@@ -2,226 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E3036018E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 07:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA79B36018F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 07:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbhDOFXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 01:23:33 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8144 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229503AbhDOFXc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 01:23:32 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13F53rqY017029;
-        Thu, 15 Apr 2021 01:23:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=0vL+SibpJZmJKZgwclAmBc+Aze2bFJYtbWw6ho9z928=;
- b=maU88t2K+SGqVa80jXuCdBcZQDBL5Hza8Sof/crQZkKCVuJBUUP4LuCJxYyc1yo0uZ9O
- oXc3EfTJOUpVv8IKSYHUPi+CxLFMEAL6eoVN964vYNJbFhMzML3fREI+ZYX1eONZlWKK
- p2ErVjoBHGkoPln6jil61EVFcQnCCkkSdXJqazU/qbDYUtADJTx/ZHS1PhbtghT/kiiN
- bUGyAR2Rzptpggx28iCekJu+qMzK+O2Mhn9l7WBVAdzLsH+cPI2Y0OW9MN/YAB9tUeIj
- TmjM3zGkPF8fqheakQ963l3mm/nj9w9bD8UfiWCdUoekmMbnsDX/ZQ8uK7oJl2ni7Dqn ZA== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37x46xeuf2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Apr 2021 01:23:08 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13F5MmXC008898;
-        Thu, 15 Apr 2021 05:23:06 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 37u3n8unq0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Apr 2021 05:23:06 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13F5N4V534603470
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Apr 2021 05:23:04 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0F3EEA405B;
-        Thu, 15 Apr 2021 05:23:04 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D8A66A4054;
-        Thu, 15 Apr 2021 05:23:02 +0000 (GMT)
-Received: from in.ibm.com (unknown [9.77.201.251])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu, 15 Apr 2021 05:23:02 +0000 (GMT)
-Date:   Thu, 15 Apr 2021 10:53:00 +0530
-From:   Bharata B Rao <bharata@linux.ibm.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        aneesh.kumar@linux.ibm.com
-Subject: Re: High kmalloc-32 slab cache consumption with 10k containers
-Message-ID: <20210415052300.GA1662898@in.ibm.com>
-Reply-To: bharata@linux.ibm.com
-References: <20210405054848.GA1077931@in.ibm.com>
- <20210406222807.GD1990290@dread.disaster.area>
+        id S230030AbhDOFZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 01:25:04 -0400
+Received: from mga11.intel.com ([192.55.52.93]:20588 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229503AbhDOFZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 01:25:01 -0400
+IronPort-SDR: IiOXhg9f6Ay/yQBMEgbNmQM8vbB5lY41W6Up5ZeuaSJv0Xxk99zTvt4ze2ZyucUM/VwwKlPJkd
+ 3u41mTeGgvLA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="191602361"
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="191602361"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 22:24:38 -0700
+IronPort-SDR: 7W01CWptxkySKPQBXRSRdmx+Mph2syAOAbsuP0FzPVBQJX8IjiBMH4bFTRqQva/8R3LQ2jODKY
+ yJ+4NWoPE1Cg==
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="425042439"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 22:24:33 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Dennis Zhou <dennis@kernel.org>
+Cc:     Miaohe Lin <linmiaohe@huawei.com>, <akpm@linux-foundation.org>,
+        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
+        <vbabka@suse.cz>, <alex.shi@linux.alibaba.com>,
+        <willy@infradead.org>, <minchan@kernel.org>,
+        <richard.weiyang@gmail.com>, <hughd@google.com>,
+        <tim.c.chen@linux.intel.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>
+Subject: Re: [PATCH 1/5] mm/swapfile: add percpu_ref support for swap
+References: <87fszww55d.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <87zgy4ufr3.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <46a51c49-2887-0c1a-bcf3-e1ebe9698ebf@huawei.com>
+        <874kg9u0jo.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <75e27441-7744-7a10-e709-c8cd00830099@huawei.com>
+        <87tuo9sjpj.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <YHZlJZh8T4ZhLhp6@google.com>
+        <877dl5seig.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <YHZqCy/y2YLCOcbD@google.com>
+        <87zgy1qv1h.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <YHcB36r5gOyXnozT@google.com>
+Date:   Thu, 15 Apr 2021 13:24:31 +0800
+In-Reply-To: <YHcB36r5gOyXnozT@google.com> (Dennis Zhou's message of "Wed, 14
+        Apr 2021 14:53:19 +0000")
+Message-ID: <87o8egp1bk.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210406222807.GD1990290@dread.disaster.area>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: sQ40t9LBvydUq8wKOEBfTpBqMTdpwFQs
-X-Proofpoint-ORIG-GUID: sQ40t9LBvydUq8wKOEBfTpBqMTdpwFQs
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-15_02:2021-04-15,2021-04-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 mlxscore=0 impostorscore=0 adultscore=0 clxscore=1015
- lowpriorityscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104150034
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 08:28:07AM +1000, Dave Chinner wrote:
-> 
-> Another approach may be to identify filesystem types that do not
-> need memcg awareness and feed that into alloc_super() to set/clear
-> the SHRINKER_MEMCG_AWARE flag. This could be based on fstype - most
-> virtual filesystems that expose system information do not really
-> need full memcg awareness because they are generally only visible to
-> a single memcg instance...
+Dennis Zhou <dennis@kernel.org> writes:
 
-Would something like below be appropriate?
+> On Wed, Apr 14, 2021 at 01:44:58PM +0800, Huang, Ying wrote:
+>> Dennis Zhou <dennis@kernel.org> writes:
+>> 
+>> > On Wed, Apr 14, 2021 at 11:59:03AM +0800, Huang, Ying wrote:
+>> >> Dennis Zhou <dennis@kernel.org> writes:
+>> >> 
+>> >> > Hello,
+>> >> >
+>> >> > On Wed, Apr 14, 2021 at 10:06:48AM +0800, Huang, Ying wrote:
+>> >> >> Miaohe Lin <linmiaohe@huawei.com> writes:
+>> >> >> 
+>> >> >> > On 2021/4/14 9:17, Huang, Ying wrote:
+>> >> >> >> Miaohe Lin <linmiaohe@huawei.com> writes:
+>> >> >> >> 
+>> >> >> >>> On 2021/4/12 15:24, Huang, Ying wrote:
+>> >> >> >>>> "Huang, Ying" <ying.huang@intel.com> writes:
+>> >> >> >>>>
+>> >> >> >>>>> Miaohe Lin <linmiaohe@huawei.com> writes:
+>> >> >> >>>>>
+>> >> >> >>>>>> We will use percpu-refcount to serialize against concurrent swapoff. This
+>> >> >> >>>>>> patch adds the percpu_ref support for later fixup.
+>> >> >> >>>>>>
+>> >> >> >>>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> >> >> >>>>>> ---
+>> >> >> >>>>>>  include/linux/swap.h |  2 ++
+>> >> >> >>>>>>  mm/swapfile.c        | 25 ++++++++++++++++++++++---
+>> >> >> >>>>>>  2 files changed, 24 insertions(+), 3 deletions(-)
+>> >> >> >>>>>>
+>> >> >> >>>>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>> >> >> >>>>>> index 144727041e78..849ba5265c11 100644
+>> >> >> >>>>>> --- a/include/linux/swap.h
+>> >> >> >>>>>> +++ b/include/linux/swap.h
+>> >> >> >>>>>> @@ -240,6 +240,7 @@ struct swap_cluster_list {
+>> >> >> >>>>>>   * The in-memory structure used to track swap areas.
+>> >> >> >>>>>>   */
+>> >> >> >>>>>>  struct swap_info_struct {
+>> >> >> >>>>>> +	struct percpu_ref users;	/* serialization against concurrent swapoff */
+>> >> >> >>>>>>  	unsigned long	flags;		/* SWP_USED etc: see above */
+>> >> >> >>>>>>  	signed short	prio;		/* swap priority of this type */
+>> >> >> >>>>>>  	struct plist_node list;		/* entry in swap_active_head */
+>> >> >> >>>>>> @@ -260,6 +261,7 @@ struct swap_info_struct {
+>> >> >> >>>>>>  	struct block_device *bdev;	/* swap device or bdev of swap file */
+>> >> >> >>>>>>  	struct file *swap_file;		/* seldom referenced */
+>> >> >> >>>>>>  	unsigned int old_block_size;	/* seldom referenced */
+>> >> >> >>>>>> +	struct completion comp;		/* seldom referenced */
+>> >> >> >>>>>>  #ifdef CONFIG_FRONTSWAP
+>> >> >> >>>>>>  	unsigned long *frontswap_map;	/* frontswap in-use, one bit per page */
+>> >> >> >>>>>>  	atomic_t frontswap_pages;	/* frontswap pages in-use counter */
+>> >> >> >>>>>> diff --git a/mm/swapfile.c b/mm/swapfile.c
+>> >> >> >>>>>> index 149e77454e3c..724173cd7d0c 100644
+>> >> >> >>>>>> --- a/mm/swapfile.c
+>> >> >> >>>>>> +++ b/mm/swapfile.c
+>> >> >> >>>>>> @@ -39,6 +39,7 @@
+>> >> >> >>>>>>  #include <linux/export.h>
+>> >> >> >>>>>>  #include <linux/swap_slots.h>
+>> >> >> >>>>>>  #include <linux/sort.h>
+>> >> >> >>>>>> +#include <linux/completion.h>
+>> >> >> >>>>>>  
+>> >> >> >>>>>>  #include <asm/tlbflush.h>
+>> >> >> >>>>>>  #include <linux/swapops.h>
+>> >> >> >>>>>> @@ -511,6 +512,15 @@ static void swap_discard_work(struct work_struct *work)
+>> >> >> >>>>>>  	spin_unlock(&si->lock);
+>> >> >> >>>>>>  }
+>> >> >> >>>>>>  
+>> >> >> >>>>>> +static void swap_users_ref_free(struct percpu_ref *ref)
+>> >> >> >>>>>> +{
+>> >> >> >>>>>> +	struct swap_info_struct *si;
+>> >> >> >>>>>> +
+>> >> >> >>>>>> +	si = container_of(ref, struct swap_info_struct, users);
+>> >> >> >>>>>> +	complete(&si->comp);
+>> >> >> >>>>>> +	percpu_ref_exit(&si->users);
+>> >> >> >>>>>
+>> >> >> >>>>> Because percpu_ref_exit() is used, we cannot use percpu_ref_tryget() in
+>> >> >> >>>>> get_swap_device(), better to add comments there.
+>> >> >> >>>>
+>> >> >> >>>> I just noticed that the comments of percpu_ref_tryget_live() says,
+>> >> >> >>>>
+>> >> >> >>>>  * This function is safe to call as long as @ref is between init and exit.
+>> >> >> >>>>
+>> >> >> >>>> While we need to call get_swap_device() almost at any time, so it's
+>> >> >> >>>> better to avoid to call percpu_ref_exit() at all.  This will waste some
+>> >> >> >>>> memory, but we need to follow the API definition to avoid potential
+>> >> >> >>>> issues in the long term.
+>> >> >> >>>
+>> >> >> >>> I have to admit that I'am not really familiar with percpu_ref. So I read the
+>> >> >> >>> implementation code of the percpu_ref and found percpu_ref_tryget_live() could
+>> >> >> >>> be called after exit now. But you're right we need to follow the API definition
+>> >> >> >>> to avoid potential issues in the long term.
+>> >> >> >>>
+>> >> >> >>>>
+>> >> >> >>>> And we need to call percpu_ref_init() before insert the swap_info_struct
+>> >> >> >>>> into the swap_info[].
+>> >> >> >>>
+>> >> >> >>> If we remove the call to percpu_ref_exit(), we should not use percpu_ref_init()
+>> >> >> >>> here because *percpu_ref->data is assumed to be NULL* in percpu_ref_init() while
+>> >> >> >>> this is not the case as we do not call percpu_ref_exit(). Maybe percpu_ref_reinit()
+>> >> >> >>> or percpu_ref_resurrect() will do the work.
+>> >> >> >>>
+>> >> >> >>> One more thing, how could I distinguish the killed percpu_ref from newly allocated one?
+>> >> >> >>> It seems percpu_ref_is_dying is only safe to call when @ref is between init and exit.
+>> >> >> >>> Maybe I could do this in alloc_swap_info()?
+>> >> >> >> 
+>> >> >> >> Yes.  In alloc_swap_info(), you can distinguish newly allocated and
+>> >> >> >> reused swap_info_struct.
+>> >> >> >> 
+>> >> >> >>>>
+>> >> >> >>>>>> +}
+>> >> >> >>>>>> +
+>> >> >> >>>>>>  static void alloc_cluster(struct swap_info_struct *si, unsigned long idx)
+>> >> >> >>>>>>  {
+>> >> >> >>>>>>  	struct swap_cluster_info *ci = si->cluster_info;
+>> >> >> >>>>>> @@ -2500,7 +2510,7 @@ static void enable_swap_info(struct swap_info_struct *p, int prio,
+>> >> >> >>>>>>  	 * Guarantee swap_map, cluster_info, etc. fields are valid
+>> >> >> >>>>>>  	 * between get/put_swap_device() if SWP_VALID bit is set
+>> >> >> >>>>>>  	 */
+>> >> >> >>>>>> -	synchronize_rcu();
+>> >> >> >>>>>> +	percpu_ref_reinit(&p->users);
+>> >> >> >>>>>
+>> >> >> >>>>> Although the effect is same, I think it's better to use
+>> >> >> >>>>> percpu_ref_resurrect() here to improve code readability.
+>> >> >> >>>>
+>> >> >> >>>> Check the original commit description for commit eb085574a752 "mm, swap:
+>> >> >> >>>> fix race between swapoff and some swap operations" and discussion email
+>> >> >> >>>> thread as follows again,
+>> >> >> >>>>
+>> >> >> >>>> https://lore.kernel.org/linux-mm/20171219053650.GB7829@linux.vnet.ibm.com/
+>> >> >> >>>>
+>> >> >> >>>> I found that the synchronize_rcu() here is to avoid to call smp_rmb() or
+>> >> >> >>>> smp_load_acquire() in get_swap_device().  Now we will use
+>> >> >> >>>> percpu_ref_tryget_live() in get_swap_device(), so we will need to add
+>> >> >> >>>> the necessary memory barrier, or make sure percpu_ref_tryget_live() has
+>> >> >> >>>> ACQUIRE semantics.  Per my understanding, we need to change
+>> >> >> >>>> percpu_ref_tryget_live() for that.
+>> >> >> >>>>
+>> >> >> >>>
+>> >> >> >>> Do you mean the below scene is possible?
+>> >> >> >>>
+>> >> >> >>> cpu1
+>> >> >> >>> swapon()
+>> >> >> >>>   ...
+>> >> >> >>>   percpu_ref_init
+>> >> >> >>>   ...
+>> >> >> >>>   setup_swap_info
+>> >> >> >>>   /* smp_store_release() is inside percpu_ref_reinit */
+>> >> >> >>>   percpu_ref_reinit
+>> >> >> >> 
+>> >> >> >> spin_unlock() has RELEASE semantics already.
+>> >> >> >> 
+>> >> >> >>>   ...
+>> >> >> >>>
+>> >> >> >>> cpu2
+>> >> >> >>> get_swap_device()
+>> >> >> >>>   /* ignored  smp_rmb() */
+>> >> >> >>>   percpu_ref_tryget_live
+>> >> >> >> 
+>> >> >> >> Some kind of ACQUIRE is required here to guarantee the refcount is
+>> >> >> >> checked before fetching the other fields of swap_info_struct.  I have
+>> >> >> >> sent out a RFC patch to mailing list to discuss this.
+>> >> >
+>> >> > I'm just catching up and following along a little bit. I apologize I
+>> >> > haven't read the swap code, but my understanding is you are trying to
+>> >> > narrow a race condition with swapoff. That makes sense to me. I'm not
+>> >> > sure I follow the need to race with reinitializing the ref though? Is it
+>> >> > not possible to wait out the dying swap info and then create a new one
+>> >> > rather than push acquire semantics?
+>> >> 
+>> >> We want to check whether the swap entry is valid (that is, the swap
+>> >> device isn't swapped off now), prevent it from swapping off, then access
+>> >> the swap_info_struct data structure.  When accessing swap_info_struct,
+>> >> we want to guarantee the ordering, so that we will not reference
+>> >> uninitialized fields of swap_info_struct.
+>> >> 
+>> >
+>> > So in the normal context of percpu_ref, once someone can access it, the
+>> > elements that it is protecting are expected to be initialized.
+>> 
+>> If we can make sure that all elements being initialized fully, why not
+>> just use percpu_ref_get() instead of percpu_ref_tryget*()?
+>> 
+>
+> Generally, the lookup is protected with rcu and then
+> percpu_ref_tryget*() is used to obtain a reference. percpu_ref_get() is
+> only good if you already have a ref as it increments regardless of being
+> 0.
+>
+> What I mean is if you can get a ref, that means the object hasn't been
+> destroyed. This differs from the semantics you are looking for which I
+> understand to be: I have long lived pointers to objects. The object may
+> die, but I may resurrect it and I want the old pointers to still be
+> valid.
+>
+> When is it possible for someone to have a pointer to the swap device and
+> the refcount goes to 0? It might be better to avoid this situation than
+> add acquire semantics.
+>
+>> > In the basic case for swap off, I'm seeing the goal as to prevent
+>> > destruction until anyone currently accessing swap is done. In this
+>> > case wouldn't we always be protecting a live struct?
+>> >
+>> > I'm maybe not understanding what conditions you're trying to revive the
+>> > percpu_ref?
+>> 
+>> A swap entry likes an indirect pointer to a swap device.  We may hold a
+>> swap entry for long time, so that the swap device is swapoff/swapon.
+>> Then we need to make sure the swap device are fully initialized before
+>> accessing the swap device via the swap entry.
+>> 
+>
+> So if I have some number of outstanding references, and then
+> percpu_ref_kill() is called, then only those that have the pointer will
+> be able to use the swap device as those references are still good. Prior
+> to calling percpu_ref_kill(), call_rcu() needs to be called on lookup
+> data structure.
+>
+> My personal understanding of tryget() vs tryget_live() is that it
+> provides a 2 phase clean up and bounds the ability for new users to come
+> in (cgroup destruction is a primary user). As tryget() might inevitably
+> let a cgroup live long past its removal, tryget_live() will say oh
+> you're in the process of dying do something else.
 
-From f314083ad69fde2a420a1b74febd6d3f7a25085f Mon Sep 17 00:00:00 2001
-From: Bharata B Rao <bharata@linux.ibm.com>
-Date: Wed, 14 Apr 2021 11:21:24 +0530
-Subject: [PATCH 1/1] fs: Let filesystems opt out of memcg awareness
+OK.  I think that I understand your typical use case now.  The resource
+producer code may look like,
 
-All filesystem mounts by default are memcg aware and end hence
-end up creating shrinker list_lrus for all the memcgs. Due to
-the way the memcg_nr_cache_ids grow and the list_lru heads are
-allocated for all memcgs, huge amount of memory gets consumed
-by kmalloc-32 slab cache when running thousands of containers.
+  obj = kmalloc();
+  /* Initialize obj fields */
+  percpu_ref_init(&obj->ref);
+  rcu_assign_pointer(global_p, obj);
 
-Improve this situation by allowing filesystems to opt out
-of memcg awareness. In this patch, tmpfs, proc and ramfs
-opt out of memcg awareness. This leads to considerable memory
-savings when running 10k containers.
+The resource reclaimer looks like,
 
-Signed-off-by: Bharata B Rao <bharata@linux.ibm.com>
----
- fs/proc/root.c             |  1 +
- fs/ramfs/inode.c           |  1 +
- fs/super.c                 | 27 +++++++++++++++++++--------
- include/linux/fs_context.h |  2 ++
- mm/shmem.c                 |  1 +
- 5 files changed, 24 insertions(+), 8 deletions(-)
+  p = global_p;
+  global_p = NULL;
+  percpu_ref_kill(&p->ref);
+  /* wait until percpu_ref_is_zero(&p->ref) */
+  /* free resources pointed by obj fields */
+  kfree(p);
 
-diff --git a/fs/proc/root.c b/fs/proc/root.c
-index c7e3b1350ef8..7856bc2ca9f4 100644
---- a/fs/proc/root.c
-+++ b/fs/proc/root.c
-@@ -257,6 +257,7 @@ static int proc_init_fs_context(struct fs_context *fc)
- 	fc->user_ns = get_user_ns(ctx->pid_ns->user_ns);
- 	fc->fs_private = ctx;
- 	fc->ops = &proc_fs_context_ops;
-+	fc->memcg_optout = true;
- 	return 0;
- }
- 
-diff --git a/fs/ramfs/inode.c b/fs/ramfs/inode.c
-index 9ebd17d7befb..576a88bb7407 100644
---- a/fs/ramfs/inode.c
-+++ b/fs/ramfs/inode.c
-@@ -278,6 +278,7 @@ int ramfs_init_fs_context(struct fs_context *fc)
- 	fsi->mount_opts.mode = RAMFS_DEFAULT_MODE;
- 	fc->s_fs_info = fsi;
- 	fc->ops = &ramfs_context_ops;
-+	fc->memcg_optout = true;
- 	return 0;
- }
- 
-diff --git a/fs/super.c b/fs/super.c
-index 8c1baca35c16..59aa22c678e6 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -198,7 +198,8 @@ static void destroy_unused_super(struct super_block *s)
-  *	returns a pointer new superblock or %NULL if allocation had failed.
-  */
- static struct super_block *alloc_super(struct file_system_type *type, int flags,
--				       struct user_namespace *user_ns)
-+				       struct user_namespace *user_ns,
-+				       bool memcg_optout)
- {
- 	struct super_block *s = kzalloc(sizeof(struct super_block),  GFP_USER);
- 	static const struct super_operations default_op;
-@@ -266,13 +267,22 @@ static struct super_block *alloc_super(struct file_system_type *type, int flags,
- 	s->s_shrink.scan_objects = super_cache_scan;
- 	s->s_shrink.count_objects = super_cache_count;
- 	s->s_shrink.batch = 1024;
--	s->s_shrink.flags = SHRINKER_NUMA_AWARE | SHRINKER_MEMCG_AWARE;
-+	s->s_shrink.flags = SHRINKER_NUMA_AWARE;
-+	if (!memcg_optout)
-+		s->s_shrink.flags |= SHRINKER_MEMCG_AWARE;
- 	if (prealloc_shrinker(&s->s_shrink))
- 		goto fail;
--	if (list_lru_init_memcg(&s->s_dentry_lru, &s->s_shrink))
--		goto fail;
--	if (list_lru_init_memcg(&s->s_inode_lru, &s->s_shrink))
--		goto fail;
-+	if (memcg_optout) {
-+		if (list_lru_init(&s->s_dentry_lru))
-+			goto fail;
-+		if (list_lru_init(&s->s_inode_lru))
-+			goto fail;
-+	} else {
-+		if (list_lru_init_memcg(&s->s_dentry_lru, &s->s_shrink))
-+			goto fail;
-+		if (list_lru_init_memcg(&s->s_inode_lru, &s->s_shrink))
-+			goto fail;
-+	}
- 	return s;
- 
- fail:
-@@ -527,7 +537,8 @@ struct super_block *sget_fc(struct fs_context *fc,
- 	}
- 	if (!s) {
- 		spin_unlock(&sb_lock);
--		s = alloc_super(fc->fs_type, fc->sb_flags, user_ns);
-+		s = alloc_super(fc->fs_type, fc->sb_flags, user_ns,
-+				fc->memcg_optout);
- 		if (!s)
- 			return ERR_PTR(-ENOMEM);
- 		goto retry;
-@@ -610,7 +621,7 @@ struct super_block *sget(struct file_system_type *type,
- 	}
- 	if (!s) {
- 		spin_unlock(&sb_lock);
--		s = alloc_super(type, (flags & ~SB_SUBMOUNT), user_ns);
-+		s = alloc_super(type, (flags & ~SB_SUBMOUNT), user_ns, false);
- 		if (!s)
- 			return ERR_PTR(-ENOMEM);
- 		goto retry;
-diff --git a/include/linux/fs_context.h b/include/linux/fs_context.h
-index 37e1e8f7f08d..73388c0b6950 100644
---- a/include/linux/fs_context.h
-+++ b/include/linux/fs_context.h
-@@ -110,6 +110,8 @@ struct fs_context {
- 	bool			need_free:1;	/* Need to call ops->free() */
- 	bool			global:1;	/* Goes into &init_user_ns */
- 	bool			oldapi:1;	/* Coming from mount(2) */
-+	bool			memcg_optout:1;	/* Opt out from per-memcg
-+						   lru handling */
- };
- 
- struct fs_context_operations {
-diff --git a/mm/shmem.c b/mm/shmem.c
-index b2db4ed0fbc7..0c9b2af52825 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -3915,6 +3915,7 @@ int shmem_init_fs_context(struct fs_context *fc)
- 
- 	fc->fs_private = ctx;
- 	fc->ops = &shmem_fs_context_ops;
-+	fc->memcg_optout = true;
- 	return 0;
- }
- 
--- 
-2.26.2
+The resource producer looks like,
 
+  rcu_read_lock();
+  p = rcu_dereference(global_p);
+  if (!p || !percpu_ref_tryget_live(&p->ref)) {
+          /* Invalid pointer, go out */
+  }
+  rcu_read_unlock();
+  /* use p */
+  percpu_ref_put(&p->ref);
+
+For this use case, it's not necessary to make percpu_ref_tryget_live()
+ACQUIRE operation.  Because refcount doesn't act as a flag to indicate
+whether the object has been fully initialized, global_p does.  And
+the data dependency guaranteed the required ordering.
+
+The use case of swap is different.  Where global_p always points to
+the obj (never freed) even if the resources pointed by obj fields has
+been freed.  And we want to use refcount as a flag to indicate whether
+the object is fully initialized.  This is hard to be changed, because
+the global_p is used to identify the stalled pointer from the totally
+invalid pointer.
+
+If all other users follow the typical use case above, we may find some
+other way to resolve the problem inside swap code, such as adding
+smp_rmb() after percpu_ref_tryget_live().
+
+Best Regards,
+Huang, Ying
