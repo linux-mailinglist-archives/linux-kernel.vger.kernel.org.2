@@ -2,166 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7C1360281
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 08:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB1F36028B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 08:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhDOGgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 02:36:47 -0400
-Received: from mga05.intel.com ([192.55.52.43]:58244 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229503AbhDOGgp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 02:36:45 -0400
-IronPort-SDR: Kg4+8JsQjks/NkYHpOvV9GyuDrwgAbEf2Ns/v+qOS0Oc1lIJPxuZryUJ89ny14JMfXV/Bus4AP
- w/hy+B5V3RtQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="280110298"
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="280110298"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 23:36:22 -0700
-IronPort-SDR: cUCFkyBP4F1zQegbRNZjRuBuYb5nTtdKHouuUdwf2fWvM3jzUJyz9Cj13j5a0BE66KmUWrq6s2
- +sqekD9u+NdQ==
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="418634557"
-Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.254.209.173]) ([10.254.209.173])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 23:36:19 -0700
-Subject: Re: [PATCH 1/3] vDPA/ifcvf: deduce VIRTIO device ID when probe
-To:     Jason Wang <jasowang@redhat.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>, mst@redhat.com,
-        lulu@redhat.com, leonro@nvidia.com
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210414091832.5132-1-lingshan.zhu@intel.com>
- <20210414091832.5132-2-lingshan.zhu@intel.com>
- <85483ff1-cf98-ad05-0c53-74caa2464459@redhat.com>
- <ccf7001b-27f0-27ea-40d2-52ca3cc2386b@linux.intel.com>
- <ffd2861d-2395-de51-a227-f1ef33f74322@redhat.com>
-From:   Zhu Lingshan <lingshan.zhu@linux.intel.com>
-Message-ID: <92ef6264-4462-cbd4-5db8-6ce6b68762e0@linux.intel.com>
-Date:   Thu, 15 Apr 2021 14:36:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S230159AbhDOGlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 02:41:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhDOGlB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 02:41:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C02DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 23:40:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kdup9hnwbEiPmwTx9I9NnARK4LM7lXWcWIkr+6fiOPY=; b=QMvRnHEY6v+1+1x3P9v5O1tppt
+        PhAkJUgWiFuni09IbxDa4Vfn6J/XKfcCCD1/a+AMGKH+4hu22+yK89okqW8E/5LCCEvtdOZ5yVdsZ
+        i3+4WIvI4x3tg0GEQR+6zXdNXAdmPjMElpRDH5aaGTA/NwhPVGMo+1ZUl5Cu8PLb8LJ1VoPdQQ9zZ
+        iLMktBmorhbqIwl211yXC1BJj0xuY5JmU4lpWh/mkQvpeqmSotkM8Jf6TbjMCTbKPYbyM2aJepYJJ
+        4ur57vX4Vy2k9wLGyjWWKxZbUAqULWbDQDH17DRHU0ifO4PNIC7ZLef1veT07UX4EEymYQT1g8imd
+        sUW8idYA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWvg1-0089BK-MR; Thu, 15 Apr 2021 06:40:34 +0000
+Date:   Thu, 15 Apr 2021 07:40:33 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, vkoul@kernel.org,
+        Jason Gunthorpe <jgg@nvidia.com>, zhangfei.gao@linaro.org
+Subject: Re: [PATCH v2 1/2] iommu/sva: Tighten SVA bind API with explicit
+ flags
+Message-ID: <20210415064033.GA1938497@infradead.org>
+References: <1618414077-28808-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1618414077-28808-2-git-send-email-jacob.jun.pan@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <ffd2861d-2395-de51-a227-f1ef33f74322@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1618414077-28808-2-git-send-email-jacob.jun.pan@linux.intel.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 14, 2021 at 08:27:56AM -0700, Jacob Pan wrote:
+>  static int idxd_enable_system_pasid(struct idxd_device *idxd)
+>  {
+> -	int flags;
+> +	unsigned int flags;
+>  	unsigned int pasid;
+>  	struct iommu_sva *sva;
+>  
+> -	flags = SVM_FLAG_SUPERVISOR_MODE;
+> +	flags = IOMMU_SVA_BIND_SUPERVISOR;
+>  
+> -	sva = iommu_sva_bind_device(&idxd->pdev->dev, NULL, &flags);
+> +	sva = iommu_sva_bind_device(&idxd->pdev->dev, NULL, flags);
 
+Please also remove the now pointless flags variable.
 
-On 4/15/2021 2:30 PM, Jason Wang wrote:
->
-> 在 2021/4/15 下午1:52, Zhu Lingshan 写道:
->>
->>
->> On 4/15/2021 11:30 AM, Jason Wang wrote:
->>>
->>> 在 2021/4/14 下午5:18, Zhu Lingshan 写道:
->>>> This commit deduces VIRTIO device ID as device type when probe,
->>>> then ifcvf_vdpa_get_device_id() can simply return the ID.
->>>> ifcvf_vdpa_get_features() and ifcvf_vdpa_get_config_size()
->>>> can work properly based on the device ID.
->>>>
->>>> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
->>>> ---
->>>>   drivers/vdpa/ifcvf/ifcvf_base.h |  1 +
->>>>   drivers/vdpa/ifcvf/ifcvf_main.c | 22 ++++++++++------------
->>>>   2 files changed, 11 insertions(+), 12 deletions(-)
->>>>
->>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h 
->>>> b/drivers/vdpa/ifcvf/ifcvf_base.h
->>>> index b2eeb16b9c2c..1c04cd256fa7 100644
->>>> --- a/drivers/vdpa/ifcvf/ifcvf_base.h
->>>> +++ b/drivers/vdpa/ifcvf/ifcvf_base.h
->>>> @@ -84,6 +84,7 @@ struct ifcvf_hw {
->>>>       u32 notify_off_multiplier;
->>>>       u64 req_features;
->>>>       u64 hw_features;
->>>> +    u32 dev_type;
->>>>       struct virtio_pci_common_cfg __iomem *common_cfg;
->>>>       void __iomem *net_cfg;
->>>>       struct vring_info vring[IFCVF_MAX_QUEUE_PAIRS * 2];
->>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c 
->>>> b/drivers/vdpa/ifcvf/ifcvf_main.c
->>>> index 44d7586019da..99b0a6b4c227 100644
->>>> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
->>>> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
->>>> @@ -323,19 +323,9 @@ static u32 ifcvf_vdpa_get_generation(struct 
->>>> vdpa_device *vdpa_dev)
->>>>     static u32 ifcvf_vdpa_get_device_id(struct vdpa_device *vdpa_dev)
->>>>   {
->>>> -    struct ifcvf_adapter *adapter = vdpa_to_adapter(vdpa_dev);
->>>> -    struct pci_dev *pdev = adapter->pdev;
->>>> -    u32 ret = -ENODEV;
->>>> -
->>>> -    if (pdev->device < 0x1000 || pdev->device > 0x107f)
->>>> -        return ret;
->>>> -
->>>> -    if (pdev->device < 0x1040)
->>>> -        ret =  pdev->subsystem_device;
->>>> -    else
->>>> -        ret =  pdev->device -0x1040;
->>>> +    struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
->>>>   -    return ret;
->>>> +    return vf->dev_type;
->>>>   }
->>>>     static u32 ifcvf_vdpa_get_vendor_id(struct vdpa_device *vdpa_dev)
->>>> @@ -466,6 +456,14 @@ static int ifcvf_probe(struct pci_dev *pdev, 
->>>> const struct pci_device_id *id)
->>>>       pci_set_drvdata(pdev, adapter);
->>>>         vf = &adapter->vf;
->>>> +    if (pdev->device < 0x1000 || pdev->device > 0x107f)
->>>> +        return -EOPNOTSUPP;
->>>> +
->>>> +    if (pdev->device < 0x1040)
->>>> +        vf->dev_type =  pdev->subsystem_device;
->>>> +    else
->>>> +        vf->dev_type =  pdev->device - 0x1040;
->>>
->>>
->>> So a question here, is the device a transtional device or modern one?
->>>
->>> If it's a transitonal one, can it swtich endianess automatically or 
->>> not?
->>>
->>> Thanks
->> Hi Jason,
->>
->> This driver should drive both modern and transitional devices as we 
->> discussed before.
->> If it's a transitional one, it will act as a modern device by 
->> default, legacy mode is a fail-over path.
->
->
-> Note that legacy driver use native endian, support legacy driver 
-> requires the device to know native endian which I'm not sure your 
-> device can do that.
->
-> Thanks
-Yes, legacy requires guest native endianess, I think we don't need to 
-worry about this because our transitional device should work in modern 
-mode by
-default(legacy mode is the failover path we will never reach, 
-get_features will fail if no ACCESS_PLATFORM), we don't support legacy 
-device in vDPA.
+> +iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, unsigned int flags)
 
-Thanks
->
->
->> For vDPA, it has to support VIRTIO_1 and ACCESS_PLATFORM, so it must 
->> in modern mode.
->> I think we don't need to worry about endianess for legacy mode.
->>
->> Thanks
->> Zhu Lingshan
->>>
->>>
->>>> +
->>>>       vf->base = pcim_iomap_table(pdev);
->>>>         adapter->pdev = pdev;
->>>
->>
->
+Pleae avoid the pointless overly long line.
 
+> -#define SVM_FLAG_GUEST_PASID		(1<<3)
+> +#define SVM_FLAG_GUEST_PASID		(1<<2)
+
+This flag is entirely unused, please just remove it in a prep patch
+rather than renumbering it.
+
+>  static inline struct iommu_sva *
+> -iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, void *drvdata)
+> +iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, unsigned int flags)
+
+Same overy long line here.
