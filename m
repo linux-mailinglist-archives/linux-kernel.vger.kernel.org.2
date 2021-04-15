@@ -2,121 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3DF360606
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00A236060E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232192AbhDOJkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 05:40:33 -0400
-Received: from m176149.mail.qiye.163.com ([59.111.176.149]:23050 "EHLO
-        m176149.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhDOJka (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 05:40:30 -0400
-Received: from vivo.com (wm-9.qy.internal [127.0.0.1])
-        by m176149.mail.qiye.163.com (Hmail) with ESMTP id 6E7C128308B;
-        Thu, 15 Apr 2021 17:40:05 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AAgApgCdDjCicbWFGpPmeaor.3.1618479605424.Hmail.wangqing@vivo.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCBWM10gd2F0Y2hkb2c6IG10azogc3VwcG9ydCBwcmUtdGltZW91dCB3aGVuIHRoZSBiYXJrIGlycSBpcyBhdmFpbGFibGU=?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 36.152.145.182
-In-Reply-To: <1e60551b-4961-91d6-1ea8-7e3b6becd385@roeck-us.net>
+        id S232089AbhDOJmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 05:42:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34658 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231200AbhDOJmu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 05:42:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2347160FD8;
+        Thu, 15 Apr 2021 09:42:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618479747;
+        bh=ji016J2CdUKZtTILjzt/X/tJBXFKy/pfmjOJgrMn5uU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=MzkezCPEEo02FCqGzQvmsS1RV0bUj4FQJz6ZojcgCLn2cytBEaVJE9LjPsn1YTDPe
+         Nr8faT6C6IyfkEMWwnCOVfm2MNYy7keuJufdoKL1UVKqlCZ7cCFFVhbnjMGCrwd2sQ
+         5da/juQUDhApXiTXljwxyXzGG1hxWqqJ8o4ZTUnMm0cIKKXlNqP5fhG2F6kqkgqWnN
+         UmYRAgle3f9yVT2ZXaOLULiXPfQ24K58hOrUZ94p9qgZZGuBddgCmnJeRz/s4BRCrg
+         1FnwMfuHM6bYPCyLgcYhW6QGZkRTPk3LQukF709nFx9xlrLkMAvRumwUh4W39Xw12P
+         JlH2MXFWiCStQ==
+Subject: Re: [PATCH v2 3/3] mmc: sdhci-s3c: constify uses of driver/match data
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Ben Dooks <ben-linux@fluff.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>
+References: <20210415084412.51125-1-krzysztof.kozlowski@canonical.com>
+ <20210415084412.51125-3-krzysztof.kozlowski@canonical.com>
+From:   Sylwester Nawrocki <snawrocki@kernel.org>
+Message-ID: <bc8cb322-3f65-4387-2942-ed51d0eaca5d@kernel.org>
+Date:   Thu, 15 Apr 2021 11:42:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Received: from wangqing@vivo.com( [36.152.145.182) ] by ajax-webmail ( [127.0.0.1] ) ; Thu, 15 Apr 2021 17:40:05 +0800 (GMT+08:00)
-From:   =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
-Date:   Thu, 15 Apr 2021 17:40:05 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGk9NSFZDGE0eShlPSh5JTxlVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU1JQ0hPSUlCSEJIN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6Ohw6Cxw4Hz8ROBIYGSw9PAsrFh4aFAlVSFVKTUpDT0xCTUtOTExDVTMWGhIXVQwaFRwKEhUc
-        Ow0SDRRVGBQWRVlXWRILWUFZSE1VSk5JVUpPTlVKQ0lZV1kIAVlBTEJDQjcG
-X-HM-Tid: 0a78d4e6e6cf9395kuws6e7c128308b
+In-Reply-To: <20210415084412.51125-3-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cj5PbiA0LzE0LzIxIDQ6NDggQU0sIFdhbmcgUWluZyB3cm90ZToKPj4gVXNlIHRoZSBiYXJrIGlu
-dGVycnVwdCBhcyB0aGUgcHJldGltZW91dCBub3RpZmllciBpZiBhdmFpbGFibGUuCj4+IAo+PiBC
-eSBkZWZhdWx0LCB0aGUgcHJldGltZW91dCBub3RpZmljYXRpb24gc2hhbGwgb2NjdXIgb25lIHNl
-Y29uZCBlYXJsaWVyCj4+IHRoYW4gdGhlIHRpbWVvdXQuCj4+IAo+PiBWMjoKPj4gLSBwYW5pYygp
-IGJ5IGRlZmF1bHQgaWYgV0FUQ0hET0dfUFJFVElNRU9VVF9HT1YgaXMgbm90IGVuYWJsZWQuCj4+
-IAo+PiBWMzoKPj4gLSBNb2RpZnkgdGhlIHByZXRpbWVvdXQgYmVoYXZpb3IsIG1hbnVhbGx5IHJl
-c2V0IGFmdGVyIHRoZSBwcmV0aW1lb3V0Cj4+IC0gaXMgcHJvY2Vzc2VkIGFuZCB3YWl0IHVudGls
-IHRpbWVvdXQuCj4+IAo+PiBTaWduZWQtb2ZmLWJ5OiBXYW5nIFFpbmcgPHdhbmdxaW5nQHZpdm8u
-Y29tPgo+PiAtLS0KPj4gIGRyaXZlcnMvd2F0Y2hkb2cvbXRrX3dkdC5jIHwgNjIgKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLQo+PiAgMSBmaWxlIGNoYW5nZWQs
-IDU3IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pCj4+IAo+PiBkaWZmIC0tZ2l0IGEvZHJp
-dmVycy93YXRjaGRvZy9tdGtfd2R0LmMgYi9kcml2ZXJzL3dhdGNoZG9nL210a193ZHQuYwo+PiBp
-bmRleCA5N2NhOTkzLi43YmVmMWUzCj4+IC0tLSBhL2RyaXZlcnMvd2F0Y2hkb2cvbXRrX3dkdC5j
-Cj4+ICsrKyBiL2RyaXZlcnMvd2F0Y2hkb2cvbXRrX3dkdC5jCj4+IEBAIC0yNSw2ICsyNSw3IEBA
-Cj4+ICAjaW5jbHVkZSA8bGludXgvcmVzZXQtY29udHJvbGxlci5oPgo+PiAgI2luY2x1ZGUgPGxp
-bnV4L3R5cGVzLmg+Cj4+ICAjaW5jbHVkZSA8bGludXgvd2F0Y2hkb2cuaD4KPj4gKyNpbmNsdWRl
-IDxsaW51eC9pbnRlcnJ1cHQuaD4KPj4gIAo+PiAgI2RlZmluZSBXRFRfTUFYX1RJTUVPVVQJCTMx
-Cj4+ICAjZGVmaW5lIFdEVF9NSU5fVElNRU9VVAkJMQo+PiBAQCAtMjM0LDE4ICsyMzUsNDYgQEAg
-c3RhdGljIGludCBtdGtfd2R0X3N0YXJ0KHN0cnVjdCB3YXRjaGRvZ19kZXZpY2UgKndkdF9kZXYp
-Cj4+ICAJdm9pZCBfX2lvbWVtICp3ZHRfYmFzZSA9IG10a193ZHQtPndkdF9iYXNlOwo+PiAgCWlu
-dCByZXQ7Cj4+ICAKPj4gLQlyZXQgPSBtdGtfd2R0X3NldF90aW1lb3V0KHdkdF9kZXYsIHdkdF9k
-ZXYtPnRpbWVvdXQpOwo+PiArCXJldCA9IG10a193ZHRfc2V0X3RpbWVvdXQod2R0X2Rldiwgd2R0
-X2Rldi0+dGltZW91dCAtIHdkdF9kZXYtPnByZXRpbWVvdXQpOwo+PiAgCWlmIChyZXQgPCAwKQo+
-PiAgCQlyZXR1cm4gcmV0Owo+PiAgCj4+ICAJcmVnID0gaW9yZWFkMzIod2R0X2Jhc2UgKyBXRFRf
-TU9ERSk7Cj4+IC0JcmVnICY9IH4oV0RUX01PREVfSVJRX0VOIHwgV0RUX01PREVfRFVBTF9FTik7
-Cj4+ICsJcmVnICY9IH5XRFRfTU9ERV9JUlFfRU47Cj4+ICsJaWYgKHdkdF9kZXYtPnByZXRpbWVv
-dXQpCj4+ICsJCXJlZyB8PSBXRFRfTU9ERV9JUlFfRU47Cj4+ICsJZWxzZQo+PiArCQlyZWcgJj0g
-fldEVF9NT0RFX0lSUV9FTjsKPj4gIAlyZWcgfD0gKFdEVF9NT0RFX0VOIHwgV0RUX01PREVfS0VZ
-KTsKPj4gIAlpb3dyaXRlMzIocmVnLCB3ZHRfYmFzZSArIFdEVF9NT0RFKTsKPj4gIAo+PiAgCXJl
-dHVybiAwOwo+PiAgfQo+PiAgCj4+ICtzdGF0aWMgaW50IG10a193ZHRfc2V0X3ByZXRpbWVvdXQo
-c3RydWN0IHdhdGNoZG9nX2RldmljZSAqd2RkLAo+PiArCQkJCSAgIHVuc2lnbmVkIGludCB0aW1l
-b3V0KQo+PiArewo+PiArCXdkZC0+cHJldGltZW91dCA9IHRpbWVvdXQ7Cj4+ICsJcmV0dXJuIG10
-a193ZHRfc3RhcnQod2RkKTsKPgo+VGhlIHdhdGNoZG9nIGlzIG5vdCBuZWNlc3NhcmlseSBhY3Rp
-dmUgaGVyZS4KPgo+PiArfQo+PiArCj4+ICtzdGF0aWMgaXJxcmV0dXJuX3QgbXRrX3dkdF9pc3Io
-aW50IGlycSwgdm9pZCAqYXJnKQo+PiArewo+PiArCXN0cnVjdCB3YXRjaGRvZ19kZXZpY2UgKndk
-ZCA9IGFyZzsKPj4gKwlzdHJ1Y3QgbXRrX3dkdF9kZXYgKm10a193ZHQgPSB3YXRjaGRvZ19nZXRf
-ZHJ2ZGF0YSh3ZGQpOwo+PiArCXZvaWQgX19pb21lbSAqd2R0X2Jhc2UgPSBtdGtfd2R0LT53ZHRf
-YmFzZTsKPj4gKwo+PiArCXdhdGNoZG9nX25vdGlmeV9wcmV0aW1lb3V0KHdkZCk7Cj4+ICsJLyoK
-Pj4gKwkgKiBHdWFyYW50ZWVkIHRvIGJlIHJlc2V0IHdoZW4gdGhlIHRpbWVvdXQKPj4gKwkgKiBl
-eHBpcmVzIHVuZGVyIGFueSBzaXR1YXRpb25zCj4+ICsJICovCj4+ICsJbWRlbGF5KDEwMDAqd2Rk
-LT5wcmV0aW1lb3V0KTsKPgo+VGhhdCBpcyBub3QgaG93IHRoaXMgaXMgc3VwcG9zZWQgdG8gd29y
-ay4gVGhlIGlkZWEgd2l0aCBhIHByZXRpbWVvdXQgaXMgdGhhdCB0aGUKPnJlYWwgd2F0Y2hkb2cg
-cmVzZXQgd2lsbCBoYXBwZW4gdW5kZXIgYWxsIGNpcmN1bXN0YW5jZXMsIGFuZCB0aGF0IGV4ZWN1
-dGluZwo+dGhlIHByZXRpbWVvdXQgKGFuZCBjaGFuZ2luZyBzb21lIGhhcmR3YXJlIHJlZ2lzdGVy
-cykgaXMgbm90IGEgcHJlcmVxdWlzaXRlCj5mb3IgdGhlIHJlYWwgdGltZW91dCB0byBoYXBwZW4u
-IEFmdGVyIGFsbCwgdGhlIHN5c3RlbSBjb3VsZCBiZSBzdHVjayBoYXJkLCB3aXRoCj5pbnRlcnJ1
-cHRzIGRpc2FibGVkLgo+Cj5PbiB0b3Agb2YgdGhhdCwganVzdCBzbGVlcGluZyBoZXJlIHdoaWxl
-IHdhaXRpbmcgZm9yIHRoZSByZWFsIHRpbWVvdXQgYW5kCj50aGVuIHJlc2V0dGluZyB0aGUgc3lz
-dGVtIGlzbid0IHRoZSBpZGVhIGVpdGhlci4gT24gYSBzaW5nbGUgY29yZSBzeXN0ZW0gdGhpcwo+
-d2lsbCBqdXN0IGhhbmcuIE9uIGEgbXVsdGktY29yZSBzeXN0ZW0sIHdobyBrbm93cyBpZiB1c2Vy
-c3BhY2UgbWFuYWdlZCB0byBwaW5nCj50aGUgd2F0Y2hkb2cgaW4gdGhlIG1lYW50aW1lLgo+Cj5V
-bmxlc3MgdGhlcmUgaXMgYSBtZWFucyB0byB0cmlnZ2VyIHRoZSB3YXRjaGRvZyB0d2ljZSwgd2l0
-aG91dCBpbnRlcnZlbnRpb24sCj50aGUgZmlyc3QgdGltZSBnZW5lcmF0aW5nIGFuIGludGVycnVw
-dCBhbmQgdGhlIHNlY29uZCB0aW1lIHJlc2V0dGluZyB0aGUgc3lzdGVtLAo+dGhlcmUgaXMgbm8g
-d2F5IGZvciB0aGlzIHRvIHdvcmsuIEkgZG9uJ3Qgc2VlIGhvdyB0aGlzIGNoaXAgcmVhbGx5IHN1
-cHBvcnRzCj5wcmV0aW1lb3V0LiBJdCBzZWVtcyB0aGF0IGl0IHN1cHBvcnRzIGVpdGhlciBhIGhh
-cmQgcmVzZXQgb3IgZ2VuZXJhdGluZyBhbgo+aW50ZXJydXB0IG9uIHdhdGNoZG9nIHRpbWVvdXQs
-IGFuZCB0aGVyZSBpcyBvbmx5IGEgc2luZ2xlIHRpbWVvdXQuCj4KPklmIHlvdSBoYXZlIGEgdXNl
-IGNhc2UgZm9yIGdlbmVyYXRpbmcgYW4gaW50ZXJydXB0IGFuZCByZXNldHRpbmcgdGhlIHN5c3Rl
-bSB2aWEKPnNvZnR3YXJlIChpZSBwYW5pYykgX2luc3RlYWRfIG9mIGhhdmluZyBpdCBnZW5lcmF0
-ZSBhIGhhcmQgcmVzZXQsIHBsZWFzZSBmZWVsCj5mcmVlIHRvIHN1Ym1pdCBhIHBhdGNoIGFsb25n
-IHRoYXQgbGluZSwgdG9nZXRoZXIgd2l0aCBhIGRlc2NyaXB0aW9uIG9mIGl0cyB1c2UKPmNhc2Uu
-Cj4KPlRoYW5rcywKPkd1ZW50ZXIKPgoKWWVzLCBhcyBtZW50aW9uZWQgYmVmb3JlLCB0aGUgYmVo
-YXZpb3Igb2YgV0RUX01PREVfSVJRX0VOIGlzIHVzZSBpcnEgaW5zdGVhZCBvZgpyZXNldCwgc28g
-d2UgbXVzdCB1c2UgV0RUX01PREVfSVJRX0VOIHwgV0RUX01PREVfRFVBTF9FTiBpZiBsaWtlIHlv
-dSBzYWlkCiJ0aGUgZmlyc3QgdGltZSBnZW5lcmF0aW5nIGFuIGludGVycnVwdCBhbmQgdGhlIHNl
-Y29uZCB0aW1lIHJlc2V0dGluZyB0aGUgc3lzdGVtIiAuIAoKVGhlIER1YWwgbW9kZSBpcyBtZW50
-aW9uZWQgaW4gdGhlIE1USyBkYXRhc2hlZXQ6CkluIHRoaXMgbW9kZSwgdGhlIHdhdGNoZG9nIHdp
-bGwgYmUgQVVUTy1SRVNUQVJUIGFmdGVyIGludGVycnVwdCBpcyB0cmlnZ2VyZWQuIApBUCBuZWVk
-IHRvIGNsZWFyIFdEVF9TVEEgYWZ0ZXIgcmVjZWl2aW5nIGludGVycnVwdCBmcm9tIFRPUFJHVSwg
-b3Igc3lzdGVtIHJlc2V0CndpbGwgYmUgdHJpZ2dlcmVkIGFmdGVyIHdhdGNoZG9nIHRpbWVyIGV4
-cGlyZXMuCkluc3RydWN0aW9ucyBmb3IgdXNl77yaClNldCB3ZHRfZW4gPSAxJ2IxLgpTZXQgZHVh
-bF9tb2RlID0gMSdiMS4KU2V0IHdkdF9pcnEgPSAxJ2IxLgoKV2UgY2FuIHVzZSBEdWFsIG1vZGUg
-dG8gYWNoaWV2ZSBwcmV0aW1lb3V0IGJlaGF2aW9yLCBvbmx5IGluIHRoaXMgd2F5IGNhbiB3ZQpn
-ZXQgbW9yZSBpbmZvcm1hdGlvbiBkdXJpbmcgcHJldGltZW91dCBwcm9jZXNzaW5nLCBpbnN0ZWFk
-IG9mIGRpcmVjdGx5IHJlc2V0dGluZy4KClRoYW5rcywKUWluZw0KDQo=
+
+
+On 15.04.2021 10:44, Krzysztof Kozlowski wrote:
+> The driver data (struct sdhci_s3c_drv_data) stored in of_device_id
+> table is allocated as const and used only in const-way.  Skip
+> unnecessary const-away casts and convert all users to work with pointer
+> to const.  This is both more logical and safer.
+> 
+> Signed-off-by: Krzysztof Kozlowski<krzysztof.kozlowski@canonical.com>
+
+Reviewed-by: Sylwester Nawrocki <snawrocki@kernel.org>
