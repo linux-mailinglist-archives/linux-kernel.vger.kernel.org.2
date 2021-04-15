@@ -2,214 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A1235FFEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 04:21:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3D2035FFF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 04:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhDOCV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 22:21:29 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:16920 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbhDOCVZ (ORCPT
+        id S229694AbhDOC0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 22:26:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229475AbhDOC0X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 22:21:25 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FLNLz5HXXzjZtV;
-        Thu, 15 Apr 2021 10:19:07 +0800 (CST)
-Received: from [10.174.187.224] (10.174.187.224) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 15 Apr 2021 10:20:52 +0800
-Subject: Re: [PATCH v3 2/2] kvm/arm64: Try stage2 block mapping for host
- device MMIO
-To:     Marc Zyngier <maz@kernel.org>
-References: <20210414065109.8616-1-zhukeqian1@huawei.com>
- <20210414065109.8616-3-zhukeqian1@huawei.com> <87pmyxme2m.wl-maz@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, <wanghaibin.wang@huawei.com>,
-        Santosh Shukla <sashukla@nvidia.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <b434317f-ef6d-1d91-0189-8343c404c88c@huawei.com>
-Date:   Thu, 15 Apr 2021 10:20:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Wed, 14 Apr 2021 22:26:23 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 565AFC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 19:26:01 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id d15so10795243qkc.9
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 19:26:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kepstin.ca; s=google;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=pZKbTgJnvPwOaUYzf3pb93PEk5cL8bWVMYrrjP/xOH4=;
+        b=Qlpt5ZpSWroQ7rYeDQVSrQSdxxEXRRo69YO9IVS5fWVDNoasfnswUPnJgyknFRHyDd
+         EpBBKrWcPjtGfeDigjaYQvwaKoJcd4+5P6cv7Qo3niTww6YLT7lbBsEVlVnW5NX+T7ED
+         VENGLJofkUiQI8XMMdajfn2VlpdFYx8nw6DCc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=pZKbTgJnvPwOaUYzf3pb93PEk5cL8bWVMYrrjP/xOH4=;
+        b=MMqdDPsKmFJVx17RHxJEoFN63GHUbTw790T4bflGXuOryKEr2Ey6JxfmKKJVMvWB3i
+         x3q9b9vhUh32GFeQvjuGCgkx0ZEsj3KwLZ/oFvynH3vPBE2Wg3XypXWpNmMoj9jGpLTO
+         LCdRlrZcfjbnrZwNuLoC7XTekYvr/UVzqvCuPRwy8yAO7XtDlfy/d3mN2rkGQiLZ+dxO
+         LN10t2VebIoaCZxbELmLIN7byCLjTB5Na1Ozw5HZyq8e3fdsaNxxadX0zzMG7O2CJRN6
+         nH85K2jPOECvDSpN93rZ1bO06ZcHq7J04lzffTuhSIt/xOJJTvG+eiXuNU1jE/aNi3yH
+         JyLQ==
+X-Gm-Message-State: AOAM531L0G/3jEBJG7TBXzXMYM4+J7poDxaPePjO0X5rzHTHS5S09bWZ
+        6j2sXjpA3lylAauNNGjok1dnK8Rv4py9deg4
+X-Google-Smtp-Source: ABdhPJy//y8HLOaczheOwyPBn4LzZ8Gv3A4UCYqLYLsnHCfJ4RS+zPv5nnkiQ1sc5Y4PVVX7atqKkQ==
+X-Received: by 2002:a37:a52:: with SMTP id 79mr1470698qkk.162.1618453560475;
+        Wed, 14 Apr 2021 19:26:00 -0700 (PDT)
+Received: from saya.kepstin.ca (dhcp-108-168-125-232.cable.user.start.ca. [108.168.125.232])
+        by smtp.gmail.com with ESMTPSA id m2sm874009qkc.14.2021.04.14.19.25.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 19:26:00 -0700 (PDT)
+Message-ID: <e596d27c0cae71685bcee8eef61f781ffdc42e11.camel@kepstin.ca>
+Subject: Re: [PATCH] Fix turbostat exiting with an error when run on AMD CPUs
+From:   Calvin Walton <calvin.walton@kepstin.ca>
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     Linux PM list <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Len Brown <lenb@kernel.org>
+Date:   Wed, 14 Apr 2021 22:25:58 -0400
+In-Reply-To: <20210415022600.GA341188@chenyu-desktop>
+References: <88d11c19e662f67ae492eb4b93e12e1b24e68c1d.camel@kepstin.ca>
+         <07f5e30a2af1674f0a2f8995641bbaaf64e47d34.camel@kepstin.ca>
+         <20210415022600.GA341188@chenyu-desktop>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 
 MIME-Version: 1.0
-In-Reply-To: <87pmyxme2m.wl-maz@kernel.org>
-Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.187.224]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
-
-On 2021/4/14 17:05, Marc Zyngier wrote:
-> + Santosh, who found some interesting bugs in that area before.
+On Thu, 2021-04-15 at 10:26 +0800, Chen Yu wrote:
+> Hi Calvin,
+> On Wed, Apr 14, 2021 at 10:08:07PM -0400, Calvin Walton wrote:
+> > On Wed, 2021-04-14 at 22:05 -0400, Calvin Walton wrote:
+> > > The current version of turbostat exits immediately upon entering
+> > > the
+> > > main loop, with error code -13. This is a regression that was
+> > > introducted
+> > > in these commits:
+> > > 
+> > > 9972d5d84d76 tools/power turbostat: Enable accumulate RAPL
+> > > display
+> > > 87e15da95775 tools/power turbostat: Introduce functions to
+> > > accumulate
+> > > RAPL consumption
+> > 
+> > Ah, I failed to check the mailing list before sending this patch!
+> > Terry
+> > Bowman's fix here should probably be preferred:
+> > https://patchwork.kernel.org/project/linux-pm/patch/20210331155807.3838-1-terry.bowman@amd.com/
+> > 
+> > My patch was simply the minimum necessary to get turbostat working
+> > again.
+> Thanks for reporting this. We had a fix for this previously at
+> https://lkml.org/lkml/2021/3/12/682
 > 
-> On Wed, 14 Apr 2021 07:51:09 +0100,
-> Keqian Zhu <zhukeqian1@huawei.com> wrote:
->>
->> The MMIO region of a device maybe huge (GB level), try to use
->> block mapping in stage2 to speedup both map and unmap.
->>
->> Compared to normal memory mapping, we should consider two more
->> points when try block mapping for MMIO region:
->>
->> 1. For normal memory mapping, the PA(host physical address) and
->> HVA have same alignment within PUD_SIZE or PMD_SIZE when we use
->> the HVA to request hugepage, so we don't need to consider PA
->> alignment when verifing block mapping. But for device memory
->> mapping, the PA and HVA may have different alignment.
->>
->> 2. For normal memory mapping, we are sure hugepage size properly
->> fit into vma, so we don't check whether the mapping size exceeds
->> the boundary of vma. But for device memory mapping, we should pay
->> attention to this.
->>
->> This adds device_rough_page_shift() to check these two points when
->> selecting block mapping size.
->>
->> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
->> ---
->>  arch/arm64/kvm/mmu.c | 37 +++++++++++++++++++++++++++++++++----
->>  1 file changed, 33 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
->> index c59af5ca01b0..1a6d96169d60 100644
->> --- a/arch/arm64/kvm/mmu.c
->> +++ b/arch/arm64/kvm/mmu.c
->> @@ -624,6 +624,31 @@ static void kvm_send_hwpoison_signal(unsigned long address, short lsb)
->>  	send_sig_mceerr(BUS_MCEERR_AR, (void __user *)address, lsb, current);
->>  }
->>  
->> +/*
->> + * Find a max mapping size that properly insides the vma. And hva and pa must
->> + * have the same alignment to this mapping size. It's rough as there are still
->> + * other restrictions, will be checked by fault_supports_stage2_huge_mapping().
->> + */
->> +static short device_rough_page_shift(struct vm_area_struct *vma,
->> +				     unsigned long hva)
-> 
-> My earlier question still stands. Under which circumstances would this
-> function return something that is *not* the final mapping size? I
-> really don't see a reason why this would not return the final mapping
-> size.
+> I'll check with Len if this patch has been merged.
 
-IIUC, all the restrictions are about alignment and area boundary.
+Thanks for checking.
 
-That's to say, HVA, IPA and PA must have same alignment within the mapping size.
-And the areas are memslot and vma, which means the mapping size must properly fit
-into the memslot and vma.
+I notice that the linked patch doesn't include the other part of the
+fix - correcting the type used for the MSR offsets to off_t (the AMD
+MSRs at 0xc0010299 exceed the range of a signed 32-bit int), so if that
+patch is in the queue to be merged, I can submit the off_t patch
+separately.
 
-In this function, we just checked the alignment of HVA and PA, and the boundary of vma.
-So we still need to check the alignment of HVA and IPA, and the boundary of memslot.
-These will be checked by fault_supports_stage2_huge_mapping().
+-- 
+Calvin Walton <calvin.walton@kepstin.ca>
 
-> 
->> +{
->> +	phys_addr_t pa = (vma->vm_pgoff << PAGE_SHIFT) + (hva - vma->vm_start);
->> +
->> +#ifndef __PAGETABLE_PMD_FOLDED
->> +	if ((hva & (PUD_SIZE - 1)) == (pa & (PUD_SIZE - 1)) &&
->> +	    ALIGN_DOWN(hva, PUD_SIZE) >= vma->vm_start &&
->> +	    ALIGN(hva, PUD_SIZE) <= vma->vm_end)
->> +		return PUD_SHIFT;
->> +#endif
->> +
->> +	if ((hva & (PMD_SIZE - 1)) == (pa & (PMD_SIZE - 1)) &&
->> +	    ALIGN_DOWN(hva, PMD_SIZE) >= vma->vm_start &&
->> +	    ALIGN(hva, PMD_SIZE) <= vma->vm_end)
->> +		return PMD_SHIFT;
->> +
->> +	return PAGE_SHIFT;
->> +}
->> +
->>  static bool fault_supports_stage2_huge_mapping(struct kvm_memory_slot *memslot,
->>  					       unsigned long hva,
->>  					       unsigned long map_size)
->> @@ -769,7 +794,10 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->>  		return -EFAULT;
->>  	}
->>  
->> -	/* Let's check if we will get back a huge page backed by hugetlbfs */
->> +	/*
->> +	 * Let's check if we will get back a huge page backed by hugetlbfs, or
->> +	 * get block mapping for device MMIO region.
->> +	 */
->>  	mmap_read_lock(current->mm);
->>  	vma = find_vma_intersection(current->mm, hva, hva + 1);
->>  	if (unlikely(!vma)) {
->> @@ -780,11 +808,12 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->>  
->>  	if (is_vm_hugetlb_page(vma))
->>  		vma_shift = huge_page_shift(hstate_vma(vma));
->> +	else if (vma->vm_flags & VM_PFNMAP)
->> +		vma_shift = device_rough_page_shift(vma, hva);
-> 
-> What prevents a VMA from having both VM_HUGETLB and VM_PFNMAP? This is
-> pretty unlikely, but I'd like to see this case catered for.
-> 
-I'm not sure whether VM_HUGETLB and VM_PFNMAP are compatible, and I failed to find a case.
-
-VM_PFNMAP is used for page-ranges managed without "struct page", just pure PFN.
-IIUC, VM_HUGETLB is used for hugetlbfs, which always has "struct page".
-So I think they should not be compatible, otherwise it's a bug of driver.
-
->>  	else
->>  		vma_shift = PAGE_SHIFT;
->>  
->> -	if (logging_active ||
->> -	    (vma->vm_flags & VM_PFNMAP)) {
->> +	if (logging_active) {
->>  		force_pte = true;
->>  		vma_shift = PAGE_SHIFT;
->>  	}
->> @@ -855,7 +884,7 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->>  
->>  	if (kvm_is_device_pfn(pfn)) {
->>  		device = true;
->> -		force_pte = true;
->> +		force_pte = (vma_pagesize == PAGE_SIZE);
-> 
-> Why do we need to set force_pte if we are already dealing with
-> PAGE_SIZE? I guess you are doing this for the sake of avoiding the
-> call to transparent_hugepage_adjust(), right?
-Yes.
-
-> 
-> I'd rather you simply don't try to upgrade a device mapping by
-> explicitly checking for this and keep force_pte for *memory*
-> exclusively.
-Agree, that's better.
-
-> 
-> Santosh, can you please take a look at this series and try to see if
-> the problem you fixed in [1] (which ended up as commit 91a2c34b7d6f)
-> is still OK with this series?
-I searched the initial version[*], VM_PFNMAP is set when we call gfn_to_pfn_prot()->vma_mmio_fault()->remap_pfn_range().
-Then the check of VM_PFNMAP in user_mem_abort() failed, so we will try to call transparent_hugepage_adjust() for device pfn.
-
-In that case, our logic of trying block mapping for MMIO is not used. And we still set force_pte for device pfn, so
-this bugfix is not affected. Santosh, do you agree that?
-
-I still found that the reason vfio_pci does not have this bug. vfio_pci set VM_PFNMAP for vma when userspace calls mmap().
-I will apply this logic for vfio_mdev too, let's see what vfio maintainer think about it.
-
-
-Thanks,
-Keqian.
-
-[*] https://lore.kernel.org/kvmarm/1603297010-18787-1-git-send-email-sashukla@nvidia.com/
-
-> 
->>  	} else if (logging_active && !write_fault) {
->>  		/*
->>  		 * Only actually map the page as writable if this was a write
-> 
-> Thanks,
-> 
-> 	M.
-> 
-> [1] https://lore.kernel.org/kvmarm/1603711447-11998-1-git-send-email-sashukla@nvidia.com/
-> 
