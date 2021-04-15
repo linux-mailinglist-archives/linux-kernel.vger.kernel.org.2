@@ -2,69 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2781361341
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 22:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBF1361343
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 22:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235203AbhDOUA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 16:00:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234654AbhDOUA1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 16:00:27 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74214C061574;
-        Thu, 15 Apr 2021 13:00:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Jidstt2/GQtBM10h7qL1vxyo4ZsH+nyyJX9lVogApq4=; b=GXqEg47IGUl3iUkF0KKQI28r5i
-        dXx0qi4Ae6gDsIoXFQVAAC2MYV3sv4hydRUaejqig0bIuTdEbTa42bMVyWl2MjtkrJy/n115VvYWe
-        AhMwH1m3yGKaa2KzY9fD65upkcgJwjyBdXpGxrkeOuUfulBaEqEom1khvrU0dhtXhi2ho7aYmCv4k
-        Y5TA/PCz/aBcZNTXvPHp354+UrRhf1bXzp5uBCI5OxTIE4pA4x3zVKYWTJaDC/SR+ElSEke5nWeb8
-        fjtpJh02CDA3xdPUdHKQD22nF2nG2kfSdC2bKHPdS4OR+BHsUsic7RIkbuyAARmJQRNr2BbsI1oyV
-        qxcO1aIw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lX89N-0091Za-NN; Thu, 15 Apr 2021 19:59:44 +0000
-Date:   Thu, 15 Apr 2021 20:59:41 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: Re: [Outreachy kernel] [PATCH v2] staging: media: atomisp: pci:
- Change line break to avoid an open parenthesis at the end of the line
-Message-ID: <20210415195941.GF2531743@casper.infradead.org>
-References: <20210415170819.GA17534@focaruja>
- <20210415171409.GC2531743@casper.infradead.org>
- <20210415194955.GI3@paasikivi.fi.intel.com>
- <20210415195704.GE2531743@casper.infradead.org>
+        id S235224AbhDOUAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 16:00:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59806 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234654AbhDOUAw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 16:00:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 97EE461153;
+        Thu, 15 Apr 2021 20:00:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618516828;
+        bh=YdzC93TtVE0c8gSNhfkcwHAO6LR0ZLhJPv1nFw9o45U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u7o2RovIlzGObUUhH07Y1exQskWumZNUgqDq4bgFaqR7ntEHTgOfA0pgEXAF6s0s4
+         utjLFEu5T3PDeGrp0WbEQavlsjP8l8t6MRJ8rxu+xUJyj6QuGWrVSQoMJ5/NltNaJ5
+         KrU/OwCXCsCwQCcEGjehonlj1/SjJF+nUIF3PGFXmxfXFotXw5OjgPbMdXbiyDjfm1
+         tkOcVuo6omwn/xXif89D4xiFhIV5KUZ+oxYhUcSREu0Wlcy4HZL5lfvyHk5/acx0TO
+         ZdpF1W09qKOJAkO02sZ/tbrPSiSBZf3UEs6+C5n2OCp8wbngm9ZrvcJO7Q7SrrH1fy
+         Eh1lhfGSz1QNA==
+Date:   Thu, 15 Apr 2021 13:00:27 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v2 8/8] block: add WARN() in bio_split() for sector
+ alignment
+Message-ID: <YHibW4ndl4sQRkC2@gmail.com>
+References: <20210325212609.492188-1-satyat@google.com>
+ <20210325212609.492188-9-satyat@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210415195704.GE2531743@casper.infradead.org>
+In-Reply-To: <20210325212609.492188-9-satyat@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 08:57:04PM +0100, Matthew Wilcox wrote:
-> On Thu, Apr 15, 2021 at 10:49:55PM +0300, Sakari Ailus wrote:
-> > On Thu, Apr 15, 2021 at 06:14:09PM +0100, Matthew Wilcox wrote:
-> > > On Thu, Apr 15, 2021 at 02:08:19PM -0300, Aline Santana Cordeiro wrote:
-> > > > -const struct atomisp_format_bridge *get_atomisp_format_bridge_from_mbus(
-> > > > -    u32 mbus_code);
-> > > > +const struct atomisp_format_bridge*
-> > > > +get_atomisp_format_bridge_from_mbus(u32 mbus_code);
-> > > 
-> > > No, this does not match coding style.  Probably best to break the
-> > > 80-column guideline in this instance.  Best would be to have a function
-> > 
-> > Having the return type on the previous line is perfectly fine. There should
-> > be a space before the asterisk though.
-> 
-> No, it's not.  Linus has ranted about that before.
+On Thu, Mar 25, 2021 at 09:26:09PM +0000, Satya Tangirala wrote:
+> The number of sectors passed to bio_split() should be aligned to
+> bio_required_sector_alignment(). All callers (other than bounce.c) have
+> been updated to ensure this, so add a WARN() if the number of sectors is
+> not aligned. (bounce.c was not updated since it's legacy code that
+> won't interact with inline encryption).
 
-Found it.  https://lore.kernel.org/lkml/1054519757.161606@palladium.transmeta.com/
+What does bounce.c "won't interact with inline encryption" mean, exactly?
+Devices that enable bounce buffering won't declare inline encryption support, so
+bounce.c will never see a bio that has an encryption context?
+
+> diff --git a/block/bio.c b/block/bio.c
+> index 26b7f721cda8..cb348f134a15 100644
+> --- a/block/bio.c
+> +++ b/block/bio.c
+> @@ -1458,6 +1458,7 @@ struct bio *bio_split(struct bio *bio, int sectors,
+>  
+>  	BUG_ON(sectors <= 0);
+>  	BUG_ON(sectors >= bio_sectors(bio));
+> +	WARN_ON(!IS_ALIGNED(sectors, bio_required_sector_alignment(bio)));
+
+If this warning triggers, shouldn't the function return NULL to indicate a
+failure rather than proceeding on?
+
+- Eric
