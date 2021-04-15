@@ -2,130 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C484B360A38
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D67360A3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233155AbhDONKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 09:10:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231482AbhDONKa (ORCPT
+        id S233001AbhDONMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 09:12:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36824 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231482AbhDONMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 09:10:30 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F10CC061574;
-        Thu, 15 Apr 2021 06:10:06 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id nm3-20020a17090b19c3b029014e1bbf6c60so8477926pjb.4;
-        Thu, 15 Apr 2021 06:10:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=poev2NLsdLHtupyejHZKkNm25xi1OhRVKq9U5bDqj4Y=;
-        b=KNPOcw6j5OJVFQEITV0zl9nFv5wKiaDDOVhQTVZrioNOvxNbbVVePVc0Sac2AFTGrn
-         LlCmeEVxZX+TnHB0bM5v2GNgxRliBXndsENyyTgtkkKKBcDSLLVHjcAeoy4/izS0zN1a
-         etTIL7G7cjXthlIai4+MlcuJE55+AsRYbU2INYQgl6CQrMKyUFjcADhDGiNrtlqiOCt6
-         wqIhbyYLAjYpIB7wZSTDzWH/LqGKTXUWPUaFeTmioIxNh4vGA/JPtduGa0Fz34q5nXcW
-         zfPZgL0526MtUGxhiF/6saD0A/Ce6362fgGEfoId8ApT8eB6FOZH1vjk4OXKV65p4axK
-         y3MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=poev2NLsdLHtupyejHZKkNm25xi1OhRVKq9U5bDqj4Y=;
-        b=eFgErBRvHEVzH99r/HZJn0dNtW/iC3nphfHOZc+ohBJTmxpF48XNje8WF8CwWOg0NF
-         BWpJRcbmqANpOOZKDRj9jPm03xZbEf1++U/vL8ug3Uk2coOviFeBj6KpG/N70+TzzknG
-         uhNFfQGEXxo6uylpzl7Z3CLDigPYEx9ovHAVNTmv+MaBPt5pORG/Pg7X+2p8+6+plhwQ
-         4Z+Y2wvU154p6kaIUiu87FH3oGZ1yEi29/Mr2aKKfE38O8hJ/m/Ps+JWfuuwoUJhX5XO
-         meqLDcEeHGhxXotm1vZJowpBx0IMr6MkopBchgMc99fQkjBQDz11WPSG9ygfNOCEhtZt
-         pzvA==
-X-Gm-Message-State: AOAM532Ir60sYddDBscqEx9+U5LijxExVqhhI5sN5aHBNxlx9/a329lz
-        FqV5qRXbk8i+9cuT6QDYU/NoJhbKG7o+eQiq
-X-Google-Smtp-Source: ABdhPJwLo3XW1PFky/UiL6FgUhppPKomCXhZ8RcTFkrZOoCyJE0LFKn72YJmHoMyXVfQisS1eSMY5A==
-X-Received: by 2002:a17:90a:94ca:: with SMTP id j10mr3897484pjw.126.1618492205922;
-        Thu, 15 Apr 2021 06:10:05 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:6:8000::a31c? ([2404:f801:9000:1a:efeb::a31c])
-        by smtp.gmail.com with ESMTPSA id s21sm2499994pjr.52.2021.04.15.06.09.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 06:10:05 -0700 (PDT)
-Subject: Re: [Resend RFC PATCH V2 08/12] UIO/Hyper-V: Not load UIO HV driver
- in the isolation VM.
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, arnd@arndb.de,
-        akpm@linux-foundation.org, konrad.wilk@oracle.com, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com, joro@8bytes.org,
-        will@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        iommu@lists.linux-foundation.org, linux-arch@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-scsi@vger.kernel.org,
-        netdev@vger.kernel.org, vkuznets@redhat.com,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com,
-        sunilmut@microsoft.com
-References: <20210414144945.3460554-1-ltykernel@gmail.com>
- <20210414144945.3460554-9-ltykernel@gmail.com> <YHcOL+HlEoh5jPb8@kroah.com>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <eec53f89-4a18-39ce-aff8-c07be2ce3971@gmail.com>
-Date:   Thu, 15 Apr 2021 21:09:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        Thu, 15 Apr 2021 09:12:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618492300;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uJFJJborCVJEMqUuUmQ0ihhHIFtN58LgRcEx9fJY0yk=;
+        b=YfdYhD1KXOQofVDi6ddoyfUiLfmOSpXtVQo48PGgsItO1LiUx5Bi46thUvFlk12UnUU5rl
+        Cjjp7LYpRteqZB7Wtz1KvjifuKM/0sZQQ9SA5V1Q9mEUmsuW+csMfblwdqfiW8Fl7JO0I1
+        B2Zwi1X8/2q0XKteF2uCgdI0xB/S12A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-311-8zek38_XN6qIhkiadECvyA-1; Thu, 15 Apr 2021 09:11:36 -0400
+X-MC-Unique: 8zek38_XN6qIhkiadECvyA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 279A710054F6;
+        Thu, 15 Apr 2021 13:11:33 +0000 (UTC)
+Received: from [10.36.114.81] (ovpn-114-81.ams2.redhat.com [10.36.114.81])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0911660C22;
+        Thu, 15 Apr 2021 13:11:21 +0000 (UTC)
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
+ APIs
+To:     Jason Gunthorpe <jgg@nvidia.com>, "Liu, Yi L" <yi.l.liu@intel.com>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>
+References: <MWHPR11MB188639EE54B48B0E1321C8198C7D9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210330132830.GO2356281@nvidia.com>
+ <BN6PR11MB40688F5AA2323AB8CC8E65E7C37C9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <20210331124038.GE1463678@nvidia.com>
+ <BN6PR11MB406854CAE9D7CE86BEAB3E23C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <BN6PR11MB40687428F0D0F3B5F13EA3E0C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <YGW27KFt9eQB9X2z@myrica>
+ <BN6PR11MB4068171CD1D4B823515F7EFBC37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <20210401134236.GF1463678@nvidia.com>
+ <BN6PR11MB4068C4DE7AF43D44DE70F4C1C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <20210401160337.GJ1463678@nvidia.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <4bea6eb9-08ad-4b6b-1e0f-c97ece58a078@redhat.com>
+Date:   Thu, 15 Apr 2021 15:11:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <YHcOL+HlEoh5jPb8@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210401160337.GJ1463678@nvidia.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jason,
 
+On 4/1/21 6:03 PM, Jason Gunthorpe wrote:
+> On Thu, Apr 01, 2021 at 02:08:17PM +0000, Liu, Yi L wrote:
+> 
+>> DMA page faults are delivered to root-complex via page request message and
+>> it is per-device according to PCIe spec. Page request handling flow is:
+>>
+>> 1) iommu driver receives a page request from device
+>> 2) iommu driver parses the page request message. Get the RID,PASID, faulted
+>>    page and requested permissions etc.
+>> 3) iommu driver triggers fault handler registered by device driver with
+>>    iommu_report_device_fault()
+> 
+> This seems confused.
+> 
+> The PASID should define how to handle the page fault, not the driver.
 
-On 4/14/2021 11:45 PM, Greg KH wrote:
-> On Wed, Apr 14, 2021 at 10:49:41AM -0400, Tianyu Lan wrote:
->> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
->>
->> UIO HV driver should not load in the isolation VM for security reason.
->> Return ENOTSUPP in the hv_uio_probe() in the isolation VM.
->>
->> Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
->> ---
->>   drivers/uio/uio_hv_generic.c | 5 +++++
->>   1 file changed, 5 insertions(+)
->>
->> diff --git a/drivers/uio/uio_hv_generic.c b/drivers/uio/uio_hv_generic.c
->> index 0330ba99730e..678b021d66f8 100644
->> --- a/drivers/uio/uio_hv_generic.c
->> +++ b/drivers/uio/uio_hv_generic.c
->> @@ -29,6 +29,7 @@
->>   #include <linux/hyperv.h>
->>   #include <linux/vmalloc.h>
->>   #include <linux/slab.h>
->> +#include <asm/mshyperv.h>
->>   
->>   #include "../hv/hyperv_vmbus.h"
->>   
->> @@ -241,6 +242,10 @@ hv_uio_probe(struct hv_device *dev,
->>   	void *ring_buffer;
->>   	int ret;
->>   
->> +	/* UIO driver should not be loaded in the isolation VM.*/
->> +	if (hv_is_isolation_supported())
->> +		return -ENOTSUPP;
->> +		
->>   	/* Communicating with host has to be via shared memory not hypercall */
->>   	if (!channel->offermsg.monitor_allocated) {
->>   		dev_err(&dev->device, "vmbus channel requires hypercall\n");
->> -- 
->> 2.25.1
->>
+In my series I don't use PASID at all. I am just enabling nested stage
+and the guest uses a single context. I don't allocate any user PASID at
+any point.
+
+When there is a fault at physical level (a stage 1 fault that concerns
+the guest), this latter needs to be reported and injected into the
+guest. The vfio pci driver registers a fault handler to the iommu layer
+and in that fault handler it fills a circ bugger and triggers an eventfd
+that is listened to by the VFIO-PCI QEMU device. this latter retrives
+the faault from the mmapped circ buffer, it knowns which vIOMMU it is
+attached to, and passes the fault to the vIOMMU.
+Then the vIOMMU triggers and IRQ in the guest.
+
+We are reusing the existing concepts from VFIO, region, IRQ to do that.
+
+For that use case, would you also use /dev/ioasid?
+
+Thanks
+
+Eric
 > 
-> Again you send out known-wrong patches?
+> I don't remember any device specific actions in ATS, so what is the
+> driver supposed to do?
 > 
-> :(
+>> 4) device driver's fault handler signals an event FD to notify userspace to
+>>    fetch the information about the page fault. If it's VM case, inject the
+>>    page fault to VM and let guest to solve it.
 > 
-Sorry for noise. Will fix this next version and I think we should make 
-sure user space driver to check data from host. This patch will be removed.
+> If the PASID is set to 'report page fault to userspace' then some
+> event should come out of /dev/ioasid, or be reported to a linked
+> eventfd, or whatever.
+> 
+> If the PASID is set to 'SVM' then the fault should be passed to
+> handle_mm_fault
+> 
+> And so on.
+> 
+> Userspace chooses what happens based on how they configure the PASID
+> through /dev/ioasid.
+> 
+> Why would a device driver get involved here?
+> 
+>> Eric has sent below series for the page fault reporting for VM with passthru
+>> device.
+>> https://lore.kernel.org/kvm/20210223210625.604517-5-eric.auger@redhat.com/
+> 
+> It certainly should not be in vfio pci. Everything using a PASID needs
+> this infrastructure, VDPA, mdev, PCI, CXL, etc.
+> 
+> Jason
+> 
+
