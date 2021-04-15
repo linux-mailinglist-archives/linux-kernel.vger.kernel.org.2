@@ -2,106 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CFA53600B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 06:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 299073600C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 06:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbhDOECX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 00:02:23 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5133 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhDOECV (ORCPT
+        id S229543AbhDOEGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 00:06:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229450AbhDOEGF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 00:02:21 -0400
-Received: from DGGEML404-HUB.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FLQb91wnczYWTs;
-        Thu, 15 Apr 2021 11:59:49 +0800 (CST)
-Received: from dggpemm000002.china.huawei.com (7.185.36.174) by
- DGGEML404-HUB.china.huawei.com (10.3.17.39) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Thu, 15 Apr 2021 12:01:55 +0800
-Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
- dggpemm000002.china.huawei.com (7.185.36.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 15 Apr 2021 12:01:55 +0800
-Received: from dggpemm000003.china.huawei.com ([7.185.36.128]) by
- dggpemm000003.china.huawei.com ([7.185.36.128]) with mapi id 15.01.2106.013;
- Thu, 15 Apr 2021 12:01:55 +0800
-From:   "Zengtao (B)" <prime.zeng@hisilicon.com>
-To:     Wu XiangCheng <bobwxc@email.cn>, Alex Shi <alexs@kernel.org>,
-        Bernard Zhao <bernard@vivo.com>
-CC:     Jonathan Corbet <corbet@lwn.net>,
-        YanTeng Si <sterlingteng@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggdjVdIGRvY3MvemhfQ046IGFkZCB0cmFuc2xhdGlv?=
- =?utf-8?Q?ns_in_zh=5FCN/dev-tools/gcov?=
-Thread-Topic: [PATCH v5] docs/zh_CN: add translations in zh_CN/dev-tools/gcov
-Thread-Index: AQHXMTFxHEf5zlvY0UeIFVspcBfxVKq08UpQ
-Date:   Thu, 15 Apr 2021 04:01:55 +0000
-Message-ID: <e26cc66e2a2745f994eb8ede9a783563@hisilicon.com>
-References: <20210414082316.15160-1-bernard@vivo.com>
- <20210414132127.GA13306@bobwxc.top>
-In-Reply-To: <20210414132127.GA13306@bobwxc.top>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.69.38.183]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+        Thu, 15 Apr 2021 00:06:05 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCB2C061574;
+        Wed, 14 Apr 2021 21:05:43 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id 20so7364202pll.7;
+        Wed, 14 Apr 2021 21:05:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=7hn6pwepeOfDXVqHpFY4pE6jHJJVUKXv4sqmopspuGE=;
+        b=C+MBCWdIXsT0ikgLkPB4KumKTetm7tNmaiM1Q9wco2rJzZnlIpsAjIGXrVr7SDorqs
+         CS1rA/YfcAjT8IR9bFTyC58c99Ii1Z5iY5NdFKRaOXxyEp/ZVdI9OgFsqNMeHtHJG3L4
+         wT7tjtufWnODWfByk+kza1f5MMTszS9QNwquA3DmVankaWnaoKJeitiufYk/9tFF+VCU
+         zxTJdNciXdS8pfNt1rtfxi/R6FEDD1LYvvpCNIGdWHak36FkOd/5YImCzIN781hVYIAt
+         omfOWu3x6Gt2M27Nnj/zwXxg4oou2ac2zM6njvMANhhYa4gVWF4SUvlz4PR/DwoW0LSC
+         uvzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=7hn6pwepeOfDXVqHpFY4pE6jHJJVUKXv4sqmopspuGE=;
+        b=tp2aUqvFgn5cM+ZdNhH63ELbGU1JsmEPJNazL3OKXQ//u7n0ekExBnpIFjv31V8KwL
+         W12mV2OwoBICPMkeRzMo1sLVe+F85zEGDwhLUQIyYA0+Cn97np/r2wNFwwbObFQneZjD
+         72NBjju6bq8sFojVoIQf9fcz/tRuouubrGw6p0GF0YL4q5IFvB5/N/DjSLxpO3t8BMpT
+         xQQuExx+UHubaAc+3zGQsx7CgQts5QCk3U0K6iB3pqArIkit0uaoLd9eccrFGbD4W72W
+         Gv4o+g4RprmxlcxgjsJu5ZHGzBT8w/IKxahJWPkSjsNeQUQxVV4gyMtH4Q/hgn7bUPVn
+         wgcg==
+X-Gm-Message-State: AOAM53281zmqpTiZv/bfvBB5FzAnbN+HU7OMOgbr5NOFxrdXQNHD8v9a
+        MvJ6iQn28kFsM1k/0vhXVVw=
+X-Google-Smtp-Source: ABdhPJwTTqQfzqN67e4rl81lyIh0sdCkKP4WVQQN1XDRdaBAKvuLjCO0DR2wxEHyd8HBplGosIh34A==
+X-Received: by 2002:a17:90a:7a8b:: with SMTP id q11mr1623864pjf.215.1618459542598;
+        Wed, 14 Apr 2021 21:05:42 -0700 (PDT)
+Received: from fmin-OptiPlex-7060.nreal.work ([137.59.103.165])
+        by smtp.gmail.com with ESMTPSA id i17sm714406pfd.84.2021.04.14.21.05.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 14 Apr 2021 21:05:42 -0700 (PDT)
+From:   dillon.minfei@gmail.com
+To:     krzysztof.kozlowski@canonical.com, robh+dt@kernel.org,
+        shawnguo@kernel.org, krzk@kernel.org, linux@rempel-privat.de,
+        s.riedmueller@phytec.de, matthias.schiffer@ew.tq-group.com,
+        leoyang.li@nxp.com, arnd@arndb.de, olof@lixom.net,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        prabhakar.csengg@gmail.com, mchehab@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, dillon min <dillon.minfei@gmail.com>
+Subject: [PATCH v3 0/4] arm: imx: Add i.mx6q DaSheng COM-9XX SBC board support
+Date:   Thu, 15 Apr 2021 12:05:31 +0800
+Message-Id: <1618459535-8141-1-git-send-email-dillon.minfei@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLemCruS7tuWOn+S7ti0tLS0tDQo+IOWPkeS7tuS6ujogV3UgWGlhbmdDaGVuZyBbbWFp
-bHRvOmJvYnd4Y0BlbWFpbC5jbl0NCj4g5Y+R6YCB5pe26Ze0OiAyMDIx5bm0NOaciDE05pelIDIx
-OjIxDQo+IOaUtuS7tuS6ujogQWxleCBTaGkgPGFsZXhzQGtlcm5lbC5vcmc+OyBCZXJuYXJkIFpo
-YW8gPGJlcm5hcmRAdml2by5jb20+DQo+IOaKhOmAgTogSm9uYXRoYW4gQ29yYmV0IDxjb3JiZXRA
-bHduLm5ldD47IFlhblRlbmcgU2kNCj4gPHN0ZXJsaW5ndGVuZ0BnbWFpbC5jb20+OyBOYXRoYW4g
-Q2hhbmNlbGxvciA8bmF0aGFuQGtlcm5lbC5vcmc+OyBOaWNrDQo+IERlc2F1bG5pZXJzIDxuZGVz
-YXVsbmllcnNAZ29vZ2xlLmNvbT47IGxpbnV4LWRvY0B2Z2VyLmtlcm5lbC5vcmc7DQo+IGxpbnV4
-LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGNsYW5nLWJ1aWx0LWxpbnV4QGdvb2dsZWdyb3Vwcy5j
-b20NCj4g5Li76aKYOiBbUEFUQ0ggdjVdIGRvY3MvemhfQ046IGFkZCB0cmFuc2xhdGlvbnMgaW4g
-emhfQ04vZGV2LXRvb2xzL2djb3YNCj4gDQo+IEZyb206IEJlcm5hcmQgWmhhbyA8YmVybmFyZEB2
-aXZvLmNvbT4NCj4gDQo+IEFkZCBuZXcgemggdHJhbnNsYXRpb25zDQo+ICogemhfQ04vZGV2LXRv
-b2xzL2djb3YucnN0DQo+ICogemhfQ04vZGV2LXRvb2xzL2luZGV4LnJzdA0KPiBhbmQgbGluayB0
-aGVtIHRvIHpoX0NOL2luZGV4LnJzdA0KPiANCj4gU2lnbmVkLW9mZi1ieTogQmVybmFyZCBaaGFv
-IDxiZXJuYXJkQHZpdm8uY29tPg0KPiBSZXZpZXdlZC1ieTogV3UgWGlhbmdDaGVuZyA8Ym9id3hj
-QGVtYWlsLmNuPg0KPiBTaWduZWQtb2ZmLWJ5OiBXdSBYaWFuZ0NoZW5nIDxib2J3eGNAZW1haWwu
-Y24+DQo+IC0tLQ0KPiBiYXNlOiBsaW51eC1uZXh0DQo+IGNvbW1pdCAyNjlkZDQyZjQ3NzYgKCJk
-b2NzL3poX0NOOiBhZGQgcmlzY3YgdG8gemhfQ04gaW5kZXgiKQ0KPiANCj4gQ2hhbmdlcyBzaW5j
-ZSBWNDoNCj4gKiBtb2RpZmllZCBzb21lIHdvcmRzIHVuZGVyIEFsZXggU2hpJ3MgYWR2aWNlcw0K
-PiANCj4gQ2hhbmdlcyBzaW5jZSBWMzoNCj4gKiB1cGRhdGUgdG8gbmV3ZXN0IGxpbnV4LW5leHQN
-Cj4gKiBmaXggYGANCj4gKiBmaXggdGFncw0KPiAqIGZpeCBsaXN0IGluZGVudA0KPiANCj4gQ2hh
-bmdlcyBzaW5jZSBWMjoNCj4gKiBmaXggc29tZSBpbmFjY3VyYXRlIHRyYW5zbGF0aW9uDQo+IA0K
-PiBDaGFuZ2VzIHNpbmNlIFYxOg0KPiAqIGFkZCBpbmRleC5yc3QgaW4gZGV2LXRvb2xzIGFuZCBs
-aW5rIHRvIHRvIHpoX0NOL2luZGV4LnJzdA0KPiAqIGZpeCBzb21lIGluYWNjdXJhdGUgdHJhbnNs
-YXRpb24NCj4gDQo+ICAuLi4vdHJhbnNsYXRpb25zL3poX0NOL2Rldi10b29scy9nY292LnJzdCAg
-ICAgfCAyNjUgKysrKysrKysrKysrKysrKysrDQo+ICAuLi4vdHJhbnNsYXRpb25zL3poX0NOL2Rl
-di10b29scy9pbmRleC5yc3QgICAgfCAgMzUgKysrDQo+ICBEb2N1bWVudGF0aW9uL3RyYW5zbGF0
-aW9ucy96aF9DTi9pbmRleC5yc3QgICAgfCAgIDEgKw0KPiAgMyBmaWxlcyBjaGFuZ2VkLCAzMDEg
-aW5zZXJ0aW9ucygrKQ0KPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vdHJhbnNs
-YXRpb25zL3poX0NOL2Rldi10b29scy9nY292LnJzdA0KPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IERv
-Y3VtZW50YXRpb24vdHJhbnNsYXRpb25zL3poX0NOL2Rldi10b29scy9pbmRleC5yc3QNCj4gDQo+
-IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL3RyYW5zbGF0aW9ucy96aF9DTi9kZXYtdG9vbHMv
-Z2Nvdi5yc3QNCj4gYi9Eb2N1bWVudGF0aW9uL3RyYW5zbGF0aW9ucy96aF9DTi9kZXYtdG9vbHMv
-Z2Nvdi5yc3QNCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gaW5kZXggMDAwMDAwMDAwMDAwLi43
-NTE1YjQ4OGJjNGUNCj4gLS0tIC9kZXYvbnVsbA0KPiArKysgYi9Eb2N1bWVudGF0aW9uL3RyYW5z
-bGF0aW9ucy96aF9DTi9kZXYtdG9vbHMvZ2Nvdi5yc3QNCj4gQEAgLTAsMCArMSwyNjUgQEANCj4g
-Ky4uIGluY2x1ZGU6OiAuLi9kaXNjbGFpbWVyLXpoX0NOLnJzdA0KPiArDQo+ICs6T3JpZ2luYWw6
-IERvY3VtZW50YXRpb24vZGV2LXRvb2xzL2djb3YucnN0DQo+ICs6VHJhbnNsYXRvcjog6LW15Yab
-5aWOIEJlcm5hcmQgWmhhbyA8YmVybmFyZEB2aXZvLmNvbT4NCj4gKw0KPiAr5ZyoTGludXjlhoXm
-oLjph4zkvb/nlKhnY2925YGa5Luj56CB6KaG55uW546H5qOA5p+lDQo+ICs9PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09DQo+ICsNCj4gK2djb3bmmK9saW51eOS4reW3sue7j+mb
-huaIkOeahOS4gOS4quWIhuaekOaooeWdl++8jOivpeaooeWdl+WcqOWGheaguOS4reWvuUdDQ+ea
-hOS7o+eggQ0KPiDopobnm5bnjofnu58NCg0KR2NvdiBpcyBhIHRvb2wvZnVuY3Rpb24sIG1pc2xl
-YWRpbmcgZm9yICIgZ2NvduaYr2xpbnV45Lit5bey57uP6ZuG5oiQ55qE5LiA5Liq5YiG5p6QDQrm
-qKHlnZciDQoNCkkgJ2Qgc3VnZ2VzdDoNCiJMaW51eOWGheaguOS4reW3sue7j+mbhuaIkOS4gOS4
-queJueaAp+aUr+aMgWdjb3blip/og73vvIzor6XnibnmgKforqnnlKjmiLflj6/ku6Xkvb/nlKhn
-Y292DQog5bel5YW35a+55YaF5qC45Luj56CB6KaG55uW546H6L+b6KGM57uf6K6hIg0KDQpUaGFu
-a3MuDQo=
+From: dillon min <dillon.minfei@gmail.com>
+
+This patchset aims to add kernel support on DaSheng COM-8XX SBC board
+optimize ov2659 driver to handle xvclk on/off at proper stage to save power
+
+changes based on master branch, since commit id:
+89698becf06d341a700913c3d89ce2a914af69a2
+
+The DaSheng Com-9xx is and ARM based signle board computer (SBC)
+featuring:
+- i.MX6Q
+- 2GiB LPDDR3 DRAM
+- 8GiB eMMC 5.0 FLASH
+- 4MiB SPI Flash
+- USB 2.0 Host/Device
+- Multiple multi-protocol RS232/RS485 Serial ports
+- microSD socket
+- 5V DC power input
+- HDMI1.4a,1080p@60
+- RGMIIx1 Gigabit Ethernet
+- CSI0x1, connect with ov2659
+
+---
+v3:
+- optimize commit message for patch v3 ov2659 part
+- move 'imx6q-ds.dtb' after 'imx6q-dms-ba16.dtb' to follow the alphabetical order
+  (arch/arm/boot/dts/Makefile)
+- move 'ds,imx6q-sbc' after 'dmo,imx6q-edmqmx6' to follow the alphabetical
+  order. (Documentation/devicetree/bindings/arm/fsl.yaml)
+- move v2 patch 4 to v3 patch 1
+- add 'Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>'
+  for [PATCH v3 1/4]
+
+- v2 link:
+https://lore.kernel.org/linux-arm-kernel/1618383117-17179-1-git-send-email-dillon.minfei@gmail.com/T/#md2dc86ac665ed7f10cffe4909825b97608805d3f
+
+v2:
+- add "[PATCH v2 4/4] dt-bindings: add dasheng vendor prefix" to fix
+  checkpatch.pl warning.
+
+
+dillon min (4):
+  dt-bindings: add dasheng vendor prefix
+  dt-bindings: arm: imx: Add i.mx6q DaSheng COM-9XX SBC
+  arm: dts: imx: Add i.mx6q DaSheng COM-9XX SBC board support
+  media: i2c: ov2659: Use clk_{prepare_enable,disable_unprepare}() to
+    set xvclk on/off
+
+ Documentation/devicetree/bindings/arm/fsl.yaml     |   1 +
+ .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
+ arch/arm/boot/dts/Makefile                         |   1 +
+ arch/arm/boot/dts/imx6q-ds.dts                     |  17 +
+ arch/arm/boot/dts/imx6qdl-ds.dtsi                  | 465 +++++++++++++++++++++
+ drivers/media/i2c/ov2659.c                         |  24 +-
+ 6 files changed, 504 insertions(+), 6 deletions(-)
+ create mode 100644 arch/arm/boot/dts/imx6q-ds.dts
+ create mode 100644 arch/arm/boot/dts/imx6qdl-ds.dtsi
+
+-- 
+2.7.4
+
