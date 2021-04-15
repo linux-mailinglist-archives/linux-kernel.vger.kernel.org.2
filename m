@@ -2,128 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 425C33612D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C84633612D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234788AbhDOTRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 15:17:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234505AbhDOTRt (ORCPT
+        id S234835AbhDOTTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 15:19:22 -0400
+Received: from mail-pg1-f173.google.com ([209.85.215.173]:36678 "EHLO
+        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234505AbhDOTTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 15:17:49 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E413EC061574;
-        Thu, 15 Apr 2021 12:17:23 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id a85so16277482pfa.0;
-        Thu, 15 Apr 2021 12:17:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zavrSAOhrdK7PChu5W1wVd4Vytxr7ADRcbZyctfF7w8=;
-        b=tEcjFvEzmK/fNjE27G/orNlk6qsronI36dkZ0S8pElFOV4OC/hjjY7Y/MrP5siShPH
-         ywildFAS83K1XNSrCSLlXWcrWT+pN/RWneLF05GfUHD15Pu2pNWInYYFrrOpviU6B0W0
-         o9GUJ1R65QLNZOP6XIh4KUhuo3iz2k8ol6ICC+45ZMlpgwmiBAfxmZl/IwHEuWiCj4d1
-         dfcUo5ya0mlU0Ki2GjpKVjK69qHrT11A+tjOO0rLuc/ULK8DMXNNXj0vDZGtJuvXZu5H
-         WMq/oASoT0YpwjrVHhIjmkjxUFRf4qthffvODxcNs2wCP/QEAjDvHd+o4jJ00AMWpYbe
-         3WgQ==
+        Thu, 15 Apr 2021 15:19:19 -0400
+Received: by mail-pg1-f173.google.com with SMTP id j7so8158195pgi.3;
+        Thu, 15 Apr 2021 12:18:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zavrSAOhrdK7PChu5W1wVd4Vytxr7ADRcbZyctfF7w8=;
-        b=X01OqK62Efr8icrhCW0/Tpd4XZxoYhBexyE4/I7ujn/9sZFfmwQRloIsZUYJmei/u+
-         lAb2fRNLbkfC0GIGAkuLe+lygMsOaK4V2Q1skpTYeFAlbkuVngRlKBJly6tHKTEtbpgl
-         Mbv0c/892kHl9L1wd/dt5jyDuJ6t1doXseu9Z5RXi8W4AsyNgmXn5zw7F3Cj/ViZTbzT
-         gV1ouNRKajdoRfTiEB6BKbu9CbbCALmc34vIUXoMYAsMCJ3nX4RT6VWCRVYkWB3oo7ee
-         /w7xj817T7LwQIx82qSJfwD+Mj51aBABeS5NNxqqGjO4AFQyJ5aOHo8FTA2qbevORleT
-         m6ZQ==
-X-Gm-Message-State: AOAM532pnuFQtIForXj50Yk6QcxuVZEs/AGV5m1v+vS+37NKAH4/JnKG
-        b76nwTzezY15eQvYlM9AXuY=
-X-Google-Smtp-Source: ABdhPJxruoQ/s7Jv+K/lrjugu4aFxNSIR1LQJ5RazivrMaxRsGeFWOCbtfRORW2k3W3PM5pwy8e03A==
-X-Received: by 2002:a62:2943:0:b029:24b:f35d:2565 with SMTP id p64-20020a6229430000b029024bf35d2565mr4604433pfp.52.1618514243339;
-        Thu, 15 Apr 2021 12:17:23 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:4d7e:4d10:d9a7:9fa4])
-        by smtp.gmail.com with ESMTPSA id x12sm3094381pjk.53.2021.04.15.12.17.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 12:17:22 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 12:17:19 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     "simba.hsu" <simba.hsu@raydium.corp-partner.google.com>
-Cc:     furquan@google.com, seanpaul@chromium.org, rrangel@chromium.org,
-        simba.hsu@rad-ic.com, jeffrey.lin@rad-ic.com, KP.li@rad-ic.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] driver: input: touchscreen: modify Raydium i2c
- touchscreen driver
-Message-ID: <YHiRP+UvUlXfr0J6@google.com>
-References: <20210415085829.1419147-1-simba.hsu@raydium.corp-partner.google.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2/mLy6Qs38Bvj+YcPWXxnazVy7EEcqhvZh36iJtGe/k=;
+        b=RnVSwskXBY+Tw3xUCKBZDp7ZakDj+QRRP4bwpoeVxqDc5ROd9oMlD1MaPpbzoOAurl
+         p6WmJTtMLuH9SowsSK2PpDZpQJ+R0VgOu6oO2h6uvB3HgsEeMs1xfXXTxmofQ0ULX9pA
+         ZJrPcwHWk7E4jI8zFS3SHfNHydLV+MD7nTwl/pzsbEaCaf4Bt6jwHKzR7l/YqbkL2EOY
+         TObDuanFtLGmAlUcvyXxOjd+PWXYjakdOsCBOLvTCoqz4GeF7ZQcuAlRofuqEXeESTrF
+         MqU73vCze2gaecim0JnCkikWG7pOqXO+ZWqFXLmdcQ7tD7otAR9mxPWACF1yh6vSz/NF
+         bo2Q==
+X-Gm-Message-State: AOAM533XG8ZGUxDUftEWpyjsTEcI/iYiYfkbnCzSITGngzFNJR4B2QxE
+        X2QQsyYlR6S3DghLr7X9HgI=
+X-Google-Smtp-Source: ABdhPJxcEkFOz6ufalkpcUWU6vIEZxqym/3RNh3KzZq4gpOTNmEEkp/ON7d1ksaDya0GjnK/kkOxWg==
+X-Received: by 2002:a65:6704:: with SMTP id u4mr4763609pgf.169.1618514335629;
+        Thu, 15 Apr 2021 12:18:55 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:f031:1d3a:7e95:2876? ([2601:647:4000:d7:f031:1d3a:7e95:2876])
+        by smtp.gmail.com with ESMTPSA id p22sm3154516pjg.39.2021.04.15.12.18.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Apr 2021 12:18:54 -0700 (PDT)
+Subject: Re: [PATCH v7 1/3] bio: limit bio max size
+To:     Changheun Lee <nanich.lee@samsung.com>
+Cc:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
+        axboe@kernel.dk, damien.lemoal@wdc.com, gregkh@linuxfoundation.org,
+        hch@infradead.org, jisoo2146.oh@samsung.com,
+        junho89.kim@samsung.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ming.lei@redhat.com,
+        mj0123.lee@samsung.com, osandov@fb.com, patchwork-bot@kernel.org,
+        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
+        tj@kernel.org, tom.leiming@gmail.com, woosung2.lee@samsung.com,
+        yt0928.kim@samsung.com
+References: <2e54f27a-ae4c-af65-34ba-18b43bd4815d@acm.org>
+ <CGME20210415105608epcas1p269bae87b8a7dab133753f7916420251e@epcas1p2.samsung.com>
+ <20210415103820.23272-1-nanich.lee@samsung.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <bb8f7127-edff-4a32-2d5c-4343002bda19@acm.org>
+Date:   Thu, 15 Apr 2021 12:18:52 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210415085829.1419147-1-simba.hsu@raydium.corp-partner.google.com>
+In-Reply-To: <20210415103820.23272-1-nanich.lee@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI,
-
-On Thu, Apr 15, 2021 at 04:58:29PM +0800, simba.hsu wrote:
-> This path makes auto-update available when IC's status is
-> Recovery mode.
-
-Could you please explain in more detail what the issue is. Also please
-improve the patch subject, as "modify Raydium i2c touchscreen driver"
-does not really convey the substance of the patch.
-
-Also, the patch does not apply to my tree, was it based on some other
-tree?
-
-> 
-> Signed-off-by: simba.hsu@raydium.corp-partner.google.com
-
-Please use your Raydium email for signoff.
-
-> Change-Id: I5ae54896a201b949eba7514500a7e75574f5726b
-
-No need to send change-id tags, they are not used in mainline kernel.
-
-> ---
->  drivers/input/touchscreen/raydium_i2c_ts.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/input/touchscreen/raydium_i2c_ts.c b/drivers/input/touchscreen/raydium_i2c_ts.c
-> index 444479ef699e..a97403c55f75 100644
-> --- a/drivers/input/touchscreen/raydium_i2c_ts.c
-> +++ b/drivers/input/touchscreen/raydium_i2c_ts.c
-> @@ -298,6 +298,7 @@ static int raydium_i2c_query_ts_BL_info(struct raydium_data *ts)
->  					 0x10, 0xc0, 0x01, 0x00, 0x04, 0x00};
->  	int error;
->  	u8 rbuf[5] = {0, 0, 0, 0, 0};
-> +	u32 tmpdata = 0;
+On 4/15/21 3:38 AM, Changheun Lee wrote:
+> @@ -167,6 +168,7 @@ void blk_queue_max_hw_sectors(struct request_queue *q, unsigned int max_hw_secto
+>  	max_sectors = round_down(max_sectors,
+>  				 limits->logical_block_size >> SECTOR_SHIFT);
+>  	limits->max_sectors = max_sectors;
+> +	limits->bio_max_bytes = max_sectors << SECTOR_SHIFT;
 >  
->  	error = raydium_i2c_send(client,
->  				 RM_CMD_BOOT_WRT, get_hwid, sizeof(get_hwid));
-> @@ -315,7 +316,8 @@ static int raydium_i2c_query_ts_BL_info(struct raydium_data *ts)
->  	error = raydium_i2c_read(client,
->  				 RM_CMD_BOOT_CHK, rbuf, sizeof(rbuf));
->  	if (!error) {
-> -		ts->info.hw_ver = cpu_to_le32(rbuf[1]<<24|rbuf[2]<<16|rbuf[3]<<8|rbuf[4]);
-> +		tmpdata = (rbuf[1]<<24|rbuf[2]<<16|rbuf[3]<<8|rbuf[4]);
-> +		ts->info.hw_ver = cpu_to_le32(tmpdata);
+>  	q->backing_dev_info->io_pages = max_sectors >> (PAGE_SHIFT - 9);
+>  }
 
-On the face of it I can't see why the code would behave differently,
-nut then there is no raydium_i2c_query_ts_BL_info() in the copy of the
-driver I have here.
+Can the new shift operation overflow? If so, how about using
+check_shl_overflow()?
 
->  		dev_err(&client->dev, "HWID %08X\n", ts->info.hw_ver);
->  	} else {
->  		ts->info.hw_ver = cpu_to_le32(0xffffffffUL);
-> -- 
-> 2.25.1
-> 
+> @@ -538,6 +540,8 @@ int blk_stack_limits(struct queue_limits *t, struct queue_limits *b,
+>  {
+>  	unsigned int top, bottom, alignment, ret = 0;
+>  
+> +	t->bio_max_bytes = min_not_zero(t->bio_max_bytes, b->bio_max_bytes);
+> +
+>  	t->max_sectors = min_not_zero(t->max_sectors, b->max_sectors);
+>  	t->max_hw_sectors = min_not_zero(t->max_hw_sectors, b->max_hw_sectors);
+>  	t->max_dev_sectors = min_not_zero(t->max_dev_sectors, b->max_dev_sectors);
 
-Thanks.
+The above will limit bio_max_bytes for all stacked block devices, which
+is something we do not want. I propose to set t->bio_max_bytes to
+UINT_MAX in blk_stack_limits() and to let the stacked driver (e.g.
+dm-crypt) decide whether or not to lower that value.
 
--- 
-Dmitry
+> diff --git a/include/linux/bio.h b/include/linux/bio.h
+> index d0246c92a6e8..e5add63da3af 100644
+> --- a/include/linux/bio.h
+> +++ b/include/linux/bio.h
+> @@ -106,6 +106,8 @@ static inline void *bio_data(struct bio *bio)
+>  	return NULL;
+>  }
+>  
+> +extern unsigned int bio_max_size(struct bio *bio);
+
+You may want to define bio_max_size() as an inline function in bio.h
+such that no additional function calls are introduced in the hot path.
+
+Thanks,
+
+Bart.
+
+
