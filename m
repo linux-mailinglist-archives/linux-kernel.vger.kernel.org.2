@@ -2,158 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E671235FEF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 02:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8444635FEFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 02:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbhDOAnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 20:43:06 -0400
-Received: from mga07.intel.com ([134.134.136.100]:56494 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230040AbhDOAnE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 20:43:04 -0400
-IronPort-SDR: gbQ6GFFy8fZOM73j00asM+fKi9qPyWTuqLLOkGzPPDAL600Ie5dT4DyOIt3GLwzmEyExdVBkbs
- DcOGKwkN0tKQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="258728973"
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="258728973"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 17:42:40 -0700
-IronPort-SDR: lP90tNN9rJXZ+zZzV/Ob6WFrbiWIsX1Gf3oImAeXo2y42oGv7f/qKBGesrYeacp3vfvicrD5fQ
- E50xgL7dT9IQ==
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="389573156"
-Received: from schen9-mobl.amr.corp.intel.com ([10.209.63.115])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 17:42:40 -0700
-Subject: Re: [RFC PATCH v1 00/11] Manage the top tier memory in a tiered
- memory
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Thelen <gthelen@google.com>, Wei Xu <weixugc@google.com>
-References: <cover.1617642417.git.tim.c.chen@linux.intel.com>
- <YGwlGrHtDJPQF7UG@dhcp22.suse.cz>
- <c615a610-eb4b-7e1e-16d1-4bc12938b08a@linux.intel.com>
- <YG7ugXZZ9BcXyGGk@dhcp22.suse.cz>
- <58e5dcc9-c134-78de-6965-7980f8596b57@linux.intel.com>
- <CALvZod4zXB6-3Mshu_TnTsQaDErfYkPTw9REYNRptSvPSRmKVA@mail.gmail.com>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <ec5d5da8-bfc8-cd7a-7959-ee86d4e01bfa@linux.intel.com>
-Date:   Wed, 14 Apr 2021 17:42:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S231695AbhDOAny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 20:43:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230040AbhDOAnw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 20:43:52 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB21C061574;
+        Wed, 14 Apr 2021 17:43:30 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id n12so24189719ybf.8;
+        Wed, 14 Apr 2021 17:43:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gbhHC/vUWtGXjPx5nVJMHlGAGaElqOL7Wm2WWdBAjY0=;
+        b=GBJxD+5wzc4WCtmmyvlFdpThQgshHxMBnvPvg6UyaVhQoSyNJxykdRZhcOftvsBf6d
+         dwvrZO385oKymlr4NDYx5XCxWjBo9VFpTtpieQHDjXOPGKnTwk5fgNpSD/nkzhcZW1Ab
+         F7+cjXnLK1smG9RMQPicTXeGyFGEQyEaK8WBppnoR8NcsrCa0Fcfy+OL4AKnaihWwnhv
+         3sZjipIH5LAnBPEKzVcusNDE7+H6RaU/yEirmlpn9pimq+OoGnGqBV+ip0CLENkB4Ax2
+         EOqz5u8GreIzYu77vPAt31VqT9PDpQtMKMXncRZ0ZNcRxDV6k3vyWM7Vs/Gk7JS9dd39
+         bL8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gbhHC/vUWtGXjPx5nVJMHlGAGaElqOL7Wm2WWdBAjY0=;
+        b=Rur9mkDYi54FB2PZYASMtgPL0pVW1MZrxm6AK0/EfCpC0bUbYEUqxxb2UaD8yBQykh
+         crvvyPmZOoJlrHNN8u6rKAY4fxq77TDs5OzBIqn49wURzcSTDtVk1JYB6zu26NDA8ss+
+         qArgYrmGSFI4abA3ZrU2n+DyVcVTbdYWzF2AxL587Z4ROBvPXazO8EzPjn0mXhnL91Fn
+         hzLOHU0awyER7j1NNoHhHy7cIWfUNzvGyze92PdQAHAGzVH6865yadOaowyof4iH8XTR
+         6B0Uo2iI6eIVVoMjBFwPuX3dJlDEm0SbJl0AkU0QWbGg5zDTm2Wj0GSlHvfg6LPvq4AG
+         VadA==
+X-Gm-Message-State: AOAM533SyBckp0gH2QAfGHoJU1MHJaexn0TL8ghq7RxSp0VedpiwWUQM
+        olIxfN500u/hk9vhsf62MnCMiCzz0PAvlsx91TM=
+X-Google-Smtp-Source: ABdhPJxIJ9b115uBRz3qbbYjABf/NUfZ+da4kvQJ1seamblPV15DQy8d3Nt99lbWTJx4+d2Z0pBdFplm5RPiE9d2Y6c=
+X-Received: by 2002:a25:3cc6:: with SMTP id j189mr889416yba.247.1618447409518;
+ Wed, 14 Apr 2021 17:43:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CALvZod4zXB6-3Mshu_TnTsQaDErfYkPTw9REYNRptSvPSRmKVA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-5-ojeda@kernel.org>
+ <CAKwvOdkjttdX83tL4pw+J5EnHM1MgEYDPp=YTpEagV4RrhdxwA@mail.gmail.com>
+In-Reply-To: <CAKwvOdkjttdX83tL4pw+J5EnHM1MgEYDPp=YTpEagV4RrhdxwA@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 15 Apr 2021 02:43:18 +0200
+Message-ID: <CANiq72ksLeuL_uqoqbf3fhLP7M0j-7TdEvRDDmxThdmrEqD2Lw@mail.gmail.com>
+Subject: Re: [PATCH 04/13] Kbuild: Rust support
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 15, 2021 at 1:19 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> Rather than check the origin (yikes, are we intentionally avoiding env
+> vars?), can this simply be
+> ifneq ($(CLIPPY),)
+>   KBUILD_CLIPPY := $(CLIPPY)
+> endif
+>
+> Then you can specify whatever value you want, support command line or
+> env vars, etc.?
 
+I was following the other existing cases like `V`. Masahiro can
+probably answer why they are done like this.
 
-On 4/12/21 12:20 PM, Shakeel Butt wrote:
+> -Oz in clang typically generates larger kernel code than -Os; LLVM
+> seems to aggressively emit libcalls even when the setup for a call
+> would be larger than the inlined call itself.  Is z smaller than s for
+> the existing rust examples?
 
->>
->> memory_t0.current       Current usage of tier 0 memory by the cgroup.
->>
->> memory_t0.min           If tier 0 memory used by the cgroup falls below this low
->>                         boundary, the memory will not be subjected to demotion
->>                         to lower tiers to free up memory at tier 0.
->>
->> memory_t0.low           Above this boundary, the tier 0 memory will be subjected
->>                         to demotion.  The demotion pressure will be proportional
->>                         to the overage.
->>
->> memory_t0.high          If tier 0 memory used by the cgroup exceeds this high
->>                         boundary, allocation of tier 0 memory by the cgroup will
->>                         be throttled. The tier 0 memory used by this cgroup
->>                         will also be subjected to heavy demotion.
->>
->> memory_t0.max           This will be a hard usage limit of tier 0 memory on the cgroup.
->>
->> If needed, memory_t[12...].current/min/low/high for additional tiers can be added.
->> This follows closely with the design of the general memory controller interface.
->>
->> Will such an interface looks sane and acceptable with everyone?
->>
-> 
-> I have a couple of questions. Let's suppose we have a two socket
-> system. Node 0 (DRAM+CPUs), Node 1 (DRAM+CPUs), Node 2 (PMEM on socket
-> 0 along with Node 0) and Node 3 (PMEM on socket 1 along with Node 1).
-> Based on the tier definition of this patch series, tier_0: {node_0,
-> node_1} and tier_1: {node_2, node_3}.
-> 
-> My questions are:
-> 
-> 1) Can we assume that the cost of access within a tier will always be
-> less than the cost of access from the tier? (node_0 <-> node_1 vs
-> node_0 <-> node_2)
+I will check if the `s`/`z` flags have the exact same semantics as
+they do in Clang, but as a quick test (quite late here, sorry!), yes,
+it seems `z` is smaller:
 
-I do assume that higher tier memory offers better performance (or less
-access latency) than a lower tier memory.  Otherwise, this defeats the
-whole purpose of promoting hot memory from lower tier to a higher tier,
-and demoting cold memory to a lower tier.
+      text data bss    dec   hex filename
 
-Tiers assumption is embedded once we define this promotion/demotion relationship
-between the numa nodes.
+    126568    8 104 126680 1eed8 drivers/android/rust_binder.o [s]
+    122923    8 104 123035 1e09b drivers/android/rust_binder.o [z]
 
-So if 
+    212351    0   0 212351 33d7f rust/core.o [s]
+    207653    0   0 207653 32b25 rust/core.o [z]
 
-  node_m ----demotes----> node_n
-         <---promotes---- 
+> This is a mess; who thought it would be a good idea to support
+> compiling the rust code at a different optimization level than the
+> rest of the C code in the kernel?  Do we really need that flexibility
+> for Rust kernel code, or can we drop this feature?
 
-then node_m is one tier higher tier than node_n. This promotion/demotion
-relationship between the nodes is the underpinning of Dave and Ying's
-demotion and promotion patch sets.  
+I did :P
 
-> 2) If yes to (1), is that assumption future proof? Will the future
-> systems with DRAM over CXL support have the same characteristics?
+The idea is that, since it seemed to work out of the box when I tried,
+it could be nice to keep for debugging and for having another degree
+of freedom when testing the compiler/nightlies etc.
 
-I think if you configure a promotion/demotion relationship between
-DRAM over CXL and local-socket connected DRAM, you could divide them
-up into separate tiers.  Or you don't care about the difference and
-you will configure them not to have a promotion/demotion relationship
-and they will be at the same tier.  Balance within the same tier
-will be effected by the autonuma mechanism.
+Also, it is not intended for users, which is why I put it in the
+"hacking" menu -- users should still only modify the usual global
+option.
 
-> 3) Will the cost of access from tier_0 to tier_1 be uniform? (node_0
-> <-> node_2 vs node_0 <-> node_3). For jobs running on node_0, node_3
-> might be third tier and similarly for jobs running on node_1, node_2
-> might be third tier.
+However, it is indeed strange for the kernel and I don't mind dropping
+it if people want to see it out (one could still do it manually if
+needed...).
 
-Tier definition is an admin's choice, of where the admin think the
-hot memory should reside after looking at the memory performance.
-It falls out of how the admin construct the promotion/demotion relationship
-between the nodes and OS does not assume the tier relationship from
-memory performance directly. 
+(Related: from what I have been told, the kernel does not support
+lower levels in C just due to old problems with compilers; but those
+may be gone now).
 
-> 
-> The reason I am asking these questions is that the statically
-> partitioning memory nodes into tiers will inherently add platform
-> specific assumptions in the user API.
-> 
-> Assumptions like:
-> 1) Access within tier is always cheaper than across tier.
-> 2) Access from tier_i to tier_i+1 has uniform cost.
-> 
-> The reason I am more inclined towards having numa centric control is
-> that we don't have to make these assumptions. Though the usability
-> will be more difficult. Greg (CCed) has some ideas on making it better
-> and we will share our proposal after polishing it a bit more.
-> 
+> Don't the target.json files all set `"eliminate-frame-pointer":
+> false,`?  Is this necessary then?  Also, which targets retain frame
+> pointers at which optimization levels is quite messy (in C compilers),
+> as well as your choice of unwinder, which is configurable for certain
+> architectures.
 
-I am still trying to understand how a numa centric control actually
-work. Putting limits on every numa node for each cgroup
-seems to make the system configuration quite complicated.  Looking
-forward to your proposal so I can better understand that perspective.
+For this (and other questions regarding the target definition files
+you have below): the situation is quite messy, indeed. Some of these
+options can be configured via flags too. Also, the target definition
+files are actually unstable in `rustc` because they are too tied to
+LLVM. So AFAIK if a command-line flag exists, we should use that. But
+I am not sure if the target definition file is supposed to support
+removing keys etc.
 
-Tim 
+Anyway, the plan here short-term is to generate the target definition
+file on the fly taking into account the options, and keep it working
+w.r.t. `rustc` nightlies (this is also why we don't have have big
+endian for ppc or 32-bit x86). Longer-term, hopefully `rustc` adds
+enough command-line flags to tweak as needed, or stabilizes the target
+files somehow, or stabilizes all the target combinations we need (i.e.
+as built-in targets in the compiler).
+
+In fact, I will add this to the "unstable features" list.
+
+> Seems like a good way for drive by commits where someone reformatted
+> the whole kernel.
+
+We enforce the formatting for all the code at the moment in the CI and
+AFAIK `rustfmt` tries to keep formatting stable (as long as one does
+not use unstable features), so code should always be formatted.
+
+Having said that, I'm not sure 100% how stable it actually is in
+practice over long periods of time -- I guess we will find out soon
+enough.
+
+> Might be nice to invoke this somehow from checkpatch.pl somehow for
+> changes to rust source files. Not necessary in the RFC, but perhaps
+> one day.
+
+We do it in the CI (see above).
+
+> Yuck. This should be default on and not configurable.
+
+See above for the opt-levels.
+
+Cheers,
+Miguel
