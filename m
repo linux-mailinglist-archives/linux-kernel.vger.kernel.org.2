@@ -2,181 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0460A361098
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:58:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B138736109C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234301AbhDOQ6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 12:58:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234267AbhDOQ6X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 12:58:23 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F293CC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 09:57:59 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id sd23so29258088ejb.12
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 09:57:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3DgCO52fftNeZ41idappXG0DEfdrTMom3c7Wz2waGIc=;
-        b=zDujCGHhaJGpB03Y8csiGEnu2TlKuSIiAyw5BbLnVhntUDWISiQY0pre2AKCezZkzw
-         6cWjr+JIFvepZ9RZBujdjrQalMmbQRTfkAjky9igeT96ZKGFMUgC1c662fqo7VGZ2W0U
-         gMfe3Q39SE4y91BJEpZtHUEL36U1j6dXONhO4YNUkRQamSr67fP+YM9d7TK44uyDs2VT
-         n0qBlI2MTdEc3AmlfD8J6DKhKCq+OudbE7JYaxuBgC6WFmZShhC1xoxsbBllH/6rTB+d
-         hbmerLU8HwZlPJs2Zr3g6SSGZQKzm3nuW38nNpv2b2PdqNNP6MNjacC4MypEB2MOwGjJ
-         8lZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3DgCO52fftNeZ41idappXG0DEfdrTMom3c7Wz2waGIc=;
-        b=OogMjnPEKTTAwkZWkRUjUfe7TqfYMv5Uqur9RbxJGQuhkDLXDZpZ6u1jpiAKUCI8WA
-         BF53qXIvUKp/6xlqQ3ikRg2dOqeHJx4U4XW8k/6REQi3Uf73Pdct0IPTPdjXnOx+PQY9
-         Uw4lpiowihRUQbZglGGIDo90dPCvBU6EWIL34UmPZLFaFMPMPEJvb0CJbjgyzZYnFW74
-         A1WWdRej1k7SYC5Z34KQMgwGB+cFCHWGXTKZriIFn5HTmNExOg73UyN4Coz68nYpZ3US
-         Old55mLsJ768cfUjJRxSU3Mw00wEXZ5QAAiTtcKK/xmT5nzidjPOvigPd9A1X/ywMjFg
-         B0MQ==
-X-Gm-Message-State: AOAM533zy9hUMPw++mkK8vZvDuA4Q+EX//o1V6j5eoZfeP63LrURE5Gr
-        YcL6gVKD1v2a/czpbVwc522BYdlQgZyPgA==
-X-Google-Smtp-Source: ABdhPJy6gp4jWVe189u4BauC4L6mG/7JLHUHTYQJmlJd1gLmtdY4ro6AZVCQPt5FMgB6G++44TvNcA==
-X-Received: by 2002:a17:906:1519:: with SMTP id b25mr4441330ejd.254.1618505878656;
-        Thu, 15 Apr 2021 09:57:58 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id bw14sm2313535ejb.89.2021.04.15.09.57.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 15 Apr 2021 09:57:58 -0700 (PDT)
-Subject: Re: [PATCH v4 4/9] ASoC: dt-bindings: wcd938x-sdw: add bindings for
- wcd938x-sdw
-To:     Rob Herring <robh@kernel.org>
-Cc:     broonie@kernel.org, devicetree@vger.kernel.org, perex@perex.cz,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        lgirdwood@gmail.com
-References: <20210414154845.21964-1-srinivas.kandagatla@linaro.org>
- <20210414154845.21964-5-srinivas.kandagatla@linaro.org>
- <20210415163912.GA1524320@robh.at.kernel.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <2458de43-2747-d377-e115-f014fb2b9907@linaro.org>
-Date:   Thu, 15 Apr 2021 17:57:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S234326AbhDOQ7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 12:59:00 -0400
+Received: from mga14.intel.com ([192.55.52.115]:61370 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233520AbhDOQ65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 12:58:57 -0400
+IronPort-SDR: bLDosqDwcXY/y5y1FEmNCOiHvYgcyjX7gcet6gE/EaHljwj+YWt6i2Nh9onlyhFQfD9xqqdPFm
+ shbT5Y+DLlkw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="194453902"
+X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
+   d="scan'208";a="194453902"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 09:58:34 -0700
+IronPort-SDR: dkLvmpp8egi7T6waBo+Wt5pAWBIoXfsgpbhmn11sugVkhAbhAl9pu1fKMuk5wCyQpK8P0z68xB
+ iyKdALIwOm5g==
+X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
+   d="scan'208";a="421750220"
+Received: from jgrenin-mobl.amr.corp.intel.com ([10.209.105.61])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 09:58:33 -0700
+Message-ID: <a42df6ba1c5d87b2094bb133e27f35331a507221.camel@linux.intel.com>
+Subject: Re: [PATCH] iio: hid-sensors: select IIO_TRIGGERED_BUFFER under
+ HID_SENSOR_IIO_TRIGGER
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Alexandru Ardelean <aardelean@deviqon.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     jic23@kernel.org, linux@deviqon.com,
+        Thomas Deutschmann <whissi@gentoo.org>
+Date:   Thu, 15 Apr 2021 09:58:33 -0700
+In-Reply-To: <20210414084955.260117-1-aardelean@deviqon.com>
+References: <20210414084955.260117-1-aardelean@deviqon.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-In-Reply-To: <20210415163912.GA1524320@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 15/04/2021 17:39, Rob Herring wrote:
-> On Wed, Apr 14, 2021 at 04:48:40PM +0100, Srinivas Kandagatla wrote:
->> Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC
->> connected over SoundWire. This device has two SoundWire devices RX and
->> TX respectively. This bindings is for those slave devices on WCD9380/WCD9385.
->>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> ---
->>   .../bindings/sound/qcom,wcd938x-sdw.yaml      | 61 +++++++++++++++++++
->>   1 file changed, 61 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd938x-sdw.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/sound/qcom,wcd938x-sdw.yaml b/Documentation/devicetree/bindings/sound/qcom,wcd938x-sdw.yaml
->> new file mode 100644
->> index 000000000000..fff33c65491b
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/qcom,wcd938x-sdw.yaml
->> @@ -0,0 +1,61 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/sound/qcom,wcd938x-sdw.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Bindings for Qualcomm SoundWire Slave devices on WCD9380/WCD9385
->> +
->> +maintainers:
->> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> +
->> +description: |
->> +  Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC.
->> +  It has RX and TX Soundwire slave devices. This bindings is for the
->> +  slave devices.
->> +
->> +properties:
->> +  compatible:
->> +    const: sdw20217010d00
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  qcom,direction:
->> +    description: direction of the SoundWire device instance
->> +    enum:
->> +      - rx
->> +      - tx
+On Wed, 2021-04-14 at 11:49 +0300, Alexandru Ardelean wrote:
+> During commit 067fda1c065ff ("iio: hid-sensors: move triggered buffer
+> setup into hid_sensor_setup_trigger"), the
+> iio_triggered_buffer_{setup,cleanup}() functions got moved under the
+> hid-sensor-trigger module.
 > 
-> Was thinking these were some established bus properties...
+> The above change works fine, if any of the sensors get built.
+> However, when
+> only the common hid-sensor-trigger module gets built (and none of the
+> drivers), then the IIO_TRIGGERED_BUFFER symbol isn't
+> selected/enforced.
 > 
-> This would just be implied by the 'reg' property index. You could define
-> 'reg-names' too I guess.
+> Previously, each driver would enforce/select the IIO_TRIGGERED_BUFFER
+> symbol. With this change the HID_SENSOR_IIO_TRIGGER (for the
+> hid-sensor-trigger module) will enforce that IIO_TRIGGERED_BUFFER
+> gets
+> selected.
 > 
->> +
->> +  qcom,port-mapping:
->> +    description: |
->> +      Specifies static port mapping between slave and master ports.
->> +      In the order of slave port index.
->> +    $ref: /schemas/types.yaml#/definitions/uint32-array
->> +    minItems: 4
->> +    maxItems: 5
+> All HID sensor drivers select the HID_SENSOR_IIO_TRIGGER symbol. So,
+> this
+> change removes the IIO_TRIGGERED_BUFFER enforcement from each driver.
 > 
-> qcom,rx-port-mapping and qcom,tx-port-mapping?
+> Fixes: 067fda1c065ff ("iio: hid-sensors: move triggered buffer setup
+> into hid_sensor_setup_trigger")
+> Reported-by: Thomas Deutschmann <whissi@gentoo.org>
+> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+
+> ---
+>  drivers/iio/accel/Kconfig              | 1 -
+>  drivers/iio/common/hid-sensors/Kconfig | 1 +
+>  drivers/iio/gyro/Kconfig               | 1 -
+>  drivers/iio/humidity/Kconfig           | 1 -
+>  drivers/iio/light/Kconfig              | 2 --
+>  drivers/iio/magnetometer/Kconfig       | 1 -
+>  drivers/iio/orientation/Kconfig        | 2 --
+>  drivers/iio/pressure/Kconfig           | 1 -
+>  drivers/iio/temperature/Kconfig        | 1 -
+>  9 files changed, 1 insertion(+), 10 deletions(-)
 > 
+> diff --git a/drivers/iio/accel/Kconfig b/drivers/iio/accel/Kconfig
+> index cceda3cecbcf..8b1723635cce 100644
+> --- a/drivers/iio/accel/Kconfig
+> +++ b/drivers/iio/accel/Kconfig
+> @@ -229,7 +229,6 @@ config DMARD10
+>  config HID_SENSOR_ACCEL_3D
+>  	depends on HID_SENSOR_HUB
+>  	select IIO_BUFFER
+> -	select IIO_TRIGGERED_BUFFER
+>  	select HID_SENSOR_IIO_COMMON
+>  	select HID_SENSOR_IIO_TRIGGER
+>  	tristate "HID Accelerometers 3D"
+> diff --git a/drivers/iio/common/hid-sensors/Kconfig
+> b/drivers/iio/common/hid-sensors/Kconfig
+> index 24d492567336..2a3dd3b907be 100644
+> --- a/drivers/iio/common/hid-sensors/Kconfig
+> +++ b/drivers/iio/common/hid-sensors/Kconfig
+> @@ -19,6 +19,7 @@ config HID_SENSOR_IIO_TRIGGER
+>  	tristate "Common module (trigger) for all HID Sensor IIO
+> drivers"
+>  	depends on HID_SENSOR_HUB && HID_SENSOR_IIO_COMMON &&
+> IIO_BUFFER
+>  	select IIO_TRIGGER
+> +	select IIO_TRIGGERED_BUFFER
+>  	help
+>  	  Say yes here to build trigger support for HID sensors.
+>  	  Triggers will be send if all requested attributes were read.
+> diff --git a/drivers/iio/gyro/Kconfig b/drivers/iio/gyro/Kconfig
+> index 5824f2edf975..20b5ac7ab66a 100644
+> --- a/drivers/iio/gyro/Kconfig
+> +++ b/drivers/iio/gyro/Kconfig
+> @@ -111,7 +111,6 @@ config FXAS21002C_SPI
+>  config HID_SENSOR_GYRO_3D
+>  	depends on HID_SENSOR_HUB
+>  	select IIO_BUFFER
+> -	select IIO_TRIGGERED_BUFFER
+>  	select HID_SENSOR_IIO_COMMON
+>  	select HID_SENSOR_IIO_TRIGGER
+>  	tristate "HID Gyroscope 3D"
+> diff --git a/drivers/iio/humidity/Kconfig
+> b/drivers/iio/humidity/Kconfig
+> index 6549fcf6db69..2de5494e7c22 100644
+> --- a/drivers/iio/humidity/Kconfig
+> +++ b/drivers/iio/humidity/Kconfig
+> @@ -52,7 +52,6 @@ config HID_SENSOR_HUMIDITY
+>  	tristate "HID Environmental humidity sensor"
+>  	depends on HID_SENSOR_HUB
+>  	select IIO_BUFFER
+> -	select IIO_TRIGGERED_BUFFER
+>  	select HID_SENSOR_IIO_COMMON
+>  	select HID_SENSOR_IIO_TRIGGER
+>  	help
+> diff --git a/drivers/iio/light/Kconfig b/drivers/iio/light/Kconfig
+> index 33ad4dd0b5c7..917f9becf9c7 100644
+> --- a/drivers/iio/light/Kconfig
+> +++ b/drivers/iio/light/Kconfig
+> @@ -256,7 +256,6 @@ config ISL29125
+>  config HID_SENSOR_ALS
+>  	depends on HID_SENSOR_HUB
+>  	select IIO_BUFFER
+> -	select IIO_TRIGGERED_BUFFER
+>  	select HID_SENSOR_IIO_COMMON
+>  	select HID_SENSOR_IIO_TRIGGER
+>  	tristate "HID ALS"
+> @@ -270,7 +269,6 @@ config HID_SENSOR_ALS
+>  config HID_SENSOR_PROX
+>  	depends on HID_SENSOR_HUB
+>  	select IIO_BUFFER
+> -	select IIO_TRIGGERED_BUFFER
+>  	select HID_SENSOR_IIO_COMMON
+>  	select HID_SENSOR_IIO_TRIGGER
+>  	tristate "HID PROX"
+> diff --git a/drivers/iio/magnetometer/Kconfig
+> b/drivers/iio/magnetometer/Kconfig
+> index 5d4ffd66032e..74ad5701c6c2 100644
+> --- a/drivers/iio/magnetometer/Kconfig
+> +++ b/drivers/iio/magnetometer/Kconfig
+> @@ -95,7 +95,6 @@ config MAG3110
+>  config HID_SENSOR_MAGNETOMETER_3D
+>  	depends on HID_SENSOR_HUB
+>  	select IIO_BUFFER
+> -	select IIO_TRIGGERED_BUFFER
+>  	select HID_SENSOR_IIO_COMMON
+>  	select HID_SENSOR_IIO_TRIGGER
+>  	tristate "HID Magenetometer 3D"
+> diff --git a/drivers/iio/orientation/Kconfig
+> b/drivers/iio/orientation/Kconfig
+> index a505583cc2fd..396cbbb867f4 100644
+> --- a/drivers/iio/orientation/Kconfig
+> +++ b/drivers/iio/orientation/Kconfig
+> @@ -9,7 +9,6 @@ menu "Inclinometer sensors"
+>  config HID_SENSOR_INCLINOMETER_3D
+>  	depends on HID_SENSOR_HUB
+>  	select IIO_BUFFER
+> -	select IIO_TRIGGERED_BUFFER
+>  	select HID_SENSOR_IIO_COMMON
+>  	select HID_SENSOR_IIO_TRIGGER
+>  	tristate "HID Inclinometer 3D"
+> @@ -20,7 +19,6 @@ config HID_SENSOR_INCLINOMETER_3D
+>  config HID_SENSOR_DEVICE_ROTATION
+>  	depends on HID_SENSOR_HUB
+>  	select IIO_BUFFER
+> -	select IIO_TRIGGERED_BUFFER
+>  	select HID_SENSOR_IIO_COMMON
+>  	select HID_SENSOR_IIO_TRIGGER
+>  	tristate "HID Device Rotation"
+> diff --git a/drivers/iio/pressure/Kconfig
+> b/drivers/iio/pressure/Kconfig
+> index 689b978db4f9..fc0d3cfca418 100644
+> --- a/drivers/iio/pressure/Kconfig
+> +++ b/drivers/iio/pressure/Kconfig
+> @@ -79,7 +79,6 @@ config DPS310
+>  config HID_SENSOR_PRESS
+>  	depends on HID_SENSOR_HUB
+>  	select IIO_BUFFER
+> -	select IIO_TRIGGERED_BUFFER
+>  	select HID_SENSOR_IIO_COMMON
+>  	select HID_SENSOR_IIO_TRIGGER
+>  	tristate "HID PRESS"
+> diff --git a/drivers/iio/temperature/Kconfig
+> b/drivers/iio/temperature/Kconfig
+> index c5482983f568..f20ae3c963cb 100644
+> --- a/drivers/iio/temperature/Kconfig
+> +++ b/drivers/iio/temperature/Kconfig
+> @@ -45,7 +45,6 @@ config HID_SENSOR_TEMP
+>  	tristate "HID Environmental temperature sensor"
+>  	depends on HID_SENSOR_HUB
+>  	select IIO_BUFFER
+> -	select IIO_TRIGGERED_BUFFER
+>  	select HID_SENSOR_IIO_COMMON
+>  	select HID_SENSOR_IIO_TRIGGER
+>  	help
 
-If we have this property then "qcom,direction" becomes redundant.
-
-> Or keep a single property and the driver knows how many slave ports for
-> each direction. IOW, an array of 9 with first 4 entries for tx and last
-> 5 for rx.
-
-We can't have a single property with 9 entries as these are two separate 
-devices, rx SoundWire Slave has 5 ports implemented where as tx SounWire 
-slave has only 4 ports implemented in hw.
-
-And the are on different SoundWire buses.
-
---srini
-> 
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - qcom,direction
->> +  - qcom,port-mapping
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    soundwire@3230000 {
->> +        #address-cells = <2>;
->> +        #size-cells = <0>;
->> +        reg = <0x03230000 0x2000>;
->> +
->> +        codec@0,3 {
->> +            compatible = "sdw20217010d00";
->> +            reg  = <0 3>;
->> +            qcom,direction = "tx";
->> +            qcom,port-mapping = <2 3 4 5>;
->> +        };
->> +    };
->> +
->> +...
->> -- 
->> 2.21.0
->>
