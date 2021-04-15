@@ -2,105 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0760361023
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4209C36102A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233782AbhDOQ2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 12:28:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36576 "EHLO
+        id S233518AbhDOQ35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 12:29:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232759AbhDOQ2R (ORCPT
+        with ESMTP id S231549AbhDOQ3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 12:28:17 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B596AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 09:27:52 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so23087698otk.5
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 09:27:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Sv8ShlWCFYrRvkMTcwOZXNbuS9oUEdPA5USpJjouThE=;
-        b=FOOM/KGf5hmW0LDCmdb7lpl3uQgy3UEwO5PjMunL+/tdyf8NWyML93As/uk5No4kVh
-         3/iXatPA+uyl4WU4kwgTde2JNYOYaA2k8gyZG2KwJVXV4KAOnN5NjCCyWeTP+Ud0ZITN
-         pE6MFRRf6HPHNAGmDLKh/JT3gm5Bi/4d3N+KLC/ChSptzig+a2yUe7WQn8hzzu+KkUSM
-         JkJ6fdVOKnXn7dV07WRwH2ec7QWF5jouXuqqnUvEmpY+rbfm+Kf+mD9md/PoGFXfD6BE
-         K/n8ukXWUAe7R+IA3uMA3HQyoBCZYyU6u9t8uq7UYz9Zbeaw9uwsADCmwN+TckTsGJRV
-         4RVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Sv8ShlWCFYrRvkMTcwOZXNbuS9oUEdPA5USpJjouThE=;
-        b=aia1EvF4LwmKdauo01f5Vlf5U/BYaLk/G0HR4M6iuDpk+AlxLaJqz4Hos5ojGeHMDv
-         yoILK6kKRG7+14+/34Cmp3h54SYrPv1V774jaWMHiA/OP2tzhunT+x09NPwQTHSbApHZ
-         oSBSvwiRD4zuB71dN4tqAqWdxPkpjRBu/233oIkX33Q4OQ/VH5ZPpT/sgydc0ma3aSR6
-         pHdHbW/hnDpyZGEqjIfxjtF+wMdYzm2gnsDWEEqwJCKu4e6Tbhz6mlV/UezPW7LJ/qWi
-         opWOSkuVKcXAvbdbNtdXqboeDDegzCoH98TFPg6tHedYHEq6XppNS0u9UXkyyyu6UNAU
-         8RcQ==
-X-Gm-Message-State: AOAM531qe2M3XMJWlpMIh7cosTdVU7Ox0JIp1rb74rtgnObMnv2jvYP9
-        nFFfS64XyRk9m8upC+8cDPRa+imKAjCXH9NdAXgKuBcPXVmBWA==
-X-Google-Smtp-Source: ABdhPJwn2G/eQ/cTmZ4tw/XztL2pHSPpSZmCTo0b2P4Qui2SzWi6hDRqjufrC2EUtW2Zd42jmLZarDzkmZOZXrf+qWk=
-X-Received: by 2002:a05:6830:1697:: with SMTP id k23mr115526otr.132.1618504072201;
- Thu, 15 Apr 2021 09:27:52 -0700 (PDT)
+        Thu, 15 Apr 2021 12:29:49 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B1FC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 09:29:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=K2m/s8XtAQXIWhkWByFxUBgfPkUPowtAwvmwg2l85mQ=; b=VNPDt/kxQ78RntA8EWuBokJOMx
+        vacXlC03B1oLodFWCLLuatEToPztLTIvNjI4M9fQo8ORveRFb5sgh8uVWeQ/OcC5z33DCDsgmkcnl
+        xGqLH2tfluFQsbXUXINMYvZmEjL3SGmqpG6L3HbOLuCYjzOQ2ZWcPcqJnOSrGGcPgS7iDnE90jJvl
+        hWyvGhpqZ0pv1NcXafB54BJ39s5tAtnkPVwCxpnQ7VPI9AwZ5Gpwewvvsfu93KvQ2iKOsr30zpCWJ
+        FpZFdBq30KOuFA8oqcsAKVXm134oelbvYmoRxGplihQX/OIO2H3Y4S/FUntgV+lI2HR/2GMjdSyOr
+        NQvqB4yQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lX4rb-00Gju0-0X; Thu, 15 Apr 2021 16:29:07 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 38C0930021C;
+        Thu, 15 Apr 2021 18:29:06 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 01F312C80212C; Thu, 15 Apr 2021 18:29:05 +0200 (CEST)
+Date:   Thu, 15 Apr 2021 18:29:05 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     mingo@kernel.org, mgorman@suse.de, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+        joshdon@google.com, valentin.schneider@arm.com
+Cc:     linux-kernel@vger.kernel.org, greg@kroah.com,
+        linux@rasmusvillemoes.dk,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH] sched/debug: Rename the sched_debug parameter to
+ sched_debug_verbose
+Message-ID: <YHhp0THHD2ofUdZD@hirez.programming.kicks-ass.net>
+References: <20210412101421.609526370@infradead.org>
+ <20210412102001.287610138@infradead.org>
 MIME-Version: 1.0
-References: <1618479020-38198-1-git-send-email-yang.lee@linux.alibaba.com>
-In-Reply-To: <1618479020-38198-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 15 Apr 2021 12:27:41 -0400
-Message-ID: <CADnq5_OzUTQnTFjp2KFij3M8g3Fgq+dfMJyn8dkjzU+mR3yceA@mail.gmail.com>
-Subject: Re: [PATCH] drm/radeon/si: Fix inconsistent indenting
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Christian Koenig <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210412102001.287610138@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On Mon, Apr 12, 2021 at 12:14:25PM +0200, Peter Zijlstra wrote:
 
-Alex
+> +	debugfs_create_bool("debug_enabled", 0644, debugfs_sched, &sched_debug_enabled);
 
-On Thu, Apr 15, 2021 at 5:30 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
->
-> Kernel test robot throws below warning ->
->
-> smatch warnings:
-> drivers/gpu/drm/radeon/si.c:4514 si_vm_packet3_cp_dma_check() warn:
-> inconsistent indenting
->
-> Fixed the inconsistent indenting.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  drivers/gpu/drm/radeon/si.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/radeon/si.c b/drivers/gpu/drm/radeon/si.c
-> index 88731b79..d0e94b1 100644
-> --- a/drivers/gpu/drm/radeon/si.c
-> +++ b/drivers/gpu/drm/radeon/si.c
-> @@ -4511,7 +4511,7 @@ static int si_vm_packet3_cp_dma_check(u32 *ib, u32 idx)
->                         } else {
->                                 for (i = 0; i < (command & 0x1fffff); i++) {
->                                         reg = start_reg + (4 * i);
-> -                               if (!si_vm_reg_valid(reg)) {
-> +                                       if (!si_vm_reg_valid(reg)) {
->                                                 DRM_ERROR("CP DMA Bad DST register\n");
->                                                 return -EINVAL;
->                                         }
-> --
-> 1.8.3.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+How's this on top of the whole series?
+
+---
+Subject: sched/debug: Rename the sched_debug parameter to sched_debug_verbose
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Thu Apr 15 18:23:17 CEST 2021
+
+CONFIG_SCHED_DEBUG is the build-time Kconfig knob, the boot param
+sched_debug and the /debug/sched/debug_enabled knobs control the
+sched_debug_enabled variable, but what they really do is make
+SCHED_DEBUG more verbose, so rename the lot.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ Documentation/admin-guide/kernel-parameters.txt |    3 ++-
+ Documentation/scheduler/sched-domains.rst       |   10 +++++-----
+ kernel/sched/debug.c                            |    4 ++--
+ kernel/sched/topology.c                         |   10 +++++-----
+ 4 files changed, 14 insertions(+), 13 deletions(-)
+
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -4756,7 +4756,8 @@
+ 
+ 	sbni=		[NET] Granch SBNI12 leased line adapter
+ 
+-	sched_debug	[KNL] Enables verbose scheduler debug messages.
++	sched_debug_verbose
++			[KNL] Enables verbose scheduler debug messages.
+ 
+ 	schedstats=	[KNL,X86] Enable or disable scheduled statistics.
+ 			Allowed values are enable and disable. This feature
+--- a/Documentation/scheduler/sched-domains.rst
++++ b/Documentation/scheduler/sched-domains.rst
+@@ -74,8 +74,8 @@ for a given topology level by creating a
+ calling set_sched_topology() with this array as the parameter.
+ 
+ The sched-domains debugging infrastructure can be enabled by enabling
+-CONFIG_SCHED_DEBUG and adding 'sched_debug' to your cmdline. If you forgot to
+-tweak your cmdline, you can also flip the /sys/kernel/debug/sched_debug
+-knob. This enables an error checking parse of the sched domains which should
+-catch most possible errors (described above). It also prints out the domain
+-structure in a visual format.
++CONFIG_SCHED_DEBUG and adding 'sched_debug_verbose' to your cmdline. If you
++forgot to tweak your cmdline, you can also flip the
++/sys/kernel/debug/sched/verbose knob. This enables an error checking parse of
++the sched domains which should catch most possible errors (described above). It
++also prints out the domain structure in a visual format.
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -275,7 +275,7 @@ static const struct file_operations sche
+ 
+ #endif /* CONFIG_PREEMPT_DYNAMIC */
+ 
+-__read_mostly bool sched_debug_enabled;
++__read_mostly bool sched_debug_verbose;
+ 
+ static const struct seq_operations sched_debug_sops;
+ 
+@@ -300,7 +300,7 @@ static __init int sched_init_debug(void)
+ 	debugfs_sched = debugfs_create_dir("sched", NULL);
+ 
+ 	debugfs_create_file("features", 0644, debugfs_sched, NULL, &sched_feat_fops);
+-	debugfs_create_bool("debug_enabled", 0644, debugfs_sched, &sched_debug_enabled);
++	debugfs_create_bool("verbose", 0644, debugfs_sched, &sched_debug_verbose);
+ #ifdef CONFIG_PREEMPT_DYNAMIC
+ 	debugfs_create_file("preempt", 0644, debugfs_sched, NULL, &sched_dynamic_fops);
+ #endif
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -14,7 +14,7 @@ static cpumask_var_t sched_domains_tmpma
+ 
+ static int __init sched_debug_setup(char *str)
+ {
+-	sched_debug_enabled = true;
++	sched_debug_verbose = true;
+ 
+ 	return 0;
+ }
+@@ -22,7 +22,7 @@ early_param("sched_debug", sched_debug_s
+ 
+ static inline bool sched_debug(void)
+ {
+-	return sched_debug_enabled;
++	return sched_debug_verbose;
+ }
+ 
+ #define SD_FLAG(_name, mflags) [__##_name] = { .meta_flags = mflags, .name = #_name },
+@@ -131,7 +131,7 @@ static void sched_domain_debug(struct sc
+ {
+ 	int level = 0;
+ 
+-	if (!sched_debug_enabled)
++	if (!sched_debug_verbose)
+ 		return;
+ 
+ 	if (!sd) {
+@@ -152,7 +152,7 @@ static void sched_domain_debug(struct sc
+ }
+ #else /* !CONFIG_SCHED_DEBUG */
+ 
+-# define sched_debug_enabled 0
++# define sched_debug_verbose 0
+ # define sched_domain_debug(sd, cpu) do { } while (0)
+ static inline bool sched_debug(void)
+ {
+@@ -2141,7 +2141,7 @@ build_sched_domains(const struct cpumask
+ 	if (has_asym)
+ 		static_branch_inc_cpuslocked(&sched_asym_cpucapacity);
+ 
+-	if (rq && sched_debug_enabled) {
++	if (rq && sched_debug_verbose) {
+ 		pr_info("root domain span: %*pbl (max cpu_capacity = %lu)\n",
+ 			cpumask_pr_args(cpu_map), rq->rd->max_cpu_capacity);
+ 	}
