@@ -2,99 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3674360406
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 148D036040E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbhDOIPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 04:15:39 -0400
-Received: from mga17.intel.com ([192.55.52.151]:41488 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231482AbhDOIPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 04:15:38 -0400
-IronPort-SDR: iiqoOa+cX08z3b5jbQl0brSJ3C7BvBDxqbYclpkS5xbq3dJkQjD38AXIUBLdIBg5wYYtn7fgth
- dQauFgNdA1bA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="174915143"
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="174915143"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 01:15:15 -0700
-IronPort-SDR: u7LQK+9Dd3Vu0zzlFRj1bFC9N57woWeAd5e0rKsvRAkrMxJp68n38NZRUdEA4akfAi0zamTkrT
- g3z2hPIKtBfA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="421621064"
-Received: from dengjie-mobl1.ccr.corp.intel.com (HELO [10.239.154.55]) ([10.239.154.55])
-  by orsmga007.jf.intel.com with ESMTP; 15 Apr 2021 01:15:09 -0700
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-To:     Wolfram Sang <wsa@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <20210323072704.rgoelmq62fl2wjjf@vireshk-i7>
- <a2994a8f-bbf9-b26f-a9d2-eb02df6623b8@intel.com>
- <CAK8P3a3OBUZC2nxaQ2wyL9EeT3gzXUX9sfJ+ZJfJUiJK_3ZkrA@mail.gmail.com>
- <20210415064538.a4vf7egk6l3u6zfz@vireshk-i7>
- <b25d1f4e-f17f-8a14-e7e6-7577d25be877@intel.com>
- <20210415072131.GA1006@kunai> <20210415072431.apntpcwrk5hp6zg4@vireshk-i7>
- <20210415072823.GB1006@kunai>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <6849a8f0-204a-362a-ed97-e910065ab14f@intel.com>
-Date:   Thu, 15 Apr 2021 16:15:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.0
+        id S231633AbhDOIQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 04:16:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54213 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231346AbhDOIQz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 04:16:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618474592;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g3qfacKPFWYJe6SJGGT9jnGqaiQMDFfgudP5Ye2GaUQ=;
+        b=UvM2lA4UEc+hvdVPyTlY+DpqNXKkbZ4cpZgX5dfqQDKCQT4DLwiQVExI+wKsytfUqNk0GL
+        0ISGthUimiUPrxjMQS3z77H5NNqDNHhrzB7uq18WvIBdXspQsksB4WwrTwtdE18kukpGVf
+        rRSjezJKfi3fN2AbiiCth8q0agg6yS0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-562-nf00DL1qOpq2a81pIwwyBQ-1; Thu, 15 Apr 2021 04:16:29 -0400
+X-MC-Unique: nf00DL1qOpq2a81pIwwyBQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9AA2310053E8;
+        Thu, 15 Apr 2021 08:16:28 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-12-61.pek2.redhat.com [10.72.12.61])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1581C1F057;
+        Thu, 15 Apr 2021 08:16:21 +0000 (UTC)
+Subject: Re: [PATCH 3/3] vDPA/ifcvf: get_config_size should return dev
+ specific config size
+To:     Stefano Garzarella <sgarzare@redhat.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Cc:     mst@redhat.com, lulu@redhat.com, leonro@nvidia.com,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210414091832.5132-1-lingshan.zhu@intel.com>
+ <20210414091832.5132-4-lingshan.zhu@intel.com>
+ <20210415081236.anbssqtsyjnmiaby@steredhat>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <178b6e14-dfb5-b5f9-477e-15801d849c2a@redhat.com>
+Date:   Thu, 15 Apr 2021 16:16:20 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <20210415072823.GB1006@kunai>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+In-Reply-To: <20210415081236.anbssqtsyjnmiaby@steredhat>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/15 15:28, Wolfram Sang wrote:
 
->> Now that we were able to catch you, I will use the opportunity to
->> clarify the doubts I had.
+在 2021/4/15 下午4:12, Stefano Garzarella 写道:
+> On Wed, Apr 14, 2021 at 05:18:32PM +0800, Zhu Lingshan wrote:
+>> get_config_size() should return the size based on the decected
+>> device type.
 >>
->> - struct mutex lock in struct virtio_i2c, I don't think this is
->>    required since the core takes care of locking in absence of this.
-> This is likely correct.
-
-
-OK. Then I will remove the lock.
-
-
->> - Use of I2C_CLASS_DEPRECATED flag, I don't think it is required for
->>    new drivers.
-> This is definately correct :)
-
-
-Do you mean a new driver doesn't need to set the following ?
-
-vi->adap.class = I2C_CLASS_DEPRECATED;
-
-Just leave the class to be 0 ?
-
-
+>> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
+>> ---
+>> drivers/vdpa/ifcvf/ifcvf_main.c | 11 ++++++++++-
+>> 1 file changed, 10 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c 
+>> b/drivers/vdpa/ifcvf/ifcvf_main.c
+>> index 9b6a38b798fa..b48b9789b69e 100644
+>> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
+>> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
+>> @@ -347,7 +347,16 @@ static u32 ifcvf_vdpa_get_vq_align(struct 
+>> vdpa_device *vdpa_dev)
+>>
+>> static size_t ifcvf_vdpa_get_config_size(struct vdpa_device *vdpa_dev)
+>> {
+>> -    return sizeof(struct virtio_net_config);
+>> +    struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
+>> +    size_t size;
+>> +
+>> +    if (vf->dev_type == VIRTIO_ID_NET)
+>> +        size = sizeof(struct virtio_net_config);
+>> +
+>> +    if (vf->dev_type == VIRTIO_ID_BLOCK)
+>> +        size = sizeof(struct virtio_blk_config);
+>> +
+>> +    return size;
 >
-> Let's see if I will have more questions...
+> I'm not familiar with the ifcvf details, but can it happen that the 
+> device is not block or net?
+>
+> Should we set `size` to 0 by default to handle this case or are we 
+> sure it's one of the two?
+>
+> Maybe we should add a comment or a warning message in this case, to 
+> prevent some analysis tool or compiler from worrying that `size` might 
+> be uninitialized.
+>
+> I was thinking something like this:
+>
+>     switch(vf->dev_type) {
+>     case VIRTIO_ID_NET:
+>         size = sizeof(struct virtio_net_config);
+>         break;
+>     case VIRTIO_ID_BLOCK:
+>         size = sizeof(struct virtio_blk_config);
+>         break;
+>     default:
+>         /* or WARN(1, "") if dev_warn() not apply */
+>         dev_warn(... , "virtio ID [0x%x] not supported\n")
+>         size = 0;
+>
+>     }
+>
+
+Yes, I agree.
+
+Thanks
 
 
-OK. Thank you.
+> Thanks,
+> Stefano
+>
 
