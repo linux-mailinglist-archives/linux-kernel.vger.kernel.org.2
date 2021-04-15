@@ -2,131 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A11E360702
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B474A360705
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232231AbhDOKYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 06:24:23 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:65295 "EHLO pegase1.c-s.fr"
+        id S232292AbhDOKYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 06:24:40 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34034 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231766AbhDOKYW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 06:24:22 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FLb6P11KFz9vBmb;
-        Thu, 15 Apr 2021 12:23:57 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id UXyUUAwc-f7L; Thu, 15 Apr 2021 12:23:57 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FLb6P0B0nz9vBK7;
-        Thu, 15 Apr 2021 12:23:57 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1299A8B7F6;
-        Thu, 15 Apr 2021 12:23:58 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id wlkDENXExdjy; Thu, 15 Apr 2021 12:23:58 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 46D9D8B7F2;
-        Thu, 15 Apr 2021 12:23:57 +0200 (CEST)
-Subject: Re: [PATCH v13 14/14] powerpc/64s/radix: Enable huge vmalloc mappings
-To:     Nicholas Piggin <npiggin@gmail.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Ding Tianhong <dingtianhong@huawei.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-References: <20210317062402.533919-1-npiggin@gmail.com>
- <20210317062402.533919-15-npiggin@gmail.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <a5c57276-737d-930b-670c-58dc0c815501@csgroup.eu>
-Date:   Thu, 15 Apr 2021 12:23:55 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S231531AbhDOKYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 06:24:37 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 26D62AC6E;
+        Thu, 15 Apr 2021 10:24:14 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id C1E551F2B65; Thu, 15 Apr 2021 12:24:13 +0200 (CEST)
+Date:   Thu, 15 Apr 2021 12:24:13 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     viro@zeniv.linux.org.uk, jack@suse.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        chao@kernel.org
+Subject: Re: [PATCH] direct-io: use read lock for DIO_LOCKING flag
+Message-ID: <20210415102413.GA25217@quack2.suse.cz>
+References: <20210415094332.37231-1-yuchao0@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210317062402.533919-15-npiggin@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210415094332.37231-1-yuchao0@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nick,
-
-Le 17/03/2021 à 07:24, Nicholas Piggin a écrit :
-> This reduces TLB misses by nearly 30x on a `git diff` workload on a
-> 2-node POWER9 (59,800 -> 2,100) and reduces CPU cycles by 0.54%, due
-> to vfs hashes being allocated with 2MB pages.
+On Thu 15-04-21 17:43:32, Chao Yu wrote:
+> 9902af79c01a ("parallel lookups: actual switch to rwsem") changes inode
+> lock from mutex to rwsem, however, we forgot to adjust lock for
+> DIO_LOCKING flag in do_blockdev_direct_IO(), so let's change to hold read
+> lock to mitigate performance regression in the case of read DIO vs read DIO,
+> meanwhile it still keeps original functionality of avoiding buffered access
+> vs direct access.
 > 
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Acked-by: Michael Ellerman <mpe@ellerman.id.au>
-> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+
+Thanks for the patch but this is not safe. Originally we had exclusive lock
+(with i_mutex), switching to rwsem doesn't change that requirement. It may
+be OK for some filesystems to actually use shared acquisition of rwsem for
+DIO reads but it is not clear that is fine for all filesystems (and I
+suspect those filesystems that actually do care already don't use
+DIO_LOCKING flag or were already converted to iomap_dio_rw()). So unless
+you do audit of all filesystems using do_blockdev_direct_IO() with
+DIO_LOCKING flag and make sure they are all fine with inode lock in shared
+mode, this is a no-go.
+
+								Honza
+
 > ---
->   .../admin-guide/kernel-parameters.txt         |  2 ++
->   arch/powerpc/Kconfig                          |  1 +
->   arch/powerpc/kernel/module.c                  | 22 +++++++++++++++----
->   3 files changed, 21 insertions(+), 4 deletions(-)
+>  fs/direct-io.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> --- a/arch/powerpc/kernel/module.c
-> +++ b/arch/powerpc/kernel/module.c
-> @@ -8,6 +8,7 @@
->   #include <linux/moduleloader.h>
->   #include <linux/err.h>
->   #include <linux/vmalloc.h>
-> +#include <linux/mm.h>
->   #include <linux/bug.h>
->   #include <asm/module.h>
->   #include <linux/uaccess.h>
-> @@ -87,13 +88,26 @@ int module_finalize(const Elf_Ehdr *hdr,
->   	return 0;
->   }
->   
-> -#ifdef MODULES_VADDR
->   void *module_alloc(unsigned long size)
->   {
-> +	unsigned long start = VMALLOC_START;
-> +	unsigned long end = VMALLOC_END;
-> +
-> +#ifdef MODULES_VADDR
->   	BUILD_BUG_ON(TASK_SIZE > MODULES_VADDR);
-> +	start = MODULES_VADDR;
-> +	end = MODULES_END;
-> +#endif
-> +
-> +	/*
-> +	 * Don't do huge page allocations for modules yet until more testing
-> +	 * is done. STRICT_MODULE_RWX may require extra work to support this
-> +	 * too.
-> +	 */
->   
-> -	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END, GFP_KERNEL,
-> -				    PAGE_KERNEL_EXEC, VM_FLUSH_RESET_PERMS, NUMA_NO_NODE,
-
-
-I think you should add the following in <asm/pgtable.h>
-
-#ifndef MODULES_VADDR
-#define MODULES_VADDR VMALLOC_START
-#define MODULES_END VMALLOC_END
-#endif
-
-And leave module_alloc() as is (just removing the enclosing #ifdef MODULES_VADDR and adding the 
-VM_NO_HUGE_VMAP  flag)
-
-This would minimise the conflits with the changes I did in powerpc/next reported by Stephen R.
-
-> +	return __vmalloc_node_range(size, 1, start, end, GFP_KERNEL,
-> +				    PAGE_KERNEL_EXEC,
-> +				    VM_NO_HUGE_VMAP | VM_FLUSH_RESET_PERMS,
-> +				    NUMA_NO_NODE,
->   				    __builtin_return_address(0));
->   }
-> -#endif
+> diff --git a/fs/direct-io.c b/fs/direct-io.c
+> index b2e86e739d7a..93ff912f2749 100644
+> --- a/fs/direct-io.c
+> +++ b/fs/direct-io.c
+> @@ -1166,7 +1166,7 @@ do_blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
+>  	dio->flags = flags;
+>  	if (dio->flags & DIO_LOCKING && iov_iter_rw(iter) == READ) {
+>  		/* will be released by direct_io_worker */
+> -		inode_lock(inode);
+> +		inode_lock_shared(inode);
+>  	}
+>  
+>  	/* Once we sampled i_size check for reads beyond EOF */
+> @@ -1316,7 +1316,7 @@ do_blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
+>  	 * of protecting us from looking up uninitialized blocks.
+>  	 */
+>  	if (iov_iter_rw(iter) == READ && (dio->flags & DIO_LOCKING))
+> -		inode_unlock(dio->inode);
+> +		inode_unlock_shared(dio->inode);
+>  
+>  	/*
+>  	 * The only time we want to leave bios in flight is when a successful
+> @@ -1341,7 +1341,7 @@ do_blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
+>  
+>  fail_dio:
+>  	if (dio->flags & DIO_LOCKING && iov_iter_rw(iter) == READ)
+> -		inode_unlock(inode);
+> +		inode_unlock_shared(inode);
+>  
+>  	kmem_cache_free(dio_cache, dio);
+>  	return retval;
+> -- 
+> 2.29.2
 > 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
