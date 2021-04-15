@@ -2,293 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D88535FFE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 04:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A1235FFEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 04:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229670AbhDOCRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 22:17:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbhDOCRl (ORCPT
+        id S229707AbhDOCV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 22:21:29 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:16920 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229616AbhDOCVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 22:17:41 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 668FDC061574;
-        Wed, 14 Apr 2021 19:17:19 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FLNJq5XTKz9sRR;
-        Thu, 15 Apr 2021 12:17:14 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1618453036;
-        bh=BrLsH1TkjXEcCa78Xs9wEftT5atraye9p1XkCrViQ1M=;
-        h=Date:From:To:Cc:Subject:From;
-        b=k/d3M3n0/2KyaBBQWcvDQrdhNAvSke0iP25flsyvDGIUmiN9AVnlywVJeE73IMBRg
-         d4WC/U2v/vugOKoT0kKNJYYdxYkaDpHmJRz6J7rBMXB8YtAo0Y9oe3Swp1FCY2osmw
-         80gL0ycPFp43zxL4z4iXu+sL11jvV3yAiQ7ajaQfT009pgHN35vKWl9RRYTgoIRYov
-         VHNyLVj0wM9aC3nhWq2TDPFQpTz9/rkupTfvD+Kpg2NIxmIkhcMuIXLRicUI9IpFEx
-         IYiOqYCx7YNmLq4DGOfa4o4X+/s9rMe6m2tzk/1Gc7DPUorqX3bRBa0JU+37XODiug
-         bpfCaMFXH3fRQ==
-Date:   Thu, 15 Apr 2021 12:17:13 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        Thierry Reding <treding@nvidia.com>
-Subject: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <20210415121713.28af219a@canb.auug.org.au>
+        Wed, 14 Apr 2021 22:21:25 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FLNLz5HXXzjZtV;
+        Thu, 15 Apr 2021 10:19:07 +0800 (CST)
+Received: from [10.174.187.224] (10.174.187.224) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 15 Apr 2021 10:20:52 +0800
+Subject: Re: [PATCH v3 2/2] kvm/arm64: Try stage2 block mapping for host
+ device MMIO
+To:     Marc Zyngier <maz@kernel.org>
+References: <20210414065109.8616-1-zhukeqian1@huawei.com>
+ <20210414065109.8616-3-zhukeqian1@huawei.com> <87pmyxme2m.wl-maz@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, <wanghaibin.wang@huawei.com>,
+        Santosh Shukla <sashukla@nvidia.com>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <b434317f-ef6d-1d91-0189-8343c404c88c@huawei.com>
+Date:   Thu, 15 Apr 2021 10:20:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/36b1V7G3c2gIvsXhhZpAXM=";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <87pmyxme2m.wl-maz@kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.187.224]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/36b1V7G3c2gIvsXhhZpAXM=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Marc,
 
-Hi all,
+On 2021/4/14 17:05, Marc Zyngier wrote:
+> + Santosh, who found some interesting bugs in that area before.
+> 
+> On Wed, 14 Apr 2021 07:51:09 +0100,
+> Keqian Zhu <zhukeqian1@huawei.com> wrote:
+>>
+>> The MMIO region of a device maybe huge (GB level), try to use
+>> block mapping in stage2 to speedup both map and unmap.
+>>
+>> Compared to normal memory mapping, we should consider two more
+>> points when try block mapping for MMIO region:
+>>
+>> 1. For normal memory mapping, the PA(host physical address) and
+>> HVA have same alignment within PUD_SIZE or PMD_SIZE when we use
+>> the HVA to request hugepage, so we don't need to consider PA
+>> alignment when verifing block mapping. But for device memory
+>> mapping, the PA and HVA may have different alignment.
+>>
+>> 2. For normal memory mapping, we are sure hugepage size properly
+>> fit into vma, so we don't check whether the mapping size exceeds
+>> the boundary of vma. But for device memory mapping, we should pay
+>> attention to this.
+>>
+>> This adds device_rough_page_shift() to check these two points when
+>> selecting block mapping size.
+>>
+>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+>> ---
+>>  arch/arm64/kvm/mmu.c | 37 +++++++++++++++++++++++++++++++++----
+>>  1 file changed, 33 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+>> index c59af5ca01b0..1a6d96169d60 100644
+>> --- a/arch/arm64/kvm/mmu.c
+>> +++ b/arch/arm64/kvm/mmu.c
+>> @@ -624,6 +624,31 @@ static void kvm_send_hwpoison_signal(unsigned long address, short lsb)
+>>  	send_sig_mceerr(BUS_MCEERR_AR, (void __user *)address, lsb, current);
+>>  }
+>>  
+>> +/*
+>> + * Find a max mapping size that properly insides the vma. And hva and pa must
+>> + * have the same alignment to this mapping size. It's rough as there are still
+>> + * other restrictions, will be checked by fault_supports_stage2_huge_mapping().
+>> + */
+>> +static short device_rough_page_shift(struct vm_area_struct *vma,
+>> +				     unsigned long hva)
+> 
+> My earlier question still stands. Under which circumstances would this
+> function return something that is *not* the final mapping size? I
+> really don't see a reason why this would not return the final mapping
+> size.
 
-Today's linux-next merge of the net-next tree got a conflict in:
+IIUC, all the restrictions are about alignment and area boundary.
 
-  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+That's to say, HVA, IPA and PA must have same alignment within the mapping size.
+And the areas are memslot and vma, which means the mapping size must properly fit
+into the memslot and vma.
 
-between commit:
+In this function, we just checked the alignment of HVA and PA, and the boundary of vma.
+So we still need to check the alignment of HVA and IPA, and the boundary of memslot.
+These will be checked by fault_supports_stage2_huge_mapping().
 
-  00423969d806 ("Revert "net: stmmac: re-init rx buffers when mac resume ba=
-ck"")
+> 
+>> +{
+>> +	phys_addr_t pa = (vma->vm_pgoff << PAGE_SHIFT) + (hva - vma->vm_start);
+>> +
+>> +#ifndef __PAGETABLE_PMD_FOLDED
+>> +	if ((hva & (PUD_SIZE - 1)) == (pa & (PUD_SIZE - 1)) &&
+>> +	    ALIGN_DOWN(hva, PUD_SIZE) >= vma->vm_start &&
+>> +	    ALIGN(hva, PUD_SIZE) <= vma->vm_end)
+>> +		return PUD_SHIFT;
+>> +#endif
+>> +
+>> +	if ((hva & (PMD_SIZE - 1)) == (pa & (PMD_SIZE - 1)) &&
+>> +	    ALIGN_DOWN(hva, PMD_SIZE) >= vma->vm_start &&
+>> +	    ALIGN(hva, PMD_SIZE) <= vma->vm_end)
+>> +		return PMD_SHIFT;
+>> +
+>> +	return PAGE_SHIFT;
+>> +}
+>> +
+>>  static bool fault_supports_stage2_huge_mapping(struct kvm_memory_slot *memslot,
+>>  					       unsigned long hva,
+>>  					       unsigned long map_size)
+>> @@ -769,7 +794,10 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>  		return -EFAULT;
+>>  	}
+>>  
+>> -	/* Let's check if we will get back a huge page backed by hugetlbfs */
+>> +	/*
+>> +	 * Let's check if we will get back a huge page backed by hugetlbfs, or
+>> +	 * get block mapping for device MMIO region.
+>> +	 */
+>>  	mmap_read_lock(current->mm);
+>>  	vma = find_vma_intersection(current->mm, hva, hva + 1);
+>>  	if (unlikely(!vma)) {
+>> @@ -780,11 +808,12 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>  
+>>  	if (is_vm_hugetlb_page(vma))
+>>  		vma_shift = huge_page_shift(hstate_vma(vma));
+>> +	else if (vma->vm_flags & VM_PFNMAP)
+>> +		vma_shift = device_rough_page_shift(vma, hva);
+> 
+> What prevents a VMA from having both VM_HUGETLB and VM_PFNMAP? This is
+> pretty unlikely, but I'd like to see this case catered for.
+> 
+I'm not sure whether VM_HUGETLB and VM_PFNMAP are compatible, and I failed to find a case.
 
-from the net tree and commits:
+VM_PFNMAP is used for page-ranges managed without "struct page", just pure PFN.
+IIUC, VM_HUGETLB is used for hugetlbfs, which always has "struct page".
+So I think they should not be compatible, otherwise it's a bug of driver.
 
-  bba2556efad6 ("net: stmmac: Enable RX via AF_XDP zero-copy")
-  de0b90e52a11 ("net: stmmac: rearrange RX and TX desc init into per-queue =
-basis")
+>>  	else
+>>  		vma_shift = PAGE_SHIFT;
+>>  
+>> -	if (logging_active ||
+>> -	    (vma->vm_flags & VM_PFNMAP)) {
+>> +	if (logging_active) {
+>>  		force_pte = true;
+>>  		vma_shift = PAGE_SHIFT;
+>>  	}
+>> @@ -855,7 +884,7 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>  
+>>  	if (kvm_is_device_pfn(pfn)) {
+>>  		device = true;
+>> -		force_pte = true;
+>> +		force_pte = (vma_pagesize == PAGE_SIZE);
+> 
+> Why do we need to set force_pte if we are already dealing with
+> PAGE_SIZE? I guess you are doing this for the sake of avoiding the
+> call to transparent_hugepage_adjust(), right?
+Yes.
 
-from the net-next tree.
+> 
+> I'd rather you simply don't try to upgrade a device mapping by
+> explicitly checking for this and keep force_pte for *memory*
+> exclusively.
+Agree, that's better.
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+> 
+> Santosh, can you please take a look at this series and try to see if
+> the problem you fixed in [1] (which ended up as commit 91a2c34b7d6f)
+> is still OK with this series?
+I searched the initial version[*], VM_PFNMAP is set when we call gfn_to_pfn_prot()->vma_mmio_fault()->remap_pfn_range().
+Then the check of VM_PFNMAP in user_mem_abort() failed, so we will try to call transparent_hugepage_adjust() for device pfn.
 
---=20
-Cheers,
-Stephen Rothwell
+In that case, our logic of trying block mapping for MMIO is not used. And we still set force_pte for device pfn, so
+this bugfix is not affected. Santosh, do you agree that?
 
-diff --cc drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 4749bd0af160,3a5ca5833ce1..000000000000
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@@ -1380,8 -1519,182 +1519,131 @@@ static void stmmac_free_tx_buffer(struc
-  }
- =20
-  /**
--  * init_dma_rx_desc_rings - init the RX descriptor rings
--  * @dev: net device structure
-+  * dma_free_rx_skbufs - free RX dma buffers
-+  * @priv: private structure
-+  * @queue: RX queue index
-+  */
-+ static void dma_free_rx_skbufs(struct stmmac_priv *priv, u32 queue)
-+ {
-+ 	int i;
-+=20
-+ 	for (i =3D 0; i < priv->dma_rx_size; i++)
-+ 		stmmac_free_rx_buffer(priv, queue, i);
-+ }
-+=20
-+ static int stmmac_alloc_rx_buffers(struct stmmac_priv *priv, u32 queue,
-+ 				   gfp_t flags)
-+ {
-+ 	struct stmmac_rx_queue *rx_q =3D &priv->rx_queue[queue];
-+ 	int i;
-+=20
-+ 	for (i =3D 0; i < priv->dma_rx_size; i++) {
-+ 		struct dma_desc *p;
-+ 		int ret;
-+=20
-+ 		if (priv->extend_desc)
-+ 			p =3D &((rx_q->dma_erx + i)->basic);
-+ 		else
-+ 			p =3D rx_q->dma_rx + i;
-+=20
-+ 		ret =3D stmmac_init_rx_buffers(priv, p, i, flags,
-+ 					     queue);
-+ 		if (ret)
-+ 			return ret;
-+=20
-+ 		rx_q->buf_alloc_num++;
-+ 	}
-+=20
-+ 	return 0;
-+ }
-+=20
-+ /**
-+  * dma_recycle_rx_skbufs - recycle RX dma buffers
-+  * @priv: private structure
-+  * @queue: RX queue index
-+  */
-+ static void dma_recycle_rx_skbufs(struct stmmac_priv *priv, u32 queue)
-+ {
-+ 	struct stmmac_rx_queue *rx_q =3D &priv->rx_queue[queue];
-+ 	int i;
-+=20
-+ 	for (i =3D 0; i < priv->dma_rx_size; i++) {
-+ 		struct stmmac_rx_buffer *buf =3D &rx_q->buf_pool[i];
-+=20
-+ 		if (buf->page) {
-+ 			page_pool_recycle_direct(rx_q->page_pool, buf->page);
-+ 			buf->page =3D NULL;
-+ 		}
-+=20
-+ 		if (priv->sph && buf->sec_page) {
-+ 			page_pool_recycle_direct(rx_q->page_pool, buf->sec_page);
-+ 			buf->sec_page =3D NULL;
-+ 		}
-+ 	}
-+ }
-+=20
-+ /**
-+  * dma_free_rx_xskbufs - free RX dma buffers from XSK pool
-+  * @priv: private structure
-+  * @queue: RX queue index
-+  */
-+ static void dma_free_rx_xskbufs(struct stmmac_priv *priv, u32 queue)
-+ {
-+ 	struct stmmac_rx_queue *rx_q =3D &priv->rx_queue[queue];
-+ 	int i;
-+=20
-+ 	for (i =3D 0; i < priv->dma_rx_size; i++) {
-+ 		struct stmmac_rx_buffer *buf =3D &rx_q->buf_pool[i];
-+=20
-+ 		if (!buf->xdp)
-+ 			continue;
-+=20
-+ 		xsk_buff_free(buf->xdp);
-+ 		buf->xdp =3D NULL;
-+ 	}
-+ }
-+=20
-+ static int stmmac_alloc_rx_buffers_zc(struct stmmac_priv *priv, u32 queue)
-+ {
-+ 	struct stmmac_rx_queue *rx_q =3D &priv->rx_queue[queue];
-+ 	int i;
-+=20
-+ 	for (i =3D 0; i < priv->dma_rx_size; i++) {
-+ 		struct stmmac_rx_buffer *buf;
-+ 		dma_addr_t dma_addr;
-+ 		struct dma_desc *p;
-+=20
-+ 		if (priv->extend_desc)
-+ 			p =3D (struct dma_desc *)(rx_q->dma_erx + i);
-+ 		else
-+ 			p =3D rx_q->dma_rx + i;
-+=20
-+ 		buf =3D &rx_q->buf_pool[i];
-+=20
-+ 		buf->xdp =3D xsk_buff_alloc(rx_q->xsk_pool);
-+ 		if (!buf->xdp)
-+ 			return -ENOMEM;
-+=20
-+ 		dma_addr =3D xsk_buff_xdp_get_dma(buf->xdp);
-+ 		stmmac_set_desc_addr(priv, p, dma_addr);
-+ 		rx_q->buf_alloc_num++;
-+ 	}
-+=20
-+ 	return 0;
-+ }
-+=20
- -/**
- - * stmmac_reinit_rx_buffers - reinit the RX descriptor buffer.
- - * @priv: driver private structure
- - * Description: this function is called to re-allocate a receive buffer, =
-perform
- - * the DMA mapping and init the descriptor.
- - */
- -static void stmmac_reinit_rx_buffers(struct stmmac_priv *priv)
- -{
- -	u32 rx_count =3D priv->plat->rx_queues_to_use;
- -	u32 queue;
- -
- -	for (queue =3D 0; queue < rx_count; queue++) {
- -		struct stmmac_rx_queue *rx_q =3D &priv->rx_queue[queue];
- -
- -		if (rx_q->xsk_pool)
- -			dma_free_rx_xskbufs(priv, queue);
- -		else
- -			dma_recycle_rx_skbufs(priv, queue);
- -
- -		rx_q->buf_alloc_num =3D 0;
- -	}
- -
- -	for (queue =3D 0; queue < rx_count; queue++) {
- -		struct stmmac_rx_queue *rx_q =3D &priv->rx_queue[queue];
- -		int ret;
- -
- -		if (rx_q->xsk_pool) {
- -			/* RX XDP ZC buffer pool may not be populated, e.g.
- -			 * xdpsock TX-only.
- -			 */
- -			stmmac_alloc_rx_buffers_zc(priv, queue);
- -		} else {
- -			ret =3D stmmac_alloc_rx_buffers(priv, queue, GFP_KERNEL);
- -			if (ret < 0)
- -				goto err_reinit_rx_buffers;
- -		}
- -	}
- -
- -	return;
- -
- -err_reinit_rx_buffers:
- -	while (queue >=3D 0) {
- -		dma_free_rx_skbufs(priv, queue);
- -
- -		if (queue =3D=3D 0)
- -			break;
- -
- -		queue--;
- -	}
- -}
- -
-+ static struct xsk_buff_pool *stmmac_get_xsk_pool(struct stmmac_priv *priv=
-, u32 queue)
-+ {
-+ 	if (!stmmac_xdp_is_enabled(priv) || !test_bit(queue, priv->af_xdp_zc_qps=
-))
-+ 		return NULL;
-+=20
-+ 	return xsk_get_pool_from_qid(priv->dev, queue);
-+ }
-+=20
-+ /**
-+  * __init_dma_rx_desc_rings - init the RX descriptor ring (per queue)
-+  * @priv: driver private structure
-+  * @queue: RX queue index
-   * @flags: gfp flag.
-   * Description: this function initializes the DMA RX descriptors
-   * and allocates the socket buffers. It supports the chained and ring
+I still found that the reason vfio_pci does not have this bug. vfio_pci set VM_PFNMAP for vma when userspace calls mmap().
+I will apply this logic for vfio_mdev too, let's see what vfio maintainer think about it.
 
---Sig_/36b1V7G3c2gIvsXhhZpAXM=
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Keqian.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB3oikACgkQAVBC80lX
-0GyDJwf+KVq1amHrqU9tXwJfJuPPV9y7YPJwyvgBfYi8HWEXLL2coLsHMfdGsSg8
-GS4KJJWIuMXu1ccZkE6pvm4y3K+CZIdIpGST1RNISvx8sJ50/c1xinkCXvE3oTer
-KlLtryKxGkHwQwCDKK95kkMjSxCWsLqGcQYOT9A4yycVETuhP3NMFwt4QnwjToT4
-UPu1R2/lTYcCbOnbJycN9xGWM3l6J1SjDm3mhi6l4yKWbZjNPpW4P842HJFjmNQH
-r1YyCucl8Omxi2spwoWocbd9wm8kG+c7LM/daiOhkMG1mDBXpAXxkfv/lFVx9xBf
-rlMM6XnJaEPDqPllttaxKn0VZC615Q==
-=cyCm
------END PGP SIGNATURE-----
+[*] https://lore.kernel.org/kvmarm/1603297010-18787-1-git-send-email-sashukla@nvidia.com/
 
---Sig_/36b1V7G3c2gIvsXhhZpAXM=--
+> 
+>>  	} else if (logging_active && !write_fault) {
+>>  		/*
+>>  		 * Only actually map the page as writable if this was a write
+> 
+> Thanks,
+> 
+> 	M.
+> 
+> [1] https://lore.kernel.org/kvmarm/1603711447-11998-1-git-send-email-sashukla@nvidia.com/
+> 
