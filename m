@@ -2,267 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA8536018B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 07:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E3036018E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 07:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbhDOFV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 01:21:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbhDOFVw (ORCPT
+        id S230027AbhDOFXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 01:23:33 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8144 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229503AbhDOFXc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 01:21:52 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64B71C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 22:21:27 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id mh2so13339422ejb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 22:21:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yfHpVPgTxoCb2Y8HlsquPo4Y9DrlaYo1kZmF94VXk9g=;
-        b=LXXLMqN91EHunpLCu7HVsmlVUG/34MyNVDrXjCBRS9736Y2tjgx8x5winXvUs+zXj3
-         rwJ2uqJvK+Ob9ZnzAq6SV8qDx560IxhxYHiKKDTjSCc3HhCjcN06qslXMvmQviI9D39N
-         gzmgaCj3t58bChjcG6ShEnLdx9HdOE7gzP8smWqB08wTMDb1tokv7X41knp4J6lxAD1q
-         lTsSC2ry2mqH679hBxf+j+QML696u6DHJQvTYAP5DUsW4HeR7hBbdPePcYsnw9SJn8CU
-         Fd3XWLdEtnwU8nuPNXFOlApKcKsPG2hhNPfLIqc3yJXU/guySXKE4vlF7vRSJ1aR18Jz
-         M8cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yfHpVPgTxoCb2Y8HlsquPo4Y9DrlaYo1kZmF94VXk9g=;
-        b=Sa9QuAbmMjQQvkESxtP975sfajNQXZwevI19yUTCJtJw/gRxcqc5gqh5vuoiEhlLBn
-         60yKaPdVBvggUZFaESjy4xleRz7iVYt+98ncD2JUfhoe/V472TyDySbZoIDKZHuJZhx+
-         /m9TicJd3R5xjfWIgLxoStlBJMDRs/KwWXlV9l0Y4US61k1EujFI/Wp7yllMAc3fO9wH
-         zozBiFfqtNAFJNNPTW3iGomVAw3LxzTl/2I/9bQdxHVuSxjXnKtYK5H6N/eZIdck1fJC
-         hXrwn/dnCZ5cXH+zbAQXQywUv4v/JSni8M5RTF01qWlvQPcI8akcUfxZjo2Wk+vI0u7l
-         H4Rg==
-X-Gm-Message-State: AOAM531nDK67S6uUrO3q3n6fJK1/39lCELLFxBOn8NQx7a0MMIrBBZKX
-        Qy0Fp2AYyUzlzS/H1cdT3TTKvhEST0WcqKlh8ZIQow==
-X-Google-Smtp-Source: ABdhPJwBKg5W4y/Mf5LNN3YaLgfsq6e9XlkPVLczLmK+QZIR3hWfVS2xvwGTnxXu7rmqfj/yjLTszCzhcNe5KyBvip4=
-X-Received: by 2002:a17:906:ef2:: with SMTP id x18mr1581794eji.323.1618464085912;
- Wed, 14 Apr 2021 22:21:25 -0700 (PDT)
+        Thu, 15 Apr 2021 01:23:32 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13F53rqY017029;
+        Thu, 15 Apr 2021 01:23:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=0vL+SibpJZmJKZgwclAmBc+Aze2bFJYtbWw6ho9z928=;
+ b=maU88t2K+SGqVa80jXuCdBcZQDBL5Hza8Sof/crQZkKCVuJBUUP4LuCJxYyc1yo0uZ9O
+ oXc3EfTJOUpVv8IKSYHUPi+CxLFMEAL6eoVN964vYNJbFhMzML3fREI+ZYX1eONZlWKK
+ p2ErVjoBHGkoPln6jil61EVFcQnCCkkSdXJqazU/qbDYUtADJTx/ZHS1PhbtghT/kiiN
+ bUGyAR2Rzptpggx28iCekJu+qMzK+O2Mhn9l7WBVAdzLsH+cPI2Y0OW9MN/YAB9tUeIj
+ TmjM3zGkPF8fqheakQ963l3mm/nj9w9bD8UfiWCdUoekmMbnsDX/ZQ8uK7oJl2ni7Dqn ZA== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37x46xeuf2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Apr 2021 01:23:08 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13F5MmXC008898;
+        Thu, 15 Apr 2021 05:23:06 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04ams.nl.ibm.com with ESMTP id 37u3n8unq0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Apr 2021 05:23:06 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13F5N4V534603470
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 15 Apr 2021 05:23:04 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0F3EEA405B;
+        Thu, 15 Apr 2021 05:23:04 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D8A66A4054;
+        Thu, 15 Apr 2021 05:23:02 +0000 (GMT)
+Received: from in.ibm.com (unknown [9.77.201.251])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu, 15 Apr 2021 05:23:02 +0000 (GMT)
+Date:   Thu, 15 Apr 2021 10:53:00 +0530
+From:   Bharata B Rao <bharata@linux.ibm.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        aneesh.kumar@linux.ibm.com
+Subject: Re: High kmalloc-32 slab cache consumption with 10k containers
+Message-ID: <20210415052300.GA1662898@in.ibm.com>
+Reply-To: bharata@linux.ibm.com
+References: <20210405054848.GA1077931@in.ibm.com>
+ <20210406222807.GD1990290@dread.disaster.area>
 MIME-Version: 1.0
-References: <CAPcyv4hAc=DERr1z8kr=V01+NSi74f-kSfMAdeArLmVb112_Dw@mail.gmail.com>
- <20210414011448.GA2266325@bjorn-Precision-5520>
-In-Reply-To: <20210414011448.GA2266325@bjorn-Precision-5520>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 14 Apr 2021 22:21:14 -0700
-Message-ID: <CAPcyv4iu8D-hJoujLXw8a4myS7trOE1FcUhESLB_imGMECVfrg@mail.gmail.com>
-Subject: Re: [PATCH v2 7/8] cxl/port: Introduce cxl_port objects
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-cxl@vger.kernel.org, Linux PCI <linux-pci@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        "Schofield, Alison" <alison.schofield@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406222807.GD1990290@dread.disaster.area>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: sQ40t9LBvydUq8wKOEBfTpBqMTdpwFQs
+X-Proofpoint-ORIG-GUID: sQ40t9LBvydUq8wKOEBfTpBqMTdpwFQs
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-15_02:2021-04-15,2021-04-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 mlxscore=0 impostorscore=0 adultscore=0 clxscore=1015
+ lowpriorityscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104150034
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 6:15 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> On Thu, Apr 08, 2021 at 07:13:38PM -0700, Dan Williams wrote:
-> > Hi Bjorn, thanks for taking a look.
-> >
-> > On Thu, Apr 8, 2021 at 3:42 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > >
-> > > [+cc Greg, Rafael, Matthew: device model questions]
-> > >
-> > > Hi Dan,
-> > >
-> > > On Thu, Apr 01, 2021 at 07:31:20AM -0700, Dan Williams wrote:
-> > > > Once the cxl_root is established then other ports in the hierarchy can
-> > > > be attached. The cxl_port object, unlike cxl_root that is associated
-> > > > with host bridges, is associated with PCIE Root Ports or PCIE Switch
-> > > > Ports. Add cxl_port instances for all PCIE Root Ports in an ACPI0016
-> > > > host bridge.
->
-> Incidentally, "PCIe" is the abbreviation used in the PCIe specs, so I
-> try to use that instead of "PCIE" in drivers/pci/.
+On Wed, Apr 07, 2021 at 08:28:07AM +1000, Dave Chinner wrote:
+> 
+> Another approach may be to identify filesystem types that do not
+> need memcg awareness and feed that into alloc_super() to set/clear
+> the SHRINKER_MEMCG_AWARE flag. This could be based on fstype - most
+> virtual filesystems that expose system information do not really
+> need full memcg awareness because they are generally only visible to
+> a single memcg instance...
 
-Noted.
+Would something like below be appropriate?
 
->
-> > > I'm not a device model expert, but I'm not sure about adding a new
-> > > /sys/bus/cxl/devices hierarchy.  I'm under the impression that CXL
-> > > devices will be enumerated by the PCI core as PCIe devices.
-> >
-> > Yes, PCIe is involved, but mostly only for the CXL.io slow path
-> > (configuration and provisioning via mailbox) when we're talking about
-> > memory expander devices (CXL calls these Type-3). So-called "Type-3"
-> > support is the primary driver of this infrastructure.
-> >
-> > You might be thinking of CXL accelerator devices that will look like
-> > plain PCIe devices that happen to participate in the CPU cache
-> > hierarchy (CXL calls these Type-1). There will also be accelerator
-> > devices that want to share coherent memory with the system (CXL calls
-> > these Type-2).
->
-> IIUC all these CXL devices will be enumerated by the PCI core.  They
-> seem to have regular PCI BARs (separate from the HDM stuff), so the
-> PCI core will presumably manage address allocation for them.  It looks
-> like Function Level Reset and hotplug are supposed to use the regular
-> PCIe code.  I guess this will all be visible via lspci just like
-> regular PCI devices, right?
+From f314083ad69fde2a420a1b74febd6d3f7a25085f Mon Sep 17 00:00:00 2001
+From: Bharata B Rao <bharata@linux.ibm.com>
+Date: Wed, 14 Apr 2021 11:21:24 +0530
+Subject: [PATCH 1/1] fs: Let filesystems opt out of memcg awareness
 
-Yes. the CXL.io protocol is synonymous with PCIe. Hotplug is native
-PCIe hotplug to negotiate getting the card online and offline.
-Although, for offline an additional constraint is to deny removal
-whenever the card has active pages in the page allocator. Similar to
-what happens today for ACPI memory hotplug where the OS can say "nope,
-there's still active pages in the range you asked to eject".
+All filesystem mounts by default are memcg aware and end hence
+end up creating shrinker list_lrus for all the memcgs. Due to
+the way the memcg_nr_cache_ids grow and the list_lru heads are
+allocated for all memcgs, huge amount of memory gets consumed
+by kmalloc-32 slab cache when running thousands of containers.
 
-FLR has no effect on CXL.cache or CXL.mem state, only CXL.io.
+Improve this situation by allowing filesystems to opt out
+of memcg awareness. In this patch, tmpfs, proc and ramfs
+opt out of memcg awareness. This leads to considerable memory
+savings when running 10k containers.
 
-> > The infrastructure being proposed here is primarily for the memory
-> > expander (Type-3) device case where the PCI sysfs hierarchy is wholly
-> > unsuited for modeling it. A single CXL memory region device may span
-> > multiple endpoints, switches, and host bridges. It poses similar
-> > stress to an OS device model as RAID where there is a driver for the
-> > component contributors to an upper level device / driver that exposes
-> > the RAID Volume (CXL memory region interleave set). The CXL memory
-> > decode space (HDM: Host Managed Device Memory) is independent of the
-> > PCIe MMIO BAR space.
->
-> It looks like you add a cxl_port for each ACPI0016 device and every
-> PCIe Root Port below it.  So I guess the upper level spanning is at a
-> higher level than cxl_port?
+Signed-off-by: Bharata B Rao <bharata@linux.ibm.com>
+---
+ fs/proc/root.c             |  1 +
+ fs/ramfs/inode.c           |  1 +
+ fs/super.c                 | 27 +++++++++++++++++++--------
+ include/linux/fs_context.h |  2 ++
+ mm/shmem.c                 |  1 +
+ 5 files changed, 24 insertions(+), 8 deletions(-)
 
-A memory interleave can span any level of the hierarchy. It can be
-across host bridges at the top level, but also incorporate a leaf
-device at the bottom of a CXL switch hierarchy. There will be a
-cxl_port instance for each side of each link.
+diff --git a/fs/proc/root.c b/fs/proc/root.c
+index c7e3b1350ef8..7856bc2ca9f4 100644
+--- a/fs/proc/root.c
++++ b/fs/proc/root.c
+@@ -257,6 +257,7 @@ static int proc_init_fs_context(struct fs_context *fc)
+ 	fc->user_ns = get_user_ns(ctx->pid_ns->user_ns);
+ 	fc->fs_private = ctx;
+ 	fc->ops = &proc_fs_context_ops;
++	fc->memcg_optout = true;
+ 	return 0;
+ }
+ 
+diff --git a/fs/ramfs/inode.c b/fs/ramfs/inode.c
+index 9ebd17d7befb..576a88bb7407 100644
+--- a/fs/ramfs/inode.c
++++ b/fs/ramfs/inode.c
+@@ -278,6 +278,7 @@ int ramfs_init_fs_context(struct fs_context *fc)
+ 	fsi->mount_opts.mode = RAMFS_DEFAULT_MODE;
+ 	fc->s_fs_info = fsi;
+ 	fc->ops = &ramfs_context_ops;
++	fc->memcg_optout = true;
+ 	return 0;
+ }
+ 
+diff --git a/fs/super.c b/fs/super.c
+index 8c1baca35c16..59aa22c678e6 100644
+--- a/fs/super.c
++++ b/fs/super.c
+@@ -198,7 +198,8 @@ static void destroy_unused_super(struct super_block *s)
+  *	returns a pointer new superblock or %NULL if allocation had failed.
+  */
+ static struct super_block *alloc_super(struct file_system_type *type, int flags,
+-				       struct user_namespace *user_ns)
++				       struct user_namespace *user_ns,
++				       bool memcg_optout)
+ {
+ 	struct super_block *s = kzalloc(sizeof(struct super_block),  GFP_USER);
+ 	static const struct super_operations default_op;
+@@ -266,13 +267,22 @@ static struct super_block *alloc_super(struct file_system_type *type, int flags,
+ 	s->s_shrink.scan_objects = super_cache_scan;
+ 	s->s_shrink.count_objects = super_cache_count;
+ 	s->s_shrink.batch = 1024;
+-	s->s_shrink.flags = SHRINKER_NUMA_AWARE | SHRINKER_MEMCG_AWARE;
++	s->s_shrink.flags = SHRINKER_NUMA_AWARE;
++	if (!memcg_optout)
++		s->s_shrink.flags |= SHRINKER_MEMCG_AWARE;
+ 	if (prealloc_shrinker(&s->s_shrink))
+ 		goto fail;
+-	if (list_lru_init_memcg(&s->s_dentry_lru, &s->s_shrink))
+-		goto fail;
+-	if (list_lru_init_memcg(&s->s_inode_lru, &s->s_shrink))
+-		goto fail;
++	if (memcg_optout) {
++		if (list_lru_init(&s->s_dentry_lru))
++			goto fail;
++		if (list_lru_init(&s->s_inode_lru))
++			goto fail;
++	} else {
++		if (list_lru_init_memcg(&s->s_dentry_lru, &s->s_shrink))
++			goto fail;
++		if (list_lru_init_memcg(&s->s_inode_lru, &s->s_shrink))
++			goto fail;
++	}
+ 	return s;
+ 
+ fail:
+@@ -527,7 +537,8 @@ struct super_block *sget_fc(struct fs_context *fc,
+ 	}
+ 	if (!s) {
+ 		spin_unlock(&sb_lock);
+-		s = alloc_super(fc->fs_type, fc->sb_flags, user_ns);
++		s = alloc_super(fc->fs_type, fc->sb_flags, user_ns,
++				fc->memcg_optout);
+ 		if (!s)
+ 			return ERR_PTR(-ENOMEM);
+ 		goto retry;
+@@ -610,7 +621,7 @@ struct super_block *sget(struct file_system_type *type,
+ 	}
+ 	if (!s) {
+ 		spin_unlock(&sb_lock);
+-		s = alloc_super(type, (flags & ~SB_SUBMOUNT), user_ns);
++		s = alloc_super(type, (flags & ~SB_SUBMOUNT), user_ns, false);
+ 		if (!s)
+ 			return ERR_PTR(-ENOMEM);
+ 		goto retry;
+diff --git a/include/linux/fs_context.h b/include/linux/fs_context.h
+index 37e1e8f7f08d..73388c0b6950 100644
+--- a/include/linux/fs_context.h
++++ b/include/linux/fs_context.h
+@@ -110,6 +110,8 @@ struct fs_context {
+ 	bool			need_free:1;	/* Need to call ops->free() */
+ 	bool			global:1;	/* Goes into &init_user_ns */
+ 	bool			oldapi:1;	/* Coming from mount(2) */
++	bool			memcg_optout:1;	/* Opt out from per-memcg
++						   lru handling */
+ };
+ 
+ struct fs_context_operations {
+diff --git a/mm/shmem.c b/mm/shmem.c
+index b2db4ed0fbc7..0c9b2af52825 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -3915,6 +3915,7 @@ int shmem_init_fs_context(struct fs_context *fc)
+ 
+ 	fc->fs_private = ctx;
+ 	fc->ops = &shmem_fs_context_ops;
++	fc->memcg_optout = true;
+ 	return 0;
+ }
+ 
+-- 
+2.26.2
 
-> > That's where the /sys/bus/cxl hierarchy is needed, to manage the HDM
-> > space across the CXL topology in a way that is foreign to PCIE (HDM
-> > Decoder hierarchy).
->
-> When we do FLR on the PCIe device, what happens to these CXL clients?
-> Do they care?  Are they notified?  Do they need to do anything before
-> or after the FLR?
-
-Per CXL Spec:
-
-"FLR has no effect on the CXL.cache and CXL.mem protocol. Any
-CXL.cache and CXL.mem related control registers including CXL DVSEC
-structures and state held by the CXL device are not affected by FLR.
-The memory controller hosting the HDM is not reset by FLR."
-
-> What about hotplug?  Spec says it leverages PCIe hotplug, but it looks
-> like maybe this all requires ACPI hotplug (acpiphp) for adding
-> ACPI0017 devices and notifying of hot remove requests?  If it uses
-> PCIe native hotplug (pciehp), what connects the CXL side to the PCI
-> side?
-
-No ACPI hotplug is not involved. ACPI0017 is essentially just a dummy
-anchor device to hang the interleave set coordination. The connect
-from native hotplug to CXL is the cxl_mem driver. When that it detects
-a new device it walks the cxl_port hierarchy to see if one is a parent
-of this endpoint. Then it registers its HDM decoders with the CXL core
-and the CXL core can online it as a standalone interneleave set or
-consolidate it with others to make a wider set. For persistent memory
-there is on-device metadata to recall whether this device was part of
-a set previously. For volatile-only devices it would need to rely on
-some policy to decide if devices are immediately onlined standalone,
-or wait for an administrator to configure them.
-
-> I guess the HDM address space management is entirely outside the scope
-> of PCI -- the address space is not described by the CXL host bridge
-> _CRS and not described by CXL endpoint BARs?
-
-Correct.
-
-> Where *is* it described
-> and who manages and allocates it?
-
-ACPI0017 will communicate a set of address spaces that the CXL core
-can allocate interleave sets.
-
->  I guess any transaction routing
-> through the CXL fabric for HDM space is also completely outside the
-> scope of PCI -- we don't need to worry about managing PCI-to-PCI
-> bridge windows, for instance?
-
-Correct. For example a PCIe switch could disable all I/O space and
-Memory (MMIO) space, but still decode Host-managed Device Memory (HDM)
-space.
-
-> Is there a cxl_register_driver() or something?  I assume there will be
-> drivers that need to manage CXL devices?  Or will they use
-> pci_register_driver() and search for a CXL capability?
-
-A bit of both. The cxl_mem driver does pci_register_driver(), but for
-ports there will be a driver on the CXL bus for that component
-capability. Both endpoints and switches will produce cxl_port
-instances to be connected / driven by a core driver and coordinated
-with a root level driver for address space and interleave management.
-
-> > > Doesn't that mean we will have one struct device in the pci_dev,
-> > > and another one in the cxl_port?
-> >
-> > Yes, that is the proposal.
->
-> > The superfluous power/ issue can be cleaned up with
-> > device_set_pm_not_required().
->
-> Thanks, we might be able to use that for portdrv.  I added it to my
-> list to investigate.
->
-> > What are the other problems this poses, because in other areas this
-> > ability to subdivide a device's functionality into sub-drivers is a
-> > useful organization principle?
->
-> Well, I'm thinking about things like enumeration, hotplug, reset,
-> resource management (BARs, bridge windows, etc), interrupts, power
-> management (suspend, resume, etc), and error reporting.  These are all
-> things that PCIe defines on a per-Function basis and seem kind of hard
-> to cleanly subdivide.
-
-Right, I'm hoping like FLR there is little need to coordinate PCI /
-CXL.io operations with CXL.mem operations, or that once a PCI driver
-registers some CXL capabilities it never needs to look back. The only
-hook that violates this so far is NAKing device removal when CXL.mem
-for that device is busy.
-
-> > So much so that several device writer teams came together to create
-> > the auxiliary-bus for the purpose of allowing sub-drivers to be
-> > carved off for independent functionality similar to the portdrv
-> > organization.
->
-> Is "auxiliary-bus" a specific thing?  I'm not familiar with it but
-> again I'd like to read up on it in case it has ideas we could
-> leverage.
-
-auxiliary-bus is not a specific thing, it's a generic way for any
-driver to register a custom device for a sub-driver to drive. One of
-the primary examples are PCI Ethernet drivers exporting RDMA device
-interfaces for common RDMA functionality. So you could have multiple
-generations of Ethernet devices all producing a common RDMA interface
-and rather than have an equivalent RDMA driver per generation just
-create a shared common one that attaches to all the different baseline
-Ethernet implementations.
-
-See:
-
-Documentation/driver-api/auxiliary_bus.rst
-
-That document is still a bit too generic, and I have an item on my
-backlog to flesh it out with more practical guidelines.
-
-> Sub-drivers *is* an issue for PCI in general, although mostly I think
-> it tends to be historical devices where people made the design mistake
-> of putting several unrelated pieces of functionality in the same PCI
-> function, so I don't think PCI has good infrastructure for doing that.
-
-Auxiliary-bus might help especially if those unrelated pieces have
-been duplicated across multiple different device implementations.
-Aux-bus might clean up the driver model for those pieces.
