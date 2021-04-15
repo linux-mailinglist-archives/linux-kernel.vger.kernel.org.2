@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC84360E36
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47EB4360E55
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234550AbhDOPMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:12:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45924 "EHLO mail.kernel.org"
+        id S235221AbhDOPOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:14:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235384AbhDOPBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:01:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 388B06137D;
-        Thu, 15 Apr 2021 14:57:14 +0000 (UTC)
+        id S234355AbhDOPDH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:03:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA5C161422;
+        Thu, 15 Apr 2021 14:58:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498634;
-        bh=A+agapKun2YtQuk0lHEgnbTeI1CbbZ89Ds1z3HMaOKo=;
+        s=korg; t=1618498688;
+        bh=bqcHL98/5DIfVZ4OpfrnQ/Lr5T/8yN1YD9VjwhQTA2g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G+0q3PpRbwuPDL0OHOWfYEAnFQpbeBdwJJkkj8lh1pC6BPtJsqPd5o3wb3a9Aoc2C
-         QlsjypMlI/CNhO5/0fc3jwSB0LEX0T4z2GkbexAtJjhtw8WPOSK3rUndiHxf8nY3J4
-         ZWVYSXI9XxQtbxigaDE6R1KKUSEQlKVhRvP9RWzQ=
+        b=XoVSD67KEAoXbDedH7yJhdIo/TTpQ/VMms//i2yeKJiDT1+vNXFnnEpHxX9Na+g7z
+         rRWbcfcq8od5Phtk2WC5EtuPomV/zPA5Gg0Uq+vrhUtw01BlpHTCE28sbPRmagcwAT
+         5dVel4fciU6l3NLCrfUns5wENb69cbhEylzY4RnU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Chris von Recklinghausen <crecklin@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Jia-Ju Bai <baijiaju1990@gmail.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 14/25] radix tree test suite: Register the main thread with the RCU library
+Subject: [PATCH 5.11 01/23] interconnect: core: fix error return code of icc_link_destroy()
 Date:   Thu, 15 Apr 2021 16:48:08 +0200
-Message-Id: <20210415144413.611898500@linuxfoundation.org>
+Message-Id: <20210415144413.195653860@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.165663182@linuxfoundation.org>
-References: <20210415144413.165663182@linuxfoundation.org>
+In-Reply-To: <20210415144413.146131392@linuxfoundation.org>
+References: <20210415144413.146131392@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,75 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox (Oracle) <willy@infradead.org>
+From: Jia-Ju Bai <baijiaju1990@gmail.com>
 
-[ Upstream commit 1bb4bd266cf39fd2fa711f2d265c558b92df1119 ]
+[ Upstream commit 715ea61532e731c62392221238906704e63d75b6 ]
 
-Several test runners register individual worker threads with the
-RCU library, but neglect to register the main thread, which can lead
-to objects being freed while the main thread is in what appears to be
-an RCU critical section.
+When krealloc() fails and new is NULL, no error return code of
+icc_link_destroy() is assigned.
+To fix this bug, ret is assigned with -ENOMEM hen new is NULL.
 
-Reported-by: Chris von Recklinghausen <crecklin@redhat.com>
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+Link: https://lore.kernel.org/r/20210306132857.17020-1-baijiaju1990@gmail.com
+Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/radix-tree/idr-test.c   | 2 ++
- tools/testing/radix-tree/multiorder.c | 2 ++
- tools/testing/radix-tree/xarray.c     | 2 ++
- 3 files changed, 6 insertions(+)
+ drivers/interconnect/core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/testing/radix-tree/idr-test.c b/tools/testing/radix-tree/idr-test.c
-index 3b796dd5e577..44ceff95a9b3 100644
---- a/tools/testing/radix-tree/idr-test.c
-+++ b/tools/testing/radix-tree/idr-test.c
-@@ -577,6 +577,7 @@ void ida_tests(void)
+diff --git a/drivers/interconnect/core.c b/drivers/interconnect/core.c
+index 5ad519c9f239..8a1e70e00876 100644
+--- a/drivers/interconnect/core.c
++++ b/drivers/interconnect/core.c
+@@ -942,6 +942,8 @@ int icc_link_destroy(struct icc_node *src, struct icc_node *dst)
+ 		       GFP_KERNEL);
+ 	if (new)
+ 		src->links = new;
++	else
++		ret = -ENOMEM;
  
- int __weak main(void)
- {
-+	rcu_register_thread();
- 	radix_tree_init();
- 	idr_checks();
- 	ida_tests();
-@@ -584,5 +585,6 @@ int __weak main(void)
- 	rcu_barrier();
- 	if (nr_allocated)
- 		printf("nr_allocated = %d\n", nr_allocated);
-+	rcu_unregister_thread();
- 	return 0;
- }
-diff --git a/tools/testing/radix-tree/multiorder.c b/tools/testing/radix-tree/multiorder.c
-index 9eae0fb5a67d..e00520cc6349 100644
---- a/tools/testing/radix-tree/multiorder.c
-+++ b/tools/testing/radix-tree/multiorder.c
-@@ -224,7 +224,9 @@ void multiorder_checks(void)
- 
- int __weak main(void)
- {
-+	rcu_register_thread();
- 	radix_tree_init();
- 	multiorder_checks();
-+	rcu_unregister_thread();
- 	return 0;
- }
-diff --git a/tools/testing/radix-tree/xarray.c b/tools/testing/radix-tree/xarray.c
-index e61e43efe463..f20e12cbbfd4 100644
---- a/tools/testing/radix-tree/xarray.c
-+++ b/tools/testing/radix-tree/xarray.c
-@@ -25,11 +25,13 @@ void xarray_tests(void)
- 
- int __weak main(void)
- {
-+	rcu_register_thread();
- 	radix_tree_init();
- 	xarray_tests();
- 	radix_tree_cpu_dead(1);
- 	rcu_barrier();
- 	if (nr_allocated)
- 		printf("nr_allocated = %d\n", nr_allocated);
-+	rcu_unregister_thread();
- 	return 0;
- }
+ out:
+ 	mutex_unlock(&icc_lock);
 -- 
 2.30.2
 
