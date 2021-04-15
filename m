@@ -2,94 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA1336033A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2843436033C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231366AbhDOHYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 03:24:14 -0400
-Received: from mga02.intel.com ([134.134.136.20]:35788 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231266AbhDOHYK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 03:24:10 -0400
-IronPort-SDR: 2Kg3w7YnkMxgZYvUKucTGMKGT2XDhBq/6VCOXvm7zt9XqVPjmIERt7+cWx2Nt/4N/4aJEllBnA
- gT3FUhxjs5sg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="181927914"
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="181927914"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 00:23:47 -0700
-IronPort-SDR: kfxF4FwPksoR+4MIAykhuN88Y7X4M9VqYkWzYl6gUP6laeWOL0/X6Ub9CNTU7b3oTZawHAtKwE
- nwx4MZjzznzA==
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="418647970"
-Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.254.209.173]) ([10.254.209.173])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 00:23:40 -0700
-Subject: Re: [PATCH 2/3] vDPA/ifcvf: enable Intel C5000X-PL virtio-block for
- vDPA
-To:     Jason Wang <jasowang@redhat.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>, mst@redhat.com,
-        lulu@redhat.com, leonro@nvidia.com
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210414091832.5132-1-lingshan.zhu@intel.com>
- <20210414091832.5132-3-lingshan.zhu@intel.com>
- <54839b05-78d2-8edf-317c-372f0ecda024@redhat.com>
- <1a1f9f50-dc92-ced3-759d-e600abca3138@linux.intel.com>
- <c90a923f-7c8d-9a32-ce14-2370f85f1ba4@redhat.com>
- <10700088-3358-739b-5770-612ab761598c@linux.intel.com>
- <d6b27f59-ff17-1d63-0065-fd03ee36cd2d@redhat.com>
-From:   Zhu Lingshan <lingshan.zhu@linux.intel.com>
-Message-ID: <af2bb5e6-e690-1aa6-4be3-75a18750aeb4@linux.intel.com>
-Date:   Thu, 15 Apr 2021 15:23:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S231258AbhDOHZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 03:25:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231215AbhDOHY6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 03:24:58 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BCBAC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 00:24:35 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id lt13so2747411pjb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 00:24:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=m8DeQWG9KEDynT5LsxE499wF6Jjldde7Gdw6tjI8mlU=;
+        b=eZ/SrbRyNsOdHBJv+PPQB5u0DBBBrqjDN9wB85pqiqZUYOSG2v6sExV769zTHLCsem
+         lh3U3u3Jt+WD1k3qPNE4v2In1evp5wMA6+m7o4ptPfyxyOBYnflaGZjxRBz+MgsOaFtS
+         Vd27V7jgcxdrkB8i1I2M9DWuqI5X4qm+X73vYQ3mx/LuUtmrRL5e3lcyKCCy7kvV3L4z
+         lM281T34X7neXewDXTqIsLHV4mCdG1IbpzGY4N0NAWinfwp7Xa6sCUDpXd4NjfqQ3K8F
+         htYHAq+SdRc8uGUx08wI0UnRwhvQNXJAcpS+8MOPpqKV1OKUYx7x3Gcd0q6l34tkyc8s
+         K+RA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=m8DeQWG9KEDynT5LsxE499wF6Jjldde7Gdw6tjI8mlU=;
+        b=tr22UTXGR7oPg9cOBTKGXNqujga5IcfcmM+l368wXqu4bSvIaov81+6HxVpkUAbH47
+         s5rwwxSREw9mstum6BdOU5k1O509OCkY4R1TWy1WRrllzb2+R5wZlbDdB9wJNfSG8yUM
+         dICiQHBmfHwqO2JVxRy9WJoA2oDEhXZuIesJ9thnjlGvmcTgW211sC3FTmo4mCOUm0II
+         4T96oYhbUanKFYUeyJ5JPlOBky71e3Df8ymp5gUKWaLjA1s+lIBMyOmJrSSoz2llXL7x
+         XMEtgKvnQpfz5vFdhoIhK6Z+Vyi9a0liFLg4YGFMGd2aqeyeY92g8j4LkHEeWNhA5HXB
+         3lKA==
+X-Gm-Message-State: AOAM532tNa2vcYcbT9X9LFRF8wV9+mgtLU7Lz56xJN9o44QIiwLXwLdQ
+        BqJed/MhWx8/ZqBxlcw7WXHkPg==
+X-Google-Smtp-Source: ABdhPJyTWNqs9DMkceI2bV/ilNrmZO65Qj9f980HcPSnamOeh+qG5A4tJDY1TZtsTUgIHcmNN9ZN1g==
+X-Received: by 2002:a17:902:7b92:b029:eb:6fc0:39e6 with SMTP id w18-20020a1709027b92b02900eb6fc039e6mr2439407pll.83.1618471474705;
+        Thu, 15 Apr 2021 00:24:34 -0700 (PDT)
+Received: from localhost ([136.185.154.93])
+        by smtp.gmail.com with ESMTPSA id i22sm1513886pgj.90.2021.04.15.00.24.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 00:24:33 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 12:54:31 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Wolfram Sang <wsa@kernel.org>, Jie Deng <jie.deng@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        conghui.chen@intel.com, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com,
+        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
+        Tali Perry <tali.perry1@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        yu1.wang@intel.com, shuo.a.liu@intel.com,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210415072431.apntpcwrk5hp6zg4@vireshk-i7>
+References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
+ <20210323072704.rgoelmq62fl2wjjf@vireshk-i7>
+ <a2994a8f-bbf9-b26f-a9d2-eb02df6623b8@intel.com>
+ <CAK8P3a3OBUZC2nxaQ2wyL9EeT3gzXUX9sfJ+ZJfJUiJK_3ZkrA@mail.gmail.com>
+ <20210415064538.a4vf7egk6l3u6zfz@vireshk-i7>
+ <b25d1f4e-f17f-8a14-e7e6-7577d25be877@intel.com>
+ <20210415072131.GA1006@kunai>
 MIME-Version: 1.0
-In-Reply-To: <d6b27f59-ff17-1d63-0065-fd03ee36cd2d@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210415072131.GA1006@kunai>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 15-04-21, 09:21, Wolfram Sang wrote:
+> 
+> > I didn't forget this. It is a very small change. I'm not sure if the
+> > maintainer Wolfram
+> > 
+> > has any comments so that I can address them together in one version.
+> 
+> Noted. I'll have a look in the next days.
 
+Now that we were able to catch you, I will use the opportunity to
+clarify the doubts I had.
 
-On 4/15/2021 3:17 PM, Jason Wang wrote:
->
-> 在 2021/4/15 下午2:41, Zhu Lingshan 写道:
->>>>>
->>>>> I think we've discussed this sometime in the past but what's the 
->>>>> reason for such whitelist consider there's already a 
->>>>> get_features() implemention?
->>>>>
->>>>> E.g Any reason to block VIRTIO_BLK_F_WRITE_ZEROS or 
->>>>> VIRTIO_F_RING_PACKED?
->>>>>
->>>>> Thanks
->>>> The reason is some feature bits are supported in the device but not 
->>>> supported by the driver, e.g, for virtio-net, mq & cq 
->>>> implementation is not ready in the driver.
->>>
->>>
->>> I understand the case of virtio-net but I wonder why we need this 
->>> for block where we don't vq cvq.
->>>
->>> Thanks
->> This is still a subset of the feature bits read from hardware, I 
->> leave it here to code consistently, and indicate what we support 
->> clearly.
->> Are you suggesting remove this feature bits list and just use what we 
->> read from hardware?
->>
->> Thansk 
->
->
-> Yes, please do that.
->
-> The whiltelist doesn't help in this case I think.
-OK, will remove this in V2
+- struct mutex lock in struct virtio_i2c, I don't think this is
+  required since the core takes care of locking in absence of this.
 
-Thanks
->
-> Thanks
+- Use of I2C_CLASS_DEPRECATED flag, I don't think it is required for
+  new drivers.
 
+:)
+
+-- 
+viresh
