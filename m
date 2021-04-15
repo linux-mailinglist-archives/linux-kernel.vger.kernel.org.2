@@ -2,66 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA2736034F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CACC436035F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231373AbhDOH3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 03:29:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46552 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231241AbhDOH3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 03:29:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5935611F1;
-        Thu, 15 Apr 2021 07:28:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618471729;
-        bh=8o7VZnjPkPwZMae4GI6SJw7WDLgUFYz+v82i4LP4MXg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gm1QWcAW5RPP1QCUSzZV5xqevFjbXGWqUseSn/tH9SGZqy/aWXZudTXoYYrZP6yYM
-         zAHTo2amU1xhcAgxWJSElIS8VyXe2kbI8K1uOXbnLHgiq0s+wHERKS8oojQVfB3vs2
-         PhviDKhPTSgppW1MpzPBYWWkrluk2MFt3AkY+9VI=
-Date:   Thu, 15 Apr 2021 09:28:46 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [Outreachy kernel] [PATCH v4] staging: rtl8723bs: Remove
- led_blink_hdl() and everything related
-Message-ID: <YHfrLoot3iJSpAHU@kroah.com>
-References: <20210415071731.25725-1-fmdefrancesco@gmail.com>
+        id S231416AbhDOHc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 03:32:27 -0400
+Received: from regular1.263xmail.com ([211.150.70.202]:33044 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231241AbhDOHcZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 03:32:25 -0400
+X-Greylist: delayed 419 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Apr 2021 03:32:25 EDT
+Received: from localhost (unknown [192.168.167.223])
+        by regular1.263xmail.com (Postfix) with ESMTP id 741F1705;
+        Thu, 15 Apr 2021 15:24:34 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from [172.16.12.120] (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P10011T140596022867712S1618471472993643_;
+        Thu, 15 Apr 2021 15:24:33 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <b802ba564036979c4ab26e08981c3180>
+X-RL-SENDER: kever.yang@rock-chips.com
+X-SENDER: yk@rock-chips.com
+X-LOGIN-NAME: kever.yang@rock-chips.com
+X-FST-TO: heiko@sntech.de
+X-RCPT-COUNT: 6
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Subject: Re: [RFC] ITS fails to allocate on rk3568/rk3566
+To:     Marc Zyngier <maz@kernel.org>, Peter Geis <pgwipeout@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>
+References: <CAMdYzYrQ5f-mv_VmTq_CRf9tR=j3mwRpKHNLmPFgCF9whsGFRw@mail.gmail.com>
+ <871rbeo7wf.wl-maz@kernel.org>
+ <CAMdYzYruPyiT89FrbJhuV=c36PyRwZ7sT45abnv8rTv85AKRow@mail.gmail.com>
+ <87y2dmmggt.wl-maz@kernel.org>
+ <CAMdYzYrNa_wJa9mvBkhDrvdNaDugR9Y=LEnbcVHxjxJS0UFcMg@mail.gmail.com>
+ <87tuoambdb.wl-maz@kernel.org>
+ <CAMdYzYo2+h+=39cw1t=11HUih-O+NUs4hhNaPbrU6si-AbqNiA@mail.gmail.com>
+ <871rbdt4tu.wl-maz@kernel.org>
+From:   Kever Yang <kever.yang@rock-chips.com>
+Message-ID: <678e9950-dd85-abb2-a104-07a4db1fad49@rock-chips.com>
+Date:   Thu, 15 Apr 2021 15:24:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210415071731.25725-1-fmdefrancesco@gmail.com>
+In-Reply-To: <871rbdt4tu.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 09:17:31AM +0200, Fabio M. De Francesco wrote:
-> Removed useless led_blink_hdl() prototype and definition.
-> Removed struct LedBlink_param. Removed LedBlink entries in
-> rtw_cmd_callback[] and in wlancmds[]. Everything related to LedBlink is
-> not anymore needed. Index of slots changed in arrays comments to reflect
-> current positions.
-> 
-> Reported-by: Julia Lawall <julia.lawall@inria.fr>
-> Reported-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-> Reported-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Suggested-by: Matthew Wilcox <willy@infradead.org>
-> Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> ---
-> 
-> Changes from v3: Merged the series into one single patch for avoiding
-> unnecessary intermediate stages.
+Hi Marc, Peter,
 
-Much better, thanks for sticking with this.  Now queued up, and I think
-this is going to be the last patch I take for 5.13-rc1.  The rest I'll
-store up for the next kernel release after that...
+     RK356x GIC has two issues:
 
-thanks,
+1. GIC only support 32bit address while rk356x supports 8GB DDR SDRAM, 
+so we use ZONE_DMA32 to fix this issue;
 
-greg k-h
+2. GIC version is r1p6-00rel0, RK356x interconnect does not support GIC 
+and CPU snoop to each other, hence the GIC does not support the 
+shareability feature.  The read of register value for shareability  
+feature does not return as expect in GICR and GITS, so we have to 
+workaround for it.
+
+Thanks,
+- Kever
+On 2021/4/14 下午8:42, Marc Zyngier wrote:
+> On Wed, 14 Apr 2021 12:41:20 +0100,
+> Peter Geis <pgwipeout@gmail.com> wrote:
+>> On Tue, Apr 13, 2021 at 11:51 AM Marc Zyngier <maz@kernel.org> wrote:
+>>> On Tue, 13 Apr 2021 16:03:51 +0100,
+>>> Peter Geis <pgwipeout@gmail.com> wrote:
+>>>> On Tue, Apr 13, 2021 at 10:01 AM Marc Zyngier <maz@kernel.org> wrote:
+>>> [...]
+>>>
+>>>>> What happens if you hack all the allocations to happen in the low 4GB
+>>>>> of the PA space?
+>>>> It seems to work correctly.
+>>>> The downstream hacks used GFP_DMA32 which gets discarded by
+>>>> kmalloc_fix_flags on certain allocations.
+>>>> Switching to GFP_DMA seems to have satisfied it, but it feels wrong
+>>>> using this code.
+>>>> Need to check the corner cases to make sure I'm not missing something.
+>>> The problem is that GFP_DMA doesn't always mean the same thing.
+>>> Overall, we need to hear from Rockchip about the exact nature of the
+>>> problem, and then we *may* be able to work something out.
+>>  From what I've read, GFP_DMA allocates as low as possible, while
+>> GFP_DMA32 ensures it's in the 32 bit address range, am I understanding
+>> this correctly?
+> ZONE_DMA{,32} aren't necessarily selected, and can vary in size (some
+> equally broken systems can only DMA over 30bits...).
+>
+>> Is there a reason GFP_DMA is permitted while GFP_DMA32 is not, aside
+>> from backwards compatibility?  (I saw the notes about how we aren't
+>> really supposed to rely on these flags)
+> They are completely independent, and they can either be selected or
+> not. And plenty of systems do not have any memory in the low
+> 4GB. FWIW, one of my main machines has its first byte of RAM at 1TB.
+>
+> Which means that supporting this system is going to require some very
+> specific handling.
+>
+>> I've also confirmed that their disabling shareability and caching is
+>> necessary.
+> Confirmed how? For which tables? We really cannot guess this kind of
+> thing.
+>
+>>> I'd also like to understand whether it is broken because you happen to
+>>> have pre-release silicon that will never make it into the wild, or if
+>>> this is the real thing that is going to ship on millions of devices.
+>> My understanding is these chips are samples prior to the full
+>> production run, but we are waiting on official comment from Rockchip
+>> about this particular errata.
+> OK. Please let me know once you get a full description of the problem
+> from Rockchip. We will also need an official erratum number for this
+> if this is to be worked around in mainline.
+>
+> 	M.
+>
+
+
