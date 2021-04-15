@@ -2,316 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F27233613AB
+	by mail.lfdr.de (Postfix) with ESMTP id A66A33613A9
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 22:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235568AbhDOUoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 16:44:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46552 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235215AbhDOUoM (ORCPT
+        id S234920AbhDOUoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 16:44:09 -0400
+Received: from sonic311-30.consmr.mail.ne1.yahoo.com ([66.163.188.211]:45316
+        "EHLO sonic311-30.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234863AbhDOUoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 16:44:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618519428;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GxEGQ6WbGdMLQ9XEOvu1wvt7ZSWG9pv/O+MOPHmN598=;
-        b=Aoc0mzWExDgGgGwAKQR4DmycdnOJFCsWKCg/sGT4ZuWRO3kk9Y4rYHX7Ohn0IyhDypjc5X
-        sLydrh7UGPGwCCk9Ifv7CvxuTbvc+6Af4DSuMLdf4oXUPtU1VXWBQ3zKloLOueUnkjcyZD
-        u5gFnrG03Bfoy7BxpDOdgkrSeq1m6E4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-388-TwEVkYgJMGuYe5r7s1L7zQ-1; Thu, 15 Apr 2021 16:43:44 -0400
-X-MC-Unique: TwEVkYgJMGuYe5r7s1L7zQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0DA4F1008060;
-        Thu, 15 Apr 2021 20:43:42 +0000 (UTC)
-Received: from redhat.com (ovpn-117-254.rdu2.redhat.com [10.10.117.254])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0B0A15D71F;
-        Thu, 15 Apr 2021 20:43:38 +0000 (UTC)
-Date:   Thu, 15 Apr 2021 14:43:38 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Keqian Zhu <zhukeqian1@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        "Cornelia Huck" <cohuck@redhat.com>,
-        Yi Sun <yi.y.sun@linux.intel.com>,
-        Tian Kevin <kevin.tian@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "Joerg Roedel" <joro@8bytes.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
-        <yuzenghui@huawei.com>, <lushenming@huawei.com>
-Subject: Re: [PATCH 3/3] vfio/iommu_type1: Add support for manual dirty log
- clear
-Message-ID: <20210415144338.54b90041@redhat.com>
-In-Reply-To: <20210413091445.7448-4-zhukeqian1@huawei.com>
-References: <20210413091445.7448-1-zhukeqian1@huawei.com>
-        <20210413091445.7448-4-zhukeqian1@huawei.com>
+        Thu, 15 Apr 2021 16:44:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1618519423; bh=OH1Jhs0M2/ItlhbCePyj39PnGsZxt1agi51Yp9IbQOo=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=n47CZzSk0xB4D0IyEuc2jqwlGkSzhurDTvrCf+crlC35LH4CidGr27PnpEe0hI5cLkU3zNV/FJhk0zlhqwDSt0ivdmRv1nd9IpL179mZeEkgwiWQNh+UuU+iRuxbu0XUASyznNqsoTCUSA7XXPRdFMHMkmaKX7V89PPTt4DO18QNdYnNhR0U7peoA+ZE+VdvjV1e3WUO/tHFmWevjq6OrvphcPWYy4EJ0an9xsAEJT3FPd/oMvGhSBaICaxEOo7TejFGMAO2DCFT5pSX5YUA3yCYUF3MgRgWXoGL8nQKwjVPlFPDy8QcuQ6xaJSyLknJ9ig39SOb3aZyx2rVCQVkeQ==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1618519423; bh=IhoHGDa3j8eUaBExOrjpmaTd8MMnyoYIi83N8UbxEJN=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=uPR5yWdYnxFxwLbwTk/rTccRneNwhzQDvmdpb9MvGLwjQEJVM6ZckpyAYoLP1B7+nKmalnBt+D8OHdQuTKO4hmQma+ivjWn0rfT8dfNjSFVeX4hofzwKjhEmqdpn3IQfvQwUrmpxROK/GOFupnAbYbHj3F5WBKrWKpQTZVptNH8Jt5HsK4DWFFOl9oimGM6qbgo6vp0LMQTU3i1u+rc7is/5vCA1xXqPiqn4zcP+Ymq04UZq5PBnvKHrpdQ/zLb4gEk9lktrMd9nTbU2VJl5RBVWWa6HjMWfqyatQEpboCe60EsnB8s8x6bN+ly3HnSg9JaozlfXHyv7PPBBdE0YPQ==
+X-YMail-OSG: _Gt41VkVM1lDOiACc1lPtTjRllzsdCj_Sx3RpJerxWh5vfLpkyDGBBtTY.mEmQl
+ de5CxsDUztJFZJ.A11Y5wK13oEknpZRb.BTbvDKl14Ilmvy7l2ERGlf_JWbAoyYoigFplhmfiMib
+ cQM5zVDjwWjvqKtP9ieZVtUFdEe4Brb7WEl4i0oQDcFr0teS0w1knWSi2yVFi5YOPAVSlkYI5Lhh
+ PJljkO6l4xxiI8BERCTdV5Q1hajnvvD4LLRS2yThBz5ptIFp.UeJgJKPhYe3ZEUqrVFZrf_oUq9F
+ JWwQAdnKf.pshfmJkDDUWtspI_RSn5PdFbAVuG7tc1WlmkKdr0ySSIhAYC7Gm9sfudrfpoCdVKqK
+ oER8.NPU..Bc.JxRNp1adwW1_b__6g06AAtUCtN88GYbe5cJ5JrYmWclDCMyMzUk2jOwXNcQ07Ji
+ dSv4450SC3oUUl4yGbeWDuHD72j.2YdhCexTwViVEnRqQqCwTQUUj2qEz.NnaN23EK3n0YyigZ8W
+ dXek4fUsGtO.OLqOZnJmPsE5wIcOyH6BPPPXx8SjmPf4Kce4.1AiLsaydHt0kAYnE4GoFMIHz5rf
+ _OAwibfrJROPIQeaUiuduQQ3um2vTWUyV1iz3ZUdSG_4zjhIjjASAcy1u4XWoC1G66m553.Za7XN
+ Y2w7ZDbXvMdcy4riaYqiayUaArCtc.FQS9xissMhRkL7r7sllucP1zabqKGyDd1TkaXHkZkjCaaH
+ 0LeFLjeLZHPDCvECLok92he5cvAXUrZGh.YLFPbRo5nN0vyeoh3AFjBWXSfqiSfIorRwgaG3xyOW
+ 3_tG8gysgwXCa.Krs2ByvMvXNaquOQEtD1FBrrxNta.0D8XJdhm1kxoak0OyhoZgJG3VCJDyVIki
+ aiCSokdvbIjd5buMV99Oc.vno.jQEVn6_GDcbGd.TYWDNzi4_WksjDSW5J6frRK8AJ0ZtyPRmemr
+ o..dRV.ZZCbDjHT6AMSaPxGoOQahePCqdq0Qnx9mRG.ntDcKz1xhn.UFkAK1.cSoIqLocjXZ3DDZ
+ RCWvdSHAFdybNo7jBwfpyIZK3gW7eZPLUhtbMIRh8UDE1fwxnHQgyCXO1uLPStzEf9B6Ulz4WI0w
+ AGS4eETtLOqez7yZFw2wc70BcbCVi9_9xCBCfETzB1zrxhX0OWFHZ4Yg30MULatZTbPd_XAB7vxk
+ XMgiLT_82tYgP.5aUaRQ9t4mH3plnp76KcqWBcltuaYEcfdRxhrLCBLxpNvLZpQjMKH0ZqEoQqTA
+ W5XVqB0PzhUZu4IoQORPV4IsvkqrQeCMgJ.ISjMTuj57lHRyrf.HlHo0bhuH4nhFixHve5HwyUUw
+ Bmxrxc3orQ7py4isLdNqFn6T3tM943xCFuHen7dA6i4hZD9p7bZOBUgSnRi4.zwFZ_DehKNVf.aC
+ cqWOoP5aJus_wp3eWs1IYFTcG7ZR_dJ2k5kRR38toSPrqWRXbkIkV7Hm80OZ7DFHCZRs7KEM86vw
+ TuExS40QDnAOQHJIPUkkFYm5QTpHTfSdQyHRWLCBD2kLwUhmE6.LRcN3NjYT7ggNDH.eDjWmnR0A
+ qq9HXNKrMmkpzCMPK.j4W1S2Us3381EmABaE_gIg6VYezgXcDI.QEBWcqKI2wN2dBSBiVzPGnPVk
+ 96G5FXA377UeXIeDbW31.c8hWCfFVxIYKzsMTvfx5e_F1mWJIdMNZHXWCMJ7BxCwwsgJ6nQyOLaj
+ aZZtS18Ixr6tthm02GoiA.fXt_A5RreHjRrcjDEKI10DrdNYZ4Tc4AGpn_XL0UjOJe9f3qrqIWi2
+ B1JopEGwTUoMJwKhTNC2OTt7C0VgOvkL4QjpmPvcnhrZMtNGRzZ6Fs6p_K3TUnreqGWJqkHOosKl
+ bt1h7iL0xhRBH1uQnAao8hq_1CohCQspYqeHbpj5TDYT0k_KCtTr1iZAU6LTCKRI1uLTmOtXA1wT
+ wVggC8f4jNiolbwVtGDNWiIBmsydMM7YQrDPHI2CL4xM4QslKx36ErlAKsnToxOR22btnmgi3YBn
+ 9bbqnJRdK5dvKaFfQntOhidP8WY5Xd4m6nqV.wFmMHGBAMS3bWZ_xpHDvYqq0Ac.YjAAZ7XqFYbb
+ LdpHvLIw7gDElo7W1kq1pHfx6TO_0HvLCESu3lJnhVAsuIOCZ_NtTSoGmme5536lN.DjkaV53sNd
+ T8TnyPkBMNUd.jtrDhgWjs83sbqjJHBiYIq2Hp_3zt5DTbjtglUHOYNv62SSjgRGfq9AS3O8rGg_
+ UcTkMLc13XPJErctmoQT78h53PiE7H0Dfq3oma1x6MgP6Wx55iRKXSDJHBSRnBCCqVlkPvzMbFIx
+ 6YpModXYQVdZ175qk7vxZx9dvOgU1tOuCCvMX0pz17r1aY4cwJ_lX1kFsBcTm.8G5AgxTPMWH.jK
+ rm8aEW.FH_C.f06KIM4TYXYFTWirJfHZeNIsyjWLqaTboiZxivW8PAgEJWYtGXAQdrHOr5tVqKub
+ QxJvoK5IGrLWTG1tEoAewKcOrXA4TvxxsepWaWct0f_lYWQXoVw36ivHWg_IznLLOzHgZItKTG2y
+ QJOrxClItkRAL5qb7C9KVJeHu8aeZulrjjOa1ehYTXK4XtgkHpb3EcAjCQXv3FW09VKrqQeOfl_q
+ w5PAFJ.HByifEjvBlnvCJtPzL.IA8Rc._ou8vFajrJK_nOHbBJUxtp7l_KgsW9O0oJhJfMSn_TC9
+ 61xt3Gorzf06mbverkTUZI_ojnEuTIsoCVCFr6mXjIgclGEfV3p8CaeU3x4TVtWwkX9lfrQZZWwg
+ 6iiEssDzI0mBtwTG2DYTIDCXwz83R.V94kIqlM2XXVhJk6XsV6AbBHOlEo6CFOJVHF81tKbrwI9z
+ r_cpSsABAM62lkKaQ5_5p6SpWi2x_LS14mdjGqI2_sN4E4I0uwk5OHQ8QyrVPn0_RLGFm1fOplGq
+ clyrkdKPEpG.m1U6CVjc.FmT_B9cjitIBaLQdjd7g_45twbOumiDDusgUfuobxSGwx0_OLsU6Bct
+ 7PUrs21JyHci_i5WwKWIcNI6PwmvAjc1aCrkiPSLDR7kx0mF3C0YzD8vfUhr6_u43SGmMFETQ7zJ
+ UKyeG2u3fM.B0B.Rsc9MIJdj1UhygW6e.4CUkVJlB9RM.P8CuJtPyu5p8dA1eSYZDf7YtFD6HVWs
+ ffHvdsVmujkFNYshfDrtdO6F4gVpje7PyikIX.UtXp54sheT8NYPQArQiaTvA7OsBzueq8u6bvXj
+ n
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.ne1.yahoo.com with HTTP; Thu, 15 Apr 2021 20:43:43 +0000
+Received: by kubenode508.mail-prod1.omega.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 6da80e5b1c1c674fe1c1f161bfcf6378;
+          Thu, 15 Apr 2021 20:43:41 +0000 (UTC)
+Subject: Re: [PATCH 0/5] evm: Prepare for moving to the LSM infrastructure
+To:     Roberto Sassu <roberto.sassu@huawei.com>, zohar@linux.ibm.com,
+        jmorris@namei.org, paul@paul-moore.com
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, selinux@vger.kernel.org,
+        reiserfs-devel@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>
+References: <20210415100435.18619-1-roberto.sassu@huawei.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <7659b8cf-71cc-33b5-dbf1-3eb1ff159fe6@schaufler-ca.com>
+Date:   Thu, 15 Apr 2021 13:43:39 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20210415100435.18619-1-roberto.sassu@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+X-Mailer: WebService/1.1.18121 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/16)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Apr 2021 17:14:45 +0800
-Keqian Zhu <zhukeqian1@huawei.com> wrote:
+On 4/15/2021 3:04 AM, Roberto Sassu wrote:
+> This patch set depends on:
+>
+> https://lore.kernel.org/linux-integrity/20210409114313.4073-1-roberto.s=
+assu@huawei.com/
+> https://lore.kernel.org/linux-integrity/20210407105252.30721-1-roberto.=
+sassu@huawei.com/
+>
+> One of the challenges that must be tackled to move IMA and EVM to the L=
+SM
+> infrastructure is to ensure that EVM is capable to correctly handle
+> multiple stacked LSMs providing an xattr at file creation. At the momen=
+t,
+> there are few issues that would prevent a correct integration. This pat=
+ch
+> set aims at solving them.
+>
+> From the LSM infrastructure side, the LSM stacking feature added the
+> possibility of registering multiple implementations of the security hoo=
+ks,
+> that are called sequentially whenever someone calls the corresponding
+> security hook. However, security_inode_init_security() and
+> security_old_inode_init_security() are currently limited to support one=
 
-> From: Kunkun Jiang <jiangkunkun@huawei.com>
-> 
-> In the past, we clear dirty log immediately after sync dirty
-> log to userspace. This may cause redundant dirty handling if
-> userspace handles dirty log iteratively:
-> 
-> After vfio clears dirty log, new dirty log starts to generate.
-> These new dirty log will be reported to userspace even if they
-> are generated before userspace handles the same dirty page.
-> 
-> That's to say, we should minimize the time gap of dirty log
-> clearing and dirty log handling. We can give userspace the
-> interface to clear dirty log.
+> xattr provided by LSM and one by EVM.
 
-IIUC, a user would be expected to clear the bitmap before copying the
-dirty pages, therefore you're trying to reduce that time gap between
-clearing any copy, but it cannot be fully eliminated and importantly,
-if the user clears after copying, they've introduced a race.  Correct?
+That is correct. At present the only two modules that provide extended
+attributes are SELinux and Smack. The LSM infrastructure requires more
+change, including change to security_inode_init_security(), before those
+modules can be used together.
 
-What results do you have to show that this is a worthwhile optimization?
+> In addition, using the call_int_hook() macro causes some issues. Accord=
+ing
+> to the documentation in include/linux/lsm_hooks.h, it is a legitimate c=
+ase
+> that an LSM returns -EOPNOTSUPP when it does not want to provide an xat=
+tr.
+> However, the loop defined in the macro would stop calling subsequent LS=
+Ms
+> if that happens. In the case of security_old_inode_init_security(), usi=
+ng
+> the macro would also cause a memory leak due to replacing the *value
+> pointer, if multiple LSMs provide an xattr.
 
-I really don't like the semantics that testing for an IOMMU capability
-enables it.  It needs to be explicitly controllable feature, which
-suggests to me that it might be a flag used in combination with _GET or
-a separate _GET_NOCLEAR operations.  Thanks,
+As there is no case where there will be multiple providers of hooks for
+inode_init_security this isn't an issue.
 
-Alex
+> From EVM side, the first operation to be done is to change the definiti=
+on
+> of evm_inode_init_security() to be compatible with the security hook
+> definition. Unfortunately, the current definition does not provide enou=
+gh
+> information for EVM, as it must have visibility of all xattrs provided =
+by
+> LSMs to correctly calculate the HMAC. This patch set changes the securi=
+ty
+> hook definition by adding the full array of xattr as a parameter.
 
+Why do you want to call evm_inode_init_security() as a regular LSM hook?
+Except for the names evm_inode_init_security() and selinux_inode_init_sec=
+urity()
+have nothing in common. They do very different things and require differe=
+nt
+data, as comes out in the patches.
 
-> Co-developed-by: Keqian Zhu <zhukeqian1@huawei.com>
-> Signed-off-by: Kunkun Jiang <jiangkunkun@huawei.com>
-> ---
->  drivers/vfio/vfio_iommu_type1.c | 100 ++++++++++++++++++++++++++++++--
->  include/uapi/linux/vfio.h       |  28 ++++++++-
->  2 files changed, 123 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index 77950e47f56f..d9c4a27b3c4e 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -78,6 +78,7 @@ struct vfio_iommu {
->  	bool			v2;
->  	bool			nesting;
->  	bool			dirty_page_tracking;
-> +	bool			dirty_log_manual_clear;
->  	bool			pinned_page_dirty_scope;
->  	bool			container_open;
->  };
-> @@ -1242,6 +1243,78 @@ static int vfio_iommu_dirty_log_sync(struct vfio_iommu *iommu,
->  	return ret;
->  }
->  
-> +static int vfio_iova_dirty_log_clear(u64 __user *bitmap,
-> +				     struct vfio_iommu *iommu,
-> +				     dma_addr_t iova, size_t size,
-> +				     size_t pgsize)
-> +{
-> +	struct vfio_dma *dma;
-> +	struct rb_node *n;
-> +	dma_addr_t start_iova, end_iova, riova;
-> +	unsigned long pgshift = __ffs(pgsize);
-> +	unsigned long bitmap_size;
-> +	unsigned long *bitmap_buffer = NULL;
-> +	bool clear_valid;
-> +	int rs, re, start, end, dma_offset;
-> +	int ret = 0;
-> +
-> +	bitmap_size = DIRTY_BITMAP_BYTES(size >> pgshift);
-> +	bitmap_buffer = kvmalloc(bitmap_size, GFP_KERNEL);
-> +	if (!bitmap_buffer) {
-> +		ret = -ENOMEM;
-> +		goto out;
-> +	}
-> +
-> +	if (copy_from_user(bitmap_buffer, bitmap, bitmap_size)) {
-> +		ret = -EFAULT;
-> +		goto out;
-> +	}
-> +
-> +	for (n = rb_first(&iommu->dma_list); n; n = rb_next(n)) {
-> +		dma = rb_entry(n, struct vfio_dma, node);
-> +		if (!dma->iommu_mapped)
-> +			continue;
-> +		if ((dma->iova + dma->size - 1) < iova)
-> +			continue;
-> +		if (dma->iova > iova + size - 1)
-> +			break;
-> +
-> +		start_iova = max(iova, dma->iova);
-> +		end_iova = min(iova + size, dma->iova + dma->size);
-> +
-> +		/* Similar logic as the tail of vfio_iova_dirty_bitmap */
-> +
-> +		clear_valid = false;
-> +		start = (start_iova - iova) >> pgshift;
-> +		end = (end_iova - iova) >> pgshift;
-> +		bitmap_for_each_set_region(bitmap_buffer, rs, re, start, end) {
-> +			clear_valid = true;
-> +			riova = iova + (rs << pgshift);
-> +			dma_offset = (riova - dma->iova) >> pgshift;
-> +			bitmap_clear(dma->bitmap, dma_offset, re - rs);
-> +		}
-> +
-> +		if (clear_valid)
-> +			vfio_dma_populate_bitmap(dma, pgsize);
-> +
-> +		if (clear_valid && !iommu->pinned_page_dirty_scope &&
-> +		    dma->iommu_mapped && !iommu->num_non_hwdbm_groups) {
-> +			ret = vfio_iommu_dirty_log_clear(iommu, start_iova,
-> +					end_iova - start_iova,	bitmap_buffer,
-> +					iova, pgshift);
-> +			if (ret) {
-> +				pr_warn("dma dirty log clear failed!\n");
-> +				goto out;
-> +			}
-> +		}
-> +
-> +	}
-> +
-> +out:
-> +	kfree(bitmap_buffer);
-> +	return ret;
-> +}
-> +
->  static int update_user_bitmap(u64 __user *bitmap, struct vfio_iommu *iommu,
->  			      struct vfio_dma *dma, dma_addr_t base_iova,
->  			      size_t pgsize)
-> @@ -1329,6 +1402,10 @@ static int vfio_iova_dirty_bitmap(u64 __user *bitmap, struct vfio_iommu *iommu,
->  		if (ret)
->  			return ret;
->  
-> +		/* Do not clear dirty automatically when manual_clear enabled */
-> +		if (iommu->dirty_log_manual_clear)
-> +			continue;
-> +
->  		/* Clear iommu dirty log to re-enable dirty log tracking */
->  		if (iommu->num_non_pinned_groups && dma->iommu_mapped &&
->  		    !iommu->num_non_hwdbm_groups) {
-> @@ -2946,6 +3023,11 @@ static int vfio_iommu_type1_check_extension(struct vfio_iommu *iommu,
->  		if (!iommu)
->  			return 0;
->  		return vfio_domains_have_iommu_cache(iommu);
-> +	case VFIO_DIRTY_LOG_MANUAL_CLEAR:
-> +		if (!iommu)
-> +			return 0;
-> +		iommu->dirty_log_manual_clear = true;
-> +		return 1;
->  	default:
->  		return 0;
->  	}
-> @@ -3201,7 +3283,8 @@ static int vfio_iommu_type1_dirty_pages(struct vfio_iommu *iommu,
->  	struct vfio_iommu_type1_dirty_bitmap dirty;
->  	uint32_t mask = VFIO_IOMMU_DIRTY_PAGES_FLAG_START |
->  			VFIO_IOMMU_DIRTY_PAGES_FLAG_STOP |
-> -			VFIO_IOMMU_DIRTY_PAGES_FLAG_GET_BITMAP;
-> +			VFIO_IOMMU_DIRTY_PAGES_FLAG_GET_BITMAP |
-> +			VFIO_IOMMU_DIRTY_PAGES_FLAG_CLEAR_BITMAP;
->  	unsigned long minsz;
->  	int ret = 0;
->  
-> @@ -3243,7 +3326,8 @@ static int vfio_iommu_type1_dirty_pages(struct vfio_iommu *iommu,
->  		}
->  		mutex_unlock(&iommu->lock);
->  		return 0;
-> -	} else if (dirty.flags & VFIO_IOMMU_DIRTY_PAGES_FLAG_GET_BITMAP) {
-> +	} else if (dirty.flags & (VFIO_IOMMU_DIRTY_PAGES_FLAG_GET_BITMAP |
-> +				VFIO_IOMMU_DIRTY_PAGES_FLAG_CLEAR_BITMAP)) {
->  		struct vfio_iommu_type1_dirty_bitmap_get range;
->  		unsigned long pgshift;
->  		size_t data_size = dirty.argsz - minsz;
-> @@ -3286,13 +3370,21 @@ static int vfio_iommu_type1_dirty_pages(struct vfio_iommu *iommu,
->  			goto out_unlock;
->  		}
->  
-> -		if (iommu->dirty_page_tracking)
-> +		if (!iommu->dirty_page_tracking) {
-> +			ret = -EINVAL;
-> +			goto out_unlock;
-> +		}
-> +
-> +		if (dirty.flags & VFIO_IOMMU_DIRTY_PAGES_FLAG_GET_BITMAP)
->  			ret = vfio_iova_dirty_bitmap(range.bitmap.data,
->  						     iommu, range.iova,
->  						     range.size,
->  						     range.bitmap.pgsize);
->  		else
-> -			ret = -EINVAL;
-> +			ret = vfio_iova_dirty_log_clear(range.bitmap.data,
-> +							iommu, range.iova,
-> +							range.size,
-> +							range.bitmap.pgsize);
->  out_unlock:
->  		mutex_unlock(&iommu->lock);
->  
-> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> index 8ce36c1d53ca..784dc3cf2a8f 100644
-> --- a/include/uapi/linux/vfio.h
-> +++ b/include/uapi/linux/vfio.h
-> @@ -52,6 +52,14 @@
->  /* Supports the vaddr flag for DMA map and unmap */
->  #define VFIO_UPDATE_VADDR		10
->  
-> +/*
-> + * The vfio_iommu driver may support user clears dirty log manually, which means
-> + * dirty log is not cleared automatically after dirty log is copied to userspace,
-> + * it's user's duty to clear dirty log. Note: when user queries this extension
-> + * and vfio_iommu driver supports it, then it is enabled.
-> + */
-> +#define VFIO_DIRTY_LOG_MANUAL_CLEAR	11
-> +
->  /*
->   * The IOCTL interface is designed for extensibility by embedding the
->   * structure length (argsz) and flags into structures passed between
-> @@ -1188,7 +1196,24 @@ struct vfio_iommu_type1_dma_unmap {
->   * actual bitmap. If dirty pages logging is not enabled, an error will be
->   * returned.
->   *
-> - * Only one of the flags _START, _STOP and _GET may be specified at a time.
-> + * Calling the IOCTL with VFIO_IOMMU_DIRTY_PAGES_FLAG_CLEAR_BITMAP flag set,
-> + * instructs the IOMMU driver to clear the dirty status of pages in a bitmap
-> + * for IOMMU container for a given IOVA range. The user must specify the IOVA
-> + * range, the bitmap and the pgsize through the structure
-> + * vfio_iommu_type1_dirty_bitmap_get in the data[] portion. This interface
-> + * supports clearing a bitmap of the smallest supported pgsize only and can be
-> + * modified in future to clear a bitmap of any specified supported pgsize. The
-> + * user must provide a memory area for the bitmap memory and specify its size
-> + * in bitmap.size. One bit is used to represent one page consecutively starting
-> + * from iova offset. The user should provide page size in bitmap.pgsize field.
-> + * A bit set in the bitmap indicates that the page at that offset from iova is
-> + * cleared the dirty status, and dirty tracking is re-enabled for that page. The
-> + * caller must set argsz to a value including the size of structure
-> + * vfio_iommu_dirty_bitmap_get, but excluing the size of the actual bitmap. If
-> + * dirty pages logging is not enabled, an error will be returned.
-> + *
-> + * Only one of the flags _START, _STOP, _GET and _CLEAR may be specified at a
-> + * time.
->   *
->   */
->  struct vfio_iommu_type1_dirty_bitmap {
-> @@ -1197,6 +1222,7 @@ struct vfio_iommu_type1_dirty_bitmap {
->  #define VFIO_IOMMU_DIRTY_PAGES_FLAG_START	(1 << 0)
->  #define VFIO_IOMMU_DIRTY_PAGES_FLAG_STOP	(1 << 1)
->  #define VFIO_IOMMU_DIRTY_PAGES_FLAG_GET_BITMAP	(1 << 2)
-> +#define VFIO_IOMMU_DIRTY_PAGES_FLAG_CLEAR_BITMAP (1 << 3)
->  	__u8         data[];
->  };
->  
+There are evm functions that could be implemented as LSM hooks. I don't t=
+hink
+this is one of them. There's no point in going overboard.
+
+> Secondly, EVM must know how many elements are in the xattr array. It se=
+ems
+> that it is not necessary to add another parameter, as all filesystems t=
+hat
+> define an initxattr function, expect that the last element of the array=20
+is
+> one with the name field set to NULL. EVM reuses the same assumption.
+>
+> This patch set has been tested by introducing several instances of a
+> TestLSM (some providing an xattr, some not, one with a wrong implementa=
+tion
+> to see how the LSM infrastructure handles it). The patch is not include=
+d
+> in this set but it is available here:
+>
+> https://github.com/robertosassu/linux/commit/0370ff0fbc16e5d63489836a95=
+8e65d697f956db
+>
+> The test, added to ima-evm-utils, is available here:
+>
+> https://github.com/robertosassu/ima-evm-utils/blob/evm-multiple-lsms-v1=
+-devel-v1/tests/evm_multiple_lsms.test
+>
+> The test takes a UML kernel built by Travis and launches it several tim=
+es,
+> each time with a different combination of LSMs. After boot, it first ch=
+ecks
+> that there is an xattr for each LSM providing it, and then calculates t=
+he
+> HMAC in user space and compares it with the HMAC calculated by EVM in
+> kernel space.
+>
+> A test report can be obtained here:
+>
+> https://www.travis-ci.com/github/robertosassu/ima-evm-utils/jobs/498699=
+540
+>
+> Lastly, running the test on reiserfs to check
+> security_old_inode_init_security(), some issues have been discovered: a=
+
+> free of xattr->name which is not correct after commit 9548906b2bb7 ('xa=
+ttr:
+> Constify ->name member of "struct xattr"'), and a misalignment with
+> security_inode_init_security() (the old version expects the full xattr =
+name
+> with the security. prefix, the new version just the suffix). The last i=
+ssue
+> has not been fixed yet.
+>
+> Roberto Sassu (5):
+>   xattr: Complete constify ->name member of "struct xattr"
+>   security: Support multiple LSMs implementing the inode_init_security
+>     hook
+>   security: Pass xattrs allocated by LSMs to the inode_init_security
+>     hook
+>   evm: Align evm_inode_init_security() definition with LSM
+>     infrastructure
+>   evm: Support multiple LSMs providing an xattr
+>
+>  fs/reiserfs/xattr_security.c        |  2 -
+>  include/linux/evm.h                 | 21 ++++---
+>  include/linux/lsm_hook_defs.h       |  2 +-
+>  include/linux/lsm_hooks.h           |  5 +-
+>  security/integrity/evm/evm.h        |  2 +
+>  security/integrity/evm/evm_crypto.c |  9 ++-
+>  security/integrity/evm/evm_main.c   | 35 +++++++----
+>  security/security.c                 | 95 +++++++++++++++++++++++------=
+
+>  security/selinux/hooks.c            |  3 +-
+>  security/smack/smack_lsm.c          |  4 +-
+>  10 files changed, 135 insertions(+), 43 deletions(-)
+>
 
