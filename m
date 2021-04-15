@@ -2,160 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F10B5360C36
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FF71360C76
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233657AbhDOOtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233613AbhDOOtN (ORCPT
+        id S233740AbhDOOvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:51:07 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:46748 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233906AbhDOOuZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:49:13 -0400
-Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E63C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 07:48:50 -0700 (PDT)
-Received: by mail-vk1-xa31.google.com with SMTP id p206so2695150vkd.4
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 07:48:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eQFFIM7pSZ3rNVADx3v3MXfqo0UYnXyfAUTQM2K5W9I=;
-        b=YqgXOwr2Mt6Lvo/hqtmAeXPCGz6u5wu+SrcecmjKDQyC9GQaTDWQnPOyH2k0mtcoYP
-         SASBrNZwIWRJ+0dEC/2PIl51tsk9Y5EvAh5TCAuBRYYfg+qfJ3ESXVTDrCbNGPaJAIXd
-         G+E8vdMCY9dWUF8rh+b/jhgukZDc3iNNEg/+Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eQFFIM7pSZ3rNVADx3v3MXfqo0UYnXyfAUTQM2K5W9I=;
-        b=EtpZWktOqBkESHNh5eW/b+mMPRSt2CJTnEeRztY5JzwZ4/u7K3Rcy1xGYIl1Wp0d1m
-         3mk0noixOy/l8i+nZcbQuYSXk2USXd/psWHsbwbaqZVwGV5OF67qlTwQ5TjptL5CUqBN
-         QDNh1hjB37sBnWxDQ3lhQltXqlF1+eQ563KslUuATfZ5kjMz0WM9rtgYw/Fz2SDN2AlM
-         YmnQ+f6hzRu6yDs3eLcHanxmd4X+KcQbEx4P1DNVHpHke/2n2EWxi2G+baOIaIP7LgQr
-         KPnYQgdJ19yxARktQqPHZ3odFTIcEiN49aCeGEFingdHKf1fjbZz0Gc2PzgKmFjpjge4
-         n4ug==
-X-Gm-Message-State: AOAM533ySL0S6TmuGkHYzTW8VUCVwjz7Qe+hn1/ZW/hnHtxMwEE+K1Ul
-        qo+uj+IW/7egAu8YeSG6pKhq0P6E17el2Q==
-X-Google-Smtp-Source: ABdhPJwP+3BpYc8b/gfMYVuc2gM+WAT6oyI8QwtQ3SGjBrHL2TWoeHps3RLGgvnG6bPx6FENqeXcHA==
-X-Received: by 2002:a1f:b652:: with SMTP id g79mr2337342vkf.21.1618498129446;
-        Thu, 15 Apr 2021 07:48:49 -0700 (PDT)
-Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com. [209.85.222.54])
-        by smtp.gmail.com with ESMTPSA id b11sm249554vsj.18.2021.04.15.07.48.49
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 07:48:49 -0700 (PDT)
-Received: by mail-ua1-f54.google.com with SMTP id z15so2102004uao.11
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 07:48:49 -0700 (PDT)
-X-Received: by 2002:a25:d847:: with SMTP id p68mr4882363ybg.345.1618498117948;
- Thu, 15 Apr 2021 07:48:37 -0700 (PDT)
+        Thu, 15 Apr 2021 10:50:25 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13FEnqjo001444;
+        Thu, 15 Apr 2021 09:49:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1618498192;
+        bh=dtU7yZZCXXN3KU4xhLoqZPhQYRi1AWdP0Mnfpha+Ma8=;
+        h=From:To:CC:Subject:Date;
+        b=w0PZWJbgd6z7XWw0Y0390BG0W3uy8yzBy/f45NNHjVujPK9SawGUHvgwa+cqhW8si
+         l2g/mCo0OjtfnXxlYke1/GFHPDr1CG09uCl5lEb18Kjs5dbUCn5gFRh0sgt/RA2UPR
+         kzzJO9srFthW5W2a3dGxn1mui2tJnBnomn22wuL8=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13FEnqX1102388
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 15 Apr 2021 09:49:52 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 15
+ Apr 2021 09:49:51 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 15 Apr 2021 09:49:51 -0500
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13FEnlS5037772;
+        Thu, 15 Apr 2021 09:49:48 -0500
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <linux-can@vger.kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>
+Subject: [PATCH v3 0/4] CAN TRANSCEIVER: Add support for CAN transceivers
+Date:   Thu, 15 Apr 2021 20:19:43 +0530
+Message-ID: <20210415144947.4725-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210402222846.2461042-1-dianders@chromium.org>
- <20210402152701.v3.1.If62a003f76a2bc4ccc6c53565becc05d2aad4430@changeid>
- <YGpeo9LV4uAh1B7u@pendragon.ideasonboard.com> <CAD=FV=UN38EiYMiwNjysBS6dReKDaf+g2GcgaVt9iF1mTRKg7A@mail.gmail.com>
- <YHedYnUrcnhRDnie@pendragon.ideasonboard.com>
-In-Reply-To: <YHedYnUrcnhRDnie@pendragon.ideasonboard.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 15 Apr 2021 07:48:25 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UhqCe1r1kqVdmYOmy75j_v73RSjP0d0MX0q5zq2GVJoQ@mail.gmail.com>
-Message-ID: <CAD=FV=UhqCe1r1kqVdmYOmy75j_v73RSjP0d0MX0q5zq2GVJoQ@mail.gmail.com>
-Subject: Re: [PATCH v3 01/12] drm/bridge: Fix the stop condition of drm_bridge_chain_pre_enable()
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus W <linus.walleij@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The following series of patches add support for CAN transceivers.
 
-On Wed, Apr 14, 2021 at 6:56 PM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Doug,
->
-> On Wed, Apr 14, 2021 at 06:19:13PM -0700, Doug Anderson wrote:
-> > On Sun, Apr 4, 2021 at 5:50 PM Laurent Pinchart wrote:
-> > > On Fri, Apr 02, 2021 at 03:28:35PM -0700, Douglas Anderson wrote:
-> > > > The drm_bridge_chain_pre_enable() is not the proper opposite of
-> > > > drm_bridge_chain_post_disable(). It continues along the chain to
-> > > > _before_ the starting bridge. Let's fix that.
-> > > >
-> > > > Fixes: 05193dc38197 ("drm/bridge: Make the bridge chain a double-linked list")
-> > > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > > > Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
-> > > > ---
-> > > >
-> > > > (no changes since v1)
-> > > >
-> > > >  drivers/gpu/drm/drm_bridge.c | 3 +++
-> > > >  1 file changed, 3 insertions(+)
-> > > >
-> > > > diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
-> > > > index 64f0effb52ac..044acd07c153 100644
-> > > > --- a/drivers/gpu/drm/drm_bridge.c
-> > > > +++ b/drivers/gpu/drm/drm_bridge.c
-> > > > @@ -522,6 +522,9 @@ void drm_bridge_chain_pre_enable(struct drm_bridge *bridge)
-> > > >       list_for_each_entry_reverse(iter, &encoder->bridge_chain, chain_node) {
-> > > >               if (iter->funcs->pre_enable)
-> > > >                       iter->funcs->pre_enable(iter);
-> > > > +
-> > > > +             if (iter == bridge)
-> > > > +                     break;
-> > >
-> > > This looks good as it matches drm_atomic_bridge_chain_disable().
-> > >
-> > > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> >
-> > Thanks for your review here and several of the other patches. Can you
-> > suggest any plan for getting them landed? It would at least be nice to
-> > get the non-controversial ones landed.
->
-> Do you have commit access to drm-misc ? If not, given your
-> contributions, I think you qualify for it.
+TCAN1042 has a standby signal that needs to be pulled high for
+sending/receiving messages[1]. TCAN1043 has a enable signal along with
+standby signal that needs to be pulled up for sending/receiving
+messages[2], and other combinations of the two lines can be used to put the
+transceiver in different states to reduce power consumption. On boards
+like the AM654-idk and J721e-evm these signals are controlled using gpios.
 
-No, I don't have access. I searched for how to get it and read through
-the qualifications and, you're right, I think I do. I've hopefully
-followed the right flow and created an issue to give me ssh access:
+Patch 1 rewords the comment that restricts max_link_rate attribute to have
+units of Mbps.
 
-https://gitlab.freedesktop.org/freedesktop/freedesktop/-/issues/348
+Patch 2 adds an API for devm_of_phy_optional_get_by_index
 
-Is that something you (or someone else on this CC list) approves?
+Patch 3 models the transceiver as a phy device tree node with properties
+for max bit rate supported, gpio properties for indicating gpio pin numbers
+to which standby and enable signals are connected.
 
+Patch 4 adds a generic driver to support CAN transceivers.
 
-> > > I'm curious though, given that the bridge passed to the function should
-> > > be the one closest to the encoder, does this make a difference ?
-> >
-> > Yes, that's how I discovered it originally. Let's see. So if I don't
-> > have this patch but have the rest of the series then I get a splat at
-> > bootup. This shows that dsi_mgr_bridge_pre_enable() must be "earlier"
-> > in the chain than my bridge chip. Here's the splat:
->
-> Right, I think it's caused by a later patch in the series calling this
-> function with a different bridge than the one closest to the encoder.
+changes since v2:
+- dropped 5 and 6 patches and to be sent via linux-can-next
+- added static keyword for can_transceiver_phy_probe()
+- changed enable gpio example to active high in patch 3
+- Rearranged the file names in alphabetical order in Makefile
+  and MAINTAINERS file
 
-Yup! I still wanted this patch to be first in the series, though,
-since it's a bugfix that we'd want to land even if the later patches
-changed in some way.
+changes since v1:
+- Added patch 1 (in v2) that rewords the comment that restrict
+  max_link_rate attribute to have units of Mbps.
+- Added patch 2 (in v2) that adds an API for
+  devm_of_phy_optional_get_by_index
+- Patch 1 (in v1)
+  - updated MAINTAINERS file
+- Patch 2 (in v1)
+  - replaced m_can with CAN to make the driver independent of CAN driver
+  - Added prefix CAN_TRANSCEIVER for EN_PRESENT and STB_PRESENT
+  - Added new line before return statements in power_on() and power_off
+  - Added error handling patch for devm_kzalloc()
+  - used the max_link_rate attribute directly instead of dividing it by
+    1000000
+  - removed the spaces before GPIOD_OUT_LOW in devm_gpiod_get()
+  - Corrected requested value for standby-gpios to GPIOD_OUT_HIGH
+  - Updated MAINTAINERS file
+- Patch 3 (in v1)
+  - replaced minItems with maxItems
+  - Removed phy-names property as there is only one phy
+- Patch 4 (in v1)
+  - replaced dev_warn with dev_info when no transceiver is found
+  - Added struct phy * field in m_can_classdev struct
+  - moved phy_power_on and phy_power_off to m_can_open and m_can_close
+    respectively
+  - Moved the check for max_bit_rate to generice transceiver driver
 
--Doug
+[1] - https://www.ti.com/lit/ds/symlink/tcan1042h.pdf
+[2] - https://www.ti.com/lit/ds/symlink/tcan1043-q1.pdf
+
+Aswath Govindraju (4):
+  phy: core: Reword the comment specifying the units of max_link_rate to
+    be Mbps
+  phy: Add API for devm_of_phy_optional_get_by_index
+  dt-bindings: phy: Add binding for TI TCAN104x CAN transceivers
+  phy: phy-can-transceiver: Add support for generic CAN transceiver
+    driver
+
+ .../bindings/phy/ti,tcan104x-can.yaml         |  56 +++++++
+ MAINTAINERS                                   |   2 +
+ drivers/phy/Kconfig                           |   9 ++
+ drivers/phy/Makefile                          |   1 +
+ drivers/phy/phy-can-transceiver.c             | 146 ++++++++++++++++++
+ drivers/phy/phy-core.c                        |  26 ++++
+ include/linux/phy/phy.h                       |   4 +-
+ 7 files changed, 243 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+ create mode 100644 drivers/phy/phy-can-transceiver.c
+
+-- 
+2.17.1
+
