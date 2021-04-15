@@ -2,202 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685F2360309
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 938973602EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231278AbhDOHN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 03:13:57 -0400
-Received: from mga14.intel.com ([192.55.52.115]:16393 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231266AbhDOHN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 03:13:56 -0400
-IronPort-SDR: mRA/MpDB451TekPSz2wGE56rxEVSVfRRXWzhVcVPcK4sqOHiUHuVL8y6AUP+v+h7bgBV7hIUKk
- 6X+eiLEuM/xA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="194364415"
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="194364415"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 00:13:33 -0700
-IronPort-SDR: N7a/losEaCAlfPsp0RkiF5M5/3RUguWGDB4OlvAUxaL1WE0aXMlAc18uuES1cel2X0mOe1zXJ4
- U37IARQwIqgw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="444089450"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
-  by fmsmga004.fm.intel.com with ESMTP; 15 Apr 2021 00:13:29 -0700
-Cc:     baolu.lu@linux.intel.com,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com,
-        yuzenghui@huawei.com, lushenming@huawei.com
-Subject: Re: [PATCH v3 01/12] iommu: Introduce dirty log tracking framework
-To:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Yi Sun <yi.y.sun@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Tian Kevin <kevin.tian@intel.com>
-References: <20210413085457.25400-1-zhukeqian1@huawei.com>
- <20210413085457.25400-2-zhukeqian1@huawei.com>
- <fe337950-f8d0-3d21-a7b1-98b385d71f3e@linux.intel.com>
- <e42373e3-10d5-5a34-8f33-8bb82d64fb19@huawei.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <56b001fa-b4fe-c595-dc5e-f362d2f07a19@linux.intel.com>
-Date:   Thu, 15 Apr 2021 15:03:52 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229793AbhDOHGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 03:06:14 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:31236 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhDOHGG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 03:06:06 -0400
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 13F75MUT007464;
+        Thu, 15 Apr 2021 16:05:23 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 13F75MUT007464
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1618470323;
+        bh=xgvwbjObDxVYEnbqckmHfXupWuFRZDZ4a2MAfr30jYk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qz7QXJPkgE27tukb7oqV966xFpPpVD5gY7+BXfwXlL86MzJWxwncRNggNeYmzO27q
+         Dl3NIsWon9PCUbEWDHvO5zoijT541iE7kUHpvOVhUVHE3M8RitmGBtjAbsDnWko4vS
+         BPXxwNZ7JhLrmA6tGvkxYrgAVQgP84ZnVpcneR11UMlWIfW6W4wqFFCxEujDHHhA23
+         aIBsTIl0M9AS8BQAiZ3OrC1mk13v5xGWInuZOt0S2mDZJHN/GGankkIBJ15MU4V8op
+         LPWSTUeMoEkT5XGGAVtD6yN3DhXc8Ree9+0v3V8era/kQMd7/aVvw1hUcCYeW2JcGo
+         CMzNUVIS83dpw==
+X-Nifty-SrcIP: [209.85.214.182]
+Received: by mail-pl1-f182.google.com with SMTP id w8so9198442plg.9;
+        Thu, 15 Apr 2021 00:05:22 -0700 (PDT)
+X-Gm-Message-State: AOAM532657kUdA4oN7EspyIs8w3QrS2JC0TlA3736j/47g0EEmMKOX/v
+        Di3d5RJLCPbPoUYunRPjrEnkFd5OzUhRt/pVc6A=
+X-Google-Smtp-Source: ABdhPJwe3AQPMSLCBMcKYrsnaTgC67jKGZTlBsKzbOKW2Sb5z8Idsd4p+wOvWoaC/MfmhOhY5Uj4cPR3+H+5g0b4s7U=
+X-Received: by 2002:a17:90b:1955:: with SMTP id nk21mr2343931pjb.198.1618470322208;
+ Thu, 15 Apr 2021 00:05:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <e42373e3-10d5-5a34-8f33-8bb82d64fb19@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210414192657.17764-1-rdunlap@infradead.org> <CAK7LNARSK2YspYvKkUKTp-aG2nqKnvdMr7B_6Am-u1-mt2XBNg@mail.gmail.com>
+ <c3d41808-111c-c4dd-43fb-459ae56fc9ab@infradead.org>
+In-Reply-To: <c3d41808-111c-c4dd-43fb-459ae56fc9ab@infradead.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 15 Apr 2021 16:04:44 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS2C1drA+v9q-mYHAbO3+4zjEdF_SJkBDtCXRExLX9u6w@mail.gmail.com>
+Message-ID: <CAK7LNAS2C1drA+v9q-mYHAbO3+4zjEdF_SJkBDtCXRExLX9u6w@mail.gmail.com>
+Subject: Re: [PATCH] uml: fix W=1 missing-include-dirs warnings
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/21 2:18 PM, Keqian Zhu wrote:
-> Hi Baolu,
-> 
-> Thanks for the review!
-> 
-> On 2021/4/14 15:00, Lu Baolu wrote:
->> Hi Keqian,
->>
->> On 4/13/21 4:54 PM, Keqian Zhu wrote:
->>> Some types of IOMMU are capable of tracking DMA dirty log, such as
->>> ARM SMMU with HTTU or Intel IOMMU with SLADE. This introduces the
->>> dirty log tracking framework in the IOMMU base layer.
->>>
->>> Three new essential interfaces are added, and we maintaince the status
->>> of dirty log tracking in iommu_domain.
->>> 1. iommu_switch_dirty_log: Perform actions to start|stop dirty log tracking
->>> 2. iommu_sync_dirty_log: Sync dirty log from IOMMU into a dirty bitmap
->>> 3. iommu_clear_dirty_log: Clear dirty log of IOMMU by a mask bitmap
->>>
->>> A new dev feature are added to indicate whether a specific type of
->>> iommu hardware supports and its driver realizes them.
->>>
->>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
->>> Signed-off-by: Kunkun Jiang <jiangkunkun@huawei.com>
->>> ---
->>>    drivers/iommu/iommu.c | 150 ++++++++++++++++++++++++++++++++++++++++++
->>>    include/linux/iommu.h |  53 +++++++++++++++
->>>    2 files changed, 203 insertions(+)
->>>
->>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->>> index d0b0a15dba84..667b2d6d2fc0 100644
->>> --- a/drivers/iommu/iommu.c
->>> +++ b/drivers/iommu/iommu.c
->>> @@ -1922,6 +1922,7 @@ static struct iommu_domain *__iommu_domain_alloc(struct bus_type *bus,
->>>        domain->type = type;
->>>        /* Assume all sizes by default; the driver may override this later */
->>>        domain->pgsize_bitmap  = bus->iommu_ops->pgsize_bitmap;
->>> +    mutex_init(&domain->switch_log_lock);
->>>          return domain;
->>>    }
->>> @@ -2720,6 +2721,155 @@ int iommu_domain_set_attr(struct iommu_domain *domain,
->>>    }
->>>    EXPORT_SYMBOL_GPL(iommu_domain_set_attr);
->>>    +int iommu_switch_dirty_log(struct iommu_domain *domain, bool enable,
->>> +               unsigned long iova, size_t size, int prot)
->>> +{
->>> +    const struct iommu_ops *ops = domain->ops;
->>> +    int ret;
->>> +
->>> +    if (unlikely(!ops || !ops->switch_dirty_log))
->>> +        return -ENODEV;
->>> +
->>> +    mutex_lock(&domain->switch_log_lock);
->>> +    if (enable && domain->dirty_log_tracking) {
->>> +        ret = -EBUSY;
->>> +        goto out;
->>> +    } else if (!enable && !domain->dirty_log_tracking) {
->>> +        ret = -EINVAL;
->>> +        goto out;
->>> +    }
->>> +
->>> +    ret = ops->switch_dirty_log(domain, enable, iova, size, prot);
->>> +    if (ret)
->>> +        goto out;
->>> +
->>> +    domain->dirty_log_tracking = enable;
->>> +out:
->>> +    mutex_unlock(&domain->switch_log_lock);
->>> +    return ret;
->>> +}
->>> +EXPORT_SYMBOL_GPL(iommu_switch_dirty_log);
->>
->> Since you also added IOMMU_DEV_FEAT_HWDBM, I am wondering what's the
->> difference between
->>
->> iommu_switch_dirty_log(on) vs. iommu_dev_enable_feature(IOMMU_DEV_FEAT_HWDBM)
->>
->> iommu_switch_dirty_log(off) vs. iommu_dev_disable_feature(IOMMU_DEV_FEAT_HWDBM)
-> Indeed. As I can see, IOMMU_DEV_FEAT_AUX is not switchable, so enable/disable
-> are not applicable for it. IOMMU_DEV_FEAT_SVA is switchable, so we can use these
-> interfaces for it.
-> 
-> IOMMU_DEV_FEAT_HWDBM is used to indicate whether hardware supports HWDBM, so we should
+On Thu, Apr 15, 2021 at 4:02 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 4/14/21 11:52 PM, Masahiro Yamada wrote:
+> > On Thu, Apr 15, 2021 at 4:27 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> >>
+> >> Currently when using "W=1" with UML builds, there are over 700 warnings
+> >> like so:
+> >>
+> >>   CC      arch/um/drivers/stderr_console.o
+> >> cc1: warning: ./arch/um/include/uapi: No such file or directory [-Wmissing-include-dirs]
+> >>
+> >> but arch/um/ does not have include/uapi/ at all, so don't
+> >> include arch/um/include/uapi/ in USERINCLUDE for UML.
+>
+>
+> >> Option 4: simply mkdir arch/um/include/uapi
+> >>         That's what I did first, just as a test, and it works.
+> >
+> >
+> > I like Option 4.
+> >
+> > But, you cannot do "mkdir -p arch/um/include/uapi" at build-time
+> > because the build system should not touch the source tree(, which
+> > might be read-only)
+> > for O= building.
+> >
+> > How about adding
+> >
+> >   arch/um/include/uapi/asm/Kbuild,
+> >
+> > which is just having a SPDX one-liner?
+>
+> Wow!  :)
+> That's what Al Viro suggested also.
+> I'll submit that patch later today (Thursday my time).
+>
+> thanks.
+> --
+> ~Randy
+>
 
-Previously we had iommu_dev_has_feature() and then was cleaned up due to
-lack of real users. If you have a real case for it, why not bringing it
-back?
 
-> design it as not switchable. I will modify the commit message of patch#12, thanks!
+BTW, after fixing this UML problem,
+can we move -Wmissing-include-dirs to the top Makefile?
 
-I am not sure that I fully get your point. But I can't see any gaps of
-using iommu_dev_enable/disable_feature() to switch dirty log on and off.
-Probably I missed anything.
+Is there any other source of -Wmissing-include-dirs
+warnings?
 
-> 
->>
->>> +
->>> +int iommu_sync_dirty_log(struct iommu_domain *domain, unsigned long iova,
->>> +             size_t size, unsigned long *bitmap,
->>> +             unsigned long base_iova, unsigned long bitmap_pgshift)
->>> +{
->>> +    const struct iommu_ops *ops = domain->ops;
->>> +    unsigned int min_pagesz;
->>> +    size_t pgsize;
->>> +    int ret = 0;
->>> +
->>> +    if (unlikely(!ops || !ops->sync_dirty_log))
->>> +        return -ENODEV;
->>> +
->>> +    min_pagesz = 1 << __ffs(domain->pgsize_bitmap);
->>> +    if (!IS_ALIGNED(iova | size, min_pagesz)) {
->>> +        pr_err("unaligned: iova 0x%lx size 0x%zx min_pagesz 0x%x\n",
->>> +               iova, size, min_pagesz);
->>> +        return -EINVAL;
->>> +    }
->>> +
->>> +    mutex_lock(&domain->switch_log_lock);
->>> +    if (!domain->dirty_log_tracking) {
->>> +        ret = -EINVAL;
->>> +        goto out;
->>> +    }
->>> +
->>> +    while (size) {
->>> +        pgsize = iommu_pgsize(domain, iova, size);
->>> +
->>> +        ret = ops->sync_dirty_log(domain, iova, pgsize,
->>> +                      bitmap, base_iova, bitmap_pgshift);
->>
->> Any reason why do you want to do this in a per-4K page manner? This can
->> lead to a lot of indirect calls and bad performance.
->>
->> How about a sync_dirty_pages()?
-> The function name of iommu_pgsize() is a bit puzzling. Actually it will try to
-> compute the max size that fit into size, so the pgsize can be a large page size
-> even if the underlying mapping is 4K. The __iommu_unmap() also has a similar logic.
 
-This series has some improvement on the iommu_pgsize() helper.
 
-https://lore.kernel.org/linux-iommu/20210405191112.28192-1-isaacm@codeaurora.org/
 
-Best regards,
-baolu
+
+-- 
+Best Regards
+Masahiro Yamada
