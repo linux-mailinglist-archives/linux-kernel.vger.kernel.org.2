@@ -2,159 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F943612E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6345D3612EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234925AbhDOT3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 15:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234859AbhDOT3r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 15:29:47 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6ECDC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 12:29:24 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id z16so17583209pga.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 12:29:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=pTfQ6ElRzveMYG+4596oXssVf3HOzO8PnlrFcsbFyCE=;
-        b=cU0QWLPJUSXRvzfmbNk9HCE5aMOlZjb8eV/vJBp6qdInriisRqlBZqvSY2oSUBxZa6
-         PHKU8vK49Ow6ZFlN6/6BhLhHoWh1hr3TKSUSkBHcw18xoKyrEcHAIyPnDTDv8ZCfS8tp
-         LHtXLbBq5484UHUfM54Bf8LqRKD2anjHyeF3U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=pTfQ6ElRzveMYG+4596oXssVf3HOzO8PnlrFcsbFyCE=;
-        b=nYM2QRbMF/oAHUBkUNu1HAEfvElEbQRaj4C15/gJFpgp/MgoY/DcRiYnDohBHkEk1X
-         yT2t7ZmWlrU/B88Ly9KopTW+zQpEUheXSjKbBzAmVziN9x9us2523WbtbIPhI2++J2FO
-         NH0vbSAd3ngd5S8aM/qeNnqqMX+FLSEcvRVe5pOZyFz4K7976PGFcJOAAFf+XuKU1+hs
-         LeyXDCnZHpE+/Ir2m4w33Gmx5I0MxrQA/aUKp+qLd3kvkzXUDtJlI2KMn806xvZFhliy
-         /zDxznm5/s+x3gsa7KYXUqjBZnmEknEJM42lhc7nPR/GMiR3oiyvFb8lBOB/yKquVXIZ
-         YeZQ==
-X-Gm-Message-State: AOAM533kM3cPz7joL1yFhVH5hJ5VPFOrAHjIVTjTnTr1Q/QH7PLbVUqM
-        VE51lIEZ2xtZcnJXPQtCldBeOGU6a5n8ZA==
-X-Google-Smtp-Source: ABdhPJyFAir0xQ7Bx7udarkpRVTWcbD4vVqKoIrN3fLlVVlZsf0M9MTUiwhBqi8oUnZvJZ08VuJ/uQ==
-X-Received: by 2002:a63:ee42:: with SMTP id n2mr4787985pgk.37.1618514963771;
-        Thu, 15 Apr 2021 12:29:23 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:1ddc:37d8:5171:510d])
-        by smtp.gmail.com with ESMTPSA id i9sm3699276pjh.9.2021.04.15.12.29.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 12:29:23 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        id S234823AbhDOTd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 15:33:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55072 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234506AbhDOTd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 15:33:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58ABC610EA;
+        Thu, 15 Apr 2021 19:33:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618515184;
+        bh=pmEpC+vDwdqGGg9r8ZJX9nLfrlZ2KwOgLUu2CwzCg8E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rlttjChmO1Bls6od5POk8j49Yd6/WKgmF/RQxekWWT2G4YDlg4ksIfBiub3Au4AD6
+         +dMbd7oExE5xJduGozCjLZK859Z3iqbXH38sXYIM1LcID48PzM7v1MEgcxszgfZ7+5
+         di1N4OYMuHNX38+e1rVZWen6cu+5St3CbTfXgYJekbEHfvOU4CcBCY0tEtPYFadDbJ
+         AVF4qtidffwzk8jSAZ/pvLWJ3R5ZSiXSMKF86bpT9eXR8+O7KjhXMQJXe7FB3rV7yR
+         qGQE8Fn1Ye1MPoshT9LulWVI+YAunbJv6Dbm3TpsJN0Dm1ZB5IJMle6TDv/mVOCWAf
+         FU7TJLezFJ7+g==
+Date:   Thu, 15 Apr 2021 12:33:02 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v2 3/8] block: blk-crypto: introduce
+ blk_crypto_bio_sectors_alignment()
+Message-ID: <YHiU7lbBO3aqUIuV@gmail.com>
+References: <20210325212609.492188-1-satyat@google.com>
+ <20210325212609.492188-4-satyat@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAPDyKFquhnG1tGAx+GGNKM7_haThSa34FcONHGhdBwFYuryeag@mail.gmail.com>
-References: <20210413003621.1403300-1-swboyd@chromium.org> <CAPDyKFquhnG1tGAx+GGNKM7_haThSa34FcONHGhdBwFYuryeag@mail.gmail.com>
-Subject: Re: [PATCH] mmc: core: Don't allocate IDA for OF aliases
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Sujit Kautkar <sujitka@chromium.org>,
-        Zubin Mithra <zsm@chromium.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 15 Apr 2021 12:29:21 -0700
-Message-ID: <161851496169.46595.399410018266490859@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325212609.492188-4-satyat@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Ulf Hansson (2021-04-15 01:56:12)
-> On Tue, 13 Apr 2021 at 02:36, Stephen Boyd <swboyd@chromium.org> wrote:
-> >
-> > -       err =3D ida_simple_get(&mmc_host_ida, min_idx, max_idx, GFP_KER=
-NEL);
-> > -       if (err < 0) {
-> > -               kfree(host);
-> > -               return NULL;
-> > +               index =3D ida_simple_get(&mmc_host_ida, min_idx, max_id=
-x, GFP_KERNEL);
-> > +               if (index < 0) {
-> > +                       kfree(host);
-> > +                       return NULL;
-> > +               }
->=20
-> This means that a DTB that is screwed up in a way that it has two mmc
-> aliases with the same index, would be allowed to use the same index.
->=20
-> What will happen when we continue the probe sequence in such a case?
+On Thu, Mar 25, 2021 at 09:26:04PM +0000, Satya Tangirala wrote:
+> The size of any bio must be aligned to the data unit size of the bio crypt
+> context (if it exists) of that bio. This must also be ensured whenever a
+> bio is split. Introduce blk_crypto_bio_sectors_alignment() that returns
+> the required alignment in sectors. The number of sectors passed to
+> any call of bio_split() should be aligned to
+> blk_crypto_bio_sectors_alignment().
 
-Yeah I thought about this after sending the patch. So the problem would
-be like this right?
+"should be aligned" => "must be aligned"?
 
-	aliases {
-		mmc1 =3D &sdhci0;
-		mmc1 =3D &sdhci1;
-	};
+> +/*
+> + * Returns the alignment requirement for the number of sectors in this bio based
+> + * on its bi_crypt_context. Any bios split from this bio must follow this
+> + * alignment requirement as well.
+> + */
 
-I have good news! DT won't compile it because it saw the same alias
-assigned to twice. I tried it on my sc7180 board.=20
+It would be helpful to expand this comment a bit to explictly mention that the
+size of the bio must be a multiple of the crypto data unit size that was
+selected by the submitter of the bio, which is the granularity of
+encryption/decryption.  Keep in mind that people reading this code won't
+necessarily be familiar with inline encryption.
 
-arch/arm64/boot/dts/qcom/sc7180.dtsi:35.3-18:
-ERROR (duplicate_property_names): /aliases:mmc1: Duplicate property name
-ERROR: Input tree has errors, aborting (use -f to force output)
-arch/arm64/boot/dts/qcom/sc7180-idp.dtb] Error 2
-
-I suppose if someone forced the compilation it may be bad, but do we
-really care?
-
-TL;DR: this seems like it isn't a problem.
-
->=20
-> >         }
-> >
-> > -       host->index =3D err;
-> > +       host->index =3D index;
-> >
-> >         dev_set_name(&host->class_dev, "mmc%d", host->index);
-> >         host->ws =3D wakeup_source_register(NULL, dev_name(&host->class=
-_dev));
->=20
-> Another concern that could potentially be a problem, is that the
-> "thread" that holds the reference that prevents ida from being
-> removed, how would that react to a new mmc device to become
-> re-registered with the same index?
->=20
-> I wonder if we perhaps should return -EPROBE_DEFER instead, when
-> ida_simple_get() fails?
->=20
-
-Don't think so. The device (with the kobject inside) is removed, and
-thus the mmc1 device will be removed, but the kobject's release function
-is delayed due to the config. This means that
-mmc_host_classdev_release() is called at a later time. The only thing
-inside that function is the IDA removal and the kfree of the container
-object. Given that nothing else is in that release function I believe it
-is safe to skip IDA allocation as it won't be blocking anything in the
-reserved alias case.=20
-
-Furthermore, when the device is deleted in mmc_remove_host() there could
-be other users of the device that haven't called put_device() yet.
-Either way, those other users are keeping the device memory alive, but
-otherwise device_del() has unlinked it from the various driver core
-lists and sysfs has removed it too so it's in a state where code may be
-referencing it but it's on the way out so users of the device will not
-be able to do much with it during this time.
-
-This sort of problem (if it exists which I don't think it does) would
-have been there all along and can't be fixed at this level. When a
-device that has an alias calls the mmc_alloc_host() function twice it
-gets two different device structures created so there are two distinct
-kobjects that will need to be released at some point. The index is
-usually different for those two kobjects, but with aliases it turns out
-it is the same. When it comes to registering that device with the same
-name the second one will fail because a device with that name already
-exists on the bus. This would be really hard to do given that it would
-need to be the same aliased device in DT calling the mmc_add_host()
-function without calling mmc_remove_host() for the first one it added in
-between.
-
-(Sorry if that is long. I'm sort of stream of conciousness writing it to
-you here and not rewriting it to be more concise)
+- Eric
