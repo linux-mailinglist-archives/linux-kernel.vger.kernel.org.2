@@ -2,154 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C73360A28
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4444E360A2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233300AbhDONJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 09:09:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48976 "EHLO
+        id S233036AbhDONJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 09:09:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233234AbhDONIm (ORCPT
+        with ESMTP id S233037AbhDONJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 09:08:42 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8078CC06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 06:08:19 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lX1ig-0006Ke-Ub; Thu, 15 Apr 2021 15:07:42 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lX1if-0005NA-Sh; Thu, 15 Apr 2021 15:07:41 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Fugang Duan <fugang.duan@nxp.com>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        Fabio Estevam <festevam@gmail.com>,
-        David Jander <david@protonic.nl>,
-        Russell King <linux@armlinux.org.uk>,
-        Philippe Schenker <philippe.schenker@toradex.com>
-Subject: [PATCH v2 7/7] net: dsa: enable selftest support for all switches by default
-Date:   Thu, 15 Apr 2021 15:07:38 +0200
-Message-Id: <20210415130738.19603-8-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210415130738.19603-1-o.rempel@pengutronix.de>
-References: <20210415130738.19603-1-o.rempel@pengutronix.de>
+        Thu, 15 Apr 2021 09:09:22 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C0AC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 06:08:58 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id gv2so2305846qvb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 06:08:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Av9lBh4ytQJLZDgCvCumBBm678aTIHFLWXFB6bVJiGk=;
+        b=MjHrmHj3CxKqGBd/wHR9VR1eOkob2QYJ9Aeq0rkN3vePFB+JTxwCpU8ycDTeFNwpUZ
+         t7JcUD3aKSEM1MTXPKb7eliUDURUr0m7JkhZTnCQ+QggTWSHzPT15NLUiMoFRvLsvTcp
+         MujH3kN7+0dHS3pvIhfruu731O3qCDMiNH5zLY0q+lHp1ki7z7UJTI8WYoNXe5gESNrA
+         miDO6KrL0zb2AMzSf7cG2g17pL+kj6Eri7EWR9XKqg7rc8sYsyIyaJqwnbH4fHuYzuN8
+         yDLUup0nMkjt6ALnPeExIWExt0Y+B/bNa/A44hKD/B09wIPf27z3NhhTXp+IX7XC5SYl
+         WH1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Av9lBh4ytQJLZDgCvCumBBm678aTIHFLWXFB6bVJiGk=;
+        b=BTnD1jVa34Kg55tqfc2Lqbbx5pGgOQJscZAe67WuoAzzF0FggozHO4ZbdJV7WfYLLN
+         qlR9joANdKAlOgi6pLSqsKA8V170EYES6hXFIxtsLOpG+JxgFQhkPLbVmzjatKPLsCgg
+         My21vgNHg2kjFYL3Ndd84t+/tOlAdbHpo+iexFZ6vbrplQHv1xzV8HjCtILjn5KniJZT
+         ecLsh3UEXEJOpA/HRk3uUnvlFH/mrp50lofzytOt+4NobpoDKqtw73b7k3eyn2W5lQsz
+         JZu29uPU6eQ+7Nfji/cPFjNlPSlNsndROwUoysamfYbvF07WcfuYVBUYCtGL7IthmwWk
+         giyA==
+X-Gm-Message-State: AOAM532kOkF7MCiK5QxSp1SDD4L1m7pWhyHy1SWWXkeU5MIDPEoR/19I
+        9F172Pv9Df+aVpK34p0cK9qPIQ==
+X-Google-Smtp-Source: ABdhPJwBZbvTOtQ7JrjyHedhunLhY1PtV+CdCC/35yHj+3yXUnmSXDK4vTITiMNWCEVv9JExSNyNAg==
+X-Received: by 2002:a05:6214:4b0:: with SMTP id w16mr2924175qvz.54.1618492137741;
+        Thu, 15 Apr 2021 06:08:57 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id l24sm1755539qtp.18.2021.04.15.06.08.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 06:08:56 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lX1jr-006k2Q-Q4; Thu, 15 Apr 2021 10:08:55 -0300
+Date:   Thu, 15 Apr 2021 10:08:55 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: linux-next: manual merge of the vfio tree with the drm tree
+Message-ID: <20210415130855.GR227011@ziepe.ca>
+References: <20210415164734.1143f20d@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210415164734.1143f20d@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Most of generic selftest should be able to work with probably all ethernet
-controllers. The DSA switches are not exception, so enable it by default at
-least for DSA.
+On Thu, Apr 15, 2021 at 04:47:34PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the vfio tree got a conflict in:
+> 
+>   drivers/gpu/drm/i915/gvt/gvt.c
+> 
+> between commit:
+> 
+>   9ff06c385300 ("drm/i915/gvt: Remove references to struct drm_device.pdev")
+> 
+> from the drm tree and commit:
+> 
+>   383987fd15ba ("vfio/gvt: Use mdev_get_type_group_id()")
+> 
+> from the vfio tree.
+> 
+> I fixed it up (I used the latter version) and can carry the fix as
+> necessary.
 
-This patch was tested with SJA1105 and AR9331.
+Yes that is right, thank you
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- include/net/dsa.h |  2 ++
- net/dsa/Kconfig   |  1 +
- net/dsa/slave.c   | 21 +++++++++++++++++++++
- 3 files changed, 24 insertions(+)
-
-diff --git a/include/net/dsa.h b/include/net/dsa.h
-index 57b2c49f72f4..b4f89522b545 100644
---- a/include/net/dsa.h
-+++ b/include/net/dsa.h
-@@ -577,6 +577,8 @@ struct dsa_switch_ops {
- 					 int port, uint64_t *data);
- 	void	(*get_stats64)(struct dsa_switch *ds, int port,
- 				   struct rtnl_link_stats64 *s);
-+	void	(*self_test)(struct dsa_switch *ds, int port,
-+			     struct ethtool_test *etest, u64 *data);
- 
- 	/*
- 	 * ethtool Wake-on-LAN
-diff --git a/net/dsa/Kconfig b/net/dsa/Kconfig
-index 8746b07668ae..cbc2bd643ab2 100644
---- a/net/dsa/Kconfig
-+++ b/net/dsa/Kconfig
-@@ -9,6 +9,7 @@ menuconfig NET_DSA
- 	select NET_SWITCHDEV
- 	select PHYLINK
- 	select NET_DEVLINK
-+	select NET_SELFTESTS
- 	help
- 	  Say Y if you want to enable support for the hardware switches supported
- 	  by the Distributed Switch Architecture.
-diff --git a/net/dsa/slave.c b/net/dsa/slave.c
-index 995e0e16f295..e282b422f733 100644
---- a/net/dsa/slave.c
-+++ b/net/dsa/slave.c
-@@ -15,6 +15,7 @@
- #include <linux/mdio.h>
- #include <net/rtnetlink.h>
- #include <net/pkt_cls.h>
-+#include <net/selftests.h>
- #include <net/tc_act/tc_mirred.h>
- #include <linux/if_bridge.h>
- #include <linux/if_hsr.h>
-@@ -748,7 +749,10 @@ static void dsa_slave_get_strings(struct net_device *dev,
- 		if (ds->ops->get_strings)
- 			ds->ops->get_strings(ds, dp->index, stringset,
- 					     data + 4 * len);
-+	} else if (stringset ==  ETH_SS_TEST) {
-+		net_selftest_get_strings(data);
- 	}
-+
- }
- 
- static void dsa_slave_get_ethtool_stats(struct net_device *dev,
-@@ -794,11 +798,27 @@ static int dsa_slave_get_sset_count(struct net_device *dev, int sset)
- 			count += ds->ops->get_sset_count(ds, dp->index, sset);
- 
- 		return count;
-+	} else if (sset ==  ETH_SS_TEST) {
-+		return net_selftest_get_count();
- 	}
- 
- 	return -EOPNOTSUPP;
- }
- 
-+static void dsa_slave_net_selftest(struct net_device *ndev,
-+				   struct ethtool_test *etest, u64 *buf)
-+{
-+	struct dsa_port *dp = dsa_slave_to_port(ndev);
-+	struct dsa_switch *ds = dp->ds;
-+
-+	if (ds->ops->self_test) {
-+		ds->ops->self_test(ds, dp->index, etest, buf);
-+		return;
-+	}
-+
-+	net_selftest(ndev, etest, buf);
-+}
-+
- static void dsa_slave_get_wol(struct net_device *dev, struct ethtool_wolinfo *w)
- {
- 	struct dsa_port *dp = dsa_slave_to_port(dev);
-@@ -1630,6 +1650,7 @@ static const struct ethtool_ops dsa_slave_ethtool_ops = {
- 	.get_rxnfc		= dsa_slave_get_rxnfc,
- 	.set_rxnfc		= dsa_slave_set_rxnfc,
- 	.get_ts_info		= dsa_slave_get_ts_info,
-+	.self_test		= dsa_slave_net_selftest,
- };
- 
- /* legacy way, bypassing the bridge *****************************************/
--- 
-2.29.2
-
+Jason
