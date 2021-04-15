@@ -2,126 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EBC436013F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 06:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40299360141
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 06:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbhDOE6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 00:58:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbhDOE6r (ORCPT
+        id S229869AbhDOE7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 00:59:53 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:55922 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229450AbhDOE7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 00:58:47 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7C5C061574;
-        Wed, 14 Apr 2021 21:58:20 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id b26so10113637pfr.3;
-        Wed, 14 Apr 2021 21:58:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SKRLPo3oVdZsOtlFDjKnXNMAzM66ox1FZB40ACHkvdI=;
-        b=B4QuludhGPzK9ikzYeG2n3wg22LrWFFJVrjrhfX7khpWK1l1IIzv7MbTZZvtSqN3Pk
-         6Rvcbfn2+UCBk6X7E2W14RF2LJQ1oUPCPLV01mpLSMCYJGDrt3piqx399H72IY07fQY8
-         aW7aNfD9h1yMK4wIi21j1PMYKUFYL2Ae2lAmaiW9dJsBZyevW/y8+QZp09WKtd7TcwYj
-         Y2m91TJZuAo/xkoZX0N+QXSWpg7FWZd2IlYTlJF2x0fZd9r52jU9FKCYO97U9E1UN10B
-         REo+NHTxGj4clCcvlIEtSM9N4S3PZt5+vKTwZfqC7u11vSs4ttt2hfWbCt04gAJXUJxE
-         4tJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SKRLPo3oVdZsOtlFDjKnXNMAzM66ox1FZB40ACHkvdI=;
-        b=XrE5eiqx+Z4N76ELKFP6Rgr5tDJ5oUzx7yYsErbAeMmEITqMmMCvFLL5IQVrXdDUho
-         l9YNysz/+UMP3uAwtysKTaBrbF+/qDk6g3ThpFRPczVm6IrtcOJpLPJDkwUKMuSdzLb9
-         KmLjVYOw5CRFEq7aoMhVA9Ocr5KHmJrWxVOXLil0NECvupS5NuAoJKBqt5AwAwSmwaV9
-         n6ow6KgRreHqgOrhBE1/hoy9vvUGzu05f65hqZXcBq6wdm1mKIfIrVchdeCNatK0TZao
-         30jcAd3XLSZUAAm7UQQkAcoq0emjcRUIFijmJIugU+xo0sme1KF6Tapi8D1e9Jczz56t
-         TNNw==
-X-Gm-Message-State: AOAM531qVNkSXX4kP2Fg+AG0hrG4SgeEKycZwELNb3CO7I8iYZSnLSv1
-        /FB+Fl1TxkS7eYVUYuKnhtE=
-X-Google-Smtp-Source: ABdhPJxVSLffqST+4s1DOHpT7YcPVdZC/l4DSUdAHaafrSXNzkCOBmF1JZHrmZxj+9317ZYcDVl1ag==
-X-Received: by 2002:a65:43c9:: with SMTP id n9mr1774047pgp.19.1618462700288;
-        Wed, 14 Apr 2021 21:58:20 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:4d7e:4d10:d9a7:9fa4])
-        by smtp.gmail.com with ESMTPSA id g14sm837029pjh.28.2021.04.14.21.58.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 21:58:19 -0700 (PDT)
-Date:   Wed, 14 Apr 2021 21:58:17 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Robin van der Gracht <robin@protonic.nl>,
-        linux-iio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Subject: Re: [Ping for Dmitry] Re: [PATCH v5 3/3] iio: adc: add ADC driver
- for the TI TSC2046 controller
-Message-ID: <YHfH6T5GpN63PNfH@google.com>
-References: <20210329073131.1759-1-o.rempel@pengutronix.de>
- <20210329073131.1759-4-o.rempel@pengutronix.de>
- <20210329115826.03bc5745@jic23-huawei>
- <20210413093105.lbqe46srqvv7tj6s@pengutronix.de>
+        Thu, 15 Apr 2021 00:59:52 -0400
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 13F4xCDF013667;
+        Thu, 15 Apr 2021 13:59:13 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 13F4xCDF013667
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1618462753;
+        bh=ht1f8yHf5q2jN0EbMW6shrGEQ2FtkebawKV6QqdYm9s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=z3jAFFPFnImSo6x/RxJZ5si1Rzh9NMQ0IbpSFJWQItx8lS0XeFxA0kqW4HpyqqurB
+         kx/DW2gIGc6UCb7BS4RHIEi/EDuhEwYQV7Xt/u3zW628T1Tu5EkGlxSWAl8tYRbTOi
+         pbUgLFiB/0rzb591/aPUXT96wR1N8RePcObMHhc0GuEcXw5nXEjmveXJvcSHB0DtCY
+         ChwPZA00CuGgKg9XTyKq/J4seoKk7KpVHys8lD5FzYqA6lpkvG+wYpeuGxHDunhQnk
+         ihM9HHnVJweW7wYBGWgnbnkkyq/4ME+tQmC2uvcuCzQIB3VqXNgyk5d20l+CtcMxdJ
+         RjhH8OLX05RtA==
+X-Nifty-SrcIP: [209.85.214.177]
+Received: by mail-pl1-f177.google.com with SMTP id y2so11380991plg.5;
+        Wed, 14 Apr 2021 21:59:12 -0700 (PDT)
+X-Gm-Message-State: AOAM531owx6Ga8LuhMfNH/15xPVcRrUcurfma5PJI37eeyP29xLImt+f
+        8Hy779Z1L5s2B8sXRy0Tw3RN1h6YJEB5a2A85Vc=
+X-Google-Smtp-Source: ABdhPJzqXO9OkbImfvAAHhsAgenGqmlkv/Ydd6svh8nfl2I1L/fspACA/bzbNglAPeifpWnV1Ri2XAe4frNQMML1i3A=
+X-Received: by 2002:a17:90a:1056:: with SMTP id y22mr1695144pjd.153.1618462752092;
+ Wed, 14 Apr 2021 21:59:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210413093105.lbqe46srqvv7tj6s@pengutronix.de>
+References: <YHdmNrKFp1HqkfVR@localhost.localdomain>
+In-Reply-To: <YHdmNrKFp1HqkfVR@localhost.localdomain>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 15 Apr 2021 13:58:35 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARXt=9-Jw+0dTRhUhkS+r8N6U+m+of5OPEtK7i1XpHzkQ@mail.gmail.com>
+Message-ID: <CAK7LNARXt=9-Jw+0dTRhUhkS+r8N6U+m+of5OPEtK7i1XpHzkQ@mail.gmail.com>
+Subject: Re: [PATCH] kconfig: redo fake deps at include/config/*.h
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oleksij, Jonathan,
+On Thu, Apr 15, 2021 at 7:01 AM Alexey Dobriyan <adobriyan@gmail.com> wrote:
+>
+> Make include/config/foo/bar.h fake deps files generation simpler.
+>
+> * delete .h suffix
+>         those aren't header files, shorten filenames,
+>
+> * delete tolower()
+>         Linux filesystems can deal with both upper and lowercase
+>         filenames very well,
+>
+> * put everything in 1 directory
+>         Presumably 'mkdir -p' split is from dark times when filesystems
+>         handled huge directories badly, disks were round adding to
+>         seek times.
 
-On Tue, Apr 13, 2021 at 11:31:05AM +0200, Oleksij Rempel wrote:
-> Hi Dmitry,
-> 
-> probably this mail passed under your radar. Can you please add your
-> statement here.
 
-Sorry, my bad, I saw "iio" and thought there is nothing for me to
-comment on ;)
+I am not sure about the impact of this change
+given various file systems in the wild,
+but this simplification is attractive.
 
-> 
-> On Mon, Mar 29, 2021 at 11:58:26AM +0100, Jonathan Cameron wrote:
-> > On Mon, 29 Mar 2021 09:31:31 +0200
-> > Oleksij Rempel <o.rempel@pengutronix.de> wrote:
-> > 
-> > > Basically the TI TSC2046 touchscreen controller is 8 channel ADC optimized for
-> > > the touchscreen use case. By implementing it as an IIO ADC device, we can
-> > > make use of resistive-adc-touch and iio-hwmon drivers.
-> > > 
-> > > Polled readings are currently not implemented to keep this patch small, so
-> > > iio-hwmon will not work out of the box for now.
-> > > 
-> > > So far, this driver was tested with a custom version of resistive-adc-touch driver,
-> > > since it needs to be extended to make use of Z1 and Z2 channels. The X/Y
-> > > are working without additional changes.
-> > > 
-> > > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > Hi Oleksij,
-> > 
-> > Couple of things in here I missed before, but big question is still whether
-> > Dmitry is happy with what you mention in the cover letter:
-> > 
-> > "This driver can replace drivers/input/touchscreen/ads7846.c and has
-> > following advantages over it:
-> > - less code to maintain
-> > - shared code paths (resistive-adc-touch, iio-hwmon, etc)
-> > - can be used as plain IIO ADC to investigate signaling issues or test
-> >   real capacity of the plates and attached low-pass filters
-> >   (or use the touchscreen as a microphone if you like ;) )"
+With a quick search, I found a comment
+'performance issues past 10,000' on ext2  [1]
+but that may not be what we care about much...
 
-I am all for code unification and reuse, so please go ahead. If there
-are regressions we can re-evaluate and see if they can be addressed in
-this driver or if we need to resurrect ads7846.
+[1]: https://webmasters.stackexchange.com/questions/99539/what-is-a-recommended-maximum-number-of-files-in-a-directory-on-your-webserver
 
-Thanks.
 
--- 
-Dmitry
+
+
+
+> @@ -124,36 +124,12 @@ static void xprintf(const char *format, ...)
+>         va_end(ap);
+>  }
+>
+> -static void xputchar(int c)
+> -{
+> -       int ret;
+> -
+> -       ret = putchar(c);
+> -       if (ret == EOF) {
+> -               perror("fixdep");
+> -               exit(1);
+> -       }
+> -}
+> -
+>  /*
+>   * Print out a dependency path from a symbol name
+>   */
+>  static void print_dep(const char *m, int slen, const char *dir)
+>  {
+> -       int c, prev_c = '/', i;
+> -
+> -       xprintf("    $(wildcard %s/", dir);
+> -       for (i = 0; i < slen; i++) {
+> -               c = m[i];
+> -               if (c == '_')
+> -                       c = '/';
+> -               else
+> -                       c = tolower(c);
+> -               if (c != '/' || prev_c != '/')
+> -                       xputchar(c);
+> -               prev_c = c;
+> -       }
+> -       xprintf(".h) \\\n");
+> +       xprintf("    $(wildcard %s/%.*s) \\\n", dir, slen, m);
+
+
+
+Since this function now contains just one line,
+can you hard-code
+
+    xprintf("    $(wildcard include/config/%.*s) \\\n", slen, m);
+
+in use_config() ?
+
+
+
+>  }
+>
+>  struct item {
+> --- a/scripts/kconfig/confdata.c
+> +++ b/scripts/kconfig/confdata.c
+> @@ -130,19 +130,14 @@ static size_t depfile_prefix_len;
+>  static int conf_touch_dep(const char *name)
+>  {
+>         int fd, ret;
+> -       const char *s;
+> -       char *d, c;
+> +       char *d;
+>
+>         /* check overflow: prefix + name + ".h" + '\0' must fit in buffer. */
+>         if (depfile_prefix_len + strlen(name) + 3 > sizeof(depfile_path))
+
+Since you dropped the ".h" suffix,
+please fix up this line.
+
+
+
+
+
+Also, you can fix
+
+  # changed, Kconfig touches the corresponding timestamp file
+include/config/*.h.
+
+in kernel/gen_kheaders.sh
+
+
+
+
+
+>                 return -1;
+>
+>         d = depfile_path + depfile_prefix_len;
+> -       s = name;
+> -
+> -       while ((c = *s++))
+> -               *d++ = (c == '_') ? '/' : tolower(c);
+> -       strcpy(d, ".h");
+> +       strcpy(d, name);
+>
+>         /* Assume directory path already exists. */
+>         fd = open(depfile_path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+> @@ -465,7 +460,7 @@ int conf_read_simple(const char *name, int def)
+>                                          * Reading from include/config/auto.conf
+>                                          * If CONFIG_FOO previously existed in
+>                                          * auto.conf but it is missing now,
+> -                                        * include/config/foo.h must be touched.
+> +                                        * include/config/FOO must be touched.
+>                                          */
+>                                         conf_touch_dep(line + strlen(CONFIG_));
+>                                 else
+
+
+
+--
+Best Regards
+Masahiro Yamada
