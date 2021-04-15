@@ -2,113 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82573602F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:09:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 625813602F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231214AbhDOHJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 03:09:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230481AbhDOHJR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 03:09:17 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 849FFC061574;
-        Thu, 15 Apr 2021 00:08:54 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so21741436otn.1;
-        Thu, 15 Apr 2021 00:08:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nvv9Z+5IWRSsuwqqnBpx+MZMoeQomd87AFJ4WvcFBio=;
-        b=fELtbrT9MMPajwbDhgBIp13s7ytuo9ZP436u5bHiLqI96pnWwNG5zhIfjL9Dw171m9
-         fgJQDkAnw4nnD67piz3+EUgSD97l2fMIi2PAliv47JT18EwJeet92Tk6/rxCnCh7x0vV
-         7A7B5sBCJKb+eCKX60HGUvjQraaDuXEGIqle1953TFREiTFvvUsoqfJTZRlpQlAF+gKE
-         db8+fYW/SYMcJLsYG9M+aWLLBz/Ptng/B/iZjwwpjXsXR2q6XjFKU3GqS2C9dZv194e/
-         77ZLOqxbOwrdA0Tl3lLF+WkUukRsQSMj8ryC+DoRJYTD+gNGZv7WIqo43RV9sKg3s/Sx
-         LFiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nvv9Z+5IWRSsuwqqnBpx+MZMoeQomd87AFJ4WvcFBio=;
-        b=S3dd5PSQTmo0Y+pcMEtDHpfVgScFNkoAeOnNS9k74z5lfCGlHp1pIiTXKPvxD6FXGe
-         AdXFk4jkPyGq4eX+QB33iLWcmcH1CutDHbd0Ca6E2WfzPEV6aNSM/9aTcStHDhfOWzlM
-         L3xE2Gawoo07nSfmla0xh7yiSiG8Pb0alGA7b3mVBKwz9jQQIZQFkqGZ1/X7QctLxODu
-         jDRLwGV0CQoUp69JKj8ITbx8wECl0R4zn2bZixflShKSLT4HZgI4i02xYgSdQjdgtwWe
-         4jxtu24SxrWJ4luKmUurSDG1FxpZl98D9hmCS4QBKiuLLhiMFXU2J73Ibn30MJmOL6e5
-         z+9Q==
-X-Gm-Message-State: AOAM530XqGIkox0r1usmuRvTdGZHxRetlKoDtMkMjKgTfr0tLQ1Sa27W
-        NQjf3bZkvmtWNVV/LM3/K10TUfqNL5MQ1C8CnXh/xfg7ejX76Q==
-X-Google-Smtp-Source: ABdhPJyS9hsAmAbnFATfr51nALqPsm1RRwEbtQKsklRn8JfEb5jRAgLViDjfoMM3N8DgpnbsDPhmyxSQLK5BbaQ8tig=
-X-Received: by 2002:a9d:ecf:: with SMTP id 73mr1587984otj.339.1618470533770;
- Thu, 15 Apr 2021 00:08:53 -0700 (PDT)
+        id S230359AbhDOHI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 03:08:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44322 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229503AbhDOHI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 03:08:56 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1618470513; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nOLV/Oy9dMUzuTuhuv9iYZGKpUTv1tQoggqmfp9NMG0=;
+        b=XHGBcj3hBO+MfNOihzVvmuEuljVs10StZmWDsrrX0tWmfIs9xfhJt/xRK5LXm8UDnMdMfj
+        Gw43B1ylwVv3quvDI3TC+YcYcGGXGlVVPRoKKp69lMnpLSBRxg3u1HfjUD1K3GJVkDcQwD
+        s88Q+PYfS6rt8uzZm4YIIvmYuRNIdeY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 51A6CB035;
+        Thu, 15 Apr 2021 07:08:33 +0000 (UTC)
+Date:   Thu, 15 Apr 2021 09:08:32 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Muchun Song <songmuchun@bytedance.com>, guro@fb.com,
+        akpm@linux-foundation.org, shakeelb@google.com,
+        vdavydov.dev@gmail.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, duanxiongchun@bytedance.com,
+        fam.zheng@bytedance.com
+Subject: Re: [External] Re: [PATCH 4/7] mm: memcontrol: simplify
+ lruvec_holds_page_lru_lock
+Message-ID: <YHfmcLLbW6MMbcPG@dhcp22.suse.cz>
+References: <20210413065153.63431-1-songmuchun@bytedance.com>
+ <20210413065153.63431-5-songmuchun@bytedance.com>
+ <YHa5ao/JgoqHQh0Z@dhcp22.suse.cz>
+ <CAMZfGtXBqxxgNaB5dcNGvtoH7Gn-1+Ara1YOGS-OahNXaExhsQ@mail.gmail.com>
+ <YHcrRMsmrXd5n3oQ@cmpxchg.org>
 MIME-Version: 1.0
-References: <20210412161012.1628202-1-colin.king@canonical.com> <CAK8P3a2pSRu0OKDNrNJSdviRgcv8Lw1mwZr5opv=UbtHLps2oQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a2pSRu0OKDNrNJSdviRgcv8Lw1mwZr5opv=UbtHLps2oQ@mail.gmail.com>
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Thu, 15 Apr 2021 10:08:26 +0300
-Message-ID: <CAFCwf10S8WhEZtpwD=2AgbgopMahxHofp-yXvsZ4GWkrctPRAQ@mail.gmail.com>
-Subject: Re: [PATCH][next] habanalabs/gaudi: Fix uninitialized return code rc
- when read size is zero
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Colin King <colin.king@canonical.com>
-Cc:     Oded Gabbay <ogabbay@kernel.org>, Ofir Bitton <obitton@habana.ai>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHcrRMsmrXd5n3oQ@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 9:41 PM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Mon, Apr 12, 2021 at 6:11 PM Colin King <colin.king@canonical.com> wrote:
-> >
-> > From: Colin Ian King <colin.king@canonical.com>
-> >
-> > In the case where size is zero the while loop never assigns rc and the
-> > return value is uninitialized. Fix this by initializing rc to zero.
-> >
-> > Addresses-Coverity: ("Uninitialized scalar variable")
-> > Fixes: 639781dcab82 ("habanalabs/gaudi: add debugfs to DMA from the device")
-> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > ---
-> >  drivers/misc/habanalabs/gaudi/gaudi.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-> > index 8730b691ec61..b751652f80a8 100644
-> > --- a/drivers/misc/habanalabs/gaudi/gaudi.c
-> > +++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-> > @@ -6252,7 +6252,7 @@ static int gaudi_debugfs_read_dma(struct hl_device *hdev, u64 addr, u32 size,
-> >         dma_addr_t dma_addr;
-> >         void *kernel_addr;
-> >         bool is_eng_idle;
-> > -       int rc, dma_id;
-> > +       int rc = 0, dma_id;
-> >
-> >         kernel_addr = hdev->asic_funcs->asic_dma_alloc_coherent(
-> >                                                 hdev, SZ_2M,
->
->
-> In general, I don't like adding initializations during the declaration as that
-> tends to hide warnings for the cases where a later initialization is
-> missing. In this case it looks correct though.
->
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
+On Wed 14-04-21 13:49:56, Johannes Weiner wrote:
+> On Wed, Apr 14, 2021 at 06:00:42PM +0800, Muchun Song wrote:
+> > On Wed, Apr 14, 2021 at 5:44 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Tue 13-04-21 14:51:50, Muchun Song wrote:
+> > > > We already have a helper lruvec_memcg() to get the memcg from lruvec, we
+> > > > do not need to do it ourselves in the lruvec_holds_page_lru_lock(). So use
+> > > > lruvec_memcg() instead. And if mem_cgroup_disabled() returns false, the
+> > > > page_memcg(page) (the LRU pages) cannot be NULL. So remove the odd logic
+> > > > of "memcg = page_memcg(page) ? : root_mem_cgroup". And use lruvec_pgdat
+> > > > to simplify the code. We can have a single definition for this function
+> > > > that works for !CONFIG_MEMCG, CONFIG_MEMCG + mem_cgroup_disabled() and
+> > > > CONFIG_MEMCG.
+> > >
+> > > Neat. While you are at it wouldn't it make sesne to rename the function
+> > > as well. I do not want to bikeshed but this is really a misnomer. it
+> > > doesn't check anything about locking. page_belongs_lruvec?
+> > 
+> > Right. lruvec_holds_page_lru_lock is used to check whether
+> > the page belongs to the lruvec. page_belongs_lruvec
+> > obviously more clearer. I can rename it to
+> > page_belongs_lruvec the next version.
+> 
+> This sounds strange to me, I think 'belongs' needs a 'to' to be
+> correct, so page_belongs_to_lruvec(). Still kind of a mouthful.
+> 
+> page_matches_lruvec()?
+> 
+> page_from_lruvec()?
 
-I don't mind taking this patch for eliminating the warning but fyi,
-the caller function (hl_dma_size_write) checks that the size is not
-zero. If the size is zero, we never reach this function.
+Any of those is much better than what we have here.
 
-Greg, do you mind applying it directly to your -next branch ? I don't
-have anything pending and I'm too lazy sending a pull request on a
-single patch ;)
-
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-
-Thanks,
-Oded
+-- 
+Michal Hocko
+SUSE Labs
