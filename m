@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E058360CA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 341E9360C34
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234231AbhDOOwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:52:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38742 "EHLO mail.kernel.org"
+        id S233629AbhDOOtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:49:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233672AbhDOOvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:51:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDA13613CD;
-        Thu, 15 Apr 2021 14:50:40 +0000 (UTC)
+        id S233598AbhDOOtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:49:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8575B613B4;
+        Thu, 15 Apr 2021 14:48:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498241;
-        bh=CdFy9NaQLEmg/PUPCmbb3Ug+hSGqUwHXpr81Mm0c7Xs=;
+        s=korg; t=1618498129;
+        bh=Ha1dcDSF7tKe9v3gXZlvuq1L7QJIY3DMSxeU79wxe5Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i7TZY6NaeSqtPqSHSX7uFj/NS7d1ejFOnKgAnUHv8I/7N50AZQajzmLhcjC6L/fIr
-         okDwEYkj3HixJehJ2M7KDwguATTXFIfrQ09OqnG044iTDGxAeLw2SxA3Df2clBuZuv
-         5/wmC+Seg5xYwrOk/jh5aAB9foiWqdViZKLLzPjA=
+        b=bJSpJOlV5pGAfHbF1gv2qXuHO4smL+vgBoQE1Z71gCrke5rPmiD/AaU8G8DJxPmuR
+         TLzWd0BBm7+49Y7zm/cb3+S43qz48hQWr0fHxXdyGxlnKEW4nhrNrFEN6E62DilBPC
+         t9yT60iNBNCqqdGgO1P9bqM0cVrufO2igREr/dTY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Helge Deller <deller@gmx.de>
-Subject: [PATCH 4.9 14/47] parisc: parisc-agp requires SBA IOMMU driver
+        stable@vger.kernel.org,
+        syzbot <syzbot+50ee810676e6a089487b@syzkaller.appspotmail.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Sven Eckelmann <sven@narfation.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.4 12/38] batman-adv: initialize "struct batadv_tvlv_tt_vlan_data"->reserved field
 Date:   Thu, 15 Apr 2021 16:47:06 +0200
-Message-Id: <20210415144413.926573109@linuxfoundation.org>
+Message-Id: <20210415144413.742350731@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.487943796@linuxfoundation.org>
-References: <20210415144413.487943796@linuxfoundation.org>
+In-Reply-To: <20210415144413.352638802@linuxfoundation.org>
+References: <20210415144413.352638802@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,31 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Helge Deller <deller@gmx.de>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
-commit 9054284e8846b0105aad43a4e7174ca29fffbc44 upstream.
+commit 08c27f3322fec11950b8f1384aa0f3b11d028528 upstream.
 
-Add a dependency to the SBA IOMMU driver to avoid:
-ERROR: modpost: "sba_list" [drivers/char/agp/parisc-agp.ko] undefined!
+KMSAN found uninitialized value at batadv_tt_prepare_tvlv_local_data()
+[1], for commit ced72933a5e8ab52 ("batman-adv: use CRC32C instead of CRC16
+in TT code") inserted 'reserved' field into "struct batadv_tvlv_tt_data"
+and commit 7ea7b4a142758dea ("batman-adv: make the TT CRC logic VLAN
+specific") moved that field to "struct batadv_tvlv_tt_vlan_data" but left
+that field uninitialized.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Helge Deller <deller@gmx.de>
+[1] https://syzkaller.appspot.com/bug?id=07f3e6dba96f0eb3cabab986adcd8a58b9bdbe9d
+
+Reported-by: syzbot <syzbot+50ee810676e6a089487b@syzkaller.appspotmail.com>
+Tested-by: syzbot <syzbot+50ee810676e6a089487b@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Fixes: ced72933a5e8ab52 ("batman-adv: use CRC32C instead of CRC16 in TT code")
+Fixes: 7ea7b4a142758dea ("batman-adv: make the TT CRC logic VLAN specific")
+Acked-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/char/agp/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/batman-adv/translation-table.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/char/agp/Kconfig
-+++ b/drivers/char/agp/Kconfig
-@@ -124,7 +124,7 @@ config AGP_HP_ZX1
+--- a/net/batman-adv/translation-table.c
++++ b/net/batman-adv/translation-table.c
+@@ -871,6 +871,7 @@ batadv_tt_prepare_tvlv_local_data(struct
  
- config AGP_PARISC
- 	tristate "HP Quicksilver AGP support"
--	depends on AGP && PARISC && 64BIT
-+	depends on AGP && PARISC && 64BIT && IOMMU_SBA
- 	help
- 	  This option gives you AGP GART support for the HP Quicksilver
- 	  AGP bus adapter on HP PA-RISC machines (Ok, just on the C8000
+ 		tt_vlan->vid = htons(vlan->vid);
+ 		tt_vlan->crc = htonl(vlan->tt.crc);
++		tt_vlan->reserved = 0;
+ 
+ 		tt_vlan++;
+ 	}
 
 
