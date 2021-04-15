@@ -2,133 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C476360593
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD27360594
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbhDOJY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 05:24:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55786 "EHLO
+        id S231773AbhDOJZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 05:25:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229820AbhDOJYy (ORCPT
+        with ESMTP id S229820AbhDOJZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 05:24:54 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A81C061574;
-        Thu, 15 Apr 2021 02:24:29 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id o16so26332053ljp.3;
-        Thu, 15 Apr 2021 02:24:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=F1DJ0GzmXw8sKDsrZ52paH//XCluIfnFmXR68ddtBX0=;
-        b=vDoOc5lSA9j5NNrK/w7l0gAncecdDu6kyst7n8cezjygFmOw3ppcWTe6fFeSvLIhHx
-         Hq37KSYwg01SjWERH8E9gRuVGgmHE5uWFm8WX4PxCdEYOV1KJP4RVT6NE/WoEiw+Vmk0
-         dVRWiTAojRv5aLptzU0J5UkPwdwzt2oI1AjPNu1PENyV6nrcvoDttDiRNqaBGH7fZNF7
-         n5q4yQiRgwVrx2TD77FGuakRcWDNVMQoLgwbcynK5LdUXiQTvatbrEHp1wWjP4yqszcs
-         mwwM8W6BPmZVhPbZFtiAb54wq+aE/HpK1u5eDYBDtsDuZ0Gdl47G85scyaR2n/p1ZkLU
-         uPeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=F1DJ0GzmXw8sKDsrZ52paH//XCluIfnFmXR68ddtBX0=;
-        b=mcKG6UyLvwx4G5vWzO1eZi+dhuMeGGuegPYQ23zJPEZLkSaJG2Y9wbVkbj2+L0IDnL
-         CBf9IMVCpYrLmmt7O1+zFk+kCnwvnehDJ2Y+GZWnqhwzchqAroXW4tS49abQGdNGgF4O
-         kWSRymnMEEJLJSRyclDbFRX8ULDGBRpTWl3Sw3QV/bks6TXn3BEUnbf5EcSsGL/ZwZ81
-         jzW/DvlUpUbB89YrKEh0Glgi4vo8rqxNxjn59EVeKT/JQCRTf6BH0587A2Z1JizjejQT
-         jWvdymRbbNXxVjD95Z8414sl7Gg7SiqHFtnAbjOeIbtR4c/+guCn7u/Eb/NOotKJzoVw
-         +9/g==
-X-Gm-Message-State: AOAM531v1QnjqjmYc97oF4PleU4A5zy0sYYSNn5Eyl5zady210KccCMV
-        10C9oxdB1MabIta+vl3AuWSWXFpDwTQ=
-X-Google-Smtp-Source: ABdhPJzmXf071xuEXPY4v8pGPVw+S6AUkHCWZfDLCXuC6XrRY9+Xs7O9CD5rp3vzZUu3W2xnGmb2FA==
-X-Received: by 2002:a05:651c:1306:: with SMTP id u6mr1275592lja.197.1618478667878;
-        Thu, 15 Apr 2021 02:24:27 -0700 (PDT)
-Received: from [192.168.1.100] ([31.173.84.170])
-        by smtp.gmail.com with ESMTPSA id q19sm584577lfu.258.2021.04.15.02.24.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 02:24:27 -0700 (PDT)
-Subject: Re: [PATCH 13/15] usb: dwc2: Add exit hibernation mode before
- removing drive
-To:     Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     John Youn <John.Youn@synopsys.com>
-References: <cover.1618464534.git.Arthur.Petrosyan@synopsys.com>
- <d01d23e2473407af37c42acb6ca4815ae5fd256e.1618464534.git.Arthur.Petrosyan@synopsys.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <6e51ca4c-b479-5ccb-59bd-a767db7118ec@gmail.com>
-Date:   Thu, 15 Apr 2021 12:24:19 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        Thu, 15 Apr 2021 05:25:15 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DEE7C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 02:24:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Jh/Z5CsbLDJ2dUT0D1FkWWjNfW/phW/5c5MUZ/JUzbg=; b=cDY0sm51fhBJRR6G9i2mGcml2O
+        W2RDobY5wE7VwT8Ddao16wlAOeiErRp7CTi5iDFWw5AGIGtnehByPJCJMhEGbFnnPE1dpCo7NrrXb
+        rdAyfEZGhmMjpasWmKKEn9yRGxoR7Yh/Kc3K5yvwFrEGbGpc60KKjKscKowfaFuJ2RrQ3LerXXldL
+        c72etaYasPgMqKXHWJrXg80p2QuNb7IU8FnAt26OeyNAbCdP107hkuyUT8SH24vCeaPHGi2nQgX0B
+        KDOC4/6xrL/Tji8+5ZjIpVIiGIMzAHqfmBIkVEydHzj3LYCYKnZVeJVoDfBV371SUmwUYqzCAhNGV
+        /WPX/Atg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWyEs-00FVmx-VT; Thu, 15 Apr 2021 09:24:43 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 344C2300209;
+        Thu, 15 Apr 2021 11:24:42 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E6C982022421A; Thu, 15 Apr 2021 11:24:41 +0200 (CEST)
+Date:   Thu, 15 Apr 2021 11:24:41 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Stafford Horne <shorne@gmail.com>, Guo Ren <guoren@kernel.org>,
+        Christoph =?iso-8859-1?Q?M=FCllner?= <christophm30@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        jonas@southpole.se, stefan.kristiansson@saunalahti.fi
+Subject: Re: [RFC][PATCH] locking: Generic ticket-lock
+Message-ID: <YHgGWT6eJOAofVaA@hirez.programming.kicks-ass.net>
+References: <CAHB2gtS6x25Oquf6W4Hhh-diUuZk1GJHTD2DjrffHo93nWbUYw@mail.gmail.com>
+ <YHVQNSfblP6G0Kgl@hirez.programming.kicks-ass.net>
+ <YHVTgfCpxpINc8sM@hirez.programming.kicks-ass.net>
+ <CAJF2gTQaF8wBCp-L6vgJPcu6EnFRWmh_qZMX2PiEfj0Z70-Ykg@mail.gmail.com>
+ <YHaU4uxr6emrivuu@hirez.programming.kicks-ass.net>
+ <YHawVOIHmDPbTmoB@hirez.programming.kicks-ass.net>
+ <YHbBBuVFNnI4kjj3@hirez.programming.kicks-ass.net>
+ <20210414204734.GJ3288043@lianli.shorne-pla.net>
+ <YHf00hgpB5C20tH3@hirez.programming.kicks-ass.net>
+ <20210415090215.GA1015@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <d01d23e2473407af37c42acb6ca4815ae5fd256e.1618464534.git.Arthur.Petrosyan@synopsys.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210415090215.GA1015@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.04.2021 8:41, Artur Petrosyan wrote:
+On Thu, Apr 15, 2021 at 10:02:18AM +0100, Catalin Marinas wrote:
+> IIRC, one issue we had with ticket spinlocks on arm64 was on big.LITTLE
+> systems where the little CPUs were always last to get a ticket when
+> racing with the big cores. That was with load/store exclusives (LR/SC
+> style) and would have probably got better with atomics but we moved to
+> qspinlocks eventually (the Juno board didn't have atomics).
 
-> When dwc2 core is in hibernation mode loading
-> driver again causes driver fail. Because in
-> that mode registers are not accessible.
-> 
-> In order to exit from hibernation checking
-> dwc2 core power saving state in "dwc2_driver_remove()"
-> function. If core is in hibernation, then checking the
-> operational mode of the driver. To check whether dwc2 core
-> is operating in host mode or device mode there is one way
-> which is retrieving the backup value of "gotgctl" and compare
-> the "CurMod" value. If previously core entered hibernation
-> in host mode then the exit is performed for host if not then
-> exit is performed for device mode. The introduced checking
-> is because in hibernation state all registers are not
-> accessible.
-> 
-> Signed-off-by: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-> ---
->   drivers/usb/dwc2/platform.c | 16 ++++++++++++++++
->   1 file changed, 16 insertions(+)
-> 
-> diff --git a/drivers/usb/dwc2/platform.c b/drivers/usb/dwc2/platform.c
-> index f8b819cfa80e..2ae4748ed5ec 100644
-> --- a/drivers/usb/dwc2/platform.c
-> +++ b/drivers/usb/dwc2/platform.c
-> @@ -316,8 +316,24 @@ static int dwc2_lowlevel_hw_init(struct dwc2_hsotg *hsotg)
->   static int dwc2_driver_remove(struct platform_device *dev)
->   {
->   	struct dwc2_hsotg *hsotg = platform_get_drvdata(dev);
-> +	struct dwc2_gregs_backup *gr;
->   	int ret = 0;
->   
-> +	/* Exit Hibernation when driver is removed. */
-> +	if (hsotg->hibernated) {
-> +		if (gr->gotgctl & GOTGCTL_CURMODE_HOST) {
-> +			ret = dwc2_exit_hibernation(hsotg, 0, 0, 1);
-> +			if (ret)
-> +				dev_err(hsotg->dev,
-> +					"exit hibernation failed.\n");
-> +		} else {
-> +			ret = dwc2_exit_hibernation(hsotg, 0, 0, 0);
-> +			if (ret)
-> +				dev_err(hsotg->dev,
-> +					"exit hibernation failed.\n");
+That sounds like a fundamental LL/SC fail, and I'm not sure qspinlock
+will help with that at all. The big cores can still hog the lock word
+and starve the little ones.
 
-    Again, why duplicate the innermost *if*?
+And those things not having AMOs there's really not much you can do. You
+want the big cores to back off, but they're having success, not failure.
+I suppose you can add a delay after a successful LL/SC, but that sucks.
 
->  +		}
-> +	}
-> +
->   	/* Exit Partial Power Down when driver is removed. */
->   	if (hsotg->in_ppd) {
->   		ret = dwc2_exit_partial_power_down(hsotg, 0, true);
-
-MBR, Sergei
+I suppose modern big.little things will have AMOs, so maybe nobody still
+cares about those systems.
