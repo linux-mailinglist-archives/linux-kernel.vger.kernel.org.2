@@ -2,171 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30C4360379
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C4D36037B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbhDOHfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 03:35:31 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:47603 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbhDOHfa (ORCPT
+        id S231292AbhDOHi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 03:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231143AbhDOHiZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 03:35:30 -0400
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 13F7Ysge006199;
-        Thu, 15 Apr 2021 16:34:55 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 13F7Ysge006199
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1618472095;
-        bh=OD3UH9B00q+oHiwfctNQok660hdenl+h06KhhwWImE4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=2ZRJZV3P2+7LuX6FUG/vyFLoTTmX4f3gIShVelb8Ub9i9Sl1F8ycDIc36CVKPWOtT
-         GjDeK1QhJpskypXZyLQUmEDEF9SYYnUd43cY5pH54Owaxq1gldQhpc1iGViBzwki9S
-         dAnuNKWIM7Ev5u4+a7XGZpwdJCczS5p7irZdwuOFI9/ZRgSHHgbKHUDlciBnPwIS2l
-         JPfRVUD2J4a+HbwT21ia5VsTpzwcPrlwS6zMTox823cZRf/HX4m6cbLT920PjRb2Gb
-         9aDW55h6x+oO0EPwr/GOr8EV0YH7qu3WYEwe6LqVrBIh33Kq9GWN3jajFDYeLKtGjD
-         Dpcoz5NYUWtvQ==
-X-Nifty-SrcIP: [209.85.214.171]
-Received: by mail-pl1-f171.google.com with SMTP id j7so11579681plx.2;
-        Thu, 15 Apr 2021 00:34:55 -0700 (PDT)
-X-Gm-Message-State: AOAM530KMVZL62j5ITsQPzngyKeFCv2n1we0RvjxlaUQOBPM5w7JOPUJ
-        rmghu0TcmZWzh5XAlHkBB24Pki81vW1RZ66xMOA=
-X-Google-Smtp-Source: ABdhPJzRbpjHLU63bJTalOwvIG9Y/CwD/naLKG/8Bv4KHJDhxu8mJxCHQSzrLOECFTJSQrKUrtme+9hbqp1PBj7+nJQ=
-X-Received: by 2002:a17:902:d645:b029:e8:ec90:d097 with SMTP id
- y5-20020a170902d645b02900e8ec90d097mr2325772plh.47.1618472094311; Thu, 15 Apr
- 2021 00:34:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210228061028.239459-1-masahiroy@kernel.org> <20210228061028.239459-3-masahiroy@kernel.org>
- <86dadf33-70f7-a5ac-cb8c-64966d2f45a1@linux.ibm.com> <395d2db1-b860-0da2-a859-d1d840508a46@de.ibm.com>
-In-Reply-To: <395d2db1-b860-0da2-a859-d1d840508a46@de.ibm.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 15 Apr 2021 16:34:17 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQB0pJay==-FvvYNYR2TDymtznPU_FELWJOBPaAjnYrcQ@mail.gmail.com>
-Message-ID: <CAK7LNAQB0pJay==-FvvYNYR2TDymtznPU_FELWJOBPaAjnYrcQ@mail.gmail.com>
-Subject: Re: [PATCH 3/4] kbuild: spilt cc-option and friends to scripts/Makefile.compiler
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Janosch Frank <frankja@linux.ibm.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Thu, 15 Apr 2021 03:38:25 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF88C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 00:38:01 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id il9-20020a17090b1649b0290114bcb0d6c2so13928589pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 00:38:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=bV8z4QSd0nufHzVv3FL+uGmmlw7+lydosaJYFrEHYIM=;
+        b=UlXuelMDXOoQSVWdYVm2kZk4GmYCUjr0cAHLr0AQ+3BA1MzeSVMVy1h2vCnO1EPv9C
+         rkDF4+GXpcv7tHZEABCGbcwf0zfSlwAIPHxkIBYxc9fYgGUiNYMabMW1FLO2hLMq6TP0
+         l0IyPL+NxG/c72io6h0KUGqauy7raYnmy+kivq9yfq62st2oNXlHG0cPv47XlawxE8gJ
+         6DPgZ61OkXIQUyM1/Z1wSATDquXtYwR5D8OTpmCvHlPQ/dtBEQfEMQHgB8PcAFcUQhXQ
+         xvQ+rAq4wcUMQWb7yozMQoQQhQAYmHXOfmC/26QioeT4JSCNcvQOw6CTGGVVcVFn+i2Y
+         14xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=bV8z4QSd0nufHzVv3FL+uGmmlw7+lydosaJYFrEHYIM=;
+        b=Ff19s1/93drQ3/yfDjYODyJI6HQMk/3Fng/B/tqP/WZrkbHUlOcZQ3MYGyL2RXF8dH
+         Wb6+PECS6L59oTz/wxSJFevja4JqtYHHxFV2FOUHNvwjRZzmsiI0MkAXKpKJRSltJDqg
+         84vHg+h0U6VMDPjOBr5UHc59MqBAVLWXuRKl8gAjbcSVLg6jmjLtYQIbL+/DADUwJKmr
+         mnenpFDsjgMYGubyNIMxvzNFBzQsffSlpD4V30mgpzz+5gYBZyAtU9rDUZmoq22I8bbf
+         qFvbdV0JxuasHqwrIYsUlSmspo0A1rgK6D+A6MCScLMYVBaNL1TThy/m2ZbTMZ0xaamD
+         UjNw==
+X-Gm-Message-State: AOAM5333uYoyi5ybJwbf8nc1Tx73r2Y3kfMEx75U6qr3F+bRsMrcFZ0p
+        TUEI8OhXCFz5/LhjmhqyWMx6Iw==
+X-Google-Smtp-Source: ABdhPJyDYUPYXOVD7f9hOJgeXWzMe7D3X1xGDL494j5mzSAYQne7ZxLnlrs5fKIxjtxA6Lc6K+skHw==
+X-Received: by 2002:a17:90a:f298:: with SMTP id fs24mr2491679pjb.176.1618472280905;
+        Thu, 15 Apr 2021 00:38:00 -0700 (PDT)
+Received: from localhost ([136.185.154.93])
+        by smtp.gmail.com with ESMTPSA id h68sm1312274pfe.111.2021.04.15.00.37.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 00:37:59 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 13:07:58 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Wolfram Sang <wsa@kernel.org>, Jie Deng <jie.deng@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Marc Hartmayer <mhartmay@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        conghui.chen@intel.com, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com,
+        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
+        Tali Perry <tali.perry1@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        yu1.wang@intel.com, shuo.a.liu@intel.com,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210415073758.lfy33n6y6kvp3yvk@vireshk-i7>
+References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
+ <20210323072704.rgoelmq62fl2wjjf@vireshk-i7>
+ <a2994a8f-bbf9-b26f-a9d2-eb02df6623b8@intel.com>
+ <CAK8P3a3OBUZC2nxaQ2wyL9EeT3gzXUX9sfJ+ZJfJUiJK_3ZkrA@mail.gmail.com>
+ <20210415064538.a4vf7egk6l3u6zfz@vireshk-i7>
+ <b25d1f4e-f17f-8a14-e7e6-7577d25be877@intel.com>
+ <20210415072131.GA1006@kunai>
+ <20210415072431.apntpcwrk5hp6zg4@vireshk-i7>
+ <20210415072823.GB1006@kunai>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210415072823.GB1006@kunai>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 10:11 PM Christian Borntraeger
-<borntraeger@de.ibm.com> wrote:
->
->
->
-> On 13.04.21 14:51, Janosch Frank wrote:
-> > On 2/28/21 7:10 AM, Masahiro Yamada wrote:
-> >> scripts/Kbuild.include is included everywhere, but macros such as
-> >> cc-option are needed by build targets only.
-> >>
-> >> For example, when 'make clean' traverses the tree, it does not need
-> >> to evaluate $(call cc-option,).
-> >>
-> >> Split cc-option, ld-option, etc. to scripts/Makefile.compiler, which
-> >> is only included from the top Makefile and scripts/Makefile.build.
-> >>
-> >> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> >
-> > This commit broke the KVM selftest compilation under s390 in linux-next
-> > for me. Funny enough the compilation is only broken on Ubuntu, under
-> > Fedora the test fails with an assertion.
-> >
-> > FEDORA:
-> > [root@fedora kvm]# ./set_memory_region_test
-> > Allowed number of memory slots: 32767
-> > ==== Test Assertion Failure ====
-> >    lib/kvm_util.c:142: vm->fd >= 0
-> >    pid=1541645 tid=1541645 - Invalid argument
-> >       1       0x0000000001002f4b: vm_open at kvm_util.c:142
-> >       2        (inlined by) vm_create at kvm_util.c:258
-> >       3       0x00000000010015ef: test_add_max_memory_regions at
-> > set_memory_region_test.c:351
-> >       4        (inlined by) main at set_memory_region_test.c:397
-> >       5       0x000003ffa3d2bb89: ?? ??:0
-> >       6       0x00000000010017ad: .annobin_abi_note.c.hot at crt1.o:?
-> >    KVM_CREATE_VM ioctl failed, rc: -1 errno: 22
-> >
-> >
-> > Ubuntu:
-> > make[1]: Leaving directory '/mnt/dev/linux'
-> > gcc -Wall -Wstrict-prototypes -Wuninitialized -O2 -g -std=gnu99
-> > -fno-stack-protector -fno-PIE -I../../../../tools/include
-> > -I../../../../tools/arch/s390/include -I../../../../usr/include/
-> > -Iinclude -Ilib -Iinclude/s390x -I..   -c lib/sparsebit.c -o
-> > /mnt/dev/linux/tools/testing/selftests/kvm/lib/sparsebit.o
-> > gcc -Wall -Wstrict-prototypes -Wuninitialized -O2 -g -std=gnu99
-> > -fno-stack-protector -fno-PIE -I../../../../tools/include
-> > -I../../../../tools/arch/s390/include -I../../../../usr/include/
-> > -Iinclude -Ilib -Iinclude/s390x -I..   -c lib/kvm_util.c -o
-> > /mnt/dev/linux/tools/testing/selftests/kvm/lib/kvm_util.o
-> > gcc -Wall -Wstrict-prototypes -Wuninitialized -O2 -g -std=gnu99
-> > -fno-stack-protector -fno-PIE -I../../../../tools/include
-> > -I../../../../tools/arch/s390/include -I../../../../usr/include/
-> > -Iinclude -Ilib/s390x -Iinclude/s390x -I..   -c
-> > lib/s390x/diag318_test_handler.c -o
-> > /mnt/dev/linux/tools/testing/selftests/kvm/lib/s390x/diag318_test_handler.o
-> > ar crs /mnt/dev/linux/tools/testing/selftests/kvm/libkvm.a
-> > /mnt/dev/linux/tools/testing/selftests/kvm/lib/assert.o
-> > /mnt/dev/linux/tools/testing/selftests/kvm/lib/elf.o
-> > /mnt/dev/linux/tools/testing/selftests/kvm/lib/io.o
-> > /mnt/dev/linux/tools/testing/selftests/kvm/lib/kvm_util.o
-> > /mnt/dev/linux/tools/testing/selftests/kvm/lib/sparsebit.o
-> > /mnt/dev/linux/tools/testing/selftests/kvm/lib/test_util.o
-> > /mnt/dev/linux/tools/testing/selftests/kvm/lib/guest_modes.o
-> > /mnt/dev/linux/tools/testing/selftests/kvm/lib/perf_test_util.o
-> > /mnt/dev/linux/tools/testing/selftests/kvm/lib/s390x/processor.o
-> > /mnt/dev/linux/tools/testing/selftests/kvm/lib/s390x/ucall.o
-> > /mnt/dev/linux/tools/testing/selftests/kvm/lib/s390x/diag318_test_handler.o
-> > gcc -Wall -Wstrict-prototypes -Wuninitialized -O2 -g -std=gnu99
-> > -fno-stack-protector -fno-PIE -I../../../../tools/include
-> > -I../../../../tools/arch/s390/include -I../../../../usr/include/
-> > -Iinclude -Is390x -Iinclude/s390x -I..  -pthread    s390x/memop.c
-> > /mnt/dev/linux/tools/testing/selftests/kvm/libkvm.a  -o
-> > /mnt/dev/linux/tools/testing/selftests/kvm/s390x/memop
-> > /usr/bin/ld: /tmp/ccFU8WYF.o: `stdout@@GLIBC_2.2' non-PLT reloc for
-> > symbol defined in shared library and accessed from executable (rebuild
-> > file with -fPIC ?)
-> > /usr/bin/ld: final link failed: bad value
-> > collect2: error: ld returned 1 exit status
-> > make: *** [../lib.mk:139:
-> > /mnt/dev/linux/tools/testing/selftests/kvm/s390x/memop] Error 1
-> >
->
->
->
-> It looks like that from tools/testing/selftests/kvm/Makefile
-> additional linker flags are being ignored with this patch.
->
-> no-pie-option := $(call try-run, echo 'int main() { return 0; }' | \
->          $(CC) -Werror -no-pie -x c - -o "$$TMP", -no-pie)
->
-> # On s390, build the testcases KVM-enabled
-> pgste-option = $(call try-run, echo 'int main() { return 0; }' | \
->          $(CC) -Werror -Wl$(comma)--s390-pgste -x c - -o "$$TMP",-Wl$(comma)--s390-pgste)
->
->
-> LDFLAGS += -pthread $(no-pie-option) $(pgste-option)
->
+On 15-04-21, 09:28, Wolfram Sang wrote:
+> 
+> > Now that we were able to catch you, I will use the opportunity to
+> > clarify the doubts I had.
+> > 
+> > - struct mutex lock in struct virtio_i2c, I don't think this is
+> >   required since the core takes care of locking in absence of this.
+> 
+> This is likely correct.
+> 
+> > - Use of I2C_CLASS_DEPRECATED flag, I don't think it is required for
+> >   new drivers.
+> 
+> This is definately correct :)
 
-
-Thanks.
-
-I will separate Kbuild and the tool build system.
-https://patchwork.kernel.org/project/linux-kbuild/patch/20210415072700.147125-2-masahiroy@kernel.org/
-
-I do not want to be bothered by the can of worms.
-
-
-
-
+Glad to hear that. Thanks.
 
 -- 
-Best Regards
-Masahiro Yamada
+viresh
