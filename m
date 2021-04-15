@@ -2,129 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B7F36133C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2781361341
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 22:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235201AbhDOT7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 15:59:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54408 "EHLO
+        id S235203AbhDOUA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 16:00:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235142AbhDOT7O (ORCPT
+        with ESMTP id S234654AbhDOUA1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 15:59:14 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94946C061574;
-        Thu, 15 Apr 2021 12:58:51 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id o123so16796803pfb.4;
-        Thu, 15 Apr 2021 12:58:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SbETF7lohgkuXHBXWamB8mVWkNu7c8UJtl6zbFx2I9c=;
-        b=R3ni5C03p6m8q7hoxznqE+yua1HR7cUIHBCNjEm8eZgO4+slnNMqvvL/AP7zO0B8g0
-         SExvUYTMtiWp/+5BhpslCB7P2tA460H6dZbw7LjzH/1F+7fLh0MgT2i910+snKn1MsSW
-         YOl/zlmQh/DUc79JnVnhM7cFFxnyfnQWircBRClxEnfKSlxzE1vK07zWhq7lALqoE+UT
-         kPz7FfVfNSzcgHvjqUrADoqYsowS40pQ7YFe3I4j/KT7bUmlmLcB9wgM1qEX3GG864qM
-         vUoqLpfEWCbZFrm/EEjblnmiHPnw1GbyMChuwvUxU2tlrgqJyqJyBQYkUIfL86bOpkk/
-         iYVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SbETF7lohgkuXHBXWamB8mVWkNu7c8UJtl6zbFx2I9c=;
-        b=IunKEqGddWDO7EBWegZ0jwWiixcXH6+95HocmSwxh6EAr8tl9co+26KjG3vNmqzaPq
-         qI7CqQ7A3a9NI/JfOrlIUYY6+Y4E3ujIrAkiLG6BIKxWtpJE7P9QD5H+jQf7jymzjWkS
-         3onZy4MoFK+RNPkbab4I+mGCLoi4TulhuftJtuK/WeV4xT/MNUdnF3Bpa0SGbLrf5V86
-         1oX9aR55dQvRX9dhLd2oivDM+CpEvGshLTNE1ZD2N7DXUv1/Y3hQdH8mt4TDLpXVRpC8
-         VUOVHBZxWEI0WDpY4uud03Z68DkbuEuuuKei7NmSe1Kp+TR1rcR9yzFE+uKZzO676kao
-         Nj7g==
-X-Gm-Message-State: AOAM532AlAUZ7L5oPU9kuH3xT9/qg+HUAQ6ghRJam7WB2IVfDm8Sed+H
-        HA1xJfSWWd1aLtmwZZEoYaw=
-X-Google-Smtp-Source: ABdhPJzimemp+4lxqQc2C0WO26adQcOf+OO8m5CVuaR0BCU6cuTx7Ies7+CTkH7l3votAP6W/ThFfw==
-X-Received: by 2002:a05:6a00:be2:b029:258:834c:cdc9 with SMTP id x34-20020a056a000be2b0290258834ccdc9mr2857919pfu.54.1618516731054;
-        Thu, 15 Apr 2021 12:58:51 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id u7sm3210496pjx.8.2021.04.15.12.58.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 12:58:50 -0700 (PDT)
-Subject: Re: [PATCH v2 2/7] net: phy: micrel: KSZ8081 & KSZ9031: add loopback
- support
-To:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Fugang Duan <fugang.duan@nxp.com>
-Cc:     kernel@pengutronix.de, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com, Fabio Estevam <festevam@gmail.com>,
-        David Jander <david@protonic.nl>,
-        Russell King <linux@armlinux.org.uk>,
-        Philippe Schenker <philippe.schenker@toradex.com>
-References: <20210415130738.19603-1-o.rempel@pengutronix.de>
- <20210415130738.19603-3-o.rempel@pengutronix.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <2bf45888-98e5-7c3c-1732-05d685d59d54@gmail.com>
-Date:   Thu, 15 Apr 2021 12:58:48 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        Thu, 15 Apr 2021 16:00:27 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74214C061574;
+        Thu, 15 Apr 2021 13:00:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Jidstt2/GQtBM10h7qL1vxyo4ZsH+nyyJX9lVogApq4=; b=GXqEg47IGUl3iUkF0KKQI28r5i
+        dXx0qi4Ae6gDsIoXFQVAAC2MYV3sv4hydRUaejqig0bIuTdEbTa42bMVyWl2MjtkrJy/n115VvYWe
+        AhMwH1m3yGKaa2KzY9fD65upkcgJwjyBdXpGxrkeOuUfulBaEqEom1khvrU0dhtXhi2ho7aYmCv4k
+        Y5TA/PCz/aBcZNTXvPHp354+UrRhf1bXzp5uBCI5OxTIE4pA4x3zVKYWTJaDC/SR+ElSEke5nWeb8
+        fjtpJh02CDA3xdPUdHKQD22nF2nG2kfSdC2bKHPdS4OR+BHsUsic7RIkbuyAARmJQRNr2BbsI1oyV
+        qxcO1aIw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lX89N-0091Za-NN; Thu, 15 Apr 2021 19:59:44 +0000
+Date:   Thu, 15 Apr 2021 20:59:41 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
+Subject: Re: [Outreachy kernel] [PATCH v2] staging: media: atomisp: pci:
+ Change line break to avoid an open parenthesis at the end of the line
+Message-ID: <20210415195941.GF2531743@casper.infradead.org>
+References: <20210415170819.GA17534@focaruja>
+ <20210415171409.GC2531743@casper.infradead.org>
+ <20210415194955.GI3@paasikivi.fi.intel.com>
+ <20210415195704.GE2531743@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210415130738.19603-3-o.rempel@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210415195704.GE2531743@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/15/2021 6:07 AM, Oleksij Rempel wrote:
-> PHY loopback is needed for the ethernet controller self test support.
-> This PHY was tested with the generic net sefltest in combination with
-> FEC ethernet controller and SJA1105 switch.
+On Thu, Apr 15, 2021 at 08:57:04PM +0100, Matthew Wilcox wrote:
+> On Thu, Apr 15, 2021 at 10:49:55PM +0300, Sakari Ailus wrote:
+> > On Thu, Apr 15, 2021 at 06:14:09PM +0100, Matthew Wilcox wrote:
+> > > On Thu, Apr 15, 2021 at 02:08:19PM -0300, Aline Santana Cordeiro wrote:
+> > > > -const struct atomisp_format_bridge *get_atomisp_format_bridge_from_mbus(
+> > > > -    u32 mbus_code);
+> > > > +const struct atomisp_format_bridge*
+> > > > +get_atomisp_format_bridge_from_mbus(u32 mbus_code);
+> > > 
+> > > No, this does not match coding style.  Probably best to break the
+> > > 80-column guideline in this instance.  Best would be to have a function
+> > 
+> > Having the return type on the previous line is perfectly fine. There should
+> > be a space before the asterisk though.
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  drivers/net/phy/micrel.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-> index a14a00328fa3..26066b1e02e5 100644
-> --- a/drivers/net/phy/micrel.c
-> +++ b/drivers/net/phy/micrel.c
-> @@ -1311,6 +1311,7 @@ static struct phy_driver ksphy_driver[] = {
->  	.get_stats	= kszphy_get_stats,
->  	.suspend	= kszphy_suspend,
->  	.resume		= kszphy_resume,
-> +	.set_loopback	= genphy_loopback,
+> No, it's not.  Linus has ranted about that before.
 
-The generic loopback is really generic and is defined by the 802.3
-standard, we should just mandate that drivers implement a custom
-loopback if the generic one cannot work. I would change the PHY library
-to do something like this:
-
-if (phydev->drv->set_loopback)
-	ret = phydev->drv->set_loopback(phydev, ...)
-else
-	ret = genphy_loopback(phydev, ...)
-
-This would enable many more drivers than that we currently have today.
-
->  }, {
->  	.phy_id		= PHY_ID_KSZ8061,
->  	.name		= "Micrel KSZ8061",
-> @@ -1356,6 +1357,7 @@ static struct phy_driver ksphy_driver[] = {
->  	.get_stats	= kszphy_get_stats,
->  	.suspend	= genphy_suspend,
->  	.resume		= kszphy_resume,
-> +	.set_loopback	= genphy_loopback,
->  }, {
->  	.phy_id		= PHY_ID_LAN8814,
->  	.phy_id_mask	= MICREL_PHY_ID_MASK,
-> 
-
--- 
-Florian
+Found it.  https://lore.kernel.org/lkml/1054519757.161606@palladium.transmeta.com/
