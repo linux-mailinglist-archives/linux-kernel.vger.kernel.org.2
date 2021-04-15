@@ -2,106 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6830E361062
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D439361065
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233977AbhDOQsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 12:48:01 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:32900 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbhDOQr7 (ORCPT
+        id S234014AbhDOQs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 12:48:26 -0400
+Received: from mail-ua1-f42.google.com ([209.85.222.42]:46852 "EHLO
+        mail-ua1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231137AbhDOQsX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 12:47:59 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618505255;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ij+uTvdXS+i44BI8usBRso/TQwX1K1KTl2LSXZhUKWo=;
-        b=vEAEiuyatSPvPasYmHicpnRVSKCmNLpbaupdo2cJ2KNDO3r9kLSwyDKKYfVEXJpfliRe8A
-        vwS/CfbECdwH2oz4Rzgv+Gc1t4jzPaW1DULTHR+nYoZzq1rCJ1cPMqn/Mdvt5x9uUbNk51
-        q3Oz6A550mCu4oUvX40/ueEc48sYLdRR3tV9cLqlsnu7NaHHnE+PAMLsAgT02BX2saN0LE
-        ehblqAGvMD6PYC7vYqtPA40HliOUuFj8APztpRRnKsPLMX00SiVnHPts0dKrTRRr035n+A
-        hnGr5g5mj+1u5ui7rNCchaF92y0hG/ngzUDQMMRH+/X5pQseUW96D5D4J6NgqQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618505255;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ij+uTvdXS+i44BI8usBRso/TQwX1K1KTl2LSXZhUKWo=;
-        b=XIpKNyzm6L4xPG0HN3vGp+unsBCCbWn4VN6zHsp1zE+YXOWbwpcesZ4B+2yuQxMmc6N94c
-        oNKzfDriw3Ix5MBg==
-To:     Lorenzo Colitti <lorenzo@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     Maciej =?utf-8?Q?=C5=BBenczykowski?= <zenczykowski@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        lkml <linux-kernel@vger.kernel.org>,
-        mikael.beckius@windriver.com,
-        Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>
-Subject: Re: [PATCH] hrtimer: Update softirq_expires_next correctly after __hrtimer_get_next_event()
-In-Reply-To: <CAKD1Yr1DnDTELUX2DQtPDtAoDMqCz6dV+TZbBuC1CFm32O8MrA@mail.gmail.com>
-References: <CAHo-OowM2jRNuvyDf-T8rzr6ZgUztXqY7m_JhuFvQ+uB8N3ZrQ@mail.gmail.com> <YHXRWoVIYLL4rYG9@kroah.com> <CAKD1Yr1DnDTELUX2DQtPDtAoDMqCz6dV+TZbBuC1CFm32O8MrA@mail.gmail.com>
-Date:   Thu, 15 Apr 2021 18:47:35 +0200
-Message-ID: <87r1jbv6jc.ffs@nanos.tec.linutronix.de>
+        Thu, 15 Apr 2021 12:48:23 -0400
+Received: by mail-ua1-f42.google.com with SMTP id v23so7666483uaq.13;
+        Thu, 15 Apr 2021 09:48:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VhOHyEkJWSCegG8VqaGpE9OM1BwPr0/49vR9DHNMwQU=;
+        b=WV7xSGVTiDwrq31QYUqHhMC1hVu9QhKS/o5VplO3x31Wfw0goT2FA5/3Jd6E0G98yY
+         MOMOLeSBawce81Nk1Qty3J0fseGdcqselxglzPRVtrdU2gPPMqBXWOBe7k1d8rJ/SJj+
+         4n/qCJxv6SFghNyHF2rVAlGEwW0YY4SiD6SHZzhPDS4m0hfB/teU+IEPabcnWvEswf6z
+         UTYLVpuyn9WnAChuHAJj6ZufhjcGxm7KiI0WML1HC3eL6znpMapV0frOHYwmgkCfScfd
+         kJIC/DLnPFDjaV+kA2mb1Jvprjz0I2hsr/w0ZN2A6dOEOLpBQ8xupzz+XscYEtvhI/qz
+         vLQw==
+X-Gm-Message-State: AOAM5333UWNvBBkPqNJ7UDsgUk4xMi12ZC9BhFAnLW1IqbGKZKqGxeda
+        3AoJRSVSoPUATe+j/qWERDhX+K5EZGdPym4pA3U=
+X-Google-Smtp-Source: ABdhPJy4XhcdlU/Mzd5/oe+kRlCGdzAOK95Pj8Cfh3/I6gQ3zXgI+WQ3j0tPVOWGRXcyo8ADu78ENCG3l5wjTFl5O0w=
+X-Received: by 2002:a9f:262c:: with SMTP id 41mr2962732uag.4.1618505279787;
+ Thu, 15 Apr 2021 09:47:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210415122602.87697-1-jacopo+renesas@jmondi.org>
+ <20210415122602.87697-5-jacopo+renesas@jmondi.org> <YHhR/YR6Ecp6yU4D@pendragon.ideasonboard.com>
+In-Reply-To: <YHhR/YR6Ecp6yU4D@pendragon.ideasonboard.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 15 Apr 2021 18:47:48 +0200
+Message-ID: <CAMuHMdWXM=0W_GbJpOqCUhTKzjaYu9S81M9u=j+8KM0sFG7Atw@mail.gmail.com>
+Subject: Re: [PATCH v4 4/7] arm64: dts: renesas: r8a77970: Add csi40 port@0
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14 2021 at 11:49, Lorenzo Colitti wrote:
-> On Wed, Apr 14, 2021 at 2:14 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->> To give context, the commit is now 46eb1701c046 ("hrtimer: Update
->> softirq_expires_next correctly after __hrtimer_get_next_event()") and is
->> attached below.
->>
->> The f_ncm.c driver is doing a lot of calls to hrtimer_start() with mode
->> HRTIMER_MODE_REL_SOFT for I think every packet it gets.  If that should
->> not be happening, we can easily fix it but I guess no one has actually
->> had fast USB devices that noticed this until now :)
+Hi Laurent,
+
+On Thu, Apr 15, 2021 at 4:47 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+> On Thu, Apr 15, 2021 at 02:25:59PM +0200, Jacopo Mondi wrote:
+> > Declare port@0 in the csi40 device node and leave it un-connected.
+> > Each board .dts file will connect the port as it requires.
+> >
+> > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
 >
-> AIUI the purpose of this timer is to support packet aggregation. USB
-> transfers are relatively expensive/high latency. 6 Gbps is 500k
-> 1500-byte packets per second, or one every 2us. So f_ncm buffers as
-> many packets as will fit into 16k (usually, 10 1500-byte packets), and
-> only initiates a USB transfer when those packets have arrived. That
-> ends up doing only one transfer every 20us. It sets a 300us timer to
-> ensure that if the 10 packets haven't arrived, it still sends out
-> whatever it has when the timer fires. The timer is set/updated on
-> every packet buffered by ncm.
->
-> Is this somehow much more expensive in 5.10.24 than it was before?
-> Even if this driver is somehow "holding it wrong", might there not be
-> other workloads that have a similar problem? What about regressions on
-> those workloads?
+> The port exists at the hardware level, so including it here sounds good.
+> The DT binding even makes the port mandatory :-)
 
-Let's put the question of whether this hrtimer usage is sensible or not
-aside for now.
+But the latter is subject to change?
 
-I stared at the change for a while and did some experiments to recreate
-the problem, but that didn't get me anywhere.
+[PATCH] media: dt-bindings: media: renesas,csi2: Node port@0 is not mandatory
+https://lore.kernel.org/linux-devicetree/20210413155346.2471776-1-niklas.soderlund+renesas@ragnatech.se/
 
-Could you please do the following?
+> > --- a/arch/arm64/boot/dts/renesas/r8a77970.dtsi
+> > +++ b/arch/arm64/boot/dts/renesas/r8a77970.dtsi
+> > @@ -1106,6 +1106,10 @@ ports {
+> >                               #address-cells = <1>;
+> >                               #size-cells = <0>;
+> >
+> > +                             port@0 {
+> > +                                     reg = <0>;
+> > +                             };
+> > +
+> >                               port@1 {
+> >                                       #address-cells = <1>;
+> >                                       #size-cells = <0>;
+\
+Gr{oetje,eeting}s,
 
-Enable tracing and enable the following tracepoints:
+                        Geert
 
-    timers/hrtimer_cancel
-    timers/hrtimer_start
-    timers/hrtimer_expire_entry
-    irq/softirq_raise
-    irq/softirq_enter
-    irq/softirq_exit
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-and function tracing filtered on ncm_wrap_ntb() and
-package_for_tx() only (to reduce the noise).
-
-Run the test on a kernels with and without that commit and collect trace
-data for both.
-
-That should give me a pretty clear picture what's going on.
-
-Thanks,
-
-        tglx
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
