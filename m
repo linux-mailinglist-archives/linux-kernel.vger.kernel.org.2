@@ -2,146 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85012361303
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DEB9361308
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234864AbhDOTki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 15:40:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234636AbhDOTkg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 15:40:36 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E2B1C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 12:40:12 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id h3so11533299qve.13
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 12:40:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ysi6RRTEAiRn+Yy07GZnMkjfObnhYqIw2YgVv+JxE44=;
-        b=b2A9c+lKNHFTx5ujWSTaeS9zFMdER+ifE7Xz5osy5K6xiMiaNTgWAyMly/+6qpp5tr
-         yRDuZ5mJe1PTVPp/InRtMLkJ2BKi3Xrj/3nluHM7i/iDx0Z/WAVtnMtXAhool/Zs4r7m
-         MUxwDVravbfwueke0nUfYYeStLFeTvTViS1GxMog6kDrxc/NFZFZzZ4kgx5klve3OqdD
-         HLxq6x2jHTz9MI5/1MxdV9MrSJD1djMSnf/MVVy0BF66/E70xCrsL6bmt8FAkFKHifSw
-         /0xvlNjX1zlQ8+imEOXDURfi+m9K0n7A8o9OsU4NvY8QWkqZWIg9TZz3/AtU2wj1nmIs
-         glTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ysi6RRTEAiRn+Yy07GZnMkjfObnhYqIw2YgVv+JxE44=;
-        b=ffTzYH7EP2Belx3BrPi9Rb4D5zIaBJdJdPgHhPzUEAO+3vHUfsmEVscwpEUvxoo99/
-         PIziRdMnYjVCgq4hNDnYNmtrV0nimo2azIb2Duz6QWN86XEaC1d8iV+FpIw4NAb2pSXz
-         fDv0pxEN718kRBoapt/a/r/NhD/nrW6h7kIJxA2pnznBHk1r3gWQ/MyKw7pthRLrw6ZR
-         /p0+BcAu0WW0xsyePHSU+pAlk7FLnIag2zx/nJgj9u1mJpvzdTZ+XrlwMTh6sDWWQbQt
-         1oGBEp4OF8r+H2XWbU2Ijy30PwrHi/1eLRD4BzRnZvvDfVNaRAsI+/AbJnX4FCD/HRBJ
-         jE5Q==
-X-Gm-Message-State: AOAM531tJJggSMspbVmS+1HaS7xKy9jaLXiRoBDrvJKHbago+5KmOHEv
-        jNyn3UFJVMM81j7MVGinTQD3Ug==
-X-Google-Smtp-Source: ABdhPJyuYjLPcmUlKK6SIRy68Qi0woumXcj2z/Cl1pUb56vpFCK/iZjog2Ajb5zWSOa3zOfXnn/u8w==
-X-Received: by 2002:a0c:c488:: with SMTP id u8mr4868194qvi.47.1618515611398;
-        Thu, 15 Apr 2021 12:40:11 -0700 (PDT)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id f17sm2529353qtp.39.2021.04.15.12.40.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 12:40:10 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 15:40:10 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Waiman Long <llong@redhat.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Subject: Re: [PATCH v3 2/5] mm/memcg: Introduce
- obj_cgroup_uncharge_mod_state()
-Message-ID: <YHiWmsQVQPGSm2El@cmpxchg.org>
-References: <20210414012027.5352-1-longman@redhat.com>
- <20210414012027.5352-3-longman@redhat.com>
- <YHhqPYcajI9JgXk/@cmpxchg.org>
- <1c85e8f6-e8b9-33e1-e29b-81fbadff959f@redhat.com>
- <YHiBlhUWoCKqQgM7@cmpxchg.org>
- <8a104fd5-64c7-3f41-981c-9cfa977c78a6@redhat.com>
+        id S234792AbhDOTo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 15:44:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234226AbhDOToz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 15:44:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F0CA6115B;
+        Thu, 15 Apr 2021 19:44:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618515871;
+        bh=oU1cQr3wkqayozcT7QZOVj1UOm40p9k1jAVx6Ebpk7w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NopJ6oGLjiZbNcp/BrmHyV+vsHX0w0jTtQvJJUDYAPpkpmV7L9CtsponNSRmdJ1nC
+         LAq04IjmE6ilLWBWAF99hPFP96sEZRM/6GgA10boU+DQR9rLbvzh6dbt8ijVsXRDjC
+         C58C6fR6NUlb05f7LfyWXMFg/mlHN+lg4k8OGeSY8Bd69bhVcEvHnO2hySM3iwfa1+
+         pN3/w3paQ20SOzGYZKkRz1sNyGc5QOpmvmpDZCUAGwXFc57Af1ybduNiLiDiete/9B
+         5KxURBYY6Rzl+ypVZRkqrnqpKtM2vT1dDUPH35s4bOo+PHB8+bkddbBdgUrEjRNR/U
+         tEGuDPeM4pZ9w==
+Date:   Thu, 15 Apr 2021 12:44:30 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v2 4/8] block: introduce bio_required_sector_alignment()
+Message-ID: <YHiXns+jQL+MrmNK@gmail.com>
+References: <20210325212609.492188-1-satyat@google.com>
+ <20210325212609.492188-5-satyat@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8a104fd5-64c7-3f41-981c-9cfa977c78a6@redhat.com>
+In-Reply-To: <20210325212609.492188-5-satyat@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 02:47:31PM -0400, Waiman Long wrote:
-> On 4/15/21 2:10 PM, Johannes Weiner wrote:
-> > On Thu, Apr 15, 2021 at 12:35:45PM -0400, Waiman Long wrote:
-> > > On 4/15/21 12:30 PM, Johannes Weiner wrote:
-> > > > On Tue, Apr 13, 2021 at 09:20:24PM -0400, Waiman Long wrote:
-> > > > > In memcg_slab_free_hook()/pcpu_memcg_free_hook(), obj_cgroup_uncharge()
-> > > > > is followed by mod_objcg_state()/mod_memcg_state(). Each of these
-> > > > > function call goes through a separate irq_save/irq_restore cycle. That
-> > > > > is inefficient.  Introduce a new function obj_cgroup_uncharge_mod_state()
-> > > > > that combines them with a single irq_save/irq_restore cycle.
-> > > > > 
-> > > > > @@ -3292,6 +3296,25 @@ void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size)
-> > > > >    	refill_obj_stock(objcg, size);
-> > > > >    }
-> > > > > +void obj_cgroup_uncharge_mod_state(struct obj_cgroup *objcg, size_t size,
-> > > > > +				   struct pglist_data *pgdat, int idx)
-> > > > The optimization makes sense.
-> > > > 
-> > > > But please don't combine independent operations like this into a
-> > > > single function. It makes for an unclear parameter list, it's a pain
-> > > > in the behind to change the constituent operations later on, and it
-> > > > has a habit of attracting more random bools over time. E.g. what if
-> > > > the caller already has irqs disabled? What if it KNOWS that irqs are
-> > > > enabled and it could use local_irq_disable() instead of save?
-> > > > 
-> > > > Just provide an __obj_cgroup_uncharge() that assumes irqs are
-> > > > disabled, combine with the existing __mod_memcg_lruvec_state(), and
-> > > > bubble the irq handling up to those callsites which know better.
-> > > > 
-> > > That will also work. However, the reason I did that was because of patch 5
-> > > in the series. I could put the get_obj_stock() and put_obj_stock() code in
-> > > slab.h and allowed them to be used directly in various places, but hiding in
-> > > one function is easier.
-> > Yeah it's more obvious after getting to patch 5.
-> > 
-> > But with the irq disabling gone entirely, is there still an incentive
-> > to combine the atomic section at all? Disabling preemption is pretty
-> > cheap, so it wouldn't matter to just do it twice.
-> > 
-> > I.e. couldn't the final sequence in slab code simply be
-> > 
-> > 	objcg_uncharge()
-> > 	mod_objcg_state()
-> > 
-> > again and each function disables preemption (and in the rare case
-> > irqs) as it sees fit?
-> > 
-> > You lose the irqsoff batching in the cold path, but as you say, hit
-> > rates are pretty good, and it doesn't seem worth complicating the code
-> > for the cold path.
-> > 
-> That does make sense, though a little bit of performance may be lost. I will
-> try that out to see how it work out performance wise.
+On Thu, Mar 25, 2021 at 09:26:05PM +0000, Satya Tangirala wrote:
+> This function returns the required alignment for the number of sectors in
+> a bio. In particular, the number of sectors passed to bio_split() must be
+> aligned to this value.
+> 
+> Signed-off-by: Satya Tangirala <satyat@google.com>
+> ---
+>  block/blk.h | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/block/blk.h b/block/blk.h
+> index 3b53e44b967e..5ef207a6d34c 100644
+> --- a/block/blk.h
+> +++ b/block/blk.h
+> @@ -261,6 +261,18 @@ static inline unsigned int bio_allowed_max_sectors(struct request_queue *q)
+>  	return round_down(UINT_MAX, queue_logical_block_size(q)) >> 9;
+>  }
+>  
+> +/*
+> + * The required sector alignment for a bio. The number of sectors in any bio
+> + * that's constructed/split must be aligned to this value.
 
-Thanks.
+What does "constructed" mean in this context?
 
-Even if we still end up doing it, it's great to have that cost
-isolated, so we know how much extra code complexity corresponds to how
-much performance gain. It seems the task/irq split could otherwise be
-a pretty localized change with no API implications.
+> + */
+> +static inline unsigned int bio_required_sector_alignment(struct bio *bio)
+> +{
+> +	struct request_queue *q = bio->bi_bdev->bd_disk->queue;
+> +
+> +	return max(queue_logical_block_size(q) >> SECTOR_SHIFT,
+> +		   blk_crypto_bio_sectors_alignment(bio));
+> +}
+
+It would be slightly simpler to use bdev_logical_block_size(bio->bi_bdev)
+instead of queue_logical_block_size(bio->bi_bdev->bd_disk->queue).
+
+Also, if there's interest in avoiding the branch implied by the max() here, it
+would be possible to take advantage of the values being powers of 2 as follows:
+
+static inline unsigned int bio_required_sector_alignment(struct bio *bio)
+{
+	unsigned int alignmask =
+		(bdev_logical_block_size(q) >> SECTOR_SHIFT) - 1;
+
+	alignmask |= blk_crypto_bio_sectors_alignment(bio) - 1;
+
+	return alignmask + 1;
+}
