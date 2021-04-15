@@ -2,139 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD888360E32
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C42A360E73
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234383AbhDOPMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:12:03 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:37698 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235366AbhDOPBE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:01:04 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13FF0WgP101805;
-        Thu, 15 Apr 2021 10:00:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1618498832;
-        bh=pKl9USW4Lb4q2lT4TkJijaFrzIIfUx2rrVu/7hEAIwg=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=IpcH/Wot0NJFgpovlSvrAMOg9Odk3OJmWmyBfGoQON3QRTjAuRndajqjOAcqBIa9t
-         ko7d9o0ZcL8vL4ULPPKHYFwWKfAMWBhEJMCvWLw77cE7N6e/zK92l+nYaLg7dFHju3
-         e1c12kCm/1KgPXQx5HsZPyWv4AzygpmoMr+kZrxc=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13FF0W7k105205
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 15 Apr 2021 10:00:32 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 15
- Apr 2021 10:00:31 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 15 Apr 2021 10:00:31 -0500
-Received: from [10.250.233.30] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13FF0RlR061690;
-        Thu, 15 Apr 2021 10:00:28 -0500
-Subject: Re: [PATCH v3 2/4] phy: Add API for devm_of_phy_optional_get_by_index
-To:     Aswath Govindraju <a-govindraju@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>, <linux-can@vger.kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-References: <20210415144947.4725-1-a-govindraju@ti.com>
- <20210415144947.4725-3-a-govindraju@ti.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <c3baf0bc-e166-4aee-f4c7-e5915352ec82@ti.com>
-Date:   Thu, 15 Apr 2021 20:30:26 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S237169AbhDOPPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:15:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48944 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235309AbhDOPFC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:05:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45CF96113B;
+        Thu, 15 Apr 2021 15:02:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618498954;
+        bh=ZvTEnMo9pgWl4sfm4XQJb+dSibzAjNILwQ8qBoBY1Rc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cGMbr/OcaPrsiIoG8XyDiauxT9fuIuj3DbxZvxoGLZIlQI4k2GkoxNe5MS9LcEQKe
+         UOrUF3u27Enqc/+zXoVlkFZbyZ56xVye4VpTHSbDdp52NGE2RROG6ufa7D20dnNHWo
+         /oKj86Z1mJ6/Zj2dP7PH0uAWJNzSjWEnxU9byubLs8m69MRzJnj8O3pb7TZ1XOAsYw
+         W29iF57CGGk3nWByQsXInZjc6kTqa+Vh9fTOabURtQXkDAQ5H1p3c5ytt3pWsUa36L
+         M071SuJATWYgbXYJEUoXTQiBVTBr4cOrA2Ul25is82A9gtaaNcm/SDfn8TUfTb0Yah
+         U91JBtzdrR7hg==
+Date:   Thu, 15 Apr 2021 16:02:29 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Ali Saidi <alisaidi@amazon.com>
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        steve.capper@arm.com, benh@kernel.crashing.org,
+        stable@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: [PATCH] locking/qrwlock: Fix ordering in
+ queued_write_lock_slowpath
+Message-ID: <20210415150228.GA26439@willie-the-truck>
+References: <20210415142552.30916-1-alisaidi@amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <20210415144947.4725-3-a-govindraju@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210415142552.30916-1-alisaidi@amazon.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Aswath,
+On Thu, Apr 15, 2021 at 02:25:52PM +0000, Ali Saidi wrote:
+> While this code is executed with the wait_lock held, a reader can
+> acquire the lock without holding wait_lock.  The writer side loops
+> checking the value with the atomic_cond_read_acquire(), but only truly
+> acquires the lock when the compare-and-exchange is completed
+> successfully which isn’t ordered. The other atomic operations from this
+> point are release-ordered and thus reads after the lock acquisition can
+> be completed before the lock is truly acquired which violates the
+> guarantees the lock should be making.
 
-On 15/04/21 8:19 pm, Aswath Govindraju wrote:
-> Add API for devm_of_phy_optional_get_by_index, to obtain a reference to an
-> optional phy by index.
+I think it would be worth spelling this out with an example. The issue
+appears to be a concurrent reader in interrupt context taking and releasing
+the lock in the window where the writer has returned from the
+atomic_cond_read_acquire() but has not yet performed the cmpxchg(). Loads
+can be speculated during this time, but the A-B-A of the lock word
+from _QW_WAITING to (_QW_WAITING | _QR_BIAS) and back to _QW_WAITING allows
+the atomic_cmpxchg_relaxed() to succeed. Is that right?
 
-Rob has posted a patch
-http://lore.kernel.org/r/20210414135525.3535787-1-robh@kernel.org
-that doesn't require consumers to get a phy by using string. Since your
-usecase also requires only one PHY, that patch should be sufficient.
-$patch could be deferred until a real use case comes.
+With that in mind, it would probably be a good idea to eyeball the qspinlock
+slowpath as well, as that uses both atomic_cond_read_acquire() and
+atomic_try_cmpxchg_relaxed().
 
-Thanks
-Kishon
+> Fixes: b519b56e378ee ("locking/qrwlock: Use atomic_cond_read_acquire() when spinning in qrwloc")
 
-> 
-> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+Typo in the quoted subject ('qrwloc').
+
+> Signed-off-by: Ali Saidi <alisaidi@amazon.com>
+> Cc: stable@vger.kernel.org
 > ---
->  drivers/phy/phy-core.c  | 26 ++++++++++++++++++++++++++
->  include/linux/phy/phy.h |  2 ++
->  2 files changed, 28 insertions(+)
+>  kernel/locking/qrwlock.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/phy/phy-core.c b/drivers/phy/phy-core.c
-> index ccb575b13777..bf06d4e0ede2 100644
-> --- a/drivers/phy/phy-core.c
-> +++ b/drivers/phy/phy-core.c
-> @@ -839,6 +839,32 @@ struct phy *devm_of_phy_get(struct device *dev, struct device_node *np,
->  }
->  EXPORT_SYMBOL_GPL(devm_of_phy_get);
+> diff --git a/kernel/locking/qrwlock.c b/kernel/locking/qrwlock.c
+> index 4786dd271b45..10770f6ac4d9 100644
+> --- a/kernel/locking/qrwlock.c
+> +++ b/kernel/locking/qrwlock.c
+> @@ -73,8 +73,8 @@ void queued_write_lock_slowpath(struct qrwlock *lock)
 >  
-> +/**
-> + * devm_of_phy_optional_get_by_index() - lookup and obtain a reference to an optional phy by index.
-> + * @dev: device that requests this phy
-> + * @np: node containing the phy
-> + * @index: index of the phy
-> + *
-> + * Gets the phy using _of_phy_get(), then gets a refcount to it,
-> + * and associates a device with it using devres. On driver detach,
-> + * release function is invoked on the devres data, then,
-> + * devres data is freed. This differs to devm_of_phy_get_by_index() in
-> + * that if the phy does not exist, it is not considered an error and
-> + * -ENODEV will not be returned. Instead the NULL phy is returned,
-> + * which can be passed to all other phy consumer calls.
-> + */
-> +struct phy *devm_of_phy_optional_get_by_index(struct device *dev, struct device_node *np,
-> +					      int index)
-> +{
-> +	struct phy *phy = devm_of_phy_get_by_index(dev, np, index);
-> +
-> +	if (PTR_ERR(phy) == -ENODEV)
-> +		phy = NULL;
-> +
-> +	return phy;
-> +}
-> +EXPORT_SYMBOL_GPL(devm_of_phy_optional_get_by_index);
-> +
->  /**
->   * devm_of_phy_get_by_index() - lookup and obtain a reference to a phy by index.
->   * @dev: device that requests this phy
-> diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
-> index f3286f4cd306..c5f32b4fadd6 100644
-> --- a/include/linux/phy/phy.h
-> +++ b/include/linux/phy/phy.h
-> @@ -253,6 +253,8 @@ struct phy *devm_of_phy_get(struct device *dev, struct device_node *np,
->  			    const char *con_id);
->  struct phy *devm_of_phy_get_by_index(struct device *dev, struct device_node *np,
->  				     int index);
-> +struct phy *devm_of_phy_optional_get_by_index(struct device *dev, struct device_node *np,
-> +					      int index);
->  void of_phy_put(struct phy *phy);
->  void phy_put(struct device *dev, struct phy *phy);
->  void devm_phy_put(struct device *dev, struct phy *phy);
-> 
+>  	/* When no more readers or writers, set the locked flag */
+>  	do {
+> -		atomic_cond_read_acquire(&lock->cnts, VAL == _QW_WAITING);
+> -	} while (atomic_cmpxchg_relaxed(&lock->cnts, _QW_WAITING,
+> +		atomic_cond_read_relaxed(&lock->cnts, VAL == _QW_WAITING);
+> +	} while (atomic_cmpxchg_acquire(&lock->cnts, _QW_WAITING,
+>  					_QW_LOCKED) != _QW_WAITING);
+
+Patch looks good, so with an updated message:
+
+Acked-by: Will Deacon <will@kernel.org>
+
+Will
