@@ -2,212 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0237736039A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:43:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895D936039F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231357AbhDOHnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 03:43:45 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15683 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbhDOHnn (ORCPT
+        id S231421AbhDOHpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 03:45:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231143AbhDOHpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 03:43:43 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FLWTj2pXpzpYNv;
-        Thu, 15 Apr 2021 15:40:25 +0800 (CST)
-Received: from [10.174.187.224] (10.174.187.224) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 15 Apr 2021 15:43:09 +0800
-Subject: Re: [PATCH v3 01/12] iommu: Introduce dirty log tracking framework
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "Joerg Roedel" <joro@8bytes.org>,
-        Yi Sun <yi.y.sun@linux.intel.com>,
-        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Tian Kevin <kevin.tian@intel.com>
-References: <20210413085457.25400-1-zhukeqian1@huawei.com>
- <20210413085457.25400-2-zhukeqian1@huawei.com>
- <fe337950-f8d0-3d21-a7b1-98b385d71f3e@linux.intel.com>
- <e42373e3-10d5-5a34-8f33-8bb82d64fb19@huawei.com>
- <56b001fa-b4fe-c595-dc5e-f362d2f07a19@linux.intel.com>
-CC:     Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
-        <yuzenghui@huawei.com>, <lushenming@huawei.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <88cba608-2f22-eb83-f22e-50cb547b6ee8@huawei.com>
-Date:   Thu, 15 Apr 2021 15:43:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Thu, 15 Apr 2021 03:45:06 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D53C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 00:44:43 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id i3so1177910edt.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 00:44:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=mo8VcWChyiswYqXafOgPzC0rghxOGJeUf888xhDxB7A=;
+        b=Djd1yu2ygNAB6AwkfDBSQM23UdPQgI7TRVwaPtaSVsOgZTsXMnEZf55dsV49AwyfqE
+         2/COw0IOUs30bcMPL2xIijtqsFtCwG8xaSgDGHFaYP40hX9uG2ZQgm/QJeCFeXg7SUIW
+         pP+Valr/YyuNLXEKM4zZ2tHWTNwZfXZ8BvDVv+hkeKYxeHDs5UqnX26mmGGAzClsHUsN
+         +cnMY9Z32Oja7hCewZctIGbz1TTfSHo+SQ1xSerPw9GWBhcVTI7Mwtsx+o3RaEnItZ5p
+         IOtllw0zzkMmaWZ1H88ziYgEuzUE/SzS0FDtsucdsP8ggYVaifte6MqK2hX9eJznRSjo
+         sizQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=mo8VcWChyiswYqXafOgPzC0rghxOGJeUf888xhDxB7A=;
+        b=Pix3VLn3joDKdkiEpI4iEx4Ei5q7g2dEPMu2UxzevUr6PEVR0p/OEYPK4wgIgL2kos
+         lU0tCfhmseJNLwPQ29yYku2GuqGAKciQJKBPlfBmOpWjAINlwC2u6rzggM9nqaJgOnNL
+         MMdbSdVs19xp91pWF0RTo8N127CLMfiVgDJbK9vaoYHW8RCVhVN7h5JC235kZjXd3ztG
+         Rff9txcrJrMq69e1Sx4OIj1K4lllUOv+GlCyi9Az87KGRUbvck/5y5aR6FbJxjjIzbNP
+         Vtm1x5nnlvFV0deKq9qIaR/VNkI+bRJ4VEG1lvkjvb7KvcpYYyDBqxtst+kgwWq7Aj2N
+         jGQw==
+X-Gm-Message-State: AOAM532TQpfqDIdd/7/rOvN8JK5OEx3ThMX9zXSFiX1AOPS7LiutdN9R
+        dc3Z4hRN/zkfPD1Jd2Vuuds+ntSvGlEqUO3V
+X-Google-Smtp-Source: ABdhPJyCH0gB2Jiuv8R9wCiM2zo6ImaqsPxioLiQTB7FtB9ufPsCdqOyvquO6WPTF6iqzJ5h5cAipA==
+X-Received: by 2002:a05:6402:254a:: with SMTP id l10mr2543769edb.160.1618472682108;
+        Thu, 15 Apr 2021 00:44:42 -0700 (PDT)
+Received: from linux.local (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
+        by smtp.gmail.com with ESMTPSA id ca1sm1654269edb.76.2021.04.15.00.44.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 00:44:41 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [Outreachy kernel] [PATCH v4] staging: rtl8723bs: Remove led_blink_hdl() and everything related
+Date:   Thu, 15 Apr 2021 09:44:40 +0200
+Message-ID: <50579851.vdsvJbu58s@linux.local>
+In-Reply-To: <YHfrLoot3iJSpAHU@kroah.com>
+References: <20210415071731.25725-1-fmdefrancesco@gmail.com> <YHfrLoot3iJSpAHU@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <56b001fa-b4fe-c595-dc5e-f362d2f07a19@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.187.224]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/4/15 15:03, Lu Baolu wrote:
-> On 4/15/21 2:18 PM, Keqian Zhu wrote:
->> Hi Baolu,
->>
->> Thanks for the review!
->>
->> On 2021/4/14 15:00, Lu Baolu wrote:
->>> Hi Keqian,
->>>
->>> On 4/13/21 4:54 PM, Keqian Zhu wrote:
->>>> Some types of IOMMU are capable of tracking DMA dirty log, such as
->>>> ARM SMMU with HTTU or Intel IOMMU with SLADE. This introduces the
->>>> dirty log tracking framework in the IOMMU base layer.
->>>>
->>>> Three new essential interfaces are added, and we maintaince the status
->>>> of dirty log tracking in iommu_domain.
->>>> 1. iommu_switch_dirty_log: Perform actions to start|stop dirty log tracking
->>>> 2. iommu_sync_dirty_log: Sync dirty log from IOMMU into a dirty bitmap
->>>> 3. iommu_clear_dirty_log: Clear dirty log of IOMMU by a mask bitmap
->>>>
->>>> A new dev feature are added to indicate whether a specific type of
->>>> iommu hardware supports and its driver realizes them.
->>>>
->>>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
->>>> Signed-off-by: Kunkun Jiang <jiangkunkun@huawei.com>
->>>> ---
->>>>    drivers/iommu/iommu.c | 150 ++++++++++++++++++++++++++++++++++++++++++
->>>>    include/linux/iommu.h |  53 +++++++++++++++
->>>>    2 files changed, 203 insertions(+)
->>>>
->>>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->>>> index d0b0a15dba84..667b2d6d2fc0 100644
->>>> --- a/drivers/iommu/iommu.c
->>>> +++ b/drivers/iommu/iommu.c
->>>> @@ -1922,6 +1922,7 @@ static struct iommu_domain *__iommu_domain_alloc(struct bus_type *bus,
->>>>        domain->type = type;
->>>>        /* Assume all sizes by default; the driver may override this later */
->>>>        domain->pgsize_bitmap  = bus->iommu_ops->pgsize_bitmap;
->>>> +    mutex_init(&domain->switch_log_lock);
->>>>          return domain;
->>>>    }
->>>> @@ -2720,6 +2721,155 @@ int iommu_domain_set_attr(struct iommu_domain *domain,
->>>>    }
->>>>    EXPORT_SYMBOL_GPL(iommu_domain_set_attr);
->>>>    +int iommu_switch_dirty_log(struct iommu_domain *domain, bool enable,
->>>> +               unsigned long iova, size_t size, int prot)
->>>> +{
->>>> +    const struct iommu_ops *ops = domain->ops;
->>>> +    int ret;
->>>> +
->>>> +    if (unlikely(!ops || !ops->switch_dirty_log))
->>>> +        return -ENODEV;
->>>> +
->>>> +    mutex_lock(&domain->switch_log_lock);
->>>> +    if (enable && domain->dirty_log_tracking) {
->>>> +        ret = -EBUSY;
->>>> +        goto out;
->>>> +    } else if (!enable && !domain->dirty_log_tracking) {
->>>> +        ret = -EINVAL;
->>>> +        goto out;
->>>> +    }
->>>> +
->>>> +    ret = ops->switch_dirty_log(domain, enable, iova, size, prot);
->>>> +    if (ret)
->>>> +        goto out;
->>>> +
->>>> +    domain->dirty_log_tracking = enable;
->>>> +out:
->>>> +    mutex_unlock(&domain->switch_log_lock);
->>>> +    return ret;
->>>> +}
->>>> +EXPORT_SYMBOL_GPL(iommu_switch_dirty_log);
->>>
->>> Since you also added IOMMU_DEV_FEAT_HWDBM, I am wondering what's the
->>> difference between
->>>
->>> iommu_switch_dirty_log(on) vs. iommu_dev_enable_feature(IOMMU_DEV_FEAT_HWDBM)
->>>
->>> iommu_switch_dirty_log(off) vs. iommu_dev_disable_feature(IOMMU_DEV_FEAT_HWDBM)
->> Indeed. As I can see, IOMMU_DEV_FEAT_AUX is not switchable, so enable/disable
->> are not applicable for it. IOMMU_DEV_FEAT_SVA is switchable, so we can use these
->> interfaces for it.
->>
->> IOMMU_DEV_FEAT_HWDBM is used to indicate whether hardware supports HWDBM, so we should
+On Thursday, April 15, 2021 9:28:46 AM CEST Greg Kroah-Hartman wrote:
+> On Thu, Apr 15, 2021 at 09:17:31AM +0200, Fabio M. De Francesco wrote:
+> > Removed useless led_blink_hdl() prototype and definition.
+> > Removed struct LedBlink_param. Removed LedBlink entries in
+> > rtw_cmd_callback[] and in wlancmds[]. Everything related to LedBlink is
+> > not anymore needed. Index of slots changed in arrays comments to
+> > reflect
+> > current positions.
+> > 
+> > Reported-by: Julia Lawall <julia.lawall@inria.fr>
+> > Reported-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+> > Reported-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Suggested-by: Matthew Wilcox <willy@infradead.org>
+> > Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > ---
+> > 
+> > Changes from v3: Merged the series into one single patch for avoiding
+> > unnecessary intermediate stages.
 > 
-> Previously we had iommu_dev_has_feature() and then was cleaned up due to
-> lack of real users. If you have a real case for it, why not bringing it
-> back?
-Yep, good suggestion.
+> Much better, thanks for sticking with this.  
+>
+I think it was worth doing this job well and getting it done, despite the 
+difficulties I had.
 
-> 
->> design it as not switchable. I will modify the commit message of patch#12, thanks!
-> 
-> I am not sure that I fully get your point. But I can't see any gaps of
-> using iommu_dev_enable/disable_feature() to switch dirty log on and off.
-> Probably I missed anything.
-IOMMU_DEV_FEAT_HWDBM just tells user whether underlying IOMMU driver supports
-dirty tracking, it is not used to management the status of dirty log tracking.
+I really appreciate your message.
 
-The feature reporting is per device, but the status management is per iommu_domain.
-Only when all devices in a domain support HWDBM, we can start dirty log for the domain.
+Thanks so much,
 
-And I think we'd better not mix the feature reporting and status management. Thoughts?
+Fabio
+>
+> Now queued up, and I think
+> this is going to be the last patch I take for 5.13-rc1.  The rest I'll
+> store up for the next kernel release after that...
+> 
+> thanks,
+> 
+> greg k-h
 
-> 
->>
->>>
->>>> +
->>>> +int iommu_sync_dirty_log(struct iommu_domain *domain, unsigned long iova,
->>>> +             size_t size, unsigned long *bitmap,
->>>> +             unsigned long base_iova, unsigned long bitmap_pgshift)
->>>> +{
->>>> +    const struct iommu_ops *ops = domain->ops;
->>>> +    unsigned int min_pagesz;
->>>> +    size_t pgsize;
->>>> +    int ret = 0;
->>>> +
->>>> +    if (unlikely(!ops || !ops->sync_dirty_log))
->>>> +        return -ENODEV;
->>>> +
->>>> +    min_pagesz = 1 << __ffs(domain->pgsize_bitmap);
->>>> +    if (!IS_ALIGNED(iova | size, min_pagesz)) {
->>>> +        pr_err("unaligned: iova 0x%lx size 0x%zx min_pagesz 0x%x\n",
->>>> +               iova, size, min_pagesz);
->>>> +        return -EINVAL;
->>>> +    }
->>>> +
->>>> +    mutex_lock(&domain->switch_log_lock);
->>>> +    if (!domain->dirty_log_tracking) {
->>>> +        ret = -EINVAL;
->>>> +        goto out;
->>>> +    }
->>>> +
->>>> +    while (size) {
->>>> +        pgsize = iommu_pgsize(domain, iova, size);
->>>> +
->>>> +        ret = ops->sync_dirty_log(domain, iova, pgsize,
->>>> +                      bitmap, base_iova, bitmap_pgshift);
->>>
->>> Any reason why do you want to do this in a per-4K page manner? This can
->>> lead to a lot of indirect calls and bad performance.
->>>
->>> How about a sync_dirty_pages()?
->> The function name of iommu_pgsize() is a bit puzzling. Actually it will try to
->> compute the max size that fit into size, so the pgsize can be a large page size
->> even if the underlying mapping is 4K. The __iommu_unmap() also has a similar logic.
-> 
-> This series has some improvement on the iommu_pgsize() helper.
-> 
-> https://lore.kernel.org/linux-iommu/20210405191112.28192-1-isaacm@codeaurora.org/
-OK, I get your idea. I will look into that, thanks!
 
-BRs,
-Keqian
+
+
