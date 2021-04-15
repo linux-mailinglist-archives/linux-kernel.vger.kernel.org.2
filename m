@@ -2,109 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CA0361180
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E89361177
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234386AbhDORyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 13:54:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58942 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234221AbhDORyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 13:54:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE22861139;
-        Thu, 15 Apr 2021 17:53:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618509217;
-        bh=uykpJSftt6neycgE9UZPf5383PYs5+NZsn9IZWyvBls=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=a+DebjSlUjLnchww5EDoaY79Eih/5pj2kts+TQDF8lOdiutpciCSifK84L9QXoGuh
-         RCrGzfgzSNpAZ+NeG3MPAjLysjOVnRJMGXPlybpG7DvUYF4HxZiT+w8dAvEnTGUaPJ
-         Y2z8tdI/HAbu3xJLZYccCvRAUO68z4aLYKUl/YLmkNnH9m7PgY4nC1If0iPVp8YDTE
-         Wpj8JPULx8hDrlo9gKeofoliQud3+SpsRZWTNtHVTutFntOa6vxqcbvKcEm6nbBQlS
-         QdfX23MKqQi9ELJvJTvpkY/vQbqMyywLTBW19pURWr2FehLnGfiruE3FynmCcrGFyQ
-         i1D9GkCI9fkcQ==
-Received: by mail-qk1-f169.google.com with SMTP id f19so8408061qka.8;
-        Thu, 15 Apr 2021 10:53:37 -0700 (PDT)
-X-Gm-Message-State: AOAM533wzFPjdCO4bqrDrc4+1n+BERT99soGLx3wwjII9mbB950Sjbh0
-        /jEfvOZR7HhZMPIUK3A0q0w00gikEhWVmGE+s1I=
-X-Google-Smtp-Source: ABdhPJzCNzm0W0XgockPjRIWCggyQJP/PdeRn4VzfFy2hYp7ghpXaixWJjKfmj+WztuDXoPxjQPb2UXr/6ySmNnlD6w=
-X-Received: by 2002:a37:d202:: with SMTP id f2mr4665987qkj.273.1618509217042;
- Thu, 15 Apr 2021 10:53:37 -0700 (PDT)
+        id S234171AbhDORxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 13:53:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233666AbhDORxx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 13:53:53 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51F1C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 10:53:29 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id bs7so11625517qvb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 10:53:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=INGh5k1Yj8szNl1l5Z8qYaD8P6YvvcJTSCldK0t4pLE=;
+        b=q+VO14PGTuNSIxED5tGGeUakeYctoqOQ0nJkbh0Vvp7quHEzTPE5abUN2YsdznM5oi
+         mXTFT434TbT7mysw7yWGazDjFqRq+YmsxrjpomEQAuHY96tmqCLoZt7lqa4LSklgrn9e
+         uRS8Dp45ihliK04vKKPAdld1KQQ8qm+2NHe3vYYeu4UyWirtudNSFErs29T78GJ5CPjs
+         wWwqc/PKCWJfxwTi5zqIU7TqrW6iJZcOQST2Om59t0knllllekcuN9GVeodH7qf/zBjG
+         vlkhN+abb/sMuFNbNaCiRCTNmyGsiuzKUuCtDMAtF/1y4UXWAHmF0/mC0tMCBJ0rIwiC
+         psKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=INGh5k1Yj8szNl1l5Z8qYaD8P6YvvcJTSCldK0t4pLE=;
+        b=sxRAx9xQ4xyg+9NfgkqRRtHbiAEHE2DmB+Ff903f8C6UGd3PKV240XeiRJUkBgVxZA
+         QJEfUUxFSOddey+nyvGDQnPJhP4untRAByexTQXZGGQWkF5qg58gBxw4GsS2YCMOkH66
+         x7gSd9hCBsJPjkzvZruSyhx3Rs/aDgUlmoyhcVnBtJA1+e2g+L/hW7DYJqyZ+ouYBlP7
+         LcmwUAIPHQlGTuLj4wHrt9UYSK4fqZVyv7AdYfOTLLWJgoPbuehrdwYHusGacj5+N0oY
+         plLGqc9MBFZNPzHQwXZloCDcGGL43OqPwzGb0LC8cZr3lThGRSX6qsd2t9V4JtTREDwT
+         WGKQ==
+X-Gm-Message-State: AOAM532ZEQcOhYpAlranFqnnOcu7gwPb4BYujAkegFqRXGnrJxOvIuzQ
+        2YqT3xZKzXq6P1KKeJYBc8hzkw==
+X-Google-Smtp-Source: ABdhPJzo+DulslHHMeIPKQfo+X00FLdIMTkZOLHNkCdxeB60C8i7fQG8oyQ9R9/2zBJktP2rCdoqbw==
+X-Received: by 2002:a0c:e2c5:: with SMTP id t5mr4255809qvl.27.1618509209056;
+        Thu, 15 Apr 2021 10:53:29 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id a11sm2470206qkn.12.2021.04.15.10.53.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 10:53:28 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 13:53:27 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Subject: Re: [PATCH v3 5/5] mm/memcg: Optimize user context object stock
+ access
+Message-ID: <YHh9l1+TUIzzFBtO@cmpxchg.org>
+References: <20210414012027.5352-1-longman@redhat.com>
+ <20210414012027.5352-6-longman@redhat.com>
 MIME-Version: 1.0
-References: <1408071538-14354-1-git-send-email-mcgrof@do-not-panic.com>
- <20140815092950.GZ18016@ZenIV.linux.org.uk> <c3b0feac-327c-15db-02c1-4a25639540e4@suse.com>
-In-Reply-To: <c3b0feac-327c-15db-02c1-4a25639540e4@suse.com>
-From:   Luis Chamberlain <mcgrof@kernel.org>
-Date:   Thu, 15 Apr 2021 10:53:25 -0700
-X-Gmail-Original-Message-ID: <CAB=NE6X2-mbZwVFnKUwjRmTGp3auZFHQXJ1h_YTJ2driUeoR+A@mail.gmail.com>
-Message-ID: <CAB=NE6X2-mbZwVFnKUwjRmTGp3auZFHQXJ1h_YTJ2driUeoR+A@mail.gmail.com>
-Subject: Re: [RFC v3 0/2] vfs / btrfs: add support for ustat()
-To:     Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.cz>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Chris Mason <clm@fb.com>,
-        Josef Bacik <jbacik@fb.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jeff Mahoney <jeffm@suse.com>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414012027.5352-6-longman@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 23, 2017 at 3:31 PM Jeff Mahoney <jeffm@suse.com> wrote:
->
-> On 8/15/14 5:29 AM, Al Viro wrote:
-> > On Thu, Aug 14, 2014 at 07:58:56PM -0700, Luis R. Rodriguez wrote:
-> >
-> >> Christoph had noted that this seemed associated to the problem
-> >> that the btrfs uses different assignments for st_dev than s_dev,
-> >> but much as I'd like to see that changed based on discussions so
-> >> far its unclear if this is going to be possible unless strong
-> >> commitment is reached.
->
-> Resurrecting a dead thread since we've been carrying this patch anyway
-> since then.
->
-> > Explain, please.  Whose commitment and commitment to what, exactly?
-> > Having different ->st_dev values for different files on the same
-> > fs is a bloody bad idea; why does btrfs do that at all?  If nothing else,
-> > it breaks the usual "are those two files on the same fs?" tests...
->
-> It's because btrfs snapshots would have inode number collisions.
-> Changing the inode numbers for snapshots would negate a big benefit of
-> btrfs snapshots: the quick creation and lightweight on-disk
-> representation due to metadata sharing.
->
-> The thing is that ustat() used to work.  Your commit 0ee5dc676a5f8
-> (btrfs: kill magical embedded struct superblock) had a regression:
-> Since it replaced the superblock with a simple dev_t, it rendered the
-> device no longer discoverable by user_get_super.  We need a list_head to
-> attach for searching.
->
-> There's an argument that this is hacky.  It's valid.  The only other
-> feedback I've heard is to use a real superblock for subvolumes to do
-> this instead.  That doesn't work either, due to things like freeze/thaw
-> and inode writeback.  Ultimately, what we need is a single file system
-> with multiple namespaces.  Years ago we just needed different inode
-> namespaces, but as people have started adopting btrfs for containers, we
-> need more than that.  I've heard requests for per-subvolume security
-> contexts.  I'd imagine user namespaces are on someone's wish list.  A
-> working df can be done with ->d_automount, but the way btrfs handles
-> having a "canonical" subvolume location has always been a way to avoid
-> directory loops.  I'd like to just automount subvolumes everywhere
-> they're referenced.  One solution, for which I have no code yet, is to
-> have something like a superblock-light that we can hang things like a
-> security context, a user namespace, and an anonymous dev.  Most file
-> systems would have just one.  Btrfs would have one per subvolume.
->
-> That's a big project with a bunch of discussion.
+On Tue, Apr 13, 2021 at 09:20:27PM -0400, Waiman Long wrote:
+> Most kmem_cache_alloc() calls are from user context. With instrumentation
+> enabled, the measured amount of kmem_cache_alloc() calls from non-task
+> context was about 0.01% of the total.
+> 
+> The irq disable/enable sequence used in this case to access content
+> from object stock is slow.  To optimize for user context access, there
+> are now two object stocks for task context and interrupt context access
+> respectively.
+> 
+> The task context object stock can be accessed after disabling preemption
+> which is cheap in non-preempt kernel. The interrupt context object stock
+> can only be accessed after disabling interrupt. User context code can
+> access interrupt object stock, but not vice versa.
+> 
+> The mod_objcg_state() function is also modified to make sure that memcg
+> and lruvec stat updates are done with interrupted disabled.
+> 
+> The downside of this change is that there are more data stored in local
+> object stocks and not reflected in the charge counter and the vmstat
+> arrays.  However, this is a small price to pay for better performance.
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> Acked-by: Roman Gushchin <guro@fb.com>
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
 
-4 years have gone by and this patch is still being carried around for
-btrfs. Other than resolving this ustat() issue for btrfs are there new
-reasons to support this effort done to be done properly? Are there
-other filesystems that would benefit? I'd like to get an idea of the
-stakeholder here before considering taking this on or not.
+This makes sense, and also explains the previous patch a bit
+better. But please merge those two.
 
- Luis
+> @@ -2229,7 +2229,8 @@ struct obj_stock {
+>  struct memcg_stock_pcp {
+>  	struct mem_cgroup *cached; /* this never be root cgroup */
+>  	unsigned int nr_pages;
+> -	struct obj_stock obj;
+> +	struct obj_stock task_obj;
+> +	struct obj_stock irq_obj;
+>  
+>  	struct work_struct work;
+>  	unsigned long flags;
+> @@ -2254,11 +2255,48 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
+>  }
+>  #endif
+>  
+> +/*
+> + * Most kmem_cache_alloc() calls are from user context. The irq disable/enable
+> + * sequence used in this case to access content from object stock is slow.
+> + * To optimize for user context access, there are now two object stocks for
+> + * task context and interrupt context access respectively.
+> + *
+> + * The task context object stock can be accessed by disabling preemption only
+> + * which is cheap in non-preempt kernel. The interrupt context object stock
+> + * can only be accessed after disabling interrupt. User context code can
+> + * access interrupt object stock, but not vice versa.
+> + */
+>  static inline struct obj_stock *current_obj_stock(void)
+>  {
+>  	struct memcg_stock_pcp *stock = this_cpu_ptr(&memcg_stock);
+>  
+> -	return &stock->obj;
+> +	return in_task() ? &stock->task_obj : &stock->irq_obj;
+> +}
+> +
+> +#define get_obj_stock(flags)				\
+> +({							\
+> +	struct memcg_stock_pcp *stock;			\
+> +	struct obj_stock *obj_stock;			\
+> +							\
+> +	if (in_task()) {				\
+> +		preempt_disable();			\
+> +		(flags) = -1L;				\
+> +		stock = this_cpu_ptr(&memcg_stock);	\
+> +		obj_stock = &stock->task_obj;		\
+> +	} else {					\
+> +		local_irq_save(flags);			\
+> +		stock = this_cpu_ptr(&memcg_stock);	\
+> +		obj_stock = &stock->irq_obj;		\
+> +	}						\
+> +	obj_stock;					\
+> +})
+> +
+> +static inline void put_obj_stock(unsigned long flags)
+> +{
+> +	if (flags == -1L)
+> +		preempt_enable();
+> +	else
+> +		local_irq_restore(flags);
+>  }
+
+Please make them both functions and use 'unsigned long *flags'.
+
+Also I'm not sure doing in_task() twice would actually be more
+expensive than the == -1 special case, and easier to understand.
+
+> @@ -2327,7 +2365,9 @@ static void drain_local_stock(struct work_struct *dummy)
+>  	local_irq_save(flags);
+>  
+>  	stock = this_cpu_ptr(&memcg_stock);
+> -	drain_obj_stock(&stock->obj);
+> +	drain_obj_stock(&stock->irq_obj);
+> +	if (in_task())
+> +		drain_obj_stock(&stock->task_obj);
+>  	drain_stock(stock);
+>  	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
+>  
+> @@ -3183,7 +3223,7 @@ static inline void mod_objcg_state(struct obj_cgroup *objcg,
+>  	memcg = obj_cgroup_memcg(objcg);
+>  	if (pgdat)
+>  		lruvec = mem_cgroup_lruvec(memcg, pgdat);
+> -	__mod_memcg_lruvec_state(memcg, lruvec, idx, nr);
+> +	mod_memcg_lruvec_state(memcg, lruvec, idx, nr);
+>  	rcu_read_unlock();
+
+This is actually a bug introduced in the earlier patch, isn't it?
+Calling __mod_memcg_lruvec_state() without irqs disabled...
