@@ -2,146 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13155361077
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A06BC36107A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234237AbhDOQxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 12:53:37 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:40462 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233583AbhDOQxf (ORCPT
+        id S234304AbhDOQxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 12:53:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234282AbhDOQxv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 12:53:35 -0400
-Received: by mail-ot1-f50.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so23170172otb.7;
-        Thu, 15 Apr 2021 09:53:11 -0700 (PDT)
+        Thu, 15 Apr 2021 12:53:51 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E769C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 09:53:27 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id g17so28195755edm.6
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 09:53:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1bUGrlN4ylkHThjUoi+HED6zB9xuS8ilfhf5hNRnO/k=;
+        b=WPBdgOH1gwDi727OGI2cea8FqqZVyRJMj/1D9o/V2Q52xTf51iDODDauPxuE3LHd7c
+         xY9fbLKGUWX3pkw8vgZPfSDh8h7mAP8gT0o6LpbQDez7vh7u1ITHLW7nn8ME51GrGHtP
+         iDD+NH9uxjH9hcBxb3I1jqbr2Xcobwtl0YRTyKLlQxHNE253oy9nhJ3A5xkDwZrWVDRn
+         XOFh0ricvACjdGYDvT7o8Wzz+LQcLzPv3ln4QPAx5/aZeI6vJs99LFgz/2Jfz95qROob
+         WKeJBHNG7vHt/nrBFBkYjA8s/2pLHRPOFrjf+ly3sUbBSKTBUk6WXWdat+J2E5Wa95Db
+         N1/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BkPRrq2X8pI/PWJmFc2vGqD8uKorT4TSwv8nxW2F7tY=;
-        b=mLM4E9i5RJbZ9q2A9jXK5SdM41xPUevZ88cip6A74u8QQp9uWQvfZIO1AtkvIurWbQ
-         5DZWW/w3nvWTfGY4xQg0hU9RFosxRzB3jjgIGLtN72WRMjpdcj8Tp3GNRjPIyPO6wBjP
-         M0Ofbdf72ZWPQT9sEpgYIsLremdhlHVsQUZEQGtcDkcUqNfopMF7pdq2mb7+Op0hLyWL
-         N7yKhAhq1UK9HoIYeXhJaGKASINRvVYpNbhC93KqTut9cYooXGLJonIyb/PIyasXCX+f
-         ovImRHd15kwBUr9EikQLnMpc8JHyYM6wrbIFG+mcz9nJZQ3oEsftsbiS2btow5UpkOYz
-         VFjg==
-X-Gm-Message-State: AOAM5324M9ksdDGrkM9+HYh1Ic4fKrEtS8P0vyyMzdYpmHTtGiTP2jCk
-        ujlIPu7wnnpsKmRVH0uCEA==
-X-Google-Smtp-Source: ABdhPJzA7edpjMrFZYgGmlpgqiNAm4TmvK2c2cIzF1IKc+l7PY5NsWG3cwQmqz49K5TQdDTwZW6aSQ==
-X-Received: by 2002:a9d:a2a:: with SMTP id 39mr147491otg.371.1618505591354;
-        Thu, 15 Apr 2021 09:53:11 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t19sm788585otm.40.2021.04.15.09.53.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 09:53:10 -0700 (PDT)
-Received: (nullmailer pid 1551645 invoked by uid 1000);
-        Thu, 15 Apr 2021 16:53:09 -0000
-Date:   Thu, 15 Apr 2021 11:53:09 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/7] dt-bindings: media: max9286: Define
- 'maxim,gpio-poc'
-Message-ID: <20210415165309.GA1535842@robh.at.kernel.org>
-References: <20210415122602.87697-1-jacopo+renesas@jmondi.org>
- <20210415122602.87697-3-jacopo+renesas@jmondi.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1bUGrlN4ylkHThjUoi+HED6zB9xuS8ilfhf5hNRnO/k=;
+        b=HpH3fUappUAmWL7pfkwYC+/U2QMzoWBczYNIvaI+1TavvrWYCWna9NDS0DB7HbLt0V
+         YMEDmOHzBvDku7btuKfCo5Pr9nW4Rvk7nJVaJ6fNnlpWUnwjhwg27fRhFkevbmGA+FBf
+         POdfvU75fOu21T3LuZrdbgBFHhCgutixcVh5UPq+5RbR/b9KPy/j/915Jj/vdQF9+lw1
+         jzgXuRjVdl3PnB/SnF4iTgQKh81hzM4bPxBsW+8Dutaatjpc2tyZ+dOOd+ErppXHlId3
+         p+TpcGd2iewlhYpLS5XJum9ajfyAhvglhMHEOl2Fe0oDbnmOxDvlGpcZ0JDGUSwmjURJ
+         BCiA==
+X-Gm-Message-State: AOAM532SoSGFiHXHmGhQU3o5es6S52rGI+ZdJ83BhQ6USMBvvTCikTYv
+        +k4Nh3mf1FymwZyLEeW+HCkeVQ==
+X-Google-Smtp-Source: ABdhPJyQXH5rz6htXutrsGmB1wjoMyGaB/A5NUr6BX7JAQ9JCVuLhw9VCD19t/elxAxtEvsGCND5Pg==
+X-Received: by 2002:a05:6402:cb8:: with SMTP id cn24mr5379165edb.105.1618505606039;
+        Thu, 15 Apr 2021 09:53:26 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id gn6sm874985ejc.83.2021.04.15.09.53.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 15 Apr 2021 09:53:25 -0700 (PDT)
+Subject: Re: [PATCH v4 1/9] ASoC: dt-bindings: wcd938x: add bindings for
+ wcd938x
+To:     Rob Herring <robh@kernel.org>
+Cc:     broonie@kernel.org, devicetree@vger.kernel.org, perex@perex.cz,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        lgirdwood@gmail.com
+References: <20210414154845.21964-1-srinivas.kandagatla@linaro.org>
+ <20210414154845.21964-2-srinivas.kandagatla@linaro.org>
+ <20210415162947.GA1511094@robh.at.kernel.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <96e7c752-a962-cb5b-c936-8151fd4c32ea@linaro.org>
+Date:   Thu, 15 Apr 2021 17:53:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210415122602.87697-3-jacopo+renesas@jmondi.org>
+In-Reply-To: <20210415162947.GA1511094@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 02:25:57PM +0200, Jacopo Mondi wrote:
-> Define a new vendor property in the maxim,max9286 binding schema.
+Thanks Rob for quick review,
+
+On 15/04/2021 17:29, Rob Herring wrote:
+> On Wed, Apr 14, 2021 at 04:48:37PM +0100, Srinivas Kandagatla wrote:
+>> Qualcomm WCD9380/WCD9385 Codec is a standalone Hi-Fi audio codec IC
+>> connected over SoundWire. This device has two SoundWire device RX and
+>> TX respectively, supporting 4 x ADCs, ClassH, Ear, Aux PA, 2xHPH,
+>> 7 x TX diff inputs, 8 DMICs, MBHC.
+>>
+>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> ---
+>>   .../bindings/sound/qcom,wcd938x.yaml          | 176 ++++++++++++++++++
+>>   1 file changed, 176 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml b/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
+>> new file mode 100644
+>> index 000000000000..4c8fa8290af0
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/sound/qcom,wcd938x.yaml
+>> @@ -0,0 +1,176 @@
+
+...
+
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    codec {
+>> +        compatible = "qcom,wcd9380-codec";
+>> +        reset-gpios = <&tlmm 32 0>;
+>> +        #sound-dai-cells = <1>;
+>> +        qcom,tx-device = <&wcd938x_tx>;
+>> +        qcom,rx-device = <&wcd938x_rx>;
+>> +        qcom,micbias1-microvolt = <1800000>;
+>> +        qcom,micbias2-microvolt = <1800000>;
+>> +        qcom,micbias3-microvolt = <1800000>;
+>> +        qcom,micbias4-microvolt = <1800000>;
+>> +        qcom,mbhc-hphl-switch;
+>> +        qcom,mbhc-ground-switch;
+>> +        qcom,mbhc-button0-vthreshold-microvolt = <75000>;
+>> +        qcom,mbhc-button1-vthreshold-microvolt = <150000>;
+>> +        qcom,mbhc-button2-vthreshold-microvolt = <237000>;
+>> +        qcom,mbhc-button3-vthreshold-microvolt = <500000>;
+>> +        qcom,mbhc-button5-vthreshold-microvolt = <500000>;
+>> +        qcom,mbhc-button6-vthreshold-microvolt = <500000>;
+>> +        qcom,mbhc-button7-vthreshold-microvolt = <500000>;
+>> +    };
+>> +
+>> +    /* ... */
+>> +
+>> +    soundwire@3230000 {
+>> +        #address-cells = <2>;
+>> +        #size-cells = <0>;
+>> +        reg = <0x03230000 0x2000>;
+>> +        wcd938x_tx: codec@0,3 {
+>> +            compatible = "sdw20217010d00";
+>> +            reg  = <0 3>;
+>> +            qcom,direction = "tx";
+>> +            qcom,port-mapping = <2 3 4 5>;
+>> +        };
+>> +
+>> +        wcd938x_rx: codec@0,4 {
+>> +            compatible = "sdw20217010d00";
+>> +            reg  = <0 4>;
+>> +            qcom,direction = "rx";
+>> +            qcom,port-mapping = <1 2 3 4 5>;
+>> +        };
 > 
-> The new property allows to declare that the remote camera
-> power-over-coax is controlled by one of the MAX9286 gpio lines.
+> This is a single device, right? We shouldn't need 3 nodes to describe
+> it. I think this should all be a single node like this:
 > 
-> As it is currently not possible to establish a regulator as consumer
-> of the MAX9286 gpio controller for this purpose, the property allows to
-> declare that the camera power is controlled by the MAX9286 directly.
+No, WCD938x is a Audio Codec which has two SoundWire Slave device (TX 
+and RX). WCD938X reset lines and supplies are common for both TX and RX 
+SoundWire devices.
+
+However TX SoundWire device only has register access to codec 
+CSR(Control Status registers).
+
+So there are two SoundWire devices and a WCD938X common parts. Now 
+making the common Codec part as a separate device made more sense here.
+So we ended with total 3 devices.
+
+1 . WCD938x Codec which deals with all the codec side including Common 
+parts.
+2. TX SoundWire device to configure TX SoundWire ports/interface and 
+provide CSR access.
+3. RX SoundWire device to configure RX Soundwire ports/interface
+
+
+> codec@0,3 {
+>          reg = <0 3>, <0 4>;
+
+We can't have this, as these two SoundWire devices hang on different 
+SoundWire bus instances.
+
+> 	compatible = "sdw20217010d00";
 > 
-> The property accepts a gpio-index (0 or 1) and one line polarity
-> flag as defined by dt-bindings/gpio/gpio.h.
+>          reset-gpios = <&tlmm 32 0>;
+>          #sound-dai-cells = <1>;
+>          qcom,micbias1-microvolt = <1800000>;
+>          qcom,micbias2-microvolt = <1800000>;
+>          qcom,micbias3-microvolt = <1800000>;
+>          qcom,micbias4-microvolt = <1800000>;
+>          qcom,mbhc-hphl-switch;
+>          qcom,mbhc-ground-switch;
+>          qcom,mbhc-button0-vthreshold-microvolt = <75000>;
+>          qcom,mbhc-button1-vthreshold-microvolt = <150000>;
+>          qcom,mbhc-button2-vthreshold-microvolt = <237000>;
+>          qcom,mbhc-button3-vthreshold-microvolt = <500000>;
+>          qcom,mbhc-button5-vthreshold-microvolt = <500000>;
+>          qcom,mbhc-button6-vthreshold-microvolt = <500000>;
+>          qcom,mbhc-button7-vthreshold-microvolt = <500000>;
+> };
 > 
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> ---
->  .../bindings/media/i2c/maxim,max9286.yaml     | 71 ++++++++++++++++++-
->  1 file changed, 70 insertions(+), 1 deletion(-)
+> You'll have to figure out the qcom,direction and qcom,port-mapping parts
+> though.
+
+That is the reason why we ended up with 3 devices here.
+
+--srini
 > 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> index 0e7162998b77..e2422241b7d0 100644
-> --- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> @@ -70,6 +70,28 @@ properties:
->        a remote serializer whose high-threshold noise immunity is not enabled
->        is 100000 micro volts
->  
-> +  maxim,gpio-poc:
-> +    $ref: '/schemas/types.yaml#/definitions/uint32-array'
-> +    minItems: 2
-> +    maxItems: 2
-> +    description: |
-> +      Index of the MAX9286 gpio output line (0 or 1) that controls Power over
-> +      Coax to the cameras and its associated polarity flag.
-> +
-> +      The property accepts an array of two unsigned integers, the first being
-> +      the gpio line index (0 or 1) and the second being the gpio line polarity
-> +      flag (GPIO_ACTIVE_HIGH or GPIO_ACTIVE_LOW) as defined in
-> +      <include/dt-bindings/gpio/gpio.h>.
-> +
-> +      When the remote cameras power is controlled by one of the MAX9286 gpio
-> +      lines, this property has to be used to specify which line among the two
-> +      available ones controls the remote camera power enablement.
-> +
-> +      When this property is used it is not possible to register a gpio
-> +      controller as the gpio lines are controlled directly by the MAX9286 and
-> +      not available for consumers, nor the 'poc-supply' property should be
-> +      specified.
-> +
->    ports:
->      $ref: /schemas/graph.yaml#/properties/ports
->  
-> @@ -182,7 +204,20 @@ required:
->    - reg
->    - ports
->    - i2c-mux
-> -  - gpio-controller
-> +
-> +# If 'maxim,gpio-poc' is present, then 'poc-supply' and 'gpio-controller'
-> +# are not allowed.
-> +if:
-> +  required:
-> +    - maxim,gpio-poc
-> +then:
-> +  allOf:
-> +    - not:
-> +        required:
-> +          - poc-supply
-> +    - not:
-> +        required:
-> +          - gpio-controller
-
-I did tell you to do it this way on irc, but looking at it again, it's 
-slightly more concise to do:
-
-     properties:
-       poc-supply: false
-       gpio-controller: false
-
-Note that 'properties' in the 'if' doesn't work because a schema 
-for a property evaluates as true when the property is not present.
-
-Either way,
-
-Reviewed-by: Rob Herring <robh@kernel.org>
-
-Rob
+> Rob
+> 
