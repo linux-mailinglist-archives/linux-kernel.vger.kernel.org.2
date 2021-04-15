@@ -2,387 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD8BB35FF36
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 03:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07DAB35FF38
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 03:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbhDOBUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 21:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbhDOBUN (ORCPT
+        id S229566AbhDOBV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 21:21:59 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:53032 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229450AbhDOBV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 21:20:13 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDDFC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 18:19:51 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id x20so6082849lfu.6
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 18:19:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wWj5r8K+b2y8jPccyFlj/HjStlsD2875PmIiZru4XIw=;
-        b=h9dCjQApzgJVCTtN4ukr7huGAYA2os7egzwY7BWQqcjeUMP4G2Wu/jIA4jLYE9IEaT
-         7d0n+ZLWnwJMG1ewRES6dWccakaMHmNVc/e2qpbbm1Ayf9mT2aS89DMKRSbAou+ixe3F
-         66WxKqr0lP2gW21vpas0MTduVFTcK4eVjxFJC+kO0NwEgIqAioxpuBOUYPIA1mhsv725
-         ulNsSaaVviIZBTbX0C2ddh8J+51yYLF46Rakcte8JuAmsf6RyJraDX+SXhyI1xBfXKXV
-         FGqSugavjcc0LgZVHSTgjHHkp+KSl+gSapLLBBdtj4b5TiD8Wj4UyAd/o/qFYq77h/hT
-         6XHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wWj5r8K+b2y8jPccyFlj/HjStlsD2875PmIiZru4XIw=;
-        b=KbAccfSReV12xqtD1BKDeu3gAv0J+MX0aKDoTLM3mMxJ8O/+3BwY+wN31yTmkW0D3a
-         ith8jtv29EvYK9c2QpMRwkUjxEXTX6D5LOPwUZZli8VKj+Ghlh/PxwzLH2bsGv5yHtMX
-         HPQ9yR+ZwV2MNMliLZ3+nH1srFa0Dmj9LkzmjnLsCyBfHyGppqj5ljgER3d/DTGtBnrn
-         +apjfg+krpbSnlxx+iQXK2dskGjlTJ6eIyVvqeLsLy2/gYnogMYLraZZo7f0Woq+fyPH
-         yhsCE5a7DauHrkKJDiFNqlp0nmrBPWoVi+fPhm8xburuksYCANevt/3Tl94WofsE/FHJ
-         93vg==
-X-Gm-Message-State: AOAM531CCHwwiNwaYStQoj6jCmfzmbd300jWHVmrxnj9fCPmhsT/HSy9
-        45sZNV0NkYsX+Pqlry2KZgd+EzldxV3+0aC6jeJmnw==
-X-Google-Smtp-Source: ABdhPJwa1DEB3yQFlcc2QsEJ5RGzqq2frKXJ7CpoH1stM4dLHqyCwogELgZzlI1wQUka6alSXe/Vud1zkTtUVkskcdE=
-X-Received: by 2002:a19:f802:: with SMTP id a2mr664651lff.545.1618449589203;
- Wed, 14 Apr 2021 18:19:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210414081428.337494-1-davidgow@google.com> <CAGS_qxryjASsRy9Ozox8UXx1=9PittUs=WmkO7=QpWt9HrLj7A@mail.gmail.com>
-In-Reply-To: <CAGS_qxryjASsRy9Ozox8UXx1=9PittUs=WmkO7=QpWt9HrLj7A@mail.gmail.com>
-From:   David Gow <davidgow@google.com>
-Date:   Thu, 15 Apr 2021 09:19:36 +0800
-Message-ID: <CABVgOSmOzex8jJQzjzjnd+gPLaFHZFy6ifugsAxq+PGr-tvH6A@mail.gmail.com>
-Subject: Re: [PATCH v2] Documentation: dev-tools: Add Testing Overview
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        Wed, 14 Apr 2021 21:21:58 -0400
+Received: from dread.disaster.area (pa49-181-239-12.pa.nsw.optusnet.com.au [49.181.239.12])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id F36B2839BE1;
+        Thu, 15 Apr 2021 11:21:19 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1lWqh2-008RJZ-A8; Thu, 15 Apr 2021 11:21:16 +1000
+Date:   Thu, 15 Apr 2021 11:21:16 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     SeongJae Park <sj38.park@gmail.com>, Yu Zhao <yuzhao@google.com>,
+        linux-mm@kvack.org, Andi Kleen <ak@linux.intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Benjamin Manes <ben.manes@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Michael Larabel <michael@michaellarabel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Michel Lespinasse <michel@lespinasse.org>,
+        Rik van Riel <riel@surriel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Rong Chen <rong.a.chen@intel.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Yang Shi <shy828301@gmail.com>,
+        Ying Huang <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        linux-kernel@vger.kernel.org, lkp@lists.01.org,
+        page-reclaim@google.com
+Subject: Re: [PATCH v2 00/16] Multigenerational LRU Framework
+Message-ID: <20210415012116.GT1990290@dread.disaster.area>
+References: <20210413075155.32652-1-sjpark@amazon.de>
+ <3ddd4f8a-8e51-662b-df11-a63a0e75b2bc@kernel.dk>
+ <20210413231436.GF63242@dread.disaster.area>
+ <91146ee7-3054-a81a-296e-e75c24f4e290@kernel.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <91146ee7-3054-a81a-296e-e75c24f4e290@kernel.dk>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_f
+        a=gO82wUwQTSpaJfP49aMSow==:117 a=gO82wUwQTSpaJfP49aMSow==:17
+        a=IkcTkHD0fZMA:10 a=3YhXtTcJ-WEA:10 a=1XWaLZrsAAAA:8 a=7-415B0cAAAA:8
+        a=Bz5T2BrlmXL63WySl4EA:9 a=QEXdDO2ut3YA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 12:30 AM Daniel Latypov <dlatypov@google.com> wrote=
-:
->
-> On Wed, Apr 14, 2021 at 1:15 AM David Gow <davidgow@google.com> wrote:
-> >
-> > The kernel now has a number of testing and debugging tools, and we've
-> > seen a bit of confusion about what the differences between them are.
-> >
-> > Add a basic documentation outlining the testing tools, when to use each=
-,
-> > and how they interact.
-> >
-> > This is a pretty quick overview rather than the idealised "kernel
-> > testing guide" that'd probably be optimal, but given the number of time=
-s
-> > questions like "When do you use KUnit and when do you use Kselftest?"
-> > are being asked, it seemed worth at least having something. Hopefully
-> > this can form the basis for more detailed documentation later.
-> >
-> > Signed-off-by: David Gow <davidgow@google.com>
->
-> Reviewed-by: Daniel Latypov <dlatypov@google.com>
->
-> Looks good to me. Some minor typos and nits about wording here and there.
->
+On Wed, Apr 14, 2021 at 08:43:36AM -0600, Jens Axboe wrote:
+> On 4/13/21 5:14 PM, Dave Chinner wrote:
+> > On Tue, Apr 13, 2021 at 10:13:24AM -0600, Jens Axboe wrote:
+> >> On 4/13/21 1:51 AM, SeongJae Park wrote:
+> >>> From: SeongJae Park <sjpark@amazon.de>
+> >>>
+> >>> Hello,
+> >>>
+> >>>
+> >>> Very interesting work, thank you for sharing this :)
+> >>>
+> >>> On Tue, 13 Apr 2021 00:56:17 -0600 Yu Zhao <yuzhao@google.com> wrote:
+> >>>
+> >>>> What's new in v2
+> >>>> ================
+> >>>> Special thanks to Jens Axboe for reporting a regression in buffered
+> >>>> I/O and helping test the fix.
+> >>>
+> >>> Is the discussion open?  If so, could you please give me a link?
+> >>
+> >> I wasn't on the initial post (or any of the lists it was posted to), but
+> >> it's on the google page reclaim list. Not sure if that is public or not.
+> >>
+> >> tldr is that I was pretty excited about this work, as buffered IO tends
+> >> to suck (a lot) for high throughput applications. My test case was
+> >> pretty simple:
+> >>
+> >> Randomly read a fast device, using 4k buffered IO, and watch what
+> >> happens when the page cache gets filled up. For this particular test,
+> >> we'll initially be doing 2.1GB/sec of IO, and then drop to 1.5-1.6GB/sec
+> >> with kswapd using a lot of CPU trying to keep up. That's mainline
+> >> behavior.
+> > 
+> > I see this exact same behaviour here, too, but I RCA'd it to
+> > contention between the inode and memory reclaim for the mapping
+> > structure that indexes the page cache. Basically the mapping tree
+> > lock is the contention point here - you can either be adding pages
+> > to the mapping during IO, or memory reclaim can be removing pages
+> > from the mapping, but we can't do both at once.
+> > 
+> > So we end up with kswapd spinning on the mapping tree lock like so
+> > when doing 1.6GB/s in 4kB buffered IO:
+> > 
+> > -   20.06%     0.00%  [kernel]               [k] kswapd                                                                                                        ▒
+> >    - 20.06% kswapd                                                                                                                                             ▒
+> >       - 20.05% balance_pgdat                                                                                                                                   ▒
+> >          - 20.03% shrink_node                                                                                                                                  ▒
+> >             - 19.92% shrink_lruvec                                                                                                                             ▒
+> >                - 19.91% shrink_inactive_list                                                                                                                   ▒
+> >                   - 19.22% shrink_page_list                                                                                                                    ▒
+> >                      - 17.51% __remove_mapping                                                                                                                 ▒
+> >                         - 14.16% _raw_spin_lock_irqsave                                                                                                        ▒
+> >                            - 14.14% do_raw_spin_lock                                                                                                           ▒
+> >                                 __pv_queued_spin_lock_slowpath                                                                                                 ▒
+> >                         - 1.56% __delete_from_page_cache                                                                                                       ▒
+> >                              0.63% xas_store                                                                                                                   ▒
+> >                         - 0.78% _raw_spin_unlock_irqrestore                                                                                                    ▒
+> >                            - 0.69% do_raw_spin_unlock                                                                                                          ▒
+> >                                 __raw_callee_save___pv_queued_spin_unlock                                                                                      ▒
+> >                      - 0.82% free_unref_page_list                                                                                                              ▒
+> >                         - 0.72% free_unref_page_commit                                                                                                         ▒
+> >                              0.57% free_pcppages_bulk                                                                                                          ▒
+> > 
+> > And these are the processes consuming CPU:
+> > 
+> >    5171 root      20   0 1442496   5696   1284 R  99.7   0.0   1:07.78 fio
+> >    1150 root      20   0       0      0      0 S  47.4   0.0   0:22.70 kswapd1
+> >    1146 root      20   0       0      0      0 S  44.0   0.0   0:21.85 kswapd0
+> >    1152 root      20   0       0      0      0 S  39.7   0.0   0:18.28 kswapd3
+> >    1151 root      20   0       0      0      0 S  15.2   0.0   0:12.14 kswapd2
+> 
+> Here's my profile when memory reclaim is active for the above mentioned
+> test case. This is a single node system, so just kswapd. It's using around
+> 40-45% CPU:
+> 
+>     43.69%  kswapd0  [kernel.vmlinux]  [k] xas_create
+>             |
+>             ---ret_from_fork
+>                kthread
+>                kswapd
+>                balance_pgdat
+>                shrink_node
+>                shrink_lruvec
+>                shrink_inactive_list
+>                shrink_page_list
+>                __delete_from_page_cache
+>                xas_store
+>                xas_create
+> 
+>     16.88%  kswapd0  [kernel.vmlinux]  [k] queued_spin_lock_slowpath
+>             |
+>             ---ret_from_fork
+>                kthread
+>                kswapd
+>                balance_pgdat
+>                shrink_node
+>                shrink_lruvec
+>                |          
+>                 --16.82%--shrink_inactive_list
+>                           |          
+>                            --16.55%--shrink_page_list
+>                                      |          
+>                                       --16.26%--_raw_spin_lock_irqsave
+>                                                 queued_spin_lock_slowpath
 
-Thanks: I'll send out v3 with some fixes to your suggestions soon.
+Yeah, so it largely ends up in the same place, with the spinlock
+contention dominating the CPU usage and efficiency of memory
+reclaim.
+
+> > i.e. when memory reclaim kicks in, the read process has 20% less
+> > time with exclusive access to the mapping tree to insert new pages.
+> > Hence buffered read performance goes down quite substantially when
+> > memory reclaim kicks in, and this really has nothing to do with the
+> > memory reclaim LRU scanning algorithm.
+> > 
+> > I can actually get this machine to pin those 5 processes to 100% CPU
+> > under certain conditions. Each process is spinning all that extra
+> > time on the mapping tree lock, and performance degrades further.
+> > Changing the LRU reclaim algorithm won't fix this - the workload is
+> > solidly bound by the exclusive nature of the mapping tree lock and
+> > the number of tasks trying to obtain it exclusively...
+> 
+> I've seen way worse than the above as well, it's just my go-to easy test
+> case for "man I wish buffered IO didn't suck so much".
+
+*nod*
+
+> >> The initial posting of this patchset did no better, in fact it did a bit
+> >> worse. Performance dropped to the same levels and kswapd was using as
+> >> much CPU as before, but on top of that we also got excessive swapping.
+> >> Not at a high rate, but 5-10MB/sec continually.
+> >>
+> >> I had some back and forths with Yu Zhao and tested a few new revisions,
+> >> and the current series does much better in this regard. Performance
+> >> still dips a bit when page cache fills, but not nearly as much, and
+> >> kswapd is using less CPU than before.
+> > 
+> > Profiles would be interesting, because it sounds to me like reclaim
+> > *might* be batching page cache removal better (e.g. fewer, larger
+> > batches) and so spending less time contending on the mapping tree
+> > lock...
+> > 
+> > IOWs, I suspect this result might actually be a result of less lock
+> > contention due to a change in batch processing characteristics of
+> > the new algorithm rather than it being a "better" algorithm...
+> 
+> See above - let me know if you want to see more specific profiling as
+> well.
+
+I don't think that profiles are going to give us the level of detail
+required to determine how this algorithm is improving performance.
+That would require careful instrumentation of the memory reclaim
+algorithms to demonstrate any significant change in behaviour, and
+then to prove that it's a predictable, consistent improvement across
+all types of machines rather than just being a freak of interactions
+with a specific workload on specific hardware would need to be done.
+
+When it comes to lock contention like this, you can't infer anything
+about external algorithm changes because better algorithms often
+make contention worse because the locks are hit harder and so
+performance goes the wrong way. Similarly, if the external algorithm
+change takes more time to do something because it is less efficient,
+then locks are hit less hard, so they contend less, and performance
+goes up.
+
+I often see an external change cause a small reduction in lock
+contention and increase in throughput through a heavily contended
+path is often a sign something is slower or behaving worse, not
+better. THe only way to determine if the external change is any good
+is to first fix the lock contention problem, then do back to back
+testing of the change.
+
+Hence I'd be very hesitant to use this test in any way as a measure
+of whether the multi-gen LRU is any better for this workload or
+not...
 
 Cheers,
--- David
 
-> > ---
-> > Thanks, everyone, for the comments on the doc. I've made a few of the
-> > suggested changes. Please let me know what you think!
-> >
-> > -- David
-> >
-> > Changes since v1:
-> > https://lore.kernel.org/linux-kselftest/20210410070529.4113432-1-davidg=
-ow@google.com/
-> > - Note KUnit's speed and that one should provide selftests for syscalls
-> > - Mention lockdep as a Dynamic Analysis Tool
-> > - Refer to "Dynamic Analysis Tools" instead of "Sanitizers"
-> > - A number of minor formatting tweaks and rewordings for clarity.
-> >
-> > Not changed:
-> > - I haven't included an exhaustive list of differences, advantages, etc=
-,
-> >   between KUnit and kselftest: for now, the doc continues to focus on
-> >   the difference between 'in-kernel' and 'userspace' testing here.
-> > - Similarly, I'm not linking out to docs defining and describing "Unit"
-> >   tests versus "End-to-end" tests. None of the existing documentation
-> >   elsewhere quite matches what we do in the kernel perfectly, so it
-> >   seems less confusing to focus on the 'in-kernel'/'userspace'
-> >   distinction, and leave other definitions as a passing mention for
-> >   those who are already familiar with the concepts.
-> > - I haven't linked to any talk videos here: a few of them are linked on
-> >   (e.g.) the KUnit webpage, but I wanted to keep the Kernel documentati=
-on
-> >   more self-contained for now. No objection to adding them in a follow-=
-up
-> >   patch if people feel strongly about it, though.
-> > - The link from index.rst to this doc is unchanged. I personally think
-> >   that the link is prominent enough there: it's the first link, and
-> >   shows up a few times. One possibility if people disagreed would be to
-> >   merge this page with the index, but given not all dev-tools are going
-> >   to be testing-related, it seemed a bit arrogant. :-)
-> >
-> >  Documentation/dev-tools/index.rst            |   3 +
-> >  Documentation/dev-tools/testing-overview.rst | 117 +++++++++++++++++++
-> >  2 files changed, 120 insertions(+)
-> >  create mode 100644 Documentation/dev-tools/testing-overview.rst
-> >
-> > diff --git a/Documentation/dev-tools/index.rst b/Documentation/dev-tool=
-s/index.rst
-> > index 1b1cf4f5c9d9..f590e5860794 100644
-> > --- a/Documentation/dev-tools/index.rst
-> > +++ b/Documentation/dev-tools/index.rst
-> > @@ -7,6 +7,8 @@ be used to work on the kernel. For now, the documents h=
-ave been pulled
-> >  together without any significant effort to integrate them into a coher=
-ent
-> >  whole; patches welcome!
-> >
-> > +A brief overview of testing-specific tools can be found in :doc:`testi=
-ng-overview`.
-> > +
-> >  .. class:: toc-title
-> >
-> >            Table of contents
-> > @@ -14,6 +16,7 @@ whole; patches welcome!
-> >  .. toctree::
-> >     :maxdepth: 2
-> >
-> > +   testing-overview
-> >     coccinelle
-> >     sparse
-> >     kcov
-> > diff --git a/Documentation/dev-tools/testing-overview.rst b/Documentati=
-on/dev-tools/testing-overview.rst
-> > new file mode 100644
-> > index 000000000000..ce36a8cdf6b5
-> > --- /dev/null
-> > +++ b/Documentation/dev-tools/testing-overview.rst
-> > @@ -0,0 +1,117 @@
-> > +.. SPDX-License-Identifier: GPL-2.0
-> > +
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > +Kernel Testing Guide
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > +
-> > +
-> > +There are a number of different tools for testing the Linux kernel, so=
- knowing
-> > +when to use each of them can be a challenge. This document provides a =
-rough
-> > +overview of their differences, and how they fit together.
-> > +
-> > +
-> > +Writing and Running Tests
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-> > +
-> > +The bulk of kernel tests are written using either the kselftest or KUn=
-it
-> > +frameworks. These both provide infrastructure to help make running tes=
-ts and
-> > +groups of tests easier, as well as providing helpers to aid in writing=
- new
-> > +tests.
-> > +
-> > +If you're looking to verify the behaviour of the Kernel =E2=80=94 part=
-icularly specific
-> > +parts of the kernel =E2=80=94 then you'll want to use KUnit or kselfte=
-st.
-> > +
-> > +
-> > +The Difference Between KUnit and kselftest
-> > +------------------------------------------
-> > +
-> > +KUnit (Documentation/dev-tools/kunit/index.rst) is an entirely in-kern=
-el system
-> > +for "white box" testing: because test code is part of the kernel, it c=
-an access
-> > +internal structures and functions which aren't exposed to userspace.
-> > +
-> > +KUnit tests therefore are best written against small, self-contained p=
-arts
-> > +of the kernel, which can be tested in isolation. This aligns well with=
- the
-> > +concept of 'unit' testing.
-> > +
-> > +For example, a KUnit test might test an individual kernel function (or=
- even a
-> > +single codepath through a function, such as an error handling case), r=
-ather
-> > +than a feature as a whole.
-> > +
-> > +This also makes KUnit tests very fast to build and run, allowing them =
-to be
-> > +run frequently as part of the development process.
-> > +
-> > +There is a KUnit test style guide which may give further pointers in
-> > +Documentation/dev-tools/kunit/style.rst
-> > +
-> > +
-> > +kselftest (Documentation/dev-tools/kselftest.rst), on the other hand, =
-is
-> > +largely implemented in userspace, and tests are normal userspace scrip=
-ts or
-> > +programs.
-> > +
-> > +This makes it easier to write more complicated tests, or tests which n=
-eed to
-> > +manipulate the overall system state more (e.g., spawning processes, et=
-c.).
-> > +However, it's not possible to call kernel functions directly from ksel=
-ftest.
-> > +This means that only kernel functionality which is exposed to userspac=
-e somhow
->
-> *s/somhow/somehow
->
-
-Whoops: fixed.
-
-> > +(e.g. by a syscall, device, filesystem, etc.) can be tested with kself=
-test.  To
-> > +work around this, some tests include a companion kernel module which e=
-xposes
-> > +more information or functionality. If a test runs mostly or entirely w=
-ithin the
-> > +kernel, however,  KUnit may be the more appropriate tool.
->
-> I like this slightly tweaked wording better, thanks.
-> Still might be a bit confusing for a reader to see "it's not possible"
-> =3D> "it's possible if you have a companion module," but I'm happy
-> enough with it as-is.
->
-
-Yeah: I experimented a bit with a couple of other ways to word this,
-but it's difficult to find a succinct way of describing that it isn't
-possible from a purely-userspace test, but that a workaround exists
-and is used. This is what I ended up with, but I'm happy to change it
-further (or see it changed in a follow-up) if someone has a brilliant
-turn of phrase for it. :-)
-
-> > +
-> > +kselftest is therefore suited well to tests of whole features, as thes=
-e will
-> > +expose an interface to userspace, which can be tested, but not impleme=
-ntation
-> > +details. This aligns well with 'system' or 'end-to-end' testing.
-> > +
-> > +For example, all new system calls should be accompanied by kselftest t=
-ests.
-> > +
-> > +Code Coverage Tools
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > +
-> > +The Linux Kernel supports two different code coverage measurement tool=
-s. These
-> > +can be used to verify that a test is executing particular functions or=
- lines
-> > +of code. This is useful for determining how much of the kernel is bein=
-g tested,
-> > +and for finding corner-cases which are not covered by the appropriate =
-test.
-> > +
-> > +:doc:`gcov` is GCC's coverage testing tool, which can be used with the=
- kernel
-> > +to get global or per-module coverage. Unlike KCOV, it does not record =
-per-task
-> > +coverage. Coverage data can be read from debugfs, and interpreted usin=
-g the
-> > +usual gcov tooling.
-> > +
-> > +:doc:`kcov` is a feature which can be built in to the kernel to allow
-> > +capturing coverage on a per-task level. It's therefore useful for fuzz=
-ing and
-> > +other situations where information about code executed during, for exa=
-mple, a
-> > +single syscall is useful.
-> > +
-> > +
-> > +Dynamic Analysis Tools
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > +
-> > +The kernel also supports a number of dynamic analysis tools, which att=
-empt to
-> > +detect classes of issues when the occur in a running kernel. These typ=
-ically
->
-> *s/the occur/they occur
->
-
-Whoops: fixed.
-
-> > +look for undefined behaviour of some kind, such as invalid memory acce=
-sses,
->
-> nit: "look for undefined behaviour of some kind"
-> Given that I think most readers will interpret UB in the sense that C
-> uses it, this might be a bit misleading. E.g. lockdep errors aren't UB
-> in that sense.
->
-> Perhaps we can reword this to "look for invalid behaviour" or even
-> just "look for bugs"
->
-
-I've reworded this to say that each tool "looks for a different class of bu=
-gs".
-
-> > +concurrency issues such as data races, or other undefined behaviour li=
-ke
-> > +integer overflows.
-> > +
-> > +Some of these tools are listed below:
-> > +
-> > +* kmemleak detects possible memory leaks. See
-> > +  Documentation/dev-tools/kmemleak.rst
-> > +* KASAN detects invalid memory accesses such as out-of-bounds and
-> > +  use-after-free errors. See Documentation/dev-tools/kasan.rst
-> > +* UBSAN detects behaviour that is undefined by the C standard, like in=
-teger
-> > +  overflows. See Documentation/dev-tools/ubsan.rst
-> > +* KCSAN detects data races. See Documentation/dev-tools/kcsan.rst
-> > +* KFENCE is a low-overhead detector of memory issues, which is much fa=
-ster than
-> > +  KASAN and can be used in production. See Documentation/dev-tools/kfe=
-nce.rst
-> > +* lockdep is a locking correctness validator. See
-> > +  Documentation/locking/lockdep-design.rst
-> > +* There are several other pieces of debug instrumentation in the kerne=
-l, many
-> > +  of which can be found in lib/Kconfig.debug
-> > +
-> > +These tools tend to test the kernel as a whole, and do not "pass" like
-> > +kselftest or KUnit tests. They can be combined with KUnit or kselftest=
- by
-> > +running tests on a kernel with a sanitizer enabled: you can then be su=
-re
->
-> nit: we refer to "sanitizers" again, I assume this needs to be updated as=
- well?
->
-
-Yeah: I missed this one: it now just refers to "tools".
-
-> > +that none of these errors are occurring during the test.
-> > +
-> > +Some of these tools integrate with KUnit or kselftest and will
-> > +automatically fail tests if an issue is detected.
-> > +
-> > --
-> > 2.31.1.295.g9ea45b61b8-goog
-> >
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
