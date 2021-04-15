@@ -2,130 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4004A3609B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6703609BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232964AbhDOMp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 08:45:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55931 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232926AbhDOMpo (ORCPT
+        id S232798AbhDOMs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 08:48:29 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16126 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231549AbhDOMsZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 08:45:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618490721;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZqHGFCvK29UwMdI5PwYAwX9JWMxR/Nky/E74KukpUQs=;
-        b=Mm7KXQFqXGELYOKD8kRV8ic5945LMy0yDb4IeTtBZVWULDHAc1hteAXfX7RoU1Bn0tO7yA
-        Zn+3Yp7Jg7QmdBQCsp56tu3fQ3MU8x9IRzLnALV/UZHwvaW9L/irqcaSFhaAKDGHplaZ6R
-        63Bn/RW1uDmBPUa4bLBKKq+q8ETWYJ4=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-426-dOBQ_N-EONGU2hTiLjeOGA-1; Thu, 15 Apr 2021 08:45:19 -0400
-X-MC-Unique: dOBQ_N-EONGU2hTiLjeOGA-1
-Received: by mail-wr1-f69.google.com with SMTP id y13-20020adfdf0d0000b02901029a3bf796so2708405wrl.15
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 05:45:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=ZqHGFCvK29UwMdI5PwYAwX9JWMxR/Nky/E74KukpUQs=;
-        b=SOJo12r3Q9PPGsncCzduNe68JsXb/QqgvDks3J/YglXDfnJRoELo764bGPvbXi+h81
-         iFuSuvXLbRXHxZdEk414bXPyj7s2jerDXUfDCkaDYQJUv2puFeeha84X2skY7xjXlZae
-         r3trMncBZsfEzIfr0GEYh2K0DfQOxT12Yhlh0LEJeWA7DgQpzGk/yNAtm5x+lFAqWfJD
-         7Qsy6T6IUsqMfgLFyhOQYbWKUM50oudqIjuRT9MWOrfQFVY5gQlWu8oA19v095MfH/pe
-         YcPRVVY+V4CB7LED4kr8tzOqEp9MMqE9PZj4opjD66QflR2VfYqU8YxGiTjT1sZY+lkF
-         Pf1A==
-X-Gm-Message-State: AOAM5300EtqOUryI9JvSu3kck+aWH7De8OnWz4CrFzIyLzFjr4AgGg9h
-        ZcXQnE2uZ74hTjeoI0CoxBOMhSfj0dcypifi9ARREghDqeIxxoGVe36p1eDtNP+OU5R6kxAf4L1
-        /JKAnjhd+DDDycHL6KKzTT/tR
-X-Received: by 2002:a5d:63c9:: with SMTP id c9mr3359370wrw.425.1618490712139;
-        Thu, 15 Apr 2021 05:45:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwMaAmTfm/cuiA0oqyYDs9Eyq2Ea+4iqwmTuqJrN3WSA1Zy0Qpi7vwNSaCPUWitC79QjKiNDg==
-X-Received: by 2002:a5d:63c9:: with SMTP id c9mr3359351wrw.425.1618490711936;
-        Thu, 15 Apr 2021 05:45:11 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6392.dip0.t-ipconnect.de. [91.12.99.146])
-        by smtp.gmail.com with ESMTPSA id u2sm3028556wmm.5.2021.04.15.05.45.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 05:45:11 -0700 (PDT)
-Subject: Re: [PATCH v8 5/7] mm: Make alloc_contig_range handle free hugetlb
- pages
-To:     Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>
-References: <20210415103544.6791-1-osalvador@suse.de>
- <20210415103544.6791-6-osalvador@suse.de>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <84268789-379e-2b45-1637-1877652cd6c9@redhat.com>
-Date:   Thu, 15 Apr 2021 14:45:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 15 Apr 2021 08:48:25 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FLfFF6z49zpYZF;
+        Thu, 15 Apr 2021 20:45:05 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 15 Apr 2021 20:47:49 +0800
+From:   Qi Liu <liuqi115@huawei.com>
+To:     <will@kernel.org>, <mark.rutland@arm.com>, <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <zhangshaokun@hisilicon.com>
+Subject: [PATCH v3 0/2] drivers/perf: hisi: Add support for PCIe PMU
+Date:   Thu, 15 Apr 2021 20:48:03 +0800
+Message-ID: <1618490885-44612-1-git-send-email-liuqi115@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20210415103544.6791-6-osalvador@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +		if (PageHuge(page) && cc->alloc_contig) {
-> +			ret = isolate_or_dissolve_huge_page(page);
-> +
-> +			/*
-> +			 * Fail isolation in case isolate_or_dissolve_huge_page()
-> +			 * reports an error. In case of -ENOMEM, abort right away.
-> +			 */
-> +			if (ret < 0) {
-> +				/*
-> +				 * Do not report -EBUSY down the chain.
-> +				 */
+This patchset adds support for HiSilicon PCIe Performance Monitoring
+Unit(PMU). It is a PCIe Root Complex integrated End Point(RCiEP) device
+added on Hip09. Each PCIe Core has a PMU RCiEP to monitor multi root
+ports and all Endpoints downstream these root ports.
 
-Nit: can fit this into a single line.
+HiSilicon PCIe PMU is supported to collect performance data of PCIe bus,
+such as: bandwidth, latency etc.
 
-> +				if (ret != -ENOMEM)
-> +					ret = 0;
+This patchset is based on 5.12-rc6. 
 
-Nit: I wonder if ret == -EBUSY would be clearer.
+Changes since v2:
+- Address the comments from John.
+- Link: https://lore.kernel.org/linux-arm-kernel/1617959157-22956-1-git-send-email-liuqi115@huawei.com/
 
-> +				low_pfn += (1UL << compound_order(page)) - 1;
-> +				goto isolate_fail;
-> +			}
-> +
-> +			/*
-> +			 * Ok, the hugepage was dissolved. Now these pages are
-> +			 * Buddy and cannot be re-allocated because they are
-> +			 * isolated. Fall-through as the check below handles
-> +			 * Buddy pages.
-> +			 */
-> +		}
-> +
+Changes since v1:
+- Drop the internal Reviewed-by tag.
+- Fix some build warnings when W=1.
+- Link: https://lore.kernel.org/linux-arm-kernel/1617788943-52722-1-git-send-email-liuqi115@huawei.com/
 
-[...]
+Qi Liu (2):
+  docs: perf: Add description for HiSilicon PCIe PMU driver
+  drivers/perf: hisi: Add driver for HiSilicon PCIe PMU
 
-> +/*
-> + * alloc_and_dissolve_huge_page - Allocate a new page and dissolve the old one
-> + * @h: struct hstate old page belongs to
-> + * @old_page: Old page to dissolve
-> + * Returns 0 on success, otherwise negated error.
-> + */
-> +
-
-nit: remove that line
-
-Acked-by: David Hildenbrand <david@redhat.com>
+ Documentation/admin-guide/perf/hisi-pcie-pmu.rst |  104 +++
+ MAINTAINERS                                      |    6 +
+ drivers/perf/Kconfig                             |    2 +
+ drivers/perf/Makefile                            |    1 +
+ drivers/perf/pci/Kconfig                         |   16 +
+ drivers/perf/pci/Makefile                        |    2 +
+ drivers/perf/pci/hisilicon/Makefile              |    3 +
+ drivers/perf/pci/hisilicon/hisi_pcie_pmu.c       | 1014 ++++++++++++++++++++++
+ include/linux/cpuhotplug.h                       |    1 +
+ 9 files changed, 1149 insertions(+)
+ create mode 100644 Documentation/admin-guide/perf/hisi-pcie-pmu.rst
+ create mode 100644 drivers/perf/pci/Kconfig
+ create mode 100644 drivers/perf/pci/Makefile
+ create mode 100644 drivers/perf/pci/hisilicon/Makefile
+ create mode 100644 drivers/perf/pci/hisilicon/hisi_pcie_pmu.c
 
 -- 
-Thanks,
-
-David / dhildenb
+2.7.4
 
