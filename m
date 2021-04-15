@@ -2,114 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22EB535FF40
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 03:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40FB335FF89
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 03:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229617AbhDOBYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 21:24:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhDOBYI (ORCPT
+        id S229581AbhDOB2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 21:28:37 -0400
+Received: from gw.atmark-techno.com ([13.115.124.170]:36044 "EHLO
+        gw.atmark-techno.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhDOB2f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 21:24:08 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36FB1C061574;
-        Wed, 14 Apr 2021 18:23:46 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id i18so1109772oii.2;
-        Wed, 14 Apr 2021 18:23:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CZcdY2ejeZuOhpZsOuHnpvCCg7RiVaBMVxDSkHSF7y0=;
-        b=iL3jK0U603yotsEojoxtuCtkP4WtwrvrHtKPJJUua4sqphBWCJ2fEiM9kJzcyhUbdL
-         iscEtYd7k73FiyaAXRGpskmYJ6P1q08LBuPZTJ6mHZVpnEmFCXuOmF3yj9ufQsUFjA/D
-         znlZT5hHhCJscZVJWqUb6ack0Az9gOeLY/U2Cd+nCVmwFbppIAYbBCA+Si49yWUnVFvj
-         SbpG3WgTUC0XN7HPG3zPd8C8iGvzi9qm/0TmJss8zkTrNNQ4FsLgivkA66zwA71q9zpk
-         j++qV7N50icirT2dhjRo3pTWuHlOmVMg93KNmCbTaXDgvc4KgJdJj+1LQNaprbs3WXog
-         46RQ==
+        Wed, 14 Apr 2021 21:28:35 -0400
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
+        by gw.atmark-techno.com (Postfix) with ESMTPS id 718408048E
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 10:28:12 +0900 (JST)
+Received: by mail-pj1-f71.google.com with SMTP id h15-20020a17090a054fb02900c66a1b9826so9523899pjf.8
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 18:28:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CZcdY2ejeZuOhpZsOuHnpvCCg7RiVaBMVxDSkHSF7y0=;
-        b=FxcK8ZxAg/Xm5gGxT69CmjIzu0pj6y0UT/jUARelBpNCvKrU7wA59vafHQvS49FGd0
-         BiECeXAUnPsBI9lrArgLMfZ83VKyW2BSgjJGCR1SIUeNc0DB6aeuO1jp6bwvLP2+ypPD
-         Lvrea0APrfE7yq4uYi1UHpZN4Cqw+bsrZ9ojgA8Qyt2n5zqTGSEkUliO5nimSxGkiLHm
-         X6oFcU2eC55g381HHt2UznGZvgUzNeGKWSPCPkGRVNPuUUMFPJ7HT3g6RfkrUS7nivXr
-         44KF11Af/rIN8UgzSlrFwSF4sOISWA65gPLLbDhyOvNzOO7GgpX1K5q5bTryEi/cLxwy
-         xV0A==
-X-Gm-Message-State: AOAM533PFcGVn2kKur0MUR8oY4imEcYA0HGsvJFd4yDwabbwdHlQGYbO
-        iuisFsPhujefeAs1QCb/f6SMGVJJQb/fqByNmQU=
-X-Google-Smtp-Source: ABdhPJygWqXkYyK5dX5T7dq+TVzLm0GRN0+/rLx/yFhDvLtbDedf/L1xCFsFMPw9CwumB70NVXgYCjNXR4/A9YCNFbY=
-X-Received: by 2002:a05:6808:5c5:: with SMTP id d5mr763874oij.141.1618449825677;
- Wed, 14 Apr 2021 18:23:45 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FOM9b0pdtnYk8Fnx4fGxxS9X4Bl0c34VqGJkMkPLCys=;
+        b=f2q5AA2VPFvCF8vSvrH0QtkiOmqhH5/AAIwc2tW+osoZRgBQTu7sEH/8PDcieFsgkr
+         AnUKRxkAbY9e78GTZUqV4lOOEd3k51QGgyXf856iPJ32aqJ6OVYMKvV2+wsgveR0cu44
+         N+Vm9x9lfoQO285Md/1GrpAF/e1ZKye6VdoIOMIrDL2QTrgndDWNT1KFsMCFnlO+eRRb
+         CegLBPc4CEQOZF/NwegWjQsE/ha+JV0VZHxvyW63gISSRLpMOYVZJN5Nt/ZyTan9hYwX
+         hnhxoeQfpWZf3lKaPAbpr9xiajxFftetPn2IuCsVELeBq0HScHA9jII39Dz2ylWdkys8
+         mn9A==
+X-Gm-Message-State: AOAM533aSyFX366s6NXjFkzj8n8eQh512kDPONXyC6IkRg69gGtaQEuu
+        Co5qoJ0QAG0sQ4YA6akQhtODhktZtAqZVl609LfzF1TM/Wp+KtxxujC9EYjAK1uj203mnmGCyjm
+        4R2wzC4MMDOcqhlb2uRnUgYV7mj3f
+X-Received: by 2002:aa7:9299:0:b029:21d:7ad1:2320 with SMTP id j25-20020aa792990000b029021d7ad12320mr936593pfa.22.1618450091301;
+        Wed, 14 Apr 2021 18:28:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwOS8ZF+FYzG7w9Mf8YFdOFOmZ/r+RgZwkgg5u3LbU7N9Rak2ehntN57YQtvkLegkVtKjlWww==
+X-Received: by 2002:aa7:9299:0:b029:21d:7ad1:2320 with SMTP id j25-20020aa792990000b029021d7ad12320mr936569pfa.22.1618450090996;
+        Wed, 14 Apr 2021 18:28:10 -0700 (PDT)
+Received: from pc-0115 (178.101.200.35.bc.googleusercontent.com. [35.200.101.178])
+        by smtp.gmail.com with ESMTPSA id e1sm643595pgl.25.2021.04.14.18.28.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 14 Apr 2021 18:28:10 -0700 (PDT)
+Received: from martinet by pc-0115 with local (Exim 4.94)
+        (envelope-from <martinet@pc-0115>)
+        id 1lWqng-004w4O-Qv; Thu, 15 Apr 2021 10:28:08 +0900
+Date:   Thu, 15 Apr 2021 10:27:58 +0900
+From:   Dominique MARTINET <dominique.martinet@atmark-techno.com>
+To:     "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Peng Fan <peng.fan@nxp.com>, dl-linux-imx <linux-imx@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [EXT] regression due to soc_device_match not handling defer
+ (Was: [PATCH v4 4/4] soc: imx8m: change to use platform driver)
+Message-ID: <YHeWnuDQo76rYoz5@atmark-techno.com>
+References: <20201120101112.31819-4-alice.guo@nxp.com>
+ <YGGZJjAxA1IO+/VU@atmark-techno.com>
+ <AM6PR04MB60536EF0DEEE6EB64CF29390E27D9@AM6PR04MB6053.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-References: <1618298169-3831-1-git-send-email-wanpengli@tencent.com>
- <YHXUFJuLXY8VZw3B@google.com> <CANRm+CzDW_5SPM0131OvRn3UPBp1nahxCykCP61XWeUpYeHU5Q@mail.gmail.com>
- <YHeNpUd1ZO1JVaAf@google.com>
-In-Reply-To: <YHeNpUd1ZO1JVaAf@google.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Thu, 15 Apr 2021 09:23:34 +0800
-Message-ID: <CANRm+Cxp47Howwusf04WyL5S0AJQx817wcq5BXBvO-U2p-D5OQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] KVM: Properly account for guest CPU time
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Michael Tokarev <mjt@tls.msk.ru>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <AM6PR04MB60536EF0DEEE6EB64CF29390E27D9@AM6PR04MB6053.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Apr 2021 at 08:49, Sean Christopherson <seanjc@google.com> wrote:
->
-> On Wed, Apr 14, 2021, Wanpeng Li wrote:
-> > On Wed, 14 Apr 2021 at 01:25, Sean Christopherson <seanjc@google.com> wrote:
-> > >
-> > > On Tue, Apr 13, 2021, Wanpeng Li wrote:
-> > > > The bugzilla https://bugzilla.kernel.org/show_bug.cgi?id=209831
-> > > > reported that the guest time remains 0 when running a while true
-> > > > loop in the guest.
-> > > >
-> > > > The commit 87fa7f3e98a131 ("x86/kvm: Move context tracking where it
-> > > > belongs") moves guest_exit_irqoff() close to vmexit breaks the
-> > > > tick-based time accouting when the ticks that happen after IRQs are
-> > > > disabled are incorrectly accounted to the host/system time. This is
-> > > > because we exit the guest state too early.
-> > > >
-> > > > This patchset splits both context tracking logic and the time accounting
-> > > > logic from guest_enter/exit_irqoff(), keep context tracking around the
-> > > > actual vmentry/exit code, have the virt time specific helpers which
-> > > > can be placed at the proper spots in kvm. In addition, it will not
-> > > > break the world outside of x86.
-> > >
-> > > IMO, this is going in the wrong direction.  Rather than separate context tracking,
-> > > vtime accounting, and KVM logic, this further intertwines the three.  E.g. the
-> > > context tracking code has even more vtime accounting NATIVE vs. GEN vs. TICK
-> > > logic baked into it.
-> > >
-> > > Rather than smush everything into context_tracking.h, I think we can cleanly
-> > > split the context tracking and vtime accounting code into separate pieces, which
-> > > will in turn allow moving the wrapping logic to linux/kvm_host.h.  Once that is
-> > > done, splitting the context tracking and time accounting logic for KVM x86
-> > > becomes a KVM detail as opposed to requiring dedicated logic in the context
-> > > tracking code.
-> > >
-> > > I have untested code that compiles on x86, I'll send an RFC shortly.
-> >
-> > We need an easy to backport fix and then we might have some further
-> > cleanups on top.
->
-> I fiddled with this a bit today, I think I have something workable that will be
-> a relatively clean and short backport.  With luck, I'll get it posted tomorrow.
+Alice Guo (OSS) wrote on Tue, Mar 30, 2021 at 02:41:23AM +0000:
+> Thanks for reporting this issue, I'll check and add a fix to handle defer probe.
 
-I think we should improve my posted version instead of posting a lot
-of alternative versions to save everybody's time.
+I haven't seen any follow up on this, have you had a chance to take a
+look?
+If this won't make it for 5.12 (in a couple of week probably?) would it
+make sense to revert 7d981405d0fd ("soc: imx8m: change to use platform
+driver") for now?
 
-    Wanpeng
+
+
+While looking at the code earlier I also have an unrelated, late-review
+on the patch itself:
+
+> +static u32 __init imx8mq_soc_revision(struct device *dev)
+> [...]
+>  @@ -191,8 +223,16 @@ static int __init imx8_soc_init(void)
+>         data = id->data;
+>         if (data) {
+>                 soc_dev_attr->soc_id = data->name;
+> -               if (data->soc_revision)
+> -                       soc_rev = data->soc_revision();
+> +               if (data->soc_revision) {
+> +                       if (pdev) {
+> +                               soc_rev = data->soc_revision(&pdev->dev);
+> +                               ret = soc_rev;
+> +                               if (ret < 0)
+
+I appreciate current soc_revision are "small enough" (looking at
+include/soc/imx/revision.h we're talking < 256) so this actually works,
+but would it make sense to either make soc_rev signed, or to have
+soc_revision() return a s64, or have the revision filled in another *u32
+argument to make sure the error is an error and not just a large rev?
+
+This is most definitely fine for now but that kind of code patterns can
+lead to weird errors down the road.
+
+Thanks,
+-- 
+Dominique
