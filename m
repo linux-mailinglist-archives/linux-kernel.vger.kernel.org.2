@@ -2,87 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8CD360F16
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D48E2360F19
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233367AbhDOPh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:37:59 -0400
-Received: from mail-pl1-f169.google.com ([209.85.214.169]:42497 "EHLO
-        mail-pl1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbhDOPhi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:37:38 -0400
-Received: by mail-pl1-f169.google.com with SMTP id w8so9940748plg.9;
-        Thu, 15 Apr 2021 08:37:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=a8rtqGj6DddCpHF5nNlZPwGIng9Wf32Y0rfcCg7Hsvw=;
-        b=OfyRoSsnjFd2kc4B1xxW+SFDqX+7v3H6EDKmHlKPLM1D2OR+xsQ6H4HifEJwLib4be
-         tUKbIluL3dPPB3I1wDC4H4WsibdAJqJmjQP/wyV/5dZDYEedVq7HzTqP6I6HR7oExsTv
-         vYQaH5sqLi3ksmmsF811/nAk9Fvak4Qv/ip1beZQ6XIug2S3qwgASZ56WPmKTWuq2sFQ
-         wqJO9mzZ48cCR929AeBIK5ats+yRzNmLiwspSNFxvSfy4CQRxwNWjdybPsRR8afLyf7q
-         KT7x27VIA9JqBIG96JsN0TApdyXAF36EEXoucpQGaPm/JJuB5xhB3D3PLJ7GOSFrhuuR
-         bO7A==
-X-Gm-Message-State: AOAM5328jjBrZYmPW44ezgFEkuiMlfqefn314Z2Cpccnlq16bZRC4Zdf
-        7gzsZUiXDf2+8vEvXNpGL/g7EJ6UTj0=
-X-Google-Smtp-Source: ABdhPJxnCKVtL5N0uBYOwWSbCVPc3NwNH5zjj+7W/67FbYxRs+hThpnJ7iV7DwSGe8jffZZNpE3G8g==
-X-Received: by 2002:a17:90b:88f:: with SMTP id bj15mr4616984pjb.147.1618501033095;
-        Thu, 15 Apr 2021 08:37:13 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:f031:1d3a:7e95:2876? ([2601:647:4000:d7:f031:1d3a:7e95:2876])
-        by smtp.gmail.com with ESMTPSA id f2sm2565595pfe.177.2021.04.15.08.37.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 08:37:12 -0700 (PDT)
-Subject: Re: [PATCH] block: remove unused function
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1618475975-106537-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <defd9b0d-9ec7-2259-6f67-83bd8cd47973@acm.org>
-Date:   Thu, 15 Apr 2021 08:37:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S233675AbhDOPih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:38:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231137AbhDOPi0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:38:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37D7C610CE;
+        Thu, 15 Apr 2021 15:38:01 +0000 (UTC)
+Date:   Thu, 15 Apr 2021 16:37:58 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ali Saidi <alisaidi@amazon.com>, linux-kernel@vger.kernel.org,
+        steve.capper@arm.com, benh@kernel.crashing.org,
+        stable@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: [PATCH] locking/qrwlock: Fix ordering in
+ queued_write_lock_slowpath
+Message-ID: <20210415153758.GF1015@arm.com>
+References: <20210415142552.30916-1-alisaidi@amazon.com>
+ <YHhV3n2n4OXzaZBM@hirez.programming.kicks-ass.net>
+ <20210415152820.GB26439@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <1618475975-106537-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210415152820.GB26439@willie-the-truck>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/21 1:39 AM, Jiapeng Chong wrote:
-> Fix the following clang warning:
+On Thu, Apr 15, 2021 at 04:28:21PM +0100, Will Deacon wrote:
+> On Thu, Apr 15, 2021 at 05:03:58PM +0200, Peter Zijlstra wrote:
+> > On Thu, Apr 15, 2021 at 02:25:52PM +0000, Ali Saidi wrote:
+> > > While this code is executed with the wait_lock held, a reader can
+> > > acquire the lock without holding wait_lock.  The writer side loops
+> > > checking the value with the atomic_cond_read_acquire(), but only truly
+> > > acquires the lock when the compare-and-exchange is completed
+> > > successfully which isn’t ordered. The other atomic operations from this
+> > > point are release-ordered and thus reads after the lock acquisition can
+> > > be completed before the lock is truly acquired which violates the
+> > > guarantees the lock should be making.
+[...]
+> > > Fixes: b519b56e378ee ("locking/qrwlock: Use atomic_cond_read_acquire() when spinning in qrwloc")
+> > > Signed-off-by: Ali Saidi <alisaidi@amazon.com>
+> > > Cc: stable@vger.kernel.org
+> > > ---
+> > >  kernel/locking/qrwlock.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/kernel/locking/qrwlock.c b/kernel/locking/qrwlock.c
+> > > index 4786dd271b45..10770f6ac4d9 100644
+> > > --- a/kernel/locking/qrwlock.c
+> > > +++ b/kernel/locking/qrwlock.c
+> > > @@ -73,8 +73,8 @@ void queued_write_lock_slowpath(struct qrwlock *lock)
+> > >  
+> > >  	/* When no more readers or writers, set the locked flag */
+> > >  	do {
+> > > -		atomic_cond_read_acquire(&lock->cnts, VAL == _QW_WAITING);
+> > > -	} while (atomic_cmpxchg_relaxed(&lock->cnts, _QW_WAITING,
+> > > +		atomic_cond_read_relaxed(&lock->cnts, VAL == _QW_WAITING);
+> > > +	} while (atomic_cmpxchg_acquire(&lock->cnts, _QW_WAITING,
+> > >  					_QW_LOCKED) != _QW_WAITING);
+> > >  unlock:
+> > >  	arch_spin_unlock(&lock->wait_lock);
+> > 
+> > This doesn't make sense, there is no such thing as a store-acquire. What
+> > you're doing here is moving the acquire from one load to the next. A
+> > load we know will load the exact same value.
+> > 
+> > Also see Documentation/atomic_t.txt:
+> > 
+> >   {}_acquire: the R of the RMW (or atomic_read) is an ACQUIRE
+> > 
+> > 
+> > If anything this code wants to be written like so.
+> > 
+> > ---
+> > 
+> > diff --git a/kernel/locking/qrwlock.c b/kernel/locking/qrwlock.c
+> > index 4786dd271b45..22aeccc363ca 100644
+> > --- a/kernel/locking/qrwlock.c
+> > +++ b/kernel/locking/qrwlock.c
+> > @@ -60,6 +60,8 @@ EXPORT_SYMBOL(queued_read_lock_slowpath);
+> >   */
+> >  void queued_write_lock_slowpath(struct qrwlock *lock)
+> >  {
+> > +	u32 cnt;
+> > +
+> >  	/* Put the writer into the wait queue */
+> >  	arch_spin_lock(&lock->wait_lock);
+> >  
+> > @@ -73,9 +75,8 @@ void queued_write_lock_slowpath(struct qrwlock *lock)
+> >  
+> >  	/* When no more readers or writers, set the locked flag */
+> >  	do {
+> > -		atomic_cond_read_acquire(&lock->cnts, VAL == _QW_WAITING);
+> > -	} while (atomic_cmpxchg_relaxed(&lock->cnts, _QW_WAITING,
+> > -					_QW_LOCKED) != _QW_WAITING);
+> > +		cnt = atomic_cond_read_acquire(&lock->cnts, VAL == _QW_WAITING);
 > 
-> block/blk-zoned.c:55:24: warning: unused function 'blk_zone_start'
-> [-Wunused-function].
+> I think the issue is that >here< a concurrent reader in interrupt context
+> can take the lock and release it again, but we could speculate reads from
+> the critical section up over the later release and up before the control
+> dependency here...
 > 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  block/blk-zoned.c | 8 --------
->  1 file changed, 8 deletions(-)
+> > +	} while (!atomic_try_cmpxchg_relaxed(&lock->cnts, &cnt, _QW_LOCKED));
 > 
-> diff --git a/block/blk-zoned.c b/block/blk-zoned.c
-> index c0276b42..250cb76 100644
-> --- a/block/blk-zoned.c
-> +++ b/block/blk-zoned.c
-> @@ -52,14 +52,6 @@ const char *blk_zone_cond_str(enum blk_zone_cond zone_cond)
->  }
->  EXPORT_SYMBOL_GPL(blk_zone_cond_str);
->  
-> -static inline sector_t blk_zone_start(struct request_queue *q,
-> -				      sector_t sector)
-> -{
-> -	sector_t zone_mask = blk_queue_zone_sectors(q) - 1;
-> -
-> -	return sector & ~zone_mask;
-> -}
+> ... and then this cmpxchg() will succeed, so our speculated stale reads
+> could be used.
+> 
+> *HOWEVER*
+> 
+> Speculating a read should be fine in the face of a concurrent _reader_,
+> so for this to be an issue it implies that the reader is also doing some
+> (atomic?) updates.
 
-A similar patch is already in Jens' for-5.13/block branch. See also
-commit 540ad3f3da25 ("blk-zoned: Remove the definition of
-blk_zone_start()").
+There's at least one such case: see chain_epi_lockless() updating
+epi->next, called from ep_poll_callback() with a read_lock held. This
+races with ep_done_scan() which has the write_lock held.
 
-Bart.
+I think the authors of the above code interpreted the read_lock as
+something that multiple threads can own disregarding the _read_ part.
+
+-- 
+Catalin
