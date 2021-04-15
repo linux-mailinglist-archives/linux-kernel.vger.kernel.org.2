@@ -2,118 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B21AC360F0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3A9A360F0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233598AbhDOPdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:33:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:49444 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231137AbhDOPc6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:32:58 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 347C5106F;
-        Thu, 15 Apr 2021 08:32:35 -0700 (PDT)
-Received: from [10.57.24.156] (unknown [10.57.24.156])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 20BA93FA35;
-        Thu, 15 Apr 2021 08:32:32 -0700 (PDT)
-Subject: Re: [PATCH] PM / EM: Inefficient OPPs detection
-To:     Quentin Perret <qperret@google.com>
-Cc:     Vincent Donnefort <vincent.donnefort@arm.com>,
-        peterz@infradead.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com, dietmar.eggemann@arm.com
-References: <1617901829-381963-1-git-send-email-vincent.donnefort@arm.com>
- <1617901829-381963-2-git-send-email-vincent.donnefort@arm.com>
- <YHg8s4VTQdiBNOpr@google.com>
- <20210415143453.GB391924@e120877-lin.cambridge.arm.com>
- <YHhU6pb8E5W2eeCX@google.com>
- <20210415151446.GC391924@e120877-lin.cambridge.arm.com>
- <YHhZrbLcUD6I83m1@google.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <cc9d7743-7795-a9c9-c1fb-4162cb02bfe2@arm.com>
-Date:   Thu, 15 Apr 2021 16:32:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S233721AbhDOPdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:33:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40746 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233363AbhDOPdp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:33:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618500801;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PFoMUqnt3mOjMRdu3Djb36BE1EcblkSzBE9itczAV+o=;
+        b=gYvlmp6seeRBWhXOGShXgS54c3SQXyBrC2kA+iEK6GwaZzilUHo3J2cS6sT4/mqIyNFdPX
+        x/2mUHNIWt1BCxmPouIXPUqfpnhL5bEja8CeL7JbENLPRhgBquWmoBIprIlhAv5kYLr1tZ
+        ORTWxel6Tqypv7qru1SMq/Dacu55kwc=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-11-mBgqc6_XP2S-LhOsOy7-iQ-1; Thu, 15 Apr 2021 11:33:19 -0400
+X-MC-Unique: mBgqc6_XP2S-LhOsOy7-iQ-1
+Received: by mail-ej1-f71.google.com with SMTP id d11-20020a170906370bb029037c87968c04so1078076ejc.17
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 08:33:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=PFoMUqnt3mOjMRdu3Djb36BE1EcblkSzBE9itczAV+o=;
+        b=MYCV2MQC+OjI9CTYThbhJUj+DJpv6RLBXwOcS+wGs1sqa7uNN1NGnmjt7nCIygBDiN
+         7eBmrWvL+yFSc64RLsUgkjllbeHmtKjZdaK3xuI1NaI1jcOPXhMsF5nQQUR48yAAP+vr
+         ZmRvHH0nv0v+fHad50pJDzvUbtc9UCHEVYZN+xYt+vAk5LBuGGTq9Lfh7O95Ku3sCvbM
+         D3/+xFYa3Z5aQimEFf+2bDPQ7S8mfAks7a/iQ5UZMG/+WgnDERBalA33IC/Kru8bjXl5
+         SmDimPsjyDhAviFgI1xehuANxSMjUA/lHP3l4YgxbY5ql8s2jnVJrBSgSleFkPCKeXV5
+         uZ+Q==
+X-Gm-Message-State: AOAM530vrh1bvdcEp6YPOaIPduAxS/9PQKy6RynJrpPg3b1gtv+2cUcM
+        q3xU04taprzQHEobHIA1zhK8xN5lzD7a/ydEqC85lKa8EpXP5HYGeDm1j1bIYHAL9+sDM00zebZ
+        I9DAdkW+9weHpB4R1TIVbMNev
+X-Received: by 2002:a05:6402:716:: with SMTP id w22mr4922500edx.206.1618500798639;
+        Thu, 15 Apr 2021 08:33:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw5dlqpKiMIeMmhJa3cFY+v+vwEa6uAJTB0yWnK6BtDfDPjvCLf8E71Hb7GL1RrJXfQ0gi+Jw==
+X-Received: by 2002:a05:6402:716:: with SMTP id w22mr4922473edx.206.1618500798440;
+        Thu, 15 Apr 2021 08:33:18 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id w13sm1951107edx.80.2021.04.15.08.33.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 08:33:17 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Siddharth Chandrasekaran <sidcha@amazon.de>,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        Wei Liu <wei.liu@kernel.org>
+Subject: Re: [PATCH RFC 01/22] asm-generic/hyperv: add
+ HV_STATUS_ACCESS_DENIED definition
+In-Reply-To: <20210415141403.hftsza3ucrf262tq@liuwe-devbox-debian-v2>
+References: <20210413122630.975617-1-vkuznets@redhat.com>
+ <20210413122630.975617-2-vkuznets@redhat.com>
+ <20210415141403.hftsza3ucrf262tq@liuwe-devbox-debian-v2>
+Date:   Thu, 15 Apr 2021 17:33:17 +0200
+Message-ID: <877dl38sw2.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <YHhZrbLcUD6I83m1@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Quentin,
+Wei Liu <wei.liu@kernel.org> writes:
 
-On 4/15/21 4:20 PM, Quentin Perret wrote:
-> On Thursday 15 Apr 2021 at 16:14:46 (+0100), Vincent Donnefort wrote:
->> On Thu, Apr 15, 2021 at 02:59:54PM +0000, Quentin Perret wrote:
->>> On Thursday 15 Apr 2021 at 15:34:53 (+0100), Vincent Donnefort wrote:
->>>> On Thu, Apr 15, 2021 at 01:16:35PM +0000, Quentin Perret wrote:
->>>>> On Thursday 08 Apr 2021 at 18:10:29 (+0100), Vincent Donnefort wrote:
->>>>>> --- a/kernel/sched/cpufreq_schedutil.c
->>>>>> +++ b/kernel/sched/cpufreq_schedutil.c
->>>>>> @@ -10,6 +10,7 @@
->>>>>>   
->>>>>>   #include "sched.h"
->>>>>>   
->>>>>> +#include <linux/energy_model.h>
->>>>>>   #include <linux/sched/cpufreq.h>
->>>>>>   #include <trace/events/power.h>
->>>>>>   
->>>>>> @@ -164,6 +165,9 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
->>>>>>   
->>>>>>   	freq = map_util_freq(util, freq, max);
->>>>>>   
->>>>>> +	/* Avoid inefficient performance states */
->>>>>> +	freq = em_pd_get_efficient_freq(em_cpu_get(policy->cpu), freq);
->>>>>
->>>>> I remember this was discussed when Douglas sent his patches some time
->>>>> ago, but I still find it sad we index the EM table here but still
->>>>> re-index the cpufreq frequency table later :/
->>>>>
->>>>> Yes in your case this lookup is very inexpensive, but still. EAS relies
->>>>> on the EM's table matching cpufreq's accurately, so this second lookup
->>>>> still feels rather unnecessary ...
->>>>
->>>> To get only a single lookup, we would need to bring the inefficiency knowledge
->>>> directly to the cpufreq framework. But it has its own limitations:
->>>>
->>>>    The cpufreq driver can have its own resolve_freq() callback, which means that
->>>>    not all the drivers would benefit from that feature.
->>>>
->>>>    The cpufreq_table can be ordered and accessed in several ways which brings
->>>>    many combinations that would need to be supported, ending-up with something
->>>>    much more intrusive. (We can though decide to limit the feature to the low to
->>>>    high access that schedutil needs).
->>>>
->>>> As the EM needs schedutil to exist anyway, it seemed to be the right place for
->>>> this code. It allows any cpufreq driver to benefit from the feature, simplify a
->>>> potential extension for a usage by devfreq devices and as a bonus it speeds-up
->>>> energy computing, allowing a more complex Energy Model.
->>>
->>> I was thinking of something a bit simpler. cpufreq_driver_resolve_freq
->>> appears to be used only from schedutil (why is it even then?), so we
->>> could just pull it into cpufreq_schedutil.c and just plain skip the call
->>> to cpufreq_frequency_table_target if the target freq has been indexed in
->>> the EM table -- it should already be matching a real OPP.
->>>
->>> Thoughts?
->>> Quentin
->>
->> Can try that for a V2. That means em_pd_get_efficient_freq() would have to
->> know about policy clamping (but I don't think that's an issue)
-> 
-> Indeed, and I think we can even see this as an improvement as EAS will
-> now see policy clamps as well in compute_energy().
+> On Tue, Apr 13, 2021 at 02:26:09PM +0200, Vitaly Kuznetsov wrote:
+>> From TLFSv6.0b, this status means: "The caller did not possess sufficient
+>> access rights to perform the requested operation."
+>> 
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>
+> This can be applied to hyperv-next right away. Let me know what you
+> think.
+>
 
-Are you sure that the 'policy' can be accessed from compute_energy()?
-It can be from schedutil freq switch path, but I'm not use about our
-feec()..
+In case there's no immediate need for this constant outside of KVM, I'd
+suggest you just give Paolo your 'Acked-by' so I can carry the patch in
+the series for the time being. This will eliminate the need to track
+dependencies between hyperv-next and kvm-next.
 
-For me this cpufreq_driver_resolve_freq sounds a bit out of this patch
-subject.
+Thanks!
 
-Regards,
-Lukasz
+-- 
+Vitaly
+
