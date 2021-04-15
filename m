@@ -2,96 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4947361437
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 23:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA75361446
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 23:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236233AbhDOVgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 17:36:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53780 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236043AbhDOVgD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 17:36:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618522539;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DNj4aUxZWko3JIYqOq33KObTtAgWgdktJ6hV/IWuKOk=;
-        b=E+fnd88hriT7R1XuDubiFY/z9w5O2cNiq06V0G3dgjKB99yDYS+Q9hT6iEjBdYjC1daOeM
-        9uqQlbit8Z9W++mDtywCzeyz+3gHpByBMtVIoN/1AXnoYEmnCYAxw7S7J34uzwaotwfKny
-        an1UwSt6DW72B8h/mK8uzPR85ttPMwA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-97-sgmMRhUBOyqJyxpYe6Dhfg-1; Thu, 15 Apr 2021 17:35:36 -0400
-X-MC-Unique: sgmMRhUBOyqJyxpYe6Dhfg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 52C291006C84;
-        Thu, 15 Apr 2021 21:35:34 +0000 (UTC)
-Received: from redhat.com (ovpn-117-254.rdu2.redhat.com [10.10.117.254])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1A685107D5C0;
-        Thu, 15 Apr 2021 21:35:31 +0000 (UTC)
-Date:   Thu, 15 Apr 2021 15:35:31 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Longfang Liu <liulongfang@huawei.com>
-Cc:     <cohuck@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, Tarun Gupta <targupta@nvidia.com>,
-        Neo Jia <cjia@nvidia.com>, Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [RFC PATCH 0/3] vfio/hisilicon: add acc live migration driver
-Message-ID: <20210415153531.56f6cdf2@redhat.com>
-In-Reply-To: <1618284983-55581-1-git-send-email-liulongfang@huawei.com>
-References: <1618284983-55581-1-git-send-email-liulongfang@huawei.com>
+        id S236243AbhDOVkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 17:40:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236148AbhDOVkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 17:40:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 84BF5610CC;
+        Thu, 15 Apr 2021 21:40:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618522809;
+        bh=AinOT/YfM148cjBjj0Zpcr1i5gy+AuLqehfsOo+NC3A=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=eqhJ5h6+enisF74bb2ZZMthC2/RSsplIavkxwxoiQsACtRBStW8Z7gREnSLIfWu69
+         adjtinmBpXkG+x/I/eX9Aw1FPo85J+lrgtyMhv+ye+qRS/ITy0GREByx+f8QeU5Fk8
+         yoN6YbTCAMZxI4/QR/LXvapTl4s3qr+w6yY5/U96HFrUNqi8fVSNvEwB/MDq0cNaJn
+         slJ36qKvOHps4V7h5mqygD/QfTeWGNwIZ0tTGLQ5jpjpop6ShTOeRKEU/qF4PXyHA0
+         muSW7/m038uNipAR4WhcPaDsrO/CNw9csArcuO9jnQsz8jkxJjLo4Schjk7+Q+PclS
+         29YgeoLdzY1yw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 70FFE60CD6;
+        Thu, 15 Apr 2021 21:40:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v3] i40e: fix the panic when running bpf in xdpdrv mode
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161852280945.6246.15751888474800396126.git-patchwork-notify@kernel.org>
+Date:   Thu, 15 Apr 2021 21:40:09 +0000
+References: <20210414023428.10121-1-kerneljasonxing@gmail.com>
+In-Reply-To: <20210414023428.10121-1-kerneljasonxing@gmail.com>
+To:     Jason Xing <kerneljasonxing@gmail.com>
+Cc:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, intel-wired-lan@lists.osuosl.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, xingwanli@kuaishou.com, lishujin@kuaishou.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Cc+ NVIDIA folks both from migration and vfio-pci-core discussion]
+Hello:
 
-On Tue, 13 Apr 2021 11:36:20 +0800
-Longfang Liu <liulongfang@huawei.com> wrote:
+This patch was applied to netdev/net.git (refs/heads/master):
 
-> The live migration solution relies on the vfio_device_migration_info protocol.
-> The structure vfio_device_migration_info is placed at the 0th offset of
-> the VFIO_REGION_SUBTYPE_MIGRATION region to get and set VFIO device related
-> migration information. Field accesses from this structure are only supported
-> at their native width and alignment. Otherwise, the result is undefined and
-> vendor drivers should return an error.
+On Wed, 14 Apr 2021 10:34:28 +0800 you wrote:
+> From: Jason Xing <xingwanli@kuaishou.com>
 > 
-> (1).The driver framework is based on vfio_pci_register_dev_region() of vfio-pci,
-> and then a new live migration region is added, and the live migration is
-> realized through the ops of this region.
+> Fix this panic by adding more rules to calculate the value of @rss_size_max
+> which could be used in allocating the queues when bpf is loaded, which,
+> however, could cause the failure and then trigger the NULL pointer of
+> vsi->rx_rings. Prio to this fix, the machine doesn't care about how many
+> cpus are online and then allocates 256 queues on the machine with 32 cpus
+> online actually.
 > 
-> (2).In order to ensure the compatibility of the devices before and after the
-> migration, the device compatibility information check will be performed in
-> the Pre-copy stage. If the check fails, an error will be returned and the
-> source VM will exit the migration function.
-> 
-> (3).After the compatibility check is passed, it will enter the Stop-and-copy
-> stage. At this time, all the live migration data will be copied, and then
-> saved to the VF device of the destination, and then the VF device of the
-> destination will be started and the VM of the source will be exited.
-> 
-> Longfang Liu (3):
->   vfio/hisilicon: add acc live migration driver
->   vfio/hisilicon: register the driver to vfio
->   vfio/hisilicom: add debugfs for driver
-> 
->  drivers/vfio/pci/Kconfig                      |    8 +
->  drivers/vfio/pci/Makefile                     |    1 +
->  drivers/vfio/pci/hisilicon/acc_vf_migration.c | 1337 +++++++++++++++++++++++++
->  drivers/vfio/pci/hisilicon/acc_vf_migration.h |  170 ++++
->  drivers/vfio/pci/vfio_pci.c                   |   11 +
->  drivers/vfio/pci/vfio_pci_private.h           |    9 +
->  6 files changed, 1536 insertions(+)
->  create mode 100644 drivers/vfio/pci/hisilicon/acc_vf_migration.c
->  create mode 100644 drivers/vfio/pci/hisilicon/acc_vf_migration.h
-> 
+> [...]
+
+Here is the summary with links:
+  - [net,v3] i40e: fix the panic when running bpf in xdpdrv mode
+    https://git.kernel.org/netdev/net/c/4e39a072a6a0
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
