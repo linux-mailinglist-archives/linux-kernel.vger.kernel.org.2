@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 341E9360C34
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7265C360CA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233629AbhDOOtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:49:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36260 "EHLO mail.kernel.org"
+        id S233785AbhDOOxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:53:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233598AbhDOOtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:49:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8575B613B4;
-        Thu, 15 Apr 2021 14:48:48 +0000 (UTC)
+        id S233948AbhDOOvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:51:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 844CC613C3;
+        Thu, 15 Apr 2021 14:50:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498129;
-        bh=Ha1dcDSF7tKe9v3gXZlvuq1L7QJIY3DMSxeU79wxe5Y=;
+        s=korg; t=1618498244;
+        bh=7gOT+euCVm7O7XlWbv/g4fgdzJgd7Y8iqX0HZT1O+14=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bJSpJOlV5pGAfHbF1gv2qXuHO4smL+vgBoQE1Z71gCrke5rPmiD/AaU8G8DJxPmuR
-         TLzWd0BBm7+49Y7zm/cb3+S43qz48hQWr0fHxXdyGxlnKEW4nhrNrFEN6E62DilBPC
-         t9yT60iNBNCqqdGgO1P9bqM0cVrufO2igREr/dTY=
+        b=tzLijPWxuVazA6Lactn7spz/eFeHQkMoEcAJ+CrXNHvnpuO+qIcWRiEMODgZmOiqj
+         80CGNA7/a5PcGiCFMikAw1Uek7ST+Q7lmH8ZUdnTdPbgqjv4fLLdptdOYCfor5X/xE
+         8BtcIQ3JZTtEa3EIcTIpojU3ge9pah6UyjKOjnsU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+50ee810676e6a089487b@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Sven Eckelmann <sven@narfation.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 12/38] batman-adv: initialize "struct batadv_tvlv_tt_vlan_data"->reserved field
-Date:   Thu, 15 Apr 2021 16:47:06 +0200
-Message-Id: <20210415144413.742350731@linuxfoundation.org>
+        stable@vger.kernel.org, Liam Beguin <liambeguin@gmail.com>,
+        Helge Deller <deller@gmx.de>, Gao Xiang <hsiangkao@redhat.com>
+Subject: [PATCH 4.9 15/47] parisc: avoid a warning on u8 cast for cmpxchg on u8 pointers
+Date:   Thu, 15 Apr 2021 16:47:07 +0200
+Message-Id: <20210415144413.954642795@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.352638802@linuxfoundation.org>
-References: <20210415144413.352638802@linuxfoundation.org>
+In-Reply-To: <20210415144413.487943796@linuxfoundation.org>
+References: <20210415144413.487943796@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+From: Gao Xiang <hsiangkao@redhat.com>
 
-commit 08c27f3322fec11950b8f1384aa0f3b11d028528 upstream.
+commit 4d752e5af63753ab5140fc282929b98eaa4bd12e upstream.
 
-KMSAN found uninitialized value at batadv_tt_prepare_tvlv_local_data()
-[1], for commit ced72933a5e8ab52 ("batman-adv: use CRC32C instead of CRC16
-in TT code") inserted 'reserved' field into "struct batadv_tvlv_tt_data"
-and commit 7ea7b4a142758dea ("batman-adv: make the TT CRC logic VLAN
-specific") moved that field to "struct batadv_tvlv_tt_vlan_data" but left
-that field uninitialized.
+commit b344d6a83d01 ("parisc: add support for cmpxchg on u8 pointers")
+can generate a sparse warning ("cast truncates bits from constant
+value"), which has been reported several times [1] [2] [3].
 
-[1] https://syzkaller.appspot.com/bug?id=07f3e6dba96f0eb3cabab986adcd8a58b9bdbe9d
+The original code worked as expected, but anyway, let silence such
+sparse warning as what others did [4].
 
-Reported-by: syzbot <syzbot+50ee810676e6a089487b@syzkaller.appspotmail.com>
-Tested-by: syzbot <syzbot+50ee810676e6a089487b@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Fixes: ced72933a5e8ab52 ("batman-adv: use CRC32C instead of CRC16 in TT code")
-Fixes: 7ea7b4a142758dea ("batman-adv: make the TT CRC logic VLAN specific")
-Acked-by: Sven Eckelmann <sven@narfation.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+[1] https://lore.kernel.org/r/202104061220.nRMBwCXw-lkp@intel.com
+[2] https://lore.kernel.org/r/202012291914.T5Agcn99-lkp@intel.com
+[3] https://lore.kernel.org/r/202008210829.KVwn7Xeh%25lkp@intel.com
+[4] https://lore.kernel.org/r/20210315131512.133720-2-jacopo+renesas@jmondi.org
+Cc: Liam Beguin <liambeguin@gmail.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: stable@vger.kernel.org # v5.8+
+Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
+Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/batman-adv/translation-table.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/parisc/include/asm/cmpxchg.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/batman-adv/translation-table.c
-+++ b/net/batman-adv/translation-table.c
-@@ -871,6 +871,7 @@ batadv_tt_prepare_tvlv_local_data(struct
- 
- 		tt_vlan->vid = htons(vlan->vid);
- 		tt_vlan->crc = htonl(vlan->tt.crc);
-+		tt_vlan->reserved = 0;
- 
- 		tt_vlan++;
+--- a/arch/parisc/include/asm/cmpxchg.h
++++ b/arch/parisc/include/asm/cmpxchg.h
+@@ -71,7 +71,7 @@ __cmpxchg(volatile void *ptr, unsigned l
+ #endif
+ 	case 4: return __cmpxchg_u32((unsigned int *)ptr,
+ 				     (unsigned int)old, (unsigned int)new_);
+-	case 1: return __cmpxchg_u8((u8 *)ptr, (u8)old, (u8)new_);
++	case 1: return __cmpxchg_u8((u8 *)ptr, old & 0xff, new_ & 0xff);
  	}
+ 	__cmpxchg_called_with_bad_pointer();
+ 	return old;
 
 
