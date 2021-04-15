@@ -2,83 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E620836065E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 783EC360641
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232360AbhDOJ7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 05:59:36 -0400
-Received: from mga12.intel.com ([192.55.52.136]:65315 "EHLO mga12.intel.com"
+        id S232204AbhDOJyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 05:54:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232294AbhDOJ71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 05:59:27 -0400
-IronPort-SDR: JQ3u8krA8A+ayFzI4RMAF7KRbmoAaPBZCyb8UGh7yMne5eEXvmjWnTtp/EWxW1xFQJ//dxXy99
- BrFUSNzC6h1Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="174321448"
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="174321448"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 02:59:04 -0700
-IronPort-SDR: AptOkeCkx0s85LJH4TjZFNfA6zvizGwZ6gcGZdSPqAVxuz7Jhl2t0gjF59bMkolL3BBGabWYZy
- vOdRc4Ipknxg==
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="425123484"
-Received: from unknown (HELO localhost.localdomain.bj.intel.com) ([10.240.193.73])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 02:59:01 -0700
-From:   Zhu Lingshan <lingshan.zhu@intel.com>
-To:     jasowang@redhat.com, mst@redhat.com, lulu@redhat.com,
-        sgarzare@redhat.com
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-Subject: [PATCH V2 3/3] vDPA/ifcvf: get_config_size should return dev specific config size
-Date:   Thu, 15 Apr 2021 17:53:36 +0800
-Message-Id: <20210415095336.4792-4-lingshan.zhu@intel.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210415095336.4792-1-lingshan.zhu@intel.com>
-References: <20210415095336.4792-1-lingshan.zhu@intel.com>
+        id S230260AbhDOJyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 05:54:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A3696108E;
+        Thu, 15 Apr 2021 09:53:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618480419;
+        bh=ADODfuARmar5XlQu+qdM/TYV8hvB2mj+V7nC+qrXlPc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=lJlX7U9An9gVj5uDMMk9Xajw1JP/Ci+8cjnv93MDYTydnqf7orpf08CImJRpGdFdC
+         tqg0J75Wx0oqfrxo8DOYrVcjKNY6kVCWBi3qXQ7AsA1zMPrYGdubV1mFKytT+ZWZpx
+         bUG0AmN8ZPgL1CCAeABm/4ndGJzlGDae2AjOx2Zuxnw9IgZyT/+GqtVtiwkjrDUho3
+         GUwpKMe0mUYU31AeXPX8LzhAfypi5CIfX0q02ymFA18ayMnMoSo/c946tuTiIW2odB
+         bDPjfRZ45zHuP5T4//ydaLlEw34aXbqUGte3+9jUsNlJcZHhWzIxLSrwcXO/CMpyQp
+         upOJfBMOGepxw==
+Subject: Re: [PATCH 2/3] spi: s3c64xx: correct kerneldoc of
+ s3c64xx_spi_port_config
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Andi Shyti <andi@etezian.org>, Mark Brown <broonie@kernel.org>,
+        linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>
+References: <20210414203343.203119-1-krzysztof.kozlowski@canonical.com>
+ <20210414203343.203119-2-krzysztof.kozlowski@canonical.com>
+From:   Sylwester Nawrocki <snawrocki@kernel.org>
+Message-ID: <d51a4940-737a-7667-4223-6a5c92133c38@kernel.org>
+Date:   Thu, 15 Apr 2021 11:53:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210414203343.203119-2-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-get_config_size() should return the size based on the decected
-device type.
 
-Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
----
- drivers/vdpa/ifcvf/ifcvf_main.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+On 14.04.2021 22:33, Krzysztof Kozlowski wrote:
+> Correct the name of s3c64xx_spi_port_config structure in kerneldoc:
+> 
+>    drivers/spi/spi-s3c64xx.c:154: warning:
+>      expecting prototype for struct s3c64xx_spi_info. Prototype was for struct s3c64xx_spi_port_config instead
+> 
+> Signed-off-by: Krzysztof Kozlowski<krzysztof.kozlowski@canonical.com>
 
-diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
-index cea1313b1a3f..6844c49fe1de 100644
---- a/drivers/vdpa/ifcvf/ifcvf_main.c
-+++ b/drivers/vdpa/ifcvf/ifcvf_main.c
-@@ -347,7 +347,23 @@ static u32 ifcvf_vdpa_get_vq_align(struct vdpa_device *vdpa_dev)
- 
- static size_t ifcvf_vdpa_get_config_size(struct vdpa_device *vdpa_dev)
- {
--	return sizeof(struct virtio_net_config);
-+	struct ifcvf_adapter *adapter = vdpa_to_adapter(vdpa_dev);
-+	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
-+	struct pci_dev *pdev = adapter->pdev;
-+	size_t size;
-+
-+	if (vf->dev_type == VIRTIO_ID_NET)
-+		size = sizeof(struct virtio_net_config);
-+
-+	else if (vf->dev_type == VIRTIO_ID_BLOCK)
-+		size = sizeof(struct virtio_blk_config);
-+
-+	else {
-+		size = 0;
-+		IFCVF_ERR(pdev, "VIRTIO ID %u not supported\n", vf->dev_type);
-+	}
-+
-+	return size;
- }
- 
- static void ifcvf_vdpa_get_config(struct vdpa_device *vdpa_dev,
--- 
-2.27.0
 
+Reviewed-by: Sylwester Nawrocki <snawrocki@kernel.org>
