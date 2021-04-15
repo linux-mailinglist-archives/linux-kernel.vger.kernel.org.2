@@ -2,155 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC2E436054C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19FA6360553
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231992AbhDOJJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 05:09:42 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:44441 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231842AbhDOJJf (ORCPT
+        id S231536AbhDOJMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 05:12:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231143AbhDOJMX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 05:09:35 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id C8FBD580732;
-        Thu, 15 Apr 2021 05:09:12 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 15 Apr 2021 05:09:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=f9xNlW94bXKtHQ7VEokJAT3kze5
-        U1y0S6MsZACvD48M=; b=vEUIxIYLGCcSHcP4DmDFXZ9AYUaaSKq7OgPflDw3FSv
-        I+QdHQXmRsMSXDy692Vcurp4HsfjKzD8TG3Rmv1kgbYUy+sxPKivQ42P/qfUJ1aC
-        J4WU7ldZicYZ5FkUh3Hc9xb+FhsHhtcguaJy7mpsV04ySgy2YJx/686BRybIYL/w
-        ICc9RqpasWbNBhTY3YWAgMerurEbyKmghfb8h97ZKjgAaZZ9FxiL/d1slUuQFOWh
-        NBdrw6IvyI8tyKWFVAPSEdAhFMwBF0BbRMLCi9KZIAD1JBWHyEF6ChNwbKb6G3cc
-        PoCWK5G2Qy2MWNRfxAx3SyHGy3z8cChtwzrYGQtwAhw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=f9xNlW
-        94bXKtHQ7VEokJAT3kze5U1y0S6MsZACvD48M=; b=q6coCEfjbx39w8i+UiUlBw
-        2i04erJWb7K1nq8nA0IGYNGZcHyaLzTiWNHB5AFNCdNFH1eXjwTq+ddprFqrcS2z
-        WEHhAYVy7NDUqC8L9LdeiEvuxx3zep9x2Z7tFQdK6ygISVJ04+osAldNwTm+DoFl
-        awyyrEKeIXll5/y/3kwKwPGC+WDVqdRPqOsU46tW1V5EX/uk6lvqGtdEuB5IIGkl
-        egDv7g8jdxJIxR4ACRlqBOGkOx1bnSos9YdLJtQiRa1NCVG6+VE1zBLCBDeyzars
-        KqzEwGVVUDpUs6kPMa2QXf1s2hoFtvUaw5wjNjPNn589E9jHazF/SoyGq8XAa1Mg
-        ==
-X-ME-Sender: <xms:twJ4YD7hHahEVJY-5XgZ6ALhWFQdIBfVXSlkM_SAafJC6skWBPV08w>
-    <xme:twJ4YI63NB7Cvdmq0PMGWuwGX2L5YP62-h4_grA6UY6ZmBs9ryoQ84G8tty9IB-as
-    UxxWZRQyLjvh1fSoLQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudelfedguddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepuedtgfejueduheevgfevvdettdduleffgfffkeeltdffkeegudekjeeuveei
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:twJ4YKcTpIt7aSdHWJShor-jeO79uTFT_5_0I4vhN6bdLFCHaqYuhw>
-    <xmx:twJ4YELUWxPD7jCsfSWlDFi3YsI9JIONzZMy3tzjtcgLyO53tt5Flg>
-    <xmx:twJ4YHJw6OPR5ti-pxTsIpN-unIEFbyldeOufzwK6bsnMPDMtYkR7Q>
-    <xmx:uAJ4YIWJ9qy5zVB6gYQb65jUxnil0TTLlTn-78kmIpBofH2uJZU7JQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 31DD9240057;
-        Thu, 15 Apr 2021 05:09:11 -0400 (EDT)
-Date:   Thu, 15 Apr 2021 11:09:08 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Kevin Tang <kevin3.tang@gmail.com>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 4/6] drm/sprd: add Unisoc's drm display controller
- driver
-Message-ID: <20210415090908.lmu372lzzjb5hz2b@gilmour>
-References: <20210222132822.7830-1-kevin3.tang@gmail.com>
- <20210222132822.7830-5-kevin3.tang@gmail.com>
- <20210324111019.og6d3w47swjim2mq@gilmour>
- <CAFPSGXZ3DjKt87Kc=wc9YKVzTjkQ38Ok6HnHm+VEdqXyHv54Eg@mail.gmail.com>
- <20210407104538.cvssdck26rejrfye@gilmour>
- <CAFPSGXa3xsxmfVquN_pTyBJ4+kL4jQAj6sK+86G3SA2OhB7Jtg@mail.gmail.com>
+        Thu, 15 Apr 2021 05:12:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3925C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 02:12:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4D66rvNXayldPIaenxD3qS5PoTu3GvzifCOGXTuJfzs=; b=mdr/IwTeGEbp53xL+7G6uVNsUS
+        5PN4eyKAfE+sZvemytDLLqiV+i3HrGs5JPbQMhL/xIWCq/7ejo833yaWtDvfQvM5DPYSKp1s0yU/Y
+        se80xd2qwaL/8cUIfzgOVKRrs/6FZVmseaA30AGtOzsKcs21geZc1RZ+pfrpZwBvnR6XJliNmonEc
+        lFblWnWK9UtyOfmxfinr92ASCQKMXXQEtTThPm2x57viVKqbUMsFHF8Dvx4c/E8AfQ03c7ByGGCk8
+        d0wPgc18WVO5fs6F2oe0FSzwQp1dm5PNhSsqwYgnJmQNgr7ffq0xOW8CuLBlJyp4Q8AEtdSr6YBxQ
+        TWImjKrw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lWy2L-008LLY-6b; Thu, 15 Apr 2021 09:11:47 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 37B93300209;
+        Thu, 15 Apr 2021 11:11:44 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 19CC22022421A; Thu, 15 Apr 2021 11:11:44 +0200 (CEST)
+Date:   Thu, 15 Apr 2021 11:11:44 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     kbuild-all@lists.01.org, kernel test robot <lkp@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [peterz-queue:perf/core 18/22] kernel/events/core.c:6418:22:
+ sparse: sparse: incorrect type in assignment (different address spaces)
+Message-ID: <YHgDUEX7ogOkb60O@hirez.programming.kicks-ass.net>
+References: <202104142209.hLOfOONR-lkp@intel.com>
+ <YHb9Mi1IwY5qtJxp@elver.google.com>
+ <YHf92aCeN65rANQY@hirez.programming.kicks-ass.net>
+ <YHgBTRciZNDUkfId@elver.google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="iqjdlfj2zil34vaj"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFPSGXa3xsxmfVquN_pTyBJ4+kL4jQAj6sK+86G3SA2OhB7Jtg@mail.gmail.com>
+In-Reply-To: <YHgBTRciZNDUkfId@elver.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 15, 2021 at 11:03:09AM +0200, Marco Elver wrote:
+> On Thu, Apr 15, 2021 at 10:48AM +0200, Peter Zijlstra wrote:
 
---iqjdlfj2zil34vaj
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > I've ended up with the below delta, does that work for you?
+> 
+> Thanks, that works for me. Do note that I explicitly chose u64 for
+> sig_addr/pending_addr because data->addr is u64. There might be a new
+> warning about the u64 to unsigned long assignment on 32 bit arches.
 
-Hi,
+My local i386-defconfig build seemed happy now. Mostly I think you're
+allowed to silently truncate between base integer types. We'll see..
+maybe some other compiler.
 
-On Fri, Apr 09, 2021 at 09:35:07PM +0800, Kevin Tang wrote:
-> > > > > +     }
-> > > > > +
-> > > > > +     return MODE_OK;
-> > > > > +}
-> > > > > +
-> > > > > +static void sprd_crtc_atomic_enable(struct drm_crtc *crtc,
-> > > > > +                                struct drm_atomic_state *state)
-> > > > > +{
-> > > > > +     struct sprd_dpu *dpu =3D to_sprd_crtc(crtc);
-> > > > > +
-> > > > > +     sprd_dpu_init(dpu);
-> > > > > +
-> > > > > +     sprd_dpi_init(dpu);
-> > > > > +
-> > > > > +     enable_irq(dpu->ctx.irq);
-> > > >
-> > > > Shouldn't this be in enable_vblank? And I would assume that you wou=
-ld
-> > > > have the interrupts enabled all the time, but disabled in your devi=
-ce?
-> > > >
-> > > It seems better to put in enable_vblank, i will try and test it... Th=
-ks
-> > >
-> > >   And I would assume that you would
-> > > have the interrupts enabled all the time, but disabled in your device?
-> > > [kevin]I don=E2=80=99t quite understand this, can you help me explain=
- it in
-> > > detail?
-> >
-> > You seem to have a register that enables and disables the interrupt in
-> > that device. The way we usually deal with them in this case is just to
-> > call request_irq in your bind/probe with the interrupts enabled at the
-> > controller level, and mask them when needed at the device level by
-> > clearing / setting that bit.
-> >
->  Yeah, we have display controller interrupts setting and clear register.
-> But the interrupts all been enabled in bootloader(eg, lk or uboot),
-> if the interrupt handler is active in the probe/bind phase by request_irq,
-> but the whole display pipeline is not ready, there maybe have some proble=
-ms.
+> Perhaps it needs something ugly like this:
+> 
+> 	info.si_addr = (void __user *)(unsigned long)event->pending_addr;
+> 
+> if pending_addr wants to be u64. Or just
+> 
+> 	event->pending_addr = (unsigned long)data->addr;
+> 
+> if data->addr being u64 on 32 bit arches is simply overkill.
 
-It's fairly common to clear / ack the interrupts from the device before
-calling request_irq precisely to avoid that issue.
-
-Maxime
-
---iqjdlfj2zil34vaj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYHgCtAAKCRDj7w1vZxhR
-xXBaAQC3ACb0Go3hl2khk93hUI2vLUrRqFpmr9tlUyb7hqba7QD+NkO+fFD5Ue+7
-9aQgbCXUIw4o3IFlfY8J7s5gjehvog8=
-=JU1P
------END PGP SIGNATURE-----
-
---iqjdlfj2zil34vaj--
+Yeah it is. It's u64 for data layout purposes, the perf buffer works in
+u64 chunks.
