@@ -2,64 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2B4B360B4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94478360B4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233157AbhDOOC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:02:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54320 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230056AbhDOOCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:02:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 953A6611AD;
-        Thu, 15 Apr 2021 14:02:27 +0000 (UTC)
-Date:   Thu, 15 Apr 2021 15:02:25 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Jian Cai <jiancai@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, stable@vger.kernel.org
-Subject: Re: [PATCH] arm64: alternatives: Move length validation in
- alternative_{insn,endif}
-Message-ID: <20210415140224.GE1015@arm.com>
-References: <20210414000803.662534-1-nathan@kernel.org>
- <20210415091743.GB1015@arm.com>
- <YHg+5RSG4XPLlZD8@archlinux-ax161>
+        id S233298AbhDOODG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:03:06 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:34352 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233238AbhDOODD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:03:03 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13FE2XuY111840;
+        Thu, 15 Apr 2021 09:02:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1618495353;
+        bh=kppgSo6J3ZDCelEateUO3XXvXeiliwjlCKeOL7fbejk=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=umb5N3Gze/EY8rl0i8TD5N2FvBpGOEgdZqBi5ma99sP/Ftrg2GUSo6H791nPFOHaZ
+         m5xOOA6VWPG8+osn2TzG5mMS8ceKY8AUxzonhUzZoJsmACzJj7dbUEZSEsZY3V7IjH
+         ImYCeXXoACrK1Q4Tc4iqVLdteLrG9N56dfZpjZ6s=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13FE2Wce024179
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 15 Apr 2021 09:02:33 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 15
+ Apr 2021 09:02:32 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 15 Apr 2021 09:02:32 -0500
+Received: from [10.24.69.20] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13FE2Tcv124197;
+        Thu, 15 Apr 2021 09:02:30 -0500
+Subject: Re: [PATCH] dt-bindings: mailbox: ti,message-manager: Convert to yaml
+To:     Nishanth Menon <nm@ti.com>, Jassi Brar <jassisinghbrar@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210414002721.23638-1-nm@ti.com>
+From:   Lokesh Vutla <lokeshvutla@ti.com>
+Message-ID: <e649b712-071b-0287-a1bc-2de422806619@ti.com>
+Date:   Thu, 15 Apr 2021 19:32:28 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHg+5RSG4XPLlZD8@archlinux-ax161>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210414002721.23638-1-nm@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 06:25:57AM -0700, Nathan Chancellor wrote:
-> On Thu, Apr 15, 2021 at 10:17:43AM +0100, Catalin Marinas wrote:
-> > On Tue, Apr 13, 2021 at 05:08:04PM -0700, Nathan Chancellor wrote:
-> > > After commit 2decad92f473 ("arm64: mte: Ensure TIF_MTE_ASYNC_FAULT is
-> > > set atomically"), LLVM's integrated assembler fails to build entry.S:
-> > > 
-> > > <instantiation>:5:7: error: expected assembly-time absolute expression
-> > >  .org . - (664b-663b) + (662b-661b)
-> > >       ^
-> > > <instantiation>:6:7: error: expected assembly-time absolute expression
-> > >  .org . - (662b-661b) + (664b-663b)
-> > >       ^
-> > 
-> > I tried the latest Linus' tree and linux-next (defconfig) with this
-> > commit in and I can't get your build error. I used both clang-10 from
-> > Debian stable and clang-11 from Debian sid. So, which clang version did
-> > you use or which kernel config options?
-> 
-> Interesting, this reproduces for me with LLVM 12 or newer with just
-> defconfig.
+[..snip..]
 
-It fails for me as well with clang-12. Do you happen to know why it
-works fine with previous clang versions?
+> diff --git a/Documentation/devicetree/bindings/mailbox/ti,message-manager.yaml b/Documentation/devicetree/bindings/mailbox/ti,message-manager.yaml
+> new file mode 100644
+> index 000000000000..4987e803ac37
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mailbox/ti,message-manager.yaml
+> @@ -0,0 +1,75 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mailbox/ti,message-manager.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Texas Instruments' Message Manager Driver
 
--- 
-Catalin
+Driver is not the right word here. Can you change it to node?
+
+Thanks and regards,
+Lokesh
+
