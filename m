@@ -2,207 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33497361071
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2208361073
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234179AbhDOQwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 12:52:30 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:39689 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234150AbhDOQw2 (ORCPT
+        id S234192AbhDOQwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 12:52:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233583AbhDOQww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 12:52:28 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618505524; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=nJyjkib2XarwJFFtDBFcrwVkSOSShC50uwK+PqeAZI0=; b=Fjfc0wuBG8IfyNg5qC/JZcMXyIMuPVDOGymwGyMKO1jf96ytQcDrvJBwdb0mKk1yww/eJzi4
- W5xItpwcJfWUGVkAPis075oc1Z8mjiuHrU5jSznVYwl9sSueQvPpOU3ca9Fh7SZzIO0BtZIw
- 2EKQsw3Y/cNv11VV0D6VB6nQbQ0=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60786f33e0e9c9a6b63c61d2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 15 Apr 2021 16:52:03
- GMT
-Sender: akhilpo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1A07FC433CA; Thu, 15 Apr 2021 16:52:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.105] (unknown [117.210.185.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akhilpo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7BED4C433C6;
-        Thu, 15 Apr 2021 16:51:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7BED4C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
-Subject: Re: [kbuild] drivers/gpu/drm/msm/adreno/a3xx_gpu.c:600
- a3xx_gpu_init() error: passing non negative 1 to ERR_PTR
-To:     Dan Carpenter <dan.carpenter@oracle.com>, kbuild@lists.01.org
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Rob Clark <robdclark@chromium.org>
-References: <20210409093738.GH6048@kadam>
-From:   Akhil P Oommen <akhilpo@codeaurora.org>
-Message-ID: <d3cd5c0b-f30e-6130-582d-7b68d8320507@codeaurora.org>
-Date:   Thu, 15 Apr 2021 22:21:56 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        Thu, 15 Apr 2021 12:52:52 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62422C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 09:52:28 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id u20so27842115lja.13
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 09:52:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U37DmZ+J3T6SaAA0HXrJNqq/8z5wrCoZ7qw6igvtpHg=;
+        b=o0LZ7oRTf0bmGgDrCymXA3Les/i63Ka5ogz7o1R1QfOxWJbRt8gkDAK9714JEu1rLU
+         07mzVIPZ37KqJOzpjXbGgjsok/9XGmeInZdGGnxAo7EowibqCjFPzQZkBkr9nfEso++4
+         A2sh15q4Q/k/dBUGA5hvzKkd1t/ZyMtHbD8xd6XgC2UzMAPuPCzuv3QKg5CC0q1OGaZH
+         NvMyJD2+w3mArpciv55SzvVhBakchRZf9FXWbXEmN2AVV+qulegnay8nTIa/5Us6TD76
+         hLSfjwbUpowtjmcLXjJflvhz0AgaDp+rx4NggJljseocLt2+ZHL+CBfd/C3eSip1/Flx
+         toHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U37DmZ+J3T6SaAA0HXrJNqq/8z5wrCoZ7qw6igvtpHg=;
+        b=a/vTJf2c2l1Vafm96A8Cdm1Yjd8BFKwgnsnNUIu/noCsc3+mgQiMz0hSYU2ERmpfrZ
+         8Uf16QNEmM5ZUs0cpfDkyg3puAljvh4fMeFNFGpNGX4gFWiZhTdbkpDASFIHHFXAAJQx
+         yIJ/+qwT3uOmRxtMqikF4uE+SqWB5fn5+XsW/HEkl2tscTxH2iTEfxxbElzQffYo2819
+         W9k6NT8+m8R60eS0dQVET/B8k0+BhtHb3PNVZgcWsgNNM587gviFosVa7lffU6/6PuFU
+         9J6CpVEzsTmDvJeptHRrUEMFaDCQ40+MddH56fuCfSqn2QjWKF+ivI+gW7zHkQXrMzvt
+         GI7g==
+X-Gm-Message-State: AOAM532q4PUH1lijvObyXADYVYvwI0XQqewDAPTShtfV18ao9Yo1hv7h
+        ARrwk0AW/r1PlyHOT6rGCD1vNmsyzoyUS2kaO7e1Ag==
+X-Google-Smtp-Source: ABdhPJzznbQyUFRW/iVVZ9tQXDX6RP0t8cOuOqshRtcMUWyAbg9L0s31GZVOrqcXe8nEpgBZGTl2/NZNUByE9ogevGE=
+X-Received: by 2002:a2e:988a:: with SMTP id b10mr57627ljj.341.1618505546655;
+ Thu, 15 Apr 2021 09:52:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210409093738.GH6048@kadam>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <YHYlQnFRMNdn/CDp@archlinux-ax161> <20210414214548.700993-1-ndesaulniers@google.com>
+ <a2ddf4d2-110a-9290-f766-3925e451ddef@arm.com>
+In-Reply-To: <a2ddf4d2-110a-9290-f766-3925e451ddef@arm.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 15 Apr 2021 09:52:14 -0700
+Message-ID: <CAKwvOdms0SVJMMLOwK-w=fzsw1FmCSK9qjZ_Syq0A-kRzYkHLQ@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: vdso32: drop -no-integrated-as flag
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/9/2021 3:07 PM, Dan Carpenter wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
-> head:   2d743660786ec51f5c1fefd5782bbdee7b227db0
-> commit: 5785dd7a8ef0de8049f40a1a109de6a1bf17b479 drm/msm: Fix duplicate gpu node in icc summary
-> config: arm64-randconfig-m031-20210407 (attached as .config)
-> compiler: aarch64-linux-gcc (GCC) 9.3.0
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> 
-> smatch warnings:
-> drivers/gpu/drm/msm/adreno/a3xx_gpu.c:600 a3xx_gpu_init() error: passing non negative 1 to ERR_PTR
-> drivers/gpu/drm/msm/adreno/a4xx_gpu.c:727 a4xx_gpu_init() error: passing non negative 1 to ERR_PTR
-> 
-> vim +600 drivers/gpu/drm/msm/adreno/a3xx_gpu.c
-> 
-> 7198e6b03155f6 Rob Clark      2013-07-19  515  struct msm_gpu *a3xx_gpu_init(struct drm_device *dev)
-> 7198e6b03155f6 Rob Clark      2013-07-19  516  {
-> 7198e6b03155f6 Rob Clark      2013-07-19  517  	struct a3xx_gpu *a3xx_gpu = NULL;
-> 55459968176f13 Rob Clark      2013-12-05  518  	struct adreno_gpu *adreno_gpu;
-> 7198e6b03155f6 Rob Clark      2013-07-19  519  	struct msm_gpu *gpu;
-> 060530f1ea6740 Rob Clark      2014-03-03  520  	struct msm_drm_private *priv = dev->dev_private;
-> 060530f1ea6740 Rob Clark      2014-03-03  521  	struct platform_device *pdev = priv->gpu_pdev;
-> 5785dd7a8ef0de Akhil P Oommen 2020-10-28  522  	struct icc_path *ocmem_icc_path;
-> 5785dd7a8ef0de Akhil P Oommen 2020-10-28  523  	struct icc_path *icc_path;
-> 7198e6b03155f6 Rob Clark      2013-07-19  524  	int ret;
-> 7198e6b03155f6 Rob Clark      2013-07-19  525
-> 7198e6b03155f6 Rob Clark      2013-07-19  526  	if (!pdev) {
-> 6a41da17e87dee Mamta Shukla   2018-10-20  527  		DRM_DEV_ERROR(dev->dev, "no a3xx device\n");
-> 7198e6b03155f6 Rob Clark      2013-07-19  528  		ret = -ENXIO;
-> 7198e6b03155f6 Rob Clark      2013-07-19  529  		goto fail;
-> 7198e6b03155f6 Rob Clark      2013-07-19  530  	}
-> 7198e6b03155f6 Rob Clark      2013-07-19  531
-> 7198e6b03155f6 Rob Clark      2013-07-19  532  	a3xx_gpu = kzalloc(sizeof(*a3xx_gpu), GFP_KERNEL);
-> 7198e6b03155f6 Rob Clark      2013-07-19  533  	if (!a3xx_gpu) {
-> 7198e6b03155f6 Rob Clark      2013-07-19  534  		ret = -ENOMEM;
-> 7198e6b03155f6 Rob Clark      2013-07-19  535  		goto fail;
-> 7198e6b03155f6 Rob Clark      2013-07-19  536  	}
-> 7198e6b03155f6 Rob Clark      2013-07-19  537
-> 55459968176f13 Rob Clark      2013-12-05  538  	adreno_gpu = &a3xx_gpu->base;
-> 55459968176f13 Rob Clark      2013-12-05  539  	gpu = &adreno_gpu->base;
-> 7198e6b03155f6 Rob Clark      2013-07-19  540
-> 70c70f091b1ffd Rob Clark      2014-05-30  541  	gpu->perfcntrs = perfcntrs;
-> 70c70f091b1ffd Rob Clark      2014-05-30  542  	gpu->num_perfcntrs = ARRAY_SIZE(perfcntrs);
-> 70c70f091b1ffd Rob Clark      2014-05-30  543
-> 3bcefb0497f9fc Rob Clark      2014-09-05  544  	adreno_gpu->registers = a3xx_registers;
-> 3bcefb0497f9fc Rob Clark      2014-09-05  545
-> f97decac5f4c2d Jordan Crouse  2017-10-20  546  	ret = adreno_gpu_init(dev, pdev, adreno_gpu, &funcs, 1);
-> 7198e6b03155f6 Rob Clark      2013-07-19  547  	if (ret)
-> 7198e6b03155f6 Rob Clark      2013-07-19  548  		goto fail;
-> 7198e6b03155f6 Rob Clark      2013-07-19  549
-> 55459968176f13 Rob Clark      2013-12-05  550  	/* if needed, allocate gmem: */
-> 55459968176f13 Rob Clark      2013-12-05  551  	if (adreno_is_a330(adreno_gpu)) {
-> 26c0b26dcd005d Brian Masney   2019-08-23  552  		ret = adreno_gpu_ocmem_init(&adreno_gpu->base.pdev->dev,
-> 26c0b26dcd005d Brian Masney   2019-08-23  553  					    adreno_gpu, &a3xx_gpu->ocmem);
-> 26c0b26dcd005d Brian Masney   2019-08-23  554  		if (ret)
-> 26c0b26dcd005d Brian Masney   2019-08-23  555  			goto fail;
-> 55459968176f13 Rob Clark      2013-12-05  556  	}
-> 55459968176f13 Rob Clark      2013-12-05  557
-> 667ce33e57d0de Rob Clark      2016-09-28  558  	if (!gpu->aspace) {
-> 871d812aa43e63 Rob Clark      2013-11-16  559  		/* TODO we think it is possible to configure the GPU to
-> 871d812aa43e63 Rob Clark      2013-11-16  560  		 * restrict access to VRAM carveout.  But the required
-> 871d812aa43e63 Rob Clark      2013-11-16  561  		 * registers are unknown.  For now just bail out and
-> 871d812aa43e63 Rob Clark      2013-11-16  562  		 * limp along with just modesetting.  If it turns out
-> 871d812aa43e63 Rob Clark      2013-11-16  563  		 * to not be possible to restrict access, then we must
-> 871d812aa43e63 Rob Clark      2013-11-16  564  		 * implement a cmdstream validator.
-> 871d812aa43e63 Rob Clark      2013-11-16  565  		 */
-> 6a41da17e87dee Mamta Shukla   2018-10-20  566  		DRM_DEV_ERROR(dev->dev, "No memory protection without IOMMU\n");
-> 871d812aa43e63 Rob Clark      2013-11-16  567  		ret = -ENXIO;
-> 871d812aa43e63 Rob Clark      2013-11-16  568  		goto fail;
-> 871d812aa43e63 Rob Clark      2013-11-16  569  	}
-> 871d812aa43e63 Rob Clark      2013-11-16  570
-> 5785dd7a8ef0de Akhil P Oommen 2020-10-28  571  	icc_path = devm_of_icc_get(&pdev->dev, "gfx-mem");
-> 5785dd7a8ef0de Akhil P Oommen 2020-10-28  572  	ret = IS_ERR(icc_path);
-> 5785dd7a8ef0de Akhil P Oommen 2020-10-28  573  	if (ret)
-> 5785dd7a8ef0de Akhil P Oommen 2020-10-28  574  		goto fail;
-> 
-> IS_ERR() returns/true false so this will lead to an Oops in the caller.
-> 
-> 	icc_path = devm_of_icc_get(&pdev->dev, "gfx-mem");
-> 	if (IS_ERR(icc_path)) {
-> 		ret = PTR_ERR(icc_path);
-> 		goto fail;
-> 	}
-Agree.
+On Thu, Apr 15, 2021 at 6:31 AM Vincenzo Frascino
+<vincenzo.frascino@arm.com> wrote:
+>
+>
+>
+> On 4/14/21 10:45 PM, Nick Desaulniers wrote:
+> > Clang can assemble these files just fine; this is a relic from the top
+> > level Makefile conditionally adding this. We no longer need --prefix,
+> > --gcc-toolchain, or -Qunused-arguments flags either with this change, so
+> > remove those too.
+> >
+> > To test building:
+> > $ ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
+> >   CROSS_COMPILE_COMPAT=arm-linux-gnueabi- make LLVM=1 LLVM_IAS=1 \
+> >   defconfig arch/arm64/kernel/vdso32/
+> >
+> > Suggested-by: Nathan Chancellor <nathan@kernel.org>
+> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+>
+> The patch looks fine, but I have one question: the kernel requires as a minimum
+> Clang/LLVM version 10.0.1. Did you verify that with that version compat vDSOs
+> still builds and works correctly?
 
-> 
-> 5785dd7a8ef0de Akhil P Oommen 2020-10-28  575
-> 5785dd7a8ef0de Akhil P Oommen 2020-10-28  576  	ocmem_icc_path = devm_of_icc_get(&pdev->dev, "ocmem");
-> 5785dd7a8ef0de Akhil P Oommen 2020-10-28  577  	ret = IS_ERR(ocmem_icc_path);
-> 5785dd7a8ef0de Akhil P Oommen 2020-10-28  578  	if (ret) {
-> 5785dd7a8ef0de Akhil P Oommen 2020-10-28  579  		/* allow -ENODATA, ocmem icc is optional */
-> 5785dd7a8ef0de Akhil P Oommen 2020-10-28  580  		if (ret != -ENODATA)
-> 5785dd7a8ef0de Akhil P Oommen 2020-10-28  581  			goto fail;
-> 
-> Same.  ret is true/false so it can't be equal to -ENODATA, plus the
-> caller will Oops.
-> 
-> Btw, this patch removed the assignments:
-> 
-> 		gpu->icc_path = of_icc_get(dev, "gfx-mem");
-> 		gpu->ocmem_icc_path = of_icc_get(dev, "ocmem");
-> 
-> So I think "gpu->icc_path" and "gpu->ocmem_icc_path" are always
-> NULL/unused and they should be removed.
-> 
-Agree. Will share a fix.
-Thanks, Dan.
+Hi Vincenzo,
+Great question, let's check.
+$ cd path/to/llvm-project
+$ git checkout origin/release/10.x
+$ cd llvm/build && ninja
+$ cd path/to/linux
+$ b4 am https://lore.kernel.org/lkml/20210413230609.3114365-1-ndesaulniers@google.com/
+-o - | git am -3
 
--Akhil.
+We can't generally build ARCH=arm64 defconfig with LLVM_IAS=1 with
+clang-10, but dropping LLVM_IAS=1 it looks like we can still build
+without that.
 
-> 5785dd7a8ef0de Akhil P Oommen 2020-10-28  582  		ocmem_icc_path = NULL;
-> 5785dd7a8ef0de Akhil P Oommen 2020-10-28  583  	}
-> 5785dd7a8ef0de Akhil P Oommen 2020-10-28  584
-> 5785dd7a8ef0de Akhil P Oommen 2020-10-28  585
-> d163ba0b65f2e4 Brian Masney   2019-11-21  586  	/*
-> d163ba0b65f2e4 Brian Masney   2019-11-21  587  	 * Set the ICC path to maximum speed for now by multiplying the fastest
-> d163ba0b65f2e4 Brian Masney   2019-11-21  588  	 * frequency by the bus width (8). We'll want to scale this later on to
-> d163ba0b65f2e4 Brian Masney   2019-11-21  589  	 * improve battery life.
-> d163ba0b65f2e4 Brian Masney   2019-11-21  590  	 */
-> 5785dd7a8ef0de Akhil P Oommen 2020-10-28  591  	icc_set_bw(icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
-> 5785dd7a8ef0de Akhil P Oommen 2020-10-28  592  	icc_set_bw(ocmem_icc_path, 0, Bps_to_icc(gpu->fast_rate) * 8);
-> d163ba0b65f2e4 Brian Masney   2019-11-21  593
-> 871d812aa43e63 Rob Clark      2013-11-16  594  	return gpu;
-> 7198e6b03155f6 Rob Clark      2013-07-19  595
-> 7198e6b03155f6 Rob Clark      2013-07-19  596  fail:
-> 7198e6b03155f6 Rob Clark      2013-07-19  597  	if (a3xx_gpu)
-> 7198e6b03155f6 Rob Clark      2013-07-19  598  		a3xx_destroy(&a3xx_gpu->base.base);
-> 7198e6b03155f6 Rob Clark      2013-07-19  599
-> 7198e6b03155f6 Rob Clark      2013-07-19 @600  	return ERR_PTR(ret);
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
-> 
-> _______________________________________________
-> kbuild mailing list -- kbuild@lists.01.org
-> To unsubscribe send an email to kbuild-leave@lists.01.org
-> 
+$ ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
+CROSS_COMPILE_COMPAT=arm-linux-gnueabi- make LLVM=1 -j72 defconfig
+clean all
+$ ls -l arch/arm64/kernel/vdso32
+total 116
+-rw-r----- 1 ndesaulniers primarygroup  7534 Apr 14 14:41 Makefile
+-rw-r----- 1 ndesaulniers primarygroup   387 Mar 31 10:47 note.c
+-rw-r----- 1 ndesaulniers primarygroup  2544 Apr 15 09:48 note.o
+-rw-r----- 1 ndesaulniers primarygroup  4552 Apr 15 09:48 vdso.lds
+-rw-r----- 1 ndesaulniers primarygroup  1587 Apr  1 12:55 vdso.lds.S
+-rw------- 1 ndesaulniers primarygroup  3576 Apr 15 09:48 vdso.so
+-rw------- 1 ndesaulniers primarygroup 24380 Apr 15 09:48 vdso.so.dbg
+-rwxr-x--- 1 ndesaulniers primarygroup 24380 Apr 15 09:48 vdso.so.raw
+-rw-r----- 1 ndesaulniers primarygroup   828 Apr  1 12:55 vgettimeofday.c
+-rw-r----- 1 ndesaulniers primarygroup 29084 Apr 15 09:48 vgettimeofday.o
 
+FWIW, clang-10 was missing support for R_AARCH64_PREL32, which affects
+building arch/arm64/kvm/hyp/nvhe/hyp-reloc.S.
+
+>
+> Otherwise:
+>
+> Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+>
+> > ---
+> > Changes V1 -> V2:
+> > * Remove --prefix, --gcc-toolchain, COMPAT_GCC_TOOLCHAIN, and
+> >   COMPAT_GCC_TOOLCHAIN_DIR as per Nathan.
+> > * Credit Nathan with Suggested-by tag.
+> > * Remove -Qunused-arguments.
+> > * Update commit message.
+> >
+> >  arch/arm64/kernel/vdso32/Makefile | 8 --------
+> >  1 file changed, 8 deletions(-)
+> >
+> > diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
+> > index 789ad420f16b..3dba0c4f8f42 100644
+> > --- a/arch/arm64/kernel/vdso32/Makefile
+> > +++ b/arch/arm64/kernel/vdso32/Makefile
+> > @@ -10,15 +10,7 @@ include $(srctree)/lib/vdso/Makefile
+> >
+> >  # Same as cc-*option, but using CC_COMPAT instead of CC
+> >  ifeq ($(CONFIG_CC_IS_CLANG), y)
+> > -COMPAT_GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE_COMPAT)elfedit))
+> > -COMPAT_GCC_TOOLCHAIN := $(realpath $(COMPAT_GCC_TOOLCHAIN_DIR)/..)
+> > -
+> >  CC_COMPAT_CLANG_FLAGS := --target=$(notdir $(CROSS_COMPILE_COMPAT:%-=%))
+> > -CC_COMPAT_CLANG_FLAGS += --prefix=$(COMPAT_GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE_COMPAT))
+> > -CC_COMPAT_CLANG_FLAGS += -no-integrated-as -Qunused-arguments
+> > -ifneq ($(COMPAT_GCC_TOOLCHAIN),)
+> > -CC_COMPAT_CLANG_FLAGS += --gcc-toolchain=$(COMPAT_GCC_TOOLCHAIN)
+> > -endif
+> >
+> >  CC_COMPAT ?= $(CC)
+> >  CC_COMPAT += $(CC_COMPAT_CLANG_FLAGS)
+> >
+>
+> --
+> Regards,
+> Vincenzo
+
+
+
+-- 
+Thanks,
+~Nick Desaulniers
