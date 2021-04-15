@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 214B23601B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 07:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E3A3601B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 07:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230329AbhDOFka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 01:40:30 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:53722 "EHLO
+        id S230375AbhDOFkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 01:40:41 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:56478 "EHLO
         smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230296AbhDOFk1 (ORCPT
+        by vger.kernel.org with ESMTP id S230296AbhDOFkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 01:40:27 -0400
-Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
+        Thu, 15 Apr 2021 01:40:35 -0400
+Received: from mailhost.synopsys.com (mdc-mailhost2.synopsys.com [10.225.0.210])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 6B1ACC0638;
-        Thu, 15 Apr 2021 05:40:04 +0000 (UTC)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id A94EA40876;
+        Thu, 15 Apr 2021 05:40:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1618465204; bh=FxOfx5Bn8qkUjQt47mpov0RocJvJwOaxj7tZCSw43H0=;
+        t=1618465213; bh=uQ2IGh1zNa806XuJ0Ij3ORBvTUnpJ5SKdAn2kXmH6mU=;
         h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=d1O9nnMGmI5ivJRs/ZCkz4HJVx3aQyt9bbU40bK2+j+5/J1EueLTg8dDHcGzdgGxN
-         UzYywOCSzonOzTGi6YxPO6QTmgmM6smkfJxslxBDMR46eUNh+/fFqzDK2xEnEAJKDK
-         7XZ+4QHAWATQg1/ZUymaVM903i4w5yFKsyWEoA+P66dja5cCMYx7R/cM/ZDYlapGxC
-         N9qGQY99RHCxGrOhN1kUGn7xnkqgUItWxR5GVtricGuyXpXAzwY+GDwknMMB8omz3O
-         V7WtBACBQ9K0nzHX4fa8Mk6tblZ0YGc/+ieK2VPUgmZCwXRFrn5hKBzq+UHorfGlns
-         e8Vnf+Bq2SU8w==
+        b=a/pJHXmyy26cQyoTRLYAGT168XxQrTxJ89z7f+81V/Fn2Gsp2qBJ2BdNBXuldDtv4
+         Jq9qBGeII87PtEHsOsnHhimN309sicoUT/k37ZuyA3SI7cg3mP9n/MXmw2vkVR6wbU
+         JsJwkhh6mUK2muLXbCdUZ6KGbRhYcKo5WDP+us+TfZb0uPZdqVHGzfLYlHpoUilU7f
+         PlCN/PYnwfplYlm4GKw2rSjJ0JwUoCQH45Mi4Hcmz0XgGYjMc5ltqT9obUwJGAlkMS
+         Yr/ADsDvQ3IeJr1SXs5iXZTLo86M4uhwCpdWgioRMVOTwu6aJxu0CBMMnvIc0HR5mI
+         /LJ9kDVa1VlnA==
 Received: from razpc-HP (razpc-hp.internal.synopsys.com [10.116.126.207])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by mailhost.synopsys.com (Postfix) with ESMTPSA id 6F804A005C;
-        Thu, 15 Apr 2021 05:40:01 +0000 (UTC)
-Received: by razpc-HP (sSMTP sendmail emulation); Thu, 15 Apr 2021 09:40:00 +0400
-Date:   Thu, 15 Apr 2021 09:40:00 +0400
-Message-Id: <1a7c38722ebff88be857655485f2a341e73a7e4f.1618464534.git.Arthur.Petrosyan@synopsys.com>
+        by mailhost.synopsys.com (Postfix) with ESMTPSA id BA5F4A005D;
+        Thu, 15 Apr 2021 05:40:09 +0000 (UTC)
+Received: by razpc-HP (sSMTP sendmail emulation); Thu, 15 Apr 2021 09:40:08 +0400
+Date:   Thu, 15 Apr 2021 09:40:08 +0400
+Message-Id: <7ec6eaf787d37c39595d92ad2fc656812b5d0457.1618464534.git.Arthur.Petrosyan@synopsys.com>
 In-Reply-To: <cover.1618464534.git.Arthur.Petrosyan@synopsys.com>
 References: <cover.1618464534.git.Arthur.Petrosyan@synopsys.com>
 X-SNPS-Relay: synopsys.com
 From:   Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-Subject: [PATCH 05/15] usb: dwc2: Allow exiting hibernation from gpwrdn rst detect
+Subject: [PATCH 06/15] usb: dwc2: Clear fifo_map when resetting core.
 To:     Felipe Balbi <balbi@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
@@ -50,82 +50,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When device cable is disconnected core receives suspend
-interrupt and enters hibernation. After entering
-into hibernation GPWRDN_RST_DET and GPWRDN_STS_CHGINT
-interrupts are asserted.
+Switching from device mode to host mode by disconnecting
+device cable core enters and exits form hibernation.
+However, the fifo map remains not cleared. It results
+to a WARNING (WARNING: CPU: 5 PID: 0 at drivers/usb/dwc2/
+gadget.c:307 dwc2_hsotg_init_fifo+0x12/0x152 [dwc2])
+if in host mode we disconnect the micro a to b host
+cable. Because core reset occurs.
 
-Allowed exit from gadget hibernation from
-GPWRDN_RST_DET by checking only linestate.
+To avoid the WARNING, fifo_map should be cleared
+in dwc2_core_reset() function by taking into account configs.
+fifo_map must be cleared only if driver is configured in
+"CONFIG_USB_DWC2_PERIPHERAL" or "CONFIG_USB_DWC2_DUAL_ROLE"
+mode.
 
-Changed the return type of "dwc2_handle_gpwrdn_intr()"
-function from void to int because exit from hibernation
-functions have a return value.
+- Added "static inline void dwc2_clear_fifo_map()" helper
+function to clear fifo_map with peripheral or dual role mode.
+
+- Added a dummy version of "dwc2_clear_fifo_map()" helper
+for host-only mode.
 
 Signed-off-by: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
 Acked-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
 ---
- drivers/usb/dwc2/core_intr.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+ drivers/usb/dwc2/core.c | 16 ++++++++++++++++
+ drivers/usb/dwc2/core.h |  3 +++
+ 2 files changed, 19 insertions(+)
 
-diff --git a/drivers/usb/dwc2/core_intr.c b/drivers/usb/dwc2/core_intr.c
-index 27d729fad227..f8963c0cf6af 100644
---- a/drivers/usb/dwc2/core_intr.c
-+++ b/drivers/usb/dwc2/core_intr.c
-@@ -751,10 +751,11 @@ static inline void dwc_handle_gpwrdn_disc_det(struct dwc2_hsotg *hsotg,
-  * The GPWRDN interrupts are those that occur in both Host and
-  * Device mode while core is in hibernated state.
-  */
--static void dwc2_handle_gpwrdn_intr(struct dwc2_hsotg *hsotg)
-+static int dwc2_handle_gpwrdn_intr(struct dwc2_hsotg *hsotg)
- {
- 	u32 gpwrdn;
- 	int linestate;
-+	int ret = 0;
- 
- 	gpwrdn = dwc2_readl(hsotg, GPWRDN);
- 	/* clear all interrupt */
-@@ -778,17 +779,27 @@ static void dwc2_handle_gpwrdn_intr(struct dwc2_hsotg *hsotg)
- 		if (hsotg->hw_params.hibernation &&
- 		    hsotg->hibernated) {
- 			if (gpwrdn & GPWRDN_IDSTS) {
--				dwc2_exit_hibernation(hsotg, 0, 0, 0);
-+				ret = dwc2_exit_hibernation(hsotg, 0, 0, 0);
-+				if (ret)
-+					dev_err(hsotg->dev,
-+						"exit hibernation failed.\n");
- 				call_gadget(hsotg, resume);
- 			} else {
--				dwc2_exit_hibernation(hsotg, 1, 0, 1);
-+				ret = dwc2_exit_hibernation(hsotg, 1, 0, 1);
-+				if (ret)
-+					dev_err(hsotg->dev,
-+						"exit hibernation failed.\n");
- 			}
- 		}
- 	} else if ((gpwrdn & GPWRDN_RST_DET) &&
- 		   (gpwrdn & GPWRDN_RST_DET_MSK)) {
- 		dev_dbg(hsotg->dev, "%s: GPWRDN_RST_DET\n", __func__);
--		if (!linestate && (gpwrdn & GPWRDN_BSESSVLD))
--			dwc2_exit_hibernation(hsotg, 0, 1, 0);
-+		if (!linestate) {
-+			ret = dwc2_exit_hibernation(hsotg, 0, 1, 0);
-+			if (ret)
-+				dev_err(hsotg->dev,
-+					"exit hibernation failed.\n");
-+		}
- 	} else if ((gpwrdn & GPWRDN_STS_CHGINT) &&
- 		   (gpwrdn & GPWRDN_STS_CHGINT_MSK)) {
- 		dev_dbg(hsotg->dev, "%s: GPWRDN_STS_CHGINT\n", __func__);
-@@ -800,6 +811,8 @@ static void dwc2_handle_gpwrdn_intr(struct dwc2_hsotg *hsotg)
- 		 */
- 		dwc_handle_gpwrdn_disc_det(hsotg, gpwrdn);
+diff --git a/drivers/usb/dwc2/core.c b/drivers/usb/dwc2/core.c
+index cb65f7f60573..eccd96fa164e 100644
+--- a/drivers/usb/dwc2/core.c
++++ b/drivers/usb/dwc2/core.c
+@@ -470,6 +470,22 @@ int dwc2_core_reset(struct dwc2_hsotg *hsotg, bool skip_wait)
+ 		dwc2_writel(hsotg, greset, GRSTCTL);
  	}
-+
-+	return ret;
- }
  
- /*
++	/*
++	 * Switching from device mode to host mode by disconnecting
++	 * device cable core enters and exits form hibernation.
++	 * However, the fifo map remains not cleared. It results
++	 * to a WARNING (WARNING: CPU: 5 PID: 0 at drivers/usb/dwc2/
++	 * gadget.c:307 dwc2_hsotg_init_fifo+0x12/0x152 [dwc2])
++	 * if in host mode we disconnect the micro a to b host
++	 * cable. Because core reset occurs.
++	 * To avoid the WARNING, fifo_map should be cleared
++	 * in dwc2_core_reset() function by taking into account configs.
++	 * fifo_map must be cleared only if driver is configured in
++	 * "CONFIG_USB_DWC2_PERIPHERAL" or "CONFIG_USB_DWC2_DUAL_ROLE"
++	 * mode.
++	 */
++	dwc2_clear_fifo_map(hsotg);
++
+ 	/* Wait for AHB master IDLE state */
+ 	if (dwc2_hsotg_wait_bit_set(hsotg, GRSTCTL, GRSTCTL_AHBIDLE, 10000)) {
+ 		dev_warn(hsotg->dev, "%s: HANG! AHB Idle timeout GRSTCTL GRSTCTL_AHBIDLE\n",
+diff --git a/drivers/usb/dwc2/core.h b/drivers/usb/dwc2/core.h
+index 8c12b3061f7f..e1f432095565 100644
+--- a/drivers/usb/dwc2/core.h
++++ b/drivers/usb/dwc2/core.h
+@@ -1423,6 +1423,8 @@ int dwc2_hsotg_tx_fifo_total_depth(struct dwc2_hsotg *hsotg);
+ int dwc2_hsotg_tx_fifo_average_depth(struct dwc2_hsotg *hsotg);
+ void dwc2_gadget_init_lpm(struct dwc2_hsotg *hsotg);
+ void dwc2_gadget_program_ref_clk(struct dwc2_hsotg *hsotg);
++static inline void dwc2_clear_fifo_map(struct dwc2_hsotg *hsotg)
++{ hsotg->fifo_map = 0; }
+ #else
+ static inline int dwc2_hsotg_remove(struct dwc2_hsotg *dwc2)
+ { return 0; }
+@@ -1467,6 +1469,7 @@ static inline int dwc2_hsotg_tx_fifo_average_depth(struct dwc2_hsotg *hsotg)
+ { return 0; }
+ static inline void dwc2_gadget_init_lpm(struct dwc2_hsotg *hsotg) {}
+ static inline void dwc2_gadget_program_ref_clk(struct dwc2_hsotg *hsotg) {}
++static inline void dwc2_clear_fifo_map(struct dwc2_hsotg *hsotg) {}
+ #endif
+ 
+ #if IS_ENABLED(CONFIG_USB_DWC2_HOST) || IS_ENABLED(CONFIG_USB_DWC2_DUAL_ROLE)
 -- 
 2.25.1
 
