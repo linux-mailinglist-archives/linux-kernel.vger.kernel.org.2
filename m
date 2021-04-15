@@ -2,967 +2,768 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9B4360AD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A6B8360AF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233381AbhDONoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 09:44:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45619 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233278AbhDONoQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 09:44:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618494233;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DpNKF7tYIma/A015g27QHa5Y8uvp6cu7V7Zo6pelFWY=;
-        b=EW5hF28OuK4KgKMXU1Bqg5zomDT5TKu4SYJEsU1dSpZ+EKEMAnGtXgOpMQGE1/aJ5F2Ij/
-        ZtDM6rPCbQtVQ1YZZkaIc/3ZtT/BCzz+EqyIqhekgjlP0g0YYW+jZl4zmjk39seiEqYPrx
-        GTU1Pawr2i4ieO/EGwPU6JEdCvYeJQA=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-380-LMmR1WNMP_GTIft8gz0UfQ-1; Thu, 15 Apr 2021 09:43:51 -0400
-X-MC-Unique: LMmR1WNMP_GTIft8gz0UfQ-1
-Received: by mail-ej1-f72.google.com with SMTP id g7-20020a1709065d07b029037c872d9cdcso947563ejt.11
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 06:43:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DpNKF7tYIma/A015g27QHa5Y8uvp6cu7V7Zo6pelFWY=;
-        b=TOpTtp/5R5uhv+JDmT+QNg38Q6fDIJFxWmJwlEG1hopiCwET0hZw5qXMb8tFND7AU5
-         ggIqEEwFZwoNQMJ2Z51mirBPex8iq4DW7W89XZpdw2y2DUBdnycH0R++6WHzq2nKlHhD
-         y0WeUq5CSDqA7E4tulABijxgyIFY2FVEGlNGNtNdKeBufxPXtY6nMBdvnXeHTiGJVJoY
-         2znpBMmqaeVi2u11Y8+mC1Z3KaPfqekIpNDlMSbaC87mbQYsgp3LGn/SMVf5wHtPPdgj
-         vow8dPBQGEgSkJ5qojEs4Cmar76YvAA4OAJYssRObjlCHQIXHD0udje3ClrFPzr/3ZuO
-         c3Xw==
-X-Gm-Message-State: AOAM530k2X07OamGwnsKe4Az1VPxru+c3Rc48r1sENjuT1Z09n+oT/4S
-        UDsmjzo5oIeqSVD9rOuYXoZoJFb9jN0hL5gx80TRidNOzhwFvTN3d7gPDV04Is+24IRxbiGIpH4
-        dnMuEDxZabH+ZFdQekvesI5St
-X-Received: by 2002:a17:907:3f08:: with SMTP id hq8mr3601913ejc.90.1618494230221;
-        Thu, 15 Apr 2021 06:43:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyqdjl1gYnSl3cS6fKuUW/wcpkvtTQF231XCRROyIeskVbvOMrKm1Ep1OzpvtDTVQAWp5usKg==
-X-Received: by 2002:a17:907:3f08:: with SMTP id hq8mr3601880ejc.90.1618494229866;
-        Thu, 15 Apr 2021 06:43:49 -0700 (PDT)
-Received: from x1.bristot.me (host-79-56-201-31.retail.telecomitalia.it. [79.56.201.31])
-        by smtp.gmail.com with ESMTPSA id i10sm2575658edt.3.2021.04.15.06.43.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 06:43:49 -0700 (PDT)
-Subject: Re: [RFC PATCH 5/5] tracing: Add the osnoise tracer
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, kcarcia@redhat.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Clark Willaims <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>, linux-doc@vger.kernel.org
-References: <cover.1617889883.git.bristot@redhat.com>
- <3a69303b27bfc5d2274ab893b2cfbd0a8dbe31f7.1617889883.git.bristot@redhat.com>
- <20210414131402.2bd448ee@gandalf.local.home>
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-Message-ID: <ef6f08f1-a798-c99e-4bd6-7b323ab29b87@redhat.com>
-Date:   Thu, 15 Apr 2021 15:43:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233189AbhDONrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 09:47:06 -0400
+Received: from mga18.intel.com ([134.134.136.126]:5768 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233121AbhDONrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 09:47:04 -0400
+IronPort-SDR: me/94HVPfIp876xRAK8UDD+HhRNYOUHAiQ58+GK6q/TSDcPPDbDVD9G+XVxe/hZDjTo+MAAxmE
+ 9RFNqiSjOwWg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="182351393"
+X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
+   d="gz'50?scan'50,208,50";a="182351393"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 06:46:39 -0700
+IronPort-SDR: Vuo9Wn7kxuDu76p4j8WROtX6thdXms1hSWO2dH3LrYWPLEGt6RV1+nDbUwCDXJOmhWF204JEUT
+ YWZ08IIpWd2g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
+   d="gz'50?scan'50,208,50";a="533139879"
+Received: from lkp-server02.sh.intel.com (HELO fa9c8fcc3464) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 15 Apr 2021 06:46:37 -0700
+Received: from kbuild by fa9c8fcc3464 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lX2KL-0000yq-0I; Thu, 15 Apr 2021 13:46:37 +0000
+Date:   Thu, 15 Apr 2021 21:45:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Anna Schumaker <Anna.Schumaker@Netapp.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        "J. Bruce Fields" <bfields@redhat.com>
+Subject: fs/nfsd/nfs4xdr.c:4657 nfsd4_encode_read_plus_hole() warn:
+ inconsistent indenting
+Message-ID: <202104152145.1xxjpDMn-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210414131402.2bd448ee@gandalf.local.home>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="pf9I7BMVVzbSWLtt"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/14/21 7:14 PM, Steven Rostedt wrote:
-> On Thu,  8 Apr 2021 16:13:23 +0200
-> Daniel Bristot de Oliveira <bristot@redhat.com> wrote:
-> 
->> In the context of high-performance computing (HPC), the Operating System
->> Noise (osnoise) refers to the interference experienced by an application
->> due to activities inside the operating system. In the context of Linux,
->> NMIs, IRQs, SoftIRQs, and any other system thread can cause noise to the
->> system. Moreover, hardware-related jobs can also cause noise, for example,
->> via SMIs.
->>
->> hwlat_detector is one of the tools used to identify the most complex
->> source of noise: hardware noise.
->>
->> In a nutshell, the hwlat_detector creates a thread that runs
->> periodically for a given period. At the beginning of a period, the thread
->> disables interrupt and starts sampling. While running, the hwlatd
->> thread reads the time in a loop. As interrupts are disabled, threads,
->> IRQs, and SoftIRQs cannot interfere with the hwlatd thread. Hence, the
->> cause of any gap between two different reads of the time roots either on
->> NMI or in the hardware itself. At the end of the period, hwlatd enables
->> interrupts and reports the max observed gap between the reads. It also
->> prints an NMI occurrence counter. If the output does not report NMI
->> executions, the user can conclude that the hardware is the culprit for
->> the latency. The hwlat detects the NMI execution by observing
->> the entry and exit of an NMI.
->>
->> The osnoise tracer leverages the hwlat_detector by running a
->> similar loop with preemption, SoftIRQs and IRQs enabled, thus allowing
->> all the sources of osnoise during its execution. Using the same approach
->> of hwlat, osnoise takes note of the entry and exit point of any
->> source of interferences, increasing a per-cpu interference counter. The
->> osnoise tracer also saves an interference counter for each source of
->> interference. The interference counter for NMI, IRQs, SoftIRQs, and
->> threads is increased anytime the tool observes these interferences' entry
->> events. When a noise happens without any interference from the operating
->> system level, the hardware noise counter increases, pointing to a
->> hardware-related noise. In this way, osnoise can account for any
->> source of interference. At the end of the period, the osnoise tracer
->> prints the sum of all noise, the max single noise, the percentage of CPU
->> available for the thread, and the counters for the noise sources.
->>
->> Usage
->>
->> Write the ASCII text osnoise into the current_tracer file of the
->> tracing system (generally mounted at /sys/kernel/tracing or
->> /sys/kernel/debug/tracing).
->>
->> For example::
->>
->>         [root@f32 ~]# cd /sys/kernel/tracing/
->>         [root@f32 tracing]# echo osnoise > current_tracer
->>
->> It is possible to follow the trace by reading the trace trace file::
->>
->>         [root@f32 tracing]# cat trace
->>         # tracer: osnoise
->>         #
->>         #                                _-----=> irqs-off
->>         #                               / _----=> need-resched
->>         #                              | / _---=> hardirq/softirq
->>         #                              || / _--=> preempt-depth                            MAX
->>         #                              || /                                             SINGLE     Interference counters:
->>         #                              ||||               RUNTIME      NOISE   % OF CPU  NOISE    +-----------------------------+
->>         #           TASK-PID      CPU# ||||   TIMESTAMP    IN US       IN US  AVAILABLE  IN US     HW    NMI    IRQ   SIRQ THREAD
->>         #              | |         |   ||||      |           |             |    |            |      |      |      |      |      |
->>                    <...>-859     [000] ....    81.637220: 1000000        190  99.98100       9     18      0   1007     18      1
->>                    <...>-860     [001] ....    81.638154: 1000000        656  99.93440      74     23      0   1006     16      3
->>                    <...>-861     [002] ....    81.638193: 1000000       5675  99.43250     202      6      0   1013     25     21
->>                    <...>-862     [003] ....    81.638242: 1000000        125  99.98750      45      1      0   1011     23      0
->>                    <...>-863     [004] ....    81.638260: 1000000       1721  99.82790     168      7      0   1002     49     41
->>                    <...>-864     [005] ....    81.638286: 1000000        263  99.97370      57      6      0   1006     26      2
->>                    <...>-865     [006] ....    81.638302: 1000000        109  99.98910      21      3      0   1006     18      1
->>                    <...>-866     [007] ....    81.638326: 1000000       7816  99.21840     107      8      0   1016     39     19
->>
->> In addition to the regular trace fields (from TASK-PID to TIMESTAMP), the
->> tracer prints a message at the end of each period for each CPU that is
->> running an osnoise/ thread. The osnoise specific fields report:
->>
->>  - The RUNTIME IN USE reports the amount of time in microseconds that
->>    the osnoise thread kept looping reading the time.
->>  - The NOISE IN US reports the sum of noise in microseconds observed
->>    by the osnoise tracer during the associated runtime.
->>  - The % OF CPU AVAILABLE reports the percentage of CPU available for
->>    the osnoise thread during the runtime window.
->>  - The MAX SINGLE NOISE IN US reports the maximum single noise observed
->>    during the runtime window.
->>  - The Interference counters display how many each of the respective
->>    interference happened during the runtime window.
->>
->> Note that the example above shows a high number of HW noise samples.
->> The reason being is that this sample was taken on a virtual machine,
->> and the host interference is detected as a hardware interference.
->>
->> Tracer options
->>
->> The tracer has a set of options inside the osnoise directory, they are:
->>
->>  - cpus: CPUs at which a osnoise thread will execute.
-> 
-> Again, I think we can reuse the tracing_cpumask.
-> 
->>  - period_us: the period of the osnoise thread.
->>  - runtime_us: how long an osnoise thread will look for noise.
-> 
-> These seem the same as window and width. At a minimum should probably share
-> the same code.
 
-how about creating a generic handler for all the "to long" writes, that receives
-a structure containing a pointer to where to save the value, a min and a max
-acceptable value?
+--pf9I7BMVVzbSWLtt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-If so, where to place this function? trace.c?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   7f75285ca572eaabc028cf78c6ab5473d0d160be
+commit: 2db27992dd565bf400658edc18f67aed0b6bc6cb NFSD: Add READ_PLUS hole segment encoding
+date:   6 months ago
+config: x86_64-randconfig-m031-20210415 (attached as .config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
 
->>  - stop_tracing_single_us: stop the system tracing of a single noise
->>    higher than the configured value is happens. Writing 0 disables this
->>    option.
->>  - stop_tracing_total_us: stop the system tracing of a NOISE IN USE
->>    higher than the configured value is happens. Writing 0 disables this
->>    option.
->>  - tolerance_ns: the minimum delta between two time() reads to be
->>    considered as noise.
-> 
-> You can use tracing_threshold for the tolerance. Do you really need it in
-> ns?
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Yes, I can. I placed it in ns to serve as a fine tune that one might need. But,
-I can use the tracing_threshold in us as well.
+New smatch warnings:
+fs/nfsd/nfs4xdr.c:4657 nfsd4_encode_read_plus_hole() warn: inconsistent indenting
 
->>
->> Additional Tracing
->>
->> In addition to the tracer, a set of tracepoints were added to
->> facilitate the identification of the osnoise source.
->>
->>  - osnoise:sample_threshold: printed anytime a noise is higher than
->>    the configurable tolerance_ns.
->>  - osnoise:nmi_noise: noise from NMI, including the duration.
->>  - osnoise:irq_noise: noise from an IRQ, including the duration.
->>  - osnoise:softirq_noise: noise from a SoftIRQ, including the
->>    duration.
->>  - osnoise:thread_noise: noise from a thread, including the duration.
->>
->> Note that a all the values are net values. This means that a thread
->> duration will not contain the duration of the IRQs that happened during
->> its execution, for example. The same is valid for all duration values.
->>
->> Here is one example of the usage of these tracepoints::
->>
->>        osnoise/8-961     [008] d.h.  5789.857532: irq_noise: local_timer:236 start 5789.857529929 duration 1845 ns
->>        osnoise/8-961     [008] dNh.  5789.858408: irq_noise: local_timer:236 start 5789.858404871 duration 2848 ns
->>      migration/8-54      [008] d...  5789.858413: thread_noise: migration/8:54 start 5789.858409300 duration 3068 ns
->>        osnoise/8-961     [008] ....  5789.858413: sample_threshold: start 5789.858404555 duration 8 us interferences 2
->>
->> In this example, a noise sample of 8 microseconds was reported in the last
->> fine, pointing to two interferences. Looking backward in the trace, the
->> two previous entries were about the migration thread running after
->> a timer IRQ execution. The first event is not part of the noise because
->> it took place one millisecond before.
->>
->> It is worth noticing that the sum of the duration reported in the
->> tracepoints is smaller than eight us reported in the
->> sample_threshold. The reason roots in the tracing overhead and in
->> the overhead of the entry and exit code that happens before and after
->> any interference execution. This justifies the dual approach: measuring
->> thread and tracing.
-> 
-> I'm not sure the tracing overhead had much to do with it as did the
-> overhead of entering the interrupt itself. events are rather fast (usually
-> less than 200ns depending on the system). You can always enable the
-> benchmark_event to see what trace event overhead is. Then again, cold cache
-> can play into it as well.
+Old smatch warnings:
+fs/nfsd/nfs4xdr.c:679 nfsd4_decode_close() warn: ignoring unreachable code.
 
-I agree, I will remove the tracing overhead part.
+vim +4657 fs/nfsd/nfs4xdr.c
 
->>
->> Cc: Jonathan Corbet <corbet@lwn.net>
->> Cc: Steven Rostedt <rostedt@goodmis.org>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Alexandre Chartre <alexandre.chartre@oracle.com>
->> Cc: Clark Willaims <williams@redhat.com>
->> Cc: John Kacur <jkacur@redhat.com>
->> Cc: Juri Lelli <juri.lelli@redhat.com>
->> Cc: linux-doc@vger.kernel.org
->> Cc: linux-kernel@vger.kernel.org
->> Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
->>
->> ---
->>  Documentation/trace/osnoise_tracer.rst |  149 ++
->>  include/linux/ftrace_irq.h             |   16 +
->>  include/trace/events/osnoise.h         |  141 ++
->>  kernel/trace/Kconfig                   |   34 +
->>  kernel/trace/Makefile                  |    1 +
->>  kernel/trace/trace.h                   |    9 +-
->>  kernel/trace/trace_entries.h           |   27 +
->>  kernel/trace/trace_osnoise.c           | 1714 ++++++++++++++++++++++++
->>  kernel/trace/trace_output.c            |   72 +-
->>  9 files changed, 2159 insertions(+), 4 deletions(-)
->>  create mode 100644 Documentation/trace/osnoise_tracer.rst
->>  create mode 100644 include/trace/events/osnoise.h
->>  create mode 100644 kernel/trace/trace_osnoise.c
->>
->> diff --git a/Documentation/trace/osnoise_tracer.rst b/Documentation/trace/osnoise_tracer.rst
->> new file mode 100644
->> index 000000000000..9a97f557317b
->> --- /dev/null
->> +++ b/Documentation/trace/osnoise_tracer.rst
->> @@ -0,0 +1,149 @@
->> +==============
->> +OSNOISE Tracer
->> +==============
->> +
->> +In the context of high-performance computing (HPC), the Operating System
->> +Noise (*osnoise*) refers to the interference experienced by an application
->> +due to activities inside the operating system. In the context of Linux,
->> +NMIs, IRQs, SoftIRQs, and any other system thread can cause noise to the
->> +system. Moreover, hardware-related jobs can also cause noise, for example,
->> +via SMIs.
->> +
->> +``hwlat_detector`` is one of the tools used to identify the most complex
->> +source of noise: *hardware noise*.
->> +
->> +In a nutshell, the ``hwlat_detector`` creates a thread that runs
->> +periodically for a given period. At the beginning of a period, the thread
->> +disables interrupt and starts sampling. While running, the ``hwlatd``
->> +thread reads the time in a loop. As interrupts are disabled, threads,
->> +IRQs, and SoftIRQs cannot interfere with the ``hwlatd`` thread. Hence, the
->> +cause of any gap between two different reads of the time roots either on
->> +NMI or in the hardware itself. At the end of the period, ``hwlatd`` enables
->> +interrupts and reports the max observed gap between the reads. It also
->> +prints a NMI occurrence counter. If the output does not report NMI
->> +executions, the user can conclude that the hardware is the culprit for
->> +the latency. The ``hwlat`` detects the NMI execution by observing
->> +the entry and exit of a NMI.
->> +
->> +The ``osnoise`` tracer leverages the ``hwlat_detector`` by running a
->> +similar loop with preemption, SoftIRQs and IRQs enabled, thus allowing
->> +all the sources of *osnoise* during its execution. Using the same approach
->> +of ``hwlat``, ``osnoise`` takes note of the entry and exit point of any
->> +source of interferences, increasing a per-cpu interference counter. The
->> +``osnoise`` tracer also saves an interference counter for each source of
->> +interference. The interference counter for NMI, IRQs, SoftIRQs, and
->> +threads is increased anytime the tool observes these interferences' entry
->> +events. When a noise happens without any interference from the operating
->> +system level, the hardware noise counter increases, pointing to a
->> +hardware-related noise. In this way, ``osnoise`` can account for any
->> +source of interference. At the end of the period, the ``osnoise`` tracer
->> +prints the sum of all noise, the max single noise, the percentage of CPU
->> +available for the thread, and the counters for the noise sources.
->> +
->> +Usage
->> +-----
->> +
->> +Write the ASCII text ``osnoise`` into the ``current_tracer`` file of the
->> +tracing system (generally mounted at ``/sys/kernel/tracing`` or
->> +``/sys/kernel/debug/tracing``).
-> 
-> I wouldn't even mention the /sys/kernel/debug/tracing path, I'm trying to
-> deprecated that.
+  4642	
+  4643	static __be32
+  4644	nfsd4_encode_read_plus_hole(struct nfsd4_compoundres *resp,
+  4645				    struct nfsd4_read *read,
+  4646				    unsigned long maxcount, u32 *eof)
+  4647	{
+  4648		struct file *file = read->rd_nf->nf_file;
+  4649		__be32 *p;
+  4650	
+  4651		/* Content type, offset, byte count */
+  4652		p = xdr_reserve_space(&resp->xdr, 4 + 8 + 8);
+  4653		if (!p)
+  4654			return nfserr_resource;
+  4655	
+  4656		*p++ = htonl(NFS4_CONTENT_HOLE);
+> 4657		 p   = xdr_encode_hyper(p, read->rd_offset);
+  4658		 p   = xdr_encode_hyper(p, maxcount);
+  4659	
+  4660		*eof = (read->rd_offset + maxcount) >= i_size_read(file_inode(file));
+  4661		return nfs_ok;
+  4662	}
+  4663	
 
-I mention it because that is the path (still) used on Fedora...
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
->> +
->> +For example::
->> +
->> +        [root@f32 ~]# cd /sys/kernel/tracing/
->> +        [root@f32 tracing]# echo osnoise > current_tracer
->> +
->> +It is possible to follow the trace by reading the ``trace`` trace file::
->> +
->> +        [root@f32 tracing]# cat trace
->> +        # tracer: osnoise
->> +        #
->> +        #                                _-----=> irqs-off
->> +        #                               / _----=> need-resched
->> +        #                              | / _---=> hardirq/softirq
->> +        #                              || / _--=> preempt-depth                            MAX
->> +        #                              || /                                             SINGLE     Interference counters:
->> +        #                              ||||               RUNTIME      NOISE   % OF CPU  NOISE    +-----------------------------+
->> +        #           TASK-PID      CPU# ||||   TIMESTAMP    IN US       IN US  AVAILABLE  IN US     HW    NMI    IRQ   SIRQ THREAD
->> +        #              | |         |   ||||      |           |             |    |            |      |      |      |      |      |
->> +                   <...>-859     [000] ....    81.637220: 1000000        190  99.98100       9     18      0   1007     18      1
->> +                   <...>-860     [001] ....    81.638154: 1000000        656  99.93440      74     23      0   1006     16      3
->> +                   <...>-861     [002] ....    81.638193: 1000000       5675  99.43250     202      6      0   1013     25     21
->> +                   <...>-862     [003] ....    81.638242: 1000000        125  99.98750      45      1      0   1011     23      0
->> +                   <...>-863     [004] ....    81.638260: 1000000       1721  99.82790     168      7      0   1002     49     41
->> +                   <...>-864     [005] ....    81.638286: 1000000        263  99.97370      57      6      0   1006     26      2
->> +                   <...>-865     [006] ....    81.638302: 1000000        109  99.98910      21      3      0   1006     18      1
->> +                   <...>-866     [007] ....    81.638326: 1000000       7816  99.21840     107      8      0   1016     39     19
->> +
->> +In addition to the regular trace fields (from TASK-PID to TIMESTAMP), the
->> +tracer prints a message at the end of each period for each CPU that is
->> +running an ``osnoise/`` thread. The osnoise specific fields report:
->> +
->> + - The ``RUNTIME IN USE`` reports the amount of time in microseconds that
->> +   the ``osnoise`` thread kept looping reading the time.
->> + - The ``NOISE IN US`` reports the sum of noise in microseconds observed
->> +   by the osnoise tracer during the associated runtime.
->> + - The ``% OF CPU AVAILABLE`` reports the percentage of CPU available for
->> +   the ``osnoise`` thread during the ``runtime`` window.
->> + - The ``MAX SINGLE NOISE IN US`` reports the maximum single noise observed
->> +   during the ``runtime`` window.
->> + - The ``Interference counters`` display how many each of the respective
->> +   interference happened during the ``runtime`` window.
->> +
->> +Note that the example above shows a high number of ``HW noise`` samples.
->> +The reason being is that this sample was taken on a virtual machine,
->> +and the host interference is detected as a hardware interference.
->> +
->> +Tracer options
->> +---------------------
->> +
->> +The tracer has a set of options inside the ``osnoise`` directory, they are:
->> +
->> + - ``cpus``: CPUs at which a ``osnoise`` thread will execute.
->> + - ``period_us``: the period of the ``osnoise`` thread.
->> + - ``runtime_us``: how long an ``osnoise`` thread will look for noise.
->> + - ``stop_tracing_single_us``: stop the system tracing of a single noise
->> +   higher than the configured value is happens. Writing ``0`` disables this
->> +   option.
->> + - ``stop_tracing_total_us``: stop the system tracing of a ``NOISE IN USE``
->> +   higher than the configured value is happens. Writing ``0`` disables this
->> +   option.
->> + - ``tolerance_ns``: the minimum delta between two time() reads to be
->> +   considered as noise.
->> +
->> +Additional Tracing
->> +------------------
->> +
->> +In addition to the tracer, a set of ``tracepoints`` were added to
->> +facilitate the identification of the osnoise source.
->> +
->> + - ``osnoise:sample_threshold``: printed anytime a noise is higher than
->> +   the configurable ``tolerance_ns``.
->> + - ``osnoise:nmi_noise``: noise from NMI, including the duration.
->> + - ``osnoise:irq_noise``: noise from an IRQ, including the duration.
->> + - ``osnoise:softirq_noise``: noise from a SoftIRQ, including the
->> +   duration.
->> + - ``osnoise:thread_noise``: noise from a thread, including the duration.
->> +
->> +Note that a all the values are *net values*. This means that a *thread*
-> 
->    "a all"?
+--pf9I7BMVVzbSWLtt
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
-Oops, I will fix that.
+H4sICAIaeGAAAy5jb25maWcAlFxLc9y2st7nV0w5m2ThHEm2VXbd0gIkQQ4yJEED4GhGG5Yi
+jx1VZMlXj5P4399ugA8AbI5zvUg06CYAAv34utHgzz/9vGIvzw9fr59vb67v7r6vvhzuD4/X
+z4dPq8+3d4f/WWVyVUuz4pkwvwFzeXv/8s9//nl/3p2/Xb377cNvJ68fb96tNofH+8PdKn24
+/3z75QWev324/+nnn1JZ56Lo0rTbcqWFrDvDd+bi1Zebm9cfVr9khz9ur+9XH357A92cnf3q
+/nrlPSZ0V6TpxfehqZi6uvhw8ubkZCCU2dh+9ubdydnJyURLS1YXI/nE6z5ldVeKejMN4DV2
+2jAj0oC2ZrpjuuoKaSRJEDU8yj2SrLVRbWqk0lOrUB+7S6m8cZNWlJkRFe8MS0reaanMRDVr
+xVkGnecS/gMsGh+FBf55Vdj9uls9HZ5fvk1LLmphOl5vO6ZgcUQlzMWbM2Afp1U1AoYxXJvV
+7dPq/uEZexhXU6asHBbs1SuquWOtvwR2/p1mpfH412zLuw1XNS+74ko0E7tPSYByRpPKq4rR
+lN3V0hNyifCWJlxpkwFlXBpvvv7KxHQ7a2LpwpnHT+2ujvUJkz9OfnuMjC9CTCjjOWtLYyXC
+25uheS21qVnFL179cv9wf/h1ZNCXrPHfQO/1VjQpOYNGarHrqo8tbznJcMlMuu5m9EEaldS6
+q3gl1b5jxrB07Y/cal6KhHiOtWCVol1lCgayBJgwiGs50aNWqz6giaunlz+evj89H75O6lPw
+miuRWkVtlEw8jfZJei0vaQrPc54agRPK865yChvxNbzORG2tAd1JJQoFJgh00HtHlQFJw/Z0
+imvogX40Xfvqhi2ZrJioqbZuLbjCddsvTIMZBdsLqwb6D4aM5sLZqK2dblfJjIcj5VKlPOsN
+Gbz0RNUNU5r3izDuud9zxpO2yHUoWIf7T6uHz9H+TRZfphstWxjTiV4mvRGtiPgsVjW+Uw9v
+WSkyZnhXMm26dJ+WhCRYs72didtAtv3xLa+NPkrsEiVZlsJAx9kq2DGW/d6SfJXUXdvglCO9
+cCqaNq2drtLWiURO6CiPVRdz+/Xw+ERpDHjKTSdrDirhq+QVSLkSMrN+dNzdWiJFZCVtLRw5
+b8tymUyYg7Uo1iiG/eztgL2YzObt2S7FedUY6LWmbNNA3sqyrQ1Te/89euKRx1IJTw2rByv7
+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
+BRQlx/ohQAIA
 
->> +duration will not contain the duration of the *IRQs* that happened during
->> +its execution, for example. The same is valid for all duration values.
-> 
-> The above is hard to understand. Do you mean individual instances of noise
-> is not recorded, and only the sum is?
-
-I need to rephrase that.... I meant that when we have two or more "noise"
-stacked, e.g., a thread noise happening, and then an IRQ noise happens on top of
-it, the noise from the TOP will be discounted, e.g., the IRQ noise added to the
-thread noise will be discounted. Like...
-
-osnoise_running
-	--------> thread noise in
-                       run 5 us
-                  ----------------> IRQ noise
-                                    run 3 us
-		  <---------------- print duration 3 us
-                       run 1 us
-        <--------- print duration 6 us (not 9 us).
-
-Making this computation in kernel reduces the amount of events printed in the
-buffer.
-
->> +
->> +Here is one example of the usage of these ``tracepoints``::
->> +
->> +       osnoise/8-961     [008] d.h.  5789.857532: irq_noise: local_timer:236 start 5789.857529929 duration 1845 ns
->> +       osnoise/8-961     [008] dNh.  5789.858408: irq_noise: local_timer:236 start 5789.858404871 duration 2848 ns
->> +     migration/8-54      [008] d...  5789.858413: thread_noise: migration/8:54 start 5789.858409300 duration 3068 ns
->> +       osnoise/8-961     [008] ....  5789.858413: sample_threshold: start 5789.858404555 duration 8 us interferences 2
->> +
->> +In this example, a noise sample of 8 microseconds was reported in the last
->> +fine, pointing to two interferences. Looking backward in the trace, the
-> 
->   "fine"?
-
-Ops, "line" :-). Will fix.
-
->> +two previous entries were about the ``migration`` thread running after
->> +a timer IRQ execution. The first event is not part of the noise because
->> +it took place one millisecond before.
->> +
->> +It is worth noticing that the sum of the duration reported in the
->> +``tracepoints`` is smaller than eight us reported in the
->> +``sample_threshold``. The reason roots in the tracing overhead and in
->> +the overhead of the entry and exit code that happens before and after
->> +any interference execution. This justifies the dual approach: measuring
->> +thread and tracing.
->> diff --git a/include/linux/ftrace_irq.h b/include/linux/ftrace_irq.h
->> index 0abd9a1d2852..fd54045980ce 100644
->> --- a/include/linux/ftrace_irq.h
->> +++ b/include/linux/ftrace_irq.h
->> @@ -7,12 +7,24 @@ extern bool trace_hwlat_callback_enabled;
->>  extern void trace_hwlat_callback(bool enter);
->>  #endif
->>  
->> +/*
->> + * XXX: Make it generic
-> 
-> Yes, this should be the same for both the hwlat detector and for
-> osnoise.
-
-Where should I place it? On hwlat, making osnoise to select it? On trace.c?
-
->> + */
->> +#ifdef CONFIG_OSNOISE_TRACER
->> +extern bool trace_osnoise_callback_enabled;
->> +extern void trace_osnoise_callback(bool enter);
->> +#endif
->> +
->>  static inline void ftrace_nmi_enter(void)
->>  {
->>  #ifdef CONFIG_HWLAT_TRACER
->>  	if (trace_hwlat_callback_enabled)
->>  		trace_hwlat_callback(true);
->>  #endif
->> +#ifdef CONFIG_OSNOISE_TRACER
->> +	if (trace_osnoise_callback_enabled)
->> +		trace_osnoise_callback(true);
->> +#endif
->>  }
->>  
->>  static inline void ftrace_nmi_exit(void)
->> @@ -21,6 +33,10 @@ static inline void ftrace_nmi_exit(void)
->>  	if (trace_hwlat_callback_enabled)
->>  		trace_hwlat_callback(false);
->>  #endif
->> +#ifdef CONFIG_OSNOISE_TRACER
->> +	if (trace_osnoise_callback_enabled)
->> +		trace_osnoise_callback(false);
->> +#endif
->>  }
->>  
->>  #endif /* _LINUX_FTRACE_IRQ_H */
->> diff --git a/include/trace/events/osnoise.h b/include/trace/events/osnoise.h
->> new file mode 100644
->> index 000000000000..81939234814b
->> --- /dev/null
->> +++ b/include/trace/events/osnoise.h
->> @@ -0,0 +1,141 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +#undef TRACE_SYSTEM
->> +#define TRACE_SYSTEM osnoise
->> +
->> +#if !defined(_OSNOISE_TRACE_H) || defined(TRACE_HEADER_MULTI_READ)
->> +#define _OSNOISE_TRACE_H
->> +
->> +#include <linux/tracepoint.h>
->> +TRACE_EVENT(thread_noise,
->> +
->> +	TP_PROTO(struct task_struct *t, u64 start, u64 duration),
->> +
->> +	TP_ARGS(t, start, duration),
->> +
->> +	TP_STRUCT__entry(
->> +		__array(	char,		comm,	TASK_COMM_LEN)
->> +		__field(	pid_t,		pid	)
-> 
-> I would place the start and duration first. As pid is 4 bytes, you have a 4
-> byte "hole" in the structure:
-> 
-> system: osnoise
-> name: thread_noise
-> ID: 442
-> format:
-> 	field:unsigned short common_type;	offset:0;	size:2;	signed:0;
-> 	field:unsigned char common_flags;	offset:2;	size:1;	signed:0;
-> 	field:unsigned char common_preempt_count;	offset:3;	size:1;	signed:0;
-> 	field:int common_pid;	offset:4;	size:4;	signed:1;
-> 
-> 	field:char comm[16];	offset:8;	size:16;	signed:1;
-> 	field:pid_t pid;	offset:24;	size:4;	signed:1;
-> 
-> [ 4 bytes of nothing here ]
-> 
-> 	field:u64 start;	offset:32;	size:8;	signed:0;
-> 	field:u64 duration;	offset:40;	size:8;	signed:0;
-> 
-
-Ack, will fix that.
-
->> +		__field(	u64,		start	)
->> +		__field(	u64,		duration)
->> +	),
->> +
->> +	TP_fast_assign(
->> +		memcpy(__entry->comm, t->comm, TASK_COMM_LEN);
->> +		__entry->pid = t->pid;
->> +		__entry->start = start;
->> +		__entry->duration = duration;
->> +	),
->> +
->> +	TP_printk("%8s:%d start %llu.%09u duration %llu ns",
->> +		__entry->comm,
->> +		__entry->pid,
->> +		__print_ns_to_secs(__entry->start),
->> +		__print_ns_without_secs(__entry->start),
->> +		__entry->duration)
->> +);
->> +
->> +TRACE_EVENT(softirq_noise,
->> +
->> +	TP_PROTO(int vector, u64 start, u64 duration),
->> +
->> +	TP_ARGS(vector, start, duration),
->> +
->> +	TP_STRUCT__entry(
->> +		__field(	int,		vector	)
->> +		__field(	u64,		start	)
->> +		__field(	u64,		duration)
-> 
-> Same here.
-> 
-> name: softirq_noise
-> ID: 441
-> format:
-> 	field:unsigned short common_type;	offset:0;	size:2;	signed:0;
-> 	field:unsigned char common_flags;	offset:2;	size:1;	signed:0;
-> 	field:unsigned char common_preempt_count;	offset:3;	size:1;	signed:0;
-> 	field:int common_pid;	offset:4;	size:4;	signed:1;
-> 
-> 	field:int vector;	offset:8;	size:4;	signed:1;
-> 
-> [ 4 bytes of nothing here]
-> 
-> 	field:u64 start;	offset:16;	size:8;	signed:0;
-> 	field:u64 duration;	offset:24;	size:8;	signed:0;
-
-ack!
-
->> +	),
->> +
->> +	TP_fast_assign(
->> +		__entry->vector = vector;
->> +		__entry->start = start;
->> +		__entry->duration = duration;
->> +	),
->> +
->> +	TP_printk("%8s:%d start %llu.%09u duration %llu ns",
->> +		show_softirq_name(__entry->vector),
->> +		__entry->vector,
->> +		__print_ns_to_secs(__entry->start),
->> +		__print_ns_without_secs(__entry->start),
->> +		__entry->duration)
->> +);
->> +
->> +TRACE_EVENT(irq_noise,
->> +
->> +	TP_PROTO(int vector, const char *desc, u64 start, u64 duration),
->> +
->> +	TP_ARGS(vector, desc, start, duration),
->> +
->> +	TP_STRUCT__entry(
->> +		__string(	desc,		desc    )
->> +		__field(	int,		vector	)
-> 
-> This doesn't have a hole, but I think it should still switch to be
-> consistent.
-
-Ack!
-
-> 
->> +		__field(	u64,		start	)
->> +		__field(	u64,		duration)
->> +	),
->> +
->> +	TP_fast_assign(
->> +		__assign_str(desc, desc);
->> +		__entry->vector = vector;
->> +		__entry->start = start;
->> +		__entry->duration = duration;
->> +	),
->> +
->> +	TP_printk("%s:%d start %llu.%09u duration %llu ns",
->> +		__get_str(desc),
->> +		__entry->vector,
->> +		__print_ns_to_secs(__entry->start),
->> +		__print_ns_without_secs(__entry->start),
->> +		__entry->duration)
->> +);
->> +
->> +TRACE_EVENT(nmi_noise,
->> +
->> +	TP_PROTO(u64 start, u64 duration),
->> +
->> +	TP_ARGS(start, duration),
->> +
->> +	TP_STRUCT__entry(
->> +		__field(	u64,		start	)
->> +		__field(	u64,		duration)
->> +	),
->> +
->> +	TP_fast_assign(
->> +		__entry->start = start;
->> +		__entry->duration = duration;
->> +	),
->> +
->> +	TP_printk("start %llu.%09u duration %llu ns",
->> +		__print_ns_to_secs(__entry->start),
->> +		__print_ns_without_secs(__entry->start),
->> +		__entry->duration)
->> +);
->> +
->> +TRACE_EVENT(sample_threshold,
->> +
->> +	TP_PROTO(u64 start, u64 duration, u64 interference),
->> +
->> +	TP_ARGS(start, duration, interference),
->> +
->> +	TP_STRUCT__entry(
->> +		__field(	u64,		start	)
->> +		__field(	u64,		duration)
->> +		__field(	u64,		interference)
->> +	),
->> +
->> +	TP_fast_assign(
->> +		__entry->start = start;
->> +		__entry->duration = duration;
->> +		__entry->interference = interference;
->> +	),
->> +
->> +	TP_printk("start %llu.%09u duration %llu us interferences %llu",
->> +		__print_ns_to_secs(__entry->start),
->> +		__print_ns_without_secs(__entry->start),
->> +		__entry->duration,
->> +		__entry->interference)
->> +);
->> +
->> +#endif /* _TRACE_OSNOISE_H */
->> +
-> 
-> 
-> [..]
-> 
->> +static void osnoise_tracer_start(struct trace_array *tr)
->> +{
->> +	int retval;
->> +
->> +	/* Only allow one instance to enable this */
->> +	if (osnoise_busy)
->> +		return;
-> 
-> I found that I couldn't start this with:
-> 
-> 	trace-cmd start -B foo -p osnoise
-
-ok, I will debug that.
-
->> +
->> +	/*
->> +	 * Trace is already hooked, we are re-enabling from
->> +	 * a stop_tracing_*.
->> +	 */
->> +	if (trace_osnoise_callback_enabled)
->> +		return;
->> +
->> +	osn_var_reset_all();
->> +
->> +	retval = hook_irq_events();
->> +	if (retval)
->> +		goto err;
->> +
->> +	retval = hook_softirq_events();
->> +	if (retval)
->> +		goto out_unhook_irq;
->> +
->> +	retval = hook_thread_events();
->> +
->> +	if (retval)
->> +		goto out_unrook_softirq;
->> +
->> +	/*
->> +	 * Make sure NMIs see reseted values.
->> +	 */
->> +	barrier();
->> +	trace_osnoise_callback_enabled = true;
->> +
->> +	retval = start_per_cpu_kthreads(tr);
->> +	/*
->> +	 * all fine!
->> +	 */
->> +	if (!retval)
->> +		return;
->> +
->> +	unhook_thread_events();
->> +out_unrook_softirq:
->> +	unhook_softirq_events();
->> +out_unhook_irq:
->> +	unhook_irq_events();
->> +err:
->> +	pr_err(BANNER "Error starting osnoise tracer\n");
->> +}
->> +
->> +static void osnoise_tracer_stop(struct trace_array *tr)
->> +{
->> +	/* Only allow one instance to enable this */
->> +	if (!osnoise_busy)
->> +		return;
->> +
->> +	trace_osnoise_callback_enabled = false;
->> +	barrier();
->> +
->> +	stop_per_cpu_kthreads();
->> +
->> +	unhook_irq_events();
->> +	unhook_softirq_events();
->> +	unhook_thread_events();
->> +}
->> +
->> +static int osnoise_tracer_init(struct trace_array *tr)
->> +{
->> +	/* Only allow one instance to enable this */
->> +	if (osnoise_busy)
->> +		return -EBUSY;
->> +
->> +	osnoise_trace = tr;
->> +
->> +	tr->max_latency = 0;
->> +
->> +	if (tracer_tracing_is_on(tr))
->> +		osnoise_tracer_start(tr);
-> 
-> That's because trace-cmd will disable tracing when it enables a tracer. And
-> the above "osnoise_trace_start() is not called.
-> 
->> +
->> +	osnoise_busy = true;
-> 
-> Once this is set, when we enable tracing, the start wont start.
-
-Ok, I will try to understand this better.
-
-Thanks
--- Daniel
-
-> -- Steve
-> 
-> 
->> +
->> +
->> +	return 0;
->> +}
->> +
->> +static void osnoise_tracer_reset(struct trace_array *tr)
->> +{
->> +	osnoise_tracer_stop(tr);
->> +
->> +	osnoise_busy = false;
->> +}
->> +
->> +static struct tracer osnoise_tracer __read_mostly = {
->> +	.name		= "osnoise",
->> +	.init		= osnoise_tracer_init,
->> +	.reset		= osnoise_tracer_reset,
->> +	.start		= osnoise_tracer_start,
->> +	.stop		= osnoise_tracer_stop,
->> +	.print_header	= print_osnoise_headers,
->> +	.allow_instances = true,
->> +};
->> +
->> +__init static int init_osnoise_tracer(void)
->> +{
->> +	int ret;
->> +
->> +	mutex_init(&osnoise_data.lock);
->> +
->> +	ret = register_tracer(&osnoise_tracer);
->> +	if (ret)
->> +		return ret;
->> +
->> +	cpumask_copy(&osnoise_cpumask, cpu_all_mask);
->> +
->> +	init_tracefs();
->> +
->> +	return 0;
->> +}
->> +late_initcall(init_osnoise_tracer);
->> diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
->> index 61255bad7e01..edeb127fcdea 100644
->> --- a/kernel/trace/trace_output.c
->> +++ b/kernel/trace/trace_output.c
->> @@ -1189,7 +1189,6 @@ trace_hwlat_print(struct trace_iterator *iter, int flags,
->>  	return trace_handle_return(s);
->>  }
->>  
->> -
->>  static enum print_line_t
->>  trace_hwlat_raw(struct trace_iterator *iter, int flags,
->>  		struct trace_event *event)
->> @@ -1219,6 +1218,76 @@ static struct trace_event trace_hwlat_event = {
->>  	.funcs		= &trace_hwlat_funcs,
->>  };
->>  
->> +/* TRACE_OSNOISE */
->> +static enum print_line_t
->> +trace_osnoise_print(struct trace_iterator *iter, int flags,
->> +		    struct trace_event *event)
->> +{
->> +	struct trace_entry *entry = iter->ent;
->> +	struct trace_seq *s = &iter->seq;
->> +	struct osnoise_entry *field;
->> +	u64 ratio, ratio_dec;
->> +	u64 net_runtime;
->> +
->> +	trace_assign_type(field, entry);
->> +
->> +	/*
->> +	 * compute the available % of cpu time.
->> +	 */
->> +	net_runtime = field->runtime - field->noise;
->> +	ratio = net_runtime * 10000000;
->> +	do_div(ratio, field->runtime);
->> +	ratio_dec = do_div(ratio, 100000);
->> +
->> +	trace_seq_printf(s, "%llu %10llu %3llu.%05llu %7llu",
->> +			 field->runtime,
->> +			 field->noise,
->> +			 ratio, ratio_dec,
->> +			 field->max_sample);
->> +
->> +	trace_seq_printf(s, " %6u", field->hw_count);
->> +	trace_seq_printf(s, " %6u", field->nmi_count);
->> +	trace_seq_printf(s, " %6u", field->irq_count);
->> +	trace_seq_printf(s, " %6u", field->softirq_count);
->> +	trace_seq_printf(s, " %6u", field->thread_count);
->> +
->> +	trace_seq_putc(s, '\n');
->> +
->> +	return trace_handle_return(s);
->> +}
->> +
->> +static enum print_line_t
->> +trace_osnoise_raw(struct trace_iterator *iter, int flags,
->> +		  struct trace_event *event)
->> +{
->> +	struct osnoise_entry *field;
->> +	struct trace_seq *s = &iter->seq;
->> +
->> +	trace_assign_type(field, iter->ent);
->> +
->> +	trace_seq_printf(s, "%lld %llu %llu %u %u %u %u %u\n",
->> +			 field->runtime,
->> +			 field->noise,
->> +			 field->max_sample,
->> +			 field->hw_count,
->> +			 field->nmi_count,
->> +			 field->irq_count,
->> +			 field->softirq_count,
->> +			 field->thread_count);
->> +
->> +	return trace_handle_return(s);
->> +}
->> +
->> +static struct trace_event_functions trace_osnoise_funcs = {
->> +	.trace		= trace_osnoise_print,
->> +	.raw		= trace_osnoise_raw,
->> +};
->> +
->> +static struct trace_event trace_osnoise_event = {
->> +	.type		= TRACE_OSNOISE,
->> +	.funcs		= &trace_osnoise_funcs,
->> +};
->> +
->>  /* TRACE_BPUTS */
->>  static enum print_line_t
->>  trace_bputs_print(struct trace_iterator *iter, int flags,
->> @@ -1384,6 +1453,7 @@ static struct trace_event *events[] __initdata = {
->>  	&trace_bprint_event,
->>  	&trace_print_event,
->>  	&trace_hwlat_event,
->> +	&trace_osnoise_event,
->>  	&trace_raw_data_event,
->>  	NULL
->>  };
-> 
-> 	
-> 
-
+--pf9I7BMVVzbSWLtt--
