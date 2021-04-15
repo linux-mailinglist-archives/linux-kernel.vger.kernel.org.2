@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEECF360D40
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80300360DF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234591AbhDOO7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:59:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39920 "EHLO mail.kernel.org"
+        id S233859AbhDOPH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:07:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234204AbhDOOzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:55:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9363613EB;
-        Thu, 15 Apr 2021 14:53:24 +0000 (UTC)
+        id S234665AbhDOO7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:59:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0172F613DE;
+        Thu, 15 Apr 2021 14:55:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498405;
-        bh=f/2zWovTdWw1YiITnl0NVy6h6k/ftA0MY1bRphiYMCE=;
+        s=korg; t=1618498528;
+        bh=Jbn7iv7/HPe6bumukrYZ9n19q3MIUGzcH0B6N3cT+2Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PVTDmtLxTBSV6JeYKbKBwsD4HXJtyYSn6G0EW0HK5BHgyUC6zpOkw0IFDwXsoUVeR
-         F55ZUbXfyqdgOHzM8Awy7VhWLeLWJxW+GuKt49W6mcE0bljcF+d4KpqUfHuzvXZxyC
-         L8pUfUbXeHcFtppKR7OkK5my9i/Vxq6Q7e7iuGeI=
+        b=EUEIEVzrXs8Sc0OghHoBHR2DlDQtEsZzToQXDE5X4tKL/wLAJ9qFhsGHbYjGmEHmD
+         CRGE0i0kd8pr0jqsZ6yUtNXGVO7rO26av2iAp51iLKfKNMwfWrhmLf5179CSb6Glc2
+         ZFOWT3eOHn0SHGSLsghv53a5W/LfdT0+bCI87zbo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Claudiu Manoil <claudiu.manoil@nxp.com>,
+        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 26/68] gianfar: Handle error code at MAC address change
-Date:   Thu, 15 Apr 2021 16:47:07 +0200
-Message-Id: <20210415144415.316808393@linuxfoundation.org>
+Subject: [PATCH 4.14 27/68] net:tipc: Fix a double free in tipc_sk_mcast_rcv
+Date:   Thu, 15 Apr 2021 16:47:08 +0200
+Message-Id: <20210415144415.354074761@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210415144414.464797272@linuxfoundation.org>
 References: <20210415144414.464797272@linuxfoundation.org>
@@ -40,37 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Manoil <claudiu.manoil@nxp.com>
+From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 
-[ Upstream commit bff5b62585123823842833ab20b1c0a7fa437f8c ]
+[ Upstream commit 6bf24dc0cc0cc43b29ba344b66d78590e687e046 ]
 
-Handle return error code of eth_mac_addr();
+In the if(skb_peek(arrvq) == skb) branch, it calls __skb_dequeue(arrvq) to get
+the skb by skb = skb_peek(arrvq). Then __skb_dequeue() unlinks the skb from arrvq
+and returns the skb which equals to skb_peek(arrvq). After __skb_dequeue(arrvq)
+finished, the skb is freed by kfree_skb(__skb_dequeue(arrvq)) in the first time.
 
-Fixes: 3d23a05c75c7 ("gianfar: Enable changing mac addr when if up")
-Signed-off-by: Claudiu Manoil <claudiu.manoil@nxp.com>
+Unfortunately, the same skb is freed in the second time by kfree_skb(skb) after
+the branch completed.
+
+My patch removes kfree_skb() in the if(skb_peek(arrvq) == skb) branch, because
+this skb will be freed by kfree_skb(skb) finally.
+
+Fixes: cb1b728096f54 ("tipc: eliminate race condition at multicast reception")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/gianfar.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ net/tipc/socket.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/freescale/gianfar.c b/drivers/net/ethernet/freescale/gianfar.c
-index b3b7b98eb32c..c89a5a80c9c8 100644
---- a/drivers/net/ethernet/freescale/gianfar.c
-+++ b/drivers/net/ethernet/freescale/gianfar.c
-@@ -485,7 +485,11 @@ static struct net_device_stats *gfar_get_stats(struct net_device *dev)
- 
- static int gfar_set_mac_addr(struct net_device *dev, void *p)
- {
--	eth_mac_addr(dev, p);
-+	int ret;
-+
-+	ret = eth_mac_addr(dev, p);
-+	if (ret)
-+		return ret;
- 
- 	gfar_set_mac_for_addr(dev, 0, dev->dev_addr);
- 
+diff --git a/net/tipc/socket.c b/net/tipc/socket.c
+index 44ede9ab7898..6fd5e1a7a336 100644
+--- a/net/tipc/socket.c
++++ b/net/tipc/socket.c
+@@ -840,7 +840,7 @@ void tipc_sk_mcast_rcv(struct net *net, struct sk_buff_head *arrvq,
+ 		spin_lock_bh(&inputq->lock);
+ 		if (skb_peek(arrvq) == skb) {
+ 			skb_queue_splice_tail_init(&tmpq, inputq);
+-			kfree_skb(__skb_dequeue(arrvq));
++			__skb_dequeue(arrvq);
+ 		}
+ 		spin_unlock_bh(&inputq->lock);
+ 		__skb_queue_purge(&tmpq);
 -- 
 2.30.2
 
