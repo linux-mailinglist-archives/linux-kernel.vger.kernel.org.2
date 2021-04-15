@@ -2,138 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA717360FA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D23E360FA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234199AbhDOP7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:59:42 -0400
-Received: from mail-bn7nam10on2085.outbound.protection.outlook.com ([40.107.92.85]:8161
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        id S233987AbhDOQBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 12:01:17 -0400
+Received: from mail-eopbgr130055.outbound.protection.outlook.com ([40.107.13.55]:11429
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232769AbhDOP7l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:59:41 -0400
+        id S231726AbhDOQBP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 12:01:15 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lSMhqhb+nw2tk7EyAm68yFMOgxq3WvwKvd9QKoFQyv6AsK6QOk9YT5+K6h9ZD0GAbXjg5vbR4yu3xUMOoTVClr9Snx8MH1Phk240YcgXamnjG9jiCW1LieZ5v0D1/+lkTgWtuEaLQKzMmMZ67P88dCE/lggrrIuqw937ng57XtE9H3iNlynXF6CNlZbTKx46NlSbQ6vmmXrHX7QroQQ62Rvly5kok+BFXzRLUExrRA5Ij7FWzjFdYKY54tGEiZqDzhWyngFJ+6C3CNME5kZ3oxREXY3+ic4QhU13ek3H9+jNvywQyXk8CLV2oh2G0EGlAS66xobLeL6I2YZfYv+MvA==
+ b=RvqaISzqANnBmIOA/wYKKntPK8OJgg8VLxZYB5/Lv3oqAHRKOQj5TN1dTKvq6dGEYae205TraxWWiqH74pvlmBTO/PqiHD5plFj5IuN9OQfOyDZg+Q1r/bQbRAKQBU63v96wh9EpiVvdlt0LBZ998DD3ue59prN7IozMzGl5RSKSnB1c2TASZUYHH0GWFxT9LuKV2r6XnrtuUn6LEBjze+3i0cajunQmnJuFfjs8tNETGAfnQZh3xYFHIIoQPrdmvUF1yNnwFQm4snCLcVokmNajHZRWwO5sNiEEb+omW2se03oQbCHBhN4l/e0sAj8hKPVIXQDzgZdRYba4wWmxaA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fzHgR4/srdRrnpCFf//he/wMHnI5/X07xubuaqy1vPo=;
- b=NfgLHJ2T6MuMbSe23bwfXaZ/LdwuaC8RuUxzq6IkpQcZ7XjfEGct3C8VsTS0hqD6rEr1GUbQRP1KgM6NAZc89ERh1d+GBmynwK+qXvIbVdEXT6w/JDyE8/H2QiF84wsMJDAFGiksnHg79xSYE3WAtLOt/+xG4VpgsDB2ia/5n+1+YDZe4sGpXTkUIP2ZJ39vmw5t6N7aoH4wEzMsh9snxMHkGFmTbMsjErw9QT3jxl/INw8pXZLa+zAE+Voj8ebc6+jJrHNTaPVmjFQSi0KFKu1k8GX7YJsg9R3WJVrvSr/idHUU4TI8u7AXrST4rlixHhxQUNdJ2BdRWH/EbGBXHA==
+ bh=GANCydmX55wDjt7mLBtgTSXhtDSD6lcm0RkfBpA69NE=;
+ b=c8GhnyJmulRPLNdYxkAzyPmS3a+vlcGBeK5JHEhclec6S7SGNX7cF1QbbZzmIyRune8NYiO3SlHoVyLy31QjflMR52/4m2LFIrplls8PkcQz20kggJECY5IgxO/2j/CojBOWM3EgbFbZ7VQGUW5R6heLGv2jYcjTAvpDetCM1eqCRLWcStsKS/oNPmBuNsniZncVmA1vSNEiBkmGmYVAXUclotKVKmpChlbZ2dLc7A5V2p/+EJgPmNso8JQOa+2jTJVXM5ZTrhUtLOZTJOnsV/143A66VQqVNPqfPA0PE3OMIHHDpinwSJsUprBJMUXx0/Gh38+QGhyvQBC8YF0PmQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=diasemi.com; dmarc=pass action=none header.from=diasemi.com;
+ dkim=pass header.d=diasemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fzHgR4/srdRrnpCFf//he/wMHnI5/X07xubuaqy1vPo=;
- b=C27UeugGWc8rOIbZnDg0GHGNf+Z83G0Lg892ZKRNHEtK1F7QYzaY34r3jPhPXwVB0vgKi9Zda2uvjuyrkcGw263QOR/SOKvbeaXfSr4bMVZO6776cTV3Wz+xzb5lQmkIHLELn5hucQC15sSxwVFnfUocLuBXd91wZfBQryNn984=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by SN6PR12MB2719.namprd12.prod.outlook.com (2603:10b6:805:6c::12) with
+ bh=GANCydmX55wDjt7mLBtgTSXhtDSD6lcm0RkfBpA69NE=;
+ b=e9GHYiBJPrTndqtTRdr8BwNwbA/K6zM7lAZ6AOleBDNz5L6Z3gh+5HYPM0hiKK4QMbEjjzIWyh/D4HGWiRD7W1NpzN9WR9ughDzf7QAtKMXiyJzr9jH5AcZpCO4CwFkK/tnuKKO1NNCS2KY71Ww3LdJkdWuadMSn0f6Uhptre08=
+Received: from PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:ac::5)
+ by PR3PR10MB3755.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:28::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.18; Thu, 15 Apr
- 2021 15:59:15 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::1fb:7d59:2c24:615e]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::1fb:7d59:2c24:615e%6]) with mapi id 15.20.4042.018; Thu, 15 Apr 2021
- 15:59:15 +0000
-From:   Ashish Kalra <Ashish.Kalra@amd.com>
-To:     pbonzini@redhat.com
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        joro@8bytes.org, bp@suse.de, thomas.lendacky@amd.com,
-        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srutherford@google.com, seanjc@google.com,
-        venu.busireddy@oracle.com, brijesh.singh@amd.com
-Subject: [PATCH v13 11/12] EFI: Introduce the new AMD Memory Encryption GUID.
-Date:   Thu, 15 Apr 2021 15:58:42 +0000
-Message-Id: <ae8924d0dcac0b397295f53f7bd3ff06f6a9ff12.1618498113.git.ashish.kalra@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1618498113.git.ashish.kalra@amd.com>
-References: <cover.1618498113.git.ashish.kalra@amd.com>
-Content-Type: text/plain
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: SA0PR11CA0148.namprd11.prod.outlook.com
- (2603:10b6:806:131::33) To SN6PR12MB2767.namprd12.prod.outlook.com
- (2603:10b6:805:75::23)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Thu, 15 Apr
+ 2021 16:00:48 +0000
+Received: from PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::7040:2788:a951:5f6]) by PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::7040:2788:a951:5f6%6]) with mapi id 15.20.4020.023; Thu, 15 Apr 2021
+ 16:00:48 +0000
+From:   Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+CC:     "tiwai@suse.de" <tiwai@suse.de>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Support Opensource <Support.Opensource@diasemi.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: RE: [RFC PATCH 2/2] ASoC: da732x: simplify code
+Thread-Topic: [RFC PATCH 2/2] ASoC: da732x: simplify code
+Thread-Index: AQHXIo2z1z47S5z30EGys1D2hqxR9Kq1275A
+Date:   Thu, 15 Apr 2021 16:00:48 +0000
+Message-ID: <PR3PR10MB4142E8DBB9313E751DA52DD0804D9@PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM>
+References: <20210326221619.949961-1-pierre-louis.bossart@linux.intel.com>
+ <20210326221619.949961-3-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20210326221619.949961-3-pierre-louis.bossart@linux.intel.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none
+ header.from=diasemi.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [147.161.166.124]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 995abac7-2a30-4230-a461-08d90027a2bb
+x-ms-traffictypediagnostic: PR3PR10MB3755:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PR3PR10MB3755A89DBAE1E612A8399F3AA74D9@PR3PR10MB3755.EURPRD10.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ixDbkLbd5HQBvVH+WOO4s9qigrn4Qun6KKSkFZr8GtH+KktxjZsHOXnvD9KQIaJBFrxyYqEJ80I6PPa7KNilJR0ZkFJ7jHRysIQWvaZipamRSKCUvI0vH7HjJJhSfWQWDjhYOJ+kkIpbs6mlqJprkMClR3A8D1vO5N8xi6H885gbnkdLglNmc2FH5JchcF7bdT45trzIaQmkCkLKUzgcwpPNG+imwk+ZA3iZfpaEyo5d6X8f4AI+rCezGX8aNBq9b/RK5TTJv9afNhXirVZ+dBl5j6PWtAAV/wjoPAc577Hib+oNyXrs+Rlpi4ICj7g1UfYDn8XwxeTlLTLDPhT3m4Q+OC/DvfG+KAqlyLw11ZdvO6jYRfvdGTX8sAy1x7nn8V9rOP+knAkGQZIZjfD4mn/iJsMEiBLtjafTpQ/ErnVXWwvBtErQdOYkY2Ca3AFkFPfyaNiaIvL1BNRl4ZpFFXItTUSfplQ8AODQAfSdbPEQOlE+HuXrPISzQS7i6EoTLkdbCRCHZuzamBgaBDFhY1IH0cYvneSgNSotDX7CLuCrQLvfGplG5POT4CaFpumFsb0xWgC/wA/KT1u3m8DJyuw+Ti0/NaQ+w+WCW7dAy1s=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(136003)(366004)(39840400004)(316002)(64756008)(478600001)(66946007)(66556008)(66446008)(8936002)(55016002)(66476007)(4326008)(86362001)(52536014)(76116006)(186003)(71200400001)(9686003)(54906003)(5660300002)(8676002)(26005)(110136005)(38100700002)(6506007)(122000001)(7696005)(83380400001)(2906002)(53546011)(33656002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?2HicwXJduM/TlOHNgIgs6kytx+CWNJF9fAct+qG/sAZgRvZI3XuDFs3DqM9r?=
+ =?us-ascii?Q?h7fgnTQRt5RbyzDkq+jp8VK8E+fWpccuGa+Nh/iRsyb+KPDo3eEFQ8aNL9r3?=
+ =?us-ascii?Q?5hlTG1O40PkhTWrcSCHMRn18UE8tJs6vmanRflhW8iVX8iySGJJcKfSL1gr0?=
+ =?us-ascii?Q?TURKFpk1pTWvGSMy73Jj+G28nzqsOTwe+9iYVrJM6wGDgeHAOxqB0/ugaVns?=
+ =?us-ascii?Q?gjnK4LQ9Kfs8uVwxBRm5cf1WZuq5V/Jq5ucUNjMPZAdcE/H20zSiWMzlqzHN?=
+ =?us-ascii?Q?aEFl4u5FWMIQ5njNiw9yybmNn3QJZFc4C6XOgumr6iUOldpRkYbSxD0gy9sx?=
+ =?us-ascii?Q?obQ1Afj+Cs71/ENPe/Fq5OlHvN3eaLIlLfsZzK3lxC8v/1dusw/Kwm866TXr?=
+ =?us-ascii?Q?IFrkn2uZUSbeEs2AXl7bsBX2j7mb+uq5QJ9rJvE1YXVdEapA/5U8zpdWW7n1?=
+ =?us-ascii?Q?QHQ9QOqq5k3K2gs86TzUIGN8PyDvlo09F/kKy+WR5cZ8Q7IFhBohty5D9Eb6?=
+ =?us-ascii?Q?5QCOb1PllWwaTDElpxvyoi2YMPeClbzUqAeiZ7gl96eJCuR8jrSgku9mwk/v?=
+ =?us-ascii?Q?t0+ZD/Q0jKZqctArXdHgsuX03exSWgSbayNdIaQpeeIL1JSPwQgV+beHtTXi?=
+ =?us-ascii?Q?Ax8GH2wIGj5m3xlaxOMl7TeyZ4jXHMufoTwwffPL/KU24BnGXfIYKxRRJkcX?=
+ =?us-ascii?Q?zf+GIX4RA0C2GroVxhfpL4sh9S7GaPdDhIlqutMKYO1HmhZMdcpD2ntcDo83?=
+ =?us-ascii?Q?Zj6b8b8ewVvkUjzjdh54jevMcMxGYIVgYiDpn5XpWTHWA7ZJbGW3u+hm5Ay7?=
+ =?us-ascii?Q?bQnTJAkPo3h/GiBYmHNfh39Xx/TpRvBAreapwwqzCukbQUdjoPzrSa4SIHrM?=
+ =?us-ascii?Q?kmBp7OroMv9Lq0yHCcrL6NFKtZJCZ4K/R2mcTtcp7CIC1wRvPW3/AhKbiRo7?=
+ =?us-ascii?Q?qdKhe+3wwSvfXvIoqW+KFaMHh5mw1mIunzv6Wdff2ATTqEkipVfH026azrh9?=
+ =?us-ascii?Q?bwaXGd37QY5GapRWwpNmOUz03rA90jF/sgNDo7XhWTCgcf3IexcDjs8KAQHS?=
+ =?us-ascii?Q?k2fn+gKeTshbLpOOGYKh6F8ZiOJqgLjYs7DZ8xl93AW9KVCVuzGHpyVl2QmG?=
+ =?us-ascii?Q?AFh4P3uW1Zt7zJvMQ9olkcVQafLS4dBmI0QLUJhr4TO25L4WMD/GWzLAP7vP?=
+ =?us-ascii?Q?CD3F46uecUm05ZABWSTM0OD3q9QfWtWZeNApWX0IxKukWA1TFMyYao3IarKY?=
+ =?us-ascii?Q?W7VysbRJlmf+SaggcVUwBp6b2E59kztykDvdw1Ijimir1gqHb4Lt7ABzKZgt?=
+ =?us-ascii?Q?IUCGEwiJCaeiorNoclDcarv7?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ashkalra_ubuntu_server.amd.com (165.204.77.1) by SA0PR11CA0148.namprd11.prod.outlook.com (2603:10b6:806:131::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.17 via Frontend Transport; Thu, 15 Apr 2021 15:59:14 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f50d6138-f304-4e83-f381-08d900276b29
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2719:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR12MB271955C3DE6D1B130492A83B8E4D9@SN6PR12MB2719.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kHkVVc+1LjHrlX9jRhSixpjha9JCtOPV+RpylX5ZduaLLKwpZ69veDWGNReaXXqBx5X+ZM1OoxiQOhpBRKujjMMtvHVkRlhfULIRkvlRhQ6g2DncB2tsLOQ9v/2SZZmfmSv0raMeCtAt/wPDRdWNLhvg4n4KHBWsQMMDoXpFkEL4Gyp72XlzadrgQS0mRI87V4Ln5XY85SibOse/sjx+4ET6nbBy7S8x8EzkW7PxRC7B1Evp4qW/9wsnAGnav8ffm7UB1Arc/3eOH+JIaE4YQ76h5hhr81Tic1QSsXxMlecTwoABez193uAhjCTaZR5k/iy62f+ejc2znQrXiV0xi/oc0uFacC8Uo8U4s6wG+Pef4y6713KgM9anHbfxlAdG/GbekEu5snprFQzKjZd8mscJPpcYwC8byhkHzfS6vTSpZ4u6U4xSdG8aFd5i8RZamkvnPpyqYZ5E5v9mXxXsYNBIKsO6zM+t2qJ/hUf48/ByiA9Zr1H4hun9OTFbk0uZlvoA/vIlAdmpPb8dsVUYk66LZ1bUMXRWSoxpYHP7yvB6PTLGz7TWPAqLSJvCcF6voBEmaxy0r3ryWNtpPLcaBv+/V0GwKSK0uS3TNWQnyP/DWclkIZWE6oL1p1nLMhU8lFLDJRUmcWrEOzxNGbiw2g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(376002)(346002)(136003)(39860400002)(2616005)(6486002)(956004)(6916009)(16526019)(66476007)(66556008)(8676002)(2906002)(66946007)(83380400001)(478600001)(6666004)(316002)(36756003)(8936002)(5660300002)(52116002)(7416002)(86362001)(26005)(38350700002)(38100700002)(7696005)(4326008)(186003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?OQPJgTgpGqwJpB8vUzAn9G6UMz0CT7iiPzsQhUfumu1r8oXmidxLmHTnLLis?=
- =?us-ascii?Q?qRM4uU2STbr/vR806Mepin+raJqhD+KYGMKWlI3tv6zYBkOBf00PWsl4T1Wr?=
- =?us-ascii?Q?WBmO3+fMM1hFk1Ammm+w6FJLrW+VtLCwgzym0r0yPg/IaAJ5ghEiCMmpVFrS?=
- =?us-ascii?Q?fi0Ce9uLs1nCPhRkH8qgYu6MTaKR13R81PnKkzx/ma4zgHM840dWFcZhBKOs?=
- =?us-ascii?Q?cOS9sMxHxID86mT16pBkEUXqlqqOT+M2YVZKM8SwYidpGPPuY85CtPyliMGD?=
- =?us-ascii?Q?Q/q9dx3VsLgyl1ax8T1ptD/j+wYvSKVNQ3v3sfUtkbi/2X9dnESIHCetqSfL?=
- =?us-ascii?Q?XtqjWSVMhqktHZp06KC8aXn5aqWkQjhX+frJA8fUOI/8zEVPRhYEKOF5lEWf?=
- =?us-ascii?Q?VKOi/PiJKdI8vIW6XGAvZHhwW5E4ElLkuj1NQ45RMfFx/Yv5vpXPj2f+/y6o?=
- =?us-ascii?Q?6eVfVFD1i1v+Yw4d1hfPXhvy1Xk8VvaqAh8Z8s478HmcbCi0475DAU1eyLxo?=
- =?us-ascii?Q?uwfg39SifTX7Bp32VhTbK+GnxCcmnPkldWFLQFOBz8WFmZiqRAn2dGPjEq4C?=
- =?us-ascii?Q?+YDNME23rOeq/T8ahbOT9sqs573eL8yjhGbM7Z9qwJYdoiLBJdq5CCKPI6v9?=
- =?us-ascii?Q?e7YuxVGy5qqRSbXPyGMZ3LbOHBIcMQR1trMeistHBTRI+XRtd33t5ML3Pm1B?=
- =?us-ascii?Q?180V1hJgzw/oWyF484bzs+BMLyDZBpCukkKIqvIEkDOMKc6/xKhF7Xfxl7CK?=
- =?us-ascii?Q?94oFtQEH4fxa8hwYtQzEcV3RxEId5Khzy9Ch199zy2RXP+tw1nbBTlBcvouW?=
- =?us-ascii?Q?bmQjYjR2cwtE3zLFsjy4Y3B48nE9gh31jolw+L+4tz4PEDpAQWIaPDrGL6aP?=
- =?us-ascii?Q?NQFovO+gD0lbDn2yYUUdYqefVQlJ/8EL1JD+TFlnCITHXrXSCcT752I6Soah?=
- =?us-ascii?Q?vXrqmflWacj/+kgODAVRl/wS/2TXYSKA49sJMm+WugoxBBRV+GbnUQhlO+a4?=
- =?us-ascii?Q?b8YuERzApuhGkO0pvpkfcHz/DF/ebcOjCUhjBkb1V6t21+2gLe0TmDsKX7xD?=
- =?us-ascii?Q?A5rqPsZjRhkeNCJ9shTCUCGKQDV7sQeherAu95hcZsYpi12pgYdhyF2zo9YT?=
- =?us-ascii?Q?Xg+9WdDX69GGibdfcXgf8PHMrlxxme7cB5un93/LJ5hjn6ZIzLmYvfkrwL4D?=
- =?us-ascii?Q?tApXJOyShMsNwtwOGzyz5PsGTX1dn03zGdTdHIqVhCK4Suv2O3WJ9TzZa2ID?=
- =?us-ascii?Q?OfwjWwCJqP2tnb7pRpsKR8qJgvLRGNeY4SaP5hqGoLPjUuc677EgRls7EV/r?=
- =?us-ascii?Q?P3wC1bMEumNYiFE/sWd1V5f6?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f50d6138-f304-4e83-f381-08d900276b29
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-OriginatorOrg: diasemi.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2021 15:59:15.2581
+X-MS-Exchange-CrossTenant-AuthSource: PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 995abac7-2a30-4230-a461-08d90027a2bb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Apr 2021 16:00:48.2142
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AoSVWllmSoP5kMHmrnw8Lv/sTbH85KOoPc1wNzhcyDOhtslr+H3n1oUJ3FN5qkASrFZ0y2W56GcfnAWvsFPrHg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2719
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: d5EnvkyatrxYNVIj5uKNwTB/xeF1LNTKKHf4YGylrrMotzahZtrC3rFik/fS3FfLh8UMbpCkj480ATqiMc321lIvC9C9eJwu3POnpyKD59o=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR10MB3755
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ashish Kalra <ashish.kalra@amd.com>
+On 26 March 2021 22:16, Pierre-Louis Bossart wrote:
 
-Introduce a new AMD Memory Encryption GUID which is currently
-used for defining a new UEFI environment variable which indicates
-UEFI/OVMF support for the SEV live migration feature. This variable
-is setup when UEFI/OVMF detects host/hypervisor support for SEV
-live migration and later this variable is read by the kernel using
-EFI runtime services to verify if OVMF supports the live migration
-feature.
+> cppcheck reports a false positive:
+>=20
+> sound/soc/codecs/da732x.c:1161:25: warning: Either the condition
+> 'indiv<0' is redundant or there is division by zero at line
+> 1161. [zerodivcond]
+>  fref =3D (da732x->sysclk / indiv);
+>                         ^
+> sound/soc/codecs/da732x.c:1158:12: note: Assuming that condition
+> 'indiv<0' is not redundant
+>  if (indiv < 0)
+>            ^
+> sound/soc/codecs/da732x.c:1161:25: note: Division by zero
+>  fref =3D (da732x->sysclk / indiv);
+>                         ^
+>=20
+> The code is awfully convoluted/confusing and can be simplified with a
+> single variable and the BIT macro.
+>=20
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com=
+>
+> ---
 
-Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-Reviewed-by: Steve Rutherford <srutherford@google.com>
----
- include/linux/efi.h | 1 +
- 1 file changed, 1 insertion(+)
+Apologies for the delay in getting to this. The change looks fine to me,
+although this part was EOL some time back, and I find it hard to believe an=
+yone
+out there has a board with this on. Wondering if it would make sense to rem=
+ove
+the driver permanently?
 
-diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 6b5d36babfcc..6f364ace82cb 100644
---- a/include/linux/efi.h
-+++ b/include/linux/efi.h
-@@ -362,6 +362,7 @@ void efi_native_runtime_setup(void);
- 
- /* OEM GUIDs */
- #define DELLEMC_EFI_RCI2_TABLE_GUID		EFI_GUID(0x2d9f28a2, 0xa886, 0x456a,  0x97, 0xa8, 0xf1, 0x1e, 0xf2, 0x4f, 0xf4, 0x55)
-+#define MEM_ENCRYPT_GUID			EFI_GUID(0x0cf29b71, 0x9e51, 0x433a,  0xa3, 0xb7, 0x81, 0xf3, 0xab, 0x16, 0xb8, 0x75)
- 
- typedef struct {
- 	efi_guid_t guid;
--- 
-2.17.1
+For the change at hand though:
+
+Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+
+>  sound/soc/codecs/da732x.c | 17 ++++++-----------
+>  sound/soc/codecs/da732x.h | 12 ++++--------
+>  2 files changed, 10 insertions(+), 19 deletions(-)
+>=20
+> diff --git a/sound/soc/codecs/da732x.c b/sound/soc/codecs/da732x.c
+> index d43ee7159ae0..42d6a3fc3af5 100644
+> --- a/sound/soc/codecs/da732x.c
+> +++ b/sound/soc/codecs/da732x.c
+> @@ -168,30 +168,25 @@ static const struct reg_default da732x_reg_cache[] =
+=3D {
+>  static inline int da732x_get_input_div(struct snd_soc_component *compone=
+nt,
+> int sysclk)
+>  {
+>  	int val;
+> -	int ret;
+>=20
+>  	if (sysclk < DA732X_MCLK_10MHZ) {
+> -		val =3D DA732X_MCLK_RET_0_10MHZ;
+> -		ret =3D DA732X_MCLK_VAL_0_10MHZ;
+> +		val =3D DA732X_MCLK_VAL_0_10MHZ;
+>  	} else if ((sysclk >=3D DA732X_MCLK_10MHZ) &&
+>  	    (sysclk < DA732X_MCLK_20MHZ)) {
+> -		val =3D DA732X_MCLK_RET_10_20MHZ;
+> -		ret =3D DA732X_MCLK_VAL_10_20MHZ;
+> +		val =3D DA732X_MCLK_VAL_10_20MHZ;
+>  	} else if ((sysclk >=3D DA732X_MCLK_20MHZ) &&
+>  	    (sysclk < DA732X_MCLK_40MHZ)) {
+> -		val =3D DA732X_MCLK_RET_20_40MHZ;
+> -		ret =3D DA732X_MCLK_VAL_20_40MHZ;
+> +		val =3D DA732X_MCLK_VAL_20_40MHZ;
+>  	} else if ((sysclk >=3D DA732X_MCLK_40MHZ) &&
+>  	    (sysclk <=3D DA732X_MCLK_54MHZ)) {
+> -		val =3D DA732X_MCLK_RET_40_54MHZ;
+> -		ret =3D DA732X_MCLK_VAL_40_54MHZ;
+> +		val =3D DA732X_MCLK_VAL_40_54MHZ;
+>  	} else {
+>  		return -EINVAL;
+>  	}
+>=20
+>  	snd_soc_component_write(component, DA732X_REG_PLL_CTRL, val);
+>=20
+> -	return ret;
+> +	return val;
+>  }
+>=20
+>  static void da732x_set_charge_pump(struct snd_soc_component *component,
+> int state)
+> @@ -1158,7 +1153,7 @@ static int da732x_set_dai_pll(struct
+> snd_soc_component *component, int pll_id,
+>  	if (indiv < 0)
+>  		return indiv;
+>=20
+> -	fref =3D (da732x->sysclk / indiv);
+> +	fref =3D da732x->sysclk / BIT(indiv);
+>  	div_hi =3D freq_out / fref;
+>  	frac_div =3D (u64)(freq_out % fref) * 8192ULL;
+>  	do_div(frac_div, fref);
+> diff --git a/sound/soc/codecs/da732x.h b/sound/soc/codecs/da732x.h
+> index c5af17ee1516..c2f784c3f359 100644
+> --- a/sound/soc/codecs/da732x.h
+> +++ b/sound/soc/codecs/da732x.h
+> @@ -48,14 +48,10 @@
+>  #define	DA732X_MCLK_20MHZ		20000000
+>  #define	DA732X_MCLK_40MHZ		40000000
+>  #define	DA732X_MCLK_54MHZ		54000000
+> -#define	DA732X_MCLK_RET_0_10MHZ		0
+> -#define	DA732X_MCLK_VAL_0_10MHZ		1
+> -#define	DA732X_MCLK_RET_10_20MHZ	1
+> -#define	DA732X_MCLK_VAL_10_20MHZ	2
+> -#define	DA732X_MCLK_RET_20_40MHZ	2
+> -#define	DA732X_MCLK_VAL_20_40MHZ	4
+> -#define	DA732X_MCLK_RET_40_54MHZ	3
+> -#define	DA732X_MCLK_VAL_40_54MHZ	8
+> +#define	DA732X_MCLK_VAL_0_10MHZ		0
+> +#define	DA732X_MCLK_VAL_10_20MHZ	1
+> +#define	DA732X_MCLK_VAL_20_40MHZ	2
+> +#define	DA732X_MCLK_VAL_40_54MHZ	3
+>  #define	DA732X_DAI_ID1			0
+>  #define	DA732X_DAI_ID2			1
+>  #define	DA732X_SRCCLK_PLL		0
+> --
+> 2.25.1
 
