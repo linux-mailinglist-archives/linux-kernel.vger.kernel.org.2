@@ -2,59 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1990B36064E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:57:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7BA360650
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231664AbhDOJ6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 05:58:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38360 "EHLO mail.kernel.org"
+        id S232030AbhDOJ6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 05:58:41 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:52353 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229457AbhDOJ6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 05:58:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D27F61166;
-        Thu, 15 Apr 2021 09:57:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618480666;
-        bh=Z8fKpQhCnoPycrzSI0zFpUvBPt/oa7wi/1dPZ/AiPkk=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=KaRXvhZbzzVO4VeHKwH7FSnlwK57Jqnszi14cKw7z/nkoxRfGx+yL5NiS1hyTxOwF
-         Abg1zmSJ944r5DvL1YaHesXwhlP9lj4z2qadQTqauD2F7mViViqYER8AB/HTfv/C1O
-         2NpWpOT7+kAx2PDLEHBPNbI/TSDzO+YRSNjgecKFzF+z+K6H8hRuQQ5RBPMrK7IFvU
-         VFIjP5xIAf+64HSNF3SIlaQ2DETfKzOBcGrjrOo8Dwyt2Tnqgn1xNo8S5k8USaqbQF
-         Cr+a1tV4Ra9sGAohklL0dueRYGoW9dGXuETXSRYMs5Y8i1rSv/lC9DsV406FwQD1Mi
-         gX6btdq/xA07Q==
-Subject: Re: [PATCH v2 2/3] mmc: sdhci-s3c: correct kerneldoc of
- sdhci_s3c_drv_data
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Ben Dooks <ben-linux@fluff.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>
-References: <20210415084412.51125-1-krzysztof.kozlowski@canonical.com>
- <20210415084412.51125-2-krzysztof.kozlowski@canonical.com>
-From:   Sylwester Nawrocki <snawrocki@kernel.org>
-Message-ID: <91d3b5ed-63ac-cf5d-e3bf-8ec853927cee@kernel.org>
-Date:   Thu, 15 Apr 2021 11:57:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229457AbhDOJ6k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 05:58:40 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FLZXl44Zbz9sVw;
+        Thu, 15 Apr 2021 19:58:15 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618480695;
+        bh=1uvsyyLpIENjUj5/+XbE4hdxkNFTsrbNH/LtFMS8UAY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AlXu6KUbaDof2ItQcld3YGAmRa8HdzwPRfaWHUAYAd5ql2lQKYi4lUxcNvu6I/3qH
+         mlqHykQ0qA1++CEyRrKozetNw/imXZnkLEKxEcEoPiRx3DfhqqAUZh6m/gmVadGfGN
+         9uFRVtfAcN6uA5Z+YyLzvmCZF+IfhHfTZEVugeQBvGT5atM+dGpB6MGJZkMvfR4Tkz
+         4Yg64uPlJkOdH68kxufb+YBPGm4j4D7zXmcYpFqQMlSeJBSJw+tQA+Ua1HPD367BkC
+         D60sYe5RP3PPmxT7UIfQQG4EybyZzdfXg1k7B6ZZAc9pWPC4uRiYvQHa71EclTykZq
+         mowwMOBuylw9Q==
+Date:   Thu, 15 Apr 2021 19:58:14 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: linux-next: manual merge of the akpm-current tree with the
+ powerpc tree
+Message-ID: <20210415195814.0dc4ced9@canb.auug.org.au>
+In-Reply-To: <20210415194417.498e71b7@canb.auug.org.au>
+References: <20210415194417.498e71b7@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210415084412.51125-2-krzysztof.kozlowski@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/ExMvwKVEhJY+RZj1n_J_Q/A";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/ExMvwKVEhJY+RZj1n_J_Q/A
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 15.04.2021 10:44, Krzysztof Kozlowski wrote:
-> Correct the name of sdhci_s3c_drv_data structure in kerneldoc:
-> 
->    drivers/mmc/host/sdhci-s3c.c:143: warning:
->      expecting prototype for struct sdhci_s3c_driver_data. Prototype was for struct sdhci_s3c_drv_data instead
-> 
-> Signed-off-by: Krzysztof Kozlowski<krzysztof.kozlowski@canonical.com>
+Hi all,
 
-Reviewed-by: Sylwester Nawrocki <snawrocki@kernel.org>
+On Thu, 15 Apr 2021 19:44:17 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>=20
+> Today's linux-next merge of the akpm-current tree got a conflict in:
+>=20
+>   arch/powerpc/kernel/module.c
+>=20
+> between commit:
+>=20
+>   2ec13df16704 ("powerpc/modules: Load modules closer to kernel text")
+>=20
+> from the powerpc tree and commit:
+>=20
+>   4930ba789f8d ("powerpc/64s/radix: enable huge vmalloc mappings")
+>=20
+> from the akpm-current tree.
+>=20
+> I fixed it up (I think - see below) and can carry the fix as
+> necessary. This is now fixed as far as linux-next is concerned, but any
+> non trivial conflicts should be mentioned to your upstream maintainer
+> when your tree is submitted for merging.  You may also want to consider
+> cooperating with the maintainer of the conflicting tree to minimise any
+> particularly complex conflicts.
+>=20
+> --=20
+> Cheers,
+> Stephen Rothwell
+>=20
+> diff --cc arch/powerpc/kernel/module.c
+> index fab84024650c,cdb2d88c54e7..000000000000
+> --- a/arch/powerpc/kernel/module.c
+> +++ b/arch/powerpc/kernel/module.c
+> @@@ -88,29 -88,26 +89,42 @@@ int module_finalize(const Elf_Ehdr *hdr
+>   	return 0;
+>   }
+>  =20
+> - #ifdef MODULES_VADDR
+>  -void *module_alloc(unsigned long size)
+>  +static __always_inline void *
+>  +__module_alloc(unsigned long size, unsigned long start, unsigned long e=
+nd)
+>   {
+>  -	unsigned long start =3D VMALLOC_START;
+>  -	unsigned long end =3D VMALLOC_END;
+>  -
+>  -#ifdef MODULES_VADDR
+>  -	BUILD_BUG_ON(TASK_SIZE > MODULES_VADDR);
+>  -	start =3D MODULES_VADDR;
+>  -	end =3D MODULES_END;
+>  -#endif
+>  -
+> + 	/*
+> + 	 * Don't do huge page allocations for modules yet until more testing
+> + 	 * is done. STRICT_MODULE_RWX may require extra work to support this
+> + 	 * too.
+> + 	 */
+> +=20
+>   	return __vmalloc_node_range(size, 1, start, end, GFP_KERNEL,
+> - 				    PAGE_KERNEL_EXEC, VM_FLUSH_RESET_PERMS, NUMA_NO_NODE,
+> + 				    PAGE_KERNEL_EXEC,
+> + 				    VM_NO_HUGE_VMAP | VM_FLUSH_RESET_PERMS,
+> + 				    NUMA_NO_NODE,
+>   				    __builtin_return_address(0));
+>   }
+>  +
+> ++
+>  +void *module_alloc(unsigned long size)
+>  +{
+> ++	unsigned long start =3D VMALLOC_START;
+> ++	unsigned long end =3D VMALLOC_END;
+>  +	unsigned long limit =3D (unsigned long)_etext - SZ_32M;
+>  +	void *ptr =3D NULL;
+>  +
+> ++#ifdef MODULES_VADDR
+>  +	BUILD_BUG_ON(TASK_SIZE > MODULES_VADDR);
+> ++	start =3D MODULES_VADDR;
+> ++	end =3D MODULES_END;
+>  +
+>  +	/* First try within 32M limit from _etext to avoid branch trampolines =
+*/
+>  +	if (MODULES_VADDR < PAGE_OFFSET && MODULES_END > limit)
+> - 		ptr =3D __module_alloc(size, limit, MODULES_END);
+> ++		ptr =3D __module_alloc(size, limit, end);
+>  +
+>  +	if (!ptr)
+> - 		ptr =3D __module_alloc(size, MODULES_VADDR, MODULES_END);
+> ++#endif
+> ++		ptr =3D __module_alloc(size, start, end);
+>  +
+>  +	return ptr;
+>  +}
+> - #endif
+
+Unfortunately, it also needs this:
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Thu, 15 Apr 2021 19:53:58 +1000
+Subject: [PATCH] merge fix up for powerpc merge fix
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ arch/powerpc/kernel/module.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/powerpc/kernel/module.c b/arch/powerpc/kernel/module.c
+index d8ab1ad2eb05..c060f99afd4d 100644
+--- a/arch/powerpc/kernel/module.c
++++ b/arch/powerpc/kernel/module.c
+@@ -110,7 +110,9 @@ void *module_alloc(unsigned long size)
+ {
+ 	unsigned long start =3D VMALLOC_START;
+ 	unsigned long end =3D VMALLOC_END;
++#ifdef MODULES_VADDR
+ 	unsigned long limit =3D (unsigned long)_etext - SZ_32M;
++#endif
+ 	void *ptr =3D NULL;
+=20
+ #ifdef MODULES_VADDR
+--=20
+2.30.2
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ExMvwKVEhJY+RZj1n_J_Q/A
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB4DjYACgkQAVBC80lX
+0Gy0LggAhCiWf+SJ7ED/qi8II8H7hqc0WFIFjp3ehHQUhxUPKbMRkTF1TDdSQCkO
+ct2iwvcIoRITqGWP/Znaf/LbcArlJlKbjTQyc9mqdWl+mIVLhaZm9htfiwC9Uktb
+lS5DjGDYyIVAanA6aTxU/wKWRYJ3PR9vSZhoHxmMIaYKQeCjTvQ/8vtpWzJGW9x8
+j9uJYhL3/VhbIY9ovmTQVLPeLNk8NIeNiXcZxx9FW3Ovef3ZDdN/aswVxfhczXlv
+ZdKh+3xzw1nvZUCYiK1zSYjGMn+qeHi6fMR1x9KOGt9C5TQTCbKSYI0gCjbrUDc0
+koocZAH932c7hL2xIE5nAN8Jwc6OCA==
+=fnEY
+-----END PGP SIGNATURE-----
+
+--Sig_/ExMvwKVEhJY+RZj1n_J_Q/A--
