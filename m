@@ -2,97 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09EA235FEC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 02:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6737535FECA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 02:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231224AbhDOAM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 20:12:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60370 "EHLO mail.kernel.org"
+        id S231314AbhDOASL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 20:18:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229889AbhDOAMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 20:12:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A158A611CC;
-        Thu, 15 Apr 2021 00:12:00 +0000 (UTC)
+        id S231234AbhDOASK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 20:18:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8894161158;
+        Thu, 15 Apr 2021 00:17:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618445523;
-        bh=AFaP1cECYuCNfUUhp3uFLuG+0Mh8ODMJZ3NF7lAq+EE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z8Ml/OhKGvvEDqO+NfsqI0H29VTDSaMbHOAy/K8+ZSdhyKDgvwsfJA4NFPppkjXn7
-         3NskXSK8/mxdGEbNuJyMWZCvIwNyIGmXjhLPM8lHWqjQEBOnToPCDc4+pmLhYLIIJz
-         sO6fozEF4MfHVjiHw5nxkg1/mAWSbFmjf/C7i+PuT5p7S5wvb0Wn7CtVpbBC5IwQaK
-         0nFgv4+FsIxIAvJy5lFjTXlkcudzKWfmK6ZkPvPHcC0gvKMcFHCQgMeVpHSbCESHAa
-         QWKghN2BuLcfbx5PVv19uqpVX911exlXGh2WjA3QcDqa9ZE1GJqfbYGi/qA3GwDY14
-         Tr4IVDqMYpHhQ==
+        s=k20201202; t=1618445868;
+        bh=3tKMa9OM+j6Bp1Khy/F8FqbFzD18WEmNIoiuFi/JtKc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=syL0Jg0utGBRZBybe+TlxsYLruJttWQPS3KodBhGYTmFhOxLBy7HCOYsUGA7hJJAk
+         +KQ6D+gMhVEwcTHQQ9MusEiaNHp2fKjuIzrJ1RU1eBePvEQoPQ9+exI1ZLrm910wY8
+         yhH6gUih86XWrEc8xcPH+lOcP22yfK77rOXyugn010ajAax2gMSAzzzuDsARSDfruG
+         IhTfA+z7djVb5vkjsf5Qf6a5UEu5wnGqWUm7wx791xySsAyDO6pi1XApOBCDy4eWoE
+         kI/kqMBvpf75A0wpI/lioCIRXlJR54xBtLt4zgnEVE3GKDF9jeNi2xUxoNqcN5d64p
+         kh5NRBo3fvjqw==
+Date:   Wed, 14 Apr 2021 17:17:43 -0700
 From:   Nathan Chancellor <nathan@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH 2/2] perf/amd/uncore: Fix sysfs type mismatch
-Date:   Wed, 14 Apr 2021 17:11:12 -0700
-Message-Id: <20210415001112.3024673-2-nathan@kernel.org>
-X-Mailer: git-send-email 2.31.1.272.g89b43f80a5
-In-Reply-To: <20210415001112.3024673-1-nathan@kernel.org>
-References: <20210415001112.3024673-1-nathan@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, vincenzo.frascino@arm.com,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v2] arm64: vdso32: drop -no-integrated-as flag
+Message-ID: <YHeGJzhIhSFJLprr@archlinux-ax161>
+References: <YHYlQnFRMNdn/CDp@archlinux-ax161>
+ <20210414214548.700993-1-ndesaulniers@google.com>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414214548.700993-1-ndesaulniers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dev_attr_show() calls the __uncore_*_show() functions via an indirect
-call but their type does not currently match the type of the show()
-member in 'struct device_attribute', resulting in a Control Flow
-Integrity violation.
+On Wed, Apr 14, 2021 at 02:45:45PM -0700, Nick Desaulniers wrote:
+> Clang can assemble these files just fine; this is a relic from the top
+> level Makefile conditionally adding this. We no longer need --prefix,
+> --gcc-toolchain, or -Qunused-arguments flags either with this change, so
+> remove those too.
+> 
+> To test building:
+> $ ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
+>   CROSS_COMPILE_COMPAT=arm-linux-gnueabi- make LLVM=1 LLVM_IAS=1 \
+>   defconfig arch/arm64/kernel/vdso32/
+> 
+> Suggested-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-$ cat /sys/devices/amd_l3/format/umask
-config:8-15
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-$ dmesg | grep "CFI failure"
-[ 1258.174653] CFI failure (target: __uncore_umask_show...):
-
-Update the type in the DEFINE_UNCORE_FORMAT_ATTR macro to match
-'struct device_attribute' so that there is no more CFI violation.
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/1350
-Fixes: 06f2c24584f3 ("perf/amd/uncore: Prepare to scale for more attributes that vary per family")
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- arch/x86/events/amd/uncore.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/events/amd/uncore.c b/arch/x86/events/amd/uncore.c
-index 7f014d450bc2..582c0ffb5e98 100644
---- a/arch/x86/events/amd/uncore.c
-+++ b/arch/x86/events/amd/uncore.c
-@@ -275,14 +275,14 @@ static struct attribute_group amd_uncore_attr_group = {
- };
- 
- #define DEFINE_UNCORE_FORMAT_ATTR(_var, _name, _format)			\
--static ssize_t __uncore_##_var##_show(struct kobject *kobj,		\
--				struct kobj_attribute *attr,		\
-+static ssize_t __uncore_##_var##_show(struct device *dev,		\
-+				struct device_attribute *attr,		\
- 				char *page)				\
- {									\
- 	BUILD_BUG_ON(sizeof(_format) >= PAGE_SIZE);			\
- 	return sprintf(page, _format "\n");				\
- }									\
--static struct kobj_attribute format_attr_##_var =			\
-+static struct device_attribute format_attr_##_var =			\
- 	__ATTR(_name, 0444, __uncore_##_var##_show, NULL)
- 
- DEFINE_UNCORE_FORMAT_ATTR(event12,	event,		"config:0-7,32-35");
--- 
-2.31.1.272.g89b43f80a5
-
+> ---
+> Changes V1 -> V2:
+> * Remove --prefix, --gcc-toolchain, COMPAT_GCC_TOOLCHAIN, and
+>   COMPAT_GCC_TOOLCHAIN_DIR as per Nathan.
+> * Credit Nathan with Suggested-by tag.
+> * Remove -Qunused-arguments.
+> * Update commit message.
+> 
+>  arch/arm64/kernel/vdso32/Makefile | 8 --------
+>  1 file changed, 8 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
+> index 789ad420f16b..3dba0c4f8f42 100644
+> --- a/arch/arm64/kernel/vdso32/Makefile
+> +++ b/arch/arm64/kernel/vdso32/Makefile
+> @@ -10,15 +10,7 @@ include $(srctree)/lib/vdso/Makefile
+>  
+>  # Same as cc-*option, but using CC_COMPAT instead of CC
+>  ifeq ($(CONFIG_CC_IS_CLANG), y)
+> -COMPAT_GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE_COMPAT)elfedit))
+> -COMPAT_GCC_TOOLCHAIN := $(realpath $(COMPAT_GCC_TOOLCHAIN_DIR)/..)
+> -
+>  CC_COMPAT_CLANG_FLAGS := --target=$(notdir $(CROSS_COMPILE_COMPAT:%-=%))
+> -CC_COMPAT_CLANG_FLAGS += --prefix=$(COMPAT_GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE_COMPAT))
+> -CC_COMPAT_CLANG_FLAGS += -no-integrated-as -Qunused-arguments
+> -ifneq ($(COMPAT_GCC_TOOLCHAIN),)
+> -CC_COMPAT_CLANG_FLAGS += --gcc-toolchain=$(COMPAT_GCC_TOOLCHAIN)
+> -endif
+>  
+>  CC_COMPAT ?= $(CC)
+>  CC_COMPAT += $(CC_COMPAT_CLANG_FLAGS)
+> -- 
+> 2.31.1.295.g9ea45b61b8-goog
+> 
+> 
