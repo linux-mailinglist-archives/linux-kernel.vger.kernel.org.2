@@ -2,181 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6F1360B77
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5EF360B7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233278AbhDOOIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:08:44 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16128 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231391AbhDOOIn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:08:43 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FLh1v0CRnzpX5s;
-        Thu, 15 Apr 2021 22:05:23 +0800 (CST)
-Received: from [10.174.187.224] (10.174.187.224) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 15 Apr 2021 22:08:10 +0800
-Subject: Re: [PATCH v4 2/2] kvm/arm64: Try stage2 block mapping for host
- device MMIO
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, Marc Zyngier <maz@kernel.org>
-References: <20210415140328.24200-1-zhukeqian1@huawei.com>
- <20210415140328.24200-3-zhukeqian1@huawei.com>
-CC:     <wanghaibin.wang@huawei.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <8f55b64f-b4dd-700e-c997-8de9c5ea282f@huawei.com>
-Date:   Thu, 15 Apr 2021 22:08:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S233380AbhDOOKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:10:18 -0400
+Received: from mga03.intel.com ([134.134.136.65]:62047 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230056AbhDOOKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:10:16 -0400
+IronPort-SDR: tjWuhqocqVlRaGKm8UG+L0A35L8TSR9RZ0LNgX+gR3OX27Yhh/uncvYoOshBFuuwsiTE1KQbwr
+ RpuHrtPVG8Sg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="194885666"
+X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
+   d="scan'208";a="194885666"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 07:09:41 -0700
+IronPort-SDR: 31qFUbJplDmJcJwbCE3slOYca0ZnN/+3E7vaX73S8oZ8hG759bsYGZty0n8AJ9jl8jJYrGaPv3
+ 7pDU1oWPxbQw==
+X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
+   d="scan'208";a="461627273"
+Received: from ckgurumu-mobl3.amr.corp.intel.com (HELO [10.212.35.10]) ([10.212.35.10])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 07:09:41 -0700
+Subject: Re: [PATCH] dmaengine: idxd: Fix potential null dereference on
+ pointer status
+To:     Colin King <colin.king@canonical.com>,
+        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210415110654.1941580-1-colin.king@canonical.com>
+From:   Dave Jiang <dave.jiang@intel.com>
+Message-ID: <4e545597-8fe5-411d-6bb7-0c5e8eea5b23@intel.com>
+Date:   Thu, 15 Apr 2021 07:09:40 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <20210415140328.24200-3-zhukeqian1@huawei.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210415110654.1941580-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.187.224]
-X-CFilter-Loop: Reflected
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marc,
 
-On 2021/4/15 22:03, Keqian Zhu wrote:
-> The MMIO region of a device maybe huge (GB level), try to use
-> block mapping in stage2 to speedup both map and unmap.
-> 
-> Compared to normal memory mapping, we should consider two more
-> points when try block mapping for MMIO region:
-> 
-> 1. For normal memory mapping, the PA(host physical address) and
-> HVA have same alignment within PUD_SIZE or PMD_SIZE when we use
-> the HVA to request hugepage, so we don't need to consider PA
-> alignment when verifing block mapping. But for device memory
-> mapping, the PA and HVA may have different alignment.
-> 
-> 2. For normal memory mapping, we are sure hugepage size properly
-> fit into vma, so we don't check whether the mapping size exceeds
-> the boundary of vma. But for device memory mapping, we should pay
-> attention to this.
-> 
-> This adds get_vma_page_shift() to get page shift for both normal
-> memory and device MMIO region, and check these two points when
-> selecting block mapping size for MMIO region.
-> 
-> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+On 4/15/2021 4:06 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> There are calls to idxd_cmd_exec that pass a null status pointer however
+> a recent commit has added an assignment to *status that can end up
+> with a null pointer dereference.  The function expects a null status
+> pointer sometimes as there is a later assignment to *status where
+> status is first null checked.  Fix the issue by null checking status
+> before making the assignment.
+>
+> Addresses-Coverity: ("Explicit null dereferenced")
+> Fixes: 89e3becd8f82 ("dmaengine: idxd: check device state before issue command")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+
+Acked-by: Dave Jiang <dave.jiang@intel.com>
+
+Thanks!
+
 > ---
->  arch/arm64/kvm/mmu.c | 61 ++++++++++++++++++++++++++++++++++++--------
->  1 file changed, 51 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index c59af5ca01b0..5a1cc7751e6d 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -738,6 +738,35 @@ transparent_hugepage_adjust(struct kvm_memory_slot *memslot,
->  	return PAGE_SIZE;
->  }
->  
-> +static int get_vma_page_shift(struct vm_area_struct *vma, unsigned long hva)
-> +{
-> +	unsigned long pa;
-> +
-> +	if (is_vm_hugetlb_page(vma) && !(vma->vm_flags & VM_PFNMAP))
-> +		return huge_page_shift(hstate_vma(vma));
-> +
-> +	if (!(vma->vm_flags & VM_PFNMAP))
-> +		return PAGE_SHIFT;
-> +
-> +	VM_BUG_ON(is_vm_hugetlb_page(vma));
-> +
-> +	pa = (vma->vm_pgoff << PAGE_SHIFT) + (hva - vma->vm_start);
-> +
-> +#ifndef __PAGETABLE_PMD_FOLDED
-> +	if ((hva & (PUD_SIZE - 1)) == (pa & (PUD_SIZE - 1)) &&
-> +	    ALIGN_DOWN(hva, PUD_SIZE) >= vma->vm_start &&
-> +	    ALIGN(hva, PUD_SIZE) <= vma->vm_end)
-> +		return PUD_SHIFT;
-> +#endif
-> +
-> +	if ((hva & (PMD_SIZE - 1)) == (pa & (PMD_SIZE - 1)) &&
-> +	    ALIGN_DOWN(hva, PMD_SIZE) >= vma->vm_start &&
-> +	    ALIGN(hva, PMD_SIZE) <= vma->vm_end)
-> +		return PMD_SHIFT;
-> +
-> +	return PAGE_SHIFT;
-> +}
-> +
->  static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->  			  struct kvm_memory_slot *memslot, unsigned long hva,
->  			  unsigned long fault_status)
-> @@ -769,7 +798,10 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->  		return -EFAULT;
->  	}
->  
-> -	/* Let's check if we will get back a huge page backed by hugetlbfs */
-> +	/*
-> +	 * Let's check if we will get back a huge page backed by hugetlbfs, or
-> +	 * get block mapping for device MMIO region.
-> +	 */
->  	mmap_read_lock(current->mm);
->  	vma = find_vma_intersection(current->mm, hva, hva + 1);
->  	if (unlikely(!vma)) {
-> @@ -778,15 +810,15 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->  		return -EFAULT;
->  	}
->  
-> -	if (is_vm_hugetlb_page(vma))
-> -		vma_shift = huge_page_shift(hstate_vma(vma));
-> -	else
-> -		vma_shift = PAGE_SHIFT;
-> -
-> -	if (logging_active ||
-> -	    (vma->vm_flags & VM_PFNMAP)) {
-> +	/*
-> +	 * logging_active is guaranteed to never be true for VM_PFNMAP
-> +	 * memslots.
-> +	 */
-> +	if (logging_active) {
->  		force_pte = true;
->  		vma_shift = PAGE_SHIFT;
-> +	} else {
-> +		vma_shift = get_vma_page_shift(vma, hva);
->  	}
-I use a if/else manner in v4, please check that. Thanks very much!
-
-
-BRs,
-Keqian
-
->  
->  	switch (vma_shift) {
-> @@ -854,8 +886,17 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->  		return -EFAULT;
->  
->  	if (kvm_is_device_pfn(pfn)) {
-> +		/*
-> +		 * If the page was identified as device early by looking at
-> +		 * the VMA flags, vma_pagesize is already representing the
-> +		 * largest quantity we can map.  If instead it was mapped
-> +		 * via gfn_to_pfn_prot(), vma_pagesize is set to PAGE_SIZE
-> +		 * and must not be upgraded.
-> +		 *
-> +		 * In both cases, we don't let transparent_hugepage_adjust()
-> +		 * change things at the last minute.
-> +		 */
->  		device = true;
-> -		force_pte = true;
->  	} else if (logging_active && !write_fault) {
->  		/*
->  		 * Only actually map the page as writable if this was a write
-> @@ -876,7 +917,7 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->  	 * If we are not forced to use page mapping, check if we are
->  	 * backed by a THP and thus use block mapping if possible.
->  	 */
-> -	if (vma_pagesize == PAGE_SIZE && !force_pte)
-> +	if (vma_pagesize == PAGE_SIZE && !(force_pte || device))
->  		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
->  							   &pfn, &fault_ipa);
->  	if (writable)
-> 
+>   drivers/dma/idxd/device.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/dma/idxd/device.c b/drivers/dma/idxd/device.c
+> index 31c819544a22..78d2dc5e9bd8 100644
+> --- a/drivers/dma/idxd/device.c
+> +++ b/drivers/dma/idxd/device.c
+> @@ -451,7 +451,8 @@ static void idxd_cmd_exec(struct idxd_device *idxd, int cmd_code, u32 operand,
+>   
+>   	if (idxd_device_is_halted(idxd)) {
+>   		dev_warn(&idxd->pdev->dev, "Device is HALTED!\n");
+> -		*status = IDXD_CMDSTS_HW_ERR;
+> +		if (status)
+> +			*status = IDXD_CMDSTS_HW_ERR;
+>   		return;
+>   	}
+>   
