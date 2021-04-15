@@ -2,126 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC59C3614A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 00:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CFA736151D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 00:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235015AbhDOWPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 18:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234764AbhDOWPh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 18:15:37 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 370E1C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:15:12 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id t23so12850722pjy.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:15:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uVqj7VZY1Cf3w1LwGxwJQ9xLnZwQGyxy7mn+rml5pJo=;
-        b=kpgxOledReTF8a07zTbARWX2I3wkhKrz9ypgDTDRg3+J1EydMS4Lu/8Mm/sNY+fSg8
-         j7DFvkwuDAAaNN4z84Za4zTkFerEy1Bwix1OZtdC6s+BHmRvPNtpT1zXh02FLmgWkKcf
-         LB/cLwJSDlQvTWbXZScDCP+8r6owoBWm/TuCaRlw45OYFqrbAHOMxO/ewbervOJyG7AX
-         H+FqzWlZSm0k1zWP/ZPjRC3lF3EjXNIRlhNoQv6OWign/XCvzEuV54xzlgKmaWJkKrSX
-         U8BHiQPxJn0j/Bx5ufZB+9PiZ+27ryEnynIG9hFeG7AVXz0ZltSql55OKonOodvEONHC
-         mrcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uVqj7VZY1Cf3w1LwGxwJQ9xLnZwQGyxy7mn+rml5pJo=;
-        b=HzuANItFDHfLlForQtoc0xMLk4UgG/x1rL2qjDlTChoVeWawjPHhNlEFr96Laf489o
-         t/5jT6zLhKK0YbM2ywYhkwgi9TY2dUIzCJNUS/nPWvKmexZXdG6LFPwGpMbfjjcQda5I
-         UQMMaaSjX5fIj/miy5NSddZaY6wdWXLjvfCYkRHQPxyFLGnIqwX7MsUDcFmk+wl2oN4t
-         oLyiMqm4J24dLjqu/t7HLT7PsAAyOUxuitneOBqx0q7zDsynqGR5jyegEv5Y2Iephp7G
-         rjJVmI7mRx4n+C0nxVkYRGCAT+gOwu2GwDBnEzS2Iv3CzYE1W7YI+u+jU+FW6W7/14cT
-         vh/g==
-X-Gm-Message-State: AOAM533/t60eFNQcq/yK4ksGfj2eWS1F84Si2EW2eQC3T4n4Fo4iBT5C
-        V5cwG/1STqNxXUsFRG6S6/AX0w==
-X-Google-Smtp-Source: ABdhPJxjZfBpIv21RYEycpOb//LPlDHIjj8rL96tnLsp2qvHau2r/6V7FJIeJVDZ/Z1VaRKAwoFbdA==
-X-Received: by 2002:a17:90b:349:: with SMTP id fh9mr6170529pjb.126.1618524911342;
-        Thu, 15 Apr 2021 15:15:11 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id k19sm3356192pgl.1.2021.04.15.15.15.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 15:15:10 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 22:15:06 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jim Mattson <jmattson@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Hao Sun <sunhao.th@gmail.com>
-Subject: Re: [PATCH 3/3] KVM: Add proper lockdep assertion in I/O bus
- unregister
-Message-ID: <YHi66hvVAkhxU4wl@google.com>
-References: <20210412222050.876100-1-seanjc@google.com>
- <20210412222050.876100-4-seanjc@google.com>
- <CALMp9eRmpm3HPUjizYXp27drY0xtWhSrsec51W7QkSHWADayNQ@mail.gmail.com>
+        id S236883AbhDOWSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 18:18:52 -0400
+Received: from mga07.intel.com ([134.134.136.100]:58096 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237181AbhDOWSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 18:18:09 -0400
+IronPort-SDR: tOmWoDPc+26anX6gMUNXFWliA3pO6Re2mKhqdTeqNBRB/efZ2bScehJntNdbwSXTfY1mtNrLwW
+ oLRkIMggiO3A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="258913065"
+X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
+   d="scan'208";a="258913065"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 15:17:45 -0700
+IronPort-SDR: NyTJAQSoo01f9QQWTq+0sz6Dl8Bsdj/qrDnWM0jIHaa+caHgMhXBXsqySw3E+G7sWqiMSPWoUq
+ oLdWwlAJ+XJA==
+X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
+   d="scan'208";a="399720960"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 15:17:44 -0700
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: [PATCH v25 0/9] Control-flow Enforcement: Indirect Branch Tracking
+Date:   Thu, 15 Apr 2021 15:17:25 -0700
+Message-Id: <20210415221734.32628-1-yu-cheng.yu@intel.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALMp9eRmpm3HPUjizYXp27drY0xtWhSrsec51W7QkSHWADayNQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021, Jim Mattson wrote:
-> On Mon, Apr 12, 2021 at 3:23 PM Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > Convert a comment above kvm_io_bus_unregister_dev() into an actual
-> > lockdep assertion, and opportunistically add curly braces to a multi-line
-> > for-loop.
-> >
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >  virt/kvm/kvm_main.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> > index ab1fa6f92c82..ccc2ef1dbdda 100644
-> > --- a/virt/kvm/kvm_main.c
-> > +++ b/virt/kvm/kvm_main.c
-> > @@ -4485,21 +4485,23 @@ int kvm_io_bus_register_dev(struct kvm *kvm, enum kvm_bus bus_idx, gpa_t addr,
-> >         return 0;
-> >  }
-> >
-> > -/* Caller must hold slots_lock. */
-> >  int kvm_io_bus_unregister_dev(struct kvm *kvm, enum kvm_bus bus_idx,
-> >                               struct kvm_io_device *dev)
-> >  {
-> >         int i, j;
-> >         struct kvm_io_bus *new_bus, *bus;
-> >
-> > +       lockdep_assert_held(&kvm->slots_lock);
-> > +
-> >         bus = kvm_get_bus(kvm, bus_idx);
-> >         if (!bus)
-> >                 return 0;
-> >
-> > -       for (i = 0; i < bus->dev_count; i++)
-> > +       for (i = 0; i < bus->dev_count; i++) {
-> >                 if (bus->range[i].dev == dev) {
-> >                         break;
-> >                 }
-> > +       }
-> Per coding-style.rst, neither the for loop nor the if-block should have braces.
-> 
-> "Do not unnecessarily use braces where a single statement will do."
+Control-flow Enforcement (CET) is a new Intel processor feature that blocks
+return/jump-oriented programming attacks.  Details are in "Intel 64 and
+IA-32 Architectures Software Developer's Manual" [1].
 
-Doh, the if-statement should indeed not use braces.  I think I meant to clean
-that up, and then saw something shiny...
+This is the second part of CET and enables Indirect Branch Tracking (IBT).
+It is built on top of the shadow stack series.
 
-But the for-loop... keep reading :-D
+Changes in v25:
+- Make updates to Kconfig and CPU feature flags for the removal of Kconfig
+  X86_CET and software-defined X86_FEATURE_CET.
+- Update ENDBR definition.
+- Rebase to Linus tree v5.12-rc7.
 
-Also, use braces when a loop contains more than a single simple statement:
+[1] Intel 64 and IA-32 Architectures Software Developer's Manual:
 
-.. code-block:: c
+    https://software.intel.com/en-us/download/intel-64-and-ia-32-
+    architectures-sdm-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4
 
-        while (condition) {
-                if (test)
-                        do_something();
-        }
+[2] Indirect Branch Tracking patches v24:
+
+    https://lore.kernel.org/r/20210401221403.32253-1-yu-cheng.yu@intel.com/
+
+H.J. Lu (3):
+  x86/cet/ibt: Update arch_prctl functions for Indirect Branch Tracking
+  x86/vdso: Insert endbr32/endbr64 to vDSO
+  x86/vdso/32: Add ENDBR to __kernel_vsyscall entry point
+
+Yu-cheng Yu (6):
+  x86/cet/ibt: Add Kconfig option for Indirect Branch Tracking
+  x86/cet/ibt: Add user-mode Indirect Branch Tracking support
+  x86/cet/ibt: Handle signals for Indirect Branch Tracking
+  x86/cet/ibt: Update ELF header parsing for Indirect Branch Tracking
+  x86/vdso: Introduce ENDBR macro
+  x86/vdso: Add ENDBR to __vdso_sgx_enter_enclave
+
+ arch/x86/Kconfig                         | 21 +++++++++
+ arch/x86/entry/vdso/Makefile             |  4 ++
+ arch/x86/entry/vdso/vdso32/system_call.S |  2 +
+ arch/x86/entry/vdso/vsgx.S               |  4 ++
+ arch/x86/include/asm/cet.h               |  9 ++++
+ arch/x86/include/asm/disabled-features.h |  8 +++-
+ arch/x86/include/asm/vdso.h              | 20 ++++++++-
+ arch/x86/include/uapi/asm/sigcontext.h   |  1 +
+ arch/x86/kernel/Makefile                 |  1 +
+ arch/x86/kernel/cet_prctl.c              |  5 +++
+ arch/x86/kernel/fpu/signal.c             | 33 ++++++++++++--
+ arch/x86/kernel/ibt.c                    | 57 ++++++++++++++++++++++++
+ arch/x86/kernel/process_64.c             |  8 ++++
+ 13 files changed, 168 insertions(+), 5 deletions(-)
+ create mode 100644 arch/x86/kernel/ibt.c
+
+-- 
+2.21.0
+
