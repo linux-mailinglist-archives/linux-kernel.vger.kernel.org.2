@@ -2,77 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C7B361094
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61521361096
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234250AbhDOQ6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 12:58:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48086 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231549AbhDOQ6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 12:58:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EB1B60231;
-        Thu, 15 Apr 2021 16:57:51 +0000 (UTC)
-Date:   Thu, 15 Apr 2021 17:57:48 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jian Cai <jiancai@google.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "# 3.4.x" <stable@vger.kernel.org>
-Subject: Re: [PATCH] arm64: alternatives: Move length validation in
- alternative_{insn,endif}
-Message-ID: <20210415165748.GG1015@arm.com>
-References: <20210414000803.662534-1-nathan@kernel.org>
- <20210415091743.GB1015@arm.com>
- <YHg+5RSG4XPLlZD8@archlinux-ax161>
- <20210415140224.GE1015@arm.com>
- <CABCJKufDUgPSRQi1ZQRk=upNtziKDJ8rTBHgq2oQpPWS=utrvg@mail.gmail.com>
+        id S234296AbhDOQ6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 12:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234267AbhDOQ6T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 12:58:19 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5607C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 09:57:55 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id i11so6505350qvu.10
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 09:57:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8CoVbt6IzeLUC5q7IpdX1He4bycqg82PFofNsjY3nlo=;
+        b=dz805Z+hx47wOwNMrHi3cTS4DU3UR/WoK/LOkLO4wjGFRvU0R2UR/LM1Jr5qmO+UfX
+         Xj8eZgLigKlOmHDihOrF/lge4KjH4S1MbzQ1M0phjbomNKF4n6kf/MMrGg1Ou+v4T6oN
+         hKy0W1m35ceAeVYDrHWoHULB41E5JJZzzI3D2kUw76zXNtQ3bamQFVNjksr5O8mNKpMf
+         4W4khLTCWvVPTlyDZi5xBNYSSFRlRicGN+SQevM04Aa6pNLQ7jNhYYrcky177RipPj2F
+         3TdlR6C9GSq2z9Q4NoV8m/FUwzOffvwttLpLK7cohfEQM759tvqvn+nzZANak8XsuIDd
+         EQrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8CoVbt6IzeLUC5q7IpdX1He4bycqg82PFofNsjY3nlo=;
+        b=TCwrgJDc2+r55z0Qa5va9Nee+VB5++MW9L9dTJPOc2rIQEZnJ0JRlPBYGpkkqK7sTZ
+         mesYnbp7NEJWPQW/VdkRMlEuUHI9NevFWyh9AVjBUCfMRAz8OSrwcErJlem6ptxpg/DK
+         nq5OE22SlZMKcbNqYeaSxbJD6wankfMNmzgLnjA0I3w/HAbrta51y/kt1BGLXxW/Nj4r
+         tK1NiYOl2TCHCrR2AjxbTNWB1RNMkWltD+x/U8d7jhGgwHQ/wRQDw9vMxlJqNpQX8EQ5
+         TrQeSw+EL3MKKy77yxEQFE5IrA+6Izy9wF4I+bV9rPk2MBjtiIAdaU3ksAM6FJJTuxd2
+         EvRQ==
+X-Gm-Message-State: AOAM530N8Uu1XkpB5NMGkfSfjhiD3hsuryFcKZFnq4PJc10W8G+slz/r
+        3Mn46pl3uBuI84l7UwQFwO5cOQ==
+X-Google-Smtp-Source: ABdhPJwrkekqqLUelsmYQNbOIN/gwIAcnSZuH7n7IbRPMrei060BZIN2tzys9aDf7QbjTGMb0PIRKQ==
+X-Received: by 2002:a05:6214:ca4:: with SMTP id s4mr4142968qvs.44.1618505874966;
+        Thu, 15 Apr 2021 09:57:54 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id a202sm2402124qkc.13.2021.04.15.09.57.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 09:57:54 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 12:57:53 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Subject: Re: [PATCH v3 4/5] mm/memcg: Separate out object stock data into its
+ own struct
+Message-ID: <YHhwkaas2PLfgtjj@cmpxchg.org>
+References: <20210414012027.5352-1-longman@redhat.com>
+ <20210414012027.5352-5-longman@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABCJKufDUgPSRQi1ZQRk=upNtziKDJ8rTBHgq2oQpPWS=utrvg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210414012027.5352-5-longman@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 08:50:25AM -0700, Sami Tolvanen wrote:
-> On Thu, Apr 15, 2021 at 7:02 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> >
-> > On Thu, Apr 15, 2021 at 06:25:57AM -0700, Nathan Chancellor wrote:
-> > > On Thu, Apr 15, 2021 at 10:17:43AM +0100, Catalin Marinas wrote:
-> > > > On Tue, Apr 13, 2021 at 05:08:04PM -0700, Nathan Chancellor wrote:
-> > > > > After commit 2decad92f473 ("arm64: mte: Ensure TIF_MTE_ASYNC_FAULT is
-> > > > > set atomically"), LLVM's integrated assembler fails to build entry.S:
-> > > > >
-> > > > > <instantiation>:5:7: error: expected assembly-time absolute expression
-> > > > >  .org . - (664b-663b) + (662b-661b)
-> > > > >       ^
-> > > > > <instantiation>:6:7: error: expected assembly-time absolute expression
-> > > > >  .org . - (662b-661b) + (664b-663b)
-> > > > >       ^
-> > > >
-> > > > I tried the latest Linus' tree and linux-next (defconfig) with this
-> > > > commit in and I can't get your build error. I used both clang-10 from
-> > > > Debian stable and clang-11 from Debian sid. So, which clang version did
-> > > > you use or which kernel config options?
-> > >
-> > > Interesting, this reproduces for me with LLVM 12 or newer with just
-> > > defconfig.
-> >
-> > It fails for me as well with clang-12. Do you happen to know why it
-> > works fine with previous clang versions?
+On Tue, Apr 13, 2021 at 09:20:26PM -0400, Waiman Long wrote:
+> The object stock data stored in struct memcg_stock_pcp are independent
+> of the other page based data stored there. Separating them out into
+> their own struct to highlight the independency.
 > 
-> It looks like CONFIG_ARM64_AS_HAS_MTE is not set when we use the
-> integrated assembler with LLVM 11, and the code that breaks later
-> versions is gated behind CONFIG_ARM64_MTE.
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> Acked-by: Roman Gushchin <guro@fb.com>
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> ---
+>  mm/memcontrol.c | 41 ++++++++++++++++++++++++++---------------
+>  1 file changed, 26 insertions(+), 15 deletions(-)
 
-That explains it, thanks.
-
--- 
-Catalin
+It's almost twice more code, and IMO not any clearer. Plus it adds
+some warts: int dummy[0], redundant naming in stock->obj.cached_objcg,
+this_cpu_ptr() doesn't really need a wrapper etc.
