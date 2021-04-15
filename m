@@ -2,81 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E10360922
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59167360929
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232921AbhDOMQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 08:16:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:44844 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232889AbhDOMQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 08:16:45 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1358A106F;
-        Thu, 15 Apr 2021 05:16:22 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 93C1C3F73B;
-        Thu, 15 Apr 2021 05:16:19 -0700 (PDT)
-Subject: Re: [PATCH v2 7/9] sched,debug: Convert sysctl sched_domains to
- debugfs
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Cc:     mingo@kernel.org, mgorman@suse.de, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, rostedt@goodmis.org,
-        bsegall@google.com, bristot@redhat.com, joshdon@google.com,
-        linux-kernel@vger.kernel.org, greg@kroah.com,
-        linux@rasmusvillemoes.dk
-References: <20210412101421.609526370@infradead.org>
- <20210412102001.485107586@infradead.org> <87lf9mmdyk.mognet@arm.com>
- <YHgB/s4KCBQ1ifdm@hirez.programming.kicks-ass.net>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <a3399de6-ebe9-a813-23a1-565f6fdf38c7@arm.com>
-Date:   Thu, 15 Apr 2021 14:16:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S232821AbhDOMR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 08:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230487AbhDOMRU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 08:17:20 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64728C061574;
+        Thu, 15 Apr 2021 05:16:57 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id d23so12822351qko.12;
+        Thu, 15 Apr 2021 05:16:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vWuMPoAE8UBxHeNo7QhXBPsmih0P+8U7Q8QiWirp95g=;
+        b=QEPR7zW4F2buJfe2/0q/Do+HgnihvLvH75yFZXYoSIEAsd5pvO2VZsskORw9FaK3qT
+         bcZn9AeJubvP+XKoDHKYPm17f5EnqO6SnyFbevyQpdLFd/dgjC8NtoAynIjQtSipvppY
+         IKclDl5Wb55AG6gDcd55/LzTdzszDj/5h/oXHSpOMWj0JcWG67nS8W3Mi7BRYfpuNjAV
+         98bZ0lymWQAsgfYv6Dq5dXZAOz/V/hYV67v6JD2mIh7ICfEbFoBpDUtTVM4s2Wr0wkQj
+         yMRK89IE2tJKHj23aKC9y3TPmgaBFzMRLuEr+qKRaih2eEA02VSSOLndN4pCayGugPc6
+         HyYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vWuMPoAE8UBxHeNo7QhXBPsmih0P+8U7Q8QiWirp95g=;
+        b=bLVqdZ2nTQpeHsvbGxUad08owbfzzKEBh+p/HUZu3S83Xr/EfkrUuQ96rSbYB7Ug60
+         Tom2EfQf7Rj7YeeYOcqQVMDpmE7QHMgRGoYHq3UhLeun4x29ubKVpJOZV+0D0x6mJUk8
+         KZZL6HZv228/TLprDxaqsCaPfyvww1HMuylF+FwgR5i65O9GOUO0bAC+pq4enyxuKuvt
+         9l2XHGCLs20C0tXItxtXovXRRqhO4Vm5/XMK9RkwIQWIPtdvo5ZHHhFUDSUqV983gBG/
+         wqJLu4gXS0ECr192E0tlZ00GeS/1PFbPRcz6/fiuOk2KFBdn3/2S2A0U3cg75Q5CPmGw
+         ZmmA==
+X-Gm-Message-State: AOAM533zCbzvknDCWqD99FT9XDylv84RRDTYtdlr8QEJwwBU5u2Ls+8q
+        pHH6iXu0V7So9klJfuYLxw==
+X-Google-Smtp-Source: ABdhPJxUbZ/hz2L3Dkwg5Kf0hfJ+pUukynyiaPFK5kfR5GN08QVvapRqOLkj598HM2XyDlmch6BqIQ==
+X-Received: by 2002:a37:9bc8:: with SMTP id d191mr3120663qke.99.1618489016748;
+        Thu, 15 Apr 2021 05:16:56 -0700 (PDT)
+Received: from gabell (209-6-122-159.s2973.c3-0.arl-cbr1.sbo-arl.ma.cable.rcncustomer.com. [209.6.122.159])
+        by smtp.gmail.com with ESMTPSA id x24sm1709700qtm.95.2021.04.15.05.16.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 05:16:56 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 08:16:53 -0400
+From:   Masayoshi Mizuma <msys.mizuma@gmail.com>
+To:     Christoph Lameter <cl@gentwo.de>
+Cc:     Waiman Long <longman@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Subject: Re: [PATCH v3 5/5] mm/memcg: Optimize user context object stock
+ access
+Message-ID: <20210415121653.dotuf6253s5yuhae@gabell>
+References: <20210414012027.5352-1-longman@redhat.com>
+ <20210414012027.5352-6-longman@redhat.com>
+ <20210415032836.lohexqge3cvpsqoa@gabell>
+ <alpine.DEB.2.22.394.2104151143080.632904@gentwo.de>
 MIME-Version: 1.0
-In-Reply-To: <YHgB/s4KCBQ1ifdm@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2104151143080.632904@gentwo.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/04/2021 11:06, Peter Zijlstra wrote:
-> On Tue, Apr 13, 2021 at 03:55:15PM +0100, Valentin Schneider wrote:
->> On 12/04/21 12:14, Peter Zijlstra wrote:
->>> Stop polluting sysctl, move to debugfs for SCHED_DEBUG stuff.
->>>
->>> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->>> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
->>
->> On my Juno (2+4 big.LITTLE), sys/kernel/debug/sched/domains/ is now empty.
->>
->> I think that's because of unregister_sched_domain_sysctl() -
->> debugfs_remove() is recursive, and I do get a case where we rebuild the
->> domains but no CPU has been added or removed (we rebuild the domains when
->> cpufreq kicks in, it's part of the big.LITTLE ponies).
->>
->> Do we actually still need that unregister? From a brief glance it looks
->> like we could throw it out.
-> 
-> Yeah, I can't think of anything either. AFAICT it hasn't done anything
-> useful since that cpumask optimization. Consider it gone.
-> 
-> I'll let it soak for another day or so, but then I was planning on
-> merging this series.
-> 
-> Updated patch has been in queue.git/sched/debug since yesterday.
+On Thu, Apr 15, 2021 at 11:44:55AM +0200, Christoph Lameter wrote:
+> Would you please stop quoting the whole patch when you have nothing to say
+> about the details? It is enough to just respond without quoting. I was
+> looking through this trying to find something you said about individual
+> sections of code but there was nothing.
 
-Had to check since v1 was working fine on Juno. So it was this
-__cpumask_clear_cpu() in register_sched_domain_sysctl() introduced in v2
-which let the files under /sys/kernel/debug/sched/domains disapear.
+Thank you for pointing it out and sorry about that.
+I'll do that next time.
 
-With {un,}register_sched_domain_sysctl() removed from
-partition_sched_domains_locked() they're there again.
-
-Looks like now register_sched_domain_sysctl() can be made static in
-kernel/sched/debug.c.
-
-[...]
+- Masa
