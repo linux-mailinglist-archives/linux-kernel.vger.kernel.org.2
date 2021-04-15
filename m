@@ -2,162 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE85635FF1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 03:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC86A35FF26
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 03:13:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229657AbhDOA7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 20:59:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58810 "EHLO
+        id S229582AbhDOBNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 21:13:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhDOA7n (ORCPT
+        with ESMTP id S229436AbhDOBNX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 20:59:43 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F7C8C061574;
-        Wed, 14 Apr 2021 17:59:21 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id p8so1164513iol.11;
-        Wed, 14 Apr 2021 17:59:21 -0700 (PDT)
+        Wed, 14 Apr 2021 21:13:23 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6809EC061574;
+        Wed, 14 Apr 2021 18:13:01 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id x77so13231243oix.8;
+        Wed, 14 Apr 2021 18:13:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=MlWKABH2GBAXTBEFNgkeH520s5m+9L7trkfahPYAnUs=;
-        b=D6dg/gq1roNisWaVaa20wOSDiOyxuGO7NQIp40zuPtkoC3Tf8n3DdsNQSSG/8tZ5w0
-         /ehX2Ou5WWUVl/2Qb6ptPXAjjMOgfy4mW3T1CHAwSUxt6TzR21NYxhlV9pFb6QMhWloO
-         2znnc9Sr1cvc8r1qSYA4M0hTLhWd/IquiyvNts//2AN8XyBfcSyMJo7p9Lin5uq+jDkq
-         sFQAnLOBsRC0F/iI/vwdcSQovT0vNK/puEdGLFclnZN1CPHQfO6ugB+v0leGs05/N4hw
-         daoaKaMc+Cew1EDZ/O6ce4AQ+lue/dsI43M+phi28NRy3jq9qntUwbMl56qlIhRZ5M/V
-         vHcQ==
+        bh=Wk6DDw94syWr3OzbAVtOTZ5taUo+9eS6vbkw8K6bZxg=;
+        b=lQgWT9I5SsT2HAkp0PsUwausGwHSnnJUzjvCUFqCG/RfY+eXGLH1oQvI7P5QnJISf/
+         49aIiqJBC3VrMrxU9RXuHExtB6gZeZvMzeZXIOvX2zka+my5IPvw+BlB9mysrc3pYaxI
+         ht4IbWJp/snEjlf5HNr+L/uLveNxnex+PB5066UHKJNVvOjsI8ZmZlXD1i+XDL66a5X+
+         t1QZ29TmTRqXb1iyyOCw0MPABHi2pLeQ5sBqXys9E71vQXUEQX1i77ak5HWkK0S9aSF1
+         TA3aJsITZzODrijj2NVMX+zF/L/80qIcTgqAnj7wWiUFcEiLZzRRZlKvsBMfp7E0Er1d
+         3efg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=MlWKABH2GBAXTBEFNgkeH520s5m+9L7trkfahPYAnUs=;
-        b=qMYXaLpMQXYSafgtnGDkEtirKK5gED2X6nGnL6lTFkb9QoUcKQ10aNvEnhjOhYPr7g
-         ihIRQ2SNeVML9O32ZTmt1QhjFgxx/deRnzu2mwpRvfy3NKbfaIGIahpnPbwCv3HyRTcc
-         0L0uRzyKd8Wm01NTM1LrrlgwVbH7b8tPMTXOtl8YNoWdlDz1rEgl3xCi/f9yYHVJEplf
-         2v5hMWwaQ4qJQpvFw5AX1gCIGnhIz+gceKTa5TVyw5gGlx4OCUe4HZf0Rl0DZZxqK9Cl
-         +JU6Sl/DEaMGDDkJYMLG9xbOzAOT9rQCY760/qX46eMrA34HgJYWIGAPsgciu4BNfTp6
-         WPbA==
-X-Gm-Message-State: AOAM531BMOwMmN7I9SR7fmGQlZ4oAUuWHOYyeO5p2W5Igwhft9/4fbmM
-        FQcQ3shAahuNQCIFphLBIYDWUkKRj28tqHVgs4U=
-X-Google-Smtp-Source: ABdhPJy+BIfqyS5SHXZKcVjMNR8+VE9YOjN1D3/GcWSVAHJ5FiQujpULGdqU7StrBWLELbkRG2ZY0AqWAfgarRzcXtI=
-X-Received: by 2002:a5e:cb06:: with SMTP id p6mr642270iom.154.1618448360790;
- Wed, 14 Apr 2021 17:59:20 -0700 (PDT)
+        bh=Wk6DDw94syWr3OzbAVtOTZ5taUo+9eS6vbkw8K6bZxg=;
+        b=nB3ADBhCG+ImKOnHgWzh/qs2MU4CuCibWJnq+SnVsgG6LJQtgK28bq5QFZtJkEgGga
+         2d9lJR+jLGHoqgVte+XBJxpWMUbB0YVoUbhsJu81rVoncPlUtYm4F2dIhgE40xuDE2Rc
+         iYhLwQ7LImiQZ2oIDsKLO+nI7bupww97SSslqB0ZwFIxkkbDLoBJDuFsKUb2hnCWCfrJ
+         gLagXyRZDftAormkf9S8362YG83KLoXoIvOJmJnlW3Dxmi6JG1lvNLXQrD+HdRvdVW/o
+         KV2A02+CKcpusYQL6Jq0+eR1JK8vzqd0x70S3cQH48WSt8NQXZ79BMgUbEy72L9Q3kuN
+         2jJw==
+X-Gm-Message-State: AOAM5312TAkmF1UQdzLGJsKKHq5AhgyFA+gk1H/i/xrP1g6833+N6asu
+        86zxyzfh2qgD+AFC9zrUrPp/aJrLxKlZJlsvdZY=
+X-Google-Smtp-Source: ABdhPJx3PuI7DwXAjEnGNsv9IgN+3156u+3ZcW2UMAvBa6vIMB1X4/zDb8vuXKDfytrYqKdZ9VjLCg6zhcYNaHrsxJg=
+X-Received: by 2002:a05:6808:bcb:: with SMTP id o11mr700419oik.141.1618449180579;
+ Wed, 14 Apr 2021 18:13:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201127112114.3219360-1-pbonzini@redhat.com> <20201127112114.3219360-3-pbonzini@redhat.com>
- <CAJhGHyCdqgtvK98_KieG-8MUfg1Jghd+H99q+FkgL0ZuqnvuAw@mail.gmail.com>
- <YHS/BxMiO6I1VOEY@google.com> <CAJhGHyAcnwkCfTcnxXcgAHnF=wPbH2EDp7H+e74ce+oNOWJ=_Q@mail.gmail.com>
- <80b013dc-0078-76f4-1299-3cff261ef7d8@redhat.com> <CAJhGHyChfXdcAMzzD7P3aC8tnhFW5GvOt88vOY=D3pyb7hgNAA@mail.gmail.com>
- <6d9dafb1-b8ff-82ef-93dc-da869fe7ba0f@redhat.com>
-In-Reply-To: <6d9dafb1-b8ff-82ef-93dc-da869fe7ba0f@redhat.com>
-From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Date:   Thu, 15 Apr 2021 08:59:09 +0800
-Message-ID: <CAJhGHyA=v_va2QTvo7Ve8JyZO4j5LjiCdB9CLnvRXGwGwa3e+A@mail.gmail.com>
-Subject: Re: [PATCH 2/2] KVM: x86: Fix split-irqchip vs interrupt injection
- window request
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        Filippo Sironi <sironi@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "v4.7+" <stable@vger.kernel.org>,
-        Wanpeng Li <wanpengli@tencent.com>
+References: <20210412065759.2907-1-kerneljasonxing@gmail.com>
+ <20210413025011.1251-1-kerneljasonxing@gmail.com> <20210413091812.0000383d@intel.com>
+In-Reply-To: <20210413091812.0000383d@intel.com>
+From:   Jason Xing <kerneljasonxing@gmail.com>
+Date:   Thu, 15 Apr 2021 09:12:24 +0800
+Message-ID: <CAL+tcoBVhD1SfMYAFVn0HxZ3ig88pxtiLoha9d6Z+62yq8bWBA@mail.gmail.com>
+Subject: Re: [PATCH net v2] i40e: fix the panic when running bpf in xdpdrv mode
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc:     anthony.l.nguyen@intel.com, David Miller <davem@davemloft.net>,
+        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        Jason Xing <xingwanli@kuaishou.com>,
+        Shujin Li <lishujin@kuaishou.com>,
+        intel-wired-lan@lists.osuosl.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 12:58 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+On Wed, Apr 14, 2021 at 12:27 AM Jesse Brandeburg
+<jesse.brandeburg@intel.com> wrote:
 >
-> On 14/04/21 04:28, Lai Jiangshan wrote:
-> > On Tue, Apr 13, 2021 at 8:15 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
-> >>
-> >> On 13/04/21 13:03, Lai Jiangshan wrote:
-> >>> This patch claims that it has a place to
-> >>> stash the IRQ when EFLAGS.IF=0, but inject_pending_event() seams to ignore
-> >>> EFLAGS.IF and queues the IRQ to the guest directly in the first branch
-> >>> of using "kvm_x86_ops.set_irq(vcpu)".
-> >>
-> >> This is only true for pure-userspace irqchip.  For split-irqchip, in
-> >> which case the "place to stash" the interrupt is
-> >> vcpu->arch.pending_external_vector.
-> >>
-> >> For pure-userspace irqchip, KVM_INTERRUPT only cares about being able to
-> >> stash the interrupt in vcpu->arch.interrupt.injected.  It is indeed
-> >> wrong for userspace to call KVM_INTERRUPT if the vCPU is not ready for
-> >> interrupt injection, but KVM_INTERRUPT does not return an error.
+> kerneljasonxing@gmail.com wrote:
+>
+> > From: Jason Xing <xingwanli@kuaishou.com>
+>
+> Hi Jason,
+>
+> Sorry, I missed this on the first time: Added intel-wired-lan,
+> please include on any future submissions for Intel drivers.
+> get-maintainers script might help here?
+>
+
+Probably I got this wrong in the last email. Did you mean that I should add
+intel-wired-lan in the title not the cc list? It seems I should put
+this together on
+the next submission like this:
+
+[Intel-wired-lan] [PATCH net v4]
+
+Am I missing something?
+
+Thanks,
+Jason
+
 > >
-> > Thanks for the reply.
+> > Fix this panic by adding more rules to calculate the value of @rss_size_max
+> > which could be used in allocating the queues when bpf is loaded, which,
+> > however, could cause the failure and then trigger the NULL pointer of
+> > vsi->rx_rings. Prio to this fix, the machine doesn't care about how many
+> > cpus are online and then allocates 256 queues on the machine with 32 cpus
+> > online actually.
 > >
-> > May I ask what is the correct/practical way of using KVM_INTERRUPT ABI
-> > for pure-userspace irqchip.
+> > Once the load of bpf begins, the log will go like this "failed to get
+> > tracking for 256 queues for VSI 0 err -12" and this "setup of MAIN VSI
+> > failed".
 > >
-> > gVisor is indeed a pure-userspace irqchip, it will call KVM_INTERRUPT
-> > when kvm_run->ready_for_interrupt_injection=1 (along with other conditions
-> > unrelated to our discussion).
+> > Thus, I attach the key information of the crash-log here.
 > >
-> > https://github.com/google/gvisor/blob/a9441aea2780da8c93da1c73da860219f98438de/pkg/sentry/platform/kvm/bluepill_amd64_unsafe.go#L105
+> > BUG: unable to handle kernel NULL pointer dereference at
+> > 0000000000000000
+> > RIP: 0010:i40e_xdp+0xdd/0x1b0 [i40e]
+> > Call Trace:
+> > [2160294.717292]  ? i40e_reconfig_rss_queues+0x170/0x170 [i40e]
+> > [2160294.717666]  dev_xdp_install+0x4f/0x70
+> > [2160294.718036]  dev_change_xdp_fd+0x11f/0x230
+> > [2160294.718380]  ? dev_disable_lro+0xe0/0xe0
+> > [2160294.718705]  do_setlink+0xac7/0xe70
+> > [2160294.719035]  ? __nla_parse+0xed/0x120
+> > [2160294.719365]  rtnl_newlink+0x73b/0x860
 > >
-> > if kvm_run->ready_for_interrupt_injection=1 when expection pending or
-> > EFLAGS.IF=0, it would be unexpected for gVisor.
+> > Fixes: 41c445ff0f48 ("i40e: main driver core")
+> >
 >
-> Not with EFLAGS.IF=0.  For pending exception, there is code to handle it
-> in inject_pending_event:
+> This Fixes line should be connected to the Sign offs with
+> no linefeeds between.
 >
-
-Thanks for the reply.
-(I rearranged your summarization here)
-
-> so what happens is:
+> > Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+> > Signed-off-by: Shujin Li <lishujin@kuaishou.com>
 >
-> - the interrupt will not be injected before the exception
+> Did Shujin contribute to this patch? Why are they signing off? If
+> they developed this patch with you, it should say:
+> Co-developed-by: Shujin ....
+> Signed-off-by: Shujin ...
+> Signed-off-by: Jason ...
 >
-> - KVM will schedule an immediate vmexit to inject the interrupt as well
+> Your signature should be last if you sent the patch. The sign-offs are
+> like a chain of custody, please review
+> https://www.kernel.org/doc/html/latest/process/submitting-patches.html#when-to-use-acked-by-cc-and-co-developed-by
 >
-> - if (as is likely) the exception has turned off interrupts, the next
-> call to inject_pending_event will reach
-> static_call(kvm_x86_enable_irq_window) and the interrupt will only be
-> injected when IF becomes 1 again.
-
-The next call to inject_pending_event() will reach here AT FIRST with
-vcpu->arch.exception.injected==false and vcpu->arch.exception.pending==false
-
->          ... if (!vcpu->arch.exception.pending) {
->                  if (vcpu->arch.nmi_injected) {
->                          static_call(kvm_x86_set_nmi)(vcpu);
->                          can_inject = false;
->                  } else if (vcpu->arch.interrupt.injected) {
->                          static_call(kvm_x86_set_irq)(vcpu);
->                          can_inject = false;
-
-And comes here and vcpu->arch.interrupt.injected is true for there is
-an interrupt queued by KVM_INTERRUPT for pure user irqchip. It then does
-the injection of the interrupt without checking the EFLAGS.IF.
-
-My question is that what stops the next call to inject_pending_event()
-to reach here when KVM_INTERRUPT is called with exepction pending.
-
-Or what makes kvm_run->ready_for_interrupt_injection be zero when
-exception pending to disallow userspace to call KVM_INTERRUPT.
-
-
->                  }
->          }
->         ...
->          if (vcpu->arch.exception.pending) {
->                 ...
->                  can_inject = false;
->          }
->         // this is vcpu->arch.interrupt.injected for userspace LAPIC
->          if (kvm_cpu_has_injectable_intr(vcpu)) {
->                  r = can_inject ?
-> static_call(kvm_x86_interrupt_allowed)(vcpu, true) : -EBUSY;
->                 if (r < 0)
->                         goto busy;
->                 ...
->         }
->
->
-> Paolo
->
+> Thanks,
+>  Jesse
