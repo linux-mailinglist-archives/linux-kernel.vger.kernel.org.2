@@ -2,51 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E6E36130C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A40DC36130D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234923AbhDOTp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 15:45:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56536 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234803AbhDOTpz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 15:45:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0606761152;
-        Thu, 15 Apr 2021 19:45:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618515932;
-        bh=zWnJYfHtYM6iXWjHyj1gcN+0DAlxASqFE+oUXJyZXHk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NYu2G9q+io1kR1RJPZHFndAFazBZnZxk/S+wvYsRDQx4sqMjsxSKK4fakiJFwY5gM
-         cPHjm/o+Kzrta2Yn4AfqHNZSSTM7ks56Iw7o8VeB02cbY73TBrtxQn8RkuolRMAVtN
-         WXt7dcTFZYLrHkxFOpXEA2pspv58xtTbwMGxALWTtN8+HelsdCr2cQXaVdwfQZDAJa
-         xRkKB7HJCJ4jEu57q0LVSXfGWtInYiDllhpvl3ZkAR2b27Jek1RQGChWXHUqWqKnDY
-         XboIEFiITIimVxOowM71PoigyRj4zNGrb1IksiiW45+P4LTpJLAgNb6N+npRq1mCcS
-         PyR4d1XqWoWtw==
-Date:   Thu, 15 Apr 2021 12:45:30 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH v2 5/8] block: respect bio_required_sector_alignment() in
- blk-crypto-fallback
-Message-ID: <YHiX2kLiwH+8kQ9K@gmail.com>
-References: <20210325212609.492188-1-satyat@google.com>
- <20210325212609.492188-6-satyat@google.com>
+        id S234931AbhDOTqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 15:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234659AbhDOTqh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 15:46:37 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D4DC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 12:46:12 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id h20so12686269plr.4
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 12:46:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8WAGqUBfUJd0GpkZy+V6HKttSzokJe0JTSsCCuwPkHs=;
+        b=R9zO9CKatW4qEMyRCYmo68RFsV0BTE1LqbAKLqaH0XeCALgGacLHKjGUSjVwv5LaeN
+         cJzNFBVLJnM5ZuWxujf6K+6L05hyRE4K8vxerDxPfYL5i/0ztY/DAZSw0z7DDvwwD9Wq
+         XCHa4EJpKKM8NfG2P7qrKi1ZxkCDmFFho2APMNdeNN3MGeGY+vJVeZZ/Intydxk93qgw
+         6bY5ICvaAb4mBX1JsAV8g3szPLZRsZ4p1yozWLUcV+ECmMsMF6uuhIRyPhbDtOFaTFmg
+         F1IL1Cbfv12+X11hJdncqujCRIiBWBi9JvtrWwwLglLnrUYAXjiwOCQBn43nvtQ2o/oX
+         XK7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8WAGqUBfUJd0GpkZy+V6HKttSzokJe0JTSsCCuwPkHs=;
+        b=hPGGIeMtntwCBWayOQFayuhOyd6cdmWjQymXdMhj8z/teSenR81I4sDgMMLfLuPNpy
+         /yHeAcPPas5LGqapquIGwB25ozF3AIxVw2Bl4o4VLGLvB/BV4fLsknzN+ZgnKhC2e9wC
+         HSqACs0mVSWDlpmu5rs98zhjBNc+Btq4lBCmYRjF1/N2t6nJgRqlqPSxAVb1UYl5cJ6I
+         P+P5V1wwjF1qowsAjZ5wKn+V6jeTu3S0Om2/eZhI1cDOCIfkWBHACgLEZmzHwEZLXxTU
+         PEDZ9+yx5lXULC6E25/zllfc4/wBxGeNoRsUKAJ0W9+oKLpQYzfyWIxuTNXsLr6jdND7
+         u/pQ==
+X-Gm-Message-State: AOAM533jaiD3n24AlkrIpUI7jgYdApedK3hjfyb5i4JEpMERrSvCEtnc
+        aH6AE3kO3O6fwko0awX/+TwvRg==
+X-Google-Smtp-Source: ABdhPJxaH8ErDb0p/p+tIWUtMEHyLhQnBHGq/ilbtbPED2/lndGn/toYWOKjyvPi38iI2Q//WNF5XQ==
+X-Received: by 2002:a17:90a:e512:: with SMTP id t18mr3403059pjy.34.1618515971633;
+        Thu, 15 Apr 2021 12:46:11 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id g14sm3148152pjh.28.2021.04.15.12.46.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 12:46:10 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 13:46:08 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     coresight@lists.linaro.org, al.grant@arm.com,
+        branislav.rankov@arm.com, denik@chromium.org,
+        suzuki.poulose@arm.com, Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] perf cs-etm: Refactor timestamp variable names
+Message-ID: <20210415194608.GA937505@xps15>
+References: <20210414143919.12605-1-james.clark@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210325212609.492188-6-satyat@google.com>
+In-Reply-To: <20210414143919.12605-1-james.clark@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 09:26:06PM +0000, Satya Tangirala wrote:
-> Make blk_crypto_split_bio_if_needed() respect
-> bio_required_sector_alignment() when calling bio_split().
+On Wed, Apr 14, 2021 at 05:39:18PM +0300, James Clark wrote:
+> Remove ambiguity in variable names relating to timestamps.
+> A later commit will save the sample kernel timestamp in one
+> of the etm structs, so name all elements appropriately to
+> avoid confusion.
 > 
+> This is also removes some ambiguity arising from the fact
+> that the --timestamp argument to perf record refers to
+> sample kernel timestamps, and the /timestamp/ event modifier
+> refers to etm timestamps, so the term is overloaded.
+> 
+> Signed-off-by: James Clark <james.clark@arm.com>
+> ---
+>  .../perf/util/cs-etm-decoder/cs-etm-decoder.c | 18 ++++----
+>  tools/perf/util/cs-etm.c                      | 42 +++++++++----------
+>  tools/perf/util/cs-etm.h                      |  4 +-
+>  3 files changed, 31 insertions(+), 33 deletions(-)
+> 
+> diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> index 059bcec3f651..055cb93eca59 100644
+> --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
+> @@ -276,13 +276,13 @@ cs_etm_decoder__do_soft_timestamp(struct cs_etm_queue *etmq,
+>  				  const uint8_t trace_chan_id)
+>  {
+>  	/* No timestamp packet has been received, nothing to do */
+> -	if (!packet_queue->timestamp)
+> +	if (!packet_queue->etm_timestamp)
+>  		return OCSD_RESP_CONT;
+>  
+> -	packet_queue->timestamp = packet_queue->next_timestamp;
+> +	packet_queue->etm_timestamp = packet_queue->next_etm_timestamp;
+>  
+>  	/* Estimate the timestamp for the next range packet */
+> -	packet_queue->next_timestamp += packet_queue->instr_count;
+> +	packet_queue->next_etm_timestamp += packet_queue->instr_count;
+>  	packet_queue->instr_count = 0;
+>  
+>  	/* Tell the front end which traceid_queue needs attention */
+> @@ -308,8 +308,8 @@ cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
+>  	 * Function do_soft_timestamp() will report the value to the front end,
+>  	 * hence asking the decoder to keep decoding rather than stopping.
+>  	 */
+> -	if (packet_queue->timestamp) {
+> -		packet_queue->next_timestamp = elem->timestamp;
+> +	if (packet_queue->etm_timestamp) {
+> +		packet_queue->next_etm_timestamp = elem->timestamp;
+>  		return OCSD_RESP_CONT;
+>  	}
+>  
+> @@ -320,8 +320,8 @@ cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
+>  	 * which instructions started by subtracting the number of instructions
+>  	 * executed to the timestamp.
+>  	 */
+> -	packet_queue->timestamp = elem->timestamp - packet_queue->instr_count;
+> -	packet_queue->next_timestamp = elem->timestamp;
+> +	packet_queue->etm_timestamp = elem->timestamp - packet_queue->instr_count;
+> +	packet_queue->next_etm_timestamp = elem->timestamp;
+>  	packet_queue->instr_count = 0;
+>  
+>  	/* Tell the front end which traceid_queue needs attention */
+> @@ -334,8 +334,8 @@ cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
+>  static void
+>  cs_etm_decoder__reset_timestamp(struct cs_etm_packet_queue *packet_queue)
+>  {
+> -	packet_queue->timestamp = 0;
+> -	packet_queue->next_timestamp = 0;
+> +	packet_queue->etm_timestamp = 0;
+> +	packet_queue->next_etm_timestamp = 0;
+>  	packet_queue->instr_count = 0;
+>  }
+>  
+> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+> index 7e63e7dedc33..c25da2ffa8f3 100644
+> --- a/tools/perf/util/cs-etm.c
+> +++ b/tools/perf/util/cs-etm.c
+> @@ -38,8 +38,6 @@
+>  #include <tools/libc_compat.h>
+>  #include "util/synthetic-events.h"
+>  
+> -#define MAX_TIMESTAMP (~0ULL)
+> -
+>  struct cs_etm_auxtrace {
+>  	struct auxtrace auxtrace;
+>  	struct auxtrace_queues queues;
+> @@ -86,7 +84,7 @@ struct cs_etm_queue {
+>  	struct cs_etm_decoder *decoder;
+>  	struct auxtrace_buffer *buffer;
+>  	unsigned int queue_nr;
+> -	u8 pending_timestamp;
+> +	u8 pending_timestamp_chan_id;
+>  	u64 offset;
+>  	const unsigned char *buf;
+>  	size_t buf_len, buf_used;
+> @@ -208,7 +206,7 @@ void cs_etm__etmq_set_traceid_queue_timestamp(struct cs_etm_queue *etmq,
+>  	 * be more than one channel per cs_etm_queue, we need to specify
+>  	 * what traceID queue needs servicing.
+>  	 */
+> -	etmq->pending_timestamp = trace_chan_id;
+> +	etmq->pending_timestamp_chan_id = trace_chan_id;
+>  }
+>  
+>  static u64 cs_etm__etmq_get_timestamp(struct cs_etm_queue *etmq,
+> @@ -216,22 +214,22 @@ static u64 cs_etm__etmq_get_timestamp(struct cs_etm_queue *etmq,
+>  {
+>  	struct cs_etm_packet_queue *packet_queue;
+>  
+> -	if (!etmq->pending_timestamp)
+> +	if (!etmq->pending_timestamp_chan_id)
+>  		return 0;
+>  
+>  	if (trace_chan_id)
+> -		*trace_chan_id = etmq->pending_timestamp;
+> +		*trace_chan_id = etmq->pending_timestamp_chan_id;
+>  
+>  	packet_queue = cs_etm__etmq_get_packet_queue(etmq,
+> -						     etmq->pending_timestamp);
+> +						     etmq->pending_timestamp_chan_id);
+>  	if (!packet_queue)
+>  		return 0;
+>  
+>  	/* Acknowledge pending status */
+> -	etmq->pending_timestamp = 0;
+> +	etmq->pending_timestamp_chan_id = 0;
+>  
+>  	/* See function cs_etm_decoder__do_{hard|soft}_timestamp() */
+> -	return packet_queue->timestamp;
+> +	return packet_queue->etm_timestamp;
+>  }
+>  
+>  static void cs_etm__clear_packet_queue(struct cs_etm_packet_queue *queue)
+> @@ -814,7 +812,7 @@ static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
+>  	int ret = 0;
+>  	unsigned int cs_queue_nr;
+>  	u8 trace_chan_id;
+> -	u64 timestamp;
+> +	u64 etm_timestamp;
+>  	struct cs_etm_queue *etmq = queue->priv;
+>  
+>  	if (list_empty(&queue->head) || etmq)
+> @@ -854,7 +852,7 @@ static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
+>  
+>  		/*
+>  		 * Run decoder on the trace block.  The decoder will stop when
+> -		 * encountering a timestamp, a full packet queue or the end of
+> +		 * encountering an ETM timestamp, a full packet queue or the end of
+>  		 * trace for that block.
+>  		 */
+>  		ret = cs_etm__decode_data_block(etmq);
+> @@ -865,10 +863,10 @@ static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
+>  		 * Function cs_etm_decoder__do_{hard|soft}_timestamp() does all
+>  		 * the timestamp calculation for us.
+>  		 */
+> -		timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
+> +		etm_timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
+>  
+>  		/* We found a timestamp, no need to continue. */
+> -		if (timestamp)
+> +		if (etm_timestamp)
+>  			break;
+>  
+>  		/*
+> @@ -892,7 +890,7 @@ static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
+>  	 * queue and will be processed in cs_etm__process_queues().
+>  	 */
+>  	cs_queue_nr = TO_CS_QUEUE_NR(queue_nr, trace_chan_id);
+> -	ret = auxtrace_heap__add(&etm->heap, cs_queue_nr, timestamp);
+> +	ret = auxtrace_heap__add(&etm->heap, cs_queue_nr, etm_timestamp);
+>  out:
+>  	return ret;
+>  }
+> @@ -2221,7 +2219,7 @@ static int cs_etm__process_queues(struct cs_etm_auxtrace *etm)
+>  	int ret = 0;
+>  	unsigned int cs_queue_nr, queue_nr;
+>  	u8 trace_chan_id;
+> -	u64 timestamp;
+> +	u64 etm_timestamp;
+>  	struct auxtrace_queue *queue;
+>  	struct cs_etm_queue *etmq;
+>  	struct cs_etm_traceid_queue *tidq;
+> @@ -2283,9 +2281,9 @@ static int cs_etm__process_queues(struct cs_etm_auxtrace *etm)
+>  		if (ret)
+>  			goto out;
+>  
+> -		timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
+> +		etm_timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
+>  
+> -		if (!timestamp) {
+> +		if (!etm_timestamp) {
+>  			/*
+>  			 * Function cs_etm__decode_data_block() returns when
+>  			 * there is no more traces to decode in the current
+> @@ -2308,7 +2306,7 @@ static int cs_etm__process_queues(struct cs_etm_auxtrace *etm)
+>  		 * this queue/traceID.
+>  		 */
+>  		cs_queue_nr = TO_CS_QUEUE_NR(queue_nr, trace_chan_id);
+> -		ret = auxtrace_heap__add(&etm->heap, cs_queue_nr, timestamp);
+> +		ret = auxtrace_heap__add(&etm->heap, cs_queue_nr, etm_timestamp);
+>  	}
+>  
+>  out:
+> @@ -2380,7 +2378,7 @@ static int cs_etm__process_event(struct perf_session *session,
+>  				 struct perf_tool *tool)
+>  {
+>  	int err = 0;
+> -	u64 timestamp;
+> +	u64 sample_kernel_timestamp;
+>  	struct cs_etm_auxtrace *etm = container_of(session->auxtrace,
+>  						   struct cs_etm_auxtrace,
+>  						   auxtrace);
+> @@ -2394,11 +2392,11 @@ static int cs_etm__process_event(struct perf_session *session,
+>  	}
+>  
+>  	if (sample->time && (sample->time != (u64) -1))
+> -		timestamp = sample->time;
+> +		sample_kernel_timestamp = sample->time;
+>  	else
+> -		timestamp = 0;
+> +		sample_kernel_timestamp = 0;
+>  
+> -	if (timestamp || etm->timeless_decoding) {
+> +	if (sample_kernel_timestamp || etm->timeless_decoding) {
+>  		err = cs_etm__update_queues(etm);
+>  		if (err)
+>  			return err;
+> diff --git a/tools/perf/util/cs-etm.h b/tools/perf/util/cs-etm.h
+> index 36428918411e..b300f6fa19cc 100644
+> --- a/tools/perf/util/cs-etm.h
+> +++ b/tools/perf/util/cs-etm.h
+> @@ -171,8 +171,8 @@ struct cs_etm_packet_queue {
+>  	u32 head;
+>  	u32 tail;
+>  	u32 instr_count;
+> -	u64 timestamp;
+> -	u64 next_timestamp;
+> +	u64 etm_timestamp;
+> +	u64 next_etm_timestamp;
 
-A bit more explanation would be helpful here.  Does this fix something, and if
-so what is it and under what circumstances?
+I find the "etm" part confusing since timestamps are generated by a specific CS
+component, not the ETM itself.  As such I think it should be "cs_timestamp" and
+"next_cs_timestamp".  But this is just a naming convention and won't press the
+case further if you feel strongly about it.
 
-- Eric
+Otherwise I think this renaming exercise is worth it.  
+
+With or without the above:
+
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+>  	struct cs_etm_packet packet_buffer[CS_ETM_PACKET_MAX_BUFFER];
+>  };
+>  
+> -- 
+> 2.28.0
+> 
