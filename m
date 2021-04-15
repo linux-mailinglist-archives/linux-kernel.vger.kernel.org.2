@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FBE7360C83
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8FA360D0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234103AbhDOOvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:51:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38004 "EHLO mail.kernel.org"
+        id S234460AbhDOO4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:56:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233930AbhDOOub (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:50:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE943613BA;
-        Thu, 15 Apr 2021 14:50:07 +0000 (UTC)
+        id S234279AbhDOOx4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:53:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 163D0613D4;
+        Thu, 15 Apr 2021 14:52:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498208;
-        bh=OuiYTNIYiqgpS7gPMtXJ/iN3uwVtDsLtvrreZPHf5z4=;
+        s=korg; t=1618498346;
+        bh=clS3TK94RoVp/7AJ9nUNT+La7QmdmF6hnBsBhzjIJjE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VUwDDVVudhLIIZZRpkW4e/c3xgGfHPPrA69KnAhdM4rM1lb0D72HGjejtBYoNZwxx
-         Vf/lefx09wPHXu4GlGt5KTctmvFAxungVtepY8QCyQ18h5vr6NxDM2Qi3sp6C0gVBE
-         NkWxXr8pJmV0gKorD2mceciO6UkLXvX7gR4DI7so=
+        b=t1eFvaw16+WbvaE7gUbXtitLQLGTFkHFdp77OejaSb4L4ozWWqZrLxBKnb4+XhKCA
+         vvKv/b5jZ9/RYf9UG/A6FBcE7AIg7qnI2dyO7VRTXkH9UyvI9FzNBnhUrPZSirAA6Z
+         hM1iTqezAf4cOacMxiSTthpQv/t19uqcNdscII0Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+368672e0da240db53b5f@syzkaller.appspotmail.com,
+        syzbot+d4c07de0144f6f63be3a@syzkaller.appspotmail.com,
         Alexander Aring <aahringo@redhat.com>,
         Stefan Schmidt <stefan@datenfreihafen.org>
-Subject: [PATCH 4.4 31/38] net: ieee802154: fix nl802154 del llsec devkey
-Date:   Thu, 15 Apr 2021 16:47:25 +0200
-Message-Id: <20210415144414.354518155@linuxfoundation.org>
+Subject: [PATCH 4.9 34/47] net: ieee802154: nl-mac: fix check on panid
+Date:   Thu, 15 Apr 2021 16:47:26 +0200
+Message-Id: <20210415144414.555922875@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.352638802@linuxfoundation.org>
-References: <20210415144413.352638802@linuxfoundation.org>
+In-Reply-To: <20210415144413.487943796@linuxfoundation.org>
+References: <20210415144413.487943796@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,31 +43,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexander Aring <aahringo@redhat.com>
 
-commit 27c746869e1a135dffc2f2a80715bb7aa00445b4 upstream.
+commit 6f7f657f24405f426212c09260bf7fe8a52cef33 upstream.
 
-This patch fixes a nullpointer dereference if NL802154_ATTR_SEC_DEVKEY is
-not set by the user. If this is the case nl802154 will return -EINVAL.
+This patch fixes a null pointer derefence for panid handle by move the
+check for the netlink variable directly before accessing them.
 
-Reported-by: syzbot+368672e0da240db53b5f@syzkaller.appspotmail.com
+Reported-by: syzbot+d4c07de0144f6f63be3a@syzkaller.appspotmail.com
 Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Link: https://lore.kernel.org/r/20210221174321.14210-4-aahringo@redhat.com
+Link: https://lore.kernel.org/r/20210228151817.95700-4-aahringo@redhat.com
 Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ieee802154/nl802154.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/ieee802154/nl-mac.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/net/ieee802154/nl802154.c
-+++ b/net/ieee802154/nl802154.c
-@@ -1908,7 +1908,8 @@ static int nl802154_del_llsec_devkey(str
- 	struct ieee802154_llsec_device_key key;
- 	__le64 extended_addr;
+--- a/net/ieee802154/nl-mac.c
++++ b/net/ieee802154/nl-mac.c
+@@ -559,9 +559,7 @@ ieee802154_llsec_parse_key_id(struct gen
+ 	desc->mode = nla_get_u8(info->attrs[IEEE802154_ATTR_LLSEC_KEY_MODE]);
  
--	if (nla_parse_nested(attrs, NL802154_DEVKEY_ATTR_MAX,
-+	if (!info->attrs[NL802154_ATTR_SEC_DEVKEY] ||
-+	    nla_parse_nested(attrs, NL802154_DEVKEY_ATTR_MAX,
- 			     info->attrs[NL802154_ATTR_SEC_DEVKEY],
- 			     nl802154_devkey_policy))
- 		return -EINVAL;
+ 	if (desc->mode == IEEE802154_SCF_KEY_IMPLICIT) {
+-		if (!info->attrs[IEEE802154_ATTR_PAN_ID] &&
+-		    !(info->attrs[IEEE802154_ATTR_SHORT_ADDR] ||
+-		      info->attrs[IEEE802154_ATTR_HW_ADDR]))
++		if (!info->attrs[IEEE802154_ATTR_PAN_ID])
+ 			return -EINVAL;
+ 
+ 		desc->device_addr.pan_id = nla_get_shortaddr(info->attrs[IEEE802154_ATTR_PAN_ID]);
+@@ -570,6 +568,9 @@ ieee802154_llsec_parse_key_id(struct gen
+ 			desc->device_addr.mode = IEEE802154_ADDR_SHORT;
+ 			desc->device_addr.short_addr = nla_get_shortaddr(info->attrs[IEEE802154_ATTR_SHORT_ADDR]);
+ 		} else {
++			if (!info->attrs[IEEE802154_ATTR_HW_ADDR])
++				return -EINVAL;
++
+ 			desc->device_addr.mode = IEEE802154_ADDR_LONG;
+ 			desc->device_addr.extended_addr = nla_get_hwaddr(info->attrs[IEEE802154_ATTR_HW_ADDR]);
+ 		}
 
 
