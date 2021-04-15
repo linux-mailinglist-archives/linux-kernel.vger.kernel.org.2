@@ -2,82 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF1F360876
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 13:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B2F36087B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 13:47:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232651AbhDOLpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 07:45:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60770 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231549AbhDOLpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 07:45:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD35D61132;
-        Thu, 15 Apr 2021 11:44:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618487088;
-        bh=PihK5dfas/WVMlw9t+kHCah/aAVGAaBd50HblG0mcrc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=See5n71LngVdG5j2SzEVbcUQ2hvHx2B+L+ERVu2U/XyaQFxyeX7+daxG2naDoH6yY
-         sogE77A6RBcoHmmbBRdEjb+uGFuVIhfHCSJlya8NGzdqoojUeoB1N2EepZJ+bG7JqM
-         o8oltkl937XvKf8cXtUrPBG3HDUzOU1odg1ipkp4sp1o1VnMTHv8p4+mLVtdAxCya+
-         3/a7FStPOdKSE3dJwPcVRPVzZm8GbySNpbWLUAm9M9xkPlOF8WNtQtxLersm/95MSI
-         2TMVV22t+6izgn+he0iL7qLAErLQ6o+3d+FdEntp6mscdiQ6QLRlO0jgH0J1DS0HBW
-         V6HvxNw+WcvJg==
-Date:   Thu, 15 Apr 2021 12:44:24 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     matthew.gerlach@linux.intel.com
-Cc:     hao.wu@intel.com, trix@redhat.com, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yilun.xu@intel.com, jdelvare@suse.com, linux@roeck-us.net,
-        lee.jones@linaro.org, linux-hwmon@vger.kernel.org,
-        russell.h.weight@intel.com, linux-spi@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] spi: Add DFL bus driver for Altera SPI Master
-Message-ID: <20210415114424.GA5514@sirena.org.uk>
-References: <20210413225835.459662-1-matthew.gerlach@linux.intel.com>
- <20210413225835.459662-2-matthew.gerlach@linux.intel.com>
- <20210414141816.GD4535@sirena.org.uk>
- <alpine.DEB.2.22.394.2104141203480.482712@rhweight-WRK1>
+        id S232666AbhDOLro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 07:47:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232642AbhDOLrn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 07:47:43 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 069C4C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 04:47:19 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lX0So-0005kK-1U; Thu, 15 Apr 2021 13:47:14 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:983:856d:54dc:ee1c])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 78A1E60F64A;
+        Thu, 15 Apr 2021 11:47:12 +0000 (UTC)
+Date:   Thu, 15 Apr 2021 13:47:11 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Cc:     Colin King <colin.king@canonical.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        linux-can <linux-can@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, kernel-janitors@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH][next] can: etas_es58x: Fix missing null check on netdev
+ pointer
+Message-ID: <20210415114711.fqxj2j744fmqw6pb@pengutronix.de>
+References: <20210415084723.1807935-1-colin.king@canonical.com>
+ <20210415090412.q3k4tmsp3rdfj54t@pengutronix.de>
+ <CAMZ6RqJvN10Qf7rg-Z1aD82kJGPqueqgr+t88=yoJH93m+OuGw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="UlVJffcvxoiEqYs2"
+        protocol="application/pgp-signature"; boundary="t7rubfvizd7wa7y7"
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2104141203480.482712@rhweight-WRK1>
-X-Cookie: VMS must die!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAMZ6RqJvN10Qf7rg-Z1aD82kJGPqueqgr+t88=yoJH93m+OuGw@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---UlVJffcvxoiEqYs2
-Content-Type: text/plain; charset=us-ascii
+--t7rubfvizd7wa7y7
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 14, 2021 at 12:09:50PM -0700, matthew.gerlach@linux.intel.com wrote:
-> On Wed, 14 Apr 2021, Mark Brown wrote:
+On 15.04.2021 20:42:36, Vincent MAILHOL wrote:
+> On Thu. 15 Apr 2021 at 18:04, Marc Kleine-Budde <mkl@pengutronix.de> wrot=
+e:
+> > On 15.04.2021 09:47:23, Colin King wrote:
+> > > From: Colin Ian King <colin.king@canonical.com>
+> > >
+> > > There is an assignment to *netdev that is can potentially be null but=
+ the
+>                                            ^^
+> Typo: that is can -> that can
 
-> > Don't create a platform device here, extend the spi-altera driver to
-> > register with both DFL and platform buses.
+Fixed.
 
-> Are you suggesting something like the SPI driver for the Designware
-> controller where there is spi-dw-core.c and bus specific code like
-> spi-dw-pci.c and spi-dw-mmioc.c?
+> > > null check is checking netdev and not *netdev as intended. Fix this by
+> > > adding in the missing * operator.
+> > >
+> > > Addresses-Coverity: ("Dereference before null check")
+> > > Fixes: 8537257874e9 ("can: etas_es58x: add core support for ETAS ES58=
+X CAN USB interfaces")
+> > > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>=20
+> Acked-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 
-Yes, exactly.
+Added to the patch.
 
---UlVJffcvxoiEqYs2
+Tnx,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--t7rubfvizd7wa7y7
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB4JxcACgkQJNaLcl1U
-h9An/Af/VFqnGaFp0qF5AyIs2gQj+NbPJA3hBIMLLMcz/tC6Q5pKphaA7Pr3+fKT
-hPQVYO+H7biwiX0WQ+BJZPnMo/7gDUEmOBnc+KvOIl/0q8FouNOoeaMsw+ScY3Kv
-fgHKSBD7ZS+29tHY+aN5jAQfAmjt6p/kpNyVEXQgUFiAQx1XKgSNrKzsAg1Ilcag
-LMXlyNukME0pC0Xu2lAZRAWlQsNLmq4k4bOckqR1nBRM8W271uO/i5/Q0+ybKxP8
-iFBSpZKfQ/na4GTVmNcFc6n2bc6CgwRAPng7lV2BX3gddCUnQ9N3VnEJZ7ubsZp3
-WFC0lKcGgWzXy3AE20kaJVDaFoYuHQ==
-=XEtk
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmB4J70ACgkQqclaivrt
+76kHtAgAr2VHjyVKYe8lsy62ZU9S+BhaUtOfaHJF8shAcpOeiyBIJyAaxExUjGri
+xEmOffCtfWmRmuk3sWLczgQ5690LfMZIGCz2n5zJZ2wjxUywNnWFCKY60pWKhYly
+kR2GVviWErqSq5V2ibkj7qCgQCtMAPsQinJx4YbSmw37xVFaluCZfDobiznLs0Xk
+ZLgpCXK4kzXrI0ZpoVJ4Lpc4lz7eF/l9z62oUlAxBGx0b2lIe4ogRPIzKG7gGci8
+CZY+aWMUGOVNkdcO2gm/9bPH9Ot58QAS1Y1D0FPX4lxRgKr7TRtT7QQl3gof/9ik
+LaFtRQ7qWKpbaVTLiOgg0Mu9bbfJpg==
+=qXQD
 -----END PGP SIGNATURE-----
 
---UlVJffcvxoiEqYs2--
+--t7rubfvizd7wa7y7--
