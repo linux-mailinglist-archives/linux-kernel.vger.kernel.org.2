@@ -2,163 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1521A3602C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 08:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B81B73602CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 08:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhDOG4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 02:56:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230201AbhDOG4M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 02:56:12 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EDA1C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 23:55:49 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lWvub-000396-V3; Thu, 15 Apr 2021 08:55:37 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lWvuZ-0006W1-P5; Thu, 15 Apr 2021 08:55:35 +0200
-Date:   Thu, 15 Apr 2021 08:55:35 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        "David A. Schleef" <ds@schleef.org>,
-        Mori Hess <fmhess@users.sourceforge.net>,
-        Truxton Fulton <trux@truxton.com>,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH 55/57] staging: comedi: drivers: ni_mio_common: Move
- 'range_ni_E_ao_ext' to where it is used
-Message-ID: <20210415065535.eff56u7nhfhrcnl3@pengutronix.de>
-References: <20210414181129.1628598-1-lee.jones@linaro.org>
- <20210414181129.1628598-56-lee.jones@linaro.org>
+        id S231231AbhDOG4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 02:56:51 -0400
+Received: from mga11.intel.com ([192.55.52.93]:61848 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231217AbhDOG4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 02:56:48 -0400
+IronPort-SDR: wlPK8LC7MEzJP45FvSXsHhoUjzfjZ4WGktWWr4MNmlOXoYNcxPfZqar9WgbvjQ/r++1UnoNwyK
+ 57ITdyR4AmLw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="191612089"
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="191612089"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 23:56:25 -0700
+IronPort-SDR: IwNtvxqKG63G2Vyzj1z8gOzo293FGZE5KxdLe37XiCPZJxNVvEdCvfuLv0RPGJtDm3JpTVBr92
+ Rdj06eOGq6Ig==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="421596188"
+Received: from dengjie-mobl1.ccr.corp.intel.com (HELO [10.239.154.55]) ([10.239.154.55])
+  by orsmga007.jf.intel.com with ESMTP; 14 Apr 2021 23:56:19 -0700
+Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux I2C <linux-i2c@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        conghui.chen@intel.com, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com,
+        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
+        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
+        Tali Perry <tali.perry1@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        yu1.wang@intel.com, shuo.a.liu@intel.com,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
+ <20210323072704.rgoelmq62fl2wjjf@vireshk-i7>
+ <a2994a8f-bbf9-b26f-a9d2-eb02df6623b8@intel.com>
+ <CAK8P3a3OBUZC2nxaQ2wyL9EeT3gzXUX9sfJ+ZJfJUiJK_3ZkrA@mail.gmail.com>
+ <20210415064538.a4vf7egk6l3u6zfz@vireshk-i7>
+From:   Jie Deng <jie.deng@intel.com>
+Message-ID: <b25d1f4e-f17f-8a14-e7e6-7577d25be877@intel.com>
+Date:   Thu, 15 Apr 2021 14:56:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="f4boi5bpfqf5gex7"
-Content-Disposition: inline
-In-Reply-To: <20210414181129.1628598-56-lee.jones@linaro.org>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210415064538.a4vf7egk6l3u6zfz@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---f4boi5bpfqf5gex7
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 2021/4/15 14:45, Viresh Kumar wrote:
+> On 23-03-21, 10:27, Arnd Bergmann wrote:
+>> I usually recommend the use of __maybe_unused for the suspend/resume
+>> callbacks for drivers that use SIMPLE_DEV_PM_OPS() or similar helpers
+>> that hide the exact conditions under which the functions get called.
+>>
+>> In this driver, there is an explicit #ifdef in the reference to the
+>> functions, so
+>> it would make sense to use the same #ifdef around the definition.
+> Jie,
+>
+> I was talking about this comment when I said I was expecting a new
+> version. I think you still need to make this change.
 
-Hello Lee,
 
-nitpick: You move range_ni_E_ao_ext to the header. However that header
-doesn't use range_ni_E_ao_ext, so the subject is technically wrong.
+I didn't forget this. It is a very small change. I'm not sure if the 
+maintainer Wolfram
 
-On Wed, Apr 14, 2021 at 07:11:27PM +0100, Lee Jones wrote:
-> ... and mark it as __maybe_unused since not all users of the
-> header file reference it.
->=20
-> Fixes the following W=3D1 kernel build warning(s):
->=20
->  drivers/staging/comedi/drivers/ni_mio_common.c:163:35: warning: =E2=80=
-=98range_ni_E_ao_ext=E2=80=99 defined but not used [-Wunused-const-variable=
-=3D]
->=20
-> Cc: Ian Abbott <abbotti@mev.co.uk>
-> Cc: H Hartley Sweeten <hsweeten@visionengravers.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: "Uwe Kleine-K=C3=B6nig" <u.kleine-koenig@pengutronix.de>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: "David A. Schleef" <ds@schleef.org>
-> Cc: Mori Hess <fmhess@users.sourceforge.net>
-> Cc: Truxton Fulton <trux@truxton.com>
-> Cc: linux-staging@lists.linux.dev
-> Cc: linux-pwm@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/staging/comedi/drivers/ni_mio_common.c | 9 ---------
->  drivers/staging/comedi/drivers/ni_stc.h        | 9 ++++++++-
->  2 files changed, 8 insertions(+), 10 deletions(-)
->=20
-> diff --git a/drivers/staging/comedi/drivers/ni_mio_common.c b/drivers/sta=
-ging/comedi/drivers/ni_mio_common.c
-> index 4f80a4991f953..37615b4e2c10d 100644
-> --- a/drivers/staging/comedi/drivers/ni_mio_common.c
-> +++ b/drivers/staging/comedi/drivers/ni_mio_common.c
-> @@ -160,15 +160,6 @@ static const struct comedi_lrange range_ni_M_ai_628x=
- =3D {
->  	}
->  };
-> =20
-> -static const struct comedi_lrange range_ni_E_ao_ext =3D {
-> -	4, {
-> -		BIP_RANGE(10),
-> -		UNI_RANGE(10),
-> -		RANGE_ext(-1, 1),
-> -		RANGE_ext(0, 1)
-> -	}
-> -};
-> -
->  static const struct comedi_lrange *const ni_range_lkup[] =3D {
->  	[ai_gain_16] =3D &range_ni_E_ai,
->  	[ai_gain_8] =3D &range_ni_E_ai_limited,
-> diff --git a/drivers/staging/comedi/drivers/ni_stc.h b/drivers/staging/co=
-medi/drivers/ni_stc.h
-> index fbc0b753a0f59..0822e65f709dd 100644
-> --- a/drivers/staging/comedi/drivers/ni_stc.h
-> +++ b/drivers/staging/comedi/drivers/ni_stc.h
-> @@ -1137,6 +1137,13 @@ struct ni_private {
->  	u8 rgout0_usage;
->  };
-> =20
-> -static const struct comedi_lrange range_ni_E_ao_ext;
-> +static const struct comedi_lrange __maybe_unused range_ni_E_ao_ext =3D {
-> +	4, {
-> +		BIP_RANGE(10),
-> +		UNI_RANGE(10),
-> +		RANGE_ext(-1, 1),
-> +		RANGE_ext(0, 1)
-> +	}
-> +};
+has any comments so that I can address them together in one version.
 
-I think a downside of this solution is that range_ni_E_ao_ext might be
-duplicated in the object files. (Ditto for the status quo BTW.)
+Thanks.
 
-I think the right approach to fix the compiler warning and the
-duplication is to declare range_ni_E_ao_ext external in the header and
-keep the definition in ni_mio_common.c.
 
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
-   |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---f4boi5bpfqf5gex7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmB342QACgkQwfwUeK3K
-7AmX5gf/dIlnwiXhI52/OOiPEZTsrfSg1t8iPwITw1Kexfp+BiH0njLzCaDtiQSB
-GrD7qoOw2/YCKCrJTErs+OJ+8dRmXWV7ynsFAf9vvDuNsnF+Mef9++t92If64pIu
-DNf/VSorofSmfYgMrizczIi6qBufr3Of1s3ebBmrQbDiM8KHNwZTC60Fy6knnE95
-3Pln3knZecUShJgGgilFyXLuPEl+lmgDD+X0tWNdRXkxY1HmeC07SlgRXYO+fPAk
-TzqO62RJG6dM/nawDHT1VjucYmUknbr6bta8rbDJauKtDn2Hshb04dIyaDJNXCuB
-cyhjtvS8nFxTR/rba97wd7Df8Wkmaw==
-=lG+K
------END PGP SIGNATURE-----
-
---f4boi5bpfqf5gex7--
