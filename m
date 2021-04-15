@@ -2,79 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE17360547
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2E436054C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231808AbhDOJJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 05:09:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45288 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232080AbhDOJJD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 05:09:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA4AC610CB;
-        Thu, 15 Apr 2021 09:08:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618477719;
-        bh=DNcJW1urQEhxebHE8EB9/vcQ74Ke7vd8CHkmoFeMQtg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qPheLIHpT2I1cdVVyOVobuXxehdE5n3YMG6xyfL3v0aaRGQHA3Z19unQfEFXHcPuk
-         QNM37UXZhwC8ecgZAZiY2UowdlW04OwwTD1fXf9t42h04Q6VzP/r8onqf2eBdLWAjB
-         ye1v9+ljZdx/rkwD6WwCkxVyQZjCW2y4s33HSrY0=
-Date:   Thu, 15 Apr 2021 11:08:36 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/7] stm class: Replace uuid_t with plain u8 uuid[16]
-Message-ID: <YHgClKj6FNDQoqem@kroah.com>
-References: <20210414171251.14672-1-alexander.shishkin@linux.intel.com>
- <20210414171251.14672-3-alexander.shishkin@linux.intel.com>
- <YHcnckePpKDujCU+@kroah.com>
- <YHcqxMLR44laX2PZ@smile.fi.intel.com>
- <YHc68v7keeITnA3K@kroah.com>
- <87sg3sfzl1.fsf@ashishki-desk.ger.corp.intel.com>
- <YHf6s2r28XOtP2+2@kroah.com>
- <CAHp75Vf7UrRuN=rBkBYrSDz3yiUq4_k2HVvCJ7cTB=_4y8+W7g@mail.gmail.com>
+        id S231992AbhDOJJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 05:09:42 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:44441 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231842AbhDOJJf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 05:09:35 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id C8FBD580732;
+        Thu, 15 Apr 2021 05:09:12 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 15 Apr 2021 05:09:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=f9xNlW94bXKtHQ7VEokJAT3kze5
+        U1y0S6MsZACvD48M=; b=vEUIxIYLGCcSHcP4DmDFXZ9AYUaaSKq7OgPflDw3FSv
+        I+QdHQXmRsMSXDy692Vcurp4HsfjKzD8TG3Rmv1kgbYUy+sxPKivQ42P/qfUJ1aC
+        J4WU7ldZicYZ5FkUh3Hc9xb+FhsHhtcguaJy7mpsV04ySgy2YJx/686BRybIYL/w
+        ICc9RqpasWbNBhTY3YWAgMerurEbyKmghfb8h97ZKjgAaZZ9FxiL/d1slUuQFOWh
+        NBdrw6IvyI8tyKWFVAPSEdAhFMwBF0BbRMLCi9KZIAD1JBWHyEF6ChNwbKb6G3cc
+        PoCWK5G2Qy2MWNRfxAx3SyHGy3z8cChtwzrYGQtwAhw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=f9xNlW
+        94bXKtHQ7VEokJAT3kze5U1y0S6MsZACvD48M=; b=q6coCEfjbx39w8i+UiUlBw
+        2i04erJWb7K1nq8nA0IGYNGZcHyaLzTiWNHB5AFNCdNFH1eXjwTq+ddprFqrcS2z
+        WEHhAYVy7NDUqC8L9LdeiEvuxx3zep9x2Z7tFQdK6ygISVJ04+osAldNwTm+DoFl
+        awyyrEKeIXll5/y/3kwKwPGC+WDVqdRPqOsU46tW1V5EX/uk6lvqGtdEuB5IIGkl
+        egDv7g8jdxJIxR4ACRlqBOGkOx1bnSos9YdLJtQiRa1NCVG6+VE1zBLCBDeyzars
+        KqzEwGVVUDpUs6kPMa2QXf1s2hoFtvUaw5wjNjPNn589E9jHazF/SoyGq8XAa1Mg
+        ==
+X-ME-Sender: <xms:twJ4YD7hHahEVJY-5XgZ6ALhWFQdIBfVXSlkM_SAafJC6skWBPV08w>
+    <xme:twJ4YI63NB7Cvdmq0PMGWuwGX2L5YP62-h4_grA6UY6ZmBs9ryoQ84G8tty9IB-as
+    UxxWZRQyLjvh1fSoLQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudelfedguddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepuedtgfejueduheevgfevvdettdduleffgfffkeeltdffkeegudekjeeuveei
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:twJ4YKcTpIt7aSdHWJShor-jeO79uTFT_5_0I4vhN6bdLFCHaqYuhw>
+    <xmx:twJ4YELUWxPD7jCsfSWlDFi3YsI9JIONzZMy3tzjtcgLyO53tt5Flg>
+    <xmx:twJ4YHJw6OPR5ti-pxTsIpN-unIEFbyldeOufzwK6bsnMPDMtYkR7Q>
+    <xmx:uAJ4YIWJ9qy5zVB6gYQb65jUxnil0TTLlTn-78kmIpBofH2uJZU7JQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 31DD9240057;
+        Thu, 15 Apr 2021 05:09:11 -0400 (EDT)
+Date:   Thu, 15 Apr 2021 11:09:08 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Kevin Tang <kevin3.tang@gmail.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 4/6] drm/sprd: add Unisoc's drm display controller
+ driver
+Message-ID: <20210415090908.lmu372lzzjb5hz2b@gilmour>
+References: <20210222132822.7830-1-kevin3.tang@gmail.com>
+ <20210222132822.7830-5-kevin3.tang@gmail.com>
+ <20210324111019.og6d3w47swjim2mq@gilmour>
+ <CAFPSGXZ3DjKt87Kc=wc9YKVzTjkQ38Ok6HnHm+VEdqXyHv54Eg@mail.gmail.com>
+ <20210407104538.cvssdck26rejrfye@gilmour>
+ <CAFPSGXa3xsxmfVquN_pTyBJ4+kL4jQAj6sK+86G3SA2OhB7Jtg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="iqjdlfj2zil34vaj"
 Content-Disposition: inline
-In-Reply-To: <CAHp75Vf7UrRuN=rBkBYrSDz3yiUq4_k2HVvCJ7cTB=_4y8+W7g@mail.gmail.com>
+In-Reply-To: <CAFPSGXa3xsxmfVquN_pTyBJ4+kL4jQAj6sK+86G3SA2OhB7Jtg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 11:48:48AM +0300, Andy Shevchenko wrote:
-> On Thu, Apr 15, 2021 at 11:35 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Wed, Apr 14, 2021 at 10:14:34PM +0300, Alexander Shishkin wrote:
-> > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
-> > >
-> > > >> Using raw buffer APIs against uuid_t / guid_t.
+
+--iqjdlfj2zil34vaj
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Fri, Apr 09, 2021 at 09:35:07PM +0800, Kevin Tang wrote:
+> > > > > +     }
+> > > > > +
+> > > > > +     return MODE_OK;
+> > > > > +}
+> > > > > +
+> > > > > +static void sprd_crtc_atomic_enable(struct drm_crtc *crtc,
+> > > > > +                                struct drm_atomic_state *state)
+> > > > > +{
+> > > > > +     struct sprd_dpu *dpu =3D to_sprd_crtc(crtc);
+> > > > > +
+> > > > > +     sprd_dpu_init(dpu);
+> > > > > +
+> > > > > +     sprd_dpi_init(dpu);
+> > > > > +
+> > > > > +     enable_irq(dpu->ctx.irq);
 > > > >
-> > > > So you want to do that, or you do not want to do that?  Totally
-> > > > confused,
+> > > > Shouldn't this be in enable_vblank? And I would assume that you wou=
+ld
+> > > > have the interrupts enabled all the time, but disabled in your devi=
+ce?
+> > > >
+> > > It seems better to put in enable_vblank, i will try and test it... Th=
+ks
 > > >
-> > > My understanding is that:
-> > > 1) generate_random_uuid() use is allegedly bad even though it's in their
-> > > header,
-> > > 2) poking directly at the byte array inside uuid_t is bad, even though,
-> > > again, header.
-> > >
-> > > It is, indeed, not ideal.
-> > >
-> > > If agreeable, I'll update this patch to the below and respin the whole
-> > > series.
+> > >   And I would assume that you would
+> > > have the interrupts enabled all the time, but disabled in your device?
+> > > [kevin]I don=E2=80=99t quite understand this, can you help me explain=
+ it in
+> > > detail?
 > >
-> > You are showing that Andy wrote this, when you are the one that did :(
-> 
-> > Anyway, I've dropped this single patch from the series and applied the
-> > rest.  Feel free to send this patch as a stand-alone one once you have
-> > the authorship issues sorted out.
-> 
-> Internally it was proposed by me as well, so authorship is correct.
+> > You seem to have a register that enables and disables the interrupt in
+> > that device. The way we usually deal with them in this case is just to
+> > call request_irq in your bind/probe with the interrupts enabled at the
+> > controller level, and mask them when needed at the device level by
+> > clearing / setting that bit.
+> >
+>  Yeah, we have display controller interrupts setting and clear register.
+> But the interrupts all been enabled in bootloader(eg, lk or uboot),
+> if the interrupt handler is active in the probe/bind phase by request_irq,
+> but the whole display pipeline is not ready, there maybe have some proble=
+ms.
 
-And I am supposed to know this how?
+It's fairly common to clear / ack the interrupts from the device before
+calling request_irq precisely to avoid that issue.
 
-Come on people, you know better than this...
+Maxime
+
+--iqjdlfj2zil34vaj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYHgCtAAKCRDj7w1vZxhR
+xXBaAQC3ACb0Go3hl2khk93hUI2vLUrRqFpmr9tlUyb7hqba7QD+NkO+fFD5Ue+7
+9aQgbCXUIw4o3IFlfY8J7s5gjehvog8=
+=JU1P
+-----END PGP SIGNATURE-----
+
+--iqjdlfj2zil34vaj--
