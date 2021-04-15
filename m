@@ -2,97 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 298FD360D04
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:56:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E563360C25
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234187AbhDOO4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:56:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234077AbhDOOxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:53:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E183613DA;
-        Thu, 15 Apr 2021 14:52:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498343;
-        bh=CInIEyceU6K5xO6r9eiLdQPTABvm3UjymXGdGY9/G6Y=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X1+VY1gTKd5zaL8PWzEUeDwB0BEZEKnlcCZ7KmnHQpS+nXTQ4rguUSe2a9bvc14Ti
-         joQxLx6YOigeIHu2vKSqklo80/M9HVZSWVvu2/sgozg2Vqbj5G9oBla/0pa4me/q1c
-         Xh02tJH8csD7Uejheuh52mjwRpEeu+ktwEY2+OV4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+9ec037722d2603a9f52e@syzkaller.appspotmail.com,
-        Alexander Aring <aahringo@redhat.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>
-Subject: [PATCH 4.9 33/47] net: mac802154: Fix general protection fault
-Date:   Thu, 15 Apr 2021 16:47:25 +0200
-Message-Id: <20210415144414.526372274@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.487943796@linuxfoundation.org>
-References: <20210415144413.487943796@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S233548AbhDOOrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:47:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233052AbhDOOrv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:47:51 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B97C061574;
+        Thu, 15 Apr 2021 07:47:28 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id B9D5C89A;
+        Thu, 15 Apr 2021 16:47:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1618498046;
+        bh=Qt+bhzs/93o6wBx0emPldtNgrinS8ZG6nYZ/56Vl7tE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IYjUec1OtrBoWVfShOjB/r32/1dvQkO2pyFJ82DU12t0qCfL100+yQEypc8qgzK1L
+         dHN18CE6vSNmvo0ZGq7q1XKkOiB9vuMdfOgQZVC7DP+1ViY43NPpaRtRtT+/LVEXK/
+         bUEr+dqGJp2awIpW+CjXR24/gGJ03d9im915Url0=
+Date:   Thu, 15 Apr 2021 17:47:25 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 4/7] arm64: dts: renesas: r8a77970: Add csi40 port@0
+Message-ID: <YHhR/YR6Ecp6yU4D@pendragon.ideasonboard.com>
+References: <20210415122602.87697-1-jacopo+renesas@jmondi.org>
+ <20210415122602.87697-5-jacopo+renesas@jmondi.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210415122602.87697-5-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+Hi Jacopo,
 
-commit 1165affd484889d4986cf3b724318935a0b120d8 upstream.
+Thank you for the patch.
 
-syzbot found general protection fault in crypto_destroy_tfm()[1].
-It was caused by wrong clean up loop in llsec_key_alloc().
-If one of the tfm array members is in IS_ERR() range it will
-cause general protection fault in clean up function [1].
+On Thu, Apr 15, 2021 at 02:25:59PM +0200, Jacopo Mondi wrote:
+> Declare port@0 in the csi40 device node and leave it un-connected.
+> Each board .dts file will connect the port as it requires.
+> 
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
 
-Call Trace:
- crypto_free_aead include/crypto/aead.h:191 [inline] [1]
- llsec_key_alloc net/mac802154/llsec.c:156 [inline]
- mac802154_llsec_key_add+0x9e0/0xcc0 net/mac802154/llsec.c:249
- ieee802154_add_llsec_key+0x56/0x80 net/mac802154/cfg.c:338
- rdev_add_llsec_key net/ieee802154/rdev-ops.h:260 [inline]
- nl802154_add_llsec_key+0x3d3/0x560 net/ieee802154/nl802154.c:1584
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:674
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+The port exists at the hardware level, so including it here sounds good.
+The DT binding even makes the port mandatory :-)
 
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Reported-by: syzbot+9ec037722d2603a9f52e@syzkaller.appspotmail.com
-Acked-by: Alexander Aring <aahringo@redhat.com>
-Link: https://lore.kernel.org/r/20210304152125.1052825-1-paskripkin@gmail.com
-Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/mac802154/llsec.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
---- a/net/mac802154/llsec.c
-+++ b/net/mac802154/llsec.c
-@@ -158,7 +158,7 @@ err_tfm0:
- 	crypto_free_skcipher(key->tfm0);
- err_tfm:
- 	for (i = 0; i < ARRAY_SIZE(key->tfm); i++)
--		if (key->tfm[i])
-+		if (!IS_ERR_OR_NULL(key->tfm[i]))
- 			crypto_free_aead(key->tfm[i]);
- 
- 	kzfree(key);
+> ---
+>  arch/arm64/boot/dts/renesas/r8a77970.dtsi | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/renesas/r8a77970.dtsi b/arch/arm64/boot/dts/renesas/r8a77970.dtsi
+> index 5a5d5649332a..e8f6352c3665 100644
+> --- a/arch/arm64/boot/dts/renesas/r8a77970.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/r8a77970.dtsi
+> @@ -1106,6 +1106,10 @@ ports {
+>  				#address-cells = <1>;
+>  				#size-cells = <0>;
+>  
+> +				port@0 {
+> +					reg = <0>;
+> +				};
+> +
+>  				port@1 {
+>  					#address-cells = <1>;
+>  					#size-cells = <0>;
 
+-- 
+Regards,
 
+Laurent Pinchart
