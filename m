@@ -2,248 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 223A036091E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E10360922
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232937AbhDOMQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 08:16:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232849AbhDOMQG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 08:16:06 -0400
-Received: from mail.pqgruber.com (mail.pqgruber.com [IPv6:2a05:d014:575:f70b:4f2c:8f1d:40c4:b13e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89786C061760;
-        Thu, 15 Apr 2021 05:15:43 -0700 (PDT)
-Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
-        by mail.pqgruber.com (Postfix) with ESMTPSA id 0D003C725D8;
-        Thu, 15 Apr 2021 14:15:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
-        s=mail; t=1618488942;
-        bh=YWHML3DuOzwgSktSARm58ZchDBxU953bun9zG3JNyD4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=namyFJEA/JD59ikB0boIuCpTDl4yd1zMiSJaxuf3veHCUeveFM2CZh6E+ZFqgy/6G
-         NfMzE0cMfWLaFfCekgLixniO4+fQ+Kg0m0HekuXccwLIzosAsnWQjXe8CiOPC1r8/q
-         4GTjNhmXtgylXASNGe6Amy6JvSVNZZQLrCUiRGm8=
-From:   Clemens Gruber <clemens.gruber@pqgruber.com>
-To:     linux-pwm@vger.kernel.org
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Clemens Gruber <clemens.gruber@pqgruber.com>
-Subject: [PATCH v9 8/8] pwm: pca9685: Add error messages for failed regmap calls
-Date:   Thu, 15 Apr 2021 14:14:55 +0200
-Message-Id: <20210415121455.39536-8-clemens.gruber@pqgruber.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415121455.39536-1-clemens.gruber@pqgruber.com>
-References: <20210415121455.39536-1-clemens.gruber@pqgruber.com>
+        id S232921AbhDOMQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 08:16:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:44844 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232889AbhDOMQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 08:16:45 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1358A106F;
+        Thu, 15 Apr 2021 05:16:22 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 93C1C3F73B;
+        Thu, 15 Apr 2021 05:16:19 -0700 (PDT)
+Subject: Re: [PATCH v2 7/9] sched,debug: Convert sysctl sched_domains to
+ debugfs
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Cc:     mingo@kernel.org, mgorman@suse.de, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, rostedt@goodmis.org,
+        bsegall@google.com, bristot@redhat.com, joshdon@google.com,
+        linux-kernel@vger.kernel.org, greg@kroah.com,
+        linux@rasmusvillemoes.dk
+References: <20210412101421.609526370@infradead.org>
+ <20210412102001.485107586@infradead.org> <87lf9mmdyk.mognet@arm.com>
+ <YHgB/s4KCBQ1ifdm@hirez.programming.kicks-ass.net>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <a3399de6-ebe9-a813-23a1-565f6fdf38c7@arm.com>
+Date:   Thu, 15 Apr 2021 14:16:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YHgB/s4KCBQ1ifdm@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Regmap operations can fail if the underlying subsystem is not working
-properly (e.g. hogged I2C bus, etc.)
-As this is useful information for the user, print an error message if it
-happens.
-Let probe fail if the first regmap_read or the first regmap_write fails.
+On 15/04/2021 11:06, Peter Zijlstra wrote:
+> On Tue, Apr 13, 2021 at 03:55:15PM +0100, Valentin Schneider wrote:
+>> On 12/04/21 12:14, Peter Zijlstra wrote:
+>>> Stop polluting sysctl, move to debugfs for SCHED_DEBUG stuff.
+>>>
+>>> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>>> Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+>>
+>> On my Juno (2+4 big.LITTLE), sys/kernel/debug/sched/domains/ is now empty.
+>>
+>> I think that's because of unregister_sched_domain_sysctl() -
+>> debugfs_remove() is recursive, and I do get a case where we rebuild the
+>> domains but no CPU has been added or removed (we rebuild the domains when
+>> cpufreq kicks in, it's part of the big.LITTLE ponies).
+>>
+>> Do we actually still need that unregister? From a brief glance it looks
+>> like we could throw it out.
+> 
+> Yeah, I can't think of anything either. AFAICT it hasn't done anything
+> useful since that cpumask optimization. Consider it gone.
+> 
+> I'll let it soak for another day or so, but then I was planning on
+> merging this series.
+> 
+> Updated patch has been in queue.git/sched/debug since yesterday.
 
-Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
----
-Changes since v8:
-- Minor readability improvements
-- Rebased
+Had to check since v1 was working fine on Juno. So it was this
+__cpumask_clear_cpu() in register_sched_domain_sysctl() introduced in v2
+which let the files under /sys/kernel/debug/sched/domains disapear.
 
-Changes since v7:
-- Use %pe instead of %d for error codes (Suggested by Uwe)
+With {un,}register_sched_domain_sysctl() removed from
+partition_sched_domains_locked() they're there again.
 
- drivers/pwm/pwm-pca9685.c | 83 ++++++++++++++++++++++++++++-----------
- 1 file changed, 59 insertions(+), 24 deletions(-)
+Looks like now register_sched_domain_sysctl() can be made static in
+kernel/sched/debug.c.
 
-diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
-index f3ff36381c5b..e88e02118f25 100644
---- a/drivers/pwm/pwm-pca9685.c
-+++ b/drivers/pwm/pwm-pca9685.c
-@@ -107,6 +107,30 @@ static bool pca9685_prescaler_can_change(struct pca9685 *pca, int channel)
- 	return test_bit(channel, pca->pwms_enabled);
- }
- 
-+static int pca9685_read_reg(struct pca9685 *pca, unsigned int reg, unsigned int *val)
-+{
-+	struct device *dev = pca->chip.dev;
-+	int err;
-+
-+	err = regmap_read(pca->regmap, reg, val);
-+	if (err)
-+		dev_err(dev, "regmap_read of register 0x%x failed: %pe\n", reg, ERR_PTR(err));
-+
-+	return err;
-+}
-+
-+static int pca9685_write_reg(struct pca9685 *pca, unsigned int reg, unsigned int val)
-+{
-+	struct device *dev = pca->chip.dev;
-+	int err;
-+
-+	err = regmap_write(pca->regmap, reg, val);
-+	if (err)
-+		dev_err(dev, "regmap_write to register 0x%x failed: %pe\n", reg, ERR_PTR(err));
-+
-+	return err;
-+}
-+
- /* Helper function to set the duty cycle ratio to duty/4096 (e.g. duty=2048 -> 50%) */
- static void pca9685_pwm_set_duty(struct pca9685 *pca, int channel, unsigned int duty)
- {
-@@ -115,12 +139,12 @@ static void pca9685_pwm_set_duty(struct pca9685 *pca, int channel, unsigned int
- 
- 	if (duty == 0) {
- 		/* Set the full OFF bit, which has the highest precedence */
--		regmap_write(pca->regmap, REG_OFF_H(channel), LED_FULL);
-+		pca9685_write_reg(pca, REG_OFF_H(channel), LED_FULL);
- 		return;
- 	} else if (duty >= PCA9685_COUNTER_RANGE) {
- 		/* Set the full ON bit and clear the full OFF bit */
--		regmap_write(pca->regmap, REG_ON_H(channel), LED_FULL);
--		regmap_write(pca->regmap, REG_OFF_H(channel), 0);
-+		pca9685_write_reg(pca, REG_ON_H(channel), LED_FULL);
-+		pca9685_write_reg(pca, REG_OFF_H(channel), 0);
- 		return;
- 	}
- 
-@@ -141,11 +165,11 @@ static void pca9685_pwm_set_duty(struct pca9685 *pca, int channel, unsigned int
- 	off = (on + duty) % PCA9685_COUNTER_RANGE;
- 
- 	/* Set ON time (clears full ON bit) */
--	regmap_write(pca->regmap, REG_ON_L(channel), on & 0xff);
--	regmap_write(pca->regmap, REG_ON_H(channel), (on >> 8) & 0xf);
-+	pca9685_write_reg(pca, REG_ON_L(channel), on & 0xff);
-+	pca9685_write_reg(pca, REG_ON_H(channel), (on >> 8) & 0xf);
- 	/* Set OFF time (clears full OFF bit) */
--	regmap_write(pca->regmap, REG_OFF_L(channel), off & 0xff);
--	regmap_write(pca->regmap, REG_OFF_H(channel), (off >> 8) & 0xf);
-+	pca9685_write_reg(pca, REG_OFF_L(channel), off & 0xff);
-+	pca9685_write_reg(pca, REG_OFF_H(channel), (off >> 8) & 0xf);
- }
- 
- static unsigned int pca9685_pwm_get_duty(struct pca9685 *pca, int channel)
-@@ -158,25 +182,25 @@ static unsigned int pca9685_pwm_get_duty(struct pca9685 *pca, int channel)
- 		return 0;
- 	}
- 
--	regmap_read(pca->regmap, LED_N_OFF_H(channel), &off);
-+	pca9685_read_reg(pca, LED_N_OFF_H(channel), &off);
- 	if (off & LED_FULL) {
- 		/* Full OFF bit is set */
- 		return 0;
- 	}
- 
--	regmap_read(pca->regmap, LED_N_ON_H(channel), &on);
-+	pca9685_read_reg(pca, LED_N_ON_H(channel), &on);
- 	if (on & LED_FULL) {
- 		/* Full ON bit is set */
- 		return PCA9685_COUNTER_RANGE;
- 	}
- 
--	regmap_read(pca->regmap, LED_N_OFF_L(channel), &val);
-+	pca9685_read_reg(pca, LED_N_OFF_L(channel), &val);
- 	off = ((off & 0xf) << 8) | (val & 0xff);
- 	if (!pwm->args.usage_power)
- 		return off;
- 
- 	/* Read ON register to calculate duty cycle of staggered output */
--	if (regmap_read(pca->regmap, LED_N_ON_L(channel), &val)) {
-+	if (pca9685_read_reg(pca, LED_N_ON_L(channel), &val)) {
- 		/* Reset val to 0 in case reading LED_N_ON_L failed */
- 		val = 0;
- 	}
-@@ -322,8 +346,15 @@ static inline int pca9685_pwm_gpio_probe(struct pca9685 *pca)
- 
- static void pca9685_set_sleep_mode(struct pca9685 *pca, bool enable)
- {
--	regmap_update_bits(pca->regmap, PCA9685_MODE1,
--			   MODE1_SLEEP, enable ? MODE1_SLEEP : 0);
-+	struct device *dev = pca->chip.dev;
-+	int err = regmap_update_bits(pca->regmap, PCA9685_MODE1,
-+				     MODE1_SLEEP, enable ? MODE1_SLEEP : 0);
-+	if (err) {
-+		dev_err(dev, "regmap_update_bits of register 0x%x failed: %pe\n",
-+			PCA9685_MODE1, ERR_PTR(err));
-+		return;
-+	}
-+
- 	if (!enable) {
- 		/* Wait 500us for the oscillator to be back up */
- 		udelay(500);
-@@ -352,7 +383,7 @@ static int __pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 		return 0;
- 	}
- 
--	regmap_read(pca->regmap, PCA9685_PRESCALE, &val);
-+	pca9685_read_reg(pca, PCA9685_PRESCALE, &val);
- 	if (prescale != val) {
- 		if (!pca9685_prescaler_can_change(pca, pwm->hwpwm)) {
- 			dev_err(chip->dev,
-@@ -370,7 +401,7 @@ static int __pca9685_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 		pca9685_set_sleep_mode(pca, true);
- 
- 		/* Change the chip-wide output frequency */
--		regmap_write(pca->regmap, PCA9685_PRESCALE, prescale);
-+		pca9685_write_reg(pca, PCA9685_PRESCALE, prescale);
- 
- 		/* Wake the chip up */
- 		pca9685_set_sleep_mode(pca, false);
-@@ -409,7 +440,7 @@ static void pca9685_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
- 	unsigned int val = 0;
- 
- 	/* Calculate (chip-wide) period from prescale value */
--	regmap_read(pca->regmap, PCA9685_PRESCALE, &val);
-+	pca9685_read_reg(pca, PCA9685_PRESCALE, &val);
- 	/*
- 	 * PCA9685_OSC_CLOCK_MHZ is 25, i.e. an integer divider of 1000.
- 	 * The following calculation is therefore only a multiplication
-@@ -506,7 +537,9 @@ static int pca9685_pwm_probe(struct i2c_client *client,
- 
- 	mutex_init(&pca->lock);
- 
--	regmap_read(pca->regmap, PCA9685_MODE2, &reg);
-+	ret = pca9685_read_reg(pca, PCA9685_MODE2, &reg);
-+	if (ret)
-+		return ret;
- 
- 	if (device_property_read_bool(&client->dev, "invert"))
- 		reg |= MODE2_INVRT;
-@@ -518,18 +551,20 @@ static int pca9685_pwm_probe(struct i2c_client *client,
- 	else
- 		reg |= MODE2_OUTDRV;
- 
--	regmap_write(pca->regmap, PCA9685_MODE2, reg);
-+	ret = pca9685_write_reg(pca, PCA9685_MODE2, reg);
-+	if (ret)
-+		return ret;
- 
- 	/* Disable all LED ALLCALL and SUBx addresses to avoid bus collisions */
--	regmap_read(pca->regmap, PCA9685_MODE1, &reg);
-+	pca9685_read_reg(pca, PCA9685_MODE1, &reg);
- 	reg &= ~(MODE1_ALLCALL | MODE1_SUB1 | MODE1_SUB2 | MODE1_SUB3);
--	regmap_write(pca->regmap, PCA9685_MODE1, reg);
-+	pca9685_write_reg(pca, PCA9685_MODE1, reg);
- 
- 	/* Reset OFF/ON registers to POR default */
--	regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_L, LED_FULL);
--	regmap_write(pca->regmap, PCA9685_ALL_LED_OFF_H, LED_FULL);
--	regmap_write(pca->regmap, PCA9685_ALL_LED_ON_L, 0);
--	regmap_write(pca->regmap, PCA9685_ALL_LED_ON_H, 0);
-+	pca9685_write_reg(pca, PCA9685_ALL_LED_OFF_L, LED_FULL);
-+	pca9685_write_reg(pca, PCA9685_ALL_LED_OFF_H, LED_FULL);
-+	pca9685_write_reg(pca, PCA9685_ALL_LED_ON_L, 0);
-+	pca9685_write_reg(pca, PCA9685_ALL_LED_ON_H, 0);
- 
- 	pca->chip.ops = &pca9685_pwm_ops;
- 	/* Add an extra channel for ALL_LED */
--- 
-2.31.1
-
+[...]
