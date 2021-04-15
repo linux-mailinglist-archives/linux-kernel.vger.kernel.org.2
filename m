@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FACE360D02
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 531D8360C80
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234008AbhDOO4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:56:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39614 "EHLO mail.kernel.org"
+        id S233543AbhDOOvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:51:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233953AbhDOOxc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:53:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DDEBF613D5;
-        Thu, 15 Apr 2021 14:52:17 +0000 (UTC)
+        id S233921AbhDOOu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:50:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E55EC613E0;
+        Thu, 15 Apr 2021 14:50:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498338;
-        bh=aZpCNt2XF25QtCJu1iUt7ziUpIDpur/9IVskh4YRI9U=;
+        s=korg; t=1618498205;
+        bh=F0q2b5Et1V+3J0UHCzUiBJ2GNKY5/run3Ud4Ho7pUE8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L0ALyEjiTMSHBgt66u2XxzOQ3uSKakM/59GQZ+Oyi2dhssrdPDlYNUTT+OIX9oVo0
-         EDjZF4lNNG4sC314comsCetTdSH862nVS6qGO7bYiBdrsLNp0BOor9x4CJ1d9iBeFz
-         sEL5FicncbEyw4wh/H3/XVoDL9EujzBKC2Hz26uQ=
+        b=zPmEpGMtxMWa6vORNXGrtF6PKMZuKjs1eZfdHU6VXWdXnj961VzTaMaZs5lpNqVxa
+         s7+IfcPZAVmM0pdpJ53Q94Pd5oV4Bra9ajb2y9XJ4Z7qmqzQ/EEGAT3wJCSGpYWcM0
+         T9K0FIa2imC5dngOnx741TivQFMOkYsXcrOuD5LM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+28a246747e0a465127f3@syzkaller.appspotmail.com,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 31/47] drivers: net: fix memory leak in atusb_probe
-Date:   Thu, 15 Apr 2021 16:47:23 +0200
-Message-Id: <20210415144414.466627824@linuxfoundation.org>
+        syzbot+ce4e062c2d51977ddc50@syzkaller.appspotmail.com,
+        Alexander Aring <aahringo@redhat.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>
+Subject: [PATCH 4.4 30/38] net: ieee802154: fix nl802154 add llsec key
+Date:   Thu, 15 Apr 2021 16:47:24 +0200
+Message-Id: <20210415144414.316505085@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.487943796@linuxfoundation.org>
-References: <20210415144413.487943796@linuxfoundation.org>
+In-Reply-To: <20210415144413.352638802@linuxfoundation.org>
+References: <20210415144413.352638802@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +41,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Alexander Aring <aahringo@redhat.com>
 
-commit 6b9fbe16955152626557ec6f439f3407b7769941 upstream.
+commit 20d5fe2d7103f5c43ad11a3d6d259e9d61165c35 upstream.
 
-syzbot reported memory leak in atusb_probe()[1].
-The problem was in atusb_alloc_urbs().
-Since urb is anchored, we need to release the reference
-to correctly free the urb
+This patch fixes a nullpointer dereference if NL802154_ATTR_SEC_KEY is
+not set by the user. If this is the case nl802154 will return -EINVAL.
 
-backtrace:
-    [<ffffffff82ba0466>] kmalloc include/linux/slab.h:559 [inline]
-    [<ffffffff82ba0466>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
-    [<ffffffff82ad3888>] atusb_alloc_urbs drivers/net/ieee802154/atusb.c:362 [inline][2]
-    [<ffffffff82ad3888>] atusb_probe+0x158/0x820 drivers/net/ieee802154/atusb.c:1038 [1]
-
-Reported-by: syzbot+28a246747e0a465127f3@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: syzbot+ce4e062c2d51977ddc50@syzkaller.appspotmail.com
+Signed-off-by: Alexander Aring <aahringo@redhat.com>
+Link: https://lore.kernel.org/r/20210221174321.14210-3-aahringo@redhat.com
+Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ieee802154/atusb.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/ieee802154/nl802154.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ieee802154/atusb.c
-+++ b/drivers/net/ieee802154/atusb.c
-@@ -341,6 +341,7 @@ static int atusb_alloc_urbs(struct atusb
- 			return -ENOMEM;
- 		}
- 		usb_anchor_urb(urb, &atusb->idle_urbs);
-+		usb_free_urb(urb);
- 		n--;
- 	}
- 	return 0;
+--- a/net/ieee802154/nl802154.c
++++ b/net/ieee802154/nl802154.c
+@@ -1527,7 +1527,8 @@ static int nl802154_add_llsec_key(struct
+ 	struct ieee802154_llsec_key_id id = { };
+ 	u32 commands[NL802154_CMD_FRAME_NR_IDS / 32] = { };
+ 
+-	if (nla_parse_nested(attrs, NL802154_KEY_ATTR_MAX,
++	if (!info->attrs[NL802154_ATTR_SEC_KEY] ||
++	    nla_parse_nested(attrs, NL802154_KEY_ATTR_MAX,
+ 			     info->attrs[NL802154_ATTR_SEC_KEY],
+ 			     nl802154_key_policy))
+ 		return -EINVAL;
 
 
