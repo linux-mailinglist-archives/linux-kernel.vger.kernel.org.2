@@ -2,116 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0064D360FB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D12F360FC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 18:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234152AbhDOQEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 12:04:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233734AbhDOQEk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 12:04:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC08C061574;
-        Thu, 15 Apr 2021 09:04:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=l8YXxHl5FfuimubfvcxmzJgMq+3HqkH1Xf70Zd6yln4=; b=LDlcmZCLGC7nLxW5erwgytybMS
-        3dX62eN/PzqtcA8eyW7pF4fkM4zzoaSuXKDJSLc1fxNMAOr2YPjMI/EH5rcrNdG1ckzjf3trNEKHj
-        ZgB7oSHcU+WghUSiCwin45Fw45tH9fOPjBSQAb4RaISDmdmtd1twU1asPJ3uNNsj9ogbmBmgSNXR4
-        mMT2udkp4tKmlMljnG97MD5fF5KCuOZ57e9+U4k9qQFzBy2mhJ6yx2YFUqIN8Y+ZSdmEyjKesgHLI
-        FIr+fXdQ+5O+5VrIi8t+FaIRKWF/xOFkAXiKoIqTLZZtkJOjs6EsZEFBrI58JV7GgFAgzrvvVqwLC
-        lEO38PEw==;
-Received: from [2601:1c0:6280:3f0::df68]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lX4T3-008mxN-3R; Thu, 15 Apr 2021 16:03:49 +0000
-Subject: Re: [PATCH] uml: fix W=1 missing-include-dirs warnings
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org
-References: <20210414192657.17764-1-rdunlap@infradead.org>
- <CAK7LNARSK2YspYvKkUKTp-aG2nqKnvdMr7B_6Am-u1-mt2XBNg@mail.gmail.com>
- <c3d41808-111c-c4dd-43fb-459ae56fc9ab@infradead.org>
- <CAK7LNAS2C1drA+v9q-mYHAbO3+4zjEdF_SJkBDtCXRExLX9u6w@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <dd054f33-beb8-317c-87f0-81badf087aa2@infradead.org>
-Date:   Thu, 15 Apr 2021 09:03:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S234198AbhDOQE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 12:04:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233734AbhDOQE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 12:04:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB74161152;
+        Thu, 15 Apr 2021 16:04:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618502673;
+        bh=VhD6RKqtsu7rzG1GFxVGJoN3lqK7UBy9qUrvzK2nO10=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Yfgvs1iSpGPuFXEGSt2UOVvJObvxY/+g6TkEbBKUcdgcCfuk2Bmb82MG/ofYQ6Man
+         MsOxF3a3ci1Yd5hQrmMOqzTMBDUXONX1Ac6pGjNYsavrBoTJzp82sN7mCP2umafjVX
+         z8+ikszUDa3cKzml3wp7OchGD9IipoC4S4pOvynmCJJieodU5xhUl05ZbCs4sYqQN2
+         b1gF4/mW4N8zO6suLzcufVsIFqV6tA3eM/UPLesZ3kW6m9De21OquoxLwof646ijXz
+         gEyiMQHN/H472b9/8+jZdHLaEKxLLIIiWhk3VA9MRCxgHyyt0saasSkx8YLyQd97RI
+         V9mbGSsLXSKqA==
+Date:   Thu, 15 Apr 2021 17:04:10 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "tiwai@suse.de" <tiwai@suse.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Support Opensource <Support.Opensource@diasemi.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: Re: [RFC PATCH 2/2] ASoC: da732x: simplify code
+Message-ID: <20210415160410.GF5514@sirena.org.uk>
+References: <20210326221619.949961-1-pierre-louis.bossart@linux.intel.com>
+ <20210326221619.949961-3-pierre-louis.bossart@linux.intel.com>
+ <PR3PR10MB4142E8DBB9313E751DA52DD0804D9@PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-In-Reply-To: <CAK7LNAS2C1drA+v9q-mYHAbO3+4zjEdF_SJkBDtCXRExLX9u6w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ULyIDA2m8JTe+TiX"
+Content-Disposition: inline
+In-Reply-To: <PR3PR10MB4142E8DBB9313E751DA52DD0804D9@PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM>
+X-Cookie: VMS must die!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/21 12:04 AM, Masahiro Yamada wrote:
-> On Thu, Apr 15, 2021 at 4:02 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> On 4/14/21 11:52 PM, Masahiro Yamada wrote:
->>> On Thu, Apr 15, 2021 at 4:27 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->>>>
->>>> Currently when using "W=1" with UML builds, there are over 700 warnings
->>>> like so:
->>>>
->>>>   CC      arch/um/drivers/stderr_console.o
->>>> cc1: warning: ./arch/um/include/uapi: No such file or directory [-Wmissing-include-dirs]
->>>>
->>>> but arch/um/ does not have include/uapi/ at all, so don't
->>>> include arch/um/include/uapi/ in USERINCLUDE for UML.
->>
->>
->>>> Option 4: simply mkdir arch/um/include/uapi
->>>>         That's what I did first, just as a test, and it works.
->>>
->>>
->>> I like Option 4.
->>>
->>> But, you cannot do "mkdir -p arch/um/include/uapi" at build-time
->>> because the build system should not touch the source tree(, which
->>> might be read-only)
->>> for O= building.
->>>
->>> How about adding
->>>
->>>   arch/um/include/uapi/asm/Kbuild,
->>>
->>> which is just having a SPDX one-liner?
->>
->> Wow!  :)
->> That's what Al Viro suggested also.
->> I'll submit that patch later today (Thursday my time).
->>
->> thanks.
->> --
->> ~Randy
->>
-> 
-> 
-> BTW, after fixing this UML problem,
-> can we move -Wmissing-include-dirs to the top Makefile?
 
-I don't see why not. And eventually remove this one:
+--ULyIDA2m8JTe+TiX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-fs/btrfs/Makefile:subdir-ccflags-y += -Wmissing-include-dirs
+On Thu, Apr 15, 2021 at 04:00:48PM +0000, Adam Thomson wrote:
+> On 26 March 2021 22:16, Pierre-Louis Bossart wrote:
 
-> Is there any other source of -Wmissing-include-dirs
-> warnings?
+> Apologies for the delay in getting to this. The change looks fine to me,
+> although this part was EOL some time back, and I find it hard to believe anyone
+> out there has a board with this on. Wondering if it would make sense to remove
+> the driver permanently?
 
-I can't give a full answer on that; only that I haven't
-seen any others and also that all other arch/*/include/
-do have a uapi/ subdir.
+Unless it's actually getting in the way it's generally easier to just
+leave the driver than try to figure out if anyone is updating a system
+that uses it.
 
--- 
-~Randy
+--ULyIDA2m8JTe+TiX
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB4Y/kACgkQJNaLcl1U
+h9A/eQf/a+AuW/wdA7h1NEPo7bdjlp1RtuPF+QM8UnlWMLsXDYWN8pPMCeDIf5X2
+lQvH9kzTWD2tGg70PPgkQXDY0rljNHYrMZVU2yktmuSlmJHJraw7SuTCWAk28ujx
+QQuKNwIfFu0P95DHCLHODG6sGXuT8asRlB2jS1UJJVgSaWJkSPPeB1jdrA/6F9Fs
+uDF6gVvNYpt91x53I7le86YVD7iZfqqxSSKLdGIUejiV9ozhCUkwt8yXDEKRdlOq
+4O8wOiJ+409SuWfwEZDX8WA+6pMvo+9wvROWvsRn4tumMtMKp0a2x8DDBl/h6Cbi
++YpcN0/zwJeye7ecVmj1sE26WqcW5g==
+=jQj2
+-----END PGP SIGNATURE-----
+
+--ULyIDA2m8JTe+TiX--
