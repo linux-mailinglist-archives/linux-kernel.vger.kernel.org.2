@@ -2,145 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72EBF361201
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 20:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7141D3611F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 20:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234705AbhDOSTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 14:19:54 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:51082 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234520AbhDOSTk (ORCPT
+        id S234620AbhDOSTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 14:19:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234404AbhDOSTh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 14:19:40 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13FIFU52066559;
-        Thu, 15 Apr 2021 18:19:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=sSRqnc8CP7d/ScOvRgpRssO7lfHgLBctuEO2QPJ6yFI=;
- b=Sb8k4Iqf+sOpMFNQuCexhjG0vdwHbcNsaNewnh02VoSu7/K6TAbAw1xeKEtXUQH9KbGX
- M9TZQXNg6rsgQ8HMt59D2tV3oHQ6Nyh9j9dVgcXRitkYZI2aN565r4VZ2U+iux2CZies
- 6RXcChQyQSekJ08w5zh3wszkkrMzk1ThNkIUSmhS+b7ewg+WpkIESFiTmMjQ6Uonbl79
- qAwJFxJhgLdFJWT/QMBQFaVEgZLGARsynO8H/McBj8c0MrAtMa3nnxZ+Y0QqqLzdpSq7
- Ux8xswQK8wo8LI6tkbt4F0L9r1liBOqiEfLu5pVsM4RuEDxzCjfl824fSsYrJAwmN0Qw Ag== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 37u3ymptm3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Apr 2021 18:19:08 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13FIFoPr068218;
-        Thu, 15 Apr 2021 18:19:07 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 37unx3app9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Apr 2021 18:19:07 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13FIJ5dm023900;
-        Thu, 15 Apr 2021 18:19:05 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 15 Apr 2021 11:19:04 -0700
+        Thu, 15 Apr 2021 14:19:37 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37B8CC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 11:19:13 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id o20so2939267edc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 11:19:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=PmecfFFFxrnk/yTNHYSDnpq8PX/J0+4kqxnhlh1oZFI=;
+        b=QxzKKtjvTvdKQi2NrcGqTtAoY1Y2AnS2IfGSzBdwvkMAI2NAMF6EZ62OVXM6SmZFRH
+         EbUrylkUnTvadK9RD48wey24hu0hNnj7Qe97GX3dJAGh8JoAn3DTvE6ngiNlFOHhVRcq
+         A+dOqb4/1JtG9OwpzYuA1YjvcamVCSYJbw6y3A2IzgRMZA6tvVzdOzXTcJtM9ZJxz7Pa
+         +Ed93NDcRKCuHtciJl7kNAQZWaiuEGL8gW6JbNc8EzV6A3ltDwx7pKiy2J+9a200Lzko
+         yJ3gkYy3Iz+2bBKzmy5AjGAMGFDCl3H2zyngTYjGeBrZQyla+3OX4zBZPWME14kx9WUJ
+         sJlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=PmecfFFFxrnk/yTNHYSDnpq8PX/J0+4kqxnhlh1oZFI=;
+        b=Iau8v03Z/340lCAVaTwt8omzQHSJgTbLu67DXUuZit/5OkC7qgrfujOmeiWd0r72Lm
+         7vNOy9xSvDqLonMOV2nPc97zXWUvZvDBmQaMmLfSgNzrGHfvXg88P/v3LvQXBcQhZiK+
+         YEl6hGoj4x03IYj7IYyyfRzrlRGXKmphwUqI+XJVIqjvBLNkcy/Jz5aoUSUQomwZ4piJ
+         jRBFv4Sj0zhA7FWOfOcxIpsjbM2I3GnyHE4K5GWxN3wfpJVEWruzoBdRSSuIQdREZXk6
+         Oa/Vc0MoYnuqF8Z0W4v64t2S5xfzePiNE1CT5Eu550ViGCEnefD1/4/LJpQBQNFStwDp
+         H6Nw==
+X-Gm-Message-State: AOAM532a9yWeoc1sY5HDfDjBZ24NPiVaah/yHV0s1QEcjnCwlfyfzMiy
+        TzJtNbhdn52DSPew3ofPUJM2H6OTQ6E=
+X-Google-Smtp-Source: ABdhPJzUFWvKSfpau3yBZTcykSRQ0OVAzTX42myBYFoIrnNN7H4r/Dsampj/o6kGRz5OkPmROTqiGw==
+X-Received: by 2002:aa7:dc15:: with SMTP id b21mr5857595edu.350.1618510751770;
+        Thu, 15 Apr 2021 11:19:11 -0700 (PDT)
+Received: from localhost.localdomain ([84.40.93.55])
+        by smtp.gmail.com with ESMTPSA id h9sm1130903ejf.10.2021.04.15.11.19.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 11:19:11 -0700 (PDT)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     rostedt@goodmis.org, tglx@linutronix.de, peterz@infradead.org,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH v4 2/6] tracing: Define new ftrace event "func_repeats"
 Date:   Thu, 15 Apr 2021 21:18:50 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Colin King <colin.king@canonical.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] clk: uniphier: Fix potential infinite loop
-Message-ID: <20210415181850.GD6021@kadam>
-References: <20210407152457.497346-1-colin.king@canonical.com>
- <CAK7LNAT+JTg5QYYbYqCm+m11X7CF_ZWyYRA4eAtqeTEuHRqoyw@mail.gmail.com>
+Message-Id: <20210415181854.147448-3-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210415181854.147448-1-y.karadz@gmail.com>
+References: <20210415181854.147448-1-y.karadz@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAT+JTg5QYYbYqCm+m11X7CF_ZWyYRA4eAtqeTEuHRqoyw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9955 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- mlxscore=0 malwarescore=0 adultscore=0 bulkscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104150114
-X-Proofpoint-GUID: 6Byqh3omvf4T8b_6-ZEm8CNEuvS2tfKT
-X-Proofpoint-ORIG-GUID: 6Byqh3omvf4T8b_6-ZEm8CNEuvS2tfKT
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9955 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 spamscore=0
- impostorscore=0 priorityscore=1501 lowpriorityscore=0 adultscore=0
- bulkscore=0 phishscore=0 suspectscore=0 malwarescore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104150114
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 03:46:47PM +0900, Masahiro Yamada wrote:
-> On Thu, Apr 8, 2021 at 12:25 AM Colin King <colin.king@canonical.com> wrote:
-> >
-> > From: Colin Ian King <colin.king@canonical.com>
-> >
-> > The for-loop iterates with a u8 loop counter i and compares this
-> > with the loop upper limit of num_parents that is an int type.
-> > There is a potential infinite loop if num_parents is larger than
-> > the u8 loop counter. Fix this by making the loop counter the same
-> > type as num_parents.
-> >
-> > Addresses-Coverity: ("Infinite loop")
-> > Fixes: 734d82f4a678 ("clk: uniphier: add core support code for UniPhier clock driver")
-> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > ---
-> >  drivers/clk/uniphier/clk-uniphier-mux.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/clk/uniphier/clk-uniphier-mux.c b/drivers/clk/uniphier/clk-uniphier-mux.c
-> > index 462c84321b2d..ce219e0d2a85 100644
-> > --- a/drivers/clk/uniphier/clk-uniphier-mux.c
-> > +++ b/drivers/clk/uniphier/clk-uniphier-mux.c
-> > @@ -34,7 +34,7 @@ static u8 uniphier_clk_mux_get_parent(struct clk_hw *hw)
-> >         int num_parents = clk_hw_get_num_parents(hw);
-> >         int ret;
-> >         unsigned int val;
-> > -       u8 i;
-> > +       int i;
-> >
-> >         ret = regmap_read(mux->regmap, mux->reg, &val);
-> >         if (ret)
-> > --
-> > 2.30.2
-> >
-> 
-> clk_hw_get_num_parents() returns 'unsigned int', so
-> I think 'num_parents' should also have been 'unsigned int'.
-> 
-> Maybe, the loop counter 'i' also should be 'unsigned int' then?
+The event aims to consolidate the function tracing record in the cases
+when a single function is called number of times consecutively.
 
-The clk_hw_get_num_parents() function returns 0-255 so the original code
-works fine.
+	while (cond)
+		do_func();
 
-It should basically always be "int i;"  That's the safest assumption.
-There are other case where it has to be size_t but in those cases I
-think people should call the list iterator something else instead of "i"
-like "size_t pg_idx;".
+This may happen in various scenarios (busy waiting for example).
+The new ftrace event can be used to show repeated function events with
+a single event and save space on the ring buffer
 
-Making everthing u32 causes more bugs than it prevents.  Signedness bugs
-with comparing to zero, type promotion bugs, or subtraction bugs where
-subtracting wraps to a high value.  It's rare to loop more than INT_MAX
-times in the kernel.  When we do need to count about 2 million then
-we're probably not going to stop counting at 4 million, we're going to
-go to 10 million or higher so size_t is more appropriate than u32.
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+---
+ kernel/trace/trace.h         |  3 +++
+ kernel/trace/trace_entries.h | 22 +++++++++++++++++
+ kernel/trace/trace_output.c  | 48 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 73 insertions(+)
 
-Btw, if you have a loop that does:
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index 5506424eae2a..6a5b4c2a0fa7 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -45,6 +45,7 @@ enum trace_type {
+ 	TRACE_BPUTS,
+ 	TRACE_HWLAT,
+ 	TRACE_RAW_DATA,
++	TRACE_FUNC_REPEATS,
+ 
+ 	__TRACE_LAST_TYPE,
+ };
+@@ -442,6 +443,8 @@ extern void __ftrace_bad_type(void);
+ 			  TRACE_GRAPH_ENT);		\
+ 		IF_ASSIGN(var, ent, struct ftrace_graph_ret_entry,	\
+ 			  TRACE_GRAPH_RET);		\
++		IF_ASSIGN(var, ent, struct func_repeats_entry,		\
++			  TRACE_FUNC_REPEATS);				\
+ 		__ftrace_bad_type();					\
+ 	} while (0)
+ 
+diff --git a/kernel/trace/trace_entries.h b/kernel/trace/trace_entries.h
+index 4547ac59da61..251c819cf0c5 100644
+--- a/kernel/trace/trace_entries.h
++++ b/kernel/trace/trace_entries.h
+@@ -338,3 +338,25 @@ FTRACE_ENTRY(hwlat, hwlat_entry,
+ 		 __entry->nmi_total_ts,
+ 		 __entry->nmi_count)
+ );
++
++#define FUNC_REPEATS_GET_DELTA_TS(entry)				\
++	(((u64)(entry)->top_delta_ts << 32) | (entry)->bottom_delta_ts)	\
++
++FTRACE_ENTRY(func_repeats, func_repeats_entry,
++
++	TRACE_FUNC_REPEATS,
++
++	F_STRUCT(
++		__field(	unsigned long,	ip		)
++		__field(	unsigned long,	parent_ip	)
++		__field(	u16	,	count		)
++		__field(	u16	,	top_delta_ts	)
++		__field(	u32	,	bottom_delta_ts	)
++	),
++
++	F_printk(" %ps <-%ps\t(repeats:%u  delta: -%llu)",
++		 (void *)__entry->ip,
++		 (void *)__entry->parent_ip,
++		 __entry->count,
++		 FUNC_REPEATS_GET_DELTA_TS(__entry))
++);
+diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+index 333233d45596..3037f0c88f90 100644
+--- a/kernel/trace/trace_output.c
++++ b/kernel/trace/trace_output.c
+@@ -1381,6 +1381,53 @@ static struct trace_event trace_raw_data_event = {
+ 	.funcs		= &trace_raw_data_funcs,
+ };
+ 
++static enum print_line_t
++trace_func_repeats_raw(struct trace_iterator *iter, int flags,
++			 struct trace_event *event)
++{
++	struct func_repeats_entry *field;
++	struct trace_seq *s = &iter->seq;
++
++	trace_assign_type(field, iter->ent);
++
++	trace_seq_printf(s, "%lu %lu %u %llu\n",
++			 field->ip,
++			 field->parent_ip,
++			 field->count,
++			 FUNC_REPEATS_GET_DELTA_TS(field));
++
++	return trace_handle_return(s);
++}
++
++static enum print_line_t
++trace_func_repeats_print(struct trace_iterator *iter, int flags,
++			 struct trace_event *event)
++{
++	struct func_repeats_entry *field;
++	struct trace_seq *s = &iter->seq;
++
++	trace_assign_type(field, iter->ent);
++
++	seq_print_ip_sym(s, field->ip, flags);
++	trace_seq_puts(s, " <-");
++	seq_print_ip_sym(s, field->parent_ip, flags);
++	trace_seq_printf(s, " (repeats: %u, last_ts:", field->count);
++	trace_print_time(s, iter,
++			 iter->ts - FUNC_REPEATS_GET_DELTA_TS(field));
++	trace_seq_puts(s, ")\n");
++
++	return trace_handle_return(s);
++}
++
++static struct trace_event_functions trace_func_repeats_funcs = {
++	.trace		= trace_func_repeats_print,
++	.raw		= trace_func_repeats_raw,
++};
++
++static struct trace_event trace_func_repeats_event = {
++	.type	 	= TRACE_FUNC_REPEATS,
++	.funcs		= &trace_func_repeats_funcs,
++};
+ 
+ static struct trace_event *events[] __initdata = {
+ 	&trace_fn_event,
+@@ -1393,6 +1440,7 @@ static struct trace_event *events[] __initdata = {
+ 	&trace_print_event,
+ 	&trace_hwlat_event,
+ 	&trace_raw_data_event,
++	&trace_func_repeats_event,
+ 	NULL
+ };
+ 
+-- 
+2.25.1
 
-	for (i = 0; i < UINT_MAX; i++) {
-
-that loop works exactly the same if "i" is an int or if it's a u32
-because of type promotion.  So you have to look really hard to find a
-place where changing a loop iterator from int to u32 fixes bug in real
-life.
-
-regards,
-dan carpenter
