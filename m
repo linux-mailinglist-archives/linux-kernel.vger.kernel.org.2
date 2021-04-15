@@ -2,102 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E135360609
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8174B3605FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232174AbhDOJi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 05:38:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231309AbhDOJii (ORCPT
+        id S231880AbhDOJjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 05:39:49 -0400
+Received: from smtp107.ord1d.emailsrvr.com ([184.106.54.107]:48970 "EHLO
+        smtp107.ord1d.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229537AbhDOJjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 05:38:38 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 254D4C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 02:38:16 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id b10so23585824iot.4
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 02:38:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OPgFWlOukLXcxKTGO6irUprnq/4nHV4Q9KnPOIDBncA=;
-        b=A4Ulwq6Rh/qbp/3COX+y1Bp6wCwZvsZbFa2/shD3RdMtC+Bp4OIHe98dW7NmtRzP6n
-         kFz7rAbDa19iXTIbRMlkry6i6mDznRlQNT/ghDF9gkA1GakPRdraf+wcOvIpVSb+tP1N
-         9o/GW01w0QH9XZRLwEn/34ZZu5VXGH0udyGiw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OPgFWlOukLXcxKTGO6irUprnq/4nHV4Q9KnPOIDBncA=;
-        b=X1ELOxmJfvG4N+RZuzvoGt/aRMgAk1UZnExNgbSDRe//vLIdp82eDYi/rTv4kpp4LN
-         vb9/LXqq7zufTC23XmymaytlY2vRm9iZctx2t7vKY1923oqrkoJdkqVoHh3yuasJslwz
-         /4Tv7PpyZ6VZlG8HWCXxGcLiyMmYTrkzKiTqI1pV/zABTurzrpvFZB/9PVx+1oExz46Y
-         pcFQ7REbesNVAHLkzbzEhAW5hlJ7GROj/XlqU75gG9eLv2oApmBfdidm+mKgTxsN+Rlu
-         ZyImfCJsfmql8zcfoOa+nH6cNNGW0RCPlRR7nz8LINInZ+0DcjqftbUG8mX2Zs1jFx9B
-         HwkA==
-X-Gm-Message-State: AOAM532XEuxqRfD94HOPkPWb8rzRWdJ3Y1RglGpiuq8aw9JxoPopClZC
-        C66pTW9FcmXJxir1rujL3mxCV9jPWJvx8+E3oAFsrQ==
-X-Google-Smtp-Source: ABdhPJwdINxuPC3DeNObKA/X0KGB4m65O7VqKvz+UAWxyq/kDi5EsER6LyA6HvHO2/qAKdV3IZon/ZHK/o2DFor132A=
-X-Received: by 2002:a02:662b:: with SMTP id k43mr1983699jac.139.1618479495616;
- Thu, 15 Apr 2021 02:38:15 -0700 (PDT)
+        Thu, 15 Apr 2021 05:39:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20190130-41we5z8j; t=1618479564;
+        bh=sdlyLj6d3Jci9vL6n3SdCe0jc0zXhGFiWjpE4Y8KIzU=;
+        h=Subject:To:From:Date:From;
+        b=R5Pt5Hn2Hqqi8pXd+WnWja8/DOi4OhXCXPZtEDSwlJ2uXqL1sPGkZOb+czdsXOnyX
+         QfLAkHIyxHqBH+ar5hBAa6sYqAd5G8CN2lX7e7DyzC+cz1nKr+l/qn26Ux5GpC5qf+
+         AC1bSo/ucMyXToTyGQlLZq+w+rgOtRmaEXCtAeAI=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp6.relay.ord1d.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 09B9EE01DE;
+        Thu, 15 Apr 2021 05:39:22 -0400 (EDT)
+Subject: Re: [PATCH 55/57] staging: comedi: drivers: ni_mio_common: Move
+ 'range_ni_E_ao_ext' to where it is used
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        "David A. Schleef" <ds@schleef.org>,
+        Mori Hess <fmhess@users.sourceforge.net>,
+        Truxton Fulton <trux@truxton.com>,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org
+References: <20210414181129.1628598-1-lee.jones@linaro.org>
+ <20210414181129.1628598-56-lee.jones@linaro.org>
+From:   Ian Abbott <abbotti@mev.co.uk>
+Organization: MEV Ltd.
+Message-ID: <fd880e8e-a5fc-67ef-6ba4-f59592dee71d@mev.co.uk>
+Date:   Thu, 15 Apr 2021 10:39:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <20210412153754.235500-1-revest@chromium.org> <20210412153754.235500-7-revest@chromium.org>
- <CAEf4BzZ6cLio0ZZEkc5iYp9yWg3Fc1ZORBTr85TdoqF-sRU3DQ@mail.gmail.com>
- <CABRcYm+v7xC8WsxYu6BoiEX1vhQSVSX5U-LyUnevGt1tFud5tA@mail.gmail.com> <CAEf4Bzb-Xh_JOWsZwC+fNiC20K_9fzrpfiAMHTYM=6k--+SZaw@mail.gmail.com>
-In-Reply-To: <CAEf4Bzb-Xh_JOWsZwC+fNiC20K_9fzrpfiAMHTYM=6k--+SZaw@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Thu, 15 Apr 2021 11:38:04 +0200
-Message-ID: <CABRcYm+SFfqzf8Qkt+f3YvXH4pRuA1ckU+YajF3+=B+jRtxs8Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210414181129.1628598-56-lee.jones@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
+X-Classification-ID: 57b37ea6-05b9-4e64-8263-c6605ab5306c-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 12:16 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Apr 14, 2021 at 2:21 AM Florent Revest <revest@chromium.org> wrote:
-> >
-> > On Wed, Apr 14, 2021 at 1:21 AM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Mon, Apr 12, 2021 at 8:38 AM Florent Revest <revest@chromium.org> wrote:
-> > > >
-> > > > This exercises most of the format specifiers.
-> > > >
-> > > > Signed-off-by: Florent Revest <revest@chromium.org>
-> > > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > > > ---
-> > >
-> > > As I mentioned on another patch, we probably need negative tests even
-> > > more than positive ones.
-> >
-> > Agreed.
-> >
-> > > I think an easy and nice way to do this is to have a separate BPF
-> > > skeleton where fmt string and arguments are provided through read-only
-> > > global variables, so that user-space can re-use the same BPF skeleton
-> > > to simulate multiple cases. BPF program itself would just call
-> > > bpf_snprintf() and store the returned result.
-> >
-> > Ah, great idea! I was thinking of having one skeleton for each but it
-> > would be a bit much indeed.
-> >
-> > Because the format string needs to be in a read only map though, I
-> > hope it can be modified from userspace before loading. I'll try it out
-> > and see :) if it doesn't work I'll just use more skeletons
->
-> You need read-only variables (const volatile my_type). Their contents
-> are statically verified by BPF verifier, yet user-space can pre-setup
-> it at runtime.
+On 14/04/2021 19:11, Lee Jones wrote:
+> ... and mark it as __maybe_unused since not all users of the
+> header file reference it.
+> 
+> Fixes the following W=1 kernel build warning(s):
+> 
+>   drivers/staging/comedi/drivers/ni_mio_common.c:163:35: warning: ‘range_ni_E_ao_ext’ defined but not used [-Wunused-const-variable=]
+> 
+> Cc: Ian Abbott <abbotti@mev.co.uk>
+> Cc: H Hartley Sweeten <hsweeten@visionengravers.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: "Uwe Kleine-König" <u.kleine-koenig@pengutronix.de>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: "David A. Schleef" <ds@schleef.org>
+> Cc: Mori Hess <fmhess@users.sourceforge.net>
+> Cc: Truxton Fulton <trux@truxton.com>
+> Cc: linux-staging@lists.linux.dev
+> Cc: linux-pwm@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>   drivers/staging/comedi/drivers/ni_mio_common.c | 9 ---------
+>   drivers/staging/comedi/drivers/ni_stc.h        | 9 ++++++++-
+>   2 files changed, 8 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/staging/comedi/drivers/ni_mio_common.c b/drivers/staging/comedi/drivers/ni_mio_common.c
+> index 4f80a4991f953..37615b4e2c10d 100644
+> --- a/drivers/staging/comedi/drivers/ni_mio_common.c
+> +++ b/drivers/staging/comedi/drivers/ni_mio_common.c
+> @@ -160,15 +160,6 @@ static const struct comedi_lrange range_ni_M_ai_628x = {
+>   	}
+>   };
+>   
+> -static const struct comedi_lrange range_ni_E_ao_ext = {
+> -	4, {
+> -		BIP_RANGE(10),
+> -		UNI_RANGE(10),
+> -		RANGE_ext(-1, 1),
+> -		RANGE_ext(0, 1)
+> -	}
+> -};
+> -
+>   static const struct comedi_lrange *const ni_range_lkup[] = {
+>   	[ai_gain_16] = &range_ni_E_ai,
+>   	[ai_gain_8] = &range_ni_E_ai_limited,
+> diff --git a/drivers/staging/comedi/drivers/ni_stc.h b/drivers/staging/comedi/drivers/ni_stc.h
+> index fbc0b753a0f59..0822e65f709dd 100644
+> --- a/drivers/staging/comedi/drivers/ni_stc.h
+> +++ b/drivers/staging/comedi/drivers/ni_stc.h
+> @@ -1137,6 +1137,13 @@ struct ni_private {
+>   	u8 rgout0_usage;
+>   };
+>   
+> -static const struct comedi_lrange range_ni_E_ao_ext;
+> +static const struct comedi_lrange __maybe_unused range_ni_E_ao_ext = {
+> +	4, {
+> +		BIP_RANGE(10),
+> +		UNI_RANGE(10),
+> +		RANGE_ext(-1, 1),
+> +		RANGE_ext(0, 1)
+> +	}
+> +};
+>   
+>   #endif /* _COMEDI_NI_STC_H */
+> 
 
-Thanks :) v4 has negative fmt tests
+I think it is better where it is for now with its fellow struct 
+comedi_lrange variables, but feel free to mark it as __maybe_unused.
+
+(Really, the #include "ni_mio_common.c" mess needs sorting out sometime.)
+
+-- 
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
