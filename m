@@ -2,125 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E900E3610C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A71E3610CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234374AbhDORJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 13:09:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24895 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231137AbhDORI5 (ORCPT
+        id S234341AbhDORKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 13:10:11 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:17212 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233074AbhDORKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 13:08:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618506513;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c4bUwdWqx5JUrWJYR1rKkQlIPcDgNW5mI87L7J9m2Ko=;
-        b=cPfFTRNhSCEXmtPLmxTSsiEx5SDNvPZ+llFjaON/nLMgxaorLChekgF+Kt+tbihq7nXZLK
-        hnBrXikii2IqjA4BlnNpR4XtqICm7vKLYnFKYHlUihfwviNW3CrJCQUXmpS+MxEBv3c1V6
-        1H9L6XhLlOFAAry3CEtvOADgOKDhmJA=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-132-OCKGBshbMKOgaNgfPICTlA-1; Thu, 15 Apr 2021 13:08:32 -0400
-X-MC-Unique: OCKGBshbMKOgaNgfPICTlA-1
-Received: by mail-qk1-f197.google.com with SMTP id h21so1954320qkl.12
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 10:08:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=c4bUwdWqx5JUrWJYR1rKkQlIPcDgNW5mI87L7J9m2Ko=;
-        b=s10wzVmDcHZPfL1D/xPkEir+4z3cBlWp5WHTruNPEDDmwsazeC75oc4h/TPvIpa7v+
-         LKCZNTiZJVZqr4L0kgZY/VUFK8VdFJjFLehJBTbSDl4U9HBKJOnctn2GaRBOfH0Do4zT
-         ILkTbCI0D7PDNYtzrAAhn0y6jqLzcfBT5MjzMp0vYobAkVQtjXRTDJNGhow4nfhmhquE
-         YpeNqTsmFhcWt2ogmkoNDXeyhIIa10JJg8q4ewh4k+b6rLIfj6roG/TjR4ovJQ22vl/i
-         xJkAqL1PP8zKi8AaIaqVA2mgdFWZsDBxUZoFYXH7Lz39zYCUvtPUAYEk+SgxaUGXruSL
-         5tkg==
-X-Gm-Message-State: AOAM533B92A2y1faGMXk/BUuwjUzZGkvOqFy4Ok7fFEDKP+BOkmbuc9e
-        BJ1X54ktT19qEdtpgVBo8hyp1to4D2nN5P0T0PjZZGpNrE9v6H2MnzT018eoc6DpOzlOtrPGdbT
-        Qy9ZTJpkoi5j08+sgnLkC+i8D
-X-Received: by 2002:a0c:e601:: with SMTP id z1mr4249163qvm.62.1618506511987;
-        Thu, 15 Apr 2021 10:08:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyYKgNv627ZQRacj4Z0akpbwf6cDPraxoDdrUd5LGopDdVhUkGCp7HX14SZP2g3PIZr3viwAg==
-X-Received: by 2002:a0c:e601:: with SMTP id z1mr4249129qvm.62.1618506511823;
-        Thu, 15 Apr 2021 10:08:31 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id u21sm2196347qtq.11.2021.04.15.10.08.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 10:08:31 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v3 3/5] mm/memcg: Cache vmstat data in percpu
- memcg_stock_pcp
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-References: <20210414012027.5352-1-longman@redhat.com>
- <20210414012027.5352-4-longman@redhat.com> <YHhu1BOMj1Ip+sb3@cmpxchg.org>
-Message-ID: <5abe499a-b1ad-fa22-3487-1a6e00e30e17@redhat.com>
-Date:   Thu, 15 Apr 2021 13:08:29 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 15 Apr 2021 13:10:09 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13FH3SQj006343;
+        Thu, 15 Apr 2021 19:09:20 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=7NI+mNA8ea+Ydi0rbf2dSjfAozC9MiaZfSB0WmqIqJg=;
+ b=RHLBOLsB8ERBJ7IzOUMN/IV1/FyIH27APkH/+HET2xP6zGBfOtLUXs7dfWL4jgs91aML
+ uqJlazhse1O3x8yqXvtEm1ydHmwvSa4JdGEtoscI8Zn5YkzgKQ6rlqBBbJTVnrtamQa0
+ ovhtBUGvIbGFVifxeHF1Rdwfu2jGXfCcub7UZ/gya5OAqAt4tCm834P/1+uXXmLauWJ3
+ 22bEX+dKQDdHt3e8fTs5Cf+t5ka3Yl8G1oYduuxdzWbHuVEisfD3TRJxqYSuI18DVU0j
+ GPIiFvtLDirSQGqac+JMYUG5wJuy/rginYrRIN8To+PSzUpn+moQVa9g16EY5yLUEK2z rQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 37wx401hb7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Apr 2021 19:09:20 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AE49410002A;
+        Thu, 15 Apr 2021 19:09:15 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 94E512C38DE;
+        Thu, 15 Apr 2021 19:09:15 +0200 (CEST)
+Received: from lmecxl0566.lme.st.com (10.75.127.46) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 15 Apr
+ 2021 19:09:14 +0200
+Subject: Re: [PATCH v2] serial: stm32: optimize spin lock usage
+To:     dillon min <dillon.minfei@gmail.com>,
+        Johan Hovold <johan@kernel.org>
+CC:     Greg KH <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+        kernel test robot <lkp@intel.com>,
+        <linux-serial@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        <kbuild-all@lists.01.org>, <clang-built-linux@googlegroups.com>,
+        Gerald Baeza <gerald.baeza@foss.st.com>
+References: <1618219898-4600-1-git-send-email-dillon.minfei@gmail.com>
+ <YHRGPpQ03XgBMkiy@hovoldconsulting.com>
+ <CAL9mu0JF-9hy3Z_ytpEO+hzKh0D+f-0gYaUBEA0v28EOHpC80w@mail.gmail.com>
+ <CAL9mu0Ke97FUZ03jvdH8Lz2qRnVY82B7tAEtjbhW97sPOVkAxQ@mail.gmail.com>
+From:   Erwan LE RAY <erwan.leray@foss.st.com>
+Message-ID: <e17fddfb-f9b8-238f-da74-a4746f33134f@foss.st.com>
+Date:   Thu, 15 Apr 2021 19:09:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YHhu1BOMj1Ip+sb3@cmpxchg.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAL9mu0Ke97FUZ03jvdH8Lz2qRnVY82B7tAEtjbhW97sPOVkAxQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-15_09:2021-04-15,2021-04-15 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/21 12:50 PM, Johannes Weiner wrote:
-> On Tue, Apr 13, 2021 at 09:20:25PM -0400, Waiman Long wrote:
->> Before the new slab memory controller with per object byte charging,
->> charging and vmstat data update happen only when new slab pages are
->> allocated or freed. Now they are done with every kmem_cache_alloc()
->> and kmem_cache_free(). This causes additional overhead for workloads
->> that generate a lot of alloc and free calls.
->>
->> The memcg_stock_pcp is used to cache byte charge for a specific
->> obj_cgroup to reduce that overhead. To further reducing it, this patch
->> makes the vmstat data cached in the memcg_stock_pcp structure as well
->> until it accumulates a page size worth of update or when other cached
->> data change.
->>
->> On a 2-socket Cascade Lake server with instrumentation enabled and this
->> patch applied, it was found that about 17% (946796 out of 5515184) of the
->> time when __mod_obj_stock_state() is called leads to an actual call to
->> mod_objcg_state() after initial boot. When doing parallel kernel build,
->> the figure was about 16% (21894614 out of 139780628). So caching the
->> vmstat data reduces the number of calls to mod_objcg_state() by more
->> than 80%.
-> Right, but mod_objcg_state() is itself already percpu-cached. What's
-> the benefit of avoiding calls to it with another percpu cache?
->
-There are actually 2 set of vmstat data that have to be updated. One is 
-associated with the memcg and other one is for each lruvec within the 
-cgroup. Caching it in obj_stock, we replace 2 writes to two colder 
-cachelines with one write to a hot cacheline. If you look at patch 5, I 
-break obj_stock into two - one for task context and one for irq context. 
-Interrupt disable is no longer needed in task context, but that is not 
-possible when writing to the actual vmstat data arrays.
+Hi Dillon,
 
-Cheers,
-Longman
+STM32MP151 is mono-core, but both STM32MP153 and STM32MP157 are 
+dual-core (see 
+https://www.st.com/content/st_com/en/products/microcontrollers-microprocessors/stm32-arm-cortex-mpus.html).
+So your point is fully relevant, thanks.
 
+ST already fixed the same issue in st-asc.c driver in the past (see 
+ef49ffd8), because a systematic deadlock was detected with RT kernel.
+
+You proposed a first implementation in your patch, and a second one in 
+the discussion. It seems that your initial proposal (ie your V2 patch) 
+is the most standard one (implemented in 6 drivers). The second 
+implementation is implemented by only 1 company.
+
+It looks that the solution is to avoid locking in the sysrq case and 
+trylock in the oops_in_progress case (see detailed analysis in 
+677fe555cbfb1).
+
+So your initial patch looks to the right proposal, but it would be safer 
+if Greg could confirm it.
+
+BR, Erwan.
+
+
+On 4/13/21 1:44 AM, dillon min wrote:
+> Hi Johan, Erwan
+> 
+> It seems still a bit of a problem in the current version, not deadlock
+> but access register at the same time.
+> 
+> For driver , we should consider it running under smp, let's think
+> about it for this case:
+> 
+> static void stm32_usart_console_write(struct console *co, const char *s,
+>                                        unsigned int cnt)
+> {
+>           .....
+>           local_irq_save(flags);
+>           if (port->sysrq)
+>                      locked = 0;
+>           .....
+>           access register cr1, tdr, isr
+>           .....
+> 
+>           local_irq_restore(flags);
+> }
+> 
+> if port->sysrq is 1, stm32_usart_console_write() just disable local
+> irq response by local_irq_save(), at the time of access register cr1,
+> tdr, isr. an TXE interrupt raised, for other cores(I know stm32
+> mpu/mcu do not have multi cores, just assume it has), it still has a
+> chance to handle interrupt.  Then there is no lock to protect the uart
+> register.
+> 
+> changes to below, should be more safe:
+> 
+> .....
+> if (port->sysrq || oops_in_progress)
+>        locked = spin_trylock_irqsave(&port->lock, flags);
+> else
+>        spin_lock_irqsave(&port->lock, flags);
+> 
+> ....
+> 
+> if (locked)
+>       spin_unlock_irqrestore(&port->lock, flags);
+> 
+> For current stm32 soc, it shouldn't happen. just a reminder for future.
+> 
+> Thanks.
+> 
+> Dillon
+> 
+> On Mon, Apr 12, 2021 at 10:04 PM dillon min <dillon.minfei@gmail.com> wrote:
+>>
+>> Hi Johan,
+>>
+>> Yes, there is no deadlock. my fault.
+>> I forget the local_irq_save() plus spin_lock() is spin_lock_irqsave().
+>>
+>> Thanks for your review. please ignore this patch.
+>>
+>> Best regards
+>>
+>> Dillon
+>>
+>> On Mon, Apr 12, 2021 at 9:08 PM Johan Hovold <johan@kernel.org> wrote:
+>>>
+>>> On Mon, Apr 12, 2021 at 05:31:38PM +0800, dillon.minfei@gmail.com wrote:
+>>>> From: dillon min <dillon.minfei@gmail.com>
+>>>>
+>>>> To avoid potential deadlock in spin_lock usage, use spin_lock_irqsave,
+>>>> spin_trylock_irqsave(), spin_unlock_irqrestore() in process context.
+>>>
+>>> This doesn't make much sense as console_write can be called in any
+>>> context. And where's the deadlock you claim to be fixing here?
+>>>
+>>>> remove unused local_irq_save/restore call.
+>>>>
+>>>> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+>>>> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+>>>> Cc: Gerald Baeza <gerald.baeza@foss.st.com>
+>>>> Cc: Erwan Le Ray <erwan.leray@foss.st.com>
+>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+>>>> ---
+>>>> v2: remove unused code from stm32_usart_threaded_interrupt() according from
+>>>>      Greg's review.
+>>>>
+>>>>   drivers/tty/serial/stm32-usart.c | 8 +++-----
+>>>>   1 file changed, 3 insertions(+), 5 deletions(-)
+>>>>
+>>>> diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+>>>> index b3675cf25a69..b1ba5e36e36e 100644
+>>>> --- a/drivers/tty/serial/stm32-usart.c
+>>>> +++ b/drivers/tty/serial/stm32-usart.c
+>>>> @@ -1354,13 +1354,12 @@ static void stm32_usart_console_write(struct console *co, const char *s,
+>>>>        u32 old_cr1, new_cr1;
+>>>>        int locked = 1;
+>>>>
+>>>> -     local_irq_save(flags);
+>>>>        if (port->sysrq)
+>>>>                locked = 0;
+>>>>        else if (oops_in_progress)
+>>>> -             locked = spin_trylock(&port->lock);
+>>>> +             locked = spin_trylock_irqsave(&port->lock, flags);
+>>>>        else
+>>>> -             spin_lock(&port->lock);
+>>>> +             spin_lock_irqsave(&port->lock, flags);
+>>>>
+>>>>        /* Save and disable interrupts, enable the transmitter */
+>>>>        old_cr1 = readl_relaxed(port->membase + ofs->cr1);
+>>>> @@ -1374,8 +1373,7 @@ static void stm32_usart_console_write(struct console *co, const char *s,
+>>>>        writel_relaxed(old_cr1, port->membase + ofs->cr1);
+>>>>
+>>>>        if (locked)
+>>>> -             spin_unlock(&port->lock);
+>>>> -     local_irq_restore(flags);
+>>>> +             spin_unlock_irqrestore(&port->lock, flags);
+>>>>   }
+>>>>
+>>>>   static int stm32_usart_console_setup(struct console *co, char *options)
+>>>
+>>> Johan
