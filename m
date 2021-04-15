@@ -2,110 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 996A2360EF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33BC6360EF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233349AbhDOP22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:28:28 -0400
-Received: from foss.arm.com ([217.140.110.172]:49336 "EHLO foss.arm.com"
+        id S233585AbhDOP25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:28:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231137AbhDOP2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:28:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 81CB4106F;
-        Thu, 15 Apr 2021 08:28:02 -0700 (PDT)
-Received: from e120877-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4A61C3FA35;
-        Thu, 15 Apr 2021 08:28:01 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 16:27:59 +0100
-From:   Vincent Donnefort <vincent.donnefort@arm.com>
-To:     Quentin Perret <qperret@google.com>
-Cc:     peterz@infradead.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com, lukasz.luba@arm.com,
-        dietmar.eggemann@arm.com
-Subject: Re: [PATCH] PM / EM: Inefficient OPPs detection
-Message-ID: <20210415152758.GD391924@e120877-lin.cambridge.arm.com>
-References: <1617901829-381963-1-git-send-email-vincent.donnefort@arm.com>
- <1617901829-381963-2-git-send-email-vincent.donnefort@arm.com>
- <YHg7pfGKhzlMrXqC@google.com>
- <20210415141207.GA391924@e120877-lin.cambridge.arm.com>
- <YHhWAvpReXjGwbl/@google.com>
+        id S231137AbhDOP2t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:28:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A21376115B;
+        Thu, 15 Apr 2021 15:28:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618500506;
+        bh=rcKwsyBG71spLEI7owmKnHtzbC9TKpBz3yV7qSke48I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dhqx9dJtE0XYy7xv/0AUzW2pyMnZVCO3iYLenf7XXHMqIhVNBBBAua+GG/A4Xb+Dp
+         GFU1QTekLmOtvcP1sbRsm4YCfDdf4ckcKoXM0awzeLL3ynfKUYDW+U1ER551NXj4cp
+         D01HpsZjuuARWkcEpiBd3Zum2KhDYLrkklYhNhb7VYcbxkZ6ETN7W6RTqiFv3tO3D0
+         05Ps6ze5kcjpHmJ6jPX83cRGNHqlfULHlUcM2opA5ttIHYZVVW39vamvxNNHc+BmL/
+         6ykDd6zJdesew8WZ6BvcU40VGnlshECgb4tuYo1+BPaXxKw6IOd6HJ+nz0NFdo1fua
+         OTdV/vnEIZ1bA==
+Date:   Thu, 15 Apr 2021 16:28:21 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ali Saidi <alisaidi@amazon.com>, linux-kernel@vger.kernel.org,
+        catalin.marinas@arm.com, steve.capper@arm.com,
+        benh@kernel.crashing.org, stable@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: [PATCH] locking/qrwlock: Fix ordering in
+ queued_write_lock_slowpath
+Message-ID: <20210415152820.GB26439@willie-the-truck>
+References: <20210415142552.30916-1-alisaidi@amazon.com>
+ <YHhV3n2n4OXzaZBM@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YHhWAvpReXjGwbl/@google.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YHhV3n2n4OXzaZBM@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 03:04:34PM +0000, Quentin Perret wrote:
-> On Thursday 15 Apr 2021 at 15:12:08 (+0100), Vincent Donnefort wrote:
-> > On Thu, Apr 15, 2021 at 01:12:05PM +0000, Quentin Perret wrote:
-> > > Hi Vincent,
-> > > 
-> > > On Thursday 08 Apr 2021 at 18:10:29 (+0100), Vincent Donnefort wrote:
-> > > > Some SoCs, such as the sd855 have OPPs within the same performance domain,
-> > > > whose cost is higher than others with a higher frequency. Even though
-> > > > those OPPs are interesting from a cooling perspective, it makes no sense
-> > > > to use them when the device can run at full capacity. Those OPPs handicap
-> > > > the performance domain, when choosing the most energy-efficient CPU and
-> > > > are wasting energy. They are inefficient.
-> > > > 
-> > > > Hence, add support for such OPPs to the Energy Model, which creates for
-> > > > each OPP a performance state. The Energy Model can now be read using the
-> > > > regular table, which contains all performance states available, or using
-> > > > an efficient table, where inefficient performance states (and by
-> > > > extension, inefficient OPPs) have been removed.
-> > > > 
-> > > > Currently, the efficient table is used in two paths. Schedutil, and
-> > > > find_energy_efficient_cpu(). We have to modify both paths in the same
-> > > > patch so they stay synchronized. The thermal framework still relies on
-> > > > the original table and hence, DevFreq devices won't create the efficient
-> > > > table.
-> > > > 
-> > > > As used in the hot-path, the efficient table is a lookup table, generated
-> > > > dynamically when the perf domain is created. The complexity of searching
-> > > > a performance state is hence changed from O(n) to O(1). This also
-> > > > speeds-up em_cpu_energy() even if no inefficient OPPs have been found.
-> > > 
-> > > Interesting. Do you have measurements showing the benefits on wake-up
-> > > duration? I remember doing so by hacking the wake-up path to force tasks
-> > > into feec()/compute_energy() even when overutilized, and then running
-> > > hackbench. Maybe something like that would work for you?
+On Thu, Apr 15, 2021 at 05:03:58PM +0200, Peter Zijlstra wrote:
+> On Thu, Apr 15, 2021 at 02:25:52PM +0000, Ali Saidi wrote:
+> > While this code is executed with the wait_lock held, a reader can
+> > acquire the lock without holding wait_lock.  The writer side loops
+> > checking the value with the atomic_cond_read_acquire(), but only truly
+> > acquires the lock when the compare-and-exchange is completed
+> > successfully which isn’t ordered. The other atomic operations from this
+> > point are release-ordered and thus reads after the lock acquisition can
+> > be completed before the lock is truly acquired which violates the
+> > guarantees the lock should be making.
+> 
+> Should be per who? We explicitly do not order the lock acquire store.
+> qspinlock has the exact same issue.
+> 
+> If you look in the git history surrounding spin_is_locked(), you'll find
+> 'lovely' things.
+> 
+> Basically, if you're doing crazy things with spin_is_locked() you get to
+> keep the pieces.
+> 
+> > Fixes: b519b56e378ee ("locking/qrwlock: Use atomic_cond_read_acquire() when spinning in qrwloc")
+> > Signed-off-by: Ali Saidi <alisaidi@amazon.com>
+> > Cc: stable@vger.kernel.org
+> > ---
+> >  kernel/locking/qrwlock.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
 > > 
-> > I'll give a try and see if I get improved numbers.
-> > 
-> > > 
-> > > Just want to make sure we actually need all that complexity -- while
-> > > it's good to reduce the asymptotic complexity, we're looking at a rather
-> > > small problem (max 30 OPPs or so I expect?), so other effects may be
-> > > dominating. Simply skipping inefficient OPPs could be implemented in a
-> > > much simpler way I think.
-> > 
-> > I could indeed just skip the perf state if marked as ineffective. But the idea
-> > was to avoid bringing another for loop in this hot-path.
+> > diff --git a/kernel/locking/qrwlock.c b/kernel/locking/qrwlock.c
+> > index 4786dd271b45..10770f6ac4d9 100644
+> > --- a/kernel/locking/qrwlock.c
+> > +++ b/kernel/locking/qrwlock.c
+> > @@ -73,8 +73,8 @@ void queued_write_lock_slowpath(struct qrwlock *lock)
+> >  
+> >  	/* When no more readers or writers, set the locked flag */
+> >  	do {
+> > -		atomic_cond_read_acquire(&lock->cnts, VAL == _QW_WAITING);
+> > -	} while (atomic_cmpxchg_relaxed(&lock->cnts, _QW_WAITING,
+> > +		atomic_cond_read_relaxed(&lock->cnts, VAL == _QW_WAITING);
+> > +	} while (atomic_cmpxchg_acquire(&lock->cnts, _QW_WAITING,
+> >  					_QW_LOCKED) != _QW_WAITING);
+> >  unlock:
+> >  	arch_spin_unlock(&lock->wait_lock);
 > 
-> Right, though it would just extend a little bit the existing loop, so
-> the overhead is unlikely to be noticeable.
-
-In the case where we let cpufreq_table resolution, it's a whole new loop that we
-would bring. In the case where we rely only on the EM resolution and bypass the
-cpufreq_table though it would be even. But with the look-up table, we're winning
-everywhere :-) Anyway I'll see if I can measure any improvement here.
-
--- 
-Vincent
-
+> This doesn't make sense, there is no such thing as a store-acquire. What
+> you're doing here is moving the acquire from one load to the next. A
+> load we know will load the exact same value.
 > 
-> > Also, not covered by this patch but probably we could get rid of the EM
-> > complexity limit as the table resolution is way faster with this change.
+> Also see Documentation/atomic_t.txt:
 > 
-> Probably yeah. I was considering removing it since eb92692b2544
-> ("sched/fair: Speed-up energy-aware wake-ups") but ended up keeping it
-> as it's entirely untested on large systems. But maybe we can reconsider.
+>   {}_acquire: the R of the RMW (or atomic_read) is an ACQUIRE
 > 
-> Thanks,
-> Quentin
+> 
+> If anything this code wants to be written like so.
+> 
+> ---
+> 
+> diff --git a/kernel/locking/qrwlock.c b/kernel/locking/qrwlock.c
+> index 4786dd271b45..22aeccc363ca 100644
+> --- a/kernel/locking/qrwlock.c
+> +++ b/kernel/locking/qrwlock.c
+> @@ -60,6 +60,8 @@ EXPORT_SYMBOL(queued_read_lock_slowpath);
+>   */
+>  void queued_write_lock_slowpath(struct qrwlock *lock)
+>  {
+> +	u32 cnt;
+> +
+>  	/* Put the writer into the wait queue */
+>  	arch_spin_lock(&lock->wait_lock);
+>  
+> @@ -73,9 +75,8 @@ void queued_write_lock_slowpath(struct qrwlock *lock)
+>  
+>  	/* When no more readers or writers, set the locked flag */
+>  	do {
+> -		atomic_cond_read_acquire(&lock->cnts, VAL == _QW_WAITING);
+> -	} while (atomic_cmpxchg_relaxed(&lock->cnts, _QW_WAITING,
+> -					_QW_LOCKED) != _QW_WAITING);
+> +		cnt = atomic_cond_read_acquire(&lock->cnts, VAL == _QW_WAITING);
 
+I think the issue is that >here< a concurrent reader in interrupt context
+can take the lock and release it again, but we could speculate reads from
+the critical section up over the later release and up before the control
+dependency here...
+
+> +	} while (!atomic_try_cmpxchg_relaxed(&lock->cnts, &cnt, _QW_LOCKED));
+
+... and then this cmpxchg() will succeed, so our speculated stale reads
+could be used.
+
+*HOWEVER*
+
+Speculating a read should be fine in the face of a concurrent _reader_,
+so for this to be an issue it implies that the reader is also doing some
+(atomic?) updates.
+
+Ali?
+
+Will
