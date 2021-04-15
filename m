@@ -2,129 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5967E360B5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B1F360B5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233405AbhDOOEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:04:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233257AbhDOOE2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:04:28 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5BE8C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 07:04:05 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id n38so16140184pfv.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 07:04:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5XPT6W5he0UfMYjZNPGLkFire9o8RBMsN2S/bCzx5Ng=;
-        b=cleochVxryEm6n+xPLdbi6rWCiJMx6jse9wDAZ2S6KURoNsWa8shkEYnqJ3kerW42j
-         aEoddADtBA7Je9fqWlaPShWFbBRSsrqjiFJlKDF1d95merOtepfBt0qOsNOw/vsfS5nL
-         tu+zjwAb4PDxVVsaJHws0sN7ld6LlZna6zZlwi3a/wwPIzmb22qvQIBBZKDUv5hhbZqB
-         hnNDSD+Wfd0Ps9LdLRQx30WNR/orJZjOCiDSB8EI8TvwtgE69qaWXUiKCJ9R/+O3XSYH
-         hbEZo9IJAzM7u9euVsmHGqSqZfPUS9MGhxZqOwNBnq8LDgTrRP3+lD6I8CqpAIOTRW0f
-         3tdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5XPT6W5he0UfMYjZNPGLkFire9o8RBMsN2S/bCzx5Ng=;
-        b=R4iWfQrEyzL+BkwPdua1rRd8ulglPmG+QqISq4hJpcephLyKzg/gkL5sZPxY0wFxQO
-         jbhJ3DBgnV/35akekWG5e6hnB0KMQiZVvhniT6sQt3z0qRtcF2fltWTUgMCHUQZs4YNv
-         Lcnhnild8sVpDNVbnFvFlOyDIto+P+y8b9oY4XDMxUNNnxIUIwFHMx6bDx+yE2XRmHxo
-         y5kL6oAQkZ/IeDXYj5I9iB6TNdhN754socb06Hc3NAksV2xo+LLfS4G30LIiobgQeDJ+
-         u+KV5XTRGzisyoCiqnNLWz8+tDjGF6fkYAbHmhNPJsKI/X2I1UPvGl0eTfNssyXjG344
-         axEQ==
-X-Gm-Message-State: AOAM533G7dFitc9xD4mayaTKMSHUw1WC4/Vkofm3bM5LHMfIf2UmokNm
-        vpBYmYFqXEWgyhAgM2ewPKw=
-X-Google-Smtp-Source: ABdhPJyMP6bMC6WgV254N+iBiedsV3xkfAipyYakF41kVP+RuG4kDZOc8dkzUNLtk5qCeK+hGhw2xA==
-X-Received: by 2002:a62:52c7:0:b029:255:e78e:5069 with SMTP id g190-20020a6252c70000b0290255e78e5069mr3227022pfb.45.1618495444989;
-        Thu, 15 Apr 2021 07:04:04 -0700 (PDT)
-Received: from kali ([103.141.87.254])
-        by smtp.gmail.com with ESMTPSA id y187sm2330633pfb.109.2021.04.15.07.04.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 07:04:04 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 19:33:56 +0530
-From:   Mitali Borkar <mitaliborkar810@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     gregkh@linuxfoundation.org, davem@davemloft.net, kuba@kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: Re: [PATCH v2 4/5] staging: rtl8192e: rectified spelling mistake and
- replace memcmp with ether_oui_equal
-Message-ID: <YHhHzF6A2Syfbxpi@kali>
-References: <cover.1618380932.git.mitaliborkar810@gmail.com>
- <eda8d3401f2f7ff7a61137b4935c6ccb09112e52.1618380932.git.mitaliborkar810@gmail.com>
- <20210414075525.GR6021@kadam>
+        id S233413AbhDOOEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:04:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55372 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233400AbhDOOEn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:04:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0523461222;
+        Thu, 15 Apr 2021 14:04:17 +0000 (UTC)
+Subject: Re: [PATCH v3 1/2] binfmt_flat: allow not offsetting data start
+To:     Damien Le Moal <damien.lemoal@wdc.com>, uclinux-dev@uclinux.org,
+        ugerg@linux-m68k.org, Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv@lists.infradead.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org
+Cc:     Max Filippov <jcmvbkbc@gmail.com>, Anup Patel <anup.patel@wdc.com>,
+        Christoph Hellwig <hch@lst.de>
+References: <20210415061502.7248-1-damien.lemoal@wdc.com>
+ <20210415061502.7248-2-damien.lemoal@wdc.com>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <8ff801ad-6e17-fdd2-6186-5443540947a9@linux-m68k.org>
+Date:   Fri, 16 Apr 2021 00:04:15 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210414075525.GR6021@kadam>
+In-Reply-To: <20210415061502.7248-2-damien.lemoal@wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 10:55:25AM +0300, Dan Carpenter wrote:
-> On Wed, Apr 14, 2021 at 12:26:01PM +0530, Mitali Borkar wrote:
-> > Added a generic function of static inline bool in
-> > include/linux/etherdevice.h to replace memcmp with
-> > ether_oui_equal throughout the execution.
-> > Corrected the misspelled words in this file.
-> > 
-> > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
-> > ---
-> >  
-> > Changes from v1:- Rectified spelling mistake and replaced memcmp with
-> > ether_oui_equal.
-> > 
-> >  drivers/staging/rtl8192e/rtl819x_HTProc.c | 48 +++++++++++------------
-> >  include/linux/etherdevice.h               |  5 +++
->    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> This is networking code and not staging code, but the netdev mailing
-> list isn't CC'd.
->
-I didn't knew mail id then, I will look into this,
+Hi Damien,
 
-> >  2 files changed, 29 insertions(+), 24 deletions(-)
-> > 
-> > diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-> > index ec6b46166e84..ce58feb2af9a 100644
-> > --- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
-> > +++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-> > @@ -43,7 +43,7 @@ u16 MCS_DATA_RATE[2][2][77] = {
-> >  	 810, 720, 810, 900, 900, 990} }
-> >  };
-> >  
-> > -static u8 UNKNOWN_BORADCOM[3] = {0x00, 0x14, 0xbf};
-> > +static u8 UNKNOWN_BROADCOM[3] = {0x00, 0x14, 0xbf};
+On 15/4/21 4:15 pm, Damien Le Moal wrote:
+> Commit 2217b9826246 ("binfmt_flat: revert "binfmt_flat: don't offset
+> the data start"") restored offsetting the start of the data section by
+> a number of words defined by MAX_SHARED_LIBS. As a result, since
+> MAX_SHARED_LIBS is never 0, a gap between the text and data sections
+> always exists. For architectures which cannot support a such gap
+> between the text and data sections (e.g. riscv nommu), flat binary
+> programs cannot be executed.
 > 
-> Please pull this spelling fix into its own patch.
+> To allow an architecture to request contiguous text and data sections,
+> introduce the config option CONFIG_BINFMT_FLAT_NO_TEXT_DATA_GAP.
+> Using this new option, the macro DATA_GAP_WORDS is conditionally
+> defined in binfmt_flat.c to MAX_SHARED_LIBS for architectures
+> tolerating the text-to-data gap (CONFIG_BINFMT_FLAT_NO_TEXT_DATA_GAP
+> disabled case) and to 0 when CONFIG_BINFMT_FLAT_NO_TEXT_DATA_GAP is
+> enabled. DATA_GAP_WORDS is used in load_flat_file() to calculate the
+> data section length and start position.
 > 
-Okay Sir.
+> An architecture enabling CONFIG_BINFMT_FLAT_NO_TEXT_DATA_GAP also
+> prevents the use of the separate text/data load case (when the flat file
+> header flags FLAT_FLAG_RAM and FLAT_FLAG_GZIP are not set with NOMMU
+> kernels) and forces the use of a single RAM region for loading
+> (equivalent to FLAT_FLAG_RAM being set).
 
-> [ snip ]
-> 
-> > diff --git a/include/linux/etherdevice.h b/include/linux/etherdevice.h
-> > index 2e5debc0373c..6a1a63168319 100644
-> > --- a/include/linux/etherdevice.h
-> > +++ b/include/linux/etherdevice.h
-> > @@ -87,6 +87,11 @@ static inline bool is_link_local_ether_addr(const u8 *addr)
-> >  #endif
-> >  }
-> >  
-> > +static inline bool ether_oui_equal(const u8 *addr, const u8 *oui)
-> > +{
-> > +return addr[0] == oui[0] && addr[1] == oui[1] && addr[2] == oui[2];
-> > +}
-> 
-> The indenting is messed up on this.
->
-OKay Sir, I am looking into this.
+So is it the case that a flat format file on RISC-V will never have
+relocations?
 
-> regards,
-> dan carpenter
+
+> Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
+> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> ---
+>   fs/Kconfig.binfmt |  3 +++
+>   fs/binfmt_flat.c  | 21 +++++++++++++++------
+>   2 files changed, 18 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/Kconfig.binfmt b/fs/Kconfig.binfmt
+> index c6f1c8c1934e..c6df931d5d45 100644
+> --- a/fs/Kconfig.binfmt
+> +++ b/fs/Kconfig.binfmt
+> @@ -112,6 +112,9 @@ config BINFMT_FLAT_ARGVP_ENVP_ON_STACK
+>   config BINFMT_FLAT_OLD_ALWAYS_RAM
+>   	bool
+>   
+> +config BINFMT_FLAT_NO_TEXT_DATA_GAP
+> +	bool
+> +
+>   config BINFMT_FLAT_OLD
+>   	bool "Enable support for very old legacy flat binaries"
+>   	depends on BINFMT_FLAT
+> diff --git a/fs/binfmt_flat.c b/fs/binfmt_flat.c
+> index b9c658e0548e..2be29bb964b8 100644
+> --- a/fs/binfmt_flat.c
+> +++ b/fs/binfmt_flat.c
+> @@ -74,6 +74,12 @@
+>   #define	MAX_SHARED_LIBS			(1)
+>   #endif
+>   
+> +#ifdef CONFIG_BINFMT_FLAT_NO_TEXT_DATA_GAP
+> +#define DATA_GAP_WORDS			(0)
+> +#else
+> +#define DATA_GAP_WORDS			(MAX_SHARED_LIBS)
+> +#endif
+> +>   struct lib_info {
+>   	struct {
+>   		unsigned long start_code;		/* Start of text segment */
+> @@ -559,7 +565,10 @@ static int load_flat_file(struct linux_binprm *bprm,
+>   	 * case,  and then the fully copied to RAM case which lumps
+>   	 * it all together.
+>   	 */
+> -	if (!IS_ENABLED(CONFIG_MMU) && !(flags & (FLAT_FLAG_RAM|FLAT_FLAG_GZIP))) {
+> +	if (!IS_ENABLED(CONFIG_MMU) &&
+> +	    !IS_ENABLED(CONFIG_BINFMT_FLAT_NO_TEXT_DATA_GAP) &&
+
+If RISC-V flat format files must always be loaded to RAM then why don't
+they set the FLAT_FLAG_RAM when compiled/generated?
+
+Regards
+Greg
+
+
+> +	    !(flags & (FLAT_FLAG_RAM|FLAT_FLAG_GZIP))) {
+> +
+>   		/*
+>   		 * this should give us a ROM ptr,  but if it doesn't we don't
+>   		 * really care
+> @@ -576,7 +585,7 @@ static int load_flat_file(struct linux_binprm *bprm,
+>   			goto err;
+>   		}
+>   
+> -		len = data_len + extra + MAX_SHARED_LIBS * sizeof(unsigned long);
+> +		len = data_len + extra + DATA_GAP_WORDS * sizeof(unsigned long);
+>   		len = PAGE_ALIGN(len);
+>   		realdatastart = vm_mmap(NULL, 0, len,
+>   			PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE, 0);
+> @@ -591,7 +600,7 @@ static int load_flat_file(struct linux_binprm *bprm,
+>   			goto err;
+>   		}
+>   		datapos = ALIGN(realdatastart +
+> -				MAX_SHARED_LIBS * sizeof(unsigned long),
+> +				DATA_GAP_WORDS * sizeof(unsigned long),
+>   				FLAT_DATA_ALIGN);
+>   
+>   		pr_debug("Allocated data+bss+stack (%u bytes): %lx\n",
+> @@ -622,7 +631,7 @@ static int load_flat_file(struct linux_binprm *bprm,
+>   		memp_size = len;
+>   	} else {
+>   
+> -		len = text_len + data_len + extra + MAX_SHARED_LIBS * sizeof(u32);
+> +		len = text_len + data_len + extra + DATA_GAP_WORDS * sizeof(u32);
+>   		len = PAGE_ALIGN(len);
+>   		textpos = vm_mmap(NULL, 0, len,
+>   			PROT_READ | PROT_EXEC | PROT_WRITE, MAP_PRIVATE, 0);
+> @@ -638,7 +647,7 @@ static int load_flat_file(struct linux_binprm *bprm,
+>   
+>   		realdatastart = textpos + ntohl(hdr->data_start);
+>   		datapos = ALIGN(realdatastart +
+> -				MAX_SHARED_LIBS * sizeof(u32),
+> +				DATA_GAP_WORDS * sizeof(u32),
+>   				FLAT_DATA_ALIGN);
+>   
+>   		reloc = (__be32 __user *)
+> @@ -714,7 +723,7 @@ static int load_flat_file(struct linux_binprm *bprm,
+>   			ret = result;
+>   			pr_err("Unable to read code+data+bss, errno %d\n", ret);
+>   			vm_munmap(textpos, text_len + data_len + extra +
+> -				MAX_SHARED_LIBS * sizeof(u32));
+> +				  DATA_GAP_WORDS * sizeof(u32));
+>   			goto err;
+>   		}
+>   	}
 > 
