@@ -2,140 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96048361631
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 01:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33EC2361635
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 01:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237669AbhDOX1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 19:27:19 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:31759 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236821AbhDOX1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 19:27:17 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618529213; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=Y3RdJh64f/A7Bekobz08o6R+GiE3qPBz/fdmi999ShQ=; b=vbU5ExeAahtLPbtrNFJBfMhJbQtMd9PGLYrQa1R8584lItAyaASJxATT6IJAwmBq4+wzXGqG
- 0TnKDTSREq+/YlcS12UZagr0iz95BgQOM7jNRXApGQrCXwCpdFMxK3BKL1h5/JFXiDQBVsqT
- dbKe2asrF0yTn2R0rs16MAWTROc=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 6078cbbca817abd39a4ead04 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 15 Apr 2021 23:26:52
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2CA00C43463; Thu, 15 Apr 2021 23:26:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 826F9C433ED;
-        Thu, 15 Apr 2021 23:26:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 826F9C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        khsieh@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/3] drm/msm/dp: initialize audio_comp when audio starts
-Date:   Thu, 15 Apr 2021 16:26:41 -0700
-Message-Id: <1618529201-26683-1-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <161843546014.46595.17704484523118330586@swboyd.mtv.corp.google.com>
-References: <161843546014.46595.17704484523118330586@swboyd.mtv.corp.google.com>
+        id S237816AbhDOX14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 19:27:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236110AbhDOX1u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 19:27:50 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5934C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 16:27:26 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id g5so32674194ejx.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 16:27:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UY6MAyIHSLuahNeTIYY7ingvaBeAjtSSyCT9IEVCcI0=;
+        b=0FQGYaPmPPNiIqguSCdGiiSM/upLqdKsUW76dDpGuEGs9eyVlQ5e0SG6jYq6vuef8y
+         hfDRr/0flKCciPn0flDjezRu9LaU+jIuCawx/5bQN39vD+jgrkklNL1fuF8mTAMQPkqr
+         /3qfRiEXN3qnk3rkcAQLU/jX2A8wQz0pN0eTNHDF4RRKXLNj6DywicW/7p5ofrc6pk7L
+         WOMdd64/O2jnSmSD3hSjHYlqSH6IRloFvNCUv2dYQoSGtriq77gZ0IhVRJSi4zZ/TLDE
+         aXgG/ZtM5NB/7MZCr9V3Wn4zvhuZf5aV2kO2tzUDvLv7xTFvX4uwezF2BjVmlSBOglGF
+         Pljw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UY6MAyIHSLuahNeTIYY7ingvaBeAjtSSyCT9IEVCcI0=;
+        b=BIdDMJgKC4shhHEOcH02tYRDB3Pnd3cv7XMY9F2D/APPC5WcqVyyDXEh4ztAhHTu6z
+         QrRu2LTu0MKFQsmkefId0Mtjmug319z6ODikaeuZixZlIZ18Qk18edO09YT/OYMP2xVo
+         YiKrf0ep6YG+teXNeGJcBH+BQakpVnetKP2ahSpXVXwiNhyyrSTF4O8Mxur4areyaN8c
+         OSmQhuj/CjSy+kzFd0SSjIOgHc6cI3vcbZ1EojbirM5H7v4nYAjnONCNULpzxMMKFRWu
+         uMBdGPY6oWVPR8rj6eouRri5BPMjUqlshyk+Phip/w+P31gzj4GecsUsUkGHl9XSa4CI
+         Wwhg==
+X-Gm-Message-State: AOAM530QwjWhljP/+kn38HZH2+7S7RrE8JU+8aPnS08XNb7EuzTmJB1F
+        e3ri4rDP+skgtVVUrdZJX6Yf39SHNiSrnW83OhHg8g==
+X-Google-Smtp-Source: ABdhPJwpWk2HP8+JznrSL+PATFH65vNY88fGqjwU03meZLdOsGxRN2pq99F13TgiNxqNJmjNha1eZoSLk4JiYIfrwoQ=
+X-Received: by 2002:a17:907:76cb:: with SMTP id kf11mr5895813ejc.472.1618529245398;
+ Thu, 15 Apr 2021 16:27:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210407222625.320177-1-ben.widawsky@intel.com> <20210407222625.320177-8-ben.widawsky@intel.com>
+In-Reply-To: <20210407222625.320177-8-ben.widawsky@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 15 Apr 2021 16:27:14 -0700
+Message-ID: <CAPcyv4hSvN_O7UUaD=AR=F3bOesDnJFsEeHZ4=fLQySiGxVekw@mail.gmail.com>
+Subject: Re: [PATCH 7/7] cxl: Add HDM decoder capbilities
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     linux-cxl@vger.kernel.org, Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        "Schofield, Alison" <alison.schofield@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initialize audio_comp when audio starts and wait for audio_comp at
-dp_display_disable(). This will take care of both dongle unplugged
-and display off (suspend) cases.
+On Wed, Apr 7, 2021 at 3:26 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
+>
+> An HDM decoder is defined in the CXL 2.0 specification as a mechanism
+> that allow devices and upstream ports to claim memory address ranges and
+> participate in interleave sets. HDM decoder registers are within the
+> component register block defined in CXL 2.0 8.2.3 CXL 2.0 Component
+> Registers as part of the CXL.cache and CXL.mem subregion.
+>
+> The Component Register Block is found via the Register Locator DVSEC
+> in a similar fashion to how the CXL Device Register Block is found. The
+> primary difference is the capability id size of the Component Register
+> Block is a single DWORD instead of 4 DWORDS.
+>
+> It's now possible to configure a CXL type 3 device's HDM decoder.
 
-Changes in v2:
--- add dp_display_signal_audio_start()
+It's always been possible and this patch just prepares for programming
+them, but does not actually touch them yet. So let's drop this as I'm
+not sure what it is saying.
 
-Changes in v3:
--- restore dp_display_handle_plugged_change() at dp_hpd_unplug_handle().
+> Such
+> programming is expected for CXL devices with persistent memory, and hot
+> plugged CXL devices that participate in CXL.mem with volatile memory.
 
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/gpu/drm/msm/dp/dp_audio.c   |  1 +
- drivers/gpu/drm/msm/dp/dp_display.c | 11 +++++++++--
- drivers/gpu/drm/msm/dp/dp_display.h |  1 +
- 3 files changed, 11 insertions(+), 2 deletions(-)
+Let's drop this as well because the state of what the OS is expected
+to program is platform and topology specific. The OS needs to be
+prepared for the HDMs to be unprogrammed, validly programmed in a
+state the OS will leave untouched, and/or validly programmed in a way
+the OS wants to redo.
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_audio.c b/drivers/gpu/drm/msm/dp/dp_audio.c
-index 82a8673..d7e4a39 100644
---- a/drivers/gpu/drm/msm/dp/dp_audio.c
-+++ b/drivers/gpu/drm/msm/dp/dp_audio.c
-@@ -527,6 +527,7 @@ int dp_audio_hw_params(struct device *dev,
- 	dp_audio_setup_acr(audio);
- 	dp_audio_safe_to_exit_level(audio);
- 	dp_audio_enable(audio, true);
-+	dp_display_signal_audio_start(dp_display);
- 	dp_display->audio_enabled = true;
- 
- end:
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 0ba71c7..1784e11 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -178,6 +178,15 @@ static int dp_del_event(struct dp_display_private *dp_priv, u32 event)
- 	return 0;
- }
- 
-+void dp_display_signal_audio_start(struct msm_dp *dp_display)
-+{
-+	struct dp_display_private *dp;
-+
-+	dp = container_of(dp_display, struct dp_display_private, dp_display);
-+
-+	reinit_completion(&dp->audio_comp);
-+}
-+
- void dp_display_signal_audio_complete(struct msm_dp *dp_display)
- {
- 	struct dp_display_private *dp;
-@@ -649,7 +658,6 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
- 	dp_add_event(dp, EV_DISCONNECT_PENDING_TIMEOUT, 0, DP_TIMEOUT_5_SECOND);
- 
- 	/* signal the disconnect event early to ensure proper teardown */
--	reinit_completion(&dp->audio_comp);
- 	dp_display_handle_plugged_change(g_dp_display, false);
- 
- 	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK |
-@@ -894,7 +902,6 @@ static int dp_display_disable(struct dp_display_private *dp, u32 data)
- 	/* wait only if audio was enabled */
- 	if (dp_display->audio_enabled) {
- 		/* signal the disconnect event */
--		reinit_completion(&dp->audio_comp);
- 		dp_display_handle_plugged_change(dp_display, false);
- 		if (!wait_for_completion_timeout(&dp->audio_comp,
- 				HZ * 5))
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.h b/drivers/gpu/drm/msm/dp/dp_display.h
-index 6092ba1..5173c89 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.h
-+++ b/drivers/gpu/drm/msm/dp/dp_display.h
-@@ -34,6 +34,7 @@ int dp_display_get_modes(struct msm_dp *dp_display,
- int dp_display_request_irq(struct msm_dp *dp_display);
- bool dp_display_check_video_test(struct msm_dp *dp_display);
- int dp_display_get_test_bpp(struct msm_dp *dp_display);
-+void dp_display_signal_audio_start(struct msm_dp *dp_display);
- void dp_display_signal_audio_complete(struct msm_dp *dp_display);
- 
- #endif /* _DP_DISPLAY_H_ */
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+>
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> ---
+>  drivers/cxl/core.c | 73 ++++++++++++++++++++++++++++++++++++++++++++++
+>  drivers/cxl/cxl.h  | 48 ++++++++++++++++++++++++++++++
+>  drivers/cxl/mem.c  | 37 ++++++++++++++++++++---
+>  drivers/cxl/pci.h  |  1 +
+>  4 files changed, 155 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/cxl/core.c b/drivers/cxl/core.c
+> index 65cd704581bc..db6a83eed0a2 100644
+> --- a/drivers/cxl/core.c
+> +++ b/drivers/cxl/core.c
+> @@ -479,6 +479,79 @@ struct cxl_port *devm_cxl_add_port(struct device *host,
+>  }
+>  EXPORT_SYMBOL_GPL(devm_cxl_add_port);
+>
+> +void cxl_setup_component_regs(struct device *dev, void __iomem *base,
+> +                             struct cxl_component_regs *regs)
+> +{
+> +       int cap, cap_count;
+> +       u64 cap_array;
+> +
+> +       *regs = (struct cxl_component_regs) { 0 };
+> +
+> +       /*
+> +        * CXL.cache and CXL.mem registers are at offset 0x1000 as defined in
+> +        * CXL 2.0 8.2.4 Table 141.
+> +        *
+> +        * TODO: Map other registers as needed.
 
+That TODO goes without saying.
+
+> +        */
+> +       base += CXL_CM_OFFSET;
+> +
+> +       cap_array = readq(base + CXL_CM_CAP_HDR_OFFSET);
+> +
+> +       if (FIELD_GET(CXL_CM_CAP_HDR_ID_MASK, cap_array) != CM_CAP_HDR_CAP_ID) {
+> +               dev_err(dev,
+> +                       "Couldn't locate the CXL.cache and CXL.mem capability array header./n");
+> +               return;
+> +       }
+> +
+> +       /* It's assumed that future versions will be backward compatible */
+
+If future versions are backwards compatible then why check? If someone
+wants a driver that supports new capabilities then update the driver,
+but validating that the version is non-zero seems to be a pedantic
+check for no good reason to me.
+
+> +#define CAPID_VERSION_CHECK(data, mask, expected, capability_msg)              \
+> +       do {                                                                   \
+> +               if (FIELD_GET(mask, data) < expected) {                        \
+> +                       dev_err(dev,                                           \
+> +                               capability_msg                                 \
+> +                               " version %ld is below expected %d",           \
+> +                               FIELD_GET(mask, data), expected);              \
+> +                       return;                                                \
+
+Ugh, "return" in a macro, please no.
+
+> +               }                                                              \
+> +       } while (0)
+> +
+> +       CAPID_VERSION_CHECK(cap_array, CXL_CM_CAP_HDR_VERSION_MASK,
+> +                           CM_CAP_HDR_CAP_VERSION, "Capability array header");
+> +       CAPID_VERSION_CHECK(cap_array, CXL_CM_CAP_HDR_CACHE_MEM_VERSION_MASK,
+> +                           CM_CAP_HDR_CACHE_MEM_VERSION,
+> +                           "Capability array header CXL.cache CXL.mem");
+> +
+> +       cap_count = FIELD_GET(CXL_CM_CAP_HDR_ARRAY_SIZE_MASK, cap_array);
+> +
+> +       for (cap = 1; cap <= cap_count; cap++) {
+> +               void __iomem *register_block;
+> +               u32 hdr;
+> +               u16 cap_id, offset;
+> +
+> +               hdr = readl(base + cap * 0x4);
+> +
+> +               cap_id = FIELD_GET(CXL_CM_CAP_HDR_ID_MASK, hdr);
+> +               offset = FIELD_GET(CXL_CM_CAP_PTR_MASK, hdr);
+> +               register_block = base + offset;
+> +
+> +               switch (cap_id) {
+> +               case CXL_CM_CAP_CAP_ID_HDM:
+> +                       CAPID_VERSION_CHECK(hdr, CXL_CM_CAP_HDR_VERSION_MASK,
+> +                                           CXL_CM_CAP_CAP_HDM_VERSION,
+> +                                           "HDM decoder capability");
+> +                       dev_dbg(dev, "found HDM decoder capability (0x%x)\n",
+> +                               offset);
+> +                       regs->hdm_decoder = register_block;
+> +                       break;
+> +               default:
+> +                       dev_dbg(dev, "Unknown CM cap ID: %d (0x%x)\n", cap_id,
+
+Hex cap id? Perhaps rather than "Unknown" this can just say "Skipping"
+because some of these are technically it's just the kernel does not
+care.
+
+> +                               offset);
+> +                       break;
+> +               }
+> +       }
+> +}
+> +EXPORT_SYMBOL_GPL(cxl_setup_component_regs);
+> +
+>  /*
+>   * cxl_setup_device_regs() - Detect CXL Device register blocks
+>   * @dev: Host device of the @base mapping
+> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> index 0211f44c95a2..a4ad1176dc5a 100644
+> --- a/drivers/cxl/cxl.h
+> +++ b/drivers/cxl/cxl.h
+> @@ -8,6 +8,31 @@
+>  #include <linux/bitops.h>
+>  #include <linux/io.h>
+>
+> +/* CXL 2.0 8.2.5 CXL.cache and CXL.mem Registers*/
+> +#define CXL_CM_OFFSET 0x1000
+> +#define CXL_CM_CAP_HDR_OFFSET 0x0
+> +#define   CXL_CM_CAP_HDR_ID_MASK GENMASK(15, 0)
+> +#define     CM_CAP_HDR_CAP_ID 1
+> +#define   CXL_CM_CAP_HDR_VERSION_MASK GENMASK(19, 16)
+> +#define     CM_CAP_HDR_CAP_VERSION 1
+> +#define   CXL_CM_CAP_HDR_CACHE_MEM_VERSION_MASK GENMASK(23, 20)
+> +#define     CM_CAP_HDR_CACHE_MEM_VERSION 1
+> +#define   CXL_CM_CAP_HDR_ARRAY_SIZE_MASK GENMASK(31, 24)
+> +#define CXL_CM_CAP_PTR_MASK GENMASK(31, 20)
+> +
+> +#define   CXL_CM_CAP_CAP_ID_HDM 0x5
+> +#define   CXL_CM_CAP_CAP_HDM_VERSION 1
+> +
+> +/* HDM decoders CXL 2.0 8.2.5.12 CXL HDM Decoder Capability Structure */
+> +#define CXL_HDM_DECODER_CAP_OFFSET 0x0
+> +#define   CXL_HDM_DECODER_COUNT_MASK GENMASK(3, 0)
+> +#define   CXL_HDM_DECODER_TARGET_COUNT_MASK GENMASK(7, 4)
+> +#define CXL_HDM_DECODER0_BASE_LOW_OFFSET 0x10
+> +#define CXL_HDM_DECODER0_BASE_HIGH_OFFSET 0x14
+> +#define CXL_HDM_DECODER0_SIZE_LOW_OFFSET 0x18
+> +#define CXL_HDM_DECODER0_SIZE_HIGH_OFFSET 0x1c
+> +#define CXL_HDM_DECODER0_CTRL_OFFSET 0x20
+> +
+>  /* CXL 2.0 8.2.8.1 Device Capabilities Array Register */
+>  #define CXLDEV_CAP_ARRAY_OFFSET 0x0
+>  #define   CXLDEV_CAP_ARRAY_CAP_ID 0
+> @@ -35,11 +60,26 @@
+>  #define CXLDEV_MBOX_PAYLOAD_OFFSET 0x20
+>
+>  /* See note for 'struct cxl_regs' for the rationale of this organization */
+> +#define CXL_COMPONENT_REGS() \
+> +       void __iomem *hdm_decoder
+> +
+>  #define CXL_DEVICE_REGS() \
+>         void __iomem *status; \
+>         void __iomem *mbox; \
+>         void __iomem *memdev
+>
+> +/**
+> + * struct cxl_component_regs - Common container of CXL component register block
+> + *                            base pointers.
+> + *
+> + * The only component registers that we care about are the CXL.cache and CXL.mem
+> + * registers which are at offset 0x1000 from the component register base (CXL
+> + * 2.0 8.2.4)
+> + */
+
+I don't think kernel-doc will be happy about this, so probably follow
+the same fixup I did when Jonathan pointed this out for the cxl_port
+patches.
+
+> +struct cxl_component_regs {
+> +       CXL_COMPONENT_REGS();
+> +};
+> +
+>  /**
+>   * struct cxl_device_regs - Common container of CXL Device register
+>   *                         block base pointers
+> @@ -59,6 +99,12 @@ struct cxl_device_regs {
+>   * The specificity reads naturally from left-to-right.
+>   */
+>  struct cxl_regs {
+> +       union {
+> +               struct {
+> +                       CXL_COMPONENT_REGS();
+> +               };
+> +               struct cxl_component_regs component;
+> +       };
+>         union {
+>                 struct {
+>                         CXL_DEVICE_REGS();
+> @@ -67,6 +113,8 @@ struct cxl_regs {
+>         };
+>  };
+>
+> +void cxl_setup_component_regs(struct device *dev, void __iomem *base,
+> +                             struct cxl_component_regs *regs);
+>  void cxl_setup_device_regs(struct device *dev, void __iomem *base,
+>                            struct cxl_device_regs *regs);
+>
+> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> index b7342aaf38c4..e915e3743b76 100644
+> --- a/drivers/cxl/mem.c
+> +++ b/drivers/cxl/mem.c
+> @@ -974,6 +974,21 @@ static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
+>         return 0;
+>  }
+>
+> +static int __cxl_setup_component_regs(struct cxl_mem *cxlm, void __iomem *base)
+> +{
+> +       struct cxl_regs *regs = &cxlm->regs;
+> +       struct pci_dev *pdev = cxlm->pdev;
+> +       struct device *dev = &pdev->dev;
+> +
+> +       cxl_setup_component_regs(dev, base, &regs->component);
+> +       if (!regs->hdm_decoder) {
+> +               dev_err(dev, "HDM decoder registers not found\n");
+> +               return -ENXIO;
+
+I was hoping this patch would show the justification of the
+organization proposed in patch-6, but it doesn't and I think we're
+better off open coding the error check in cxl_mem_setup_regs().
+
+All the other patches in this series I did not comment on look good to me.
