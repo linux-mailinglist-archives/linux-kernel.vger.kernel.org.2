@@ -2,109 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC71D360E79
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:16:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1425360DA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234351AbhDOPPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:15:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49076 "EHLO mail.kernel.org"
+        id S234290AbhDOPEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:04:09 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:43410 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235475AbhDOPFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:05:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A60F7613B0;
-        Thu, 15 Apr 2021 15:03:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618499030;
-        bh=dXnmeqHEJKNmTkFsNw2zlTfrOvZF8N2q6pwjSmvheCo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=osl2YtcgAOFqbTYB6tqu6NuqdNSBtOQ35np6Q1mqoB7zW4S1ajWyksRuCcrgOiRL2
-         tMoFRKyuE/tqSJPUeC6bD8dXvX8Ijfx5z7IVpR62ufbkpBVaslsKKuG0jeWZN9rwJH
-         /mkzr6MP6X1JdeAT1a481cHFfH9YRd84YEqB98lg=
-Date:   Thu, 15 Apr 2021 16:53:48 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH 00/13] tty.h cleanups
-Message-ID: <YHhTfL6eIJzCOt7W@kroah.com>
-References: <20210408125134.3016837-1-gregkh@linuxfoundation.org>
- <YG8SUl+B8+76JZwV@hovoldconsulting.com>
- <YG9E5GpLljkXARDj@kroah.com>
- <YHADHYKMhfYE1aNw@hovoldconsulting.com>
- <YHf3ojj44ex2dd3M@kroah.com>
- <YHhKSdVpo9mo0sCn@hovoldconsulting.com>
+        id S233968AbhDOO4X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:56:23 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618498560; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=FFS6EKj/DWquOwjPpszmYv2XYXjqrSmpSWLrx/ZGvbE=; b=Sga/2GUowc3M+Ek/yy/k/FARd34ODjhnFJd15OUUbU0CDGWXSMqZldlL8AQuyzFcJsX3Nkof
+ XD4x6N22enj9wejn5zAFD+gExcqd8A6n7QKcc5iZw0euvTBEHV1bRjpQ7dH5jZpbSUqukVLG
+ 9NHGsHl0z/hKYuOCBtihtNCpOA8=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 607853ed8166b7eff7484a62 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 15 Apr 2021 14:55:41
+ GMT
+Sender: charante=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9C022C43468; Thu, 15 Apr 2021 14:55:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.29.110] (unknown [49.37.156.137])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: charante)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D93F2C43464;
+        Thu, 15 Apr 2021 14:55:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D93F2C43464
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
+Subject: Re: [PATCH] sched,psi: fix the 'int' underflow for psi
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org
+References: <1618496981-6148-1-git-send-email-charante@codeaurora.org>
+ <YHhQ7tDZWF6tHXSQ@cmpxchg.org>
+From:   Charan Teja Kalla <charante@codeaurora.org>
+Message-ID: <b0a0b8f5-a5bc-4807-f55b-288db57c74e2@codeaurora.org>
+Date:   Thu, 15 Apr 2021 20:25:32 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHhKSdVpo9mo0sCn@hovoldconsulting.com>
+In-Reply-To: <YHhQ7tDZWF6tHXSQ@cmpxchg.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 04:14:33PM +0200, Johan Hovold wrote:
-> On Thu, Apr 15, 2021 at 10:21:54AM +0200, Greg Kroah-Hartman wrote:
-> > On Fri, Apr 09, 2021 at 09:32:45AM +0200, Johan Hovold wrote:
-> > > On Thu, Apr 08, 2021 at 08:01:08PM +0200, Greg Kroah-Hartman wrote:
-> > > > On Thu, Apr 08, 2021 at 04:25:22PM +0200, Johan Hovold wrote:
-> > > > > On Thu, Apr 08, 2021 at 02:51:21PM +0200, Greg Kroah-Hartman wrote:
-> > > > > > Turns out there is a lot of tty-internal stuff in include/linux/tty.h
-> > > > > > that do not belong there.  Create a internal-to-the-tty-layer .h file
-> > > > > > for these types of things and move function prototypes to it instead of
-> > > > > > being in the system-wide header file.
-> > > > > > 
-> > > > > > Along the way clean up the use of some old tty-only debugging macros and
-> > > > > > use the in-kernel dev_*() calls instead.
-> > > > > 
-> > > > > I'm afraid that's not a good idea since not all ttys have a
-> > > > > corresponding class device. Notable exception include pseudo terminals
-> > > > > and serdev.
-> > > > > 
-> > > > > While dev_printk() can handle a NULL device argument without crashing,
-> > > > > we'll actually lose log information by removing the tty printk helpers.
-> > > > 
-> > > > I think the same info will be printed here as before, just some NULL
-> > > > information at the beginning, right?  And the benifits overall (for real
-> > > > tty devices), should outweigh the few devices that do not have this
-> > > > information.
-> > > 
-> > > No, you'll only be losing information (tty driver and tty name). Here's
-> > > a pty example, where the first line in each pair use dev_info() and the
-> > > second tty_info():
-> > > 
-> > > [   10.235331] (NULL device *): tty_get_device
-> > > [   10.235441] ptm ptm0: tty_get_device
-> > > 
-> > > [   10.235586] (NULL device *): tty_get_device
-> > > [   10.235674] pts pts0: tty_get_device
-> > > 
-> > > and similar for serdev, which is becoming more and more common.
-> > 
-> > Ok, good point, I'll go apply only the first 2 patches in this series
-> > (moving the macros out of tty.h and removing the unused one) and then
-> > will redo this set of patches again.
+Thanks Johannes!!
+
+On 4/15/2021 8:12 PM, Johannes Weiner wrote:
+> Makes sense, it's more graceful in the event of a bug.
 > 
-> Perhaps no harm in leaving the tty_info() on in there for consistency.
-> We have users of the _ratelimited() flavour of it (even if there's no
-> dependency).
+> But what motivates this change? Is it something you hit recently with
+> an upstream kernel and we should investigate?
 
-I dropped it, no need to keep around unused macros :)
+We specifically didn't hit the issue around this change. Identified this
+while doing code walk through.
 
-> > I think a better tty_msg() macro is warrented so that we can provide
-> > dev_*() output if we have a device, otherwise fall back to the old
-> > style to preserve functionality.
 > 
-> Possibly, but the dev_printk() for the tty class devices wouldn't
-> provide any more info than what's already there (i.e. driver name + tty
-> name).
+> There is already a branch on the tasks to signal the bug. How about:
 > 
-> (And associating ttys with other devices and drivers (e.g. a serdev
-> client and its driver) might not be what we want since you lose the
-> connection to the underlying tty driver.)
+> 		if (groupc->tasksk[t]) {
+> 			groupc->tasks[t]--;
+> 		} else if (!psi_bug) {
+> 			printk_deferred(...
+> 			psi_bug = 1;
+> 		}
 
-Yeah, I messed with this for a bit today and I think I'm just going to
-give up and leave it as-is for now...
-
-thanks,
-
-greg k-h
+Looks cleaner. Will raise V2 with this.
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+Forum, a Linux Foundation Collaborative Project
