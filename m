@@ -2,108 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED40836116B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CA0361180
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233980AbhDORvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 13:51:39 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:58985 "EHLO m43-7.mailgun.net"
+        id S234386AbhDORyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 13:54:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233551AbhDORvi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 13:51:38 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618509075; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=w3FgUKgONopjUFKG1MF4A+eFSirR9zSIJ7MyD+RzndI=; b=Uvje9IsA9M472WPlCXwlEx3ea//jDji5j7FNutMHWLhHpRt2+E0oN3TlKAMKe2gvXTafgq94
- q96/tB9w9iD5Gm9qiXQueUhKZCYH98NHQlXs/lP1Njg2GWT+key9GyGuEvcVh6t4G43XljIX
- MKOx67cMc0gfLZOQhuyp0UFGC6g=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 60787d079a9ff96d95f743e2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 15 Apr 2021 17:51:03
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 76A33C43461; Thu, 15 Apr 2021 17:51:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.110.95.130] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4C35EC433C6;
-        Thu, 15 Apr 2021 17:51:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4C35EC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: [PATCH] usb: dwc3: gadget: Avoid canceling current request for
- queuing error
-To:     Felipe Balbi <balbi@kernel.org>, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jackp@codeaurora.org
-References: <1618439388-20427-1-git-send-email-wcheng@codeaurora.org>
- <87mtu0njvj.fsf@kernel.org>
-From:   Wesley Cheng <wcheng@codeaurora.org>
-Message-ID: <677afbd3-6c72-29c0-ca25-88dd1bff335a@codeaurora.org>
-Date:   Thu, 15 Apr 2021 10:51:01 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S234221AbhDORyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 13:54:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE22861139;
+        Thu, 15 Apr 2021 17:53:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618509217;
+        bh=uykpJSftt6neycgE9UZPf5383PYs5+NZsn9IZWyvBls=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=a+DebjSlUjLnchww5EDoaY79Eih/5pj2kts+TQDF8lOdiutpciCSifK84L9QXoGuh
+         RCrGzfgzSNpAZ+NeG3MPAjLysjOVnRJMGXPlybpG7DvUYF4HxZiT+w8dAvEnTGUaPJ
+         Y2z8tdI/HAbu3xJLZYccCvRAUO68z4aLYKUl/YLmkNnH9m7PgY4nC1If0iPVp8YDTE
+         Wpj8JPULx8hDrlo9gKeofoliQud3+SpsRZWTNtHVTutFntOa6vxqcbvKcEm6nbBQlS
+         QdfX23MKqQi9ELJvJTvpkY/vQbqMyywLTBW19pURWr2FehLnGfiruE3FynmCcrGFyQ
+         i1D9GkCI9fkcQ==
+Received: by mail-qk1-f169.google.com with SMTP id f19so8408061qka.8;
+        Thu, 15 Apr 2021 10:53:37 -0700 (PDT)
+X-Gm-Message-State: AOAM533wzFPjdCO4bqrDrc4+1n+BERT99soGLx3wwjII9mbB950Sjbh0
+        /jEfvOZR7HhZMPIUK3A0q0w00gikEhWVmGE+s1I=
+X-Google-Smtp-Source: ABdhPJzCNzm0W0XgockPjRIWCggyQJP/PdeRn4VzfFy2hYp7ghpXaixWJjKfmj+WztuDXoPxjQPb2UXr/6ySmNnlD6w=
+X-Received: by 2002:a37:d202:: with SMTP id f2mr4665987qkj.273.1618509217042;
+ Thu, 15 Apr 2021 10:53:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87mtu0njvj.fsf@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1408071538-14354-1-git-send-email-mcgrof@do-not-panic.com>
+ <20140815092950.GZ18016@ZenIV.linux.org.uk> <c3b0feac-327c-15db-02c1-4a25639540e4@suse.com>
+In-Reply-To: <c3b0feac-327c-15db-02c1-4a25639540e4@suse.com>
+From:   Luis Chamberlain <mcgrof@kernel.org>
+Date:   Thu, 15 Apr 2021 10:53:25 -0700
+X-Gmail-Original-Message-ID: <CAB=NE6X2-mbZwVFnKUwjRmTGp3auZFHQXJ1h_YTJ2driUeoR+A@mail.gmail.com>
+Message-ID: <CAB=NE6X2-mbZwVFnKUwjRmTGp3auZFHQXJ1h_YTJ2driUeoR+A@mail.gmail.com>
+Subject: Re: [RFC v3 0/2] vfs / btrfs: add support for ustat()
+To:     Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.cz>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Chris Mason <clm@fb.com>,
+        Josef Bacik <jbacik@fb.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jeff Mahoney <jeffm@suse.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 23, 2017 at 3:31 PM Jeff Mahoney <jeffm@suse.com> wrote:
+>
+> On 8/15/14 5:29 AM, Al Viro wrote:
+> > On Thu, Aug 14, 2014 at 07:58:56PM -0700, Luis R. Rodriguez wrote:
+> >
+> >> Christoph had noted that this seemed associated to the problem
+> >> that the btrfs uses different assignments for st_dev than s_dev,
+> >> but much as I'd like to see that changed based on discussions so
+> >> far its unclear if this is going to be possible unless strong
+> >> commitment is reached.
+>
+> Resurrecting a dead thread since we've been carrying this patch anyway
+> since then.
+>
+> > Explain, please.  Whose commitment and commitment to what, exactly?
+> > Having different ->st_dev values for different files on the same
+> > fs is a bloody bad idea; why does btrfs do that at all?  If nothing else,
+> > it breaks the usual "are those two files on the same fs?" tests...
+>
+> It's because btrfs snapshots would have inode number collisions.
+> Changing the inode numbers for snapshots would negate a big benefit of
+> btrfs snapshots: the quick creation and lightweight on-disk
+> representation due to metadata sharing.
+>
+> The thing is that ustat() used to work.  Your commit 0ee5dc676a5f8
+> (btrfs: kill magical embedded struct superblock) had a regression:
+> Since it replaced the superblock with a simple dev_t, it rendered the
+> device no longer discoverable by user_get_super.  We need a list_head to
+> attach for searching.
+>
+> There's an argument that this is hacky.  It's valid.  The only other
+> feedback I've heard is to use a real superblock for subvolumes to do
+> this instead.  That doesn't work either, due to things like freeze/thaw
+> and inode writeback.  Ultimately, what we need is a single file system
+> with multiple namespaces.  Years ago we just needed different inode
+> namespaces, but as people have started adopting btrfs for containers, we
+> need more than that.  I've heard requests for per-subvolume security
+> contexts.  I'd imagine user namespaces are on someone's wish list.  A
+> working df can be done with ->d_automount, but the way btrfs handles
+> having a "canonical" subvolume location has always been a way to avoid
+> directory loops.  I'd like to just automount subvolumes everywhere
+> they're referenced.  One solution, for which I have no code yet, is to
+> have something like a superblock-light that we can hang things like a
+> security context, a user namespace, and an anonymous dev.  Most file
+> systems would have just one.  Btrfs would have one per subvolume.
+>
+> That's a big project with a bunch of discussion.
 
+4 years have gone by and this patch is still being carried around for
+btrfs. Other than resolving this ustat() issue for btrfs are there new
+reasons to support this effort done to be done properly? Are there
+other filesystems that would benefit? I'd like to get an idea of the
+stakeholder here before considering taking this on or not.
 
-On 4/14/2021 11:26 PM, Felipe Balbi wrote:
-> Wesley Cheng <wcheng@codeaurora.org> writes:
-> 
->> If an error is received when issuing a start or update transfer
->> command, the error handler will stop all active requests (including
->> the current USB request), and call dwc3_gadget_giveback() to notify
->> function drivers of the requests which have been stopped.  Avoid
->> having to cancel the current request which is trying to be queued, as
->> the function driver will handle the EP queue error accordingly.
->> Simply unmap the request as it was done before, and allow previously
->> started transfers to be cleaned up.
->>
->> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
->> ---
->>  drivers/usb/dwc3/gadget.c | 5 +++++
->>  1 file changed, 5 insertions(+)
->>
->> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
->> index e1b04c97..4200775 100644
->> --- a/drivers/usb/dwc3/gadget.c
->> +++ b/drivers/usb/dwc3/gadget.c
->> @@ -1399,6 +1399,11 @@ static int __dwc3_gadget_kick_transfer(struct dwc3_ep *dep)
->>  		if (ret == -EAGAIN)
->>  			return ret;
->>  
->> +		/* Avoid canceling current request, as it has not been started */
->> +		if (req->trb)
->> +			memset(req->trb, 0, sizeof(struct dwc3_trb));
-> 
-> we don't need a full memset. I think ensuring HWO bit is zero is enough.
-> 
-Hi Felipe,
-
-Thanks for the input/review, will make this change to just clear the HWO.
-
-Thanks
-Wesley Cheng
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+ Luis
