@@ -2,128 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F593602E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E55993602DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 08:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231244AbhDOHA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 03:00:29 -0400
-Received: from mx313.baidu.com ([180.101.52.140]:11491 "EHLO
-        njjs-sys-mailin07.njjs.baidu.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231217AbhDOHA1 (ORCPT
+        id S231205AbhDOHAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 03:00:15 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:52349 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230090AbhDOHAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 03:00:27 -0400
-Received: from unknown.domain.tld (bjhw-sys-rpm015653cc5.bjhw.baidu.com [10.227.53.39])
-        by njjs-sys-mailin07.njjs.baidu.com (Postfix) with ESMTP id BFF5419480054;
-        Thu, 15 Apr 2021 15:00:01 +0800 (CST)
-From:   Li RongQing <lirongqing@baidu.com>
-To:     linux-kernel@vger.kernel.org, namhyung@kernel.org,
-        jolsa@redhat.com, alexander.shishkin@linux.intel.com,
-        mark.rutland@arm.com, acme@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, lirongqing@baidu.com
-Subject: [PATCH][resend] perf x86 kvm-stat: support to analyze kvm msr
-Date:   Thu, 15 Apr 2021 15:00:01 +0800
-Message-Id: <1618470001-7239-1-git-send-email-lirongqing@baidu.com>
-X-Mailer: git-send-email 1.7.1
+        Thu, 15 Apr 2021 03:00:13 -0400
+Received: from uno.localdomain (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 3EABA20000E;
+        Thu, 15 Apr 2021 06:59:47 +0000 (UTC)
+Date:   Thu, 15 Apr 2021 09:00:27 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/5] arm64: dts: renesas: eagle: Add GMSL .dtsi
+Message-ID: <20210415070027.t3p5mlxnwq2qazao@uno.localdomain>
+References: <20210414135128.180980-1-jacopo+renesas@jmondi.org>
+ <20210414135128.180980-5-jacopo+renesas@jmondi.org>
+ <YHeAbbyc2oURne3G@pendragon.ideasonboard.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YHeAbbyc2oURne3G@pendragon.ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lei Zhao <zhaolei27@baidu.com>
+Hi Laurent,
 
-usage:
-    - kvm stat
-      run a command and gather performance counter statistics
+On Thu, Apr 15, 2021 at 02:53:17AM +0300, Laurent Pinchart wrote:
+> Hi Jacopo and Kieran,
+>
+> Thank you for the patch.
+>
+> On Wed, Apr 14, 2021 at 03:51:27PM +0200, Jacopo Mondi wrote:
+> > From: Kieran Bingham <kieran.bingham@ideasonboard.com>
+> >
+> > Describe the FAKRA connector available on Eagle board that allows
+> > connecting GMSL camera modules such as IMI RDACM20 and RDACM21.
+> >
+> > Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+> > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> > ---
+> >  arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi | 186 ++++++++++++++++++++
+> >  1 file changed, 186 insertions(+)
+> >  create mode 100644 arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi
+> >
+> > diff --git a/arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi b/arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi
+> > new file mode 100644
+> > index 000000000000..1836bca1e8b2
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/renesas/eagle-gmsl.dtsi
+> > @@ -0,0 +1,186 @@
+> > +// SPDX-License-Identifier: GPL-2.0+
+> > +/*
+> > + * Device Tree Source (overlay) for the Eagle V3M GMSL connectors
+> > + *
+> > + * Copyright (C) 2017 Ideas on Board <kieran.bingham@ideasonboard.com>
+> > + * Copyright (C) 2021 Jacopo Mondi <jacopo+renesas@jmondi.org>
+> > + *
+> > + * This overlay allows you to define GMSL cameras connected to the FAKRA
+> > + * connectors on the Eagle-V3M (or compatible) board.
+> > + *
+> > + * The following cameras are currently supported:
+> > + *    "imi,rdacm20"
+> > + *    "imi,rdacm21"
+> > + */
+> > +
+> > +#include <dt-bindings/gpio/gpio.h>
+> > +
+> > +/*
+> > + * Select which cameras are in use:
+> > + * #define EAGLE_CAMERA0_RDACM20
+> > + * #define EAGLE_CAMERA0_RDACM21
+> > + *
+> > + * The two camera modules are configured with different image formats
+> > + * and cannot be mixed.
+> > + */
+> > +#define EAGLE_CAMERA0_RDACM21
+> > +#define EAGLE_CAMERA1_RDACM21
+> > +#define EAGLE_CAMERA2_RDACM21
+> > +#define EAGLE_CAMERA3_RDACM21
+>
+> To avoid possible errors, I'd use one macro to set the camera model, and
+> another macro to select the ports. The second could be a bitmask if
+> desired.
+>
+> These macros should be defined in the file that includes this file, not
+> here.
 
-    - show the result:
-      perf kvm stat report --event=msr
+Don't worry, I have quite some comments from you on the dts patches
+from the previous versio of the series still to address... As said in
+the cover letter I was mostly interested in a validation of the new
+property and the driver support.
 
-See the msr events:
+Thanks
+  j
 
-Analyze events for all VMs, all VCPUs:
-
-MSR Access Samples  Samples% Time%  Min Time Max Time  Avg time
-
-  0x6e0:W   67007  98.17%   98.31%  0.59us   10.69us  0.90us ( +-  0.10% )
-  0x830:W    1186   1.74%    1.60%  0.53us  108.34us  0.82us ( +- 11.02% )
-   0x3b:R      66   0.10%    0.09%  0.56us    1.26us  0.80us ( +-  3.24% )
-
-Total Samples:68259, Total events handled time:61150.95us.
-
-Signed-off-by: Li RongQing <lirongqing@baidu.com>
-Signed-off-by: Lei Zhao <zhaolei27@baidu.com>
----
- tools/perf/arch/x86/util/kvm-stat.c |   46 +++++++++++++++++++++++++++++++++++
- 1 files changed, 46 insertions(+), 0 deletions(-)
-
-diff --git a/tools/perf/arch/x86/util/kvm-stat.c b/tools/perf/arch/x86/util/kvm-stat.c
-index 0729204..c5dd54f 100644
---- a/tools/perf/arch/x86/util/kvm-stat.c
-+++ b/tools/perf/arch/x86/util/kvm-stat.c
-@@ -133,11 +133,56 @@ static void ioport_event_decode_key(struct perf_kvm_stat *kvm __maybe_unused,
- 	.name = "IO Port Access"
- };
- 
-+ /* The time of emulation msr is from kvm_msr to kvm_entry. */
-+static void msr_event_get_key(struct evsel *evsel,
-+				 struct perf_sample *sample,
-+				 struct event_key *key)
-+{
-+	key->key  = evsel__intval(evsel, sample, "ecx");
-+	key->info = evsel__intval(evsel, sample, "write");
-+}
-+
-+static bool msr_event_begin(struct evsel *evsel,
-+			       struct perf_sample *sample,
-+			       struct event_key *key)
-+{
-+	if (!strcmp(evsel->name, "kvm:kvm_msr")) {
-+		msr_event_get_key(evsel, sample, key);
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
-+static bool msr_event_end(struct evsel *evsel,
-+			     struct perf_sample *sample __maybe_unused,
-+			     struct event_key *key __maybe_unused)
-+{
-+	return kvm_entry_event(evsel);
-+}
-+
-+static void msr_event_decode_key(struct perf_kvm_stat *kvm __maybe_unused,
-+				    struct event_key *key,
-+				    char *decode)
-+{
-+	scnprintf(decode, decode_str_len, "%#llx:%s",
-+		  (unsigned long long)key->key,
-+		  key->info ? "W" : "R");
-+}
-+
-+static struct kvm_events_ops msr_events = {
-+	.is_begin_event = msr_event_begin,
-+	.is_end_event = msr_event_end,
-+	.decode_key = msr_event_decode_key,
-+	.name = "MSR Access"
-+};
-+
- const char *kvm_events_tp[] = {
- 	"kvm:kvm_entry",
- 	"kvm:kvm_exit",
- 	"kvm:kvm_mmio",
- 	"kvm:kvm_pio",
-+	"kvm:kvm_msr",
- 	NULL,
- };
- 
-@@ -145,6 +190,7 @@ struct kvm_reg_events_ops kvm_reg_events_ops[] = {
- 	{ .name = "vmexit", .ops = &exit_events },
- 	{ .name = "mmio", .ops = &mmio_events },
- 	{ .name = "ioport", .ops = &ioport_events },
-+	{ .name = "msr", .ops = &msr_events },
- 	{ NULL, NULL },
- };
- 
--- 
-1.7.1
-
+>
+> > +
+> > +/* Set the compatible string based on the camera model. */
+> > +#if defined(EAGLE_CAMERA0_RDACM21) || defined(EAGLE_CAMERA1_RDACM21) || \
+> > +    defined(EAGLE_CAMERA2_RDACM21) || defined(EAGLE_CAMERA3_RDACM21)
+> > +#define EAGLE_CAMERA_MODEL	"imi,rdacm21"
+> > +#define EAGLE_USE_RDACM21
+> > +#elif defined(EAGLE_CAMERA0_RDACM20) || defined(EAGLE_CAMERA1_RDACM20) || \
+> > +      defined(EAGLE_CAMERA2_RDACM20) || defined(EAGLE_CAMERA3_RDACM20)
+> > +#define EAGLE_CAMERA_MODEL	"imi,rdacm20"
+> > +#define EAGLE_USE_RDACM20
+> > +#endif
+> > +
+> > +/* Define which cameras are available. */
+> > +#if defined(EAGLE_CAMERA0_RDACM21) || defined(EAGLE_CAMERA0_RDACM20)
+> > +#define EAGLE_USE_CAMERA_0
+> > +#endif
+> > +
+> > +#if defined(EAGLE_CAMERA1_RDACM21) || defined(EAGLE_CAMERA1_RDACM20)
+> > +#define EAGLE_USE_CAMERA_1
+> > +#endif
+> > +
+> > +#if defined(EAGLE_CAMERA2_RDACM21) || defined(EAGLE_CAMERA2_RDACM20)
+> > +#define EAGLE_USE_CAMERA_2
+> > +#endif
+> > +
+> > +#if defined(EAGLE_CAMERA3_RDACM21) || defined(EAGLE_CAMERA3_RDACM20)
+> > +#define EAGLE_USE_CAMERA_3
+> > +#endif
+> > +
+> > +/* Define the endpoint links. */
+> > +#ifdef EAGLE_USE_CAMERA_0
+> > +&max9286_in0 {
+> > +	remote-endpoint = <&fakra_con0>;
+> > +};
+> > +#endif
+> > +
+> > +#ifdef EAGLE_USE_CAMERA_1
+> > +&max9286_in1 {
+> > +	remote-endpoint = <&fakra_con1>;
+> > +};
+> > +#endif
+> > +
+> > +#ifdef EAGLE_USE_CAMERA_2
+> > +&max9286_in2 {
+> > +	remote-endpoint = <&fakra_con2>;
+> > +};
+> > +#endif
+> > +
+> > +#ifdef EAGLE_USE_CAMERA_3
+> > +&max9286_in3 {
+> > +	remote-endpoint = <&fakra_con3>;
+> > +};
+> > +#endif
+> > +
+> > +/* Populate the GMSL i2c-mux bus with camera nodes. */
+> > +#if defined(EAGLE_USE_RDACM21) || defined(EAGLE_USE_RDACM20)
+> > +
+> > +#ifdef EAGLE_USE_CAMERA_0
+> > +&vin0 {
+> > +	status = "okay";
+> > +};
+> > +#endif
+> > +
+> > +#ifdef EAGLE_USE_CAMERA_1
+> > +&vin1 {
+> > +	status = "okay";
+> > +};
+> > +#endif
+> > +
+> > +#ifdef EAGLE_USE_CAMERA_2
+> > +&vin2 {
+> > +	status = "okay";
+> > +};
+> > +#endif
+> > +
+> > +#ifdef EAGLE_USE_CAMERA_3
+> > +&vin3 {
+> > +	status = "okay";
+> > +};
+> > +#endif
+> > +
+> > +&gmsl {
+> > +
+> > +	status = "okay";
+> > +	maxim,reverse-channel-microvolt = <100000>;
+> > +
+> > +	i2c-mux {
+> > +#ifdef EAGLE_USE_CAMERA_0
+> > +		i2c@0 {
+> > +			status = "okay";
+> > +
+> > +			camera@51 {
+> > +				compatible = EAGLE_CAMERA_MODEL;
+> > +				reg = <0x51>, <0x61>;
+> > +
+> > +				port {
+> > +					fakra_con0: endpoint {
+> > +						remote-endpoint = <&max9286_in0>;
+> > +					};
+> > +				};
+> > +			};
+> > +		};
+> > +#endif
+> > +
+> > +#ifdef EAGLE_USE_CAMERA_1
+> > +		i2c@1 {
+> > +			status = "okay";
+> > +
+> > +			camera@52 {
+> > +				compatible = EAGLE_CAMERA_MODEL;
+> > +				reg = <0x52>, <0x62>;
+> > +
+> > +				port {
+> > +					fakra_con1: endpoint {
+> > +						remote-endpoint = <&max9286_in1>;
+> > +					};
+> > +				};
+> > +			};
+> > +		};
+> > +#endif
+> > +
+> > +#ifdef EAGLE_USE_CAMERA_2
+> > +		i2c@2 {
+> > +			status = "okay";
+> > +
+> > +			camera@53 {
+> > +				compatible = EAGLE_CAMERA_MODEL;
+> > +				reg = <0x53>, <0x63>;
+> > +
+> > +				port {
+> > +					fakra_con2: endpoint {
+> > +						remote-endpoint = <&max9286_in2>;
+> > +					};
+> > +				};
+> > +			};
+> > +		};
+> > +#endif
+> > +
+> > +#ifdef EAGLE_USE_CAMERA_3
+> > +		i2c@3 {
+> > +			status = "okay";
+> > +
+> > +			camera@54 {
+> > +				compatible = EAGLE_CAMERA_MODEL;
+> > +				reg = <0x54>, <0x64>;
+> > +
+> > +				port {
+> > +					fakra_con3: endpoint {
+> > +						remote-endpoint = <&max9286_in3>;
+> > +					};
+> > +				};
+> > +			};
+> > +		};
+> > +#endif
+> > +	};
+> > +};
+> > +#endif
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
