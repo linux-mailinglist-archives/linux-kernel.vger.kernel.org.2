@@ -2,78 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEAE1360256
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 08:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7176360258
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 08:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230407AbhDOG0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 02:26:13 -0400
-Received: from mga01.intel.com ([192.55.52.88]:45226 "EHLO mga01.intel.com"
+        id S230465AbhDOG1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 02:27:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230366AbhDOG0L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 02:26:11 -0400
-IronPort-SDR: 3M1ecVUBcJ83xrr9h0SXiRSX+QWmD8G0U+mig7csHqeN5PHoXV9mVJqX2fAFTVQnrJHaRnU1ZG
- pHxjF10/WzzA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="215297418"
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="215297418"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 23:25:47 -0700
-IronPort-SDR: zY54dWZOt7m6OJWkJm9OClz48C/KRlYVNxj28nO9i1Ow2gAi24vZ3f0pwI7yaw5r46tPMikjTP
- 74pQ++ZiUsUA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="421587324"
-Received: from dengjie-mobl1.ccr.corp.intel.com (HELO [10.239.154.55]) ([10.239.154.55])
-  by orsmga007.jf.intel.com with ESMTP; 14 Apr 2021 23:25:41 -0700
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Wolfram Sang <wsa@kernel.org>, wsa@the-dreams.de
-Cc:     wsa@kernel.org, wsa@the-dreams.de, mst@redhat.com,
-        linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, jasowang@redhat.com,
-        wsa+renesas@sang-engineering.com,
-        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
-        arnd@arndb.de, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
-        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
-        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <e93836c3-d444-0b8c-c9df-559de0d5f27e@intel.com>
- <20210414035229.7uqfdcd6dy2ryg3s@vireshk-i7>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <dc5d6f92-8f90-5731-5fce-4b2b6a72c81f@intel.com>
-Date:   Thu, 15 Apr 2021 14:25:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.0
+        id S230153AbhDOG1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 02:27:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE3E260231;
+        Thu, 15 Apr 2021 06:26:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618468007;
+        bh=+ENAR6b4b0HhPBE+r0SPMfIaZNMhcuo0VJOvNcPqXcQ=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Dwgm81l0ZnPOhmJKZP9BvVqixZJokLlkolbuCZrO3WX/hAzHmpPLueKrTG16tybOt
+         KKqfuz656EJ7SvVPzMmEKsMT74VhtXSyXjqajtnduiUzxS9D98yYldy1ypwVuelaE0
+         c84BUUv02ZQ1q26bSh6zRkgZ9wbh/oNjXHt57QzlQqyuHpFprelNDDNP9LsihX/g2G
+         nHJSDAp36J+Bjb3tg5GyaI+FwlwZXnK81tWTCH0O0NqALm0PFsP/tm60F1sNoZ9Gco
+         Dm3W7kPgPrlKjf2wJkStpwRIZzbGxuE8eUH91RuSE11CdXqJXKn+zROcQNe2+imCSL
+         pNk6TFpXegjRg==
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Wesley Cheng <wcheng@codeaurora.org>, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
+Subject: Re: [PATCH] usb: dwc3: gadget: Avoid canceling current request for
+ queuing error
+In-Reply-To: <1618439388-20427-1-git-send-email-wcheng@codeaurora.org>
+References: <1618439388-20427-1-git-send-email-wcheng@codeaurora.org>
+Date:   Thu, 15 Apr 2021 09:26:40 +0300
+Message-ID: <87mtu0njvj.fsf@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210414035229.7uqfdcd6dy2ryg3s@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-On 2021/4/14 11:52, Viresh Kumar wrote:
+Wesley Cheng <wcheng@codeaurora.org> writes:
+
+> If an error is received when issuing a start or update transfer
+> command, the error handler will stop all active requests (including
+> the current USB request), and call dwc3_gadget_giveback() to notify
+> function drivers of the requests which have been stopped.  Avoid
+> having to cancel the current request which is trying to be queued, as
+> the function driver will handle the EP queue error accordingly.
+> Simply unmap the request as it was done before, and allow previously
+> started transfers to be cleaned up.
 >
->> Is i2c/for-next the right tree to merge it
->> ?
-> It should be.
+> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+> ---
+>  drivers/usb/dwc3/gadget.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+> index e1b04c97..4200775 100644
+> --- a/drivers/usb/dwc3/gadget.c
+> +++ b/drivers/usb/dwc3/gadget.c
+> @@ -1399,6 +1399,11 @@ static int __dwc3_gadget_kick_transfer(struct dwc3=
+_ep *dep)
+>  		if (ret =3D=3D -EAGAIN)
+>  			return ret;
+>=20=20
+> +		/* Avoid canceling current request, as it has not been started */
+> +		if (req->trb)
+> +			memset(req->trb, 0, sizeof(struct dwc3_trb));
 
-Thanks Viresh.
+we don't need a full memset. I think ensuring HWO bit is zero is enough.
 
+=2D-=20
+balbi
 
-Hi Wolfram,
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Do you have any comments for this patch ? Your opinion will be important 
-to improve this patch
+-----BEGIN PGP SIGNATURE-----
 
-since you are the maintainer of I2C.
-
-Thanks,
-
-Jie
-
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAmB33KARHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQbjrRAAgudUzvoaFOVpQwYbsfAE8oP1FM4o45Lw
+//mO35HrO44ArfFT5nMh7N/hsvLZFvRk5LP4R5sSEG9+Qqm7EdEfrkmVxVzCpPYV
+hhtBJBB2Lh1dpNtSafCUrDd9niDSXh/PtHo9KlN2NNCtecrW5NPmBRwcVElq7Lub
+Hx10/+9bXBz/539PseIm4mXmprGO9ZU6TEJu78kmWcpWBOsJJZNTiz8e1chAzPvb
+YS2k4XSm6mjKxIm9+PMVtV9psZG1D4tdDNAbNuITEfrxBSQnbi/h5zO/XWJZEBLQ
+PLblcB5PX4/mV+P/xQNUUSM1hQ9o7rZFsS5JYLpwqLNn2H6L1kHExc/Exebzq/Ju
+z6PoBLnY4/qBmL/7OjBfDYWMot4dznVpvvYVs6IP9KT6cMhU2pVQiW1pJ8K+pbrQ
+6dkkEkDvWXe+blIRpQPf2nGg1JeaisJ4xuMDs3qK/seiDbrZwL3XwRj1LPz3/xUu
+AdZY15RMifKh9mzDCrbIMUP5JglNmbktfYimnrVQjSPsR5DUuzGaauIaz7USafmF
+0ExythixDvJMgYWDK2vQehTsBUOvz7nlfRD5z/N3fxYIE+FmjX5sJoIEzIPsehF6
+U+9k9VH4yhtDaPpo+ysKEhF9ivB78QmicKn04bKSDzcRCQf8t4LLnKPPTnjEdWJu
+p6mcEvHzUCY=
+=jYQD
+-----END PGP SIGNATURE-----
+--=-=-=--
