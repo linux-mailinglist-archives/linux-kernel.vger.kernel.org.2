@@ -2,100 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B260360743
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A605F36074A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232446AbhDOKhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 06:37:00 -0400
-Received: from mga07.intel.com ([134.134.136.100]:25587 "EHLO mga07.intel.com"
+        id S231960AbhDOKip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 06:38:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51994 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232233AbhDOKgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 06:36:54 -0400
-IronPort-SDR: IEnvXnyjXYVYrezVu2r7nicDeVzAtyb8S0rdydNq79UhbqEiDRsnPpEXbaXNmKs2Px+FIh7zcE
- U5zbpfhWH4FQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="258789617"
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="258789617"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 03:36:30 -0700
-IronPort-SDR: JWGyp9+PPSR53zav66bKAZd/Xsmd/rWmwo2rlRUx4L7nniUkwlQUJOrKA7mp+07hmz2SRoJI37
- Rul1GLppECHQ==
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="399530258"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 03:36:27 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lWzMG-004DhB-5Q; Thu, 15 Apr 2021 13:36:24 +0300
-Date:   Thu, 15 Apr 2021 13:36:24 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yicong Yang <yangyicong@hisilicon.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH] i2c: I2C_HISI should depend on ARCH_HISI && ACPI
-Message-ID: <YHgXKHvjnC5qzDPy@smile.fi.intel.com>
-References: <26db9291095c1dfd81c73b0f5f1434f9b399b1f5.1618316565.git.geert+renesas@glider.be>
- <bd8db435-24e1-5ab3-6b35-1d4d8a292a7e@hisilicon.com>
- <CAMuHMdVouD+e4GpN_Dur8HSop4B8HVosGSYw7vfTpBEi_inMbw@mail.gmail.com>
- <21d833f0-b1b8-9732-21c7-3a73676e07d3@hisilicon.com>
- <39f6bbed-9eea-963a-1ef1-a83248f162aa@hisilicon.com>
+        id S229481AbhDOKio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 06:38:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BDB0CAD09;
+        Thu, 15 Apr 2021 10:38:20 +0000 (UTC)
+To:     Oliver Glitta <glittao@gmail.com>, Marco Elver <elver@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Daniel Latypov <dlatypov@google.com>
+References: <20210413100747.4921-1-glittao@gmail.com>
+ <20210413100747.4921-2-glittao@gmail.com>
+ <CANpmjNOOWuiR6Lb1igX+5Lp=PwcEE7Gx5co5KeGCnGz2WxbjNQ@mail.gmail.com>
+ <CAD=R=qq9fUKnD7vxayigTPUF4E=_3w-4uZwM=ym4DfqXwP3QSw@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v4 2/3] mm/slub, kunit: add a KUnit test for SLUB
+ debugging functionality
+Message-ID: <23e27bc2-2f12-d65a-b3ac-8ecb7a37a8c1@suse.cz>
+Date:   Thu, 15 Apr 2021 12:38:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <39f6bbed-9eea-963a-1ef1-a83248f162aa@hisilicon.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CAD=R=qq9fUKnD7vxayigTPUF4E=_3w-4uZwM=ym4DfqXwP3QSw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 05:04:39PM +0800, Yicong Yang wrote:
-> On 2021/4/15 16:18, Yicong Yang wrote:
-> > On 2021/4/15 2:06, Geert Uytterhoeven wrote:
-> >> On Wed, Apr 14, 2021 at 11:24 AM Yicong Yang <yangyicong@hisilicon.com> wrote:
-> >>> On 2021/4/13 20:26, Geert Uytterhoeven wrote:
-> >>>> The HiSilicon Kunpeng I2C controller is only present on HiSilicon
-> >>>> Kunpeng SoCs, and its driver relies on ACPI to probe for its presence.
-> >>>> Hence add dependencies on ARCH_HISI and ACPI, to prevent asking the user
-> >>>> about this driver when configuring a kernel without Hisilicon platform
-> >>>> or ACPI firmware support.
-> >>>
-> >>> this is a public IP which doesn't specifically depend on ARCH_HISI. I'm
-> >>> not sure all the platform this IP on has ARCH_HISI configured. The driver
-> >>> will not be compiled by default config. This is not correct to have
-> >>> this dependence.
-> >>
-> >> Thanks for your answer!
-> >>
-> >> I guess it's still fine to add a dependency on ACPI?
-> > 
-> > yes. currently we only use this driver through ACPI. So at least
-> > for this driver, it make sense to keep the dependency.
-> > 
+On 4/15/21 12:10 PM, Oliver Glitta wrote:
+> ut 13. 4. 2021 o 15:54 Marco Elver <elver@google.com> napísal(a):
+>>
+>> On Tue, 13 Apr 2021 at 12:07, <glittao@gmail.com> wrote:
+>> > From: Oliver Glitta <glittao@gmail.com>
+>> >
+>> > SLUB has resiliency_test() function which is hidden behind #ifdef
+>> > SLUB_RESILIENCY_TEST that is not part of Kconfig, so nobody
+>> > runs it. KUnit should be a proper replacement for it.
+>> >
+>> > Try changing byte in redzone after allocation and changing
+>> > pointer to next free node, first byte, 50th byte and redzone
+>> > byte. Check if validation finds errors.
+>> >
+>> > There are several differences from the original resiliency test:
+>> > Tests create own caches with known state instead of corrupting
+>> > shared kmalloc caches.
+>> >
+>> > The corruption of freepointer uses correct offset, the original
+>> > resiliency test got broken with freepointer changes.
+>> >
+>> > Scratch changing random byte test, because it does not have
+>> > meaning in this form where we need deterministic results.
+>> >
+>> > Add new option CONFIG_SLUB_KUNIT_TEST in Kconfig.
+>> > Because the test deliberatly modifies non-allocated objects, it depends on
+>> > !KASAN which would have otherwise prevented that.
+>>
+>> Hmm, did the test fail with KASAN? Is it possible to skip the tests
+>> and still run a subset of tests with KASAN? It'd be nice if we could
+>> run some of these tests with KASAN as well.
+>>
+>> > Use kunit_resource to count errors in cache and silence bug reports.
+>> > Count error whenever slab_bug() or slab_fix() is called or when
+>> > the count of pages is wrong.
+>> >
+>> > Signed-off-by: Oliver Glitta <glittao@gmail.com>
+>>
+>> Reviewed-by: Marco Elver <elver@google.com>
+>>
 > 
-> sorry. i was a little mess about this. I dropped this in [1].
-> so just keep it as is.
+> Thank you.
 > 
-> [1] https://lore.kernel.org/linux-i2c/YGMntYT2iz72wgrd@smile.fi.intel.com/
+>> Thanks, this all looks good to me. But perhaps do test what works with
+>> KASAN, to see if you need the !KASAN constraint for all cases.
+> 
+> I tried to run tests with KASAN functionality disabled with function
+> kasan_disable_current() and three of the tests failed with wrong
+> errors counts.
+> So I add the !KASAN constraint for all tests, because the merge window
+> is coming, we want to know if this version is stable and without other
+> mistakes.
+> We will take a closer look at that in the follow-up patch.
 
-If you think that ACPI dependency is good to have there, go ahead, not my
-worries of the consequences. I just consider that as unneeded dependencies.
-
-The proper fix would be to have a split in Kbuild infra for compile
-dependencies and run-time dependencies.
-
-+Cc: Masahiro for the discussion, maybe it had already taken place and there is
-an impediment to do so.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Agreed. In this context, KASAN is essentially a different implementation of the
+same checks that SLUB_DEBUG offers (and also does other checks) and we excercise
+these SLUB_DEBUG checks by deliberately causing the corruption that they detect
+- so instead, KASAN detects it, as it should. I assume that once somebody opts
+for a full KASAN kernel build, they don't need the SLUB_DEBUG functionality at
+that point, as KASAN is more extensive (On the other hand SLUB_DEBUG kernels can
+be (and are) shipped as production distro kernels where specific targetted
+debugging can be enabled to help find bugs in production with minimal disruption).
+So trying to make both cooperate can work only to some extent and for now we've
+chosen the safer way.
