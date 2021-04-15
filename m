@@ -2,90 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B31F360686
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF128360690
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbhDOKG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 06:06:27 -0400
-Received: from mout.gmx.net ([212.227.15.15]:57405 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231919AbhDOKGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 06:06:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1618481132;
-        bh=+kUA0a4ZwMlKKIjn9JGeCEsofiYmSw4pSDq5hmtIq2I=;
-        h=X-UI-Sender-Class:Date:In-Reply-To:References:Subject:To:CC:From;
-        b=QuPPBRiENJoCcijPjvZcehy4ig2VOX3F66I2kOgs/vJFAbu8+rKBAGMfkS9y51vXB
-         Qn5gDOQSDEvgZWUuNQ5EEFtH81pRpUqBh0iC6+KQptIxJ/1CigUqydmPRjMQR9EMfV
-         8SSnKuex4gojzwa1SAAqkMBNtVSmJDEWCYsEXDh8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from frank-s9 ([80.245.79.33]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MQMyZ-1lBLGH0N3x-00MIeU; Thu, 15
- Apr 2021 12:05:32 +0200
-Date:   Thu, 15 Apr 2021 12:05:26 +0200
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20210415094005.2673-1-dqfext@gmail.com>
-References: <20210415094005.2673-1-dqfext@gmail.com>
+        id S232370AbhDOKHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 06:07:19 -0400
+Received: from outbound-smtp56.blacknight.com ([46.22.136.240]:46845 "EHLO
+        outbound-smtp56.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232282AbhDOKHR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 06:07:17 -0400
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp56.blacknight.com (Postfix) with ESMTPS id 24CB9FAAA8
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 11:06:53 +0100 (IST)
+Received: (qmail 20158 invoked from network); 15 Apr 2021 10:06:53 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 15 Apr 2021 10:06:52 -0000
+Date:   Thu, 15 Apr 2021 11:06:50 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>
+Subject: Re: [PATCH 04/11] mm/vmstat: Convert NUMA statistics to basic NUMA
+ counters
+Message-ID: <20210415100650.GJ3697@techsingularity.net>
+References: <20210407202423.16022-1-mgorman@techsingularity.net>
+ <20210407202423.16022-5-mgorman@techsingularity.net>
+ <7a7ec563-0519-a850-563a-9680a7bd00d3@suse.cz>
+ <20210414151850.GG3697@techsingularity.net>
+ <c4dff8a5-7959-c191-c66d-23a515244b80@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH net-next] net: ethernet: mediatek: fix typo in offload code
-To:     linux-mediatek@lists.infradead.org,
-        DENG Qingfang <dqfext@gmail.com>, Felix Fietkau <nbd@nbd.name>,
-        John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-CC:     Alex Ryabchenko <d3adme4t@gmail.com>
-From:   Frank Wunderlich <frank-w@public-files.de>
-Message-ID: <86DA3F5B-32B2-446B-B83D-AFDC5EE6BF53@public-files.de>
-X-Provags-ID: V03:K1:PlTSyeEjvd5QpR+8/glb3oZRAAoeP/sVZ46rDI8ff51bte7qAzo
- 0y2loCGZIEppur0KEOWHSPNx8Y9tDeluhuV/o4OqnexoiTupD728MW1s2fpWZKDBuxOvXfb
- C/vrQFUlaGuEhSHV/Gx7EM64seFRytvCQFMaQu8S9QIUd5pDZ2TZvfgBDdmNf9K6zt1bbxJ
- iuY9NS+J6LMaZX07t2W2A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:LO/CZ9QTzDI=:TYoFxZWYwdEgCCGxcK3MPf
- i0vOKpwaIvIrvkV1M0tkhAKn7sKMGNM9MpwEM9N79U05yJ7fh7KDk6ytrZCeoTEkEeu/p9hUz
- zFUP+jIKSB7OkeKUGdF+HJEblIFk4jZknfZtUCtVVyA77U8gL6aVsV0Fd3TsJNCNvTHAbOVFN
- xYh1G+Je+q6EapArZY9YWSKJw+Za2MXSWZYcuqF3QJHwRm5RekNw1lSO5ihVcavLu4NNKW/hz
- fIXKxYK/h4VaPK2ZQ7l4JwrnK70w2MtKTeOUsN1KNRZ8GBqE7Z+hKUJBUD2yzrmiSQZ9ycD5M
- lUc/m7UGN7b4bC+Z0ODNfwdSm4f1ghEB7G0dCUffelaFN9x1mRhnFuuDoziX6hQneCKVt+CoS
- KenOiEcQt8w44+rJ8T9DpGvszeuC8MzOHZSF5/u/WV5XSxh8L0V0xlsAw3dyWa03figFU8Js1
- +8wSayeVS/hGr2KPxksqF/xIQ4GTg7cw7Meu9/LHvVwrMty//jzV+ItunAWrYBcqjztkqraMN
- oSUGTlxlYSdISUd9UZdtHRr+nIfSwtQVWcwvR1bIV0TQfnWEXG9dx+enkG0u9rhwiKztKppb5
- iNyydbFT5EqfR4Yz19WhIzukxwMZnH0aO5xrfXLO//Rz+FmeUER/hghpdGWoDxJQawi/WeJDr
- rszR7gnOwXj0HyQTDPwgQQ8bpEr8FVf6M5suG+EtMx2XXruZkdB1grvFX4f1GmnlF1m0aHfN4
- HmN086lOjt8gZocbSS8mB+pythc2ptrT8ZxuhyzBFubW2Tp0r2d+mgGYa4joZFhhDCu2XMfJ4
- IK+VPsx4dukuWSeI2P8IRUxbmoBETGdiYbKG9G0ZE1rmOtmqY4zFp7HLlkNCa/YJkIa5xYDVl
- r/XB4XLFkBupHKz0JLfMs1CgjsTXjdAhuNGupbi+nekHtj+siSV6pMdmbl+2tFs8/bWeF+blA
- LGZsR0wHfG1hix/WzpiHNuT0Ct59EUEmq6y/hQxorW7Gv3uYFx8Gp/ej6ivoaKqjp7r5ChNCJ
- +Sa4UKwUeYGQ91oCRcqNc4jOJsFR9KobtIqot9f3jNS7ZBwIpDu++c9fbIH+vRjdXcyN+C29D
- pAlOnygQnwO4m6rFW26M+b60irT9wQqUF+LWYIPQ6H8fnQ0M2BDMJAjfxcR88HKfwc4cozygB
- G6yaHjWcfuQR7Lg8CPSnnz4zCwQDsVplG8XQH+gTiuYhGtGsjWyzodKEAF/no2UMobZIYpyzf
- 5eB6pZ2/vrYv3/I6K
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <c4dff8a5-7959-c191-c66d-23a515244b80@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 15=2E April 2021 11:40:05 MESZ schrieb DENG Qingfang <dqfext@gmail=2Ecom=
->:
->=2Ekey_offset was assigned to =2Ehead_offset instead=2E Fix the typo=2E
->
->Fixes: 502e84e2382d ("net: ethernet: mtk_eth_soc: add flow offloading
->support")
->Signed-off-by: DENG Qingfang <dqfext@gmail=2Ecom>
+On Wed, Apr 14, 2021 at 05:56:53PM +0200, Vlastimil Babka wrote:
+> On 4/14/21 5:18 PM, Mel Gorman wrote:
+> > On Wed, Apr 14, 2021 at 02:56:45PM +0200, Vlastimil Babka wrote:
+> >> So it seems that this intermediate assignment to zone counters (using
+> >> atomic_long_set() even) is unnecessary and this could mimic sum_vm_events() that
+> >> just does the summation on a local array?
+> >> 
+> > 
+> > The atomic is unnecessary for sure but using a local array is
+> > problematic because of your next point.
+> 
+> IIUC vm_events seems to do fine without a centralized array and handling CPU hot
+> remove at the sime time ...
+> 
 
-Thanks for posting the fix,but imho commit-message is not good=2E
+The vm_events are more global in nature. They are not reported
+to userspace on a per-zone (/proc/zoneinfo) basis or per-node
+(/sys/devices/system/node/node*/numastat) basis so they are not equivalent.
 
-Issue were traffic problems after a while with increased ping times if flo=
-w offload is active=2E
+> >> And probably a bit more serious is that vm_events have vm_events_fold_cpu() to
+> >> deal with a cpu going away, but after your patch the stats counted on a cpu just
+> >> disapepar from the sums as it goes offline as there's no such thing for the numa
+> >> counters.
+> >> 
+> > 
+> > That is a problem I missed. Even if zonestats was preserved on
+> > hot-remove, fold_vm_zone_numa_events would not be reading the CPU so
+> > hotplug events jump all over the place.
+> > 
+> > So some periodic folding is necessary. I would still prefer not to do it
+> > by time but it could be done only on overflow or when a file like
+> > /proc/vmstat is read. I'll think about it a bit more and see what I come
+> > up with.
+> 
+> ... because vm_events_fold_cpu() seems to simply move the stats from the CPU
+> being offlined to the current one. So the same approach should be enough for
+> NUMA stats?
+> 
 
-It turns out that key_offset with cookie is needed in rhashtable_params an=
-d head_offset was defined twice=2E
-regards Frank
+Yes, or at least very similar.
+
+-- 
+Mel Gorman
+SUSE Labs
