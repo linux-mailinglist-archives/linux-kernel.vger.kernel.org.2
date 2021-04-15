@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1FBA360CFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80444360C56
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233549AbhDOO41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:56:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39920 "EHLO mail.kernel.org"
+        id S233857AbhDOOuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:50:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233692AbhDOOwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:52:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A61D613CF;
-        Thu, 15 Apr 2021 14:51:39 +0000 (UTC)
+        id S233747AbhDOOtw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:49:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BA75613C3;
+        Thu, 15 Apr 2021 14:49:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498300;
-        bh=HPtoD8rfV4PdfEQYtYjkcpDbED7Bggou9Nnlh/4moUE=;
+        s=korg; t=1618498170;
+        bh=iZjowC2CRvrD+FlGm3LXrYZWdumE3CSKrtm4XT3I9gE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ys75ObbG+R55GgErZbvfzzSc6nkzaWCx+scmo3wK30XasxE8Y9qwVlh/z8Y6lKk/h
-         bYLLSds2qUtdN2yryaEV7tRorhyDIUNxxgAS4CWcOPodCM5o3Ed7LZ+86lWnn8vz/B
-         Ia0MubN33c+NU3gnBB5fThECPHu4QeWuXcFpY/gE=
+        b=mVwoyh220uHNLjPNGXyUwf0+/Q9wiOwKxVlXrZ8x0u6l/ZbzmaCp+2zNKAdPKLCvv
+         wcv/q3VdvAezwA8+VXQvhs3j//5mRVvUf2OEEzmN7Wm/M1jVGd0cRIa5U+Md9HZs9O
+         QMfrHRQhEyF2YhL44YhQevWt2wTM3QSiUS2E6Mf8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com>,
-        syzbot <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com>,
-        syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Tom Seewald <tseewald@gmail.com>
-Subject: [PATCH 4.9 28/47] usbip: fix vudc usbip_sockfd_store races leading to gpf
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+9ec037722d2603a9f52e@syzkaller.appspotmail.com,
+        Alexander Aring <aahringo@redhat.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>
+Subject: [PATCH 4.4 26/38] net: mac802154: Fix general protection fault
 Date:   Thu, 15 Apr 2021 16:47:20 +0200
-Message-Id: <20210415144414.362835324@linuxfoundation.org>
+Message-Id: <20210415144414.180039833@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.487943796@linuxfoundation.org>
-References: <20210415144413.487943796@linuxfoundation.org>
+In-Reply-To: <20210415144413.352638802@linuxfoundation.org>
+References: <20210415144413.352638802@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,154 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuah Khan <skhan@linuxfoundation.org>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit 46613c9dfa964c0c60b5385dbdf5aaa18be52a9c upstream.
+commit 1165affd484889d4986cf3b724318935a0b120d8 upstream.
 
-usbip_sockfd_store() is invoked when user requests attach (import)
-detach (unimport) usb gadget device from usbip host. vhci_hcd sends
-import request and usbip_sockfd_store() exports the device if it is
-free for export.
+syzbot found general protection fault in crypto_destroy_tfm()[1].
+It was caused by wrong clean up loop in llsec_key_alloc().
+If one of the tfm array members is in IS_ERR() range it will
+cause general protection fault in clean up function [1].
 
-Export and unexport are governed by local state and shared state
-- Shared state (usbip device status, sockfd) - sockfd and Device
-  status are used to determine if stub should be brought up or shut
-  down. Device status is shared between host and client.
-- Local state (tcp_socket, rx and tx thread task_struct ptrs)
-  A valid tcp_socket controls rx and tx thread operations while the
-  device is in exported state.
-- While the device is exported, device status is marked used and socket,
-  sockfd, and thread pointers are valid.
+Call Trace:
+ crypto_free_aead include/crypto/aead.h:191 [inline] [1]
+ llsec_key_alloc net/mac802154/llsec.c:156 [inline]
+ mac802154_llsec_key_add+0x9e0/0xcc0 net/mac802154/llsec.c:249
+ ieee802154_add_llsec_key+0x56/0x80 net/mac802154/cfg.c:338
+ rdev_add_llsec_key net/ieee802154/rdev-ops.h:260 [inline]
+ nl802154_add_llsec_key+0x3d3/0x560 net/ieee802154/nl802154.c:1584
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Export sequence (stub-up) includes validating the socket and creating
-receive (rx) and transmit (tx) threads to talk to the client to provide
-access to the exported device. rx and tx threads depends on local and
-shared state to be correct and in sync.
-
-Unexport (stub-down) sequence shuts the socket down and stops the rx and
-tx threads. Stub-down sequence relies on local and shared states to be
-in sync.
-
-There are races in updating the local and shared status in the current
-stub-up sequence resulting in crashes. These stem from starting rx and
-tx threads before local and global state is updated correctly to be in
-sync.
-
-1. Doesn't handle kthread_create() error and saves invalid ptr in local
-   state that drives rx and tx threads.
-2. Updates tcp_socket and sockfd,  starts stub_rx and stub_tx threads
-   before updating usbip_device status to SDEV_ST_USED. This opens up a
-   race condition between the threads and usbip_sockfd_store() stub up
-   and down handling.
-
-Fix the above problems:
-- Stop using kthread_get_run() macro to create/start threads.
-- Create threads and get task struct reference.
-- Add kthread_create() failure handling and bail out.
-- Hold usbip_device lock to update local and shared states after
-  creating rx and tx threads.
-- Update usbip_device status to SDEV_ST_USED.
-- Update usbip_device tcp_socket, sockfd, tcp_rx, and tcp_tx
-- Start threads after usbip_device (tcp_socket, sockfd, tcp_rx, tcp_tx,
-  and status) is complete.
-
-Credit goes to syzbot and Tetsuo Handa for finding and root-causing the
-kthread_get_run() improper error handling problem and others. This is a
-hard problem to find and debug since the races aren't seen in a normal
-case. Fuzzing forces the race window to be small enough for the
-kthread_get_run() error path bug and starting threads before updating the
-local and shared state bug in the stub-up sequence.
-
-Fixes: 9720b4bc76a83807 ("staging/usbip: convert to kthread")
-Cc: stable@vger.kernel.org
-Reported-by: syzbot <syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com>
-Reported-by: syzbot <syzbot+bf1a360e305ee719e364@syzkaller.appspotmail.com>
-Reported-by: syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>
-Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Link: https://lore.kernel.org/r/b1c08b983ffa185449c9f0f7d1021dc8c8454b60.1615171203.git.skhan@linuxfoundation.org
-Signed-off-by: Tom Seewald <tseewald@gmail.com>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Reported-by: syzbot+9ec037722d2603a9f52e@syzkaller.appspotmail.com
+Acked-by: Alexander Aring <aahringo@redhat.com>
+Link: https://lore.kernel.org/r/20210304152125.1052825-1-paskripkin@gmail.com
+Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/usbip/vudc_sysfs.c |   42 +++++++++++++++++++++++++++++++++--------
- 1 file changed, 34 insertions(+), 8 deletions(-)
+ net/mac802154/llsec.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/usbip/vudc_sysfs.c
-+++ b/drivers/usb/usbip/vudc_sysfs.c
-@@ -103,8 +103,9 @@ unlock:
- }
- static BIN_ATTR_RO(dev_desc, sizeof(struct usb_device_descriptor));
+--- a/net/mac802154/llsec.c
++++ b/net/mac802154/llsec.c
+@@ -158,7 +158,7 @@ err_tfm0:
+ 	crypto_free_blkcipher(key->tfm0);
+ err_tfm:
+ 	for (i = 0; i < ARRAY_SIZE(key->tfm); i++)
+-		if (key->tfm[i])
++		if (!IS_ERR_OR_NULL(key->tfm[i]))
+ 			crypto_free_aead(key->tfm[i]);
  
--static ssize_t store_sockfd(struct device *dev, struct device_attribute *attr,
--		     const char *in, size_t count)
-+static ssize_t store_sockfd(struct device *dev,
-+				 struct device_attribute *attr,
-+				 const char *in, size_t count)
- {
- 	struct vudc *udc = (struct vudc *) dev_get_drvdata(dev);
- 	int rv;
-@@ -113,6 +114,8 @@ static ssize_t store_sockfd(struct devic
- 	struct socket *socket;
- 	unsigned long flags;
- 	int ret;
-+	struct task_struct *tcp_rx = NULL;
-+	struct task_struct *tcp_tx = NULL;
- 
- 	rv = kstrtoint(in, 0, &sockfd);
- 	if (rv != 0)
-@@ -158,24 +161,47 @@ static ssize_t store_sockfd(struct devic
- 			goto sock_err;
- 		}
- 
--		udc->ud.tcp_socket = socket;
--
-+		/* unlock and create threads and get tasks */
- 		spin_unlock_irq(&udc->ud.lock);
- 		spin_unlock_irqrestore(&udc->lock, flags);
- 
--		udc->ud.tcp_rx = kthread_get_run(&v_rx_loop,
--						    &udc->ud, "vudc_rx");
--		udc->ud.tcp_tx = kthread_get_run(&v_tx_loop,
--						    &udc->ud, "vudc_tx");
-+		tcp_rx = kthread_create(&v_rx_loop, &udc->ud, "vudc_rx");
-+		if (IS_ERR(tcp_rx)) {
-+			sockfd_put(socket);
-+			return -EINVAL;
-+		}
-+		tcp_tx = kthread_create(&v_tx_loop, &udc->ud, "vudc_tx");
-+		if (IS_ERR(tcp_tx)) {
-+			kthread_stop(tcp_rx);
-+			sockfd_put(socket);
-+			return -EINVAL;
-+		}
-+
-+		/* get task structs now */
-+		get_task_struct(tcp_rx);
-+		get_task_struct(tcp_tx);
- 
-+		/* lock and update udc->ud state */
- 		spin_lock_irqsave(&udc->lock, flags);
- 		spin_lock_irq(&udc->ud.lock);
-+
-+		udc->ud.tcp_socket = socket;
-+		udc->ud.tcp_rx = tcp_rx;
-+		udc->ud.tcp_rx = tcp_tx;
- 		udc->ud.status = SDEV_ST_USED;
-+
- 		spin_unlock_irq(&udc->ud.lock);
- 
- 		do_gettimeofday(&udc->start_time);
- 		v_start_timer(udc);
- 		udc->connected = 1;
-+
-+		spin_unlock_irqrestore(&udc->lock, flags);
-+
-+		wake_up_process(udc->ud.tcp_rx);
-+		wake_up_process(udc->ud.tcp_tx);
-+		return count;
-+
- 	} else {
- 		if (!udc->connected) {
- 			dev_err(dev, "Device not connected");
+ 	kzfree(key);
 
 
