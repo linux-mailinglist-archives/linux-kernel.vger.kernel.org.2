@@ -2,100 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A71B360534
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 684F6360537
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232087AbhDOJEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 05:04:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232014AbhDOJEo (ORCPT
+        id S232105AbhDOJFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 05:05:14 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15685 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231482AbhDOJFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 05:04:44 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183AEC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 02:04:21 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lWxv5-000169-KF; Thu, 15 Apr 2021 11:04:15 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:983:856d:54dc:ee1c])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id B209860F2DC;
-        Thu, 15 Apr 2021 09:04:12 +0000 (UTC)
-Date:   Thu, 15 Apr 2021 11:04:12 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] can: etas_es58x: Fix missing null check on netdev
- pointer
-Message-ID: <20210415090412.q3k4tmsp3rdfj54t@pengutronix.de>
-References: <20210415084723.1807935-1-colin.king@canonical.com>
+        Thu, 15 Apr 2021 05:05:12 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FLYHj6D7vzpY5v;
+        Thu, 15 Apr 2021 17:01:53 +0800 (CST)
+Received: from [127.0.0.1] (10.69.38.196) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Thu, 15 Apr 2021
+ 17:04:39 +0800
+Subject: Re: [PATCH] i2c: I2C_HISI should depend on ARCH_HISI && ACPI
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+CC:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+References: <26db9291095c1dfd81c73b0f5f1434f9b399b1f5.1618316565.git.geert+renesas@glider.be>
+ <bd8db435-24e1-5ab3-6b35-1d4d8a292a7e@hisilicon.com>
+ <CAMuHMdVouD+e4GpN_Dur8HSop4B8HVosGSYw7vfTpBEi_inMbw@mail.gmail.com>
+ <21d833f0-b1b8-9732-21c7-3a73676e07d3@hisilicon.com>
+From:   Yicong Yang <yangyicong@hisilicon.com>
+Message-ID: <39f6bbed-9eea-963a-1ef1-a83248f162aa@hisilicon.com>
+Date:   Thu, 15 Apr 2021 17:04:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="szmpbpc75mtqb4hx"
-Content-Disposition: inline
-In-Reply-To: <20210415084723.1807935-1-colin.king@canonical.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <21d833f0-b1b8-9732-21c7-3a73676e07d3@hisilicon.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.38.196]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021/4/15 16:18, Yicong Yang wrote:
+> On 2021/4/15 2:06, Geert Uytterhoeven wrote:
+>> Hi Yicong,
+>>
+>> On Wed, Apr 14, 2021 at 11:24 AM Yicong Yang <yangyicong@hisilicon.com> wrote:
+>>> On 2021/4/13 20:26, Geert Uytterhoeven wrote:
+>>>> The HiSilicon Kunpeng I2C controller is only present on HiSilicon
+>>>> Kunpeng SoCs, and its driver relies on ACPI to probe for its presence.
+>>>> Hence add dependencies on ARCH_HISI and ACPI, to prevent asking the user
+>>>> about this driver when configuring a kernel without Hisilicon platform
+>>>> or ACPI firmware support.
+>>>
+>>> this is a public IP which doesn't specifically depend on ARCH_HISI. I'm
+>>> not sure all the platform this IP on has ARCH_HISI configured. The driver
+>>> will not be compiled by default config. This is not correct to have
+>>> this dependence.
+>>
+>> Thanks for your answer!
+>>
+>> I guess it's still fine to add a dependency on ACPI?
+> 
+> yes. currently we only use this driver through ACPI. So at least
+> for this driver, it make sense to keep the dependency.
+> 
 
---szmpbpc75mtqb4hx
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+sorry. i was a little mess about this. I dropped this in [1].
+so just keep it as is.
 
-On 15.04.2021 09:47:23, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
->=20
-> There is an assignment to *netdev that is can potentially be null but the
-> null check is checking netdev and not *netdev as intended. Fix this by
-> adding in the missing * operator.
->=20
-> Addresses-Coverity: ("Dereference before null check")
-> Fixes: 8537257874e9 ("can: etas_es58x: add core support for ETAS ES58X CA=
-N USB interfaces")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+[1] https://lore.kernel.org/linux-i2c/YGMntYT2iz72wgrd@smile.fi.intel.com/
 
-Looks good. Applied to linux-can-next/testing.
+>>
+>> Thanks again!
+>>
+>>>> Fixes: d62fbdb99a85730a ("i2c: add support for HiSilicon I2C controller")
+>>>> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>>>> ---
+>>>>  drivers/i2c/busses/Kconfig | 2 +-
+>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
+>>>> index b5b4e0d0ff4dd0bc..3ead6d9e130b2ebc 100644
+>>>> --- a/drivers/i2c/busses/Kconfig
+>>>> +++ b/drivers/i2c/busses/Kconfig
+>>>> @@ -647,7 +647,7 @@ config I2C_HIGHLANDER
+>>>>
+>>>>  config I2C_HISI
+>>>>       tristate "HiSilicon I2C controller"
+>>>> -     depends on ARM64 || COMPILE_TEST
+>>>> +     depends on (ARM64 && ARCH_HISI && ACPI) || COMPILE_TEST
+>>>>       help
+>>>>         Say Y here if you want to have Hisilicon I2C controller support
+>>>>         available on the Kunpeng Server.
+>> \
+>> Gr{oetje,eeting}s,
+>>
+>>                         Geert
+>>
+> 
+> 
+> .
+> 
 
-Tnx,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---szmpbpc75mtqb4hx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmB4AYgACgkQqclaivrt
-76lQ5gf+MVDfgP/lHzpBKIj8U4d1CJ+Hb2cUtI+HcxDsNqc08ZCbsoiWhze1E0df
-W4Hv7r7oN5RtUpsmM5hF8NV1jwjR3/buD6AIaTTMYWLOLm0QU+o/W2uKydBy1M9y
-ythlIG/6MN132kMeNLk7iHfXzT4jHCrVouq1kNVGZBwch+ljGCYw+1LJ5WwCutvh
-PP04dZZF/9EmYX10mWgmor6bMcD5tCPGd4P54sYsGuN6KV0pZiCWK2H2xqpi8sPW
-K3yWIPUnrI3RGqwmwAq/0v+JHi2rpipNvEUKz6+t326FhQcE6vy6oQ71pfcHM3Vk
-FN2fr4XDZLDEqPIe3Sl90lCNwKWhBA==
-=NznM
------END PGP SIGNATURE-----
-
---szmpbpc75mtqb4hx--
