@@ -2,108 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB253605EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB7136060C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232349AbhDOJgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 05:36:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232326AbhDOJgC (ORCPT
+        id S231840AbhDOJmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 05:42:18 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.50]:16981 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhDOJmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 05:36:02 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5974EC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 02:35:38 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id u7so9926940plr.6
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 02:35:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CJGA7CCltoi4LLPzz1QAsIABRN6U35XVYBq+koWY01c=;
-        b=cENYPVud5PeRD1D7qHuukP+AksGsNcy/N6MKBCNIrvRMwZ7D4AmkT3YnJ0ZGxFvtre
-         HfQb7ZL0JL4zUxRsbH0gJTkWBIUFkAU/683iyML2L1SHc+7BHBUNPK/qPt+lkccOfA0Y
-         qURI0WOxyZyPQocKWPTdNCrGcwfXMuVE7EmPo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CJGA7CCltoi4LLPzz1QAsIABRN6U35XVYBq+koWY01c=;
-        b=ojqnZ4MkmBs8Dol5FLJEX2NvlenTcH/q4XQonbRBiV83kEr+rxGwqTwBwAnNCnzh6Q
-         WPRCgXAbedU/zBz6aOsu1DNme1C5feZe3AnjsW+rlIE1jYFG8XxlJM7Yoya2oM+LvR/u
-         FGbVGKqVOKA7oaAYT7gd4oKlBPaT4f6la5ZnbrLVN08e9tO8eWQmV2qV2aOPeIwNddYy
-         R48/gxsa7dQPtbc9Wi0f2wpNBZItJuGDd5w1KE6l+xdlG3J71VWr9cw+R+KzbgGssBKa
-         s3Jw7Q6v6omIF1gBZPr4iBWFR+dTRkD9QLrc5FEBSjsT2SFRQZSyXgrk9FPQlKzvKmjV
-         yoHA==
-X-Gm-Message-State: AOAM532t7SfGYgE4U3PDNo8Pom/quJ+YCxw+z1lfazB6iA4RpmgqKShM
-        RdfPSX0qIUvA6WNjx/gi0ZUo/SB6eg8NrQ==
-X-Google-Smtp-Source: ABdhPJxgYrtlSJlROR24WiWfnuLX9r3uA+Pl2QHDNsh8eRJ+6V8MzWQzeTyRoA9+bjI23r0H4gMakw==
-X-Received: by 2002:a17:903:1d2:b029:ea:e375:6a57 with SMTP id e18-20020a17090301d2b02900eae3756a57mr2926248plh.31.1618479337825;
-        Thu, 15 Apr 2021 02:35:37 -0700 (PDT)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:6432:a6cb:91d2:5e32])
-        by smtp.gmail.com with ESMTPSA id a13sm1849502pgm.43.2021.04.15.02.35.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 02:35:37 -0700 (PDT)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sean Wang <sean.wang@mediatek.com>,
-        Ben Ho <Ben.Ho@mediatek.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: [PATCH 8/8] arm64: dts: mt8183: Add kukui-jacuzzi-kenzo board
-Date:   Thu, 15 Apr 2021 17:35:19 +0800
-Message-Id: <20210415093519.1920877-8-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
-In-Reply-To: <20210415093519.1920877-1-hsinyi@chromium.org>
-References: <20210415093519.1920877-1-hsinyi@chromium.org>
+        Thu, 15 Apr 2021 05:42:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1618479353; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=HqFJF53dqlnv+6ca2ohTPNOp0F3B+mW19z6tdzKD4/WBca0MqJjUsNDrIJqSgMydwz
+    Mn5UvuXapzrvC4bSXNQxseLvOAnOFKpGyznx1yADbKNmEBe1inAQZ4ZIKadNt4n9JtFU
+    naD8TVz7skBDoqfDAaVXTPywWmuv+DIyfpwzYLq40iLdEJsj0mF6XE9VBEWNFCNBwh2h
+    ByH3sAJ1SVZBJxDkQ89UfcaBPeOoUVrtqbGvtCFmm5MwTGacnzv8sXrchv1WxHWi44v+
+    A5nRN0YUMfUbI6Mo/iFMFh338VsFdQVFTPM0ju4Q6/RUSJ9viLQRZCMkqMEQD7ZLFGkB
+    0Zsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1618479353;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=UszZM0lxzcT1TucYYh81PlY6CI1II6hKqZ0KtEwG5JI=;
+    b=I88GP/dTB8qSBCb6mvoifbfw5nTYB7888Sbo0ZGQ6tZKu3t4qc8d6pitMcE2sp1FRp
+    7IXVWd4QoOc8nXcGqIX2QWnvoh+p5XGxMJcbFCuTqQLBhWNoe7UcQakxMIyNtbZKI/4D
+    0bBkhh4ZKcCs1G0HGiPHLyWLZggV+awwwmQONk5Bn40pHKVCbdg9v8efFYkaCQbynBC2
+    HlhgYN+S5prqTdt7ZcqKrsiTqhfoOAwAfsbXxIwAz29ozPg0tYy2g3p6z+eKbNyStFX9
+    BE3ZtxKTpeihn9FBVycOMNtOAl8QyUw5NkGLp8pHEdWDHTzw6kYo7OEYzBHSQMvHx1zK
+    8edA==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1618479353;
+    s=strato-dkim-0002; d=fpond.eu;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=UszZM0lxzcT1TucYYh81PlY6CI1II6hKqZ0KtEwG5JI=;
+    b=CD6w6g5CaHc2ffT8ZdvpFCXZx5X9SDd8UKDHJta4vKJchYk6fMQECfw3lE+gYcwX9U
+    8Ntswg9SrWcoJ2seOFN8cbmwZ+EK/3uhFnSJCamqkq8UOe917Qhe6K8DGtGGue5mRTqw
+    IeCe4UG7yMNV0eHR2CrYmjXq1Mhw9BlobdHQmT6wx9HjFaUcBXCRBu1oSG+VkSLFkKkJ
+    Ev9f7QXIvQdWDLvpRHbN7G/ry07wa0Q0l39keI59SNLx+EnpEByMB82lkE8jxVctcXzt
+    ogVDoA/DjeI6MUuTHq9ePSO7zzbr262bjQYgAGReCy1RN2qexwd2hkaYrkM9RvIUU4Tw
+    /quA==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":OWANVUa4dPFUgKR/3dpvnYP0Np73dmm4I5W0/AvA67Ot4fvR82FSd93q"
+X-RZG-CLASS-ID: mo00
+Received: from groucho.site
+    by smtp.strato.de (RZmta 47.24.2 DYNA|AUTH)
+    with ESMTPSA id Y0bfddx3F9Zr7wu
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Thu, 15 Apr 2021 11:35:53 +0200 (CEST)
+From:   Ulrich Hecht <uli+renesas@fpond.eu>
+To:     linux-renesas-soc@vger.kernel.org, linux-serial@vger.kernel.org
+Cc:     wsa@kernel.org, geert@linux-m68k.org,
+        yoshihiro.shimoda.uh@renesas.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, linux-kernel@vger.kernel.org,
+        Ulrich Hecht <uli+renesas@fpond.eu>
+Subject: [PATCH] serial: sh-sci: remove obsolete latency workaround
+Date:   Thu, 15 Apr 2021 11:35:47 +0200
+Message-Id: <20210415093547.21639-1-uli+renesas@fpond.eu>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kenzo is known as Acer Chromebook 311.
+Since the transition to hrtimers there is no more need to set a minimum
+RX timeout to work around latency issues.
 
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Signed-off-by: Ulrich Hecht <uli+renesas@fpond.eu>
 ---
- arch/arm64/boot/dts/mediatek/Makefile                |  1 +
- .../boot/dts/mediatek/mt8183-kukui-jacuzzi-kenzo.dts | 12 ++++++++++++
- 2 files changed, 13 insertions(+)
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-kenzo.dts
+ drivers/tty/serial/sh-sci.c | 13 +------------
+ 1 file changed, 1 insertion(+), 12 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-index b33d0bc58021..25770d83059d 100644
---- a/arch/arm64/boot/dts/mediatek/Makefile
-+++ b/arch/arm64/boot/dts/mediatek/Makefile
-@@ -17,6 +17,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-burnet.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-damu.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-juniper-sku16.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-kappa.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-kenzo.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-willow-sku0.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-jacuzzi-willow-sku1.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kakadu.dtb
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-kenzo.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-kenzo.dts
-new file mode 100644
-index 000000000000..6f1aa692753a
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-kenzo.dts
-@@ -0,0 +1,12 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright 2021 Google LLC
-+ */
-+
-+/dts-v1/;
-+#include "mt8183-kukui-jacuzzi-juniper.dtsi"
-+
-+/ {
-+	model = "Google kenzo sku17 board";
-+	compatible = "google,juniper-sku17", "google,juniper", "mediatek,mt8183";
-+};
+diff --git a/drivers/tty/serial/sh-sci.c b/drivers/tty/serial/sh-sci.c
+index e3af97a59856..ef37fdf37612 100644
+--- a/drivers/tty/serial/sh-sci.c
++++ b/drivers/tty/serial/sh-sci.c
+@@ -2609,21 +2609,10 @@ static void sci_set_termios(struct uart_port *port, struct ktermios *termios,
+ 		udelay(DIV_ROUND_UP(10 * 1000000, baud));
+ 	}
+ 
+-	/*
+-	 * Calculate delay for 2 DMA buffers (4 FIFO).
+-	 * See serial_core.c::uart_update_timeout().
+-	 * With 10 bits (CS8), 250Hz, 115200 baud and 64 bytes FIFO, the above
+-	 * function calculates 1 jiffie for the data plus 5 jiffies for the
+-	 * "slop(e)." Then below we calculate 5 jiffies (20ms) for 2 DMA
+-	 * buffers (4 FIFO sizes), but when performing a faster transfer, the
+-	 * value obtained by this formula is too small. Therefore, if the value
+-	 * is smaller than 20ms, use 20ms as the timeout value for DMA.
+-	 */
++	/* Calculate delay for 2 DMA buffers (4 FIFO). */
+ 	s->rx_frame = (10000 * bits) / (baud / 100);
+ #ifdef CONFIG_SERIAL_SH_SCI_DMA
+ 	s->rx_timeout = s->buf_len_rx * 2 * s->rx_frame;
+-	if (s->rx_timeout < 20)
+-		s->rx_timeout = 20;
+ #endif
+ 
+ 	if ((termios->c_cflag & CREAD) != 0)
 -- 
-2.31.1.295.g9ea45b61b8-goog
+2.20.1
 
