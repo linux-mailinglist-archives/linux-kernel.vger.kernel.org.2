@@ -2,112 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 938973602EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB203602EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbhDOHGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 03:06:14 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:31236 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhDOHGG (ORCPT
+        id S231183AbhDOHGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 03:06:54 -0400
+Received: from www381.your-server.de ([78.46.137.84]:51512 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhDOHGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 03:06:06 -0400
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 13F75MUT007464;
-        Thu, 15 Apr 2021 16:05:23 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 13F75MUT007464
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1618470323;
-        bh=xgvwbjObDxVYEnbqckmHfXupWuFRZDZ4a2MAfr30jYk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qz7QXJPkgE27tukb7oqV966xFpPpVD5gY7+BXfwXlL86MzJWxwncRNggNeYmzO27q
-         Dl3NIsWon9PCUbEWDHvO5zoijT541iE7kUHpvOVhUVHE3M8RitmGBtjAbsDnWko4vS
-         BPXxwNZ7JhLrmA6tGvkxYrgAVQgP84ZnVpcneR11UMlWIfW6W4wqFFCxEujDHHhA23
-         aIBsTIl0M9AS8BQAiZ3OrC1mk13v5xGWInuZOt0S2mDZJHN/GGankkIBJ15MU4V8op
-         LPWSTUeMoEkT5XGGAVtD6yN3DhXc8Ree9+0v3V8era/kQMd7/aVvw1hUcCYeW2JcGo
-         CMzNUVIS83dpw==
-X-Nifty-SrcIP: [209.85.214.182]
-Received: by mail-pl1-f182.google.com with SMTP id w8so9198442plg.9;
-        Thu, 15 Apr 2021 00:05:22 -0700 (PDT)
-X-Gm-Message-State: AOAM532657kUdA4oN7EspyIs8w3QrS2JC0TlA3736j/47g0EEmMKOX/v
-        Di3d5RJLCPbPoUYunRPjrEnkFd5OzUhRt/pVc6A=
-X-Google-Smtp-Source: ABdhPJwe3AQPMSLCBMcKYrsnaTgC67jKGZTlBsKzbOKW2Sb5z8Idsd4p+wOvWoaC/MfmhOhY5Uj4cPR3+H+5g0b4s7U=
-X-Received: by 2002:a17:90b:1955:: with SMTP id nk21mr2343931pjb.198.1618470322208;
- Thu, 15 Apr 2021 00:05:22 -0700 (PDT)
+        Thu, 15 Apr 2021 03:06:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=GpPC6kjMAScPgOy9gWmvzAqvitQWMheOac8bf5AM7OU=; b=MVjRdroWh7p90PFc+51tvIkr9K
+        5rF2ufksBnKBAKF/7NjjzvDgkpaf02c0VwzlLVv+C37KTg05jtSr4V4dz5fZRhDJicdJvfaZqYH7g
+        ni6MvHdyScuSCU1sLgyTCO6fh2H7CzQDXYeUCGNriJH53TNR6uw9dzAaAMyHVMIstZbwB60x5iMzS
+        FN/fg0UoS6uLdyxmOM+CImCns1dG55lSo0JOJxr3us/TggXzEUZFI0iZAt57cla95avOHwXyr8IXm
+        pi7DXOixVkneDuCsYuwNqsO8VeTvpxMHvUnIDhQh38qs1s+Aoqf/2d7xfZ9RdclMjWnqHROjojIiw
+        X6fsCtuA==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1lWw54-000Chl-Lw; Thu, 15 Apr 2021 09:06:26 +0200
+Received: from [2001:a61:2a42:9501:9e5c:8eff:fe01:8578]
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1lWw54-0003pF-B1; Thu, 15 Apr 2021 09:06:26 +0200
+Subject: Re: [RFC v2 PATCH 0/7] Xilinx DMA enhancements and optimization
+To:     Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        vkoul@kernel.org, robh+dt@kernel.org, michal.simek@xilinx.com
+Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        git@xilinx.com
+References: <1617990965-35337-1-git-send-email-radhey.shyam.pandey@xilinx.com>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <0948eae0-b304-79f8-7d9a-543cba78fbe5@metafoo.de>
+Date:   Thu, 15 Apr 2021 09:06:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <20210414192657.17764-1-rdunlap@infradead.org> <CAK7LNARSK2YspYvKkUKTp-aG2nqKnvdMr7B_6Am-u1-mt2XBNg@mail.gmail.com>
- <c3d41808-111c-c4dd-43fb-459ae56fc9ab@infradead.org>
-In-Reply-To: <c3d41808-111c-c4dd-43fb-459ae56fc9ab@infradead.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 15 Apr 2021 16:04:44 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAS2C1drA+v9q-mYHAbO3+4zjEdF_SJkBDtCXRExLX9u6w@mail.gmail.com>
-Message-ID: <CAK7LNAS2C1drA+v9q-mYHAbO3+4zjEdF_SJkBDtCXRExLX9u6w@mail.gmail.com>
-Subject: Re: [PATCH] uml: fix W=1 missing-include-dirs warnings
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1617990965-35337-1-git-send-email-radhey.shyam.pandey@xilinx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26140/Wed Apr 14 13:10:01 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 4:02 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 4/14/21 11:52 PM, Masahiro Yamada wrote:
-> > On Thu, Apr 15, 2021 at 4:27 AM Randy Dunlap <rdunlap@infradead.org> wrote:
-> >>
-> >> Currently when using "W=1" with UML builds, there are over 700 warnings
-> >> like so:
-> >>
-> >>   CC      arch/um/drivers/stderr_console.o
-> >> cc1: warning: ./arch/um/include/uapi: No such file or directory [-Wmissing-include-dirs]
-> >>
-> >> but arch/um/ does not have include/uapi/ at all, so don't
-> >> include arch/um/include/uapi/ in USERINCLUDE for UML.
->
->
-> >> Option 4: simply mkdir arch/um/include/uapi
-> >>         That's what I did first, just as a test, and it works.
-> >
-> >
-> > I like Option 4.
-> >
-> > But, you cannot do "mkdir -p arch/um/include/uapi" at build-time
-> > because the build system should not touch the source tree(, which
-> > might be read-only)
-> > for O= building.
-> >
-> > How about adding
-> >
-> >   arch/um/include/uapi/asm/Kbuild,
-> >
-> > which is just having a SPDX one-liner?
->
-> Wow!  :)
-> That's what Al Viro suggested also.
-> I'll submit that patch later today (Thursday my time).
->
-> thanks.
-> --
-> ~Randy
->
+On 4/9/21 7:55 PM, Radhey Shyam Pandey wrote:
+> Some background about the patch series: Xilinx Axi Ethernet device driver
+> (xilinx_axienet_main.c) currently has axi-dma code inside it. The goal
+> is to refactor axiethernet driver and use existing AXI DMA driver using
+> DMAEngine API.
 
+This is pretty neat! Do you have the patches that modify the AXI 
+Ethernet driver in a public tree somewhere, so this series can be seen 
+in context?
 
-BTW, after fixing this UML problem,
-can we move -Wmissing-include-dirs to the top Makefile?
-
-Is there any other source of -Wmissing-include-dirs
-warnings?
-
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
