@@ -2,142 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D32743613DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 23:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C24743613DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 23:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235433AbhDOVIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 17:08:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234869AbhDOVIN (ORCPT
+        id S235519AbhDOVJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 17:09:16 -0400
+Received: from mail-oo1-f50.google.com ([209.85.161.50]:41618 "EHLO
+        mail-oo1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234869AbhDOVJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 17:08:13 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C76BDC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 14:07:49 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id q14-20020a17090a430eb02901503aaee02bso2358806pjg.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 14:07:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HftWZnccBzP01eluEQiPxFKbZi9Y6kknhs11IWeFnvM=;
-        b=NRvO3JOF8esPh7/WWkaX8usLVRSwsRys7YWh93NwFRddFNjL48k1rv9EHsnby5dv04
-         kYHVjh/ZHUyXCgAzGLfn7VWfk2NBxw3Q8otRYaShP4NqstdYEUq/RNE9dqnxIEZbPF9H
-         IfTxHNzYLHNYjAECWkPJWbtiy3yh4kow8p71RFx1TtXsLxi2vxXExkzbv16OOrihFzNr
-         37qV+2AICtA+AGb9EQbNJCEKW8cl2jypQLut7Xb2RYvFIiUkFmf6x26JXOUXtR1wUEKv
-         ARouBx2K+KXbP//OX1crmWeSBLkJQlQgQT7HPXWRtaH7l4xyUoG2WD59i/ADlDwvtfOt
-         ZXWw==
+        Thu, 15 Apr 2021 17:09:13 -0400
+Received: by mail-oo1-f50.google.com with SMTP id h2-20020a4ad7420000b02901e5901169a5so5473376oot.8;
+        Thu, 15 Apr 2021 14:08:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HftWZnccBzP01eluEQiPxFKbZi9Y6kknhs11IWeFnvM=;
-        b=Q/cZTvDlXLXNzmHW+70TdMeihtOUTG4GAp02jvyC6ZOj0y97HwnJN+6G5/4WLS+Xkc
-         cr6UdocdRp517wzfsOpBXupPjAdlyDnwO7Q9gVKf4jiatZbJkf67yy0+WLzgJRU08b/z
-         PwqfzX4j3FOhWCzw4X3zkjOOaRfp5Pu9+O+G81tA2D7lMeBBvE6eQ5AXOuAzX05mtuCl
-         PhLlGPFYU4S2f8oHGAGWQJpATbfozcUxnBJod7rGMYYnJ8GO/b7y4noz7+HIjJFZ/tql
-         ZJ7hIz2L7Lmg5anHY3MGBQPeZVLKyzwb+GyBYixq3v6rcYu6U9lL/4BB6z0FsVhmrVpt
-         iCmg==
-X-Gm-Message-State: AOAM531UsjEQ8sTw23P989K1xe9QJkp4MWT079fYeF+1bEIejo+s1nq0
-        ZYAWJvSY767hVVWT1lnecpIjFg==
-X-Google-Smtp-Source: ABdhPJxIfjaIzEemvHUaeH9feCNZBRnIZBbDTyHH5eWcVFuZoEsFzhsCpvLoN1Y+4JC4uNcJLeUhuw==
-X-Received: by 2002:a17:90b:16cd:: with SMTP id iy13mr6219384pjb.46.1618520869084;
-        Thu, 15 Apr 2021 14:07:49 -0700 (PDT)
-Received: from hermes.local (76-14-218-44.or.wavecable.com. [76.14.218.44])
-        by smtp.gmail.com with ESMTPSA id q63sm3391636pjq.17.2021.04.15.14.07.48
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dBWyxdU6sbfl8J7+Mi7uwU0zvgg5AWmI3XulvlHXtE0=;
+        b=ZAQindKyZfVSQue+qmfd5XJbMmoebS8y3xd0EEM4fpDF8F+mwvf+0oqsRfaohngRl0
+         uLeVs74cqngBI5RKIGmOqLYmMv5jJVlToR2cZWsajw2eMVdEpfHcRMkBb2SYboN8RixC
+         3KBryPJgE7Q75A00yeY6Cxmm/KauQr0ZUsSzYf5hlHkLlhDATskbUzuF44cpgMEGYz3B
+         kqsFPZcW8d3IMoX0EgvMpEg/C7ukRawBrsePo1lZOEXZC7g9iM3B1gTloCYnNdCF/V4d
+         FFqeUCZTADIZQDosr6ESYturnlH9EXTIP368941HehlqT4/TIXuOuvc/PIZSI6EHE6J/
+         oLyA==
+X-Gm-Message-State: AOAM5323eO6raS1MFYsflmJDWhje+JNM8wNDyXYLF28ZmgsQoVqmiSpt
+        NofB4dH1QdDcvheejC3A9ePyIV0QJQ==
+X-Google-Smtp-Source: ABdhPJx11jv44MnT6jEOw+QxwzTP6f31Jok0fQUAizHEBbO1vMUV/JhaP/Ge0LqyHPQWXhQI3Xv5Ig==
+X-Received: by 2002:a4a:4304:: with SMTP id k4mr816573ooj.42.1618520927976;
+        Thu, 15 Apr 2021 14:08:47 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i11sm778714oot.11.2021.04.15.14.08.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 14:07:48 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 14:07:40 -0700
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        liuwe@microsoft.com, netdev@vger.kernel.org, leon@kernel.org,
-        andrew@lunn.ch, bernd@petrovitsch.priv.at, rdunlap@infradead.org,
-        shacharr@microsoft.com, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH v6 net-next] net: mana: Add a driver for Microsoft Azure
- Network Adapter (MANA)
-Message-ID: <20210415140740.7fac720e@hermes.local>
-In-Reply-To: <20210415054519.12944-1-decui@microsoft.com>
-References: <20210415054519.12944-1-decui@microsoft.com>
+        Thu, 15 Apr 2021 14:08:47 -0700 (PDT)
+Received: (nullmailer pid 1885798 invoked by uid 1000);
+        Thu, 15 Apr 2021 21:08:46 -0000
+Date:   Thu, 15 Apr 2021 16:08:46 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-phy@lists.infradead.org, linux-can@vger.kernel.org,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: Re: [PATCH v3 3/4] dt-bindings: phy: Add binding for TI TCAN104x CAN
+ transceivers
+Message-ID: <20210415210846.GA1871445@robh.at.kernel.org>
+References: <20210415144947.4725-1-a-govindraju@ti.com>
+ <20210415144947.4725-4-a-govindraju@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210415144947.4725-4-a-govindraju@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Apr 2021 22:45:19 -0700
-Dexuan Cui <decui@microsoft.com> wrote:
+On Thu, Apr 15, 2021 at 08:19:46PM +0530, Aswath Govindraju wrote:
+> Add binding documentation for TI TCAN104x CAN transceivers.
+> 
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
+>  .../bindings/phy/ti,tcan104x-can.yaml         | 56 +++++++++++++++++++
+>  MAINTAINERS                                   |  1 +
+>  2 files changed, 57 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml b/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+> new file mode 100644
+> index 000000000000..4643b979930a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+> @@ -0,0 +1,56 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/phy/ti,tcan104x-can.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: TCAN104x CAN TRANSCEIVER PHY
+> +
+> +maintainers:
+> +  - Aswath Govindraju <a-govindraju@ti.com>
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^tcan104x-phy"
 
-> +static int mana_query_vport_cfg(struct mana_port_context *apc, u32 vport_index,
-> +				u32 *max_sq, u32 *max_rq, u32 *num_indir_entry)
-> +{
-> +	struct mana_query_vport_cfg_resp resp = {};
-> +	struct mana_query_vport_cfg_req req = {};
-> +	int err;
-> +
-> +	mana_gd_init_req_hdr(&req.hdr, MANA_QUERY_VPORT_CONFIG,
-> +			     sizeof(req), sizeof(resp));
-> +
-> +	req.vport_index = vport_index;
-> +
-> +	err = mana_send_request(apc->ac, &req, sizeof(req), &resp,
-> +				sizeof(resp));
-> +	if (err)
-> +		return err;
-> +
-> +	err = mana_verify_resp_hdr(&resp.hdr, MANA_QUERY_VPORT_CONFIG,
-> +				   sizeof(resp));
-> +	if (err)
-> +		return err;
-> +
-> +	if (resp.hdr.status)
-> +		return -EPROTO;
-> +
-> +	*max_sq = resp.max_num_sq;
-> +	*max_rq = resp.max_num_rq;
-> +	*num_indir_entry = resp.num_indirection_ent;
-> +
-> +	apc->port_handle = resp.vport;
-> +	memcpy(apc->mac_addr, resp.mac_addr, ETH_ALEN);
+Node names should be generic. So 'phy' or 'can-phy'.
 
-You could use ether_addr_copy here.
+With that,
 
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-> +int mana_do_attach(struct net_device *ndev, enum mana_attach_caller caller)
-> +{
-> +	struct mana_port_context *apc = netdev_priv(ndev);
-> +	struct gdma_dev *gd = apc->ac->gdma_dev;
-> +	u32 max_txq, max_rxq, max_queues;
-> +	int port_idx = apc->port_idx;
-> +	u32 num_indirect_entries;
-> +	int err;
 > +
-> +	if (caller == MANA_OPEN)
-> +		goto start_open;
+> +  compatible:
+> +    enum:
+> +      - ti,tcan1042
+> +      - ti,tcan1043
 > +
-> +	err = mana_init_port_context(apc);
-> +	if (err)
-> +		return err;
+> +  '#phy-cells':
+> +    const: 0
 > +
-> +	err = mana_query_vport_cfg(apc, port_idx, &max_txq, &max_rxq,
-> +				   &num_indirect_entries);
-> +	if (err) {
-> +		netdev_err(ndev, "Failed to query info for vPort 0\n");
-> +		goto reset_apc;
-> +	}
+> +  standby-gpios:
+> +    description:
+> +      gpio node to toggle standby signal on transceiver
+> +    maxItems: 1
 > +
-> +	max_queues = min_t(u32, max_txq, max_rxq);
-> +	if (apc->max_queues > max_queues)
-> +		apc->max_queues = max_queues;
+> +  enable-gpios:
+> +    description:
+> +      gpio node to toggle enable signal on transceiver
+> +    maxItems: 1
 > +
-> +	if (apc->num_queues > apc->max_queues)
-> +		apc->num_queues = apc->max_queues;
+> +  max-bitrate:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      max bit rate supported in bps
+> +    minimum: 1
 > +
-> +	memcpy(ndev->dev_addr, apc->mac_addr, ETH_ALEN);
-
-And here use ether_addr_copy().
-
+> +required:
+> +  - compatible
+> +  - '#phy-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    transceiver1: tcan104x-phy {
+> +      compatible = "ti,tcan1043";
+> +      #phy-cells = <0>;
+> +      max-bitrate = <5000000>;
+> +      standby-gpios = <&wakeup_gpio1 16 GPIO_ACTIVE_LOW>;
+> +      enable-gpios = <&main_gpio1 67 GPIO_ACTIVE_HIGH>;
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 84ef96a444c3..e666d33af10d 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4046,6 +4046,7 @@ W:	https://github.com/linux-can
+>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git
+>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git
+>  F:	Documentation/devicetree/bindings/net/can/
+> +F:	Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+>  F:	drivers/net/can/
+>  F:	include/linux/can/bittiming.h
+>  F:	include/linux/can/dev.h
+> -- 
+> 2.17.1
+> 
