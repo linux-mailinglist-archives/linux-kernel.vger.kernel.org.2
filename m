@@ -2,169 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8542C3610CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD353610D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234396AbhDORKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 13:10:40 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33388 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233074AbhDORKd (ORCPT
+        id S233914AbhDORMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 13:12:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231137AbhDORL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 13:10:33 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13FH5QoL109381;
-        Thu, 15 Apr 2021 13:09:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=RNOY/d8yZYRP0pLhpV+4fVvzfWSWc4YU6tDtd0XuG74=;
- b=E83ohc5YAGm8DZMiH2sUboATQCBIZU8MzD5q0bzbAMU+Au/WK3l80BU7NshxFrGTOLC/
- PUGFW/sKAmDMRwyJwU8a6f+WlseUc3bwsGtmfjJ5QtKAyVjuussJAqYNM0lAhzmMXjRx
- pF/Ed8M/60GbAQXzwSWTlSqxfkpKPMGmtna0hlcvsrEjys93iUoJmaoY0YbWDVLoEqc4
- CNgnIekb93v6bxqU3AggG0jIsrcbBBsdXXJUtFVOEyB3e+vZwnO03ApQlVzZuzm1Jur2
- HYAxoFSuDZcCC+mWNnzR0fp5WK8Ic0v0f3AVcLZ1iZRzihFM5PhFkM517/R+tssmtW9b WQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37xs4k8x49-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Apr 2021 13:09:46 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13FH68Zv114010;
-        Thu, 15 Apr 2021 13:09:46 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37xs4k8x3e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Apr 2021 13:09:45 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13FH9HkA025538;
-        Thu, 15 Apr 2021 17:09:43 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03ams.nl.ibm.com with ESMTP id 37u3n8c189-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 15 Apr 2021 17:09:43 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13FH9Jxd27329006
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Apr 2021 17:09:19 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 394F4AE056;
-        Thu, 15 Apr 2021 17:09:41 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 40AB5AE053;
-        Thu, 15 Apr 2021 17:09:38 +0000 (GMT)
-Received: from vajain21.in.ibm.com (unknown [9.199.56.7])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Thu, 15 Apr 2021 17:09:38 +0000 (GMT)
-Received: by vajain21.in.ibm.com (sSMTP sendmail emulation); Thu, 15 Apr 2021 22:39:37 +0530
-From:   Vaibhav Jain <vaibhav@linux.ibm.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
-Subject: Re: [PATCH v1 1/1] powerpc/papr_scm: Properly handle UUID types and
- API
-In-Reply-To: <20210415134637.17770-1-andriy.shevchenko@linux.intel.com>
-References: <20210415134637.17770-1-andriy.shevchenko@linux.intel.com>
-Date:   Thu, 15 Apr 2021 22:39:37 +0530
-Message-ID: <87eefblbji.fsf@vajain21.in.ibm.com>
+        Thu, 15 Apr 2021 13:11:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A41C061574;
+        Thu, 15 Apr 2021 10:11:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YwgbDheT+MJJ4trDHQZMYorZHJyXvzB0bzY8L8H53Zg=; b=pqDZ5QWhUwnCMzzTpH+57MdG8e
+        g0vSEvFaeMGsKZ8bh0uo5UlIzHiiUgtJXiYwSvzacGqhh6T6NUMa7H0FmZtHyRyC3p6SM9J82c7nt
+        wJ42qJWzFe26oOKJIu3NFrFYbbArdbYa6HooTaeAKc+NP3I6rczNl963yeZNi4aDr08izYDfRM3GD
+        lb8BDY8K66PWBgEDvI5KTaFM7dI7gmB3dxzh0jphKMJR33jYTh5zvGwlqJWJriDwVOvk8EUzYHs4K
+        WlLbiUz0IBvw1/FZNpfVY943UN1CCV+CB9CaByZSj9Jt8m13uHY+rBW34SoQuSqLRa7q6/dbT68+r
+        T9a1b7tg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lX5Vj-008r8z-8x; Thu, 15 Apr 2021 17:10:41 +0000
+Date:   Thu, 15 Apr 2021 18:10:35 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Subject: Re: [PATCH v3 0/5] mm/memcg: Reduce kmemcache memory accounting
+ overhead
+Message-ID: <20210415171035.GB2531743@casper.infradead.org>
+References: <20210414012027.5352-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: jdyrEc2zCvE--isOIPFNk9uE2Dg2D-xg
-X-Proofpoint-ORIG-GUID: fkD8rdMtqEd7WlUBrb8Ef_ID3XQ4kkOs
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-15_09:2021-04-15,2021-04-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- adultscore=0 clxscore=1011 bulkscore=0 mlxlogscore=999 priorityscore=1501
- lowpriorityscore=0 phishscore=0 spamscore=0 malwarescore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104150106
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414012027.5352-1-longman@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 13, 2021 at 09:20:22PM -0400, Waiman Long wrote:
+> With memory accounting disable, the run time was 2.848s. With memory
+> accounting enabled, the run times with the application of various
+> patches in the patchset were:
+> 
+>   Applied patches   Run time   Accounting overhead   Overhead %age
+>   ---------------   --------   -------------------   -------------
+>        None          10.800s         7.952s              100.0%
+>         1-2           9.140s         6.292s               79.1%
+>         1-3           7.641s         4.793s               60.3%
+>         1-5           6.801s         3.953s               49.7%
 
-Thanks for the patch Andy,
+I think this is a misleading way to report the overhead.  I would have said:
 
-Unfortunately ran into a compilation issue due to missing "#include
-<asm/unaligned.h>" that provides definition for
-get_unaligned_le64(). Gcc reported following error:
-=20
-error: implicit declaration of function =E2=80=98get_unaligned_le64=E2=80=99
-
-After including the necessary header file, kernel compiled fine and I
-was able to test & verify the patch.
-
---=20
-Cheers
-~ Vaibhav
-
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> writes:
-
-> Parse to and export from UUID own type, before dereferencing.
-> This also fixes wrong comment (Little Endian UUID is something else)
-> and should fix Sparse warnings about assigning strict types to POD.
->
-> Fixes: 43001c52b603 ("powerpc/papr_scm: Use ibm,unit-guid as the iset coo=
-kie")
-> Fixes: 259a948c4ba1 ("powerpc/pseries/scm: Use a specific endian format f=
-or storing uuid from the device tree")
-> Cc: Oliver O'Halloran <oohall@gmail.com>
-> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
-> Not tested
->  arch/powerpc/platforms/pseries/papr_scm.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/pla=
-tforms/pseries/papr_scm.c
-> index ae6f5d80d5ce..4366e1902890 100644
-> --- a/arch/powerpc/platforms/pseries/papr_scm.c
-> +++ b/arch/powerpc/platforms/pseries/papr_scm.c
-> @@ -1085,8 +1085,9 @@ static int papr_scm_probe(struct platform_device *p=
-dev)
->  	u32 drc_index, metadata_size;
->  	u64 blocks, block_size;
->  	struct papr_scm_priv *p;
-> +	u8 uuid_raw[UUID_SIZE];
->  	const char *uuid_str;
-> -	u64 uuid[2];
-> +	uuid_t uuid;
->  	int rc;
->=20=20
->  	/* check we have all the required DT properties */
-> @@ -1129,16 +1130,18 @@ static int papr_scm_probe(struct platform_device =
-*pdev)
->  	p->hcall_flush_required =3D of_property_read_bool(dn, "ibm,hcall-flush-=
-required");
->=20=20
->  	/* We just need to ensure that set cookies are unique across */
-> -	uuid_parse(uuid_str, (uuid_t *) uuid);
-> +	uuid_parse(uuid_str, &uuid);
-> +
->  	/*
->  	 * cookie1 and cookie2 are not really little endian
-> -	 * we store a little endian representation of the
-> +	 * we store a raw buffer representation of the
->  	 * uuid str so that we can compare this with the label
->  	 * area cookie irrespective of the endian config with which
->  	 * the kernel is built.
->  	 */
-> -	p->nd_set.cookie1 =3D cpu_to_le64(uuid[0]);
-> -	p->nd_set.cookie2 =3D cpu_to_le64(uuid[1]);
-> +	export_uuid(uuid_raw, &uuid);
-> +	p->nd_set.cookie1 =3D get_unaligned_le64(&uuid_raw[0]);
-> +	p->nd_set.cookie2 =3D get_unaligned_le64(&uuid_raw[8]);
->=20=20
->  	/* might be zero */
->  	p->metadata_size =3D metadata_size;
-> --=20
-> 2.30.2
->
+			10.800s		7.952s		279.2%
+			 9.140s		6.292s		220.9%
+			 7.641s		4.793s		168.3%
+			 6.801s		3.953s		138.8%
 
