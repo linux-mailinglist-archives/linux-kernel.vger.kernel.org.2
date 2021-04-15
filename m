@@ -2,147 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43B433609A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 598653609A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 14:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232946AbhDOMmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 08:42:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23264 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230202AbhDOMmr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 08:42:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618490544;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ar7jE+OGjgWhr4Cr/7k8/to/kgomCc9gO1itsRhfVjo=;
-        b=EP9jyR0vxQhkoqXFevQtJFSImtQA2+hHYMeMy9eFDnC47W0M9nHPDkWRlrWLpqFVdd3HFB
-        szecMVZbJLsLq8QTNWHIFsGkjvvdRZ7iktuW8Cfd5MuokgJU84FzDadyMyD+aD1EzgHxXy
-        zKqLqDO0KwJTqLQ6QFnVgjK2NbFuynw=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-503-NBlR8yVuOSCISeXUZS5MTg-1; Thu, 15 Apr 2021 08:42:22 -0400
-X-MC-Unique: NBlR8yVuOSCISeXUZS5MTg-1
-Received: by mail-wr1-f69.google.com with SMTP id d15-20020a5d538f0000b02901027c18c581so2679643wrv.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 05:42:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=ar7jE+OGjgWhr4Cr/7k8/to/kgomCc9gO1itsRhfVjo=;
-        b=kfNMpx0pmwpJPNQj5EFHnX/Kn2XTfK+FWraSf0AgZ5tVWrA++qgE0Or1uHptTLB7wO
-         6V8m8CsmVqttKFefE+SvqyqAICl9SFgnQ+6sUsnMymdJCAcr5qwI2ZEjFxwUDYwNdxUZ
-         URkx0uXHIwxHgVeLz2iBciUEWx0CfoYL3lSycp/wSB9gHNQynke+N8zJ/WRML50hbOxh
-         JxaML6e6Qd+Zbs0rcf4KoC4FdQvbTOIKFF+KP/9/TASus/u6vuwTV/pttaSIash59dHd
-         Qk7jT0knasWoZBf0pnYZ2YZrnstTE2nnFmdkek+Nl3NVkrgpOr8PtWohh8JGAGPFzmIE
-         sXLw==
-X-Gm-Message-State: AOAM532HIAzS1MCFwUMVAnfMgjolm+IKj7bxgB9YdoXEpg20Stb8BnAS
-        5K35g4Gex++MQRggjOx6oOGX6UMFHXV7LT+nnkj8Scm6hdg0Pz1rv+yTxg8t83t5W/oy+3veshJ
-        ZfGYw1otvqib8KD+sZlqNmomb
-X-Received: by 2002:a5d:658c:: with SMTP id q12mr3398347wru.30.1618490541374;
-        Thu, 15 Apr 2021 05:42:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy70NNG0NvXrtbxBSPuoc+/nExBGycC8ugDorCmUYmJFJyQFhnrWCbd70HcbUQjCzoKdJC/+A==
-X-Received: by 2002:a5d:658c:: with SMTP id q12mr3398324wru.30.1618490541195;
-        Thu, 15 Apr 2021 05:42:21 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6392.dip0.t-ipconnect.de. [91.12.99.146])
-        by smtp.gmail.com with ESMTPSA id w4sm2848464wrp.58.2021.04.15.05.42.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 05:42:20 -0700 (PDT)
-Subject: Re: [PATCH v8 4/7] mm,hugetlb: Split prep_new_huge_page functionality
-To:     Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>
-References: <20210415103544.6791-1-osalvador@suse.de>
- <20210415103544.6791-5-osalvador@suse.de>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <021eb32f-9664-8a1b-c3eb-9d51ca4fe21a@redhat.com>
-Date:   Thu, 15 Apr 2021 14:42:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232988AbhDOMnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 08:43:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52224 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232993AbhDOMnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 08:43:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 75B88610E8;
+        Thu, 15 Apr 2021 12:42:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618490567;
+        bh=3M573xfs0hNXfcCF4OhMwhysBCpFoK9x2zhcPMH6MCE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rhibKjm+E0PTHJnnjSg49QkkkTHu4PodN1IM//rzWAFkVF16V4LsZudMr8F9m73Fr
+         K8PKDiOYBfmp6aXurI7V5oe4Y/kaosCZswDnj51KwjKtJpG/OYTnglASt/irGE177S
+         khD1g/6sm4uPAHnDcj4GTFw4BeZ8scOkVw/J97ECOuTI6SzEJ+eHE3/w8U1kcuUYJ5
+         EpkUlsGpkGFK5I2EYSBQzJfKtNQKAQMlSnLd5s38LuINBESudy3S57jfCKPeJrjtsp
+         z6tjrHrB4VJTmHRrnz6M84Umsp1rtRCBL/40w3KJDBrk6rGYHXLzL4DoBFA9lPIhBO
+         NBMjfLckfNINw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 138E040647; Thu, 15 Apr 2021 09:42:44 -0300 (-03)
+Date:   Thu, 15 Apr 2021 09:42:43 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>, Jiri Olsa <jolsa@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] perf map: Fix error return code in maps__clone()
+Message-ID: <YHg0wyanA+UxqXWi@kernel.org>
+References: <20210415092744.3793-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210415103544.6791-5-osalvador@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210415092744.3793-1-thunder.leizhen@huawei.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.04.21 12:35, Oscar Salvador wrote:
-> Currently, prep_new_huge_page() performs two functions.
-> It sets the right state for a new hugetlb, and increases the hstate's
-> counters to account for the new page.
-> 
-> Let us split its functionality into two separate functions, decoupling
-> the handling of the counters from initializing a hugepage.
-> The outcome is having __prep_new_huge_page(), which only
-> initializes the page , and __prep_account_new_huge_page(), which adds
-> the new page to the hstate's counters.
-> 
-> This allows us to be able to set a hugetlb without having to worry
-> about the counter/locking. It will prove useful in the next patch.
-> prep_new_huge_page() still calls both functions.
-> 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-> ---
->   mm/hugetlb.c | 20 +++++++++++++++++---
->   1 file changed, 17 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 2cb9fa79cbaa..6f39ec79face 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1483,16 +1483,30 @@ void free_huge_page(struct page *page)
->   	}
->   }
->   
-> -static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
-> +/*
-> + * Must be called with the hugetlb lock held
-> + */
-> +static void __prep_account_new_huge_page(struct hstate *h, int nid)
-> +{
-> +	lockdep_assert_held(&hugetlb_lock);
-> +	h->nr_huge_pages++;
-> +	h->nr_huge_pages_node[nid]++;
-> +}
-> +
-> +static void __prep_new_huge_page(struct page *page)
->   {
->   	INIT_LIST_HEAD(&page->lru);
->   	set_compound_page_dtor(page, HUGETLB_PAGE_DTOR);
->   	hugetlb_set_page_subpool(page, NULL);
->   	set_hugetlb_cgroup(page, NULL);
->   	set_hugetlb_cgroup_rsvd(page, NULL);
-> +}
-> +
-> +static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
-> +{
-> +	__prep_new_huge_page(page);
->   	spin_lock_irq(&hugetlb_lock);
-> -	h->nr_huge_pages++;
-> -	h->nr_huge_pages_node[nid]++;
-> +	__prep_account_new_huge_page(h, nid);
->   	spin_unlock_irq(&hugetlb_lock);
->   }
->   
-> 
+Em Thu, Apr 15, 2021 at 05:27:44PM +0800, Zhen Lei escreveu:
+> Although 'err' has been initialized to -ENOMEM, but it will be reassigned
+> by the "err = unwind__prepare_access(...)" statement in the for loop. So
+> that, the value of 'err' is unknown when map__clone() failed.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+You forgot to research and add this:
+
+Fixes: 6c502584438bda63 ("perf unwind: Call unwind__prepare_access for forked thread")
+
+So that the stable@kernel.org guys can pick this up automagically and
+apply this fix to the stable kernels.
+
+I've added it.
+
+Thanks, applied.
+
+- Arnaldo
+ 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  tools/perf/util/map.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
+> index fbc40a2c17d4dca..8af693d9678cefe 100644
+> --- a/tools/perf/util/map.c
+> +++ b/tools/perf/util/map.c
+> @@ -840,15 +840,18 @@ int maps__fixup_overlappings(struct maps *maps, struct map *map, FILE *fp)
+>  int maps__clone(struct thread *thread, struct maps *parent)
+>  {
+>  	struct maps *maps = thread->maps;
+> -	int err = -ENOMEM;
+> +	int err;
+>  	struct map *map;
+>  
+>  	down_read(&parent->lock);
+>  
+>  	maps__for_each_entry(parent, map) {
+>  		struct map *new = map__clone(map);
+> -		if (new == NULL)
+> +
+> +		if (new == NULL) {
+> +			err = -ENOMEM;
+>  			goto out_unlock;
+> +		}
+>  
+>  		err = unwind__prepare_access(maps, new, NULL);
+>  		if (err)
+> -- 
+> 2.26.0.106.g9fadedd
+> 
+> 
 
 -- 
-Thanks,
 
-David / dhildenb
-
+- Arnaldo
