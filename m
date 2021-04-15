@@ -2,128 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 148D036040E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7241360412
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231633AbhDOIQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 04:16:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54213 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231346AbhDOIQz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 04:16:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618474592;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g3qfacKPFWYJe6SJGGT9jnGqaiQMDFfgudP5Ye2GaUQ=;
-        b=UvM2lA4UEc+hvdVPyTlY+DpqNXKkbZ4cpZgX5dfqQDKCQT4DLwiQVExI+wKsytfUqNk0GL
-        0ISGthUimiUPrxjMQS3z77H5NNqDNHhrzB7uq18WvIBdXspQsksB4WwrTwtdE18kukpGVf
-        rRSjezJKfi3fN2AbiiCth8q0agg6yS0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-562-nf00DL1qOpq2a81pIwwyBQ-1; Thu, 15 Apr 2021 04:16:29 -0400
-X-MC-Unique: nf00DL1qOpq2a81pIwwyBQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9AA2310053E8;
-        Thu, 15 Apr 2021 08:16:28 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-12-61.pek2.redhat.com [10.72.12.61])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1581C1F057;
-        Thu, 15 Apr 2021 08:16:21 +0000 (UTC)
-Subject: Re: [PATCH 3/3] vDPA/ifcvf: get_config_size should return dev
- specific config size
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-Cc:     mst@redhat.com, lulu@redhat.com, leonro@nvidia.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210414091832.5132-1-lingshan.zhu@intel.com>
- <20210414091832.5132-4-lingshan.zhu@intel.com>
- <20210415081236.anbssqtsyjnmiaby@steredhat>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <178b6e14-dfb5-b5f9-477e-15801d849c2a@redhat.com>
-Date:   Thu, 15 Apr 2021 16:16:20 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.1
+        id S231611AbhDOIRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 04:17:48 -0400
+Received: from mga14.intel.com ([192.55.52.115]:21446 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231512AbhDOIRq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 04:17:46 -0400
+IronPort-SDR: qS+pMH+k1kSrbxpzoqxJLtSiPRSr5BOo+yATenhPPkMk6iuKXpeR0bMzKf5QQyAD28OYBKyJgf
+ HueNXBbQFjuw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="194373031"
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="194373031"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 01:17:22 -0700
+IronPort-SDR: 9c5gqLrYYW0fUwx9hZpvX5vZ5PyRns/yiXHTnk4B5vjWKGcS8yiIyucVDYHSHVq6ELgqH+kD4n
+ tyIfoHidLofQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="418663733"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by fmsmga008.fm.intel.com with ESMTP; 15 Apr 2021 01:17:18 -0700
+Date:   Thu, 15 Apr 2021 16:17:17 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH v4 08/13] mm/mempolicy: Create a page allocator for policy
+Message-ID: <20210415081717.GC61572@shbuild999.sh.intel.com>
+References: <1615952410-36895-1-git-send-email-feng.tang@intel.com>
+ <1615952410-36895-9-git-send-email-feng.tang@intel.com>
+ <YHbpQ2xpTVChY718@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20210415081236.anbssqtsyjnmiaby@steredhat>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHbpQ2xpTVChY718@dhcp22.suse.cz>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 14, 2021 at 03:08:19PM +0200, Michal Hocko wrote:
+> On Wed 17-03-21 11:40:05, Feng Tang wrote:
+> > From: Ben Widawsky <ben.widawsky@intel.com>
+> > 
+> > Add a helper function which takes care of handling multiple preferred
+> > nodes. It will be called by future patches that need to handle this,
+> > specifically VMA based page allocation, and task based page allocation.
+> > Huge pages don't quite fit the same pattern because they use different
+> > underlying page allocation functions. This consumes the previous
+> > interleave policy specific allocation function to make a one stop shop
+> > for policy based allocation.
+> > 
+> > With this, MPOL_PREFERRED_MANY's semantic is more like MPOL_PREFERRED
+> > that it will first try the preferred node/nodes, and fallback to all
+> > other nodes when first try fails. Thanks to Michal Hocko for suggestions
+> > on this.
+> > 
+> > For now, only interleaved policy will be used so there should be no
+> > functional change yet. However, if bisection points to issues in the
+> > next few commits, it was likely the fault of this patch.
+> 
+> I am not sure this is helping much. Let's see in later patches but I
+> would keep them separate and rather create a dedicated function for the
+> new policy allocation mode.
+ 
+Thanks for the suggestion, we will rethink the implementations. 
 
-在 2021/4/15 下午4:12, Stefano Garzarella 写道:
-> On Wed, Apr 14, 2021 at 05:18:32PM +0800, Zhu Lingshan wrote:
->> get_config_size() should return the size based on the decected
->> device type.
->>
->> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
->> ---
->> drivers/vdpa/ifcvf/ifcvf_main.c | 11 ++++++++++-
->> 1 file changed, 10 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c 
->> b/drivers/vdpa/ifcvf/ifcvf_main.c
->> index 9b6a38b798fa..b48b9789b69e 100644
->> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
->> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
->> @@ -347,7 +347,16 @@ static u32 ifcvf_vdpa_get_vq_align(struct 
->> vdpa_device *vdpa_dev)
->>
->> static size_t ifcvf_vdpa_get_config_size(struct vdpa_device *vdpa_dev)
->> {
->> -    return sizeof(struct virtio_net_config);
->> +    struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
->> +    size_t size;
->> +
->> +    if (vf->dev_type == VIRTIO_ID_NET)
->> +        size = sizeof(struct virtio_net_config);
->> +
->> +    if (vf->dev_type == VIRTIO_ID_BLOCK)
->> +        size = sizeof(struct virtio_blk_config);
->> +
->> +    return size;
->
-> I'm not familiar with the ifcvf details, but can it happen that the 
-> device is not block or net?
->
-> Should we set `size` to 0 by default to handle this case or are we 
-> sure it's one of the two?
->
-> Maybe we should add a comment or a warning message in this case, to 
-> prevent some analysis tool or compiler from worrying that `size` might 
-> be uninitialized.
->
-> I was thinking something like this:
->
->     switch(vf->dev_type) {
->     case VIRTIO_ID_NET:
->         size = sizeof(struct virtio_net_config);
->         break;
->     case VIRTIO_ID_BLOCK:
->         size = sizeof(struct virtio_blk_config);
->         break;
->     default:
->         /* or WARN(1, "") if dev_warn() not apply */
->         dev_warn(... , "virtio ID [0x%x] not supported\n")
->         size = 0;
->
->     }
->
+- Feng
 
-Yes, I agree.
-
-Thanks
-
-
-> Thanks,
-> Stefano
->
-
+> > Similar functionality is offered via policy_node() and
+> > policy_nodemask(). By themselves however, neither can achieve this
+> > fallback style of sets of nodes.
+> > 
+> > [ Feng: for the first try, add NOWARN flag, and skip the direct reclaim
+> >   to speedup allocation in some case ]
+> > 
+> > Link: https://lore.kernel.org/r/20200630212517.308045-9-ben.widawsky@intel.com
+> > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> > Signed-off-by: Feng Tang <feng.tang@intel.com>
+> > ---
+> >  mm/mempolicy.c | 65 ++++++++++++++++++++++++++++++++++++++++++++++------------
+> >  1 file changed, 52 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> > index d945f29..d21105b 100644
+> > --- a/mm/mempolicy.c
+> > +++ b/mm/mempolicy.c
+> > @@ -2187,22 +2187,60 @@ bool mempolicy_nodemask_intersects(struct task_struct *tsk,
+> >  	return ret;
+> >  }
+> >  
+> > -/* Allocate a page in interleaved policy.
+> > -   Own path because it needs to do special accounting. */
+> > -static struct page *alloc_page_interleave(gfp_t gfp, unsigned order,
+> > -					unsigned nid)
+> > +/* Handle page allocation for all but interleaved policies */
+> > +static struct page *alloc_pages_policy(struct mempolicy *pol, gfp_t gfp,
+> > +				       unsigned int order, int preferred_nid)
+> >  {
+> >  	struct page *page;
+> > +	gfp_t gfp_mask = gfp;
+> >  
+> > -	page = __alloc_pages(gfp, order, nid);
+> > -	/* skip NUMA_INTERLEAVE_HIT counter update if numa stats is disabled */
+> > -	if (!static_branch_likely(&vm_numa_stat_key))
+> > +	if (pol->mode == MPOL_INTERLEAVE) {
+> > +		page = __alloc_pages(gfp, order, preferred_nid);
+> > +		/* skip NUMA_INTERLEAVE_HIT counter update if numa stats is disabled */
+> > +		if (!static_branch_likely(&vm_numa_stat_key))
+> > +			return page;
+> > +		if (page && page_to_nid(page) == preferred_nid) {
+> > +			preempt_disable();
+> > +			__inc_numa_state(page_zone(page), NUMA_INTERLEAVE_HIT);
+> > +			preempt_enable();
+> > +		}
+> >  		return page;
+> > -	if (page && page_to_nid(page) == nid) {
+> > -		preempt_disable();
+> > -		__inc_numa_state(page_zone(page), NUMA_INTERLEAVE_HIT);
+> > -		preempt_enable();
+> >  	}
+> > +
+> > +	VM_BUG_ON(preferred_nid != NUMA_NO_NODE);
+> > +
+> > +	preferred_nid = numa_node_id();
+> > +
+> > +	/*
+> > +	 * There is a two pass approach implemented here for
+> > +	 * MPOL_PREFERRED_MANY. In the first pass we try the preferred nodes
+> > +	 * but allow the allocation to fail. The below table explains how
+> > +	 * this is achieved.
+> > +	 *
+> > +	 * | Policy                        | preferred nid | nodemask   |
+> > +	 * |-------------------------------|---------------|------------|
+> > +	 * | MPOL_DEFAULT                  | local         | NULL       |
+> > +	 * | MPOL_PREFERRED                | best          | NULL       |
+> > +	 * | MPOL_INTERLEAVE               | ERR           | ERR        |
+> > +	 * | MPOL_BIND                     | local         | pol->nodes |
+> > +	 * | MPOL_PREFERRED_MANY           | best          | pol->nodes |
+> > +	 * | MPOL_PREFERRED_MANY (round 2) | local         | NULL       |
+> > +	 * +-------------------------------+---------------+------------+
+> > +	 */
+> > +	if (pol->mode == MPOL_PREFERRED_MANY) {
+> > +		gfp_mask |=  __GFP_NOWARN;
+> > +
+> > +		/* Skip direct reclaim, as there will be a second try */
+> > +		gfp_mask &= ~__GFP_DIRECT_RECLAIM;
+> > +	}
+> > +
+> > +	page = __alloc_pages_nodemask(gfp_mask, order,
+> > +				      policy_node(gfp, pol, preferred_nid),
+> > +				      policy_nodemask(gfp, pol));
+> > +
+> > +	if (unlikely(!page && pol->mode == MPOL_PREFERRED_MANY))
+> > +		page = __alloc_pages_nodemask(gfp, order, preferred_nid, NULL);
+> > +
+> >  	return page;
+> >  }
+> >  
+> > @@ -2244,8 +2282,8 @@ alloc_pages_vma(gfp_t gfp, int order, struct vm_area_struct *vma,
+> >  		unsigned nid;
+> >  
+> >  		nid = interleave_nid(pol, vma, addr, PAGE_SHIFT + order);
+> > +		page = alloc_pages_policy(pol, gfp, order, nid);
+> >  		mpol_cond_put(pol);
+> > -		page = alloc_page_interleave(gfp, order, nid);
+> >  		goto out;
+> >  	}
+> >  
+> > @@ -2329,7 +2367,8 @@ struct page *alloc_pages_current(gfp_t gfp, unsigned order)
+> >  	 * nor system default_policy
+> >  	 */
+> >  	if (pol->mode == MPOL_INTERLEAVE)
+> > -		page = alloc_page_interleave(gfp, order, interleave_nodes(pol));
+> > +		page = alloc_pages_policy(pol, gfp, order,
+> > +					  interleave_nodes(pol));
+> >  	else
+> >  		page = __alloc_pages_nodemask(gfp, order,
+> >  				policy_node(gfp, pol, numa_node_id()),
+> > -- 
+> > 2.7.4
+> 
+> -- 
+> Michal Hocko
+> SUSE Labs
