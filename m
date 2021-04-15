@@ -2,103 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B24436042E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6447E360430
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231702AbhDOIVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 04:21:41 -0400
-Received: from mga02.intel.com ([134.134.136.20]:40204 "EHLO mga02.intel.com"
+        id S231565AbhDOIWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 04:22:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231518AbhDOIVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 04:21:40 -0400
-IronPort-SDR: vLJQUkkVU4UnMXOO4aH9YLwwxslpLorRIsDT95wfQB7Dakfg2ux4x78x+5QmmK7iITM5NnC8yc
- V6iiuz3Q7kBg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="181935151"
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="181935151"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 01:20:52 -0700
-IronPort-SDR: 1lU7OEfzIb1pcf5QGGkQIq6NSWFeXJshxPIiKQv7zc0HQF052LS/JhAZBIYs638sShagaId8DW
- sSRCMj1iK0og==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="421622671"
-Received: from dengjie-mobl1.ccr.corp.intel.com (HELO [10.239.154.55]) ([10.239.154.55])
-  by orsmga007.jf.intel.com with ESMTP; 15 Apr 2021 01:20:47 -0700
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-To:     Wolfram Sang <wsa@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <20210323072704.rgoelmq62fl2wjjf@vireshk-i7>
- <a2994a8f-bbf9-b26f-a9d2-eb02df6623b8@intel.com>
- <CAK8P3a3OBUZC2nxaQ2wyL9EeT3gzXUX9sfJ+ZJfJUiJK_3ZkrA@mail.gmail.com>
- <20210415064538.a4vf7egk6l3u6zfz@vireshk-i7>
- <b25d1f4e-f17f-8a14-e7e6-7577d25be877@intel.com>
- <20210415072131.GA1006@kunai> <20210415072431.apntpcwrk5hp6zg4@vireshk-i7>
- <20210415072823.GB1006@kunai>
- <6849a8f0-204a-362a-ed97-e910065ab14f@intel.com>
- <20210415081828.GD1006@kunai>
-From:   Jie Deng <jie.deng@intel.com>
-Message-ID: <bf672e9b-85ba-e234-8a4e-d562ae7fb7a3@intel.com>
-Date:   Thu, 15 Apr 2021 16:20:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.0
+        id S231388AbhDOIWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 04:22:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94372611AC;
+        Thu, 15 Apr 2021 08:21:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618474917;
+        bh=MzgBwo6AvTH3Xni+y03+CAO5/Yr7OdgG7HKKkkwlV5I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LLBtLksNikM5Oy26xFOqMe0HES0hX/EkAWnX2quUoqQn8cobXY1ABlJwAOH2+rC7c
+         3eWHg4n6J4qfoWP5KWrgEGdEnPSAla2IIleDywNSdSpXtS/Q0pGQap5MyYOhMn6oce
+         QtvPYLoP0X9jOGUPhiRlwOkx1ccQKHL1FM8qfmP8=
+Date:   Thu, 15 Apr 2021 10:21:54 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH 00/13] tty.h cleanups
+Message-ID: <YHf3ojj44ex2dd3M@kroah.com>
+References: <20210408125134.3016837-1-gregkh@linuxfoundation.org>
+ <YG8SUl+B8+76JZwV@hovoldconsulting.com>
+ <YG9E5GpLljkXARDj@kroah.com>
+ <YHADHYKMhfYE1aNw@hovoldconsulting.com>
 MIME-Version: 1.0
-In-Reply-To: <20210415081828.GD1006@kunai>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHADHYKMhfYE1aNw@hovoldconsulting.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 09, 2021 at 09:32:45AM +0200, Johan Hovold wrote:
+> On Thu, Apr 08, 2021 at 08:01:08PM +0200, Greg Kroah-Hartman wrote:
+> > On Thu, Apr 08, 2021 at 04:25:22PM +0200, Johan Hovold wrote:
+> > > On Thu, Apr 08, 2021 at 02:51:21PM +0200, Greg Kroah-Hartman wrote:
+> > > > Turns out there is a lot of tty-internal stuff in include/linux/tty.h
+> > > > that do not belong there.  Create a internal-to-the-tty-layer .h file
+> > > > for these types of things and move function prototypes to it instead of
+> > > > being in the system-wide header file.
+> > > > 
+> > > > Along the way clean up the use of some old tty-only debugging macros and
+> > > > use the in-kernel dev_*() calls instead.
+> > > 
+> > > I'm afraid that's not a good idea since not all ttys have a
+> > > corresponding class device. Notable exception include pseudo terminals
+> > > and serdev.
+> > > 
+> > > While dev_printk() can handle a NULL device argument without crashing,
+> > > we'll actually lose log information by removing the tty printk helpers.
+> > 
+> > I think the same info will be printed here as before, just some NULL
+> > information at the beginning, right?  And the benifits overall (for real
+> > tty devices), should outweigh the few devices that do not have this
+> > information.
+> 
+> No, you'll only be losing information (tty driver and tty name). Here's
+> a pty example, where the first line in each pair use dev_info() and the
+> second tty_info():
+> 
+> [   10.235331] (NULL device *): tty_get_device
+> [   10.235441] ptm ptm0: tty_get_device
+> 
+> [   10.235586] (NULL device *): tty_get_device
+> [   10.235674] pts pts0: tty_get_device
+> 
+> and similar for serdev, which is becoming more and more common.
 
-On 2021/4/15 16:18, Wolfram Sang wrote:
-> On Thu, Apr 15, 2021 at 04:15:07PM +0800, Jie Deng wrote:
->> On 2021/4/15 15:28, Wolfram Sang wrote:
->>
->>>> Now that we were able to catch you, I will use the opportunity to
->>>> clarify the doubts I had.
->>>>
->>>> - struct mutex lock in struct virtio_i2c, I don't think this is
->>>>     required since the core takes care of locking in absence of this.
->>> This is likely correct.
->> OK. Then I will remove the lock.
-> Let me have a look first, please.
+Ok, good point, I'll go apply only the first 2 patches in this series
+(moving the macros out of tty.h and removing the unused one) and then
+will redo this set of patches again.   I think a better tty_msg() macro
+is warrented so that we can provide dev_*() output if we have a device,
+otherwise fall back to the old style to preserve functionality.
 
+thanks,
 
-Sure. Thank you.
-
-
->>>> - Use of I2C_CLASS_DEPRECATED flag, I don't think it is required for
->>>>     new drivers.
->>> This is definately correct :)
->> Do you mean a new driver doesn't need to set the following ?
->>
->> vi->adap.class = I2C_CLASS_DEPRECATED;
->>
->> Just leave the class to be 0 ?
-> Yes. DEPRECATED is only for drivers which used to have a class and then
-> chose to remove it.
-
-
-Got it. Thanks for your clarification.
-
-
+greg k-h
