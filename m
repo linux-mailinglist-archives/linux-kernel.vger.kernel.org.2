@@ -2,89 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38EF736086F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 13:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FF1F360876
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 13:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232658AbhDOLnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 07:43:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44214 "EHLO mx2.suse.de"
+        id S232651AbhDOLpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 07:45:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230190AbhDOLnT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 07:43:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618486976; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZxvJbfkWzNPA4y8TM5w+ufaw7NwfQQ+gZ7nfkT3HSSU=;
-        b=erm68Nk3sewm7NX5iM2VCsgdh05X3/Zwz4C68LHbYdiOaanmZlJ/RfeLY+qkPhHavd7jI/
-        FHihJ8u+p+Zio6xGd5Or+LBvNG8hm5hyZNz/yRgydIk2aM/PAryyHSglShEWxswMiPdGpg
-        F3izSIdO5zViP0KdH6bocp+6QghcMmc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 465C9AE56;
-        Thu, 15 Apr 2021 11:42:56 +0000 (UTC)
-Date:   Thu, 15 Apr 2021 13:42:55 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 7/7] mm,page_alloc: Drop unnecessary checks from
- pfn_range_valid_contig
-Message-ID: <YHgmv68CC9hC8GEI@dhcp22.suse.cz>
-References: <20210415103544.6791-1-osalvador@suse.de>
- <20210415103544.6791-8-osalvador@suse.de>
+        id S231549AbhDOLpL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 07:45:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD35D61132;
+        Thu, 15 Apr 2021 11:44:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618487088;
+        bh=PihK5dfas/WVMlw9t+kHCah/aAVGAaBd50HblG0mcrc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=See5n71LngVdG5j2SzEVbcUQ2hvHx2B+L+ERVu2U/XyaQFxyeX7+daxG2naDoH6yY
+         sogE77A6RBcoHmmbBRdEjb+uGFuVIhfHCSJlya8NGzdqoojUeoB1N2EepZJ+bG7JqM
+         o8oltkl937XvKf8cXtUrPBG3HDUzOU1odg1ipkp4sp1o1VnMTHv8p4+mLVtdAxCya+
+         3/a7FStPOdKSE3dJwPcVRPVzZm8GbySNpbWLUAm9M9xkPlOF8WNtQtxLersm/95MSI
+         2TMVV22t+6izgn+he0iL7qLAErLQ6o+3d+FdEntp6mscdiQ6QLRlO0jgH0J1DS0HBW
+         V6HvxNw+WcvJg==
+Date:   Thu, 15 Apr 2021 12:44:24 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     matthew.gerlach@linux.intel.com
+Cc:     hao.wu@intel.com, trix@redhat.com, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yilun.xu@intel.com, jdelvare@suse.com, linux@roeck-us.net,
+        lee.jones@linaro.org, linux-hwmon@vger.kernel.org,
+        russell.h.weight@intel.com, linux-spi@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] spi: Add DFL bus driver for Altera SPI Master
+Message-ID: <20210415114424.GA5514@sirena.org.uk>
+References: <20210413225835.459662-1-matthew.gerlach@linux.intel.com>
+ <20210413225835.459662-2-matthew.gerlach@linux.intel.com>
+ <20210414141816.GD4535@sirena.org.uk>
+ <alpine.DEB.2.22.394.2104141203480.482712@rhweight-WRK1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="UlVJffcvxoiEqYs2"
 Content-Disposition: inline
-In-Reply-To: <20210415103544.6791-8-osalvador@suse.de>
+In-Reply-To: <alpine.DEB.2.22.394.2104141203480.482712@rhweight-WRK1>
+X-Cookie: VMS must die!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 15-04-21 12:35:44, Oscar Salvador wrote:
-> pfn_range_valid_contig() bails out when it finds an in-use page or a
-> hugetlb page, among other things.
-> We can drop the in-use page check since __alloc_contig_pages can migrate
-> away those pages, and the hugetlb page check can go too since
-> isolate_migratepages_range is now capable of dealing with hugetlb pages.
-> Either way, those checks are racy so let the end function handle it
-> when the time comes.
-> 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+--UlVJffcvxoiEqYs2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> ---
->  mm/page_alloc.c | 6 ------
->  1 file changed, 6 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index b5a94de3cdde..c5338e912ace 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -8901,12 +8901,6 @@ static bool pfn_range_valid_contig(struct zone *z, unsigned long start_pfn,
->  
->  		if (PageReserved(page))
->  			return false;
-> -
-> -		if (page_count(page) > 0)
-> -			return false;
-> -
-> -		if (PageHuge(page))
-> -			return false;
->  	}
->  	return true;
->  }
-> -- 
-> 2.16.3
+On Wed, Apr 14, 2021 at 12:09:50PM -0700, matthew.gerlach@linux.intel.com wrote:
+> On Wed, 14 Apr 2021, Mark Brown wrote:
 
--- 
-Michal Hocko
-SUSE Labs
+> > Don't create a platform device here, extend the spi-altera driver to
+> > register with both DFL and platform buses.
+
+> Are you suggesting something like the SPI driver for the Designware
+> controller where there is spi-dw-core.c and bus specific code like
+> spi-dw-pci.c and spi-dw-mmioc.c?
+
+Yes, exactly.
+
+--UlVJffcvxoiEqYs2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB4JxcACgkQJNaLcl1U
+h9An/Af/VFqnGaFp0qF5AyIs2gQj+NbPJA3hBIMLLMcz/tC6Q5pKphaA7Pr3+fKT
+hPQVYO+H7biwiX0WQ+BJZPnMo/7gDUEmOBnc+KvOIl/0q8FouNOoeaMsw+ScY3Kv
+fgHKSBD7ZS+29tHY+aN5jAQfAmjt6p/kpNyVEXQgUFiAQx1XKgSNrKzsAg1Ilcag
+LMXlyNukME0pC0Xu2lAZRAWlQsNLmq4k4bOckqR1nBRM8W271uO/i5/Q0+ybKxP8
+iFBSpZKfQ/na4GTVmNcFc6n2bc6CgwRAPng7lV2BX3gddCUnQ9N3VnEJZ7ubsZp3
+WFC0lKcGgWzXy3AE20kaJVDaFoYuHQ==
+=XEtk
+-----END PGP SIGNATURE-----
+
+--UlVJffcvxoiEqYs2--
