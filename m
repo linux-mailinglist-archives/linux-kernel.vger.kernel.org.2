@@ -2,110 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C84633612D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 754733612DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:19:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234835AbhDOTTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 15:19:22 -0400
-Received: from mail-pg1-f173.google.com ([209.85.215.173]:36678 "EHLO
-        mail-pg1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234505AbhDOTTT (ORCPT
+        id S234849AbhDOTT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 15:19:58 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:50976 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234505AbhDOTT4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 15:19:19 -0400
-Received: by mail-pg1-f173.google.com with SMTP id j7so8158195pgi.3;
-        Thu, 15 Apr 2021 12:18:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2/mLy6Qs38Bvj+YcPWXxnazVy7EEcqhvZh36iJtGe/k=;
-        b=RnVSwskXBY+Tw3xUCKBZDp7ZakDj+QRRP4bwpoeVxqDc5ROd9oMlD1MaPpbzoOAurl
-         p6WmJTtMLuH9SowsSK2PpDZpQJ+R0VgOu6oO2h6uvB3HgsEeMs1xfXXTxmofQ0ULX9pA
-         ZJrPcwHWk7E4jI8zFS3SHfNHydLV+MD7nTwl/pzsbEaCaf4Bt6jwHKzR7l/YqbkL2EOY
-         TObDuanFtLGmAlUcvyXxOjd+PWXYjakdOsCBOLvTCoqz4GeF7ZQcuAlRofuqEXeESTrF
-         MqU73vCze2gaecim0JnCkikWG7pOqXO+ZWqFXLmdcQ7tD7otAR9mxPWACF1yh6vSz/NF
-         bo2Q==
-X-Gm-Message-State: AOAM533XG8ZGUxDUftEWpyjsTEcI/iYiYfkbnCzSITGngzFNJR4B2QxE
-        X2QQsyYlR6S3DghLr7X9HgI=
-X-Google-Smtp-Source: ABdhPJxcEkFOz6ufalkpcUWU6vIEZxqym/3RNh3KzZq4gpOTNmEEkp/ON7d1ksaDya0GjnK/kkOxWg==
-X-Received: by 2002:a65:6704:: with SMTP id u4mr4763609pgf.169.1618514335629;
-        Thu, 15 Apr 2021 12:18:55 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:f031:1d3a:7e95:2876? ([2601:647:4000:d7:f031:1d3a:7e95:2876])
-        by smtp.gmail.com with ESMTPSA id p22sm3154516pjg.39.2021.04.15.12.18.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 12:18:54 -0700 (PDT)
-Subject: Re: [PATCH v7 1/3] bio: limit bio max size
-To:     Changheun Lee <nanich.lee@samsung.com>
-Cc:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
-        axboe@kernel.dk, damien.lemoal@wdc.com, gregkh@linuxfoundation.org,
-        hch@infradead.org, jisoo2146.oh@samsung.com,
-        junho89.kim@samsung.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ming.lei@redhat.com,
-        mj0123.lee@samsung.com, osandov@fb.com, patchwork-bot@kernel.org,
-        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
-        tj@kernel.org, tom.leiming@gmail.com, woosung2.lee@samsung.com,
-        yt0928.kim@samsung.com
-References: <2e54f27a-ae4c-af65-34ba-18b43bd4815d@acm.org>
- <CGME20210415105608epcas1p269bae87b8a7dab133753f7916420251e@epcas1p2.samsung.com>
- <20210415103820.23272-1-nanich.lee@samsung.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <bb8f7127-edff-4a32-2d5c-4343002bda19@acm.org>
-Date:   Thu, 15 Apr 2021 12:18:52 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Thu, 15 Apr 2021 15:19:56 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D30D189A;
+        Thu, 15 Apr 2021 21:19:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1618514372;
+        bh=Q1WdGLnzxFoo2A1h8Q37p+vfqUv2dls2iL/8mcK4FWo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l4oJM1avqEQzFTtCPNh82Y6V0s1ao3O6veQfVyRgPdud6h0rXR/iQ3k4p2wZbgZYu
+         22MzKFbGuqEVlFQRbLcvDGxVuGgwXRRRp1D/hvUzR5LRslqGF9Oz1OGFEI5fwLww3B
+         Fkbtqt8im3PBEbEegee5oqPv3S8BtnJaeGKF5N3A=
+Date:   Thu, 15 Apr 2021 22:19:30 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/7] media: i2c: max9286: Use "maxim,gpio-poc" property
+Message-ID: <YHiRwr+2PzJmoTaQ@pendragon.ideasonboard.com>
+References: <20210415122602.87697-1-jacopo+renesas@jmondi.org>
+ <20210415122602.87697-4-jacopo+renesas@jmondi.org>
 MIME-Version: 1.0
-In-Reply-To: <20210415103820.23272-1-nanich.lee@samsung.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210415122602.87697-4-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/21 3:38 AM, Changheun Lee wrote:
-> @@ -167,6 +168,7 @@ void blk_queue_max_hw_sectors(struct request_queue *q, unsigned int max_hw_secto
->  	max_sectors = round_down(max_sectors,
->  				 limits->logical_block_size >> SECTOR_SHIFT);
->  	limits->max_sectors = max_sectors;
-> +	limits->bio_max_bytes = max_sectors << SECTOR_SHIFT;
->  
->  	q->backing_dev_info->io_pages = max_sectors >> (PAGE_SHIFT - 9);
->  }
+Hi Jacopo,
 
-Can the new shift operation overflow? If so, how about using
-check_shl_overflow()?
+Thank you for the patch.
 
-> @@ -538,6 +540,8 @@ int blk_stack_limits(struct queue_limits *t, struct queue_limits *b,
->  {
->  	unsigned int top, bottom, alignment, ret = 0;
+On Thu, Apr 15, 2021 at 02:25:58PM +0200, Jacopo Mondi wrote:
+> The 'maxim,gpio-poc' property is used when the remote camera
+> power-over-coax is controlled by one of the MAX9286 gpio lines,
+> to instruct the driver about which line to use and what the line
+> polarity is.
+> 
+> Add to the max9286 driver support for parsing the newly introduced
+> property and use it if available in place of the usual supply, as it is
+> not possible to establish one as consumer of the max9286 gpio
+> controller.
+> 
+> If the new property is present, no gpio controller is registered and
+> 'poc-supply' is ignored.
+> 
+> In order to maximize code re-use, break out the max9286 gpio handling
+> function so that they can be used by the gpio controller through the
+> gpio-consumer API, or directly by the driver code.
+> 
+> Wrap the power up and power down routines to their own function to
+> be able to use either the gpio line directly or the supply. This will
+> make it easier to control the remote camera power at run time.
+> 
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> ---
+>  drivers/media/i2c/max9286.c | 119 ++++++++++++++++++++++++++++--------
+>  1 file changed, 93 insertions(+), 26 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+> index 6fd4d59fcc72..a8b37783d2ef 100644
+> --- a/drivers/media/i2c/max9286.c
+> +++ b/drivers/media/i2c/max9286.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/fwnode.h>
+>  #include <linux/gpio/consumer.h>
+>  #include <linux/gpio/driver.h>
+> +#include <linux/gpio/machine.h>
+>  #include <linux/i2c.h>
+>  #include <linux/i2c-mux.h>
+>  #include <linux/module.h>
+> @@ -165,6 +166,9 @@ struct max9286_priv {
 >  
-> +	t->bio_max_bytes = min_not_zero(t->bio_max_bytes, b->bio_max_bytes);
+>  	u32 reverse_channel_mv;
+>  
+> +	u32 gpio_poc;
+> +	u32 gpio_poc_flags;
 > +
->  	t->max_sectors = min_not_zero(t->max_sectors, b->max_sectors);
->  	t->max_hw_sectors = min_not_zero(t->max_hw_sectors, b->max_hw_sectors);
->  	t->max_dev_sectors = min_not_zero(t->max_dev_sectors, b->max_dev_sectors);
-
-The above will limit bio_max_bytes for all stacked block devices, which
-is something we do not want. I propose to set t->bio_max_bytes to
-UINT_MAX in blk_stack_limits() and to let the stacked driver (e.g.
-dm-crypt) decide whether or not to lower that value.
-
-> diff --git a/include/linux/bio.h b/include/linux/bio.h
-> index d0246c92a6e8..e5add63da3af 100644
-> --- a/include/linux/bio.h
-> +++ b/include/linux/bio.h
-> @@ -106,6 +106,8 @@ static inline void *bio_data(struct bio *bio)
->  	return NULL;
+>  	struct v4l2_ctrl_handler ctrls;
+>  	struct v4l2_ctrl *pixelrate;
+>  
+> @@ -1022,8 +1026,19 @@ static int max9286_setup(struct max9286_priv *priv)
+>  	return 0;
 >  }
 >  
-> +extern unsigned int bio_max_size(struct bio *bio);
+> -static void max9286_gpio_set(struct gpio_chip *chip,
+> -			     unsigned int offset, int value)
+> +static int max9286_gpio_set(struct max9286_priv *priv, unsigned int offset,
+> +			    int value)
+> +{
+> +	int ret = max9286_read(priv, 0x0f);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = value ? (ret & 0x3) | BIT(offset) : (ret & 0x3) & ~BIT(offset);
+> +	return max9286_write(priv, 0x0f, MAX9286_0X0F_RESERVED | ret);
+> +}
 
-You may want to define bio_max_size() as an inline function in bio.h
-such that no additional function calls are introduced in the hot path.
+Was there anything wrong with v3, sharing the implementation between the
+gpio-controller and non gpio-controller cases ? In particular, caching
+the state locally seems better, max9286_read() goes over I2C and is thus
+slow.
 
-Thanks,
+> +
+> +static void max9286_gpiochip_set(struct gpio_chip *chip,
+> +				 unsigned int offset, int value)
+>  {
+>  	struct max9286_priv *priv = gpiochip_get_data(chip);
+>  
+> @@ -1035,7 +1050,7 @@ static void max9286_gpio_set(struct gpio_chip *chip,
+>  	max9286_write(priv, 0x0f, MAX9286_0X0F_RESERVED | priv->gpio_state);
+>  }
+>  
+> -static int max9286_gpio_get(struct gpio_chip *chip, unsigned int offset)
+> +static int max9286_gpiochip_get(struct gpio_chip *chip, unsigned int offset)
+>  {
+>  	struct max9286_priv *priv = gpiochip_get_data(chip);
+>  
+> @@ -1055,8 +1070,8 @@ static int max9286_register_gpio(struct max9286_priv *priv)
+>  	gpio->of_node = dev->of_node;
+>  	gpio->ngpio = 2;
+>  	gpio->base = -1;
+> -	gpio->set = max9286_gpio_set;
+> -	gpio->get = max9286_gpio_get;
+> +	gpio->set = max9286_gpiochip_set;
+> +	gpio->get = max9286_gpiochip_get;
+>  	gpio->can_sleep = true;
+>  
+>  	/* GPIO values default to high */
+> @@ -1069,6 +1084,71 @@ static int max9286_register_gpio(struct max9286_priv *priv)
+>  	return ret;
+>  }
+>  
+> +static int max9286_parse_gpios(struct max9286_priv *priv)
+> +{
+> +	struct device *dev = &priv->client->dev;
+> +	u32 gpio_poc[2];
+> +	int ret;
+> +
+> +	/*
+> +	 * Parse the "gpio-poc" vendor property. If the camera power is
+> +	 * controlled by one of the MAX9286 gpio lines, do not register
+> +	 * the gpio controller and ignore 'poc-supply'.
+> +	 */
+> +	ret = of_property_read_u32_array(dev->of_node,
+> +					 "maxim,gpio-poc", gpio_poc, 2);
+> +	if (!ret) {
+> +		priv->gpio_poc = gpio_poc[0];
+> +		priv->gpio_poc_flags = gpio_poc[1];
+> +		if (priv->gpio_poc > 1 ||
+> +		    (priv->gpio_poc_flags != GPIO_ACTIVE_HIGH &&
+> +		     priv->gpio_poc_flags != GPIO_ACTIVE_LOW)) {
+> +			dev_err(dev, "Invalid 'gpio-poc': (%u %u)\n",
+> +				priv->gpio_poc, priv->gpio_poc_flags);
+> +			return -EINVAL;
+> +		}
+> +
+> +		return 0;
+> +	}
+> +
+> +	ret = max9286_register_gpio(priv);
+> +	if (ret)
+> +		return ret;
+> +
+> +	priv->regulator = devm_regulator_get(dev, "poc");
+> +	if (IS_ERR(priv->regulator)) {
+> +		if (PTR_ERR(priv->regulator) != -EPROBE_DEFER)
+> +			dev_err(dev, "Unable to get PoC regulator (%ld)\n",
+> +				PTR_ERR(priv->regulator));
+> +		return PTR_ERR(priv->regulator);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int max9286_poc_enable(struct max9286_priv *priv, bool enable)
+> +{
+> +	int ret;
+> +
+> +	/* If "poc-gpio" is used, toggle the line and do not use regulator. */
+> +	if (enable)
+> +		ret = priv->regulator
+> +		    ? regulator_enable(priv->regulator)
+> +		    : max9286_gpio_set(priv, priv->gpio_poc,
+> +				       enable ^ priv->gpio_poc_flags);
+> +	else
+> +		ret = priv->regulator
+> +		    ? regulator_disable(priv->regulator)
+> +		    : max9286_gpio_set(priv, priv->gpio_poc,
+> +				       enable ^ priv->gpio_poc_flags);
+> +
+> +	if (ret < 0)
+> +		dev_err(&priv->client->dev, "Unable to turn PoC %s\n",
+> +			enable ? "on" : "off");
+> +
+> +	return ret;
+> +}
+> +
+>  static int max9286_init(struct device *dev)
+>  {
+>  	struct max9286_priv *priv;
+> @@ -1078,17 +1158,14 @@ static int max9286_init(struct device *dev)
+>  	client = to_i2c_client(dev);
+>  	priv = i2c_get_clientdata(client);
+>  
+> -	/* Enable the bus power. */
+> -	ret = regulator_enable(priv->regulator);
+> -	if (ret < 0) {
+> -		dev_err(&client->dev, "Unable to turn PoC on\n");
+> +	ret = max9286_poc_enable(priv, true);
+> +	if (ret)
+>  		return ret;
+> -	}
+>  
+>  	ret = max9286_setup(priv);
+>  	if (ret) {
+>  		dev_err(dev, "Unable to setup max9286\n");
+> -		goto err_regulator;
+> +		goto err_poc_disable;
+>  	}
+>  
+>  	/*
+> @@ -1098,7 +1175,7 @@ static int max9286_init(struct device *dev)
+>  	ret = max9286_v4l2_register(priv);
+>  	if (ret) {
+>  		dev_err(dev, "Failed to register with V4L2\n");
+> -		goto err_regulator;
+> +		goto err_poc_disable;
+>  	}
+>  
+>  	ret = max9286_i2c_mux_init(priv);
+> @@ -1114,8 +1191,8 @@ static int max9286_init(struct device *dev)
+>  
+>  err_v4l2_register:
+>  	max9286_v4l2_unregister(priv);
+> -err_regulator:
+> -	regulator_disable(priv->regulator);
+> +err_poc_disable:
+> +	max9286_poc_enable(priv, false);
+>  
+>  	return ret;
+>  }
+> @@ -1286,20 +1363,10 @@ static int max9286_probe(struct i2c_client *client)
+>  	 */
+>  	max9286_configure_i2c(priv, false);
+>  
+> -	ret = max9286_register_gpio(priv);
+> +	ret = max9286_parse_gpios(priv);
+>  	if (ret)
+>  		goto err_powerdown;
+>  
+> -	priv->regulator = devm_regulator_get(&client->dev, "poc");
+> -	if (IS_ERR(priv->regulator)) {
+> -		if (PTR_ERR(priv->regulator) != -EPROBE_DEFER)
+> -			dev_err(&client->dev,
+> -				"Unable to get PoC regulator (%ld)\n",
+> -				PTR_ERR(priv->regulator));
+> -		ret = PTR_ERR(priv->regulator);
+> -		goto err_powerdown;
+> -	}
+> -
+>  	ret = max9286_parse_dt(priv);
+>  	if (ret)
+>  		goto err_powerdown;
+> @@ -1326,7 +1393,7 @@ static int max9286_remove(struct i2c_client *client)
+>  
+>  	max9286_v4l2_unregister(priv);
+>  
+> -	regulator_disable(priv->regulator);
+> +	max9286_poc_enable(priv, false);
+>  
+>  	gpiod_set_value_cansleep(priv->gpiod_pwdn, 0);
+>  
 
-Bart.
+-- 
+Regards,
 
-
+Laurent Pinchart
