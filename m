@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2D5360D63
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 733B6360DA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233828AbhDOPCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:02:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40392 "EHLO mail.kernel.org"
+        id S234667AbhDOPEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:04:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234374AbhDOOzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:55:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A352613CB;
-        Thu, 15 Apr 2021 14:53:49 +0000 (UTC)
+        id S234216AbhDOO4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:56:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94741613FA;
+        Thu, 15 Apr 2021 14:54:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498430;
-        bh=xhSIoU50J/zyuY1Me/4TWYxnfVUdLbDZkr8dnr+Enkk=;
+        s=korg; t=1618498460;
+        bh=LqWR8r/QDnwCdOh6F0uCLuPVg/GVc7ojEUh/8VymQws=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AF6CvTHYml/E56psVjhDVJhA/yYkbzmBVTbHpydJlc9p6i0dm/aFSdVH+AVVg0EoY
-         hZKFrzd8Q3tpKwDKf7kGxLnvbNYGEPSfA7BNdMhNfftiKc5CB4JTcPazLwYQRHmIag
-         dt3UtVwGJhs1/ag84f1TP14Df89qiEQc0Z2Yxh60=
+        b=2MVr1NxXMZjwzQ8ryhFVJiQlHmpjFsOsJeLUwrfjKJrGhKIMTp+yKU86wlHd/Kjs+
+         Z/3BQuFaMwwYPJMrmpyLu6Ls17Q+KmcXaUmNCuOe5KE57lDeMfQqYlkyvyZuvz85dl
+         jqORxhd+gHpaM62xXttgLtPe/rx+YYp35PlG+yt4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
+        stable@vger.kernel.org, Milton Miller <miltonm@us.ibm.com>,
+        Eddie James <eajames@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 28/68] ARM: dts: imx6: pbab01: Set vmmc supply for both SD interfaces
-Date:   Thu, 15 Apr 2021 16:47:09 +0200
-Message-Id: <20210415144415.387035250@linuxfoundation.org>
+Subject: [PATCH 4.14 29/68] net/ncsi: Avoid channel_monitor hrtimer deadlock
+Date:   Thu, 15 Apr 2021 16:47:10 +0200
+Message-Id: <20210415144415.419775111@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210415144414.464797272@linuxfoundation.org>
 References: <20210415144414.464797272@linuxfoundation.org>
@@ -42,43 +41,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Riedmueller <s.riedmueller@phytec.de>
+From: Milton Miller <miltonm@us.ibm.com>
 
-[ Upstream commit f57011e72f5fe0421ec7a812beb1b57bdf4bb47f ]
+[ Upstream commit 03cb4d05b4ea9a3491674ca40952adb708d549fa ]
 
-Setting the vmmc supplies is crucial since otherwise the supplying
-regulators get disabled and the SD interfaces are no longer powered
-which leads to system failures if the system is booted from that SD
-interface.
+Calling ncsi_stop_channel_monitor from channel_monitor is a guaranteed
+deadlock on SMP because stop calls del_timer_sync on the timer that
+invoked channel_monitor as its timer function.
 
-Fixes: 1e44d3f880d5 ("ARM i.MX6Q: dts: Enable I2C1 with EEPROM and PMIC on Phytec phyFLEX-i.MX6 Ouad module")
-Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Recognise the inherent race of marking the monitor disabled before
+deleting the timer by just returning if enable was cleared.  After
+a timeout (the default case -- reset to START when response received)
+just mark the monitor.enabled false.
+
+If the channel has an entry on the channel_queue list, or if the
+state is not ACTIVE or INACTIVE, then warn and mark the timer stopped
+and don't restart, as the locking is broken somehow.
+
+Fixes: 0795fb2021f0 ("net/ncsi: Stop monitor if channel times out or is inactive")
+Signed-off-by: Milton Miller <miltonm@us.ibm.com>
+Signed-off-by: Eddie James <eajames@linux.ibm.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+ net/ncsi/ncsi-manage.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-index 25b0704c6054..d2c31eae9fef 100644
---- a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
-@@ -423,6 +423,7 @@
- 	pinctrl-0 = <&pinctrl_usdhc2>;
- 	cd-gpios = <&gpio1 4 GPIO_ACTIVE_LOW>;
- 	wp-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
-+	vmmc-supply = <&vdd_sd1_reg>;
- 	status = "disabled";
- };
+diff --git a/net/ncsi/ncsi-manage.c b/net/ncsi/ncsi-manage.c
+index 28c42b22b748..6b7f9e1f64d3 100644
+--- a/net/ncsi/ncsi-manage.c
++++ b/net/ncsi/ncsi-manage.c
+@@ -203,13 +203,20 @@ static void ncsi_channel_monitor(unsigned long data)
+ 	monitor_state = nc->monitor.state;
+ 	spin_unlock_irqrestore(&nc->lock, flags);
  
-@@ -432,5 +433,6 @@
- 		     &pinctrl_usdhc3_cdwp>;
- 	cd-gpios = <&gpio1 27 GPIO_ACTIVE_LOW>;
- 	wp-gpios = <&gpio1 29 GPIO_ACTIVE_HIGH>;
-+	vmmc-supply = <&vdd_sd0_reg>;
- 	status = "disabled";
- };
+-	if (!enabled || chained) {
+-		ncsi_stop_channel_monitor(nc);
+-		return;
+-	}
++	if (!enabled)
++		return;		/* expected race disabling timer */
++	if (WARN_ON_ONCE(chained))
++		goto bad_state;
++
+ 	if (state != NCSI_CHANNEL_INACTIVE &&
+ 	    state != NCSI_CHANNEL_ACTIVE) {
+-		ncsi_stop_channel_monitor(nc);
++bad_state:
++		netdev_warn(ndp->ndev.dev,
++			    "Bad NCSI monitor state channel %d 0x%x %s queue\n",
++			    nc->id, state, chained ? "on" : "off");
++		spin_lock_irqsave(&nc->lock, flags);
++		nc->monitor.enabled = false;
++		spin_unlock_irqrestore(&nc->lock, flags);
+ 		return;
+ 	}
+ 
+@@ -234,10 +241,9 @@ static void ncsi_channel_monitor(unsigned long data)
+ 			ndp->flags |= NCSI_DEV_RESHUFFLE;
+ 		}
+ 
+-		ncsi_stop_channel_monitor(nc);
+-
+ 		ncm = &nc->modes[NCSI_MODE_LINK];
+ 		spin_lock_irqsave(&nc->lock, flags);
++		nc->monitor.enabled = false;
+ 		nc->state = NCSI_CHANNEL_INVISIBLE;
+ 		ncm->data[2] &= ~0x1;
+ 		spin_unlock_irqrestore(&nc->lock, flags);
 -- 
 2.30.2
 
