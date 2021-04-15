@@ -2,145 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DD635FFCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 04:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 117C235FFD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 04:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbhDOCFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 22:05:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbhDOCFv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 22:05:51 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C5A3C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 19:05:27 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id f12so17093084qtf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 19:05:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kepstin.ca; s=google;
-        h=message-id:subject:from:to:cc:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=6xhuUVgjBAC1B6CSbTxZXzScfJ4bMKqw6vDHawJD1C4=;
-        b=Jqmm8OgSc88cnUqwazmpGrij1003UuKustveP2GDVtNaaRF13m12U88Ofd/giO5FZ8
-         dw4kD5RR/jEHCJXIH+ne0DgEG0vjBXIcfNFCeqHDHDEE/8XLYFGLU+dhzh4b/KGYc/g0
-         kIMqpnV0UT5//s2nswOY/Re/fAmt3WgocLbT8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=6xhuUVgjBAC1B6CSbTxZXzScfJ4bMKqw6vDHawJD1C4=;
-        b=EzNy6O6sve3T49AlZABwyhuM1ZUpKcYjiVjDjtl2von29SXGShYoOkGFGxSjy/HlvP
-         f4bMEjyeB11c1wo0rhKbNgxcJ1OeFoA5BOXTpyyKShu5KHzG1iEeZnsloy9UzZ7Ym+EU
-         Hj5Y6TRgPTw3MTGoWR4TtXesxZmD2ndb04EtqxXz6B5Y5au7wQm68SDG7BGsv5zF7sAl
-         HOi3kY3TjZByqsq8CPoT4aM3NpN61XE4W1cRss5ys2MwG6ni0MjD1gFn5QYPMetDuRYY
-         38KI9oQzMc4QlJr8dkCG8rSxzk2EtQqO+iiEqaT1vXqJ8UFlFFtZcADeEE51WJJdYbVY
-         QQAA==
-X-Gm-Message-State: AOAM5317LfDFKfHRPJ6iMv7TYNpI1HNFGySDe1QSvhcfPEXbtvZunqPU
-        rdattFoHTnREdRz7gsnFPVSOCw==
-X-Google-Smtp-Source: ABdhPJyFOL+4vGBXdOfpecXwAwZ83EwIJMAtJadyx0Rf90fufgsZ21AA3mETfYaoxkeAM+hhPvhxrw==
-X-Received: by 2002:ac8:45c6:: with SMTP id e6mr1017883qto.228.1618452326372;
-        Wed, 14 Apr 2021 19:05:26 -0700 (PDT)
-Received: from saya.kepstin.ca (dhcp-108-168-125-232.cable.user.start.ca. [108.168.125.232])
-        by smtp.gmail.com with ESMTPSA id f27sm925917qkh.118.2021.04.14.19.05.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 19:05:25 -0700 (PDT)
-Message-ID: <88d11c19e662f67ae492eb4b93e12e1b24e68c1d.camel@kepstin.ca>
-Subject: [PATCH] Fix turbostat exiting with an error when run on AMD CPUs
-From:   Calvin Walton <calvin.walton@kepstin.ca>
-To:     Linux PM list <linux-pm@vger.kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Len Brown <lenb@kernel.org>, Chen Yu <yu.c.chen@intel.com>
-Date:   Wed, 14 Apr 2021 22:05:24 -0400
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
+        id S229641AbhDOCG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 22:06:27 -0400
+Received: from ozlabs.org ([203.11.71.1]:44541 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229449AbhDOCGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 22:06:25 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FLN3m34zKz9sRR;
+        Thu, 15 Apr 2021 12:05:56 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618452358;
+        bh=PYgaVE9PcVq38Vy6wf5WsIwhmhTCstQabYe5OVga994=;
+        h=Date:From:To:Cc:Subject:From;
+        b=e+amyzW0bVAObm9NdzX8M0KKf6EOKNM/dCREIP0PCpgQdO/KcXyjtzXm+IR95DGgD
+         xgJruyvVdDjqSA34cuUg5jWCkHPE2BMTo/zN3TicdUEhe4Av5R4JCkP9KHRXpFsqzK
+         XXZZxjOfKhW0Rx3KCTOVkKI5VtuHYCXZLr3VK/Jg8XP9o2UErRbjJHJ6k42FyMS3at
+         oI12tRLWi+k/WZIl0JdfSvD37lP5TH1WEwM+Y3RWkCErgtnaEvgmrPzsocoOja4Qtq
+         XHIKz0VwglFRCbjB70nGb9ZfSJZ5N5FJ7z1tCMAJdGaGqy/hwJbQk4vrMU9QgQ1304
+         gtg/sN4PBVrrA==
+Date:   Thu, 15 Apr 2021 12:05:54 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Subject: linux-next: manual merge of the rdma tree with Linus' tree
+Message-ID: <20210415120554.27a65b64@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/r5QQjExRYB93QcOlez/u6E2";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current version of turbostat exits immediately upon entering the
-main loop, with error code -13. This is a regression that was introducted
-in these commits:
+--Sig_/r5QQjExRYB93QcOlez/u6E2
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-9972d5d84d76 tools/power turbostat: Enable accumulate RAPL display
-87e15da95775 tools/power turbostat: Introduce functions to accumulate RAPL consumption
+Hi all,
 
-Which introduced a method to accumulate MSR values over long sampling
-durations.
+Today's linux-next merge of the rdma tree got a conflict in:
 
-The commits failed to account for the fact that AMD CPUs use a different
-(but confusingly similarly named) MSR for reading the package energy.
-I've added the AMD version of the MSR to the methods so that turbostat
-can be run again.
+  drivers/infiniband/hw/hfi1/hfi.h
 
-(If you run on a system with mixed Intel and AMD cpus, you might have
-problems, but I have been assured that this isn't likely in practice.)
+between commit:
 
-The MSR offsets in the conversion functions have been switched to use
-type off_t, since the offsets of the AMD MSRs exceed the range of a
-signed 32-bit int.
+  5de61a47eb90 ("IB/hfi1: Fix probe time panic when AIP is enabled with a b=
+uggy BIOS")
 
-Note that since the framework introduced only handles per-cpu MSRs but not
-per-core MSRs, AMD "Core" energy is not currently accumulated over long
-sampling periods.
+from Linus' tree and commit:
 
-Fixes: 9972d5d84d76982606806b2ce887f70c2f8ba60a
-Signed-off-by: Calvin Walton <calvin.walton@kepstin.ca>
----
- tools/power/x86/turbostat/turbostat.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+  780278c2c8bb ("IB/hfi1: Rework AIP and VNIC dummy netdev usage")
 
-diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-index a7c4f0772e53..576e03d373c4 100644
---- a/tools/power/x86/turbostat/turbostat.c
-+++ b/tools/power/x86/turbostat/turbostat.c
-@@ -291,13 +291,16 @@ struct msr_sum_array {
- /* The percpu MSR sum array.*/
- struct msr_sum_array *per_cpu_msr_sum;
- 
--int idx_to_offset(int idx)
-+off_t idx_to_offset(int idx)
- {
--	int offset;
-+	off_t offset;
- 
- 	switch (idx) {
- 	case IDX_PKG_ENERGY:
--		offset = MSR_PKG_ENERGY_STATUS;
-+		if (do_rapl & RAPL_AMD_F17H)
-+			offset = MSR_PKG_ENERGY_STAT;
-+		else
-+			offset = MSR_PKG_ENERGY_STATUS;
- 		break;
- 	case IDX_DRAM_ENERGY:
- 		offset = MSR_DRAM_ENERGY_STATUS;
-@@ -320,11 +323,12 @@ int idx_to_offset(int idx)
- 	return offset;
- }
- 
--int offset_to_idx(int offset)
-+int offset_to_idx(off_t offset)
- {
- 	int idx;
- 
- 	switch (offset) {
-+	case MSR_PKG_ENERGY_STAT:
- 	case MSR_PKG_ENERGY_STATUS:
- 		idx = IDX_PKG_ENERGY;
- 		break;
-@@ -353,7 +357,7 @@ int idx_valid(int idx)
- {
- 	switch (idx) {
- 	case IDX_PKG_ENERGY:
--		return do_rapl & RAPL_PKG;
-+		return do_rapl & (RAPL_PKG | RAPL_AMD_F17H);
- 	case IDX_DRAM_ENERGY:
- 		return do_rapl & RAPL_DRAM;
- 	case IDX_PP0_ENERGY:
--- 
-2.31.1
+from the rdma tree.
 
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
+--=20
+Cheers,
+Stephen Rothwell
 
+diff --cc drivers/infiniband/hw/hfi1/hfi.h
+index 2a9a040569eb,2183d02ccfa2..000000000000
+--- a/drivers/infiniband/hw/hfi1/hfi.h
++++ b/drivers/infiniband/hw/hfi1/hfi.h
+@@@ -1408,8 -1402,7 +1402,8 @@@ struct hfi1_devdata=20
+  	/* Lock to protect IRQ SRC register access */
+  	spinlock_t irq_src_lock;
+  	int vnic_num_vports;
+- 	struct net_device *dummy_netdev;
++ 	struct hfi1_netdev_rx *netdev_rx;
+ +	struct hfi1_affinity_node *affinity_entry;
+ =20
+  	/* Keeps track of IPoIB RSM rule users */
+  	atomic_t ipoib_rsm_usr_num;
+
+--Sig_/r5QQjExRYB93QcOlez/u6E2
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB3n4IACgkQAVBC80lX
+0GzmgwgAmNMTFYusqlM3FwnZdQD8GG8crxMYenqHFYHyOZ4Bj0vASdteaN2r7HXV
+5IB6e/+WXozmJ1ZvsYRcgAMiAqf12lmxvbX9XPTpC96dS35N7p7wa8ngpObXR5PN
+SSZvhECFGrKVWNR26C4mGA8Oz+8i6EJn+HGLWwCjKo5UZKAtcRv50OE/SKrssfeE
+FuW4yVOEzOKXdkzFk8hUTv7eSx2JgzARh6+nQDbLXdBOZgM+mMJ1NIOo8ir7LbvW
+cgNDEfMzkGkjiHXeHqXfMj3TVFfpS/qPQd2Lu4IEGDOKqNkbWzyHl9kSSuc5HuUa
++GnM3uvpr/3OBexbVKo6G85Xl2mmRQ==
+=ihZb
+-----END PGP SIGNATURE-----
+
+--Sig_/r5QQjExRYB93QcOlez/u6E2--
