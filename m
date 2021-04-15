@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883F4360C3E
+	by mail.lfdr.de (Postfix) with ESMTP id D34B4360C3F
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233450AbhDOOtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:49:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36594 "EHLO mail.kernel.org"
+        id S233727AbhDOOte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:49:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233662AbhDOOtW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:49:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 55CF66137D;
-        Thu, 15 Apr 2021 14:48:59 +0000 (UTC)
+        id S233685AbhDOOtZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:49:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F639613B7;
+        Thu, 15 Apr 2021 14:49:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498139;
-        bh=8fSJZL48aZy8oz9E7PaCWCZUOpP7ZVURcEGBWb7vjek=;
+        s=korg; t=1618498142;
+        bh=bc9qPMjasmBF+j48zO9UV+tvpzF081srboqhBfU6C6A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o3dCC/OhfgiIaHktQ0YP0dHnmr5zpI8ZudLJzYVIpjmqSloFz1s7G5svyDWAi83Bj
-         sUYmUQipLOe1fqDlqIHGnKXjBTETPrVxlYYE+yOh4GEjyWvboS168ez8amUpQX7XuB
-         pLMOXkIuxKMr+wSH8YvRo9HMR6lgToI26XFZsEbA=
+        b=p9L4B2OafZAW6kVDW4chU6KIu/csQxRVDePw9qh0jjeEkKwS9eWbnimqRj+yt2DLj
+         3cS30H2dnDBzoUkSr6hMGLgJqAQR4Yb/+oVsihoEISx8oOCUnCxU5zptScmZlpDC7C
+         rUJcZKCGuu8akmaSOpyva1xdtiynD4HlrTxNF8jI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Lukasz Majczak <lma@semihalf.com>,
+        Lukasz Bartosik <lb@semihalf.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 16/38] net:tipc: Fix a double free in tipc_sk_mcast_rcv
-Date:   Thu, 15 Apr 2021 16:47:10 +0200
-Message-Id: <20210415144413.867962999@linuxfoundation.org>
+Subject: [PATCH 4.4 17/38] clk: fix invalid usage of list cursor in unregister
+Date:   Thu, 15 Apr 2021 16:47:11 +0200
+Message-Id: <20210415144413.898345104@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210415144413.352638802@linuxfoundation.org>
 References: <20210415144413.352638802@linuxfoundation.org>
@@ -40,42 +41,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Lukasz Bartosik <lb@semihalf.com>
 
-[ Upstream commit 6bf24dc0cc0cc43b29ba344b66d78590e687e046 ]
+[ Upstream commit 7045465500e465b09f09d6e5bdc260a9f1aab97b ]
 
-In the if(skb_peek(arrvq) == skb) branch, it calls __skb_dequeue(arrvq) to get
-the skb by skb = skb_peek(arrvq). Then __skb_dequeue() unlinks the skb from arrvq
-and returns the skb which equals to skb_peek(arrvq). After __skb_dequeue(arrvq)
-finished, the skb is freed by kfree_skb(__skb_dequeue(arrvq)) in the first time.
+Fix invalid usage of a list_for_each_entry cursor in
+clk_notifier_unregister(). When list is empty or if the list
+is completely traversed (without breaking from the loop on one
+of the entries) then the list cursor does not point to a valid
+entry and therefore should not be used. The patch fixes a logical
+bug that hasn't been seen in pratice however it is analogus
+to the bug fixed in clk_notifier_register().
 
-Unfortunately, the same skb is freed in the second time by kfree_skb(skb) after
-the branch completed.
+The issue was dicovered when running 5.12-rc1 kernel on x86_64
+with KASAN enabled:
+BUG: KASAN: global-out-of-bounds in clk_notifier_register+0xab/0x230
+Read of size 8 at addr ffffffffa0d10588 by task swapper/0/1
 
-My patch removes kfree_skb() in the if(skb_peek(arrvq) == skb) branch, because
-this skb will be freed by kfree_skb(skb) finally.
+CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc1 #1
+Hardware name: Google Caroline/Caroline,
+BIOS Google_Caroline.7820.430.0 07/20/2018
+Call Trace:
+ dump_stack+0xee/0x15c
+ print_address_description+0x1e/0x2dc
+ kasan_report+0x188/0x1ce
+ ? clk_notifier_register+0xab/0x230
+ ? clk_prepare_lock+0x15/0x7b
+ ? clk_notifier_register+0xab/0x230
+ clk_notifier_register+0xab/0x230
+ dw8250_probe+0xc01/0x10d4
+ ...
+ Memory state around the buggy address:
+  ffffffffa0d10480: 00 00 00 00 00 03 f9 f9 f9 f9 f9 f9 00 00 00 00
+  ffffffffa0d10500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9
+ >ffffffffa0d10580: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+                          ^
+  ffffffffa0d10600: 00 00 00 00 00 00 f9 f9 f9 f9 f9 f9 00 00 00 00
+  ffffffffa0d10680: 00 00 00 00 00 00 00 00 f9 f9 f9 f9 00 00 00 00
+  ==================================================================
 
-Fixes: cb1b728096f54 ("tipc: eliminate race condition at multicast reception")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: b2476490ef11 ("clk: introduce the common clock framework")
+Reported-by: Lukasz Majczak <lma@semihalf.com>
+Signed-off-by: Lukasz Bartosik <lb@semihalf.com>
+Link: https://lore.kernel.org/r/20210401225149.18826-2-lb@semihalf.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tipc/socket.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/clk.c | 30 +++++++++++++-----------------
+ 1 file changed, 13 insertions(+), 17 deletions(-)
 
-diff --git a/net/tipc/socket.c b/net/tipc/socket.c
-index 65171f8e8c45..0e5bb03c6425 100644
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -763,7 +763,7 @@ void tipc_sk_mcast_rcv(struct net *net, struct sk_buff_head *arrvq,
- 		spin_lock_bh(&inputq->lock);
- 		if (skb_peek(arrvq) == skb) {
- 			skb_queue_splice_tail_init(&tmpq, inputq);
--			kfree_skb(__skb_dequeue(arrvq));
-+			__skb_dequeue(arrvq);
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 53c068f90b37..c46fff3a32fe 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -2870,32 +2870,28 @@ EXPORT_SYMBOL_GPL(clk_notifier_register);
+  */
+ int clk_notifier_unregister(struct clk *clk, struct notifier_block *nb)
+ {
+-	struct clk_notifier *cn = NULL;
+-	int ret = -EINVAL;
++	struct clk_notifier *cn;
++	int ret = -ENOENT;
+ 
+ 	if (!clk || !nb)
+ 		return -EINVAL;
+ 
+ 	clk_prepare_lock();
+ 
+-	list_for_each_entry(cn, &clk_notifier_list, node)
+-		if (cn->clk == clk)
+-			break;
+-
+-	if (cn->clk == clk) {
+-		ret = srcu_notifier_chain_unregister(&cn->notifier_head, nb);
++	list_for_each_entry(cn, &clk_notifier_list, node) {
++		if (cn->clk == clk) {
++			ret = srcu_notifier_chain_unregister(&cn->notifier_head, nb);
+ 
+-		clk->core->notifier_count--;
++			clk->core->notifier_count--;
+ 
+-		/* XXX the notifier code should handle this better */
+-		if (!cn->notifier_head.head) {
+-			srcu_cleanup_notifier_head(&cn->notifier_head);
+-			list_del(&cn->node);
+-			kfree(cn);
++			/* XXX the notifier code should handle this better */
++			if (!cn->notifier_head.head) {
++				srcu_cleanup_notifier_head(&cn->notifier_head);
++				list_del(&cn->node);
++				kfree(cn);
++			}
++			break;
  		}
- 		spin_unlock_bh(&inputq->lock);
- 		__skb_queue_purge(&tmpq);
+-
+-	} else {
+-		ret = -ENOENT;
+ 	}
+ 
+ 	clk_prepare_unlock();
 -- 
 2.30.2
 
