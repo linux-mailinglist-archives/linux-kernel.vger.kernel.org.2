@@ -2,179 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90BCE36132B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB6136132C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235049AbhDOTyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 15:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234716AbhDOTyn (ORCPT
+        id S235082AbhDOTzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 15:55:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43838 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234889AbhDOTzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 15:54:43 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B862C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 12:54:20 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id q10so17634069pgj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 12:54:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ij4LykCj/Hdbgw3UoGr4uR4CU6tTNOA2JBdD93B4Vhg=;
-        b=mNNHqFpw6Q5WBUl3HalbanadWH0VG5i3svHssyBSgbYV4s+bf13OcziE4QxwumM/pK
-         Q96+ltcCmAiZuozf5MWOOccAFQlEpYUYvbY35KS2LhkllDwBOcYFXypOy/rl6lzdqD4X
-         srZsxXvVuOBgs9Tk2kkGslZ7syTXvLNc9UmIXiil6HOJxsfnxIThyjrBgQRuvqvXjdl/
-         hTlwyBfA2JWEAyyXECAhurQvP5hoayZYnyh61t+yIxc+54W3KL7yJle9CogIaQM+ReQE
-         Ak3tkghuot/qxiVdKZSf2zP9MLMYrzJ8fY4fMbwObJK0zRqHgcSJBZGbQ7ZKYLYw+SQ5
-         khHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ij4LykCj/Hdbgw3UoGr4uR4CU6tTNOA2JBdD93B4Vhg=;
-        b=iDg5OgXHwU/hwLuK5RkUYBQY4jLybKhmGbO0D6Y6C1RXl7zdKjJbizazeLBL0+M5aG
-         lKYhUxf8QK/19Jc/BQPdvLQtgdenNjIlV/0dHHih4ZlSuEH7ZP9SJP/gioLcAKVcq6nl
-         xFL6qkn1NvHirZrXMt8nPkOtf+GOuS9KB8O/+hD95DHcBzN3VtaktfxV6ndJcQXHaNXw
-         IElhnF6s1Cz/kkYuCk7U8h3kDdqcdGHVDqOx6/494DoQcQld+Q8+f4Cb9yXbACjtdTmf
-         YJmawDz+H3M2UdfE7dO0riX3N7tkh6jDGlINBD0CvMzLJfmepWeoOAOE2YIb2tIsFNVB
-         jNpw==
-X-Gm-Message-State: AOAM530vnZ71zFjzuGusKFe0tWyRd161JG7gxk3lrWhFuwTv++A/jtpW
-        k7xXKHZXecD6WB/bwCbl5dQ9iw==
-X-Google-Smtp-Source: ABdhPJzViyaV5qxofFa2dUKQ4VsMWPme8ePOriFDTuMDh8Ji/pPihe30gP3m8Kj2emLOVPwxrZv/7A==
-X-Received: by 2002:a62:4e96:0:b029:248:effc:9a4d with SMTP id c144-20020a624e960000b0290248effc9a4dmr4659860pfb.71.1618516459693;
-        Thu, 15 Apr 2021 12:54:19 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id d6sm2778016pfn.197.2021.04.15.12.54.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 12:54:18 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 13:54:16 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     coresight@lists.linaro.org, al.grant@arm.com,
-        branislav.rankov@arm.com, denik@chromium.org,
-        suzuki.poulose@arm.com, Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] perf cs-etm: Set time on synthesised samples to
- preserve ordering
-Message-ID: <20210415195416.GB937505@xps15>
-References: <20210414143919.12605-1-james.clark@arm.com>
- <20210414143919.12605-2-james.clark@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210414143919.12605-2-james.clark@arm.com>
+        Thu, 15 Apr 2021 15:55:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618516489;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=iRIRLrxFFNFBkwrMyN9toDxe0Au1DXwDcBrxMODMZD0=;
+        b=fw+WK+jgRRGQASI0kROS6js4/yMOgHvhcXp1Vt/sCqjfRBiyse8+yRwjxbM7tcbdGTZEaI
+        NAROfytOJb7TbVUF6Wkih90OLffVDujVsdJy/0My3q77ywMj6pZ8NKDKyZLYmujnWC+HOg
+        7+fFUuoN9Ag72QakxZ9w4n4cmE627K8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-270-fK4UMbhDP_CQii9VeYjI2w-1; Thu, 15 Apr 2021 15:54:47 -0400
+X-MC-Unique: fK4UMbhDP_CQii9VeYjI2w-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DCB871854E26;
+        Thu, 15 Apr 2021 19:54:45 +0000 (UTC)
+Received: from llong.com (ovpn-116-45.rdu2.redhat.com [10.10.116.45])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3FE085D9C0;
+        Thu, 15 Apr 2021 19:54:31 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     Bharata B Rao <bharata@linux.vnet.ibm.com>,
+        Phil Auld <pauld@redhat.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        linux-kernel@vger.kernel.org, Waiman Long <longman@redhat.com>
+Subject: [PATCH v5] sched/debug: Use sched_debug_lock to serialize use of cgroup_path[] only
+Date:   Thu, 15 Apr 2021 15:54:26 -0400
+Message-Id: <20210415195426.6677-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 05:39:19PM +0300, James Clark wrote:
-> The following attribute is set when synthesising samples in
-> timed decoding mode:
-> 
->     attr.sample_type |= PERF_SAMPLE_TIME;
-> 
-> This results in new samples that appear to have timestamps but
-> because we don't assign any timestamps to the samples, when the
-> resulting inject file is opened again, the synthesised samples
-> will be on the wrong side of the MMAP or COMM events.
->
+The handling of sysrq key can be activated by echoing the key to
+/proc/sysrq-trigger or via the magic key sequence typed into a terminal
+that is connected to the system in some way (serial, USB or other mean).
+In the former case, the handling is done in a user context. In the
+latter case, it is likely to be in an interrupt context.
 
-I understand the problem.  Once again an issue caused by CS and the kernel
-having a different view of time. 
+Currently in print_cpu() of kernel/sched/debug.c, sched_debug_lock is
+taken with interrupt disabled for the whole duration of the calls to
+print_*_stats() and print_rq() which could last for the quite some time
+if the information dump happens on the serial console.
 
-> For example this results in the samples being associated with
-> the perf binary, rather than the target of the record:
-> 
->     perf record -e cs_etm/@tmc_etr0/u top
->     perf inject -i perf.data -o perf.inject --itrace=i100il
->     perf report -i perf.inject
-> 
-> Where 'Command' == perf should show as 'top':
-> 
->     # Overhead  Command  Source Shared Object  Source Symbol           Target Symbol           Basic Block Cycles
->     # ........  .......  ....................  ......................  ......................  ..................
->     #
->         31.08%  perf     [unknown]             [.] 0x000000000040c3f8  [.] 0x000000000040c3e8  -
-> 
-> If the perf.data file is opened directly with perf, without the
-> inject step, then this already works correctly because the
-> events are synthesised after the COMM and MMAP events and
-> no second sorting happens. Re-sorting only happens when opening
-> the perf.inject file for the second time so timestamps are
-> needed.
-> 
-> Using the timestamp from the AUX record mirrors the current
-> behaviour when opening directly with perf, because the events
-> are generated on the call to cs_etm__process_queues().
-> 
-> Signed-off-by: James Clark <james.clark@arm.com>
-> Co-developed-by: Al Grant <al.grant@arm.com>
-> Signed-off-by: Al Grant <al.grant@arm.com>
+If the system has many cpus and the sched_debug_lock is somehow busy
+(e.g. parallel sysrq-t), the system may hit a hard lockup panic
+depending on the actually serial console implementation of the
+system. For instance,
 
-Suzuki is correct, your name has to appear after Al's.
+[ 7809.796262] Kernel panic - not syncing: Hard LOCKUP
+[ 7809.796264] CPU: 13 PID: 79867 Comm: reproducer.sh Kdump: loaded Tainted: G          I      --------- -  - 4.18.0-301.el8.x86_64 #1
+[ 7809.796264] Hardware name: Dell Inc. PowerEdge R640/0W23H8, BIOS 1.4.9 06/29/2018
+[ 7809.796265] Call Trace:
+[ 7809.796265]  <NMI>
+[ 7809.796266]  dump_stack+0x5c/0x80
+[ 7809.796266]  panic+0xe7/0x2a9
+[ 7809.796267]  nmi_panic.cold.9+0xc/0xc
+[ 7809.796267]  watchdog_overflow_callback.cold.7+0x5c/0x70
+[ 7809.796268]  __perf_event_overflow+0x52/0xf0
+[ 7809.796268]  handle_pmi_common+0x204/0x2a0
+[ 7809.796269]  ? __set_pte_vaddr+0x32/0x50
+[ 7809.796269]  ? __native_set_fixmap+0x24/0x30
+[ 7809.796270]  ? ghes_copy_tofrom_phys+0xd3/0x1c0
+[ 7809.796271]  intel_pmu_handle_irq+0xbf/0x160
+[ 7809.796271]  perf_event_nmi_handler+0x2d/0x50
+[ 7809.796272]  nmi_handle+0x63/0x110
+[ 7809.796272]  default_do_nmi+0x49/0x100
+[ 7809.796273]  do_nmi+0x17e/0x1e0
+[ 7809.796273]  end_repeat_nmi+0x16/0x6f
+[ 7809.796274] RIP: 0010:native_queued_spin_lock_slowpath+0x5b/0x1d0
+[ 7809.796275] Code: 6d f0 0f ba 2f 08 0f 92 c0 0f b6 c0 c1 e0 08 89 c2 8b 07 30 e4 09 d0 a9 00 01 ff ff 75 47 85 c0 74 0e 8b 07 84 c0 74 08 f3 90 <8b> 07 84 c0 75 f8 b8 01 00 00 00 66 89 07 c3 8b 37 81 fe 00 01 00
+[ 7809.796276] RSP: 0018:ffffaa54cd887df8 EFLAGS: 00000002
+[ 7809.796277] RAX: 0000000000000101 RBX: 0000000000000246 RCX: 0000000000000000
+[ 7809.796278] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff936b66d0
+[ 7809.796278] RBP: ffffffff9301fb40 R08: 0000000000000004 R09: 000000000000004f
+[ 7809.796279] R10: 0000000000000000 R11: ffffaa54cd887cc0 R12: ffff907fd0a29ec0
+[ 7809.796280] R13: 0000000000000000 R14: ffffffff926ab7c0 R15: 0000000000000000
+[ 7809.796280]  ? native_queued_spin_lock_slowpath+0x5b/0x1d0
+[ 7809.796281]  ? native_queued_spin_lock_slowpath+0x5b/0x1d0
+[ 7809.796281]  </NMI>
+[ 7809.796282]  _raw_spin_lock_irqsave+0x32/0x40
+[ 7809.796283]  print_cpu+0x261/0x7c0
+[ 7809.796283]  sysrq_sched_debug_show+0x34/0x50
+[ 7809.796284]  sysrq_handle_showstate+0xc/0x20
+[ 7809.796284]  __handle_sysrq.cold.11+0x48/0xfb
+[ 7809.796285]  write_sysrq_trigger+0x2b/0x30
+[ 7809.796285]  proc_reg_write+0x39/0x60
+[ 7809.796286]  vfs_write+0xa5/0x1a0
+[ 7809.796286]  ksys_write+0x4f/0xb0
+[ 7809.796287]  do_syscall_64+0x5b/0x1a0
+[ 7809.796287]  entry_SYSCALL_64_after_hwframe+0x65/0xca
+[ 7809.796288] RIP: 0033:0x7fabe4ceb648
 
-> ---
->  tools/perf/util/cs-etm.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> index c25da2ffa8f3..d0fa9dce47f1 100644
-> --- a/tools/perf/util/cs-etm.c
-> +++ b/tools/perf/util/cs-etm.c
-> @@ -54,6 +54,7 @@ struct cs_etm_auxtrace {
->  	u8 sample_instructions;
->  
->  	int num_cpu;
-> +	u64 latest_kernel_timestamp;
->  	u32 auxtrace_type;
->  	u64 branches_sample_type;
->  	u64 branches_id;
-> @@ -1192,6 +1193,8 @@ static int cs_etm__synth_instruction_sample(struct cs_etm_queue *etmq,
->  	event->sample.header.misc = cs_etm__cpu_mode(etmq, addr);
->  	event->sample.header.size = sizeof(struct perf_event_header);
->  
-> +	if (!etm->timeless_decoding)
-> +		sample.time = etm->latest_kernel_timestamp;
->  	sample.ip = addr;
->  	sample.pid = tidq->pid;
->  	sample.tid = tidq->tid;
-> @@ -1248,6 +1251,8 @@ static int cs_etm__synth_branch_sample(struct cs_etm_queue *etmq,
->  	event->sample.header.misc = cs_etm__cpu_mode(etmq, ip);
->  	event->sample.header.size = sizeof(struct perf_event_header);
->  
-> +	if (!etm->timeless_decoding)
-> +		sample.time = etm->latest_kernel_timestamp;
->  	sample.ip = ip;
->  	sample.pid = tidq->pid;
->  	sample.tid = tidq->tid;
-> @@ -2412,9 +2417,10 @@ static int cs_etm__process_event(struct perf_session *session,
->  	else if (event->header.type == PERF_RECORD_SWITCH_CPU_WIDE)
->  		return cs_etm__process_switch_cpu_wide(etm, event);
->  
-> -	if (!etm->timeless_decoding &&
-> -	    event->header.type == PERF_RECORD_AUX)
-> +	if (!etm->timeless_decoding && event->header.type == PERF_RECORD_AUX) {
-> +		etm->latest_kernel_timestamp = sample_kernel_timestamp;
+The purpose of sched_debug_lock is to serialize the use of the global
+cgroup_path[] buffer in print_cpu(). The rests of the printk calls don't
+need serialization from sched_debug_lock.
 
-It will be fun to fix this when 8.4 comes out but for now it's the best we've
-got.
+Calling printk() with interrupt disabled can still be problematic if
+multiple instances are running. Allocating a stack buffer of PATH_MAX
+bytes is not feasible because of the limited size of the kernel stack.
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+The solution implemented in this patch is to allow only one caller at a
+time to use the full size group_path[], while other simultaneous callers
+will have to use shorter stack buffers with the possibility of path
+name truncation. A "..." suffix will be printed if truncation may have
+happened.  The cgroup path name is provided for informational purpose
+only, so occasional path name truncation should not be a big problem.
 
->  		return cs_etm__process_queues(etm);
-> +	}
->  
->  	return 0;
->  }
-> -- 
-> 2.28.0
-> 
+Fixes: efe25c2c7b3a ("sched: Reinstate group names in /proc/sched_debug")
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ kernel/sched/debug.c | 42 +++++++++++++++++++++++++++++-------------
+ 1 file changed, 29 insertions(+), 13 deletions(-)
+
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 486f403a778b..9c8b3ed2199a 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -8,8 +8,6 @@
+  */
+ #include "sched.h"
+ 
+-static DEFINE_SPINLOCK(sched_debug_lock);
+-
+ /*
+  * This allows printing both to /proc/sched_debug and
+  * to the console
+@@ -470,16 +468,37 @@ static void print_cfs_group_stats(struct seq_file *m, int cpu, struct task_group
+ #endif
+ 
+ #ifdef CONFIG_CGROUP_SCHED
++static DEFINE_SPINLOCK(sched_debug_lock);
+ static char group_path[PATH_MAX];
+ 
+-static char *task_group_path(struct task_group *tg)
++static void task_group_path(struct task_group *tg, char *path, int plen)
+ {
+-	if (autogroup_path(tg, group_path, PATH_MAX))
+-		return group_path;
++	if (autogroup_path(tg, path, plen))
++		return;
+ 
+-	cgroup_path(tg->css.cgroup, group_path, PATH_MAX);
++	cgroup_path(tg->css.cgroup, path, plen);
++}
+ 
+-	return group_path;
++/*
++ * Only 1 SEQ_printf_task_group_path() caller can use the full length
++ * group_path[] for cgroup path. Other simultaneous callers will have
++ * to use a shorter stack buffer. A "..." suffix is appended at the end
++ * of the stack buffer so that it will show up in case the output length
++ * matches the given buffer size to indicate possible path name truncation.
++ */
++#define SEQ_printf_task_group_path(m, tg, fmt...)			\
++{									\
++	if (spin_trylock(&sched_debug_lock)) {				\
++		task_group_path(tg, group_path, sizeof(group_path));	\
++		SEQ_printf(m, fmt, group_path);				\
++		spin_unlock(&sched_debug_lock);				\
++	} else {							\
++		char buf[128];						\
++		char *bufend = buf + sizeof(buf) - 3;			\
++		task_group_path(tg, buf, bufend - buf);			\
++		strcpy(bufend - 1, "...");				\
++		SEQ_printf(m, fmt, buf);				\
++	}								\
+ }
+ #endif
+ 
+@@ -506,7 +525,7 @@ print_task(struct seq_file *m, struct rq *rq, struct task_struct *p)
+ 	SEQ_printf(m, " %d %d", task_node(p), task_numa_group_id(p));
+ #endif
+ #ifdef CONFIG_CGROUP_SCHED
+-	SEQ_printf(m, " %s", task_group_path(task_group(p)));
++	SEQ_printf_task_group_path(m, task_group(p), " %s")
+ #endif
+ 
+ 	SEQ_printf(m, "\n");
+@@ -543,7 +562,7 @@ void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
+ 
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+ 	SEQ_printf(m, "\n");
+-	SEQ_printf(m, "cfs_rq[%d]:%s\n", cpu, task_group_path(cfs_rq->tg));
++	SEQ_printf_task_group_path(m, cfs_rq->tg, "cfs_rq[%d]:%s\n", cpu);
+ #else
+ 	SEQ_printf(m, "\n");
+ 	SEQ_printf(m, "cfs_rq[%d]:\n", cpu);
+@@ -614,7 +633,7 @@ void print_rt_rq(struct seq_file *m, int cpu, struct rt_rq *rt_rq)
+ {
+ #ifdef CONFIG_RT_GROUP_SCHED
+ 	SEQ_printf(m, "\n");
+-	SEQ_printf(m, "rt_rq[%d]:%s\n", cpu, task_group_path(rt_rq->tg));
++	SEQ_printf_task_group_path(m, rt_rq->tg, "rt_rq[%d]:%s\n", cpu);
+ #else
+ 	SEQ_printf(m, "\n");
+ 	SEQ_printf(m, "rt_rq[%d]:\n", cpu);
+@@ -666,7 +685,6 @@ void print_dl_rq(struct seq_file *m, int cpu, struct dl_rq *dl_rq)
+ static void print_cpu(struct seq_file *m, int cpu)
+ {
+ 	struct rq *rq = cpu_rq(cpu);
+-	unsigned long flags;
+ 
+ #ifdef CONFIG_X86
+ 	{
+@@ -717,13 +735,11 @@ do {									\
+ 	}
+ #undef P
+ 
+-	spin_lock_irqsave(&sched_debug_lock, flags);
+ 	print_cfs_stats(m, cpu);
+ 	print_rt_stats(m, cpu);
+ 	print_dl_stats(m, cpu);
+ 
+ 	print_rq(m, rq, cpu);
+-	spin_unlock_irqrestore(&sched_debug_lock, flags);
+ 	SEQ_printf(m, "\n");
+ }
+ 
+-- 
+2.18.1
+
