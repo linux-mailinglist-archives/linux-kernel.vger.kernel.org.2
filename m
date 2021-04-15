@@ -2,123 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B569360E9E
+	by mail.lfdr.de (Postfix) with ESMTP id F17DB360EA0
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235171AbhDOPRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:17:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233094AbhDOPNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:13:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D360D613A9;
-        Thu, 15 Apr 2021 15:13:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618499612;
-        bh=gnCwUg8I/RSf0h2mo/u86eJvsrWWjx5n5P0C+aiTZms=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jsXqeM1DZ9Pbi0TIf1LAc1x/cTz41yglDU1DiwKumU0UHb/AVzJeL/HbL9znhwHY+
-         HGXBQr8kO3G578Ea+0v/daT5jKFjH7Wa3oAahxQeQTd9gTPPbjfw2imZ0Fz2bYQy4Z
-         dwkeQC4/QQEST2sZl5pQ6mVxpPszSd3tBkmVsGI7Cw5i5haREtkOCtoDaj0qggwucL
-         xIi+St1+gABHhiPraQFmFif6Ur7AkNNnrliCryDCVqeJxVKYkiZU12tYTSLf9bqlZD
-         9tv6vF+HL/IjWgCTjrKhrNKeba7jdl0ScTrrfoiVkZiSJ/X+WzvQNR5og0UScJqRpx
-         WJ9XujAE4TaSw==
-Received: by mail-ed1-f53.google.com with SMTP id h10so28480775edt.13;
-        Thu, 15 Apr 2021 08:13:32 -0700 (PDT)
-X-Gm-Message-State: AOAM533sHoB5BLAv+Ovw5K+zmJaD1xcgchsObkzuEOU07WT0asnqPJZu
-        rHJE+ZEEqeIIcFmO+zDARX3eHRC8DcA1SUocvA==
-X-Google-Smtp-Source: ABdhPJwxfoJTLt7AJgzWRKNjUP7mZVPDURqIDUVhonvGhI1UgFtE8GSKjZvaIZcnAzBS3+qwQm+A9nTHwXqaPy5/22I=
-X-Received: by 2002:a05:6402:1b1c:: with SMTP id by28mr4859088edb.62.1618499611519;
- Thu, 15 Apr 2021 08:13:31 -0700 (PDT)
+        id S235407AbhDOPRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:17:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47718 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236421AbhDOPO5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:14:57 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A0C2C06138E;
+        Thu, 15 Apr 2021 08:13:58 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id g35so17083082pgg.9;
+        Thu, 15 Apr 2021 08:13:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=i0SWPsbZMrd0nebi+GVIlyiAWrh4CzfKyh+F53eCiJI=;
+        b=g3thAUPNolya2yaKXB5KwLtyiplCBRPd1lMgSEU3Gl6ZxCnKYJBgaaqnI7wlZkPPe+
+         yKzXoBMZOx6M3RHjZHKdlRMDZHQ4qTtR58jloRXCd3cVfZ/bE2v9KEBYHKOSMHUqBaTN
+         859bdOg6morVtwz8+5qEion050CRwOLw11Zoe37RBBJMH+/DfxhiBYIF9OGctrZ07sP5
+         8tPRnhWGhxo/DxsQzOUSCyEOFvJYs6Uvb3xP05KjeAuHfTyB0yKsKml22hZmDS3kv0Tt
+         nYi14mLivu+Cy+i3mj/ZRE7PbC9q145kAdC5qhpTvM4Ndpzt52CULPUiAAMMSWo5oD2F
+         M2Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=i0SWPsbZMrd0nebi+GVIlyiAWrh4CzfKyh+F53eCiJI=;
+        b=XwZ0FEe+AOmWrb7AbwF51qH6rDBLTlYGVAlEAmxzgEc7MgwW2WWtXyDZtiMMefjdrm
+         +smrmo3e3wrmSezlUgnURqdHByn+1ceKf1sbV1USPrF2Pj+dqzT11v5KmVg/jZI19pu0
+         eO2Oz3dU3VkIkJ2wCje/yFHL2ePwjaHvgugq0cUil0HhH1zi3Dn1eStA+d5YEkVszr5J
+         khvRKZupSZKj9i/VOuYhm4OjmPwr0S3Bhe96id/1wO07gpR+Oycz+vk5Uea8V+J6iEII
+         EpWqMt+Qc2j859gameWA6APgCpYzrxGNKhWNQcVpFJsBW9CqAg2SOxIusvbS2E/54Mz0
+         Y1kQ==
+X-Gm-Message-State: AOAM532twWxN8hgMHD+hYjbETzB2jFsThDaGwkzwKR3DoXuknxiZWD+s
+        D9gg9qPzmp/jrd5m2q59bD4=
+X-Google-Smtp-Source: ABdhPJxYmcljVlbKmo68b2xJsy8My7DGt4PPefNRj1OC73eYNiNx+X83zT/1SrQUwzZfZcCRMywKUQ==
+X-Received: by 2002:a63:df56:: with SMTP id h22mr3959816pgj.84.1618499638122;
+        Thu, 15 Apr 2021 08:13:58 -0700 (PDT)
+Received: from syed ([2401:4900:2eec:4193:f802:b600:e94c:55c4])
+        by smtp.gmail.com with ESMTPSA id 186sm2476361pfe.212.2021.04.15.08.13.48
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 15 Apr 2021 08:13:57 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 20:43:35 +0530
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     jic23@kernel.org, kernel@pengutronix.de,
+        linux-stm32@st-md-mailman.stormreply.com, a.fatoum@pengutronix.de,
+        kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        alexandre.belloni@bootlin.com, david@lechnology.com,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        o.rempel@pengutronix.de
+Subject: Re: [PATCH v10 03/33] counter: 104-quad-8: Remove pointless comment
+Message-ID: <20210415151335.GA8933@syed>
+References: <cover.1616150619.git.vilhelm.gray@gmail.com>
+ <e53df4416573f16069090f4c660afbd8d501f2a0.1616150619.git.vilhelm.gray@gmail.com>
 MIME-Version: 1.0
-References: <20210412123936.25555-1-pali@kernel.org> <CAL_JsqLSse=W3TFu=Wc=eEAV4fKDGfsQ6JUvO3KyG_pnGTVg6A@mail.gmail.com>
- <20210415083640.ntg6kv6ayppxldgd@pali> <20210415104537.403de52e@thinkpad>
-In-Reply-To: <20210415104537.403de52e@thinkpad>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 15 Apr 2021 10:13:17 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqL2gjprb3MDv8KPSpe0CUBFjGajnMbF71DM+F9Yewp2uw@mail.gmail.com>
-Message-ID: <CAL_JsqL2gjprb3MDv8KPSpe0CUBFjGajnMbF71DM+F9Yewp2uw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: marvell: armada-37xx: Set linux,pci-domain to zero
-To:     Marek Behun <marek.behun@nic.cz>,
-        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e53df4416573f16069090f4c660afbd8d501f2a0.1616150619.git.vilhelm.gray@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 3:45 AM Marek Behun <marek.behun@nic.cz> wrote:
+On Fri, Mar 19, 2021 at 08:00:22PM +0900, William Breathitt Gray wrote:
+> It is obvious that devm_counter_register() is used to register a Counter
+> device, so a comment stating such is pointless here.
+> 
+> Cc: Syed Nayyar Waris <syednwaris@gmail.com>
+> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> ---
+>  drivers/counter/104-quad-8.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/counter/104-quad-8.c b/drivers/counter/104-quad-8.c
+> index 9691f8612be8..4bb9abffae48 100644
+> --- a/drivers/counter/104-quad-8.c
+> +++ b/drivers/counter/104-quad-8.c
+> @@ -1082,7 +1082,6 @@ static int quad8_probe(struct device *dev, unsigned int id)
+>  	/* Enable all counters */
+>  	outb(QUAD8_CHAN_OP_ENABLE_COUNTERS, base[id] + QUAD8_REG_CHAN_OP);
+>  
+> -	/* Register Counter device */
+>  	return devm_counter_register(dev, &priv->counter);
+>  }
+>  
+> -- 
+> 2.30.2
 >
-> On Thu, 15 Apr 2021 10:36:40 +0200
-> Pali Roh=C3=A1r <pali@kernel.org> wrote:
->
-> > On Tuesday 13 April 2021 13:17:29 Rob Herring wrote:
-> > > On Mon, Apr 12, 2021 at 7:41 AM Pali Roh=C3=A1r <pali@kernel.org> wro=
-te:
-> > > >
-> > > > Since commit 526a76991b7b ("PCI: aardvark: Implement driver 'remove=
-'
-> > > > function and allow to build it as module") PCIe controller driver f=
-or
-> > > > Armada 37xx can be dynamically loaded and unloaded at runtime. Also=
- driver
-> > > > allows dynamic binding and unbinding of PCIe controller device.
-> > > >
-> > > > Kernel PCI subsystem assigns by default dynamically allocated PCI d=
-omain
-> > > > number (starting from zero) for this PCIe controller every time whe=
-n device
-> > > > is bound. So PCI domain changes after every unbind / bind operation=
-.
-> > >
-> > > PCI host bridges as a module are relatively new, so seems likely a bu=
-g to me.
-> >
-> > Why a bug? It is there since 5.10 and it is working.
 
-I mean historically, the PCI subsystem didn't even support host
-bridges as a module. They weren't even proper drivers and it was all
-arch specific code. Most of the host bridge drivers are still built-in
-only. This seems like a small detail that was easily overlooked.
-unbind is not a well tested path.
-
-> > > > Alternative way for assigning PCI domain number is to use static al=
-located
-> > > > numbers defined in Device Tree. This option has requirement that ev=
-ery PCI
-> > > > controller in system must have defined PCI bus number in Device Tre=
-e.
-> > >
-> > > That seems entirely pointless from a DT point of view with a single P=
-CI bridge.
-> >
-> > If domain id is not specified in DT then kernel uses counter and assign=
-s
-> > counter++. So it is not pointless if we want to have stable domain id.
->
-> What Rob is trying to say is that
-> - the bug is that kernel assigns counter++
-> - device-tree should not be used to fix problems with how kernel does
->   things
-> - if a device has only one PCIe controller, it is pointless to define
->   it's pci-domain. If there were multiple controllers, then it would
->   make sense, but there is only one
-
-Yes. I think what we want here is a domain bitmap rather than a
-counter and we assign the lowest free bit. That could also allow for
-handling a mixture of fixed domain numbers and dynamically assigned
-ones.
-
-You could create scenarios where the numbers change on you, but it
-wouldn't be any different than say plugging in USB serial adapters.
-You get the same ttyUSBx device when you re-attach unless there's been
-other ttyUSBx devices attached/detached.
-
-Rob
+Acked-by: Syed Nayyar Waris <syednwaris@gmail.com>
