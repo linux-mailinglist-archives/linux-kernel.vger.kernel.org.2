@@ -2,106 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2123615F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 01:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEDEB361600
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 01:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236733AbhDOXNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 19:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234914AbhDOXNC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 19:13:02 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15261C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 16:12:38 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id x21-20020a17090a5315b029012c4a622e4aso13557418pjh.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 16:12:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=quZmVxdkfveDUtpLM1NU/LuQrdZNONtDpXYzxh0MMQU=;
-        b=dlBNCIJGr0qL38amaMZRkug9NjLuSZKepOmlGO/a/0dku+GQVYqb2GS0jPTD9w2gLe
-         mxyKCuERedST3RGnVbk4l07BD+E5BOSCp/2NFPvySo56I89CsE7aDSCbVRn53Jv8Ql5N
-         hSp7xLsHsW85pUai/ansn/rQu7ZvTTszyfp0E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=quZmVxdkfveDUtpLM1NU/LuQrdZNONtDpXYzxh0MMQU=;
-        b=KcjpWS96m/zFt5ptOx9gNxteG4PTzEpnSuTCofQZI4joOLncDpha3iIP8V0NDcpry3
-         WLqnyNDLRxAv/9Wg+HOoqAH6KGmHm2lBokpVmFMLvXmZmClPpV1LrACbex2aNYRlbTn1
-         NrZ0tAfp6ERY3MkZWeeK9z8/zV8uu1q0Hb2eHnw56rwvQh0qxGYWgJGkRWnoqHnABHz9
-         Y1ULbzrrhvFaXjMnpzPzXMWjtbTdW3FWPOialbq/dl9qJyfQhvYfNjqhXKAIDkf9yUJU
-         NPIsYvxHq4ERKFuYgziTUXew0jiE4O68eOz0YiHtmzJOs9uWkF2Asdp5hTXXCxVonaqr
-         5H0w==
-X-Gm-Message-State: AOAM531xuJf2VgsBkYqE9eJHKV4XUGGh8d+/tAL/2Shw71S5ZuiylVGY
-        c8RRhdE7nSGZh90gZumnnZVUAQ==
-X-Google-Smtp-Source: ABdhPJxtoW/lfV/Z4uQg/42K/o4Py3SAIqP7jABAruwS7PxREUqkSHGAEbZJMX/djPbOm2w9XfP5tw==
-X-Received: by 2002:a17:902:59d4:b029:ea:bbc5:c775 with SMTP id d20-20020a17090259d4b02900eabbc5c775mr6469026plj.11.1618528357637;
-        Thu, 15 Apr 2021 16:12:37 -0700 (PDT)
-Received: from localhost (2001-44b8-111e-5c00-3f8b-a64e-9a27-b872.static.ipv6.internode.on.net. [2001:44b8:111e:5c00:3f8b:a64e:9a27:b872])
-        by smtp.gmail.com with ESMTPSA id x11sm3055779pfr.7.2021.04.15.16.12.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 16:12:37 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Steven Price <steven.price@arm.com>, akpm@linux-foundation.org
-Cc:     linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, x86@kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v1 3/5] mm: ptdump: Provide page size to notepage()
-In-Reply-To: <1ef6b954fb7b0f4dfc78820f1e612d2166c13227.1618506910.git.christophe.leroy@csgroup.eu>
-References: <cover.1618506910.git.christophe.leroy@csgroup.eu> <1ef6b954fb7b0f4dfc78820f1e612d2166c13227.1618506910.git.christophe.leroy@csgroup.eu>
-Date:   Fri, 16 Apr 2021 09:12:34 +1000
-Message-ID: <8735vr16sd.fsf@dja-thinkpad.axtens.net>
+        id S236841AbhDOXSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 19:18:25 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:54468 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234735AbhDOXSX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 19:18:23 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lXBFC-00Gycy-IW; Fri, 16 Apr 2021 01:17:54 +0200
+Date:   Fri, 16 Apr 2021 01:17:54 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 net-next 01/10] net: korina: Fix MDIO functions
+Message-ID: <YHjJotQ9vQ03KZSH@lunn.ch>
+References: <20210414230648.76129-1-tsbogend@alpha.franken.de>
+ <20210414230648.76129-2-tsbogend@alpha.franken.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414230648.76129-2-tsbogend@alpha.franken.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
-
->  static void note_page(struct ptdump_state *pt_st, unsigned long addr, int level,
-> -		      u64 val)
-> +		      u64 val, unsigned long page_size)
-
-Compilers can warn about unused parameters at -Wextra level.  However,
-reading scripts/Makefile.extrawarn it looks like the warning is
-explicitly _disabled_ in the kernel at W=1 and not reenabled at W=2 or
-W=3. So I guess this is fine...
-
-> @@ -126,7 +126,7 @@ static int ptdump_hole(unsigned long addr, unsigned long next,
+> +static int korina_mdio_wait(struct korina_private *lp)
+> +{
+> +	u32 value;
+> +
+> +	return readl_poll_timeout_atomic(&lp->eth_regs->miimind,
+> +					 value, value & ETH_MII_IND_BSY,
+> +					 1, 1000);
+> +}
+> +
+> +static int korina_mdio_read(struct net_device *dev, int phy, int reg)
 >  {
->  	struct ptdump_state *st = walk->private;
+>  	struct korina_private *lp = netdev_priv(dev);
+>  	int ret;
 >  
-> -	st->note_page(st, addr, depth, 0);
-> +	st->note_page(st, addr, depth, 0, 0);
+> -	mii_id = ((lp->rx_irq == 0x2c ? 1 : 0) << 8);
+> +	if (korina_mdio_wait(lp))
+> +		return -ETIMEDOUT;
+>  
+> -	writel(0, &lp->eth_regs->miimcfg);
+> -	writel(0, &lp->eth_regs->miimcmd);
+> -	writel(mii_id | reg, &lp->eth_regs->miimaddr);
+> -	writel(ETH_MII_CMD_SCN, &lp->eth_regs->miimcmd);
+> +	writel(phy << 8 | reg, &lp->eth_regs->miimaddr);
+> +	writel(1, &lp->eth_regs->miimcmd);
+> +
+> +	if (korina_mdio_wait(lp))
+> +		return -ETIMEDOUT;
 
-I know it doesn't matter at this point, but I'm not really thrilled by
-the idea of passing 0 as the size here. Doesn't the hole have a known
-page size?
+Just return what readl_poll_timeout_atomic() returns. In general, you
+should not change error codes.
 
 >  
->  	return 0;
->  }
-> @@ -153,5 +153,5 @@ void ptdump_walk_pgd(struct ptdump_state *st, struct mm_struct *mm, pgd_t *pgd)
->  	mmap_read_unlock(mm);
->  
->  	/* Flush out the last page */
-> -	st->note_page(st, 0, -1, 0);
-> +	st->note_page(st, 0, -1, 0, 0);
+> -	ret = (int)(readl(&lp->eth_regs->miimrdd));
+> +	if (readl(&lp->eth_regs->miimind) & ETH_MII_IND_NV)
+> +		return -1;
 
-I'm more OK with the idea of passing 0 as the size when the depth is -1
-(don't know): if we don't know the depth we conceptually can't know the
-page size.
+Please use -ESOMETHING, not -1.
 
-Regards,
-Daniel
-
+       Andrew
