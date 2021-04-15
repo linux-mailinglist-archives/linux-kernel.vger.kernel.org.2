@@ -2,76 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 025523615BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 00:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFFBB3615C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 00:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237537AbhDOWyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 18:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234949AbhDOWyh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 18:54:37 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D829CC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:54:13 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id f8so29986675edd.11
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:54:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LZPmXSJHlNJkGabrxCzQ+1bNVgcNhlvvFPZsThC87BQ=;
-        b=0/Bv9AMjps8ZT69MpMit11F2p9twNVTVYb+XVv9QK0JxYFc5DvplRTa70eF1YbSfMu
-         IBkP1v8RHWg08P2iK/miye29yig2XeDlud0R4CkYnz0EAOTuVpy+cX7jEx6dcHmdnzsC
-         6DhGckcXW/uRc2ecX2R+QDWHPUPGMN2b7OZhI25TlWuDwO7+Y7BtCCGo+z1tHYpWubGh
-         W6IOmdyWPbvgjU9ZxMQ2zo0MnTE+QTrwXHN2bNY/B/wuPeBSD8viT2PIlL34ggRpAtYF
-         RFPmZfJFEWz3M/cDojI6+EXjosI04PgHYSlkQH/mCcaVIhycSv9J0ikMzMpmmbuP7qgb
-         PPAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LZPmXSJHlNJkGabrxCzQ+1bNVgcNhlvvFPZsThC87BQ=;
-        b=TiZPw6N08el3qvADp2gc39j3Dj0qB5mxkuFthqOaqObDjL9ghGDfDlwzojr5jzPO9L
-         L4qU4jGxGjWYacOMEUTY31r9MC8HbYRp8YpqFJhshKMWoxWNPFp6cQRsZJB5BGGcOpW3
-         RKADMLwLIWzrH/5h71y5LFBJuLJLybxBGv18Snv8QdCcfDL6dmMcCQg1bwxKxUPdDzQ5
-         UHDMLK8EX2vMxNmE3OikBxiG0ikZNuc1GqOVZK3eN1I/RGviiuJwSC4SeNNjx8X7c2zg
-         12BpH4bCbvenf+G3awYRkqvgKzN0ffRgtZ0M3aBmkMmN0jswRIKd31rvQpf09WrimHke
-         md3Q==
-X-Gm-Message-State: AOAM530lCGxQnvNIecE8Nc/F6LpiRBJ25czb0950nKY+L8Nf7jIAE3Dy
-        t/CtEUyZEO/OXb4wkeUFjqbH9k8S1ujAWSiW6cosMw==
-X-Google-Smtp-Source: ABdhPJz2afjkEzncwyQD1rDlPyo0Ht+aLitlIBNnnevfCO5TgZ+sU9A5sYUKn48QokZdzy1MDkhkJuwtfpo7kv0FJJg=
-X-Received: by 2002:a50:e607:: with SMTP id y7mr7076665edm.18.1618527252572;
- Thu, 15 Apr 2021 15:54:12 -0700 (PDT)
+        id S236532AbhDOW5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 18:57:01 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:54402 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234949AbhDOW5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 18:57:00 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lXAuQ-00GyOH-LW; Fri, 16 Apr 2021 00:56:26 +0200
+Date:   Fri, 16 Apr 2021 00:56:26 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
+Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] phy: nxp-c45: add driver for tja1103
+Message-ID: <YHjEmtWjhhH6412w@lunn.ch>
+References: <20210415092538.78398-1-radu-nicolae.pirea@oss.nxp.com>
+ <20210415092538.78398-3-radu-nicolae.pirea@oss.nxp.com>
 MIME-Version: 1.0
-References: <20210407222625.320177-1-ben.widawsky@intel.com> <20210407222625.320177-7-ben.widawsky@intel.com>
-In-Reply-To: <20210407222625.320177-7-ben.widawsky@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 15 Apr 2021 15:54:00 -0700
-Message-ID: <CAPcyv4huxaVj=Czk7KgbwfS=6_Dc_N3MmoN-=faB_hSuSt7u8w@mail.gmail.com>
-Subject: Re: [PATCH 6/7] cxl/mem: Create a helper to setup device regs
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-cxl@vger.kernel.org, Linux PCI <linux-pci@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        "Schofield, Alison" <alison.schofield@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210415092538.78398-3-radu-nicolae.pirea@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 3:26 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
->
-> Memory devices have a list of required register regions within the
-> register block, but this isn't required of all CXL components or
-> devices. To make things more tidy, and allow for easily setting up other
-> block types in this loop, the helper is introduced.
+> +config NXP_C45_TJA11XX_PHY
+> +	tristate "NXP C45 TJA11XX PHYs"
+> +	help
+> +	  Enable support for NXP C45 TJA11XX PHYs.
+> +	  Currently supports only the TJA1103 PHY.
 
-I don't understand the point of this or the organization choice.
-cxl_setup_device_regs() *is* the core implementation so there
-shouldn't be a "__" prefixed version wrapping it. I agree that some
-users will not care that some of the device registers are not found,
-but that won't be cxl_mem_setup_regs() making that call.
+> +#define PHY_ID_BASE_T1			0x001BB010
+
+It would be better to use PHY_ID_TJA_1103 here.
+
+> +
+> +#define PMAPMD_B100T1_PMAPMD_CTL		0x0834
+> +#define B100T1_PMAPMD_CONFIG_EN		BIT(15)
+> +#define B100T1_PMAPMD_MASTER		BIT(14)
+> +#define MASTER_MODE			(B100T1_PMAPMD_CONFIG_EN | \
+> +	B100T1_PMAPMD_MASTER)
+
+You would normally align this with the B100T1_PMAPMD_CONFIG_EN
+
+> +static int nxp_c45_reset_done(struct phy_device *phydev)
+> +{
+> +	return !(phy_read_mmd(phydev, MDIO_MMD_VEND1, VEND1_DEVICE_CONTROL) &
+> +		DEVICE_CONTROL_RESET);
+> +}
+> +
+> +static int nxp_c45_reset_done_or_timeout(struct phy_device *phydev,
+> +					 ktime_t timeout)
+> +{
+> +	ktime_t cur = ktime_get();
+> +
+> +	return nxp_c45_reset_done(phydev) || ktime_after(cur, timeout);
+> +}
+> +
+> +static int nxp_c45_soft_reset(struct phy_device *phydev)
+> +{
+> +	ktime_t timeout;
+> +	int ret;
+> +
+> +	ret = phy_write_mmd(phydev, MDIO_MMD_VEND1, VEND1_DEVICE_CONTROL,
+> +			    DEVICE_CONTROL_RESET);
+> +	if (ret)
+> +		return ret;
+> +
+> +	timeout = ktime_add_ns(ktime_get(), RESET_POLL_NS);
+> +	spin_until_cond(nxp_c45_reset_done_or_timeout(phydev, timeout));
+
+phy_read_mmd_poll_timeout() i think does what you need.
+
+> +	if (!nxp_c45_reset_done(phydev)) {
+> +		phydev_err(phydev, "reset fail\n");
+> +		return -EIO;
+> +	}
+> +	return 0;
+> +}
+
+> +static struct phy_driver nxp_c45_driver[] = {
+> +	{
+> +		PHY_ID_MATCH_MODEL(PHY_ID_BASE_T1),
+> +		.name			= "NXP C45 BASE-T1",
+
+"NXP C45 TJA1103"
+
+     Andrew
