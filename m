@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0CEE360E26
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C96360E34
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234029AbhDOPKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:10:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46934 "EHLO mail.kernel.org"
+        id S235042AbhDOPMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:12:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235257AbhDOPAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:00:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85969613CE;
-        Thu, 15 Apr 2021 14:56:44 +0000 (UTC)
+        id S235382AbhDOPBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:01:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E792161131;
+        Thu, 15 Apr 2021 14:57:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498605;
-        bh=QTvcIRJNKMRiksMR7E7Alj7n1FqbgtDFltF/BrK615k=;
+        s=korg; t=1618498632;
+        bh=xk8PhMNYQFUaQzUqsMpY4fkUNahe/71Ppk9khC8YHPk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=firVrmHN3G7D4XNv0stuxzighIUEUMisM4s6ojpJBok0sZQaOw0/db+F8Njd/T3+s
-         zUsC3zpX2uv0d3nUWXcEVq1RT/wG5ZqBU4Df0tg2VVP03s7t+xQWOo35e6EyhzoT71
-         BpPacPh/psNpAkqAW7N0g/pixnh9C4tZcoqgop1w=
+        b=0BnCfAlPctbzK+EeCpYsAu38EF4gU/f58NwSyIyIZrUjKusaunP9R1e1Dv+584LxL
+         54ifIVt+rP3Spz6D5mDVlq01OjrLO3cycXuozAEVhTjvyqd373NTwMR3RpE/4NFU+m
+         Y2UlrBosIWVpFmZB9yPfPvh3xqoKrIFgkfe36+f0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+cfc0247ac173f597aaaa@syzkaller.appspotmail.com,
-        Andy Nguyen <theflow@google.com>,
-        Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 5.4 13/18] netfilter: x_tables: fix compat match/target pad out-of-bound write
-Date:   Thu, 15 Apr 2021 16:48:06 +0200
-Message-Id: <20210415144413.468212358@linuxfoundation.org>
+        stable@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        Yufen Yu <yuyufen@huawei.com>, Ming Lei <ming.lei@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 13/25] block: only update parent bi_status when bio fail
+Date:   Thu, 15 Apr 2021 16:48:07 +0200
+Message-Id: <20210415144413.582250269@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.055232956@linuxfoundation.org>
-References: <20210415144413.055232956@linuxfoundation.org>
+In-Reply-To: <20210415144413.165663182@linuxfoundation.org>
+References: <20210415144413.165663182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,100 +40,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+From: Yufen Yu <yuyufen@huawei.com>
 
-commit b29c457a6511435960115c0f548c4360d5f4801d upstream.
+[ Upstream commit 3edf5346e4f2ce2fa0c94651a90a8dda169565ee ]
 
-xt_compat_match/target_from_user doesn't check that zeroing the area
-to start of next rule won't write past end of allocated ruleset blob.
+For multiple split bios, if one of the bio is fail, the whole
+should return error to application. But we found there is a race
+between bio_integrity_verify_fn and bio complete, which return
+io success to application after one of the bio fail. The race as
+following:
 
-Remove this code and zero the entire blob beforehand.
+split bio(READ)          kworker
 
-Reported-by: syzbot+cfc0247ac173f597aaaa@syzkaller.appspotmail.com
-Reported-by: Andy Nguyen <theflow@google.com>
-Fixes: 9fa492cdc160c ("[NETFILTER]: x_tables: simplify compat API")
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+nvme_complete_rq
+blk_update_request //split error=0
+  bio_endio
+    bio_integrity_endio
+      queue_work(kintegrityd_wq, &bip->bip_work);
+
+                         bio_integrity_verify_fn
+                         bio_endio //split bio
+                          __bio_chain_endio
+                             if (!parent->bi_status)
+
+                               <interrupt entry>
+                               nvme_irq
+                                 blk_update_request //parent error=7
+                                 req_bio_endio
+                                    bio->bi_status = 7 //parent bio
+                               <interrupt exit>
+
+                               parent->bi_status = 0
+                        parent->bi_end_io() // return bi_status=0
+
+The bio has been split as two: split and parent. When split
+bio completed, it depends on kworker to do endio, while
+bio_integrity_verify_fn have been interrupted by parent bio
+complete irq handler. Then, parent bio->bi_status which have
+been set in irq handler will overwrite by kworker.
+
+In fact, even without the above race, we also need to conside
+the concurrency beteen mulitple split bio complete and update
+the same parent bi_status. Normally, multiple split bios will
+be issued to the same hctx and complete from the same irq
+vector. But if we have updated queue map between multiple split
+bios, these bios may complete on different hw queue and different
+irq vector. Then the concurrency update parent bi_status may
+cause the final status error.
+
+Suggested-by: Keith Busch <kbusch@kernel.org>
+Signed-off-by: Yufen Yu <yuyufen@huawei.com>
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Link: https://lore.kernel.org/r/20210331115359.1125679-1-yuyufen@huawei.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/netfilter/arp_tables.c |    2 ++
- net/ipv4/netfilter/ip_tables.c  |    2 ++
- net/ipv6/netfilter/ip6_tables.c |    2 ++
- net/netfilter/x_tables.c        |   10 ++--------
- 4 files changed, 8 insertions(+), 8 deletions(-)
+ block/bio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/ipv4/netfilter/arp_tables.c
-+++ b/net/ipv4/netfilter/arp_tables.c
-@@ -1196,6 +1196,8 @@ static int translate_compat_table(struct
- 	if (!newinfo)
- 		goto out_unlock;
- 
-+	memset(newinfo->entries, 0, size);
-+
- 	newinfo->number = compatr->num_entries;
- 	for (i = 0; i < NF_ARP_NUMHOOKS; i++) {
- 		newinfo->hook_entry[i] = compatr->hook_entry[i];
---- a/net/ipv4/netfilter/ip_tables.c
-+++ b/net/ipv4/netfilter/ip_tables.c
-@@ -1430,6 +1430,8 @@ translate_compat_table(struct net *net,
- 	if (!newinfo)
- 		goto out_unlock;
- 
-+	memset(newinfo->entries, 0, size);
-+
- 	newinfo->number = compatr->num_entries;
- 	for (i = 0; i < NF_INET_NUMHOOKS; i++) {
- 		newinfo->hook_entry[i] = compatr->hook_entry[i];
---- a/net/ipv6/netfilter/ip6_tables.c
-+++ b/net/ipv6/netfilter/ip6_tables.c
-@@ -1445,6 +1445,8 @@ translate_compat_table(struct net *net,
- 	if (!newinfo)
- 		goto out_unlock;
- 
-+	memset(newinfo->entries, 0, size);
-+
- 	newinfo->number = compatr->num_entries;
- 	for (i = 0; i < NF_INET_NUMHOOKS; i++) {
- 		newinfo->hook_entry[i] = compatr->hook_entry[i];
---- a/net/netfilter/x_tables.c
-+++ b/net/netfilter/x_tables.c
-@@ -733,7 +733,7 @@ void xt_compat_match_from_user(struct xt
+diff --git a/block/bio.c b/block/bio.c
+index fa01bef35bb1..9c931df2d986 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -313,7 +313,7 @@ static struct bio *__bio_chain_endio(struct bio *bio)
  {
- 	const struct xt_match *match = m->u.kernel.match;
- 	struct compat_xt_entry_match *cm = (struct compat_xt_entry_match *)m;
--	int pad, off = xt_compat_match_offset(match);
-+	int off = xt_compat_match_offset(match);
- 	u_int16_t msize = cm->u.user.match_size;
- 	char name[sizeof(m->u.user.name)];
+ 	struct bio *parent = bio->bi_private;
  
-@@ -743,9 +743,6 @@ void xt_compat_match_from_user(struct xt
- 		match->compat_from_user(m->data, cm->data);
- 	else
- 		memcpy(m->data, cm->data, msize - sizeof(*cm));
--	pad = XT_ALIGN(match->matchsize) - match->matchsize;
--	if (pad > 0)
--		memset(m->data + match->matchsize, 0, pad);
- 
- 	msize += off;
- 	m->u.user.match_size = msize;
-@@ -1116,7 +1113,7 @@ void xt_compat_target_from_user(struct x
- {
- 	const struct xt_target *target = t->u.kernel.target;
- 	struct compat_xt_entry_target *ct = (struct compat_xt_entry_target *)t;
--	int pad, off = xt_compat_target_offset(target);
-+	int off = xt_compat_target_offset(target);
- 	u_int16_t tsize = ct->u.user.target_size;
- 	char name[sizeof(t->u.user.name)];
- 
-@@ -1126,9 +1123,6 @@ void xt_compat_target_from_user(struct x
- 		target->compat_from_user(t->data, ct->data);
- 	else
- 		memcpy(t->data, ct->data, tsize - sizeof(*ct));
--	pad = XT_ALIGN(target->targetsize) - target->targetsize;
--	if (pad > 0)
--		memset(t->data + target->targetsize, 0, pad);
- 
- 	tsize += off;
- 	t->u.user.target_size = tsize;
+-	if (!parent->bi_status)
++	if (bio->bi_status && !parent->bi_status)
+ 		parent->bi_status = bio->bi_status;
+ 	bio_put(bio);
+ 	return parent;
+-- 
+2.30.2
+
 
 
