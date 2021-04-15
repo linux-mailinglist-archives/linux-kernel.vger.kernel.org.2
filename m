@@ -2,61 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C603604BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DDC13604C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:45:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbhDOIp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 04:45:58 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:53221 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231491AbhDOIp5 (ORCPT
+        id S231644AbhDOIqI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 15 Apr 2021 04:46:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231251AbhDOIqF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 04:45:57 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UVd47qV_1618476326;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UVd47qV_1618476326)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 15 Apr 2021 16:45:32 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     eric@anholt.net
-Cc:     mripard@kernel.org, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] drm/vc4: remove unused function
-Date:   Thu, 15 Apr 2021 16:45:25 +0800
-Message-Id: <1618476325-112629-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Thu, 15 Apr 2021 04:46:05 -0400
+Received: from mail.nic.cz (lists.nic.cz [IPv6:2001:1488:800:400::400])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC18C061574;
+        Thu, 15 Apr 2021 01:45:42 -0700 (PDT)
+Received: from thinkpad (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
+        by mail.nic.cz (Postfix) with ESMTPSA id 820CC140A70;
+        Thu, 15 Apr 2021 10:45:38 +0200 (CEST)
+Date:   Thu, 15 Apr 2021 10:45:37 +0200
+From:   Marek Behun <marek.behun@nic.cz>
+To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: marvell: armada-37xx: Set linux,pci-domain
+ to zero
+Message-ID: <20210415104537.403de52e@thinkpad>
+In-Reply-To: <20210415083640.ntg6kv6ayppxldgd@pali>
+References: <20210412123936.25555-1-pali@kernel.org>
+        <CAL_JsqLSse=W3TFu=Wc=eEAV4fKDGfsQ6JUvO3KyG_pnGTVg6A@mail.gmail.com>
+        <20210415083640.ntg6kv6ayppxldgd@pali>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
+        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
+        autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following clang warning:
+On Thu, 15 Apr 2021 10:36:40 +0200
+Pali Rohár <pali@kernel.org> wrote:
 
-drivers/gpu/drm/vc4/vc4_vec.c:201:1: warning: unused function
-'to_vc4_vec_connector' [-Wunused-function].
+> On Tuesday 13 April 2021 13:17:29 Rob Herring wrote:
+> > On Mon, Apr 12, 2021 at 7:41 AM Pali Rohár <pali@kernel.org> wrote:  
+> > >
+> > > Since commit 526a76991b7b ("PCI: aardvark: Implement driver 'remove'
+> > > function and allow to build it as module") PCIe controller driver for
+> > > Armada 37xx can be dynamically loaded and unloaded at runtime. Also driver
+> > > allows dynamic binding and unbinding of PCIe controller device.
+> > >
+> > > Kernel PCI subsystem assigns by default dynamically allocated PCI domain
+> > > number (starting from zero) for this PCIe controller every time when device
+> > > is bound. So PCI domain changes after every unbind / bind operation.  
+> > 
+> > PCI host bridges as a module are relatively new, so seems likely a bug to me.  
+> 
+> Why a bug? It is there since 5.10 and it is working.
+> 
+> > > Alternative way for assigning PCI domain number is to use static allocated
+> > > numbers defined in Device Tree. This option has requirement that every PCI
+> > > controller in system must have defined PCI bus number in Device Tree.  
+> > 
+> > That seems entirely pointless from a DT point of view with a single PCI bridge.  
+> 
+> If domain id is not specified in DT then kernel uses counter and assigns
+> counter++. So it is not pointless if we want to have stable domain id.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/gpu/drm/vc4/vc4_vec.c | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/drivers/gpu/drm/vc4/vc4_vec.c b/drivers/gpu/drm/vc4/vc4_vec.c
-index bd5b8eb..090529d 100644
---- a/drivers/gpu/drm/vc4/vc4_vec.c
-+++ b/drivers/gpu/drm/vc4/vc4_vec.c
-@@ -197,12 +197,6 @@ struct vc4_vec_connector {
- 	struct drm_encoder *encoder;
- };
- 
--static inline struct vc4_vec_connector *
--to_vc4_vec_connector(struct drm_connector *connector)
--{
--	return container_of(connector, struct vc4_vec_connector, base);
--}
--
- enum vc4_vec_tv_mode_id {
- 	VC4_VEC_TV_MODE_NTSC,
- 	VC4_VEC_TV_MODE_NTSC_J,
--- 
-1.8.3.1
-
+What Rob is trying to say is that
+- the bug is that kernel assigns counter++
+- device-tree should not be used to fix problems with how kernel does
+  things
+- if a device has only one PCIe controller, it is pointless to define
+  it's pci-domain. If there were multiple controllers, then it would
+  make sense, but there is only one
