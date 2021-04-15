@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABBF3615E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 01:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2123615F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 01:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236803AbhDOXML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 19:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
+        id S236733AbhDOXNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 19:13:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235294AbhDOXMK (ORCPT
+        with ESMTP id S234914AbhDOXNC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 19:12:10 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B11BC061756;
-        Thu, 15 Apr 2021 16:11:47 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id o10so27995812ybb.10;
-        Thu, 15 Apr 2021 16:11:47 -0700 (PDT)
+        Thu, 15 Apr 2021 19:13:02 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15261C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 16:12:38 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id x21-20020a17090a5315b029012c4a622e4aso13557418pjh.2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 16:12:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j61kcmaXD9c1jysZB1/I7sxKtpHysny10w+VEwri1uA=;
-        b=oI5Xry7k3zjmbMVx7M+NYOrZPBIpK7S12TWHgHN9Dz1hKzVddBAfV5YG70LoNBMUHQ
-         0LPaBs//bFSD6bZxpCLl2zBIDL8+IRKecDjviPhvwn9QjoS2rFILBeQPPQ+QmDMu8NC5
-         VXhFCaEouWYOh2B6UXF93tJ2HUZh4d+eQznepNLgbLdcSfw+0rXjE4K6ExSiVStWDPv7
-         iqebIs1HGApJZ/npjzU+rd517jdNx9uQcTk/TmwVoE9N8Kc3yCp72W7uL/whsvPwSb1C
-         L0pGcCuWydVeBwc9kkMO0rXP6tYSEm71RxTMiFujO88dj5cquaHZxPwDtH4ZzGjlmUFV
-         9z6Q==
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=quZmVxdkfveDUtpLM1NU/LuQrdZNONtDpXYzxh0MMQU=;
+        b=dlBNCIJGr0qL38amaMZRkug9NjLuSZKepOmlGO/a/0dku+GQVYqb2GS0jPTD9w2gLe
+         mxyKCuERedST3RGnVbk4l07BD+E5BOSCp/2NFPvySo56I89CsE7aDSCbVRn53Jv8Ql5N
+         hSp7xLsHsW85pUai/ansn/rQu7ZvTTszyfp0E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j61kcmaXD9c1jysZB1/I7sxKtpHysny10w+VEwri1uA=;
-        b=beUs5dDB1RjmKVCoLPfAwb3dSa2VTf2uCYzPyCUJKOJz+xQiLfl2T55hbItt4oYhp/
-         5kKfsHDHeeDj7pW8qqRr6rYd08IOoGB1Qb4XoXTrFOuWrwRKgFXI+Tq32diCxY2hYyY7
-         9UglWy0RftlVjGossumDHP0YLnu90kigahxrVXuZOIsvwGGNWVx3F6CXcVgQH/7EYel+
-         /0ENI4k0fIfcqEWZndNLFD+WoaU2LONVb1qqEQ3JbvTFHR/prpkQuSw/8/TvNHJmcof9
-         0a92eVbf3nxq+K7VBowTbeXo/hAI6mzS5/dApjRlem0a7Pdc/5gLq5fSvUHddb+JWR/g
-         aycg==
-X-Gm-Message-State: AOAM533tSN2L4icFqGx+rCz0VSanHNGry8dXP9ABQKAqgPdeBzK2LGic
-        3voFqeYAHzy6jl1JFKMwUUCBh5gk8+hMx5LfNfk=
-X-Google-Smtp-Source: ABdhPJxxL7eFQ7F9EBc9MPaVBI56oeazOX6VmNdgQDlEjXnarRPwg4xUYuuu8oozCAqJu/wsbHvRMkVJS/goVQ8ho98=
-X-Received: by 2002:a25:d70f:: with SMTP id o15mr7379492ybg.403.1618528306128;
- Thu, 15 Apr 2021 16:11:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=quZmVxdkfveDUtpLM1NU/LuQrdZNONtDpXYzxh0MMQU=;
+        b=KcjpWS96m/zFt5ptOx9gNxteG4PTzEpnSuTCofQZI4joOLncDpha3iIP8V0NDcpry3
+         WLqnyNDLRxAv/9Wg+HOoqAH6KGmHm2lBokpVmFMLvXmZmClPpV1LrACbex2aNYRlbTn1
+         NrZ0tAfp6ERY3MkZWeeK9z8/zV8uu1q0Hb2eHnw56rwvQh0qxGYWgJGkRWnoqHnABHz9
+         Y1ULbzrrhvFaXjMnpzPzXMWjtbTdW3FWPOialbq/dl9qJyfQhvYfNjqhXKAIDkf9yUJU
+         NPIsYvxHq4ERKFuYgziTUXew0jiE4O68eOz0YiHtmzJOs9uWkF2Asdp5hTXXCxVonaqr
+         5H0w==
+X-Gm-Message-State: AOAM531xuJf2VgsBkYqE9eJHKV4XUGGh8d+/tAL/2Shw71S5ZuiylVGY
+        c8RRhdE7nSGZh90gZumnnZVUAQ==
+X-Google-Smtp-Source: ABdhPJxtoW/lfV/Z4uQg/42K/o4Py3SAIqP7jABAruwS7PxREUqkSHGAEbZJMX/djPbOm2w9XfP5tw==
+X-Received: by 2002:a17:902:59d4:b029:ea:bbc5:c775 with SMTP id d20-20020a17090259d4b02900eabbc5c775mr6469026plj.11.1618528357637;
+        Thu, 15 Apr 2021 16:12:37 -0700 (PDT)
+Received: from localhost (2001-44b8-111e-5c00-3f8b-a64e-9a27-b872.static.ipv6.internode.on.net. [2001:44b8:111e:5c00:3f8b:a64e:9a27:b872])
+        by smtp.gmail.com with ESMTPSA id x11sm3055779pfr.7.2021.04.15.16.12.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 16:12:37 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Steven Price <steven.price@arm.com>, akpm@linux-foundation.org
+Cc:     linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 3/5] mm: ptdump: Provide page size to notepage()
+In-Reply-To: <1ef6b954fb7b0f4dfc78820f1e612d2166c13227.1618506910.git.christophe.leroy@csgroup.eu>
+References: <cover.1618506910.git.christophe.leroy@csgroup.eu> <1ef6b954fb7b0f4dfc78820f1e612d2166c13227.1618506910.git.christophe.leroy@csgroup.eu>
+Date:   Fri, 16 Apr 2021 09:12:34 +1000
+Message-ID: <8735vr16sd.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
-References: <20210414185406.917890-1-revest@chromium.org> <20210414185406.917890-4-revest@chromium.org>
-In-Reply-To: <20210414185406.917890-4-revest@chromium.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 15 Apr 2021 16:11:35 -0700
-Message-ID: <CAEf4Bzbt0hmhJVYGwc4wp+jp209ed75oUQcTXg-NTX5ABzFBzw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 3/6] bpf: Add a bpf_snprintf helper
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 11:54 AM Florent Revest <revest@chromium.org> wrote:
->
-> The implementation takes inspiration from the existing bpf_trace_printk
-> helper but there are a few differences:
->
-> To allow for a large number of format-specifiers, parameters are
-> provided in an array, like in bpf_seq_printf.
->
-> Because the output string takes two arguments and the array of
-> parameters also takes two arguments, the format string needs to fit in
-> one argument. Thankfully, ARG_PTR_TO_CONST_STR is guaranteed to point to
-> a zero-terminated read-only map so we don't need a format string length
-> arg.
->
-> Because the format-string is known at verification time, we also do
-> a first pass of format string validation in the verifier logic. This
-> makes debugging easier.
->
-> Signed-off-by: Florent Revest <revest@chromium.org>
-> ---
+Hi Christophe,
 
-LGTM.
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+>  static void note_page(struct ptdump_state *pt_st, unsigned long addr, int level,
+> -		      u64 val)
+> +		      u64 val, unsigned long page_size)
 
->  include/linux/bpf.h            |  1 +
->  include/uapi/linux/bpf.h       | 28 +++++++++++++++++++
->  kernel/bpf/helpers.c           | 50 ++++++++++++++++++++++++++++++++++
->  kernel/bpf/verifier.c          | 41 ++++++++++++++++++++++++++++
->  kernel/trace/bpf_trace.c       |  2 ++
->  tools/include/uapi/linux/bpf.h | 28 +++++++++++++++++++
->  6 files changed, 150 insertions(+)
->
+Compilers can warn about unused parameters at -Wextra level.  However,
+reading scripts/Makefile.extrawarn it looks like the warning is
+explicitly _disabled_ in the kernel at W=1 and not reenabled at W=2 or
+W=3. So I guess this is fine...
 
-[...]
+> @@ -126,7 +126,7 @@ static int ptdump_hole(unsigned long addr, unsigned long next,
+>  {
+>  	struct ptdump_state *st = walk->private;
+>  
+> -	st->note_page(st, addr, depth, 0);
+> +	st->note_page(st, addr, depth, 0, 0);
+
+I know it doesn't matter at this point, but I'm not really thrilled by
+the idea of passing 0 as the size here. Doesn't the hole have a known
+page size?
+
+>  
+>  	return 0;
+>  }
+> @@ -153,5 +153,5 @@ void ptdump_walk_pgd(struct ptdump_state *st, struct mm_struct *mm, pgd_t *pgd)
+>  	mmap_read_unlock(mm);
+>  
+>  	/* Flush out the last page */
+> -	st->note_page(st, 0, -1, 0);
+> +	st->note_page(st, 0, -1, 0, 0);
+
+I'm more OK with the idea of passing 0 as the size when the depth is -1
+(don't know): if we don't know the depth we conceptually can't know the
+page size.
+
+Regards,
+Daniel
+
