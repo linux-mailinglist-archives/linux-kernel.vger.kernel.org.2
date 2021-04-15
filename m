@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A4B5360E42
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10BCE360E6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234780AbhDOPNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:13:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44862 "EHLO mail.kernel.org"
+        id S236866AbhDOPPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:15:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234199AbhDOPBb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:01:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42FB5613B7;
-        Thu, 15 Apr 2021 14:57:32 +0000 (UTC)
+        id S234884AbhDOPE7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:04:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0693761431;
+        Thu, 15 Apr 2021 14:58:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498652;
-        bh=heNJQ70uqvCspaLjMHfrojQJ1lC0s3guDaOnbcptdXQ=;
+        s=korg; t=1618498739;
+        bh=DoMPtUtQn6Ti78BNZWdPJv7gdrykCJx/19nciIWrer0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TSaUHzfFvi2j/iVQopJ7WSX0QYUCtik8pXym50pEQAmr3URPiW95OGWUYyLkdu5yo
-         ahrWZn2GR7J5xm+wGzvh1cV3fvcboUPfxDj0j2JdUmJ+7izTcQovg+VHZpLtWK4HPn
-         to1ThslsDz4HSEoUr3//5Q7tB+vVGQpVmcNt2IEs=
+        b=SgMxXUJfH8HyoyPa0zjrsmXcg6WGTlmPjwoWCSmRlHMHvSPxC8IyWDR43UTeAs3m1
+         CoyvWF9qk17EM/udSzew68To6HsE2HNRxCjTHq14q8/ZRVzukgsEBQwLMVBKWEjWoX
+         BTA2udRe6LiDH3ePmnDO31C8gP+hqmP+j8TOl1mo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 20/25] block: dont ignore REQ_NOWAIT for direct IO
-Date:   Thu, 15 Apr 2021 16:48:14 +0200
-Message-Id: <20210415144413.791984438@linuxfoundation.org>
+        stable@vger.kernel.org, Stefan Raspl <raspl@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 08/23] tools/kvm_stat: Add restart delay
+Date:   Thu, 15 Apr 2021 16:48:15 +0200
+Message-Id: <20210415144413.415964497@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.165663182@linuxfoundation.org>
-References: <20210415144413.165663182@linuxfoundation.org>
+In-Reply-To: <20210415144413.146131392@linuxfoundation.org>
+References: <20210415144413.146131392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,44 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Begunkov <asml.silence@gmail.com>
+From: Stefan Raspl <raspl@linux.ibm.com>
 
-[ Upstream commit f8b78caf21d5bc3fcfc40c18898f9d52ed1451a5 ]
+[ Upstream commit 75f94ecbd0dfd2ac4e671f165f5ae864b7301422 ]
 
-If IOCB_NOWAIT is set on submission, then that needs to get propagated to
-REQ_NOWAIT on the block side. Otherwise we completely lose this
-information, and any issuer of IOCB_NOWAIT IO will potentially end up
-blocking on eg request allocation on the storage side.
+If this service is enabled and the system rebooted, Systemd's initial
+attempt to start this unit file may fail in case the kvm module is not
+loaded. Since we did not specify a delay for the retries, Systemd
+restarts with a minimum delay a number of times before giving up and
+disabling the service. Which means a subsequent kvm module load will
+have kvm running without monitoring.
+Adding a delay to fix this.
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Stefan Raspl <raspl@linux.ibm.com>
+Message-Id: <20210325122949.1433271-1-raspl@linux.ibm.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/block_dev.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ tools/kvm/kvm_stat/kvm_stat.service | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index 6516051807b8..718533f0fb90 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -280,6 +280,8 @@ __blkdev_direct_IO_simple(struct kiocb *iocb, struct iov_iter *iter,
- 		bio.bi_opf = dio_bio_write_op(iocb);
- 		task_io_account_write(ret);
- 	}
-+	if (iocb->ki_flags & IOCB_NOWAIT)
-+		bio.bi_opf |= REQ_NOWAIT;
- 	if (iocb->ki_flags & IOCB_HIPRI)
- 		bio_set_polled(&bio, iocb);
+diff --git a/tools/kvm/kvm_stat/kvm_stat.service b/tools/kvm/kvm_stat/kvm_stat.service
+index 71aabaffe779..8f13b843d5b4 100644
+--- a/tools/kvm/kvm_stat/kvm_stat.service
++++ b/tools/kvm/kvm_stat/kvm_stat.service
+@@ -9,6 +9,7 @@ Type=simple
+ ExecStart=/usr/bin/kvm_stat -dtcz -s 10 -L /var/log/kvm_stat.csv
+ ExecReload=/bin/kill -HUP $MAINPID
+ Restart=always
++RestartSec=60s
+ SyslogIdentifier=kvm_stat
+ SyslogLevel=debug
  
-@@ -433,6 +435,8 @@ __blkdev_direct_IO(struct kiocb *iocb, struct iov_iter *iter, int nr_pages)
- 			bio->bi_opf = dio_bio_write_op(iocb);
- 			task_io_account_write(bio->bi_iter.bi_size);
- 		}
-+		if (iocb->ki_flags & IOCB_NOWAIT)
-+			bio->bi_opf |= REQ_NOWAIT;
- 
- 		dio->size += bio->bi_iter.bi_size;
- 		pos += bio->bi_iter.bi_size;
 -- 
 2.30.2
 
