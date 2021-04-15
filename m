@@ -2,109 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40FB335FF89
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 03:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE4135FF8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 03:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229581AbhDOB2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 21:28:37 -0400
-Received: from gw.atmark-techno.com ([13.115.124.170]:36044 "EHLO
-        gw.atmark-techno.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhDOB2f (ORCPT
+        id S229493AbhDOBal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 21:30:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50422 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229450AbhDOBak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 21:28:35 -0400
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
-        by gw.atmark-techno.com (Postfix) with ESMTPS id 718408048E
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 10:28:12 +0900 (JST)
-Received: by mail-pj1-f71.google.com with SMTP id h15-20020a17090a054fb02900c66a1b9826so9523899pjf.8
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 18:28:12 -0700 (PDT)
+        Wed, 14 Apr 2021 21:30:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618450217;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NuT37Vpiz4KczvJjbLuhVhLsnc1sKQ6bWyp9Fysxc0M=;
+        b=SKhq/xnRzymw3OROtwY8Am/xi4wnDKFx6mlhKxf3ulA5LZ0UsKhsYL0ilIA/HsK7JbMUFM
+        FfWHcbHQL1OtIZV1bfto5mYPQr+DUpRAxiBQXwK+lhCTMrVGyP275AyoSnogh9+QFPs1uK
+        C5yPAWVNvZHCOLh9hrAryxbpT7ASXVM=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-484-9jAwT0nEPPKts27nH5mKvw-1; Wed, 14 Apr 2021 21:30:16 -0400
+X-MC-Unique: 9jAwT0nEPPKts27nH5mKvw-1
+Received: by mail-lf1-f69.google.com with SMTP id t11-20020ac24c0b0000b02901aa03303b72so1755217lfq.10
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 18:30:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FOM9b0pdtnYk8Fnx4fGxxS9X4Bl0c34VqGJkMkPLCys=;
-        b=f2q5AA2VPFvCF8vSvrH0QtkiOmqhH5/AAIwc2tW+osoZRgBQTu7sEH/8PDcieFsgkr
-         AnUKRxkAbY9e78GTZUqV4lOOEd3k51QGgyXf856iPJ32aqJ6OVYMKvV2+wsgveR0cu44
-         N+Vm9x9lfoQO285Md/1GrpAF/e1ZKye6VdoIOMIrDL2QTrgndDWNT1KFsMCFnlO+eRRb
-         CegLBPc4CEQOZF/NwegWjQsE/ha+JV0VZHxvyW63gISSRLpMOYVZJN5Nt/ZyTan9hYwX
-         hnhxoeQfpWZf3lKaPAbpr9xiajxFftetPn2IuCsVELeBq0HScHA9jII39Dz2ylWdkys8
-         mn9A==
-X-Gm-Message-State: AOAM533aSyFX366s6NXjFkzj8n8eQh512kDPONXyC6IkRg69gGtaQEuu
-        Co5qoJ0QAG0sQ4YA6akQhtODhktZtAqZVl609LfzF1TM/Wp+KtxxujC9EYjAK1uj203mnmGCyjm
-        4R2wzC4MMDOcqhlb2uRnUgYV7mj3f
-X-Received: by 2002:aa7:9299:0:b029:21d:7ad1:2320 with SMTP id j25-20020aa792990000b029021d7ad12320mr936593pfa.22.1618450091301;
-        Wed, 14 Apr 2021 18:28:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwOS8ZF+FYzG7w9Mf8YFdOFOmZ/r+RgZwkgg5u3LbU7N9Rak2ehntN57YQtvkLegkVtKjlWww==
-X-Received: by 2002:aa7:9299:0:b029:21d:7ad1:2320 with SMTP id j25-20020aa792990000b029021d7ad12320mr936569pfa.22.1618450090996;
-        Wed, 14 Apr 2021 18:28:10 -0700 (PDT)
-Received: from pc-0115 (178.101.200.35.bc.googleusercontent.com. [35.200.101.178])
-        by smtp.gmail.com with ESMTPSA id e1sm643595pgl.25.2021.04.14.18.28.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 14 Apr 2021 18:28:10 -0700 (PDT)
-Received: from martinet by pc-0115 with local (Exim 4.94)
-        (envelope-from <martinet@pc-0115>)
-        id 1lWqng-004w4O-Qv; Thu, 15 Apr 2021 10:28:08 +0900
-Date:   Thu, 15 Apr 2021 10:27:58 +0900
-From:   Dominique MARTINET <dominique.martinet@atmark-techno.com>
-To:     "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Peng Fan <peng.fan@nxp.com>, dl-linux-imx <linux-imx@nxp.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [EXT] regression due to soc_device_match not handling defer
- (Was: [PATCH v4 4/4] soc: imx8m: change to use platform driver)
-Message-ID: <YHeWnuDQo76rYoz5@atmark-techno.com>
-References: <20201120101112.31819-4-alice.guo@nxp.com>
- <YGGZJjAxA1IO+/VU@atmark-techno.com>
- <AM6PR04MB60536EF0DEEE6EB64CF29390E27D9@AM6PR04MB6053.eurprd04.prod.outlook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NuT37Vpiz4KczvJjbLuhVhLsnc1sKQ6bWyp9Fysxc0M=;
+        b=WILkc0RkVMvf1uBRiq4dhfG//wTWzc925wAonTUJ927Jd17HhHHHYvvDGOn49bJE8L
+         D+P4kxIB/TrdD88j2NAzKfnFwDQZ9AGu5PtTf4O/eEcmEAFBYCx5r8D0rhTEqet+3hU1
+         Zo0Goy2fYVJee7tiN98pmSjQ9BzTKbGWlgVAtusvVT9Z4Zf/RzIla7C5cA1nH/DfS/g4
+         qU1NPg/2LmnWIz+Gyq3/qQC1rbs6xDiKbNneXUgQKVzany4fZnsrD/rY8JQYtnrrsUuy
+         DqjBeno4jy2huYEJyXPQpmxGv42zQkvGP5LSBqA3OkCDdG+qbdamIVB3rPxdJKg0WcI4
+         GRAA==
+X-Gm-Message-State: AOAM532UsbVp6HUscg4A+AXBvi+5LAfoRVBe4VZrkIW8G8UTeKmFzam8
+        kgkTvicXi2nzcaloAjrpXfDAwpbBY+SkXPje1Exvsar+/Vh/CouPaoyN6C4g7n/cPyDBz6L6vzG
+        yn4K3nfylplsSv8V4L/nLmjvlOWGsrQaIlnXPV9Om
+X-Received: by 2002:a05:6512:b0d:: with SMTP id w13mr690484lfu.16.1618450214565;
+        Wed, 14 Apr 2021 18:30:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwDYMlj20wS7v+deB0HVHfODTSDiKREGfFpV6FOtv9WxbYz6e2VspZKd9MIhgzZuDHdRBE8GCKZun9GcIddnGk=
+X-Received: by 2002:a05:6512:b0d:: with SMTP id w13mr690469lfu.16.1618450214403;
+ Wed, 14 Apr 2021 18:30:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <AM6PR04MB60536EF0DEEE6EB64CF29390E27D9@AM6PR04MB6053.eurprd04.prod.outlook.com>
+References: <20210317003616.2817418-1-aklimov@redhat.com> <87tuowcnv3.ffs@nanos.tec.linutronix.de>
+ <CALW4P+L9_tYgfOPv0riWWnv54HPhKPDJ4EK4yYaWsz0MdDGqfw@mail.gmail.com>
+In-Reply-To: <CALW4P+L9_tYgfOPv0riWWnv54HPhKPDJ4EK4yYaWsz0MdDGqfw@mail.gmail.com>
+From:   Alexey Klimov <aklimov@redhat.com>
+Date:   Thu, 15 Apr 2021 02:30:03 +0100
+Message-ID: <CAFBcO+8NBZxNdXtVuTXt9_m9gWTq7kxrcDcdFntvVjR_0rM13A@mail.gmail.com>
+Subject: Re: [PATCH v3] cpu/hotplug: wait for cpuset_hotplug_work to finish on
+ cpu onlining
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        cgroups@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Joshua Baker <jobaker@redhat.com>, audralmitchel@gmail.com,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rafael@kernel.org, tj@kernel.org,
+        Qais Yousef <qais.yousef@arm.com>, hannes@cmpxchg.org,
+        Alexey Klimov <klimov.linux@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alice Guo (OSS) wrote on Tue, Mar 30, 2021 at 02:41:23AM +0000:
-> Thanks for reporting this issue, I'll check and add a fix to handle defer probe.
+On Sun, Apr 4, 2021 at 3:32 AM Alexey Klimov <klimov.linux@gmail.com> wrote:
+>
+> On Sat, Mar 27, 2021 at 9:01 PM Thomas Gleixner <tglx@linutronix.de> wrote:
 
-I haven't seen any follow up on this, have you had a chance to take a
-look?
-If this won't make it for 5.12 (in a couple of week probably?) would it
-make sense to revert 7d981405d0fd ("soc: imx8m: change to use platform
-driver") for now?
+[...]
 
+Now, the patch:
 
+>> Subject: cpu/hotplug: Cure the cpusets trainwreck
+>> From: Thomas Gleixner <tglx@linutronix.de>
+>> Date: Sat, 27 Mar 2021 15:57:29 +0100
+>>
+>> Alexey and Joshua tried to solve a cpusets related hotplug problem which is
+>> user space visible and results in unexpected behaviour for some time after
+>> a CPU has been plugged in and the corresponding uevent was delivered.
+>>
+>> cpusets delegate the hotplug work (rebuilding cpumasks etc.) to a
+>> workqueue. This is done because the cpusets code has already a lock
+>> nesting of cgroups_mutex -> cpu_hotplug_lock. A synchronous callback or
+>> waiting for the work to finish with cpu_hotplug_lock held can and will
+>> deadlock because that results in the reverse lock order.
+>>
+>> As a consequence the uevent can be delivered before cpusets have consistent
+>> state which means that a user space invocation of sched_setaffinity() to
+>> move a task to the plugged CPU fails up to the point where the scheduled
+>> work has been processed.
+>>
+>> The same is true for CPU unplug, but that does not create user observable
+>> failure (yet).
+>>
+>> It's still inconsistent to claim that an operation is finished before it
+>> actually is and that's the real issue at hand. uevents just make it
+>> reliably observable.
+>>
+>> Obviously the problem should be fixed in cpusets/cgroups, but untangling
+>> that is pretty much impossible because according to the changelog of the
+>> commit which introduced this 8 years ago:
+>>
+>>  3a5a6d0c2b03("cpuset: don't nest cgroup_mutex inside get_online_cpus()")
+>>
+>> the lock order cgroups_mutex -> cpu_hotplug_lock is a design decision and
+>> the whole code is built around that.
+>>
+>> So bite the bullet and invoke the relevant cpuset function, which waits for
+>> the work to finish, in _cpu_up/down() after dropping cpu_hotplug_lock and
+>> only when tasks are not frozen by suspend/hibernate because that would
+>> obviously wait forever.
+>>
+>> Waiting there with cpu_add_remove_lock, which is protecting the present
+>> and possible CPU maps, held is not a problem at all because neither work
+>> queues nor cpusets/cgroups have any lockchains related to that lock.
+>>
+>> Waiting in the hotplug machinery is not problematic either because there
+>> are already state callbacks which wait for hardware queues to drain. It
+>> makes the operations slightly slower, but hotplug is slow anyway.
+>>
+>> This ensures that state is consistent before returning from a hotplug
+>> up/down operation. It's still inconsistent during the operation, but that's
+>> a different story.
+>>
+>> Add a large comment which explains why this is done and why this is not a
+>> dump ground for the hack of the day to work around half thought out locking
+>> schemes. Document also the implications vs. hotplug operations and
+>> serialization or the lack of it.
+>>
+>> Thanks to Alexy and Joshua for analyzing why this temporary
+>> sched_setaffinity() failure happened.
+>>
+>> Reported-by: Alexey Klimov <aklimov@redhat.com>
+>> Reported-by: Joshua Baker <jobaker@redhat.com>
+>> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+>> Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
+>> Cc: Qais Yousef <qais.yousef@arm.com>
 
-While looking at the code earlier I also have an unrelated, late-review
-on the patch itself:
+Feel free to use:
+Tested-by: Alexey Klimov <aklimov@redhat.com>
 
-> +static u32 __init imx8mq_soc_revision(struct device *dev)
-> [...]
->  @@ -191,8 +223,16 @@ static int __init imx8_soc_init(void)
->         data = id->data;
->         if (data) {
->                 soc_dev_attr->soc_id = data->name;
-> -               if (data->soc_revision)
-> -                       soc_rev = data->soc_revision();
-> +               if (data->soc_revision) {
-> +                       if (pdev) {
-> +                               soc_rev = data->soc_revision(&pdev->dev);
-> +                               ret = soc_rev;
-> +                               if (ret < 0)
+The bug doesn't reproduce with this change, I had the testcase running
+for ~25 hrs without failing under different workloads.
 
-I appreciate current soc_revision are "small enough" (looking at
-include/soc/imx/revision.h we're talking < 256) so this actually works,
-but would it make sense to either make soc_rev signed, or to have
-soc_revision() return a s64, or have the revision filled in another *u32
-argument to make sure the error is an error and not just a large rev?
+Are you going to submit the patch? Or I can do it on your behalf if you like.
 
-This is most definitely fine for now but that kind of code patterns can
-lead to weird errors down the road.
+[...]
 
-Thanks,
--- 
-Dominique
+Best regards,
+Alexey
+
