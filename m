@@ -2,65 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9036A361317
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F4BC36131A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 21:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234995AbhDOTu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 15:50:28 -0400
-Received: from mga01.intel.com ([192.55.52.88]:45948 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234226AbhDOTu1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 15:50:27 -0400
-IronPort-SDR: 9aP6hx3k2so9/1ZM64hC/+m+pYuoRJ4i3LYCQ60Gcj2gojk5z+WiCGbgzofEbh8kWESzO5rd0C
- 8bjGeRp2vNNg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="215442161"
-X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
-   d="scan'208";a="215442161"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 12:49:59 -0700
-IronPort-SDR: eOU2zCcD3J55/9SE1uLBp57qUwy3FyckoLw/AMgywqjXcLADDBre4t1KbW/NcFUjDBDpz43G9S
- YC2gJK2tk/1Q==
-X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
-   d="scan'208";a="533244995"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 12:49:57 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 911F1200E8;
-        Thu, 15 Apr 2021 22:49:55 +0300 (EEST)
-Date:   Thu, 15 Apr 2021 22:49:55 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: Re: [Outreachy kernel] [PATCH v2] staging: media: atomisp: pci:
- Change line break to avoid an open parenthesis at the end of the line
-Message-ID: <20210415194955.GI3@paasikivi.fi.intel.com>
-References: <20210415170819.GA17534@focaruja>
- <20210415171409.GC2531743@casper.infradead.org>
+        id S235044AbhDOTux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 15:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234226AbhDOTuv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 15:50:51 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B28C061574;
+        Thu, 15 Apr 2021 12:50:27 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0ace009d15a56636e5abd2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:ce00:9d15:a566:36e5:abd2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 063121EC03E4;
+        Thu, 15 Apr 2021 21:50:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1618516226;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=m+1u7jWekMJzRnPaUKo/hlQMLbQ3pB3EnuCoWlBcJwE=;
+        b=gC/HenhFlKg6OxOBD5VmBJE7r2uQnnyrYhzs7L7smfXhCX62Dm4DyBu8DDw9HPr/dclVF7
+        tWQhGAdvoTQgF/bnrvyy/Fms2w0qHDXUavv/J2XYx1SjESSCNHXwO0y3Bl6kVdvijQKUWm
+        BZCr/BMY883/B+Eclm1Ezk8MUMmxUgY=
+Date:   Thu, 15 Apr 2021 21:50:20 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, ak@linux.intel.com,
+        herbert@gondor.apana.org.au, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: Re: [RFC Part2 PATCH 02/30] x86/sev-snp: add RMP entry lookup helpers
+Message-ID: <20210415195020.GG6318@zn.tnic>
+References: <20210324170436.31843-1-brijesh.singh@amd.com>
+ <20210324170436.31843-3-brijesh.singh@amd.com>
+ <20210415165711.GD6318@zn.tnic>
+ <1813139d-f5f9-3791-dadb-4a684fe1cf46@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210415171409.GC2531743@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1813139d-f5f9-3791-dadb-4a684fe1cf46@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 06:14:09PM +0100, Matthew Wilcox wrote:
-> On Thu, Apr 15, 2021 at 02:08:19PM -0300, Aline Santana Cordeiro wrote:
-> > -const struct atomisp_format_bridge *get_atomisp_format_bridge_from_mbus(
-> > -    u32 mbus_code);
-> > +const struct atomisp_format_bridge*
-> > +get_atomisp_format_bridge_from_mbus(u32 mbus_code);
+On Thu, Apr 15, 2021 at 01:08:09PM -0500, Brijesh Singh wrote:
+> This is from Family 19h Model 01h Rev B01. The processor which
+> introduces the SNP feature. Yes, I have already upload the PPR on the BZ.
 > 
-> No, this does not match coding style.  Probably best to break the
-> 80-column guideline in this instance.  Best would be to have a function
+> The PPR is also available at AMD: https://www.amd.com/en/support/tech-docs
 
-Having the return type on the previous line is perfectly fine. There should
-be a space before the asterisk though.
+Please add the link in the bugzilla to the comments here - this is the
+reason why stuff is being uploaded in the first place, because those
+vendor sites tend to change and those links become stale with time.
+
+> I guess I was trying to shorten the name. I am good with struct rmpentry;
+
+Yes please - typedefs are used only in very specific cases.
+
+> All those magic numbers are documented in the PPR.
+
+We use defines - not magic numbers. For example
+
+#define RMPTABLE_ENTRIES_OFFSET 0x4000
+
+The 8 is probably
+
+PAGE_SHIFT - RMPENTRY_SHIFT
+
+because you have GPA bits [50:12] and an RMP entry is 16 bytes, i.e., 1 << 4.
+
+With defines it is actually clear what the computation is doing - with
+naked numbers not really.
+
+> APM does not provide the offset of the entry inside the RMP table.
+
+It does, kinda, but in the pseudocode of those new insns in APM v3. From
+PVALIDATE pseudo:
+
+	RMP_ENTRY_PA = RMP_BASE + 0x4000 + (SYSTEM_PA / 0x1000) * 16
+
+and that last
+
+	/ 0x1000 * 16
+
+is actually
+
+	>> 12 - 4
+
+i.e., the >> 8 shift.
+
+Thx.
 
 -- 
-Sakari Ailus
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
