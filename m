@@ -2,225 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90E9F3607FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 13:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 274B2360800
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 13:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232481AbhDOLHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 07:07:14 -0400
-Received: from mga09.intel.com ([134.134.136.24]:34156 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230056AbhDOLHM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 07:07:12 -0400
-IronPort-SDR: wCxwWUTE7A/IdS/dzNC8tCF8MdhWQo/SRupOayroKPYXgO0yr+ti0lK3zp+CL8Thb/yNHk7eGg
- eSsnq4U4yCGw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="194945190"
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="194945190"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 04:06:48 -0700
-IronPort-SDR: rFTEe/7ieLL7MmVazHp1Wky/wR37tK4aX1XplAuERrJlemRGGQRyIfYeGq5Jc0eYJ7JE4bSWUR
- l4FyJaTuX3sg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="382695131"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by orsmga003.jf.intel.com with ESMTP; 15 Apr 2021 04:06:41 -0700
-Subject: Re: [PATCH v18 1/2] scsi: ufs: Enable power management for wlun
-To:     Asutosh Das <asutoshd@codeaurora.org>, cang@codeaurora.org,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
-Cc:     linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Bean Huo <beanhuo@micron.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Yue Hu <huyue2@yulong.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-mediatek@lists.infradead.org>
-References: <cover.1618426513.git.asutoshd@codeaurora.org>
- <d1a6af736730b9d79f977100286c5d9325546ac2.1618426513.git.asutoshd@codeaurora.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <47049515-be9d-23b0-6dbd-24b3b09fdb82@intel.com>
-Date:   Thu, 15 Apr 2021 14:06:58 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231829AbhDOLJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 07:09:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229457AbhDOLJC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 07:09:02 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47887C061574;
+        Thu, 15 Apr 2021 04:08:39 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id m3so27534920edv.5;
+        Thu, 15 Apr 2021 04:08:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CJEXGWtytFjUqt6P4vNA40mZIRxGMVPGV2UwUxWsXUE=;
+        b=MaBpP8FijUA/2WCbs9DpH4APQkmy597fO4jiqpGIxC28kd06Y1u0erql2Bu/PXJpce
+         kJAL5188+5D7BARP0IVigeF7tIQk6G2ZEgXvio2E6AEY8wjdUk00kAsvi/p0qIU6SGgT
+         u5qWfeg3eoZarAbYGC3z81k4j7k4xHQKUMuBc9nCvvU9PxVOnbym2fWSOk1T2fUm28VP
+         I7MaJH1NNceeUu7xY/Pul0TYZX7zy3VSvefXVG9N5g8HL9Q7dEjhenosP3u+X/EjoumV
+         bQiwTtnQKe8tWsn57Ao0z73Cstezp+b3DlF1w0x/yQNhym645VyqJcJxMZEdXPgWCm2+
+         QTzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CJEXGWtytFjUqt6P4vNA40mZIRxGMVPGV2UwUxWsXUE=;
+        b=W32TBzoH6rKRu9EhZKPPmtocLIEwUXev6oQ0ZtnAqII5g8SWjh6V+3XOX4cPs8g0LD
+         VMkvxyJZo7NM4ivHDr8Q/EQhMvw/i1WUTSOHg9Y92ueVzMOuqua5ItnT0bhXnYcfOI4Z
+         zS8gFpMjZt+l3aW1HaJYutYnccKEjKf3gHLZiRrRC6jD/M0BgoZM4/2xWT8c2L9tI7zg
+         ULWWHadOsf7Jzw1oRf3zC80kXKHiE5zz5Ev7lMPiICG37pG6Qr/0GSIgi9d6xwFcSF72
+         wdLI6M/vIPLraQUstK3kuOFx32GySoJHS+hl716J6qgZ9btTJb0SqK0FQ02YfukKVpFs
+         9u8w==
+X-Gm-Message-State: AOAM533t+wVC1CmterNjjFMzA37gV0NTGVjJEIuiLwiDjReYemU5+hmi
+        DJK08nTCi+9zs7//Xr1/f1c=
+X-Google-Smtp-Source: ABdhPJyNyvR/OwJgW2GIrpZzpGlMdCvT5Z2rk+ivAL5XSbhytinqKJNhZdVesZtBIGEDuBO+XjMyIw==
+X-Received: by 2002:aa7:c351:: with SMTP id j17mr3593597edr.199.1618484917913;
+        Thu, 15 Apr 2021 04:08:37 -0700 (PDT)
+Received: from anparri (mob-176-243-198-62.net.vodafone.it. [176.243.198.62])
+        by smtp.gmail.com with ESMTPSA id o15sm1639244edv.72.2021.04.15.04.08.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 04:08:35 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 13:08:26 +0200
+From:   Andrea Parri <parri.andrea@gmail.com>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] Drivers: hv: vmbus: Introduce and negotiate VMBus
+ protocol version 5.3
+Message-ID: <20210415110826.GA39379@anparri>
+References: <20210414150118.2843-1-parri.andrea@gmail.com>
+ <20210414150118.2843-2-parri.andrea@gmail.com>
+ <MWHPR21MB15935F8B28EFE3FAB8533F50D74E9@MWHPR21MB1593.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <d1a6af736730b9d79f977100286c5d9325546ac2.1618426513.git.asutoshd@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MWHPR21MB15935F8B28EFE3FAB8533F50D74E9@MWHPR21MB1593.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/04/21 9:58 pm, Asutosh Das wrote:
-> During runtime-suspend of ufs host, the scsi devices are
-> already suspended and so are the queues associated with them.
-> But the ufs host sends SSU (START_STOP_UNIT) to wlun
-> during its runtime-suspend.
-> During the process blk_queue_enter checks if the queue is not in
-> suspended state. If so, it waits for the queue to resume, and never
-> comes out of it.
-> The commit
-> (d55d15a33: scsi: block: Do not accept any requests while suspended)
-> adds the check if the queue is in suspended state in blk_queue_enter().
+> > @@ -234,6 +234,7 @@ static inline u32 hv_get_avail_to_write_percent(
+> >   * 5 . 0  (Newer Windows 10)
+> >   * 5 . 1  (Windows 10 RS4)
+> >   * 5 . 2  (Windows Server 2019, RS5)
+> > + * 5 . 3  (Windows Server 2021) // FIXME: use proper version number/name
 > 
-> Call trace:
->  __switch_to+0x174/0x2c4
->  __schedule+0x478/0x764
->  schedule+0x9c/0xe0
->  blk_queue_enter+0x158/0x228
->  blk_mq_alloc_request+0x40/0xa4
->  blk_get_request+0x2c/0x70
->  __scsi_execute+0x60/0x1c4
->  ufshcd_set_dev_pwr_mode+0x124/0x1e4
->  ufshcd_suspend+0x208/0x83c
->  ufshcd_runtime_suspend+0x40/0x154
->  ufshcd_pltfrm_runtime_suspend+0x14/0x20
->  pm_generic_runtime_suspend+0x28/0x3c
->  __rpm_callback+0x80/0x2a4
->  rpm_suspend+0x308/0x614
->  rpm_idle+0x158/0x228
->  pm_runtime_work+0x84/0xac
->  process_one_work+0x1f0/0x470
->  worker_thread+0x26c/0x4c8
->  kthread+0x13c/0x320
->  ret_from_fork+0x10/0x18
-> 
-> Fix this by registering ufs device wlun as a scsi driver and
-> registering it for block runtime-pm. Also make this as a
-> supplier for all other luns. That way, this device wlun
-> suspends after all the consumers and resumes after
-> hba resumes.
+> The official name is now public information as "Windows Server 2022".
 
-Can you also explain the new driver for RPMB WLUN and UAC changes here?
+Thank you, I've updated the name and removed the FIXME.
 
-And also mention that the driver will now always be runtime
-resumed before system suspend.
-
-> 
-> Co-developed-by: Can Guo <cang@codeaurora.org>
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
-> ---
-
-<SNIP>
-
-> +static void ufshcd_setup_links(struct ufs_hba *hba, struct scsi_device *sdev)
-> +{
-> +	struct device_link *link;
-> +
-> +	/*
-> +	 * device wlun is the supplier & rest of the luns are consumers
-> +	 * This ensures that device wlun suspends after all other luns.
-> +	 */
-> +	if (hba->sdev_ufs_device) {
-> +		link = device_link_add(&sdev->sdev_gendev,
-> +				       &hba->sdev_ufs_device->sdev_gendev,
-> +				       DL_FLAG_PM_RUNTIME|DL_FLAG_RPM_ACTIVE);
-
-"|" could be surrounded by spaces i.e.
-				       DL_FLAG_PM_RUNTIME | DL_FLAG_RPM_ACTIVE);
-
-> +		if (!link) {
-> +			dev_err(&sdev->sdev_gendev, "Failed establishing link - %s\n",
-> +				dev_name(&hba->sdev_ufs_device->sdev_gendev));
-> +			return;
-> +		}
-> +		hba->luns_avail--;
-> +		/* Ignore REPORT_LUN wlun probing */
-> +		if (hba->luns_avail == 1) {
-> +			ufshcd_rpm_put(hba);
-> +			return;
-> +		}
-> +	} else {
-> +		/* device wlun is probed */
-> +		hba->luns_avail--;
-> +	}
-> +}
-
-<SNIP>
-
-> @@ -8916,42 +8906,214 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  	if (hba->ee_usr_mask)
->  		ufshcd_write_ee_control(hba);
->  
-> -	hba->clk_gating.is_suspended = false;
-> -
-> -	if (ufshcd_is_clkscaling_supported(hba))
-> -		ufshcd_clk_scaling_suspend(hba, false);
-> -
-> -	/* Enable Auto-Hibernate if configured */
-> -	ufshcd_auto_hibern8_enable(hba);
-> +	if (hba->clk_scaling.is_allowed)
-> +		ufshcd_resume_clkscaling(hba);
-
-We don't use clks, regulators, clk gating, clk scaling, but the
-original code looks more correct because hba->clk_scaling.is_allowed
-will have been set to false by ufshcd_clk_scaling_suspend(hba, true)
-in __ufshcd_wl_suspend().
-
-<SNIP>
-
-> +#ifdef CONFIG_PM_SLEEP
-> +static int ufshcd_wl_suspend(struct device *dev)
-> +{
-> +	struct scsi_device *sdev = to_scsi_device(dev);
-> +	struct ufs_hba *hba;
-> +	int ret;
-
-For below:
-	int ret = 0;
-
-> +	ktime_t start = ktime_get();
-> +
-> +	hba = shost_priv(sdev->host);
-> +	down(&hba->host_sem);
-
-If we get here with dev runtime suspended, then skip
-__ufshcd_wl_suspend() i.e.
-
-	if (pm_runtime_suspended(dev))
-		goto out;
-
-> +	ret = __ufshcd_wl_suspend(hba, UFS_SYSTEM_PM);
-> +	if (ret) {
-> +		dev_err(&sdev->sdev_gendev, "%s failed: %d\n", __func__,  ret);
-> +		up(&hba->host_sem);
-> +	} else {
-> +		hba->is_sys_suspended = true;
-> +	}
-
-out:
-	if (!ret)
-		hba->is_sys_suspended = true;
-
-> +
-> +	trace_ufshcd_wl_suspend(dev_name(dev), ret,
-> +		ktime_to_us(ktime_sub(ktime_get(), start)),
-> +		hba->curr_dev_pwr_mode, hba->uic_link_state);
-> +
-> +	return ret;
-> +}
-
-<SNIP>
+  Andrea
