@@ -2,91 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3752E360A9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B85360A9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 15:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233192AbhDONhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 09:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233090AbhDONhX (ORCPT
+        id S233210AbhDONh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 09:37:26 -0400
+Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:36177 "EHLO
+        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232642AbhDONhX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 15 Apr 2021 09:37:23 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B32DC061574;
-        Thu, 15 Apr 2021 06:37:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rmmd2MnkoiOz6+31WCvz2SljYBXG1ZHyCZdZS1oIPaw=; b=DGczTqARvMf/0/wZARvuJQXtcX
-        fJ3VwdUbeGmOaliuJtMplXcQ/gNCn/1W3PiuUTikVMiXgZRabeYoywRbtPlp70jXwEkzsU8RAxG7y
-        XH5vfGpFPib2JOZj83+F1zFn5CNsbSsroKjLSSWBBo/WvKEo1onXnApmqUkpbD846EeAvGRjytdD8
-        qBI5+5kcfy7mHVlmETIorUFQScHdrqGbXYrix+/n2dE9zfUzuXJH+i94u7AaI3dw6QTjKbIGDwPwA
-        Q1z8qMLCMeQ/v4DT/mqRAcevDZSCGgsafjIXbUtKuBPEOCthWDeZEIhb4PBN620wdifwP9rx+4Lwy
-        2WtAvo9Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lX2Ak-00GHOV-GJ; Thu, 15 Apr 2021 13:36:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D9459300212;
-        Thu, 15 Apr 2021 15:36:40 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id AD84C2C12A6C2; Thu, 15 Apr 2021 15:36:40 +0200 (CEST)
-Date:   Thu, 15 Apr 2021 15:36:40 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alison Schofield <alison.schofield@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Prarit Bhargava <prarit@redhat.com>, brice.goglin@gmail.com
-Subject: Re: [PATCH v3] x86, sched: Treat Intel SNC topology as default, COD
- as exception
-Message-ID: <YHhBaDLjBOZUKCrW@hirez.programming.kicks-ass.net>
-References: <20210310190233.31752-1-alison.schofield@intel.com>
+Received: from [192.168.2.10] ([84.202.3.209])
+        by smtp.xs4all.nl with ESMTPA
+        id X2Axl3eNOsMyaX2B0lULVP; Thu, 15 Apr 2021 15:36:59 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1618493819; bh=gZoHwNCMoKyEmoDVfhautmQ8Mg0LQtbn5JZYlZAijxU=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=mIjvdkYkWYVJLty5slqCe1PoUZ3rpdG6GeSyU0GnbmHbnCQEm/o5iAW0zWQs03AoK
+         8K9QvGZsHtG5piJgaxS29cPMeN9Mm55nfkuSzfukSrYG7xl0XYbsCSaLxLuD7FNSJ5
+         HZYo8KxK2wECqbY5mZVOkYEw50zd8816q1kldYhqeTPfWLSkbMxGUFG82wo3o86G6O
+         PoADtAC3it5W30FRCRTeAIIusNB9YfjV2qT2GnOQALmCfOWCZUEU8GKHogvt+yB/4c
+         sJFODgYIJOS749H8t4YXxfRoq8I7rgvCnBtINWRc6CoypbysJYUmV+/PDF8/EFnjy9
+         D2MrV/XIV3KRQ==
+Subject: Re: [PATCH v3] staging: media: zoran: reduce length of a line
+To:     Mitali Borkar <mitaliborkar810@gmail.com>, clabbe@baylibre.com,
+        mchehab@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        mitali_s@me.iitr.ac.in
+References: <YHXITpUbYOb2lO/u@kali>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <fbfe2705-30bd-dbaf-e3f4-95ef678a5089@xs4all.nl>
+Date:   Thu, 15 Apr 2021 15:36:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210310190233.31752-1-alison.schofield@intel.com>
+In-Reply-To: <YHXITpUbYOb2lO/u@kali>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfF3kyduNUb4qus6KIfTU6+sc7BExhW7ghIVg9vBpD1Uf5EddXtrtZprcgXSCOUf4dC2fXnlx98lOQPg35NxGvOd2kl4jcpnRs+chJj5aAYsInSVqmKYb
+ fJeFHmbjtyxshFYEYouyY3n38ywXrlZ+6BEOdZm78kDALClha5nFFYknUjHZroVEvI1+WovF5VkKsAf5WLmmZWT67vruVRjr1qey8/cHQG0mHqUa5aW3FWrV
+ d1o5XX8NyOCA+sP7waguefMZd7sNDoOExhaf7bFC8h4F88sFaLoFlwfL00WRSGM0rkhbPwyHaDkV+acscIw+PgQ80qu1YMvvwMr1W3NBcvuEsVKWHBmtToWg
+ kn5apcFH6cV7kb1/KYqZguNBLqLcf8QvydO7IEJzJoiLIjMC+B9M5DStPF1TQjthb7Aoa4ePPk6bKLXw15zUI0UEYj9HRlZpU66MIKkHnhYzscAXeaC2ZjS/
+ tYNiGCrirBaBeItjov2es+okdiaOvmPJw7ZW8g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 10, 2021 at 11:02:33AM -0800, Alison Schofield wrote:
-> Commit 1340ccfa9a9a ("x86,sched: Allow topologies where NUMA nodes
-> share an LLC") added a vendor and model specific check to never
-> call topology_sane() for Intel Skylake Server systems where NUMA
-> nodes share an LLC.
+On 13/04/2021 18:35, Mitali Borkar wrote:
+> Reduced length of a line which exceed the 100 columns limit by splitting
+> the line into two statements and commenting it with '*' to meet linux
+> kernel coding style for long(multi-line) comments.
+> Reported by checkpatch.
 > 
-> Intel Ice Lake and Sapphire Rapids CPUs also enumerate an LLC that is
-> shared by multiple NUMA nodes. The LLC on these CPUs is shared for
-> off-package data access but private to the NUMA node for on-package
-> access. Rather than managing a list of allowable SNC topologies, make
-> this SNC topology the default, and treat Intel's Cluster-On-Die (COD)
-> topology as the exception.
+> Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+> ---
 > 
-> In SNC mode, Sky Lake, Ice Lake, and Sapphire Rapids servers do not
-> emit this warning:
+> Changes from v2:- Rebased this patch and made changes against mainline
+> code.
+> Changes from v1:- Made style changes according to linux kernel coding style
+> for long comments.
 > 
-> sched: CPU #3's llc-sibling CPU #0 is not on the same node! [node: 1 != 0]. Ignoring dependency.
+>  drivers/staging/media/zoran/zr36060.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 > 
-> Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Signed-off-by: Alison Schofield <alison.schofield@intel.com>
+> diff --git a/drivers/staging/media/zoran/zr36060.c b/drivers/staging/media/zoran/zr36060.c
+> index 4f9eb9ff2c42..27eec3446592 100644
+> --- a/drivers/staging/media/zoran/zr36060.c
+> +++ b/drivers/staging/media/zoran/zr36060.c
+> @@ -249,7 +249,11 @@ static const char zr36060_ta[8] = { 0, 1, 1, 0, 0, 0, 0, 0 };	//table idx's AC
+>  static const char zr36060_decimation_h[8] = { 2, 1, 1, 0, 0, 0, 0, 0 };
+>  static const char zr36060_decimation_v[8] = { 1, 1, 1, 0, 0, 0, 0, 0 };
+>  
+> -/* SOF (start of frame) segment depends on width, height and sampling ratio of each color component */
+> +/*
+> + * SOF (start of frame) segment depends on width,
+> + * height and sampling ratio of each color component
+> + */
+> +
 
-Seeing how this is basically what I gave you earlier; but now tested and
-with comments on,
+No need for this extra newline. The comment block describes the function,
+so the function should directly follow that comment.
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Regards,
 
-Boris, will you make it happen, or you want me to queue it somewhere
-x86/core like?
+	Hans
+
+>  static int zr36060_set_sof(struct zr36060 *ptr)
+>  {
+>  	char sof_data[34];	// max. size of register set
+> 
+
