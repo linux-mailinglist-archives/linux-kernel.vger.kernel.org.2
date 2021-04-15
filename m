@@ -2,95 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74929360320
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6CB2360329
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbhDOHTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 03:19:01 -0400
-Received: from mail-ua1-f45.google.com ([209.85.222.45]:34567 "EHLO
-        mail-ua1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbhDOHTA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 03:19:00 -0400
-Received: by mail-ua1-f45.google.com with SMTP id s2so7220196uap.1;
-        Thu, 15 Apr 2021 00:18:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TYpEFy4TiS8JfXQcnDIWzjJBFSrstXrUZn7dBlSbGg0=;
-        b=twCmbuKS/Jjeqc97M5GoqKHZEYetz6QQFR+i5fK7HEu2yUI1vnKx6L+Yidg/kZmndj
-         McmIEZLEYa7U8FJVtgfscbUztCA9GUmtWviyltOfdDFmuQ5RRBDLXdo/jRCJ0O3eOmwp
-         3ta+CL82FL3W4qAhTleYZG+d3gu0nyKMBzse4j3mxhjjJ4hr5+Igl6CLp923FVplcmvG
-         ci2EBwqVJu60vuoI9c0dw52+dC0gRAsTQMeqz0Eslu8EZfQrVdzBcCf2NPi71bCCoP7y
-         WgT/icfSMgPMT0Htw3LJk4Kj2R+MIcbu0AeUGOfEGAb1ePHZiJvEQkM5MOHehcP+WAUJ
-         KajA==
-X-Gm-Message-State: AOAM532DNwrNOWpV8pD4IjUmqrxblGuMIjcFyb2T26vTUymlR3Y2l8wx
-        dUz2nmD3pmUhAHe8GImwVaeJzLarp3gp3+KAFuc=
-X-Google-Smtp-Source: ABdhPJztPwJcY9Ud2yMHeeON2pYWHFlcgH92k1SmJ4Mv/fkqt/H8QcgYvYh8pCTm1dBwGoP5HEfatXBa0el+hDTFGxM=
-X-Received: by 2002:ab0:2c16:: with SMTP id l22mr856492uar.100.1618471117162;
- Thu, 15 Apr 2021 00:18:37 -0700 (PDT)
+        id S231330AbhDOHUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 03:20:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44234 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231143AbhDOHUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 03:20:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07B6C61103;
+        Thu, 15 Apr 2021 07:19:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618471184;
+        bh=6yA3ZP7QlU0O7VefE5uCcyXZQdn2vdNBzoNCgVzhAH0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=P4EGm6D9qx4YMmIfc4mX90pvDkJQaQUxvxPvT3bkLwNI8RS9qrFP1kjaEwRZi8b1u
+         GCM3x7sirPfh7DlE/+4N9TyZcBqJGMggr4/TSkeLHQ7J1hJfDfHTBn9OFUQdJxiE18
+         R6YDZ8PsnZCtnJY5Npaq9Uf1Xhf66z0TNDxAdahY=
+Date:   Thu, 15 Apr 2021 09:19:42 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Colin King <colin.king@canonical.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Ofir Bitton <obitton@habana.ai>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH][next] habanalabs/gaudi: Fix uninitialized return code rc
+ when read size is zero
+Message-ID: <YHfpDvLvzwEFT5BT@kroah.com>
+References: <20210412161012.1628202-1-colin.king@canonical.com>
+ <CAK8P3a2pSRu0OKDNrNJSdviRgcv8Lw1mwZr5opv=UbtHLps2oQ@mail.gmail.com>
+ <CAFCwf10S8WhEZtpwD=2AgbgopMahxHofp-yXvsZ4GWkrctPRAQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210412153754.235500-1-revest@chromium.org> <20210412153754.235500-4-revest@chromium.org>
- <CAEf4BzZCR2JMXwNvJikfWYnZa-CyCQTQsW+Xs_5w9zOT3kbVSA@mail.gmail.com>
- <CAMuHMdUQOi8h31D_Qtnv_E1vsEu6RO8sHy-DArQ0jQt5v_JoVA@mail.gmail.com>
- <CABRcYmK597zCNs_ay6BUjxCuxGJazKn4iujYtOUxcZC0J=xVPg@mail.gmail.com> <CAEf4BzbROOSi8PfM2c-BR31S-=aQjVgfzTAPaCqntcjjQb1W=w@mail.gmail.com>
-In-Reply-To: <CAEf4BzbROOSi8PfM2c-BR31S-=aQjVgfzTAPaCqntcjjQb1W=w@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 15 Apr 2021 09:18:25 +0200
-Message-ID: <CAMuHMdXQ2=xPSGxDsrprb_pXjkOaUi_YZ+8h65kdW+SYCseWoQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/6] bpf: Add a bpf_snprintf helper
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Florent Revest <revest@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFCwf10S8WhEZtpwD=2AgbgopMahxHofp-yXvsZ4GWkrctPRAQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrii,
-
-On Thu, Apr 15, 2021 at 12:58 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
-> On Wed, Apr 14, 2021 at 11:30 AM Florent Revest <revest@chromium.org> wrote:
-> > On Wed, Apr 14, 2021 at 8:02 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > On Wed, Apr 14, 2021 at 9:41 AM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > > On Mon, Apr 12, 2021 at 8:38 AM Florent Revest <revest@chromium.org> wrote:
-> > > > > +       fmt = (char *)fmt_addr + fmt_map_off;
-> > > > > +
-> > > >
-> > > > bot complained about lack of (long) cast before fmt_addr, please address
-> > >
-> > > (uintptr_t), I assume?
+On Thu, Apr 15, 2021 at 10:08:26AM +0300, Oded Gabbay wrote:
+> On Mon, Apr 12, 2021 at 9:41 PM Arnd Bergmann <arnd@arndb.de> wrote:
 > >
-> > (uintptr_t) seems more correct to me as well. However, I just had a
-> > look at the rest of verifier.c and (long) casts are already used
-> > pretty much everywhere whereas uintptr_t isn't used yet.
-> > I'll send a v4 with a long cast for the sake of consistency with the
-> > rest of the verifier.
->
-> right, I don't care about long or uintptr_t, both are guaranteed to
-> work, I just remember seeing a lot of code with (long) cast. I have no
-> preference.
+> > On Mon, Apr 12, 2021 at 6:11 PM Colin King <colin.king@canonical.com> wrote:
+> > >
+> > > From: Colin Ian King <colin.king@canonical.com>
+> > >
+> > > In the case where size is zero the while loop never assigns rc and the
+> > > return value is uninitialized. Fix this by initializing rc to zero.
+> > >
+> > > Addresses-Coverity: ("Uninitialized scalar variable")
+> > > Fixes: 639781dcab82 ("habanalabs/gaudi: add debugfs to DMA from the device")
+> > > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> > > ---
+> > >  drivers/misc/habanalabs/gaudi/gaudi.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+> > > index 8730b691ec61..b751652f80a8 100644
+> > > --- a/drivers/misc/habanalabs/gaudi/gaudi.c
+> > > +++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+> > > @@ -6252,7 +6252,7 @@ static int gaudi_debugfs_read_dma(struct hl_device *hdev, u64 addr, u32 size,
+> > >         dma_addr_t dma_addr;
+> > >         void *kernel_addr;
+> > >         bool is_eng_idle;
+> > > -       int rc, dma_id;
+> > > +       int rc = 0, dma_id;
+> > >
+> > >         kernel_addr = hdev->asic_funcs->asic_dma_alloc_coherent(
+> > >                                                 hdev, SZ_2M,
+> >
+> >
+> > In general, I don't like adding initializations during the declaration as that
+> > tends to hide warnings for the cases where a later initialization is
+> > missing. In this case it looks correct though.
+> >
+> > Acked-by: Arnd Bergmann <arnd@arndb.de>
+> 
+> I don't mind taking this patch for eliminating the warning but fyi,
+> the caller function (hl_dma_size_write) checks that the size is not
+> zero. If the size is zero, we never reach this function.
+> 
+> Greg, do you mind applying it directly to your -next branch ? I don't
+> have anything pending and I'm too lazy sending a pull request on a
+> single patch ;)
+> 
+> Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 
-AFAIR, uintptr_t was introduced only in C99. Early Linux code predates that,
-hence uses long, and this behavior was of course copied to new code.
+I can grab it from this thread, thanks!
 
-Please use uintptr_t in new code.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+greg k-h
