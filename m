@@ -2,118 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9B636032F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8211F360336
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhDOHWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 03:22:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44468 "EHLO mail.kernel.org"
+        id S231325AbhDOHXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 03:23:32 -0400
+Received: from mga11.intel.com ([192.55.52.93]:64107 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231143AbhDOHWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 03:22:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6390D61019;
-        Thu, 15 Apr 2021 07:21:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618471300;
-        bh=ANtW8C28zwPXlFacT3Q0OH6yx8N/U+gwGOFCD2dpbr0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QrSQHw+BcOboi9t/w2ErSS30JNb3MvbU37R2RDje/Lx3g1OjiBn7A5vbZU0FopZ7j
-         7cgeOJ+cG94crFLBI+6e+X2YuI4PzXmujbwmJlXexHFnHPMLGcXVm1/LWEuOtBnrKW
-         MBh9Nw3yP94EpkrkByyuxfsIrvJ55SV4FZ1ayIhSL5zlEhEI2f0cJqJUJwFNg6guiK
-         yEj15uilUmD+/QI3Nx1jQNCe2lstK0/y3zvBRyI9sITRErVTgmCfh1tPatpPYGXEsR
-         7g2DFUTxemi2XBTgaW6V+Na0f+4E/Sf5BVnHsauk5srsX6N/GiFV4pue7boCHMvsue
-         P/hoX6IRn5ZQA==
-Date:   Thu, 15 Apr 2021 09:21:31 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Jie Deng <jie.deng@intel.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        yu1.wang@intel.com, shuo.a.liu@intel.com,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210415072131.GA1006@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Jie Deng <jie.deng@intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        conghui.chen@intel.com, kblaiech@mellanox.com,
-        jarkko.nikula@linux.intel.com,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Mike Rapoport <rppt@kernel.org>, loic.poulain@linaro.org,
-        Tali Perry <tali.perry1@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>, yu1.wang@intel.com,
-        shuo.a.liu@intel.com, Stefan Hajnoczi <stefanha@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
- <20210323072704.rgoelmq62fl2wjjf@vireshk-i7>
- <a2994a8f-bbf9-b26f-a9d2-eb02df6623b8@intel.com>
- <CAK8P3a3OBUZC2nxaQ2wyL9EeT3gzXUX9sfJ+ZJfJUiJK_3ZkrA@mail.gmail.com>
- <20210415064538.a4vf7egk6l3u6zfz@vireshk-i7>
- <b25d1f4e-f17f-8a14-e7e6-7577d25be877@intel.com>
+        id S230090AbhDOHX3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 03:23:29 -0400
+IronPort-SDR: x9f/I2kF0yY4Oy/NPOEFbo7WaAQDdT5pL1BLxvG9Z8obDdsFUirJTQZ85hu+sh/JcVPZnjFeLX
+ BKf9AjyDz31Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="191615578"
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="191615578"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 00:23:06 -0700
+IronPort-SDR: 1q08mUOndKXeFVGEi7/bOhotozuY47EgUD72MhZuLu5RDOeGhDdtBhcxSMZ9fWE5Vm7NIwhUH8
+ i5dM4tQLKOcA==
+X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
+   d="scan'208";a="418647778"
+Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.254.209.173]) ([10.254.209.173])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 00:23:03 -0700
+Subject: Re: [PATCH 1/3] vDPA/ifcvf: deduce VIRTIO device ID when probe
+To:     Jason Wang <jasowang@redhat.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>, mst@redhat.com,
+        lulu@redhat.com, leonro@nvidia.com
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210414091832.5132-1-lingshan.zhu@intel.com>
+ <20210414091832.5132-2-lingshan.zhu@intel.com>
+ <85483ff1-cf98-ad05-0c53-74caa2464459@redhat.com>
+ <ccf7001b-27f0-27ea-40d2-52ca3cc2386b@linux.intel.com>
+ <ffd2861d-2395-de51-a227-f1ef33f74322@redhat.com>
+ <92ef6264-4462-cbd4-5db8-6ce6b68762e0@linux.intel.com>
+ <d3c7ea9f-1849-f890-f647-6caf764a7542@redhat.com>
+From:   Zhu Lingshan <lingshan.zhu@linux.intel.com>
+Message-ID: <e2e5de78-9b6f-32cf-5955-ed930365d79f@linux.intel.com>
+Date:   Thu, 15 Apr 2021 15:23:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="envbJBWh7q8WU6mo"
-Content-Disposition: inline
-In-Reply-To: <b25d1f4e-f17f-8a14-e7e6-7577d25be877@intel.com>
+In-Reply-To: <d3c7ea9f-1849-f890-f647-6caf764a7542@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---envbJBWh7q8WU6mo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
+On 4/15/2021 3:16 PM, Jason Wang wrote:
+>
+> 在 2021/4/15 下午2:36, Zhu Lingshan 写道:
+>>
+>>
+>> On 4/15/2021 2:30 PM, Jason Wang wrote:
+>>>
+>>> 在 2021/4/15 下午1:52, Zhu Lingshan 写道:
+>>>>
+>>>>
+>>>> On 4/15/2021 11:30 AM, Jason Wang wrote:
+>>>>>
+>>>>> 在 2021/4/14 下午5:18, Zhu Lingshan 写道:
+>>>>>> This commit deduces VIRTIO device ID as device type when probe,
+>>>>>> then ifcvf_vdpa_get_device_id() can simply return the ID.
+>>>>>> ifcvf_vdpa_get_features() and ifcvf_vdpa_get_config_size()
+>>>>>> can work properly based on the device ID.
+>>>>>>
+>>>>>> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
+>>>>>> ---
+>>>>>>   drivers/vdpa/ifcvf/ifcvf_base.h |  1 +
+>>>>>>   drivers/vdpa/ifcvf/ifcvf_main.c | 22 ++++++++++------------
+>>>>>>   2 files changed, 11 insertions(+), 12 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h 
+>>>>>> b/drivers/vdpa/ifcvf/ifcvf_base.h
+>>>>>> index b2eeb16b9c2c..1c04cd256fa7 100644
+>>>>>> --- a/drivers/vdpa/ifcvf/ifcvf_base.h
+>>>>>> +++ b/drivers/vdpa/ifcvf/ifcvf_base.h
+>>>>>> @@ -84,6 +84,7 @@ struct ifcvf_hw {
+>>>>>>       u32 notify_off_multiplier;
+>>>>>>       u64 req_features;
+>>>>>>       u64 hw_features;
+>>>>>> +    u32 dev_type;
+>>>>>>       struct virtio_pci_common_cfg __iomem *common_cfg;
+>>>>>>       void __iomem *net_cfg;
+>>>>>>       struct vring_info vring[IFCVF_MAX_QUEUE_PAIRS * 2];
+>>>>>> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c 
+>>>>>> b/drivers/vdpa/ifcvf/ifcvf_main.c
+>>>>>> index 44d7586019da..99b0a6b4c227 100644
+>>>>>> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
+>>>>>> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
+>>>>>> @@ -323,19 +323,9 @@ static u32 ifcvf_vdpa_get_generation(struct 
+>>>>>> vdpa_device *vdpa_dev)
+>>>>>>     static u32 ifcvf_vdpa_get_device_id(struct vdpa_device 
+>>>>>> *vdpa_dev)
+>>>>>>   {
+>>>>>> -    struct ifcvf_adapter *adapter = vdpa_to_adapter(vdpa_dev);
+>>>>>> -    struct pci_dev *pdev = adapter->pdev;
+>>>>>> -    u32 ret = -ENODEV;
+>>>>>> -
+>>>>>> -    if (pdev->device < 0x1000 || pdev->device > 0x107f)
+>>>>>> -        return ret;
+>>>>>> -
+>>>>>> -    if (pdev->device < 0x1040)
+>>>>>> -        ret =  pdev->subsystem_device;
+>>>>>> -    else
+>>>>>> -        ret =  pdev->device-0x1040;
+>>>>>> +    struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
+>>>>>>   -    return ret;
+>>>>>> +    return vf->dev_type;
+>>>>>>   }
+>>>>>>     static u32 ifcvf_vdpa_get_vendor_id(struct vdpa_device 
+>>>>>> *vdpa_dev)
+>>>>>> @@ -466,6 +456,14 @@ static int ifcvf_probe(struct pci_dev *pdev, 
+>>>>>> const struct pci_device_id *id)
+>>>>>>       pci_set_drvdata(pdev, adapter);
+>>>>>>         vf = &adapter->vf;
+>>>>>> +    if (pdev->device < 0x1000 || pdev->device > 0x107f)
+>>>>>> +        return -EOPNOTSUPP;
+>>>>>> +
+>>>>>> +    if (pdev->device < 0x1040)
+>>>>>> +        vf->dev_type =  pdev->subsystem_device;
+>>>>>> +    else
+>>>>>> +        vf->dev_type =  pdev->device - 0x1040;
+>>>>>
+>>>>>
+>>>>> So a question here, is the device a transtional device or modern one?
+>>>>>
+>>>>> If it's a transitonal one, can it swtich endianess automatically 
+>>>>> or not?
+>>>>>
+>>>>> Thanks
+>>>> Hi Jason,
+>>>>
+>>>> This driver should drive both modern and transitional devices as we 
+>>>> discussed before.
+>>>> If it's a transitional one, it will act as a modern device by 
+>>>> default, legacy mode is a fail-over path.
+>>>
+>>>
+>>> Note that legacy driver use native endian, support legacy driver 
+>>> requires the device to know native endian which I'm not sure your 
+>>> device can do that.
+>>>
+>>> Thanks
+>> Yes, legacy requires guest native endianess, I think we don't need to 
+>> worry about this because our transitional device should work in 
+>> modern mode by
+>> default(legacy mode is the failover path we will never reach, 
+>> get_features will fail if no ACCESS_PLATFORM), we don't support 
+>> legacy device in vDPA.
+>>
+>> Thanks
+>
+>
+> Ok, so I think it's better to add a comment here.
+sure, will add a comment in V2
 
-> I didn't forget this. It is a very small change. I'm not sure if the
-> maintainer Wolfram
->=20
-> has any comments so that I can address them together in one version.
+Thanks
+>
+> Thanks
+>
+>
+>>>
+>>>
+>>>> For vDPA, it has to support VIRTIO_1 and ACCESS_PLATFORM, so it 
+>>>> must in modern mode.
+>>>> I think we don't need to worry about endianess for legacy mode.
+>>>>
+>>>> Thanks
+>>>> Zhu Lingshan
+>>>>>
+>>>>>
+>>>>>> +
+>>>>>>       vf->base = pcim_iomap_table(pdev);
+>>>>>>         adapter->pdev = pdev;
+>>>>>
+>>>>
+>>>
+>>
+>
 
-Noted. I'll have a look in the next days.
-
-
---envbJBWh7q8WU6mo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmB36XcACgkQFA3kzBSg
-KbYAgw//ZALqEFi+U4OWNgzN5og6uPiiwzFwCwT8WEpZ0galxg7zj5WeHBMyROAr
-0bGRhtCUrm6be+aF2sE5VaEp0+ehVO7vkLGizTydR4M73yJUwFxY5IPGoOlfYttQ
-TNU7ExAccGkk9oCfRaYcofAHh+U1ulgP7nC/PjMcCocHGXRV2ST/CEIhVoMuCI9X
-KGt2J2PDDh6KGqPCQsQgDznSMK6cGoE9l/T6KU9nuea0Qlb0/GuJL+rPtidIguci
-Ng9EzRPhDscnMK526yIClxbxTdM+13Lxp498tgptwVjqQ5EdaRakYo7A0IgSPI11
-Ttt7zIlumHhdIFsYzz9eQt0e7WNzxlH9ZpGf3tRJoxAxkfi4bXPLtNrguwzBQt5p
-Lf6JItqGV+4biiPOLvho/MCA5LlY5qOgNE7ewOlIiqv348G+ZbgmGfKoZ5pHxuDK
-q76sQCadM/vLtSjBUaMxrY7EK+DOsBVisR0oXPhEYFRI8q/yHQ6X3dk1/ttUw1RT
-d9SmWK51FmYAE6AzhrLam9BK6E4NS6FCTMWBYGBsCAGX1tsE2tjBOxEQG7feNabP
-w3l3+rtqQxHHtXB9G6EMWYAnpRrNb1PrLsokXRWPYZbpN4k+CjqndQ5ab3pDYEMR
-SICXl09SSuJ1U2yIj9rFDCvVYbz4793XTsM0i8DNaaQsKCCDiDk=
-=+EoA
------END PGP SIGNATURE-----
-
---envbJBWh7q8WU6mo--
