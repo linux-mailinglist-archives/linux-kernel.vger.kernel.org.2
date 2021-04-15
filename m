@@ -2,116 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968833600B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 06:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CFA53600B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 06:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229521AbhDOEBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 00:01:52 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:57962 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229450AbhDOEBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 00:01:51 -0400
-Received: from [10.130.0.135] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxPcmTundgzikIAA--.11464S3;
-        Thu, 15 Apr 2021 12:01:24 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: [QUESTION] Will the pahole tar source code with corresponding libbpf
- submodule codes be released as well in the future?
-To:     Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <2de4aad5-fa9e-1c39-3c92-9bb9229d0966@loongson.cn>
-Date:   Thu, 15 Apr 2021 12:01:23 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S229609AbhDOECX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 00:02:23 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5133 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhDOECV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 00:02:21 -0400
+Received: from DGGEML404-HUB.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FLQb91wnczYWTs;
+        Thu, 15 Apr 2021 11:59:49 +0800 (CST)
+Received: from dggpemm000002.china.huawei.com (7.185.36.174) by
+ DGGEML404-HUB.china.huawei.com (10.3.17.39) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Thu, 15 Apr 2021 12:01:55 +0800
+Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
+ dggpemm000002.china.huawei.com (7.185.36.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 15 Apr 2021 12:01:55 +0800
+Received: from dggpemm000003.china.huawei.com ([7.185.36.128]) by
+ dggpemm000003.china.huawei.com ([7.185.36.128]) with mapi id 15.01.2106.013;
+ Thu, 15 Apr 2021 12:01:55 +0800
+From:   "Zengtao (B)" <prime.zeng@hisilicon.com>
+To:     Wu XiangCheng <bobwxc@email.cn>, Alex Shi <alexs@kernel.org>,
+        Bernard Zhao <bernard@vivo.com>
+CC:     Jonathan Corbet <corbet@lwn.net>,
+        YanTeng Si <sterlingteng@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggdjVdIGRvY3MvemhfQ046IGFkZCB0cmFuc2xhdGlv?=
+ =?utf-8?Q?ns_in_zh=5FCN/dev-tools/gcov?=
+Thread-Topic: [PATCH v5] docs/zh_CN: add translations in zh_CN/dev-tools/gcov
+Thread-Index: AQHXMTFxHEf5zlvY0UeIFVspcBfxVKq08UpQ
+Date:   Thu, 15 Apr 2021 04:01:55 +0000
+Message-ID: <e26cc66e2a2745f994eb8ede9a783563@hisilicon.com>
+References: <20210414082316.15160-1-bernard@vivo.com>
+ <20210414132127.GA13306@bobwxc.top>
+In-Reply-To: <20210414132127.GA13306@bobwxc.top>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.69.38.183]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9AxPcmTundgzikIAA--.11464S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxAF1UGr1UKFyxJFyfAr15XFb_yoW5XFy8pF
-        Z3J3Z5tr45Kw4FyrWkA34xWr4YqrZ5tr4aqa4Skr4UCrZ8Xa1xWan2vF43urZxAwn8Jay2
-        qF17CF4UCFy8Wr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkvb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
-        vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07bOoGdUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(1) tools/bpf/bpftool build failed due to the following reason:
-
-Error: failed to load BTF from /boot/vmlinux-5.12.0-rc2: No such file or 
-directory
-make: *** [Makefile:158: vmlinux.h] Error 2
-
-(2) When set CONFIG_DEBUG_INFO_BTF=y, failed to generate BTF for vmlinux
-due to pahole is not available
-
-BTF: .tmp_vmlinux.btf: pahole (pahole) is not available
-Failed to generate BTF for vmlinux
-Try to disable CONFIG_DEBUG_INFO_BTF
-make: *** [Makefile:1197: vmlinux] Error 1
-
-(3) When build pahole from tar.gz source code, it still failed
-due to no libbpf submodule.
-
-loongson@linux:~$ wget 
-https://git.kernel.org/pub/scm/devel/pahole/pahole.git/snapshot/pahole-1.21.tar.gz
-loongson@linux:~$ tar xf pahole-1.21.tar.gz
-loongson@linux:~$ cd pahole-1.21
-loongson@linux:~/pahole-1.21$ mkdir build
-loongson@linux:~/pahole-1.21$ cd build/
-loongson@linux:~/pahole-1.21/build$ cmake -D__LIB=lib ..
--- The C compiler identification is GNU 10.2.1
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: /usr/bin/cc - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Checking availability of DWARF and ELF development libraries
--- Looking for dwfl_module_build_id in elf
--- Looking for dwfl_module_build_id in elf - found
--- Found dwarf.h header: /usr/include
--- Found elfutils/libdw.h header: /usr/include
--- Found libdw library: /usr/lib/mips64el-linux-gnuabi64/libdw.so
--- Found libelf library: /usr/lib/mips64el-linux-gnuabi64/libelf.so
--- Checking availability of DWARF and ELF development libraries - done
--- Found ZLIB: /usr/lib/mips64el-linux-gnuabi64/libz.so (found version 
-"1.2.11")
-CMake Error at CMakeLists.txt:60 (message):
-   The submodules were not downloaded! GIT_SUBMODULE was turned off or 
-failed.
-   Please update submodules and try again.
-
--- Configuring incomplete, errors occurred!
-See also "/home/loongson/pahole-1.21/build/CMakeFiles/CMakeOutput.log".
-
-(4) I notice that the pahole git source code can build successful because
-it will clone libbpf automatically:
-
--- Submodule update
-Submodule 'lib/bpf' (https://github.com/libbpf/libbpf) registered for 
-path 'lib/bpf'
-Cloning into '/home/loongson/pahole/lib/bpf'...
-Submodule path 'lib/bpf': checked out 
-'986962fade5dfa89c2890f3854eb040d2a64ab38'
--- Submodule update - done
-
-(5) So Will the pahole tar source code with corresponding libbpf 
-submodule codes
-be released as well in the future? just like bcc:
-https://github.com/iovisor/bcc/releases
-https://github.com/iovisor/bcc/commit/708f786e3784dc32570a079f2ed74c35731664ea
-
-Thanks,
-Tiezhu
-
+PiAtLS0tLemCruS7tuWOn+S7ti0tLS0tDQo+IOWPkeS7tuS6ujogV3UgWGlhbmdDaGVuZyBbbWFp
+bHRvOmJvYnd4Y0BlbWFpbC5jbl0NCj4g5Y+R6YCB5pe26Ze0OiAyMDIx5bm0NOaciDE05pelIDIx
+OjIxDQo+IOaUtuS7tuS6ujogQWxleCBTaGkgPGFsZXhzQGtlcm5lbC5vcmc+OyBCZXJuYXJkIFpo
+YW8gPGJlcm5hcmRAdml2by5jb20+DQo+IOaKhOmAgTogSm9uYXRoYW4gQ29yYmV0IDxjb3JiZXRA
+bHduLm5ldD47IFlhblRlbmcgU2kNCj4gPHN0ZXJsaW5ndGVuZ0BnbWFpbC5jb20+OyBOYXRoYW4g
+Q2hhbmNlbGxvciA8bmF0aGFuQGtlcm5lbC5vcmc+OyBOaWNrDQo+IERlc2F1bG5pZXJzIDxuZGVz
+YXVsbmllcnNAZ29vZ2xlLmNvbT47IGxpbnV4LWRvY0B2Z2VyLmtlcm5lbC5vcmc7DQo+IGxpbnV4
+LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGNsYW5nLWJ1aWx0LWxpbnV4QGdvb2dsZWdyb3Vwcy5j
+b20NCj4g5Li76aKYOiBbUEFUQ0ggdjVdIGRvY3MvemhfQ046IGFkZCB0cmFuc2xhdGlvbnMgaW4g
+emhfQ04vZGV2LXRvb2xzL2djb3YNCj4gDQo+IEZyb206IEJlcm5hcmQgWmhhbyA8YmVybmFyZEB2
+aXZvLmNvbT4NCj4gDQo+IEFkZCBuZXcgemggdHJhbnNsYXRpb25zDQo+ICogemhfQ04vZGV2LXRv
+b2xzL2djb3YucnN0DQo+ICogemhfQ04vZGV2LXRvb2xzL2luZGV4LnJzdA0KPiBhbmQgbGluayB0
+aGVtIHRvIHpoX0NOL2luZGV4LnJzdA0KPiANCj4gU2lnbmVkLW9mZi1ieTogQmVybmFyZCBaaGFv
+IDxiZXJuYXJkQHZpdm8uY29tPg0KPiBSZXZpZXdlZC1ieTogV3UgWGlhbmdDaGVuZyA8Ym9id3hj
+QGVtYWlsLmNuPg0KPiBTaWduZWQtb2ZmLWJ5OiBXdSBYaWFuZ0NoZW5nIDxib2J3eGNAZW1haWwu
+Y24+DQo+IC0tLQ0KPiBiYXNlOiBsaW51eC1uZXh0DQo+IGNvbW1pdCAyNjlkZDQyZjQ3NzYgKCJk
+b2NzL3poX0NOOiBhZGQgcmlzY3YgdG8gemhfQ04gaW5kZXgiKQ0KPiANCj4gQ2hhbmdlcyBzaW5j
+ZSBWNDoNCj4gKiBtb2RpZmllZCBzb21lIHdvcmRzIHVuZGVyIEFsZXggU2hpJ3MgYWR2aWNlcw0K
+PiANCj4gQ2hhbmdlcyBzaW5jZSBWMzoNCj4gKiB1cGRhdGUgdG8gbmV3ZXN0IGxpbnV4LW5leHQN
+Cj4gKiBmaXggYGANCj4gKiBmaXggdGFncw0KPiAqIGZpeCBsaXN0IGluZGVudA0KPiANCj4gQ2hh
+bmdlcyBzaW5jZSBWMjoNCj4gKiBmaXggc29tZSBpbmFjY3VyYXRlIHRyYW5zbGF0aW9uDQo+IA0K
+PiBDaGFuZ2VzIHNpbmNlIFYxOg0KPiAqIGFkZCBpbmRleC5yc3QgaW4gZGV2LXRvb2xzIGFuZCBs
+aW5rIHRvIHRvIHpoX0NOL2luZGV4LnJzdA0KPiAqIGZpeCBzb21lIGluYWNjdXJhdGUgdHJhbnNs
+YXRpb24NCj4gDQo+ICAuLi4vdHJhbnNsYXRpb25zL3poX0NOL2Rldi10b29scy9nY292LnJzdCAg
+ICAgfCAyNjUgKysrKysrKysrKysrKysrKysrDQo+ICAuLi4vdHJhbnNsYXRpb25zL3poX0NOL2Rl
+di10b29scy9pbmRleC5yc3QgICAgfCAgMzUgKysrDQo+ICBEb2N1bWVudGF0aW9uL3RyYW5zbGF0
+aW9ucy96aF9DTi9pbmRleC5yc3QgICAgfCAgIDEgKw0KPiAgMyBmaWxlcyBjaGFuZ2VkLCAzMDEg
+aW5zZXJ0aW9ucygrKQ0KPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vdHJhbnNs
+YXRpb25zL3poX0NOL2Rldi10b29scy9nY292LnJzdA0KPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IERv
+Y3VtZW50YXRpb24vdHJhbnNsYXRpb25zL3poX0NOL2Rldi10b29scy9pbmRleC5yc3QNCj4gDQo+
+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL3RyYW5zbGF0aW9ucy96aF9DTi9kZXYtdG9vbHMv
+Z2Nvdi5yc3QNCj4gYi9Eb2N1bWVudGF0aW9uL3RyYW5zbGF0aW9ucy96aF9DTi9kZXYtdG9vbHMv
+Z2Nvdi5yc3QNCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gaW5kZXggMDAwMDAwMDAwMDAwLi43
+NTE1YjQ4OGJjNGUNCj4gLS0tIC9kZXYvbnVsbA0KPiArKysgYi9Eb2N1bWVudGF0aW9uL3RyYW5z
+bGF0aW9ucy96aF9DTi9kZXYtdG9vbHMvZ2Nvdi5yc3QNCj4gQEAgLTAsMCArMSwyNjUgQEANCj4g
+Ky4uIGluY2x1ZGU6OiAuLi9kaXNjbGFpbWVyLXpoX0NOLnJzdA0KPiArDQo+ICs6T3JpZ2luYWw6
+IERvY3VtZW50YXRpb24vZGV2LXRvb2xzL2djb3YucnN0DQo+ICs6VHJhbnNsYXRvcjog6LW15Yab
+5aWOIEJlcm5hcmQgWmhhbyA8YmVybmFyZEB2aXZvLmNvbT4NCj4gKw0KPiAr5ZyoTGludXjlhoXm
+oLjph4zkvb/nlKhnY2925YGa5Luj56CB6KaG55uW546H5qOA5p+lDQo+ICs9PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09DQo+ICsNCj4gK2djb3bmmK9saW51eOS4reW3sue7j+mb
+huaIkOeahOS4gOS4quWIhuaekOaooeWdl++8jOivpeaooeWdl+WcqOWGheaguOS4reWvuUdDQ+ea
+hOS7o+eggQ0KPiDopobnm5bnjofnu58NCg0KR2NvdiBpcyBhIHRvb2wvZnVuY3Rpb24sIG1pc2xl
+YWRpbmcgZm9yICIgZ2NvduaYr2xpbnV45Lit5bey57uP6ZuG5oiQ55qE5LiA5Liq5YiG5p6QDQrm
+qKHlnZciDQoNCkkgJ2Qgc3VnZ2VzdDoNCiJMaW51eOWGheaguOS4reW3sue7j+mbhuaIkOS4gOS4
+queJueaAp+aUr+aMgWdjb3blip/og73vvIzor6XnibnmgKforqnnlKjmiLflj6/ku6Xkvb/nlKhn
+Y292DQog5bel5YW35a+55YaF5qC45Luj56CB6KaG55uW546H6L+b6KGM57uf6K6hIg0KDQpUaGFu
+a3MuDQo=
