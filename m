@@ -2,138 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB21361408
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 23:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F4736140A
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 23:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235764AbhDOVTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 17:19:30 -0400
-Received: from mga07.intel.com ([134.134.136.100]:53927 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235110AbhDOVT3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 17:19:29 -0400
-IronPort-SDR: WDFrfT3s9fHH9L3AvpvfroFj44Jmg1asHtNNYLHUFCnMTro5YzH+8ACI17fXpgSfQcAtSKr0Dy
- ueauJPBH+cYw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="258904205"
-X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
-   d="scan'208";a="258904205"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 14:19:05 -0700
-IronPort-SDR: 0BTZHOCWTCz1UA2ScgSgzF5MEPoioBZwhQmEEWkxuHqEciqtu1cKTce9Pk3SJWRCJQnpcycbuw
- zjyg+Ho5XZUA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
-   d="scan'208";a="444312582"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga004.fm.intel.com with ESMTP; 15 Apr 2021 14:19:05 -0700
-Received: from [10.212.132.71] (kliang2-MOBL.ccr.corp.intel.com [10.212.132.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 630A858088F;
-        Thu, 15 Apr 2021 14:19:03 -0700 (PDT)
-Subject: Re: [PATCH] perf/x86/intel/uncore: Avoid null dereferences
- (uncore_extra_pci_dev)
-To:     Steve Wahl <steve.wahl@hpe.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-References: <20210415203720.334007-1-steve.wahl@hpe.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <f3789c72-4805-8636-1bcb-38c2a1ec69ea@linux.intel.com>
-Date:   Thu, 15 Apr 2021 17:19:01 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S235411AbhDOVT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 17:19:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234959AbhDOVT5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 17:19:57 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5979C061574;
+        Thu, 15 Apr 2021 14:19:33 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lX9Oc-005bBv-ES; Thu, 15 Apr 2021 21:19:30 +0000
+Date:   Thu, 15 Apr 2021 21:19:30 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Miklos Szeredi <mszeredi@redhat.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the vfs tree
+Message-ID: <YHit4glpYL3cCMoe@zeniv-ca.linux.org.uk>
+References: <20210412214730.2dbbcdff@canb.auug.org.au>
+ <CAOssrKdAmeVK_uwLCDo_ZT52vOzxSU9X=orgzU6RB088L6OdKA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210415203720.334007-1-steve.wahl@hpe.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOssrKdAmeVK_uwLCDo_ZT52vOzxSU9X=orgzU6RB088L6OdKA@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
-
-On 4/15/2021 4:37 PM, Steve Wahl wrote:
-> If an uncore has no pci_init routine, or that routine fails,
-> uncore_pci_init is not called, and memory is not allocated for
-> uncore_extra_pci_dev.
+On Mon, Apr 12, 2021 at 03:07:56PM +0200, Miklos Szeredi wrote:
+> Hi Al,
 > 
-> So check to make sure uncore_extra_pci_dev is not NULL before use.
->
-
-I think more after yesterday's discussion. There may be a better 
-solution than this.
-
-Actually, we don't have to probe all the PCU devices and stores them 
-into the uncore_extra_pci_dev for the cpu_init().
-We just need to pick up the first PCU device and check the existence of 
-the SBOX once.
-
-I will send out a patch shortly.
-
-> And fix the case that led us to discover the null derefs; don't fail
-> snbep_pci2phy_map_init if BIOS doesn't supply pcibus_to_node
-> information.
+> Fixed fileattr branch pushed to:
 > 
-> Fixes: 9a7832ce3d92 ("perf/x86/intel/uncore: With > 8 nodes, get pci bus die id from NUMA info")
+>   git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git fileattr_v6
 
-In theory, the pci_read_config_dword() may fails as well. It has 
-possible that the issue can still be observed before the "> 8 nodes" patch.
-
-I think the fixes should be 5306c31c5733 ("perf/x86/uncore/hsw-ep: 
-Handle systems with only two SBOXes")
-
-Thanks,
-Kan
-
-> Signed-off-by: Steve Wahl <steve.wahl@hpe.com>
-> ---
->   arch/x86/events/intel/uncore_snbep.c | 10 +++++++---
->   1 file changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-> index b79951d0707c..14c24356a2fa 100644
-> --- a/arch/x86/events/intel/uncore_snbep.c
-> +++ b/arch/x86/events/intel/uncore_snbep.c
-> @@ -1373,11 +1373,11 @@ static int snbep_pci2phy_map_init(int devid, int nodeid_loc, int idmap_loc, bool
->   		/*
->   		 * The nodeid and idmap registers only contain enough
->   		 * information to handle 8 nodes.  On systems with more
-> -		 * than 8 nodes, we need to rely on NUMA information,
-> +		 * than 8 nodes, if available we rely on NUMA information,
->   		 * filled in from BIOS supplied information, to determine
->   		 * the topology.
->   		 */
-> -		if (nr_node_ids <= 8) {
-> +		if ((nr_node_ids <= 8) || (pcibus_to_node(ubox_dev->bus) == -1)) {
->   			/* get the Node ID of the local register */
->   			err = pci_read_config_dword(ubox_dev, nodeid_loc, &config);
->   			if (err)
-> @@ -2865,7 +2865,9 @@ void hswep_uncore_cpu_init(void)
->   		hswep_uncore_cbox.num_boxes = boot_cpu_data.x86_max_cores;
->   
->   	/* Detect 6-8 core systems with only two SBOXes */
-> -	if (uncore_extra_pci_dev[pkg].dev[HSWEP_PCI_PCU_3]) {
-> +	if (!uncore_extra_pci_dev)
-> +		hswep_uncore_sbox.num_boxes = 2;
-> +	else if (uncore_extra_pci_dev[pkg].dev[HSWEP_PCI_PCU_3]) {
->   		u32 capid4;
->   
->   		pci_read_config_dword(uncore_extra_pci_dev[pkg].dev[HSWEP_PCI_PCU_3],
-> @@ -3243,6 +3245,8 @@ void bdx_uncore_cpu_init(void)
->   	if (boot_cpu_data.x86_model == 86) {
->   		uncore_msr_uncores[BDX_MSR_UNCORE_SBOX] = NULL;
->   	/* Detect systems with no SBOXes */
-> +	} else if (!uncore_extra_pci_dev) {
-> +		bdx_msr_uncores[BDX_MSR_UNCORE_SBOX] = NULL;
->   	} else if (uncore_extra_pci_dev[pkg].dev[HSWEP_PCI_PCU_3]) {
->   		struct pci_dev *pdev;
->   		u32 capid4;
-> 
+Merged and pushed out...
