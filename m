@@ -2,112 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2615435FF13
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 02:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D14A35FF16
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 02:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbhDOAuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 20:50:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56740 "EHLO
+        id S229551AbhDOA6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 20:58:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbhDOAuI (ORCPT
+        with ESMTP id S229436AbhDOA6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 20:50:08 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02EC5C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 17:49:47 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id em21-20020a17090b0155b029014e204a81e6so3842227pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 17:49:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fOJI4hThVgEOLJyImgusGGiOxy9mpTSNJ/Mrm5n5Wk0=;
-        b=lEI57So+mLNKqR8MOcAK5p3MZw4vqrkk9etbelECfBcXuY5eDWQoby3QMZLzSfY8Ld
-         RvK2vdibjbtjGeqLJkWkmBpcWbieDeicodh6t61TVGzdFOeCO2Tfi3KhnWWSjua3I+7/
-         zjdNxm+qgvPvgZ9WsJ9ZUeZ5YYiuAJh6XbZ6tEsTahjj4Zht3bVEskNbzX1vDUHFjevH
-         xvzIDu3EKHqfEu4p4n1g3O6vhoUbUZUSS7b6TvAcCczNn3L241mIvi8mFqtGd8FZSgLw
-         Yy8ROdcJrDJ/TYNZnks+IkY99l1c7xmHX3Jt5yK9PVXmr+doXnNzkHsWhkATfYP4LBZn
-         OCgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fOJI4hThVgEOLJyImgusGGiOxy9mpTSNJ/Mrm5n5Wk0=;
-        b=g17Gd0BMsBMThS7zmfTghIPOfcP/D0glZiU85kNz8DAlx3olAU4GL7mrE+8HvI7nwS
-         AmlmkeOWu4KRV+343O4DPQ/HrbkcyIqXha/0A69LqtrfrqKjWsG2S+edyMIb/MDKClQt
-         5qUzxnItEV1QjQpNjvB2JU3ITItnJPAFAlytYKr3yG0XsaNh/AViCc1UoazA8Fg7g9SU
-         cUHMkAgxqjmPGwUH0l2/jWF6gKa2eFiqwjwT8ttO1JrF+/mOJ/3YB5zKBro/yO190UcB
-         r+GEZfa9/X9WUZaz08qI+4Z3FRAd2wT+g7i/NYXLn64immBjS0qTORQOIRd8nDYL+by8
-         mqHQ==
-X-Gm-Message-State: AOAM530xGvurcKEttu2Ay3ADBHhtr41Md+eENNgiHdP+aEGOSfPItPT7
-        hrghls1B770HicI7BFZH7RMy9g==
-X-Google-Smtp-Source: ABdhPJxRBMrjNapa9s3nteduAiJXZXONsLdWBJOaAaq7bl/eTin1t4vjjR9fsQXFfqGsZoPswRvjvQ==
-X-Received: by 2002:a17:90a:fa0c:: with SMTP id cm12mr915481pjb.54.1618447785825;
-        Wed, 14 Apr 2021 17:49:45 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id z29sm589556pga.52.2021.04.14.17.49.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Apr 2021 17:49:45 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 00:49:41 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Michael Tokarev <mjt@tls.msk.ru>
-Subject: Re: [PATCH v2 0/3] KVM: Properly account for guest CPU time
-Message-ID: <YHeNpUd1ZO1JVaAf@google.com>
-References: <1618298169-3831-1-git-send-email-wanpengli@tencent.com>
- <YHXUFJuLXY8VZw3B@google.com>
- <CANRm+CzDW_5SPM0131OvRn3UPBp1nahxCykCP61XWeUpYeHU5Q@mail.gmail.com>
+        Wed, 14 Apr 2021 20:58:52 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 937B3C061574;
+        Wed, 14 Apr 2021 17:58:29 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 63B3E51E;
+        Thu, 15 Apr 2021 02:58:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1618448306;
+        bh=dT0dNdclklPiYApYQlXIEs77mjYEm26Y9+wMkOD0nvc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RxLAeseP/5Pdt5JDnRvWf/rt6evuAn133rWeH6zaj1mKSEUlv64P8LNG/QdY52rXj
+         kAZ9ksbDJQbfOkAFg7j5b+4VSSoOPa3I2w9S5KrUpQy8BqA705FFPZTDiBtU/g82el
+         Lknu/tWvcMyEHaLL+ZO6r8+4faZeq4oA+AMYXOlk=
+Date:   Thu, 15 Apr 2021 03:58:25 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus W <linus.walleij@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        robdclark@chromium.org, Stephen Boyd <swboyd@chromium.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        linux-arm-msm@vger.kernel.org,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 12/12] drm/panel: panel-simple: Use runtime pm to
+ avoid excessive unprepare / prepare
+Message-ID: <YHePsQgqOau1V5lD@pendragon.ideasonboard.com>
+References: <20210402222846.2461042-1-dianders@chromium.org>
+ <20210402152701.v3.12.I9e8bd33b49c496745bfac58ea9ab418bd3b6f5ce@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CANRm+CzDW_5SPM0131OvRn3UPBp1nahxCykCP61XWeUpYeHU5Q@mail.gmail.com>
+In-Reply-To: <20210402152701.v3.12.I9e8bd33b49c496745bfac58ea9ab418bd3b6f5ce@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021, Wanpeng Li wrote:
-> On Wed, 14 Apr 2021 at 01:25, Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > On Tue, Apr 13, 2021, Wanpeng Li wrote:
-> > > The bugzilla https://bugzilla.kernel.org/show_bug.cgi?id=209831
-> > > reported that the guest time remains 0 when running a while true
-> > > loop in the guest.
-> > >
-> > > The commit 87fa7f3e98a131 ("x86/kvm: Move context tracking where it
-> > > belongs") moves guest_exit_irqoff() close to vmexit breaks the
-> > > tick-based time accouting when the ticks that happen after IRQs are
-> > > disabled are incorrectly accounted to the host/system time. This is
-> > > because we exit the guest state too early.
-> > >
-> > > This patchset splits both context tracking logic and the time accounting
-> > > logic from guest_enter/exit_irqoff(), keep context tracking around the
-> > > actual vmentry/exit code, have the virt time specific helpers which
-> > > can be placed at the proper spots in kvm. In addition, it will not
-> > > break the world outside of x86.
-> >
-> > IMO, this is going in the wrong direction.  Rather than separate context tracking,
-> > vtime accounting, and KVM logic, this further intertwines the three.  E.g. the
-> > context tracking code has even more vtime accounting NATIVE vs. GEN vs. TICK
-> > logic baked into it.
-> >
-> > Rather than smush everything into context_tracking.h, I think we can cleanly
-> > split the context tracking and vtime accounting code into separate pieces, which
-> > will in turn allow moving the wrapping logic to linux/kvm_host.h.  Once that is
-> > done, splitting the context tracking and time accounting logic for KVM x86
-> > becomes a KVM detail as opposed to requiring dedicated logic in the context
-> > tracking code.
-> >
-> > I have untested code that compiles on x86, I'll send an RFC shortly.
-> 
-> We need an easy to backport fix and then we might have some further
-> cleanups on top.
+Hi Doug,
 
-I fiddled with this a bit today, I think I have something workable that will be
-a relatively clean and short backport.  With luck, I'll get it posted tomorrow.
+Thank you for the patch.
+
+On Fri, Apr 02, 2021 at 03:28:46PM -0700, Douglas Anderson wrote:
+> Unpreparing and re-preparing a panel can be a really heavy
+> operation. Panels datasheets often specify something on the order of
+> 500ms as the delay you should insert after turning off the panel
+> before turning it on again. In addition, turning on a panel can have
+> delays on the order of 100ms - 200ms before the panel will assert HPD
+> (AKA "panel ready"). The above means that we should avoid turning a
+> panel off if we're going to turn it on again shortly.
+> 
+> The above becomes a problem when we want to read the EDID of a
+> panel. The way that ordering works is that userspace wants to read the
+> EDID of the panel _before_ fully enabling it so that it can set the
+> initial mode correctly. However, we can't read the EDID until we power
+> it up. This leads to code that does this dance (like
+> ps8640_bridge_get_edid()):
+> 
+> 1. When userspace requests EDID / the panel modes (through an ioctl),
+>    we power on the panel just enough to read the EDID and then power
+>    it off.
+> 2. Userspace then turns the panel on.
+> 
+> There's likely not much time between step #1 and #2 and so we want to
+> avoid powering the panel off and on again between those two steps.
+> 
+> Let's use Runtime PM to help us. We'll move the existing prepare() and
+> unprepare() to be runtime resume() and runtime suspend(). Now when we
+> want to prepare() or unprepare() we just increment or decrement the
+> refcount. We'll default to a 1 second autosuspend delay which seems
+> sane given the typical delays we see for panels.
+> 
+> A few notes:
+> - It seems the existing unprepare() and prepare() are defined to be
+>   no-ops if called extra times. We'll preserve that behavior.
+
+The prepare and unprepare calls are supposed to be balanced, which
+should allow us to drop this check. Do you have a reason to suspect that
+it may not be the case ?
+
+> - This is a slight change in the ABI of simple panel. If something was
+>   absolutely relying on the unprepare() to happen instantly that
+>   simply won't be the case anymore. I'm not aware of anyone relying on
+>   that behavior, but if there is someone then we'll need to figure out
+>   how to enable (or disable) this new delayed behavior selectively.
+> - In order for this to work we now have a hard dependency on
+>   "PM". From memory this is a legit thing to assume these days and we
+>   don't have to find some fallback to keep working if someone wants to
+>   build their system without "PM".
+
+Sounds fine to me.
+
+The code looks good to me. Possibly with the prepared check removed,
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> 
+> (no changes since v1)
+> 
+>  drivers/gpu/drm/panel/Kconfig        |  1 +
+>  drivers/gpu/drm/panel/panel-simple.c | 93 +++++++++++++++++++++-------
+>  2 files changed, 73 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+> index 4894913936e9..ef87d92cdf49 100644
+> --- a/drivers/gpu/drm/panel/Kconfig
+> +++ b/drivers/gpu/drm/panel/Kconfig
+> @@ -80,6 +80,7 @@ config DRM_PANEL_SIMPLE
+>  	tristate "support for simple panels"
+>  	depends on OF
+>  	depends on BACKLIGHT_CLASS_DEVICE
+> +	depends on PM
+>  	select VIDEOMODE_HELPERS
+>  	help
+>  	  DRM panel driver for dumb panels that need at most a regulator and
+> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+> index be312b5c04dd..6b22872b3281 100644
+> --- a/drivers/gpu/drm/panel/panel-simple.c
+> +++ b/drivers/gpu/drm/panel/panel-simple.c
+> @@ -27,6 +27,7 @@
+>  #include <linux/module.h>
+>  #include <linux/of_platform.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/pm_runtime.h>
+>  #include <linux/regulator/consumer.h>
+>  
+>  #include <video/display_timing.h>
+> @@ -175,6 +176,8 @@ struct panel_simple {
+>  	bool enabled;
+>  	bool no_hpd;
+>  
+> +	bool prepared;
+> +
+>  	ktime_t prepared_time;
+>  	ktime_t unprepared_time;
+>  
+> @@ -334,19 +337,31 @@ static int panel_simple_disable(struct drm_panel *panel)
+>  	return 0;
+>  }
+>  
+> +static int panel_simple_suspend(struct device *dev)
+> +{
+> +	struct panel_simple *p = dev_get_drvdata(dev);
+> +
+> +	gpiod_set_value_cansleep(p->enable_gpio, 0);
+> +	regulator_disable(p->supply);
+> +	p->unprepared_time = ktime_get();
+> +
+> +	return 0;
+> +}
+> +
+>  static int panel_simple_unprepare(struct drm_panel *panel)
+>  {
+>  	struct panel_simple *p = to_panel_simple(panel);
+> +	int ret;
+>  
+> -	if (p->prepared_time == 0)
+> +	/* Unpreparing when already unprepared is a no-op */
+> +	if (!p->prepared)
+>  		return 0;
+>  
+> -	gpiod_set_value_cansleep(p->enable_gpio, 0);
+> -
+> -	regulator_disable(p->supply);
+> -
+> -	p->prepared_time = 0;
+> -	p->unprepared_time = ktime_get();
+> +	pm_runtime_mark_last_busy(panel->dev);
+> +	ret = pm_runtime_put_autosuspend(panel->dev);
+> +	if (ret < 0)
+> +		return ret;
+> +	p->prepared = false;
+>  
+>  	return 0;
+>  }
+> @@ -376,22 +391,19 @@ static int panel_simple_get_hpd_gpio(struct device *dev,
+>  	return 0;
+>  }
+>  
+> -static int panel_simple_prepare_once(struct drm_panel *panel)
+> +static int panel_simple_prepare_once(struct panel_simple *p)
+>  {
+> -	struct panel_simple *p = to_panel_simple(panel);
+> +	struct device *dev = p->base.dev;
+>  	unsigned int delay;
+>  	int err;
+>  	int hpd_asserted;
+>  	unsigned long hpd_wait_us;
+>  
+> -	if (p->prepared_time != 0)
+> -		return 0;
+> -
+>  	panel_simple_wait(p->unprepared_time, p->desc->delay.unprepare);
+>  
+>  	err = regulator_enable(p->supply);
+>  	if (err < 0) {
+> -		dev_err(panel->dev, "failed to enable supply: %d\n", err);
+> +		dev_err(dev, "failed to enable supply: %d\n", err);
+>  		return err;
+>  	}
+>  
+> @@ -405,7 +417,7 @@ static int panel_simple_prepare_once(struct drm_panel *panel)
+>  
+>  	if (p->hpd_gpio) {
+>  		if (IS_ERR(p->hpd_gpio)) {
+> -			err = panel_simple_get_hpd_gpio(panel->dev, p, false);
+> +			err = panel_simple_get_hpd_gpio(dev, p, false);
+>  			if (err)
+>  				goto error;
+>  		}
+> @@ -423,7 +435,7 @@ static int panel_simple_prepare_once(struct drm_panel *panel)
+>  
+>  		if (err) {
+>  			if (err != -ETIMEDOUT)
+> -				dev_err(panel->dev,
+> +				dev_err(dev,
+>  					"error waiting for hpd GPIO: %d\n", err);
+>  			goto error;
+>  		}
+> @@ -447,25 +459,46 @@ static int panel_simple_prepare_once(struct drm_panel *panel)
+>   */
+>  #define MAX_PANEL_PREPARE_TRIES		5
+>  
+> -static int panel_simple_prepare(struct drm_panel *panel)
+> +static int panel_simple_resume(struct device *dev)
+>  {
+> +	struct panel_simple *p = dev_get_drvdata(dev);
+>  	int ret;
+>  	int try;
+>  
+>  	for (try = 0; try < MAX_PANEL_PREPARE_TRIES; try++) {
+> -		ret = panel_simple_prepare_once(panel);
+> +		ret = panel_simple_prepare_once(p);
+>  		if (ret != -ETIMEDOUT)
+>  			break;
+>  	}
+>  
+>  	if (ret == -ETIMEDOUT)
+> -		dev_err(panel->dev, "Prepare timeout after %d tries\n", try);
+> +		dev_err(dev, "Prepare timeout after %d tries\n", try);
+>  	else if (try)
+> -		dev_warn(panel->dev, "Prepare needed %d retries\n", try);
+> +		dev_warn(dev, "Prepare needed %d retries\n", try);
+>  
+>  	return ret;
+>  }
+>  
+> +static int panel_simple_prepare(struct drm_panel *panel)
+> +{
+> +	struct panel_simple *p = to_panel_simple(panel);
+> +	int ret;
+> +
+> +	/* Preparing when already prepared is a no-op */
+> +	if (p->prepared)
+> +		return 0;
+> +
+> +	ret = pm_runtime_get_sync(panel->dev);
+> +	if (ret < 0) {
+> +		pm_runtime_put_autosuspend(panel->dev);
+> +		return ret;
+> +	}
+> +
+> +	p->prepared = true;
+> +
+> +	return 0;
+> +}
+> +
+>  static int panel_simple_enable(struct drm_panel *panel)
+>  {
+>  	struct panel_simple *p = to_panel_simple(panel);
+> @@ -748,6 +781,18 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
+>  		break;
+>  	}
+>  
+> +	dev_set_drvdata(dev, panel);
+> +
+> +	/*
+> +	 * We use runtime PM for prepare / unprepare since those power the panel
+> +	 * on and off and those can be very slow operations. This is important
+> +	 * to optimize powering the panel on briefly to read the EDID before
+> +	 * fully enabling the panel.
+> +	 */
+> +	pm_runtime_enable(dev);
+> +	pm_runtime_set_autosuspend_delay(dev, 1000);
+> +	pm_runtime_use_autosuspend(dev);
+> +
+>  	drm_panel_init(&panel->base, dev, &panel_simple_funcs, connector_type);
+>  
+>  	err = drm_panel_of_backlight(&panel->base);
+> @@ -756,8 +801,6 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
+>  
+>  	drm_panel_add(&panel->base);
+>  
+> -	dev_set_drvdata(dev, panel);
+> -
+>  	return 0;
+>  
+>  free_ddc:
+> @@ -4603,10 +4646,17 @@ static void panel_simple_platform_shutdown(struct platform_device *pdev)
+>  	panel_simple_shutdown(&pdev->dev);
+>  }
+>  
+> +static const struct dev_pm_ops panel_simple_pm_ops = {
+> +	SET_RUNTIME_PM_OPS(panel_simple_suspend, panel_simple_resume, NULL)
+> +	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
+> +				pm_runtime_force_resume)
+> +};
+> +
+>  static struct platform_driver panel_simple_platform_driver = {
+>  	.driver = {
+>  		.name = "panel-simple",
+>  		.of_match_table = platform_of_match,
+> +		.pm = &panel_simple_pm_ops,
+>  	},
+>  	.probe = panel_simple_platform_probe,
+>  	.remove = panel_simple_platform_remove,
+> @@ -4901,6 +4951,7 @@ static struct mipi_dsi_driver panel_simple_dsi_driver = {
+>  	.driver = {
+>  		.name = "panel-simple-dsi",
+>  		.of_match_table = dsi_of_match,
+> +		.pm = &panel_simple_pm_ops,
+>  	},
+>  	.probe = panel_simple_dsi_probe,
+>  	.remove = panel_simple_dsi_remove,
+
+-- 
+Regards,
+
+Laurent Pinchart
