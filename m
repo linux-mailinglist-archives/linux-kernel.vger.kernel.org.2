@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F34D360E53
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C823360E23
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235213AbhDOPNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:13:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48750 "EHLO mail.kernel.org"
+        id S234614AbhDOPKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:10:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234268AbhDOPC7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:02:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C34FD61423;
-        Thu, 15 Apr 2021 14:57:57 +0000 (UTC)
+        id S235228AbhDOPAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:00:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF93F613C0;
+        Thu, 15 Apr 2021 14:56:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498678;
-        bh=pjVahfz3s20aR/AH0zANuMX4aIrcHcR3Y5XIu74Yg4A=;
+        s=korg; t=1618498600;
+        bh=dhYxorx/1pSdpYb4mUa+fX1VX6NdweZAjcddJC4Olo4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nem/+lVyt0GSHInZUR1eaejsxenrKrOpGJvchTnKWIyTscQifnEBPwnyDYYKOBsVj
-         McfHp3k8Qx+ZVtmldxPpNmEIK5FmblRf9mYBE6qbyyIr0oMRFq6HAr4Xfmds8d4Cea
-         WVMS1o0Ni1NP2pUJYuT4W4YbRuEvouzRl8eHHYDM=
+        b=CO2DTXonUVANdOFgW92h7TAKFL3EzwTaLN4P2DOf6qySRFwlUVz1eDvaNT0yLqerl
+         527RQtuIZ+KGAitZl36TSqtttpem7BtRQ0jimuJ6+sNKxw+Vmltqjuv9S5bhL/Ulae
+         +G38P1Hl9wD0V/RAfFh9iZyAmjwSZw4n25xROaw8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        stable@vger.kernel.org,
+        Chris von Recklinghausen <crecklin@redhat.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 07/25] ftrace: Check if pages were allocated before calling free_pages()
-Date:   Thu, 15 Apr 2021 16:48:01 +0200
-Message-Id: <20210415144413.397686224@linuxfoundation.org>
+Subject: [PATCH 5.4 09/18] idr test suite: Take RCU read lock in idr_find_test_1
+Date:   Thu, 15 Apr 2021 16:48:02 +0200
+Message-Id: <20210415144413.344891808@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.165663182@linuxfoundation.org>
-References: <20210415144413.165663182@linuxfoundation.org>
+In-Reply-To: <20210415144413.055232956@linuxfoundation.org>
+References: <20210415144413.055232956@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,58 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-[ Upstream commit 59300b36f85f254260c81d9dd09195fa49eb0f98 ]
+[ Upstream commit 703586410da69eb40062e64d413ca33bd735917a ]
 
-It is possible that on error pg->size can be zero when getting its order,
-which would return a -1 value. It is dangerous to pass in an order of -1
-to free_pages(). Check if order is greater than or equal to zero before
-calling free_pages().
+When run on a single CPU, this test would frequently access already-freed
+memory.  Due to timing, this bug never showed up on multi-CPU tests.
 
-Link: https://lore.kernel.org/lkml/20210330093916.432697c7@gandalf.local.home/
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Reported-by: Chris von Recklinghausen <crecklin@redhat.com>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/ftrace.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ tools/testing/radix-tree/idr-test.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 82041bbf8fc2..b1983c2aeb53 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -3230,7 +3230,8 @@ ftrace_allocate_pages(unsigned long num_to_init)
- 	pg = start_pg;
- 	while (pg) {
- 		order = get_count_order(pg->size / ENTRIES_PER_PAGE);
--		free_pages((unsigned long)pg->records, order);
-+		if (order >= 0)
-+			free_pages((unsigned long)pg->records, order);
- 		start_pg = pg->next;
- 		kfree(pg);
- 		pg = start_pg;
-@@ -6452,7 +6453,8 @@ void ftrace_release_mod(struct module *mod)
- 		clear_mod_from_hashes(pg);
+diff --git a/tools/testing/radix-tree/idr-test.c b/tools/testing/radix-tree/idr-test.c
+index 44ceff95a9b3..4a9b451b7ba0 100644
+--- a/tools/testing/radix-tree/idr-test.c
++++ b/tools/testing/radix-tree/idr-test.c
+@@ -306,11 +306,15 @@ void idr_find_test_1(int anchor_id, int throbber_id)
+ 	BUG_ON(idr_alloc(&find_idr, xa_mk_value(anchor_id), anchor_id,
+ 				anchor_id + 1, GFP_KERNEL) != anchor_id);
  
- 		order = get_count_order(pg->size / ENTRIES_PER_PAGE);
--		free_pages((unsigned long)pg->records, order);
-+		if (order >= 0)
-+			free_pages((unsigned long)pg->records, order);
- 		tmp_page = pg->next;
- 		kfree(pg);
- 		ftrace_number_of_pages -= 1 << order;
-@@ -6812,7 +6814,8 @@ void ftrace_free_mem(struct module *mod, void *start_ptr, void *end_ptr)
- 		if (!pg->index) {
- 			*last_pg = pg->next;
- 			order = get_count_order(pg->size / ENTRIES_PER_PAGE);
--			free_pages((unsigned long)pg->records, order);
-+			if (order >= 0)
-+				free_pages((unsigned long)pg->records, order);
- 			ftrace_number_of_pages -= 1 << order;
- 			ftrace_number_of_groups--;
- 			kfree(pg);
++	rcu_read_lock();
+ 	do {
+ 		int id = 0;
+ 		void *entry = idr_get_next(&find_idr, &id);
++		rcu_read_unlock();
+ 		BUG_ON(entry != xa_mk_value(id));
++		rcu_read_lock();
+ 	} while (time(NULL) < start + 11);
++	rcu_read_unlock();
+ 
+ 	pthread_join(throbber, NULL);
+ 
 -- 
 2.30.2
 
