@@ -2,281 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15F09361203
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 20:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 263283611F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 20:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234724AbhDOSUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 14:20:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60986 "EHLO
+        id S234487AbhDOSTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 14:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234647AbhDOSTs (ORCPT
+        with ESMTP id S233052AbhDOSTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 14:19:48 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73082C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 11:19:25 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id l19so17085814ilk.13
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 11:19:25 -0700 (PDT)
+        Thu, 15 Apr 2021 14:19:34 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7610C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 11:19:10 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id o20so2939123edc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 11:19:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u11fVQy6kjnMRElja77kseBc1mYwvTCWjt5Bt5mrtok=;
-        b=GHTzamdY005X/OnRXBk0Vw+T+JdjzWzQqcx3zniyw/EQME2lhoY2Y59H+nzDrpdl8h
-         8vzusYbKf278AnyTd8WCOwGkF3VdvVwfYlivQfgCnvYpJqwoTeD20jGd+8MtjBgzSiCZ
-         H4gvvi/BVMPSoqMeCtiU7VZuSewPN21h+izvLjh5zfsllSERI5oScu7ZxizcwX3yqNVu
-         VLpZOF6+VJ1cLT9naswy/21xnpZzuMLGrwYtU2XP9BGXpIT0KlF2Ky8I7ETp/Mm6avU+
-         STZOfVEB8vTpZLv5dolU5CmBzaKxb0AeO7v9zjt6cRyxH91xVb+nFfJts9CvwjkxGKo9
-         Yjyg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jZc2AUCbTG/HxCmgVJd8gMY0LuI50FHIEGq64TXtsuQ=;
+        b=AzvZPaPWIJjf5i3r+Ybo28R0fr7E71JakY7GOsT4YUj9AIMnBsFZjlFYfIdybQRliv
+         oPrTAfkhUaWuLoIXZNE9OCk1eqO1bqVgwSwK8uvqZm2c41ppmjHa1qoIc3niH7vhWoOG
+         mikvmsHb1dVaERICdi2LN5hraJpaF2CC8Yr5vcvvyzjZV7/rCmrooyqmgvr+wnDBLy0U
+         GxQf6lVKcdToM5Uyc3O8zWmIFr865bDpWhRT6gpMirqki7PVhAROZhhxGxZel4e0bNzJ
+         wQkQf70csdbJWrOFo99o2nvhJB2G3gf+eYL8CaVe+ueUpsdaBl1mRi0rHxxHkplkV6cR
+         nQOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u11fVQy6kjnMRElja77kseBc1mYwvTCWjt5Bt5mrtok=;
-        b=D/kXBtGkOvoaPwoKFo52zBQgwTYVPoAj+m1bjwM0BL5723D10Gjv7vtDXEVSoHlDmy
-         vDQ/I5RHXEqPcyW7DlLTWflaTs6kdigad3YY7+mDbRhl+b6lkm+DvsNJ+ZmMX2a6SFTr
-         2TXP8STcLlMeqacLpR6cT5bx/3KmxNLBvlm43Ses/8cUvH7C/rLBm3d990cxAb+Ki78P
-         iksMMq9DY14vxxMfYJzU3NFDjmnFBrHElxW8uNtZ+h8cEJ7VupH+Us4S8b99jBJgGUvD
-         gpI3FFvpBhDAvgWfz6yj+yiavgQyb4NYHV/yn3/oKmXnVFCMH2N30n3Dd4kJ1L/K2gtN
-         gKXw==
-X-Gm-Message-State: AOAM532SX+HTMtnnm8xUDKTeLm1pxairjXJ/U/C52vbdH0wGdCKE0RFu
-        eiiLcXvO1H+iddZz7zlN7c0HAMgfu9JYd6FWk8HUFQ==
-X-Google-Smtp-Source: ABdhPJwB59HPRXr9BHRidgTeK1xp2kqrjl7Diw7oTDeEwnGmuL5iD1AyI0Au9dxO8g8jlmM6LFfx/OLx/pdcsvy/N6U=
-X-Received: by 2002:a05:6e02:b24:: with SMTP id e4mr3922220ilu.30.1618510764626;
- Thu, 15 Apr 2021 11:19:24 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jZc2AUCbTG/HxCmgVJd8gMY0LuI50FHIEGq64TXtsuQ=;
+        b=WkyjzvM218+KQVRAY3Fnng1DXWQ0ZVLRDQXG4IujATOD1OrPV31eFIYfdHiQzVjx6i
+         XMQ8/6kW5tyhDKneJezZY7quHR4wshtok+oJpwI3tjTNgSFuMW/+3wBVwyQDKwUF26Xj
+         fWrhnAHhUOgYCSkdFHvZ9xQWCcITFx6gvMbHWfLKAKLQl1UlbOWiMvaPq4YMbkBDrjoD
+         B1SbAfjY53md7p5CxmXuWVmJbnKeWKpEBodvpyruMxKISs4MY7nhcY0+b99/+x1Zak3f
+         7pNrY5EShXv+uR7HL6fZlLnYKhS4BASvzizAfTbJjP94u+gzfLonmmoi2Tvl8hkaEPz8
+         MWfA==
+X-Gm-Message-State: AOAM532L4s4b1GznroRCXa7y99q7l5wu0jY9VB9llhUNgIuj+rpGqRt4
+        ELroRjs3iynd6lhnTe+wH1UGUMyof5Y=
+X-Google-Smtp-Source: ABdhPJzpQ/za6eeDQPq6SMSMWtD2AszvxpGGwnzeohcJNpYb0BxdgkT6bSogIgr1hoDSE9ItIHg32Q==
+X-Received: by 2002:aa7:d699:: with SMTP id d25mr5704005edr.83.1618510749232;
+        Thu, 15 Apr 2021 11:19:09 -0700 (PDT)
+Received: from localhost.localdomain ([84.40.93.55])
+        by smtp.gmail.com with ESMTPSA id h9sm1130903ejf.10.2021.04.15.11.19.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 11:19:08 -0700 (PDT)
+From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     rostedt@goodmis.org, tglx@linutronix.de, peterz@infradead.org,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [PATCH v4 0/6] Add "func_no_repete" tracing option
+Date:   Thu, 15 Apr 2021 21:18:48 +0300
+Message-Id: <20210415181854.147448-1-y.karadz@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210408234327.624367-1-axelrasmussen@google.com>
- <20210408234327.624367-5-axelrasmussen@google.com> <20210412231736.GA1002612@xz-x1>
- <CAJHvVcirn08ad64pTdxTRDRRXF16QnFwC-3GOT8bXMp2E2UYhg@mail.gmail.com> <20210413181209.GB4440@xz-x1>
-In-Reply-To: <20210413181209.GB4440@xz-x1>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Thu, 15 Apr 2021 11:18:47 -0700
-Message-ID: <CAJHvVcg0k0ht1kYTPDZp1_GCeXoV31BUAPofXEV-neQefX2_Jw@mail.gmail.com>
-Subject: Re: [PATCH 4/9] userfaultfd/shmem: support UFFDIO_CONTINUE for shmem
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Colascione <dancol@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 11:12 AM Peter Xu <peterx@redhat.com> wrote:
->
-> On Mon, Apr 12, 2021 at 09:40:22PM -0700, Axel Rasmussen wrote:
-> > On Mon, Apr 12, 2021 at 4:17 PM Peter Xu <peterx@redhat.com> wrote:
-> > >
-> > > On Thu, Apr 08, 2021 at 04:43:22PM -0700, Axel Rasmussen wrote:
-> > > > +/*
-> > > > + * Install PTEs, to map dst_addr (within dst_vma) to page.
-> > > > + *
-> > > > + * This function handles MCOPY_ATOMIC_CONTINUE (which is always file-backed),
-> > > > + * whether or not dst_vma is VM_SHARED. It also handles the more general
-> > > > + * MCOPY_ATOMIC_NORMAL case, when dst_vma is *not* VM_SHARED (it may be file
-> > > > + * backed, or not).
-> > > > + *
-> > > > + * Note that MCOPY_ATOMIC_NORMAL for a VM_SHARED dst_vma is handled by
-> > > > + * shmem_mcopy_atomic_pte instead.
-> > > > + */
-> > > > +static int mcopy_atomic_install_ptes(struct mm_struct *dst_mm, pmd_t *dst_pmd,
-> > > > +                                  struct vm_area_struct *dst_vma,
-> > > > +                                  unsigned long dst_addr, struct page *page,
-> > > > +                                  bool newly_allocated, bool wp_copy)
-> > > > +{
-> > > > +     int ret;
-> > > > +     pte_t _dst_pte, *dst_pte;
-> > > > +     int writable;
-> > > > +     bool vm_shared = dst_vma->vm_flags & VM_SHARED;
-> > > > +     spinlock_t *ptl;
-> > > > +     struct inode *inode;
-> > > > +     pgoff_t offset, max_off;
-> > > > +
-> > > > +     _dst_pte = mk_pte(page, dst_vma->vm_page_prot);
-> > > > +     writable = dst_vma->vm_flags & VM_WRITE;
-> > > > +     /* For private, non-anon we need CoW (don't write to page cache!) */
-> > > > +     if (!vma_is_anonymous(dst_vma) && !vm_shared)
-> > > > +             writable = 0;
-> > > > +
-> > > > +     if (writable || vma_is_anonymous(dst_vma))
-> > > > +             _dst_pte = pte_mkdirty(_dst_pte);
-> > > > +     if (writable) {
-> > > > +             if (wp_copy)
-> > > > +                     _dst_pte = pte_mkuffd_wp(_dst_pte);
-> > > > +             else
-> > > > +                     _dst_pte = pte_mkwrite(_dst_pte);
-> > > > +     } else if (vm_shared) {
-> > > > +             /*
-> > > > +              * Since we didn't pte_mkdirty(), mark the page dirty or it
-> > > > +              * could be freed from under us. We could do this
-> > > > +              * unconditionally, but doing it only if !writable is faster.
-> > > > +              */
-> > > > +             set_page_dirty(page);
-> > > > +     }
-> > > > +
-> > > > +     dst_pte = pte_offset_map_lock(dst_mm, dst_pmd, dst_addr, &ptl);
-> > > > +
-> > > > +     if (vma_is_shmem(dst_vma)) {
-> > > > +             /* The shmem MAP_PRIVATE case requires checking the i_size */
-> > >
-> > > When you start to use this function in the last patch it'll be needed too even
-> > > if MAP_SHARED?
-> > >
-> > > How about directly state the reason of doing this ("serialize against truncate
-> > > with the PT lock") instead of commenting about "who will need it"?
-> > >
-> > > > +             inode = dst_vma->vm_file->f_inode;
-> > > > +             offset = linear_page_index(dst_vma, dst_addr);
-> > > > +             max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
-> > > > +             ret = -EFAULT;
-> > > > +             if (unlikely(offset >= max_off))
-> > > > +                     goto out_unlock;
-> > > > +     }
-> > >
-> > > [...]
-> > >
-> > > > +/* Handles UFFDIO_CONTINUE for all shmem VMAs (shared or private). */
-> > > > +static int mcontinue_atomic_pte(struct mm_struct *dst_mm,
-> > > > +                             pmd_t *dst_pmd,
-> > > > +                             struct vm_area_struct *dst_vma,
-> > > > +                             unsigned long dst_addr,
-> > > > +                             bool wp_copy)
-> > > > +{
-> > > > +     struct inode *inode = file_inode(dst_vma->vm_file);
-> > > > +     pgoff_t pgoff = linear_page_index(dst_vma, dst_addr);
-> > > > +     struct page *page;
-> > > > +     int ret;
-> > > > +
-> > > > +     ret = shmem_getpage(inode, pgoff, &page, SGP_READ);
-> > >
-> > > SGP_READ looks right, as we don't want page allocation.  However I noticed
-> > > there's very slight difference when the page was just fallocated:
-> > >
-> > >         /* fallocated page? */
-> > >         if (page && !PageUptodate(page)) {
-> > >                 if (sgp != SGP_READ)
-> > >                         goto clear;
->
-> [1]
->
-> > >                 unlock_page(page);
-> > >                 put_page(page);
-> > >                 page = NULL;
-> > >                 hindex = index;
-> > >         }
-> > >
-> > > I think it won't happen for your case since the page should be uptodate already
-> > > (the other thread should check and modify the page before CONTINUE), but still
-> > > raise this up, since if the page was allocated it smells better to still
-> > > install the fallocated page (do we need to clear the page and SetUptodate)?
-> >
-> > Sorry for the somewhat rambling thought process:
-> >
-> > My first thought is, I don't really know what PageUptodate means for
-> > shmem pages. If I understand correctly, normally we say PageUptodate()
-> > if the in memory data is more recent or equivalent to the on-disk
-> > data. But, shmem pages are entirely in memory - they are file backed
-> > in name only, in some sense.
-> >
-> > fallocate() does all sorts of things so the comment to me seems a bit
-> > ambiguous, but it seems the implication is that we're worried
-> > specifically about the case where the shmem page was recently
-> > allocated with fallocate(mode=0)? In that case, do we use
-> > !PageUptodate() to denote that the page has been allocated, but its
-> > contents are undefined?
-> >
-> > I suppose that would make sense, as the action "goto clear;" generally
-> > memset()-s the page to zero it, and then calls SetPageUptodate().
-> >
-> > Okay so let's say the following sequence of events happens:
-> >
-> > 1. Userspace calls fallocate(mode=0) to allocate some shmem pages.
-> > 2. Another thread, via a UFFD-registered mapping, manages to trigger a
-> > minor fault on one such page, while we still have !PageUptodate().
-> > (I'm not 100% sure this can happen, but let's say it can.)
-> > 3. UFFD handler thread gets the minor fault event, and for whatever
-> > (buggy?) reason does nothing - it doesn't modify the page, it just
-> > calls CONTINUE.
->
-> [2]
->
-> >
-> > I think if we get to this point, zeroing the page, returning it, and
-> > setting up the PTEs seems somewhat reasonable to me. I suppose
-> > alternatively we could notice that this happened and return an error
-> > to the caller? I'm hesitant to mess with the behavior of
-> > shmem_getpage_gfp() to make such a thing happen though. I do think if
-> > we're going to set up the PTEs instead of returning an error, we
-> > definitely do need to clear and SetPageUptodate() the page first.
-> >
-> > In conclusion, I think this behavior is correct.
->
-> I agree with you (mostly :), but except one thing: you passed in SGP_READ, so
-> IMHO it won't do what you explained (see [1] above: "goto clear" is with "sgp
-> != SGP_READ" only); instead of doing what you said, I think it'll reset page
-> pointer to NULL..  Then quickly in the latter block:
->
->         if (page || sgp == SGP_READ)
->                 goto out;
->
-> So I think at last shmem_getpage_gfp(SGP_READ) will return NULL.
+The new option for function tracing aims to save space on the ring
+buffer and to make it more readable in the case when a single function
+is called number of times consecutively:
 
-Ah, indeed, I mistakenly read that as "sgp != SGP_READ".
+	while (cond)
+		do_func();
 
->
-> I do think I've got some confusion here regarding SGP_READ, since from the
-> comment in shmem_fs.h it says:
->
->         SGP_READ,       /* don't exceed i_size, don't allocate page */
->
-> It's natural to think it as "return the fallocated page" in this case.  However
-> it seems not the case?  My gut feeling is the comment for SGP_READ needs a
-> touch up, so as to state that for newly fallocated (and not used) pages it'll
-> return NULL even if cache hit.
->
-> So I think you're right, for all cases this may be a trivial case.  However
-> I've got a lesson somewhere else that we should never overlook zero pages,
-> which is also related to this case - although fallocated page is still
-> !Uptodate so clear page happens even latter, however from userspace pov, the
-> user could assume it's a zero page even if the page is not accessed at all
-> (since any access will cause clear page).  Then the user program could avoid
-> modifying this page if it knows this page keeps to be zero page somehow (e.g.,
-> a zero page bitmap?). Then your example above [2] seems indeed a valid one
-> worth thinking, at least not fully paranoid.
+Instead of having an identical records for each call of the function
+we will record only the first call, followed by an event showing the
+number of repeats.
 
-I'm kind of left thinking along the same lines though.
+v4 changes:
+  * "[PATCH 1/5] Define static void trace_print_time()" is added to
+    the patch-set. This patch simply applies the modification suggested
+    by Steven Rostedt in his review of v3. My contribution to the code
+    of this patch is really negligible.
 
-Modifying shmem_getpage_gfp to behave differently in this case seems
-likely to be a can of worms.
+  * FUNC_REPEATS_GET_DELTA_TS macro is improved.
 
-With the current behavior, at least it doesn't seem to be too
-problematic - we're not going to hand userspace an unzeroed page or
-anything. At worst, it's a bit of a rough edge userspace might hit.
-The UFFD handler thread will just get an error when it tries to
-CONTINUE, and could recover by e.g. writing to the page or something
-and trying again.
+  * The way we print the time of the last function repeat is improved.
 
-I'm inclined to leave it as is, and maybe look into a way to file down
-the rough edge in a future patch, as well as some of the other
-cleanups we've discussed elsewhere. Objections?
+  * "tracer_alloc_func_repeats(struct trace_array *tr)" is removed from
+    trace.h.
 
->
-> --
-> Peter Xu
->
+  * FUNC_REPEATS_GET_DELTA_TS macro is replased by a static inline
+    function
+
+v3 changes:
+  * FUNC_REPEATS_SET_DELTA_TS macro has been optimised.
+
+  * Fixed bug in func_set_flag(): In the previous version the value
+    of the "new_flags" variable was not properly calculated because
+    I misinterpreted the meaning of the "bit" argument of the function.
+    This bug in v2 had no real effect, because for the moment we have
+    only two "function options" so the value of "new_flags" was correct,
+    although its way of calculating was wrong.
+
+v2 changes:
+  * As suggested by Steven in his review, we now record not only the
+    repetition count, but also the time elapsed between the last
+    repetition of the function and the actual generation of the
+    "func_repeats" event. 16 bits are used to record the repetition
+    count. In the case of an overflow of the counter a second pair of
+    "function" and "func_repeats" events will be generated. The time
+    interval gets codded by using up to 48 (32 + 16) bits.
+
+
+Yordan Karadzhov (VMware) (6):
+  tracing: Define static void trace_print_time()
+  tracing: Define new ftrace event "func_repeats"
+  tracing: Add "last_func_repeats" to struct trace_array
+  tracing: Add method for recording "func_repeats" events
+  tracing: Unify the logic for function tracing options
+  tracing: Add "func_no_repeats" option for function tracing
+
+ kernel/trace/trace.c           |  35 ++++++
+ kernel/trace/trace.h           |  19 +++
+ kernel/trace/trace_entries.h   |  22 ++++
+ kernel/trace/trace_functions.c | 223 ++++++++++++++++++++++++++++-----
+ kernel/trace/trace_output.c    |  74 +++++++++--
+ 5 files changed, 336 insertions(+), 37 deletions(-)
+
+-- 
+2.25.1
+
