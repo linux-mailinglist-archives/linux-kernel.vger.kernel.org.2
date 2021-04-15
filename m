@@ -2,96 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131C9360065
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 05:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C08B360067
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 05:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbhDODZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 23:25:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbhDODZG (ORCPT
+        id S229769AbhDODZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 23:25:53 -0400
+Received: from mail-m17635.qiye.163.com ([59.111.176.35]:36072 "EHLO
+        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229467AbhDODZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 23:25:06 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AB7C061574;
-        Wed, 14 Apr 2021 20:24:44 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id c15so19011651ilj.1;
-        Wed, 14 Apr 2021 20:24:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5qEo3mthyR3dOnmcZMQVvD2ZSwCGPs4Eje1etCG0w1Q=;
-        b=PBPl4AUojHm+9CmoViiO5eWVpd2gZgf93mXiISsejyDN4BJ3ByvjBrPuGm68e+7W75
-         5CLsWIlzG6OsnxjpBCP2FJ06XBoWYySLdlw3EOCCH5FaiHnjGZBQ3xFSoDSZpLW7kC4D
-         l1+a7/XDCAwIF46e22uzbJs11P1ok+mSV4RRNU/bBlwukoC0YHxmR26KYnPCY723GenC
-         KMV366uSRxQV9XQBRceX4DhtZusDKnLqXhZkbzGCahOS1eL1nypMWF4MpF7KAbzTSgG3
-         fJ/2G9M8ebPBg4zsdnBNHF6gKZS9MiFPnBfuMzdYfkv3Qi3f5ZobQ2WbRDbEOJB94NPa
-         zmDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5qEo3mthyR3dOnmcZMQVvD2ZSwCGPs4Eje1etCG0w1Q=;
-        b=bBsqdBLWuawD1cNTpgRQcW/9dXOpENPUUh9Qi5WxCB8LsUPIueevqJ50blQNyDxGJY
-         ZUu8yauB78PAI4WvTr52C9rO/yiiYdlCw+OmHBWA6oUsBa1Zou3qgTFMLWAoWUFr0hCE
-         TGuSN2zXWyO5J4pha9UICX5siyddkqhDCrZAB1RyuLPG+qG1FcvG64xe07/zAItYQTJJ
-         fyIc8q4QoOcgJDROYN7QWEF8po0NlNa7LZ/WwlATYwq0yztHC2nw+LDrhSLrGGHd9Wk2
-         c6D5xJggGBYs7WfgCYt+35HRZKipVMXs2SxcdEaQJC/dxXr2U3GtplMkVUubfuB2m/ws
-         0w3g==
-X-Gm-Message-State: AOAM53346GlYKzuHpuxRpeOeCqMJHI5lgrk+xSdDHLwEf0xpiKXyIIzb
-        CA635175dK1dfcaMl/y0K6ccJHqqR33toJLxBy4=
-X-Google-Smtp-Source: ABdhPJwsC2fqSbm+ZcKDH7BP+UiKQX3ja0N2rwdXSTWKywzbyG3ZXx2KlpXuFVkWa+UICmCz9x4AOa8WUC8d3aDaYHc=
-X-Received: by 2002:a05:6e02:e0a:: with SMTP id a10mr1070085ilk.271.1618457083879;
- Wed, 14 Apr 2021 20:24:43 -0700 (PDT)
+        Wed, 14 Apr 2021 23:25:44 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id A5F024003CA;
+        Thu, 15 Apr 2021 11:25:20 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] power: reset: Remove unneeded semicolon
+Date:   Thu, 15 Apr 2021 11:24:56 +0800
+Message-Id: <20210415032456.24070-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <1618383117-17179-1-git-send-email-dillon.minfei@gmail.com>
- <1618383117-17179-5-git-send-email-dillon.minfei@gmail.com> <9f8f3d55-b3f3-54d6-9143-5d676a21c901@canonical.com>
-In-Reply-To: <9f8f3d55-b3f3-54d6-9143-5d676a21c901@canonical.com>
-From:   dillon min <dillon.minfei@gmail.com>
-Date:   Thu, 15 Apr 2021 11:24:08 +0800
-Message-ID: <CAL9mu0KB9cm6khKzftaW=X+RGkBEPEnRWFPHVaxLaHrQEzOGKw@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] dt-bindings: add dasheng vendor prefix
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        krzk@kernel.org, linux@rempel-privat.de, s.riedmueller@phytec.de,
-        matthias.schiffer@ew.tq-group.com, leoyang.li@nxp.com,
-        arnd@arndb.de, olof@lixom.net,
-        Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de,
-        festevam@gmail.com, prabhakar.csengg@gmail.com, mchehab@kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-imx@nxp.com, linux-media@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGRhKSVYeHk1JTUNLSk8eSE9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nxw6NRw4Cj8RFhM#HhApKTZK
+        VikaCQFVSlVKTUpDT05MSklKSk1OVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFKQ0tNNwY+
+X-HM-Tid: 0a78d38fd057d991kuwsa5f024003ca
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 9:01 PM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 14/04/2021 08:51, dillon.minfei@gmail.com wrote:
-> > From: dillon min <dillon.minfei@gmail.com>
-> >
-> > Add vendor prefix for DaSheng, Inc.
-> >
-> > Signed-off-by: dillon min <dillon.minfei@gmail.com>
-> > ---
-> > v2: new add
-> >
-> >  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
-> >  1 file changed, 2 insertions(+)
->
-> This should be the first patch in the series.
-OK, will place this patch at v3's first. thanks
+Fix the following coccicheck warning:
 
-Best regards
-Dillon,
->
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->
->
-> Best regards,
-> Krzysztof
+./drivers/power/reset/vexpress-poweroff.c:136:2-3: Unneeded semicolon
+
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ drivers/power/reset/vexpress-poweroff.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/power/reset/vexpress-poweroff.c b/drivers/power/reset/vexpress-poweroff.c
+index 1fdbcbd95fc2..447ffdacddf9 100644
+--- a/drivers/power/reset/vexpress-poweroff.c
++++ b/drivers/power/reset/vexpress-poweroff.c
+@@ -133,7 +133,7 @@ static int vexpress_reset_probe(struct platform_device *pdev)
+ 	case FUNC_REBOOT:
+ 		ret = _vexpress_register_restart_handler(&pdev->dev);
+ 		break;
+-	};
++	}
+ 
+ 	return ret;
+ }
+-- 
+2.25.1
+
