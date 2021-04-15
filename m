@@ -2,126 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B693603EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE93A3603F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 10:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231520AbhDOILU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 04:11:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbhDOILT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 04:11:19 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 654CCC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 01:10:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pNl50OnfrsTMw9KJLwf0kvnMVVjH09VJYTN9ZXHDw+M=; b=DCZRjJtg5q6QH3lkg0Ou4stg0O
-        BbAQXLss0hhVEXlHG/YgG9f+mZJcp6HvmXJPNMs6/Z5DijH2isBJkudZ9lRksWBEQSD4ZoLSbDsm7
-        zjtJ6b5I0pduCbWrSNLyIXJUvJMRxz8ajH+E2++KXIKnmt89PHrdDqg24L3iYPov0rHVOaVnY9vgt
-        Q6W5c+4GAHo0SzjqiBcIMqKpEWwGs0hIIlTeZqiQXDjFgPcVPw+zoilG95xnoesbICYo3ncXTHMJH
-        48cGFpMO26asbEcRiC3pEVv8ibVbe3MkxpHm/5hS/nDfaXjaz6tQ62ANszqtTNDdprgz7NFiSrkcY
-        f6Jzh1Ug==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lWx4W-008Gu6-Ec; Thu, 15 Apr 2021 08:09:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 268BB30021C;
-        Thu, 15 Apr 2021 10:09:55 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E504820BF5EDB; Thu, 15 Apr 2021 10:09:54 +0200 (CEST)
-Date:   Thu, 15 Apr 2021 10:09:54 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Stafford Horne <shorne@gmail.com>
-Cc:     Guo Ren <guoren@kernel.org>,
-        Christoph =?iso-8859-1?Q?M=FCllner?= <christophm30@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
+        id S231561AbhDOILs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 15 Apr 2021 04:11:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55664 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231535AbhDOILr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 04:11:47 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F3B6960FEA;
+        Thu, 15 Apr 2021 08:11:24 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lWx5t-007agq-Ny; Thu, 15 Apr 2021 09:11:21 +0100
+Date:   Thu, 15 Apr 2021 09:11:21 +0100
+Message-ID: <87k0p4m0gm.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Kever Yang <kever.yang@rock-chips.com>
+Cc:     Peter Geis <pgwipeout@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, jonas@southpole.se,
-        stefan.kristiansson@saunalahti.fi
-Subject: Re: [RFC][PATCH] locking: Generic ticket-lock
-Message-ID: <YHf00hgpB5C20tH3@hirez.programming.kicks-ass.net>
-References: <CAHB2gtS9J09VaY9ZxDJYVo2fTgS-u6p7e89aLCnwOHnYEOJR=g@mail.gmail.com>
- <mhng-03d1655e-090e-4afb-a4e3-12b4b8f0e6bf@palmerdabbelt-glaptop>
- <CAHB2gtS6x25Oquf6W4Hhh-diUuZk1GJHTD2DjrffHo93nWbUYw@mail.gmail.com>
- <YHVQNSfblP6G0Kgl@hirez.programming.kicks-ass.net>
- <YHVTgfCpxpINc8sM@hirez.programming.kicks-ass.net>
- <CAJF2gTQaF8wBCp-L6vgJPcu6EnFRWmh_qZMX2PiEfj0Z70-Ykg@mail.gmail.com>
- <YHaU4uxr6emrivuu@hirez.programming.kicks-ass.net>
- <YHawVOIHmDPbTmoB@hirez.programming.kicks-ass.net>
- <YHbBBuVFNnI4kjj3@hirez.programming.kicks-ass.net>
- <20210414204734.GJ3288043@lianli.shorne-pla.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210414204734.GJ3288043@lianli.shorne-pla.net>
+        Heiko =?UTF-8?B?U3Q=?= =?UTF-8?B?w7xibmVy?= <heiko@sntech.de>
+Subject: Re: [RFC] ITS fails to allocate on rk3568/rk3566
+In-Reply-To: <678e9950-dd85-abb2-a104-07a4db1fad49@rock-chips.com>
+References: <CAMdYzYrQ5f-mv_VmTq_CRf9tR=j3mwRpKHNLmPFgCF9whsGFRw@mail.gmail.com>
+        <871rbeo7wf.wl-maz@kernel.org>
+        <CAMdYzYruPyiT89FrbJhuV=c36PyRwZ7sT45abnv8rTv85AKRow@mail.gmail.com>
+        <87y2dmmggt.wl-maz@kernel.org>
+        <CAMdYzYrNa_wJa9mvBkhDrvdNaDugR9Y=LEnbcVHxjxJS0UFcMg@mail.gmail.com>
+        <87tuoambdb.wl-maz@kernel.org>
+        <CAMdYzYo2+h+=39cw1t=11HUih-O+NUs4hhNaPbrU6si-AbqNiA@mail.gmail.com>
+        <871rbdt4tu.wl-maz@kernel.org>
+        <678e9950-dd85-abb2-a104-07a4db1fad49@rock-chips.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: kever.yang@rock-chips.com, pgwipeout@gmail.com, tglx@linutronix.de, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, heiko@sntech.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 05:47:34AM +0900, Stafford Horne wrote:
+Hi Kever,
 
-> > How's this then? Compile tested only on openrisc/simple_smp_defconfig.
+On Thu, 15 Apr 2021 08:24:33 +0100,
+Kever Yang <kever.yang@rock-chips.com> wrote:
 > 
-> I did my testing with this FPGA build SoC:
+> Hi Marc, Peter,
 > 
->  https://github.com/stffrdhrn/de0_nano-multicore
+>     RK356x GIC has two issues:
 > 
-> Note, the CPU timer sync logic uses mb() and is a bit flaky.  So missing mb()
-> might be a reason.  I thought we had defined mb() and l.msync, but it seems to
-> have gotten lost.
-> 
-> With that said I could test out this ticket-lock implementation.  How would I
-> tell if its better than qspinlock?
+> 1. GIC only support 32bit address while rk356x supports 8GB DDR SDRAM,
+> so we use ZONE_DMA32 to fix this issue;
 
-Mostly if it isn't worse, it's better for being *much* simpler. As you
-can see, the guts of ticket is like 16 lines of C (lock+unlock) and you
-only need the behaviour of atomic_fetch_add() to reason about behaviour
-of the whole thing. qspinlock OTOH is mind bending painful to reason
-about.
+What transactions does this affect exactly? Only some ITS tables? Or
+all of them, including the command queue? What about the configuration
+and pending tables associated with the redistributors?
 
-There are some spinlock tests in locktorture; but back when I had a
-userspace copy of the lot and would measure min,avg,max acquire times
-under various contention loads (making sure to only run a single task
-per CPU etc.. to avoid lock holder preemption and other such 'fun'
-things).
+> 2. GIC version is r1p6-00rel0, RK356x interconnect does not support
+> GIC and CPU snoop to each other, hence the GIC does not support the
+> shareability feature.  The read of register value for shareability 
+> feature does not return as expect in GICR and GITS, so we have to
+> workaround for it.
 
-It took us a fair amount of work to get qspinlock to compete with ticket
-for low contention cases (by far the most common in the kernel), and it
-took a fairly large amount of CPUs for qspinlock to really win from
-ticket on the contended case. Your hardware may vary. In particular the
-access to the external cacheline (for queueing, see the queue: label in
-queued_spin_lock_slowpath) is a pain-point and the relative cost of
-cacheline misses for your arch determines where (and if) low contention
-behaviour is competitive.
+How about the cacheability attribute? Can you please provide the exact
+set of attributes that this system actually supports for each of the
+ITS and redistributor base registers?
 
-Also, less variance (the reason for the min/max measure) is better.
-Large variance is typically a sign of fwd progress trouble.
+Also, please provide errata numbers for these two issues so that we
+can properly document them and track the workarounds.
 
-That's not saying that qspinlock isn't awesome, but I'm arguing that you
-should get there by first trying all the simpler things. By gradually
-increasing complexity you can also find the problem spots (for your
-architecture) and you have something to fall back to in case of trouble.
+Thanks,
 
-Now, the obvious selling point of qspinlock is that due to the MCS style
-nature of the thing it doesn't bounce the lock around, but that comes at
-a cost of having to use that extra cacheline (due to the kernel liking
-sizeof(spinlock_t) == sizeof(u32)). But things like ARM64's WFE (see
-smp_cond_load_acquire()) can shift the balance quite a bit on that front
-as well (ARM has a similar thing but less useful, see it's spinlock.h
-and look for wfe() and dsb_sev()).
+	M.
 
-Once your arch hits NUMA, qspinlock is probably a win. However, low
-contention performance is still king for most workloads. Better high
-contention behaviour is nice.
+-- 
+Without deviation from the norm, progress is not possible.
