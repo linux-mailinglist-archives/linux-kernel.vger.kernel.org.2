@@ -2,85 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D962936057E
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6AC36057D
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231678AbhDOJUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 05:20:46 -0400
-Received: from mga14.intel.com ([192.55.52.115]:26136 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231388AbhDOJUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229761AbhDOJUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 15 Apr 2021 05:20:40 -0400
-IronPort-SDR: 9Z0vg8P6gX/DCdgLdbCPrQocmlP1+Kq94A9vtj/INKPfkbrUXSPo25jSpnmBJnUumDZ7KcgH0S
- MwSBhua5+0EA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="194383848"
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="194383848"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 02:20:16 -0700
-IronPort-SDR: n5soXkagFEqGqwFmH8J/fHl9ftelwXXgyTGTn83FZG4lrlItyzBPeIkqVI2EgtgMjNXvlKQ1IP
- 04g8avGPvBOw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="444123430"
-Received: from um.fi.intel.com (HELO um) ([10.237.72.62])
-  by fmsmga004.fm.intel.com with ESMTP; 15 Apr 2021 02:20:14 -0700
-From:   Alexander Shishkin <alexander.shishkin@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, alexander.shishkin@linux.intel.com
-Subject: Re: [PATCH 2/7] stm class: Replace uuid_t with plain u8 uuid[16]
-In-Reply-To: <YHf6s2r28XOtP2+2@kroah.com>
-References: <20210414171251.14672-1-alexander.shishkin@linux.intel.com>
- <20210414171251.14672-3-alexander.shishkin@linux.intel.com>
- <YHcnckePpKDujCU+@kroah.com> <YHcqxMLR44laX2PZ@smile.fi.intel.com>
- <YHc68v7keeITnA3K@kroah.com>
- <87sg3sfzl1.fsf@ashishki-desk.ger.corp.intel.com>
- <YHf6s2r28XOtP2+2@kroah.com>
-Date:   Thu, 15 Apr 2021 12:20:14 +0300
-Message-ID: <87pmyvgb01.fsf@ashishki-desk.ger.corp.intel.com>
+Received: from mail-io1-f69.google.com ([209.85.166.69]:39831 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229457AbhDOJUh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 05:20:37 -0400
+Received: by mail-io1-f69.google.com with SMTP id o21-20020a6b5a150000b02903e0762a258bso1235419iob.6
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 02:20:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=TKWxKlxzNvpkHVwpq2ENPdqKLi0cVgaRRb7P7JYoqUE=;
+        b=i29I91fUTBZQq949wQ9qPMBGO+qA32MnH5jfEnDJ8poM2/mI+vshy9aJKT+P+I2twy
+         MlMsd1jS3aYX0NUCcY/VyfY38YaT6KHO3RafY+DzPsvtbJgKOj93zDYkG6bYF+74RryI
+         bF0PQPQpkeCdwpxzSAz46GSuUYenyRv5GdFRg3J/PIfjxUJsPaXHFEUUK48eRGljt2Xd
+         6owzEgZ9N/96ExT3leEGdVY9BWKa2rwiDoHbXagAYCymWQCPc33XWgMTqjwLK2B8UFer
+         YZoCVLbPYihsbj4tenikf0ZSCittPQNMDgXQam5KPBs2SFT/8ComqKO9gPPdb+kjQs5K
+         mtsQ==
+X-Gm-Message-State: AOAM530KUdIFh/xMhQl1hHmcFYLktAWViw6q0jxOLAvga4pdTZm66rme
+        we3v5ahdiGzuZiQLVDaX0YVYprdeCbovhprdlQGm+wtS1yHx
+X-Google-Smtp-Source: ABdhPJxq6orZYNnkZxH1VeQZa1M+8mZNmke50bqtwk7DdZ9QLFhbsiazhuSTimW1RIMtU+mT8d1H1edxH7tJu4Dr0appJLyoc/40
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Received: by 2002:a92:d712:: with SMTP id m18mr2093767iln.127.1618478414709;
+ Thu, 15 Apr 2021 02:20:14 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 02:20:14 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fc4bc305bfff5e42@google.com>
+Subject: [syzbot] INFO: trying to register non-static key in nfc_llcp_sock_unlink
+From:   syzbot <syzbot+0b2182efb62fe1a7e162@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+Hello,
 
-> On Wed, Apr 14, 2021 at 10:14:34PM +0300, Alexander Shishkin wrote:
->> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
->> 
->> >> Using raw buffer APIs against uuid_t / guid_t.
->> >
->> > So you want to do that, or you do not want to do that?  Totally
->> > confused,
->> 
->> My understanding is that:
->> 1) generate_random_uuid() use is allegedly bad even though it's in their
->> header,
->> 2) poking directly at the byte array inside uuid_t is bad, even though,
->> again, header.
->> 
->> It is, indeed, not ideal.
->> 
->> If agreeable, I'll update this patch to the below and respin the whole
->> series.
->
-> You are showing that Andy wrote this, when you are the one that did :(
+syzbot found the following issue on:
 
-That's intentional, it's Andy's patch. In fact, it was probably me who
-insisted on the open-coded-byte-array version, in an offline
-conversation some time ago. I'd like to keep his name on it if that's
-ok. I've re-sent it [1] as a standalone patch.
+HEAD commit:    50987bec Merge tag 'trace-v5.12-rc7' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14d2cab1d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b5591c832f889fd9
+dashboard link: https://syzkaller.appspot.com/bug?extid=0b2182efb62fe1a7e162
 
-> Anyway, I've dropped this single patch from the series and applied the
-> rest.  Feel free to send this patch as a stand-alone one once you have
-> the authorship issues sorted out.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Thank you!
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0b2182efb62fe1a7e162@syzkaller.appspotmail.com
 
-[1] https://lore.kernel.org/lkml/20210415091555.88085-1-alexander.shishkin@linux.intel.com/
+INFO: trying to register non-static key.
+The code is fine but needs lockdep annotation, or maybe
+you didn't initialize this object before use?
+turning off the locking correctness validator.
+CPU: 3 PID: 10363 Comm: syz-executor.3 Not tainted 5.12.0-rc7-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ assign_lock_key kernel/locking/lockdep.c:936 [inline]
+ register_lock_class+0x1077/0x1180 kernel/locking/lockdep.c:1248
+ __lock_acquire+0x106/0x54c0 kernel/locking/lockdep.c:4780
+ lock_acquire kernel/locking/lockdep.c:5511 [inline]
+ lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5476
+ __raw_write_lock include/linux/rwlock_api_smp.h:210 [inline]
+ _raw_write_lock+0x2a/0x40 kernel/locking/spinlock.c:295
+ nfc_llcp_sock_unlink+0x1d/0x1c0 net/nfc/llcp_core.c:32
+ llcp_sock_release+0x286/0x580 net/nfc/llcp_sock.c:640
+ __sock_release+0xcd/0x280 net/socket.c:599
+ sock_close+0x18/0x20 net/socket.c:1258
+ __fput+0x288/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:140
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xbfc/0x2a60 kernel/exit.c:825
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ get_signal+0x47f/0x2150 kernel/signal.c:2781
+ arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:789
+ handle_signal_work kernel/entry/common.c:147 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+ exit_to_user_mode_prepare+0x148/0x250 kernel/entry/common.c:208
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x466459
+Code: Unable to access opcode bytes at RIP 0x46642f.
+RSP: 002b:00007fddc86a8218 EFLAGS: 00000246
+ ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 000000000056bf68 RCX: 0000000000466459
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000056bf68
+RBP: 000000000056bf60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf6c
+R13: 00007fff5b1ed3ff R14: 00007fddc86a8300 R15: 0000000000022000
+------------[ cut here ]------------
+refcount_t: underflow; use-after-free.
+WARNING: CPU: 3 PID: 10363 at lib/refcount.c:28 refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
+Modules linked in:
 
-Regards,
---
-Alex
+CPU: 3 PID: 10363 Comm: syz-executor.3 Not tainted 5.12.0-rc7-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+RIP: 0010:refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
+Code: e9 db fe ff ff 48 89 df e8 4c c7 ed fd e9 8a fe ff ff e8 22 98 aa fd 48 c7 c7 c0 47 c1 89 c6 05 c4 30 e8 09 01 e8 14 a5 f9 04 <0f> 0b e9 af fe ff ff 0f 1f 84 00 00 00 00 00 41 56 41 55 41 54 55
+RSP: 0000:ffffc90000f77958 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff888025e5a200 RSI: ffffffff815b8155 RDI: fffff520001eef1d
+RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815b0ebe R11: 0000000000000000 R12: 0000000000000000
+R13: ffff888044a19018 R14: ffff888044a19000 R15: ffff888022a6d330
+FS:  0000000000000000(0000) GS:ffff88802ca00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f69397f80d8 CR3: 000000000bc8e000 CR4: 0000000000150ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __refcount_sub_and_test include/linux/refcount.h:283 [inline]
+ __refcount_dec_and_test include/linux/refcount.h:315 [inline]
+ refcount_dec_and_test include/linux/refcount.h:333 [inline]
+ kref_put include/linux/kref.h:64 [inline]
+ nfc_llcp_local_put net/nfc/llcp_core.c:183 [inline]
+ nfc_llcp_local_put+0x1ab/0x200 net/nfc/llcp_core.c:178
+ llcp_sock_destruct+0x81/0x150 net/nfc/llcp_sock.c:950
+ __sk_destruct+0x4b/0x900 net/core/sock.c:1795
+ sk_destruct+0xbd/0xe0 net/core/sock.c:1839
+ __sk_free+0xef/0x3d0 net/core/sock.c:1850
+ sk_free+0x78/0xa0 net/core/sock.c:1861
+ sock_put include/net/sock.h:1807 [inline]
+ llcp_sock_release+0x3c9/0x580 net/nfc/llcp_sock.c:644
+ __sock_release+0xcd/0x280 net/socket.c:599
+ sock_close+0x18/0x20 net/socket.c:1258
+ __fput+0x288/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:140
+ exit_task_work include/linux/task_work.h:30 [inline]
+ do_exit+0xbfc/0x2a60 kernel/exit.c:825
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ get_signal+0x47f/0x2150 kernel/signal.c:2781
+ arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:789
+ handle_signal_work kernel/entry/common.c:147 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+ exit_to_user_mode_prepare+0x148/0x250 kernel/entry/common.c:208
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x466459
+Code: Unable to access opcode bytes at RIP 0x46642f.
+RSP: 002b:00007fddc86a8218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 000000000056bf68 RCX: 0000000000466459
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000056bf68
+RBP: 000000000056bf60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf6c
+R13: 00007fff5b1ed3ff R14: 00007fddc86a8300 R15: 0000000000022000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
