@@ -2,116 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96947360F04
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B78A360F07
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233900AbhDOPa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:30:26 -0400
-Received: from outbound-smtp46.blacknight.com ([46.22.136.58]:49135 "EHLO
-        outbound-smtp46.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233685AbhDOPaX (ORCPT
+        id S233685AbhDOPbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:31:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231137AbhDOPbp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:30:23 -0400
-Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp46.blacknight.com (Postfix) with ESMTPS id DA13BFAF25
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 16:29:59 +0100 (IST)
-Received: (qmail 1618 invoked from network); 15 Apr 2021 15:29:59 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 15 Apr 2021 15:29:59 -0000
-Date:   Thu, 15 Apr 2021 16:29:58 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>
-Subject: Re: [PATCH 11/11] mm/page_alloc: Embed per_cpu_pages locking within
- the per-cpu structure
-Message-ID: <20210415152958.GL3697@techsingularity.net>
-References: <20210414133931.4555-1-mgorman@techsingularity.net>
- <20210414133931.4555-12-mgorman@techsingularity.net>
- <de5d1dbb-fb56-9660-fadb-6318047305d4@suse.cz>
+        Thu, 15 Apr 2021 11:31:45 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 941A2C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 08:31:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uxFNx8Ls1EjAX5avuFuqLLc2lUBNPz30HeVoOn1uPWc=; b=ffatmZJhGimSLIXmb3ZAtXSywv
+        eCgq7k6Azr3gDPUc5delTOvcRcZqsDOdai7Ynzwmoya8Es/c40PbkRVyJx6I/k5Y1qQyY2UQYYQCg
+        CjkWO7fnhDsl0p54tIlLPel9aAitY4lv/wzNtjhqzip4xRcQhCq+kZ7ZgJf7XQ6xjB338UmTzhdNl
+        ZA0yRlLcsdhzof4tMnszeql8DD3CPNDOsojg2UoHLM9Xa/vO3vnm0eZXXhJI4mak3p2xE6ijlvAjk
+        +3kxT36sgH+oTMx/U87y4uJ1oFm9vfJASiCMYsjshTYN9MtbiFFAW+JN04IxrbX+dV4P7CsL24DT7
+        YAt0e0Iw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lX3wO-008kng-U2; Thu, 15 Apr 2021 15:30:17 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 839E6300209;
+        Thu, 15 Apr 2021 17:29:59 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6C6322C7727AE; Thu, 15 Apr 2021 17:29:59 +0200 (CEST)
+Date:   Thu, 15 Apr 2021 17:29:59 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     tglx@linutronix.de, mingo@kernel.org, bigeasy@linutronix.de,
+        swood@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vincent.donnefort@arm.com, qais.yousef@arm.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] sched: Use cpu_dying() to fix balance_push vs
+ hotplug-rollback
+Message-ID: <YHhb99iRHXcxD2/e@hirez.programming.kicks-ass.net>
+References: <20210310145258.899619710@infradead.org>
+ <20210310150109.259726371@infradead.org>
+ <871rclu3jz.mognet@e113632-lin.i-did-not-set--mail-host-address--so-tickle-me>
+ <YHQ3Iy7QfL+0UoM0@hirez.programming.kicks-ass.net>
+ <87r1jfmn8d.mognet@arm.com>
+ <YHU/a9HvGLYpOLKZ@hirez.programming.kicks-ass.net>
+ <YHgAYef83VQhKdC2@hirez.programming.kicks-ass.net>
+ <87a6pzmxec.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <de5d1dbb-fb56-9660-fadb-6318047305d4@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <87a6pzmxec.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 04:53:46PM +0200, Vlastimil Babka wrote:
-> On 4/14/21 3:39 PM, Mel Gorman wrote:
-> > struct per_cpu_pages is protected by the pagesets lock but it can be
-> > embedded within struct per_cpu_pages at a minor cost. This is possible
-> > because per-cpu lookups are based on offsets. Paraphrasing an explanation
-> > from Peter Ziljstra
-> > 
-> >   The whole thing relies on:
-> > 
-> >     &per_cpu_ptr(msblk->stream, cpu)->lock == per_cpu_ptr(&msblk->stream->lock, cpu)
-> > 
-> >   Which is true because the lhs:
-> > 
-> >     (local_lock_t *)((zone->per_cpu_pages + per_cpu_offset(cpu)) + offsetof(struct per_cpu_pages, lock))
-> > 
-> >   and the rhs:
-> > 
-> >     (local_lock_t *)((zone->per_cpu_pages + offsetof(struct per_cpu_pages, lock)) + per_cpu_offset(cpu))
-> > 
-> >   are identical, because addition is associative.
-> > 
-> > More details are included in mmzone.h. This embedding is not completely
-> > free for three reasons.
-> > 
-> > 1. As local_lock does not return a per-cpu structure, the PCP has to
-> >    be looked up twice -- first to acquire the lock and again to get the
-> >    PCP pointer.
-> > 
-> > 2. For PREEMPT_RT and CONFIG_DEBUG_LOCK_ALLOC, local_lock is potentially
-> >    a spinlock or has lock-specific tracking. In both cases, it becomes
-> >    necessary to release/acquire different locks when freeing a list of
-> >    pages in free_unref_page_list.
+On Thu, Apr 15, 2021 at 03:32:11PM +0100, Valentin Schneider wrote:
+> > So instead, make sure balance_push is enabled between
+> > sched_cpu_deactivate() and sched_cpu_activate() (eg. when
+> > !cpu_active()), and gate it's utility with cpu_dying().
 > 
-> Looks like this pattern could benefit from a local_lock API helper that would do
-> the right thing? It probably couldn't optimize much the CONFIG_PREEMPT_RT case
-> which would need to be unlock/lock in any case, but CONFIG_DEBUG_LOCK_ALLOC
-> could perhaps just keep the IRQ's disabled and just note the change of what's
-> acquired?
-> 
+> I'd word that "is enabled below sched_cpu_activate()", since
+> sched_cpu_deactivate() is now out of the picture.
 
-A helper could potentially be used but right now, there is only one
-call-site that needs this type of care so it may be overkill. A helper
-was proposed that can lookup and lock a per-cpu structure which is
-generally useful but does not suit the case where different locks need
-to be acquired.
-
-> > 3. For most kernel configurations, local_lock_t is empty and no storage is
-> >    required. By embedding the lock, the memory consumption on PREEMPT_RT
-> >    and CONFIG_DEBUG_LOCK_ALLOC is higher.
-> 
-> But I wonder, is there really a benefit to this increased complexity? Before the
-> patch we had "pagesets" - a local_lock that protects all zones' pcplists. Now
-> each zone's pcplists have own local_lock. On !PREEMPT_RT we will never take the
-> locks of multiple zones from the same CPU in parallel, because we use
-> local_lock_irqsave(). Can that parallelism happen on PREEMPT_RT, because that
-> could perhaps justify the change?
-> 
-
-I don't think PREEMPT_RT gets additional parallelism because it's still
-a per-cpu structure that is being protected. The difference is whether
-we are protecting the CPU-N index for all per_cpu_pages or just one.
-The patch exists because it was asked why the lock was not embedded within
-the structure it's protecting. I initially thought that was unsafe and
-I was wrong as explained in the changelog. But now that I find it *can*
-be done but it's a bit ugly so I put it at the end of the series so it
-can be dropped if necessary.
-
--- 
-Mel Gorman
-SUSE Labs
+I are confused (again!). Did you mean to say something like: 'is enabled
+below SCHED_AP_ACTIVE' ?
