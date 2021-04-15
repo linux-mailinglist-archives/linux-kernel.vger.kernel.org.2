@@ -2,80 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88BE7360684
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B31F360686
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbhDOKGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 06:06:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231919AbhDOKFi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 06:05:38 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2048C061574;
-        Thu, 15 Apr 2021 03:05:14 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id v72so4783095ybe.11;
-        Thu, 15 Apr 2021 03:05:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6oeIFs7Ag00+enOPg/8U9CSlTyarnRdS/t7jZtMEknc=;
-        b=cQe+lD2xs9LqPIp0h34xkwPNKG5VP0FV8kgPnyqPsbxBPvbT7u9hNVwYeyFeACyCuJ
-         hq/WcLJuBM8uCBhVWaIurCV2BC/cklpaMWHUMY+Ox+RMS2tTJOvfx4J6eFAE0LzHdKxv
-         46RJ0UJwwoYz//bYLnxEPv7cK/hBU7Be91qKB/iDiFECylr2flES0UFsqu4mLP3rUJvJ
-         kAVl8L1PL5MHXbLJZ1XbDPe77RJMwnR26T02s0eRDIL7HjW35iUG9VMRFOBo5Kv6jaLM
-         A8Nfot/8TmXuR9ph8IyrJgrEGH0fiqgduXMjvYZ7/f7TuzGCFJb1/lwpsQSZau6+P+3n
-         AoRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6oeIFs7Ag00+enOPg/8U9CSlTyarnRdS/t7jZtMEknc=;
-        b=rupAi2SqoLX7JCNNJqiM2LaUJ1zlopX/0388LAsoYJUd5JZemtufBbAUpaEzErSxpw
-         bbdODBS8c8cEWZogbDJot/S4+rOzvUGwvDsCZvKDdmRNYX19VxKpEY3bKpbFR0f4/1wH
-         U386uBSs6I6GHSsz6f0Dly0hniE+3TR/ySHWwjOzoqTOhk2qoCCClxN5ZakrZQ8OV1gf
-         qW/TB1s1nWb6TaCfRxhjRf1JTVmPqZYTCof9QKZBDIpqIZIqO+QrSUNOvsTgAE4BR3cP
-         nedpJ4fhmmyDC6mXTiGan+HLxk46QDB/+hKGE+ieG35izrvw7kbBY6V7+8siVxDL8jXT
-         PgQg==
-X-Gm-Message-State: AOAM532Rv20tgS+MXHGSsuPlZwJzhf+ksjnv1gGPIT9oH//x7qgEdCvm
-        bIqylUQqkZpqvw0bOGZoXdpxIZftpFUfIhrJs06GDo1EmWBHzg==
-X-Google-Smtp-Source: ABdhPJxboetpX1Mmk/0DFs1Mo4sZybpbdkNJuiEPy+sitIoWrv9qaflK3e4jCMm+PMOGa/JD2jUmJVR1Cdr5b8WV1Zw=
-X-Received: by 2002:a25:c444:: with SMTP id u65mr3406193ybf.93.1618481114331;
- Thu, 15 Apr 2021 03:05:14 -0700 (PDT)
+        id S231617AbhDOKG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 06:06:27 -0400
+Received: from mout.gmx.net ([212.227.15.15]:57405 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231919AbhDOKGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 06:06:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1618481132;
+        bh=+kUA0a4ZwMlKKIjn9JGeCEsofiYmSw4pSDq5hmtIq2I=;
+        h=X-UI-Sender-Class:Date:In-Reply-To:References:Subject:To:CC:From;
+        b=QuPPBRiENJoCcijPjvZcehy4ig2VOX3F66I2kOgs/vJFAbu8+rKBAGMfkS9y51vXB
+         Qn5gDOQSDEvgZWUuNQ5EEFtH81pRpUqBh0iC6+KQptIxJ/1CigUqydmPRjMQR9EMfV
+         8SSnKuex4gojzwa1SAAqkMBNtVSmJDEWCYsEXDh8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from frank-s9 ([80.245.79.33]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MQMyZ-1lBLGH0N3x-00MIeU; Thu, 15
+ Apr 2021 12:05:32 +0200
+Date:   Thu, 15 Apr 2021 12:05:26 +0200
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20210415094005.2673-1-dqfext@gmail.com>
+References: <20210415094005.2673-1-dqfext@gmail.com>
 MIME-Version: 1.0
-References: <20210414184604.23473-1-ojeda@kernel.org> <CAKwvOdm8s7Yp8e=8tpscY805-bjQWyoNVzhFZnH4KL-q9ZP4Hw@mail.gmail.com>
-In-Reply-To: <CAKwvOdm8s7Yp8e=8tpscY805-bjQWyoNVzhFZnH4KL-q9ZP4Hw@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 15 Apr 2021 12:05:03 +0200
-Message-ID: <CANiq72n-trsFMzzUTPw9qP+98auYk9uOO0NNMrJzq-=SkEo5BA@mail.gmail.com>
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH net-next] net: ethernet: mediatek: fix typo in offload code
+To:     linux-mediatek@lists.infradead.org,
+        DENG Qingfang <dqfext@gmail.com>, Felix Fietkau <nbd@nbd.name>,
+        John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+CC:     Alex Ryabchenko <d3adme4t@gmail.com>
+From:   Frank Wunderlich <frank-w@public-files.de>
+Message-ID: <86DA3F5B-32B2-446B-B83D-AFDC5EE6BF53@public-files.de>
+X-Provags-ID: V03:K1:PlTSyeEjvd5QpR+8/glb3oZRAAoeP/sVZ46rDI8ff51bte7qAzo
+ 0y2loCGZIEppur0KEOWHSPNx8Y9tDeluhuV/o4OqnexoiTupD728MW1s2fpWZKDBuxOvXfb
+ C/vrQFUlaGuEhSHV/Gx7EM64seFRytvCQFMaQu8S9QIUd5pDZ2TZvfgBDdmNf9K6zt1bbxJ
+ iuY9NS+J6LMaZX07t2W2A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:LO/CZ9QTzDI=:TYoFxZWYwdEgCCGxcK3MPf
+ i0vOKpwaIvIrvkV1M0tkhAKn7sKMGNM9MpwEM9N79U05yJ7fh7KDk6ytrZCeoTEkEeu/p9hUz
+ zFUP+jIKSB7OkeKUGdF+HJEblIFk4jZknfZtUCtVVyA77U8gL6aVsV0Fd3TsJNCNvTHAbOVFN
+ xYh1G+Je+q6EapArZY9YWSKJw+Za2MXSWZYcuqF3QJHwRm5RekNw1lSO5ihVcavLu4NNKW/hz
+ fIXKxYK/h4VaPK2ZQ7l4JwrnK70w2MtKTeOUsN1KNRZ8GBqE7Z+hKUJBUD2yzrmiSQZ9ycD5M
+ lUc/m7UGN7b4bC+Z0ODNfwdSm4f1ghEB7G0dCUffelaFN9x1mRhnFuuDoziX6hQneCKVt+CoS
+ KenOiEcQt8w44+rJ8T9DpGvszeuC8MzOHZSF5/u/WV5XSxh8L0V0xlsAw3dyWa03figFU8Js1
+ +8wSayeVS/hGr2KPxksqF/xIQ4GTg7cw7Meu9/LHvVwrMty//jzV+ItunAWrYBcqjztkqraMN
+ oSUGTlxlYSdISUd9UZdtHRr+nIfSwtQVWcwvR1bIV0TQfnWEXG9dx+enkG0u9rhwiKztKppb5
+ iNyydbFT5EqfR4Yz19WhIzukxwMZnH0aO5xrfXLO//Rz+FmeUER/hghpdGWoDxJQawi/WeJDr
+ rszR7gnOwXj0HyQTDPwgQQ8bpEr8FVf6M5suG+EtMx2XXruZkdB1grvFX4f1GmnlF1m0aHfN4
+ HmN086lOjt8gZocbSS8mB+pythc2ptrT8ZxuhyzBFubW2Tp0r2d+mgGYa4joZFhhDCu2XMfJ4
+ IK+VPsx4dukuWSeI2P8IRUxbmoBETGdiYbKG9G0ZE1rmOtmqY4zFp7HLlkNCa/YJkIa5xYDVl
+ r/XB4XLFkBupHKz0JLfMs1CgjsTXjdAhuNGupbi+nekHtj+siSV6pMdmbl+2tFs8/bWeF+blA
+ LGZsR0wHfG1hix/WzpiHNuT0Ct59EUEmq6y/hQxorW7Gv3uYFx8Gp/ej6ivoaKqjp7r5ChNCJ
+ +Sa4UKwUeYGQ91oCRcqNc4jOJsFR9KobtIqot9f3jNS7ZBwIpDu++c9fbIH+vRjdXcyN+C29D
+ pAlOnygQnwO4m6rFW26M+b60irT9wQqUF+LWYIPQ6H8fnQ0M2BDMJAjfxcR88HKfwc4cozygB
+ G6yaHjWcfuQR7Lg8CPSnnz4zCwQDsVplG8XQH+gTiuYhGtGsjWyzodKEAF/no2UMobZIYpyzf
+ 5eB6pZ2/vrYv3/I6K
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 2:23 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
+Am 15=2E April 2021 11:40:05 MESZ schrieb DENG Qingfang <dqfext@gmail=2Ecom=
+>:
+>=2Ekey_offset was assigned to =2Ehead_offset instead=2E Fix the typo=2E
 >
-> Looks like Wedson's writeup is now live. Nice job Wedson!
-> https://security.googleblog.com/2021/04/rust-in-linux-kernel.html
+>Fixes: 502e84e2382d ("net: ethernet: mtk_eth_soc: add flow offloading
+>support")
+>Signed-off-by: DENG Qingfang <dqfext@gmail=2Ecom>
 
-+1 It is very nicely written and explains the semaphore samples
-(included in the RFC) he wrote, with nice tables comparing how
-different parts look like between C and Rust!
+Thanks for posting the fix,but imho commit-message is not good=2E
 
-Anyone interested in this RFC, C or Rust, please take a look!
+Issue were traffic problems after a while with increased ping times if flo=
+w offload is active=2E
 
-Cheers,
-Miguel
+It turns out that key_offset with cookie is needed in rhashtable_params an=
+d head_offset was defined twice=2E
+regards Frank
