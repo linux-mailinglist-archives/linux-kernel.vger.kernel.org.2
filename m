@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9E5361565
+	by mail.lfdr.de (Postfix) with ESMTP id 78B23361566
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 00:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237408AbhDOWWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 18:22:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57230 "EHLO
+        id S237495AbhDOWWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 18:22:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237367AbhDOWV6 (ORCPT
+        with ESMTP id S237401AbhDOWWA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 18:21:58 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86970C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:21:32 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id s16-20020a05621412d0b029019a42aa64f7so2774320qvv.20
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:21:32 -0700 (PDT)
+        Thu, 15 Apr 2021 18:22:00 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E0EC061763
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:21:34 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id v2so3937482ybc.17
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 15:21:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=UAC36Umw1y4N2XTzBeWJ62cig8EoZ7urvgIOFbPyNVs=;
-        b=hdBoKyZq93hljglLeFSOkjraFuyeHrftvH1IWOLFybaQggYb39Eo+yBxuHDX7vMCY8
-         28tqvfYRRtbAeKfKSSeCXch5CIe3N/nwduJM+oCpYz97tWxFJIYJYTf//FC6kmn4js2r
-         JRnGFw72gnQCiGlQudymiLyL6pB03MEjdIRxghqW+xi2N1UcgRFR4SnNd5ot1g1cbQBB
-         x0Kg871VTPiSbOhxn1deKmo9nvQXwCXxBT6swl0sAWqLVjQnObaggeFQanPPkOYiFDn7
-         9Mx0RIfNwQoA4imUxNHEqpQ8Z8raJjJprLXKEcGYRwGDZ+80dN91NCI1SvkLNLuPjxg8
-         VHTg==
+        bh=5bZDkTOmF30k3ylXE7mjWEUF6Se+XKGXeTtOG326tls=;
+        b=u8/EHms+P5QHbtTJ6SsWhwk29xFysKHQdf/9xINwhk2Wxp21WIFSsVeUCy33wKtjFy
+         lUmj0nJPEi1n3Oh0A/Bgumm6PBfeRQ6rZ6U/hC52JnbgBrzx6Jwpq61xXK+tFBYn07IA
+         kAc09ehAkcpVLpAu8SPSKStvPEd9Ubx9twCwkgnSJZd30C8OLAntIF86x0Zdvht71NN5
+         s84XV5pqBHrcqFv2Av1nDsm/Dn5rp/O/+/cSldZguahj7hUC9TWg1fG2Nd5xxJ9MgVCK
+         hmjkzhRlEIteP178WSGuZ8PcLY0tZW6hKtnGHn1ErP7Lmb892CbNGFt4X8R+qosWioiv
+         3SSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=UAC36Umw1y4N2XTzBeWJ62cig8EoZ7urvgIOFbPyNVs=;
-        b=B4eC3v+0jhKzDOcnGJpKZjzpuEr09a8LrsIyQQ5KPNJ/6LK2kI1txnfCH+oM9jB0TQ
-         l/6+DTA9YN2z3/Fg4w99cv0W8U6oqpXSczi1t+enliJVrjaenb5Ww794i/rymLgS9yZG
-         BKkl8XnQpYDgEOMlPaPLmuN7N96LWLFWNrKbT9PBny6wlqR7bp2BiGj/JJoI6uKjSDzz
-         oqzDxBq7fxDrNtYtKPS83GU2zig2YTWLyLcMEs2MS5qQGvJQS/1DFQWR13skO9N/wB1z
-         46Zh1dmy7R1L4cHQkBOfohgu6+Fw5y6K7OIZV4TEX+A4gIp9PHYGsKXwZegGuW6+frXr
-         iLwA==
-X-Gm-Message-State: AOAM532u9Py0MG9lEwqIL4mAdxq8wEHCtsMcTZ/dI4jm7aF1slyrQXUo
-        mEgPBQ8RPi/9z4fUYPHCZLM39MiJEvE=
-X-Google-Smtp-Source: ABdhPJwUZIGHXwDCmD9Ec2vGqDNqiOgbzXxuMPLd6Y1HUTcMEki9QsgPmUp+XAYk4F9XG/4mMf5xt6XbAWk=
+        bh=5bZDkTOmF30k3ylXE7mjWEUF6Se+XKGXeTtOG326tls=;
+        b=MDgrBykJziuHqBttvssIOAO4lBsRJlV2cl1LLXT56o/sHyK0I9Fb1iTO++a/kzpA/n
+         tN1vQbAyRPOJlK7FC8MiTJa1AxL7S6smyT5gPdvwjLt7HMylHFbHKJYKOB/YLiKjPEGl
+         ISIBuKSw7xUpcrVrlFWHu1mrWOrbOKWEX6ajUoJn1iZq1jLrgHmLCxgZIstZx5KEbu+s
+         3Gmb8J2Ab1VF5tZvZF/Lm2I7zjuofu8utp5/p/jzeO9DwqJ32m+RtJP4UQh1+Md2GACS
+         v8Mlu08kELf/b2fLMp1DIGdYl7MpGCV9IYFG789gSlV/oiLrqrQDsKVw3QngFm5z5+Ri
+         HTTg==
+X-Gm-Message-State: AOAM5333Jo34hQSQKBpBmglWKUWOLRM1emQStIR6DezgF4utUxXpFy0T
+        WvuykB7y5MFw6Orbwz02oj8pLvrJlig=
+X-Google-Smtp-Source: ABdhPJzkSOmVcTYZbMZ5mFcI1gbLLhi87LjETeJ5cPYgxWeheNNd0DFYGFGeWJlxcCCk0oPTkVNLc+BLJCU=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:6c93:ada0:6bbf:e7db])
- (user=seanjc job=sendgmr) by 2002:a05:6214:1c45:: with SMTP id
- if5mr5551635qvb.48.1618525291699; Thu, 15 Apr 2021 15:21:31 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:f80e:: with SMTP id u14mr7738720ybd.428.1618525294052;
+ Thu, 15 Apr 2021 15:21:34 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 15 Apr 2021 15:21:05 -0700
+Date:   Thu, 15 Apr 2021 15:21:06 -0700
 In-Reply-To: <20210415222106.1643837-1-seanjc@google.com>
-Message-Id: <20210415222106.1643837-9-seanjc@google.com>
+Message-Id: <20210415222106.1643837-10-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210415222106.1643837-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
-Subject: [PATCH v3 8/9] KVM: x86: Consolidate guest enter/exit logic to common helpers
+Subject: [PATCH v3 9/9] KVM: Move instrumentation-safe annotations for
+ enter/exit to x86 code
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -68,210 +69,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the enter/exit logic in {svm,vmx}_vcpu_enter_exit() to common
-helpers.  Opportunistically update the somewhat stale comment about the
-updates needing to occur immediately after VM-Exit.
+Drop the instrumentation_{begin,end}() annonations from the common KVM
+guest enter/exit helpers, and massage the x86 code as needed to preserve
+the necessary annotations.  x86 is the only architecture whose transition
+flow is tagged as noinstr, and more specifically, it is the only
+architecture for which instrumentation_{begin,end}() can be non-empty.
 
-No functional change intended.
+No other architecture supports CONFIG_STACK_VALIDATION=y, and s390 is the
+only other architecture that support CONFIG_DEBUG_ENTRY=y.  For
+instrumentation annontations to be meaningful, both aformentioned configs
+must be enabled.
+
+Letting x86 deal with the annotations avoids unnecessary nops by
+squashing back-to-back instrumention-safe sequences.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/svm/svm.c | 46 ++-----------------------------------
- arch/x86/kvm/vmx/vmx.c | 46 ++-----------------------------------
- arch/x86/kvm/x86.h     | 52 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 56 insertions(+), 88 deletions(-)
+ arch/x86/kvm/x86.h       | 4 ++--
+ include/linux/kvm_host.h | 9 +--------
+ 2 files changed, 3 insertions(+), 10 deletions(-)
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index bb2aa0dde7c5..0677595d07e5 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -3713,25 +3713,7 @@ static noinstr void svm_vcpu_enter_exit(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 
--	/*
--	 * VMENTER enables interrupts (host state), but the kernel state is
--	 * interrupts disabled when this is invoked. Also tell RCU about
--	 * it. This is the same logic as for exit_to_user_mode().
--	 *
--	 * This ensures that e.g. latency analysis on the host observes
--	 * guest mode as interrupt enabled.
--	 *
--	 * guest_enter_irqoff() informs context tracking about the
--	 * transition to guest mode and if enabled adjusts RCU state
--	 * accordingly.
--	 */
--	instrumentation_begin();
--	trace_hardirqs_on_prepare();
--	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
--	instrumentation_end();
--
--	guest_enter_irqoff();
--	lockdep_hardirqs_on(CALLER_ADDR0);
-+	kvm_guest_enter_irqoff();
- 
- 	if (sev_es_guest(vcpu->kvm)) {
- 		__svm_sev_es_vcpu_run(svm->vmcb_pa);
-@@ -3745,31 +3727,7 @@ static noinstr void svm_vcpu_enter_exit(struct kvm_vcpu *vcpu)
- 		vmload(__sme_page_pa(sd->save_area));
- 	}
- 
--	/*
--	 * VMEXIT disables interrupts (host state), but tracing and lockdep
--	 * have them in state 'on' as recorded before entering guest mode.
--	 * Same as enter_from_user_mode().
--	 *
--	 * context_tracking_guest_exit_irqoff() restores host context and
--	 * reinstates RCU if enabled and required.
--	 *
--	 * This needs to be done before the below as native_read_msr()
--	 * contains a tracepoint and x86_spec_ctrl_restore_host() calls
--	 * into world and some more.
--	 */
--	lockdep_hardirqs_off(CALLER_ADDR0);
--	context_tracking_guest_exit_irqoff();
--
--	instrumentation_begin();
--	/*
--	 * Account guest time when precise accounting based on context tracking
--	 * is enabled.  Tick based accounting is deferred until after IRQs that
--	 * occurred within the VM-Enter/VM-Exit "window" are handled.
--	 */
--	if (vtime_accounting_enabled_this_cpu())
--		vtime_account_guest_exit();
--	trace_hardirqs_off_finish();
--	instrumentation_end();
-+	kvm_guest_exit_irqoff();
- }
- 
- static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 5ae9dc197048..19b0e25bf598 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6600,25 +6600,7 @@ static fastpath_t vmx_exit_handlers_fastpath(struct kvm_vcpu *vcpu)
- static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
- 					struct vcpu_vmx *vmx)
- {
--	/*
--	 * VMENTER enables interrupts (host state), but the kernel state is
--	 * interrupts disabled when this is invoked. Also tell RCU about
--	 * it. This is the same logic as for exit_to_user_mode().
--	 *
--	 * This ensures that e.g. latency analysis on the host observes
--	 * guest mode as interrupt enabled.
--	 *
--	 * guest_enter_irqoff() informs context tracking about the
--	 * transition to guest mode and if enabled adjusts RCU state
--	 * accordingly.
--	 */
--	instrumentation_begin();
--	trace_hardirqs_on_prepare();
--	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
--	instrumentation_end();
--
--	guest_enter_irqoff();
--	lockdep_hardirqs_on(CALLER_ADDR0);
-+	kvm_guest_enter_irqoff();
- 
- 	/* L1D Flush includes CPU buffer clear to mitigate MDS */
- 	if (static_branch_unlikely(&vmx_l1d_should_flush))
-@@ -6634,31 +6616,7 @@ static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
- 
- 	vcpu->arch.cr2 = native_read_cr2();
- 
--	/*
--	 * VMEXIT disables interrupts (host state), but tracing and lockdep
--	 * have them in state 'on' as recorded before entering guest mode.
--	 * Same as enter_from_user_mode().
--	 *
--	 * context_tracking_guest_exit_irqoff() restores host context and
--	 * reinstates RCU if enabled and required.
--	 *
--	 * This needs to be done before the below as native_read_msr()
--	 * contains a tracepoint and x86_spec_ctrl_restore_host() calls
--	 * into world and some more.
--	 */
--	lockdep_hardirqs_off(CALLER_ADDR0);
--	context_tracking_guest_exit_irqoff();
--
--	instrumentation_begin();
--	/*
--	 * Account guest time when precise accounting based on context tracking
--	 * is enabled.  Tick based accounting is deferred until after IRQs that
--	 * occurred within the VM-Enter/VM-Exit "window" are handled.
--	 */
--	if (vtime_accounting_enabled_this_cpu())
--		vtime_account_guest_exit();
--	trace_hardirqs_off_finish();
--	instrumentation_end();
-+	kvm_guest_exit_irqoff();
- }
- 
- static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
 diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-index daccf20fbcd5..285953e81777 100644
+index 285953e81777..b17857ac540b 100644
 --- a/arch/x86/kvm/x86.h
 +++ b/arch/x86/kvm/x86.h
-@@ -8,6 +8,58 @@
- #include "kvm_cache_regs.h"
- #include "kvm_emulate.h"
+@@ -25,9 +25,9 @@ static __always_inline void kvm_guest_enter_irqoff(void)
+ 	instrumentation_begin();
+ 	trace_hardirqs_on_prepare();
+ 	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
+-	instrumentation_end();
+-
+ 	guest_enter_irqoff();
++	instrumentation_end();
++
+ 	lockdep_hardirqs_on(CALLER_ADDR0);
+ }
  
-+static __always_inline void kvm_guest_enter_irqoff(void)
-+{
-+	/*
-+	 * VMENTER enables interrupts (host state), but the kernel state is
-+	 * interrupts disabled when this is invoked. Also tell RCU about
-+	 * it. This is the same logic as for exit_to_user_mode().
-+	 *
-+	 * This ensures that e.g. latency analysis on the host observes
-+	 * guest mode as interrupt enabled.
-+	 *
-+	 * guest_enter_irqoff() informs context tracking about the
-+	 * transition to guest mode and if enabled adjusts RCU state
-+	 * accordingly.
-+	 */
-+	instrumentation_begin();
-+	trace_hardirqs_on_prepare();
-+	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
-+	instrumentation_end();
-+
-+	guest_enter_irqoff();
-+	lockdep_hardirqs_on(CALLER_ADDR0);
-+}
-+
-+static __always_inline void kvm_guest_exit_irqoff(void)
-+{
-+	/*
-+	 * VMEXIT disables interrupts (host state), but tracing and lockdep
-+	 * have them in state 'on' as recorded before entering guest mode.
-+	 * Same as enter_from_user_mode().
-+	 *
-+	 * context_tracking_guest_exit_irqoff() restores host context and
-+	 * reinstates RCU if enabled and required.
-+	 *
-+	 * This needs to be done immediately after VM-Exit, before any code
-+	 * that might contain tracepoints or call out to the greater world,
-+	 * e.g. before x86_spec_ctrl_restore_host().
-+	 */
-+	lockdep_hardirqs_off(CALLER_ADDR0);
-+	context_tracking_guest_exit_irqoff();
-+
-+	instrumentation_begin();
-+	/*
-+	 * Account guest time when precise accounting based on context tracking
-+	 * is enabled.  Tick based accounting is deferred until after IRQs that
-+	 * occurred within the VM-Enter/VM-Exit "window" are handled.
-+	 */
-+	if (vtime_accounting_enabled_this_cpu())
-+		vtime_account_guest_exit();
-+	trace_hardirqs_off_finish();
-+	instrumentation_end();
-+}
-+
- #define KVM_NESTED_VMENTER_CONSISTENCY_CHECK(consistency_check)		\
- ({									\
- 	bool failed = (consistency_check);				\
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 444d5f0225cb..e5eb64019f47 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -339,9 +339,7 @@ static __always_inline void guest_enter_irqoff(void)
+ 	 * This is running in ioctl context so its safe to assume that it's the
+ 	 * stime pending cputime to flush.
+ 	 */
+-	instrumentation_begin();
+ 	vtime_account_guest_enter();
+-	instrumentation_end();
+ 
+ 	/*
+ 	 * KVM does not hold any references to rcu protected data when it
+@@ -351,21 +349,16 @@ static __always_inline void guest_enter_irqoff(void)
+ 	 * one time slice). Lets treat guest mode as quiescent state, just like
+ 	 * we do with user-mode execution.
+ 	 */
+-	if (!context_tracking_guest_enter_irqoff()) {
+-		instrumentation_begin();
++	if (!context_tracking_guest_enter_irqoff())
+ 		rcu_virt_note_context_switch(smp_processor_id());
+-		instrumentation_end();
+-	}
+ }
+ 
+ static __always_inline void guest_exit_irqoff(void)
+ {
+ 	context_tracking_guest_exit_irqoff();
+ 
+-	instrumentation_begin();
+ 	/* Flush the guest cputime we spent on the guest */
+ 	vtime_account_guest_exit();
+-	instrumentation_end();
+ }
+ 
+ static inline void guest_exit(void)
 -- 
 2.31.1.368.gbe11c130af-goog
 
