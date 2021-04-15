@@ -2,34 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68391360E2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36CA0360E6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234938AbhDOPLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:11:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47212 "EHLO mail.kernel.org"
+        id S236702AbhDOPPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:15:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235306AbhDOPAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:00:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53D0F61417;
-        Thu, 15 Apr 2021 14:56:57 +0000 (UTC)
+        id S234760AbhDOPE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:04:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60BD66142C;
+        Thu, 15 Apr 2021 14:58:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498618;
-        bh=vd75wb8kS8EZtErPhTWaI3YgTd4Nzj0bJply8F4euZ8=;
+        s=korg; t=1618498729;
+        bh=oig4PkMG+5ETXt+u398CdLDRIpLa18RO/Hbb1ProsSQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HGZErhpzbEyiRq9st5C0lpZ+W9dW7oKGqA2R6MsBuIyyU14dgkX5FHnZ1oVBjWBT1
-         oXFvE4W//s6lQlmI4h2FQIjsWwc7MnKX2Y0RIAfBLC5nCxOx73M5vPTT7qJ8D3ybGX
-         hvugVfrQgqeYy6D/LKZeHaXg+dIgf+3bWIQqnnzo=
+        b=sCspONk44Ved4vMEpDuuS8sINGpflJphxNVXUftsP3Mr327D3lFKJBplNooR/Mo//
+         a/p7Tmfhh9OIBw1WW0YEdp46ovDJ3wsiC3Gz8qBJ4ZbHLeersF1+JcEiW0YshW78la
+         xqH9eotKumRDsu2CVc7fnYW06Fag9W+oo/hVVd9k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 5.4 18/18] xen/events: fix setting irq affinity
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 04/23] KVM: arm64: Disable guest access to trace filter controls
 Date:   Thu, 15 Apr 2021 16:48:11 +0200
-Message-Id: <20210415144413.624750165@linuxfoundation.org>
+Message-Id: <20210415144413.296653437@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.055232956@linuxfoundation.org>
-References: <20210415144413.055232956@linuxfoundation.org>
+In-Reply-To: <20210415144413.146131392@linuxfoundation.org>
+References: <20210415144413.146131392@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,47 +43,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-The backport of upstream patch 25da4618af240fbec61 ("xen/events: don't
-unmask an event channel when an eoi is pending") introduced a
-regression for stable kernels 5.10 and older: setting IRQ affinity for
-IRQs related to interdomain events would no longer work, as moving the
-IRQ to its new cpu was not included in the irq_ack callback for those
-events.
+[ Upstream commit a354a64d91eec3e0f8ef0eed575b480fd75b999c ]
 
-Fix that by adding the needed call.
+Disable guest access to the Trace Filter control registers.
+We do not advertise the Trace filter feature to the guest
+(ID_AA64DFR0_EL1: TRACE_FILT is cleared) already, but the guest
+can still access the TRFCR_EL1 unless we trap it.
 
-Note that kernels 5.11 and later don't need the explicit moving of the
-IRQ to the target cpu in the irq_ack callback, due to a rework of the
-affinity setting in kernel 5.11.
+This will also make sure that the guest cannot fiddle with
+the filtering controls set by a nvhe host.
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210323120647.454211-3-suzuki.poulose@arm.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/xen/events/events_base.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/include/asm/kvm_arm.h | 1 +
+ arch/arm64/kvm/debug.c           | 2 ++
+ 2 files changed, 3 insertions(+)
 
---- a/drivers/xen/events/events_base.c
-+++ b/drivers/xen/events/events_base.c
-@@ -1783,7 +1783,7 @@ static void lateeoi_ack_dynirq(struct ir
+diff --git a/arch/arm64/include/asm/kvm_arm.h b/arch/arm64/include/asm/kvm_arm.h
+index 4e90c2debf70..94d4025acc0b 100644
+--- a/arch/arm64/include/asm/kvm_arm.h
++++ b/arch/arm64/include/asm/kvm_arm.h
+@@ -278,6 +278,7 @@
+ #define CPTR_EL2_DEFAULT	CPTR_EL2_RES1
  
- 	if (VALID_EVTCHN(evtchn)) {
- 		do_mask(info, EVT_MASK_REASON_EOI_PENDING);
--		event_handler_exit(info);
-+		ack_dynirq(data);
- 	}
- }
- 
-@@ -1794,7 +1794,7 @@ static void lateeoi_mask_ack_dynirq(stru
- 
- 	if (VALID_EVTCHN(evtchn)) {
- 		do_mask(info, EVT_MASK_REASON_EXPLICIT);
--		event_handler_exit(info);
-+		ack_dynirq(data);
- 	}
- }
- 
+ /* Hyp Debug Configuration Register bits */
++#define MDCR_EL2_TTRF		(1 << 19)
+ #define MDCR_EL2_TPMS		(1 << 14)
+ #define MDCR_EL2_E2PB_MASK	(UL(0x3))
+ #define MDCR_EL2_E2PB_SHIFT	(UL(12))
+diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
+index 7a7e425616b5..dbc890511631 100644
+--- a/arch/arm64/kvm/debug.c
++++ b/arch/arm64/kvm/debug.c
+@@ -89,6 +89,7 @@ void kvm_arm_reset_debug_ptr(struct kvm_vcpu *vcpu)
+  *  - Debug ROM Address (MDCR_EL2_TDRA)
+  *  - OS related registers (MDCR_EL2_TDOSA)
+  *  - Statistical profiler (MDCR_EL2_TPMS/MDCR_EL2_E2PB)
++ *  - Self-hosted Trace Filter controls (MDCR_EL2_TTRF)
+  *
+  * Additionally, KVM only traps guest accesses to the debug registers if
+  * the guest is not actively using them (see the KVM_ARM64_DEBUG_DIRTY
+@@ -112,6 +113,7 @@ void kvm_arm_setup_debug(struct kvm_vcpu *vcpu)
+ 	vcpu->arch.mdcr_el2 = __this_cpu_read(mdcr_el2) & MDCR_EL2_HPMN_MASK;
+ 	vcpu->arch.mdcr_el2 |= (MDCR_EL2_TPM |
+ 				MDCR_EL2_TPMS |
++				MDCR_EL2_TTRF |
+ 				MDCR_EL2_TPMCR |
+ 				MDCR_EL2_TDRA |
+ 				MDCR_EL2_TDOSA);
+-- 
+2.30.2
+
 
 
