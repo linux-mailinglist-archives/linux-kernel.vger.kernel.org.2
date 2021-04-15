@@ -2,110 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2703602E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F593602E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 09:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231204AbhDOHA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 03:00:27 -0400
-Received: from mail-vs1-f48.google.com ([209.85.217.48]:41491 "EHLO
-        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbhDOHAZ (ORCPT
+        id S231244AbhDOHA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 03:00:29 -0400
+Received: from mx313.baidu.com ([180.101.52.140]:11491 "EHLO
+        njjs-sys-mailin07.njjs.baidu.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231217AbhDOHA1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 03:00:25 -0400
-Received: by mail-vs1-f48.google.com with SMTP id d6so5419075vsm.8;
-        Thu, 15 Apr 2021 00:00:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vbzgJOlVxu5yO76Hjt4YIfAWsnQVrr2IcvyeAahZ2KQ=;
-        b=kC4/O6cX7Q75dObTn03vhx/q79eBlVAvfSVEk/WKBVVPHLDWsje8Q9DJVajzn0cl33
-         jKfZwaPN/qyq77JTsJJ7U/K1OVJjqE7VwdpxFOw78kRLNoV/JQesac6RIJCRtqVdbN6z
-         Zarw/vW9ROdP7Um3E+pNQHiF/4Jp1CH7fuB8dytlRr+XS/doH5oFiTalD8CBIm5IjUuw
-         LT29U7Ev6kBjY6w9RSdgIg1B+51+hpVbNwaBZQqjkupfSgQb1+mRE7Pbof+7vImUAWOZ
-         SYN4FE3wyQbvEeHciWn860TALqz8GoFRYlx4WkM8CcYsFOIzz6X8mOqPd+A3Ogfq3/Cb
-         +BCQ==
-X-Gm-Message-State: AOAM530BRqzec/M2iIf0xRZPB/4Ss4AZYSb4jXjRxirEBYX8Y3XTbq8r
-        kseMjpqS9oWPFJ2/702FKkUSa3D5xIa4J591hN6KOY2u
-X-Google-Smtp-Source: ABdhPJzLqx3+sTnBI59ImPcvOZLWyigNGqnXndOIssdcnUZiTr0YKH3CjOyOvll5xVJ+/Q7K4238d/3Jagum/tX5tTs=
-X-Received: by 2002:a67:7c8c:: with SMTP id x134mr1090046vsc.40.1618470001382;
- Thu, 15 Apr 2021 00:00:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210414135128.180980-1-jacopo+renesas@jmondi.org>
- <20210414135128.180980-2-jacopo+renesas@jmondi.org> <YHd/AKIfxIHhTjWO@pendragon.ideasonboard.com>
- <20210415065420.lbba2hig4p2ynx6c@uno.localdomain>
-In-Reply-To: <20210415065420.lbba2hig4p2ynx6c@uno.localdomain>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 15 Apr 2021 08:59:50 +0200
-Message-ID: <CAMuHMdV6=DXO4AzrhgcDzdCNB4qYua2jkGsEcZyi5FwnbF70tQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/5] dt-bindings: media: max9286: Define 'maxim,gpio-poc'
-To:     Jacopo Mondi <jacopo@jmondi.org>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 15 Apr 2021 03:00:27 -0400
+Received: from unknown.domain.tld (bjhw-sys-rpm015653cc5.bjhw.baidu.com [10.227.53.39])
+        by njjs-sys-mailin07.njjs.baidu.com (Postfix) with ESMTP id BFF5419480054;
+        Thu, 15 Apr 2021 15:00:01 +0800 (CST)
+From:   Li RongQing <lirongqing@baidu.com>
+To:     linux-kernel@vger.kernel.org, namhyung@kernel.org,
+        jolsa@redhat.com, alexander.shishkin@linux.intel.com,
+        mark.rutland@arm.com, acme@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, lirongqing@baidu.com
+Subject: [PATCH][resend] perf x86 kvm-stat: support to analyze kvm msr
+Date:   Thu, 15 Apr 2021 15:00:01 +0800
+Message-Id: <1618470001-7239-1-git-send-email-lirongqing@baidu.com>
+X-Mailer: git-send-email 1.7.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+From: Lei Zhao <zhaolei27@baidu.com>
 
-On Thu, Apr 15, 2021 at 8:53 AM Jacopo Mondi <jacopo@jmondi.org> wrote:
-> On Thu, Apr 15, 2021 at 02:47:12AM +0300, Laurent Pinchart wrote:
-> > On Wed, Apr 14, 2021 at 03:51:24PM +0200, Jacopo Mondi wrote:
-> > > Define a new vendor property in the maxim,max9286 binding schema.
-> > >
-> > > The new property allows to declare that the remote camera
-> > > power-over-coax is controlled by one of the MAX9286 gpio lines.
-> > >
-> > > As it is currently not possible to establish a regulator as consumer
-> > > of the MAX9286 gpio controller for this purpose, the property allows to
-> > > declare that the camera power is controlled by the MAX9286 directly.
-> > >
-> > > The property accepts a gpio-index (0 or 1) and one line polarity
-> > > flag as defined by dt-bindings/gpio/gpio.h.
-> > >
-> > > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> > > ---
-> > >  .../bindings/media/i2c/maxim,max9286.yaml     | 53 ++++++++++++++++++-
-> > >  1 file changed, 52 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> > > index ee16102fdfe7..480a491f3744 100644
-> > > --- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> > > +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> > > @@ -70,6 +70,24 @@ properties:
-> > >        a remote serializer whose high-threshold noise immunity is not enabled
-> > >        is 100000 micro volts
-> > >
-> > > +  maxim,gpio-poc:
-> >
-> > I would have written poc-gpio to match the order of the GPIO bindings
-> > syntax.
-> >
->
-> That's what I had :) but then the property gets matched against the
-> gpio schema and I get complains because it expects a phandle as first
-> argument... Maybe there's a way I've missed to prevent the property to
-> be matched with *-gpio ?
+usage:
+    - kvm stat
+      run a command and gather performance counter statistics
 
-GPIO hogs also use gpio properties lacking the phandle.
-Hence the way this is handled for hogs may (or may not, it's yaml after all ;-)
-inspire you how to handle this here.
+    - show the result:
+      perf kvm stat report --event=msr
 
-Gr{oetje,eeting}s,
+See the msr events:
 
-                        Geert
+Analyze events for all VMs, all VCPUs:
 
+MSR Access Samples  Samples% Time%  Min Time Max Time  Avg time
+
+  0x6e0:W   67007  98.17%   98.31%  0.59us   10.69us  0.90us ( +-  0.10% )
+  0x830:W    1186   1.74%    1.60%  0.53us  108.34us  0.82us ( +- 11.02% )
+   0x3b:R      66   0.10%    0.09%  0.56us    1.26us  0.80us ( +-  3.24% )
+
+Total Samples:68259, Total events handled time:61150.95us.
+
+Signed-off-by: Li RongQing <lirongqing@baidu.com>
+Signed-off-by: Lei Zhao <zhaolei27@baidu.com>
+---
+ tools/perf/arch/x86/util/kvm-stat.c |   46 +++++++++++++++++++++++++++++++++++
+ 1 files changed, 46 insertions(+), 0 deletions(-)
+
+diff --git a/tools/perf/arch/x86/util/kvm-stat.c b/tools/perf/arch/x86/util/kvm-stat.c
+index 0729204..c5dd54f 100644
+--- a/tools/perf/arch/x86/util/kvm-stat.c
++++ b/tools/perf/arch/x86/util/kvm-stat.c
+@@ -133,11 +133,56 @@ static void ioport_event_decode_key(struct perf_kvm_stat *kvm __maybe_unused,
+ 	.name = "IO Port Access"
+ };
+ 
++ /* The time of emulation msr is from kvm_msr to kvm_entry. */
++static void msr_event_get_key(struct evsel *evsel,
++				 struct perf_sample *sample,
++				 struct event_key *key)
++{
++	key->key  = evsel__intval(evsel, sample, "ecx");
++	key->info = evsel__intval(evsel, sample, "write");
++}
++
++static bool msr_event_begin(struct evsel *evsel,
++			       struct perf_sample *sample,
++			       struct event_key *key)
++{
++	if (!strcmp(evsel->name, "kvm:kvm_msr")) {
++		msr_event_get_key(evsel, sample, key);
++		return true;
++	}
++
++	return false;
++}
++
++static bool msr_event_end(struct evsel *evsel,
++			     struct perf_sample *sample __maybe_unused,
++			     struct event_key *key __maybe_unused)
++{
++	return kvm_entry_event(evsel);
++}
++
++static void msr_event_decode_key(struct perf_kvm_stat *kvm __maybe_unused,
++				    struct event_key *key,
++				    char *decode)
++{
++	scnprintf(decode, decode_str_len, "%#llx:%s",
++		  (unsigned long long)key->key,
++		  key->info ? "W" : "R");
++}
++
++static struct kvm_events_ops msr_events = {
++	.is_begin_event = msr_event_begin,
++	.is_end_event = msr_event_end,
++	.decode_key = msr_event_decode_key,
++	.name = "MSR Access"
++};
++
+ const char *kvm_events_tp[] = {
+ 	"kvm:kvm_entry",
+ 	"kvm:kvm_exit",
+ 	"kvm:kvm_mmio",
+ 	"kvm:kvm_pio",
++	"kvm:kvm_msr",
+ 	NULL,
+ };
+ 
+@@ -145,6 +190,7 @@ struct kvm_reg_events_ops kvm_reg_events_ops[] = {
+ 	{ .name = "vmexit", .ops = &exit_events },
+ 	{ .name = "mmio", .ops = &mmio_events },
+ 	{ .name = "ioport", .ops = &ioport_events },
++	{ .name = "msr", .ops = &msr_events },
+ 	{ NULL, NULL },
+ };
+ 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+1.7.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
