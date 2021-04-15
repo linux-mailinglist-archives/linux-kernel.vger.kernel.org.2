@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B89F35FFD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 04:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D3935FFD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 04:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229669AbhDOCHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 22:07:17 -0400
-Received: from mga04.intel.com ([192.55.52.120]:14866 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229449AbhDOCHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 22:07:15 -0400
-IronPort-SDR: OAj1+TXC/xDBgbGHh87mJqGcG+AeH130Sdv57AwUnKGs+gMlaGX7hXN7gg5nBbfomPG4Pj6/UG
- nfDStuembbcg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="192648863"
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="192648863"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 19:06:53 -0700
-IronPort-SDR: XfNeBLI887Qp5AIn4Mtpvqr7TMGB4r1tIYsEOb/+S1DvwzmWZLsPyymzajdWHKDKLzvsRaQDpc
- FaMdnn/wDzVw==
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="383874988"
-Received: from jbrandeb-mobl4.amr.corp.intel.com (HELO localhost) ([10.209.19.126])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 19:06:52 -0700
-Date:   Wed, 14 Apr 2021 19:06:52 -0700
-From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
-To:     kerneljasonxing@gmail.com, davem@davemloft.net, kuba@kernel.org
-Cc:     anthony.l.nguyen@intel.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, intel-wired-lan@lists.osuosl.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Jason Xing <xingwanli@kuaishou.com>,
-        Shujin Li <lishujin@kuaishou.com>
-Subject: Re: [PATCH net v3] i40e: fix the panic when running bpf in xdpdrv
- mode
-Message-ID: <20210414190652.00006680@intel.com>
-In-Reply-To: <20210414023428.10121-1-kerneljasonxing@gmail.com>
-References: <20210413025011.1251-1-kerneljasonxing@gmail.com>
-        <20210414023428.10121-1-kerneljasonxing@gmail.com>
-X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
+        id S229583AbhDOCIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 22:08:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229449AbhDOCId (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 22:08:33 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CDE9C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 19:08:10 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id d15so10760184qkc.9
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 19:08:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kepstin.ca; s=google;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=JqLpHGjz8FBfsB+oiUFw3oGbHf8VhZlWw288yxsMYis=;
+        b=VWtNrScHvqsJ9+VBK5repCCDNFK+b8SyNiz6DsD5iU9MSf/SFWFWvqbVIcZomSDRZZ
+         fpcJbGUNy3WM6RSbnJORxrGHXHdL2rSYUeRWogG7bWoAbN3H7wBDofgFnPCEcW2AErm5
+         MuoGr5C3jHjbGDLFaV6P0Ep7TWCYTQnWj695U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=JqLpHGjz8FBfsB+oiUFw3oGbHf8VhZlWw288yxsMYis=;
+        b=tVFX6WK+VPw7zFiS1T+RZZw5I/jq8mya8WDFahi13Ejy4DeAb8ZrS7jOd0AChENmyW
+         /qgmkcCDXFyQT9TnOQ1/wuK3zzmYV+VT2u4ONwPe5pYzKBqG/S4Pm9N+pG8Yxxueryfj
+         Lc7IQWb9abHFz8EVlW2Uxp4EcLoJcy+FgjeoRE5/o9Dq3uXSvf5e34hKUb5IHltFW/UM
+         EA/NMdsZTJjhp/97CC5oF3dZuGAL9W/DYLk/RFxzuMkrZDXayxyqnm0J/YLLn4tVbaoU
+         rSwxK9IuJh2Z0/K6aBWR6Prd5A/+aTnAUqGlz8fAL+SBJoDCNsN20AsIdEnuA245OYTW
+         s/zQ==
+X-Gm-Message-State: AOAM530IusTYVq7KDIs59Q1txFzYBcPP5CpUst/GBDT0IC/ZxHEglpNP
+        L53Yy0KqrXUt1UdxtFCZbOUjpw==
+X-Google-Smtp-Source: ABdhPJyAryAjPDXkZXsQsUWd46NKaQws1o6uq6J4S2nBgODpANu/ApFmXow+ZgrMboK9dZ2nfMcvpQ==
+X-Received: by 2002:a05:620a:15c:: with SMTP id e28mr1338013qkn.311.1618452489517;
+        Wed, 14 Apr 2021 19:08:09 -0700 (PDT)
+Received: from saya.kepstin.ca (dhcp-108-168-125-232.cable.user.start.ca. [108.168.125.232])
+        by smtp.gmail.com with ESMTPSA id q17sm800305qtp.45.2021.04.14.19.08.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 19:08:08 -0700 (PDT)
+Message-ID: <07f5e30a2af1674f0a2f8995641bbaaf64e47d34.camel@kepstin.ca>
+Subject: Re: [PATCH] Fix turbostat exiting with an error when run on AMD CPUs
+From:   Calvin Walton <calvin.walton@kepstin.ca>
+To:     Linux PM list <linux-pm@vger.kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Len Brown <lenb@kernel.org>, Chen Yu <yu.c.chen@intel.com>
+Date:   Wed, 14 Apr 2021 22:08:07 -0400
+In-Reply-To: <88d11c19e662f67ae492eb4b93e12e1b24e68c1d.camel@kepstin.ca>
+References: <88d11c19e662f67ae492eb4b93e12e1b24e68c1d.camel@kepstin.ca>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kerneljasonxing@gmail.com wrote:
+On Wed, 2021-04-14 at 22:05 -0400, Calvin Walton wrote:
+> The current version of turbostat exits immediately upon entering the
+> main loop, with error code -13. This is a regression that was
+> introducted
+> in these commits:
+> 
+> 9972d5d84d76 tools/power turbostat: Enable accumulate RAPL display
+> 87e15da95775 tools/power turbostat: Introduce functions to accumulate
+> RAPL consumption
 
-> From: Jason Xing <xingwanli@kuaishou.com>
-> 
-> Fix this panic by adding more rules to calculate the value of @rss_size_max
-> which could be used in allocating the queues when bpf is loaded, which,
-> however, could cause the failure and then trigger the NULL pointer of
-> vsi->rx_rings. Prio to this fix, the machine doesn't care about how many
-> cpus are online and then allocates 256 queues on the machine with 32 cpus
-> online actually.
-> 
-> Once the load of bpf begins, the log will go like this "failed to get
-> tracking for 256 queues for VSI 0 err -12" and this "setup of MAIN VSI
-> failed".
-> 
-> Thus, I attach the key information of the crash-log here.
-> 
-> BUG: unable to handle kernel NULL pointer dereference at
-> 0000000000000000
-> RIP: 0010:i40e_xdp+0xdd/0x1b0 [i40e]
-> Call Trace:
-> [2160294.717292]  ? i40e_reconfig_rss_queues+0x170/0x170 [i40e]
-> [2160294.717666]  dev_xdp_install+0x4f/0x70
-> [2160294.718036]  dev_change_xdp_fd+0x11f/0x230
-> [2160294.718380]  ? dev_disable_lro+0xe0/0xe0
-> [2160294.718705]  do_setlink+0xac7/0xe70
-> [2160294.719035]  ? __nla_parse+0xed/0x120
-> [2160294.719365]  rtnl_newlink+0x73b/0x860
-> 
-> Fixes: 41c445ff0f48 ("i40e: main driver core")
-> Co-developed-by: Shujin Li <lishujin@kuaishou.com>
-> Signed-off-by: Shujin Li <lishujin@kuaishou.com>
-> Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+Ah, I failed to check the mailing list before sending this patch! Terry
+Bowman's fix here should probably be preferred:
+https://patchwork.kernel.org/project/linux-pm/patch/20210331155807.3838-1-terry.bowman@amd.com/
 
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+My patch was simply the minimum necessary to get turbostat working
+again.
+-- 
+Calvin Walton <calvin.walton@kepstin.ca>
 
-@Jakub/@DaveM - feel free to apply this directly.
