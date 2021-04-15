@@ -2,87 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D869D360E24
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6485A360DFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234669AbhDOPK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:10:27 -0400
-Received: from mga01.intel.com ([192.55.52.88]:19338 "EHLO mga01.intel.com"
+        id S234729AbhDOPIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:08:13 -0400
+Received: from phobos.denx.de ([85.214.62.61]:55638 "EHLO phobos.denx.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235221AbhDOPAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:00:36 -0400
-IronPort-SDR: C+6jaPYv7xLvlvCUkkNzCsF/QAzsGwIMRLvQnYL4XFYRXoz3L/H6QT9XPQU0KOIKGjlkPwcjqJ
- guq7F92dcAAw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="215373453"
-X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
-   d="scan'208";a="215373453"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 07:58:47 -0700
-IronPort-SDR: 0nMXSfFbe91SryOjvqsvyC+/22ba/E+TNwYUTtABQl+fmjgKBz11ZK/b6m42ARhRz0lNAweFQc
- Ds0NeXR0XR3g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,225,1613462400"; 
-   d="scan'208";a="461643535"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 15 Apr 2021 07:58:46 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 1807A12A; Thu, 15 Apr 2021 17:59:02 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>,
-        op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] tee: optee: Provide special parameter field for UUID values
-Date:   Thu, 15 Apr 2021 17:58:57 +0300
-Message-Id: <20210415145857.34183-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S234869AbhDOPAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:00:05 -0400
+Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id C55F181FE1;
+        Thu, 15 Apr 2021 16:59:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1618498780;
+        bh=Kw07LkJdKop/yJQQqAUybaOom8omiDfjimVgY6INlKM=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=qG3vJnacjJH2T6/LHSUKQqKJUBWrcEN7r6NhcGCSdBtN4nss3tWZ0nO/Ises27Xvc
+         VJGziRkn7XGX6HeJNFZ3NKxgJfYbo1qxsVRITxF5utVsu0V855wi9W/o5nOiAsG4j4
+         LzmcixCWz41r3/bCwgBpZpWa7aJMXgqoXHnAz/0L093+4TBflUjIMWQCZR0RFKlVXg
+         k47GEkzZmKdFN1i6BrfQukuubfOoZ8NLj6HD4D23S0QhGYD27jXWwe+QQ52WES1B9h
+         aS32TR1XAlYbdiafXGiMDKeW4MksrP+jd/DapR7g7HXa8+g0bzZaaTBKJcCvdhW4+c
+         +FMQpDAlr3Yfg==
+Subject: Re: [PATCH 11/13] ARM: dts: stm32: fix LTDC port node on STM32 MCU ad
+ MPU
+To:     Alexandre TORGUE <alexandre.torgue@foss.st.com>, arnd@arndb.de,
+        robh+dt@kernel.org, jagan@amarulasolutions.com,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Marcin Sloniewski <marcin.sloniewski@gmail.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        kuba@kernel.org
+References: <20210415101037.1465-1-alexandre.torgue@foss.st.com>
+ <20210415101037.1465-12-alexandre.torgue@foss.st.com>
+ <3b39908b-a263-a5d4-f6ac-ac30ffb06269@denx.de>
+ <36e9f0df-dfdb-e2f5-3d6e-ac32a1b8156e@foss.st.com>
+ <fa3885df-8977-9540-f2af-d4095f519483@denx.de>
+ <3961c9ae-41cc-5a15-2704-ffc0832f0fe8@foss.st.com>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <57a7f4bf-42e9-56fb-e898-2c5749f53c60@denx.de>
+Date:   Thu, 15 Apr 2021 16:59:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
+In-Reply-To: <3961c9ae-41cc-5a15-2704-ffc0832f0fe8@foss.st.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.102.4 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dereferencing something to uuid_t value is not good idea strictly speaking.
-Provide a special parameter field for UUID values and drop ugly casting.
+On 4/15/21 4:35 PM, Alexandre TORGUE wrote:
+> 
+> 
+> On 4/15/21 4:30 PM, Marek Vasut wrote:
+>> On 4/15/21 3:34 PM, Alexandre TORGUE wrote:
+>>> Hi Marek
+>>
+>> Hello Alexandre,
+>>
+>>>>> diff --git a/arch/arm/boot/dts/stm32mp157c-dk2.dts 
+>>>>> b/arch/arm/boot/dts/stm32mp157c-dk2.dts
+>>>>> index 2bc92ef3aeb9..19ef475a48fc 100644
+>>>>> --- a/arch/arm/boot/dts/stm32mp157c-dk2.dts
+>>>>> +++ b/arch/arm/boot/dts/stm32mp157c-dk2.dts
+>>>>> @@ -82,9 +82,15 @@
+>>>>>   };
+>>>>>   &ltdc {
+>>>>> -    status = "okay";
+>>>>> -
+>>>>>       port {
+>>>>> +        #address-cells = <1>;
+>>>>> +        #size-cells = <0>;
+>>>>> +
+>>>>> +        ltdc_ep0_out: endpoint@0 {
+>>>>> +            reg = <0>;
+>>>>> +            remote-endpoint = <&sii9022_in>;
+>>>>> +        };
+>>>>> +
+>>>>>           ltdc_ep1_out: endpoint@1 {
+>>>>>               reg = <1>;
+>>>>>               remote-endpoint = <&dsi_in>;
+>>>>
+>>>> [...]
+>>>>
+>>>>> diff --git a/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi 
+>>>>> b/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
+>>>>> index 64dca5b7f748..e7f10975cacf 100644
+>>>>> --- a/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
+>>>>> +++ b/arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
+>>>>> @@ -277,11 +277,7 @@
+>>>>>       status = "okay";
+>>>>>       port {
+>>>>> -        #address-cells = <1>;
+>>>>> -        #size-cells = <0>;
+>>>>> -
+>>>>> -        ltdc_ep0_out: endpoint@0 {
+>>>>> -            reg = <0>;
+>>>>> +        ltdc_ep0_out: endpoint {
+>>>>>               remote-endpoint = <&adv7513_in>;
+>>>>>           };
+>>>>>       };
+>>>>
+>>>> I think this is wrong, the AV96 can have two displays connected to 
+>>>> two ports of the LTDC, just like DK2 for example.
+>>>
+>>> As for dk2 address/size cells are added only if there are 2 
+>>> endpoints. It is for this reason I moved endpoint0 definition from 
+>>> stm32mp15xx-dkx to stm32mp151a-dk1.dts (dk1 has only one endpoint).
+>>>
+>>> Here it's the same, if you have second endpoint then adress/size will 
+>>> have to be added.
+>>
+>> That's a bit problematic. Consider either the use case of DTO which 
+>> adds the other display, or even a custom board DTS. Without your 
+>> patch, this works:
+>>
+>> arch/arm/boot/dts/stm32mp15xx-dhcor-avenger96.dtsi
+>> &ltdc {
+>>    ...
+>>    ports {
+>>      ltdc_ep0_out: endpoint@0 {
+>>        remote-endpoint = <&adv7513_in>;
+>>      };
+>>    };
+>> };
+>>
+>> board-with-display.dts or board-overlay.dts
+>> &ltdc {
+>>    ports {
+>>      endpoint@1 { // just add another endpoint@1, no problem
+>>        remote-endpoint = <&display>;
+>>      };
+>>    };
+>> };
+>>
+>> With your patch, the DTS would have to modify the "endpoint" node to 
+>> be "endpoint@0" probably with a whole lot of /detele-node/ etc. magic 
+>> (DTO cannot do that, so that's a problem, and I do use DTOs on AV96 
+>> extensively for the various expansion cards) and then add the 
+>> endpoint@1. That becomes real complicated in custom board DT, and 
+>> impossible with DTO.
+> 
+> Yes I agree that it'll be problematic. So maybe so solution would be to 
+> not detect a warning for the initial case (only one endpoint with a reg)
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/tee/optee/call.c      | 2 +-
- drivers/tee/optee/optee_msg.h | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-index 1f0a68381656..d50cff7a9406 100644
---- a/drivers/tee/optee/call.c
-+++ b/drivers/tee/optee/call.c
-@@ -241,7 +241,7 @@ int optee_open_session(struct tee_context *ctx,
- 	memcpy(&msg_arg->params[0].u.value, arg->uuid, sizeof(arg->uuid));
- 	msg_arg->params[1].u.value.c = arg->clnt_login;
- 
--	rc = tee_session_calc_client_uuid((uuid_t *)&msg_arg->params[1].u.value,
-+	rc = tee_session_calc_client_uuid(&msg_arg->params[1].u.uuid,
- 					  arg->clnt_login, arg->clnt_uuid);
- 	if (rc)
- 		goto out;
-diff --git a/drivers/tee/optee/optee_msg.h b/drivers/tee/optee/optee_msg.h
-index 81ff593ac4ec..df095a974f3f 100644
---- a/drivers/tee/optee/optee_msg.h
-+++ b/drivers/tee/optee/optee_msg.h
-@@ -144,6 +144,7 @@ struct optee_msg_param_value {
-  * @tmem:	parameter by temporary memory reference
-  * @rmem:	parameter by registered memory reference
-  * @value:	parameter by opaque value
-+ * @uuid:	parameter by UUID
-  *
-  * @attr & OPTEE_MSG_ATTR_TYPE_MASK indicates if tmem, rmem or value is used in
-  * the union. OPTEE_MSG_ATTR_TYPE_VALUE_* indicates value,
-@@ -157,6 +158,7 @@ struct optee_msg_param {
- 		struct optee_msg_param_tmem tmem;
- 		struct optee_msg_param_rmem rmem;
- 		struct optee_msg_param_value value;
-+		uuid_t uuid;
- 	} u;
- };
- 
--- 
-2.30.2
-
+That looks OK. Or even better, if the checker warned only on IPs which 
+cannot have more than one endpoint, but have endpoint@N in DT (where N 
+in 0..+inf) . On IPs which can have one or more endpoints, the warning 
+should not be emitted.
