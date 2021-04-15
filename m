@@ -2,92 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5183613D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 23:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1DC3613D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 23:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235651AbhDOVBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 17:01:01 -0400
-Received: from ms.lwn.net ([45.79.88.28]:58512 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235150AbhDOVBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 17:01:00 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S235107AbhDOVDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 17:03:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37874 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234838AbhDOVDK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 17:03:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618520566;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oGHsaDaUpiruomI8+2Hlw2Ap8tFFUdJWgJGhYkehwNM=;
+        b=JHH5YGsC3e8QLINbMIBlPdFYtYenIKBFDO9xFwosAIRtvq6B8tTvE7pCNt4vL3xAMWsyl4
+        YUila7XgWG5mswSAXFCDp8eKtPuXMfp4NET/wamflCuIcDXOINNeDZC94feEB7AEMDvXuf
+        ZOIC/lIpSioZXIv/xjnQK1QWMugPAng=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-278-jBkJnf1aPXSSMKUKZ7sn5A-1; Thu, 15 Apr 2021 17:02:42 -0400
+X-MC-Unique: jBkJnf1aPXSSMKUKZ7sn5A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id DE32580F;
-        Thu, 15 Apr 2021 21:00:36 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net DE32580F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1618520437; bh=2+CbRqv7ZlMu8naopkm6fMmoTFHR31mRq856qSvT7ZU=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=RclVygl+v6fqaVf6vYW9hHwIBsFBdMBsvx3vPHTqEk9Lx05Ra9EWYrh0oO35Crk9c
-         82BCWpa163fU3ShVC1sf/sbA6d2wLn+o0Zi/amPDIBoYVctNX5zWzYcy7lTyZT1VZE
-         +UZu9AowboURV8/QinqKc9ZNQmWWA/FtRvjJzMXfiMbCYZQe+EmsrHmM/g3oC06Y0d
-         huVVEwtwYdEU1g/jua4PXXWPQYdXcJqY0IkhhRtJ1LoUWbM5Nv74kLhr76Jfz30OZM
-         Cpt6Bt3ZouvB9zUkS+Nky+sDX2ljCLRa5CUPCR07bC0IdJ89OBNnOivRepEe4K4d8i
-         O/6XEgYg2fVOw==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Wu XiangCheng <bobwxc@email.cn>
-Cc:     Alex Shi <alexs@kernel.org>,
-        Federico Vaga <federico.vaga@vaga.pv.it>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Tsugikazu Shibata <tshibata@ab.jp.nec.com>,
-        SeongJae Park <sjpark@amazon.de>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 0/2] Add a new translation tool scripts/trslt.py
-In-Reply-To: <cover.1618208899.git.bobwxc@email.cn>
-References: <cover.1618208899.git.bobwxc@email.cn>
-Date:   Thu, 15 Apr 2021 15:00:36 -0600
-Message-ID: <871rbbi7pn.fsf@meer.lwn.net>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BEB651005582;
+        Thu, 15 Apr 2021 21:02:41 +0000 (UTC)
+Received: from sandy.ghostprotocols.net (unknown [10.3.128.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2903D9CA0;
+        Thu, 15 Apr 2021 21:02:41 +0000 (UTC)
+Received: by sandy.ghostprotocols.net (Postfix, from userid 1000)
+        id 8D4A6102; Thu, 15 Apr 2021 18:02:38 -0300 (-03)
+Date:   Thu, 15 Apr 2021 18:02:38 -0300
+From:   Arnaldo Carvalho de Melo <acme@redhat.com>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [QUESTION] Will the pahole tar source code with corresponding
+ libbpf submodule codes be released as well in the future?
+Message-ID: <20210415210238.GB21027@redhat.com>
+References: <2de4aad5-fa9e-1c39-3c92-9bb9229d0966@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2de4aad5-fa9e-1c39-3c92-9bb9229d0966@loongson.cn>
+X-Url:  http://acmel.wordpress.com
+User-Agent: Mutt/1.5.20 (2009-12-10)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wu XiangCheng <bobwxc@email.cn> writes:
+Em Thu, Apr 15, 2021 at 12:01:23PM +0800, Tiezhu Yang escreveu:
+> (1) tools/bpf/bpftool build failed due to the following reason:
+> 
+> Error: failed to load BTF from /boot/vmlinux-5.12.0-rc2: No such
+> file or directory
+> make: *** [Makefile:158: vmlinux.h] Error 2
+> 
+> (2) When set CONFIG_DEBUG_INFO_BTF=y, failed to generate BTF for vmlinux
+> due to pahole is not available
+> 
+> BTF: .tmp_vmlinux.btf: pahole (pahole) is not available
+> Failed to generate BTF for vmlinux
+> Try to disable CONFIG_DEBUG_INFO_BTF
+> make: *** [Makefile:1197: vmlinux] Error 1
+> 
+> (3) When build pahole from tar.gz source code, it still failed
+> due to no libbpf submodule.
 
-> Hi all,
->
-> This set of patches aim to add a new translation tool - trslt.py, which
-> can control the transltions version corresponding to source files.
->
-> For a long time, kernel documentation translations lacks a way to control the
-> version corresponding to the source files. If you translate a file and then
-> someone updates the source file, there will be a problem. It's hard to know
-> which version the existing translation corresponds to, and even harder to sync
-> them. 
->
-> The common way now is to check the date, but this is not exactly accurate,
-> especially for documents that are often updated. And some translators write 
-> corresponding commit ID in the commit log for reference, it is a good way, 
-> but still a little troublesome.
->
-> Thus, the purpose of ``trslt.py`` is to add a new annotating tag to the file
-> to indicate corresponding version of the source file::
->
-> .. translation_origin_commit: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
->
-> The script will automatically copy file and generate tag when creating new
-> translation, and give update suggestions based on those tags when updating
-> translations.
->
-> More details please read doc in [Patch 2/2].
 
-So, like Federico, I'm unconvinced about putting this into the
-translated text itself.  This is metadata, and I'd put it with the rest
-of the metadata.  My own suggestion would be a tag like:
+You're getting the tarball from the wrong place, you should get it from:
 
-  Translates: 6161a4b18a66 ("docs: reporting-issues: make people CC the regressions list")
+https://fedorapeople.org/~acme/dwarves/dwarves-1.21.tar.xz
 
-It would be an analogue to the Fixes tag in this regard; you could have
-more than one of them if need be.
+Please read the announcement:
 
-I'm not sure we really need a script in the kernel tree for this; it
-seems like what you really want is some sort of git commit hook.  That
-said, if you come up with something useful, we can certainly find a
-place for it.
+https://lore.kernel.org/bpf/YHRiXNX1JUF2Az0A@kernel.org/
 
-Thanks,
+- Arnaldo
 
-jon
+ 
+> loongson@linux:~$ wget https://git.kernel.org/pub/scm/devel/pahole/pahole.git/snapshot/pahole-1.21.tar.gz
+> loongson@linux:~$ tar xf pahole-1.21.tar.gz
+> loongson@linux:~$ cd pahole-1.21
+> loongson@linux:~/pahole-1.21$ mkdir build
+> loongson@linux:~/pahole-1.21$ cd build/
+> loongson@linux:~/pahole-1.21/build$ cmake -D__LIB=lib ..
+> -- The C compiler identification is GNU 10.2.1
+> -- Detecting C compiler ABI info
+> -- Detecting C compiler ABI info - done
+> -- Check for working C compiler: /usr/bin/cc - skipped
+> -- Detecting C compile features
+> -- Detecting C compile features - done
+> -- Checking availability of DWARF and ELF development libraries
+> -- Looking for dwfl_module_build_id in elf
+> -- Looking for dwfl_module_build_id in elf - found
+> -- Found dwarf.h header: /usr/include
+> -- Found elfutils/libdw.h header: /usr/include
+> -- Found libdw library: /usr/lib/mips64el-linux-gnuabi64/libdw.so
+> -- Found libelf library: /usr/lib/mips64el-linux-gnuabi64/libelf.so
+> -- Checking availability of DWARF and ELF development libraries - done
+> -- Found ZLIB: /usr/lib/mips64el-linux-gnuabi64/libz.so (found
+> version "1.2.11")
+> CMake Error at CMakeLists.txt:60 (message):
+>   The submodules were not downloaded! GIT_SUBMODULE was turned off
+> or failed.
+>   Please update submodules and try again.
+> 
+> -- Configuring incomplete, errors occurred!
+> See also "/home/loongson/pahole-1.21/build/CMakeFiles/CMakeOutput.log".
+> 
+> (4) I notice that the pahole git source code can build successful because
+> it will clone libbpf automatically:
+> 
+> -- Submodule update
+> Submodule 'lib/bpf' (https://github.com/libbpf/libbpf) registered
+> for path 'lib/bpf'
+> Cloning into '/home/loongson/pahole/lib/bpf'...
+> Submodule path 'lib/bpf': checked out
+> '986962fade5dfa89c2890f3854eb040d2a64ab38'
+> -- Submodule update - done
+> 
+> (5) So Will the pahole tar source code with corresponding libbpf
+> submodule codes
+> be released as well in the future? just like bcc:
+> https://github.com/iovisor/bcc/releases
+> https://github.com/iovisor/bcc/commit/708f786e3784dc32570a079f2ed74c35731664ea
+> 
+> Thanks,
+> Tiezhu
+
