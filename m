@@ -2,208 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A420F3608AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 13:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA293608B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 13:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232670AbhDOL45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 07:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232302AbhDOL4x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 07:56:53 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D22C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 04:56:27 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id v6so35151056ejo.6
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 04:56:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Mmzr1BXITN8/WsQtuIlDuVTV5ipAk7FG2VM5j+Bi1So=;
-        b=QvQMXegx4Q6FfPIpt3BYD7d/rIzGJpkhRMRMpxNI2Jc9ovzo2ea9Po/pjK9xcot10J
-         qfrgGeGvDxK0UtoQelPc859qvv3lCo3V+I61eOMYlY8VoruRr/1VzBriz8TYVT38gXGi
-         bKsI+0K3iURKjYw5ibQslYc04LzCB2HkYJNOWtQdeJtmREQywEIO3U6qpcFFSzp1UUSr
-         dtudZ7kiiIBbHYxn6lznMpdvme+RuMnAyO8YBP/JdG6KqY3gxKnonMJ2xQr0SQ3k8UEY
-         6eAqAWXS/841WW5UHmuMlxOhssYyTS1s5DnIKzXWT6WFbvJt2mBq4t3ivxQ5Rtr6d49m
-         ObjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Mmzr1BXITN8/WsQtuIlDuVTV5ipAk7FG2VM5j+Bi1So=;
-        b=QJUHW5BX2HoYYgf6TfPknoBHOCs+jGmVNLFU4VyqhQxXP6H+3tJyPNvHiLMiMRbDN7
-         WFRQEK2iUnmnCkRnwTNWXhXHEQFrb589v8mBBHoRVGgt1jhz/Yrwoe5TtdMddAStL9tc
-         h1TlVaOAP4v4LS10bcqC7/fQ9AJZ8JfisHdlkZfXXrrFHkm2RFlcR1MwMlTSfoYJ4nhJ
-         x/WtX0gPhwVBQMH6YjMymJ+KTg4EC26ojN5IHg+Qz2iKSWim4hGk/Ttu4F5oYcVYVQN7
-         QV0kDb6XwLVd+OEclqNcY1ExFrnMy3is8wmNnWamcI3BMrQpBojiaNJZLgc5KtR8JGPB
-         oR0A==
-X-Gm-Message-State: AOAM531ElvOBC9V8zwRq2fy0xMlTutPQIGZG3DL0osrPt+1kP7C4RHl6
-        l8GDKHjryH3Jdcz61k/pTZ4=
-X-Google-Smtp-Source: ABdhPJyRvFr8GCcyp6cP4pUhEHuqjgAxms+Re3dD8oeMsGnJsnFn3mLckPuF7TSkfuSpiaA2RZVQPA==
-X-Received: by 2002:a17:906:278e:: with SMTP id j14mr3012533ejc.224.1618487786343;
-        Thu, 15 Apr 2021 04:56:26 -0700 (PDT)
-Received: from abel.fritz.box ([2a02:908:1252:fb60:3ba1:ccd9:cd93:a8ed])
-        by smtp.gmail.com with ESMTPSA id s9sm2182461edd.16.2021.04.15.04.56.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 04:56:26 -0700 (PDT)
-From:   "=?UTF-8?q?Christian=20K=C3=B6nig?=" 
-        <ckoenig.leichtzumerken@gmail.com>
-X-Google-Original-From: =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Cc:     vbabka@suse.cz, daniel@ffwll.ch, ray.huang@amd.com,
-        akpm@linux-foundation.org
-Subject: [PATCH 2/2] drm/ttm: optimize the pool shrinker a bit v2
-Date:   Thu, 15 Apr 2021 13:56:24 +0200
-Message-Id: <20210415115624.2904-2-christian.koenig@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210415115624.2904-1-christian.koenig@amd.com>
-References: <20210415115624.2904-1-christian.koenig@amd.com>
+        id S232279AbhDOMAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 08:00:09 -0400
+Received: from mail-dm3nam07on2059.outbound.protection.outlook.com ([40.107.95.59]:39840
+        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229943AbhDOMAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 08:00:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=c7RwiH24oKBGZ2EdJ/pf7l/zDQSSFDtJIGQXnykFa9XTiFSSEL31HMcUMwdrKBIOgFFNyyJO6dUD4lhNlwJMtvkRp1ELpIfb0WApVJUfumjO6Z4z9P2G7MJ9dgjQL9fgb3n5o5SKCkVdUWxAG7qYfpaf53m6rHTZZE6uU5qFloaEc/gN1uD2c9k+f9YMCcpvByp1Jt79Fp59bqBi8YgH/+GABP9X6Z2TH2vFtFhqxpFaw1V69Ggh9YSEo0fxWIPDRhFz+Ge/rH54r5LPtqw4/3Dlqf9FNCKo5QO3Jmc/dGQdZ30g3L+kjMGJnACIDySFNZLQPj2aAT0b/Movs27HXg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WjagX6Ea/EXVbM8VEs83/WsyErFkpl6VCNatYg3SkVc=;
+ b=HJfEH0GNFwjFWrDyBzOZIT3uyqCt9onvPdr27qx/YTO2RgoeDjz7H/fwIP/skhm918zBW0yUQZ1M0RIHrlWX77HaH1QdRGQHIKsrNAxq3K5XIL+44cWTwJ6qoZq4pGU+RUWR1iAFBsni9Lno4SjJIHprtz+2bPaZx5viufQRL8+A54dbVKHXtUdn4yY8vI7g5AyGY048RVBxtiHS7lwi2O0Bd0V+LKvMvtPZYFf3BZ7R89QJjFyG4KMdF9apZJFO2fJqH7pl897S1EFp/LSP4tacblxUkA4pg7B7n1Q7ApCroj4Ocl/Lq/vOlskpNQObCk9BjmFw5ngW4w9xdi3GOg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WjagX6Ea/EXVbM8VEs83/WsyErFkpl6VCNatYg3SkVc=;
+ b=tqJDyUNBhAvPDssGyOx//vwKNTFGFM1xGwq3QAOGtsPs6SaW0pkpNx2/nrilUiTwDxfoT3p7dYkqd/UaQvgtCxkE6ab3UaV+GNcMz6FUaYCZGLDOLQ2ETbrI/rSSv12EQIcl1hO3vLr+NCELOKrn/l3qOpoJRzfBQnEoKclEnj/v6CoUp4s0SCFkl4cX83JCHyXK5VV3dcmjV89hVdQyIzxYAOdjJaYm1GIAnx06E7aAMTJ3N+ii7+mq9bw8xV7Arw0Z9fLskvnjvkd3yOzBjA3QhWQ684EckQ6YYBqPqDVMPCxp8PLDb6nVXD/uQIrazY/LF+wlEqr6OmnLNVfeDA==
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1337.namprd12.prod.outlook.com (2603:10b6:3:6e::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16; Thu, 15 Apr
+ 2021 11:59:43 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4020.024; Thu, 15 Apr 2021
+ 11:59:43 +0000
+Date:   Thu, 15 Apr 2021 08:59:41 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
+        zhangfei.gao@linaro.org, vkoul@kernel.org
+Subject: Re: [PATCH 2/2] iommu/sva: Remove mm parameter from SVA bind API
+Message-ID: <20210415115941.GE1370958@nvidia.com>
+References: <1617901736-24788-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1617901736-24788-2-git-send-email-jacob.jun.pan@linux.intel.com>
+ <YHAoY9+w2ebYZ7VV@myrica>
+ <20210409110305.6b0471d9@jacob-builder>
+ <20210413170947.35ba9267@jacob-builder>
+ <41433d99-e413-f5bf-5279-695dae6c58ba@linux.intel.com>
+ <20210414112602.GA1370958@nvidia.com>
+ <eb700675-f698-62e5-bbab-3d199ff58dcb@linux.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <eb700675-f698-62e5-bbab-3d199ff58dcb@linux.intel.com>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: MN2PR01CA0050.prod.exchangelabs.com (2603:10b6:208:23f::19)
+ To DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR01CA0050.prod.exchangelabs.com (2603:10b6:208:23f::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Thu, 15 Apr 2021 11:59:43 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lX0er-006WSX-HO; Thu, 15 Apr 2021 08:59:41 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8f69ebf2-1d48-41f3-2ce4-08d90005f4be
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1337:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB13371B2A068DE47FF313F81FC24D9@DM5PR12MB1337.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +yhcMn5iZCm8DIPrEdb8UswMc0CvhGeN9iHa8uKVt8qAntoUuypxYeKb/2cwzJQ6P+7ghM3PIq1+k8coOS65vdGBXunhxdVf5HoyYZ8XV6p0zFvzFslXVSFchLB+lqnlRclTcQw4yuBkzsLhawZf1h1oVqaIbiLz3bxOdb8BMBS4RdRNmEwO0+Y17XFHhhy8FMxFqJxgbvJkQZ17v2TfPac1J9HrbI5AcSti9IRPOCbu6AF+6oWKZGGGuMW2upY8ttF7g2i3Gf/KSV1jxiNzN3FI7elDS8HXW2fGA80/m9dUjQej+I/KYBspjZd1kC8UcgLc5MrtRHUDaaGziuvaZktk2XbjBHhY4bqFUCHMHRHcYKgKFXwl8vZbXdk7+lf/cKj67VZGxNpsUuL/zNRa8SEMCzkIKYi0lgAQLyKFaRKelTIlByChRNQSJYFRd0NteTXGLfqTCdq9U14hHkMAp+HuXRf4zGj0Xjqtqsz+hnJVDNe4tpns34eoFLSuzAF8DxnetFU+kPcAWyUaJmvjva6QEswRQgGCLKJVs+xp6Pt0OFnmUdo4UZzp10lor8hdPOtrQ/luiw8g7VReBRDv4bCUA6BAwDgl/BEOh1D7ObI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(396003)(136003)(346002)(376002)(53546011)(5660300002)(8936002)(26005)(7416002)(66556008)(66476007)(2616005)(8676002)(66946007)(9746002)(33656002)(9786002)(426003)(316002)(2906002)(36756003)(186003)(478600001)(6916009)(1076003)(4326008)(4744005)(38100700002)(86362001)(54906003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?LPNd183AMLvNbOYunMVN0OEvoHNthjhz5WnfzQFpUX+s270yVuJaJsPaA2Xd?=
+ =?us-ascii?Q?uaLHUv7FR11EZgARZHC7z4JCrDOA9GeeWlRjZ9XnFLvWiuGCUNuanUSBMGtJ?=
+ =?us-ascii?Q?oesmy+v6meR+dp2/FPSySKGr5y3wy9p2LDrVAeGcM4VEmsBUrBKLKIrV/en+?=
+ =?us-ascii?Q?cGJbs4CGg/mXsUwn5c/LnqrmlsuA3oVoyM8GwvJMcMjrzlkf39OxNG6sJT+u?=
+ =?us-ascii?Q?RYq0f8wI0hWPKths79+bzV4F4i5rvAHaMuH5aFt7IDW+bskjkAsmxBujQb69?=
+ =?us-ascii?Q?CgPkf8T/QyfAQspj6gz0z1JxmTZo5v7Oev933w7VAqiw4qOfbnXJkd5zO0f+?=
+ =?us-ascii?Q?s5OdWnhzqzgsg6+mBjYXRhuCqPxOqURyGeih433G+JyN3G52UzFPtrIZF3EL?=
+ =?us-ascii?Q?I6M45fx8E0rFkfy+0rrqYepQ3PNWlmgFes79vQ+1VneZy2mmGcbIcdLYRi78?=
+ =?us-ascii?Q?Z67G5+lHSmuRdBgrXGNfP5l0Hoq4g/Xrnp5xAdoPDxYJi1w9wcocmD+BSKjl?=
+ =?us-ascii?Q?r4x7LPmla9pG+LDvkgWP/3OFreQKWZMfhlraBs1pl/0hT36umNp0j3/8LvZD?=
+ =?us-ascii?Q?q0EJXRwKgaeBubHO932WEUNt8fC8EfKN0426vc9L6Yc6b0X4gFOG7WAOh4mL?=
+ =?us-ascii?Q?NESMTjxNAbjqNl1nDQj9msAKeVY8eJqQN2Qnf8ugF7yNAbBjspOK6z4aDggX?=
+ =?us-ascii?Q?MLl7S1RVJUwP4Lnt8SsgHrmQk8UPaFxxyi6T6lAo0ftAxPJ9/kO6T4udvLuc?=
+ =?us-ascii?Q?G8jzk3xz4+hTloKqFWlsBqotsjVxr9oAO9ZP9gzdCJLFZiRwIUBENabIUxES?=
+ =?us-ascii?Q?wB3zaXR92XBFL/ERdK2oif3MUazznSy/hZgDV/AnS6By0NP6cBA08J0S2H9W?=
+ =?us-ascii?Q?97w/B0szbjjtSuepw7UsH8umPqdugh9JvNYCfZy1Fql7nu8TVrY8lxTQ/N0m?=
+ =?us-ascii?Q?vAMlfdyvAG9cpTmEQSyzPEhxcZPI/yali4DLh/A8obe6nf61przbhAnlxF0a?=
+ =?us-ascii?Q?cBEpTM4d8vGqrgZR9hVe60AJNQ7fcA/UtdgUNqZbEV5Qp1TsVI5ns7SkWFsb?=
+ =?us-ascii?Q?vomyt1w0iAzXWLU3hQOMvWc+5y6orqlK1gECefr1149yBGFf+3wt46bx9zus?=
+ =?us-ascii?Q?ycLfnIR1PST+lbageqP1ANQUoop3QnxWnZx2vkOEmFxJpmWW/cIlro01H+UA?=
+ =?us-ascii?Q?olPEKhP/bkV2fT51MldYQsZa3lEEReHZ9/M8o9Xa54CqJJXvbHzZDYeeAgm8?=
+ =?us-ascii?Q?KXKZCb7Mu7ZSFeK5o9HktBMLwuksDANWkQC9QmrtgnxmmrLHRyXiKn8XPApZ?=
+ =?us-ascii?Q?6mpjd6QUHSXIBQfUFW825hmn?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8f69ebf2-1d48-41f3-2ce4-08d90005f4be
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2021 11:59:43.3044
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EsVqENgkG+/G/z0rPpukF7K31ZSygvIzZpA6vN+uDmTYJ9KO9lfR+iW4wRlNmlHU
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1337
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch back to using a spinlock again by moving the IOMMU unmap outside
-of the locked region.
+On Thu, Apr 15, 2021 at 01:33:24PM +0800, Lu Baolu wrote:
+> Hi Jason,
+> 
+> On 4/14/21 7:26 PM, Jason Gunthorpe wrote:
+> > On Wed, Apr 14, 2021 at 02:22:09PM +0800, Lu Baolu wrote:
+> > 
+> > > I still worry about supervisor pasid allocation.
+> > > 
+> > > If we use iommu_sva_alloc_pasid() to allocate a supervisor pasid, which
+> > > mm should the pasid be set? I've ever thought about passing &init_mm to
+> > > iommu_sva_alloc_pasid(). But if you add "mm != current->mm", this seems
+> > > not to work. Or do you prefer a separated interface for supervisor pasid
+> > > allocation/free?
+> > 
+> > Without a mm_struct it is not SVA, so don't use SVA APIs for whatever
+> > a 'supervisor pasid' is
+> 
+> The supervisor PASID has its mm_struct. The only difference is that the
+> device will set priv=1 in its DMA transactions with the PASID.
 
-v2: Add a comment explaining why we need sync_shrinkers().
+Soemthing like init_mm should not be used with 'SVA'
 
-Signed-off-by: Christian König <christian.koenig@amd.com>
----
- drivers/gpu/drm/ttm/ttm_pool.c | 44 +++++++++++++++++-----------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
-
-diff --git a/drivers/gpu/drm/ttm/ttm_pool.c b/drivers/gpu/drm/ttm/ttm_pool.c
-index cb38b1a17b09..955836d569cc 100644
---- a/drivers/gpu/drm/ttm/ttm_pool.c
-+++ b/drivers/gpu/drm/ttm/ttm_pool.c
-@@ -70,7 +70,7 @@ static struct ttm_pool_type global_uncached[MAX_ORDER];
- static struct ttm_pool_type global_dma32_write_combined[MAX_ORDER];
- static struct ttm_pool_type global_dma32_uncached[MAX_ORDER];
- 
--static struct mutex shrinker_lock;
-+static spinlock_t shrinker_lock;
- static struct list_head shrinker_list;
- static struct shrinker mm_shrinker;
- 
-@@ -263,9 +263,9 @@ static void ttm_pool_type_init(struct ttm_pool_type *pt, struct ttm_pool *pool,
- 	spin_lock_init(&pt->lock);
- 	INIT_LIST_HEAD(&pt->pages);
- 
--	mutex_lock(&shrinker_lock);
-+	spin_lock(&shrinker_lock);
- 	list_add_tail(&pt->shrinker_list, &shrinker_list);
--	mutex_unlock(&shrinker_lock);
-+	spin_unlock(&shrinker_lock);
- }
- 
- /* Remove a pool_type from the global shrinker list and free all pages */
-@@ -273,9 +273,9 @@ static void ttm_pool_type_fini(struct ttm_pool_type *pt)
- {
- 	struct page *p;
- 
--	mutex_lock(&shrinker_lock);
-+	spin_lock(&shrinker_lock);
- 	list_del(&pt->shrinker_list);
--	mutex_unlock(&shrinker_lock);
-+	spin_unlock(&shrinker_lock);
- 
- 	while ((p = ttm_pool_type_take(pt)))
- 		ttm_pool_free_page(pt->pool, pt->caching, pt->order, p);
-@@ -313,24 +313,19 @@ static struct ttm_pool_type *ttm_pool_select_type(struct ttm_pool *pool,
- static unsigned int ttm_pool_shrink(void)
- {
- 	struct ttm_pool_type *pt;
--	unsigned int num_freed;
- 	struct page *p;
- 
--	mutex_lock(&shrinker_lock);
-+	spin_lock(&shrinker_lock);
- 	pt = list_first_entry(&shrinker_list, typeof(*pt), shrinker_list);
-+	list_move_tail(&pt->shrinker_list, &shrinker_list);
-+	spin_unlock(&shrinker_lock);
- 
- 	p = ttm_pool_type_take(pt);
--	if (p) {
--		ttm_pool_free_page(pt->pool, pt->caching, pt->order, p);
--		num_freed = 1 << pt->order;
--	} else {
--		num_freed = 0;
--	}
--
--	list_move_tail(&pt->shrinker_list, &shrinker_list);
--	mutex_unlock(&shrinker_lock);
-+	if (!p)
-+		return 0;
- 
--	return num_freed;
-+	ttm_pool_free_page(pt->pool, pt->caching, pt->order, p);
-+	return 1 << pt->order;
- }
- 
- /* Return the allocation order based for a page */
-@@ -530,6 +525,11 @@ void ttm_pool_fini(struct ttm_pool *pool)
- 			for (j = 0; j < MAX_ORDER; ++j)
- 				ttm_pool_type_fini(&pool->caching[i].orders[j]);
- 	}
-+
-+	/* We removed the pool types from the LRU, but we need to also make sure
-+	 * that no shrinker is concurrently freeing pages from the pool.
-+	 */
-+	sync_shrinkers();
- }
- 
- /* As long as pages are available make sure to release at least one */
-@@ -604,7 +604,7 @@ static int ttm_pool_debugfs_globals_show(struct seq_file *m, void *data)
- {
- 	ttm_pool_debugfs_header(m);
- 
--	mutex_lock(&shrinker_lock);
-+	spin_lock(&shrinker_lock);
- 	seq_puts(m, "wc\t:");
- 	ttm_pool_debugfs_orders(global_write_combined, m);
- 	seq_puts(m, "uc\t:");
-@@ -613,7 +613,7 @@ static int ttm_pool_debugfs_globals_show(struct seq_file *m, void *data)
- 	ttm_pool_debugfs_orders(global_dma32_write_combined, m);
- 	seq_puts(m, "uc 32\t:");
- 	ttm_pool_debugfs_orders(global_dma32_uncached, m);
--	mutex_unlock(&shrinker_lock);
-+	spin_unlock(&shrinker_lock);
- 
- 	ttm_pool_debugfs_footer(m);
- 
-@@ -640,7 +640,7 @@ int ttm_pool_debugfs(struct ttm_pool *pool, struct seq_file *m)
- 
- 	ttm_pool_debugfs_header(m);
- 
--	mutex_lock(&shrinker_lock);
-+	spin_lock(&shrinker_lock);
- 	for (i = 0; i < TTM_NUM_CACHING_TYPES; ++i) {
- 		seq_puts(m, "DMA ");
- 		switch (i) {
-@@ -656,7 +656,7 @@ int ttm_pool_debugfs(struct ttm_pool *pool, struct seq_file *m)
- 		}
- 		ttm_pool_debugfs_orders(pool->caching[i].orders, m);
- 	}
--	mutex_unlock(&shrinker_lock);
-+	spin_unlock(&shrinker_lock);
- 
- 	ttm_pool_debugfs_footer(m);
- 	return 0;
-@@ -693,7 +693,7 @@ int ttm_pool_mgr_init(unsigned long num_pages)
- 	if (!page_pool_size)
- 		page_pool_size = num_pages;
- 
--	mutex_init(&shrinker_lock);
-+	spin_lock_init(&shrinker_lock);
- 	INIT_LIST_HEAD(&shrinker_list);
- 
- 	for (i = 0; i < MAX_ORDER; ++i) {
--- 
-2.25.1
-
+Jason
