@@ -2,182 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FC33602AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 08:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E37C03602BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 08:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhDOGta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 02:49:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230056AbhDOGt1 (ORCPT
+        id S230436AbhDOGxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 02:53:25 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:64536 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229933AbhDOGxW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 02:49:27 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E5A5C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 23:49:05 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lWvo8-0002Xv-UD; Thu, 15 Apr 2021 08:48:56 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lWvo8-0005YD-GV; Thu, 15 Apr 2021 08:48:56 +0200
-Date:   Thu, 15 Apr 2021 08:48:54 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 1/8] pwm: pca9685: Switch to atomic API
-Message-ID: <20210415064854.glrvk7d634bisb34@pengutronix.de>
-References: <20210412132745.76609-1-clemens.gruber@pqgruber.com>
- <20210412161808.lp2amdfopw74lvz7@pengutronix.de>
- <YHR3wP4Fk3jidnri@workstation.tuxnet>
- <20210412201019.vouxx4daumusrcvr@pengutronix.de>
- <YHWKehtYFSaHt1hC@workstation.tuxnet>
- <20210413193818.r7oqzdzbxqf5sjj3@pengutronix.de>
- <YHbbaiwK9Tasb7NF@workstation.tuxnet>
- <20210414192131.2o4c2eia6jnjatp2@pengutronix.de>
- <YHdGXG3PbsmicK7U@workstation.tuxnet>
+        Thu, 15 Apr 2021 02:53:22 -0400
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 13F6qfpq015976;
+        Thu, 15 Apr 2021 15:52:41 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 13F6qfpq015976
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1618469561;
+        bh=ASLMD/Isn3hyU3AH6rc2TBLrCxFcTFf8y3b9byejf+k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QwDQByczDp2Ixc5lmb0fTUY0fURBptlbXVYbFrJk7tr0V2WT1I+xMW1fy/nuaSm3A
+         eVZ1lykXl438BMO7IHX+FvjX+ANuPxqUd6f0YdG7iN3yb7r+vYML21Zem9K3kFWqih
+         AnCzn/WgRJRIdEwi3hZbOZoTh4uOe6mNGwQ4G+sUkgdXyznrOwrD6pBKLIOJbQZRJS
+         TsnKY4xVw1G98JyH+5om3gtB4Q5tlWLHQLkJiJKbZ4Dfq1ElZvrduxL9F5EZ6dKgth
+         oyY72QksPOPWSQPwF1qsBqKddCpkr0IGzu6ipz7tjm99JFEOTsGhQjQf2iRfKfz4Zl
+         a6Um2KxZ/t1XQ==
+X-Nifty-SrcIP: [209.85.216.43]
+Received: by mail-pj1-f43.google.com with SMTP id z22-20020a17090a0156b029014d4056663fso12163663pje.0;
+        Wed, 14 Apr 2021 23:52:41 -0700 (PDT)
+X-Gm-Message-State: AOAM532CNR4sIMkZS3Lo4Wh3ZU5z2nfooz0cEsz9T5IIPbRZC9XkzuXr
+        2poS7tREx1MiGmKGb9M8X1XzN4sR1/ChYA9vFmA=
+X-Google-Smtp-Source: ABdhPJyMNCwpzerAzacYrJrcWqFcuKBK68TQWYjfjdGIIUUg6XX5GJzX3WcOY63EAoqh8uq6kpikN+HHEWtCfQmbYCE=
+X-Received: by 2002:a17:90a:1056:: with SMTP id y22mr2109954pjd.153.1618469560457;
+ Wed, 14 Apr 2021 23:52:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kij3efdivtjivdyy"
-Content-Disposition: inline
-In-Reply-To: <YHdGXG3PbsmicK7U@workstation.tuxnet>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210414192657.17764-1-rdunlap@infradead.org>
+In-Reply-To: <20210414192657.17764-1-rdunlap@infradead.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 15 Apr 2021 15:52:03 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARSK2YspYvKkUKTp-aG2nqKnvdMr7B_6Am-u1-mt2XBNg@mail.gmail.com>
+Message-ID: <CAK7LNARSK2YspYvKkUKTp-aG2nqKnvdMr7B_6Am-u1-mt2XBNg@mail.gmail.com>
+Subject: Re: [PATCH] uml: fix W=1 missing-include-dirs warnings
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 15, 2021 at 4:27 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> Currently when using "W=1" with UML builds, there are over 700 warnings
+> like so:
+>
+>   CC      arch/um/drivers/stderr_console.o
+> cc1: warning: ./arch/um/include/uapi: No such file or directory [-Wmissing-include-dirs]
+>
+> but arch/um/ does not have include/uapi/ at all, so don't
+> include arch/um/include/uapi/ in USERINCLUDE for UML.
+>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: Michal Marek <michal.lkml@markovi.net>
+> Cc: linux-kbuild@vger.kernel.org
+> Cc: Jeff Dike <jdike@addtoit.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> Cc: linux-um@lists.infradead.org
+> ---
+>  Makefile |   10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>
+> Option 2: change the setting of USERINCLUDE. This could alter
+>         (a) build times and
+>         (b) which header files get used: if there are multiple
+>             header files named foobar.h in the $(USERINCLUDE)
+>             subdirectories, this Option changes the order in which
+>             they would be found.
+>
+> - linux-next-20210413.orig/Makefile
+> + linux-next-20210413/Makefile
+> @@ -501,13 +501,16 @@ LDFLAGS_vmlinux =
+>
+>  # Use USERINCLUDE when you must reference the UAPI directories only.
+>  USERINCLUDE    := \
+> -               -I$(srctree)/arch/$(SRCARCH)/include/uapi \
+>                 -I$(objtree)/arch/$(SRCARCH)/include/generated/uapi \
+>                 -I$(srctree)/include/uapi \
+>                 -I$(objtree)/include/generated/uapi \
+>                  -include $(srctree)/include/linux/compiler-version.h \
+>                  -include $(srctree)/include/linux/kconfig.h
+>
+> +ifneq ($(ARCH),um)
+> +USERINCLUDE    += -I$(srctree)/arch/$(SRCARCH)/include/uapi
+> +endif
+> +
+>  # Use LINUXINCLUDE when you must reference the include/ directory.
+>  # Needed to be compatible with the O= option
+>  LINUXINCLUDE    := \
+>
+> Option 3: modify scripts/Makefile.extrawarn not to set
+>         -Wmissing-include-dirs for arch=um. I think that this is not
+>         a good idea: it could cause valid problem reports not to be
+>         reported.
+>
+> Option 4: simply mkdir arch/um/include/uapi
+>         That's what I did first, just as a test, and it works.
 
---kij3efdivtjivdyy
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 14, 2021 at 09:45:32PM +0200, Clemens Gruber wrote:
-> On Wed, Apr 14, 2021 at 09:21:31PM +0200, Uwe Kleine-K=F6nig wrote:
-> > On Wed, Apr 14, 2021 at 02:09:14PM +0200, Clemens Gruber wrote:
-> > > Hi Uwe,
-> > >=20
-> > > On Tue, Apr 13, 2021 at 09:38:18PM +0200, Uwe Kleine-K=F6nig wrote:
-> > > > Hello Clemens,
-> > > >=20
-> > > > On Tue, Apr 13, 2021 at 02:11:38PM +0200, Clemens Gruber wrote:
-> > > > > On Mon, Apr 12, 2021 at 10:10:19PM +0200, Uwe Kleine-K=F6nig wrot=
-e:
-> > > > > > On Mon, Apr 12, 2021 at 06:39:28PM +0200, Clemens Gruber wrote:
-> > > > > > > With your suggested round-down, the example with frequency of=
- 200 Hz
-> > > > > > > would no longer result in 30 but 29 and that contradicts the =
-datasheet.
-> > > > > >=20
-> > > > > > Well, with PRESCALE =3D 30 we get a frequency of 196.88 Hz and =
-with
-> > > > > > PRESCALE =3D 29 we get a frequency of 203.45 Hz. So no matter i=
-f you pick
-> > > > > > 29 or 30, you don't get 200 Hz. And which of the two possible v=
-alues is
-> > > > > > the better one depends on the consumer, no matter what rounding
-> > > > > > algorithm the data sheet suggests. Also note that the math here=
- contains
-> > > > > > surprises you don't expect at first. For example, what PRESCALE=
- value
-> > > > > > would you pick to get 284 Hz? [If my mail was a video, I'd sugg=
-est to
-> > > > > > press Space now to pause and let you think first :-)] The data =
-sheet's
-> > > > > > formula suggests:
-> > > > > >=20
-> > > > > > 	round(25 MHz / (4096 * 284)) - 1 =3D 20
-> > > > > >=20
-> > > > > > The resulting frequency when picking PRESCALE =3D 20 is 290.644=
- Hz (so an
-> > > > > > error of 6.644 Hz). If instead you pick PRESCALE =3D 21 you get=
- 277.433 Hz
-> > > > > > (error =3D 6.567 Hz), so 21 is the better choice.
-> > > > > >=20
-> > > > > > Exercise for the reader:
-> > > > > >  What is the correct formula to really determine the PRESCALE v=
-alue that
-> > > > > >  yields the best approximation (i.e. minimizing
-> > > > > >  abs(real_freq - target_freq)) for a given target_freq?
-> > > >=20
-> > > > I wonder if you tried this.
-> > >=20
-> > > We could calculate both round-up and round-down and decide which one =
-is
-> > > closer to "real freq" (even though that is not the actual frequency b=
-ut
-> > > just our backwards-calculated frequency).
-> >=20
-> > Yeah, the backwards-calculated frequency is the best assumption we
-> > have.
-> >=20
-> > > But I can't give you a formula with minimized abs(real_freq-target_fr=
-eq)
-> > > Is it a different round point than 0.5 and maybe relative to f ?
-> > >=20
-> > > Please enlighten us :-)
-> >=20
-> > Sorry, I cannot. I spend ~20 min today after lunch with pencil and
-> > paper, but without success. I was aware that it isn't trivial and this
-> > is the main reason I established round-down as default for new drivers
-> > instead of round-nearest.
->=20
-> Oh, I thought you already solved it. I tried too for a while but was
-> unsuccessful. Not trivial indeed!
->=20
-> But regarding you establishing round-down: Wouldn't it be even better if
-> the driver did what I suggested above, namely calculate backwards from
-> both the rounded-up as well as the rounded-down prescale value and then
-> write the one with the smallest abs(f_target - f_real) to the register?
+I like Option 4.
 
-No, I don't think so for several reasons. First, just rounding down is
-easier (and keeping lowlevel drivers rules and implementation easy is
-IMHO a good goal). The second reason is that round-nearest is a bit
-ambigous because round to the nearest frequency is slightly different to
-round to the nearest period length. So to actually implement (or use)
-it correctly, people have to grasp that difference. Compared to that
-rounding down the period length corresponds 1:1 to rounding up
-frequency. That's easy.
+But, you cannot do "mkdir -p arch/um/include/uapi" at build-time
+because the build system should not touch the source tree(, which
+might be read-only)
+for O= building.
 
-For the third reason I have to backup a bit: I intend to introduce a
-function pwm_round_rate that predicts what pwm_apply_rate will actually
-implement. Of course it must have the same rounding rules. This allows
-to implement efficient search for consumers that e.g. prefer
-round-nearest time, or round-nearest frequency. I'm convinced that
-searching the optimal request to make is easier if round_rate uses
-round-down and not round-nearest.
+How about adding
 
-All three reasons boil down to "the math for round-down is just simpler
-(for implementers and for users) than with round-nearest".
+  arch/um/include/uapi/asm/Kbuild,
 
-Best regards
-Uwe
+which is just having a SPDX one-liner?
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
---kij3efdivtjivdyy
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmB34dMACgkQwfwUeK3K
-7AkZWgf/SJH5gUNhVoq0Ss5l1e4cNXs73avV6WBUWFp9ZanIcKrNAo+vsErxneq3
-riw2RUutTTaVybfzlbwfeGJJVLrnnKDKIgp6DJPsHXVS3puf0hfjsVlSVmwpisnV
-xkfpshaAfWXdH+IBQFBj9p7CJsaqeVsV2Dwm8+A9Ud7J9LYduqNvKLq1eW1CbwcW
-NOJNIFQqB+Am4AnD8W7/jMbnKoXlhSG2Cc4+HSNjoczDw8029wYIMP1GBY62a7Q1
-OmhP696dLosuUs/T73ZZg65EojAZfg7qRaBFmgBlLtDFJHSl1njj1F0x7Qj277ut
-u4/11FzWpidfcR2e5PZiq0E5INSYqQ==
-=gN4c
------END PGP SIGNATURE-----
 
---kij3efdivtjivdyy--
+
+
+
+
+
+
+
+>
+> --- linux-next-20210413.orig/Makefile
+> +++ linux-next-20210413/Makefile
+> @@ -500,6 +500,15 @@ AFLAGS_KERNEL      =
+>  LDFLAGS_vmlinux =
+>
+>  # Use USERINCLUDE when you must reference the UAPI directories only.
+> +# Note: arch/um/ does not have an include/uapi/ subdir.
+> +ifeq ($(ARCH),um)
+> +USERINCLUDE    := \
+> +               -I$(objtree)/arch/$(SRCARCH)/include/generated/uapi \
+> +               -I$(srctree)/include/uapi \
+> +               -I$(objtree)/include/generated/uapi \
+> +                -include $(srctree)/include/linux/compiler-version.h \
+> +                -include $(srctree)/include/linux/kconfig.h
+> +else
+>  USERINCLUDE    := \
+>                 -I$(srctree)/arch/$(SRCARCH)/include/uapi \
+>                 -I$(objtree)/arch/$(SRCARCH)/include/generated/uapi \
+> @@ -507,6 +516,7 @@ USERINCLUDE    := \
+>                 -I$(objtree)/include/generated/uapi \
+>                  -include $(srctree)/include/linux/compiler-version.h \
+>                  -include $(srctree)/include/linux/kconfig.h
+> +endif
+>
+>  # Use LINUXINCLUDE when you must reference the include/ directory.
+>  # Needed to be compatible with the O= option
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
