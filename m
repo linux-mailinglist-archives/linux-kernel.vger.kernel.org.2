@@ -2,122 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A77F7360C0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:42:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D52DE360C0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233282AbhDOOma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
+        id S233385AbhDOOm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:42:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231549AbhDOOm3 (ORCPT
+        with ESMTP id S233201AbhDOOm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:42:29 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CD6C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 07:42:06 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id w6so1664706pfc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 07:42:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hatUuIhFi7CMwOdtJnGcgxnJeKk201WCNig0Migkokc=;
-        b=WWvQUtlCtm3XADW/zB82p0+6Hb5UM6F14J4u3VKgtfXypsgmQ9OUwXGOUQklu3RSqZ
-         +R6Yu1xwTw+VRqAt1W9KDznQETO7wmMLiN5E3jC8sRmIqBYebwSFH5P7e4mln4VQ9cqT
-         vyOLwyPpClX8h+xkfB+LMtuM170wDldyjrIs9mRugpcXU/Hh4BcY6TgQI7ES9THgOEaD
-         vkedDhegu0iRrjDHjc7N93ZiGPFl1yQ8yVrspF3kbMTc3KdV+PxKJ7tuR4BE5HMaHz7F
-         nxwpwufQqt2cyGBLOYZtD+E5k3hXj91R2eheqFLaUE193ta3anEpLwwx4G5K5xF6niky
-         zVwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hatUuIhFi7CMwOdtJnGcgxnJeKk201WCNig0Migkokc=;
-        b=SRCgGURwSHYaoqA5E26Qem+apCQgbTgRfx2c5nE8BCZtuQwzO+VENMK9pgof90z22a
-         Yot1l1fBxx0n5/gzqkUERdD1qK92iu9ThkhPJPPbNL+pzQyZa672jaWzFzsO9ScFLlpM
-         8hI8cRhrflLyLJKWECTCazCsNS7DvxoAeRYNwngnqX5DwKKYJHePvbVgVhmzUSUuX5TY
-         xFx7IcD52jGSooX56JCeuAeN9Dq7dpp+GEQpjZoSRbQl12jiOSWrOEetLRLgQnJUKDaj
-         YAU9dnrGrmgB2r/43et77L7Q6ucXozoLeRLcdtQpG8aL+PoXPI7cfnj4NQ7qxp/r0BBQ
-         bPIw==
-X-Gm-Message-State: AOAM533WzdkN0vf/G0uubnQA0CbELvUvzbuxEdH9YF9DxZot7lKJd9oh
-        UDO0ktGAob+xISBHTpLYTajW7A==
-X-Google-Smtp-Source: ABdhPJzOVlfOiUa73d5LlzAx57mYNgnY2nwgWDcJlPxpK8barrG8CUwSkXJPPE6FSKXQTMAjqBm4Vg==
-X-Received: by 2002:aa7:86c9:0:b029:245:1c62:3499 with SMTP id h9-20020aa786c90000b02902451c623499mr3489516pfo.74.1618497725486;
-        Thu, 15 Apr 2021 07:42:05 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([116.206.101.232])
-        by smtp.gmail.com with ESMTPSA id t10sm2719605pjy.16.2021.04.15.07.42.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 07:42:04 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 22:41:58 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Al Grant <Al.Grant@arm.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/6] perf arm-spe: Remove unused enum value
- ARM_SPE_PER_CPU_MMAPS
-Message-ID: <20210415144158.GD1011890@leoy-ThinkPad-X240s>
-References: <20210412091006.468557-1-leo.yan@linaro.org>
- <20210412091006.468557-2-leo.yan@linaro.org>
- <882e13d1-c793-88c6-0b1e-629462fb99ac@arm.com>
+        Thu, 15 Apr 2021 10:42:58 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F33BC061574;
+        Thu, 15 Apr 2021 07:42:34 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3DD6989A;
+        Thu, 15 Apr 2021 16:42:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1618497751;
+        bh=k+IQUeSEYm1M3FFyJ2PXsEYwB8+VDm1H6a7nr/uK4Bs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GI2XyNCZXM9QT6cYE4wKtBBgpjxWlnf+46yux+Bl8X6OTHU+ERIQau2ZVIAV50AVW
+         dGSmh+hkw9jwvhGckd61GrigbYhXswNKzR1IQ2gkG47lk+LjO5liUBlDwWHf1SuAi/
+         LmSJLlVbDz58Sv+Y7HncWMqGOe+8TiHS4stq0tjc=
+Date:   Thu, 15 Apr 2021 17:42:29 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/7] dt-bindings: media: max9286: Re-indent example
+Message-ID: <YHhQ1fIicHoDKB0L@pendragon.ideasonboard.com>
+References: <20210415122602.87697-1-jacopo+renesas@jmondi.org>
+ <20210415122602.87697-2-jacopo+renesas@jmondi.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <882e13d1-c793-88c6-0b1e-629462fb99ac@arm.com>
+In-Reply-To: <20210415122602.87697-2-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+Hi Jacopo,
 
-On Thu, Apr 15, 2021 at 05:13:36PM +0300, James Clark wrote:
-> On 12/04/2021 12:10, Leo Yan wrote:
-> > The enum value 'ARM_SPE_PER_CPU_MMAPS' is never used so remove it.
-> 
-> Hi Leo,
-> 
-> I think this causes an error when attempting to open a newly recorded file
-> with an old version of perf. The value ARM_SPE_AUXTRACE_PRIV_MAX is used here:
-> 
-> 	size_t min_sz = sizeof(u64) * ARM_SPE_AUXTRACE_PRIV_MAX;
-> 	struct perf_record_time_conv *tc = &session->time_conv;
-> 	struct arm_spe *spe;
-> 	int err;
-> 
-> 	if (auxtrace_info->header.size < sizeof(struct perf_record_auxtrace_info) +
-> 					min_sz)
-> 		return -EINVAL;
-> 
-> And removing ARM_SPE_PER_CPU_MMAPS changes the value of ARM_SPE_AUXTRACE_PRIV_MAX.
-> 
-> At least I think that's what's causing the problem. I get this error:
-> 
-> 	./perf report -i per-thread-spe-time.data
-> 	0x1c0 [0x18]: failed to process type: 70 [Invalid argument]
-> 	Error:
-> 	failed to process sample
-> 	# To display the perf.data header info, please use --header/--header-only options.
-> 	#
+Thank you for the patch.
 
-Yes, when working on this patch I had concern as well.
+On Thu, Apr 15, 2021 at 02:25:56PM +0200, Jacopo Mondi wrote:
+> The dt-bindings examples are usually indented with 4 spaces.
+> 
+> The maxim,max9286 schema has the example indented with only
+> 2 spaces, re-indent it.
+> 
+> Cosmetic change only.
+> 
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
 
-I carefully thought that the perf tool should be backwards-compatible,
-but there have no requirement for forwards-compatibility.  This is the
-main reason why I kept this patch.
+Tested by applying and verifying that `git show -b` shows an empty diff.
 
-If you or anyone could confirm the forwards-compatibility is required,
-it's quite fine for me to drop this patch.
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-Thanks a lot for the reviewing and testing!
-Leo
+> ---
+>  .../bindings/media/i2c/maxim,max9286.yaml     | 214 +++++++++---------
+>  1 file changed, 107 insertions(+), 107 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> index ee16102fdfe7..0e7162998b77 100644
+> --- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
+> @@ -191,140 +191,140 @@ examples:
+>      #include <dt-bindings/gpio/gpio.h>
+>  
+>      i2c@e66d8000 {
+> -      #address-cells = <1>;
+> -      #size-cells = <0>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+>  
+> -      reg = <0 0xe66d8000>;
+> +        reg = <0 0xe66d8000>;
+>  
+> -      gmsl-deserializer@2c {
+> -        compatible = "maxim,max9286";
+> -        reg = <0x2c>;
+> -        poc-supply = <&camera_poc_12v>;
+> -        enable-gpios = <&gpio 13 GPIO_ACTIVE_HIGH>;
+> +        gmsl-deserializer@2c {
+> +            compatible = "maxim,max9286";
+> +            reg = <0x2c>;
+> +            poc-supply = <&camera_poc_12v>;
+> +            enable-gpios = <&gpio 13 GPIO_ACTIVE_HIGH>;
+>  
+> -        gpio-controller;
+> -        #gpio-cells = <2>;
+> +            gpio-controller;
+> +            #gpio-cells = <2>;
+>  
+> -        maxim,reverse-channel-microvolt = <170000>;
+> +            maxim,reverse-channel-microvolt = <170000>;
+>  
+> -        ports {
+> -          #address-cells = <1>;
+> -          #size-cells = <0>;
+> +            ports {
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+>  
+> -          port@0 {
+> -            reg = <0>;
+> +                port@0 {
+> +                    reg = <0>;
+>  
+> -            max9286_in0: endpoint {
+> -              remote-endpoint = <&rdacm20_out0>;
+> -            };
+> -          };
+> -
+> -          port@1 {
+> -            reg = <1>;
+> -
+> -            max9286_in1: endpoint {
+> -              remote-endpoint = <&rdacm20_out1>;
+> -            };
+> -          };
+> -
+> -          port@2 {
+> -            reg = <2>;
+> -
+> -            max9286_in2: endpoint {
+> -              remote-endpoint = <&rdacm20_out2>;
+> -            };
+> -          };
+> +                    max9286_in0: endpoint {
+> +                        remote-endpoint = <&rdacm20_out0>;
+> +                    };
+> +                };
+>  
+> -          port@3 {
+> -            reg = <3>;
+> +                port@1 {
+> +                    reg = <1>;
+>  
+> -            max9286_in3: endpoint {
+> -              remote-endpoint = <&rdacm20_out3>;
+> -            };
+> -          };
+> +                    max9286_in1: endpoint {
+> +                        remote-endpoint = <&rdacm20_out1>;
+> +                    };
+> +                };
+>  
+> -          port@4 {
+> -            reg = <4>;
+> +                port@2 {
+> +                    reg = <2>;
+>  
+> -            max9286_out: endpoint {
+> -              data-lanes = <1 2 3 4>;
+> -              remote-endpoint = <&csi40_in>;
+> -            };
+> -          };
+> -        };
+> +                    max9286_in2: endpoint {
+> +                        remote-endpoint = <&rdacm20_out2>;
+> +                    };
+> +                };
+>  
+> -        i2c-mux {
+> -          #address-cells = <1>;
+> -          #size-cells = <0>;
+> +                port@3 {
+> +                    reg = <3>;
+>  
+> -          i2c@0 {
+> -            #address-cells = <1>;
+> -            #size-cells = <0>;
+> -            reg = <0>;
+> +                    max9286_in3: endpoint {
+> +                        remote-endpoint = <&rdacm20_out3>;
+> +                    };
+> +                };
+>  
+> -            camera@51 {
+> -              compatible = "imi,rdacm20";
+> -              reg = <0x51>, <0x61>;
+> +                port@4 {
+> +                    reg = <4>;
+>  
+> -              port {
+> -                rdacm20_out0: endpoint {
+> -                  remote-endpoint = <&max9286_in0>;
+> +                    max9286_out: endpoint {
+> +                        data-lanes = <1 2 3 4>;
+> +                        remote-endpoint = <&csi40_in>;
+> +                    };
+>                  };
+> -              };
+> -
+>              };
+> -          };
+> -
+> -          i2c@1 {
+> -            #address-cells = <1>;
+> -            #size-cells = <0>;
+> -            reg = <1>;
+>  
+> -            camera@52 {
+> -              compatible = "imi,rdacm20";
+> -              reg = <0x52>, <0x62>;
+> +            i2c-mux {
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+>  
+> -              port {
+> -                rdacm20_out1: endpoint {
+> -                  remote-endpoint = <&max9286_in1>;
+> -                };
+> -              };
+> -            };
+> -          };
+> +                i2c@0 {
+> +                    #address-cells = <1>;
+> +                    #size-cells = <0>;
+> +                    reg = <0>;
+>  
+> -          i2c@2 {
+> -            #address-cells = <1>;
+> -            #size-cells = <0>;
+> -            reg = <2>;
+> +                    camera@51 {
+> +                        compatible = "imi,rdacm20";
+> +                        reg = <0x51>, <0x61>;
+>  
+> -            camera@53 {
+> -              compatible = "imi,rdacm20";
+> -              reg = <0x53>, <0x63>;
+> +                        port {
+> +                            rdacm20_out0: endpoint {
+> +                                remote-endpoint = <&max9286_in0>;
+> +                            };
+> +                        };
+>  
+> -              port {
+> -                rdacm20_out2: endpoint {
+> -                  remote-endpoint = <&max9286_in2>;
+> +                    };
+>                  };
+> -              };
+> -            };
+> -          };
+>  
+> -          i2c@3 {
+> -            #address-cells = <1>;
+> -            #size-cells = <0>;
+> -            reg = <3>;
+> +                i2c@1 {
+> +                    #address-cells = <1>;
+> +                    #size-cells = <0>;
+> +                    reg = <1>;
+> +
+> +                    camera@52 {
+> +                        compatible = "imi,rdacm20";
+> +                        reg = <0x52>, <0x62>;
+> +
+> +                        port {
+> +                            rdacm20_out1: endpoint {
+> +                                remote-endpoint = <&max9286_in1>;
+> +                            };
+> +                        };
+> +                    };
+> +                };
+>  
+> -            camera@54 {
+> -              compatible = "imi,rdacm20";
+> -              reg = <0x54>, <0x64>;
+> +                i2c@2 {
+> +                    #address-cells = <1>;
+> +                    #size-cells = <0>;
+> +                    reg = <2>;
+> +
+> +                    camera@53 {
+> +                        compatible = "imi,rdacm20";
+> +                        reg = <0x53>, <0x63>;
+> +
+> +                        port {
+> +                            rdacm20_out2: endpoint {
+> +                                remote-endpoint = <&max9286_in2>;
+> +                            };
+> +                        };
+> +                    };
+> +                };
+>  
+> -              port {
+> -                rdacm20_out3: endpoint {
+> -                  remote-endpoint = <&max9286_in3>;
+> +                i2c@3 {
+> +                    #address-cells = <1>;
+> +                    #size-cells = <0>;
+> +                    reg = <3>;
+> +
+> +                    camera@54 {
+> +                        compatible = "imi,rdacm20";
+> +                        reg = <0x54>, <0x64>;
+> +
+> +                        port {
+> +                            rdacm20_out3: endpoint {
+> +                                remote-endpoint = <&max9286_in3>;
+> +                            };
+> +                        };
+> +                    };
+>                  };
+> -              };
+>              };
+> -          };
+>          };
+> -      };
+>      };
+
+-- 
+Regards,
+
+Laurent Pinchart
