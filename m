@@ -2,115 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED79436139A
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 22:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B0A36139C
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 22:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235574AbhDOUiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 16:38:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235251AbhDOUiB (ORCPT
+        id S235605AbhDOUiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 16:38:11 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:33392 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235573AbhDOUiJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 16:38:01 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D97C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 13:37:37 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id p67so11911453pfp.10
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 13:37:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vObk5zpfxMuIbD3QrtDnjfXIj3YNa+wCetzq4YqI/Ys=;
-        b=jFuHk7s+f9q7wrY3o3n5mT6FaLvMYQsuXRb9E4r2sVuVSavAoOQE97qyAqwGwSHPjL
-         cxyNkCn51HFKKfiQg4YuflgIVh/sU+5/TJTLTNXy88r4eCREQ6yOPW5iVGc8/M1UwFNf
-         dNotMU2eu0pi6gYuk5WEDtEIrI2ef5JDgprKeTwKMurZg4MMlt0Cq58NToqv7Xne0En6
-         SstFDcQUu2WaoGHmxixsZJ1E5O/3RQN77l22m4uYjtIMP7D4k4kFrNkhGjh+amrlo/Gn
-         WsW/ETiiioEpndHSdUOzl+M6mEAkWVPCz+/YMErQnbXH4vx6UNXfNHGDarQis8Kjkooz
-         TQjQ==
+        Thu, 15 Apr 2021 16:38:09 -0400
+Received: by mail-ot1-f48.google.com with SMTP id 92-20020a9d02e50000b029028fcc3d2c9eso1318489otl.0;
+        Thu, 15 Apr 2021 13:37:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=vObk5zpfxMuIbD3QrtDnjfXIj3YNa+wCetzq4YqI/Ys=;
-        b=V7A40mxxn0+/AYI+IpIcWp6KA2M/NBGBGmt7LO/OGztfTpQ1hltx/IVRe6jE0zRzZb
-         S5yquauLxLVimuOfoTl4y8B5RYIVDWmg0YLIAadNQJGo5D8p6mQcZKSow/ineEHyVHI8
-         K/wSngVjclEwG94exKx4i8HM3i8HbWHSnCADfLYPhOzpgjvCZEiZEQari4D5cVQdl21u
-         vRjS5VlBfR4vpzyIU74/d2ji7huvpiCEtLbkH5EMuKRmjEiojHg1n7YHVdUSqxVfJWVz
-         6StMZE7z4/uaneTadYSKxRtDuv4rEV+bezTqCtlbJb0b9lsYyv2XCTKT2QEUcGnflrXH
-         qgmQ==
-X-Gm-Message-State: AOAM533NylNH9izmHpzu4LJyUvrVpTE5lry4VKG3T4XK+34OMgQc/4Qp
-        qLmiikDQuSVn1IdL4oZ+bxpYKg==
-X-Google-Smtp-Source: ABdhPJyfg2R+ssZa5r6cIL/CR4EUg2vTi5YKkIspyQJx2qSZYuKvfHn4PzCtsx/al20OzOj0WXdsGg==
-X-Received: by 2002:a63:fb15:: with SMTP id o21mr5024855pgh.337.1618519056848;
-        Thu, 15 Apr 2021 13:37:36 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id g18sm2828703pfb.178.2021.04.15.13.37.30
+        bh=SV6uLdiUIbNtCGDaL9g5OEfzZbfEmr4PSTr5jNTx670=;
+        b=ShCNOqVuoEnziWaIVQ1c+tl9sX7uf2aoSCq8/oi8kXbGekuUkm6LlAAjjx1urCVbyF
+         4eyFk0AkZQhNB3SUSnDtlYLpNFRZG5VRxxmb0qviQMusHGmTnO1sqohcozshRRw8uUTe
+         rk5CsFwCUdKpbY+pPCp0yib7T5MPTH63ovw/GTk+guElvUiPeETMgCg9+BJ9HijiH6SF
+         VU85GJCGhFasrVFNDnBXDMyqzd7ZXkbxuZLmB/8dxjudkoLgZO2jOhdhFF+xQalvvE81
+         2yg3EALAHwHwDBYZKIt3/TTx1Z+hepjxc5lil6qFrUYKH6uTWQcoSzK3760nyJYkQoaa
+         atsg==
+X-Gm-Message-State: AOAM533+XRWZ4JJUvQhA+BfV7wKpjx1msX+zR00Eyev5H3f3fkPC5/xJ
+        TNM52J02mc6Vxfge0/v/Jw==
+X-Google-Smtp-Source: ABdhPJyNGtj7dGg5GwtUMbHWt8Ht+g49ssWkYBZp2WW5+yqeI81C8urNbu4W7m7D/jx0Em+fsnnwFQ==
+X-Received: by 2002:a05:6830:1515:: with SMTP id k21mr814922otp.269.1618519064589;
+        Thu, 15 Apr 2021 13:37:44 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id d7sm774314oop.9.2021.04.15.13.37.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 13:37:30 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 14:37:28 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     coresight@lists.linaro.org, al.grant@arm.com,
-        branislav.rankov@arm.com, denik@chromium.org,
-        suzuki.poulose@arm.com, Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/7] Split Coresight decode by aux records
-Message-ID: <20210415203728.GD937505@xps15>
-References: <20210212144513.31765-1-james.clark@arm.com>
+        Thu, 15 Apr 2021 13:37:43 -0700 (PDT)
+Received: (nullmailer pid 1842170 invoked by uid 1000);
+        Thu, 15 Apr 2021 20:37:41 -0000
+Date:   Thu, 15 Apr 2021 15:37:41 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     dillon.minfei@gmail.com
+Cc:     olof@lixom.net, arnd@arndb.de, matthias.schiffer@ew.tq-group.com,
+        mchehab@kernel.org, krzk@kernel.org,
+        krzysztof.kozlowski@canonical.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux@rempel-privat.de,
+        festevam@gmail.com, leoyang.li@nxp.com, linux-imx@nxp.com,
+        prabhakar.csengg@gmail.com, s.riedmueller@phytec.de,
+        s.hauer@pengutronix.de, linux-arm-kernel@lists.infradead.org,
+        robh+dt@kernel.org, kernel@pengutronix.de,
+        devicetree@vger.kernel.org, shawnguo@kernel.org
+Subject: Re: [PATCH v3 2/4] dt-bindings: arm: imx: Add i.mx6q DaSheng COM-9XX
+ SBC
+Message-ID: <20210415203741.GA1842113@robh.at.kernel.org>
+References: <1618459535-8141-1-git-send-email-dillon.minfei@gmail.com>
+ <1618459535-8141-3-git-send-email-dillon.minfei@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210212144513.31765-1-james.clark@arm.com>
+In-Reply-To: <1618459535-8141-3-git-send-email-dillon.minfei@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+On Thu, 15 Apr 2021 12:05:33 +0800, dillon.minfei@gmail.com wrote:
+> From: dillon min <dillon.minfei@gmail.com>
+> 
+> The DaSheng Com-9xx is and ARM based signle board computer (SBC)
+> featuring:
+> - i.MX6Q
+> - 2GiB LPDDR3 DRAM
+> - 8GiB eMMC 5.0 FLASH
+> - 4MiB SPI Flash
+> - USB 2.0 Host/Device
+> - Multiple multi-protocol RS232/RS485 Serial ports
+> - microSD socket
+> - 5V DC power input
+> - HDMI1.4a,1080p@60
+> - RGMIIx1 Gigabit Ethernet
+> - CSI0x1, connect with ov2659
+> 
+> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+> v3: move 'ds,imx6q-sbc' after 'dmo,imx6q-edmqmx6' to follow the alphabetical
+> order.
+> 
+>  Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-On Fri, Feb 12, 2021 at 04:45:06PM +0200, James Clark wrote:
-> Hi All,
-> 
-> Since my previous RFC, I've fixed --per-thread mode and solved
-> most of the open questions. I've also changed --dump-raw-trace
-> to use the same code path so it's also working now.
-> 
-> I think the only open questions are:
->   * General approach
->   * If aux records need to be saved, or if they can be pulled
->     from elsewhere.
-> 
-> I've also tested perf inject which is now working with troublesome
-> files.
->
-
-This patchset is now at the top of the coresight review list.  I suggest you
-rebase this on top of your two timestamp related patches and send another
-revision.
- 
-> Thanks
-> James
-> 
-> James Clark (7):
->   perf cs-etm: Split up etm queue setup function
->   perf cs-etm: Only search timestamp in current sample's queue.
->   perf cs-etm: Save aux records in each etm queue
->   perf cs-etm: don't process queues until cs_etm__flush_events
->   perf cs-etm: split decode by aux records.
->   perf cs-etm: Use existing decode code path for --dump-raw-trace
->   perf cs-etm: Suppress printing when resetting decoder
-> 
->  .../perf/util/cs-etm-decoder/cs-etm-decoder.c |  10 +-
->  tools/perf/util/cs-etm.c                      | 300 ++++++++++--------
->  2 files changed, 168 insertions(+), 142 deletions(-)
-> 
-> -- 
-> 2.28.0
-> 
+Acked-by: Rob Herring <robh@kernel.org>
