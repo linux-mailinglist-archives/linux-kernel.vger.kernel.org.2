@@ -2,182 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1960736114D
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B7C36114F
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 19:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234172AbhDORot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 13:44:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233134AbhDORom (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 13:44:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 246D06115B;
-        Thu, 15 Apr 2021 17:44:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618508659;
-        bh=FQz0pD4kv15nu6Gh8jeOf7Ip6Z3DdOPGbJ6/uOkYSmc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fECi0I1N7U6/gNqBXmbNEU9TdnsRDZvWE680GsvE78zRk2D5aamSbkRiFxFGpMhOo
-         GzT0+4mWV4vASYHFP/1zhIKgmT3l0UCFkLCMuHbuB1m/rarLZ+aJzCwEiKR3kfXF3g
-         1TgTfl9pFvDWRcSLGJZg5Hsbj43sGlVITCHktJX0xdDL7mdle9gMJfGx8Yov9Zj9kg
-         nQW17bAZE+WJqSWCEDHkFF4mYRvwiniKKEAX5NrIJtPaCtJ4quwtofDzI9HVKdD44i
-         a2JDMZI86qYDwD4E2+qWjdlm4mGPD9NuK3OnMYvT51t1mg+leMzqGdUWl7RYKtjVE0
-         kgAhCnrSNvvKA==
-Date:   Thu, 15 Apr 2021 10:44:17 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     davem@davemloft.net, kys@microsoft.com, haiyangz@microsoft.com,
-        sthemmin@microsoft.com, wei.liu@kernel.org, liuwe@microsoft.com,
-        netdev@vger.kernel.org, leon@kernel.org, andrew@lunn.ch,
-        bernd@petrovitsch.priv.at, rdunlap@infradead.org,
-        shacharr@microsoft.com, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH v6 net-next] net: mana: Add a driver for Microsoft Azure
- Network Adapter (MANA)
-Message-ID: <20210415104417.6269cd9a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210415054519.12944-1-decui@microsoft.com>
-References: <20210415054519.12944-1-decui@microsoft.com>
+        id S234077AbhDORq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 13:46:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36650 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233395AbhDORqY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 13:46:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618508761;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mAQgrrs/fT5iNfRVmF2BgfffAf7Nhr3HzWZJ/IDRqis=;
+        b=OOvJC6R4otrdzb9op85ngGLWPLClzSK6qLqk8GbD8PzTOaRDRo9I9GQ5hk9ZlmE4WzPP2M
+        8up2yvrGoAroazETU1J810OV3yWtO+IeZxs6zgLme+oWBkO8j1ObtQ9wJzInaXZzmLaYlc
+        XMr5QrzXZkGUMOJc8gu9BWTR2QOb+Mc=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-310-mBfLwsDRMdeX73fu5-sRUQ-1; Thu, 15 Apr 2021 13:45:57 -0400
+X-MC-Unique: mBfLwsDRMdeX73fu5-sRUQ-1
+Received: by mail-qt1-f198.google.com with SMTP id x7-20020a05622a0007b029019d73c63053so4500667qtw.16
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 10:45:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=mAQgrrs/fT5iNfRVmF2BgfffAf7Nhr3HzWZJ/IDRqis=;
+        b=n1iRENn0FIHmEy+WRbik1h0Rp6MvAvEm+7Psny6sYilBTXosdgOwqYRpZDqZUdVTUz
+         MJRrdMumT/KfD+zH0U6pfv76RK744GKNDrCvO8zc7RA16V713yHTVU3it0LrUJ9TUSO1
+         tCO0+OTTT8F2SHmNIXn5AM8PXExMcwaUHkTLNuIkcpl+Q1XI4ew1kTwUDqRttB2sT12x
+         7GFa/rovmVF5rLxgLzIqcEY4gM9MuaQtosXtzaOQHeOWxEH6nEOD0lecORXhRJFlH/fQ
+         BNkPfEBjXkA8CynsZE+NiSyJImjgmuxFvSROSr4mz864DXunMdV485NmjOH7A6IMi31t
+         7i1w==
+X-Gm-Message-State: AOAM533s9pRl1MUZPD/7PgSodO8nrhn4hltJfJalvWu/HoFLp3BQ5mb8
+        sGK4HysVZAbxCpxk1lv+m8yq1H3X9GbAMTrcDSfL/R9tLqTJ1i6yonO5ulQZ05m72Dx1onUt3u7
+        2oYwWT/DYZORsCrXajSzqkT7N
+X-Received: by 2002:ac8:594:: with SMTP id a20mr4035562qth.295.1618508757084;
+        Thu, 15 Apr 2021 10:45:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxiT8Jqne8RPHHOTMVAUMxBUqZMQ4EbB4wRNPSvpefvx4TGPTVunaMkrSKpc7DZg2DEUwpeWQ==
+X-Received: by 2002:ac8:594:: with SMTP id a20mr4035543qth.295.1618508756868;
+        Thu, 15 Apr 2021 10:45:56 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id c23sm2375540qkk.24.2021.04.15.10.45.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Apr 2021 10:45:55 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v2] locking/qrwlock: Fix ordering in
+ queued_write_lock_slowpath
+To:     Ali Saidi <alisaidi@amazon.com>, linux-kernel@vger.kernel.org
+Cc:     catalin.marinas@arm.com, steve.capper@arm.com,
+        benh@kernel.crashing.org, stable@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+References: <20210415172711.15480-1-alisaidi@amazon.com>
+Message-ID: <e9dfb6c2-3efc-5f4c-ebba-2f26f14295d5@redhat.com>
+Date:   Thu, 15 Apr 2021 13:45:54 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210415172711.15480-1-alisaidi@amazon.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Apr 2021 22:45:19 -0700 Dexuan Cui wrote:
-> +	buf = dma_alloc_coherent(gmi->dev, length, &dma_handle,
-> +				 GFP_KERNEL | __GFP_ZERO);
+On 4/15/21 1:27 PM, Ali Saidi wrote:
+> While this code is executed with the wait_lock held, a reader can
+> acquire the lock without holding wait_lock.  The writer side loops
+> checking the value with the atomic_cond_read_acquire(), but only truly
+> acquires the lock when the compare-and-exchange is completed
+> successfully which isn’t ordered. This exposes the window between the
+> acquire and the cmpxchg to an A-B-A problem which allows reads following
+> the lock acquisition to observe values speculatively before the write
+> lock is truly acquired.
+>
+> We've seen a problem in epoll where the reader does a xchg while
+> holding the read lock, but the writer can see a value change out from under it.
+>
+> Writer                               | Reader 2
+> --------------------------------------------------------------------------------
+> ep_scan_ready_list()                 |
+> |- write_lock_irq()                  |
+>      |- queued_write_lock_slowpath()  |
+>        |- atomic_cond_read_acquire()  |
+>                                       | read_lock_irqsave(&ep->lock, flags);
+>     --> (observes value before unlock)|  chain_epi_lockless()
+>     |                                 |    epi->next = xchg(&ep->ovflist, epi);
+>     |                                 | read_unlock_irqrestore(&ep->lock, flags);
+>     |                                 |
+>     |     atomic_cmpxchg_relaxed()    |
+>     |-- READ_ONCE(ep->ovflist);       |
+>
+> A core can order the read of the ovflist ahead of the
+> atomic_cmpxchg_relaxed(). Switching the cmpxchg to use acquire semantics
+> addresses this issue at which point the atomic_cond_read can be switched
+> to use relaxed semantics.
+>
+> Fixes: b519b56e378ee ("locking/qrwlock: Use atomic_cond_read_acquire() when spinning in qrwlock")
+> Signed-off-by: Ali Saidi <alisaidi@amazon.com>
+> Cc: stable@vger.kernel.org
+> Acked-by: Will Deacon <will@kernel.org>
+> Tested-by: Steve Capper <steve.capper@arm.com>
+> Reviewed-by: Steve Capper <steve.capper@arm.com>
+>
+> ---
+>   kernel/locking/qrwlock.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/locking/qrwlock.c b/kernel/locking/qrwlock.c
+> index 4786dd271b45..10770f6ac4d9 100644
+> --- a/kernel/locking/qrwlock.c
+> +++ b/kernel/locking/qrwlock.c
+> @@ -73,8 +73,8 @@ void queued_write_lock_slowpath(struct qrwlock *lock)
+>   
+>   	/* When no more readers or writers, set the locked flag */
+>   	do {
+> -		atomic_cond_read_acquire(&lock->cnts, VAL == _QW_WAITING);
+> -	} while (atomic_cmpxchg_relaxed(&lock->cnts, _QW_WAITING,
+> +		atomic_cond_read_relaxed(&lock->cnts, VAL == _QW_WAITING);
+> +	} while (atomic_cmpxchg_acquire(&lock->cnts, _QW_WAITING,
+>   					_QW_LOCKED) != _QW_WAITING);
+>   unlock:
+>   	arch_spin_unlock(&lock->wait_lock);
 
-No need for GFP_ZERO, dma_alloc_coherent() zeroes the memory these days.
+Acked-by: Waiman Long <longman@redhat.com>
 
-> +static int mana_gd_register_irq(struct gdma_queue *queue,
-> +				const struct gdma_queue_spec *spec)
-> ...
-> +	struct gdma_irq_context *gic;
-> +
-> +	struct gdma_context *gc;
-
-Why the empty line?
-
-> +	queue = kzalloc(sizeof(*queue), GFP_KERNEL);
-> +	if (!queue)
-> +		return -ENOMEM;
-> +
-> +	gmi = &queue->mem_info;
-> +	err = mana_gd_alloc_memory(gc, spec->queue_size, gmi);
-> +	if (err)
-> +		return err;
-
-Leaks the memory from 'queue'?
-
-Same code in mana_gd_create_mana_eq(), ...wq_cq(), etc.
-
-> +int mana_do_attach(struct net_device *ndev, enum mana_attach_caller caller)
-> +{
-> +	struct mana_port_context *apc = netdev_priv(ndev);
-> +	struct gdma_dev *gd = apc->ac->gdma_dev;
-> +	u32 max_txq, max_rxq, max_queues;
-> +	int port_idx = apc->port_idx;
-> +	u32 num_indirect_entries;
-> +	int err;
-> +
-> +	if (caller == MANA_OPEN)
-> +		goto start_open;
-> +
-> +	err = mana_init_port_context(apc);
-> +	if (err)
-> +		return err;
-> +
-> +	err = mana_query_vport_cfg(apc, port_idx, &max_txq, &max_rxq,
-> +				   &num_indirect_entries);
-> +	if (err) {
-> +		netdev_err(ndev, "Failed to query info for vPort 0\n");
-> +		goto reset_apc;
-> +	}
-> +
-> +	max_queues = min_t(u32, max_txq, max_rxq);
-> +	if (apc->max_queues > max_queues)
-> +		apc->max_queues = max_queues;
-> +
-> +	if (apc->num_queues > apc->max_queues)
-> +		apc->num_queues = apc->max_queues;
-> +
-> +	memcpy(ndev->dev_addr, apc->mac_addr, ETH_ALEN);
-> +
-> +	if (caller == MANA_PROBE)
-> +		return 0;
-> +
-> +start_open:
-
-Why keep this as a single function, there is no overlap between what's
-done for OPEN and PROBE, it seems.
-
-Similarly detach should probably be split into clearly distinct parts.
-
-> +	err = mana_create_eq(apc);
-> +	if (err)
-> +		goto reset_apc;
-> +
-> +	err = mana_create_vport(apc, ndev);
-> +	if (err)
-> +		goto destroy_eq;
-> +
-> +	err = netif_set_real_num_tx_queues(ndev, apc->num_queues);
-> +	if (err)
-> +		goto destroy_vport;
-> +
-> +	err = mana_add_rx_queues(apc, ndev);
-> +	if (err)
-> +		goto destroy_vport;
-> +
-> +	apc->rss_state = apc->num_queues > 1 ? TRI_STATE_TRUE : TRI_STATE_FALSE;
-> +
-> +	err = netif_set_real_num_rx_queues(ndev, apc->num_queues);
-> +	if (err)
-> +		goto destroy_vport;
-> +
-> +	mana_rss_table_init(apc);
-> +
-> +	err = mana_config_rss(apc, TRI_STATE_TRUE, true, true);
-> +	if (err)
-> +		goto destroy_vport;
-> +
-> +	return 0;
-> +
-> +destroy_vport:
-> +	mana_destroy_vport(apc);
-> +destroy_eq:
-> +	mana_destroy_eq(gd->gdma_context, apc);
-> +reset_apc:
-> +	if (caller == MANA_OPEN)
-> +		return err;
-> +	kfree(apc->rxqs);
-> +	apc->rxqs = NULL;
-> +	return err;
-> +}
-> +
-> +int mana_attach(struct net_device *ndev)
-> +{
-> +	struct mana_port_context *apc = netdev_priv(ndev);
-> +	int err;
-> +
-> +	ASSERT_RTNL();
-> +
-> +	err = mana_do_attach(ndev, MANA_ATTACH);
-> +	if (err)
-> +		return err;
-> +
-> +	netif_device_attach(ndev);
-> +
-> +	apc->port_is_up = apc->port_st_save;
-> +
-> +	/* Ensure port state updated before txq state */
-> +	smp_wmb();
-> +
-> +	if (apc->port_is_up) {
-> +		netif_carrier_on(ndev);
-> +		netif_tx_wake_all_queues(ndev);
-> +	}
-> +
-> +	return 0;
-> +}
