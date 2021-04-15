@@ -2,154 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B23A3605F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 129093605BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 11:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232102AbhDOJgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 05:36:21 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:60857 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232367AbhDOJgT (ORCPT
+        id S231842AbhDOJcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 05:32:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47833 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230474AbhDOJb6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 05:36:19 -0400
-X-Greylist: delayed 556 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Apr 2021 05:36:19 EDT
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id F103D10F3;
-        Thu, 15 Apr 2021 05:26:38 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Thu, 15 Apr 2021 05:26:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=PtaPMljBD2boZ8zdNUtTMi1M1Dx
-        Oz641bQ2OhBoGMjo=; b=qZJm9bq/q8pqEMr1PDT01gAsiPjumU/BRbuKfpekYpj
-        L2DrcagM3UtPSpGEOJw5YaUcMFU9PZYvgLxKCtg1dFp7u5CYxVJDLjzgHBEnD68B
-        a+xbxwkyg5Pvou6eHzz+TTFRWf+Ikc4/skKbyGDeVUnUlsMzVftQM3Dju9oJepjZ
-        bWn1Sq3R34YmpKSn/0cu6PpfvP8AO5MJHozjLPD7NslF4nnrD+RyS+c5yiWKczAj
-        agJ0b2b+dvoLeE+cfqu1d5pL1E3SjKLyk68qXIKO4srq+rwmH2orMWqdEk+69yTB
-        YLZIy0koG/H1+tAnTYTlWKoV5ASAhfyI9L/Vk/ezp7w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=PtaPMl
-        jBD2boZ8zdNUtTMi1M1DxOz641bQ2OhBoGMjo=; b=rdruuGFMfbwZsnv/OifYg6
-        eF1id0DgmV4ZuqeJ79qlIhTYgdyozjLarNrFq4lOc1Z+yTmv/ItRvPB4o/PZG/nj
-        VVTfAj4EAw1CTOtKMWkD/a0C/BcNG90N1hu1oegDHA0ECuETV8oRPzgYo8tiFMXe
-        /Bl9elVSYyZzl3osUDfmeWzZhKx5XCFvgJBvwg5aWYw0YqM3vjUPknRWfXC32H1J
-        T+C8gqEzp2WUvD4b+84KY/plhPLjbMapTKXeh0EQqQ0pqmfHw7YJ5ss5eT68U9ya
-        DZZD2LBtT5lb1leq6vHw3MQNoACTYO/LKmVkx9kiNgLNgqv4QAoDC3k6QeKbiCmw
-        ==
-X-ME-Sender: <xms:ywZ4YLVEyFbZdE7VindQd54P70eLLG1KZjhhVEbjn05WA6KRUsp4Gg>
-    <xme:ywZ4YH3UAM-_BraEqDdmPGpqsDRaos5L-ij__R0qkxs0wChUq2XKgOGnzVtmwbpEL
-    Xvwmq4BKwZyy_BfzIM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudelfedgudeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:ywZ4YCa0Ke0eotrSX1S8ssua1fQKjj3JefXX5Slst5mcRUmPisSRXg>
-    <xmx:ywZ4YKrhooip1bTHf-TtoaOk3xp1RAbhgkfFmohB0NJfWKDv9ZDbcA>
-    <xmx:ywZ4YOpwZNHX7a20ucRaRhiw4JnOmwFsL3Zkt8HFZK4q6fuWlUGzyg>
-    <xmx:zgZ4YGwMvDYgXzWoQomG1WFrp3MfFBgBN_jPYXQdp28hAcMgWDwhw66AdRE>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 23E0424005B;
-        Thu, 15 Apr 2021 05:26:35 -0400 (EDT)
-Date:   Thu, 15 Apr 2021 11:26:33 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Simon Ser <contact@emersion.fr>,
-        Sam Ravnborg <sam@ravnborg.org>, od@zcrc.me,
-        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH 2/2] drm/ingenic: Don't request full modeset if property
- is not modified
-Message-ID: <20210415092633.4vkteqmqqxfgrjxz@gilmour>
-References: <20210329175046.214629-1-paul@crapouillou.net>
- <20210329175046.214629-3-paul@crapouillou.net>
+        Thu, 15 Apr 2021 05:31:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618479091;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=phkRKYasHy2ON2Zd+AYnzw9m/3bL2pWoEajZ+S+eLjE=;
+        b=UHVBgssU6AtMt7bHKsoNjGWZmLb2dNLpL302eS/pWSek+cSANzQYV+T5IF5/6J8TY3XYK9
+        oGUUZTiXJVLBmXGkoT9uyfn2IYP61rhRDkv/FkfDp4d7J8WZKq9kOSpPzEBM/YRFhSEhTM
+        UCRPfAOEIqko7TFJbvhXa55fXK1c8DU=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-12-6VbZ0yRqOay4S7RceM_prw-1; Thu, 15 Apr 2021 05:31:29 -0400
+X-MC-Unique: 6VbZ0yRqOay4S7RceM_prw-1
+Received: by mail-wr1-f72.google.com with SMTP id t14-20020adff04e0000b0290103307c23e1so2465906wro.8
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 02:31:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=phkRKYasHy2ON2Zd+AYnzw9m/3bL2pWoEajZ+S+eLjE=;
+        b=SDpTCX12bYHwLDP5RxzOR9eT9wUDnhDSFdFPZ+8jZ41M714+nltKQI/YVgftphoThd
+         6xEUlbqKF9LK3GfHppxHoloxhDKecK5M9qjGOF8QMrsVUL7WmN/qef/0wM+qeKQucaoi
+         2E4ivmAGUePR3GI6K7YFnPaGwqApo62Qd3h0BvGgGBUj+twPsvrdsWJM+H6UWqb9H/kW
+         hdrw8AIctYk0iqvHvYMfqtiqfQV9JqCxAutHvarNyECAWTGF4qg6UI18m2M87KMfotJT
+         AQ5SrySWjm51Vw6lfu4hT+4rLugPc2HoPoIbbfrhW5N6fUhhP1qDQgjvI+fNNxZaOPs+
+         w4LA==
+X-Gm-Message-State: AOAM533O3uIybgMWwSk5Qn97ddiCFJBzzdLDH9eXsg7laq/yN8y15P4K
+        mnERsRjDhQK2j5fBkDdkicIX4YvWM0gFczWHcQ6K8yoA+h7f9q8ekPpRO6x2QYxZZ8Xy0lgD86O
+        xjp+dMgDHX9okmZJEQJviMQkX
+X-Received: by 2002:adf:8b45:: with SMTP id v5mr2406839wra.398.1618479088756;
+        Thu, 15 Apr 2021 02:31:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxfQSnAXznxI2JGkIgFlRINBs/MudcZie1Vu3F7EQtZ3n7ewfaKl4lNqKpS1JUJMayw6nDijQ==
+X-Received: by 2002:adf:8b45:: with SMTP id v5mr2406812wra.398.1618479088514;
+        Thu, 15 Apr 2021 02:31:28 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6392.dip0.t-ipconnect.de. [91.12.99.146])
+        by smtp.gmail.com with ESMTPSA id t19sm1746813wmq.14.2021.04.15.02.31.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Apr 2021 02:31:27 -0700 (PDT)
+Subject: Re: [RFC/RFT PATCH 2/3] arm64: decouple check whether pfn is normal
+ memory from pfn_valid()
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20210407172607.8812-1-rppt@kernel.org>
+ <20210407172607.8812-3-rppt@kernel.org>
+ <4a788546-b854-fd35-644a-f1d9075a9a78@arm.com>
+ <9c0956f0-494e-5c6b-bdc2-d4213afd5e2f@redhat.com>
+ <YHdQtmuxpqi4wCE/@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <62161846-4f03-e4b1-ae0b-fdf96f78d97c@redhat.com>
+Date:   Thu, 15 Apr 2021 11:31:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rbolhufisrxhasd4"
-Content-Disposition: inline
-In-Reply-To: <20210329175046.214629-3-paul@crapouillou.net>
+In-Reply-To: <YHdQtmuxpqi4wCE/@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 14.04.21 22:29, Mike Rapoport wrote:
+> On Wed, Apr 14, 2021 at 05:58:26PM +0200, David Hildenbrand wrote:
+>> On 08.04.21 07:14, Anshuman Khandual wrote:
+>>>
+>>> On 4/7/21 10:56 PM, Mike Rapoport wrote:
+>>>> From: Mike Rapoport <rppt@linux.ibm.com>
+>>>>
+>>>> The intended semantics of pfn_valid() is to verify whether there is a
+>>>> struct page for the pfn in question and nothing else.
+>>>
+>>> Should there be a comment affirming this semantics interpretation, above the
+>>> generic pfn_valid() in include/linux/mmzone.h ?
+>>>
+>>>>
+>>>> Yet, on arm64 it is used to distinguish memory areas that are mapped in the
+>>>> linear map vs those that require ioremap() to access them.
+>>>>
+>>>> Introduce a dedicated pfn_is_memory() to perform such check and use it
+>>>> where appropriate.
+>>>>
+>>>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+>>>> ---
+>>>>    arch/arm64/include/asm/memory.h | 2 +-
+>>>>    arch/arm64/include/asm/page.h   | 1 +
+>>>>    arch/arm64/kvm/mmu.c            | 2 +-
+>>>>    arch/arm64/mm/init.c            | 6 ++++++
+>>>>    arch/arm64/mm/ioremap.c         | 4 ++--
+>>>>    arch/arm64/mm/mmu.c             | 2 +-
+>>>>    6 files changed, 12 insertions(+), 5 deletions(-)
+>>>>
+>>>> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+>>>> index 0aabc3be9a75..7e77fdf71b9d 100644
+>>>> --- a/arch/arm64/include/asm/memory.h
+>>>> +++ b/arch/arm64/include/asm/memory.h
+>>>> @@ -351,7 +351,7 @@ static inline void *phys_to_virt(phys_addr_t x)
+>>>>    #define virt_addr_valid(addr)	({					\
+>>>>    	__typeof__(addr) __addr = __tag_reset(addr);			\
+>>>> -	__is_lm_address(__addr) && pfn_valid(virt_to_pfn(__addr));	\
+>>>> +	__is_lm_address(__addr) && pfn_is_memory(virt_to_pfn(__addr));	\
+>>>>    })
+>>>>    void dump_mem_limit(void);
+>>>> diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
+>>>> index 012cffc574e8..32b485bcc6ff 100644
+>>>> --- a/arch/arm64/include/asm/page.h
+>>>> +++ b/arch/arm64/include/asm/page.h
+>>>> @@ -38,6 +38,7 @@ void copy_highpage(struct page *to, struct page *from);
+>>>>    typedef struct page *pgtable_t;
+>>>>    extern int pfn_valid(unsigned long);
+>>>> +extern int pfn_is_memory(unsigned long);
+>>>>    #include <asm/memory.h>
+>>>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+>>>> index 8711894db8c2..ad2ea65a3937 100644
+>>>> --- a/arch/arm64/kvm/mmu.c
+>>>> +++ b/arch/arm64/kvm/mmu.c
+>>>> @@ -85,7 +85,7 @@ void kvm_flush_remote_tlbs(struct kvm *kvm)
+>>>>    static bool kvm_is_device_pfn(unsigned long pfn)
+>>>>    {
+>>>> -	return !pfn_valid(pfn);
+>>>> +	return !pfn_is_memory(pfn);
+>>>>    }
+>>>>    /*
+>>>> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+>>>> index 3685e12aba9b..258b1905ed4a 100644
+>>>> --- a/arch/arm64/mm/init.c
+>>>> +++ b/arch/arm64/mm/init.c
+>>>> @@ -258,6 +258,12 @@ int pfn_valid(unsigned long pfn)
+>>>>    }
+>>>>    EXPORT_SYMBOL(pfn_valid);
+>>>> +int pfn_is_memory(unsigned long pfn)
+>>>> +{
+>>>> +	return memblock_is_map_memory(PFN_PHYS(pfn));
+>>>> +}
+>>>> +EXPORT_SYMBOL(pfn_is_memory);> +
+>>>
+>>> Should not this be generic though ? There is nothing platform or arm64
+>>> specific in here. Wondering as pfn_is_memory() just indicates that the
+>>> pfn is linear mapped, should not it be renamed as pfn_is_linear_memory()
+>>> instead ? Regardless, it's fine either way.
+>>
+>> TBH, I dislike (generic) pfn_is_memory(). It feels like we're mixing
+>> concepts.
+> 
+> Yeah, at the moment NOMAP is very much arm specific so I'd keep it this way
+> for now.
+> 
+>>   NOMAP memory vs !NOMAP memory; even NOMAP is some kind of memory
+>> after all. pfn_is_map_memory() would be more expressive, although still
+>> sub-optimal.
+>>
+>> We'd actually want some kind of arm64-specific pfn_is_system_memory() or the
+>> inverse pfn_is_device_memory() -- to be improved.
+> 
+> In my current version (to be posted soon) I've started with
+> pfn_lineary_mapped() but then ended up with pfn_mapped() to make it
+> "upward" compatible with architectures that use direct rather than linear
+> map :)
 
---rbolhufisrxhasd4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+And even that is moot. It doesn't tell you if a PFN is *actually* mapped 
+(hello secretmem).
 
-Hi,
+I'd suggest to just use memblock_is_map_memory() in arch specific code. 
+Then it's clear what we are querying exactly and what the semantics 
+might be.
 
-On Mon, Mar 29, 2021 at 06:50:46PM +0100, Paul Cercueil wrote:
-> Avoid requesting a full modeset if the sharpness property is not
-> modified, because then we don't actually need it.
->=20
-> Fixes: fc1acf317b01 ("drm/ingenic: Add support for the IPU")
-> Cc: <stable@vger.kernel.org> # 5.8+
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  drivers/gpu/drm/ingenic/ingenic-ipu.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-ipu.c b/drivers/gpu/drm/inge=
-nic/ingenic-ipu.c
-> index 3b1091e7c0cd..95b665c4a7b0 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-ipu.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-ipu.c
-> @@ -640,10 +640,12 @@ ingenic_ipu_plane_atomic_set_property(struct drm_pl=
-ane *plane,
->  {
->  	struct ingenic_ipu *ipu =3D plane_to_ingenic_ipu(plane);
->  	struct drm_crtc_state *crtc_state;
-> +	bool mode_changed;
-> =20
->  	if (property !=3D ipu->sharpness_prop)
->  		return -EINVAL;
-> =20
-> +	mode_changed =3D val !=3D ipu->sharpness;
->  	ipu->sharpness =3D val;
-> =20
->  	if (state->crtc) {
-> @@ -651,7 +653,7 @@ ingenic_ipu_plane_atomic_set_property(struct drm_plan=
-e *plane,
->  		if (WARN_ON(!crtc_state))
->  			return -EINVAL;
-> =20
-> -		crtc_state->mode_changed =3D true;
-> +		crtc_state->mode_changed |=3D mode_changed;
->  	}
+-- 
+Thanks,
 
-I'd just change the condition from
+David / dhildenb
 
-if (state->crtc)
-
-to
-
-if (state->crtc && val !=3D ipu->sharpness)
-
-It's going to be easier to extend if you ever need to. Also, drivers
-usually do this in atomic_check, is there a specific reason to do it in
-atomic_set_property?
-
-Maxime
-
---rbolhufisrxhasd4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYHgGyAAKCRDj7w1vZxhR
-xbrVAQD22j4BtDq6oO5iGWb7UdC+qPz36k0/YBh5BRbQ5qyf2gD+KYIoom5pUNBU
-kg6Yl77CjwRcM0x0V2Ylhu7QwgWEpwA=
-=U0dV
------END PGP SIGNATURE-----
-
---rbolhufisrxhasd4--
