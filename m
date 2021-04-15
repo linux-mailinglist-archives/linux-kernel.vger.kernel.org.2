@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36CA0360E6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD56360E3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236702AbhDOPPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:15:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48860 "EHLO mail.kernel.org"
+        id S234673AbhDOPMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:12:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234760AbhDOPE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:04:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60BD66142C;
-        Thu, 15 Apr 2021 14:58:49 +0000 (UTC)
+        id S235421AbhDOPBU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 11:01:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFCFD613CB;
+        Thu, 15 Apr 2021 14:57:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498729;
-        bh=oig4PkMG+5ETXt+u398CdLDRIpLa18RO/Hbb1ProsSQ=;
+        s=korg; t=1618498645;
+        bh=AXAVOkWMP4TJGq/t1me/jBeq5pvaOQy+i2sBDw2TSL8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sCspONk44Ved4vMEpDuuS8sINGpflJphxNVXUftsP3Mr327D3lFKJBplNooR/Mo//
-         a/p7Tmfhh9OIBw1WW0YEdp46ovDJ3wsiC3Gz8qBJ4ZbHLeersF1+JcEiW0YshW78la
-         xqH9eotKumRDsu2CVc7fnYW06Fag9W+oo/hVVd9k=
+        b=kaIOIe/LG1rIp5zHBFnZb4LT3/fKDnxgft+mhWsufYwCjx4tGfYGz/HRaXZxA1366
+         dT0dOJ3WzwLSRdEOV75WBwqs7e26Nl5eUby9xueN9bz0y8MA1xroUjBu0zeYJbI/xW
+         BhUQRWMcR0LeRROPxJYZFROJ8UIMm1Kpk3Q5mJQs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 04/23] KVM: arm64: Disable guest access to trace filter controls
-Date:   Thu, 15 Apr 2021 16:48:11 +0200
-Message-Id: <20210415144413.296653437@linuxfoundation.org>
+Subject: [PATCH 5.10 18/25] io_uring: dont mark S_ISBLK async work as unbounded
+Date:   Thu, 15 Apr 2021 16:48:12 +0200
+Message-Id: <20210415144413.732165281@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.146131392@linuxfoundation.org>
-References: <20210415144413.146131392@linuxfoundation.org>
+In-Reply-To: <20210415144413.165663182@linuxfoundation.org>
+References: <20210415144413.165663182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,63 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
+From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit a354a64d91eec3e0f8ef0eed575b480fd75b999c ]
+[ Upstream commit 4b982bd0f383db9132e892c0c5144117359a6289 ]
 
-Disable guest access to the Trace Filter control registers.
-We do not advertise the Trace filter feature to the guest
-(ID_AA64DFR0_EL1: TRACE_FILT is cleared) already, but the guest
-can still access the TRFCR_EL1 unless we trap it.
+S_ISBLK is marked as unbounded work for async preparation, because it
+doesn't match S_ISREG. That is incorrect, as any read/write to a block
+device is also a bounded operation. Fix it up and ensure that S_ISBLK
+isn't marked unbounded.
 
-This will also make sure that the guest cannot fiddle with
-the filtering controls set by a nvhe host.
-
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210323120647.454211-3-suzuki.poulose@arm.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/include/asm/kvm_arm.h | 1 +
- arch/arm64/kvm/debug.c           | 2 ++
- 2 files changed, 3 insertions(+)
+ fs/io_uring.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/include/asm/kvm_arm.h b/arch/arm64/include/asm/kvm_arm.h
-index 4e90c2debf70..94d4025acc0b 100644
---- a/arch/arm64/include/asm/kvm_arm.h
-+++ b/arch/arm64/include/asm/kvm_arm.h
-@@ -278,6 +278,7 @@
- #define CPTR_EL2_DEFAULT	CPTR_EL2_RES1
- 
- /* Hyp Debug Configuration Register bits */
-+#define MDCR_EL2_TTRF		(1 << 19)
- #define MDCR_EL2_TPMS		(1 << 14)
- #define MDCR_EL2_E2PB_MASK	(UL(0x3))
- #define MDCR_EL2_E2PB_SHIFT	(UL(12))
-diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
-index 7a7e425616b5..dbc890511631 100644
---- a/arch/arm64/kvm/debug.c
-+++ b/arch/arm64/kvm/debug.c
-@@ -89,6 +89,7 @@ void kvm_arm_reset_debug_ptr(struct kvm_vcpu *vcpu)
-  *  - Debug ROM Address (MDCR_EL2_TDRA)
-  *  - OS related registers (MDCR_EL2_TDOSA)
-  *  - Statistical profiler (MDCR_EL2_TPMS/MDCR_EL2_E2PB)
-+ *  - Self-hosted Trace Filter controls (MDCR_EL2_TTRF)
-  *
-  * Additionally, KVM only traps guest accesses to the debug registers if
-  * the guest is not actively using them (see the KVM_ARM64_DEBUG_DIRTY
-@@ -112,6 +113,7 @@ void kvm_arm_setup_debug(struct kvm_vcpu *vcpu)
- 	vcpu->arch.mdcr_el2 = __this_cpu_read(mdcr_el2) & MDCR_EL2_HPMN_MASK;
- 	vcpu->arch.mdcr_el2 |= (MDCR_EL2_TPM |
- 				MDCR_EL2_TPMS |
-+				MDCR_EL2_TTRF |
- 				MDCR_EL2_TPMCR |
- 				MDCR_EL2_TDRA |
- 				MDCR_EL2_TDOSA);
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 0de27e75460d..dc1b0f6fd49b 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -1439,7 +1439,7 @@ static void io_prep_async_work(struct io_kiocb *req)
+ 	if (req->flags & REQ_F_ISREG) {
+ 		if (def->hash_reg_file || (ctx->flags & IORING_SETUP_IOPOLL))
+ 			io_wq_hash_work(&req->work, file_inode(req->file));
+-	} else {
++	} else if (!req->file || !S_ISBLK(file_inode(req->file)->i_mode)) {
+ 		if (def->unbound_nonreg_file)
+ 			req->work.flags |= IO_WQ_WORK_UNBOUND;
+ 	}
 -- 
 2.30.2
 
