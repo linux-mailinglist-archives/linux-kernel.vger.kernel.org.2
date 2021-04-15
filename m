@@ -2,242 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8502F3611B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 20:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91F03611BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 20:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234575AbhDOSJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 14:09:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46498 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234574AbhDOSJI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 14:09:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618510124;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CFSW/xx6h8VP0E9MM0SVm+J+UNt/2rTNWHWvDh7sIOU=;
-        b=Fpz0dHtykwvnxZ3bRpNA5WDF5pXKuGF6qTFY9SaJdRedz594z2g1FmaN7nIWc9Hrv2no+h
-        UT3tkmlE3T3iZY6k96dovgQcl57m3PmSd1ZfyTokhrD77yxTJiKJ8zviyF31FJx+HEvHUQ
-        610VkESylR0ETuT09B1SGdWuK+PRp4c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-287-OE96HVLmORK72ygKyf7eRg-1; Thu, 15 Apr 2021 14:08:39 -0400
-X-MC-Unique: OE96HVLmORK72ygKyf7eRg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 73FD610054F6;
-        Thu, 15 Apr 2021 18:08:37 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8013D13487;
-        Thu, 15 Apr 2021 18:08:33 +0000 (UTC)
-Date:   Thu, 15 Apr 2021 20:08:32 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Matthew Wilcox' <willy@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        "Christoph Hellwig" <hch@lst.de>, brouer@redhat.com
-Subject: Re: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
-Message-ID: <20210415200832.32796445@carbon>
-In-Reply-To: <a50c3156fe8943ef964db4345344862f@AcuMS.aculab.com>
-References: <20210410205246.507048-1-willy@infradead.org>
-        <20210410205246.507048-2-willy@infradead.org>
-        <20210411114307.5087f958@carbon>
-        <20210411103318.GC2531743@casper.infradead.org>
-        <20210412011532.GG2531743@casper.infradead.org>
-        <20210414101044.19da09df@carbon>
-        <20210414115052.GS2531743@casper.infradead.org>
-        <20210414211322.3799afd4@carbon>
-        <20210414213556.GY2531743@casper.infradead.org>
-        <a50c3156fe8943ef964db4345344862f@AcuMS.aculab.com>
+        id S234492AbhDOSKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 14:10:03 -0400
+Received: from foss.arm.com ([217.140.110.172]:51992 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233916AbhDOSJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 14:09:58 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3E7F6106F;
+        Thu, 15 Apr 2021 11:09:35 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AA3313FA45;
+        Thu, 15 Apr 2021 11:09:33 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Ruifeng Zhang <ruifeng.zhang0110@gmail.com>, linux@armlinux.org.uk,
+        sudeep.holla@arm.com, gregkh@linuxfoundation.org,
+        rafael@kernel.org, a.p.zijlstra@chello.nl,
+        dietmar.eggemann@arm.com, mingo@kernel.org,
+        ruifeng.zhang1@unisoc.com, nianfu.bai@unisoc.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/1] arm: topology: parse the topology from the dt
+In-Reply-To: <20210414122326.5255-1-ruifeng.zhang0110@gmail.com>
+References: <20210414122326.5255-1-ruifeng.zhang0110@gmail.com>
+Date:   Thu, 15 Apr 2021 19:09:28 +0100
+Message-ID: <8735vrmnc7.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Apr 2021 21:56:39 +0000
-David Laight <David.Laight@ACULAB.COM> wrote:
+On 14/04/21 20:23, Ruifeng Zhang wrote:
+> From: Ruifeng Zhang <ruifeng.zhang1@unisoc.com>
+>
+> In Unisoc, the sc9863a SoC which using cortex-a55, it has two software
+> version, one of them is the kernel running on EL1 using aarch32.
+>                 user(EL0)             kernel(EL1)
+> sc9863a_go      aarch32               aarch32
+> sc9863a         aarch64               aarch64
+>
+> When kernel runs on EL1 using aarch32, the topology will parse wrong.
+> For example,
+> The MPIDR has been written to the chip register in armv8.2 format.
+> For example,
+> core0: 0000000080000000
+> core1: 0000000080000100
+> core2: 0000000080000200
+> ...
+>
+> It will parse to:
+> |       | aff2 | packageid | coreid |
+> |-------+------+-----------+--------|
+> | Core0 |    0 |         0 |    0   |
+> | Core1 |    0 |         1 |    0   |
+> | Core2 |    0 |         2 |    0   |
+> |  ...  |      |           |        |
+>
+> The wrong topology is that all of the coreid are 0 and unexpected
+> packageid.
+>
+> The reason is the MPIDR format is different between armv7 and armv8.2.
+> armv7 (A7) mpidr is:
+> [11:8]      [7:2]       [1:0]
+> cluster     reserved    cpu
+> The cortex-a7 spec DDI0464F 4.3.5
+> https://developer.arm.com/documentation/ddi0464/f/?lang=en
+>
+> armv8.2 (A55) mpidr is:
+> [23:16]     [15:8]      [7:0]
+> cluster     cpu         thread
+>
 
-> From: Matthew Wilcox
-> > Sent: 14 April 2021 22:36
-> > 
-> > On Wed, Apr 14, 2021 at 09:13:22PM +0200, Jesper Dangaard Brouer wrote:  
-> > > (If others want to reproduce).  First I could not reproduce on ARM32.
-> > > Then I found out that enabling CONFIG_XEN on ARCH=arm was needed to
-> > > cause the issue by enabling CONFIG_ARCH_DMA_ADDR_T_64BIT.  
-> > 
-> > hmmm ... you should be able to provoke it by enabling ARM_LPAE,
-> > which selects PHYS_ADDR_T_64BIT, and
-> > 
-> > config ARCH_DMA_ADDR_T_64BIT
-> >         def_bool 64BIT || PHYS_ADDR_T_64BIT
-> >   
-> > >  struct page {
-> > >         long unsigned int          flags;                /*     0     4 */
-> > >
-> > >         /* XXX 4 bytes hole, try to pack */
-> > >
-> > >         union {
-> > >                 struct {
-> > >                         struct list_head lru;            /*     8     8 */
-> > >                         struct address_space * mapping;  /*    16     4 */
-> > >                         long unsigned int index;         /*    20     4 */
-> > >                         long unsigned int private;       /*    24     4 */
-> > >                 };                                       /*     8    20 */
-> > >                 struct {
-> > >                         dma_addr_t dma_addr  
-> 
-> Adding __packed here will remove the 4 byte hole before the union
-> and the compiler seems clever enough to know that anything following
-> a 'long' must also be 'long' aligned.
+What I had understood from our conversation was that there *isn't* a format
+difference (at least for the bottom 32 bits) - arm64/kernel/topopology.c
+would parse it the same, except that MPIDR parsing has been deprecated for
+arm64.
 
-Played with __packed in below patch, and I can confirm it seems to work.
+The problem is that those MPIDR values don't match the actual topology. If
+they had the MT bit set, i.e.
 
-> So you don't get anything horrid like byte accesses.
-> On 64bit dma_addr will remain 64bit aligned.
-> On arm32 dma_addr will be 32bit aligned - but forcing two 32bit access
-> won't make any difference.
+  core0: 0000000081000000
+  core1: 0000000081000100
+  core2: 0000000081000200
 
-See below patch.  Where I swap32 the dma address to satisfy
-page->compound having bit zero cleared. (It is the simplest fix I could
-come up with).
+then it would be parsed as:
 
+  |       | package_id | core_id | thread_id |
+  |-------+------------+---------+-----------|
+  | Core0 |          0 |       0 |         0 |
+  | Core1 |          0 |       1 |         0 |
+  | Core2 |          0 |       2 |         0 |
 
-[PATCH] page_pool: handling 32-bit archs with 64-bit dma_addr_t
-
-From: Jesper Dangaard Brouer <brouer@redhat.com>
-
-Workaround for storing 64-bit DMA-addr on 32-bit machines in struct
-page.  The page->dma_addr share area with page->compound_head which
-use bit zero to mark compound pages. This is okay, as DMA-addr are
-aligned pointers which have bit zero cleared.
-
-In the 32-bit case, page->compound_head is 32-bit.  Thus, when
-dma_addr_t is 64-bit it will be located in top 32-bit.  Solve by
-swapping dma_addr 32-bit segments.
-
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
----
- include/linux/mm_types.h |    2 +-
- include/linux/types.h    |    1 +
- include/net/page_pool.h  |   21 ++++++++++++++++++++-
- net/core/page_pool.c     |    8 +++++---
- 4 files changed, 27 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 6613b26a8894..27406e3b1e1b 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -100,7 +100,7 @@ struct page {
- 			 * @dma_addr: might require a 64-bit value even on
- 			 * 32-bit architectures.
- 			 */
--			dma_addr_t dma_addr;
-+			dma_addr_t dma_addr __packed;
- 		};
- 		struct {	/* slab, slob and slub */
- 			union {
-diff --git a/include/linux/types.h b/include/linux/types.h
-index ac825ad90e44..65fd5d630016 100644
---- a/include/linux/types.h
-+++ b/include/linux/types.h
-@@ -141,6 +141,7 @@ typedef u64 blkcnt_t;
-  */
- #ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
- typedef u64 dma_addr_t;
-+//typedef u64 __attribute__((aligned(sizeof(void *)))) dma_addr_t;
- #else
- typedef u32 dma_addr_t;
- #endif
-diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-index b5b195305346..c2329088665c 100644
---- a/include/net/page_pool.h
-+++ b/include/net/page_pool.h
-@@ -196,9 +196,28 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
- 	page_pool_put_full_page(pool, page, true);
- }
- 
-+static inline
-+dma_addr_t page_pool_dma_addr_read(dma_addr_t dma_addr)
-+{
-+	/* Workaround for storing 64-bit DMA-addr on 32-bit machines in struct
-+	 * page.  The page->dma_addr share area with page->compound_head which
-+	 * use bit zero to mark compound pages. This is okay, as DMA-addr are
-+	 * aligned pointers which have bit zero cleared.
-+	 *
-+	 * In the 32-bit case, page->compound_head is 32-bit.  Thus, when
-+	 * dma_addr_t is 64-bit it will be located in top 32-bit.  Solve by
-+	 * swapping dma_addr 32-bit segments.
-+	 */
-+#ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
-+	if (sizeof(long unsigned int) == 4) /* 32-bit system */
-+		dma_addr = (dma_addr << 32) | (dma_addr >> 32);
-+#endif
-+	return dma_addr;
-+}
-+
- static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
- {
--	return page->dma_addr;
-+	return page_pool_dma_addr_read(page->dma_addr);
- }
- 
- static inline bool is_page_pool_compiled_in(void)
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index ad8b0707af04..813598ea23f6 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -174,8 +174,10 @@ static void page_pool_dma_sync_for_device(struct page_pool *pool,
- 					  struct page *page,
- 					  unsigned int dma_sync_size)
- {
-+	dma_addr_t dma = page_pool_dma_addr_read(page->dma_addr);
-+
- 	dma_sync_size = min(dma_sync_size, pool->p.max_len);
--	dma_sync_single_range_for_device(pool->p.dev, page->dma_addr,
-+	dma_sync_single_range_for_device(pool->p.dev, dma,
- 					 pool->p.offset, dma_sync_size,
- 					 pool->p.dma_dir);
- }
-@@ -226,7 +228,7 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
- 		put_page(page);
- 		return NULL;
- 	}
--	page->dma_addr = dma;
-+	page->dma_addr = page_pool_dma_addr_read(dma);
- 
- 	if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
- 		page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
-@@ -294,7 +296,7 @@ void page_pool_release_page(struct page_pool *pool, struct page *page)
- 		 */
- 		goto skip_dma_unmap;
- 
--	dma = page->dma_addr;
-+	dma = page_pool_dma_addr_read(page->dma_addr);
- 
- 	/* When page is unmapped, it cannot be returned our pool */
- 	dma_unmap_page_attrs(pool->p.dev, dma,
-
-
---
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+which would make more sense (wrt the actual, physical topology).
