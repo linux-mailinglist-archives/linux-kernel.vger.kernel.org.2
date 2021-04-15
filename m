@@ -2,517 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0282F3606A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 254A03606C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 12:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232341AbhDOKK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 06:10:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231482AbhDOKKx (ORCPT
+        id S232412AbhDOKLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 06:11:32 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:49546 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231771AbhDOKLY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 06:10:53 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC518C061574;
-        Thu, 15 Apr 2021 03:10:30 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id t23so11816245pjy.3;
-        Thu, 15 Apr 2021 03:10:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NvHsKbfHKiPhhIDMvBo8gHDE39B/2bp+8K6UZXIMKE8=;
-        b=IFxNnCuGsZm/1xK/2JjuFIIK+WiBUISDtvKxkyOXqSgJYU7nGvjDzot5zKdJ2MzlMd
-         z1XpBvFc110U7/EVWRhYWo79Pt9ITPFwraplukM82BTBw/BnvEPAzlYdNn6SQK39v5EE
-         iXnoK9xy0kWD2sfocYXqYwIGfrg30bB8ZZHY62mIDiaR9ut+kQEsa4B8xd14c5QWgdiR
-         9REiErR00J8d7p8GsAwv6g5/ZGQSKv1ad6+k/a88XwXAknP32OxMg3hY2wb0Y4IvqPWF
-         Yqi7tf1my6VvGPBLrmCwkFfW8k47rKFLPn0cGYPw4bTWo/9M/ikKO/dy9mxDFoePHD0h
-         xa6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NvHsKbfHKiPhhIDMvBo8gHDE39B/2bp+8K6UZXIMKE8=;
-        b=WUUDmbWVtDClggNB7Vqm0enFZ1QUcpGdmr7wtqYuuv/XedK5ejmWaRUjEP3OGqMNJM
-         HojtLSga1RJwgBy2yAr7HjYqbcYhMu89xG9EHKPKwGGZSS2XNzHw3uILBT06p8S8Dntj
-         nC+tXBFoLjpkZhJHhTZ8S1yWDWbgzB3irxxXK2FhFqka/QGjSwJ7DzAMhM+ltj4nrSoF
-         TNqlZame8gyz+hlsab+LyY8MRmzVQX2VxIxe2WBrhZb+vofGfKm3NU4Ai9Hi9LMjs1np
-         NZxlpUpyNPq9RGXuG/EUrqPoTJoCy/P1M/wd8yus0aWMs51OsPaBAWhCK3qsOKQP9NYN
-         Z+fQ==
-X-Gm-Message-State: AOAM530MaYS2n1PJNXnAIydYs8R0+sYh2GTChI0HLfsTKwCp5QXjBRz7
-        dou7IyrOs2LwCDn207sE630kNDjjFsqQaNEdGNc=
-X-Google-Smtp-Source: ABdhPJwAY4VM01K/INQpoA54VNzxkWTMwP9EDpd0+gJZzGwGj+3kl4ES1JgpLRckVZfj+9d/H1Z4xgXnh9Oj9DrQ4uo=
-X-Received: by 2002:a17:90b:30c3:: with SMTP id hi3mr2914460pjb.27.1618481430206;
- Thu, 15 Apr 2021 03:10:30 -0700 (PDT)
+        Thu, 15 Apr 2021 06:11:24 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13FAAinD025292;
+        Thu, 15 Apr 2021 12:10:44 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=MHemc9dIypROVxJM89Wnd08Ri31AtNoLRiSbLCCA4dQ=;
+ b=R7b2D0kIdRD4UaDcHz2L0k/yinuw8rMDs4xxLItoy2F69/2iyoqr2sybIqx4+WOoWRRm
+ ewUUYx/S0I8BDdCUqd7c+NarMUQdy7l3XGljZrbXMRHSN4ls9E/RQogtEdtpvxFZl/Ex
+ eK6WWJxpYohkVv6LLaz/xb7XLe8O9cBWHHS8d0kgt/nRlYtaY8OIkHiRAarm0HdIRa4j
+ 7tK7ab/wKbnsbtFm6YHoKljdh6TLCEqyWxZU0G4FYwuzxQ08OqBC2GqQq61doKLlSg23
+ tbGMH/dMKvLRHNwinBaTxWwAXSFnBkAAdWku+9FlTq64eRdI/4QN5u1RbJUXV7NJ/4wK zg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 37xes0t5yh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Apr 2021 12:10:44 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id F3A7A10002A;
+        Thu, 15 Apr 2021 12:10:39 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C812A226377;
+        Thu, 15 Apr 2021 12:10:39 +0200 (CEST)
+Received: from localhost (10.75.127.51) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 15 Apr 2021 12:10:39
+ +0200
+From:   Alexandre Torgue <alexandre.torgue@foss.st.com>
+To:     <arnd@arndb.de>, <robh+dt@kernel.org>, Marek Vasut <marex@denx.de>,
+        <jagan@amarulasolutions.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Marcin Sloniewski <marcin.sloniewski@gmail.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-kernel@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>,
+        <kuba@kernel.org>
+Subject: [PATCH 00/13] ARM: dts: stm32: fix "make dtbs_check W=1" round1
+Date:   Thu, 15 Apr 2021 12:10:24 +0200
+Message-ID: <20210415101037.1465-1-alexandre.torgue@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210413100747.4921-1-glittao@gmail.com> <20210413100747.4921-2-glittao@gmail.com>
- <CANpmjNOOWuiR6Lb1igX+5Lp=PwcEE7Gx5co5KeGCnGz2WxbjNQ@mail.gmail.com>
-In-Reply-To: <CANpmjNOOWuiR6Lb1igX+5Lp=PwcEE7Gx5co5KeGCnGz2WxbjNQ@mail.gmail.com>
-From:   Oliver Glitta <glittao@gmail.com>
-Date:   Thu, 15 Apr 2021 12:10:19 +0200
-Message-ID: <CAD=R=qq9fUKnD7vxayigTPUF4E=_3w-4uZwM=ym4DfqXwP3QSw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] mm/slub, kunit: add a KUnit test for SLUB
- debugging functionality
-To:     Marco Elver <elver@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-15_03:2021-04-15,2021-04-15 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ut 13. 4. 2021 o 15:54 Marco Elver <elver@google.com> nap=C3=ADsal(a):
->
-> On Tue, 13 Apr 2021 at 12:07, <glittao@gmail.com> wrote:
-> > From: Oliver Glitta <glittao@gmail.com>
-> >
-> > SLUB has resiliency_test() function which is hidden behind #ifdef
-> > SLUB_RESILIENCY_TEST that is not part of Kconfig, so nobody
-> > runs it. KUnit should be a proper replacement for it.
-> >
-> > Try changing byte in redzone after allocation and changing
-> > pointer to next free node, first byte, 50th byte and redzone
-> > byte. Check if validation finds errors.
-> >
-> > There are several differences from the original resiliency test:
-> > Tests create own caches with known state instead of corrupting
-> > shared kmalloc caches.
-> >
-> > The corruption of freepointer uses correct offset, the original
-> > resiliency test got broken with freepointer changes.
-> >
-> > Scratch changing random byte test, because it does not have
-> > meaning in this form where we need deterministic results.
-> >
-> > Add new option CONFIG_SLUB_KUNIT_TEST in Kconfig.
-> > Because the test deliberatly modifies non-allocated objects, it depends=
- on
-> > !KASAN which would have otherwise prevented that.
->
-> Hmm, did the test fail with KASAN? Is it possible to skip the tests
-> and still run a subset of tests with KASAN? It'd be nice if we could
-> run some of these tests with KASAN as well.
->
-> > Use kunit_resource to count errors in cache and silence bug reports.
-> > Count error whenever slab_bug() or slab_fix() is called or when
-> > the count of pages is wrong.
-> >
-> > Signed-off-by: Oliver Glitta <glittao@gmail.com>
->
-> Reviewed-by: Marco Elver <elver@google.com>
->
+Hi,
 
-Thank you.
+First round to cleanup warnings and yaml validation issues seen running
+"make dtbs_check W=1" command for STM32 platform. It concerns all SoC
+(MCU: f429/429, f746/769, h743, MPU) and all boards (ST reference boards,
+DH, Engicam, LxA ...).
 
-> Thanks, this all looks good to me. But perhaps do test what works with
-> KASAN, to see if you need the !KASAN constraint for all cases.
+Main fixes are done in device tree files but some imply a change in yaml
+dt-bindings file.
 
-I tried to run tests with KASAN functionality disabled with function
-kasan_disable_current() and three of the tests failed with wrong
-errors counts.
-So I add the !KASAN constraint for all tests, because the merge window
-is coming, we want to know if this version is stable and without other
-mistakes.
-We will take a closer look at that in the follow-up patch.
+regards
+Alex
 
->
-> > ---
-> > Changes since v3
-> >
-> > Use kunit_resource to silence bug reports and count errors suggested by
-> > Marco Elver.
-> > Make the test depends on !KASAN thanks to report from the kernel test r=
-obot.
-> >
-> > Changes since v2
-> >
-> > Use bit operation & instead of logical && as reported by kernel test
-> > robot and Dan Carpenter
-> >
-> > Changes since v1
-> >
-> > Conversion from kselftest to KUnit test suggested by Marco Elver.
-> > Error silencing.
-> > Error counting improvements.
-> >  lib/Kconfig.debug |  12 ++++
-> >  lib/Makefile      |   1 +
-> >  lib/slub_kunit.c  | 150 ++++++++++++++++++++++++++++++++++++++++++++++
-> >  mm/slab.h         |   1 +
-> >  mm/slub.c         |  50 ++++++++++++++--
-> >  5 files changed, 209 insertions(+), 5 deletions(-)
-> >  create mode 100644 lib/slub_kunit.c
-> >
-> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> > index 2779c29d9981..9b8a0d754278 100644
-> > --- a/lib/Kconfig.debug
-> > +++ b/lib/Kconfig.debug
-> > @@ -2371,6 +2371,18 @@ config BITS_TEST
-> >
-> >           If unsure, say N.
-> >
-> > +config SLUB_KUNIT_TEST
-> > +       tristate "KUnit test for SLUB cache error detection" if !KUNIT_=
-ALL_TESTS
-> > +       depends on SLUB_DEBUG && KUNIT && !KASAN
-> > +       default KUNIT_ALL_TESTS
-> > +       help
-> > +         This builds SLUB allocator unit test.
-> > +         Tests SLUB cache debugging functionality.
-> > +         For more information on KUnit and unit tests in general pleas=
-e refer
-> > +         to the KUnit documentation in Documentation/dev-tools/kunit/.
-> > +
-> > +         If unsure, say N.
-> > +
-> >  config TEST_UDELAY
-> >         tristate "udelay test driver"
-> >         help
-> > diff --git a/lib/Makefile b/lib/Makefile
-> > index b5307d3eec1a..1e59c6714ed8 100644
-> > --- a/lib/Makefile
-> > +++ b/lib/Makefile
-> > @@ -352,5 +352,6 @@ obj-$(CONFIG_LIST_KUNIT_TEST) +=3D list-test.o
-> >  obj-$(CONFIG_LINEAR_RANGES_TEST) +=3D test_linear_ranges.o
-> >  obj-$(CONFIG_BITS_TEST) +=3D test_bits.o
-> >  obj-$(CONFIG_CMDLINE_KUNIT_TEST) +=3D cmdline_kunit.o
-> > +obj-$(CONFIG_SLUB_KUNIT_TEST) +=3D slub_kunit.o
-> >
-> >  obj-$(CONFIG_GENERIC_LIB_DEVMEM_IS_ALLOWED) +=3D devmem_is_allowed.o
-> > diff --git a/lib/slub_kunit.c b/lib/slub_kunit.c
-> > new file mode 100644
-> > index 000000000000..cb9ae9f7e8a6
-> > --- /dev/null
-> > +++ b/lib/slub_kunit.c
-> > @@ -0,0 +1,150 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#include <kunit/test.h>
-> > +#include <linux/mm.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/module.h>
-> > +#include <linux/kernel.h>
-> > +#include "../mm/slab.h"
-> > +
-> > +static struct kunit_resource resource;
-> > +static int slab_errors;
-> > +
-> > +static void test_clobber_zone(struct kunit *test)
-> > +{
-> > +       struct kmem_cache *s =3D kmem_cache_create("TestSlub_RZ_alloc",=
- 64, 0,
-> > +                               SLAB_RED_ZONE, NULL);
-> > +       u8 *p =3D kmem_cache_alloc(s, GFP_KERNEL);
-> > +
-> > +       p[64] =3D 0x12;
-> > +
-> > +       validate_slab_cache(s);
-> > +       KUNIT_EXPECT_EQ(test, 2, slab_errors);
-> > +
-> > +       kmem_cache_free(s, p);
-> > +       kmem_cache_destroy(s);
-> > +}
-> > +
-> > +static void test_next_pointer(struct kunit *test)
-> > +{
-> > +       struct kmem_cache *s =3D kmem_cache_create("TestSlub_next_ptr_f=
-ree", 64, 0,
-> > +                               SLAB_POISON, NULL);
-> > +       u8 *p =3D kmem_cache_alloc(s, GFP_KERNEL);
-> > +       unsigned long tmp;
-> > +       unsigned long *ptr_addr;
-> > +
-> > +       kmem_cache_free(s, p);
-> > +
-> > +       ptr_addr =3D (unsigned long *)(p + s->offset);
-> > +       tmp =3D *ptr_addr;
-> > +       p[s->offset] =3D 0x12;
-> > +
-> > +       /*
-> > +        * Expecting three errors.
-> > +        * One for the corrupted freechain and the other one for the wr=
-ong
-> > +        * count of objects in use. The third error is fixing broken ca=
-che.
-> > +        */
-> > +       validate_slab_cache(s);
-> > +       KUNIT_EXPECT_EQ(test, 3, slab_errors);
-> > +
-> > +       /*
-> > +        * Try to repair corrupted freepointer.
-> > +        * Still expecting two errors. The first for the wrong count
-> > +        * of objects in use.
-> > +        * The second error is for fixing broken cache.
-> > +        */
-> > +       *ptr_addr =3D tmp;
-> > +       slab_errors =3D 0;
-> > +
-> > +       validate_slab_cache(s);
-> > +       KUNIT_EXPECT_EQ(test, 2, slab_errors);
-> > +
-> > +       /*
-> > +        * Previous validation repaired the count of objects in use.
-> > +        * Now expecting no error.
-> > +        */
-> > +       slab_errors =3D 0;
-> > +       validate_slab_cache(s);
-> > +       KUNIT_EXPECT_EQ(test, 0, slab_errors);
-> > +
-> > +       kmem_cache_destroy(s);
-> > +}
-> > +
-> > +static void test_first_word(struct kunit *test)
-> > +{
-> > +       struct kmem_cache *s =3D kmem_cache_create("TestSlub_1th_word_f=
-ree", 64, 0,
-> > +                               SLAB_POISON, NULL);
-> > +       u8 *p =3D kmem_cache_alloc(s, GFP_KERNEL);
-> > +
-> > +       kmem_cache_free(s, p);
-> > +       *p =3D 0x78;
-> > +
-> > +       validate_slab_cache(s);
-> > +       KUNIT_EXPECT_EQ(test, 2, slab_errors);
-> > +
-> > +       kmem_cache_destroy(s);
-> > +}
-> > +
-> > +static void test_clobber_50th_byte(struct kunit *test)
-> > +{
-> > +       struct kmem_cache *s =3D kmem_cache_create("TestSlub_50th_word_=
-free", 64, 0,
-> > +                               SLAB_POISON, NULL);
-> > +       u8 *p =3D kmem_cache_alloc(s, GFP_KERNEL);
-> > +
-> > +       kmem_cache_free(s, p);
-> > +       p[50] =3D 0x9a;
-> > +
-> > +       validate_slab_cache(s);
-> > +       KUNIT_EXPECT_EQ(test, 2, slab_errors);
-> > +       kmem_cache_destroy(s);
-> > +}
-> > +
-> > +static void test_clobber_redzone_free(struct kunit *test)
-> > +{
-> > +       struct kmem_cache *s =3D kmem_cache_create("TestSlub_RZ_free", =
-64, 0,
-> > +                               SLAB_RED_ZONE, NULL);
-> > +       u8 *p =3D kmem_cache_alloc(s, GFP_KERNEL);
-> > +
-> > +       kmem_cache_free(s, p);
-> > +       p[64] =3D 0xab;
-> > +
-> > +       validate_slab_cache(s);
-> > +       KUNIT_EXPECT_EQ(test, 2, slab_errors);
-> > +       kmem_cache_destroy(s);
-> > +}
-> > +
-> > +static int test_init(struct kunit *test)
-> > +{
-> > +       slab_errors =3D 0;
-> > +
-> > +       /* FIXME: remove when CONFIG_KASAN requirement is dropped. */
-> > +       current->kunit_test =3D test;
->
-> Note, the patch "kunit: support failure from dynamic analysis tools"
-> is already in -next. It's probably safe to leave this, and send a
-> follow-up patch later once that kunit patch is in mainline.
->
-> > +       kunit_add_named_resource(test, NULL, NULL, &resource,
-> > +                                       "slab_errors", &slab_errors);
-> > +       return 0;
-> > +}
-> > +
-> > +static void test_exit(struct kunit *test)
-> > +{
-> > +       /* FIXME: remove when CONFIG_KASAN requirement is dropped. */
-> > +       current->kunit_test =3D NULL;
-> > +}
-> > +
-> > +static struct kunit_case test_cases[] =3D {
-> > +       KUNIT_CASE(test_clobber_zone),
-> > +       KUNIT_CASE(test_next_pointer),
-> > +       KUNIT_CASE(test_first_word),
-> > +       KUNIT_CASE(test_clobber_50th_byte),
-> > +       KUNIT_CASE(test_clobber_redzone_free),
-> > +       {}
-> > +};
-> > +
-> > +static struct kunit_suite test_suite =3D {
-> > +       .name =3D "slub_test",
-> > +       .init =3D test_init,
-> > +       .exit =3D test_exit,
-> > +       .test_cases =3D test_cases,
-> > +};
-> > +kunit_test_suite(test_suite);
-> > +
-> > +MODULE_LICENSE("GPL");
-> > diff --git a/mm/slab.h b/mm/slab.h
-> > index 076582f58f68..95cf42eb8396 100644
-> > --- a/mm/slab.h
-> > +++ b/mm/slab.h
-> > @@ -215,6 +215,7 @@ DECLARE_STATIC_KEY_TRUE(slub_debug_enabled);
-> >  DECLARE_STATIC_KEY_FALSE(slub_debug_enabled);
-> >  #endif
-> >  extern void print_tracking(struct kmem_cache *s, void *object);
-> > +long validate_slab_cache(struct kmem_cache *s);
-> >  #else
-> >  static inline void print_tracking(struct kmem_cache *s, void *object)
-> >  {
-> > diff --git a/mm/slub.c b/mm/slub.c
-> > index 3021ce9bf1b3..d7df8841d90a 100644
-> > --- a/mm/slub.c
-> > +++ b/mm/slub.c
-> > @@ -35,6 +35,7 @@
-> >  #include <linux/prefetch.h>
-> >  #include <linux/memcontrol.h>
-> >  #include <linux/random.h>
-> > +#include <kunit/test.h>
-> >
-> >  #include <trace/events/kmem.h>
-> >
-> > @@ -447,6 +448,26 @@ static inline bool cmpxchg_double_slab(struct kmem=
-_cache *s, struct page *page,
-> >  static unsigned long object_map[BITS_TO_LONGS(MAX_OBJS_PER_PAGE)];
-> >  static DEFINE_SPINLOCK(object_map_lock);
-> >
-> > +#if IS_ENABLED(CONFIG_KUNIT)
-> > +static bool slab_add_kunit_errors(void)
-> > +{
-> > +       struct kunit_resource *resource;
-> > +
-> > +       if (likely(!current->kunit_test))
-> > +               return false;
-> > +
-> > +       resource =3D kunit_find_named_resource(current->kunit_test, "sl=
-ab_errors");
-> > +       if (!resource)
-> > +               return false;
-> > +
-> > +       (*(int *)resource->data)++;
-> > +       kunit_put_resource(resource);
-> > +       return true;
-> > +}
-> > +#else
-> > +static inline bool slab_add_kunit_errors(void) { return false; }
-> > +#endif
-> > +
-> >  /*
-> >   * Determine a map of object in use on a page.
-> >   *
-> > @@ -676,6 +697,9 @@ static void slab_fix(struct kmem_cache *s, char *fm=
-t, ...)
-> >         struct va_format vaf;
-> >         va_list args;
-> >
-> > +       if (slab_add_kunit_errors())
-> > +               return;
-> > +
-> >         va_start(args, fmt);
-> >         vaf.fmt =3D fmt;
-> >         vaf.va =3D &args;
-> > @@ -739,6 +763,9 @@ static void print_trailer(struct kmem_cache *s, str=
-uct page *page, u8 *p)
-> >  void object_err(struct kmem_cache *s, struct page *page,
-> >                         u8 *object, char *reason)
-> >  {
-> > +       if (slab_add_kunit_errors())
-> > +               return;
-> > +
-> >         slab_bug(s, "%s", reason);
-> >         print_trailer(s, page, object);
-> >  }
-> > @@ -749,6 +776,9 @@ static __printf(3, 4) void slab_err(struct kmem_cac=
-he *s, struct page *page,
-> >         va_list args;
-> >         char buf[100];
-> >
-> > +       if (slab_add_kunit_errors())
-> > +               return;
-> > +
-> >         va_start(args, fmt);
-> >         vsnprintf(buf, sizeof(buf), fmt, args);
-> >         va_end(args);
-> > @@ -798,12 +828,16 @@ static int check_bytes_and_report(struct kmem_cac=
-he *s, struct page *page,
-> >         while (end > fault && end[-1] =3D=3D value)
-> >                 end--;
-> >
-> > +       if (slab_add_kunit_errors())
-> > +               goto skip_bug_print;
-> > +
-> >         slab_bug(s, "%s overwritten", what);
-> >         pr_err("INFO: 0x%p-0x%p @offset=3D%tu. First byte 0x%x instead =
-of 0x%x\n",
-> > -                                       fault, end - 1, fault - addr,
-> > -                                       fault[0], value);
-> > +                               fault, end - 1, fault - addr,
-> > +                               fault[0], value);
-> >         print_trailer(s, page, object);
-> >
-> > +skip_bug_print:
-> >         restore_bytes(s, what, value, fault, end);
-> >         return 0;
-> >  }
-> > @@ -4650,9 +4684,11 @@ static int validate_slab_node(struct kmem_cache =
-*s,
-> >                 validate_slab(s, page);
-> >                 count++;
-> >         }
-> > -       if (count !=3D n->nr_partial)
-> > +       if (count !=3D n->nr_partial) {
-> >                 pr_err("SLUB %s: %ld partial slabs counted but counter=
-=3D%ld\n",
-> >                        s->name, count, n->nr_partial);
-> > +               slab_add_kunit_errors();
-> > +       }
-> >
-> >         if (!(s->flags & SLAB_STORE_USER))
-> >                 goto out;
-> > @@ -4661,16 +4697,18 @@ static int validate_slab_node(struct kmem_cache=
- *s,
-> >                 validate_slab(s, page);
-> >                 count++;
-> >         }
-> > -       if (count !=3D atomic_long_read(&n->nr_slabs))
-> > +       if (count !=3D atomic_long_read(&n->nr_slabs)) {
-> >                 pr_err("SLUB: %s %ld slabs counted but counter=3D%ld\n"=
-,
-> >                        s->name, count, atomic_long_read(&n->nr_slabs));
-> > +               slab_add_kunit_errors();
-> > +       }
-> >
-> >  out:
-> >         spin_unlock_irqrestore(&n->list_lock, flags);
-> >         return count;
-> >  }
-> >
-> > -static long validate_slab_cache(struct kmem_cache *s)
-> > +long validate_slab_cache(struct kmem_cache *s)
-> >  {
-> >         int node;
-> >         unsigned long count =3D 0;
-> > @@ -4682,6 +4720,8 @@ static long validate_slab_cache(struct kmem_cache=
- *s)
-> >
-> >         return count;
-> >  }
-> > +EXPORT_SYMBOL(validate_slab_cache);
-> > +
-> >  /*
-> >   * Generate lists of code addresses where slabcache objects are alloca=
-ted
-> >   * and freed.
-> > --
-> > 2.31.1.272.g89b43f80a5
-> >
+Alexandre Torgue (13):
+  ARM: dts: stm32: fix gpio-keys node on STM32 MCU boards
+  ARM: dts: stm32: fix RCC node name on stm32f429 MCU
+  ARM: dts: stm32: fix timer nodes on STM32 MCU to prevent warnings
+  dt-bindings: mfd: stm32-timers: remove #address/size cells from
+    required properties
+  ARM: dts: stm32: update pinctrl node name on STM32 MCU to prevent
+    warnings
+  ARM: dts: stm32: fix i2c node name on stm32f746 to prevent warnings
+  ARM: dts: stm32: move stmmac axi config in ethernet node on stm32mp15
+  dt-bindings: net: document ptp_ref clk in dwmac
+  ARM: dts: stm32: fix stpmic node for stm32mp1 boards
+  dt-bindings: mfd: add vref_ddr-supply to st,stpmic1 yaml
+  ARM: dts: stm32: fix LTDC port node on STM32 MCU ad MPU
+  ARM: dts: stm32: fix DSI port node on STM32MP15
+  ARM: dts: stm32: fix ltdc pinctrl on microdev2.0-of7
+
+ .../bindings/mfd/st,stm32-timers.yaml         |  2 -
+ .../devicetree/bindings/mfd/st,stpmic1.yaml   |  2 +-
+ .../devicetree/bindings/net/snps,dwmac.yaml   |  4 +-
+ .../devicetree/bindings/net/stm32-dwmac.yaml  |  6 +-
+ arch/arm/boot/dts/stm32429i-eval.dts          |  8 +-
+ arch/arm/boot/dts/stm32746g-eval.dts          |  6 +-
+ arch/arm/boot/dts/stm32f4-pinctrl.dtsi        |  2 +-
+ arch/arm/boot/dts/stm32f429-disco.dts         |  6 +-
+ arch/arm/boot/dts/stm32f429-pinctrl.dtsi      | 72 +++++++++---------
+ arch/arm/boot/dts/stm32f429.dtsi              | 10 +--
+ arch/arm/boot/dts/stm32f469-disco.dts         |  8 +-
+ arch/arm/boot/dts/stm32f469-pinctrl.dtsi      | 74 +++++++++----------
+ arch/arm/boot/dts/stm32f7-pinctrl.dtsi        |  2 +-
+ arch/arm/boot/dts/stm32f746.dtsi              | 12 +--
+ arch/arm/boot/dts/stm32f769-disco.dts         |  6 +-
+ arch/arm/boot/dts/stm32h743.dtsi              |  4 -
+ arch/arm/boot/dts/stm32mp151.dtsi             | 16 ++--
+ arch/arm/boot/dts/stm32mp157.dtsi             |  2 -
+ arch/arm/boot/dts/stm32mp157a-dk1.dts         |  8 ++
+ ...157a-microgea-stm32mp1-microdev2.0-of7.dts |  5 +-
+ arch/arm/boot/dts/stm32mp157a-stinger96.dtsi  |  7 +-
+ arch/arm/boot/dts/stm32mp157c-dk2.dts         | 12 ++-
+ arch/arm/boot/dts/stm32mp157c-ev1.dts         |  5 +-
+ arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts     |  3 +-
+ .../arm/boot/dts/stm32mp157c-odyssey-som.dtsi |  5 +-
+ arch/arm/boot/dts/stm32mp15xx-dhcom-som.dtsi  |  5 +-
+ .../boot/dts/stm32mp15xx-dhcor-avenger96.dtsi |  6 +-
+ arch/arm/boot/dts/stm32mp15xx-dkx.dtsi        |  7 --
+ arch/arm/boot/dts/stm32mp15xx-osd32.dtsi      |  7 +-
+ 29 files changed, 130 insertions(+), 182 deletions(-)
+
+-- 
+2.17.1
+
