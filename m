@@ -2,110 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D137F360EA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C625360EA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 17:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234776AbhDOPRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 11:17:49 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:53894 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236550AbhDOPPD (ORCPT
+        id S235242AbhDOPRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 11:17:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236641AbhDOPPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 11:15:03 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13FFEUCn013190;
-        Thu, 15 Apr 2021 10:14:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1618499670;
-        bh=+qBC1tnl5YMK3m60rKOq4hj1XFlwy6Q4817612NjXgE=;
-        h=Subject:CC:References:From:Date:In-Reply-To;
-        b=yfp2Ont4ALWQWjciYZ1YSZtvmOAulxg5cb/16pbUSzbGHThWmXB8x4vP0Um2MAn7N
-         x6Qc+dcMcdXltpENliCMx6/3tTikjIlxhhfC8lcSs7JVsGj4p0b3qdVkgcBRTo/ebf
-         Rz2L8jKNlffRGiKGr0T6Lk7QvTrGgaxO7Bsf+dok=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13FFEUTk017045
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 15 Apr 2021 10:14:30 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 15
- Apr 2021 10:14:29 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 15 Apr 2021 10:14:29 -0500
-Received: from [172.24.145.148] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13FFEPBM088778;
-        Thu, 15 Apr 2021 10:14:26 -0500
-Subject: Re: [PATCH 0/2] MCAN: Add support for implementing transceiver as a
- phy
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-References: <20210415150629.5417-1-a-govindraju@ti.com>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <1fc33525-d879-f8b2-60e5-58c64b66b938@ti.com>
-Date:   Thu, 15 Apr 2021 20:44:24 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 15 Apr 2021 11:15:07 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57FD0C06175F;
+        Thu, 15 Apr 2021 08:14:44 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id c17so16264955pfn.6;
+        Thu, 15 Apr 2021 08:14:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Ax39KJeRsWzONrhn+72TkNapDpAhRxhVHYcwUNfI7/8=;
+        b=dZXTlmwxnwELuSG5gVg7O/1XlkljIXnmaZxoSsrmXYAif0qd0cS2nLBV31LseGwAww
+         08AZo0PIV9odOFgEtGAoQWBGVis/cpRaldCoMSgWx0i8u3k4eVdGECk2soddkRtwXr8W
+         goG25yIsWtbaRs4263s3TAzPuDz4xEVthaSwE0PSnmyj2wnXsT4D3uqzUe74laAsfCR3
+         MQSfG5xqP9CGq5I/QyeX62oZhM24rciIbTqtir2WC5A6knnDxSt7RtEd+shZndTNr08p
+         mpUHl+Wi+PbhhT5515odVLZx/3VzDUQWi+fZApvrNtlCzuIaZIE/IU4atSpxhtB0XLJd
+         qUNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Ax39KJeRsWzONrhn+72TkNapDpAhRxhVHYcwUNfI7/8=;
+        b=q2nMUCLyJBQExynUQRijrLm1g37hFO02WL6hfGqJLZSPcZszJtEM9aTupnQ0Ns9Vqd
+         BsUcI82fIjvWWNJWh6bC5J2hgqlFsRhme0c/87qXZG45X+JDiWrTjsEf1PM59Y5TglDV
+         ISmAWTyjDJxwyGEc6omDbfEhr9mOcu5QRfyu4867shjHQ6DNtkXmWEaEAii7crFvM1/0
+         8PpcMsJVnPlcG1jZ0IagxRuJ+R6W130Z8gjuYpmbg4sJ2MemAFWx1Zk8hp/MYuz1pTTX
+         kt1lQJBA/rdR0otTF18yWRj9kSJtJym3FDmUR3N081cliMisE/AmjmmqvnvInHyRtjpB
+         twRg==
+X-Gm-Message-State: AOAM531+UyY0gQ3zv2FwZB4CJZSwntrsg972xzEzduEwNlo+6jBzDkcD
+        LhavriAsKfH9tfNHbcnAzgJ6ElxyqeA=
+X-Google-Smtp-Source: ABdhPJy7h45A/JGY8V4v3PNXukYZA8GUaHq8q5XZTPvNARGrwJyJ1oIa8vavVXfsZ1NSqZbWbAyD3Q==
+X-Received: by 2002:aa7:864d:0:b029:24b:dd03:edec with SMTP id a13-20020aa7864d0000b029024bdd03edecmr3764464pfo.18.1618499683934;
+        Thu, 15 Apr 2021 08:14:43 -0700 (PDT)
+Received: from syed ([2401:4900:2eec:4193:f802:b600:e94c:55c4])
+        by smtp.gmail.com with ESMTPSA id u5sm684396pfn.155.2021.04.15.08.14.35
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 15 Apr 2021 08:14:42 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 20:44:31 +0530
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     jic23@kernel.org, kernel@pengutronix.de,
+        linux-stm32@st-md-mailman.stormreply.com, a.fatoum@pengutronix.de,
+        kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        alexandre.belloni@bootlin.com, david@lechnology.com,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        o.rempel@pengutronix.de
+Subject: Re: [PATCH v10 04/33] counter: 104-quad-8: Return error when invalid
+ mode during ceiling_write
+Message-ID: <20210415151431.GB8933@syed>
+References: <cover.1616150619.git.vilhelm.gray@gmail.com>
+ <98676f9a2e9cf991d7a002b3b264cca774e5b3c8.1616150619.git.vilhelm.gray@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210415150629.5417-1-a-govindraju@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <98676f9a2e9cf991d7a002b3b264cca774e5b3c8.1616150619.git.vilhelm.gray@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
-
-On 15/04/21 8:36 pm, Aswath Govindraju wrote:
-> The following series of patches add support for implementing the
-> transceiver as a phy of m_can_platform driver.
+On Fri, Mar 19, 2021 at 08:00:23PM +0900, William Breathitt Gray wrote:
+> The 104-QUAD-8 only has two count modes where a ceiling value makes
+> sense: Range Limit and Modulo-N. Outside of these two modes, setting a
+> ceiling value is an invalid operation -- so let's report it as such by
+> returning -EINVAL.
 > 
-> TCAN1042 has a standby signal that needs to be pulled high for
-> sending/receiving messages[1]. TCAN1043 has a enable signal along with
-> standby signal that needs to be pulled up for sending/receiving
-> messages[2], and other combinations of the two lines can be used to put the
-> transceiver in different states to reduce power consumption. On boards
-> like the AM654-idk and J721e-evm these signals are controlled using gpios.
+> Fixes: fc069262261c ("counter: 104-quad-8: Add lock guards - generic interface")
+> Cc: Syed Nayyar Waris <syednwaris@gmail.com>
+> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> ---
+>  drivers/counter/104-quad-8.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> These gpios are set in phy driver, and the transceiver can be put in
-> different states using phy API. The phy driver is added in the series [3].
-> 
-> [1] - https://www.ti.com/lit/ds/symlink/tcan1042h.pdf
-> [2] - https://www.ti.com/lit/ds/symlink/tcan1043-q1.pdf
-> [3] - https://lore.kernel.org/patchwork/project/lkml/list/?series=495365
-> 
+> diff --git a/drivers/counter/104-quad-8.c b/drivers/counter/104-quad-8.c
+> index 4bb9abffae48..233a3acc1377 100644
+> --- a/drivers/counter/104-quad-8.c
+> +++ b/drivers/counter/104-quad-8.c
+> @@ -714,13 +714,14 @@ static ssize_t quad8_count_ceiling_write(struct counter_device *counter,
+>  	switch (priv->count_mode[count->id]) {
+>  	case 1:
+>  	case 3:
+> +		mutex_unlock(&priv->lock);
+>  		quad8_preset_register_set(priv, count->id, ceiling);
+> -		break;
+> +		return len;
+>  	}
+>  
+>  	mutex_unlock(&priv->lock);
+>  
+> -	return len;
+> +	return -EINVAL;
+>  }
+>  
+>  static ssize_t quad8_count_preset_enable_read(struct counter_device *counter,
+> -- 
+> 2.30.2
+>
 
-Please ignore this series. I will post a respin using
-devm_phy_get_optional instead of devm_of_phy_get_optional_by_index()
-based on the comments below[1]. Sorry for the noise.
-
-[1] - https://lore.kernel.org/patchwork/patch/1413931/
-
-Thanks,
-Aswath
-
-> Faiz Abbas (2):
->   dt-bindings: net: can: Document transceiver implementation as phy
->   can: m_can: Add support for transceiver as phy
-> 
->  .../devicetree/bindings/net/can/bosch,m_can.yaml    |  3 +++
->  drivers/net/can/m_can/m_can.c                       | 10 ++++++++++
->  drivers/net/can/m_can/m_can.h                       |  2 ++
->  drivers/net/can/m_can/m_can_platform.c              | 13 +++++++++++++
->  4 files changed, 28 insertions(+)
-> 
-
+Acked-by: Syed Nayyar Waris <syednwaris@gmail.com>
