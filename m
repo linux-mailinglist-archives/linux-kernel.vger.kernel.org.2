@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC33360CB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3235D360C52
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234364AbhDOOyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:54:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38004 "EHLO mail.kernel.org"
+        id S233808AbhDOOuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:50:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234125AbhDOOvg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:51:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92C8F613C7;
-        Thu, 15 Apr 2021 14:51:11 +0000 (UTC)
+        id S233753AbhDOOto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:49:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00C68613BA;
+        Thu, 15 Apr 2021 14:49:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498271;
-        bh=D+0MZIwCjVIkAh0pYeUB0k/Y8o720m5527efrRHJSe8=;
+        s=korg; t=1618498161;
+        bh=lVWsah9atAHAu568W2G9A2G5z8pjuYC90AG4B0tra20=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p64xasl4C7EsTxFMSJdeGLgMcSSUyIV7Wu9jRwoqL/ubvqJBmIFjRAY221m2mg7vI
-         xlS+fXbORUNuXaGIAWDKQ+Q8Yc7Mf6rVdb/9GTaSxddyv2v/oiqzstbIE3Ydk615iY
-         DBTa+zVUdl1IKq9j4BVkrN1bl5BqpToXGI5Z9fP8=
+        b=MgdcG+JZdCZ13A09C+S2sdSieuxTjK/VYYlVA//36BVpAd601MPxEPrUgO/kdUcqt
+         pvpxfJ3A+K2F5SzHi1xkHilyd4eKXubU3y0WSy8q//pRbAzuHqKJLlgOvldE88JQij
+         etPwz9+imz6YcvtHFcbc8aJ6yrTMUz5Xx1o0QdwQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 24/47] s390/cpcmd: fix inline assembly register clobbering
-Date:   Thu, 15 Apr 2021 16:47:16 +0200
-Message-Id: <20210415144414.230752710@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+001516d86dbe88862cec@syzkaller.appspotmail.com,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.4 23/38] net: tun: set tun->dev->addr_len during TUNSETLINK processing
+Date:   Thu, 15 Apr 2021 16:47:17 +0200
+Message-Id: <20210415144414.088107507@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.487943796@linuxfoundation.org>
-References: <20210415144413.487943796@linuxfoundation.org>
+In-Reply-To: <20210415144413.352638802@linuxfoundation.org>
+References: <20210415144413.352638802@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +42,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Gordeev <agordeev@linux.ibm.com>
+From: Phillip Potter <phil@philpotter.co.uk>
 
-[ Upstream commit 7a2f91441b2c1d81b77c1cd816a4659f4abc9cbe ]
+commit cca8ea3b05c972ffb5295367e6c544369b45fbdd upstream.
 
-Register variables initialized using arithmetic. That leads to
-kasan instrumentaton code corrupting the registers contents.
-Follow GCC guidlines and use temporary variables for assigning
-init values to register variables.
+When changing type with TUNSETLINK ioctl command, set tun->dev->addr_len
+to match the appropriate type, using new tun_get_addr_len utility function
+which returns appropriate address length for given type. Fixes a
+KMSAN-found uninit-value bug reported by syzbot at:
+https://syzkaller.appspot.com/bug?id=0766d38c656abeace60621896d705743aeefed51
 
-Fixes: 94c12cc7d196 ("[S390] Inline assembly cleanup.")
-Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
-Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Link: https://gcc.gnu.org/onlinedocs/gcc-10.2.0/gcc/Local-Register-Variables.html
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: syzbot+001516d86dbe88862cec@syzkaller.appspotmail.com
+Diagnosed-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/s390/kernel/cpcmd.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/tun.c |   48 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
-diff --git a/arch/s390/kernel/cpcmd.c b/arch/s390/kernel/cpcmd.c
-index 7f48e568ac64..540912666740 100644
---- a/arch/s390/kernel/cpcmd.c
-+++ b/arch/s390/kernel/cpcmd.c
-@@ -37,10 +37,12 @@ static int diag8_noresponse(int cmdlen)
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -71,6 +71,14 @@
+ #include <net/sock.h>
+ #include <linux/seq_file.h>
+ #include <linux/uio.h>
++#include <linux/ieee802154.h>
++#include <linux/if_ltalk.h>
++#include <uapi/linux/if_fddi.h>
++#include <uapi/linux/if_hippi.h>
++#include <uapi/linux/if_fc.h>
++#include <net/ax25.h>
++#include <net/rose.h>
++#include <net/6lowpan.h>
  
- static int diag8_response(int cmdlen, char *response, int *rlen)
+ #include <asm/uaccess.h>
+ 
+@@ -1888,6 +1896,45 @@ unlock:
+ 	return ret;
+ }
+ 
++/* Return correct value for tun->dev->addr_len based on tun->dev->type. */
++static unsigned char tun_get_addr_len(unsigned short type)
++{
++	switch (type) {
++	case ARPHRD_IP6GRE:
++	case ARPHRD_TUNNEL6:
++		return sizeof(struct in6_addr);
++	case ARPHRD_IPGRE:
++	case ARPHRD_TUNNEL:
++	case ARPHRD_SIT:
++		return 4;
++	case ARPHRD_ETHER:
++		return ETH_ALEN;
++	case ARPHRD_IEEE802154:
++	case ARPHRD_IEEE802154_MONITOR:
++		return IEEE802154_EXTENDED_ADDR_LEN;
++	case ARPHRD_PHONET_PIPE:
++	case ARPHRD_PPP:
++	case ARPHRD_NONE:
++		return 0;
++	case ARPHRD_6LOWPAN:
++		return EUI64_ADDR_LEN;
++	case ARPHRD_FDDI:
++		return FDDI_K_ALEN;
++	case ARPHRD_HIPPI:
++		return HIPPI_ALEN;
++	case ARPHRD_IEEE802:
++		return FC_ALEN;
++	case ARPHRD_ROSE:
++		return ROSE_ADDR_LEN;
++	case ARPHRD_NETROM:
++		return AX25_ADDR_LEN;
++	case ARPHRD_LOCALTLK:
++		return LTALK_ALEN;
++	default:
++		return 0;
++	}
++}
++
+ static long __tun_chr_ioctl(struct file *file, unsigned int cmd,
+ 			    unsigned long arg, int ifreq_len)
  {
-+	unsigned long _cmdlen = cmdlen | 0x40000000L;
-+	unsigned long _rlen = *rlen;
- 	register unsigned long reg2 asm ("2") = (addr_t) cpcmd_buf;
- 	register unsigned long reg3 asm ("3") = (addr_t) response;
--	register unsigned long reg4 asm ("4") = cmdlen | 0x40000000L;
--	register unsigned long reg5 asm ("5") = *rlen;
-+	register unsigned long reg4 asm ("4") = _cmdlen;
-+	register unsigned long reg5 asm ("5") = _rlen;
- 
- 	asm volatile(
- 		"	sam31\n"
--- 
-2.30.2
-
+@@ -2026,6 +2073,7 @@ static long __tun_chr_ioctl(struct file
+ 			ret = -EBUSY;
+ 		} else {
+ 			tun->dev->type = (int) arg;
++			tun->dev->addr_len = tun_get_addr_len(tun->dev->type);
+ 			tun_debug(KERN_INFO, tun, "linktype set to %d\n",
+ 				  tun->dev->type);
+ 			ret = 0;
 
 
