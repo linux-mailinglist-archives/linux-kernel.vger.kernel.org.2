@@ -2,228 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF4735FEB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 02:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 679E035FEB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 02:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230300AbhDOACk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 14 Apr 2021 20:02:40 -0400
-Received: from mga01.intel.com ([192.55.52.88]:63049 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230429AbhDOACd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 14 Apr 2021 20:02:33 -0400
-IronPort-SDR: /d+sh4qb7bdWu4iye/hGRXFYw2GUQBnlV1UxDfbdoR4u58ej8rY8JFMNtLD6QVaIcRkHN8qXH0
- 6i+t6cCHkZ/A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9954"; a="215260305"
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="215260305"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2021 17:02:10 -0700
-IronPort-SDR: f7FiFk0yD5IXI0t0iOY3dxvX7bZN5VVh0ueuQI8FqA/xdwRryRkB+B113TojbZSSUhDK+UIPn/
- gSBXp1mRvX2g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,223,1613462400"; 
-   d="scan'208";a="461415814"
-Received: from otc-wp-03.jf.intel.com ([10.54.39.79])
-  by orsmga001.jf.intel.com with ESMTP; 14 Apr 2021 17:02:10 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>
-Cc:     Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
-        zhangfei.gao@linaro.org, vkoul@kernel.org,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: [PATCH v2 2/2] iommu/sva: Remove mm parameter from SVA bind API
-Date:   Wed, 14 Apr 2021 08:27:57 -0700
-Message-Id: <1618414077-28808-3-git-send-email-jacob.jun.pan@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1618414077-28808-1-git-send-email-jacob.jun.pan@linux.intel.com>
-References: <1618414077-28808-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        id S230401AbhDOABZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 14 Apr 2021 20:01:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230363AbhDOABV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 14 Apr 2021 20:01:21 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C6DFC061574;
+        Wed, 14 Apr 2021 17:00:59 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8F52151E;
+        Thu, 15 Apr 2021 02:00:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1618444857;
+        bh=fm3K/7qYN/h/SZQMNfBTmltjSZNJfyOqx0GhaMvN27s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IAQ2ExJhcZlh8SSRpg6mXSZmqXxBqRpNNOvs4jSfHtN6vKway+5L5J9ULIoTnjw6J
+         n050heOdHpeiJFgqgy8JsY60naS6hzZyiL0hhekQ/ex6PN/XgPb1Z/2kYIz1tMp9NS
+         Yi9YfJJV/D9KB15HtcbCVwrE1GPPCeVTzM7KVbu0=
+Date:   Thu, 15 Apr 2021 03:00:56 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/5] media: i2c: max9286: Use "maxim,gpio-poc" property
+Message-ID: <YHeCOCkn1YvYR09E@pendragon.ideasonboard.com>
+References: <20210414135128.180980-1-jacopo+renesas@jmondi.org>
+ <20210414135128.180980-3-jacopo+renesas@jmondi.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210414135128.180980-3-jacopo+renesas@jmondi.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mm parameter in iommu_sva_bind_device() is intended for privileged
-process perform bind() on behalf of other processes. This use case has
-yet to be materialized, let alone potential security implications of
-adding kernel hooks without explicit user consent.
-In addition, with the agreement that IOASID allocation shall be subject
-cgroup limit. It will be inline with misc cgroup proposal if IOASID
-allocation as part of the SVA bind is limited to the current task.
+Hi Jacopo,
 
-Link: https://lore.kernel.org/linux-iommu/20210303160205.151d114e@jacob-builder/
-Link: https://lore.kernel.org/linux-iommu/YFhiMLR35WWMW%2FHu@myrica/
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
----
- drivers/dma/idxd/cdev.c       |  2 +-
- drivers/dma/idxd/init.c       |  2 +-
- drivers/iommu/iommu-sva-lib.c | 11 +++++++----
- drivers/iommu/iommu.c         | 20 +++++++++++++-------
- drivers/misc/uacce/uacce.c    |  2 +-
- include/linux/iommu.h         |  3 +--
- 6 files changed, 24 insertions(+), 16 deletions(-)
+Thank you for the patch.
 
-diff --git a/drivers/dma/idxd/cdev.c b/drivers/dma/idxd/cdev.c
-index 21ec82bc47b6..8c3347c8930c 100644
---- a/drivers/dma/idxd/cdev.c
-+++ b/drivers/dma/idxd/cdev.c
-@@ -103,7 +103,7 @@ static int idxd_cdev_open(struct inode *inode, struct file *filp)
- 	filp->private_data = ctx;
- 
- 	if (device_pasid_enabled(idxd)) {
--		sva = iommu_sva_bind_device(dev, current->mm, 0);
-+		sva = iommu_sva_bind_device(dev, 0);
- 		if (IS_ERR(sva)) {
- 			rc = PTR_ERR(sva);
- 			dev_err(dev, "pasid allocation failed: %d\n", rc);
-diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
-index 82a0985ad6dc..a92fa625f3b5 100644
---- a/drivers/dma/idxd/init.c
-+++ b/drivers/dma/idxd/init.c
-@@ -305,7 +305,7 @@ static int idxd_enable_system_pasid(struct idxd_device *idxd)
- 
- 	flags = IOMMU_SVA_BIND_SUPERVISOR;
- 
--	sva = iommu_sva_bind_device(&idxd->pdev->dev, NULL, flags);
-+	sva = iommu_sva_bind_device(&idxd->pdev->dev, flags);
- 	if (IS_ERR(sva)) {
- 		dev_warn(&idxd->pdev->dev,
- 			 "iommu sva bind failed: %ld\n", PTR_ERR(sva));
-diff --git a/drivers/iommu/iommu-sva-lib.c b/drivers/iommu/iommu-sva-lib.c
-index bd41405d34e9..6e3d1a010d47 100644
---- a/drivers/iommu/iommu-sva-lib.c
-+++ b/drivers/iommu/iommu-sva-lib.c
-@@ -12,13 +12,13 @@ static DECLARE_IOASID_SET(iommu_sva_pasid);
- 
- /**
-  * iommu_sva_alloc_pasid - Allocate a PASID for the mm
-- * @mm: the mm
-  * @min: minimum PASID value (inclusive)
-  * @max: maximum PASID value (inclusive)
-  *
-- * Try to allocate a PASID for this mm, or take a reference to the existing one
-- * provided it fits within the [@min, @max] range. On success the PASID is
-- * available in mm->pasid, and must be released with iommu_sva_free_pasid().
-+ * Try to allocate a PASID for the current mm, or take a reference to the
-+ * existing one provided it fits within the [@min, @max] range. On success
-+ * the PASID is available in the current mm->pasid, and must be released with
-+ * iommu_sva_free_pasid().
-  * @min must be greater than 0, because 0 indicates an unused mm->pasid.
-  *
-  * Returns 0 on success and < 0 on error.
-@@ -28,6 +28,9 @@ int iommu_sva_alloc_pasid(struct mm_struct *mm, ioasid_t min, ioasid_t max)
- 	int ret = 0;
- 	ioasid_t pasid;
- 
-+	if (mm != current->mm)
-+		return -EINVAL;
-+
- 	if (min == INVALID_IOASID || max == INVALID_IOASID ||
- 	    min == 0 || max < min)
- 		return -EINVAL;
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index eefa541d8674..5bbc35c395a6 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -23,6 +23,7 @@
- #include <linux/property.h>
- #include <linux/fsl/mc.h>
- #include <linux/module.h>
-+#include <linux/sched/mm.h>
- #include <trace/events/iommu.h>
- 
- static struct kset *iommu_group_kset;
-@@ -2959,15 +2960,14 @@ int iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev)
- EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
- 
- /**
-- * iommu_sva_bind_device() - Bind a process address space to a device
-+ * iommu_sva_bind_device() - Bind the current process address space to a device
-  * @dev: the device
-- * @mm: the mm to bind, caller must hold a reference to it
-  * @flags: options for the bind operation defined as IOMMU_SVA_BIND_*
-  *
-  * Create a bond between device and address space, allowing the device to access
-  * the mm using the returned PASID. If a bond already exists between @device and
-- * @mm, it is returned and an additional reference is taken. Caller must call
-- * iommu_sva_unbind_device() to release each reference.
-+ * the current mm, it is returned and an additional reference is taken. Caller
-+ * must call iommu_sva_unbind_device() to release each reference.
-  *
-  * iommu_dev_enable_feature(dev, IOMMU_DEV_FEAT_SVA) must be called first, to
-  * initialize the required SVA features.
-@@ -2975,9 +2975,10 @@ EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
-  * On error, returns an ERR_PTR value.
-  */
- struct iommu_sva *
--iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, unsigned int flags)
-+iommu_sva_bind_device(struct device *dev, unsigned int flags)
- {
- 	struct iommu_group *group;
-+	struct mm_struct *mm = NULL;
- 	struct iommu_sva *handle = ERR_PTR(-EINVAL);
- 	const struct iommu_ops *ops = dev->bus->iommu_ops;
- 
-@@ -2989,8 +2990,11 @@ iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, unsigned int fla
- 		return ERR_PTR(-ENODEV);
- 
- 	/* Supervisor SVA does not need the current mm */
--	if ((flags & IOMMU_SVA_BIND_SUPERVISOR) && mm)
--		return ERR_PTR(-EINVAL);
-+	if (!(flags & IOMMU_SVA_BIND_SUPERVISOR)) {
-+		mm = get_task_mm(current);
-+		if (!mm)
-+			return ERR_PTR(-EINVAL);
-+	}
- 	/* Ensure device count and domain don't change while we're binding */
- 	mutex_lock(&group->mutex);
- 
-@@ -3004,6 +3008,8 @@ iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, unsigned int fla
- 		goto out_unlock;
- 
- 	handle = ops->sva_bind(dev, mm, flags);
-+	if (mm)
-+		mmput(mm);
- out_unlock:
- 	mutex_unlock(&group->mutex);
- 	iommu_group_put(group);
-diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
-index 27e0e04dfcab..da4401a3d8f5 100644
---- a/drivers/misc/uacce/uacce.c
-+++ b/drivers/misc/uacce/uacce.c
-@@ -99,7 +99,7 @@ static int uacce_bind_queue(struct uacce_device *uacce, struct uacce_queue *q)
- 	if (!(uacce->flags & UACCE_DEV_SVA))
- 		return 0;
- 
--	handle = iommu_sva_bind_device(uacce->parent, current->mm, 0);
-+	handle = iommu_sva_bind_device(uacce->parent, 0);
- 	if (IS_ERR(handle))
- 		return PTR_ERR(handle);
- 
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index ba81cec0b086..4e846950a6b9 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -652,7 +652,6 @@ void iommu_aux_detach_device(struct iommu_domain *domain, struct device *dev);
- int iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev);
- 
- struct iommu_sva *iommu_sva_bind_device(struct device *dev,
--					struct mm_struct *mm,
- 					unsigned int flags);
- void iommu_sva_unbind_device(struct iommu_sva *handle);
- u32 iommu_sva_get_pasid(struct iommu_sva *handle);
-@@ -1028,7 +1027,7 @@ iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev)
- }
- 
- static inline struct iommu_sva *
--iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, unsigned int flags)
-+iommu_sva_bind_device(struct device *dev, unsigned int flags)
- {
- 	return NULL;
- }
+On Wed, Apr 14, 2021 at 03:51:25PM +0200, Jacopo Mondi wrote:
+> The 'maxim,gpio-poc' property is used when the remote camera
+> power-over-coax is controlled by one of the MAX9286 gpio lines,
+> to instruct the driver about which line to use and what the line
+> polarity is.
+> 
+> Add to the max9286 driver support for parsing the newly introduce
+s/introduce/introduced/
+
+> property and use it if available in place of the usual supply, as it is
+> not possible to establish one as consumer of the max9286 gpio
+> controller.
+> 
+> If the new property is present, no gpio controller is registered and
+> 'poc-supply' is ignored.
+> 
+> In order to maximize code re-use, break out the max9286 gpio handling
+> function so that they can be used by the gpio controller through the
+> gpio-consumer API, or directly by the driver code.
+> 
+> Wrap the power up and power down routines to their own function to
+> be able to use either the gpio line directly or the supply. This will
+> make it easier to control the remote camera power at run time.
+
+I would have split the patch in two, with a first patch that refactors
+the code, and a second one that extends it, but that's no big deal.
+
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> ---
+>  drivers/media/i2c/max9286.c | 125 +++++++++++++++++++++++++++---------
+>  1 file changed, 96 insertions(+), 29 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+> index 6fd4d59fcc72..0c125f7b3d9b 100644
+> --- a/drivers/media/i2c/max9286.c
+> +++ b/drivers/media/i2c/max9286.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/fwnode.h>
+>  #include <linux/gpio/consumer.h>
+>  #include <linux/gpio/driver.h>
+> +#include <linux/gpio/machine.h>
+>  #include <linux/i2c.h>
+>  #include <linux/i2c-mux.h>
+>  #include <linux/module.h>
+> @@ -165,6 +166,9 @@ struct max9286_priv {
+>  
+>  	u32 reverse_channel_mv;
+>  
+> +	u32 gpio_poc;
+> +	u32 gpio_poc_flags;
+> +
+>  	struct v4l2_ctrl_handler ctrls;
+>  	struct v4l2_ctrl *pixelrate;
+>  
+> @@ -1022,20 +1026,27 @@ static int max9286_setup(struct max9286_priv *priv)
+>  	return 0;
+>  }
+>  
+> -static void max9286_gpio_set(struct gpio_chip *chip,
+> -			     unsigned int offset, int value)
+> +static int max9286_gpio_set(struct max9286_priv *priv, unsigned int offset,
+> +			    int value)
+>  {
+> -	struct max9286_priv *priv = gpiochip_get_data(chip);
+> -
+>  	if (value)
+>  		priv->gpio_state |= BIT(offset);
+>  	else
+>  		priv->gpio_state &= ~BIT(offset);
+>  
+> -	max9286_write(priv, 0x0f, MAX9286_0X0F_RESERVED | priv->gpio_state);
+> +	return max9286_write(priv, 0x0f,
+> +			     MAX9286_0X0F_RESERVED | priv->gpio_state);
+> +}
+> +
+> +static void max9286_gpiochip_set(struct gpio_chip *chip,
+> +				 unsigned int offset, int value)
+> +{
+> +	struct max9286_priv *priv = gpiochip_get_data(chip);
+> +
+> +	max9286_gpio_set(priv, offset, value);
+>  }
+>  
+> -static int max9286_gpio_get(struct gpio_chip *chip, unsigned int offset)
+> +static int max9286_gpiochip_get(struct gpio_chip *chip, unsigned int offset)
+>  {
+>  	struct max9286_priv *priv = gpiochip_get_data(chip);
+>  
+> @@ -1055,8 +1066,8 @@ static int max9286_register_gpio(struct max9286_priv *priv)
+>  	gpio->of_node = dev->of_node;
+>  	gpio->ngpio = 2;
+>  	gpio->base = -1;
+> -	gpio->set = max9286_gpio_set;
+> -	gpio->get = max9286_gpio_get;
+> +	gpio->set = max9286_gpiochip_set;
+> +	gpio->get = max9286_gpiochip_get;
+>  	gpio->can_sleep = true;
+>  
+>  	/* GPIO values default to high */
+> @@ -1069,6 +1080,75 @@ static int max9286_register_gpio(struct max9286_priv *priv)
+>  	return ret;
+>  }
+>  
+> +static int max9286_parse_gpios(struct max9286_priv *priv)
+> +{
+> +	struct device *dev = &priv->client->dev;
+> +	u32 gpio_poc[2];
+> +	int ret;
+> +
+> +	/*
+> +	 * Parse the "gpio-poc" vendor property. If the camera power is
+> +	 * controlled by one of the MAX9286 gpio lines, do not register
+> +	 * the gpio controller and ignore 'poc-supply'.
+> +	 */
+> +	ret = of_property_read_u32_array(dev->of_node,
+> +					 "maxim,gpio-poc", gpio_poc, 2);
+> +	if (!ret) {
+> +		priv->gpio_poc = gpio_poc[0];
+> +		priv->gpio_poc_flags = gpio_poc[1];
+> +		if ((priv->gpio_poc != 0 && priv->gpio_poc != 1) ||
+
+You could simply test priv->gpio_poc > 1.
+
+> +		    (priv->gpio_poc_flags != GPIO_ACTIVE_HIGH &&
+> +		     priv->gpio_poc_flags != GPIO_ACTIVE_LOW)) {
+> +			dev_err(dev, "Invalid 'gpio-poc': (%u %u)\n",
+> +				priv->gpio_poc, priv->gpio_poc_flags);
+> +			return -EINVAL;
+> +		}
+> +
+> +		/* GPIO values default to high */
+> +		priv->gpio_state = BIT(0) | BIT(1);
+
+Why is that ?
+
+> +		priv->regulator = NULL;
+
+As priv is initialized to 0, you can skip this.
+
+> +
+> +		return 0;
+> +	}
+> +
+> +	ret = max9286_register_gpio(priv);
+> +	if (ret)
+> +		return ret;
+> +
+> +	priv->regulator = devm_regulator_get(dev, "poc");
+> +	if (IS_ERR(priv->regulator)) {
+> +		if (PTR_ERR(priv->regulator) != -EPROBE_DEFER)
+> +			dev_err(dev, "Unable to get PoC regulator (%ld)\n",
+> +				PTR_ERR(priv->regulator));
+> +		return PTR_ERR(priv->regulator);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int max9286_poc_enable(struct max9286_priv *priv, bool enable)
+> +{
+> +	int ret;
+> +
+> +	/* If "poc-gpio" is used, toggle the line and do not use regulator. */
+> +	if (!priv->regulator)
+> +		return max9286_gpio_set(priv, priv->gpio_poc,
+> +					enable ^ priv->gpio_poc_flags);
+> +
+> +	/* Otherwise PoC is controlled using a regulator. */
+> +	if (enable) {
+> +		ret = regulator_enable(priv->regulator);
+> +		if (ret < 0) {
+> +			dev_err(&priv->client->dev, "Unable to turn PoC on\n");
+
+As error message when max9286_gpio_set() fails (at least in the enable
+case) would be good too. Bonus points if there's a single dev_err()
+call.
+
+> +			return ret;
+> +		}
+> +
+> +		return 0;
+> +	}
+> +
+> +	return regulator_disable(priv->regulator);
+> +}
+> +
+>  static int max9286_init(struct device *dev)
+>  {
+>  	struct max9286_priv *priv;
+> @@ -1078,17 +1158,14 @@ static int max9286_init(struct device *dev)
+>  	client = to_i2c_client(dev);
+>  	priv = i2c_get_clientdata(client);
+>  
+> -	/* Enable the bus power. */
+> -	ret = regulator_enable(priv->regulator);
+> -	if (ret < 0) {
+> -		dev_err(&client->dev, "Unable to turn PoC on\n");
+> +	ret = max9286_poc_enable(priv, true);
+> +	if (ret)
+>  		return ret;
+> -	}
+>  
+>  	ret = max9286_setup(priv);
+>  	if (ret) {
+>  		dev_err(dev, "Unable to setup max9286\n");
+> -		goto err_regulator;
+> +		goto err_poc_disable;
+>  	}
+>  
+>  	/*
+> @@ -1098,7 +1175,7 @@ static int max9286_init(struct device *dev)
+>  	ret = max9286_v4l2_register(priv);
+>  	if (ret) {
+>  		dev_err(dev, "Failed to register with V4L2\n");
+> -		goto err_regulator;
+> +		goto err_poc_disable;
+>  	}
+>  
+>  	ret = max9286_i2c_mux_init(priv);
+> @@ -1114,8 +1191,8 @@ static int max9286_init(struct device *dev)
+>  
+>  err_v4l2_register:
+>  	max9286_v4l2_unregister(priv);
+> -err_regulator:
+> -	regulator_disable(priv->regulator);
+> +err_poc_disable:
+> +	max9286_poc_enable(priv, false);
+>  
+>  	return ret;
+>  }
+> @@ -1286,20 +1363,10 @@ static int max9286_probe(struct i2c_client *client)
+>  	 */
+>  	max9286_configure_i2c(priv, false);
+>  
+> -	ret = max9286_register_gpio(priv);
+> +	ret = max9286_parse_gpios(priv);
+>  	if (ret)
+>  		goto err_powerdown;
+>  
+> -	priv->regulator = devm_regulator_get(&client->dev, "poc");
+> -	if (IS_ERR(priv->regulator)) {
+> -		if (PTR_ERR(priv->regulator) != -EPROBE_DEFER)
+> -			dev_err(&client->dev,
+> -				"Unable to get PoC regulator (%ld)\n",
+> -				PTR_ERR(priv->regulator));
+> -		ret = PTR_ERR(priv->regulator);
+> -		goto err_powerdown;
+> -	}
+> -
+>  	ret = max9286_parse_dt(priv);
+>  	if (ret)
+>  		goto err_powerdown;
+> @@ -1326,7 +1393,7 @@ static int max9286_remove(struct i2c_client *client)
+>  
+>  	max9286_v4l2_unregister(priv);
+>  
+> -	regulator_disable(priv->regulator);
+> +	max9286_poc_enable(priv, false);
+>  
+>  	gpiod_set_value_cansleep(priv->gpiod_pwdn, 0);
+>  
+
 -- 
-2.25.1
+Regards,
 
+Laurent Pinchart
