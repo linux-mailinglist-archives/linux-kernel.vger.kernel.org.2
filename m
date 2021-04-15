@@ -2,89 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 057343602C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 08:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B053602C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 08:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbhDOGzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 02:55:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33942 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229933AbhDOGzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 02:55:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618469684; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=j/VjSYO1zorqpOQ4YycM3fmnEbt1KvREwl3ylHFycHU=;
-        b=g7/4fTEIxZhyajLVOgkJMP3lwGZMq9VRALcEHWWBXpLVvpeJUslhn+FtURU6S8+fjWcyp1
-        w7Gkq5F2/9qtbghqXrsvKOxyn7JVDtY6nbMlr+Er+Kdq/HATCSRZOCzLtjLpcYLK9kB8Ok
-        6r7bW/HMVTbK7lgjbIx2TmANl/W4L7E=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D09BCAFF8;
-        Thu, 15 Apr 2021 06:54:43 +0000 (UTC)
-Date:   Thu, 15 Apr 2021 08:54:43 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Bharata B Rao <bharata@linux.ibm.com>
-Cc:     Dave Chinner <david@fromorbit.com>, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, aneesh.kumar@linux.ibm.com
-Subject: Re: High kmalloc-32 slab cache consumption with 10k containers
-Message-ID: <YHfjMyJuvXzJsg6T@dhcp22.suse.cz>
-References: <20210405054848.GA1077931@in.ibm.com>
- <20210406222807.GD1990290@dread.disaster.area>
- <20210415052300.GA1662898@in.ibm.com>
+        id S231182AbhDOG4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 02:56:11 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:34812 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230201AbhDOG4J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 02:56:09 -0400
+Received: from mail-ed1-f69.google.com ([209.85.208.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lWvuk-0001lA-Nj
+        for linux-kernel@vger.kernel.org; Thu, 15 Apr 2021 06:55:46 +0000
+Received: by mail-ed1-f69.google.com with SMTP id r4-20020a0564022344b0290382ce72b7f9so4653044eda.19
+        for <linux-kernel@vger.kernel.org>; Wed, 14 Apr 2021 23:55:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jW5ksZJL5w6HMjRF02e9r52MndUZOjt+ECOTfix66Mo=;
+        b=suJ4GclnxeFThO3g/1gRBdLVvHwRQSw6e9XKah4kiu3Ti3LKNR2mZoN4Jonr1nOMxO
+         Syaspm2L29pz0R23VzA0tLHmJwuSd/axSUQMYQ4ZIGFrxg7OYED8pBqAkbTvqqbysnK/
+         3VoNxKMACV/4WEGjjnu2nrvy2t9mLwnx0NQjiJj9Id/2iiiMbLulEVUfGQTpw/L/QJ8J
+         YixcLAOejS8BVYxOxdhVhO//6WGXsyH1uLC4ueiuaoi/5UAwqvIe03+4RBbLX6E+MvAa
+         GHUkMfzCQ7irn1KKDrxjpFH1A7mfrETnNbB52yEUXsDLOAVx+LamWc4ki2AL8KrHkrFH
+         1wtg==
+X-Gm-Message-State: AOAM532pcXABaQXaZGc6yeHVOiKr4OSBPkXzMqUxJO3cO18uLbh+QtV8
+        C8ywGnVMh9ARjdguyxuetLDqeL0eyK3CwA/0nvSSb4evpuZCvP5w6O7fMj3zelKb+GiANDDIkA3
+        q/GzzswdIKT3UpS0ZBSVAi983QK493FOS3Y6k+t+Glw==
+X-Received: by 2002:a17:906:1749:: with SMTP id d9mr1845227eje.12.1618469746453;
+        Wed, 14 Apr 2021 23:55:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyZZpiRats6JlqAzERLcvThQ/1Bvbg8u4Oo8oDQSgbgDgrnQpDMqGMikyN2SEpgOVvxMDYVfA==
+X-Received: by 2002:a17:906:1749:: with SMTP id d9mr1845209eje.12.1618469746265;
+        Wed, 14 Apr 2021 23:55:46 -0700 (PDT)
+Received: from localhost.localdomain (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
+        by smtp.gmail.com with ESMTPSA id m14sm1526561edd.63.2021.04.14.23.55.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Apr 2021 23:55:45 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        arm@kernel.org, soc@kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [GIT PULL] memory: Second pull for v5.13
+Date:   Thu, 15 Apr 2021 08:55:14 +0200
+Message-Id: <20210415065514.7385-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210415052300.GA1662898@in.ibm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 15-04-21 10:53:00, Bharata B Rao wrote:
-> On Wed, Apr 07, 2021 at 08:28:07AM +1000, Dave Chinner wrote:
-> > 
-> > Another approach may be to identify filesystem types that do not
-> > need memcg awareness and feed that into alloc_super() to set/clear
-> > the SHRINKER_MEMCG_AWARE flag. This could be based on fstype - most
-> > virtual filesystems that expose system information do not really
-> > need full memcg awareness because they are generally only visible to
-> > a single memcg instance...
-> 
-> Would something like below be appropriate?
+Hi,
 
-No. First of all you are defining yet another way to say
-SHRINKER_MEMCG_AWARE which is messy. And secondly why would shmem, proc
-and ramfs be any special and they would be ok to opt out? There is no
-single word about that reasoning in your changelog.
+On top of previous pull request - few remaining minor fixes.
 
-> >From f314083ad69fde2a420a1b74febd6d3f7a25085f Mon Sep 17 00:00:00 2001
-> From: Bharata B Rao <bharata@linux.ibm.com>
-> Date: Wed, 14 Apr 2021 11:21:24 +0530
-> Subject: [PATCH 1/1] fs: Let filesystems opt out of memcg awareness
-> 
-> All filesystem mounts by default are memcg aware and end hence
-> end up creating shrinker list_lrus for all the memcgs. Due to
-> the way the memcg_nr_cache_ids grow and the list_lru heads are
-> allocated for all memcgs, huge amount of memory gets consumed
-> by kmalloc-32 slab cache when running thousands of containers.
-> 
-> Improve this situation by allowing filesystems to opt out
-> of memcg awareness. In this patch, tmpfs, proc and ramfs
-> opt out of memcg awareness. This leads to considerable memory
-> savings when running 10k containers.
-> 
-> Signed-off-by: Bharata B Rao <bharata@linux.ibm.com>
-> ---
->  fs/proc/root.c             |  1 +
->  fs/ramfs/inode.c           |  1 +
->  fs/super.c                 | 27 +++++++++++++++++++--------
->  include/linux/fs_context.h |  2 ++
->  mm/shmem.c                 |  1 +
->  5 files changed, 24 insertions(+), 8 deletions(-)
+Best regards,
+Krzysztof
 
-[...]
--- 
-Michal Hocko
-SUSE Labs
+
+The following changes since commit 25dcca7fedcd4e31cb368ad846bfd738c0c6307c:
+
+  memory: pl353: fix mask of ECC page_size config register (2021-04-05 16:15:58 +0200)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git tags/memory-controller-drv-5.13-2
+
+for you to fetch changes up to 6ce2c05b21189eb17b3aa26720cc5841acf9dce8:
+
+  memory: mtk-smi: Add device-link between smi-larb and smi-common (2021-04-13 16:56:31 +0200)
+
+----------------------------------------------------------------
+Memory controller drivers for v5.13, part two
+
+1. Renesas RPC: fix possible NULL pointer.
+2. Exynos5422 DMC: add proper error checking for clk_prepare.
+3. Mediatek SMI: use device-links instead of explicit PM runtime calls.
+
+----------------------------------------------------------------
+Krzysztof Kozlowski (2):
+      memory: renesas-rpc-if: fix possible NULL pointer dereference of resource
+      memory: samsung: exynos5422-dmc: handle clk_set_parent() failure
+
+Yong Wu (1):
+      memory: mtk-smi: Add device-link between smi-larb and smi-common
+
+ drivers/memory/mtk-smi.c                | 19 ++++++++++---------
+ drivers/memory/renesas-rpc-if.c         |  2 +-
+ drivers/memory/samsung/exynos5422-dmc.c |  4 +++-
+ 3 files changed, 14 insertions(+), 11 deletions(-)
