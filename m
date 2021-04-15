@@ -2,100 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1123611B5
+	by mail.lfdr.de (Postfix) with ESMTP id 8502F3611B7
 	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 20:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234329AbhDOSJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 14:09:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233610AbhDOSI7 (ORCPT
+        id S234575AbhDOSJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 14:09:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46498 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234574AbhDOSJI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 14:08:59 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06713C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 11:08:35 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id em21-20020a17090b0155b029014e204a81e6so5094475pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 11:08:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZmIKFqUHduSAESy/4PeOU4GLOIssUo9k0MhB+rtUuxQ=;
-        b=PAAA1ea9mxCTLUm8rMnTT5Bz5uVDe7aIm2+CS58Eq71KP7XnCrvhijNuLJxuEe90BQ
-         gv101TXrm7o+GZO8H1bHUb13ljxphmsan9DDXjQ0mfKtiflDz8G3FoWYhAmlLYtJamNC
-         AfRa4VoecAaE7wasorSg+6yvy22JlDtKF7w/o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZmIKFqUHduSAESy/4PeOU4GLOIssUo9k0MhB+rtUuxQ=;
-        b=EwcFL6uQj8iBudGczoIzaWDvcPc+jYM0WWbaZixq/SfpcYn4WhBdHRAE4ULCCmwqev
-         oXjUcd85WMdeKIr3prvS+6LByRB4szn/r6v+Vs+Kepdbo1Cy19iLOB3lCCeiKO0MwcBW
-         WMKQo/2qW6YVu1OUEuedlMFfPMjNa0TLmv7pg+m9g3N3/0adZ07vljBynfXP12iPVkLy
-         MmbzBSs0A55KfbbzS1zgHJhYHgQRrKidUwUCsi+H2u1OuDF2wElNE7G/TC6nKIWlWSuq
-         dhFTwDd9+R/3c3aDjlsyYXY3FWPtEcJD+DkOJE5M5O/WdqRz/+G3wWkucCJMysvzungk
-         FyIQ==
-X-Gm-Message-State: AOAM531FkWImp0zhQU/ivw6JxdNnmbWl9Ti48HkuTOgb+zbl6Ce/sKwT
-        8xuwRbjl4R9J7nM6a1Kw0tigPA==
-X-Google-Smtp-Source: ABdhPJwV/iOPwRirOtIF2WPN0bS+rgljCqrBIoMJMtQGrpGIZKfWvo2Q4gixIqblVzkxGsqtn16B8g==
-X-Received: by 2002:a17:902:eec5:b029:ea:bffe:2b06 with SMTP id h5-20020a170902eec5b02900eabffe2b06mr5413492plb.8.1618510115438;
-        Thu, 15 Apr 2021 11:08:35 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x194sm2993217pfc.18.2021.04.15.11.08.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 11:08:34 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 11:08:31 -0700
-From:   Kees Cook <keescook@chromium.org>
+        Thu, 15 Apr 2021 14:09:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618510124;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CFSW/xx6h8VP0E9MM0SVm+J+UNt/2rTNWHWvDh7sIOU=;
+        b=Fpz0dHtykwvnxZ3bRpNA5WDF5pXKuGF6qTFY9SaJdRedz594z2g1FmaN7nIWc9Hrv2no+h
+        UT3tkmlE3T3iZY6k96dovgQcl57m3PmSd1ZfyTokhrD77yxTJiKJ8zviyF31FJx+HEvHUQ
+        610VkESylR0ETuT09B1SGdWuK+PRp4c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-287-OE96HVLmORK72ygKyf7eRg-1; Thu, 15 Apr 2021 14:08:39 -0400
+X-MC-Unique: OE96HVLmORK72ygKyf7eRg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 73FD610054F6;
+        Thu, 15 Apr 2021 18:08:37 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8013D13487;
+        Thu, 15 Apr 2021 18:08:33 +0000 (UTC)
+Date:   Thu, 15 Apr 2021 20:08:32 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
 To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-Message-ID: <202104151107.8E3D919@keescook>
-References: <20210414184604.23473-1-ojeda@kernel.org>
- <CAHk-=wh_sNLoz84AUUzuqXEsYH35u=8HV3vK-jbRbJ_B-JjGrg@mail.gmail.com>
- <CANiq72mSMtfdRFPGJKuoqCBFdsa_xHvx9ATjcB7QSunQdDHBuw@mail.gmail.com>
- <202104141820.7DDE15A30@keescook>
- <8eaa65020c0d44ed9122fed5acf945a0@AcuMS.aculab.com>
+Cc:     'Matthew Wilcox' <willy@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        "Christoph Hellwig" <hch@lst.de>, brouer@redhat.com
+Subject: Re: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
+Message-ID: <20210415200832.32796445@carbon>
+In-Reply-To: <a50c3156fe8943ef964db4345344862f@AcuMS.aculab.com>
+References: <20210410205246.507048-1-willy@infradead.org>
+        <20210410205246.507048-2-willy@infradead.org>
+        <20210411114307.5087f958@carbon>
+        <20210411103318.GC2531743@casper.infradead.org>
+        <20210412011532.GG2531743@casper.infradead.org>
+        <20210414101044.19da09df@carbon>
+        <20210414115052.GS2531743@casper.infradead.org>
+        <20210414211322.3799afd4@carbon>
+        <20210414213556.GY2531743@casper.infradead.org>
+        <a50c3156fe8943ef964db4345344862f@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8eaa65020c0d44ed9122fed5acf945a0@AcuMS.aculab.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 08:26:21AM +0000, David Laight wrote:
-> ...
-> > Besides just FP, 128-bit, etc, I remain concerned about just basic
-> > math operations. C has no way to describe the intent of integer
-> > overflow, so the kernel was left with the only "predictable" result:
-> > wrap around. Unfortunately, this is wrong in most cases, and we're left
-> > with entire classes of vulnerability related to such overflows.
-> 
-> I'm not sure any of the alternatives (except perhaps panic)
-> are much better.
-> Many years ago I used a COBOL system that skipped the assignment
-> if ADD X to Y (y += x) would overflow.
-> That gave a very hard to spot error when the sump of a long list
-> way a little too large.
-> If it had wrapped the error would be obvious.
-> 
-> There are certainly places where saturate is good.
-> Mostly when dealing with analogue samples.
-> 
-> I guess the problematic code is stuff that checks:
-> 	if (foo->size + constant > limit) goto error;
-> instead of:
-> 	if (foo->size > limit - constant) goto error;
+On Wed, 14 Apr 2021 21:56:39 +0000
+David Laight <David.Laight@ACULAB.COM> wrote:
 
-Right. This and alloc(size * count) are the primary offenders. :)
+> From: Matthew Wilcox
+> > Sent: 14 April 2021 22:36
+> > 
+> > On Wed, Apr 14, 2021 at 09:13:22PM +0200, Jesper Dangaard Brouer wrote:  
+> > > (If others want to reproduce).  First I could not reproduce on ARM32.
+> > > Then I found out that enabling CONFIG_XEN on ARCH=arm was needed to
+> > > cause the issue by enabling CONFIG_ARCH_DMA_ADDR_T_64BIT.  
+> > 
+> > hmmm ... you should be able to provoke it by enabling ARM_LPAE,
+> > which selects PHYS_ADDR_T_64BIT, and
+> > 
+> > config ARCH_DMA_ADDR_T_64BIT
+> >         def_bool 64BIT || PHYS_ADDR_T_64BIT
+> >   
+> > >  struct page {
+> > >         long unsigned int          flags;                /*     0     4 */
+> > >
+> > >         /* XXX 4 bytes hole, try to pack */
+> > >
+> > >         union {
+> > >                 struct {
+> > >                         struct list_head lru;            /*     8     8 */
+> > >                         struct address_space * mapping;  /*    16     4 */
+> > >                         long unsigned int index;         /*    20     4 */
+> > >                         long unsigned int private;       /*    24     4 */
+> > >                 };                                       /*     8    20 */
+> > >                 struct {
+> > >                         dma_addr_t dma_addr  
+> 
+> Adding __packed here will remove the 4 byte hole before the union
+> and the compiler seems clever enough to know that anything following
+> a 'long' must also be 'long' aligned.
 
--- 
-Kees Cook
+Played with __packed in below patch, and I can confirm it seems to work.
+
+> So you don't get anything horrid like byte accesses.
+> On 64bit dma_addr will remain 64bit aligned.
+> On arm32 dma_addr will be 32bit aligned - but forcing two 32bit access
+> won't make any difference.
+
+See below patch.  Where I swap32 the dma address to satisfy
+page->compound having bit zero cleared. (It is the simplest fix I could
+come up with).
+
+
+[PATCH] page_pool: handling 32-bit archs with 64-bit dma_addr_t
+
+From: Jesper Dangaard Brouer <brouer@redhat.com>
+
+Workaround for storing 64-bit DMA-addr on 32-bit machines in struct
+page.  The page->dma_addr share area with page->compound_head which
+use bit zero to mark compound pages. This is okay, as DMA-addr are
+aligned pointers which have bit zero cleared.
+
+In the 32-bit case, page->compound_head is 32-bit.  Thus, when
+dma_addr_t is 64-bit it will be located in top 32-bit.  Solve by
+swapping dma_addr 32-bit segments.
+
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+---
+ include/linux/mm_types.h |    2 +-
+ include/linux/types.h    |    1 +
+ include/net/page_pool.h  |   21 ++++++++++++++++++++-
+ net/core/page_pool.c     |    8 +++++---
+ 4 files changed, 27 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 6613b26a8894..27406e3b1e1b 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -100,7 +100,7 @@ struct page {
+ 			 * @dma_addr: might require a 64-bit value even on
+ 			 * 32-bit architectures.
+ 			 */
+-			dma_addr_t dma_addr;
++			dma_addr_t dma_addr __packed;
+ 		};
+ 		struct {	/* slab, slob and slub */
+ 			union {
+diff --git a/include/linux/types.h b/include/linux/types.h
+index ac825ad90e44..65fd5d630016 100644
+--- a/include/linux/types.h
++++ b/include/linux/types.h
+@@ -141,6 +141,7 @@ typedef u64 blkcnt_t;
+  */
+ #ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
+ typedef u64 dma_addr_t;
++//typedef u64 __attribute__((aligned(sizeof(void *)))) dma_addr_t;
+ #else
+ typedef u32 dma_addr_t;
+ #endif
+diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+index b5b195305346..c2329088665c 100644
+--- a/include/net/page_pool.h
++++ b/include/net/page_pool.h
+@@ -196,9 +196,28 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
+ 	page_pool_put_full_page(pool, page, true);
+ }
+ 
++static inline
++dma_addr_t page_pool_dma_addr_read(dma_addr_t dma_addr)
++{
++	/* Workaround for storing 64-bit DMA-addr on 32-bit machines in struct
++	 * page.  The page->dma_addr share area with page->compound_head which
++	 * use bit zero to mark compound pages. This is okay, as DMA-addr are
++	 * aligned pointers which have bit zero cleared.
++	 *
++	 * In the 32-bit case, page->compound_head is 32-bit.  Thus, when
++	 * dma_addr_t is 64-bit it will be located in top 32-bit.  Solve by
++	 * swapping dma_addr 32-bit segments.
++	 */
++#ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
++	if (sizeof(long unsigned int) == 4) /* 32-bit system */
++		dma_addr = (dma_addr << 32) | (dma_addr >> 32);
++#endif
++	return dma_addr;
++}
++
+ static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
+ {
+-	return page->dma_addr;
++	return page_pool_dma_addr_read(page->dma_addr);
+ }
+ 
+ static inline bool is_page_pool_compiled_in(void)
+diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+index ad8b0707af04..813598ea23f6 100644
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -174,8 +174,10 @@ static void page_pool_dma_sync_for_device(struct page_pool *pool,
+ 					  struct page *page,
+ 					  unsigned int dma_sync_size)
+ {
++	dma_addr_t dma = page_pool_dma_addr_read(page->dma_addr);
++
+ 	dma_sync_size = min(dma_sync_size, pool->p.max_len);
+-	dma_sync_single_range_for_device(pool->p.dev, page->dma_addr,
++	dma_sync_single_range_for_device(pool->p.dev, dma,
+ 					 pool->p.offset, dma_sync_size,
+ 					 pool->p.dma_dir);
+ }
+@@ -226,7 +228,7 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
+ 		put_page(page);
+ 		return NULL;
+ 	}
+-	page->dma_addr = dma;
++	page->dma_addr = page_pool_dma_addr_read(dma);
+ 
+ 	if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
+ 		page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
+@@ -294,7 +296,7 @@ void page_pool_release_page(struct page_pool *pool, struct page *page)
+ 		 */
+ 		goto skip_dma_unmap;
+ 
+-	dma = page->dma_addr;
++	dma = page_pool_dma_addr_read(page->dma_addr);
+ 
+ 	/* When page is unmapped, it cannot be returned our pool */
+ 	dma_unmap_page_attrs(pool->p.dev, dma,
+
+
+--
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
