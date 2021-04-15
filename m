@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78861360C2F
-	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB7A360CA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 15 Apr 2021 16:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233564AbhDOOtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 10:49:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36176 "EHLO mail.kernel.org"
+        id S233517AbhDOOwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 10:52:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232767AbhDOOtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 10:49:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3664761029;
-        Thu, 15 Apr 2021 14:48:43 +0000 (UTC)
+        id S234046AbhDOOvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 10:51:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 940F3613BA;
+        Thu, 15 Apr 2021 14:50:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618498123;
-        bh=vAJy+GVY+I8RpOdP3+KdIrTe/lEVBxIp80Bju7EPmd4=;
+        s=korg; t=1618498238;
+        bh=4lJThul/wz5GfpjV0ZclYVjx+hQZYcext+kvej/pxVg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QEGICIG/eOCfQUGbfu0ZA7h7khPSaBxjZU2JFxtEid1AfOIaiUPuXL0qM/kDz/Ehl
-         hE7y0wrgQri0oNnhWLs1p73T4SVwPcdwAG3VZ+Lh1JhMJcEsn5p1zYLb/HyilPmGeY
-         6PM9qHOltjz8prj2aIFbs+7hAysm4Lve5nrn8D8s=
+        b=1tPNTpWuBI6XPjChpVol2JnMj2SQo1EmnyddJ9ipzNqii8JKpwTOxdyQ5eb3Mt9Ty
+         NcKkLWpYEtOk33HeBEabYjURXbMDTjXKq8Kirj3+Sq+V5VAglWOPJlaPG/8CDO4GDE
+         wZC9QeUEMJauOtpE3Usi97DNRl8KfZVCqEN96wx0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jan Kara <jack@suse.cz>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.4 10/38] fs: direct-io: fix missing sdio->boundary
-Date:   Thu, 15 Apr 2021 16:47:04 +0200
-Message-Id: <20210415144413.682167116@linuxfoundation.org>
+Subject: [PATCH 4.9 13/47] fs: direct-io: fix missing sdio->boundary
+Date:   Thu, 15 Apr 2021 16:47:05 +0200
+Message-Id: <20210415144413.897424022@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210415144413.352638802@linuxfoundation.org>
-References: <20210415144413.352638802@linuxfoundation.org>
+In-Reply-To: <20210415144413.487943796@linuxfoundation.org>
+References: <20210415144413.487943796@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -73,15 +73,15 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/fs/direct-io.c
 +++ b/fs/direct-io.c
-@@ -780,6 +780,7 @@ submit_page_section(struct dio *dio, str
+@@ -793,6 +793,7 @@ submit_page_section(struct dio *dio, str
  		    struct buffer_head *map_bh)
  {
  	int ret = 0;
 +	int boundary = sdio->boundary;	/* dio_send_cur_page may clear it */
  
- 	if (dio->rw & WRITE) {
+ 	if (dio->op == REQ_OP_WRITE) {
  		/*
-@@ -818,10 +819,10 @@ submit_page_section(struct dio *dio, str
+@@ -831,10 +832,10 @@ submit_page_section(struct dio *dio, str
  	sdio->cur_page_fs_offset = sdio->block_in_file << sdio->blkbits;
  out:
  	/*
