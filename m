@@ -2,98 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC2436181D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 05:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 656F7361852
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 05:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237820AbhDPDSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 23:18:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236990AbhDPDSS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 23:18:18 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74BFCC061574;
-        Thu, 15 Apr 2021 20:17:53 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so13831449pjv.1;
-        Thu, 15 Apr 2021 20:17:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=VI3t5ESF3PsNUZ1NJ3A1UYUYGbeRTCKjzBQtgFmOTfg=;
-        b=vNPyQT9+tpNZ0xu455EDkmF7kUdPLbwzbuS8VYJs8oceeuvNSA/KT2g4WJohP8jA1H
-         Ud4GmV9neYynCYgLQTbCI6k+g74+ZD9lhmpfs6QOf7wXUAzwZW7mKugiVxef/BimNd6M
-         DpACe4R5mgzgxGQwACJzqexC/YiwfwrcbU+L1thHMbPzzcD3elFglNLrxlxLErstQb36
-         /HGR9YmaDJMesEv3ohEbc1EhtBuqwX2Oo1gPTOHVLOY7r4iQzjI36XtCLbxyvWy02dXZ
-         bD4QNYeKO0O/VcoBLFQqdiHklH5gthDzQwW0RpTgEYii7GCJUPW7v1WbmgjuajdC2qE7
-         wXFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=VI3t5ESF3PsNUZ1NJ3A1UYUYGbeRTCKjzBQtgFmOTfg=;
-        b=o4dZar+V3tKyoV2yG8LUrpK6q0I2ag0UlgoCfDi/wnnmuiNru3ECCPfIM2parKGSEN
-         WAYQyOjykYMC9X3prb6Qfm1+HK0BrIqpC7JWuPceWmueXim9FpVCgUpoP+v92LP42PLm
-         BVTw6lDmhnhJAkSP7oqrTStOgw3n5j8KAfQt9whSF1HX682LwyvUy749scClyPbQ8NVn
-         JDrhByP8ZlXtb5KsXr5K0dfzcXAQw4gQi7kRGShogbLRaD6oB6budJtFeVHwhaMIpHI/
-         0ADVuhxPwYQZF4PG+U5XV12mJ8ajG9PKhsjUTy9ZB5CYGm70/UdyE0oovGYxu0GqK4hE
-         0EOA==
-X-Gm-Message-State: AOAM532+G0gi5nitFkOfN5xNhMFoJNEq6w12QXfKGCQ9WEbV9lphk4RC
-        DF1XYPhIXntjcQIHd0df7ik=
-X-Google-Smtp-Source: ABdhPJxEGzCeuDLWhFr1dq91rTtma9D5cQka0/3gQBFBh723PI+Tgr1wUXyZt4fujGvu64MSBfwP4Q==
-X-Received: by 2002:a17:90a:7783:: with SMTP id v3mr7382210pjk.177.1618543073024;
-        Thu, 15 Apr 2021 20:17:53 -0700 (PDT)
-Received: from mi-OptiPlex-7060.mioffice.cn ([43.224.245.180])
-        by smtp.gmail.com with ESMTPSA id gd1sm3552411pjb.49.2021.04.15.20.17.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 20:17:52 -0700 (PDT)
-From:   zhuguangqing83@gmail.com
-To:     Bastien Nocera <hadess@hadess.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Henrik Rydberg <rydberg@bitmath.org>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guangqing Zhu <zhuguangqing83@gmail.com>
-Subject: [PATCH] Input: goodix - Fix missing IRQF_ONESHOT as only threaded handler
-Date:   Fri, 16 Apr 2021 11:17:47 +0800
-Message-Id: <20210416031747.28504-1-zhuguangqing83@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S238222AbhDPDr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 23:47:27 -0400
+Received: from gate.crashing.org ([63.228.1.57]:56655 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234662AbhDPDrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 23:47:25 -0400
+Received: from ip6-localhost (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 13G3Onft032125;
+        Thu, 15 Apr 2021 22:24:50 -0500
+Message-ID: <730d603b12e590c56770309b4df2bd668f7afbe3.camel@kernel.crashing.org>
+Subject: Re: [PATCH net-next v4 2/2] of: net: fix of_get_mac_addr_nvmem()
+ for non-platform devices
+From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To:     Michael Walle <michael@walle.cc>, ath9k-devel@qca.qualcomm.com,
+        UNGLinuxDriver@microchip.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org, linux-oxnas@groups.io,
+        linux-omap@vger.kernel.org, linux-wireless@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-staging@lists.linux.dev
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Andreas Larsson <andreas@gaisler.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Joyce Ooi <joyce.ooi@intel.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Fugang Duan <fugang.duan@nxp.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Pantelis Antoniou <pantelis.antoniou@gmail.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Byungho An <bh74.an@samsung.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Wingman Kwok <w-kwok2@ti.com>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Helmut Schaa <helmut.schaa@googlemail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?ISO-8859-1?Q?J=E9r=F4me?= Pouiller <jerome.pouiller@silabs.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>
+Date:   Fri, 16 Apr 2021 13:24:49 +1000
+In-Reply-To: <20210412174718.17382-3-michael@walle.cc>
+References: <20210412174718.17382-1-michael@walle.cc>
+         <20210412174718.17382-3-michael@walle.cc>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangqing Zhu <zhuguangqing83@gmail.com>
+On Mon, 2021-04-12 at 19:47 +0200, Michael Walle wrote:
+> 
+>  /**
+>   * of_get_phy_mode - Get phy mode for given device_node
+> @@ -59,15 +60,39 @@ static int of_get_mac_addr(struct device_node *np, const char *name, u8 *addr)
+>  static int of_get_mac_addr_nvmem(struct device_node *np, u8 *addr)
+>  {
+>         struct platform_device *pdev = of_find_device_by_node(np);
+> +       struct nvmem_cell *cell;
+> +       const void *mac;
+> +       size_t len;
+>         int ret;
+>  
+> -       if (!pdev)
+> -               return -ENODEV;
+> +       /* Try lookup by device first, there might be a nvmem_cell_lookup
+> +        * associated with a given device.
+> +        */
+> +       if (pdev) {
+> +               ret = nvmem_get_mac_address(&pdev->dev, addr);
+> +               put_device(&pdev->dev);
+> +               return ret;
+> +       }
+> +
 
-Coccinelle noticed:
-drivers/input/touchscreen/goodix.c:497:8-33: ERROR: Threaded IRQ with no
-primary handler requested without IRQF_ONESHOT
+This smells like the wrong band aid :)
 
-Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
----
- drivers/input/touchscreen/goodix.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Any struct device can contain an OF node pointer these days.
 
-diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
-index c682b028f0a2..725d01e01328 100644
---- a/drivers/input/touchscreen/goodix.c
-+++ b/drivers/input/touchscreen/goodix.c
-@@ -496,7 +496,8 @@ static int goodix_request_irq(struct goodix_ts_data *ts)
- {
- 	return devm_request_threaded_irq(&ts->client->dev, ts->client->irq,
- 					 NULL, goodix_ts_irq_handler,
--					 ts->irq_flags, ts->client->name, ts);
-+					 ts->irq_flags | IRQF_ONESHOT,
-+					 ts->client->name, ts);
- }
- 
- static int goodix_check_cfg_8(struct goodix_ts_data *ts, const u8 *cfg, int len)
-@@ -1158,7 +1159,7 @@ static int goodix_configure_dev(struct goodix_ts_data *ts)
- 		return error;
- 	}
- 
--	ts->irq_flags = goodix_irq_flags[ts->int_trigger_type] | IRQF_ONESHOT;
-+	ts->irq_flags = goodix_irq_flags[ts->int_trigger_type];
- 	error = goodix_request_irq(ts);
- 	if (error) {
- 		dev_err(&ts->client->dev, "request IRQ failed: %d\n", error);
--- 
-2.17.1
+This seems all backwards. I think we are dealing with bad evolution.
+
+We need to do a lookup for the device because we get passed an of_node.
+We should just get passed a device here... or rather stop calling
+of_get_mac_addr() from all those drivers and instead call
+eth_platform_get_mac_address() which in turns calls of_get_mac_addr().
+
+Then the nvmem stuff gets put in eth_platform_get_mac_address().
+
+of_get_mac_addr() becomes a low-level thingy that most drivers don't
+care about.
+
+Cheers,
+Ben.
+
 
