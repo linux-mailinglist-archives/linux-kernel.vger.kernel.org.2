@@ -2,108 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB729361C59
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE22361C5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240476AbhDPItt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 04:49:49 -0400
-Received: from out28-97.mail.aliyun.com ([115.124.28.97]:38051 "EHLO
-        out28-97.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241340AbhDPIsq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 04:48:46 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07564378|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0219487-0.000672429-0.977379;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047201;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=16;RT=16;SR=0;TI=SMTPD_---.K-shfge_1618562890;
-Received: from zhouyanjie-virtual-machine.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.K-shfge_1618562890)
-          by smtp.aliyun-inc.com(10.147.40.233);
-          Fri, 16 Apr 2021 16:48:20 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     tsbogend@alpha.franken.de
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, paul.burton@mips.com,
-        paul@crapouillou.net, siyanteng@loongson.cn, huangpei@loongson.cn,
-        ira.weiny@intel.com, yangtiezhu@loongson.cn,
-        zhouyanjie@wanyeetech.com, jun.jiang@ingenic.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, sernia.zhou@foxmail.com
-Subject: [PATCH] Revert "MIPS: make userspace mapping young by default".
-Date:   Fri, 16 Apr 2021 16:47:48 +0800
-Message-Id: <1618562868-91115-1-git-send-email-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.7.4
+        id S240594AbhDPItw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 04:49:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40308 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239777AbhDPItr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 04:49:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11EC361166
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 08:49:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618562963;
+        bh=y5pQwjBbQFMq3bKD3QbzsNa+rjDrnoeE8rBvuO87GXU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uWxDDO68UQ+Fd7Ndr4dCXdVzu5lPFfbObq3h/s1/1XL5rV8iEc5dHmwGaH/UWImp6
+         NrOGFPkGgBEY9Qt9VrlabFxMTsLXSHGBhVw9aYNenwEDOUknV+PTDwmEwvc0ReBI6t
+         rOcVZLBTH3A2Nk5Hm/Je92H9G2Ww2scjDWdWWE2VwCXEoNN1X6zfipOXHYEQx4eQSi
+         LS5SML2uornNySjErNr6mu0xGKeQv45A97lbvy3nfc1y9ZwUE7pArzA7JjZv4mxhvD
+         dBimN5IDOu4a/k+QTA+2eR2MKkwB60TSTie/S81lb0G3oKoyHHDv1G76Ed2kYkCKp3
+         kwWjELqeRybfA==
+Received: by mail-ej1-f43.google.com with SMTP id w23so25187716ejb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 01:49:22 -0700 (PDT)
+X-Gm-Message-State: AOAM5323aRYshKSj0YULGfhq71/SKlcdjQYBX348xOVebCWTpvV1TLGN
+        n0f8DUizQKkZFk51007j44R/76tQf6eE9oqeIqE=
+X-Google-Smtp-Source: ABdhPJwp2DQQbwzEAyjC3O9KKED/xishQuYkBwfUiSbwLvp9SA9uxFeiI/SUa58fLcRRdfyYmi2cj7S9pQnxBoN9fHM=
+X-Received: by 2002:a17:907:961d:: with SMTP id gb29mr1732730ejc.381.1618562961599;
+ Fri, 16 Apr 2021 01:49:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210413061618.4999-1-zhuguangqing83@gmail.com>
+In-Reply-To: <20210413061618.4999-1-zhuguangqing83@gmail.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Fri, 16 Apr 2021 10:49:09 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPf=X+EQJXSFAsuC54Fwvi4TNX9JAoYsEUp7j3BKio4gQQ@mail.gmail.com>
+Message-ID: <CAJKOXPf=X+EQJXSFAsuC54Fwvi4TNX9JAoYsEUp7j3BKio4gQQ@mail.gmail.com>
+Subject: Re: [PATCH] irq: Fix missing IRQF_ONESHOT as only threaded handler
+To:     zhuguangqing83@gmail.com
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit f685a533a7fab35c5d069dcd663f59c8e4171a75.
+On Tue, 13 Apr 2021 at 15:42, <zhuguangqing83@gmail.com> wrote:
+>
+> From: Guangqing Zhu <zhuguangqing83@gmail.com>
+>
+> Coccinelle noticed:
+>   kernel/irq/manage.c:2199:8-28: ERROR: Threaded IRQ with no primary
+> handler requested without IRQF_ONESHOT.
+>
+> Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
+> ---
+>  kernel/irq/manage.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+> index 4c14356543d9..222816750048 100644
+> --- a/kernel/irq/manage.c
+> +++ b/kernel/irq/manage.c
+> @@ -2197,7 +2197,7 @@ int request_any_context_irq(unsigned int irq, irq_handler_t handler,
+>
+>         if (irq_settings_is_nested_thread(desc)) {
+>                 ret = request_threaded_irq(irq, NULL, handler,
+> -                                          flags, name, dev_id);
+> +                                          flags | IRQF_ONESHOT, name, dev_id);
 
-It cause kernel panic on Ingenic X1830, so let's revert it.
+This is a core IRQ code... and you clearly see here a nested IRQ.
+Please, stop sending automated coccinelle patches.
 
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
- arch/mips/mm/cache.c | 31 ++++++++++++++-----------------
- 1 file changed, 14 insertions(+), 17 deletions(-)
-
-diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
-index 7719d63..9cfd432 100644
---- a/arch/mips/mm/cache.c
-+++ b/arch/mips/mm/cache.c
-@@ -21,7 +21,6 @@
- #include <asm/cpu.h>
- #include <asm/cpu-features.h>
- #include <asm/setup.h>
--#include <asm/pgtable.h>
- 
- /* Cache operations. */
- void (*flush_cache_all)(void);
-@@ -157,31 +156,29 @@ unsigned long _page_cachable_default;
- EXPORT_SYMBOL(_page_cachable_default);
- 
- #define PM(p)	__pgprot(_page_cachable_default | (p))
--#define PVA(p)	PM(_PAGE_VALID | _PAGE_ACCESSED | (p))
- 
- static inline void setup_protection_map(void)
- {
- 	protection_map[0]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
--	protection_map[1]  = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
--	protection_map[2]  = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
--	protection_map[3]  = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
--	protection_map[4]  = PVA(_PAGE_PRESENT);
--	protection_map[5]  = PVA(_PAGE_PRESENT);
--	protection_map[6]  = PVA(_PAGE_PRESENT);
--	protection_map[7]  = PVA(_PAGE_PRESENT);
-+	protection_map[1]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
-+	protection_map[2]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
-+	protection_map[3]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
-+	protection_map[4]  = PM(_PAGE_PRESENT);
-+	protection_map[5]  = PM(_PAGE_PRESENT);
-+	protection_map[6]  = PM(_PAGE_PRESENT);
-+	protection_map[7]  = PM(_PAGE_PRESENT);
- 
- 	protection_map[8]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
--	protection_map[9]  = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
--	protection_map[10] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE |
-+	protection_map[9]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
-+	protection_map[10] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE |
- 				_PAGE_NO_READ);
--	protection_map[11] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
--	protection_map[12] = PVA(_PAGE_PRESENT);
--	protection_map[13] = PVA(_PAGE_PRESENT);
--	protection_map[14] = PVA(_PAGE_PRESENT);
--	protection_map[15] = PVA(_PAGE_PRESENT);
-+	protection_map[11] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
-+	protection_map[12] = PM(_PAGE_PRESENT);
-+	protection_map[13] = PM(_PAGE_PRESENT);
-+	protection_map[14] = PM(_PAGE_PRESENT | _PAGE_WRITE);
-+	protection_map[15] = PM(_PAGE_PRESENT | _PAGE_WRITE);
- }
- 
--#undef _PVA
- #undef PM
- 
- void cpu_cache_init(void)
--- 
-2.7.4
-
+Best regards,
+Krzysztof
