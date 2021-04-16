@@ -2,58 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13135361EB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:32:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F294D361EBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239109AbhDPLbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 07:31:31 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:53072 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229719AbhDPLb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 07:31:29 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lXMgb-0003Ov-Qt; Fri, 16 Apr 2021 21:30:59 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 16 Apr 2021 21:30:57 +1000
-Date:   Fri, 16 Apr 2021 21:30:57 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next 0/5] Remove redundant dev_err call
-Message-ID: <20210416113057.GG16633@gondor.apana.org.au>
-References: <20210407141819.32588-1-yuehaibing@huawei.com>
+        id S242198AbhDPLbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 07:31:46 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:46856 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242094AbhDPLbm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 07:31:42 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13GBVBTn106567;
+        Fri, 16 Apr 2021 06:31:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1618572671;
+        bh=MelUBgWsylW80+RVjogTPjEFvjvSH2ZwkORUG97pKnw=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=cXlXL83p98zNZgPDUVA5Od5HzvZr7rrVL0UQpvk7Z620uY3SAIl89HzI7h7+0OpxC
+         pL+cc7UjzRUaK7YeVht1nB1s2IX/6GalQf2vh/Z02PCHPHR3+Qau08U2MM2CKFMRTL
+         7lVVwEo1e1Ie9cI2i0RIjg0jHOYRQ4C5N4pNSlFo=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13GBVBUv079822
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 16 Apr 2021 06:31:11 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 16
+ Apr 2021 06:31:10 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 16 Apr 2021 06:31:10 -0500
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13GBUwIw073816;
+        Fri, 16 Apr 2021 06:31:07 -0500
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <linux-can@vger.kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>
+Subject: [PATCH v5 2/3] dt-bindings: phy: Add binding for TI TCAN104x CAN transceivers
+Date:   Fri, 16 Apr 2021 17:00:57 +0530
+Message-ID: <20210416113058.23815-3-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210416113058.23815-1-a-govindraju@ti.com>
+References: <20210416113058.23815-1-a-govindraju@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210407141819.32588-1-yuehaibing@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 10:18:14PM +0800, YueHaibing wrote:
-> This patchset remove some redundant dev_err calls
-> 
-> YueHaibing (5):
->   crypto: atmel-tdes - Remove redundant dev_err call in
->     atmel_tdes_probe()
->   crypto: img-hash - Remove redundant dev_err call in img_hash_probe()
->   crypto: ux500 - Remove redundant dev_err calls
->   crypto: keembay - Remove redundant dev_err calls
->   crypto: ccree - Remove redundant dev_err call in init_cc_resources()
-> 
->  drivers/crypto/atmel-tdes.c                   | 1 -
->  drivers/crypto/ccree/cc_driver.c              | 4 +---
->  drivers/crypto/img-hash.c                     | 3 ---
->  drivers/crypto/keembay/keembay-ocs-aes-core.c | 4 +---
->  drivers/crypto/keembay/keembay-ocs-hcu-core.c | 4 +---
->  drivers/crypto/ux500/cryp/cryp_core.c         | 1 -
->  drivers/crypto/ux500/hash/hash_core.c         | 1 -
->  7 files changed, 3 insertions(+), 15 deletions(-)
+Add binding documentation for TI TCAN104x CAN transceivers.
 
-All applied.  Thanks.
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+ .../bindings/phy/ti,tcan104x-can.yaml         | 56 +++++++++++++++++++
+ MAINTAINERS                                   |  1 +
+ 2 files changed, 57 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+
+diff --git a/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml b/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+new file mode 100644
+index 000000000000..6107880e5246
+--- /dev/null
++++ b/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+@@ -0,0 +1,56 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/phy/ti,tcan104x-can.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: TCAN104x CAN TRANSCEIVER PHY
++
++maintainers:
++  - Aswath Govindraju <a-govindraju@ti.com>
++
++properties:
++  $nodename:
++    pattern: "^can-phy"
++
++  compatible:
++    enum:
++      - ti,tcan1042
++      - ti,tcan1043
++
++  '#phy-cells':
++    const: 0
++
++  standby-gpios:
++    description:
++      gpio node to toggle standby signal on transceiver
++    maxItems: 1
++
++  enable-gpios:
++    description:
++      gpio node to toggle enable signal on transceiver
++    maxItems: 1
++
++  max-bitrate:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      max bit rate supported in bps
++    minimum: 1
++
++required:
++  - compatible
++  - '#phy-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    transceiver1: can-phy {
++      compatible = "ti,tcan1043";
++      #phy-cells = <0>;
++      max-bitrate = <5000000>;
++      standby-gpios = <&wakeup_gpio1 16 GPIO_ACTIVE_LOW>;
++      enable-gpios = <&main_gpio1 67 GPIO_ACTIVE_HIGH>;
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 84ef96a444c3..e666d33af10d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4046,6 +4046,7 @@ W:	https://github.com/linux-can
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git
+ F:	Documentation/devicetree/bindings/net/can/
++F:	Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+ F:	drivers/net/can/
+ F:	include/linux/can/bittiming.h
+ F:	include/linux/can/dev.h
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.17.1
+
