@@ -2,85 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F2A36179E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 04:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 854913617A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 04:42:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234962AbhDPClM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 22:41:12 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:48141 "EHLO ozlabs.org"
+        id S236148AbhDPCnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 22:43:03 -0400
+Received: from mga09.intel.com ([134.134.136.24]:24272 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234548AbhDPClK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 22:41:10 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FM0nT35z7z9sSC;
-        Fri, 16 Apr 2021 12:40:45 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1618540845;
-        bh=OwZiIABFu7AJlIJwLYAVUQTyUXxkqTtZCX8S19sU4h8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LfiBsVKVrv2MJWMn0fKIiphzrlxfYUmPWVfPmfwkAKTP40lG5yZaMBD2eJ5uuz0mU
-         Ubi7LRskPM2nEKgurh8g6sdqNLGWKaDfk6JchCxyi2cYgRyAqsZqZ4DNXMsZET/ptC
-         vKDsHJP25i/2IFtZPLDu5/TcRik9dc7/58icilxe5ptcS3Xx8NRFcavziIexkaEFLs
-         gefLAip1/pU/s0WVAb5pOetILnGXhmFZAMDxu2XytEJuRfIi8l7BruDCpJc/LZwk6j
-         qdiiS/JlNakOU7mOtYQE0isakyutZYi4v+UFabNWnPvOh1XibQTxXE8qwVRz17PA3Q
-         9j6zLky23dGCQ==
-Date:   Fri, 16 Apr 2021 12:40:44 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Prike Liang <Prike.Liang@amd.com>,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the amdgpu tree
-Message-ID: <20210416124044.53d4beee@canb.auug.org.au>
+        id S234548AbhDPCnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 22:43:01 -0400
+IronPort-SDR: sNVxYt0gpwfW+WiP5WHI8YFP+fH9tuNLFJvgsF33VWoyTPX00NANI0IOxmJ4vOfq8iAoU7ff1u
+ q99e14qSRrAQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="195092046"
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="195092046"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 19:42:37 -0700
+IronPort-SDR: oCpKOHXPVkd9xhaUJhOgUWuyrYg5UdcM4noz9G0FOIgZeej2MtyPEhRYDxhwGZNXi9v1E/cdiC
+ sX/2BvZj+g6A==
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="418971473"
+Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.254.208.190]) ([10.254.208.190])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 19:42:32 -0700
+Subject: Re: [PATCH V2 3/3] vDPA/ifcvf: get_config_size should return dev
+ specific config size
+To:     Stefano Garzarella <sgarzare@redhat.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Cc:     lulu@redhat.com, kvm@vger.kernel.org, mst@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+References: <20210415095336.4792-1-lingshan.zhu@intel.com>
+ <20210415095336.4792-4-lingshan.zhu@intel.com>
+ <20210415134838.3hn33estolycag4p@steredhat>
+From:   Zhu Lingshan <lingshan.zhu@linux.intel.com>
+Message-ID: <e1abd531-d8f9-d9ba-3dfe-2eafcd75c58f@linux.intel.com>
+Date:   Fri, 16 Apr 2021 10:42:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/HtVi6+vP_cKBfTqVPR61JVi";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210415134838.3hn33estolycag4p@steredhat>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/HtVi6+vP_cKBfTqVPR61JVi
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-After merging the amdgpu tree, today's linux-next build (powerpc
-ppc64_defconfig) produced this warning:
+On 4/15/2021 9:48 PM, Stefano Garzarella wrote:
+> On Thu, Apr 15, 2021 at 05:53:36PM +0800, Zhu Lingshan wrote:
+>> get_config_size() should return the size based on the decected
+>> device type.
+>>
+>> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
+>> ---
+>> drivers/vdpa/ifcvf/ifcvf_main.c | 18 +++++++++++++++++-
+>> 1 file changed, 17 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c 
+>> b/drivers/vdpa/ifcvf/ifcvf_main.c
+>> index cea1313b1a3f..6844c49fe1de 100644
+>> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
+>> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
+>> @@ -347,7 +347,23 @@ static u32 ifcvf_vdpa_get_vq_align(struct 
+>> vdpa_device *vdpa_dev)
+>>
+>> static size_t ifcvf_vdpa_get_config_size(struct vdpa_device *vdpa_dev)
+>> {
+>> -    return sizeof(struct virtio_net_config);
+>> +    struct ifcvf_adapter *adapter = vdpa_to_adapter(vdpa_dev);
+>> +    struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
+>> +    struct pci_dev *pdev = adapter->pdev;
+>> +    size_t size;
+>> +
+>> +    if (vf->dev_type == VIRTIO_ID_NET)
+>> +        size = sizeof(struct virtio_net_config);
+>> +
+>> +    else if (vf->dev_type == VIRTIO_ID_BLOCK)
+>> +        size = sizeof(struct virtio_blk_config);
+>> +
+>> +    else {
+>> +        size = 0;
+>> +        IFCVF_ERR(pdev, "VIRTIO ID %u not supported\n", vf->dev_type);
+>> +    }
+>
+> I slightly prefer the switch, but I don't have a strong opinion.
+>
+> However, if we want to use if/else, we should follow 
+> `Documentation/process/coding-style.rst` line 166:
+>    Note that the closing brace is empty on a line of its own, 
+> **except** in
+>    the cases where it is followed by a continuation of the same 
+> statement,
+>    ie a ``while`` in a do-statement or an ``else`` in an if-statement, 
+> like
+>
+> also `scripts/checkpatch.pl --strict` complains:
+>
+>    CHECK: braces {} should be used on all arms of this statement
+>    #209: FILE: drivers/vdpa/ifcvf/ifcvf_main.c:355:
+>    +    if (vf->dev_type == VIRTIO_ID_NET)
+>    [...]
+>    +    else if (vf->dev_type == VIRTIO_ID_BLOCK)
+>    [...]
+>    +    else {
+>    [...]
+>
+>    CHECK: Unbalanced braces around else statement
+>    #215: FILE: drivers/vdpa/ifcvf/ifcvf_main.c:361:
+>    +    else {
+Thanks Stefano, the reason is we only have one line code after if, so 
+looks like {} is unnecessary, I agree switch can clear up
+code style confusions. I will add this in v3.
 
-drivers/pci/quirks.c: In function 'quirk_amd_nvme_fixup':
-drivers/pci/quirks.c:312:18: warning: unused variable 'rdev' [-Wunused-vari=
-able]
-  312 |  struct pci_dev *rdev;
-      |                  ^~~~
+Thanks!
+>
+> Thanks,
+> Stefano
+>
+> _______________________________________________
+> Virtualization mailing list
+> Virtualization@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/virtualization
 
-Introduced by commit
-
-  9597624ef606 ("nvme: put some AMD PCIE downstream NVME device to simple s=
-uspend/resume path")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/HtVi6+vP_cKBfTqVPR61JVi
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB4+SwACgkQAVBC80lX
-0GwW6Af+P7F0mElELCManZPeB/IsOmGPLRkWHmfDQp5aWzWdX1Sclu1t8KbGrWN3
-Bsz0c1aPaEriQGTk2whvpPy9eIYUHfHNOFMAqRvh94Y3SZrKUgNuS0aDMgPJA3Xq
-iRaElxc6NbaoZFiUSHGV3QYNf1SVrbHX7k8DhGDEUyLIS3RN52Z3b4nsgPEPgtfH
-7F3Zr1D8rEMKuAie+FgFKEi4UBPumSrIiiD6u0kTsSRTy3qMbiK/EjGmdJV2oFPS
-9U8h8flG9oaxzInzHN6qhx9kuCA0uvT9EMXJvmv2h8eIKl2v5kqkymb1DVPcwXaD
-AnGC2PCwYtrN+k5pr7hOqzFqZn3zAg==
-=cfmR
------END PGP SIGNATURE-----
-
---Sig_/HtVi6+vP_cKBfTqVPR61JVi--
