@@ -2,152 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9712362A2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 23:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1CC1362A2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 23:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235570AbhDPVWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 17:22:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50560 "EHLO
+        id S1344377AbhDPVWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 17:22:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344242AbhDPVV6 (ORCPT
+        with ESMTP id S1344236AbhDPVV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 16 Apr 2021 17:21:58 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E0AC061343;
-        Fri, 16 Apr 2021 14:19:00 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0cc500329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:c500:329c:23ff:fea6:a903])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C0A971EC0350;
-        Fri, 16 Apr 2021 23:18:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1618607937;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UpcmZbbbGFBVK0S1XUfHo8fVMPRezkHQLhMcfuuypro=;
-        b=qAv9ARPZvIpQqfteUj6uo33p2q1+OadyW3CgQJBw25mwdgfW9aPA7gahgdfij9hpCVVUts
-        f7+RB/BjTsep91KMvLCVs1AOwHFqMGMBmIaqY1GQIFrRSi0Dr64l7XHnZwjt9Y5CGG+H8/
-        BONKf4EVmuqDh1xHeYmwz2NxIdc6UFo=
-Date:   Fri, 16 Apr 2021 23:18:55 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     x86@kernel.org, Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 05/15] x86: Implement function_nocfi
-Message-ID: <20210416211855.GD22348@zn.tnic>
-References: <20210416203844.3803177-1-samitolvanen@google.com>
- <20210416203844.3803177-6-samitolvanen@google.com>
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44FF8C061344;
+        Fri, 16 Apr 2021 14:19:29 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id n12so31607189ybf.8;
+        Fri, 16 Apr 2021 14:19:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=udsjYFmKZpzpPEZQ/S94m1J5JpuvU1EmGzVJfAa7Om8=;
+        b=EosPrWTw2GhguQ2HMV+cpFl/54oW1S4zmr0H6Z19xIAq8cU8Ub7uO0q4nQJtoyDVvK
+         BNqH90kAcYN+mw5cr4HGgxGG+iJGmV4cALQryNtFoHePwef1ZBT3WZigxR2u2XzyID7Y
+         FtENA/IG+gQ+zeJ6zH2YdrU+qKGAPR0s8lhip+Vpw4vNuMV+2D2wdts7ehDxz0UES6H4
+         l4fvpS8suXEog7ap3jlfQ0Xh4KOLjFaYu3p7hSp7QcjjOsG8VFx8Qr4mwG/NZitsEk7L
+         pRcdqgY1Iw0tQF5BDyjGmlQw08P9lXHmjJ5Q0dPeFAD9IEr3E316XmQ10pJ36U1McKEH
+         ToRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=udsjYFmKZpzpPEZQ/S94m1J5JpuvU1EmGzVJfAa7Om8=;
+        b=WdpT+jFBsWQRQ819ZrHvu+RIVCQZ6P3/aI4uXeNhips7Orx0XP5xfsJw0s2WikOY0L
+         LVzK/8ZOWcvKvm6dYnxXTsEduDbbDjceYc3JVFya+lQ9P5dd4/zwIQXvnQJWqc3IQng/
+         OPd03p0iJMEf1Lhs3lA8OZIoFfnMr9MivkaoBKNT8taHb3ENJ0MJtrmXjEq1lDBy1huI
+         VlOgAD6P65sennUFm8Ut5WPB5k3wOqcTGfqf1xR/uEO6k42Urw0xzCV4sTL+vZ06qjez
+         s6b0sadOrmxHIjE2Vt5J9rItfnGUkUtXxgWQtFyRcnu6CkziQkC8WIoQsYsrhQVjnaeX
+         XrDA==
+X-Gm-Message-State: AOAM533mtfUVJMZUwgqIIoU1Vx3iohlS4kTf7VzgddxIYqhF2Do51FT9
+        0ALxOPUr3WEk2I15QmHL8DV+Fra6pcb9JpH3+5M=
+X-Google-Smtp-Source: ABdhPJyNClVV1yCAjhal7QcWJILaE+DVzQrq0w+nHD/4P9l19UMiv/gcRcnPaNvszVrGtWxPIoOZxPQaGFw3tBNsX4U=
+X-Received: by 2002:a25:7909:: with SMTP id u9mr1528074ybc.22.1618607969202;
+ Fri, 16 Apr 2021 14:19:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210416203844.3803177-6-samitolvanen@google.com>
+References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-5-ojeda@kernel.org>
+ <YHmTWEAS/QjX++w4@hirez.programming.kicks-ass.net> <CAHk-=wh_zb=K1B-N8mgHmSZDqTLgOm711NRXbTX_OwFAzDYg0Q@mail.gmail.com>
+ <CANiq72nx7ngazsH7sZgc=HeU0cNj45F9+-rwQb7AkdYsRCmRbQ@mail.gmail.com>
+ <YHnS92ZKZ4tRWTiA@zeniv-ca.linux.org.uk> <CANiq72=RLf0FiuLVL-ZeLFp9P2LxTymbzhXoyQGG=tvUY_J-Sg@mail.gmail.com>
+ <20210416202215.GA11236@1wt.eu>
+In-Reply-To: <20210416202215.GA11236@1wt.eu>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 16 Apr 2021 23:19:18 +0200
+Message-ID: <CANiq72=3zZvdEsp-AH2Xj1nuvfGOQQ1WGmav6i4nFTz-3-_c_w@mail.gmail.com>
+Subject: Re: [PATCH 04/13] Kbuild: Rust support
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 01:38:34PM -0700, Sami Tolvanen wrote:
-> With CONFIG_CFI_CLANG, the compiler replaces function addresses in
-> instrumented C code with jump table addresses. This change implements
-> the function_nocfi() macro, which returns the actual function address
-> instead.
-> 
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> ---
->  arch/x86/include/asm/page.h | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/page.h b/arch/x86/include/asm/page.h
-> index 7555b48803a8..5499a05c44fc 100644
-> --- a/arch/x86/include/asm/page.h
-> +++ b/arch/x86/include/asm/page.h
-> @@ -71,6 +71,20 @@ static inline void copy_user_page(void *to, void *from, unsigned long vaddr,
->  extern bool __virt_addr_valid(unsigned long kaddr);
->  #define virt_addr_valid(kaddr)	__virt_addr_valid((unsigned long) (kaddr))
->  
-> +#ifdef CONFIG_CFI_CLANG
+On Fri, Apr 16, 2021 at 10:22 PM Willy Tarreau <w@1wt.eu> wrote:
+>
+> So it simply does the equivalent of:
+>
+>   struct result {
+>      int status;
+>      int error;
+>   };
 
-Almost every patch is talking about this magical config symbol but it
-is nowhere to be found. How do I disable it, is there a Kconfig entry
-somewhere, etc, etc?
+Not exactly, it is more like a tagged union, as Connor mentioned.
 
-> +/*
-> + * With CONFIG_CFI_CLANG, the compiler replaces function address
-> + * references with the address of the function's CFI jump table
-> + * entry. The function_nocfi macro always returns the address of the
-> + * actual function instead.
-> + */
-> +#define function_nocfi(x) ({						\
-> +	void *addr;							\
-> +	asm("leaq " __stringify(x) "(%%rip), %0\n\t" : "=r" (addr));	\
-> +	addr;								\
-> +})
+However, and this is the critical bit: it is a compile-time error to
+access the inactive variants (in safe code). In C, it is on you to
+keep track which one is the current one.
 
-Also, eww.
+>      kill_foo();   // only for rust, C doesn't need it
 
-It seems all these newfangled things we get, mean obfuscating code even
-more. What's wrong with using __nocfi instead? That's nicely out of the
-way so slap that in front of functions.
+Please note that `kill_foo()` is not needed in Rust -- it was an
+example of possible cleanup (since Al mentioned resources/cleanup)
+using RAII.
 
-Also, did you even build this on, say, 32-bit allmodconfig?
-
-Oh well.
-
-In file included from ./include/linux/ftrace.h:22:0,
-                 from ./include/linux/init_task.h:9,
-                 from init/init_task.c:2:
-./include/linux/ftrace.h: In function ‘ftrace_init_nop’:
-./arch/x86/include/asm/ftrace.h:9:40: error: implicit declaration of function ‘function_nocfi’ [-Werror=implicit-function-declaration]
- # define MCOUNT_ADDR  ((unsigned long)(function_nocfi(__fentry__)))
-                                        ^
-./include/linux/ftrace.h:671:35: note: in expansion of macro ‘MCOUNT_ADDR’
-  return ftrace_make_nop(mod, rec, MCOUNT_ADDR);
-                                   ^~~~~~~~~~~
-In file included from ./include/linux/ftrace.h:22:0,
-                 from ./include/linux/perf_event.h:49,
-                 from ./include/linux/trace_events.h:10,
-                 from ./include/trace/syscall.h:7,
-                 from ./include/linux/syscalls.h:85,
-                 from init/main.c:21:
-./include/linux/ftrace.h: In function ‘ftrace_init_nop’:
-./arch/x86/include/asm/ftrace.h:9:40: error: implicit declaration of function ‘function_nocfi’ [-Werror=implicit-function-declaration]
- # define MCOUNT_ADDR  ((unsigned long)(function_nocfi(__fentry__)))
-                                        ^
-./include/linux/ftrace.h:671:35: note: in expansion of macro ‘MCOUNT_ADDR’
-  return ftrace_make_nop(mod, rec, MCOUNT_ADDR);
-                                   ^~~~~~~~~~~
-In file included from ./include/linux/ftrace.h:22:0,
-                 from ./include/linux/perf_event.h:49,
-                 from ./include/linux/trace_events.h:10,
-                 from ./include/trace/syscall.h:7,
-                 from ./include/linux/syscalls.h:85,
-                 from init/initramfs.c:10:
-./include/linux/ftrace.h: In function ‘ftrace_init_nop’:
-./arch/x86/include/asm/ftrace.h:9:40: error: implicit declaration of function ‘function_nocfi’ [-Werror=implicit-function-declaration]
- # define MCOUNT_ADDR  ((unsigned long)(function_nocfi(__fentry__)))
-                                        ^
-./include/linux/ftrace.h:671:35: note: in expansion of macro ‘MCOUNT_ADDR’
-  return ftrace_make_nop(mod, rec, MCOUNT_ADDR);
-                                   ^~~~~~~~~~~
-In file included from ./include/linux/ftrace.h:22:0,
-                 from ./include/linux/perf_event.h:49,
-                 from arch/x86/events/core.c:15:
-./include/linux/ftrace.h: In function ‘ftrace_init_nop’:
-./arch/x86/include/asm/ftrace.h:9:40: error: implicit declaration of function ‘function_nocfi’ [-Werror=implicit-function-declaration]
- # define MCOUNT_ADDR  ((unsigned long)(function_nocfi(__fentry__)))
-...
-
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Cheers,
+Miguel
