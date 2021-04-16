@@ -2,309 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B070362A61
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 23:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75327362A66
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 23:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344437AbhDPVfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 17:35:21 -0400
-Received: from mail.hallyn.com ([178.63.66.53]:42506 "EHLO mail.hallyn.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235714AbhDPVfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 17:35:20 -0400
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-        id CE2A2471; Fri, 16 Apr 2021 16:34:53 -0500 (CDT)
-Date:   Fri, 16 Apr 2021 16:34:53 -0500
-From:   "Serge E. Hallyn" <serge@hallyn.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Andrew G. Morgan" <morgan@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        security@kernel.org, Tycho Andersen <tycho@tycho.ws>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [RFC PATCH] capabilities: require CAP_SETFCAP to map uid 0 (v3)
-Message-ID: <20210416213453.GA29094@mail.hallyn.com>
-References: <20210416045851.GA13811@mail.hallyn.com>
- <20210416150501.zam55gschpn2w56i@wittgenstein>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S1344457AbhDPVgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 17:36:45 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:55708 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235540AbhDPVgl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 17:36:41 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13GLSpNg005118;
+        Fri, 16 Apr 2021 14:36:00 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=FEqA/dTwN7cCgHWT+Xl+2AuYK4FhTtzZNkkvwG8ciaw=;
+ b=imLiuRljvjJrmXdQhgIpykKHFhfOLlQQugAFLrdLAcCVtyzYDna2kLMVZ5vcxvMpC7ga
+ AiggzCVukYgqUmKeCkTgDOT/reC7A+NATh9cuUZy9NEUJydFBb0e3VW8RogY/paGisx7
+ lUNYP9gGUZ9inpmgmk6TpNwJEAz+82f7mZM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 37ydj4swmv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 16 Apr 2021 14:36:00 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 16 Apr 2021 14:35:59 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QSsZmKUqsS8RgnCW+8RbzfiMYvzoYjSCiR4Kt+7U91LlMjjEip8bVBvP7STIdiQAOc+LUiTBbnC7hIdVzLP9xpynyq67tvqqMvJTspUTkLWQY6hTnRMlHFDBIIpt8UjusPXcelE+XpIrWMGXZxwkvIAUYQkerT1r9vbj90YmGApuUIdcaF66331JtIDQffWZIEfmbSIOKgYlNrhHSyTArftGina+YceBekwK/GoX/RogzbpsB7k6TP7mSATVi5DqMQolwGxz+sKSdlwpQMTYdL0oXICiRjoOBoBfWv0jro3VjtIEurvkQrtFgCS1p5oLAYrEukgGV6YDx9khFJHi1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FEqA/dTwN7cCgHWT+Xl+2AuYK4FhTtzZNkkvwG8ciaw=;
+ b=CW4hYBO27qzwKSptLuR74MnOZfPTRlTJGzca7kPnFiz3a1jSs4Ad3k2Xdo2jsvNXBkDKyhrxj1W6Rm8GXPYJRZSdp+ks8BEDUsxoFZH/3HcubXv6Y1LSGdRsKANjoynP57f54t88eni0bqDjd7jkYWI6BvTGlvjOImyrFZO/aj8fTiw2w1TsvKzComliCVu7XrpM5pIXddUUwLHAL4OyHU65giZDxzMCg6QBI7p08YkcbFbJ1WvBagX/wFvAPHFEbvKuS1kehf1PO7ZYg0Qi5EuiHP92oL5lMcmFcFufyFo3e5oJg5ZyjJa+cU1b1S/cXohTqALTVs7eFjUll7YeZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BY3PR15MB4801.namprd15.prod.outlook.com (2603:10b6:a03:3b4::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Fri, 16 Apr
+ 2021 21:35:58 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::718a:4142:4c92:732f]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::718a:4142:4c92:732f%6]) with mapi id 15.20.4042.019; Fri, 16 Apr 2021
+ 21:35:58 +0000
+Date:   Fri, 16 Apr 2021 14:35:53 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Pedro Tammela <pctammela@gmail.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Pedro Tammela <pctammela@mojatatu.com>,
+        David Verbeiren <david.verbeiren@tessares.net>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v4 0/3] add batched ops for percpu array
+Message-ID: <20210416213553.wclvjwbkxpvs6rfr@kafai-mbp.dhcp.thefacebook.com>
+References: <20210415174619.51229-1-pctammela@mojatatu.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210416150501.zam55gschpn2w56i@wittgenstein>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210415174619.51229-1-pctammela@mojatatu.com>
+X-Originating-IP: [2620:10d:c090:400::5:d4d1]
+X-ClientProxiedBy: MW4PR04CA0384.namprd04.prod.outlook.com
+ (2603:10b6:303:81::29) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:d4d1) by MW4PR04CA0384.namprd04.prod.outlook.com (2603:10b6:303:81::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Fri, 16 Apr 2021 21:35:56 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 97d757b1-8db6-41c8-f6f5-08d9011f9f4c
+X-MS-TrafficTypeDiagnostic: BY3PR15MB4801:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY3PR15MB4801426E4802C8440DB43737D54C9@BY3PR15MB4801.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vovBa+Ioh1Cg/8U2p+/ybgqAr6CnLLQ4ABhzSuVD1flNA0uScmUReFKOITmMjzYkDsYYuTIFxY3E9iTFcMfBAsTXj58LISSKHVJb1B5OxY8hfAd0yCX7Wyekrk0pOiPyI3bo74iVu1J5reOg/MXwFRrh6QmGfM0spLmW/Cfw7jBHpeMBml7v9eI1tmN22w1NFHnbhStsGcKzRKPUPNqGLj3JKCeRwW9KTVVzFC6QjVRdyvqpFJ/+KY676m3QSEG8bxfwCFpWtbWIRHS2PjX3eJ4PrZinx7hEiHkFo2RbNCCafxKqXwn61+IebJ9f5eG4Wgmy83KEPDTp4i/stXUVWXcPGdgmfrRVLh/bFVV2ZapJHEttaNfCGG1AgbKDvs4nsm3TXl/HgGBJKQFnr66cjDH9voz7E2TElQewxMr4LCxmJQkufUqM35nmfqK9d+tpTWhVYy3rgWUwAT4qUdnpabYr4Pd9PrQMt1tdNlEzRjpaSeJORt/BZq196TfieuKdkNiwglCeOeIjdUSzoocMy7axMlMdNwZ76z+ILbZ2FoyUR8Bw4YLbaPM7MndZybZx2KQO6kesgyLk5zfGa1Hn+w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(66476007)(66556008)(66946007)(7696005)(498600001)(6666004)(7416002)(5660300002)(54906003)(8936002)(52116002)(6916009)(186003)(86362001)(4744005)(4326008)(8676002)(83380400001)(38100700002)(2906002)(9686003)(55016002)(16526019)(1076003)(6506007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?gIbZNMRI/uB034XLMbv7KpcwLKSfpTywCjqOabx3azfBXktvuZSlISMPnQ6K?=
+ =?us-ascii?Q?WdyXWQnOogiFdrE/xt4lQ3X0PajDFTYgx34LsTwiBmDkaUtkKJ8hM3W0rk9B?=
+ =?us-ascii?Q?P3nQSUiTFkdkfFQmh0HL2eeAvyerYKdj/pM1PKsLHAk+8tOIsjCPZz1Z+ysQ?=
+ =?us-ascii?Q?DmiJeDc0mHUBX8Ald5IQjWNrqzaPY0zDkAHaoQ0fEohhZ4/tIQtX4pbslS8B?=
+ =?us-ascii?Q?Et2V0+fDfSMup0XbLfqr7yN+kfCONPaG+DqQhA4qkY53xD3gF8P/LBi7Fkll?=
+ =?us-ascii?Q?049VpRklYXBT+aNRX0/acdINRV6q4OgOEPDaPpH2L4hR4I80QEhJva0Y4M6Q?=
+ =?us-ascii?Q?k+K79N8VMl9/8H7Mtsp7RWlgvQClwLD7jRbvIn+0god8SfRzfS/Q/IvSOWkl?=
+ =?us-ascii?Q?R+Ii5YfhLv/s1JnCRzuNRGKsEAoEeEgFJ2geTJrTVlkickdvHp39VwrPrDUu?=
+ =?us-ascii?Q?gwsZvkaoFvda5XTf+YsQbgjZ+Cjj6YMRNAPRciBEH5qEA2YjsinanRgGC0VR?=
+ =?us-ascii?Q?y4xhNj4M0R1giuGZkS3bAvJvb0aTzBwwJrvvsOzqlqgLkg8cVDoAOt5mEt3x?=
+ =?us-ascii?Q?O9CzOWyb4Qbq4YGy7JbO5UuctdBOL2NDjZt4B5qrLrvXL63NN6tQ7ANNDqeI?=
+ =?us-ascii?Q?MjmXgLBa47oiuFzy+m8ecTlMPtACyPZH7DXA4cU0wK8d/DjvZ94aeoQDTLmc?=
+ =?us-ascii?Q?MkURfSvc73mUz9cbaT3bLmuIToOvg7Ht6qQh03p4+QYcdwlyTX+dQHwcErZI?=
+ =?us-ascii?Q?tLfj2lGw8CpoFR+F86UvPBSmo/qKuykGY7hPrqakp5HHfDKt8hZoj1dJc+4C?=
+ =?us-ascii?Q?NSya1SIik85UvGOmvKB6rfKzMuBxnFBw3/qluNu/g9YgbMO4nlALA/WOEr+q?=
+ =?us-ascii?Q?OXecxOp4cxW+4josFXMrB+T8ogbbXtUmQr5e0z54gTHNyJ8e7hVJ8TXwTEcZ?=
+ =?us-ascii?Q?mRn2cYrHHIf/phPTfpU8mfjOLIt5rG6dIqQEz1KBOY35wxjVMK+4Xi2T7aJa?=
+ =?us-ascii?Q?SYwCbnG4NX2dZMAP/t/fis2W0NJWiDTiheGHU0fhjUoqCYNq9EdjLQvUtmI2?=
+ =?us-ascii?Q?IH/2gVEBYNYqCkvOq577eJOVifhLY+qN/voNu67mJBiwZHPCiU8AL8EftVeL?=
+ =?us-ascii?Q?p3XVQnOX0FGG9LP89NhIph36Ov+GqD94Z3XwVuqALRUXJvmXQ3EVJNcXi+81?=
+ =?us-ascii?Q?hnU0569PQQ6f8ORVFU3K3JG6hSAcF10udnaHhLdKn63G9vgyzUfoLZ8tjBrM?=
+ =?us-ascii?Q?x4A11YINfjkf3JYclH30Tn3QOLWlpWshe36zSACRYOZlLKUZ+KytCoJ9cqf9?=
+ =?us-ascii?Q?95JPcX/dwERKqGFyWhX26+DTCwCsWLjm9qnIt4DulqkVvw=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 97d757b1-8db6-41c8-f6f5-08d9011f9f4c
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2021 21:35:58.0889
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jLzvL6z4k0WsFEYPlo6i5hAhkP9OsKUE1pHgOacfNCKkxI8ZMmcIedxoYmdcJnv0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR15MB4801
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: 3bIx0rsCOGJKj-WNQZIJ-KbpFxFw_Lxq
+X-Proofpoint-ORIG-GUID: 3bIx0rsCOGJKj-WNQZIJ-KbpFxFw_Lxq
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-16_09:2021-04-16,2021-04-16 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ suspectscore=0 phishscore=0 lowpriorityscore=0 impostorscore=0 bulkscore=0
+ spamscore=0 priorityscore=1501 malwarescore=0 mlxscore=0 adultscore=0
+ mlxlogscore=749 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104160151
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 05:05:01PM +0200, Christian Brauner wrote:
-> On Thu, Apr 15, 2021 at 11:58:51PM -0500, Serge Hallyn wrote:
-> > (Eric - this patch (v3) is a cleaned up version of the previous approach.
-> > v4 is at https://git.kernel.org/pub/scm/linux/kernel/git/sergeh/linux.git/log/?h=2021-04-15/setfcap-nsfscaps-v4
-> > and is the approach you suggested.  I can send it also as a separate patch
-> > if you like)
-> > 
-> > A process running as uid 0 but without cap_setfcap currently can simply
-> > unshare a new user namespace with uid 0 mapped to 0.  While this task
-> > will not have new capabilities against the parent namespace, there is
-> > a loophole due to the way namespaced file capabilities work.  File
-> > capabilities valid in userns 1 are distinguised from file capabilities
-> > valid in userns 2 by the kuid which underlies uid 0.  Therefore
-> > the restricted root process can unshare a new self-mapping namespace,
-> > add a namespaced file capability onto a file, then use that file
-> > capability in the parent namespace.
-> > 
-> > To prevent that, do not allow mapping uid 0 if the process which
-> > opened the uid_map file does not have CAP_SETFCAP, which is the capability
-> > for setting file capabilities.
-> > 
-> > A further wrinkle:  a task can unshare its user namespace, then
-> > open its uid_map file itself, and map (only) its own uid.  In this
-> > case we do not have the credential from before unshare,  which was
-> > potentially more restricted.  So, when creating a user namespace, we
-> > record whether the creator had CAP_SETFCAP.  Then we can use that
-> > during map_write().
-> > 
-> > With this patch:
-> > 
-> > 1. unprivileged user can still unshare -Ur
-> > 
-> > ubuntu@caps:~$ unshare -Ur
-> > root@caps:~# logout
-> > 
-> > 2. root user can still unshare -Ur
-> > 
-> > ubuntu@caps:~$ sudo bash
-> > root@caps:/home/ubuntu# unshare -Ur
-> > root@caps:/home/ubuntu# logout
-> > 
-> > 3. root user without CAP_SETFCAP cannot unshare -Ur:
-> > 
-> > root@caps:/home/ubuntu# /sbin/capsh --drop=cap_setfcap --
-> > root@caps:/home/ubuntu# /sbin/setcap cap_setfcap=p /sbin/setcap
-> > unable to set CAP_SETFCAP effective capability: Operation not permitted
-> > root@caps:/home/ubuntu# unshare -Ur
-> > unshare: write failed /proc/self/uid_map: Operation not permitted
-> > 
-> > Signed-off-by: Serge Hallyn <serge@hallyn.com>
-> > 
-> > Changelog:
-> >    * fix logic in the case of writing to another task's uid_map
-> >    * rename 'ns' to 'map_ns', and make a file_ns local variable
-> >    * use /* comments */
-> >    * update the CAP_SETFCAP comment in capability.h
-> >    * rename parent_unpriv to parent_can_setfcap (and reverse the
-> >      logic)
-> >    * remove printks
-> >    * clarify (i hope) the code comments
-> >    * update capability.h comment
-> >    * renamed parent_can_setfcap to parent_could_setfcap
-> >    * made the check its own disallowed_0_mapping() fn
-> >    * moved the check into new_idmap_permitted
-> > ---
+On Thu, Apr 15, 2021 at 02:46:16PM -0300, Pedro Tammela wrote:
+> This patchset introduces batched operations for the per-cpu variant of
+> the array map.
 > 
-> Thank you for working on this fix!
+> It also removes the percpu macros from 'bpf_util.h'. This change was
+> suggested by Andrii in a earlier iteration of this patchset.
 > 
-> I do prefer your approach of doing the check at user namespace creation
-> time instead of moving it into the setxattr() codepath.
-> 
-> Let me reiterate that the ability to write through fscaps is a valid
-> usecase and this should continue to work but that for locked down user
-> namespace as Andrew wants to use them your patch provides a clean
-> solution.
-> We've are using identity mappings in quite a few scenarios partially
-> when performing tests but also to write through fscaps.
-> We also had reports of users that use identity mappings. They create
-> their rootfs by running image extraction in an identity mapped userns
-> where fscaps are written through.
-> Podman has use-cases for this feature as well and has been affected by
-> the regression of the first fix.
-
-Thanks for reviewing.
-
-I'm not sure what your point above is, so just to make sure - the
-alternative implementation also does allow fscaps for cases where
-root uid is remapped, only disallowing it if it would violate the
-ancestor's lack of cap_setfcap.
-
-
-> >  include/linux/user_namespace.h  |  3 ++
-> >  include/uapi/linux/capability.h |  3 +-
-> >  kernel/user_namespace.c         | 61 +++++++++++++++++++++++++++++++--
-> >  3 files changed, 63 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/include/linux/user_namespace.h b/include/linux/user_namespace.h
-> > index 64cf8ebdc4ec..f6c5f784be5a 100644
-> > --- a/include/linux/user_namespace.h
-> > +++ b/include/linux/user_namespace.h
-> > @@ -63,6 +63,9 @@ struct user_namespace {
-> >  	kgid_t			group;
-> >  	struct ns_common	ns;
-> >  	unsigned long		flags;
-> > +	/* parent_could_setfcap: true if the creator if this ns had CAP_SETFCAP
-> > +	 * in its effective capability set at the child ns creation time. */
-> > +	bool			parent_could_setfcap;
-> >  
-> >  #ifdef CONFIG_KEYS
-> >  	/* List of joinable keyrings in this namespace.  Modification access of
-> > diff --git a/include/uapi/linux/capability.h b/include/uapi/linux/capability.h
-> > index c6ca33034147..2ddb4226cd23 100644
-> > --- a/include/uapi/linux/capability.h
-> > +++ b/include/uapi/linux/capability.h
-> > @@ -335,7 +335,8 @@ struct vfs_ns_cap_data {
-> >  
-> >  #define CAP_AUDIT_CONTROL    30
-> >  
-> > -/* Set or remove capabilities on files */
-> > +/* Set or remove capabilities on files.
-> > +   Map uid=0 into a child user namespace. */
-> >  
-> >  #define CAP_SETFCAP	     31
-> >  
-> > diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
-> > index af612945a4d0..8c75028a9aae 100644
-> > --- a/kernel/user_namespace.c
-> > +++ b/kernel/user_namespace.c
-> > @@ -106,6 +106,7 @@ int create_user_ns(struct cred *new)
-> >  	if (!ns)
-> >  		goto fail_dec;
-> >  
-> > +	ns->parent_could_setfcap = cap_raised(new->cap_effective, CAP_SETFCAP);
-> >  	ret = ns_alloc_inum(&ns->ns);
-> >  	if (ret)
-> >  		goto fail_free;
-> > @@ -841,6 +842,56 @@ static int sort_idmaps(struct uid_gid_map *map)
-> >  	return 0;
-> >  }
-> >  
-> > +/*
-> > + * If mapping uid 0, then file capabilities created by the new namespace will
-> > + * be effective in the parent namespace.  Adding file capabilities requires
-> > + * CAP_SETFCAP, which the child namespace will have, so creating such a
-> > + * mapping requires CAP_SETFCAP in the parent namespace.
-> > + */
-> > +static bool disallowed_0_mapping(const struct file *file,
-> > +				 struct user_namespace *map_ns,
-> > +				 struct uid_gid_map *new_map)
-> > +{
-> > +	int idx;
-> > +	bool zeromapping = false;
-> > +	const struct user_namespace *file_ns = file->f_cred->user_ns;
-> > +
-> > +	for (idx = 0; idx < new_map->nr_extents; idx++) {
-> 
-> I think having that loop is acceptable here since it's only called once
-> at map creation time even though the forward array is not yet sorted.
-> 
-> > +		struct uid_gid_extent *e;
-> > +		u32 lower_first;
-> > +
-> > +		if (new_map->nr_extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
-> > +			e = &new_map->extent[idx];
-> > +		else
-> > +			e = &new_map->forward[idx];
-> > +		if (e->lower_first == 0) {
-> > +			zeromapping = true;
-> > +			break;
-> > +		}
-> > +	}
-> > +
-> > +	if (!zeromapping)
-> > +		return false;
-> > +
-> > +	if (map_ns == file_ns) {
-> > +		/* The user unshared first and is writing to
-> > +		 * /proc/self/uid_map.  User already has full
-> > +		 * capabilites in the new namespace, so verify
-> > +		 * that the parent has CAP_SETFCAP. */
-> > +		if (!file_ns->parent_could_setfcap)
-> > +			return true;
-> > +	} else {
-> > +		/* Process p1 is writing to uid_map of p2, who
-> > +		 * is in a child user namespace to p1's.  So
-> > +		 * we verify that p1 has CAP_SETFCAP to its
-> > +		 * own namespace */
-> > +		if (!file_ns_capable(file, map_ns->parent, CAP_SETFCAP))
-> > +			return true;
-> > +	}
-> > +
-> > +	return false;
-> > +}
-> 
-> Maybe we can tweak this a tiny bit to get rid of the "zeromapping"?:
-> 
-> static bool disallowed_0_mapping(const struct file *file,
-> 				 struct user_namespace *map_ns,
-> 				 struct uid_gid_map *new_map)
-> {
-> 	int idx;
-> 	const struct user_namespace *file_ns = file->f_cred->user_ns;
-> 	struct uid_gid_extent *extent0 = NULL;
-> 
-> 	for (idx = 0; idx < new_map->nr_extents; idx++) {
-> 		u32 lower_first;
-> 
-> 		if (new_map->nr_extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
-> 			extent0 = &new_map->extent[idx];
-> 		else
-> 			extent0 = &new_map->forward[idx];
-> 		if (extent0->lower_first == 0)
-> 			break;
-> 
-> 		extent0 = NULL;
-> 	}
-> 
-> 	if (!extent0)
-> 		return false;
-
-Feels a little less clear to me, but that's probably just me, so I'll
-switch it over, thanks.
-
-> 
-> 	if (map_ns == file_ns) {
-> 		/* 
-> 		 * The user unshared first and is writing to
-> 		 * /proc/self/uid_map.  User already has full
-> 		 * capabilites in the new namespace, so verify
-> 		 * that the parent has CAP_SETFCAP.
-> 		 */
-> 		if (!file_ns->parent_could_setfcap)
-> 			return true;
-> 	} else {
-> 		/* 
-> 		 * Process p1 is writing to uid_map of p2, who
-> 		 * is in a child user namespace to p1's. So
-> 		 * we verify that p1 has CAP_SETFCAP to its
-> 		 * own namespace.
-> 		 */
-> 		if (!file_ns_capable(file, map_ns->parent, CAP_SETFCAP))
-> 			return true;
-> 	}
-> 
-> 	return false;
-> }
-> 
-> In addition I would think that expressing the logic the other way around
-> is more legible. I'm not too keen on having negations in function names.
-> We should probably also tweak the comment a bit and make it kernel-doc
-> clean:
-> 
-> /**
->  * verify_root_map() - check the uid 0 mapping
-
-Hm.  restrict_root_map() ?  "verify" sounds like we should sometimes reject
-it.
-
->  * @file: idmapping file
->  * @map_ns: user namespace of the target process
->  * @new_map: requested idmap
->  *
->  * If a process requested a mapping for uid 0 onto
->  * uid 0 verify that the process writing the map had the CAP_SETFCAP
->  * capability as the target process will be able to
->  * write fscaps that are valid in ancestor user namespaces.
->  *
->  * Return: true if the mapping is allow, false if not.
->  */
-> static bool verify_root_map()
+> The tests were updated to reflect all the new changes.
+Acked-by: Martin KaFai Lau <kafai@fb.com>
