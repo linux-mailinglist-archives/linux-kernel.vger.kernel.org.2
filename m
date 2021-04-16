@@ -2,158 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B260E3627B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 20:28:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC003627BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 20:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244835AbhDPS2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 14:28:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236787AbhDPS23 (ORCPT
+        id S244888AbhDPSac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 14:30:32 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:40710 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238226AbhDPSaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 14:28:29 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C366C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 11:28:04 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id k73so24845163ybf.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 11:28:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qYdKrE1zIlOzfHp4IhnEDh/ZEjT1bfTnj4Cp18io3c8=;
-        b=M65GbMciF8c8P/jrTOmRILWpizSLmCME+Z4Bj8NWg6xvyStueQndmFwysQbWSPHrRI
-         BjEkkH2TDS95ShyHY73w8d7AG1LO1fG4CgG/JrrQ4xzzltpjVsLdSnKwHzWgDqyNY/6H
-         qB1xO8cKOMLw9eXd/cJfW4dI38SsJImq1sUGWSlJc7TZfn9OgwuVkvtOyHocxt/IbmuJ
-         /mCKdTN+644aeLvacPlmYnrLPuJBtTxA04xmSPr7YoOjQNmHgKLbTUNO+Ohxw0qhNpNU
-         QArIoFcYs5YdUluZSQVG+nYVLXbqUmBKSV+kgfDolZuuhzJa5cxpCWCDbuh6yUzUcQS0
-         CgQA==
+        Fri, 16 Apr 2021 14:30:30 -0400
+Received: by mail-ot1-f53.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so26571871otb.7;
+        Fri, 16 Apr 2021 11:30:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qYdKrE1zIlOzfHp4IhnEDh/ZEjT1bfTnj4Cp18io3c8=;
-        b=IGP12O1pLRW+nuo2c8ciW9Ys6ui283OpcEEbMB7QTizgUa7qXLCd0q5s+p+tQuzNxG
-         1kjtw/Z4yH9dvZUyet0/kY8+n+T2ppijLS9lTX5okfBGR4ZiAAUJ8QcpfxZXse8K3grU
-         TChrxizcRbmWF094CKmoe8TGo/0Zsjiwh4uafjJEs9UT+tHGZt3Ea7nw9rWYq15xBtR0
-         XpsMGAkeb01KHUVeFGUvLxwMyY239wqOcUyrtlc7Jpr27f+ejsyTjPumylUW9cxWEiYn
-         Yez5xht4UowezfGKDyzRTkPp+fGjf5vCxVovlAilCvNnulfp/aFw4/vsR6sDhwJ5gkqB
-         Goyw==
-X-Gm-Message-State: AOAM532sf68x0P8iEPr9kY+fPhTyckCixmBiGICyAI3qdvl0Tm/drhQw
-        endPgd2hkKqxeAHFbO9U7hQ8eYjCVzPxCUJM7kdJoA==
-X-Google-Smtp-Source: ABdhPJzpBK1wYEpzI44fV2r55GTuwm/r8tOiWBH0d3Grc40BHUnSbi1Lg583ZAzXaN++lk+cvcZ5vgsWNMyZlFIKNWI=
-X-Received: by 2002:a25:7307:: with SMTP id o7mr581220ybc.469.1618597683618;
- Fri, 16 Apr 2021 11:28:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210409140806.31824-1-srinivas.neeli@xilinx.com>
- <20210409140806.31824-2-srinivas.neeli@xilinx.com> <CAHp75Vddd6ygr4mJ9Z+SuGZmfLcgDLWLZaxby2XE2mX8War-qQ@mail.gmail.com>
- <CAMpxmJW=HWf_NxGpfBkX=utgOTs4+6RtypxnKGtpuYnX=t8rGQ@mail.gmail.com> <DM6PR02MB5386CADF5A10EF28A640AD76AF4E9@DM6PR02MB5386.namprd02.prod.outlook.com>
-In-Reply-To: <DM6PR02MB5386CADF5A10EF28A640AD76AF4E9@DM6PR02MB5386.namprd02.prod.outlook.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 16 Apr 2021 20:27:52 +0200
-Message-ID: <CAMpxmJV_CtFQpZvr_H0g3DvPMQZwqa-9z2FVxCLX=tF9Ytkj7Q@mail.gmail.com>
-Subject: Re: [PATCH 1/3] gpio: zynq: use module_platform_driver to simplify
- the code
-To:     Srinivas Neeli <sneeli@xilinx.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        Michal Simek <michals@xilinx.com>,
-        Shubhrajyoti Datta <shubhraj@xilinx.com>,
-        Srinivas Goud <sgoud@xilinx.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        git <git@xilinx.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=+4y5xD6FsO3vC5Ys9vRm1ilGC7bEb0/EsoeiI7VBKsE=;
+        b=XfUbKvRMDbvb3webEk1n8tuMAf9lk5KNU8EGuvD15sjwox0jdfKROyZBmORK9WBwwz
+         wsfcR0ij6Qte770W3fIfDB0TPoDPEkH6wt/mtKD6NvRjaoWKTgrlrQYdi1Lku3o6VrgG
+         dph1B6KuvJeXoVms/uc5KGRRkvEgV+IcZUhyyI9AGfm1s+LfUoJ0n6QU1inNllzu/q0K
+         C3mJ4Y5eTFdFFK4vkY7HWbiufNz5JA100x1n1Ff4AxjDpLU8Dwrrt4Pw021guAOQuG+2
+         rJOxFNqNXQX9lQuUCJq2pTbgEyQ6f9jXX/OEKzGciCGQweNVIUF503s+409bOK+qWT2q
+         3uYw==
+X-Gm-Message-State: AOAM533Fyb6jS54vg0OKlW1qU1UXMpGi2x5asULdGp2C3fZu/aTHUQ0y
+        FjXGridz8/WCXW6Sb04dTw==
+X-Google-Smtp-Source: ABdhPJyn22RcL82sR7wG7S9QbI0HIP2dmwFaaZSa4uAL4UTjFklWGoLWwWVk1Ie+5Q84cXwJAx5pQg==
+X-Received: by 2002:a9d:2de8:: with SMTP id g95mr4699080otb.162.1618597804995;
+        Fri, 16 Apr 2021 11:30:04 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id n104sm1544410ota.27.2021.04.16.11.30.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 11:30:04 -0700 (PDT)
+Received: (nullmailer pid 3708342 invoked by uid 1000);
+        Fri, 16 Apr 2021 18:30:01 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     devicetree@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        linux-mtd@lists.infradead.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Vignesh Raghavendra <vigneshr@ti.com>
+In-Reply-To: <20210416114928.27758-5-michael@walle.cc>
+References: <20210416114928.27758-1-michael@walle.cc> <20210416114928.27758-5-michael@walle.cc>
+Subject: Re: [PATCH 4/5] dt-bindings: mtd: spi-nor: add otp property
+Date:   Fri, 16 Apr 2021 13:30:01 -0500
+Message-Id: <1618597801.613342.3708340.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 4:45 PM Srinivas Neeli <sneeli@xilinx.com> wrote:
->
-> HI baratosz and Andy,
->
+On Fri, 16 Apr 2021 13:49:27 +0200, Michael Walle wrote:
+> SPI-NOR flashes may have OTP regions and have a nvmem binding. This
+> binding is described in mtd.yaml.
+> 
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> ---
+> Changes since RFC:
+>  - new patch
+> 
+>  Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
 
-It's Bartosz. You literally just need to copy & paste the name from my emai=
-l...
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-> > -----Original Message-----
-> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > Sent: Tuesday, April 13, 2021 4:14 PM
-> > To: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > Cc: Srinivas Neeli <sneeli@xilinx.com>; linus.walleij@linaro.org; Micha=
-l Simek
-> > <michals@xilinx.com>; Shubhrajyoti Datta <shubhraj@xilinx.com>; Sriniva=
-s
-> > Goud <sgoud@xilinx.com>; linux-gpio@vger.kernel.org; linux-arm-
-> > kernel@lists.infradead.org; linux-kernel@vger.kernel.org; git
-> > <git@xilinx.com>
-> > Subject: Re: [PATCH 1/3] gpio: zynq: use module_platform_driver to simp=
-lify
-> > the code
-> >
-> > On Sat, Apr 10, 2021 at 12:08 AM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:
-> > >
-> > >
-> > >
-> > > On Friday, April 9, 2021, Srinivas Neeli <srinivas.neeli@xilinx.com> =
-wrote:
-> > >>
-> > >> module_platform_driver() makes the code simpler by eliminating
-> > >> boilerplate code.
-> > >>
-> > >> Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
-> > >> ---
-> > >>  drivers/gpio/gpio-zynq.c | 17 +----------------
-> > >>  1 file changed, 1 insertion(+), 16 deletions(-)
-> > >>
-> > >> diff --git a/drivers/gpio/gpio-zynq.c b/drivers/gpio/gpio-zynq.c
-> > >> index 3521c1dc3ac0..bb1ac0c5cf26 100644
-> > >> --- a/drivers/gpio/gpio-zynq.c
-> > >> +++ b/drivers/gpio/gpio-zynq.c
-> > >> @@ -1020,22 +1020,7 @@ static struct platform_driver zynq_gpio_drive=
-r
-> > =3D {
-> > >>         .remove =3D zynq_gpio_remove,
-> > >>  };
-> > >>
-> > >> -/**
-> > >> - * zynq_gpio_init - Initial driver registration call
-> > >> - *
-> > >> - * Return: value from platform_driver_register
-> > >> - */
-> > >> -static int __init zynq_gpio_init(void) -{
-> > >> -       return platform_driver_register(&zynq_gpio_driver);
-> > >> -}
-> > >> -postcore_initcall(zynq_gpio_init);
-> > >
-> > >
-> > >
-> > > It=E2=80=99s not an equivalent. Have you tested on actual hardware? I=
-f no, there is
-> > no go for this change.
-> > >
-> >
-> > Yep, this has been like this since the initial introduction of this dri=
-ver.
-> > Unfortunately there's no documented reason so unless we can test it, it=
- has
-> > to stay this way.
-> >
-> I tested driver, functionality wise everything working fine.
-> Based on below conversation, I moved driver to module driver.
-> https://lore.kernel.org/patchwork/patch/818202/
->
+yamllint warnings/errors:
 
-Andy: How about we give it a try then? If anyone yells, we'll just revert i=
-t.
+dtschema/dtc warnings/errors:
+Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/mtd/mtd.yaml'
+xargs: dt-doc-validate: exited with status 255; aborting
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/spi/st,stm32-qspi.example.dt.yaml'
+Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/mtd/mtd.yaml'
+make[1]: *** [scripts/Makefile.lib:377: Documentation/devicetree/bindings/spi/st,stm32-qspi.example.dt.yaml] Error 255
+make[1]: *** Waiting for unfinished jobs....
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/spi/qcom,spi-qcom-qspi.example.dt.yaml'
+Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/mtd/mtd.yaml'
+make[1]: *** [scripts/Makefile.lib:377: Documentation/devicetree/bindings/spi/qcom,spi-qcom-qspi.example.dt.yaml] Error 255
+make: *** [Makefile:1414: dt_binding_check] Error 2
 
-> Thanks
-> Srinivas Neeli
->
-> > Bartosz
+See https://patchwork.ozlabs.org/patch/1467025
 
-Bartosz
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
