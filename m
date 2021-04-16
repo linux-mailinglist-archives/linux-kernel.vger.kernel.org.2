@@ -2,261 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE1C3620EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39EDD3620F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242697AbhDPNaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 09:30:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235011AbhDPNaJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 09:30:09 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0213DC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 06:29:43 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 12so44619626lfq.13
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 06:29:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Icv6wfageHWd4iMnekPzpHhUck/9+vUG68GbtOfui5s=;
-        b=ThgZH6a8eO9NVFoyBylzD0/Pjua1eA4owl4IRUiE5DZnVNT6DFkE2sT7hOA9Nrr3nE
-         1OK/LlW51Z9M9IEXksmkYrBFeKZJTfDckYpPNA/jmDrW/4srhA2stXe3yLanRVa1iO+U
-         JPGdGELaxlqU/1bgLjd4gc36YHTgPD6hqwlpWIOdRAQoOV5KwSQCXLCA0HBJ9I9qe6EH
-         lKH0e0uI7UKnzIEHmebYdSktaUzUMXRh2qh+uNKBFBA06VYs61tKVafzElPh9NP04tBs
-         a9hzArx/7jrD84vyjrdiBKS0nHFMDrCPwwHtkSj+dBO3011CQXaF0jpg0hchz/BN2cyJ
-         51Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Icv6wfageHWd4iMnekPzpHhUck/9+vUG68GbtOfui5s=;
-        b=NykqRUqcL5BJMfhC1utP/Zn/sxtlLV937VKSie6yIFzkyZLlkob+EE0Kf3ZN5b+sEZ
-         9b/JtB1QNMX8V1SFbPWYnMWnu4LFYJLdn62dYN79Jq3BkK932EqruL5V7qQrUCmtDNgp
-         88QSzIUjLvJDzjzl87QHr2qYFkA8aWKVJKcDRvsKzqK1vczH1Zseui3mg7mnADuoBTcN
-         VraHKIykKrRB5diRwvi7eB4ZOuXwIg2apb6npfGrHazbmNGJQwTI4qgXDHGPF7bfjZmr
-         Ft4ypoYEoK46sCenW0t7H6FuXx5Y56SioMiKAGmN2fwuGiNU8UrPeX9tvmZnIPAIAiEI
-         BfBg==
-X-Gm-Message-State: AOAM530En8Ymyr09DLwFmowOncluitLlPpuLB6C5h8pNlZPIIPYNVx2/
-        bB07t1qQWTW9JPT5r5SlwdqNGb09biwdyfx+SYNtJA==
-X-Google-Smtp-Source: ABdhPJw0BcUDStpHvzRGHgIx5DF2VQXP7pBJaZ+PIk6XoiV0qFccjlTlPK+c3TtkV3o+67f2rRyssFe1G/HoB+XQgJw=
-X-Received: by 2002:a05:6512:54a:: with SMTP id h10mr3354930lfl.305.1618579781436;
- Fri, 16 Apr 2021 06:29:41 -0700 (PDT)
+        id S243931AbhDPNaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 09:30:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43802 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235011AbhDPNal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 09:30:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EDB4611AB;
+        Fri, 16 Apr 2021 13:30:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618579816;
+        bh=n9xmFN2NsaASWbiOf1tjXSrysPr4eQ8p8Daqq/eQqzI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VzLXW0btd8iMCdR16X/ODd6jzYF2rBVrRWHEtPAB8wfNKf2U2Lx3wHtrHI6efxbLb
+         9pEbsB6Lwp5gYD7UfLl5dBRx57lyC2RyMtU2RF7jZtDzil0ovv6rSzC3r6jsO6A2gW
+         QaDxbIC7zAYlv93wEngg/rclzoVVWP6/Wu+yhm8nDY3zB8fuEv8T1i2vC0Shqn6Evd
+         jgXqShtryKm22DTQC63oRLEcXmJxrdslhq58LKXMS823acjj9d8E7miF13AM4bk7Dw
+         qOjyHJs4NtdsWbQ6hK91pKVtcd4ZA3WJm7mHhFFOCwdIKi2NyZjBxvMejJijPphbZ1
+         /L1nIpWGNhnHw==
+Received: by mail-ej1-f49.google.com with SMTP id x12so21386493ejc.1;
+        Fri, 16 Apr 2021 06:30:16 -0700 (PDT)
+X-Gm-Message-State: AOAM530Z3nT6xCfEXgElRw8u0+5WRJ1QwtHYOBWJU+0GIG1ahIprpW6y
+        vQ3VagzT+NQEzIdhF4/6f5m7PNrpzjRCZPARTA==
+X-Google-Smtp-Source: ABdhPJyYkMxFlTQe3wBkH0km71+lVgj11mjrhrSuWMukjpytVS+13WuaQ0umP4fhq7OEonjh4vw2GDt98yeQoFruT88=
+X-Received: by 2002:a17:906:9ac5:: with SMTP id ah5mr8145109ejc.360.1618579815055;
+ Fri, 16 Apr 2021 06:30:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210415175846.494385-1-valentin.schneider@arm.com> <20210415175846.494385-2-valentin.schneider@arm.com>
-In-Reply-To: <20210415175846.494385-2-valentin.schneider@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 16 Apr 2021 15:29:30 +0200
-Message-ID: <CAKfTPtA7uq24hFv57c=W_XkXH-g9b2xo7OfJHRP+cbKoh-0TOQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] sched/fair: Filter out locally-unsolvable misfit imbalances
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>,
-        Lingutla Chandrasekhar <clingutla@codeaurora.org>
+References: <20210415032958.740233-1-ikjn@chromium.org> <20210415032958.740233-2-ikjn@chromium.org>
+ <CAFqH_53GXdCfPCke_UN3fqrDxHZ_scd21ZekVzrYoVWbmLUmrw@mail.gmail.com>
+In-Reply-To: <CAFqH_53GXdCfPCke_UN3fqrDxHZ_scd21ZekVzrYoVWbmLUmrw@mail.gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 16 Apr 2021 08:30:01 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJ0mqqK69m_iFKTqGzu_TYvR7WdsuKw-ead74Sc=6msDw@mail.gmail.com>
+Message-ID: <CAL_JsqJ0mqqK69m_iFKTqGzu_TYvR7WdsuKw-ead74Sc=6msDw@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] mfd: google,cros-ec: add DT bindings for a
+ baseboard's switch device
+To:     Enric Balletbo Serra <eballetbo@gmail.com>
+Cc:     Ikjoon Jang <ikjn@chromium.org>,
+        Linux Input <linux-input@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Dmitry Torokhov <dtor@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Apr 2021 at 19:58, Valentin Schneider
-<valentin.schneider@arm.com> wrote:
+On Fri, Apr 16, 2021 at 12:37 AM Enric Balletbo Serra
+<eballetbo@gmail.com> wrote:
 >
-> Consider the following (hypothetical) asymmetric CPU capacity topology,
-> with some amount of capacity pressure (RT | DL | IRQ | thermal):
+> Hi Ikjoon,
 >
->   DIE [          ]
->   MC  [    ][    ]
->        0  1  2  3
+> Thank you for your patch.
 >
->   | CPU | capacity_orig | capacity |
->   |-----+---------------+----------|
->   |   0 |           870 |      860 |
->   |   1 |           870 |      600 |
->   |   2 |          1024 |      850 |
->   |   3 |          1024 |      860 |
+> Missatge de Ikjoon Jang <ikjn@chromium.org> del dia dj., 15 d=E2=80=99abr=
+.
+> 2021 a les 5:32:
+> >
+> > This is for ChromeOS tablets which have a 'cros_cbas' switch device
+> > in the "Whiskers" base board. This device can be instantiated only by
+> > device tree on ARM platforms. ChromeOS EC doesn't provide a way to
+> > probe the device.
+> >
+> > Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+> >
+> > ---
+> >
+> > Changes in v5:
+> >  - Add missing blank lines and change the description property's positi=
+on.
+> >  - Add a note to description: "this device cannot be detected at runtim=
+e."
+> >
+> > Changes in v4:
+> > Define cros-cbase bindings inside google,cros-ec.yaml instead of
+> > a separated binding document.
+> >
+> >  .../bindings/mfd/google,cros-ec.yaml          | 20 +++++++++++++++++++
+> >  1 file changed, 20 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml =
+b/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
+> > index 76bf16ee27ec..8dcce176b72e 100644
+> > --- a/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
+> > +++ b/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
+> > @@ -114,6 +114,22 @@ properties:
+> >        - "#address-cells"
+> >        - "#size-cells"
+> >
+> > +  cbas:
+> > +    type: object
+> > +
+> > +    description:
+> > +      This device is used to signal when a detachable base is attached
+> > +      to a Chrome OS tablet. This device cannot be detected at runtime=
+.
+> > +
+> > +    properties:
+> > +      compatible:
+> > +        const: google,cros-cbas
+> > +
+> > +    required:
+> > +      - compatible
+> > +
+> > +    additionalProperties: false
+> > +
+> >  patternProperties:
+> >    "^i2c-tunnel[0-9]*$":
+> >      type: object
+> > @@ -180,6 +196,10 @@ examples:
+> >              interrupts =3D <99 0>;
+> >              interrupt-parent =3D <&gpio7>;
+> >              spi-max-frequency =3D <5000000>;
+> > +
+> > +            base_detection: cbas {
 >
-> If CPU1 has a misfit task, then CPU0, CPU2 and CPU3 are valid candidates to
-> grant the task an uplift in CPU capacity. Consider CPU0 and CPU3 as
-> sufficiently busy, i.e. don't have enough spare capacity to accommodate
-> CPU1's misfit task. This would then fall on CPU2 to pull the task.
->
-> This currently won't happen, because CPU2 will fail
->
->   capacity_greater(capacity_of(CPU2), sg->sgc->max_capacity)
->
-> in update_sd_pick_busiest(), where 'sg' is the [0, 1] group at DIE
-> level. In this case, the max_capacity is that of CPU0's, which is at this
-> point in time greater than that of CPU2's. This comparison doesn't make
-> much sense, given that the only CPUs we should care about in this scenario
-> are CPU1 (the CPU with the misfit task) and CPU2 (the load-balance
-> destination CPU).
->
-> Aggregate a misfit task's load into sgs->group_misfit_task_load only if
-> env->dst_cpu would grant it a capacity uplift.
->
-> Note that the aforementioned capacity vs sgc->max_capacity comparison was
-> meant to prevent misfit task downmigration: candidate groups classified as
-> group_misfit_task but with a higher (max) CPU capacity than the destination CPU
-> would be discarded. This change makes it so said group_misfit_task
-> classification can't happen anymore, which may cause some undesired
-> downmigrations.
->
-> Further tweak find_busiest_queue() to ensure this doesn't happen. Also note
-> find_busiest_queue() can now iterate over CPUs with a higher capacity than
-> the local CPU's, so add a capacity check there.
->
-> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-> ---
->  kernel/sched/fair.c | 63 ++++++++++++++++++++++++++++++++-------------
->  1 file changed, 45 insertions(+), 18 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 9b8ae02f1994..d2d1a69d7aa7 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -5759,6 +5759,12 @@ static unsigned long capacity_of(int cpu)
->         return cpu_rq(cpu)->cpu_capacity;
->  }
->
-> +/* Is CPU a's capacity noticeably greater than CPU b's? */
-> +static inline bool cpu_capacity_greater(int a, int b)
-> +{
-> +       return capacity_greater(capacity_of(a), capacity_of(b));
-> +}
-> +
->  static void record_wakee(struct task_struct *p)
->  {
->         /*
-> @@ -7486,6 +7492,7 @@ struct lb_env {
->
->         enum fbq_type           fbq_type;
->         enum migration_type     migration_type;
-> +       enum group_type         src_grp_type;
->         struct list_head        tasks;
->  };
->
-> @@ -8447,6 +8454,32 @@ static bool update_nohz_stats(struct rq *rq)
->  #endif
->  }
->
-> +static inline void update_sg_lb_misfit_stats(struct lb_env *env,
-> +                                            struct sched_group *group,
-> +                                            struct sg_lb_stats *sgs,
-> +                                            int *sg_status,
-> +                                            int cpu)
-> +{
-> +       struct rq *rq = cpu_rq(cpu);
-> +
-> +       if (!(env->sd->flags & SD_ASYM_CPUCAPACITY) ||
-> +           !rq->misfit_task_load)
-> +               return;
-> +
-> +       *sg_status |= SG_OVERLOAD;
-> +
-> +       /*
-> +        * Don't attempt to maximize load for misfit tasks that can't be
-> +        * granted a CPU capacity uplift.
-> +        */
-> +       if (cpu_capacity_greater(env->dst_cpu, cpu)) {
-> +               sgs->group_misfit_task_load = max(
-> +                       sgs->group_misfit_task_load,
-> +                       rq->misfit_task_load);
-> +       }
-> +
-> +}
-> +
->  /**
->   * update_sg_lb_stats - Update sched_group's statistics for load balancing.
->   * @env: The load balancing environment.
-> @@ -8498,12 +8531,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
->                 if (local_group)
->                         continue;
->
-> -               /* Check for a misfit task on the cpu */
-> -               if (env->sd->flags & SD_ASYM_CPUCAPACITY &&
-> -                   sgs->group_misfit_task_load < rq->misfit_task_load) {
-> -                       sgs->group_misfit_task_load = rq->misfit_task_load;
-> -                       *sg_status |= SG_OVERLOAD;
-> -               }
-> +               update_sg_lb_misfit_stats(env, group, sgs, sg_status, i);
->         }
->
->         /* Check if dst CPU is idle and preferred to this group */
-> @@ -8550,15 +8578,9 @@ static bool update_sd_pick_busiest(struct lb_env *env,
->         if (!sgs->sum_h_nr_running)
->                 return false;
->
-> -       /*
-> -        * Don't try to pull misfit tasks we can't help.
-> -        * We can use max_capacity here as reduction in capacity on some
-> -        * CPUs in the group should either be possible to resolve
-> -        * internally or be covered by avg_load imbalance (eventually).
-> -        */
-> +       /* Don't try to pull misfit tasks we can't help */
->         if (sgs->group_type == group_misfit_task &&
-> -           (!capacity_greater(capacity_of(env->dst_cpu), sg->sgc->max_capacity) ||
-> -            sds->local_stat.group_type != group_has_spare))
-> +            sds->local_stat.group_type != group_has_spare)
->                 return false;
->
->         if (sgs->group_type > busiest->group_type)
-> @@ -9288,6 +9310,8 @@ static struct sched_group *find_busiest_group(struct lb_env *env)
->         if (!sds.busiest)
->                 goto out_balanced;
->
-> +       env->src_grp_type = busiest->group_type;
-> +
->         /* Misfit tasks should be dealt with regardless of the avg load */
->         if (busiest->group_type == group_misfit_task)
->                 goto force_balance;
-> @@ -9441,8 +9465,8 @@ static struct rq *find_busiest_queue(struct lb_env *env,
->                  * average load.
->                  */
->                 if (env->sd->flags & SD_ASYM_CPUCAPACITY &&
-> -                   !capacity_greater(capacity_of(env->dst_cpu), capacity) &&
-> -                   nr_running == 1)
-> +                   env->src_grp_type <= group_fully_busy &&
-> +                   !capacity_greater(capacity_of(env->dst_cpu), capacity))
->                         continue;
->
->                 switch (env->migration_type) {
-> @@ -9504,15 +9528,18 @@ static struct rq *find_busiest_queue(struct lb_env *env,
->                 case migrate_misfit:
->                         /*
->                          * For ASYM_CPUCAPACITY domains with misfit tasks we
-> -                        * simply seek the "biggest" misfit task.
-> +                        * simply seek the "biggest" misfit task we can
-> +                        * accommodate.
->                          */
-> +                       if (!cpu_capacity_greater(env->dst_cpu, i))
+> nit: Rob, shouldn't this be just cbas?
 
-Use the same level of interface as above. This makes code and the
-condition easier to follow in find_busiest_queue()
+Yes.
 
-capacity_greater(capacity_of(env->dst_cpu), capacity_of(i))
-
-
-> +                               continue;
-> +
->                         if (rq->misfit_task_load > busiest_load) {
->                                 busiest_load = rq->misfit_task_load;
->                                 busiest = rq;
->                         }
 >
->                         break;
-> -
->                 }
->         }
+> > +                compatible =3D "google,cros-cbas";
+> > +            };
+> >          };
+> >      };
+> >
+> > --
+> > 2.31.1.295.g9ea45b61b8-goog
+> >
 >
-> --
-> 2.25.1
->
+> Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
