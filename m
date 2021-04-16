@@ -2,157 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569343628F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 21:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC6D3628FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 21:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244072AbhDPT4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 15:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60180 "EHLO
+        id S244523AbhDPT6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 15:58:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243879AbhDPT4m (ORCPT
+        with ESMTP id S243879AbhDPT6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 15:56:42 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E17AC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 12:56:17 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id r9so43796264ejj.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 12:56:17 -0700 (PDT)
+        Fri, 16 Apr 2021 15:58:05 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83CFDC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 12:57:40 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id u15so6001378plf.10
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 12:57:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l12BmPzjPGQPhOVAK1+pGnVg6YOohJn2PXow4I2KCwo=;
-        b=nQnk4fUrtR73OTn0Bked0GsH77E4CU2Aryt7NrztyQzLtex0tRik3lEi7dybmcBzRH
-         imUnySkDeWbLpm1SmLfQ939xsEAUlHIlrHZFouijtfVnEwwG/v4ZQfXaj+HSc8sr43j+
-         v+8FG6MhnCm6G5B8vHIVVyp4FpcXRY7PYCkB9DDvlM+eVLprbZBp++dJAbMAVMCt5SYF
-         q/qG9Xpz56IlrdEJbFFzzSPDCCvk4OjPw1eqpC1um+tl/xs3BG0Rvpm0vl3JBc7b9mtP
-         P0H2tUoAEcqxONVhFCzFwaQG92PxbLWuDF0PKMf+1CmUgDTeVky9AKb8XU42U9NOfxiW
-         nrZA==
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:in-reply-to:to:cc:subject
+         :content-transfer-encoding;
+        bh=1ie6hM/smrfhCEhy832cA4m2Ud/Z60E44UvGH/esV8w=;
+        b=fhahKhOIEWDZ8APHmM+SL4Alq/XzPbT4dyx0KU63rxFazMFKr0MoZN3jDefqPagC34
+         YvwAXBG0FBcNLJnm6W0W83f8zgwlB6S/EXD24snDOJjTgDoDxEKUB33L/17e89OqWT0p
+         XYtEfrmOCYySiuPWpd9hFMTKDTPUwcPGHGGHzEXB0bJ5wzsFFA7Oz9v+IzqJxdnaPEQz
+         2wXkG7QQ94CPipMzhEIHf2QrHDdxIYw16sWI7NqMvktePou/ktAPV4a44BLMzZjVKq4Z
+         1n4NYPBMJo2fqI8yWg0RtLdMxYQXBPKu5E5+zLHQRGxHouYdQQZ9VTdLGwgWG60hBRLG
+         2yxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l12BmPzjPGQPhOVAK1+pGnVg6YOohJn2PXow4I2KCwo=;
-        b=m2fLRmqxZHJIA6UbyGFqMb+XIQNA3FMI2gVEpbJV1EG0WlFqHhUw+cu64HaR0M1Olk
-         pqDnMYrAM1ZXRfcnnXIlNxRqKMhkBihLL/WPCKil110ljfHBCpEvrmrStZVsOb4uwwM4
-         Oghu3T0JZFX2qvBPr/458L9YhgbnWysD2BCKPcdHaUttFoHdtvB+2vwbov2LsXKSc05v
-         1msaizPAi+qw+lYwVG+ByPw7HpwArcfSZYp0DtuYJnlzR02cHPIWlrXN3aqHn7O9lmHs
-         07cvXKXgMgpiuoy4aSW4hixQxpLQkc08FiOONxTsfB2sVgVcWiZkKd0dFOsslzNoADE4
-         f7cg==
-X-Gm-Message-State: AOAM530n+kW3yIUiiFlUAsgsI89cMUaAK10yOyv+MW252IiTzZ9f1lRz
-        HRbx3lN0onEZDNQ+uTXDx9QsAyBC011utpjyEkx62A==
-X-Google-Smtp-Source: ABdhPJyQvyIq/sIJGlqAF2MfMI37oI2jAKdM4rT3dS8JIUJ3W5auOyWaYVKZc/Khipbuc/aofSL7uwOHc1OwxgnwwFo=
-X-Received: by 2002:a17:907:7631:: with SMTP id jy17mr9952113ejc.418.1618602976235;
- Fri, 16 Apr 2021 12:56:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210416173524.GA1379987@redhat.com>
-In-Reply-To: <20210416173524.GA1379987@redhat.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 16 Apr 2021 12:56:05 -0700
-Message-ID: <CAPcyv4h77oTMBQ50wg6eHLpkFMQ16oAHg2+D=d5zshT6iWgAfw@mail.gmail.com>
-Subject: Re: [PATCH] dax: Fix missed wakeup in put_unlocked_entry()
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Linux fsdevel mailing list <linux-fsdevel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux kernel mailing list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:message-id:date:from:in-reply-to:to:cc:subject
+         :content-transfer-encoding;
+        bh=1ie6hM/smrfhCEhy832cA4m2Ud/Z60E44UvGH/esV8w=;
+        b=VSmOS2IQr2IMhLAJq7TurA+LZNjkLR5fSkIDSBZIUYVT2W1mBQRK2Bfk2X/dYHSLQJ
+         Ym8829gKEjAa1VTYMLGYUbeSiZZf7Pj9lbFuFegcbeX9r8gSFc4u+JpSlaVLdAeQp057
+         pasi+1zIImLzN/DqCQa8o6j2+Q+cGoaIU0wRsnNXHuGXoCsqZ78HpBN0OErK6oFzEVfV
+         pqjQoRyhURXhAbzM0Ph9Gtbem79rJb3gue75Bu6iHRF1T/QTKx6IiFJtN9COpRnfenZY
+         pPWJVEOpaFMVvnAUl28xpCzLgM/nYg1KGbsawsq6ojQgHrjrPKHYiGbgXzyKlEWBnNNr
+         5Ibg==
+X-Gm-Message-State: AOAM532x0e6ErsCS1AoJpw6x9yskARIafcEa1cx/xokaqfnnVgrO8Srs
+        1xoV8+4Yrhj0/1pLAjTCb9vX+SfrrmdBWiOjqAU=
+X-Google-Smtp-Source: ABdhPJzbrhVBeY+5/yDLivuPKPdbRmaabRQjIDQzzswp62ZB5GSi8pTKY/fWiBM80+JAWvqt51jzHg==
+X-Received: by 2002:a17:90a:3f08:: with SMTP id l8mr11318647pjc.136.1618603059739;
+        Fri, 16 Apr 2021 12:57:39 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id m11sm6109528pgs.4.2021.04.16.12.57.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 12:57:39 -0700 (PDT)
+Message-ID: <6079ec33.1c69fb81.c2d4e.1d09@mx.google.com>
+Date:   Fri, 16 Apr 2021 12:57:39 -0700 (PDT)
+X-Google-Original-Date: Fri, 16 Apr 2021 19:57:38 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210415144413.165663182@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: RE: [PATCH 5.10 00/25] 5.10.31-rc1 review
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 10:35 AM Vivek Goyal <vgoyal@redhat.com> wrote:
->
-> I am seeing missed wakeups which ultimately lead to a deadlock when I am
-> using virtiofs with DAX enabled and running "make -j". I had to mount
-> virtiofs as rootfs and also reduce to dax window size to 32M to reproduce
-> the problem consistently.
->
-> This is not a complete patch. I am just proposing this partial fix to
-> highlight the issue and trying to figure out how it should be fixed.
-> Should it be fixed in generic dax code or should filesystem (fuse/virtiofs)
-> take care of this.
->
-> So here is the problem. put_unlocked_entry() wakes up waiters only
-> if entry is not null as well as !dax_is_conflict(entry). But if I
-> call multiple instances of invalidate_inode_pages2() in parallel,
-> then I can run into a situation where there are waiters on
-> this index but nobody will wait these.
->
-> invalidate_inode_pages2()
->   invalidate_inode_pages2_range()
->     invalidate_exceptional_entry2()
->       dax_invalidate_mapping_entry_sync()
->         __dax_invalidate_entry() {
->                 xas_lock_irq(&xas);
->                 entry = get_unlocked_entry(&xas, 0);
->                 ...
->                 ...
->                 dax_disassociate_entry(entry, mapping, trunc);
->                 xas_store(&xas, NULL);
->                 ...
->                 ...
->                 put_unlocked_entry(&xas, entry);
->                 xas_unlock_irq(&xas);
->         }
->
-> Say a fault in in progress and it has locked entry at offset say "0x1c".
-> Now say three instances of invalidate_inode_pages2() are in progress
-> (A, B, C) and they all try to invalidate entry at offset "0x1c". Given
-> dax entry is locked, all tree instances A, B, C will wait in wait queue.
->
-> When dax fault finishes, say A is woken up. It will store NULL entry
-> at index "0x1c" and wake up B. When B comes along it will find "entry=0"
-> at page offset 0x1c and it will call put_unlocked_entry(&xas, 0). And
-> this means put_unlocked_entry() will not wake up next waiter, given
-> the current code. And that means C continues to wait and is not woken
-> up.
->
-> In my case I am seeing that dax page fault path itself is waiting
-> on grab_mapping_entry() and also invalidate_inode_page2() is
-> waiting in get_unlocked_entry() but entry has already been cleaned
-> up and nobody woke up these processes. Atleast I think that's what
-> is happening.
->
-> This patch wakes up a process even if entry=0. And deadlock does not
-> happen. I am running into some OOM issues, that will debug.
->
-> So my question is that is it a dax issue and should it be fixed in
-> dax layer. Or should it be handled in fuse to make sure that
-> multiple instances of invalidate_inode_pages2() on same inode
-> don't make progress in parallel and introduce enough locking
-> around it.
->
-> Right now fuse_finish_open() calls invalidate_inode_pages2() without
-> any locking. That allows it to make progress in parallel to dax
-> fault path as well as allows multiple instances of invalidate_inode_pages2()
-> to run in parallel.
->
-> Not-yet-signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-> ---
->  fs/dax.c |    7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> Index: redhat-linux/fs/dax.c
-> ===================================================================
-> --- redhat-linux.orig/fs/dax.c  2021-04-16 12:50:40.141363317 -0400
-> +++ redhat-linux/fs/dax.c       2021-04-16 12:51:42.385926390 -0400
-> @@ -266,9 +266,10 @@ static void wait_entry_unlocked(struct x
->
->  static void put_unlocked_entry(struct xa_state *xas, void *entry)
->  {
-> -       /* If we were the only waiter woken, wake the next one */
-> -       if (entry && !dax_is_conflict(entry))
-> -               dax_wake_entry(xas, entry, false);
-> +       if (dax_is_conflict(entry))
-> +               return;
-> +
-> +       dax_wake_entry(xas, entry, false);
+On Thu, 15 Apr 2021 16:47:54 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.10.31 release.
+> There are 25 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 17 Apr 2021 14:44:01 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.31-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-How does this work if entry is NULL? dax_entry_waitqueue() will not
-know if it needs to adjust the index. I think the fix might be to
-specify that put_unlocked_entry() in the invalidate path needs to do a
-wake_up_all().
+5.10.31-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
+
