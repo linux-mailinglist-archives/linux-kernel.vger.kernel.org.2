@@ -2,58 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57FE9362953
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 22:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C4B362958
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 22:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245673AbhDPU04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 16:26:56 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:50565 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244249AbhDPU0x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 16:26:53 -0400
-X-Originating-IP: 90.65.108.55
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 422A6FF802;
-        Fri, 16 Apr 2021 20:26:27 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     linux-kernel@vger.kernel.org, Laurent Vivier <laurent@vivier.eu>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-m68k@lists.linux-m68k.org, linux-rtc@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 0/2] m68k: Add Virtual M68k Machine
-Date:   Fri, 16 Apr 2021 22:26:26 +0200
-Message-Id: <161860472066.842937.16850667459079911050.b4-ty@bootlin.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210323221430.3735147-1-laurent@vivier.eu>
-References: <20210323221430.3735147-1-laurent@vivier.eu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        id S245606AbhDPU2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 16:28:42 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:19917 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244843AbhDPU2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 16:28:38 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618604893; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=Z5idBwlQhEZLRZOuOyizkreWC2NX+mI+QplQa1hscsI=; b=tdRYmcOC/inCdp9Z0RoRwZcR5xICAk64SMB0aeD+dPlYoHpbSKcY3hl6XlgZsh96g7QLXi+r
+ sPVVkVKbNoa3UJXOhCcEfrQS31rsjF5TcGVmt6puunVu/2CboVETmn7fOHhKmJfvpAjbT/8f
+ 2zyBNYnh9HR51Q44hePGwIVDjw0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6079f35c2cc44d3aea4c9a9c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Apr 2021 20:28:12
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 76AE4C433CA; Fri, 16 Apr 2021 20:28:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E6AB3C433C6;
+        Fri, 16 Apr 2021 20:28:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E6AB3C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        khsieh@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] drm/msm/dp: service only one irq_hpd if there are multiple irq_hpd pending
+Date:   Fri, 16 Apr 2021 13:27:57 -0700
+Message-Id: <1618604877-28297-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Mar 2021 23:14:28 +0100, Laurent Vivier wrote:
-> The most powerful m68k machine emulated by QEMU is a Quadra 800,
-> but this machine is very limited: only 1 GiB of memory and only some
-> specific interfaces, with no DMA.
-> 
-> The Virtual M68k Machine is based on Goldfish interfaces defined by Google
-> for Android simulator. It uses Goldfish-rtc (timer and RTC),
-> Goldfish-pic (PIC) and Goldfish-tty (for early tty).
-> 
-> [...]
+Some dongle may generate more than one irq_hpd events in a short period of
+time. This patch will treat those irq_hpd events as single one and service
+only one irq_hpd event.
 
-Applied, thanks!
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ drivers/gpu/drm/msm/dp/dp_display.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-[1/2] rtc: goldfish: remove dependency to OF
-      commit: 3fd00fdc4f11c656a63e6a6280c0bcb63cf109a2
-[2/2] m68k: introduce a virtual m68k machine
-      commit: 95631785c64840f3816f7a4cc2ce1a5332f43184
-
-Best regards,
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index 5a39da6..0a7d383 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -707,6 +707,9 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
+ 		return 0;
+ 	}
+ 
++	/* only handle first irq_hpd in case of multiple irs_hpd pending */
++	dp_del_event(dp, EV_IRQ_HPD_INT);
++
+ 	ret = dp_display_usbpd_attention_cb(&dp->pdev->dev);
+ 	if (ret == -ECONNRESET) { /* cable unplugged */
+ 		dp->core_initialized = false;
+@@ -1300,6 +1303,9 @@ static int dp_pm_suspend(struct device *dev)
+ 	/* host_init will be called at pm_resume */
+ 	dp->core_initialized = false;
+ 
++	/* system suspended, delete pending irq_hdps */
++	dp_del_event(dp, EV_IRQ_HPD_INT);
++
+ 	mutex_unlock(&dp->event_mutex);
+ 
+ 	return 0;
+@@ -1496,6 +1502,9 @@ int msm_dp_display_disable(struct msm_dp *dp, struct drm_encoder *encoder)
+ 	/* stop sentinel checking */
+ 	dp_del_event(dp_display, EV_DISCONNECT_PENDING_TIMEOUT);
+ 
++	/* link is down, delete pending irq_hdps */
++	dp_del_event(dp_display, EV_IRQ_HPD_INT);
++
+ 	dp_display_disable(dp_display, 0);
+ 
+ 	rc = dp_display_unprepare(dp);
 -- 
-Alexandre Belloni <alexandre.belloni@bootlin.com>
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
