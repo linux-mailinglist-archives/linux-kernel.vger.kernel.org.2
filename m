@@ -2,159 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79514361AFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 10:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2301361B05
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 10:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239874AbhDPH7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 03:59:20 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33912 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S239859AbhDPH7T (ORCPT
+        id S239814AbhDPIFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 04:05:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236893AbhDPIFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 03:59:19 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13G7XxHN138687;
-        Fri, 16 Apr 2021 03:58:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=a60hQsz0xpYXDiJLKWxC2W4MYc6pkB5sdNqBWr6ssRM=;
- b=spzbPzZMF3zeVl4NFNSTDSMdK0r/jGaaX6AKC9buToIO8TcKoy8+E04Sb87Bnp+FAt9a
- buSSS2hjv6/og1ImD1DElmf67k4ZbaPnrE4iVPCnDFW26DbCwQA/3xNW55Vg9jNRLBPx
- n4B2iqeJYktPHfWjnH0w3hy5s5yBY4p9R3djnyZlHY68SGlgrP8QEuayCVfui4b27vHm
- B89lz1zNIefD2PSjRRdLnScwYYl1YOBVZyqyqk4B4CkMgSZetAAEbjulx4tjqzZqPpr9
- wt//4Bv3MrwSVM1KC10aybQRxIgfXyoGhOclGMmegUqF8MdhSWSmotczkI0R3wh9rtpu sA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37xtqa07cg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 03:58:29 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13G7Z88Q141859;
-        Fri, 16 Apr 2021 03:58:29 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37xtqa07c4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 03:58:29 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13G7vGCH020596;
-        Fri, 16 Apr 2021 07:58:27 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06ams.nl.ibm.com with ESMTP id 37u39hmb6w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 07:58:27 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13G7wO4W34341168
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Apr 2021 07:58:25 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D00ADA4051;
-        Fri, 16 Apr 2021 07:58:24 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 85222A4040;
-        Fri, 16 Apr 2021 07:58:22 +0000 (GMT)
-Received: from [9.85.71.75] (unknown [9.85.71.75])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 16 Apr 2021 07:58:22 +0000 (GMT)
-Subject: Re: [PATCH v1 1/1] powerpc/papr_scm: Properly handle UUID types and
- API
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Vaibhav Jain <vaibhav@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "Oliver O'Halloran" <oohall@gmail.com>
-References: <20210415134637.17770-1-andriy.shevchenko@linux.intel.com>
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-Message-ID: <af677216-82b4-f1fa-1d90-3d32dabf8583@linux.ibm.com>
-Date:   Fri, 16 Apr 2021 13:28:21 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210415134637.17770-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: rnJsI56rpExDF3Bo1wlmngO1NTDBBViL
-X-Proofpoint-ORIG-GUID: VhrjLmthWVmM633LBBbNsjhsOjnPESOb
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-15_11:2021-04-15,2021-04-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 mlxlogscore=999 spamscore=0 malwarescore=0
- lowpriorityscore=0 priorityscore=1501 phishscore=0 bulkscore=0
- adultscore=0 mlxscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104060000 definitions=main-2104160056
+        Fri, 16 Apr 2021 04:05:10 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60833C061574;
+        Fri, 16 Apr 2021 01:04:46 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id u21so40825065ejo.13;
+        Fri, 16 Apr 2021 01:04:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=OWRXiPGRi09QbcBFvA9VOlXlTCFeZlC+E/sc4KUB+7A=;
+        b=YAfK0ActrpH0ig12JPJ+SU8a+VVAabRSDFiW+zaSwaLg0Ee6gIJZn8tP3RecwrR+rm
+         g9L8LxCirOy1w6dhRcBh3/qU5dkA/OtyLYGDq62985DRxXQF+TK5KM38e5nkfxNuObdc
+         qsH+BjsSndNVdByxQHGyiIS1ZC6XuZuxbfjRLmC0F75xRk7GMnfygH1qDvS1FvFhMC1k
+         M25J8o0IRNA3InSOtUJqD2ANSElOIXkvhzUgZm+KCudblw0YK/Z1UVx7M+qutDP9d0T0
+         jIh6ikRCPI++HL+ZybODn3A/jgsAzu/TKQ7KsowWG7/i+Olh9gAWOU6GF7Oy8yVgpiM/
+         78CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=OWRXiPGRi09QbcBFvA9VOlXlTCFeZlC+E/sc4KUB+7A=;
+        b=PbnmhgDHALkkd/rkjaUnemZboGXr3txFxQTPdTJcFp3WrfG/EbSLx5j5R4lsFIgWI8
+         yonN+0hruv511xOnnve3HOHdCKugOSA2R1TZhRYwUEVumpYqtZKwcyMWDb334UBEjJ3h
+         16m4rJaiBbAG9duS5syETeNCZe1P58EHmCmXUZNOVSHjZL2h5UR9LoJRl4yp6tJHfVTE
+         QSu2o1ts99Kf+L3TCxtKcVyBus9LyoHDrEnzd6j3yL6ZfmrIBQMDd8W7bmly/85SD77j
+         hvuBZteM7FOnuZ8wNV1dR44YGl1UXPDaAyWQDGC/J4gDYWtIbyeiIQJxW5DnTiNXAnVu
+         uD5Q==
+X-Gm-Message-State: AOAM531BdoD8EVXUM9eXuBYrShFHeLOCcw37wwCCTyczbo3qd3zkH8H4
+        QeXcD2VQPB/gjG7eDLTzNa5Ns59UPaF5Kff1
+X-Google-Smtp-Source: ABdhPJwtExuvPla2KbvdeXR3UALergaPe7QsuMA4vfP9OXbIKm+ngpy0r+5X0gsJnpl0ENGH/GqBfw==
+X-Received: by 2002:a17:906:cb1:: with SMTP id k17mr7136631ejh.307.1618560285007;
+        Fri, 16 Apr 2021 01:04:45 -0700 (PDT)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id q16sm4672303edv.61.2021.04.16.01.04.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 16 Apr 2021 01:04:44 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, zhangqing@rock-chips.com,
+        enric.balletbo@collabora.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v8 00/15] soc: rockchip: power-domain: add rk3568 powerdomains
+Date:   Fri, 16 Apr 2021 10:03:27 +0200
+Message-Id: <20210416080342.18614-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/21 7:16 PM, Andy Shevchenko wrote:
-> Parse to and export from UUID own type, before dereferencing.
-> This also fixes wrong comment (Little Endian UUID is something else)
-> and should fix Sparse warnings about assigning strict types to POD.
-> 
-> Fixes: 43001c52b603 ("powerpc/papr_scm: Use ibm,unit-guid as the iset cookie")
-> Fixes: 259a948c4ba1 ("powerpc/pseries/scm: Use a specific endian format for storing uuid from the device tree")
-> Cc: Oliver O'Halloran <oohall@gmail.com>
-> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
-> Not tested
->   arch/powerpc/platforms/pseries/papr_scm.c | 13 ++++++++-----
->   1 file changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
-> index ae6f5d80d5ce..4366e1902890 100644
-> --- a/arch/powerpc/platforms/pseries/papr_scm.c
-> +++ b/arch/powerpc/platforms/pseries/papr_scm.c
-> @@ -1085,8 +1085,9 @@ static int papr_scm_probe(struct platform_device *pdev)
->   	u32 drc_index, metadata_size;
->   	u64 blocks, block_size;
->   	struct papr_scm_priv *p;
-> +	u8 uuid_raw[UUID_SIZE];
->   	const char *uuid_str;
-> -	u64 uuid[2];
-> +	uuid_t uuid;
->   	int rc;
->   
->   	/* check we have all the required DT properties */
-> @@ -1129,16 +1130,18 @@ static int papr_scm_probe(struct platform_device *pdev)
->   	p->hcall_flush_required = of_property_read_bool(dn, "ibm,hcall-flush-required");
->   
->   	/* We just need to ensure that set cookies are unique across */
-> -	uuid_parse(uuid_str, (uuid_t *) uuid);
-> +	uuid_parse(uuid_str, &uuid);
-> +
->   	/*
->   	 * cookie1 and cookie2 are not really little endian
-> -	 * we store a little endian representation of the
-> +	 * we store a raw buffer representation of the
->   	 * uuid str so that we can compare this with the label
->   	 * area cookie irrespective of the endian config with which
->   	 * the kernel is built.
->   	 */
-> -	p->nd_set.cookie1 = cpu_to_le64(uuid[0]);
-> -	p->nd_set.cookie2 = cpu_to_le64(uuid[1]);
-> +	export_uuid(uuid_raw, &uuid);
-> +	p->nd_set.cookie1 = get_unaligned_le64(&uuid_raw[0]);
-> +	p->nd_set.cookie2 = get_unaligned_le64(&uuid_raw[8]);
->   
+Fix power-controller node names for dtbs_check.
+Convert power domain documentation to json-schema.
+Add a meaningful power domain name.
+Support power domain function for RK3568 Soc.
 
-ok that does the equivalent of cpu_to_le64 there. So we are good. But 
-the comment update is missing the details why we did that 
-get_unaligned_le64. Maybe raw buffer representation is the correct term?
-Should we add an example in the comment. ie,
+Changed in V8:
+  Add #power-domain-cells to power domain nodes.
+  Convert pmu.txt to YAML.
+  Add more compatible strings to pmu.yaml
+  Add pd-node ref schema.
 
-/*
-  * Historically we stored the cookie in the below format.
-for a uuid str 72511b67-0b3b-42fd-8d1d-5be3cae8bcaa
-cookie1 was  0xfd423b0b671b5172 cookie2 was 0xaabce8cae35b1d8d
-*/
+Changed in V7:
+[PATCH v7 07/11]:
+  Fix TAB warning
+  Fix alignment
+[PATCH v7 09/11]:
+  Fix commit message and author format
+  Changed SPDX-License-Identifier back to GPL-2.0
+  Remove "clocks", "assigned-clocks" and "assigned-clock-parents"
+  Fix indent example
+[PATCH v7 11/11]:
+  Fix alignment
 
+Changed in V6:
+[PATCH v6 7/11]: Use kbasename(node->full_name).
+[PATCH v6 9/11]: Update the commit message.
 
+Changed in V5:
+[PATCH v5 1/11]: New.
+[PATCH v5 2/11]: New.
+[PATCH v5 3/11]: New.
+[PATCH v5 4/11]: New.
+[PATCH v5 5/11]: New.
+[PATCH v5 6/11]: New.
+[PATCH v5 7/11]: New.
+[PATCH v5 8/11]: No change. Same as [PATCH v4 1/4].
+[PATCH v5 9/11]: [PATCH v4 2/4] Fix up yaml code styles.
+[PATCH v5 10/11]: No change. Same as [PATCH v4 3/4].
+[PATCH v5 11/11]: [PATCH v4 4/4] add a meaningful power domain name for
+RK3568 Soc.
 
->   	/* might be zero */
->   	p->metadata_size = metadata_size;
-> 
+Changed in V4:
+[PATCH v4 2/4]: Fix up yaml code styles. Remove the new compatible to [PATCH v4 3/4]
+[PATCH v4 3/4]: Adding new compatible for RK3568 Soc.
+[PATCH v4 4/4]: No change. Same as [PATCH v3 3/3].
+
+Changed in V3:
+[PATCH v3 2/3]: Fix up the code styles and add rk3568 base on:
+https://patchwork.kernel.org/project/linux-rockchip/patch/20210225102643.653095-1-enric.balletbo@collabora.com/
+
+Changed in V2:
+[PATCH v2 2/3]: Fix up yaml code styles.
+
+Elaine Zhang (10):
+  ARM: dts: rockchip: Fix power-controller node names for rk3066a
+  ARM: dts: rockchip: Fix power-controller node names for rk3188
+  ARM: dts: rockchip: Fix power-controller node names for rk3288
+  arm64: dts: rockchip: Fix power-controller node names for px30
+  arm64: dts: rockchip: Fix power-controller node names for rk3328
+  arm64: dts: rockchip: Fix power-controller node names for rk3399
+  soc: rockchip: pm-domains: Add a meaningful power domain name
+  dt-bindings: add power-domain header for RK3568 SoCs
+  dt-bindings: power: rockchip: Add bindings for RK3568 Soc
+  soc: rockchip: power-domain: add rk3568 powerdomains
+
+Enric Balletbo i Serra (1):
+  dt-bindings: power: rockchip: Convert to json-schema
+
+Johan Jonker (4):
+  ARM: dts: rockchip: add #power-domain-cells to power domain nodes
+  arm64: dts: rockchip: add #power-domain-cells to power domain nodes
+  dt-bindings: arm: rockchip: convert pmu.txt to YAML
+  dt-bindings: arm: rockchip: add more compatible strings to pmu.yaml
+
+ .../devicetree/bindings/arm/rockchip/pmu.txt       |  16 --
+ .../devicetree/bindings/arm/rockchip/pmu.yaml      |  57 +++++
+ .../bindings/power/rockchip,power-controller.yaml  | 259 +++++++++++++++++++++
+ .../bindings/soc/rockchip/power_domain.txt         | 136 -----------
+ arch/arm/boot/dts/rk3066a.dtsi                     |   9 +-
+ arch/arm/boot/dts/rk3188.dtsi                      |   9 +-
+ arch/arm/boot/dts/rk3288.dtsi                      |  12 +-
+ arch/arm64/boot/dts/rockchip/px30.dtsi             |  24 +-
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi           |   9 +-
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi           |  60 +++--
+ drivers/soc/rockchip/pm_domains.c                  | 252 +++++++++++---------
+ include/dt-bindings/power/rk3568-power.h           |  32 +++
+ 12 files changed, 575 insertions(+), 300 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/arm/rockchip/pmu.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/rockchip/pmu.yaml
+ create mode 100644 Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
+ delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
+ create mode 100644 include/dt-bindings/power/rk3568-power.h
+
+-- 
+2.11.0
 
