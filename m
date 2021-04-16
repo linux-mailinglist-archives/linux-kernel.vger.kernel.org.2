@@ -2,124 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8B9362696
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F373E362691
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240735AbhDPRUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 13:20:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53946 "EHLO
+        id S240521AbhDPRUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 13:20:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240673AbhDPRUo (ORCPT
+        with ESMTP id S239551AbhDPRUX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 13:20:44 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21930C061574;
-        Fri, 16 Apr 2021 10:20:18 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id p12so19637701pgj.10;
-        Fri, 16 Apr 2021 10:20:18 -0700 (PDT)
+        Fri, 16 Apr 2021 13:20:23 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A89C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:19:58 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id b17so23726170ilh.6
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:19:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HNdoPRhe9ydcDzsOjKuBgbIIMgX8oUiaq4I6X+MyuLg=;
-        b=c/vt2HVwweliTRqSdVAM0D/2ZFdsaG03KL3iQnQ8A17zQm4+r2KYQCg+edqIEmDQFY
-         7Fym+OV8RAgyTjQWUt1fdTFYz6vdFg4RNFrnCZHXDNfXNZ9k3Uxms1bFAjstw61GW/CX
-         ZpZt5cpSitvmk/+jYnadKjEpg8qUELibXQvEcXYopTyDHRq8ghG7Q6mgHQS1D0J+QjYD
-         ZGv/w44aeF8f4wrmwz157usBme5VCUowoA3cQf5NRR35sKYGzsczCQH2SSiVssC/rFFG
-         tL9WLkAtCrwnsNBNtbwalDO8ZnEo9TNq4bD1ng1hXE6sLocDZtpVpMX6MSJ/Agl0VS/O
-         SpgA==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=6e7t6TfWiGQDRdCZmECAbPZ2los9v9aMlAKupjzwxUM=;
+        b=jJL1VCySU07RkNPU/y7sIq1rho8Kbaay+P8s2sUhLxdHcIHxy4hegDdJ3Au33EalQD
+         7XVEmdaQh8GHpSEMKYC3uk6jfgaA94ASQW+asyqDOjR8Cbz0ErKd3GRSVLHwyCGq5T95
+         1nfa3LC/xcASYISfB66rJrEkl75mcmPDelxscE88RcI00x3N0GrzHsZ9KeZppXOBHP/L
+         oenwCVWdc3LCBkzisMq6gB+N5O/1zw4Vb1L3yVpFu8mTrlz5X5qc2baXgBtqACDPqGBg
+         hSgIskrXAb/hBa6hFCesV5Xq2ZG5LAZ+LJpsVFRzV5bP3GuZzAQ8L//bVVFz0INfPiw9
+         xcFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HNdoPRhe9ydcDzsOjKuBgbIIMgX8oUiaq4I6X+MyuLg=;
-        b=WN6jdyjWR0Z1JU+12+PiiuOaBeM5T8CE6bQQZYc6rQ8ZKeoudkPhkZSoNjB0NfDA6y
-         HrAbBB2aPGGpXuDbgrfFXX3hu2Xv8iSxK28Y6VXuM16Fyi2Yy9JNf80uQUU+bNlJR49m
-         1QAZPSiq/NLPw9PUGAPccHalOTtsN/epUN3qbp8z/i51sHViUsOuiHbPblegPlWK7Ky3
-         SxCHiGtTS62idQTQq+u5HiXaEckZry217XPJbEdxLczuqfzaX+8OSrF0gJlqBtTYttzr
-         SSJuSKX0bPZYu4OJCeWMpzOYIJU/8i6Bg9P4HGjOvUtzx5sl03o4TR1BOf24HA+DsrbM
-         Sqpg==
-X-Gm-Message-State: AOAM530o5To5AU3PWf71Rz+KhPLgpFg6yF1RHHYea0iXWHsWXIFvndTc
-        IQOjUcrphuP+uSrewy9vAfQIwV5jW/MU+w==
-X-Google-Smtp-Source: ABdhPJz0reBgvQimWpOzDOCBMDyxNNikEwZd815dZP5BsTmzz2ngQ88C+BlAqQw+15z4ykfcS457sA==
-X-Received: by 2002:a63:1a50:: with SMTP id a16mr164697pgm.92.1618593617602;
-        Fri, 16 Apr 2021 10:20:17 -0700 (PDT)
-Received: from localhost.localdomain (220-130-175-235.HINET-IP.hinet.net. [220.130.175.235])
-        by smtp.gmail.com with ESMTPSA id 33sm5536776pgq.21.2021.04.16.10.20.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 10:20:17 -0700 (PDT)
-From:   Chung-Chiang Cheng <shepjeng@gmail.com>
-X-Google-Original-From: Chung-Chiang Cheng <cccheng@synology.com>
-To:     christian.brauner@ubuntu.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     cccheng@synology.com
-Subject: [PATCH] hfsplus: prevent negative dentries when casefolded
-Date:   Sat, 17 Apr 2021 01:20:12 +0800
-Message-Id: <20210416172012.8667-1-cccheng@synology.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=6e7t6TfWiGQDRdCZmECAbPZ2los9v9aMlAKupjzwxUM=;
+        b=g7xGDX0zM3UTSLP8A/HeKqcSHMpRUSvN0OTE1ekD0UA2vAxMjGHagkhyRe1d6sI2fX
+         aXRDuGLFzdH/vva/XxtRICYTZjXgn7olXOYnYcnfPjLPZ89yXN49QUCEx2Hpebw/XVSJ
+         zjN6D6Jt2DflSGEdZ77R3HUWDxQgMiia3lCtB+46O08R2IBCy9WbeH8iQfKM+CFkft/t
+         HOXrrAe8vpbKjJib382Y7CTUnsaZDpyLUjXcqMAP0dweibPPnn3ccDP3hQAqybGhrRuy
+         FzpkrMZWavpcb0nOP7HijMpg6Bi7GnfDNXjvIvGqzlyk3CxDPOg0cQulhbHKG5nImQBK
+         0Mhw==
+X-Gm-Message-State: AOAM533K7gPUY0D01+bwxf/sRQYY4nb3Hs9s5Zetx4Rz5/3XdRx16H0f
+        MeFVL3OIPAsjZd/N8cHtytWu6s+ak17FgI/p+G6oLT9TdfKVRg==
+X-Google-Smtp-Source: ABdhPJyM0roxIn+nCrjOTRzI36tQfRmnapRL8yJe9hKwTQO2YCgJ6KCOwAiJYPxf2dTjs7l4oMa/3N7fIYaJAVE9t0k=
+X-Received: by 2002:a92:de4e:: with SMTP id e14mr1898299ilr.129.1618593598010;
+ Fri, 16 Apr 2021 10:19:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Drew Abbott <abbotta4@gmail.com>
+Date:   Fri, 16 Apr 2021 13:20:28 -0400
+Message-ID: <CALY-g84i=WPVT7OKwKa1xJaORPwMUyjdX0ewqqoVsC2ihbpvtg@mail.gmail.com>
+Subject: Page BUGs
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hfsplus uses the case-insensitive filenames by default, but VFS negative
-dentries are incompatible with case-insensitive. For example, the
-following instructions will get a cached filename 'aaa' which isn't
-expected. There is no such problem in macOS.
+Hello,
 
-  touch aaa
-  rm aaa
-  touch AAA
+I have been troubleshooting problems with the vanilla and lts linux kernels
+for a couple of weeks now and saw this mailing list in MAINTAINERS for
+problems with mm.h; apologies if this is the wrong place to ask. I have
+been experiencing many freezes and panics with this hardware:
+https://pcpartpicker.com/user/Abbott/saved/#view=wXdgt6
+Originally[0], many of the traces referred to cpu idling funcs that seem to
+be addressed already[1][2], but now all of the traces refer to problems
+with paging[3][4][5][6]. I normally mount a mergerfs filesystem at boot
+that I thought was causing the panics[7], but I have since removed that
+entry from fstab and can still see paging bugs without that fs (or any
+other FUSE fs) mounted[7].
+What can I do to keep my computer from freezing and panicking?
 
-This patch just takes the same approach as ext4 and f2fs to prevent
-negative dentries for this issue.
+Thank you,
+Drew Abbott
 
-Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
----
- fs/hfsplus/dir.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/fs/hfsplus/dir.c b/fs/hfsplus/dir.c
-index 03e6c046faf4..fcab8f09b6af 100644
---- a/fs/hfsplus/dir.c
-+++ b/fs/hfsplus/dir.c
-@@ -121,6 +121,9 @@ static struct dentry *hfsplus_lookup(struct inode *dir, struct dentry *dentry,
- 	if (S_ISREG(inode->i_mode))
- 		HFSPLUS_I(inode)->linkid = linkid;
- out:
-+	/* Prevent the negative dentry in the casefolded form from being cached */
-+	if (!inode && test_bit(HFSPLUS_SB_CASEFOLD, &HFSPLUS_SB(sb)->flags))
-+		return NULL;
- 	return d_splice_alias(inode, dentry);
- fail:
- 	hfs_find_exit(&fd);
-@@ -407,6 +410,12 @@ static int hfsplus_unlink(struct inode *dir, struct dentry *dentry)
- 		sbi->file_count--;
- 	inode->i_ctime = current_time(inode);
- 	mark_inode_dirty(inode);
-+
-+	/* VFS negative dentries are incompatible with encoding and
-+	 * case-insensitiveness
-+	 */
-+	if (test_bit(HFSPLUS_SB_CASEFOLD, &sbi->flags))
-+		d_invalidate(dentry);
- out:
- 	mutex_unlock(&sbi->vh_mutex);
- 	return res;
-@@ -429,6 +438,12 @@ static int hfsplus_rmdir(struct inode *dir, struct dentry *dentry)
- 	inode->i_ctime = current_time(inode);
- 	hfsplus_delete_inode(inode);
- 	mark_inode_dirty(inode);
-+
-+	/* VFS negative dentries are incompatible with encoding and
-+	 * case-insensitiveness
-+	 */
-+	if (test_bit(HFSPLUS_SB_CASEFOLD, &sbi->flags))
-+		d_invalidate(dentry);
- out:
- 	mutex_unlock(&sbi->vh_mutex);
- 	return res;
--- 
-2.25.1
-
+[0] https://bbs.archlinux.org/viewtopic.php?id=259571
+[1] https://bugzilla.kernel.org/show_bug.cgi?id=212087
+[2] https://bugzilla.kernel.org/show_bug.cgi?id=212543
+[3] https://imgur.com/HT4F7p7
+[4] https://imgur.com/pTb4Miu
+[5] https://imgur.com/pTb4Miu
+[6] https://imgur.com/JVueE3m
+[7] http://0x0.st/-ATM.log
