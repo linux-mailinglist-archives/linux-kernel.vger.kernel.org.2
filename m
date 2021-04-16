@@ -2,83 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB468361E1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59333361E15
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241271AbhDPKi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 06:38:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33786 "EHLO mail.kernel.org"
+        id S241147AbhDPKjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 06:39:01 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:39660 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240513AbhDPKin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 06:38:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2190610CD;
-        Fri, 16 Apr 2021 10:38:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618569499;
-        bh=IwthkpghUgaJJRlf4fBazKvw5wFO1M0ZTtJe9yFo0YA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=RAeFqmjk9tfJt62NfPMGJnali8yVh9D8pOU+pNHzN8XUuEKvChiVw08eex8FxsnAG
-         YjM/c/ziz5nyM2EajyWtLMUWywlz+Ntl/UbJBZUMNEQHWf4t+A8QJPmiJ+5y99+WPh
-         mO4v6NqfNRTUruhc1L22ER20DHpCl1SeC6jI3RGs1VQ9S1cJ3s0I/skm41p86Im1H0
-         xPFxHn4r2epHDuM7uMJaEk+2zlnz+qDCBbwt5cwcpCmnF/rem2cKCrZLbU8p8XrU5A
-         poMxYyG0LpOja86q/ndyng9KhDvMjEr50n5q//TWJoy8fQYV4AseC37ueqxrPRuG7u
-         44CkXt2uwV+yA==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     zhuguangqing83@gmail.com,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guangqing Zhu <zhuguangqing83@gmail.com>
-Subject: Re: [PATCH] Input: twl4030_keypad - Fix missing IRQF_ONESHOT as
- only threaded handler
-In-Reply-To: <20210416025706.11214-1-zhuguangqing83@gmail.com>
-References: <20210416025706.11214-1-zhuguangqing83@gmail.com>
-Date:   Fri, 16 Apr 2021 13:38:12 +0300
-Message-ID: <8735vqo6p7.fsf@kernel.org>
+        id S240931AbhDPKis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 06:38:48 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FMCNW3tv5z9v4WN;
+        Fri, 16 Apr 2021 12:38:19 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id TGx8rBpOGfLa; Fri, 16 Apr 2021 12:38:19 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FMCNW2yYgz9v4WM;
+        Fri, 16 Apr 2021 12:38:19 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8FD108B83B;
+        Fri, 16 Apr 2021 12:38:20 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id gxbf4EojfzU4; Fri, 16 Apr 2021 12:38:20 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6CE338B83A;
+        Fri, 16 Apr 2021 12:38:19 +0200 (CEST)
+Subject: Re: [PATCH v1 3/5] mm: ptdump: Provide page size to notepage()
+To:     Steven Price <steven.price@arm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        akpm@linux-foundation.org
+Cc:     linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org, linux-mm@kvack.org
+References: <cover.1618506910.git.christophe.leroy@csgroup.eu>
+ <1ef6b954fb7b0f4dfc78820f1e612d2166c13227.1618506910.git.christophe.leroy@csgroup.eu>
+ <41819925-3ee5-4771-e98b-0073e8f095cf@arm.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <da53d2f2-b472-0c38-bdd5-99c5a098675d@csgroup.eu>
+Date:   Fri, 16 Apr 2021 12:38:18 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+In-Reply-To: <41819925-3ee5-4771-e98b-0073e8f095cf@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
 
-zhuguangqing83@gmail.com writes:
 
-> From: Guangqing Zhu <zhuguangqing83@gmail.com>
->
-> Coccinelle noticed:
-> drivers/input/keyboard/twl4030_keypad.c:413:9-34: ERROR: Threaded IRQ with
-> no primary handler requested without IRQF_ONESHOT
->
-> Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
+Le 16/04/2021 à 11:28, Steven Price a écrit :
+> On 15/04/2021 18:18, Christophe Leroy wrote:
+>> In order to support large pages on powerpc, notepage()
+>> needs to know the page size of the page.
+>>
+>> Add a page_size argument to notepage().
+>>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>   arch/arm64/mm/ptdump.c         |  2 +-
+>>   arch/riscv/mm/ptdump.c         |  2 +-
+>>   arch/s390/mm/dump_pagetables.c |  3 ++-
+>>   arch/x86/mm/dump_pagetables.c  |  2 +-
+>>   include/linux/ptdump.h         |  2 +-
+>>   mm/ptdump.c                    | 16 ++++++++--------
+>>   6 files changed, 14 insertions(+), 13 deletions(-)
+>>
+> [...]
+>> diff --git a/mm/ptdump.c b/mm/ptdump.c
+>> index da751448d0e4..61cd16afb1c8 100644
+>> --- a/mm/ptdump.c
+>> +++ b/mm/ptdump.c
+>> @@ -17,7 +17,7 @@ static inline int note_kasan_page_table(struct mm_walk *walk,
+>>   {
+>>       struct ptdump_state *st = walk->private;
+>> -    st->note_page(st, addr, 4, pte_val(kasan_early_shadow_pte[0]));
+>> +    st->note_page(st, addr, 4, pte_val(kasan_early_shadow_pte[0]), PAGE_SIZE);
+> 
+> I'm not completely sure what the page_size is going to be used for, but note that KASAN presents an 
+> interesting case here. We short-cut by detecting it's a KASAN region at a high level 
+> (PGD/P4D/PUD/PMD) and instead of walking the tree down just call note_page() *once* but with 
+> level==4 because we know KASAN sets up the page table like that.
+> 
+> However the one call actually covers a much larger region - so while PAGE_SIZE matches the level it 
+> doesn't match the region covered. AFAICT this will lead to odd results if you enable KASAN on powerpc.
 
-Reviewed-by: Felipe Balbi <balbi@kernel.org>
+Hum .... I successfully tested it with KASAN, I now realise that I tested it with 
+CONFIG_KASAN_VMALLOC selected. In this situation, since 
+https://github.com/torvalds/linux/commit/af3d0a686 we don't have any common shadow page table anymore.
 
-=2D-=20
-balbi
+I'll test again without CONFIG_KASAN_VMALLOC.
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+> 
+> To be honest I don't fully understand why powerpc requires the page_size - it appears to be using it 
+> purely to find "holes" in the calls to note_page(), but I haven't worked out why such holes would 
+> occur.
 
------BEGIN PGP SIGNATURE-----
+I was indeed introduced for KASAN. We have a first commit 
+https://github.com/torvalds/linux/commit/cabe8138 which uses page size to detect whether it is a 
+KASAN like stuff.
 
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAmB5aRQRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQawLg//bnXV+MhAYjVymdFOcBk5tGG+lzgqcxjE
-Hh5n5iPt//21d7bQ79f5pHgQ/XuDREwLkdiisYp1xwan5ABUqfXh7PaZOGiyysdZ
-yKQ5SbwGUgfKpXmp74//+Vuz/AhfK8p8EFKim2aOFP+g6FFZ1CmB+b+rRRmLmG7Z
-cxxxdbsFIKzQi979wVqKAfVHtQgAbUlUM2l4OPFoYdrLErO3l2F597BUBS3oyGbZ
-lHtg6vsympXXJbrMwRKBcy9tUCsEbhbpkmSQNCwx+n6ajG97w9rduzU3tUHbK/oP
-kLc5nZr7720wFaHiXpKlLhAZB8pDAwwmC2K7lh4k7eZQT/Uf0nSaniOaEJfRW4CM
-9IjjwyInEYaSvhyQugREWxoxRt69/v5n2hlCBh3I+YowapeV6boReRdyLbCI/TmI
-+P6tZeOJFhDCa/mTs8svKYe+4ay6j6fUMmVSV3UpaqtHGzvg6h9SLvWAwhJwspPB
-GVv4AQjX8TwFzj1M8XAHEn1/WBjU+1wGs6KBYUEjE0uOtk3lHfNuJZ6kJwXBqBs5
-LimPM8/nB6inoE005qnekI/LE4KAUHdWvK27TqgdI4rtar/8qJjjepe+6BjRgn+N
-Ss72LPncIJekNSBzQhE4s/7ctMEG///twnr8Ut5YW5NkYJKW6Eube65pCw/Tk0l7
-SzrBrud0dlM=
-=AUSC
------END PGP SIGNATURE-----
---=-=-=--
+Then came https://github.com/torvalds/linux/commit/b00ff6d8c as a fix. I can't remember what the 
+problem was exactly, something around the use of hugepages for kernel memory, came as part of the 
+series 
+https://patchwork.ozlabs.org/project/linuxppc-dev/cover/cover.1589866984.git.christophe.leroy@csgroup.eu/
+
+
+Christophe
