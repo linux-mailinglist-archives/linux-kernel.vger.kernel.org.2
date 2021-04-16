@@ -2,85 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32B4362534
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 18:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA46236253C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 18:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238368AbhDPQJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 12:09:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38068 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236350AbhDPQJm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 12:09:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1BD76113D;
-        Fri, 16 Apr 2021 16:09:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618589358;
-        bh=LT3aTtIyNMIt1ylzBHBWXlZkbbUuLb4bFY3i31NmIwo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=O8rjvo/LVEfOfz5yV1eUDcrKDSY3OunACHttjTg60KGV2UPkwvmmfujdN9FsYfeo5
-         CGX3jXPM/hQLx0Xu0eyHgg5678Kk6xT0AYs8OKZWVgPIZZDMBX04OfU9q9vj8vpEck
-         g/i9KrEGfITQzkVjn9YbYmiW9RdaZZuaxJ1gX3wrlLTmAG8AxE0V70H7qFyNO+fEnf
-         /Io+EK/Gdgdxd40x+16HYnx9yLxNJfSA4Z1b4oUD+uBT2y3H8kxCVsDslLvOZqEQ34
-         5H0EpaQ75+U+5XdFos3GeHNCWJFPzE011/gUNhre/ha2If2RB56JzzbIabNzXE04yX
-         eWDwkCRuQtJJQ==
-Date:   Sat, 17 Apr 2021 01:09:14 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     zuoqilin1@163.com, Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, zuoqilin <zuoqilin@yulong.com>
-Subject: Re: [PATCH] tools/bootconfig: Simplify expression
-Message-Id: <20210417010914.e44504e46680d09eda141f18@kernel.org>
-In-Reply-To: <20210414134647.1870-1-zuoqilin1@163.com>
-References: <20210414134647.1870-1-zuoqilin1@163.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S240063AbhDPQLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 12:11:04 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:46378 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236350AbhDPQK4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 12:10:56 -0400
+Received: from [192.168.86.23] (c-73-38-52-84.hsd1.vt.comcast.net [73.38.52.84])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 0378920B8001;
+        Fri, 16 Apr 2021 09:10:28 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0378920B8001
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1618589431;
+        bh=9MXNGr+OsMs3ZgwnW73MWJRCTLeAvuN7B4xa579GwLs=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=qq63LORblOaS7ZOylg8BPaRJrxFsJH4ALhgZg4EXBBxDzyX/HiLnpZQncAH56chNV
+         gJbU+JREtUYqCHkoE/Nx2mAsemurEp4A0OlgpIrThG4eUwpscLCg7VbOX+pfh+QBzy
+         jZMk27UwZrUCqJtIvt1lbj5hRk1tiYEotgHgO+Dc=
+Subject: Re: [PATCH v2 1/7] hyperv: Detect Nested virtualization support for
+ SVM
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org,
+        Lan Tianyu <Tianyu.Lan@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        viremana@linux.microsoft.com
+References: <cover.1618492553.git.viremana@linux.microsoft.com>
+ <9d12558549bc0c6f179b26f5b16c751bdfab3f74.1618492553.git.viremana@linux.microsoft.com>
+ <871rba8wjj.fsf@vitty.brq.redhat.com>
+From:   Vineeth Pillai <viremana@linux.microsoft.com>
+Message-ID: <a50e0d90-d853-7195-56ce-42b85484a55e@linux.microsoft.com>
+Date:   Fri, 16 Apr 2021 12:10:26 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
+MIME-Version: 1.0
+In-Reply-To: <871rba8wjj.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Apr 2021 21:46:47 +0800
-zuoqilin1@163.com wrote:
 
-> From: zuoqilin <zuoqilin@yulong.com>
-> 
-> It is not necessary to define the variable ret to receive
-> the return value of the xbc_node_compose_key() method.
-> 
-> Signed-off-by: zuoqilin <zuoqilin@yulong.com>
+> It may make sense to expand this a bit as it is probably unclear how the
+> change is related to SVM.
+>
+> Something like:
+>
+> HYPERV_CPUID_NESTED_FEATURES CPUID leaf can be present on both Intel and
+> AMD Hyper-V guests. Previously, the code was using
+> HV_X64_ENLIGHTENED_VMCS_RECOMMENDED feature bit to determine the
+> availability of nested features leaf and this complies to TLFS:
+> "Recommend a nested hypervisor using the enlightened VMCS interface.
+> Also indicates that additional nested enlightenments may be available
+> (see leaf 0x4000000A)". Enlightened VMCS, however, is an Intel only
+> feature so the detection method doesn't work for AMD. Use
+> HYPERV_CPUID_VENDOR_AND_MAX_FUNCTIONS.EAX CPUID information ("The
+> maximum input value for hypervisor CPUID information.") instead, this
+> works for both AMD and Intel.
+Thanks for the input. Will update the commit message in next revision.
 
-Indeed.
-
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thank you!
-
-> ---
->  tools/bootconfig/main.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
-> index 7362bef..5fb309b 100644
-> --- a/tools/bootconfig/main.c
-> +++ b/tools/bootconfig/main.c
-> @@ -84,11 +84,9 @@ static void xbc_show_list(void)
->  	char key[XBC_KEYLEN_MAX];
->  	struct xbc_node *leaf;
->  	const char *val;
-> -	int ret = 0;
->  
->  	xbc_for_each_key_value(leaf, val) {
-> -		ret = xbc_node_compose_key(leaf, key, XBC_KEYLEN_MAX);
-> -		if (ret < 0)
-> +		if (xbc_node_compose_key(leaf, key, XBC_KEYLEN_MAX) < 0)
->  			break;
->  		printf("%s = ", key);
->  		if (!val || val[0] == '\0') {
-> -- 
-> 1.9.1
-> 
-> 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Thanks,
+Vineeth
