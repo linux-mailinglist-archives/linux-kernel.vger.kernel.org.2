@@ -2,155 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C478F3618F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 06:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C963618F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 06:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234735AbhDPEjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 00:39:46 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19318 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229719AbhDPEjo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 00:39:44 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13G4Y3j9022685;
-        Fri, 16 Apr 2021 00:38:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Qg3sUk81HK+aS8G8kz99tD1f+4C08Ppu6ef3glezsJA=;
- b=YYuMSPzeN9W+kwvAEKA7kOn9LX7MjuNZ9+epu7drmVlfmlaI/0Yjv6Zd71Aa51NX0iIw
- 625eZBEN0L2FGzTHHRP3jaksobM2W6DZplZkkitk6KtjpGle1yRORYKpPqQWn91tUxYR
- A8O6lkutyqCuCn1x40MQ3Otv2mGoYblAMfGmYA6TyWzDjoNwbuotcbZ2UTVaaf9vVlA3
- zvlcaYKALH68h4D25XilhwY9ABGxxkgo4BDbnn5km+c9x5D+vB47TC7P9LDv06zdp+sM
- hEIjhqF7KxmgHNfefADKKjMG1k4boqyB19doUNj09XsAyPKHWsEN2JIEgvwkt5ibJuDw nA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37xbpu3m36-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 00:38:53 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13G4YjJl023816;
-        Fri, 16 Apr 2021 00:38:53 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37xbpu3m1m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 00:38:52 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13G4bc0l019194;
-        Fri, 16 Apr 2021 04:38:51 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 37u3n8c7u4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 04:38:50 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13G4cQXW36962698
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Apr 2021 04:38:26 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B17F9A4051;
-        Fri, 16 Apr 2021 04:38:48 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D40CFA4040;
-        Fri, 16 Apr 2021 04:38:46 +0000 (GMT)
-Received: from [9.85.71.75] (unknown [9.85.71.75])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 16 Apr 2021 04:38:46 +0000 (GMT)
-Subject: Re: [PATCH v1 1/1] powerpc/papr_scm: Properly handle UUID types and
- API
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Vaibhav Jain <vaibhav@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "Oliver O'Halloran" <oohall@gmail.com>
-References: <20210415134637.17770-1-andriy.shevchenko@linux.intel.com>
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-Message-ID: <266684c6-e2c8-e19b-214d-809f16e79e7b@linux.ibm.com>
-Date:   Fri, 16 Apr 2021 10:08:45 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231408AbhDPEnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 00:43:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32848 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229555AbhDPEnV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 00:43:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FA7861152;
+        Fri, 16 Apr 2021 04:42:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618548177;
+        bh=4hdUt+EDEa/QUCWdkHyC/ffQXQkj9XGd5bdPb0nZqGI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=RNNe76AAteWei9QEDSL1+ENgDEJidm7Scx0Nb9Fw6YLe6E3uthLjhZOlN8AkQawCo
+         ZA6hax7FBKFVQOgw4NMNqmUEnQZFMiKWRK00jPFL+7Ma3F7QFwwGTU3dnMwIGLMAPM
+         kCe/spG4cTm8k7j6pd3G68MQHQm3B3T3G9izCZAAZLz0btelgxzH1O7l8sYLkMWNT/
+         Z8pfsZprZJLYT8dIZDL19ohTcVmRZxjaV6ye5G7J4pisc210LpvtjFQav7dYWGXGjN
+         LzAlloF6mXhz+8IKecok97GDGZmsC6OLJdnkP8okaH7Ocf4iL9ToGbVFujqYCdVZOS
+         U1gVdCgxBxtdQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D68475C013E; Thu, 15 Apr 2021 21:42:56 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 21:42:56 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Huang Ying <ying.huang@intel.com>
+Cc:     linux-kernel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Roman Gushchin <guro@fb.com>, Ming Lei <ming.lei@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Miaohe Lin <linmiaohe@huawei.com>
+Subject: Re: [RFC PATCH] percpu_ref: Make percpu_ref_tryget*() ACQUIRE
+ operations
+Message-ID: <20210416044256.GE4212@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210413024703.2745636-1-ying.huang@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210415134637.17770-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 0PxvgveLwHLjJYd3ClaSZb_jAgO70mft
-X-Proofpoint-GUID: EvIvTXs2ncKiE5pD93RJbCRHHo_9nM4i
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-15_11:2021-04-15,2021-04-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=999 clxscore=1011 suspectscore=0 adultscore=0
- lowpriorityscore=0 malwarescore=0 bulkscore=0 mlxscore=0 spamscore=0
- phishscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104060000 definitions=main-2104160033
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210413024703.2745636-1-ying.huang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/21 7:16 PM, Andy Shevchenko wrote:
-> Parse to and export from UUID own type, before dereferencing.
-> This also fixes wrong comment (Little Endian UUID is something else)
-> and should fix Sparse warnings about assigning strict types to POD.
+On Tue, Apr 13, 2021 at 10:47:03AM +0800, Huang Ying wrote:
+> One typical use case of percpu_ref_tryget() family functions is as
+> follows,
 > 
+>   if (percpu_ref_tryget(&p->ref)) {
+> 	  /* Operate on the other fields of *p */
+>   }
+> 
+> The refcount needs to be checked before operating on the other fields
+> of the data structure (*p), otherwise, the values gotten from the
+> other fields may be invalid or inconsistent.  To guarantee the correct
+> memory ordering, percpu_ref_tryget*() needs to be the ACQUIRE
+> operations.
 
-I am wondering whether this will break older namespace created. IIRC 
-that cpu_to_le64 was done to be backward compatible with namespaces 
-created before 259a948c4ba1.
+I am not seeing the need for this.
 
-What we need to test is create a namespace in little endian kernel and 
-read it back in via big endian and vice versa. Also we need to make sure 
-we can read the already created namespace before this patch.
+If __ref_is_percpu() returns true, then the overall count must be non-zero
+and there will be an RCU grace period between now and the time that this
+count becomes zero.  For the calls to __ref_is_percpu() enclosed within
+rcu_read_lock() and rcu_read_unlock(), the grace period will provide
+the needed ordering.  (See the comment header for the synchronize_rcu()
+function.)
 
+Otherwise, when __ref_is_percpu() returns false, its caller does a
+value-returning atomic read-modify-write operation, which provides
+full ordering.
 
-> Fixes: 43001c52b603 ("powerpc/papr_scm: Use ibm,unit-guid as the iset cookie")
-> Fixes: 259a948c4ba1 ("powerpc/pseries/scm: Use a specific endian format for storing uuid from the device tree")
-> Cc: Oliver O'Halloran <oohall@gmail.com>
-> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Either way, the required acquire semantics (and more) are already
+provided, and in particular, this analysis covers the percpu_ref_tryget()
+you call out above.
+
+Or am I missing something subtle here?
+
+							Thanx, Paul
+
+> This function implements that via using smp_load_acquire() in
+> __ref_is_percpu() to read the percpu pointer.
+> 
+> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Kent Overstreet <kent.overstreet@gmail.com>
+> Cc: "Paul E. McKenney" <paulmck@kernel.org>
+> Cc: Roman Gushchin <guro@fb.com>
+> Cc: Ming Lei <ming.lei@redhat.com>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Miaohe Lin <linmiaohe@huawei.com>
 > ---
-> Not tested
->   arch/powerpc/platforms/pseries/papr_scm.c | 13 ++++++++-----
->   1 file changed, 8 insertions(+), 5 deletions(-)
+>  include/linux/percpu-refcount.h | 17 +++++++++++++----
+>  1 file changed, 13 insertions(+), 4 deletions(-)
 > 
-> diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
-> index ae6f5d80d5ce..4366e1902890 100644
-> --- a/arch/powerpc/platforms/pseries/papr_scm.c
-> +++ b/arch/powerpc/platforms/pseries/papr_scm.c
-> @@ -1085,8 +1085,9 @@ static int papr_scm_probe(struct platform_device *pdev)
->   	u32 drc_index, metadata_size;
->   	u64 blocks, block_size;
->   	struct papr_scm_priv *p;
-> +	u8 uuid_raw[UUID_SIZE];
->   	const char *uuid_str;
-> -	u64 uuid[2];
-> +	uuid_t uuid;
->   	int rc;
->   
->   	/* check we have all the required DT properties */
-> @@ -1129,16 +1130,18 @@ static int papr_scm_probe(struct platform_device *pdev)
->   	p->hcall_flush_required = of_property_read_bool(dn, "ibm,hcall-flush-required");
->   
->   	/* We just need to ensure that set cookies are unique across */
-> -	uuid_parse(uuid_str, (uuid_t *) uuid);
-> +	uuid_parse(uuid_str, &uuid);
-> +
->   	/*
->   	 * cookie1 and cookie2 are not really little endian
-> -	 * we store a little endian representation of the
-> +	 * we store a raw buffer representation of the
->   	 * uuid str so that we can compare this with the label
->   	 * area cookie irrespective of the endian config with which
->   	 * the kernel is built.
->   	 */
-> -	p->nd_set.cookie1 = cpu_to_le64(uuid[0]);
-> -	p->nd_set.cookie2 = cpu_to_le64(uuid[1]);
-> +	export_uuid(uuid_raw, &uuid);
-> +	p->nd_set.cookie1 = get_unaligned_le64(&uuid_raw[0]);
-> +	p->nd_set.cookie2 = get_unaligned_le64(&uuid_raw[8]);
->   
->   	/* might be zero */
->   	p->metadata_size = metadata_size;
+> diff --git a/include/linux/percpu-refcount.h b/include/linux/percpu-refcount.h
+> index 16c35a728b4c..9838f7ea4bf1 100644
+> --- a/include/linux/percpu-refcount.h
+> +++ b/include/linux/percpu-refcount.h
+> @@ -165,13 +165,13 @@ static inline bool __ref_is_percpu(struct percpu_ref *ref,
+>  	 * !__PERCPU_REF_ATOMIC, which may be set asynchronously, and then
+>  	 * used as a pointer.  If the compiler generates a separate fetch
+>  	 * when using it as a pointer, __PERCPU_REF_ATOMIC may be set in
+> -	 * between contaminating the pointer value, meaning that
+> -	 * READ_ONCE() is required when fetching it.
+> +	 * between contaminating the pointer value, smp_load_acquire()
+> +	 * will prevent this.
+>  	 *
+> -	 * The dependency ordering from the READ_ONCE() pairs
+> +	 * The dependency ordering from the smp_load_acquire() pairs
+>  	 * with smp_store_release() in __percpu_ref_switch_to_percpu().
+>  	 */
+> -	percpu_ptr = READ_ONCE(ref->percpu_count_ptr);
+> +	percpu_ptr = smp_load_acquire(&ref->percpu_count_ptr);
+>  
+>  	/*
+>  	 * Theoretically, the following could test just ATOMIC; however,
+> @@ -231,6 +231,9 @@ static inline void percpu_ref_get(struct percpu_ref *ref)
+>   * Returns %true on success; %false on failure.
+>   *
+>   * This function is safe to call as long as @ref is between init and exit.
+> + *
+> + * This function is an ACQUIRE operation, that is, all memory operations
+> + * after will appear to happen after checking the refcount.
+>   */
+>  static inline bool percpu_ref_tryget_many(struct percpu_ref *ref,
+>  					  unsigned long nr)
+> @@ -260,6 +263,9 @@ static inline bool percpu_ref_tryget_many(struct percpu_ref *ref,
+>   * Returns %true on success; %false on failure.
+>   *
+>   * This function is safe to call as long as @ref is between init and exit.
+> + *
+> + * This function is an ACQUIRE operation, that is, all memory operations
+> + * after will appear to happen after checking the refcount.
+>   */
+>  static inline bool percpu_ref_tryget(struct percpu_ref *ref)
+>  {
+> @@ -280,6 +286,9 @@ static inline bool percpu_ref_tryget(struct percpu_ref *ref)
+>   * percpu_ref_tryget_live().
+>   *
+>   * This function is safe to call as long as @ref is between init and exit.
+> + *
+> + * This function is an ACQUIRE operation, that is, all memory operations
+> + * after will appear to happen after checking the refcount.
+>   */
+>  static inline bool percpu_ref_tryget_live(struct percpu_ref *ref)
+>  {
+> -- 
+> 2.30.2
 > 
-
