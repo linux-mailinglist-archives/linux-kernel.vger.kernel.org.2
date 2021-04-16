@@ -2,91 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2FE4361F3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A774F361F0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241048AbhDPMAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 08:00:24 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:55746 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229706AbhDPMAW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 08:00:22 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 5065C203A52;
-        Fri, 16 Apr 2021 13:59:57 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A630F203A48;
-        Fri, 16 Apr 2021 13:59:54 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 689D54032B;
-        Fri, 16 Apr 2021 13:59:51 +0200 (CEST)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: ak4458: check reset control status
-Date:   Fri, 16 Apr 2021 19:45:02 +0800
-Message-Id: <1618573502-1488-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S240068AbhDPLpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 07:45:45 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:54500 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229706AbhDPLpo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 07:45:44 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13GBjA7Q112858;
+        Fri, 16 Apr 2021 06:45:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1618573510;
+        bh=LQzKzUALcHK7bf23nielNUyEdHtTqb3reVqwKHmjS60=;
+        h=Subject:CC:References:From:Date:In-Reply-To;
+        b=wKWu8/zh4nW9GmATPJPPnF/1xfuI5rN3BE+Tv7pCr3pgg1uXxP/Mu4f2PQD4oLdg0
+         MUcVn2hRcf+Ek7zkEvXJYe85BWmI8/Slfq/6CPEDRi9FDfYuLoGh+qiERq7hEjwaRc
+         jPSdET8Rgu6/15ZuP7w8y9CpksgLA8EIlBNu+nzw=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13GBjAUH101300
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 16 Apr 2021 06:45:10 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 16
+ Apr 2021 06:45:10 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 16 Apr 2021 06:45:10 -0500
+Received: from [172.24.145.148] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13GBj5EX096321;
+        Fri, 16 Apr 2021 06:45:06 -0500
+Subject: Re: [PATCH v2 0/2] MCAN: Add support for implementing transceiver as
+ a phy
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>
+References: <20210415154635.30094-1-a-govindraju@ti.com>
+From:   Aswath Govindraju <a-govindraju@ti.com>
+Message-ID: <2743eef1-6e20-28e5-769a-26ae8eb15dd6@ti.com>
+Date:   Fri, 16 Apr 2021 17:15:04 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210415154635.30094-1-a-govindraju@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Viorel Suman <viorel.suman@nxp.com>
+Hi all,
 
-check the return value of ak4458_rstn_control.
+On 15/04/21 9:16 pm, Aswath Govindraju wrote:
+> The following series of patches add support for implementing the
+> transceiver as a phy of m_can_platform driver.
+> 
+> TCAN1042 has a standby signal that needs to be pulled high for
+> sending/receiving messages[1]. TCAN1043 has a enable signal along with
+> standby signal that needs to be pulled up for sending/receiving
+> messages[2], and other combinations of the two lines can be used to put the
+> transceiver in different states to reduce power consumption. On boards
+> like the AM654-idk and J721e-evm these signals are controlled using gpios.
+> 
+> These gpios are set in phy driver, and the transceiver can be put in
+> different states using phy API. The phy driver is added in the series [3].
+> 
+> This patch series is dependent on [4].
+> 
+> Changes since v1:
+> - Used the API devm_phy_get_optional() instead of 
+>   devm_of_phy_get_optional_by_index()
+> 
+> [1] - https://www.ti.com/lit/ds/symlink/tcan1042h.pdf
+> [2] - https://www.ti.com/lit/ds/symlink/tcan1043-q1.pdf
+> [3] - https://lore.kernel.org/patchwork/project/lkml/list/?series=495365
+> [4] - https://lore.kernel.org/patchwork/patch/1413286/
+> 
 
-Signed-off-by: Viorel Suman <viorel.suman@nxp.com>
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/codecs/ak4458.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+Posted v3 for this series.
 
-diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
-index 85a1d00894a9..0a94973889a1 100644
---- a/sound/soc/codecs/ak4458.c
-+++ b/sound/soc/codecs/ak4458.c
-@@ -419,8 +419,13 @@ static int ak4458_hw_params(struct snd_pcm_substream *substream,
- 	snd_soc_component_update_bits(component, AK4458_00_CONTROL1,
- 			    AK4458_DIF_MASK, format);
- 
--	ak4458_rstn_control(component, 0);
--	ak4458_rstn_control(component, 1);
-+	ret = ak4458_rstn_control(component, 0);
-+	if (ret)
-+		return ret;
-+
-+	ret = ak4458_rstn_control(component, 1);
-+	if (ret)
-+		return ret;
- 
- 	return 0;
- }
-@@ -429,6 +434,7 @@ static int ak4458_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- {
- 	struct snd_soc_component *component = dai->component;
- 	struct ak4458_priv *ak4458 = snd_soc_component_get_drvdata(component);
-+	int ret;
- 
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBS_CFS: /* Slave Mode */
-@@ -461,8 +467,13 @@ static int ak4458_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 				      ak4458->fmt == SND_SOC_DAIFMT_PDM ?
- 				      AK4458_DP_MASK : 0);
- 
--	ak4458_rstn_control(component, 0);
--	ak4458_rstn_control(component, 1);
-+	ret = ak4458_rstn_control(component, 0);
-+	if (ret)
-+		return ret;
-+
-+	ret = ak4458_rstn_control(component, 1);
-+	if (ret)
-+		return ret;
- 
- 	return 0;
- }
--- 
-2.27.0
+Thanks,
+Aswath
+
+> Faiz Abbas (2):
+>   dt-bindings: net: can: Document transceiver implementation as phy
+>   can: m_can: Add support for transceiver as phy
+> 
+>  .../devicetree/bindings/net/can/bosch,m_can.yaml    |  3 +++
+>  drivers/net/can/m_can/m_can.c                       | 10 ++++++++++
+>  drivers/net/can/m_can/m_can.h                       |  2 ++
+>  drivers/net/can/m_can/m_can_platform.c              | 13 +++++++++++++
+>  4 files changed, 28 insertions(+)
+> 
 
