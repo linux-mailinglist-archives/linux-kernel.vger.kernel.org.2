@@ -2,90 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2061F361E19
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 523E7361E1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241709AbhDPKkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 06:40:06 -0400
-Received: from foss.arm.com ([217.140.110.172]:38402 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235267AbhDPKj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 06:39:58 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1A03D106F;
-        Fri, 16 Apr 2021 03:39:34 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C72573FA35;
-        Fri, 16 Apr 2021 03:39:31 -0700 (PDT)
-Subject: Re: [PATCH v2 0/1] arm: topology: parse the topology from the dt
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        Ruifeng Zhang <ruifeng.zhang0110@gmail.com>
-Cc:     linux@armlinux.org.uk, sudeep.holla@arm.com,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, a.p.zijlstra@chello.nl,
-        mingo@kernel.org, ruifeng.zhang1@unisoc.com, nianfu.bai@unisoc.com,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210414122326.5255-1-ruifeng.zhang0110@gmail.com>
- <8735vrmnc7.mognet@arm.com> <b7a76995-f6c3-67c5-b14e-d40587495d7e@arm.com>
- <CAG7+-3Nv=m0pd8t0eQEUv5zSeg86hfkKcs_VLzsbzWFabYbTTQ@mail.gmail.com>
- <87wnt2lglo.mognet@arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <44ab835f-3456-6bd9-97e9-5936cf5372da@arm.com>
-Date:   Fri, 16 Apr 2021 12:39:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S240439AbhDPKld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 06:41:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229502AbhDPKla (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 06:41:30 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F284AC061574;
+        Fri, 16 Apr 2021 03:41:04 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FMCRd1BPDz9sVv;
+        Fri, 16 Apr 2021 20:41:01 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1618569661;
+        bh=SeOzQ9Fg9C2zAMuj8cY5McP+aFk25PiM311deR2n+II=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=dlrfmoa66rjbsgjm/6d63tAsvauWz+/zCQSBCnuup3KRzbygxslVoQS9YLGzEmxCp
+         BlmJROc2q2TCvBVUIsPXowKqD3tb+ePzQL27V3dkPyfXbwzb78UU1jdjd137lpsvKm
+         KRliFf+AabCTWYguQlPH0zI4TXJyjldAKamw26SoqGPY25rAGdtoTIaVkio+4Uf4L1
+         SEAb53oUP9Z4uROoJLiyxDIETXgY4VU69wU0ZSnGCG4nWNO75litn3pAbksUGbd/82
+         gAnYfZRakpES4+dl5kRnYehiwK32L5HnaGG6PdUlZ0kv9Tk4UjgZL+TxjgXEcebnmo
+         67fGXanIuuK6g==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Tony Ambardar <tony.ambardar@gmail.com>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Stable <stable@vger.kernel.org>, Rosen Penev <rosenp@gmail.com>
+Subject: Re: [PATCH v3] powerpc: fix EDEADLOCK redefinition error in
+ uapi/asm/errno.h
+In-Reply-To: <CAPGftE-Q+Q479j7SikDBQLiM+VKbpXpRYnTeEJeAHeZrh_Ok2A@mail.gmail.com>
+References: <20200917000757.1232850-1-Tony.Ambardar@gmail.com>
+ <20200917135437.1238787-1-Tony.Ambardar@gmail.com>
+ <CAPGftE-Q+Q479j7SikDBQLiM+VKbpXpRYnTeEJeAHeZrh_Ok2A@mail.gmail.com>
+Date:   Fri, 16 Apr 2021 20:41:00 +1000
+Message-ID: <87r1jaeclf.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <87wnt2lglo.mognet@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/04/2021 11:32, Valentin Schneider wrote:
-> On 16/04/21 15:47, Ruifeng Zhang wrote:
->> For more requirements, if all cores in one physical cluster, the
->> {aff2} of all cores are the same value.
->> i.e. the sc9863a,
->> core0: 0000000081000000
->> core1: 0000000081000100
->> core2: 0000000081000200
->> core3: 0000000081000300
->> core4: 0000000081000400
->> core5: 0000000081000500
->> core6: 0000000081000600
->> core7: 0000000081000700
+Tony Ambardar <tony.ambardar@gmail.com> writes:
+> Hello Michael,
+>
+> The latest version of this patch addressed all feedback I'm aware of
+> when submitted last September, and I've seen no further comments from
+> reviewers since then.
+>
+> Could you please let me know where this stands and if anything further
+> is needed?
+
+Sorry, it's still sitting in my inbox :/
+
+I was going to reply to suggest we split the tools change out. The
+headers under tools are usually updated by another maintainer, I think
+it might even be scripted.
+
+Anyway I've applied your patch and done that (dropped the change to
+tools/.../errno.h), which should also mean the stable backport is more
+likely to work automatically.
+
+It will hit mainline in v5.13-rc1 and then be backported to the stable
+trees.
+
+I don't think you actually need the tools version of the header updated
+to fix your bug? In which case we can probably just wait for it to be
+updated automatically when the tools headers are sync'ed with the kernel
+versions.
+
+cheers
+
+
+> On Thu, 17 Sept 2020 at 06:54, Tony Ambardar <tony.ambardar@gmail.com> wrote:
 >>
->> According to MPIDR all cores will parse to the one cluster, but it's
->> the big.LITTLE system, it's need two logic cluster for schedule or
->> cpufreq.
->> So I think it's better to add the logic of parse topology from DT.
-> 
-> Ah, so it's a slightly different issue, but still one that requires a
-> different means of specifying topology.
-
-I'm confused. Do you have the MT bit set to 1 then? So the issue that
-the mpidr handling in arm32's store_cpu_topology() is not correct does
-not exist?
-
-With DynamIQ you have only *one* cluster, you should also be able to run
-your big.LITTLE system with only an MC sched domain.
-
-# cat /proc/schedstat
-cpu0 ....
-domain0 ff ... <- MC
-...
-
-You can introduce a cpu-map to create what we called Phantom Domains in
-Android products.
-
-# cat /proc/schedstat
-
-cpu0 ....
-domain0 0f ... <- MC
-domain1 ff ... < DIE
-
-Is this what you need for your arm32 kernel system? Adding the
-possibility to parse cpu-map to create Phantom Domains?
+>> A few archs like powerpc have different errno.h values for macros
+>> EDEADLOCK and EDEADLK. In code including both libc and linux versions of
+>> errno.h, this can result in multiple definitions of EDEADLOCK in the
+>> include chain. Definitions to the same value (e.g. seen with mips) do
+>> not raise warnings, but on powerpc there are redefinitions changing the
+>> value, which raise warnings and errors (if using "-Werror").
+>>
+>> Guard against these redefinitions to avoid build errors like the following,
+>> first seen cross-compiling libbpf v5.8.9 for powerpc using GCC 8.4.0 with
+>> musl 1.1.24:
+>>
+>>   In file included from ../../arch/powerpc/include/uapi/asm/errno.h:5,
+>>                    from ../../include/linux/err.h:8,
+>>                    from libbpf.c:29:
+>>   ../../include/uapi/asm-generic/errno.h:40: error: "EDEADLOCK" redefined [-Werror]
+>>    #define EDEADLOCK EDEADLK
+>>
+>>   In file included from toolchain-powerpc_8540_gcc-8.4.0_musl/include/errno.h:10,
+>>                    from libbpf.c:26:
+>>   toolchain-powerpc_8540_gcc-8.4.0_musl/include/bits/errno.h:58: note: this is the location of the previous definition
+>>    #define EDEADLOCK       58
+>>
+>>   cc1: all warnings being treated as errors
+>>
+>> CC: Stable <stable@vger.kernel.org>
+>> Reported-by: Rosen Penev <rosenp@gmail.com>
+>> Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
+>> ---
+>> v1 -> v2:
+>>  * clean up commit description formatting
+>>
+>> v2 -> v3: (per Michael Ellerman)
+>>  * drop indeterminate 'Fixes' tags, request stable backports instead
+>> ---
+>>  arch/powerpc/include/uapi/asm/errno.h       | 1 +
+>>  tools/arch/powerpc/include/uapi/asm/errno.h | 1 +
+>>  2 files changed, 2 insertions(+)
+>>
+>> diff --git a/arch/powerpc/include/uapi/asm/errno.h b/arch/powerpc/include/uapi/asm/errno.h
+>> index cc79856896a1..4ba87de32be0 100644
+>> --- a/arch/powerpc/include/uapi/asm/errno.h
+>> +++ b/arch/powerpc/include/uapi/asm/errno.h
+>> @@ -2,6 +2,7 @@
+>>  #ifndef _ASM_POWERPC_ERRNO_H
+>>  #define _ASM_POWERPC_ERRNO_H
+>>
+>> +#undef EDEADLOCK
+>>  #include <asm-generic/errno.h>
+>>
+>>  #undef EDEADLOCK
+>> diff --git a/tools/arch/powerpc/include/uapi/asm/errno.h b/tools/arch/powerpc/include/uapi/asm/errno.h
+>> index cc79856896a1..4ba87de32be0 100644
+>> --- a/tools/arch/powerpc/include/uapi/asm/errno.h
+>> +++ b/tools/arch/powerpc/include/uapi/asm/errno.h
+>> @@ -2,6 +2,7 @@
+>>  #ifndef _ASM_POWERPC_ERRNO_H
+>>  #define _ASM_POWERPC_ERRNO_H
+>>
+>> +#undef EDEADLOCK
+>>  #include <asm-generic/errno.h>
+>>
+>>  #undef EDEADLOCK
+>> --
+>> 2.25.1
+>>
