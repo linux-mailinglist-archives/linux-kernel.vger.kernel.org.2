@@ -2,82 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7393628AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 21:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAA53628B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 21:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236991AbhDPTcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 15:32:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34688 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231510AbhDPTcE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 15:32:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 123CE611AB;
-        Fri, 16 Apr 2021 19:31:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618601499;
-        bh=8LNu5JOmFuLKWCjhg6+ayA0INbjk1fmtkW1OrPWr+Os=;
-        h=Date:From:To:Cc:Subject:From;
-        b=vIgrnyPgyyP3Dnnu1GZGQWUmQ3qTzbLx+61BK6VWmsBilTmeF6jbPUrq4UC85nAL9
-         kTYW/2xQzfnnf3dP5iw/r8oaxsFNPmV1eowFR53qnELNza9h6548PMCpTCSS2BM5pS
-         ImM2wrKFBC+07nATJOUFURB8cdcsoavq+gMGHJBnWisb1V7YDvcR/T/S8Fbpxeosvo
-         gv5HAW1KJomao7bPzxZBqaTmLxphzMgO3MiGG/a2Uir4WzQnnnS7smG+tq4FBKMyUz
-         48D1gRIr2gnCOBLKJi/bqHhjmsZI514jYNc7bRb40nuTIf699NUp1ppYX3aoZBE5vo
-         CDDqefV2OD2zA==
-Date:   Fri, 16 Apr 2021 14:31:51 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] flow_dissector: Fix out-of-bounds warning in
- __skb_flow_bpf_to_target()
-Message-ID: <20210416193151.GA591935@embeddedor>
+        id S243542AbhDPTec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 15:34:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235029AbhDPTe2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 15:34:28 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65EF6C061574;
+        Fri, 16 Apr 2021 12:34:03 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id h7so21635397qtx.3;
+        Fri, 16 Apr 2021 12:34:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ETyLeWgC4ldlxgX9gOjNJ7AnWjdh0/ZzmImW1zL5RMI=;
+        b=CX2G+YIGIh2yuN8MjkbHjYrLpXn5LJpkHcuCoR5kK8ziPenqrpnPBohfBcbZJV0Y4E
+         gbp2BmAjvMQtVcE5Ndki1O6haSyon6RHZ9TuavMRYtLWd8uT73TIa16lrSppTDHlEp6y
+         nBciopNar97QzrsbisXtZpTSc2wGNJ3+4Fvc9R0tc0kSAN4vrGfMQZgAUZOphV/9H33V
+         A6hY80u0x14Ek2ZdV+4RZ/8k5eI8EGK6J4f9qtZQW9EDGVWIMAFaFl2/bSTvrYi09cb2
+         FkmL1Zhw/t7jkXsH1czgX6yP5vZ1uJ4j/tilEVuPdCYJYIntPW+nqeL/li0A5NiYWym3
+         DWSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ETyLeWgC4ldlxgX9gOjNJ7AnWjdh0/ZzmImW1zL5RMI=;
+        b=Q2yOjiXSYRVfgrT+UVSpG9VuhGxUy0INM800W4GxWDEqYQOEv0FL12HGiuMMX3A9cr
+         GVl0/D87EP+QHMMrrMQnYWfff76Z8+XfNrW/dhh4hlsr+ZLT8fkIjNUnhUkGAy4mtdu9
+         P3MQ2xPORz0cMpjN+8niw1nbMKkPs9Sboo944laB7dMphHsrZM43669qvBTbiLMXK8mL
+         fJwOFWVKglRJwqrJecAKhY76NxChuOAYOJhpLf2rnqbyBJX7M4T7iz3/RbhS1+lpbGwV
+         NbMvIG5hJbfhJ4WJyaFEQLUDdevLXpefVkGaIgk9A9hI7aQD4pCYRQMTqFiZ4djsIDGW
+         qDQA==
+X-Gm-Message-State: AOAM530wa++cqLs5geY8WphUlSv3B/TBvxBZltUh4ZPJf6bHJ+A9nuZb
+        I4UTu36QgGrIqml9Pe90H58Xa9oR6fo=
+X-Google-Smtp-Source: ABdhPJxk50y+ZCriLsVXKTHn1xmUJk8V3P7VDGQKdrW4uDMW35tXLWJ299pTEwT8ZvdCevie6YDiow==
+X-Received: by 2002:a05:622a:46:: with SMTP id y6mr670494qtw.44.1618601642482;
+        Fri, 16 Apr 2021 12:34:02 -0700 (PDT)
+Received: from ?IPv6:2804:14c:125:811b:fbbc:3360:40c4:fb64? ([2804:14c:125:811b:fbbc:3360:40c4:fb64])
+        by smtp.gmail.com with ESMTPSA id o25sm679073qtl.37.2021.04.16.12.34.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Apr 2021 12:34:02 -0700 (PDT)
+Subject: Re: [PATCH RFC v3] media: em28xx: Fix race condition between open and
+ init function
+To:     Shuah Khan <skhan@linuxfoundation.org>, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        kernel test robot <lkp@intel.com>,
+        syzbot+b2391895514ed9ef4a8e@syzkaller.appspotmail.com
+References: <20210415140724.15398-1-igormtorrente@gmail.com>
+ <d254bf85-5185-6b21-afc6-fb00a9278186@linuxfoundation.org>
+From:   Igor Torrente <igormtorrente@gmail.com>
+Message-ID: <c18180b5-52b9-e787-654c-6967ecb81dce@gmail.com>
+Date:   Fri, 16 Apr 2021 16:33:59 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <d254bf85-5185-6b21-afc6-fb00a9278186@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following out-of-bounds warning:
 
-net/core/flow_dissector.c:835:3: warning: 'memcpy' offset [33, 48] from the object at 'flow_keys' is out of the bounds of referenced subobject 'ipv6_src' with type '__u32[4]' {aka 'unsigned int[4]'} at offset 16 [-Warray-bounds]
 
-The problem is that the original code is trying to copy data into a
-couple of struct members adjacent to each other in a single call to
-memcpy().  So, the compiler legitimately complains about it. As these
-are just a couple of members, fix this by copying each one of them in
-separate calls to memcpy(). 
+On 4/15/21 2:25 PM, Shuah Khan wrote:
+> On 4/15/21 8:07 AM, Igor Matheus Andrade Torrente wrote:
+>> Fixes a race condition - for lack of a more precise term - between
+>> em28xx_v4l2_open and em28xx_v4l2_init, by detaching the v4l2_dev,
+>> media_pad and vdev structs from the em28xx_v4l2, and managing the
+>> lifetime of those objects more dynamicaly.
+>>
+>> The race happens when a thread[1] - containing the em28xx_v4l2_init()
+>> code - calls the v4l2_mc_create_media_graph(), and it return a error,
+>> if a thread[2] - running v4l2_open() - pass the verification point
+>> and reaches the em28xx_v4l2_open() before the thread[1] finishes
+>> the deregistration of v4l2 subsystem, the thread[1] will free all
+>> resources before the em28xx_v4l2_open() can process their things,
+>> because the em28xx_v4l2_init() has the dev->lock. And all this lead
+>> the thread[2] to cause a user-after-free.
+>>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Reported-and-tested-by: 
+>> syzbot+b2391895514ed9ef4a8e@syzkaller.appspotmail.com
+>> Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+>> ---
+>>
+>> V2: Add v4l2_i2c_new_subdev null check
+>>      Deal with v4l2 subdevs dependencies
+>>
+>> V3: Fix link error when compiled as a module
+>>
+>> ---
+>>   drivers/media/usb/em28xx/em28xx-camera.c |   4 +-
+>>   drivers/media/usb/em28xx/em28xx-video.c  | 300 +++++++++++++++--------
+>>   drivers/media/usb/em28xx/em28xx.h        |   6 +-
+>>   3 files changed, 209 insertions(+), 101 deletions(-)
+>>
+> 
+> The changes looks good to me. Have you tried building as a modules and
+> running modprobes and rmmods? You can do that without a device.
+> 
 
-This helps with the ongoing efforts to globally enable -Warray-bounds
-and get us closer to being able to tighten the FORTIFY_SOURCE routines
-on memcpy().
+I tried and everything worked fine.
 
-Link: https://github.com/KSPP/linux/issues/109
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> thanks,
+> -- Shuah
+> 
+
+Thanks,
 ---
- net/core/flow_dissector.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
-index 5985029e43d4..3ed7c98a98e1 100644
---- a/net/core/flow_dissector.c
-+++ b/net/core/flow_dissector.c
-@@ -832,8 +832,10 @@ static void __skb_flow_bpf_to_target(const struct bpf_flow_keys *flow_keys,
- 		key_addrs = skb_flow_dissector_target(flow_dissector,
- 						      FLOW_DISSECTOR_KEY_IPV6_ADDRS,
- 						      target_container);
--		memcpy(&key_addrs->v6addrs, &flow_keys->ipv6_src,
--		       sizeof(key_addrs->v6addrs));
-+		memcpy(&key_addrs->v6addrs.src, &flow_keys->ipv6_src,
-+		       sizeof(key_addrs->v6addrs.src));
-+		memcpy(&key_addrs->v6addrs.dst, &flow_keys->ipv6_dst,
-+		       sizeof(key_addrs->v6addrs.dst));
- 		key_control->addr_type = FLOW_DISSECTOR_KEY_IPV6_ADDRS;
- 	}
- 
--- 
-2.27.0
-
+Igor Matheus Andrade Torrente
