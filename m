@@ -2,143 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC293620ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE1C3620EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243483AbhDPN2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 09:28:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25481 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241311AbhDPN2K (ORCPT
+        id S242697AbhDPNaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 09:30:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235011AbhDPNaJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 09:28:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618579665;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JAKUqXFHXuyIOfRcOhTnPnVKgo/XPbGiNpXU9KPW1QA=;
-        b=Z94XpQHvuhQ3w8zOHIMkRRau4BO+WQaM+PRypVmTn+TDqAfgrIFOge9nX+cGMuX7r+ELEn
-        HFheITuz4wJACJltQu5Nfn3yJ6Z0ZNVrXnADmVeoyK6RJa0TRCymaRBEnB228xdN7JVcVM
-        lrNh8SlHhOu/vnAlZCc2VOvgpJD+BMM=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-42-Gc-9nF__M2SVcsZNRzeJtw-1; Fri, 16 Apr 2021 09:27:43 -0400
-X-MC-Unique: Gc-9nF__M2SVcsZNRzeJtw-1
-Received: by mail-ed1-f72.google.com with SMTP id l7-20020aa7c3070000b029038502ffe9f2so1264614edq.16
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 06:27:43 -0700 (PDT)
+        Fri, 16 Apr 2021 09:30:09 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0213DC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 06:29:43 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 12so44619626lfq.13
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 06:29:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Icv6wfageHWd4iMnekPzpHhUck/9+vUG68GbtOfui5s=;
+        b=ThgZH6a8eO9NVFoyBylzD0/Pjua1eA4owl4IRUiE5DZnVNT6DFkE2sT7hOA9Nrr3nE
+         1OK/LlW51Z9M9IEXksmkYrBFeKZJTfDckYpPNA/jmDrW/4srhA2stXe3yLanRVa1iO+U
+         JPGdGELaxlqU/1bgLjd4gc36YHTgPD6hqwlpWIOdRAQoOV5KwSQCXLCA0HBJ9I9qe6EH
+         lKH0e0uI7UKnzIEHmebYdSktaUzUMXRh2qh+uNKBFBA06VYs61tKVafzElPh9NP04tBs
+         a9hzArx/7jrD84vyjrdiBKS0nHFMDrCPwwHtkSj+dBO3011CQXaF0jpg0hchz/BN2cyJ
+         51Hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JAKUqXFHXuyIOfRcOhTnPnVKgo/XPbGiNpXU9KPW1QA=;
-        b=Z8MBQdquEePyhNjDKc1rYgEjI3EmgvO4duNPBtaFuEVQdRufpmottr6ncNsPlU5fnw
-         Y1MJz4CCe3LYyuUDgER0PF0sDsrVujeG6UKy4xC7VxmWEpA6DsTIuAmfTqFHh91uFY7Z
-         fMvB9NrHUA1g6w5jHvZxjqd1qcqTZxfTLqVc/voUcq+yjrUBKRSnqBsJT95ul/Nvy1AE
-         010G/KAVVNaVUoX7e5AsRhm4v3hP/2K3i6cgtyUW2q+MsQoQcjc1g2x7ZR0lNgP7DxF7
-         g0GkB/7ofSRGqd/Z3NReLs/XE2X9g0884HrfYST/2jNyV4CuK/oBwYU/Oyz3EbPnYC4Q
-         sk9w==
-X-Gm-Message-State: AOAM533CsvDpgZsIdr6yGKKY3md3PUiN3HA2/IlcwNoJou51laJcACFq
-        EMINtZspQ22Z7SLS9ZEgaitGBWi2njOtibSsGbeiTz97FL0hsF+uII8JdsSPDp8ZEbPfY6O+6a2
-        RldO8WxySChtlHFhZlIf6d6rM
-X-Received: by 2002:a17:906:3e4a:: with SMTP id t10mr7812294eji.553.1618579662295;
-        Fri, 16 Apr 2021 06:27:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw6UeUn5HRMxz6UHppX8f3UHpv0mBTcngffZpbHmagQPNNqqfWIQKVS47kiiMglIJ9lySwYmg==
-X-Received: by 2002:a17:906:3e4a:: with SMTP id t10mr7812280eji.553.1618579662121;
-        Fri, 16 Apr 2021 06:27:42 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id p7sm4198620eja.103.2021.04.16.06.27.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Apr 2021 06:27:41 -0700 (PDT)
-Subject: Re: [PATCH v2] tools: do not include scripts/Kbuild.include
-To:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Cc:     Janosch Frank <frankja@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        netdev@vger.kernel.org
-References: <20210416130051.239782-1-masahiroy@kernel.org>
- <ee99eb80-5711-9349-23a4-0faf8d7b60a8@de.ibm.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <c2b0b348-e114-14d0-44c0-11d0ce6f7760@redhat.com>
-Date:   Fri, 16 Apr 2021 15:27:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Icv6wfageHWd4iMnekPzpHhUck/9+vUG68GbtOfui5s=;
+        b=NykqRUqcL5BJMfhC1utP/Zn/sxtlLV937VKSie6yIFzkyZLlkob+EE0Kf3ZN5b+sEZ
+         9b/JtB1QNMX8V1SFbPWYnMWnu4LFYJLdn62dYN79Jq3BkK932EqruL5V7qQrUCmtDNgp
+         88QSzIUjLvJDzjzl87QHr2qYFkA8aWKVJKcDRvsKzqK1vczH1Zseui3mg7mnADuoBTcN
+         VraHKIykKrRB5diRwvi7eB4ZOuXwIg2apb6npfGrHazbmNGJQwTI4qgXDHGPF7bfjZmr
+         Ft4ypoYEoK46sCenW0t7H6FuXx5Y56SioMiKAGmN2fwuGiNU8UrPeX9tvmZnIPAIAiEI
+         BfBg==
+X-Gm-Message-State: AOAM530En8Ymyr09DLwFmowOncluitLlPpuLB6C5h8pNlZPIIPYNVx2/
+        bB07t1qQWTW9JPT5r5SlwdqNGb09biwdyfx+SYNtJA==
+X-Google-Smtp-Source: ABdhPJw0BcUDStpHvzRGHgIx5DF2VQXP7pBJaZ+PIk6XoiV0qFccjlTlPK+c3TtkV3o+67f2rRyssFe1G/HoB+XQgJw=
+X-Received: by 2002:a05:6512:54a:: with SMTP id h10mr3354930lfl.305.1618579781436;
+ Fri, 16 Apr 2021 06:29:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ee99eb80-5711-9349-23a4-0faf8d7b60a8@de.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210415175846.494385-1-valentin.schneider@arm.com> <20210415175846.494385-2-valentin.schneider@arm.com>
+In-Reply-To: <20210415175846.494385-2-valentin.schneider@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 16 Apr 2021 15:29:30 +0200
+Message-ID: <CAKfTPtA7uq24hFv57c=W_XkXH-g9b2xo7OfJHRP+cbKoh-0TOQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] sched/fair: Filter out locally-unsolvable misfit imbalances
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Rik van Riel <riel@surriel.com>,
+        Lingutla Chandrasekhar <clingutla@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/04/21 15:26, Christian Borntraeger wrote:
-> 
-> 
-> On 16.04.21 15:00, Masahiro Yamada wrote:
->> Since commit d9f4ff50d2aa ("kbuild: spilt cc-option and friends to
->> scripts/Makefile.compiler"), some kselftests fail to build.
->>
->> The tools/ directory opted out Kbuild, and went in a different
->> direction. They copy any kind of files to the tools/ directory
->> in order to do whatever they want in their world.
->>
->> tools/build/Build.include mimics scripts/Kbuild.include, but some
->> tool Makefiles included the Kbuild one to import a feature that is
->> missing in tools/build/Build.include:
->>
->>   - Commit ec04aa3ae87b ("tools/thermal: tmon: use "-fstack-protector"
->>     only if supported") included scripts/Kbuild.include from
->>     tools/thermal/tmon/Makefile to import the cc-option macro.
->>
->>   - Commit c2390f16fc5b ("selftests: kvm: fix for compilers that do
->>     not support -no-pie") included scripts/Kbuild.include from
->>     tools/testing/selftests/kvm/Makefile to import the try-run macro.
->>
->>   - Commit 9cae4ace80ef ("selftests/bpf: do not ignore clang
->>     failures") included scripts/Kbuild.include from
->>     tools/testing/selftests/bpf/Makefile to import the .DELETE_ON_ERROR
->>     target.
->>
->>   - Commit 0695f8bca93e ("selftests/powerpc: Handle Makefile for
->>     unrecognized option") included scripts/Kbuild.include from
->>     tools/testing/selftests/powerpc/pmu/ebb/Makefile to import the
->>     try-run macro.
->>
->> Copy what they need into tools/build/Build.include, and make them
->> include it instead of scripts/Kbuild.include.
->>
->> Link: 
->> https://lore.kernel.org/lkml/86dadf33-70f7-a5ac-cb8c-64966d2f45a1@linux.ibm.com/ 
->>
->> Fixes: d9f4ff50d2aa ("kbuild: spilt cc-option and friends to 
->> scripts/Makefile.compiler")
->> Reported-by: Janosch Frank <frankja@linux.ibm.com>
->> Reported-by: Christian Borntraeger <borntraeger@de.ibm.com>
->> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> 
-> looks better.
-> Tested-by: Christian Borntraeger <borntraeger@de.ibm.com>
-> 
+On Thu, 15 Apr 2021 at 19:58, Valentin Schneider
+<valentin.schneider@arm.com> wrote:
+>
+> Consider the following (hypothetical) asymmetric CPU capacity topology,
+> with some amount of capacity pressure (RT | DL | IRQ | thermal):
+>
+>   DIE [          ]
+>   MC  [    ][    ]
+>        0  1  2  3
+>
+>   | CPU | capacity_orig | capacity |
+>   |-----+---------------+----------|
+>   |   0 |           870 |      860 |
+>   |   1 |           870 |      600 |
+>   |   2 |          1024 |      850 |
+>   |   3 |          1024 |      860 |
+>
+> If CPU1 has a misfit task, then CPU0, CPU2 and CPU3 are valid candidates to
+> grant the task an uplift in CPU capacity. Consider CPU0 and CPU3 as
+> sufficiently busy, i.e. don't have enough spare capacity to accommodate
+> CPU1's misfit task. This would then fall on CPU2 to pull the task.
+>
+> This currently won't happen, because CPU2 will fail
+>
+>   capacity_greater(capacity_of(CPU2), sg->sgc->max_capacity)
+>
+> in update_sd_pick_busiest(), where 'sg' is the [0, 1] group at DIE
+> level. In this case, the max_capacity is that of CPU0's, which is at this
+> point in time greater than that of CPU2's. This comparison doesn't make
+> much sense, given that the only CPUs we should care about in this scenario
+> are CPU1 (the CPU with the misfit task) and CPU2 (the load-balance
+> destination CPU).
+>
+> Aggregate a misfit task's load into sgs->group_misfit_task_load only if
+> env->dst_cpu would grant it a capacity uplift.
+>
+> Note that the aforementioned capacity vs sgc->max_capacity comparison was
+> meant to prevent misfit task downmigration: candidate groups classified as
+> group_misfit_task but with a higher (max) CPU capacity than the destination CPU
+> would be discarded. This change makes it so said group_misfit_task
+> classification can't happen anymore, which may cause some undesired
+> downmigrations.
+>
+> Further tweak find_busiest_queue() to ensure this doesn't happen. Also note
+> find_busiest_queue() can now iterate over CPUs with a higher capacity than
+> the local CPU's, so add a capacity check there.
+>
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> ---
+>  kernel/sched/fair.c | 63 ++++++++++++++++++++++++++++++++-------------
+>  1 file changed, 45 insertions(+), 18 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 9b8ae02f1994..d2d1a69d7aa7 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -5759,6 +5759,12 @@ static unsigned long capacity_of(int cpu)
+>         return cpu_rq(cpu)->cpu_capacity;
+>  }
+>
+> +/* Is CPU a's capacity noticeably greater than CPU b's? */
+> +static inline bool cpu_capacity_greater(int a, int b)
+> +{
+> +       return capacity_greater(capacity_of(a), capacity_of(b));
+> +}
+> +
+>  static void record_wakee(struct task_struct *p)
+>  {
+>         /*
+> @@ -7486,6 +7492,7 @@ struct lb_env {
+>
+>         enum fbq_type           fbq_type;
+>         enum migration_type     migration_type;
+> +       enum group_type         src_grp_type;
+>         struct list_head        tasks;
+>  };
+>
+> @@ -8447,6 +8454,32 @@ static bool update_nohz_stats(struct rq *rq)
+>  #endif
+>  }
+>
+> +static inline void update_sg_lb_misfit_stats(struct lb_env *env,
+> +                                            struct sched_group *group,
+> +                                            struct sg_lb_stats *sgs,
+> +                                            int *sg_status,
+> +                                            int cpu)
+> +{
+> +       struct rq *rq = cpu_rq(cpu);
+> +
+> +       if (!(env->sd->flags & SD_ASYM_CPUCAPACITY) ||
+> +           !rq->misfit_task_load)
+> +               return;
+> +
+> +       *sg_status |= SG_OVERLOAD;
+> +
+> +       /*
+> +        * Don't attempt to maximize load for misfit tasks that can't be
+> +        * granted a CPU capacity uplift.
+> +        */
+> +       if (cpu_capacity_greater(env->dst_cpu, cpu)) {
+> +               sgs->group_misfit_task_load = max(
+> +                       sgs->group_misfit_task_load,
+> +                       rq->misfit_task_load);
+> +       }
+> +
+> +}
+> +
+>  /**
+>   * update_sg_lb_stats - Update sched_group's statistics for load balancing.
+>   * @env: The load balancing environment.
+> @@ -8498,12 +8531,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
+>                 if (local_group)
+>                         continue;
+>
+> -               /* Check for a misfit task on the cpu */
+> -               if (env->sd->flags & SD_ASYM_CPUCAPACITY &&
+> -                   sgs->group_misfit_task_load < rq->misfit_task_load) {
+> -                       sgs->group_misfit_task_load = rq->misfit_task_load;
+> -                       *sg_status |= SG_OVERLOAD;
+> -               }
+> +               update_sg_lb_misfit_stats(env, group, sgs, sg_status, i);
+>         }
+>
+>         /* Check if dst CPU is idle and preferred to this group */
+> @@ -8550,15 +8578,9 @@ static bool update_sd_pick_busiest(struct lb_env *env,
+>         if (!sgs->sum_h_nr_running)
+>                 return false;
+>
+> -       /*
+> -        * Don't try to pull misfit tasks we can't help.
+> -        * We can use max_capacity here as reduction in capacity on some
+> -        * CPUs in the group should either be possible to resolve
+> -        * internally or be covered by avg_load imbalance (eventually).
+> -        */
+> +       /* Don't try to pull misfit tasks we can't help */
+>         if (sgs->group_type == group_misfit_task &&
+> -           (!capacity_greater(capacity_of(env->dst_cpu), sg->sgc->max_capacity) ||
+> -            sds->local_stat.group_type != group_has_spare))
+> +            sds->local_stat.group_type != group_has_spare)
+>                 return false;
+>
+>         if (sgs->group_type > busiest->group_type)
+> @@ -9288,6 +9310,8 @@ static struct sched_group *find_busiest_group(struct lb_env *env)
+>         if (!sds.busiest)
+>                 goto out_balanced;
+>
+> +       env->src_grp_type = busiest->group_type;
+> +
+>         /* Misfit tasks should be dealt with regardless of the avg load */
+>         if (busiest->group_type == group_misfit_task)
+>                 goto force_balance;
+> @@ -9441,8 +9465,8 @@ static struct rq *find_busiest_queue(struct lb_env *env,
+>                  * average load.
+>                  */
+>                 if (env->sd->flags & SD_ASYM_CPUCAPACITY &&
+> -                   !capacity_greater(capacity_of(env->dst_cpu), capacity) &&
+> -                   nr_running == 1)
+> +                   env->src_grp_type <= group_fully_busy &&
+> +                   !capacity_greater(capacity_of(env->dst_cpu), capacity))
+>                         continue;
+>
+>                 switch (env->migration_type) {
+> @@ -9504,15 +9528,18 @@ static struct rq *find_busiest_queue(struct lb_env *env,
+>                 case migrate_misfit:
+>                         /*
+>                          * For ASYM_CPUCAPACITY domains with misfit tasks we
+> -                        * simply seek the "biggest" misfit task.
+> +                        * simply seek the "biggest" misfit task we can
+> +                        * accommodate.
+>                          */
+> +                       if (!cpu_capacity_greater(env->dst_cpu, i))
 
-Thank you very much Masahiro, this look great.
+Use the same level of interface as above. This makes code and the
+condition easier to follow in find_busiest_queue()
 
-Paolo
+capacity_greater(capacity_of(env->dst_cpu), capacity_of(i))
 
+
+> +                               continue;
+> +
+>                         if (rq->misfit_task_load > busiest_load) {
+>                                 busiest_load = rq->misfit_task_load;
+>                                 busiest = rq;
+>                         }
+>
+>                         break;
+> -
+>                 }
+>         }
+>
+> --
+> 2.25.1
+>
