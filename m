@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C9EB361921
+	by mail.lfdr.de (Postfix) with ESMTP id 68359361922
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 07:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238597AbhDPFQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 01:16:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33616 "EHLO
+        id S238626AbhDPFQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 01:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238593AbhDPFQR (ORCPT
+        with ESMTP id S238593AbhDPFQX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 01:16:17 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3D87C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 22:15:53 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id i190so17574775pfc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 22:15:53 -0700 (PDT)
+        Fri, 16 Apr 2021 01:16:23 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE468C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 22:15:59 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id p67so12636862pfp.10
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 22:15:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CUAxTMYGPKcXUKklEvyCvysOG+ZnpjCi0FGjCzotqSU=;
-        b=sKTfHmqSsWDRGf9SVi9pCO6Hmse+SZHM+tv3/GJl2rgPhf5LhsNUzYPF8GIbtfPjmi
-         RLQSfJGWAZtFFG5WKBMO/UEP4u+7lJ86fcGy3qMcMBQRs16QYPNN4osVE2B7q3wPm3IM
-         6k/5JyFHsfTjzDmOAZ2WZ21L69Y6as0JcteWUeVjQxAJsR7i3UC4Bj6clihPikjYzYdB
-         MkpMLzKj7ZirphY+yFO6Wt5BcH6ICOyYy2mJsVMItKl0chzciFMZA+B16wt9PEMImgIe
-         0mu9QbgV/a2EWzTQvbMRBfNglm3uT3KAt50tf3sstmbeqzHvrmzQeC+1dNyS4ySuO74L
-         kJLA==
+        bh=EITONQXFUiMqxrQ5NUsYlzJaHXQ6TTbcz+uz38aCyj8=;
+        b=SuUeEWi3hkyym9C+nZPi7l4X3qRxD6TQytpUw/1EHGepojFemgYBIwmEu4XWEYjzRU
+         an93ortrd6A7N9bn9ygLjYAeG6tEhXijd+Gp2dFmewjtt8Y1BXdbX0UYctCOSDbYaGJe
+         b9hQRoOKYWATBes4K+Q4crKShSdfA1/k3ry8JPuwHhRcJ2oFjLBYQDL3wGIYmxrBe8Jg
+         V9+K60ehr1o+PctGj1dJdVcEYAsvz0WkuOBMUBhiriTc1dXJcLyKJdTLeV1uBVAUYxh+
+         J2vGVMqehdk5QvqMcgGo39GgUTujIeA5A48sPaQtouMdkT2OTMa0pXP76k7LVxBXs+23
+         +VHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CUAxTMYGPKcXUKklEvyCvysOG+ZnpjCi0FGjCzotqSU=;
-        b=euFrNMLaLIlMQ7EgkYPxuATEVD/zl43+rrcOmPIGyWJJNHtJOonwJNlqd7PAvM+krK
-         W1TW+FNDR5+VTWkENnFqdHEEHAHV9Xqv55HCErAGM8LTJzw4ptUT6IqKwk6y9YzoD70R
-         ALpnkH5Jf8sG0JaQxDqrjsHVQrKBuhnsnu0uzjjPpm5s1NquUNF6jYuReLvskBfnD4XR
-         rHRHwE/F9kQq1pzv28TUiPzhR+x0mP1skSZWLk38EbsnQM5Jy17VtRtfJqOnwWXd4uGD
-         5uSbKFMfluYworHph6fGiZi0ct4cwrb5pdIoxkGRpbgL5XyhZHBqEwF97dFIACVmKFIc
-         N8AA==
-X-Gm-Message-State: AOAM531R5fIj/X9mNBfgRLKKROWocHHGdS6UjwB/WHYEpXIXfViqqQl2
-        LwUNm18QkIky6cLi7Pc6+LSLUQ==
-X-Google-Smtp-Source: ABdhPJylZLX97P+G2iOwpp72wGJA5EJe8joOYASW+03d0LyiRtMtN0GtaCcX9czglyk4+IJR8Rxong==
-X-Received: by 2002:a62:6883:0:b029:220:4426:449c with SMTP id d125-20020a6268830000b02902204426449cmr6160037pfc.14.1618550153443;
-        Thu, 15 Apr 2021 22:15:53 -0700 (PDT)
+        bh=EITONQXFUiMqxrQ5NUsYlzJaHXQ6TTbcz+uz38aCyj8=;
+        b=hr34EsPQPb+OmcDRnQVa5vCbDxst8Rfsjrwpc4K7bxNBSvyBA3ljfwR4xCt6/M8ehQ
+         0NaGKfzWFEmCnBmJMf2zJB9vgnvV2EOsOuEfnpIAXeJhQEm6gKQ1632l+kT2ZodAFDCC
+         XZrpHYl/mf6gipNIJ0ljiITfdxiwycbQpKZkdDhA65cqrLeJYfq9VssXrLN2QyZi7r81
+         OtAVYYUM4S/bnolymuJQ6g5evuUzrTHaB/Dg926FVSkqexek17w8rtT9NNtMRS6vKy/H
+         2/LZWi4qmreeuONMbGGSOTH+KzUNYfbQlR9cjA8hlpa1fr07mkoN1Tdp1DsRM4QAI6Lw
+         Ysgg==
+X-Gm-Message-State: AOAM533eh92f8gzKKR8BLPlAFSc95/F8Y58st6IOyqFQEM5JTBOnkWNf
+        SWVcE++SZ+prNc1iQW00VIsNgg==
+X-Google-Smtp-Source: ABdhPJxQ15461bx5MeGSdaLrFIJ1l7r1oqawxEatcnKC8zUEEH8blyrZiTvRaboYm6nB5iYTJ3lp/g==
+X-Received: by 2002:aa7:8593:0:b029:259:c31b:945b with SMTP id w19-20020aa785930000b0290259c31b945bmr2025912pfn.27.1618550159354;
+        Thu, 15 Apr 2021 22:15:59 -0700 (PDT)
 Received: from localhost.localdomain ([139.177.225.235])
-        by smtp.gmail.com with ESMTPSA id j7sm3518540pfd.129.2021.04.15.22.15.49
+        by smtp.gmail.com with ESMTPSA id j7sm3518540pfd.129.2021.04.15.22.15.53
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 15 Apr 2021 22:15:53 -0700 (PDT)
+        Thu, 15 Apr 2021 22:15:59 -0700 (PDT)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     guro@fb.com, hannes@cmpxchg.org, mhocko@kernel.org,
         akpm@linux-foundation.org, shakeelb@google.com,
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         duanxiongchun@bytedance.com,
         Muchun Song <songmuchun@bytedance.com>,
         Michal Hocko <mhocko@suse.com>
-Subject: [PATCH v2 3/8] mm: memcontrol: remove the pgdata parameter of mem_cgroup_page_lruvec
-Date:   Fri, 16 Apr 2021 13:14:02 +0800
-Message-Id: <20210416051407.54878-4-songmuchun@bytedance.com>
+Subject: [PATCH v2 4/8] mm: memcontrol: simplify lruvec_holds_page_lru_lock
+Date:   Fri, 16 Apr 2021 13:14:03 +0800
+Message-Id: <20210416051407.54878-5-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 In-Reply-To: <20210416051407.54878-1-songmuchun@bytedance.com>
 References: <20210416051407.54878-1-songmuchun@bytedance.com>
@@ -68,11 +68,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All the callers of mem_cgroup_page_lruvec() just pass page_pgdat(page)
-as the 2nd parameter to it (except isolate_migratepages_block()). But
-for isolate_migratepages_block(), the page_pgdat(page) is also equal
-to the local variable of @pgdat. So mem_cgroup_page_lruvec() do not
-need the pgdat parameter. Just remove it to simplify the code.
+We already have a helper lruvec_memcg() to get the memcg from lruvec, we
+do not need to do it ourselves in the lruvec_holds_page_lru_lock(). So use
+lruvec_memcg() instead. And if mem_cgroup_disabled() returns false, the
+page_memcg(page) (the LRU pages) cannot be NULL. So remove the odd logic
+of "memcg = page_memcg(page) ? : root_mem_cgroup". And use lruvec_pgdat
+to simplify the code. We can have a single definition for this function
+that works for !CONFIG_MEMCG, CONFIG_MEMCG + mem_cgroup_disabled() and
+CONFIG_MEMCG.
 
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
@@ -80,122 +83,65 @@ Reviewed-by: Shakeel Butt <shakeelb@google.com>
 Acked-by: Roman Gushchin <guro@fb.com>
 Acked-by: Michal Hocko <mhocko@suse.com>
 ---
- include/linux/memcontrol.h | 10 +++++-----
- mm/compaction.c            |  2 +-
- mm/memcontrol.c            |  9 +++------
- mm/swap.c                  |  2 +-
- mm/workingset.c            |  2 +-
- 5 files changed, 11 insertions(+), 14 deletions(-)
+ include/linux/memcontrol.h | 31 +++++++------------------------
+ 1 file changed, 7 insertions(+), 24 deletions(-)
 
 diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index c193be760709..f2a5aaba3577 100644
+index f2a5aaba3577..2fc728492c9b 100644
 --- a/include/linux/memcontrol.h
 +++ b/include/linux/memcontrol.h
-@@ -743,13 +743,12 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
- /**
-  * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
-  * @page: the page
-- * @pgdat: pgdat of the page
-  *
-  * This function relies on page->mem_cgroup being stable.
-  */
--static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
--						struct pglist_data *pgdat)
-+static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page)
- {
-+	pg_data_t *pgdat = page_pgdat(page);
- 	struct mem_cgroup *memcg = page_memcg(page);
+@@ -755,22 +755,6 @@ static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page)
+ 	return mem_cgroup_lruvec(memcg, pgdat);
+ }
  
- 	VM_WARN_ON_ONCE_PAGE(!memcg && !mem_cgroup_disabled(), page);
-@@ -1221,9 +1220,10 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+-static inline bool lruvec_holds_page_lru_lock(struct page *page,
+-					      struct lruvec *lruvec)
+-{
+-	pg_data_t *pgdat = page_pgdat(page);
+-	const struct mem_cgroup *memcg;
+-	struct mem_cgroup_per_node *mz;
+-
+-	if (mem_cgroup_disabled())
+-		return lruvec == &pgdat->__lruvec;
+-
+-	mz = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+-	memcg = page_memcg(page) ? : root_mem_cgroup;
+-
+-	return lruvec->pgdat == pgdat && mz->memcg == memcg;
+-}
+-
+ struct mem_cgroup *mem_cgroup_from_task(struct task_struct *p);
+ 
+ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm);
+@@ -1227,14 +1211,6 @@ static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page)
  	return &pgdat->__lruvec;
  }
  
--static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
--						    struct pglist_data *pgdat)
-+static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page)
+-static inline bool lruvec_holds_page_lru_lock(struct page *page,
+-					      struct lruvec *lruvec)
+-{
+-	pg_data_t *pgdat = page_pgdat(page);
+-
+-	return lruvec == &pgdat->__lruvec;
+-}
+-
+ static inline void lruvec_memcg_debug(struct lruvec *lruvec, struct page *page)
  {
-+	pg_data_t *pgdat = page_pgdat(page);
+ }
+@@ -1516,6 +1492,13 @@ static inline void unlock_page_lruvec_irqrestore(struct lruvec *lruvec,
+ 	spin_unlock_irqrestore(&lruvec->lru_lock, flags);
+ }
+ 
++static inline bool lruvec_holds_page_lru_lock(struct page *page,
++					      struct lruvec *lruvec)
++{
++	return lruvec_pgdat(lruvec) == page_pgdat(page) &&
++	       lruvec_memcg(lruvec) == page_memcg(page);
++}
 +
- 	return &pgdat->__lruvec;
- }
- 
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 8c5028bfbd56..1c500e697c88 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -994,7 +994,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
- 		if (!TestClearPageLRU(page))
- 			goto isolate_fail_put;
- 
--		lruvec = mem_cgroup_page_lruvec(page, pgdat);
-+		lruvec = mem_cgroup_page_lruvec(page);
- 
- 		/* If we already hold the lock, we can skip some rechecking */
- 		if (lruvec != locked) {
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 50e3cf1e263e..caf193088beb 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1181,9 +1181,8 @@ void lruvec_memcg_debug(struct lruvec *lruvec, struct page *page)
- struct lruvec *lock_page_lruvec(struct page *page)
- {
- 	struct lruvec *lruvec;
--	struct pglist_data *pgdat = page_pgdat(page);
- 
--	lruvec = mem_cgroup_page_lruvec(page, pgdat);
-+	lruvec = mem_cgroup_page_lruvec(page);
- 	spin_lock(&lruvec->lru_lock);
- 
- 	lruvec_memcg_debug(lruvec, page);
-@@ -1194,9 +1193,8 @@ struct lruvec *lock_page_lruvec(struct page *page)
- struct lruvec *lock_page_lruvec_irq(struct page *page)
- {
- 	struct lruvec *lruvec;
--	struct pglist_data *pgdat = page_pgdat(page);
- 
--	lruvec = mem_cgroup_page_lruvec(page, pgdat);
-+	lruvec = mem_cgroup_page_lruvec(page);
- 	spin_lock_irq(&lruvec->lru_lock);
- 
- 	lruvec_memcg_debug(lruvec, page);
-@@ -1207,9 +1205,8 @@ struct lruvec *lock_page_lruvec_irq(struct page *page)
- struct lruvec *lock_page_lruvec_irqsave(struct page *page, unsigned long *flags)
- {
- 	struct lruvec *lruvec;
--	struct pglist_data *pgdat = page_pgdat(page);
- 
--	lruvec = mem_cgroup_page_lruvec(page, pgdat);
-+	lruvec = mem_cgroup_page_lruvec(page);
- 	spin_lock_irqsave(&lruvec->lru_lock, *flags);
- 
- 	lruvec_memcg_debug(lruvec, page);
-diff --git a/mm/swap.c b/mm/swap.c
-index a75a8265302b..e0d5699213cc 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -313,7 +313,7 @@ void lru_note_cost(struct lruvec *lruvec, bool file, unsigned int nr_pages)
- 
- void lru_note_cost_page(struct page *page)
- {
--	lru_note_cost(mem_cgroup_page_lruvec(page, page_pgdat(page)),
-+	lru_note_cost(mem_cgroup_page_lruvec(page),
- 		      page_is_file_lru(page), thp_nr_pages(page));
- }
- 
-diff --git a/mm/workingset.c b/mm/workingset.c
-index b7cdeca5a76d..4f7a306ce75a 100644
---- a/mm/workingset.c
-+++ b/mm/workingset.c
-@@ -408,7 +408,7 @@ void workingset_activation(struct page *page)
- 	memcg = page_memcg_rcu(page);
- 	if (!mem_cgroup_disabled() && !memcg)
- 		goto out;
--	lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
-+	lruvec = mem_cgroup_page_lruvec(page);
- 	workingset_age_nonresident(lruvec, thp_nr_pages(page));
- out:
- 	rcu_read_unlock();
+ /* Don't lock again iff page's lruvec locked */
+ static inline struct lruvec *relock_page_lruvec_irq(struct page *page,
+ 		struct lruvec *locked_lruvec)
 -- 
 2.11.0
 
