@@ -2,106 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA8C36284C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 21:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF6E7362851
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 21:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241358AbhDPTI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 15:08:26 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:59306 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234898AbhDPTIZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 15:08:25 -0400
-Date:   Fri, 16 Apr 2021 19:07:56 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618600079;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RXeDpHhm+Qn3xDVhJ5riLOB/Nu6pLzHS8NqwHThHcGY=;
-        b=PgGIwTz+NfLgme/GJ0yZtgNNqPkD5dtvgq4h9hN+OT88dtvHG+WIaRAyRzNAqRjR+i6hSo
-        SX8Qjd3IbLmuawZz2R18HXBKCZVLTzBY7u0dp0nFx597odxLOUkIUJjW3b1oRuqGWGxjdR
-        yqiI6UbdBY8HD4NhV6C/d18RDEzdBZJ0IfMcIMcHA8bakDX0D9mmibUHf9jZvkWJbCXgeK
-        k2ObHG0XAyPUMgJ/uQvuhm06C7TqEJIGhgDo9QY5LQEaBBM7QTzNdpGmDIXhFqeUc3mxSE
-        RntRdkRAKwrtIAdzJrbzAM6OBH5oSdpe4WhZFHqojtiWA2QRFzdoTBLJiH8oGw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618600079;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RXeDpHhm+Qn3xDVhJ5riLOB/Nu6pLzHS8NqwHThHcGY=;
-        b=/NSUdsD7Yc15Hj/Syis51bLF2Kv1Se9NBti+YgN6VcSsJHyQggCZSuVODx+yeS5sx4ySI0
-        4nb15Eiq31hJAsAA==
-From:   "tip-bot2 for Marc Kleine-Budde" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] time/timecounter: Mark 1st argument of
- timecounter_cyc2time() as const
-Cc:     "Marc Kleine-Budde" <mkl@pengutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210303103544.994855-1-mkl@pengutronix.de>
-References: <20210303103544.994855-1-mkl@pengutronix.de>
+        id S242098AbhDPTIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 15:08:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56788 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235753AbhDPTIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 15:08:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBE64613B7;
+        Fri, 16 Apr 2021 19:08:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618600095;
+        bh=NaGNzCN+2i1mRkbQ3L8O3kT96tguq6/zzGA/BfG16zE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Se7Phvu52mCL6v++fyg/yYnlisNjRghz6hwAV2XsD/4Kby7/H1VU1GIpLdHLvw2xV
+         edCOHjiY8uPmTO6Yj+0J7kj1B8Y/SJYSXiqhmjdptegP7aVKdrFzTsqtEyP4YdY9Bu
+         CPqNVlUE2weVJfZrLQnD0JTTrBwmIV9Afz4HKK1ujz08pxlBxAdMsnX+z7ZQHvRy3H
+         ee3CkWSQaLufdbInyVJ169R2Etx5aG7M98khcKPFS4SYr5Gc+7lzWOOeIISCsRdnbu
+         5iez+ua0fYrUgbINs0fNnaPDyVIH8Mgls3T/4Isv7vaC8WIpKAvoTi45cJcQJt7bY2
+         fIUGNrOhq31eQ==
+Received: by mail-ot1-f47.google.com with SMTP id 92-20020a9d02e50000b029028fcc3d2c9eso4190085otl.0;
+        Fri, 16 Apr 2021 12:08:15 -0700 (PDT)
+X-Gm-Message-State: AOAM530XDXOhcp6l2VFPqnriLWPIix4NzpD2dTJYTuzmC8UjgnwRccJk
+        JxWHKZcHbH89n7gqVViR77KRCCpI9n9p5a5+3kM=
+X-Google-Smtp-Source: ABdhPJzH4WO2KOFQOPbyOUxhDnRNTxX6dPIFmPJydsDOQ9kfHGzNvNc+8aTDKXSJsr1QIEoNWd6hBlT/LoVfvEmILo0=
+X-Received: by 2002:a9d:75c1:: with SMTP id c1mr4730792otl.108.1618600094987;
+ Fri, 16 Apr 2021 12:08:14 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <161860007673.29796.3934141418916152456.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20210416181421.2374588-1-jiancai@google.com>
+In-Reply-To: <20210416181421.2374588-1-jiancai@google.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 16 Apr 2021 21:08:03 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXER9EmB4wD9SbFhJL5VHc1qJ_bDC+GhPTFdxzHAJWLT0w@mail.gmail.com>
+Message-ID: <CAMj1kXER9EmB4wD9SbFhJL5VHc1qJ_bDC+GhPTFdxzHAJWLT0w@mail.gmail.com>
+Subject: Re: [PATCH] arm64: vdso: remove commas between macro name and arguments
+To:     Jian Cai <jiancai@google.com>
+Cc:     "# 3.4.x" <stable@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Manoj Gupta <manojgupta@google.com>,
+        Luis Lozano <llozano@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+On Fri, 16 Apr 2021 at 20:16, Jian Cai <jiancai@google.com> wrote:
+>
+> LLVM's integrated assembler does not support using commas separating
+> the name and arguments in .macro. However, only spaces are used in the
+> manual page. This replaces commas between macro names and the subsequent
+> arguments with space in calls to clock_gettime_return to make it
+> compatible with IAS.
+>
+> Link:
+> https://sourceware.org/binutils/docs/as/Macro.html#Macro
+> Signed-off-by: Jian Cai <jiancai@google.com>
+> ---
+>  arch/arm64/kernel/vdso/gettimeofday.S | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/arm64/kernel/vdso/gettimeofday.S b/arch/arm64/kernel/vdso/gettimeofday.S
+> index 856fee6d3512..7ee685d9adfc 100644
+> --- a/arch/arm64/kernel/vdso/gettimeofday.S
+> +++ b/arch/arm64/kernel/vdso/gettimeofday.S
+> @@ -122,7 +122,7 @@ x_tmp               .req    x8
+>  9998:
+>         .endm
+>
+> -       .macro clock_gettime_return, shift=0
+> +       .macro clock_gettime_return shift=0
 
-Commit-ID:     07ff4aed015c564d03fd518d2fb54e5e6948903c
-Gitweb:        https://git.kernel.org/tip/07ff4aed015c564d03fd518d2fb54e5e6948903c
-Author:        Marc Kleine-Budde <mkl@pengutronix.de>
-AuthorDate:    Wed, 03 Mar 2021 11:35:44 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Fri, 16 Apr 2021 21:03:50 +02:00
+Are you sure the definition needs to be changed as well? The majority
+of GAS macros in arch/arm64 (if not all) use a comma after the
+identifier, so I would prefer not to deviate from that arbitrarily.
 
-time/timecounter: Mark 1st argument of timecounter_cyc2time() as const
+Just look at
 
-The timecounter is not modified in this function. Mark it as const.
+$ git grep -E \.macro\\s+\\S+,  arch/arm64/*.S
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210303103544.994855-1-mkl@pengutronix.de
 
----
- include/linux/timecounter.h | 2 +-
- kernel/time/timecounter.c   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/timecounter.h b/include/linux/timecounter.h
-index 754b74a..c6540ce 100644
---- a/include/linux/timecounter.h
-+++ b/include/linux/timecounter.h
-@@ -124,7 +124,7 @@ extern u64 timecounter_read(struct timecounter *tc);
-  * This allows conversion of cycle counter values which were generated
-  * in the past.
-  */
--extern u64 timecounter_cyc2time(struct timecounter *tc,
-+extern u64 timecounter_cyc2time(const struct timecounter *tc,
- 				u64 cycle_tstamp);
- 
- #endif
-diff --git a/kernel/time/timecounter.c b/kernel/time/timecounter.c
-index 85b98e7..e628528 100644
---- a/kernel/time/timecounter.c
-+++ b/kernel/time/timecounter.c
-@@ -76,7 +76,7 @@ static u64 cc_cyc2ns_backwards(const struct cyclecounter *cc,
- 	return ns;
- }
- 
--u64 timecounter_cyc2time(struct timecounter *tc,
-+u64 timecounter_cyc2time(const struct timecounter *tc,
- 			 u64 cycle_tstamp)
- {
- 	u64 delta = (cycle_tstamp - tc->cycle_last) & tc->cc->mask;
+>         .if \shift == 1
+>         lsr     x11, x11, x12
+>         .endif
+> @@ -227,7 +227,7 @@ realtime:
+>         seqcnt_check fail=realtime
+>         get_ts_realtime res_sec=x10, res_nsec=x11, \
+>                 clock_nsec=x15, xtime_sec=x13, xtime_nsec=x14, nsec_to_sec=x9
+> -       clock_gettime_return, shift=1
+> +       clock_gettime_return shift=1
+>
+>         ALIGN
+>  monotonic:
+> @@ -250,7 +250,7 @@ monotonic:
+>                 clock_nsec=x15, xtime_sec=x13, xtime_nsec=x14, nsec_to_sec=x9
+>
+>         add_ts sec=x10, nsec=x11, ts_sec=x3, ts_nsec=x4, nsec_to_sec=x9
+> -       clock_gettime_return, shift=1
+> +       clock_gettime_return shift=1
+>
+>         ALIGN
+>  monotonic_raw:
+> @@ -271,7 +271,7 @@ monotonic_raw:
+>                 clock_nsec=x15, nsec_to_sec=x9
+>
+>         add_ts sec=x10, nsec=x11, ts_sec=x13, ts_nsec=x14, nsec_to_sec=x9
+> -       clock_gettime_return, shift=1
+> +       clock_gettime_return shift=1
+>
+>         ALIGN
+>  realtime_coarse:
+> --
+> 2.31.1.368.gbe11c130af-goog
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
