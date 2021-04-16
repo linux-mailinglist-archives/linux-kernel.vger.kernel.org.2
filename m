@@ -2,138 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F04E362B02
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC35362B06
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235258AbhDPWU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 18:20:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48180 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231510AbhDPWUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 18:20:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D71E613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 22:20:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618611629;
-        bh=cw+o8cfEuCo6PQdHXEsdN0LoqovEdVoWI1b2P0UF/Og=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jxKsP0Fr9kLKdD37KZFr2gu8uqJ4eMaAup4AizAaAIdv9BKvzqPDEgdgbRBqum7zC
-         lWKQeigSIzxGjTJHEiwDs9xOo/IJUbEib4DA3B84aEQ5lLth2jUfE9lUj4h8QdAD1E
-         9Z2obm0iE+pEWoFyv7etI8gGBQtinezT/unZfPuCAuFvRIfPS4bKZ7yN9BeXLOXjNl
-         lVBK12qMeYLlfofHvBxBmpPC1+zZX59BpJkWseUTGLjyQuWLncZGNvRiMC4y2Qys4I
-         lhxVTpq9Aa87Zkp9Jcnq1KIFqAcjpNd7gurH56WiNZd/0MotMjImyhskUQyILS3pOl
-         CQiDJVampjCng==
-Received: by mail-ed1-f51.google.com with SMTP id w18so34081898edc.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 15:20:29 -0700 (PDT)
-X-Gm-Message-State: AOAM531PLaZ6BNfptW3V3jSgRBcOtDtfmcpS9+OK/xww1M8PBrcxqoY9
-        Gr9kofvlmXT2ePT9rj2rHEYGl3Z1krF28BnSYNMQsw==
-X-Google-Smtp-Source: ABdhPJwrhXiYlU+qO4b6VCJY/F1yFSIFXZAHioVtpExmGxj4TZL8vcEumj5aGB0McOtELfNfByc/+fwJgoYDXb5XsJs=
-X-Received: by 2002:a50:f395:: with SMTP id g21mr12764633edm.238.1618611628139;
- Fri, 16 Apr 2021 15:20:28 -0700 (PDT)
+        id S235618AbhDPWVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 18:21:02 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:38629 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231510AbhDPWVA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 18:21:00 -0400
+Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 496E8100006;
+        Fri, 16 Apr 2021 22:20:32 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        satya priya <skakit@codeaurora.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org, kgunda@codeaurora.org,
+        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: (subset) [PATCH V2 0/4] Add RTC support for PMIC PMK8350
+Date:   Sat, 17 Apr 2021 00:20:31 +0200
+Message-Id: <161861162166.866673.15336346688705513488.b4-ty@bootlin.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <1617976766-7852-1-git-send-email-skakit@codeaurora.org>
+References: <1617976766-7852-1-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-References: <20210416203844.3803177-1-samitolvanen@google.com>
- <20210416203844.3803177-6-samitolvanen@google.com> <20210416211855.GD22348@zn.tnic>
- <CABCJKud8TvzhcjHCpsrtCJ4B50ZUfaL48F42EhZ2zWKLteAc0Q@mail.gmail.com>
- <20210416220251.GE22348@zn.tnic> <CALCETrVTtKqD6fonUmT_qr0HJ0X9TWzLGq-wpm+A7XKyjn3W5g@mail.gmail.com>
- <20210416221414.GF22348@zn.tnic>
-In-Reply-To: <20210416221414.GF22348@zn.tnic>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Fri, 16 Apr 2021 15:20:17 -0700
-X-Gmail-Original-Message-ID: <CALCETrUo+tR+YmfoBPWV9z_7QhU74=7tmCBD_zsfa24ZxNvfxg@mail.gmail.com>
-Message-ID: <CALCETrUo+tR+YmfoBPWV9z_7QhU74=7tmCBD_zsfa24ZxNvfxg@mail.gmail.com>
-Subject: Re: [PATCH 05/15] x86: Implement function_nocfi
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 3:14 PM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Fri, Apr 16, 2021 at 03:06:17PM -0700, Andy Lutomirski wrote:
-> > On Fri, Apr 16, 2021 at 3:03 PM Borislav Petkov <bp@alien8.de> wrote:
-> > >
-> > > On Fri, Apr 16, 2021 at 02:49:23PM -0700, Sami Tolvanen wrote:
-> > > > __nocfi only disables CFI checking in a function, the compiler still
-> > > > changes function addresses to point to the CFI jump table, which is
-> > > > why we need function_nocfi().
-> > >
-> > > So call it __func_addr() or get_function_addr() or so, so that at least
-> > > it is clear what this does.
-> > >
-> >
-> > This seems backwards to me.  If I do:
-> >
-> > extern void foo(some signature);
-> >
-> > then I would, perhaps naively, expect foo to be the actual symbol that
->
-> I'm just reading the patch:
->
-> ... The function_nocfi macro always returns the address of the
-> + * actual function instead.
-> + */
-> +#define function_nocfi(x) ({                                           \
-> +       void *addr;                                                     \
-> +       asm("leaq " __stringify(x) "(%%rip), %0\n\t" : "=r" (addr));    \
-> +       addr;
->
-> so it does a rip-relative load into a reg which ends up with the function
-> address.
+On Fri, 9 Apr 2021 19:29:22 +0530, satya priya wrote:
+> satya priya (4):
+>   rtc: pm8xxx: Add RTC support for PMIC PMK8350
+>   dt-bindings: mfd: Add compatible for pmk8350 rtc
+>   dt-bindings: mfd: Convert pm8xxx bindings to yaml
+>   dt-bindings: rtc: qcom-pm8xxx-rtc: Add qcom pm8xxx rtc bindings
+> 
+>  .../devicetree/bindings/mfd/qcom-pm8xxx.txt        | 99 ----------------------
+>  .../devicetree/bindings/mfd/qcom-pm8xxx.yaml       | 54 ++++++++++++
+>  .../devicetree/bindings/rtc/qcom-pm8xxx-rtc.yaml   | 62 ++++++++++++++
+>  drivers/rtc/rtc-pm8xxx.c                           | 11 +++
+>  4 files changed, 127 insertions(+), 99 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mfd/qcom-pm8xxx.txt
+>  create mode 100644 Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
+>  create mode 100644 Documentation/devicetree/bindings/rtc/qcom-pm8xxx-rtc.yaml
 
-This is horrible.
+Applied, thanks!
 
-We made a mistake adapting the kernel to GCC's nonsensical stack
-protector ABI, especially on 32-bit, instead of making GCC fix it.
-Let's not repeat this with clang please.
+[1/4] rtc: pm8xxx: Add RTC support for PMIC PMK8350
+      commit: c8f0ca8b7a4b91f637ccd9a55f37dbac73d6f6bf
+[4/4] dt-bindings: rtc: qcom-pm8xxx-rtc: Add qcom pm8xxx rtc bindings
+      commit: 8138c5f0318c69a878582d2140dac08e6a99880d
 
-Sami, I'm assuming that:
-
-extern void func(void);
-
-results in anything that takes a pointer to func getting a pointer to
-some special magic descriptor instead of to func, so that:
-
-void (*ptr)(void);
-ptr = func;
-ptr();
-
-does the right thing.  Then void (*)(void) is no longer a raw pointer.  Fine.
-
-But obviously there is code that needs real function pointers.  How
-about making this a first-class feature, or at least hacking around it
-more cleanly.  For example, what does this do:
-
-char entry_whatever[];
-wrmsrl(..., (unsigned long)entry_whatever);
-
-or, alternatively,
-
-extern void func() __attribute__((nocfi));
-
-void (*ptr)(void);
-ptr = func;  /* probably fails to compile -- invalid conversion */
-
-(unsigned long)func /* returns the actual pointer */
-
-func();  /* works like normal */
-
-And maybe allow this too:
-
-void (*ptr)(void) __attribute__((nocfi);
-ptr = func;
-ptr();  /* emits an unchecked call.  maybe warns, too.  anyone who
-does this needs to be extremely careful. */
-
---Andy
+Best regards,
+-- 
+Alexandre Belloni <alexandre.belloni@bootlin.com>
