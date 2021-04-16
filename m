@@ -2,223 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38511362178
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D68C8362183
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244273AbhDPNvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 09:51:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34852 "EHLO
+        id S235767AbhDPNy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 09:54:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240498AbhDPNvn (ORCPT
+        with ESMTP id S235478AbhDPNy5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 09:51:43 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46AADC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 06:51:17 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id s7so26677795wru.6
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 06:51:17 -0700 (PDT)
+        Fri, 16 Apr 2021 09:54:57 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC00C061574;
+        Fri, 16 Apr 2021 06:54:31 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id r9so42270665ejj.3;
+        Fri, 16 Apr 2021 06:54:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=xRM3MnZum00TjXyXV395BHIoejSmJkmsUoaS2chuhuQ=;
-        b=CaNBeNgCW6UgczdXmgMA1lJ/t0J0+HsLZ2PA0dN6277iAR8q1wFCSHk6BiONc5AC0D
-         ZHVUohYzvswqhtu4n4XSfnETFPlFiKTINknsTDo4LyGPn/xShws9LdS5URWj3MqyAPDH
-         66TpuCOePPPZ9Em70+jzKHEEJWLfE9J6b0gSZQLYZ2cK2aQh3tz0GDGwWCH9BYFC9lI2
-         S4Uh+J6mDSWhwG9RKFlCA/8INQlCwjh7+XaujIMvnN5d5J82ZN2O79rCDCzHT6+RSe4v
-         NZoYGa26kwvLJQCh6N/f1FjfHzTnloi1eSs+nrkZbcWf3NI8pH73s6iUP/WAeEOeK391
-         +Opw==
+         :content-disposition:in-reply-to:user-agent;
+        bh=KDk3amLs0Zl+rRoVpfXZhI0atBu/zQbhsj1RfUtselA=;
+        b=lKlNd6BbkPwTyNkHOTZRnX0iDbb2TgVGLzu55+YftgoNzLJSSJGaYPoyg8E0dZ8xR0
+         rYsnThJY3dl2H62jYsA+2E8//nx/yafkJUec1BohIIwhEhuONmNkTCM8VD/JrLX6FX7q
+         tYD1tvwGKkV3CNzzNRWTsDtMya7adSbsx7eI4S56Wfc9WVkdiUtdUHcE3+FEIwNl8xuv
+         MRUsygSswlXwxmDVno4FB3/rLGn3tKlibgZX6LL57aLX3WQYnwv6pV3tNgdNdAGj3gBl
+         bwsvPdcQNwUA201LiM7ulpeb40D8T6eryJeZ7b0GMx4/Gz0V2HwOHNT4PQPAWFfZ66jQ
+         7jJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=xRM3MnZum00TjXyXV395BHIoejSmJkmsUoaS2chuhuQ=;
-        b=Jd7+0enMEFgr3Mc0/8Zd0w4vqIFUKnQOqSNB/WN7pKn1fwWuy5oHt8zwxl1evoal/9
-         1XHTjPfAqW5q0STRobafiAdWm+3EnNcKfs24Zc/K9B7sj1I59TiJtPTdG8t3H23LQh4k
-         Nblht6j4YdB22Tw5ckoU+oePrPd1amDq33hWc0iNsUshPi7ZU8pgTadKtlfsDRCFRR1N
-         kZITdNEalJPuO9oEY9gvXXhL+X2UU+SmZXGp21veBXRH/AAuiELgDSzsJfIhtY/5EhHq
-         oHCiJUbcY8gtHuKqOraBk88k9LrbG6Avbn4coc2ZPHYglDkQivUhRHVgEr0oeYRxVS9P
-         lIog==
-X-Gm-Message-State: AOAM530jrogwcApV/AiI5glvzLhd7/jPYJX4vowplLFMgKmj0b3edXLQ
-        v+wzi3erJDqAxy61NjHQD6Xe9jMFAVZuDQ==
-X-Google-Smtp-Source: ABdhPJygJ+/KhuGuCr2HXJEzE1TV1CQZFbUOR9oif4KtUZXL7r0sVkEWg/a397ZUbg/wzpl7pI9yvw==
-X-Received: by 2002:a5d:55cf:: with SMTP id i15mr8944409wrw.289.1618581075991;
-        Fri, 16 Apr 2021 06:51:15 -0700 (PDT)
-Received: from vingu-book ([2a01:e0a:f:6020:2c7d:7c51:7cb2:ccb2])
-        by smtp.gmail.com with ESMTPSA id o18sm8811960wmp.26.2021.04.16.06.51.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 16 Apr 2021 06:51:15 -0700 (PDT)
-Date:   Fri, 16 Apr 2021 15:51:13 +0200
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>,
-        Lingutla Chandrasekhar <clingutla@codeaurora.org>
-Subject: Re: [PATCH 2/2] sched/fair: Relax task_hot() for misfit tasks
-Message-ID: <20210416135113.GA16445@vingu-book>
-References: <20210415175846.494385-1-valentin.schneider@arm.com>
- <20210415175846.494385-3-valentin.schneider@arm.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=KDk3amLs0Zl+rRoVpfXZhI0atBu/zQbhsj1RfUtselA=;
+        b=OHtwKcuFxjPYgdsfI9SYQ6E5HQ39N8KYmurVWijflqUmWSgYScoW+r2fgBPW2KpDCs
+         2R685b5hieSEPvMrzRZ8MBRNNqA3jIWKY5e9ORHVIye9tvG4HFVzzxUp/ABDLfPTfmnt
+         XOYMtsJnRe4b/TuNDXY2Yo+LvZ7QmFmTZS8VgQkdlLT08N0iu5zuS5iKU3H52zd3LtnH
+         wgdzCaFYhSb4VWTKxXYJRMLbF859OAsGeod93VxS9JngTPl4Win446TASp0sGT4aPkoJ
+         Ch8P1oJryRMnY4GqqsaM6UOpSgTBKVW2WZY+B7pxyA4x5ze8b4/3+2En0JAnehacDIBD
+         456A==
+X-Gm-Message-State: AOAM532waVK6MveGk5xadzCwjXSFV9NvFoc/stidq6kv/fCMnL8JwGzf
+        5nGoyNVbX/CiD8Ou0WVyNNQ=
+X-Google-Smtp-Source: ABdhPJxsoAA0G4Bt4HknjHiIPZuQRBEjgsZO5sOBy03fib7O8u7qlp7wFovDtI2HB59oKaG/6ZikAA==
+X-Received: by 2002:a17:906:85cb:: with SMTP id i11mr8075474ejy.311.1618581269965;
+        Fri, 16 Apr 2021 06:54:29 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id c12sm5968623edx.54.2021.04.16.06.54.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 06:54:28 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 15:55:11 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Clemens Gruber <clemens.gruber@pqgruber.com>,
+        linux-pwm@vger.kernel.org, Sven Van Asbroeck <TheSven73@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 4/8] dt-bindings: pwm: Support new PWM_USAGE_POWER flag
+Message-ID: <YHmXPyf+XjgJs3C8@orome.fritz.box>
+References: <20210412132745.76609-1-clemens.gruber@pqgruber.com>
+ <20210412132745.76609-4-clemens.gruber@pqgruber.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="XbFHZBPVqfivajiW"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210415175846.494385-3-valentin.schneider@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210412132745.76609-4-clemens.gruber@pqgruber.com>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le jeudi 15 avril 2021 à 18:58:46 (+0100), Valentin Schneider a écrit :
-> Consider the following topology:
-> 
->   DIE [          ]
->   MC  [    ][    ]
->        0  1  2  3
-> 
->   capacity_orig_of(x \in {0-1}) < capacity_orig_of(x \in {2-3})
-> 
-> w/ CPUs 2-3 idle and CPUs 0-1 running CPU hogs (util_avg=1024).
-> 
-> When CPU2 goes through load_balance() (via periodic / NOHZ balance), it
-> should pull one CPU hog from either CPU0 or CPU1 (this is misfit task
-> upmigration). However, should a e.g. pcpu kworker awake on CPU0 just before
-> this load_balance() happens and preempt the CPU hog running there, we would
-> have, for the [0-1] group at CPU2's DIE level:
-> 
-> o sgs->sum_nr_running > sgs->group_weight
-> o sgs->group_capacity * 100 < sgs->group_util * imbalance_pct
-> 
-> IOW, this group is group_overloaded.
-> 
-> Considering CPU0 is picked by find_busiest_queue(), we would then visit the
-> preempted CPU hog in detach_tasks(). However, given it has just been
-> preempted by this pcpu kworker, task_hot() will prevent it from being
-> detached. We then leave load_balance() without having done anything.
-> 
-> Long story short, preempted misfit tasks are affected by task_hot(), while
-> currently running misfit tasks are intentionally preempted by the stopper
-> task to migrate them over to a higher-capacity CPU.
-> 
-> Align detach_tasks() with the active-balance logic and let it pick a
-> cache-hot misfit task when the destination CPU can provide a capacity
-> uplift.
-> 
-> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+
+--XbFHZBPVqfivajiW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Apr 12, 2021 at 03:27:41PM +0200, Clemens Gruber wrote:
+> Add the flag and corresponding documentation for PWM_USAGE_POWER.
+>=20
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
 > ---
->  kernel/sched/fair.c | 36 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 36 insertions(+)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index d2d1a69d7aa7..43fc98d34276 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -7493,6 +7493,7 @@ struct lb_env {
->  	enum fbq_type		fbq_type;
->  	enum migration_type	migration_type;
->  	enum group_type         src_grp_type;
-> +	enum group_type         dst_grp_type;
->  	struct list_head	tasks;
->  };
->  
-> @@ -7533,6 +7534,31 @@ static int task_hot(struct task_struct *p, struct lb_env *env)
->  	return delta < (s64)sysctl_sched_migration_cost;
->  }
->  
-> +
-> +/*
-> + * What does migrating this task do to our capacity-aware scheduling criterion?
-> + *
-> + * Returns 1, if the task needs more capacity than the dst CPU can provide.
-> + * Returns 0, if the task needs the extra capacity provided by the dst CPU
-> + * Returns -1, if the task isn't impacted by the migration wrt capacity.
-> + */
-> +static int migrate_degrades_capacity(struct task_struct *p, struct lb_env *env)
-> +{
-> +	if (!(env->sd->flags & SD_ASYM_CPUCAPACITY))
-> +		return -1;
-> +
-> +	if (!task_fits_capacity(p, capacity_of(env->src_cpu))) {
-> +		if (cpu_capacity_greater(env->dst_cpu, env->src_cpu))
-> +			return 0;
-> +		else if (cpu_capacity_greater(env->src_cpu, env->dst_cpu))
-> +			return 1;
-> +		else
-> +			return -1;
-> +	}
+>  Documentation/devicetree/bindings/pwm/pwm.txt | 3 +++
+>  include/dt-bindings/pwm/pwm.h                 | 1 +
+>  2 files changed, 4 insertions(+)
 
-Being there means that task fits src_cpu capacity so why testing p against dst_cpu ?
+Rob, what are your thoughts on this? I've been thinking about this some
+more and I'm having second thoughts about putting this into device tree
+because it doesn't actually describe a property of the PWM hardware but
+rather a use-case specific hint. It's a bit of a gray area because this
+is just part of the PWM specifier which already has use-case specific
+"configuration", such as the period and the polarity.
 
-> +
-> +	return task_fits_capacity(p, capacity_of(env->dst_cpu)) ? -1 : 1;
-> +}
+Perhaps a better place for this is within the PWM API? We could add the
+same information into struct pwm_state and then consumers that don't
+care about specifics of the signal (such as pwm-backlight) can set that
+flag when they request a state to be applied.
 
-I prefer the below which easier to read because the same var is use everywhere and you can remove cpu_capacity_greater.
+Thierry
 
-static int migrate_degrades_capacity(struct task_struct *p, struct lb_env *env)
-{
-    unsigned long src_capacity, dst_capacity;
+--XbFHZBPVqfivajiW
+Content-Type: application/pgp-signature; name="signature.asc"
 
-    if (!(env->sd->flags & SD_ASYM_CPUCAPACITY))
-        return -1;
+-----BEGIN PGP SIGNATURE-----
 
-    src_capacity = capacity_of(env->src_cpu);
-    dst_capacity = capacity_of(env->dst_cpu);
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmB5lzwACgkQ3SOs138+
+s6EIRBAAopZq0WA+PGKaCMBdc3iqIKquJL4ZtHYLNy7PIFmUgxNw2bn/B3IRihS1
+WKd0Tvt9OYiP9vMhVKdUUm2W0How6aUWgACYAfj1O8LZU5Xa44ENeXSCkACBN6mW
+A+ff1QrfNZqxE9BtFPChjTKsm2ty+2ybzT9Z5RcwcmWoZn2/rioZGsx79QzuO02Y
+D1fk3L7jkPa7sZsqwkJOdBgSb31hgMzPSOxm3VZaJoxIxr+uIEqJVHNG5vpw/cY0
+EStGp0wZc5uROb/zFFlHTi5JuAV+Mxrk/2A6vUU+IL6OwFQ3o1toTQToIW+oK1Ul
+1gh/Ts3lFj3O6ALj/8n7pW6eN6JAnE0ZZo75ccWHmaNmzypPNiePA0Vit1WDklZM
+KtdIHdCTC0i55R90wFQNPZBhYIfk72hNUJGWjHQV5AwmjwmsXGPLY6q0qvl11kzy
+kzDg7CSF2E1BuIb4VGAg+fdJzsoaVQa4pbNT1TYB94eQvPZXUvJ7urNBOntKWH6T
+IpDp/DJd5btx+qsXLFKF3fqyEwYlpfQkZlCqhEBM8Qivwa7pMrCLp8YpsDBXGwPK
+36GJAzwDQRRx2Efgugk898nZ60dCllaJyt+rMs8HpCkkb6P8OsRuXrrgEcOVLtzl
+MkQ1FhpXZOjiIcCh1tqcfjv/7KXCbkam1O2i7d1JSpiHbAzL/Cc=
+=GQic
+-----END PGP SIGNATURE-----
 
-    if (!task_fits_capacity(p, src_capacity)) {
-        if (capacity_greater(dst_capacity, src_capacity))
-            return 0;
-        else if (capacity_greater(src_capacity, dst_capacity))
-            return 1;
-        else
-            return -1;
-    }
-
-    return task_fits_capacity(p, dst_capacity) ? -1 : 1;
-}
-
-
-> +
->  #ifdef CONFIG_NUMA_BALANCING
->  /*
->   * Returns 1, if task migration degrades locality
-> @@ -7672,6 +7698,15 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
->  	if (tsk_cache_hot == -1)
->  		tsk_cache_hot = task_hot(p, env);
->  
-> +	/*
-> +	 * On a (sane) asymmetric CPU capacity system, the increase in compute
-> +	 * capacity should offset any potential performance hit caused by a
-> +	 * migration.
-> +	 */
-> +	if ((env->dst_grp_type == group_has_spare) &&
-
-Shouldn't it be env->src_grp_type == group_misfit_task to only care of misfit task case as
-stated in $subject
-
-
-> +	    !migrate_degrades_capacity(p, env))
-> +		tsk_cache_hot = 0;
-> +
->  	if (tsk_cache_hot <= 0 ||
->  	    env->sd->nr_balance_failed > env->sd->cache_nice_tries) {
->  		if (tsk_cache_hot == 1) {
-> @@ -9310,6 +9345,7 @@ static struct sched_group *find_busiest_group(struct lb_env *env)
->  	if (!sds.busiest)
->  		goto out_balanced;
->  
-> +	env->dst_grp_type = local->group_type;
->  	env->src_grp_type = busiest->group_type;
->  
->  	/* Misfit tasks should be dealt with regardless of the avg load */
-> -- 
-> 2.25.1
-> 
+--XbFHZBPVqfivajiW--
