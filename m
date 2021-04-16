@@ -2,154 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2B5361D51
+	by mail.lfdr.de (Postfix) with ESMTP id C71E0361D52
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240979AbhDPJ3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 05:29:30 -0400
-Received: from foss.arm.com ([217.140.110.172]:37152 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229706AbhDPJ32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 05:29:28 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E41111396;
-        Fri, 16 Apr 2021 02:29:03 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0C9EB3FA35;
-        Fri, 16 Apr 2021 02:29:01 -0700 (PDT)
-Subject: Re: [PATCH v1 3/5] mm: ptdump: Provide page size to notepage()
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        akpm@linux-foundation.org
-Cc:     linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, x86@kernel.org, linux-mm@kvack.org
-References: <cover.1618506910.git.christophe.leroy@csgroup.eu>
- <1ef6b954fb7b0f4dfc78820f1e612d2166c13227.1618506910.git.christophe.leroy@csgroup.eu>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <41819925-3ee5-4771-e98b-0073e8f095cf@arm.com>
-Date:   Fri, 16 Apr 2021 10:28:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S241378AbhDPJaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 05:30:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234996AbhDPJaK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 05:30:10 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA40CC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:29:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=++QZxlBgT7LgxqpU0jPFwi5srIjm2Y8BfTh1/+DAOsk=; b=YPJl4thEpecBd5MOtykGsWcQQk
+        hO4jPOIto8uUulqHkGcGjiy0CKsAtnq5Uf97ZjwbrmDY/CEDc1ek1vzqYY75KO3f/rphCcETncg80
+        7hhkp+BVgy6uvrzMPFdB9z+DTdVhcNkRtFA6fgBY7NTllvdRj/Bw8sZkX+7Bx3jgGtYjgRkqRNNQA
+        1uumPjgLaqVQ/tm2J0cUQeB3KRre8VxYZQO7dTmDAUu6cio7nqyPwB451yEXOTtzHV3tPqbjoVilo
+        e3+3XbcfyWYQuV0e8nrGDqwzktl3Yp2HhBxo4pMBLFEO+Op2WlIh5AWpbyHaPgV7/x6vBG2lmkBc+
+        U3VUqbRQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lXKn5-001YLc-HD; Fri, 16 Apr 2021 09:29:31 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C1D9830015A;
+        Fri, 16 Apr 2021 11:29:30 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id ACAD2203711CC; Fri, 16 Apr 2021 11:29:30 +0200 (CEST)
+Date:   Fri, 16 Apr 2021 11:29:30 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Song Liu <songliubraving@fb.com>, Tejun Heo <tj@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v3 1/2] perf/core: Share an event with multiple cgroups
+Message-ID: <YHlY+qd2hF00OrFw@hirez.programming.kicks-ass.net>
+References: <20210413155337.644993-1-namhyung@kernel.org>
+ <20210413155337.644993-2-namhyung@kernel.org>
+ <YHhS6kjeA8AvcFgz@hirez.programming.kicks-ass.net>
+ <CAM9d7chrHYNOB4ShJ=34WwXOUY-grXhkiW_wursywTH1FbZdvA@mail.gmail.com>
+ <YHlYT+tHrkNyMFuh@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <1ef6b954fb7b0f4dfc78820f1e612d2166c13227.1618506910.git.christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHlYT+tHrkNyMFuh@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/04/2021 18:18, Christophe Leroy wrote:
-> In order to support large pages on powerpc, notepage()
-> needs to know the page size of the page.
+
+Duh.. this is a half-finished email I meant to save for later. Anyway,
+I'll reply more.
+
+On Fri, Apr 16, 2021 at 11:26:39AM +0200, Peter Zijlstra wrote:
+> On Fri, Apr 16, 2021 at 08:48:12AM +0900, Namhyung Kim wrote:
+> > On Thu, Apr 15, 2021 at 11:51 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > > On Tue, Apr 13, 2021 at 08:53:36AM -0700, Namhyung Kim wrote:
 > 
-> Add a page_size argument to notepage().
+> > > > cgroup event counting (i.e. perf stat).
+> > > >
+> > > >  * PERF_EVENT_IOC_ATTACH_CGROUP - it takes a buffer consists of a
+> > > >      64-bit array to attach given cgroups.  The first element is a
+> > > >      number of cgroups in the buffer, and the rest is a list of cgroup
+> > > >      ids to add a cgroup info to the given event.
+> > >
+> > > WTH is a cgroup-id? The syscall takes a fd to the path, why have two
+> > > different ways?
+> > 
+> > As you know, we already use cgroup-id for sampling.  Yeah we
+> > can do it with the fd but one of the point in this patch is to reduce
+> > the number of file descriptors. :)
 > 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->   arch/arm64/mm/ptdump.c         |  2 +-
->   arch/riscv/mm/ptdump.c         |  2 +-
->   arch/s390/mm/dump_pagetables.c |  3 ++-
->   arch/x86/mm/dump_pagetables.c  |  2 +-
->   include/linux/ptdump.h         |  2 +-
->   mm/ptdump.c                    | 16 ++++++++--------
->   6 files changed, 14 insertions(+), 13 deletions(-)
->
-[...]
-> diff --git a/mm/ptdump.c b/mm/ptdump.c
-> index da751448d0e4..61cd16afb1c8 100644
-> --- a/mm/ptdump.c
-> +++ b/mm/ptdump.c
-> @@ -17,7 +17,7 @@ static inline int note_kasan_page_table(struct mm_walk *walk,
->   {
->   	struct ptdump_state *st = walk->private;
->   
-> -	st->note_page(st, addr, 4, pte_val(kasan_early_shadow_pte[0]));
-> +	st->note_page(st, addr, 4, pte_val(kasan_early_shadow_pte[0]), PAGE_SIZE);
-
-I'm not completely sure what the page_size is going to be used for, but 
-note that KASAN presents an interesting case here. We short-cut by 
-detecting it's a KASAN region at a high level (PGD/P4D/PUD/PMD) and 
-instead of walking the tree down just call note_page() *once* but with 
-level==4 because we know KASAN sets up the page table like that.
-
-However the one call actually covers a much larger region - so while 
-PAGE_SIZE matches the level it doesn't match the region covered. AFAICT 
-this will lead to odd results if you enable KASAN on powerpc.
-
-To be honest I don't fully understand why powerpc requires the page_size 
-- it appears to be using it purely to find "holes" in the calls to 
-note_page(), but I haven't worked out why such holes would occur.
-
-Steve
-
->   
->   	walk->action = ACTION_CONTINUE;
->   
-> @@ -41,7 +41,7 @@ static int ptdump_pgd_entry(pgd_t *pgd, unsigned long addr,
->   		st->effective_prot(st, 0, pgd_val(val));
->   
->   	if (pgd_leaf(val))
-> -		st->note_page(st, addr, 0, pgd_val(val));
-> +		st->note_page(st, addr, 0, pgd_val(val), PGDIR_SIZE);
->   
->   	return 0;
->   }
-> @@ -62,7 +62,7 @@ static int ptdump_p4d_entry(p4d_t *p4d, unsigned long addr,
->   		st->effective_prot(st, 1, p4d_val(val));
->   
->   	if (p4d_leaf(val))
-> -		st->note_page(st, addr, 1, p4d_val(val));
-> +		st->note_page(st, addr, 1, p4d_val(val), P4D_SIZE);
->   
->   	return 0;
->   }
-> @@ -83,7 +83,7 @@ static int ptdump_pud_entry(pud_t *pud, unsigned long addr,
->   		st->effective_prot(st, 2, pud_val(val));
->   
->   	if (pud_leaf(val))
-> -		st->note_page(st, addr, 2, pud_val(val));
-> +		st->note_page(st, addr, 2, pud_val(val), PUD_SIZE);
->   
->   	return 0;
->   }
-> @@ -102,7 +102,7 @@ static int ptdump_pmd_entry(pmd_t *pmd, unsigned long addr,
->   	if (st->effective_prot)
->   		st->effective_prot(st, 3, pmd_val(val));
->   	if (pmd_leaf(val))
-> -		st->note_page(st, addr, 3, pmd_val(val));
-> +		st->note_page(st, addr, 3, pmd_val(val), PMD_SIZE);
->   
->   	return 0;
->   }
-> @@ -116,7 +116,7 @@ static int ptdump_pte_entry(pte_t *pte, unsigned long addr,
->   	if (st->effective_prot)
->   		st->effective_prot(st, 4, pte_val(val));
->   
-> -	st->note_page(st, addr, 4, pte_val(val));
-> +	st->note_page(st, addr, 4, pte_val(val), PAGE_SIZE);
->   
->   	return 0;
->   }
-> @@ -126,7 +126,7 @@ static int ptdump_hole(unsigned long addr, unsigned long next,
->   {
->   	struct ptdump_state *st = walk->private;
->   
-> -	st->note_page(st, addr, depth, 0);
-> +	st->note_page(st, addr, depth, 0, 0);
->   
->   	return 0;
->   }
-> @@ -153,5 +153,5 @@ void ptdump_walk_pgd(struct ptdump_state *st, struct mm_struct *mm, pgd_t *pgd)
->   	mmap_read_unlock(mm);
->   
->   	/* Flush out the last page */
-> -	st->note_page(st, 0, -1, 0);
-> +	st->note_page(st, 0, -1, 0, 0);
->   }
+> Well, I found those patches again after I wrote that. But I'm still not
+> sure what a cgroup-id is from userspace.
 > 
-
+> How does userspace get one given a cgroup? (I actually mounted cgroupfs
+> in order to see if there's some new 'id' file to read, there is not)
+> Does having the cgroup-id ensure the cgroup exists? Can the cgroup-id
+> get re-used?
+> 
+> I really don't konw what the thing is. I don't use cgroups, like ever,
+> except when I'm forced to due to some regression or bugreport.
+> 
+> > Also, having cgroup-id is good to match with the result (from read)
+> > as it contains the cgroup information.
+> 
+> What?
+> 
+> > > >  * PERF_EVENT_IOC_READ_CGROUP - it takes a buffer consists of a 64-bit
+> > > >      array to get the event counter values.  The first element is size
+> > > >      of the array in byte, and the second element is a cgroup id to
+> > > >      read.  The rest is to save the counter value and timings.
+> > >
+> > > :-(
+> > >
+> > > So basically you're doing a whole seconds cgroup interface, one that
+> > > violates the one counter per file premise and lives off of ioctl()s.
+> > 
+> > Right, but I'm not sure that we really want a separate event for each
+> > cgroup if underlying hardware events are all the same.
+> 
+> Sure, I see where you're coming from; I just don't much like where it
+> got you :-)
+> 
+> > > *IF* we're going to do something like this, I feel we should explore the
+> > > whole vector-per-fd concept before proceeding. Can we make it less yuck
+> > > (less special ioctl() and more regular file ops. Can we apply the
+> > > concept to more things?
+> > 
+> > Ideally it'd do without keeping file descriptors open.  Maybe we can make
+> > the vector accept various types like vector-per-cgroup_id or so.
+> 
+> So I think we've had proposals for being able to close fds in the past;
+> while preserving groups etc. We've always pushed back on that because of
+> the resource limit issue. By having each counter be a filedesc we get a
+> natural limit on the amount of resources you can consume. And in that
+> respect, having to use 400k fds is things working as designed.
+> 
+> Anyway, there might be a way around this..
+> 
+> > > The second patch extends the ioctl() to be more read() like, instead of
+> > > doing the sane things and extending read() by adding PERF_FORMAT_VECTOR
+> > > or whatever. In fact, this whole second ioctl() doesn't make sense to
+> > > have if we do indeed want to do vector-per-fd.
+> > 
+> > One of the upside of the ioctl() is that we can pass cgroup-id to read.
+> > Probably we can keep the index in the vector and set the file offset
+> > with it.  Or else just read the whole vector, and then it has a cgroup-id
+> > in the output like PERF_FORMAT_CGROUP?
+> > 
+> > >
+> > > Also, I suppose you can already fake this, by having a
+> > > SW_CGROUP_SWITCHES (sorry, I though I picked those up, done now) event
+> > 
+> > Thanks!
+> > 
+> > > with PERF_SAMPLE_READ|PERF_SAMPLE_CGROUP and PERF_FORMAT_GROUP in a
+> > > group with a bunch of events. Then the buffer will fill with the values
+> > > you use here.
+> > 
+> > Right, I'll do an experiment with it.
+> > 
+> > >
+> > > Yes, I suppose it has higher overhead, but you get the data you want
+> > > without having to do terrible things like this.
+> > 
+> > That's true.  And we don't need many things in the perf record like
+> > synthesizing task/mmap info.  Also there's a risk we can miss some
+> > samples for some reason.
+> > 
+> > Another concern is that it'd add huge slow down in the perf event
+> > open as it creates a mixed sw/hw group.  The synchronized_rcu in
+> > the move_cgroup path caused significant problems in my
+> > environment as it adds up in proportion to the number of cpus.
+> 
+> Since when is perf_event_open() a performance concern? That thing is
+> slow in all possible ways.
