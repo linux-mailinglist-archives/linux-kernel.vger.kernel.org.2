@@ -2,119 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DDA0362ABC
+	by mail.lfdr.de (Postfix) with ESMTP id A1727362ABD
 	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236140AbhDPWGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 18:06:25 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:57989 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235666AbhDPWGX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 18:06:23 -0400
-X-Originating-IP: 90.65.108.55
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id F1B0520003;
-        Fri, 16 Apr 2021 22:05:55 +0000 (UTC)
-Date:   Sat, 17 Apr 2021 00:05:55 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Francois Gervais <fgervais@distech-controls.com>
-Cc:     linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
-        Michael McCormick <michael.mccormick@enatel.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] rtc: pcf85063: add integrity check
-Message-ID: <YHoKQ9qtupDhXVm3@piout.net>
-References: <20210311174940.23072-1-fgervais@distech-controls.com>
+        id S236282AbhDPWG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 18:06:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235608AbhDPWGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 18:06:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44E5A613B4
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 22:06:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618610790;
+        bh=4Xl0tR28PauSIlcb3tBpyyEncZpSiEx2m3KQJDq5wWc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Y3R2rSFSUVZv99sZNOekR5WG9rg1NBv+7D3lqRSmSQLegp1N73pGA3rjjL+aMihDa
+         +U9l6yWgBaWUjVT3OJy1Y+iofHd7i2Q0/ll0BVm0MccS1FE+Nknqs5c+hgjlvaaArL
+         sjb+ZvfV8As2EmApjbI2hew3OkzRmKcrU3YS2mABR+EYPg4Q3yqL6cLnG1QQ06oSZU
+         JfvqIouVR9zCa8lsM+5gu4VFAYH17k2RjBUUop+M7u3y7PFPf6Lt1pP36qyfLidiDy
+         wrpGTLiHW9zXwckkTXILQjSspxTAxMOvLBM4+bkK8I5P+34lo3DxLfTfn8GmzX+Vy2
+         2jqN2u/39S1Ag==
+Received: by mail-ej1-f44.google.com with SMTP id g5so37494148ejx.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 15:06:30 -0700 (PDT)
+X-Gm-Message-State: AOAM5314QKLnzm/AhSpGou8mW1pr2tFoc+uun6ZN7NzfOqil4emtozxo
+        Af8+WpY64rhj9AWTi+8D9L1j9Vm9p3aIMSk5QJlajw==
+X-Google-Smtp-Source: ABdhPJwTkOpDm/66xnifL1NOzABLFP12oHwsSfQjdb94ivueAF8wcH+5AKK4qaUllhuWLW59ACn7qCe5GAjGnJVK5yc=
+X-Received: by 2002:a17:906:c010:: with SMTP id e16mr10503154ejz.214.1618610788798;
+ Fri, 16 Apr 2021 15:06:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311174940.23072-1-fgervais@distech-controls.com>
+References: <20210416203844.3803177-1-samitolvanen@google.com>
+ <20210416203844.3803177-6-samitolvanen@google.com> <20210416211855.GD22348@zn.tnic>
+ <CABCJKud8TvzhcjHCpsrtCJ4B50ZUfaL48F42EhZ2zWKLteAc0Q@mail.gmail.com> <20210416220251.GE22348@zn.tnic>
+In-Reply-To: <20210416220251.GE22348@zn.tnic>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 16 Apr 2021 15:06:17 -0700
+X-Gmail-Original-Message-ID: <CALCETrVTtKqD6fonUmT_qr0HJ0X9TWzLGq-wpm+A7XKyjn3W5g@mail.gmail.com>
+Message-ID: <CALCETrVTtKqD6fonUmT_qr0HJ0X9TWzLGq-wpm+A7XKyjn3W5g@mail.gmail.com>
+Subject: Re: [PATCH 05/15] x86: Implement function_nocfi
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Sami Tolvanen <samitolvanen@google.com>, X86 ML <x86@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Apr 16, 2021 at 3:03 PM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Fri, Apr 16, 2021 at 02:49:23PM -0700, Sami Tolvanen wrote:
+> > __nocfi only disables CFI checking in a function, the compiler still
+> > changes function addresses to point to the CFI jump table, which is
+> > why we need function_nocfi().
+>
+> So call it __func_addr() or get_function_addr() or so, so that at least
+> it is clear what this does.
+>
 
-On 11/03/2021 12:49:40-0500, Francois Gervais wrote:
-> Sometimes when the RTC battery is inserted, the voltage will bounce a
-> bit and we've seen that this can randomly flip configuration bits in
-> the RTC.
-> 
-> For example, we've seen COF bits flips and then the output clock
-> frequency would not be the expected one anymore.
-> 
-> To remediate this issue, this adds an optional feature where if the OS
-> bit it set on boot, it's possibly because the RTC lost power and again
-> possibly because a new battery has been inserted. In that case, it
-> reapplies defaults to configuration registers.
-> 
-> Signed-off-by: Francois Gervais <fgervais@distech-controls.com>
-> ---
->  drivers/rtc/rtc-pcf85063.c | 54 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 54 insertions(+)
-> 
-> diff --git a/drivers/rtc/rtc-pcf85063.c b/drivers/rtc/rtc-pcf85063.c
-> index 463991c74fdd..774cc4cf93d8 100644
-> --- a/drivers/rtc/rtc-pcf85063.c
-> +++ b/drivers/rtc/rtc-pcf85063.c
-> @@ -57,6 +57,10 @@
->  #define PCF85063_REG_ALM_S		0x0b
->  #define PCF85063_AEN			BIT(7)
->  
-> +static bool integrity_check;
-> +module_param(integrity_check, bool, 0444);
-> +MODULE_PARM_DESC(integrity_check, "Set to one to enable the integrity check.");
-> +
->  struct pcf85063_config {
->  	struct regmap_config regmap;
->  	unsigned has_alarms:1;
-> @@ -357,6 +361,49 @@ static int pcf85063_load_capacitance(struct pcf85063 *pcf85063,
->  				  PCF85063_REG_CTRL1_CAP_SEL, reg);
->  }
->  
-> +static int pcf85063_check_integrity(struct pcf85063 *pcf85063)
-> +{
-> +	int err;
-> +	unsigned int val;
-> +
-> +	err = regmap_read(pcf85063->regmap, PCF85063_REG_SC, &val);
-> +	if (err < 0) {
-> +		dev_warn(&pcf85063->rtc->dev, "failed to read OS bit: %d",
-> +			 err);
-> +		return err;
-> +	}
-> +
-> +	if (!(val & PCF85063_REG_SC_OS)) {
-> +		dev_dbg(&pcf85063->rtc->dev, "integrity is ok\n");
-> +		return 0;
-> +	}
-> +
-> +	dev_dbg(&pcf85063->rtc->dev, "Power loss detected, restoring defaults\n");
-> +	err = regmap_update_bits(pcf85063->regmap, PCF85063_REG_CTRL1,
-> +				 (unsigned int)~PCF85063_REG_CTRL1_CAP_SEL, 0);
-> +	if (err < 0)
-> +		goto err_restore;
-> +
-> +	err = regmap_write(pcf85063->regmap, PCF85063_REG_CTRL2, 0);
-> +	if (err < 0)
-> +		goto err_restore;
-> +
-> +	err = regmap_write(pcf85063->regmap, PCF85063_REG_OFFSET, 0);
-> +	if (err < 0)
-> +		goto err_restore;
-> +
-> +	err = regmap_write(pcf85063->regmap, PCF85063_REG_RAM, 0);
-> +	if (err < 0)
-> +		goto err_restore;
-> +
+This seems backwards to me.  If I do:
 
-I'm not sure I get the use case because PCF85063_REG_CTRL2 should be
-initialized properly after the driver is probed anyway. The other two
-can be set from userspace once it detects the oscillator failure which
-would be better at deciding the policy anyway.
+extern void foo(some signature);
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+then I would, perhaps naively, expect foo to be the actual symbol that
+gets called and for the ABI to be changed to do the CFI checks.  The
+foo symbol would point to whatever magic is needed.  I assume I'm
+missing something.
