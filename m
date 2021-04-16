@@ -2,187 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D59361976
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 07:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D85036197A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 07:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238657AbhDPFtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 01:49:15 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:61684 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231598AbhDPFtI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 01:49:08 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FM4yL18bxzB09bL;
-        Fri, 16 Apr 2021 07:48:42 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id y8gfrr0M5iy9; Fri, 16 Apr 2021 07:48:42 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FM4yK6ptpzB09bK;
-        Fri, 16 Apr 2021 07:48:41 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C3C238B81C;
-        Fri, 16 Apr 2021 07:48:42 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id GFphMEGbTxDw; Fri, 16 Apr 2021 07:48:42 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id BFF598B81A;
-        Fri, 16 Apr 2021 07:48:41 +0200 (CEST)
-Subject: Re: [PATCH v1 1/5] mm: pagewalk: Fix walk for hugepage tables
-To:     Daniel Axtens <dja@axtens.net>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Steven Price <steven.price@arm.com>, akpm@linux-foundation.org
-Cc:     linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, x86@kernel.org, linux-mm@kvack.org
-References: <cover.1618506910.git.christophe.leroy@csgroup.eu>
- <733408f48b1ed191f53518123ee6fc6d42287cc6.1618506910.git.christophe.leroy@csgroup.eu>
- <877dl3184l.fsf@dja-thinkpad.axtens.net>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <56d4c630-ac1e-6b75-39a5-7b5bfbd5b1aa@csgroup.eu>
-Date:   Fri, 16 Apr 2021 07:48:41 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S238732AbhDPFwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 01:52:00 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:34682 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238696AbhDPFvx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 01:51:53 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13G5ia0h094659;
+        Fri, 16 Apr 2021 05:49:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=kRy8guf9ADEaLVne8vD5aYowdOf903zCbD0a8Uul56I=;
+ b=OpiahsKZ7BS593zzzc1sX6x++7/hUb2U/9g3VD0sUKfzRO1PQlpN6tCjsrRjf+2tl1s5
+ /iDtNVYj0TqlH5tn7cXVy78tUsjqwbWO45dv3tjKI80R6R8YBNllV57GauvhzNBCseaU
+ ejxb5ChkpR6nOQy//UAWorG7BSFSrWEhXJPj8+yul4cFGBq/LUB6HeZt8oFQOjXvtzaF
+ PU/litZdvJzBqAok1sc3QzHTuxKhb1SOXMC1Z6yINuMez+PMTiNoY+TVPqhXGvnoAWw4
+ Hd/L4Et3RD51nTF21FjvPp7TfSoFGZJKA0UY1p5oOjucdfa0AHIlcDpgxKHXQxOkENmH ow== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 37u3ymqw8n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 16 Apr 2021 05:49:57 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13G5jd98014616;
+        Fri, 16 Apr 2021 05:49:55 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 37unswq0xd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 16 Apr 2021 05:49:55 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13G5nn50027730;
+        Fri, 16 Apr 2021 05:49:50 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 15 Apr 2021 22:49:49 -0700
+Date:   Fri, 16 Apr 2021 08:49:41 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
+Subject: Re: [Outreachy kernel] [PATCH v2] staging: media: atomisp: pci:
+ Change line break to avoid an open parenthesis at the end of the line
+Message-ID: <20210416054941.GF6021@kadam>
+References: <20210415170819.GA17534@focaruja>
+ <20210415171409.GC2531743@casper.infradead.org>
+ <20210415194955.GI3@paasikivi.fi.intel.com>
+ <20210415195704.GE2531743@casper.infradead.org>
+ <20210415195941.GF2531743@casper.infradead.org>
+ <20210415212158.GK3@paasikivi.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <877dl3184l.fsf@dja-thinkpad.axtens.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210415212158.GK3@paasikivi.fi.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9955 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ malwarescore=0 suspectscore=0 bulkscore=0 mlxscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104160044
+X-Proofpoint-GUID: UBL0ZxRfGNz-BqCCz60MCMCNixHxWPlj
+X-Proofpoint-ORIG-GUID: UBL0ZxRfGNz-BqCCz60MCMCNixHxWPlj
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9955 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 spamscore=0
+ impostorscore=0 priorityscore=1501 lowpriorityscore=0 adultscore=0
+ bulkscore=0 phishscore=0 suspectscore=0 malwarescore=0 clxscore=1031
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104160044
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 16, 2021 at 12:21:58AM +0300, Sakari Ailus wrote:
+> On Thu, Apr 15, 2021 at 08:59:41PM +0100, Matthew Wilcox wrote:
+> > On Thu, Apr 15, 2021 at 08:57:04PM +0100, Matthew Wilcox wrote:
+> > > On Thu, Apr 15, 2021 at 10:49:55PM +0300, Sakari Ailus wrote:
+> > > > On Thu, Apr 15, 2021 at 06:14:09PM +0100, Matthew Wilcox wrote:
+> > > > > On Thu, Apr 15, 2021 at 02:08:19PM -0300, Aline Santana Cordeiro wrote:
+> > > > > > -const struct atomisp_format_bridge *get_atomisp_format_bridge_from_mbus(
+> > > > > > -    u32 mbus_code);
+> > > > > > +const struct atomisp_format_bridge*
+> > > > > > +get_atomisp_format_bridge_from_mbus(u32 mbus_code);
+> > > > > 
+> > > > > No, this does not match coding style.  Probably best to break the
+> > > > > 80-column guideline in this instance.  Best would be to have a function
+> > > > 
+> > > > Having the return type on the previous line is perfectly fine. There should
+> > > > be a space before the asterisk though.
+> > > 
+> > > No, it's not.  Linus has ranted about that before.
+> > 
+> > Found it.  https://lore.kernel.org/lkml/1054519757.161606@palladium.transmeta.com/
+> 
+> Two decades ago, really?
+> 
+> This is simply one of the practical means how you split long function
+> declarations and avoid overly long lines. Not my favourite though, but
+> still better than those long lines.
 
-
-Le 16/04/2021 à 00:43, Daniel Axtens a écrit :
-> Hi Christophe,
-> 
->> Pagewalk ignores hugepd entries and walk down the tables
->> as if it was traditionnal entries, leading to crazy result.
->>
->> Add walk_hugepd_range() and use it to walk hugepage tables.
->>
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->> ---
->>   mm/pagewalk.c | 54 +++++++++++++++++++++++++++++++++++++++++++++------
->>   1 file changed, 48 insertions(+), 6 deletions(-)
->>
->> diff --git a/mm/pagewalk.c b/mm/pagewalk.c
->> index e81640d9f177..410a9d8f7572 100644
->> --- a/mm/pagewalk.c
->> +++ b/mm/pagewalk.c
->> @@ -58,6 +58,32 @@ static int walk_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
->>   	return err;
->>   }
->>   
->> +static int walk_hugepd_range(hugepd_t *phpd, unsigned long addr,
->> +			     unsigned long end, struct mm_walk *walk, int pdshift)
->> +{
->> +	int err = 0;
->> +#ifdef CONFIG_ARCH_HAS_HUGEPD
->> +	const struct mm_walk_ops *ops = walk->ops;
->> +	int shift = hugepd_shift(*phpd);
->> +	int page_size = 1 << shift;
->> +
->> +	if (addr & (page_size - 1))
->> +		return 0;
->> +
->> +	for (;;) {
->> +		pte_t *pte = hugepte_offset(*phpd, addr, pdshift);
->> +
->> +		err = ops->pte_entry(pte, addr, addr + page_size, walk);
->> +		if (err)
->> +			break;
->> +		if (addr >= end - page_size)
->> +			break;
->> +		addr += page_size;
->> +	}
-> 
-> Initially I thought this was a somewhat unintuitive way to structure
-> this loop, but I see it parallels the structure of walk_pte_range_inner,
-> so I think the consistency is worth it.
-> 
-> I notice the pte walking code potentially takes some locks: does this
-> code need to do that?
-> 
-> arch/powerpc/mm/hugetlbpage.c says that hugepds are protected by the
-> mm->page_table_lock, but I don't think we're taking it in this code.
-
-I'll add it, thanks.
+I've always thought we allow either style, but it has to be done
+consistently within the file.  I was pretty sure that was policy but
+it's another thing that goes back decades so I don't have a reference.
+It shouldn't be about breaking up long lines.
 
 > 
->> +#endif
->> +	return err;
->> +}
->> +
->>   static int walk_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
->>   			  struct mm_walk *walk)
->>   {
->> @@ -108,7 +134,10 @@ static int walk_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
->>   				goto again;
->>   		}
->>   
->> -		err = walk_pte_range(pmd, addr, next, walk);
->> +		if (is_hugepd(__hugepd(pmd_val(*pmd))))
->> +			err = walk_hugepd_range((hugepd_t *)pmd, addr, next, walk, PMD_SHIFT);
->> +		else
->> +			err = walk_pte_range(pmd, addr, next, walk);
->>   		if (err)
->>   			break;
->>   	} while (pmd++, addr = next, addr != end);
->> @@ -157,7 +186,10 @@ static int walk_pud_range(p4d_t *p4d, unsigned long addr, unsigned long end,
->>   		if (pud_none(*pud))
->>   			goto again;
->>   
->> -		err = walk_pmd_range(pud, addr, next, walk);
->> +		if (is_hugepd(__hugepd(pud_val(*pud))))
->> +			err = walk_hugepd_range((hugepd_t *)pud, addr, next, walk, PUD_SHIFT);
->> +		else
->> +			err = walk_pmd_range(pud, addr, next, walk);
-> 
-> I'm a bit worried you might end up calling into walk_hugepd_range with
-> ops->pte_entry == NULL, and then jumping to 0.
+> My personal preference would be to wrap at the opening parenthesis and
+> indent by just a tab, but I know many people who disagree with that...
 
-You are right, I missed it.
-I'll bail out of walk_hugepd_range() when ops->pte_entry is NULL.
+If you're running into the 80 character limit, then it's fine to use
+two tabs.  I think we have been rejecting patches that push align the
+parameters but push past the 80 character limit.  Using one tab is
+confusing because it makes the decalarations line up with the code.
 
+regards,
+dan carpenter
 
-> 
-> static int walk_pud_range(p4d_t *p4d, unsigned long addr, unsigned long end,
-> 			  struct mm_walk *walk)
-> {
-> ...
->          pud = pud_offset(p4d, addr);
-> 	do {
->                  ...
->                  if ((!walk->vma && (pud_leaf(*pud) || !pud_present(*pud))) ||
-> 		    walk->action == ACTION_CONTINUE ||
-> 		    !(ops->pmd_entry || ops->pte_entry)) <<< THIS CHECK
-> 			continue;
->                  ...
-> 		if (is_hugepd(__hugepd(pud_val(*pud))))
-> 			err = walk_hugepd_range((hugepd_t *)pud, addr, next, walk, PUD_SHIFT);
-> 		else
-> 			err = walk_pmd_range(pud, addr, next, walk);
-> 		if (err)
-> 			break;
-> 	} while (pud++, addr = next, addr != end);
-> 
-> walk_pud_range will proceed if there is _either_ an ops->pmd_entry _or_
-> an ops->pte_entry, but walk_hugepd_range will call ops->pte_entry
-> unconditionally.
-> 
-> The same issue applies to walk_{p4d,pgd}_range...
-> 
-> Kind regards,
-> Daniel
-> 
-
-Thanks
-Christophe
