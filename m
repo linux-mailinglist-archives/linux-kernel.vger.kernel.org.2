@@ -2,155 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC7536271C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B9E36271E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243574AbhDPRq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 13:46:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235877AbhDPRqw (ORCPT
+        id S243640AbhDPRrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 13:47:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47599 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235877AbhDPRrB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 13:46:52 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C837DC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:46:24 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d8so14368759plh.11
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:46:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7wXuYb2sAQupo2LG+aIJB2xPslEGiIuMvjBT329yg3U=;
-        b=J5PjHQGscCeSuO/gbZXuoewf8jGW9qKmFdTqS24XZn2uTUgChpjgJRSE0zIyVx56Wh
-         K6ruEk05Qdf/5KJuHfJh2gsM6DgcJMLk5XKJdzJRHkL5lactllzN9rrVHBS3m4GBuPHW
-         eErmAOFfOjDA/Gt40EEImNaXyzYe9+WbtA+ropKWwpYzYE1tOk8HmAhaJuhfg8l14tS1
-         CfAvjkhATJRg+pCAjnA8NuY+7lDvuXhPFECRnCp9ZI6N07vSV0SN/rLQq6OvPXv2/Jtt
-         nNvYqgvphMkTuvocMNUxcBqqrnKDOd6jNIrLIhFiOp9Oxgy7/iZfIezi6KBvTcO48Upy
-         qVRw==
+        Fri, 16 Apr 2021 13:47:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618595196;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UwAq3mjTqcl8JnB7zCamgcUlnZYnBtvHAiM1ilKgZu8=;
+        b=NI1HjptsDyNRS2dRcRY/EC1+6YtETYQDR5FHfFA0udAGUEMtrCb7L+jwjlsLZRzJp8X7C2
+        smgpMFTiQpShRXfI8LqV23eM5cx/uuRIJyya0d8R+QkurC66DQSuSfsz/sdjlOkv8rMH3n
+        fpdSeJg4U/I8wjY6JUaOvz1g4N+h3HQ=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-16-EzQ6tTD3NQGwVP2YyFcsbQ-1; Fri, 16 Apr 2021 13:46:34 -0400
+X-MC-Unique: EzQ6tTD3NQGwVP2YyFcsbQ-1
+Received: by mail-oi1-f200.google.com with SMTP id r204-20020aca44d50000b029013da91480a0so9712636oia.17
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:46:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7wXuYb2sAQupo2LG+aIJB2xPslEGiIuMvjBT329yg3U=;
-        b=guvBkyYcxPqnbE9+reJzYMIbnqpOG9jRNC1Hqyq/tQ3f/kBvGizbShSuoKICNm2E+V
-         XOxbJxLS2eNcQ5At82U/rXFfxh2taLKPgC6que06vDIvCQEau8Dqe76TZ+IMZofVtC33
-         Xt1tGbCBBRT32F1kR5U+g0LWYIbv6AGvG7EaYBR8mbthHl6DeaPUChF/u9YOv/d4WUEL
-         JICSv+MhE3QdZXo23hmeIQEVHGT5vOQHzCqmCB8Nx/dqRTeLhShNeMNb59K4wWsWmJMP
-         UdFh4JqRCwEY/ZoJ+LLEO6AyivP0dNRjBYjdReonaT7uT13JFOg49lCN5u5lyEH6kwOW
-         iP7w==
-X-Gm-Message-State: AOAM53019mkg+pWUGFs3HcwX/v8AhQO9IwsxP67o/lB8wEid1cb2Lwo1
-        llB39R5MKVAS/RCtYgfxQj8Llg==
-X-Google-Smtp-Source: ABdhPJzfFYb59axooQ1Dcvl2ibVjHLLezR7oN3SWOQimhjaIEN5XT1qNMQndTGWqeZYEeUsA9MoKxA==
-X-Received: by 2002:a17:902:f1d3:b029:ec:7b6e:5826 with SMTP id e19-20020a170902f1d3b02900ec7b6e5826mr4473776plc.22.1618595184388;
-        Fri, 16 Apr 2021 10:46:24 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id w123sm1891141pfb.109.2021.04.16.10.46.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 10:46:24 -0700 (PDT)
-Date:   Fri, 16 Apr 2021 11:46:22 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     peng.fan@oss.nxp.com
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        o.rempel@pengutronix.de, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH V4 6/8] remoteproc: imx_rproc: make clk optional
-Message-ID: <20210416174622.GC1050209@xps15>
-References: <1618493261-32606-1-git-send-email-peng.fan@oss.nxp.com>
- <1618493261-32606-7-git-send-email-peng.fan@oss.nxp.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UwAq3mjTqcl8JnB7zCamgcUlnZYnBtvHAiM1ilKgZu8=;
+        b=rypNW5OSJw2zTrrR7L0gsporKyVMXvEZH9/upO3mCSB1llxLkX74P6eCXPRI17MxaI
+         kcv91KO40XD1otZnHUNIkOQRrGzoInT9bscIg5Qb7K6e5vB1X5n9q8beMQoEnY01fIwc
+         clPe6Fkhoy0FyNTaLa0Y0YGBFlutzTIrQyzeHxn35aJRl6QnnCiSCq0jx4AZ6rfpWVbD
+         obFTTTa5THPbw7jgphsNA7994TuxCMvRmOMLzdIxkFdoERmbmri8R9KoRv8U/nmthXeP
+         EwjOcX0xhElvfc/c0u+P78QZ+ij78FZZzoqclWMueXD6nxv4xKozEnpWxAZWp90D/UqZ
+         wVLg==
+X-Gm-Message-State: AOAM531jw03jCz+EEwqHbuAd0nNoILCxXum5bFNVh9qVHBYt5dze6aY1
+        T9MKBKbOAZjSMiflaKCI29pWXTIjjmjOvy0vFIEOc4KA3TG+2+OKUlpagE/M3OGjE9cP1uW8xiw
+        +Y/1/+jyHUjbPitrAKWfIfUJBGtgWic2wlxwqpes2pDnI0lAUZvzw1/v1ZvjdtpJu71n5ekgyIA
+        ==
+X-Received: by 2002:a9d:1d26:: with SMTP id m35mr4656008otm.266.1618595193467;
+        Fri, 16 Apr 2021 10:46:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyqmjn4JZgbtPJEhjtjFp39QSapQwN3qRjLDpF9oiDAS4DSPTNYxB/uSTzFnddcPY6N0Oc0UQ==
+X-Received: by 2002:a9d:1d26:: with SMTP id m35mr4655978otm.266.1618595193194;
+        Fri, 16 Apr 2021 10:46:33 -0700 (PDT)
+Received: from [192.168.0.173] (ip68-103-222-6.ks.ok.cox.net. [68.103.222.6])
+        by smtp.gmail.com with ESMTPSA id y2sm1365951ooa.10.2021.04.16.10.46.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Apr 2021 10:46:32 -0700 (PDT)
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+To:     Willy Tarreau <w@1wt.eu>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Wedson Almeida Filho <wedsonaf@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <YHlz54rd1YQHsOA/@hirez.programming.kicks-ass.net>
+ <YHmMJWmzz2vZ3qQH@google.com>
+ <YHmc2+bKQJ/XAATF@hirez.programming.kicks-ass.net>
+ <YHmuX1NA5RF7C7XS@google.com> <20210416161444.GA10484@1wt.eu>
+ <CANiq72nbkJFPmiJXX=L8PmkouKgKG1k-CxhZYpL1hcncYwa8JA@mail.gmail.com>
+ <20210416173717.GA10846@1wt.eu>
+From:   Connor Kuehl <ckuehl@redhat.com>
+Message-ID: <d33dbe20-698a-7dba-2e46-ece325a1c849@redhat.com>
+Date:   Fri, 16 Apr 2021 12:46:31 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1618493261-32606-7-git-send-email-peng.fan@oss.nxp.com>
+In-Reply-To: <20210416173717.GA10846@1wt.eu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 09:27:39PM +0800, peng.fan@oss.nxp.com wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On 4/16/21 12:37 PM, Willy Tarreau wrote:
+> Hi Miguel,
 > 
-> To i.MX7ULP, M4 is the master to control everything, no need to provide
-> clk from Linux side. So make clk optional when method is IMX_RPROC_NONE.
+> On Fri, Apr 16, 2021 at 07:10:17PM +0200, Miguel Ojeda wrote:
+>> And by having the compiler enforce this safe-unsafe split, you can
+>> review safe code without having to constantly worry about UB; and be
+>> extra alert when dealing with `unsafe` blocks.
 > 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  drivers/remoteproc/imx_rproc.c | 46 ++++++++++++++++++++++++++++--------------
->  1 file changed, 31 insertions(+), 15 deletions(-)
+> I do appreciate this safe/unsafe split and a few other things I've seen
+> in the language. The equivalent I'm using in C is stronger typing and
+> "const" modifiers wherever possible. Of course it's much more limited,
+> it's just to explain that I do value this. I just feel like "unsafe"
+> is the universal response to any question "how would I do this" while
+> at the same time "safe" is the best selling argument for the language.
+> As such, I strongly doubt about the real benefits once facing reality
+> with everything marked unsafe. Except that it will be easier to blame
+> the person having written the unsafe one-liner instead of writing 60
+> cryptic lines doing the functional equivalent using some lesser known
+> extensions :-/
 > 
-> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-> index 2b633fd..56dfcc1 100644
-> --- a/drivers/remoteproc/imx_rproc.c
-> +++ b/drivers/remoteproc/imx_rproc.c
-> @@ -606,6 +606,35 @@ static int imx_rproc_detect_mode(struct imx_rproc *priv)
->  	return 0;
->  }
->  
-> +static int imx_rproc_clk_enable(struct imx_rproc *priv)
-> +{
-> +	const struct imx_rproc_dcfg *dcfg = priv->dcfg;
-> +	struct device *dev = priv->dev;
-> +	int ret;
-> +
-> +	/* Remote core is not under control of Linux */
-> +	if (dcfg->method == IMX_RPROC_NONE)
-> +		return 0;
-> +
-> +	priv->clk = devm_clk_get(dev, NULL);
-> +	if (IS_ERR(priv->clk)) {
-> +		dev_err(dev, "Failed to get clock\n");
-> +		return PTR_ERR(priv->clk);
-> +	}
-> +
-> +	/*
-> +	 * clk for M4 block including memory. Should be
-> +	 * enabled before .start for FW transfer.
-> +	 */
-> +	ret = clk_prepare_enable(priv->clk);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to enable clock\n");
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int imx_rproc_probe(struct platform_device *pdev)
->  {
->  	struct device *dev = &pdev->dev;
-> @@ -654,22 +683,9 @@ static int imx_rproc_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto err_put_mbox;
->  
-> -	priv->clk = devm_clk_get(dev, NULL);
-> -	if (IS_ERR(priv->clk)) {
-> -		dev_err(dev, "Failed to get clock\n");
-> -		ret = PTR_ERR(priv->clk);
-> -		goto err_put_mbox;
-> -	}
-> -
-> -	/*
-> -	 * clk for M4 block including memory. Should be
-> -	 * enabled before .start for FW transfer.
-> -	 */
-> -	ret = clk_prepare_enable(priv->clk);
-> -	if (ret) {
-> -		dev_err(&rproc->dev, "Failed to enable clock\n");
-> +	ret = imx_rproc_clk_enable(priv);
-> +	if (ret)
 
-Much better
+It's possible that many of the questions you've been specifically asking
+about, by sheer coincidence, are targeted towards the problems that would
+indeed require a lower-level abstraction built within an unsafe block; meaning
+you've managed to evade the tons of other upper layers that could be written
+in safe Rust.
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Indeed, at a certain layer, unsafe is unavoidable for the kind of work that
+is done in the kernel. The goal is to shrink the unsafe blocks as much as
+possible and confirm the correctness of those pieces, then build safe
+abstractions on top of it.
 
->  		goto err_put_mbox;
-> -	}
->  
->  	INIT_WORK(&priv->rproc_work, imx_rproc_vq_work);
->  
-> -- 
-> 2.7.4
-> 
+For what it's worth, if there was some post-human apocalyptic world where
+literally everything had to go inside an unsafe block, the silver lining
+in a hypothetical situation like this is that unsafe does not disable all
+of Rust's static analysis like the borrow checker, etc. It allows you to
+do things like directly dereference a pointer, etc. Unsafe also doesn't
+automatically mean that the code is wrong or that it has memory issues;
+it just means that the compiler can't guarantee that it doesn't based on
+what you do in the unsafe block.
+
+Connor
+
