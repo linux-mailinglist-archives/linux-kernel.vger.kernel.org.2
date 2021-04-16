@@ -2,92 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BEE6361B6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 10:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC10361B6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 10:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240225AbhDPIJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 04:09:00 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:41057 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240207AbhDPII4 (ORCPT
+        id S240283AbhDPIJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 04:09:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240252AbhDPIJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 04:08:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618560512; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=3huQkCIQxwU3fG7sB0tL0HmGVzjHRE4WDz/luFfQpRk=; b=u+pseQxeS1/K/vhqyxQHZueSRjQjjP0ZuTdj/J6rVjXo1O6xkTm4zqSeJOpDGYAjJOAkajFI
- DRbfz2RYvyej8q59Bfq8FEPi6IHo7GfDAH3HfABNmK6pZ9QqUtnQkzAx33DcC45JUKoycwHq
- p//Pcd0rcplW+qK9U//DNhzd6zU=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 607945f0a817abd39ad28fc3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Apr 2021 08:08:16
- GMT
-Sender: taozha=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E29DAC433CA; Fri, 16 Apr 2021 08:08:15 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from taozha-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: taozha)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 76AA9C43464;
-        Fri, 16 Apr 2021 08:08:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 76AA9C43464
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=taozha@codeaurora.org
-From:   Tao Zhang <taozha@codeaurora.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc:     Tao Zhang <taozha@codeaurora.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Tingwei Zhang <tingwei@codeaurora.org>,
-        Mao Jinlong <jinlmao@codeaurora.org>,
-        Yuanfang Zhang <zhangyuanfang@codeaurora.org>
-Subject: [PATCH v1 2/2] dt-bindings: arm: add property for coresight component name
-Date:   Fri, 16 Apr 2021 16:07:56 +0800
-Message-Id: <1618560476-28908-3-git-send-email-taozha@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1618560476-28908-1-git-send-email-taozha@codeaurora.org>
-References: <1618560476-28908-1-git-send-email-taozha@codeaurora.org>
+        Fri, 16 Apr 2021 04:09:10 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C27C061574;
+        Fri, 16 Apr 2021 01:08:46 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id n127so2019154wmb.5;
+        Fri, 16 Apr 2021 01:08:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=3fxufJIKY9M0ESBy2+S1qlqYMJSKzUOHQ6YV4z83AzU=;
+        b=fCkmtgEfV100eUu8UAne1zSXWjUQ3uIRWP1wQCBKCM9aHDsFfiaDJv4lqaQvoI4YEJ
+         fMwuEI/ke9t6dDRDRCkCXqD30xrtmZLrqFV9WQjEe4bfuHEgNRMIbI7SDYkF8Zic+OrQ
+         y0tFJIaQ8DBcW8dkplQ4Xi2xhByHuqGRs7t2oNpQkuiubzh6mGlm6+Gmn6/dEt2QZXpx
+         iq/JvcsFZZMCpmOFbPm7GCpkHH+P0PzCxbgcoZaUYypYtcMB0gw7sEmkkJQ8T17c1IUi
+         lI6NhWOgsg6EOkrus1gjB6bl3wOB9kIU+q/2TOqHdvpBIUXcmT5JYWOSLc0BrSv5LlY3
+         KThQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=3fxufJIKY9M0ESBy2+S1qlqYMJSKzUOHQ6YV4z83AzU=;
+        b=NCITGP03KpqB1dgned9Ir8lvxTho7+gO4AfcY1pVFNT/Pp8ybRY/sMG6k9H7KBgk40
+         2ukd+ekXxHJvy/5kHyIZFb2bl1lpcXn3DqZbo2C7QH77zNmNwrT2l88juqvirk7Lntv5
+         +EKMMF5NiLJ/BbWAZc1jdczhC+kqzpdufV5cAiGx/bugNaYndbyf78g2GcKLet2tx+BY
+         yX5BYOyOV4ZqDwKiZfWplofoUODk+iNQFMf6s+UsmfIKFr8nOwxfmy/pCjQpiSjJviVB
+         iGKOjOrhUo0fXA+mGanv5Za/09QTJa1FWxTG4itwm0knfuz7TgjxB2635fNIKCURo8Rj
+         Ci5Q==
+X-Gm-Message-State: AOAM533wfsBBUzspJccZ/O6fLfX68RXI7/voHFkVGQPHsWvucpj5V4pt
+        xwLIQIJKN7RhHMlTb/zVjp6xvBqlQOlXtg==
+X-Google-Smtp-Source: ABdhPJz+Aqy2dlorvethG/BD83GHwM/hMdQRX11Z61JhM2x2P2PEAKvIPGP1l9DT/vHP7HTLYUrqfA==
+X-Received: by 2002:a7b:c346:: with SMTP id l6mr7026599wmj.34.1618560524809;
+        Fri, 16 Apr 2021 01:08:44 -0700 (PDT)
+Received: from localhost (200116b8206a30116607e2acfb3e7251.dip.versatel-1u1.de. [2001:16b8:206a:3011:6607:e2ac:fb3e:7251])
+        by smtp.gmail.com with ESMTPSA id k11sm5192808wrx.88.2021.04.16.01.08.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 01:08:44 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 10:08:43 +0200
+From:   Malte Deiseroth <mdeiseroth88@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] usb: misc: adutux: fix whitespace coding style issue
+Message-ID: <20210416080843.GA137657@utop>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add property "coresight-name" for coresight component name. This
-allows coresight driver to read device name from device entries.
+Correct missing space error ceckpatch.pl is complaining about.
 
-Signed-off-by: Tao Zhang <taozha@codeaurora.org>
+Signed-off-by: Malte Deiseroth <mdeiseroth88@gmail.com>
 ---
- Documentation/devicetree/bindings/arm/coresight.txt | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/misc/adutux.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/arm/coresight.txt b/Documentation/devicetree/bindings/arm/coresight.txt
-index d711676..0e980ce 100644
---- a/Documentation/devicetree/bindings/arm/coresight.txt
-+++ b/Documentation/devicetree/bindings/arm/coresight.txt
-@@ -103,6 +103,8 @@ its hardware characteristcs.
- 	  powers down the coresight component also powers down and loses its
- 	  context. This property is currently only used for the ETM 4.x driver.
+diff --git a/drivers/usb/misc/adutux.c b/drivers/usb/misc/adutux.c
+index 45a387979935..6d15a097b007 100644
+--- a/drivers/usb/misc/adutux.c
++++ b/drivers/usb/misc/adutux.c
+@@ -183,10 +183,10 @@ static void adu_interrupt_in_callback(struct urb *urb)
+ 				dev->interrupt_in_buffer, urb->actual_length);
  
-+	* coresight-name: the name of the coresight devices.
-+
- * Optional properties for ETM/PTMs:
+ 			dev->read_buffer_length += urb->actual_length;
+-			dev_dbg(&dev->udev->dev,"%s reading  %d\n", __func__,
++			dev_dbg(&dev->udev->dev, "%s reading  %d\n", __func__,
+ 				urb->actual_length);
+ 		} else {
+-			dev_dbg(&dev->udev->dev,"%s : read_buffer overflow\n",
++			dev_dbg(&dev->udev->dev, "%s : read_buffer overflow\n",
+ 				__func__);
+ 		}
+ 	}
+@@ -726,7 +726,7 @@ static int adu_probe(struct usb_interface *interface,
+ 		retval = -EIO;
+ 		goto error;
+ 	}
+-	dev_dbg(&interface->dev,"serial_number=%s", dev->serial_number);
++	dev_dbg(&interface->dev, "serial_number=%s", dev->serial_number);
  
- 	* arm,cp14: must be present if the system accesses ETM/PTM management
+ 	/* we can register the device now, as it is ready */
+ 	usb_set_intfdata(interface, dev);
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.27.0
 
