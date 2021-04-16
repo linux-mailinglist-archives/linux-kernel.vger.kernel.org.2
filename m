@@ -2,98 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F34903616F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 02:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7943616FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 02:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235152AbhDPAwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 20:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234659AbhDPAwa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 20:52:30 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C09E4C061574;
-        Thu, 15 Apr 2021 17:52:06 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id a85so16786289pfa.0;
-        Thu, 15 Apr 2021 17:52:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5vKfH0j/f6fb4wkpRoHHS0wOSCD6x6RBlRUQeYmds5U=;
-        b=gSjtGQeWRjn3O9fXiPwIrc7is7Rj+Po/FZNwG13Rw7B591MpNq4Y8EubJLQwqgqk63
-         42OwbKbDgKUGivmKIDuvowlqy0Uc5Vu7SV+NI8fxvPCgc2WE7gmIG7/8rSTxvMh8Z3wh
-         S511qlzEdVDoxzMl5oIFMesnLRKYLLbD3xld+vTkSmXfeGsmFtRpwzoXNGwQd5I6EiP9
-         vGeaotvL8oV8jpvt3FyLwVn+2iBBd91/179JWytBcBTgz+4sYOgpFKy2cgNSc4SpEssA
-         1lfioK8/kJ3Cy4m9AP9puN7GBTvCwLT3g/IQwmXEVRaS2wIKe6wm/MfL+c8ksiX0fFUO
-         GmGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5vKfH0j/f6fb4wkpRoHHS0wOSCD6x6RBlRUQeYmds5U=;
-        b=psQ06j/Z0eBCvbmJyumi4fJRcfo7mAQEfVSORd7tY6YT1G+dMviybwAHiv8zk2enB8
-         1Cu/cQ41IvGAeuKXbgkkjCii3zwnfRjIAJvzmfI5lDCdMBW/sbFiuLwtL7+Lyhq5u5RO
-         cCE2QVJfkgkxOSEXbmliwc8+xFNK4sLr1nMqOCosQsdjCImLOmHsINfVZJIT7CM1kQE2
-         6KlOnhZy9jUJVkFxEOX2moD9pSQw20z4gvINIu0EdNCfIJS1FSjRfAjqfqhiXrEQUOda
-         U3w/wDqr0jHkqrOcn03JcJprliqPZTH/njD4CQD8Bv2Q/e3rUSpXcBjf3tKmFJEVD5T+
-         djLQ==
-X-Gm-Message-State: AOAM532hYYZIxxUGf5TxiSeYYyJVw+4z4kql4IeX7fqyC4EbwKH2v37D
-        YfgjK6gd8tC2fn35w7kjE4/7enpWYCs=
-X-Google-Smtp-Source: ABdhPJz3fiylTU1hxFTWNsdQXmo9qbxS5a3PS8Td9isM2gTcVQUEBQFPiAiL0tKFNBGWvepL7z57cg==
-X-Received: by 2002:a05:6a00:883:b029:247:562:f8f9 with SMTP id q3-20020a056a000883b02902470562f8f9mr5590269pfj.34.1618534325828;
-        Thu, 15 Apr 2021 17:52:05 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id g17sm3466630pji.40.2021.04.15.17.52.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 15 Apr 2021 17:52:05 -0700 (PDT)
-Subject: Re: [PATCH 5.10 00/25] 5.10.31-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210415144413.165663182@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <cf161101-d00d-6fa6-d2a7-7026f4c72fd1@gmail.com>
-Date:   Thu, 15 Apr 2021 17:52:03 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        id S234883AbhDPAzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 20:55:25 -0400
+Received: from mga02.intel.com ([134.134.136.20]:21043 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234548AbhDPAzY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 20:55:24 -0400
+IronPort-SDR: fRkeOOPhaPfAb70otSPC3nKaZJQv3NR0j0VteTPHeFuaiND9yGC3m3aenhhy00FJmI1LAu8zaz
+ zXIXm+QnjXaQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="182095123"
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="182095123"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 17:55:00 -0700
+IronPort-SDR: GusbmW9popzEpuzofssHL/6/ccZp8sxV1nwJBnW7x+K4QZx6UuBGsgTe2c9ru44xbLKbpmZU0y
+ 3z7xCRNudg/Q==
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="425396800"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 17:54:55 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Dennis Zhou <dennis@kernel.org>
+Cc:     Miaohe Lin <linmiaohe@huawei.com>, <akpm@linux-foundation.org>,
+        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
+        <vbabka@suse.cz>, <alex.shi@linux.alibaba.com>,
+        <willy@infradead.org>, <minchan@kernel.org>,
+        <richard.weiyang@gmail.com>, <hughd@google.com>,
+        <tim.c.chen@linux.intel.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>
+Subject: Re: [PATCH 1/5] mm/swapfile: add percpu_ref support for swap
+References: <46a51c49-2887-0c1a-bcf3-e1ebe9698ebf@huawei.com>
+        <874kg9u0jo.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <75e27441-7744-7a10-e709-c8cd00830099@huawei.com>
+        <87tuo9sjpj.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <YHZlJZh8T4ZhLhp6@google.com>
+        <877dl5seig.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <YHZqCy/y2YLCOcbD@google.com>
+        <87zgy1qv1h.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <YHcB36r5gOyXnozT@google.com>
+        <87o8egp1bk.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <YHhOLuIAR3QJ1jx4@google.com>
+Date:   Fri, 16 Apr 2021 08:54:53 +0800
+In-Reply-To: <YHhOLuIAR3QJ1jx4@google.com> (Dennis Zhou's message of "Thu, 15
+        Apr 2021 14:31:10 +0000")
+Message-ID: <87v98nnj4y.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20210415144413.165663182@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Dennis Zhou <dennis@kernel.org> writes:
 
+> On Thu, Apr 15, 2021 at 01:24:31PM +0800, Huang, Ying wrote:
+>> Dennis Zhou <dennis@kernel.org> writes:
+>> 
+>> > On Wed, Apr 14, 2021 at 01:44:58PM +0800, Huang, Ying wrote:
+>> >> Dennis Zhou <dennis@kernel.org> writes:
+>> >> 
+>> >> > On Wed, Apr 14, 2021 at 11:59:03AM +0800, Huang, Ying wrote:
+>> >> >> Dennis Zhou <dennis@kernel.org> writes:
+>> >> >> 
+>> >> >> > Hello,
+>> >> >> >
+>> >> >> > On Wed, Apr 14, 2021 at 10:06:48AM +0800, Huang, Ying wrote:
+>> >> >> >> Miaohe Lin <linmiaohe@huawei.com> writes:
+>> >> >> >> 
+>> >> >> >> > On 2021/4/14 9:17, Huang, Ying wrote:
+>> >> >> >> >> Miaohe Lin <linmiaohe@huawei.com> writes:
+>> >> >> >> >> 
+>> >> >> >> >>> On 2021/4/12 15:24, Huang, Ying wrote:
+>> >> >> >> >>>> "Huang, Ying" <ying.huang@intel.com> writes:
+>> >> >> >> >>>>
+>> >> >> >> >>>>> Miaohe Lin <linmiaohe@huawei.com> writes:
+>> >> >> >> >>>>>
+>> >> >> >> >>>>>> We will use percpu-refcount to serialize against concurrent swapoff. This
+>> >> >> >> >>>>>> patch adds the percpu_ref support for later fixup.
+>> >> >> >> >>>>>>
+>> >> >> >> >>>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> >> >> >> >>>>>> ---
+>> >> >> >> >>>>>>  include/linux/swap.h |  2 ++
+>> >> >> >> >>>>>>  mm/swapfile.c        | 25 ++++++++++++++++++++++---
+>> >> >> >> >>>>>>  2 files changed, 24 insertions(+), 3 deletions(-)
+>> >> >> >> >>>>>>
+>> >> >> >> >>>>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>> >> >> >> >>>>>> index 144727041e78..849ba5265c11 100644
+>> >> >> >> >>>>>> --- a/include/linux/swap.h
+>> >> >> >> >>>>>> +++ b/include/linux/swap.h
+>> >> >> >> >>>>>> @@ -240,6 +240,7 @@ struct swap_cluster_list {
+>> >> >> >> >>>>>>   * The in-memory structure used to track swap areas.
+>> >> >> >> >>>>>>   */
+>> >> >> >> >>>>>>  struct swap_info_struct {
+>> >> >> >> >>>>>> +	struct percpu_ref users;	/* serialization against concurrent swapoff */
+>> >> >> >> >>>>>>  	unsigned long	flags;		/* SWP_USED etc: see above */
+>> >> >> >> >>>>>>  	signed short	prio;		/* swap priority of this type */
+>> >> >> >> >>>>>>  	struct plist_node list;		/* entry in swap_active_head */
+>> >> >> >> >>>>>> @@ -260,6 +261,7 @@ struct swap_info_struct {
+>> >> >> >> >>>>>>  	struct block_device *bdev;	/* swap device or bdev of swap file */
+>> >> >> >> >>>>>>  	struct file *swap_file;		/* seldom referenced */
+>> >> >> >> >>>>>>  	unsigned int old_block_size;	/* seldom referenced */
+>> >> >> >> >>>>>> +	struct completion comp;		/* seldom referenced */
+>> >> >> >> >>>>>>  #ifdef CONFIG_FRONTSWAP
+>> >> >> >> >>>>>>  	unsigned long *frontswap_map;	/* frontswap in-use, one bit per page */
+>> >> >> >> >>>>>>  	atomic_t frontswap_pages;	/* frontswap pages in-use counter */
+>> >> >> >> >>>>>> diff --git a/mm/swapfile.c b/mm/swapfile.c
+>> >> >> >> >>>>>> index 149e77454e3c..724173cd7d0c 100644
+>> >> >> >> >>>>>> --- a/mm/swapfile.c
+>> >> >> >> >>>>>> +++ b/mm/swapfile.c
+>> >> >> >> >>>>>> @@ -39,6 +39,7 @@
+>> >> >> >> >>>>>>  #include <linux/export.h>
+>> >> >> >> >>>>>>  #include <linux/swap_slots.h>
+>> >> >> >> >>>>>>  #include <linux/sort.h>
+>> >> >> >> >>>>>> +#include <linux/completion.h>
+>> >> >> >> >>>>>>  
+>> >> >> >> >>>>>>  #include <asm/tlbflush.h>
+>> >> >> >> >>>>>>  #include <linux/swapops.h>
+>> >> >> >> >>>>>> @@ -511,6 +512,15 @@ static void swap_discard_work(struct work_struct *work)
+>> >> >> >> >>>>>>  	spin_unlock(&si->lock);
+>> >> >> >> >>>>>>  }
+>> >> >> >> >>>>>>  
+>> >> >> >> >>>>>> +static void swap_users_ref_free(struct percpu_ref *ref)
+>> >> >> >> >>>>>> +{
+>> >> >> >> >>>>>> +	struct swap_info_struct *si;
+>> >> >> >> >>>>>> +
+>> >> >> >> >>>>>> +	si = container_of(ref, struct swap_info_struct, users);
+>> >> >> >> >>>>>> +	complete(&si->comp);
+>> >> >> >> >>>>>> +	percpu_ref_exit(&si->users);
+>> >> >> >> >>>>>
+>> >> >> >> >>>>> Because percpu_ref_exit() is used, we cannot use percpu_ref_tryget() in
+>> >> >> >> >>>>> get_swap_device(), better to add comments there.
+>> >> >> >> >>>>
+>> >> >> >> >>>> I just noticed that the comments of percpu_ref_tryget_live() says,
+>> >> >> >> >>>>
+>> >> >> >> >>>>  * This function is safe to call as long as @ref is between init and exit.
+>> >> >> >> >>>>
+>> >> >> >> >>>> While we need to call get_swap_device() almost at any time, so it's
+>> >> >> >> >>>> better to avoid to call percpu_ref_exit() at all.  This will waste some
+>> >> >> >> >>>> memory, but we need to follow the API definition to avoid potential
+>> >> >> >> >>>> issues in the long term.
+>> >> >> >> >>>
+>> >> >> >> >>> I have to admit that I'am not really familiar with percpu_ref. So I read the
+>> >> >> >> >>> implementation code of the percpu_ref and found percpu_ref_tryget_live() could
+>> >> >> >> >>> be called after exit now. But you're right we need to follow the API definition
+>> >> >> >> >>> to avoid potential issues in the long term.
+>> >> >> >> >>>
+>> >> >> >> >>>>
+>> >> >> >> >>>> And we need to call percpu_ref_init() before insert the swap_info_struct
+>> >> >> >> >>>> into the swap_info[].
+>> >> >> >> >>>
+>> >> >> >> >>> If we remove the call to percpu_ref_exit(), we should not use percpu_ref_init()
+>> >> >> >> >>> here because *percpu_ref->data is assumed to be NULL* in percpu_ref_init() while
+>> >> >> >> >>> this is not the case as we do not call percpu_ref_exit(). Maybe percpu_ref_reinit()
+>> >> >> >> >>> or percpu_ref_resurrect() will do the work.
+>> >> >> >> >>>
+>> >> >> >> >>> One more thing, how could I distinguish the killed percpu_ref from newly allocated one?
+>> >> >> >> >>> It seems percpu_ref_is_dying is only safe to call when @ref is between init and exit.
+>> >> >> >> >>> Maybe I could do this in alloc_swap_info()?
+>> >> >> >> >> 
+>> >> >> >> >> Yes.  In alloc_swap_info(), you can distinguish newly allocated and
+>> >> >> >> >> reused swap_info_struct.
+>> >> >> >> >> 
+>> >> >> >> >>>>
+>> >> >> >> >>>>>> +}
+>> >> >> >> >>>>>> +
+>> >> >> >> >>>>>>  static void alloc_cluster(struct swap_info_struct *si, unsigned long idx)
+>> >> >> >> >>>>>>  {
+>> >> >> >> >>>>>>  	struct swap_cluster_info *ci = si->cluster_info;
+>> >> >> >> >>>>>> @@ -2500,7 +2510,7 @@ static void enable_swap_info(struct swap_info_struct *p, int prio,
+>> >> >> >> >>>>>>  	 * Guarantee swap_map, cluster_info, etc. fields are valid
+>> >> >> >> >>>>>>  	 * between get/put_swap_device() if SWP_VALID bit is set
+>> >> >> >> >>>>>>  	 */
+>> >> >> >> >>>>>> -	synchronize_rcu();
+>> >> >> >> >>>>>> +	percpu_ref_reinit(&p->users);
+>> >> >> >> >>>>>
+>> >> >> >> >>>>> Although the effect is same, I think it's better to use
+>> >> >> >> >>>>> percpu_ref_resurrect() here to improve code readability.
+>> >> >> >> >>>>
+>> >> >> >> >>>> Check the original commit description for commit eb085574a752 "mm, swap:
+>> >> >> >> >>>> fix race between swapoff and some swap operations" and discussion email
+>> >> >> >> >>>> thread as follows again,
+>> >> >> >> >>>>
+>> >> >> >> >>>> https://lore.kernel.org/linux-mm/20171219053650.GB7829@linux.vnet.ibm.com/
+>> >> >> >> >>>>
+>> >> >> >> >>>> I found that the synchronize_rcu() here is to avoid to call smp_rmb() or
+>> >> >> >> >>>> smp_load_acquire() in get_swap_device().  Now we will use
+>> >> >> >> >>>> percpu_ref_tryget_live() in get_swap_device(), so we will need to add
+>> >> >> >> >>>> the necessary memory barrier, or make sure percpu_ref_tryget_live() has
+>> >> >> >> >>>> ACQUIRE semantics.  Per my understanding, we need to change
+>> >> >> >> >>>> percpu_ref_tryget_live() for that.
+>> >> >> >> >>>>
+>> >> >> >> >>>
+>> >> >> >> >>> Do you mean the below scene is possible?
+>> >> >> >> >>>
+>> >> >> >> >>> cpu1
+>> >> >> >> >>> swapon()
+>> >> >> >> >>>   ...
+>> >> >> >> >>>   percpu_ref_init
+>> >> >> >> >>>   ...
+>> >> >> >> >>>   setup_swap_info
+>> >> >> >> >>>   /* smp_store_release() is inside percpu_ref_reinit */
+>> >> >> >> >>>   percpu_ref_reinit
+>> >> >> >> >> 
+>> >> >> >> >> spin_unlock() has RELEASE semantics already.
+>> >> >> >> >> 
+>> >> >> >> >>>   ...
+>> >> >> >> >>>
+>> >> >> >> >>> cpu2
+>> >> >> >> >>> get_swap_device()
+>> >> >> >> >>>   /* ignored  smp_rmb() */
+>> >> >> >> >>>   percpu_ref_tryget_live
+>> >> >> >> >> 
+>> >> >> >> >> Some kind of ACQUIRE is required here to guarantee the refcount is
+>> >> >> >> >> checked before fetching the other fields of swap_info_struct.  I have
+>> >> >> >> >> sent out a RFC patch to mailing list to discuss this.
+>> >> >> >
+>> >> >> > I'm just catching up and following along a little bit. I apologize I
+>> >> >> > haven't read the swap code, but my understanding is you are trying to
+>> >> >> > narrow a race condition with swapoff. That makes sense to me. I'm not
+>> >> >> > sure I follow the need to race with reinitializing the ref though? Is it
+>> >> >> > not possible to wait out the dying swap info and then create a new one
+>> >> >> > rather than push acquire semantics?
+>> >> >> 
+>> >> >> We want to check whether the swap entry is valid (that is, the swap
+>> >> >> device isn't swapped off now), prevent it from swapping off, then access
+>> >> >> the swap_info_struct data structure.  When accessing swap_info_struct,
+>> >> >> we want to guarantee the ordering, so that we will not reference
+>> >> >> uninitialized fields of swap_info_struct.
+>> >> >> 
+>> >> >
+>> >> > So in the normal context of percpu_ref, once someone can access it, the
+>> >> > elements that it is protecting are expected to be initialized.
+>> >> 
+>> >> If we can make sure that all elements being initialized fully, why not
+>> >> just use percpu_ref_get() instead of percpu_ref_tryget*()?
+>> >> 
+>> >
+>> > Generally, the lookup is protected with rcu and then
+>> > percpu_ref_tryget*() is used to obtain a reference. percpu_ref_get() is
+>> > only good if you already have a ref as it increments regardless of being
+>> > 0.
+>> >
+>> > What I mean is if you can get a ref, that means the object hasn't been
+>> > destroyed. This differs from the semantics you are looking for which I
+>> > understand to be: I have long lived pointers to objects. The object may
+>> > die, but I may resurrect it and I want the old pointers to still be
+>> > valid.
+>> >
+>> > When is it possible for someone to have a pointer to the swap device and
+>> > the refcount goes to 0? It might be better to avoid this situation than
+>> > add acquire semantics.
+>> >
+>> >> > In the basic case for swap off, I'm seeing the goal as to prevent
+>> >> > destruction until anyone currently accessing swap is done. In this
+>> >> > case wouldn't we always be protecting a live struct?
+>> >> >
+>> >> > I'm maybe not understanding what conditions you're trying to revive the
+>> >> > percpu_ref?
+>> >> 
+>> >> A swap entry likes an indirect pointer to a swap device.  We may hold a
+>> >> swap entry for long time, so that the swap device is swapoff/swapon.
+>> >> Then we need to make sure the swap device are fully initialized before
+>> >> accessing the swap device via the swap entry.
+>> >> 
+>> >
+>> > So if I have some number of outstanding references, and then
+>> > percpu_ref_kill() is called, then only those that have the pointer will
+>> > be able to use the swap device as those references are still good. Prior
+>> > to calling percpu_ref_kill(), call_rcu() needs to be called on lookup
+>> > data structure.
+>> >
+>> > My personal understanding of tryget() vs tryget_live() is that it
+>> > provides a 2 phase clean up and bounds the ability for new users to come
+>> > in (cgroup destruction is a primary user). As tryget() might inevitably
+>> > let a cgroup live long past its removal, tryget_live() will say oh
+>> > you're in the process of dying do something else.
+>> 
+>> OK.  I think that I understand your typical use case now.  The resource
+>> producer code may look like,
+>> 
+>>   obj = kmalloc();
+>>   /* Initialize obj fields */
+>>   percpu_ref_init(&obj->ref);
+>>   rcu_assign_pointer(global_p, obj);
+>> 
+>> The resource reclaimer looks like,
+>> 
+>>   p = global_p;
+>>   global_p = NULL;
+>>   percpu_ref_kill(&p->ref);
+>>   /* wait until percpu_ref_is_zero(&p->ref) */
+>>   /* free resources pointed by obj fields */
+>>   kfree(p);
+>> 
+>> The resource producer looks like,
+>> 
+>>   rcu_read_lock();
+>>   p = rcu_dereference(global_p);
+>>   if (!p || !percpu_ref_tryget_live(&p->ref)) {
+>>           /* Invalid pointer, go out */
+>>   }
+>>   rcu_read_unlock();
+>>   /* use p */
+>>   percpu_ref_put(&p->ref);
+>> 
+>> For this use case, it's not necessary to make percpu_ref_tryget_live()
+>> ACQUIRE operation.  Because refcount doesn't act as a flag to indicate
+>> whether the object has been fully initialized, global_p does.  And
+>> the data dependency guaranteed the required ordering.
+>> 
+>
+> Yes this is spot on.
+>
+>> The use case of swap is different.  Where global_p always points to
+>> the obj (never freed) even if the resources pointed by obj fields has
+>> been freed.  And we want to use refcount as a flag to indicate whether
+>> the object is fully initialized.  This is hard to be changed, because
+>> the global_p is used to identify the stalled pointer from the totally
+>> invalid pointer.
+>> 
+>
+> Apologies ahead of time for this possibly dumb question. Is it possible
+> to have swapon swap out the global_p with
+> old_obj = rcu_access_pointer(global_p);
+> rcu_assign_pointer(global_p, obj);
+> kfree_rcu(remove_old_obj) or call_rcu();
+>
+> Then the obj pointed to by global_p would always be valid, but only
+> would be alive again if it got the new pointer?
 
-On 4/15/2021 7:47 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.31 release.
-> There are 25 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 17 Apr 2021 14:44:01 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.31-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Yes.  This looks good!  Thanks a lot!
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+Best Regards,
+Huang, Ying
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+>> If all other users follow the typical use case above, we may find some
+>> other way to resolve the problem inside swap code, such as adding
+>> smp_rmb() after percpu_ref_tryget_live().
+>> 
+>
+> I would prefer it.
+>
+>> Best Regards,
+>> Huang, Ying
+>
+> Thanks,
+> Dennis
