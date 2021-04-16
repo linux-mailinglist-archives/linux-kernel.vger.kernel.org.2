@@ -2,154 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A64A361F0A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A020361F07
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242311AbhDPLpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 07:45:08 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:54340 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242085AbhDPLpC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S242094AbhDPLpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 16 Apr 2021 07:45:02 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13GBiTtj112596;
-        Fri, 16 Apr 2021 06:44:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1618573469;
-        bh=mbuQ70PGAeBYG1iuTQJgyXbv/NPSjwO6U3RTsucScYI=;
-        h=Subject:CC:References:From:Date:In-Reply-To;
-        b=s9cY+HzbMnpWAhJ2uaRn0HeSn8KN/gBCeBOAUQO7PbhkrdhNWN2EcUd+kJC9jBYHr
-         d5mX/gqcxl+BdCrHkC16FdupGY5+5eAc77cm4izWcWmXajCCfr86wxX4NsoOvfHLx5
-         4K9O1fG5XaNVKkeYvcQ8K6p4FgF6QYYD0kfyKMJo=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13GBiTSQ096205
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 16 Apr 2021 06:44:29 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 16
- Apr 2021 06:44:28 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 16 Apr 2021 06:44:28 -0500
-Received: from [172.24.145.148] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13GBiOS6095142;
-        Fri, 16 Apr 2021 06:44:25 -0500
-Subject: Re: [PATCH v4 0/3] CAN TRANSCEIVER: Add support for CAN transceivers
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>, <linux-can@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-References: <20210416052647.2758-1-a-govindraju@ti.com>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <ca83b1e1-b656-33a5-0abd-b7c1123ef32b@ti.com>
-Date:   Fri, 16 Apr 2021 17:14:24 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Received: from mail.kernel.org ([198.145.29.99]:47246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241891AbhDPLpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 07:45:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D13161057;
+        Fri, 16 Apr 2021 11:44:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618573476;
+        bh=g1GQ3fMRsXXUxb3TziyhacMOOpriyOWdQMsWa6+jGug=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BJi5NHc+XLro4v3JuXfxVimD3qTxlRIlEQW0jKcbC1fkOeMbhX+QD36Vpgv/m5ZWS
+         w9k0pCOsSSy5e1rtpgZ6meO2kxgPq/nHRJ8xHTAE/3ueN6qs6pqlukQ1HUBO0cBT9Z
+         1AQShBFk27Hug5dFGtBphwLSnqUSmscREcGT3KDTwjeLt7aURG5nZp5OsnGRS8Tf1v
+         cyIiJ5wZAAlMJuC7YOXtzgBlbuPlBe1viVwrvSNQ2ApaD5WM28tOf9xQWfW9Tzj99G
+         Xv0t+SbyVly+TfTJMs7hkGCjxMV0CtCIjWPw5NkGbs+NBYqqEsV1nMMDioVyRJhgy+
+         nG5AVY/FWbnzA==
+Date:   Fri, 16 Apr 2021 14:44:26 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [RFC/RFT PATCH 1/3] memblock: update initialization of reserved
+ pages
+Message-ID: <YHl4mqgh5CtNk1l7@kernel.org>
+References: <20210407172607.8812-1-rppt@kernel.org>
+ <20210407172607.8812-2-rppt@kernel.org>
+ <0c48f98c-7454-1458-15a5-cc5a7e1fb7cd@redhat.com>
+ <CAMj1kXGw97epyP2HdHjA8Yp6+VF1j5xmd0AgVBBv3k+h_B610w@mail.gmail.com>
+ <3811547a-9057-3c80-3805-2e658488ac99@redhat.com>
+ <YHdPmtpzFxHE9mAt@kernel.org>
+ <f5503130-c0e7-329f-86c4-727ece1c860f@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210416052647.2758-1-a-govindraju@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f5503130-c0e7-329f-86c4-727ece1c860f@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Thu, Apr 15, 2021 at 11:30:12AM +0200, David Hildenbrand wrote:
+> > Not sure we really need a new pagetype here, PG_Reserved seems to be quite
+> > enough to say "don't touch this".  I generally agree that we could make
+> > PG_Reserved a PageType and then have several sub-types for reserved memory.
+> > This definitely will add clarity but I'm not sure that this justifies
+> > amount of churn and effort required to audit uses of PageResrved().
+> > > Then, we could mostly avoid having to query memblock at runtime to figure
+> > > out that this is special memory. This would obviously be an extension to
+> > > this series. Just a thought.
+> > 
+> > Stop pushing memblock out of kernel! ;-)
+> 
+> Can't stop. Won't stop. :D
+> 
+> It's lovely for booting up a kernel until we have other data-structures in
+> place ;)
 
-On 16/04/21 10:56 am, Aswath Govindraju wrote:
-> The following series of patches add support for CAN transceivers.
-> 
-> TCAN1042 has a standby signal that needs to be pulled high for
-> sending/receiving messages[1]. TCAN1043 has a enable signal along with
-> standby signal that needs to be pulled up for sending/receiving
-> messages[2], and other combinations of the two lines can be used to put the
-> transceiver in different states to reduce power consumption. On boards
-> like the AM654-idk and J721e-evm these signals are controlled using gpios.
-> 
-> Patch 1 rewords the comment that restricts max_link_rate attribute to have
-> units of Mbps.
-> 
-> Patch 2 models the transceiver as a phy device tree node with properties
-> for max bit rate supported, gpio properties for indicating gpio pin numbers
-> to which standby and enable signals are connected.
-> 
-> Patch 2 adds a generic driver to support CAN transceivers.
-> 
-> changes since v3:
-> - dropped patch 2(in v3)
-> - changed the node name property in patch 3(in v3)
-> - picked up Rob Herring's reviewed-by for patch 3(in v3)
-> 
-> changes since v2:
-> - dropped 5 and 6 patches and to be sent via linux-can-next
-> - added static keyword for can_transceiver_phy_probe()
-> - changed enable gpio example to active high in patch 3
-> - Rearranged the file names in alphabetical order in Makefile
->   and MAINTAINERS file
-> 
-> changes since v1:
-> - Added patch 1 (in v2) that rewords the comment that restrict
->   max_link_rate attribute to have units of Mbps.
-> - Added patch 2 (in v2) that adds an API for
->   devm_of_phy_optional_get_by_index
-> - Patch 1 (in v1)
->   - updated MAINTAINERS file
-> - Patch 2 (in v1)
->   - replaced m_can with CAN to make the driver independent of CAN driver
->   - Added prefix CAN_TRANSCEIVER for EN_PRESENT and STB_PRESENT
->   - Added new line before return statements in power_on() and power_off
->   - Added error handling patch for devm_kzalloc()
->   - used the max_link_rate attribute directly instead of dividing it by
->     1000000
->   - removed the spaces before GPIOD_OUT_LOW in devm_gpiod_get()
->   - Corrected requested value for standby-gpios to GPIOD_OUT_HIGH
->   - Updated MAINTAINERS file
-> - Patch 3 (in v1)
->   - replaced minItems with maxItems
->   - Removed phy-names property as there is only one phy
-> - Patch 4 (in v1)
->   - replaced dev_warn with dev_info when no transceiver is found
->   - Added struct phy * field in m_can_classdev struct
->   - moved phy_power_on and phy_power_off to m_can_open and m_can_close
->     respectively
->   - Moved the check for max_bit_rate to generice transceiver driver
-> 
-> [1] - https://www.ti.com/lit/ds/symlink/tcan1042h.pdf
-> [2] - https://www.ti.com/lit/ds/symlink/tcan1043-q1.pdf
-> 
-> 
+A bit more seriously, we don't have any data structure that reliably
+represents physical memory layout and arch-independent fashion. 
+memblock is probably the best starting point for eventually having one.
 
-Posted v5 for this series.
-
-Thanks,
-Aswath
-
-> Aswath Govindraju (3):
->   phy: core: Reword the comment specifying the units of max_link_rate to
->     be Mbps
->   dt-bindings: phy: Add binding for TI TCAN104x CAN transceivers
->   phy: phy-can-transceiver: Add support for generic CAN transceiver
->     driver
-> 
->  .../bindings/phy/ti,tcan104x-can.yaml         |  56 +++++++
->  MAINTAINERS                                   |   2 +
->  drivers/phy/Kconfig                           |   9 ++
->  drivers/phy/Makefile                          |   1 +
->  drivers/phy/phy-can-transceiver.c             | 146 ++++++++++++++++++
->  include/linux/phy/phy.h                       |   2 +-
->  6 files changed, 215 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
->  create mode 100644 drivers/phy/phy-can-transceiver.c
-> 
-
+-- 
+Sincerely yours,
+Mike.
