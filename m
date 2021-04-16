@@ -2,109 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB283621E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A99903621CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244389AbhDPOMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:12:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243932AbhDPOLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:11:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA2E2611AC;
-        Fri, 16 Apr 2021 14:11:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618582288;
-        bh=D27fejqWID7E6q4rHiW0aBefkPAsSCwMPL3Ng82yR88=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MM+mif4vJn80/jf6UTcJSVdQ1QQPwyHU/cBGbrjVYEGHk1evDJTLKNbErzKNGSVW0
-         NWKY0Z//SAPhjE8XyPYYp/tpJEuAo1qbv+qzF3WqC7YKVdAbt/LLhrMqVPS5f+AgbR
-         R4dekVNLDeqrswqGP0uB5IQA1YOvBJTql55u78iLvK7kI/WogfymAvnD4zqw565MEG
-         Ml0IPHLG19z/yXMMKGdQ7fAaV8cT5FTVVr4P+PS8NJIj1zL7bHyveXfKA5zEwu9tAG
-         qNzcQFxKDbrMifkhX0bRGjhs8RlnqnAVWBQomDlbxp0NIKBadewcSd11LIkJhUz+i9
-         huMfZbqjnCBqw==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lXPBx-0006aE-JE; Fri, 16 Apr 2021 16:11:29 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        dillon.minfei@gmail.com, Erwan Le Ray <erwan.leray@foss.st.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 3/3] serial: stm32: defer sysrq processing
-Date:   Fri, 16 Apr 2021 16:05:57 +0200
-Message-Id: <20210416140557.25177-4-johan@kernel.org>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210416140557.25177-1-johan@kernel.org>
-References: <20210416140557.25177-1-johan@kernel.org>
+        id S244353AbhDPOKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:10:01 -0400
+Received: from smtprelay0212.hostedemail.com ([216.40.44.212]:45440 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S244519AbhDPOJf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 10:09:35 -0400
+Received: from omf06.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 52CB4180CC338;
+        Fri, 16 Apr 2021 14:09:09 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf06.hostedemail.com (Postfix) with ESMTPA id C75542448B4;
+        Fri, 16 Apr 2021 14:09:06 +0000 (UTC)
+Message-ID: <f6f66233fbd670fef82a199ab0299489618cad81.camel@perches.com>
+Subject: Re: [PATCH v5] printk: Userspace format enumeration support
+From:   Joe Perches <joe@perches.com>
+To:     Chris Down <chris@chrisdown.name>, Petr Mladek <pmladek@suse.com>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+Date:   Fri, 16 Apr 2021 07:09:05 -0700
+In-Reply-To: <YHmXi303WxVZzVwI@chrisdown.name>
+References: <YEgvR6Wc1xt0qupy@chrisdown.name>
+         <02c3b2f3-ff8e-ceb9-b30b-e533959c0491@rasmusvillemoes.dk>
+         <YFDAfPCnS204jiD5@chrisdown.name> <YFHAdUB4lu4mJ9Ar@alley>
+         <5ea3b634-5467-35cf-dd08-1001f878b569@rasmusvillemoes.dk>
+         <YFMvfawY+0CncS8G@alley> <YHmXi303WxVZzVwI@chrisdown.name>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: C75542448B4
+X-Spam-Status: No, score=1.60
+X-Stat-Signature: cqhxomtunzwjze9g7h59ftyp7i7akz79
+X-Rspamd-Server: rspamout04
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX199kE6lHRbJ4CRcIEWXOQ0Zqvf2Fpq0BkA=
+X-HE-Tag: 1618582146-290331
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the uart_unlock_and_check_sysrq() helper to defer sysrq processing
-until receive processing is done and the port lock has been released.
+On Fri, 2021-04-16 at 14:56 +0100, Chris Down wrote:
+> Any better suggestions? :-)
 
-This allows cleaning up the console_write() implementation by not having
-to work around the recursive sysrq case (by dropping locking completely)
-and also makes the console code work with PREEMPT_RT by no longer
-relying on local_irq_save().
+A gcc plugin that looks for functions marked __printf(fmt, pos)
+so any const fmt is stored.
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/tty/serial/stm32-usart.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index 3524ed2c0c73..24a1dfe7058b 100644
---- a/drivers/tty/serial/stm32-usart.c
-+++ b/drivers/tty/serial/stm32-usart.c
-@@ -270,12 +270,12 @@ static void stm32_usart_receive_chars(struct uart_port *port, bool threaded)
- 			}
- 		}
- 
--		if (uart_handle_sysrq_char(port, c))
-+		if (uart_prepare_sysrq_char(port, c))
- 			continue;
- 		uart_insert_char(port, sr, USART_SR_ORE, c, flag);
- 	}
- 
--	spin_unlock(&port->lock);
-+	uart_unlock_and_check_sysrq(port);
- 
- 	tty_flip_buffer_push(tport);
- }
-@@ -1430,13 +1430,10 @@ static void stm32_usart_console_write(struct console *co, const char *s,
- 	u32 old_cr1, new_cr1;
- 	int locked = 1;
- 
--	local_irq_save(flags);
--	if (port->sysrq)
--		locked = 0;
--	else if (oops_in_progress)
--		locked = spin_trylock(&port->lock);
-+	if (oops_in_progress)
-+		locked = spin_trylock_irqsave(&port->lock, flags);
- 	else
--		spin_lock(&port->lock);
-+		spin_lock_irqsave(&port->lock, flags);
- 
- 	/* Save and disable interrupts, enable the transmitter */
- 	old_cr1 = readl_relaxed(port->membase + ofs->cr1);
-@@ -1450,8 +1447,7 @@ static void stm32_usart_console_write(struct console *co, const char *s,
- 	writel_relaxed(old_cr1, port->membase + ofs->cr1);
- 
- 	if (locked)
--		spin_unlock(&port->lock);
--	local_irq_restore(flags);
-+		spin_unlock_irqrestore(&port->lock, flags);
- }
- 
- static int stm32_usart_console_setup(struct console *co, char *options)
--- 
-2.26.3
 
