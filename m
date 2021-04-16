@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 413BF3624A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E19036249F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237672AbhDPPyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 11:54:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34652 "EHLO
+        id S237474AbhDPPyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 11:54:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235976AbhDPPyJ (ORCPT
+        with ESMTP id S235955AbhDPPyJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 16 Apr 2021 11:54:09 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D88DDC061756;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B888AC061574;
         Fri, 16 Apr 2021 08:53:44 -0700 (PDT)
 Date:   Fri, 16 Apr 2021 15:53:42 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UhW2gRea8qcyEIBHPmVodnEM2KLLrp/GfJ7mLerg8eo=;
-        b=WzkuTLZrVcUfqxOMkQo0tsRoiEIvlMJMM3UNCrnPSKTdE35/LapmpctSrXz/NPlqDXxYlV
-        jC6ML1o4rsf9lCUK9Vc62o3vWkbSeIi0TGBjHup7lJhIpdnlyHYCkXANf+BLivHE5vTWe+
-        8Sc2vmIMmq05NSj32E1F1ro0yseSaP3wkOGLifOT5a8uWuO/eM1JfkBQtoflWY1fipdvUL
-        DxI2U1+Jr0FUUqBVy3wmyKr/og2i6oyS1qGsGLWe6kHrgafkOvoeqJGeXPQHI5hTm6Brhf
-        KYBwJP61MaGQh4clPG0F7J3YCwekuNd9v3tLB6yEM2G6wR1ra/895iu7kR/6gw==
+        bh=vVwmKQoIi9A17wnXEUexM0LDdPLA/qd1qY9YgemsJJI=;
+        b=mhxQFWB9u4TRfjqehl/Vxj4qihJCg5bpuAfy0usbI7GKSG9xiWGT9YNzN/81mXM8xAD2Fl
+        N0yqSqE3itKmm+kfDsDtJEgmbEXUkMH8Gtox9LaxUsOb0xJ1v6GdeGghnp3c1wLnZptIT5
+        PsMK0Nosh24P/ySmKWzvktXuVkb93+vqCAD2mu4ApqhXP6oCqE4Bpc2ILVmY1E5AqATHpk
+        SgvDytnfRGQZ4fRBhu/0ltdDtIVwy5AnNfxvu2OXhOGOJT7dSfElZFjI1uP6PKzC8WRAEF
+        WVMUMswXhYwotapsKWum+LcfvwtYz+ot6zY94SiUXVplh07CwURit18idPeOLQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1618588423;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,22 +36,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UhW2gRea8qcyEIBHPmVodnEM2KLLrp/GfJ7mLerg8eo=;
-        b=17DS8q0nGa6CoDZRQBP9kHDE+R0ci33w3PtNqchAURt3BeWqmTUUL/xfC8bTDBuZIMnEV8
-        uZONypMUg+zFIVDw==
+        bh=vVwmKQoIi9A17wnXEUexM0LDdPLA/qd1qY9YgemsJJI=;
+        b=eLXoMvYWAXeXqDqiftMGllW48hl1XmEsePNJABzy+xamQF48y/JSIAaG8bLjMdJjia0eoL
+        vXTO1YQI0ai/UMAA==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched: Move SCHED_DEBUG sysctl to debugfs
+Subject: [tip: sched/core] sched,preempt: Move preempt_dynamic to debug.c
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
         Valentin Schneider <valentin.schneider@arm.com>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210412102001.287610138@infradead.org>
-References: <20210412102001.287610138@infradead.org>
+In-Reply-To: <20210412102001.353833279@infradead.org>
+References: <20210412102001.353833279@infradead.org>
 MIME-Version: 1.0
-Message-ID: <161858842284.29796.3853677323211839924.tip-bot2@tip-bot2>
+Message-ID: <161858842245.29796.17863309333059665489.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,99 +61,147 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     8a99b6833c884fa0e7919030d93fecedc69fc625
-Gitweb:        https://git.kernel.org/tip/8a99b6833c884fa0e7919030d93fecedc69fc625
+Commit-ID:     1011dcce99f8026d48fdd7b9cc259e32a8b472be
+Gitweb:        https://git.kernel.org/tip/1011dcce99f8026d48fdd7b9cc259e32a8b472be
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Wed, 24 Mar 2021 11:43:21 +01:00
+AuthorDate:    Thu, 25 Mar 2021 12:21:38 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Fri, 16 Apr 2021 17:06:34 +02:00
 
-sched: Move SCHED_DEBUG sysctl to debugfs
+sched,preempt: Move preempt_dynamic to debug.c
 
-Stop polluting sysctl with undocumented knobs that really are debug
-only, move them all to /debug/sched/ along with the existing
-/debug/sched_* files that already exist.
+Move the #ifdef SCHED_DEBUG bits to kernel/sched/debug.c in order to
+collect all the debugfs bits.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Tested-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/20210412102001.287610138@infradead.org
+Link: https://lkml.kernel.org/r/20210412102001.353833279@infradead.org
 ---
- include/linux/sched/sysctl.h |  8 +--
- kernel/sched/core.c          |  4 +-
- kernel/sched/debug.c         | 74 +++++++++++++++++++++++++--
- kernel/sched/fair.c          |  9 +---
- kernel/sched/sched.h         |  2 +-
- kernel/sysctl.c              | 96 +-----------------------------------
- 6 files changed, 80 insertions(+), 113 deletions(-)
+ kernel/sched/core.c  | 77 +------------------------------------------
+ kernel/sched/debug.c | 67 ++++++++++++++++++++++++++++++++++++-
+ kernel/sched/sched.h | 11 ++++--
+ 3 files changed, 78 insertions(+), 77 deletions(-)
 
-diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
-index 3c31ba8..0a3f346 100644
---- a/include/linux/sched/sysctl.h
-+++ b/include/linux/sched/sysctl.h
-@@ -26,10 +26,11 @@ int proc_dohung_task_timeout_secs(struct ctl_table *table, int write,
- enum { sysctl_hung_task_timeout_secs = 0 };
- #endif
- 
-+extern unsigned int sysctl_sched_child_runs_first;
-+
- extern unsigned int sysctl_sched_latency;
- extern unsigned int sysctl_sched_min_granularity;
- extern unsigned int sysctl_sched_wakeup_granularity;
--extern unsigned int sysctl_sched_child_runs_first;
- 
- enum sched_tunable_scaling {
- 	SCHED_TUNABLESCALING_NONE,
-@@ -37,7 +38,7 @@ enum sched_tunable_scaling {
- 	SCHED_TUNABLESCALING_LINEAR,
- 	SCHED_TUNABLESCALING_END,
- };
--extern enum sched_tunable_scaling sysctl_sched_tunable_scaling;
-+extern unsigned int sysctl_sched_tunable_scaling;
- 
- extern unsigned int sysctl_numa_balancing_scan_delay;
- extern unsigned int sysctl_numa_balancing_scan_period_min;
-@@ -47,9 +48,6 @@ extern unsigned int sysctl_numa_balancing_scan_size;
- #ifdef CONFIG_SCHED_DEBUG
- extern __read_mostly unsigned int sysctl_sched_migration_cost;
- extern __read_mostly unsigned int sysctl_sched_nr_migrate;
--
--int sched_proc_update_handler(struct ctl_table *table, int write,
--		void *buffer, size_t *length, loff_t *ppos);
- #endif
- 
- /*
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 7d031da..bac30db 100644
+index bac30db..e6c714b 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -5504,9 +5504,11 @@ static const struct file_operations sched_dynamic_fops = {
- 	.release	= single_release,
+@@ -5371,9 +5371,9 @@ enum {
+ 	preempt_dynamic_full,
  };
  
-+extern struct dentry *debugfs_sched;
-+
- static __init int sched_init_debug_dynamic(void)
+-static int preempt_dynamic_mode = preempt_dynamic_full;
++int preempt_dynamic_mode = preempt_dynamic_full;
+ 
+-static int sched_dynamic_mode(const char *str)
++int sched_dynamic_mode(const char *str)
  {
--	debugfs_create_file("sched_preempt", 0644, NULL, NULL, &sched_dynamic_fops);
-+	debugfs_create_file("sched_preempt", 0644, debugfs_sched, NULL, &sched_dynamic_fops);
- 	return 0;
+ 	if (!strcmp(str, "none"))
+ 		return preempt_dynamic_none;
+@@ -5387,7 +5387,7 @@ static int sched_dynamic_mode(const char *str)
+ 	return -EINVAL;
  }
- late_initcall(sched_init_debug_dynamic);
+ 
+-static void sched_dynamic_update(int mode)
++void sched_dynamic_update(int mode)
+ {
+ 	/*
+ 	 * Avoid {NONE,VOLUNTARY} -> FULL transitions from ever ending up in
+@@ -5444,79 +5444,8 @@ static int __init setup_preempt_mode(char *str)
+ }
+ __setup("preempt=", setup_preempt_mode);
+ 
+-#ifdef CONFIG_SCHED_DEBUG
+-
+-static ssize_t sched_dynamic_write(struct file *filp, const char __user *ubuf,
+-				   size_t cnt, loff_t *ppos)
+-{
+-	char buf[16];
+-	int mode;
+-
+-	if (cnt > 15)
+-		cnt = 15;
+-
+-	if (copy_from_user(&buf, ubuf, cnt))
+-		return -EFAULT;
+-
+-	buf[cnt] = 0;
+-	mode = sched_dynamic_mode(strstrip(buf));
+-	if (mode < 0)
+-		return mode;
+-
+-	sched_dynamic_update(mode);
+-
+-	*ppos += cnt;
+-
+-	return cnt;
+-}
+-
+-static int sched_dynamic_show(struct seq_file *m, void *v)
+-{
+-	static const char * preempt_modes[] = {
+-		"none", "voluntary", "full"
+-	};
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(preempt_modes); i++) {
+-		if (preempt_dynamic_mode == i)
+-			seq_puts(m, "(");
+-		seq_puts(m, preempt_modes[i]);
+-		if (preempt_dynamic_mode == i)
+-			seq_puts(m, ")");
+-
+-		seq_puts(m, " ");
+-	}
+-
+-	seq_puts(m, "\n");
+-	return 0;
+-}
+-
+-static int sched_dynamic_open(struct inode *inode, struct file *filp)
+-{
+-	return single_open(filp, sched_dynamic_show, NULL);
+-}
+-
+-static const struct file_operations sched_dynamic_fops = {
+-	.open		= sched_dynamic_open,
+-	.write		= sched_dynamic_write,
+-	.read		= seq_read,
+-	.llseek		= seq_lseek,
+-	.release	= single_release,
+-};
+-
+-extern struct dentry *debugfs_sched;
+-
+-static __init int sched_init_debug_dynamic(void)
+-{
+-	debugfs_create_file("sched_preempt", 0644, debugfs_sched, NULL, &sched_dynamic_fops);
+-	return 0;
+-}
+-late_initcall(sched_init_debug_dynamic);
+-
+-#endif /* CONFIG_SCHED_DEBUG */
+ #endif /* CONFIG_PREEMPT_DYNAMIC */
+ 
+-
+ /*
+  * This is the entry point to schedule() from kernel preemption
+  * off of irq context.
 diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 4b49cc2..2093b90 100644
+index 2093b90..bdd344f 100644
 --- a/kernel/sched/debug.c
 +++ b/kernel/sched/debug.c
-@@ -169,15 +169,81 @@ static const struct file_operations sched_feat_fops = {
- 	.release	= single_release,
- };
+@@ -213,9 +213,71 @@ static const struct file_operations sched_scaling_fops = {
  
-+#ifdef CONFIG_SMP
+ #endif /* SMP */
+ 
++#ifdef CONFIG_PREEMPT_DYNAMIC
 +
-+static ssize_t sched_scaling_write(struct file *filp, const char __user *ubuf,
++static ssize_t sched_dynamic_write(struct file *filp, const char __user *ubuf,
 +				   size_t cnt, loff_t *ppos)
 +{
 +	char buf[16];
++	int mode;
 +
 +	if (cnt > 15)
 +		cnt = 15;
@@ -162,229 +209,87 @@ index 4b49cc2..2093b90 100644
 +	if (copy_from_user(&buf, ubuf, cnt))
 +		return -EFAULT;
 +
-+	if (kstrtouint(buf, 10, &sysctl_sched_tunable_scaling))
-+		return -EINVAL;
++	buf[cnt] = 0;
++	mode = sched_dynamic_mode(strstrip(buf));
++	if (mode < 0)
++		return mode;
 +
-+	if (sched_update_scaling())
-+		return -EINVAL;
++	sched_dynamic_update(mode);
 +
 +	*ppos += cnt;
++
 +	return cnt;
 +}
 +
-+static int sched_scaling_show(struct seq_file *m, void *v)
++static int sched_dynamic_show(struct seq_file *m, void *v)
 +{
-+	seq_printf(m, "%d\n", sysctl_sched_tunable_scaling);
++	static const char * preempt_modes[] = {
++		"none", "voluntary", "full"
++	};
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(preempt_modes); i++) {
++		if (preempt_dynamic_mode == i)
++			seq_puts(m, "(");
++		seq_puts(m, preempt_modes[i]);
++		if (preempt_dynamic_mode == i)
++			seq_puts(m, ")");
++
++		seq_puts(m, " ");
++	}
++
++	seq_puts(m, "\n");
 +	return 0;
 +}
 +
-+static int sched_scaling_open(struct inode *inode, struct file *filp)
++static int sched_dynamic_open(struct inode *inode, struct file *filp)
 +{
-+	return single_open(filp, sched_scaling_show, NULL);
++	return single_open(filp, sched_dynamic_show, NULL);
 +}
 +
-+static const struct file_operations sched_scaling_fops = {
-+	.open		= sched_scaling_open,
-+	.write		= sched_scaling_write,
++static const struct file_operations sched_dynamic_fops = {
++	.open		= sched_dynamic_open,
++	.write		= sched_dynamic_write,
 +	.read		= seq_read,
 +	.llseek		= seq_lseek,
 +	.release	= single_release,
 +};
 +
-+#endif /* SMP */
++#endif /* CONFIG_PREEMPT_DYNAMIC */
 +
  __read_mostly bool sched_debug_enabled;
  
-+struct dentry *debugfs_sched;
-+
+-struct dentry *debugfs_sched;
++static struct dentry *debugfs_sched;
+ 
  static __init int sched_init_debug(void)
  {
--	debugfs_create_file("sched_features", 0644, NULL, NULL,
--			&sched_feat_fops);
-+	struct dentry __maybe_unused *numa;
+@@ -225,6 +287,9 @@ static __init int sched_init_debug(void)
  
--	debugfs_create_bool("sched_debug", 0644, NULL,
--			&sched_debug_enabled);
-+	debugfs_sched = debugfs_create_dir("sched", NULL);
-+
-+	debugfs_create_file("features", 0644, debugfs_sched, NULL, &sched_feat_fops);
-+	debugfs_create_bool("debug_enabled", 0644, debugfs_sched, &sched_debug_enabled);
-+
-+	debugfs_create_u32("latency_ns", 0644, debugfs_sched, &sysctl_sched_latency);
-+	debugfs_create_u32("min_granularity_ns", 0644, debugfs_sched, &sysctl_sched_min_granularity);
-+	debugfs_create_u32("wakeup_granularity_ns", 0644, debugfs_sched, &sysctl_sched_wakeup_granularity);
-+
-+#ifdef CONFIG_SMP
-+	debugfs_create_file("tunable_scaling", 0644, debugfs_sched, NULL, &sched_scaling_fops);
-+	debugfs_create_u32("migration_cost_ns", 0644, debugfs_sched, &sysctl_sched_migration_cost);
-+	debugfs_create_u32("nr_migrate", 0644, debugfs_sched, &sysctl_sched_nr_migrate);
-+#endif
-+
-+#ifdef CONFIG_NUMA_BALANCING
-+	numa = debugfs_create_dir("numa_balancing", debugfs_sched);
-+
-+	debugfs_create_u32("scan_delay_ms", 0644, numa, &sysctl_numa_balancing_scan_delay);
-+	debugfs_create_u32("scan_period_min_ms", 0644, numa, &sysctl_numa_balancing_scan_period_min);
-+	debugfs_create_u32("scan_period_max_ms", 0644, numa, &sysctl_numa_balancing_scan_period_max);
-+	debugfs_create_u32("scan_size_mb", 0644, numa, &sysctl_numa_balancing_scan_size);
+ 	debugfs_create_file("features", 0644, debugfs_sched, NULL, &sched_feat_fops);
+ 	debugfs_create_bool("debug_enabled", 0644, debugfs_sched, &sched_debug_enabled);
++#ifdef CONFIG_PREEMPT_DYNAMIC
++	debugfs_create_file("preempt", 0644, debugfs_sched, NULL, &sched_dynamic_fops);
 +#endif
  
- 	return 0;
- }
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 9b8ae02..b3ea14c 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -49,7 +49,7 @@ static unsigned int normalized_sysctl_sched_latency	= 6000000ULL;
-  *
-  * (default SCHED_TUNABLESCALING_LOG = *(1+ilog(ncpus))
-  */
--enum sched_tunable_scaling sysctl_sched_tunable_scaling = SCHED_TUNABLESCALING_LOG;
-+unsigned int sysctl_sched_tunable_scaling = SCHED_TUNABLESCALING_LOG;
- 
- /*
-  * Minimal preemption granularity for CPU-bound tasks:
-@@ -634,15 +634,10 @@ struct sched_entity *__pick_last_entity(struct cfs_rq *cfs_rq)
-  * Scheduling class statistics methods:
-  */
- 
--int sched_proc_update_handler(struct ctl_table *table, int write,
--		void *buffer, size_t *lenp, loff_t *ppos)
-+int sched_update_scaling(void)
- {
--	int ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
- 	unsigned int factor = get_update_sysctl_factor();
- 
--	if (ret || !write)
--		return ret;
--
- 	sched_nr_latency = DIV_ROUND_UP(sysctl_sched_latency,
- 					sysctl_sched_min_granularity);
- 
+ 	debugfs_create_u32("latency_ns", 0644, debugfs_sched, &sysctl_sched_latency);
+ 	debugfs_create_u32("min_granularity_ns", 0644, debugfs_sched, &sysctl_sched_min_granularity);
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 7e7e936..123ff3b 100644
+index 123ff3b..c312389 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -1568,6 +1568,8 @@ static inline void unregister_sched_domain_sysctl(void)
+@@ -2734,5 +2734,12 @@ static inline bool is_per_cpu_kthread(struct task_struct *p)
  }
  #endif
  
-+extern int sched_update_scaling(void);
+-void swake_up_all_locked(struct swait_queue_head *q);
+-void __prepare_to_swait(struct swait_queue_head *q, struct swait_queue *wait);
++extern void swake_up_all_locked(struct swait_queue_head *q);
++extern void __prepare_to_swait(struct swait_queue_head *q, struct swait_queue *wait);
 +
- extern void flush_smp_call_function_from_idle(void);
- 
- #else /* !CONFIG_SMP: */
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 17f1cc9..4bff44d 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -184,17 +184,6 @@ static enum sysctl_writes_mode sysctl_writes_strict = SYSCTL_WRITES_STRICT;
- int sysctl_legacy_va_layout;
- #endif
- 
--#ifdef CONFIG_SCHED_DEBUG
--static int min_sched_granularity_ns = 100000;		/* 100 usecs */
--static int max_sched_granularity_ns = NSEC_PER_SEC;	/* 1 second */
--static int min_wakeup_granularity_ns;			/* 0 usecs */
--static int max_wakeup_granularity_ns = NSEC_PER_SEC;	/* 1 second */
--#ifdef CONFIG_SMP
--static int min_sched_tunable_scaling = SCHED_TUNABLESCALING_NONE;
--static int max_sched_tunable_scaling = SCHED_TUNABLESCALING_END-1;
--#endif /* CONFIG_SMP */
--#endif /* CONFIG_SCHED_DEBUG */
--
- #ifdef CONFIG_COMPACTION
- static int min_extfrag_threshold;
- static int max_extfrag_threshold = 1000;
-@@ -1659,91 +1648,6 @@ static struct ctl_table kern_table[] = {
- 		.mode		= 0644,
- 		.proc_handler	= proc_dointvec,
- 	},
--#ifdef CONFIG_SCHED_DEBUG
--	{
--		.procname	= "sched_min_granularity_ns",
--		.data		= &sysctl_sched_min_granularity,
--		.maxlen		= sizeof(unsigned int),
--		.mode		= 0644,
--		.proc_handler	= sched_proc_update_handler,
--		.extra1		= &min_sched_granularity_ns,
--		.extra2		= &max_sched_granularity_ns,
--	},
--	{
--		.procname	= "sched_latency_ns",
--		.data		= &sysctl_sched_latency,
--		.maxlen		= sizeof(unsigned int),
--		.mode		= 0644,
--		.proc_handler	= sched_proc_update_handler,
--		.extra1		= &min_sched_granularity_ns,
--		.extra2		= &max_sched_granularity_ns,
--	},
--	{
--		.procname	= "sched_wakeup_granularity_ns",
--		.data		= &sysctl_sched_wakeup_granularity,
--		.maxlen		= sizeof(unsigned int),
--		.mode		= 0644,
--		.proc_handler	= sched_proc_update_handler,
--		.extra1		= &min_wakeup_granularity_ns,
--		.extra2		= &max_wakeup_granularity_ns,
--	},
--#ifdef CONFIG_SMP
--	{
--		.procname	= "sched_tunable_scaling",
--		.data		= &sysctl_sched_tunable_scaling,
--		.maxlen		= sizeof(enum sched_tunable_scaling),
--		.mode		= 0644,
--		.proc_handler	= sched_proc_update_handler,
--		.extra1		= &min_sched_tunable_scaling,
--		.extra2		= &max_sched_tunable_scaling,
--	},
--	{
--		.procname	= "sched_migration_cost_ns",
--		.data		= &sysctl_sched_migration_cost,
--		.maxlen		= sizeof(unsigned int),
--		.mode		= 0644,
--		.proc_handler	= proc_dointvec,
--	},
--	{
--		.procname	= "sched_nr_migrate",
--		.data		= &sysctl_sched_nr_migrate,
--		.maxlen		= sizeof(unsigned int),
--		.mode		= 0644,
--		.proc_handler	= proc_dointvec,
--	},
--#endif /* CONFIG_SMP */
--#ifdef CONFIG_NUMA_BALANCING
--	{
--		.procname	= "numa_balancing_scan_delay_ms",
--		.data		= &sysctl_numa_balancing_scan_delay,
--		.maxlen		= sizeof(unsigned int),
--		.mode		= 0644,
--		.proc_handler	= proc_dointvec,
--	},
--	{
--		.procname	= "numa_balancing_scan_period_min_ms",
--		.data		= &sysctl_numa_balancing_scan_period_min,
--		.maxlen		= sizeof(unsigned int),
--		.mode		= 0644,
--		.proc_handler	= proc_dointvec,
--	},
--	{
--		.procname	= "numa_balancing_scan_period_max_ms",
--		.data		= &sysctl_numa_balancing_scan_period_max,
--		.maxlen		= sizeof(unsigned int),
--		.mode		= 0644,
--		.proc_handler	= proc_dointvec,
--	},
--	{
--		.procname	= "numa_balancing_scan_size_mb",
--		.data		= &sysctl_numa_balancing_scan_size,
--		.maxlen		= sizeof(unsigned int),
--		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
--		.extra1		= SYSCTL_ONE,
--	},
--#endif /* CONFIG_NUMA_BALANCING */
--#endif /* CONFIG_SCHED_DEBUG */
- #ifdef CONFIG_SCHEDSTATS
- 	{
- 		.procname	= "sched_schedstats",
++#ifdef CONFIG_PREEMPT_DYNAMIC
++extern int preempt_dynamic_mode;
++extern int sched_dynamic_mode(const char *str);
++extern void sched_dynamic_update(int mode);
++#endif
++
