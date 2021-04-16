@@ -2,256 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48AFE3616AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 02:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E26303616AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 02:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236705AbhDPAGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 20:06:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51762 "EHLO
+        id S235405AbhDPAMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 20:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234874AbhDPAGp (ORCPT
+        with ESMTP id S234764AbhDPAMg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 20:06:45 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A632C061574;
-        Thu, 15 Apr 2021 17:06:22 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id r5so13513696ilb.2;
-        Thu, 15 Apr 2021 17:06:22 -0700 (PDT)
+        Thu, 15 Apr 2021 20:12:36 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06846C061574;
+        Thu, 15 Apr 2021 17:12:11 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id j7so13023240plx.2;
+        Thu, 15 Apr 2021 17:12:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=EWbin3LRnkS15U3EHv3eMCbIAS87ffxpyM/9vbY3Lzg=;
-        b=D/8Cbc+BN57QKfzgwDW602fm8QeBD/eeS3yntMAWrteS6+/3g21Z5e1/9WBDXdFYTE
-         vtDueXKy6V+q5igsW+YMOVVL+WSpCPlKgMZUam388Ui+W4fSqb4ES859pl91hx9Cfwqg
-         vBIyve5sxN1/be1PKrW5VFFHgx7q0H8p3Egy4OePZ/Mg2j1Zhl+kTs5jMS00r/jV+WMv
-         Ydqw3LCvU8ZkIN07dh5zQTffrg4OkuDx1C+QBnyNdPckJ3RXHvZ//5H4reT3dVjNs/ef
-         V9bV6Xpc9tzZxHD3Acw3Xz9roOjaWnw8m0SZyFKIKQ65OCDz9AfS5GN96uF2e3jurshu
-         xUUA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=XS9jf7c2Kn/z8NibUqzFqwM3JlkffV+BoajyGhE4uFo=;
+        b=mo1BkFPwqS6c6CkwjkDF6esSCOHgCMlmbcTjcV9SxD1/CnFRa/6ug4NA0e/hEPwMdp
+         0sbTfZYhpk+BhRcYsVQBvzvNRnu13U0vqEyOeRQmlKW1HiDsttuvOKUeAoGk5lUbv0Y7
+         yANgaw/Ir7dh/mlDX/DiONSXnlSofjD6W5Kh/qVzRKY/1W338p4whzwJQJsb1z0UC+lH
+         CHGTKC7xEyIdw5TR46dcW6w8xtYOpgjGYkD8y6mjH1LGarYIYCLcvmmeJG4qbEfTmwCg
+         d7RvXPVJd4Ye7HUpQ+gkqqmizhlfa/ZR2KuAYWbmDQXWPCoRFYHX22ID0LsfLuvI6e+n
+         P1Kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EWbin3LRnkS15U3EHv3eMCbIAS87ffxpyM/9vbY3Lzg=;
-        b=DanfMpcsV3NJS8vap9fzbMTjp2AN+s/uc7Jx3qZpQbT+C/iN+Xo9TTDnzc7pJhbpyI
-         Zbdxjl0F8cMDDTfJsDyntO81JFxokihmw0Y+X4hjLELOODJEMDkjaACSdGBlp8A+U7F/
-         Mu1dyKqQMzvaD0ygxj8n2tKbaA6pe3NgkMjxxRh+af7WxgSo4srAws57KxzejHGvfwtf
-         mRvKBiepV9KqV4me6omqBbqwwaebcE5YX5JGVscYC2QSUfPRQt5QKjfEJskh4XDk34Nf
-         wSoGxC9H9fUOITjs9g2mL62B9FkMrhfk8oNfds0iBZXDY+c8uUBonr9rpmT9VhkAprUB
-         NVIA==
-X-Gm-Message-State: AOAM532LCxPNPlnKTTKTY64xl3n0oFJ06euzrh6el6P04f1G3SUalBGW
-        pdPqevcLF3C00kCqaNpyu1aerCX5sXY5vdxSu24=
-X-Google-Smtp-Source: ABdhPJwYIVpY2PiGRL1ChoH7zY0yI9AASv+74317Ulc/lWUi9fukeFxGcFYreC0d7uiC2RamHfxQi/QgpeYsxRTi0P8=
-X-Received: by 2002:a05:6e02:1baf:: with SMTP id n15mr4893724ili.148.1618531581637;
- Thu, 15 Apr 2021 17:06:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=XS9jf7c2Kn/z8NibUqzFqwM3JlkffV+BoajyGhE4uFo=;
+        b=a6ZF5hAGYUSz7GZ3nnIYGQiHa2ZqCWiS22A+C8th0SyxPDHwjDhxrRT+HMQOhTUwlE
+         9YBhvAldDywGg8H90IaqRR3KdF/1mLDzoaE3RkL8zTkkQzMHaYOEKyoeyty9VCD67rev
+         wMzZEmdJc/OBn5a7paAm8epMmdfYmWbEpwjC9Gu3dQwtJtRx3Jep8gInOn4k64hE2zVY
+         brQQBHiopezp6RFCGfmRUUBEmy2N/8N7MQkQuoS+NaULSHyY1m/Gk5/lLRywV6Xlp/77
+         VrcTm4XJN/VCBchZwXcgzwSPZ9dyR6Hman0YIpMn5JL0RPEhFmqT50gkcmDEhvr2k6LF
+         HACw==
+X-Gm-Message-State: AOAM5319hrt6zAXDjRA4hsifkGxlaFkuQAC1qAyxlRegkl6HEv9x1AlG
+        4NxZgxLR20+9a2yAt7vMumw=
+X-Google-Smtp-Source: ABdhPJw86uCZIyZhfUfXRNdYT3BvkAgjE0TmQM8Ra+Ml2xGDSSsiy3C5xqlsxYPFzzSIgbQl2QEvaQ==
+X-Received: by 2002:a17:903:4101:b029:ea:fc8a:9adb with SMTP id r1-20020a1709034101b02900eafc8a9adbmr6686043pld.49.1618531931378;
+        Thu, 15 Apr 2021 17:12:11 -0700 (PDT)
+Received: from ilya-fury.hpicorp.net ([2602:61:7344:f100::b87])
+        by smtp.gmail.com with ESMTPSA id q63sm3563100pjq.17.2021.04.15.17.12.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 17:12:10 -0700 (PDT)
+From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+To:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>
+Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Subject: [PATCH net-next,v2] net: ethernet: mediatek: ppe: fix busy wait loop
+Date:   Thu, 15 Apr 2021 17:11:48 -0700
+Message-Id: <20210416001148.333969-1-ilya.lipnitskiy@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <YHjH3DxteZrID2hW@lunn.ch>
+References: <YHjH3DxteZrID2hW@lunn.ch>
 MIME-Version: 1.0
-References: <1618219898-4600-1-git-send-email-dillon.minfei@gmail.com>
- <YHRGPpQ03XgBMkiy@hovoldconsulting.com> <CAL9mu0JF-9hy3Z_ytpEO+hzKh0D+f-0gYaUBEA0v28EOHpC80w@mail.gmail.com>
- <CAL9mu0Ke97FUZ03jvdH8Lz2qRnVY82B7tAEtjbhW97sPOVkAxQ@mail.gmail.com> <e17fddfb-f9b8-238f-da74-a4746f33134f@foss.st.com>
-In-Reply-To: <e17fddfb-f9b8-238f-da74-a4746f33134f@foss.st.com>
-From:   Hua Dillon <dillonhua@gmail.com>
-Date:   Fri, 16 Apr 2021 08:06:10 +0800
-Message-ID: <CAPTRvHksyOR-XoLUOA+fCf33CWj--Y8jUiN99qMFcnxrQ3M_FA@mail.gmail.com>
-Subject: Re: [PATCH v2] serial: stm32: optimize spin lock usage
-To:     Erwan LE RAY <erwan.leray@foss.st.com>
-Cc:     dillon min <dillon.minfei@gmail.com>,
-        Johan Hovold <johan@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        kernel test robot <lkp@intel.com>,
-        linux-serial@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        Gerald Baeza <gerald.baeza@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Erwan,
+The intention is for the loop to timeout if the body does not succeed.
+The current logic calls time_is_before_jiffies(timeout) which is false
+until after the timeout, so the loop body never executes.
 
-Erwan LE RAY <erwan.leray@foss.st.com> =E4=BA=8E2021=E5=B9=B44=E6=9C=8816=
-=E6=97=A5=E5=91=A8=E4=BA=94 =E4=B8=8A=E5=8D=881:10=E5=86=99=E9=81=93=EF=BC=
-=9A
->
-> Hi Dillon,
->
-> STM32MP151 is mono-core, but both STM32MP153 and STM32MP157 are
-> dual-core (see
-> https://www.st.com/content/st_com/en/products/microcontrollers-microproce=
-ssors/stm32-arm-cortex-mpus.html).
-> So your point is fully relevant, thanks.
+Fix by using readl_poll_timeout as a more standard and less error-prone
+solution.
 
-Thanks.
->
-> ST already fixed the same issue in st-asc.c driver in the past (see
-> ef49ffd8), because a systematic deadlock was detected with RT kernel.
->
-> You proposed a first implementation in your patch, and a second one in
-> the discussion. It seems that your initial proposal (ie your V2 patch)
-> is the most standard one (implemented in 6 drivers). The second
-> implementation is implemented by only 1 company.
->
-> It looks that the solution is to avoid locking in the sysrq case and
-> trylock in the oops_in_progress case (see detailed analysis in
-> 677fe555cbfb1).
+Fixes: ba37b7caf1ed ("net: ethernet: mtk_eth_soc: add support for initializing the PPE")
+Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc: Felix Fietkau <nbd@nbd.name>
+---
+ drivers/net/ethernet/mediatek/mtk_ppe.c | 18 +++++++++---------
+ drivers/net/ethernet/mediatek/mtk_ppe.h |  1 +
+ 2 files changed, 10 insertions(+), 9 deletions(-)
 
-Thanks for the detail information. the V2 patch didn't cover this case:
+diff --git a/drivers/net/ethernet/mediatek/mtk_ppe.c b/drivers/net/ethernet/mediatek/mtk_ppe.c
+index 71e1ccea6e72..f4b3fc0eeb50 100644
+--- a/drivers/net/ethernet/mediatek/mtk_ppe.c
++++ b/drivers/net/ethernet/mediatek/mtk_ppe.c
+@@ -5,6 +5,7 @@
+ #include <linux/jiffies.h>
+ #include <linux/delay.h>
+ #include <linux/io.h>
++#include <linux/iopoll.h>
+ #include <linux/etherdevice.h>
+ #include <linux/platform_device.h>
+ #include "mtk_ppe.h"
+@@ -44,18 +45,17 @@ static u32 ppe_clear(struct mtk_ppe *ppe, u32 reg, u32 val)
+ 
+ static int mtk_ppe_wait_busy(struct mtk_ppe *ppe)
+ {
+-	unsigned long timeout = jiffies + HZ;
+-
+-	while (time_is_before_jiffies(timeout)) {
+-		if (!(ppe_r32(ppe, MTK_PPE_GLO_CFG) & MTK_PPE_GLO_CFG_BUSY))
+-			return 0;
++	int ret;
++	u32 val;
+ 
+-		usleep_range(10, 20);
+-	}
++	ret = readl_poll_timeout(ppe->base + MTK_PPE_GLO_CFG, val,
++				 !(val & MTK_PPE_GLO_CFG_BUSY),
++				 20, MTK_PPE_WAIT_TIMEOUT_US);
+ 
+-	dev_err(ppe->dev, "PPE table busy");
++	if (ret)
++		dev_err(ppe->dev, "PPE table busy");
+ 
+-	return -ETIMEDOUT;
++	return ret;
+ }
+ 
+ static void mtk_ppe_cache_clear(struct mtk_ppe *ppe)
+diff --git a/drivers/net/ethernet/mediatek/mtk_ppe.h b/drivers/net/ethernet/mediatek/mtk_ppe.h
+index 51bd5e75bbbd..242fb8f2ae65 100644
+--- a/drivers/net/ethernet/mediatek/mtk_ppe.h
++++ b/drivers/net/ethernet/mediatek/mtk_ppe.h
+@@ -12,6 +12,7 @@
+ #define MTK_PPE_ENTRIES_SHIFT		3
+ #define MTK_PPE_ENTRIES			(1024 << MTK_PPE_ENTRIES_SHIFT)
+ #define MTK_PPE_HASH_MASK		(MTK_PPE_ENTRIES - 1)
++#define MTK_PPE_WAIT_TIMEOUT_US		1000000
+ 
+ #define MTK_FOE_IB1_UNBIND_TIMESTAMP	GENMASK(7, 0)
+ #define MTK_FOE_IB1_UNBIND_PACKETS	GENMASK(23, 8)
+-- 
+2.31.1
 
-    stm32_usart_threaded_interrupt()
-      spin_lock(&port->lock);
-      ...
-      uart_handle_sysrq_char();
-        sysrq_function();
-          printk();
-            stm32_usart_console_write();
-              locked =3D spin_trylock_irqsave(&port->lock); //better
-than no lock(locked =3D 0) if other uart interrupt coming at this point
-
-Find a same solution on fsl_lpuart.c
-commit abf1e0a98083fd0a1069ce68ad8c92bfb97a57db
-
-Thanks.
-
-Best regards
-Dillon
->
-> So your initial patch looks to the right proposal, but it would be safer
-> if Greg could confirm it.
->
-> BR, Erwan.
->
->
-> On 4/13/21 1:44 AM, dillon min wrote:
-> > Hi Johan, Erwan
-> >
-> > It seems still a bit of a problem in the current version, not deadlock
-> > but access register at the same time.
-> >
-> > For driver , we should consider it running under smp, let's think
-> > about it for this case:
-> >
-> > static void stm32_usart_console_write(struct console *co, const char *s=
-,
-> >                                        unsigned int cnt)
-> > {
-> >           .....
-> >           local_irq_save(flags);
-> >           if (port->sysrq)
-> >                      locked =3D 0;
-> >           .....
-> >           access register cr1, tdr, isr
-> >           .....
-> >
-> >           local_irq_restore(flags);
-> > }
-> >
-> > if port->sysrq is 1, stm32_usart_console_write() just disable local
-> > irq response by local_irq_save(), at the time of access register cr1,
-> > tdr, isr. an TXE interrupt raised, for other cores(I know stm32
-> > mpu/mcu do not have multi cores, just assume it has), it still has a
-> > chance to handle interrupt.  Then there is no lock to protect the uart
-> > register.
-> >
-> > changes to below, should be more safe:
-> >
-> > .....
-> > if (port->sysrq || oops_in_progress)
-> >        locked =3D spin_trylock_irqsave(&port->lock, flags);
-> > else
-> >        spin_lock_irqsave(&port->lock, flags);
-> >
-> > ....
-> >
-> > if (locked)
-> >       spin_unlock_irqrestore(&port->lock, flags);
-> >
-> > For current stm32 soc, it shouldn't happen. just a reminder for future.
-> >
-> > Thanks.
-> >
-> > Dillon
-> >
-> > On Mon, Apr 12, 2021 at 10:04 PM dillon min <dillon.minfei@gmail.com> w=
-rote:
-> >>
-> >> Hi Johan,
-> >>
-> >> Yes, there is no deadlock. my fault.
-> >> I forget the local_irq_save() plus spin_lock() is spin_lock_irqsave().
-> >>
-> >> Thanks for your review. please ignore this patch.
-> >>
-> >> Best regards
-> >>
-> >> Dillon
-> >>
-> >> On Mon, Apr 12, 2021 at 9:08 PM Johan Hovold <johan@kernel.org> wrote:
-> >>>
-> >>> On Mon, Apr 12, 2021 at 05:31:38PM +0800, dillon.minfei@gmail.com wro=
-te:
-> >>>> From: dillon min <dillon.minfei@gmail.com>
-> >>>>
-> >>>> To avoid potential deadlock in spin_lock usage, use spin_lock_irqsav=
-e,
-> >>>> spin_trylock_irqsave(), spin_unlock_irqrestore() in process context.
-> >>>
-> >>> This doesn't make much sense as console_write can be called in any
-> >>> context. And where's the deadlock you claim to be fixing here?
-> >>>
-> >>>> remove unused local_irq_save/restore call.
-> >>>>
-> >>>> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-> >>>> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-> >>>> Cc: Gerald Baeza <gerald.baeza@foss.st.com>
-> >>>> Cc: Erwan Le Ray <erwan.leray@foss.st.com>
-> >>>> Reported-by: kernel test robot <lkp@intel.com>
-> >>>> Signed-off-by: dillon min <dillon.minfei@gmail.com>
-> >>>> ---
-> >>>> v2: remove unused code from stm32_usart_threaded_interrupt() accordi=
-ng from
-> >>>>      Greg's review.
-> >>>>
-> >>>>   drivers/tty/serial/stm32-usart.c | 8 +++-----
-> >>>>   1 file changed, 3 insertions(+), 5 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/s=
-tm32-usart.c
-> >>>> index b3675cf25a69..b1ba5e36e36e 100644
-> >>>> --- a/drivers/tty/serial/stm32-usart.c
-> >>>> +++ b/drivers/tty/serial/stm32-usart.c
-> >>>> @@ -1354,13 +1354,12 @@ static void stm32_usart_console_write(struct=
- console *co, const char *s,
-> >>>>        u32 old_cr1, new_cr1;
-> >>>>        int locked =3D 1;
-> >>>>
-> >>>> -     local_irq_save(flags);
-> >>>>        if (port->sysrq)
-> >>>>                locked =3D 0;
-> >>>>        else if (oops_in_progress)
-> >>>> -             locked =3D spin_trylock(&port->lock);
-> >>>> +             locked =3D spin_trylock_irqsave(&port->lock, flags);
-> >>>>        else
-> >>>> -             spin_lock(&port->lock);
-> >>>> +             spin_lock_irqsave(&port->lock, flags);
-> >>>>
-> >>>>        /* Save and disable interrupts, enable the transmitter */
-> >>>>        old_cr1 =3D readl_relaxed(port->membase + ofs->cr1);
-> >>>> @@ -1374,8 +1373,7 @@ static void stm32_usart_console_write(struct c=
-onsole *co, const char *s,
-> >>>>        writel_relaxed(old_cr1, port->membase + ofs->cr1);
-> >>>>
-> >>>>        if (locked)
-> >>>> -             spin_unlock(&port->lock);
-> >>>> -     local_irq_restore(flags);
-> >>>> +             spin_unlock_irqrestore(&port->lock, flags);
-> >>>>   }
-> >>>>
-> >>>>   static int stm32_usart_console_setup(struct console *co, char *opt=
-ions)
-> >>>
-> >>> Johan
