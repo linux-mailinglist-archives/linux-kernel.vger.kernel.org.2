@@ -2,108 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB26D36211D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4187B362126
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244068AbhDPNiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 09:38:19 -0400
-Received: from mga07.intel.com ([134.134.136.100]:58122 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240255AbhDPNiS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 09:38:18 -0400
-IronPort-SDR: utfLtOBUOmfvFAofQSLgo7oyJFJ1r1Q5Rc26pncKUxbTDfo/6VYIetT1d05bTcZSIoOl+kAQNq
- dcz19SfVHd7g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="258997543"
-X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
-   d="scan'208";a="258997543"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 06:37:53 -0700
-IronPort-SDR: 8dvdtdypufG707Mx+5ZL29GNEAAlplLat4g+afwTSoljBiRLyUMrP309/ZUwc2Y7+rkUkDPCa1
- OHM0ukp3k5zg==
-X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
-   d="scan'208";a="399910046"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 06:37:51 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lXOfM-004ezF-70; Fri, 16 Apr 2021 16:37:48 +0300
-Date:   Fri, 16 Apr 2021 16:37:48 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jan Sebastian =?iso-8859-1?Q?G=F6tte?= <linux@jaseg.net>,
-        Phil Reid <preid@electromag.com.au>,
-        Nishad Kamdar <nishadkamdar@gmail.com>
-Subject: Re: [PATCH v1 1/2] fbtft: Rectify GPIO handling
-Message-ID: <YHmTLPWT/BoTik/P@smile.fi.intel.com>
-References: <20210416123117.4993-1-andriy.shevchenko@linux.intel.com>
- <YHmIb2YrwfzZa7Wh@kroah.com>
+        id S244101AbhDPNix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 09:38:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50360 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235535AbhDPNis (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 09:38:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618580303;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ORKl8cG3pXQFZT6dMTWhjbu3j7T6kEqKkWZLykCofkk=;
+        b=A677PCkGXoMrtrw2EifpBvHZ3IlbQ/abd6eu3vZnRHODEX1WMLDtjkYa1w0A6yTYKUrHeF
+        istzAxTU86oEQVH0fyiCsrEz9YwSho0JWPWvv3eGdiu9qTxkavO028wLMp+VMmsvv+eEuR
+        SfgctE7vGjBPmwAwZyJ0S1bDYKWl2kA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-269-rdYtHHQlPP-nLVltZYYZvA-1; Fri, 16 Apr 2021 09:38:21 -0400
+X-MC-Unique: rdYtHHQlPP-nLVltZYYZvA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3FFCA107ACCA;
+        Fri, 16 Apr 2021 13:38:18 +0000 (UTC)
+Received: from [10.36.113.21] (ovpn-113-21.ams2.redhat.com [10.36.113.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3276A19D9F;
+        Fri, 16 Apr 2021 13:38:04 +0000 (UTC)
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
+ APIs
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>
+References: <BN6PR11MB40688F5AA2323AB8CC8E65E7C37C9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <20210331124038.GE1463678@nvidia.com>
+ <BN6PR11MB406854CAE9D7CE86BEAB3E23C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <BN6PR11MB40687428F0D0F3B5F13EA3E0C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <YGW27KFt9eQB9X2z@myrica>
+ <BN6PR11MB4068171CD1D4B823515F7EFBC37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <20210401134236.GF1463678@nvidia.com>
+ <BN6PR11MB4068C4DE7AF43D44DE70F4C1C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <20210401160337.GJ1463678@nvidia.com>
+ <4bea6eb9-08ad-4b6b-1e0f-c97ece58a078@redhat.com>
+ <20210415230732.GG1370958@nvidia.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <b1492fd3-8ce2-1632-3b14-73d8d4356fd7@redhat.com>
+Date:   Fri, 16 Apr 2021 15:38:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHmIb2YrwfzZa7Wh@kroah.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210415230732.GG1370958@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 02:51:59PM +0200, Greg Kroah-Hartman wrote:
-> On Fri, Apr 16, 2021 at 03:31:16PM +0300, Andy Shevchenko wrote:
-> > The infamous commit c440eee1a7a1 ("Staging: fbtft: Switch to
-> > the GPIO descriptor interface") broke GPIO handling completely.
-> > It has already four commits to rectify and it seems not enough.
-> > In order to fix the mess here we:
-> > 
-> >   1) Set default to "inactive" for all requested pins
-> > 
-> >   2) Fix CS, RD, and WR pins polarity since it's active low and
-> >      GPIO descriptor interface takes it into consideration from
-> >      the Device Tree or ACPI
-> > 
-> >   3) Fix RESET pin polarity in the places missed by the commit
-> >      b918d1c27066 ("Staging: fbtft: Fix reset assertion when using gpio descriptor")
-> > 
-> >   4) Consolidate chip activation (CS assert) under default
-> >      ->reset() callback
-> > 
-> > To summarize the expectations about polarity for GPIOs:
-> > 
-> >    #RD			Low
-> >    #WR			Low
-> >    #CS			Low
-> >    #RESET		Low
-> >    DC or RS		High
-> >    RW			High
-> >    Data	0..15		High
-> > 
-> > See also Adafruit learning course [1] for the example of the schematics.
-> > 
-> > While at it, drop unneeded NULL checks, since GPIO API is tolerant to that.
-> > At the end, update TODO to mark this job eventually done.
-> > 
-> > [1]: https://learn.adafruit.com/adafruit-2-8-and-3-2-color-tft-touchscreen-breakout-v2/downloads
+Hi Jason,
+
+On 4/16/21 1:07 AM, Jason Gunthorpe wrote:
+> On Thu, Apr 15, 2021 at 03:11:19PM +0200, Auger Eric wrote:
+>> Hi Jason,
+>>
+>> On 4/1/21 6:03 PM, Jason Gunthorpe wrote:
+>>> On Thu, Apr 01, 2021 at 02:08:17PM +0000, Liu, Yi L wrote:
+>>>
+>>>> DMA page faults are delivered to root-complex via page request message and
+>>>> it is per-device according to PCIe spec. Page request handling flow is:
+>>>>
+>>>> 1) iommu driver receives a page request from device
+>>>> 2) iommu driver parses the page request message. Get the RID,PASID, faulted
+>>>>    page and requested permissions etc.
+>>>> 3) iommu driver triggers fault handler registered by device driver with
+>>>>    iommu_report_device_fault()
+>>>
+>>> This seems confused.
+>>>
+>>> The PASID should define how to handle the page fault, not the driver.
+>>
+>> In my series I don't use PASID at all. I am just enabling nested stage
+>> and the guest uses a single context. I don't allocate any user PASID at
+>> any point.
+>>
+>> When there is a fault at physical level (a stage 1 fault that concerns
+>> the guest), this latter needs to be reported and injected into the
+>> guest. The vfio pci driver registers a fault handler to the iommu layer
+>> and in that fault handler it fills a circ bugger and triggers an eventfd
+>> that is listened to by the VFIO-PCI QEMU device. this latter retrives
+>> the faault from the mmapped circ buffer, it knowns which vIOMMU it is
+>> attached to, and passes the fault to the vIOMMU.
+>> Then the vIOMMU triggers and IRQ in the guest.
+>>
+>> We are reusing the existing concepts from VFIO, region, IRQ to do that.
+>>
+>> For that use case, would you also use /dev/ioasid?
 > 
-> Shouldn't this be broken up into "one patch per thing" from your list
-> above?  Feels like you did a lot of different things all in the same
-> patch :(
+> /dev/ioasid could do all the things you described vfio-pci as doing,
+> it can even do them the same way you just described.
+> 
+> Stated another way, do you plan to duplicate all of this code someday
+> for vfio-cxl? What about for vfio-platform? ARM SMMU can be hooked to
+> platform devices, right?
+vfio regions and IRQ related APIs are common user interfaces exposed by
+all vfio drivers, including platform. Then the actual circular buffer
+implementation details can be put in a common lib.
 
-I am aware, but breaking to the things here will bring it to the state where
-the functionality is still broken in between. Another point is that the drop
-of unneeded checks will bring the modification of the same line in the code
-twice. Or if you look at 5), for instance, due to CS management breakage,
-fixing it w/o 5) will bring it to the weird case that previously handled CS
-due to lucky defaults from firmware or bootloader, suddenly won't work and
-nothing can help it. The split in this case would look like adding the CS
-handling to all drivers followed by removal all of them. I think it's ugly.
-And so on. Believe me, I really tried hard to split this, but it always
-becomes to undesired result.
+as for the thin vfio iommu wrappers, the ones you don't like, they are
+implemented in type1 code.
 
-Any ideas how to split that we fix stuff in one commit?
+Maybe the need for /dev/ioasid is more crying for PASID management but
+for the nested use case, that's not obvious to me and in your different
+replies, it was not crystal clear where the use case belongs to.
+
+The redesign requirement came pretty late in the development process.
+The iommu user API is upstream for a while, the VFIO interfaces have
+been submitted a long time ago and under review for a bunch of time.
+Redesigning everything with a different API, undefined at this point, is
+a major setback for our work and will have a large impact on the
+introduction of features companies are looking forward, hence our
+frustration.
+
+Thanks
+
+Eric
 
 
--- 
-With Best Regards,
-Andy Shevchenko
-
+> 
+> I feel what you guys are struggling with is some choice in the iommu
+> kernel APIs that cause the events to be delivered to the pci_device
+> owner, not the PASID owner.
+> 
+> That feels solvable.
+> 
+> Jason
+> 
 
