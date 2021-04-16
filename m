@@ -2,147 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5EA362925
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 22:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56CDC362929
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 22:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244851AbhDPUVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 16:21:49 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4498 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234654AbhDPUVr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 16:21:47 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13GK3Ra5095602;
-        Fri, 16 Apr 2021 16:21:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=EXbZeS34P+SiTyeIevH74JohvMoAWHhbNDjOk0wj1yk=;
- b=qMqB4MdhnwZTma4lXPYmUBMlDrsgLtsfwxOkSpgrOgpK2kyDjYih5EAXctQ4CmZWVKCL
- wz79+BPE41lCmR6949/nv+Ewd+/sKpbaUqjfc4bNnm7aG+oTz29EbU/CjFugQvhFoDg2
- /uxSrXxYAyErDyu2mWQtarH9c8XIRyY2Oo8vc9hYWi7q5CFFmHL1DNXvVKsOFzBCr/Sw
- Dk9e9f53tZGQ/yK7IrphECnxxszZeEcezwt4ppOYUogoxtjyrkJgsRJQ+Xk205e1Gkw/
- CjpDv+eW6IjbDUdz9dHzk69VJffqnT0FpCsLMDdl415Ivt+sDS1cmCLnxiVdGwhrF3k4 7g== 
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37yecx586q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 16:21:12 -0400
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13GKIANc021101;
-        Fri, 16 Apr 2021 20:21:12 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma01dal.us.ibm.com with ESMTP id 37u3nah3m3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 20:21:12 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13GKLBMA10223886
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Apr 2021 20:21:11 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 31D1BB206B;
-        Fri, 16 Apr 2021 20:21:11 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 83A26B2064;
-        Fri, 16 Apr 2021 20:21:10 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.160.122.125])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 16 Apr 2021 20:21:10 +0000 (GMT)
-Subject: Re: [PATCH] powerpc/pseries: extract host bridge from pci_bus prior
- to bus removal
-To:     Daniel Axtens <dja@axtens.net>, mpe@ellerman.id.au
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20210211182435.47968-1-tyreld@linux.ibm.com>
- <878s5ig0p7.fsf@linkitivity.dja.id.au>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <9ff72ca1-debd-9bc5-c445-db68e673f3ef@linux.ibm.com>
-Date:   Fri, 16 Apr 2021 13:21:09 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S245111AbhDPUXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 16:23:13 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:51740 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234654AbhDPUXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 16:23:12 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 13GKMFDa011534;
+        Fri, 16 Apr 2021 22:22:15 +0200
+Date:   Fri, 16 Apr 2021 22:22:15 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH 04/13] Kbuild: Rust support
+Message-ID: <20210416202215.GA11236@1wt.eu>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <20210414184604.23473-5-ojeda@kernel.org>
+ <YHmTWEAS/QjX++w4@hirez.programming.kicks-ass.net>
+ <CAHk-=wh_zb=K1B-N8mgHmSZDqTLgOm711NRXbTX_OwFAzDYg0Q@mail.gmail.com>
+ <CANiq72nx7ngazsH7sZgc=HeU0cNj45F9+-rwQb7AkdYsRCmRbQ@mail.gmail.com>
+ <YHnS92ZKZ4tRWTiA@zeniv-ca.linux.org.uk>
+ <CANiq72=RLf0FiuLVL-ZeLFp9P2LxTymbzhXoyQGG=tvUY_J-Sg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <878s5ig0p7.fsf@linkitivity.dja.id.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: SWU3kPdSE_fHBZtWaq6ahJVrfr8XNqfA
-X-Proofpoint-GUID: SWU3kPdSE_fHBZtWaq6ahJVrfr8XNqfA
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-16_09:2021-04-16,2021-04-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 impostorscore=0 clxscore=1011 priorityscore=1501
- adultscore=0 phishscore=0 bulkscore=0 suspectscore=0 spamscore=0
- mlxlogscore=999 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104160140
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANiq72=RLf0FiuLVL-ZeLFp9P2LxTymbzhXoyQGG=tvUY_J-Sg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/16/21 12:15 AM, Daniel Axtens wrote:
-> Hi Tyrel,
+On Fri, Apr 16, 2021 at 08:57:07PM +0200, Miguel Ojeda wrote:
+> On Fri, Apr 16, 2021 at 8:10 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> >
+> > How well would ? operator fit that pattern?  _If_ it's just a syntax sugar
+> > along the lines of "if argument matches Err(_), return Err(_)", the types
+> > shouldn't be an issue, but that might need some fun with releasing resources,
+> > etc.  If it's something more elaborate... details, please.
 > 
->> The pci_bus->bridge reference may no longer be valid after
->> pci_bus_remove() resulting in passing a bad value to device_unregister()
->> for the associated bridge device.
->>
->> Store the host_bridge reference in a separate variable prior to
->> pci_bus_remove().
->>
-> The patch certainly seems to do what you say. I'm not really up on the
-> innards of PCI, so I'm struggling to figure out by what code path
-> pci_bus_remove() might invalidate pci_bus->bridge? A quick look at
-> pci_remove_bus was not very illuminating but I didn't chase down every
-> call it made.
-
-remove_phb_dynamic()
-|--> pci_remove_bus(bus)
-     |--> device_unregister(&bus->dev)
-          |--> put_device(dev)
-               |--> device_release(kobj)
-                    |--> dev->class->dev_release(dev) == release_pci_bus(dev)
-                         |--> kfree(bus)
-
-We have the above call chain that takes place in the when put_device() triggers
-the kobject ref count to go zero. The kobject_release function in this case is
-device_release() which in turn calls dev->class->dev_release(dev). For a pci_bus
-the class is appropriately pcibus_class whose dev_release() callback points to
-release_pci_bus(). This in turn calls kfree() on the bus. Which means we can no
-longer safely dereference any fields of the pci_bus struct.
-
--Tyrel
-
+> Yes, it is just syntax sugar -- it doesn't introduce any power to the language.
 > 
-> Kind regards,
-> Daniel
+> It was introduced because it is a very common pattern when using the
+> `Result` and `Option` enums. In fact, before it existed, it was just a
+> simple macro that you could also implement yourself.
 > 
->> Fixes: 7340056567e3 ("powerpc/pci: Reorder pci bus/bridge unregistration during PHB removal")
->> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
->> ---
->>  arch/powerpc/platforms/pseries/pci_dlpar.c | 4 +++-
->>  1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/powerpc/platforms/pseries/pci_dlpar.c b/arch/powerpc/platforms/pseries/pci_dlpar.c
->> index f9ae17e8a0f4..a8f9140a24fa 100644
->> --- a/arch/powerpc/platforms/pseries/pci_dlpar.c
->> +++ b/arch/powerpc/platforms/pseries/pci_dlpar.c
->> @@ -50,6 +50,7 @@ EXPORT_SYMBOL_GPL(init_phb_dynamic);
->>  int remove_phb_dynamic(struct pci_controller *phb)
->>  {
->>  	struct pci_bus *b = phb->bus;
->> +	struct pci_host_bridge *host_bridge = to_pci_host_bridge(b->bridge);
->>  	struct resource *res;
->>  	int rc, i;
->>  
->> @@ -76,7 +77,8 @@ int remove_phb_dynamic(struct pci_controller *phb)
->>  	/* Remove the PCI bus and unregister the bridge device from sysfs */
->>  	phb->bus = NULL;
->>  	pci_remove_bus(b);
->> -	device_unregister(b->bridge);
->> +	host_bridge->bus = NULL;
->> +	device_unregister(&host_bridge->dev);
->>  
->>  	/* Now release the IO resource */
->>  	if (res->flags & IORESOURCE_IO)
->> -- 
->> 2.27.0
+> For instance, given `Foo` and `Bar` types that need RAII cleanup of
+> some kind (let's say `kill_foo()` and `kill_bar()`):
+> 
+>     fn foo() -> KernelResult<Foo> {
+>         if black_box() {
+>             return Err(EINVAL);
+>         }
+> 
+>         // something that gets you a `Foo`
+>         let foo = ...;
+> 
+>         Ok(foo)
+>     }
+> 
+>     fn bar() -> KernelResult<Bar> {
+>         let p = foo()?;
+> 
+>         // something that gets you a `Bar`, possibly using the `p`
+>         let bar = ...;
+> 
+>         Ok(bar)
+>     }
+> 
+> This reduces to (full example at https://godbolt.org/z/hjTxd3oP1):
+> 
+>     bar:
+>             push    rbx
+>             mov     ebx, 1
+>             call    qword ptr [rip + black_box@GOTPCREL]
+>             test    al, al
+>             jne     .LBB2_2
+>             call    qword ptr [rip + kill_foo@GOTPCREL]
+>             xor     ebx, ebx
+>     .LBB2_2:
+>             mov     eax, ebx
+>             mov     edx, -1234
+>             pop     rbx
+>             ret
+> 
+> You can see `bar()` calls `black_box()`. If it failed, it returns the
+> EINVAL. Otherwise, it cleans up the `foo` automatically and returns
+> the successful `bar`.
 
+So it simply does the equivalent of:
+
+  #define EINVAL -1234
+
+  struct result {
+     int status;
+     int error;
+  };
+
+  extern bool black_box();
+  extern void kill_foo();
+
+  struct result bar()
+  {
+     return (struct error){ !!black_box(), EINVAL };
+  }
+
+  struct result foo()
+  {
+     struct result res = bar();
+
+     if (res.status)
+        goto leave;
+     /* ... */
+     kill_foo();   // only for rust, C doesn't need it
+  leave:
+     return res;
+  }
+
+So it simply returns a pair of values instead of a single one, which
+is nothing special but not much conventional in the kernel either given
+that ultimately syscalls will usually return a single value anyway. At
+some point some code will have to remerge them to provide a composite
+result and even take care of ambigous special cases like { true, 0 }
+which may or may not indicate an error, and avoiding to consider the
+unused error code on success.
+
+For example some code called from mmap() might have to deal with this
+this way:
+
+   if (result.status == (void *)-1)
+       return -result.error;
+   else
+       return result.status;
+
+But possibly a lot of code feeding this result struct would be tempted
+to do something like this to deal with NULL returns:
+
+   result.status = foo_alloc();
+   if (!result.status) {
+       result.error = -ENOMEM;
+       return result;
+   }
+
+And suddenly the error is lost, as a NULL is returned to the upper layers
+which does not correspond to an failure status. Conversely, with a unique
+result you'd do something like this:
+
+   result = foo_alloc();
+   if (!result)
+       return -ENOMEM;
+
+So it might possibly be safer to stick to the usually expected return
+values instead of introducing composite ones.
+
+I tend to agree that composite results can be better from new projects
+started from scratch when all the API follows this principle, but here
+there's quite a massive code base that was not designed along these
+lines and I easily see how this can become a source of trouble over
+time.
+
+Willy
