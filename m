@@ -2,53 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4BD362499
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 413BF3624A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236317AbhDPPyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 11:54:24 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58208 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235890AbhDPPyI (ORCPT
+        id S237672AbhDPPyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 11:54:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235976AbhDPPyJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 11:54:08 -0400
-Date:   Fri, 16 Apr 2021 15:53:41 -0000
+        Fri, 16 Apr 2021 11:54:09 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D88DDC061756;
+        Fri, 16 Apr 2021 08:53:44 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 15:53:42 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618588422;
+        s=2020; t=1618588423;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=QIGyW2vtnrWu1C6GgUWW5iEzLps1sh6zroMV1GPrKzo=;
-        b=YNz92SjrEFNmAzZdsCfnHmivxkMJyHUiHHc1w1OfQjYQM8D/cMXWxSHa4dyqGrK1GUQVvb
-        bSQBwMWKQsxA8aAlbIO7m+/hUBpL7dRhZVh57IfcZTe4QqCAaYqPKblMqVaP6+8RmjqNd9
-        JGUNVHju8OcBVeB5BRHaCdmmDm4zJ7Iyo+Ff46UU7XSGjKGEXHTLlvh+RPX66nuKFXDaOm
-        v+Fk3TDzReTGHL3uUd9tJhLgMZA0H5kedh3PAlHen9vYgB7B2pLa2msQhBFfBOk5aBdUDu
-        4YgQilhkszmYZyqS+cT34LEG8tP7bEOnSn5e+RnudGGL7Vj4F28+Z998E90KOA==
+        bh=UhW2gRea8qcyEIBHPmVodnEM2KLLrp/GfJ7mLerg8eo=;
+        b=WzkuTLZrVcUfqxOMkQo0tsRoiEIvlMJMM3UNCrnPSKTdE35/LapmpctSrXz/NPlqDXxYlV
+        jC6ML1o4rsf9lCUK9Vc62o3vWkbSeIi0TGBjHup7lJhIpdnlyHYCkXANf+BLivHE5vTWe+
+        8Sc2vmIMmq05NSj32E1F1ro0yseSaP3wkOGLifOT5a8uWuO/eM1JfkBQtoflWY1fipdvUL
+        DxI2U1+Jr0FUUqBVy3wmyKr/og2i6oyS1qGsGLWe6kHrgafkOvoeqJGeXPQHI5hTm6Brhf
+        KYBwJP61MaGQh4clPG0F7J3YCwekuNd9v3tLB6yEM2G6wR1ra/895iu7kR/6gw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618588422;
+        s=2020e; t=1618588423;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=QIGyW2vtnrWu1C6GgUWW5iEzLps1sh6zroMV1GPrKzo=;
-        b=7oOqO8GhbUusV6OlZOoqf4cT8TgZU9ryd7z0UM7afLCLS3qaCoEMOsn6qSLW+yzyDsGiO+
-        Ghml3Fzs7tWqDgBg==
+        bh=UhW2gRea8qcyEIBHPmVodnEM2KLLrp/GfJ7mLerg8eo=;
+        b=17DS8q0nGa6CoDZRQBP9kHDE+R0ci33w3PtNqchAURt3BeWqmTUUL/xfC8bTDBuZIMnEV8
+        uZONypMUg+zFIVDw==
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched,debug: Convert sysctl sched_domains to debugfs
+Subject: [tip: sched/core] sched: Move SCHED_DEBUG sysctl to debugfs
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
         Valentin Schneider <valentin.schneider@arm.com>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <s4KCBQ1ifdm@hirez.programming.kicks-ass.net>
-References: <s4KCBQ1ifdm@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210412102001.287610138@infradead.org>
+References: <20210412102001.287610138@infradead.org>
 MIME-Version: 1.0
-Message-ID: <161858842162.29796.1693217441845241647.tip-bot2@tip-bot2>
+Message-ID: <161858842284.29796.3853677323211839924.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,394 +62,329 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     3b87f136f8fccddf7da016ab7d04bb3cf9b180f0
-Gitweb:        https://git.kernel.org/tip/3b87f136f8fccddf7da016ab7d04bb3cf9b180f0
+Commit-ID:     8a99b6833c884fa0e7919030d93fecedc69fc625
+Gitweb:        https://git.kernel.org/tip/8a99b6833c884fa0e7919030d93fecedc69fc625
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Thu, 25 Mar 2021 11:31:20 +01:00
+AuthorDate:    Wed, 24 Mar 2021 11:43:21 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 16 Apr 2021 17:06:35 +02:00
+CommitterDate: Fri, 16 Apr 2021 17:06:34 +02:00
 
-sched,debug: Convert sysctl sched_domains to debugfs
+sched: Move SCHED_DEBUG sysctl to debugfs
 
-Stop polluting sysctl, move to debugfs for SCHED_DEBUG stuff.
+Stop polluting sysctl with undocumented knobs that really are debug
+only, move them all to /debug/sched/ along with the existing
+/debug/sched_* files that already exist.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Tested-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/YHgB/s4KCBQ1ifdm@hirez.programming.kicks-ass.net
+Link: https://lkml.kernel.org/r/20210412102001.287610138@infradead.org
 ---
- kernel/sched/debug.c    | 254 ++++++++-------------------------------
- kernel/sched/sched.h    |  10 +--
- kernel/sched/topology.c |   6 +-
- 3 files changed, 59 insertions(+), 211 deletions(-)
+ include/linux/sched/sysctl.h |  8 +--
+ kernel/sched/core.c          |  4 +-
+ kernel/sched/debug.c         | 74 +++++++++++++++++++++++++--
+ kernel/sched/fair.c          |  9 +---
+ kernel/sched/sched.h         |  2 +-
+ kernel/sysctl.c              | 96 +-----------------------------------
+ 6 files changed, 80 insertions(+), 113 deletions(-)
 
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index bdd344f..b25de7b 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -299,6 +299,10 @@ static __init int sched_init_debug(void)
- 	debugfs_create_file("tunable_scaling", 0644, debugfs_sched, NULL, &sched_scaling_fops);
- 	debugfs_create_u32("migration_cost_ns", 0644, debugfs_sched, &sysctl_sched_migration_cost);
- 	debugfs_create_u32("nr_migrate", 0644, debugfs_sched, &sysctl_sched_nr_migrate);
-+
-+	mutex_lock(&sched_domains_mutex);
-+	update_sched_domain_debugfs();
-+	mutex_unlock(&sched_domains_mutex);
+diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
+index 3c31ba8..0a3f346 100644
+--- a/include/linux/sched/sysctl.h
++++ b/include/linux/sched/sysctl.h
+@@ -26,10 +26,11 @@ int proc_dohung_task_timeout_secs(struct ctl_table *table, int write,
+ enum { sysctl_hung_task_timeout_secs = 0 };
  #endif
  
- #ifdef CONFIG_NUMA_BALANCING
-@@ -316,229 +320,88 @@ late_initcall(sched_init_debug);
++extern unsigned int sysctl_sched_child_runs_first;
++
+ extern unsigned int sysctl_sched_latency;
+ extern unsigned int sysctl_sched_min_granularity;
+ extern unsigned int sysctl_sched_wakeup_granularity;
+-extern unsigned int sysctl_sched_child_runs_first;
  
- #ifdef CONFIG_SMP
+ enum sched_tunable_scaling {
+ 	SCHED_TUNABLESCALING_NONE,
+@@ -37,7 +38,7 @@ enum sched_tunable_scaling {
+ 	SCHED_TUNABLESCALING_LINEAR,
+ 	SCHED_TUNABLESCALING_END,
+ };
+-extern enum sched_tunable_scaling sysctl_sched_tunable_scaling;
++extern unsigned int sysctl_sched_tunable_scaling;
  
--#ifdef CONFIG_SYSCTL
+ extern unsigned int sysctl_numa_balancing_scan_delay;
+ extern unsigned int sysctl_numa_balancing_scan_period_min;
+@@ -47,9 +48,6 @@ extern unsigned int sysctl_numa_balancing_scan_size;
+ #ifdef CONFIG_SCHED_DEBUG
+ extern __read_mostly unsigned int sysctl_sched_migration_cost;
+ extern __read_mostly unsigned int sysctl_sched_nr_migrate;
 -
--static struct ctl_table sd_ctl_dir[] = {
--	{
--		.procname	= "sched_domain",
--		.mode		= 0555,
--	},
--	{}
--};
--
--static struct ctl_table sd_ctl_root[] = {
--	{
--		.procname	= "kernel",
--		.mode		= 0555,
--		.child		= sd_ctl_dir,
--	},
--	{}
--};
--
--static struct ctl_table *sd_alloc_ctl_entry(int n)
--{
--	struct ctl_table *entry =
--		kcalloc(n, sizeof(struct ctl_table), GFP_KERNEL);
--
--	return entry;
--}
--
--static void sd_free_ctl_entry(struct ctl_table **tablep)
--{
--	struct ctl_table *entry;
--
--	/*
--	 * In the intermediate directories, both the child directory and
--	 * procname are dynamically allocated and could fail but the mode
--	 * will always be set. In the lowest directory the names are
--	 * static strings and all have proc handlers.
--	 */
--	for (entry = *tablep; entry->mode; entry++) {
--		if (entry->child)
--			sd_free_ctl_entry(&entry->child);
--		if (entry->proc_handler == NULL)
--			kfree(entry->procname);
--	}
--
--	kfree(*tablep);
--	*tablep = NULL;
--}
--
--static void
--set_table_entry(struct ctl_table *entry,
--		const char *procname, void *data, int maxlen,
--		umode_t mode, proc_handler *proc_handler)
--{
--	entry->procname = procname;
--	entry->data = data;
--	entry->maxlen = maxlen;
--	entry->mode = mode;
--	entry->proc_handler = proc_handler;
--}
-+static cpumask_var_t		sd_sysctl_cpus;
-+static struct dentry		*sd_dentry;
+-int sched_proc_update_handler(struct ctl_table *table, int write,
+-		void *buffer, size_t *length, loff_t *ppos);
+ #endif
  
--static int sd_ctl_doflags(struct ctl_table *table, int write,
--			  void *buffer, size_t *lenp, loff_t *ppos)
-+static int sd_flags_show(struct seq_file *m, void *v)
+ /*
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 7d031da..bac30db 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5504,9 +5504,11 @@ static const struct file_operations sched_dynamic_fops = {
+ 	.release	= single_release,
+ };
+ 
++extern struct dentry *debugfs_sched;
++
+ static __init int sched_init_debug_dynamic(void)
  {
--	unsigned long flags = *(unsigned long *)table->data;
--	size_t data_size = 0;
--	size_t len = 0;
--	char *tmp, *buf;
-+	unsigned long flags = *(unsigned int *)m->private;
- 	int idx;
- 
--	if (write)
--		return 0;
--
--	for_each_set_bit(idx, &flags, __SD_FLAG_CNT) {
--		char *name = sd_flag_debug[idx].name;
--
--		/* Name plus whitespace */
--		data_size += strlen(name) + 1;
--	}
--
--	if (*ppos > data_size) {
--		*lenp = 0;
--		return 0;
--	}
--
--	buf = kcalloc(data_size + 1, sizeof(*buf), GFP_KERNEL);
--	if (!buf)
--		return -ENOMEM;
--
- 	for_each_set_bit(idx, &flags, __SD_FLAG_CNT) {
--		char *name = sd_flag_debug[idx].name;
--
--		len += snprintf(buf + len, strlen(name) + 2, "%s ", name);
--	}
--
--	tmp = buf + *ppos;
--	len -= *ppos;
--
--	if (len > *lenp)
--		len = *lenp;
--	if (len)
--		memcpy(buffer, tmp, len);
--	if (len < *lenp) {
--		((char *)buffer)[len] = '\n';
--		len++;
-+		seq_puts(m, sd_flag_debug[idx].name);
-+		seq_puts(m, " ");
- 	}
--
--	*lenp = len;
--	*ppos += len;
--
--	kfree(buf);
-+	seq_puts(m, "\n");
- 
+-	debugfs_create_file("sched_preempt", 0644, NULL, NULL, &sched_dynamic_fops);
++	debugfs_create_file("sched_preempt", 0644, debugfs_sched, NULL, &sched_dynamic_fops);
  	return 0;
  }
+ late_initcall(sched_init_debug_dynamic);
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 4b49cc2..2093b90 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -169,15 +169,81 @@ static const struct file_operations sched_feat_fops = {
+ 	.release	= single_release,
+ };
  
--static struct ctl_table *
--sd_alloc_ctl_domain_table(struct sched_domain *sd)
--{
--	struct ctl_table *table = sd_alloc_ctl_entry(9);
--
--	if (table == NULL)
--		return NULL;
--
--	set_table_entry(&table[0], "min_interval",	  &sd->min_interval,	    sizeof(long), 0644, proc_doulongvec_minmax);
--	set_table_entry(&table[1], "max_interval",	  &sd->max_interval,	    sizeof(long), 0644, proc_doulongvec_minmax);
--	set_table_entry(&table[2], "busy_factor",	  &sd->busy_factor,	    sizeof(int),  0644, proc_dointvec_minmax);
--	set_table_entry(&table[3], "imbalance_pct",	  &sd->imbalance_pct,	    sizeof(int),  0644, proc_dointvec_minmax);
--	set_table_entry(&table[4], "cache_nice_tries",	  &sd->cache_nice_tries,    sizeof(int),  0644, proc_dointvec_minmax);
--	set_table_entry(&table[5], "flags",		  &sd->flags,		    sizeof(int),  0444, sd_ctl_doflags);
--	set_table_entry(&table[6], "max_newidle_lb_cost", &sd->max_newidle_lb_cost, sizeof(long), 0644, proc_doulongvec_minmax);
--	set_table_entry(&table[7], "name",		  sd->name,	       CORENAME_MAX_SIZE, 0444, proc_dostring);
--	/* &table[8] is terminator */
--
--	return table;
--}
--
--static struct ctl_table *sd_alloc_ctl_cpu_table(int cpu)
-+static int sd_flags_open(struct inode *inode, struct file *file)
- {
--	struct ctl_table *entry, *table;
--	struct sched_domain *sd;
--	int domain_num = 0, i;
--	char buf[32];
--
--	for_each_domain(cpu, sd)
--		domain_num++;
--	entry = table = sd_alloc_ctl_entry(domain_num + 1);
--	if (table == NULL)
--		return NULL;
--
--	i = 0;
--	for_each_domain(cpu, sd) {
--		snprintf(buf, 32, "domain%d", i);
--		entry->procname = kstrdup(buf, GFP_KERNEL);
--		entry->mode = 0555;
--		entry->child = sd_alloc_ctl_domain_table(sd);
--		entry++;
--		i++;
--	}
--	return table;
-+	return single_open(file, sd_flags_show, inode->i_private);
- }
- 
--static cpumask_var_t		sd_sysctl_cpus;
--static struct ctl_table_header	*sd_sysctl_header;
-+static const struct file_operations sd_flags_fops = {
-+	.open		= sd_flags_open,
++#ifdef CONFIG_SMP
++
++static ssize_t sched_scaling_write(struct file *filp, const char __user *ubuf,
++				   size_t cnt, loff_t *ppos)
++{
++	char buf[16];
++
++	if (cnt > 15)
++		cnt = 15;
++
++	if (copy_from_user(&buf, ubuf, cnt))
++		return -EFAULT;
++
++	if (kstrtouint(buf, 10, &sysctl_sched_tunable_scaling))
++		return -EINVAL;
++
++	if (sched_update_scaling())
++		return -EINVAL;
++
++	*ppos += cnt;
++	return cnt;
++}
++
++static int sched_scaling_show(struct seq_file *m, void *v)
++{
++	seq_printf(m, "%d\n", sysctl_sched_tunable_scaling);
++	return 0;
++}
++
++static int sched_scaling_open(struct inode *inode, struct file *filp)
++{
++	return single_open(filp, sched_scaling_show, NULL);
++}
++
++static const struct file_operations sched_scaling_fops = {
++	.open		= sched_scaling_open,
++	.write		= sched_scaling_write,
 +	.read		= seq_read,
 +	.llseek		= seq_lseek,
 +	.release	= single_release,
 +};
- 
--void register_sched_domain_sysctl(void)
-+static void register_sd(struct sched_domain *sd, struct dentry *parent)
- {
--	static struct ctl_table *cpu_entries;
--	static struct ctl_table **cpu_idx;
--	static bool init_done = false;
--	char buf[32];
--	int i;
-+#define SDM(type, mode, member)	\
-+	debugfs_create_##type(#member, mode, parent, &sd->member)
- 
--	if (!cpu_entries) {
--		cpu_entries = sd_alloc_ctl_entry(num_possible_cpus() + 1);
--		if (!cpu_entries)
--			return;
--
--		WARN_ON(sd_ctl_dir[0].child);
--		sd_ctl_dir[0].child = cpu_entries;
--	}
-+	SDM(ulong, 0644, min_interval);
-+	SDM(ulong, 0644, max_interval);
-+	SDM(u64,   0644, max_newidle_lb_cost);
-+	SDM(u32,   0644, busy_factor);
-+	SDM(u32,   0644, imbalance_pct);
-+	SDM(u32,   0644, cache_nice_tries);
-+	SDM(str,   0444, name);
- 
--	if (!cpu_idx) {
--		struct ctl_table *e = cpu_entries;
-+#undef SDM
- 
--		cpu_idx = kcalloc(nr_cpu_ids, sizeof(struct ctl_table*), GFP_KERNEL);
--		if (!cpu_idx)
--			return;
-+	debugfs_create_file("flags", 0444, parent, &sd->flags, &sd_flags_fops);
-+}
- 
--		/* deal with sparse possible map */
--		for_each_possible_cpu(i) {
--			cpu_idx[i] = e;
--			e++;
--		}
--	}
-+void update_sched_domain_debugfs(void)
-+{
-+	int cpu, i;
- 
- 	if (!cpumask_available(sd_sysctl_cpus)) {
- 		if (!alloc_cpumask_var(&sd_sysctl_cpus, GFP_KERNEL))
- 			return;
--	}
--
--	if (!init_done) {
--		init_done = true;
--		/* init to possible to not have holes in @cpu_entries */
- 		cpumask_copy(sd_sysctl_cpus, cpu_possible_mask);
- 	}
- 
--	for_each_cpu(i, sd_sysctl_cpus) {
--		struct ctl_table *e = cpu_idx[i];
-+	if (!sd_dentry)
-+		sd_dentry = debugfs_create_dir("domains", debugfs_sched);
 +
-+	for_each_cpu(cpu, sd_sysctl_cpus) {
-+		struct sched_domain *sd;
-+		struct dentry *d_cpu;
-+		char buf[32];
++#endif /* SMP */
 +
-+		snprintf(buf, sizeof(buf), "cpu%d", cpu);
-+		debugfs_remove(debugfs_lookup(buf, sd_dentry));
-+		d_cpu = debugfs_create_dir(buf, sd_dentry);
+ __read_mostly bool sched_debug_enabled;
  
--		if (e->child)
--			sd_free_ctl_entry(&e->child);
-+		i = 0;
-+		for_each_domain(cpu, sd) {
-+			struct dentry *d_sd;
- 
--		if (!e->procname) {
--			snprintf(buf, 32, "cpu%d", i);
--			e->procname = kstrdup(buf, GFP_KERNEL);
-+			snprintf(buf, sizeof(buf), "domain%d", i);
-+			d_sd = debugfs_create_dir(buf, d_cpu);
++struct dentry *debugfs_sched;
 +
-+			register_sd(sd, d_sd);
-+			i++;
- 		}
--		e->mode = 0555;
--		e->child = sd_alloc_ctl_cpu_table(i);
- 
--		__cpumask_clear_cpu(i, sd_sysctl_cpus);
-+		__cpumask_clear_cpu(cpu, sd_sysctl_cpus);
- 	}
--
--	WARN_ON(sd_sysctl_header);
--	sd_sysctl_header = register_sysctl_table(sd_ctl_root);
- }
- 
- void dirty_sched_domain_sysctl(int cpu)
-@@ -547,13 +410,6 @@ void dirty_sched_domain_sysctl(int cpu)
- 		__cpumask_set_cpu(cpu, sd_sysctl_cpus);
- }
- 
--/* may be called multiple times per register */
--void unregister_sched_domain_sysctl(void)
--{
--	unregister_sysctl_table(sd_sysctl_header);
--	sd_sysctl_header = NULL;
--}
--#endif /* CONFIG_SYSCTL */
- #endif /* CONFIG_SMP */
- 
- #ifdef CONFIG_FAIR_GROUP_SCHED
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index c312389..55232db 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1552,20 +1552,16 @@ static inline unsigned int group_first_cpu(struct sched_group *group)
- 
- extern int group_balance_cpu(struct sched_group *sg);
- 
--#if defined(CONFIG_SCHED_DEBUG) && defined(CONFIG_SYSCTL)
--void register_sched_domain_sysctl(void);
-+#ifdef CONFIG_SCHED_DEBUG
-+void update_sched_domain_debugfs(void);
- void dirty_sched_domain_sysctl(int cpu);
--void unregister_sched_domain_sysctl(void);
- #else
--static inline void register_sched_domain_sysctl(void)
-+static inline void update_sched_domain_debugfs(void)
+ static __init int sched_init_debug(void)
  {
+-	debugfs_create_file("sched_features", 0644, NULL, NULL,
+-			&sched_feat_fops);
++	struct dentry __maybe_unused *numa;
+ 
+-	debugfs_create_bool("sched_debug", 0644, NULL,
+-			&sched_debug_enabled);
++	debugfs_sched = debugfs_create_dir("sched", NULL);
++
++	debugfs_create_file("features", 0644, debugfs_sched, NULL, &sched_feat_fops);
++	debugfs_create_bool("debug_enabled", 0644, debugfs_sched, &sched_debug_enabled);
++
++	debugfs_create_u32("latency_ns", 0644, debugfs_sched, &sysctl_sched_latency);
++	debugfs_create_u32("min_granularity_ns", 0644, debugfs_sched, &sysctl_sched_min_granularity);
++	debugfs_create_u32("wakeup_granularity_ns", 0644, debugfs_sched, &sysctl_sched_wakeup_granularity);
++
++#ifdef CONFIG_SMP
++	debugfs_create_file("tunable_scaling", 0644, debugfs_sched, NULL, &sched_scaling_fops);
++	debugfs_create_u32("migration_cost_ns", 0644, debugfs_sched, &sysctl_sched_migration_cost);
++	debugfs_create_u32("nr_migrate", 0644, debugfs_sched, &sysctl_sched_nr_migrate);
++#endif
++
++#ifdef CONFIG_NUMA_BALANCING
++	numa = debugfs_create_dir("numa_balancing", debugfs_sched);
++
++	debugfs_create_u32("scan_delay_ms", 0644, numa, &sysctl_numa_balancing_scan_delay);
++	debugfs_create_u32("scan_period_min_ms", 0644, numa, &sysctl_numa_balancing_scan_period_min);
++	debugfs_create_u32("scan_period_max_ms", 0644, numa, &sysctl_numa_balancing_scan_period_max);
++	debugfs_create_u32("scan_size_mb", 0644, numa, &sysctl_numa_balancing_scan_size);
++#endif
+ 
+ 	return 0;
  }
- static inline void dirty_sched_domain_sysctl(int cpu)
- {
- }
--static inline void unregister_sched_domain_sysctl(void)
--{
--}
- #endif
- 
- extern int sched_update_scaling(void);
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index d1aec24..c343aed 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -2223,7 +2223,6 @@ int sched_init_domains(const struct cpumask *cpu_map)
- 		doms_cur = &fallback_doms;
- 	cpumask_and(doms_cur[0], cpu_map, housekeeping_cpumask(HK_FLAG_DOMAIN));
- 	err = build_sched_domains(doms_cur[0], NULL);
--	register_sched_domain_sysctl();
- 
- 	return err;
- }
-@@ -2298,9 +2297,6 @@ void partition_sched_domains_locked(int ndoms_new, cpumask_var_t doms_new[],
- 
- 	lockdep_assert_held(&sched_domains_mutex);
- 
--	/* Always unregister in case we don't destroy any domains: */
--	unregister_sched_domain_sysctl();
--
- 	/* Let the architecture update CPU core mappings: */
- 	new_topology = arch_update_cpu_topology();
- 
-@@ -2389,7 +2385,7 @@ match3:
- 	dattr_cur = dattr_new;
- 	ndoms_cur = ndoms_new;
- 
--	register_sched_domain_sysctl();
-+	update_sched_domain_debugfs();
- }
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 9b8ae02..b3ea14c 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -49,7 +49,7 @@ static unsigned int normalized_sysctl_sched_latency	= 6000000ULL;
+  *
+  * (default SCHED_TUNABLESCALING_LOG = *(1+ilog(ncpus))
+  */
+-enum sched_tunable_scaling sysctl_sched_tunable_scaling = SCHED_TUNABLESCALING_LOG;
++unsigned int sysctl_sched_tunable_scaling = SCHED_TUNABLESCALING_LOG;
  
  /*
+  * Minimal preemption granularity for CPU-bound tasks:
+@@ -634,15 +634,10 @@ struct sched_entity *__pick_last_entity(struct cfs_rq *cfs_rq)
+  * Scheduling class statistics methods:
+  */
+ 
+-int sched_proc_update_handler(struct ctl_table *table, int write,
+-		void *buffer, size_t *lenp, loff_t *ppos)
++int sched_update_scaling(void)
+ {
+-	int ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
+ 	unsigned int factor = get_update_sysctl_factor();
+ 
+-	if (ret || !write)
+-		return ret;
+-
+ 	sched_nr_latency = DIV_ROUND_UP(sysctl_sched_latency,
+ 					sysctl_sched_min_granularity);
+ 
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 7e7e936..123ff3b 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1568,6 +1568,8 @@ static inline void unregister_sched_domain_sysctl(void)
+ }
+ #endif
+ 
++extern int sched_update_scaling(void);
++
+ extern void flush_smp_call_function_from_idle(void);
+ 
+ #else /* !CONFIG_SMP: */
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 17f1cc9..4bff44d 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -184,17 +184,6 @@ static enum sysctl_writes_mode sysctl_writes_strict = SYSCTL_WRITES_STRICT;
+ int sysctl_legacy_va_layout;
+ #endif
+ 
+-#ifdef CONFIG_SCHED_DEBUG
+-static int min_sched_granularity_ns = 100000;		/* 100 usecs */
+-static int max_sched_granularity_ns = NSEC_PER_SEC;	/* 1 second */
+-static int min_wakeup_granularity_ns;			/* 0 usecs */
+-static int max_wakeup_granularity_ns = NSEC_PER_SEC;	/* 1 second */
+-#ifdef CONFIG_SMP
+-static int min_sched_tunable_scaling = SCHED_TUNABLESCALING_NONE;
+-static int max_sched_tunable_scaling = SCHED_TUNABLESCALING_END-1;
+-#endif /* CONFIG_SMP */
+-#endif /* CONFIG_SCHED_DEBUG */
+-
+ #ifdef CONFIG_COMPACTION
+ static int min_extfrag_threshold;
+ static int max_extfrag_threshold = 1000;
+@@ -1659,91 +1648,6 @@ static struct ctl_table kern_table[] = {
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_dointvec,
+ 	},
+-#ifdef CONFIG_SCHED_DEBUG
+-	{
+-		.procname	= "sched_min_granularity_ns",
+-		.data		= &sysctl_sched_min_granularity,
+-		.maxlen		= sizeof(unsigned int),
+-		.mode		= 0644,
+-		.proc_handler	= sched_proc_update_handler,
+-		.extra1		= &min_sched_granularity_ns,
+-		.extra2		= &max_sched_granularity_ns,
+-	},
+-	{
+-		.procname	= "sched_latency_ns",
+-		.data		= &sysctl_sched_latency,
+-		.maxlen		= sizeof(unsigned int),
+-		.mode		= 0644,
+-		.proc_handler	= sched_proc_update_handler,
+-		.extra1		= &min_sched_granularity_ns,
+-		.extra2		= &max_sched_granularity_ns,
+-	},
+-	{
+-		.procname	= "sched_wakeup_granularity_ns",
+-		.data		= &sysctl_sched_wakeup_granularity,
+-		.maxlen		= sizeof(unsigned int),
+-		.mode		= 0644,
+-		.proc_handler	= sched_proc_update_handler,
+-		.extra1		= &min_wakeup_granularity_ns,
+-		.extra2		= &max_wakeup_granularity_ns,
+-	},
+-#ifdef CONFIG_SMP
+-	{
+-		.procname	= "sched_tunable_scaling",
+-		.data		= &sysctl_sched_tunable_scaling,
+-		.maxlen		= sizeof(enum sched_tunable_scaling),
+-		.mode		= 0644,
+-		.proc_handler	= sched_proc_update_handler,
+-		.extra1		= &min_sched_tunable_scaling,
+-		.extra2		= &max_sched_tunable_scaling,
+-	},
+-	{
+-		.procname	= "sched_migration_cost_ns",
+-		.data		= &sysctl_sched_migration_cost,
+-		.maxlen		= sizeof(unsigned int),
+-		.mode		= 0644,
+-		.proc_handler	= proc_dointvec,
+-	},
+-	{
+-		.procname	= "sched_nr_migrate",
+-		.data		= &sysctl_sched_nr_migrate,
+-		.maxlen		= sizeof(unsigned int),
+-		.mode		= 0644,
+-		.proc_handler	= proc_dointvec,
+-	},
+-#endif /* CONFIG_SMP */
+-#ifdef CONFIG_NUMA_BALANCING
+-	{
+-		.procname	= "numa_balancing_scan_delay_ms",
+-		.data		= &sysctl_numa_balancing_scan_delay,
+-		.maxlen		= sizeof(unsigned int),
+-		.mode		= 0644,
+-		.proc_handler	= proc_dointvec,
+-	},
+-	{
+-		.procname	= "numa_balancing_scan_period_min_ms",
+-		.data		= &sysctl_numa_balancing_scan_period_min,
+-		.maxlen		= sizeof(unsigned int),
+-		.mode		= 0644,
+-		.proc_handler	= proc_dointvec,
+-	},
+-	{
+-		.procname	= "numa_balancing_scan_period_max_ms",
+-		.data		= &sysctl_numa_balancing_scan_period_max,
+-		.maxlen		= sizeof(unsigned int),
+-		.mode		= 0644,
+-		.proc_handler	= proc_dointvec,
+-	},
+-	{
+-		.procname	= "numa_balancing_scan_size_mb",
+-		.data		= &sysctl_numa_balancing_scan_size,
+-		.maxlen		= sizeof(unsigned int),
+-		.mode		= 0644,
+-		.proc_handler	= proc_dointvec_minmax,
+-		.extra1		= SYSCTL_ONE,
+-	},
+-#endif /* CONFIG_NUMA_BALANCING */
+-#endif /* CONFIG_SCHED_DEBUG */
+ #ifdef CONFIG_SCHEDSTATS
+ 	{
+ 		.procname	= "sched_schedstats",
