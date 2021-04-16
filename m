@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B027361DE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8EB361DE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241399AbhDPKWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 06:22:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53420 "EHLO mx2.suse.de"
+        id S241447AbhDPKWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 06:22:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53462 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241175AbhDPKW3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S241192AbhDPKW3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 16 Apr 2021 06:22:29 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D8351AFEC;
-        Fri, 16 Apr 2021 10:22:03 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id A9A9DB000;
+        Fri, 16 Apr 2021 10:22:04 +0000 (UTC)
 From:   Oscar Salvador <osalvador@suse.de>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     David Hildenbrand <david@redhat.com>,
@@ -22,10 +22,11 @@ Cc:     David Hildenbrand <david@redhat.com>,
         Anshuman Khandual <anshuman.khandual@arm.com>,
         Pavel Tatashin <pasha.tatashin@soleen.com>,
         Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
-Subject: [PATCH v8 4/8] mm,memory_hotplug: Allocate memmap from the added memory range
-Date:   Fri, 16 Apr 2021 12:21:49 +0200
-Message-Id: <20210416102153.8794-5-osalvador@suse.de>
+        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>
+Subject: [PATCH v8 5/8] acpi,memhotplug: Enable MHP_MEMMAP_ON_MEMORY when supported
+Date:   Fri, 16 Apr 2021 12:21:50 +0200
+Message-Id: <20210416102153.8794-6-osalvador@suse.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20210416102153.8794-1-osalvador@suse.de>
 References: <20210416102153.8794-1-osalvador@suse.de>
@@ -35,628 +36,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Physical memory hotadd has to allocate a memmap (struct page array) for
-the newly added memory section. Currently, alloc_pages_node() is used
-for those allocations.
-
-This has some disadvantages:
- a) an existing memory is consumed for that purpose
-    (eg: ~2MB per 128MB memory section on x86_64)
- b) if the whole node is movable then we have off-node struct pages
-    which has performance drawbacks.
- c) It might be there are no PMD_ALIGNED chunks so memmap array gets
-    populated with base pages.
-
-This can be improved when CONFIG_SPARSEMEM_VMEMMAP is enabled.
-
-Vmemap page tables can map arbitrary memory.
-That means that we can simply use the beginning of each memory section and
-map struct pages there.
-struct pages which back the allocated space then just need to be treated
-carefully.
-
-Implementation wise we will reuse vmem_altmap infrastructure to override
-the default allocator used by __populate_section_memmap.
-Part of the implementation also relies on memory_block structure gaining
-a new field which specifies the number of vmemmap_pages at the beginning.
-This patch also introduces the following functions:
-
- - mhp_init_memmap_on_memory:
-		       Initializes vmemmap pages by calling move_pfn_range_to_zone(),
-		       calls kasan_add_zero_shadow(), and onlines as many sections
-		       as vmemmap pages fully span.
- - mhp_deinit_memmap_on_memory:
-		       Undoes what mhp_init_memmap_on_memory.
-
-The new function memory_block_online() calls mhp_init_memmap_on_memory() before
-doing the actual online_pages(). Should online_pages() fail, we clean up
-by calling mhp_deinit_memmap_on_memory().
-Adjusting of present_pages is done at the end once we know that online_pages()
-succedeed.
-
-On offline, memory_block_offline() needs to unaccount vmemmap pages from
-present_pages() before calling offline_pages().
-This is necessary because offline_pages() tears down some structures based
-on the fact whether the node or the zone become empty.
-If offline_pages() fails, we account back vmemmap pages.
-If it succeeds, we call mhp_deinit_memmap_on_memory().
-
-Hot-remove:
-
- We need to be careful when removing memory, as adding and
- removing memory needs to be done with the same granularity.
- To check that this assumption is not violated, we check the
- memory range we want to remove and if a) any memory block has
- vmemmap pages and b) the range spans more than a single memory
- block, we scream out loud and refuse to proceed.
-
- If all is good and the range was using memmap on memory (aka vmemmap pages),
- we construct an altmap structure so free_hugepage_table does the right
- thing and calls vmem_altmap_free instead of free_pagetable.
+Let the caller check whether it can pass MHP_MEMMAP_ON_MEMORY by
+checking mhp_supports_memmap_on_memory().
+MHP_MEMMAP_ON_MEMORY can only be set in case
+ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE is enabled, the architecture supports
+altmap, and the range to be added spans a single memory block.
 
 Signed-off-by: Oscar Salvador <osalvador@suse.de>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
 ---
- drivers/base/memory.c          |  75 ++++++++++++++++--
- include/linux/memory.h         |   8 +-
- include/linux/memory_hotplug.h |  17 +++-
- include/linux/memremap.h       |   2 +-
- include/linux/mmzone.h         |   7 +-
- mm/Kconfig                     |   5 ++
- mm/memory_hotplug.c            | 171 ++++++++++++++++++++++++++++++++++++++---
- mm/sparse.c                    |   2 -
- 8 files changed, 265 insertions(+), 22 deletions(-)
+ drivers/acpi/acpi_memhotplug.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/base/memory.c b/drivers/base/memory.c
-index f209925a5d4e..179857d53982 100644
---- a/drivers/base/memory.c
-+++ b/drivers/base/memory.c
-@@ -173,16 +173,76 @@ static int memory_block_online(struct memory_block *mem)
- {
- 	unsigned long start_pfn = section_nr_to_pfn(mem->start_section_nr);
- 	unsigned long nr_pages = PAGES_PER_SECTION * sections_per_block;
-+	unsigned long nr_vmemmap_pages = mem->nr_vmemmap_pages;
-+	struct zone *zone;
-+	int ret;
-+
-+	zone = mhp_get_target_zone(start_pfn, nr_pages, mem->nid,
-+				   mem->online_type);
-+
-+	/*
-+	 * Although vmemmap pages have a different lifecycle than the pages
-+	 * they describe (they remain until the memory is unplugged), doing
-+	 * its initialization and accounting at hot-{online,offline} stage
-+	 * simplifies things a lot
-+	 */
-+	if (nr_vmemmap_pages) {
-+		ret = mhp_init_memmap_on_memory(start_pfn, nr_vmemmap_pages, zone);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	ret = online_pages(start_pfn + nr_vmemmap_pages,
-+			   nr_pages - nr_vmemmap_pages, zone);
-+	if (ret) {
-+		if (nr_vmemmap_pages)
-+			mhp_deinit_memmap_on_memory(start_pfn, nr_vmemmap_pages);
-+		return ret;
-+	}
-+
-+	/*
-+	 * Account once onlining succeeded. If the page was unpopulated, it is
-+	 * now already properly populated.
-+	 */
-+	if (nr_vmemmap_pages)
-+		adjust_present_page_count(zone, nr_vmemmap_pages);
+diff --git a/drivers/acpi/acpi_memhotplug.c b/drivers/acpi/acpi_memhotplug.c
+index b02fd51e5589..8cc195c4c861 100644
+--- a/drivers/acpi/acpi_memhotplug.c
++++ b/drivers/acpi/acpi_memhotplug.c
+@@ -171,6 +171,7 @@ static int acpi_memory_enable_device(struct acpi_memory_device *mem_device)
+ 	acpi_handle handle = mem_device->device->handle;
+ 	int result, num_enabled = 0;
+ 	struct acpi_memory_info *info;
++	mhp_t mhp_flags = MHP_NONE;
+ 	int node;
  
--	return online_pages(start_pfn, nr_pages, mem->online_type, mem->nid);
-+	return ret;
- }
+ 	node = acpi_get_node(handle);
+@@ -194,8 +195,10 @@ static int acpi_memory_enable_device(struct acpi_memory_device *mem_device)
+ 		if (node < 0)
+ 			node = memory_add_physaddr_to_nid(info->start_addr);
  
- static int memory_block_offline(struct memory_block *mem)
- {
- 	unsigned long start_pfn = section_nr_to_pfn(mem->start_section_nr);
- 	unsigned long nr_pages = PAGES_PER_SECTION * sections_per_block;
-+	unsigned long nr_vmemmap_pages = mem->nr_vmemmap_pages;
-+	struct zone *zone;
-+	int ret;
-+
-+	zone = page_zone(pfn_to_page(start_pfn));
++		if (mhp_supports_memmap_on_memory(info->length))
++			mhp_flags |= MHP_MEMMAP_ON_MEMORY;
+ 		result = __add_memory(node, info->start_addr, info->length,
+-				      MHP_NONE);
++				      mhp_flags);
  
--	return offline_pages(start_pfn, nr_pages);
-+	/*
-+	 * Unaccount before offlining, such that unpopulated zone and kthreads
-+	 * can properly be torn down in offline_pages().
-+	 */
-+	if (nr_vmemmap_pages)
-+		adjust_present_page_count(zone, -nr_vmemmap_pages);
-+
-+	ret = offline_pages(start_pfn + nr_vmemmap_pages,
-+			    nr_pages - nr_vmemmap_pages);
-+	if (ret) {
-+		/* offline_pages() failed. Account back. */
-+		if (nr_vmemmap_pages)
-+			adjust_present_page_count(zone, nr_vmemmap_pages);
-+		return ret;
-+	}
-+
-+	/*
-+	 * Re-adjust present pages if offline_pages() fails.
-+	 */
-+	if (nr_vmemmap_pages)
-+		mhp_deinit_memmap_on_memory(start_pfn, nr_vmemmap_pages);
-+
-+	return ret;
- }
- 
- /*
-@@ -576,7 +636,8 @@ int register_memory(struct memory_block *memory)
- 	return ret;
- }
- 
--static int init_memory_block(unsigned long block_id, unsigned long state)
-+static int init_memory_block(unsigned long block_id, unsigned long state,
-+			     unsigned long nr_vmemmap_pages)
- {
- 	struct memory_block *mem;
- 	int ret = 0;
-@@ -593,6 +654,7 @@ static int init_memory_block(unsigned long block_id, unsigned long state)
- 	mem->start_section_nr = block_id * sections_per_block;
- 	mem->state = state;
- 	mem->nid = NUMA_NO_NODE;
-+	mem->nr_vmemmap_pages = nr_vmemmap_pages;
- 
- 	ret = register_memory(mem);
- 
-@@ -612,7 +674,7 @@ static int add_memory_block(unsigned long base_section_nr)
- 	if (section_count == 0)
- 		return 0;
- 	return init_memory_block(memory_block_id(base_section_nr),
--				 MEM_ONLINE);
-+				 MEM_ONLINE, 0);
- }
- 
- static void unregister_memory(struct memory_block *memory)
-@@ -634,7 +696,8 @@ static void unregister_memory(struct memory_block *memory)
-  *
-  * Called under device_hotplug_lock.
-  */
--int create_memory_block_devices(unsigned long start, unsigned long size)
-+int create_memory_block_devices(unsigned long start, unsigned long size,
-+				unsigned long vmemmap_pages)
- {
- 	const unsigned long start_block_id = pfn_to_block_id(PFN_DOWN(start));
- 	unsigned long end_block_id = pfn_to_block_id(PFN_DOWN(start + size));
-@@ -647,7 +710,7 @@ int create_memory_block_devices(unsigned long start, unsigned long size)
- 		return -EINVAL;
- 
- 	for (block_id = start_block_id; block_id != end_block_id; block_id++) {
--		ret = init_memory_block(block_id, MEM_OFFLINE);
-+		ret = init_memory_block(block_id, MEM_OFFLINE, vmemmap_pages);
- 		if (ret)
- 			break;
- 	}
-diff --git a/include/linux/memory.h b/include/linux/memory.h
-index 4da95e684e20..97e92e8b556a 100644
---- a/include/linux/memory.h
-+++ b/include/linux/memory.h
-@@ -29,6 +29,11 @@ struct memory_block {
- 	int online_type;		/* for passing data to online routine */
- 	int nid;			/* NID for this memory block */
- 	struct device dev;
-+	/*
-+	 * Number of vmemmap pages. These pages
-+	 * lay at the beginning of the memory block.
-+	 */
-+	unsigned long nr_vmemmap_pages;
- };
- 
- int arch_get_memory_phys_device(unsigned long start_pfn);
-@@ -80,7 +85,8 @@ static inline int memory_notify(unsigned long val, void *v)
- #else
- extern int register_memory_notifier(struct notifier_block *nb);
- extern void unregister_memory_notifier(struct notifier_block *nb);
--int create_memory_block_devices(unsigned long start, unsigned long size);
-+int create_memory_block_devices(unsigned long start, unsigned long size,
-+				unsigned long vmemmap_pages);
- void remove_memory_block_devices(unsigned long start, unsigned long size);
- extern void memory_dev_init(void);
- extern int memory_notify(unsigned long val, void *v);
-diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
-index 7288aa5ef73b..992d85211549 100644
---- a/include/linux/memory_hotplug.h
-+++ b/include/linux/memory_hotplug.h
-@@ -55,6 +55,14 @@ typedef int __bitwise mhp_t;
-  */
- #define MHP_MERGE_RESOURCE	((__force mhp_t)BIT(0))
- 
-+/*
-+ * We want memmap (struct page array) to be self contained.
-+ * To do so, we will use the beginning of the hot-added range to build
-+ * the page tables for the memmap array that describes the entire range.
-+ * Only selected architectures support it with SPARSE_VMEMMAP.
-+ */
-+#define MHP_MEMMAP_ON_MEMORY   ((__force mhp_t)BIT(1))
-+
- /*
-  * Extended parameters for memory hotplug:
-  * altmap: alternative allocator for memmap array (optional)
-@@ -99,9 +107,15 @@ static inline void zone_seqlock_init(struct zone *zone)
- extern int zone_grow_free_lists(struct zone *zone, unsigned long new_nr_pages);
- extern int zone_grow_waitqueues(struct zone *zone, unsigned long nr_pages);
- extern int add_one_highpage(struct page *page, int pfn, int bad_ppro);
-+extern void adjust_present_page_count(struct zone *zone, long nr_pages);
- /* VM interface that may be used by firmware interface */
-+extern struct zone *mhp_get_target_zone(unsigned long pfn, unsigned long nr_pages,
-+					int nid, int online_type);
-+extern int mhp_init_memmap_on_memory(unsigned long pfn, unsigned long nr_pages,
-+				     struct zone *zone);
-+extern void mhp_deinit_memmap_on_memory(unsigned long pfn, unsigned long nr_pages);
- extern int online_pages(unsigned long pfn, unsigned long nr_pages,
--			int online_type, int nid);
-+			struct zone *zone);
- extern struct zone *test_pages_in_a_zone(unsigned long start_pfn,
- 					 unsigned long end_pfn);
- extern void __offline_isolated_pages(unsigned long start_pfn,
-@@ -359,6 +373,7 @@ extern struct zone *zone_for_pfn_range(int online_type, int nid, unsigned start_
- extern int arch_create_linear_mapping(int nid, u64 start, u64 size,
- 				      struct mhp_params *params);
- void arch_remove_linear_mapping(u64 start, u64 size);
-+extern bool mhp_supports_memmap_on_memory(unsigned long size);
- #endif /* CONFIG_MEMORY_HOTPLUG */
- 
- #endif /* __LINUX_MEMORY_HOTPLUG_H */
-diff --git a/include/linux/memremap.h b/include/linux/memremap.h
-index f5b464daeeca..45a79da89c5f 100644
---- a/include/linux/memremap.h
-+++ b/include/linux/memremap.h
-@@ -17,7 +17,7 @@ struct device;
-  * @alloc: track pages consumed, private to vmemmap_populate()
-  */
- struct vmem_altmap {
--	const unsigned long base_pfn;
-+	unsigned long base_pfn;
- 	const unsigned long end_pfn;
- 	const unsigned long reserve;
- 	unsigned long free;
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 47946cec7584..76f4ca5ed230 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -427,6 +427,11 @@ enum zone_type {
- 	 *    techniques might use alloc_contig_range() to hide previously
- 	 *    exposed pages from the buddy again (e.g., to implement some sort
- 	 *    of memory unplug in virtio-mem).
-+	 * 6. Memory-hotplug: when using memmap_on_memory and onlining the memory
-+	 *    to the MOVABLE zone, the vmemmap pages are also placed in such
-+	 *    zone. Such pages cannot be really moved around as they are
-+	 *    self-stored in the range, but they are treated as movable when
-+	 *    the range they describe is about to be offlined.
- 	 *
- 	 * In general, no unmovable allocations that degrade memory offlining
- 	 * should end up in ZONE_MOVABLE. Allocators (like alloc_contig_range())
-@@ -1378,10 +1383,8 @@ static inline int online_section_nr(unsigned long nr)
- 
- #ifdef CONFIG_MEMORY_HOTPLUG
- void online_mem_sections(unsigned long start_pfn, unsigned long end_pfn);
--#ifdef CONFIG_MEMORY_HOTREMOVE
- void offline_mem_sections(unsigned long start_pfn, unsigned long end_pfn);
- #endif
--#endif
- 
- static inline struct mem_section *__pfn_to_section(unsigned long pfn)
- {
-diff --git a/mm/Kconfig b/mm/Kconfig
-index 24c045b24b95..febf805000f8 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -183,6 +183,11 @@ config MEMORY_HOTREMOVE
- 	depends on MEMORY_HOTPLUG && ARCH_ENABLE_MEMORY_HOTREMOVE
- 	depends on MIGRATION
- 
-+config MHP_MEMMAP_ON_MEMORY
-+	def_bool y
-+	depends on MEMORY_HOTPLUG && SPARSEMEM_VMEMMAP
-+	depends on ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
-+
- # Heavily threaded applications may benefit from splitting the mm-wide
- # page_table_lock, so that faults on different parts of the user address
- # space can be handled with less contention: split it at this NR_CPUS.
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index d05056b3c173..7efee41268b6 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -42,6 +42,8 @@
- #include "internal.h"
- #include "shuffle.h"
- 
-+static bool memmap_on_memory;
-+
- /*
-  * online_page_callback contains pointer to current page onlining function.
-  * Initially it is generic_online_page(). If it is required it could be
-@@ -641,7 +643,12 @@ EXPORT_SYMBOL_GPL(generic_online_page);
- static void online_pages_range(unsigned long start_pfn, unsigned long nr_pages)
- {
- 	const unsigned long end_pfn = start_pfn + nr_pages;
--	unsigned long pfn;
-+	unsigned long pfn = start_pfn;
-+
-+	while (!IS_ALIGNED(pfn, MAX_ORDER_NR_PAGES)) {
-+		(*online_page_callback)(pfn_to_page(pfn), pageblock_order);
-+		pfn += pageblock_nr_pages;
-+	}
- 
- 	/*
- 	 * Online the pages in MAX_ORDER - 1 aligned chunks. The callback might
-@@ -649,7 +656,7 @@ static void online_pages_range(unsigned long start_pfn, unsigned long nr_pages)
- 	 * later). We account all pages as being online and belonging to this
- 	 * zone ("present").
- 	 */
--	for (pfn = start_pfn; pfn < end_pfn; pfn += MAX_ORDER_NR_PAGES)
-+	for (; pfn < end_pfn; pfn += MAX_ORDER_NR_PAGES)
- 		(*online_page_callback)(pfn_to_page(pfn), MAX_ORDER - 1);
- 
- 	/* mark all involved sections as online */
-@@ -829,7 +836,11 @@ struct zone * zone_for_pfn_range(int online_type, int nid, unsigned start_pfn,
- 	return default_zone_for_pfn(nid, start_pfn, nr_pages);
- }
- 
--static void adjust_present_page_count(struct zone *zone, long nr_pages)
-+/*
-+ * This function should only be called by memory_block_{online,offline},
-+ * and {online,offline}_pages.
-+ */
-+void adjust_present_page_count(struct zone *zone, long nr_pages)
- {
- 	unsigned long flags;
- 
-@@ -839,12 +850,64 @@ static void adjust_present_page_count(struct zone *zone, long nr_pages)
- 	pgdat_resize_unlock(zone->zone_pgdat, &flags);
- }
- 
--int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
--		       int online_type, int nid)
-+struct zone *mhp_get_target_zone(unsigned long pfn, unsigned long nr_pages,
-+				 int nid, int online_type)
-+{
-+	return zone_for_pfn_range(online_type, nid, pfn, nr_pages);
-+}
-+
-+int mhp_init_memmap_on_memory(unsigned long pfn, unsigned long nr_pages,
-+			      struct zone *zone)
-+{
-+	unsigned long end_pfn = pfn + nr_pages;
-+	int ret;
-+
-+	/*
-+	 * Initialize vmemmap pages with the corresponding node, zone links set.
-+	 */
-+	move_pfn_range_to_zone(zone, pfn, nr_pages, NULL, MIGRATE_UNMOVABLE);
-+
-+	ret = kasan_add_zero_shadow(__va(PFN_PHYS(pfn)), PFN_PHYS(nr_pages));
-+	if (ret) {
-+		remove_pfn_range_from_zone(zone, pfn, nr_pages);
-+		return ret;
-+	}
-+
-+	/*
-+	 * It might be that the vmemmap_pages fully span sections. If that is
-+	 * the case, mark those sections online here as otherwise they will be
-+	 * left offline.
-+	 */
-+	if (nr_pages >= PAGES_PER_SECTION)
-+	        online_mem_sections(pfn, ALIGN_DOWN(end_pfn, PAGES_PER_SECTION));
-+
-+	return ret;
-+}
-+
-+void mhp_deinit_memmap_on_memory(unsigned long pfn, unsigned long nr_pages)
-+{
-+	unsigned long end_pfn = pfn + nr_pages;
-+        /*
-+	 * The pages associated with this vmemmap have been offlined, so
-+	 * we can reset its state here.
-+	 */
-+	remove_pfn_range_from_zone(page_zone(pfn_to_page(pfn)), pfn, nr_pages);
-+	kasan_remove_zero_shadow(__va(PFN_PHYS(pfn)), PFN_PHYS(nr_pages));
-+
-+	/*
-+	 * It might be that the vmemmap_pages fully span sections. If that is
-+	 * the case, mark those sections offline here as otherwise they will be
-+	 * left online.
-+	 */
-+	if (nr_pages >= PAGES_PER_SECTION)
-+		offline_mem_sections(pfn, ALIGN_DOWN(end_pfn, PAGES_PER_SECTION));
-+}
-+
-+int __ref online_pages(unsigned long pfn, unsigned long nr_pages, struct zone *zone)
- {
- 	unsigned long flags;
--	struct zone *zone;
- 	int need_zonelists_rebuild = 0;
-+	int nid;
- 	int ret;
- 	struct memory_notify arg;
- 
-@@ -860,8 +923,9 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
- 
- 	mem_hotplug_begin();
- 
-+	nid = zone_to_nid(zone);
-+
- 	/* associate pfn range with the zone */
--	zone = zone_for_pfn_range(online_type, nid, pfn, nr_pages);
- 	move_pfn_range_to_zone(zone, pfn, nr_pages, NULL, MIGRATE_ISOLATE);
- 
- 	arg.start_pfn = pfn;
-@@ -1075,6 +1139,45 @@ static int online_memory_block(struct memory_block *mem, void *arg)
- 	return device_online(&mem->dev);
- }
- 
-+bool mhp_supports_memmap_on_memory(unsigned long size)
-+{
-+	unsigned long nr_vmemmap_pages = size / PAGE_SIZE;
-+	unsigned long vmemmap_size = nr_vmemmap_pages * sizeof(struct page);
-+	unsigned long remaining_size = size - vmemmap_size;
-+
-+	/*
-+	 * Besides having arch support and the feature enabled at runtime, we
-+	 * need a few more assumptions to hold true:
-+	 *
-+	 * a) We span a single memory block: memory onlining/offlinin;g happens
-+	 *    in memory block granularity. We don't want the vmemmap of online
-+	 *    memory blocks to reside on offline memory blocks. In the future,
-+	 *    we might want to support variable-sized memory blocks to make the
-+	 *    feature more versatile.
-+	 *
-+	 * b) The vmemmap pages span complete PMDs: We don't want vmemmap code
-+	 *    to populate memory from the altmap for unrelated parts (i.e.,
-+	 *    other memory blocks)
-+	 *
-+	 * c) The vmemmap pages (and thereby the pages that will be exposed to
-+	 *    the buddy) have to cover full pageblocks: memory onlining/offlining
-+	 *    code requires applicable ranges to be page-aligned, for example, to
-+	 *    set the migratetypes properly.
-+	 *
-+	 * TODO: Although we have a check here to make sure that vmemmap pages
-+	 *       fully populate a PMD, it is not the right place to check for
-+	 *       this. A much better solution involves improving vmemmap code
-+	 *       to fallback to base pages when trying to populate vmemmap using
-+	 *       altmap as an alternative source of memory, and we do not exactly
-+	 *       populate a single PMD.
-+	 */
-+	return memmap_on_memory &&
-+	       IS_ENABLED(CONFIG_MHP_MEMMAP_ON_MEMORY) &&
-+	       size == memory_block_size_bytes() &&
-+	       IS_ALIGNED(vmemmap_size, PMD_SIZE) &&
-+	       IS_ALIGNED(remaining_size, (pageblock_nr_pages << PAGE_SHIFT));
-+}
-+
- /*
-  * NOTE: The caller must call lock_device_hotplug() to serialize hotplug
-  * and online/offline operations (triggered e.g. by sysfs).
-@@ -1084,6 +1187,7 @@ static int online_memory_block(struct memory_block *mem, void *arg)
- int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
- {
- 	struct mhp_params params = { .pgprot = pgprot_mhp(PAGE_KERNEL) };
-+	struct vmem_altmap mhp_altmap = {};
- 	u64 start, size;
- 	bool new_node = false;
- 	int ret;
-@@ -1110,13 +1214,26 @@ int __ref add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
- 		goto error;
- 	new_node = ret;
- 
-+	/*
-+	 * Self hosted memmap array
-+	 */
-+	if (mhp_flags & MHP_MEMMAP_ON_MEMORY) {
-+		if (!mhp_supports_memmap_on_memory(size)) {
-+			ret = -EINVAL;
-+			goto error;
-+		}
-+		mhp_altmap.free = PHYS_PFN(size);
-+		mhp_altmap.base_pfn = PHYS_PFN(start);
-+		params.altmap = &mhp_altmap;
-+	}
-+
- 	/* call arch's memory hotadd */
- 	ret = arch_add_memory(nid, start, size, &params);
- 	if (ret < 0)
- 		goto error;
- 
- 	/* create memory block devices after memory was added */
--	ret = create_memory_block_devices(start, size);
-+	ret = create_memory_block_devices(start, size, mhp_altmap.alloc);
- 	if (ret) {
- 		arch_remove_memory(nid, start, size, NULL);
- 		goto error;
-@@ -1762,6 +1879,14 @@ static int check_memblock_offlined_cb(struct memory_block *mem, void *arg)
- 	return 0;
- }
- 
-+static int get_nr_vmemmap_pages_cb(struct memory_block *mem, void *arg)
-+{
-+	/*
-+	 * If not set, continue with the next block.
-+	 */
-+	return mem->nr_vmemmap_pages;
-+}
-+
- static int check_cpu_on_node(pg_data_t *pgdat)
- {
- 	int cpu;
-@@ -1836,6 +1961,9 @@ EXPORT_SYMBOL(try_offline_node);
- static int __ref try_remove_memory(int nid, u64 start, u64 size)
- {
- 	int rc = 0;
-+	struct vmem_altmap mhp_altmap = {};
-+	struct vmem_altmap *altmap = NULL;
-+	unsigned long nr_vmemmap_pages;
- 
- 	BUG_ON(check_hotplug_memory_range(start, size));
- 
-@@ -1848,6 +1976,31 @@ static int __ref try_remove_memory(int nid, u64 start, u64 size)
- 	if (rc)
- 		return rc;
- 
-+	/*
-+	 * We only support removing memory added with MHP_MEMMAP_ON_MEMORY in
-+	 * the same granularity it was added - a single memory block.
-+	 */
-+	if (memmap_on_memory) {
-+		nr_vmemmap_pages = walk_memory_blocks(start, size, NULL,
-+						      get_nr_vmemmap_pages_cb);
-+		if (nr_vmemmap_pages) {
-+			if (size != memory_block_size_bytes()) {
-+				pr_warn("Refuse to remove %#llx - %#llx,"
-+					"wrong granularity\n",
-+					start, start + size);
-+				return -EINVAL;
-+			}
-+
-+			/*
-+			 * Let remove_pmd_table->free_hugepage_table do the
-+			 * right thing if we used vmem_altmap when hot-adding
-+			 * the range.
-+			 */
-+			mhp_altmap.alloc = nr_vmemmap_pages;
-+			altmap = &mhp_altmap;
-+		}
-+	}
-+
- 	/* remove memmap entry */
- 	firmware_map_remove(start, start + size, "System RAM");
- 
-@@ -1859,7 +2012,7 @@ static int __ref try_remove_memory(int nid, u64 start, u64 size)
- 
- 	mem_hotplug_begin();
- 
--	arch_remove_memory(nid, start, size, NULL);
-+	arch_remove_memory(nid, start, size, altmap);
- 
- 	if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK)) {
- 		memblock_free(start, size);
-diff --git a/mm/sparse.c b/mm/sparse.c
-index 7bd23f9d6cef..8e96cf00536b 100644
---- a/mm/sparse.c
-+++ b/mm/sparse.c
-@@ -623,7 +623,6 @@ void online_mem_sections(unsigned long start_pfn, unsigned long end_pfn)
- 	}
- }
- 
--#ifdef CONFIG_MEMORY_HOTREMOVE
- /* Mark all memory sections within the pfn range as offline */
- void offline_mem_sections(unsigned long start_pfn, unsigned long end_pfn)
- {
-@@ -644,7 +643,6 @@ void offline_mem_sections(unsigned long start_pfn, unsigned long end_pfn)
- 		ms->section_mem_map &= ~SECTION_IS_ONLINE;
- 	}
- }
--#endif
- 
- #ifdef CONFIG_SPARSEMEM_VMEMMAP
- static struct page * __meminit populate_section_memmap(unsigned long pfn,
+ 		/*
+ 		 * If the memory block has been used by the kernel, add_memory()
 -- 
 2.16.3
 
