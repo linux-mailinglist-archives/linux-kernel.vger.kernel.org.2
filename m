@@ -2,155 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 643DD361D86
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B342361D89
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240406AbhDPJ4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 05:56:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:37698 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240218AbhDPJ4L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 05:56:11 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C1BD106F;
-        Fri, 16 Apr 2021 02:55:46 -0700 (PDT)
-Received: from [10.57.57.112] (unknown [10.57.57.112])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0DAE73FA35;
-        Fri, 16 Apr 2021 02:55:43 -0700 (PDT)
-Subject: Re: [PATCH 2/2] perf cs-etm: Set time on synthesised samples to
- preserve ordering
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     coresight@lists.linaro.org, al.grant@arm.com,
-        branislav.rankov@arm.com, denik@chromium.org,
-        suzuki.poulose@arm.com, Mike Leach <mike.leach@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210414143919.12605-1-james.clark@arm.com>
- <20210414143919.12605-2-james.clark@arm.com>
- <06e1cc2e-1108-81cd-59e4-79277807b80c@arm.com>
- <20210415123953.GB1011890@leoy-ThinkPad-X240s>
- <4c173b86-b045-0514-b293-c39cc74d353d@arm.com>
- <20210415143329.GC1011890@leoy-ThinkPad-X240s>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <476662dd-eddb-e537-9940-6bc5b3293d2b@arm.com>
-Date:   Fri, 16 Apr 2021 12:55:42 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S239761AbhDPJ6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 05:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233612AbhDPJ63 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 05:58:29 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973C3C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:58:04 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4A3935A5;
+        Fri, 16 Apr 2021 11:58:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1618567082;
+        bh=xSo6PytDu5Cq4mnyjhpzVYDwWNwyPGmVgHOT/48h4nU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MZOdxX5ofISyaTc31LDkhK/plA7k0+HS91ESbp1PMm16M18wsilwkkSaOsQ2Cug4w
+         G+DmizAgRLLcii1bDbmZ9zJe7k4kt5/6nT340AKnyGUJfLTSluhMP+PjX7UM9aUsVf
+         2TjmDMBTbT9JF4vbcSaaMTNZn0LW25TvON5CZO34=
+Date:   Fri, 16 Apr 2021 12:58:00 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     jonas@kwiboo.se, jernej.skrabec@siol.net, robert.foss@linaro.org,
+        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] drm/bridge: dw-hdmi: disable loading of DW-HDMI CEC
+ sub-driver
+Message-ID: <YHlfqJIlUh7eytty@pendragon.ideasonboard.com>
+References: <20210416092737.1971876-1-narmstrong@baylibre.com>
 MIME-Version: 1.0
-In-Reply-To: <20210415143329.GC1011890@leoy-ThinkPad-X240s>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210416092737.1971876-1-narmstrong@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Neil,
 
-
-On 15/04/2021 17:33, Leo Yan wrote:
-> Hi James,
+On Fri, Apr 16, 2021 at 11:27:35AM +0200, Neil Armstrong wrote:
+> This adds DW-HDMI driver a glue option to disable loading of the CEC sub-driver.
 > 
-> On Thu, Apr 15, 2021 at 03:51:46PM +0300, James Clark wrote:
+> On some SoCs, the CEC functionality is enabled in the IP config bits, but the
+> CEC bus is non-functional like on Amlogic SoCs, where the CEC config bit is set
+> but the DW-HDMI CEC signal is not connected to a physical pin, leading to some
+> confusion when the DW-HDMI CEC controller can't communicate on the bus.
+
+If we can't trust the CEC config bit, would it be better to not use it
+at all, and instead let each platform glue logic tell whether to enable
+CEC or not ?
+
+> Jernej Skrabec (1):
+>   drm/bridge/synopsys: dw-hdmi: Add an option to suppress loading CEC
+>     driver
 > 
-> [...]
+> Neil Armstrong (1):
+>   drm/meson: dw-hdmi: disable DW-HDMI CEC sub-driver
 > 
->>> For the orignal perf data file with "--per-thread" option, the decoder
->>> runs into the condition for "etm->timeless_decoding"; and it doesn't
->>> contain ETM timestamp.
->>>
->>> Afterwards, the injected perf data file also misses ETM timestamp and
->>> hit the condition "etm->timeless_decoding".
->>>
->>> So I am confusing why the original perf data can be processed properly
->>> but fails to handle the injected perf data file.
->>
->> Hi Leo,
->>
->> My patch only deals with per-cpu mode. With per-thread mode everything is already working
->> because _none_ of the events have timestamps because they are not enabled by default:
->>
->> 	/* In per-cpu case, always need the time of mmap events etc */
->> 	if (!perf_cpu_map__empty(cpus))
->> 		evsel__set_sample_bit(tracking_evsel, TIME);
->>
->> When none of the events have timestamps, I think perf doesn't use the ordering code in
->> ordered-events.c. So when the inject file is opened, the events are read in file order.
+>  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 2 +-
+>  drivers/gpu/drm/meson/meson_dw_hdmi.c     | 1 +
+>  include/drm/bridge/dw_hdmi.h              | 2 ++
+>  3 files changed, 4 insertions(+), 1 deletion(-)
 > 
-> The explination makes sense to me.  One thinking: if the original file
-> doesn't use the ordered event, is it possible for the injected file to
-> not use the ordered event as well?
 
-Yes if you inject on a file with no timestamps and then open it, then the function queue_event()
-in ordered_events.c is not hit.
+-- 
+Regards,
 
-If you create a file based on one with timestamps, then the queue_event() function is hit
-even on the injected file.
-
-The relevant bit of code is here:
-
-	if (tool->ordered_events) {
-		u64 timestamp = -1ULL;
-
-		ret = evlist__parse_sample_timestamp(evlist, event, &timestamp);
-		if (ret && ret != -1)
-			return ret;
-
-		ret = perf_session__queue_event(session, event, timestamp, file_offset);
-		if (ret != -ETIME)
-			return ret;
-	}
-
-	return perf_session__deliver_event(session, event, tool, file_offset);
-
-If tool->ordered_events is set AND the timestamp for the sample parses to be non zero
-and non -1:
-
-	if (!timestamp || timestamp == ~0ULL)
-		return -ETIME;
-
-Then the event is added into the queue, otherwise it goes straight through to perf_session__deliver_event()
-The ordering can be disabled manually with tool->ordered_events and --disable-order and is also disabled
-with --dump-raw-trace.
-
-It seems like processing the file only really works when all events are unordered but in the right order,
-or ordered with the right timestamps set.
-
-> 
-> Could you confirm Intel-pt can work well for per-cpu mode for inject
-> file?
-
-Yes it seems like synthesised samples are assigned sensible timestamps.
-
-	perf record -e intel_pt//u top
-	perf inject -i perf.data -o perf-intel-per-cpu.inject.data --itrace=i100i --strip
-	perf report -i perf-intel-per-cpu.inject.data -D
-
-Results in the correct binary and DSO names and the SAMPLE timestamp is after the COMM:
-
-	0 381165621595220 0x1200 [0x38]: PERF_RECORD_COMM exec: top:20173/20173
-	
-	...
-	
-	2 381165622169297 0x13b0 [0x38]: PERF_RECORD_SAMPLE(IP, 0x2): 20173/20173: 0x7fdaa14abf53 period: 100 addr: 0
- 	... thread: top:20173
- 	...... dso: /lib/x86_64-linux-gnu/ld-2.27.so
-
-Per-thread also works, but no samples or events have timestamps.
-
-> 
->> So it's not really about --per-thread vs per-cpu mode, it's actually about whether
->> PERF_SAMPLE_TIME is set, which is set as a by-product of per-cpu mode.
->>
->> I hope I understood your question properly.
-> 
-> Thanks for info, sorry if I miss any info you have elaborated.
-> 
-> Leo
-> 
+Laurent Pinchart
