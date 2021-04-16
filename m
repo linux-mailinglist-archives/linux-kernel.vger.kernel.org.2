@@ -2,76 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4796362867
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 21:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D58BE362869
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 21:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242700AbhDPTM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 15:12:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57526 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235122AbhDPTMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 15:12:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABDD9611AF;
-        Fri, 16 Apr 2021 19:12:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618600344;
-        bh=Rv2GvndnTmtUHMieNY3HvaWYmPwe9OWiXSUMXa7ltaY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=psiL2cihVJWqJ4zI5xobZjykYKFmtbnwtlrYmaHfG8/g4dldrS/LkmyLKKU2dfQGM
-         6KoAD9m8etWHXBpXX1LPFVxX5lVGCtrovBRqt9UhYbyRydVvoKrxjtQvmm0NoYY+wm
-         I5O/E/2k7mZN258GuHAmNBpmWUTOh/kQhzfqoJmfOP8IShhGB1hDBcaWJka3aVyAox
-         +ChlnOQVPN5cjCMhxPKfJ43y2xY4pqaf1a58pHlgKGTM7c8cyyZC+35PxCUzNozLoA
-         iv9BppMsqbKmvtgZBqbQZmB618iwMIWgBvLCFCNcVf8ElsonHwYwxt9un33zmmHNs9
-         b2jR1Gf+2yP7A==
-Date:   Fri, 16 Apr 2021 14:12:36 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-sctp@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] sctp: Fix out-of-bounds warning in
- sctp_process_asconf_param()
-Message-ID: <20210416191236.GA589296@embeddedor>
+        id S242890AbhDPTNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 15:13:25 -0400
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:41978 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235122AbhDPTNV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 15:13:21 -0400
+Received: by mail-oi1-f180.google.com with SMTP id r186so1113555oif.8;
+        Fri, 16 Apr 2021 12:12:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DNjkbun/XYfHCNxGgq9zHxG/GMby9cLqXNMucsqMB1w=;
+        b=TmbNKGiJYCTTEpGWhsMRe9TW/qy0paCIVp94CjBt5rwfjFMhJxgDQk3YLKi9WN9+T3
+         D/XtGPK5si7qqQrnufRzaNtT02NqmCP0+maB8hPQqDZnApqHPFsdR4meWKCnopF3GnRQ
+         8j7YeSrkHFKwdyQcCfTQAzS13omveaqDBxcZkM6Qu7qChuGjXNuifWwtauRxvstBjRjd
+         M97isnLiMJGGH0LYpVfihhIK3DyJ/hIbNqQCiDzUX3CNkXyvsRawnJzAh6CHVgGwgajD
+         O+WLrl1cE2vKH6Q9YGKP9FSBoA88qfsl/i0271rdGSFsCcdhKLA1lXAK0L+us65TGM+w
+         /ucg==
+X-Gm-Message-State: AOAM530G8eu4c0D60UU/S/hA3hueinS1mJ5UyAwb3mgYvC5YPiTrk1Xt
+        rY9XgSizU4KsZWdoOTtgbg==
+X-Google-Smtp-Source: ABdhPJxgh6O5W1jlb8bKCqeMgP6WIAUMETr3Uer8iH7Yq2NSXt9VKsmR9WjIZMIRYZ2jxU7aSlU0WA==
+X-Received: by 2002:aca:4442:: with SMTP id r63mr7533105oia.102.1618600376326;
+        Fri, 16 Apr 2021 12:12:56 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h17sm1498246otj.38.2021.04.16.12.12.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 12:12:55 -0700 (PDT)
+Received: (nullmailer pid 3779654 invoked by uid 1000);
+        Fri, 16 Apr 2021 19:12:54 -0000
+Date:   Fri, 16 Apr 2021 14:12:54 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Nishanth Menon <nm@ti.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        s-anna@ti.com, linux-kernel@vger.kernel.org,
+        Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH V3] dt-bindings: mailbox: ti, secure-proxy: Convert to
+ json schema
+Message-ID: <20210416191254.GA3779553@robh.at.kernel.org>
+References: <20210416005953.17147-1-nm@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210416005953.17147-1-nm@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following out-of-bounds warning:
+On Thu, 15 Apr 2021 19:59:53 -0500, Nishanth Menon wrote:
+> Convert the ti,secure-proxy to yaml for better checks and documentation.
+> Differences being mostly in the examples:
+> - Dropped the example usage of mailbox client, it is better done in
+>   tisci node definition.
+> - Switched reg usage for address-cells and size-cells 1 - aligned with
+>   schema checks as well.
+> - included header in example for a buildable example.
+> 
+> While at this, lets make sure to support upto 100 rx threads even though
+> typically upto 1 threads is practically in use.
+> 
+> NOTE: The following checkpatch warning is generated since we do include the header
+> in the example, but this is a false positive warning.
+>   WARNING: DT binding docs and includes should be a separate patch. See:
+>   Documentation/devicetree/bindings/submitting-patches.rst
+> 
+> Signed-off-by: Nishanth Menon <nm@ti.com>
+> ---
+> 
+> Changes since v2:
+>  - Subject line rewording to indicate json schema rather than yaml
+>  - Review comment: Dropped "-" in interrupt-names pattern so that it will match all
+>    entries
+>  - Minor commit message formatting changes
+> 
+> V2: https://lore.kernel.org/linux-arm-kernel/20210413224535.30910-1-nm@ti.com/
+> V1: https://lore.kernel.org/linux-arm-kernel/20210413171230.5872-1-nm@ti.com/
+> 
+>  .../bindings/mailbox/ti,secure-proxy.txt      | 50 ------------
+>  .../bindings/mailbox/ti,secure-proxy.yaml     | 79 +++++++++++++++++++
+>  2 files changed, 79 insertions(+), 50 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mailbox/ti,secure-proxy.txt
+>  create mode 100644 Documentation/devicetree/bindings/mailbox/ti,secure-proxy.yaml
+> 
 
-net/sctp/sm_make_chunk.c:3150:4: warning: 'memcpy' offset [17, 28] from the object at 'addr' is out of the bounds of referenced subobject 'v4' with type 'struct sockaddr_in' at offset 0 [-Warray-bounds]
-
-This helps with the ongoing efforts to globally enable -Warray-bounds
-and get us closer to being able to tighten the FORTIFY_SOURCE routines
-on memcpy().
-
-Link: https://github.com/KSPP/linux/issues/109
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- net/sctp/sm_make_chunk.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/sctp/sm_make_chunk.c b/net/sctp/sm_make_chunk.c
-index 54e6a708d06e..5f9a7c028274 100644
---- a/net/sctp/sm_make_chunk.c
-+++ b/net/sctp/sm_make_chunk.c
-@@ -3147,7 +3147,7 @@ static __be16 sctp_process_asconf_param(struct sctp_association *asoc,
- 		 * primary.
- 		 */
- 		if (af->is_any(&addr))
--			memcpy(&addr.v4, sctp_source(asconf), sizeof(addr));
-+			memcpy(&addr, sctp_source(asconf), sizeof(addr));
- 
- 		if (security_sctp_bind_connect(asoc->ep->base.sk,
- 					       SCTP_PARAM_SET_PRIMARY,
--- 
-2.27.0
-
+Reviewed-by: Rob Herring <robh@kernel.org>
