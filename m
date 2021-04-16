@@ -2,108 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0F9361BDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83CE5361BE3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239768AbhDPIh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 04:37:59 -0400
-Received: from mga06.intel.com ([134.134.136.31]:17966 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232442AbhDPIh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 04:37:58 -0400
-IronPort-SDR: ER3UxIOeOWsJ8Kbca4e3yVhkAgXKvsvGZDMmg/UjsEkgiRkuBa2MYsuidRbaQWV2VY0uJfeWXY
- t8uYkt6DwbAA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="256324544"
-X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
-   d="scan'208";a="256324544"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 01:37:33 -0700
-IronPort-SDR: 0u3B25yUP3DkaMmFYZ3eX/OFY8cwgwhw61cjwZHiTxcc4h/6teNjzrjGE26MhQQ68prrJJNtyk
- 7LkFIY8wKxuQ==
-X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
-   d="scan'208";a="522648878"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 01:37:30 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 74E3C20188;
-        Fri, 16 Apr 2021 11:37:28 +0300 (EEST)
-Date:   Fri, 16 Apr 2021 11:37:28 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: Re: [Outreachy kernel] [PATCH v2] staging: media: atomisp: pci:
- Change line break to avoid an open parenthesis at the end of the line
-Message-ID: <20210416083728.GL3@paasikivi.fi.intel.com>
-References: <20210415170819.GA17534@focaruja>
- <20210415171409.GC2531743@casper.infradead.org>
- <20210415194955.GI3@paasikivi.fi.intel.com>
- <20210415195704.GE2531743@casper.infradead.org>
- <20210415195941.GF2531743@casper.infradead.org>
- <20210415212158.GK3@paasikivi.fi.intel.com>
- <20210416054941.GF6021@kadam>
+        id S239288AbhDPIkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 04:40:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60009 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235226AbhDPIki (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 04:40:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618562413;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E/21KtrUJDrIPwXoawNEtFcajhDHUfFH4h+ED/BPh0I=;
+        b=LoZq+lV/09ar6eica9yMXDuMH/+9B+zCQTn1sqsb4/jV03Rw+1wTcRl8KQX8eg5jOK5w4+
+        m5Sw0rDm1lXvrwMP6UylGOPtNbMIRWWzACdE5D4XKKe4OA84LlGgBqG/kYcndsSI7onnFk
+        RATNhrrysMUtQ6yN7IRHYclHAWMZCwQ=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-179-Iaa9UdIcM1WwpRfpeuJIcg-1; Fri, 16 Apr 2021 04:40:11 -0400
+X-MC-Unique: Iaa9UdIcM1WwpRfpeuJIcg-1
+Received: by mail-ed1-f71.google.com with SMTP id i25-20020a50fc190000b0290384fe0dab00so1055519edr.6
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 01:40:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=E/21KtrUJDrIPwXoawNEtFcajhDHUfFH4h+ED/BPh0I=;
+        b=PjhEgi2ueyE5TTyESUtDS7qM5oFkVqe2DSN2hdQ1uZ3Sw5diCwM0IUhGObv6CDHF2Y
+         zctWqlTwHojEsAzB9DFS9omgbKkXO2LvymMXxBYz6R7kIuu7zzHwxGrFHwciCrHeB0dV
+         GUF8Wzh2vuV5KEiVXiUGfjW0lULT6zGoaUa9SvbT7po8LP4Po/GpRlvGn2sJCZbF0DFX
+         g8BJTf/SUvunRsWjulV/sijW3NVM6wFPTGXoA1sf792+DtIkAE6QuWcJJNY2q+siwap9
+         U6BLCamIcRsoGEbseuobVpQbfE2gCq9jVvtVxH5+fPayZ9Ba6vCPzqOcizjTZI90hw8L
+         ZDZA==
+X-Gm-Message-State: AOAM531o/63q7FlgctwUUI2OozLr11FiiMW3NklwYcO24bQQDZFo2lIJ
+        G2MHyOsILdiKTqE6YOmVKmaHy0jZO9ZfQjav9sXbMZ9MfTjzEq+7TdsQmO8tjNzKoI2n5dhFphF
+        5KXWg3rZaJ2iT6AcWI6V/IUbi
+X-Received: by 2002:a17:906:2596:: with SMTP id m22mr7477045ejb.175.1618562410233;
+        Fri, 16 Apr 2021 01:40:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyzNJnhs14GfiKHmwxiwSXkMkIYSx3t9HmyGiPAFsuoDS423ZgZVJAbSWmQrlHtBpNbXS2xKA==
+X-Received: by 2002:a17:906:2596:: with SMTP id m22mr7477008ejb.175.1618562410070;
+        Fri, 16 Apr 2021 01:40:10 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id b14sm4764203edx.39.2021.04.16.01.40.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Apr 2021 01:40:09 -0700 (PDT)
+Subject: Re: [PATCH v2 3/7] KVM: x86: hyper-v: Move the remote TLB flush logic
+ out of vmx
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org,
+        Lan Tianyu <Tianyu.Lan@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>
+References: <cover.1618492553.git.viremana@linux.microsoft.com>
+ <92207433d0784e123347caaa955c04fbec51eaa7.1618492553.git.viremana@linux.microsoft.com>
+ <87y2di7hiz.fsf@vitty.brq.redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <8a83b571-5c19-603e-193f-666b99a96461@redhat.com>
+Date:   Fri, 16 Apr 2021 10:40:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416054941.GF6021@kadam>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <87y2di7hiz.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan,
-
-On Fri, Apr 16, 2021 at 08:49:41AM +0300, Dan Carpenter wrote:
-> On Fri, Apr 16, 2021 at 12:21:58AM +0300, Sakari Ailus wrote:
-> > On Thu, Apr 15, 2021 at 08:59:41PM +0100, Matthew Wilcox wrote:
-> > > On Thu, Apr 15, 2021 at 08:57:04PM +0100, Matthew Wilcox wrote:
-> > > > On Thu, Apr 15, 2021 at 10:49:55PM +0300, Sakari Ailus wrote:
-> > > > > On Thu, Apr 15, 2021 at 06:14:09PM +0100, Matthew Wilcox wrote:
-> > > > > > On Thu, Apr 15, 2021 at 02:08:19PM -0300, Aline Santana Cordeiro wrote:
-> > > > > > > -const struct atomisp_format_bridge *get_atomisp_format_bridge_from_mbus(
-> > > > > > > -    u32 mbus_code);
-> > > > > > > +const struct atomisp_format_bridge*
-> > > > > > > +get_atomisp_format_bridge_from_mbus(u32 mbus_code);
-> > > > > > 
-> > > > > > No, this does not match coding style.  Probably best to break the
-> > > > > > 80-column guideline in this instance.  Best would be to have a function
-> > > > > 
-> > > > > Having the return type on the previous line is perfectly fine. There should
-> > > > > be a space before the asterisk though.
-> > > > 
-> > > > No, it's not.  Linus has ranted about that before.
-> > > 
-> > > Found it.  https://lore.kernel.org/lkml/1054519757.161606@palladium.transmeta.com/
-> > 
-> > Two decades ago, really?
-> > 
-> > This is simply one of the practical means how you split long function
-> > declarations and avoid overly long lines. Not my favourite though, but
-> > still better than those long lines.
+On 16/04/21 10:36, Vitaly Kuznetsov wrote:
+> - Create a dedicated set of files, e.g. 'kvmonhyperv.[ch]' (I also
+> thought about 'hyperv_host.[ch]' but then I realized it's equally
+> misleading as one can read this as 'KVM is acting as Hyper-V host').
 > 
-> I've always thought we allow either style, but it has to be done
-> consistently within the file.  I was pretty sure that was policy but
-> it's another thing that goes back decades so I don't have a reference.
-> It shouldn't be about breaking up long lines.
-> 
-> > 
-> > My personal preference would be to wrap at the opening parenthesis and
-> > indent by just a tab, but I know many people who disagree with that...
-> 
-> If you're running into the 80 character limit, then it's fine to use
-> two tabs.  I think we have been rejecting patches that push align the
-> parameters but push past the 80 character limit.  Using one tab is
-> confusing because it makes the decalarations line up with the code.
+> Personally, I'd vote for the later. Besides eliminating confusion, the
+> benefit of having dedicated files is that we can avoid compiling them
+> completely when !IS_ENABLED(CONFIG_HYPERV) (#ifdefs in C are ugly).
 
-Interesting. Do you have an example of this? I've thought checkpatch.pl
-gave a warning if the line ended with an opening parenthesis no matter
-what.
+Indeed.  For the file, kvm-on-hv.[ch] can do.
 
--- 
-Kind regards,
+Paolo
 
-Sakari Ailus
