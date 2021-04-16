@@ -2,87 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9C883628F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 21:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE6D3628F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 21:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235029AbhDPTyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 15:54:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236469AbhDPTyE (ORCPT
+        id S243166AbhDPTy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 15:54:58 -0400
+Received: from mailout.easymail.ca ([64.68.200.34]:46018 "EHLO
+        mailout.easymail.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236393AbhDPTy5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 15:54:04 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2823CC061760
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 12:53:38 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id cu16so12576780pjb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 12:53:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4QdNLxtMyGBXnzcuFRJGiRcHb2u3OpFrU/9Q6DJdtHM=;
-        b=XzsdTPW17a3D0CPunlZ/4Z5f/H9FiCbcKc7JSo7yT/4tvhMDg88Uy9/DpphB0gFPyN
-         WZwYxeCI7knl4QLYflLQLThv9/rAjYkTJHWNifKWZOeDMqeAW/KK2+XPusnBD3GpPWqv
-         vfePIE7jYmbgRh3hZsK+hEL+IYHJZ2tS82dcA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4QdNLxtMyGBXnzcuFRJGiRcHb2u3OpFrU/9Q6DJdtHM=;
-        b=GjGYPuXKeGYBipdujsZaabS7fai4OfPXCqkcem7rgYIQ1/7MqJwSEUmz/ozSJ9Ywuu
-         Qg+4KoaiMtfMizs32JiPe8eBOpCThRhYdBDApToOp4azV0bN33fBT8kSL9phgnqx/9iQ
-         t+iNw/iVKlbRsJ3KdjlJ4I42NWk1Nn0ctBZE7ZjmFkolRDQ9jG1pqv5EnC7lMEhGlKne
-         rOF5/EDwivyHMLvF4K213+BEZPPMMEGCAQk064izTmD24RFoyFDUxENOZvkXM59A+Phn
-         uFj4RoY6tLpn76aVazgsAWwb1ZIXw52jt740FxLklC/AzrDnwPinn1frqsxDXLZiek1d
-         dA8w==
-X-Gm-Message-State: AOAM532H2UT/JGw+hpwHP1U8nHv0+4IJA/bE1Y5TtUGm8ZX/y8+7ykuj
-        zAxyaVofhC9ge7We1Sk9eCexFQ==
-X-Google-Smtp-Source: ABdhPJyOi0Hh1KaoxJrDOCHEREwQAXtTICn1Y0/lFNXgtHYCnfD5JLKmsk3YmfHUaTA/Thzsnhgwog==
-X-Received: by 2002:a17:902:8604:b029:e6:60ad:6921 with SMTP id f4-20020a1709028604b02900e660ad6921mr11346580plo.15.1618602817589;
-        Fri, 16 Apr 2021 12:53:37 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j10sm3733203pga.5.2021.04.16.12.53.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 12:53:37 -0700 (PDT)
-Date:   Fri, 16 Apr 2021 12:53:36 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-sctp@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] sctp: Fix out-of-bounds warning in
- sctp_process_asconf_param()
-Message-ID: <202104161249.D889C975D9@keescook>
-References: <20210416191236.GA589296@embeddedor>
+        Fri, 16 Apr 2021 15:54:57 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mailout.easymail.ca (Postfix) with ESMTP id 5A0F623B7E;
+        Fri, 16 Apr 2021 19:54:32 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at emo06-pco.easydns.vpn
+Received: from mailout.easymail.ca ([127.0.0.1])
+        by localhost (emo06-pco.easydns.vpn [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id JH0B0m67ZeMM; Fri, 16 Apr 2021 19:54:32 +0000 (UTC)
+Received: from mail.gonehiking.org (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
+        by mailout.easymail.ca (Postfix) with ESMTPA id 58B7E239DB;
+        Fri, 16 Apr 2021 19:54:25 +0000 (UTC)
+Received: from [192.168.1.4] (internal [192.168.1.4])
+        by mail.gonehiking.org (Postfix) with ESMTP id 31CA03EE4F;
+        Fri, 16 Apr 2021 13:54:24 -0600 (MDT)
+Subject: Re: [PATCH 2/5] scsi: BusLogic: Avoid unbounded `vsprintf' use
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <alpine.DEB.2.21.2104141244520.44318@angie.orcam.me.uk>
+ <alpine.DEB.2.21.2104141521190.44318@angie.orcam.me.uk>
+From:   Khalid Aziz <khalid@gonehiking.org>
+Message-ID: <1dd4eb71-05e5-6da4-bfec-01883d1ac7b3@gonehiking.org>
+Date:   Fri, 16 Apr 2021 13:54:24 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416191236.GA589296@embeddedor>
+In-Reply-To: <alpine.DEB.2.21.2104141521190.44318@angie.orcam.me.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 02:12:36PM -0500, Gustavo A. R. Silva wrote:
-> Fix the following out-of-bounds warning:
+On 4/14/21 4:39 PM, Maciej W. Rozycki wrote:
+> Existing `blogic_msg' invocations do not appear to overrun its internal 
+> buffer of a fixed length of 100, which would cause stack corruption, but 
+> it's easy to miss with possible further updates and a fix is cheap in 
+> performance terms, so limit the output produced into the buffer by using 
+> `vsnprintf' rather than `vsprintf'.
 > 
-> net/sctp/sm_make_chunk.c:3150:4: warning: 'memcpy' offset [17, 28] from the object at 'addr' is out of the bounds of referenced subobject 'v4' with type 'struct sockaddr_in' at offset 0 [-Warray-bounds]
+> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+> ---
+>  drivers/scsi/BusLogic.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> This helps with the ongoing efforts to globally enable -Warray-bounds
-> and get us closer to being able to tighten the FORTIFY_SOURCE routines
-> on memcpy().
+> linux-buslogic-vsnprintf.diff
+> Index: linux-macro-ide/drivers/scsi/BusLogic.c
+> ===================================================================
+> --- linux-macro-ide.orig/drivers/scsi/BusLogic.c
+> +++ linux-macro-ide/drivers/scsi/BusLogic.c
+> @@ -3588,7 +3588,7 @@ static void blogic_msg(enum blogic_msgle
+>  	int len = 0;
+>  
+>  	va_start(args, adapter);
+> -	len = vsprintf(buf, fmt, args);
+> +	len = vsnprintf(buf, sizeof(buf), fmt, args);
+>  	va_end(args);
+>  	if (msglevel == BLOGIC_ANNOUNCE_LEVEL) {
+>  		static int msglines = 0;
 > 
-> Link: https://github.com/KSPP/linux/issues/109
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Yup!
+As Maciej explained in other email that snprintf() does null-terminate
+the string, I think this change is fine.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--- 
-Kees Cook
+Acked-by: Khalid Aziz <khalid@gonehiking.org>
