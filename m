@@ -2,93 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE399361FF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F094361FF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235345AbhDPMdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 08:33:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60602 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234291AbhDPMdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 08:33:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 67EF2610E6;
-        Fri, 16 Apr 2021 12:33:25 +0000 (UTC)
-Date:   Fri, 16 Apr 2021 13:33:22 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     He Zhe <zhe.he@windriver.com>
-Cc:     oleg@redhat.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, paul@paul-moore.com,
-        eparis@redhat.com, linux-audit@redhat.com,
-        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH 1/3] arm64: ptrace: Add is_syscall_success to handle
- compat
-Message-ID: <20210416123322.GA23184@arm.com>
-References: <20210416075533.7720-1-zhe.he@windriver.com>
+        id S239255AbhDPMeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 08:34:46 -0400
+Received: from jptosegrel01.sonyericsson.com ([124.215.201.71]:12179 "EHLO
+        JPTOSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234291AbhDPMek (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 08:34:40 -0400
+From:   Peter Enderborg <peter.enderborg@sony.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@suse.com>, NeilBrown <neilb@suse.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mike Rapoport <rppt@kernel.org>, <linux-media@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>,
+        <linaro-mm-sig@lists.linaro.org>,
+        Matthew Wilcox <willy@infradead.org>
+CC:     Peter Enderborg <peter.enderborg@sony.com>
+Subject: [PATCH v2] dma-buf: Add DmaBufTotal counter in meminfo
+Date:   Fri, 16 Apr 2021 14:33:52 +0200
+Message-ID: <20210416123352.10747-1-peter.enderborg@sony.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416075533.7720-1-zhe.he@windriver.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=crzlbGwi c=1 sm=1 tr=0 a=9drRLWArJOlETflmpfiyCA==:117 a=3YhXtTcJ-WEA:10 a=z6gsHLkEAAAA:8 a=USQXLDy_ZNVIum19Oj8A:9 a=d-OLMTCWyvARjPbQ-enb:22 a=pHzHmUro8NiASowvMSCR:22 a=Ew2E2A-JSTLzCXPT_086:22
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 03:55:31PM +0800, He Zhe wrote:
-> The general version of is_syscall_success does not handle 32-bit
-> compatible case, which would cause 32-bit negative return code to be
-> recoganized as a positive number later and seen as a "success".
-> 
-> Since is_compat_thread is defined in compat.h, implementing
-> is_syscall_success in ptrace.h would introduce build failure due to
-> recursive inclusion of some basic headers like mutex.h. We put the
-> implementation to ptrace.c
-> 
-> Signed-off-by: He Zhe <zhe.he@windriver.com>
-> ---
->  arch/arm64/include/asm/ptrace.h |  3 +++
->  arch/arm64/kernel/ptrace.c      | 10 ++++++++++
->  2 files changed, 13 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/ptrace.h b/arch/arm64/include/asm/ptrace.h
-> index e58bca832dff..3c415e9e5d85 100644
-> --- a/arch/arm64/include/asm/ptrace.h
-> +++ b/arch/arm64/include/asm/ptrace.h
-> @@ -328,6 +328,9 @@ static inline void regs_set_return_value(struct pt_regs *regs, unsigned long rc)
->  	regs->regs[0] = rc;
->  }
->  
-> +extern inline int is_syscall_success(struct pt_regs *regs);
-> +#define is_syscall_success(regs) is_syscall_success(regs)
-> +
->  /**
->   * regs_get_kernel_argument() - get Nth function argument in kernel
->   * @regs:	pt_regs of that context
-> diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-> index 170f42fd6101..3266201f8c60 100644
-> --- a/arch/arm64/kernel/ptrace.c
-> +++ b/arch/arm64/kernel/ptrace.c
-> @@ -1909,3 +1909,13 @@ int valid_user_regs(struct user_pt_regs *regs, struct task_struct *task)
->  	else
->  		return valid_native_regs(regs);
->  }
-> +
-> +inline int is_syscall_success(struct pt_regs *regs)
-> +{
-> +	unsigned long val = regs->regs[0];
-> +
-> +	if (is_compat_thread(task_thread_info(current)))
-> +		val = sign_extend64(val, 31);
-> +
-> +	return !IS_ERR_VALUE(val);
-> +}
+This adds a total used dma-buf memory. Details
+can be found in debugfs, however it is not for everyone
+and not always available. dma-buf are indirect allocated by
+userspace. So with this value we can monitor and detect
+userspace applications that have problems.
 
-It's better to use compat_user_mode(regs) here instead of
-is_compat_thread(). It saves us from worrying whether regs are for the
-current context.
+Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
+---
+ drivers/dma-buf/dma-buf.c | 12 ++++++++++++
+ fs/proc/meminfo.c         |  5 ++++-
+ include/linux/dma-buf.h   |  1 +
+ 3 files changed, 17 insertions(+), 1 deletion(-)
 
-I think we should change regs_return_value() instead. This function
-seems to be called from several other places and it has the same
-potential problems if called on compat pt_regs.
-
+diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+index f264b70c383e..9f88171b394c 100644
+--- a/drivers/dma-buf/dma-buf.c
++++ b/drivers/dma-buf/dma-buf.c
+@@ -37,6 +37,7 @@ struct dma_buf_list {
+ };
+ 
+ static struct dma_buf_list db_list;
++static atomic_long_t dma_buf_size;
+ 
+ static char *dmabuffs_dname(struct dentry *dentry, char *buffer, int buflen)
+ {
+@@ -79,6 +80,7 @@ static void dma_buf_release(struct dentry *dentry)
+ 	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
+ 		dma_resv_fini(dmabuf->resv);
+ 
++	atomic_long_sub(dmabuf->size, &dma_buf_size);
+ 	module_put(dmabuf->owner);
+ 	kfree(dmabuf->name);
+ 	kfree(dmabuf);
+@@ -586,6 +588,7 @@ struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info)
+ 	mutex_lock(&db_list.lock);
+ 	list_add(&dmabuf->list_node, &db_list.head);
+ 	mutex_unlock(&db_list.lock);
++	atomic_long_add(dmabuf->size, &dma_buf_size);
+ 
+ 	return dmabuf;
+ 
+@@ -1346,6 +1349,15 @@ void dma_buf_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map)
+ }
+ EXPORT_SYMBOL_GPL(dma_buf_vunmap);
+ 
++/**
++ * dma_buf_get_size - Return the used nr pages by dma-buf
++ */
++long dma_buf_get_size(void)
++{
++	return atomic_long_read(&dma_buf_size) >> PAGE_SHIFT;
++}
++EXPORT_SYMBOL_GPL(dma_buf_get_size);
++
+ #ifdef CONFIG_DEBUG_FS
+ static int dma_buf_debug_show(struct seq_file *s, void *unused)
+ {
+diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
+index 6fa761c9cc78..178f6ffb1618 100644
+--- a/fs/proc/meminfo.c
++++ b/fs/proc/meminfo.c
+@@ -16,6 +16,7 @@
+ #ifdef CONFIG_CMA
+ #include <linux/cma.h>
+ #endif
++#include <linux/dma-buf.h>
+ #include <asm/page.h>
+ #include "internal.h"
+ 
+@@ -145,7 +146,9 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+ 	show_val_kb(m, "CmaFree:        ",
+ 		    global_zone_page_state(NR_FREE_CMA_PAGES));
+ #endif
+-
++#ifdef CONFIG_DMA_SHARED_BUFFER
++	show_val_kb(m, "DmaBufTotal:    ", dma_buf_get_size());
++#endif
+ 	hugetlb_report_meminfo(m);
+ 
+ 	arch_report_meminfo(m);
+diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+index efdc56b9d95f..f6481315a377 100644
+--- a/include/linux/dma-buf.h
++++ b/include/linux/dma-buf.h
+@@ -507,4 +507,5 @@ int dma_buf_mmap(struct dma_buf *, struct vm_area_struct *,
+ 		 unsigned long);
+ int dma_buf_vmap(struct dma_buf *dmabuf, struct dma_buf_map *map);
+ void dma_buf_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map);
++long dma_buf_get_size(void);
+ #endif /* __DMA_BUF_H__ */
 -- 
-Catalin
+2.17.1
+
