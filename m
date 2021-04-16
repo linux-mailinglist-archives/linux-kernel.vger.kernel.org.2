@@ -2,87 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0912B36231C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 698B636231F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245236AbhDPOq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:46:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36180 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244605AbhDPOq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:46:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 795AC610FC;
-        Fri, 16 Apr 2021 14:46:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618584362;
-        bh=qpm8MHd3hC7x4V+sHrNbEegZYfAuyfhVcaQke9j+V4w=;
+        id S245281AbhDPOr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:47:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240931AbhDPOr0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 10:47:26 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F0CC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:47:01 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C586C510;
+        Fri, 16 Apr 2021 16:46:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1618584420;
+        bh=cQArhNoWMAlPCxN0Uts+L5Q+YkzYFQeuqeKvTHpGInw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=emeqpdgMpiXTBNBcX+7GWIkt6+uwu9f/LSuSpAsfeu5lI4+6Wx9eqv7xDr/sugXm4
-         9gQFCnBEFdx2WjeZstLIUwzu9C4AUvzT8jXoMKBcWxVu4NOHencpiPlj2TQVWOMZQ8
-         zajt5y1otU6cSmsw0wCRanjuxVJkkeQ/KmqoQWQt9tg0AhRqbOEpJw6YzivV4pnsHa
-         G1NNIOYnOF5ehTftC/lHlWuza/TcGW0umzXHCmLSoXAwOvzo7Q9quHYQoNi6twAymg
-         WV5bHRUXKMplB5dNaZs3q7s4s9MewkyLo9zS2y0KnKO9M8Z1Qh5HePT7EfUh3j0dlp
-         6CdVXgRcZM6FQ==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lXPjO-0006fq-1A; Fri, 16 Apr 2021 16:46:02 +0200
-Date:   Fri, 16 Apr 2021 16:46:02 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     dillon min <dillon.minfei@gmail.com>
-Cc:     Alexandre TORGUE <alexandre.torgue@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Erwan Le Ray <erwan.leray@foss.st.com>,
-        Gerald Baeza <gerald.baeza@st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 2/3] serial: stm32: fix threaded interrupt handling
-Message-ID: <YHmjKhH7xWz0BxEv@hovoldconsulting.com>
-References: <20210416140557.25177-1-johan@kernel.org>
- <20210416140557.25177-3-johan@kernel.org>
- <CAL9mu0KwgOFQfa8ft4rB6+F=KLd1gZLYDvwpAW72zPAFntehVw@mail.gmail.com>
+        b=WRUDU+fHVYP1SmkEbF043sQt24g1Kbv6AdtfwwYYg6FT280yhEEWx9LB8SC1/SLmo
+         faWL3syih+hWi+Xahjiv0Cu0T8dH792SwUkanFbISIouOCbfL0w2ugSYARhGu/feSb
+         t/+4L6FpNGjR35Y7ZKlu4Rez6mR6UL4A/PdGyqEk=
+Date:   Fri, 16 Apr 2021 17:46:57 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Hyun Kwon <hyun.kwon@xilinx.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 21/40] drm/xlnx/zynqmp_dp: Fix a little potential doc-rot
+Message-ID: <YHmjYRKouy9P/YGb@pendragon.ideasonboard.com>
+References: <20210416143725.2769053-1-lee.jones@linaro.org>
+ <20210416143725.2769053-22-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL9mu0KwgOFQfa8ft4rB6+F=KLd1gZLYDvwpAW72zPAFntehVw@mail.gmail.com>
+In-Reply-To: <20210416143725.2769053-22-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 10:35:25PM +0800, dillon min wrote:
-> Hi Johan
-> 
-> Thanks for share your patch.
-> 
-> Johan Hovold <johan@kernel.org>于2021年4月16日 周五22:11写道：
-> 
-> > When DMA is enabled the receive handler runs in a threaded handler, but
-> > the primary handler up until very recently neither disabled interrupts
-> > in the device or used IRQF_ONESHOT. This would lead to a deadlock if an
-> > interrupt comes in while the threaded receive handler is running under
-> > the port lock.
-> >
-> Greg told me there was a patch fixed this case. In case hard irq &
-> threaded_fn both offered. The local_irq_save() will be executed before call
-> driver’s threaded handler.
-> 
-> Post the original mail from Greg
-> 
-> Please see 81e2073c175b ("genirq: Disable interrupts for force threaded
-> handlers") for when threaded irq handlers have irqs disabled, isn't that
-> the case you are trying to "protect" from here?
-> 
-> Why is the "threaded" flag used at all?  The driver should not care.
-> 
-> Also see 9baedb7baeda ("serial: imx: drop workaround for forced irq
-> threading") in linux-next for an example of how this was fixed up in a
-> serial driver.
+Hi Lee,
 
-Neither of these commits are (directly) related to the problem this
-patch addresses (they are about force-threaded handlers, this is about a
-normal threaded handler which run with interrupts enabled).
+Thank you for the patch.
 
-Johan
+On Fri, Apr 16, 2021 at 03:37:06PM +0100, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/gpu/drm/xlnx/zynqmp_dp.c:806: warning: expecting prototype for zynqmp_dp_link_train(). Prototype was for zynqmp_dp_train() instead
+> 
+> Cc: Hyun Kwon <hyun.kwon@xilinx.com>
+> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Michal Simek <michal.simek@xilinx.com>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+I assume you'll merge the whole series in one go through drm-misc. If
+that's not the case, please let me know and I'll take the zynqmp patches
+in my tree.
+
+> ---
+>  drivers/gpu/drm/xlnx/zynqmp_dp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> index 59d1fb017da01..5ce96421acf40 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> @@ -797,7 +797,7 @@ static int zynqmp_dp_link_train_ce(struct zynqmp_dp *dp)
+>  }
+>  
+>  /**
+> - * zynqmp_dp_link_train - Train the link
+> + * zynqmp_dp_train - Train the link
+>   * @dp: DisplayPort IP core structure
+>   *
+>   * Return: 0 if all trains are done successfully, or corresponding error code.
+
+-- 
+Regards,
+
+Laurent Pinchart
