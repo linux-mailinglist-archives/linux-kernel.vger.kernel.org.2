@@ -2,87 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7931336231D
+	by mail.lfdr.de (Postfix) with ESMTP id 0912B36231C
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245274AbhDPOqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:46:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244605AbhDPOqg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:46:36 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C10C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:46:12 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id f15so19162068iob.5
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:46:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yYbdy738YZSLcRHWeIc/rXEkRrBDPjfZ8CjoruCy+gk=;
-        b=z2EiDumIKflW5Y2jsMQs3gNynYUnYBkWTKgg4sKgJk8PrTg0hKWCLc+Lr0Gw6iZaSa
-         /khUtKGEbnxqEz0l0jyI00PNqA1BkbGTgMujzS7mjAncrN1opi+bmA+qnlSOpysogFWX
-         SdFZ/NFRps6pQKTrcfiYFnsyyF/nJp1rkMsmeJ9JmQXgPUA2PczXLyhudbZ+5ZjuqUBD
-         4sZ3KFqhjgsJ5ahMQPTzSoDmWptvu/9Fe1PCs5Kh1vr0RkpwYaB0UBtOQpMtwX0VTDZh
-         C61Mkjbo5kgwk/Pm45YUycckX8qVHZbgweqk24QAV/70TQzszCuBEwvoKohbLQkc3wjT
-         +C3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yYbdy738YZSLcRHWeIc/rXEkRrBDPjfZ8CjoruCy+gk=;
-        b=IUBippKdPXqX3x6MI8dvzXVeXtRO0RA59PozTrCRui5T768o5kWZJfyPX+HFZ4LQzf
-         4x+w/ZkAzAPRksmfRUdQeJ/uT2uulZSfEli5DgbvVKyIFi0PU9ZbRTkni0j7vJaOV6mC
-         pfiH5FEYp4prxQ4KDB/E28J5FbzlwDi6uLhs4mdFLc8Z8uykn2IzEb3swrj23aS25xrP
-         DMPkMh5guhphCy69KkvURLJFJ4T/nIcoKUJo/kCk/v5XlK33aTFpN4bZTgTfJ9vYxKkX
-         R4lIzz5YC98UXaF4FbOuhq4bQT1E3LTPjbWribcaenRi4fDRMZ8lEcjztTtxtbwP+Iro
-         Y8sg==
-X-Gm-Message-State: AOAM531ZMwUHp9RszJMyVFpicV0B0onNdB7PnMh/AeNkPLAeoEEcH9yy
-        7fSOsGK9mEHwFRChGkeA1b/kUEu8+1cf0hBDaPpqNA==
-X-Google-Smtp-Source: ABdhPJx8ZQwst2KNubris3aC1UDWKGesJFlm8qEQTf37aQ0qmaDu6K1V7H7yfOxbRF1YInb4nxFRhFeb4NknxnwERt0=
-X-Received: by 2002:a05:6638:3013:: with SMTP id r19mr4449140jak.36.1618584371813;
- Fri, 16 Apr 2021 07:46:11 -0700 (PDT)
+        id S245236AbhDPOq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:46:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36180 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244605AbhDPOq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 10:46:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 795AC610FC;
+        Fri, 16 Apr 2021 14:46:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618584362;
+        bh=qpm8MHd3hC7x4V+sHrNbEegZYfAuyfhVcaQke9j+V4w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=emeqpdgMpiXTBNBcX+7GWIkt6+uwu9f/LSuSpAsfeu5lI4+6Wx9eqv7xDr/sugXm4
+         9gQFCnBEFdx2WjeZstLIUwzu9C4AUvzT8jXoMKBcWxVu4NOHencpiPlj2TQVWOMZQ8
+         zajt5y1otU6cSmsw0wCRanjuxVJkkeQ/KmqoQWQt9tg0AhRqbOEpJw6YzivV4pnsHa
+         G1NNIOYnOF5ehTftC/lHlWuza/TcGW0umzXHCmLSoXAwOvzo7Q9quHYQoNi6twAymg
+         WV5bHRUXKMplB5dNaZs3q7s4s9MewkyLo9zS2y0KnKO9M8Z1Qh5HePT7EfUh3j0dlp
+         6CdVXgRcZM6FQ==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lXPjO-0006fq-1A; Fri, 16 Apr 2021 16:46:02 +0200
+Date:   Fri, 16 Apr 2021 16:46:02 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     dillon min <dillon.minfei@gmail.com>
+Cc:     Alexandre TORGUE <alexandre.torgue@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Erwan Le Ray <erwan.leray@foss.st.com>,
+        Gerald Baeza <gerald.baeza@st.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 2/3] serial: stm32: fix threaded interrupt handling
+Message-ID: <YHmjKhH7xWz0BxEv@hovoldconsulting.com>
+References: <20210416140557.25177-1-johan@kernel.org>
+ <20210416140557.25177-3-johan@kernel.org>
+ <CAL9mu0KwgOFQfa8ft4rB6+F=KLd1gZLYDvwpAW72zPAFntehVw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210415202404.945368-1-mathieu.poirier@linaro.org>
- <YHk0iDnfujBR3mTB@kroah.com> <YHk+jRT/164eCnWa@kroah.com>
-In-Reply-To: <YHk+jRT/164eCnWa@kroah.com>
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-Date:   Fri, 16 Apr 2021 08:46:01 -0600
-Message-ID: <CANLsYky+tu0a-h1V=1AegXm8UvpfAbSfwYv0TgSQzRj1fZ=1UA@mail.gmail.com>
-Subject: Re: [PATCH 0/1] coresight: Fix for v5.12-rc7
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linaro.org>,
-        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL9mu0KwgOFQfa8ft4rB6+F=KLd1gZLYDvwpAW72zPAFntehVw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Apr 2021 at 01:36, Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Apr 16, 2021 at 08:54:00AM +0200, Greg KH wrote:
-> > On Thu, Apr 15, 2021 at 02:24:03PM -0600, Mathieu Poirier wrote:
-> > > Hi Greg,
-> > >
-> > > Please consider this patch as a fix for v5.12-rc7.  Applies cleanly
-> > > to your char-misc-linus branch (e49d033bddf5).
+On Fri, Apr 16, 2021 at 10:35:25PM +0800, dillon min wrote:
+> Hi Johan
+> 
+> Thanks for share your patch.
+> 
+> Johan Hovold <johan@kernel.org>于2021年4月16日 周五22:11写道：
+> 
+> > When DMA is enabled the receive handler runs in a threaded handler, but
+> > the primary handler up until very recently neither disabled interrupts
+> > in the device or used IRQF_ONESHOT. This would lead to a deadlock if an
+> > interrupt comes in while the threaded receive handler is running under
+> > the port lock.
 > >
-> > It's too late for 5.12-final, and really my tree should be closed for
-> > 5.13-rc1 now.  I can sneak this in for the merge window, is that ok?
->
+> Greg told me there was a patch fixed this case. In case hard irq &
+> threaded_fn both offered. The local_irq_save() will be executed before call
+> driver’s threaded handler.
+> 
+> Post the original mail from Greg
+> 
+> Please see 81e2073c175b ("genirq: Disable interrupts for force threaded
+> handlers") for when threaded irq handlers have irqs disabled, isn't that
+> the case you are trying to "protect" from here?
+> 
+> Why is the "threaded" flag used at all?  The driver should not care.
+> 
+> Also see 9baedb7baeda ("serial: imx: drop workaround for forced irq
+> threading") in linux-next for an example of how this was fixed up in a
+> serial driver.
 
-Yes, definitely.
+Neither of these commits are (directly) related to the problem this
+patch addresses (they are about force-threaded handlers, this is about a
+normal threaded handler which run with interrupts enabled).
 
-> I've just taken it for my 5.13-rc1 set of patches and added a cc: stable
-> to get it backported to 5.12.1.
->
-
-That will be just fine.
-
-> thanks,
->
-> greg k-h
+Johan
