@@ -2,152 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C963618F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 06:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D0C3618FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 06:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231408AbhDPEnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 00:43:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229555AbhDPEnV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 00:43:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FA7861152;
-        Fri, 16 Apr 2021 04:42:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618548177;
-        bh=4hdUt+EDEa/QUCWdkHyC/ffQXQkj9XGd5bdPb0nZqGI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=RNNe76AAteWei9QEDSL1+ENgDEJidm7Scx0Nb9Fw6YLe6E3uthLjhZOlN8AkQawCo
-         ZA6hax7FBKFVQOgw4NMNqmUEnQZFMiKWRK00jPFL+7Ma3F7QFwwGTU3dnMwIGLMAPM
-         kCe/spG4cTm8k7j6pd3G68MQHQm3B3T3G9izCZAAZLz0btelgxzH1O7l8sYLkMWNT/
-         Z8pfsZprZJLYT8dIZDL19ohTcVmRZxjaV6ye5G7J4pisc210LpvtjFQav7dYWGXGjN
-         LzAlloF6mXhz+8IKecok97GDGZmsC6OLJdnkP8okaH7Ocf4iL9ToGbVFujqYCdVZOS
-         U1gVdCgxBxtdQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D68475C013E; Thu, 15 Apr 2021 21:42:56 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 21:42:56 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Huang Ying <ying.huang@intel.com>
-Cc:     linux-kernel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Roman Gushchin <guro@fb.com>, Ming Lei <ming.lei@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Miaohe Lin <linmiaohe@huawei.com>
-Subject: Re: [RFC PATCH] percpu_ref: Make percpu_ref_tryget*() ACQUIRE
- operations
-Message-ID: <20210416044256.GE4212@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210413024703.2745636-1-ying.huang@intel.com>
+        id S238213AbhDPEpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 00:45:17 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45852 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229555AbhDPEpP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 00:45:15 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13G4YPGU048393;
+        Fri, 16 Apr 2021 00:44:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=sFqB8Nx1yOnTC2YBXhWD1XQdbyVUMOcgezM1VW/ORvI=;
+ b=jX5FPixHA1ZrJuF15BkI0b/otjV5RWXfSgUWlxv1TB4nx5qJ9MTgGPutg3bcStb4vH/R
+ X7OsBahhzPIs2vZyenu3hynq2BSC9UN6Wfh9Xuaja0ktqHFXHxKYFCIlwwhwWiiQQ/EI
+ UXVp208gzXGNWaWx615WKpVf8hg9zqq25gw3bXNz6s/dSO1u9iM0V0FpPHp4qcXbTjVi
+ UL5QeSEL+8zloSW1B2KlyChvUquSrr51+7CaDpbc8AQalQ2I6yp2W810SG7dBhpGN6zN
+ s1P6HSo4/Th5oYvSa+CsHgK/n3hiHCkC9ATzPr+ePVMrLtQMjXD/xdaAUZ4IID3hWGuv mw== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37xsvadgbc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 00:44:48 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13G4es0T009176;
+        Fri, 16 Apr 2021 04:44:46 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma05fra.de.ibm.com with ESMTP id 37u3n8a9sx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 04:44:45 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13G4iL9B32243986
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 16 Apr 2021 04:44:21 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8C55CAE051;
+        Fri, 16 Apr 2021 04:44:43 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 606F4AE045;
+        Fri, 16 Apr 2021 04:44:42 +0000 (GMT)
+Received: from in.ibm.com (unknown [9.77.199.141])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Fri, 16 Apr 2021 04:44:42 +0000 (GMT)
+Date:   Fri, 16 Apr 2021 10:14:39 +0530
+From:   Bharata B Rao <bharata@linux.ibm.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        aneesh.kumar@linux.ibm.com
+Subject: Re: High kmalloc-32 slab cache consumption with 10k containers
+Message-ID: <20210416044439.GB1749436@in.ibm.com>
+Reply-To: bharata@linux.ibm.com
+References: <20210405054848.GA1077931@in.ibm.com>
+ <20210406222807.GD1990290@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210413024703.2745636-1-ying.huang@intel.com>
+In-Reply-To: <20210406222807.GD1990290@dread.disaster.area>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: iZ4sgeYm6gM96f61qbJja4XmxuUaxycO
+X-Proofpoint-GUID: iZ4sgeYm6gM96f61qbJja4XmxuUaxycO
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-15_11:2021-04-15,2021-04-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
+ phishscore=0 mlxlogscore=673 priorityscore=1501 spamscore=0 malwarescore=0
+ adultscore=0 lowpriorityscore=0 suspectscore=0 mlxscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104160033
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 10:47:03AM +0800, Huang Ying wrote:
-> One typical use case of percpu_ref_tryget() family functions is as
-> follows,
+On Wed, Apr 07, 2021 at 08:28:07AM +1000, Dave Chinner wrote:
+> On Mon, Apr 05, 2021 at 11:18:48AM +0530, Bharata B Rao wrote:
 > 
->   if (percpu_ref_tryget(&p->ref)) {
-> 	  /* Operate on the other fields of *p */
->   }
+> > As an alternative approach, I have this below hack that does lazy
+> > list_lru creation. The memcg-specific list is created and initialized
+> > only when there is a request to add an element to that particular
+> > list. Though I am not sure about the full impact of this change
+> > on the owners of the lists and also the performance impact of this,
+> > the overall savings look good.
 > 
-> The refcount needs to be checked before operating on the other fields
-> of the data structure (*p), otherwise, the values gotten from the
-> other fields may be invalid or inconsistent.  To guarantee the correct
-> memory ordering, percpu_ref_tryget*() needs to be the ACQUIRE
-> operations.
-
-I am not seeing the need for this.
-
-If __ref_is_percpu() returns true, then the overall count must be non-zero
-and there will be an RCU grace period between now and the time that this
-count becomes zero.  For the calls to __ref_is_percpu() enclosed within
-rcu_read_lock() and rcu_read_unlock(), the grace period will provide
-the needed ordering.  (See the comment header for the synchronize_rcu()
-function.)
-
-Otherwise, when __ref_is_percpu() returns false, its caller does a
-value-returning atomic read-modify-write operation, which provides
-full ordering.
-
-Either way, the required acquire semantics (and more) are already
-provided, and in particular, this analysis covers the percpu_ref_tryget()
-you call out above.
-
-Or am I missing something subtle here?
-
-							Thanx, Paul
-
-> This function implements that via using smp_load_acquire() in
-> __ref_is_percpu() to read the percpu pointer.
+> Avoiding memory allocation in list_lru_add() was one of the main
+> reasons for up-front static allocation of memcg lists. We cannot do
+> memory allocation while callers are holding multiple spinlocks in
+> core system algorithms (e.g. dentry_kill -> retain_dentry ->
+> d_lru_add -> list_lru_add), let alone while holding an internal
+> spinlock.
 > 
-> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: Kent Overstreet <kent.overstreet@gmail.com>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Roman Gushchin <guro@fb.com>
-> Cc: Ming Lei <ming.lei@redhat.com>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->  include/linux/percpu-refcount.h | 17 +++++++++++++----
->  1 file changed, 13 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/percpu-refcount.h b/include/linux/percpu-refcount.h
-> index 16c35a728b4c..9838f7ea4bf1 100644
-> --- a/include/linux/percpu-refcount.h
-> +++ b/include/linux/percpu-refcount.h
-> @@ -165,13 +165,13 @@ static inline bool __ref_is_percpu(struct percpu_ref *ref,
->  	 * !__PERCPU_REF_ATOMIC, which may be set asynchronously, and then
->  	 * used as a pointer.  If the compiler generates a separate fetch
->  	 * when using it as a pointer, __PERCPU_REF_ATOMIC may be set in
-> -	 * between contaminating the pointer value, meaning that
-> -	 * READ_ONCE() is required when fetching it.
-> +	 * between contaminating the pointer value, smp_load_acquire()
-> +	 * will prevent this.
->  	 *
-> -	 * The dependency ordering from the READ_ONCE() pairs
-> +	 * The dependency ordering from the smp_load_acquire() pairs
->  	 * with smp_store_release() in __percpu_ref_switch_to_percpu().
->  	 */
-> -	percpu_ptr = READ_ONCE(ref->percpu_count_ptr);
-> +	percpu_ptr = smp_load_acquire(&ref->percpu_count_ptr);
->  
->  	/*
->  	 * Theoretically, the following could test just ATOMIC; however,
-> @@ -231,6 +231,9 @@ static inline void percpu_ref_get(struct percpu_ref *ref)
->   * Returns %true on success; %false on failure.
->   *
->   * This function is safe to call as long as @ref is between init and exit.
-> + *
-> + * This function is an ACQUIRE operation, that is, all memory operations
-> + * after will appear to happen after checking the refcount.
->   */
->  static inline bool percpu_ref_tryget_many(struct percpu_ref *ref,
->  					  unsigned long nr)
-> @@ -260,6 +263,9 @@ static inline bool percpu_ref_tryget_many(struct percpu_ref *ref,
->   * Returns %true on success; %false on failure.
->   *
->   * This function is safe to call as long as @ref is between init and exit.
-> + *
-> + * This function is an ACQUIRE operation, that is, all memory operations
-> + * after will appear to happen after checking the refcount.
->   */
->  static inline bool percpu_ref_tryget(struct percpu_ref *ref)
->  {
-> @@ -280,6 +286,9 @@ static inline bool percpu_ref_tryget(struct percpu_ref *ref)
->   * percpu_ref_tryget_live().
->   *
->   * This function is safe to call as long as @ref is between init and exit.
-> + *
-> + * This function is an ACQUIRE operation, that is, all memory operations
-> + * after will appear to happen after checking the refcount.
->   */
->  static inline bool percpu_ref_tryget_live(struct percpu_ref *ref)
->  {
-> -- 
-> 2.30.2
-> 
+> Putting a GFP_ATOMIC allocation inside 3-4 nested spinlocks in a
+> path we know might have memory demand in the *hundreds of GB* range
+> gets an NACK from me. It's a great idea, but it's just not a
+
+I do understand that GFP_ATOMIC allocations are really not preferrable
+but want to point out that the allocations in the range of hundreds of
+GBs get reduced to tens of MBs when we do lazy list_lru head allocations
+under GFP_ATOMIC.
+
+As shown earlier, this is what I see in my experimental setup with
+10k containers:
+
+Number of kmalloc-32 allocations
+		Before		During		After
+W/o patch	178176		3442409472	388933632
+W/  patch	190464		468992		468992
+
+So 3442409472*32=102GB upfront list_lru creation-time GFP_KERNEL allocations
+get reduced to 468992*32=14MB dynamic list_lru addtion-time GFP_ATOMIC
+allocations.
+
+This does really depend and vary on the type of the container and
+the number of mounts it does, but I suspect we are looking
+at GFP_ATOMIC allocations in the MB range. Also the number of
+GFP_ATOMIC slab allocation requests matter I suppose.
+
+There are other users of list_lru, but I was just looking at
+dentry and inode list_lru usecase. It appears to me that for both
+dentry and inode, we can tolerate the failure from list_lru_add
+due to GFP_ATOMIC allocation failure. The failure to add dentry
+or inode to the lru list means that they won't be retained in
+the lru list, but would be freed immediately. Is this understanding
+correct?
+
+If so, would that likely impact the subsequent lookups adversely?
+We failed to retain a dentry or inode in the lru list because
+we failed to allocate memory, presumably under memory pressure.
+Even in such a scenario, is failure to add dentry or inode to
+lru list so bad and not tolerable? 
+
+Regards,
+Bharata.
