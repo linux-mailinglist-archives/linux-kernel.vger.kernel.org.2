@@ -2,129 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6441C362A4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 23:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D900A362A57
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 23:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344372AbhDPV1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 17:27:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51896 "EHLO
+        id S1344396AbhDPVaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 17:30:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235451AbhDPV1f (ORCPT
+        with ESMTP id S245392AbhDPVaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 17:27:35 -0400
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1ABCC061574;
-        Fri, 16 Apr 2021 14:27:09 -0700 (PDT)
-Received: by mail-qv1-xf34.google.com with SMTP id gv2so4865925qvb.8;
-        Fri, 16 Apr 2021 14:27:09 -0700 (PDT)
+        Fri, 16 Apr 2021 17:30:52 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40D88C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 14:30:27 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id v6so7607800ybk.9
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 14:30:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :organization:user-agent:mime-version:content-transfer-encoding;
-        bh=qnIWecU4j0go3BHki/tPX89ICgmbfzbrXzKLY+iWOac=;
-        b=PhDBZAzo+OIHeHKPUkiWebd2RIRE8h8B3dLA1tcUMxGsYd1ao5o99BL9jDla3voE9Y
-         GPrLd+bUmEtL5Yk6emTGq2QA+qjodIhVTE5gLa8+vGwH+nqQiXqR5PTrNRb7megwHdKn
-         Wy9vXZS5Sm4Ta5Zkbx3QfxiAas3oyIsb/c1ikDetmr7ImtGSBYSrROdswWOEGxzN4OK/
-         0tDo7I6b4S8YsPrY8Bq/+YVu2x7RMm/LIm/Y5NiS/zm5t/vCRaPTSryG0Re/JDsrjUbG
-         RL8lzHi9gtqu2COx+wLHUWnLJ1pKupIZsi9gTJPZNhnIAMrKyEgcA3tHthGlMk2qXO2B
-         YjIQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=U9tamRek+f4z2tELrXoSidH/IwPkK66LgQjWaBRSdrE=;
+        b=dK9tzuquLhY4V61JGT5wBqFOvtpYpnz+sEopbQ45BNyZRJwqouCOqWITY6JJqoJ8B3
+         4pn5ZMon7BK2lRvbS9byxIjE9SzPIPJxdoUmMu+VwtMO1OuJPLmNCYm5Orlaa1i3Rl+4
+         4xdS6pOu4ZjKZOnpEy5eIVXONgNgXi8sNJWC1g13yFBI2jcZiy1HvZtX6+dCLKdAF/h3
+         W5gwl4r1FaMFQ8EmF1UkZjMtC7ASqaUP8R9lBAG+0GKknhDS4+zltTwfrf2uJaj8fiYm
+         +4/KG8Z329dAY3Qp9MGfqAO4IAN/3OzUA5vNVOZb++UU0qxZ1A2L4xbcCCQKzJuEYpt+
+         iP7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=qnIWecU4j0go3BHki/tPX89ICgmbfzbrXzKLY+iWOac=;
-        b=D7t4FGUSdaCk1GUwEdmgslFVhjyMcfMqTM5ag/6YnPCWDHEsFqXyhhuodqD+fHi5mS
-         8x+3Xz2s94Z+EEY1LYLJmUwA1AbYn7ESVAMTZyRVXbLWOGwAvOaT5uGUakxKZk5mnju7
-         CIpEPw8Ia4H82ENvQukmYtdepoDfZ1NSW+MDEetDedgHw/v1NUnGnzw4ms74Erm1Z/Ct
-         YeOknntbws/xoMG5f0gH46yTitEeXR475TRmsegNnHWWA/JMRq6NuVY+sqXQtNtU1m1d
-         RdZplT9ddaDcu2IYC1ayG58R8DcQFllE42n6df/qriY7AS9+gy1OH8/mt7vlXyqkPjzR
-         S97Q==
-X-Gm-Message-State: AOAM531VHiBekJzpEB9LkwUxRUxEgz7K8ch9TxP+ndxa8roV2Vxum/I9
-        0MdLBEqqKiFq/eeb2Ou5iMo=
-X-Google-Smtp-Source: ABdhPJxiaMQSF5aQnwptHbIMI7IyFwQxTjUhS8gbDjqudrYedippV2ExrK8pQT0GQ6TQ9sjUaHt5/g==
-X-Received: by 2002:ad4:522b:: with SMTP id r11mr10787069qvq.6.1618608429096;
-        Fri, 16 Apr 2021 14:27:09 -0700 (PDT)
-Received: from li-908e0a4c-2250-11b2-a85c-f027e903211b.ibm.com ([177.35.200.187])
-        by smtp.gmail.com with ESMTPSA id l4sm5081376qkd.105.2021.04.16.14.27.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 14:27:08 -0700 (PDT)
-Message-ID: <bd3767f61d0a604918e9886ae6da2eadc8dde310.camel@gmail.com>
-Subject: Re: [PATCH 1/1] of/pci: Add IORESOURCE_MEM_64 to resource flags for
- 64-bit memory addresses
-From:   Leonardo Bras <leobras.c@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Date:   Fri, 16 Apr 2021 18:27:03 -0300
-In-Reply-To: <CAL_Jsq+WwAeziGN4EfPAWfA0fieAjfcxfi29=StOx0GeKjAe_g@mail.gmail.com>
-References: <20210415180050.373791-1-leobras.c@gmail.com>
-         <CAL_Jsq+WwAeziGN4EfPAWfA0fieAjfcxfi29=StOx0GeKjAe_g@mail.gmail.com>
-Organization: IBM
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=U9tamRek+f4z2tELrXoSidH/IwPkK66LgQjWaBRSdrE=;
+        b=EdoofWb/BJdZeQcyByr584vjB1P5faanuzD02f4mCHQIeWCM15a6jkMILtDt1JX/hi
+         e8AsoWntWFZj70CVkQqgpV3+wMNN/nQncxsnuzyboRtISMRklhH6aMsCyoEa/m1/JITy
+         f7VGalTDjrdw1uEJcUq00p57rAzMCrPU8J+1BULkiMJvNPP/LxNt46droOaWlQPzLZLu
+         RT+GLxGRzG7IRHM7Bd86nuf4cF/ZHUOxMUsYPqvcjganoWf8IIJHwF6LYu4WLpEdoFcq
+         V4uMA+IdWFfToCgsrlLSRJiXcLBd13bnfYQnwaMFBgIsFYvF8vxSlbCkilzdgbT1cOhi
+         3pPA==
+X-Gm-Message-State: AOAM530E+8quahYIf+URsB37xSSpvJOSuPUs/qGP/ZJ9ZwpkRHnRBXRL
+        olxqpr+Z++ix8Cqfr12NppPZZZAeTqjN
+X-Google-Smtp-Source: ABdhPJxFrvFO1fCCCc7PO1gSlfb/ne7U/i1wnkFMgU6JZDuWbAdOb6t7wOm0smOiAwYoSRo8nC7jda8Nayfi
+X-Received: from joshdon.svl.corp.google.com ([2620:15c:2cd:202:565:26ba:7914:77e6])
+ (user=joshdon job=sendgmr) by 2002:a25:dc8e:: with SMTP id
+ y136mr1722997ybe.140.1618608626453; Fri, 16 Apr 2021 14:30:26 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 14:29:36 -0700
+Message-Id: <20210416212936.390566-1-joshdon@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
+Subject: [PATCH v2 resubmit] sched: Warn on long periods of pending need_resched
+From:   Josh Don <joshdon@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        linux-kernel@vger.kernel.org, Paul Turner <pjt@google.com>,
+        Josh Don <joshdon@google.com>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Rob, thanks for this feedback!
+From: Paul Turner <pjt@google.com>
 
-On Thu, 2021-04-15 at 13:59 -0500, Rob Herring wrote:
-> +PPC and PCI lists
-> 
-> On Thu, Apr 15, 2021 at 1:01 PM Leonardo Bras <leobras.c@gmail.com> wrote:
-> > 
-> > Many other resource flag parsers already add this flag when the input
-> > has bits 24 & 25 set, so update this one to do the same.
-> 
-> Many others? Looks like sparc and powerpc to me. 
-> 
+CPU scheduler marks need_resched flag to signal a schedule() on a
+particular CPU. But, schedule() may not happen immediately in cases
+where the current task is executing in the kernel mode (no
+preemption state) for extended periods of time.
 
-s390 also does that, but it look like it comes from a device-tree.
+This patch adds a warn_on if need_resched is pending for more than the
+time specified in sysctl resched_latency_warn_ms. If it goes off, it is
+likely that there is a missing cond_resched() somewhere. Monitoring is
+done via the tick and the accuracy is hence limited to jiffy scale. This
+also means that we won't trigger the warning if the tick is disabled.
 
-> Those would be the
-> ones I worry about breaking. Sparc doesn't use of/address.c so it's
-> fine. Powerpc version of the flags code was only fixed in 2019, so I
-> don't think powerpc will care either.
+This feature (LATENCY_WARN) is default disabled.
 
-In powerpc I reach this function with this stack, while configuring a
-virtio-net device for a qemu/KVM pseries guest:
+Signed-off-by: Paul Turner <pjt@google.com>
+Signed-off-by: Josh Don <joshdon@google.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210323035706.572953-1-joshdon@google.com
+---
+This squashes the fixup from https://lkml.org/lkml/2021/3/30/1309.
 
-pci_process_bridge_OF_ranges+0xac/0x2d4
-pSeries_discover_phbs+0xc4/0x158
-discover_phbs+0x40/0x60
-do_one_initcall+0x60/0x2d0
-kernel_init_freeable+0x308/0x3a8
-kernel_init+0x2c/0x168
-ret_from_kernel_thread+0x5c/0x70
+ include/linux/sched/sysctl.h |  3 ++
+ kernel/sched/core.c          | 70 +++++++++++++++++++++++++++++++++++-
+ kernel/sched/debug.c         | 13 +++++++
+ kernel/sched/features.h      |  2 ++
+ kernel/sched/sched.h         | 10 ++++++
+ 5 files changed, 97 insertions(+), 1 deletion(-)
 
-For this, both MMIO32 and MMIO64 resources will have flags 0x200.
-
-> 
-> I noticed both sparc and powerpc set PCI_BASE_ADDRESS_MEM_TYPE_64 in
-> the flags. AFAICT, that's not set anywhere outside of arch code. So
-> never for riscv, arm and arm64 at least. That leads me to
-> pci_std_update_resource() which is where the PCI code sets BARs and
-> just copies the flags in PCI_BASE_ADDRESS_MEM_MASK ignoring
-> IORESOURCE_* flags. So it seems like 64-bit is still not handled and
-> neither is prefetch.
-> 
-
-I am not sure if you mean here:
-a) it's ok to add IORESOURCE_MEM_64 here, because it does not affect
-anything else, or
-b) it should be using PCI_BASE_ADDRESS_MEM_TYPE_64 
-(or IORESOURCE_MEM_64 | PCI_BASE_ADDRESS_MEM_TYPE_64) instead, since
-it's how it's added in powerpc/sparc, and else there is no point.
-
-Again, thanks for helping!
-
-Best regards,
-Leonardo Bras
+diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
+index 0a3f34638cf5..db2c0f34aaaf 100644
+--- a/include/linux/sched/sysctl.h
++++ b/include/linux/sched/sysctl.h
+@@ -48,6 +48,9 @@ extern unsigned int sysctl_numa_balancing_scan_size;
+ #ifdef CONFIG_SCHED_DEBUG
+ extern __read_mostly unsigned int sysctl_sched_migration_cost;
+ extern __read_mostly unsigned int sysctl_sched_nr_migrate;
++
++extern int sysctl_resched_latency_warn_ms;
++extern int sysctl_resched_latency_warn_once;
+ #endif
+ 
+ /*
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 9565f304ac46..c07a4c17205f 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -58,7 +58,17 @@ const_debug unsigned int sysctl_sched_features =
+ #include "features.h"
+ 	0;
+ #undef SCHED_FEAT
+-#endif
++
++/*
++ * Print a warning if need_resched is set for the given duration (if
++ * LATENCY_WARN is enabled).
++ *
++ * If sysctl_resched_latency_warn_once is set, only one warning will be shown
++ * per boot.
++ */
++__read_mostly int sysctl_resched_latency_warn_ms = 100;
++__read_mostly int sysctl_resched_latency_warn_once = 1;
++#endif /* CONFIG_SCHED_DEBUG */
+ 
+ /*
+  * Number of tasks to iterate in a single balance run.
+@@ -4527,6 +4537,55 @@ unsigned long long task_sched_runtime(struct task_struct *p)
+ 	return ns;
+ }
+ 
++#ifdef CONFIG_SCHED_DEBUG
++static u64 cpu_resched_latency(struct rq *rq)
++{
++	int latency_warn_ms = READ_ONCE(sysctl_resched_latency_warn_ms);
++	u64 resched_latency, now = rq_clock(rq);
++	static bool warned_once;
++
++	if (sysctl_resched_latency_warn_once && warned_once)
++		return 0;
++
++	if (!need_resched() || !latency_warn_ms)
++		return 0;
++
++	if (system_state == SYSTEM_BOOTING)
++		return 0;
++
++	if (!rq->last_seen_need_resched_ns) {
++		rq->last_seen_need_resched_ns = now;
++		rq->ticks_without_resched = 0;
++		return 0;
++	}
++
++	rq->ticks_without_resched++;
++	resched_latency = now - rq->last_seen_need_resched_ns;
++	if (resched_latency <= latency_warn_ms * NSEC_PER_MSEC)
++		return 0;
++
++	warned_once = true;
++
++	return resched_latency;
++}
++
++static int __init setup_resched_latency_warn_ms(char *str)
++{
++	long val;
++
++	if ((kstrtol(str, 0, &val))) {
++		pr_warn("Unable to set resched_latency_warn_ms\n");
++		return 1;
++	}
++
++	sysctl_resched_latency_warn_ms = val;
++	return 1;
++}
++__setup("resched_latency_warn_ms=", setup_resched_latency_warn_ms);
++#else
++static inline u64 cpu_resched_latency(struct rq *rq) { return 0; }
++#endif /* CONFIG_SCHED_DEBUG */
++
+ /*
+  * This function gets called by the timer code, with HZ frequency.
+  * We call it with interrupts disabled.
+@@ -4538,6 +4597,7 @@ void scheduler_tick(void)
+ 	struct task_struct *curr = rq->curr;
+ 	struct rq_flags rf;
+ 	unsigned long thermal_pressure;
++	u64 resched_latency;
+ 
+ 	arch_scale_freq_tick();
+ 	sched_clock_tick();
+@@ -4548,10 +4608,15 @@ void scheduler_tick(void)
+ 	thermal_pressure = arch_scale_thermal_pressure(cpu_of(rq));
+ 	update_thermal_load_avg(rq_clock_thermal(rq), rq, thermal_pressure);
+ 	curr->sched_class->task_tick(rq, curr, 0);
++	if (sched_feat(LATENCY_WARN))
++		resched_latency = cpu_resched_latency(rq);
+ 	calc_global_load_tick(rq);
+ 
+ 	rq_unlock(rq, &rf);
+ 
++	if (sched_feat(LATENCY_WARN) && resched_latency)
++		resched_latency_warn(cpu, resched_latency);
++
+ 	perf_event_task_tick();
+ 
+ #ifdef CONFIG_SMP
+@@ -5046,6 +5111,9 @@ static void __sched notrace __schedule(bool preempt)
+ 	next = pick_next_task(rq, prev, &rf);
+ 	clear_tsk_need_resched(prev);
+ 	clear_preempt_need_resched();
++#ifdef CONFIG_SCHED_DEBUG
++	rq->last_seen_need_resched_ns = 0;
++#endif
+ 
+ 	if (likely(prev != next)) {
+ 		rq->nr_switches++;
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 8cad99038c03..de77a65e9524 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -309,6 +309,9 @@ static __init int sched_init_debug(void)
+ 	debugfs_create_u32("min_granularity_ns", 0644, debugfs_sched, &sysctl_sched_min_granularity);
+ 	debugfs_create_u32("wakeup_granularity_ns", 0644, debugfs_sched, &sysctl_sched_wakeup_granularity);
+ 
++	debugfs_create_u32("latency_warn_ms", 0644, debugfs_sched, &sysctl_resched_latency_warn_ms);
++	debugfs_create_u32("latency_warn_once", 0644, debugfs_sched, &sysctl_resched_latency_warn_once);
++
+ #ifdef CONFIG_SMP
+ 	debugfs_create_file("tunable_scaling", 0644, debugfs_sched, NULL, &sched_scaling_fops);
+ 	debugfs_create_u32("migration_cost_ns", 0644, debugfs_sched, &sysctl_sched_migration_cost);
+@@ -1032,3 +1035,13 @@ void proc_sched_set_task(struct task_struct *p)
+ 	memset(&p->se.statistics, 0, sizeof(p->se.statistics));
+ #endif
+ }
++
++void resched_latency_warn(int cpu, u64 latency)
++{
++	static DEFINE_RATELIMIT_STATE(latency_check_ratelimit, 60 * 60 * HZ, 1);
++
++	WARN(__ratelimit(&latency_check_ratelimit),
++	     "sched: CPU %d need_resched set for > %llu ns (%d ticks) "
++	     "without schedule\n",
++	     cpu, latency, cpu_rq(cpu)->ticks_without_resched);
++}
+diff --git a/kernel/sched/features.h b/kernel/sched/features.h
+index 011c5ec7b7b5..7f8dace0964c 100644
+--- a/kernel/sched/features.h
++++ b/kernel/sched/features.h
+@@ -91,5 +91,7 @@ SCHED_FEAT(WA_BIAS, true)
+ SCHED_FEAT(UTIL_EST, true)
+ SCHED_FEAT(UTIL_EST_FASTUP, true)
+ 
++SCHED_FEAT(LATENCY_WARN, false)
++
+ SCHED_FEAT(ALT_PERIOD, true)
+ SCHED_FEAT(BASE_SLICE, true)
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 0f4db0bb7692..563e77d2c0a2 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -58,6 +58,7 @@
+ #include <linux/prefetch.h>
+ #include <linux/profile.h>
+ #include <linux/psi.h>
++#include <linux/ratelimit.h>
+ #include <linux/rcupdate_wait.h>
+ #include <linux/security.h>
+ #include <linux/stop_machine.h>
+@@ -971,6 +972,11 @@ struct rq {
+ 
+ 	atomic_t		nr_iowait;
+ 
++#ifdef CONFIG_SCHED_DEBUG
++	u64 last_seen_need_resched_ns;
++	int ticks_without_resched;
++#endif
++
+ #ifdef CONFIG_MEMBARRIER
+ 	int membarrier_state;
+ #endif
+@@ -2376,6 +2382,8 @@ extern void print_dl_stats(struct seq_file *m, int cpu);
+ extern void print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq);
+ extern void print_rt_rq(struct seq_file *m, int cpu, struct rt_rq *rt_rq);
+ extern void print_dl_rq(struct seq_file *m, int cpu, struct dl_rq *dl_rq);
++
++extern void resched_latency_warn(int cpu, u64 latency);
+ #ifdef CONFIG_NUMA_BALANCING
+ extern void
+ show_numa_stats(struct task_struct *p, struct seq_file *m);
+@@ -2383,6 +2391,8 @@ extern void
+ print_numa_stats(struct seq_file *m, int node, unsigned long tsf,
+ 	unsigned long tpf, unsigned long gsf, unsigned long gpf);
+ #endif /* CONFIG_NUMA_BALANCING */
++#else
++static inline void resched_latency_warn(int cpu, u64 latency) {}
+ #endif /* CONFIG_SCHED_DEBUG */
+ 
+ extern void init_cfs_rq(struct cfs_rq *cfs_rq);
+-- 
+2.31.1.368.gbe11c130af-goog
 
