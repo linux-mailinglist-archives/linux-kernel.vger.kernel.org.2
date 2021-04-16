@@ -2,64 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7B436268D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 827A2362694
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235011AbhDPRTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 13:19:22 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:44609 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240464AbhDPRTH (ORCPT
+        id S240606AbhDPRU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 13:20:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239551AbhDPRUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 13:19:07 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lXS6t-0001zR-1u; Fri, 16 Apr 2021 17:18:27 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        iommu@lists.linux-foundation.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] iommu: remove redundant assignment to variable agaw
-Date:   Fri, 16 Apr 2021 18:18:26 +0100
-Message-Id: <20210416171826.64091-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 16 Apr 2021 13:20:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE4D2C061574;
+        Fri, 16 Apr 2021 10:20:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qtFH6oX6Y+CwqvrP/eQqVHnQ1PKWRZm3CzmPeAWkwAI=; b=CU1DqCCedeq/zg3pQfBZolrwAU
+        yFOgerIhd8McekZBRINHRmWhl34iaHhBFnKhdVl1Olk3svEbYwI4vlrpOg2FZ4W/w8dZb1L25atBv
+        SxD5ABTQY0sAGwzRacDl84wZb+LrvIFH6UbZfgEJMxAFLKD4zRuJVaNFXk1F/2815M6Fnyq5pMHf0
+        YZcvPZPAstxePMKnrcYjjGdZjSYJLvk2thgI40wwkGARPtwd/4pFlvLRO7F/spVymYyFUZdK0CM1z
+        gR6nUjfiM0ArMxc1ZNI75IJMe6K7T5iPuDZ37EYtTdd4OivGozKr/xQdAJg9CqvPo2oGFKXuznKPG
+        aUp7fSeg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lXS7F-00AEhj-Kj; Fri, 16 Apr 2021 17:18:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2F1A0300209;
+        Fri, 16 Apr 2021 19:18:49 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 02C1424C0E77F; Fri, 16 Apr 2021 19:18:48 +0200 (CEST)
+Date:   Fri, 16 Apr 2021 19:18:48 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Willy Tarreau <w@1wt.eu>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+Message-ID: <YHnG+GRwiMqgHGs5@hirez.programming.kicks-ass.net>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <YHlz54rd1YQHsOA/@hirez.programming.kicks-ass.net>
+ <YHmMJWmzz2vZ3qQH@google.com>
+ <YHmc2+bKQJ/XAATF@hirez.programming.kicks-ass.net>
+ <YHmuX1NA5RF7C7XS@google.com>
+ <20210416161444.GA10484@1wt.eu>
+ <CANiq72nbkJFPmiJXX=L8PmkouKgKG1k-CxhZYpL1hcncYwa8JA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANiq72nbkJFPmiJXX=L8PmkouKgKG1k-CxhZYpL1hcncYwa8JA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Fri, Apr 16, 2021 at 07:10:17PM +0200, Miguel Ojeda wrote:
 
-The variable agaw is initialized with a value that is never
-read and it is being updated later with a new value as a
-counter in a for-loop. The initialization is redundant and
-can be removed.
+> Of course, UB is only a subset of errors, but it is a major one, and
+> particularly critical for privileged code.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/iommu/intel/iommu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 0e04d450c38a..171dd4844ab2 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -564,7 +564,7 @@ static inline int domain_pfn_supported(struct dmar_domain *domain,
- static int __iommu_calculate_agaw(struct intel_iommu *iommu, int max_gaw)
- {
- 	unsigned long sagaw;
--	int agaw = -1;
-+	int agaw;
- 
- 	sagaw = cap_sagaw(iommu->cap);
- 	for (agaw = width_to_agaw(max_gaw);
--- 
-2.30.2
-
+I've seen relatively few UBSAN warnings that weren't due to UBSAN being
+broken.
