@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CCDC361B07
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 10:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD67361B09
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 10:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239835AbhDPIFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 04:05:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42288 "EHLO
+        id S239881AbhDPIFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 04:05:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236893AbhDPIFO (ORCPT
+        with ESMTP id S236893AbhDPIFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 04:05:14 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8358DC061574;
-        Fri, 16 Apr 2021 01:04:50 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id s15so31185226edd.4;
-        Fri, 16 Apr 2021 01:04:50 -0700 (PDT)
+        Fri, 16 Apr 2021 04:05:20 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C1FC061574;
+        Fri, 16 Apr 2021 01:04:56 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id w3so40861124ejc.4;
+        Fri, 16 Apr 2021 01:04:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=0+GJVl5A79GqQ5LebjTNhcSfSUHslIcyCgOWie7UI0c=;
-        b=Muk+NOdvawddovM7SLiOoNvRCbMVyVW3sAoamwZBiFGQ2YBAbcHI0p8c/7YjBF5zhs
-         Aum6cZ8segbMAJwwwIUCALOxJxSrl277KAcKPZhSeaASmMPqeiiIYhvF6N05Hk3RH9/J
-         TJTb/LObh/5sXq1jp4Dfu6zL1ULkA6Ma27PT1RTaE7plGSr9JiTKkg1m5vfVwrEbeK3X
-         HxkvvtTjrM2C7Bbf8pNTr/DlYCxfkyi9rGXssV30tXtfaqH1McF9oF1999rH2xwUr9Tr
-         c8b9dK0BI2jgG7XcGBmK2kW9M1SPH/x4JonELJpcpeClosbYNiGvz1flEVKrcbgGalEZ
-         yL0Q==
+        bh=hQOvTm7HW4RD6s7O1xMZhkEYd1hzrRk65QKfsGi+jms=;
+        b=AFPMnGAu7qRkenodHpWhCuvoT0axU6n611uuI3NWBEQ8zrdVTKOSBJl+Oauk7rq8rM
+         6I/p5HCDy8GAFEC7DfP4FltqUbyT1dWdGTAiqUvTLoCeXDHiGufdeaxQWziIsPLZl8V7
+         mx/nKaTVJ8gOMdsgmErXG4Q6mmRalInadumCUCrOHqdvGdFPXluwl338eVofkY4z479v
+         2dFBAvJYLSXRoOSo3eNiRC1ZptacSaz6/HFl2S3fpmcHoq0tlkJ9aIJVaiSmSGnur5Gp
+         WrN/xVji0YMAE482K1A41slRCCklqaRDP4dsMzLfX4eyopEXo5U07Ozpa6qxhXR/0Zpd
+         sDKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=0+GJVl5A79GqQ5LebjTNhcSfSUHslIcyCgOWie7UI0c=;
-        b=tyOQiSJ02LEvul63vKPjUjHWsF36evcNmRPyuxkEMXIQ9LV3okSPU1F6qnLd+hMWbB
-         IAcLTdQv/EToGhX+zboSVajDVmVsq2jogl7d5V9MBRg+oybjXOnjTabtrWq/MFHB++EO
-         27KZ32rBFMue3l3b+Up2gSd8lskmUTuzGx7sKF0SLo+4/DhFbMcdRthu5ZPnt0m9lOCK
-         s5qpYVEQlBdF7LGr6okS12VKdLco3W2JNSVxGTZH3VfKoQ4/ubIQRjjfcLbU1UCv7cwg
-         LfVjtOjT4XVNieEgDyCeYvSw7AXSu7wAITFgc+rAqFRlffyom2Jp82togZ41thnLrAgX
-         SwIA==
-X-Gm-Message-State: AOAM530PzTz+rxM6BgB0hUz1VLe0+sT/xNk6FBV3deOuVqtvfPkVZvXZ
-        Gkpw5TBNZxNJPQXJcap8T1E=
-X-Google-Smtp-Source: ABdhPJzuVSHXEILKd8+m9imL5V3K2bAF8Yb0hmxLx7ANpTilFv9VD8lRAFEd4xQLX9FFuWeuOgddSw==
-X-Received: by 2002:a05:6402:27ca:: with SMTP id c10mr8229426ede.382.1618560289267;
-        Fri, 16 Apr 2021 01:04:49 -0700 (PDT)
+        bh=hQOvTm7HW4RD6s7O1xMZhkEYd1hzrRk65QKfsGi+jms=;
+        b=okplzRQZeZr4uPp9RtpA3nHHGP7NNkWm9d9v3Xf4Pg4yhdXdZyyPq7b/ji8sSHjPwZ
+         k7UXdgcM65lJW3xztjPI8oK16WcTNWuYAa1u+ANjsdafluqALUyPw+L0x1CsSXQYzwzH
+         /1IVFYrHd0Wty8UppI3FG4nGMDFKj8PwOBJOOHJp8dg/jqqIBQ7lzuV+Edv3LiDWdZz+
+         R8F+oXRFHiS+M0xy7wtCrHI8PkIsDIQBdVrN5/+afz9FpFKUdMgpjaMfUo9cSo0QSCsq
+         vkfQAtcavWgEtRm6I4O513ajE2Q1pa8wKZfe7p2dqYdjIjOhgUKNFRTZtwYq3CyVy+5N
+         kdBg==
+X-Gm-Message-State: AOAM53222PyC5aH1EFOGpGsITXAdHPPlFSgnTe/aeDojm/kwTcOxMgku
+        MjpKNsMyck9MVkqJXzofXKTAMFoeMNhydbnk
+X-Google-Smtp-Source: ABdhPJyFkWgbgeXMuY8aMqWrjqIOYGKy3PvVSK0kY0r59k3eLtsb4MCwx+Jb+QLXXXLJrTsXgQ6JHg==
+X-Received: by 2002:a17:906:e84:: with SMTP id p4mr7183405ejf.248.1618560295196;
+        Fri, 16 Apr 2021 01:04:55 -0700 (PDT)
 Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id q16sm4672303edv.61.2021.04.16.01.04.45
+        by smtp.gmail.com with ESMTPSA id q16sm4672303edv.61.2021.04.16.01.04.49
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 16 Apr 2021 01:04:48 -0700 (PDT)
+        Fri, 16 Apr 2021 01:04:54 -0700 (PDT)
 From:   Johan Jonker <jbx6244@gmail.com>
 To:     heiko@sntech.de
 Cc:     robh+dt@kernel.org, zhangqing@rock-chips.com,
         enric.balletbo@collabora.com, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v8 01/15] ARM: dts: rockchip: Fix power-controller node names for rk3066a
-Date:   Fri, 16 Apr 2021 10:03:28 +0200
-Message-Id: <20210416080342.18614-2-jbx6244@gmail.com>
+Subject: [PATCH v8 02/15] ARM: dts: rockchip: Fix power-controller node names for rk3188
+Date:   Fri, 16 Apr 2021 10:03:29 +0200
+Message-Id: <20210416080342.18614-3-jbx6244@gmail.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20210416080342.18614-1-jbx6244@gmail.com>
 References: <20210416080342.18614-1-jbx6244@gmail.com>
@@ -72,40 +72,38 @@ Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
 Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
-Changed
----
- arch/arm/boot/dts/rk3066a.dtsi | 6 +++---
+ arch/arm/boot/dts/rk3188.dtsi | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/rk3066a.dtsi b/arch/arm/boot/dts/rk3066a.dtsi
-index 252750c97..bbc3bff50 100644
---- a/arch/arm/boot/dts/rk3066a.dtsi
-+++ b/arch/arm/boot/dts/rk3066a.dtsi
-@@ -755,7 +755,7 @@
+diff --git a/arch/arm/boot/dts/rk3188.dtsi b/arch/arm/boot/dts/rk3188.dtsi
+index 2298a8d84..5db32fdbe 100644
+--- a/arch/arm/boot/dts/rk3188.dtsi
++++ b/arch/arm/boot/dts/rk3188.dtsi
+@@ -699,7 +699,7 @@
  		#address-cells = <1>;
  		#size-cells = <0>;
  
--		pd_vio@RK3066_PD_VIO {
-+		power-domain@RK3066_PD_VIO {
- 			reg = <RK3066_PD_VIO>;
+-		pd_vio@RK3188_PD_VIO {
++		power-domain@RK3188_PD_VIO {
+ 			reg = <RK3188_PD_VIO>;
  			clocks = <&cru ACLK_LCDC0>,
  				 <&cru ACLK_LCDC1>,
-@@ -782,7 +782,7 @@
+@@ -721,7 +721,7 @@
  				 <&qos_rga>;
  		};
  
--		pd_video@RK3066_PD_VIDEO {
-+		power-domain@RK3066_PD_VIDEO {
- 			reg = <RK3066_PD_VIDEO>;
+-		pd_video@RK3188_PD_VIDEO {
++		power-domain@RK3188_PD_VIDEO {
+ 			reg = <RK3188_PD_VIDEO>;
  			clocks = <&cru ACLK_VDPU>,
  				 <&cru ACLK_VEPU>,
-@@ -791,7 +791,7 @@
+@@ -730,7 +730,7 @@
  			pm_qos = <&qos_vpu>;
  		};
  
--		pd_gpu@RK3066_PD_GPU {
-+		power-domain@RK3066_PD_GPU {
- 			reg = <RK3066_PD_GPU>;
+-		pd_gpu@RK3188_PD_GPU {
++		power-domain@RK3188_PD_GPU {
+ 			reg = <RK3188_PD_GPU>;
  			clocks = <&cru ACLK_GPU>;
  			pm_qos = <&qos_gpu>;
 -- 
