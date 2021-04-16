@@ -2,111 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A477362AB6
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86DD7362ABA
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236029AbhDPWFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 18:05:10 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:51766 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234898AbhDPWFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 18:05:09 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 13GM4GQh011937;
-        Sat, 17 Apr 2021 00:04:16 +0200
-Date:   Sat, 17 Apr 2021 00:04:16 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Connor Kuehl <ckuehl@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH 04/13] Kbuild: Rust support
-Message-ID: <20210416220416.GA11872@1wt.eu>
+        id S236112AbhDPWFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 18:05:52 -0400
+Received: from mail-ed1-f48.google.com ([209.85.208.48]:40634 "EHLO
+        mail-ed1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234898AbhDPWFs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 18:05:48 -0400
+Received: by mail-ed1-f48.google.com with SMTP id o20so7706341edc.7;
+        Fri, 16 Apr 2021 15:05:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pE+1y3kVswoYX2AiLRaqMZxwYcgmWgUuY2qO0xxCCr0=;
+        b=Nup7K2rty/zHBA4NVd53qG5OC4JdYw7FeAV4rQTzvBnZUBldcZnQTnEcbSEHwrl+yE
+         sTYCT+yYoeIkBAqF8yGh5LQpZHlpoyrYr0lQoum5Up5wA2fh74aohKYr/4BApPk37cNq
+         XDvrSdLZv5gDpgvfaekMlivlr1S9eQlGjyr3agDPahDZYOLuD8ynDFRSVGKrd145kaq0
+         pFU1KWmXWe4PqZee0qt7GlNVNDRadQovErl/4A7vI7gHfICLOIS4/pJY6gdnngvvizOZ
+         Ep2vk6+662Bu71XPNRi+6/XyoNTcbKwjwSQL7PlVh3LzxbJecrQMhPCSBSg5jbpcoJTt
+         0jwQ==
+X-Gm-Message-State: AOAM533sJk586pd0zIQmCxayPlX7lIwEsRlGNuC4I9kCsyS1qM/31CEO
+        zhTmJ/3WUkTtIHU2ZNfr0ntiJCtkX9PJuL9C4KI=
+X-Google-Smtp-Source: ABdhPJyoUO+HJ3qMNcryPvKppffY+ChU86bnFi8SAvERKyhwOEbczCIePADySBwPpz3QZH93R58c6wfdllohe6bgSsE=
+X-Received: by 2002:aa7:cb97:: with SMTP id r23mr12279313edt.106.1618610722450;
+ Fri, 16 Apr 2021 15:05:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANiq72=3zZvdEsp-AH2Xj1nuvfGOQQ1WGmav6i4nFTz-3-_c_w@mail.gmail.com>
- <CANiq72=5pMzSS5V7h-QcQvYgyZUwdE=T705KtBWrNYZPjMYK3Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com>
+ <87lf9nk2ku.fsf@oldenburg.str.redhat.com> <CALCETrWxJzf-rm9rqMpdxEtdVe+0OH7XRtWV=UzrgBDiPT=vVQ@mail.gmail.com>
+ <CAJvTdKkAzEeAKrEYMU-gBWXoNGyJ09ZGw1gsU0b3uCuo8vrX0A@mail.gmail.com>
+ <20210413034346.GA22861@1wt.eu> <CAJvTdKmLth==ZPv7ygLs0jFX7JRPVhVT82ZDoT4xcQRABEVTvQ@mail.gmail.com>
+ <20210414095804.GB10709@zn.tnic> <CAJvTdKn_y8qAjDy189zEf8cnaWrvW3baca=z9FgGxV9AvQEADg@mail.gmail.com>
+ <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu> <20210415054713.GB6318@zn.tnic>
+In-Reply-To: <20210415054713.GB6318@zn.tnic>
+From:   Len Brown <lenb@kernel.org>
+Date:   Fri, 16 Apr 2021 18:05:10 -0400
+Message-ID: <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Willy Tarreau <w@1wt.eu>, Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-abi@vger.kernel.org,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 11:39:00PM +0200, Miguel Ojeda wrote:
-> On Fri, Apr 16, 2021 at 10:58 PM Willy Tarreau <w@1wt.eu> wrote:
-> >
-> > No, two:
-> >   - ok in %rax (seems like it's "!ok" technically speaking since it
-> >     returns 1 on !ok and 0 on ok)
-> >   - foo_or_err in %rdx
-> 
-> Yes, but that is the implementation -- conceptually you only have one
-> or the other, and Rust won't allow you to use the wrong one.
+On Thu, Apr 15, 2021 at 1:47 AM Borislav Petkov <bp@alien8.de> wrote:
 
-OK so for unions you always pass two values along the whole chain, a
-selector and the value itself.
+> What I'd like to see is 0-overhead for current use cases and only
+> overhead for those who want to use it. If that can't be done
+> automagically, then users should request it explicitly. So basically you
+> blow up the xsave buffer only for processes which want to do AMX.
 
-But my point remains that the point of extreme care is at the interface
-with the rest of the kernel because there is a change of semantics
-there.
+Indeed, expanding the xsave buffer happens only for tasks that touch
+AMX TILE registers.
 
-> > However then I'm bothered because Miguel's example showed that regardless
-> > of OK, EINVAL was always returned in foo_or_err, so maybe it's just
-> > because his example was not well chosen but it wasn't very visible from
-> > the source:
-> 
-> That is the optimizer being fancy since the error can be put
-> unconditionally in `rdx`.
+> And this brings the question about libraries which, if they start using
+> AMX by default - which doesn't sound like they will want to because AMX
+> reportedly will have only a limited? set of users - if libraries start
+> using it by default, then it better be worth the handling of the 8kb
+> buffer per process.
 
-Yes that's what I understood as well. I just didn't know that it had
-to be seen as a union.
+I'm not aware of any intent to transparently use AMX for bcopy, like
+what happened
+with AVX-512.  (didn't they undo that mistake?)
 
-On Fri, Apr 16, 2021 at 11:19:18PM +0200, Miguel Ojeda wrote:
-> On Fri, Apr 16, 2021 at 10:22 PM Willy Tarreau <w@1wt.eu> wrote:
-> >
-> > So it simply does the equivalent of:
-> >
-> >   struct result {
-> >      int status;
-> >      int error;
-> >   };
-> 
-> Not exactly, it is more like a tagged union, as Connor mentioned.
-> 
-> However, and this is the critical bit: it is a compile-time error to
-> access the inactive variants (in safe code). In C, it is on you to
-> keep track which one is the current one.
+> If not, this should also be requestable per process so that a simple
+> pipe in Linux:
+>
+> <process> | grep | awk | sed ...
+>
+> and so on is not penalized to allocate and handle by default 8kb for
+> *each* process' buffer in that pipe just because each is linking against
+> glibc which has detected AMX support in CPUID and is using it too for
+> some weird reason like some microbenchmark saying so.
 
-Sure but as I said most often (due to API or ABI inheritance), both
-are already exclusive and stored as ranges. Returning 1..4095 for
-errno or a pointer including NULL for a success doesn't shock me at
-all.
+Tasks are created without an 8KB AMX buffer.
+Tasks have to actually touch the AMX TILE registers for us to allocate
+one for them.
 
-Along thes lines I hardly see how you'd tag pointers by manipulating
-their lower unused bits. That's something important both for memory
-usage and performance (supports atomic opts).
+> But my initial question was on the "establishing" part and was asking
+> where we have established anything wrt AMX.
 
-> >      kill_foo();   // only for rust, C doesn't need it
-> 
-> Please note that `kill_foo()` is not needed in Rust -- it was an
-> example of possible cleanup (since Al mentioned resources/cleanup)
-> using RAII.
+The patch set on LKML establishes working AMX Linux support in public.
+I am thankful for your and other public review and feedback on that series.
+I can think of 3 actual bugs that were found in the process.
 
-Yep but I kept it just to have comparable output code since in C
-you'd simply use "goto leave" and not have this function call to
-do the cleanup.
-
-Willy
+thanks,
+Len Brown Intel Open Source Technology Center
