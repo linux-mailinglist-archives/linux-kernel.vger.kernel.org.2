@@ -2,119 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A514362C14
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 01:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F117362C1C
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 02:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235043AbhDPX4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 19:56:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231958AbhDPX4q (ORCPT
+        id S235032AbhDPX7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 19:59:24 -0400
+Received: from mail-pj1-f47.google.com ([209.85.216.47]:35542 "EHLO
+        mail-pj1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231997AbhDPX7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 19:56:46 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DDFEC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 16:56:19 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id u11so11180605pjr.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 16:56:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0ROwS2iwVkP5MLz3ud+/DGta/Lb7M4iHXAMw79DXVDA=;
-        b=fzHg1spcg5c2yJ5/awvsTeGX+0ipxgNor9tMeFhKpmHv9bbYnlPAXKnoePE+89qO/A
-         jBBkn5ZcHA18CxySucKy9HDUtI0as+MKoK9ZsL79IjPpBPYxd22ckwKQjD4BDUEg1s++
-         JV0SdWSIbiLW7iXcoubFU0ID57jjaDFUwV5xw=
+        Fri, 16 Apr 2021 19:59:22 -0400
+Received: by mail-pj1-f47.google.com with SMTP id j21-20020a17090ae615b02901505b998b45so1927946pjy.0;
+        Fri, 16 Apr 2021 16:58:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0ROwS2iwVkP5MLz3ud+/DGta/Lb7M4iHXAMw79DXVDA=;
-        b=IpXqCGsH8GkqnqxVo9sX1CKpH8fslIufc0HFm2sFrj0KmcPHkPe6wvWNHCGbb8uRCg
-         ooafYdP4itKt4Fe3N/d2KKsoinVTLsnY09nCW469ne6QHgJRd58IR8NPpLcP69L6Q21k
-         0g3cM+1qBhVFyzRcqCTMZXad7qCRLAqHXtjxGzx//sfJwI1VJx62/VJUqyBEMuI9vF1M
-         llCvWn82utbiLslgINLQTQL1xcsWERjnzwNwA2zTSzV7ylk67BvXj/RpJ0qG0vKO6O80
-         plwKjfdnzFCNvUEn3IJLlRMg9xJa4Keko24kurqkSyF3Cq3u3vp1iqTGBfQSGTg41e6p
-         VvuA==
-X-Gm-Message-State: AOAM530+r1CL9ZWWybARuozW0A0w8rarb1sRplKlY5WBJKU2REgZ/Mf7
-        DrsUTcErtZuARvVoP5CFrZ6bKQ==
-X-Google-Smtp-Source: ABdhPJxMWqoZd2RU37trLX1Sf29ygHNOyE0ZJyAgzWAIzGU4uEdZ0v2zXS70qOT88GFkvC4X+c0mtw==
-X-Received: by 2002:a17:902:e5d1:b029:eb:7ec2:648e with SMTP id u17-20020a170902e5d1b02900eb7ec2648emr10275443plf.30.1618617379040;
-        Fri, 16 Apr 2021 16:56:19 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j26sm5588829pfn.47.2021.04.16.16.56.18
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yc6/O6ItT9BvcJf7D3/AKKkQGKBmdsKi/XWtpIpZKuI=;
+        b=Qzyx8gef7sbPc+g2Pncna0AczH+hK1H+bSruQWqKyBvc8qCbtGE/OhECJuvGr+V5Ye
+         aal5B23SsimzAMBQ5jfQalIHZ2KWRG+I+pNFU1omROzHP5T9ljwVLay9a5/w5tMYIY5R
+         25OPDzBCHuXS5SW7cGEb9muYEHAj+DHNmZecv/N5shu9nsxKq4tawqiqABrI8s002B2h
+         EbkBN9/lyWmQOmBsdDQeOlpkDrSQgTc+e6EJgmIj4xhBBCyll1R0LfoKkYHTxpGGzIOP
+         RHl2VdGAW8gKYCMnU6PdLJbVthTd5GuqQpZbHAVX/CXxk9l/VI0vEWVvWx/1MgWjRJpz
+         +L8g==
+X-Gm-Message-State: AOAM530L6/RorJyf+5nYRDDniTnYMGHcORDhjrc801XDZ6sCXtJNPW7s
+        TbrKPNs24T4fdXlHExe3WRI=
+X-Google-Smtp-Source: ABdhPJxhyoB7ChsXUF+GYTaAc8CBGnRYH+wZetrV5rP6NKD+EjVeaF5kuUqJ5YqLR7ITZYwYoSs/Ew==
+X-Received: by 2002:a17:902:ea93:b029:eb:65ee:ddd3 with SMTP id x19-20020a170902ea93b02900eb65eeddd3mr11836848plb.24.1618617536716;
+        Fri, 16 Apr 2021 16:58:56 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id e190sm5677416pfe.3.2021.04.16.16.58.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 16:56:18 -0700 (PDT)
-Date:   Fri, 16 Apr 2021 16:56:17 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Sami Tolvanen <samitolvanen@google.com>, x86@kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 06/15] x86: Avoid CFI jump tables in IDT and entry points
-Message-ID: <202104161642.B72BD68@keescook>
-References: <20210416203844.3803177-1-samitolvanen@google.com>
- <20210416203844.3803177-7-samitolvanen@google.com>
- <87im4luaq7.ffs@nanos.tec.linutronix.de>
+        Fri, 16 Apr 2021 16:58:55 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id D4DD2403A2; Fri, 16 Apr 2021 23:58:54 +0000 (UTC)
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     rafael@kernel.org, gregkh@linuxfoundation.org,
+        viro@zeniv.linux.org.uk, jack@suse.cz, bvanassche@acm.org,
+        jeyu@kernel.org, ebiederm@xmission.com
+Cc:     mchehab@kernel.org, keescook@chromium.org,
+        linux-fsdevel@vger.kernel.org, kernel@tuxforce.de,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH 0/2] fs: provide a stop gap fix for buggy resume firmware API calls
+Date:   Fri, 16 Apr 2021 23:58:48 +0000
+Message-Id: <20210416235850.23690-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.23.0.rc1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87im4luaq7.ffs@nanos.tec.linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 12:26:56AM +0200, Thomas Gleixner wrote:
-> On Fri, Apr 16 2021 at 13:38, Sami Tolvanen wrote:
-> > With CONFIG_CFI_CLANG, the compiler replaces function addresses in C
-> > code with jump table addresses.
-> 
-> Fine.
-> 
-> > To avoid referring to jump tables in entry code with PTI,
-> 
-> What has this to do with PTI?
+Lukas has reported an issue [0] with a media driver which causes stall on
+resume. At first his suspicion was that this issue was due to a bug in
+btrfs. I managed to build a custom driver to reproduce the issue and
+confirmed it was not a bug in btrfs. The issue is reproducible in XFS
+as well. This issue is a demonstration of how broken the filesystem
+suspend / resume cycle is and how easy it can be to trigger an issue.
 
-Short answer: in earlier development of this series, entry routines
-were attempting to jump to the (unmapped) jump tables, and IDT code had
-similar issues. But yes, the commit message can be improved; I'll let
-Sami explain the details.
+By only doing reads with the firmware API used incorrectly, a simple
+suspend / resume cycle can stall a system. The stall happens since
+the hardware never gets read request issued by the filesystem as it
+was already suspended. The fs waits forever. The stall also happens
+because resume calls are synchronous and if one does not complete
+we'll wait forever.
 
-> > disable CFI for IDT and paravirt code, and use function_nocfi() to
-> > prevent jump table addresses from being added to the IDT or system
-> > call entry points.
-> 
-> How does this changelog make sense for anyone not familiar with the
-> matter at hand?
-> 
-> Where is the analysis why excluding 
-> 
-> > +CFLAGS_REMOVE_idt.o		:= $(CC_FLAGS_CFI)
-> > +CFLAGS_REMOVE_paravirt.o	:= $(CC_FLAGS_CFI)
-> 
-> all of idt.c and paravirt.c is correct and how that is going to be
-> correct in the future?
-> 
-> These files are excluded from CFI, so I can add whatever I want to them
-> and circumvent the purpose of CFI, right?
-> 
-> Brilliant plan that. But I know, sekurity ...
+My new unposted VFS series for the fs freezer / resume work fixes this,
+however this series will require a bit more discussion before this lands
+upstream. And so this series provides a test case for the issue and an
+intermediate stop-gap patch which resolves the issue for now. We can
+remove this once the VFS freeze work lands upstream.
 
-*sigh* we're on the same side. :P I will choose to understand your
-comments here as:
+[0] https://lkml.kernel.org/r/c79e24a5-f808-d1f0-1f09-ee6f135d9679@tuxforce.de
 
-"How will enforcement of CFI policy be correctly maintained here if
-the justification for disabling it for whole compilation units is not
-clearly understandable by other developers not familiar with the nuances
-of its application?"
+Luis Chamberlain (2):
+  test_firmware: add suspend support to test buggy drivers
+  fs/kernel_read_file: use usermodehelper_read_trylock() as a stop gap
 
-This is a completely justified position to take. Thank you for calling
-it out; we'll make it better.
+ fs/kernel_read_file.c                         |  37 ++++-
+ kernel/kexec_file.c                           |   9 +-
+ kernel/module.c                               |   8 +-
+ lib/test_firmware.c                           | 136 ++++++++++++++++--
+ tools/testing/selftests/firmware/fw_lib.sh    |   8 +-
+ .../selftests/firmware/fw_test_resume.sh      |  80 +++++++++++
+ 6 files changed, 261 insertions(+), 17 deletions(-)
+ create mode 100755 tools/testing/selftests/firmware/fw_test_resume.sh
 
 -- 
-Kees Cook
+2.29.2
+
