@@ -2,385 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA42D36283A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 21:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 888A9362843
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 21:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238278AbhDPTGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 15:06:15 -0400
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:41648 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235868AbhDPTGN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 15:06:13 -0400
-Received: by mail-oi1-f176.google.com with SMTP id r186so1093890oif.8;
-        Fri, 16 Apr 2021 12:05:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NUrzL79B0A/EanBTqoVHqtTWMOAGqMbXYSjniUhAP8w=;
-        b=Edst7TXNKPip9Js0VN54nXOhIWGdw+e6f17b4S8cJp7RF5n30Kj52dpMPCCoHud6hn
-         PO8Z5O2phA0tenOXPyAbj4tzc4eI+sHVNbgdBY70qx01MUI5C++haL8yBjMjFo1sf0rl
-         soKM1EUFtSIzWER9iSmCAmvN/g1LY1GFxk0pnKSNGjTil64W9W7aG353zdGS0/NVV6wS
-         yvXPYz30vfw7uUHxRx2+9WVWQP6k8GPzSHU4Khg6rBpiDZhFjaXWlSIekNbd6jvj+QAd
-         8/QO6yEGWcSFAzmT+F0xiuA0DnyY32GkVSlzBXhJ4y+HIevmMQ2RVW93TPT6idexnmhv
-         5VhQ==
-X-Gm-Message-State: AOAM531twRn322/mNMKpjMRiJJfDbvOt37dMW7FIUjp6Ud1EA3wqij9I
-        A36Fx50ivCGp1hL8AkDeJw==
-X-Google-Smtp-Source: ABdhPJyYy6dvtN9IHkna8RxcKD+wGfD+qlTT63XKPKzhLIkzEiuzzVTHCYpiW2SAP/vjjP8w7kiakg==
-X-Received: by 2002:aca:c78b:: with SMTP id x133mr7712818oif.24.1618599946882;
-        Fri, 16 Apr 2021 12:05:46 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id y67sm1555380otb.1.2021.04.16.12.05.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 12:05:46 -0700 (PDT)
-Received: (nullmailer pid 3767749 invoked by uid 1000);
-        Fri, 16 Apr 2021 19:05:44 -0000
-Date:   Fri, 16 Apr 2021 14:05:44 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     heiko@sntech.de, zhangqing@rock-chips.com,
-        enric.balletbo@collabora.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 13/15] dt-bindings: power: rockchip: Convert to
- json-schema
-Message-ID: <20210416190544.GA3752460@robh.at.kernel.org>
-References: <20210416080342.18614-1-jbx6244@gmail.com>
- <20210416080342.18614-14-jbx6244@gmail.com>
+        id S240701AbhDPTHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 15:07:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56248 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235877AbhDPTHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 15:07:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7047613B4;
+        Fri, 16 Apr 2021 19:06:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618600002;
+        bh=Au3M8d9TGedy6ttuMVhUpPPMGyWlvqWqr5/wBGPaMEE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=AD9t9Y+nIAvbHoRtCskbByoW7dl+Ic+4Fo3LrDOk7/0KUaHAWtpgylOQjrZ8wJR9a
+         dvsKq5+hc4mKwIN0yRrikBHerohRykSHJhzJ76HyNFZrC67csHntrV8SPGPF6vMBFc
+         uOqtzH0EZ+bXFwKqv6QW07ggZsg6yjbMOz6MOR4edButYYOxFfbzPrZIpo5RW5t+j7
+         tD3Ea5b2adrP1XzEcwso/gtv+im3oqjJvtQlsGSaWVD1I+H2Voaqdp/ra+IV33qWoB
+         vlrnmDMDJvlaOWw8ERoGiDtowp73xi4jh+qEnF2gQV+2oOMv/w728C1kc/7a4zz/GL
+         piEIFl0HB7BsA==
+Date:   Fri, 16 Apr 2021 14:06:40 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     bhelgaas@google.com, lorenzo.pieralisi@arm.com, rjw@rjwysocki.net,
+        lenb@kernel.org, amurray@thegoodpenguin.co.uk, treding@nvidia.com,
+        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kthota@nvidia.com,
+        mmaddireddy@nvidia.com, sagar.tv@gmail.com
+Subject: Re: [PATCH V4] PCI: Add MCFG quirks for Tegra194 host controllers
+Message-ID: <20210416190640.GA2743067@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210416080342.18614-14-jbx6244@gmail.com>
+In-Reply-To: <20210416134537.19474-1-vidyas@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 10:03:40AM +0200, Johan Jonker wrote:
-> From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+On Fri, Apr 16, 2021 at 07:15:37PM +0530, Vidya Sagar wrote:
+> The PCIe controller in Tegra194 SoC is not completely ECAM-compliant.
+> With the current hardware design limitations in place, ECAM can be enabled
+> only for one controller (C5 controller to be precise) with bus numbers
+> starting from 160 instead of 0. A different approach is taken to avoid this
+> abnormal way of enabling ECAM for just one controller but to enable
+> configuration space access for all the other controllers. In this approach,
+> ops are added through MCFG quirk mechanism which access the configuration
+> spaces by dynamically programming iATU (internal AddressTranslation Unit)
+> to generate respective configuration accesses just like the way it is
+> done in DesignWare core sub-system.
+> This issue is specific to Tegra194 and it would be fixed in the future
+> generations of Tegra SoCs.
 > 
-> Convert the soc/rockchip/power_domain.txt binding document to
-> json-schema and move to the power bindings directory.
-> 
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+
+Applied to pci/tegra for v5.13, thanks!
+
 > ---
-> Note for rob+dt:
-> A tag was not added on purpose, because:
->   Add "rockchip," prefix to the qos compatible name
->   in example.
->   Changed maintainers.
->   Size reg description is reduced.
->   Little style changes '' to ""
-> Please have a look at it again.
+> V4:
+> * Addressed Bjorn's review comments
+> * Rebased changes on top of Lorenzo's pci/dwc branch
 > 
-> For some SoC nodes this patch serie generates notifications
-> for undocumented "assigned-clocks" and "assigned-clock-parents"
-> properties till there is consensus of what to do with it.
-> ---
-> Changed V8:
->   Add pd-node ref schema
-> Changed V7:
->   Fix commit message and author format
->   Changed SPDX-License-Identifier back to GPL-2.0
->   Remove "clocks", "assigned-clocks" and "assigned-clock-parents"
->   Fix indent example
-> Changed V6:
->   Changed author
-> Changed V5:
->   Change SPDX-License-Identifier to  GPL-2.0-only OR BSD-2-Clause
->   Remove a maintainer
->   Changed patternProperties to power-domain
->   Add "clocks", "assigned-clocks" and "assigned-clock-parents"
-> Changed V4:
->   Remove new compatible string
->   Style changes '' to ""
-> Changed V3:
->   Use Enric's conversion with rk3399 example
-> Changed V2:
->   Convert power_domain.txt to YAML with rk3568 example
-> ---
->  .../bindings/power/rockchip,power-controller.yaml  | 257 +++++++++++++++++++++
->  .../bindings/soc/rockchip/power_domain.txt         | 136 -----------
->  2 files changed, 257 insertions(+), 136 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
->  delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
+> V3:
+> * Removed MCFG address hardcoding in pci_mcfg.c file
+> * Started using 'dbi_base' for accessing root port's own config space
+> * and using 'config_base' for accessing config space of downstream hierarchy
 > 
-> diff --git a/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml b/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
-> new file mode 100644
-> index 000000000..2b9950fd6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
-> @@ -0,0 +1,257 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/power/rockchip,power-controller.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> V2:
+> * Fixed build issues reported by kbuild test bot
+> 
+>  drivers/acpi/pci_mcfg.c                    |   7 ++
+>  drivers/pci/controller/dwc/Makefile        |   2 +-
+>  drivers/pci/controller/dwc/pcie-tegra194.c | 103 +++++++++++++++++++++
+>  include/linux/pci-ecam.h                   |   1 +
+>  4 files changed, 112 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
+> index 95f23acd5b80..53cab975f612 100644
+> --- a/drivers/acpi/pci_mcfg.c
+> +++ b/drivers/acpi/pci_mcfg.c
+> @@ -116,6 +116,13 @@ static struct mcfg_fixup mcfg_quirks[] = {
+>  	THUNDER_ECAM_QUIRK(2, 12),
+>  	THUNDER_ECAM_QUIRK(2, 13),
+>  
+> +	{ "NVIDIA", "TEGRA194", 1, 0, MCFG_BUS_ANY, &tegra194_pcie_ops},
+> +	{ "NVIDIA", "TEGRA194", 1, 1, MCFG_BUS_ANY, &tegra194_pcie_ops},
+> +	{ "NVIDIA", "TEGRA194", 1, 2, MCFG_BUS_ANY, &tegra194_pcie_ops},
+> +	{ "NVIDIA", "TEGRA194", 1, 3, MCFG_BUS_ANY, &tegra194_pcie_ops},
+> +	{ "NVIDIA", "TEGRA194", 1, 4, MCFG_BUS_ANY, &tegra194_pcie_ops},
+> +	{ "NVIDIA", "TEGRA194", 1, 5, MCFG_BUS_ANY, &tegra194_pcie_ops},
 > +
-> +title: Rockchip Power Domains
+>  #define XGENE_V1_ECAM_MCFG(rev, seg) \
+>  	{"APM   ", "XGENE   ", rev, seg, MCFG_BUS_ANY, \
+>  		&xgene_v1_pcie_ecam_ops }
+> diff --git a/drivers/pci/controller/dwc/Makefile b/drivers/pci/controller/dwc/Makefile
+> index 625f6aaeb5b8..2da826ef18ac 100644
+> --- a/drivers/pci/controller/dwc/Makefile
+> +++ b/drivers/pci/controller/dwc/Makefile
+> @@ -18,7 +18,6 @@ obj-$(CONFIG_PCIE_INTEL_GW) += pcie-intel-gw.o
+>  obj-$(CONFIG_PCIE_KIRIN) += pcie-kirin.o
+>  obj-$(CONFIG_PCIE_HISI_STB) += pcie-histb.o
+>  obj-$(CONFIG_PCI_MESON) += pci-meson.o
+> -obj-$(CONFIG_PCIE_TEGRA194) += pcie-tegra194.o
+>  obj-$(CONFIG_PCIE_UNIPHIER) += pcie-uniphier.o
+>  obj-$(CONFIG_PCIE_UNIPHIER_EP) += pcie-uniphier-ep.o
+>  
+> @@ -35,4 +34,5 @@ obj-$(CONFIG_PCIE_UNIPHIER_EP) += pcie-uniphier-ep.o
+>  ifdef CONFIG_PCI
+>  obj-$(CONFIG_ARM64) += pcie-al.o
+>  obj-$(CONFIG_ARM64) += pcie-hisi.o
+> +obj-$(CONFIG_ARM64) += pcie-tegra194.o
+>  endif
+> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
+> index 6fa216e52d14..cb38e94a3033 100644
+> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
+> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
+> @@ -22,6 +22,8 @@
+>  #include <linux/of_irq.h>
+>  #include <linux/of_pci.h>
+>  #include <linux/pci.h>
+> +#include <linux/pci-acpi.h>
+> +#include <linux/pci-ecam.h>
+>  #include <linux/phy/phy.h>
+>  #include <linux/pinctrl/consumer.h>
+>  #include <linux/platform_device.h>
+> @@ -311,6 +313,104 @@ struct tegra_pcie_dw_of_data {
+>  	enum dw_pcie_device_mode mode;
+>  };
+>  
+> +#if defined(CONFIG_ACPI) && defined(CONFIG_PCI_QUIRKS)
+> +struct tegra194_pcie_ecam  {
+> +	void __iomem *config_base;
+> +	void __iomem *iatu_base;
+> +	void __iomem *dbi_base;
+> +};
 > +
-> +maintainers:
-> +  - Elaine Zhang <zhangqing@rock-chips.com>
-> +  - Heiko Stuebner <heiko@sntech.de>
+> +static int tegra194_acpi_init(struct pci_config_window *cfg)
+> +{
+> +	struct device *dev = cfg->parent;
+> +	struct tegra194_pcie_ecam *pcie_ecam;
 > +
-> +description: |
-> +  Rockchip processors include support for multiple power domains
-> +  which can be powered up/down by software based on different
-> +  application scenarios to save power.
+> +	pcie_ecam = devm_kzalloc(dev, sizeof(*pcie_ecam), GFP_KERNEL);
+> +	if (!pcie_ecam)
+> +		return -ENOMEM;
 > +
-> +  Power domains contained within power-controller node are
-> +  generic power domain providers documented in
-> +  Documentation/devicetree/bindings/power/power-domain.yaml.
+> +	pcie_ecam->config_base = cfg->win;
+> +	pcie_ecam->iatu_base = cfg->win + SZ_256K;
+> +	pcie_ecam->dbi_base = cfg->win + SZ_512K;
+> +	cfg->priv = pcie_ecam;
 > +
-> +  IP cores belonging to a power domain should contain a
-> +  "power-domains" property that is a phandle for the
-> +  power domain node representing the domain.
+> +	return 0;
+> +}
 > +
-> +properties:
-> +  $nodename:
-> +    const: power-controller
+> +static void atu_reg_write(struct tegra194_pcie_ecam *pcie_ecam, int index,
+> +			  u32 val, u32 reg)
+> +{
+> +	u32 offset = PCIE_GET_ATU_OUTB_UNR_REG_OFFSET(index);
 > +
-> +  compatible:
-> +    enum:
-> +      - rockchip,px30-power-controller
-> +      - rockchip,rk3036-power-controller
-> +      - rockchip,rk3066-power-controller
-> +      - rockchip,rk3128-power-controller
-> +      - rockchip,rk3188-power-controller
-> +      - rockchip,rk3228-power-controller
-> +      - rockchip,rk3288-power-controller
-> +      - rockchip,rk3328-power-controller
-> +      - rockchip,rk3366-power-controller
-> +      - rockchip,rk3368-power-controller
-> +      - rockchip,rk3399-power-controller
+> +	writel(val, pcie_ecam->iatu_base + offset + reg);
+> +}
 > +
-> +  "#power-domain-cells":
-> +    const: 1
+> +static void program_outbound_atu(struct tegra194_pcie_ecam *pcie_ecam,
+> +				 int index, int type, u64 cpu_addr,
+> +				 u64 pci_addr, u64 size)
+> +{
+> +	atu_reg_write(pcie_ecam, index, lower_32_bits(cpu_addr),
+> +		      PCIE_ATU_LOWER_BASE);
+> +	atu_reg_write(pcie_ecam, index, upper_32_bits(cpu_addr),
+> +		      PCIE_ATU_UPPER_BASE);
+> +	atu_reg_write(pcie_ecam, index, lower_32_bits(pci_addr),
+> +		      PCIE_ATU_LOWER_TARGET);
+> +	atu_reg_write(pcie_ecam, index, lower_32_bits(cpu_addr + size - 1),
+> +		      PCIE_ATU_LIMIT);
+> +	atu_reg_write(pcie_ecam, index, upper_32_bits(pci_addr),
+> +		      PCIE_ATU_UPPER_TARGET);
+> +	atu_reg_write(pcie_ecam, index, type, PCIE_ATU_CR1);
+> +	atu_reg_write(pcie_ecam, index, PCIE_ATU_ENABLE, PCIE_ATU_CR2);
+> +}
 > +
-> +  "#address-cells":
-> +    const: 1
+> +static void __iomem *tegra194_map_bus(struct pci_bus *bus,
+> +				      unsigned int devfn, int where)
+> +{
+> +	struct pci_config_window *cfg = bus->sysdata;
+> +	struct tegra194_pcie_ecam *pcie_ecam = cfg->priv;
+> +	u32 busdev;
+> +	int type;
 > +
-> +  "#size-cells":
-> +    const: 0
+> +	if (bus->number < cfg->busr.start || bus->number > cfg->busr.end)
+> +		return NULL;
 > +
-> +patternProperties:
-> +  "^power-domain@[0-9a-f]+$":
-> +    properties:
+> +	if (bus->number == cfg->busr.start) {
+> +		if (PCI_SLOT(devfn) == 0)
+> +			return pcie_ecam->dbi_base + where;
+> +		else
+> +			return NULL;
+> +	}
 > +
-> +      "#power-domain-cells":
-> +        enum: [0, 1]
-> +        description:
-> +          Must be 0 for nodes representing a single PM domain and 1 for nodes
-> +          providing multiple PM domains.
-
-Can't this and 'required' go into pd-node?
-
+> +	busdev = PCIE_ATU_BUS(bus->number) | PCIE_ATU_DEV(PCI_SLOT(devfn)) |
+> +		 PCIE_ATU_FUNC(PCI_FUNC(devfn));
 > +
-> +      "#address-cells":
-> +        const: 1
+> +	if (bus->parent->number == cfg->busr.start) {
+> +		if (PCI_SLOT(devfn) == 0)
+> +			type = PCIE_ATU_TYPE_CFG0;
+> +		else
+> +			return NULL;
+> +	} else {
+> +		type = PCIE_ATU_TYPE_CFG1;
+> +	}
 > +
-> +      "#size-cells":
-> +        const: 0
+> +	program_outbound_atu(pcie_ecam, 0, type, cfg->res.start, busdev,
+> +			     SZ_256K);
 > +
-> +    $ref: "#/definitions/pd-node"
-
-Move this and 'unevaluatedProperties' above 'properties'. It's a bit 
-easier to read than trying to follow the indentation.
-
+> +	return pcie_ecam->config_base + where;
+> +}
 > +
-> +    patternProperties:
-> +      "^power-domain@[0-9a-f]+$":
-> +        properties:
+> +const struct pci_ecam_ops tegra194_pcie_ops = {
+> +	.init		= tegra194_acpi_init,
+> +	.pci_ops	= {
+> +		.map_bus	= tegra194_map_bus,
+> +		.read		= pci_generic_config_read,
+> +		.write		= pci_generic_config_write,
+> +	}
+> +};
+> +#endif /* defined(CONFIG_ACPI) && defined(CONFIG_PCI_QUIRKS) */
 > +
-> +          "#power-domain-cells":
-> +            enum: [0, 1]
+> +#ifdef CONFIG_PCIE_TEGRA194
 > +
-> +          "#address-cells":
-> +            const: 1
+>  static inline struct tegra_pcie_dw *to_tegra_pcie(struct dw_pcie *pci)
+>  {
+>  	return container_of(pci, struct tegra_pcie_dw, pci);
+> @@ -2311,3 +2411,6 @@ MODULE_DEVICE_TABLE(of, tegra_pcie_dw_of_match);
+>  MODULE_AUTHOR("Vidya Sagar <vidyas@nvidia.com>");
+>  MODULE_DESCRIPTION("NVIDIA PCIe host controller driver");
+>  MODULE_LICENSE("GPL v2");
 > +
-> +          "#size-cells":
-> +            const: 0
+> +#endif /* CONFIG_PCIE_TEGRA194 */
 > +
-> +        $ref: "#/definitions/pd-node"
-> +
-> +        patternProperties:
-> +          "^power-domain@[0-9a-f]+$":
-> +            properties:
-> +
-> +              "#power-domain-cells":
-> +                const: 0
-
-You can keep this one since it adds additional constraints.
-
-> +
-> +            $ref: "#/definitions/pd-node"
-> +
-> +            required:
-> +              - "#power-domain-cells"
-> +
-> +            unevaluatedProperties: false
-> +
-> +        required:
-> +          - "#power-domain-cells"
-> +
-> +        unevaluatedProperties: false
-> +
-> +    required:
-> +      - "#power-domain-cells"
-> +
-> +    unevaluatedProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - "#power-domain-cells"
-> +
-> +additionalProperties: false
-> +
-> +definitions:
-
-'$defs' rather than 'definitions'. The former is in the json-schema 
-spec, the latter was only convention.
-
-> +  pd-node:
-> +    type: object
-> +    description: |
-> +      Represents the power domains within the power controller node.
-> +
-> +    properties:
-> +      reg:
-> +        maxItems: 1
-> +        description: |
-> +          Power domain index. Valid values are defined in
-> +          "include/dt-bindings/power/px30-power.h"
-> +          "include/dt-bindings/power/rk3036-power.h"
-> +          "include/dt-bindings/power/rk3066-power.h"
-> +          "include/dt-bindings/power/rk3128-power.h"
-> +          "include/dt-bindings/power/rk3188-power.h"
-> +          "include/dt-bindings/power/rk3228-power.h"
-> +          "include/dt-bindings/power/rk3288-power.h"
-> +          "include/dt-bindings/power/rk3328-power.h"
-> +          "include/dt-bindings/power/rk3366-power.h"
-> +          "include/dt-bindings/power/rk3368-power.h"
-> +          "include/dt-bindings/power/rk3399-power.h"
-> +
-> +      clocks:
-> +        minItems: 1
-> +        maxItems: 30
-> +        description: |
-> +          A number of phandles to clocks that need to be enabled
-> +          while power domain switches state.
-> +
-> +      pm_qos:
-> +        $ref: /schemas/types.yaml#/definitions/phandle-array
-> +        description: |
-> +          A number of phandles to qos blocks which need to be saved and restored
-> +          while power domain switches state.
-> +
-> +    required:
-> +      - reg
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/rk3399-cru.h>
-> +    #include <dt-bindings/power/rk3399-power.h>
-> +
-> +    soc {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        qos_hdcp: qos@ffa90000 {
-> +            compatible = "rockchip,rk3399-qos", "syscon";
-> +            reg = <0x0 0xffa90000 0x0 0x20>;
-> +        };
-> +
-> +        qos_iep: qos@ffa98000 {
-> +            compatible = "rockchip,rk3399-qos", "syscon";
-> +            reg = <0x0 0xffa98000 0x0 0x20>;
-> +        };
-> +
-> +        qos_rga_r: qos@ffab0000 {
-> +            compatible = "rockchip,rk3399-qos", "syscon";
-> +            reg = <0x0 0xffab0000 0x0 0x20>;
-> +        };
-> +
-> +        qos_rga_w: qos@ffab0080 {
-> +            compatible = "rockchip,rk3399-qos", "syscon";
-> +            reg = <0x0 0xffab0080 0x0 0x20>;
-> +        };
-> +
-> +        qos_video_m0: qos@ffab8000 {
-> +            compatible = "rockchip,rk3399-qos", "syscon";
-> +            reg = <0x0 0xffab8000 0x0 0x20>;
-> +        };
-> +
-> +        qos_video_m1_r: qos@ffac0000 {
-> +            compatible = "rockchip,rk3399-qos", "syscon";
-> +            reg = <0x0 0xffac0000 0x0 0x20>;
-> +        };
-> +
-> +        qos_video_m1_w: qos@ffac0080 {
-> +            compatible = "rockchip,rk3399-qos", "syscon";
-> +            reg = <0x0 0xffac0080 0x0 0x20>;
-> +        };
-> +
-> +        power-management@ff310000 {
-> +            compatible = "rockchip,rk3399-pmu", "syscon", "simple-mfd";
-> +            reg = <0x0 0xff310000 0x0 0x1000>;
-> +
-> +            power-controller {
-> +                compatible = "rockchip,rk3399-power-controller";
-> +                #power-domain-cells = <1>;
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +
-> +                /* These power domains are grouped by VD_CENTER */
-> +                power-domain@RK3399_PD_IEP {
-> +                    reg = <RK3399_PD_IEP>;
-> +                    clocks = <&cru ACLK_IEP>,
-> +                             <&cru HCLK_IEP>;
-> +                    pm_qos = <&qos_iep>;
-> +                    #power-domain-cells = <0>;
-> +                };
-> +                power-domain@RK3399_PD_RGA {
-> +                    reg = <RK3399_PD_RGA>;
-> +                    clocks = <&cru ACLK_RGA>,
-> +                             <&cru HCLK_RGA>;
-> +                    pm_qos = <&qos_rga_r>,
-> +                             <&qos_rga_w>;
-> +                    #power-domain-cells = <0>;
-> +                };
-> +                power-domain@RK3399_PD_VCODEC {
-> +                    reg = <RK3399_PD_VCODEC>;
-> +                    clocks = <&cru ACLK_VCODEC>,
-> +                             <&cru HCLK_VCODEC>;
-> +                    pm_qos = <&qos_video_m0>;
-> +                    #power-domain-cells = <0>;
-> +                };
-> +                power-domain@RK3399_PD_VDU {
-> +                    reg = <RK3399_PD_VDU>;
-> +                    clocks = <&cru ACLK_VDU>,
-> +                             <&cru HCLK_VDU>;
-> +                    pm_qos = <&qos_video_m1_r>,
-> +                             <&qos_video_m1_w>;
-> +                    #power-domain-cells = <0>;
-> +                };
-> +                power-domain@RK3399_PD_VIO {
-> +                    reg = <RK3399_PD_VIO>;
-> +                    #power-domain-cells = <1>;
-> +                    #address-cells = <1>;
-> +                    #size-cells = <0>;
-> +
-> +                    power-domain@RK3399_PD_HDCP {
-> +                        reg = <RK3399_PD_HDCP>;
-> +                        clocks = <&cru ACLK_HDCP>,
-> +                                 <&cru HCLK_HDCP>,
-> +                                 <&cru PCLK_HDCP>;
-> +                        pm_qos = <&qos_hdcp>;
-> +                        #power-domain-cells = <0>;
-> +                    };
-> +                };
-> +            };
-> +        };
-> +    };
+> diff --git a/include/linux/pci-ecam.h b/include/linux/pci-ecam.h
+> index 65d3d83015c3..fbdadd4d8377 100644
+> --- a/include/linux/pci-ecam.h
+> +++ b/include/linux/pci-ecam.h
+> @@ -85,6 +85,7 @@ extern const struct pci_ecam_ops pci_thunder_ecam_ops; /* Cavium ThunderX 1.x */
+>  extern const struct pci_ecam_ops xgene_v1_pcie_ecam_ops; /* APM X-Gene PCIe v1 */
+>  extern const struct pci_ecam_ops xgene_v2_pcie_ecam_ops; /* APM X-Gene PCIe v2.x */
+>  extern const struct pci_ecam_ops al_pcie_ops;	/* Amazon Annapurna Labs PCIe */
+> +extern const struct pci_ecam_ops tegra194_pcie_ops; /* Tegra194 PCIe */
+>  #endif
+>  
+>  #if IS_ENABLED(CONFIG_PCI_HOST_COMMON)
+> -- 
+> 2.17.1
+> 
