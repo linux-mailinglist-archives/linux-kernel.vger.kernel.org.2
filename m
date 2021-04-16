@@ -2,229 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A52C7361D63
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 788ED361D68
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240251AbhDPJuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 05:50:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37684 "EHLO
+        id S242100AbhDPJuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 05:50:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232022AbhDPJuV (ORCPT
+        with ESMTP id S242084AbhDPJu3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 05:50:21 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E01C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:49:56 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id u17so41269776ejk.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:49:56 -0700 (PDT)
+        Fri, 16 Apr 2021 05:50:29 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDBBEC061574;
+        Fri, 16 Apr 2021 02:50:04 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 12so43675653lfq.13;
+        Fri, 16 Apr 2021 02:50:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=b9xcU+bHCH6H4Mu7XMxMJgfJPmJdYS6JjfdFloan2eY=;
-        b=O7b7afvKsVytUgchxcoZQTWt5+DMHs6JcMkOXtU+LYfcENx1T8fCtUONi2MfvEtXqN
-         2aXgrO1LizMJL1MB+nkhUL0QpvLmUfrmznUFysVax+BV/kgoreq/liyXA168y8ec+S/R
-         170HVnAnz3uEciN/N8fvbWIVPWIjZoKSMYzLvX+2Tg9WxtD+YGnybXE0TXdEx231QIGj
-         jdQeLSMo9fx6GrpQK2Zuwvb2uU1laGstMLzGHSX2WmedtKY8eDrkTAizxrFEyA31voB0
-         VMZPC7MhMUPV6x46vDMkhy+E90lbdEgl/7FNX2v5p+dg5GsAJhlc/CeRq9IDPTiaaEwP
-         1uYg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Tvtg6aVXxIBB0vWz8Hrg/nrQeUwgt00ywj2SguplQsQ=;
+        b=Xun+J7l8RVZbLt2UPSgIF9EAkBcMtlyEO+zZssn81K9BaPmN3u1Hv96g0gE4J4X8Cy
+         XMfXjQtF5eGDpN6c+lwUkccF2qwtmhj37JgdHPUJjTMiCw1E4h+hAWnk3OyHwb+HoYbE
+         TvI9+5cOZbpgj3OKUjaEZI0PZuuV5Y5lGaGtbWx7luod+rHjicNoMvR+GsJsRZBe/AU5
+         oeIpjtlJk6T6+uRFIvZEymSTUShZ8AEhCK2UEFyoGJRGQrPK7fQVd4/ahYVLXWhaBHJT
+         Brb2xieYzWYUC8QF8WAziiDmSmcOmEwyhmdsRXzysZcgPTnQU0DauRpa1qlminij14BK
+         8zWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=b9xcU+bHCH6H4Mu7XMxMJgfJPmJdYS6JjfdFloan2eY=;
-        b=ScXqYbFEPpZ7jnWdJnt0CQclGJhQCZDz3VHaMba2MCfTU609W4R0TVNRfkLedI/Q8s
-         2/ouasdD5JnO/EVuwEI5fX7yK/rQfcw4reJejPnyA9oSbNTCGvi0zZJUeOESl8vIuEq4
-         XDmhJKIIzjBKYL8nZeaINuHt/fAKZbGtWIwpH8Lkxic0WKN1+QWp6Zt+bcV5h0u0j32r
-         uqhvunFzY1DO2kDg43d610AATC8etEi05IHapJ/a0EM34GkzhNhrTmWV5wHEt3B0E/2M
-         oRnvcA8c4/JPQFJ/swJM8A9EhoFu+/2vNNr6TQVfpiZhngGfc/8tCPHsP4fwYcU44srh
-         0k7g==
-X-Gm-Message-State: AOAM531+p1F0JBBViAEQtkAOuTLRWCmfBcK3xNarouYnSiS7Gf4pwD/6
-        mRzFRMr1SKt5oF/a15jAKAutng1jBmK2YcxmK8DZlg==
-X-Google-Smtp-Source: ABdhPJy28vY9jrv2LfPhq7lFPJ0hGDvDfyDSRrWKFrpmwW6obPj14vaOnkH3hlUEw05sJ8JBByIuoqO1kwRO3vDFQmY=
-X-Received: by 2002:a17:906:f155:: with SMTP id gw21mr7431696ejb.170.1618566595315;
- Fri, 16 Apr 2021 02:49:55 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Tvtg6aVXxIBB0vWz8Hrg/nrQeUwgt00ywj2SguplQsQ=;
+        b=VXVbtXYj1MkYN/HX7kQzG1aNfLroJlfbpMLO4ADU6NTlHF7GrDWbzyRizwCncL/VcY
+         ljt3hvAwIR7Z0ypCeaIZ7pDs+K+fygU450tLCLI7BO2cPf+epkkoW5DQFzAkY+FGFrlV
+         Hl+sLsx9dvyVPUSz9Lp4Lm5U7K83hivRcw9sfTj3A2t3nZNACK/B0A7l18VKgjPMz8rv
+         pvjE828UH+5H/qKGwWRsVvvHdLxNWExxku5vedP0xEDbOdETv8uWoPRTtlJPnqjQzLFM
+         mIivQinn17/IID3KYskdEA9wTBpZxfsI3BhjmNIZijzo6g6o3nBWNvgoCvPDRAfriDo5
+         w/Ew==
+X-Gm-Message-State: AOAM5318qE8Zzb2loJmc8hNh7FV2PK7HEUUIuH5DdQLpj8/svpISNMHL
+        NFS8OsnaACrMoLl/5+RAzsfXh/Sar7U=
+X-Google-Smtp-Source: ABdhPJxzUgNJFrEwsJvyGTD3zf3qb/87rSdg5K7Rs8ASJGtyrZ24hmzgX7QtaDuPM9qBCfRGRkSg1A==
+X-Received: by 2002:a05:6512:3f8d:: with SMTP id x13mr2376810lfa.43.1618566603234;
+        Fri, 16 Apr 2021 02:50:03 -0700 (PDT)
+Received: from [192.168.1.100] ([31.173.80.250])
+        by smtp.gmail.com with ESMTPSA id l26sm944777lfk.101.2021.04.16.02.50.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Apr 2021 02:50:02 -0700 (PDT)
+Subject: Re: [PATCH] usb: misc: adutux: fix whitespace coding style issue
+To:     Malte Deiseroth <mdeiseroth88@gmail.com>,
+        gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210416080843.GA137657@utop>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <e0e91387-255d-9194-c4e1-0b6c18c5aee9@gmail.com>
+Date:   Fri, 16 Apr 2021 12:50:01 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-References: <20210415144411.596695196@linuxfoundation.org>
-In-Reply-To: <20210415144411.596695196@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 16 Apr 2021 15:19:43 +0530
-Message-ID: <CA+G9fYu4r1+UUh-Lm6RH_9tL6xkQvOUNYEONXAYG888TnsWZng@mail.gmail.com>
-Subject: Re: [PATCH 4.19 00/13] 4.19.188-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210416080843.GA137657@utop>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Apr 2021 at 20:29, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.188 release.
-> There are 13 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 17 Apr 2021 14:44:01 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.188-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 16.04.2021 11:08, Malte Deiseroth wrote:
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+> Correct missing space error ceckpatch.pl is complaining about.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+    It's called checkpatch.pl. :-)
 
-## Build
-* kernel: 4.19.188-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.19.y
-* git commit: 9f5de887b160253cf03d6ae91e72ba7dbd4a2317
-* git describe: v4.19.187-14-g9f5de887b160
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
-.187-14-g9f5de887b160
+> Signed-off-by: Malte Deiseroth <mdeiseroth88@gmail.com>
+[...]
 
-## No regressions (compared to v4.19.187)
-
-## No fixes (compared to v4.19.187)
-
-## Test result summary
- total: 71166, pass: 57695, fail: 1809, skip: 11392, xfail: 270,
-
-## Build Summary
-* arm: 97 total, 96 passed, 1 failed
-* arm64: 25 total, 24 passed, 1 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 14 total, 13 passed, 1 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 39 total, 39 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 15 total, 14 passed, 1 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+MBR, Sergei
