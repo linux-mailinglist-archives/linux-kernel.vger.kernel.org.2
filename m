@@ -2,111 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FAB3361D02
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AD92361D06
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239919AbhDPJOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 05:14:20 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:59525 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235099AbhDPJOQ (ORCPT
+        id S241532AbhDPJOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 05:14:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235020AbhDPJOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 05:14:16 -0400
-Received: from mail-ed1-f72.google.com ([209.85.208.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lXKXv-0007Kr-8E
-        for linux-kernel@vger.kernel.org; Fri, 16 Apr 2021 09:13:51 +0000
-Received: by mail-ed1-f72.google.com with SMTP id f1-20020a0564021941b02903850806bb32so709167edz.9
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:13:51 -0700 (PDT)
+        Fri, 16 Apr 2021 05:14:51 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27269C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:14:27 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id d10so18795117pgf.12
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:14:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=8lDqc+TYkF9pP4uENPMPvtRZ1G1LiLYNI2+86HjZ3j4=;
+        b=U+Nll+6qi9gighJPhyw/5xmLkh+myCNJH8LtUaH/kjyn353iLZcEsskXL8ml4YkRCj
+         w2wFm+i7gUrXuZmdZzZC2sqDLSpE77zRvujOHMSkdw2nShClvTHA5armSVUD562+D9Ii
+         l4JA3AFw9hBT/VExwC/ZpUrAFOE879pIA1spaev+ejW78F1zmBCEeQy/PMbCiyJmb4Gr
+         i6zy9UktR8oOzfzDR8lQzHeHGmOYPSvaou142xr3LNWoc0n3toZ/atbibpnkc1Jn5l/V
+         gTMGR100per33u3NDA4xgQAwqcjH7a2DoNp6GJ6y5jprwfswVP4TXWRoJ25rXHaqe8qd
+         YkXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TBHSrQMedfIZ0NHm4Vuee3oMabjgi2Z9z+wuaFSao34=;
-        b=FGGzt5lqP01SNVPA2IOt0JAvCQ1l52hmuJfcxlLmtApoWiTYxLE9s75kb5m5ctgUDu
-         ZkljlfZ2SV/F/bBeIIcxEtrIVc87rEcv7KJJn7qje79VSVlOJ2fys8+QJ5V0JTHyPVDp
-         glTFJh5Gahx0AgDGv5XHBNaR5vSCTPfQDPDGV+XPe7olpf3OK9R8BbRQ/ag3KaYhrKHG
-         4SGe6vKIOf4TBEbxUCHqKxOjuD9DG3bEzfhkZ613xpLN2finMfs7M1aQ3UbiL/Na2T42
-         7EDNcwWCREiqWdZfa2fnWgtftplTWsSa46CqbYn2EvI48Xc5ptIbm/toaLvpqJyWzKz6
-         6tUA==
-X-Gm-Message-State: AOAM532gFABgysBC1BGExyH0pINRWD5D+d0hSe592x3V3CKNydqKpcwS
-        dlNGC0577N7C9oM4tk76Ad6RwVJqB4O8YfrnV9MzyJrdOHRqDACX7xoXCwwfqeHZo+QWPme+wW/
-        qeNyd0ZdY0pdkpMa/XeL8YqGSMphwJoqSl6aeAy93qw==
-X-Received: by 2002:a17:906:53c7:: with SMTP id p7mr7337270ejo.89.1618564430904;
-        Fri, 16 Apr 2021 02:13:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJweK9tiB7uzLCIeFzW76R/mM0DO97HxN0N8y+fVULfDExeD0z+87Y25+JwAgl7DxkP3goJkpA==
-X-Received: by 2002:a17:906:53c7:: with SMTP id p7mr7337261ejo.89.1618564430799;
-        Fri, 16 Apr 2021 02:13:50 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
-        by smtp.gmail.com with ESMTPSA id m10sm3830584ejc.32.2021.04.16.02.13.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Apr 2021 02:13:50 -0700 (PDT)
-Subject: Re: [PATCH] rtc: Fix missing IRQF_ONESHOT as only threaded handler
-To:     zhuguangqing83@gmail.com, Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-References: <20210416021949.1569-1-zhuguangqing83@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <342f2c09-87a8-571e-e032-d954de4cf2fc@canonical.com>
-Date:   Fri, 16 Apr 2021 11:13:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8lDqc+TYkF9pP4uENPMPvtRZ1G1LiLYNI2+86HjZ3j4=;
+        b=XIHjuydM96W0ptj8vSvXNewS7z17jZX1HT3p+3v9mI1bvSyKa+qEmMdmqxNMow5ULa
+         EMu6S4RC3xaCSxoOdcpLjLSx29+Lz342gkDnoFFmqbjRoS28LuJo9AFbT+Pid4S8teEo
+         hZS5Clkvv5yOtbEPDEsVQY/AtfkuiSFzpv+IV4k6goeRhEzLxJUSpec0CoKpImRC7rPV
+         0ExofX+IR6d9cc8eztA8iLs45/kmvoN53D63W1cyNiWNkT/0N3b7VxZaQWE/ieo9W+u5
+         FJEmdgdTPkc1TuPb4YfzB5AYIOb1YtAXXKSnEatuYPNvbXHbKgLwcGMA8j//VeYyyQrU
+         NuiA==
+X-Gm-Message-State: AOAM531UqsRdJLvTdPgqjIYYOm/ELQEhOT5XKmOqpZ87yU9VVGlcjYEA
+        95JLkcsDSPxqk5HP89dJGoH/qx4944g620LR9vWwEA==
+X-Google-Smtp-Source: ABdhPJxSkqkrwhYv5hXxKmkv9csB4kg1BQcPtIeGKgQQAuzgS5nXWtbBRz4tpaSCZ+S/3OLaNgRMLjfA4wRpQnPUF7M=
+X-Received: by 2002:aa7:9d8e:0:b029:258:aaea:7000 with SMTP id
+ f14-20020aa79d8e0000b0290258aaea7000mr4986162pfq.39.1618564466665; Fri, 16
+ Apr 2021 02:14:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210416021949.1569-1-zhuguangqing83@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210415183639.1487-1-rdunlap@infradead.org> <CABkfQAGfaxQJ4xdMpJk3CO-VZueM11BBUR-YpAQ8v0-wvwAheg@mail.gmail.com>
+In-Reply-To: <CABkfQAGfaxQJ4xdMpJk3CO-VZueM11BBUR-YpAQ8v0-wvwAheg@mail.gmail.com>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Fri, 16 Apr 2021 11:14:15 +0200
+Message-ID: <CAG3jFyuty4pVzd+6+tFgKtmAE06dOtz1AwnZRefQD9F7bvbKGQ@mail.gmail.com>
+Subject: Re: [PATCH -next] drm: bridge: fix LONTIUM use of mipi_dsi_() functions
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>, Vinod Koul <vkoul@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/04/2021 04:19, zhuguangqing83@gmail.com wrote:
-> From: Guangqing Zhu <zhuguangqing83@gmail.com>
-> 
-> Coccinelle noticed:
-> 1. drivers/rtc/rtc-s5m.c:810:7-32: ERROR: Threaded IRQ with no primary
->    handler requested without IRQF_ONESHOT
-> 2. drivers/rtc/rtc-rk808.c:441:7-32: ERROR: Threaded IRQ with no primary
->    handler requested without IRQF_ONESHOT
-> 3. drivers/rtc/rtc-max77686.c:779:7-27: ERROR: Threaded IRQ with no primary
->    handler requested without IRQF_ONESHOT
-> 4. drivers/rtc/rtc-tps65910.c:415:7-32: ERROR: Threaded IRQ with no primary
->    handler requested without IRQF_ONESHOT
-> 5. drivers/rtc/rtc-lp8788.c:277:8-33: ERROR: Threaded IRQ with no primary
->    handler requested without IRQF_ONESHOT
-> 6. drivers/rtc/rtc-max8998.c:283:7-32: ERROR: Threaded IRQ with no primary
->    handler requested without IRQF_ONESHOT
-> 7. drivers/rtc/rtc-rc5t583.c:241:7-32: ERROR: Threaded IRQ with no primary
->    handler requested without IRQF_ONESHOT
-> 8. drivers/rtc/rtc-max8997.c:495:7-32: ERROR: Threaded IRQ with no primary
->    handler requested without IRQF_ONESHOT
-> 
-> Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
-> ---
->  drivers/rtc/rtc-lp8788.c   | 2 +-
->  drivers/rtc/rtc-max77686.c | 4 ++--
->  drivers/rtc/rtc-max8997.c  | 2 +-
->  drivers/rtc/rtc-max8998.c  | 3 ++-
->  drivers/rtc/rtc-rc5t583.c  | 2 +-
->  drivers/rtc/rtc-rk808.c    | 2 +-
->  drivers/rtc/rtc-s5m.c      | 4 ++--
+Merged for 5.13 in drm-misc-next-fixes
 
-The commit msg suggests in misleading way that there is an issue here to
-solve but at least for max* and s5m it is not true. These are nested
-interrupts.
-
-I tested *only* the S5M:
-Tested-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-
-but still I wonder - why this change is needed, except satisfying blind
-Coccinelle runs? Does it really bring benefit for the nested interrupts?
-
-
-Best regards,
-Krzysztof
+On Thu, 15 Apr 2021 at 21:36, Adrien Grassein <adrien.grassein@gmail.com> w=
+rote:
+>
+> Reviewed-by: Adren Grassein <adrien.grassein@gmail.com>
+>
+> Le jeu. 15 avr. 2021 =C3=A0 20:36, Randy Dunlap <rdunlap@infradead.org> a=
+ =C3=A9crit :
+> >
+> > The Lontium DRM bridge drivers use mipi_dsi_() function interfaces so
+> > they need to select DRM_MIPI_DSI to prevent build errors.
+> >
+> > ERROR: modpost: "mipi_dsi_attach" [drivers/gpu/drm/bridge/lontium-lt961=
+1uxc.ko] undefined!
+> > ERROR: modpost: "mipi_dsi_device_register_full" [drivers/gpu/drm/bridge=
+/lontium-lt9611uxc.ko] undefined!
+> > ERROR: modpost: "of_find_mipi_dsi_host_by_node" [drivers/gpu/drm/bridge=
+/lontium-lt9611uxc.ko] undefined!
+> > ERROR: modpost: "mipi_dsi_device_unregister" [drivers/gpu/drm/bridge/lo=
+ntium-lt9611uxc.ko] undefined!
+> > ERROR: modpost: "mipi_dsi_detach" [drivers/gpu/drm/bridge/lontium-lt961=
+1uxc.ko] undefined!
+> > ERROR: modpost: "mipi_dsi_attach" [drivers/gpu/drm/bridge/lontium-lt961=
+1.ko] undefined!
+> > ERROR: modpost: "mipi_dsi_device_register_full" [drivers/gpu/drm/bridge=
+/lontium-lt9611.ko] undefined!
+> > ERROR: modpost: "of_find_mipi_dsi_host_by_node" [drivers/gpu/drm/bridge=
+/lontium-lt9611.ko] undefined!
+> > ERROR: modpost: "mipi_dsi_device_unregister" [drivers/gpu/drm/bridge/lo=
+ntium-lt9611.ko] undefined!
+> > ERROR: modpost: "mipi_dsi_detach" [drivers/gpu/drm/bridge/lontium-lt961=
+1.ko] undefined!
+> > WARNING: modpost: suppressed 5 unresolved symbol warnings because there=
+ were too many)
+> >
+> > Fixes: 23278bf54afe ("drm/bridge: Introduce LT9611 DSI to HDMI bridge")
+> > Fixes: 0cbbd5b1a012 ("drm: bridge: add support for lontium LT9611UXC br=
+idge")
+> > Fixes: 30e2ae943c26 ("drm/bridge: Introduce LT8912B DSI to HDMI bridge"=
+)
+> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > Cc: Sam Ravnborg <sam@ravnborg.org>
+> > Cc: Vinod Koul <vkoul@kernel.org>
+> > Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> > Cc: Adrien Grassein <adrien.grassein@gmail.com>
+> > Cc: Andrzej Hajda <a.hajda@samsung.com>
+> > Cc: Neil Armstrong <narmstrong@baylibre.com>
+> > Cc: Robert Foss <robert.foss@linaro.org>
+> > Cc: dri-devel@lists.freedesktop.org
+> > Cc: stable@vger.kernel.org
+> > ---
+> >  drivers/gpu/drm/bridge/Kconfig |    3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > --- linux-next-20210414.orig/drivers/gpu/drm/bridge/Kconfig
+> > +++ linux-next-20210414/drivers/gpu/drm/bridge/Kconfig
+> > @@ -66,6 +66,7 @@ config DRM_LONTIUM_LT8912B
+> >         depends on OF
+> >         select DRM_PANEL_BRIDGE
+> >         select DRM_KMS_HELPER
+> > +       select DRM_MIPI_DSI
+> >         select REGMAP_I2C
+> >         help
+> >           Driver for Lontium LT8912B DSI to HDMI bridge
+> > @@ -81,6 +82,7 @@ config DRM_LONTIUM_LT9611
+> >         depends on OF
+> >         select DRM_PANEL_BRIDGE
+> >         select DRM_KMS_HELPER
+> > +       select DRM_MIPI_DSI
+> >         select REGMAP_I2C
+> >         help
+> >           Driver for Lontium LT9611 DSI to HDMI bridge
+> > @@ -94,6 +96,7 @@ config DRM_LONTIUM_LT9611UXC
+> >         depends on OF
+> >         select DRM_PANEL_BRIDGE
+> >         select DRM_KMS_HELPER
+> > +       select DRM_MIPI_DSI
+> >         select REGMAP_I2C
+> >         help
+> >           Driver for Lontium LT9611UXC DSI to HDMI bridge
