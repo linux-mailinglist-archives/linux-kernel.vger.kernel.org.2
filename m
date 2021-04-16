@@ -2,71 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0C53616E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 02:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C49D13616E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 02:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237001AbhDPAoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 20:44:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59784 "EHLO
+        id S237061AbhDPAqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 20:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236917AbhDPAoE (ORCPT
+        with ESMTP id S234971AbhDPAqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 20:44:04 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D7E0C061574;
-        Thu, 15 Apr 2021 17:43:40 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lXCa3-005daQ-S7; Fri, 16 Apr 2021 00:43:31 +0000
-Date:   Fri, 16 Apr 2021 00:43:31 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Chao Yu <yuchao0@huawei.com>, jack@suse.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        chao@kernel.org
-Subject: Re: [PATCH] direct-io: use read lock for DIO_LOCKING flag
-Message-ID: <YHjds1kY6h2kzIZ+@zeniv-ca.linux.org.uk>
-References: <20210415094332.37231-1-yuchao0@huawei.com>
- <20210415102413.GA25217@quack2.suse.cz>
+        Thu, 15 Apr 2021 20:46:16 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 071DFC061574;
+        Thu, 15 Apr 2021 17:45:53 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id d10so18072653pgf.12;
+        Thu, 15 Apr 2021 17:45:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dmjEQ+PcDryFW3YWt0Nhzw/ZkwBEiKeND45E4thTri8=;
+        b=W+Aan76L1WsDfJ/uIE17T94rf7YSuy2Ed5TaXBfsKbDp2/XQjqvmS+hKNbQF/dYjkm
+         PXtL2NN0gcEeGJEWnJtsQEwOT6HxnCwFw9rEdYgMS0yb7e394WBlhYL8yJjkTQ4lmy86
+         IpwenrqTvKYng0IgmusLN/j9JgFHqBMuPEB5uyfOWkQNbkKKu11NrtU6Ylkdv6cU8owK
+         5WrcDtTuHBKRlohy+yV8YQ28tgnYdx0sDa2DQu+LVM01n1kcdDP114IU3mKoN749xZNG
+         l6DzWe92sqSJewnzHs4DMXAZBTsl9YF0fI8Ch7LaOfwcS+lCDgTTNCiuiLMLIS1rtErt
+         AQbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dmjEQ+PcDryFW3YWt0Nhzw/ZkwBEiKeND45E4thTri8=;
+        b=IF7zPdkl6ZV52VRZ6rZ80+njJz5XtB7trHXygrGs/SvsqMcRHR19EDXtMcM8fpJxcp
+         0k6hw0Ftr8uprGpvRSOqR+ZwFA52cPw6oJsxMzC9RkASlaqY+C6RrOmGdJP9TXBjv3d4
+         72DhdOdux8vOizctIyHAHDMndw/IfzLXPfX6PdtbqBhDZj8tATw12TYGemR9o2FTQH1j
+         xUo8inGZZWG4luvixLGGvCHpzuKVeqL6H80QQu43tTBY8onPa+6rVyLDPzA36yJw/Xzs
+         8/jL2nbXOrl6U2fn8gmGmlgbGSnP2jtqJbEGQ+8jf1aZYvzThh+r+vFCnlj7QhhIIev5
+         7cig==
+X-Gm-Message-State: AOAM532RXF70o5WelsFNiPeiB63rf1naFzLfcfDiYWI+jzipA5bfLU2G
+        eJ9zLztFz9DiQ8RaWO5gXzxKCg6c5V8=
+X-Google-Smtp-Source: ABdhPJxuF8dOrIh8sHvI9reuorYiCIa02BDGIgbniCCO9RshC7YM9uG4HIUozoJkLqnq+4ZjNCJ6yQ==
+X-Received: by 2002:a05:6a00:2ce:b029:246:f904:a94 with SMTP id b14-20020a056a0002ceb0290246f9040a94mr5482236pft.56.1618533952065;
+        Thu, 15 Apr 2021 17:45:52 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id a9sm3048521pfo.186.2021.04.15.17.45.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Apr 2021 17:45:51 -0700 (PDT)
+Subject: Re: [PATCH 5.4 00/18] 5.4.113-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210415144413.055232956@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <4a6c389e-7780-2710-15cf-a037d2b4d48c@gmail.com>
+Date:   Thu, 15 Apr 2021 17:45:43 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210415102413.GA25217@quack2.suse.cz>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20210415144413.055232956@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 12:24:13PM +0200, Jan Kara wrote:
-> On Thu 15-04-21 17:43:32, Chao Yu wrote:
-> > 9902af79c01a ("parallel lookups: actual switch to rwsem") changes inode
-> > lock from mutex to rwsem, however, we forgot to adjust lock for
-> > DIO_LOCKING flag in do_blockdev_direct_IO(),
 
-The change in question had nothing to do with the use of ->i_mutex for
-regular files data access.
 
-> > so let's change to hold read
-> > lock to mitigate performance regression in the case of read DIO vs read DIO,
-> > meanwhile it still keeps original functionality of avoiding buffered access
-> > vs direct access.
-> > 
-> > Signed-off-by: Chao Yu <yuchao0@huawei.com>
+On 4/15/2021 7:47 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.113 release.
+> There are 18 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Thanks for the patch but this is not safe. Originally we had exclusive lock
-> (with i_mutex), switching to rwsem doesn't change that requirement. It may
-> be OK for some filesystems to actually use shared acquisition of rwsem for
-> DIO reads but it is not clear that is fine for all filesystems (and I
-> suspect those filesystems that actually do care already don't use
-> DIO_LOCKING flag or were already converted to iomap_dio_rw()). So unless
-> you do audit of all filesystems using do_blockdev_direct_IO() with
-> DIO_LOCKING flag and make sure they are all fine with inode lock in shared
-> mode, this is a no-go.
+> Responses should be made by Sat, 17 Apr 2021 14:44:01 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.113-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Aye.  Frankly, I would expect that anyone bothering with that kind of
-analysis for given filesystem (and there are fairly unpleasant ones in the
-list) would just use the fruits of those efforts to convert it over to
-iomap.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-"Read DIO" does not mean that accesses to private in-core data structures used
-by given filesystem can be safely done in parallel.  So blanket patch like
-that is not safe at all.
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
