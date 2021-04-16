@@ -2,137 +2,508 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03AA36221D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC2B362207
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244206AbhDPOWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:22:48 -0400
-Received: from mail-mw2nam12on2089.outbound.protection.outlook.com ([40.107.244.89]:56161
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229706AbhDPOWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:22:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ES1ZsE6seP4EU6NVB7vfgYqc2X/nsmdaTHkB9w0SnexErZazDOqYGyV9CRkVXlQJrDnwzlNgV/3djbDxs2wkD9ZhShaJI9KnenTOFg159hXYpQmhE8HvSrOnMVkpgWdUrMIQvpKQRpIVf0/rZQLFb3uAc74R9HeuT/V3IHFr+cDu/yT8k0DuMA9MGFPogoqa4X/PwkxpZV7pSqQVd+Ni+qe/PpEhXzxAEr9bAB88LYyhHFnOLF9qD18u/ugKlXK33R1xOriHqpDD0y8G7DPOyYD7lHTvUkDHB7KlbOJ56mjci92+XfHgBm4yYb7dxwoboqhJGVH4bMMGckHP4vN1kA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TgWIQ7KBwmWdLpKJK+SiCfcEfz57bK96ejFlWArKmBc=;
- b=SPcvLgnaKuhOrpnRFoKPdxMyoXKLUv+4CAd8wrGlKZNO+pbapb88FrQ+vo9JzBx9xH0qHkq3Bc/oZ2rrjGchR+HZCz0TtbVxZwtuNzm0op/lpMAeOihRB+tTaZ+zujxZ5DbnpLpJkglFNgk63QiijcVGDar2u60ecF6wFHvaZk/Y/wGJ+NBD/twUw0mxbG3H0XOD7txLHccXKOit4XfPFkML3DRTjf60gtZqvkh9AmAaEEd6jX6zCfbquu2CYib/jIJ8SIgyGuAIE+FXNTRwqjqtqVw8G9fDqraieZJb6PAVebv8UZ2+hUk4prz90dgB/z3cVlk0Jd17EmCgB0gjcw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TgWIQ7KBwmWdLpKJK+SiCfcEfz57bK96ejFlWArKmBc=;
- b=XCK6zfCegi0YALFmKEOgFNBirR4UwD278dczCeILChG5m5FrvmetdCEHPFNSvi8XZZc04UrCXYtsvsfBCVXjJB4NJ8SqY+SvvuwnO9JrOoMZ5F0YX8J5gjzMWu/0vZVAY7UQ7eGWMVg1+hkkOEk3kwx93TkQYP54++mtQx6Sd94=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
- by CY4PR1101MB2264.namprd11.prod.outlook.com (2603:10b6:910:24::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.21; Fri, 16 Apr
- 2021 14:22:12 +0000
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::f45f:e820:49f5:3725]) by CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::f45f:e820:49f5:3725%6]) with mapi id 15.20.3999.037; Fri, 16 Apr 2021
- 14:22:12 +0000
-From:   quanyang.wang@windriver.com
-To:     Mark Brown <broonie@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
-Cc:     linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Quanyang Wang <quanyang.wang@windriver.com>
-Subject: [V2][PATCH 0/5] spi: spi-zynqmp-gqspi: fix spi issues
-Date:   Fri, 16 Apr 2021 22:20:42 +0800
-Message-Id: <20210416142047.6349-1-quanyang.wang@windriver.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK2PR02CA0147.apcprd02.prod.outlook.com
- (2603:1096:202:16::31) To CY4PR11MB0071.namprd11.prod.outlook.com
- (2603:10b6:910:7a::30)
+        id S244596AbhDPOU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:20:59 -0400
+Received: from mga12.intel.com ([192.55.52.136]:57094 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244572AbhDPOU5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 10:20:57 -0400
+IronPort-SDR: Pcd2FiXgdEIu4fETzFWLpJVo7DhrtsrnCFlk8RahInBCajBWk1iWSYxQBkt8NCjA6qMXK/eajo
+ 5Xx+grbkncaA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9956"; a="174539407"
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="174539407"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 07:20:32 -0700
+IronPort-SDR: i8HAIRV/04OnOlv8pP6aUvzfhU1pfFZ1M3bJrCgT1N4m+EKDHH7AD/tgUEEEJvfgT999b6p9PU
+ dpyi3S3xEESw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="425615126"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga008.jf.intel.com with ESMTP; 16 Apr 2021 07:20:30 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 2391ABA; Fri, 16 Apr 2021 17:20:47 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?q?Jan=20Sebastian=20G=C3=B6tte?= <linux@jaseg.net>,
+        Phil Reid <preid@electromag.com.au>,
+        Nishad Kamdar <nishadkamdar@gmail.com>
+Subject: [PATCH v2 2/4] fbtft: Rectify GPIO handling
+Date:   Fri, 16 Apr 2021 17:20:42 +0300
+Message-Id: <20210416142044.17766-2-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210416142044.17766-1-andriy.shevchenko@linux.intel.com>
+References: <20210416142044.17766-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pek-qwang2-d1.wrs.com (60.247.85.82) by HK2PR02CA0147.apcprd02.prod.outlook.com (2603:1096:202:16::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Fri, 16 Apr 2021 14:22:10 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6fae3a9e-5017-4a7f-80da-08d900e306ba
-X-MS-TrafficTypeDiagnostic: CY4PR1101MB2264:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CY4PR1101MB226461E2858CEBE0A76809A9F04C9@CY4PR1101MB2264.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6l5rZbIPqZl25X+LdBO9u2hI6Ex4goci8glqHTH0VOhRYCrCYcG1jU/W9Z+4gJeVAvFqFCN+bl85edxc5biTxPU1pvi9DjI8+UrVQvcAnzK3ZFgrfle2a9fZRz1rm5Nt4KX+0JoX/LRgPL4+8enzIwQAG80RHqQ0rs2k9ErSQQ20CEWG1UNdaYnGPDIizREUvA+c4Q+gETTqab2UMHgOSy6O8GYMP4WIqycfAIc5SuGXK85ccEgDO6E+QDYrv7MXRQDSAZeKrk8A2Q7l6ve2SLKBAeyT//7Xi0skRl5HOrfOPq5I4mgRqhigMgjUAsWIgCiLNzGzoK2vQbit5WbnPjXUVfFzZ8lJBwdwKbXn13ykzhAk/Y2Q7RAHHba172QUNEqlGz9HVShH5zOw7H/5SoG2TWX4yPxp+Uw7CEojESREtwsPhUoGfXocgD03k+YPCU7ghcM64HxMxheokcMoaEW7L7zTfQLU1YZZNHRU1dSTi97sPSoOcZT7kf2NUork4ASefyu9pW4i8Vw4ffn6pDi5FIoBMRwaz5TEbzgp/AiOwlTOeWVWXKH4nZOsXUi6X3C2npH3NcGmXrM6qW7q1vNzgn9Mt4KpeihRweGEiKz0mH84AJossD9P1yhKUcndMFGdETEWrcTJTq4vm4uyW06C68esid67lh+vH1OAZOE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(396003)(39850400004)(346002)(86362001)(186003)(2906002)(38350700002)(38100700002)(316002)(6506007)(9686003)(6486002)(83380400001)(66946007)(8676002)(66556008)(66476007)(478600001)(4744005)(16526019)(5660300002)(4326008)(26005)(6512007)(1076003)(52116002)(110136005)(956004)(6666004)(8936002)(107886003)(2616005)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ixpzydprRklrprGcKX6i1VikmZoXPcEprxdUZgmvIpScN0Fd0bdyG83GuatD?=
- =?us-ascii?Q?bHFCoJHSYCBwDJnjIIOCjPH7DHjSuhM3p2Wepy14aAUZ58sMavw220jhGxjD?=
- =?us-ascii?Q?Rb4BjpqXZi2ckWCmwe0GurwsOX8zdA1U+fL50yIhvYzt+0udyqs+3CVkrrMm?=
- =?us-ascii?Q?QrXAVYiGQ7cXCKHJaosymynqQiI7NypCu+WyWgj5oXzC7NYZyp9JaNMpPqGz?=
- =?us-ascii?Q?nJh2q9y9mDa3kC9wkx+rW0vT4JR8O2+WoYfsmeftWjRvAB9Gk4jGIRVIQvyh?=
- =?us-ascii?Q?rKuQ4b6fPRILYEsC0SjB2lfHpqlekvPFiyAx+/ku9Ebzzm2I6D9DdtXLyvmr?=
- =?us-ascii?Q?2Pc7YGGjSSdAyHxYK9ZI21wmNflmazHG4/CQBpygzXge1bU3UJuc96grGbg1?=
- =?us-ascii?Q?sv8pv5QJiiJjPmUfgeEn6Bh+QS9XrNWaYutdjoF2/CLzuymNPU8ezP6PrT8V?=
- =?us-ascii?Q?+sXkJKicfH2jvktbFRWHPOf9NPDuJcvqAkqSlTlUZKTBIpRUUS1G9neZTj4c?=
- =?us-ascii?Q?4qnrUCEKfxGe0n0dyJYEVdhaJ1n0/7qh4vTJmKMw0N+Q5hu1b+R8oLrR9A9S?=
- =?us-ascii?Q?x7YbBOSpZUQENAkJ9SI681a6OWFlIbuEBxdiyN8KQwJQWuZPaGgk3QoRoN22?=
- =?us-ascii?Q?OYJFjFbI423vNnrzoiWl4DTT4qMDPq8GxtaIhTtwSgGPHQ3SDqaupyg9Liu2?=
- =?us-ascii?Q?xUqLdoF2L3v1IR6wPb8OAN/qA/4gX9AwrpdAiMig2vvjBeQbVY5OEALq0R/7?=
- =?us-ascii?Q?z7hR6a2xD9W5kb9egLZH6xE+re1Y/0HnJcgjumoZhntWT+d3RQQYfYwfx7Rk?=
- =?us-ascii?Q?uBi/+aYE7dPjVmeYmfT+F0WkCEIYu0zi7uVllpkn+YrfFn2EfulrHvlyL0hs?=
- =?us-ascii?Q?OZJ5fWvWk6mbktqh2QAajapIBENCdLrpHWk+chgM+V2VmJ63imQ8SWvvMdRK?=
- =?us-ascii?Q?8XHwQ0w94LWpnUoBH3ntV+USt8Cc1mqo7Tty8XnCMt935KDajqzVVFrbwN54?=
- =?us-ascii?Q?EjrkrX1zRivpj8lKyDQgvF1Tp5Mtcj9HxyWSwV4MbWzSZYEMC6d96YHMLg93?=
- =?us-ascii?Q?RP2uMFq4UwlRbPhu2JSTjNnuzqZcR1No/lOEWvGVgYkmD7046/sER0AEW+pB?=
- =?us-ascii?Q?+ETVJz1wdeoIZKBy62A0Yhu3sqr1sYoHeTxGcKpxgKgEXgI0nQQYR0Nc0x+i?=
- =?us-ascii?Q?+ZRHbkxOCxsSt0IZI3w8b7zeICi63ul5jWE8jNXTTew9aPWz7pELjtlSTi7c?=
- =?us-ascii?Q?LYwmIikOssn+mUBSoGIfNS1jASYLwEKZCMY9RSekmYxjqjOz5E+YKFJRvDGt?=
- =?us-ascii?Q?fM9UQgeEImky4leUZRksS1gs?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6fae3a9e-5017-4a7f-80da-08d900e306ba
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2021 14:22:12.3586
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AXBoGhJzHO4lLxUP1+wXbukP6TEcPk2GKXuNHoKwG9ka09kyzfrBOGZAk6m9i+E+nC3IZMc65yUmHRvtFw2K0BSxxa5xhq4EZeFLcHEZkcE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1101MB2264
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quanyang Wang <quanyang.wang@windriver.com>
+The infamous commit c440eee1a7a1 ("Staging: fbtft: Switch to
+the GPIO descriptor interface") broke GPIO handling completely.
+It has already four commits to rectify and it seems not enough.
+In order to fix the mess here we:
 
-Hi all,
+  1) Set default to "inactive" for all requested pins
 
-V2:
-Remove all "Fixes:" tags since they base on some patches are not
-with "Fixes:".
+  2) Fix CS, RD, and WR pins polarity since it's active low and
+     GPIO descriptor interface takes it into consideration from
+     the Device Tree or ACPI
 
-V1:
-This series fix some issues that occurs in spi-zynqmp-gqspi.c.
+  3) Consolidate chip activation (CS assert) under default
+     ->reset() callback
 
-Thanks,
-Quanyang
+To summarize the expectations about polarity for GPIOs:
 
-Amit Kumar Mahapatra (1):
-  spi: spi-zynqmp-gqspi: Resolved slab-out-of-bounds bug
+   #RD			Low
+   #WR			Low
+   #CS			Low
+   #RESET		Low
+   DC or RS		High
+   RW			High
+   Data	0 .. 15		High
 
-Quanyang Wang (4):
-  spi: spi-zynqmp-gqspi: fix clk_enable/disable imbalance issue
-  spi: spi-zynqmp-gqspi: fix hang issue when suspend/resume
-  spi: spi-zynqmp-gqspi: fix use-after-free in zynqmp_qspi_exec_op
-  spi: spi-zynqmp-gqspi: return -ENOMEM if dma_map_single fails
+See also Adafruit learning course [1] for the example of the schematics.
 
- drivers/spi/spi-zynqmp-gqspi.c | 115 +++++++++++++++------------------
- 1 file changed, 51 insertions(+), 64 deletions(-)
+While at it, drop unneeded NULL checks, since GPIO API is tolerant to that.
 
+[1]: https://learn.adafruit.com/adafruit-2-8-and-3-2-color-tft-touchscreen-breakout-v2/downloads
+
+Fixes: 92e3e884887c ("Staging: fbtft: Fix GPIO handling")
+Fixes: b918d1c27066 ("Staging: fbtft: Fix reset assertion when using gpio descriptor")
+Fixes: dbc4f989c878 ("Staging: fbtft: Fix probing of gpio descriptor")
+Fixes: c440eee1a7a1 ("Staging: fbtft: Switch to the gpio descriptor interface")
+Cc: Jan Sebastian Götte <linux@jaseg.net>
+Cc: Phil Reid <preid@electromag.com.au>
+Cc: Nishad Kamdar <nishadkamdar@gmail.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2: shrunk by splitting some stuff to the separate changes (Greg)
+ drivers/staging/fbtft/fb_agm1264k-fl.c | 16 ++++++++--------
+ drivers/staging/fbtft/fb_bd663474.c    |  4 ----
+ drivers/staging/fbtft/fb_ili9163.c     |  4 ----
+ drivers/staging/fbtft/fb_ili9320.c     |  1 -
+ drivers/staging/fbtft/fb_ili9325.c     |  4 ----
+ drivers/staging/fbtft/fb_ili9340.c     |  1 -
+ drivers/staging/fbtft/fb_s6d1121.c     |  4 ----
+ drivers/staging/fbtft/fb_sh1106.c      |  1 -
+ drivers/staging/fbtft/fb_ssd1289.c     |  4 ----
+ drivers/staging/fbtft/fb_ssd1325.c     |  2 --
+ drivers/staging/fbtft/fb_ssd1331.c     |  6 ++----
+ drivers/staging/fbtft/fb_ssd1351.c     |  1 -
+ drivers/staging/fbtft/fb_upd161704.c   |  4 ----
+ drivers/staging/fbtft/fb_watterott.c   |  1 -
+ drivers/staging/fbtft/fbtft-bus.c      |  3 +--
+ drivers/staging/fbtft/fbtft-core.c     | 13 ++++++-------
+ drivers/staging/fbtft/fbtft-io.c       | 12 ++++++------
+ 17 files changed, 23 insertions(+), 58 deletions(-)
+
+diff --git a/drivers/staging/fbtft/fb_agm1264k-fl.c b/drivers/staging/fbtft/fb_agm1264k-fl.c
+index 4dfc22d05a40..207d578547cd 100644
+--- a/drivers/staging/fbtft/fb_agm1264k-fl.c
++++ b/drivers/staging/fbtft/fb_agm1264k-fl.c
+@@ -181,12 +181,12 @@ static void write_reg8_bus8(struct fbtft_par *par, int len, ...)
+ 	/* select chip */
+ 	if (*buf) {
+ 		/* cs1 */
+-		gpiod_set_value(par->CS0, 1);
+-		gpiod_set_value(par->CS1, 0);
+-	} else {
+-		/* cs0 */
+ 		gpiod_set_value(par->CS0, 0);
+ 		gpiod_set_value(par->CS1, 1);
++	} else {
++		/* cs0 */
++		gpiod_set_value(par->CS0, 1);
++		gpiod_set_value(par->CS1, 0);
+ 	}
+ 
+ 	gpiod_set_value(par->RS, 0); /* RS->0 (command mode) */
+@@ -384,8 +384,8 @@ static int write_vmem(struct fbtft_par *par, size_t offset, size_t len)
+ 	}
+ 	kfree(convert_buf);
+ 
+-	gpiod_set_value(par->CS0, 1);
+-	gpiod_set_value(par->CS1, 1);
++	gpiod_set_value(par->CS0, 0);
++	gpiod_set_value(par->CS1, 0);
+ 
+ 	return ret;
+ }
+@@ -406,10 +406,10 @@ static int write(struct fbtft_par *par, void *buf, size_t len)
+ 		for (i = 0; i < 8; ++i)
+ 			gpiod_set_value(par->gpio.db[i], data & (1 << i));
+ 		/* set E */
+-		gpiod_set_value(par->EPIN, 1);
++		gpiod_set_value(par->EPIN, 0);
+ 		udelay(5);
+ 		/* unset E - write */
+-		gpiod_set_value(par->EPIN, 0);
++		gpiod_set_value(par->EPIN, 1);
+ 		udelay(1);
+ 	}
+ 
+diff --git a/drivers/staging/fbtft/fb_bd663474.c b/drivers/staging/fbtft/fb_bd663474.c
+index e2c7646588f8..1629c2c440a9 100644
+--- a/drivers/staging/fbtft/fb_bd663474.c
++++ b/drivers/staging/fbtft/fb_bd663474.c
+@@ -12,7 +12,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/delay.h>
+ 
+ #include "fbtft.h"
+@@ -24,9 +23,6 @@
+ 
+ static int init_display(struct fbtft_par *par)
+ {
+-	if (par->gpio.cs)
+-		gpiod_set_value(par->gpio.cs, 0);  /* Activate chip */
+-
+ 	par->fbtftops.reset(par);
+ 
+ 	/* Initialization sequence from Lib_UTFT */
+diff --git a/drivers/staging/fbtft/fb_ili9163.c b/drivers/staging/fbtft/fb_ili9163.c
+index 05648c3ffe47..6582a2c90aaf 100644
+--- a/drivers/staging/fbtft/fb_ili9163.c
++++ b/drivers/staging/fbtft/fb_ili9163.c
+@@ -11,7 +11,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/delay.h>
+ #include <video/mipi_display.h>
+ 
+@@ -77,9 +76,6 @@ static int init_display(struct fbtft_par *par)
+ {
+ 	par->fbtftops.reset(par);
+ 
+-	if (par->gpio.cs)
+-		gpiod_set_value(par->gpio.cs, 0);  /* Activate chip */
+-
+ 	write_reg(par, MIPI_DCS_SOFT_RESET); /* software reset */
+ 	mdelay(500);
+ 	write_reg(par, MIPI_DCS_EXIT_SLEEP_MODE); /* exit sleep */
+diff --git a/drivers/staging/fbtft/fb_ili9320.c b/drivers/staging/fbtft/fb_ili9320.c
+index f2e72d14431d..a8f4c618b754 100644
+--- a/drivers/staging/fbtft/fb_ili9320.c
++++ b/drivers/staging/fbtft/fb_ili9320.c
+@@ -8,7 +8,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/spi/spi.h>
+ #include <linux/delay.h>
+ 
+diff --git a/drivers/staging/fbtft/fb_ili9325.c b/drivers/staging/fbtft/fb_ili9325.c
+index c9aa4cb43123..16d3b17ca279 100644
+--- a/drivers/staging/fbtft/fb_ili9325.c
++++ b/drivers/staging/fbtft/fb_ili9325.c
+@@ -10,7 +10,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/delay.h>
+ 
+ #include "fbtft.h"
+@@ -85,9 +84,6 @@ static int init_display(struct fbtft_par *par)
+ {
+ 	par->fbtftops.reset(par);
+ 
+-	if (par->gpio.cs)
+-		gpiod_set_value(par->gpio.cs, 0);  /* Activate chip */
+-
+ 	bt &= 0x07;
+ 	vc &= 0x07;
+ 	vrh &= 0x0f;
+diff --git a/drivers/staging/fbtft/fb_ili9340.c b/drivers/staging/fbtft/fb_ili9340.c
+index 415183c7054a..704236bcaf3f 100644
+--- a/drivers/staging/fbtft/fb_ili9340.c
++++ b/drivers/staging/fbtft/fb_ili9340.c
+@@ -8,7 +8,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/delay.h>
+ #include <video/mipi_display.h>
+ 
+diff --git a/drivers/staging/fbtft/fb_s6d1121.c b/drivers/staging/fbtft/fb_s6d1121.c
+index 8c7de3290343..62f27172f844 100644
+--- a/drivers/staging/fbtft/fb_s6d1121.c
++++ b/drivers/staging/fbtft/fb_s6d1121.c
+@@ -12,7 +12,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/delay.h>
+ 
+ #include "fbtft.h"
+@@ -29,9 +28,6 @@ static int init_display(struct fbtft_par *par)
+ {
+ 	par->fbtftops.reset(par);
+ 
+-	if (par->gpio.cs)
+-		gpiod_set_value(par->gpio.cs, 0);  /* Activate chip */
+-
+ 	/* Initialization sequence from Lib_UTFT */
+ 
+ 	write_reg(par, 0x0011, 0x2004);
+diff --git a/drivers/staging/fbtft/fb_sh1106.c b/drivers/staging/fbtft/fb_sh1106.c
+index 6f7249493ea3..7b9ab39e1c1a 100644
+--- a/drivers/staging/fbtft/fb_sh1106.c
++++ b/drivers/staging/fbtft/fb_sh1106.c
+@@ -9,7 +9,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/delay.h>
+ 
+ #include "fbtft.h"
+diff --git a/drivers/staging/fbtft/fb_ssd1289.c b/drivers/staging/fbtft/fb_ssd1289.c
+index 7a3fe022cc69..f27bab38b3ec 100644
+--- a/drivers/staging/fbtft/fb_ssd1289.c
++++ b/drivers/staging/fbtft/fb_ssd1289.c
+@@ -10,7 +10,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ 
+ #include "fbtft.h"
+ 
+@@ -28,9 +27,6 @@ static int init_display(struct fbtft_par *par)
+ {
+ 	par->fbtftops.reset(par);
+ 
+-	if (par->gpio.cs)
+-		gpiod_set_value(par->gpio.cs, 0);  /* Activate chip */
+-
+ 	write_reg(par, 0x00, 0x0001);
+ 	write_reg(par, 0x03, 0xA8A4);
+ 	write_reg(par, 0x0C, 0x0000);
+diff --git a/drivers/staging/fbtft/fb_ssd1325.c b/drivers/staging/fbtft/fb_ssd1325.c
+index 8a3140d41d8b..796a2ac3e194 100644
+--- a/drivers/staging/fbtft/fb_ssd1325.c
++++ b/drivers/staging/fbtft/fb_ssd1325.c
+@@ -35,8 +35,6 @@ static int init_display(struct fbtft_par *par)
+ {
+ 	par->fbtftops.reset(par);
+ 
+-	gpiod_set_value(par->gpio.cs, 0);
+-
+ 	write_reg(par, 0xb3);
+ 	write_reg(par, 0xf0);
+ 	write_reg(par, 0xae);
+diff --git a/drivers/staging/fbtft/fb_ssd1331.c b/drivers/staging/fbtft/fb_ssd1331.c
+index 37622c9462aa..ec5eced7f8cb 100644
+--- a/drivers/staging/fbtft/fb_ssd1331.c
++++ b/drivers/staging/fbtft/fb_ssd1331.c
+@@ -81,8 +81,7 @@ static void write_reg8_bus8(struct fbtft_par *par, int len, ...)
+ 	va_start(args, len);
+ 
+ 	*buf = (u8)va_arg(args, unsigned int);
+-	if (par->gpio.dc)
+-		gpiod_set_value(par->gpio.dc, 0);
++	gpiod_set_value(par->gpio.dc, 0);
+ 	ret = par->fbtftops.write(par, par->buf, sizeof(u8));
+ 	if (ret < 0) {
+ 		va_end(args);
+@@ -104,8 +103,7 @@ static void write_reg8_bus8(struct fbtft_par *par, int len, ...)
+ 			return;
+ 		}
+ 	}
+-	if (par->gpio.dc)
+-		gpiod_set_value(par->gpio.dc, 1);
++	gpiod_set_value(par->gpio.dc, 1);
+ 	va_end(args);
+ }
+ 
+diff --git a/drivers/staging/fbtft/fb_ssd1351.c b/drivers/staging/fbtft/fb_ssd1351.c
+index 900b28d826b2..cf263a58a148 100644
+--- a/drivers/staging/fbtft/fb_ssd1351.c
++++ b/drivers/staging/fbtft/fb_ssd1351.c
+@@ -2,7 +2,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/spi/spi.h>
+ #include <linux/delay.h>
+ 
+diff --git a/drivers/staging/fbtft/fb_upd161704.c b/drivers/staging/fbtft/fb_upd161704.c
+index c77832ae5e5b..c680160d6380 100644
+--- a/drivers/staging/fbtft/fb_upd161704.c
++++ b/drivers/staging/fbtft/fb_upd161704.c
+@@ -12,7 +12,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/delay.h>
+ 
+ #include "fbtft.h"
+@@ -26,9 +25,6 @@ static int init_display(struct fbtft_par *par)
+ {
+ 	par->fbtftops.reset(par);
+ 
+-	if (par->gpio.cs)
+-		gpiod_set_value(par->gpio.cs, 0);  /* Activate chip */
+-
+ 	/* Initialization sequence from Lib_UTFT */
+ 
+ 	/* register reset */
+diff --git a/drivers/staging/fbtft/fb_watterott.c b/drivers/staging/fbtft/fb_watterott.c
+index 76b25df376b8..a57e1f4feef3 100644
+--- a/drivers/staging/fbtft/fb_watterott.c
++++ b/drivers/staging/fbtft/fb_watterott.c
+@@ -8,7 +8,6 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/gpio/consumer.h>
+ #include <linux/delay.h>
+ 
+ #include "fbtft.h"
+diff --git a/drivers/staging/fbtft/fbtft-bus.c b/drivers/staging/fbtft/fbtft-bus.c
+index 63c65dd67b17..3d422bc11641 100644
+--- a/drivers/staging/fbtft/fbtft-bus.c
++++ b/drivers/staging/fbtft/fbtft-bus.c
+@@ -135,8 +135,7 @@ int fbtft_write_vmem16_bus8(struct fbtft_par *par, size_t offset, size_t len)
+ 	remain = len / 2;
+ 	vmem16 = (u16 *)(par->info->screen_buffer + offset);
+ 
+-	if (par->gpio.dc)
+-		gpiod_set_value(par->gpio.dc, 1);
++	gpiod_set_value(par->gpio.dc, 1);
+ 
+ 	/* non buffered write */
+ 	if (!par->txbuf.buf)
+diff --git a/drivers/staging/fbtft/fbtft-core.c b/drivers/staging/fbtft/fbtft-core.c
+index 4f362dad4436..67c3b1975a4d 100644
+--- a/drivers/staging/fbtft/fbtft-core.c
++++ b/drivers/staging/fbtft/fbtft-core.c
+@@ -38,8 +38,7 @@ int fbtft_write_buf_dc(struct fbtft_par *par, void *buf, size_t len, int dc)
+ {
+ 	int ret;
+ 
+-	if (par->gpio.dc)
+-		gpiod_set_value(par->gpio.dc, dc);
++	gpiod_set_value(par->gpio.dc, dc);
+ 
+ 	ret = par->fbtftops.write(par, buf, len);
+ 	if (ret < 0)
+@@ -79,7 +78,7 @@ static int fbtft_request_one_gpio(struct fbtft_par *par,
+ 	int ret = 0;
+ 
+ 	*gpiop = devm_gpiod_get_index_optional(dev, name, index,
+-					       GPIOD_OUT_HIGH);
++					       GPIOD_OUT_LOW);
+ 	if (IS_ERR(*gpiop)) {
+ 		ret = PTR_ERR(*gpiop);
+ 		dev_err(dev,
+@@ -226,11 +225,15 @@ static void fbtft_reset(struct fbtft_par *par)
+ {
+ 	if (!par->gpio.reset)
+ 		return;
++
+ 	fbtft_par_dbg(DEBUG_RESET, par, "%s()\n", __func__);
++
+ 	gpiod_set_value_cansleep(par->gpio.reset, 1);
+ 	usleep_range(20, 40);
+ 	gpiod_set_value_cansleep(par->gpio.reset, 0);
+ 	msleep(120);
++
++	gpiod_set_value_cansleep(par->gpio.cs, 1);  /* Activate chip */
+ }
+ 
+ static void fbtft_update_display(struct fbtft_par *par, unsigned int start_line,
+@@ -922,8 +925,6 @@ static int fbtft_init_display_from_property(struct fbtft_par *par)
+ 		goto out_free;
+ 
+ 	par->fbtftops.reset(par);
+-	if (par->gpio.cs)
+-		gpiod_set_value(par->gpio.cs, 0);  /* Activate chip */
+ 
+ 	index = -1;
+ 	val = values[++index];
+@@ -1018,8 +1019,6 @@ int fbtft_init_display(struct fbtft_par *par)
+ 	}
+ 
+ 	par->fbtftops.reset(par);
+-	if (par->gpio.cs)
+-		gpiod_set_value(par->gpio.cs, 0);  /* Activate chip */
+ 
+ 	i = 0;
+ 	while (i < FBTFT_MAX_INIT_SEQUENCE) {
+diff --git a/drivers/staging/fbtft/fbtft-io.c b/drivers/staging/fbtft/fbtft-io.c
+index 0863d257d762..de1904a443c2 100644
+--- a/drivers/staging/fbtft/fbtft-io.c
++++ b/drivers/staging/fbtft/fbtft-io.c
+@@ -142,12 +142,12 @@ int fbtft_write_gpio8_wr(struct fbtft_par *par, void *buf, size_t len)
+ 		data = *(u8 *)buf;
+ 
+ 		/* Start writing by pulling down /WR */
+-		gpiod_set_value(par->gpio.wr, 0);
++		gpiod_set_value(par->gpio.wr, 1);
+ 
+ 		/* Set data */
+ #ifndef DO_NOT_OPTIMIZE_FBTFT_WRITE_GPIO
+ 		if (data == prev_data) {
+-			gpiod_set_value(par->gpio.wr, 0); /* used as delay */
++			gpiod_set_value(par->gpio.wr, 1); /* used as delay */
+ 		} else {
+ 			for (i = 0; i < 8; i++) {
+ 				if ((data & 1) != (prev_data & 1))
+@@ -165,7 +165,7 @@ int fbtft_write_gpio8_wr(struct fbtft_par *par, void *buf, size_t len)
+ #endif
+ 
+ 		/* Pullup /WR */
+-		gpiod_set_value(par->gpio.wr, 1);
++		gpiod_set_value(par->gpio.wr, 0);
+ 
+ #ifndef DO_NOT_OPTIMIZE_FBTFT_WRITE_GPIO
+ 		prev_data = *(u8 *)buf;
+@@ -192,12 +192,12 @@ int fbtft_write_gpio16_wr(struct fbtft_par *par, void *buf, size_t len)
+ 		data = *(u16 *)buf;
+ 
+ 		/* Start writing by pulling down /WR */
+-		gpiod_set_value(par->gpio.wr, 0);
++		gpiod_set_value(par->gpio.wr, 1);
+ 
+ 		/* Set data */
+ #ifndef DO_NOT_OPTIMIZE_FBTFT_WRITE_GPIO
+ 		if (data == prev_data) {
+-			gpiod_set_value(par->gpio.wr, 0); /* used as delay */
++			gpiod_set_value(par->gpio.wr, 1); /* used as delay */
+ 		} else {
+ 			for (i = 0; i < 16; i++) {
+ 				if ((data & 1) != (prev_data & 1))
+@@ -215,7 +215,7 @@ int fbtft_write_gpio16_wr(struct fbtft_par *par, void *buf, size_t len)
+ #endif
+ 
+ 		/* Pullup /WR */
+-		gpiod_set_value(par->gpio.wr, 1);
++		gpiod_set_value(par->gpio.wr, 0);
+ 
+ #ifndef DO_NOT_OPTIMIZE_FBTFT_WRITE_GPIO
+ 		prev_data = *(u16 *)buf;
 -- 
-2.25.1
+2.30.2
 
