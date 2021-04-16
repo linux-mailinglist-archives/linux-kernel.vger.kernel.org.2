@@ -2,116 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58780362344
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7D3362351
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244804AbhDPPBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 11:01:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43216 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236384AbhDPPB1 (ORCPT
+        id S245381AbhDPPCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 11:02:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244999AbhDPPCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 11:01:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618585262;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Fri, 16 Apr 2021 11:02:14 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C6BC061574;
+        Fri, 16 Apr 2021 08:01:49 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 15:01:46 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618585307;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=h5MhNFa+G0GXPiMOp8zeJtDGBUydEX9X5pmRHMN7Eug=;
-        b=XR/e+NTTTfwQ7jfhHBmwVOhMuPvL+4dR/AEzchWh2cw7pGaxVBgwFrM494YuMlztZ6PKTS
-        q8SmLX0pQXA5JHSYfKXZBPECkxsMRORv4X0T5KdJGSbFjAV1et0hvpMF2jvZYn1Zu/I2KU
-        D4swtJeoTfuAYk3bMQNJRhQpLGYUOXA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-600-Z4tRWluRNO-bDudkzhywfw-1; Fri, 16 Apr 2021 11:00:57 -0400
-X-MC-Unique: Z4tRWluRNO-bDudkzhywfw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AC79B107AFB6;
-        Fri, 16 Apr 2021 15:00:54 +0000 (UTC)
-Received: from [10.36.113.21] (ovpn-113-21.ams2.redhat.com [10.36.113.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 34752107D5C1;
-        Fri, 16 Apr 2021 15:00:47 +0000 (UTC)
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
- APIs
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-References: <YGW27KFt9eQB9X2z@myrica>
- <BN6PR11MB4068171CD1D4B823515F7EFBC37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210401134236.GF1463678@nvidia.com>
- <BN6PR11MB4068C4DE7AF43D44DE70F4C1C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210401160337.GJ1463678@nvidia.com>
- <4bea6eb9-08ad-4b6b-1e0f-c97ece58a078@redhat.com>
- <20210415230732.GG1370958@nvidia.com>
- <b1492fd3-8ce2-1632-3b14-73d8d4356fd7@redhat.com>
- <20210416140524.GI1370958@nvidia.com>
- <f71c1e37-6466-e931-be1d-b9b36d785596@redhat.com>
- <20210416143451.GJ1370958@nvidia.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <6159ef35-c24e-105f-43f6-f90d481f4b24@redhat.com>
-Date:   Fri, 16 Apr 2021 17:00:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        bh=jYZWPtDMrEcYhCUgO6OL6PA5yeacxbkEGBOxZmZxr2o=;
+        b=UjdnVojhsS8+Vo27cJ+tevrqLVVM0+jZ91rZy0/BWezxhkxMJqAl0Xx2NwkyO/WvcVI9PP
+        t3KaWZEv8nKGWXy6fyENTTfnytMOxXXNc4bGyu9RxuZIiYn9awOU0gHrzQHwHD8PFfvBG2
+        aPnKNwixdObByDKD3G6AowUIGsXhqfUif4lKXq4pyx8ILueMMOYiAZXWurIL+8EFUzjXpG
+        8j4tulLSDsW7SGknIV1ZVdassg09SwNMmdrzVezra/HgW2ugOo0H93EPFRjek96X9AmIXD
+        dMKjvsIK+N+fFwMvi95EBiu1XlejzbFbYVHxHzoSRhBCz8B7aOQ0wYSZfnzD3w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618585307;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jYZWPtDMrEcYhCUgO6OL6PA5yeacxbkEGBOxZmZxr2o=;
+        b=MBZhr2neHzVt0lPC7Nupp0wne9NmdnjvnHWgJVWJlxFMsE/QvdD/BSOXypILnxTLMdCXX0
+        Id7aHVWMXYeeocAA==
+From:   "tip-bot2 for Nathan Chancellor" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf/amd/uncore: Fix sysfs type mismatch
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210415001112.3024673-2-nathan@kernel.org>
+References: <20210415001112.3024673-2-nathan@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210416143451.GJ1370958@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Message-ID: <161858530676.29796.11038219693282032016.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+The following commit has been merged into the perf/core branch of tip:
 
-On 4/16/21 4:34 PM, Jason Gunthorpe wrote:
-> On Fri, Apr 16, 2021 at 04:26:19PM +0200, Auger Eric wrote:
-> 
->> This was largely done during several confs including plumber, KVM forum,
->> for several years. Also API docs were shared on the ML. I don't remember
->> any voice was raised at those moments.
-> 
-> I don't think anyone objects to the high level ideas, but
-> implementation does matter. I don't think anyone presented "hey we
-> will tunnel an uAPI through VFIO to the IOMMU subsystem" - did they?
+Commit-ID:     b04c0cddff6d1d6656c7f7c08c0b8f07eb287564
+Gitweb:        https://git.kernel.org/tip/b04c0cddff6d1d6656c7f7c08c0b8f07eb287564
+Author:        Nathan Chancellor <nathan@kernel.org>
+AuthorDate:    Wed, 14 Apr 2021 17:11:12 -07:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Fri, 16 Apr 2021 16:32:44 +02:00
 
-At minimum
-https://events19.linuxfoundation.cn/wp-content/uploads/2017/11/Shared-Virtual-Memory-in-KVM_Yi-Liu.pdf
+perf/amd/uncore: Fix sysfs type mismatch
 
-But most obviously everything is documented in
-Documentation/userspace-api/iommu.rst where the VFIO tunneling is
-clearly stated ;-)
+dev_attr_show() calls the __uncore_*_show() functions via an indirect
+call but their type does not currently match the type of the show()
+member in 'struct device_attribute', resulting in a Control Flow
+Integrity violation.
 
-But well let's work together to design a better and more elegant
-solution then.
+$ cat /sys/devices/amd_l3/format/umask
+config:8-15
 
-Thanks
+$ dmesg | grep "CFI failure"
+[ 1258.174653] CFI failure (target: __uncore_umask_show...):
 
-Eric
-> 
-> Look at the fairly simple IMS situation, for example. This was
-> presented at plumbers too, and the slides were great - but the
-> implementation was too hacky. It required a major rework of the x86
-> interrupt handling before it was OK.
-> 
-> Jason
-> 
+Update the type in the DEFINE_UNCORE_FORMAT_ATTR macro to match
+'struct device_attribute' so that there is no more CFI violation.
 
+Fixes: 06f2c24584f3 ("perf/amd/uncore: Prepare to scale for more attributes that vary per family")
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210415001112.3024673-2-nathan@kernel.org
+---
+ arch/x86/events/amd/uncore.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/events/amd/uncore.c b/arch/x86/events/amd/uncore.c
+index 7f014d4..582c0ff 100644
+--- a/arch/x86/events/amd/uncore.c
++++ b/arch/x86/events/amd/uncore.c
+@@ -275,14 +275,14 @@ static struct attribute_group amd_uncore_attr_group = {
+ };
+ 
+ #define DEFINE_UNCORE_FORMAT_ATTR(_var, _name, _format)			\
+-static ssize_t __uncore_##_var##_show(struct kobject *kobj,		\
+-				struct kobj_attribute *attr,		\
++static ssize_t __uncore_##_var##_show(struct device *dev,		\
++				struct device_attribute *attr,		\
+ 				char *page)				\
+ {									\
+ 	BUILD_BUG_ON(sizeof(_format) >= PAGE_SIZE);			\
+ 	return sprintf(page, _format "\n");				\
+ }									\
+-static struct kobj_attribute format_attr_##_var =			\
++static struct device_attribute format_attr_##_var =			\
+ 	__ATTR(_name, 0444, __uncore_##_var##_show, NULL)
+ 
+ DEFINE_UNCORE_FORMAT_ATTR(event12,	event,		"config:0-7,32-35");
