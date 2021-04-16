@@ -2,85 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7128361FC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA169361FCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235609AbhDPM2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 08:28:03 -0400
-Received: from ozlabs.org ([203.11.71.1]:40005 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234914AbhDPM2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 08:28:01 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FMFpW6jWXz9sVb;
-        Fri, 16 Apr 2021 22:27:31 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1618576052;
-        bh=JYdcLdPUbTo38tlUGmoVGoWuj6WMw32aNHJqgtTCmtY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=qKkcct5wuDcOsZPYHyhGTQN3p9pM377ZvPDpG4ZNqnCrapu/6F9UCx4iSr8MTFBRb
-         ejhzGMofCfqPpZCKNN8Rt8Fk95xEUEPA+4s68rxggS/ddIPNzT+H8m6GmhayrPbDb5
-         faHRerQUMRT/U41nXfXhEyVYfnjB526cpflJMsqzYKsLx3tb2tbGcl+orX+qlVg3MB
-         wU3mnj2GgnCmuELAQmEdzIjWeW/oEjx0QfZmJCHg/USbl69NzkD2POIj5VypgsWVpq
-         4GDcHyX2VcBVCzFsErVnnJikU88nJ2rxpsOD0QErEGMHHLY6xFf2nbqm1CVgzH1tuz
-         53c/9vpRRNvDw==
-Date:   Fri, 16 Apr 2021 22:27:31 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the kvm tree
-Message-ID: <20210416222731.3e82b3a0@canb.auug.org.au>
+        id S239485AbhDPM3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 08:29:36 -0400
+Received: from mail-qv1-f46.google.com ([209.85.219.46]:45592 "EHLO
+        mail-qv1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235074AbhDPM3c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 08:29:32 -0400
+Received: by mail-qv1-f46.google.com with SMTP id bs7so12798320qvb.12;
+        Fri, 16 Apr 2021 05:29:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Jk36eYtLMeyJSNx9XAqpGadjjqtLtgy4AzBa+/tMpFM=;
+        b=Zpe5v4E7EYU6air29l/BM29JKksJFfh9vfHwspuoGq6W00a+jorMUNp+g3IYImlBGO
+         UN+76APSHYkP/ZnHU8HgpC1J1ERCixQIRheqfRivSj0R1u1R8/IGOdZTQ/nc5qYfvKKg
+         Gfg4y7Xq/KSE/CYvrPDjbYP4h2J99MkjBpdjSwbu4gNAPSRvRJVW06LDQbcI58yyEiAt
+         PnMhwOihj3V68SseXC3iQVzCBOnHCMd7u98UKa9ikwWmmJLNoeEYiWRG62tVnOHjJcu/
+         cZJnDJhqEDB1Fv1exuhvKnsg067dStoHothZ3pEdRH7vS6n0mKy63hKIV2sPEmfzZQ9M
+         aowA==
+X-Gm-Message-State: AOAM531T1+hZHodiegzNxthdNFiCTCp06YjlnSxx7Bm1agu7+pH2GjOC
+        FmkwT3SFGDqMSw89FuShegx5JmXoTwAF/Q==
+X-Google-Smtp-Source: ABdhPJxNGyjLKZ/oS+9/Xqx9fNqI3kp0gsMjlfVpsCvcZyjzS5RvBT0qdtCEk2bYWJMjJfdNy8JpFg==
+X-Received: by 2002:a0c:fbac:: with SMTP id m12mr8087022qvp.52.1618576146247;
+        Fri, 16 Apr 2021 05:29:06 -0700 (PDT)
+Received: from [10.68.32.192] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
+        by smtp.gmail.com with ESMTPSA id b15sm3986102qtg.82.2021.04.16.05.29.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Apr 2021 05:29:05 -0700 (PDT)
+Subject: Re: [PATCH] floppy: remove redundant assignment to variable st
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Colin King <colin.king@canonical.com>,
+        Willy Tarreau <w@1wt.eu>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210415130020.1959951-1-colin.king@canonical.com>
+From:   Denis Efremov <efremov@linux.com>
+Message-ID: <d6c29628-be82-c812-e021-fd0f0ab02172@linux.com>
+Date:   Fri, 16 Apr 2021 15:29:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/1tsCH=y7VINn6jpuc5OMoAl";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210415130020.1959951-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/1tsCH=y7VINn6jpuc5OMoAl
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Jens, could you please take this one? I thought to send it to you with other
+cleanup patches in a merge request, but you already applied rest of the
+patches. If you prefer to take it as merge request, it's ok I'll send it
+based on your branch for-5.13/drivers.
 
-Hi all,
+On 4/15/21 4:00 PM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The variable st is being assigned a value that is never read and
+> it is being updated later with a new value. The initialization is
+> redundant and can be removed.
+> 
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-In commit
+Reviewed-by: Denis Efremov <efremov@linux.com>
 
-  c3171e94cc1c ("KVM: s390: VSIE: fix MVPG handling for prefixing and MSO")
+Thanks,
+Denis
 
-Fixes tag
-
-  Fixes: bdf7509bbefa ("s390/kvm: VSIE: correctly handle MVPG when in VSIE")
-
-has these problem(s):
-
-  - Subject does not match target commit subject
-    Just use
-	git log -1 --format=3D'Fixes: %h ("%s")'
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/1tsCH=y7VINn6jpuc5OMoAl
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB5grMACgkQAVBC80lX
-0GxTKgf8DPhUSMv9IFzE2TZZAUQun6lqp8YjsO2jTTU4tIeRuFmJmCg1tYFHRlzK
-ORAvCmKJjtNC2B0uNXh3UrhxWVCeawPjw4OBRb8DoTCnIIBo274kHbqGG2I7WNZp
-1BZZsTKa1wIf09f6fKn9MlYOPbLdFlOc3YvA/AGTfMOyRem0eF8Xozk6q/M+VvqL
-7ki2t6bht6+9qLC35MU2vlt4B/ZWQtxkcdQIIOdq/f96H/fy4P5gKytG7ztlqSxM
-51YWi0pCT5ElR/Mob1GxIRqHjTX5bDVqW0fiR1YFbhl9ZY+VLIwOLwKxNLEH7quq
-NSU4+JeZOnmy7i5igVgtAiweDxUT/A==
-=XIlH
------END PGP SIGNATURE-----
-
---Sig_/1tsCH=y7VINn6jpuc5OMoAl--
+> ---
+>  arch/x86/include/asm/floppy.h | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/x86/include/asm/floppy.h b/arch/x86/include/asm/floppy.h
+> index d43717b423cb..6ec3fc969ad5 100644
+> --- a/arch/x86/include/asm/floppy.h
+> +++ b/arch/x86/include/asm/floppy.h
+> @@ -74,7 +74,6 @@ static irqreturn_t floppy_hardint(int irq, void *dev_id)
+>  		int lcount;
+>  		char *lptr;
+>  
+> -		st = 1;
+>  		for (lcount = virtual_dma_count, lptr = virtual_dma_addr;
+>  		     lcount; lcount--, lptr++) {
+>  			st = inb(virtual_dma_port + FD_STATUS);
+> 
