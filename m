@@ -2,190 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39FF43623AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D32723623CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343631AbhDPPRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 11:17:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47125 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245347AbhDPPN7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 11:13:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618585988;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y31wAS8VhbNO8Hh/5HXcZZGq5ek4j0KdlPADbl+H2zY=;
-        b=SxQQQ1x5n1/zTl1W7sqkRDDKKZunsRgSt6rArJ2YdooxAgUBduLu1cavrjXPFqwnljli2T
-        j6M0KRrukjJgIMrhsgi9YGEqE9+o44GKzxnTxVlIdI3jLhT3pwl1B8YiFd9ke39MtrcU+o
-        uAkmZUO9cVfV0NxZdZJzuwniECnotZ4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-183-dWRYUTRkOKOZ7b3GOxbilw-1; Fri, 16 Apr 2021 11:13:05 -0400
-X-MC-Unique: dWRYUTRkOKOZ7b3GOxbilw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B465CA687E;
-        Fri, 16 Apr 2021 15:13:02 +0000 (UTC)
-Received: from treble (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 54A8360861;
-        Fri, 16 Apr 2021 15:13:00 +0000 (UTC)
-Date:   Fri, 16 Apr 2021 10:12:58 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     zhaoxiao <zhaoxiao@uniontech.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, nivedita@alum.mit.edu, clin@suse.com,
-        andriy.shevchenko@linux.intel.com, ndesaulniers@google.com,
-        dan.j.williams@intel.com, masahiroy@kernel.org,
-        linux-kernel@vger.kernel.org, jroedel@suse.de,
-        peterz@infradead.org, Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH v2] X86: Makefile: Replace -pg with CC_FLAGS_FTRACE
-Message-ID: <20210416151258.gjchvi7c5uneiy63@treble>
-References: <20210416053928.11576-1-zhaoxiao@uniontech.com>
+        id S1343601AbhDPPV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 11:21:57 -0400
+Received: from mout.gmx.net ([212.227.17.20]:42011 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243051AbhDPPVA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 11:21:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1618586432;
+        bh=o8y9pcmg8Eesddl3oGmRlZ5y7tRkqQSYlyuTQm6bUt4=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=dLNgC41zHDE41jGivU1wiyGuJYWZGPSelfQxgRiieV0hG83f7WPtVEKfC1zJl8ofa
+         l0AMTDyC8jNbnkfZXOJbTtEwEdOH6vyiOBEteqKsHqbnh3IFCojYkfAY+af1VlVxSn
+         9rAh9+lDWfwg5EF9O8EHvR8ohZpenrcQ0w/6WHsM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.150.210]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MLzBp-1lFcBy43Dl-00I092; Fri, 16
+ Apr 2021 17:13:28 +0200
+Message-ID: <7826c19ecd583700f56d2db33360e8032e812ecf.camel@gmx.de>
+Subject: Re: [patch] x86/crash: fix crash_setup_memmap_entries()
+ out-of-bounds access
+From:   Mike Galbraith <efault@gmx.de>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, DaveYoung <dyoung@redhat.com>,
+        Baoquan He <bhe@redhat.com>, kexec@lists.infradead.org,
+        x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>
+Date:   Fri, 16 Apr 2021 17:13:26 +0200
+In-Reply-To: <20210416144459.GB22348@zn.tnic>
+References: <9efaad2ba042b8791cbe8c3e7cad491fe05e06eb.camel@gmx.de>
+         <20210416110701.GA3835@dhcp-128-65.nay.redhat.com>
+         <063a63ddea914ac654cbe9a1d1d6c76986af7882.camel@gmx.de>
+         <20210416114708.GB79779@dhcp-128-65.nay.redhat.com>
+         <725fa3dc1da2737f0f6188a1a9701bead257ea9d.camel@gmx.de>
+         <20210416121636.GA22348@zn.tnic>
+         <a853ea8535151fd8b267d8e68a45b33748978d8a.camel@gmx.de>
+         <20210416144459.GB22348@zn.tnic>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210416053928.11576-1-zhaoxiao@uniontech.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:y7YG8mesp+ucSQBe9vAuOgwkkH8o0iUHqPsI/eG8TYCbhKvMYZe
+ Yqn/XfLnv3FbQvfU8j2XqtQzFHrSMCtCIstgvcjAbFp593d4vxAlfvJvKlW2lSifkpOm/+i
+ lLO0ILfgu5AqdMAYGG4Pj7RaPevI7LepykF2L+41sG8Qr1TaYCKgW5fBxAW0gNCe9qgqMbv
+ J/sVzh4JqUB/q7X1MVxbg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9+f3s7v0sDw=:nvxg/VVipUJwGadXpOu7JD
+ hLhrguOvfKiq4RSlkdtwSXjxpkbRrxKwnZCZ0U70jhJHvC6+uU780obraNYPSV0FngpcoYCf/
+ 8nA4dox1RVLIvVhs3JQx0py6uvKozOpnur56WgjLicBzcE7V4q6i7WJ/5qXakkOJFC+O9Az73
+ rXERFXAWeufeHOCTVHYm9Vljp+iwmoURVlsaJeBolB8zgcXtzI1oxJQ9GYL/LqR7DyWZt+rRx
+ VxOCrfgFqBJvLSk3ycpqXZD9TzcfqS+3q10FU1dWphlFzz8MRJ2tHxkfGiuuAcEm0NZVLva3q
+ F0QEOIuedLGgBUpUxalfYvzMdttSwQdLklzp7JDvRLED1wzowLEdKtDhM0tr9+LN30knuWEGq
+ JmVSVG7Icb/JsgLnNapB1oF7VlmMipGm9Hbx27Oe7+8DyyJGDF6JHtBGoQaOxB+89je38/wNW
+ u68A86ZYI4zagZTnag8QN22OyTsX4EmSSXhORLN8VUH/uKXSrrbr3N/Riuex1YzYPu4V+bkjE
+ p02knZb3BjDG6EPMcfvkcOB9LjFF9oK5uhL1NRPdZrpw40JiJl6y52MmP7KmPJ8cqIU6piE/b
+ bSOs4SjP4AN3OL7EDuzDp4O0mV4n75ZetM0lXfgRJSZOJqDRAecgOtC+Y1Uw7ou7Jg7Ob4giw
+ KLqG4484gCxX1zI3CfP+YZw8MGn8bb7a1aepj7rHOB8QVgg6YsrWRrF1UwmzEAgPZBgrlNb5E
+ 7Tk7yXOX3ZPQSQqi/oqYLT0kc45PQWU/7/7ZqmCi1luiAVpyjrIgAzWI+onH8Nwl5RdaRk3vT
+ jVouyXrRS6S5h2yLQs+GCTAkAjrEQTsIXokeNjfRROxbY1oiJtriorKQezYG9JILURnsE8zoY
+ /7JP44JLDEwpiGyqKkvRBIl30AWSeZwVUynvFLx/Yzx0XicueoA9hldmVVREsRmhB3Bww5Ed2
+ Sy3o48fI9ywIWXgpmG2YOQNn0rRd98wRUqj4W/u3MBzjGgYWOZ37lU7ikQAFqQcanSquQIMc0
+ 0GiERy0mRRzl2AQR1ZgdgIjJDMBPvSlInM0kWrR7k1X61n2RPBDxhUHzUDoOkVGYCiXhK7216
+ /hRX901Tam53cs1UAOZuSPoCRzanFALRaTDwm02Rtup76ET1swRRpAqPg1H+OZylFF80T6yTK
+ U7jy24y6h4hUdE8Ntc5NKqDgeVIfaBhv8EJl4o1+uT4++SqKhF9OXnrPtNKMHy17Q1kdU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding Steven Rostedt (ftrace maintainer).
+On Fri, 2021-04-16 at 16:44 +0200, Borislav Petkov wrote:
+> On Fri, Apr 16, 2021 at 03:16:07PM +0200, Mike Galbraith wrote:
+> > On Fri, 2021-04-16 at 14:16 +0200, Borislav Petkov wrote:
+> > >
+> > > Please be more verbose and structure your commit message like this:
+> >
+> > Hrmph, I thought it was too verbose for dinky one-liner if anything.
+>
+> Please look at how other commit messages in tip have free text - not
+> only tools output.
+>
+> Also, this looks like a fix for some previous commit. Please dig out
+> which commit introduced the issue and put its commit ID in a Fixes: tag
+> above your S-o-B.
+>
+> If you don't have time or desire to do that, you can say so and I'll do
+> it myself when I get a chance.
 
-On Fri, Apr 16, 2021 at 01:39:28PM +0800, zhaoxiao wrote:
-> In preparation for x86 supporting ftrace built on other compiler
-> options, let's have the x86 Makefiles remove the $(CC_FLAGS_FTRACE)
-> flags, whatever these may be, rather than assuming '-pg'.
-> 
-> There should be no functional change as a result of this patch.
-> 
-> Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
-> ---
-> v2: add the same change for the other Makefile in arch/x86 directory.
->  arch/x86/entry/vdso/Makefile |  8 ++++----
->  arch/x86/kernel/Makefile     | 16 ++++++++--------
->  arch/x86/kernel/cpu/Makefile |  4 ++--
->  arch/x86/lib/Makefile        |  2 +-
->  arch/x86/mm/Makefile         |  4 ++--
->  arch/x86/xen/Makefile        |  6 +++---
->  6 files changed, 20 insertions(+), 20 deletions(-)
-> 
-> diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
-> index 05c4abc2fdfd..c5bd91bf9f93 100644
-> --- a/arch/x86/entry/vdso/Makefile
-> +++ b/arch/x86/entry/vdso/Makefile
-> @@ -96,10 +96,10 @@ $(vobjs): KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_LTO) $(GCC_PLUGINS_CFLAGS) $(
->  #
->  # vDSO code runs in userspace and -pg doesn't help with profiling anyway.
->  #
-> -CFLAGS_REMOVE_vclock_gettime.o = -pg
-> -CFLAGS_REMOVE_vdso32/vclock_gettime.o = -pg
-> -CFLAGS_REMOVE_vgetcpu.o = -pg
-> -CFLAGS_REMOVE_vsgx.o = -pg
-> +CFLAGS_REMOVE_vclock_gettime.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_vdso32/vclock_gettime.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_vgetcpu.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_vsgx.o = $(CC_FLAGS_FTRACE)
->  
->  #
->  # X32 processes use x32 vDSO to access 64bit kernel data.
-> diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-> index 2ddf08351f0b..2811fc6a17ba 100644
-> --- a/arch/x86/kernel/Makefile
-> +++ b/arch/x86/kernel/Makefile
-> @@ -13,14 +13,14 @@ CPPFLAGS_vmlinux.lds += -U$(UTS_MACHINE)
->  
->  ifdef CONFIG_FUNCTION_TRACER
->  # Do not profile debug and lowlevel utilities
-> -CFLAGS_REMOVE_tsc.o = -pg
-> -CFLAGS_REMOVE_paravirt-spinlocks.o = -pg
-> -CFLAGS_REMOVE_pvclock.o = -pg
-> -CFLAGS_REMOVE_kvmclock.o = -pg
-> -CFLAGS_REMOVE_ftrace.o = -pg
-> -CFLAGS_REMOVE_early_printk.o = -pg
-> -CFLAGS_REMOVE_head64.o = -pg
-> -CFLAGS_REMOVE_sev-es.o = -pg
-> +CFLAGS_REMOVE_tsc.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_paravirt-spinlocks.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_pvclock.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_kvmclock.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_ftrace.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_early_printk.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_head64.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_sev-es.o = $(CC_FLAGS_FTRACE)
->  endif
->  
->  KASAN_SANITIZE_head$(BITS).o				:= n
-> diff --git a/arch/x86/kernel/cpu/Makefile b/arch/x86/kernel/cpu/Makefile
-> index 637b499450d1..4435c6de9145 100644
-> --- a/arch/x86/kernel/cpu/Makefile
-> +++ b/arch/x86/kernel/cpu/Makefile
-> @@ -5,8 +5,8 @@
->  
->  # Don't trace early stages of a secondary CPU boot
->  ifdef CONFIG_FUNCTION_TRACER
-> -CFLAGS_REMOVE_common.o = -pg
-> -CFLAGS_REMOVE_perf_event.o = -pg
-> +CFLAGS_REMOVE_common.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_perf_event.o = $(CC_FLAGS_FTRACE)
->  endif
->  
->  # If these files are instrumented, boot hangs during the first second.
-> diff --git a/arch/x86/lib/Makefile b/arch/x86/lib/Makefile
-> index bad4dee4f0e4..0aa71b8a5bc1 100644
-> --- a/arch/x86/lib/Makefile
-> +++ b/arch/x86/lib/Makefile
-> @@ -21,7 +21,7 @@ KASAN_SANITIZE_cmdline.o  := n
->  KCSAN_SANITIZE_cmdline.o  := n
->  
->  ifdef CONFIG_FUNCTION_TRACER
-> -CFLAGS_REMOVE_cmdline.o = -pg
-> +CFLAGS_REMOVE_cmdline.o = $(CC_FLAGS_FTRACE)
->  endif
->  
->  CFLAGS_cmdline.o := -fno-stack-protector -fno-jump-tables
-> diff --git a/arch/x86/mm/Makefile b/arch/x86/mm/Makefile
-> index 5864219221ca..91883d5a0293 100644
-> --- a/arch/x86/mm/Makefile
-> +++ b/arch/x86/mm/Makefile
-> @@ -12,8 +12,8 @@ KASAN_SANITIZE_mem_encrypt_identity.o	:= n
->  KCSAN_SANITIZE := n
->  
->  ifdef CONFIG_FUNCTION_TRACER
-> -CFLAGS_REMOVE_mem_encrypt.o		= -pg
-> -CFLAGS_REMOVE_mem_encrypt_identity.o	= -pg
-> +CFLAGS_REMOVE_mem_encrypt.o		= $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_mem_encrypt_identity.o	= $(CC_FLAGS_FTRACE)
->  endif
->  
->  obj-y				:=  init.o init_$(BITS).o fault.o ioremap.o extable.o mmap.o \
-> diff --git a/arch/x86/xen/Makefile b/arch/x86/xen/Makefile
-> index 40b5779fce21..179dfc124c94 100644
-> --- a/arch/x86/xen/Makefile
-> +++ b/arch/x86/xen/Makefile
-> @@ -2,9 +2,9 @@
->  
->  ifdef CONFIG_FUNCTION_TRACER
->  # Do not profile debug and lowlevel utilities
-> -CFLAGS_REMOVE_spinlock.o = -pg
-> -CFLAGS_REMOVE_time.o = -pg
-> -CFLAGS_REMOVE_irq.o = -pg
-> +CFLAGS_REMOVE_spinlock.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_time.o = $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_irq.o = $(CC_FLAGS_FTRACE)
->  endif
->  
->  # Make sure early boot has no stackprotector
-> -- 
-> 2.20.1
-> 
-> 
-> 
+Ok, bin it for the nonce.
 
--- 
-Josh
+	-Mike
 
