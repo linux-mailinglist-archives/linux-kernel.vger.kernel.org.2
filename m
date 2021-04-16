@@ -2,90 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB32361EBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13135361EB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:32:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242096AbhDPLbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 07:31:43 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:46832 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbhDPLbl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 07:31:41 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13GBV7jx106544;
-        Fri, 16 Apr 2021 06:31:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1618572667;
-        bh=IlU5JTHbgq4me6qjMbuUKqaDA5SuF5DOc/xXRU46LRk=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=HnMQBAeEMo/H52ClX9Jm9ZuhXkLBmMmH2ArgcWYHHEi0hVcxF8dujEpa1pIf+XUNj
-         Dq7URl8wU8NgoOxz+HXWWc1IX+Bv9NZfba9x7e80xdpUQFU67O7h7ucONQaYf6e5CB
-         EUrKq97Lra64A73eUfiqjroYflTgyhCg/n79GhmU=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13GBV7Uv122596
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 16 Apr 2021 06:31:07 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 16
- Apr 2021 06:31:06 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 16 Apr 2021 06:31:06 -0500
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13GBUwIv073816;
-        Fri, 16 Apr 2021 06:31:03 -0500
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>, <linux-can@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>
-Subject: [PATCH v5 1/3] phy: core: Reword the comment specifying the units of max_link_rate to be Mbps
-Date:   Fri, 16 Apr 2021 17:00:56 +0530
-Message-ID: <20210416113058.23815-2-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210416113058.23815-1-a-govindraju@ti.com>
-References: <20210416113058.23815-1-a-govindraju@ti.com>
+        id S239109AbhDPLbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 07:31:31 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:53072 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229719AbhDPLb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 07:31:29 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1lXMgb-0003Ov-Qt; Fri, 16 Apr 2021 21:30:59 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 16 Apr 2021 21:30:57 +1000
+Date:   Fri, 16 Apr 2021 21:30:57 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next 0/5] Remove redundant dev_err call
+Message-ID: <20210416113057.GG16633@gondor.apana.org.au>
+References: <20210407141819.32588-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407141819.32588-1-yuehaibing@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In some subsystems (eg. CAN, SPI), the max link rate supported can be less
-than 1 Mbps and if the unit for max_link_rate is Mbps then it can't be
-used. Therefore, leave the decision of units to be used, to the producer
-and consumer.
+On Wed, Apr 07, 2021 at 10:18:14PM +0800, YueHaibing wrote:
+> This patchset remove some redundant dev_err calls
+> 
+> YueHaibing (5):
+>   crypto: atmel-tdes - Remove redundant dev_err call in
+>     atmel_tdes_probe()
+>   crypto: img-hash - Remove redundant dev_err call in img_hash_probe()
+>   crypto: ux500 - Remove redundant dev_err calls
+>   crypto: keembay - Remove redundant dev_err calls
+>   crypto: ccree - Remove redundant dev_err call in init_cc_resources()
+> 
+>  drivers/crypto/atmel-tdes.c                   | 1 -
+>  drivers/crypto/ccree/cc_driver.c              | 4 +---
+>  drivers/crypto/img-hash.c                     | 3 ---
+>  drivers/crypto/keembay/keembay-ocs-aes-core.c | 4 +---
+>  drivers/crypto/keembay/keembay-ocs-hcu-core.c | 4 +---
+>  drivers/crypto/ux500/cryp/cryp_core.c         | 1 -
+>  drivers/crypto/ux500/hash/hash_core.c         | 1 -
+>  7 files changed, 3 insertions(+), 15 deletions(-)
 
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
----
- include/linux/phy/phy.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
-index 0ed434d02196..f3286f4cd306 100644
---- a/include/linux/phy/phy.h
-+++ b/include/linux/phy/phy.h
-@@ -125,7 +125,7 @@ struct phy_ops {
- /**
-  * struct phy_attrs - represents phy attributes
-  * @bus_width: Data path width implemented by PHY
-- * @max_link_rate: Maximum link rate supported by PHY (in Mbps)
-+ * @max_link_rate: Maximum link rate supported by PHY (units to be decided by producer and consumer)
-  * @mode: PHY mode
-  */
- struct phy_attrs {
+All applied.  Thanks.
 -- 
-2.17.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
