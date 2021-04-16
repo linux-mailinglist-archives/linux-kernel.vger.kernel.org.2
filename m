@@ -2,111 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB072361DEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 852C9361DFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235398AbhDPKaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 06:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbhDPKaP (ORCPT
+        id S239784AbhDPKc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 06:32:29 -0400
+Received: from mail-wm1-f53.google.com ([209.85.128.53]:39631 "EHLO
+        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238766AbhDPKc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 06:30:15 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44105C061574;
-        Fri, 16 Apr 2021 03:29:50 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id i10so8089096lfe.11;
-        Fri, 16 Apr 2021 03:29:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=H+WTwEnsnZdl0Xn6pZHhjD5+FhzVUFjaFGV4P9UC5Io=;
-        b=gU/7d4rj3ccFeJAYLjQWUhJFldBn5Vim/dpg226TJc5qD+/hboUZvsG7BsVCI5bcHA
-         h3LWmR8B1/NfB8DpKiz3GcPnBG+tAKZthn2gpVLdnc5LJxTSywpAHPGJI9ai/YpqLvSo
-         fmIQ2bCPylp079maHG2qgqxozQyroMQkCALgxGX6j+TiXNtOljo7rMZSNlon+LE50CIJ
-         HA6J37KpfC1a3QAFjpzMsdr1e7SpAyx3nYddxwv1Whp+AuM4nkYC96RSy8WMtEjW1tda
-         4Jt/EgIMUUv/HGYL1O4nCpLGCuJ8aXGruX3lvCecbP3MDlirowlJSY6kKq1Pm0jfktL7
-         HNyA==
+        Fri, 16 Apr 2021 06:32:27 -0400
+Received: by mail-wm1-f53.google.com with SMTP id i21-20020a05600c3555b029012eae2af5d4so4286440wmq.4;
+        Fri, 16 Apr 2021 03:32:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=H+WTwEnsnZdl0Xn6pZHhjD5+FhzVUFjaFGV4P9UC5Io=;
-        b=VYr/YnTW2YkHn+4TZ5PTHhMz7ui0jKEgRaYA+GKJqg+DrFq4FWkPSs5zC5kep9nW1r
-         rCjWrK89pp7wu02QMTFZK6YPGHNylFnh3D4yUcjkcQHKSq7XDtGHhQP8tNjWINBo4mHi
-         y+JvdR8PgH1s/APrLOkmzYwH33WGTszzktcve6bzcUPdRnyqUKrIBWt3Qt6hraKgrKLy
-         lV97es31z2mOtgN8je9Z0hege4BjoMSzvYETUoOrcTs5TZrgj0KHnonDUnEyuIsS1dOm
-         QTvJDSCyxovq1tkLxg/uAsI1TjVThpibkGG4G/Drepw4QKy9gsDd7IK5PSzzj6QDL29I
-         /LuQ==
-X-Gm-Message-State: AOAM530fjErwvsmSSaj7f6ry32mviJqRWkrSW1C/K4d0EvXd9J39dYEQ
-        5BzPrGGyLByGAQqEeC8r9v3CtDyEWuQ=
-X-Google-Smtp-Source: ABdhPJyViVvAEZ+cE1s1imtQjOXoo0Dj/nMYskeLBWn/9e5xIEoNEgnbnwLqkNoWeUxrSIPvT8d/xQ==
-X-Received: by 2002:ac2:442e:: with SMTP id w14mr2386463lfl.285.1618568988830;
-        Fri, 16 Apr 2021 03:29:48 -0700 (PDT)
-Received: from home.paul.comp (paulfertser.info. [2001:470:26:54b:226:9eff:fe70:80c2])
-        by smtp.gmail.com with ESMTPSA id c27sm956173lfv.149.2021.04.16.03.29.47
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yqhNqfjZUG4eC0lkMn87qOHykQGaWRjakY07kc6mVKw=;
+        b=gVznrD3krorP8fo6hwOv4a2IeibvemExqseX8YiirgAqQuUF9WoKmHB1QGG6lEQmjP
+         ELx7kwqXjo6VT4Cg/b9NKmiPBjKmTipWKeTI2GO2eXsyo55iyRGfh3cPb2aTpC2HXCpu
+         VXAWPb07YDBgkxuB/cduWVOsTQs+OqMegHZvJQwYzwKQuUgVQBHgYZmPiaCQFbJIYQj9
+         UIBNw9EhBuPnwElShCF3nWZBNyijJ/FKB/Ei4wk7I2qM4zW362xJMsaVJeqZvZVzKyu8
+         r5PW8oCc/Dr7QofpAAPqYyf4t9Qm2b+R7/AyAgGIWxUFwUKdQAjLmySAB0103KzsWyW3
+         QFSQ==
+X-Gm-Message-State: AOAM53142kJvOubzcvso74w7/bMK0Cs/NKkTQkgz+rkfsyx0j3oIqwql
+        ctZ3tiGb8jFI5sc5zSbkjl0=
+X-Google-Smtp-Source: ABdhPJxerASWRcbPAJybWqXWONU6R+tPGuulB/fKNbyDGI3tyQ4wQNWfaWet2Kd1JYysI92oOshy9A==
+X-Received: by 2002:a05:600c:40c4:: with SMTP id m4mr7468836wmh.25.1618569120641;
+        Fri, 16 Apr 2021 03:32:00 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id u8sm9631940wrr.42.2021.04.16.03.31.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 03:29:48 -0700 (PDT)
-Received: from home.paul.comp (home.paul.comp [IPv6:0:0:0:0:0:0:0:1])
-        by home.paul.comp (8.15.2/8.15.2/Debian-14~deb10u1) with ESMTP id 13GATjFR013669;
-        Fri, 16 Apr 2021 13:29:46 +0300
-Received: (from paul@localhost)
-        by home.paul.comp (8.15.2/8.15.2/Submit) id 13GATiB2013668;
-        Fri, 16 Apr 2021 13:29:44 +0300
-From:   Paul Fertser <fercerpav@gmail.com>
-To:     linux-hwmon@vger.kernel.org
-Cc:     Paul Fertser <fercerpav@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        Vadim Pasternak <vadimp@mellanox.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] hwmon: pmbus: pxe1610: don't bail out when not all pages are active
-Date:   Fri, 16 Apr 2021 13:29:04 +0300
-Message-Id: <20210416102926.13614-1-fercerpav@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <3612b78a-8e43-289b-ff0f-6c995995eeb0@roeck-us.net>
-References: <3612b78a-8e43-289b-ff0f-6c995995eeb0@roeck-us.net>
+        Fri, 16 Apr 2021 03:32:00 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 10:31:58 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Wei Liu <wei.liu@kernel.org>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Siddharth Chandrasekaran <sidcha@amazon.de>,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH RFC 01/22] asm-generic/hyperv: add
+ HV_STATUS_ACCESS_DENIED definition
+Message-ID: <20210416103158.34cxzspi5idzci5g@liuwe-devbox-debian-v2>
+References: <20210413122630.975617-1-vkuznets@redhat.com>
+ <20210413122630.975617-2-vkuznets@redhat.com>
+ <20210415141403.hftsza3ucrf262tq@liuwe-devbox-debian-v2>
+ <877dl38sw2.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877dl38sw2.fsf@vitty.brq.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Certain VRs might be configured to use only the first output channel and
-so the mode for the second will be 0. Handle this gracefully.
+On Thu, Apr 15, 2021 at 05:33:17PM +0200, Vitaly Kuznetsov wrote:
+> Wei Liu <wei.liu@kernel.org> writes:
+> 
+> > On Tue, Apr 13, 2021 at 02:26:09PM +0200, Vitaly Kuznetsov wrote:
+> >> From TLFSv6.0b, this status means: "The caller did not possess sufficient
+> >> access rights to perform the requested operation."
+> >> 
+> >> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> >
+> > This can be applied to hyperv-next right away. Let me know what you
+> > think.
+> >
+> 
+> In case there's no immediate need for this constant outside of KVM, I'd
+> suggest you just give Paolo your 'Acked-by' so I can carry the patch in
+> the series for the time being. This will eliminate the need to track
+> dependencies between hyperv-next and kvm-next.
 
-Fixes: b9fa0a3acfd8 ("hwmon: (pmbus/core) Add support for vid mode detection per page bases")
-Signed-off-by: Paul Fertser <fercerpav@gmail.com>
----
-
-Notes:
-    Changes for v2:
-      - Use more imperative style
-
- drivers/hwmon/pmbus/pxe1610.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/drivers/hwmon/pmbus/pxe1610.c b/drivers/hwmon/pmbus/pxe1610.c
-index da27ce34ee3f..eb4a06003b7f 100644
---- a/drivers/hwmon/pmbus/pxe1610.c
-+++ b/drivers/hwmon/pmbus/pxe1610.c
-@@ -41,6 +41,15 @@ static int pxe1610_identify(struct i2c_client *client,
- 				info->vrm_version[i] = vr13;
- 				break;
- 			default:
-+				/*
-+				 * If prior pages are available limit operation
-+				 * to them
-+				 */
-+				if (i != 0) {
-+					info->pages = i;
-+					return 0;
-+				}
-+
- 				return -ENODEV;
- 			}
- 		}
--- 
-2.20.1
-
+Acked-by: Wei Liu <wei.liu@kernel.org>
