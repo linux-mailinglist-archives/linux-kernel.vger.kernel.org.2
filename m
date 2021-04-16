@@ -2,313 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9F13626CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 147723626DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242417AbhDPRbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 13:31:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242365AbhDPRbB (ORCPT
+        id S242739AbhDPRct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 13:32:49 -0400
+Received: from mx315.baidu.com ([180.101.52.204]:39257 "EHLO
+        njjs-sys-mailin01.njjs.baidu.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236140AbhDPRcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 13:31:01 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE2DC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:30:36 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id t22so19695726pgu.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:30:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=q5wMI7x8R3NVGtWXjOVwyo6hiimn4/q3w0CIc2jmNSo=;
-        b=Z3/jKZUp1MokdrU6UgufTOWM2iZW3g+TEeyk6mG6eAJL8MH3sL2xRRsNxhzcnhJF+v
-         hxkdN3/IfpjNT7upq8oMWCmWqKtdiSywMe6CQAedn1ax71Ap71zKE58ovuIOHbq6yyl/
-         h1buwHVecsDPzxv/XOxdZZQOknN1dwQ8GElJV1iDtLoKaddtZ8CMe0UAFaItm34sXBH1
-         +CoKkizmcXszQ3kcobnJpKIrSqJu8zu25Bf7c94wvcSe81NY2zAVBi46S7jsdJxPZKnp
-         Rehzj/EbXo7Ih9UDQjWUkGiK/QQG/NCQ8tqEN7aGwclphMdv0ux9nZ3AX/jw3nwGF8ZI
-         QNug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=q5wMI7x8R3NVGtWXjOVwyo6hiimn4/q3w0CIc2jmNSo=;
-        b=jiwzxNyBAgzOrT1J/HDacHXN38yATKeW3/qjSx28iAaZdO40twvIGAEqdD+mP/XGIv
-         JbDFebGYGxcgKwwF7Yh2py9kKTCDoU4+yICmY+lSLxhInbZDeuJEr5ZmV6lNM43BNGUw
-         /QQqP7ZfS3t1NCMpuwfD8GA7NbNP6OQ6ky+PzOt1daSrqYbJU2/wxu8cBbQhRYLYU5Rc
-         Vq1jSCxhW6y4nWJmQzQ4AOWyBv6SLZ7DvF0OVeG4oRmRZiH76jQ/wy3n6XpPoDe7pGdE
-         E56f/n/mNVd5gqnu7KIODHm1tDSreuM8EIeFLQ1L50Xi7d1k6d6G/3KHYAsHFCPZbwc/
-         JlLw==
-X-Gm-Message-State: AOAM531mrqbo/FeLbkJcR3BM7/EKuPhTL/e9v569jy89yUZ6jdqEaXoi
-        cJf6TgbOyToTBXVeqZoopS08Ug==
-X-Google-Smtp-Source: ABdhPJw1W57hS0urdalMCM5IzHRZOUpaR8Ra7DL1Debf6bpFzc/MHd7aB7tcCvtEBTvchwXnldSgtA==
-X-Received: by 2002:a05:6a00:2301:b029:247:7208:1d6f with SMTP id h1-20020a056a002301b029024772081d6fmr8835755pfh.43.1618594235257;
-        Fri, 16 Apr 2021 10:30:35 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id 14sm5584986pgz.48.2021.04.16.10.30.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 10:30:34 -0700 (PDT)
-Date:   Fri, 16 Apr 2021 17:30:30 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jim Mattson <jmattson@google.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Peter Gonda <pgonda@google.com>,
-        David Hildenbrand <david@redhat.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFCv2 13/13] KVM: unmap guest memory using poisoned pages
-Message-ID: <YHnJtvXdrZE+AfM3@google.com>
-References: <20210416154106.23721-1-kirill.shutemov@linux.intel.com>
- <20210416154106.23721-14-kirill.shutemov@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416154106.23721-14-kirill.shutemov@linux.intel.com>
+        Fri, 16 Apr 2021 13:32:47 -0400
+X-Greylist: delayed 589 seconds by postgrey-1.27 at vger.kernel.org; Fri, 16 Apr 2021 13:32:47 EDT
+Received: from unknown.domain.tld (bjhw-sys-rpm015653cc5.bjhw.baidu.com [10.227.53.39])
+        by njjs-sys-mailin01.njjs.baidu.com (Postfix) with ESMTP id 7FF6A7F00049;
+        Sat, 17 Apr 2021 01:22:31 +0800 (CST)
+From:   chukaiping <chukaiping@baidu.com>
+To:     mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
+        akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v2] mm/compaction:let proactive compaction order configurable
+Date:   Sat, 17 Apr 2021 01:22:31 +0800
+Message-Id: <1618593751-32148-1-git-send-email-chukaiping@baidu.com>
+X-Mailer: git-send-email 1.7.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021, Kirill A. Shutemov wrote:
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 1b404e4d7dd8..f8183386abe7 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -8170,6 +8170,12 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
->  		kvm_sched_yield(vcpu->kvm, a0);
->  		ret = 0;
->  		break;
-> +	case KVM_HC_ENABLE_MEM_PROTECTED:
-> +		ret = kvm_protect_memory(vcpu->kvm);
-> +		break;
-> +	case KVM_HC_MEM_SHARE:
-> +		ret = kvm_share_memory(vcpu->kvm, a0, a1);
+Currently the proactive compaction order is fixed to
+COMPACTION_HPAGE_ORDER(9), it's OK in most machines with lots of
+normal 4KB memory, but it's too high for the machines with small
+normal memory, for example the machines with most memory configured
+as 1GB hugetlbfs huge pages. In these machines the max order of
+free pages is often below 9, and it's always below 9 even with hard
+compaction. This will lead to proactive compaction be triggered very
+frequently. In these machines we only care about order of 3 or 4.
+This patch export the oder to proc and let it configurable
+by user, and the default value is still COMPACTION_HPAGE_ORDER.
 
-Can you take a look at a proposed hypercall interface for SEV live migration and
-holler if you (or anyone else) thinks it will have extensibility issues?
+Signed-off-by: chukaiping <chukaiping@baidu.com>
+Reported-by: kernel test robot <lkp@intel.com>
+---
 
-https://lkml.kernel.org/r/93d7f2c2888315adc48905722574d89699edde33.1618498113.git.ashish.kalra@amd.com
+Changes in v2:
+    - fix the compile error in ia64 and powerpc
+    - change the hard coded max order number from 10 to MAX_ORDER - 1
 
-> +		break;
->  	default:
->  		ret = -KVM_ENOSYS;
->  		break;
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index fadaccb95a4c..cd2374802702 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -436,6 +436,8 @@ static inline int kvm_arch_vcpu_memslots_id(struct kvm_vcpu *vcpu)
->  }
->  #endif
->  
-> +#define KVM_NR_SHARED_RANGES 32
-> +
->  /*
->   * Note:
->   * memslots are not sorted by id anymore, please use id_to_memslot()
-> @@ -513,6 +515,10 @@ struct kvm {
->  	pid_t userspace_pid;
->  	unsigned int max_halt_poll_ns;
->  	u32 dirty_ring_size;
-> +	bool mem_protected;
-> +	void *id;
-> +	int nr_shared_ranges;
-> +	struct range shared_ranges[KVM_NR_SHARED_RANGES];
+ include/linux/compaction.h |    1 +
+ kernel/sysctl.c            |   11 +++++++++++
+ mm/compaction.c            |   14 +++++++++++---
+ 3 files changed, 23 insertions(+), 3 deletions(-)
 
-Hard no for me.  IMO, anything that requires KVM to track shared/pinned pages in
-a separate tree/array is non-starter.  More specific to TDX #MCs, KVM should not
-be the canonical reference for the state of a page.
-
->  };
->  
->  #define kvm_err(fmt, ...) \
-
-...
-
-> @@ -1868,11 +1874,17 @@ static int hva_to_pfn_slow(unsigned long addr, bool *async, bool write_fault,
->  		flags |= FOLL_WRITE;
->  	if (async)
->  		flags |= FOLL_NOWAIT;
-> +	if (kvm->mem_protected)
-> +		flags |= FOLL_ALLOW_POISONED;
-
-This is unsafe, only the flows that are mapping the PFN into the guest should
-use ALLOW_POISONED, e.g. __kvm_map_gfn() should fail on a poisoned page.
-
->  
->  	npages = get_user_pages_unlocked(addr, 1, &page, flags);
->  	if (npages != 1)
->  		return npages;
->  
-> +	if (IS_ENABLED(CONFIG_HAVE_KVM_PROTECTED_MEMORY) &&
-> +	    kvm->mem_protected && !kvm_page_allowed(kvm, page))
-> +		return -EHWPOISON;
-> +
->  	/* map read fault as writable if possible */
->  	if (unlikely(!write_fault) && writable) {
->  		struct page *wpage;
-
-...
-
-> @@ -2338,19 +2350,93 @@ static int next_segment(unsigned long len, int offset)
->  		return len;
->  }
->  
-> -static int __kvm_read_guest_page(struct kvm_memory_slot *slot, gfn_t gfn,
-> -				 void *data, int offset, int len)
-> +int copy_from_guest(struct kvm *kvm, void *data, unsigned long hva, int len)
-> +{
-> +	int offset = offset_in_page(hva);
-> +	struct page *page;
-> +	int npages, seg;
-> +	void *vaddr;
-> +
-> +	if (!IS_ENABLED(CONFIG_HAVE_KVM_PROTECTED_MEMORY) ||
-> +	    !kvm->mem_protected) {
-> +		return __copy_from_user(data, (void __user *)hva, len);
-> +	}
-> +
-> +	might_fault();
-> +	kasan_check_write(data, len);
-> +	check_object_size(data, len, false);
-> +
-> +	while ((seg = next_segment(len, offset)) != 0) {
-> +		npages = get_user_pages_unlocked(hva, 1, &page,
-> +						 FOLL_ALLOW_POISONED);
-> +		if (npages != 1)
-> +			return -EFAULT;
-> +
-> +		if (!kvm_page_allowed(kvm, page))
-> +			return -EFAULT;
-> +
-> +		vaddr = kmap_atomic(page);
-> +		memcpy(data, vaddr + offset, seg);
-> +		kunmap_atomic(vaddr);
-
-Why is KVM allowed to access a poisoned page?  I would expect shared pages to
-_not_ be poisoned.  Except for pure software emulation of SEV, KVM can't access
-guest private memory.
-
-> +
-> +		put_page(page);
-> +		len -= seg;
-> +		hva += seg;
-> +		data += seg;
-> +		offset = 0;
-> +	}
-> +
-> +	return 0;
-> +}
-
-...
-  
-> @@ -2693,6 +2775,41 @@ void kvm_vcpu_mark_page_dirty(struct kvm_vcpu *vcpu, gfn_t gfn)
->  }
->  EXPORT_SYMBOL_GPL(kvm_vcpu_mark_page_dirty);
->  
-> +int kvm_protect_memory(struct kvm *kvm)
-> +{
-> +	if (mmap_write_lock_killable(kvm->mm))
-> +		return -KVM_EINTR;
-> +
-> +	kvm->mem_protected = true;
-> +	kvm_arch_flush_shadow_all(kvm);
-> +	mmap_write_unlock(kvm->mm);
-> +
-> +	return 0;
-> +}
-> +
-> +int kvm_share_memory(struct kvm *kvm, unsigned long gfn, unsigned long npages)
-> +{
-> +	unsigned long end = gfn + npages;
-> +
-> +	if (!npages || !IS_ENABLED(CONFIG_HAVE_KVM_PROTECTED_MEMORY))
-> +		return 0;
-> +
-> +	__kvm_share_memory(kvm, gfn, end);
-> +
-> +	for (; gfn < end; gfn++) {
-> +		struct page *page = gfn_to_page(kvm, gfn);
-> +		unsigned long pfn = page_to_pfn(page);
-> +
-> +		if (page == KVM_ERR_PTR_BAD_PAGE)
-> +			continue;
-> +
-> +		kvm_share_pfn(kvm, pfn);
-
-I like the idea of using "special" PTE value to denote guest private memory,
-e.g. in this RFC, HWPOISON.  But I strongly dislike having KVM involved in the
-manipulation of the special flag/value.
-
-Today, userspace owns the gfn->hva translations and the kernel effectively owns
-the hva->pfn translations (with input from userspace).  KVM just connects the
-dots.
-
-Having KVM own the shared/private transitions means KVM is now part owner of the
-entire gfn->hva->pfn translation, i.e. KVM is effectively now a secondary MMU
-and a co-owner of the primary MMU.  This creates locking madness, e.g. KVM taking
-mmap_sem for write, mmu_lock under page lock, etc..., and also takes control away
-from userspace.  E.g. userspace strategy could be to use a separate backing/pool
-for shared memory and change the gfn->hva translation (memslots) in reaction to
-a shared/private conversion.  Automatically swizzling things in KVM takes away
-that option.
-
-IMO, KVM should be entirely "passive" in this process, e.g. the guest shares or
-protects memory, userspace calls into the kernel to change state, and the kernel
-manages the page tables to prevent bad actors.  KVM simply does the plumbing for
-the guest page tables.
-
-> +		put_page(page);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  void kvm_sigset_activate(struct kvm_vcpu *vcpu)
->  {
->  	if (!vcpu->sigset_active)
-> diff --git a/virt/kvm/mem_protected.c b/virt/kvm/mem_protected.c
-> new file mode 100644
-> index 000000000000..81882bd3232b
-> --- /dev/null
-> +++ b/virt/kvm/mem_protected.c
-> @@ -0,0 +1,110 @@
-> +#include <linux/kvm_host.h>
-> +#include <linux/mm.h>
-> +#include <linux/rmap.h>
-> +
-> +static DEFINE_XARRAY(kvm_pfn_map);
-> +
-> +static bool gfn_is_shared(struct kvm *kvm, unsigned long gfn)
-> +{
-> +	bool ret = false;
-> +	int i;
-> +
-> +	spin_lock(&kvm->mmu_lock);
-
-Taking mmu_lock for write in the page fault path is a non-starter.  The TDP MMU
-is being converted to support concurrent faults, which is a foundational pillar
-of its scalability.
-
-> +	for (i = 0; i < kvm->nr_shared_ranges; i++) {
-> +		if (gfn < kvm->shared_ranges[i].start)
-> +			continue;
-> +		if (gfn >= kvm->shared_ranges[i].end)
-> +			continue;
-> +
-> +		ret = true;
-> +		break;
-> +	}
-> +	spin_unlock(&kvm->mmu_lock);
-> +
-> +	return ret;
-> +}
+diff --git a/include/linux/compaction.h b/include/linux/compaction.h
+index ed4070e..151ccd1 100644
+--- a/include/linux/compaction.h
++++ b/include/linux/compaction.h
+@@ -83,6 +83,7 @@ static inline unsigned long compact_gap(unsigned int order)
+ #ifdef CONFIG_COMPACTION
+ extern int sysctl_compact_memory;
+ extern unsigned int sysctl_compaction_proactiveness;
++extern unsigned int sysctl_compaction_order;
+ extern int sysctl_compaction_handler(struct ctl_table *table, int write,
+ 			void *buffer, size_t *length, loff_t *ppos);
+ extern int sysctl_extfrag_threshold;
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 62fbd09..a607d4d 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -195,6 +195,8 @@ enum sysctl_writes_mode {
+ #endif /* CONFIG_SMP */
+ #endif /* CONFIG_SCHED_DEBUG */
+ 
++static int max_buddy_zone = MAX_ORDER - 1;
++
+ #ifdef CONFIG_COMPACTION
+ static int min_extfrag_threshold;
+ static int max_extfrag_threshold = 1000;
+@@ -2871,6 +2873,15 @@ int proc_do_static_key(struct ctl_table *table, int write,
+ 		.extra2		= &one_hundred,
+ 	},
+ 	{
++		.procname       = "compaction_order",
++		.data           = &sysctl_compaction_order,
++		.maxlen         = sizeof(sysctl_compaction_order),
++		.mode           = 0644,
++		.proc_handler   = proc_dointvec_minmax,
++		.extra1         = SYSCTL_ZERO,
++		.extra2         = &max_buddy_zone,
++	},
++	{
+ 		.procname	= "extfrag_threshold",
+ 		.data		= &sysctl_extfrag_threshold,
+ 		.maxlen		= sizeof(int),
+diff --git a/mm/compaction.c b/mm/compaction.c
+index e04f447..bfd1d5e 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -1925,16 +1925,16 @@ static bool kswapd_is_running(pg_data_t *pgdat)
+ 
+ /*
+  * A zone's fragmentation score is the external fragmentation wrt to the
+- * COMPACTION_HPAGE_ORDER. It returns a value in the range [0, 100].
++ * sysctl_compaction_order. It returns a value in the range [0, 100].
+  */
+ static unsigned int fragmentation_score_zone(struct zone *zone)
+ {
+-	return extfrag_for_order(zone, COMPACTION_HPAGE_ORDER);
++	return extfrag_for_order(zone, sysctl_compaction_order);
+ }
+ 
+ /*
+  * A weighted zone's fragmentation score is the external fragmentation
+- * wrt to the COMPACTION_HPAGE_ORDER scaled by the zone's size. It
++ * wrt to the sysctl_compaction_order scaled by the zone's size. It
+  * returns a value in the range [0, 100].
+  *
+  * The scaling factor ensures that proactive compaction focuses on larger
+@@ -2666,6 +2666,7 @@ static void compact_nodes(void)
+  * background. It takes values in the range [0, 100].
+  */
+ unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
++unsigned int __read_mostly sysctl_compaction_order;
+ 
+ /*
+  * This is the entry point for compacting all nodes via
+@@ -2958,6 +2959,13 @@ static int __init kcompactd_init(void)
+ 	int nid;
+ 	int ret;
+ 
++	/*
++	 * move the initialization of sysctl_compaction_order to here to
++	 * eliminate compile error in ia64 and powerpc architecture because
++	 * COMPACTION_HPAGE_ORDER is a variable in this architecture
++	 */
++	sysctl_compaction_order = COMPACTION_HPAGE_ORDER;
++
+ 	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
+ 					"mm/compaction:online",
+ 					kcompactd_cpu_online, NULL);
+-- 
+1.7.1
 
