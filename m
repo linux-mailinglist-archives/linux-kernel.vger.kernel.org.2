@@ -2,53 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1438E362998
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 22:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 785663629A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 22:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241620AbhDPUp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 16:45:59 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:59818 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235547AbhDPUpz (ORCPT
+        id S242900AbhDPUtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 16:49:20 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:57733 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234312AbhDPUtS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 16:45:55 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618605929;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=K2JEeuNPUyMaF6o07/3L9005UoABxWNubStaoEOOaDc=;
-        b=lS9DbNkN1RKXdl+p+df2IXF7OLFvHm6b9SsjgoIRvp29IRMmD7zI3Zl9641AXMGspwVDm4
-        N2h2rZ+cWzCVqXOaBwdSKwfUKnIHUSg5ChIv8w/arO6zQ/lVpowHKOrPr1xgoya4Tlw01x
-        ZXUHC2YW7nJRuV8jY0LLdK3BQNyJYyfvbpdB2ehEbhOm0MUhmaICrDxcZ8KpSKkYTl17Oz
-        Kr2Y8kt6btuccHd2V8lrtzE8BbJi81RJcSQuwuQS1L22hLtPOULQipc3kf+urn/jzNEtQz
-        kZbForC9hpqLtAHxKTmhQqy3/tBUi/udD1uEKh9t37FzEdJD/EDNMTGgqmMHIA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618605929;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=K2JEeuNPUyMaF6o07/3L9005UoABxWNubStaoEOOaDc=;
-        b=l+vCizgL80KtnSDWe00bSgpGzfv7X/advucn5PZLqCAR+9G5uKEOUnwakqZ9Q02YtYcz9J
-        Aaxo4pB40Y0WESAg==
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
-        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
-        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
-        ak@linux.intel.com, "Paul E. McKenney" <paulmck@kernel.org>,
-        Chris Mason <clm@fb.com>
-Subject: Re: [PATCH v8 clocksource 2/5] clocksource: Retry clock read if long delays detected
-In-Reply-To: <20210414043602.2812981-2-paulmck@kernel.org>
-Date:   Fri, 16 Apr 2021 22:45:28 +0200
-Message-ID: <871rbauffb.ffs@nanos.tec.linutronix.de>
+        Fri, 16 Apr 2021 16:49:18 -0400
+X-Originating-IP: 50.39.163.217
+Received: from localhost (unknown [50.39.163.217])
+        (Authenticated sender: josh@joshtriplett.org)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id EA15720002;
+        Fri, 16 Apr 2021 20:48:44 +0000 (UTC)
+Date:   Fri, 16 Apr 2021 13:48:42 -0700
+From:   Josh Triplett <josh@joshtriplett.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, ojeda@kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+Message-ID: <YHn4KqS2tTp2+G7V@localhost>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
+ <YHkSO3TUktyPs4Nz@boqun-archlinux>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHkSO3TUktyPs4Nz@boqun-archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13 2021 at 21:35, Paul E. McKenney wrote:
->  #define WATCHDOG_INTERVAL (HZ >> 1)
->  #define WATCHDOG_THRESHOLD (NSEC_PER_SEC >> 4)
+On Fri, Apr 16, 2021 at 12:27:39PM +0800, Boqun Feng wrote:
+> Josh, I think it's good if we can connect to the people working on Rust
+> memoryg model, I think the right person is Ralf Jung and the right place
+> is https://github.com/rust-lang/unsafe-code-guidelines, but you
+> cerntainly know better than me ;-) Or maybe we can use Rust-for-Linux or
+> linux-toolchains list to discuss.
 
-Didn't we discuss that the threshold is too big ?
+Ralf is definitely the right person to talk to. I don't think the UCG
+repository is the right place to start that discussion, though. For now,
+I'd suggest starting an email thread with Ralf and some C-and-kernel
+memory model folks (hi Paul!) to suss out the most important changes
+that would be needed.
 
+With my language team hat on, I'd *absolutely* like to see the Rust
+memory model support RCU-style deferred reclamation in a sound way,
+ideally with as little unsafe code as possible.
