@@ -2,54 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55EA3361AB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 09:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98578361AC0
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 09:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239694AbhDPHhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 03:37:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46750 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231666AbhDPHhM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 03:37:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 345E861153;
-        Fri, 16 Apr 2021 07:36:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618558607;
-        bh=l0GFKWQuALae0ij/Od9yu2a+hXe0aaMnMEBbL7OCjBQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kjc45SxEKUo3RUwa6SL07UUCLyPhLTHSPMwNMIIQnutA7pKG1PXO35Wlscqee5mGQ
-         nZAkd/DBlD8IvhLBokkkscnbgfXNOSDI5F7n6Yo35U9XIbEtcKaeLECQnWnuj2+mvn
-         NdYVwV9IUjavGY6bb2egJBuQUc7IdrliIX9i93hc=
-Date:   Fri, 16 Apr 2021 09:36:45 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     mike.leach@linaro.org, leo.yan@linaro.org, suzuki.poulose@arm.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/1] coresight: Fix for v5.12-rc7
-Message-ID: <YHk+jRT/164eCnWa@kroah.com>
-References: <20210415202404.945368-1-mathieu.poirier@linaro.org>
- <YHk0iDnfujBR3mTB@kroah.com>
+        id S239469AbhDPHm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 03:42:57 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:37685 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239124AbhDPHm4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 03:42:56 -0400
+X-Originating-IP: 93.61.96.190
+Received: from uno.localdomain (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id D166B1BF217;
+        Fri, 16 Apr 2021 07:42:28 +0000 (UTC)
+Date:   Fri, 16 Apr 2021 09:43:07 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/5] media: i2c: max9286: Use "maxim,gpio-poc" property
+Message-ID: <20210416074307.mtd7bcv3yj6zekt6@uno.localdomain>
+References: <20210414135128.180980-1-jacopo+renesas@jmondi.org>
+ <20210414135128.180980-3-jacopo+renesas@jmondi.org>
+ <YHeCOCkn1YvYR09E@pendragon.ideasonboard.com>
+ <20210415065848.xgisi5cpcxvnxzb4@uno.localdomain>
+ <YHiQfcHoyyvSwFsp@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YHk0iDnfujBR3mTB@kroah.com>
+In-Reply-To: <YHiQfcHoyyvSwFsp@pendragon.ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 08:54:00AM +0200, Greg KH wrote:
-> On Thu, Apr 15, 2021 at 02:24:03PM -0600, Mathieu Poirier wrote:
-> > Hi Greg,
-> > 
-> > Please consider this patch as a fix for v5.12-rc7.  Applies cleanly
-> > to your char-misc-linus branch (e49d033bddf5).
-> 
-> It's too late for 5.12-final, and really my tree should be closed for
-> 5.13-rc1 now.  I can sneak this in for the merge window, is that ok?
+Hi Laurent,
 
-I've just taken it for my 5.13-rc1 set of patches and added a cc: stable
-to get it backported to 5.12.1.
+On Thu, Apr 15, 2021 at 10:14:05PM +0300, Laurent Pinchart wrote:
+> > > > +		/* GPIO values default to high */
+> > > > +		priv->gpio_state = BIT(0) | BIT(1);
+> > >
+> > > Why is that ?
+> > >
+> > As the set/get functions of gpiochip use the gpio_state and I wanted
+> > to use the same functions for the internal gpio handling I used
+> > gpio_state in gpio_set(). My thinking was that in this way altering
+> > the gpio line would be visibile to gpio consumers... which we don't
+> > have as I won't register the gpio-controller :)
+>
+> My question was why they default to high here, when they default to low
+> when there's a gpio-controller property.
+>
 
-thanks,
+Oh, got it now... the two output lines are high by default :)
+Why do you say "they default to low when there's a gpio-controller
+property" ? When does that requirement come from ?
 
-greg k-h
+Thanks
+   j
+
+> > > > +		priv->regulator = NULL;
+> > >
+> > > As priv is initialized to 0, you can skip this.
+> >
+> > Yes, I liked it explicit as it is used as flag, but it is not
+> > required...
+> >
+> > > > +
+> > > > +		return 0;
+> > > > +	}
+> > > > +
+> > > > +	ret = max9286_register_gpio(priv);
+> > > > +	if (ret)
+> > > > +		return ret;
+> > > > +
+> > > > +	priv->regulator = devm_regulator_get(dev, "poc");
+> > > > +	if (IS_ERR(priv->regulator)) {
+> > > > +		if (PTR_ERR(priv->regulator) != -EPROBE_DEFER)
+> > > > +			dev_err(dev, "Unable to get PoC regulator (%ld)\n",
+> > > > +				PTR_ERR(priv->regulator));
+> > > > +		return PTR_ERR(priv->regulator);
+> > > > +	}
+> > > > +
+> > > > +	return 0;
+> > > > +}
+> > > > +
+> > > > +static int max9286_poc_enable(struct max9286_priv *priv, bool enable)
+> > > > +{
+> > > > +	int ret;
+> > > > +
+> > > > +	/* If "poc-gpio" is used, toggle the line and do not use regulator. */
+> > > > +	if (!priv->regulator)
+> > > > +		return max9286_gpio_set(priv, priv->gpio_poc,
+> > > > +					enable ^ priv->gpio_poc_flags);
+> > > > +
+> > > > +	/* Otherwise PoC is controlled using a regulator. */
+> > > > +	if (enable) {
+> > > > +		ret = regulator_enable(priv->regulator);
+> > > > +		if (ret < 0) {
+> > > > +			dev_err(&priv->client->dev, "Unable to turn PoC on\n");
+> > >
+> > > As error message when max9286_gpio_set() fails (at least in the enable
+> > > case) would be good too. Bonus points if there's a single dev_err()
+> > > call.
+> >
+> > I'll see how it looks like
+> >
+> > > > +			return ret;
+> > > > +		}
+> > > > +
+> > > > +		return 0;
+> > > > +	}
+> > > > +
+> > > > +	return regulator_disable(priv->regulator);
+> > > > +}
+> > > > +
+> > > >  static int max9286_init(struct device *dev)
+> > > >  {
+> > > >  	struct max9286_priv *priv;
+> > > > @@ -1078,17 +1158,14 @@ static int max9286_init(struct device *dev)
+> > > >  	client = to_i2c_client(dev);
+> > > >  	priv = i2c_get_clientdata(client);
+> > > >
+> > > > -	/* Enable the bus power. */
+> > > > -	ret = regulator_enable(priv->regulator);
+> > > > -	if (ret < 0) {
+> > > > -		dev_err(&client->dev, "Unable to turn PoC on\n");
+> > > > +	ret = max9286_poc_enable(priv, true);
+> > > > +	if (ret)
+> > > >  		return ret;
+> > > > -	}
+> > > >
+> > > >  	ret = max9286_setup(priv);
+> > > >  	if (ret) {
+> > > >  		dev_err(dev, "Unable to setup max9286\n");
+> > > > -		goto err_regulator;
+> > > > +		goto err_poc_disable;
+> > > >  	}
+> > > >
+> > > >  	/*
+> > > > @@ -1098,7 +1175,7 @@ static int max9286_init(struct device *dev)
+> > > >  	ret = max9286_v4l2_register(priv);
+> > > >  	if (ret) {
+> > > >  		dev_err(dev, "Failed to register with V4L2\n");
+> > > > -		goto err_regulator;
+> > > > +		goto err_poc_disable;
+> > > >  	}
+> > > >
+> > > >  	ret = max9286_i2c_mux_init(priv);
+> > > > @@ -1114,8 +1191,8 @@ static int max9286_init(struct device *dev)
+> > > >
+> > > >  err_v4l2_register:
+> > > >  	max9286_v4l2_unregister(priv);
+> > > > -err_regulator:
+> > > > -	regulator_disable(priv->regulator);
+> > > > +err_poc_disable:
+> > > > +	max9286_poc_enable(priv, false);
+> > > >
+> > > >  	return ret;
+> > > >  }
+> > > > @@ -1286,20 +1363,10 @@ static int max9286_probe(struct i2c_client *client)
+> > > >  	 */
+> > > >  	max9286_configure_i2c(priv, false);
+> > > >
+> > > > -	ret = max9286_register_gpio(priv);
+> > > > +	ret = max9286_parse_gpios(priv);
+> > > >  	if (ret)
+> > > >  		goto err_powerdown;
+> > > >
+> > > > -	priv->regulator = devm_regulator_get(&client->dev, "poc");
+> > > > -	if (IS_ERR(priv->regulator)) {
+> > > > -		if (PTR_ERR(priv->regulator) != -EPROBE_DEFER)
+> > > > -			dev_err(&client->dev,
+> > > > -				"Unable to get PoC regulator (%ld)\n",
+> > > > -				PTR_ERR(priv->regulator));
+> > > > -		ret = PTR_ERR(priv->regulator);
+> > > > -		goto err_powerdown;
+> > > > -	}
+> > > > -
+> > > >  	ret = max9286_parse_dt(priv);
+> > > >  	if (ret)
+> > > >  		goto err_powerdown;
+> > > > @@ -1326,7 +1393,7 @@ static int max9286_remove(struct i2c_client *client)
+> > > >
+> > > >  	max9286_v4l2_unregister(priv);
+> > > >
+> > > > -	regulator_disable(priv->regulator);
+> > > > +	max9286_poc_enable(priv, false);
+> > > >
+> > > >  	gpiod_set_value_cansleep(priv->gpiod_pwdn, 0);
+> > > >
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
