@@ -2,111 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B323619A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 08:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 090623619AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 08:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239034AbhDPGBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 02:01:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49254 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239023AbhDPGBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 02:01:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618552874; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CcxZJXIn600KKHi4Ii9DOy7PKS3jJv9awLf/Br93sWI=;
-        b=HOinFmk+SPJG00P75hIszwIpHFu1+7CmEVsIDNQN+nU6+l+AXkEDrqcjCN4Ox86I1hnp84
-        KGZ7CTwfby81UyAS/CP52O55HcwHjF7uNjPkdu95Mdrxa03xulABq+oBD5jqPSgidiTf1U
-        zKmtdmsiC9czyO3qleb2tnj/2OvDhKI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 239F2AFEA;
-        Fri, 16 Apr 2021 06:01:14 +0000 (UTC)
-Date:   Fri, 16 Apr 2021 08:01:08 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     guro@fb.com, hannes@cmpxchg.org, akpm@linux-foundation.org,
-        shakeelb@google.com, vdavydov.dev@gmail.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        duanxiongchun@bytedance.com
-Subject: Re: [PATCH v2 5/8] mm: memcontrol: rename lruvec_holds_page_lru_lock
- to page_matches_lruvec
-Message-ID: <YHkoJI12iADTAP69@dhcp22.suse.cz>
-References: <20210416051407.54878-1-songmuchun@bytedance.com>
- <20210416051407.54878-6-songmuchun@bytedance.com>
+        id S239023AbhDPGCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 02:02:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238753AbhDPGCL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 02:02:11 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F00CC061574;
+        Thu, 15 Apr 2021 23:01:47 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so24788442otb.7;
+        Thu, 15 Apr 2021 23:01:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=T4qHEDweevzaKk+/Z7BMChCVb0eziZLwAYSXDX8BD/Q=;
+        b=gBtm9gxXcMOgIUXbqx9Dano+Ty2CSlmYq4jCAqzvhb1V2WUOeAi2V50ECrk7ENP0Z3
+         xoeNLkQH/VzHK4wZrI4yAaNTOOKF29SCeox3B1+9t4oSKKPoOGjsm1ljGPj8qlZt67EZ
+         Tty/xNjM/PInqfCa9P//rKTFG6JUCZOsyyfmMMNPVctirKlbX8ob0u2PUcPoMqn+Ydzd
+         9Wga1CdYoNE/ROSpb/g6yj32I4nMh4KP4CSXn2pcu9Sj1/C0L4KFb5FbCFpLP/zY5bVX
+         FbDUD8iOC/JhlJrIqaqkwbvcK/vZo5m0BByG0QSg6vjdtJ2s/3Or9LGRdtBPQXrhdf58
+         ov8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=T4qHEDweevzaKk+/Z7BMChCVb0eziZLwAYSXDX8BD/Q=;
+        b=A3RG8aE7Nbn/LzFta0obYzhsK6cFVW9KQ1YnK2nLxsNb74/Tca+ioKtMWfyWLaOvVK
+         nTkwznXaklc80Z/P+XOF6RLyP2ygZKZqJw/iekZ340R8mpLo8qAKdpS6S0q57BXMBsfA
+         cIeHbcTcjQPilAYGmEPJ/EZHYszEyp9/whVjWMLB+67MvDGYN20J79rnQvpF9OT/cpOP
+         t7sI3CXKsT41UhxHryj163fa7KnzS9o8jmJIlRryD+bebLwtdgtmypmn4pQey+f/MyKS
+         CquG38R7UYCU/VI8NVDulEkmV6CojaAYkFF3q9tnlWH7Kr/0EP5YCZyt0IwJhaXW+jmr
+         75eg==
+X-Gm-Message-State: AOAM530JR3fL8Yg8ywms2Pz2GSyVXgtNh/aFsOfD7bTfXNYW9DdgQuXb
+        hxs+1RrGhf7oP4q2EJ/onZnqQvtxN0fFxiC/Z4A=
+X-Google-Smtp-Source: ABdhPJyKhobAkSPrF0bBE94D2OcYfN/PyYnWg2+xNPQ+k2AGgT/bPjH/3M5KcyXX5guT86pQU+koBSKDN7y/XH2ctlQ=
+X-Received: by 2002:a05:6830:15d0:: with SMTP id j16mr2509358otr.184.1618552906846;
+ Thu, 15 Apr 2021 23:01:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416051407.54878-6-songmuchun@bytedance.com>
+References: <20210415093519.1920877-1-hsinyi@chromium.org> <20210415093519.1920877-8-hsinyi@chromium.org>
+In-Reply-To: <20210415093519.1920877-8-hsinyi@chromium.org>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Fri, 16 Apr 2021 08:01:38 +0200
+Message-ID: <CAFqH_53t4Y-D2tvi7yySc04VeJrYQWBFtVE7ZipHvpwPN-Zy6g@mail.gmail.com>
+Subject: Re: [PATCH 8/8] arm64: dts: mt8183: Add kukui-jacuzzi-kenzo board
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Ben Ho <Ben.Ho@mediatek.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 16-04-21 13:14:04, Muchun Song wrote:
-> lruvec_holds_page_lru_lock() doesn't check anything about locking and is
-> used to check whether the page belongs to the lruvec. So rename it to
-> page_matches_lruvec().
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Hi Hsin-Yi,
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Thank you for your patch.
 
-Thanks
+Missatge de Hsin-Yi Wang <hsinyi@chromium.org> del dia dj., 15 d=E2=80=99ab=
+r.
+2021 a les 11:37:
+>
+> Kenzo is known as Acer Chromebook 311.
+>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
 > ---
->  include/linux/memcontrol.h | 7 +++----
->  mm/vmscan.c                | 2 +-
->  2 files changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 2fc728492c9b..40b0c31ea4ba 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -1492,8 +1492,7 @@ static inline void unlock_page_lruvec_irqrestore(struct lruvec *lruvec,
->  	spin_unlock_irqrestore(&lruvec->lru_lock, flags);
->  }
->  
-> -static inline bool lruvec_holds_page_lru_lock(struct page *page,
-> -					      struct lruvec *lruvec)
-> +static inline bool page_matches_lruvec(struct page *page, struct lruvec *lruvec)
->  {
->  	return lruvec_pgdat(lruvec) == page_pgdat(page) &&
->  	       lruvec_memcg(lruvec) == page_memcg(page);
-> @@ -1504,7 +1503,7 @@ static inline struct lruvec *relock_page_lruvec_irq(struct page *page,
->  		struct lruvec *locked_lruvec)
->  {
->  	if (locked_lruvec) {
-> -		if (lruvec_holds_page_lru_lock(page, locked_lruvec))
-> +		if (page_matches_lruvec(page, locked_lruvec))
->  			return locked_lruvec;
->  
->  		unlock_page_lruvec_irq(locked_lruvec);
-> @@ -1518,7 +1517,7 @@ static inline struct lruvec *relock_page_lruvec_irqsave(struct page *page,
->  		struct lruvec *locked_lruvec, unsigned long *flags)
->  {
->  	if (locked_lruvec) {
-> -		if (lruvec_holds_page_lru_lock(page, locked_lruvec))
-> +		if (page_matches_lruvec(page, locked_lruvec))
->  			return locked_lruvec;
->  
->  		unlock_page_lruvec_irqrestore(locked_lruvec, *flags);
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index bb8321026c0c..2bc5cf409958 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -2062,7 +2062,7 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
->  		 * All pages were isolated from the same lruvec (and isolation
->  		 * inhibits memcg migration).
->  		 */
-> -		VM_BUG_ON_PAGE(!lruvec_holds_page_lru_lock(page, lruvec), page);
-> +		VM_BUG_ON_PAGE(!page_matches_lruvec(page, lruvec), page);
->  		add_page_to_lru_list(page, lruvec);
->  		nr_pages = thp_nr_pages(page);
->  		nr_moved += nr_pages;
-> -- 
-> 2.11.0
-
--- 
-Michal Hocko
-SUSE Labs
+>  arch/arm64/boot/dts/mediatek/Makefile                |  1 +
+>  .../boot/dts/mediatek/mt8183-kukui-jacuzzi-kenzo.dts | 12 ++++++++++++
+>  2 files changed, 13 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-ken=
+zo.dts
+>
+> diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/=
+mediatek/Makefile
+> index b33d0bc58021..25770d83059d 100644
+> --- a/arch/arm64/boot/dts/mediatek/Makefile
+> +++ b/arch/arm64/boot/dts/mediatek/Makefile
+> @@ -17,6 +17,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt8183-kukui-jacuzzi-b=
+urnet.dtb
+>  dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt8183-kukui-jacuzzi-damu.dtb
+>  dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt8183-kukui-jacuzzi-juniper-sku16.dtb
+>  dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt8183-kukui-jacuzzi-kappa.dtb
+> +dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt8183-kukui-jacuzzi-kenzo.dtb
+>  dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt8183-kukui-jacuzzi-willow-sku0.dtb
+>  dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt8183-kukui-jacuzzi-willow-sku1.dtb
+>  dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt8183-kukui-kakadu.dtb
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-kenzo.dts =
+b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-kenzo.dts
+> new file mode 100644
+> index 000000000000..6f1aa692753a
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-kenzo.dts
+> @@ -0,0 +1,12 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> +/*
+> + * Copyright 2021 Google LLC
+> + */
+> +
+> +/dts-v1/;
+> +#include "mt8183-kukui-jacuzzi-juniper.dtsi"
+> +
+> +/ {
+> +       model =3D "Google kenzo sku17 board";
+> +       compatible =3D "google,juniper-sku17", "google,juniper", "mediate=
+k,mt8183";
+> +};
+> --
+> 2.31.1.295.g9ea45b61b8-goog
+>
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
