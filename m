@@ -2,215 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47001362AFF
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F04E362B02
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235122AbhDPWS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 18:18:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230056AbhDPWS4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 18:18:56 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C061C061574;
-        Fri, 16 Apr 2021 15:18:31 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7B55C51E;
-        Sat, 17 Apr 2021 00:18:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1618611507;
-        bh=IuCnAAJS5v6qKyuXjBEuQoVksOGIAcJ5BWO3jyoj2DA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iP5IfDiRuTia/H1IW666sZLLlxVIs388+xasJ/C7VoWAN6txU3k2gyxSflbo6ZSRz
-         C2JPY3mYmNXTievNnInM0detPIu1xst2hkHoqGZHCLOu+xNHJ+NdC4TfT1ckvixql5
-         bY7GJmpB1gQMb6YTNjoVp8jQtrLCZ+7kaZG5JuPE=
-Date:   Sat, 17 Apr 2021 01:18:25 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo@jmondi.org>
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/5] media: i2c: max9286: Use "maxim,gpio-poc" property
-Message-ID: <YHoNMXQWd5XyeI/I@pendragon.ideasonboard.com>
-References: <20210414135128.180980-1-jacopo+renesas@jmondi.org>
- <20210414135128.180980-3-jacopo+renesas@jmondi.org>
- <YHeCOCkn1YvYR09E@pendragon.ideasonboard.com>
- <20210415065848.xgisi5cpcxvnxzb4@uno.localdomain>
- <YHiQfcHoyyvSwFsp@pendragon.ideasonboard.com>
- <20210416074307.mtd7bcv3yj6zekt6@uno.localdomain>
+        id S235258AbhDPWU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 18:20:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48180 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231510AbhDPWUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 18:20:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D71E613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 22:20:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618611629;
+        bh=cw+o8cfEuCo6PQdHXEsdN0LoqovEdVoWI1b2P0UF/Og=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jxKsP0Fr9kLKdD37KZFr2gu8uqJ4eMaAup4AizAaAIdv9BKvzqPDEgdgbRBqum7zC
+         lWKQeigSIzxGjTJHEiwDs9xOo/IJUbEib4DA3B84aEQ5lLth2jUfE9lUj4h8QdAD1E
+         9Z2obm0iE+pEWoFyv7etI8gGBQtinezT/unZfPuCAuFvRIfPS4bKZ7yN9BeXLOXjNl
+         lVBK12qMeYLlfofHvBxBmpPC1+zZX59BpJkWseUTGLjyQuWLncZGNvRiMC4y2Qys4I
+         lhxVTpq9Aa87Zkp9Jcnq1KIFqAcjpNd7gurH56WiNZd/0MotMjImyhskUQyILS3pOl
+         CQiDJVampjCng==
+Received: by mail-ed1-f51.google.com with SMTP id w18so34081898edc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 15:20:29 -0700 (PDT)
+X-Gm-Message-State: AOAM531PLaZ6BNfptW3V3jSgRBcOtDtfmcpS9+OK/xww1M8PBrcxqoY9
+        Gr9kofvlmXT2ePT9rj2rHEYGl3Z1krF28BnSYNMQsw==
+X-Google-Smtp-Source: ABdhPJwrhXiYlU+qO4b6VCJY/F1yFSIFXZAHioVtpExmGxj4TZL8vcEumj5aGB0McOtELfNfByc/+fwJgoYDXb5XsJs=
+X-Received: by 2002:a50:f395:: with SMTP id g21mr12764633edm.238.1618611628139;
+ Fri, 16 Apr 2021 15:20:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210416074307.mtd7bcv3yj6zekt6@uno.localdomain>
+References: <20210416203844.3803177-1-samitolvanen@google.com>
+ <20210416203844.3803177-6-samitolvanen@google.com> <20210416211855.GD22348@zn.tnic>
+ <CABCJKud8TvzhcjHCpsrtCJ4B50ZUfaL48F42EhZ2zWKLteAc0Q@mail.gmail.com>
+ <20210416220251.GE22348@zn.tnic> <CALCETrVTtKqD6fonUmT_qr0HJ0X9TWzLGq-wpm+A7XKyjn3W5g@mail.gmail.com>
+ <20210416221414.GF22348@zn.tnic>
+In-Reply-To: <20210416221414.GF22348@zn.tnic>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 16 Apr 2021 15:20:17 -0700
+X-Gmail-Original-Message-ID: <CALCETrUo+tR+YmfoBPWV9z_7QhU74=7tmCBD_zsfa24ZxNvfxg@mail.gmail.com>
+Message-ID: <CALCETrUo+tR+YmfoBPWV9z_7QhU74=7tmCBD_zsfa24ZxNvfxg@mail.gmail.com>
+Subject: Re: [PATCH 05/15] x86: Implement function_nocfi
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
-
-On Fri, Apr 16, 2021 at 09:43:07AM +0200, Jacopo Mondi wrote:
-> On Thu, Apr 15, 2021 at 10:14:05PM +0300, Laurent Pinchart wrote:
-> > > > > +		/* GPIO values default to high */
-> > > > > +		priv->gpio_state = BIT(0) | BIT(1);
-> > > >
-> > > > Why is that ?
-> > > >
-> > > As the set/get functions of gpiochip use the gpio_state and I wanted
-> > > to use the same functions for the internal gpio handling I used
-> > > gpio_state in gpio_set(). My thinking was that in this way altering
-> > > the gpio line would be visibile to gpio consumers... which we don't
-> > > have as I won't register the gpio-controller :)
+On Fri, Apr 16, 2021 at 3:14 PM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Fri, Apr 16, 2021 at 03:06:17PM -0700, Andy Lutomirski wrote:
+> > On Fri, Apr 16, 2021 at 3:03 PM Borislav Petkov <bp@alien8.de> wrote:
+> > >
+> > > On Fri, Apr 16, 2021 at 02:49:23PM -0700, Sami Tolvanen wrote:
+> > > > __nocfi only disables CFI checking in a function, the compiler still
+> > > > changes function addresses to point to the CFI jump table, which is
+> > > > why we need function_nocfi().
+> > >
+> > > So call it __func_addr() or get_function_addr() or so, so that at least
+> > > it is clear what this does.
+> > >
 > >
-> > My question was why they default to high here, when they default to low
-> > when there's a gpio-controller property.
-> 
-> Oh, got it now... the two output lines are high by default :)
-> Why do you say "they default to low when there's a gpio-controller
-> property" ? When does that requirement come from ?
+> > This seems backwards to me.  If I do:
+> >
+> > extern void foo(some signature);
+> >
+> > then I would, perhaps naively, expect foo to be the actual symbol that
+>
+> I'm just reading the patch:
+>
+> ... The function_nocfi macro always returns the address of the
+> + * actual function instead.
+> + */
+> +#define function_nocfi(x) ({                                           \
+> +       void *addr;                                                     \
+> +       asm("leaq " __stringify(x) "(%%rip), %0\n\t" : "=r" (addr));    \
+> +       addr;
+>
+> so it does a rip-relative load into a reg which ends up with the function
+> address.
 
-My bad, I thought they were set to 0 in that case, but they're not.
+This is horrible.
 
-How about moving this initialization from max9286_register_gpio() to the
-beginning of this function, as it's shared by both cases ?
+We made a mistake adapting the kernel to GCC's nonsensical stack
+protector ABI, especially on 32-bit, instead of making GCC fix it.
+Let's not repeat this with clang please.
 
-> > > > > +		priv->regulator = NULL;
-> > > >
-> > > > As priv is initialized to 0, you can skip this.
-> > >
-> > > Yes, I liked it explicit as it is used as flag, but it is not
-> > > required...
-> > >
-> > > > > +
-> > > > > +		return 0;
-> > > > > +	}
-> > > > > +
-> > > > > +	ret = max9286_register_gpio(priv);
-> > > > > +	if (ret)
-> > > > > +		return ret;
-> > > > > +
-> > > > > +	priv->regulator = devm_regulator_get(dev, "poc");
-> > > > > +	if (IS_ERR(priv->regulator)) {
-> > > > > +		if (PTR_ERR(priv->regulator) != -EPROBE_DEFER)
-> > > > > +			dev_err(dev, "Unable to get PoC regulator (%ld)\n",
-> > > > > +				PTR_ERR(priv->regulator));
-> > > > > +		return PTR_ERR(priv->regulator);
-> > > > > +	}
-> > > > > +
-> > > > > +	return 0;
-> > > > > +}
-> > > > > +
-> > > > > +static int max9286_poc_enable(struct max9286_priv *priv, bool enable)
-> > > > > +{
-> > > > > +	int ret;
-> > > > > +
-> > > > > +	/* If "poc-gpio" is used, toggle the line and do not use regulator. */
-> > > > > +	if (!priv->regulator)
-> > > > > +		return max9286_gpio_set(priv, priv->gpio_poc,
-> > > > > +					enable ^ priv->gpio_poc_flags);
-> > > > > +
-> > > > > +	/* Otherwise PoC is controlled using a regulator. */
-> > > > > +	if (enable) {
-> > > > > +		ret = regulator_enable(priv->regulator);
-> > > > > +		if (ret < 0) {
-> > > > > +			dev_err(&priv->client->dev, "Unable to turn PoC on\n");
-> > > >
-> > > > As error message when max9286_gpio_set() fails (at least in the enable
-> > > > case) would be good too. Bonus points if there's a single dev_err()
-> > > > call.
-> > >
-> > > I'll see how it looks like
-> > >
-> > > > > +			return ret;
-> > > > > +		}
-> > > > > +
-> > > > > +		return 0;
-> > > > > +	}
-> > > > > +
-> > > > > +	return regulator_disable(priv->regulator);
-> > > > > +}
-> > > > > +
-> > > > >  static int max9286_init(struct device *dev)
-> > > > >  {
-> > > > >  	struct max9286_priv *priv;
-> > > > > @@ -1078,17 +1158,14 @@ static int max9286_init(struct device *dev)
-> > > > >  	client = to_i2c_client(dev);
-> > > > >  	priv = i2c_get_clientdata(client);
-> > > > >
-> > > > > -	/* Enable the bus power. */
-> > > > > -	ret = regulator_enable(priv->regulator);
-> > > > > -	if (ret < 0) {
-> > > > > -		dev_err(&client->dev, "Unable to turn PoC on\n");
-> > > > > +	ret = max9286_poc_enable(priv, true);
-> > > > > +	if (ret)
-> > > > >  		return ret;
-> > > > > -	}
-> > > > >
-> > > > >  	ret = max9286_setup(priv);
-> > > > >  	if (ret) {
-> > > > >  		dev_err(dev, "Unable to setup max9286\n");
-> > > > > -		goto err_regulator;
-> > > > > +		goto err_poc_disable;
-> > > > >  	}
-> > > > >
-> > > > >  	/*
-> > > > > @@ -1098,7 +1175,7 @@ static int max9286_init(struct device *dev)
-> > > > >  	ret = max9286_v4l2_register(priv);
-> > > > >  	if (ret) {
-> > > > >  		dev_err(dev, "Failed to register with V4L2\n");
-> > > > > -		goto err_regulator;
-> > > > > +		goto err_poc_disable;
-> > > > >  	}
-> > > > >
-> > > > >  	ret = max9286_i2c_mux_init(priv);
-> > > > > @@ -1114,8 +1191,8 @@ static int max9286_init(struct device *dev)
-> > > > >
-> > > > >  err_v4l2_register:
-> > > > >  	max9286_v4l2_unregister(priv);
-> > > > > -err_regulator:
-> > > > > -	regulator_disable(priv->regulator);
-> > > > > +err_poc_disable:
-> > > > > +	max9286_poc_enable(priv, false);
-> > > > >
-> > > > >  	return ret;
-> > > > >  }
-> > > > > @@ -1286,20 +1363,10 @@ static int max9286_probe(struct i2c_client *client)
-> > > > >  	 */
-> > > > >  	max9286_configure_i2c(priv, false);
-> > > > >
-> > > > > -	ret = max9286_register_gpio(priv);
-> > > > > +	ret = max9286_parse_gpios(priv);
-> > > > >  	if (ret)
-> > > > >  		goto err_powerdown;
-> > > > >
-> > > > > -	priv->regulator = devm_regulator_get(&client->dev, "poc");
-> > > > > -	if (IS_ERR(priv->regulator)) {
-> > > > > -		if (PTR_ERR(priv->regulator) != -EPROBE_DEFER)
-> > > > > -			dev_err(&client->dev,
-> > > > > -				"Unable to get PoC regulator (%ld)\n",
-> > > > > -				PTR_ERR(priv->regulator));
-> > > > > -		ret = PTR_ERR(priv->regulator);
-> > > > > -		goto err_powerdown;
-> > > > > -	}
-> > > > > -
-> > > > >  	ret = max9286_parse_dt(priv);
-> > > > >  	if (ret)
-> > > > >  		goto err_powerdown;
-> > > > > @@ -1326,7 +1393,7 @@ static int max9286_remove(struct i2c_client *client)
-> > > > >
-> > > > >  	max9286_v4l2_unregister(priv);
-> > > > >
-> > > > > -	regulator_disable(priv->regulator);
-> > > > > +	max9286_poc_enable(priv, false);
-> > > > >
-> > > > >  	gpiod_set_value_cansleep(priv->gpiod_pwdn, 0);
-> > > > >
+Sami, I'm assuming that:
 
--- 
-Regards,
+extern void func(void);
 
-Laurent Pinchart
+results in anything that takes a pointer to func getting a pointer to
+some special magic descriptor instead of to func, so that:
+
+void (*ptr)(void);
+ptr = func;
+ptr();
+
+does the right thing.  Then void (*)(void) is no longer a raw pointer.  Fine.
+
+But obviously there is code that needs real function pointers.  How
+about making this a first-class feature, or at least hacking around it
+more cleanly.  For example, what does this do:
+
+char entry_whatever[];
+wrmsrl(..., (unsigned long)entry_whatever);
+
+or, alternatively,
+
+extern void func() __attribute__((nocfi));
+
+void (*ptr)(void);
+ptr = func;  /* probably fails to compile -- invalid conversion */
+
+(unsigned long)func /* returns the actual pointer */
+
+func();  /* works like normal */
+
+And maybe allow this too:
+
+void (*ptr)(void) __attribute__((nocfi);
+ptr = func;
+ptr();  /* emits an unchecked call.  maybe warns, too.  anyone who
+does this needs to be extremely careful. */
+
+--Andy
