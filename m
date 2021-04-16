@@ -2,98 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F969361F95
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CF6361F9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243221AbhDPMPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 08:15:02 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:18464 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232130AbhDPMPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 08:15:01 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618575277; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=TE0UfCCs0t5M7uKrBfemPgC5lI7MMceAzvf4wl8pkcU=;
- b=xQqMj957nF3gaVwobgGMJxmb33SPZZRWo36+eC6BlxYQSNETRoo9fa+oWFNO8IrHFl1nLe5t
- TWzjuuq76H0iTOMIcDm9j+sLLQzsP5ISc3mlILPFC8uYQBXRErWfl38M1xGKbPX0HsW5nvje
- 8Q/K2bQnoXv01JVDowrHfpLEqMc=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 60797fa0853c0a2c46ae3822 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Apr 2021 12:14:24
- GMT
-Sender: taozha=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B9501C43461; Fri, 16 Apr 2021 12:14:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S243314AbhDPMQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 08:16:10 -0400
+Received: from mo-csw1514.securemx.jp ([210.130.202.153]:40234 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232130AbhDPMQJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 08:16:09 -0400
+Received: by mo-csw.securemx.jp (mx-mo-csw1514) id 13GCFQJd029781; Fri, 16 Apr 2021 21:15:26 +0900
+X-Iguazu-Qid: 34trSOSPthsRJckbCs
+X-Iguazu-QSIG: v=2; s=0; t=1618575326; q=34trSOSPthsRJckbCs; m=7HPJQplQYDVdOr5qiRc8LTUir5zBahKRvEqdYSEGzxQ=
+Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
+        by relay.securemx.jp (mx-mr1512) id 13GCFPEU030896
+        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 16 Apr 2021 21:15:25 +0900
+Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: taozha)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F2FB1C433C6;
-        Fri, 16 Apr 2021 12:14:22 +0000 (UTC)
+        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id 0C1031000DC;
+        Fri, 16 Apr 2021 21:15:25 +0900 (JST)
+Received: from hop001.toshiba.co.jp ([133.199.164.63])
+        by enc01.toshiba.co.jp  with ESMTP id 13GCFOLS011662;
+        Fri, 16 Apr 2021 21:15:24 +0900
+Date:   Fri, 16 Apr 2021 21:15:23 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        linux-pwm@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
+        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] pwm: visconti: Add Toshiba Visconti SoC PWM
+ support
+X-TSB-HOP: ON
+Message-ID: <20210416121523.c34trzsrlcjuzirl@toshiba.co.jp>
+References: <20210409230837.1919744-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <20210409230837.1919744-3-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <20210410135321.oissremqropvrpd3@pengutronix.de>
+ <20210412025536.i5chpp6sighunvfx@toshiba.co.jp>
+ <20210412070232.6q3cgqvuj53p4cmi@pengutronix.de>
+ <20210416080721.oa7xdvu22w2b2rkf@toshiba.co.jp>
+ <20210416094426.x4gyw3drp2fcwczs@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 16 Apr 2021 20:14:22 +0800
-From:   taozha@codeaurora.org
-To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Tingwei Zhang <tingwei@codeaurora.org>,
-        Mao Jinlong <jinlmao@codeaurora.org>,
-        Yuanfang Zhang <zhangyuanfang@codeaurora.org>
-Subject: Re: [PATCH v1 1/2] coresight: Add support for device names
-In-Reply-To: <87im4mfpds.fsf@ashishki-desk.ger.corp.intel.com>
-References: <1618560476-28908-1-git-send-email-taozha@codeaurora.org>
- <1618560476-28908-2-git-send-email-taozha@codeaurora.org>
- <87im4mfpds.fsf@ashishki-desk.ger.corp.intel.com>
-Message-ID: <fbadb638e161e62d38ed2ba905da7340@codeaurora.org>
-X-Sender: taozha@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210416094426.x4gyw3drp2fcwczs@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-16 19:19, Alexander Shishkin wrote:
-> Tao Zhang <taozha@codeaurora.org> writes:
-> 
->> diff --git a/drivers/hwtracing/coresight/coresight-core.c 
->> b/drivers/hwtracing/coresight/coresight-core.c
->> index 4ba801d..b79c726 100644
->> --- a/drivers/hwtracing/coresight/coresight-core.c
->> +++ b/drivers/hwtracing/coresight/coresight-core.c
->> @@ -1640,6 +1640,12 @@ char *coresight_alloc_device_name(struct 
->> coresight_dev_list *dict,
->>  	int idx;
->>  	char *name = NULL;
->>  	struct fwnode_handle **list;
->> +	struct device_node *node = dev->of_node;
->> +
->> +	if (!node) {
->> +		if (!of_property_read_string(node, "coresight-name", &name))
-> 
-> Ok, I'm not a device tree expert, but I'm pretty sure the above is a
-> nop.
-> 
-> Regards,
-> --
-> Alex
-You are right. The pointer check code here is wrong, I will correct it 
-on the V2 version.
+Hi Uwe,
 
-Tao
+Thanks for your comment.
+
+On Fri, Apr 16, 2021 at 11:44:26AM +0200, Uwe Kleine-König wrote:
+> Hello Nobuhiro,
+> 
+> On Fri, Apr 16, 2021 at 05:07:21PM +0900, Nobuhiro Iwamatsu wrote:
+> > On Mon, Apr 12, 2021 at 09:02:32AM +0200, Uwe Kleine-König wrote:
+> > > On Mon, Apr 12, 2021 at 11:55:36AM +0900, Nobuhiro Iwamatsu wrote:
+> > > > On Sat, Apr 10, 2021 at 03:53:21PM +0200, Uwe Kleine-König wrote:
+> > > > > Can you please put a paragraph analogous to the one in pwm-sifive in the
+> > > > > same format. This simplified keeping an overview about the oddities of
+> > > > > the various supported chips.
+> > > > 
+> > > > OK, I will check pwm-sifive's, and add.
+> > 
+> > I will add the following :
+> > 
+> >  * Limitations:
+> >  * - PIPGM_PWMC is a 2-bit divider (00: 1, 01: 2, 10: 4, 11: 8) for the input
+> >  *   clock running at 1 MHz.
+> 
+> I would strip that to:
+> 
+>  - Fixed input clock running at 1 MHz
+> 
+
+OK, I will update.
+
+> >  * - When the settings of the PWM are modified, the new values are shadowed
+> >  *   in hardware until the PIPGM_PCSR register is written and the currently
+> >  *   running period is completed. This way the hardware switches atomically
+> >  *   from the old setting to the new.
+> >  * - Disabling the hardware completes the currently running period and keeps
+> >  *   the output at low level at all times.
+> 
+> This looks fine.
+>  
+> > > For me the critical (and only) difference between "off" and
+> > > "duty cycle = 0" is that when a new configuration is to be applied. In
+> > > the "off" state a new period can (and should) start immediately, while
+> > > with "duty_cycle = 0" the rising edge should be delayed until the
+> > > currently running period is over.[1]
+> > > 
+> > > So the thing to do here (IMHO) is:
+> > > 
+> > > Iff with PIPGM_PCSR = 0 configuring a new setting (that is finalized
+> > > with writing a non-zero value to PIPGM_PCSR) completes the currently
+> > > running period, then always assume the PWM as enabled.
+> > 
+> > Yes, this device works that way.
+> 
+> OK, then please use
+> 
+> 	state->enabled = true
+> 
+> unconditionally in visconti_pwm_get_state().
+> 
+
+Please let me check.
+If I unconditionally add 'state->enabled = true' to visconti_pwm_get_state(),
+state->enabled is set to true because visconti_pwm_get_state() is called when
+the device is created (this is when I write the device number to the export of
+/sys/class/pwm/pwmchip0 ).
+And since PIPGM_PCSR is 0 in this state, the pulse by PWM is not output.
+However, I think this means that the device is working as this driver.
+Is this correct?
+
+> Best regards
+> Uwe
+> 
+
+Best regards,
+  Nobuhiro
