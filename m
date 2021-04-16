@@ -2,144 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7273618F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 06:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0AE3618F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 06:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237511AbhDPEfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 00:35:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234735AbhDPEfJ (ORCPT
+        id S238156AbhDPEfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 00:35:44 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:55063 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237767AbhDPEfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 00:35:09 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90CE2C061574;
-        Thu, 15 Apr 2021 21:34:45 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id s16so21212373iog.9;
-        Thu, 15 Apr 2021 21:34:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Wj0LmQcX4T3RD/LCUSwlZuN9U0k4EZ8z0GPjE5eqJ+c=;
-        b=SeofBIy31lvaGo4ip2O0oyx2LsxzePZb/9lOB5C9/D+k6qqrK4+LfDdJT4Mtoj5Rw9
-         QPXKrV/lFBRuv/SJ5LnbvZBDIK6pm+jc6J4mvF8ccSsB6avWE0IHq6EbS2DvYJZXC/jm
-         i0ta7IKIkkgq/MX5hpCxGaA7mixRoz0T2cZ8dMDtx5RrFgFSteRq5nns1W2HlOoVv2fG
-         LB/cwCQ6SO0DLfWqoHzZbzqBqZwM5zF+snorjJSGY8KpJBvNQ+cni0oeEJRFHot9ovle
-         tlVN1aCCYLMa49lJ3RxGzhSTGdpbFQmRearzZmcvCGKONJuOWN4MllJizUsi3PIGCLax
-         i39A==
+        Fri, 16 Apr 2021 00:35:41 -0400
+Received: by mail-il1-f200.google.com with SMTP id a1-20020a92c5410000b02901689a5cd3bdso5766511ilj.21
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 21:35:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Wj0LmQcX4T3RD/LCUSwlZuN9U0k4EZ8z0GPjE5eqJ+c=;
-        b=K+jVVmVxfyp05eJleOor6B8jK2ktteBzMLamMu6L9QVW0R9jgAeWSyQqwVSi7syrFk
-         ibgg8oJlZ6Q7zzdV8MS0/dh/7rqoRnkvMkgAqUfg/WU/wzbjPsbTGi9LZl6WBDGwEHR9
-         20UId57Av2AXdG7lJzx815VvVJpBlew6RO98KSg92GR4gD9iWd4xtOw6BrCI8ym6nc+F
-         tFsj+tIma00YyIHuwf8o9b2Q4B+3n2bnlyGrZcfwlA62U3pQgfYqz1y4tSH4qKO1qVve
-         Va3ED4gjlfkHgaEDEszXi1pM5Fiz2Uic+NFBS4nj7T3kXogf7bQx5x+Rbe8+7hiJ6bkr
-         Xx5g==
-X-Gm-Message-State: AOAM530xj1FshBgqnlt7A2g8b6Qn7Ncb9XDMUi8P6+BvMnvnB59AX9Wj
-        l68xtftIuXVWlb0OhAK1ZLZV2yNd5RNOH2qUySI=
-X-Google-Smtp-Source: ABdhPJytOPUOKUWf/eTtPMePF5L6DxvqY6VglSQ6/SSxDKWH2L5q4cw/KTLhsa10kl+UaBOEIqA4+If5fE/i8rTFXOI=
-X-Received: by 2002:a5d:8ad2:: with SMTP id e18mr2068967iot.51.1618547685088;
- Thu, 15 Apr 2021 21:34:45 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=vQTgohi03z5tK7Cg1hw3ZJisST4UH/MCqTpc+mpUM3w=;
+        b=Fsw1WBJOXsOdvxZi/pXb+r65wPqUyPJtLNfWNHe5SXYmINXqPyKItJKFLfrB8r69X2
+         +ls2rgqKxnvp6XMrgC/t65Ewt7JThi4hHvUsEl6DlKJ9Kzxy7mP96B9MPm0NXXrdxn4i
+         skY8bMrgwIyiAwvHsjZ2cm+tarbe2uPxPTFdmVtYS4sI13daBtOzuqtzFKpn4GlPr8xv
+         zHpXkoH/dtC5qMjOseeFt9z9ks566Fc2Fc3/kAzrFafFV+HN7eGx/8+Yiu2FC28vuuOC
+         H+29scZlZjY+1rHB3+7K7KIXRUBJFQTUsccw7lEeMO0IXXtRJ5v+QUBSOhUyjTo7SnBp
+         7AiQ==
+X-Gm-Message-State: AOAM532KDVWJ7r/+ivXMPDDKLn0apwruqAj4lc/VX24u63BfKhW2JYDz
+        bUAA9FLWNJkgZqEeA/L0DGNsBZay9CoqYY8dDtrHm3djniTZ
+X-Google-Smtp-Source: ABdhPJw1usrwJxPJNZPdyxUalJuLF2O2KN2oetB1VB36jzdNFtg6/b+WSHV39d4QGIjC1xLB7NXq3r61gkbTcUaBrhhTb6j06Uy0
 MIME-Version: 1.0
-References: <20200917000757.1232850-1-Tony.Ambardar@gmail.com> <20200917135437.1238787-1-Tony.Ambardar@gmail.com>
-In-Reply-To: <20200917135437.1238787-1-Tony.Ambardar@gmail.com>
-From:   Tony Ambardar <tony.ambardar@gmail.com>
-Date:   Thu, 15 Apr 2021 21:34:36 -0700
-Message-ID: <CAPGftE-Q+Q479j7SikDBQLiM+VKbpXpRYnTeEJeAHeZrh_Ok2A@mail.gmail.com>
-Subject: Re: [PATCH v3] powerpc: fix EDEADLOCK redefinition error in uapi/asm/errno.h
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Stable <stable@vger.kernel.org>, Rosen Penev <rosenp@gmail.com>
+X-Received: by 2002:a5e:8419:: with SMTP id h25mr1970510ioj.43.1618547715699;
+ Thu, 15 Apr 2021 21:35:15 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 21:35:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a5772005c00f8101@google.com>
+Subject: [syzbot] WARNING in ctx_sched_in
+From:   syzbot <syzbot+50d41b514809f6f4f326@syzkaller.appspotmail.com>
+To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, jolsa@redhat.com,
+        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
+        netdev@vger.kernel.org, peterz@infradead.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Michael,
+Hello,
 
-The latest version of this patch addressed all feedback I'm aware of
-when submitted last September, and I've seen no further comments from
-reviewers since then.
+syzbot found the following issue on:
 
-Could you please let me know where this stands and if anything further
-is needed?
+HEAD commit:    79c338ab riscv: keep interrupts disabled for BREAKPOINT ex..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+console output: https://syzkaller.appspot.com/x/log.txt?x=10fb93f9d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f8af20e245283c9a
+dashboard link: https://syzkaller.appspot.com/bug?extid=50d41b514809f6f4f326
+userspace arch: riscv64
 
-Kind regards,
-Tony
+Unfortunately, I don't have any reproducer for this issue yet.
 
-On Thu, 17 Sept 2020 at 06:54, Tony Ambardar <tony.ambardar@gmail.com> wrote:
->
-> A few archs like powerpc have different errno.h values for macros
-> EDEADLOCK and EDEADLK. In code including both libc and linux versions of
-> errno.h, this can result in multiple definitions of EDEADLOCK in the
-> include chain. Definitions to the same value (e.g. seen with mips) do
-> not raise warnings, but on powerpc there are redefinitions changing the
-> value, which raise warnings and errors (if using "-Werror").
->
-> Guard against these redefinitions to avoid build errors like the following,
-> first seen cross-compiling libbpf v5.8.9 for powerpc using GCC 8.4.0 with
-> musl 1.1.24:
->
->   In file included from ../../arch/powerpc/include/uapi/asm/errno.h:5,
->                    from ../../include/linux/err.h:8,
->                    from libbpf.c:29:
->   ../../include/uapi/asm-generic/errno.h:40: error: "EDEADLOCK" redefined [-Werror]
->    #define EDEADLOCK EDEADLK
->
->   In file included from toolchain-powerpc_8540_gcc-8.4.0_musl/include/errno.h:10,
->                    from libbpf.c:26:
->   toolchain-powerpc_8540_gcc-8.4.0_musl/include/bits/errno.h:58: note: this is the location of the previous definition
->    #define EDEADLOCK       58
->
->   cc1: all warnings being treated as errors
->
-> CC: Stable <stable@vger.kernel.org>
-> Reported-by: Rosen Penev <rosenp@gmail.com>
-> Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
-> ---
-> v1 -> v2:
->  * clean up commit description formatting
->
-> v2 -> v3: (per Michael Ellerman)
->  * drop indeterminate 'Fixes' tags, request stable backports instead
-> ---
->  arch/powerpc/include/uapi/asm/errno.h       | 1 +
->  tools/arch/powerpc/include/uapi/asm/errno.h | 1 +
->  2 files changed, 2 insertions(+)
->
-> diff --git a/arch/powerpc/include/uapi/asm/errno.h b/arch/powerpc/include/uapi/asm/errno.h
-> index cc79856896a1..4ba87de32be0 100644
-> --- a/arch/powerpc/include/uapi/asm/errno.h
-> +++ b/arch/powerpc/include/uapi/asm/errno.h
-> @@ -2,6 +2,7 @@
->  #ifndef _ASM_POWERPC_ERRNO_H
->  #define _ASM_POWERPC_ERRNO_H
->
-> +#undef EDEADLOCK
->  #include <asm-generic/errno.h>
->
->  #undef EDEADLOCK
-> diff --git a/tools/arch/powerpc/include/uapi/asm/errno.h b/tools/arch/powerpc/include/uapi/asm/errno.h
-> index cc79856896a1..4ba87de32be0 100644
-> --- a/tools/arch/powerpc/include/uapi/asm/errno.h
-> +++ b/tools/arch/powerpc/include/uapi/asm/errno.h
-> @@ -2,6 +2,7 @@
->  #ifndef _ASM_POWERPC_ERRNO_H
->  #define _ASM_POWERPC_ERRNO_H
->
-> +#undef EDEADLOCK
->  #include <asm-generic/errno.h>
->
->  #undef EDEADLOCK
-> --
-> 2.25.1
->
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+50d41b514809f6f4f326@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 4475 at kernel/events/core.c:3752 ctx_sched_in+0x12e/0x3ee kernel/events/core.c:3752
+Modules linked in:
+CPU: 1 PID: 4475 Comm: syz-executor.1 Not tainted 5.12.0-rc6-syzkaller-00183-g79c338ab575e #0
+Hardware name: riscv-virtio,qemu (DT)
+epc : ctx_sched_in+0x12e/0x3ee kernel/events/core.c:3752
+ ra : ctx_sched_in+0x12e/0x3ee kernel/events/core.c:3752
+epc : ffffffe000279fe8 ra : ffffffe000279fe8 sp : ffffffe009e17680
+ gp : ffffffe004588ad0 tp : ffffffe006398000 t0 : 0000000000000000
+ t1 : 0000000000000001 t2 : 00000000000f4240 s0 : ffffffe009e176f0
+ s1 : ffffffe0077edc00 a0 : ffffffe067d79118 a1 : 00000000000f0000
+ a2 : 0000000000000002 a3 : ffffffe000279fe8 a4 : ffffffe006399000
+ a5 : 0000000040000000 a6 : 0000000000f00000 a7 : ffffffe000280cc8
+ s2 : 0000000000000007 s3 : ffffffe0077edd40 s4 : ffffffe006398000
+ s5 : 0000000000000002 s6 : ffffffe00458c0d0 s7 : ffffffe067d78f70
+ s8 : 0000000000000007 s9 : ffffffe067d79118 s10: ffffffe0077edc00
+ s11: ffffffe0077edc08 t3 : e189d98bb4bfb900 t4 : ffffffc4042c47b2
+ t5 : ffffffc4042c47ba t6 : 0000000000040000
+status: 0000000000000100 badaddr: 0000000000000000 cause: 0000000000000003
+Call Trace:
+[<ffffffe000279fe8>] ctx_sched_in+0x12e/0x3ee kernel/events/core.c:3752
+[<ffffffe00027a2e0>] perf_event_sched_in+0x38/0x74 kernel/events/core.c:2680
+[<ffffffe000280da2>] perf_event_context_sched_in kernel/events/core.c:3817 [inline]
+[<ffffffe000280da2>] __perf_event_task_sched_in+0x4ea/0x680 kernel/events/core.c:3860
+[<ffffffe0000850f8>] perf_event_task_sched_in include/linux/perf_event.h:1210 [inline]
+[<ffffffe0000850f8>] finish_task_switch.isra.0+0x284/0x318 kernel/sched/core.c:4189
+[<ffffffe002a94308>] context_switch kernel/sched/core.c:4325 [inline]
+[<ffffffe002a94308>] __schedule+0x484/0xe8c kernel/sched/core.c:5073
+[<ffffffe002a95102>] preempt_schedule_notrace+0x9c/0x19a kernel/sched/core.c:5312
+[<ffffffe0000cd54a>] rcu_read_unlock_sched_notrace include/linux/rcupdate.h:794 [inline]
+[<ffffffe0000cd54a>] trace_lock_acquire+0xf0/0x20e include/trace/events/lock.h:13
+[<ffffffe0000d3c0e>] lock_acquire+0x28/0x5a kernel/locking/lockdep.c:5481
+[<ffffffe0003b20ee>] rcu_lock_acquire include/linux/rcupdate.h:267 [inline]
+[<ffffffe0003b20ee>] rcu_read_lock include/linux/rcupdate.h:656 [inline]
+[<ffffffe0003b20ee>] percpu_ref_put_many.constprop.0+0x38/0x148 include/linux/percpu-refcount.h:317
+[<ffffffe0003baa56>] percpu_ref_put include/linux/percpu-refcount.h:338 [inline]
+[<ffffffe0003baa56>] obj_cgroup_put include/linux/memcontrol.h:713 [inline]
+[<ffffffe0003baa56>] memcg_slab_free_hook mm/slab.h:372 [inline]
+[<ffffffe0003baa56>] memcg_slab_free_hook mm/slab.h:336 [inline]
+[<ffffffe0003baa56>] do_slab_free mm/slub.c:3117 [inline]
+[<ffffffe0003baa56>] ___cache_free+0x2bc/0x3dc mm/slub.c:3168
+[<ffffffe0003be26c>] qlink_free mm/kasan/quarantine.c:146 [inline]
+[<ffffffe0003be26c>] qlist_free_all+0x56/0xac mm/kasan/quarantine.c:165
+[<ffffffe0003be774>] kasan_quarantine_reduce+0x14c/0x1c8 mm/kasan/quarantine.c:272
+[<ffffffe0003bc3f8>] __kasan_slab_alloc+0x60/0x62 mm/kasan/common.c:437
+[<ffffffe0003b8f10>] kasan_slab_alloc include/linux/kasan.h:223 [inline]
+[<ffffffe0003b8f10>] slab_post_alloc_hook mm/slab.h:516 [inline]
+[<ffffffe0003b8f10>] slab_alloc_node mm/slub.c:2907 [inline]
+[<ffffffe0003b8f10>] slab_alloc mm/slub.c:2915 [inline]
+[<ffffffe0003b8f10>] kmem_cache_alloc+0x168/0x3ca mm/slub.c:2920
+[<ffffffe0001aaee2>] kmem_cache_zalloc include/linux/slab.h:674 [inline]
+[<ffffffe0001aaee2>] taskstats_tgid_alloc kernel/taskstats.c:561 [inline]
+[<ffffffe0001aaee2>] taskstats_exit+0x3ce/0x5fe kernel/taskstats.c:600
+[<ffffffe000031bfc>] do_exit+0x3b2/0x1846 kernel/exit.c:810
+[<ffffffe00003319a>] do_group_exit+0xa0/0x198 kernel/exit.c:922
+[<ffffffe00004c558>] get_signal+0x31e/0x14ba kernel/signal.c:2781
+[<ffffffe000007e06>] do_signal arch/riscv/kernel/signal.c:271 [inline]
+[<ffffffe000007e06>] do_notify_resume+0xa8/0x930 arch/riscv/kernel/signal.c:317
+[<ffffffe000005586>] ret_from_exception+0x0/0x14
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
