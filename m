@@ -2,63 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 962C3361C11
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6E8361C1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240757AbhDPIrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 04:47:21 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:2250 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239471AbhDPIrU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 04:47:20 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AZL/wmquxbTNGJ9gVaa3z1RQC7skCEoMji2hD?=
- =?us-ascii?q?6mlwRA09T+Wxncqjhele8BfyhioYVn1Io6HjBICraxrnmaJdy48XILukQU3CsG?=
- =?us-ascii?q?ynMIlt4eLZsljdMgf58fNQ0rolTrhmBLTLfCFHpOvz/QXQKbYd6fad9qTAv43j?=
- =?us-ascii?q?5lNMaS0vVK169Qd+DW+gYzVLbS1LH4AwGpbZxucvnUvCRV0tYs62BmYIUoH4zr?=
- =?us-ascii?q?WhqLvdfRUECxQ7gTPgsRqU6aX3GxXd/hASXyIn+9Yf2FXFiADw6+Gftei6wHbn?=
- =?us-ascii?q?uVP70pI+orbc4+oGIPbJq8AObh3wlw6jZe1aKtm/lQFwhNvq1XEHv53npQw6M8?=
- =?us-ascii?q?F69nXLF1vFxifF6k3c9HIH0TvN43m+rhLY0LfEbSN/D9BewYFUdhac7EY/ptRx?=
- =?us-ascii?q?zb9GxAuixuBqJAKFmj/86djOXwxrkUTxoWNKq590s0Bi?=
-X-IronPort-AV: E=Sophos;i="5.82,226,1613430000"; 
-   d="scan'208";a="503542453"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 10:46:54 +0200
-Date:   Fri, 16 Apr 2021 10:46:54 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: Re: [Outreachy kernel] [PATCH v2] staging: media: atomisp: pci:
- Change line break to avoid an open parenthesis at the end of the line
-In-Reply-To: <20210416083728.GL3@paasikivi.fi.intel.com>
-Message-ID: <alpine.DEB.2.22.394.2104161045140.8503@hadrien>
-References: <20210415170819.GA17534@focaruja> <20210415171409.GC2531743@casper.infradead.org> <20210415194955.GI3@paasikivi.fi.intel.com> <20210415195704.GE2531743@casper.infradead.org> <20210415195941.GF2531743@casper.infradead.org> <20210415212158.GK3@paasikivi.fi.intel.com>
- <20210416054941.GF6021@kadam> <20210416083728.GL3@paasikivi.fi.intel.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S240933AbhDPIru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 04:47:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45910 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240846AbhDPIrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 04:47:40 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 68C62AE86;
+        Fri, 16 Apr 2021 08:47:14 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: [PATCH v4 net-next 00/10] net: Korina improvements
+Date:   Fri, 16 Apr 2021 10:47:01 +0200
+Message-Id: <20210416084712.62561-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > If you're running into the 80 character limit, then it's fine to use
-> > two tabs.  I think we have been rejecting patches that push align the
-> > parameters but push past the 80 character limit.  Using one tab is
-> > confusing because it makes the decalarations line up with the code.
->
-> Interesting. Do you have an example of this? I've thought checkpatch.pl
-> gave a warning if the line ended with an opening parenthesis no matter
-> what.
+While converting Mikrotik RB532 support to use device tree I stumbled
+over the korina ethernet driver, which used way too many MIPS specific
+hacks. This series cleans this all up and adds support for device tree.
 
-Checkpatch is a perl script that searches for patterns that often indicate
-code that is hard to understand.  It is not a precise definition of what
-is allowed in the Linux kernel.  Humans have to amke compromises.
+Changes in v4:
+  - improve error returns in mdio_read further
+  - added clock name and improved clk handling
+  - fixed bindind errors
 
-julia
+Changes in v3:
+  - use readl_poll_timeout_atomic in mdio_wait
+  - return -ETIMEDOUT, if mdio_wait failed
+  - added DT binding and changed name to idt,3243x-emac
+  - fixed usage of of_get_mac_address for net-next
+
+Changes in v2:
+  - added device tree support to get rid of idt_cpu_freq
+  - fixed compile test on 64bit archs
+  - fixed descriptor current address handling by storing/using mapped
+    dma addresses (dma controller modifies current address)
+
+Thomas Bogendoerfer (10):
+  net: korina: Fix MDIO functions
+  net: korina: Use devres functions
+  net: korina: Remove not needed cache flushes
+  net: korina: Remove nested helpers
+  net: korina: Use DMA API
+  net: korina: Only pass mac address via platform data
+  net: korina: Add support for device tree
+  net: korina: Get mdio input clock via common clock framework
+  net: korina: Make driver COMPILE_TESTable
+  dt-bindings: net: korina: Add DT bindings for IDT 79RC3243x SoCs
+
+ .../bindings/net/idt,3243x-emac.yaml          |  74 +++
+ arch/mips/rb532/devices.c                     |   5 +-
+ drivers/net/ethernet/Kconfig                  |   3 +-
+ drivers/net/ethernet/korina.c                 | 601 +++++++++++++-----
+ 4 files changed, 511 insertions(+), 172 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/idt,3243x-emac.yaml
+
+-- 
+2.29.2
+
