@@ -2,79 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C011361A84
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 09:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C676361A68
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 09:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239607AbhDPHXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 03:23:40 -0400
-Received: from elvis.franken.de ([193.175.24.41]:53273 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239532AbhDPHXc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 03:23:32 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lXIol-0007qW-00; Fri, 16 Apr 2021 09:23:07 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id D32FFC04CD; Fri, 16 Apr 2021 09:12:26 +0200 (CEST)
-Date:   Fri, 16 Apr 2021 09:12:26 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 net-next 07/10] net: korina: Add support for device
- tree
-Message-ID: <20210416071226.GA5257@alpha.franken.de>
-References: <20210414230648.76129-1-tsbogend@alpha.franken.de>
- <20210414230648.76129-8-tsbogend@alpha.franken.de>
- <YHjQ8ylbX2X+QJHG@lunn.ch>
+        id S238848AbhDPHPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 03:15:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230466AbhDPHP2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 03:15:28 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3604C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 00:15:03 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id z22-20020a17090a0156b029014d4056663fso14126812pje.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 00:15:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=BzihCKLSn5zDahlSfxZpVN+H6HlVaY3GCUyxBAUfdLQ=;
+        b=YXGCN5pL3en+V1lnsbKkewxe6z62T9YCtJrt5Qgn59jA+RTQ7H/kg+KlNAoD2/aSeZ
+         E9Flt7AmhulS59kAeBj7Rh/lNrPoV8fHug6KFClhT8g7WbGvhSAcrhJ1oNtCE/Z+0L1+
+         E0kBN5F6PriHe9zTWzS6ewqJA2NBOlokLxLhk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=BzihCKLSn5zDahlSfxZpVN+H6HlVaY3GCUyxBAUfdLQ=;
+        b=NMJjHPcoCZGXZ+FmQgW8yDJKqR5dncioZrbq2i4R62tQUa0PG5mxZZbiYGWCHM8fjn
+         y+7r6K6wIxkfdj3HCSYZYi2qPWuYsOjn1Za400sZj5Xh/Zzbowip15iOo62iZs92Onrf
+         Qr0ITjD+5HONvMmB2Meh7dv9dAicF6KtJabEnHMfCeGG3JjuThAkrAfbu+kWTfZ6MLqE
+         KzR0hqPqdRz5xX1jkvK8Dr5/+8Qrq7y7oDUytgeF0OrmS79OqMs8EDJeT9R5U9tBDRN1
+         ffic2FEkItIqE6j6GFXWTPuQOW4qP2dtWq3mWv/WYEyDxTj1aB28256TFfl0R3g74fDC
+         17ow==
+X-Gm-Message-State: AOAM531xT7bByUuqI+LM3zekHCZ+hz0WZvnEXkKRKDvOTbLUvQysRfks
+        TVPpfXjB9a989pwR6ZJUjfERDA==
+X-Google-Smtp-Source: ABdhPJyL/bVQGB2j1SyQSTZxiabgYxoP8rXxgYmkXLPKRCg/zorqcQ8i+YMrNm90RtJGI2WRnMDxQg==
+X-Received: by 2002:a17:90b:3b4e:: with SMTP id ot14mr7907331pjb.81.1618557303436;
+        Fri, 16 Apr 2021 00:15:03 -0700 (PDT)
+Received: from localhost (2001-44b8-111e-5c00-09c3-a49e-2955-78c6.static.ipv6.internode.on.net. [2001:44b8:111e:5c00:9c3:a49e:2955:78c6])
+        by smtp.gmail.com with ESMTPSA id e65sm4107570pfe.9.2021.04.16.00.15.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 00:15:03 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>, mpe@ellerman.id.au
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Tyrel Datwyler <tyreld@linux.ibm.com>
+Subject: Re: [PATCH] powerpc/pseries: extract host bridge from pci_bus prior to bus removal
+In-Reply-To: <20210211182435.47968-1-tyreld@linux.ibm.com>
+References: <20210211182435.47968-1-tyreld@linux.ibm.com>
+Date:   Fri, 16 Apr 2021 17:15:00 +1000
+Message-ID: <878s5ig0p7.fsf@linkitivity.dja.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHjQ8ylbX2X+QJHG@lunn.ch>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 01:49:07AM +0200, Andrew Lunn wrote:
-> > -	memcpy(dev->dev_addr, mac_addr, ETH_ALEN);
-> > +	if (mac_addr) {
-> > +		ether_addr_copy(dev->dev_addr, mac_addr);
-> > +	} else {
-> > +		u8 ofmac[ETH_ALEN];
-> > +
-> > +		if (of_get_mac_address(pdev->dev.of_node, ofmac) == 0)
-> > +			ether_addr_copy(dev->dev_addr, ofmac);
-> 
-> You should be able to skip the ether_addr_copy() by passing 
-> dev->dev_addr directly to of_get_mac_address().
+Hi Tyrel,
 
-good point
+> The pci_bus->bridge reference may no longer be valid after
+> pci_bus_remove() resulting in passing a bad value to device_unregister()
+> for the associated bridge device.
+>
+> Store the host_bridge reference in a separate variable prior to
+> pci_bus_remove().
+>
+The patch certainly seems to do what you say. I'm not really up on the
+innards of PCI, so I'm struggling to figure out by what code path
+pci_bus_remove() might invalidate pci_bus->bridge? A quick look at
+pci_remove_bus was not very illuminating but I didn't chase down every
+call it made.
 
-> 
-> > +		else
-> > +			eth_hw_addr_random(dev);
-> > +	}
-> >  
-> >  	lp->rx_irq = platform_get_irq_byname(pdev, "korina_rx");
-> >  	lp->tx_irq = platform_get_irq_byname(pdev, "korina_tx");
-> > @@ -1146,8 +1157,21 @@ static int korina_remove(struct platform_device *pdev)
-> >  	return 0;
-> >  }
-> >  
-> > +#ifdef CONFIG_OF
-> > +static const struct of_device_id korina_match[] = {
-> > +	{
-> > +		.compatible = "idt,3243x-emac",
-> 
-> You need to document this compatible somewhere under Documentation/devicetree/binding
+Kind regards,
+Daniel
 
-checkpatch hinted to put it in an extra patch, it's patch 10 of this
-series and looking at my inbox it didn't get through :-(.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+> Fixes: 7340056567e3 ("powerpc/pci: Reorder pci bus/bridge unregistration during PHB removal")
+> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+> ---
+>  arch/powerpc/platforms/pseries/pci_dlpar.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/powerpc/platforms/pseries/pci_dlpar.c b/arch/powerpc/platforms/pseries/pci_dlpar.c
+> index f9ae17e8a0f4..a8f9140a24fa 100644
+> --- a/arch/powerpc/platforms/pseries/pci_dlpar.c
+> +++ b/arch/powerpc/platforms/pseries/pci_dlpar.c
+> @@ -50,6 +50,7 @@ EXPORT_SYMBOL_GPL(init_phb_dynamic);
+>  int remove_phb_dynamic(struct pci_controller *phb)
+>  {
+>  	struct pci_bus *b = phb->bus;
+> +	struct pci_host_bridge *host_bridge = to_pci_host_bridge(b->bridge);
+>  	struct resource *res;
+>  	int rc, i;
+>  
+> @@ -76,7 +77,8 @@ int remove_phb_dynamic(struct pci_controller *phb)
+>  	/* Remove the PCI bus and unregister the bridge device from sysfs */
+>  	phb->bus = NULL;
+>  	pci_remove_bus(b);
+> -	device_unregister(b->bridge);
+> +	host_bridge->bus = NULL;
+> +	device_unregister(&host_bridge->dev);
+>  
+>  	/* Now release the IO resource */
+>  	if (res->flags & IORESOURCE_IO)
+> -- 
+> 2.27.0
