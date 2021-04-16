@@ -2,75 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B384436206E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D368F36207A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242838AbhDPNC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 09:02:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:41052 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239122AbhDPNCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 09:02:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 988CC13D5;
-        Fri, 16 Apr 2021 06:01:56 -0700 (PDT)
-Received: from e113131-lin.cambridge.arm.com (e113131-lin.cambridge.arm.com [10.1.195.76])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 627463F85F;
-        Fri, 16 Apr 2021 06:01:55 -0700 (PDT)
-From:   Beata Michalska <beata.michalska@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, valentin.schneider@arm.com,
-        dietmar.eggemann@arm.com, corbet@lwn.net, linux-doc@vger.kernel.org
-Subject: [RFC PATCH 3/3] sched/doc: Update the CPU capacity asymmetry bits
-Date:   Fri, 16 Apr 2021 14:01:25 +0100
-Message-Id: <1618578085-29584-4-git-send-email-beata.michalska@arm.com>
-In-Reply-To: <1618578085-29584-1-git-send-email-beata.michalska@arm.com>
-References: <1618578085-29584-1-git-send-email-beata.michalska@arm.com>
+        id S242329AbhDPNHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 09:07:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234291AbhDPNHt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 09:07:49 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D64B7C061574;
+        Fri, 16 Apr 2021 06:07:22 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id i21-20020a05600c3555b029012eae2af5d4so4555701wmq.4;
+        Fri, 16 Apr 2021 06:07:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X1QM8B6jbrKekugtXWG7niO37dGaqz+Qr3M5o/z4z7k=;
+        b=cXPaqMIsEqgYTmxm1QSn08MWu+7Xa3by/TlAHTNj+RNF9eLNJAgDZUa5HegBkJQRvi
+         KctwG2xyTuZUuR7ogCeQvEZNwpw2+Kba022xCN2X9jn21Q2eSj46B3fd9OawP7U74sGD
+         m2Ka3v1N95rlEH/Ebj7mY2iRBuWPUwnQzTMS7AO7F20GsnqkQv7hoo04kJ2RT+Kkb3w5
+         yZnzu/9+m+MeqTJYDAfaGKhuOOAjbXYDjWzZ1EO9sUC1mxL8CpyR2F9JeSwEixnMz4jG
+         iIrMgwpejrRZj6T+5y9u3YOekb6VPSQ+yeuVksZ2hu7zFocrh7AP/P7tL0BZi6u7HH7u
+         EJYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X1QM8B6jbrKekugtXWG7niO37dGaqz+Qr3M5o/z4z7k=;
+        b=X61/mi8VEiVr9d3WeneuQh3AnNVKCF25F30bkgnp+1Cb/TtOnPr9OtQZvjTQ/DNqVC
+         VHkl6/Vx+HZMp+p4t9i3dPR036unZ1u3Rxp09NQA/g2q0SbYpgYgjE99/2qWqlhk6ySP
+         MlvjEV2gb1PhxNCE44EugRJLswHQcQWqoJpdJdyU9slhIoidJScsCYQPLvytmxyoiaqM
+         dUFAsyOSe/mQI8BRRpjJ/RVx/ntWcAeaHO4hUKzgdqc2O4i+IuTGA0sF/fmktE6XF/Kq
+         iCCLvkGATEHeCHqtFqUgW+jcK0HTqcJEAtXAa1tvwdrxNeIvQxVq9XjzO33rNHf3q+Qw
+         pBSQ==
+X-Gm-Message-State: AOAM530tu7nWx7tCPmJST2LDVAYrNw2M12tFt6f0zdoxb/5iF+pdlaKR
+        4iaOn/Y646niRf9/8Tt89Sax2RXekyFR7KTVxzamcpqMMXyksOna
+X-Google-Smtp-Source: ABdhPJx5xdyB+CIx6x7Q9HsKZj2cV5fCDxyKuGcCDwhirLAjzqrruuyvkukN8/XZ1f+cs1hBl/HbbACArBimwvRLTUY=
+X-Received: by 2002:a7b:ce09:: with SMTP id m9mr8303247wmc.150.1618578441478;
+ Fri, 16 Apr 2021 06:07:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-10-ojeda@kernel.org>
+ <CAHk-=wjdZ1KksHHHuekeAx9kKFXEyt+rg0P=yRD1Bia_01wucg@mail.gmail.com>
+ <CAKwvOd=Vo3wwm-egc6fTa7gD4dsrc77OvBhUy8e+VM=LujRCfg@mail.gmail.com> <YHfm+tCYp+I1C5I/@kroah.com>
+In-Reply-To: <YHfm+tCYp+I1C5I/@kroah.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Fri, 16 Apr 2021 09:07:10 -0400
+Message-ID: <CAGngYiV3Q336QLwZ_PjDj9hd+Y4uMjhq209ppYYqc_QeegLvgw@mail.gmail.com>
+Subject: Re: [PATCH 09/13] Samples: Rust examples
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the documentation bits referring to capacity aware scheduling
-with regards to newly introduced SD_ASYM_CPUCAPACITY_FULL shed_domain
-flag.
+On Thu, Apr 15, 2021 at 3:11 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> I've been talking with the developers here about doing a "real" driver
 
-Signed-off-by: Beata Michalska <beata.michalska@arm.com>
----
- Documentation/scheduler/sched-capacity.rst | 6 ++++--
- Documentation/scheduler/sched-energy.rst   | 2 +-
- 2 files changed, 5 insertions(+), 3 deletions(-)
+Would it be beneficial if the device h/w targeted by the "real" Rust
+driver has QEMU emulation? Perhaps in addition to physical silicon.
 
-diff --git a/Documentation/scheduler/sched-capacity.rst b/Documentation/scheduler/sched-capacity.rst
-index 9b7cbe4..92d16e7 100644
---- a/Documentation/scheduler/sched-capacity.rst
-+++ b/Documentation/scheduler/sched-capacity.rst
-@@ -284,8 +284,10 @@ whether the system exhibits asymmetric CPU capacities. Should that be the
- case:
- 
- - The sched_asym_cpucapacity static key will be enabled.
--- The SD_ASYM_CPUCAPACITY flag will be set at the lowest sched_domain level that
--  spans all unique CPU capacity values.
-+- The SD_ASYM_CPUCAPACITY_FULL flag will be set at the lowest sched_domain
-+  level that spans all unique CPU capacity values.
-+- The SD_ASYM_CPUCAPACITY flag will be set for any sched_domain that spans
-+  cpus with any range of asymmetry.
- 
- The sched_asym_cpucapacity static key is intended to guard sections of code that
- cater to asymmetric CPU capacity systems. Do note however that said key is
-diff --git a/Documentation/scheduler/sched-energy.rst b/Documentation/scheduler/sched-energy.rst
-index afe02d3..8fbce5e 100644
---- a/Documentation/scheduler/sched-energy.rst
-+++ b/Documentation/scheduler/sched-energy.rst
-@@ -328,7 +328,7 @@ section lists these dependencies and provides hints as to how they can be met.
- 
- As mentioned in the introduction, EAS is only supported on platforms with
- asymmetric CPU topologies for now. This requirement is checked at run-time by
--looking for the presence of the SD_ASYM_CPUCAPACITY flag when the scheduling
-+looking for the presence of the SD_ASYM_CPUCAPACITY_FULL flag when the scheduling
- domains are built.
- 
- See Documentation/scheduler/sched-capacity.rst for requirements to be met for this
--- 
-2.7.4
+If developers don't need access to physical hardware, they might be
+more likely to get involved with Linux/Rust.
 
+Also, I'm guessing QEMU allows us to embed the emulated device into a
+variety of board architectures: x86_64, arm64, powerpc, etc. which
+could be useful in smoking out architecture-specific Rust driver
+issues.
+
+Sven
