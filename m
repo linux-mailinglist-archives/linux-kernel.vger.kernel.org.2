@@ -2,100 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86DD7362ABA
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:07:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DDA0362ABC
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236112AbhDPWFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 18:05:52 -0400
-Received: from mail-ed1-f48.google.com ([209.85.208.48]:40634 "EHLO
-        mail-ed1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234898AbhDPWFs (ORCPT
+        id S236140AbhDPWGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 18:06:25 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:57989 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235666AbhDPWGX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 18:05:48 -0400
-Received: by mail-ed1-f48.google.com with SMTP id o20so7706341edc.7;
-        Fri, 16 Apr 2021 15:05:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pE+1y3kVswoYX2AiLRaqMZxwYcgmWgUuY2qO0xxCCr0=;
-        b=Nup7K2rty/zHBA4NVd53qG5OC4JdYw7FeAV4rQTzvBnZUBldcZnQTnEcbSEHwrl+yE
-         sTYCT+yYoeIkBAqF8yGh5LQpZHlpoyrYr0lQoum5Up5wA2fh74aohKYr/4BApPk37cNq
-         XDvrSdLZv5gDpgvfaekMlivlr1S9eQlGjyr3agDPahDZYOLuD8ynDFRSVGKrd145kaq0
-         pFU1KWmXWe4PqZee0qt7GlNVNDRadQovErl/4A7vI7gHfICLOIS4/pJY6gdnngvvizOZ
-         Ep2vk6+662Bu71XPNRi+6/XyoNTcbKwjwSQL7PlVh3LzxbJecrQMhPCSBSg5jbpcoJTt
-         0jwQ==
-X-Gm-Message-State: AOAM533sJk586pd0zIQmCxayPlX7lIwEsRlGNuC4I9kCsyS1qM/31CEO
-        zhTmJ/3WUkTtIHU2ZNfr0ntiJCtkX9PJuL9C4KI=
-X-Google-Smtp-Source: ABdhPJyoUO+HJ3qMNcryPvKppffY+ChU86bnFi8SAvERKyhwOEbczCIePADySBwPpz3QZH93R58c6wfdllohe6bgSsE=
-X-Received: by 2002:aa7:cb97:: with SMTP id r23mr12279313edt.106.1618610722450;
- Fri, 16 Apr 2021 15:05:22 -0700 (PDT)
+        Fri, 16 Apr 2021 18:06:23 -0400
+X-Originating-IP: 90.65.108.55
+Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id F1B0520003;
+        Fri, 16 Apr 2021 22:05:55 +0000 (UTC)
+Date:   Sat, 17 Apr 2021 00:05:55 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Francois Gervais <fgervais@distech-controls.com>
+Cc:     linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
+        Michael McCormick <michael.mccormick@enatel.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] rtc: pcf85063: add integrity check
+Message-ID: <YHoKQ9qtupDhXVm3@piout.net>
+References: <20210311174940.23072-1-fgervais@distech-controls.com>
 MIME-Version: 1.0
-References: <CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com>
- <87lf9nk2ku.fsf@oldenburg.str.redhat.com> <CALCETrWxJzf-rm9rqMpdxEtdVe+0OH7XRtWV=UzrgBDiPT=vVQ@mail.gmail.com>
- <CAJvTdKkAzEeAKrEYMU-gBWXoNGyJ09ZGw1gsU0b3uCuo8vrX0A@mail.gmail.com>
- <20210413034346.GA22861@1wt.eu> <CAJvTdKmLth==ZPv7ygLs0jFX7JRPVhVT82ZDoT4xcQRABEVTvQ@mail.gmail.com>
- <20210414095804.GB10709@zn.tnic> <CAJvTdKn_y8qAjDy189zEf8cnaWrvW3baca=z9FgGxV9AvQEADg@mail.gmail.com>
- <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu> <20210415054713.GB6318@zn.tnic>
-In-Reply-To: <20210415054713.GB6318@zn.tnic>
-From:   Len Brown <lenb@kernel.org>
-Date:   Fri, 16 Apr 2021 18:05:10 -0400
-Message-ID: <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Willy Tarreau <w@1wt.eu>, Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-abi@vger.kernel.org,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210311174940.23072-1-fgervais@distech-controls.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 1:47 AM Borislav Petkov <bp@alien8.de> wrote:
+Hi,
 
-> What I'd like to see is 0-overhead for current use cases and only
-> overhead for those who want to use it. If that can't be done
-> automagically, then users should request it explicitly. So basically you
-> blow up the xsave buffer only for processes which want to do AMX.
+On 11/03/2021 12:49:40-0500, Francois Gervais wrote:
+> Sometimes when the RTC battery is inserted, the voltage will bounce a
+> bit and we've seen that this can randomly flip configuration bits in
+> the RTC.
+> 
+> For example, we've seen COF bits flips and then the output clock
+> frequency would not be the expected one anymore.
+> 
+> To remediate this issue, this adds an optional feature where if the OS
+> bit it set on boot, it's possibly because the RTC lost power and again
+> possibly because a new battery has been inserted. In that case, it
+> reapplies defaults to configuration registers.
+> 
+> Signed-off-by: Francois Gervais <fgervais@distech-controls.com>
+> ---
+>  drivers/rtc/rtc-pcf85063.c | 54 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 54 insertions(+)
+> 
+> diff --git a/drivers/rtc/rtc-pcf85063.c b/drivers/rtc/rtc-pcf85063.c
+> index 463991c74fdd..774cc4cf93d8 100644
+> --- a/drivers/rtc/rtc-pcf85063.c
+> +++ b/drivers/rtc/rtc-pcf85063.c
+> @@ -57,6 +57,10 @@
+>  #define PCF85063_REG_ALM_S		0x0b
+>  #define PCF85063_AEN			BIT(7)
+>  
+> +static bool integrity_check;
+> +module_param(integrity_check, bool, 0444);
+> +MODULE_PARM_DESC(integrity_check, "Set to one to enable the integrity check.");
+> +
+>  struct pcf85063_config {
+>  	struct regmap_config regmap;
+>  	unsigned has_alarms:1;
+> @@ -357,6 +361,49 @@ static int pcf85063_load_capacitance(struct pcf85063 *pcf85063,
+>  				  PCF85063_REG_CTRL1_CAP_SEL, reg);
+>  }
+>  
+> +static int pcf85063_check_integrity(struct pcf85063 *pcf85063)
+> +{
+> +	int err;
+> +	unsigned int val;
+> +
+> +	err = regmap_read(pcf85063->regmap, PCF85063_REG_SC, &val);
+> +	if (err < 0) {
+> +		dev_warn(&pcf85063->rtc->dev, "failed to read OS bit: %d",
+> +			 err);
+> +		return err;
+> +	}
+> +
+> +	if (!(val & PCF85063_REG_SC_OS)) {
+> +		dev_dbg(&pcf85063->rtc->dev, "integrity is ok\n");
+> +		return 0;
+> +	}
+> +
+> +	dev_dbg(&pcf85063->rtc->dev, "Power loss detected, restoring defaults\n");
+> +	err = regmap_update_bits(pcf85063->regmap, PCF85063_REG_CTRL1,
+> +				 (unsigned int)~PCF85063_REG_CTRL1_CAP_SEL, 0);
+> +	if (err < 0)
+> +		goto err_restore;
+> +
+> +	err = regmap_write(pcf85063->regmap, PCF85063_REG_CTRL2, 0);
+> +	if (err < 0)
+> +		goto err_restore;
+> +
+> +	err = regmap_write(pcf85063->regmap, PCF85063_REG_OFFSET, 0);
+> +	if (err < 0)
+> +		goto err_restore;
+> +
+> +	err = regmap_write(pcf85063->regmap, PCF85063_REG_RAM, 0);
+> +	if (err < 0)
+> +		goto err_restore;
+> +
 
-Indeed, expanding the xsave buffer happens only for tasks that touch
-AMX TILE registers.
+I'm not sure I get the use case because PCF85063_REG_CTRL2 should be
+initialized properly after the driver is probed anyway. The other two
+can be set from userspace once it detects the oscillator failure which
+would be better at deciding the policy anyway.
 
-> And this brings the question about libraries which, if they start using
-> AMX by default - which doesn't sound like they will want to because AMX
-> reportedly will have only a limited? set of users - if libraries start
-> using it by default, then it better be worth the handling of the 8kb
-> buffer per process.
-
-I'm not aware of any intent to transparently use AMX for bcopy, like
-what happened
-with AVX-512.  (didn't they undo that mistake?)
-
-> If not, this should also be requestable per process so that a simple
-> pipe in Linux:
->
-> <process> | grep | awk | sed ...
->
-> and so on is not penalized to allocate and handle by default 8kb for
-> *each* process' buffer in that pipe just because each is linking against
-> glibc which has detected AMX support in CPUID and is using it too for
-> some weird reason like some microbenchmark saying so.
-
-Tasks are created without an 8KB AMX buffer.
-Tasks have to actually touch the AMX TILE registers for us to allocate
-one for them.
-
-> But my initial question was on the "establishing" part and was asking
-> where we have established anything wrt AMX.
-
-The patch set on LKML establishes working AMX Linux support in public.
-I am thankful for your and other public review and feedback on that series.
-I can think of 3 actual bugs that were found in the process.
-
-thanks,
-Len Brown Intel Open Source Technology Center
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
