@@ -2,176 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058EC3619BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 08:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC4F361987
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 08:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234371AbhDPGI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 02:08:58 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:23678 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbhDPGI4 (ORCPT
+        id S238805AbhDPFxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 01:53:23 -0400
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:34648 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238358AbhDPFxW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 02:08:56 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210416060830epoutp0413634c92efddf30130cc5793be13f24a~2QakipgoF0096600966epoutp04D
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 06:08:30 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210416060830epoutp0413634c92efddf30130cc5793be13f24a~2QakipgoF0096600966epoutp04D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1618553310;
-        bh=TVR2NG8Dla8sUBALdtzvQt19CiAXv7/CBvFbD/vfHuE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ba/7jgl+Bmpbaum/c4so8ozz8pDkfErerUohQVKeIBTgXP1kWZyBeGnNR5O2JgW+9
-         sP6OVyutReRI8QSbGV8HyIvXfhG+v4+uw86rOGxWg1R+CzbSyYAsAnk8LDtnfAcYlV
-         6MsxIXt7eOLc0h7yB4JRDKRR7RplLxHB5r6RFRII=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210416060829epcas1p1f2aca6faecc6e2dd8098d2b93bb3738c~2QajgKAqv3073230732epcas1p15;
-        Fri, 16 Apr 2021 06:08:29 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.165]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4FM5P81hp3z4x9Q9; Fri, 16 Apr
-        2021 06:08:28 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        BE.3B.07927.CD929706; Fri, 16 Apr 2021 15:08:28 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210416060827epcas1p39350d45cef64c91be681b76180b63140~2QahhMA5_0256402564epcas1p3W;
-        Fri, 16 Apr 2021 06:08:27 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210416060827epsmtrp2ad5489f2cafc2395104e3858cbfada6f~2QahfyNHe0969609696epsmtrp2W;
-        Fri, 16 Apr 2021 06:08:27 +0000 (GMT)
-X-AuditID: b6c32a35-f4c0da8000011ef7-82-607929dc0434
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A1.B5.33967.BD929706; Fri, 16 Apr 2021 15:08:27 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.99.105]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210416060827epsmtip102808d4f8ed04bb94b0896ddbd207681~2QahQvFMt0913309133epsmtip1d;
-        Fri, 16 Apr 2021 06:08:27 +0000 (GMT)
-From:   Changheun Lee <nanich.lee@samsung.com>
-To:     bvanassche@acm.org
-Cc:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
-        axboe@kernel.dk, damien.lemoal@wdc.com, gregkh@linuxfoundation.org,
-        hch@infradead.org, jisoo2146.oh@samsung.com,
-        junho89.kim@samsung.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ming.lei@redhat.com,
-        mj0123.lee@samsung.com, nanich.lee@samsung.com, osandov@fb.com,
-        patchwork-bot@kernel.org, seunghwan.hyun@samsung.com,
-        sookwan7.kim@samsung.com, tj@kernel.org, tom.leiming@gmail.com,
-        woosung2.lee@samsung.com, yt0928.kim@samsung.com
-Subject: Re: [PATCH v7 1/3] bio: limit bio max size
-Date:   Fri, 16 Apr 2021 14:50:39 +0900
-Message-Id: <20210416055039.20126-1-nanich.lee@samsung.com>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <bb8f7127-edff-4a32-2d5c-4343002bda19@acm.org>
+        Fri, 16 Apr 2021 01:53:22 -0400
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 13G5qSHO014226;
+        Fri, 16 Apr 2021 14:52:28 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 13G5qSHO014226
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1618552349;
+        bh=WQhLqm4+QKuAfKFbPuWr/32+TJjPkkHvQQwkRrLTiv8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=0xU3Q6lGxioXwmdJa6oHMklRN9fk1rBIALFc1bhEJLQEKoSvZcQTySexw8ThyPNDF
+         R+Wf9aaBGvbra4+HhWh4OmxJrtsDUyynCVQggrHjJkkf6NZJfQ830t3DGsBk6mnw+s
+         XOyYyKvrkACkLQIYpOIqVGxrDzCCalB3TBk5U6pLuoImAqyUv599gLranzGosWBA/b
+         Nl+7oiBc4zsSo3py4Ni67QZ2KMJQAx7lwjcMS1Efgcq1bq+N2iSRo00Z6WSCrc+X6q
+         lf2Eg+/RO6MRYaPU8jWU7Ki2Mpg6vF860nOXPiKvOAyYM/X1D1KxNZ9lF7jz2LVEzC
+         oWuqKCfHso6Vg==
+X-Nifty-SrcIP: [209.85.214.178]
+Received: by mail-pl1-f178.google.com with SMTP id q11so280841plx.2;
+        Thu, 15 Apr 2021 22:52:28 -0700 (PDT)
+X-Gm-Message-State: AOAM533c9KvrzdBu72R2N329xKxaeo2azOUvjt5Ip8CNP4R33m3XG3Iy
+        5ojBO0Q2+kAPRepH0KzAkKENVA9MLFNkBXXQLRM=
+X-Google-Smtp-Source: ABdhPJwLGLIPGhYWQrmYzOJJRgQcrIoez9eOoky84sqnv3+AVSyd1FV1crs46aiZEwyITdNQVxF5/uCnufkJvG16dKE=
+X-Received: by 2002:a17:902:d2c8:b029:eb:424b:84c with SMTP id
+ n8-20020a170902d2c8b02900eb424b084cmr7915380plc.71.1618552348021; Thu, 15 Apr
+ 2021 22:52:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xbVRzHc+5tbwumUB6DIz6GDYuhW6GlKzuOR0ZclhtxhggqYYa2wg1F
-        S1t7y2RqCFsp2woyOhiEx8aGOLbOifISKs9OVASXDYQJwgAlG4wAkwIZwyWWXoj89/v+zuf3
-        +57feXBxbwcRwE3XGCi9RqkWEO6sllvBYtF48AmFuHHWDVVZWwC6MXGOQKWP13FkOr2GIeOX
-        9QTqL6rBUMHMKTZ6Zr6PodVpGnWM7UVDtioC2YuNGCprrMLRyOQAB926P8xC07UWHN3uW2aj
-        S38fQk/regFaenKPg35tLcZRfcc6cciPHPo9lrQYFzlkW8UEh2y8JiSHfsskG6xnCbLr4tcc
-        cqlzmCALm6yAdDS8TJ7uzsfinktSR6ooZSqlD6Q0KdrUdE1alCA2Xv66XBYulogkr6EDgkCN
-        MoOKEhx+M050JF3tnFQQeFypznSm4pQ0LQiNjtRrMw1UoEpLG6IElC5VrZOIdSG0MoPO1KSF
-        pGgzDkrE4jCZk1SoVXXVUyzdiFdWw2ATJweUe5iBGxfy98OGm/c4ZuDO9ea3Atiz2r0llgGc
-        P/kUZ8QagKVjJvZ2yfg3doxZ6ADw0Y07gBEOAO9cb+ZsUgR/HyxcGCM2Y1++HxxaWXNBOD+P
-        BcdyR1wLPnwp/P7ZFVcBi78Hbty2u/I8fgS0mWoJxm43/HeyAN+M3Zz5uooVNsN4wb7yGdZm
-        jDsZY3Ola6+Q/4QLfzJecEJcpzgM2+8eZ/r4wEc/N3GYOAA6FjsIhs8H0JhXDRhRBGDtw6sY
-        Q0nhssMBNhvh/GBYbwtl0q/Ato2LgDH2gIurBVtePHgmz5tBguBA7iS+7fXwZttWRxKaRs1b
-        B1wIYJ81hygCgRU75qnYMU/F/86XAW4FfpSOzkijaIlOsvOSG4Dr9QtlrcCy8DjEDjAusAPI
-        xQW+POnZLIU3L1V54lNKr5XrM9UUbQcy52lb8IBdKVrn99EY5BJZmFQqRfvDD4TLpAJ/3gfi
-        Kbk3P01poD6iKB2l367DuG4BOdhVqmRgFu8q93wJP+bfsrG+W/Xjqla1UHKsU/JOP/vjr1TJ
-        oQ9W3vZyT7fEy9XtWQnZZRKRvZ/97Z97tW4tPX3tMW9gjbbeF7N1pXMKu29EdOUVhemP1n1B
-        uUueuYmfF13769QDVJeYHxTqI6z0jS9E4tFm81uiV8uq8yrbYpM4a8NJu56vKT5jEQoSvK5/
-        Nn/JQ9xp76Wzvzga9kPP3Q+V8UcvnEvgcf/pHxIOjtYcebdtxtMrfO6k9RPb6HS3RVNSn2Dj
-        LOPt7OmuyKkJ0XzMd4nR7MGY8vOFitIXDra/n7zH4B+RnozEwhjfX8yz44ZIz+JQxeUllc00
-        9h5cc4+ZE7BolVIixPW08j93SaykhgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrJIsWRmVeSWpSXmKPExsWy7bCSnO5tzcoEg7k7JCzmrNrGaLH6bj+b
-        xbQPP5ktWtu/MVk0L17PZnF6wiImi54nTawWf7vuMVl8fVhssfeWtsXlXXPYLA5NbmaymL55
-        DrPFtftn2C0O37vKYvFwyURmi3MnP7FazHvsYPFr+VFGi/c/rrNbnNoxmdli/d6fbA5iHpev
-        eHtMbH7H7rFz1l12j80rtDwuny312LSqk81j/9w17B7v911l8+jbsorR4/MmOY/2A91MAdxR
-        XDYpqTmZZalF+nYJXBnL5z9gKbgmWLHp0hb2BsaZfF2MnBwSAiYSd9YdYgKxhQR2M0rsP84J
-        EZeSOH7iLWsXIweQLSxx+HBxFyMXUMlHRom23iNg9WwCOhJ9b2+xgdgiAmISl798YwQpYhZY
-        wCJxcOcJdpCEsICxxPa/C8FsFgFVid/nDoE18ApYS+xqXcIGsUxe4s/9HmYQmxMovnzWF1aI
-        g6wk/jXNYYGoF5Q4OfMJmM0MVN+8dTbzBEaBWUhSs5CkFjAyrWKUTC0ozk3PLTYsMMxLLdcr
-        TswtLs1L10vOz93ECI5NLc0djNtXfdA7xMjEwXiIUYKDWUmE17izIkGINyWxsiq1KD++qDQn
-        tfgQozQHi5I474Wuk/FCAumJJanZqakFqUUwWSYOTqkGJsXri21+OWj0L9TuljjVt25ZhqbQ
-        RdeCpM3fLUWvVee8uGA2+d6/m49fam0X9Ny52KL49GXOkiqLzq4D3dqvokujn4Q/WfuKccnP
-        wPvrzXgs6x50NTsphq01X8MT517N+Sc240G834+FG878aGB3rDYKdTRrrL70cTnD4SsHVV8y
-        R07seJW+P2bBfeULXg/nfbawnWEhnBITmRFq6pf24V1TZefNSe7X7J4aVYlyBVgXpUZKhtn5
-        urDbuLcU77hYlLnqW8vcSj/TL6lsIe/bvly7cHOxmbbH49mfEk+t7Fy34krPi8D8sqnJyWcV
-        8yNllivFzlt9cO9c1S81X1wKXomZqq5oz09c7ZOgYnRSiaU4I9FQi7moOBEA+/FzrDwDAAA=
-X-CMS-MailID: 20210416060827epcas1p39350d45cef64c91be681b76180b63140
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210416060827epcas1p39350d45cef64c91be681b76180b63140
-References: <bb8f7127-edff-4a32-2d5c-4343002bda19@acm.org>
-        <CGME20210416060827epcas1p39350d45cef64c91be681b76180b63140@epcas1p3.samsung.com>
+References: <20210415171352.27398-1-rdunlap@infradead.org> <CAK7LNASRLgRTZMwzbwnrYA96hLDpzWm8JVBMYQSHMNasXCHtdQ@mail.gmail.com>
+In-Reply-To: <CAK7LNASRLgRTZMwzbwnrYA96hLDpzWm8JVBMYQSHMNasXCHtdQ@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 16 Apr 2021 14:51:50 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATTZfWr227EQY-k7VJm_9X29g6fRKO-hGhXmJnhXOxCug@mail.gmail.com>
+Message-ID: <CAK7LNATTZfWr227EQY-k7VJm_9X29g6fRKO-hGhXmJnhXOxCug@mail.gmail.com>
+Subject: Re: [PATCH v2] uml: fix W=1 missing-include-dirs warnings
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 4/15/21 3:38 AM, Changheun Lee wrote:
-> > @@ -167,6 +168,7 @@ void blk_queue_max_hw_sectors(struct request_queue *q, unsigned int max_hw_secto
-> >  	max_sectors = round_down(max_sectors,
-> >  				 limits->logical_block_size >> SECTOR_SHIFT);
-> >  	limits->max_sectors = max_sectors;
-> > +	limits->bio_max_bytes = max_sectors << SECTOR_SHIFT;
-> >  
-> >  	q->backing_dev_info->io_pages = max_sectors >> (PAGE_SHIFT - 9);
-> >  }
-> 
-> Can the new shift operation overflow? If so, how about using
-> check_shl_overflow()?
+On Fri, Apr 16, 2021 at 4:14 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Fri, Apr 16, 2021 at 2:14 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+> >
+> > Currently when using "W=1" with UML builds, there are over 700 warnings
+> > like so:
+> >
+> >   CC      arch/um/drivers/stderr_console.o
+> > cc1: warning: ./arch/um/include/uapi: No such file or directory [-Wmissing-include-dirs]
+> >
+> > but arch/um/ does not have include/uapi/ at all, so add that
+> > subdir and put one Kbuild file into it (since git does not track
+> > empty subdirs).
+> >
+> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> > Cc: Masahiro Yamada <masahiroy@kernel.org>
+> > Cc: Michal Marek <michal.lkml@markovi.net>
+> > Cc: linux-kbuild@vger.kernel.org
+> > Cc: Jeff Dike <jdike@addtoit.com>
+> > Cc: Richard Weinberger <richard@nod.at>
+> > Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> > Cc: linux-um@lists.infradead.org
+> > ---
+> > v2: use Option 4 from v1: add arch/um/include/uapi so that 'make' is
+> >     placated -- and just like all other arch's have.
+>
+>
+>
+> Assuming the UML maintainer will pick up this:
+>
+> Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
 
-OK, I'll check.
 
-> 
-> > @@ -538,6 +540,8 @@ int blk_stack_limits(struct queue_limits *t, struct queue_limits *b,
-> >  {
-> >  	unsigned int top, bottom, alignment, ret = 0;
-> >  
-> > +	t->bio_max_bytes = min_not_zero(t->bio_max_bytes, b->bio_max_bytes);
-> > +
-> >  	t->max_sectors = min_not_zero(t->max_sectors, b->max_sectors);
-> >  	t->max_hw_sectors = min_not_zero(t->max_hw_sectors, b->max_hw_sectors);
-> >  	t->max_dev_sectors = min_not_zero(t->max_dev_sectors, b->max_dev_sectors);
-> 
-> The above will limit bio_max_bytes for all stacked block devices, which
-> is something we do not want. I propose to set t->bio_max_bytes to
-> UINT_MAX in blk_stack_limits() and to let the stacked driver (e.g.
-> dm-crypt) decide whether or not to lower that value.
-> 
+Now I see this patch queued up to UML repository.
+Thanks.
 
-Actually, bio size should be limited in dm-crypt too. Because almost I/O
-from user space will be gone to dm-crypt first. I/O issue timing will be
-delayed if bio size is not limited in dm-crypt.
-Do you have any idea to decide whether takes lower bio max size, or not
-in the stacked driver?
-Add a flag to decide this in driver layer like before?
-Or insert code manually in each stacked driver if it is needed?
 
-> > diff --git a/include/linux/bio.h b/include/linux/bio.h
-> > index d0246c92a6e8..e5add63da3af 100644
-> > --- a/include/linux/bio.h
-> > +++ b/include/linux/bio.h
-> > @@ -106,6 +106,8 @@ static inline void *bio_data(struct bio *bio)
-> >  	return NULL;
-> >  }
-> >  
-> > +extern unsigned int bio_max_size(struct bio *bio);
-> 
-> You may want to define bio_max_size() as an inline function in bio.h
-> such that no additional function calls are introduced in the hot path.
 
-Thanks, I'll try.
 
-> 
-> Thanks,
-> 
-> Bart.
+--
+Best Regards
+Masahiro Yamada
