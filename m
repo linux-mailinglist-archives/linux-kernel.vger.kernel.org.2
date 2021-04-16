@@ -2,310 +2,339 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33FC2362598
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 18:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5EE362597
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 18:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235707AbhDPQW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 12:22:29 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:24214 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235507AbhDPQWO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 12:22:14 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13GGK0lG002033;
-        Fri, 16 Apr 2021 09:21:39 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- content-transfer-encoding : mime-version; s=facebook;
- bh=cDdXrSKOv1KEhREir67rHNeUTWRgxqSl7pQnA6crp/k=;
- b=DY58/sVgsXPgmBb8rcvdMvFLkuGy7Mm6OSa/y0mq5rjNO5HwIWlEOW88f3UywIAjAwRT
- xR3ktLpLM4e1TjCHklM3H0xbc4yBtBa7WPgHoBPawRWOO6ufOwUrJuMyLSAei1jEznZI
- txA/riggvSjywE34wrjURSc2C2IeGQIAvpw= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 37wv9qpyh4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 16 Apr 2021 09:21:39 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 16 Apr 2021 09:21:37 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Zu899Ig6ZZE2L4YveHPNGkn4Pq3MZb1TISUHIoyMNPK6am5kvNoEQjPXdCwwgTkNvhvd1bvMhrVnPzrFKJOcemtz+jY4H3HpQKKs2A3DmV/rhu3CFM3eEQWTm/FWPDFLxgaKg0LA/2rPhdUDASKGixgJ4twUbI/Spz4f/jqZ8SeDdcbQPWd9AuzIO0c4uQO1pGe0QpMbNmV9+0f674EaKsUnkLwZdVj0oX7y99cwJXZLBFofyaJEGFlOkS6R1AZMiqQVOt7zQDNgl24aVjAFgD47H/PUAa8g18788cTvzvxv9QFudBMnVahwH8ej74fagUWKJSfRGcJu+oFp41nGqA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=21PTcwzHSJ254U92A845ZY1WBexatWsaYBkx62t6ZUw=;
- b=l9LneewlrU682A2ZSGW7+HebbseSKD+zS9jYx7PHlMLHP3W8mXBzOYaA9m1NWay7R77P4tIueHlM1COsWMFoutrP/ltrYexAbPNz26qbjD7N3bPlvmtaxu8rwGN2+/ZzIYB0K4etnZPg9kO7XIpRYTBSIjdgJuCKwfr1fcWLgYw3puze3cOjcpDGdlMEJRf6eEp9eGg+Mes34ctXYlAEYnhBO0qvTTbwByNXeiCWivOxM8AB9eydCgOmeqhiiO7he+hXrNIGmbnWktTJSwijww8hwYKo9RLwEosMDFIK0vwubcPDn3AztfWe2Bj3ZGvA3e+aWndePrpmeZ7gC//K5w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BY5PR15MB3684.namprd15.prod.outlook.com (2603:10b6:a03:1fd::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.18; Fri, 16 Apr
- 2021 16:21:36 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::2c3d:df54:e11c:ee99]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::2c3d:df54:e11c:ee99%6]) with mapi id 15.20.4020.025; Fri, 16 Apr 2021
- 16:21:36 +0000
-Date:   Fri, 16 Apr 2021 09:21:31 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Dennis Zhou <dennis@kernel.org>
-CC:     Pratik Sampat <psampat@linux.ibm.com>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <pratik.r.sampat@gmail.com>
-Subject: Re: [PATCH v3 0/6] percpu: partial chunk depopulation
-Message-ID: <YHm5i9/j+RiKcONf@carbon.dhcp.thefacebook.com>
-References: <20210408035736.883861-1-guro@fb.com>
- <25c78660-9f4c-34b3-3a05-68c313661a46@linux.ibm.com>
- <YHmcorqNE5NpAN3G@google.com>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-In-Reply-To: <YHmcorqNE5NpAN3G@google.com>
-X-Originating-IP: [2620:10d:c090:400::5:3149]
-X-ClientProxiedBy: MWHPR12CA0035.namprd12.prod.outlook.com
- (2603:10b6:301:2::21) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:3149) by MWHPR12CA0035.namprd12.prod.outlook.com (2603:10b6:301:2::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Fri, 16 Apr 2021 16:21:35 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 59de7d21-303d-4104-3c34-08d900f3b512
-X-MS-TrafficTypeDiagnostic: BY5PR15MB3684:
-X-Microsoft-Antispam-PRVS: <BY5PR15MB36844851265C7930A87EC6E6BE4C9@BY5PR15MB3684.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sW/p4Zra+V+s2COp9VNKlz7vPBGn6l7DVsM3wNfN6ybuoHb4f9tyfUlZN77Fcf1RFW5r0e7nRuzSThITPToPkFqzTdLI+UiQCNciYTVgCg9sZjweNtE2eq3siNtLk/txkoFJItUyq1w7K2gbC3uzF1tcjOf3NtM72Nzpbp5UeVjW06+wN+BGkD3k5b1KaSVWkLxV+Q0iCsoFUZVo38bW01kdPZ18l6txlFXinjWtYs+C//QOynWsUAWI8yKs0k+mDfFoyVSQkCRxWmA3coPfqGtoS43Dpxlv7+iFIfG9TvgPSDoRmW+Bld0mlwcqxszpYuWBElMgJ/jxFDu3xcVhRT8uk0d/SUgl+x9JMHZaoX75bb5cTXF3+GZf5Ysq1Et7eFJHCmK1nCpe6vOmBbDmD/XhIsQS2/HBj4WE/X0egzneS+icslYHvDECFygOvvJPUCdxRwsSvz98FKJBCIwjM4G12hGWpgj7CsOXSBNdU9anPBPxMxn/kL1VUbgNmHWi6mca7CVDiwKg48SeP8SSBFlLR03IEF4Psk42ovZPP93QLd+FY7Ib+619ejsOC9jvw0bA0QL4L5Iom864GQkaAHY8poFwvK9vbCDaEQZKQ/HjB2e3G2SIsSsDkR77izRWkCf9EdpVbfKRLhhjHHrRewazd27MrMmxtf6CK3pNAUI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(39860400002)(396003)(366004)(346002)(16526019)(478600001)(6916009)(186003)(55016002)(66946007)(6666004)(86362001)(4326008)(8936002)(9686003)(5660300002)(316002)(83380400001)(6506007)(966005)(66476007)(53546011)(66556008)(8676002)(2906002)(52116002)(54906003)(38100700002)(7696005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?iso-8859-1?Q?DabIivbxlXLTmDG3b0nuDhYNVqNmzR2ZzocYt+37/4xnhN3WYVMm7lpFAa?=
- =?iso-8859-1?Q?v0Zq5tnqPJUh8JnmycBB50OTMC3u8ugxmOAHleGRsR4d03hoH/ccpxqya0?=
- =?iso-8859-1?Q?14GE/GrvY2rWRM4uk218Mg1RNohr2O6LBjkNtbrDhy5ScOOaRD3A8yMjKP?=
- =?iso-8859-1?Q?dDYMXvGIE4fJi5KTGcSk8ZM9d2x7KF1KknxxSP+/RpgHDjRj/FW2X/luM/?=
- =?iso-8859-1?Q?2CKdoCzqKre+bpDmmtBEL+q/NSwogS7tIeeN5EQxdz2UpRgtAT5uvb5/2m?=
- =?iso-8859-1?Q?mJNlX2on9msN7mCil/YmHta/U9I958qCJYtSKPWPzI1nGEabCKTARqnM2H?=
- =?iso-8859-1?Q?tpdYhA3WUd9jAbqOGbrnReQbnEdpnlGtxfsNCT17O/rYjPT/uz+DBw9EIc?=
- =?iso-8859-1?Q?FxMWZv5iZKyWHII0HaYD7mIuDMZxZbRMy3e0c8J8RlpfFq03rUzBmWdwMn?=
- =?iso-8859-1?Q?zPejWEKbGPg2Y3LuU7rU6XHtLG5CXgC+bIBz8XBu5TalwFiBmz4zaw3fmI?=
- =?iso-8859-1?Q?upHIIv+FiG3rFXq+4L/h7NKe7+akSZP2l+l2Bhpp75qtGoFyHg6xWn1kX2?=
- =?iso-8859-1?Q?8gn5E9SiJyK96rQkfjQcPgxNEXiPrds9lkmc8ULzbI6mr2ez842UqBpYZB?=
- =?iso-8859-1?Q?ogGjKXw7120pDiInojmnUy24s7P6x7u3V4M6CC2VD0hRa5kjnHZ/5ju6Qb?=
- =?iso-8859-1?Q?jPp3mahP453SbH+VXLaqhtmNSUMbN4+VeoNtPHMxLj/AExTNrfqj2utpkE?=
- =?iso-8859-1?Q?WKFVolVBDLhoALUBEQtqy9qonj2eIdTyHtkoZF2gII5n6etts6W6KezOAa?=
- =?iso-8859-1?Q?9KfyBl6+ZaZvNk4u6bbPh3UFX97IgZRiuUtSmizRIxbw1dCQnOeXUsx+4B?=
- =?iso-8859-1?Q?CkqYc/nhqte8+mFWxjrpyGzusFHqBY0HBdq+bBNKoBVRQ834fbHmA3k310?=
- =?iso-8859-1?Q?SuJkGUSI2BL5alp8uSfwHngGTzgCD7eZgdKvnw7gH3l4AeLMvIg+VaaE4W?=
- =?iso-8859-1?Q?LgqLoJLY78hpt75jYgqE6TWd5FPVDPiYyGCVoopd3km22xIV0+aOZt1qaD?=
- =?iso-8859-1?Q?DJ7DQSi3JuQ2hz/H6hTFTGy155QVOuYElrXiQ/xFrm27T0s9mGopFq5q7c?=
- =?iso-8859-1?Q?qCqHZlf8l0eHv3+AiRSOz6aVYEIsLMlTN3bdS6u/6ijoiJHbn+LtIuepVO?=
- =?iso-8859-1?Q?6CNFA2S3HHFlkhkxZLIwU7INouCEXQ3P1klt/OfszYlqjaaG3MlRHFewb3?=
- =?iso-8859-1?Q?dMuw0VA8ouPXx3Ide/qFGTIocI7P7jET4ZOKvO6RoWrudBnMQ+NGPM70Rq?=
- =?iso-8859-1?Q?2PeW/zIsu7i0AK31+J/jS+fYxdd9blQ7911LJugQ3KB15mshdnj1d5m8Bu?=
- =?iso-8859-1?Q?jx8Hf5bhRZ9ENzxBsZjuvPPTTXCaksiA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 59de7d21-303d-4104-3c34-08d900f3b512
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2021 16:21:36.6708
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UzTFPuyWjDjhpOgE1cPLXqasTaqdnUSsWUr8nFmceyB3KVfnBawNg5luNZWEwkNk
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3684
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: INire6wuhgkGAGsS1Vp_eOp7P2MCWqJl
-X-Proofpoint-ORIG-GUID: INire6wuhgkGAGsS1Vp_eOp7P2MCWqJl
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 1 URL was un-rewritten
+        id S235587AbhDPQW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 12:22:26 -0400
+Received: from mga04.intel.com ([192.55.52.120]:14422 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235243AbhDPQV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 12:21:59 -0400
+IronPort-SDR: zVEFsmsZ4GgsdbekcNYZLPywQ/MqMAroYE5FFQBgWG2ag06I9n+YuAQ1t5MP4O/g8XGXwZh3oJ
+ 24zEcsaIxF/A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9956"; a="192937960"
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="192937960"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 09:21:35 -0700
+IronPort-SDR: Fcy8rkeucZUzDEOy5KtWgRSLaA8b/0KVcVYLuQAwktP3nu+DcFkovbQDcBTf07g8nlx/hk9wlG
+ V2d5SU3L8wbA==
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="453389865"
+Received: from mhsedler-mobl1.amr.corp.intel.com (HELO [10.212.149.97]) ([10.212.149.97])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 09:21:34 -0700
+Subject: Re: [RFCv2 04/13] x86/kvm: Use bounce buffers for KVM memory
+ protection
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Jim Mattson <jmattson@google.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Steve Rutherford <srutherford@google.com>,
+        Peter Gonda <pgonda@google.com>,
+        David Hildenbrand <david@redhat.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210416154106.23721-1-kirill.shutemov@linux.intel.com>
+ <20210416154106.23721-5-kirill.shutemov@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <2ea287f6-9e2f-1607-c9d6-8c985438f989@intel.com>
+Date:   Fri, 16 Apr 2021 09:21:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-16_08:2021-04-16,2021-04-16 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
- suspectscore=0 clxscore=1011 adultscore=0 mlxscore=0 lowpriorityscore=0
- malwarescore=0 impostorscore=0 phishscore=0 priorityscore=1501
- mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104060000 definitions=main-2104160118
-X-FB-Internal: deliver
+In-Reply-To: <20210416154106.23721-5-kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 02:18:10PM +0000, Dennis Zhou wrote:
-> Hello,
-> 
-> On Fri, Apr 16, 2021 at 06:26:15PM +0530, Pratik Sampat wrote:
-> > Hello Roman,
-> > 
-> > I've tried the v3 patch series on a POWER9 and an x86 KVM setup.
-> > 
-> > My results of the percpu_test are as follows:
-> > Intel KVM 4CPU:4G
-> > Vanilla 5.12-rc6
-> > # ./percpu_test.sh
-> > Percpu:             1952 kB
-> > Percpu:           219648 kB
-> > Percpu:           219648 kB
-> > 
-> > 5.12-rc6 + with patchset applied
-> > # ./percpu_test.sh
-> > Percpu:             2080 kB
-> > Percpu:           219712 kB
-> > Percpu:            72672 kB
-> > 
-> > I'm able to see improvement comparable to that of what you're see too.
-> > 
-> > However, on POWERPC I'm unable to reproduce these improvements with the patchset in the same configuration
-> > 
-> > POWER9 KVM 4CPU:4G
-> > Vanilla 5.12-rc6
-> > # ./percpu_test.sh
-> > Percpu:             5888 kB
-> > Percpu:           118272 kB
-> > Percpu:           118272 kB
-> > 
-> > 5.12-rc6 + with patchset applied
-> > # ./percpu_test.sh
-> > Percpu:             6144 kB
-> > Percpu:           119040 kB
-> > Percpu:           119040 kB
-> > 
-> > I'm wondering if there's any architectural specific code that needs plumbing
-> > here?
-> > 
-> 
-> There shouldn't be. Can you send me the percpu_stats debug output before
-> and after?
+On 4/16/21 8:40 AM, Kirill A. Shutemov wrote:
+> Mirror SEV, use SWIOTLB always if KVM memory protection is enabled.
+...
+>  arch/x86/mm/mem_encrypt.c          | 44 ---------------------------
+>  arch/x86/mm/mem_encrypt_common.c   | 48 ++++++++++++++++++++++++++++++
 
-Btw, sidelined chunks are not listed in the debug output. It was actually on my
-to-do list, looks like I need to prioritize it a bit.
+The changelog need to at least mention what's going on here.  It doesn't
+prepare me at all for having code move around.
 
-> 
-> > I will also look through the code to find the reason why POWER isn't
-> > depopulating pages.
-> > 
-> > Thank you,
-> > Pratik
-> > 
-> > On 08/04/21 9:27 am, Roman Gushchin wrote:
-> > > In our production experience the percpu memory allocator is sometimes struggling
-> > > with returning the memory to the system. A typical example is a creation of
-> > > several thousands memory cgroups (each has several chunks of the percpu data
-> > > used for vmstats, vmevents, ref counters etc). Deletion and complete releasing
-> > > of these cgroups doesn't always lead to a shrinkage of the percpu memory,
-> > > so that sometimes there are several GB's of memory wasted.
-> > > 
-> > > The underlying problem is the fragmentation: to release an underlying chunk
-> > > all percpu allocations should be released first. The percpu allocator tends
-> > > to top up chunks to improve the utilization. It means new small-ish allocations
-> > > (e.g. percpu ref counters) are placed onto almost filled old-ish chunks,
-> > > effectively pinning them in memory.
-> > > 
-> > > This patchset solves this problem by implementing a partial depopulation
-> > > of percpu chunks: chunks with many empty pages are being asynchronously
-> > > depopulated and the pages are returned to the system.
-> > > 
-> > > To illustrate the problem the following script can be used:
-> > > 
-> > > --
-> > > #!/bin/bash
-> > > 
-> > > cd /sys/fs/cgroup
-> > > 
-> > > mkdir percpu_test
-> > > echo "+memory" > percpu_test/cgroup.subtree_control
-> > > 
-> > > cat /proc/meminfo | grep Percpu
-> > > 
-> > > for i in `seq 1 1000`; do
-> > >      mkdir percpu_test/cg_"${i}"
-> > >      for j in `seq 1 10`; do
-> > > 	mkdir percpu_test/cg_"${i}"_"${j}"
-> > >      done
-> > > done
-> > > 
-> > > cat /proc/meminfo | grep Percpu
-> > > 
-> > > for i in `seq 1 1000`; do
-> > >      for j in `seq 1 10`; do
-> > > 	rmdir percpu_test/cg_"${i}"_"${j}"
-> > >      done
-> > > done
-> > > 
-> > > sleep 10
-> > > 
-> > > cat /proc/meminfo | grep Percpu
-> > > 
-> > > for i in `seq 1 1000`; do
-> > >      rmdir percpu_test/cg_"${i}"
-> > > done
-> > > 
-> > > rmdir percpu_test
-> > > --
-> > > 
-> > > It creates 11000 memory cgroups and removes every 10 out of 11.
-> > > It prints the initial size of the percpu memory, the size after
-> > > creating all cgroups and the size after deleting most of them.
-> > > 
-> > > Results:
-> > >    vanilla:
-> > >      ./percpu_test.sh
-> > >      Percpu:             7488 kB
-> > >      Percpu:           481152 kB
-> > >      Percpu:           481152 kB
-> > > 
-> > >    with this patchset applied:
-> > >      ./percpu_test.sh
-> > >      Percpu:             7488 kB
-> > >      Percpu:           481408 kB
-> > >      Percpu:           135552 kB
-> > > 
-> > > So the total size of the percpu memory was reduced by more than 3.5 times.
-> > > 
-> > > v3:
-> > >    - introduced pcpu_check_chunk_hint()
-> > >    - fixed a bug related to the hint check
-> > >    - minor cosmetic changes
-> > >    - s/pretends/fixes (cc Vlastimil)
-> > > 
-> > > v2:
-> > >    - depopulated chunks are sidelined
-> > >    - depopulation happens in the reverse order
-> > >    - depopulate list made per-chunk type
-> > >    - better results due to better heuristics
-> > > 
-> > > v1:
-> > >    - depopulation heuristics changed and optimized
-> > >    - chunks are put into a separate list, depopulation scan this list
-> > >    - chunk->isolated is introduced, chunk->depopulate is dropped
-> > >    - rearranged patches a bit
-> > >    - fixed a panic discovered by krobot
-> > >    - made pcpu_nr_empty_pop_pages per chunk type
-> > >    - minor fixes
-> > > 
-> > > rfc:
-> > >    https://lwn.net/Articles/850508/ 
-> > > 
-> > > 
-> > > Roman Gushchin (6):
-> > >    percpu: fix a comment about the chunks ordering
-> > >    percpu: split __pcpu_balance_workfn()
-> > >    percpu: make pcpu_nr_empty_pop_pages per chunk type
-> > >    percpu: generalize pcpu_balance_populated()
-> > >    percpu: factor out pcpu_check_chunk_hint()
-> > >    percpu: implement partial chunk depopulation
-> > > 
-> > >   mm/percpu-internal.h |   4 +-
-> > >   mm/percpu-stats.c    |   9 +-
-> > >   mm/percpu.c          | 306 +++++++++++++++++++++++++++++++++++--------
-> > >   3 files changed, 261 insertions(+), 58 deletions(-)
-> > > 
-> > 
-> 
-> Roman, sorry for the delay. I'm looking to apply this today to for-5.14.
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index d197b3beb904..c51d14db5620 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -812,6 +812,7 @@ config KVM_GUEST
+>  	select ARCH_CPUIDLE_HALTPOLL
+>  	select X86_HV_CALLBACK_VECTOR
+>  	select X86_MEM_ENCRYPT_COMMON
+> +	select SWIOTLB
+>  	default y
+>  	help
+>  	  This option enables various optimizations for running under the KVM
 
-Great, thanks!
+So, this feature is always compiled in with KVM.  Could you say a couple
+of things about that?  Why did you decide not have a Kconfig option for it?
+
+> diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
+> index 31c4df123aa0..a748b30c2f23 100644
+> --- a/arch/x86/include/asm/mem_encrypt.h
+> +++ b/arch/x86/include/asm/mem_encrypt.h
+> @@ -47,10 +47,8 @@ int __init early_set_memory_encrypted(unsigned long vaddr, unsigned long size);
+>  
+>  void __init mem_encrypt_free_decrypted_mem(void);
+>  
+> -/* Architecture __weak replacement functions */
+> -void __init mem_encrypt_init(void);
+> -
+>  void __init sev_es_init_vc_handling(void);
+> +
+>  bool sme_active(void);
+>  bool sev_active(void);
+>  bool sev_es_active(void);
+> @@ -91,6 +89,9 @@ static inline void mem_encrypt_free_decrypted_mem(void) { }
+>  
+>  #endif	/* CONFIG_AMD_MEM_ENCRYPT */
+>  
+> +/* Architecture __weak replacement functions */
+> +void __init mem_encrypt_init(void);
+
+FWIW, I'd rather have the code movement in separate patches from the
+functional changes.
+
+>  /*
+>   * The __sme_pa() and __sme_pa_nodebug() macros are meant for use when
+>   * writing to or comparing values from the cr3 register.  Having the
+> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+> index aed6034fcac1..ba179f5ca198 100644
+> --- a/arch/x86/kernel/kvm.c
+> +++ b/arch/x86/kernel/kvm.c
+> @@ -26,6 +26,7 @@
+>  #include <linux/kprobes.h>
+>  #include <linux/nmi.h>
+>  #include <linux/swait.h>
+> +#include <linux/swiotlb.h>
+>  #include <asm/timer.h>
+>  #include <asm/cpu.h>
+>  #include <asm/traps.h>
+> @@ -765,6 +766,7 @@ static void __init kvm_init_platform(void)
+>  		pr_info("KVM memory protection enabled\n");
+>  		mem_protected = true;
+>  		setup_force_cpu_cap(X86_FEATURE_KVM_MEM_PROTECTED);
+> +		swiotlb_force = SWIOTLB_FORCE;
+>  	}
+>  }
+>  
+> diff --git a/arch/x86/kernel/pci-swiotlb.c b/arch/x86/kernel/pci-swiotlb.c
+> index c2cfa5e7c152..814060a6ceb0 100644
+> --- a/arch/x86/kernel/pci-swiotlb.c
+> +++ b/arch/x86/kernel/pci-swiotlb.c
+> @@ -13,6 +13,7 @@
+>  #include <asm/dma.h>
+>  #include <asm/xen/swiotlb-xen.h>
+>  #include <asm/iommu_table.h>
+> +#include <asm/kvm_para.h>
+>  
+>  int swiotlb __read_mostly;
+>  
+> @@ -49,7 +50,7 @@ int __init pci_swiotlb_detect_4gb(void)
+>  	 * buffers are allocated and used for devices that do not support
+>  	 * the addressing range required for the encryption mask.
+>  	 */
+> -	if (sme_active())
+> +	if (sme_active() || kvm_mem_protected())
+>  		swiotlb = 1;
+>  
+>  	return swiotlb;
+
+While I don't doubt you got it right, it would be nice to also explain
+in the changelog why you manipulate both 'swiotlb_force' and 'swiotlb'.
+
+> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+> index 9ca477b9b8ba..3478f20fb46f 100644
+> --- a/arch/x86/mm/mem_encrypt.c
+> +++ b/arch/x86/mm/mem_encrypt.c
+> @@ -409,47 +409,3 @@ void __init mem_encrypt_free_decrypted_mem(void)
+>  
+>  	free_init_pages("unused decrypted", vaddr, vaddr_end);
+>  }
+> -
+> -static void print_mem_encrypt_feature_info(void)
+> -{
+> -	pr_info("AMD Memory Encryption Features active:");
+> -
+> -	/* Secure Memory Encryption */
+> -	if (sme_active()) {
+> -		/*
+> -		 * SME is mutually exclusive with any of the SEV
+> -		 * features below.
+> -		 */
+> -		pr_cont(" SME\n");
+> -		return;
+> -	}
+> -
+> -	/* Secure Encrypted Virtualization */
+> -	if (sev_active())
+> -		pr_cont(" SEV");
+> -
+> -	/* Encrypted Register State */
+> -	if (sev_es_active())
+> -		pr_cont(" SEV-ES");
+> -
+> -	pr_cont("\n");
+> -}
+> -
+> -/* Architecture __weak replacement functions */
+> -void __init mem_encrypt_init(void)
+> -{
+> -	if (!sme_me_mask)
+> -		return;
+> -
+> -	/* Call into SWIOTLB to update the SWIOTLB DMA buffers */
+> -	swiotlb_update_mem_attributes();
+> -
+> -	/*
+> -	 * With SEV, we need to unroll the rep string I/O instructions.
+> -	 */
+> -	if (sev_active())
+> -		static_branch_enable(&sev_enable_key);
+> -
+> -	print_mem_encrypt_feature_info();
+> -}
+> -
+> diff --git a/arch/x86/mm/mem_encrypt_common.c b/arch/x86/mm/mem_encrypt_common.c
+> index 6bf0718bb72a..351b77361a5d 100644
+> --- a/arch/x86/mm/mem_encrypt_common.c
+> +++ b/arch/x86/mm/mem_encrypt_common.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/mem_encrypt.h>
+>  #include <linux/dma-direct.h>
+>  #include <asm/kvm_para.h>
+> +#include <asm/mem_encrypt.h>
+>  
+>  /* Override for DMA direct allocation check - ARCH_HAS_FORCE_DMA_UNENCRYPTED */
+>  bool force_dma_unencrypted(struct device *dev)
+> @@ -37,3 +38,50 @@ bool force_dma_unencrypted(struct device *dev)
+>  
+>  	return false;
+>  }
+> +
+> +static void print_mem_encrypt_feature_info(void)
+> +{
+> +	if (kvm_mem_protected()) {
+> +		pr_info("KVM memory protection enabled\n");
+> +		return;
+> +	}
+
+I understand that they're touching similar areas of code, but I'm a bit
+unnerved with memory protection being in all these "encryption"
+functions and files.
+
+I think some thoughtful renaming is in order.
+
+> +	pr_info("AMD Memory Encryption Features active:");
+> +
+> +	/* Secure Memory Encryption */
+> +	if (sme_active()) {
+> +		/*
+> +		 * SME is mutually exclusive with any of the SEV
+> +		 * features below.
+> +		 */
+> +		pr_cont(" SME\n");
+> +		return;
+> +	}
+> +
+> +	/* Secure Encrypted Virtualization */
+> +	if (sev_active())
+> +		pr_cont(" SEV");
+> +
+> +	/* Encrypted Register State */
+> +	if (sev_es_active())
+> +		pr_cont(" SEV-ES");
+> +
+> +	pr_cont("\n");
+> +}
+
+This, for instance really shouldn't be in common code.  It should be in
+an AMD-specific area.
+
+> +void __init mem_encrypt_init(void)
+> +{
+> +	if (!sme_me_mask && !kvm_mem_protected())
+> +		return;
+> +
+> +	/* Call into SWIOTLB to update the SWIOTLB DMA buffers */
+> +	swiotlb_update_mem_attributes();
+> +
+> +	/*
+> +	 * With SEV, we need to unroll the rep string I/O instructions.
+> +	 */
+> +	if (sev_active())
+> +		static_branch_enable(&sev_enable_key);
+> +
+> +	print_mem_encrypt_feature_info();
+> +}
+
+This function is called like this:
+
+>         /*
+>          * This needs to be called before any devices perform DMA
+>          * operations that might use the SWIOTLB bounce buffers. It will
+>          * mark the bounce buffers as decrypted so that their usage will
+>          * not cause "plain-text" data to be decrypted when accessed.
+>          */
+>         mem_encrypt_init();
+
+So, maybe this should be x86_swiotlb_init() or something.  Then, move
+the print_mem_encrypt_feature_info() elsewhere, probably back out to
+mem_init().  Maybe even just call it print_arch_mem_features() or something.
