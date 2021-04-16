@@ -2,115 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A862361E6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3154361E6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235350AbhDPLHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 07:07:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31471 "EHLO
+        id S241670AbhDPLHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 07:07:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43298 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237997AbhDPLHf (ORCPT
+        by vger.kernel.org with ESMTP id S235011AbhDPLHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 16 Apr 2021 07:07:35 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
         s=mimecast20190719; t=1618571230;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nHPAeuJEveCP4Fc1NFrF0y8J4SMSH0qhebL+YdyGc54=;
-        b=hs2KVe0ErjmlUC7e9lnOzIb1clqo1J0cr2JNT0AKAzhRbQGQtGUmNTq4Yee9GXpSuWCH56
-        CPcnMavFdaTdxUDI3v5kutiWP8N/EZVmUaVRyUfk9gCrUiuYnUHTfnpzEMLlkQhKCCPYbB
-        5n4TR/JmFcEtzTU1wuFeJU8t7ZbVEDk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-587-DgoPjzdyORO5kVrtif4suA-1; Fri, 16 Apr 2021 07:07:08 -0400
-X-MC-Unique: DgoPjzdyORO5kVrtif4suA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8BB7F8030A1;
-        Fri, 16 Apr 2021 11:07:07 +0000 (UTC)
-Received: from dhcp-128-65.nay.redhat.com (ovpn-12-55.pek2.redhat.com [10.72.12.55])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 52F361C4;
-        Fri, 16 Apr 2021 11:07:04 +0000 (UTC)
-Date:   Fri, 16 Apr 2021 19:07:01 +0800
-From:   Dave Young <dyoung@redhat.com>
-To:     Mike Galbraith <efault@gmx.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
-        kexec@lists.infradead.org
-Subject: Re: x86/crash: fix crash_setup_memmap_entries() out-of-bounds access
-Message-ID: <20210416110701.GA3835@dhcp-128-65.nay.redhat.com>
-References: <9efaad2ba042b8791cbe8c3e7cad491fe05e06eb.camel@gmx.de>
+        bh=GPi+c282xzGJKGtsxEXKiuYYzkH/n0b1SG5+hHDFjQY=;
+        b=WgApvM0b40uNVlkMkytzWlVKqZkCa7LeGfcNxKOWsjkbehjB1lesGsIwj2U1TIU0b0pNy+
+        GXozk8SHxjd1lcjRoR5RjK3aNQh3vZmPJeL0QqwguodI7GcBFNuGBVCWwA8M1979p37ZoP
+        KzCPl2Usgbz6ALKEoJGwLK0ISxdsqNE=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-291-RlOoPjt6PCyNG30eVHyLhg-1; Fri, 16 Apr 2021 07:07:08 -0400
+X-MC-Unique: RlOoPjt6PCyNG30eVHyLhg-1
+Received: by mail-wm1-f70.google.com with SMTP id g199-20020a1c9dd00000b02901355dd71edaso86346wme.7
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 04:07:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=GPi+c282xzGJKGtsxEXKiuYYzkH/n0b1SG5+hHDFjQY=;
+        b=Hi5AwY2WooCp97Xh0JcAorGw9WGMc5FVQV06NyeKB0dKKbNgROuVdyGIfrgbr08A6i
+         27viON1jnoACM5dMGVyf0T8SKqrJNL1QnHPQC2PlLZxfrsziYElNAtcTJUIorpkCkGlO
+         O5n+FsXmgIZ2VQlX7IYEo1nxYwYkPQ2hAx8B0iSSW7uZuXSUb5PMukldWhr+Mu+OzDin
+         2kCw5dD9lBXzIsWOWmeBH4E2pl9siRc0DFzBRw7V3+VuQedUEoFq6o/UlwHhlYPV+7DZ
+         YLjyi9EQbMKEBHyBBZUkjiPnqGwtgcLLtjgIAQ7bO7wQxhRPo8oHP2g/bt1hqK6VbrPd
+         gdBQ==
+X-Gm-Message-State: AOAM530tbRV2wNaSu1i9qrm6Gs3CcwyUzrhkRLh87KCXFym7WNeqlrjb
+        u5SxaZI+BfkdH+EmaQZMxL+90p7Z948d8EZK/1Q/AXyjpAR1fT7ALm9VhwnRMdFnA8hVEAXDb2u
+        PGn7CewJNyBfzE8CvU7N7sKF1M0E2fVpxYoltF/FtJorvG9N9fD+Q/EY1dpxsKjTIIchutk+a
+X-Received: by 2002:a1c:e906:: with SMTP id q6mr7688002wmc.138.1618571227580;
+        Fri, 16 Apr 2021 04:07:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw0mCPuIda0sp2AYe64aqgt78fHBJ/WWgEzW5gY9+iWGAmyRJ/Af2N2BSCTDa29ihnvOvgA1g==
+X-Received: by 2002:a1c:e906:: with SMTP id q6mr7687976wmc.138.1618571227301;
+        Fri, 16 Apr 2021 04:07:07 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c64fb.dip0.t-ipconnect.de. [91.12.100.251])
+        by smtp.gmail.com with ESMTPSA id m15sm6348716wrx.32.2021.04.16.04.07.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Apr 2021 04:07:07 -0700 (PDT)
+Subject: Re: [PATCH v8 4/8] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210416102153.8794-1-osalvador@suse.de>
+ <20210416102153.8794-5-osalvador@suse.de>
+ <df8220ac-4214-5ff6-0048-35553fea8c8c@redhat.com>
+ <YHlpAvTPuRZtKo0i@localhost.localdomain>
+ <6e659d5b-c3f1-bd72-a3af-235d6bc55b0b@redhat.com>
+ <YHlufVk+2O7HsXJh@localhost.localdomain>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <b0f5f87c-af03-173c-17e3-ccf15ccb9cb1@redhat.com>
+Date:   Fri, 16 Apr 2021 13:07:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9efaad2ba042b8791cbe8c3e7cad491fe05e06eb.camel@gmx.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <YHlufVk+2O7HsXJh@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
 
-Thanks for the patch! I suggest always cc kexec list for kexec/kdump
-patches.
-On 04/15/21 at 07:56pm, Mike Galbraith wrote:
-> x86/crash: fix crash_setup_memmap_entries() KASAN vmalloc-out-of-bounds gripe
-> 
-> [   15.428011] BUG: KASAN: vmalloc-out-of-bounds in crash_setup_memmap_entries+0x17e/0x3a0
-> [   15.428018] Write of size 8 at addr ffffc90000426008 by task kexec/1187
-> 
-> (gdb) list *crash_setup_memmap_entries+0x17e
-> 0xffffffff8107cafe is in crash_setup_memmap_entries (arch/x86/kernel/crash.c:322).
-> 317                                      unsigned long long mend)
-> 318     {
-> 319             unsigned long start, end;
-> 320
-> 321             cmem->ranges[0].start = mstart;
-> 322             cmem->ranges[0].end = mend;
-> 323             cmem->nr_ranges = 1;
-> 324
-> 325             /* Exclude elf header region */
-> 326             start = image->arch.elf_load_addr;
-> (gdb)
-> 
-> We're excluding two ranges, allocate the scratch space we need to do that.
+> -int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
+> -		       int online_type, int nid)
+> +int mhp_init_memmap_on_memory(unsigned long pfn, unsigned long nr_pages,
+> +			      struct zone *zone)
+> +{
+> +	unsigned long end_pfn = pfn + nr_pages;
+> +	int ret;
+> +
+> +	ret = kasan_add_zero_shadow(__va(PFN_PHYS(pfn)), PFN_PHYS(nr_pages));
+> +	if (ret)
+> +		return ret;
+> +
+> +	/*
+> +	 * Initialize vmemmap pages with the corresponding node, zone links set.
 
-I think 1 range should be fine, have you tested 1?
+The "set" sounds weird. I'd remove that comment completely.
 
-The code is just excluding the elf header space which will be loaded
-first before anything else so I assume it will be just at the start of
-the crashkernel resource region.  Thus [a b] after exclude the start
-part will be [c b].  But I have not read the code for long time, maybe I
-need to double check.
+> +	 */
+> +	move_pfn_range_to_zone(zone, pfn, nr_pages, NULL, MIGRATE_UNMOVABLE);
+> +
+> +	/*
+> +	 * It might be that the vmemmap_pages fully span sections. If that is
+> +	 * the case, mark those sections online here as otherwise they will be
+> +	 * left offline.
+> +	 */
+> +	if (nr_pages >= PAGES_PER_SECTION)
+> +	        online_mem_sections(pfn, ALIGN_DOWN(end_pfn, PAGES_PER_SECTION));
+> +
+> +	return ret;
+> +}
+> +
+> +void mhp_deinit_memmap_on_memory(unsigned long pfn, unsigned long nr_pages)
+> +{
+> +	unsigned long end_pfn = pfn + nr_pages;
+> +        /*
+> +	 * The pages associated with this vmemmap have been offlined, so
+> +	 * we can reset its state here.
+> +	 */
+> +	remove_pfn_range_from_zone(page_zone(pfn_to_page(pfn)), pfn, nr_pages);
+> +	kasan_remove_zero_shadow(__va(PFN_PHYS(pfn)), PFN_PHYS(nr_pages));
+> +
+> +	/*
+> +	 * It might be that the vmemmap_pages fully span sections. If that is
+> +	 * the case, mark those sections offline here as otherwise they will be
+> +	 * left online.
+> +	 */
+> +	if (nr_pages >= PAGES_PER_SECTION)
+> +		offline_mem_sections(pfn, ALIGN_DOWN(end_pfn, PAGES_PER_SECTION));
 
-But anyway 2 would be good since the code is obscure we can easily miss
-it in the future.  See how other people think.
+It's usually best if you undo stuff in the complete opposite order. For 
+example at this point, the memmap might already have been poisoned, yet 
+pfn_to_online_page() would return true. You should do that first.
 
-> 
-> Signed-off-by: Mike Galbraith <efault@gmx.de>
-> ---
->  arch/x86/kernel/crash.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- a/arch/x86/kernel/crash.c
-> +++ b/arch/x86/kernel/crash.c
-> @@ -337,7 +337,7 @@ int crash_setup_memmap_entries(struct ki
->  	struct crash_memmap_data cmd;
->  	struct crash_mem *cmem;
-> 
-> -	cmem = vzalloc(sizeof(struct crash_mem));
-> +	cmem = vzalloc(sizeof(struct crash_mem)+(2*sizeof(struct crash_mem_range)));
+Apart from that, nothing jumped at me :)
 
-Thanks for the patch, can you try below?
-vzalloc(struct_size(cmem, ranges, 2));
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
+-- 
+Thanks,
 
->  	if (!cmem)
->  		return -ENOMEM;
-> 
-> 
-
-Thanks
-Dave
+David / dhildenb
 
