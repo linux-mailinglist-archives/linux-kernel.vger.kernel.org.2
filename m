@@ -2,141 +2,499 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9669F361BD6
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05FDA361BDA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240545AbhDPIgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 04:36:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54612 "EHLO
+        id S239902AbhDPIg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 04:36:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20395 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239093AbhDPIga (ORCPT
+        by vger.kernel.org with ESMTP id S239093AbhDPIgu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 04:36:30 -0400
+        Fri, 16 Apr 2021 04:36:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618562166;
+        s=mimecast20190719; t=1618562185;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=gAIh4WsVS/ayzhp5HjJe99OkPRqXPu6YrMhzHKnuu4E=;
-        b=WN/DN/lFgtSz2MQF9gvZefpOfOtoSiqDggFsEuNIJHlJzjj3HcwyR+Rgizimoz8dBV1M7y
-        Za08/gB5l5TTJHzxSu5sr6bx/uigrWMac4spP1sJXW77+M9OmkUT0iIAcHWfyq1YajwMGz
-        v8rooabi5h/F/DagGAxm7DoucbuoKvY=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-321-u1nZd45cOEqySIFYD54USQ-1; Fri, 16 Apr 2021 04:36:04 -0400
-X-MC-Unique: u1nZd45cOEqySIFYD54USQ-1
-Received: by mail-ed1-f72.google.com with SMTP id w15-20020a056402268fb02903828f878ec5so6593331edd.5
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 01:36:03 -0700 (PDT)
+        bh=DgeYEiv95IkJvUMRSG8MIyXHooAfO2THphAXRRpYqoA=;
+        b=duLq5KuewPX4DVVaW63rvBu+3dsgTy5jOPdFBNldoL4s2/OzSg//YquX7xXI5+K++POcSo
+        nFfw6UjQwMlaFdnXDYKfBKH+kPAsW6eXuNoORfOWFxCyhQI67Jhe8oz8kxYlk4CSip36tP
+        qKsuBIYyCP8ExKYLAgL6WTlfXt2WcVs=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-64-VfeUIKP_Pd2YK8yearO8Zw-1; Fri, 16 Apr 2021 04:36:23 -0400
+X-MC-Unique: VfeUIKP_Pd2YK8yearO8Zw-1
+Received: by mail-ed1-f70.google.com with SMTP id co5-20020a0564020c05b02903825bcdad12so6586543edb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 01:36:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=gAIh4WsVS/ayzhp5HjJe99OkPRqXPu6YrMhzHKnuu4E=;
-        b=BE1+CdI2rh3iv+xslQWpUVDudMPyuVmnI4BsBTRzSzJOyOqv3rlPXTKta/8NfmrvrE
-         gklOn7SLFrW07omdBpSSKKHOHQz5PaBwtLCjEBTg5IO2wnKMP0NPRWjtuYZVg1+NKuPX
-         BK0MdjsWAnrRaKsM7ts1mvf2+JtX1Oa+XMz2XKWcviLGogB1xpdljB7rIXASJbOD/tQC
-         YcftBM8GbwmP5PW5s6fB1P9SYFi7sE2G1FfhQdyQN1QN8duyXydBBehX2S7OHMGqikDJ
-         RZmlwRCr7RSPiDC1eJAa8mEGUPJ1nm/shmZuNMlGzPKxoKNE+0yPJdumoQo5da1sKbxH
-         BKHA==
-X-Gm-Message-State: AOAM530Z+cKcVjBi+yl+/rVAiCybeEF/nxKbj6H+6DkkdByiegGYxMNJ
-        wttw+yYbQZW+eQd1t4kOUkVjU6/HbwoPDyIyVeudEJO2gDiHMpCyf8aueDrddjieoKvcl9yolDp
-        4Zrhk74hDJej6oMUkN3DOoI85
-X-Received: by 2002:a17:906:2b03:: with SMTP id a3mr7529694ejg.481.1618562162786;
-        Fri, 16 Apr 2021 01:36:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxgAusKooTgufLR2oxQaNZJSdVLxPdce8E3XlDxu6rxKUOMWItS6xghBQPlz5lFNQCfdDw8FQ==
-X-Received: by 2002:a17:906:2b03:: with SMTP id a3mr7529674ejg.481.1618562162630;
-        Fri, 16 Apr 2021 01:36:02 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c64fb.dip0.t-ipconnect.de. [91.12.100.251])
-        by smtp.gmail.com with ESMTPSA id k16sm3764251ejv.37.2021.04.16.01.36.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Apr 2021 01:36:02 -0700 (PDT)
-Subject: Re: [PATCH v9 6/7] mm: Make alloc_contig_range handle in-use hugetlb
- pages
-To:     Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>
-References: <20210416070023.4742-1-osalvador@suse.de>
- <20210416070023.4742-7-osalvador@suse.de>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <02de399f-1ecf-98d6-6a78-1301f9a97d5a@redhat.com>
-Date:   Fri, 16 Apr 2021 10:36:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=DgeYEiv95IkJvUMRSG8MIyXHooAfO2THphAXRRpYqoA=;
+        b=CPylWnbSNNtqUcfvc+1t4IXZpmvRb/LPYy+r/024Wh09mw2BHfHTEPI+f8taVdH3kc
+         MNR1e41d9YxIIDhz7G7GpVmB+6PoyZFl2SdQBohWou5T5k+W4mSnEQxgzsXwIsuCOLB4
+         xHBi3H6AEjw6hIITjNoFyYhjhOopxgA2GxXdf2eExRlGzMz6LtdJwgXdB3CAO+nLpKHJ
+         +ri73mSr1EJDz0RZitv+YW6VJewF1fuXH9WkXC8qVcgp5DSP7WjwIpEIlM1a0UsYc6At
+         zXXfhBsGoHumAQnFL4cyo4sngOkjCRwXLMlBBsKuMJFicZ6BeXOY4DFX9g/g3fT9hh+9
+         sKgA==
+X-Gm-Message-State: AOAM531uskz0P1iZI7O90WZrVaD9mAe7K4pKHIiCVbxMSKI1GrgRMcwd
+        VoNJFPNiDzx7p8FVynzr5LIknZQqsK3e9i52exIJzdVSGO+QBkXc2WItHMLADGiDhijJJaNzEJa
+        QiN1sZ1Fz2xy7FfXV8MF5z8Yd
+X-Received: by 2002:a17:906:2dd9:: with SMTP id h25mr7190587eji.6.1618562182532;
+        Fri, 16 Apr 2021 01:36:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxu/kRBAic/sMHzEYtmBkU/3YbFv7PRHntpXZkq/H94+8SVuHJDHXL4OzJkJAX7B7XI6pAp6w==
+X-Received: by 2002:a17:906:2dd9:: with SMTP id h25mr7190570eji.6.1618562182335;
+        Fri, 16 Apr 2021 01:36:22 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id a17sm3710462ejf.20.2021.04.16.01.36.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 01:36:21 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Vineeth Pillai <viremana@linux.microsoft.com>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org,
+        Lan Tianyu <Tianyu.Lan@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>
+Subject: Re: [PATCH v2 3/7] KVM: x86: hyper-v: Move the remote TLB flush
+ logic out of vmx
+In-Reply-To: <92207433d0784e123347caaa955c04fbec51eaa7.1618492553.git.viremana@linux.microsoft.com>
+References: <cover.1618492553.git.viremana@linux.microsoft.com>
+ <92207433d0784e123347caaa955c04fbec51eaa7.1618492553.git.viremana@linux.microsoft.com>
+Date:   Fri, 16 Apr 2021 10:36:20 +0200
+Message-ID: <87y2di7hiz.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210416070023.4742-7-osalvador@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Vineeth Pillai <viremana@linux.microsoft.com> writes:
 
-> -int isolate_or_dissolve_huge_page(struct page *page)
-> +int isolate_or_dissolve_huge_page(struct page *page, struct list_head *list)
->   {
->   	struct hstate *h;
->   	struct page *head;
-> +	int ret = -EBUSY;
->   
->   	/*
->   	 * The page might have been dissolved from under our feet, so make sure
-> @@ -2373,13 +2380,18 @@ int isolate_or_dissolve_huge_page(struct page *page)
->   
->   	/*
->   	 * Fence off gigantic pages as there is a cyclic dependency between
-> -	 * alloc_contig_range and them. Return -ENOME as this has the effect
-> +	 * alloc_contig_range and them. Return -ENOMEM as this has the effect
-
-Nit: belongs into previous patch.
-
->   	 * of bailing out right away without further retrying.
->   	 */
->   	if (hstate_is_gigantic(h))
->   		return -ENOMEM;
->   
-> -	return alloc_and_dissolve_huge_page(h, head);
-> +	if (page_count(head) && isolate_huge_page(head, list))
-> +		ret = 0;
-> +	else if (!page_count(head))
-> +		ret = alloc_and_dissolve_huge_page(h, head, list);
+> Currently the remote TLB flush logic is specific to VMX.
+> Move it to a common place so that SVM can use it as well.
+>
+> Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h | 14 +++++
+>  arch/x86/kvm/hyperv.c           | 87 +++++++++++++++++++++++++++++
+>  arch/x86/kvm/hyperv.h           | 20 +++++++
+>  arch/x86/kvm/vmx/vmx.c          | 97 +++------------------------------
+>  arch/x86/kvm/vmx/vmx.h          | 10 ----
+>  arch/x86/kvm/x86.c              |  9 ++-
+>  6 files changed, 136 insertions(+), 101 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 877a4025d8da..ed84c15d18bc 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -838,6 +838,15 @@ struct kvm_vcpu_arch {
+>  
+>  	/* Protected Guests */
+>  	bool guest_state_protected;
 > +
+> +#if IS_ENABLED(CONFIG_HYPERV)
+> +	/*
+> +	 * Two Dimensional paging CR3
+> +	 * EPTP for Intel
+> +	 * nCR3 for AMD
+> +	 */
+> +	u64 tdp_pointer;
+> +#endif
+>  };
+>  
+>  struct kvm_lpage_info {
+> @@ -1079,6 +1088,11 @@ struct kvm_arch {
+>  	 */
+>  	spinlock_t tdp_mmu_pages_lock;
+>  #endif /* CONFIG_X86_64 */
+> +
+> +#if IS_ENABLED(CONFIG_HYPERV)
+> +	int tdp_pointers_match;
+> +	spinlock_t tdp_pointer_lock;
+> +#endif
+>  };
+>  
+>  struct kvm_vm_stat {
+> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> index 58fa8c029867..614b4448a028 100644
+> --- a/arch/x86/kvm/hyperv.c
+> +++ b/arch/x86/kvm/hyperv.c
+
+I still think that using arch/x86/kvm/hyperv.[ch] for KVM-on-Hyper-V is
+misleading. Currently, these are dedicated to emulating Hyper-V
+interface to KVM guests and this is orthogonal to nesting KVM on
+Hyper-V. As a solution, I'd suggest you either:
+- Put the stuff in x86.c
+- Create a dedicated set of files, e.g. 'kvmonhyperv.[ch]' (I also
+thought about 'hyperv_host.[ch]' but then I realized it's equally
+misleading as one can read this as 'KVM is acting as Hyper-V host').
+
+Personally, I'd vote for the later. Besides eliminating confusion, the
+benefit of having dedicated files is that we can avoid compiling them
+completely when !IS_ENABLED(CONFIG_HYPERV) (#ifdefs in C are ugly).
+
+
+> @@ -32,6 +32,7 @@
+>  #include <linux/eventfd.h>
+>  
+>  #include <asm/apicdef.h>
+> +#include <asm/mshyperv.h>
+>  #include <trace/events/kvm.h>
+>  
+>  #include "trace.h"
+> @@ -2180,3 +2181,89 @@ int kvm_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
+>  
+>  	return 0;
+>  }
+> +
+> +#if IS_ENABLED(CONFIG_HYPERV)
+> +/* check_tdp_pointer() should be under protection of tdp_pointer_lock. */
+> +static void check_tdp_pointer_match(struct kvm *kvm)
+> +{
+> +	u64 tdp_pointer = INVALID_PAGE;
+> +	bool valid_tdp = false;
+> +	struct kvm_vcpu *vcpu;
+> +	int i;
+> +
+> +	kvm_for_each_vcpu(i, vcpu, kvm) {
+> +		if (!valid_tdp) {
+> +			tdp_pointer = vcpu->arch.tdp_pointer;
+> +			valid_tdp = true;
+> +			continue;
+> +		}
+> +
+> +		if (tdp_pointer != vcpu->arch.tdp_pointer) {
+> +			kvm->arch.tdp_pointers_match = TDP_POINTERS_MISMATCH;
+> +			return;
+> +		}
+> +	}
+> +
+> +	kvm->arch.tdp_pointers_match = TDP_POINTERS_MATCH;
+> +}
+> +
+> +static int kvm_fill_hv_flush_list_func(struct hv_guest_mapping_flush_list *flush,
+> +		void *data)
+> +{
+> +	struct kvm_tlb_range *range = data;
+> +
+> +	return hyperv_fill_flush_guest_mapping_list(flush, range->start_gfn,
+> +			range->pages);
+> +}
+> +
+> +static inline int __hv_remote_flush_tlb_with_range(struct kvm *kvm,
+> +		struct kvm_vcpu *vcpu, struct kvm_tlb_range *range)
+> +{
+> +	u64 tdp_pointer = vcpu->arch.tdp_pointer;
+> +
+> +	/*
+> +	 * FLUSH_GUEST_PHYSICAL_ADDRESS_SPACE hypercall needs address
+> +	 * of the base of EPT PML4 table, strip off EPT configuration
+> +	 * information.
+> +	 */
+> +	if (range)
+> +		return hyperv_flush_guest_mapping_range(tdp_pointer & PAGE_MASK,
+> +				kvm_fill_hv_flush_list_func, (void *)range);
+> +	else
+> +		return hyperv_flush_guest_mapping(tdp_pointer & PAGE_MASK);
+> +}
+> +
+> +int kvm_hv_remote_flush_tlb_with_range(struct kvm *kvm,
+> +		struct kvm_tlb_range *range)
+> +{
+> +	struct kvm_vcpu *vcpu;
+> +	int ret = 0, i;
+> +
+> +	spin_lock(&kvm->arch.tdp_pointer_lock);
+> +
+> +	if (kvm->arch.tdp_pointers_match == TDP_POINTERS_CHECK)
+> +		check_tdp_pointer_match(kvm);
+> +
+> +	if (kvm->arch.tdp_pointers_match != TDP_POINTERS_MATCH) {
+> +		kvm_for_each_vcpu(i, vcpu, kvm) {
+> +			/* If tdp_pointer is invalid pointer, bypass flush request. */
+> +			if (VALID_PAGE(vcpu->arch.tdp_pointer))
+> +				ret |= __hv_remote_flush_tlb_with_range(
+> +					kvm, vcpu, range);
+> +		}
+> +	} else {
+> +		ret = __hv_remote_flush_tlb_with_range(kvm,
+> +				kvm_get_vcpu(kvm, 0), range);
+> +	}
+> +
+> +	spin_unlock(&kvm->arch.tdp_pointer_lock);
 > +	return ret;
->   }
->   
->   struct page *alloc_huge_page(struct vm_area_struct *vma,
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index bb8321026c0c..5199b9696bab 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1703,8 +1703,9 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
->   	LIST_HEAD(clean_pages);
->   
->   	list_for_each_entry_safe(page, next, page_list, lru) {
-> -		if (page_is_file_lru(page) && !PageDirty(page) &&
-> -		    !__PageMovable(page) && !PageUnevictable(page)) {
-> +		if (!PageHuge(page) && page_is_file_lru(page) &&
-> +		    !PageDirty(page) && !__PageMovable(page) &&
-> +		    !PageUnevictable(page)) {
+> +}
+> +EXPORT_SYMBOL_GPL(kvm_hv_remote_flush_tlb_with_range);
+> +
+> +int kvm_hv_remote_flush_tlb(struct kvm *kvm)
+> +{
+> +	return kvm_hv_remote_flush_tlb_with_range(kvm, NULL);
+> +}
+> +EXPORT_SYMBOL_GPL(kvm_hv_remote_flush_tlb);
+> +#endif
+> diff --git a/arch/x86/kvm/hyperv.h b/arch/x86/kvm/hyperv.h
+> index e951af1fcb2c..b27c6f47f58d 100644
+> --- a/arch/x86/kvm/hyperv.h
+> +++ b/arch/x86/kvm/hyperv.h
+> @@ -50,6 +50,12 @@
+>  /* Hyper-V HV_X64_MSR_SYNDBG_OPTIONS bits */
+>  #define HV_X64_SYNDBG_OPTION_USE_HCALLS		BIT(2)
+>  
+> +enum tdp_pointers_status {
+> +	TDP_POINTERS_CHECK = 0,
+> +	TDP_POINTERS_MATCH = 1,
+> +	TDP_POINTERS_MISMATCH = 2
+> +};
+> +
+>  static inline struct kvm_hv *to_kvm_hv(struct kvm *kvm)
+>  {
+>  	return &kvm->arch.hyperv;
+> @@ -141,4 +147,18 @@ int kvm_vm_ioctl_hv_eventfd(struct kvm *kvm, struct kvm_hyperv_eventfd *args);
+>  int kvm_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
+>  		     struct kvm_cpuid_entry2 __user *entries);
+>  
+> +#if IS_ENABLED(CONFIG_HYPERV)
+> +static inline void kvm_update_arch_tdp_pointer(struct kvm *kvm,
+> +		struct kvm_vcpu *vcpu, u64 tdp_pointer)
+> +{
+> +	spin_lock(&kvm->arch.tdp_pointer_lock);
+> +	vcpu->arch.tdp_pointer = tdp_pointer;
+> +	kvm->arch.tdp_pointers_match = TDP_POINTERS_CHECK;
+> +	spin_unlock(&kvm->arch.tdp_pointer_lock);
+> +}
+> +
+> +int kvm_hv_remote_flush_tlb(struct kvm *kvm);
+> +int kvm_hv_remote_flush_tlb_with_range(struct kvm *kvm,
+> +		struct kvm_tlb_range *range);
+> +#endif
+>  #endif
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 50810d471462..67f607319eb7 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -62,6 +62,7 @@
+>  #include "vmcs12.h"
+>  #include "vmx.h"
+>  #include "x86.h"
+> +#include "hyperv.h"
+>  
+>  MODULE_AUTHOR("Qumranet");
+>  MODULE_LICENSE("GPL");
+> @@ -472,83 +473,6 @@ static const u32 vmx_uret_msrs_list[] = {
+>  static bool __read_mostly enlightened_vmcs = true;
+>  module_param(enlightened_vmcs, bool, 0444);
+>  
+> -/* check_ept_pointer() should be under protection of ept_pointer_lock. */
+> -static void check_ept_pointer_match(struct kvm *kvm)
+> -{
+> -	struct kvm_vcpu *vcpu;
+> -	u64 tmp_eptp = INVALID_PAGE;
+> -	int i;
+> -
+> -	kvm_for_each_vcpu(i, vcpu, kvm) {
+> -		if (!VALID_PAGE(tmp_eptp)) {
+> -			tmp_eptp = to_vmx(vcpu)->ept_pointer;
+> -		} else if (tmp_eptp != to_vmx(vcpu)->ept_pointer) {
+> -			to_kvm_vmx(kvm)->ept_pointers_match
+> -				= EPT_POINTERS_MISMATCH;
+> -			return;
+> -		}
+> -	}
+> -
+> -	to_kvm_vmx(kvm)->ept_pointers_match = EPT_POINTERS_MATCH;
+> -}
+> -
+> -static int kvm_fill_hv_flush_list_func(struct hv_guest_mapping_flush_list *flush,
+> -		void *data)
+> -{
+> -	struct kvm_tlb_range *range = data;
+> -
+> -	return hyperv_fill_flush_guest_mapping_list(flush, range->start_gfn,
+> -			range->pages);
+> -}
+> -
+> -static inline int __hv_remote_flush_tlb_with_range(struct kvm *kvm,
+> -		struct kvm_vcpu *vcpu, struct kvm_tlb_range *range)
+> -{
+> -	u64 ept_pointer = to_vmx(vcpu)->ept_pointer;
+> -
+> -	/*
+> -	 * FLUSH_GUEST_PHYSICAL_ADDRESS_SPACE hypercall needs address
+> -	 * of the base of EPT PML4 table, strip off EPT configuration
+> -	 * information.
+> -	 */
+> -	if (range)
+> -		return hyperv_flush_guest_mapping_range(ept_pointer & PAGE_MASK,
+> -				kvm_fill_hv_flush_list_func, (void *)range);
+> -	else
+> -		return hyperv_flush_guest_mapping(ept_pointer & PAGE_MASK);
+> -}
+> -
+> -static int hv_remote_flush_tlb_with_range(struct kvm *kvm,
+> -		struct kvm_tlb_range *range)
+> -{
+> -	struct kvm_vcpu *vcpu;
+> -	int ret = 0, i;
+> -
+> -	spin_lock(&to_kvm_vmx(kvm)->ept_pointer_lock);
+> -
+> -	if (to_kvm_vmx(kvm)->ept_pointers_match == EPT_POINTERS_CHECK)
+> -		check_ept_pointer_match(kvm);
+> -
+> -	if (to_kvm_vmx(kvm)->ept_pointers_match != EPT_POINTERS_MATCH) {
+> -		kvm_for_each_vcpu(i, vcpu, kvm) {
+> -			/* If ept_pointer is invalid pointer, bypass flush request. */
+> -			if (VALID_PAGE(to_vmx(vcpu)->ept_pointer))
+> -				ret |= __hv_remote_flush_tlb_with_range(
+> -					kvm, vcpu, range);
+> -		}
+> -	} else {
+> -		ret = __hv_remote_flush_tlb_with_range(kvm,
+> -				kvm_get_vcpu(kvm, 0), range);
+> -	}
+> -
+> -	spin_unlock(&to_kvm_vmx(kvm)->ept_pointer_lock);
+> -	return ret;
+> -}
+> -static int hv_remote_flush_tlb(struct kvm *kvm)
+> -{
+> -	return hv_remote_flush_tlb_with_range(kvm, NULL);
+> -}
+> -
+>  static int hv_enable_direct_tlbflush(struct kvm_vcpu *vcpu)
+>  {
+>  	struct hv_enlightened_vmcs *evmcs;
+> @@ -3115,13 +3039,10 @@ static void vmx_load_mmu_pgd(struct kvm_vcpu *vcpu, unsigned long pgd,
+>  		eptp = construct_eptp(vcpu, pgd, pgd_level);
+>  		vmcs_write64(EPT_POINTER, eptp);
+>  
+> -		if (kvm_x86_ops.tlb_remote_flush) {
+> -			spin_lock(&to_kvm_vmx(kvm)->ept_pointer_lock);
+> -			to_vmx(vcpu)->ept_pointer = eptp;
+> -			to_kvm_vmx(kvm)->ept_pointers_match
+> -				= EPT_POINTERS_CHECK;
+> -			spin_unlock(&to_kvm_vmx(kvm)->ept_pointer_lock);
+> -		}
+> +#if IS_ENABLED(CONFIG_HYPERV)
+> +		if (kvm_x86_ops.tlb_remote_flush)
+> +			kvm_update_arch_tdp_pointer(kvm, vcpu, eptp);
+> +#endif
+>  
+>  		if (!enable_unrestricted_guest && !is_paging(vcpu))
+>  			guest_cr3 = to_kvm_vmx(kvm)->ept_identity_map_addr;
+> @@ -6989,8 +6910,6 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
+>  	vmx->pi_desc.nv = POSTED_INTR_VECTOR;
+>  	vmx->pi_desc.sn = 1;
+>  
+> -	vmx->ept_pointer = INVALID_PAGE;
+> -
+>  	return 0;
+>  
+>  free_vmcs:
+> @@ -7007,8 +6926,6 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
+>  
+>  static int vmx_vm_init(struct kvm *kvm)
+>  {
+> -	spin_lock_init(&to_kvm_vmx(kvm)->ept_pointer_lock);
+> -
+>  	if (!ple_gap)
+>  		kvm->arch.pause_in_guest = true;
+>  
+> @@ -7818,9 +7735,9 @@ static __init int hardware_setup(void)
+>  #if IS_ENABLED(CONFIG_HYPERV)
+>  	if (ms_hyperv.nested_features & HV_X64_NESTED_GUEST_MAPPING_FLUSH
+>  	    && enable_ept) {
+> -		vmx_x86_ops.tlb_remote_flush = hv_remote_flush_tlb;
+> +		vmx_x86_ops.tlb_remote_flush = kvm_hv_remote_flush_tlb;
+>  		vmx_x86_ops.tlb_remote_flush_with_range =
+> -				hv_remote_flush_tlb_with_range;
+> +				kvm_hv_remote_flush_tlb_with_range;
+>  	}
+>  #endif
+>  
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index 89da5e1251f1..d2e2ab46f5bb 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -325,7 +325,6 @@ struct vcpu_vmx {
+>  	 */
+>  	u64 msr_ia32_feature_control;
+>  	u64 msr_ia32_feature_control_valid_bits;
+> -	u64 ept_pointer;
+>  
+>  	struct pt_desc pt_desc;
+>  	struct lbr_desc lbr_desc;
+> @@ -338,21 +337,12 @@ struct vcpu_vmx {
+>  	} shadow_msr_intercept;
+>  };
+>  
+> -enum ept_pointers_status {
+> -	EPT_POINTERS_CHECK = 0,
+> -	EPT_POINTERS_MATCH = 1,
+> -	EPT_POINTERS_MISMATCH = 2
+> -};
+> -
+>  struct kvm_vmx {
+>  	struct kvm kvm;
+>  
+>  	unsigned int tss_addr;
+>  	bool ept_identity_pagetable_done;
+>  	gpa_t ept_identity_map_addr;
+> -
+> -	enum ept_pointers_status ept_pointers_match;
+> -	spinlock_t ept_pointer_lock;
+>  };
+>  
+>  bool nested_vmx_allowed(struct kvm_vcpu *vcpu);
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 2a20ce60152e..f566e78b59b9 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -10115,6 +10115,10 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
+>  	vcpu->arch.pending_external_vector = -1;
+>  	vcpu->arch.preempted_in_kernel = false;
+>  
+> +#if IS_ENABLED(CONFIG_HYPERV)
+> +	vcpu->arch.tdp_pointer = INVALID_PAGE;
+> +#endif
+> +
+>  	r = static_call(kvm_x86_vcpu_create)(vcpu);
+>  	if (r)
+>  		goto free_guest_fpu;
+> @@ -10470,7 +10474,6 @@ void kvm_arch_free_vm(struct kvm *kvm)
+>  	vfree(kvm);
+>  }
+>  
+> -
 
-Nit: adding to the end of the list would require less modifications ;)
+Stray change?
 
->   			ClearPageActive(page);
->   			list_move(&page->lru, &clean_pages);
->   		}
-> 
-
-Acked-by: David Hildenbrand <david@redhat.com>
+>  int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+>  {
+>  	if (type)
+> @@ -10498,6 +10501,10 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+>  
+>  	kvm->arch.guest_can_read_msr_platform_info = true;
+>  
+> +#if IS_ENABLED(CONFIG_HYPERV)
+> +	spin_lock_init(&kvm->arch.tdp_pointer_lock);
+> +#endif
+> +
+>  	INIT_DELAYED_WORK(&kvm->arch.kvmclock_update_work, kvmclock_update_fn);
+>  	INIT_DELAYED_WORK(&kvm->arch.kvmclock_sync_work, kvmclock_sync_fn);
 
 -- 
-Thanks,
-
-David / dhildenb
+Vitaly
 
