@@ -2,66 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C80643622EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EFD33622ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244956AbhDPOkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45188 "EHLO
+        id S245014AbhDPOkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244399AbhDPOi1 (ORCPT
+        with ESMTP id S242934AbhDPOi2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:38:27 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C211EC06138F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:38:01 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id e7so32475731edu.10
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:38:01 -0700 (PDT)
+        Fri, 16 Apr 2021 10:38:28 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF8FC061761
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:38:02 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id w18so32626468edc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:38:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=q9QkHlwJDar64oIul6Zxhmqo4CTxwCRZxxTfk+OGqes=;
-        b=eY+BehDOCCwJrQBgJvFkrLf60qYGNjp86LQ95v4aL7ItluI4Kc1SOgueUMBeL7xVO0
-         HabFWzx1pws/L5MRCFq5LUoT5qfUy3s5FD/uSxeZFuyHKY3170WEz1Csbb4fSPaBDIqN
-         oRoIS2YwYhl3F0P/wmetAgGaxJNwr8QMpvE56Jxb1rGkseV0sHdrWs1gzTSOL2x1NJS0
-         Vj80LYVwo8lXzAojSa+aNSIeTjnQWOA9oP0WJp53MrM0/1L47DLNnl/6xm51fQAC1llu
-         FYuAOZoo41nr91MY3qLkcrnWrr3xBTW/WLIuUjkwS7wdSBtV0LoR2GWHCg5gPjz2JP4q
-         OdwA==
+        bh=I7F+9DKjv4pSxsjZ8Q4NSxZmBv+NpIxPJbgx2acVLUU=;
+        b=xUDIIJR/cLuzx29sMHGLZuOY6AlLTmEc1nYFSxBrGbSXcio6hSFL/Qj5My76RSIH9v
+         2TVRPRZTGDZUYukol3Rrr41enxdOCl2w6ae1LlUjfQIp52cn4Hk2ugldcUdfREVUpYyz
+         kZ6hBID8yhhVWiYsfLKSwy6p+Exx+V2kxGKoycf7iPUKdzeESN2WkGwvJXSEBud644PT
+         I1eg02i76GgWn9puwVkudV9PSwN4mqxmZSc2KqQQyAigrLRsCAImTh+iComP6NC+Xxhc
+         HL9krOFybdi4KocyKW5QMBdfBRmX3gL/dmsrCmFfgH13kdZ2wxyGx18f2ddaKZn4iXVK
+         ppfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=q9QkHlwJDar64oIul6Zxhmqo4CTxwCRZxxTfk+OGqes=;
-        b=LFWxc+cfSeBnwJoHe9pF76pQOJryKbZ7EOINe36817u09c1tVKmDTHh6W8+R68Nfuc
-         8d9De3gox24uXa6HBH2GCTHZOnPbB1441DlL8fuJjnGCnJsTEbI2EQZTGroPnvOkPpE9
-         L/v4niSVShhbuxPHqbzhMevqLvjbOztO/Futlewlp9POV8S5Whtipp77Ac/ByfX6xlch
-         44agzKaPmT1drannxJpwLQOOjwakHho/eX/CVNOy384msKYPe/7N29dCB0qsmsFfUrxn
-         mV6B+DQ0oAU7mDJmIhvuMm4g0rJT0XSnEo8IGgAjIu4PRUNcUGzSgRU/59V2UOsbodQa
-         jjQQ==
-X-Gm-Message-State: AOAM532wrRncF7I/clJvDOaOjDO83xtriqGsbsugk/cqppPW92uD1gp+
-        dtPPKvBn/XVF+HRIB//PiTPl1Q==
-X-Google-Smtp-Source: ABdhPJyfwppiWNh6UNq5J0oc3JQa61CxtXjxBSY55rvdOBADEXG3x0lLiRIZS3Wa6Jra3UH/lva7pA==
-X-Received: by 2002:a05:6402:cb3:: with SMTP id cn19mr2427916edb.206.1618583880589;
-        Fri, 16 Apr 2021 07:38:00 -0700 (PDT)
+        bh=I7F+9DKjv4pSxsjZ8Q4NSxZmBv+NpIxPJbgx2acVLUU=;
+        b=LUXk0SNflT2rrMOhYgf/JYOFO8uiRa7ixXTagDhdxSB7NynxeH9nXMdZDvGtMWXCzl
+         7idQoB4qyzsWQ1KsXpeosuC17Rx5lrIdvfveAZerkuFyK2z9kPWFwF1az4qn4NyL5eOq
+         dl/FFfSiCQ8Dbgt54IhvfqW4sKtPDkqdDNkztSPC+Yz8vlEtISN/hKhCz96e0YyfjTEm
+         KKV/JsunPQWPVG2POKsIuzO01R6ga5WHlu9DFPVMWONL7THacpUDxU4OnpRmF/2TDCcu
+         3R7Sts6QRnSD8Rr7UeQsWtF3v/e4zlodzTEGYLn5TrcSxS85GYgG1tZkW1Iny0Jzxwig
+         bPMw==
+X-Gm-Message-State: AOAM5314iaZU3F2QDhn5/wU/yjQadpsihPYK5XyldDdVbDQjdbg4WP7G
+        VSTuzRyzSVvTQIPcCn4CF/orSQ==
+X-Google-Smtp-Source: ABdhPJwNxKANqCbAqE4qRNcZ6coZt9d+It6wnNQh5h1d63Ti//CSPf5MsoYyaoVv1NgeAQygdGWyLA==
+X-Received: by 2002:a05:6402:3550:: with SMTP id f16mr10261727edd.134.1618583881703;
+        Fri, 16 Apr 2021 07:38:01 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id j10sm1326523ejk.93.2021.04.16.07.37.59
+        by smtp.gmail.com with ESMTPSA id j10sm1326523ejk.93.2021.04.16.07.38.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 07:38:00 -0700 (PDT)
+        Fri, 16 Apr 2021 07:38:01 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
+Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         Sumit Semwal <sumit.semwal@linaro.org>,
-        Jerome Glisse <glisse@freedesktop.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 29/40] drm/amd/amdgpu/amdgpu_fence: Provide description for 'sched_score'
-Date:   Fri, 16 Apr 2021 15:37:14 +0100
-Message-Id: <20210416143725.2769053-30-lee.jones@linaro.org>
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Adam Jackson <ajax@redhat.com>,
+        Ben Widawsky <ben@bwidawsk.net>,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org
+Subject: [PATCH 30/40] drm/vgem/vgem_drv: Demote kernel-doc abuse
+Date:   Fri, 16 Apr 2021 15:37:15 +0100
+Message-Id: <20210416143725.2769053-31-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210416143725.2769053-1-lee.jones@linaro.org>
 References: <20210416143725.2769053-1-lee.jones@linaro.org>
@@ -74,35 +73,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c:444: warning: Function parameter or member 'sched_score' not described in 'amdgpu_fence_driver_init_ring'
+ drivers/gpu/drm/vgem/vgem_drv.c:29: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
 
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Jerome Glisse <glisse@freedesktop.org>
-Cc: amd-gfx@lists.freedesktop.org
+Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Adam Jackson <ajax@redhat.com>
+Cc: Ben Widawsky <ben@bwidawsk.net>
 Cc: dri-devel@lists.freedesktop.org
 Cc: linux-media@vger.kernel.org
 Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/vgem/vgem_drv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
-index 47ea468596184..30772608eac6c 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c
-@@ -434,6 +434,7 @@ int amdgpu_fence_driver_start_ring(struct amdgpu_ring *ring,
-  *
-  * @ring: ring to init the fence driver on
-  * @num_hw_submission: number of entries on the hardware queue
-+ * @sched_score: optional score atomic shared with other schedulers
-  *
-  * Init the fence driver for the requested ring (all asics).
-  * Helper function for amdgpu_fence_driver_init().
+diff --git a/drivers/gpu/drm/vgem/vgem_drv.c b/drivers/gpu/drm/vgem/vgem_drv.c
+index a0e75f1d5d016..bf38a7e319d14 100644
+--- a/drivers/gpu/drm/vgem/vgem_drv.c
++++ b/drivers/gpu/drm/vgem/vgem_drv.c
+@@ -25,7 +25,7 @@
+  *	Ben Widawsky <ben@bwidawsk.net>
+  */
+ 
+-/**
++/*
+  * This is vgem, a (non-hardware-backed) GEM service.  This is used by Mesa's
+  * software renderer and the X server for efficient buffer sharing.
+  */
 -- 
 2.27.0
 
