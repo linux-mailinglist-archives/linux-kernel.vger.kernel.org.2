@@ -2,139 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8150361AD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 09:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C92C361ADF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 09:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239728AbhDPHvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 03:51:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39336 "EHLO
+        id S238980AbhDPHwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 03:52:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231898AbhDPHvu (ORCPT
+        with ESMTP id S238690AbhDPHwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 03:51:50 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB79CC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 00:51:25 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lXJFv-0007Vj-FL; Fri, 16 Apr 2021 09:51:11 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:b21a:a98c:8cd:ce9c])
+        Fri, 16 Apr 2021 03:52:21 -0400
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA0BC061574;
+        Fri, 16 Apr 2021 00:51:57 -0700 (PDT)
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id AEC6260FFEB;
-        Fri, 16 Apr 2021 07:51:09 +0000 (UTC)
-Date:   Fri, 16 Apr 2021 09:51:09 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-phy@lists.infradead.org, linux-can@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id E4A4B72;
+        Fri, 16 Apr 2021 00:51:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1618559516;
+        bh=gtBYFQvU70xkjkpifpEydwzy9XaAEMFkL6adfGXPg28=;
+        h=From:To:Cc:Subject:Date:From;
+        b=l/rCgOR1d/8e5SiSClNjcrGxw1b3ZRW+8RbbwM7O975shSysOwFWVzXVMmbpFGAfG
+         iU6Rjo4DQEtbe57u9qos1zR8RB+2y9SJOfNkKHtBaj5oL/e6irVPC+YNwZXUvY/e7B
+         cHz6QgTb49XLVjxWlItYTOppxl/FsnEqZ7g1QHks=
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     openbmc@lists.ozlabs.org, Zev Weiss <zev@bewilderbeest.net>,
         Rob Herring <robh+dt@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: Re: [PATCH v4 3/3] phy: phy-can-transceiver: Add support for generic
- CAN transceiver driver
-Message-ID: <20210416075109.yw3c47ii67gckeqd@pengutronix.de>
-References: <20210416052647.2758-1-a-govindraju@ti.com>
- <20210416052647.2758-4-a-govindraju@ti.com>
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: aspeed: update e3c246d4i vuart properties
+Date:   Fri, 16 Apr 2021 02:51:13 -0500
+Message-Id: <20210416075113.18047-1-zev@bewilderbeest.net>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ady7filrbecwiiya"
-Content-Disposition: inline
-In-Reply-To: <20210416052647.2758-4-a-govindraju@ti.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This device-tree was merged with a provisional vuart IRQ-polarity
+property that was still under review and ended up taking a somewhat
+different form.  This patch updates it to match the final form of the
+new vuart properties, which additionally allow specifying the SIRQ
+number and LPC address.
 
---ady7filrbecwiiya
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+---
 
-On 16.04.2021 10:56:47, Aswath Govindraju wrote:
-> The driver adds support for generic CAN transceivers. Currently
-> the modes supported by this driver are standby and normal modes for TI
-> TCAN1042 and TCAN1043 CAN transceivers.
->=20
-> The transceiver is modelled as a phy with pins controlled by gpios, to put
-> the transceiver in various device functional modes. It also gets the phy
-> attribute max_link_rate for the usage of CAN drivers.
->=20
-> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-> ---
->  MAINTAINERS                       |   1 +
->  drivers/phy/Kconfig               |   9 ++
->  drivers/phy/Makefile              |   1 +
->  drivers/phy/phy-can-transceiver.c | 146 ++++++++++++++++++++++++++++++
->  4 files changed, 157 insertions(+)
->  create mode 100644 drivers/phy/phy-can-transceiver.c
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index e666d33af10d..4e868f2a97c7 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -4048,6 +4048,7 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/gi=
-t/mkl/linux-can-next.git
->  F:	Documentation/devicetree/bindings/net/can/
->  F:	Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
->  F:	drivers/net/can/
-> +F:	drivers/phy/phy-can-transceiver.c
->  F:	include/linux/can/bittiming.h
->  F:	include/linux/can/dev.h
->  F:	include/linux/can/led.h
-> diff --git a/drivers/phy/Kconfig b/drivers/phy/Kconfig
-> index 54c1f2f0985f..51902b629fc6 100644
-> --- a/drivers/phy/Kconfig
-> +++ b/drivers/phy/Kconfig
-> @@ -61,6 +61,15 @@ config USB_LGM_PHY
->  	  interface to interact with USB GEN-II and USB 3.x PHY that is part
->  	  of the Intel network SOC.
-> =20
-> +config PHY_CAN_TRANSCEIVER
-> +	tristate "CAN transceiver PHY"
-> +	select GENERIC_PHY
-> +	help
-> +	  This option enables support for CAN transceivers as a PHY. This
-> +	  driver provides function for putting the transceivers in various
-> +	  functional modes using gpios and sets the attribute max link
-> +	  rate, for mcan drivers.
-                    ^^^^
+The relevant aspeed-vuart patches [0] have been merged into Greg KH's
+tty-next tree, so I figure it's probably okay to proceed with the
+corresponding dts adjustments now.
 
-CAN
+[0] https://lore.kernel.org/openbmc/20210412034712.16778-1-zev@bewilderbeest.net/
 
-Marc
+ arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+diff --git a/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts b/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts
+index dcab6e78dfa4..8be40c8283af 100644
+--- a/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts
++++ b/arch/arm/boot/dts/aspeed-bmc-asrock-e3c246d4i.dts
+@@ -4,6 +4,7 @@
+ #include "aspeed-g5.dtsi"
+ #include <dt-bindings/gpio/aspeed-gpio.h>
+ #include <dt-bindings/i2c/i2c.h>
++#include <dt-bindings/interrupt-controller/irq.h>
+ 
+ /{
+ 	model = "ASRock E3C246D4I BMC";
+@@ -73,7 +74,8 @@ &uart5 {
+ 
+ &vuart {
+ 	status = "okay";
+-	aspeed,sirq-active-high;
++	aspeed,lpc-io-reg = <0x2f8>;
++	aspeed,lpc-interrupts = <3 IRQ_TYPE_LEVEL_HIGH>;
+ };
+ 
+ &mac0 {
+-- 
+2.31.1
 
---ady7filrbecwiiya
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmB5QeoACgkQqclaivrt
-76lL2Af/UvxExvGuIijK2rChTwL3SRtvX/+pPjQvIocOQXS0k3f/Qrn4kekRnYra
-L5E5CKfkfDyQ8+Z1hI10WxOKP12wtekyocXH06+wPYZfnSfVXTGa0udUzQsnDbZq
-HWJcSdy1AIAuDuRCteWuaAKpXkvqRIKcg2i06DWKHnsM/CiHN6PHunf2pNO7vN6N
-m+tM2haOcNWGb0MQ9MYL3q18rN+MtO/FyKhGnQ6G0WNPGzhwPoHHuYEk/tP2mMB8
-kbqRyYOOTdtmssPqLGU9/w3N2AB+av9m+JtiVO4xfk9lcREN5NdF7DFsdCg3pC2q
-uojUDhg536F1EyjPzsiuucbsPtSE7Q==
-=WkZb
------END PGP SIGNATURE-----
-
---ady7filrbecwiiya--
