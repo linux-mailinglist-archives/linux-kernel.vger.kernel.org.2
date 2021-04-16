@@ -2,76 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A39362822
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 20:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D8D36282C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 20:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239909AbhDPS4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 14:56:21 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:35734 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236142AbhDPS4T (ORCPT
+        id S240003AbhDPS5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 14:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235957AbhDPS5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 14:56:19 -0400
-Received: by mail-ot1-f54.google.com with SMTP id a2-20020a0568300082b029028d8118b91fso8159123oto.2;
-        Fri, 16 Apr 2021 11:55:54 -0700 (PDT)
+        Fri, 16 Apr 2021 14:57:44 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BA6C061574;
+        Fri, 16 Apr 2021 11:57:19 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id c195so31207566ybf.9;
+        Fri, 16 Apr 2021 11:57:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IuXR4s76KW2g16KgmTJ3s1NR8NxaS0rBglhD+4wC2bA=;
+        b=t6Eh6V9OMwi659Ak0KE8pRM5p87Dz7/7Ty3eBJkJHR3jxgYIRk0vixc1KxYDXStbk3
+         0xvaAqI02zC6EBd3wRdbUwS3/Z/BenDWtD6tLgUY2gwjWBt+8SHdws8AwkQZcTMCn7kl
+         Sp3dnKOM/qyPCfBCJ40L2kHBWxeAhGPHPN4AjRdjoXVllD5DZC/L4Wl2n0WmZDCEsFkM
+         J6Qc9+HPOeE5f+JvWQTM/3gHA99pYJs2U5IS1IiXXhX8jaOCQOY7X19eZOG14hIgMPWg
+         O1+7MnPo2thZERtolLuOH8vVpWQgb18ZVviCi3wdpOcMF7nxQ4o2D5qfJ4G5oRDOrgUh
+         2p3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Hma+9zO1Y6oeqJ6JVhr4MtqPIcdulc3xEHbwZSzOoVY=;
-        b=ex03S20ZroWbTdEFxO1ZFVXpAYwEIX2SM+fVQIpSGhz433bQvffAyCZK02tTY0Bkxk
-         XceHoAIjivV8ajIrVSvlDbSXSbFO/Xn3QW5E/FqjAEyWqxs1Feh6klF8sCUkTyDKhbkk
-         tY8Y60QMlwQ5nlWZujNQtE6EYnqDGvcdSRv2Po6GAw6ptHROqhq0IWDGOC4F2Q2ei8Qn
-         UnfNZ+QVDFqLWgwf0eVczd8JjQH/29NSpYfLZcLzkXYXwn3enj4JAHoACP8+l8a4Ajo+
-         1urb94zDOJjnO15Uz3mnu3uzyoNhaq+TIWJKIW3uuLGv7iiqiXGDmZzWnOeEsMT8LfHi
-         tinQ==
-X-Gm-Message-State: AOAM533nEUiuTaNzco3o84kZ7is8NFxGIS/MZ17pYRsuj/md7+B63R/r
-        zkJUjfD8PqA5JLC/hkLy2bPLFz25Ew==
-X-Google-Smtp-Source: ABdhPJxp/ZNYTBcin4+hkWrZfaH8k7QNcoxv1l7/DutQRgLTMiDLbgoQatvHS8OXjYhAkYyOwgnv2Q==
-X-Received: by 2002:a05:6830:10d3:: with SMTP id z19mr4938562oto.59.1618599353779;
-        Fri, 16 Apr 2021 11:55:53 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 8sm1539175ott.68.2021.04.16.11.55.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 11:55:53 -0700 (PDT)
-Received: (nullmailer pid 3752283 invoked by uid 1000);
-        Fri, 16 Apr 2021 18:55:52 -0000
-Date:   Fri, 16 Apr 2021 13:55:52 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, heiko@sntech.de,
-        enric.balletbo@collabora.com, zhangqing@rock-chips.com,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v8 12/15] dt-bindings: arm: rockchip: add more compatible
- strings to pmu.yaml
-Message-ID: <20210416185552.GA3752233@robh.at.kernel.org>
-References: <20210416080342.18614-1-jbx6244@gmail.com>
- <20210416080342.18614-13-jbx6244@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IuXR4s76KW2g16KgmTJ3s1NR8NxaS0rBglhD+4wC2bA=;
+        b=NYIjMm4lEkPwIcMaUDyDT5xaKKD2U+yilwnWNNlNTT0yL5dBBkzR58BLM+F2F0f0Vz
+         Hfwc/exKTRDJYkiGFLxg+82FDOcAwaiaCELMW8jWjk41YDH6sH65lOl0JtYbmz2dYgH9
+         ATzlSpZAxMB48F1b0yanH60GxDQxyETKwFg0k+f7yntuKSHVKp24aZnXQW15ArCgdOrf
+         aXjQYPPClvmE3QTzZpQOQohHrb5+V35NE1UMXkCQZte4Gpy1i8XN+WyKSfTgIN5dukRd
+         quksGae5h3qn8rw/ZRZXODe2a8VT+nh8jhdoEsN6DCYbCdEdqLPOSd6em8rgm0XulNz0
+         ac2w==
+X-Gm-Message-State: AOAM530n34tK4h6tsiWP/rwK4NU7jOQpH1dbWd0jTCXehiLmdTS6k46f
+        3Yy3t6/Rpk7MS3DTX4T++U795QSCYyqTaoFZcFA=
+X-Google-Smtp-Source: ABdhPJx/Sef28+ab/jqRThJjs0GBqd35mSjtjTNKxxnwr7wkjUsSlz3TUt4YQ3eQatBFCI53ILW6au7VDYWbxBsQHvQ=
+X-Received: by 2002:a25:7909:: with SMTP id u9mr796140ybc.22.1618599438460;
+ Fri, 16 Apr 2021 11:57:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416080342.18614-13-jbx6244@gmail.com>
+References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-5-ojeda@kernel.org>
+ <YHmTWEAS/QjX++w4@hirez.programming.kicks-ass.net> <CAHk-=wh_zb=K1B-N8mgHmSZDqTLgOm711NRXbTX_OwFAzDYg0Q@mail.gmail.com>
+ <CANiq72nx7ngazsH7sZgc=HeU0cNj45F9+-rwQb7AkdYsRCmRbQ@mail.gmail.com> <YHnS92ZKZ4tRWTiA@zeniv-ca.linux.org.uk>
+In-Reply-To: <YHnS92ZKZ4tRWTiA@zeniv-ca.linux.org.uk>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 16 Apr 2021 20:57:07 +0200
+Message-ID: <CANiq72=RLf0FiuLVL-ZeLFp9P2LxTymbzhXoyQGG=tvUY_J-Sg@mail.gmail.com>
+Subject: Re: [PATCH 04/13] Kbuild: Rust support
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Apr 2021 10:03:39 +0200, Johan Jonker wrote:
-> The compatible strings below are already in use in the Rockchip
-> dtsi files, but were somehow never added to a document, so add
-> 
-> "rockchip,px30-pmu", "syscon", "simple-mfd"
-> "rockchip,rk3288-pmu", "syscon", "simple-mfd"
-> "rockchip,rk3328-pmu", "syscon", "simple-mfd"
-> "rockchip,rk3399-pmu", "syscon", "simple-mfd"
-> 
-> for pmu nodes to pmu.yaml.
-> 
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> ---
->  Documentation/devicetree/bindings/arm/rockchip/pmu.yaml | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
+On Fri, Apr 16, 2021 at 8:10 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> How well would ? operator fit that pattern?  _If_ it's just a syntax sugar
+> along the lines of "if argument matches Err(_), return Err(_)", the types
+> shouldn't be an issue, but that might need some fun with releasing resources,
+> etc.  If it's something more elaborate... details, please.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Yes, it is just syntax sugar -- it doesn't introduce any power to the language.
+
+It was introduced because it is a very common pattern when using the
+`Result` and `Option` enums. In fact, before it existed, it was just a
+simple macro that you could also implement yourself.
+
+For instance, given `Foo` and `Bar` types that need RAII cleanup of
+some kind (let's say `kill_foo()` and `kill_bar()`):
+
+    fn foo() -> KernelResult<Foo> {
+        if black_box() {
+            return Err(EINVAL);
+        }
+
+        // something that gets you a `Foo`
+        let foo = ...;
+
+        Ok(foo)
+    }
+
+    fn bar() -> KernelResult<Bar> {
+        let p = foo()?;
+
+        // something that gets you a `Bar`, possibly using the `p`
+        let bar = ...;
+
+        Ok(bar)
+    }
+
+This reduces to (full example at https://godbolt.org/z/hjTxd3oP1):
+
+    bar:
+            push    rbx
+            mov     ebx, 1
+            call    qword ptr [rip + black_box@GOTPCREL]
+            test    al, al
+            jne     .LBB2_2
+            call    qword ptr [rip + kill_foo@GOTPCREL]
+            xor     ebx, ebx
+    .LBB2_2:
+            mov     eax, ebx
+            mov     edx, -1234
+            pop     rbx
+            ret
+
+You can see `bar()` calls `black_box()`. If it failed, it returns the
+EINVAL. Otherwise, it cleans up the `foo` automatically and returns
+the successful `bar`.
+
+Cheers,
+Miguel
