@@ -2,929 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7423627DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 20:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A21E3627E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 20:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244921AbhDPSmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 14:42:22 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54674 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235192AbhDPSmU (ORCPT
+        id S244947AbhDPSow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 14:44:52 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:34772 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235192AbhDPSou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 14:42:20 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13GIY2Jw051166;
-        Fri, 16 Apr 2021 14:41:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=2sMQCauwOiQgq0MVX+Uq4LnvELkwRCriHy8ioC1vXTM=;
- b=eU8neAAfPK5TKZMb6lEuOo9vGA5NaXVbWEkhOXMlV7aUh2QDoraN3zBIjlEin233h50f
- CK0483YutIpG30W33dBn//Cc4O8NSLi6rZSspwkN3QWk7EjSJvAt6sBKzaZe1ylEjHxo
- My7cqzI8FlMLcZpq7Pb0RYgiTx2lHVKxt2RjTth3VZEmpyF7YBT3HjLpxxx7bED5Oydx
- DtGA0BIN88sU4RHZziJ4uXI4x74cxRHN3fs6heKRCGV2n3l23mP0R1QNsw1QiRnN/sD4
- KBHLf/ZbnQoLeBy+ajbicWZcWHU17D7GAfp7lt+xt35jKl7Up0qdF54fj/LZEhSEX140 6w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37xtt5a0g1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 14:41:47 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13GIYhfH052561;
-        Fri, 16 Apr 2021 14:41:47 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37xtt5a0f6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 14:41:47 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13GIWU2Q001908;
-        Fri, 16 Apr 2021 18:41:44 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 37u3n8vm0r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 18:41:44 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13GIfgJd31261150
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Apr 2021 18:41:42 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EA2EDA404D;
-        Fri, 16 Apr 2021 18:41:41 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CD631A4051;
-        Fri, 16 Apr 2021 18:41:38 +0000 (GMT)
-Received: from [9.102.1.61] (unknown [9.102.1.61])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 16 Apr 2021 18:41:38 +0000 (GMT)
-Subject: Re: [PATCH v3 0/6] percpu: partial chunk depopulation
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, pratik.r.sampat@gmail.com
-References: <20210408035736.883861-1-guro@fb.com>
- <25c78660-9f4c-34b3-3a05-68c313661a46@linux.ibm.com>
- <YHmcorqNE5NpAN3G@google.com>
- <7a001bf6-5708-fb04-4970-367d9845ccb9@linux.ibm.com>
- <YHnFsL2G2bpOH8ML@carbon.dhcp.thefacebook.com>
- <8ea7c616-95e8-e391-5373-ebaf10836d2c@linux.ibm.com>
- <YHnYqMdyYtIdab6n@carbon.dhcp.thefacebook.com>
-From:   Pratik Sampat <psampat@linux.ibm.com>
-Message-ID: <09a8d1eb-280d-9ee9-3d68-d065db47a516@linux.ibm.com>
-Date:   Sat, 17 Apr 2021 00:11:37 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 16 Apr 2021 14:44:50 -0400
+Received: by mail-ot1-f53.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so26616317otn.1;
+        Fri, 16 Apr 2021 11:44:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ue4U2hx4gZY/OfTJKPiXwVwHVj/Jmgf89NK50uKXHBU=;
+        b=bF4SxEqVIeKX/1H47nKGvwsBAX2RqB2EcFcMn2HPFju8hX/iKJiReGmDc0X8k+iNKY
+         lTA52B2xD4kaM1M77+hV61GzH6B0xKI4nSsAZrm1vnqpGTP5Zz72RFwgqusfqNdtyqo+
+         NGjZsfUiDzKYaJs0gfLJLBNml6JLNSmRL8YOh+ad6Jzl0S/FYXxHNKjEvV+9/4G70Un/
+         ata/4uHV1BWTxv00xUqJXK1cy0MEsg6F3Yn8As4a2lQlfysDTeHVxEL2GakuZhjTE2Yc
+         9WcuR2UbO1tvc0r1EDkyUDged1quWvU9+D9j0UpOgTAairvYImyNtpdzWJo/vOiMFVAt
+         eWSw==
+X-Gm-Message-State: AOAM533HDwDDBuRYUbFQYjJEEuQ6az1QmyEiZJX8eb0r4SVzquWdohPN
+        j713ol8lz1xpRXMMHm8s8g==
+X-Google-Smtp-Source: ABdhPJxNPTL5ESroEEmdFOQGYr1QURmiCb9UHAC1h/YFKMa6RSflMjttW9oHM1p5jnwbn/9BkOgxFg==
+X-Received: by 2002:a9d:4d01:: with SMTP id n1mr4821124otf.336.1618598665577;
+        Fri, 16 Apr 2021 11:44:25 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id l5sm911863otr.72.2021.04.16.11.44.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 11:44:24 -0700 (PDT)
+Received: (nullmailer pid 3730968 invoked by uid 1000);
+        Fri, 16 Apr 2021 18:44:23 -0000
+Date:   Fri, 16 Apr 2021 13:44:23 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH 0/5] mtd: core: OTP nvmem provider support
+Message-ID: <20210416184423.GA3715339@robh.at.kernel.org>
+References: <20210416114928.27758-1-michael@walle.cc>
 MIME-Version: 1.0
-In-Reply-To: <YHnYqMdyYtIdab6n@carbon.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: vRKqHLhpJTmd-GC_gJuhk6KaDKvkA1RE
-X-Proofpoint-GUID: OnYEhr4O8Ssu70WG2hSZYGvL7RFUsdPh
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-16_09:2021-04-16,2021-04-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- mlxlogscore=999 malwarescore=0 phishscore=0 clxscore=1015 suspectscore=0
- bulkscore=0 impostorscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104160131
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416114928.27758-1-michael@walle.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 16, 2021 at 01:49:23PM +0200, Michael Walle wrote:
+> The goal is to fetch a (base) MAC address from the OTP region of a SPI NOR
+> flash.
+> 
+> This is the first part, where I try to add the nvmem provider support to
+> the MTD core.
+> 
+> I'm not sure about the device tree bindings. Consider the following two
+> variants:
+> 
+> (1)
+>     flash@0 {
+>         ..
+> 
+>         otp {
+>             compatible = "mtd-user-otp";
 
+mtd is a linuxism. Why not just 'nvmem-cells' here or as a fallback if 
+we come up with a better name? 
 
-On 17/04/21 12:04 am, Roman Gushchin wrote:
-> On Fri, Apr 16, 2021 at 11:57:03PM +0530, Pratik Sampat wrote:
->>
->> On 16/04/21 10:43 pm, Roman Gushchin wrote:
->>> On Fri, Apr 16, 2021 at 08:58:33PM +0530, Pratik Sampat wrote:
->>>> Hello Dennis,
->>>>
->>>> I apologize for the clutter of logs before, I'm pasting the logs of before and
->>>> after the percpu test in the case of the patchset being applied on 5.12-rc6 and
->>>> the vanilla kernel 5.12-rc6.
->>>>
->>>> On 16/04/21 7:48 pm, Dennis Zhou wrote:
->>>>> Hello,
->>>>>
->>>>> On Fri, Apr 16, 2021 at 06:26:15PM +0530, Pratik Sampat wrote:
->>>>>> Hello Roman,
->>>>>>
->>>>>> I've tried the v3 patch series on a POWER9 and an x86 KVM setup.
->>>>>>
->>>>>> My results of the percpu_test are as follows:
->>>>>> Intel KVM 4CPU:4G
->>>>>> Vanilla 5.12-rc6
->>>>>> # ./percpu_test.sh
->>>>>> Percpu:             1952 kB
->>>>>> Percpu:           219648 kB
->>>>>> Percpu:           219648 kB
->>>>>>
->>>>>> 5.12-rc6 + with patchset applied
->>>>>> # ./percpu_test.sh
->>>>>> Percpu:             2080 kB
->>>>>> Percpu:           219712 kB
->>>>>> Percpu:            72672 kB
->>>>>>
->>>>>> I'm able to see improvement comparable to that of what you're see too.
->>>>>>
->>>>>> However, on POWERPC I'm unable to reproduce these improvements with the patchset in the same configuration
->>>>>>
->>>>>> POWER9 KVM 4CPU:4G
->>>>>> Vanilla 5.12-rc6
->>>>>> # ./percpu_test.sh
->>>>>> Percpu:             5888 kB
->>>>>> Percpu:           118272 kB
->>>>>> Percpu:           118272 kB
->>>>>>
->>>>>> 5.12-rc6 + with patchset applied
->>>>>> # ./percpu_test.sh
->>>>>> Percpu:             6144 kB
->>>>>> Percpu:           119040 kB
->>>>>> Percpu:           119040 kB
->>>>>>
->>>>>> I'm wondering if there's any architectural specific code that needs plumbing
->>>>>> here?
->>>>>>
->>>>> There shouldn't be. Can you send me the percpu_stats debug output before
->>>>> and after?
->>>> I'll paste the whole debug stats before and after here.
->>>> 5.12-rc6 + patchset
->>>> -----BEFORE-----
->>>> Percpu Memory Statistics
->>>> Allocation Info:
->>> Hm, this looks highly suspicious. Here is your stats in a more compact form:
->>>
->>> Vanilla
->>>
->>> nr_alloc            :         9038         nr_alloc            :        97046
->>> nr_dealloc          :         6992	   nr_dealloc          :        94237
->>> nr_cur_alloc        :         2046	   nr_cur_alloc        :         2809
->>> nr_max_alloc        :         2178	   nr_max_alloc        :        90054
->>> nr_chunks           :            3	   nr_chunks           :           11
->>> nr_max_chunks       :            3	   nr_max_chunks       :           47
->>> min_alloc_size      :            4	   min_alloc_size      :            4
->>> max_alloc_size      :         1072	   max_alloc_size      :         1072
->>> empty_pop_pages     :            5	   empty_pop_pages     :           29
->>>
->>>
->>> Patched
->>>
->>> nr_alloc            :         9040         nr_alloc            :        97048
->>> nr_dealloc          :         6994	   nr_dealloc          :        95002
->>> nr_cur_alloc        :         2046	   nr_cur_alloc        :         2046
->>> nr_max_alloc        :         2208	   nr_max_alloc        :        90054
->>> nr_chunks           :            3	   nr_chunks           :           48
->>> nr_max_chunks       :            3	   nr_max_chunks       :           48
->>> min_alloc_size      :            4	   min_alloc_size      :            4
->>> max_alloc_size      :         1072	   max_alloc_size      :         1072
->>> empty_pop_pages     :           12	   empty_pop_pages     :           61
->>>
->>>
->>> So it looks like the number of chunks got bigger, as well as the number of
->>> empty_pop_pages? This contradicts to what you wrote, so can you, please, make
->>> sure that the data is correct and we're not messing two cases?
->>>
->>> So it looks like for some reason sidelined (depopulated) chunks are not getting
->>> freed completely. But I struggle to explain why the initial empty_pop_pages is
->>> bigger with the same amount of chunks.
->>>
->>> So, can you, please, apply the following patch and provide an updated statistics?
->> Unfortunately, I'm not completely well versed in this area, but yes the empty
->> pop pages number doesn't make sense to me either.
->>
->> I re-ran the numbers trying to make sure my experiment setup is sane but
->> results remain the same.
->>
->> Vanilla
->> nr_alloc            :         9040         nr_alloc            :        97048
->> nr_dealloc          :         6994	   nr_dealloc          :        94404
->> nr_cur_alloc        :         2046	   nr_cur_alloc        :         2644
->> nr_max_alloc        :         2169	   nr_max_alloc        :        90054
->> nr_chunks           :            3	   nr_chunks           :           10
->> nr_max_chunks       :            3	   nr_max_chunks       :           47
->> min_alloc_size      :            4	   min_alloc_size      :            4
->> max_alloc_size      :         1072	   max_alloc_size      :         1072
->> empty_pop_pages     :            4	   empty_pop_pages     :           32
->>
->> With the patchset + debug patch the results are as follows:
->> Patched
->>
->> nr_alloc            :         9040         nr_alloc            :        97048
->> nr_dealloc          :         6994	   nr_dealloc          :        94349
->> nr_cur_alloc        :         2046	   nr_cur_alloc        :         2699
->> nr_max_alloc        :         2194	   nr_max_alloc        :        90054
->> nr_chunks           :            3	   nr_chunks           :           48
->> nr_max_chunks       :            3	   nr_max_chunks       :           48
->> min_alloc_size      :            4	   min_alloc_size      :            4
->> max_alloc_size      :         1072	   max_alloc_size      :         1072
->> empty_pop_pages     :           12	   empty_pop_pages     :           54
->>
->> With the extra tracing I can see 39 entries of "Chunk (sidelined)"
->> after the test was run. I don't see any entries for "Chunk (to depopulate)"
->>
->> I've snipped the results of slidelined chunks because they went on for ~600
->> lines, if you need the full logs let me know.
-> Yes, please! That's the most interesting part!
+>             #address-cells = <1>;
+>             #size-cells = <1>;
+> 
+>             serial-number@0 {
+>                 reg = <0x0 0x8>;
+>             };
+>         };
+>     };
+> 
+> (2)
+>     flash@0 {
+>         ..
+> 
+>         otp {
+>             compatible = "mtd-user-otp";
+>             #address-cells = <1>;
+>             #size-cells = <1>;
+> 
+> 			some-useful-name {
+>                 compatible = "nvmem-cells";
+> 
+>                 serial-number@0 {
+>                     reg = <0x0 0x8>;
+>                 };
+> 			};
+>         };
+>     };
+> 
+> Both bindings use a subnode "opt[-N]". We cannot have the nvmem cells as
+> children to the flash node because of the legacy partition binding.
+> 
+> (1) seems to be the form which is used almost everywhere in the kernel.
+> That is, the nvmem cells are just children of the parent node.
+> 
+> (2) seem to be more natural, because there might also be other properties
+> inside the otp subnode and might be more future-proof.
+> 
+> At the moment this patch implements (1).
 
-Got it. Pasting the full logs of after the percpu experiment was completed
+I think approach (1) seems fine.
 
-Percpu Memory Statistics
-Allocation Info:
-----------------------------------------
-   unit_size           :       655360
-   static_size         :       608920
-   reserved_size       :            0
-   dyn_size            :        46440
-   atom_size           :        65536
-   alloc_size          :       655360
-
-Global Stats:
-----------------------------------------
-   nr_alloc            :        97048
-   nr_dealloc          :        94349
-   nr_cur_alloc        :         2699
-   nr_max_alloc        :        90054
-   nr_chunks           :           48
-   nr_max_chunks       :           48
-   min_alloc_size      :            4
-   max_alloc_size      :         1072
-   empty_pop_pages     :           54
-
-Per Chunk Stats:
-----------------------------------------
-Chunk: <- First Chunk
-   nr_alloc            :         1081
-   max_alloc_size      :         1072
-   empty_pop_pages     :            0
-   first_bit           :        16117
-   free_bytes          :            4
-   contig_bytes        :            4
-   sum_frag            :            4
-   max_frag            :            4
-   cur_min_alloc       :            4
-   cur_med_alloc       :            8
-   cur_max_alloc       :         1072
-   memcg_aware         :            0
-
-Chunk:
-   nr_alloc            :          826
-   max_alloc_size      :         1072
-   empty_pop_pages     :            6
-   first_bit           :          819
-   free_bytes          :       640660
-   contig_bytes        :       249896
-   sum_frag            :       464700
-   max_frag            :       306216
-   cur_min_alloc       :            4
-   cur_med_alloc       :            8
-   cur_max_alloc       :         1072
-   memcg_aware         :            0
-
-Chunk:
-   nr_alloc            :            0
-   max_alloc_size      :            0
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            0
-
-Chunk:
-   nr_alloc            :           90
-   max_alloc_size      :         1072
-   empty_pop_pages     :            0
-   first_bit           :          536
-   free_bytes          :       595752
-   contig_bytes        :        26164
-   sum_frag            :       575132
-   max_frag            :        26164
-   cur_min_alloc       :          156
-   cur_med_alloc       :         1072
-   cur_max_alloc       :         1072
-   memcg_aware         :            1
-
-Chunk:
-   nr_alloc            :           90
-   max_alloc_size      :         1072
-   empty_pop_pages     :            0
-   first_bit           :            0
-   free_bytes          :       597428
-   contig_bytes        :        26164
-   sum_frag            :       596848
-   max_frag            :        26164
-   cur_min_alloc       :          156
-   cur_med_alloc       :          312
-   cur_max_alloc       :         1072
-   memcg_aware         :            1
-
-Chunk:
-   nr_alloc            :           92
-   max_alloc_size      :         1072
-   empty_pop_pages     :            0
-   first_bit           :            0
-   free_bytes          :       595284
-   contig_bytes        :        26164
-   sum_frag            :       590360
-   max_frag            :        26164
-   cur_min_alloc       :          156
-   cur_med_alloc       :          312
-   cur_max_alloc       :         1072
-   memcg_aware         :            1
-
-Chunk:
-   nr_alloc            :           92
-   max_alloc_size      :         1072
-   empty_pop_pages     :            0
-   first_bit           :            0
-   free_bytes          :       595284
-   contig_bytes        :        26164
-   sum_frag            :       583768
-   max_frag            :        26164
-   cur_min_alloc       :          156
-   cur_med_alloc       :          312
-   cur_max_alloc       :         1072
-   memcg_aware         :            1
-
-Chunk:
-   nr_alloc            :          360
-   max_alloc_size      :         1072
-   empty_pop_pages     :            7
-   first_bit           :        26595
-   free_bytes          :       506640
-   contig_bytes        :       506540
-   sum_frag            :          100
-   max_frag            :           36
-   cur_min_alloc       :            4
-   cur_med_alloc       :          156
-   cur_max_alloc       :         1072
-   memcg_aware         :            1
-
-Chunk:
-   nr_alloc            :           12
-   max_alloc_size      :         1072
-   empty_pop_pages     :            3
-   first_bit           :            0
-   free_bytes          :       647524
-   contig_bytes        :       563492
-   sum_frag            :        57872
-   max_frag            :        26164
-   cur_min_alloc       :          156
-   cur_med_alloc       :          312
-   cur_max_alloc       :         1072
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :           52
-   max_alloc_size      :         1072
-   empty_pop_pages     :            0
-   first_bit           :            0
-   free_bytes          :       621404
-   contig_bytes        :       203104
-   sum_frag            :       603400
-   max_frag            :       260656
-   cur_min_alloc       :          156
-   cur_med_alloc       :          312
-   cur_max_alloc       :         1072
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            4
-   max_alloc_size      :         1072
-   empty_pop_pages     :            0
-   first_bit           :            0
-   free_bytes          :       652748
-   contig_bytes        :       570600
-   sum_frag            :       570600
-   max_frag            :       570600
-   cur_min_alloc       :          156
-   cur_med_alloc       :          312
-   cur_max_alloc       :         1072
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-Chunk (sidelined):
-   nr_alloc            :            0
-   max_alloc_size      :         1072
-   empty_pop_pages     :            1
-   first_bit           :            0
-   free_bytes          :       655360
-   contig_bytes        :       655360
-   sum_frag            :            0
-   max_frag            :            0
-   cur_min_alloc       :            0
-   cur_med_alloc       :            0
-   cur_max_alloc       :            0
-   memcg_aware         :            1
-
-
+Rob
