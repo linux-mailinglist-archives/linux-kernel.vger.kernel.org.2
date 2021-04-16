@@ -2,92 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C43362890
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 21:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 622D8362891
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 21:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240501AbhDPTYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 15:24:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235362AbhDPTYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 15:24:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B84B6137D;
-        Fri, 16 Apr 2021 19:24:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618601050;
-        bh=qHawK0oSTOLvJhEkLLbelkvEtYDRemD5y/71PvXJsow=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=i+nsE09tHA0GPcdM2/MeTaNM0szdQ0WdGtOryocd2mlqAtBAPS//L0i0bzZXsO8/u
-         fkLV7Gvab0QGNzDId6j792QJPu/gog3Dicsi9l6jZFfqUa3Plj723IeLds1pJpEKyr
-         6OgPJZied02D4CRJM27ck/2DbUH0P6noqZEX7ncjo7RzthjBNAzaObjGEgxy17r7VL
-         +SzfZO2eKYv3O9Q0TMm2hz5GTNKJ/yfV2ONFoik610B/49nvK59V7cy8m7CfnUYsqV
-         5lioX2gDeS8C6LthsG8R30YIzz9snIrCPJCSf5aLBXNxUvo3ks8yjt+OS6lELHHJwv
-         0hfkytCmujThA==
-Date:   Fri, 16 Apr 2021 14:24:09 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jianjun Wang <jianjun.wang@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, youlin.pei@mediatek.com,
-        chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com,
-        sin_jieyang@mediatek.com, drinkcat@chromium.org,
-        Rex-BC.Chen@mediatek.com, anson.chuang@mediatek.com,
-        Krzysztof Wilczyski <kw@linux.com>
-Subject: Re: [v9,2/7] PCI: Export pci_pio_to_address() for module use
-Message-ID: <20210416192409.GA2744791@bjorn-Precision-5520>
+        id S241174AbhDPTYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 15:24:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235362AbhDPTYo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 15:24:44 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D437C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 12:24:18 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id w8so15513533pfn.9
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 12:24:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=au1OzdUxzPBTnWVZvWu79dip0mAHZrKvjjowjMqY2UE=;
+        b=SFC7x0J8SZ4vw/i2LY+v4bsGGAoWUKBp0ag81cE6lwfqHZz/brkekp9aUSxYBRvG6G
+         iFnjHIE6BbuPkqiiYjQ5D6x9Xklg64ZwzU+USKoO83qddMKI4KalsjjG//3jECdmEPIz
+         YrD7UcN7g69P97mMV2DO1f3I/bBZANGQCDqfxIelUt7Iv8KgUkheX2MVvzT8QMAOD2KK
+         EdQOT9gTvNfhJXcloJ1YqsmxVX4TkYcwclCAVRrSzhoGOkIf1HXzB14MLqU3TR8IX6gp
+         P+hUO376GN0wkefINe8RVxRmynRyqpnXvyRnRYSeBWBpW34Lu+XxCxT81KHfbK4zaQ8I
+         Znhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=au1OzdUxzPBTnWVZvWu79dip0mAHZrKvjjowjMqY2UE=;
+        b=HEh0PXPziJIcl6IMk1Deg4TAlBpziS/DjoGCuO9bfhZi8QWFyD1+2Wtu/u7WDVhSEK
+         3PG6s4X6VMfSOMXov8E1mlB1EvvRkj7swOXXTik9ip3agiElY5jpfuAMTU2ClzLFo581
+         0JmwJnFnAqMfIGolEOlIkG17IK2hDTEQ1DI/MJvQuPTRoHQNr3OoeRdanLLS+bg/IKWh
+         fm2STrPTayFtoShgZyH5271I3tK6iyOcJFsZmkwK9gcDs7xh501otEGF8Ku7Ntn07i9z
+         Ymj+i4XhZDZVlghvrfJjmQn3qvgXe1cM5/15sZLZqGfvz0iUdaRzPdebjZ8n7p4iF/fQ
+         XUeg==
+X-Gm-Message-State: AOAM530fmhOYuAqPe4s+jGRQh3kEwSUZcUaiBuVNrJ2nS12IXfyoWK/Y
+        yJ3Q88xkwTOxV1Xw/nuttGs=
+X-Google-Smtp-Source: ABdhPJzPf3TWr7284RoYUQ0sJc3eJmD6QfqWAVAfiEO+BRc+oBNCBMo3hWTvRdIIM7/mWO2GWGhYjQ==
+X-Received: by 2002:a63:e552:: with SMTP id z18mr588609pgj.100.1618601058251;
+        Fri, 16 Apr 2021 12:24:18 -0700 (PDT)
+Received: from edumazet1.svl.corp.google.com ([2620:15c:2c4:201:8178:2218:96f0:c55c])
+        by smtp.gmail.com with ESMTPSA id s9sm5440076pfc.192.2021.04.16.12.24.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 12:24:17 -0700 (PDT)
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+Subject: [PATCH] x86/uaccess: small optimization in unsafe_copy_to_user()
+Date:   Fri, 16 Apr 2021 12:24:13 -0700
+Message-Id: <20210416192413.1514419-1-eric.dumazet@gmail.com>
+X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210413095257.GA21802@lpieralisi>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 10:53:05AM +0100, Lorenzo Pieralisi wrote:
-> On Wed, Mar 24, 2021 at 10:09:42AM +0100, Pali Rohár wrote:
-> > On Wednesday 24 March 2021 11:05:05 Jianjun Wang wrote:
-> > > This interface will be used by PCI host drivers for PIO translation,
-> > > export it to support compiling those drivers as kernel modules.
-> > > 
-> > > Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
-> > > ---
-> > >  drivers/pci/pci.c | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > > 
-> > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > > index 16a17215f633..12bba221c9f2 100644
-> > > --- a/drivers/pci/pci.c
-> > > +++ b/drivers/pci/pci.c
-> > > @@ -4052,6 +4052,7 @@ phys_addr_t pci_pio_to_address(unsigned long pio)
-> > >  
-> > >  	return address;
-> > >  }
-> > > +EXPORT_SYMBOL(pci_pio_to_address);
-> > 
-> > Hello! I'm not sure if EXPORT_SYMBOL is correct because file has GPL-2.0
-> > header. Should not be in this case used only EXPORT_SYMBOL_GPL? Maybe
-> > other people would know what is correct?
-> 
-> I think this should be EXPORT_SYMBOL_GPL(), I can make this change
-> but this requires Bjorn's ACK to go upstream (Bjorn, it is my fault,
-> it was assigned to me on patchwork, now updated, please have a look).
+From: Eric Dumazet <edumazet@google.com>
 
-Yep, looks good to me, and I agree it should be EXPORT_SYMBOL_GPL().
+We have to loop only to copy u64 values.
+After this first loop, we copy at most one u32, one u16 and one byte.
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+---
+ arch/x86/include/asm/uaccess.h | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-> > >  
-> > >  unsigned long __weak pci_address_to_pio(phys_addr_t address)
-> > >  {
-> > > -- 
-> > > 2.25.1
-> > > 
+diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
+index c9fa7be3df82ddb9495961b3e2f22b1ac07edafa..ddb19bb8c86786d78407dcfb59623943ccbce8a8 100644
+--- a/arch/x86/include/asm/uaccess.h
++++ b/arch/x86/include/asm/uaccess.h
+@@ -517,15 +517,23 @@ do {										\
+ 		len -= sizeof(type);						\
+ 	}
+ 
++#define unsafe_copy_elem(dst, src, len, type, label)				\
++	if (len >= sizeof(type)) {						\
++		unsafe_put_user(*(type *)(src),(type __user *)(dst),label);	\
++		dst += sizeof(type);						\
++		src += sizeof(type);						\
++		len -= sizeof(type);						\
++	}
++
+ #define unsafe_copy_to_user(_dst,_src,_len,label)			\
+ do {									\
+ 	char __user *__ucu_dst = (_dst);				\
+ 	const char *__ucu_src = (_src);					\
+ 	size_t __ucu_len = (_len);					\
+ 	unsafe_copy_loop(__ucu_dst, __ucu_src, __ucu_len, u64, label);	\
+-	unsafe_copy_loop(__ucu_dst, __ucu_src, __ucu_len, u32, label);	\
+-	unsafe_copy_loop(__ucu_dst, __ucu_src, __ucu_len, u16, label);	\
+-	unsafe_copy_loop(__ucu_dst, __ucu_src, __ucu_len, u8, label);	\
++	unsafe_copy_elem(__ucu_dst, __ucu_src, __ucu_len, u32, label);	\
++	unsafe_copy_elem(__ucu_dst, __ucu_src, __ucu_len, u16, label);	\
++	unsafe_copy_elem(__ucu_dst, __ucu_src, __ucu_len, u8, label);	\
+ } while (0)
+ 
+ #define HAVE_GET_KERNEL_NOFAULT
+-- 
+2.31.1.368.gbe11c130af-goog
+
