@@ -2,114 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379E43626CE
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3593626CF
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242499AbhDPRbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 13:31:24 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2877 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242430AbhDPRbX (ORCPT
+        id S242548AbhDPRb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 13:31:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242430AbhDPRb0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 13:31:23 -0400
-Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FMNN81KF4z688M0;
-        Sat, 17 Apr 2021 01:23:36 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 16 Apr 2021 19:30:56 +0200
-Received: from localhost (10.52.127.203) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 16 Apr
- 2021 18:30:55 +0100
-Date:   Fri, 16 Apr 2021 18:29:27 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Lee Jones <lee.jones@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-iio@vger.kernel.org>, <linux-staging@lists.linux.dev>
-Subject: Re: [PATCH 21/57] staging: iio: frequency: ad9834: Provide missing
- description for 'devid'
-Message-ID: <20210416182927.00000f60@Huawei.com>
-In-Reply-To: <20210414181129.1628598-22-lee.jones@linaro.org>
-References: <20210414181129.1628598-1-lee.jones@linaro.org>
-        <20210414181129.1628598-22-lee.jones@linaro.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+        Fri, 16 Apr 2021 13:31:26 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE565C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:31:01 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id q11so1252526plx.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:31:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:in-reply-to:to:cc:subject
+         :content-transfer-encoding;
+        bh=eVm7fzMrS3gNt2tz30VRFlPB65aZXiIaR8dlHiQjB+I=;
+        b=Ntoj7WicRgw6IMgnZeOI/m2F9jwhlgNQHBf2A7La2t0WF2AsQifFcjeIn5tRQs1JtO
+         PWT9YYl6QRZ6acVGszHbP/zV31pYZc3EXqmeW3rEBajwmm+ly/JmKHdH8ekus8N6f9IM
+         adkNnU6vRgusLhLWyXES8VZTfR5sZv4aGULSw7nt/mXzabI9LT+a/cwZpc3jQKGVFqxN
+         MUET8hqoCsggti/wugecvKV9TCrKugai+RFqFjvUVvv4vrtMks8k2hJakTXuw4PTh/I2
+         m7cGSW72blFJAHw5SYR9IPi2ZuU7WHpfPOtUzceVMdcGqFKNSVeSphdTInnAHtSbB8Ip
+         RLTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:to:cc:subject
+         :content-transfer-encoding;
+        bh=eVm7fzMrS3gNt2tz30VRFlPB65aZXiIaR8dlHiQjB+I=;
+        b=U8Wv2Pf+9DbzA7lkF84gRGVpPjZ1PaX1IkyCJb1/yFA0XZf8gfBCf1FqkszR9cX2d+
+         YkTwbA7GZHpGPTdJrhRz3g+tqDAu4WSnXa3BFiwDtn0XverIydC8eeRzQ2LNbv6RsJjS
+         MAqM3m7Gghuaw+LoJI4EbX9ehzsoX9XW1dk3O66bwMBmYl53ax0rAUnllj6TBrBAgFS4
+         efCeZsnnhqCpeO2QFCYlf+0FfTC0Hpy0ZyM26H6mEe3ID7gakC59Q19FE7EXv3uN2eS0
+         AGGBym7zortVUcVBOq/KDjjJAmvP3BsEBOW/GUzFTcgqSZh3/bOsQr7mXr2jyPWoH9xw
+         G1WA==
+X-Gm-Message-State: AOAM530nwDI6Douv+lZDW/hn5ZSaR6JCQy06eQyKkxbyGBeu8VYtMiIQ
+        b3OKzoMBC/RfC0JhkrT59KEjTIdchz61wtvZwr8=
+X-Google-Smtp-Source: ABdhPJy+98u0iYf8qcRv5HsBKVPk0z7QUADgd4kCmpfBRtxqK8WrVLCAFZICdFjxu/stSQHGtiYwYg==
+X-Received: by 2002:a17:90a:300f:: with SMTP id g15mr11409516pjb.88.1618594260839;
+        Fri, 16 Apr 2021 10:31:00 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id fw24sm6013644pjb.21.2021.04.16.10.30.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 10:31:00 -0700 (PDT)
+Message-ID: <6079c9d4.1c69fb81.f4140.08ad@mx.google.com>
+Date:   Fri, 16 Apr 2021 10:31:00 -0700 (PDT)
+X-Google-Original-Date: Fri, 16 Apr 2021 17:30:59 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210415144413.146131392@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: RE: [PATCH 5.11 00/23] 5.11.15-rc1 review
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.127.203]
-X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Apr 2021 19:10:53 +0100
-Lee Jones <lee.jones@linaro.org> wrote:
-
-> Also demote kernel-doc abuses
+On Thu, 15 Apr 2021 16:48:07 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.11.15 release.
+> There are 23 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Fixes the following W=1 kernel build warning(s):
+> Responses should be made by Sat, 17 Apr 2021 14:44:01 +0000.
+> Anything received after that time might be too late.
 > 
->  drivers/staging/iio/frequency/ad9834.c:87: warning: Function parameter or member 'devid' not described in 'ad9834_state'
->  drivers/staging/iio/frequency/ad9834.c:93: warning: cannot understand function prototype: 'enum ad9834_supported_device_ids '
->  drivers/staging/iio/frequency/ad9834.c:320: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.15-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
+> and the diffstat can be found below.
 > 
-> Cc: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: Michael Hennerich <Michael.Hennerich@analog.com>
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linux-iio@vger.kernel.org
-> Cc: linux-staging@lists.linux.dev
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-
-I was leaving the staging stuff in IIO related to W=1 as good material
-for newbies, but I guess if you are blanket cleaning it up then fair
-enough.
-
-Sounds like Greg will take the whole series so,
-
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-> ---
->  drivers/staging/iio/frequency/ad9834.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+> thanks,
 > 
-> diff --git a/drivers/staging/iio/frequency/ad9834.c b/drivers/staging/iio/frequency/ad9834.c
-> index 60a3ae5587b90..94b131ef8a22c 100644
-> --- a/drivers/staging/iio/frequency/ad9834.c
-> +++ b/drivers/staging/iio/frequency/ad9834.c
-> @@ -58,6 +58,7 @@
->   * @spi:		spi_device
->   * @mclk:		external master clock
->   * @control:		cached control word
-> + * @devid:		device id
->   * @xfer:		default spi transfer
->   * @msg:		default spi message
->   * @freq_xfer:		tuning word spi transfer
-> @@ -86,7 +87,7 @@ struct ad9834_state {
->  	__be16				freq_data[2];
->  };
->  
-> -/**
-> +/*
->   * ad9834_supported_device_ids:
->   */
->  
-> @@ -316,7 +317,7 @@ ssize_t ad9834_show_out1_wavetype_available(struct device *dev,
->  static IIO_DEVICE_ATTR(out_altvoltage0_out1_wavetype_available, 0444,
->  		       ad9834_show_out1_wavetype_available, NULL, 0);
->  
-> -/**
-> +/*
->   * see dds.h for further information
->   */
->  
+> greg k-h
+> 
+
+5.11.15-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
