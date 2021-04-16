@@ -2,170 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A384361D8A
+	by mail.lfdr.de (Postfix) with ESMTP id E1CF5361D8D
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241959AbhDPJdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 05:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33794 "EHLO
+        id S240938AbhDPJeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 05:34:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239848AbhDPJdQ (ORCPT
+        with ESMTP id S237554AbhDPJeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 05:33:16 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF07C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:32:51 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id 82so29392512yby.7
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:32:51 -0700 (PDT)
+        Fri, 16 Apr 2021 05:34:01 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D45BC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:33:37 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id c15so17076210wro.13
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:33:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6A39D/ltNLVXHQXp0YgBWaQxSJiY9LOUgjRGwkD57t8=;
-        b=DA8waUM6qCQA5DPh7UeUBhbFq6bFkFVpGLMXw/VQ58nd4mnkkTt/6E26EQ+FRyw7tK
-         gIuwlIAdriYLCSGGPwGkD8aFEJDHx9aeuHIqGk+wD6NIAaBV8+UdOBFNVMi8wd1Svw/p
-         NIdRV2kkhJ4URrmsCSYaCdvBpAWIz5HvztLg0UTQ3ywlJXu5ePkYzytwPFYTq9yFT2vJ
-         PtcqHN0QtCP3rvsv8nhcQTuirkrvkb42t3JLttFa8nU7USwaF3xZFI1Kv3Vyq2HVsHbo
-         tf1FuLK8rz8i6xbQSoQpr10sKdtBsnasRcAJTGHm3a41R8IWNtKbeoQvWIObyeRHGV5P
-         KxFA==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Y6UyUK/PLZR7RRPxa5IwMOvQk8P6IAfMpv+pLHnWIWk=;
+        b=QZQkZJdBI8z4aSv5GPjE/sdUZF5KNDwCq5LFScZU1aQwxesSrQTgs2rloNEdifvRkG
+         kutHzoba1sPCUsWxZjyPd2edgncUU/2Qdt9sFwNZxbEF/1AErUeJce7TeCo0pSweY58F
+         sRTu860WAz3M8uM6/XAdDMy37xtCeDXbzcYA4VB33RITm7AgkBtdz6HoJzEcpvxdPbLG
+         6VszU67q5srWYwsySecPDR5vGbtoUxsQgBhu1aR08i9iuDhhJLiIrAbvsw6Jp+K38Pnf
+         O0fxY7RTMTlhQ6p9NrrYcoaNPcY6+cIWLP6ln+KF4a9iWUuZqCUIWK/lyj7Occ3Y3Hwz
+         bTkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6A39D/ltNLVXHQXp0YgBWaQxSJiY9LOUgjRGwkD57t8=;
-        b=gAMO53r6sNE+Y3OWm0swgbzoydZVsHXJoY9tbqUdrY/3u9PFSxBJYBFSRf+MA8dUkp
-         x24V+goA8lNne6gT0iQhEYQQGJrVsoa0diIw2WoaSPciW/bT3UV/Z6Dot02NRanNB1RJ
-         IEcbKAkoL3HaTcnemcLZKLXgFGwX5sSi4leYb8ylfCKgZa/IkFAD8dThcuiAHlHtz+HL
-         4I4VJogORi+zBHOZydcUTrDRyw40CTOD8RcC+iUZ8uTY38kKObij5hDShGIECA/m3SPG
-         dH+PiUNGP96o+YRQkESGzD2yUylxBcMRG+Kb+9jyYRSqycexwu/yWezvy9bcYrlo5NYh
-         fSGg==
-X-Gm-Message-State: AOAM530z2ZWroRuMbhBcB9UvwNAWf3BI0C0jPxM9pwyiTicrIprIebmH
-        0r0qaULG9er8lCUeTQC62OtZOoE2mMLZ2OKWh7NZwQ==
-X-Google-Smtp-Source: ABdhPJws8UG08R8jGCP9HpSOImNdmD8qTd6g1nE0DrNelMfE0fogrOdpyy+pZncaaZB5t1pjBNqlVn8V9qD4RpFxwoM=
-X-Received: by 2002:a25:cf08:: with SMTP id f8mr11601203ybg.132.1618565569092;
- Fri, 16 Apr 2021 02:32:49 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Y6UyUK/PLZR7RRPxa5IwMOvQk8P6IAfMpv+pLHnWIWk=;
+        b=q+ADfuILfoyLm7mm3yGt51tqjEadtCjTThoLM8iIu8uygH4yDZZe9H6nAwM+HvcGGd
+         cR8UwJBJtiGgnit6f2xcxHOIq/i9Q3JEqhRVeAD4Pv7nMry7Z0gNINJQMVcp2zNVSVos
+         Ubsi/CHmN93iVi4GX4oc1Nhp53PBCr751qC3JajyaH/O3eY+5crDowWwJ9Z6AietvDYN
+         mEvHnAQh0MWwFcFHnqqeKWFOSqKEuiWjSmsBKyONnfKE6JxZ11clcDTdSEPWyHGvwoV4
+         PJZ4rUgYLueLfeAcOgrLMHKpgKlKq+1g9zoIzZK2Hr8vVPbQWaA3Jq2B6GHM2Yv6WLBA
+         CdjA==
+X-Gm-Message-State: AOAM530KyX0Wa1Tnh++YguI9JoawGu8GW2MnhFHFSPILuzXM+6zZnnnd
+        AFejSWyjVxQUM0bgSTiUZMlsiA==
+X-Google-Smtp-Source: ABdhPJyi9TudN5b27GdAZGQawwbe7hN4TWTVODnrXz7f90bs+B7teKNt5eKgfJN+j0eEBk4vPKX/tg==
+X-Received: by 2002:a05:6000:118c:: with SMTP id g12mr8068180wrx.241.1618565615984;
+        Fri, 16 Apr 2021 02:33:35 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:90c:e290:6e70:fd4e:dfdb:68d7? ([2a01:e0a:90c:e290:6e70:fd4e:dfdb:68d7])
+        by smtp.gmail.com with ESMTPSA id s14sm9473716wrm.51.2021.04.16.02.33.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Apr 2021 02:33:35 -0700 (PDT)
+Subject: Re: [PATCH] mmc: meson-gx: remove useless warning about scatterlist
+ size alignment in block mode
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Dmitry Lebed <lebed.dmitry@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+References: <20210414100010.3877669-1-narmstrong@baylibre.com>
+ <CAPDyKFpNLu3R+7ODZaC7yWMYbSOujswgLTkN97FQNg5zhwSxgw@mail.gmail.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <ff1d8605-4f45-c272-9bd6-e55ea8a9c68c@baylibre.com>
+Date:   Fri, 16 Apr 2021 11:33:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210415144414.464797272@linuxfoundation.org> <20210415144414.998180483@linuxfoundation.org>
- <7c0e6a19291e32eaa2e5d31d8d90f4c500392666.camel@redhat.com>
-In-Reply-To: <7c0e6a19291e32eaa2e5d31d8d90f4c500392666.camel@redhat.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 16 Apr 2021 11:32:37 +0200
-Message-ID: <CANn89i+uktnBRcKXY8+uFZ0S3KJEgBhJUjOafs-3UH5f6++wQw@mail.gmail.com>
-Subject: Re: [PATCH 4.14 16/68] net: ensure mac header is set in virtio_net_hdr_to_skb()
-To:     Balazs Nemeth <bnemeth@redhat.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        Willem de Bruijn <willemb@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        "David S. Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAPDyKFpNLu3R+7ODZaC7yWMYbSOujswgLTkN97FQNg5zhwSxgw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 10:49 AM Balazs Nemeth <bnemeth@redhat.com> wrote:
->
-> On Thu, 2021-04-15 at 16:46 +0200, Greg Kroah-Hartman wrote:
-> > From: Eric Dumazet <edumazet@google.com>
-> >
-> > commit 61431a5907fc36d0738e9a547c7e1556349a03e9 upstream.
-> >
-> > Commit 924a9bc362a5 ("net: check if protocol extracted by
-> > virtio_net_hdr_set_proto is correct")
-> > added a call to dev_parse_header_protocol() but mac_header is not yet
-> > set.
-> >
-> > This means that eth_hdr() reads complete garbage, and syzbot
-> > complained about it [1]
-> >
-> > This patch resets mac_header earlier, to get more coverage about this
-> > change.
-> >
-> > Audit of virtio_net_hdr_to_skb() callers shows that this change
-> > should be safe.
-> >
-> > [1]
-> >
-> > BUG: KASAN: use-after-free in eth_header_parse_protocol+0xdc/0xe0
-> > net/ethernet/eth.c:282
-> > Read of size 2 at addr ffff888017a6200b by task syz-executor313/8409
-> >
-> > CPU: 1 PID: 8409 Comm: syz-executor313 Not tainted 5.12.0-rc2-
-> > syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine,
-> > BIOS Google 01/01/2011
-> > Call Trace:
-> >  __dump_stack lib/dump_stack.c:79 [inline]
-> >  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
-> >  print_address_description.constprop.0.cold+0x5b/0x2f8
-> > mm/kasan/report.c:232
-> >  __kasan_report mm/kasan/report.c:399 [inline]
-> >  kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
-> >  eth_header_parse_protocol+0xdc/0xe0 net/ethernet/eth.c:282
-> >  dev_parse_header_protocol include/linux/netdevice.h:3177 [inline]
-> >  virtio_net_hdr_to_skb.constprop.0+0x99d/0xcd0
-> > include/linux/virtio_net.h:83
-> >  packet_snd net/packet/af_packet.c:2994 [inline]
-> >  packet_sendmsg+0x2325/0x52b0 net/packet/af_packet.c:3031
-> >  sock_sendmsg_nosec net/socket.c:654 [inline]
-> >  sock_sendmsg+0xcf/0x120 net/socket.c:674
-> >  sock_no_sendpage+0xf3/0x130 net/core/sock.c:2860
-> >  kernel_sendpage.part.0+0x1ab/0x350 net/socket.c:3631
-> >  kernel_sendpage net/socket.c:3628 [inline]
-> >  sock_sendpage+0xe5/0x140 net/socket.c:947
-> >  pipe_to_sendpage+0x2ad/0x380 fs/splice.c:364
-> >  splice_from_pipe_feed fs/splice.c:418 [inline]
-> >  __splice_from_pipe+0x43e/0x8a0 fs/splice.c:562
-> >  splice_from_pipe fs/splice.c:597 [inline]
-> >  generic_splice_sendpage+0xd4/0x140 fs/splice.c:746
-> >  do_splice_from fs/splice.c:767 [inline]
-> >  do_splice+0xb7e/0x1940 fs/splice.c:1079
-> >  __do_splice+0x134/0x250 fs/splice.c:1144
-> >  __do_sys_splice fs/splice.c:1350 [inline]
-> >  __se_sys_splice fs/splice.c:1332 [inline]
-> >  __x64_sys_splice+0x198/0x250 fs/splice.c:1332
-> >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-> >
-> > Fixes: 924a9bc362a5 ("net: check if protocol extracted by
-> > virtio_net_hdr_set_proto is correct")
-> > Signed-off-by: Eric Dumazet <edumazet@google.com>
-> > Cc: Balazs Nemeth <bnemeth@redhat.com>
-> > Cc: Willem de Bruijn <willemb@google.com>
-> > Reported-by: syzbot <syzkaller@googlegroups.com>
-> > Signed-off-by: David S. Miller <davem@davemloft.net>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > ---
-> >  include/linux/virtio_net.h |    2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > --- a/include/linux/virtio_net.h
-> > +++ b/include/linux/virtio_net.h
-> > @@ -62,6 +62,8 @@ static inline int virtio_net_hdr_to_skb(
-> >                         return -EINVAL;
-> >         }
-> >
-> > +       skb_reset_mac_header(skb);
-> > +
-> >         if (hdr->flags & VIRTIO_NET_HDR_F_NEEDS_CSUM) {
-> >                 u16 start = __virtio16_to_cpu(little_endian, hdr-
-> > >csum_start);
-> >                 u16 off = __virtio16_to_cpu(little_endian, hdr-
-> > >csum_offset);
-> >
-> >
->
-> Hi,
->
-> Since the call to dev_parse_header_protocol is only made for gso
-> packets where skb->protocol is not set, we could move
-> skb_reset_mac_header down closer to that call. Is there another reason
-> to reset mac_header earlier (and affect handling of other packets as
-> well)? In any case, thanks for spotting this!
->
+On 15/04/2021 11:07, Ulf Hansson wrote:
+> On Wed, 14 Apr 2021 at 12:00, Neil Armstrong <narmstrong@baylibre.com> wrote:
+>>
+>> Since commit e085b51c74cc ("mmc: meson-gx: check for scatterlist size alignment in block mode"),
+>> support for SDIO SD_IO_RW_EXTENDED transferts are properly filtered but some driver
+>> like brcmfmac still gives a block sg buffer size not aligned with SDIO block,
+>> triggerring a warning even if the transfer works in degraded mode.
+>>
+>> This should be ultimately fixed in brcmfmac, but since it's only a performance issue
+>> the warning should be removed.
+>>
+>> Fixes: e085b51c74cc ("mmc: meson-gx: check for scatterlist size alignment in block mode")
+>> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+>> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+>> ---
+>>  drivers/mmc/host/meson-gx-mmc.c | 5 +----
+>>  1 file changed, 1 insertion(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/mmc/host/meson-gx-mmc.c b/drivers/mmc/host/meson-gx-mmc.c
+>> index eb6c02bc4a02..6bc151045843 100644
+>> --- a/drivers/mmc/host/meson-gx-mmc.c
+>> +++ b/drivers/mmc/host/meson-gx-mmc.c
+>> @@ -246,11 +246,8 @@ static void meson_mmc_get_transfer_mode(struct mmc_host *mmc,
+>>                  * size, otherwise chain mode could not be used.
+>>                  */
+>>                 for_each_sg(data->sg, sg, data->sg_len, i) {
+>> -                       if (sg->length % data->blksz) {
+>> -                               WARN_ONCE(1, "unaligned sg len %u blksize %u\n",
+>> -                                         sg->length, data->blksz);
+> 
+> Rather than removing this warning, perhaps an option could be to use
+> dev_warn_once() instead?
 
-The answer to your question was in the changelog
 
-"This patch resets mac_header earlier, to get more coverage about this change."
+Yep, I'll re-spin.
 
-We want to detect if such a reset is going to hurt in general, not
-only for GSO packets.
+Neil
+
+> 
+>> +                       if (sg->length % data->blksz)
+>>                                 return;
+>> -                       }
+>>                 }
+>>         }
+>>
+> 
+> Kind regards
+> Uffe
+> 
+
