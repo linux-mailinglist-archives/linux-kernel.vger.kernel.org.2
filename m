@@ -2,77 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A32EF361E72
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE23361E7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239352AbhDPLJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 07:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235011AbhDPLJs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 07:09:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DEC5C061574;
-        Fri, 16 Apr 2021 04:09:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wricDXbRsfuITNqF2TYSCApfJgf/TrNtRqhvMhFAZJs=; b=Y26Meg6YAb9XQNiI4oEZ9AFQuy
-        wWYeKyW7C8HS2jwil4L54VgZ33G3sI1oaIR7z8ndqNXOo2388OcOr6TTZCjNFkcJ2m+ytYNdxpb7E
-        YwQgab6tdRx2Q02tudGG62J7NUz4fzFm+2Q2OMzUhiGofWME4QtAVudHl3QpPG4jClPZLPzaLSAqE
-        bhVhHnQDYbGu1sqBqxrgJxy4Dr0zOOPeosynVnO0Uj33kcCQ3tyg91sUGnlxgg1z1CudTO/kri5LE
-        h/etKdNOg4QTmPIhRJyi/XN5u7l0YvkwsvkMAp86iH2jLCcYgrldJnXbqQnev78jJOiDvmCBIIh0X
-        zb00LSVw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lXMLY-009rOM-P1; Fri, 16 Apr 2021 11:09:13 +0000
-Date:   Fri, 16 Apr 2021 12:09:12 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Peter Enderborg <peter.enderborg@sony.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>, NeilBrown <neilb@suse.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mike Rapoport <rppt@kernel.org>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH] dma-buf: Add DmaBufTotal counter in meminfo
-Message-ID: <20210416110912.GI2531743@casper.infradead.org>
-References: <20210416093719.6197-1-peter.enderborg@sony.com>
+        id S235452AbhDPLUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 07:20:02 -0400
+Received: from mga03.intel.com ([134.134.136.65]:9412 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235011AbhDPLT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 07:19:57 -0400
+IronPort-SDR: yuk6dktqCJoke4B43c3fxCoq/DA9rQgLYOEHJ0WHRfuPmgH2X8ilnwUlGn3TuXDDLaiL45Q7Z4
+ 2mQG80zaP8iA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="195052352"
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="195052352"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 04:19:32 -0700
+IronPort-SDR: BJZDC5Jq+ygLeIOUlN5DHtRSPA54UoNQksLH1UDbp79GVwgghc+S2OVAoPSCFnBDJYUy8lcCQt
+ LxOAcsVCbvTw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="601439675"
+Received: from um.fi.intel.com (HELO um) ([10.237.72.62])
+  by orsmga005.jf.intel.com with ESMTP; 16 Apr 2021 04:19:28 -0700
+From:   Alexander Shishkin <alexander.shishkin@linux.intel.com>
+To:     Tao Zhang <taozha@codeaurora.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Tao Zhang <taozha@codeaurora.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Tingwei Zhang <tingwei@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        Yuanfang Zhang <zhangyuanfang@codeaurora.org>,
+        alexander.shishkin@linux.intel.com
+Subject: Re: [PATCH v1 1/2] coresight: Add support for device names
+In-Reply-To: <1618560476-28908-2-git-send-email-taozha@codeaurora.org>
+References: <1618560476-28908-1-git-send-email-taozha@codeaurora.org>
+ <1618560476-28908-2-git-send-email-taozha@codeaurora.org>
+Date:   Fri, 16 Apr 2021 14:19:27 +0300
+Message-ID: <87im4mfpds.fsf@ashishki-desk.ger.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416093719.6197-1-peter.enderborg@sony.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 11:37:19AM +0200, Peter Enderborg wrote:
-> diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-> index 6fa761c9cc78..3c1a82b51a6f 100644
-> --- a/fs/proc/meminfo.c
-> +++ b/fs/proc/meminfo.c
-> @@ -16,6 +16,7 @@
->  #ifdef CONFIG_CMA
->  #include <linux/cma.h>
->  #endif
-> +#include <linux/dma-buf.h>
->  #include <asm/page.h>
->  #include "internal.h"
->  
-> @@ -145,6 +146,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
->  	show_val_kb(m, "CmaFree:        ",
->  		    global_zone_page_state(NR_FREE_CMA_PAGES));
->  #endif
-> +	show_val_kb(m, "DmaBufTotal:    ", dma_buf_get_size());
->  
->  	hugetlb_report_meminfo(m);
->  
+Tao Zhang <taozha@codeaurora.org> writes:
 
-... and if CONFIG_DMA_SHARED_BUFFER is not set ...?
+> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+> index 4ba801d..b79c726 100644
+> --- a/drivers/hwtracing/coresight/coresight-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-core.c
+> @@ -1640,6 +1640,12 @@ char *coresight_alloc_device_name(struct coresight_dev_list *dict,
+>  	int idx;
+>  	char *name = NULL;
+>  	struct fwnode_handle **list;
+> +	struct device_node *node = dev->of_node;
+> +
+> +	if (!node) {
+> +		if (!of_property_read_string(node, "coresight-name", &name))
+
+Ok, I'm not a device tree expert, but I'm pretty sure the above is a
+nop.
+
+Regards,
+--
+Alex
