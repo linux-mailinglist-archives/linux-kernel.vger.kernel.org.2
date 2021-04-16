@@ -2,112 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F7C361A56
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 09:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 978F9361A59
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 09:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbhDPHJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 03:09:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58308 "EHLO
+        id S238060AbhDPHJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 03:09:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238538AbhDPHJW (ORCPT
+        with ESMTP id S234010AbhDPHJe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 03:09:22 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B807C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 00:08:56 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id m3so30985210edv.5
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 00:08:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=zLSMvZYRAJCsk2Rs4S2rsxdlqP0N63/bvG4UtBJlhds=;
-        b=BlfiJ62lVmCMYByn7WvrksbbVI6TDARHp3g2O1W3ZtQwmxayq62Kf5FE0ajOQhHB26
-         htlN704WKAY3fwWT25ySYXp46TeheqfnPYqTn7LL1Xm8/rvCPRrTHFX5lf0nkKQKh8P+
-         15pSu5V0cHZrpjn83WWFePMOoOwlVnVlNoYNKRbxW5XEqi4ifSYHOIfL0H2hapsMAUNx
-         CaBM7Jv9Pdmy8X1L123AXZniNoRhXalwQGdR3SDfq9od/K6Etk3U5GE99+JxY5Igv8+X
-         pojj+Ob30ktvFVtClekEkCGrvmyeohvQUScQlV+EgfQQGqhkCz8+8DWzN43Ler/Ye98W
-         IfFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=zLSMvZYRAJCsk2Rs4S2rsxdlqP0N63/bvG4UtBJlhds=;
-        b=hEzYeRAVBS+CfpVehpPlDdz7MFvPNs1RA5RrRmSedwTuJIv1mCEUEjfv7LFbSvQrmv
-         yYglJvPnhEHItTPyUMTI4JkTR9IDJws/eBrhgDJ91MowLByxCdgQYnyVm5ycpILgrJqF
-         7X9rjii8YiAt06JhGlcIdO0taoEAUpGDVV+x6WBVO4rbgwrfI8CqXMPf4CKojOPG9DcF
-         Ktbe7RCqS8UNP9y3FWIj0lw7vKiFoS0X2IxLg6ZMIva7mwrIjQXLpjLJ9a2vJysQeXJf
-         APrg3UD4jU5mELKPJzM4bp4Q02xDFfRW3ny4VATvzbKsNUi7Qhigrm8YqjDOkmuEbVz7
-         zSGg==
-X-Gm-Message-State: AOAM531bOAwVYwrwNcQRyAeqM40XfR9Gf/7dBwU1zUqnxt0JeDQ34/nd
-        DcFzzFkrOtQd/3W7PPJa774DmAEyvIU=
-X-Google-Smtp-Source: ABdhPJydJ7xvzJS0k7fG4gTWodX4tiWHFMzTnM+NC5HYG9Xb+seCqYMDtLNm+BvO9A97hGceLRSCXQ==
-X-Received: by 2002:a05:6402:4405:: with SMTP id y5mr8598888eda.32.1618556935191;
-        Fri, 16 Apr 2021 00:08:55 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:c122:98c9:2964:3d64? ([2a02:908:1252:fb60:c122:98c9:2964:3d64])
-        by smtp.gmail.com with ESMTPSA id k9sm3405159eje.102.2021.04.16.00.08.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Apr 2021 00:08:54 -0700 (PDT)
-Subject: Re: [PATCH 2/2] drm/ttm: optimize the pool shrinker a bit v2
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, vbabka@suse.cz, daniel@ffwll.ch,
-        ray.huang@amd.com
-References: <20210415115624.2904-1-christian.koenig@amd.com>
- <20210415115624.2904-2-christian.koenig@amd.com>
- <20210415133310.1ee9df70a9eb887be937c3a3@linux-foundation.org>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <57572373-d68c-80de-7f9e-c04239d1b050@gmail.com>
-Date:   Fri, 16 Apr 2021 09:08:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 16 Apr 2021 03:09:34 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B09CDC061574;
+        Fri, 16 Apr 2021 00:09:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=e1pqz5Awgt1GE6YgZQa4ltuZ9s1zkandzmHzgiCBi6c=; b=OqQfvuTlkemnHt1IBx3a7Ub2j3
+        p1CrRqAMQAvdr7/i+JN+Nb88qSLD2PYT/4hwPVy5gTiU1Q6Jdx/HEJxmePQzP0H8QtQqUpSvS4z2y
+        JFf1p8ls+CqqYNfX/hBE4qkZR3Y0DW4X8ifWd4VKStRFBKb0SV+5PUUgmiDyQbQwB44WDVdHEp5Lc
+        8TtcGmM6aNwtheVEm3v0AsbOMmIpmc9GB1dDfEzvB+DVF5SLO28RtXCtUHGCosfkFQ0bKONxsXczj
+        LFW7ubp35dJO3KT22qNhHOtE9yRzkf7JqOMSaoWn4Ov5an4vbPNDHqX1lY7CGA9kP5cyueF9Bke/T
+        D9OytkZw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lXIb9-0018wR-2d; Fri, 16 Apr 2021 07:09:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0D45630015A;
+        Fri, 16 Apr 2021 09:09:02 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E7B8A200C8D28; Fri, 16 Apr 2021 09:09:01 +0200 (CEST)
+Date:   Fri, 16 Apr 2021 09:09:01 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Wedson Almeida Filho <wedsonaf@google.com>
+Cc:     ojeda@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+Message-ID: <YHk4DZE1ZWTiBB1f@hirez.programming.kicks-ass.net>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
+ <YHj02M3jMSweoP4l@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210415133310.1ee9df70a9eb887be937c3a3@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHj02M3jMSweoP4l@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 15.04.21 um 22:33 schrieb Andrew Morton:
-> On Thu, 15 Apr 2021 13:56:24 +0200 "Christian König" <ckoenig.leichtzumerken@gmail.com> wrote:
->
->> @@ -530,6 +525,11 @@ void ttm_pool_fini(struct ttm_pool *pool)
->>   			for (j = 0; j < MAX_ORDER; ++j)
->>   				ttm_pool_type_fini(&pool->caching[i].orders[j]);
->>   	}
->> +
->> +	/* We removed the pool types from the LRU, but we need to also make sure
->> +	 * that no shrinker is concurrently freeing pages from the pool.
->> +	 */
->> +	sync_shrinkers();
-> It isn't immediately clear to me how this works.  ttm_pool_fini() has
-> already freed all the pages hasn't it?  So why would it care if some
-> shrinkers are still playing with the pages?
+On Fri, Apr 16, 2021 at 03:22:16AM +0100, Wedson Almeida Filho wrote:
+> On Thu, Apr 15, 2021 at 08:58:16PM +0200, Peter Zijlstra wrote:
+> > On Wed, Apr 14, 2021 at 08:45:51PM +0200, ojeda@kernel.org wrote:
+> > 
+> > > Rust is a systems programming language that brings several key
+> > > advantages over C in the context of the Linux kernel:
+> > > 
+> > >   - No undefined behavior in the safe subset (when unsafe code is
+> > >     sound), including memory safety and the absence of data races.
+> > 
+> > And yet I see not a single mention of the Rust Memory Model and how it
+> > aligns (or not) with the LKMM. The C11 memory model for example is a
+> > really poor fit for LKMM.
+> 
+> We don't intend to directly expose C data structures to Rust code (outside the
+> kernel crate). Instead, we intend to provide wrappers that expose safe
+> interfaces even though the implementation may use unsafe blocks. So we expect
+> the vast majority of Rust code to just care about the Rust memory model.
+> 
+> We admittedly don't have a huge number of wrappers yet, but we do have enough to
+> implement most of Binder and so far it's been ok. We do intend to eventually
+> cover other classes of drivers that may unveil unforeseen difficulties, we'll
+> see.
+> 
+> If you have concerns that we might have overlooked, we'd be happy to hear about
+> them from you (or anyone else).
 
-Yes ttm_pool_fini() has freed up all pages which had been in the pool 
-when the function was called.
+Well, the obvious example would be seqlocks. C11 can't do them. The not
+sharing of data structures would avoid most of that, but will also cost
+you in performance.
 
-But the problem is it is possible that a parallel running shrinker has 
-taken a page from the pool and is in the process of freeing it up.
+Simlar thing for RCU; C11 can't optimally do that; it needs to make
+rcu_dereference() a load-acquire [something ARM64 has already done in C
+because the compiler might be too clever by half when doing LTO :-(].
+But it's the compiler needing the acquire semantics, not the computer,
+which is just bloody wrong.
 
-When I return here the pool structure and especially the device 
-structure are freed while the parallel running shrinker is still using them.
+And there's more sharp corners to be had. But yes, if you're not
+actually sharing anything; and taking the performance hit that comes
+with that, you might get away with it.
 
-I could go for a design where we have one shrinker per device instead, 
-but that would put a bit to much pressure on the pool in my opinion.
+> > HTML is not a valid documentation format. Heck, markdown itself is
+> > barely readable.
+> 
+> Are you stating [what you perceive as] a fact or just venting? If the former,
+> would you mind enlightening us with some evidence?
 
-> Or is it the case that ttm_pool_fini() is assuming that there will be
-> some further action against these pages, which requires that shrinkers
-> no longer be accessing the pages and which further assumes that future
-> shrinker invocations will not be able to look up these pages?
->
-> IOW, a bit more explanation about the dynamics here would help!
+I've yet to see a program that renders HTML (including all the cruft
+often used in docs, which might include SVG graphics and whatnot) sanely
+in ASCII. Lynx does not qualify, it's output is atrocious crap.
 
-Sorry, I'm not a native speaker of English and sometimes still have a 
-hard time explaining things.
+Yes, lynx lets you read HTML in ASCII, but at the cost of bleeding
+eyeballs and missing content.
 
-Regards,
-Christian.
+Nothing beats a sane ASCII document with possibly, where really needed
+some ASCII art.
+
+Sadly the whole kernel documentation project is moving away from that as
+well, which just means I'm back to working on an undocumented codebase.
+This rst crap they adopted is unreadable garbage.
+
+> > It is really *really* hard to read. It has all sorts of weird things,
+> > like operators at the beginning after a line break:
+> > 
+> > 	if (foo
+> > 	    || bar)
+> > 
+> > which is just wrong. And it suffers from CamelCase, which is just about
+> > the worst thing ever. Not even the C++ std libs have that (or had, back
+> > when I still did knew C++).
+> > 
+> > I also see:
+> > 
+> > 	if (foo) {
+> > 		...
+> > 	}
+> > 
+> > and
+> > 
+> > 	if foo {
+> > 	}
+> > 
+> > the latter, ofcourse, being complete rubbish.
+> 
+> There are advantages to adopting the preferred style of a language (when one
+> exists). We, of course, are not required to adopt it but I am of the opinion
+> that we should have good reasons to diverge if that's our choice in the end.
+> 
+> "Not having parentheses around the if-clause expression is complete rubbish"
+> doesn't sound like a good reason to me.
+
+Of course it does; my internal lexer keeps screaming syntax error at me;
+how am I going to understand code when I can't sanely read it?
+
+The more you make it look like (Kernel) C, the easier it is for us C
+people to actually read. My eyes have been reading C for almost 30 years
+by now, they have a lexer built in the optical nerve; reading something
+that looks vaguely like C but is definitely not C is an utterly painful
+experience.
+
+You're asking to join us, not the other way around. I'm fine in a world
+without Rust.
