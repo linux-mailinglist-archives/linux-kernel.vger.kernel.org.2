@@ -2,180 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B584A362B0C
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:25:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40917362B09
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235727AbhDPWZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 18:25:59 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:59820 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235583AbhDPWZy (ORCPT
+        id S235563AbhDPWZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 18:25:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233514AbhDPWZk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 18:25:54 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13GMPJKm118270;
-        Fri, 16 Apr 2021 17:25:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1618611919;
-        bh=utgO5PVd5wR3Tdh3aSlX3zh2ppZqzEWKNEl2e6gL+58=;
-        h=From:To:CC:Subject:Date;
-        b=K+k2XntQa4HadpsrzbpLPauhygzKAb5JAsgFFwlQ5h7Lob7PgI8vEhrHBgxATEyXc
-         n2wfUAGEQWtAvtUyuT2rrfBQAXDKnymvhRTayocKHu5Zb6JsrAjOF5E8tHuPaV+68V
-         bKvVFiwqwXzEt9jAYYYEZfYpV7U7Pi3tE3VCanEg=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13GMPJlM125175
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 16 Apr 2021 17:25:19 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 16
- Apr 2021 17:25:18 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 16 Apr 2021 17:25:18 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13GMPI2u070293;
-        Fri, 16 Apr 2021 17:25:18 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Nishanth Menon <nm@ti.com>
-Subject: [PATCH] dt-bindings: arm: firmware: Convert linaro,optee-tz to json schema
-Date:   Fri, 16 Apr 2021 17:25:18 -0500
-Message-ID: <20210416222518.15801-1-nm@ti.com>
-X-Mailer: git-send-email 2.31.0
+        Fri, 16 Apr 2021 18:25:40 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2469C061574;
+        Fri, 16 Apr 2021 15:25:15 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id s5so21735313qkj.5;
+        Fri, 16 Apr 2021 15:25:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=84gt/sK4j/+259WLeY5W9SpttA1mqKzaJ7iCIgGDeTA=;
+        b=CRRFAS8w+pVMLZrflfzDfRjo2cmYIm4Yl+qAXu7iRhKX+5l2liyPxA0qinsK36S7yC
+         3wvh2co5cNGhloMfpiWp6FEAY78S1ShpwECzele6jApyl6pNOu41WLpXqGn5f6Ynh5Uk
+         NMoeUDMKboTOXBCx0FQKRGdSK0cJC/6bVKnGvDUzrYmHR6aeIdv16cNHHD7XsgWBV6tP
+         mjb1hdM3/+73uih+W/pjkDIZ+UnoiQjI/EdfjJUx6a96ARBk+BLeHrR9OacxJVdwc7Vv
+         7dUkdE9GYh8E4RlfMCCyMvKEZVjCecUp2aAIub+Gl+XIOw5XiirBnkReEdEjGFvxk809
+         +6eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=84gt/sK4j/+259WLeY5W9SpttA1mqKzaJ7iCIgGDeTA=;
+        b=n3ONp35vykPnbfbBwUW4ZZwho4LTPhhUPYt+bJFJb8khSzPH3XuDeQ/eFpDktQ0H7C
+         SokVjY3nBamrDk9djIEX4cjv0xjs7zt5a+MGTYMrO5w6QEIIQXknpX6INikRwjSkItxG
+         h+fQdt/i5hDLpsfTOOjV76jS3VFoAJsiCBL7kkFBKjz+r9V1gWiFfUT01x8r0YTJwRlb
+         IZRJetNOzGC3Azyiv/XKdbqqrtD5w5KTdszP1ElYkxA16xGtydr43ldbIU6kQ1C4pthX
+         wtwDcZKx15XzuTATtqSMnS7wI+mOpUzJDx6wd7cYWbs0LViOGuqFcQnaQZj+XQc4nAxP
+         mnnA==
+X-Gm-Message-State: AOAM533niOcYq8Gymu5G+Fu25FClglTS4M8N8haha5/+nMevtsBkc0EF
+        aMTFg6YnVtPt1GBuowfig9A=
+X-Google-Smtp-Source: ABdhPJw+3om9w6tjoiF5XF101AhEZCnB3br7T3VAvwn9iuKXUhJmWkKphpy6CJoA6AtKAGA5eMRlUQ==
+X-Received: by 2002:a05:620a:950:: with SMTP id w16mr1547553qkw.188.1618611914992;
+        Fri, 16 Apr 2021 15:25:14 -0700 (PDT)
+Received: from LuizSampaio-PC.localdomain ([2804:14d:5c21:af45:3b27:576c:7dde:37f1])
+        by smtp.gmail.com with ESMTPSA id n15sm4790712qti.51.2021.04.16.15.25.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 15:25:14 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 19:26:08 -0300
+From:   Luiz Sampaio <sampaio.ime@gmail.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     corbet@lwn.net, rikard.falkeborn@gmail.com,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v5 2/6] w1: ds2438: fixed if brackets coding style issue
+Message-ID: <20210416222608.z7mfxnxhfx2dgytq@LuizSampaio-PC.localdomain>
+References: <20210405105009.420924-1-sampaio.ime@gmail.com>
+ <20210409030942.441830-1-sampaio.ime@gmail.com>
+ <20210409030942.441830-3-sampaio.ime@gmail.com>
+ <67bacd4825f9c8f1abc225146888c5a50deb924c.camel@perches.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <67bacd4825f9c8f1abc225146888c5a50deb924c.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert linaro,optee-tz to json schema format for better documentation
-and error checks.
+On Fri, Apr 09, 2021 at 07:40:57AM -0700, Joe Perches wrote:
+> On Fri, 2021-04-09 at 00:09 -0300, Luiz Sampaio wrote:
+> > Since there is only one statement inside the if clause, no brackets are
+> > required.
+> []
+> > diff --git a/drivers/w1/slaves/w1_ds2438.c b/drivers/w1/slaves/w1_ds2438.c
+> []
+> > @@ -287,9 +287,9 @@ static ssize_t iad_read(struct file *filp, struct kobject *kobj,
+> >  	if (!buf)
+> >  		return -EINVAL;
+> >  
+> > 
+> > -	if (w1_ds2438_get_current(sl, &voltage) == 0) {
+> > +	if (w1_ds2438_get_current(sl, &voltage) == 0)
+> >  		ret = snprintf(buf, count, "%i\n", voltage);
+> > -	} else
+> > +	else
+> >  		ret = -EIO;
+> >  
+> > 
+> >  	return ret;
+> 
+> to me this would look better using a style like the below:
+> (and it might be better using sysfs_emit and not snprintf too)
+> 
+> ---
+>  drivers/w1/slaves/w1_ds2438.c | 36 ++++++++++++------------------------
+>  1 file changed, 12 insertions(+), 24 deletions(-)
+> 
+> diff --git a/drivers/w1/slaves/w1_ds2438.c b/drivers/w1/slaves/w1_ds2438.c
+> index 5cfb0ae23e91..9115c5a9bc4f 100644
+> --- a/drivers/w1/slaves/w1_ds2438.c
+> +++ b/drivers/w1/slaves/w1_ds2438.c
+> @@ -279,7 +279,6 @@ static ssize_t iad_read(struct file *filp, struct kobject *kobj,
+>  			loff_t off, size_t count)
+>  {
+>  	struct w1_slave *sl = kobj_to_w1_slave(kobj);
+> -	int ret;
+>  	int16_t voltage;
+>  
+>  	if (off != 0)
+> @@ -287,12 +286,10 @@ static ssize_t iad_read(struct file *filp, struct kobject *kobj,
+>  	if (!buf)
+>  		return -EINVAL;
+>  
+> -	if (w1_ds2438_get_current(sl, &voltage) == 0) {
+> -		ret = snprintf(buf, count, "%i\n", voltage);
+> -	} else
+> -		ret = -EIO;
+> +	if (w1_ds2438_get_current(sl, &voltage))
+> +		return -EIO;
+>  
+> -	return ret;
+> +	return snprintf(buf, count, "%i\n", voltage);
+>  }
+>  
+>  static ssize_t page0_read(struct file *filp, struct kobject *kobj,
+> @@ -330,7 +327,6 @@ static ssize_t temperature_read(struct file *filp, struct kobject *kobj,
+>  				loff_t off, size_t count)
+>  {
+>  	struct w1_slave *sl = kobj_to_w1_slave(kobj);
+> -	int ret;
+>  	int16_t temp;
+>  
+>  	if (off != 0)
+> @@ -338,12 +334,10 @@ static ssize_t temperature_read(struct file *filp, struct kobject *kobj,
+>  	if (!buf)
+>  		return -EINVAL;
+>  
+> -	if (w1_ds2438_get_temperature(sl, &temp) == 0) {
+> -		ret = snprintf(buf, count, "%i\n", temp);
+> -	} else
+> -		ret = -EIO;
+> +	if (w1_ds2438_get_temperature(sl, &temp))
+> +		return -EIO;
+>  
+> -	return ret;
+> +	return snprintf(buf, count, "%i\n", temp);
+>  }
+>  
+>  static ssize_t vad_read(struct file *filp, struct kobject *kobj,
+> @@ -351,7 +345,6 @@ static ssize_t vad_read(struct file *filp, struct kobject *kobj,
+>  			loff_t off, size_t count)
+>  {
+>  	struct w1_slave *sl = kobj_to_w1_slave(kobj);
+> -	int ret;
+>  	uint16_t voltage;
+>  
+>  	if (off != 0)
+> @@ -359,12 +352,10 @@ static ssize_t vad_read(struct file *filp, struct kobject *kobj,
+>  	if (!buf)
+>  		return -EINVAL;
+>  
+> -	if (w1_ds2438_get_voltage(sl, DS2438_ADC_INPUT_VAD, &voltage) == 0) {
+> -		ret = snprintf(buf, count, "%u\n", voltage);
+> -	} else
+> -		ret = -EIO;
+> +	if (w1_ds2438_get_voltage(sl, DS2438_ADC_INPUT_VAD, &voltage))
+> +		return -EIO;
+>  
+> -	return ret;
+> +	return snprintf(buf, count, "%u\n", voltage);
+>  }
+>  
+>  static ssize_t vdd_read(struct file *filp, struct kobject *kobj,
+> @@ -372,7 +363,6 @@ static ssize_t vdd_read(struct file *filp, struct kobject *kobj,
+>  			loff_t off, size_t count)
+>  {
+>  	struct w1_slave *sl = kobj_to_w1_slave(kobj);
+> -	int ret;
+>  	uint16_t voltage;
+>  
+>  	if (off != 0)
+> @@ -380,12 +370,10 @@ static ssize_t vdd_read(struct file *filp, struct kobject *kobj,
+>  	if (!buf)
+>  		return -EINVAL;
+>  
+> -	if (w1_ds2438_get_voltage(sl, DS2438_ADC_INPUT_VDD, &voltage) == 0) {
+> -		ret = snprintf(buf, count, "%u\n", voltage);
+> -	} else
+> -		ret = -EIO;
+> +	if (w1_ds2438_get_voltage(sl, DS2438_ADC_INPUT_VDD, &voltage))
+> +		return -EIO;
+>  
+> -	return ret;
+> +	return snprintf(buf, count, "%u\n", voltage);
+>  }
+>  
+>  static BIN_ATTR(iad, S_IRUGO | S_IWUSR | S_IWGRP, iad_read, iad_write, 0);
+>
 
-NOTE:
-1. This change does introduce a stricter naming convention for
-   optee nodes.
-2. We do have false positive checkpatch warning with this patch:
-   "DT binding docs and includes should be a separate patch"
-
-Signed-off-by: Nishanth Menon <nm@ti.com>
----
- .../bindings/arm/firmware/linaro,optee-tz.txt | 31 ----------
- .../arm/firmware/linaro,optee-tz.yaml         | 62 +++++++++++++++++++
- 2 files changed, 62 insertions(+), 31 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.txt
- create mode 100644 Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml
-
-diff --git a/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.txt b/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.txt
-deleted file mode 100644
-index d38834c67dff..000000000000
---- a/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.txt
-+++ /dev/null
-@@ -1,31 +0,0 @@
--OP-TEE Device Tree Bindings
--
--OP-TEE is a piece of software using hardware features to provide a Trusted
--Execution Environment. The security can be provided with ARM TrustZone, but
--also by virtualization or a separate chip.
--
--We're using "linaro" as the first part of the compatible property for
--the reference implementation maintained by Linaro.
--
--* OP-TEE based on ARM TrustZone required properties:
--
--- compatible     : should contain "linaro,optee-tz"
--
--- method         : The method of calling the OP-TEE Trusted OS. Permitted
--                   values are:
--
--                   "smc" : SMC #0, with the register assignments specified
--		           in drivers/tee/optee/optee_smc.h
--
--                   "hvc" : HVC #0, with the register assignments specified
--		           in drivers/tee/optee/optee_smc.h
--
--
--
--Example:
--	firmware {
--		optee {
--			compatible = "linaro,optee-tz";
--			method = "smc";
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml b/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml
-new file mode 100644
-index 000000000000..6513b5ac8b2c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml
-@@ -0,0 +1,62 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/arm/firmware/linaro,optee-tz.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: OP-TEE Device Tree Bindings
-+
-+maintainers:
-+  - Jens Wiklander <jens.wiklander@linaro.org>
-+
-+description: |
-+  OP-TEE is a piece of software using hardware features to provide a Trusted
-+  Execution Environment. The security can be provided with ARM TrustZone, but
-+  also by virtualization or a separate chip.
-+
-+  We're using "linaro" as the first part of the compatible property for
-+  the reference implementation maintained by Linaro.
-+
-+properties:
-+  $nodename:
-+    const: 'optee'
-+
-+  compatible:
-+    const: linaro,optee-tz
-+
-+  method:
-+    description: The method of calling the OP-TEE Trusted OS.
-+    oneOf:
-+      - description: |
-+          SMC #0, with the register assignments specified
-+          in drivers/tee/optee/optee_smc.h
-+        items:
-+          - const: smc
-+      - description: |
-+          HVC #0, with the register assignments specified
-+          in drivers/tee/optee/optee_smc.h
-+        items:
-+          - const: hvc
-+
-+required:
-+  - compatible
-+  - method
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    firmware  {
-+        optee  {
-+            compatible = "linaro,optee-tz";
-+            method = "smc";
-+        };
-+    };
-+
-+  - |
-+    firmware  {
-+        optee  {
-+            compatible = "linaro,optee-tz";
-+            method = "hvc";
-+        };
-+    };
--- 
-2.31.0
-
+Sorry for the late reply! I agree, this would look nicer. I will wait for
+the current revision and change this for the next one. 
