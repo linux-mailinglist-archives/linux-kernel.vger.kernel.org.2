@@ -2,85 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73C73626B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B14813626B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241502AbhDPR0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 13:26:39 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:56122 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235935AbhDPR0i (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 13:26:38 -0400
-Received: from [192.168.86.23] (c-73-38-52-84.hsd1.vt.comcast.net [73.38.52.84])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 246E820B8001;
-        Fri, 16 Apr 2021 10:26:11 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 246E820B8001
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1618593973;
-        bh=yI1pAMpH+mhQxjxBFxyi6XTgljNwMYGQtQI+vVWmMsk=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=slYNO8en83Yfldinakff1HJ/VLKev28A09BDDpGfNxEsBbJsFZzaRUwIL6TqVp60l
-         n+V4W/Pm2YDlMVWcvXcoKFbSRkv9U3k9t4ZtyrpKL7VlbKv/AQ5tquBIZ2Bejd650V
-         yJmIxW3UOiU6H1DyeLr5CWaC44C8wO2qaDuhG75M=
-Subject: Re: [PATCH v2 5/7] KVM: SVM: hyper-v: Remote TLB flush for SVM
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org,
-        Lan Tianyu <Tianyu.Lan@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        viremana@linux.microsoft.com
-References: <cover.1618492553.git.viremana@linux.microsoft.com>
- <959f6cc899a17c709a2f5a71f6b2dc8c072ae600.1618492553.git.viremana@linux.microsoft.com>
- <87sg3q7g7b.fsf@vitty.brq.redhat.com>
-From:   Vineeth Pillai <viremana@linux.microsoft.com>
-Message-ID: <f85b1db2-3a0b-0de3-78e9-2c04721f00bc@linux.microsoft.com>
-Date:   Fri, 16 Apr 2021 13:26:08 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
-MIME-Version: 1.0
-In-Reply-To: <87sg3q7g7b.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S241903AbhDPR1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 13:27:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56190 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241743AbhDPR1W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 13:27:22 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C99A611AE;
+        Fri, 16 Apr 2021 17:26:57 +0000 (UTC)
+Received: from rostedt by gandalf.local.home with local (Exim 4.94)
+        (envelope-from <rostedt@goodmis.org>)
+        id 1lXSF6-0069ii-8a; Fri, 16 Apr 2021 13:26:56 -0400
+Message-ID: <20210416172612.086725495@goodmis.org>
+User-Agent: quilt/0.66
+Date:   Fri, 16 Apr 2021 13:26:12 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
+Subject: [for-next][PATCH 0/7] tracing: Add func_no_repeats option
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Steven Rostedt (VMware) <rostedt@goodmis.org>, Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+for-next
 
-On 4/16/2021 5:04 AM, Vitaly Kuznetsov wrote:
-> Vineeth Pillai <viremana@linux.microsoft.com> writes:
->
->
->   
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +static void hv_init_vmcb(struct vmcb *vmcb)
-> +{
-> +	struct hv_enlightenments *hve = &vmcb->hv_enlightenments;
-> +
-> +	if (npt_enabled &&
-> +	    ms_hyperv.nested_features & HV_X64_NESTED_ENLIGHTENED_TLB)
-> Nitpick: we can probably have a 'static inline' for
->
->   "npt_enabled && ms_hyperv.nested_features & HV_X64_NESTED_ENLIGHTENED_TLB"
->
-> e.g. 'hv_svm_enlightened_tlbflush()'
-Makes sense, will do.
-
-Thanks,
-Vineeth
+Head SHA1: e1db6338d6fa0d409e45cf20ab5aeaca704f68e7
 
 
+Steven Rostedt (VMware) (1):
+      ftrace: Reuse the output of the function tracer for func_repeats
 
+Yordan Karadzhov (VMware) (6):
+      tracing: Define static void trace_print_time()
+      tracing: Define new ftrace event "func_repeats"
+      tracing: Add "last_func_repeats" to struct trace_array
+      tracing: Add method for recording "func_repeats" events
+      tracing: Unify the logic for function tracing options
+      tracing: Add "func_no_repeats" option for function tracing
 
+----
+ kernel/trace/trace.c           |  35 +++++++
+ kernel/trace/trace.h           |  19 ++++
+ kernel/trace/trace_entries.h   |  22 ++++
+ kernel/trace/trace_functions.c | 223 +++++++++++++++++++++++++++++++++++------
+ kernel/trace/trace_output.c    |  91 ++++++++++++++---
+ 5 files changed, 346 insertions(+), 44 deletions(-)
