@@ -2,454 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C47C362236
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1FFE362235
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236039AbhDPO2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:28:06 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:56727 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233606AbhDPO2E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S235950AbhDPO2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 16 Apr 2021 10:28:04 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618583260; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=9GpCbXu9iJiZ8BJcay3JR2dmTei9vvUKB55VySZgdUA=; b=o8FmOyFw9r+jIjgE5xJhGtwQxPUCZCKf7YGEvyRByMHOEB0nqAUtejvlcdGWb5CgQEhfmtAx
- +AKDdfxyMyg4lW/4NIaMAzOYCDcpsp/1c+l2l1Pmt4ys5H04b52o/mlM20bwfp92YUnytQAs
- z58oARHUo5CFkgUUIVgZVv9IqhY=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 60799ed7a817abd39a8bcbb4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Apr 2021 14:27:35
- GMT
-Sender: faiyazm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E2F2DC43463; Fri, 16 Apr 2021 14:27:34 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from faiyazm-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: faiyazm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CC220C433C6;
-        Fri, 16 Apr 2021 14:27:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CC220C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
-From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
-To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     vinmenon@codeaurora.org, Faiyaz Mohammed <faiyazm@codeaurora.org>
-Subject: [PATCH v4] mm: slub: move sysfs slab alloc/free interfaces to debugfs
-Date:   Fri, 16 Apr 2021 19:57:19 +0530
-Message-Id: <1618583239-18124-1-git-send-email-faiyazm@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+Received: from Galois.linutronix.de ([193.142.43.55]:57620 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235897AbhDPO2C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 10:28:02 -0400
+Date:   Fri, 16 Apr 2021 14:27:35 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618583256;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Sx7sDJq/YhxQGmyN5puo1e/5fcEsVfkvA4JzjEuhwUM=;
+        b=shsiyNaYBCzdceKbLD0jnRSdlexiNa3cKjgWNcXjHAbru9mbBKXabnnesHs11PmGft51ab
+        VN352CZFmBt4XNtSexEU0Ef6Q8zX/nxIDSJoSFr1uB+EGgPeIF1iGY+SqKolJzgmq6HiFy
+        f2sRLGLo87WcT/N06KTiaXCBXei6lB9L+22bddAmiMb5E78CiYW0WXlnTrgrccltTjIfEd
+        Zeg9cbnr7IoT6MJcJJamvI4shqD3JqpkfY6zXhbT/+qHBfeEsMFx2JlUu6erlLpTMoHPHQ
+        2yg+49rlRiO+8yxzSD1YpRa2l8YbS1ayYizux1qM6ShKIh7qk5953h81EZClzg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618583256;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Sx7sDJq/YhxQGmyN5puo1e/5fcEsVfkvA4JzjEuhwUM=;
+        b=IX1AZgZTINzdBNH1jxmHf9FREVIiCaacM3gngOQ3ihk0uuV6YQDonSlL4EQfi7neTAftSK
+        oT32SgWRnrGK65DA==
+From:   "tip-bot2 for Alison Schofield" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/core] x86, sched: Treat Intel SNC topology as default, COD
+ as exception
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        stable@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210310190233.31752-1-alison.schofield@intel.com>
+References: <20210310190233.31752-1-alison.schofield@intel.com>
+MIME-Version: 1.0
+Message-ID: <161858325531.29796.18336323014475030833.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-alloc_calls and free_calls implementation in sysfs have two issues,
-one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
-to "one value per file" rule.
+The following commit has been merged into the x86/core branch of tip:
 
-To overcome this issues, move the alloc_calls and free_calls implemeation
-to debugfs.
+Commit-ID:     2c88d45edbb89029c1190bb3b136d2602f057c98
+Gitweb:        https://git.kernel.org/tip/2c88d45edbb89029c1190bb3b136d2602f057c98
+Author:        Alison Schofield <alison.schofield@intel.com>
+AuthorDate:    Wed, 10 Mar 2021 11:02:33 -08:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Thu, 15 Apr 2021 18:34:20 +02:00
 
-Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+x86, sched: Treat Intel SNC topology as default, COD as exception
+
+Commit 1340ccfa9a9a ("x86,sched: Allow topologies where NUMA nodes
+share an LLC") added a vendor and model specific check to never
+call topology_sane() for Intel Skylake Server systems where NUMA
+nodes share an LLC.
+
+Intel Ice Lake and Sapphire Rapids CPUs also enumerate an LLC that is
+shared by multiple NUMA nodes. The LLC on these CPUs is shared for
+off-package data access but private to the NUMA node for on-package
+access. Rather than managing a list of allowable SNC topologies, make
+this SNC topology the default, and treat Intel's Cluster-On-Die (COD)
+topology as the exception.
+
+In SNC mode, Sky Lake, Ice Lake, and Sapphire Rapids servers do not
+emit this warning:
+
+sched: CPU #3's llc-sibling CPU #0 is not on the same node! [node: 1 != 0]. Ignoring dependency.
+
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Alison Schofield <alison.schofield@intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/20210310190233.31752-1-alison.schofield@intel.com
 ---
- include/linux/slub_def.h |  10 +++
- mm/slab_common.c         |   9 +++
- mm/slub.c                | 202 ++++++++++++++++++++++++++++++++++++++++++-----
- 3 files changed, 200 insertions(+), 21 deletions(-)
+ arch/x86/kernel/smpboot.c | 90 +++++++++++++++++++-------------------
+ 1 file changed, 46 insertions(+), 44 deletions(-)
 
-diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
-index dcde82a..f8c268d 100644
---- a/include/linux/slub_def.h
-+++ b/include/linux/slub_def.h
-@@ -110,6 +110,9 @@ struct kmem_cache {
- #ifdef CONFIG_SYSFS
- 	struct kobject kobj;	/* For sysfs */
- #endif
-+#ifdef CONFIG_SLUB_DEBUG
-+	struct dentry *slab_cache_dentry;
-+#endif
- #ifdef CONFIG_SLAB_FREELIST_HARDENED
- 	unsigned long random;
- #endif
-@@ -159,6 +162,13 @@ static inline void sysfs_slab_release(struct kmem_cache *s)
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 02813a7..147b2f3 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -458,29 +458,52 @@ static bool match_smt(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+ 	return false;
  }
- #endif
  
-+#ifdef CONFIG_DEBUG_FS
-+void debugfs_slab_release(struct kmem_cache *);
-+#else
-+static inline void debugfs_slab_release(struct kmem_cache *s)
++static bool match_die(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
 +{
++	if (c->phys_proc_id == o->phys_proc_id &&
++	    c->cpu_die_id == o->cpu_die_id)
++		return true;
++	return false;
 +}
-+#endif
- void object_err(struct kmem_cache *s, struct page *page,
- 		u8 *object, char *reason);
- 
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 88e8339..fb28328 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -437,6 +437,9 @@ static void slab_caches_to_rcu_destroy_workfn(struct work_struct *work)
- #else
- 		slab_kmem_cache_release(s);
- #endif
-+#ifdef CONFIG_DEBUG_FS
-+		debugfs_slab_release(s);
-+#endif
- 	}
- }
- 
-@@ -454,6 +457,9 @@ static int shutdown_cache(struct kmem_cache *s)
- #ifdef SLAB_SUPPORTS_SYSFS
- 		sysfs_slab_unlink(s);
- #endif
-+#ifdef CONFIG_DEBUG_FS
-+		debugfs_slab_release(s);
-+#endif
- 		list_add_tail(&s->list, &slab_caches_to_rcu_destroy);
- 		schedule_work(&slab_caches_to_rcu_destroy_work);
- 	} else {
-@@ -464,6 +470,9 @@ static int shutdown_cache(struct kmem_cache *s)
- #else
- 		slab_kmem_cache_release(s);
- #endif
-+#ifdef CONFIG_DEBUG_FS
-+		debugfs_slab_release(s);
-+#endif
- 	}
- 
- 	return 0;
-diff --git a/mm/slub.c b/mm/slub.c
-index 3021ce9..ab7a0d3 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -36,6 +36,7 @@
- #include <linux/memcontrol.h>
- #include <linux/random.h>
- 
-+#include <linux/debugfs.h>
- #include <trace/events/kmem.h>
- 
- #include "internal.h"
-@@ -225,6 +226,15 @@ static inline int sysfs_slab_alias(struct kmem_cache *s, const char *p)
- 							{ return 0; }
- #endif
- 
-+#ifdef CONFIG_DEBUG_FS
-+static void debugfs_slab_add(struct kmem_cache *);
-+static int debugfs_slab_alias(struct kmem_cache *, const char *);
-+#else
-+static inline void debugfs_slab_add(struct kmem_cache *s) { }
-+static inline int debugfs_slab_alias(struct kmem_cache *s, const char *p)
-+							{ return 0; }
-+#endif
 +
- static inline void stat(const struct kmem_cache *s, enum stat_item si)
- {
- #ifdef CONFIG_SLUB_STATS
-@@ -4521,6 +4531,8 @@ __kmem_cache_alias(const char *name, unsigned int size, unsigned int align,
- 			s->refcount--;
- 			s = NULL;
- 		}
-+
-+		debugfs_slab_alias(s, name);
- 	}
- 
- 	return s;
-@@ -4542,6 +4554,8 @@ int __kmem_cache_create(struct kmem_cache *s, slab_flags_t flags)
- 	if (err)
- 		__kmem_cache_release(s);
- 
-+	debugfs_slab_add(s);
-+
- 	return err;
- }
- 
-@@ -4682,6 +4696,8 @@ static long validate_slab_cache(struct kmem_cache *s)
- 
- 	return count;
- }
-+
-+#ifdef CONFIG_DEBUG_FS
  /*
-  * Generate lists of code addresses where slabcache objects are allocated
-  * and freed.
-@@ -4705,6 +4721,8 @@ struct loc_track {
- 	struct location *loc;
+- * Define snc_cpu[] for SNC (Sub-NUMA Cluster) CPUs.
++ * Unlike the other levels, we do not enforce keeping a
++ * multicore group inside a NUMA node.  If this happens, we will
++ * discard the MC level of the topology later.
++ */
++static bool match_pkg(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
++{
++	if (c->phys_proc_id == o->phys_proc_id)
++		return true;
++	return false;
++}
++
++/*
++ * Define intel_cod_cpu[] for Intel COD (Cluster-on-Die) CPUs.
+  *
+- * These are Intel CPUs that enumerate an LLC that is shared by
+- * multiple NUMA nodes. The LLC on these systems is shared for
+- * off-package data access but private to the NUMA node (half
+- * of the package) for on-package access.
++ * Any Intel CPU that has multiple nodes per package and does not
++ * match intel_cod_cpu[] has the SNC (Sub-NUMA Cluster) topology.
+  *
+- * CPUID (the source of the information about the LLC) can only
+- * enumerate the cache as being shared *or* unshared, but not
+- * this particular configuration. The CPU in this case enumerates
+- * the cache to be shared across the entire package (spanning both
+- * NUMA nodes).
++ * When in SNC mode, these CPUs enumerate an LLC that is shared
++ * by multiple NUMA nodes. The LLC is shared for off-package data
++ * access but private to the NUMA node (half of the package) for
++ * on-package access. CPUID (the source of the information about
++ * the LLC) can only enumerate the cache as shared or unshared,
++ * but not this particular configuration.
+  */
+ 
+-static const struct x86_cpu_id snc_cpu[] = {
+-	X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_X, NULL),
++static const struct x86_cpu_id intel_cod_cpu[] = {
++	X86_MATCH_INTEL_FAM6_MODEL(HASWELL_X, 0),	/* COD */
++	X86_MATCH_INTEL_FAM6_MODEL(BROADWELL_X, 0),	/* COD */
++	X86_MATCH_INTEL_FAM6_MODEL(ANY, 1),		/* SNC */
+ 	{}
  };
  
-+static struct dentry *slab_debugfs_root;
-+
- static void free_loc_track(struct loc_track *t)
+ static bool match_llc(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
  {
- 	if (t->max)
-@@ -4822,10 +4840,9 @@ static void process_slab(struct loc_track *t, struct kmem_cache *s,
- 	put_map(map);
++	const struct x86_cpu_id *id = x86_match_cpu(intel_cod_cpu);
+ 	int cpu1 = c->cpu_index, cpu2 = o->cpu_index;
++	bool intel_snc = id && id->driver_data;
+ 
+ 	/* Do not match if we do not have a valid APICID for cpu: */
+ 	if (per_cpu(cpu_llc_id, cpu1) == BAD_APICID)
+@@ -495,32 +518,12 @@ static bool match_llc(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+ 	 * means 'c' does not share the LLC of 'o'. This will be
+ 	 * reflected to userspace.
+ 	 */
+-	if (!topology_same_node(c, o) && x86_match_cpu(snc_cpu))
++	if (match_pkg(c, o) && !topology_same_node(c, o) && intel_snc)
+ 		return false;
+ 
+ 	return topology_sane(c, o, "llc");
  }
  
--static int list_locations(struct kmem_cache *s, char *buf,
-+static int list_locations(struct seq_file *seq, struct kmem_cache *s,
- 			  enum track_item alloc)
- {
--	int len = 0;
- 	unsigned long i;
- 	struct loc_track t = { 0, 0, NULL };
- 	int node;
-@@ -4833,7 +4850,8 @@ static int list_locations(struct kmem_cache *s, char *buf,
+-/*
+- * Unlike the other levels, we do not enforce keeping a
+- * multicore group inside a NUMA node.  If this happens, we will
+- * discard the MC level of the topology later.
+- */
+-static bool match_pkg(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+-{
+-	if (c->phys_proc_id == o->phys_proc_id)
+-		return true;
+-	return false;
+-}
+-
+-static bool match_die(struct cpuinfo_x86 *c, struct cpuinfo_x86 *o)
+-{
+-	if ((c->phys_proc_id == o->phys_proc_id) &&
+-		(c->cpu_die_id == o->cpu_die_id))
+-		return true;
+-	return false;
+-}
+-
  
- 	if (!alloc_loc_track(&t, PAGE_SIZE / sizeof(struct location),
- 			     GFP_KERNEL)) {
--		return sysfs_emit(buf, "Out of memory\n");
-+		seq_puts(seq, "Out of memory\n");
-+		return -ENOMEM;
- 	}
- 	/* Push back cpu slabs */
- 	flush_all(s);
-@@ -4856,46 +4874,46 @@ static int list_locations(struct kmem_cache *s, char *buf,
- 	for (i = 0; i < t.count; i++) {
- 		struct location *l = &t.loc[i];
+ #if defined(CONFIG_SCHED_SMT) || defined(CONFIG_SCHED_MC)
+ static inline int x86_sched_itmt_flags(void)
+@@ -592,14 +595,23 @@ void set_cpu_sibling_map(int cpu)
+ 	for_each_cpu(i, cpu_sibling_setup_mask) {
+ 		o = &cpu_data(i);
  
--		len += sysfs_emit_at(buf, len, "%7ld ", l->count);
-+		seq_printf(seq, "%7ld ", l->count);
++		if (match_pkg(c, o) && !topology_same_node(c, o))
++			x86_has_numa_in_package = true;
++
+ 		if ((i == cpu) || (has_smt && match_smt(c, o)))
+ 			link_mask(topology_sibling_cpumask, cpu, i);
  
- 		if (l->addr)
--			len += sysfs_emit_at(buf, len, "%pS", (void *)l->addr);
-+			seq_printf(seq, "%pS", (void *)l->addr);
- 		else
--			len += sysfs_emit_at(buf, len, "<not-available>");
-+			seq_puts(seq, "<not-available>");
+ 		if ((i == cpu) || (has_mp && match_llc(c, o)))
+ 			link_mask(cpu_llc_shared_mask, cpu, i);
  
- 		if (l->sum_time != l->min_time)
--			len += sysfs_emit_at(buf, len, " age=%ld/%ld/%ld",
-+			seq_printf(seq, " age=%ld/%ld/%ld",
- 					     l->min_time,
- 					     (long)div_u64(l->sum_time,
- 							   l->count),
- 					     l->max_time);
- 		else
--			len += sysfs_emit_at(buf, len, " age=%ld", l->min_time);
-+			seq_printf(seq, " age=%ld", l->min_time);
- 
- 		if (l->min_pid != l->max_pid)
--			len += sysfs_emit_at(buf, len, " pid=%ld-%ld",
-+			seq_printf(seq, " pid=%ld-%ld",
- 					     l->min_pid, l->max_pid);
- 		else
--			len += sysfs_emit_at(buf, len, " pid=%ld",
-+			seq_printf(seq, " pid=%ld",
- 					     l->min_pid);
- 
- 		if (num_online_cpus() > 1 &&
- 		    !cpumask_empty(to_cpumask(l->cpus)))
--			len += sysfs_emit_at(buf, len, " cpus=%*pbl",
-+			seq_printf(seq, " cpus=%*pbl",
- 					     cpumask_pr_args(to_cpumask(l->cpus)));
- 
- 		if (nr_online_nodes > 1 && !nodes_empty(l->nodes))
--			len += sysfs_emit_at(buf, len, " nodes=%*pbl",
-+			seq_printf(seq, " nodes=%*pbl",
- 					     nodemask_pr_args(&l->nodes));
- 
--		len += sysfs_emit_at(buf, len, "\n");
-+		seq_puts(seq, "\n");
++		if ((i == cpu) || (has_mp && match_die(c, o)))
++			link_mask(topology_die_cpumask, cpu, i);
  	}
  
- 	free_loc_track(&t);
- 	if (!t.count)
--		len += sysfs_emit_at(buf, len, "No data\n");
-+		seq_puts(seq, "No data\n");
- 
--	return len;
-+	return 0;
++	threads = cpumask_weight(topology_sibling_cpumask(cpu));
++	if (threads > __max_smt_threads)
++		__max_smt_threads = threads;
++
+ 	/*
+ 	 * This needs a separate iteration over the cpus because we rely on all
+ 	 * topology_sibling_cpumask links to be set-up.
+@@ -613,8 +625,7 @@ void set_cpu_sibling_map(int cpu)
+ 			/*
+ 			 *  Does this new cpu bringup a new core?
+ 			 */
+-			if (cpumask_weight(
+-			    topology_sibling_cpumask(cpu)) == 1) {
++			if (threads == 1) {
+ 				/*
+ 				 * for each core in package, increment
+ 				 * the booted_cores for this new cpu
+@@ -631,16 +642,7 @@ void set_cpu_sibling_map(int cpu)
+ 			} else if (i != cpu && !c->booted_cores)
+ 				c->booted_cores = cpu_data(i).booted_cores;
+ 		}
+-		if (match_pkg(c, o) && !topology_same_node(c, o))
+-			x86_has_numa_in_package = true;
+-
+-		if ((i == cpu) || (has_mp && match_die(c, o)))
+-			link_mask(topology_die_cpumask, cpu, i);
+ 	}
+-
+-	threads = cpumask_weight(topology_sibling_cpumask(cpu));
+-	if (threads > __max_smt_threads)
+-		__max_smt_threads = threads;
  }
- #endif	/* CONFIG_SLUB_DEBUG */
  
-@@ -5348,17 +5366,23 @@ SLAB_ATTR(validate);
- 
- static ssize_t alloc_calls_show(struct kmem_cache *s, char *buf)
- {
--	if (!(s->flags & SLAB_STORE_USER))
--		return -ENOSYS;
--	return list_locations(s, buf, TRACK_ALLOC);
-+	int len = 0;
-+
-+	len += sprintf(buf, "Deprecated, use the equvalent under");
-+	len += sprintf(buf, "/sys/kernel/debug/slab/%s/alloc_calls", s->name);
-+
-+	return len;
- }
- SLAB_ATTR_RO(alloc_calls);
- 
- static ssize_t free_calls_show(struct kmem_cache *s, char *buf)
- {
--	if (!(s->flags & SLAB_STORE_USER))
--		return -ENOSYS;
--	return list_locations(s, buf, TRACK_FREE);
-+	int len = 0;
-+
-+	len += sprintf(buf, "Deprecated, use the equvalent under");
-+	len += sprintf(buf, "/sys/kernel/debug/slab/%s/free_calls", s->name);
-+
-+	return len;
- }
- SLAB_ATTR_RO(free_calls);
- #endif /* CONFIG_SLUB_DEBUG */
-@@ -5814,6 +5838,142 @@ static int __init slab_sysfs_init(void)
- __initcall(slab_sysfs_init);
- #endif /* CONFIG_SYSFS */
- 
-+#if defined(CONFIG_SLUB_DEBUG) && defined(CONFIG_DEBUG_FS)
-+static int debugfs_slab_alias(struct kmem_cache *s, const char *name)
-+{
-+	struct saved_alias *al;
-+
-+	if (slab_state == FULL) {
-+		/*
-+		 * If we have a leftover link then remove it.
-+		 */
-+		debugfs_remove(s->slab_cache_dentry);
-+		s->slab_cache_dentry = debugfs_create_symlink(name, slab_debugfs_root, NULL);
-+		return IS_ERR(s->slab_cache_dentry);
-+	}
-+
-+	al = kmalloc(sizeof(struct saved_alias), GFP_KERNEL);
-+	if (!al)
-+		return -ENOMEM;
-+
-+	al->s = s;
-+	al->name = name;
-+	al->next = alias_list;
-+	alias_list = al;
-+	return 0;
-+}
-+
-+static int slab_debug_trace(struct seq_file *seq, void *ignored)
-+{
-+	struct kmem_cache *s = seq->private;
-+
-+	if (!(s->flags & SLAB_STORE_USER))
-+		return 0;
-+
-+	if (strcmp(seq->file->f_path.dentry->d_name.name, "alloc_trace") == 0)
-+		return list_locations(seq, s, TRACK_ALLOC);
-+	else
-+		return list_locations(seq, s, TRACK_FREE);
-+
-+	return 0;
-+}
-+
-+static int slab_debug_trace_open(struct inode *inode, struct file *filp)
-+{
-+	return single_open(filp, slab_debug_trace,
-+				file_inode(filp)->i_private);
-+}
-+
-+static const struct file_operations slab_debug_fops = {
-+	.open    = slab_debug_trace_open,
-+	.read    = seq_read,
-+	.llseek  = seq_lseek,
-+	.release = single_release,
-+};
-+
-+static void debugfs_slab_add(struct kmem_cache *s)
-+{
-+	const char *name;
-+	int unmergeable = slab_unmergeable(s);
-+
-+	if (unlikely(!slab_debugfs_root))
-+		return;
-+
-+	if (!unmergeable && disable_higher_order_debug &&
-+			(slub_debug & DEBUG_METADATA_FLAGS))
-+		unmergeable = 1;
-+
-+	if (unmergeable) {
-+		/*
-+		 * Slabcache can never be merged so we can use the name proper.
-+		 * This is typically the case for debug situations. In that
-+		 * case we can catch duplicate names easily.
-+		 */
-+		debugfs_remove(s->slab_cache_dentry);
-+		name = s->name;
-+	} else {
-+		/*
-+		 * Create a unique name for the slab as a target
-+		 * for the symlinks.
-+		 */
-+		name = create_unique_id(s);
-+	}
-+
-+	s->slab_cache_dentry = debugfs_create_dir(s->name, slab_debugfs_root);
-+	if (!IS_ERR(s->slab_cache_dentry)) {
-+		debugfs_create_file("alloc_trace", 0400,
-+			s->slab_cache_dentry, s, &slab_debug_fops);
-+
-+		debugfs_create_file("free_trace", 0400,
-+			s->slab_cache_dentry, s, &slab_debug_fops);
-+	}
-+
-+	if (!unmergeable) {
-+		/* Setup first alias */
-+		debugfs_slab_alias(s, s->name);
-+	}
-+}
-+
-+void debugfs_slab_release(struct kmem_cache *s)
-+{
-+	if (slab_state >= FULL)
-+		debugfs_remove_recursive(s->slab_cache_dentry);
-+}
-+
-+static int __init slab_debugfs_init(void)
-+{
-+	struct kmem_cache *s;
-+	int err;
-+
-+	slab_debugfs_root = debugfs_create_dir("slab", NULL);
-+	if (!IS_ERR(slab_debugfs_root)) {
-+
-+		slab_state = FULL;
-+
-+		list_for_each_entry(s, &slab_caches, list)
-+			debugfs_slab_add(s);
-+	} else {
-+		pr_err("Cannot create slab debugfs.\n");
-+		return IS_ERR(slab_debugfs_root);
-+	}
-+
-+	while (alias_list) {
-+		struct saved_alias *al = alias_list;
-+
-+		alias_list = alias_list->next;
-+
-+		err = debugfs_slab_alias(al->s, al->name);
-+		if (err)
-+			pr_err("SLUB: Unable to add boot slab alias %s to debugfs\n",
-+			       al->name);
-+		kfree(al);
-+	}
-+
-+	return 0;
-+
-+}
-+__initcall(slab_debugfs_init);
-+#endif
- /*
-  * The /proc/slabinfo ABI
-  */
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of the Code Aurora Forum, hosted by The Linux Foundation
-
+ /* maps the cpu to the sched domain representing multi-core */
