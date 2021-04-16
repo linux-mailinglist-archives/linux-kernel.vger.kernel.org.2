@@ -2,107 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2D436230C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FBAB36230F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245034AbhDPOnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:43:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46452 "EHLO
+        id S245069AbhDPOn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244946AbhDPOnT (ORCPT
+        with ESMTP id S244399AbhDPOng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:43:19 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 047ACC061763;
-        Fri, 16 Apr 2021 07:42:33 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id o21-20020a1c4d150000b029012e52898006so4709841wmh.0;
-        Fri, 16 Apr 2021 07:42:32 -0700 (PDT)
+        Fri, 16 Apr 2021 10:43:36 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 523DFC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:43:11 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id s16so22647078iog.9
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:43:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Lx7hg/JBTOUY6NQVwUXFQgNKj1wjLMxdVCIC1wg2uVk=;
-        b=EvXWQU/Qlfk18FjDjxRmA+QW+Bx3wnGUsvoMuCUiagV+PDkkt6eBRdGlZUj6xe7kko
-         4y5hWL0G0e2gqNFPKuHtAeBbc/gc6sAAd9+PujrFaVM8fcrpgl4YXulq6S0x2Erw2qWX
-         ltgqE30B8msjW4ImVDMG2p5zWg2pelzOht4Kl6d1dkdWBKiJJzgl1oK3ftyNXr+nMhot
-         8FMSFdSQyxBwIVkMmKFpafA6IWhrsyIUsvOpdSaRNIlxvuLRDXNvgjEhxQfLKNIq0CvP
-         kjmSscSTKlUrYIO1a9VCvQs/rx++O0p9LeihRTvVPZQETpaQVqUaHcRSpoK8q/7kfmW5
-         NXEQ==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Lp6KUcpzifC+AOvSZvapIoyzvGHXfJkgx9ufls5cSDs=;
+        b=euQfq2wFnH47LbM4abT1kLxvYkf6Sm9dtzlvDEkHRLT16XPhriYBl4jchj3CNIj5Cb
+         78dEEh4TPIwY63jFSpB3a/4Hw6jbLBUaSghrWwAniyOnmsLBpSGqHaFBCqMY0IIv7hvo
+         XREmLq4799LTQ+vzSqvxuvuQjrowfvajPCs7k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Lx7hg/JBTOUY6NQVwUXFQgNKj1wjLMxdVCIC1wg2uVk=;
-        b=hXkYEWXdI5ewxCQNBpd5iqdxEVGug2n0paGukn+eTKRuiGc3xfKktRPRG0BmD2Pqw7
-         g9JfGaEpArQhX8YpFqZe5UMkhEcVsNxZnb3KHJsS3F0c5RFoFwkPhmSLKrzuwON4yipd
-         /wMnC7sz5AoCKN2+d2d4/rurlK2HOT5BY3S5d22YicxU0rYcrbzHQlOIPcOLBn+J7+7p
-         qnZYvlTyZAo0BjC0BIuNQp3sW3+i9XPkHIBgPKuFk4aaKvUhUama/NGcwk/jnKU64T8x
-         U9MEOj4Z0DTrPRVCARcHYTqtthYJVFnxtccKbif1dgISWNoBSPacuBdZ7yYVmLa4Ns1M
-         WIcA==
-X-Gm-Message-State: AOAM5308cfLA62MQBzSB1yDb4V9fAyWR+y/abliKFXJNxouW/VyRRzF0
-        KueizE1hAQ+5zluSVr7/row=
-X-Google-Smtp-Source: ABdhPJwPqelGlwrzQ0/PPn5lnVFbfg3aSHUs1UfWSE9VW8vBKpb0fKRIiCPDCxB9PvGjPQgOBfgw6Q==
-X-Received: by 2002:a05:600c:4145:: with SMTP id h5mr8611177wmm.53.1618584151776;
-        Fri, 16 Apr 2021 07:42:31 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id v189sm9667455wmg.9.2021.04.16.07.42.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Apr 2021 07:42:31 -0700 (PDT)
-Subject: Re: [PATCH 4/8] dt-bindings: arm64: dts: mediatek: Add
- mt8183-kukui-jacuzzi-kenzo
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sean Wang <sean.wang@mediatek.com>,
-        Ben Ho <Ben.Ho@mediatek.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-References: <20210415093519.1920877-1-hsinyi@chromium.org>
- <20210415093519.1920877-4-hsinyi@chromium.org>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <face0af7-8630-31fa-4975-a80311257d13@gmail.com>
-Date:   Fri, 16 Apr 2021 16:42:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Lp6KUcpzifC+AOvSZvapIoyzvGHXfJkgx9ufls5cSDs=;
+        b=bMy562l6OrrQRg3Dax2/DhUybuNgyU2E2TAqSHLQy43hQa/4QSipWk1PfI0f0gLcRo
+         58JG3EuoDbyDQnEo8MU58lYf/bY1YvX0e6ap/GQ8N1uDCcpOW/taOAdTECQlUcbRY/Lj
+         GH7iz3R14aw92vBekReuhr7T0FsYZWeNZkUOUGwY3dG3FFPaC7+fAD82vo7YEvSvCiTW
+         Z+cTbWT/SZDgyAl1c0qsDgxo6t96EdsQ1J+lFZ7Dw7x2lL/nPnxoxcmacqDa4AJQeUP+
+         L1dIpplQG4zmGTXOv/NLG9SMmf85ZPL0HYhk/2SR5X4xmZosg1zRQux0KIapkbf0JZKx
+         Fl6A==
+X-Gm-Message-State: AOAM533/Nbk4pIw5zu19hlffCAoYfA6sYQLjRQXBc9eYunM6N3wDjGz+
+        pXo3AH5SvEJAPjHQKiU8+Cx5jfsQqE5FX/xsAVAAiA==
+X-Google-Smtp-Source: ABdhPJzZne3Oah6jq0y3MQ7cXog0eHGiB4uUC0V04tFOpjqhXtg1Qck21Dtp3ESr9EjxkzptDtOP0iJHWG1Ya4WW0SQ=
+X-Received: by 2002:a05:6638:38a4:: with SMTP id b36mr4265974jav.102.1618584190633;
+ Fri, 16 Apr 2021 07:43:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210415093519.1920877-4-hsinyi@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210414172916.2689361-1-hsinyi@chromium.org> <20210414172916.2689361-7-hsinyi@chromium.org>
+ <87y2dicnpy.fsf@intel.com>
+In-Reply-To: <87y2dicnpy.fsf@intel.com>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Fri, 16 Apr 2021 22:42:44 +0800
+Message-ID: <CAJMQK-iUgQBH8uW07fpbptE33D5NsVwmZXngcZknPw93apRK0A@mail.gmail.com>
+Subject: Re: [PATCH v19 6/6] drm/i915/selftests: Rename functions names
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Wolfram Sang <wsa@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-i2c@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        intel-gfx@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 16, 2021 at 10:23 PM Jani Nikula
+<jani.nikula@linux.intel.com> wrote:
+>
+> On Thu, 15 Apr 2021, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+> > pm_resume and pm_suspend might be conflict with the ones defined in
+> > include/linux/suspend.h. Rename pm_resume{suspend} to
+> > i915_pm_resume{suspend} since they are only used here.
+>
+> I agree with the rationale here.
+>
+> Do you need this to be part of your series, or shall we just pick this
+> up for i915? (We might consider renaming to something else or prefix the
+> functions with _ though, as we also have existing i915_pm_suspend and
+> i915_pm_resume elsewhere.)
+>
+
+This patch can be separated from the series, thanks.
 
 
-On 15/04/2021 11:35, Hsin-Yi Wang wrote:
-> Kenzo is known as Acer Chromebook 311.
-> 
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
->  Documentation/devicetree/bindings/arm/mediatek.yaml | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
-> index 0870490aa350..39e4a99ebb37 100644
-> --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
-> +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
-> @@ -137,9 +137,11 @@ properties:
->          items:
->            - const: google,damu
->            - const: mediatek,mt8183
-> -      - description: Google Juniper (Acer Chromebook Spin 311)
-> +      - description: Google Juniper (Acer Chromebook Spin 311) / Kenzo (Acer Crhomebook 311)
-
-Crhomebook -> Chromebook :)
-
->          items:
-> -          - const: google,juniper-sku16
-> +          - enum:
-> +              - google,juniper-sku16
-> +              - google,juniper-sku17
->            - const: google,juniper
->            - const: mediatek,mt8183
->        - description: Google Kakadu (ASUS Chromebook Detachable CM3)
-> 
+> BR,
+> Jani.
+>
+> >
+> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > ---
+> >  drivers/gpu/drm/i915/selftests/i915_gem.c | 10 +++++-----
+> >  1 file changed, 5 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/i915/selftests/i915_gem.c b/drivers/gpu/drm/i915/selftests/i915_gem.c
+> > index dc394fb7ccfa..525afda9d31f 100644
+> > --- a/drivers/gpu/drm/i915/selftests/i915_gem.c
+> > +++ b/drivers/gpu/drm/i915/selftests/i915_gem.c
+> > @@ -94,7 +94,7 @@ static int pm_prepare(struct drm_i915_private *i915)
+> >       return 0;
+> >  }
+> >
+> > -static void pm_suspend(struct drm_i915_private *i915)
+> > +static void i915_pm_suspend(struct drm_i915_private *i915)
+> >  {
+> >       intel_wakeref_t wakeref;
+> >
+> > @@ -116,7 +116,7 @@ static void pm_hibernate(struct drm_i915_private *i915)
+> >       }
+> >  }
+> >
+> > -static void pm_resume(struct drm_i915_private *i915)
+> > +static void i915_pm_resume(struct drm_i915_private *i915)
+> >  {
+> >       intel_wakeref_t wakeref;
+> >
+> > @@ -152,12 +152,12 @@ static int igt_gem_suspend(void *arg)
+> >       if (err)
+> >               goto out;
+> >
+> > -     pm_suspend(i915);
+> > +     i915_pm_suspend(i915);
+> >
+> >       /* Here be dragons! Note that with S3RST any S3 may become S4! */
+> >       simulate_hibernate(i915);
+> >
+> > -     pm_resume(i915);
+> > +     i915_pm_resume(i915);
+> >
+> >       err = switch_to_context(ctx);
+> >  out:
+> > @@ -192,7 +192,7 @@ static int igt_gem_hibernate(void *arg)
+> >       /* Here be dragons! */
+> >       simulate_hibernate(i915);
+> >
+> > -     pm_resume(i915);
+> > +     i915_pm_resume(i915);
+> >
+> >       err = switch_to_context(ctx);
+> >  out:
+>
+> --
+> Jani Nikula, Intel Open Source Graphics Center
