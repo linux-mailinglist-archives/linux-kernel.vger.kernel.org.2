@@ -2,153 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770813623EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 546BC3623E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343670AbhDPP3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 11:29:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243009AbhDPP3s (ORCPT
+        id S1343573AbhDPP3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 11:29:00 -0400
+Received: from mail-pj1-f44.google.com ([209.85.216.44]:45031 "EHLO
+        mail-pj1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236062AbhDPP24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 11:29:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCF8C06175F;
-        Fri, 16 Apr 2021 08:29:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1toLz+6Q9HQNcw3MQRhWkEtoAVrOWnWFJOtvRcLCOTo=; b=AfDcl5h/43wjmPGPvOHoHHxUtH
-        VUrHqD3LImr52YJgVp8v99CpXw49O+3ABZxg5dh2xjPUhMw9cBqhZ/eHIxjqVBmWAJ5j2VFJliPqP
-        BQOm1fzjrGaws2wsSyby1unfkL+/Wxc1aXKKpQCeRlWZhNlLgNueCFlXNMIQiSGoqCfvjgZ9Is6GB
-        hFY2A2C7bLXBzhULxoFqzdLwiH6FLDnAub0LrzdQzZam5myqe1duHZgtATotK/lfgrQQkIZGYhNry
-        QenDpI12d1AnF7t8sVRmpZ4hU7p/p1rPmDOPveX4AC6sl4F0D+bQ9ZY+9PGK+tPLJDf+e8Y0+WANo
-        iep2axvg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lXQNv-00A7Ug-LK; Fri, 16 Apr 2021 15:28:22 +0000
-Date:   Fri, 16 Apr 2021 16:27:55 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Arnd Bergmann <arnd@kernel.org>, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
-Message-ID: <20210416152755.GL2531743@casper.infradead.org>
-References: <20210410205246.507048-2-willy@infradead.org>
- <20210411114307.5087f958@carbon>
- <20210411103318.GC2531743@casper.infradead.org>
- <20210412011532.GG2531743@casper.infradead.org>
- <20210414101044.19da09df@carbon>
- <20210414115052.GS2531743@casper.infradead.org>
- <20210414211322.3799afd4@carbon>
- <20210414213556.GY2531743@casper.infradead.org>
- <a50c3156fe8943ef964db4345344862f@AcuMS.aculab.com>
- <20210415200832.32796445@carbon>
+        Fri, 16 Apr 2021 11:28:56 -0400
+Received: by mail-pj1-f44.google.com with SMTP id q14-20020a17090a430eb02901503aaee02bso3753107pjg.3;
+        Fri, 16 Apr 2021 08:28:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dBQTxUFrjwvsCdlEVTG7RhY8i8OidyFaeos2pX2WolE=;
+        b=GGxeqd8wJlbcVu+Y4DR8TF58GI7SS7GcUPZUFwT+VIsXp54UCnqQiR0YpqFeDuCbG+
+         Ku9Z9wcMBHIBCMCCiOOEgicdVoi60HCWbBx00+QwHJ0W/Ra0ZfJW2+OhLD8RunbLEwSx
+         gIv575GIOCPB0/6SzAti/sn0EDhVaYE1b23MvVStN9TFNgBZA+86piHrzns1JzLuv+H9
+         c/J7C3k9jnzNn45Dr5FacORBAlhLhWZECMq4d8s7iWbPu9CG08KKR40msv3hwvnon0L9
+         p/dQtecfaErO0g0X2GN9Fj+udIM5rSWGheTvLRZGONeLVAXOkBQy+tyecgO3u2QuKM6y
+         FKcA==
+X-Gm-Message-State: AOAM532Bpq9CR/azO9EyBdl+L/RcUCOdoBwLs7d3nHEF67ROZfWqXxUA
+        YSkqtGuxsZBVrAFuyJYLLuQ=
+X-Google-Smtp-Source: ABdhPJzWtT8SbIiIv8xuMkmmhSFImhlIUKuwKWw9oX5SI4jGU2XMhaeq3PkkD5TgK5xN+pXLb/tBuA==
+X-Received: by 2002:a17:90b:1e0b:: with SMTP id pg11mr10600410pjb.146.1618586910490;
+        Fri, 16 Apr 2021 08:28:30 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:deb4:c899:3eb6:a154? ([2601:647:4000:d7:deb4:c899:3eb6:a154])
+        by smtp.gmail.com with ESMTPSA id t17sm5285487pfe.35.2021.04.16.08.28.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Apr 2021 08:28:29 -0700 (PDT)
+Subject: Re: [PATCH v7 1/3] bio: limit bio max size
+To:     Changheun Lee <nanich.lee@samsung.com>
+Cc:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
+        axboe@kernel.dk, damien.lemoal@wdc.com, gregkh@linuxfoundation.org,
+        hch@infradead.org, jisoo2146.oh@samsung.com,
+        junho89.kim@samsung.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ming.lei@redhat.com,
+        mj0123.lee@samsung.com, osandov@fb.com, patchwork-bot@kernel.org,
+        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
+        tj@kernel.org, tom.leiming@gmail.com, woosung2.lee@samsung.com,
+        yt0928.kim@samsung.com
+References: <bb8f7127-edff-4a32-2d5c-4343002bda19@acm.org>
+ <CGME20210416060827epcas1p39350d45cef64c91be681b76180b63140@epcas1p3.samsung.com>
+ <20210416055039.20126-1-nanich.lee@samsung.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <9ad8ef3f-905c-543e-d2af-7bf2f43ea04c@acm.org>
+Date:   Fri, 16 Apr 2021 08:28:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210415200832.32796445@carbon>
+In-Reply-To: <20210416055039.20126-1-nanich.lee@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 08:08:32PM +0200, Jesper Dangaard Brouer wrote:
-> See below patch.  Where I swap32 the dma address to satisfy
-> page->compound having bit zero cleared. (It is the simplest fix I could
-> come up with).
+On 4/15/21 10:50 PM, Changheun Lee wrote:
+>> On 4/15/21 3:38 AM, Changheun Lee wrote:
+>>> @@ -538,6 +540,8 @@ int blk_stack_limits(struct queue_limits *t, struct queue_limits *b,
+>>>  {
+>>>  	unsigned int top, bottom, alignment, ret = 0;
+>>>  
+>>> +	t->bio_max_bytes = min_not_zero(t->bio_max_bytes, b->bio_max_bytes);
+>>> +
+>>>  	t->max_sectors = min_not_zero(t->max_sectors, b->max_sectors);
+>>>  	t->max_hw_sectors = min_not_zero(t->max_hw_sectors, b->max_hw_sectors);
+>>>  	t->max_dev_sectors = min_not_zero(t->max_dev_sectors, b->max_dev_sectors);
+>>
+>> The above will limit bio_max_bytes for all stacked block devices, which
+>> is something we do not want. I propose to set t->bio_max_bytes to
+>> UINT_MAX in blk_stack_limits() and to let the stacked driver (e.g.
+>> dm-crypt) decide whether or not to lower that value.
+> 
+> Actually, bio size should be limited in dm-crypt too. Because almost I/O
+> from user space will be gone to dm-crypt first. I/O issue timing will be
+> delayed if bio size is not limited in dm-crypt.
+> Do you have any idea to decide whether takes lower bio max size, or not
+> in the stacked driver?
+> Add a flag to decide this in driver layer like before?
+> Or insert code manually in each stacked driver if it is needed?
 
-I think this is slightly simpler, and as a bonus code that assumes the
-old layout won't compile.
+There will be fewer stacked drivers for which the bio size has to be
+limited than for which the bio size has not to be limited. Hence the
+proposal to set t->bio_max_bytes to UINT_MAX in blk_stack_limits() and
+to let the stacked driver (e.g. dm-crypt) decide whether or not to lower
+that value.
 
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 6613b26a8894..5aacc1c10a45 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -97,10 +97,10 @@ struct page {
- 		};
- 		struct {	/* page_pool used by netstack */
- 			/**
--			 * @dma_addr: might require a 64-bit value even on
-+			 * @dma_addr: might require a 64-bit value on
- 			 * 32-bit architectures.
- 			 */
--			dma_addr_t dma_addr;
-+			unsigned long dma_addr[2];
- 		};
- 		struct {	/* slab, slob and slub */
- 			union {
-diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-index b5b195305346..db7c7020746a 100644
---- a/include/net/page_pool.h
-+++ b/include/net/page_pool.h
-@@ -198,7 +198,17 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
- 
- static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
- {
--	return page->dma_addr;
-+	dma_addr_t ret = page->dma_addr[0];
-+	if (sizeof(dma_addr_t) > sizeof(unsigned long))
-+		ret |= (dma_addr_t)page->dma_addr[1] << 32;
-+	return ret;
-+}
-+
-+static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
-+{
-+	page->dma_addr[0] = addr;
-+	if (sizeof(dma_addr_t) > sizeof(unsigned long))
-+		page->dma_addr[1] = addr >> 32;
- }
- 
- static inline bool is_page_pool_compiled_in(void)
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index ad8b0707af04..f014fd8c19a6 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -174,8 +174,10 @@ static void page_pool_dma_sync_for_device(struct page_pool *pool,
- 					  struct page *page,
- 					  unsigned int dma_sync_size)
- {
-+	dma_addr_t dma_addr = page_pool_get_dma_addr(page);
-+
- 	dma_sync_size = min(dma_sync_size, pool->p.max_len);
--	dma_sync_single_range_for_device(pool->p.dev, page->dma_addr,
-+	dma_sync_single_range_for_device(pool->p.dev, dma_addr,
- 					 pool->p.offset, dma_sync_size,
- 					 pool->p.dma_dir);
- }
-@@ -226,7 +228,7 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
- 		put_page(page);
- 		return NULL;
- 	}
--	page->dma_addr = dma;
-+	page_pool_set_dma_addr(page, dma);
- 
- 	if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
- 		page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
-@@ -294,13 +296,13 @@ void page_pool_release_page(struct page_pool *pool, struct page *page)
- 		 */
- 		goto skip_dma_unmap;
- 
--	dma = page->dma_addr;
-+	dma = page_pool_get_dma_addr(page);
- 
--	/* When page is unmapped, it cannot be returned our pool */
-+	/* When page is unmapped, it cannot be returned to our pool */
- 	dma_unmap_page_attrs(pool->p.dev, dma,
- 			     PAGE_SIZE << pool->p.order, pool->p.dma_dir,
- 			     DMA_ATTR_SKIP_CPU_SYNC);
--	page->dma_addr = 0;
-+	page_pool_set_dma_addr(page, 0);
- skip_dma_unmap:
- 	/* This may be the last page returned, releasing the pool, so
- 	 * it is not safe to reference pool afterwards.
+Thanks,
+
+Bart.
