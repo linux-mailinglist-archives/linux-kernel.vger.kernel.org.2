@@ -2,169 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F078361D46
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A35361D4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237457AbhDPJ1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 05:27:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231666AbhDPJ1r (ORCPT
+        id S240542AbhDPJ2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 05:28:19 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:49772 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239117AbhDPJ2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 05:27:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28BC6C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:27:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=HPc6wzpM0fRvoMm2lRghdfZ9iKMJxYwnHLDM6jmTY5Y=; b=GDTZlHwLb/nSS3o8n4T46sXmHr
-        B0QkYBvpxyMVglHu0XAuU8Uoea3LJTV7EM1KE2rOVYoGojgP0gX87RLO0/1W3zteJVJexcOit7wBh
-        MeLYwj9Ir1YpYdHpbfaqQxsbs94cFBo3y27FuYj6QAN9s32ZB+WJ9Emf33DDq0ArlrhQT6ZVT68Iw
-        zPfjqoF82EJrq4sZYj4CPIdIb10zjQXz0mWAjGr77le9MHKoy+K4Q/fi9O+uYNtRw0c4D0jeJf+Wv
-        Qo7moPKS4P2ApUpu3SueKgs3XQ3ng8CLcTBJCpsp2Gm72qiYI2s52RFffBA9Od5uMdyDVWpSFKY98
-        EHR9Ko8Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lXKkL-009lQi-Qd; Fri, 16 Apr 2021 09:26:44 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1DECE30015A;
-        Fri, 16 Apr 2021 11:26:39 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A98D5203711CC; Fri, 16 Apr 2021 11:26:39 +0200 (CEST)
-Date:   Fri, 16 Apr 2021 11:26:39 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Song Liu <songliubraving@fb.com>, Tejun Heo <tj@kernel.org>,
+        Fri, 16 Apr 2021 05:28:17 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13G9QoXq061900;
+        Fri, 16 Apr 2021 04:26:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1618565210;
+        bh=iUN+ZAwoZO98VUtAbHnorakjrh71xOPMrXkAMJ4Hqpo=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=q6CHJQ5yHhCUxTvsb7LWnrHojwq4z5fdGhcq05XBA0YlrsKJOlZL44mFXdrMXAW0R
+         wUKB5uUpmeYwcbTk0M0RI9dOZ3CPFoP6cgHnph+X7GsjlxLhWiVAP157Q4A/cGg0Yj
+         nGxzGQi4XUQ1CBnf2HhNuMpn9s6wtsVxUbfTVjAk=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13G9Qotj047995
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 16 Apr 2021 04:26:50 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 16
+ Apr 2021 04:26:49 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 16 Apr 2021 04:26:49 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13G9QjO8101592;
+        Fri, 16 Apr 2021 04:26:46 -0500
+Subject: Re: Bogus struct page layout on 32-bit
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@lst.de>
+CC:     Matthew Wilcox <willy@infradead.org>,
         kernel test robot <lkp@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v3 1/2] perf/core: Share an event with multiple cgroups
-Message-ID: <YHlYT+tHrkNyMFuh@hirez.programming.kicks-ass.net>
-References: <20210413155337.644993-1-namhyung@kernel.org>
- <20210413155337.644993-2-namhyung@kernel.org>
- <YHhS6kjeA8AvcFgz@hirez.programming.kicks-ass.net>
- <CAM9d7chrHYNOB4ShJ=34WwXOUY-grXhkiW_wursywTH1FbZdvA@mail.gmail.com>
+        Linux-MM <linux-mm@kvack.org>, <kbuild-all@lists.01.org>,
+        <clang-built-linux@googlegroups.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        <linuxppc-dev@lists.ozlabs.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+References: <20210409185105.188284-3-willy@infradead.org>
+ <202104100656.N7EVvkNZ-lkp@intel.com>
+ <20210410024313.GX2531743@casper.infradead.org>
+ <20210410082158.79ad09a6@carbon>
+ <CAC_iWjLXZ6-hhvmvee6r4R_N64u-hrnLqE_CSS1nQk+YaMQQnA@mail.gmail.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <ab9f1a6c-4099-2b59-457d-fcc45d2396f4@ti.com>
+Date:   Fri, 16 Apr 2021 12:26:44 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7chrHYNOB4ShJ=34WwXOUY-grXhkiW_wursywTH1FbZdvA@mail.gmail.com>
+In-Reply-To: <CAC_iWjLXZ6-hhvmvee6r4R_N64u-hrnLqE_CSS1nQk+YaMQQnA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 08:48:12AM +0900, Namhyung Kim wrote:
-> On Thu, Apr 15, 2021 at 11:51 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> > On Tue, Apr 13, 2021 at 08:53:36AM -0700, Namhyung Kim wrote:
+Hi Ilias, All,
 
-> > > cgroup event counting (i.e. perf stat).
-> > >
-> > >  * PERF_EVENT_IOC_ATTACH_CGROUP - it takes a buffer consists of a
-> > >      64-bit array to attach given cgroups.  The first element is a
-> > >      number of cgroups in the buffer, and the rest is a list of cgroup
-> > >      ids to add a cgroup info to the given event.
-> >
-> > WTH is a cgroup-id? The syscall takes a fd to the path, why have two
-> > different ways?
+On 10/04/2021 11:52, Ilias Apalodimas wrote:
+> +CC Grygorii for the cpsw part as Ivan's email is not valid anymore
 > 
-> As you know, we already use cgroup-id for sampling.  Yeah we
-> can do it with the fd but one of the point in this patch is to reduce
-> the number of file descriptors. :)
-
-Well, I found those patches again after I wrote that. But I'm still not
-sure what a cgroup-id is from userspace.
-
-How does userspace get one given a cgroup? (I actually mounted cgroupfs
-in order to see if there's some new 'id' file to read, there is not)
-Does having the cgroup-id ensure the cgroup exists? Can the cgroup-id
-get re-used?
-
-I really don't konw what the thing is. I don't use cgroups, like ever,
-except when I'm forced to due to some regression or bugreport.
-
-> Also, having cgroup-id is good to match with the result (from read)
-> as it contains the cgroup information.
-
-What?
-
-> > >  * PERF_EVENT_IOC_READ_CGROUP - it takes a buffer consists of a 64-bit
-> > >      array to get the event counter values.  The first element is size
-> > >      of the array in byte, and the second element is a cgroup id to
-> > >      read.  The rest is to save the counter value and timings.
-> >
-> > :-(
-> >
-> > So basically you're doing a whole seconds cgroup interface, one that
-> > violates the one counter per file premise and lives off of ioctl()s.
+> Thanks for catching this. Interesting indeed...
 > 
-> Right, but I'm not sure that we really want a separate event for each
-> cgroup if underlying hardware events are all the same.
+> On Sat, 10 Apr 2021 at 09:22, Jesper Dangaard Brouer <brouer@redhat.com> wrote:
+>>
+>> On Sat, 10 Apr 2021 03:43:13 +0100
+>> Matthew Wilcox <willy@infradead.org> wrote:
+>>
+>>> On Sat, Apr 10, 2021 at 06:45:35AM +0800, kernel test robot wrote:
+>>>>>> include/linux/mm_types.h:274:1: error: static_assert failed due to requirement '__builtin_offsetof(struct page, lru) == __builtin_offsetof(struct folio, lru)' "offsetof(struct page, lru) == offsetof(struct folio, lru)"
+>>>>     FOLIO_MATCH(lru, lru);
+>>>>     include/linux/mm_types.h:272:2: note: expanded from macro 'FOLIO_MATCH'
+>>>>             static_assert(offsetof(struct page, pg) == offsetof(struct folio, fl))
+>>>
+>>> Well, this is interesting.  pahole reports:
+>>>
+>>> struct page {
+>>>          long unsigned int          flags;                /*     0     4 */
+>>>          /* XXX 4 bytes hole, try to pack */
+>>>          union {
+>>>                  struct {
+>>>                          struct list_head lru;            /*     8     8 */
+>>> ...
+>>> struct folio {
+>>>          union {
+>>>                  struct {
+>>>                          long unsigned int flags;         /*     0     4 */
+>>>                          struct list_head lru;            /*     4     8 */
+>>>
+>>> so this assert has absolutely done its job.
+>>>
+>>> But why has this assert triggered?  Why is struct page layout not what
+>>> we thought it was?  Turns out it's the dma_addr added in 2019 by commit
+>>> c25fff7171be ("mm: add dma_addr_t to struct page").  On this particular
+>>> config, it's 64-bit, and ppc32 requires alignment to 64-bit.  So
+>>> the whole union gets moved out by 4 bytes.
+>>
+>> Argh, good that you are catching this!
+>>
+>>> Unfortunately, we can't just fix this by putting an 'unsigned long pad'
+>>> in front of it.  It still aligns the entire union to 8 bytes, and then
+>>> it skips another 4 bytes after the pad.
+>>>
+>>> We can fix it like this ...
+>>>
+>>> +++ b/include/linux/mm_types.h
+>>> @@ -96,11 +96,12 @@ struct page {
+>>>                          unsigned long private;
+>>>                  };
+>>>                  struct {        /* page_pool used by netstack */
+>>> +                       unsigned long _page_pool_pad;
+>>
+>> I'm fine with this pad.  Matteo is currently proposing[1] to add a 32-bit
+>> value after @dma_addr, and he could use this area instead.
+>>
+>> [1] https://lore.kernel.org/netdev/20210409223801.104657-3-mcroce@linux.microsoft.com/
+>>
+>> When adding/changing this, we need to make sure that it doesn't overlap
+>> member @index, because network stack use/check page_is_pfmemalloc().
+>> As far as my calculations this is safe to add.  I always try to keep an
+>> eye out for this, but I wonder if we could have a build check like yours.
+>>
+>>
+>>>                          /**
+>>>                           * @dma_addr: might require a 64-bit value even on
+>>>                           * 32-bit architectures.
+>>>                           */
+>>> -                       dma_addr_t dma_addr;
+>>> +                       dma_addr_t dma_addr __packed;
+>>>                  };
+>>>                  struct {        /* slab, slob and slub */
+>>>                          union {
+>>>
+>>> but I don't know if GCC is smart enough to realise that dma_addr is now
+>>> on an 8 byte boundary and it can use a normal instruction to access it,
+>>> or whether it'll do something daft like use byte loads to access it.
+>>>
+>>> We could also do:
+>>>
+>>> +                       dma_addr_t dma_addr __packed __aligned(sizeof(void *));
+>>>
+>>> and I see pahole, at least sees this correctly:
+>>>
+>>>                  struct {
+>>>                          long unsigned int _page_pool_pad; /*     4     4 */
+>>>                          dma_addr_t dma_addr __attribute__((__aligned__(4))); /*     8     8 */
+>>>                  } __attribute__((__packed__)) __attribute__((__aligned__(4)));
+>>>
+>>> This presumably affects any 32-bit architecture with a 64-bit phys_addr_t
+>>> / dma_addr_t.  Advice, please?
+>>
+>> I'm not sure that the 32-bit behavior is with 64-bit (dma) addrs.
+>>
+>> I don't have any 32-bit boards with 64-bit DMA.  Cc. Ivan, wasn't your
+>> board (572x ?) 32-bit with driver 'cpsw' this case (where Ivan added
+>> XDP+page_pool) ?
 
-Sure, I see where you're coming from; I just don't much like where it
-got you :-)
+Sry, for delayed reply.
 
-> > *IF* we're going to do something like this, I feel we should explore the
-> > whole vector-per-fd concept before proceeding. Can we make it less yuck
-> > (less special ioctl() and more regular file ops. Can we apply the
-> > concept to more things?
-> 
-> Ideally it'd do without keeping file descriptors open.  Maybe we can make
-> the vector accept various types like vector-per-cgroup_id or so.
+The TI platforms am3/4/5 (cpsw) and Keystone 2 (netcp) can do only 32bit DMA even in case of LPAE (dma-ranges are used).
+Originally, as I remember, CONFIG_ARCH_DMA_ADDR_T_64BIT has not been selected for the LPAE case
+on TI platforms and the fact that it became set is the result of multi-paltform/allXXXconfig/DMA
+optimizations and unification.
+(just checked - not set in 4.14)
 
-So I think we've had proposals for being able to close fds in the past;
-while preserving groups etc. We've always pushed back on that because of
-the resource limit issue. By having each counter be a filedesc we get a
-natural limit on the amount of resources you can consume. And in that
-respect, having to use 400k fds is things working as designed.
+Probable commit 4965a68780c5 ("arch: define the ARCH_DMA_ADDR_T_64BIT config symbol in lib/Kconfig").
 
-Anyway, there might be a way around this..
+The TI drivers have been updated, finally to accept ARCH_DMA_ADDR_T_64BIT=y by using things like (__force u32)
+for example.
 
-> > The second patch extends the ioctl() to be more read() like, instead of
-> > doing the sane things and extending read() by adding PERF_FORMAT_VECTOR
-> > or whatever. In fact, this whole second ioctl() doesn't make sense to
-> > have if we do indeed want to do vector-per-fd.
-> 
-> One of the upside of the ioctl() is that we can pass cgroup-id to read.
-> Probably we can keep the index in the vector and set the file offset
-> with it.  Or else just read the whole vector, and then it has a cgroup-id
-> in the output like PERF_FORMAT_CGROUP?
-> 
-> >
-> > Also, I suppose you can already fake this, by having a
-> > SW_CGROUP_SWITCHES (sorry, I though I picked those up, done now) event
-> 
-> Thanks!
-> 
-> > with PERF_SAMPLE_READ|PERF_SAMPLE_CGROUP and PERF_FORMAT_GROUP in a
-> > group with a bunch of events. Then the buffer will fill with the values
-> > you use here.
-> 
-> Right, I'll do an experiment with it.
-> 
-> >
-> > Yes, I suppose it has higher overhead, but you get the data you want
-> > without having to do terrible things like this.
-> 
-> That's true.  And we don't need many things in the perf record like
-> synthesizing task/mmap info.  Also there's a risk we can miss some
-> samples for some reason.
-> 
-> Another concern is that it'd add huge slow down in the perf event
-> open as it creates a mixed sw/hw group.  The synchronized_rcu in
-> the move_cgroup path caused significant problems in my
-> environment as it adds up in proportion to the number of cpus.
+Honestly, I've done sanity check of CPSW with LPAE=y (ARCH_DMA_ADDR_T_64BIT=y) very long time ago.
 
-Since when is perf_event_open() a performance concern? That thing is
-slow in all possible ways.
+-- 
+Best regards,
+grygorii
