@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D357D362028
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D54DE36202A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243176AbhDPMr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 08:47:58 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:42242 "EHLO
+        id S243270AbhDPMsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 08:48:07 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:42246 "EHLO
         smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242906AbhDPMrv (ORCPT
+        by vger.kernel.org with ESMTP id S243675AbhDPMr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 08:47:51 -0400
-Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
+        Fri, 16 Apr 2021 08:47:59 -0400
+Received: from mailhost.synopsys.com (mdc-mailhost2.synopsys.com [10.225.0.210])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id C141EC06B9;
-        Fri, 16 Apr 2021 12:47:26 +0000 (UTC)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id C36CFC06B9;
+        Fri, 16 Apr 2021 12:47:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1618577247; bh=FxOfx5Bn8qkUjQt47mpov0RocJvJwOaxj7tZCSw43H0=;
+        t=1618577255; bh=uQ2IGh1zNa806XuJ0Ij3ORBvTUnpJ5SKdAn2kXmH6mU=;
         h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=KFAxS2rdE957emANNFHgpcuDP1iPbikPhu/05rhjrpA8uoJFVXNuFIjrDdGSwOF1W
-         vZIt72IDhbLHmgeAXjWzMtnnnh3iyUvaKXj1WLU/LRzbTGV2kNxCmdQcFESE2WbzRu
-         Y7be61lDxItx4FSEcmKkgwzimKi7UDW2YoFmgSyadWf1aP+oSRvf2YXsgf3NuxOBQ+
-         1W1ijWuTKYEQQsS8k4MszPWGzGTecruNE7ij/DKhpoQwSBT1CU4igFF4MqG+glQUEI
-         iNZCU/63ZWiS3I3Qwe6QxXdR6BsF4TA2gEY8PVncVYjySj2ZumS9oW/ezyCo1uu2Wu
-         WWVrimHXEXIrw==
+        b=kgK7BEaXBp2gDp3IT4Ri6qh/FjFoBUlfbGKpnZQxW2WB1AvsgykmlUX35spLprqht
+         hmNpa9KUiAWNJecTNjObMd5JFIpAhhieAj3YOpVESlK3TbQsx3rhjFvMgGXKT9tZL0
+         WZfzCIYGm/OjHpjhhP79wd+akFAChsOrFUOTJ6ZoBy62F02EysTwtNMgsjhR6i7Jh6
+         ecCIz5sA3+n+x5WZXCe9orlYGEHUk3r+f9jcJuM4dhVUHYPgb82wt+7urfJPIS5d2L
+         yog5MZrmldXGeSmPxDAVZmPC0jsSJtpyHazL00VAbIyO6SeiQnptKNPKulY1Uscvxf
+         UjjDB4e+LvmJQ==
 Received: from razpc-HP (razpc-hp.internal.synopsys.com [10.116.126.207])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by mailhost.synopsys.com (Postfix) with ESMTPSA id B6F17A005C;
-        Fri, 16 Apr 2021 12:47:23 +0000 (UTC)
-Received: by razpc-HP (sSMTP sendmail emulation); Fri, 16 Apr 2021 16:47:22 +0400
-Date:   Fri, 16 Apr 2021 16:47:22 +0400
+        by mailhost.synopsys.com (Postfix) with ESMTPSA id C500AA005D;
+        Fri, 16 Apr 2021 12:47:31 +0000 (UTC)
+Received: by razpc-HP (sSMTP sendmail emulation); Fri, 16 Apr 2021 16:47:30 +0400
+Date:   Fri, 16 Apr 2021 16:47:30 +0400
 In-Reply-To: <cover.1618464534.git.Arthur.Petrosyan@synopsys.com>
 References: <cover.1618464534.git.Arthur.Petrosyan@synopsys.com>
 X-SNPS-Relay: synopsys.com
 From:   Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
-Subject: [PATCH v2 05/15] usb: dwc2: Allow exiting hibernation from gpwrdn rst detect
+Subject: [PATCH v2 06/15] usb: dwc2: Clear fifo_map when resetting core.
 To:     Felipe Balbi <balbi@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
@@ -45,87 +45,86 @@ To:     Felipe Balbi <balbi@kernel.org>,
 Cc:     John Youn <John.Youn@synopsys.com>,
         Artur Petrosyan <Arthur.Petrosyan@synopsys.com>,
         Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
-Message-Id: <20210416124723.B6F17A005C@mailhost.synopsys.com>
+Message-Id: <20210416124731.C500AA005D@mailhost.synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When device cable is disconnected core receives suspend
-interrupt and enters hibernation. After entering
-into hibernation GPWRDN_RST_DET and GPWRDN_STS_CHGINT
-interrupts are asserted.
+Switching from device mode to host mode by disconnecting
+device cable core enters and exits form hibernation.
+However, the fifo map remains not cleared. It results
+to a WARNING (WARNING: CPU: 5 PID: 0 at drivers/usb/dwc2/
+gadget.c:307 dwc2_hsotg_init_fifo+0x12/0x152 [dwc2])
+if in host mode we disconnect the micro a to b host
+cable. Because core reset occurs.
 
-Allowed exit from gadget hibernation from
-GPWRDN_RST_DET by checking only linestate.
+To avoid the WARNING, fifo_map should be cleared
+in dwc2_core_reset() function by taking into account configs.
+fifo_map must be cleared only if driver is configured in
+"CONFIG_USB_DWC2_PERIPHERAL" or "CONFIG_USB_DWC2_DUAL_ROLE"
+mode.
 
-Changed the return type of "dwc2_handle_gpwrdn_intr()"
-function from void to int because exit from hibernation
-functions have a return value.
+- Added "static inline void dwc2_clear_fifo_map()" helper
+function to clear fifo_map with peripheral or dual role mode.
+
+- Added a dummy version of "dwc2_clear_fifo_map()" helper
+for host-only mode.
 
 Signed-off-by: Artur Petrosyan <Arthur.Petrosyan@synopsys.com>
 Acked-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
 ---
- drivers/usb/dwc2/core_intr.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+ drivers/usb/dwc2/core.c | 16 ++++++++++++++++
+ drivers/usb/dwc2/core.h |  3 +++
+ 2 files changed, 19 insertions(+)
 
-diff --git a/drivers/usb/dwc2/core_intr.c b/drivers/usb/dwc2/core_intr.c
-index 27d729fad227..f8963c0cf6af 100644
---- a/drivers/usb/dwc2/core_intr.c
-+++ b/drivers/usb/dwc2/core_intr.c
-@@ -751,10 +751,11 @@ static inline void dwc_handle_gpwrdn_disc_det(struct dwc2_hsotg *hsotg,
-  * The GPWRDN interrupts are those that occur in both Host and
-  * Device mode while core is in hibernated state.
-  */
--static void dwc2_handle_gpwrdn_intr(struct dwc2_hsotg *hsotg)
-+static int dwc2_handle_gpwrdn_intr(struct dwc2_hsotg *hsotg)
- {
- 	u32 gpwrdn;
- 	int linestate;
-+	int ret = 0;
- 
- 	gpwrdn = dwc2_readl(hsotg, GPWRDN);
- 	/* clear all interrupt */
-@@ -778,17 +779,27 @@ static void dwc2_handle_gpwrdn_intr(struct dwc2_hsotg *hsotg)
- 		if (hsotg->hw_params.hibernation &&
- 		    hsotg->hibernated) {
- 			if (gpwrdn & GPWRDN_IDSTS) {
--				dwc2_exit_hibernation(hsotg, 0, 0, 0);
-+				ret = dwc2_exit_hibernation(hsotg, 0, 0, 0);
-+				if (ret)
-+					dev_err(hsotg->dev,
-+						"exit hibernation failed.\n");
- 				call_gadget(hsotg, resume);
- 			} else {
--				dwc2_exit_hibernation(hsotg, 1, 0, 1);
-+				ret = dwc2_exit_hibernation(hsotg, 1, 0, 1);
-+				if (ret)
-+					dev_err(hsotg->dev,
-+						"exit hibernation failed.\n");
- 			}
- 		}
- 	} else if ((gpwrdn & GPWRDN_RST_DET) &&
- 		   (gpwrdn & GPWRDN_RST_DET_MSK)) {
- 		dev_dbg(hsotg->dev, "%s: GPWRDN_RST_DET\n", __func__);
--		if (!linestate && (gpwrdn & GPWRDN_BSESSVLD))
--			dwc2_exit_hibernation(hsotg, 0, 1, 0);
-+		if (!linestate) {
-+			ret = dwc2_exit_hibernation(hsotg, 0, 1, 0);
-+			if (ret)
-+				dev_err(hsotg->dev,
-+					"exit hibernation failed.\n");
-+		}
- 	} else if ((gpwrdn & GPWRDN_STS_CHGINT) &&
- 		   (gpwrdn & GPWRDN_STS_CHGINT_MSK)) {
- 		dev_dbg(hsotg->dev, "%s: GPWRDN_STS_CHGINT\n", __func__);
-@@ -800,6 +811,8 @@ static void dwc2_handle_gpwrdn_intr(struct dwc2_hsotg *hsotg)
- 		 */
- 		dwc_handle_gpwrdn_disc_det(hsotg, gpwrdn);
+diff --git a/drivers/usb/dwc2/core.c b/drivers/usb/dwc2/core.c
+index cb65f7f60573..eccd96fa164e 100644
+--- a/drivers/usb/dwc2/core.c
++++ b/drivers/usb/dwc2/core.c
+@@ -470,6 +470,22 @@ int dwc2_core_reset(struct dwc2_hsotg *hsotg, bool skip_wait)
+ 		dwc2_writel(hsotg, greset, GRSTCTL);
  	}
-+
-+	return ret;
- }
  
- /*
++	/*
++	 * Switching from device mode to host mode by disconnecting
++	 * device cable core enters and exits form hibernation.
++	 * However, the fifo map remains not cleared. It results
++	 * to a WARNING (WARNING: CPU: 5 PID: 0 at drivers/usb/dwc2/
++	 * gadget.c:307 dwc2_hsotg_init_fifo+0x12/0x152 [dwc2])
++	 * if in host mode we disconnect the micro a to b host
++	 * cable. Because core reset occurs.
++	 * To avoid the WARNING, fifo_map should be cleared
++	 * in dwc2_core_reset() function by taking into account configs.
++	 * fifo_map must be cleared only if driver is configured in
++	 * "CONFIG_USB_DWC2_PERIPHERAL" or "CONFIG_USB_DWC2_DUAL_ROLE"
++	 * mode.
++	 */
++	dwc2_clear_fifo_map(hsotg);
++
+ 	/* Wait for AHB master IDLE state */
+ 	if (dwc2_hsotg_wait_bit_set(hsotg, GRSTCTL, GRSTCTL_AHBIDLE, 10000)) {
+ 		dev_warn(hsotg->dev, "%s: HANG! AHB Idle timeout GRSTCTL GRSTCTL_AHBIDLE\n",
+diff --git a/drivers/usb/dwc2/core.h b/drivers/usb/dwc2/core.h
+index 8c12b3061f7f..e1f432095565 100644
+--- a/drivers/usb/dwc2/core.h
++++ b/drivers/usb/dwc2/core.h
+@@ -1423,6 +1423,8 @@ int dwc2_hsotg_tx_fifo_total_depth(struct dwc2_hsotg *hsotg);
+ int dwc2_hsotg_tx_fifo_average_depth(struct dwc2_hsotg *hsotg);
+ void dwc2_gadget_init_lpm(struct dwc2_hsotg *hsotg);
+ void dwc2_gadget_program_ref_clk(struct dwc2_hsotg *hsotg);
++static inline void dwc2_clear_fifo_map(struct dwc2_hsotg *hsotg)
++{ hsotg->fifo_map = 0; }
+ #else
+ static inline int dwc2_hsotg_remove(struct dwc2_hsotg *dwc2)
+ { return 0; }
+@@ -1467,6 +1469,7 @@ static inline int dwc2_hsotg_tx_fifo_average_depth(struct dwc2_hsotg *hsotg)
+ { return 0; }
+ static inline void dwc2_gadget_init_lpm(struct dwc2_hsotg *hsotg) {}
+ static inline void dwc2_gadget_program_ref_clk(struct dwc2_hsotg *hsotg) {}
++static inline void dwc2_clear_fifo_map(struct dwc2_hsotg *hsotg) {}
+ #endif
+ 
+ #if IS_ENABLED(CONFIG_USB_DWC2_HOST) || IS_ENABLED(CONFIG_USB_DWC2_DUAL_ROLE)
 -- 
 2.25.1
 
