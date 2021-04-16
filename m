@@ -2,113 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1F9361929
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 07:18:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2593D36192B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 07:18:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238683AbhDPFQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 01:16:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236538AbhDPFQo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 01:16:44 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65656C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 22:16:19 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id em21-20020a17090b0155b029014e204a81e6so5850022pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 22:16:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uQtbD7P4vc1vn6sj+rqk5iopinYS+ejCLWKURjwvog0=;
-        b=mRtbHxsAw7+QrX8ggNXOLMpdmdVUi7Qf1Lpa81SHEUBjmwEClOHj/sH4gvAYCq8zPZ
-         xWibDLFCrAzBmZDv70d88yqFQse8c9LDa2GH++SJosfSXH710S1MN91bD9nh5dZhoJ+Z
-         k0lLVEqXe3+hW7vEtcqBkSlhNOw9VTcVBej93UknAw8Nnf+qblXwim/FTZBj8ayS/sT2
-         9NOkyYaLvrpYcu5oKbIJ7zcZJgeAmkEZyf5w8lja3um9r8ULyUkEgRgQ0hnfg7qKs0Eq
-         F5EShwqc6drtDgM19zTdg9A10CWl1boL9f0t+t3Bg3N9uDCy5PRtVitu16kREDAQyi/E
-         XbHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uQtbD7P4vc1vn6sj+rqk5iopinYS+ejCLWKURjwvog0=;
-        b=Hz6WoUy0YSNYVseOuubdihzqh7QgpZSsZgWyzWgyO255s7FMMrN8je7TGnxN5ieWha
-         ikYIQiIeJTjPIWUHfSuzrhycDeMr5K9eGQWbxDBRxhpdoDI/maQKGmJOqXsJ8pk4iNsS
-         oA35NTIomtlrg3uEkgZ2/7ZJVJW5IpOkhcx4lYas6KG3t3p1PtWWbt3Q+gO1De9T7Nc1
-         /O7lwW1d0OcKhl8834gL2d6IJwFNKGqtiS8gHVy4Kfnd/1GXf6oTiDvqZZUW1G1SojV2
-         g6DikslF5jJi0JvWzgwFCpmtw0v2wss7lLB6Nfn1wUNysfXQLWaAyK0zgM5jLJv2EAFQ
-         Pd4A==
-X-Gm-Message-State: AOAM532cuDrFaJCYz+8N8gWWfBqvWV940TxSMXt/+YukiVPvsvBaWrVe
-        Yuxi2IOerdXSVSnG99ByrTwI2kGr80iAonzJ
-X-Google-Smtp-Source: ABdhPJzsgKapGnuNFn0l7TP15/XU9x0NbvQ/D9jy8GoSu4oybHVT5scnv3+3n7GIFQav84toXIR3Nw==
-X-Received: by 2002:a17:902:c948:b029:e9:8f01:fa8e with SMTP id i8-20020a170902c948b02900e98f01fa8emr7765675pla.37.1618550179022;
-        Thu, 15 Apr 2021 22:16:19 -0700 (PDT)
-Received: from localhost.localdomain ([139.177.225.235])
-        by smtp.gmail.com with ESMTPSA id j7sm3518540pfd.129.2021.04.15.22.16.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 15 Apr 2021 22:16:18 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     guro@fb.com, hannes@cmpxchg.org, mhocko@kernel.org,
-        akpm@linux-foundation.org, shakeelb@google.com,
-        vdavydov.dev@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        duanxiongchun@bytedance.com,
-        Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@suse.com>
-Subject: [PATCH v2 8/8] mm: vmscan: remove noinline_for_stack
-Date:   Fri, 16 Apr 2021 13:14:07 +0800
-Message-Id: <20210416051407.54878-9-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20210416051407.54878-1-songmuchun@bytedance.com>
-References: <20210416051407.54878-1-songmuchun@bytedance.com>
+        id S238699AbhDPFRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 01:17:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37334 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234886AbhDPFQ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 01:16:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9A5B610FB;
+        Fri, 16 Apr 2021 05:16:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618550195;
+        bh=BBtGGf3ANCNgEB8oOFtBzS4am3atW0oPfW8UZjM5cxw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mNRg/Tl/ID0HMReqzdPW9xRBTtbebfW9yMyetgLpzRh7rgXzdmWifsGQ5r4vHcfxH
+         MX7X6eacpB2y8/qA/J4zzbFNtIuKwyJowLH97tBq62yjsWqV1oS8rszoOM/OzBojNI
+         ogUR1xvlHEzm0qPmjozIz8ylygQDTt9sZHboJAmo=
+Date:   Fri, 16 Apr 2021 07:16:32 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     liulongfang <liulongfang@huawei.com>
+Cc:     mathias.nyman@intel.com, stern@rowland.harvard.edu,
+        liudongdong3@huawei.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kong.kongxinwei@hisilicon.com,
+        yisen.zhuang@huawei.com
+Subject: Re: [RFC PATCH] USB:XHCI:skip hub registration
+Message-ID: <YHkdsMR7E2Dr7QTc@kroah.com>
+References: <1618489358-42283-1-git-send-email-liulongfang@huawei.com>
+ <YHgy0jqLE0WAxA+2@kroah.com>
+ <973a4759-4464-e59e-f84b-15672503e290@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <973a4759-4464-e59e-f84b-15672503e290@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The noinline_for_stack is introduced by commit 666356297ec4 ("vmscan:
-set up pagevec as late as possible in shrink_inactive_list()"), its
-purpose is to delay the allocation of pagevec as late as possible to
-save stack memory. But the commit 2bcf88796381 ("mm: take pagevecs off
-reclaim stack") replace pagevecs by lists of pages_to_free. So we do
-not need noinline_for_stack, just remove it (let the compiler decide
-whether to inline).
+On Fri, Apr 16, 2021 at 10:43:34AM +0800, liulongfang wrote:
+> On 2021/4/15 20:34, Greg KH wrote:
+> > On Thu, Apr 15, 2021 at 08:22:38PM +0800, Longfang Liu wrote:
+> >> When the number of ports on the USB hub is 0, skip the registration
+> >> operation of the USB hub.
+> > 
+> > That's crazy.  Why not fix the hardware?  How has this hub passed the
+> > USB certification process?
+> > 
+> >> The current Kunpeng930's XHCI hardware controller is defective. The number
+> >> of ports on its USB3.0 bus controller is 0, and the number of ports on
+> >> the USB2.0 bus controller is 1.
+> >>
+> >> In order to solve this problem that the USB3.0 controller does not have
+> >> a port which causes the registration of the hub to fail, this patch passes
+> >> the defect information by adding flags in the quirks of xhci and usb_hcd,
+> >> and finally skips the registration process of the hub directly according
+> >> to the results of these flags when the hub is initialized.
+> >>
+> >> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+> >> ---
+> >>  drivers/usb/core/hub.c      | 6 ++++++
+> >>  drivers/usb/host/xhci-pci.c | 4 ++++
+> >>  drivers/usb/host/xhci.c     | 5 +++++
+> >>  drivers/usb/host/xhci.h     | 1 +
+> >>  include/linux/usb/hcd.h     | 1 +
+> >>  5 files changed, 17 insertions(+)
+> >>
+> >> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+> >> index b1e14be..2d6869d 100644
+> >> --- a/drivers/usb/core/hub.c
+> >> +++ b/drivers/usb/core/hub.c
+> >> @@ -1769,9 +1769,15 @@ static int hub_probe(struct usb_interface *intf, const struct usb_device_id *id)
+> >>  	struct usb_host_interface *desc;
+> >>  	struct usb_device *hdev;
+> >>  	struct usb_hub *hub;
+> >> +	struct usb_hcd *hcd;
+> >>  
+> >>  	desc = intf->cur_altsetting;
+> >>  	hdev = interface_to_usbdev(intf);
+> >> +	hcd = bus_to_hcd(hdev->bus);
+> >> +	if (hcd->usb3_no_port) {
+> >> +		dev_warn(&intf->dev, "USB hub has no port\n");
+> >> +		return -ENODEV;
+> >> +	}
+> >>  
+> >>  	/*
+> >>  	 * Set default autosuspend delay as 0 to speedup bus suspend,
+> >> diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
+> >> index ef513c2..63b89a4 100644
+> >> --- a/drivers/usb/host/xhci-pci.c
+> >> +++ b/drivers/usb/host/xhci-pci.c
+> >> @@ -281,6 +281,10 @@ static void xhci_pci_quirks(struct device *dev, struct xhci_hcd *xhci)
+> >>  	if (xhci->quirks & XHCI_RESET_ON_RESUME)
+> >>  		xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+> >>  				"QUIRK: Resetting on resume");
+> >> +
+> >> +	if (pdev->vendor == PCI_VENDOR_ID_HUAWEI &&
+> >> +	    pdev->device == 0xa23c)
+> >> +		xhci->quirks |= XHCI_USB3_NOPORT;
+> > 
+> > Can't we just detect this normally that there are no ports for this
+> > device?  Why is the device lying about how many ports it has such that
+> > we have to "override" this?
+> > 
+> 
+> The hub driver will check the port number in prob(). If there is no port,
+> the driver will report an error log. But we hope this defective device
+> does not print error log.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Acked-by: Roman Gushchin <guro@fb.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
----
- mm/vmscan.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Defective devices deserve to have errors sent to the error log,
+otherwise how will people know to tell the companies to fix them?
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 2bc5cf409958..2d2727b78df9 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2014,8 +2014,8 @@ static int too_many_isolated(struct pglist_data *pgdat, int file,
-  *
-  * Returns the number of pages moved to the given lruvec.
-  */
--static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
--						     struct list_head *list)
-+static unsigned int move_pages_to_lru(struct lruvec *lruvec,
-+				      struct list_head *list)
- {
- 	int nr_pages, nr_moved = 0;
- 	LIST_HEAD(pages_to_free);
-@@ -2095,7 +2095,7 @@ static int current_may_throttle(void)
-  * shrink_inactive_list() is a helper for shrink_node().  It returns the number
-  * of reclaimed pages
-  */
--static noinline_for_stack unsigned long
-+static unsigned long
- shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
- 		     struct scan_control *sc, enum lru_list lru)
- {
--- 
-2.11.0
+Again, this device can not pass USB certification, so there's not much
+we should do to work around that, right?
 
+thanks,
+
+greg k-h
