@@ -2,232 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD65362156
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E310362163
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244120AbhDPNq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 09:46:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47780 "EHLO mail.kernel.org"
+        id S244251AbhDPNr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 09:47:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229706AbhDPNqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 09:46:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D86546121E;
-        Fri, 16 Apr 2021 13:46:27 +0000 (UTC)
-Date:   Fri, 16 Apr 2021 15:46:24 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Kees Cook <keescook@chromium.org>, Christoph Hellwig <hch@lst.de>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH] fs: split receive_fd_replace from __receive_fd
-Message-ID: <20210416134624.xzh55x74kspmw24f@wittgenstein>
-References: <20210325082209.1067987-1-hch@lst.de>
- <20210325082209.1067987-2-hch@lst.de>
- <202104021157.7B388D1B2@keescook>
- <YHkPb7LSzadhpG6H@zeniv-ca.linux.org.uk>
+        id S244237AbhDPNrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 09:47:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80CD46121E;
+        Fri, 16 Apr 2021 13:46:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618580816;
+        bh=B/gO4o0ET1Vf4JJJaWbgLKZOakfSU5zu8k7n8XwNkcQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Q6ySTFEuLcZ4Q3HiIU3ZLS6PIYWbzBKE+E85JHkS7+68Ve4YOKQoGeVEy38cC3atV
+         0ZKtTNLMnWqqEl0ibUc1zA/ScBeccX8iQbsdsPNk5hwxVLlEdYwUqdRoweGrS7bLd8
+         no13WO4vVR5+7Z9IAz5cQZtw8cumow1zrXe7xtUSCLUxi1QwRufdCWoVFN0Zfos0H5
+         zSUaPFlcsYBlG8GGyqTq0E+o+jEn8q3mXvhSrdIrUoGr4pEoRuSLwfLpLIcrBQqQ29
+         P7M+rHJJ7SaDWVBU4sOUUz5+/WpDoltGkqoKlRC3Js8EudEN56RmY8+DaGfiNsJfmb
+         HHF7MzdTvYOtA==
+Received: by mail-ej1-f54.google.com with SMTP id mh2so20688036ejb.8;
+        Fri, 16 Apr 2021 06:46:56 -0700 (PDT)
+X-Gm-Message-State: AOAM532p5Nh0RRjAt9yCVV4T4aDLa6lQTsU/jYLA4CASNjhUYv6OH80c
+        kN6Djkc8TWaAv4YdX/dac6goK3tcj86tEY18bQ==
+X-Google-Smtp-Source: ABdhPJxTDzaPKU8wyeBHLRuKnIcggDRpfumYSFxCw0m75Xt2Xdbw7cBsRkNPQ/1iDsEibfDBKiARfrTWqdXzoIBomOk=
+X-Received: by 2002:a17:907:70d3:: with SMTP id yk19mr8343248ejb.108.1618580815150;
+ Fri, 16 Apr 2021 06:46:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YHkPb7LSzadhpG6H@zeniv-ca.linux.org.uk>
+References: <YHmOvvyxAyOY/fRL@Red>
+In-Reply-To: <YHmOvvyxAyOY/fRL@Red>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 16 Apr 2021 08:46:42 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJ47D2m-7sF_FKfmf3X0JVw4gs-bxGt2b76oUtUqhdEYw@mail.gmail.com>
+Message-ID: <CAL_JsqJ47D2m-7sF_FKfmf3X0JVw4gs-bxGt2b76oUtUqhdEYw@mail.gmail.com>
+Subject: Re: Need help converting usb/faraday,fotg210.yaml to yaml
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 04:15:43AM +0000, Al Viro wrote:
-> On Fri, Apr 02, 2021 at 12:01:05PM -0700, Kees Cook wrote:
-> > On Thu, Mar 25, 2021 at 09:22:09AM +0100, Christoph Hellwig wrote:
-> > > receive_fd_replace shares almost no code with the general case, so split
-> > > it out.  Also remove the "Bump the sock usage counts" comment from
-> > > both copies, as that is now what __receive_sock actually does.
-> > > 
-> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > 
-> > I'm okay with repeating code in fs/file.c. What I wanted to avoid was
-> > open coded combinations in various callers.
-> 
-> ... and that got you a lovely userland ABI, where you have
-> 
-> 	(1) newfd >= 0, SECCOMP_ADDFD_FLAG_SETFD is present => replace
-> 	(2) newfd < 0, SECCOMP_ADDFD_FLAG_SETFD is present => insert
-> 	(3) newfd == 0, SECCOMP_ADDFD_FLAG_SETFD not present => insert
-> 	(4) newfd != 0, SECCOMP_ADDFD_FLAG_SETFD not present => -EINVAL
-> 
-> IMO (2) is a bug.  Whether we still can fix it or not... no idea, depends
-> on whether the actual userland has come to depend upon it.
+On Fri, Apr 16, 2021 at 8:18 AM Corentin Labbe
+<clabbe.montjoie@gmail.com> wrote:
+>
+> Hello
+>
+> I am converting Documentation/devicetree/bindings/usb/faraday,fotg210.txt to yaml with the patch attached below.
+> But validating it give me:
+> Documentation/devicetree/bindings/usb/faraday,fotg210.example.dt.yaml: usb@68000000: 'syscon', 'wakeup-source' do not match any of the regexes: 'pinctrl-[0-9]+'
 
-The number of users actively making use of this is rn more or less only
-projects I maintain. There's a proposal to make that API part of another
-project but they can just adapt to the new behavior too since there's no
-released version. So we could just risk that change.
+These have to be defined at the top level, not just the if/then
+schema. More below...
 
-> 
-> I suggest turning (2) into an error (-EBADF is what you'd get from
-> attempt to set something at such descriptor) and seeing if anything
-> breaks.  And having SECCOMP_ADDFD_FLAG_SETFD status passed into kaddfd
-> explicitly, with explicit check in seccomp_handle_addfd().  As in
-> 
-> commit 42eb0d54c08a0331d6d295420f602237968d792b
-> Author: Christoph Hellwig <hch@lst.de>
-> Date:   Thu Mar 25 09:22:09 2021 +0100
-> 
->     fs: split receive_fd_replace from __receive_fd
->     
->     receive_fd_replace shares almost no code with the general case, so split
->     it out.  Also remove the "Bump the sock usage counts" comment from
->     both copies, as that is now what __receive_sock actually does.
->     
->     [AV: ... and make the only user of receive_fd_replace() choose between
->     it and receive_fd() according to what userland had passed to it in
->     flags]
->     
->     Signed-off-by: Christoph Hellwig <hch@lst.de>
->     Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-> 
-> diff --git a/fs/file.c b/fs/file.c
-> index f3a4bac2cbe9..d8ccb95a7f41 100644
-> --- a/fs/file.c
-> +++ b/fs/file.c
-> @@ -1068,8 +1068,6 @@ int replace_fd(unsigned fd, struct file *file, unsigned flags)
->  
->  /**
->   * __receive_fd() - Install received file into file descriptor table
-> - *
-> - * @fd: fd to install into (if negative, a new fd will be allocated)
->   * @file: struct file that was received from another process
->   * @ufd: __user pointer to write new fd number to
->   * @o_flags: the O_* flags to apply to the new fd entry
-> @@ -1083,7 +1081,7 @@ int replace_fd(unsigned fd, struct file *file, unsigned flags)
->   *
->   * Returns newly install fd or -ve on error.
->   */
-> -int __receive_fd(int fd, struct file *file, int __user *ufd, unsigned int o_flags)
-> +int __receive_fd(struct file *file, int __user *ufd, unsigned int o_flags)
->  {
->  	int new_fd;
->  	int error;
-> @@ -1092,32 +1090,33 @@ int __receive_fd(int fd, struct file *file, int __user *ufd, unsigned int o_flag
->  	if (error)
->  		return error;
->  
-> -	if (fd < 0) {
-> -		new_fd = get_unused_fd_flags(o_flags);
-> -		if (new_fd < 0)
-> -			return new_fd;
-> -	} else {
-> -		new_fd = fd;
-> -	}
-> +	new_fd = get_unused_fd_flags(o_flags);
-> +	if (new_fd < 0)
-> +		return new_fd;
->  
->  	if (ufd) {
->  		error = put_user(new_fd, ufd);
->  		if (error) {
-> -			if (fd < 0)
-> -				put_unused_fd(new_fd);
-> +			put_unused_fd(new_fd);
->  			return error;
->  		}
->  	}
->  
-> -	if (fd < 0) {
-> -		fd_install(new_fd, get_file(file));
-> -	} else {
-> -		error = replace_fd(new_fd, file, o_flags);
-> -		if (error)
-> -			return error;
-> -	}
-> +	fd_install(new_fd, get_file(file));
-> +	__receive_sock(file);
-> +	return new_fd;
-> +}
->  
-> -	/* Bump the sock usage counts, if any. */
-> +int receive_fd_replace(int new_fd, struct file *file, unsigned int o_flags)
-> +{
-> +	int error;
+>
+> I dont know from where came this pinctrl regex.
+
+The tooling adds it.
+
+> I think this is perhaps due to the if not matched, but still didnt find any solution.
+>
+> Thanks
+>
+> --- a/Documentation/devicetree/bindings/usb/faraday,fotg210.txt
+> +++ /dev/null
+> @@ -1,35 +0,0 @@
+> -Faraday FOTG Host controller
+> -
+> -This OTG-capable USB host controller is found in Cortina Systems
+> -Gemini and other SoC products.
+> -
+> -Required properties:
+> -- compatible: should be one of:
+> -  "faraday,fotg210"
+> -  "cortina,gemini-usb", "faraday,fotg210"
+> -- reg: should contain one register range i.e. start and length
+> -- interrupts: description of the interrupt line
+> -
+> -Optional properties:
+> -- clocks: should contain the IP block clock
+> -- clock-names: should be "PCLK" for the IP block clock
+> -
+> -Required properties for "cortina,gemini-usb" compatible:
+> -- syscon: a phandle to the system controller to access PHY registers
+> -
+> -Optional properties for "cortina,gemini-usb" compatible:
+> -- cortina,gemini-mini-b: boolean property that indicates that a Mini-B
+> -  OTG connector is in use
+> -- wakeup-source: see power/wakeup-source.txt
+> -
+> -Example for Gemini:
+> -
+> -usb@68000000 {
+> -       compatible = "cortina,gemini-usb", "faraday,fotg210";
+> -       reg = <0x68000000 0x1000>;
+> -       interrupts = <10 IRQ_TYPE_LEVEL_HIGH>;
+> -       clocks = <&cc 12>;
+> -       clock-names = "PCLK";
+> -       syscon = <&syscon>;
+> -       wakeup-source;
+> -};
+> diff --git a/Documentation/devicetree/bindings/usb/faraday,fotg210.yaml b/Documentation/devicetree/bindings/usb/faraday,fotg210.yaml
+> new file mode 100644
+> index 000000000000..b5418f29745e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/usb/faraday,fotg210.yaml
+> @@ -0,0 +1,78 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/usb/faraday,fotg210.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +	error = security_file_receive(file);
-> +	if (error)
-> +		return error;
-> +	error = replace_fd(new_fd, file, o_flags);
-> +	if (error)
-> +		return error;
->  	__receive_sock(file);
->  	return new_fd;
->  }
-> diff --git a/include/linux/file.h b/include/linux/file.h
-> index 225982792fa2..2de2e4613d7b 100644
-> --- a/include/linux/file.h
-> +++ b/include/linux/file.h
-> @@ -92,23 +92,20 @@ extern void put_unused_fd(unsigned int fd);
->  
->  extern void fd_install(unsigned int fd, struct file *file);
->  
-> -extern int __receive_fd(int fd, struct file *file, int __user *ufd,
-> +extern int __receive_fd(struct file *file, int __user *ufd,
->  			unsigned int o_flags);
->  static inline int receive_fd_user(struct file *file, int __user *ufd,
->  				  unsigned int o_flags)
->  {
->  	if (ufd == NULL)
->  		return -EFAULT;
-> -	return __receive_fd(-1, file, ufd, o_flags);
-> +	return __receive_fd(file, ufd, o_flags);
->  }
->  static inline int receive_fd(struct file *file, unsigned int o_flags)
->  {
-> -	return __receive_fd(-1, file, NULL, o_flags);
-> -}
-> -static inline int receive_fd_replace(int fd, struct file *file, unsigned int o_flags)
-> -{
-> -	return __receive_fd(fd, file, NULL, o_flags);
-> +	return __receive_fd(file, NULL, o_flags);
->  }
-> +int receive_fd_replace(int new_fd, struct file *file, unsigned int o_flags);
->  
->  extern void flush_delayed_fput(void);
->  extern void __fput_sync(struct file *);
-> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> index 1d60fc2c9987..4fe19cecaa94 100644
-> --- a/kernel/seccomp.c
-> +++ b/kernel/seccomp.c
-> @@ -119,8 +119,11 @@ struct seccomp_kaddfd {
->  	int fd;
->  	unsigned int flags;
->  
-> -	/* To only be set on reply */
-> -	int ret;
-> +	union {
-> +		bool setfd;
-> +		/* To only be set on reply */
-> +		int ret;
-> +	};
->  	struct completion completion;
->  	struct list_head list;
->  };
-> @@ -1069,7 +1072,11 @@ static void seccomp_handle_addfd(struct seccomp_kaddfd *addfd)
->  	 * that it has been handled.
->  	 */
->  	list_del_init(&addfd->list);
-> -	addfd->ret = receive_fd_replace(addfd->fd, addfd->file, addfd->flags);
-> +	if (!addfd->setfd)
-> +		addfd->ret = receive_fd(addfd->file, addfd->flags);
-> +	else
-> +		addfd->ret = receive_fd_replace(addfd->fd, addfd->file,
-> +						addfd->flags);
->  	complete(&addfd->completion);
->  }
->  
-> @@ -1583,8 +1590,8 @@ static long seccomp_notify_addfd(struct seccomp_filter *filter,
->  		return -EBADF;
->  
->  	kaddfd.flags = addfd.newfd_flags;
-> -	kaddfd.fd = (addfd.flags & SECCOMP_ADDFD_FLAG_SETFD) ?
-> -		    addfd.newfd : -1;
-> +	kaddfd.setfd = addfd.flags & SECCOMP_ADDFD_FLAG_SETFD;
-> +	kaddfd.fd = addfd.newfd;
->  	init_completion(&kaddfd.completion);
->  
->  	ret = mutex_lock_interruptible(&filter->notify_lock);
+> +title: Faraday FOTG Host controller
+> +
+> +maintainers:
+> +  - Linus Walleij <linus.walleij@linaro.org>
+> +
+> +description: |
+> +    This OTG-capable USB host controller is found in Cortina Systems
+> +    Gemini and other SoC products.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: faraday,fotg210
+> +      - items:
+> +        - const: cortina,gemini-usb
+> +        - const: faraday,fotg210
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    const: PCLK
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +if:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        const: cortina,gemini-usb
+> +then:
+> +  properties:
+> +    syscon:
+> +      maxItems: 1
+> +      $ref: /schemas/types.yaml#/definitions/phandle
+> +      description: Phandle to the system controller to access PHY registers
+> +    cortina,gemini-mini-b:
+> +      type: boolean
+> +      description: boolean property that indicates that a Mini-B OTG connector is in use
+> +    wakeup-source:
+> +      type: boolean
+> +      description: see power/wakeup-source.txt
+
+Move these definitions to the top level 'properties'. Then add an else clause:
+
+else:
+  properties:
+    syscon: false
+    cortina,gemini-mini-b: false
+    wakeup-source: false
+
+> +  required:
+> +    - syscon
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    usb@68000000 {
+> +      compatible = "cortina,gemini-usb", "faraday,fotg210";
+> +      reg = <0x68000000 0x1000>;
+> +      interrupts = <10 IRQ_TYPE_LEVEL_HIGH>;
+> +      clocks = <&cc 12>;
+> +      clock-names = "PCLK";
+> +      syscon = <&syscon>;
+> +      wakeup-source;
+> +    };
+> +...
+>
