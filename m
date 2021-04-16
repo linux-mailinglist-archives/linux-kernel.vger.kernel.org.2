@@ -2,87 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5FE361F8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41621361F8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241464AbhDPMKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 08:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40432 "EHLO
+        id S241701AbhDPMMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 08:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232130AbhDPMKG (ORCPT
+        with ESMTP id S232130AbhDPMMh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 08:10:06 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78CFFC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 05:09:41 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id nk8so718458pjb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 05:09:41 -0700 (PDT)
+        Fri, 16 Apr 2021 08:12:37 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F3AC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 05:12:13 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id f15so18691699iob.5
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 05:12:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        d=ieee.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kalm4mobUMbEi2fiGq9fxLO7hrBXdcxOMDLAzJOaJgw=;
-        b=GHzhAEh0ZJSuP3B9e6gxFZV9WFShFbszVgYKTb2p5OyrE2z3u0USPMEJuGOyvuUJsW
-         adGYgCUh8e8PaLMwrDzfQfDhM9zsYRCOwlkLi4P8aXFvTHKhOo3pqkZV6wOfoXnv9wHI
-         8oZsk63Z6eFCpEI+GEl7Ta83PBMOJ2HMr5m1dO9L5pyS+wmIXW1KqxvpdEwCo6wNLAvS
-         t2YdiBKkMU3oHJqCtJFSiMyZTeq8UypLGJPadbM1Uek8kHShAotw21QIX0nxmDoNHWk0
-         YCbFwSCXxfvGVrunaUWMEwEyaTVv6kG827MmgEINwXg8Grsi4y7v0NKsOgXJXAGo5oks
-         N/jg==
+        bh=QRWAPmW5vvyXZA3k3epSuvNabZYcpW8oDtvws6ZLKbA=;
+        b=UplxDcY1zQ2EymDQcSIbvMLZOmcYU+jYX9/g74rwXA5evWnhYH2I9jwlXZbhmKe7Uh
+         BBL/g4ZhSoQxAKX6VGDn/XV7n1XMaw6imZ9hdGoNH7UWlZGIK5x8DpzwiAJwTdc1K+kl
+         EZm6mITn17YLMUY775amwjKD5aBATgC6P+giA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=kalm4mobUMbEi2fiGq9fxLO7hrBXdcxOMDLAzJOaJgw=;
-        b=YBr9AdnZ/1IwcpPJCGedF2zd1BDjq0YE9iqeQ9DH+a6G9ugisPqmgkx46Zhh16Vwrg
-         3MAYt+ziemcsfltLKE7H2f6IsnBTbEaa3Zc2QpX706NKr7NrgKsAC7zYh7CM+qwOw27j
-         tmMaxy/mIApxdPGcn41TdK6cUx38X+IQwsEyMe5s9ZFvBpbqKPEnLntmTJABLC0T23S5
-         zN8Pf4k+cs/aKM9I+G+gzFsicDLwO1YKvZF2J+hw5ZelLcErwAIXVfh2+uAxjh8fyZvq
-         SXm14bAkZuLJj7yHZcMnjYBgS2rpZLHQoFyumXVNHVGm36lhS9lo4vXAahtgQkKB0Qk/
-         klsQ==
-X-Gm-Message-State: AOAM533IeduIqAGQAzjKYtnA2PnqjUPEGHXmGkviqjVOs3j5km470TKH
-        a0ResQDoslaufl5YNGUWgMjvTJVvigxtWA==
-X-Google-Smtp-Source: ABdhPJylUhsIG3VFFpchvfgdpDQMlyoUHJCWyGL+z9R6gHxRFrqDkPaGSumQwmrQN6wr70fY1y/JRg==
-X-Received: by 2002:a17:902:edc4:b029:eb:159f:32b7 with SMTP id q4-20020a170902edc4b02900eb159f32b7mr9277104plk.11.1618574980806;
-        Fri, 16 Apr 2021 05:09:40 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id i17sm4726472pfd.84.2021.04.16.05.09.39
+        bh=QRWAPmW5vvyXZA3k3epSuvNabZYcpW8oDtvws6ZLKbA=;
+        b=hvn31M34d5SKZyENIFks+lmnGT/J36y2t+Rod6HqILi7ZKEIqD8s+QyJg0xvXaFZo8
+         sU0L7uIzn2QNo7qFchNLCxwgOEhdlxIiNMa+2qNBFU7KDTSxf47wgZ1qnptWgcHJe5QZ
+         uNzJ8/mpsulQW6kSW9kYzBFPIzMvZ5VzTXIKwOcQKpdmFp+ixGHqtk221Hzj1EzvNcTh
+         fWiKuwZ8bfDwemKjundrPja8S/OrHAXB4rGj/Hz1C/No3SPes5WGni9/kKvrqLyY8SGb
+         O8jgdalKfGFiM1boieJd5rVAkNxVFrstZrF8BxNvuuELnH18PXebe6jsUnO37GI2xCGg
+         K+qQ==
+X-Gm-Message-State: AOAM531yPlMH/n39bk6L25RDld0Kip05l17XnUzq6cbNec/wtf+x152E
+        3Ji8/XtjXAGvBzLUpOrx7CpJVy1ar8XNUg==
+X-Google-Smtp-Source: ABdhPJzonT2xqujZWT52oa9/fLNipZhY74sU/pHLYeFmZAfsUf5mQYtA00rRFIFW13DMjp/348GLWw==
+X-Received: by 2002:a05:6638:1390:: with SMTP id w16mr3705553jad.83.1618575132189;
+        Fri, 16 Apr 2021 05:12:12 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id s1sm308665iov.52.2021.04.16.05.12.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Apr 2021 05:09:40 -0700 (PDT)
-Subject: Re: [RFC PATCH 2/2] bfq/mq-deadline: remove redundant check for
- passthrough request
-To:     Lin Feng <linf@wangsu.com>, paolo.valente@linaro.org
-Cc:     linux-block@vger.kernel.org, ming.lei@redhat.com,
-        linux-kernel@vger.kernel.org
-References: <20210415034326.214227-1-linf@wangsu.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <2ac2fd8d-08df-9412-c551-35f34bf7333b@kernel.dk>
-Date:   Fri, 16 Apr 2021 06:09:40 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 16 Apr 2021 05:12:11 -0700 (PDT)
+Subject: Re: [PATCH] drivers: ipa: Fix missing IRQF_ONESHOT as only threaded
+ handler
+To:     zhuguangqing83@gmail.com, Alex Elder <elder@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210416034007.31222-1-zhuguangqing83@gmail.com>
+From:   Alex Elder <elder@ieee.org>
+Message-ID: <a200ba57-4c70-d2cc-10b8-710789c322dc@ieee.org>
+Date:   Fri, 16 Apr 2021 07:12:10 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210415034326.214227-1-linf@wangsu.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210416034007.31222-1-zhuguangqing83@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/14/21 9:43 PM, Lin Feng wrote:
-> Since commit 01e99aeca39796003 'blk-mq: insert passthrough request into
-> hctx->dispatch directly', passthrough request should not appear in
-> IO-scheduler any more, so blk_rq_is_passthrough checking in addon IO
-> schedulers is redundant.
+On 4/15/21 10:40 PM, zhuguangqing83@gmail.com wrote:
+> From: Guangqing Zhu <zhuguangqing83@gmail.com>
+
+This is not required here.	-Alex
+
+https://lore.kernel.org/netdev/d57e0a43-4d87-93cf-471c-c8185ea85ced@ieee.org/
+
+> Coccinelle noticed:
+> drivers/net/ipa/ipa_smp2p.c:186:7-27: ERROR: Threaded IRQ with no primary
+> handler requested without IRQF_ONESHOT
 > 
-> (Notes: this patch passes generic IO load test with hdds under SAS
-> controller and hdds under AHCI controller but obviously not covers all.
-> Not sure if passthrough request can still escape into IO scheduler from
-> blk_mq_sched_insert_requests, which is used by blk_mq_flush_plug_list and
-> has lots of indirect callers.)
-
-Applied, with the bfq bits hand edited to apply for 5.13.
-
--- 
-Jens Axboe
+> Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
+> ---
+>   drivers/net/ipa/ipa_smp2p.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ipa/ipa_smp2p.c b/drivers/net/ipa/ipa_smp2p.c
+> index a5f7a79a1923..74e04427a711 100644
+> --- a/drivers/net/ipa/ipa_smp2p.c
+> +++ b/drivers/net/ipa/ipa_smp2p.c
+> @@ -183,7 +183,8 @@ static int ipa_smp2p_irq_init(struct ipa_smp2p *smp2p, const char *name,
+>   	}
+>   	irq = ret;
+>   
+> -	ret = request_threaded_irq(irq, NULL, handler, 0, name, smp2p);
+> +	ret = request_threaded_irq(irq, NULL, handler, IRQF_ONESHOT,
+> +				   name, smp2p);
+>   	if (ret) {
+>   		dev_err(dev, "error %d requesting \"%s\" IRQ\n", ret, name);
+>   		return ret;
+> 
 
