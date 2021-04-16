@@ -2,233 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B20AC361DAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4568361D5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242034AbhDPJoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 05:44:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36282 "EHLO
+        id S242028AbhDPJpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 05:45:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242151AbhDPJoc (ORCPT
+        with ESMTP id S238871AbhDPJpL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 05:44:32 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 484B9C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:44:06 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id f8so31492121edd.11
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:44:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=rRe1PF/xqu0UuMVNa18GYnpri2sRMuuyU92Z0ugYpAo=;
-        b=AWrprHCh4oIrKLyyoxOXv0moOagMX2kFBjgfLlge7pODzapeVn/YVK8wS6CajcgBdq
-         /3sXGOG/p/1qseBNV/wDZx82ykav42znmpbwhUjiumHFGB4Lej9ChnEbDeZwYs6NDDEC
-         ZCCRhPOuppHACljp7PJo9wm5wXE7rjyb5SooWf//95dsorMEZQuDGGetjcWIsfEEZkmZ
-         0CpPm67faBcy3CSUIdX9nOH09UO1GIupmBPX6figxbt6mQMGA9oqso+V9lcQxtkqkK1N
-         VrdM8aSB3VKV/tn191+f46QWN3CKtqynCPuraCpnys+nv3/hnSDY4F8b9pFEi1ZfCOhD
-         CCcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rRe1PF/xqu0UuMVNa18GYnpri2sRMuuyU92Z0ugYpAo=;
-        b=WnjjxXVRLHqh3y7q7OzxVET3abAz/PGZhmKUdi2uv9P1NejjFvPRkZE3e8BeLksACV
-         5FPumdDOjn+751L0aW9NyTcGn5H8FZ/uzSjXbzo8605lmrzQMMrF5osdP2vH19AThjiw
-         Cbdw5clmcGL8oPhYMpCidDiV2QoudLNCBkcFKTVjpoxyWLYSoMz3Kfiz7UHWkHUV10qq
-         rgWQ/t9YpVcLVt5jvAxPPelVNhDMQM6zx81SXr3xH63ihc8CxFIfv4OPYh4MP6NR010a
-         DFk7O/wXNtSsBJcJnQjYY0ArG90gM+tHeoiJyRuH0SJnTURkRzKA0tYHkSu8MSEvIiSR
-         WdvQ==
-X-Gm-Message-State: AOAM531ASxBnQm4zSRrTdJcDpLZTxKnqL5sjc3bDaHFxScClBL3itVfY
-        KIN+MbQ1f1sKOVNq8VA5NMMDttHKVZhnA4LMcxjKNgjZSLtzYIVX
-X-Google-Smtp-Source: ABdhPJwqd/otW47l1SXmWbcZq/9GwutbNWcg+6AKGshozAJ3XpkHy+o7hEQb8FXNQ+8Nb0SSVhKfMUOYCyIVNWoXnOQ=
-X-Received: by 2002:a50:c3c2:: with SMTP id i2mr8908609edf.23.1618566244823;
- Fri, 16 Apr 2021 02:44:04 -0700 (PDT)
+        Fri, 16 Apr 2021 05:45:11 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37700C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:44:47 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lXL1c-0004Kv-Br; Fri, 16 Apr 2021 11:44:32 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lXL1Y-0003fo-Dj; Fri, 16 Apr 2021 11:44:28 +0200
+Date:   Fri, 16 Apr 2021 11:44:26 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        linux-pwm@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
+        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] pwm: visconti: Add Toshiba Visconti SoC PWM
+ support
+Message-ID: <20210416094426.x4gyw3drp2fcwczs@pengutronix.de>
+References: <20210409230837.1919744-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <20210409230837.1919744-3-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <20210410135321.oissremqropvrpd3@pengutronix.de>
+ <20210412025536.i5chpp6sighunvfx@toshiba.co.jp>
+ <20210412070232.6q3cgqvuj53p4cmi@pengutronix.de>
+ <20210416080721.oa7xdvu22w2b2rkf@toshiba.co.jp>
 MIME-Version: 1.0
-References: <20210415144413.055232956@linuxfoundation.org>
-In-Reply-To: <20210415144413.055232956@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 16 Apr 2021 15:13:53 +0530
-Message-ID: <CA+G9fYuRLE=kG1Ppkwhc9QLhMtWreja7_ApWEU+2RmMX6XawnA@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/18] 5.4.113-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="t42vctr7z7mwa3qh"
+Content-Disposition: inline
+In-Reply-To: <20210416080721.oa7xdvu22w2b2rkf@toshiba.co.jp>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Apr 2021 at 20:31, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.113 release.
-> There are 18 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 17 Apr 2021 14:44:01 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.113-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+--t42vctr7z7mwa3qh
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Hello Nobuhiro,
 
-## Build
-* kernel: 5.4.113-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.4.y
-* git commit: 0d80f6c61d6ba21b3cb64eae72b8485dd96b5a94
-* git describe: v5.4.112-19-g0d80f6c61d6b
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
-12-19-g0d80f6c61d6b
+On Fri, Apr 16, 2021 at 05:07:21PM +0900, Nobuhiro Iwamatsu wrote:
+> On Mon, Apr 12, 2021 at 09:02:32AM +0200, Uwe Kleine-K=F6nig wrote:
+> > On Mon, Apr 12, 2021 at 11:55:36AM +0900, Nobuhiro Iwamatsu wrote:
+> > > On Sat, Apr 10, 2021 at 03:53:21PM +0200, Uwe Kleine-K=F6nig wrote:
+> > > > Can you please put a paragraph analogous to the one in pwm-sifive i=
+n the
+> > > > same format. This simplified keeping an overview about the oddities=
+ of
+> > > > the various supported chips.
+> > >=20
+> > > OK, I will check pwm-sifive's, and add.
+>=20
+> I will add the following :
+>=20
+>  * Limitations:
+>  * - PIPGM_PWMC is a 2-bit divider (00: 1, 01: 2, 10: 4, 11: 8) for the i=
+nput
+>  *   clock running at 1 MHz.
 
-## No regressions (compared to v5.4.112)
+I would strip that to:
 
-## No fixes (compared to v5.4.112)
+ - Fixed input clock running at 1 MHz
 
-## Test result summary
- total: 71154, pass: 59298, fail: 1014, skip: 10587, xfail: 255,
+>  * - When the settings of the PWM are modified, the new values are shadow=
+ed
+>  *   in hardware until the PIPGM_PCSR register is written and the current=
+ly
+>  *   running period is completed. This way the hardware switches atomical=
+ly
+>  *   from the old setting to the new.
+>  * - Disabling the hardware completes the currently running period and ke=
+eps
+>  *   the output at low level at all times.
 
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 191 total, 191 passed, 0 failed
-* arm64: 25 total, 25 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 14 total, 14 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 25 total, 25 passed, 0 failed
+This looks fine.
+=20
+> > For me the critical (and only) difference between "off" and
+> > "duty cycle =3D 0" is that when a new configuration is to be applied. In
+> > the "off" state a new period can (and should) start immediately, while
+> > with "duty_cycle =3D 0" the rising edge should be delayed until the
+> > currently running period is over.[1]
+> >=20
+> > So the thing to do here (IMHO) is:
+> >=20
+> > Iff with PIPGM_PCSR =3D 0 configuring a new setting (that is finalized
+> > with writing a non-zero value to PIPGM_PCSR) completes the currently
+> > running period, then always assume the PWM as enabled.
+>=20
+> Yes, this device works that way.
 
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* perf
-* perf/Zstd-perf.data-compression
-* rcutorture
-* ssuite
-* v4l2-compliance
+OK, then please use
 
---
-Linaro LKFT
-https://lkft.linaro.org
+	state->enabled =3D true
+
+unconditionally in visconti_pwm_get_state().
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--t42vctr7z7mwa3qh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmB5XHYACgkQwfwUeK3K
+7AnT3Qf/UxtGaRC2PkiqZqydmy5iwe/ufofn1G4HLEcTektGyzPwAuCYp21GNVm3
+aBTM7yjUKzm9tI3oxD3wWuSdEAyBp9rwPmyk/376GB7ZHcd2noXSH0DM8d0cYjMg
+l/vekoyFUOAPUMirdO4kdeukZeOU+Caskxd5y/UaZ+Gc9LI70ARXi6QnJbiL/4C2
+ej53UHhf2JZqKYpdPRdkSLuULpJ8mrbQQG1RSP/6YylyGB5aA1X84cw3kwyg7R0o
+LjccDhLne0qkSEi80EMCr3aW29sJjKMiMybOJkwyY62RdXHp1Cdd7c5BS1/+Bhnd
+CeTfOmimMouYVue4qyJstkswR/gHbg==
+=gYIm
+-----END PGP SIGNATURE-----
+
+--t42vctr7z7mwa3qh--
