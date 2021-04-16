@@ -2,115 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79286361E95
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:26:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D64E361E9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242734AbhDPLZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 07:25:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242414AbhDPLYy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 07:24:54 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 812C0C061756;
-        Fri, 16 Apr 2021 04:24:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=sb+Ugjsd0tAaDPpJs5cCihgu8wnXOCRedQVd+/pDZMc=; b=oTQOxnF8z6GepfXYmcNaITTJ8J
-        BQKqIXFBNrrj+WsWUsizw7P/Mm/aFxwvDFsxUZBf+4IUVINWC4ikel759t8pZXuRRoEC8unOKqGEj
-        PSG73vXSMMgdAE4lX2eWR0s4MrAOeVd0Tc5/4RxWkqyVBqAphGNu7ozOJ/4uM2gei2v2wQKlyrLAg
-        NNjzoxj29MsAzohIPJ92Rjv+lfx4ZCpOFGcTMg8qmRKuQ5Cs5N7EuTgPtJ32/GgvpZgbS2BZHO9To
-        +atJUR8B2KtZ3ryXu1knNaY1+Cngp9xhf2hLF8Jq3OS6cuwRB4+j0gQo5L0gtLILdKzAfQbtLoKfM
-        PQNltwoA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lXMaG-001uWR-Eu; Fri, 16 Apr 2021 11:24:25 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0507C300212;
-        Fri, 16 Apr 2021 13:24:24 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E762C2C30CA77; Fri, 16 Apr 2021 13:24:23 +0200 (CEST)
-Date:   Fri, 16 Apr 2021 13:24:23 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     ojeda@kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-Message-ID: <YHlz54rd1YQHsOA/@hirez.programming.kicks-ass.net>
-References: <20210414184604.23473-1-ojeda@kernel.org>
+        id S240049AbhDPL1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 07:27:23 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:53000 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235012AbhDPL1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 07:27:21 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1lXMcR-0003H7-3K; Fri, 16 Apr 2021 21:26:40 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 16 Apr 2021 21:26:38 +1000
+Date:   Fri, 16 Apr 2021 21:26:38 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Hui Tang <tanghui20@huawei.com>
+Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
+        xuzaibo@huawei.com, wangzhou1@hisilicon.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: hisilicon/hpre - fix unmapping invalid dma
+ address
+Message-ID: <20210416112638.GA14703@gondor.apana.org.au>
+References: <1618048157-6289-1-git-send-email-tanghui20@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210414184604.23473-1-ojeda@kernel.org>
+In-Reply-To: <1618048157-6289-1-git-send-email-tanghui20@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 08:45:51PM +0200, ojeda@kernel.org wrote:
->   - Featureful language: sum types, pattern matching, generics,
->     RAII, lifetimes, shared & exclusive references, modules &
->     visibility, powerful hygienic and procedural macros...
+On Sat, Apr 10, 2021 at 05:49:17PM +0800, Hui Tang wrote:
+> Currently, an invalid dma address may be unmapped when calling
+> 'xx_data_clr_all' in error path, so check dma address of sqe in/out
+> whether it has been mapped before calling 'dma_free_coherent' or
+> 'dma_unmap_single'.
+> 
+> An abnormal case is as follows:
+> hpre_curve25519_compute_value
+> 	-> hpre_curve25519_src_init
+> 	-> hpre_curve25519_hw_data_clr_all
+> 
+> Fixes: a9214b0b6ed2(crypto: hisilicon - fix the check on dma address)
+> Signed-off-by: Hui Tang <tanghui20@huawei.com>
+> ---
+>  drivers/crypto/hisilicon/hpre/hpre_crypto.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
 
-IMO RAII is over-valued, but just in case you care, the below seems to
-work just fine. No fancy new language needed, works today. Similarly you
-can create refcount_t guards, or with a little more work full blown
-smart_ptr crud.
+This triggers new sparse warnings.
 
----
-diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-index e19323521f9c..f03a72dd8cea 100644
---- a/include/linux/mutex.h
-+++ b/include/linux/mutex.h
-@@ -197,4 +197,22 @@ extern void mutex_unlock(struct mutex *lock);
- 
- extern int atomic_dec_and_mutex_lock(atomic_t *cnt, struct mutex *lock);
- 
-+struct mutex_guard {
-+	struct mutex *mutex;
-+};
-+
-+static inline struct mutex_guard mutex_guard_lock(struct mutex *mutex)
-+{
-+	mutex_lock(mutex);
-+	return (struct mutex_guard){ .mutex = mutex, };
-+}
-+
-+static inline void mutex_guard_unlock(struct mutex_guard *guard)
-+{
-+	mutex_unlock(guard->mutex);
-+}
-+
-+#define DEFINE_MUTEX_GUARD(name, lock)			\
-+	struct mutex_guard __attribute__((__cleanup__(mutex_guard_unlock))) name = mutex_guard_lock(lock)
-+
- #endif /* __LINUX_MUTEX_H */
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 8ee3249de2f0..603d197a83b8 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -5715,16 +5715,15 @@ static long perf_compat_ioctl(struct file *file, unsigned int cmd,
- 
- int perf_event_task_enable(void)
- {
-+	DEFINE_MUTEX_GUARD(event_mutex, &current->perf_event_mutex);
- 	struct perf_event_context *ctx;
- 	struct perf_event *event;
- 
--	mutex_lock(&current->perf_event_mutex);
- 	list_for_each_entry(event, &current->perf_event_list, owner_entry) {
- 		ctx = perf_event_ctx_lock(event);
- 		perf_event_for_each_child(event, _perf_event_enable);
- 		perf_event_ctx_unlock(event, ctx);
- 	}
--	mutex_unlock(&current->perf_event_mutex);
- 
- 	return 0;
- }
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
