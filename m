@@ -2,67 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6C6362543
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 18:12:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20DE5362563
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 18:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240231AbhDPQMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 12:12:20 -0400
-Received: from smtprelay0071.hostedemail.com ([216.40.44.71]:46968 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S239949AbhDPQMR (ORCPT
+        id S240643AbhDPQOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 12:14:49 -0400
+Received: from out28-3.mail.aliyun.com ([115.124.28.3]:52908 "EHLO
+        out28-3.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236098AbhDPQOk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 12:12:17 -0400
-Received: from omf18.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id BBB9A180018DF;
-        Fri, 16 Apr 2021 16:11:51 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id A24442EBF98;
-        Fri, 16 Apr 2021 16:11:50 +0000 (UTC)
-Message-ID: <decdb749f0192bd886faa7e8470795fb2644e4f8.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: Improve ALLOC_ARRAY_ARGS test
-From:   Joe Perches <joe@perches.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        apw@canonical.com, dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Date:   Fri, 16 Apr 2021 09:11:49 -0700
-In-Reply-To: <a1ac975aaabc9f71397b75254f833920428411e0.1618588673.git.christophe.jaillet@wanadoo.fr>
-References: <a1ac975aaabc9f71397b75254f833920428411e0.1618588673.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Fri, 16 Apr 2021 12:14:40 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1126267|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0167904-0.00010199-0.983108;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047205;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.K.1zIuN_1618589646;
+Received: from zhouyanjie-virtual-machine.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.K.1zIuN_1618589646)
+          by smtp.aliyun-inc.com(10.147.42.197);
+          Sat, 17 Apr 2021 00:14:11 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     linus.walleij@linaro.org, robh+dt@kernel.org, paul@crapouillou.net
+Cc:     linux-gpio@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        hns@goldelico.com, paul@boddie.org.uk, andy.shevchenko@gmail.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sernia.zhou@foxmail.com,
+        siyanteng@loongson.cn
+Subject: [PATCH v5 00/11] Fix bugs and add support for new Ingenic SoCs.
+Date:   Sat, 17 Apr 2021 00:13:54 +0800
+Message-Id: <1618589645-96504-1-git-send-email-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.60
-X-Rspamd-Server: rspamout02
-X-Stat-Signature: p3mzayeefbt44sf8bdnq7wru9a7yw45t
-X-Rspamd-Queue-Id: A24442EBF98
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18Vt669FdflVPUqqlaDZzRsRQelMpUEMCw=
-X-HE-Tag: 1618589510-381955
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-04-16 at 17:58 +0200, Christophe JAILLET wrote:
-> The devm_ variant of 'kcalloc()' and 'kmalloc_array()' are not tested
-> Add the corresponding check.
-[]
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -7006,9 +7006,9 @@ sub process {
-> †		}
-> †
-> 
-> †# check for alloc argument mismatch
-> -		if ($line =~ /\b(kcalloc|kmalloc_array)\s*\(\s*sizeof\b/) {
-> +		if ($line =~ /\b(devm_|)(kcalloc|kmalloc_array)\s*\(\s*sizeof\b/) {
+v1->v2:
+1.Split [1/3] in v1 to [1/6] [2/6] [3/6] [4/6] in v2.
+2.Fix the uninitialized warning.
 
-Perhaps nicer using
+v2->v3:
+Split [6/6] in v2 to [6/10] [7/10] [8/10] [9/10] [10/10] in v3.
 
-		if ($line =~ /\b((?:devm_)?(?:kcalloc|kmalloc_array))\s*\*\s*sizeof\b/) {
+v3->v4:
+1.Modify the format of comment.
+2.Split lcd pins into several groups.
+3.Drop "lcd-no-pins" which is pointless.
+4.Improve the structure of some functions.
+5.Adjust function names to avoid confusion.
+6.Use "lcd-special" and "lcd-generic" instead "lcd-xxbit-tft".
+7.Replace "lcd-rgb-xxx" with "lcd-tft-xxx" to avoid confusion.
 
-> †			WARN("ALLOC_ARRAY_ARGS",
-> -			     "$1 uses number as first arg, sizeof is generally wrong\n" . $herecurr);
-> +			     "$1$2 uses number as first arg, sizeof is generally wrong\n" . $herecurr);
+v4->v5:
+Add support for schmitt and slew.
 
-So there's only one capture group and this line doesn't need to be changed.
+Âë®Áê∞Êù∞ (Zhou Yanjie) (11):
+  pinctrl: Ingenic: Add missing pins to the JZ4770 MAC MII group.
+  pinctrl: Ingenic: Add support for read the pin configuration of X1830.
+  pinctrl: Ingenic: Adjust the sequence of X1830 SSI pin groups.
+  pinctrl: Ingenic: Improve LCD pins related code.
+  pinctrl: Ingenic: Reformat the code.
+  dt-bindings: pinctrl: Add bindings for new Ingenic SoCs.
+  pinctrl: Ingenic: Add pinctrl driver for JZ4730.
+  pinctrl: Ingenic: Add pinctrl driver for JZ4750.
+  pinctrl: Ingenic: Add pinctrl driver for JZ4755.
+  pinctrl: Ingenic: Add pinctrl driver for JZ4775.
+  pinctrl: Ingenic: Add pinctrl driver for X2000.
 
+ .../bindings/pinctrl/ingenic,pinctrl.yaml          |   23 +-
+ drivers/pinctrl/pinctrl-ingenic.c                  | 1619 ++++++++++++++++++--
+ 2 files changed, 1507 insertions(+), 135 deletions(-)
+
+-- 
+2.7.4
 
