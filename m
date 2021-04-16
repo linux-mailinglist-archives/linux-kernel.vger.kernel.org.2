@@ -2,96 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B1C362332
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C9C362337
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236710AbhDPO6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:58:44 -0400
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:21018 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235784AbhDPO6n (ORCPT
+        id S244534AbhDPO7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:59:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240740AbhDPO7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:58:43 -0400
-Received: from pps.filterd (m0134425.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13GEj6qu029713;
-        Fri, 16 Apr 2021 14:57:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pps0720; bh=ANeabVMz/5+G24ihAqcUDXTzVxOXBSe47zWvNvMOVTo=;
- b=RrBTUwtI8fvzo94sWfvZ2ZFhzfEjC/ndFAXGy4LAWkiXqADXCGF4mFa+6DLcqdvL9Oop
- O7vDoDcj82k0/CYQGlGKM8BCw7/js80fGUxj4oySD9yKmEbHLH1dBteKGv1dnSAHXErX
- D3mz5RxRvonGoUkHH9Qcg6eDy4dTWYQ3V+0x25lhGRDJzp859iSCoTcNr1MZ9udIik8G
- 2uHFCfWQq1svAymVCy+jjgHlKrfzbaMDWe8t5DFtl3rj4rDt+H2bmRXwiAQX7pskduW8
- tSieiELzOSgUInq7F+WzMVs/+QUOfC5yJeCHa1Crpi4cvwxeFHWemlFvq0Kq67DjqJ/m Ug== 
-Received: from g4t3427.houston.hpe.com (g4t3427.houston.hpe.com [15.241.140.73])
-        by mx0b-002e3701.pphosted.com with ESMTP id 37yapfs2p3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 14:57:55 +0000
-Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
-        by g4t3427.houston.hpe.com (Postfix) with ESMTP id AC28A57;
-        Fri, 16 Apr 2021 14:57:54 +0000 (UTC)
-Received: from swahl-home.5wahls.com (unknown [16.214.132.81])
-        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id A1EBF4B;
-        Fri, 16 Apr 2021 14:57:53 +0000 (UTC)
-Date:   Fri, 16 Apr 2021 09:57:53 -0500
-From:   Steve Wahl <steve.wahl@hpe.com>
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     steve.wahl@hpe.com, mike.travis@hpe.com, dimitri.sivanich@hpe.com,
-        russ.anderson@hpe.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/platform/uv: Fix inconsistent indenting
-Message-ID: <YHml8enBsBMpdZmS@swahl-home.5wahls.com>
-References: <1618567840-15891-1-git-send-email-yang.lee@linux.alibaba.com>
+        Fri, 16 Apr 2021 10:59:01 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 772A0C061756;
+        Fri, 16 Apr 2021 07:58:36 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FMK8n1kfXz9sWK;
+        Sat, 17 Apr 2021 00:58:33 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618585113;
+        bh=cIlMdrmnY8xfUotlk3HjA+3AaMQAPaEqG0+WRFRFMzY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Lxvk3EsayIuu49a14DRd3ArX/Xa2jMszBu/PeFy9V2YOI6MLPDfnKZ/wroYFEkjoZ
+         ruxhG+2jOinHLzd1gZpuvf1pg2+h5snEDcnSAWz9r86PiZRARRaWqAh1TGBCupm7Ei
+         zX8a9vsnM2AaNGbh+lvjv1boh2ii0vXB3vscwAwI7559JbVazl6Gu1NSl6MxR0h7R4
+         UEvaiJ/l2Ya4xKXXdyeTaktjI42a+TvRpbOF3FC4JiaCqs9gmE7jgNI2qZikWe5HRG
+         rZk1ITj2w4mNFHMXODhTw6fB/czUTuAJOhqikDpK9xXexgsHkgqmsUh6bK6pkNbbVE
+         6aPRK8udIi5vg==
+Date:   Sat, 17 Apr 2021 00:58:31 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        KVM <kvm@vger.kernel.org>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tag needs some work in the kvm tree
+Message-ID: <20210417005831.3785688b@canb.auug.org.au>
+In-Reply-To: <2b825142-fdd9-be35-6d88-bb3b9c985122@redhat.com>
+References: <20210416222731.3e82b3a0@canb.auug.org.au>
+        <00222197-fb22-ab0a-97e2-11c9f85a67f1@de.ibm.com>
+        <2b825142-fdd9-be35-6d88-bb3b9c985122@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1618567840-15891-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Proofpoint-ORIG-GUID: p0B3MKK1zkBoQsqvduc-vxuMgq5oORjz
-X-Proofpoint-GUID: p0B3MKK1zkBoQsqvduc-vxuMgq5oORjz
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-16_07:2021-04-16,2021-04-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 suspectscore=0 mlxlogscore=931 bulkscore=0 phishscore=0
- lowpriorityscore=0 clxscore=1015 mlxscore=0 spamscore=0 adultscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104160111
+Content-Type: multipart/signed; boundary="Sig_/0DmwpD/swBEIc1UY/TlK=+X";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
+--Sig_/0DmwpD/swBEIc1UY/TlK=+X
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 16, 2021 at 06:10:40PM +0800, Yang Li wrote:
-> Kernel test robot throws below warning ->
-> 
-> smatch warnings:
-> arch/x86/kernel/apic/x2apic_uv_x.c:111 early_get_pnodeid() warn:
-> inconsistent indenting
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->  arch/x86/kernel/apic/x2apic_uv_x.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-> index 52bc217..3e7534e 100644
-> --- a/arch/x86/kernel/apic/x2apic_uv_x.c
-> +++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-> @@ -108,7 +108,7 @@ static void __init early_get_pnodeid(void)
->  	} else if (UVH_RH_GAM_ADDR_MAP_CONFIG) {
->  		union uvh_rh_gam_addr_map_config_u  m_n_config;
->  
-> -	m_n_config.v = uv_early_read_mmr(UVH_RH_GAM_ADDR_MAP_CONFIG);
-> +		m_n_config.v = uv_early_read_mmr(UVH_RH_GAM_ADDR_MAP_CONFIG);
->  		uv_cpuid.n_skt = m_n_config.s.n_skt;
->  		if (is_uv(UV3))
->  			uv_cpuid.m_skt = m_n_config.s3.m_skt;
-> -- 
-> 1.8.3.1
-> 
+Hi all,
 
--- 
-Steve Wahl, Hewlett Packard Enterprise
+On Fri, 16 Apr 2021 16:02:01 +0200 Paolo Bonzini <pbonzini@redhat.com> wrot=
+e:
+>
+> On 16/04/21 14:38, Christian Borntraeger wrote:
+> > On 16.04.21 14:27, Stephen Rothwell wrote: =20
+> >> Hi all,
+> >>
+> >> In commit
+> >>
+> >> =C2=A0=C2=A0 c3171e94cc1c ("KVM: s390: VSIE: fix MVPG handling for pre=
+fixing and >> MSO")
+> >>
+> >> Fixes tag
+> >>
+> >> =C2=A0=C2=A0 Fixes: bdf7509bbefa ("s390/kvm: VSIE: correctly handle MV=
+PG when in >> VSIE")
+> >>
+> >> has these problem(s):
+> >>
+> >> =C2=A0=C2=A0 - Subject does not match target commit subject
+> >> =C2=A0=C2=A0=C2=A0=C2=A0 Just use
+> >> =C2=A0=C2=A0=C2=A0=C2=A0git log -1 --format=3D'Fixes: %h ("%s")' =20
+> >=20
+> > Hmm, this has been sitting in kvms390/next for some time now. Is this a=
+ > new check?
+> >  =20
+>=20
+> Maybe you just missed it when it was reported for kvms390?
+>=20
+> https://www.spinics.net/lists/linux-next/msg59652.html
+
+It was a different commit SHA then and was reported because the Fixes
+SHA did not exist.  It was fixed the next day, so I guess either I
+missed reporting this different problem, or I thought at least it had
+been fixed to use the correct SHA.  I am not completely consistent,
+sometimes :-)
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/0DmwpD/swBEIc1UY/TlK=+X
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB5phcACgkQAVBC80lX
+0GwoqggAhj7E4OiKMOnBWhl1ZjaMdZAidgXea6JGZGTB3UEhRtJVCMk3zjqfN6N5
+BHE3GS3zfIlipzavzSDc/Qu0Vy/CqTndlYVZB+RzJszegcwTVu9Z1Cv9f+gHARjz
+QGhwHSMcJncqzICp/3fyPQvbmruZr8e3ah7iWucCOfgWj6vri5A/jDjSjIR1UKoN
+kbf38gi14BGsULsASiSEMREo2bksWBkhea0mQ8qzd/FFQgc/IS1kInazRNfxzH6k
+hGzdVc+Np9e1W3Q0LIzWiENnFiFL+hyWKkQZs+W6pk/g68jaKt4X6CG/+weKOzsv
+Ld0tGk7SIU3DhXdxstZPgnph3UiyDA==
+=5y7J
+-----END PGP SIGNATURE-----
+
+--Sig_/0DmwpD/swBEIc1UY/TlK=+X--
