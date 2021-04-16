@@ -2,114 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB133621F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 383333621F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244445AbhDPOPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241568AbhDPOO5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:14:57 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474F1C061574;
-        Fri, 16 Apr 2021 07:14:30 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id n140so27957624oig.9;
-        Fri, 16 Apr 2021 07:14:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=65N9Kp4PBxpTjuyc3/ie9bOroIFouunysfM8BBC1uiw=;
-        b=kx/FVz7KepDYI1He13TsnPCAXrQaObs7LYZ2YLr3zHhWmDndh5Ozw3RDyKkMrqIh+z
-         MznFB//oSZKeb7bHbkeenTZJ8qXRe33H1JVEc9TFh5Re35fP4/HlCixHGWiXPhAoNcTo
-         QKrMvpdSkHuL+i1d+AkhJbmKpVIndwHXPloQHbxXaMipkKWSgshH8R/PhOBVc6JBjwW2
-         v4ZQnFFb++kMAI9n9MAf7poKyGCmr0nxQdRzSS6IGNPW2KQR+Ebc3n8cIgGhrNHwrWCO
-         vLc3gVLEfjJ8oWUYJuPWNN4O3gDICo1xxuoTjabzxvl4cGvEflx3m3ss/wLuPgZxN0S7
-         1Vcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=65N9Kp4PBxpTjuyc3/ie9bOroIFouunysfM8BBC1uiw=;
-        b=dWJAYt9BOuZY7pmcvf0P/xTddPAZSlpNfT2+eR0BhyfCEScDI1NP4NsQE5CVIp5nXI
-         dY1luPbrmCVz21RR52FoALmMc+XUghzdf0gc7Iig/8MA0TB6FbO7OngR5ouacAVm5CEL
-         a0DLPg16EUVQdtJVI6XkRug3k9+E6Xh59EXz4xCqf3MK5NyFLBWBai0uNIDlhW8RChn/
-         /WV9UO/D9KsNGYj0Yg+xeRYbgIz8uy4nP5szYnv95IS8XGL5ywejBjH5TL5twb7IXyNP
-         HFq2Re4A7vYZjgFRclah/o08if6ex36BLt26/A/26I0b8NAIoWGFp1ksOSKswXQN0ykH
-         5pzQ==
-X-Gm-Message-State: AOAM533DCL14H3m9fRfYW9LiO4L3hnUZjzyUPUbLR7Nvxt2pndpFLqdR
-        EWn0naRM8e44Ebn+g2s8Zpyc/memG9c=
-X-Google-Smtp-Source: ABdhPJxduZF26xTaWjBNA3LmCFt4T7aCOvcnUsHiJtq6OPNlvPIicbmHp1R109ZiW3Tt4IB250cRNA==
-X-Received: by 2002:aca:5909:: with SMTP id n9mr3471769oib.66.1618582468319;
-        Fri, 16 Apr 2021 07:14:28 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u139sm1415117oia.52.2021.04.16.07.14.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 16 Apr 2021 07:14:27 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 16 Apr 2021 07:14:25 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Paul Fertser <fercerpav@gmail.com>
-Cc:     linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Vadim Pasternak <vadimp@mellanox.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] hwmon: pmbus: pxe1610: don't bail out when not all
- pages are active
-Message-ID: <20210416141425.GA254358@roeck-us.net>
-References: <3612b78a-8e43-289b-ff0f-6c995995eeb0@roeck-us.net>
- <20210416102926.13614-1-fercerpav@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416102926.13614-1-fercerpav@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S244456AbhDPOPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:15:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235928AbhDPOP2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 10:15:28 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9A79D6103D;
+        Fri, 16 Apr 2021 14:15:03 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lXPFN-007s36-HZ; Fri, 16 Apr 2021 15:15:01 +0100
+Date:   Fri, 16 Apr 2021 15:15:00 +0100
+Message-ID: <87y2dis4d7.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     He Ying <heying24@huawei.com>
+Cc:     <tglx@linutronix.de>, <julien.thierry.kdev@gmail.com>,
+        <catalin.marinas@arm.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [RFC PATCH] irqchip/gic-v3: Do not enable irqs when handling spurious interrups
+In-Reply-To: <20210416062217.25157-1-heying24@huawei.com>
+References: <20210416062217.25157-1-heying24@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: heying24@huawei.com, tglx@linutronix.de, julien.thierry.kdev@gmail.com, catalin.marinas@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, mark.rutland@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 01:29:04PM +0300, Paul Fertser wrote:
-> Certain VRs might be configured to use only the first output channel and
-> so the mode for the second will be 0. Handle this gracefully.
-> 
-> Fixes: b9fa0a3acfd8 ("hwmon: (pmbus/core) Add support for vid mode detection per page bases")
-> Signed-off-by: Paul Fertser <fercerpav@gmail.com>
+[+ Mark]
 
-Applied.
+On Fri, 16 Apr 2021 07:22:17 +0100,
+He Ying <heying24@huawei.com> wrote:
+> 
+> We found this problem in our kernel src tree:
+> 
+> [   14.816231] ------------[ cut here ]------------
+> [   14.816231] kernel BUG at irq.c:99!
+> [   14.816232] Internal error: Oops - BUG: 0 [#1] SMP
+> [   14.816232] Process swapper/0 (pid: 0, stack limit = 0x(____ptrval____))
+> [   14.816233] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G           O      4.19.95-1.h1.AOS2.0.aarch64 #14
+> [   14.816233] Hardware name: evb (DT)
+> [   14.816234] pstate: 80400085 (Nzcv daIf +PAN -UAO)
+> [   14.816234] pc : asm_nmi_enter+0x94/0x98
+> [   14.816235] lr : asm_nmi_enter+0x18/0x98
+> [   14.816235] sp : ffff000008003c50
+> [   14.816235] pmr_save: 00000070
+> [   14.816237] x29: ffff000008003c50 x28: ffff0000095f56c0
+> [   14.816238] x27: 0000000000000000 x26: ffff000008004000
+> [   14.816239] x25: 00000000015e0000 x24: ffff8008fb916000
+> [   14.816240] x23: 0000000020400005 x22: ffff0000080817cc
+> [   14.816241] x21: ffff000008003da0 x20: 0000000000000060
+> [   14.816242] x19: 00000000000003ff x18: ffffffffffffffff
+> [   14.816243] x17: 0000000000000008 x16: 003d090000000000
+> [   14.816244] x15: ffff0000095ea6c8 x14: ffff8008fff5ab40
+> [   14.816244] x13: ffff8008fff58b9d x12: 0000000000000000
+> [   14.816245] x11: ffff000008c8a200 x10: 000000008e31fca5
+> [   14.816246] x9 : ffff000008c8a208 x8 : 000000000000000f
+> [   14.816247] x7 : 0000000000000004 x6 : ffff8008fff58b9e
+> [   14.816248] x5 : 0000000000000000 x4 : 0000000080000000
+> [   14.816249] x3 : 0000000000000000 x2 : 0000000080000000
+> [   14.816250] x1 : 0000000000120000 x0 : ffff0000095f56c0
+> [   14.816251] Call trace:
+> [   14.816251]  asm_nmi_enter+0x94/0x98
+> [   14.816251]  el1_irq+0x8c/0x180
+> [   14.816252]  gic_handle_irq+0xbc/0x2e4
+> [   14.816252]  el1_irq+0xcc/0x180
+> [   14.816253]  arch_timer_handler_virt+0x38/0x58
+> [   14.816253]  handle_percpu_devid_irq+0x90/0x240
+> [   14.816253]  generic_handle_irq+0x34/0x50
+> [   14.816254]  __handle_domain_irq+0x68/0xc0
+> [   14.816254]  gic_handle_irq+0xf8/0x2e4
+> [   14.816255]  el1_irq+0xcc/0x180
+> [   14.816255]  arch_cpu_idle+0x34/0x1c8
+> [   14.816255]  default_idle_call+0x24/0x44
+> [   14.816256]  do_idle+0x1d0/0x2c8
+> [   14.816256]  cpu_startup_entry+0x28/0x30
+> [   14.816256]  rest_init+0xb8/0xc8
+> [   14.816257]  start_kernel+0x4c8/0x4f4
+> [   14.816257] Code: 940587f1 d5384100 b9401001 36a7fd01 (d4210000)
+> [   14.816258] Modules linked in: start_dp(O) smeth(O)
+> [   15.103092] ---[ end trace 701753956cb14aa8 ]---
+> [   15.103093] Kernel panic - not syncing: Fatal exception in interrupt
+> [   15.103099] SMP: stopping secondary CPUs
+> [   15.103100] Kernel Offset: disabled
+> [   15.103100] CPU features: 0x36,a2400218
+> [   15.103100] Memory Limit: none
+
+Urgh...
+
+> Our kernel src tree is based on 4.19.95 and backports arm64 pseudo-NMI
+> patches but doesn't support nested NMI. Its top relative commit is
+> commit 17ce302f3117 ("arm64: Fix interrupt tracing in the presence of NMIs").
+
+Can you please reproduce it with mainline and without any backport?
+It is hard to reason about something that isn't a vanilla kernel.
+
+> I look into this issue and find that it's caused by 'BUG_ON(in_nmi())'
+> in nmi_enter(). From the call trace, we find two 'el1_irqs' which
+> means an interrupt preempts the other one and the new one is an NMI.
+> Furthermore, by adding some prints, we find the first irq also calls
+> nmi_enter(), but its priority is not GICD_INT_NMI_PRI and its irq number
+> is 1023. It enables irq by calling gic_arch_enable_irqs() in
+> gic_handle_irq(). At this moment, the second irq preempts the first irq
+> and it's an NMI but current context is already in nmi. So that may be
+> the problem.
+
+I'm not sure I get it. From the stack trace, I see this:
+
+[   14.816251]  asm_nmi_enter+0x94/0x98
+[   14.816251]  el1_irq+0x8c/0x180			(C)
+[   14.816252]  gic_handle_irq+0xbc/0x2e4
+[   14.816252]  el1_irq+0xcc/0x180			(B)
+[   14.816253]  arch_timer_handler_virt+0x38/0x58
+[   14.816253]  handle_percpu_devid_irq+0x90/0x240
+[   14.816253]  generic_handle_irq+0x34/0x50
+[   14.816254]  __handle_domain_irq+0x68/0xc0
+[   14.816254]  gic_handle_irq+0xf8/0x2e4
+[   14.816255]  el1_irq+0xcc/0x180			(A)
+
+which indicates that we preempted a timer interrupt (A) with another
+IRQ (B), itself immediately preempted by another IRQ (C)? That's
+indeed at least one too many.
+
+Can you please describe for each of (A), (B) and (C) whether they are
+spurious or not, what their priorities are if they aren't spurious?
+
+> In my opinion, when handling spurious interrupts, we shouldn't enable irqs.
+> My reason is that for spurious interrupts we may enter nmi context in
+> el1_irq() because current PMR may be GIC_PRIO_IRQOFF. If we enable irqs
+> at this time, another NMI may happen and preempt this spurious interrupt
+> but the context is already in nmi. That causes a bug on if nested NMI is
+> not supported. Even for nested nmi, I think it's not a normal scenario.
+
+I would tend to agree that this isn't great. Actually, I'd probably
+move the check for a spurious interrupt right after the read of
+ICC_IAR1_EL1, because there is no real need to do anything else at
+that point.
+
+However, upstream is quite different from 4.19 in that respect, and
+I'm not sure if what I am looking at is what you are seeing with your
+older kernel.
 
 Thanks,
-Guenter
 
+	M.
+
+> Fixes: 17ce302f3117 ("arm64: Fix interrupt tracing in the presence of NMIs")
+> Signed-off-by: He Ying <heying24@huawei.com>
 > ---
+>  drivers/irqchip/irq-gic-v3.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> Notes:
->     Changes for v2:
->       - Use more imperative style
-> 
->  drivers/hwmon/pmbus/pxe1610.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/hwmon/pmbus/pxe1610.c b/drivers/hwmon/pmbus/pxe1610.c
-> index da27ce34ee3f..eb4a06003b7f 100644
-> --- a/drivers/hwmon/pmbus/pxe1610.c
-> +++ b/drivers/hwmon/pmbus/pxe1610.c
-> @@ -41,6 +41,15 @@ static int pxe1610_identify(struct i2c_client *client,
->  				info->vrm_version[i] = vr13;
->  				break;
->  			default:
-> +				/*
-> +				 * If prior pages are available limit operation
-> +				 * to them
-> +				 */
-> +				if (i != 0) {
-> +					info->pages = i;
-> +					return 0;
-> +				}
+> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> index 94b89258d045..d3b52734a2c5 100644
+> --- a/drivers/irqchip/irq-gic-v3.c
+> +++ b/drivers/irqchip/irq-gic-v3.c
+> @@ -654,15 +654,15 @@ static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs
+>  		return;
+>  	}
+>  
+> +	/* Check for special IDs first */
+> +	if ((irqnr >= 1020 && irqnr <= 1023))
+> +		return;
 > +
->  				return -ENODEV;
->  			}
->  		}
+>  	if (gic_prio_masking_enabled()) {
+>  		gic_pmr_mask_irqs();
+>  		gic_arch_enable_irqs();
+>  	}
+>  
+> -	/* Check for special IDs first */
+> -	if ((irqnr >= 1020 && irqnr <= 1023))
+> -		return;
+> -
+>  	if (static_branch_likely(&supports_deactivate_key))
+>  		gic_write_eoir(irqnr);
+>  	else
 > -- 
-> 2.20.1
+> 2.17.1
 > 
+> 
+
+-- 
+Without deviation from the norm, progress is not possible.
