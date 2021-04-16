@@ -2,148 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B56936279F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 20:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA5F3627A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 20:24:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244747AbhDPSWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 14:22:32 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:56644 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235750AbhDPSWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 14:22:31 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618597326; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=kVxxHWGXgfHGZWYXemFNetuQ9QkDGOKq4KF+Razehig=; b=NEGb9PEze03PZExiPy2f4JetVW4CPwrSN8QYmWgx+nHI5YFzM28Hkk++zEa+J7ehCKexEofa
- 1+Qy83BfPshBsufJm8KyYGG4gT1J6MJVfkJlVrOQEBNvK+gDkX2LHW/dQt3nzrWnXtMT6Rq8
- KE755y2UMskBh2XWsnxZTY4b62I=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 6079d5c12cc44d3aeadb8f59 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Apr 2021 18:21:53
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2E69BC43465; Fri, 16 Apr 2021 18:21:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3F772C433CA;
-        Fri, 16 Apr 2021 18:21:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3F772C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [PATCH v18 1/2] scsi: ufs: Enable power management for wlun
-To:     Bart Van Assche <bvanassche@acm.org>, cang@codeaurora.org,
-        martin.petersen@oracle.com, adrian.hunter@intel.com,
-        linux-scsi@vger.kernel.org
-Cc:     linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Pedro Sousa <pedrom.sousa@synopsys.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Bean Huo <beanhuo@micron.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Yue Hu <huyue2@yulong.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-mediatek@lists.infradead.org>
-References: <cover.1618426513.git.asutoshd@codeaurora.org>
- <d1a6af736730b9d79f977100286c5d9325546ac2.1618426513.git.asutoshd@codeaurora.org>
- <f111e363-c709-fe3c-65da-450c9e9e3408@acm.org>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <9ae35c14-f8aa-a181-2259-2d32bd2c1f07@codeaurora.org>
-Date:   Fri, 16 Apr 2021 11:21:48 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S236033AbhDPSYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 14:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234312AbhDPSYb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 14:24:31 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7380C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 11:24:05 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 101-20020a9d0d6e0000b02902816815ff62so20659202oti.9
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 11:24:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
+        bh=NGL2DZ81iiy8zZ9X98sR3lExSRtmhzsEE2kmMo2vY6Y=;
+        b=qRxg1AQVpABQRxRIqNU5TKPRxviJzaAJJQvMgYRNOw77gh3Yu7WQSV0s+T33hqXGiZ
+         YBFdsywjmDeOsHpxDxYDsyBhOUeP377VvaPhkfyg1tqcZdAk8HxXX3LG3j/0I+oOX4Yr
+         ggCsVdEKnxJGiqAcoWSC1Eg4vrEBC8ZnMNIH93EITdtCdb3PHD2BnenltnN05fYQ2WMi
+         gm48T9giGwX9vwYFGU0RAs+fLMtWFJ5iGTQJSlvpbPpgFGkXLK1+hmGMSI1W4ilk9T+O
+         8ruuAxK28VWV0B/hOOHgqrB69eysFrQkUM91ZAAW/yMAz7cEA/VNS3cd9pYTDqiN3rQw
+         S2sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:cc;
+        bh=NGL2DZ81iiy8zZ9X98sR3lExSRtmhzsEE2kmMo2vY6Y=;
+        b=iAqqE4QDEcpSQUNa3O5+lg1/SgrwOLnUsElCcnuskKpOOaDm9x+p/ehG7xt/jbcY8j
+         iYca0qjXQ5Ie3AdxI9Pq+DBgRcKxgUNavOGOvbTbliZqjS6lVGACm6Vqe0srWH9m/LU+
+         HVIcU4YeodAktQ8O5+E5EvVmRBUpINLVdGlY0K4dJFSvMY3yLaPA2zTI48OfjNml7OuX
+         zX/mhGPJD+icdkkXiNHDzXuYr3dnStxewkhRfQ+h8S3BlWXsMOh5MsaZQVmyhziKqCDq
+         101vkYxqvM36fa+xPMdSy7MqsKu5BM+pKzQoazIwHh2aF385B9x3nPW5aNJvRQnE6AK6
+         cTuw==
+X-Gm-Message-State: AOAM531FE5sRI19mGl5WjzO5lXbVN/mdQJp1hauLzOW/ueGz9+IaKXY7
+        tC/DwwymivK5tsHLC4h9c2h69annVGNJxPyIADSkrQ==
+X-Received: by 2002:a05:6830:200e:: with SMTP id e14mt4156138otp.111.1618597444844;
+ Fri, 16 Apr 2021 11:24:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <f111e363-c709-fe3c-65da-450c9e9e3408@acm.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210416181421.2374588-1-jiancai@google.com>
+In-Reply-To: <20210416181421.2374588-1-jiancai@google.com>
+From:   Jian Cai <jiancai@google.com>
+Date:   Fri, 16 Apr 2021 11:23:53 -0700
+Message-ID: <CA+SOCLL28Hej9zMmKJpU5vffVGviDo59uG=kWm0zPtCyZodR5g@mail.gmail.com>
+Subject: Re: [PATCH] arm64: vdso: remove commas between macro name and arguments
+Cc:     "# 3.4.x" <stable@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Manoj Gupta <manojgupta@google.com>,
+        Luis Lozano <llozano@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/2021 4:11 PM, Bart Van Assche wrote:
-> On 4/14/21 11:58 AM, Asutosh Das wrote:
->> [ ... ]
-> 
-Hi Bart,
-Thanks for the comments. I will fix the comments in the next version.
+I should've mentioned this patch is for 4.19 only as the code has been
+rewritten in later versions, but requires a large amount of backports
+(https://github.com/ClangBuiltLinux/linux/issues/1349). This is the
+only blocker for 4.19 migration to LLVM's integrated assembler on CrOS
+that I am aware of.
 
-> The following code is executed before ufshcd_async_scan() is called:
-> 
-> 	dev = hba->dev;
-> 	[ ... ]
-> 	/* Hold auto suspend until async scan completes */
-> 	pm_runtime_get_sync(dev);
-> 
-That would only keep the hba runtime resumed. At this point of time the 
-luns are not detected yet.
-> and the following code occurs in ufshcd_add_lus():
-> 
-> 	pm_runtime_put_sync(hba->dev);
-> 
-> Isn't that sufficient to postpone enabling of runtime PM until LUN
-> scanning has finished? Or in other words, is adding a
-> pm_runtime_get_noresume() call in ufshcd_slave_configure() really necessary?
-> 
-Yes, because the supplier (device wlun) may be suspended otherwise in 
-scsi_sysfs_add_sdev().
->> @@ -4979,15 +5035,9 @@ ufshcd_transfer_rsp_status(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
->>   			 */
->>   			if (!hba->pm_op_in_progress &&
->>   			    !ufshcd_eh_in_progress(hba) &&
->> -			    ufshcd_is_exception_event(lrbp->ucd_rsp_ptr) &&
->> -			    schedule_work(&hba->eeh_work)) {
->> -				/*
->> -				 * Prevent suspend once eeh_work is scheduled
->> -				 * to avoid deadlock between ufshcd_suspend
->> -				 * and exception event handler.
->> -				 */
->> -				pm_runtime_get_noresume(hba->dev);
->> -			}
->> +			    ufshcd_is_exception_event(lrbp->ucd_rsp_ptr))
->> +				/* Flushed in suspend */
->> +				schedule_work(&hba->eeh_work);
-> 
-> What makes it safe to leave out the above pm_runtime_get_noresume() call?
-> 
-The __ufshcd_wl_suspend() would flush this work so that it doesn't run 
-after suspend.
-> Thanks,
-> 
-> Bart.
-> 
+Thanks,
+Jian
 
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
+On Fri, Apr 16, 2021 at 11:14 AM Jian Cai <jiancai@google.com> wrote:
+>
+> LLVM's integrated assembler does not support using commas separating
+> the name and arguments in .macro. However, only spaces are used in the
+> manual page. This replaces commas between macro names and the subsequent
+> arguments with space in calls to clock_gettime_return to make it
+> compatible with IAS.
+>
+> Link:
+> https://sourceware.org/binutils/docs/as/Macro.html#Macro
+> Signed-off-by: Jian Cai <jiancai@google.com>
+> ---
+>  arch/arm64/kernel/vdso/gettimeofday.S | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/arm64/kernel/vdso/gettimeofday.S b/arch/arm64/kernel/vdso/gettimeofday.S
+> index 856fee6d3512..7ee685d9adfc 100644
+> --- a/arch/arm64/kernel/vdso/gettimeofday.S
+> +++ b/arch/arm64/kernel/vdso/gettimeofday.S
+> @@ -122,7 +122,7 @@ x_tmp               .req    x8
+>  9998:
+>         .endm
+>
+> -       .macro clock_gettime_return, shift=0
+> +       .macro clock_gettime_return shift=0
+>         .if \shift == 1
+>         lsr     x11, x11, x12
+>         .endif
+> @@ -227,7 +227,7 @@ realtime:
+>         seqcnt_check fail=realtime
+>         get_ts_realtime res_sec=x10, res_nsec=x11, \
+>                 clock_nsec=x15, xtime_sec=x13, xtime_nsec=x14, nsec_to_sec=x9
+> -       clock_gettime_return, shift=1
+> +       clock_gettime_return shift=1
+>
+>         ALIGN
+>  monotonic:
+> @@ -250,7 +250,7 @@ monotonic:
+>                 clock_nsec=x15, xtime_sec=x13, xtime_nsec=x14, nsec_to_sec=x9
+>
+>         add_ts sec=x10, nsec=x11, ts_sec=x3, ts_nsec=x4, nsec_to_sec=x9
+> -       clock_gettime_return, shift=1
+> +       clock_gettime_return shift=1
+>
+>         ALIGN
+>  monotonic_raw:
+> @@ -271,7 +271,7 @@ monotonic_raw:
+>                 clock_nsec=x15, nsec_to_sec=x9
+>
+>         add_ts sec=x10, nsec=x11, ts_sec=x13, ts_nsec=x14, nsec_to_sec=x9
+> -       clock_gettime_return, shift=1
+> +       clock_gettime_return shift=1
+>
+>         ALIGN
+>  realtime_coarse:
+> --
+> 2.31.1.368.gbe11c130af-goog
+>
