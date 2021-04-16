@@ -2,163 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6263617CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 04:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32B073617D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 04:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235800AbhDPCwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 22:52:31 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:38946 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235291AbhDPCwN (ORCPT
+        id S235348AbhDPCyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 22:54:24 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:54778 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234894AbhDPCyW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 22:52:13 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13G2nqiM047261;
-        Fri, 16 Apr 2021 02:51:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=AZCGvNlhtjPAZfpaF6xKV0GkTS0D07Zb38mvkymMxFU=;
- b=E1hrukZLz1jVGw60ojqk2BDUFe70hTIl3GMT7RyoNCeKRh3ArYgLR9QjIA0Ci7sWqAPI
- 8Hx6RvORd3Z3AjKWQdlLUbpVBQv8Qz358NsAguqGORNOzdo+pawcS1W+0PHJrl1rRGGo
- 1DZlm/aGbw6fpwdxma9X6F8bJ46aW1ZdDsmoulo6lwe745+JZxccGMiI0hNwxw/G43uA
- mYu5rWp8dFeF+byqofEuU54JRhGDYGwlqWh03uhmXYJsShk+fndaWP00lwgzpZcuB/9y
- Tre+EWW6kVl0tRtQPXQbZPo9GLQ4Kjk13Ju0zoI81tMyd23WV+kpAPyd+fE8rKhXPLSu uw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 37u3ymqpmb-1
+        Thu, 15 Apr 2021 22:54:22 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13G2nv5Z164657;
+        Fri, 16 Apr 2021 02:53:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=S2OHefHIz3NUy5DqZtPKK3zT/BOMh9tZ1keD7cmmDbw=;
+ b=c/qMduAqXD+aUWiid1zbhKXqS9CfswDidabb5iR7HkeNnae5jjQlsvNk2+lqFiwmUcas
+ 33f2RWR+vBERxcfxB3DC9+FeJVJAgUgeTsWUccKSv6WOKAg6APEuimTPH0PbkeA4O/5F
+ 1VQmQtwgE2lbW7U/ZGsq+wDBlzxpujjYjObMYiu6mQ5HukaA4zaWnki2rcASmiPULals
+ 4TF6pdqhs5XHpjrtLQWLx9O9xW6+Ib16giQdgC1entIXU79ZGmZufhaIECGAH6bE5IUw
+ aOpu0aIGC5io54mHaUvS2zvhVDxJ8GdOTa4EoYi1yYGqyKk0nP/Skev4uOPSvm5F8Jy7 IQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 37u3erqr3k-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Apr 2021 02:51:46 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13G2pdFG045037;
-        Fri, 16 Apr 2021 02:51:45 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2172.outbound.protection.outlook.com [104.47.58.172])
-        by userp3020.oracle.com with ESMTP id 37unswhm94-2
+        Fri, 16 Apr 2021 02:53:11 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13G2noYZ173394;
+        Fri, 16 Apr 2021 02:53:09 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 37unx3txsk-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Apr 2021 02:51:45 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Tx6R/u0Qlh/7CFVGxYBy2BxqJJGf6XDH52LH4YddkFI1IEmf3fgCeqYRCKbagAKaqfBixeRQ3cR1923IcCGj1lF86jpFK5wcek3pfe+P7ZVf1P8tmeiyjQM0f9ijmG4pUPuANFRhPrL+WjKyo6QJ/EH0J6mCMSvpzL4fTlFjP4vgTfvIkbIaf74RLvv4X9lDHBJ8l7lvNfKXcQAHpEtIuXk6hAcuvEPXMFoEQlpPlIf5sdJALVpxj4yT1jm0lvzXuawvB85Cn6UnGV3xAHUlSi/LPy3yAoKGbJz++26i8b542sdXKsvKweP5BE1pcVakMP+O0m4igR5iXVydQAAZLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AZCGvNlhtjPAZfpaF6xKV0GkTS0D07Zb38mvkymMxFU=;
- b=Y5joSwVyujCaUi5+cgXZSLRMVb8wtU0ZNkOqwxKUAQGHWK+ikHc55XjXEFeWijvizfkgM28B87s9cPO9lk8+putVdZQUWz/sQ63aXRKmr1wvdrqbbPJLUZTB3TaXfS3h/IPeQW6yDn6iPly2Qkr8+tjj1ScrSOLUHOtGesQE2gv4SJ1nER/3eFSUHIfDt7jwvE7UCabGIr5B+huqDoyM5BEMOW/DBbRZBZ7KHDLp0iFRjo3QzJ7X9nQ7Z4q66EdX1c2tpYNOwcqcN5Tp993ke7pXOyPVq2eYyy9SAwApzQD+gFFCHlWjJ9fldjVcyH0EiXgkEnf+8exSLWY1gl0NKQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AZCGvNlhtjPAZfpaF6xKV0GkTS0D07Zb38mvkymMxFU=;
- b=Puy7+7fOmFq21UtXCzZJ3kortoOmQs361uljXo42cJGraJQ3iCHG6AbEJShRTCFt5gxiM/1ODNVLm0cWj+jQktOFxIycz/wX7sbDRTkfzNxqb5sup4BCWIjLVlXYi1939fTfhfhHV13AFwu80XgBDxZThZwn3pEWwAAIUK+k6Ro=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB5466.namprd10.prod.outlook.com (2603:10b6:510:e2::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Fri, 16 Apr
- 2021 02:51:44 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::9ce3:6a25:939f:c688]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::9ce3:6a25:939f:c688%4]) with mapi id 15.20.4042.018; Fri, 16 Apr 2021
- 02:51:44 +0000
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>, kael_w@yeah.net
-Subject: Re: [PATCH] scsi: isci/phy.h: Remove unnecessary struct declaration
-Date:   Thu, 15 Apr 2021 22:51:22 -0400
-Message-Id: <161853823947.16006.18116158202131817903.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210406105913.676746-1-wanjiabing@vivo.com>
-References: <20210406105913.676746-1-wanjiabing@vivo.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [138.3.201.9]
-X-ClientProxiedBy: SA9PR11CA0023.namprd11.prod.outlook.com
- (2603:10b6:806:6e::28) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.mkp.ca.oracle.com (138.3.201.9) by SA9PR11CA0023.namprd11.prod.outlook.com (2603:10b6:806:6e::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Fri, 16 Apr 2021 02:51:43 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f7fcf3c7-5114-4bad-ab70-08d9008291be
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5466:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB5466698C063462B4741743F88E4C9@PH0PR10MB5466.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4ENqZPBTig0NGJXfe6E2ulCRIYcmuMyeC1NWw2j0xlg76rcKbAY5H7BdbSNUeW+rBlwMDFClv0V7Az2fsrE+AI2PN1C9YZ/p1cwXhCJZzRGJDjpEu7+Y8PZUk6wVr3l2vuO4X0JBy4UdS8JV1I97ZmuQAfgntKTayVlMUzqwpv8mcr6MhloTRv8bJLrGHYgvb9BxzMa+qVKo6gPgAPjbDeKtAtihgwyc6J6y8zkjRKAwEBBak4ODpglErYU7Ew0i8hh6s9eDVfKv483Cx0y0rjW8eWg8+ruishoQZh9L3TihlCH2Z4y3tC8QPKUPGTv1MwP1FS1TxMVI4IB4FDune2Ini31sw4qVHzdWJXAXnDriD45RlEXsr8OzjXN0bMexVXXsfqc2ySn36kEdCYFaiGzCl5ukaaB1CJHqk9/PsgwBU2WYNwePjKHOUBO48//vSHFKBaM6kkAsAeOhMeYjyn1zKWF90ktLWqszIxpNsbh4rijiWkfZFYW9uGl+ooFBSYl1jpuHRUcyIjSIDk32NsiF/yDFwY8ijo5sdEvTT1mNqpq0XmqL9JddJsgv3WXw4qBz3pTwjtUgipkhelrDb74nwYPAORhnhe8ctT/HSlqbiukAr5Hx+EaU0tPKSljj7HBN9/S79kEYC6HCNX1xlaRVuII3chOtxFb4vnyUw7UdlICscFak/TEiQ+fozk0p/yRCs3oWWO8AXKgyGAm3LvPwjOX7d8vIgnRolO7Bv6Q=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(366004)(376002)(346002)(136003)(7696005)(2906002)(36756003)(956004)(4326008)(6486002)(6666004)(5660300002)(2616005)(103116003)(52116002)(966005)(508600001)(316002)(66476007)(186003)(110136005)(16526019)(66946007)(4744005)(66556008)(8936002)(38100700002)(8676002)(86362001)(26005)(38350700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?bFdVdjFHVlVvVkVwOGpLQXBnN3IzNXNzRGM1dmpHN1JucGwxTldUMHBRbENQ?=
- =?utf-8?B?RTB6eG5nNnVxNkRiRERCMk5QWlVpSndBVkwzK1duQkdPYW1jWFdYVnVPUk9Z?=
- =?utf-8?B?UEg4R2xEL1N6UjVUVnZScEp1NU9TUUhJUUsyeU1CRjI5TmtWR0JFazZXMGE3?=
- =?utf-8?B?NkJyRU5obUo1ZWtFbHBWVm13RXMwUFdMc0wraVJnQ0pmblVwSG9kd0U1YWJp?=
- =?utf-8?B?QUNKeWEvV1NNbmRENHNBWGp0dGMzMXRoWmo3cmczNUhVRTRKdytaNUtURW1x?=
- =?utf-8?B?MjNuenhWMVNFMXIrZTlRcFhTZWZ0Vzk4S2thejdDK3NwSnpCTHV1SENOUTNq?=
- =?utf-8?B?MWhkTmNvaVg2UHh4NUxqdElOSkp3T3BmN2pWZFRCamhndXdFbFhBWGlPWEVu?=
- =?utf-8?B?ZGVCaEphWmNYZ0FEVWthakhRL3JqajY0SklnWXAvbFRxamxsaTZCckhNWWdX?=
- =?utf-8?B?cTBvbDlEelc5TGlhVWM0eEJNbGFPcUxXQWY1eS9OTm5zL3RyTFFXQWJLUHB3?=
- =?utf-8?B?OEd2SWpsUEU1K1FpK2RhbUZLNDJVcVNSU05ydW9FQXg1U2s3ZmZHVURWZ1l3?=
- =?utf-8?B?NFIySXpaUitpZHpvc0R2emNGKzFOVnlnOWpwQWxyWTlBTkI4NEVsYUJmeWxL?=
- =?utf-8?B?N1RlTDZRMG5jeFRjSGlBdW9aUlFzM0U4TUppWjY0blQzM1EyWnR4bDQxQ2tX?=
- =?utf-8?B?anB4YmxCZytLNWkxb1BGbzFFb3ZyeUd2aUNxRmlNcXorZmpUMTQxdmNqNUlX?=
- =?utf-8?B?djAwWVQvSkVFalVrQUczcitoU3dFUDQ1cHN1cXNDWWJ6Q2xjWWZMSVZhQTZL?=
- =?utf-8?B?bng2azZXeFoyTXRyeXdBVjVPOGtZLzM4Nk9pU0VUVzdHOG1TU3hqKzdkaEQ2?=
- =?utf-8?B?Zm1xbjBBRSt3TWJLczk3VEJSQ2hObmVKQk94Y3Q3WDFacmFYQVlwNnJVTldq?=
- =?utf-8?B?Z0dpM3l6WEQ4enVEc1g1cWlUdERUbVMzZmRONGo1ODZrRnUxUnZjUnJoWWZN?=
- =?utf-8?B?S0FjM2hzbmxVYmZTNVpZU2ZyeDBLd05VRGRzVHdWWDNSbTZySWxZYi9hQkcx?=
- =?utf-8?B?YUhoQVhUZ3RzY1RHVElpSUhRWE5KWW1HZUx1VWtlVExqS3lXREhZaSsxczlB?=
- =?utf-8?B?QTJOb3NtZVIwdlJZVE1KRVZreW5MckwrWFYyZmV6NHp6Ym1lcVdVQkN4TVFu?=
- =?utf-8?B?ZGkzdGxnOHk5MkRHQmM2VVJqeFFzL05YdTArc1F2ZkxFTjI4d0tJUllvd0l2?=
- =?utf-8?B?akdveFRUZGFGcWErd0ZzcFhLSDErd2tza3Fack1jVEdHNkhidXJkM056Vitt?=
- =?utf-8?B?b0VHdlJVSDZpY3FRaXV5U0FVVFBtWm5IQTJkRzBpdDBMQXJWeFROL2lKMUJQ?=
- =?utf-8?B?MnJlN252N0pJR2w0M3NlU01iekwyUnEyZk1nS1RZbDNTcU1kc2lpMGFBMlJv?=
- =?utf-8?B?aC9uVDNTd0k2Ulgvc2RYU2FKTkJmb0tKYXIzNUN3Y2l5endZNDFtQS8xQkFR?=
- =?utf-8?B?U25aWjMyQ2RBaEw5M3l1VUxXc2N1SmJSVWNPeWVGQk1EcXBMV1hEOC9BdHVC?=
- =?utf-8?B?RWgvNlpjS25hL0VNbCtFSXVwUExRamttaVNoUmtnMjkyRExJcGlxeC9sc0Ns?=
- =?utf-8?B?TDY0VFpvTmhncENKQ0htNTJKM3QwbXJOMWo3aFRkODZWekxTbFNKZ2dDMGwx?=
- =?utf-8?B?Vkk5ZFYzNkhJYWZ1RjZDbWhpVDBHZ3N5SC9Iem4rUHhhTWYyWTNuNXI1UEFr?=
- =?utf-8?Q?SvvUxowl54N9vtYpdMbk9plyhDLT0TXDBgpSJue?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f7fcf3c7-5114-4bad-ab70-08d9008291be
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2021 02:51:44.2368
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k5rQ8VBTgJkog4X+lL0spiSJAuLGtvGRLrzf/QTCUprKLM50h6edYxJ/2akFSxGTRdfFIgm8X3wti8wo0gq/HzHwQpAOykT1EO9Lrycesmo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5466
+        Fri, 16 Apr 2021 02:53:09 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 13G2r0Nx007815;
+        Fri, 16 Apr 2021 02:53:00 GMT
+Received: from dhcp-10-39-213-90.vpn.oracle.com (/10.39.213.90)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 16 Apr 2021 02:52:59 +0000
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [External] : Re: [PATCH v14 4/6] locking/qspinlock: Introduce
+ starvation avoidance into CNA
+From:   Alex Kogan <alex.kogan@oracle.com>
+In-Reply-To: <YHWIezK9pbmbWxsu@hirez.programming.kicks-ass.net>
+Date:   Thu, 15 Apr 2021 22:52:57 -0400
+Cc:     linux@armlinux.org.uk, Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, longman@redhat.com,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, bp@alien8.de,
+        hpa@zytor.com, x86@kernel.org, guohanjun@huawei.com,
+        jglauber@marvell.com, steven.sistare@oracle.com,
+        daniel.m.jordan@oracle.com, dave.dice@oracle.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <02D4688A-FB4C-4100-8B85-C915F130BB99@oracle.com>
+References: <20210401153156.1165900-1-alex.kogan@oracle.com>
+ <20210401153156.1165900-5-alex.kogan@oracle.com>
+ <YHWIezK9pbmbWxsu@hirez.programming.kicks-ass.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-Proofpoint-IMR: 1
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9955 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=974 adultscore=0
- malwarescore=0 suspectscore=0 bulkscore=0 mlxscore=0 spamscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ mlxscore=0 malwarescore=0 adultscore=0 bulkscore=0 spamscore=0
  phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2104060000 definitions=main-2104160022
-X-Proofpoint-GUID: r8lOMVCLjNdiajOd-ZPcKag-JywMxdVf
-X-Proofpoint-ORIG-GUID: r8lOMVCLjNdiajOd-ZPcKag-JywMxdVf
+X-Proofpoint-ORIG-GUID: BgWxyQ0j-dxXObdTaf03sQhp2g50bIYy
+X-Proofpoint-GUID: BgWxyQ0j-dxXObdTaf03sQhp2g50bIYy
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9955 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 spamscore=0
- impostorscore=0 priorityscore=1501 lowpriorityscore=0 adultscore=0
- bulkscore=0 phishscore=0 suspectscore=0 malwarescore=0 clxscore=1015
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 clxscore=1015
+ adultscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0
+ impostorscore=0 suspectscore=0 mlxscore=0 phishscore=0 lowpriorityscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
  definitions=main-2104160022
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 6 Apr 2021 18:59:13 +0800, Wan Jiabing wrote:
 
-> struct sci_phy_proto is defined at 142nd line.
-> The declaration here is unnecessary. Remove it.
 
-Applied to 5.13/scsi-queue, thanks!
+> On Apr 13, 2021, at 8:03 AM, Peter Zijlstra <peterz@infradead.org> =
+wrote:
+>=20
+> On Thu, Apr 01, 2021 at 11:31:54AM -0400, Alex Kogan wrote:
+>=20
+>> @@ -49,13 +55,33 @@ struct cna_node {
+>> 	u16			real_numa_node;
+>> 	u32			encoded_tail;	/* self */
+>> 	u32			partial_order;	/* enum val */
+>> +	s32			start_time;
+>> };
+>=20
+>> +/*
+>> + * Controls the threshold time in ms (default =3D 10) for intra-node =
+lock
+>> + * hand-offs before the NUMA-aware variant of spinlock is forced to =
+be
+>> + * passed to a thread on another NUMA node. The default setting can =
+be
+>> + * changed with the "numa_spinlock_threshold" boot option.
+>> + */
+>> +#define MSECS_TO_JIFFIES(m)	\
+>> +	(((m) + (MSEC_PER_SEC / HZ) - 1) / (MSEC_PER_SEC / HZ))
+>> +static int intra_node_handoff_threshold __ro_after_init =3D =
+MSECS_TO_JIFFIES(10);
+>> +
+>> +static inline bool intra_node_threshold_reached(struct cna_node *cn)
+>> +{
+>> +	s32 current_time =3D (s32)jiffies;
+>> +	s32 threshold =3D cn->start_time + intra_node_handoff_threshold;
+>> +
+>> +	return current_time - threshold > 0;
+>> +}
+>=20
+> None of this makes any sense:
+>=20
+> - why do you track time elapsed as a signed entity?
+> - why are you using jiffies; that's terrible granularity.
+Good points. I will address that (see below). I will just mention that=20=
 
-[1/1] scsi: isci/phy.h: Remove unnecessary struct declaration
-      https://git.kernel.org/mkp/scsi/c/8350e19658c1
+those suggestions came from senior folks on this mailing list,
+and it seemed prudent to take their counsel.=20
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+>=20
+> As Andi already said, 10ms is silly large. You've just inflated the
+> lock-acquire time for every contended lock to stupid land just because
+> NUMA.
+I just ran a few quick tests =E2=80=94 local_clock() (a wrapper around =
+sched_clock())=20
+works well, so I will switch to using that.
+
+I also took a few numbers with different thresholds. Looks like we can =
+drop=20
+the threshold to 1ms with a minor penalty to performance. However,=20
+pushing the threshold to 100us has a more significant cost. Here are
+the numbers for reference:
+
+will-it-scale/lock2_threads:
+threshold:                     10ms     1ms      100us
+speedup at 142 threads:       2.184    1.974     1.1418=20
+
+will-it-scale/open1_threads:
+threshold:                     10ms     1ms      100us
+speedup at 142 threads:       2.146    1.974     1.291
+
+Would you be more comfortable with setting the default at 1ms?
+
+> And this also brings me to the whole premise of this series; *why* are
+> we optimizing this? What locks are so contended that this actually =
+helps
+> and shouldn't you be spending your time breaking those locks? That =
+would
+> improve throughput more than this ever can.
+
+I think for the same reason the kernel switched from ticket locks to =
+queue locks
+several years back. There always will be applications with contended =
+locks.=20
+Sometimes the workarounds are easy, but many times they are not, like =
+with=20
+legacy applications or when the workload is skewed (e.g., every client =
+tries to
+update the metadata of the same file protected by the same lock). The =
+results
+show that for those cases we leave > 2x performance on the table. Those =
+are not
+only our numbers =E2=80=94 LKP reports show similar or even better =
+results,=20
+on a wide range of benchmarks, e.g.:
+=
+https://lists.01.org/hyperkitty/list/lkp@lists.01.org/thread/HGVOCYDEE5KTL=
+YPTAFBD2RXDQOCDPFUJ/
+=
+https://lists.01.org/hyperkitty/list/lkp@lists.01.org/thread/OUPS7MZ3GJA2X=
+YWM52GMU7H7EI25IT37/
+=
+https://lists.01.org/hyperkitty/list/lkp@lists.01.org/thread/DNMEQPXJRQY2I=
+KHZ3ERGRY6TUPWDTFUN/
+
+Regards,
+=E2=80=94 Alex
+
