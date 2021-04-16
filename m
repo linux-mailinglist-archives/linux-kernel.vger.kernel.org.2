@@ -2,98 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F31036241E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EDC236242A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343859AbhDPPkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 11:40:00 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:54511 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S236141AbhDPPj5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 11:39:57 -0400
-Received: (qmail 44307 invoked by uid 1000); 16 Apr 2021 11:39:32 -0400
-Date:   Fri, 16 Apr 2021 11:39:32 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Chris Chiu <chris.chiu@canonical.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, m.v.b@runbox.com,
-        hadess@hadess.net, linux-usb@vger.kernel.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] USB: Don't set USB_PORT_FEAT_SUSPEND on WD19's
- Realtek Hub
-Message-ID: <20210416153932.GD42403@rowland.harvard.edu>
-References: <20210415114856.4555-1-chris.chiu@canonical.com>
- <YHgyP8tGNM1Wi5dJ@kroah.com>
- <CABTNMG0MuaSkWZhiTwtWjPTg5WZ-Vdt9Ju9-RzBke9JjCBJo8Q@mail.gmail.com>
- <20210415184637.GA15445@rowland.harvard.edu>
- <CABTNMG3aweq43eQcONif2_M4JF3ARmBgOKE18v7vzHvaJnjrtA@mail.gmail.com>
+        id S1343876AbhDPPkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 11:40:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53060 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236325AbhDPPku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 11:40:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5741611C2;
+        Fri, 16 Apr 2021 15:40:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618587625;
+        bh=8MtiE0FbPfA5YxzFgo5RoQ19Q1k97WY5Ev8YkCTv+UY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R9jfhMgNlKrbkQqvBG2w9VDECCzOhF42xQmH6ojPk97zVkg2PEsicKwPp1iYsf+Sv
+         31hkUfcaK3s65Xj3BgWV5fs9Pf6vqXgt2mKBemjBsUYYnVZO4Dj8/mzrb8novWNISu
+         jqCndQVUfVE/ao4PV5Vi3UpZ34vojdcUwyTo8OjUYzI2FjIHXRtKHQmpl2LosOfZid
+         DrcVo6jx7TEOa6wpbGD+cHnFiMLlfHjql3MmDJZOV/bWLa7lkf5Bm/Sh5wQUD64Bf+
+         3MFaEtrzoXGJ8WsqxuoIUrXO7qTGQ34LPnDPsqBQypjbCikH8Bgv7CnzkIfHU4uIA8
+         Ze6Ph8IsemPiQ==
+Date:   Fri, 16 Apr 2021 16:40:01 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        lkft-triage@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [next] aarch64-linux-gnu-ld: Unexpected GOT/PLT entries detected!
+Message-ID: <20210416154001.GE5560@sirena.org.uk>
+References: <CA+G9fYtVGhCJbnY8Hro2qx-i21cOeEBD6t_yz7B=O6Y7gD5bkQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Oiv9uiLrevHtW1RS"
 Content-Disposition: inline
-In-Reply-To: <CABTNMG3aweq43eQcONif2_M4JF3ARmBgOKE18v7vzHvaJnjrtA@mail.gmail.com>
+In-Reply-To: <CA+G9fYtVGhCJbnY8Hro2qx-i21cOeEBD6t_yz7B=O6Y7gD5bkQ@mail.gmail.com>
+X-Cookie: Snow Day -- stay home.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 09:24:30AM +0800, Chris Chiu wrote:
-> On Fri, Apr 16, 2021 at 2:46 AM Alan Stern <stern@rowland.harvard.edu> wrote:
-> >
-> > On Fri, Apr 16, 2021 at 12:13:43AM +0800, Chris Chiu wrote:
-> > > One thing worth mentioning here, I never hit the hub_ext_port_status -71
-> > > problem if I resume by waking up from the keyboard connected to the hub.
-> >
-> > I thought you said earlier that the port got into trouble while it was
-> > suspending, not while it was resuming.  You wrote:
-> >
-> > > [ 2789.679812] usb 3-4-port3: can't suspend, status -110
-> >
-> > So if the problem occurs during suspend, how can it be possible to avoid
-> > the problem by taking some particular action later while resuming?
-> >
-> 
-> The ETIMEDOUT is still there, but the port can resume w/o problems and I
-> don't really know what the hub did. I can only reset_resume the hub to bring it
-> back if I'm not waking up from the connected keyboard.
 
-What if two devices are plugged into the hub, only one of them is 
-runtime suspended, and you need to runtime resume that device?  Then you 
-can't do a reset-resume of the hub, because the hub isn't suspended.
+--Oiv9uiLrevHtW1RS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> > > But the usbcore kernel log shows me wPortStatus: 0503 wPortChane: 0004
-> > > of that port while resuming. In normal cases, they are 0507:0000.
-> >
-> > The 0004 bit of wPortChange means that the suspend status has changed;
-> > the port is no longer suspended because the device attached to that port
-> > (your keyboard) issued a wakeup request.
-> >
-> > >  I don't know how to SetPortFeature() with setting the status change bit only.
-> >
-> > You can't.  Only the hub itself can set the wPortChange bits.
-> >
-> > > Or maybe it's just some kind of timing issue of the
-> > > idle/suspend/resume signaling.
-> >
-> > Not timing.  It's because you woke the system up from the attached
-> > keyboard.
-> >
-> > Alan Stern
-> 
-> Got it. I'm just confused by the USB 2.0 spec 11.24.2.7.2 that
-> "Hubs may allow setting of the status change bits with a SetPortFeature()
->  request for diagnostic purposes."
+On Fri, Apr 16, 2021 at 08:45:04PM +0530, Naresh Kamboju wrote:
 
-Yeah, I don't think very many hubs actually do that.
+> The arm64 allnoconfig build failed on linux -next tag 20210416
 
-> So for this case, I think USB_QUIRK_RESET_RESUME would be a
-> better option to at least bring back the port. Any suggestion about what
-> kind of test I can do on this hub? Thanks
+> fpsimd.c:(.text+0x144): undefined reference to `sve_load_state'
+> aarch64-linux-gnu-ld: arch/arm64/kernel/fpsimd.o: in function `fpsimd_save':
+> fpsimd.c:(.text+0x1f8): undefined reference to `sve_get_vl'
+> aarch64-linux-gnu-ld: fpsimd.c:(.text+0x230): undefined reference to
+> `sve_save_state'
 
-I'm not sure what you're proposing.
+This was already reported and fixed yesterday.
 
-If (as mentioned above) the hub doesn't handle the 
-Set-Port-Feature(suspend) request properly, then we should avoid issuing 
-that request.  Which means runtime suspend attempts should not be 
-allowed, as in your most recent patch.
+--Oiv9uiLrevHtW1RS
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Alan Stern
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB5r9AACgkQJNaLcl1U
+h9Dwowf9GZ9742dGy47lBFFIRtJQfW3YeR6Zec4B/fzeFbndskot54k1di5PRkPz
+KErwcdoeNCOpi5Q/6HsJLMdfP1Oytd64POEGtOdYiv6TsqCs+Bhw3UX5zRk66Fjn
+an6+YhpecHkV5VleIMNk7BYxA7BqObsKuXrUKyi3wW3L15P/uf3lCuj+yir8EMny
+G63NSzw0sCt1Du3SQMGL2mS2CwrN2CW8UAUBYzP5fAb1iksx7Ea0jhkYGERudMGF
+pPIOVCRe9AXMLeOVndz5Y4QEgPvlSYh1shbShChPtLhYfdnAc9VOjxoP6pyz/lRw
+50PbzdNzHTnfUtIh6kQc+7qz8BZgxQ==
+=5A73
+-----END PGP SIGNATURE-----
+
+--Oiv9uiLrevHtW1RS--
