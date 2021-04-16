@@ -2,56 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9640C361842
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 05:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA876361845
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 05:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238074AbhDPDii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 23:38:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40784 "EHLO
+        id S238106AbhDPDko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 23:40:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234816AbhDPDig (ORCPT
+        with ESMTP id S234816AbhDPDkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 23:38:36 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C8CBC061574;
-        Thu, 15 Apr 2021 20:38:13 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lXFJ3-005fLg-Lp; Fri, 16 Apr 2021 03:38:09 +0000
-Date:   Fri, 16 Apr 2021 03:38:09 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH] fs: split receive_fd_replace from __receive_fd
-Message-ID: <YHkGodVOpc/kg3V8@zeniv-ca.linux.org.uk>
-References: <20210325082209.1067987-1-hch@lst.de>
- <20210325082209.1067987-2-hch@lst.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325082209.1067987-2-hch@lst.de>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+        Thu, 15 Apr 2021 23:40:41 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E560C061574;
+        Thu, 15 Apr 2021 20:40:16 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id z22so8119285plo.3;
+        Thu, 15 Apr 2021 20:40:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=oUo2JF9IqQjyidp0K1ig13iO9lu64qKuODrfboUEIYg=;
+        b=NKerWLiU/PngmgzC+YgS5OEkEywnl5gAo6qr0GOYcup3sJNuOIm+oUZf+6zf4CBk2I
+         AJg7NWZ0YTUpx4AZNzIe/ylxvmuGF3uAwb+by30KES9wv9q6g3K3iZyvxzOBik8CBqV6
+         7TtwYps3GkGEjsHCTsWPVZSMJG2ceu7K7olcBLQS+bMYanZABsQa9qt7z0F07vxuoUw/
+         ZreQ6eQtbqpwBGCYdJ75s1QF5ZhykxN0TADTsryfvkvPt3R3INSGKAGEtXFDi5ikpfOn
+         f2dR+781Sjb69/G8TmLzJf/Z3B7EK+woBDv2NEw0G7XJQUODCvDqo6gXXVnhwK8t1Z1f
+         gKJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=oUo2JF9IqQjyidp0K1ig13iO9lu64qKuODrfboUEIYg=;
+        b=RTdnd4NGYJOckMUS4sDywfLS76LbPy0Sz4ZbVgXVR3zupobXtsyj1z8/v75pQF2t+L
+         Dmu9+1kxoNVUx4c6FbjY3BqaQXKHOJC2kx6YsVuN0RG0drCdOKlxRG7qREX2bhIdZ9+V
+         Do0NUyUCMsYL3Gedlul7B6t7rlYOgFKAS+MyMaaGtLypdLYHnQNpkXfhmogWxxqi3mSS
+         XzegBZI+SfNLcoO1j9QI/53lstiajtnPQyU8RTraBu9Vq5rFRtAaZ2Dx4uWBr4O2qlvE
+         oj1qPcQ3JukqnB1opthQdN0QX2PzhxN++kjYUoWAV+EBux/LEZxGzBYitBQVqgJeDsVg
+         DVzQ==
+X-Gm-Message-State: AOAM531/TyDJQA/jw/MgQkyncnFYnc6yFvUXgET/sxjumAY+8J4J8Fdu
+        B4yZKPYu+1GfPK4VGliOwhKUNByBLoFxmJ+vtR8=
+X-Google-Smtp-Source: ABdhPJzjXiGOtKd9NQalcbApfIT9Bc4vfqr02DsuG2Rw/zNfNIG5Ke8lQmouwjZoVFYWjgyZzKddWg==
+X-Received: by 2002:a17:902:c404:b029:ea:f0a9:6060 with SMTP id k4-20020a170902c404b02900eaf0a96060mr7297686plk.9.1618544416311;
+        Thu, 15 Apr 2021 20:40:16 -0700 (PDT)
+Received: from mi-OptiPlex-7060.mioffice.cn ([43.224.245.180])
+        by smtp.gmail.com with ESMTPSA id r26sm3473902pfq.17.2021.04.15.20.40.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Apr 2021 20:40:15 -0700 (PDT)
+From:   zhuguangqing83@gmail.com
+To:     Alex Elder <elder@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guangqing Zhu <zhuguangqing83@gmail.com>
+Subject: [PATCH] drivers: ipa: Fix missing IRQF_ONESHOT as only threaded handler
+Date:   Fri, 16 Apr 2021 11:40:07 +0800
+Message-Id: <20210416034007.31222-1-zhuguangqing83@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 09:22:09AM +0100, Christoph Hellwig wrote:
-> receive_fd_replace shares almost no code with the general case, so split
-> it out.  Also remove the "Bump the sock usage counts" comment from
-> both copies, as that is now what __receive_sock actually does.
+From: Guangqing Zhu <zhuguangqing83@gmail.com>
 
-Nice, except that you've misread that, er, lovely API.  This
+Coccinelle noticed:
+drivers/net/ipa/ipa_smp2p.c:186:7-27: ERROR: Threaded IRQ with no primary
+handler requested without IRQF_ONESHOT
 
-> -static inline int receive_fd_replace(int fd, struct file *file, unsigned int o_flags)
-> -{
-> -	return __receive_fd(fd, file, NULL, o_flags);
-> +	return __receive_fd(file, NULL, o_flags);
->  }
+Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
+---
+ drivers/net/ipa/ipa_smp2p.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-can get called with negative fd (in which case it turns into an alias for
-receive_fd(), of course).  As the result, that ioctl got broken in case
-when SECCOMP_ADDFD_FLAG_SETFD is not set.  Trivially fixed by having the
-only caller check the damn condition and call either receive_fd_replace()
-or receive_fd().
+diff --git a/drivers/net/ipa/ipa_smp2p.c b/drivers/net/ipa/ipa_smp2p.c
+index a5f7a79a1923..74e04427a711 100644
+--- a/drivers/net/ipa/ipa_smp2p.c
++++ b/drivers/net/ipa/ipa_smp2p.c
+@@ -183,7 +183,8 @@ static int ipa_smp2p_irq_init(struct ipa_smp2p *smp2p, const char *name,
+ 	}
+ 	irq = ret;
+ 
+-	ret = request_threaded_irq(irq, NULL, handler, 0, name, smp2p);
++	ret = request_threaded_irq(irq, NULL, handler, IRQF_ONESHOT,
++				   name, smp2p);
+ 	if (ret) {
+ 		dev_err(dev, "error %d requesting \"%s\" IRQ\n", ret, name);
+ 		return ret;
+-- 
+2.17.1
+
