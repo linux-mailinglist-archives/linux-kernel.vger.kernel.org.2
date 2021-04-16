@@ -2,75 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFFDA36259C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 18:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8440036259E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 18:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235412AbhDPQYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 12:24:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41734 "EHLO mail.kernel.org"
+        id S235488AbhDPQZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 12:25:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235820AbhDPQYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 12:24:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2042D61002;
-        Fri, 16 Apr 2021 16:23:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618590226;
-        bh=/a1sDlZNCDt5H3fPLy5LZGMuwyqS+pjC9L/aHXdKetg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=qpPtXvXJvZoWTh9JsEGBV7yfVq6HuU/P+r+9+1OYTzBFavLG7+9dckQWFi4m3c42e
-         e1z9FXj4qE3/bia1biZrNff/7PaIY9mmw2V8KD37IKI2F6Fw2AQiH0txmTxa6ahQsq
-         GZJRlEpOvJLJOzzX2xpDsHkEbMqtIBdUe3jH1CY0zR4qQ4H0cuks/3MEb9Su2clpIk
-         IRKmhL0CPrkZlFfT836gZrNjjAq7BYzt/l87/j+rGfAnAb07dlhaObA/PShPPqJ7BE
-         pKOE4GN43RzoPq/R9f64FjooWFPEazQxZIq6Riis1k88MW518WfltJUtZjOBFtj6iV
-         UnA9BQ7cb/8fA==
-Date:   Fri, 16 Apr 2021 11:23:44 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: shpchp: remove unused function
-Message-ID: <20210416162344.GA2724691@bjorn-Precision-5520>
+        id S235385AbhDPQZX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 12:25:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A0F46137D;
+        Fri, 16 Apr 2021 16:24:57 +0000 (UTC)
+Date:   Fri, 16 Apr 2021 17:24:55 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [GIT PULL] arm64 fix for 5.12-rc8/final
+Message-ID: <20210416162451.GA11506@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1618475422-96531-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 04:30:22PM +0800, Jiapeng Chong wrote:
-> Fix the following clang warning:
-> 
-> drivers/pci/hotplug/shpchp_hpc.c:177:20: warning: unused function
-> 'shpc_writeb' [-Wunused-function].
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Hi Linus,
 
-Applied to pci/hotplug for v5.13 with the following subject, thanks!
+A recent commit (2decad92f473, "arm64: mte: Ensure TIF_MTE_ASYNC_FAULT
+is set atomically") broke the kernel build when using the LLVM
+integrated assembly (only noticeable with clang-12 as MTE is not
+supported by earlier versions and the code in question not compiled).
+The Fixes: tag in the commit refers to the original patch introducing
+subsections for the alternative code sequences.
 
-  PCI: shpchp: Remove unused shpc_writeb()
+Please pull the fix below for -rc8/final (Will's off today). Thanks.
 
-> ---
->  drivers/pci/hotplug/shpchp_hpc.c | 5 -----
->  1 file changed, 5 deletions(-)
-> 
-> diff --git a/drivers/pci/hotplug/shpchp_hpc.c b/drivers/pci/hotplug/shpchp_hpc.c
-> index db04728..9e3b277 100644
-> --- a/drivers/pci/hotplug/shpchp_hpc.c
-> +++ b/drivers/pci/hotplug/shpchp_hpc.c
-> @@ -174,11 +174,6 @@ static inline u8 shpc_readb(struct controller *ctrl, int reg)
->  	return readb(ctrl->creg + reg);
->  }
->  
-> -static inline void shpc_writeb(struct controller *ctrl, int reg, u8 val)
-> -{
-> -	writeb(val, ctrl->creg + reg);
-> -}
-> -
->  static inline u16 shpc_readw(struct controller *ctrl, int reg)
->  {
->  	return readw(ctrl->creg + reg);
-> -- 
-> 1.8.3.1
-> 
+The following changes since commit 738fa58ee1328481d1d7889e7c430b3401c571b9:
+
+  arm64: kprobes: Restore local irqflag if kprobes is cancelled (2021-04-13 09:30:16 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
+
+for you to fetch changes up to 22315a2296f4c251fa92aec45fbbae37e9301b6c:
+
+  arm64: alternatives: Move length validation in alternative_{insn, endif} (2021-04-15 18:33:25 +0100)
+
+----------------------------------------------------------------
+Fix kernel compilation when using the LLVM integrated assembly.
+
+----------------------------------------------------------------
+Nathan Chancellor (1):
+      arm64: alternatives: Move length validation in alternative_{insn, endif}
+
+ arch/arm64/include/asm/alternative-macros.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+-- 
+Catalin
