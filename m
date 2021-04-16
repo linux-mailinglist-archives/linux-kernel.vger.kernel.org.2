@@ -2,182 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE5D3629F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 23:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E83CF362A00
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 23:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344142AbhDPVMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 17:12:37 -0400
-Received: from mga14.intel.com ([192.55.52.115]:56174 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235809AbhDPVMc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 17:12:32 -0400
-IronPort-SDR: WEHqqIz9B0n5JKoU8xlKTaw/LTbeGYH5wo+bBQOkFvJuVy7xk6yW+LI6tUvnZDTcZ3V+ns0l6J
- W53FOw+FtBWg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9956"; a="194671038"
-X-IronPort-AV: E=Sophos;i="5.82,228,1613462400"; 
-   d="scan'208";a="194671038"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 14:12:00 -0700
-IronPort-SDR: J3lYlTAWMnwDYYC4mSXYwE0iO1+sHk4Zz4qEGD7GhSu51FJQGhSEjST9JCJBSHngYAaJkble4O
- 82obPT3s84Cw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,228,1613462400"; 
-   d="scan'208";a="383166513"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 16 Apr 2021 14:11:58 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lXVkr-0000XZ-MQ; Fri, 16 Apr 2021 21:11:57 +0000
-Date:   Sat, 17 Apr 2021 05:11:52 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 345774c3f039a2d1d4844bfc3deb6ba9a05c6c65
-Message-ID: <6079fd98.nkvG+15WrcS7hPHz%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1344164AbhDPVNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 17:13:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235809AbhDPVNI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 17:13:08 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E381C061574;
+        Fri, 16 Apr 2021 14:12:43 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id o5so30375308qkb.0;
+        Fri, 16 Apr 2021 14:12:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pej7cYSY7G++pCyMAJmDVXBzw+DrojrmueaKR2kfWvY=;
+        b=BX/Uss1RFKucFsMCZsRQ0QE7jgcdrT1NnTd1q4O6jafSkjbXH39SrsG8+l0iWy0DIU
+         ExSUB5BDfr84ZeqgYn2q6VYaM6yaGa7hGs3xf1+ozEp6y+C5y85tGE1kiHnXV/IHFs3q
+         m7d6S5iikMF2BQvD2FeAg0n/Z6PRZBVX9EjtBLcvC/zgBLzcsgzUuENtKqtwm78JTO9p
+         JF5TzsiVWfJOPMA9Egz2N7KZymkTvOguPpre2YOFxm9+ksiSDyL/oDBXqiOhHb+AshWV
+         ndJl5JeDtQc4VNYsDHVYeSoQbPNBLB/mgERlgkdsK70uFb0L5X929MiczHULRjZDa8hJ
+         E0Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pej7cYSY7G++pCyMAJmDVXBzw+DrojrmueaKR2kfWvY=;
+        b=mx5ssOIlI1hUa5h650ID+FIDRNKAhdPRUMh3LlzZDdpZIM0hKGmwVcAeE6uiI1EiFN
+         0f+KQsHFA7b7DLxJ/Tb416iHR2oDd0KRlBRPBKyVqbPZgm/5T3Ep04RrVuypblE2L8Rm
+         SQPzOauBOLqBUY8QjjW/D2xQiFFCAHVWGO0u+2IsylLkoIdn16JLtxdx4irBbK14EnK1
+         eXEI1Lzi/vgJU4AJsiZpC5dHuR9ifq5kVcWpOZYm/sfsyTz2zFsWZ0WNXi0AIRM7wE7u
+         n5A7T1EKQTgIKfrcumlp1PhV7aWS1dgPLr300z2PE/Gjp31j/ra5cxVEvtDHmYhDPSP3
+         dmBg==
+X-Gm-Message-State: AOAM533dWV9jg5k8M3E9SiB+LOkyfzO65DycpdbdC61l5EgZ3yH3/Bva
+        lbZCk8dCy97u/JCATVLOuvVJx+WRwf5uQdm9
+X-Google-Smtp-Source: ABdhPJwz15JS4tTE2Z7l24KG2GsiWuSfGDGJ4OnV+YsQx2YUL//IMrj070shK8loUGD6wZjFLwtjYg==
+X-Received: by 2002:a37:e50e:: with SMTP id e14mr1201256qkg.117.1618607562894;
+        Fri, 16 Apr 2021 14:12:42 -0700 (PDT)
+Received: from horizon.localdomain ([2001:1284:f016:34ad:eee9:5f0:5b4c:3593])
+        by smtp.gmail.com with ESMTPSA id d14sm5064497qkg.33.2021.04.16.14.12.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 14:12:42 -0700 (PDT)
+Received: by horizon.localdomain (Postfix, from userid 1000)
+        id 13155C086B; Fri, 16 Apr 2021 18:12:40 -0300 (-03)
+Date:   Fri, 16 Apr 2021 18:12:40 -0300
+From:   Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-sctp@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] sctp: Fix out-of-bounds warning in
+ sctp_process_asconf_param()
+Message-ID: <YHn9yNDetZu4bFFR@horizon.localdomain>
+References: <20210416191236.GA589296@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210416191236.GA589296@embeddedor>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 345774c3f039a2d1d4844bfc3deb6ba9a05c6c65  Merge branch 'linus'
+On Fri, Apr 16, 2021 at 02:12:36PM -0500, Gustavo A. R. Silva wrote:
+> Fix the following out-of-bounds warning:
+> 
+> net/sctp/sm_make_chunk.c:3150:4: warning: 'memcpy' offset [17, 28] from the object at 'addr' is out of the bounds of referenced subobject 'v4' with type 'struct sockaddr_in' at offset 0 [-Warray-bounds]
+> 
+> This helps with the ongoing efforts to globally enable -Warray-bounds
+> and get us closer to being able to tighten the FORTIFY_SOURCE routines
+> on memcpy().
+> 
+> Link: https://github.com/KSPP/linux/issues/109
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-elapsed time: 720m
-
-configs tested: 120
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-powerpc                      ep88xc_defconfig
-mips                      pic32mzda_defconfig
-i386                                defconfig
-arm                        multi_v5_defconfig
-m68k                           sun3_defconfig
-sh                           se7750_defconfig
-arm                            qcom_defconfig
-powerpc                 xes_mpc85xx_defconfig
-xtensa                    xip_kc705_defconfig
-powerpc                 mpc8560_ads_defconfig
-arm                         lpc18xx_defconfig
-mips                           ip27_defconfig
-powerpc                 mpc8272_ads_defconfig
-arm                        magician_defconfig
-xtensa                       common_defconfig
-sh                     magicpanelr2_defconfig
-powerpc                         ps3_defconfig
-arm                          pcm027_defconfig
-sparc64                             defconfig
-arm                            xcep_defconfig
-sh                   rts7751r2dplus_defconfig
-powerpc                 mpc837x_rdb_defconfig
-mips                           ip28_defconfig
-m68k                       m5475evb_defconfig
-powerpc                 mpc832x_mds_defconfig
-powerpc                 mpc8315_rdb_defconfig
-mips                   sb1250_swarm_defconfig
-arm                           sama5_defconfig
-ia64                        generic_defconfig
-csky                                defconfig
-mips                           ip32_defconfig
-sh                             shx3_defconfig
-powerpc                     mpc512x_defconfig
-nios2                            alldefconfig
-powerpc                     powernv_defconfig
-arm                             mxs_defconfig
-powerpc                        warp_defconfig
-powerpc                     kmeter1_defconfig
-riscv                    nommu_k210_defconfig
-arm                          gemini_defconfig
-arm                      integrator_defconfig
-sh                             sh03_defconfig
-m68k                        mvme16x_defconfig
-parisc                generic-64bit_defconfig
-mips                      loongson3_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210416
-i386                 randconfig-a006-20210416
-i386                 randconfig-a001-20210416
-i386                 randconfig-a005-20210416
-i386                 randconfig-a004-20210416
-i386                 randconfig-a002-20210416
-x86_64               randconfig-a014-20210416
-x86_64               randconfig-a015-20210416
-x86_64               randconfig-a011-20210416
-x86_64               randconfig-a013-20210416
-x86_64               randconfig-a012-20210416
-x86_64               randconfig-a016-20210416
-i386                 randconfig-a015-20210416
-i386                 randconfig-a014-20210416
-i386                 randconfig-a013-20210416
-i386                 randconfig-a012-20210416
-i386                 randconfig-a016-20210416
-i386                 randconfig-a011-20210416
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a003-20210416
-x86_64               randconfig-a002-20210416
-x86_64               randconfig-a005-20210416
-x86_64               randconfig-a001-20210416
-x86_64               randconfig-a006-20210416
-x86_64               randconfig-a004-20210416
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Thanks.
