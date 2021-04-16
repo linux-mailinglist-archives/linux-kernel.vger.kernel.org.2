@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D919361998
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 08:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF7A936199D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 08:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238927AbhDPF54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 01:57:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42700 "EHLO
+        id S238932AbhDPF6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 01:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234829AbhDPF5z (ORCPT
+        with ESMTP id S236787AbhDPF6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 01:57:55 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348FFC061574;
-        Thu, 15 Apr 2021 22:57:30 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so24780637otb.7;
-        Thu, 15 Apr 2021 22:57:30 -0700 (PDT)
+        Fri, 16 Apr 2021 01:58:35 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3703FC061574;
+        Thu, 15 Apr 2021 22:58:11 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id i81so26769758oif.6;
+        Thu, 15 Apr 2021 22:58:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=VOrqlTV3huhMCZAEQIUjiZ90jLDEUdTRF16U+SVEFXQ=;
-        b=jexlo7/S3quht6cy3pccZK2RvurXcNQ44ooeJISi79+SnQlWssMxWESqTHHWbc6sQo
-         PswkbUSDKQkiFGRYtpYXEoOfyQH2tx+7PuxGpp58hJaeCYEJVdRWNT1ZMzA/ZnOkmDpU
-         yXE6WR64gFQHEqUZLjP878bo1QEhaPBbkQDOGCka7TbnoYoHysBSUcyrKEll5go206cD
-         tMfN0Ce2EwueHeoQipNL9A2y5UWiorgU9ISqrx6pMflLSMNXAqArtVM16qiMxAjgHOdL
-         +yUCBUkRw2UM7FC9HJ4t4eVcJ0p/qDuWr0WxVOEO4eO5SGPAruEeAKk925xMETooeIJt
-         VRNA==
+        bh=Ze0E4HckaFH5mJg66hViAQBt3akuirU2NsikBcdw7Ls=;
+        b=qJRTgttDvK9iZe0dwcrtYQMSQMFZK4D2s51cYpBDMULGJ1jtblkpfMyafwedvaarfh
+         PvGjqPITGHIeajL5QUtoBWBoVK4oKJFTzQuJl0i/5GdqNd9bQ3XKGdcQx/4aq1hAqpCX
+         PY7VkAV+qRiK0O9IQO1qg51+76s0AWNfmyMBDQEuQxXYYhyxnoTxE5wXdhckqS7pwkf+
+         lOQ487LH59h2nv7+fk6LqTcY2it57EyAdor1Fm0vhpg1a8VUUP7obkk1NG9Hk4Zp9elu
+         u2RzIsjFT/LQ1Ul0gwqczienwM7FYG3iZvjG3H29YXphJLIcL+PTMhH9qu8jqTk11HNN
+         WY8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=VOrqlTV3huhMCZAEQIUjiZ90jLDEUdTRF16U+SVEFXQ=;
-        b=iZg8Zr458NQUeNJcsUqBuimXJTZEH0Ts4pymLpRQJwaBsME6OfaOpdP3ypHz8Jo2sX
-         BQ6cnEPmF1j9i2s0g9Y8AOEwVqs6mLyn9CfizLzgF1pW3M7HLad50qfvEbAZW1sL9pMq
-         QV4pKhb/fI/00cWyyVYGeHIstPaL1wVB70Gr0TCpSn2QToosZVqTBvjPHoqvPvGVtnPx
-         XHjj/fWd09yPcpuFmAs6Pq9wmuMshm/uLRq+gaEZ8Evnvk5QHaWcyYsNnwhO453T+hkz
-         xlot1xq50/EQkKWoCCVDleA6tUBaryM/RPfp1sFk13wrsNusS1Z5+fMT0gFdVWxZ3Pt0
-         yRBQ==
-X-Gm-Message-State: AOAM530uxaOpXotuGHeq46zcHrUAVXj3+3dO5EUuI+0d10QiqR+lcVwJ
-        osuxxkWRTSPD6YLB5He79zBsXb57Fw8QFwSPYDQ=
-X-Google-Smtp-Source: ABdhPJybkHaFhC1kho6OSz3Hq35NUakGJLmB47r7+Qw4hTh5gx6Nq2tu2N4OETGP9bH+nc/s5N9we1lRNaE/fEZI1CU=
-X-Received: by 2002:a05:6830:1398:: with SMTP id d24mr2489846otq.281.1618552649627;
- Thu, 15 Apr 2021 22:57:29 -0700 (PDT)
+        bh=Ze0E4HckaFH5mJg66hViAQBt3akuirU2NsikBcdw7Ls=;
+        b=P1WwpZATktXSt5AaHY4qdy+ygTHDF1tRYe20JWmHlCZBatguUIDkzanz/vAgBNVzpI
+         VXJNeyhrtv2dxjXUbXj9EkLrxOc9N5jKkvCR83i16E62g071nl2nm8Szq8DzwGk5PKcl
+         /MaQa7xsyk9h0J9r66Hm9rXSPZmofIvlOAsCxCg24mxAUfeq19Un3C9FGKIByG2gOR+Z
+         UYdp+M1+I+KC1tRd39o7VjJcBToECYKJDXTolRp+9ucUKLcR+lWJ+570gP0iacGYZ/2u
+         aM5LODvOOINB4Xli01SWL+AZx9szNj4LtDlMyte+4tfcg2kNqcVOCYtwuJ9XnzzJk2cF
+         A/kA==
+X-Gm-Message-State: AOAM530zOBPiIrrcv+FbK4fhAwEmhDBG3ftphEyctnqkwm4N26WtaiBZ
+        jq/wAqaE53dS40aTV52LQUEBfM0XR3qVkNGGF9A=
+X-Google-Smtp-Source: ABdhPJx8nO9o2WPSuUZ1vQVPGCgRInpsGr+23PnyET35hB7M1rBLSeV+ffHh6TEno7oYmmY/u4DtIRfYEvO7VCn6Cig=
+X-Received: by 2002:a05:6808:bd6:: with SMTP id o22mr5259675oik.129.1618552690038;
+ Thu, 15 Apr 2021 22:58:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210415093519.1920877-1-hsinyi@chromium.org> <20210415093519.1920877-3-hsinyi@chromium.org>
-In-Reply-To: <20210415093519.1920877-3-hsinyi@chromium.org>
+References: <20210415093519.1920877-1-hsinyi@chromium.org> <20210415093519.1920877-4-hsinyi@chromium.org>
+In-Reply-To: <20210415093519.1920877-4-hsinyi@chromium.org>
 From:   Enric Balletbo Serra <eballetbo@gmail.com>
-Date:   Fri, 16 Apr 2021 07:57:21 +0200
-Message-ID: <CAFqH_50725CK30jWksqDxvKFUuGdsS4MOtFK58Kqhi7-vcGg9A@mail.gmail.com>
-Subject: Re: [PATCH 3/8] dt-bindings: arm64: dts: mediatek: Add mt8183-kukui-jacuzzi-burnet
+Date:   Fri, 16 Apr 2021 07:58:01 +0200
+Message-ID: <CAFqH_506gmouWeLRXhRbUpaQ7Xb+bOOJt_65GnPsYE4oRs05XA@mail.gmail.com>
+Subject: Re: [PATCH 4/8] dt-bindings: arm64: dts: mediatek: Add mt8183-kukui-jacuzzi-kenzo
 To:     Hsin-Yi Wang <hsinyi@chromium.org>
 Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
@@ -76,32 +76,36 @@ Missatge de Hsin-Yi Wang <hsinyi@chromium.org> del dia dj., 15 d=E2=80=99ab=
 r.
 2021 a les 11:36:
 >
-> Burnet is known as HP Chromebook x360 11MK G3 EE.
+> Kenzo is known as Acer Chromebook 311.
 >
 > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 
 Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
 > ---
->  Documentation/devicetree/bindings/arm/mediatek.yaml | 4 ++++
->  1 file changed, 4 insertions(+)
+>  Documentation/devicetree/bindings/arm/mediatek.yaml | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 >
 > diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Docume=
 ntation/devicetree/bindings/arm/mediatek.yaml
-> index 96c401597bd8..0870490aa350 100644
+> index 0870490aa350..39e4a99ebb37 100644
 > --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
 > +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
-> @@ -122,6 +122,10 @@ properties:
->            - enum:
->                - mediatek,mt8195-evb
->            - const: mediatek,mt8195
-> +      - description: Google Burnet (HP Chromebook x360 11MK G3 EE)
-> +        items:
-> +          - const: google,burnet
-> +          - const: mediatek,mt8183
->        - description: Google Krane (Lenovo IdeaPad Duet, 10e,...)
+> @@ -137,9 +137,11 @@ properties:
 >          items:
->            - enum:
+>            - const: google,damu
+>            - const: mediatek,mt8183
+> -      - description: Google Juniper (Acer Chromebook Spin 311)
+> +      - description: Google Juniper (Acer Chromebook Spin 311) / Kenzo (=
+Acer Crhomebook 311)
+>          items:
+> -          - const: google,juniper-sku16
+> +          - enum:
+> +              - google,juniper-sku16
+> +              - google,juniper-sku17
+>            - const: google,juniper
+>            - const: mediatek,mt8183
+>        - description: Google Kakadu (ASUS Chromebook Detachable CM3)
 > --
 > 2.31.1.295.g9ea45b61b8-goog
 >
