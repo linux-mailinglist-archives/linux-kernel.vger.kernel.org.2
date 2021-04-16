@@ -2,112 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8276F3629CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 22:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3876A362A1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 23:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244133AbhDPU7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 16:59:09 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:51754 "EHLO 1wt.eu"
+        id S1344214AbhDPVWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 17:22:06 -0400
+Received: from mga06.intel.com ([134.134.136.31]:46596 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236340AbhDPU7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 16:59:04 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 13GKwCKQ011673;
-        Fri, 16 Apr 2021 22:58:12 +0200
-Date:   Fri, 16 Apr 2021 22:58:12 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Connor Kuehl <ckuehl@redhat.com>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH 04/13] Kbuild: Rust support
-Message-ID: <20210416205812.GA11655@1wt.eu>
-References: <20210414184604.23473-1-ojeda@kernel.org>
- <20210414184604.23473-5-ojeda@kernel.org>
- <YHmTWEAS/QjX++w4@hirez.programming.kicks-ass.net>
- <CAHk-=wh_zb=K1B-N8mgHmSZDqTLgOm711NRXbTX_OwFAzDYg0Q@mail.gmail.com>
- <CANiq72nx7ngazsH7sZgc=HeU0cNj45F9+-rwQb7AkdYsRCmRbQ@mail.gmail.com>
- <YHnS92ZKZ4tRWTiA@zeniv-ca.linux.org.uk>
- <CANiq72=RLf0FiuLVL-ZeLFp9P2LxTymbzhXoyQGG=tvUY_J-Sg@mail.gmail.com>
- <20210416202215.GA11236@1wt.eu>
- <efe80452-fac9-247a-1e2b-a73553f605e8@redhat.com>
+        id S1344186AbhDPVVr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 17:21:47 -0400
+IronPort-SDR: HkC5zTqdCNDMUYG1AzxXZeI76em2LDjKgbEkdiJus0NCg3/XuofY6E8++bOEbq4sEHTG99T7Wk
+ vqqbwIi/13JQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9956"; a="256427945"
+X-IronPort-AV: E=Sophos;i="5.82,228,1613462400"; 
+   d="scan'208";a="256427945"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 14:19:34 -0700
+IronPort-SDR: 3vfggyqGry/nrWnHH+RyO74dDk6XQPSCR1gyRWlQfj+zUkev56L0d89TQ/9Fa8JB9F+8VTCDsy
+ fes5B32D8e6g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,228,1613462400"; 
+   d="scan'208";a="522825399"
+Received: from otc-wp-03.jf.intel.com ([10.54.39.79])
+  by fmsmga001.fm.intel.com with ESMTP; 16 Apr 2021 14:19:34 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>
+Cc:     "Christoph Hellwig" <hch@infradead.org>,
+        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
+        zhangfei.gao@linaro.org, vkoul@kernel.org,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Subject: [PATCH v3 0/2] Simplify and restrict IOMMU SVA APIs
+Date:   Fri, 16 Apr 2021 05:45:12 -0700
+Message-Id: <1618577114-30156-1-git-send-email-jacob.jun.pan@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <efe80452-fac9-247a-1e2b-a73553f605e8@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 03:34:50PM -0500, Connor Kuehl wrote:
-> On 4/16/21 3:22 PM, Willy Tarreau wrote:
-> > So it simply does the equivalent of:
-> > 
-> >   #define EINVAL -1234
-> > 
-> >   struct result {
-> >      int status;
-> >      int error;
-> >   };
-> 
-> Result and Option types are more like a union with a tag that
-> describes which variant it is.
-> 
-> struct foo_result {
->     /* if ok, then access foo_or_err.successful_foo
->      *        else, access foo_or_err.error
->      */
->     bool ok;
->     union {
->         struct foo successful_foo;
->         int error;
->     } foo_or_err;
-> };
+A couple of small changes to simplify and restrict SVA APIs. The motivation
+is to make PASID allocation palatable for cgroup consumptions. Misc cgroup
+is merged for v5.13, it can be extended for IOASID as another scalar
+resource.
 
-OK.
+I have not tested on ARM platforms due to availability. Would appreciate
+if someone could help with the testing on uacce based SVA usages.
 
-> > [..]
-> > 
-> > So it simply returns a pair of values instead of a single one, which
-> 
-> It will only return 1 value.
+Thanks,
 
-No, two:
-  - ok in %rax (seems like it's "!ok" technically speaking since it
-    returns 1 on !ok and 0 on ok)
-  - foo_or_err in %rdx
+Jacob
 
-However then I'm bothered because Miguel's example showed that regardless
-of OK, EINVAL was always returned in foo_or_err, so maybe it's just
-because his example was not well chosen but it wasn't very visible from
-the source:
+ChangeLog:
+V3	- stop passing mm to sva_bind IOMMU ops, no need to take mm refcount
+	in the common SVA code.
+	- deleted flag variable in idxd driver
 
-     bar:
-             push    rbx
-             mov     ebx, 1
-             call    qword ptr [rip + black_box@GOTPCREL]
-             test    al, al
-             jne     .LBB2_2
-             call    qword ptr [rip + kill_foo@GOTPCREL]
-             xor     ebx, ebx
-     .LBB2_2:
-             mov     eax, ebx
-             mov     edx, -1234
-             pop     rbx
-             ret
+V2
+	- retained mm argument in iommu_sva_alloc_pasid()
+	- keep generic supervisor flag separated from vt-d's SRE
+	- move flag declaration out of CONFIG_IOMMU_API
 
-Willy
+
+
+Jacob Pan (2):
+  iommu/sva: Tighten SVA bind API with explicit flags
+  iommu/sva: Remove mm parameter from SVA bind API
+
+ drivers/dma/idxd/cdev.c                       |  2 +-
+ drivers/dma/idxd/init.c                       |  7 ++----
+ .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   | 12 ++++++----
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h   |  5 ++--
+ drivers/iommu/intel/svm.c                     | 19 ++++++++-------
+ drivers/iommu/iommu-sva-lib.c                 | 11 +++++----
+ drivers/iommu/iommu-sva-lib.h                 |  2 +-
+ drivers/iommu/iommu.c                         | 13 +++++------
+ drivers/misc/uacce/uacce.c                    |  2 +-
+ include/linux/intel-iommu.h                   |  3 +--
+ include/linux/intel-svm.h                     | 17 ++------------
+ include/linux/iommu.h                         | 23 ++++++++++++++-----
+ 12 files changed, 56 insertions(+), 60 deletions(-)
+
+
+base-commit: e49d033bddf5b565044e2abe4241353959bc9120
+-- 
+2.25.1
+
