@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEB29361985
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 08:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 476F1361989
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 08:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238779AbhDPFxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 01:53:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41612 "EHLO
+        id S238833AbhDPFxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 01:53:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238358AbhDPFxA (ORCPT
+        with ESMTP id S238358AbhDPFxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 01:53:00 -0400
+        Fri, 16 Apr 2021 01:53:44 -0400
 Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F34C061574;
-        Thu, 15 Apr 2021 22:52:36 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id t17-20020a9d77510000b0290287a5143b41so13544005otl.11;
-        Thu, 15 Apr 2021 22:52:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4344C061574;
+        Thu, 15 Apr 2021 22:53:20 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 92-20020a9d02e50000b029028fcc3d2c9eso2297056otl.0;
+        Thu, 15 Apr 2021 22:53:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=Sz5AkDEHXoTdhaWqNa4aiq2JXP5rqPnHAGXR8ZCTKAg=;
-        b=hhN8uGqIBz9cbQV+JtKoeYJC9DF8KbPYfeHcv2sRSlO7JlsQh7YxfMBbjgZ7ulVU4n
-         na6SYs8pHd2P8eOTE5PXPufwsGafk901JlRrzkz4JmUCYL4n0t3zlBU0knmbGTk9WR12
-         8jwqVa1OV4JzgzU5Goyq3DGuWpOIv4R4hHJ68tMh/4TyG1sfNVU/ekXA23B6CDU0RQXV
-         lSM7UetSayuuegUyc4iSYy8L5uU79VHyYL9C2hJJLwbmPEOP6pNVa/BqNy2NnUAEaQe8
-         kYzH0kYJd01auSpFTa7CK408VdX2rdUYSyopNFU6VwFkbH6bSaFmnH7B0lSj+gMhlVX2
-         XRHQ==
+        bh=MCLUGMKOGCUhcX5PBKwgjDIDGwxEw0xOP/rCTk9Ji7w=;
+        b=dWqwHYu2UDFUk2dsRv+6Opo6tnDsyuOf/z6SFDD6Yu/pYZeMyd5ptvs+teCRwYrFcV
+         r0QJo7BFf/SgXng34dmLR210AModhgA2SwTdXfsnsN3e7r3aG1waK6OgJbaoYakNsyhR
+         2qWHWnkC+u3an0MrnM4T41G5/nrQUbbseJzCgrtr9Fdt1MMWfvxKqSeXGqY0hqTr8y7S
+         KFvRvCUT+vPfg7rS/MIKLvQktakh+cBjSmPkgJ2metykBox4dimG2a1gEpp72kj5xh8b
+         nbFCddQeeQoEH+b8JSUojOPj5EqKGqa8m/ZVsFgIhcHmqL9zvKH4Vflh1KdqCHpppzfM
+         1cnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Sz5AkDEHXoTdhaWqNa4aiq2JXP5rqPnHAGXR8ZCTKAg=;
-        b=HGDGk1CtAXjAFuOt7rerowqtp08uxqJE4aIQE/YcMwPS9KZEJ56pBJw6gjKbA763aZ
-         6OToRtyqeHvqjCLJ8XqOi+kf7DhJh5dQpumzpK67x+cmwSUMjIGGe+26ya3ltKBi/Df9
-         AAtqXla+lfKrrhQ8+daaGUZ/xkYC3Xx2QERMbVgxxckfAzCzBf7+uf/hNjqZFN/k5TYx
-         Xvve9sfgcV8UotfIuFWScb5mPEOLVIHGgOsnf1AFBT/9Me51a1pWp+hLTxgzW8rMeSaU
-         dg8Dgt2hRFHXjQfMLlDOIkqCZ5Ql8McBqJU7n6wig5kujHuu8t160JCF6lZH92fPu+Lw
-         vYNg==
-X-Gm-Message-State: AOAM532Vf6J9btIrL3Zpmj/zsvL3UcCZvgTychXQR7HH288i6330zg8q
-        Nz25XyuVv1VPhUespY19KOZ+XgcLizLe5T62e08=
-X-Google-Smtp-Source: ABdhPJzai2AZUpqMlxmUdFMD8/LL884tQ/+a9LNwb5D3Cdt4KsiydVj2riIrDLj6ZLQCSuXQ/lT10T3IqFFyC1PY+/Q=
-X-Received: by 2002:a05:6830:1398:: with SMTP id d24mr2479119otq.281.1618552355449;
- Thu, 15 Apr 2021 22:52:35 -0700 (PDT)
+        bh=MCLUGMKOGCUhcX5PBKwgjDIDGwxEw0xOP/rCTk9Ji7w=;
+        b=kHuzJNzu+FwaPn7O/oO+Q/dPVa6sQyxiI7nMI1q0nlbIFdAgcYMUJmcxK26KCo7C/3
+         dlAZJRCbNwrzvDU5Prp4fNnTCRoE7UVViSPHEn0pIHIfneZ6W8n/zJrOAoeS+NB2f/f9
+         6uZv45B3+Qocu80Hlwz48oYGB2FxazGmfkhBIhA1C++AKrU+dTxGIVGENHduSZM1CWiO
+         O0M4uLDZw5XAlkrroA3Fw3NC3DsFEe2gu9sGiokASeq4fhS3vgQC7zrudtO/hEnJn9sK
+         l1eJaDzWftzqT53qZoIHvbP4h5YSnPd27/J0PAatfBbsbJETATGU5PenkMuwuK958QSS
+         fUrg==
+X-Gm-Message-State: AOAM533rNTXbyX3Ntj9ATOYBR3H/n237NV/TaMSP3rbQYaAKJXR1y3Zb
+        l9AR1OpAXaKGj0ke2AU3uCCbWHvUQ1xYvFSpkf4=
+X-Google-Smtp-Source: ABdhPJzFLjrAS4QeLk1KFR6twQbAcjPSrmnYSU8cMmm1EBYPMvKlpmQ3aMpsI2Zm4QhdZI2+66eoLsV3YPk0O9aLiKs=
+X-Received: by 2002:a05:6830:15d0:: with SMTP id j16mr2489968otr.184.1618552400329;
+ Thu, 15 Apr 2021 22:53:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210414144643.17435-1-matthias.bgg@kernel.org>
-In-Reply-To: <20210414144643.17435-1-matthias.bgg@kernel.org>
+References: <20210414144643.17435-1-matthias.bgg@kernel.org> <20210414144643.17435-2-matthias.bgg@kernel.org>
+In-Reply-To: <20210414144643.17435-2-matthias.bgg@kernel.org>
 From:   Enric Balletbo Serra <eballetbo@gmail.com>
-Date:   Fri, 16 Apr 2021 07:52:26 +0200
-Message-ID: <CAFqH_53TOM6oyByRaMb8d7caX+u5Wn5DyrXuXHYKVUwBCfrkZg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] arm64: dts: mt8183-pumpkin: fix dtbs_check warning
+Date:   Fri, 16 Apr 2021 07:53:11 +0200
+Message-ID: <CAFqH_51iP+V1hQ=J+YtLv0K9qoEK9WJgoCiNyqp6Yd1T9RKfXw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] arm64: dts: mt8183: fix dtbs_check warning
 To:     matthias.bgg@kernel.org
 Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
         Enric Balletbo i Serra <enric.balletbo@collabora.com>,
@@ -84,32 +84,39 @@ Missatge de l'adre=C3=A7a <matthias.bgg@kernel.org> del dia dc., 14 d=E2=80=
 > Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
 > ---
 >
->  arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 >
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts b/arch/arm64=
-/boot/dts/mediatek/mt8183-pumpkin.dts
-> index eb6e595c2975..0aff5eb52e88 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183-pumpkin.dts
-> @@ -32,7 +32,7 @@ reserved-memory {
->                 #size-cells =3D <2>;
->                 ranges;
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/d=
+ts/mediatek/mt8183.dtsi
+> index 0ff7b67a6806..c5e822b6b77a 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> @@ -681,13 +681,13 @@ cpu_thermal: cpu_thermal {
+>                                 sustainable-power =3D <5000>;
 >
-> -               scp_mem_reserved: scp_mem_region {
-> +               scp_mem_reserved: scp_mem_region@50000000 {
->                         compatible =3D "shared-dma-pool";
->                         reg =3D <0 0x50000000 0 0x2900000>;
->                         no-map;
-> @@ -55,7 +55,7 @@ led-green {
->                 };
->         };
+>                                 trips {
+> -                                       threshold: trip-point@0 {
+> +                                       threshold: trip-point0 {
+>                                                 temperature =3D <68000>;
+>                                                 hysteresis =3D <2000>;
+>                                                 type =3D "passive";
+>                                         };
 >
-> -       ntc@0 {
-> +       ntc {
->                 compatible =3D "murata,ncp03wf104";
->                 pullup-uv =3D <1800000>;
->                 pullup-ohm =3D <390000>;
+> -                                       target: trip-point@1 {
+> +                                       target: trip-point1 {
+>                                                 temperature =3D <80000>;
+>                                                 hysteresis =3D <2000>;
+>                                                 type =3D "passive";
+> @@ -1103,7 +1103,7 @@ u2port0: usb-phy@0 {
+>                                 status =3D "okay";
+>                         };
+>
+> -                       u3port0: usb-phy@0700 {
+> +                       u3port0: usb-phy@700 {
+>                                 reg =3D <0x0700 0x900>;
+>                                 clocks =3D <&clk26m>;
+>                                 clock-names =3D "ref";
 > --
 > 2.30.2
 >
