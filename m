@@ -2,161 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90384361B8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 10:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7979361B90
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 10:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240296AbhDPI1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 04:27:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30654 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240290AbhDPI1J (ORCPT
+        id S240315AbhDPI14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 04:27:56 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:17367 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237554AbhDPI1y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 04:27:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618561605;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GDfR8iVh8XSN4o8S9XIZ+vsfxmtqUP1R7YuCLZyLUbM=;
-        b=f5BpE1EO5amrg6SW2ld+EhkrDGaL64c0ZBhoTLkIsE/2ZeYgEhLVOvpsWCxRBRdr7sBEmc
-        jl5J/tWELPrrwwxBStvtQD++ea8pXiMoZU3tbevJmeov0BV/qGjK8+Ef9HdFJg9G9EEcl7
-        79Ir+1++gGOtczPzBOMuTxx1MXTKUjw=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-401-KjgiykoAM2e-4yYM2mBPyg-1; Fri, 16 Apr 2021 04:26:43 -0400
-X-MC-Unique: KjgiykoAM2e-4yYM2mBPyg-1
-Received: by mail-ej1-f70.google.com with SMTP id g7-20020a1709065d07b029037c872d9cdcso1782847ejt.11
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 01:26:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=GDfR8iVh8XSN4o8S9XIZ+vsfxmtqUP1R7YuCLZyLUbM=;
-        b=osXsWQV/YnUxa9PFYefPs+DCBx16unWfJPH+WJ0XWRwFt0gVZg8u+NJwWAwizpdc26
-         FCSB+FMX2mHx7xJ4DFZCJSobeqx/Bo+z/kqsX/+B0ZAdi3n8W1KkupKm6EfrzJbFRm90
-         qTQ3dlqJWFNVi4D63M1diKDjJNzoyzX1jzesPOqakMoerDsy0P3lp4vnMVPvXbW94BPG
-         oBLeFHtiQ+9CJmj2V5y5ecIqj+/T2OgrFiOM1Lh1rqNPYqqElwFInoW4s1rtc+TDFYzA
-         mFHFYBshSuGZPNxDfjm4bjizwhjlKqCc15EWKpPeEWMFUlae6GyoH7NEyElbM7vT+Tnx
-         su0A==
-X-Gm-Message-State: AOAM530xT/fbtvGMRKYQl5LR04/ajVM21ORkA+NKWfzhpSh8UZDEpKXR
-        RGbPthp8zbtG51v0zzc7PzwVIPsZBNB7y20Pv0cyejtSL1kxRMZ+hNS4tftjwFBy9qmQWmIOiQb
-        X19OoVb4bxGLOzcCQcU9+j7ut
-X-Received: by 2002:a05:6402:7cf:: with SMTP id u15mr2496391edy.297.1618561602411;
-        Fri, 16 Apr 2021 01:26:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzjCNyDz0otPSAn5rP293qV2aUO2LfE/x9sXa+u6jjL4WGAVGA2gNPkgIpakzrGSlP22der0Q==
-X-Received: by 2002:a05:6402:7cf:: with SMTP id u15mr2496382edy.297.1618561602274;
-        Fri, 16 Apr 2021 01:26:42 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id w13sm4585188edc.81.2021.04.16.01.26.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 01:26:41 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Vineeth Pillai <viremana@linux.microsoft.com>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org,
-        Lan Tianyu <Tianyu.Lan@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>
-Subject: Re: [PATCH v2 1/7] hyperv: Detect Nested virtualization support for
- SVM
-In-Reply-To: <9d12558549bc0c6f179b26f5b16c751bdfab3f74.1618492553.git.viremana@linux.microsoft.com>
-References: <cover.1618492553.git.viremana@linux.microsoft.com>
- <9d12558549bc0c6f179b26f5b16c751bdfab3f74.1618492553.git.viremana@linux.microsoft.com>
-Date:   Fri, 16 Apr 2021 10:26:40 +0200
-Message-ID: <871rba8wjj.fsf@vitty.brq.redhat.com>
+        Fri, 16 Apr 2021 04:27:54 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FM8RM2QhBzlYDD;
+        Fri, 16 Apr 2021 16:25:35 +0800 (CST)
+Received: from huawei.com (10.67.174.53) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Fri, 16 Apr 2021
+ 16:27:21 +0800
+From:   Liao Chang <liaochang1@huawei.com>
+To:     <Jisheng.Zhang@synaptics.com>, <paul.walmsley@sifive.com>,
+        <palmer@dabbelt.com>, <aou@eecs.berkeley.edu>,
+        <guoren@linux.alibaba.com>, <mhiramat@kernel.org>,
+        <penberg@kernel.org>, <mingo@kernel.org>, <lkp@intel.com>,
+        <me@packi.ch>
+CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <liaochang1@huawei.com>
+Subject: [PATCH v2] riscv/kprobe: Restore local irqflag if kprobe is cancelled
+Date:   Fri, 16 Apr 2021 16:27:31 +0800
+Message-ID: <20210416082731.121494-1-liaochang1@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
+X-Originating-IP: [10.67.174.53]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vineeth Pillai <viremana@linux.microsoft.com> writes:
+The execution of sys_read end up hitting a BUG_ON() in __find_get_block after
+installing probe at sys_read via kprobe, the BUG message like the following:
 
-> Detect nested features exposed by Hyper-V if SVM is enabled.
->
+[   65.708663] ------------[ cut here ]------------
+[   65.709987] kernel BUG at fs/buffer.c:1251!
+[   65.711283] Kernel BUG [#1]
+[   65.712032] Modules linked in:
+[   65.712925] CPU: 0 PID: 51 Comm: sh Not tainted 5.12.0-rc4 #1
+[   65.714407] Hardware name: riscv-virtio,qemu (DT)
+[   65.715696] epc : __find_get_block+0x218/0x2c8
+[   65.716835]  ra : __getblk_gfp+0x1c/0x4a
+[   65.717831] epc : ffffffe00019f11e ra : ffffffe00019f56a sp : ffffffe002437930
+[   65.719553]  gp : ffffffe000f06030 tp : ffffffe0015abc00 t0 : ffffffe00191e038
+[   65.721290]  t1 : ffffffe00191e038 t2 : 000000000000000a s0 : ffffffe002437960
+[   65.723051]  s1 : ffffffe00160ad00 a0 : ffffffe00160ad00 a1 : 000000000000012a
+[   65.724772]  a2 : 0000000000000400 a3 : 0000000000000008 a4 : 0000000000000040
+[   65.726545]  a5 : 0000000000000000 a6 : ffffffe00191e000 a7 : 0000000000000000
+[   65.728308]  s2 : 000000000000012a s3 : 0000000000000400 s4 : 0000000000000008
+[   65.730049]  s5 : 000000000000006c s6 : ffffffe00240f800 s7 : ffffffe000f080a8
+[   65.731802]  s8 : 0000000000000001 s9 : 000000000000012a s10: 0000000000000008
+[   65.733516]  s11: 0000000000000008 t3 : 00000000000003ff t4 : 000000000000000f
+[   65.734434]  t5 : 00000000000003ff t6 : 0000000000040000
+[   65.734613] status: 0000000000000100 badaddr: 0000000000000000 cause: 0000000000000003
+[   65.734901] Call Trace:
+[   65.735076] [<ffffffe00019f11e>] __find_get_block+0x218/0x2c8
+[   65.735417] [<ffffffe00020017a>] __ext4_get_inode_loc+0xb2/0x2f6
+[   65.735618] [<ffffffe000201b6c>] ext4_get_inode_loc+0x3a/0x8a
+[   65.735802] [<ffffffe000203380>] ext4_reserve_inode_write+0x2e/0x8c
+[   65.735999] [<ffffffe00020357a>] __ext4_mark_inode_dirty+0x4c/0x18e
+[   65.736208] [<ffffffe000206bb0>] ext4_dirty_inode+0x46/0x66
+[   65.736387] [<ffffffe000192914>] __mark_inode_dirty+0x12c/0x3da
+[   65.736576] [<ffffffe000180dd2>] touch_atime+0x146/0x150
+[   65.736748] [<ffffffe00010d762>] filemap_read+0x234/0x246
+[   65.736920] [<ffffffe00010d834>] generic_file_read_iter+0xc0/0x114
+[   65.737114] [<ffffffe0001f5d7a>] ext4_file_read_iter+0x42/0xea
+[   65.737310] [<ffffffe000163f2c>] new_sync_read+0xe2/0x15a
+[   65.737483] [<ffffffe000165814>] vfs_read+0xca/0xf2
+[   65.737641] [<ffffffe000165bae>] ksys_read+0x5e/0xc8
+[   65.737816] [<ffffffe000165c26>] sys_read+0xe/0x16
+[   65.737973] [<ffffffe000003972>] ret_from_syscall+0x0/0x2
+[   65.738858] ---[ end trace fe93f985456c935d ]---
 
-It may make sense to expand this a bit as it is probably unclear how the
-change is related to SVM.
+A simple reproducer looks like:
+	echo 'p:myprobe sys_read fd=%a0 buf=%a1 count=%a2' > /sys/kernel/debug/tracing/kprobe_events
+	echo 1 > /sys/kernel/debug/tracing/events/kprobes/myprobe/enable
+	cat trace
 
-Something like:
+Here's what happens to hit that BUG_ON():
 
-HYPERV_CPUID_NESTED_FEATURES CPUID leaf can be present on both Intel and
-AMD Hyper-V guests. Previously, the code was using
-HV_X64_ENLIGHTENED_VMCS_RECOMMENDED feature bit to determine the
-availability of nested features leaf and this complies to TLFS:
-"Recommend a nested hypervisor using the enlightened VMCS interface. 
-Also indicates that additional nested enlightenments may be available
-(see leaf 0x4000000A)". Enlightened VMCS, however, is an Intel only
-feature so the detection method doesn't work for AMD. Use
-HYPERV_CPUID_VENDOR_AND_MAX_FUNCTIONS.EAX CPUID information ("The
-maximum input value for hypervisor CPUID information.") instead, this
-works for both AMD and Intel.
+If instruction being single stepped caused page fault, the
+kprobe is cancelled to let the page fault handler continues
+as normal page fault. But the local irqflags are disabled,
+so CPU will restore 'sstatus' with 'SIE' masked. After page
+fault is serviced, the kprobe is triggered again, we overwrite
+the saved irqflag by calling kprobe_save_local_irqflag(). Note,
+'SIE' is masked in this new saved irqflag. After kprobe is
+serviced, the CPU 'sstatus' is restored with 'SIE' masked.
+This overwritten 'sstatus' cause BUG_ON() in __find_get_block.
 
+This bug is already fixed on arm64 by Jisheng Zhang.
 
-> Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
-> ---
->  arch/x86/kernel/cpu/mshyperv.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-> index 3546d3e21787..c6f812851e37 100644
-> --- a/arch/x86/kernel/cpu/mshyperv.c
-> +++ b/arch/x86/kernel/cpu/mshyperv.c
-> @@ -252,6 +252,7 @@ static void __init hv_smp_prepare_cpus(unsigned int max_cpus)
->  
->  static void __init ms_hyperv_init_platform(void)
->  {
-> +	int hv_max_functions_eax;
->  	int hv_host_info_eax;
->  	int hv_host_info_ebx;
->  	int hv_host_info_ecx;
-> @@ -269,6 +270,8 @@ static void __init ms_hyperv_init_platform(void)
->  	ms_hyperv.misc_features = cpuid_edx(HYPERV_CPUID_FEATURES);
->  	ms_hyperv.hints    = cpuid_eax(HYPERV_CPUID_ENLIGHTMENT_INFO);
->  
-> +	hv_max_functions_eax = cpuid_eax(HYPERV_CPUID_VENDOR_AND_MAX_FUNCTIONS);
-> +
->  	pr_info("Hyper-V: privilege flags low 0x%x, high 0x%x, hints 0x%x, misc 0x%x\n",
->  		ms_hyperv.features, ms_hyperv.priv_high, ms_hyperv.hints,
->  		ms_hyperv.misc_features);
-> @@ -298,8 +301,7 @@ static void __init ms_hyperv_init_platform(void)
->  	/*
->  	 * Extract host information.
->  	 */
-> -	if (cpuid_eax(HYPERV_CPUID_VENDOR_AND_MAX_FUNCTIONS) >=
-> -	    HYPERV_CPUID_VERSION) {
-> +	if (hv_max_functions_eax >= HYPERV_CPUID_VERSION) {
->  		hv_host_info_eax = cpuid_eax(HYPERV_CPUID_VERSION);
->  		hv_host_info_ebx = cpuid_ebx(HYPERV_CPUID_VERSION);
->  		hv_host_info_ecx = cpuid_ecx(HYPERV_CPUID_VERSION);
-> @@ -325,9 +327,11 @@ static void __init ms_hyperv_init_platform(void)
->  			ms_hyperv.isolation_config_a, ms_hyperv.isolation_config_b);
->  	}
->  
-> -	if (ms_hyperv.hints & HV_X64_ENLIGHTENED_VMCS_RECOMMENDED) {
-> +	if (hv_max_functions_eax >= HYPERV_CPUID_NESTED_FEATURES) {
->  		ms_hyperv.nested_features =
->  			cpuid_eax(HYPERV_CPUID_NESTED_FEATURES);
-> +		pr_info("Hyper-V: Nested features: 0x%x\n",
-> +			ms_hyperv.nested_features);
->  	}
->  
->  	/*
+Fixes: c22b0bcb1dd02 ("riscv: Add kprobes supported")
+Signed-off-by: Liao Chang <liaochang1@huawei.com>
+---
 
-With the commit message expanded,
+Changes in v2:
+- Reorganize commit message.
 
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+ arch/riscv/kernel/probes/kprobes.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
+diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probes/kprobes.c
+index 7e2c78e2ca6b..d71f7c49a721 100644
+--- a/arch/riscv/kernel/probes/kprobes.c
++++ b/arch/riscv/kernel/probes/kprobes.c
+@@ -260,8 +260,10 @@ int __kprobes kprobe_fault_handler(struct pt_regs *regs, unsigned int trapnr)
+ 
+ 		if (kcb->kprobe_status == KPROBE_REENTER)
+ 			restore_previous_kprobe(kcb);
+-		else
++		else {
++			kprobes_restore_local_irqflag(kcb, regs);
+ 			reset_current_kprobe();
++		}
+ 
+ 		break;
+ 	case KPROBE_HIT_ACTIVE:
 -- 
-Vitaly
+2.17.1
 
