@@ -2,104 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1376D3623BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7BD3623BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343776AbhDPPT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 11:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54726 "EHLO
+        id S1343638AbhDPPTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 11:19:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343697AbhDPPSS (ORCPT
+        with ESMTP id S1343523AbhDPPSr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 11:18:18 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A9D8C06138D
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 08:17:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mXM8BsDx8XODqEBa4z4najuCzVesa91/gBhAVhpaPQI=; b=rE9YauTT6DHy8BZS7KKsV+2eb/
-        SZC8NFGaEhlXvZpX6HKp3bIhseCGXDp4OoqksD0+2ISeqlgFk4acnjWaaODF/7fLpTCVx7Yg+Y5Mm
-        psU2yO85L8xrzg8FELUC45shQHio5KmuF8dPYpu2NDXgif21slDhAhA5P0tGgMC6pkISEAEkNRgr8
-        7Rfvj73xa53qQ6IojIXEr7j5mVSobxD0FjjPIkMyrU6c/buLMGwbEKM9TLlU4lYHOdJ2qLJKVHRv6
-        oW4zQ+OtFJFTJNWVpL7nr3D6DOBX1PsOdQoqRd/g/YBGVvbEZee2f1xqsbs+pMKYfmG3zMWbts7tv
-        BubRmqFQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lXQDY-002aG6-8o; Fri, 16 Apr 2021 15:17:14 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 60CD4300222;
-        Fri, 16 Apr 2021 17:17:11 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2E87B24C0E746; Fri, 16 Apr 2021 17:17:11 +0200 (CEST)
-Date:   Fri, 16 Apr 2021 17:17:11 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     paulmck <paulmck@kernel.org>, Will Deacon <will@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        lttng-dev <lttng-dev@lists.lttng.org>
-Subject: Re: liburcu: LTO breaking rcu_dereference on arm64 and possibly
- other architectures ?
-Message-ID: <YHmqd3BHwVmaUZHX@hirez.programming.kicks-ass.net>
-References: <1680415903.81652.1618584736742.JavaMail.zimbra@efficios.com>
+        Fri, 16 Apr 2021 11:18:47 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DE3B6C06175F;
+        Fri, 16 Apr 2021 08:18:21 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id CDA9292009C; Fri, 16 Apr 2021 17:18:20 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id C92F592009B;
+        Fri, 16 Apr 2021 17:18:20 +0200 (CEST)
+Date:   Fri, 16 Apr 2021 17:18:20 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Nix <nix@esperi.org.uk>
+cc:     Khalid Aziz <khalid@gonehiking.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] scsi: Set allocation length to 255 for ATA Information
+ VPD page
+In-Reply-To: <878s5joh2d.fsf@esperi.org.uk>
+Message-ID: <alpine.DEB.2.21.2104161628540.44318@angie.orcam.me.uk>
+References: <alpine.DEB.2.21.2104141244520.44318@angie.orcam.me.uk> <alpine.DEB.2.21.2104141306130.44318@angie.orcam.me.uk> <878s5joh2d.fsf@esperi.org.uk>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1680415903.81652.1618584736742.JavaMail.zimbra@efficios.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 10:52:16AM -0400, Mathieu Desnoyers wrote:
-> Hi Paul, Will, Peter,
-> 
-> I noticed in this discussion https://lkml.org/lkml/2021/4/16/118 that LTO
-> is able to break rcu_dereference. This seems to be taken care of by
-> arch/arm64/include/asm/rwonce.h on arm64 in the Linux kernel tree.
-> 
-> In the liburcu user-space library, we have this comment near rcu_dereference() in
-> include/urcu/static/pointer.h:
-> 
->  * The compiler memory barrier in CMM_LOAD_SHARED() ensures that value-speculative
->  * optimizations (e.g. VSS: Value Speculation Scheduling) does not perform the
->  * data read before the pointer read by speculating the value of the pointer.
->  * Correct ordering is ensured because the pointer is read as a volatile access.
->  * This acts as a global side-effect operation, which forbids reordering of
->  * dependent memory operations. Note that such concern about dependency-breaking
->  * optimizations will eventually be taken care of by the "memory_order_consume"
->  * addition to forthcoming C++ standard.
-> 
-> (note: CMM_LOAD_SHARED() is the equivalent of READ_ONCE(), but was introduced in
-> liburcu as a public API before READ_ONCE() existed in the Linux kernel)
-> 
-> Peter tells me the "memory_order_consume" is not something which can be used today.
-> Any information on its status at C/C++ standard levels and implementation-wise ?
-> 
-> Pragmatically speaking, what should we change in liburcu to ensure we don't generate
-> broken code when LTO is enabled ? I suspect there are a few options here:
-> 
-> 1) Fail to build if LTO is enabled,
-> 2) Generate slower code for rcu_dereference, either on all architectures or only
->    on weakly-ordered architectures,
-> 3) Generate different code depending on whether LTO is enabled or not. AFAIU this would only
->    work if every compile unit is aware that it will end up being optimized with LTO. Not sure
->    how this could be done in the context of user-space.
-> 4) [ Insert better idea here. ]
-> 
-> Thoughts ?
+On Thu, 15 Apr 2021, Nix wrote:
 
-Using memory_order_acquire is safe; and is basically what Will did for
-ARM64.
+> > Set the allocation length to 255 for the ATA Information VPD page 
+> > requested in the WRITE SAME handler, so as not to limit information 
+> > examined by `scsi_get_vpd_page' in the supported vital product data 
+> > pages unnecessarily.
+> >
+> > Originally it was thought that Areca hardware may have issues with a 
+> > valid allocation length supplied for a VPD inquiry, however older SCSI 
+> > standard revisions[1] consider 255 the maximum length allowed and what 
+> 
+> Aaaah. That explains a lot! (Not that I can remember what SCSI standard
+> rev that Areca firmware claimed to implement. I know I never updated the
+> firmware, so it's going to be something no newer than mid-2009 and
+> probably quite a bit older.)
 
-The problematic tranformations are possible even without LTO, although
-less likely due to less visibility, but everybody agrees they're
-possible and allowed.
+ From the original discussion I gather Areca sometimes acts as a 
+pass-through device to actual storage hardware, so it may well have been 
+decided for the firmware to take a conservative approach and interpret 
+the low order byte only.  A genuine bug cannot be ruled out either of 
+course, which I why I will appreciate your testing.
 
-OTOH we do not have a positive sighting of it actually happening (I
-think), we're all just being cautious and not willing to debug the
-resulting wreckage if it does indeed happen.
+> >  I can see you're still around.  Would you therefore please be so kind 
+> > as to verify this change with your Areca hardware if you still have it?
+> 
+> It's been up in the loft for years, but I'll get it out this weekend and
+> give it a spin :) this'll let me make sure the disks still spin as well,
+> which matters for an in-case-of-lightning-strike disaster-recovery
+> backup box.
+> 
+> (I just hope this kernel boots on it at all. It's about three years
+> since I retired it... let's see!)
 
+ FWIW if all else fails you can try this patch with the original kernel 
+you used with the box.  This piece of code hasn't changed, so until I 
+came up with the complete five-part solution proposed here I merely had 
+the original commit reverted as it is so as to allow forward progress.
+
+ In any case, as per the cover letter, I have upgraded from 2.6.18, much 
+older, and this was the sole show-stopper for the machine, running SMP 
+even, so chances are 5.11+ will work with your system as well.  The 
+other plain 486/EISA/ATA box, similarly upgraded (now that I got its 
+faulty odd industrial PSU finally replaced) works just fine with vanilla 
+5.11.
+
+ OTOH versions ~3.15 through to ~4.5 I have tried while bisecting this 
+issue mostly failed to even start booting due to what looks like a 
+heisenbug to me (e.g. switching from XZ to gzip for compression would 
+make some, but not all versions/configurations boot occasionally), so 
+YMMV.
+
+ Overall we're not that bad with keeping stuff working, it's more new 
+use that causes troubles sometimes.
+
+> >  It looks to me like you were thinking in the right direction with: 
+> > <https://lore.kernel.org/linux-scsi/87vc3nuipg.fsf@spindle.srvr.nix/>. 
+> 
+> It's the sort of mistake I could see myself making: an easy mistake to
+> make when so many things in C require buffer size - 1 or you get a
+> disastrous security hole...
+
+ And here it's masking, except that with (256 - 1) rather than (512 - 1) 
+as you suggested.
+
+ Thank you for your input!
+
+  Maciej
