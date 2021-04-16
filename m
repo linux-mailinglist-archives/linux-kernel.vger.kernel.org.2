@@ -2,116 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAAB8361C54
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB729361C59
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241472AbhDPIs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 04:48:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42228 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241105AbhDPIsJ (ORCPT
+        id S240476AbhDPItt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 04:49:49 -0400
+Received: from out28-97.mail.aliyun.com ([115.124.28.97]:38051 "EHLO
+        out28-97.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241340AbhDPIsq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 04:48:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618562864;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2r7NGmqheP2GV+6A/LiwNG2tOhjWpE+ouB1t/RVmSe4=;
-        b=FUhgS5DsuE9li4xMlFG9nF2S4BrL+uOfeU8Cwf5Es7/eZ22UJGXVILczvaPcWcHvtbunbU
-        77xXP4Ox9Atq3lLNIW1H1VQx8Bk6kW0iUgYpfPqn/o0BEh/IPLij5ONUcAqTvuF0lRRZet
-        /j0lRhQa0q9aRVYVvrA/slWu+49x1Xs=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-512-006IJkopPluMmfVFsoWBOw-1; Fri, 16 Apr 2021 04:47:42 -0400
-X-MC-Unique: 006IJkopPluMmfVFsoWBOw-1
-Received: by mail-ej1-f70.google.com with SMTP id k5-20020a1709061c05b029037cb8a99e03so1791332ejg.16
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 01:47:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2r7NGmqheP2GV+6A/LiwNG2tOhjWpE+ouB1t/RVmSe4=;
-        b=dTLdVly+hhIugnJOIxAzBOm720ndTNKoAnmWD5zKOeMPWO7q8XVQMxx5KeBt5/pKml
-         FDF781XgkwTvooZNXwB7JJB1uNtFw8nqea1AgSh4rqlkOzJG3tfHAm57SpGKP4pEwaR8
-         g1+d8e7QzsiOY1tLJjKQnJ4439ItgNs3SzGJWv2y5E/uthTS0Re16jqvQUbjY95ucEBm
-         1z4anIhFHEblRvLpHLdu3Cogq2QpQNr9WH4A/uXIsfzwQj9+4MdAIbaeX3MhIgN79ift
-         6Kgbu1AqHE3rPvY+Rh2Gudw4d6OSVQlYkMhqPvP4LTk8GvyBZM/pqegmftKE6ZeAud5k
-         rb0Q==
-X-Gm-Message-State: AOAM532X61V8+QE/E3AL5O06G4WSdbp1L5B9kzn05B+wn4JGM1URXxf8
-        mSBTkMHV038w6TB9be/bzQAmJh/pPcUhQXp+CD/a2n+3V8EoKBl/strU8+jzg5irgTihMUdobQw
-        ufeSqWtcwhcCTayO8QAgEqeag
-X-Received: by 2002:aa7:db87:: with SMTP id u7mr8433901edt.16.1618562861496;
-        Fri, 16 Apr 2021 01:47:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyB2d7tIaEFMBWd3DwYN1KfiOebKxLZRxhbIvY5dtME0hUSHkW/0SULGJHTws6pnnflB3CeaA==
-X-Received: by 2002:aa7:db87:: with SMTP id u7mr8433888edt.16.1618562861323;
-        Fri, 16 Apr 2021 01:47:41 -0700 (PDT)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id m14sm1016232edc.18.2021.04.16.01.47.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 01:47:41 -0700 (PDT)
-Date:   Fri, 16 Apr 2021 10:47:38 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Zhu Lingshan <lingshan.zhu@intel.com>
-Cc:     jasowang@redhat.com, mst@redhat.com, lulu@redhat.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 3/3] vDPA/ifcvf: get_config_size should return dev
- specific config size
-Message-ID: <20210416084738.k2xr7m6rdhrvoqr2@steredhat>
-References: <20210416071628.4984-1-lingshan.zhu@intel.com>
- <20210416071628.4984-4-lingshan.zhu@intel.com>
+        Fri, 16 Apr 2021 04:48:46 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07564378|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0219487-0.000672429-0.977379;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047201;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=16;RT=16;SR=0;TI=SMTPD_---.K-shfge_1618562890;
+Received: from zhouyanjie-virtual-machine.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.K-shfge_1618562890)
+          by smtp.aliyun-inc.com(10.147.40.233);
+          Fri, 16 Apr 2021 16:48:20 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     tsbogend@alpha.franken.de
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, paul.burton@mips.com,
+        paul@crapouillou.net, siyanteng@loongson.cn, huangpei@loongson.cn,
+        ira.weiny@intel.com, yangtiezhu@loongson.cn,
+        zhouyanjie@wanyeetech.com, jun.jiang@ingenic.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sernia.zhou@foxmail.com
+Subject: [PATCH] Revert "MIPS: make userspace mapping young by default".
+Date:   Fri, 16 Apr 2021 16:47:48 +0800
+Message-Id: <1618562868-91115-1-git-send-email-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210416071628.4984-4-lingshan.zhu@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 03:16:28PM +0800, Zhu Lingshan wrote:
->get_config_size() should return the size based on the decected
->device type.
->
->Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
->---
-> drivers/vdpa/ifcvf/ifcvf_main.c | 19 ++++++++++++++++++-
-> 1 file changed, 18 insertions(+), 1 deletion(-)
+This reverts commit f685a533a7fab35c5d069dcd663f59c8e4171a75.
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+It cause kernel panic on Ingenic X1830, so let's revert it.
 
->
->diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
->index 376b2014916a..3b6f7862dbb8 100644
->--- a/drivers/vdpa/ifcvf/ifcvf_main.c
->+++ b/drivers/vdpa/ifcvf/ifcvf_main.c
->@@ -356,7 +356,24 @@ static u32 ifcvf_vdpa_get_vq_align(struct vdpa_device *vdpa_dev)
->
-> static size_t ifcvf_vdpa_get_config_size(struct vdpa_device *vdpa_dev)
-> {
->-	return sizeof(struct virtio_net_config);
->+	struct ifcvf_adapter *adapter = vdpa_to_adapter(vdpa_dev);
->+	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
->+	struct pci_dev *pdev = adapter->pdev;
->+	size_t size;
->+
->+	switch (vf->dev_type) {
->+	case VIRTIO_ID_NET:
->+		size = sizeof(struct virtio_net_config);
->+		break;
->+	case VIRTIO_ID_BLOCK:
->+		size = sizeof(struct virtio_blk_config);
->+		break;
->+	default:
->+		size = 0;
->+		IFCVF_ERR(pdev, "VIRTIO ID %u not supported\n", vf->dev_type);
->+	}
->+
->+	return size;
-> }
->
-> static void ifcvf_vdpa_get_config(struct vdpa_device *vdpa_dev,
->-- 
->2.27.0
->
+Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+---
+ arch/mips/mm/cache.c | 31 ++++++++++++++-----------------
+ 1 file changed, 14 insertions(+), 17 deletions(-)
+
+diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
+index 7719d63..9cfd432 100644
+--- a/arch/mips/mm/cache.c
++++ b/arch/mips/mm/cache.c
+@@ -21,7 +21,6 @@
+ #include <asm/cpu.h>
+ #include <asm/cpu-features.h>
+ #include <asm/setup.h>
+-#include <asm/pgtable.h>
+ 
+ /* Cache operations. */
+ void (*flush_cache_all)(void);
+@@ -157,31 +156,29 @@ unsigned long _page_cachable_default;
+ EXPORT_SYMBOL(_page_cachable_default);
+ 
+ #define PM(p)	__pgprot(_page_cachable_default | (p))
+-#define PVA(p)	PM(_PAGE_VALID | _PAGE_ACCESSED | (p))
+ 
+ static inline void setup_protection_map(void)
+ {
+ 	protection_map[0]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+-	protection_map[1]  = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
+-	protection_map[2]  = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+-	protection_map[3]  = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
+-	protection_map[4]  = PVA(_PAGE_PRESENT);
+-	protection_map[5]  = PVA(_PAGE_PRESENT);
+-	protection_map[6]  = PVA(_PAGE_PRESENT);
+-	protection_map[7]  = PVA(_PAGE_PRESENT);
++	protection_map[1]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
++	protection_map[2]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
++	protection_map[3]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
++	protection_map[4]  = PM(_PAGE_PRESENT);
++	protection_map[5]  = PM(_PAGE_PRESENT);
++	protection_map[6]  = PM(_PAGE_PRESENT);
++	protection_map[7]  = PM(_PAGE_PRESENT);
+ 
+ 	protection_map[8]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+-	protection_map[9]  = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
+-	protection_map[10] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE |
++	protection_map[9]  = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
++	protection_map[10] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE |
+ 				_PAGE_NO_READ);
+-	protection_map[11] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
+-	protection_map[12] = PVA(_PAGE_PRESENT);
+-	protection_map[13] = PVA(_PAGE_PRESENT);
+-	protection_map[14] = PVA(_PAGE_PRESENT);
+-	protection_map[15] = PVA(_PAGE_PRESENT);
++	protection_map[11] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
++	protection_map[12] = PM(_PAGE_PRESENT);
++	protection_map[13] = PM(_PAGE_PRESENT);
++	protection_map[14] = PM(_PAGE_PRESENT | _PAGE_WRITE);
++	protection_map[15] = PM(_PAGE_PRESENT | _PAGE_WRITE);
+ }
+ 
+-#undef _PVA
+ #undef PM
+ 
+ void cpu_cache_init(void)
+-- 
+2.7.4
 
