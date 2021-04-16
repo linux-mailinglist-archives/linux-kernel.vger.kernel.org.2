@@ -2,132 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 090623619AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 08:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB783619B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 08:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239023AbhDPGCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 02:02:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43706 "EHLO
+        id S238344AbhDPGFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 02:05:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238753AbhDPGCL (ORCPT
+        with ESMTP id S229706AbhDPGFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 02:02:11 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F00CC061574;
-        Thu, 15 Apr 2021 23:01:47 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so24788442otb.7;
-        Thu, 15 Apr 2021 23:01:47 -0700 (PDT)
+        Fri, 16 Apr 2021 02:05:16 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7511C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 23:04:50 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 12so42782558lfq.13
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 23:04:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=T4qHEDweevzaKk+/Z7BMChCVb0eziZLwAYSXDX8BD/Q=;
-        b=gBtm9gxXcMOgIUXbqx9Dano+Ty2CSlmYq4jCAqzvhb1V2WUOeAi2V50ECrk7ENP0Z3
-         xoeNLkQH/VzHK4wZrI4yAaNTOOKF29SCeox3B1+9t4oSKKPoOGjsm1ljGPj8qlZt67EZ
-         Tty/xNjM/PInqfCa9P//rKTFG6JUCZOsyyfmMMNPVctirKlbX8ob0u2PUcPoMqn+Ydzd
-         9Wga1CdYoNE/ROSpb/g6yj32I4nMh4KP4CSXn2pcu9Sj1/C0L4KFb5FbCFpLP/zY5bVX
-         FbDUD8iOC/JhlJrIqaqkwbvcK/vZo5m0BByG0QSg6vjdtJ2s/3Or9LGRdtBPQXrhdf58
-         ov8w==
+         :cc;
+        bh=gbzaa2Ai7xXdaJk+SuOzDr1sDQqCY9sqWL6R/1Zrh+s=;
+        b=W5/QWZWFFaSWg9idKZ6DJEpPmhh/eOS3XCiS0GJpjJR7c/9hO/bPRnbhDx6fcqOh/0
+         sp9nz3xawBALOHCXGcN4jIih6Lo7LRUhWSYjVKt/IE7M5QZMCikdUSMKXXJqXnNorxIu
+         UcotZdbyz0htz+FRuAF9BYmaG3K/gWMFAT/A8/JmQBFrNNVdGLgxB72JzOcS3dWuBrUO
+         pLLR3MAXjECLXZHF0eu89BJvQwappXx3P0EcpPXDjPCJULvqxF+y1iSxNPQzfc3EiG4c
+         rSb/0coU8nEO5IvdaN3SjfYFjNy5PzO32XHT/eoBVhUpxXlkT2FrApLCrpZqzbcHuazj
+         0Naw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=T4qHEDweevzaKk+/Z7BMChCVb0eziZLwAYSXDX8BD/Q=;
-        b=A3RG8aE7Nbn/LzFta0obYzhsK6cFVW9KQ1YnK2nLxsNb74/Tca+ioKtMWfyWLaOvVK
-         nTkwznXaklc80Z/P+XOF6RLyP2ygZKZqJw/iekZ340R8mpLo8qAKdpS6S0q57BXMBsfA
-         cIeHbcTcjQPilAYGmEPJ/EZHYszEyp9/whVjWMLB+67MvDGYN20J79rnQvpF9OT/cpOP
-         t7sI3CXKsT41UhxHryj163fa7KnzS9o8jmJIlRryD+bebLwtdgtmypmn4pQey+f/MyKS
-         CquG38R7UYCU/VI8NVDulEkmV6CojaAYkFF3q9tnlWH7Kr/0EP5YCZyt0IwJhaXW+jmr
-         75eg==
-X-Gm-Message-State: AOAM530JR3fL8Yg8ywms2Pz2GSyVXgtNh/aFsOfD7bTfXNYW9DdgQuXb
-        hxs+1RrGhf7oP4q2EJ/onZnqQvtxN0fFxiC/Z4A=
-X-Google-Smtp-Source: ABdhPJyKhobAkSPrF0bBE94D2OcYfN/PyYnWg2+xNPQ+k2AGgT/bPjH/3M5KcyXX5guT86pQU+koBSKDN7y/XH2ctlQ=
-X-Received: by 2002:a05:6830:15d0:: with SMTP id j16mr2509358otr.184.1618552906846;
- Thu, 15 Apr 2021 23:01:46 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=gbzaa2Ai7xXdaJk+SuOzDr1sDQqCY9sqWL6R/1Zrh+s=;
+        b=FYBRh+F/gZRNVlQ0fpcwg4DVqLXM5lyCYfyt9w5l3LRWAuqM6vNrPPmexT/lCWM2lP
+         MH/vPjgrc9mSKRxdzC7ouqYkjbz77Fm+ILAj3ml1mjhZ/jihw/ND2XT2nQ2xtbrFKDXN
+         YOAzGswBEz8uXMgxSy8cc0/wQWRKtCFbXkXQ5w3Wik9okkFYg6ZPePMCgx23xbMssU++
+         DQXmdSPQOeE0q7c6/Sqxv1xBboFMoI0cG6Xf3sxZPsIJ1W3G6PQq1aO40PKmVSiTJiCM
+         +xWF5V17e1SdBljgUy+d+a4GbHmf6mCXNj8yjWkV7hMK7VmzX8x2B2369mYyppZvZ4cI
+         /Zpg==
+X-Gm-Message-State: AOAM533xTrppzi6e/f96aVYDbCfkylZirJKyx0X7JJKeKKFjVPk6A+nN
+        weIX9HtZopOED5EuIpLixIbfhJOlkl1nineNduYPJw==
+X-Google-Smtp-Source: ABdhPJzd3Uifx8wPh8+Ukv5wC6+mAKF4pnOLfbn/l4Zr9Mzj0XiDdg2h8UGLElnlq21TU6eWm2HsUZh+V10t5NGgiSg=
+X-Received: by 2002:a19:ac09:: with SMTP id g9mr1821239lfc.547.1618553088788;
+ Thu, 15 Apr 2021 23:04:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210415093519.1920877-1-hsinyi@chromium.org> <20210415093519.1920877-8-hsinyi@chromium.org>
-In-Reply-To: <20210415093519.1920877-8-hsinyi@chromium.org>
-From:   Enric Balletbo Serra <eballetbo@gmail.com>
-Date:   Fri, 16 Apr 2021 08:01:38 +0200
-Message-ID: <CAFqH_53t4Y-D2tvi7yySc04VeJrYQWBFtVE7ZipHvpwPN-Zy6g@mail.gmail.com>
-Subject: Re: [PATCH 8/8] arm64: dts: mt8183: Add kukui-jacuzzi-kenzo board
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Ben Ho <Ben.Ho@mediatek.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+References: <20210414184604.23473-1-ojeda@kernel.org> <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
+ <YHkSO3TUktyPs4Nz@boqun-archlinux>
+In-Reply-To: <YHkSO3TUktyPs4Nz@boqun-archlinux>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 15 Apr 2021 23:04:37 -0700
+Message-ID: <CAKwvOdnRx+8LhOAnH24CeZz2a2-MwF03oB7Um_pKBq8WAoLNxw@mail.gmail.com>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, ojeda@kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Wedson Almeida Filho <wedsonaf@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hsin-Yi,
+On Thu, Apr 15, 2021 at 9:27 PM Boqun Feng <boqun.feng@gmail.com> wrote:
+>
+> [Copy LKMM people, Josh, Nick and Wedson]
+>
+> On Thu, Apr 15, 2021 at 08:58:16PM +0200, Peter Zijlstra wrote:
+> > On Wed, Apr 14, 2021 at 08:45:51PM +0200, ojeda@kernel.org wrote:
+> >
+> > > Rust is a systems programming language that brings several key
+> > > advantages over C in the context of the Linux kernel:
+> > >
+> > >   - No undefined behavior in the safe subset (when unsafe code is
+> > >     sound), including memory safety and the absence of data races.
+> >
+> > And yet I see not a single mention of the Rust Memory Model and how it
+> > aligns (or not) with the LKMM. The C11 memory model for example is a
+> > really poor fit for LKMM.
+> >
+>
+> I think Rust currently uses C11 memory model as per:
+>
+>         https://doc.rust-lang.org/nomicon/atomics.html
+>
+> , also I guess another reason that they pick C11 memory model is because
+> LLVM has the support by default.
+>
+> But I think the Rust Community still wants to have a good memory model,
+> and they are open to any kind of suggestion and input. I think we (LKMM
+> people) should really get involved, because the recent discussion on
+> RISC-V's atomics shows that if we didn't people might get a "broken"
+> design because they thought C11 memory model is good enough:
+>
+>         https://lore.kernel.org/lkml/YGyZPCxJYGOvqYZQ@boqun-archlinux/
+>
+> And the benefits are mutual: a) Linux Kernel Memory Model (LKMM) is
+> defined by combining the requirements of developers and the behavior of
+> hardwares, it's pratical and can be a very good input for memory model
+> designing in Rust; b) Once Rust has a better memory model, the compiler
+> technologies whatever Rust compilers use to suppor the memory model can
+> be adopted to C compilers and we can get that part for free.
 
-Thank you for your patch.
+Yes, I agree; I think that's a very good approach.  Avoiding the ISO
+WG14 is interesting; at least the merits could be debated in the
+public and not behind closed doors.
 
-Missatge de Hsin-Yi Wang <hsinyi@chromium.org> del dia dj., 15 d=E2=80=99ab=
-r.
-2021 a les 11:37:
 >
-> Kenzo is known as Acer Chromebook 311.
+> At least I personally is very intereted to help Rust on a complete and
+> pratical memory model ;-)
 >
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Josh, I think it's good if we can connect to the people working on Rust
+> memoryg model, I think the right person is Ralf Jung and the right place
+> is https://github.com/rust-lang/unsafe-code-guidelines, but you
+> cerntainly know better than me ;-) Or maybe we can use Rust-for-Linux or
+> linux-toolchains list to discuss.
+>
+> [...]
+> > >   - Boqun Feng is working hard on the different options for
+> > >     threading abstractions and has reviewed most of the `sync` PRs.
+> >
+> > Boqun, I know you're familiar with LKMM, can you please talk about how
+> > Rust does things and how it interacts?
+>
+> As Wedson said in the other email, currently there is no code requiring
+> synchronization between C side and Rust side, so we are currently fine.
+> But in the longer term, we need to teach Rust memory model about the
+> "design patterns" used in Linux kernel for parallel programming.
+>
+> What I have been doing so far is reviewing patches which have memory
+> orderings in Rust-for-Linux project, try to make sure we don't include
+> memory ordering bugs for the beginning.
+>
+> Regards,
+> Boqun
 
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
-> ---
->  arch/arm64/boot/dts/mediatek/Makefile                |  1 +
->  .../boot/dts/mediatek/mt8183-kukui-jacuzzi-kenzo.dts | 12 ++++++++++++
->  2 files changed, 13 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-ken=
-zo.dts
->
-> diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/=
-mediatek/Makefile
-> index b33d0bc58021..25770d83059d 100644
-> --- a/arch/arm64/boot/dts/mediatek/Makefile
-> +++ b/arch/arm64/boot/dts/mediatek/Makefile
-> @@ -17,6 +17,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt8183-kukui-jacuzzi-b=
-urnet.dtb
->  dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt8183-kukui-jacuzzi-damu.dtb
->  dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt8183-kukui-jacuzzi-juniper-sku16.dtb
->  dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt8183-kukui-jacuzzi-kappa.dtb
-> +dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt8183-kukui-jacuzzi-kenzo.dtb
->  dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt8183-kukui-jacuzzi-willow-sku0.dtb
->  dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt8183-kukui-jacuzzi-willow-sku1.dtb
->  dtb-$(CONFIG_ARCH_MEDIATEK) +=3D mt8183-kukui-kakadu.dtb
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-kenzo.dts =
-b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-kenzo.dts
-> new file mode 100644
-> index 000000000000..6f1aa692753a
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-jacuzzi-kenzo.dts
-> @@ -0,0 +1,12 @@
-> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> +/*
-> + * Copyright 2021 Google LLC
-> + */
-> +
-> +/dts-v1/;
-> +#include "mt8183-kukui-jacuzzi-juniper.dtsi"
-> +
-> +/ {
-> +       model =3D "Google kenzo sku17 board";
-> +       compatible =3D "google,juniper-sku17", "google,juniper", "mediate=
-k,mt8183";
-> +};
-> --
-> 2.31.1.295.g9ea45b61b8-goog
->
->
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+
+-- 
+Thanks,
+~Nick Desaulniers
