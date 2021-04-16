@@ -2,101 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D720362307
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC20362309
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:52:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244959AbhDPOmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:42:40 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40399 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236105AbhDPOmb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:42:31 -0400
-Received: from mail-ed1-f72.google.com ([209.85.208.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lXPfZ-0000Cg-F3
-        for linux-kernel@vger.kernel.org; Fri, 16 Apr 2021 14:42:05 +0000
-Received: by mail-ed1-f72.google.com with SMTP id v5-20020a0564023485b029037ff13253bcso7111901edc.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:42:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=H3orKY1/6E7It9couZQFwgWHB9x2xfiTMv49UiHX33I=;
-        b=Z82r+thQLP8R3Fc0YrZisFiM5rNh3iuSzjm9760OenKhMY2UQ8udF8aPoiuxCYuilK
-         pPsvpGQLGUUzAZtkDxwXm7K1QWbJ1DxFeD2AV2pywpVqGc1OA9y6la54B79nsLszt+1K
-         SUgiSt5PDHPo5POle2pEGCoEnxl8cYV8lfRUsUtNp3zuyQUrmX7UlXO0XdxTQAxlBgZP
-         t1CmSw5Q6FkhCcVznL8PD6NgRDryIjgM+4TPFNWo/Hjcy0DcOnu+PB6CouP6WxnwPuyd
-         JnyKnDh13FgYwuTc19H7wQxzT8Vg8u012qoFNPL1YcbjT0LwpKPa5Ts1wOd7JOywwHhW
-         TM1Q==
-X-Gm-Message-State: AOAM530PchV1MyVnhopAHH/Cf7lhVHvJ2Dac/ABFHbA0yYnZx+zP7WzU
-        d4gB0x94UebsjLJSwRGoU0ZBSV0hSv517ZPAWydQqf/HAicQMgLX0hNhbTxqUgodCAf2lakuMxj
-        1cAGocZr9+v4/YXQi0CarjkARZbHN1ufKldnwzjVPug==
-X-Received: by 2002:a17:906:3153:: with SMTP id e19mr8808151eje.351.1618584125253;
-        Fri, 16 Apr 2021 07:42:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxLYgDmRYOx7mlmnqWjHmwHF8mTlbAilqonRblj7lGIBqxozRBPiD2hV0hjFdS3yuqciMmEQw==
-X-Received: by 2002:a17:906:3153:: with SMTP id e19mr8808134eje.351.1618584125122;
-        Fri, 16 Apr 2021 07:42:05 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
-        by smtp.gmail.com with ESMTPSA id t7sm5532707edq.42.2021.04.16.07.42.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Apr 2021 07:42:04 -0700 (PDT)
-Subject: Re: [PATCH 38/40] drm/exynos/exynos_drm_ipp: Fix some function name
- disparity issues
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Inki Dae <inki.dae@samsung.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-References: <20210416143725.2769053-1-lee.jones@linaro.org>
- <20210416143725.2769053-39-lee.jones@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <81a27ab8-9e2e-8f29-c1dd-19ec54ec3d28@canonical.com>
-Date:   Fri, 16 Apr 2021 16:42:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S245179AbhDPOnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:43:18 -0400
+Received: from mga14.intel.com ([192.55.52.115]:24839 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244373AbhDPOmd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 10:42:33 -0400
+IronPort-SDR: OkcZ0s6HkwD4zKUlGKKl6+uXeq5e7sdsbyvCiZh7eL/noOThK9TOSsowGGA+ZsXXN5Gjxf+pvI
+ r8ylf4zQYeAw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9956"; a="194606650"
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="194606650"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 07:42:08 -0700
+IronPort-SDR: HG4qjL1YMnW5HHQIdjfSEzfDoqyXUesZW51hWmyBeha99RNQ6nryWSzv4AI92sOWr++wOe2EW/
+ w6GtmmN+UAAw==
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="399925866"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 07:42:06 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lXPfY-004fhK-4q; Fri, 16 Apr 2021 17:42:04 +0300
+Date:   Fri, 16 Apr 2021 17:42:04 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v1 1/1] video: ssd1307fb: Drop OF dependency
+Message-ID: <YHmiPMcgMqHCzaur@smile.fi.intel.com>
+References: <20210409164140.17337-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210416143725.2769053-39-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210409164140.17337-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/04/2021 16:37, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
++Cc: Greg.
+
+Greg, can you pick up this one?
+
+The subsystem seems orphaned and I see your name in the git history for the
+recent submissions against that driver.
+
+Id is 20210409164140.17337-1-andriy.shevchenko@linux.intel.com
+
+On Fri, Apr 09, 2021 at 07:41:40PM +0300, Andy Shevchenko wrote:
+> After the commit 72915994e028 ("video: ssd1307fb: Make use of device
+> properties") driver does not depend on OF, drop unneeded dependency.
 > 
->  drivers/gpu/drm/exynos/exynos_drm_ipp.c:105: warning: expecting prototype for exynos_drm_ipp_ioctl_get_res_ioctl(). Prototype was for exynos_drm_ipp_get_res_ioctl() instead
->  drivers/gpu/drm/exynos/exynos_drm_ipp.c:153: warning: expecting prototype for exynos_drm_ipp_ioctl_get_caps(). Prototype was for exynos_drm_ipp_get_caps_ioctl() instead
-> 
-> Cc: Inki Dae <inki.dae@samsung.com>
-> Cc: Joonyoung Shim <jy0922.shim@samsung.com>
-> Cc: Seung-Woo Kim <sw0312.kim@samsung.com>
-> Cc: Kyungmin Park <kyungmin.park@samsung.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-samsung-soc@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->  drivers/gpu/drm/exynos/exynos_drm_ipp.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  drivers/video/fbdev/Kconfig | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
+> index 4f02db65dede..7506b5949eb0 100644
+> --- a/drivers/video/fbdev/Kconfig
+> +++ b/drivers/video/fbdev/Kconfig
+> @@ -2209,7 +2209,6 @@ config FB_SIMPLE
+>  config FB_SSD1307
+>  	tristate "Solomon SSD1307 framebuffer support"
+>  	depends on FB && I2C
+> -	depends on OF
+>  	depends on GPIOLIB || COMPILE_TEST
+>  	select FB_SYS_FOPS
+>  	select FB_SYS_FILLRECT
+> -- 
+> 2.30.2
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-
-Best regards,
-Krzysztof
