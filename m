@@ -2,91 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C1E361B81
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 10:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E30361B84
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 10:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240129AbhDPIX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 04:23:57 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:16083 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229706AbhDPIXw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 04:23:52 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618561408; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=3huQkCIQxwU3fG7sB0tL0HmGVzjHRE4WDz/luFfQpRk=; b=jLZcW5K1PK22eDbG743LE25ohfkGIQFCIaMZVOzGnKYRxa/IQPnL/TVX6p2wZCIGZ9vVCD7J
- 6RXbWIAywviCFg1eww6MLJ0GTzg2wKoUlK3kqQbnKGyfDBzdZ+63yxpOtqQ764PlxQcBCW8l
- tEkURTT36mbaYyCU9x1C5gAp8kY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 6079496b853c0a2c46e36bee (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Apr 2021 08:23:07
- GMT
-Sender: taozha=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 73306C433CA; Fri, 16 Apr 2021 08:23:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from taozha-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: taozha)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1EABBC433ED;
-        Fri, 16 Apr 2021 08:23:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1EABBC433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=taozha@codeaurora.org
-From:   Tao Zhang <taozha@codeaurora.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc:     Tao Zhang <taozha@codeaurora.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Tingwei Zhang <tingwei@codeaurora.org>,
-        Mao Jinlong <jinlmao@codeaurora.org>,
-        Yuanfang Zhang <zhangyuanfang@codeaurora.org>
-Subject: [PATCH v1 2/2] dt-bindings: arm: add property for coresight component name
-Date:   Fri, 16 Apr 2021 16:22:42 +0800
-Message-Id: <1618561362-1561-3-git-send-email-taozha@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1618561362-1561-1-git-send-email-taozha@codeaurora.org>
-References: <1618561362-1561-1-git-send-email-taozha@codeaurora.org>
+        id S238898AbhDPIZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 04:25:49 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:17364 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232022AbhDPIZr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 04:25:47 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FM8Nv077CzlYCq;
+        Fri, 16 Apr 2021 16:23:27 +0800 (CST)
+Received: from DESKTOP-5IS4806.china.huawei.com (10.174.187.224) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 16 Apr 2021 16:25:13 +0800
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Ben Gardon <bgardon@google.com>
+CC:     <wanghaibin.wang@huawei.com>
+Subject: [RFC PATCH v2 0/2] KVM: x86: Enable dirty logging lazily for huge pages
+Date:   Fri, 16 Apr 2021 16:25:09 +0800
+Message-ID: <20210416082511.2856-1-zhukeqian1@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.174.187.224]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add property "coresight-name" for coresight component name. This
-allows coresight driver to read device name from device entries.
+Currently during start dirty logging, if we're with init-all-set,
+we write protect huge pages and leave normal pages untouched, for
+that we can enable dirty logging for these pages lazily.
 
-Signed-off-by: Tao Zhang <taozha@codeaurora.org>
----
- Documentation/devicetree/bindings/arm/coresight.txt | 2 ++
- 1 file changed, 2 insertions(+)
+Actually enable dirty logging lazily for huge pages is feasible
+too, which not only reduces the time of start dirty logging, also
+greatly reduces side-effect on guest when there is high dirty rate.
 
-diff --git a/Documentation/devicetree/bindings/arm/coresight.txt b/Documentation/devicetree/bindings/arm/coresight.txt
-index d711676..0e980ce 100644
---- a/Documentation/devicetree/bindings/arm/coresight.txt
-+++ b/Documentation/devicetree/bindings/arm/coresight.txt
-@@ -103,6 +103,8 @@ its hardware characteristcs.
- 	  powers down the coresight component also powers down and loses its
- 	  context. This property is currently only used for the ETM 4.x driver.
- 
-+	* coresight-name: the name of the coresight devices.
-+
- * Optional properties for ETM/PTMs:
- 
- 	* arm,cp14: must be present if the system accesses ETM/PTM management
+Thanks,
+Keqian
+
+Keqian Zhu (2):
+  KVM: x86: Support write protect gfn with min_level
+  KVM: x86: Not wr-protect huge page with init_all_set dirty log
+
+ arch/x86/kvm/mmu/mmu.c          | 57 ++++++++++++++++++++++++++++-----
+ arch/x86/kvm/mmu/mmu_internal.h |  3 +-
+ arch/x86/kvm/mmu/page_track.c   |  2 +-
+ arch/x86/kvm/mmu/tdp_mmu.c      | 16 ++++++---
+ arch/x86/kvm/mmu/tdp_mmu.h      |  3 +-
+ arch/x86/kvm/x86.c              | 37 ++++++---------------
+ 6 files changed, 76 insertions(+), 42 deletions(-)
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.23.0
 
