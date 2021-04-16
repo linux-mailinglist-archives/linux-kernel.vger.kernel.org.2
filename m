@@ -2,187 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5E43626B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1053626C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241518AbhDPR04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 13:26:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55934 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235935AbhDPR0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 13:26:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE88260FED;
-        Fri, 16 Apr 2021 17:26:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618593989;
-        bh=5P4/qPwdpux1jE4JlcCASPqUxEgy+/WluDGUYEnfiG0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=JaBGkBjpLtY194K6WS2uxdqR/r1qu3qiBMiRynIkyqd2MmgY/YbGP73TNzgq+vojy
-         EhMl5l1JPqMGYvtWarXEsG9OHijpShN9oRDF2faL+YOs8P6WlHNmhY7/BODeymVuSa
-         mJjhT1EpBpwvizfWakOM9MhTrycojEkEJFLUejqph2HpSnTABrEZdPSeY+9KmsGj5x
-         K4fWGYiW8H4nhjHOzLxgl/XsAsFU+RJVNHf0sWv5ALl7uiN6uXaCyheHAsefSlNoZI
-         bEFg02mV31s5GirLmmqtExkuuRNTCSbzOdHPCVFcv0Mw3lcvKLXz8ohHCtbCOIQb+E
-         Nb/ZplQMRgHpw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 84E085C0253; Fri, 16 Apr 2021 10:26:29 -0700 (PDT)
-Date:   Fri, 16 Apr 2021 10:26:29 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Xu, Yanfei" <yanfei.xu@windriver.com>
-Cc:     rcu@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [Qestion] Is preempt_disable/enable needed in non-preemption
- code path
-Message-ID: <20210416172629.GH4212@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <b068d707-0ac7-4840-a297-112731972d8a@windriver.com>
- <20210415154326.GF4510@paulmck-ThinkPad-P17-Gen-1>
- <adae433f-f886-32e7-2ebd-192a624d7586@windriver.com>
- <20210415170748.GA4212@paulmck-ThinkPad-P17-Gen-1>
- <3ef49985-68c9-277d-648c-53447ff602f4@windriver.com>
+        id S242273AbhDPRav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 13:30:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234404AbhDPRar (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 13:30:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166BAC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:30:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8TWUEpRZp/QTwrvwYSXbnkSx60aeb88p1od16kj1Quo=; b=EP6h+yaataVxruWXk8aKNrfi1k
+        K0yIMUSpQWcoq9exyCKf/XnXGnRr8a6iPUzUFoxVMcvCBOuTMlJrPZsfjfgNfWkQTId+jgu6FtUvU
+        TLBvi8CneTR+9DIFMgLjjMP4koEMwYc3vAlfFsrMAP7Mgza6IbWSXey3OTKthxO/trfHn/qucpbau
+        QJDCqiNDihOKNtNShpiSdC4RNw21ci0Zatd0BeewNkD2zSgY+5JIogS4W5z8Z0x1J25AQEe+YwGVo
+        EuRfhXo8OYEoypPgxzGYMS9MZoEQwiWRnnLXmC8Viy8W8tkK8wzSJ0n8ggnd15+f9dyNofQvL8MYK
+        CCrayGEw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lXSGz-00AFKB-Ko; Fri, 16 Apr 2021 17:28:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EF4ED3001FF;
+        Fri, 16 Apr 2021 19:28:52 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CE6B124C0E74A; Fri, 16 Apr 2021 19:28:52 +0200 (CEST)
+Date:   Fri, 16 Apr 2021 19:28:52 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Bharata B Rao <bharata@linux.vnet.ibm.com>,
+        Phil Auld <pauld@redhat.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5] sched/debug: Use sched_debug_lock to serialize use of
+ cgroup_path[] only
+Message-ID: <YHnJVK5N1QMTlDgm@hirez.programming.kicks-ass.net>
+References: <20210415195426.6677-1-longman@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3ef49985-68c9-277d-648c-53447ff602f4@windriver.com>
+In-Reply-To: <20210415195426.6677-1-longman@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 06:51:10PM +0800, Xu, Yanfei wrote:
+On Thu, Apr 15, 2021 at 03:54:26PM -0400, Waiman Long wrote:
+> The handling of sysrq key can be activated by echoing the key to
+> /proc/sysrq-trigger or via the magic key sequence typed into a terminal
+> that is connected to the system in some way (serial, USB or other mean).
+> In the former case, the handling is done in a user context. In the
+> latter case, it is likely to be in an interrupt context.
 > 
+> Currently in print_cpu() of kernel/sched/debug.c, sched_debug_lock is
+> taken with interrupt disabled for the whole duration of the calls to
+> print_*_stats() and print_rq() which could last for the quite some time
+> if the information dump happens on the serial console.
 > 
-> On 4/16/21 1:07 AM, Paul E. McKenney wrote:
-> > [Please note: This e-mail is from an EXTERNAL e-mail address]
-> > 
-> > On Fri, Apr 16, 2021 at 12:18:42AM +0800, Xu, Yanfei wrote:
-> > > 
-> > > 
-> > > On 4/15/21 11:43 PM, Paul E. McKenney wrote:
-> > > > [Please note: This e-mail is from an EXTERNAL e-mail address]
-> > > > 
-> > > > On Thu, Apr 15, 2021 at 11:04:05PM +0800, Xu, Yanfei wrote:
-> > > > > Hi experts,
-> > > > > 
-> > > > > I am learning rcu mechanism and its codes. When looking at the
-> > > > > rcu_blocking_is_gp(), I found there is a pair preemption disable/enable
-> > > > > operation in non-preemption code path. And it has been a long time. I can't
-> > > > > understand why we need it? Is there some thing I missed? If not, can we
-> > > > > remove the unnecessary operation like blow?
-> > > > 
-> > > > Good point, you are right that preemption is disabled anyway in that block
-> > > > of code.  However, preempt_disable() and preempt_enable() also prevent the
-> > > > compiler from moving that READ_ONCE() around.  So my question to you is
-> > > > whether it is safe to remove those statements entirely or whether they
-> > > > should instead be replaced by barrier() or similar.
-> > > 
-> > > Thanks for your reply! :)
-> > > 
-> > > Yes, preempt_disable() and preempt_enable() defined in !preemption are
-> > > barrier(). barrier can prevent from reordering that READ_ONCE(), but base on
-> > > my current understanding, volatile in READ_ONCE can also tell the compiler
-> > > not to reorder it. So, I think it's safe?
-> > 
-> > Maybe.
-> > 
-> > Please keep in mind that although the compiler is prohibited from
-> > reordering volatile accesses with each other, there is nothing stopping
-> > it from reordering volatile accesses with non-volatile accesses.
+> If the system has many cpus and the sched_debug_lock is somehow busy
+> (e.g. parallel sysrq-t), the system may hit a hard lockup panic
+> depending on the actually serial console implementation of the
+> system. For instance,
 > 
-> Thanks for your patient explanation!
+...
 > 
-> I am trying to absorb what you said. Blow are my understanding:
-> 1. "the compiler is prohibited from reordering volatile accesses with each
-> other" means these situations:
-> int a;
-> foo()
-> {
->     for(;;)
->         READ_ONCE(a);
-> }
+> The purpose of sched_debug_lock is to serialize the use of the global
+> cgroup_path[] buffer in print_cpu(). The rests of the printk calls don't
+> need serialization from sched_debug_lock.
 > 
-> or
+> Calling printk() with interrupt disabled can still be problematic if
+> multiple instances are running. Allocating a stack buffer of PATH_MAX
+> bytes is not feasible because of the limited size of the kernel stack.
 > 
-> int a,b;
-> foo()
-> {
->     int c,d;
->     c = READ_ONCE(a);
->     d = READ_ONCE(b);
-> }
-
-Yes, in both cases the load instructions emitted for the READ_ONCE()
-macros must be emitted in order.  The underlying hardware is free
-to reorder.
-
-> 2. "volatile accesses with non-volatile accesses" means d=b may happen
-> before c=READ_ONCE(a) :
-> int a;
-> foo()
-> {
->     int b = 2
->     int c,d;
->     c = READ_ONCE(a);
->     d = b;
-> }
-> if we want to keep the ordering of volatile access "c=READ_ONCE(a)" and
-> non-volatile access "d=b", we should use stronger barrier like barrier().
-
-Or an additional READ_ONCE() for b or a WRITE_ONCE() for d.  But again,
-this would constrain only the compiler, not the hardware.
-
-But this wouldn't matter in most cases, because both b and d are local
-variables whose addresses were never taken.  So someone would need to
-be using something crazy to poke into others' stacks for this to matter.
-
-> Hope I didn't misunderstand.
-
-It looks like you have most of it.
-
-> Back to rcu_blocking_is_gp(), I find this link today
-> https://www.spinics.net/lists/rcu/msg03985.html
-> With the content in this link, I still haven't got the meaning of these two
-> barrier(). I think I should learn knowledge about cpu-hotplug and things
-> which talked in the link first to make sure if I am missing something, and
-> then consult you. :)
-
-That sounds like a very good approach!
-
-Keep in mind that I am worried not just about the current state of
-the code and compilers, but also their possible future states.
-
-							Thanx, Paul
-
-> Best regards,
-> Yanfei
+> The solution implemented in this patch is to allow only one caller at a
+> time to use the full size group_path[], while other simultaneous callers
+> will have to use shorter stack buffers with the possibility of path
+> name truncation. A "..." suffix will be printed if truncation may have
+> happened.  The cgroup path name is provided for informational purpose
+> only, so occasional path name truncation should not be a big problem.
 > 
-> > 
-> >                                                          Thanx, Paul
-> > 
-> > > Best regards,
-> > > Yanfei
-> > > 
-> > > > 
-> > > >                                                           Thanx, Paul
-> > > > 
-> > > > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > > > > index da6f5213fb74..c6d95a00715e 100644
-> > > > > --- a/kernel/rcu/tree.c
-> > > > > +++ b/kernel/rcu/tree.c
-> > > > > @@ -3703,7 +3703,6 @@ static int rcu_blocking_is_gp(void)
-> > > > >           if (IS_ENABLED(CONFIG_PREEMPTION))
-> > > > >                   return rcu_scheduler_active == RCU_SCHEDULER_INACTIVE;
-> > > > >           might_sleep();  /* Check for RCU read-side critical section. */
-> > > > > -       preempt_disable();
-> > > > >           /*
-> > > > >            * If the rcu_state.n_online_cpus counter is equal to one,
-> > > > >            * there is only one CPU, and that CPU sees all prior accesses
-> > > > > @@ -3718,7 +3717,6 @@ static int rcu_blocking_is_gp(void)
-> > > > >            * Those memory barriers are provided by CPU-hotplug code.
-> > > > >            */
-> > > > >           ret = READ_ONCE(rcu_state.n_online_cpus) <= 1;
-> > > > > -       preempt_enable();
-> > > > >           return ret;
-> > > > >    }
-> > > > > 
-> > > > > 
-> > > > > 
-> > > > > Best regards,
-> > > > > Yanfei
+> Fixes: efe25c2c7b3a ("sched: Reinstate group names in /proc/sched_debug")
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Waiman Long <longman@redhat.com>
+
+Thanks!
