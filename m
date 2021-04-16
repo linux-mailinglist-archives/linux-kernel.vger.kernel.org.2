@@ -2,121 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7B5361A0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 08:50:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C7E361A16
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 08:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236523AbhDPGtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 02:49:10 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:53092 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235140AbhDPGtH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 02:49:07 -0400
-X-UUID: db5ba41aa28e4a7994f35392fcd6179c-20210416
-X-UUID: db5ba41aa28e4a7994f35392fcd6179c-20210416
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1631980096; Fri, 16 Apr 2021 14:48:35 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 16 Apr 2021 14:48:32 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 16 Apr 2021 14:48:31 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Ikjoon Jang <ikjn@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Eddie Hung <eddie.hung@mediatek.com>
-Subject: [next PATCH] usb: xhci-mtk: remove bus status check
-Date:   Fri, 16 Apr 2021 14:48:26 +0800
-Message-ID: <1618555706-6810-1-git-send-email-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
+        id S235051AbhDPGy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 02:54:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231193AbhDPGy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 02:54:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 920B0610FC;
+        Fri, 16 Apr 2021 06:54:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618556043;
+        bh=WVEAR4/mOGJcfwKtKTiJzRqxOkx5jC2Bf3OQ5/TkxUE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VYbIKYmhEdoNZ4dHlIR7UKkFPN/8f2uhPVxZ1GriR4mN/iiPD33tg++lwpZFQg1Xc
+         WZb07o98Lc5xrMyPideF3ux1HjqXv1cptwO8JPtWegQQ4G//tfmjLnILkBqE1S3LSp
+         S9eGjetNR37hD+fSte9+PL7Q7jbIJ5vnkUCfbR8s=
+Date:   Fri, 16 Apr 2021 08:54:00 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     mike.leach@linaro.org, leo.yan@linaro.org, suzuki.poulose@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/1] coresight: Fix for v5.12-rc7
+Message-ID: <YHk0iDnfujBR3mTB@kroah.com>
+References: <20210415202404.945368-1-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 2F30F745CAD38CD33E7450348FE77EDF66EBF882B5AE109122F72EB4A79340A42000:8
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210415202404.945368-1-mathieu.poirier@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PM will take care of the status of child device, so no need
-check each port anymore.
+On Thu, Apr 15, 2021 at 02:24:03PM -0600, Mathieu Poirier wrote:
+> Hi Greg,
+> 
+> Please consider this patch as a fix for v5.12-rc7.  Applies cleanly
+> to your char-misc-linus branch (e49d033bddf5).
 
-Suggested-by: Ikjoon Jang <ikjn@chromium.org>
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
----
- drivers/usb/host/xhci-mtk.c | 43 ++-----------------------------------
- 1 file changed, 2 insertions(+), 41 deletions(-)
+It's too late for 5.12-final, and really my tree should be closed for
+5.13-rc1 now.  I can sneak this in for the merge window, is that ok?
 
-diff --git a/drivers/usb/host/xhci-mtk.c b/drivers/usb/host/xhci-mtk.c
-index d4c455eecb8d..1fdeb315a124 100644
---- a/drivers/usb/host/xhci-mtk.c
-+++ b/drivers/usb/host/xhci-mtk.c
-@@ -654,42 +654,6 @@ static int __maybe_unused xhci_mtk_resume(struct device *dev)
- 	return ret;
- }
- 
--static int check_rhub_status(struct xhci_hcd *xhci, struct xhci_hub *rhub)
--{
--	u32 suspended_ports;
--	u32 status;
--	int num_ports;
--	int i;
--
--	num_ports = rhub->num_ports;
--	suspended_ports = rhub->bus_state.suspended_ports;
--	for (i = 0; i < num_ports; i++) {
--		if (!(suspended_ports & BIT(i))) {
--			status = readl(rhub->ports[i]->addr);
--			if (status & PORT_CONNECT)
--				return -EBUSY;
--		}
--	}
--
--	return 0;
--}
--
--/*
-- * check the bus whether it could suspend or not
-- * the bus will suspend if the downstream ports are already suspended,
-- * or no devices connected.
-- */
--static int check_bus_status(struct xhci_hcd *xhci)
--{
--	int ret;
--
--	ret = check_rhub_status(xhci, &xhci->usb3_rhub);
--	if (ret)
--		return ret;
--
--	return check_rhub_status(xhci, &xhci->usb2_rhub);
--}
--
- static int __maybe_unused xhci_mtk_runtime_suspend(struct device *dev)
- {
- 	struct xhci_hcd_mtk  *mtk = dev_get_drvdata(dev);
-@@ -699,11 +663,8 @@ static int __maybe_unused xhci_mtk_runtime_suspend(struct device *dev)
- 	if (xhci->xhc_state)
- 		return -ESHUTDOWN;
- 
--	if (device_may_wakeup(dev)) {
--		ret = check_bus_status(xhci);
--		if (!ret)
--			ret = xhci_mtk_suspend(dev);
--	}
-+	if (device_may_wakeup(dev))
-+		ret = xhci_mtk_suspend(dev);
- 
- 	/* -EBUSY: let PM automatically reschedule another autosuspend */
- 	return ret ? -EBUSY : 0;
--- 
-2.18.0
+thanks,
 
+greg k-h
