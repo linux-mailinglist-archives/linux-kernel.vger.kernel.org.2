@@ -2,96 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75178362214
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3D2E362217
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244648AbhDPOV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:21:29 -0400
-Received: from mga11.intel.com ([192.55.52.93]:24109 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244572AbhDPOV2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:21:28 -0400
-IronPort-SDR: +SfvAe9xmOgw8i1hcQk0UiuBKEpjR6fx+52RSkSgDaiPMBBPa3x7R7ozn0nHb3FEwpehpWX0kE
- kgu6blHY7ZNg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9956"; a="191856036"
-X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
-   d="scan'208";a="191856036"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 07:21:03 -0700
-IronPort-SDR: zmdCb34RpMljdFJ+iFsV9Zoyu2JS5v7cl2KQLOEOFPzdsUfs7jvKZ8+gpfyVdcNURMi5bs2RCa
- iCh1XdmGXiBA==
-X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
-   d="scan'208";a="461979133"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 07:21:01 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lXPL8-004fR5-6x; Fri, 16 Apr 2021 17:20:58 +0300
-Date:   Fri, 16 Apr 2021 17:20:58 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jan Sebastian =?iso-8859-1?Q?G=F6tte?= <linux@jaseg.net>,
-        Phil Reid <preid@electromag.com.au>,
-        Nishad Kamdar <nishadkamdar@gmail.com>
-Subject: Re: [PATCH v1 1/2] fbtft: Rectify GPIO handling
-Message-ID: <YHmdSpN4PIZghsgS@smile.fi.intel.com>
-References: <20210416123117.4993-1-andriy.shevchenko@linux.intel.com>
- <YHmIb2YrwfzZa7Wh@kroah.com>
+        id S244665AbhDPOVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243051AbhDPOVj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 10:21:39 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85077C061574;
+        Fri, 16 Apr 2021 07:21:14 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id x76so20277360ybe.5;
+        Fri, 16 Apr 2021 07:21:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=t2GyCAH28OFUKirekIiqG8QH/lg+7x2E9PX/3Ek0zoE=;
+        b=DN4360cPG7/skv/Q3gCUFB73HgA3nzH+525Cgqh/o/Sulu0m4bTBwnHevUocDCwwi6
+         3qKax591nZdA0Ojb9AD3uRCojJykqMb+8bJHhI+Nqkdf9/DJwxtNq/NR8pC79rWyC7T1
+         auBKfUYycwbn6OXqgA5WR9zkM+uswdjdM6SUkV3McSJaZpHLKY2JiBOGP3ueW9iJnAMn
+         IZP+dT6lmrZi0uK5RGzHWWA2ni+Ngn7SPxd0Cw3UO6vxmRc8FwVBxda/Hzpud1hVUjpp
+         sQe2N34/JXAfj5aBTxyAzE6SlWTMIbR3o1kVakAQkmK1xkhe78cdZz3SjJdxDi+o9oak
+         ZLvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t2GyCAH28OFUKirekIiqG8QH/lg+7x2E9PX/3Ek0zoE=;
+        b=LrvISHeis84s5EpObdJmQtUvdow83rCZ2l6GuVs+ksEBGg2sNTKZrxkxsd6CN3N60h
+         CJQbc5KSJBAWz27XrrrMGZupizmVt4q3c9RHVdeD+J3NHT6n3MTbmlpVG2AyASviub4M
+         YgXmcLcD2kQztsXJr07p9E6vbNchLgXAbGVctAgFey3AO80oNiMBo2JStKdi6o6DRA1u
+         fW8V1OhjZaPuIDm5KnMm1aQtkoDXSbQwV+xEIWGjvXEIEz9dXOvnHCTRR+D4OAgAwfht
+         ZtXsoZsjA07Zo01oHxt8C5E9Dy5/IqdrGcgHqP7sh6moDbySESY1TfX0QfOLUl/rAlxc
+         hk9Q==
+X-Gm-Message-State: AOAM532oXh8MOsgVm+B8j6fGbPm1N4EMOw41x/vIq71IhOoPLunJ+nQE
+        taBSWwsW3e0rc+m5KenubDeOrLjiAMvpaiWesrs=
+X-Google-Smtp-Source: ABdhPJwVsoVQM4VZt7oKFcbdYa2NYRotI8uUuXF4t8Xeg5W0UK22rrX/4IWKKe6OqKVB+3im4D0wY+ZKRHlKUQVjdwI=
+X-Received: by 2002:a25:6803:: with SMTP id d3mr12588384ybc.422.1618582873937;
+ Fri, 16 Apr 2021 07:21:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHmIb2YrwfzZa7Wh@kroah.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210414184604.23473-1-ojeda@kernel.org> <YHlz54rd1YQHsOA/@hirez.programming.kicks-ass.net>
+In-Reply-To: <YHlz54rd1YQHsOA/@hirez.programming.kicks-ass.net>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 16 Apr 2021 16:21:02 +0200
+Message-ID: <CANiq72=LE64F9VDvr5aajeBNfXCvVK+yXN8m97jo-E6TDHNVbg@mail.gmail.com>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 02:51:59PM +0200, Greg Kroah-Hartman wrote:
-> On Fri, Apr 16, 2021 at 03:31:16PM +0300, Andy Shevchenko wrote:
-> > The infamous commit c440eee1a7a1 ("Staging: fbtft: Switch to
-> > the GPIO descriptor interface") broke GPIO handling completely.
-> > It has already four commits to rectify and it seems not enough.
-> > In order to fix the mess here we:
-> > 
-> >   1) Set default to "inactive" for all requested pins
-> > 
-> >   2) Fix CS, RD, and WR pins polarity since it's active low and
-> >      GPIO descriptor interface takes it into consideration from
-> >      the Device Tree or ACPI
-> > 
-> >   3) Fix RESET pin polarity in the places missed by the commit
-> >      b918d1c27066 ("Staging: fbtft: Fix reset assertion when using gpio descriptor")
-> > 
-> >   4) Consolidate chip activation (CS assert) under default
-> >      ->reset() callback
-> > 
-> > To summarize the expectations about polarity for GPIOs:
-> > 
-> >    #RD			Low
-> >    #WR			Low
-> >    #CS			Low
-> >    #RESET		Low
-> >    DC or RS		High
-> >    RW			High
-> >    Data	0..15		High
-> > 
-> > See also Adafruit learning course [1] for the example of the schematics.
-> > 
-> > While at it, drop unneeded NULL checks, since GPIO API is tolerant to that.
-> > At the end, update TODO to mark this job eventually done.
-> > 
-> > [1]: https://learn.adafruit.com/adafruit-2-8-and-3-2-color-tft-touchscreen-breakout-v2/downloads
-> 
-> Shouldn't this be broken up into "one patch per thing" from your list
-> above?  Feels like you did a lot of different things all in the same
-> patch :(
+On Fri, Apr 16, 2021 at 1:24 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> IMO RAII is over-valued, but just in case you care, the below seems to
+> work just fine. No fancy new language needed, works today. Similarly you
+> can create refcount_t guards, or with a little more work full blown
+> smart_ptr crud.
 
-Okay, I split a bit, now it's 4 patches. (See v2).
+Please note that even smart pointers (as in C++'s `std::unique_ptr`
+etc.) do not guarantee memory safety. Yes, they help a lot writing
+sound code (in particular exception-safe C++ code), but they do not
+bring the same guarantees.
 
--- 
-With Best Regards,
-Andy Shevchenko
+That's why using C language extensions (the existing ones, that is) to
+recreate RAII/guards, smart pointers, etc. would only bring you to a
+point closer to C++, but not to Rust.
 
-
+Cheers,
+Miguel
