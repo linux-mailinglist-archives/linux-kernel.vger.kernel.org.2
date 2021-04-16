@@ -2,190 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15670361B8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 10:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90384361B8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 10:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240271AbhDPI04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 04:26:56 -0400
-Received: from ozlabs.org ([203.11.71.1]:36179 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239119AbhDPI0z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 04:26:55 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FM8SP4w7Zz9sRK;
-        Fri, 16 Apr 2021 18:26:29 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1618561590;
-        bh=rJsn2xn4zrHwTySjwVScZjOwNoNBsaujoa/Nf1VcOcI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=m9aqNncDhkNr+mEYqQ5V1U0p6y0XaNTtIS15eI9WRARxUNEBauoWZtOy2HucOYcXo
-         s/VqJdUVSqDoE0m8QeG5H7AzxSwvhholFT0QHI/fckBMkywlCV4zqGs4IAyAgt34MD
-         J/JjsfPxI9Uth6VYb+LtAhSETfSltjYVApJERb27tdboY05Gb2PVCOWszk03sS6L8u
-         p0MAht8fSAL3IDiDuMF72AXjthlRN+d9JfqpTU+Ya05KmVISBkCg9EKGvWMmPSbASY
-         XARD/LygUWpn+LgU+kIKwVojvu+MLarLWJp4gTeHb8b9x/kXHgRnC03Y2uU/zL+pad
-         yBLnmsCQVtYyQ==
-Date:   Fri, 16 Apr 2021 18:26:28 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hang Lu <hangl@codeaurora.org>, Li Li <dualli@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Marco Ballesio <balejs@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Todd Kjos <tkjos@google.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-Subject: Re: linux-next: manual merge of the rust tree with the char-misc
- tree
-Message-ID: <20210416182628.53df3424@canb.auug.org.au>
-In-Reply-To: <20210416175806.2acd314b@canb.auug.org.au>
-References: <20210416175806.2acd314b@canb.auug.org.au>
+        id S240296AbhDPI1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 04:27:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30654 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240290AbhDPI1J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 04:27:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618561605;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GDfR8iVh8XSN4o8S9XIZ+vsfxmtqUP1R7YuCLZyLUbM=;
+        b=f5BpE1EO5amrg6SW2ld+EhkrDGaL64c0ZBhoTLkIsE/2ZeYgEhLVOvpsWCxRBRdr7sBEmc
+        jl5J/tWELPrrwwxBStvtQD++ea8pXiMoZU3tbevJmeov0BV/qGjK8+Ef9HdFJg9G9EEcl7
+        79Ir+1++gGOtczPzBOMuTxx1MXTKUjw=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-401-KjgiykoAM2e-4yYM2mBPyg-1; Fri, 16 Apr 2021 04:26:43 -0400
+X-MC-Unique: KjgiykoAM2e-4yYM2mBPyg-1
+Received: by mail-ej1-f70.google.com with SMTP id g7-20020a1709065d07b029037c872d9cdcso1782847ejt.11
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 01:26:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=GDfR8iVh8XSN4o8S9XIZ+vsfxmtqUP1R7YuCLZyLUbM=;
+        b=osXsWQV/YnUxa9PFYefPs+DCBx16unWfJPH+WJ0XWRwFt0gVZg8u+NJwWAwizpdc26
+         FCSB+FMX2mHx7xJ4DFZCJSobeqx/Bo+z/kqsX/+B0ZAdi3n8W1KkupKm6EfrzJbFRm90
+         qTQ3dlqJWFNVi4D63M1diKDjJNzoyzX1jzesPOqakMoerDsy0P3lp4vnMVPvXbW94BPG
+         oBLeFHtiQ+9CJmj2V5y5ecIqj+/T2OgrFiOM1Lh1rqNPYqqElwFInoW4s1rtc+TDFYzA
+         mFHFYBshSuGZPNxDfjm4bjizwhjlKqCc15EWKpPeEWMFUlae6GyoH7NEyElbM7vT+Tnx
+         su0A==
+X-Gm-Message-State: AOAM530xT/fbtvGMRKYQl5LR04/ajVM21ORkA+NKWfzhpSh8UZDEpKXR
+        RGbPthp8zbtG51v0zzc7PzwVIPsZBNB7y20Pv0cyejtSL1kxRMZ+hNS4tftjwFBy9qmQWmIOiQb
+        X19OoVb4bxGLOzcCQcU9+j7ut
+X-Received: by 2002:a05:6402:7cf:: with SMTP id u15mr2496391edy.297.1618561602411;
+        Fri, 16 Apr 2021 01:26:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzjCNyDz0otPSAn5rP293qV2aUO2LfE/x9sXa+u6jjL4WGAVGA2gNPkgIpakzrGSlP22der0Q==
+X-Received: by 2002:a05:6402:7cf:: with SMTP id u15mr2496382edy.297.1618561602274;
+        Fri, 16 Apr 2021 01:26:42 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id w13sm4585188edc.81.2021.04.16.01.26.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 01:26:41 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Vineeth Pillai <viremana@linux.microsoft.com>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org,
+        Lan Tianyu <Tianyu.Lan@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>
+Subject: Re: [PATCH v2 1/7] hyperv: Detect Nested virtualization support for
+ SVM
+In-Reply-To: <9d12558549bc0c6f179b26f5b16c751bdfab3f74.1618492553.git.viremana@linux.microsoft.com>
+References: <cover.1618492553.git.viremana@linux.microsoft.com>
+ <9d12558549bc0c6f179b26f5b16c751bdfab3f74.1618492553.git.viremana@linux.microsoft.com>
+Date:   Fri, 16 Apr 2021 10:26:40 +0200
+Message-ID: <871rba8wjj.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/KRfRZ0E2adh9X.QZPmEdw7L";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/KRfRZ0E2adh9X.QZPmEdw7L
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Vineeth Pillai <viremana@linux.microsoft.com> writes:
 
-Hi all,
-
-On Fri, 16 Apr 2021 17:58:06 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
+> Detect nested features exposed by Hyper-V if SVM is enabled.
 >
-> Today's linux-next merge of the rust tree got a conflict in:
->=20
->   include/uapi/linux/android/binder.h
->=20
-> between commits:
->=20
->   432ff1e91694 ("binder: BINDER_FREEZE ioctl")
->   ae28c1be1e54 ("binder: BINDER_GET_FROZEN_INFO ioctl")
->   a7dc1e6f99df ("binder: tell userspace to dump current backtrace when de=
-tected oneway spamming")
->=20
-> from the char-misc tree and commit:
->=20
->   1fed5dee5fbb ("Android: Binder IPC in Rust (WIP)")
->=20
-> from the rust tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> diff --cc include/uapi/linux/android/binder.h
-> index 20e435fe657a,7b13c9e9aa2f..000000000000
-> --- a/include/uapi/linux/android/binder.h
-> +++ b/include/uapi/linux/android/binder.h
-> @@@ -217,31 -217,18 +217,33 @@@ struct binder_node_info_for_ref=20
->   	__u32            reserved3;
->   };
->  =20
->  +struct binder_freeze_info {
->  +	__u32            pid;
->  +	__u32            enable;
->  +	__u32            timeout_ms;
->  +};
->  +
->  +struct binder_frozen_status_info {
->  +	__u32            pid;
->  +	__u32            sync_recv;
->  +	__u32            async_recv;
->  +};
->  +
-> - #define BINDER_WRITE_READ		_IOWR('b', 1, struct binder_write_read)
-> - #define BINDER_SET_IDLE_TIMEOUT		_IOW('b', 3, __s64)
-> - #define BINDER_SET_MAX_THREADS		_IOW('b', 5, __u32)
-> - #define BINDER_SET_IDLE_PRIORITY	_IOW('b', 6, __s32)
-> - #define BINDER_SET_CONTEXT_MGR		_IOW('b', 7, __s32)
-> - #define BINDER_THREAD_EXIT		_IOW('b', 8, __s32)
-> - #define BINDER_VERSION			_IOWR('b', 9, struct binder_version)
-> - #define BINDER_GET_NODE_DEBUG_INFO	_IOWR('b', 11, struct binder_node_de=
-bug_info)
-> - #define BINDER_GET_NODE_INFO_FOR_REF	_IOWR('b', 12, struct binder_node_=
-info_for_ref)
-> - #define BINDER_SET_CONTEXT_MGR_EXT	_IOW('b', 13, struct flat_binder_obj=
-ect)
-> - #define BINDER_FREEZE			_IOW('b', 14, struct binder_freeze_info)
-> - #define BINDER_GET_FROZEN_INFO		_IOWR('b', 15, struct binder_frozen_sta=
-tus_info)
-> - #define BINDER_ENABLE_ONEWAY_SPAM_DETECTION	_IOW('b', 16, __u32)
-> + enum {
-> + 	BINDER_WRITE_READ		=3D _IOWR('b', 1, struct binder_write_read),
-> + 	BINDER_SET_IDLE_TIMEOUT		=3D _IOW('b', 3, __s64),
-> + 	BINDER_SET_MAX_THREADS		=3D _IOW('b', 5, __u32),
-> + 	BINDER_SET_IDLE_PRIORITY	=3D _IOW('b', 6, __s32),
-> + 	BINDER_SET_CONTEXT_MGR		=3D _IOW('b', 7, __s32),
-> + 	BINDER_THREAD_EXIT		=3D _IOW('b', 8, __s32),
-> + 	BINDER_VERSION			=3D _IOWR('b', 9, struct binder_version),
-> + 	BINDER_GET_NODE_DEBUG_INFO	=3D _IOWR('b', 11, struct binder_node_debug=
-_info),
-> + 	BINDER_GET_NODE_INFO_FOR_REF	=3D _IOWR('b', 12, struct binder_node_inf=
-o_for_ref),
-> + 	BINDER_SET_CONTEXT_MGR_EXT	=3D _IOW('b', 13, struct flat_binder_object=
-),
-> ++	BINDER_FREEZE			=3D _IOW('b', 14, struct binder_freeze_info)
-> ++	BINDER_GET_FROZEN_INFO		=3D _IOWR('b', 15, struct binder_frozen_status=
-_info)
-> ++	BINDER_ENABLE_ONEWAY_SPAM_DETECTION	=3D _IOW('b', 16, __u32)
-> + };
->  =20
->   /*
->    * NOTE: Two special error codes you should check for when calling
 
-I also needed this patch (which I will add to my merge resolution):
+It may make sense to expand this a bit as it is probably unclear how the
+change is related to SVM.
 
-diff --git a/include/uapi/linux/android/binder.h b/include/uapi/linux/andro=
-id/binder.h
-index 49611d7309e0..9fca291e0132 100644
---- a/include/uapi/linux/android/binder.h
-+++ b/include/uapi/linux/android/binder.h
-@@ -240,9 +240,9 @@ enum {
- 	BINDER_GET_NODE_DEBUG_INFO	=3D _IOWR('b', 11, struct binder_node_debug_in=
-fo),
- 	BINDER_GET_NODE_INFO_FOR_REF	=3D _IOWR('b', 12, struct binder_node_info_f=
-or_ref),
- 	BINDER_SET_CONTEXT_MGR_EXT	=3D _IOW('b', 13, struct flat_binder_object),
--	BINDER_FREEZE			=3D _IOW('b', 14, struct binder_freeze_info)
--	BINDER_GET_FROZEN_INFO		=3D _IOWR('b', 15, struct binder_frozen_status_in=
-fo)
--	BINDER_ENABLE_ONEWAY_SPAM_DETECTION	=3D _IOW('b', 16, __u32)
-+	BINDER_FREEZE			=3D _IOW('b', 14, struct binder_freeze_info),
-+	BINDER_GET_FROZEN_INFO		=3D _IOWR('b', 15, struct binder_frozen_status_in=
-fo),
-+	BINDER_ENABLE_ONEWAY_SPAM_DETECTION	=3D _IOW('b', 16, __u32),
- };
-=20
- /*
+Something like:
 
---=20
-Cheers,
-Stephen Rothwell
+HYPERV_CPUID_NESTED_FEATURES CPUID leaf can be present on both Intel and
+AMD Hyper-V guests. Previously, the code was using
+HV_X64_ENLIGHTENED_VMCS_RECOMMENDED feature bit to determine the
+availability of nested features leaf and this complies to TLFS:
+"Recommend a nested hypervisor using the enlightened VMCS interface. 
+Also indicates that additional nested enlightenments may be available
+(see leaf 0x4000000A)". Enlightened VMCS, however, is an Intel only
+feature so the detection method doesn't work for AMD. Use
+HYPERV_CPUID_VENDOR_AND_MAX_FUNCTIONS.EAX CPUID information ("The
+maximum input value for hypervisor CPUID information.") instead, this
+works for both AMD and Intel.
 
---Sig_/KRfRZ0E2adh9X.QZPmEdw7L
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
+> Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
+> ---
+>  arch/x86/kernel/cpu/mshyperv.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+> index 3546d3e21787..c6f812851e37 100644
+> --- a/arch/x86/kernel/cpu/mshyperv.c
+> +++ b/arch/x86/kernel/cpu/mshyperv.c
+> @@ -252,6 +252,7 @@ static void __init hv_smp_prepare_cpus(unsigned int max_cpus)
+>  
+>  static void __init ms_hyperv_init_platform(void)
+>  {
+> +	int hv_max_functions_eax;
+>  	int hv_host_info_eax;
+>  	int hv_host_info_ebx;
+>  	int hv_host_info_ecx;
+> @@ -269,6 +270,8 @@ static void __init ms_hyperv_init_platform(void)
+>  	ms_hyperv.misc_features = cpuid_edx(HYPERV_CPUID_FEATURES);
+>  	ms_hyperv.hints    = cpuid_eax(HYPERV_CPUID_ENLIGHTMENT_INFO);
+>  
+> +	hv_max_functions_eax = cpuid_eax(HYPERV_CPUID_VENDOR_AND_MAX_FUNCTIONS);
+> +
+>  	pr_info("Hyper-V: privilege flags low 0x%x, high 0x%x, hints 0x%x, misc 0x%x\n",
+>  		ms_hyperv.features, ms_hyperv.priv_high, ms_hyperv.hints,
+>  		ms_hyperv.misc_features);
+> @@ -298,8 +301,7 @@ static void __init ms_hyperv_init_platform(void)
+>  	/*
+>  	 * Extract host information.
+>  	 */
+> -	if (cpuid_eax(HYPERV_CPUID_VENDOR_AND_MAX_FUNCTIONS) >=
+> -	    HYPERV_CPUID_VERSION) {
+> +	if (hv_max_functions_eax >= HYPERV_CPUID_VERSION) {
+>  		hv_host_info_eax = cpuid_eax(HYPERV_CPUID_VERSION);
+>  		hv_host_info_ebx = cpuid_ebx(HYPERV_CPUID_VERSION);
+>  		hv_host_info_ecx = cpuid_ecx(HYPERV_CPUID_VERSION);
+> @@ -325,9 +327,11 @@ static void __init ms_hyperv_init_platform(void)
+>  			ms_hyperv.isolation_config_a, ms_hyperv.isolation_config_b);
+>  	}
+>  
+> -	if (ms_hyperv.hints & HV_X64_ENLIGHTENED_VMCS_RECOMMENDED) {
+> +	if (hv_max_functions_eax >= HYPERV_CPUID_NESTED_FEATURES) {
+>  		ms_hyperv.nested_features =
+>  			cpuid_eax(HYPERV_CPUID_NESTED_FEATURES);
+> +		pr_info("Hyper-V: Nested features: 0x%x\n",
+> +			ms_hyperv.nested_features);
+>  	}
+>  
+>  	/*
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB5SjQACgkQAVBC80lX
-0GwgMgf+OSuvlBKjzyvOnBasXupT/lY+YVrfsR+R0Ib84VLyVoYyjPqC0mQV97NZ
-lSTQ7cApb08Tyn4h/5umk8x+len8UwGIRIY9lYJ753iwCmkjpM5gITGlxRan1G0f
-sANBFyStiely1C/efnbDRqBF9hSlY2KKuM8oNiqN/llrT8DPLgLQJ49MQpn6/RRE
-UIsxnIF1SekGiQl3opw7xl9uU9L+iBmzX43JXs6ypD5yv3BXl/6UZIye9hp1AR7p
-8qcm6RFh/c0TsIW4tY6fAxerKVRE3GraDwysP0JVPZcb/vOsJYiKhrzQRRajMkIS
-y3kFJV81cVtHIjLFxJT8iUxvNgc8Eg==
-=yXu9
------END PGP SIGNATURE-----
+With the commit message expanded,
 
---Sig_/KRfRZ0E2adh9X.QZPmEdw7L--
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+
+-- 
+Vitaly
+
