@@ -2,112 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B952C361FB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7128361FC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243462AbhDPMYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 08:24:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243404AbhDPMYC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 08:24:02 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5821C061574;
-        Fri, 16 Apr 2021 05:23:37 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id z1so29863722ybf.6;
-        Fri, 16 Apr 2021 05:23:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oJWOBU898RR64I5dUgBojnrKLrF+H0PdTgSU59Ph068=;
-        b=F88mPaWYARVjBdkYiXNxWNv06dZCNfEiE9bRYpt7hK7KKzw55VR34flKRflG+TlZky
-         ynS8EVLCuLTrn4YY0MRl4/3veqV67byO44Y1SUsL9OVIGvuZC/gSwmHg0hNvtp6jKNyc
-         NRFEw7z1UNPyuswTtwXFHmmBku37m5ofWkthnZz0pRbY53CPfx8YZ9mIwKNxbM9mdiI3
-         0Q/12eTlMPqvE8Z9sqhLPu8bjXNWwIrgOICYTBK1I2pBHFaoRvPco4PULKgon3U0+EY5
-         dbVbRQ7fwteo5CgoLswR7VWsxbHgbXZUCoBlEgbkohQTUJjCBALqU3duntCU+LvJvQli
-         xQAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oJWOBU898RR64I5dUgBojnrKLrF+H0PdTgSU59Ph068=;
-        b=UPLMiB1k+O2fTmgyeYWq+/P0zWem1npT5o908V4pOyCGM7rf7jCPfG8v2UB3SraCeE
-         NgMDNkJBk9m5oVhWMpMdaJpad9SmiQiOfZ8bqLQX2h2AlptidRVonVaXkvlNpO2jTniX
-         qJ3wPvlCIt5/Mfr5VRre3ErmGBrH7HjJi9b4JwN4vi/dGMEdY2L78yRCVesI3UmGN/Y5
-         dua2xOxboW7c1ejt/pxxCQ/yXTax4YNHmXS9CsiJBqMNt2zg/prz/8pVgAjMybsbxaK9
-         KiqPe2V0pTyQJTsntKySFwdSrCJQXVxjD39DCc69iwMTTZ7D//CQMj9kIIm4f9hrgii4
-         1NOQ==
-X-Gm-Message-State: AOAM533sG0xdHF3ZveRTKBPrqb3qhcsk14pqnMcEwS+2qXfmIfm7GQEL
-        BYMOyS8KuLAOmmIx4n2PCsUdtthU+c6LLB8UUjU=
-X-Google-Smtp-Source: ABdhPJxQmILSd73jktfvCK8N1AvhaqwM43zyeMR4u8U2bCKGdASsI/jtNsPLqlByKcaOcHTssmfTv+/86lWTiZlLLnI=
-X-Received: by 2002:a25:cfc2:: with SMTP id f185mr12128491ybg.26.1618575817094;
- Fri, 16 Apr 2021 05:23:37 -0700 (PDT)
+        id S235609AbhDPM2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 08:28:03 -0400
+Received: from ozlabs.org ([203.11.71.1]:40005 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234914AbhDPM2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 08:28:01 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FMFpW6jWXz9sVb;
+        Fri, 16 Apr 2021 22:27:31 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618576052;
+        bh=JYdcLdPUbTo38tlUGmoVGoWuj6WMw32aNHJqgtTCmtY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=qKkcct5wuDcOsZPYHyhGTQN3p9pM377ZvPDpG4ZNqnCrapu/6F9UCx4iSr8MTFBRb
+         ejhzGMofCfqPpZCKNN8Rt8Fk95xEUEPA+4s68rxggS/ddIPNzT+H8m6GmhayrPbDb5
+         faHRerQUMRT/U41nXfXhEyVYfnjB526cpflJMsqzYKsLx3tb2tbGcl+orX+qlVg3MB
+         wU3mnj2GgnCmuELAQmEdzIjWeW/oEjx0QfZmJCHg/USbl69NzkD2POIj5VypgsWVpq
+         4GDcHyX2VcBVCzFsErVnnJikU88nJ2rxpsOD0QErEGMHHLY6xFf2nbqm1CVgzH1tuz
+         53c/9vpRRNvDw==
+Date:   Fri, 16 Apr 2021 22:27:31 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
+Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the kvm tree
+Message-ID: <20210416222731.3e82b3a0@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-5-ojeda@kernel.org>
- <CAKwvOdkjttdX83tL4pw+J5EnHM1MgEYDPp=YTpEagV4RrhdxwA@mail.gmail.com>
- <CANiq72ksLeuL_uqoqbf3fhLP7M0j-7TdEvRDDmxThdmrEqD2Lw@mail.gmail.com> <CAKwvOdkyRkR0Jj5w5HWJ+o4YpOrLfTY1Vjho0bDn60fgRE-pkA@mail.gmail.com>
-In-Reply-To: <CAKwvOdkyRkR0Jj5w5HWJ+o4YpOrLfTY1Vjho0bDn60fgRE-pkA@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 16 Apr 2021 14:23:26 +0200
-Message-ID: <CANiq72=TDkRzZi7fN5y9QmtRbvoZTzxHXDg_ELjdD+YhmXzgPw@mail.gmail.com>
-Subject: Re: [PATCH 04/13] Kbuild: Rust support
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/1tsCH=y7VINn6jpuc5OMoAl";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 8:03 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> Until then, I don't see why we need to permit developers to express
-> such flexibility for just the Rust code, or have it differ from the
-> intent of the C code. Does it make sense to set RUST_OPT_LEVEL_3 and
-> CC_OPTIMIZE_FOR_SIZE? I doubt it. That doesn't seem like a development
-> feature, but a mistake.  YAGNI.  Instead developers should clarify
-> what they care about in terms of high level intent; if someone wants
-> to micromanage optimization level flags in their forks they don't need
-> a Kconfig to do it (they're either going to hack KBUILD_CFLAGS,
-> CFLAGS_*.o, or KCFLAGS), and there's probably better mechanisms for
-> fine-tooth precision of optimizing actually hot code or not via PGO
-> and AutoFDO.
+--Sig_/1tsCH=y7VINn6jpuc5OMoAl
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I completely agree when we are talking about higher level optimization
-levels. From a user perspective, it does not make much sense to want
-slightly different optimizations levels or different size/performance
-trade-offs between C and Rust. However, I am thinking from the
-debugging side, i.e. mostly low or no optimization; rather than about
-micromanaging optimizations for performance.
+Hi all,
 
-For instance, last year I used `RUST_OPT_LEVEL_0/1` to quickly rule
-out optimizer/codegen/etc. bugs on the Rust side when we had some
-memory corruption over Rust data
-(https://github.com/Rust-for-Linux/linux/pull/28), which is important
-when dealing with compiler nightly versions. It was also nice to be
-able to easily follow along when stepping, too.
+In commit
 
-Having said that, I agree that in those cases one can simply tweak the
-flags manually -- so that's why I said it is fine dropping the the
-`Kconfig` options. There might be some advantages of having them, such
-as making developers aware that those builds should work, to keep them
-tested/working, etc.; but we can do that manually too in the CI/docs
-too.
+  c3171e94cc1c ("KVM: s390: VSIE: fix MVPG handling for prefixing and MSO")
 
+Fixes tag
+
+  Fixes: bdf7509bbefa ("s390/kvm: VSIE: correctly handle MVPG when in VSIE")
+
+has these problem(s):
+
+  - Subject does not match target commit subject
+    Just use
+	git log -1 --format=3D'Fixes: %h ("%s")'
+
+--=20
 Cheers,
-Miguel
+Stephen Rothwell
+
+--Sig_/1tsCH=y7VINn6jpuc5OMoAl
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB5grMACgkQAVBC80lX
+0GxTKgf8DPhUSMv9IFzE2TZZAUQun6lqp8YjsO2jTTU4tIeRuFmJmCg1tYFHRlzK
+ORAvCmKJjtNC2B0uNXh3UrhxWVCeawPjw4OBRb8DoTCnIIBo274kHbqGG2I7WNZp
+1BZZsTKa1wIf09f6fKn9MlYOPbLdFlOc3YvA/AGTfMOyRem0eF8Xozk6q/M+VvqL
+7ki2t6bht6+9qLC35MU2vlt4B/ZWQtxkcdQIIOdq/f96H/fy4P5gKytG7ztlqSxM
+51YWi0pCT5ElR/Mob1GxIRqHjTX5bDVqW0fiR1YFbhl9ZY+VLIwOLwKxNLEH7quq
+NSU4+JeZOnmy7i5igVgtAiweDxUT/A==
+=XIlH
+-----END PGP SIGNATURE-----
+
+--Sig_/1tsCH=y7VINn6jpuc5OMoAl--
