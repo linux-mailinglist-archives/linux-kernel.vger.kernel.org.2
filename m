@@ -2,75 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9FBF361CEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C731361CEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241105AbhDPJEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 05:04:33 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:4502 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235192AbhDPJE2 (ORCPT
+        id S241090AbhDPJFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 05:05:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50952 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241167AbhDPJF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 05:04:28 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AlZylv6CjwDucrYrlHelN55DYdL4zR+YMi2QD?=
- =?us-ascii?q?/UZ3VBBTb4ikh9mj9c5rsSPcpT4NVBgb8uyoF7KHRRrnn6JdwY5UBru6WRmjhW?=
- =?us-ascii?q?3AFuBfxK/D5xGlJCHk7O5a0s5bAs1DIfn9F0Jzg8q/wCTQKbYd6eKK+qypmuvS?=
- =?us-ascii?q?pk0FJT1CUK1u4xx0DQyWCCRNNWp7LKAkH5mR7NcvnVSdUEkQB/7WOlA4ReTZ4/?=
- =?us-ascii?q?XEmJX6CCR2ZSIP2U2+yQml77P3CHGjsys2WTkn+9gfzVQ=3D?=
-X-IronPort-AV: E=Sophos;i="5.82,226,1613430000"; 
-   d="scan'208";a="503548861"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 11:03:53 +0200
-Date:   Fri, 16 Apr 2021 11:03:53 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-cc:     Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: Re: [Outreachy kernel] [PATCH v2] staging: media: atomisp: pci:
- Change line break to avoid an open parenthesis at the end of the line
-In-Reply-To: <20210416085431.GM3@paasikivi.fi.intel.com>
-Message-ID: <alpine.DEB.2.22.394.2104161101250.8503@hadrien>
-References: <20210415170819.GA17534@focaruja> <20210415171409.GC2531743@casper.infradead.org> <20210415194955.GI3@paasikivi.fi.intel.com> <20210415195704.GE2531743@casper.infradead.org> <20210415195941.GF2531743@casper.infradead.org> <20210415212158.GK3@paasikivi.fi.intel.com>
- <20210416054941.GF6021@kadam> <20210416083728.GL3@paasikivi.fi.intel.com> <alpine.DEB.2.22.394.2104161045140.8503@hadrien> <20210416085431.GM3@paasikivi.fi.intel.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Fri, 16 Apr 2021 05:05:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618563901;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CXZtb/9V50pvn916phJza4VdieTQX2m9DR3I2BJV+/M=;
+        b=LmMmYvjERPCmU4YBoKiP59A0ay9LSyrpsWBL6fjH3SZI0TcDVIAnWb0IRAoEtn6h3KSKWF
+        1rO2sddxva5tN6+sLQFJY+h/PbNyerE1G/6Fyei58VXoUeeBfWN0rrAsWDtaz1FRwAID5J
+        FRtF//nmjzo6ENGRrP/+ZkyFcb4XSXU=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-486-WRkdYlZ6Nb2EHoZ6dqzMMQ-1; Fri, 16 Apr 2021 05:04:59 -0400
+X-MC-Unique: WRkdYlZ6Nb2EHoZ6dqzMMQ-1
+Received: by mail-ej1-f71.google.com with SMTP id n10-20020a1709061d0ab029037caa96b8c5so1825502ejh.23
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:04:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=CXZtb/9V50pvn916phJza4VdieTQX2m9DR3I2BJV+/M=;
+        b=l4SLiq6z42J09lbXk9KTSdDUL+yAabT3+qgCQIm4/m9qbU3jxTVHUS9qyckMexJoVp
+         A7q06Xl3sv3HgXnJ8BdinIv9hgA+DJ4XTz6aTnvo5RuJ++xHwo2YbuQEQLWghoFaPxSN
+         tURueeyRLA55bVmzGyWwm+V8s2plN3u4DmYS2lUkxAAFwvHL74UvkXXXDc3QcFelny9T
+         urHSeIufSVlAgnuEluUE1sU6lpOqmvAZSfohlJf77/tT7KYZg1nnecp2UF5XB0Lusjbl
+         aNeNHmDJ5lboqhADcDoxlmSUKXP10Cl1IS9dCbEEjdxswTPf+/E1XgiPxPqQMdDir5MW
+         KK5Q==
+X-Gm-Message-State: AOAM530Mdt/oJQZP6bltoRuPO7QsqLH+5mj8W8AgFGz//FkDj0RH6tl6
+        eSgOZw62EEkDJTT60An2HQCN7DGMSPF9TKEJ1/Vg4+R7raestdHQgPWufqOV835SDFD0OhuODji
+        xqtX/7DKoaFExi3PTHt+udcwu
+X-Received: by 2002:a50:ee17:: with SMTP id g23mr8859587eds.45.1618563898512;
+        Fri, 16 Apr 2021 02:04:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxRNTz62KVaajOAGLyQ67JSzj1vlwK/bkfGBPG4DOXdQmzYcTrZ+IL+vqblDlxIPHl/JcgdpA==
+X-Received: by 2002:a50:ee17:: with SMTP id g23mr8859574eds.45.1618563898386;
+        Fri, 16 Apr 2021 02:04:58 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id bu8sm644309edb.77.2021.04.16.02.04.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 02:04:57 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Vineeth Pillai <viremana@linux.microsoft.com>
+Cc:     Vineeth Pillai <viremana@linux.microsoft.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org,
+        Lan Tianyu <Tianyu.Lan@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>
+Subject: Re: [PATCH v2 5/7] KVM: SVM: hyper-v: Remote TLB flush for SVM
+In-Reply-To: <959f6cc899a17c709a2f5a71f6b2dc8c072ae600.1618492553.git.viremana@linux.microsoft.com>
+References: <cover.1618492553.git.viremana@linux.microsoft.com>
+ <959f6cc899a17c709a2f5a71f6b2dc8c072ae600.1618492553.git.viremana@linux.microsoft.com>
+Date:   Fri, 16 Apr 2021 11:04:56 +0200
+Message-ID: <87sg3q7g7b.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Vineeth Pillai <viremana@linux.microsoft.com> writes:
 
-
-On Fri, 16 Apr 2021, Sakari Ailus wrote:
-
-> On Fri, Apr 16, 2021 at 10:46:54AM +0200, Julia Lawall wrote:
-> > > > If you're running into the 80 character limit, then it's fine to use
-> > > > two tabs.  I think we have been rejecting patches that push align the
-> > > > parameters but push past the 80 character limit.  Using one tab is
-> > > > confusing because it makes the decalarations line up with the code.
-> > >
-> > > Interesting. Do you have an example of this? I've thought checkpatch.pl
-> > > gave a warning if the line ended with an opening parenthesis no matter
-> > > what.
-> >
-> > Checkpatch is a perl script that searches for patterns that often indicate
-> > code that is hard to understand.  It is not a precise definition of what
-> > is allowed in the Linux kernel.  Humans have to amke compromises.
+> Enable remote TLB flush for SVM.
 >
-> Yeah... but I'd think if this is a preferred style then the warning could
-> be omitted. It might not be that difficult.
+> Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
+> ---
+>  arch/x86/kvm/svm/svm.c | 37 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 37 insertions(+)
+>
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 2ad1f55c88d0..de141d5ae5fb 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -37,6 +37,7 @@
+>  #include <asm/spec-ctrl.h>
+>  #include <asm/cpu_device_id.h>
+>  #include <asm/traps.h>
+> +#include <asm/mshyperv.h>
+>  
+>  #include <asm/virtext.h>
+>  #include "trace.h"
+> @@ -44,6 +45,8 @@
+>  #include "svm.h"
+>  #include "svm_ops.h"
+>  
+> +#include "hyperv.h"
+> +
+>  #define __ex(x) __kvm_handle_fault_on_reboot(x)
+>  
+>  MODULE_AUTHOR("Qumranet");
+> @@ -931,6 +934,8 @@ static __init void svm_set_cpu_caps(void)
+>  		kvm_cpu_cap_set(X86_FEATURE_VIRT_SSBD);
+>  }
+>  
+> +static struct kvm_x86_ops svm_x86_ops;
+> +
+>  static __init int svm_hardware_setup(void)
+>  {
+>  	int cpu;
+> @@ -1000,6 +1005,16 @@ static __init int svm_hardware_setup(void)
+>  	kvm_configure_mmu(npt_enabled, get_max_npt_level(), PG_LEVEL_1G);
+>  	pr_info("kvm: Nested Paging %sabled\n", npt_enabled ? "en" : "dis");
+>  
+> +#if IS_ENABLED(CONFIG_HYPERV)
+> +	if (ms_hyperv.nested_features & HV_X64_NESTED_ENLIGHTENED_TLB
+> +	    && npt_enabled) {
+> +		pr_info("kvm: Hyper-V enlightened NPT TLB flush enabled\n");
+> +		svm_x86_ops.tlb_remote_flush = kvm_hv_remote_flush_tlb;
+> +		svm_x86_ops.tlb_remote_flush_with_range =
+> +				kvm_hv_remote_flush_tlb_with_range;
+> +	}
+> +#endif
+> +
+>  	if (nrips) {
+>  		if (!boot_cpu_has(X86_FEATURE_NRIPS))
+>  			nrips = false;
+> @@ -1120,6 +1135,21 @@ static void svm_check_invpcid(struct vcpu_svm *svm)
+>  	}
+>  }
+>  
+> +#if IS_ENABLED(CONFIG_HYPERV)
+> +static void hv_init_vmcb(struct vmcb *vmcb)
+> +{
+> +	struct hv_enlightenments *hve = &vmcb->hv_enlightenments;
+> +
+> +	if (npt_enabled &&
+> +	    ms_hyperv.nested_features & HV_X64_NESTED_ENLIGHTENED_TLB)
 
-No idea.  It involves looking at two successive lines, which may make it
-more complicated.  Probably the biggest problem would be knowing whether
-the line being looked at represents a function header.  Maybe that could
-be detected by the fact that there is normally no space at the beginning
-of the line?
+Nitpick: we can probably have a 'static inline' for 
 
-julia
+ "npt_enabled && ms_hyperv.nested_features & HV_X64_NESTED_ENLIGHTENED_TLB"
+
+e.g. 'hv_svm_enlightened_tlbflush()'
+
+> +		hve->hv_enlightenments_control.enlightened_npt_tlb = 1;
+> +}
+> +#else
+> +static inline void hv_init_vmcb(struct vmcb *vmcb)
+> +{
+> +}
+> +#endif
+> +
+>  static void init_vmcb(struct vcpu_svm *svm)
+>  {
+>  	struct vmcb_control_area *control = &svm->vmcb->control;
+> @@ -1282,6 +1312,8 @@ static void init_vmcb(struct vcpu_svm *svm)
+>  		}
+>  	}
+>  
+> +	hv_init_vmcb(svm->vmcb);
+> +
+>  	vmcb_mark_all_dirty(svm->vmcb);
+>  
+>  	enable_gif(svm);
+> @@ -3975,6 +4007,11 @@ static void svm_load_mmu_pgd(struct kvm_vcpu *vcpu, unsigned long root,
+>  		svm->vmcb->control.nested_cr3 = cr3;
+>  		vmcb_mark_dirty(svm->vmcb, VMCB_NPT);
+>  
+> +#if IS_ENABLED(CONFIG_HYPERV)
+> +		if (kvm_x86_ops.tlb_remote_flush)
+> +			kvm_update_arch_tdp_pointer(vcpu->kvm, vcpu, cr3);
+> +#endif
+> +
+>  		/* Loading L2's CR3 is handled by enter_svm_guest_mode.  */
+>  		if (!test_bit(VCPU_EXREG_CR3, (ulong *)&vcpu->arch.regs_avail))
+>  			return;
+
+-- 
+Vitaly
+
