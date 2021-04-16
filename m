@@ -2,152 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26903628B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 21:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7EA3628B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 21:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243610AbhDPTfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 15:35:13 -0400
-Received: from mailout.easymail.ca ([64.68.200.34]:37716 "EHLO
-        mailout.easymail.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235029AbhDPTfM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 15:35:12 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mailout.easymail.ca (Postfix) with ESMTP id BDED6C0DBE;
-        Fri, 16 Apr 2021 19:34:46 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at emo04-pco.easydns.vpn
-Received: from mailout.easymail.ca ([127.0.0.1])
-        by localhost (emo04-pco.easydns.vpn [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id I4-BX4Tq3JuR; Fri, 16 Apr 2021 19:34:46 +0000 (UTC)
-Received: from mail.gonehiking.org (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
-        by mailout.easymail.ca (Postfix) with ESMTPA id 1B44BC270A;
-        Fri, 16 Apr 2021 19:34:37 +0000 (UTC)
-Received: from [192.168.1.4] (internal [192.168.1.4])
-        by mail.gonehiking.org (Postfix) with ESMTP id C5BE23EE4F;
-        Fri, 16 Apr 2021 13:34:36 -0600 (MDT)
-Subject: Re: [PATCH 1/5] scsi: BusLogic: Fix missing `pr_cont' use
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <alpine.DEB.2.21.2104141244520.44318@angie.orcam.me.uk>
- <alpine.DEB.2.21.2104141419040.44318@angie.orcam.me.uk>
-From:   Khalid Aziz <khalid@gonehiking.org>
-Message-ID: <98a2ab05-e566-41f3-74b4-8b54563f4ae3@gonehiking.org>
-Date:   Fri, 16 Apr 2021 13:34:36 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S243675AbhDPTgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 15:36:04 -0400
+Received: from mail-eopbgr760050.outbound.protection.outlook.com ([40.107.76.50]:18050
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235029AbhDPTgD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 15:36:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PQvmObWUvyWkHZ8yRacdOR9UNoeuhWIS8gIdLfRZg+gRcLPUYHwAcM9iXjcplvT/AyUcLDeS1kYuQaQmVzgMWOB1ka5ORpPdv6PglZixbRQKKf189xP0yrkVFsG7it6iYVRpdhN2/x2sL2l5FMNUX3swd+SeeSF06RLnWsuN4Q9+uWmO7gt5kIVry7+9NRLoEqR+ZRDHKFqKOfnJFjDXzZGhdj07sZJf5leGysvuWRcMQkNOwxL1stLV97vvwvNaQeT51Ezhh7Z0C5mvWaiMwzW+tX8DrSH/1iRxwmQZwTqcWacgLyT6mvAdTfMZ1tZMtV2KCnToDefnCGeqOea0+Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LuTZ7gDVDAj73oyxLhQo6Iyr7ZqIB4LSvsBtII7iXrY=;
+ b=DhJec2rzNBz99lxj1j66vR6b/kDeT3zbLDsoxo6DHqf8WAktNS/sPTGtqW5W8sG2LJk0Z83HMXWXe0vZXM4ibpW41wUfqWMz3wrvbQswiqOQ8UyspDslLvadWTH91dS3T0w5xjVqlPIpUUx95cx5V1Et+528Etxc0NDLLzFwCaAUQDUmaoEzJ2dJgR+zCBj2B80pZuHhnkWHDNUxoLqADr397ffGkjMufdPeWkoWBnMsbkC2fnROs7KRYxZlJQqpWwL8vndLZsdHHlMO3oXSyualwKcYOEsoUd4jsISM6qbLspl1ZIeONfOUMLdI/qoLrDIxdbSigTLDoylNCahcKQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LuTZ7gDVDAj73oyxLhQo6Iyr7ZqIB4LSvsBtII7iXrY=;
+ b=dYKFHGT4zTtclE9op24K0B8DGCOWrH4HK1NM46wJL7WvjjSzTbYBIpcey0FFPx1bQHLZZN4n7fAjsgx2/LPhUxUcFKcnFtUDgvZZt0zgQgj6UGQAu1xz9BlEK5gSrDZKkHPqv7zcIMqAAPkfCXsCVVZnBe/sGSrFWuB/WzNZBa62OZzx1XGvyDO0COilBP4eEzIrB+FgdvEdSzRNqHeDlW513R8iICWASWLM1ePsCbG6C6lvQ89RQufVsvN5fCfyCeRinZDgnOx6diCpf83occyDmIPKxwdlb2/8mwQtE4me0xzhdE9HdcRHq4S8vl0S8wrxW2n3JFpNyaOclxVdug==
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1243.namprd12.prod.outlook.com (2603:10b6:3:74::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.21; Fri, 16 Apr
+ 2021 19:35:36 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4020.024; Fri, 16 Apr 2021
+ 19:35:36 +0000
+Date:   Fri, 16 Apr 2021 16:35:35 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Brice Goglin <Brice.Goglin@inria.fr>,
+        Keith Busch <kbusch@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] node: fix device cleanups in error handling code
+Message-ID: <20210416193535.GO1370958@nvidia.com>
+References: <YHA0JUra+F64+NpB@mwanda>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHA0JUra+F64+NpB@mwanda>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: BL1PR13CA0379.namprd13.prod.outlook.com
+ (2603:10b6:208:2c0::24) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.21.2104141419040.44318@angie.orcam.me.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0379.namprd13.prod.outlook.com (2603:10b6:208:2c0::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.6 via Frontend Transport; Fri, 16 Apr 2021 19:35:36 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lXUFb-007Poz-7S; Fri, 16 Apr 2021 16:35:35 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 45e1bfb1-c16a-427b-847c-08d9010ecf17
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1243:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB12434B14C1CC6313BEC45B7FC24C9@DM5PR12MB1243.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1824;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: L+wtOTj8COcFLugjSnehPaqvqtw25VSN8m3q4AD30c86FJb3zOLJLDJpbK/Ueh6IGMZA6+9dMDBLIE0Yb+YLlSjhmSubhwlpPyj7X9SaLTKa+SF3auZ0ma/dKpf0Akqy7lK8KMdwdXMv1QMDwjEgJolfPg/S6xE20lQ4zfLQgWoOIYoh3fgXCkJIwRb0HuaSHw63lUv5P5pWyqIG9P2DJuyVQnFsH13pP9bvosQbpgBjTXxAvEStMDR7Ns8fjQiwPPuvzWEcnz+7fS5Zo7C3Ovck+UN4Mz6WWmbJHX4lJla11JHZ3i3sG4l8zySamz2fEVXONCJlnqnYmbDGN2U9DKQIKsdFfQb+GJU6nOqln9F8fLVA3pTf9Sz+FLWZSl7omzhIzfhvrgNUAKTJ4ng7bYRn+k71Qe7xuvnQaC60t1SheXM/M4ele5AY4euS5GL8wTXc+s0oteawv+TGAWcq+tnGmx21E+EcFbs653sLtr06vnOGxqHg3VeU4yJth76xRm5p/RMbjUTO4lEOq8dGWvapF5K596bP9XC/c1+FX+f7uHVptDm98OddWghq1ahYurqXOGtMoSu9IpdReaYlU2Us67BjmzZVWA4SXwp30so=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(39860400002)(396003)(366004)(376002)(36756003)(5660300002)(9786002)(9746002)(8936002)(66476007)(86362001)(8676002)(186003)(66556008)(6916009)(38100700002)(66946007)(316002)(33656002)(426003)(26005)(83380400001)(1076003)(2906002)(478600001)(54906003)(4326008)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?T/+4Q6R3Bl+Hk0UwVo0V9qvK9TEPo85q+4RkLyb2534Zbq3dk3nFdOEGmzbB?=
+ =?us-ascii?Q?IRloDHFWvaDDfVjqQJ/JvvqIFhYlLbK/YbDw0OLm2xFMkVhl7Pe/mvqaMiQR?=
+ =?us-ascii?Q?dfBnHIu4UKqAqDt+bBYvkSRIh5YDlp7sNVLKOLXtNI0UwgMxDgtRIhlb4pui?=
+ =?us-ascii?Q?6jGJ19nkpNeJudjrdsWlqvd7zVvT2SzB+Qn3dokqvoOQADBae4e0g1rs/lHh?=
+ =?us-ascii?Q?WxARbUkMdWt1f3oTy8sLb8T8b2gnwyRgIc7A7NOTAfE+/aag48X8TwrbQCed?=
+ =?us-ascii?Q?pWJvNCZhdpCoG/NL3cWjc8v6r5XAeA0/ZJGvwDrIes97oOUdArSp/hnNaHsw?=
+ =?us-ascii?Q?0/RIwCqF9Kn7rq/M26OFRn+E1NGP8dDz/A7oDPIexYVWdEam50tNO8AKcVMr?=
+ =?us-ascii?Q?tLgUth/ZOohwwQC4oRiDasojrZNf1NFPadeT3vqlfsoZtmEj+PdCOM5SO2/V?=
+ =?us-ascii?Q?ijxAuKZV3hdD8yZYdvcexPhTiqXbopOa0LQoDCXtg8g1LhfXtGKw6fsKaqzZ?=
+ =?us-ascii?Q?xsIoRxRPoIF9eVXXsjrCTTwiQtm/ug7h0SfBqEqPsI0o2Yx0N1GQMAQ6RRjO?=
+ =?us-ascii?Q?BXdMflp8os2lw4P237rehwI7zKYUyLOA4BfT+/bRDcxwB8zVAdDC7+iCg4D1?=
+ =?us-ascii?Q?4bbje87a16nnluRJ+Sr0efeAA6zQsyy7r4vKXj55npd9z9GIqEgDakBuuao/?=
+ =?us-ascii?Q?IfidpRLkUqRpcm2brFEthyYlbKlGABRX6FgIHDD0Aox+uGcspWzfpgj2nL48?=
+ =?us-ascii?Q?ML++Xu6a5PGly6uSoLW9Q1PGcMClYNjIkEylUwjA3ngMDL47FNrLvLOaJjPJ?=
+ =?us-ascii?Q?uxtEalxdmNu9V7bRoxihIjRRU/Zlzy5C1zpeKIIh0XATBU3fzfNxQWnH/2l9?=
+ =?us-ascii?Q?PCfrlXBYKLs7NH1AxD3Sjd6m8425JSERvpEX1uOjhRCgonfrStWc6NnkUSeo?=
+ =?us-ascii?Q?jptNk6NEG18PmxsHmfAxVQIghxUs2VZ62j6y52YmSqFFraOQ8NHWHexWa5V9?=
+ =?us-ascii?Q?3L8mH+5PFcAdfdCFQzgc3dzGd+xJ/EcgTOJKE5FNQXZyi0va9qhI1OGBsGSX?=
+ =?us-ascii?Q?vWNj6lGFk/Zfr7gZqMHD6jgClToPq3AbiD+D/zl52qPf8jew2rYrVPcp499h?=
+ =?us-ascii?Q?pLGTMFG6sDU/6LcjamsRHZBl3Fiol3uZCjBqPwkpenp81VYhTo2EgjImJX1U?=
+ =?us-ascii?Q?uC2XsI/nvl7hy0ssNtgv418ICcF6A87bCCN9bfH4NjPmklfPApFh9lzhAgON?=
+ =?us-ascii?Q?MUxpf1nAHQwiz737EZR20r/gKY31JmgASNn6xMaB4fLtrCN1LSk0COMvjVkJ?=
+ =?us-ascii?Q?CGfynAJSPhnMoa9ixq6aZiQIqr4TWfZEPFZ0jOmvKHnLjw=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45e1bfb1-c16a-427b-847c-08d9010ecf17
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2021 19:35:36.7509
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 18oCPZG0fIfWdIr+YlzWlVsnNAtRLCH61k00tfBktn4f/P35lOBMs9gwo1IMdB5Z
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1243
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/14/21 4:39 PM, Maciej W. Rozycki wrote:
-> Update BusLogic driver's messaging system to use `pr_cont' for 
-> continuation lines, bringing messy output:
+On Fri, Apr 09, 2021 at 02:01:57PM +0300, Dan Carpenter wrote:
+> We can't use kfree() to free device managed resources so the kfree(dev)
+> is against the rules.
 > 
-> pci 0000:00:13.0: PCI->APIC IRQ transform: INT A -> IRQ 17
-> scsi: ***** BusLogic SCSI Driver Version 2.1.17 of 12 September 2013 *****
-> scsi: Copyright 1995-1998 by Leonard N. Zubkoff <lnz@dandelion.com>
-> scsi0: Configuring BusLogic Model BT-958 PCI Wide Ultra SCSI Host Adapter
-> scsi0:   Firmware Version: 5.07B, I/O Address: 0x7000, IRQ Channel: 17/Level
-> scsi0:   PCI Bus: 0, Device: 19, Address:
-> 0xE0012000,
-> Host Adapter SCSI ID: 7
-> scsi0:   Parity Checking: Enabled, Extended Translation: Enabled
-> scsi0:   Synchronous Negotiation: Ultra, Wide Negotiation: Enabled
-> scsi0:   Disconnect/Reconnect: Enabled, Tagged Queuing: Enabled
-> scsi0:   Scatter/Gather Limit: 128 of 8192 segments, Mailboxes: 211
-> scsi0:   Driver Queue Depth: 211, Host Adapter Queue Depth: 192
-> scsi0:   Tagged Queue Depth:
-> Automatic
-> , Untagged Queue Depth: 3
-> scsi0:   SCSI Bus Termination: Both Enabled
-> , SCAM: Disabled
+> It's easier to write this code if we open code the device_register() as
+> a device_initialize() and device_add().  That way if dev_set_name() set
+> name fails we can call put_device() and it will clean up correctly.
 > 
-> scsi0: *** BusLogic BT-958 Initialized Successfully ***
-> scsi host0: BusLogic BT-958
-> 
-> back to order:
-> 
-> pci 0000:00:13.0: PCI->APIC IRQ transform: INT A -> IRQ 17
-> scsi: ***** BusLogic SCSI Driver Version 2.1.17 of 12 September 2013 *****
-> scsi: Copyright 1995-1998 by Leonard N. Zubkoff <lnz@dandelion.com>
-> scsi0: Configuring BusLogic Model BT-958 PCI Wide Ultra SCSI Host Adapter
-> scsi0:   Firmware Version: 5.07B, I/O Address: 0x7000, IRQ Channel: 17/Level
-> scsi0:   PCI Bus: 0, Device: 19, Address: 0xE0012000, Host Adapter SCSI ID: 7
-> scsi0:   Parity Checking: Enabled, Extended Translation: Enabled
-> scsi0:   Synchronous Negotiation: Ultra, Wide Negotiation: Enabled
-> scsi0:   Disconnect/Reconnect: Enabled, Tagged Queuing: Enabled
-> scsi0:   Scatter/Gather Limit: 128 of 8192 segments, Mailboxes: 211
-> scsi0:   Driver Queue Depth: 211, Host Adapter Queue Depth: 192
-> scsi0:   Tagged Queue Depth: Automatic, Untagged Queue Depth: 3
-> scsi0:   SCSI Bus Termination: Both Enabled, SCAM: Disabled
-> scsi0: *** BusLogic BT-958 Initialized Successfully ***
-> scsi host0: BusLogic BT-958
-> 
-> Also diagnostic output such as with the `BusLogic=TraceConfiguration' 
-> parameter is affected and becomes vertical and therefore hard to read.  
-> This has now been corrected, e.g.:
-> 
-> pci 0000:00:13.0: PCI->APIC IRQ transform: INT A -> IRQ 17
-> blogic_cmd(86) Status = 30:  4 ==>  4: FF 05 93 00
-> blogic_cmd(95) Status = 28: (Modify I/O Address)
-> blogic_cmd(91) Status = 30:  1 ==>  1: 01
-> blogic_cmd(04) Status = 30:  4 ==>  4: 41 41 35 30
-> blogic_cmd(8D) Status = 30: 14 ==> 14: 45 DC 00 20 00 00 00 00 00 40 30 37 42 1D
-> scsi: ***** BusLogic SCSI Driver Version 2.1.17 of 12 September 2013 *****
-> scsi: Copyright 1995-1998 by Leonard N. Zubkoff <lnz@dandelion.com>
-> blogic_cmd(04) Status = 30:  4 ==>  4: 41 41 35 30
-> blogic_cmd(0B) Status = 30:  3 ==>  3: 00 08 07
-> blogic_cmd(0D) Status = 30: 34 ==> 34: 03 01 07 04 00 00 00 00 00 00 00 00 00 00 00 00 FF 42 44 46 FF 00 00 00 00 00 00 00 00 00 FF 00 FF 00
-> blogic_cmd(8D) Status = 30: 14 ==> 14: 45 DC 00 20 00 00 00 00 00 40 30 37 42 1D
-> blogic_cmd(84) Status = 30:  1 ==>  1: 37
-> blogic_cmd(8B) Status = 30:  5 ==>  5: 39 35 38 20 20
-> blogic_cmd(85) Status = 30:  1 ==>  1: 42
-> blogic_cmd(86) Status = 30:  4 ==>  4: FF 05 93 00
-> blogic_cmd(91) Status = 30: 64 ==> 64: 41 46 3E 20 39 35 38 20 20 00 C4 00 04 01 07 2F 07 04 35 FF FF FF FF FF FF FF FF FF FF 01 00 FE FF 08 FF FF 00 00 00 00 00 00 00 01 00 01 00 00 FF FF 00 00 00 00 00 00 00 00 00 00 00 00 00 FC
-> scsi0: Configuring BusLogic Model BT-958 PCI Wide Ultra SCSI Host Adapter
-> 
-> etc.
-> 
-> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
-> Fixes: 4bcc595ccd80 ("printk: reinstate KERN_CONT for printing continuation lines")
-> Cc: stable@vger.kernel.org # v4.9+
+> Fixes: acc02a109b04 ("node: Add memory-side caching attributes")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > ---
->  drivers/scsi/BusLogic.c |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> linux-buslogic-pr-cont.diff
-> Index: linux-macro-ide/drivers/scsi/BusLogic.c
-> ===================================================================
-> --- linux-macro-ide.orig/drivers/scsi/BusLogic.c
-> +++ linux-macro-ide/drivers/scsi/BusLogic.c
-> @@ -3603,7 +3603,7 @@ static void blogic_msg(enum blogic_msgle
->  			if (buf[0] != '\n' || len > 1)
->  				printk("%sscsi%d: %s", blogic_msglevelmap[msglevel], adapter->host_no, buf);
->  		} else
-> -			printk("%s", buf);
-> +			pr_cont("%s", buf);
->  	} else {
->  		if (begin) {
->  			if (adapter != NULL && adapter->adapter_initd)
-> @@ -3611,7 +3611,7 @@ static void blogic_msg(enum blogic_msgle
->  			else
->  				printk("%s%s", blogic_msglevelmap[msglevel], buf);
->  		} else
-> -			printk("%s", buf);
-> +			pr_cont("%s", buf);
->  	}
->  	begin = (buf[len - 1] == '\n');
->  }
-> 
+>  drivers/base/node.c | 26 ++++++++++++--------------
+>  1 file changed, 12 insertions(+), 14 deletions(-)
 
-Looks good.
+Wow, yikes, that "kfree_const(dev->kobj.name);" is really creative
 
-Acked-by: Khalid Aziz <khalid@gonehiking.org>
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+
+Though I dislike ignoring the error code from dev_set_name(), I think
+Greg would prefer this:
+
+diff --git a/drivers/base/node.c b/drivers/base/node.c
+index f449dbb2c74666..80079e440add12 100644
+--- a/drivers/base/node.c
++++ b/drivers/base/node.c
+@@ -140,20 +140,16 @@ static struct node_access_nodes *node_init_node_access(struct node *node,
+ 	dev->parent = &node->dev;
+ 	dev->release = node_access_release;
+ 	dev->groups = node_access_node_groups;
+-	if (dev_set_name(dev, "access%u", access))
+-		goto free;
+ 
+-	if (device_register(dev))
+-		goto free_name;
++	dev_set_name(dev, "access%u", access);
++	if (device_register(dev)) {
++		put_device(dev);
++		return NULL;
++	}
+ 
+ 	pm_runtime_no_callbacks(dev);
+ 	list_add_tail(&access_node->list_node, &node->access_list);
+ 	return access_node;
+-free_name:
+-	kfree_const(dev->kobj.name);
+-free:
+-	kfree(access_node);
+-	return NULL;
+ }
+ 
+
+(arguably a device_register_name() would be even better, if you are
+handy with coccinelle there could quickly be alot of users)
+
+Jason
