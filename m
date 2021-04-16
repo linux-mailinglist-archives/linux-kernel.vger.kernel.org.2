@@ -2,80 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE6D3628F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 21:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 569343628F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 21:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243166AbhDPTy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 15:54:58 -0400
-Received: from mailout.easymail.ca ([64.68.200.34]:46018 "EHLO
-        mailout.easymail.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236393AbhDPTy5 (ORCPT
+        id S244072AbhDPT4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 15:56:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243879AbhDPT4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 15:54:57 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mailout.easymail.ca (Postfix) with ESMTP id 5A0F623B7E;
-        Fri, 16 Apr 2021 19:54:32 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at emo06-pco.easydns.vpn
-Received: from mailout.easymail.ca ([127.0.0.1])
-        by localhost (emo06-pco.easydns.vpn [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id JH0B0m67ZeMM; Fri, 16 Apr 2021 19:54:32 +0000 (UTC)
-Received: from mail.gonehiking.org (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
-        by mailout.easymail.ca (Postfix) with ESMTPA id 58B7E239DB;
-        Fri, 16 Apr 2021 19:54:25 +0000 (UTC)
-Received: from [192.168.1.4] (internal [192.168.1.4])
-        by mail.gonehiking.org (Postfix) with ESMTP id 31CA03EE4F;
-        Fri, 16 Apr 2021 13:54:24 -0600 (MDT)
-Subject: Re: [PATCH 2/5] scsi: BusLogic: Avoid unbounded `vsprintf' use
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <alpine.DEB.2.21.2104141244520.44318@angie.orcam.me.uk>
- <alpine.DEB.2.21.2104141521190.44318@angie.orcam.me.uk>
-From:   Khalid Aziz <khalid@gonehiking.org>
-Message-ID: <1dd4eb71-05e5-6da4-bfec-01883d1ac7b3@gonehiking.org>
-Date:   Fri, 16 Apr 2021 13:54:24 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 16 Apr 2021 15:56:42 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E17AC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 12:56:17 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id r9so43796264ejj.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 12:56:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l12BmPzjPGQPhOVAK1+pGnVg6YOohJn2PXow4I2KCwo=;
+        b=nQnk4fUrtR73OTn0Bked0GsH77E4CU2Aryt7NrztyQzLtex0tRik3lEi7dybmcBzRH
+         imUnySkDeWbLpm1SmLfQ939xsEAUlHIlrHZFouijtfVnEwwG/v4ZQfXaj+HSc8sr43j+
+         v+8FG6MhnCm6G5B8vHIVVyp4FpcXRY7PYCkB9DDvlM+eVLprbZBp++dJAbMAVMCt5SYF
+         q/qG9Xpz56IlrdEJbFFzzSPDCCvk4OjPw1eqpC1um+tl/xs3BG0Rvpm0vl3JBc7b9mtP
+         P0H2tUoAEcqxONVhFCzFwaQG92PxbLWuDF0PKMf+1CmUgDTeVky9AKb8XU42U9NOfxiW
+         nrZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l12BmPzjPGQPhOVAK1+pGnVg6YOohJn2PXow4I2KCwo=;
+        b=m2fLRmqxZHJIA6UbyGFqMb+XIQNA3FMI2gVEpbJV1EG0WlFqHhUw+cu64HaR0M1Olk
+         pqDnMYrAM1ZXRfcnnXIlNxRqKMhkBihLL/WPCKil110ljfHBCpEvrmrStZVsOb4uwwM4
+         Oghu3T0JZFX2qvBPr/458L9YhgbnWysD2BCKPcdHaUttFoHdtvB+2vwbov2LsXKSc05v
+         1msaizPAi+qw+lYwVG+ByPw7HpwArcfSZYp0DtuYJnlzR02cHPIWlrXN3aqHn7O9lmHs
+         07cvXKXgMgpiuoy4aSW4hixQxpLQkc08FiOONxTsfB2sVgVcWiZkKd0dFOsslzNoADE4
+         f7cg==
+X-Gm-Message-State: AOAM530n+kW3yIUiiFlUAsgsI89cMUaAK10yOyv+MW252IiTzZ9f1lRz
+        HRbx3lN0onEZDNQ+uTXDx9QsAyBC011utpjyEkx62A==
+X-Google-Smtp-Source: ABdhPJyQvyIq/sIJGlqAF2MfMI37oI2jAKdM4rT3dS8JIUJ3W5auOyWaYVKZc/Khipbuc/aofSL7uwOHc1OwxgnwwFo=
+X-Received: by 2002:a17:907:7631:: with SMTP id jy17mr9952113ejc.418.1618602976235;
+ Fri, 16 Apr 2021 12:56:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.21.2104141521190.44318@angie.orcam.me.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210416173524.GA1379987@redhat.com>
+In-Reply-To: <20210416173524.GA1379987@redhat.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 16 Apr 2021 12:56:05 -0700
+Message-ID: <CAPcyv4h77oTMBQ50wg6eHLpkFMQ16oAHg2+D=d5zshT6iWgAfw@mail.gmail.com>
+Subject: Re: [PATCH] dax: Fix missed wakeup in put_unlocked_entry()
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Linux fsdevel mailing list <linux-fsdevel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        Sergio Lopez <slp@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        linux kernel mailing list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/14/21 4:39 PM, Maciej W. Rozycki wrote:
-> Existing `blogic_msg' invocations do not appear to overrun its internal 
-> buffer of a fixed length of 100, which would cause stack corruption, but 
-> it's easy to miss with possible further updates and a fix is cheap in 
-> performance terms, so limit the output produced into the buffer by using 
-> `vsnprintf' rather than `vsprintf'.
-> 
-> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+On Fri, Apr 16, 2021 at 10:35 AM Vivek Goyal <vgoyal@redhat.com> wrote:
+>
+> I am seeing missed wakeups which ultimately lead to a deadlock when I am
+> using virtiofs with DAX enabled and running "make -j". I had to mount
+> virtiofs as rootfs and also reduce to dax window size to 32M to reproduce
+> the problem consistently.
+>
+> This is not a complete patch. I am just proposing this partial fix to
+> highlight the issue and trying to figure out how it should be fixed.
+> Should it be fixed in generic dax code or should filesystem (fuse/virtiofs)
+> take care of this.
+>
+> So here is the problem. put_unlocked_entry() wakes up waiters only
+> if entry is not null as well as !dax_is_conflict(entry). But if I
+> call multiple instances of invalidate_inode_pages2() in parallel,
+> then I can run into a situation where there are waiters on
+> this index but nobody will wait these.
+>
+> invalidate_inode_pages2()
+>   invalidate_inode_pages2_range()
+>     invalidate_exceptional_entry2()
+>       dax_invalidate_mapping_entry_sync()
+>         __dax_invalidate_entry() {
+>                 xas_lock_irq(&xas);
+>                 entry = get_unlocked_entry(&xas, 0);
+>                 ...
+>                 ...
+>                 dax_disassociate_entry(entry, mapping, trunc);
+>                 xas_store(&xas, NULL);
+>                 ...
+>                 ...
+>                 put_unlocked_entry(&xas, entry);
+>                 xas_unlock_irq(&xas);
+>         }
+>
+> Say a fault in in progress and it has locked entry at offset say "0x1c".
+> Now say three instances of invalidate_inode_pages2() are in progress
+> (A, B, C) and they all try to invalidate entry at offset "0x1c". Given
+> dax entry is locked, all tree instances A, B, C will wait in wait queue.
+>
+> When dax fault finishes, say A is woken up. It will store NULL entry
+> at index "0x1c" and wake up B. When B comes along it will find "entry=0"
+> at page offset 0x1c and it will call put_unlocked_entry(&xas, 0). And
+> this means put_unlocked_entry() will not wake up next waiter, given
+> the current code. And that means C continues to wait and is not woken
+> up.
+>
+> In my case I am seeing that dax page fault path itself is waiting
+> on grab_mapping_entry() and also invalidate_inode_page2() is
+> waiting in get_unlocked_entry() but entry has already been cleaned
+> up and nobody woke up these processes. Atleast I think that's what
+> is happening.
+>
+> This patch wakes up a process even if entry=0. And deadlock does not
+> happen. I am running into some OOM issues, that will debug.
+>
+> So my question is that is it a dax issue and should it be fixed in
+> dax layer. Or should it be handled in fuse to make sure that
+> multiple instances of invalidate_inode_pages2() on same inode
+> don't make progress in parallel and introduce enough locking
+> around it.
+>
+> Right now fuse_finish_open() calls invalidate_inode_pages2() without
+> any locking. That allows it to make progress in parallel to dax
+> fault path as well as allows multiple instances of invalidate_inode_pages2()
+> to run in parallel.
+>
+> Not-yet-signed-off-by: Vivek Goyal <vgoyal@redhat.com>
 > ---
->  drivers/scsi/BusLogic.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> linux-buslogic-vsnprintf.diff
-> Index: linux-macro-ide/drivers/scsi/BusLogic.c
+>  fs/dax.c |    7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> Index: redhat-linux/fs/dax.c
 > ===================================================================
-> --- linux-macro-ide.orig/drivers/scsi/BusLogic.c
-> +++ linux-macro-ide/drivers/scsi/BusLogic.c
-> @@ -3588,7 +3588,7 @@ static void blogic_msg(enum blogic_msgle
->  	int len = 0;
->  
->  	va_start(args, adapter);
-> -	len = vsprintf(buf, fmt, args);
-> +	len = vsnprintf(buf, sizeof(buf), fmt, args);
->  	va_end(args);
->  	if (msglevel == BLOGIC_ANNOUNCE_LEVEL) {
->  		static int msglines = 0;
-> 
+> --- redhat-linux.orig/fs/dax.c  2021-04-16 12:50:40.141363317 -0400
+> +++ redhat-linux/fs/dax.c       2021-04-16 12:51:42.385926390 -0400
+> @@ -266,9 +266,10 @@ static void wait_entry_unlocked(struct x
+>
+>  static void put_unlocked_entry(struct xa_state *xas, void *entry)
+>  {
+> -       /* If we were the only waiter woken, wake the next one */
+> -       if (entry && !dax_is_conflict(entry))
+> -               dax_wake_entry(xas, entry, false);
+> +       if (dax_is_conflict(entry))
+> +               return;
+> +
+> +       dax_wake_entry(xas, entry, false);
 
-As Maciej explained in other email that snprintf() does null-terminate
-the string, I think this change is fine.
-
-Acked-by: Khalid Aziz <khalid@gonehiking.org>
+How does this work if entry is NULL? dax_entry_waitqueue() will not
+know if it needs to adjust the index. I think the fix might be to
+specify that put_unlocked_entry() in the invalidate path needs to do a
+wake_up_all().
