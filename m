@@ -2,90 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 289DA361D60
+	by mail.lfdr.de (Postfix) with ESMTP id A52C7361D63
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242065AbhDPJty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 05:49:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28273 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232022AbhDPJty (ORCPT
+        id S240251AbhDPJuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 05:50:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232022AbhDPJuV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 05:49:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618566569;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pL4/0WJEqGhEKqqgK/B3s9Ma+T2AYRInru9aztuxIYY=;
-        b=Jx/o+UdlJHlTVBSGZY0cLX5+aogIIYs2D2vEJykfGX1QCbVtAAbdMJ3vOYmGypvXFxMKMN
-        yGMba/MmMNpyPbSJdr3KiNWp2OlRikLM6bljvxMWP0BvDZC1RCEJE5ozLC9Ka60sOf0UWz
-        CaBBHNAiqQXkwUGozA1wDwdUt+jR8oQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-585-mW1SmpBpNbC06zBXKRyOag-1; Fri, 16 Apr 2021 05:49:27 -0400
-X-MC-Unique: mW1SmpBpNbC06zBXKRyOag-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C7A036D246;
-        Fri, 16 Apr 2021 09:49:25 +0000 (UTC)
-Received: from localhost (ovpn-12-94.pek2.redhat.com [10.72.12.94])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 04F6E6294D;
-        Fri, 16 Apr 2021 09:49:22 +0000 (UTC)
-Date:   Fri, 16 Apr 2021 17:49:20 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH v9 5/7] mm: Make alloc_contig_range handle free hugetlb
- pages
-Message-ID: <20210416094920.GA8560@MiWiFi-R3L-srv>
-References: <20210416070023.4742-1-osalvador@suse.de>
- <20210416070023.4742-6-osalvador@suse.de>
+        Fri, 16 Apr 2021 05:50:21 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E01C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:49:56 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id u17so41269776ejk.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:49:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=b9xcU+bHCH6H4Mu7XMxMJgfJPmJdYS6JjfdFloan2eY=;
+        b=O7b7afvKsVytUgchxcoZQTWt5+DMHs6JcMkOXtU+LYfcENx1T8fCtUONi2MfvEtXqN
+         2aXgrO1LizMJL1MB+nkhUL0QpvLmUfrmznUFysVax+BV/kgoreq/liyXA168y8ec+S/R
+         170HVnAnz3uEciN/N8fvbWIVPWIjZoKSMYzLvX+2Tg9WxtD+YGnybXE0TXdEx231QIGj
+         jdQeLSMo9fx6GrpQK2Zuwvb2uU1laGstMLzGHSX2WmedtKY8eDrkTAizxrFEyA31voB0
+         VMZPC7MhMUPV6x46vDMkhy+E90lbdEgl/7FNX2v5p+dg5GsAJhlc/CeRq9IDPTiaaEwP
+         1uYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=b9xcU+bHCH6H4Mu7XMxMJgfJPmJdYS6JjfdFloan2eY=;
+        b=ScXqYbFEPpZ7jnWdJnt0CQclGJhQCZDz3VHaMba2MCfTU609W4R0TVNRfkLedI/Q8s
+         2/ouasdD5JnO/EVuwEI5fX7yK/rQfcw4reJejPnyA9oSbNTCGvi0zZJUeOESl8vIuEq4
+         XDmhJKIIzjBKYL8nZeaINuHt/fAKZbGtWIwpH8Lkxic0WKN1+QWp6Zt+bcV5h0u0j32r
+         uqhvunFzY1DO2kDg43d610AATC8etEi05IHapJ/a0EM34GkzhNhrTmWV5wHEt3B0E/2M
+         oRnvcA8c4/JPQFJ/swJM8A9EhoFu+/2vNNr6TQVfpiZhngGfc/8tCPHsP4fwYcU44srh
+         0k7g==
+X-Gm-Message-State: AOAM531+p1F0JBBViAEQtkAOuTLRWCmfBcK3xNarouYnSiS7Gf4pwD/6
+        mRzFRMr1SKt5oF/a15jAKAutng1jBmK2YcxmK8DZlg==
+X-Google-Smtp-Source: ABdhPJy28vY9jrv2LfPhq7lFPJ0hGDvDfyDSRrWKFrpmwW6obPj14vaOnkH3hlUEw05sJ8JBByIuoqO1kwRO3vDFQmY=
+X-Received: by 2002:a17:906:f155:: with SMTP id gw21mr7431696ejb.170.1618566595315;
+ Fri, 16 Apr 2021 02:49:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416070023.4742-6-osalvador@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20210415144411.596695196@linuxfoundation.org>
+In-Reply-To: <20210415144411.596695196@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 16 Apr 2021 15:19:43 +0530
+Message-ID: <CA+G9fYu4r1+UUh-Lm6RH_9tL6xkQvOUNYEONXAYG888TnsWZng@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/13] 4.19.188-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/16/21 at 09:00am, Oscar Salvador wrote:
-...  
-> +/*
-> + * alloc_and_dissolve_huge_page - Allocate a new page and dissolve the old one
-> + * @h: struct hstate old page belongs to
-> + * @old_page: Old page to dissolve
-> + * Returns 0 on success, otherwise negated error.
-> + */
-> +static int alloc_and_dissolve_huge_page(struct hstate *h, struct page *old_page)
-> +{
-> +	gfp_t gfp_mask = htlb_alloc_mask(h) | __GFP_THISNODE;
-> +	int nid = page_to_nid(old_page);
-> +	struct page *new_page;
-> +	int ret = 0;
-> +
-> +	/*
-> +	 * Before dissolving the page, we need to allocate a new one for the
-> +	 * pool to remain stable. Using alloc_buddy_huge_page() allows us to
-> +	 * not having to deal with prep_new_page() and avoids dealing of any
-				   ~ prep_new_huge_page() ?
-> +	 * counters. This simplifies and let us do the whole thing under the
-> +	 * lock.
-> +	 */
-> +	new_page = alloc_buddy_huge_page(h, gfp_mask, nid, NULL, NULL);
-> +	if (!new_page)
-> +		return -ENOMEM;
-> +
-> +retry:
-> +	spin_lock_irq(&hugetlb_lock);
-...
+On Thu, 15 Apr 2021 at 20:29, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.188 release.
+> There are 13 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 17 Apr 2021 14:44:01 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.188-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 4.19.188-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.19.y
+* git commit: 9f5de887b160253cf03d6ae91e72ba7dbd4a2317
+* git describe: v4.19.187-14-g9f5de887b160
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
+.187-14-g9f5de887b160
+
+## No regressions (compared to v4.19.187)
+
+## No fixes (compared to v4.19.187)
+
+## Test result summary
+ total: 71166, pass: 57695, fail: 1809, skip: 11392, xfail: 270,
+
+## Build Summary
+* arm: 97 total, 96 passed, 1 failed
+* arm64: 25 total, 24 passed, 1 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 14 total, 13 passed, 1 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 39 total, 39 passed, 0 failed
+* s390: 9 total, 9 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 15 total, 14 passed, 1 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
