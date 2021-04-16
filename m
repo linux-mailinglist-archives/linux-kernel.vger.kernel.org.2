@@ -2,100 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41621361F8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA9D361F93
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241701AbhDPMMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 08:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232130AbhDPMMh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 08:12:37 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F3AC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 05:12:13 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id f15so18691699iob.5
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 05:12:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QRWAPmW5vvyXZA3k3epSuvNabZYcpW8oDtvws6ZLKbA=;
-        b=UplxDcY1zQ2EymDQcSIbvMLZOmcYU+jYX9/g74rwXA5evWnhYH2I9jwlXZbhmKe7Uh
-         BBL/g4ZhSoQxAKX6VGDn/XV7n1XMaw6imZ9hdGoNH7UWlZGIK5x8DpzwiAJwTdc1K+kl
-         EZm6mITn17YLMUY775amwjKD5aBATgC6P+giA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QRWAPmW5vvyXZA3k3epSuvNabZYcpW8oDtvws6ZLKbA=;
-        b=hvn31M34d5SKZyENIFks+lmnGT/J36y2t+Rod6HqILi7ZKEIqD8s+QyJg0xvXaFZo8
-         sU0L7uIzn2QNo7qFchNLCxwgOEhdlxIiNMa+2qNBFU7KDTSxf47wgZ1qnptWgcHJe5QZ
-         uNzJ8/mpsulQW6kSW9kYzBFPIzMvZ5VzTXIKwOcQKpdmFp+ixGHqtk221Hzj1EzvNcTh
-         fWiKuwZ8bfDwemKjundrPja8S/OrHAXB4rGj/Hz1C/No3SPes5WGni9/kKvrqLyY8SGb
-         O8jgdalKfGFiM1boieJd5rVAkNxVFrstZrF8BxNvuuELnH18PXebe6jsUnO37GI2xCGg
-         K+qQ==
-X-Gm-Message-State: AOAM531yPlMH/n39bk6L25RDld0Kip05l17XnUzq6cbNec/wtf+x152E
-        3Ji8/XtjXAGvBzLUpOrx7CpJVy1ar8XNUg==
-X-Google-Smtp-Source: ABdhPJzonT2xqujZWT52oa9/fLNipZhY74sU/pHLYeFmZAfsUf5mQYtA00rRFIFW13DMjp/348GLWw==
-X-Received: by 2002:a05:6638:1390:: with SMTP id w16mr3705553jad.83.1618575132189;
-        Fri, 16 Apr 2021 05:12:12 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id s1sm308665iov.52.2021.04.16.05.12.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Apr 2021 05:12:11 -0700 (PDT)
-Subject: Re: [PATCH] drivers: ipa: Fix missing IRQF_ONESHOT as only threaded
- handler
-To:     zhuguangqing83@gmail.com, Alex Elder <elder@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210416034007.31222-1-zhuguangqing83@gmail.com>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <a200ba57-4c70-d2cc-10b8-710789c322dc@ieee.org>
-Date:   Fri, 16 Apr 2021 07:12:10 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S241753AbhDPMOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 08:14:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37450 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232130AbhDPMOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 08:14:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5EEB0B035;
+        Fri, 16 Apr 2021 12:14:10 +0000 (UTC)
+Date:   Fri, 16 Apr 2021 14:14:04 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Baoquan He <bhe@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH v9 5/7] mm: Make alloc_contig_range handle free hugetlb
+ pages
+Message-ID: <YHl/jDs/TDg3in4I@localhost.localdomain>
+References: <20210416070023.4742-1-osalvador@suse.de>
+ <20210416070023.4742-6-osalvador@suse.de>
+ <20210416094920.GA8560@MiWiFi-R3L-srv>
 MIME-Version: 1.0
-In-Reply-To: <20210416034007.31222-1-zhuguangqing83@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416094920.GA8560@MiWiFi-R3L-srv>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/21 10:40 PM, zhuguangqing83@gmail.com wrote:
-> From: Guangqing Zhu <zhuguangqing83@gmail.com>
+On Fri, Apr 16, 2021 at 05:49:20PM +0800, Baoquan He wrote:
+> On 04/16/21 at 09:00am, Oscar Salvador wrote:
+> ...  
+> > +/*
+> > + * alloc_and_dissolve_huge_page - Allocate a new page and dissolve the old one
+> > + * @h: struct hstate old page belongs to
+> > + * @old_page: Old page to dissolve
+> > + * Returns 0 on success, otherwise negated error.
+> > + */
+> > +static int alloc_and_dissolve_huge_page(struct hstate *h, struct page *old_page)
+> > +{
+> > +	gfp_t gfp_mask = htlb_alloc_mask(h) | __GFP_THISNODE;
+> > +	int nid = page_to_nid(old_page);
+> > +	struct page *new_page;
+> > +	int ret = 0;
+> > +
+> > +	/*
+> > +	 * Before dissolving the page, we need to allocate a new one for the
+> > +	 * pool to remain stable. Using alloc_buddy_huge_page() allows us to
+> > +	 * not having to deal with prep_new_page() and avoids dealing of any
+> 				   ~ prep_new_huge_page() ?
 
-This is not required here.	-Alex
+Yep, clumsy.
+@Andrew: could you please amend that or should I send a new version?
 
-https://lore.kernel.org/netdev/d57e0a43-4d87-93cf-471c-c8185ea85ced@ieee.org/
+Thanks
 
-> Coccinelle noticed:
-> drivers/net/ipa/ipa_smp2p.c:186:7-27: ERROR: Threaded IRQ with no primary
-> handler requested without IRQF_ONESHOT
-> 
-> Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
-> ---
->   drivers/net/ipa/ipa_smp2p.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ipa/ipa_smp2p.c b/drivers/net/ipa/ipa_smp2p.c
-> index a5f7a79a1923..74e04427a711 100644
-> --- a/drivers/net/ipa/ipa_smp2p.c
-> +++ b/drivers/net/ipa/ipa_smp2p.c
-> @@ -183,7 +183,8 @@ static int ipa_smp2p_irq_init(struct ipa_smp2p *smp2p, const char *name,
->   	}
->   	irq = ret;
->   
-> -	ret = request_threaded_irq(irq, NULL, handler, 0, name, smp2p);
-> +	ret = request_threaded_irq(irq, NULL, handler, IRQF_ONESHOT,
-> +				   name, smp2p);
->   	if (ret) {
->   		dev_err(dev, "error %d requesting \"%s\" IRQ\n", ret, name);
->   		return ret;
-> 
-
+-- 
+Oscar Salvador
+SUSE L3
