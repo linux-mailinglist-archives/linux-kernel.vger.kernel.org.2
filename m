@@ -2,119 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB801362A77
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 23:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44385362A7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 23:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243556AbhDPVkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 17:40:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235540AbhDPVkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 17:40:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15D47610CD;
-        Fri, 16 Apr 2021 21:40:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618609228;
-        bh=f9EMaN2F4fCZmxXmeuotxslIHmkZ/94dl7T4HpTXfNI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=u+fyM+ZwLXAlJk8yv0LciwwSykMvw0Rc9UjpyPdZA7Lk93OU7QwRUNHRqXuOSnROY
-         g83g7pLGFUu2SA7KOIAfcduuez9vNFxXG81RRqY1OgYz/Flq/WrMmMs4zQASzUQrjf
-         HUg7PfOekKDh/CFmTqsnVAiu8qXONIecZ0KVtpn8SnDb3ELNDExByYlYV6yDKW64RP
-         0sLEm2lp/RMZIh+MswcJ6ewa7TV4NQz++xnc9a0egpCdsWk9B3Lhx1V1P8eoa1JLRq
-         +APmYuo902xg5JSmvdqlvMDLhs6g7OzcXbUTQL71G78imxv2fECBLXjFAWDXXO+xtL
-         wtJi59SKr9skw==
-Received: by mail-oo1-f46.google.com with SMTP id t140-20020a4a3e920000b02901e5c1add773so5199882oot.1;
-        Fri, 16 Apr 2021 14:40:28 -0700 (PDT)
-X-Gm-Message-State: AOAM5332FexiILrjDk1SeWTnMo8Vez9fJv0DXcxfIG+yXA1rIAlLNihh
-        TV93miBjrfb0H7oDr8birho7lgFqd/hUTple/rU=
-X-Google-Smtp-Source: ABdhPJxdMfsuLGWVNA5ayxm2yN4i+p/QjzTTX7AmIEAoxUU4u9K4CkFF2lNyvgjAd1ckXELnyhHc/v9XkbxeNcsWg0c=
-X-Received: by 2002:a4a:b997:: with SMTP id e23mr4811719oop.13.1618609227327;
- Fri, 16 Apr 2021 14:40:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210416181421.2374588-1-jiancai@google.com> <20210416203522.2397801-1-jiancai@google.com>
-In-Reply-To: <20210416203522.2397801-1-jiancai@google.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 16 Apr 2021 23:40:15 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEBR7MMiXyOEHO+si1Fp7ZfzqFD-ks-tS=_3ncw_RmKVg@mail.gmail.com>
-Message-ID: <CAMj1kXEBR7MMiXyOEHO+si1Fp7ZfzqFD-ks-tS=_3ncw_RmKVg@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64: vdso: remove commas between macro name and arguments
-To:     Jian Cai <jiancai@google.com>
-Cc:     "# 3.4.x" <stable@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Manoj Gupta <manojgupta@google.com>,
-        Luis Lozano <llozano@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S244420AbhDPVlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 17:41:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235540AbhDPVlq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 17:41:46 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4DEBC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 14:41:19 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id o21-20020a05622a0095b02901b1324f9fceso6873885qtw.8
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 14:41:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=16osPIg+L8iFbBbX26b2dgHdAr7cmIuZsXJwe7Kia+g=;
+        b=WBimkN8DWryRmhzJxGj1LBDcTnpBNhzCOkYkTKVLyqlkm06LeBDi9CTPbJQaymbLQW
+         x0WhodsEAesUcItNZLnebP3kZTdSgbYT5GnlA0eW13axE1nRFhHd9Jikc0elBVarnlwb
+         NGwNfokyMKx9F2MF+7wJW4jajRQSHxPZb89Y9mQ7qitPR6HXmWz4z4zMSNQ6sdGJm7c/
+         5HGku1xtgjuJ3t8aq7jiap5qkqebKSXBUWeALG2NP/MDnjk4YWPp49DLenryzGnHb/Wp
+         BWb74qHaC+GgK5BPdQ3o/WFOlA2RfDOAw+Eo10BPaMcC3LPX735X1lsmLwYNxG5O6OZb
+         WZ1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=16osPIg+L8iFbBbX26b2dgHdAr7cmIuZsXJwe7Kia+g=;
+        b=LoU+cXwkvNBW9voPuz8d8Rd0QDD4iiYAINPx6ruJeu7IUzLCnVwUHL8vqpA3AROBVV
+         7OKLlxwFCrG9opYFLoeTXNfkymZ5fLyxWjpbN2/+5eGytFIwhhg76g+XRe09gSLPO3EC
+         hmN+ynh8WJ0g6bYgH7VcwJiUj1FPNoLYHZ4zIkVTsv3AT8+nHfhBoFPIRatJQTzHccRQ
+         rd4fG3gaWAG+w3SAf2UtebGTNzvXrYJoktt/al7Oo7mApqLHYivhGzQKPIw10DCqBAao
+         wGOJ7QyVeS9VwbgPc2oxaCcjKEF+AJnaGtHjHCt/EaICgMCbR2MdhzMWjLtUwlLL6AcP
+         ZBqA==
+X-Gm-Message-State: AOAM530rZ7bF+b0D/0RwTYH2AfktJLpdQRemP+mymMuohhQUAF+Qz4V1
+        nOXLojjo+wLMM0Vid+WpdbYCWHNo6JQX
+X-Google-Smtp-Source: ABdhPJz8bALJqumEOr6IoT4IIs3oknvaJ4pQgL0djIhAFUOFYs2/o6mvcAiW2S7wcGYrwl9OaBu8hN2ikEZO
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:42bc:2b31:3f37:1a26])
+ (user=irogers job=sendgmr) by 2002:a0c:f64d:: with SMTP id
+ s13mr10266118qvm.13.1618609278854; Fri, 16 Apr 2021 14:41:18 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 14:41:13 -0700
+Message-Id: <20210416214113.552252-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
+Subject: [PATCH] perf arm64: Fix off-by-one directory paths.
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Apr 2021 at 22:35, Jian Cai <jiancai@google.com> wrote:
->
-> LLVM's integrated assembler does not support using commas separating
-> the name and arguments in .macro. However, only spaces are used in the
-> manual page. This replaces commas between macro names and the subsequent
-> arguments with space in calls to clock_gettime_return to make it
-> compatible with IAS.
->
-> Link:
-> https://sourceware.org/binutils/docs/as/Macro.html#Macro
-> https://github.com/ClangBuiltLinux/linux/issues/1349
->
-> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+Relative path include works in the regular build due to -I paths but may
+break in other situations.
 
-Please remove this tag - the only thing I suggested was to drop part
-of the original patch.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/arch/arm64/util/kvm-stat.c         | 4 ++--
+ tools/perf/arch/arm64/util/pmu.c              | 4 ++--
+ tools/perf/arch/arm64/util/unwind-libunwind.c | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
+diff --git a/tools/perf/arch/arm64/util/kvm-stat.c b/tools/perf/arch/arm64/util/kvm-stat.c
+index 50376b9062c1..2303256b7d05 100644
+--- a/tools/perf/arch/arm64/util/kvm-stat.c
++++ b/tools/perf/arch/arm64/util/kvm-stat.c
+@@ -1,8 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <errno.h>
+ #include <memory.h>
+-#include "../../util/evsel.h"
+-#include "../../util/kvm-stat.h"
++#include "../../../util/evsel.h"
++#include "../../../util/kvm-stat.h"
+ #include "arm64_exception_types.h"
+ #include "debug.h"
+ 
+diff --git a/tools/perf/arch/arm64/util/pmu.c b/tools/perf/arch/arm64/util/pmu.c
+index d3259d61ca75..2234fbd0a912 100644
+--- a/tools/perf/arch/arm64/util/pmu.c
++++ b/tools/perf/arch/arm64/util/pmu.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ 
+-#include "../../util/cpumap.h"
+-#include "../../util/pmu.h"
++#include "../../../util/cpumap.h"
++#include "../../../util/pmu.h"
+ 
+ struct pmu_events_map *pmu_events_map__find(void)
+ {
+diff --git a/tools/perf/arch/arm64/util/unwind-libunwind.c b/tools/perf/arch/arm64/util/unwind-libunwind.c
+index 1495a9523a23..5aecf88e3de6 100644
+--- a/tools/perf/arch/arm64/util/unwind-libunwind.c
++++ b/tools/perf/arch/arm64/util/unwind-libunwind.c
+@@ -4,9 +4,9 @@
+ #ifndef REMOTE_UNWIND_LIBUNWIND
+ #include <libunwind.h>
+ #include "perf_regs.h"
+-#include "../../util/unwind.h"
++#include "../../../util/unwind.h"
+ #endif
+-#include "../../util/debug.h"
++#include "../../../util/debug.h"
+ 
+ int LIBUNWIND__ARCH_REG_ID(int regnum)
+ {
+-- 
+2.31.1.368.gbe11c130af-goog
 
-> Signed-off-by: Jian Cai <jiancai@google.com>
-> ---
->
-> Changes v1 -> v2:
->   Keep the comma in the macro definition to be consistent with other
->   definitions.
->
->  arch/arm64/kernel/vdso/gettimeofday.S | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/arm64/kernel/vdso/gettimeofday.S b/arch/arm64/kernel/vdso/gettimeofday.S
-> index 856fee6d3512..b6faf8b5d1fe 100644
-> --- a/arch/arm64/kernel/vdso/gettimeofday.S
-> +++ b/arch/arm64/kernel/vdso/gettimeofday.S
-> @@ -227,7 +227,7 @@ realtime:
->         seqcnt_check fail=realtime
->         get_ts_realtime res_sec=x10, res_nsec=x11, \
->                 clock_nsec=x15, xtime_sec=x13, xtime_nsec=x14, nsec_to_sec=x9
-> -       clock_gettime_return, shift=1
-> +       clock_gettime_return shift=1
->
->         ALIGN
->  monotonic:
-> @@ -250,7 +250,7 @@ monotonic:
->                 clock_nsec=x15, xtime_sec=x13, xtime_nsec=x14, nsec_to_sec=x9
->
->         add_ts sec=x10, nsec=x11, ts_sec=x3, ts_nsec=x4, nsec_to_sec=x9
-> -       clock_gettime_return, shift=1
-> +       clock_gettime_return shift=1
->
->         ALIGN
->  monotonic_raw:
-> @@ -271,7 +271,7 @@ monotonic_raw:
->                 clock_nsec=x15, nsec_to_sec=x9
->
->         add_ts sec=x10, nsec=x11, ts_sec=x13, ts_nsec=x14, nsec_to_sec=x9
-> -       clock_gettime_return, shift=1
-> +       clock_gettime_return shift=1
->
->         ALIGN
->  realtime_coarse:
-> --
-> 2.31.1.368.gbe11c130af-goog
->
