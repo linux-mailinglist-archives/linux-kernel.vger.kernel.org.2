@@ -2,75 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A926362407
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA5936240B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343790AbhDPPel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 11:34:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343730AbhDPPek (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 11:34:40 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D578C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 08:34:15 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id a25so18231500ljm.11
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 08:34:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zLDzDS9UlIWp51s2VYij1UMAETw6FlEgnQT5aRCLKZ8=;
-        b=DirpUMunw7EJUFeo+SjDvEj+yxk4h+B0bfUUPJg74pxOGjtiQ7fNb9Oq58fXbOZ+mu
-         D//Ql481hiNCpWPsetH1q0ztOVvxhFhVkFsq6cNIfQcWfrRRSksKD8UXIEGTUXIjJ1eX
-         +oGhlhG+lOI8eNadbFYgc8soiLSGydn4hLUPxsUNepf8lTcXFcL5DLBV8lo9w3lhTkNa
-         t1Z0VlCHvWjXr2FCpP68tOLtp9uy8Nrn4ZIZBL+X8dH4ydFOdaAun9Lk8E5NtKKeL64x
-         k3kvzoGm8+XO26Ni3LixU3DAhEt4BV1A0MGf+uFwRATaU/KQ4nhRLAv0oV2Cgj3/mAjD
-         v8VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zLDzDS9UlIWp51s2VYij1UMAETw6FlEgnQT5aRCLKZ8=;
-        b=ilSnOTqzcXNUsGekMHPIEho4BG5pxOnzZlm7jx5ZJRAnUeOhvYYtW7i0sD1HGRdEtL
-         9hQzAJPQM7WDjQofYrQnfxaY+1hIV7SGIcT2ioW9i8VXovAaKnGGao4FILMulqAcZAkN
-         HM8SttX7fqzvylZV3P2kaPDJzs1ingcEGduoF2WnixGstFsmr3tp90aTk6fSbHikubrq
-         NkB6mHjxTj9fUkqI5kYvMh8o0wSnH+uSl8ai1kAB7qPPlTu84tPoXdQrFoYBrsVw3WPS
-         RNdyNPmxn6iFG2whaCg7l5/rQxs2dLNdU6n8EGKrbKnOPt/G8hMLc5xJBzcKVreBRSO9
-         +biA==
-X-Gm-Message-State: AOAM531XRb0VBvwzpd4LkIrV5dCkZktYcS6N5tINoY72VpZbOgTtPt0d
-        4kGMpbUw5ezi2jzmwweXYGIYzfvLK590wn94VNrbaw==
-X-Google-Smtp-Source: ABdhPJztGzHRBxHR8pp9VZ2uuYnoN0E9ouY8yRDZ9cBnXqQkZiysaZaIKiKr0D5i9LgzlVDWPmnNKqQYFcG0sgjuN1Q=
-X-Received: by 2002:a2e:b17b:: with SMTP id a27mr837141ljm.160.1618587253744;
- Fri, 16 Apr 2021 08:34:13 -0700 (PDT)
+        id S1343794AbhDPPf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 11:35:26 -0400
+Received: from mail-bn8nam11on2067.outbound.protection.outlook.com ([40.107.236.67]:5861
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235440AbhDPPfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 11:35:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eTl5fP46dY/3vSR6gO5j+1kjVvOxFgAdmFzpYmnNSYcQMPDh07iPcMr5pl/TRE9G+CtMgkMvQ5WPNyXT82F59prJG2FSgiosv4d8HyOmNJ9/VHv3Acn1lsv85UP9T9SyebV7qoksQ2cldgWOEwcPO95GAUmDWuoBK4nH1/LcG0s1oOztceUUg6Ru7jrlzgPbu2LGj8F7tHLiu0kJWgY2CraQQgPAH3FNu73GsEd0VZoq0YQhnWViELkCzsqzfKk2RaLSRrzt2tUJ7rCAKDXBz2rwoK78hmR5efZgNcZzE/F1lPIDxqvjAE0MeG1Omx+Bu9/bUYN3A5d0SKBWRLjRfA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fE3bpLCOf0LURtUyDCzhegkW/6g77juk5Cltv3V6IvY=;
+ b=OLjxFDPVsP9K6EGqaPyoFIWT61Gcvq5x+71XJTwWNajqhA5X809vlN9IMdCzYd6amc0kGP6xEy1jiq3PaUEhmQ2nJGs24k+182oRXsC+uOUxwhudlZxspawZk7D8Vrx8FXnYjD19dMMYcKUcVT2NerH39bXdSqqWcrWYbRTteYyFbH8sKwqUZrREQXUJlyB9am8hC+QvvcGeGNQwQqGtzSV1oujNv3r4p2iuPZ98I0jXcvurcrseint9Kxbvqi7vWW1RLKoiofazTCpC760kuB4le+VqFZT25bosCu1OXMbqTiPFxzQEp8VXCmYBPJZnZU5ZzJQp6vbY+DFmIOi/MA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fE3bpLCOf0LURtUyDCzhegkW/6g77juk5Cltv3V6IvY=;
+ b=MXWpaJ+qxnassiCih1P6ObNNJJ8QS370jqUpCS/eL/qY146fsSQvFGTVBCFur4vEqPPtkjfcNtiSxUOxLlEypeDczj8BCfTQXW83WfekngHUwbJN9BAU33QLGO/zUy4b52t0kQHONzKy4PcdbYYKcRqoVhm3/Rg9F6o6Q1UpTYw=
+Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=none action=none
+ header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4206.namprd12.prod.outlook.com (2603:10b6:208:1d5::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.18; Fri, 16 Apr
+ 2021 15:34:58 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::6d4d:4674:1cf6:8d34]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::6d4d:4674:1cf6:8d34%6]) with mapi id 15.20.4020.025; Fri, 16 Apr 2021
+ 15:34:58 +0000
+Subject: Re: [PATCH 22/40] drm/ttm/ttm_tt: Demote non-conformant kernel-doc
+ header
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Huang Rui <ray.huang@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org
+References: <20210416143725.2769053-1-lee.jones@linaro.org>
+ <20210416143725.2769053-23-lee.jones@linaro.org>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <2a85bf3c-d40e-6608-98f3-cd399f4df912@amd.com>
+Date:   Fri, 16 Apr 2021 17:34:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <20210416143725.2769053-23-lee.jones@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:5d8d:1198:63ca:8fe4]
+X-ClientProxiedBy: AM0PR02CA0150.eurprd02.prod.outlook.com
+ (2603:10a6:20b:28d::17) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-References: <20210416051407.54878-1-songmuchun@bytedance.com> <20210416051407.54878-6-songmuchun@bytedance.com>
-In-Reply-To: <20210416051407.54878-6-songmuchun@bytedance.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 16 Apr 2021 08:34:02 -0700
-Message-ID: <CALvZod6Ok6ELDmQCirLMYZfXavs=7miJK2v1DW2OKZzpP-aqeQ@mail.gmail.com>
-Subject: Re: [PATCH v2 5/8] mm: memcontrol: rename lruvec_holds_page_lru_lock
- to page_matches_lruvec
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:5d8d:1198:63ca:8fe4] (2a02:908:1252:fb60:5d8d:1198:63ca:8fe4) by AM0PR02CA0150.eurprd02.prod.outlook.com (2603:10a6:20b:28d::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Fri, 16 Apr 2021 15:34:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e3ac8195-badc-444a-90fb-08d900ed3136
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4206:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4206D4057F51F2A660EC0C1C834C9@MN2PR12MB4206.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: upnlecIYF4XCoUgMMJB41siSTXh/Nw7SvuewsCtd42Qv64kRyfiBmbXsu2FtT8WeBlJThVOTnztm2mM78Xe+hTYj0B/CGLqqWVmdI8Vrh05i1W8dINQzLYt0df+4ZLYXcc6ru+KfX8Z1L2evhX+wPKgC5xiLb3tznNfD1WM3y4cQiNqPGB2eGNc/OWl6NM8I/PujVYWVlDas5AWWYPegRtaV2EWOKZZb/Q1c985XRLkDEcAttcgtcWGL//djFCihcrz8/pNc1D4gu+/bWbGxB7RFfGuKMaZOdK60ZayfIehlTrj8lP35e+TEk+s1QGVOOdoZwJnwr2vtbhHoGJ4jz4PIrmzbm/OgNUbSbvrkwvDpcM2I2kT4NykFtx3Ra4vsmKdMNqq2Ynq4tX9kgafASBX38wBTi3D04w8YSoz5rIQBmMUUh/7dxcUw41vi3ZGnaewZ7Z9VyPLK6F7wXxpM3g3Dd92mWa0A3hlmuBOGeiitk0hFDh/oRn8uQhiqepSZpbGrGMbmRLcc5NP5Csw7iGop2V/zNXP9qz5e37KhG/ZLQL3xPnN9OpMt7SzFpoJfWIGT3ayYrQEwsdVsyv7HOy1Yn9MTPDptP0he8bFs8MFToo7llK8zAHVtmweQKa1xLGfL25sVwF553X+017W3pVq0tYMe4j8Fub/ydcsdiBmvFxg3M1kRP7tyNvC3ul8n
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(39860400002)(376002)(136003)(346002)(36756003)(6666004)(54906003)(31696002)(2906002)(66556008)(66476007)(5660300002)(8676002)(66946007)(8936002)(2616005)(316002)(478600001)(6486002)(31686004)(38100700002)(52116002)(6916009)(186003)(83380400001)(16526019)(4326008)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eUJKOTFmN0hWZ0x6RGoxbUJ4N1JTdlZ5eTBpY1pWQWFMVFpibU84cHFaN0tq?=
+ =?utf-8?B?bm11a1U1Wjk3cWdwRFltZ2RjRThxSE5BSm5XZnZKSUliZDhEYnRWU1dYVnV6?=
+ =?utf-8?B?V1JxNFhsK05qckk1Tmd0R20rbVVBMU9xU2wzS1Z1OXdLZGlsVHlYZUF1a3hi?=
+ =?utf-8?B?SDRoR25wOWxVZHFEWE5WYlhKdEpxWjZienJRTks5VytUS0VvQlp3ZzR3QlQw?=
+ =?utf-8?B?akNUaUx2dkV0QWh2VFo1U3UzekRXYWpsVDh5dWJZU2VwTmpTeCtKWXd5WUZq?=
+ =?utf-8?B?SXBGNlJ3enFiMDQrUzBoVXc3dmpSQTUrNlZzWVZoOUNWY1N0NmdaNnYwVkZh?=
+ =?utf-8?B?NEcxSnRRakJ4UlJUQkNuSTFHc1dpNnRkVEJMdHp3TFhaVjlqbFArZlVyQStF?=
+ =?utf-8?B?bGVQczYxMVZUV0ZwVHg3YzhROUpyYmlxZmZidkdiZk5NN2dTamNlV0RmOFRo?=
+ =?utf-8?B?bW5VNXY1RjJJcVZuV3MrM2JjMnZpL3dwN2VMTUNuSnZhV2dSNng1WXREKzBB?=
+ =?utf-8?B?VUxjZjJEa3NHL1NlZUZuQ2hBZFFXSkY3UTFZa2VCcTB1TUlwWU43Ni9kckJm?=
+ =?utf-8?B?cW9lalphMDNDY2ZhakhqLzBvT2NMczJlRHdkWmRzTU5RdnZrREZOZ3VoWEh4?=
+ =?utf-8?B?WXVOWjJhVDZRR0o1cWcvSTFoUU9QdTZNaXNDYVNCekFPUU5VS0J6NVNUWXlT?=
+ =?utf-8?B?U0ErQXhTbUlGdi9JM0xHVUxjbEVrUGZBUDFDa2FVODdXeG94azkxSVlMRGI3?=
+ =?utf-8?B?aXlITGpFM3AzQ2d1YUVXS0pWOXN5bnUwT1F2RzVaWUJpOWFzeHpzNHRCSzhK?=
+ =?utf-8?B?Sjk2cGgxWXBhWUtFcW5Wb2J6QW01Yk5HS1h3NUZySWg5NlVwbE1oR1U0bFNC?=
+ =?utf-8?B?TzJUTERqZjFlUXFLS1ZFMTRDQ0pjRnk5WkJuQ1AvNjk3VjNDWStrVjZWUTdX?=
+ =?utf-8?B?bW44SVpQbXVGcGVUdU84TG1zem5xN3QyMDJwakRRRlVVcWN2dHhvMWY1azE0?=
+ =?utf-8?B?YkY5RDZvQkhodlozRnhzN2grNy9lcVV3bDZod1JMQS9nUW11c2R5d2FNMFlQ?=
+ =?utf-8?B?SGZSNTJGR2NsTGlWUE1CdU5saWVuL2IwL2NQbHdlWi82OWw5cmdkZ1BxVHg0?=
+ =?utf-8?B?WENuRG1PdHpkTVBxeHNCYkN0Y1FnNWEwZ1l0UTRMaW0rL0hZSjZNdjNWS3FR?=
+ =?utf-8?B?bU1SUWhYVXo4OUM2djJ3U1F0VEpxSHE3WFVpSlJSVlpmOE5oTm9sV3BQY1h1?=
+ =?utf-8?B?UHlUWnNFSjFwOTVuemthckVBWEVueG9zZVFyTTNDNWk5NnpmbkJ4QTVHcTFa?=
+ =?utf-8?B?UVpNV1hyaFNqSmlCdXkrSm1PVHlNZXdueU1KaDhRWTZjaE1jbnozUVNLRUsv?=
+ =?utf-8?B?S3Y1NnBPeXBrUFU0d01mZElBaXNUSFZ2UkVhQ2dnb0MyQjlRN3RvWkVnTUZW?=
+ =?utf-8?B?bXJxZVdFdlFST3E2OEROMm9BaS8xcVlBT3M2RWs2RDRoREZrMnk4czA2aFhF?=
+ =?utf-8?B?eEYzbDZKRE5QU1BPSDhMeEhwQUhqN2x3a0cxc2xadlY5Zm9obEdoKzB2OCtT?=
+ =?utf-8?B?azZ0Vk5xSTFRQThCRlJVYUEwK1JIUktWWUpJckRxVkxLVWNjSjY5QmZ4TU0y?=
+ =?utf-8?B?RkZhUW5pcFB1NUtjWXZnL0FNUlFRTnk4VWtjQzdXUlBjb1BnVk14SStzbjg0?=
+ =?utf-8?B?dGtRK0xzS3dPbFc0SUh2bHhPZ1VHS3ZMOXVybjFoUHZvTzBMQUU0OGRLYzRN?=
+ =?utf-8?B?Q3NGRlZqSFVHZW9rd0gxaWNQbzQ0RmFhV2hJQSt2eHo5dk9EWmJ1MGtTajNB?=
+ =?utf-8?B?Q09RNmRTWnhmeFlJZG9iTWRSTnVBRld4b0pYaXlERHYySFhManFWeWVFODZQ?=
+ =?utf-8?Q?De1bHTxrw/1s9?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e3ac8195-badc-444a-90fb-08d900ed3136
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2021 15:34:58.4783
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DUSPi4PBoR3VuzJyR78RnKtMPLV4F3c71MROxrjDZU0pYIM3gwoq8/8kqysMtHCj
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4206
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 10:16 PM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> lruvec_holds_page_lru_lock() doesn't check anything about locking and is
-> used to check whether the page belongs to the lruvec. So rename it to
-> page_matches_lruvec().
->
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+
+Am 16.04.21 um 16:37 schrieb Lee Jones:
+> Fixes the following W=1 kernel build warning(s):
+>
+>   drivers/gpu/drm/ttm/ttm_tt.c:398: warning: Function parameter or member 'num_pages' not described in 'ttm_tt_mgr_init'
+>   drivers/gpu/drm/ttm/ttm_tt.c:398: warning: Function parameter or member 'num_dma32_pages' not described in 'ttm_tt_mgr_init'
+>
+> Cc: Christian Koenig <christian.koenig@amd.com>
+> Cc: Huang Rui <ray.huang@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+
+For that one I would rather prefer to just document the two parameters.
+
+Christian.
+
+> ---
+>   drivers/gpu/drm/ttm/ttm_tt.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/ttm/ttm_tt.c b/drivers/gpu/drm/ttm/ttm_tt.c
+> index 7dcd3fb694956..d939c3bde2fcf 100644
+> --- a/drivers/gpu/drm/ttm/ttm_tt.c
+> +++ b/drivers/gpu/drm/ttm/ttm_tt.c
+> @@ -389,7 +389,7 @@ void ttm_tt_unpopulate(struct ttm_device *bdev, struct ttm_tt *ttm)
+>   	ttm->page_flags &= ~TTM_PAGE_FLAG_PRIV_POPULATED;
+>   }
+>   
+> -/**
+> +/*
+>    * ttm_tt_mgr_init - register with the MM shrinker
+>    *
+>    * Register with the MM shrinker for swapping out BOs.
+
