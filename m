@@ -2,176 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 799D3361B26
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 10:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E73A8361B58
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 10:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240088AbhDPIGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 04:06:49 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:60533 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239217AbhDPIGg (ORCPT
+        id S239445AbhDPIHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 04:07:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237888AbhDPIHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 04:06:36 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 13G866Sn8023557, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 13G866Sn8023557
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 16 Apr 2021 16:06:06 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 16 Apr 2021 16:06:05 +0800
-Received: from fc32.localdomain (172.21.177.102) by RTEXMBS04.realtek.com.tw
- (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 16 Apr
- 2021 16:06:04 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     <kuba@kernel.org>, <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <nic_swsd@realtek.com>,
-        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        Hayes Wang <hayeswang@realtek.com>
-Subject: [PATCH net-next 6/6] r8152: search the configuration of vendor mode
-Date:   Fri, 16 Apr 2021 16:04:37 +0800
-Message-ID: <1394712342-15778-356-Taiwan-albertk@realtek.com>
-X-Mailer: Microsoft Office Outlook 11
-In-Reply-To: <1394712342-15778-350-Taiwan-albertk@realtek.com>
-References: <1394712342-15778-350-Taiwan-albertk@realtek.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.21.177.102]
-X-ClientProxiedBy: RTEXMBS01.realtek.com.tw (172.21.6.94) To
- RTEXMBS04.realtek.com.tw (172.21.6.97)
-X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzQvMTYgpFekyCAwNjowMDowMA==?=
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 04/16/2021 07:42:45
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 163158 [Apr 16 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 442 442 b985cb57763b61d2a20abb585d5d4cc10c315b09
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: realtek.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: {Track_Chinese_Simplified, headers_charset}
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 04/16/2021 07:45:00
-X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzQvMTYgpFekyCAwNjozODowMA==?=
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 04/16/2021 07:46:47
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 163158 [Apr 16 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 442 442 b985cb57763b61d2a20abb585d5d4cc10c315b09
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: realtek.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: {Track_Chinese_Simplified, headers_charset}
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 04/16/2021 07:50:00
+        Fri, 16 Apr 2021 04:07:40 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B59C061760;
+        Fri, 16 Apr 2021 01:07:16 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id u21so40835592ejo.13;
+        Fri, 16 Apr 2021 01:07:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=8QmAPApDjBEmJBBq1hydSyG9+jA/1KakkTGHjfucekE=;
+        b=jcC3M3fSQgPEkEYe45Wi5D1augrlg2O/l/X34dYSl0Pun8RE1Gqh4daF2btK37f5nC
+         djxPf5glCW9tPw6cj3R+G0mZv2I/SDyJ4Y9x+y7Yls17uhj/lMZyJxMpCrBP9jPbxGKP
+         fDWpvD2hUU4CiQusdcWRGCawDpRRZW1uzlr1v3PBV3ZpGDMypunECpIF0ou19OWNEczu
+         d3O7OWQVx54PG37ub7AG0O+aUe0K4jHxDfz09nYZj1QDIpBKAz3mbp4GxBWjO4CPpzIG
+         3czMykj7zXpuRIDQatH8A6aB9OkMCWUnwNmeDWuQxYtnDIdbTGjX6Jef6YTq5/+Gydc1
+         JtJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=8QmAPApDjBEmJBBq1hydSyG9+jA/1KakkTGHjfucekE=;
+        b=tG7jMRVeRDK8NMg2Vfd4Z1l0ZegAxuDTU+fxBuVs5A0z8hUNeh1R7PoeM8F1e2cVxp
+         em0He6bUr0VDDrFU7Vbn4HQhbHWqF3xwhHc9fxRoP5h7S28jnnxkgQaLVnoMwDutsO8J
+         3RNNfeK0+/uCx8qD0jKp2Dvcdewxonzcf8jjexftB8GjIQYNKSe17MHVrQnT28IFwG9j
+         lgOb+ljq2RVmFP90/4JGdw655VKY3N2btjnpgsQR/txexYHCzvQwLkPbR+GXgRG5bXdu
+         AnNiknictKXR4IecIpi3hVSqcQycsAVVh3E+R5gdxn1+QyLubIhVh8V+G/nLdJLoIOGH
+         agwQ==
+X-Gm-Message-State: AOAM5330XeAYkXoZkLGJD51MMKwMApMSigk7atl/nPFJk9YvWMJJWIl9
+        b+C8yhKN3IuVLHjFiIDwCc4=
+X-Google-Smtp-Source: ABdhPJxsxISKUp14vxETjj1wbSaX4bKta3FFFHqoSphu0PDScr+CFTa7AweP/NU8yTuJ603i2NCP0g==
+X-Received: by 2002:a17:906:95cb:: with SMTP id n11mr7408210ejy.251.1618560434893;
+        Fri, 16 Apr 2021 01:07:14 -0700 (PDT)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id q16sm4672303edv.61.2021.04.16.01.05.17
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 16 Apr 2021 01:07:14 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, zhangqing@rock-chips.com,
+        enric.balletbo@collabora.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v8 07/15] arm64: dts: rockchip: Fix power-controller node names for rk3399
+Date:   Fri, 16 Apr 2021 10:03:34 +0200
+Message-Id: <20210416080342.18614-8-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20210416080342.18614-1-jbx6244@gmail.com>
+References: <20210416080342.18614-1-jbx6244@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vendor mode is not always at config #1, so it is necessary to
-set the correct configuration number.
+From: Elaine Zhang <zhangqing@rock-chips.com>
 
-Signed-off-by: Hayes Wang <hayeswang@realtek.com>
+Use more generic names (as recommended in the device tree specification
+or the binding documentation)
+
+Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
- drivers/net/usb/r8152.c | 39 +++++++++++++++++++++++++++++++++++----
- 1 file changed, 35 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi | 40 ++++++++++++++++----------------
+ 1 file changed, 20 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
-index 34c1ee61af01..9119a860e9bd 100644
---- a/drivers/net/usb/r8152.c
-+++ b/drivers/net/usb/r8152.c
-@@ -29,7 +29,7 @@
- #include <linux/usb/r8152.h>
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index 0f2879cc1..19614c2ce 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -968,26 +968,26 @@
+ 			#size-cells = <0>;
  
- /* Information for net-next */
--#define NETNEXT_VERSION		"11"
-+#define NETNEXT_VERSION		"12"
+ 			/* These power domains are grouped by VD_CENTER */
+-			pd_iep@RK3399_PD_IEP {
++			power-domain@RK3399_PD_IEP {
+ 				reg = <RK3399_PD_IEP>;
+ 				clocks = <&cru ACLK_IEP>,
+ 					 <&cru HCLK_IEP>;
+ 				pm_qos = <&qos_iep>;
+ 			};
+-			pd_rga@RK3399_PD_RGA {
++			power-domain@RK3399_PD_RGA {
+ 				reg = <RK3399_PD_RGA>;
+ 				clocks = <&cru ACLK_RGA>,
+ 					 <&cru HCLK_RGA>;
+ 				pm_qos = <&qos_rga_r>,
+ 					 <&qos_rga_w>;
+ 			};
+-			pd_vcodec@RK3399_PD_VCODEC {
++			power-domain@RK3399_PD_VCODEC {
+ 				reg = <RK3399_PD_VCODEC>;
+ 				clocks = <&cru ACLK_VCODEC>,
+ 					 <&cru HCLK_VCODEC>;
+ 				pm_qos = <&qos_video_m0>;
+ 			};
+-			pd_vdu@RK3399_PD_VDU {
++			power-domain@RK3399_PD_VDU {
+ 				reg = <RK3399_PD_VDU>;
+ 				clocks = <&cru ACLK_VDU>,
+ 					 <&cru HCLK_VDU>;
+@@ -996,94 +996,94 @@
+ 			};
  
- /* Information for net */
- #define NET_VERSION		"11"
-@@ -8107,6 +8107,39 @@ static void r8156b_init(struct r8152 *tp)
- 	tp->coalesce = 15000;	/* 15 us */
- }
+ 			/* These power domains are grouped by VD_GPU */
+-			pd_gpu@RK3399_PD_GPU {
++			power-domain@RK3399_PD_GPU {
+ 				reg = <RK3399_PD_GPU>;
+ 				clocks = <&cru ACLK_GPU>;
+ 				pm_qos = <&qos_gpu>;
+ 			};
  
-+static bool rtl_vendor_mode(struct usb_interface *intf)
-+{
-+	struct usb_host_interface *alt = intf->cur_altsetting;
-+	struct usb_device *udev;
-+	struct usb_host_config *c;
-+	int i, num_configs;
-+
-+	if (alt->desc.bInterfaceClass == USB_CLASS_VENDOR_SPEC)
-+		return true;
-+
-+	/* The vendor mode is not always config #1, so to find it out. */
-+	udev = interface_to_usbdev(intf);
-+	c = udev->config;
-+	num_configs = udev->descriptor.bNumConfigurations;
-+	for (i = 0; i < num_configs; (i++, c++)) {
-+		struct usb_interface_descriptor	*desc = NULL;
-+
-+		if (c->desc.bNumInterfaces > 0)
-+			desc = &c->intf_cache[0]->altsetting->desc;
-+		else
-+			continue;
-+
-+		if (desc->bInterfaceClass == USB_CLASS_VENDOR_SPEC) {
-+			usb_driver_set_configuration(udev, c->desc.bConfigurationValue);
-+			break;
-+		}
-+	}
-+
-+	WARN_ON_ONCE(i == num_configs);
-+
-+	return false;
-+}
-+
- static int rtl8152_pre_reset(struct usb_interface *intf)
- {
- 	struct r8152 *tp = usb_get_intfdata(intf);
-@@ -9345,10 +9378,8 @@ static int rtl8152_probe(struct usb_interface *intf,
- 	if (version == RTL_VER_UNKNOWN)
- 		return -ENODEV;
+ 			/* These power domains are grouped by VD_LOGIC */
+-			pd_edp@RK3399_PD_EDP {
++			power-domain@RK3399_PD_EDP {
+ 				reg = <RK3399_PD_EDP>;
+ 				clocks = <&cru PCLK_EDP_CTRL>;
+ 			};
+-			pd_emmc@RK3399_PD_EMMC {
++			power-domain@RK3399_PD_EMMC {
+ 				reg = <RK3399_PD_EMMC>;
+ 				clocks = <&cru ACLK_EMMC>;
+ 				pm_qos = <&qos_emmc>;
+ 			};
+-			pd_gmac@RK3399_PD_GMAC {
++			power-domain@RK3399_PD_GMAC {
+ 				reg = <RK3399_PD_GMAC>;
+ 				clocks = <&cru ACLK_GMAC>,
+ 					 <&cru PCLK_GMAC>;
+ 				pm_qos = <&qos_gmac>;
+ 			};
+-			pd_sd@RK3399_PD_SD {
++			power-domain@RK3399_PD_SD {
+ 				reg = <RK3399_PD_SD>;
+ 				clocks = <&cru HCLK_SDMMC>,
+ 					 <&cru SCLK_SDMMC>;
+ 				pm_qos = <&qos_sd>;
+ 			};
+-			pd_sdioaudio@RK3399_PD_SDIOAUDIO {
++			power-domain@RK3399_PD_SDIOAUDIO {
+ 				reg = <RK3399_PD_SDIOAUDIO>;
+ 				clocks = <&cru HCLK_SDIO>;
+ 				pm_qos = <&qos_sdioaudio>;
+ 			};
+-			pd_tcpc0@RK3399_PD_TCPD0 {
++			power-domain@RK3399_PD_TCPD0 {
+ 				reg = <RK3399_PD_TCPD0>;
+ 				clocks = <&cru SCLK_UPHY0_TCPDCORE>,
+ 					 <&cru SCLK_UPHY0_TCPDPHY_REF>;
+ 			};
+-			pd_tcpc1@RK3399_PD_TCPD1 {
++			power-domain@RK3399_PD_TCPD1 {
+ 				reg = <RK3399_PD_TCPD1>;
+ 				clocks = <&cru SCLK_UPHY1_TCPDCORE>,
+ 					 <&cru SCLK_UPHY1_TCPDPHY_REF>;
+ 			};
+-			pd_usb3@RK3399_PD_USB3 {
++			power-domain@RK3399_PD_USB3 {
+ 				reg = <RK3399_PD_USB3>;
+ 				clocks = <&cru ACLK_USB3>;
+ 				pm_qos = <&qos_usb_otg0>,
+ 					 <&qos_usb_otg1>;
+ 			};
+-			pd_vio@RK3399_PD_VIO {
++			power-domain@RK3399_PD_VIO {
+ 				reg = <RK3399_PD_VIO>;
+ 				#address-cells = <1>;
+ 				#size-cells = <0>;
  
--	if (udev->actconfig->desc.bConfigurationValue != 1) {
--		usb_driver_set_configuration(udev, 1);
-+	if (!rtl_vendor_mode(intf))
- 		return -ENODEV;
--	}
+-				pd_hdcp@RK3399_PD_HDCP {
++				power-domain@RK3399_PD_HDCP {
+ 					reg = <RK3399_PD_HDCP>;
+ 					clocks = <&cru ACLK_HDCP>,
+ 						 <&cru HCLK_HDCP>,
+ 						 <&cru PCLK_HDCP>;
+ 					pm_qos = <&qos_hdcp>;
+ 				};
+-				pd_isp0@RK3399_PD_ISP0 {
++				power-domain@RK3399_PD_ISP0 {
+ 					reg = <RK3399_PD_ISP0>;
+ 					clocks = <&cru ACLK_ISP0>,
+ 						 <&cru HCLK_ISP0>;
+ 					pm_qos = <&qos_isp0_m0>,
+ 						 <&qos_isp0_m1>;
+ 				};
+-				pd_isp1@RK3399_PD_ISP1 {
++				power-domain@RK3399_PD_ISP1 {
+ 					reg = <RK3399_PD_ISP1>;
+ 					clocks = <&cru ACLK_ISP1>,
+ 						 <&cru HCLK_ISP1>;
+ 					pm_qos = <&qos_isp1_m0>,
+ 						 <&qos_isp1_m1>;
+ 				};
+-				pd_vo@RK3399_PD_VO {
++				power-domain@RK3399_PD_VO {
+ 					reg = <RK3399_PD_VO>;
+ 					#address-cells = <1>;
+ 					#size-cells = <0>;
  
- 	if (intf->cur_altsetting->desc.bNumEndpoints < 3)
- 		return -ENODEV;
+-					pd_vopb@RK3399_PD_VOPB {
++					power-domain@RK3399_PD_VOPB {
+ 						reg = <RK3399_PD_VOPB>;
+ 						clocks = <&cru ACLK_VOP0>,
+ 							 <&cru HCLK_VOP0>;
+ 						pm_qos = <&qos_vop_big_r>,
+ 							 <&qos_vop_big_w>;
+ 					};
+-					pd_vopl@RK3399_PD_VOPL {
++					power-domain@RK3399_PD_VOPL {
+ 						reg = <RK3399_PD_VOPL>;
+ 						clocks = <&cru ACLK_VOP1>,
+ 							 <&cru HCLK_VOP1>;
 -- 
-2.26.3
+2.11.0
 
