@@ -2,65 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA16361D83
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC52361D85
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241934AbhDPJdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 05:33:05 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:50812 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S241846AbhDPJc7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 05:32:59 -0400
-X-UUID: 542ecd2361ec4b18807be65b8aa7aa9c-20210416
-X-UUID: 542ecd2361ec4b18807be65b8aa7aa9c-20210416
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <pk.chi@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 11946504; Fri, 16 Apr 2021 17:32:33 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 16 Apr 2021 17:32:31 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 16 Apr 2021 17:32:30 +0800
-From:   Po-Kai Chi <pk.chi@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <wsd_upstream@mediatek.com>, CC Hwang <cc.hwang@mediatek.com>,
-        Po-Kai Chi <pk.chi@mediatek.com>
-Subject: [PATCH v2 4/4] arm64: defconfig: Enable MediaTek DRAMC common driver
-Date:   Fri, 16 Apr 2021 17:32:18 +0800
-Message-ID: <1618565538-6972-5-git-send-email-pk.chi@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <1618565538-6972-1-git-send-email-pk.chi@mediatek.com>
-References: <1618565538-6972-1-git-send-email-pk.chi@mediatek.com>
+        id S241943AbhDPJdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 05:33:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:37234 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239848AbhDPJdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 05:33:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D4A0F106F;
+        Fri, 16 Apr 2021 02:32:45 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4ACA53FA35;
+        Fri, 16 Apr 2021 02:32:44 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Ruifeng Zhang <ruifeng.zhang0110@gmail.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     linux@armlinux.org.uk, sudeep.holla@arm.com,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, a.p.zijlstra@chello.nl,
+        mingo@kernel.org, ruifeng.zhang1@unisoc.com, nianfu.bai@unisoc.com,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/1] arm: topology: parse the topology from the dt
+In-Reply-To: <CAG7+-3Nv=m0pd8t0eQEUv5zSeg86hfkKcs_VLzsbzWFabYbTTQ@mail.gmail.com>
+References: <20210414122326.5255-1-ruifeng.zhang0110@gmail.com> <8735vrmnc7.mognet@arm.com> <b7a76995-f6c3-67c5-b14e-d40587495d7e@arm.com> <CAG7+-3Nv=m0pd8t0eQEUv5zSeg86hfkKcs_VLzsbzWFabYbTTQ@mail.gmail.com>
+Date:   Fri, 16 Apr 2021 10:32:35 +0100
+Message-ID: <87wnt2lglo.mognet@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-TM-SNTS-SMTP: 13DF5259ACF754A1C8355D8857F1BF498FD04F2B3C8B8E785D4E4A59B96A78172000:8
-X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit enables MediaTek DRAMC common driver to be built
-as a module by default for the ARM64 builds.
+On 16/04/21 15:47, Ruifeng Zhang wrote:
+> For more requirements, if all cores in one physical cluster, the
+> {aff2} of all cores are the same value.
+> i.e. the sc9863a,
+> core0: 0000000081000000
+> core1: 0000000081000100
+> core2: 0000000081000200
+> core3: 0000000081000300
+> core4: 0000000081000400
+> core5: 0000000081000500
+> core6: 0000000081000600
+> core7: 0000000081000700
+>
+> According to MPIDR all cores will parse to the one cluster, but it's
+> the big.LITTLE system, it's need two logic cluster for schedule or
+> cpufreq.
+> So I think it's better to add the logic of parse topology from DT.
 
-Signed-off-by: Po-Kai Chi <pk.chi@mediatek.com>
----
- arch/arm64/configs/defconfig |    1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index d612f63..49d7464 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -1163,3 +1163,4 @@ CONFIG_DEBUG_KERNEL=y
- # CONFIG_DEBUG_PREEMPT is not set
- # CONFIG_FTRACE is not set
- CONFIG_MEMTEST=y
-+CONFIG_MTK_DRAMC=m
--- 
-1.7.9.5
-
+Ah, so it's a slightly different issue, but still one that requires a
+different means of specifying topology.
