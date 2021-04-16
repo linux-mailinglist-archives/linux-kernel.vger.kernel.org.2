@@ -2,68 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B8E33622F5
+	by mail.lfdr.de (Postfix) with ESMTP id C70833622F7
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245382AbhDPOlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45188 "EHLO
+        id S244985AbhDPOlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:41:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244314AbhDPOio (ORCPT
+        with ESMTP id S244589AbhDPOiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:38:44 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A896DC061358
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:38:11 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id w3so42522412ejc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:38:11 -0700 (PDT)
+        Fri, 16 Apr 2021 10:38:46 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F19BC061359
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:38:12 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id mh2so20938568ejb.8
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:38:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=41LgwOuoq22rGgsCktNaBese4amMVfNYLTWP6zyN98Q=;
-        b=SdxKlv+fNXg5L8kGoNDlYldYsqKcpPLAo7SNh4UKeExvT+lzMSwwhYTQgAkyNW9XV1
-         63a1JDzirzFBEbKuUKIuNOxi9MSJjlGxn4M3fV3HctPcinrNVovY6FlDNzSTVZ92KF+o
-         XIk3NOOnT5B91RxZoU8MtBX+p3GuXccPlgOW5xfBBnG3UrYm0xApChnqyq6w3iu3Oe9j
-         lE1286wLw82FuzX9IBZjoe3AXA+PeNjmQTiulNd5wH2OOPghylJzXQcb1Xu6CSnNgEHC
-         dsZisdfzr5StyHwyG5CNaHmFfL+M9iwvAx32Z/rwAWgZDEmk+ytaEasqOsL58RLMkWX3
-         zsLg==
+        bh=K9wjRJ3K6gEJWw7cmRlm1PWa18kr/G6l9t1XfKeR5i0=;
+        b=hsB6bda4PBPLddVEBDk0vz5lUc3uon7c5uczoWgeIVSXi6HGmocnf3hJ3J13pM4afH
+         hFR8QMsXah3FZwP4gROY/5i0pujiWAdJtP4BfvAk1xqq7KVZcbyGzzsKGuIwotI/T6Ap
+         Kky9Zzseqo688VrTBA5uGnRJnH3FXLykl4s8gRJlkCIZjjqCkYqUhevHh+Avgp/Bs9xV
+         7S8aBaTrqBpGI5tq3XE7PStwvaQgqMbeTxsibvxDDohT1nypFcIO3lUfHFowvFwmxU3o
+         nWrfZhB4GZwUA6DAG+kBo3BvtShUJeyTDS6LHRHu3DeZayPj0TDExB8LHQoXaL0z/9hq
+         sAPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=41LgwOuoq22rGgsCktNaBese4amMVfNYLTWP6zyN98Q=;
-        b=Pk9BgW5UHfkLnZRbGXjcDR+0lNhQrNKBuvCvKvqiWV5+eNunEop/G3Pwqh7wG0jxDF
-         doUPPOoyIQdh2ENtQZDSyw8AunkGyCYr+GJN15xQbwDurcHn4qwSi3mXCfbaJDv8lWA/
-         3FN5O/AxQWGCj5+SV5SyaynVlr1TxgGTSUXPiPEnF8VxfQOaHxwMVhG6dUwu+9Wgg55d
-         9ttTaCJNDBnFS5czaRFOq7BwXx+OiJCexAMzOadkzYHN7WfOUWA5GE6Usp9pA0tuDf5M
-         YrWvdepxJ5l+7f9pJRnBf0imrSoSKk8IFH4uuRlcK0hIF7r0NLGmttxYj2l2DtX4q9VP
-         +ipw==
-X-Gm-Message-State: AOAM530WhyoLjTjS6+uQkgeid/syisIr/lc2BlzJOE6VDGmcKkf2JdAh
-        SbOPfuXm1OhB9grDgxnegC6oRw==
-X-Google-Smtp-Source: ABdhPJxvfI/125JkkMmqblbXT2TRLpBJYLh7O+FA3oUYUCfjmPOCcTm/RwOmqUq72nMdaj0sKo9gcg==
-X-Received: by 2002:a17:906:b52:: with SMTP id v18mr8565368ejg.485.1618583890433;
-        Fri, 16 Apr 2021 07:38:10 -0700 (PDT)
+        bh=K9wjRJ3K6gEJWw7cmRlm1PWa18kr/G6l9t1XfKeR5i0=;
+        b=YY0lzbSTzQinzhpVhRiYggqGV1X3AfQ9uZkZpJrDz5rMeP7gzG0nFtCK743Zh0ewd8
+         zB+15RPZjZWZPCYx9s9mOKewZFjKUm5nhZobeyiqEd4mn2HYVmtN2SpY08P0UKvzCkia
+         Aw3CmObQNhV/ymuRZI2fU7af0vT4DFXuXjGSpbK62zG/kr4LAkSnAY/OHL+fZxW2a8e4
+         ZCpQ2qTH2tQLHMFvXDkJZmlhI3kRGaFz0CHYEGTBwPPKWRz43X1Jj6hfWhXQV8vrEGui
+         VEiYWKoJCr0GrctLeNOWwjFiMD9Dvx53pJ+x4xpBKommVBOnPUt1w6vjG/OpbkamkBbl
+         8uZg==
+X-Gm-Message-State: AOAM530jTMIo6+olln+XB4vfRQ/K2R/HXpbOi3Wi5gnW9Ik3VfCthgdO
+        ebZFncfDZ4+obYWl2dxafSJbTg==
+X-Google-Smtp-Source: ABdhPJyu162ulu0SvfYCwjPDNoMz4ehF0YKxWNjcaeHrMN7tLesqEuNfuMeh0cHl6rXVzMJImkpgsQ==
+X-Received: by 2002:a17:906:c218:: with SMTP id d24mr8348994ejz.363.1618583891366;
+        Fri, 16 Apr 2021 07:38:11 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id j10sm1326523ejk.93.2021.04.16.07.38.09
+        by smtp.gmail.com with ESMTPSA id j10sm1326523ejk.93.2021.04.16.07.38.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 07:38:09 -0700 (PDT)
+        Fri, 16 Apr 2021 07:38:10 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Inki Dae <inki.dae@samsung.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
+Cc:     linux-kernel@vger.kernel.org,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: [PATCH 38/40] drm/exynos/exynos_drm_ipp: Fix some function name disparity issues
-Date:   Fri, 16 Apr 2021 15:37:23 +0100
-Message-Id: <20210416143725.2769053-39-lee.jones@linaro.org>
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Vincent Abriou <vincent.abriou@st.com>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 39/40] drm/sti/sti_hdmi: Provide kernel-doc headers with function names
+Date:   Fri, 16 Apr 2021 15:37:24 +0100
+Message-Id: <20210416143725.2769053-40-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210416143725.2769053-1-lee.jones@linaro.org>
 References: <20210416143725.2769053-1-lee.jones@linaro.org>
@@ -75,47 +71,112 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/exynos/exynos_drm_ipp.c:105: warning: expecting prototype for exynos_drm_ipp_ioctl_get_res_ioctl(). Prototype was for exynos_drm_ipp_get_res_ioctl() instead
- drivers/gpu/drm/exynos/exynos_drm_ipp.c:153: warning: expecting prototype for exynos_drm_ipp_ioctl_get_caps(). Prototype was for exynos_drm_ipp_get_caps_ioctl() instead
+ drivers/gpu/drm/sti/sti_hdmi.c:193: warning: expecting prototype for HDMI interrupt handler threaded(). Prototype was for hdmi_irq_thread() instead
+ drivers/gpu/drm/sti/sti_hdmi.c:225: warning: expecting prototype for HDMI interrupt handler(). Prototype was for hdmi_irq() instead
+ drivers/gpu/drm/sti/sti_hdmi.c:246: warning: expecting prototype for Set hdmi active area depending on the drm display mode selected(). Prototype was for hdmi_active_area() instead
+ drivers/gpu/drm/sti/sti_hdmi.c:267: warning: expecting prototype for Overall hdmi configuration(). Prototype was for hdmi_config() instead
+ drivers/gpu/drm/sti/sti_hdmi.c:346: warning: expecting prototype for Helper to concatenate infoframe in 32 bits word(). Prototype was for hdmi_infoframe_subpack() instead
+ drivers/gpu/drm/sti/sti_hdmi.c:366: warning: expecting prototype for Helper to write info frame(). Prototype was for hdmi_infoframe_write_infopack() instead
+ drivers/gpu/drm/sti/sti_hdmi.c:438: warning: expecting prototype for Prepare and configure the AVI infoframe(). Prototype was for hdmi_avi_infoframe_config() instead
+ drivers/gpu/drm/sti/sti_hdmi.c:481: warning: expecting prototype for Prepare and configure the AUDIO infoframe(). Prototype was for hdmi_audio_infoframe_config() instead
+ drivers/gpu/drm/sti/sti_hdmi.c:561: warning: expecting prototype for Software reset of the hdmi subsystem(). Prototype was for hdmi_swreset() instead
 
-Cc: Inki Dae <inki.dae@samsung.com>
-Cc: Joonyoung Shim <jy0922.shim@samsung.com>
-Cc: Seung-Woo Kim <sw0312.kim@samsung.com>
-Cc: Kyungmin Park <kyungmin.park@samsung.com>
+Cc: Benjamin Gaignard <benjamin.gaignard@linaro.org>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Vincent Abriou <vincent.abriou@st.com>
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-samsung-soc@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/exynos/exynos_drm_ipp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/sti/sti_hdmi.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/gpu/drm/exynos/exynos_drm_ipp.c b/drivers/gpu/drm/exynos/exynos_drm_ipp.c
-index 4f2b7551b2515..9ae8689353579 100644
---- a/drivers/gpu/drm/exynos/exynos_drm_ipp.c
-+++ b/drivers/gpu/drm/exynos/exynos_drm_ipp.c
-@@ -88,7 +88,7 @@ void exynos_drm_ipp_unregister(struct device *dev,
+diff --git a/drivers/gpu/drm/sti/sti_hdmi.c b/drivers/gpu/drm/sti/sti_hdmi.c
+index f3ace11209dd7..dd5a388898e79 100644
+--- a/drivers/gpu/drm/sti/sti_hdmi.c
++++ b/drivers/gpu/drm/sti/sti_hdmi.c
+@@ -184,7 +184,7 @@ void hdmi_write(struct sti_hdmi *hdmi, u32 val, int offset)
  }
  
  /**
-- * exynos_drm_ipp_ioctl_get_res_ioctl - enumerate all ipp modules
-+ * exynos_drm_ipp_get_res_ioctl - enumerate all ipp modules
-  * @dev: DRM device
-  * @data: ioctl data
-  * @file_priv: DRM file info
-@@ -136,7 +136,7 @@ static inline struct exynos_drm_ipp *__ipp_get(uint32_t id)
+- * HDMI interrupt handler threaded
++ * hdmi_irq_thread - HDMI interrupt handler threaded
+  *
+  * @irq: irq number
+  * @arg: connector structure
+@@ -216,7 +216,7 @@ static irqreturn_t hdmi_irq_thread(int irq, void *arg)
  }
  
  /**
-- * exynos_drm_ipp_ioctl_get_caps - get ipp module capabilities and formats
-+ * exynos_drm_ipp_get_caps_ioctl - get ipp module capabilities and formats
-  * @dev: DRM device
-  * @data: ioctl data
-  * @file_priv: DRM file info
+- * HDMI interrupt handler
++ * hdmi_irq - HDMI interrupt handler
+  *
+  * @irq: irq number
+  * @arg: connector structure
+@@ -238,7 +238,7 @@ static irqreturn_t hdmi_irq(int irq, void *arg)
+ }
+ 
+ /**
+- * Set hdmi active area depending on the drm display mode selected
++ * hdmi_active_area - Set hdmi active area depending on the drm display mode selected
+  *
+  * @hdmi: pointer on the hdmi internal structure
+  */
+@@ -259,7 +259,7 @@ static void hdmi_active_area(struct sti_hdmi *hdmi)
+ }
+ 
+ /**
+- * Overall hdmi configuration
++ * hdmi_config - Overall hdmi configuration
+  *
+  * @hdmi: pointer on the hdmi internal structure
+  */
+@@ -337,7 +337,7 @@ static void hdmi_infoframe_reset(struct sti_hdmi *hdmi,
+ }
+ 
+ /**
+- * Helper to concatenate infoframe in 32 bits word
++ * hdmi_infoframe_subpack - Helper to concatenate infoframe in 32 bits word
+  *
+  * @ptr: pointer on the hdmi internal structure
+  * @size: size to write
+@@ -354,7 +354,7 @@ static inline unsigned int hdmi_infoframe_subpack(const u8 *ptr, size_t size)
+ }
+ 
+ /**
+- * Helper to write info frame
++ * hdmi_infoframe_write_infopack - Helper to write info frame
+  *
+  * @hdmi: pointer on the hdmi internal structure
+  * @data: infoframe to write
+@@ -424,7 +424,7 @@ static void hdmi_infoframe_write_infopack(struct sti_hdmi *hdmi,
+ }
+ 
+ /**
+- * Prepare and configure the AVI infoframe
++ * hdmi_avi_infoframe_config - Prepare and configure the AVI infoframe
+  *
+  * AVI infoframe are transmitted at least once per two video field and
+  * contains information about HDMI transmission mode such as color space,
+@@ -467,7 +467,7 @@ static int hdmi_avi_infoframe_config(struct sti_hdmi *hdmi)
+ }
+ 
+ /**
+- * Prepare and configure the AUDIO infoframe
++ * hdmi_audio_infoframe_config - Prepare and configure the AUDIO infoframe
+  *
+  * AUDIO infoframe are transmitted once per frame and
+  * contains information about HDMI transmission mode such as audio codec,
+@@ -552,7 +552,7 @@ static int hdmi_vendor_infoframe_config(struct sti_hdmi *hdmi)
+ #define HDMI_TIMEOUT_SWRESET  100   /*milliseconds */
+ 
+ /**
+- * Software reset of the hdmi subsystem
++ * hdmi_swreset - Software reset of the hdmi subsystem
+  *
+  * @hdmi: pointer on the hdmi internal structure
+  *
 -- 
 2.27.0
 
