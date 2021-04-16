@@ -2,191 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 955C7361ED3
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9AD6361ED6
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242775AbhDPLdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 07:33:44 -0400
-Received: from vmicros1.altlinux.org ([194.107.17.57]:42558 "EHLO
-        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239096AbhDPLdm (ORCPT
+        id S242807AbhDPLeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 07:34:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242542AbhDPLd6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 07:33:42 -0400
-Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
-        by vmicros1.altlinux.org (Postfix) with ESMTP id 4CD1C72C8B5;
-        Fri, 16 Apr 2021 14:33:14 +0300 (MSK)
-Received: from example.org (ip-94-113-225-162.net.upcbroadband.cz [94.113.225.162])
-        by imap.altlinux.org (Postfix) with ESMTPSA id F1DC84A47A1;
-        Fri, 16 Apr 2021 14:33:12 +0300 (MSK)
-Date:   Fri, 16 Apr 2021 13:33:10 +0200
-From:   Alexey Gladkov <gladkov.alexey@gmail.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Feng Tang <feng.tang@intel.com>, zhengjun.xing@intel.com,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: Re: 08ed4efad6: stress-ng.sigsegv.ops_per_sec -41.9% regression
-Message-ID: <20210416113310.vbxrzorycqdxwiyc@example.org>
-References: <7abe5ab608c61fc2363ba458bea21cf9a4a64588.1617814298.git.gladkov.alexey@gmail.com>
- <20210408083026.GE1696@xsang-OptiPlex-9020>
- <CAHk-=wigPx+MMQMQ-7EA0pq5_5+kMCNV4qFsOss-WwdCSQmb-w@mail.gmail.com>
- <m1im4wmx9g.fsf@fess.ebiederm.org>
+        Fri, 16 Apr 2021 07:33:58 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5842DC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 04:33:32 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id x12so20876607ejc.1
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 04:33:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1sdD/l1VwhH+c/F3S78fVTVhAzf9Cd31X/5+m6bD7as=;
+        b=lz327AlYYflNXq+TsKYKDMgHowev0TrdrxUAdAto4opqVwt1nu64BS3TJ8RHOPdsgE
+         TsCNxJPFONTRpyhVXm3YWomO/Ey8i/SFnXpjhZ37tEYUc2js6xQaibgG/cDiVVbCMjAc
+         PB8WLSE3GwgTqEcYDrTf+8uIXtxrdXitwSo740MkXTP2BhuBrLKYx96+lIqVge+R9biQ
+         IKR9Hep6cN9NJX/zmjJLksBOckplYOxbawv8yJc8xVrz5HaVdp9tYIUwTBSV0U9Q1Vng
+         jZuSuQE1en7dtaveddAdI/SeAuBCwpQbCnYstxXFu7ITqOwgAwJBtq3Ms4MQGtvA/RiN
+         id/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1sdD/l1VwhH+c/F3S78fVTVhAzf9Cd31X/5+m6bD7as=;
+        b=s9e5Yz3PttO2W7chku0Od0njN2tkyFxs1771DUGc7P6kiedZF5Sz4BctG0laPqT0et
+         6t3jYlEnQJ9ZKVV7HUVV9yXdx8v5NWE0OZmH4nmCgjBxCGq00qE3BJdNm/e1ul3cHUhT
+         SpraP69DCzbLB7ez3tnlrDDu2VrxLEzPnCcjvapPb7STAbk2Da8tC5nqWNevI3vcNrlO
+         UxUs0vvVXQWIuU3oExRoGtPTc9Cyr9UzAE922S/qka/MkHl5TI/hdS/v5xsqCswDAxEq
+         GylvaNQIuR1/aBGkhh9vDRsXYOMhwP9l3Budt/ehpicSvfnq4NOIvusIjEQQNAHKo1hb
+         ZtiA==
+X-Gm-Message-State: AOAM530mBO1Z4Y5X3aPZetfipDRhqmOixAbExlu7Zc0NeJfTPwenEGkI
+        HVG7e74k/ERRCYPYrO4AnuVMEoKy6qzHcI/DRQWaHg==
+X-Google-Smtp-Source: ABdhPJzvdSG8fbZGiT8fEHiTOQXLTngBXTSxPHs1eNCNdlZBW1eGb9cDlpPwE6tFopqUzo1E0xm/HEUmuMZeU6KUXHA=
+X-Received: by 2002:a17:907:98ae:: with SMTP id ju14mr8061101ejc.287.1618572810946;
+ Fri, 16 Apr 2021 04:33:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <m1im4wmx9g.fsf@fess.ebiederm.org>
+References: <20210415144414.464797272@linuxfoundation.org>
+In-Reply-To: <20210415144414.464797272@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 16 Apr 2021 17:03:19 +0530
+Message-ID: <CA+G9fYsGWrqPD4OQ0ejwSKMsxVkdJj7GBSD1kNTWxOLQfy6GVQ@mail.gmail.com>
+Subject: Re: [PATCH 4.14 00/68] 4.14.231-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 01:44:43PM -0500, Eric W. Biederman wrote:
-> Linus Torvalds <torvalds@linux-foundation.org> writes:
-> 
-> > On Thu, Apr 8, 2021 at 1:32 AM kernel test robot <oliver.sang@intel.com> wrote:
-> >>
-> >> FYI, we noticed a -41.9% regression of stress-ng.sigsegv.ops_per_sec due to commit
-> >> 08ed4efad684 ("[PATCH v10 6/9] Reimplement RLIMIT_SIGPENDING on top of ucounts")
-> >
-> > Ouch.
-> 
-> We were cautiously optimistic when no test problems showed up from
-> the last posting that there was nothing to look at here.
-> 
-> Unfortunately it looks like the bots just missed the last posting. 
-> 
-> So it seems we are finally pretty much at correct code in need
-> of performance tuning.
-> 
-> > I *think* this test may be testing "send so many signals that it
-> > triggers the signal queue overflow case".
-> >
-> > And I *think* that the performance degradation may be due to lots of
-> > unnecessary allocations, because ity looks like that commit changes
-> > __sigqueue_alloc() to do
-> >
-> >         struct sigqueue *q = kmem_cache_alloc(sigqueue_cachep, flags);
-> >
-> > *before* checking the signal limit, and then if the signal limit was
-> > exceeded, it will just be free'd instead.
-> >
-> > The old code would check the signal count against RLIMIT_SIGPENDING
-> > *first*, and if there were m ore pending signals then it wouldn't do
-> > anything at all (including not incrementing that expensive atomic
-> > count).
-> 
-> This is an interesting test in a lot of ways as it is testing the
-> synchronous signal delivery path caused by an exception.  The test
-> is either executing *ptr = 0 (where ptr points to a read-only page)
-> or it executes an x86 instruction that is excessively long.
-> 
-> I have found the code but I haven't figured out how it is being
-> called yet.  The core loop is just:
-> 	for(;;) {
-> 		sigaction(SIGSEGV, &action, NULL);
-> 		sigaction(SIGILL, &action, NULL);
-> 		sigaction(SIGBUS, &action, NULL);
-> 
-> 		ret = sigsetjmp(jmp_env, 1);
-> 		if (done())
->                 	break;
-> 		if (ret) {
->                 	/* verify signal */
->                 } else {
->                 	*ptr = 0;
->                 }
-> 	}
-> 
-> Code like that fundamentally can not be multi-threaded.  So the only way
-> the sigpending limit is being hit is if there are more processes running
-> that code simultaneously than the size of the limit.
-> 
-> Further it looks like stress-ng pushes RLIMIT_SIGPENDING as high as it
-> will go before the test starts.
-> 
-> 
-> > Also, the old code was very careful to only do the "get_user()" for
-> > the *first* signal it added to the queue, and do the "put_user()" for
-> > when removing the last signal. Exactly because those atomics are very
-> > expensive.
-> >
-> > The new code just does a lot of these atomics unconditionally.
-> 
-> Yes. That seems a likely culprit.
-> 
-> > I dunno. The profile data in there is a bit hard to read, but there's
-> > a lot more cachee misses, and a *lot* of node crossers:
-> >
-> >>    5961544          +190.4%   17314361        perf-stat.i.cache-misses
-> >>   22107466          +119.2%   48457656        perf-stat.i.cache-references
-> >>     163292 ą  3%   +4582.0%    7645410        perf-stat.i.node-load-misses
-> >>     227388 ą  2%   +3708.8%    8660824        perf-stat.i.node-loads
-> >
-> > and (probably as a result) average instruction costs have gone up enormously:
-> >
-> >>       3.47           +66.8%       5.79        perf-stat.overall.cpi
-> >>      22849           -65.6%       7866        perf-stat.overall.cycles-between-cache-misses
-> >
-> > and it does seem to be at least partly about "put_ucounts()":
-> >
-> >>       0.00            +4.5        4.46        perf-profile.calltrace.cycles-pp.put_ucounts.__sigqueue_free.get_signal.arch_do_signal_or_restart.exit_to_user_mode_prepare
-> >
-> > and a lot of "get_ucounts()".
-> >
-> > But it may also be that the new "get sigpending" is just *so* much
-> > more expensive than it used to be.
-> 
-> That too is possible.
-> 
-> That node-load-misses number does look like something is bouncing back
-> and forth between the nodes a lot more.  So I suspect stress-ng is
-> running multiple copies of the sigsegv test in different processes at
-> once.
-> 
-> 
-> 
-> That really suggests cache line ping pong from get_ucounts and
-> incrementing sigpending.
-> 
-> It surprises me that obtaining the cache lines exclusively is
-> the dominant cost on this code path but obtaining two cache lines
-> exclusively instead of one cache cache line exclusively is consistent
-> with a causing the exception delivery to take nearly twice as long.
-> 
-> For the optimization we only care about the leaf count so with a little
-> care we can restore the optimization.  So that is probably the thing
-> to do here.  The fewer changes to worry about the less likely to find
-> surprises.
-> 
-> 
-> 
-> That said for this specific case there is a lot of potential room for
-> improvement.  As this is a per thread signal the code update sigpending
-> in commit_cred and never worry about needing to pin the struct
-> user_struct or struct ucounts.  As this is a synchronous signal we could
-> skip the sigpending increment, skip the signal queue entirely, and
-> deliver the signal to user-space immediately.  The removal of all cache
-> ping pongs might make it worth it.
-> 
-> There is also Thomas Gleixner's recent optimization to cache one
-> sigqueue entry per task to give more predictable behavior.  That
-> would remove the cost of the allocation.
+On Thu, 15 Apr 2021 at 20:27, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.14.231 release.
+> There are 68 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 17 Apr 2021 14:44:01 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.14.231-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-https://git.kernel.org/pub/scm/linux/kernel/git/legion/linux.git/commit/?h=patchset/per-userspace-rlimit/v11.1&id=08db0c814926c6f16e08de99b2de34c8b5ff68ce
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-You mean something like this ? I did it on top of Thomas Gleixner's
-patches.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
--- 
-Rgrds, legion
+## Build
+* kernel: 4.14.231-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.14.y
+* git commit: 520c87617485a8885f18d5cb9d70076199e37b43
+* git describe: v4.14.230-69-g520c87617485
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
+.230-69-g520c87617485
 
+## No regressions (compared to v4.14.230-60-g9c0b97ea1e55)
+
+## No fixes (compared to v4.14.230-60-g9c0b97ea1e55)
+
+## Test result summary
+ total: 57382, pass: 47701, fail: 583, skip: 8861, xfail: 237,
+
+## Build Summary
+* arm: 96 total, 96 passed, 0 failed
+* arm64: 23 total, 23 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 13 total, 13 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 13 total, 13 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
