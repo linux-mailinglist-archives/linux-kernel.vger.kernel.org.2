@@ -2,153 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D860236238B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C37362388
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245740AbhDPPIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 11:08:06 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9088 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235784AbhDPPHv (ORCPT
+        id S245546AbhDPPHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 11:07:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245035AbhDPPHi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 11:07:51 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13GF45SC117001;
-        Fri, 16 Apr 2021 11:06:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=WbWU7a4i5njKdlMB6x5Fpyc2NkH9nMPMKZadNALON/Q=;
- b=HlVktblGK6gqeiRweZgWYoquklRYUdtUraNG5Cuf+1mjxFF7IGjYHYP41BcvPT63Z2Mv
- FDk3EXzNIfppD2i/h4hQP6Bocu2oM0LJm0TTWdNzgz0qcndbq4+YFxOQSrOF5gUgU+Hx
- wtzBMLuOTUht6FU7V1L9RKndrIvef0NuaEu+sa98tya/RqUarLvW/FV925h2K/viIsPL
- QV7I+kteFdHA3CAYYxuA5jx9GNw5mMFrrTLlEGhaRc7eVvLBrujrmit1+7uHA3At34v/
- xLGdWBJCo/TMYY93S1clNFFzIetv/O+SzBQEzV8Ov4lDESFpWn1VJ1G/zXWKTXaVuU7S hw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37x88k9y2b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 11:06:50 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13GF4XLs119292;
-        Fri, 16 Apr 2021 11:06:50 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37x88k9y19-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 11:06:50 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13GEvPjC000821;
-        Fri, 16 Apr 2021 15:06:48 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 37u39hmht6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 15:06:48 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13GF6kB545613366
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Apr 2021 15:06:46 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 13820A4040;
-        Fri, 16 Apr 2021 15:06:46 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 16DF5A4051;
-        Fri, 16 Apr 2021 15:06:43 +0000 (GMT)
-Received: from vajain21.in.ibm.com (unknown [9.85.72.155])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Fri, 16 Apr 2021 15:06:42 +0000 (GMT)
-Received: by vajain21.in.ibm.com (sSMTP sendmail emulation); Fri, 16 Apr 2021 20:36:42 +0530
-From:   Vaibhav Jain <vaibhav@linux.ibm.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
-Subject: Re: [PATCH v1 1/1] powerpc/papr_scm: Properly handle UUID types and
- API
-In-Reply-To: <CAHp75VcPANL+LBTxy2V8f2Ksy=FJmdbU1=r60KKO7YSUf9BCLg@mail.gmail.com>
-References: <20210415134637.17770-1-andriy.shevchenko@linux.intel.com>
- <87eefblbji.fsf@vajain21.in.ibm.com>
- <CAHp75VcPANL+LBTxy2V8f2Ksy=FJmdbU1=r60KKO7YSUf9BCLg@mail.gmail.com>
-Date:   Fri, 16 Apr 2021 20:36:42 +0530
-Message-ID: <87a6pyl14t.fsf@vajain21.in.ibm.com>
+        Fri, 16 Apr 2021 11:07:38 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24688C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 08:07:12 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so16567051pjh.1
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 08:07:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qvRPd9mJKRx11Shv+OyTN/o/Bvjy/gaC5xNSiISaZwo=;
+        b=g08ANfEZT2d6VY2y52OdJOvS9/b1mZSA7c+Jo1sA2FPH8q9i+09GskgqqXvKUdkSOx
+         iu+y+gK8WpaNyA1V6z0XT0TBhreeLBI7aJM7oeDrKwdaeWEZN6vY54tnEpTmqK/obSTe
+         FaAi9VsJM5SHEqfam9+6cCvsCAwwlmwgC79oYHhb9WdD5i0K59EdQBXEXyodLndfRBpl
+         NnCacMIFBKoZUTG0epfo1NbtUn19WXN8yAIuY6Ob1faQMb/6Tn3pYntUNub3bnIYMauj
+         Qd1WSq8tp28qVml5F7HkyqUVX0qR89M3nUTMTlpCXCANmB2Z5DBKQDc5T/lLxCag8Nq2
+         eE1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qvRPd9mJKRx11Shv+OyTN/o/Bvjy/gaC5xNSiISaZwo=;
+        b=le/U5uRRGw8LXTs1NYjIs7igOYmUzrzWkHww3aomYqsuXgxM1VlCXOJ5MAVDbuWgwB
+         DGtkSvez4Ps/VBO3w0XSBUbpMHxRfHOI8TE1GnYUjUzB8l9W46YRMStqKm7SaEJf1aZe
+         nPW3FqlpkkFnlXKtqevULYTufrAj31Uvavk051ezNkjx2zUxG8DMhUuQ58F/3u9ZHFz3
+         nKHYAqLkdhpxZAErkmBAMsJxx9fpGpovUSI3PO3NbTVcWIZUQUkDrcpuClX1bw07WR6F
+         IOQQehV1tRSGLSFJOlNpERhfmzXyDJADPaolS+Y7g3Xn7OycrDyBht7zBh6MKGZx51EA
+         ZhBw==
+X-Gm-Message-State: AOAM531wfaiDy8f2+NA/Qe5yMa8PWtaUx3lTxAn/+aahU1joxHcscSQs
+        FBs6r26q/TDA14cAy8DoynV7Ug==
+X-Google-Smtp-Source: ABdhPJw/TvRlw4eu+nGgPjVquPv+r/N1Q8Ytb4wzK/E+5VbvXcS28/9OfbX37TdfIIoycQvIdJO+/Q==
+X-Received: by 2002:a17:903:2310:b029:eb:73d5:3e4e with SMTP id d16-20020a1709032310b02900eb73d53e4emr9661606plh.66.1618585631641;
+        Fri, 16 Apr 2021 08:07:11 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id t184sm5196525pgt.32.2021.04.16.08.07.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 08:07:11 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 09:07:09 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     coresight@lists.linaro.org, acme@kernel.org, al.grant@arm.com,
+        branislav.rankov@arm.com, denik@chromium.org,
+        suzuki.poulose@arm.com, Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] perf cs-etm: Set time on synthesised samples to
+ preserve ordering
+Message-ID: <20210416150709.GA1046932@xps15>
+References: <20210416105632.8771-1-james.clark@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Gj3h6l7E5xP8Yl02kFNPJ50ytsfvNNx9
-X-Proofpoint-ORIG-GUID: ckxZAx8zOlRRvIGCHqvJ3VpMz7ME06ar
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-16_08:2021-04-16,2021-04-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1015
- mlxscore=0 bulkscore=0 suspectscore=0 lowpriorityscore=0
- priorityscore=1501 impostorscore=0 phishscore=0 malwarescore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104160112
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416105632.8771-1-james.clark@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andy Shevchenko <andy.shevchenko@gmail.com> writes:
+Hi James,
 
-> On Thu, Apr 15, 2021 at 8:10 PM Vaibhav Jain <vaibhav@linux.ibm.com> wrot=
-e:
->>
->>
->> Thanks for the patch Andy,
->>
->> Unfortunately ran into a compilation issue due to missing "#include
->> <asm/unaligned.h>" that provides definition for
->> get_unaligned_le64(). Gcc reported following error:
->>
->> error: implicit declaration of function =E2=80=98get_unaligned_le64=E2=
-=80=99
->
-> Right, I have not tested it (as mentioned in the comments to the patch)
->
->> After including the necessary header file, kernel compiled fine and I
->> was able to test & verify the patch.
->
-> Thank you very much for the testing.
->
-> I'm not sure what the coverage of your test is.
+On Fri, Apr 16, 2021 at 01:56:30PM +0300, James Clark wrote:
+> Changes since v1:
+>  * Improved variable name from etm_timestamp -> cs_timestamp
+>  * Fixed ordering of Signed-off-by
+> 
 
-Your patch updates the way the interleaved set-cookies are populated in
-papr_scm which are then used to populate label entry for a namespace. I
-verified that the reported region setcookie hasnt changed for an nvdimm
-region before and after applying your patch for both BE and LE variants:
+You forgot to add the RB and AB you received.  Since Arnaldo is responsible for
+the perf tools subsystem, please send another revision.
 
-# 64-bit Little endian kernel before applying the patch
-$ sudo cat /sys/devices/ndbus0/region0/set_cookie
-0x8b6b26cbc930e2b5
+Thanks,
+Mathieu
 
-# 64-bit Little endian kernel after applying your patch
-$ sudo cat /sys/devices/ndbus0/region0/set_cookie
-0x8b6b26cbc930e2b5
-
-# 64-bit Big endian kernel before applying your patch
-$ sudo cat /sys/devices/ndbus0/region0/set_cookie
-0x8b6b26cbc930e2b5
-
-# 64-bit Big endian kernel after applying your patch
-$ sudo cat /sys/devices/ndbus0/region0/set_cookie
-0x8b6b26cbc930e2b5
-
-> That's why I have an
-> additional question below. Is the byte ordering kept the same in BE
-> (32- and 64-bit) cases? Because I'm worrying that I might have missed
-> something.
-Libnvdimm store these cookies in label area as little endian values and
-based on the results above I think we are good.
->
->
-> --=20
-> With Best Regards,
-> Andy Shevchenko
-
---=20
-Cheers
-~ Vaibhav
+> James Clark (2):
+>   perf cs-etm: Refactor timestamp variable names
+>   perf cs-etm: Set time on synthesised samples to preserve ordering
+> 
+>  .../perf/util/cs-etm-decoder/cs-etm-decoder.c | 18 +++----
+>  tools/perf/util/cs-etm.c                      | 52 ++++++++++---------
+>  tools/perf/util/cs-etm.h                      |  4 +-
+>  3 files changed, 39 insertions(+), 35 deletions(-)
+> 
+> -- 
+> 2.28.0
+> 
