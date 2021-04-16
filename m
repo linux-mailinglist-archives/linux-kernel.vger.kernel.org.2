@@ -2,69 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A87E3623B2
+	by mail.lfdr.de (Postfix) with ESMTP id 565233623B3
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245408AbhDPPRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 11:17:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55572 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245653AbhDPPPe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1343490AbhDPPRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 11:17:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42782 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245712AbhDPPPe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 16 Apr 2021 11:15:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618586104;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=Pn6yvUUjNUSlzuQVqqIMB1mfmQSsMpS8xNJAq4YBzK8=;
-        b=GNOOCsNKc5VD+fervF4m2Ym4dIv/71FhL+GALJ8PXPtFcRkYnVx8EpjO6QS74TzadLg7X4
-        QRxhtxmySB4poHJ+dfwJUOcZSueP24pMSNsJEdaN5O8iqBimCt5AhF3thFNwoQL9n/Cy+L
-        X8JsJN864dbgpJRnj00gVpn0HusPMTs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-217-hjNCdYNrOQubG6COtEDHvg-1; Fri, 16 Apr 2021 11:15:00 -0400
-X-MC-Unique: hjNCdYNrOQubG6COtEDHvg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BBEDF8030A0;
-        Fri, 16 Apr 2021 15:14:58 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-35.rdu2.redhat.com [10.10.119.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 25B392B3C8;
-        Fri, 16 Apr 2021 15:14:56 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-cc:     dhowells@redhat.com, Jarkko Sakkinen <jarkko@kernel.org>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Fix for CVE-2020-26541
-MIME-Version: 1.0
-Content-Type: text/plain
-Date:   Fri, 16 Apr 2021 16:14:56 +0100
-Message-ID: <1609249.1618586096@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3BAFD61184;
+        Fri, 16 Apr 2021 15:15:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618586101;
+        bh=eSQcljIYl3Hgl1jZuA/KozNWi0lcW6fQwaXzi1gJR5c=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=OK9E8v0LHCVVLrBWXqwPVeA+bfLKSjCkxMwmRlC5YejJTi8/QaUE67o9Wisb7U3zX
+         oD4uhrBAzBtcpyQJUeO4Fv4BICnQj4VSVELiDTGyOMn941ROQggGMKc04CbhkuAMjR
+         LBbhHN6hMucI1GAgtZiOGTWlFNFlVB8ao06vOMoQWEopPhTbC4Xq2rr7I8Z2kOyWoY
+         e/JXDyeaUoptDnWXaYO7x3lGABTW+bdoEU8hoG6rWo1uHBZmVQxL1g3Ffk9y9HN7VL
+         CSn68WWPLnSxMPmzhUTq27b4SdBIpHcUFBOt/aIWSDKQWSxTftLnl2RDTM4HeS5RFV
+         RhsmULcPd9cPg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2968E609AF;
+        Fri, 16 Apr 2021 15:15:01 +0000 (UTC)
+Subject: Re: [PULL] drm-fixes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YHmR+Gyh/s2sHT2D@phenom.ffwll.local>
+References: <YHmR+Gyh/s2sHT2D@phenom.ffwll.local>
+X-PR-Tracked-List-Id: Direct Rendering Infrastructure - Development
+ <dri-devel.lists.freedesktop.org>
+X-PR-Tracked-Message-Id: <YHmR+Gyh/s2sHT2D@phenom.ffwll.local>
+X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-04-16
+X-PR-Tracked-Commit-Id: 4d2e1288372ccc5ac60290bc10cace49c9bfa6d0
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 2f7b98d1e55ccd34e4998bf5f321ec7b9d6b451b
+Message-Id: <161858610111.23465.8316457944463841403.pr-tracker-bot@kernel.org>
+Date:   Fri, 16 Apr 2021 15:15:01 +0000
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The pull request you sent on Fri, 16 Apr 2021 15:32:40 +0200:
 
-Hi Linus,
+> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-04-16
 
-I posted a pull request for a fix for CVE-2020-26541:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/2f7b98d1e55ccd34e4998bf5f321ec7b9d6b451b
 
-	https://lore.kernel.org/keyrings/1884195.1615482306@warthog.procyon.org.uk/
-	[GIT PULL] Add EFI_CERT_X509_GUID support for dbx/mokx entries
+Thank you!
 
-I'm guessing you're not going to pull it now for 5.12, so should I just
-reissue the request in the merge window?  Also, do you want the base pulling
-up to something a bit more recent than 5.11-rc4?
-
-David
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
