@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52560361BFB
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED97361BFC
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240617AbhDPIly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 04:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240598AbhDPIlx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 04:41:53 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD4AC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 01:41:29 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id 20so9642965pll.7
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 01:41:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=He3oTSlwnFPi0gSb22caSHrtR7K6cmAux7Z+2T9Xo1o=;
-        b=hacERswIX9cIS1UJydG+GKquH1hgrwS2+nCAq/Bgnj2hhImJuvM1HgFl4cg3S6pZev
-         JCM/D2hsoeC9Cts3k/lDE+Tk9+6VMkX2XSjBRWjIaS+bPe6By0MTX5I0WkSokhwkTZ2s
-         IbESokhSKgVQrq92WrdxoWpJ2zDl3xWxv0TymTHlFtLoHnW/4sc2o/IGhHEL6OREV5PB
-         6L4ls7hRTeG8WWZxbf/vK4servXkCqbwQ9exsc6rCarR8bBKnafSkErOolvEAnnBOVyk
-         YimIDDJRfC/4fGCP6QUmjQnHe0SUetMfhL8E10Ju8nu1Lfygrl+Nh+deXzi9RCwd4o03
-         s9RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=He3oTSlwnFPi0gSb22caSHrtR7K6cmAux7Z+2T9Xo1o=;
-        b=neOD+Ng8v0Jle+TIiInTeEtxxt3HLPSzrQ9eZ4Wr/R9yXxAd/IBenA8odTLP8hLD7u
-         jtGXyHvZdzyCkQgkoCqWYROCkzIdq9qZT+Bxu+7nXA9E8XPeR2pi6sRZicP+k4Ps5/LV
-         5XNVfDlYIq9awGj+tpA0LUvMZIeC1ydUCrIwSjIYqrSWthf5rp2Qi/ecuK6grwOPqI5j
-         VaPTmG79frT9ReI4kzAG55DI1xS40ryb1/KQp7WEaLXS3s3a66pu5SlOqwuD8ODjRYQV
-         ojNspVgFVkHIEZHa4GKrPEPa4ZiuuP8lYT01UNpGTNx/fRFs6tFub4TFddpV53eGj1VR
-         uy0w==
-X-Gm-Message-State: AOAM533aKW1FkXVrL5owMScaWXonAM6XcDjjWLbxGJM5+J640O4IQ9FP
-        KJ37l4qzmBj2dqxaTGMZ/kL6yhXzQmEWwQpK4V+jIA==
-X-Google-Smtp-Source: ABdhPJwF2oXeuk5v0ZBd9FHld186Dr4jfV9Bgsh1mreQZM+bGYmRq9h7B9YLZnGn9NgnTr0mVBmGQE0fwbP36eT7Of4=
-X-Received: by 2002:a17:90b:392:: with SMTP id ga18mr8091538pjb.222.1618562488639;
- Fri, 16 Apr 2021 01:41:28 -0700 (PDT)
+        id S240638AbhDPImp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 04:42:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:36070 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239639AbhDPImo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 04:42:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 11A64106F;
+        Fri, 16 Apr 2021 01:42:20 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 43FFA3FA45;
+        Fri, 16 Apr 2021 01:42:19 -0700 (PDT)
+Subject: Re: [PATCH] mm: ptdump: Fix build failure
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-mm@kvack.org
+References: <912b349e2bcaa88939904815ca0af945740c6bd4.1618478922.git.christophe.leroy@csgroup.eu>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <c6c50422-9566-8667-0ad6-627c51c9b7aa@arm.com>
+Date:   Fri, 16 Apr 2021 09:42:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210415183619.1431-1-rdunlap@infradead.org>
-In-Reply-To: <20210415183619.1431-1-rdunlap@infradead.org>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Fri, 16 Apr 2021 10:41:17 +0200
-Message-ID: <CAG3jFyvi-NyOdd8DdKu_QYz593YYvJzXm65DoCLubzHE+-5zNg@mail.gmail.com>
-Subject: Re: [PATCH -next] drm: bridge: fix ANX7625 use of mipi_dsi_() functions
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Xin Ji <xji@analogixsemi.com>, Sam Ravnborg <sam@ravnborg.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <912b349e2bcaa88939904815ca0af945740c6bd4.1618478922.git.christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Randy!
+On 15/04/2021 10:31, Christophe Leroy wrote:
+> 	  CC      mm/ptdump.o
+> 	In file included from <command-line>:
+> 	mm/ptdump.c: In function 'ptdump_pte_entry':
+> 	././include/linux/compiler_types.h:320:38: error: call to '__compiletime_assert_207' declared with attribute error: Unsupported access size for {READ,WRITE}_ONCE().
+> 	  320 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+> 	      |                                      ^
+> 	././include/linux/compiler_types.h:301:4: note: in definition of macro '__compiletime_assert'
+> 	  301 |    prefix ## suffix();    \
+> 	      |    ^~~~~~
+> 	././include/linux/compiler_types.h:320:2: note: in expansion of macro '_compiletime_assert'
+> 	  320 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+> 	      |  ^~~~~~~~~~~~~~~~~~~
+> 	./include/asm-generic/rwonce.h:36:2: note: in expansion of macro 'compiletime_assert'
+> 	   36 |  compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long), \
+> 	      |  ^~~~~~~~~~~~~~~~~~
+> 	./include/asm-generic/rwonce.h:49:2: note: in expansion of macro 'compiletime_assert_rwonce_type'
+> 	   49 |  compiletime_assert_rwonce_type(x);    \
+> 	      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 	mm/ptdump.c:114:14: note: in expansion of macro 'READ_ONCE'
+> 	  114 |  pte_t val = READ_ONCE(*pte);
+> 	      |              ^~~~~~~~~
+> 	make[2]: *** [mm/ptdump.o] Error 1
+> 
+> READ_ONCE() cannot be used for reading PTEs. Use ptep_get()
+> instead. See commit 481e980a7c19 ("mm: Allow arches to provide ptep_get()")
+> and commit c0e1c8c22beb ("powerpc/8xx: Provide ptep_get() with 16k pages")
+> for details.
 
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
+It was cargo-culted from the arm64/x86 implementations (where this 
+happens to be safe).
 
-On Thu, 15 Apr 2021 at 20:36, Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> The Analogix DRM ANX7625 bridge driver uses mips_dsi_() function
-> interfaces so it should select DRM_MIPI_DSI to prevent build errors.
->
->
-> ERROR: modpost: "mipi_dsi_attach" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
-> ERROR: modpost: "mipi_dsi_device_register_full" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
-> ERROR: modpost: "of_find_mipi_dsi_host_by_node" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
-> ERROR: modpost: "mipi_dsi_device_unregister" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
-> ERROR: modpost: "mipi_dsi_detach" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
->
->
-> Fixes: 8bdfc5dae4e3 ("drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to DP")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Xin Ji <xji@analogixsemi.com>
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: Andrzej Hajda <a.hajda@samsung.com>
-> Cc: Neil Armstrong <narmstrong@baylibre.com>
-> Cc: Robert Foss <robert.foss@linaro.org>
-> Cc: stable@vger.kernel.org
+> Fixes: 30d621f6723b ("mm: add generic ptdump")
+> Cc: Steven Price <steven.price@arm.com>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+
+Reviewed-by: Steven Price <steven.price@arm.com>
+
+Thanks,
+
+Steve
+
 > ---
->  drivers/gpu/drm/bridge/analogix/Kconfig |    1 +
->  1 file changed, 1 insertion(+)
->
-> --- linux-next-20210414.orig/drivers/gpu/drm/bridge/analogix/Kconfig
-> +++ linux-next-20210414/drivers/gpu/drm/bridge/analogix/Kconfig
-> @@ -30,6 +30,7 @@ config DRM_ANALOGIX_ANX7625
->         tristate "Analogix Anx7625 MIPI to DP interface support"
->         depends on DRM
->         depends on OF
-> +       select DRM_MIPI_DSI
->         help
->           ANX7625 is an ultra-low power 4K mobile HD transmitter
->           designed for portable devices. It converts MIPI/DPI to
+>   mm/ptdump.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/ptdump.c b/mm/ptdump.c
+> index 4354c1422d57..da751448d0e4 100644
+> --- a/mm/ptdump.c
+> +++ b/mm/ptdump.c
+> @@ -111,7 +111,7 @@ static int ptdump_pte_entry(pte_t *pte, unsigned long addr,
+>   			    unsigned long next, struct mm_walk *walk)
+>   {
+>   	struct ptdump_state *st = walk->private;
+> -	pte_t val = READ_ONCE(*pte);
+> +	pte_t val = ptep_get(pte);
+>   
+>   	if (st->effective_prot)
+>   		st->effective_prot(st, 4, pte_val(val));
+> 
+
