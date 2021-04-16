@@ -2,136 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D0C3618FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 06:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2A1361909
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 06:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238213AbhDPEpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 00:45:17 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45852 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229555AbhDPEpP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 00:45:15 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13G4YPGU048393;
-        Fri, 16 Apr 2021 00:44:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=sFqB8Nx1yOnTC2YBXhWD1XQdbyVUMOcgezM1VW/ORvI=;
- b=jX5FPixHA1ZrJuF15BkI0b/otjV5RWXfSgUWlxv1TB4nx5qJ9MTgGPutg3bcStb4vH/R
- X7OsBahhzPIs2vZyenu3hynq2BSC9UN6Wfh9Xuaja0ktqHFXHxKYFCIlwwhwWiiQQ/EI
- UXVp208gzXGNWaWx615WKpVf8hg9zqq25gw3bXNz6s/dSO1u9iM0V0FpPHp4qcXbTjVi
- UL5QeSEL+8zloSW1B2KlyChvUquSrr51+7CaDpbc8AQalQ2I6yp2W810SG7dBhpGN6zN
- s1P6HSo4/Th5oYvSa+CsHgK/n3hiHCkC9ATzPr+ePVMrLtQMjXD/xdaAUZ4IID3hWGuv mw== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37xsvadgbc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 00:44:48 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13G4es0T009176;
-        Fri, 16 Apr 2021 04:44:46 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma05fra.de.ibm.com with ESMTP id 37u3n8a9sx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 04:44:45 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13G4iL9B32243986
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Apr 2021 04:44:21 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8C55CAE051;
-        Fri, 16 Apr 2021 04:44:43 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 606F4AE045;
-        Fri, 16 Apr 2021 04:44:42 +0000 (GMT)
-Received: from in.ibm.com (unknown [9.77.199.141])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri, 16 Apr 2021 04:44:42 +0000 (GMT)
-Date:   Fri, 16 Apr 2021 10:14:39 +0530
-From:   Bharata B Rao <bharata@linux.ibm.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        aneesh.kumar@linux.ibm.com
-Subject: Re: High kmalloc-32 slab cache consumption with 10k containers
-Message-ID: <20210416044439.GB1749436@in.ibm.com>
-Reply-To: bharata@linux.ibm.com
-References: <20210405054848.GA1077931@in.ibm.com>
- <20210406222807.GD1990290@dread.disaster.area>
+        id S237414AbhDPE6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 00:58:36 -0400
+Received: from ptr.189.cn ([183.61.185.103]:11423 "EHLO 189.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229555AbhDPE6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 00:58:30 -0400
+HMM_SOURCE_IP: 10.64.8.31:18705.380823691
+HMM_ATTACHE_NUM: 0000
+HMM_SOURCE_TYPE: SMTP
+Received: from clientip-14.215.91.1 (unknown [10.64.8.31])
+        by 189.cn (HERMES) with SMTP id 9DB16101C25;
+        Fri, 16 Apr 2021 12:57:48 +0800 (CST)
+Received: from  ([172.27.8.53])
+        by gateway-151646-dep-84df4bfd9c-c55qc with ESMTP id 778ad9260a3d4fc2ac2e7d0a48db4b6f for john.garry@huawei.com;
+        Fri Apr 16 12:57:49 2021
+X-Transaction-ID: 778ad9260a3d4fc2ac2e7d0a48db4b6f
+X-filter-score: 
+X-Real-From: chensong_2000@189.cn
+X-Receive-IP: 172.27.8.53
+X-MEDUSA-Status: 0
+Sender: chensong_2000@189.cn
+Subject: Re: [PATCH] kernel:irq:manage: request threaded irq with a specified
+ priority
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rostedt@goodmis.org, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, keescook@chromium.org,
+        gregkh@linuxfoundation.org, maz@kernel.org, joe@perches.com,
+        romain.perier@gmail.com, john.garry@huawei.com
+References: <1618294774-24370-1-git-send-email-chensong_2000@189.cn>
+ <875z0qzigk.ffs@nanos.tec.linutronix.de>
+From:   chensong <chensong_2000@189.cn>
+Message-ID: <4a355b66-3803-586b-56c7-ce715b5e59cc@189.cn>
+Date:   Fri, 16 Apr 2021 12:57:47 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210406222807.GD1990290@dread.disaster.area>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: iZ4sgeYm6gM96f61qbJja4XmxuUaxycO
-X-Proofpoint-GUID: iZ4sgeYm6gM96f61qbJja4XmxuUaxycO
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-15_11:2021-04-15,2021-04-15 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
- phishscore=0 mlxlogscore=673 priorityscore=1501 spamscore=0 malwarescore=0
- adultscore=0 lowpriorityscore=0 suspectscore=0 mlxscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104160033
+In-Reply-To: <875z0qzigk.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 08:28:07AM +1000, Dave Chinner wrote:
-> On Mon, Apr 05, 2021 at 11:18:48AM +0530, Bharata B Rao wrote:
+
+
+On 2021/4/13 下午4:39, Thomas Gleixner wrote:
+> On Tue, Apr 13 2021 at 14:19, Song Chen wrote:
+>> In general, irq handler thread will be assigned a default priority which
+>> is MAX_RT_PRIO/2, as a result, no one can preempt others.
+>>
+>> Here is the case I found in a real project, an interrupt int_a is
+>> coming, wakes up its handler handler_a and handler_a wakes up a
+>> userspace RT process task_a.
+>>
+>> However, if another irq handler handler_b which has nothing to do
+>> with any RT tasks is running when int_a is coming, handler_a can't
+>> preempt handler_b, as a result, task_a can't be waken up immediately
+>> as expected until handler_b gives up cpu voluntarily. In this case,
+>> determinism breaks.
 > 
-> > As an alternative approach, I have this below hack that does lazy
-> > list_lru creation. The memcg-specific list is created and initialized
-> > only when there is a request to add an element to that particular
-> > list. Though I am not sure about the full impact of this change
-> > on the owners of the lists and also the performance impact of this,
-> > the overall savings look good.
+> It breaks because the system designer failed to assign proper priorities
+> to the irq threads int_a, int_b and to the user space process task_a.
+
+yes, it's designers' responsibility to assign proper priorities, but 
+kernel is also obliged to provide interfaces for those designers.
+
+chrt can help designers in this case, however, the truth is lot of 
+customers are not familiar with it. what's more, chrt can also apply to 
+userspace rt task, but userspace also has sched_setscheduler to assgin 
+proper priority inside code like cyclictest, why can't driver writers 
+have another choice?
+
+Further, what if irq handlear thread has to run on the expected priority 
+at the very beginning? This patch helps.
+
+BR
+
+Song
+
 > 
-> Avoiding memory allocation in list_lru_add() was one of the main
-> reasons for up-front static allocation of memcg lists. We cannot do
-> memory allocation while callers are holding multiple spinlocks in
-> core system algorithms (e.g. dentry_kill -> retain_dentry ->
-> d_lru_add -> list_lru_add), let alone while holding an internal
-> spinlock.
+> That's not solvable at the kernel level.
 > 
-> Putting a GFP_ATOMIC allocation inside 3-4 nested spinlocks in a
-> path we know might have memory demand in the *hundreds of GB* range
-> gets an NACK from me. It's a great idea, but it's just not a
-
-I do understand that GFP_ATOMIC allocations are really not preferrable
-but want to point out that the allocations in the range of hundreds of
-GBs get reduced to tens of MBs when we do lazy list_lru head allocations
-under GFP_ATOMIC.
-
-As shown earlier, this is what I see in my experimental setup with
-10k containers:
-
-Number of kmalloc-32 allocations
-		Before		During		After
-W/o patch	178176		3442409472	388933632
-W/  patch	190464		468992		468992
-
-So 3442409472*32=102GB upfront list_lru creation-time GFP_KERNEL allocations
-get reduced to 468992*32=14MB dynamic list_lru addtion-time GFP_ATOMIC
-allocations.
-
-This does really depend and vary on the type of the container and
-the number of mounts it does, but I suspect we are looking
-at GFP_ATOMIC allocations in the MB range. Also the number of
-GFP_ATOMIC slab allocation requests matter I suppose.
-
-There are other users of list_lru, but I was just looking at
-dentry and inode list_lru usecase. It appears to me that for both
-dentry and inode, we can tolerate the failure from list_lru_add
-due to GFP_ATOMIC allocation failure. The failure to add dentry
-or inode to the lru list means that they won't be retained in
-the lru list, but would be freed immediately. Is this understanding
-correct?
-
-If so, would that likely impact the subsequent lookups adversely?
-We failed to retain a dentry or inode in the lru list because
-we failed to allocate memory, presumably under memory pressure.
-Even in such a scenario, is failure to add dentry or inode to
-lru list so bad and not tolerable? 
-
-Regards,
-Bharata.
+> Thanks,
+> 
+>          tglx
+> 
+> 
