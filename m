@@ -2,129 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9693629C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 22:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8276F3629CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 22:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244012AbhDPU6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 16:58:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243809AbhDPU6b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 16:58:31 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2DBC061574;
-        Fri, 16 Apr 2021 13:58:06 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id o5so30335179qkb.0;
-        Fri, 16 Apr 2021 13:58:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :organization:user-agent:mime-version:content-transfer-encoding;
-        bh=qnIWecU4j0go3BHki/tPX89ICgmbfzbrXzKLY+iWOac=;
-        b=pz/bSOQmz9g+p6n0hHD1XQp4RAoq2j/Dj0uYmko1vHfn5u7RxBa80ABt2yiEG25v68
-         haJilWm4NQoEiFZmf6ZCbgXgD0WEvFImh7UxgbDrysgLT0RyxcXbeAQsfenuXFUhxMZ0
-         kqgYHnrvKY1kb9ACeLaIhxNJTlueR0VDBoK5nyTA7AWNFEcOVXwKX/bhRfyDzO5BDxYu
-         iyyzTYTkUbhk8xG+XjJB0unQDDTTmiCESPhkYjks9+OV4j3FvRjcw8FUhL+gaUffJ1XI
-         Ix5RU/RXzOdSgrB+BelgyWuXjivn2djucxlh6gW5fRKzGgkoysyHferoLsZxEue8M1RI
-         O/Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=qnIWecU4j0go3BHki/tPX89ICgmbfzbrXzKLY+iWOac=;
-        b=m589olun8jgQ7LV6pwltR65I4dYsSpTih87CCIIid0ogIa0FvJHrzFEARdA2J/VFYq
-         m+qvf7HETq77/z8P0jObY0Mkwr9OszSL4Vpzfwi8anDSHG8jfxHyGOE1ofsKVoKVPdR2
-         JpfMDxTBpRPJQSQPq1IAVbWfyaxK5/nr8npWQ3ikDuhRi+jTqy4bN+Wz0QvuD65EgBNT
-         8ykPf0e2udle4InyL3iPYJVwwPB/yNx6D0i/8keL7CY17r0Q90KBoiHoMri21zkPk+8A
-         n1xRQIrR219fejD9GQTVLqCeJqHNfZ2tRJc+VBvCZPQTBkMs/sXVONJqWeuOMsIFSpCX
-         UgwQ==
-X-Gm-Message-State: AOAM530Lebemi5nzWTma+PcqkqIQpnzStr46S4LDhoGmlVW+0nEh3XzK
-        CtiZZu6XFnpHgucPPwS0nHz7r14K1m4=
-X-Google-Smtp-Source: ABdhPJxFhinlHNn02trTin40jfBumlNTfk5ie7OrDNyXW4/JI/YC1pS+0OjO1mDC9iZf7UePRpjcKg==
-X-Received: by 2002:a37:d4e:: with SMTP id 75mr1110422qkn.457.1618606685688;
-        Fri, 16 Apr 2021 13:58:05 -0700 (PDT)
-Received: from li-908e0a4c-2250-11b2-a85c-f027e903211b.ibm.com ([177.35.200.187])
-        by smtp.gmail.com with ESMTPSA id n15sm4860020qkk.109.2021.04.16.13.58.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 13:58:05 -0700 (PDT)
-Message-ID: <7b089cd48b90f2445c7cb80da1ce8638607c46fc.camel@gmail.com>
-Subject: Re: [PATCH 1/1] of/pci: Add IORESOURCE_MEM_64 to resource flags for
- 64-bit memory addresses
-From:   Leonardo Bras <leobras.c@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Date:   Fri, 16 Apr 2021 17:57:59 -0300
-In-Reply-To: <CAL_Jsq+WwAeziGN4EfPAWfA0fieAjfcxfi29=StOx0GeKjAe_g@mail.gmail.com>
-References: <20210415180050.373791-1-leobras.c@gmail.com>
-         <CAL_Jsq+WwAeziGN4EfPAWfA0fieAjfcxfi29=StOx0GeKjAe_g@mail.gmail.com>
-Organization: IBM
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S244133AbhDPU7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 16:59:09 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:51754 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236340AbhDPU7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 16:59:04 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 13GKwCKQ011673;
+        Fri, 16 Apr 2021 22:58:12 +0200
+Date:   Fri, 16 Apr 2021 22:58:12 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Connor Kuehl <ckuehl@redhat.com>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH 04/13] Kbuild: Rust support
+Message-ID: <20210416205812.GA11655@1wt.eu>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <20210414184604.23473-5-ojeda@kernel.org>
+ <YHmTWEAS/QjX++w4@hirez.programming.kicks-ass.net>
+ <CAHk-=wh_zb=K1B-N8mgHmSZDqTLgOm711NRXbTX_OwFAzDYg0Q@mail.gmail.com>
+ <CANiq72nx7ngazsH7sZgc=HeU0cNj45F9+-rwQb7AkdYsRCmRbQ@mail.gmail.com>
+ <YHnS92ZKZ4tRWTiA@zeniv-ca.linux.org.uk>
+ <CANiq72=RLf0FiuLVL-ZeLFp9P2LxTymbzhXoyQGG=tvUY_J-Sg@mail.gmail.com>
+ <20210416202215.GA11236@1wt.eu>
+ <efe80452-fac9-247a-1e2b-a73553f605e8@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <efe80452-fac9-247a-1e2b-a73553f605e8@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Rob, thanks for this feedback!
-
-On Thu, 2021-04-15 at 13:59 -0500, Rob Herring wrote:
-> +PPC and PCI lists
-> 
-> On Thu, Apr 15, 2021 at 1:01 PM Leonardo Bras <leobras.c@gmail.com> wrote:
+On Fri, Apr 16, 2021 at 03:34:50PM -0500, Connor Kuehl wrote:
+> On 4/16/21 3:22 PM, Willy Tarreau wrote:
+> > So it simply does the equivalent of:
 > > 
-> > Many other resource flag parsers already add this flag when the input
-> > has bits 24 & 25 set, so update this one to do the same.
+> >   #define EINVAL -1234
+> > 
+> >   struct result {
+> >      int status;
+> >      int error;
+> >   };
 > 
-> Many others? Looks like sparc and powerpc to me. 
+> Result and Option types are more like a union with a tag that
+> describes which variant it is.
 > 
+> struct foo_result {
+>     /* if ok, then access foo_or_err.successful_foo
+>      *        else, access foo_or_err.error
+>      */
+>     bool ok;
+>     union {
+>         struct foo successful_foo;
+>         int error;
+>     } foo_or_err;
+> };
 
-s390 also does that, but it look like it comes from a device-tree.
+OK.
 
-> Those would be the
-> ones I worry about breaking. Sparc doesn't use of/address.c so it's
-> fine. Powerpc version of the flags code was only fixed in 2019, so I
-> don't think powerpc will care either.
-
-In powerpc I reach this function with this stack, while configuring a
-virtio-net device for a qemu/KVM pseries guest:
-
-pci_process_bridge_OF_ranges+0xac/0x2d4
-pSeries_discover_phbs+0xc4/0x158
-discover_phbs+0x40/0x60
-do_one_initcall+0x60/0x2d0
-kernel_init_freeable+0x308/0x3a8
-kernel_init+0x2c/0x168
-ret_from_kernel_thread+0x5c/0x70
-
-For this, both MMIO32 and MMIO64 resources will have flags 0x200.
-
+> > [..]
+> > 
+> > So it simply returns a pair of values instead of a single one, which
 > 
-> I noticed both sparc and powerpc set PCI_BASE_ADDRESS_MEM_TYPE_64 in
-> the flags. AFAICT, that's not set anywhere outside of arch code. So
-> never for riscv, arm and arm64 at least. That leads me to
-> pci_std_update_resource() which is where the PCI code sets BARs and
-> just copies the flags in PCI_BASE_ADDRESS_MEM_MASK ignoring
-> IORESOURCE_* flags. So it seems like 64-bit is still not handled and
-> neither is prefetch.
-> 
+> It will only return 1 value.
 
-I am not sure if you mean here:
-a) it's ok to add IORESOURCE_MEM_64 here, because it does not affect
-anything else, or
-b) it should be using PCI_BASE_ADDRESS_MEM_TYPE_64 
-(or IORESOURCE_MEM_64 | PCI_BASE_ADDRESS_MEM_TYPE_64) instead, since
-it's how it's added in powerpc/sparc, and else there is no point.
+No, two:
+  - ok in %rax (seems like it's "!ok" technically speaking since it
+    returns 1 on !ok and 0 on ok)
+  - foo_or_err in %rdx
 
-Again, thanks for helping!
+However then I'm bothered because Miguel's example showed that regardless
+of OK, EINVAL was always returned in foo_or_err, so maybe it's just
+because his example was not well chosen but it wasn't very visible from
+the source:
 
-Best regards,
-Leonardo Bras
+     bar:
+             push    rbx
+             mov     ebx, 1
+             call    qword ptr [rip + black_box@GOTPCREL]
+             test    al, al
+             jne     .LBB2_2
+             call    qword ptr [rip + kill_foo@GOTPCREL]
+             xor     ebx, ebx
+     .LBB2_2:
+             mov     eax, ebx
+             mov     edx, -1234
+             pop     rbx
+             ret
 
+Willy
