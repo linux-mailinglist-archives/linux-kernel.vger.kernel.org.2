@@ -2,111 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3508E361FFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6116D361FFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240787AbhDPMhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 08:37:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240513AbhDPMhv (ORCPT
+        id S242146AbhDPMio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 08:38:44 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9636 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235243AbhDPMil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 08:37:51 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46789C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 05:37:27 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lXNie-0007oq-Rc; Fri, 16 Apr 2021 14:37:08 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:b21a:a98c:8cd:ce9c])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id F3648610325;
-        Fri, 16 Apr 2021 12:37:01 +0000 (UTC)
-Date:   Fri, 16 Apr 2021 14:37:00 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Faiz Abbas <faiz_abbas@ti.com>
-Subject: Re: [PATCH v2 0/2] MCAN: Add support for implementing transceiver as
- a phy
-Message-ID: <20210416123700.s77prohqjqkegebv@pengutronix.de>
-References: <20210415154635.30094-1-a-govindraju@ti.com>
+        Fri, 16 Apr 2021 08:38:41 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13GCZX3m037291;
+        Fri, 16 Apr 2021 08:38:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=8iOl2pgc+pfrz28oppTEemV2d1omLs4ADa4tFM33Xlc=;
+ b=VDFkjS+4LeYpNPu6fC7SQWNuxOwac7Q7+B2TV/pTqlrUIOJg0rgQhbwSgvERD+mUssB4
+ EXZarjciy0LxqzwVoXOePZVW2NnSTgZzCrrCOxuasIt2+BUAG1Sn+R/H+2KOFhxcTphx
+ xcDBBhQfk5NaSoVElMRLsRevQBJm6iQkFbCtej7/NKfRy1IIhtED9YJtNVNWL2bYv4UB
+ xVzLmXmKh+EUV6XaIZYxJABihIGBgbdkDsY33D6IhEkalHK8W6cm5vE4yBAUMA5jQ530
+ I+Q/YLNzrxBspepXZrNLe/AwJxIMSoIpN41fYO7xuSo/p86k8WWMxV2UhtcjFI45rdP8 jA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37xxnphcvr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 08:38:10 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13GCZjMX038176;
+        Fri, 16 Apr 2021 08:38:09 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37xxnphcuv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 08:38:09 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13GCRj8W006769;
+        Fri, 16 Apr 2021 12:38:08 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03ams.nl.ibm.com with ESMTP id 37u3n8cf0h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 12:38:08 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13GCc5Ea42795498
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 16 Apr 2021 12:38:05 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B6D0AAE055;
+        Fri, 16 Apr 2021 12:38:05 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 18E3DAE04D;
+        Fri, 16 Apr 2021 12:38:05 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.64.24])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 16 Apr 2021 12:38:05 +0000 (GMT)
+Subject: Re: linux-next: Fixes tag needs some work in the kvm tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
+Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210416222731.3e82b3a0@canb.auug.org.au>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <00222197-fb22-ab0a-97e2-11c9f85a67f1@de.ibm.com>
+Date:   Fri, 16 Apr 2021 14:38:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xqo6yibeskab43ot"
-Content-Disposition: inline
-In-Reply-To: <20210415154635.30094-1-a-govindraju@ti.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210416222731.3e82b3a0@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: jhd4b3CO_inSOEuzwgnTPLcvLjuMOTHn
+X-Proofpoint-ORIG-GUID: RrMXz8aLz6p4OEC2DXqGZd9WGSa9MuRX
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-16_07:2021-04-15,2021-04-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ mlxscore=0 impostorscore=0 spamscore=0 malwarescore=0 clxscore=1015
+ adultscore=0 lowpriorityscore=0 bulkscore=0 priorityscore=1501
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104160094
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 16.04.21 14:27, Stephen Rothwell wrote:
+> Hi all,
+> 
+> In commit
+> 
+>    c3171e94cc1c ("KVM: s390: VSIE: fix MVPG handling for prefixing and MSO")
+> 
+> Fixes tag
+> 
+>    Fixes: bdf7509bbefa ("s390/kvm: VSIE: correctly handle MVPG when in VSIE")
+> 
+> has these problem(s):
+> 
+>    - Subject does not match target commit subject
+>      Just use
+> 	git log -1 --format='Fixes: %h ("%s")'
 
---xqo6yibeskab43ot
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 15.04.2021 21:16:33, Aswath Govindraju wrote:
-> The following series of patches add support for implementing the
-> transceiver as a phy of m_can_platform driver.
->=20
-> TCAN1042 has a standby signal that needs to be pulled high for
-> sending/receiving messages[1]. TCAN1043 has a enable signal along with
-> standby signal that needs to be pulled up for sending/receiving
-> messages[2], and other combinations of the two lines can be used to put t=
-he
-> transceiver in different states to reduce power consumption. On boards
-> like the AM654-idk and J721e-evm these signals are controlled using gpios.
->=20
-> These gpios are set in phy driver, and the transceiver can be put in
-> different states using phy API. The phy driver is added in the series [3].
->=20
-> This patch series is dependent on [4].
-
-Looks good. Can you ping me after the next -rc1, when this patch hits
-mainline. Then I'll merge this into linux-can-next.
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---xqo6yibeskab43ot
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmB5hOkACgkQqclaivrt
-76kycAf/TIfrDUXPJ4ouUR5LkNcMylId2QQaYz+ki2uzFPcL4UAXc0pLCn28b/vH
-2mzqV8XCm7nKVp5mlmsdGFgVVTsgmQRvfTZIJoElsilOag3/BteSrdokpZAORcMO
-RBRQakm1Y3pvWr+8oiWXXkpuDwU+KQRP4XzC3IIaxed9Nbilh6bQkSc6E4396fSP
-lF9CWFILd+XcWcDJcdSwbYvXCUw1ofGanJ8To1ylT5GT8Hbcn6G3rv7ro1fQXua2
-JO722JYSmk/TkhiyCAELW6sDePv/0qJcYu/VX/P7QMsudUYhYjtGsEB402JXRKnr
-SJSwEJHtF20H8Eb9mamNsvo3CTk0+w==
-=4TFD
------END PGP SIGNATURE-----
-
---xqo6yibeskab43ot--
+Hmm, this has been sitting in kvms390/next for some time now. Is this a new check?
