@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95CC6362319
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7931336231D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245230AbhDPOpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:45:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46968 "EHLO
+        id S245274AbhDPOqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240931AbhDPOpd (ORCPT
+        with ESMTP id S244605AbhDPOqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:45:33 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE86C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:45:08 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8849B51E;
-        Fri, 16 Apr 2021 16:45:05 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1618584306;
-        bh=7gdYMuUtn6uOGMcMMnkrDu5CQiOt/VJ+0qsqd8hKfU4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D7WE6YKMq9p03CIOMLvar3I/tBOdqoEJ8kBNzQ1oxzf6LqFRDorw4gLWjwaj1npzc
-         7Yulu1L8UTSxxd2/IAfQ+CPjbtgOxYV8m7rMTi6f6cEr7vE9YzgTQgGr4W88CUDh40
-         FcQ+wq79AJV+JCVDU7+8JQk3MqcZ9tMawF9tk6PY=
-Date:   Fri, 16 Apr 2021 17:45:02 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Hyun Kwon <hyun.kwon@xilinx.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Michal Simek <michal.simek@xilinx.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 20/40] drm/xlnx/zynqmp_disp: Fix incorrectly documented
- enum 'zynqmp_disp_id'
-Message-ID: <YHmi7psSllqh9WwG@pendragon.ideasonboard.com>
-References: <20210416143725.2769053-1-lee.jones@linaro.org>
- <20210416143725.2769053-21-lee.jones@linaro.org>
+        Fri, 16 Apr 2021 10:46:36 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C10C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:46:12 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id f15so19162068iob.5
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:46:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yYbdy738YZSLcRHWeIc/rXEkRrBDPjfZ8CjoruCy+gk=;
+        b=z2EiDumIKflW5Y2jsMQs3gNynYUnYBkWTKgg4sKgJk8PrTg0hKWCLc+Lr0Gw6iZaSa
+         /khUtKGEbnxqEz0l0jyI00PNqA1BkbGTgMujzS7mjAncrN1opi+bmA+qnlSOpysogFWX
+         SdFZ/NFRps6pQKTrcfiYFnsyyF/nJp1rkMsmeJ9JmQXgPUA2PczXLyhudbZ+5ZjuqUBD
+         4sZ3KFqhjgsJ5ahMQPTzSoDmWptvu/9Fe1PCs5Kh1vr0RkpwYaB0UBtOQpMtwX0VTDZh
+         C61Mkjbo5kgwk/Pm45YUycckX8qVHZbgweqk24QAV/70TQzszCuBEwvoKohbLQkc3wjT
+         +C3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yYbdy738YZSLcRHWeIc/rXEkRrBDPjfZ8CjoruCy+gk=;
+        b=IUBippKdPXqX3x6MI8dvzXVeXtRO0RA59PozTrCRui5T768o5kWZJfyPX+HFZ4LQzf
+         4x+w/ZkAzAPRksmfRUdQeJ/uT2uulZSfEli5DgbvVKyIFi0PU9ZbRTkni0j7vJaOV6mC
+         pfiH5FEYp4prxQ4KDB/E28J5FbzlwDi6uLhs4mdFLc8Z8uykn2IzEb3swrj23aS25xrP
+         DMPkMh5guhphCy69KkvURLJFJ4T/nIcoKUJo/kCk/v5XlK33aTFpN4bZTgTfJ9vYxKkX
+         R4lIzz5YC98UXaF4FbOuhq4bQT1E3LTPjbWribcaenRi4fDRMZ8lEcjztTtxtbwP+Iro
+         Y8sg==
+X-Gm-Message-State: AOAM531ZMwUHp9RszJMyVFpicV0B0onNdB7PnMh/AeNkPLAeoEEcH9yy
+        7fSOsGK9mEHwFRChGkeA1b/kUEu8+1cf0hBDaPpqNA==
+X-Google-Smtp-Source: ABdhPJx8ZQwst2KNubris3aC1UDWKGesJFlm8qEQTf37aQ0qmaDu6K1V7H7yfOxbRF1YInb4nxFRhFeb4NknxnwERt0=
+X-Received: by 2002:a05:6638:3013:: with SMTP id r19mr4449140jak.36.1618584371813;
+ Fri, 16 Apr 2021 07:46:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210416143725.2769053-21-lee.jones@linaro.org>
+References: <20210415202404.945368-1-mathieu.poirier@linaro.org>
+ <YHk0iDnfujBR3mTB@kroah.com> <YHk+jRT/164eCnWa@kroah.com>
+In-Reply-To: <YHk+jRT/164eCnWa@kroah.com>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Fri, 16 Apr 2021 08:46:01 -0600
+Message-ID: <CANLsYky+tu0a-h1V=1AegXm8UvpfAbSfwYv0TgSQzRj1fZ=1UA@mail.gmail.com>
+Subject: Re: [PATCH 0/1] coresight: Fix for v5.12-rc7
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linaro.org>,
+        "Suzuki K. Poulose" <suzuki.poulose@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
+On Fri, 16 Apr 2021 at 01:36, Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Fri, Apr 16, 2021 at 08:54:00AM +0200, Greg KH wrote:
+> > On Thu, Apr 15, 2021 at 02:24:03PM -0600, Mathieu Poirier wrote:
+> > > Hi Greg,
+> > >
+> > > Please consider this patch as a fix for v5.12-rc7.  Applies cleanly
+> > > to your char-misc-linus branch (e49d033bddf5).
+> >
+> > It's too late for 5.12-final, and really my tree should be closed for
+> > 5.13-rc1 now.  I can sneak this in for the merge window, is that ok?
+>
 
-Thank you for the patch.
+Yes, definitely.
 
-On Fri, Apr 16, 2021 at 03:37:05PM +0100, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/gpu/drm/xlnx/zynqmp_disp.c:101: warning: expecting prototype for enum zynqmp_disp_id. Prototype was for enum zynqmp_disp_layer_id instead
-> 
-> Cc: Hyun Kwon <hyun.kwon@xilinx.com>
-> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Michal Simek <michal.simek@xilinx.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> I've just taken it for my 5.13-rc1 set of patches and added a cc: stable
+> to get it backported to 5.12.1.
+>
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+That will be just fine.
 
-> ---
->  drivers/gpu/drm/xlnx/zynqmp_disp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> index 109d627968ac0..ca1161ec9e16f 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> @@ -91,7 +91,7 @@ struct zynqmp_disp_format {
->  };
->  
->  /**
-> - * enum zynqmp_disp_id - Layer identifier
-> + * enum zynqmp_disp_layer_id - Layer identifier
->   * @ZYNQMP_DISP_LAYER_VID: Video layer
->   * @ZYNQMP_DISP_LAYER_GFX: Graphics layer
->   */
-
--- 
-Regards,
-
-Laurent Pinchart
+> thanks,
+>
+> greg k-h
