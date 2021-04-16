@@ -2,78 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 302FD36288C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 21:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C43362890
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 21:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238465AbhDPTW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 15:22:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235362AbhDPTW4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 15:22:56 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D33C061574;
-        Fri, 16 Apr 2021 12:22:31 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id g38so31290335ybi.12;
-        Fri, 16 Apr 2021 12:22:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=o0dexlCTmbXseq9OucTMrh/yd65+XxEyKGgX3F4Kcro=;
-        b=hxqJDy9ySm5TrpLrNT+1gU+WEqKsjwDiT5nr16MuXAJEcHcI8eswRz5/RXvqcgsjm6
-         Aqjex+khTuf+iBKcnpTzN4wCGFXNjISyvYDw1vpqkKXEBBF03buD3cDb7LZzEXJMBI0w
-         8yFpX6JyfMF8zWNyAOnt/2Btp9SfcEjeojc0DEZOX6REHKlvOva9+OJQ42Debqa5VFJg
-         bf/FOby2fK+ydNk+b7lRUrqxxA0gzbbRi3BLyWEDTKbvJs8cUm5pPhxD7o0JHEUEtPcW
-         jvQSW+nj2hh9A2ru8X77gYFdoQMLKbTm/oh0YjF2//brHV/Myp0ezzp0ysnlwJ4XAAfT
-         JU1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=o0dexlCTmbXseq9OucTMrh/yd65+XxEyKGgX3F4Kcro=;
-        b=JUJ+iDC7IRxVkB5le/mtYUJw5H+oWhHPCyqjEIHbvpkyp3xf40YFgFe5Ansj9uQNAD
-         B2Rl3hJdR29pBI+Mlt4rBsuhhokGcaculij+PKbO7TxRPrlPlF77uE5gZXvIUWM3NNrz
-         hlJIXfa3GRCmvCzKNsE+vDknOVrRnc4r3LyxeLClKkqH7aH7vOa3y5Y4g7Zo6blOrIVU
-         JjqMf7ZJEJZ7xtQz4qkETGQ9pkLwSLtlGWh+KNjAtAg8d3yDYz8e2wfpKw6mOuEp8V5i
-         ygsZjpJdm6T2UydR0tsggGA4EWKZqEnVWTg7VqEkATwzVU7fYy09K4Q89Q52Zc9kBFKK
-         tzKw==
-X-Gm-Message-State: AOAM5308mpDjXfjOXQAFtcSsGYPUfqLelo/EeXMlNT8nGfmW9pG5IX4f
-        25TFR33GXsWVKAMZBB60gP3ofQ6QDIO+Umvx7hM=
-X-Google-Smtp-Source: ABdhPJwF5UnB4TcmPnwFLyJTNJo4qQ4027fOHmmT21t5LNwcYknq5DN6lNtqZZkQPsw2JNJ1wbDO+iiHCPZU1W+W+m4=
-X-Received: by 2002:a25:cfc2:: with SMTP id f185mr1065112ybg.26.1618600951046;
- Fri, 16 Apr 2021 12:22:31 -0700 (PDT)
+        id S240501AbhDPTYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 15:24:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60906 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235362AbhDPTYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 15:24:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B84B6137D;
+        Fri, 16 Apr 2021 19:24:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618601050;
+        bh=qHawK0oSTOLvJhEkLLbelkvEtYDRemD5y/71PvXJsow=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=i+nsE09tHA0GPcdM2/MeTaNM0szdQ0WdGtOryocd2mlqAtBAPS//L0i0bzZXsO8/u
+         fkLV7Gvab0QGNzDId6j792QJPu/gog3Dicsi9l6jZFfqUa3Plj723IeLds1pJpEKyr
+         6OgPJZied02D4CRJM27ck/2DbUH0P6noqZEX7ncjo7RzthjBNAzaObjGEgxy17r7VL
+         +SzfZO2eKYv3O9Q0TMm2hz5GTNKJ/yfV2ONFoik610B/49nvK59V7cy8m7CfnUYsqV
+         5lioX2gDeS8C6LthsG8R30YIzz9snIrCPJCSf5aLBXNxUvo3ks8yjt+OS6lELHHJwv
+         0hfkytCmujThA==
+Date:   Fri, 16 Apr 2021 14:24:09 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jianjun Wang <jianjun.wang@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, youlin.pei@mediatek.com,
+        chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com,
+        sin_jieyang@mediatek.com, drinkcat@chromium.org,
+        Rex-BC.Chen@mediatek.com, anson.chuang@mediatek.com,
+        Krzysztof Wilczyski <kw@linux.com>
+Subject: Re: [v9,2/7] PCI: Export pci_pio_to_address() for module use
+Message-ID: <20210416192409.GA2744791@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <f6218ac526a04fa4d4406f935bcc4eb4a7df65c4.1617917438.git.msuchanek@suse.de>
- <CAK7LNAR-zdHLpp7eQ_PUG6PQMKUKh2m0b80NGSxnxuXhjyT=3g@mail.gmail.com>
- <20210411101829.GR6564@kitsune.suse.cz> <CAK7LNASycuqb2wyizXgVs4aN33LOrxCBikLbSXs+anWJ0-SW_Q@mail.gmail.com>
- <20210411200335.GS6564@kitsune.suse.cz>
-In-Reply-To: <20210411200335.GS6564@kitsune.suse.cz>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 16 Apr 2021 21:22:20 +0200
-Message-ID: <CANiq72n41amNTnMhOpF7SJY_Xg7YVbZngOx3VzJGW8_fxv9Mtg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kbuild: dummy-tools: Add elfedit.
-To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210413095257.GA21802@lpieralisi>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 11:27 PM Michal Such=C3=A1nek <msuchanek@suse.de> w=
-rote:
->
-> Yes, I do have the rust support.
+On Tue, Apr 13, 2021 at 10:53:05AM +0100, Lorenzo Pieralisi wrote:
+> On Wed, Mar 24, 2021 at 10:09:42AM +0100, Pali Rohár wrote:
+> > On Wednesday 24 March 2021 11:05:05 Jianjun Wang wrote:
+> > > This interface will be used by PCI host drivers for PIO translation,
+> > > export it to support compiling those drivers as kernel modules.
+> > > 
+> > > Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
+> > > ---
+> > >  drivers/pci/pci.c | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > > 
+> > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > > index 16a17215f633..12bba221c9f2 100644
+> > > --- a/drivers/pci/pci.c
+> > > +++ b/drivers/pci/pci.c
+> > > @@ -4052,6 +4052,7 @@ phys_addr_t pci_pio_to_address(unsigned long pio)
+> > >  
+> > >  	return address;
+> > >  }
+> > > +EXPORT_SYMBOL(pci_pio_to_address);
+> > 
+> > Hello! I'm not sure if EXPORT_SYMBOL is correct because file has GPL-2.0
+> > header. Should not be in this case used only EXPORT_SYMBOL_GPL? Maybe
+> > other people would know what is correct?
+> 
+> I think this should be EXPORT_SYMBOL_GPL(), I can make this change
+> but this requires Bjorn's ACK to go upstream (Bjorn, it is my fault,
+> it was assigned to me on patchwork, now updated, please have a look).
 
-I applied your patch in rust-next and it is in the latest linux-next,
-let me know if that helped.
+Yep, looks good to me, and I agree it should be EXPORT_SYMBOL_GPL().
 
-Masahiro, if you want to apply it on your side, just let me know!
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
-Cheers,
-Miguel
+> > >  
+> > >  unsigned long __weak pci_address_to_pio(phys_addr_t address)
+> > >  {
+> > > -- 
+> > > 2.25.1
+> > > 
