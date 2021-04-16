@@ -2,107 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426E6362A73
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 23:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB801362A77
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 23:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344501AbhDPVjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 17:39:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235540AbhDPVjh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 17:39:37 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A51C061574;
-        Fri, 16 Apr 2021 14:39:12 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id y2so29590937ybq.13;
-        Fri, 16 Apr 2021 14:39:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FhRl8wyt4kyWOXB4hj/P/sBHkU0fAxeEEfW1FWg8FGY=;
-        b=XUGR4FumO2z4d0PIcvh90tV8PwYc+5gWKgmSCmH3w1L7wBW7hlSBrBhtWIegDIdFi+
-         tYyIcTf4dOiNcHnz8/O3l3/r1VcosYhR9v74MM11yCYBg66MjAcX2suBNjvS8LNFe2jh
-         vvwY0I623sJv0wFH71vOF7qFnp5Z5DUKuh4hBULkM5sqAc87aYjDoLh2+E3OljTUcW61
-         wuxXmf3rVGfEpJhxnWcTDvj0Y1EZUyDiJrK2FmMNjsbufrCfeqeS4F0EwtNZljFSMP68
-         m1OIu+L6I6f7BeHfWENgUkMIcUFezR6bkG7n2ByWKCekEaWqD/u7BK+OaVYISkTez5Rb
-         K84g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FhRl8wyt4kyWOXB4hj/P/sBHkU0fAxeEEfW1FWg8FGY=;
-        b=aaHSRCsBV0A99BYkmKwWfSlA6hZISHwMN6xRHCnyw5O62RgOHKk448Xytpo0WpAYkF
-         f41bSJqLjZmwZgkSewIZIABLeJyBgn8TIhyNfSsfEJLsF21aQo81qZbiBleCmnDfybwK
-         sTBSNzfTyHuKV9qS9PPtW1PBjWsugf1Qu5mmeuhnyVOTllZrWDhLB8nrozw3WLOMCGRO
-         3rysMzxZV5DXdw1ClE7e0F5vHlNldKYV5r8Lgjd2FGhlM7vO3KRRh92P3W2Pqbx9K2tw
-         FgMSptXkb1Ln1GHj5FPQNGJI6NPW2O8+qR7GRvvdCjeTnrprufkVnGRWIxAR7psLB18U
-         4Vag==
-X-Gm-Message-State: AOAM532BozrXS+rJeYlfxWe4nHp01YbkLhCDMdupc/Tn/quUBfZoJc8r
-        wRztkQ2S/5QbF32p0hXL13XvhGH188vf5UqJKdM=
-X-Google-Smtp-Source: ABdhPJy6fjJ1LaIk+0NY41aYV58CnFUA6clshxkRCpoJPC9v/sp1QPt2XSbN3aUPzb7vMWH10nJweNMaG5p6cNBhrPI=
-X-Received: by 2002:a25:7909:: with SMTP id u9mr1622529ybc.22.1618609151601;
- Fri, 16 Apr 2021 14:39:11 -0700 (PDT)
+        id S243556AbhDPVkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 17:40:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36512 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235540AbhDPVkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 17:40:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15D47610CD;
+        Fri, 16 Apr 2021 21:40:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618609228;
+        bh=f9EMaN2F4fCZmxXmeuotxslIHmkZ/94dl7T4HpTXfNI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=u+fyM+ZwLXAlJk8yv0LciwwSykMvw0Rc9UjpyPdZA7Lk93OU7QwRUNHRqXuOSnROY
+         g83g7pLGFUu2SA7KOIAfcduuez9vNFxXG81RRqY1OgYz/Flq/WrMmMs4zQASzUQrjf
+         HUg7PfOekKDh/CFmTqsnVAiu8qXONIecZ0KVtpn8SnDb3ELNDExByYlYV6yDKW64RP
+         0sLEm2lp/RMZIh+MswcJ6ewa7TV4NQz++xnc9a0egpCdsWk9B3Lhx1V1P8eoa1JLRq
+         +APmYuo902xg5JSmvdqlvMDLhs6g7OzcXbUTQL71G78imxv2fECBLXjFAWDXXO+xtL
+         wtJi59SKr9skw==
+Received: by mail-oo1-f46.google.com with SMTP id t140-20020a4a3e920000b02901e5c1add773so5199882oot.1;
+        Fri, 16 Apr 2021 14:40:28 -0700 (PDT)
+X-Gm-Message-State: AOAM5332FexiILrjDk1SeWTnMo8Vez9fJv0DXcxfIG+yXA1rIAlLNihh
+        TV93miBjrfb0H7oDr8birho7lgFqd/hUTple/rU=
+X-Google-Smtp-Source: ABdhPJxdMfsuLGWVNA5ayxm2yN4i+p/QjzTTX7AmIEAoxUU4u9K4CkFF2lNyvgjAd1ckXELnyhHc/v9XkbxeNcsWg0c=
+X-Received: by 2002:a4a:b997:: with SMTP id e23mr4811719oop.13.1618609227327;
+ Fri, 16 Apr 2021 14:40:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-5-ojeda@kernel.org>
- <YHmTWEAS/QjX++w4@hirez.programming.kicks-ass.net> <CAHk-=wh_zb=K1B-N8mgHmSZDqTLgOm711NRXbTX_OwFAzDYg0Q@mail.gmail.com>
- <CANiq72nx7ngazsH7sZgc=HeU0cNj45F9+-rwQb7AkdYsRCmRbQ@mail.gmail.com>
- <YHnS92ZKZ4tRWTiA@zeniv-ca.linux.org.uk> <CANiq72=RLf0FiuLVL-ZeLFp9P2LxTymbzhXoyQGG=tvUY_J-Sg@mail.gmail.com>
- <20210416202215.GA11236@1wt.eu> <efe80452-fac9-247a-1e2b-a73553f605e8@redhat.com>
- <20210416205812.GA11655@1wt.eu>
-In-Reply-To: <20210416205812.GA11655@1wt.eu>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 16 Apr 2021 23:39:00 +0200
-Message-ID: <CANiq72=5pMzSS5V7h-QcQvYgyZUwdE=T705KtBWrNYZPjMYK3Q@mail.gmail.com>
-Subject: Re: [PATCH 04/13] Kbuild: Rust support
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Connor Kuehl <ckuehl@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
+References: <20210416181421.2374588-1-jiancai@google.com> <20210416203522.2397801-1-jiancai@google.com>
+In-Reply-To: <20210416203522.2397801-1-jiancai@google.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 16 Apr 2021 23:40:15 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEBR7MMiXyOEHO+si1Fp7ZfzqFD-ks-tS=_3ncw_RmKVg@mail.gmail.com>
+Message-ID: <CAMj1kXEBR7MMiXyOEHO+si1Fp7ZfzqFD-ks-tS=_3ncw_RmKVg@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: vdso: remove commas between macro name and arguments
+To:     Jian Cai <jiancai@google.com>
+Cc:     "# 3.4.x" <stable@vger.kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
+        Sasha Levin <sashal@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Manoj Gupta <manojgupta@google.com>,
+        Luis Lozano <llozano@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 10:58 PM Willy Tarreau <w@1wt.eu> wrote:
+On Fri, 16 Apr 2021 at 22:35, Jian Cai <jiancai@google.com> wrote:
 >
-> No, two:
->   - ok in %rax (seems like it's "!ok" technically speaking since it
->     returns 1 on !ok and 0 on ok)
->   - foo_or_err in %rdx
+> LLVM's integrated assembler does not support using commas separating
+> the name and arguments in .macro. However, only spaces are used in the
+> manual page. This replaces commas between macro names and the subsequent
+> arguments with space in calls to clock_gettime_return to make it
+> compatible with IAS.
+>
+> Link:
+> https://sourceware.org/binutils/docs/as/Macro.html#Macro
+> https://github.com/ClangBuiltLinux/linux/issues/1349
+>
+> Suggested-by: Ard Biesheuvel <ardb@kernel.org>
 
-Yes, but that is the implementation -- conceptually you only have one
-or the other, and Rust won't allow you to use the wrong one.
+Please remove this tag - the only thing I suggested was to drop part
+of the original patch.
 
-> However then I'm bothered because Miguel's example showed that regardless
-> of OK, EINVAL was always returned in foo_or_err, so maybe it's just
-> because his example was not well chosen but it wasn't very visible from
-> the source:
 
-That is the optimizer being fancy since the error can be put
-unconditionally in `rdx`.
-
-If you compile:
-
-    pub fn it_is_ok() -> KernelResult<Bar> {
-        Ok(Bar)
-    }
-
-you will see it just clears `rax`.
-
-Cheers,
-Miguel
+> Signed-off-by: Jian Cai <jiancai@google.com>
+> ---
+>
+> Changes v1 -> v2:
+>   Keep the comma in the macro definition to be consistent with other
+>   definitions.
+>
+>  arch/arm64/kernel/vdso/gettimeofday.S | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/arm64/kernel/vdso/gettimeofday.S b/arch/arm64/kernel/vdso/gettimeofday.S
+> index 856fee6d3512..b6faf8b5d1fe 100644
+> --- a/arch/arm64/kernel/vdso/gettimeofday.S
+> +++ b/arch/arm64/kernel/vdso/gettimeofday.S
+> @@ -227,7 +227,7 @@ realtime:
+>         seqcnt_check fail=realtime
+>         get_ts_realtime res_sec=x10, res_nsec=x11, \
+>                 clock_nsec=x15, xtime_sec=x13, xtime_nsec=x14, nsec_to_sec=x9
+> -       clock_gettime_return, shift=1
+> +       clock_gettime_return shift=1
+>
+>         ALIGN
+>  monotonic:
+> @@ -250,7 +250,7 @@ monotonic:
+>                 clock_nsec=x15, xtime_sec=x13, xtime_nsec=x14, nsec_to_sec=x9
+>
+>         add_ts sec=x10, nsec=x11, ts_sec=x3, ts_nsec=x4, nsec_to_sec=x9
+> -       clock_gettime_return, shift=1
+> +       clock_gettime_return shift=1
+>
+>         ALIGN
+>  monotonic_raw:
+> @@ -271,7 +271,7 @@ monotonic_raw:
+>                 clock_nsec=x15, nsec_to_sec=x9
+>
+>         add_ts sec=x10, nsec=x11, ts_sec=x13, ts_nsec=x14, nsec_to_sec=x9
+> -       clock_gettime_return, shift=1
+> +       clock_gettime_return shift=1
+>
+>         ALIGN
+>  realtime_coarse:
+> --
+> 2.31.1.368.gbe11c130af-goog
+>
