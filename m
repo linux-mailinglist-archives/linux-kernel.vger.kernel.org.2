@@ -2,97 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0483619F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 08:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9EF3619FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 08:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239250AbhDPGjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 02:39:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38818 "EHLO mx2.suse.de"
+        id S235106AbhDPGq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 02:46:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239192AbhDPGjH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 02:39:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618555121; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tNhVt/xCfNdMMCLz228vt0HGCkm8dnEvK2GBIRn4xww=;
-        b=A3XQDSlnvdAvpRgcg1dXE3OCdh91lH7XApSAer4PUiCVhhZKjTFGKsC6QBSDpuen/JTu3B
-        JRmk0OKTe0m8kUXM6S1U2eyflLQTW3PLJCQbY+/2pabax/vRN3x70ZVWZnHQogTFu/S+EQ
-        EPkv2uvqoPeVE8NSd6Y+4AJBMjiwg/A=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EE4E0AE86;
-        Fri, 16 Apr 2021 06:38:40 +0000 (UTC)
-Date:   Fri, 16 Apr 2021 08:38:40 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Shakeel Butt <shakeelb@google.com>, Yang Shi <shy828301@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v1 00/11] Manage the top tier memory in a tiered
- memory
-Message-ID: <YHkw8Ou2VAgHYTjl@dhcp22.suse.cz>
-References: <cover.1617642417.git.tim.c.chen@linux.intel.com>
- <CALvZod7StYJCPnWRNLnYQV8S5CBLtE0w4r2rH-wZzNs9jGJSRg@mail.gmail.com>
- <CAHbLzkrPD6s9vRy89cgQ36e+1cs6JbLqV84se7nnvP9MByizXA@mail.gmail.com>
- <CALvZod69-GcS2W57hAUvjbWBCD6B2dTeVsFbtpQuZOM2DphwCQ@mail.gmail.com>
- <YHABLBYU0UgzwOZi@dhcp22.suse.cz>
- <4a864946-a316-3d9c-8780-64c6281276d1@linux.intel.com>
+        id S234935AbhDPGq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 02:46:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B27C61153;
+        Fri, 16 Apr 2021 06:46:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618555562;
+        bh=pgBgltwpp2vXq8qcrbAjpGXaonOI75OVZN1vx3tCnoE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H5fdeINjaWpH1F57aSY2BSqaP0khWNnjBLYtKLylVSjah7RGOmLwniwBqe/Gn9phx
+         +fam+tFBZWw/O8IaXYOV+awQeUT9iM/gTkpMSTOkJmrKgc+WAARmvdu4FLiCYan0SR
+         NpDOHABcYT0ITYUHI9ASykajivmC9zciUwqGVesk=
+Date:   Fri, 16 Apr 2021 08:46:00 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     linux-kernel@vger.kernel.org,
+        Dimitris Lampridis <dlampridis@logikonlabs.com>,
+        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v3] serial: omap: fix rs485 half-duplex filtering
+Message-ID: <YHkyqGExO6Ri8UkJ@kroah.com>
+References: <20210415210252.25399-1-dariobin@libero.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4a864946-a316-3d9c-8780-64c6281276d1@linux.intel.com>
+In-Reply-To: <20210415210252.25399-1-dariobin@libero.it>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 15-04-21 15:31:46, Tim Chen wrote:
+On Thu, Apr 15, 2021 at 11:02:52PM +0200, Dario Binacchi wrote:
+> Data received during half-duplex transmission must be filtered.
+> If the target device responds quickly, emptying the FIFO at the end of
+> the transmission can erase not only the echo characters but also part of
+> the response message.
+> By keeping the receive interrupt enabled even during transmission, it
+> allows you to filter each echo character and only in a number equal to
+> those transmitted.
+> The issue was generated by a target device that started responding
+> 240us later having received a request in communication at 115200bps.
+> Sometimes, some messages received by the target were missing some of the
+> first bytes.
+> 
+> Fixes: 3a13884abea0 ("tty/serial: omap: empty the RX FIFO at the end of half-duplex TX")
+> Signed-off-by: Dario Binacchi <dariobin@libero.it>
 > 
 > 
-> On 4/9/21 12:24 AM, Michal Hocko wrote:
-> > On Thu 08-04-21 13:29:08, Shakeel Butt wrote:
-> >> On Thu, Apr 8, 2021 at 11:01 AM Yang Shi <shy828301@gmail.com> wrote:
-> > [...]
-> >>> The low priority jobs should be able to be restricted by cpuset, for
-> >>> example, just keep them on second tier memory nodes. Then all the
-> >>> above problems are gone.
-> > 
-> > Yes, if the aim is to isolate some users from certain numa node then
-> > cpuset is a good fit but as Shakeel says this is very likely not what
-> > this work is aiming for.
-> > 
-> >> Yes that's an extreme way to overcome the issue but we can do less
-> >> extreme by just (hard) limiting the top tier usage of low priority
-> >> jobs.
-> > 
-> > Per numa node high/hard limit would help with a more fine grained control.
-> > The configuration would be tricky though. All low priority memcgs would
-> > have to be carefully configured to leave enough for your important
-> > processes. That includes also memory which is not accounted to any
-> > memcg. 
-> > The behavior of those limits would be quite tricky for OOM situations
-> > as well due to a lack of NUMA aware oom killer.
-> > 
+> ---
 > 
-> Another downside of putting limits on individual NUMA
-> node is it would limit flexibility.
+> Changes in v3:
+> - Add 'Fixes' tag
+> 
+> Changes in v2:
+> - Fix compiling error
+> 
+>  drivers/tty/serial/omap-serial.c | 39 ++++++++++++++++++++------------
+>  1 file changed, 24 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/omap-serial.c b/drivers/tty/serial/omap-serial.c
+> index 76b94d0ff586..c0df22b7ea5e 100644
+> --- a/drivers/tty/serial/omap-serial.c
+> +++ b/drivers/tty/serial/omap-serial.c
+> @@ -159,6 +159,8 @@ struct uart_omap_port {
+>  	u32			calc_latency;
+>  	struct work_struct	qos_work;
+>  	bool			is_suspending;
+> +
+> +	atomic_t		rs485_tx_filter_count;
 
-Let me just clarify one thing. I haven't been proposing per NUMA limits.
-As I've said above it would be quite tricky to use and the behavior
-would be tricky as well. All I am saying is that we do not want to have
-an interface that is tightly bound to any specific HW setup (fast RAM as
-a top tier and PMEM as a fallback) that you have proposed here. We want
-to have a generic NUMA based abstraction. How that abstraction is going
-to look like is an open question and it really depends on usecase that
-we expect to see.
+Why are you using an atomic variable?  What do you think this is
+"protected from"?
 
--- 
-Michal Hocko
-SUSE Labs
+>  };
+>  
+>  #define to_uart_omap_port(p) ((container_of((p), struct uart_omap_port, port)))
+> @@ -328,19 +330,6 @@ static void serial_omap_stop_tx(struct uart_port *port)
+>  		serial_out(up, UART_IER, up->ier);
+>  	}
+>  
+> -	if ((port->rs485.flags & SER_RS485_ENABLED) &&
+> -	    !(port->rs485.flags & SER_RS485_RX_DURING_TX)) {
+> -		/*
+> -		 * Empty the RX FIFO, we are not interested in anything
+> -		 * received during the half-duplex transmission.
+> -		 */
+> -		serial_out(up, UART_FCR, up->fcr | UART_FCR_CLEAR_RCVR);
+> -		/* Re-enable RX interrupts */
+> -		up->ier |= UART_IER_RLSI | UART_IER_RDI;
+> -		up->port.read_status_mask |= UART_LSR_DR;
+> -		serial_out(up, UART_IER, up->ier);
+> -	}
+> -
+>  	pm_runtime_mark_last_busy(up->dev);
+>  	pm_runtime_put_autosuspend(up->dev);
+>  }
+> @@ -366,6 +355,10 @@ static void transmit_chars(struct uart_omap_port *up, unsigned int lsr)
+>  		serial_out(up, UART_TX, up->port.x_char);
+>  		up->port.icount.tx++;
+>  		up->port.x_char = 0;
+> +		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
+> +		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX))
+> +			atomic_inc(&up->rs485_tx_filter_count);
+> +
+>  		return;
+>  	}
+>  	if (uart_circ_empty(xmit) || uart_tx_stopped(&up->port)) {
+> @@ -377,6 +370,10 @@ static void transmit_chars(struct uart_omap_port *up, unsigned int lsr)
+>  		serial_out(up, UART_TX, xmit->buf[xmit->tail]);
+>  		xmit->tail = (xmit->tail + 1) & (UART_XMIT_SIZE - 1);
+>  		up->port.icount.tx++;
+> +		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
+> +		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX))
+> +			atomic_inc(&up->rs485_tx_filter_count);
+> +
+>  		if (uart_circ_empty(xmit))
+>  			break;
+>  	} while (--count > 0);
+> @@ -420,7 +417,7 @@ static void serial_omap_start_tx(struct uart_port *port)
+>  
+>  	if ((port->rs485.flags & SER_RS485_ENABLED) &&
+>  	    !(port->rs485.flags & SER_RS485_RX_DURING_TX))
+> -		serial_omap_stop_rx(port);
+> +		atomic_set(&up->rs485_tx_filter_count, 0);
+>  
+>  	serial_omap_enable_ier_thri(up);
+>  	pm_runtime_mark_last_busy(up->dev);
+> @@ -491,8 +488,13 @@ static void serial_omap_rlsi(struct uart_omap_port *up, unsigned int lsr)
+>  	 * Read one data character out to avoid stalling the receiver according
+>  	 * to the table 23-246 of the omap4 TRM.
+>  	 */
+> -	if (likely(lsr & UART_LSR_DR))
+> +	if (likely(lsr & UART_LSR_DR)) {
+>  		serial_in(up, UART_RX);
+> +		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
+> +		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX) &&
+> +		    atomic_read(&up->rs485_tx_filter_count))
+> +			atomic_dec(&up->rs485_tx_filter_count);
+
+You can not read and then decrement right afterward and expect this to
+actually do what you think it is doing.
+
+Just use a real lock if you need to protect access for this value, as it
+is, this patch is totally wrong.
+
+thanks,
+
+greg k-h
