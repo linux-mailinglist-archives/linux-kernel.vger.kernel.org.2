@@ -2,143 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4233621A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA8C3621AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235931AbhDPOFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235875AbhDPOFs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:05:48 -0400
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (mail-co1nam04on0621.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe4d::621])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69E6C061574;
-        Fri, 16 Apr 2021 07:05:22 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZUl9vimFoj8575Q4ZVmwgQhvXFlZC0g/bdxvq3eVIoy934cap7XD/OQDWyeAy0ein2PxA9N/22ql9qT/LlfYc0r63St0zuza5BQjCdyeBfeZsDJeXZRmdlGm6KdH8hd3greTMufEkl3TOzWtpFLeZqSjy4cQ9zatea+IEk0wTbUwDOBLhlQQKlQC834bU+bZ8wK/R6jfi/43XjWwaFjNNymzLNgrR39wD+AyqJZxMMQ7M8owbJXoXaiCe0qhokNazupdLtHH6D77igJbBrEgHr2lEHLeWQLvWxx000LkRiq5lLuciCcMGIjxZY2Dxj8TZPlVwmvYIH1qs4YiBMMMbg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Jz+6fDX/tpVCOhisCb3B49zCwzIk1ZgUcrcNuQeCHWc=;
- b=RJo259pAJ2j9IC36Oz+T18AlTYND9jBpELsoeY6kD7FRE4CYL+an3eouIj/EIbkoZw72U2p2q0FubuHWz//POW2GmzJZLKqfBzUJImm+qOsymX6DxOC4D+JoIkwNrMZcLx94enB2+8UwL1zn3tIZCERxp+thbc+nZ2zmF2EANVlEoo35pqE/GhvUenAFiKruKFiT5LvWi9PjxKtfDa6QM7Kk6ePIz2cZKdPwNM0q3gNgbSyq4Ely4z5ZDRP053MZWtV57NZ+yTMPbjBE4TlOKQOoFVaR58l1zSxPMFYby1KexzifznYAuR15Io+AQJoS8qYhMLudCe6wU0EzVjHPWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Jz+6fDX/tpVCOhisCb3B49zCwzIk1ZgUcrcNuQeCHWc=;
- b=Vxtk/gtUoabjgAWOLHi5lTuJYeyRkYVo7+OvzcSgIz018ZOzsA83rfwMZQ8oNpq7UGc+QcW8HVHdz9JOie2dwjPks92/Bf2NaXOt0MnTOoq9R2FI0vq68FseOVs5kYk10XBroZvwxe3zA0yS9nF89d0oxgDYSiEKLGQbBBBocB0=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
- by CY4PR11MB1943.namprd11.prod.outlook.com (2603:10b6:903:123::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Fri, 16 Apr
- 2021 14:05:21 +0000
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::f45f:e820:49f5:3725]) by CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::f45f:e820:49f5:3725%6]) with mapi id 15.20.3999.037; Fri, 16 Apr 2021
- 14:05:21 +0000
-Subject: Re: [PATCH 1/5] spi: spi-zynqmp-gqspi: fix clk_enable/disable
- imbalance issue
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Michal Simek <michal.simek@xilinx.com>,
-        Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20210416004652.2975446-1-quanyang.wang@windriver.com>
- <20210416004652.2975446-2-quanyang.wang@windriver.com>
- <20210416125558.GA5560@sirena.org.uk>
-From:   "quanyang.wang" <quanyang.wang@windriver.com>
-Message-ID: <03f4152a-e66e-6b4a-5b4a-5f79f9ce2302@windriver.com>
-Date:   Fri, 16 Apr 2021 22:04:30 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-In-Reply-To: <20210416125558.GA5560@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK2P15301CA0012.APCP153.PROD.OUTLOOK.COM
- (2603:1096:202:1::22) To CY4PR11MB0071.namprd11.prod.outlook.com
- (2603:10b6:910:7a::30)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.199] (60.247.85.82) by HK2P15301CA0012.APCP153.PROD.OUTLOOK.COM (2603:1096:202:1::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.2 via Frontend Transport; Fri, 16 Apr 2021 14:05:19 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b2cd8ade-cdfe-4177-e0fc-08d900e0ac1e
-X-MS-TrafficTypeDiagnostic: CY4PR11MB1943:
-X-Microsoft-Antispam-PRVS: <CY4PR11MB19435B74106B89AB0A7D674DF04C9@CY4PR11MB1943.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:773;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JDIZtNb0fgNeRg4C2yyEaM+y23k27FLHvHoNx/S/ZXW6QQwqE2/wSTzPDQ2Efp3QXEdO+uGTzVhIbi7iGQxqOjbCi8+dTPhS6l71SsjefLmesAXCy8w4caRNx23wyiBB+ORYoGTz9LXn1Zsw2S42bzc0t4pMzLbV0DlXnXK2mzDDPQN1WKJJOaOGOsMGjqI0LZ0CFkv1flz4aTzJtvdXymZ2jCW0JOWhjhuHT0EFnmWd9AHpBpng35yNpkqOznh28JZWRxLF0lliTlsl1FdBBeoenaCuMKUl1I43TwXPqA1cW8UDYxDy71ZTLKEQ6gB66JykWoeGIihor2BGcIlYiXgef4LG4Ej1PsbcS/hQThl1de7HQeU5IjjgunxkOyfxT+PGSBDWe53jxo+eleCW+CWzM4+gwRQVLeeF4IIYzZDTIbq3xFEu3a70mGqYxB6az1PQRYDXhj+OHKqHarrLy51T6DzV35oCNc07SubCIxPJSotHtvsdCz2Ld/4EjGzceDjytPqsWrVm9cs8mSA6TutXrzvAXhe57i6bTckspHUOJTu9g5dwoPawe4ejVzVRwJmB4RfwPaSRss8t8EX4LkUfxOS8B6G2bCa2tsFsDrOpP+Z3jMpWmTuFhdWZhMrEaxJVPDnPJ2P5JJ5me7bMG2CkcON7h/21qMK+JxqgD+bvybnJ0EyyqHnmb1e3OIZJzkNM94t+F/Nz7Zt2kMobvIGWPzdWfyRbkn6M4adt/wg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2906002)(6666004)(6916009)(83380400001)(5660300002)(16576012)(956004)(52116002)(38100700002)(6706004)(66946007)(16526019)(54906003)(8676002)(2616005)(66476007)(86362001)(31696002)(4326008)(53546011)(66556008)(8936002)(26005)(498600001)(36756003)(4744005)(31686004)(186003)(38350700002)(6486002)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?SGqGDOeMvlLCSa5I3KtbArt6sP9bkHXG9e9t6mVQ6S5/j5Iom+U1oM6i?=
- =?Windows-1252?Q?JVe6EswOeOEQFrqViGNseAdL3P5iHs1ZdOn4mqUCFYUUq2cnGOBXeOVd?=
- =?Windows-1252?Q?3CVoDaj1J6nt/vgRDl0mvdk33Cu0IIDkuZyl1QNK+b2C6ArU5iUP6HS4?=
- =?Windows-1252?Q?4krXADGQMp3QxAcxGIsMr5LnEuaWEREu1sUut0fPOlHLXV9yLu2tXqoR?=
- =?Windows-1252?Q?uqwaG1Tp1DN9aL9a+X0U2+M6vsfOyahKzL5kSeM7uOD0J98E+XtVcWoM?=
- =?Windows-1252?Q?o0/BXe1ZYCQz1eBL52YUzDQlmOUV8KIPI9wZ1g9MD0b+Za51Ki78qSZJ?=
- =?Windows-1252?Q?h1cTjBUmfBT8TQ2YuHo0GyZFkZIjNEpM0gNU62M8mIyS90DYldfO2/hs?=
- =?Windows-1252?Q?gcJcw9U4NaXMfgtKwM8rBD7J3hUzFZ2BETonaUv9ngy4W+RRsV13b6px?=
- =?Windows-1252?Q?6J7b9Zsxo1QSSR2h2Xq+eRUz/HbHNjYyFui5g6e0yAh81u4e5HMGTAye?=
- =?Windows-1252?Q?QFewE7zsl1Bch6uIv2vErZq5f2RyPAAWqEglhYslcAHs+hA+bKMQ+Hm5?=
- =?Windows-1252?Q?ElYX1JKRO4IGYDGjJMhBTRRO1HBRKbodHd4TrmhiIgAgAoLjxaLKm3ND?=
- =?Windows-1252?Q?kGGHA7xVHyrmZZeF4cLJEG384eoD63jkXBSH3sJzSwEPvc94rsl5OE8v?=
- =?Windows-1252?Q?kLR95QqZELjdtvcz2fUwzya/FW84qqL4p/ePKpT3zayppR0i8l+SZ434?=
- =?Windows-1252?Q?t4zouIsVWV70wykG0m8vZKE8v2r3oKwtTMggdAmqG/OV/DyrduGmn4CI?=
- =?Windows-1252?Q?MGgP96cTmaRZeOJJepgeRtC6Zo8aJA12yg/OfkEhJmA54SR51wk4OxmJ?=
- =?Windows-1252?Q?pjoDNyiMaIwB6vhqFFXIk8NPGyNY5nrfJ9PZ3oEQQCpq5LQbV6X2czsn?=
- =?Windows-1252?Q?isXJqAIFDr84sHHSdfEHAWBn9kMj3tCWA3J7mPUYyFzWwFI5JUcYEI8b?=
- =?Windows-1252?Q?Xm73IKwvg87V6g8teHIqteQKbsDFGeo/GNy45SpA5HtJzfhUJ8cHSxhZ?=
- =?Windows-1252?Q?q77rap7ABfLUjIYkKbWMZG0jADSCp09MmA4NHLFEn3EcPPJCIC2a5wmi?=
- =?Windows-1252?Q?VaTyHwU6LVLcUGrAFBf12MPiSxZBBoJntlZDcYLslGBcl71SO0fjVrdf?=
- =?Windows-1252?Q?6eQJT55TNT5PbV7UTLz4U1CRhm30Wz/fRag5wm7oGvp44o/6IUHQsHin?=
- =?Windows-1252?Q?1XD01MONU8oKt1+3CUTK/T/wOpXwJ2EK2K6/Yff2ve/08bQC4N62wcjf?=
- =?Windows-1252?Q?/JGvUG1lNUICAM/hFNvKKExsgm/Vnst/VZ5EW8/lUrUBypS9Wgs40yfr?=
- =?Windows-1252?Q?GMbc6ly9ptqfi+E+i7k28WWDNRltWmVYydACQ8WtQUc1e5/JDxILMgaU?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b2cd8ade-cdfe-4177-e0fc-08d900e0ac1e
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2021 14:05:21.2873
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: t92qfQv2NldCEgKtnWZMngRMozrxt/R2qwMNelqsfi248zaX2+8ASDmBI3qs6g7kefMYKFocNt1O+F4GOk9i4FqPdNqvQYIIM6MyJUd2Eu0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1943
+        id S236011AbhDPOGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:06:35 -0400
+Received: from mga09.intel.com ([134.134.136.24]:61022 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235875AbhDPOGe (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 10:06:34 -0400
+IronPort-SDR: 7tec4m37zhR0TNaZQB3P/ipOkesbNzCip9Bj+x9XQDgAWmzl5HGc/T3PWtXGhgWWPad+LdJHVb
+ mFhAa9LQvsNQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9956"; a="195156020"
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="195156020"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 07:06:09 -0700
+IronPort-SDR: zMBDr2Cjqm6WLAKpdBh3psOUfsRNhOT1PR2rK1rbiqnBqo5qdmpBNG9HB/sJiYXYXkyuLZ7scR
+ Nux1F/qef1IA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="612766586"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by fmsmga006.fm.intel.com with ESMTP; 16 Apr 2021 07:06:07 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH v4 00/25] perf tool: AlderLake hybrid support series 1
+Date:   Fri, 16 Apr 2021 22:04:52 +0800
+Message-Id: <20210416140517.18206-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+AlderLake uses a hybrid architecture utilizing Golden Cove cores
+(core cpu) and Gracemont cores (atom cpu). Each cpu has dedicated
+event list. Some events are available on core cpu, some events
+are available on atom cpu and some events can be available on both.
 
-On 4/16/21 8:55 PM, Mark Brown wrote:
-> On Fri, Apr 16, 2021 at 08:46:48AM +0800, quanyang.wang@windriver.com wrote:
->
->> Since pm_runtime works now, clks can be enabled/disabled by calling
->> zynqmp_runtime_suspend/resume. So we don't need to enable these clks
->> explicitly in zynqmp_qspi_setup_op. Remove them to fix this issue.
->> Fixes: 1c26372e5aa9 ("spi: spi-zynqmp-gqspi: Update driver to use spi-mem framework")
-> Are you *sure* this fixes is accurate?  The patch (and several of the
-> others that flag the same commit) doesn't apply against for-5.12, though
-> at this point there's not really enough time to send another pull request
-> so it doesn't super matter though someone will probably need to help out
-> with stable backports.
+Kernel exports new pmus "cpu_core" and "cpu_atom" through sysfs:
+/sys/devices/cpu_core
+/sys/devices/cpu_atom
 
-I am sorry. These patches should NOT be with "Fixes" tag since they base 
-on the patches
+cat /sys/devices/cpu_core/cpus
+0-15
 
-which are not with "Fixes". May I send a V2 patch series which remove 
-these "Fixes" tags?
+cat /sys/devices/cpu_atom/cpus
+16-23
 
-Thanks,
+In this example, core cpus are 0-15 and atom cpus are 16-23.
 
-Quanyang
+To enable a core only event or atom only event:
+
+        cpu_core/<event name>/
+or
+        cpu_atom/<event name>/
+
+Count the 'cycles' event on core cpus.
+
+  # perf stat -e cpu_core/cycles/ -a -- sleep 1
+
+   Performance counter stats for 'system wide':
+
+      12,853,951,349      cpu_core/cycles/
+
+         1.002581249 seconds time elapsed
+
+If one event is available on both atom cpu and core cpu, two events
+are created automatically.
+
+  # perf stat -e cycles -a -- sleep 1
+
+   Performance counter stats for 'system wide':
+
+      12,856,467,438      cpu_core/cycles/
+       6,404,634,785      cpu_atom/cycles/
+
+         1.002453013 seconds time elapsed
+
+Group is supported if the events are from same pmu, otherwise a warning
+is displayed and disable grouping automatically.
+
+  # perf stat -e '{cpu_core/cycles/,cpu_core/instructions/}' -a -- sleep 1
+
+   Performance counter stats for 'system wide':
+
+      12,863,866,968      cpu_core/cycles/
+         554,795,017      cpu_core/instructions/
+
+         1.002616117 seconds time elapsed
+
+  # perf stat -e '{cpu_core/cycles/,cpu_atom/instructions/}' -a -- sleep 1
+  WARNING: events in group from different hybrid PMUs!
+  WARNING: grouped events cpus do not match, disabling group:
+    anon group { cpu_core/cycles/, cpu_atom/instructions/ }
+
+   Performance counter stats for 'system wide':
+
+           6,283,970      cpu_core/cycles/
+             765,635      cpu_atom/instructions/
+
+         1.003959036 seconds time elapsed
+
+Note that, since the whole patchset for AlderLake hybrid support is very
+large (40+ patches). For simplicity, it's splitted into several patch
+series.
+
+The patch series 1 only supports the basic functionality. The advanced
+supports for perf-c2c/perf-mem/topdown/metrics/topology header and others
+will be added in follow-up patch series.
+
+The perf tool codes can also be found at:
+https://github.com/yaoj/perf.git
+
+v4:
+---
+- In Liang Kan's patch:
+  '[PATCH V6 21/25] perf: Extend PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE',
+  the user interface for hardware events and cache events are changed, so
+  perf tool patches are changed as well.
+
+- Fix an issue when atom CPUs are offlined. "/sys/bus/event_source/devices/cpu_atom/cpus"
+  exists but the content is empty. For this case, we can't enable the cpu_atom
+  PMU. '[PATCH v4 05/25] perf pmu: Save detected hybrid pmus to a global pmu list'
+
+- Define 'ret' variable for return value in patch
+  '[PATCH v4 09/25] perf parse-events: Create two hybrid cache events'
+
+- Directly return add_raw_hybrid() in patch
+  '[PATCH v4 10/25] perf parse-events: Create two hybrid raw events'
+ 
+- Drop the patch 'perf pmu: Support 'cycles' and 'branches' inside
+  hybrid PMU'.
+
+- Separate '[PATCH v3 12/27] perf parse-events: Support no alias assigned event
+  inside hybrid PMU' into two patches:
+  '[PATCH v4 11/25] perf parse-events: Compare with hybrid pmu name'
+  '[PATCH v4 12/25] perf parse-events: Support event inside hybrid pmu'.
+  And these two patches are improved according to Jiri's comments.
+
+v3:
+---
+- Drop 'perf evlist: Hybrid event uses its own cpus'. This patch is wide
+  and actually it's not very necessary. The current perf framework has
+  processed the cpus for evsel well even for hybrid evsel. So this patch can
+  be dropped.
+
+- Drop 'perf evsel: Adjust hybrid event and global event mixed group'.
+  The patch is a bit tricky and hard to understand. In v3, we will disable
+  grouping when the group members are from different PMUs. So this patch
+  would be not necessary.
+
+- Create parse-events-hybrid.c/parse-events-hybrid.h and evlist-hybrid.c/evlist-hybrid.h.
+  Move hybrid related codes to these files.
+
+- Create a new patch 'perf pmu: Support 'cycles' and 'branches' inside hybrid PMU' to
+  support 'cycles' and 'branches' inside PMU.
+
+- Create a new patch 'perf record: Uniquify hybrid event name' to tell user the
+  pmu which the event belongs to for perf-record.
+
+- If group members are from different hybrid PMUs, shows warning and disable
+  grouping.
+
+- Other refining and refactoring.
+
+v2:
+---
+- Drop kernel patches (Kan posted the series "Add Alder Lake support for perf (kernel)" separately).
+- Drop the patches for perf-c2c/perf-mem/topdown/metrics/topology header supports,
+  which will be added in series 2 or series 3.
+- Simplify the arguments of __perf_pmu__new_alias() by passing
+  the 'struct pme_event' pointer.
+- Check sysfs validity before access.
+- Use pmu style event name, such as "cpu_core/cycles/".
+- Move command output two chars to the right.
+- Move pmu hybrid functions to new created pmu-hybrid.c/pmu-hybrid.h.
+  This is to pass the perf test python case.
+
+Jin Yao (25):
+  tools headers uapi: Update tools's copy of linux/perf_event.h
+  perf jevents: Support unit value "cpu_core" and "cpu_atom"
+  perf pmu: Simplify arguments of __perf_pmu__new_alias
+  perf pmu: Save pmu name
+  perf pmu: Save detected hybrid pmus to a global pmu list
+  perf pmu: Add hybrid helper functions
+  perf stat: Uniquify hybrid event name
+  perf parse-events: Create two hybrid hardware events
+  perf parse-events: Create two hybrid cache events
+  perf parse-events: Create two hybrid raw events
+  perf parse-events: Compare with hybrid pmu name
+  perf parse-events: Support event inside hybrid pmu
+  perf record: Create two hybrid 'cycles' events by default
+  perf stat: Add default hybrid events
+  perf stat: Filter out unmatched aggregation for hybrid event
+  perf stat: Warn group events from different hybrid PMU
+  perf record: Uniquify hybrid event name
+  perf tests: Add hybrid cases for 'Parse event definition strings' test
+  perf tests: Add hybrid cases for 'Roundtrip evsel->name' test
+  perf tests: Skip 'Setup struct perf_event_attr' test for hybrid
+  perf tests: Support 'Track with sched_switch' test for hybrid
+  perf tests: Support 'Parse and process metrics' test for hybrid
+  perf tests: Support 'Session topology' test for hybrid
+  perf tests: Support 'Convert perf time to TSC' test for hybrid
+  perf tests: Skip 'perf stat metrics (shadow stat) test' for hybrid
+
+ include/uapi/linux/perf_event.h            |  15 ++
+ tools/include/uapi/linux/perf_event.h      |  15 ++
+ tools/perf/builtin-record.c                |  47 +++++-
+ tools/perf/builtin-stat.c                  |  29 ++++
+ tools/perf/pmu-events/jevents.c            |   2 +
+ tools/perf/tests/attr.c                    |   4 +
+ tools/perf/tests/evsel-roundtrip-name.c    |  19 ++-
+ tools/perf/tests/parse-events.c            | 152 ++++++++++++++++++
+ tools/perf/tests/parse-metric.c            |  10 +-
+ tools/perf/tests/perf-time-to-tsc.c        |  16 ++
+ tools/perf/tests/shell/stat+shadow_stat.sh |   3 +
+ tools/perf/tests/switch-tracking.c         |  10 +-
+ tools/perf/tests/topology.c                |  10 +-
+ tools/perf/util/Build                      |   3 +
+ tools/perf/util/evlist-hybrid.c            |  88 ++++++++++
+ tools/perf/util/evlist-hybrid.h            |  14 ++
+ tools/perf/util/evlist.c                   |   5 +-
+ tools/perf/util/evsel.c                    |  12 +-
+ tools/perf/util/evsel.h                    |   4 +-
+ tools/perf/util/parse-events-hybrid.c      | 178 +++++++++++++++++++++
+ tools/perf/util/parse-events-hybrid.h      |  23 +++
+ tools/perf/util/parse-events.c             |  86 +++++++++-
+ tools/perf/util/parse-events.h             |   9 +-
+ tools/perf/util/parse-events.y             |   9 +-
+ tools/perf/util/pmu-hybrid.c               |  89 +++++++++++
+ tools/perf/util/pmu-hybrid.h               |  22 +++
+ tools/perf/util/pmu.c                      |  64 +++++---
+ tools/perf/util/pmu.h                      |   7 +
+ tools/perf/util/python-ext-sources         |   2 +
+ tools/perf/util/stat-display.c             |  35 +++-
+ 30 files changed, 933 insertions(+), 49 deletions(-)
+ create mode 100644 tools/perf/util/evlist-hybrid.c
+ create mode 100644 tools/perf/util/evlist-hybrid.h
+ create mode 100644 tools/perf/util/parse-events-hybrid.c
+ create mode 100644 tools/perf/util/parse-events-hybrid.h
+ create mode 100644 tools/perf/util/pmu-hybrid.c
+ create mode 100644 tools/perf/util/pmu-hybrid.h
+
+-- 
+2.17.1
 
