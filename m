@@ -2,146 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B8936225E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD80E3622BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236297AbhDPOfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:35:24 -0400
-Received: from mail-mw2nam12on2043.outbound.protection.outlook.com ([40.107.244.43]:36353
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235724AbhDPOfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:35:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=To442poxtQVzzFj1LTJo4j9IA88B8Se0RX3alZ0qLzE7svYCEDum9cOuck/1BR0F3Y+yfataM8SWKJFqnBQtpccvc7aNbJWL/WOKoADJdh7076lx7AOxfPvEnen4SzR/fovcXBY5wtL7Qgd4tZMEQrEViiQZNVscbtdylS1/+4gBSvSehYkswZnQEodaaooBbSXgdjBNdzppDl5TrRd/FfymobkHHMEbsqgJmUSaxebMJRrfqH5vs+Y7tOgDxs5aglMkrz7D3mulRPRrOwJ638b1yy5tW9Ck9xbPefmh4AiyNGN1c4NsROKaipMUVlAt9ZH3Iync+zh4s6dIBz7ORQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H4LNGlrRsxG9zQEEEZa6+Bne03W6a9ickZfs5pg8nSg=;
- b=gi00f+Vj57ld6EOQ6lz3w1KdeEgV7CxG8ppnABSHblErEYrq7/T8le/OSmqcmozgefykYm9/Q+FjPy5y4JXTPvNjwflanZ/4YF2PZxqYrtmPFdoipIJGc29N8bW/gayH2QHa1fp9zb0bMLZicTZ8FbBYSxHEXBjxYoY0qTcur03fM/11HGN/FhD8iTkezlL/lEpTVc7BqWAX2fcRKSDNflu+9tnUjIEjXzhu46ZtBhQLrhLJ7APQ8es1GkCU61CiWcVC+PsFutkYFiuWvEx/xEATvZBfFXFbCU1ZYCbQc87RqU7CNjCJe56bBzc1lQQ5o0PwqpKznrkeIuns0j9FTQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H4LNGlrRsxG9zQEEEZa6+Bne03W6a9ickZfs5pg8nSg=;
- b=Dj/KTy5udnJBo6o0ERzhVT8rnNlNXF87o9B/2QnIxCkwNbIvbHwyRZiU5OcA/58x/M7yj7xJfHFNaX8PG/NFXLa6BEvSJ28WLi+fDybdbxkk9hjkdEAy23TNM286MmdmlbPm5Ivf3v9OX5yyMbxl2zl8dZT1mAoCLtlra2qtZWiBDBugE5bp/4ZquUk2VP4kzYisjdQJgZ/KMsrWZdOjf/7vKrfEN5Gv9A+bc1xgYiSwiSfaOiawNiu1ZaD6NsnWNx32XwQ+FGwlUtZu/TGl/hJDPSBgitI0H38Bjn+UbF+5NjkSeOwks0d4yTLq26cZMlMm3VP2/hvKbAOI0k+Ydw==
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1146.namprd12.prod.outlook.com (2603:10b6:3:73::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.19; Fri, 16 Apr
- 2021 14:34:53 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4020.024; Fri, 16 Apr 2021
- 14:34:53 +0000
-Date:   Fri, 16 Apr 2021 11:34:51 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Auger Eric <eric.auger@redhat.com>
-Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210416143451.GJ1370958@nvidia.com>
-References: <YGW27KFt9eQB9X2z@myrica>
- <BN6PR11MB4068171CD1D4B823515F7EFBC37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210401134236.GF1463678@nvidia.com>
- <BN6PR11MB4068C4DE7AF43D44DE70F4C1C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210401160337.GJ1463678@nvidia.com>
- <4bea6eb9-08ad-4b6b-1e0f-c97ece58a078@redhat.com>
- <20210415230732.GG1370958@nvidia.com>
- <b1492fd3-8ce2-1632-3b14-73d8d4356fd7@redhat.com>
- <20210416140524.GI1370958@nvidia.com>
- <f71c1e37-6466-e931-be1d-b9b36d785596@redhat.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f71c1e37-6466-e931-be1d-b9b36d785596@redhat.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: BL1PR13CA0257.namprd13.prod.outlook.com
- (2603:10b6:208:2ba::22) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S236072AbhDPOiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:38:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235561AbhDPOh5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 10:37:57 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41BC2C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:37:31 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id n2so42444930ejy.7
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:37:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8GxxDkNQ8xWrJkT9ns8670579onh7Bw+Uvw6ps3Hfzw=;
+        b=sYu24cfTNp3Sk4VoVSTiZqobXGS3o/nl0S6CM7UMymRzJySbfpZpwBn4yOUMeZDO5R
+         TTPZysgH5JwH4gWicDVlSJXvfnJhRa6vSH8N7qnf2cLql+HX6P9eGY8yH05SiJkTTapB
+         cUsa5jSFYsua/vA/qRY+5BCk+jpyp7Bx/plX0fwM/Yavv33fVDc+ZKkJOUdehjEothHN
+         fYbTCXiVvAYkcPlpsALfnFYCAiNnI8LYEyvQX9anXk0VAaVTV2QN40epzPGkkFu/3j8C
+         E7/HouOKLSTw9DWGjH+xF6aSIabcOm+GI/p5GAe1cQxOpvsMQ853+b+kmUjjRUkihTWz
+         a5EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8GxxDkNQ8xWrJkT9ns8670579onh7Bw+Uvw6ps3Hfzw=;
+        b=hrZYg7b0Q7diRQq1/Js6AgMT0DbLn1RrqO3+CtBdZ4c4YqI+Nnq69kqA/9MZTyND1J
+         08xDNhabqHEMWtSrLkuzf0e334VxwxU2YQL0F47SILcSZT5I1+D6iVGEImJA/aBeC/RD
+         I+2/uNe/MDXV5dNhksk6xLyOSoi6517N6rgrkKdFmpSqW+8wHmo6uPbE1QTxzC9K2wY2
+         wSMXlVEeImtrneZtilG++WN+rFQ6Puc9qctKtknpNrzstUbgVYjZS+hCb/5N8ygpfTc7
+         s7sLjo5dsz2WrPSclr9DnMyyA33cQyIVvnMIrXq7Uaxz0GOUtl5bySVGDyAMlp6z0n48
+         53YA==
+X-Gm-Message-State: AOAM530aqqO5SPTUYEO/pvwui7HZQdcsfk1ObVo6t0B5txX37C2ZTN0G
+        0TZvNzGS9TlAgPg+qUKSMpqa9Q==
+X-Google-Smtp-Source: ABdhPJz9kIi33dwSJ44VTeiCQHZMhDXP4sc0J7Kiq4t3coxWZ1m1x67Zk7mnLNXlBKhO87ldnTNptw==
+X-Received: by 2002:a17:906:1dd3:: with SMTP id v19mr8633955ejh.4.1618583849970;
+        Fri, 16 Apr 2021 07:37:29 -0700 (PDT)
+Received: from dell.default ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id j10sm1326523ejk.93.2021.04.16.07.37.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 07:37:29 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org, Adam Jackson <ajax@redhat.com>,
+        Ajay Kumar <ajaykumar.rs@samsung.com>,
+        Akshu Agarwal <akshua@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Ben Widawsky <ben@bwidawsk.net>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, Eric Anholt <eric@anholt.net>,
+        freedreno@lists.freedesktop.org, Huang Rui <ray.huang@amd.com>,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Jeremy Kolb <jkolb@brandeis.edu>,
+        Jerome Glisse <glisse@freedesktop.org>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linaro-mm-sig@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-media@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-tegra@vger.kernel.org, Lyude Paul <lyude@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Nirmoy Das <nirmoy.das@amd.com>, nouveau@lists.freedesktop.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Clark <rob.clark@linaro.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>, Sean Paul <sean@poorly.run>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Tomi Valkeinen <tomba@kernel.org>,
+        Vincent Abriou <vincent.abriou@st.com>
+Subject: [PATCH 00/40] [Set 16] Rid W=1 warnings from GPU!
+Date:   Fri, 16 Apr 2021 15:36:45 +0100
+Message-Id: <20210416143725.2769053-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0257.namprd13.prod.outlook.com (2603:10b6:208:2ba::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.6 via Frontend Transport; Fri, 16 Apr 2021 14:34:53 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lXPYZ-007Kg7-SK; Fri, 16 Apr 2021 11:34:51 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9ca4d51e-6233-4ef7-b2a0-08d900e4cc68
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1146:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1146D3699C9AD695B9A0856FC24C9@DM5PR12MB1146.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AtOD/G2g9WLqFN9AcRZnvwCJAQnN7hC7RFhCH+eW/MxU2+dlyWn419aEc+o12aDSNS5eIFPlPLE1Jx5UPM9I2XYWByRdvwk1WlabAVCSWajIdHQKH8ENqNylJk2qbbWVxDKeiLjgYp5AR8CPUj+jlTAQjOhWmF2z4JPmbUKA/vli8yriaHkPiRHILdGyHDNt8DMrZcNRf5UmE+Ic8Yd+2IsdkmY1xIJH+2VMkzLt/oBLHs3NfGVzZWvTGncIl8s09gw4eRnxJiTBtHOKibZ86diXdAxYIZNQY3G+LMR8fZGhWarDMiYHIDP1FZf7QFCMtPWVFb87G8XPzNhiIZdwCkF+rIDLralg5gyrSZ+fWF+tUh1zWNlZgXc5kJ4OKEnQl5jHUJHFhtSDps7iWGXq+T8nQIRpBTnpNHvkbQtl33/1DWaGUS7udrSzw4NvnDa9eVxs1OFHtYoHbI2CNvVzfsyuHnYnhwm3M+TxPQCDNTsotahF5cOj9qnSqzHarIBlCxn+q3cpD1WgSOAKkbqmUYwZkvHx8yF4xVzcEOI4AkM5/uadG5hdrDIXvhATkjLlrBtliqadiWeuGu39OMdAsz72oi9RpPZn1Xdar+vv/OQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(366004)(39860400002)(346002)(66946007)(66556008)(66476007)(478600001)(8936002)(33656002)(54906003)(9786002)(316002)(9746002)(86362001)(26005)(8676002)(186003)(4744005)(36756003)(4326008)(6916009)(2906002)(1076003)(426003)(5660300002)(7416002)(2616005)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?tv+inDxGQseQ+iHCCNCF7y0Yzaj3PovNlIKSajxiX4EJxGSBx+j/wUpl8wYP?=
- =?us-ascii?Q?X6Q/b7yoby/tuCrVbrVU0/skvYSxrEnCN3DvL+WdWuihrmWH+5/9ufPAiPy+?=
- =?us-ascii?Q?9EaMxlly5nuUl71K5IWoeT50H82tL6Tab8vwVyR4Wl3NQUrSTGoMHX4Kj06T?=
- =?us-ascii?Q?9UplDY4iZNqXLrN04aGvl3pVhz/RmnebSewopgpZmHd+GDlWmt4ATItDAcgk?=
- =?us-ascii?Q?sslz5QNxf5GDe6JlwnSCyiVWEadGeV6gplQYBZbvDw7G2xko8qNlQZZL0hw+?=
- =?us-ascii?Q?e7Uq6/0JG7eSTxrtpKBd6m5T7014Cs2JmBYSs6XPRyRdeXxze9/tbVpDNVTQ?=
- =?us-ascii?Q?CmxLQ+BR6jV0g/EKr5xe2BFTvNRr+sxApgdEIg4mJlDa0WJsEqKI9QY/qwF+?=
- =?us-ascii?Q?CCgvoAV+l6qFj8bk0vk/taHNm/oTrihB9+LCP0ZzvPioAglngEI9sFP0a3Dl?=
- =?us-ascii?Q?cu50MXoahU/EpPKQ28wArm+0hvfmaZujTC2503HGgsHdswwBIUK5k3MHrLxd?=
- =?us-ascii?Q?34X6NzNRWVipm/3iZblC8w1KHkzWw/BFNHk3q+7BxQWbYkoLZt8WBoG9RKRv?=
- =?us-ascii?Q?Qb1snexAmu+Xp9s5JyEEeybXXq/WvXvbMH+cWVX4WpBf7TUMbPkZUuu5DMS4?=
- =?us-ascii?Q?dApS5MKgFuhD3qmpt5wSZU36fYjrrp7W6wnk4DyeSbxtiibFuJ2I7asdfXVU?=
- =?us-ascii?Q?/WwibeAVtBFZpPD9XvYN46VIOwLVibpeoZytPQFfgv+T6eczxsPSpJI/nwzU?=
- =?us-ascii?Q?Wf/lBpmGvgOrlpxlGSeJUqnrFjB6YUjSV1dNHaFJ+aKlVfFLDghaEqOgWZrm?=
- =?us-ascii?Q?a80KnhjC8B/wKObyEyyRF/2pHqLPYfJqwsdIESKV9gyPC4Uu6TqHx1cS522g?=
- =?us-ascii?Q?aoxAfhP7SASclVLYU2JmUwjnBxU0NFQUAmCYI5hytcJ0SBIG9kMgfVTceXXa?=
- =?us-ascii?Q?ggrOx5wWELurlVmZf6CdMk/i1lZy00VsjRKf3RXQtwb7thB48Gu4mZvz1keZ?=
- =?us-ascii?Q?mfzB2KxDjE+lhb7XjE2vIILugFQnn0rP8wlrUKnCjGwNWbl6vuaz7TTD4oo8?=
- =?us-ascii?Q?Lr+3HGQC2jE9FpuiD7AkUOSuASmJ5dHmgIAJ+5QnKHLiPMQ8fkOeRwXZmVPX?=
- =?us-ascii?Q?4NTprkF0rlcWeG0cqXUHVeAnPFlNFlPZOGxyQwrZisVBHtV5JMPqgiVU1Ava?=
- =?us-ascii?Q?TITWq1zwdZxL0b60uwl4hBNDTB1BBAbektSFLvQXF8ZeVePSIDRpoC4HsxRA?=
- =?us-ascii?Q?WerPsIL2Hc07Ntk00DgPBH2BRinAYHQrdc5Wa7n7z0lq3AlQBEkOOEIBMh5z?=
- =?us-ascii?Q?IHnhadxteJ83yN2WzyR9StZKMKbRxNA/qlzjwCPgnQ/v+w=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9ca4d51e-6233-4ef7-b2a0-08d900e4cc68
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2021 14:34:53.3261
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uyQUFfuY214+c61l6rOG5swRevxnP4wx/LI9DH2MGT9K8YUxK3JKbAYR8Jwns37n
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1146
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 04:26:19PM +0200, Auger Eric wrote:
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-> This was largely done during several confs including plumber, KVM forum,
-> for several years. Also API docs were shared on the ML. I don't remember
-> any voice was raised at those moments.
+Lee Jones (40):
+  drm/nouveau/nvkm/subdev/bios/init: Demote obvious abuse of kernel-doc
+  drm/nouveau/dispnv50/disp: Remove unused variable 'ret'
+  drm/msm/dp/dp_display: Remove unused variable 'hpd'
+  include: drm: drm_atomic: Make use of 'new_plane_state'
+  drm/nouveau/nvkm/subdev/volt/gk20a: Demote non-conformant kernel-doc
+    headers
+  drm/nouveau/nvkm/engine/gr/gf100: Demote non-conformant kernel-doc
+    header
+  drm/nouveau/nouveau_bo: Remove unused variables 'dev'
+  drm/nouveau/nouveau_display: Remove set but unused variable 'width'
+  drm/nouveau/dispnv04/crtc: Demote non-conforming kernel-doc headers
+  drm/nouveau/dispnv50/disp: Remove unused variable 'ret' from function
+    returning void
+  drm/nouveau/dispnv50/headc57d: Make local function 'headc57d_olut'
+    static
+  drm/nouveau/nv50_display: Remove superfluous prototype for local
+    static functions
+  drm/nouveau/dispnv50/disp: Include header containing our prototypes
+  drm/nouveau/nouveau_ioc32: File headers are not good candidates for
+    kernel-doc
+  drm/nouveau/nouveau_svm: Remove unused variable 'ret' from void
+    function
+  drm/nouveau/nouveau_ioc32: Demote kernel-doc abuse to standard comment
+    block
+  gpu: host1x: bus: Remove superfluous param description 'key'
+  drm/omapdrm/omap_irq: Fix a couple of incorrectly documented functions
+  drm/omapdrm/omap_gem: Properly document omap_gem_dumb_map_offset()
+  drm/xlnx/zynqmp_disp: Fix incorrectly documented enum 'zynqmp_disp_id'
+  drm/xlnx/zynqmp_dp: Fix a little potential doc-rot
+  drm/ttm/ttm_tt: Demote non-conformant kernel-doc header
+  drm/ttm/ttm_bo: Fix incorrectly documented function
+    'ttm_bo_cleanup_refs'
+  drm/scheduler/sched_entity: Fix some function name disparity
+  drm/radeon/radeon_device: Provide function name in kernel-doc header
+  drm/amd/amdgpu/amdgpu_device: Remove unused variable 'r'
+  drm/ttm/ttm_device: Demote kernel-doc abuses
+  drm/panel/panel-raspberrypi-touchscreen: Demote kernel-doc abuse
+  drm/amd/amdgpu/amdgpu_fence: Provide description for 'sched_score'
+  drm/vgem/vgem_drv: Demote kernel-doc abuse
+  drm/amd/amdgpu/amdgpu_gart: Correct a couple of function names in the
+    docs
+  drm/amd/amdgpu/amdgpu_ttm: Fix incorrectly documented function
+    'amdgpu_ttm_copy_mem_to_mem()'
+  drm/amd/amdgpu/amdgpu_ring: Provide description for 'sched_score'
+  drm/exynos/exynos_drm_fimd: Realign function name with its header
+  drm/amd/amdgpu/amdgpu_cs: Repair some function naming disparity
+  drm/exynos/exynos7_drm_decon: Realign function name with its header
+  drm/panel/panel-sitronix-st7701: Demote kernel-doc format abuse
+  drm/exynos/exynos_drm_ipp: Fix some function name disparity issues
+  drm/sti/sti_hdmi: Provide kernel-doc headers with function names
+  drm/mediatek/mtk_disp_ccorr: Demote less than half-populated struct
+    header
 
-I don't think anyone objects to the high level ideas, but
-implementation does matter. I don't think anyone presented "hey we
-will tunnel an uAPI through VFIO to the IOMMU subsystem" - did they?
+ drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c        |   6 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    |   5 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c     |   1 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gart.c      |   4 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c      |   1 +
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c       |   2 +-
+ drivers/gpu/drm/exynos/exynos7_drm_decon.c    |   2 +-
+ drivers/gpu/drm/exynos/exynos_drm_fimd.c      |   2 +-
+ drivers/gpu/drm/exynos/exynos_drm_ipp.c       |   4 +-
+ drivers/gpu/drm/mediatek/mtk_disp_ccorr.c     |   2 +-
+ drivers/gpu/drm/msm/dp/dp_display.c           |   3 -
+ drivers/gpu/drm/nouveau/dispnv04/crtc.c       |   4 +-
+ drivers/gpu/drm/nouveau/dispnv50/disp.c       |  10 +-
+ drivers/gpu/drm/nouveau/dispnv50/headc57d.c   |   2 +-
+ drivers/gpu/drm/nouveau/nouveau_bo.c          |   4 -
+ drivers/gpu/drm/nouveau/nouveau_display.c     |   8 +-
+ drivers/gpu/drm/nouveau/nouveau_ioc32.c       |   4 +-
+ drivers/gpu/drm/nouveau/nouveau_svm.c         |   5 +-
+ drivers/gpu/drm/nouveau/nv50_display.h        |   3 -
+ .../gpu/drm/nouveau/nvkm/engine/gr/gf100.c    |   2 +-
+ .../gpu/drm/nouveau/nvkm/subdev/bios/init.c   | 204 ++++++------------
+ .../gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c  |   4 +-
+ drivers/gpu/drm/omapdrm/omap_gem.c            |   2 +-
+ drivers/gpu/drm/omapdrm/omap_irq.c            |   4 +-
+ .../drm/panel/panel-raspberrypi-touchscreen.c |   2 +-
+ drivers/gpu/drm/panel/panel-sitronix-st7701.c |   2 +-
+ drivers/gpu/drm/radeon/radeon_device.c        |   3 +-
+ drivers/gpu/drm/scheduler/sched_entity.c      |   6 +-
+ drivers/gpu/drm/sti/sti_hdmi.c                |  18 +-
+ drivers/gpu/drm/ttm/ttm_bo.c                  |   2 +-
+ drivers/gpu/drm/ttm/ttm_device.c              |   4 +-
+ drivers/gpu/drm/ttm/ttm_tt.c                  |   2 +-
+ drivers/gpu/drm/vgem/vgem_drv.c               |   2 +-
+ drivers/gpu/drm/xlnx/zynqmp_disp.c            |   2 +-
+ drivers/gpu/drm/xlnx/zynqmp_dp.c              |   2 +-
+ drivers/gpu/host1x/bus.c                      |   1 -
+ include/drm/drm_atomic.h                      |   3 +-
+ 37 files changed, 130 insertions(+), 207 deletions(-)
 
-Look at the fairly simple IMS situation, for example. This was
-presented at plumbers too, and the slides were great - but the
-implementation was too hacky. It required a major rework of the x86
-interrupt handling before it was OK.
+Cc: Adam Jackson <ajax@redhat.com>
+Cc: Ajay Kumar <ajaykumar.rs@samsung.com>
+Cc: Akshu Agarwal <akshua@gmail.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: amd-gfx@lists.freedesktop.org
+Cc: Benjamin Gaignard <benjamin.gaignard@linaro.org>
+Cc: Ben Skeggs <bskeggs@redhat.com>
+Cc: Ben Widawsky <ben@bwidawsk.net>
+Cc: Christian Koenig <christian.koenig@amd.com>
+Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: David Airlie <airlied@linux.ie>
+Cc: dri-devel@lists.freedesktop.org
+Cc: Eric Anholt <eric@anholt.net>
+Cc: freedreno@lists.freedesktop.org
+Cc: Huang Rui <ray.huang@amd.com>
+Cc: Hyun Kwon <hyun.kwon@xilinx.com>
+Cc: Inki Dae <inki.dae@samsung.com>
+Cc: Jagan Teki <jagan@amarulasolutions.com>
+Cc: Jeremy Kolb <jkolb@brandeis.edu>
+Cc: Jerome Glisse <glisse@freedesktop.org>
+Cc: Joonyoung Shim <jy0922.shim@samsung.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc: Kuogee Hsieh <khsieh@codeaurora.org>
+Cc: Kyungmin Park <kyungmin.park@samsung.com>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: linaro-mm-sig@lists.linaro.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-arm-msm@vger.kernel.org
+Cc: linux-mediatek@lists.infradead.org
+Cc: linux-media@vger.kernel.org
+Cc: linux-samsung-soc@vger.kernel.org
+Cc: linux-tegra@vger.kernel.org
+Cc: Lyude Paul <lyude@redhat.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Michal Simek <michal.simek@xilinx.com>
+Cc: Nirmoy Das <nirmoy.das@amd.com>
+Cc: nouveau@lists.freedesktop.org
+Cc: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Rob Clark <rob.clark@linaro.org>
+Cc: Rob Clark <robdclark@gmail.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Cc: Sean Paul <sean@poorly.run>
+Cc: Seung-Woo Kim <sw0312.kim@samsung.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: Tomi Valkeinen <tomba@kernel.org>
+Cc: Vincent Abriou <vincent.abriou@st.com>
+-- 
+2.27.0
 
-Jason
