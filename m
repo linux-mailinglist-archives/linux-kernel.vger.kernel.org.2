@@ -2,499 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05FDA361BDA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:00:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0F9361BDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239902AbhDPIg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 04:36:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20395 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239093AbhDPIgu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 04:36:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618562185;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DgeYEiv95IkJvUMRSG8MIyXHooAfO2THphAXRRpYqoA=;
-        b=duLq5KuewPX4DVVaW63rvBu+3dsgTy5jOPdFBNldoL4s2/OzSg//YquX7xXI5+K++POcSo
-        nFfw6UjQwMlaFdnXDYKfBKH+kPAsW6eXuNoORfOWFxCyhQI67Jhe8oz8kxYlk4CSip36tP
-        qKsuBIYyCP8ExKYLAgL6WTlfXt2WcVs=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-64-VfeUIKP_Pd2YK8yearO8Zw-1; Fri, 16 Apr 2021 04:36:23 -0400
-X-MC-Unique: VfeUIKP_Pd2YK8yearO8Zw-1
-Received: by mail-ed1-f70.google.com with SMTP id co5-20020a0564020c05b02903825bcdad12so6586543edb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 01:36:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=DgeYEiv95IkJvUMRSG8MIyXHooAfO2THphAXRRpYqoA=;
-        b=CPylWnbSNNtqUcfvc+1t4IXZpmvRb/LPYy+r/024Wh09mw2BHfHTEPI+f8taVdH3kc
-         MNR1e41d9YxIIDhz7G7GpVmB+6PoyZFl2SdQBohWou5T5k+W4mSnEQxgzsXwIsuCOLB4
-         xHBi3H6AEjw6hIITjNoFyYhjhOopxgA2GxXdf2eExRlGzMz6LtdJwgXdB3CAO+nLpKHJ
-         +ri73mSr1EJDz0RZitv+YW6VJewF1fuXH9WkXC8qVcgp5DSP7WjwIpEIlM1a0UsYc6At
-         zXXfhBsGoHumAQnFL4cyo4sngOkjCRwXLMlBBsKuMJFicZ6BeXOY4DFX9g/g3fT9hh+9
-         sKgA==
-X-Gm-Message-State: AOAM531uskz0P1iZI7O90WZrVaD9mAe7K4pKHIiCVbxMSKI1GrgRMcwd
-        VoNJFPNiDzx7p8FVynzr5LIknZQqsK3e9i52exIJzdVSGO+QBkXc2WItHMLADGiDhijJJaNzEJa
-        QiN1sZ1Fz2xy7FfXV8MF5z8Yd
-X-Received: by 2002:a17:906:2dd9:: with SMTP id h25mr7190587eji.6.1618562182532;
-        Fri, 16 Apr 2021 01:36:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxu/kRBAic/sMHzEYtmBkU/3YbFv7PRHntpXZkq/H94+8SVuHJDHXL4OzJkJAX7B7XI6pAp6w==
-X-Received: by 2002:a17:906:2dd9:: with SMTP id h25mr7190570eji.6.1618562182335;
-        Fri, 16 Apr 2021 01:36:22 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id a17sm3710462ejf.20.2021.04.16.01.36.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 01:36:21 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Vineeth Pillai <viremana@linux.microsoft.com>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org,
-        Lan Tianyu <Tianyu.Lan@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>
-Subject: Re: [PATCH v2 3/7] KVM: x86: hyper-v: Move the remote TLB flush
- logic out of vmx
-In-Reply-To: <92207433d0784e123347caaa955c04fbec51eaa7.1618492553.git.viremana@linux.microsoft.com>
-References: <cover.1618492553.git.viremana@linux.microsoft.com>
- <92207433d0784e123347caaa955c04fbec51eaa7.1618492553.git.viremana@linux.microsoft.com>
-Date:   Fri, 16 Apr 2021 10:36:20 +0200
-Message-ID: <87y2di7hiz.fsf@vitty.brq.redhat.com>
+        id S239768AbhDPIh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 04:37:59 -0400
+Received: from mga06.intel.com ([134.134.136.31]:17966 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232442AbhDPIh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 04:37:58 -0400
+IronPort-SDR: ER3UxIOeOWsJ8Kbca4e3yVhkAgXKvsvGZDMmg/UjsEkgiRkuBa2MYsuidRbaQWV2VY0uJfeWXY
+ t8uYkt6DwbAA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="256324544"
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="256324544"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 01:37:33 -0700
+IronPort-SDR: 0u3B25yUP3DkaMmFYZ3eX/OFY8cwgwhw61cjwZHiTxcc4h/6teNjzrjGE26MhQQ68prrJJNtyk
+ 7LkFIY8wKxuQ==
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="522648878"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 01:37:30 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 74E3C20188;
+        Fri, 16 Apr 2021 11:37:28 +0300 (EEST)
+Date:   Fri, 16 Apr 2021 11:37:28 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
+Subject: Re: [Outreachy kernel] [PATCH v2] staging: media: atomisp: pci:
+ Change line break to avoid an open parenthesis at the end of the line
+Message-ID: <20210416083728.GL3@paasikivi.fi.intel.com>
+References: <20210415170819.GA17534@focaruja>
+ <20210415171409.GC2531743@casper.infradead.org>
+ <20210415194955.GI3@paasikivi.fi.intel.com>
+ <20210415195704.GE2531743@casper.infradead.org>
+ <20210415195941.GF2531743@casper.infradead.org>
+ <20210415212158.GK3@paasikivi.fi.intel.com>
+ <20210416054941.GF6021@kadam>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416054941.GF6021@kadam>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vineeth Pillai <viremana@linux.microsoft.com> writes:
+Hi Dan,
 
-> Currently the remote TLB flush logic is specific to VMX.
-> Move it to a common place so that SVM can use it as well.
->
-> Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
-> ---
->  arch/x86/include/asm/kvm_host.h | 14 +++++
->  arch/x86/kvm/hyperv.c           | 87 +++++++++++++++++++++++++++++
->  arch/x86/kvm/hyperv.h           | 20 +++++++
->  arch/x86/kvm/vmx/vmx.c          | 97 +++------------------------------
->  arch/x86/kvm/vmx/vmx.h          | 10 ----
->  arch/x86/kvm/x86.c              |  9 ++-
->  6 files changed, 136 insertions(+), 101 deletions(-)
->
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 877a4025d8da..ed84c15d18bc 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -838,6 +838,15 @@ struct kvm_vcpu_arch {
->  
->  	/* Protected Guests */
->  	bool guest_state_protected;
-> +
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +	/*
-> +	 * Two Dimensional paging CR3
-> +	 * EPTP for Intel
-> +	 * nCR3 for AMD
-> +	 */
-> +	u64 tdp_pointer;
-> +#endif
->  };
->  
->  struct kvm_lpage_info {
-> @@ -1079,6 +1088,11 @@ struct kvm_arch {
->  	 */
->  	spinlock_t tdp_mmu_pages_lock;
->  #endif /* CONFIG_X86_64 */
-> +
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +	int tdp_pointers_match;
-> +	spinlock_t tdp_pointer_lock;
-> +#endif
->  };
->  
->  struct kvm_vm_stat {
-> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-> index 58fa8c029867..614b4448a028 100644
-> --- a/arch/x86/kvm/hyperv.c
-> +++ b/arch/x86/kvm/hyperv.c
+On Fri, Apr 16, 2021 at 08:49:41AM +0300, Dan Carpenter wrote:
+> On Fri, Apr 16, 2021 at 12:21:58AM +0300, Sakari Ailus wrote:
+> > On Thu, Apr 15, 2021 at 08:59:41PM +0100, Matthew Wilcox wrote:
+> > > On Thu, Apr 15, 2021 at 08:57:04PM +0100, Matthew Wilcox wrote:
+> > > > On Thu, Apr 15, 2021 at 10:49:55PM +0300, Sakari Ailus wrote:
+> > > > > On Thu, Apr 15, 2021 at 06:14:09PM +0100, Matthew Wilcox wrote:
+> > > > > > On Thu, Apr 15, 2021 at 02:08:19PM -0300, Aline Santana Cordeiro wrote:
+> > > > > > > -const struct atomisp_format_bridge *get_atomisp_format_bridge_from_mbus(
+> > > > > > > -    u32 mbus_code);
+> > > > > > > +const struct atomisp_format_bridge*
+> > > > > > > +get_atomisp_format_bridge_from_mbus(u32 mbus_code);
+> > > > > > 
+> > > > > > No, this does not match coding style.  Probably best to break the
+> > > > > > 80-column guideline in this instance.  Best would be to have a function
+> > > > > 
+> > > > > Having the return type on the previous line is perfectly fine. There should
+> > > > > be a space before the asterisk though.
+> > > > 
+> > > > No, it's not.  Linus has ranted about that before.
+> > > 
+> > > Found it.  https://lore.kernel.org/lkml/1054519757.161606@palladium.transmeta.com/
+> > 
+> > Two decades ago, really?
+> > 
+> > This is simply one of the practical means how you split long function
+> > declarations and avoid overly long lines. Not my favourite though, but
+> > still better than those long lines.
+> 
+> I've always thought we allow either style, but it has to be done
+> consistently within the file.  I was pretty sure that was policy but
+> it's another thing that goes back decades so I don't have a reference.
+> It shouldn't be about breaking up long lines.
+> 
+> > 
+> > My personal preference would be to wrap at the opening parenthesis and
+> > indent by just a tab, but I know many people who disagree with that...
+> 
+> If you're running into the 80 character limit, then it's fine to use
+> two tabs.  I think we have been rejecting patches that push align the
+> parameters but push past the 80 character limit.  Using one tab is
+> confusing because it makes the decalarations line up with the code.
 
-I still think that using arch/x86/kvm/hyperv.[ch] for KVM-on-Hyper-V is
-misleading. Currently, these are dedicated to emulating Hyper-V
-interface to KVM guests and this is orthogonal to nesting KVM on
-Hyper-V. As a solution, I'd suggest you either:
-- Put the stuff in x86.c
-- Create a dedicated set of files, e.g. 'kvmonhyperv.[ch]' (I also
-thought about 'hyperv_host.[ch]' but then I realized it's equally
-misleading as one can read this as 'KVM is acting as Hyper-V host').
-
-Personally, I'd vote for the later. Besides eliminating confusion, the
-benefit of having dedicated files is that we can avoid compiling them
-completely when !IS_ENABLED(CONFIG_HYPERV) (#ifdefs in C are ugly).
-
-
-> @@ -32,6 +32,7 @@
->  #include <linux/eventfd.h>
->  
->  #include <asm/apicdef.h>
-> +#include <asm/mshyperv.h>
->  #include <trace/events/kvm.h>
->  
->  #include "trace.h"
-> @@ -2180,3 +2181,89 @@ int kvm_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
->  
->  	return 0;
->  }
-> +
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +/* check_tdp_pointer() should be under protection of tdp_pointer_lock. */
-> +static void check_tdp_pointer_match(struct kvm *kvm)
-> +{
-> +	u64 tdp_pointer = INVALID_PAGE;
-> +	bool valid_tdp = false;
-> +	struct kvm_vcpu *vcpu;
-> +	int i;
-> +
-> +	kvm_for_each_vcpu(i, vcpu, kvm) {
-> +		if (!valid_tdp) {
-> +			tdp_pointer = vcpu->arch.tdp_pointer;
-> +			valid_tdp = true;
-> +			continue;
-> +		}
-> +
-> +		if (tdp_pointer != vcpu->arch.tdp_pointer) {
-> +			kvm->arch.tdp_pointers_match = TDP_POINTERS_MISMATCH;
-> +			return;
-> +		}
-> +	}
-> +
-> +	kvm->arch.tdp_pointers_match = TDP_POINTERS_MATCH;
-> +}
-> +
-> +static int kvm_fill_hv_flush_list_func(struct hv_guest_mapping_flush_list *flush,
-> +		void *data)
-> +{
-> +	struct kvm_tlb_range *range = data;
-> +
-> +	return hyperv_fill_flush_guest_mapping_list(flush, range->start_gfn,
-> +			range->pages);
-> +}
-> +
-> +static inline int __hv_remote_flush_tlb_with_range(struct kvm *kvm,
-> +		struct kvm_vcpu *vcpu, struct kvm_tlb_range *range)
-> +{
-> +	u64 tdp_pointer = vcpu->arch.tdp_pointer;
-> +
-> +	/*
-> +	 * FLUSH_GUEST_PHYSICAL_ADDRESS_SPACE hypercall needs address
-> +	 * of the base of EPT PML4 table, strip off EPT configuration
-> +	 * information.
-> +	 */
-> +	if (range)
-> +		return hyperv_flush_guest_mapping_range(tdp_pointer & PAGE_MASK,
-> +				kvm_fill_hv_flush_list_func, (void *)range);
-> +	else
-> +		return hyperv_flush_guest_mapping(tdp_pointer & PAGE_MASK);
-> +}
-> +
-> +int kvm_hv_remote_flush_tlb_with_range(struct kvm *kvm,
-> +		struct kvm_tlb_range *range)
-> +{
-> +	struct kvm_vcpu *vcpu;
-> +	int ret = 0, i;
-> +
-> +	spin_lock(&kvm->arch.tdp_pointer_lock);
-> +
-> +	if (kvm->arch.tdp_pointers_match == TDP_POINTERS_CHECK)
-> +		check_tdp_pointer_match(kvm);
-> +
-> +	if (kvm->arch.tdp_pointers_match != TDP_POINTERS_MATCH) {
-> +		kvm_for_each_vcpu(i, vcpu, kvm) {
-> +			/* If tdp_pointer is invalid pointer, bypass flush request. */
-> +			if (VALID_PAGE(vcpu->arch.tdp_pointer))
-> +				ret |= __hv_remote_flush_tlb_with_range(
-> +					kvm, vcpu, range);
-> +		}
-> +	} else {
-> +		ret = __hv_remote_flush_tlb_with_range(kvm,
-> +				kvm_get_vcpu(kvm, 0), range);
-> +	}
-> +
-> +	spin_unlock(&kvm->arch.tdp_pointer_lock);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(kvm_hv_remote_flush_tlb_with_range);
-> +
-> +int kvm_hv_remote_flush_tlb(struct kvm *kvm)
-> +{
-> +	return kvm_hv_remote_flush_tlb_with_range(kvm, NULL);
-> +}
-> +EXPORT_SYMBOL_GPL(kvm_hv_remote_flush_tlb);
-> +#endif
-> diff --git a/arch/x86/kvm/hyperv.h b/arch/x86/kvm/hyperv.h
-> index e951af1fcb2c..b27c6f47f58d 100644
-> --- a/arch/x86/kvm/hyperv.h
-> +++ b/arch/x86/kvm/hyperv.h
-> @@ -50,6 +50,12 @@
->  /* Hyper-V HV_X64_MSR_SYNDBG_OPTIONS bits */
->  #define HV_X64_SYNDBG_OPTION_USE_HCALLS		BIT(2)
->  
-> +enum tdp_pointers_status {
-> +	TDP_POINTERS_CHECK = 0,
-> +	TDP_POINTERS_MATCH = 1,
-> +	TDP_POINTERS_MISMATCH = 2
-> +};
-> +
->  static inline struct kvm_hv *to_kvm_hv(struct kvm *kvm)
->  {
->  	return &kvm->arch.hyperv;
-> @@ -141,4 +147,18 @@ int kvm_vm_ioctl_hv_eventfd(struct kvm *kvm, struct kvm_hyperv_eventfd *args);
->  int kvm_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
->  		     struct kvm_cpuid_entry2 __user *entries);
->  
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +static inline void kvm_update_arch_tdp_pointer(struct kvm *kvm,
-> +		struct kvm_vcpu *vcpu, u64 tdp_pointer)
-> +{
-> +	spin_lock(&kvm->arch.tdp_pointer_lock);
-> +	vcpu->arch.tdp_pointer = tdp_pointer;
-> +	kvm->arch.tdp_pointers_match = TDP_POINTERS_CHECK;
-> +	spin_unlock(&kvm->arch.tdp_pointer_lock);
-> +}
-> +
-> +int kvm_hv_remote_flush_tlb(struct kvm *kvm);
-> +int kvm_hv_remote_flush_tlb_with_range(struct kvm *kvm,
-> +		struct kvm_tlb_range *range);
-> +#endif
->  #endif
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 50810d471462..67f607319eb7 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -62,6 +62,7 @@
->  #include "vmcs12.h"
->  #include "vmx.h"
->  #include "x86.h"
-> +#include "hyperv.h"
->  
->  MODULE_AUTHOR("Qumranet");
->  MODULE_LICENSE("GPL");
-> @@ -472,83 +473,6 @@ static const u32 vmx_uret_msrs_list[] = {
->  static bool __read_mostly enlightened_vmcs = true;
->  module_param(enlightened_vmcs, bool, 0444);
->  
-> -/* check_ept_pointer() should be under protection of ept_pointer_lock. */
-> -static void check_ept_pointer_match(struct kvm *kvm)
-> -{
-> -	struct kvm_vcpu *vcpu;
-> -	u64 tmp_eptp = INVALID_PAGE;
-> -	int i;
-> -
-> -	kvm_for_each_vcpu(i, vcpu, kvm) {
-> -		if (!VALID_PAGE(tmp_eptp)) {
-> -			tmp_eptp = to_vmx(vcpu)->ept_pointer;
-> -		} else if (tmp_eptp != to_vmx(vcpu)->ept_pointer) {
-> -			to_kvm_vmx(kvm)->ept_pointers_match
-> -				= EPT_POINTERS_MISMATCH;
-> -			return;
-> -		}
-> -	}
-> -
-> -	to_kvm_vmx(kvm)->ept_pointers_match = EPT_POINTERS_MATCH;
-> -}
-> -
-> -static int kvm_fill_hv_flush_list_func(struct hv_guest_mapping_flush_list *flush,
-> -		void *data)
-> -{
-> -	struct kvm_tlb_range *range = data;
-> -
-> -	return hyperv_fill_flush_guest_mapping_list(flush, range->start_gfn,
-> -			range->pages);
-> -}
-> -
-> -static inline int __hv_remote_flush_tlb_with_range(struct kvm *kvm,
-> -		struct kvm_vcpu *vcpu, struct kvm_tlb_range *range)
-> -{
-> -	u64 ept_pointer = to_vmx(vcpu)->ept_pointer;
-> -
-> -	/*
-> -	 * FLUSH_GUEST_PHYSICAL_ADDRESS_SPACE hypercall needs address
-> -	 * of the base of EPT PML4 table, strip off EPT configuration
-> -	 * information.
-> -	 */
-> -	if (range)
-> -		return hyperv_flush_guest_mapping_range(ept_pointer & PAGE_MASK,
-> -				kvm_fill_hv_flush_list_func, (void *)range);
-> -	else
-> -		return hyperv_flush_guest_mapping(ept_pointer & PAGE_MASK);
-> -}
-> -
-> -static int hv_remote_flush_tlb_with_range(struct kvm *kvm,
-> -		struct kvm_tlb_range *range)
-> -{
-> -	struct kvm_vcpu *vcpu;
-> -	int ret = 0, i;
-> -
-> -	spin_lock(&to_kvm_vmx(kvm)->ept_pointer_lock);
-> -
-> -	if (to_kvm_vmx(kvm)->ept_pointers_match == EPT_POINTERS_CHECK)
-> -		check_ept_pointer_match(kvm);
-> -
-> -	if (to_kvm_vmx(kvm)->ept_pointers_match != EPT_POINTERS_MATCH) {
-> -		kvm_for_each_vcpu(i, vcpu, kvm) {
-> -			/* If ept_pointer is invalid pointer, bypass flush request. */
-> -			if (VALID_PAGE(to_vmx(vcpu)->ept_pointer))
-> -				ret |= __hv_remote_flush_tlb_with_range(
-> -					kvm, vcpu, range);
-> -		}
-> -	} else {
-> -		ret = __hv_remote_flush_tlb_with_range(kvm,
-> -				kvm_get_vcpu(kvm, 0), range);
-> -	}
-> -
-> -	spin_unlock(&to_kvm_vmx(kvm)->ept_pointer_lock);
-> -	return ret;
-> -}
-> -static int hv_remote_flush_tlb(struct kvm *kvm)
-> -{
-> -	return hv_remote_flush_tlb_with_range(kvm, NULL);
-> -}
-> -
->  static int hv_enable_direct_tlbflush(struct kvm_vcpu *vcpu)
->  {
->  	struct hv_enlightened_vmcs *evmcs;
-> @@ -3115,13 +3039,10 @@ static void vmx_load_mmu_pgd(struct kvm_vcpu *vcpu, unsigned long pgd,
->  		eptp = construct_eptp(vcpu, pgd, pgd_level);
->  		vmcs_write64(EPT_POINTER, eptp);
->  
-> -		if (kvm_x86_ops.tlb_remote_flush) {
-> -			spin_lock(&to_kvm_vmx(kvm)->ept_pointer_lock);
-> -			to_vmx(vcpu)->ept_pointer = eptp;
-> -			to_kvm_vmx(kvm)->ept_pointers_match
-> -				= EPT_POINTERS_CHECK;
-> -			spin_unlock(&to_kvm_vmx(kvm)->ept_pointer_lock);
-> -		}
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +		if (kvm_x86_ops.tlb_remote_flush)
-> +			kvm_update_arch_tdp_pointer(kvm, vcpu, eptp);
-> +#endif
->  
->  		if (!enable_unrestricted_guest && !is_paging(vcpu))
->  			guest_cr3 = to_kvm_vmx(kvm)->ept_identity_map_addr;
-> @@ -6989,8 +6910,6 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
->  	vmx->pi_desc.nv = POSTED_INTR_VECTOR;
->  	vmx->pi_desc.sn = 1;
->  
-> -	vmx->ept_pointer = INVALID_PAGE;
-> -
->  	return 0;
->  
->  free_vmcs:
-> @@ -7007,8 +6926,6 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
->  
->  static int vmx_vm_init(struct kvm *kvm)
->  {
-> -	spin_lock_init(&to_kvm_vmx(kvm)->ept_pointer_lock);
-> -
->  	if (!ple_gap)
->  		kvm->arch.pause_in_guest = true;
->  
-> @@ -7818,9 +7735,9 @@ static __init int hardware_setup(void)
->  #if IS_ENABLED(CONFIG_HYPERV)
->  	if (ms_hyperv.nested_features & HV_X64_NESTED_GUEST_MAPPING_FLUSH
->  	    && enable_ept) {
-> -		vmx_x86_ops.tlb_remote_flush = hv_remote_flush_tlb;
-> +		vmx_x86_ops.tlb_remote_flush = kvm_hv_remote_flush_tlb;
->  		vmx_x86_ops.tlb_remote_flush_with_range =
-> -				hv_remote_flush_tlb_with_range;
-> +				kvm_hv_remote_flush_tlb_with_range;
->  	}
->  #endif
->  
-> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> index 89da5e1251f1..d2e2ab46f5bb 100644
-> --- a/arch/x86/kvm/vmx/vmx.h
-> +++ b/arch/x86/kvm/vmx/vmx.h
-> @@ -325,7 +325,6 @@ struct vcpu_vmx {
->  	 */
->  	u64 msr_ia32_feature_control;
->  	u64 msr_ia32_feature_control_valid_bits;
-> -	u64 ept_pointer;
->  
->  	struct pt_desc pt_desc;
->  	struct lbr_desc lbr_desc;
-> @@ -338,21 +337,12 @@ struct vcpu_vmx {
->  	} shadow_msr_intercept;
->  };
->  
-> -enum ept_pointers_status {
-> -	EPT_POINTERS_CHECK = 0,
-> -	EPT_POINTERS_MATCH = 1,
-> -	EPT_POINTERS_MISMATCH = 2
-> -};
-> -
->  struct kvm_vmx {
->  	struct kvm kvm;
->  
->  	unsigned int tss_addr;
->  	bool ept_identity_pagetable_done;
->  	gpa_t ept_identity_map_addr;
-> -
-> -	enum ept_pointers_status ept_pointers_match;
-> -	spinlock_t ept_pointer_lock;
->  };
->  
->  bool nested_vmx_allowed(struct kvm_vcpu *vcpu);
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 2a20ce60152e..f566e78b59b9 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10115,6 +10115,10 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
->  	vcpu->arch.pending_external_vector = -1;
->  	vcpu->arch.preempted_in_kernel = false;
->  
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +	vcpu->arch.tdp_pointer = INVALID_PAGE;
-> +#endif
-> +
->  	r = static_call(kvm_x86_vcpu_create)(vcpu);
->  	if (r)
->  		goto free_guest_fpu;
-> @@ -10470,7 +10474,6 @@ void kvm_arch_free_vm(struct kvm *kvm)
->  	vfree(kvm);
->  }
->  
-> -
-
-Stray change?
-
->  int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->  {
->  	if (type)
-> @@ -10498,6 +10501,10 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->  
->  	kvm->arch.guest_can_read_msr_platform_info = true;
->  
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +	spin_lock_init(&kvm->arch.tdp_pointer_lock);
-> +#endif
-> +
->  	INIT_DELAYED_WORK(&kvm->arch.kvmclock_update_work, kvmclock_update_fn);
->  	INIT_DELAYED_WORK(&kvm->arch.kvmclock_sync_work, kvmclock_sync_fn);
+Interesting. Do you have an example of this? I've thought checkpatch.pl
+gave a warning if the line ended with an opening parenthesis no matter
+what.
 
 -- 
-Vitaly
+Kind regards,
 
+Sakari Ailus
