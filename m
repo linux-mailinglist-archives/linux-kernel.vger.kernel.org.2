@@ -2,106 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94FEB361F44
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9CA361F4B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238637AbhDPMCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 08:02:53 -0400
-Received: from mout.gmx.net ([212.227.15.18]:36583 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233955AbhDPMCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 08:02:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1618574528;
-        bh=QP6zpvpiOBFTWjRWyUOTqKOfudm/QdBgNsC0x5d1gCc=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=ahAoaxj1aNdqkQWn1fbThMmBcTvNABN9BHeOXWOg20KpceytAZxs4EcPGhAgZoclo
-         RhbUc7+q2laWUPS+zzN8aFKoZCGEF35LyaFh12lDweb5lhQxKZrVfZ0/imeFfat5Ld
-         0b6S2HQDGBJGG56hHd+lKkqP36tup/c9WUwhnPKI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.150.210]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MyKDe-1ljVgC1nH2-00yeSM; Fri, 16
- Apr 2021 14:02:08 +0200
-Message-ID: <725fa3dc1da2737f0f6188a1a9701bead257ea9d.camel@gmx.de>
-Subject: [patch] x86/crash: fix crash_setup_memmap_entries() out-of-bounds
- access
-From:   Mike Galbraith <efault@gmx.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     DaveYoung <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        kexec@lists.infradead.org, x86@kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Date:   Fri, 16 Apr 2021 14:02:07 +0200
-In-Reply-To: <20210416114708.GB79779@dhcp-128-65.nay.redhat.com>
-References: <9efaad2ba042b8791cbe8c3e7cad491fe05e06eb.camel@gmx.de>
-         <20210416110701.GA3835@dhcp-128-65.nay.redhat.com>
-         <063a63ddea914ac654cbe9a1d1d6c76986af7882.camel@gmx.de>
-         <20210416114708.GB79779@dhcp-128-65.nay.redhat.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:iwXci5EKGJCJtgOxAHTN+ZCcPnvvbKkNgfxSiWpZObzDaRzWl6B
- k+B4aPtuXJOOTEkyC18B4DtnGdP34+RcvoOvUWPNsRIwoSsfeu2enruZtSIW8OIxyRKcW+r
- TN3Wrv1FeN+8/zdA5jTxTTfmL+5RZtl2MY0FKSNE3OaSA3SPVQ3Wkq1we/u0K9m+DMYsJD5
- FwUqUydgGkWVl+x3mbPrA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:7D78gtA7+Ak=:Go2v7MRNt8f3Ktc8CDYIfd
- cZsZOvyzRYU/urIt1TX+jEOHj+GJtQvjmvM7ojBqMRpZJlcqeJpwab6YOgcAIKVf6k324HgnN
- yBegOePDoA+UJfsH7m9LtWI5cFv9ML/8q83XnQURT7iUw3ePR6R845bLW3csXaOWaZBjOWvsR
- ehkCX5RXPq72r1hMFRmAzKZE6x4joURRF43IONICCVKoc7VyjFf3zDjOFmpsN9mP9o11bCTCz
- beAuozDUt++as+afu3GhiLk6ZSe5zivOSISmO909PqOBUXQxmGEJObg9t2zvh9a6P+BIA8i1w
- hZPIZ5LQMWWxQ43V2lFqxvnXRKZ7Pk5MXY3EoUOrrcYJXLA3t6bUE/6FbDtYajTtSh5J4saf1
- 09vPzrvaRniY9+GK8owS3MnQQ5CYs1CTanh5m/M1VLNkbA6eKI1WrKCuC7Gf+pns1hqVWE/NE
- etYCiXxB4GNJSR1LpPoqF8M9NFe+WlG6EBNBNA4a022lONxpp7NkThj2fK1M6vYtQsrFRufqk
- rqELAdQzrjJOmbjDVFV61XXR1SxsShadqEYQaF9tvzZrvYhrbmvstnvKvt/HfkKB4I3w4nKLC
- TDBgxlC0h0NxukzkY5YDypqDwUzS/hYs79ygSz21p7sX3nb8vggeLOmzM9xYq14eyb2M4Tybl
- z+7ij1qkHZ+9J/HBCGYofqA2z9kFBr4n8Og+cKR8WnlKzvtDhJC9mTa0aekmx70SnXPfPMO6c
- a6DXbkICRgfJfXsoROuxBmM7GoSTgffbqUqHs+rhrwmFqJB887HRtcsquzWtMp6sFf1Ee8cz7
- HrrXGLdvhZpNrrqUP7vXmAJHsIWMfKHmLoXpMp0XjFRuOeJRNsKwsmHQI1PEVjpCxxSIqs5Ma
- Odu/PYjJLZnet4He13A/zMmCY5Qa2+P5bzdSemKm+1ryjBndKcFSIA8YUHEamCFSeNxVjWQgt
- +mMkWQKgMEQQxMTFasnmUh6xKlwO7QgKhoPHppr2p/KgOY0RdTHZ50MVHGItx40uqwpbr9nL5
- RgHu0pf+k4WqMRYh8fZAGITL9ChR72Ca7uG8FS4SiUL6NSIu7qbKjJgcN9MD93wyCY7/gLvU6
- FH790iUbDHgNx2QKkdD9QZCP2QddJPMXHA4fr1nfNql9Cc9zQBGVSxyfZ6B/5PXMb3R2m9hJE
- 2DOJ87Ca3U7AZ2c7jZ5l8QK8+RzU2kpiJAbIyRUM9DwN2rqZ87wAJXBXoLsU6adie3SjE=
+        id S240913AbhDPMEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 08:04:46 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:42009 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237682AbhDPMEk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 08:04:40 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618574655; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=2ykfzo43bdfME6vikSYhWqnN90ERJ9J2e6T9baSKjWE=; b=EOIuLZdn5am7faWeixIcDLkrRvryTNlEeG7k6ENyecdY0amOuCQgGwFQ/h/RVQJw8JBLbVKo
+ mxQOOX0LRlB76blbg0nYYaaiWJkh7Rnjif63ju2Cx2po16WFiWGd6T/urh45HqN4D7cyz9pF
+ f6oqK4xkZ/WOkvnfHyxSggTsB+o=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 60797d3ce0e9c9a6b658fcaf (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Apr 2021 12:04:12
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id ED746C43462; Fri, 16 Apr 2021 12:04:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EB914C433C6;
+        Fri, 16 Apr 2021 12:04:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EB914C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     bjorn.andersson@linaro.org, ulf.hansson@linaro.org,
+        mathieu.poirier@linaro.org, robh+dt@kernel.org, swboyd@chromium.org
+Cc:     rjw@rjwysocki.net, agross@kernel.org, ohad@wizery.com,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, rishabhb@codeaurora.org,
+        sidgup@codeaurora.org, Sibi Sankar <sibis@codeaurora.org>
+Subject: [PATCH 00/12] Use qmp_send to update co-processor load state
+Date:   Fri, 16 Apr 2021 17:33:46 +0530
+Message-Id: <1618574638-5117-1-git-send-email-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[   15.428011] BUG: KASAN: vmalloc-out-of-bounds in crash_setup_memmap_ent=
-ries+0x17e/0x3a0
-[   15.428018] Write of size 8 at addr ffffc90000426008 by task kexec/1187
+The power domains exposed by the AOSS QMP driver control the load state
+resources linked to modem, adsp, cdsp remoteprocs. These are used to
+notify the Always on Subsystem (AOSS) that a particular co-processor is
+up/down. AOSS uses this information to wait for the co-processors to
+suspend before starting its sleep sequence. These co-processors enter
+low-power modes independent to that of the application processor and
+the load state resources linked to them are expected to remain unaltered
+across system suspend/resume cycles. To achieve this behavior lets stop
+modeling them as power-domains and replace them with generic qmp_send
+interface instead.
 
-(gdb) list *crash_setup_memmap_entries+0x17e
-0xffffffff8107cafe is in crash_setup_memmap_entries (arch/x86/kernel/crash=
-.c:322).
-317                                      unsigned long long mend)
-318     {
-319             unsigned long start, end;
-320
-321             cmem->ranges[0].start =3D mstart;
-322             cmem->ranges[0].end =3D mend;
-323             cmem->nr_ranges =3D 1;
-324
-325             /* Exclude elf header region */
-326             start =3D image->arch.elf_load_addr;
-(gdb)
+https://lore.kernel.org/lkml/20200913034603.GV3715@yoga/
+Previous dicussion on dropping power-domain support from AOSS QMP driver
 
-Append missing struct crash_mem_range to cmem.
+https://lore.kernel.org/lkml/1617943188-23278-2-git-send-email-deesin@qti.qualcomm.com/
+Depends on ^^
 
-Signed-off-by: Mike Galbraith <efault@gmx.de>
-=2D--
- arch/x86/kernel/crash.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sibi Sankar (12):
+  dt-bindings: soc: qcom: aoss: Drop power-domain bindings
+  soc: qcom: aoss: Drop power domain support
+  dt-bindings: remoteproc: qcom: pas: Add QMP bindings
+  dt-bindings: remoteproc: qcom: Add QMP bindings
+  remoteproc: qcom: q6v5: Use qmp_send to update co-processor load state
+  arm64: dts: qcom: sc7180: Use QMP binding to control load state
+  arm64: dts: qcom: sc7280: Use QMP binding to control load state
+  arm64: dts: qcom: sdm845: Use QMP binding to control load state
+  arm64: dts: qcom: sm8150: Use QMP binding to control load state
+  arm64: dts: qcom: sm8250: Use QMP binding to control load state
+  arm64: dts: qcom: sm8350: Use QMP binding to control load state
+  dt-bindings: soc: qcom: aoss: Delete unused power-domain definitions
 
-=2D-- a/arch/x86/kernel/crash.c
-+++ b/arch/x86/kernel/crash.c
-@@ -337,7 +337,7 @@ int crash_setup_memmap_entries(struct ki
- 	struct crash_memmap_data cmd;
- 	struct crash_mem *cmem;
+ .../devicetree/bindings/remoteproc/qcom,adsp.txt   |  11 ++-
+ .../devicetree/bindings/remoteproc/qcom,q6v5.txt   |   7 +-
+ .../devicetree/bindings/soc/qcom/qcom,aoss-qmp.txt |  16 +--
+ arch/arm64/boot/dts/qcom/sc7180.dtsi               |   9 +-
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               |   2 -
+ arch/arm64/boot/dts/qcom/sdm845.dtsi               |   8 +-
+ arch/arm64/boot/dts/qcom/sm8150.dtsi               |  28 +++---
+ arch/arm64/boot/dts/qcom/sm8250.dtsi               |  22 ++---
+ arch/arm64/boot/dts/qcom/sm8350.dtsi               |  30 +++---
+ drivers/remoteproc/qcom_q6v5.c                     |  57 ++++++++++-
+ drivers/remoteproc/qcom_q6v5.h                     |   7 +-
+ drivers/remoteproc/qcom_q6v5_adsp.c                |   7 +-
+ drivers/remoteproc/qcom_q6v5_mss.c                 |  44 ++-------
+ drivers/remoteproc/qcom_q6v5_pas.c                 |  80 ++++-----------
+ drivers/remoteproc/qcom_q6v5_wcss.c                |   4 +-
+ drivers/soc/qcom/qcom_aoss.c                       | 109 +--------------------
+ include/dt-bindings/power/qcom-aoss-qmp.h          |  14 ---
+ 17 files changed, 163 insertions(+), 292 deletions(-)
+ delete mode 100644 include/dt-bindings/power/qcom-aoss-qmp.h
 
--	cmem =3D vzalloc(sizeof(struct crash_mem));
-+	cmem =3D vzalloc(struct_size(cmem, ranges, 1));
- 	if (!cmem)
- 		return -ENOMEM;
-
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
