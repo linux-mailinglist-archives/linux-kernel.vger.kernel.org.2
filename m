@@ -2,69 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A2F3622F3
+	by mail.lfdr.de (Postfix) with ESMTP id B44AD3622F4
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243350AbhDPOk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:40:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45194 "EHLO
+        id S245363AbhDPOlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:41:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244497AbhDPOil (ORCPT
+        with ESMTP id S244767AbhDPOim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:38:41 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9280EC06134E
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:38:09 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id sd23so33835238ejb.12
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:38:09 -0700 (PDT)
+        Fri, 16 Apr 2021 10:38:42 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C5CC06134F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:38:10 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id o20so6274324edc.7
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:38:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JrproNEUMCgSjmh/8B0I/rNyBQoaOU4LantvG8VttuY=;
-        b=AbhwF2o8lWGjI+FDsAThxXdYjTFw6ntHJ+FjLaceNvJgOS2Y7pl+JkE3/1i576V58B
-         YvDUmpqhZuyg4ON7XYVatcqM580H8JN3lJS9HLyvlLYjuXBs5xAjEta/3co9QOEIr43v
-         XLrqP7juFl6LHY7r+NdZVb0uIbH4dibSpJu6wGgmMky1EuVOjhAXtvsFFHpR0y46mchQ
-         rNSYZwaCr8ePffvLwn7sdYpMKrD+vBBEloIRYGDJwzMvm6Upd6Mr0PlQYUiNkmTcHqFp
-         eVdmSNrJHUvjzz7h9vB9PlsqKdu6rTezQq6HeQ7z78UZtM0LGOPupSB1p9WxIUVHznWW
-         Y/hA==
+        bh=4gQV8mJJSsa7/geg3uIIMju4DuwjY0BUG1OfqH4cLSs=;
+        b=u6xbTe3xnS1gxy5a6K6GfhsnvR+yi1tODlvBP0VAE7+3t8Yro6VDBbKwS753lIQs8W
+         p8WxAHkE8yRXaFTsQ38fO6gNDCMye+0iXJ/bugUjU/Ukti+9nG2YiCz6A+JztQ2Ikvj5
+         eMvhwvqeXTPrDQRWGMaC3DUQtFfLgU2G9nWqHX9QFDcRjFNRv/K/LgJOJLy+KZ6XETul
+         PJHcTwK+yLHk4N6r3Vq/316CC6LRR67mt+GiT8UKl3AieE0d2tNYrCmuYtEKNFiRIE+6
+         iwlq0JUnw59qA52zPXYh86eRrO/5DQMhpYcgBvdCYWqrgvhyuNJ2iJlb5LDEOnIdIn9W
+         HsoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JrproNEUMCgSjmh/8B0I/rNyBQoaOU4LantvG8VttuY=;
-        b=q/0lVzvOoRoKdSe1kPR83SBxKBo3d2ElUTQw0+Z52vlGjV5iU1jrGbn2wRLw7GB15D
-         cP91mU2G+G8RjZFdMiu7S0ve+60koo+TrvheKlgpcOa6WjPmgOof/Y8n6B8IpCuxqjyb
-         tDnpB60d3gXK9dgLd/ndEixNgFJl0rJHy5aNJ0sOjSKp5p4IhwOzVn1OcQmj4MFupVPU
-         WWvRWr1gVw7ffeQvJIVhMZlDMbX+l6mQ8Wj/rh2sbylIoeKoqDueWvjTaBkuCN2Nv85o
-         hT6PSmceUlgzNznP0w2MIpwak3LALXRAi0YzirRUT/baOls4BiYp2p9lUhdtVHZfYdig
-         cD1A==
-X-Gm-Message-State: AOAM5307FL79CvgOQReXcpzePIrjJxxHkxxTm7HbOgWSrdz/Xi3lQvxO
-        v6Uc+72IxM1wN5FHKvZo868oHA==
-X-Google-Smtp-Source: ABdhPJxRohIyR/YCoUD5YI/XkzLdyuPidmXlmk0d8AmwuQ7/5UcOVVluw10vUFCBA6T3eZAmMx7dlA==
-X-Received: by 2002:a17:906:dbcd:: with SMTP id yc13mr8165471ejb.99.1618583888233;
-        Fri, 16 Apr 2021 07:38:08 -0700 (PDT)
+        bh=4gQV8mJJSsa7/geg3uIIMju4DuwjY0BUG1OfqH4cLSs=;
+        b=gkaYPw7oOo8IpmraZjfMtiSEEbq+KKglSzrw1CrzYj/9kF6bPvxGWeQhWs9GFUc16I
+         bBc6CGLUGDvlyzQK8uQC1u/d02PFzHdTp6xqjFFSV48a/O+pby38ozZGbrhhwTnyCA1f
+         g3EJskJsFLpRuDoGgmRnYjnoIkDqjR6j3Y/ChCZqqQ0NdjqXvfHg1Vx3b4lhxZJJycyo
+         4Eg/54Im/trqZSlrS90bd5M2HDfufiYaLrhsO5qvaDXR/e8hhy0aM4U57pU8xBp9WZ/r
+         iKT5T3XTvvCRKCAguTHDUkm9/uFqMJp3k/Az7PBmHzh+SqQneKRntWp6FOt9Q7yzvf3p
+         g8BA==
+X-Gm-Message-State: AOAM530ntnmvTXSmEaoM7yUmkh1by729WhsGvKxLTk3v5DQ7uGradq7F
+        9ex7RU/a+MhVtDEIQQ3fbFFdng==
+X-Google-Smtp-Source: ABdhPJx6hl0NeE9v7r2wwoPvU738KX9/i1DbfaWlqv4VwG0bItjiP/oOEsDadsPe3idoRSOBEDjryg==
+X-Received: by 2002:a05:6402:b07:: with SMTP id bm7mr10115095edb.82.1618583889302;
+        Fri, 16 Apr 2021 07:38:09 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id j10sm1326523ejk.93.2021.04.16.07.38.07
+        by smtp.gmail.com with ESMTPSA id j10sm1326523ejk.93.2021.04.16.07.38.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 07:38:07 -0700 (PDT)
+        Fri, 16 Apr 2021 07:38:08 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Inki Dae <inki.dae@samsung.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
+Cc:     linux-kernel@vger.kernel.org,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Akshu Agarwal <akshua@gmail.com>,
-        Ajay Kumar <ajaykumar.rs@samsung.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: [PATCH 36/40] drm/exynos/exynos7_drm_decon: Realign function name with its header
-Date:   Fri, 16 Apr 2021 15:37:21 +0100
-Message-Id: <20210416143725.2769053-37-lee.jones@linaro.org>
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 37/40] drm/panel/panel-sitronix-st7701: Demote kernel-doc format abuse
+Date:   Fri, 16 Apr 2021 15:37:22 +0100
+Message-Id: <20210416143725.2769053-38-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210416143725.2769053-1-lee.jones@linaro.org>
 References: <20210416143725.2769053-1-lee.jones@linaro.org>
@@ -76,38 +71,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/exynos/exynos7_drm_decon.c:355: warning: expecting prototype for shadow_protect_win(). Prototype was for decon_shadow_protect_win() instead
+ drivers/gpu/drm/panel/panel-sitronix-st7701.c:42: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
 
-Cc: Inki Dae <inki.dae@samsung.com>
-Cc: Joonyoung Shim <jy0922.shim@samsung.com>
-Cc: Seung-Woo Kim <sw0312.kim@samsung.com>
-Cc: Kyungmin Park <kyungmin.park@samsung.com>
+Cc: Jagan Teki <jagan@amarulasolutions.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Sam Ravnborg <sam@ravnborg.org>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc: Akshu Agarwal <akshua@gmail.com>
-Cc: Ajay Kumar <ajaykumar.rs@samsung.com>
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-samsung-soc@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/exynos/exynos7_drm_decon.c | 2 +-
+ drivers/gpu/drm/panel/panel-sitronix-st7701.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/exynos/exynos7_drm_decon.c b/drivers/gpu/drm/exynos/exynos7_drm_decon.c
-index 431c5d32f9a47..9b5e6f94e5585 100644
---- a/drivers/gpu/drm/exynos/exynos7_drm_decon.c
-+++ b/drivers/gpu/drm/exynos/exynos7_drm_decon.c
-@@ -344,7 +344,7 @@ static void decon_win_set_colkey(struct decon_context *ctx, unsigned int win)
- }
+diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7701.c b/drivers/gpu/drm/panel/panel-sitronix-st7701.c
+index 4d2a149b202cb..320a2a8fd4592 100644
+--- a/drivers/gpu/drm/panel/panel-sitronix-st7701.c
++++ b/drivers/gpu/drm/panel/panel-sitronix-st7701.c
+@@ -38,7 +38,7 @@
+ #define DSI_CMD2_BK1_SPD2		0xC2 /* Source EQ2 Setting */
+ #define DSI_CMD2_BK1_MIPISET1		0xD0 /* MIPI Setting 1 */
  
- /**
-- * shadow_protect_win() - disable updating values from shadow registers at vsync
-+ * decon_shadow_protect_win() - disable updating values from shadow registers at vsync
+-/**
++/*
+  * Command2 with BK function selection.
   *
-  * @ctx: display and enhancement controller context
-  * @win: window to protect registers for
+  * BIT[4, 0]: [CN2, BKXSEL]
 -- 
 2.27.0
 
