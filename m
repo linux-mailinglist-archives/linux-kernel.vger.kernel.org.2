@@ -2,71 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F340361840
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 05:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9640C361842
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 05:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237035AbhDPDia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 23:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40744 "EHLO
+        id S238074AbhDPDii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 23:38:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234816AbhDPDi1 (ORCPT
+        with ESMTP id S234816AbhDPDig (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 23:38:27 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFA36C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 20:38:03 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id e8-20020a17090a7288b029014e51f5a6baso8546488pjg.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 20:38:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=areca-com-tw.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:date:mime-version
-         :content-transfer-encoding;
-        bh=9YrdWgC2SFRBEtg49JT1X0HhBm78LmIvkwcHdeoziQA=;
-        b=JsZPk/tojGvPw0Ly046RGV1Ws4CtLQ7QucqbfbuT0QIcjjs9f5EjQKArpdXFi8hV+i
-         a/xGS5MYSXm8kFeM7OU0YAiCP5EF42/t3QDKFqKYMqE7CNc6DVe334Sjfq8ljFaVnOhA
-         yf+RzOEKovd5lAAM5XshlojbIL+qcrj523XzvTtBSUKintg12FziDbtkEHu2GzzsXlf7
-         uVPPW5nksO89xPiyzvUymSiF7PSFTUfo84eVZjd4MFPQuj6aczNTpnOxDgw1jejTyS/5
-         4UvwsKfSOIUv02IIi1iTIn0s9/Yhrp9FV+d4WQTMKXdB2FCkNb7E8Gc6Lb3UF+eT1c7r
-         Aabw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:date:mime-version
-         :content-transfer-encoding;
-        bh=9YrdWgC2SFRBEtg49JT1X0HhBm78LmIvkwcHdeoziQA=;
-        b=mvG6b5SLZhaX5uUWMxF3biLx2dYKiJ9D31LEBzqlywZFu0bT2YB9Mchv3nD37+dLIL
-         mIUmp1a2kz9y1a37kStSdr90le7o2toDLkgr5avbsPunO7wkQI+Ao11JSSU1RuiO7pCl
-         mWVTebyz4fqlFy4i6pAdZVW0rT7KWdSfZjRty1K0Yr2tVEU5WCXyUBxxl1SGu2C8Ok6Y
-         coZ7mKyEORx5pmhY//cxxa4a/pSotK5Q+V80wzC51UWqZKeruRoSI1qPYmUnNEGkoKtH
-         takXRtpokqvQQ41n0wlrqBh353kJDOe8MADUtYLNUewQTnXXHyYb+VsVKdlOkXEx1AY/
-         CFbA==
-X-Gm-Message-State: AOAM53193c8EGwPlf8LyZuNeBtRELSWdYbomkYjq8ZvRhAjbuF1SMF3q
-        NMeunlgaTyHcfUj54WgsU9qLow==
-X-Google-Smtp-Source: ABdhPJzwuHP98jFLc7VDRXgO6t852ZA7yohI3crumgP2QljiMkwxyYJ+NbQNftjPqjT4gd92JCL+Zg==
-X-Received: by 2002:a17:90b:1647:: with SMTP id il7mr6979963pjb.132.1618544283266;
-        Thu, 15 Apr 2021 20:38:03 -0700 (PDT)
-Received: from centos78 (60-248-88-209.HINET-IP.hinet.net. [60.248.88.209])
-        by smtp.gmail.com with ESMTPSA id 14sm3308259pfl.1.2021.04.15.20.38.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 15 Apr 2021 20:38:02 -0700 (PDT)
-Message-ID: <0b1571666e97dd121da59b2861d389550ab86597.camel@areca.com.tw>
-Subject: [PATCH 0/2] scsi: arcmsr: fix SCSI command timeout on ARC-1886
-From:   ching Huang <ching2048@areca.com.tw>
-To:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
-        linux-scsi@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Fri, 16 Apr 2021 11:38:00 +0800
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-10.el7) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Thu, 15 Apr 2021 23:38:36 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C8CBC061574;
+        Thu, 15 Apr 2021 20:38:13 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lXFJ3-005fLg-Lp; Fri, 16 Apr 2021 03:38:09 +0000
+Date:   Fri, 16 Apr 2021 03:38:09 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH] fs: split receive_fd_replace from __receive_fd
+Message-ID: <YHkGodVOpc/kg3V8@zeniv-ca.linux.org.uk>
+References: <20210325082209.1067987-1-hch@lst.de>
+ <20210325082209.1067987-2-hch@lst.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325082209.1067987-2-hch@lst.de>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is against to mkp's 5.13/scsi-staging.
+On Thu, Mar 25, 2021 at 09:22:09AM +0100, Christoph Hellwig wrote:
+> receive_fd_replace shares almost no code with the general case, so split
+> it out.  Also remove the "Bump the sock usage counts" comment from
+> both copies, as that is now what __receive_sock actually does.
 
-This patch fixed the wrong cdb payload report to IOP, that cause scsi command
-timeout when scatter-gather count is large than some number.
----
+Nice, except that you've misread that, er, lovely API.  This
 
+> -static inline int receive_fd_replace(int fd, struct file *file, unsigned int o_flags)
+> -{
+> -	return __receive_fd(fd, file, NULL, o_flags);
+> +	return __receive_fd(file, NULL, o_flags);
+>  }
 
+can get called with negative fd (in which case it turns into an alias for
+receive_fd(), of course).  As the result, that ioctl got broken in case
+when SECCOMP_ADDFD_FLAG_SETFD is not set.  Trivially fixed by having the
+only caller check the damn condition and call either receive_fd_replace()
+or receive_fd().
