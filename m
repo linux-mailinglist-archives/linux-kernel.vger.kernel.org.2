@@ -2,86 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB61361877
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 05:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53B08361889
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 06:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238410AbhDPD6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 23:58:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45120 "EHLO
+        id S230287AbhDPEJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 00:09:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238379AbhDPD6a (ORCPT
+        with ESMTP id S229502AbhDPEJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 23:58:30 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9ADDC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 20:58:04 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id h20so13270976plr.4
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 20:58:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=areca-com-tw.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:date:mime-version
-         :content-transfer-encoding;
-        bh=xa3dF3mWjOGHQTSXewzVQttORbJ1MeBGLJ4z7sU7nWs=;
-        b=hDsbccfiO4QBRFKF7p2mclaEkEBZEAoFUo18DDp+TCGeURUfZa0ym1aJy3MucPH+gS
-         uen2f6p0XPtPHyfAcBkTuRKVmq4GXMSBCYDwaPoOxVMyJUdrQHbBUxXeOHqvLys0LcK5
-         2o1pqA0P0dIsr5My/0NEXgMl7+bQGL9273w6/ZMFJ3xeabmzw0Mx6sTFBc8kX86QUd2v
-         lVXHJcaU7BdudghOpMsNfbstOZcniHpoBzTTpYOT3tPdVvC3560GsaWb9iXHLeQE3Zci
-         VzxVvmSi3hP+geT0pT5Zkx0cSGNODArs7AebotLMZtqlqSRseEkeiFylRkqDlLZcSOnV
-         L+Qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:date:mime-version
-         :content-transfer-encoding;
-        bh=xa3dF3mWjOGHQTSXewzVQttORbJ1MeBGLJ4z7sU7nWs=;
-        b=oWJFUJbO2a7AEh4MoeNpSYvOpDCHg3tFFsOmP2z/EKnWDXbsx+ef+CaxBjNH8XmxDD
-         ZukiOZhQ3SlI8XN6Vb3vNcRHZs4Ey30Yc/PzqLUSjhej/z9P917SuDa08JfAsAY/7Ybh
-         gYOeoLQLarKzY70ZFSegCFQD7nExl5UVD1+KfTg1NzDCEGQE1IJ8oyeRA7sdGN8ZKrEr
-         PMHFeiG5HR1GCFUK3PzDBdvoexlo0tcEFnvw8+PZZKEKXuckXTBfFaQOsWcQa98Dpocb
-         BnyAm75ZVTFLmmWi5vXS726Dty/GS3BjEAhyweqzjp893KlCJXFrRcAnKCrp0HyHWhnD
-         APHQ==
-X-Gm-Message-State: AOAM5325j1RkRCTqpW9nmIlJT3v+RKkMm4TTJnYalS4bEdOXbW+mgBnD
-        5PWnROqgDIG2apN+z5JM02T66eaoKv6fww==
-X-Google-Smtp-Source: ABdhPJyBCVgFDJt7lAZEwyqfQoG1JyoAPvR7ALiEabt1kcJvgo/pe9JbzJg5U4pl+r07xssEt+7e8g==
-X-Received: by 2002:a17:90b:ed8:: with SMTP id gz24mr7209234pjb.98.1618545484393;
-        Thu, 15 Apr 2021 20:58:04 -0700 (PDT)
-Received: from centos78 (60-248-88-209.HINET-IP.hinet.net. [60.248.88.209])
-        by smtp.gmail.com with ESMTPSA id i9sm4328017pjh.9.2021.04.15.20.58.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 15 Apr 2021 20:58:04 -0700 (PDT)
-Message-ID: <1ca5474a5c6fea59bf13cdf84f7bd17f0b20f562.camel@areca.com.tw>
-Subject: [PATCH 2/2] scsi: arcmsr: update driver version to
- v1.50.00.04-20210414
-From:   ching Huang <ching2048@areca.com.tw>
-To:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
-        linux-scsi@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Fri, 16 Apr 2021 11:58:02 +0800
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-10.el7) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Fri, 16 Apr 2021 00:09:17 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE716C061574;
+        Thu, 15 Apr 2021 21:08:52 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FM2l51dMQz9sVv;
+        Fri, 16 Apr 2021 14:08:49 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618546129;
+        bh=LzX6QQLQc8CQHgRYWvVv11qjsr5ClNvJpZxmq+uydjo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gfYYuOZvQk4GDQFMvzyXIEYVKm5yWq88lFyRyKqym/Ki90zQdDANOFuUN3Jeq6VZ5
+         3IHibWyCbzVAaLtG4wFYzhpp6ykTK1ampNGljUSBXpJ+XiWsxRl4ZmBhbCeXonqb+i
+         rimrl7rL+zSKMtMliH4VjH52ywYdvb1Pi+oWkiv+f8a9AvX+vS1dMF+g9zUVaHG3TQ
+         B/0iGWrz4pCSZ3FWCzspOWxONr40MEdlJrb2hu4UPgXoCtk5OR/afr/eWyCxboVtvG
+         n2p7xyICqeYd9qIwUdTSa6A6bZUVs0SGcpvT1Lhajvx7m0Tmzie2/c6kQX/984mtnZ
+         bpc/8dRSRLsgQ==
+Date:   Fri, 16 Apr 2021 14:08:48 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Liang, Prike" <Prike.Liang@amd.com>
+Cc:     Alex Deucher <alexdeucher@gmail.com>,
+        "S-k, Shyam-sundar" <Shyam-sundar.S-k@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the amdgpu tree
+Message-ID: <20210416140848.6f458345@canb.auug.org.au>
+In-Reply-To: <BYAPR12MB323890BEC6212E401D10545EFB4C9@BYAPR12MB3238.namprd12.prod.outlook.com>
+References: <20210416124044.53d4beee@canb.auug.org.au>
+        <BYAPR12MB323890BEC6212E401D10545EFB4C9@BYAPR12MB3238.namprd12.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/S6PIT6/iCI7c5JePTqua5jZ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ching Huang <ching2048@areca.com.tw>
+--Sig_/S6PIT6/iCI7c5JePTqua5jZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Update driver version to v1.50.00.04-20210414.
+Hi,
 
-Signed-off-by: ching Huang <ching2048@areca.com.tw>
----
+On Fri, 16 Apr 2021 03:12:12 +0000 "Liang, Prike" <Prike.Liang@amd.com> wro=
+te:
+>=20
+> Hi, Rothwell
 
-diff --git a/drivers/scsi/arcmsr/arcmsr.h b/drivers/scsi/arcmsr/arcmsr.h
-index 0f6abd2..eb0ef73 100644
---- a/drivers/scsi/arcmsr/arcmsr.h
-+++ b/drivers/scsi/arcmsr/arcmsr.h
-@@ -49,7 +49,7 @@ struct device_attribute;
- #define ARCMSR_MAX_OUTSTANDING_CMD	1024
- #define ARCMSR_DEFAULT_OUTSTANDING_CMD	128
- #define ARCMSR_MIN_OUTSTANDING_CMD	32
--#define ARCMSR_DRIVER_VERSION		"v1.50.00.02-20200819"
-+#define ARCMSR_DRIVER_VERSION		"v1.50.00.04-20210414"
- #define ARCMSR_SCSI_INITIATOR_ID	255
- #define ARCMSR_MAX_XFER_SECTORS		512
- #define ARCMSR_MAX_XFER_SECTORS_B	4096
+(Stephen, actually :-))
 
+> This fix solution hasn't locked down and still being discussed and roll-u=
+pdated in the NVMe mail group.
+> Will update the patch once it refined done.
+
+In which case, this patch should not be in linux-next (or any branch
+that is included by linux-next).
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/S6PIT6/iCI7c5JePTqua5jZ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB5DdAACgkQAVBC80lX
+0GzhHQgAiagyfwLl5VT/1Mw64G3vzUoRqG/zBS27GO99VFasxRHUg4+FothEp8gp
+SV04kQz6eWlKTkqWbfBxLzNugVFj5Mw/lsj82FueBDDQd9Fi6PQKPI1Sl8GgzLY1
+BMtmZYB+5ydpUteQoIF4rjtf6e9S1TFkcAUzqMhRyDA/0mou5qCAse7eT4bjmB3N
+j/BfceG15mEAK+m7MrV/ell7SQGQjBTUXajuBy8JrdaH28+oLRFHJ+Cz/vG2J/tq
+XDuqm+TJ5wMLp8iu+Bd3twE313y3V1ret0mQ5ligPm1Qqt6joHBLl2rAu9U11L5U
+hsEMfHe7Y/42v94l9Sok8vCEkpJ+MA==
+=krHA
+-----END PGP SIGNATURE-----
+
+--Sig_/S6PIT6/iCI7c5JePTqua5jZ--
