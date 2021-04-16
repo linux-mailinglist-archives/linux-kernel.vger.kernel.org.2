@@ -2,135 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1133D3617DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 04:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B7C3617E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 04:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234998AbhDPC4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 22:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59816 "EHLO
+        id S235340AbhDPC5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 22:57:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234764AbhDPCz7 (ORCPT
+        with ESMTP id S235096AbhDPC5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 22:55:59 -0400
+        Thu, 15 Apr 2021 22:57:00 -0400
 Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E622C061574;
-        Thu, 15 Apr 2021 19:55:34 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id o2so6449719qtr.4;
-        Thu, 15 Apr 2021 19:55:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CB8C061574;
+        Thu, 15 Apr 2021 19:56:34 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id d6so1575098qtx.13;
+        Thu, 15 Apr 2021 19:56:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=jms.id.au; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=suL1dnZ+yJPZCMAJ4Juw2WYLXt8ud7bqHuYeTFy760Y=;
-        b=F1jVfXS7MPMczBX9Ht5uH8AxLh6pAd5Su23muuHP3C9tVk7MRtPXI147skyXKIFckd
-         HgeAOTGile7OpFTWPexrb7eB5snaT1qtUJ+gMaxkGr21L+WGYWxzZgJX4eZY2evI0o5W
-         aOC6o8X4Cva6IL3DucjUIGuXdKTiSz0qLWd5k=
+        bh=jnkm67rG/2HcFfj+lsSeDL4hn/hfKuiZIPnLkwTSDlk=;
+        b=O+Z3IpOWsKS5ISWSN18gt5XrPXPcHuFe+UtxG5eFnqYsgu5ngJ7gGJTk0UaiAQ0F/e
+         OOPRR51hflQzxcuYTf3wOLFCvV8coI0aQjLapQBWS2ADxk622pl+lRdRc26rAF5lT3MY
+         v0oC522LX1NDpOOxLY5aO3QAZXv1KC8uWla3c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=suL1dnZ+yJPZCMAJ4Juw2WYLXt8ud7bqHuYeTFy760Y=;
-        b=LE7JaVjmc+55afEyYTOKp8wFlbsZE38NnbirKB0LrTp1y3KQlzEhLQhNlcdhm68lDO
-         LKS/rxay2GLYDVGUVATF8fxWfwj4AbpGtGEebZHHAPIhB/AcWNX1MJQ59kQzyMWSTFRg
-         hfw5rngB5vzmpHLTytKQ2STcoNUSjEV66LbwR7VGhoU4Xe/1fyuj+dABlmUWxX0CwGpe
-         p1XQQwZtltZqLbJEYm0zuH+xH56rbEKHbGRZQkcQoFLRdQloiY0SatAoFjLa/T4wqZ4B
-         /6lVBCY1QQIcvf0gmsUNfVNnFFWWUj87NxJ7CwzOQzU092HkPrVJd3PHwKRjILdfRIKl
-         muDg==
-X-Gm-Message-State: AOAM5336yYc+gWLZjeATHl/bm6LKRfqgpc3EqFFpmxEAfPyJfvbWM+1j
-        yns9xdmnyImlpJG68qSxFItkgMWq7DTI/Ot5WPk=
-X-Google-Smtp-Source: ABdhPJwBl5oTwfqjVBgI2UrXXXs/eahKVwoG8bPYGUxhDqljBmSbkoivKoCvbd1/Rw62YcXC9b2FklRA4+mF8+pB6fI=
-X-Received: by 2002:a05:622a:589:: with SMTP id c9mr5979265qtb.363.1618541733396;
- Thu, 15 Apr 2021 19:55:33 -0700 (PDT)
+        bh=jnkm67rG/2HcFfj+lsSeDL4hn/hfKuiZIPnLkwTSDlk=;
+        b=r3Ytu8mg9FBb0TFWspMVwx48ScoJctpv/swwkdXNdsLphgpsmRXK/PDgwMAXBOII8B
+         u4zy7Ct3/GY0BbJfeoYUvsoVbxRJNSSVMT98Kuf0hCfjtJAIgPXzFsEe9ocE1n00UAqK
+         hnINPaRjQTU0m5qnAY4X6FAJswWtxsSplZE2NY3+wBfgrHG7hPx4HGpsEzmAkNbegM42
+         6JZI6v+J2P7VtI5Nz4/ftPe3TXeKnRmNOMkudXQBFg80VI24BTJewZBAYhCpHl0UaZMq
+         9A0Kihs17PnAHb1LCsVjxCtQecSZhTk2Sk63aC+G8N1nRFtqJwt6maa7B5Emqcm0uz+C
+         KnbQ==
+X-Gm-Message-State: AOAM533JE8L2W/VOgujNQgm9qacqbuZeg83IY/BAFuPWBahYrTAMeQE4
+        0E/s5caBqeOxMMhnyLeLyiKMuFVHafX0a8QtUvbYeZze
+X-Google-Smtp-Source: ABdhPJwFIt3wjYFboTIvXYmV9ErYew+4zrMSmwJwwWeusCEXWE8ryNdMaN8pfdSl/vhlCW6ZUgTbG1XGmasTQrvwkdg=
+X-Received: by 2002:a05:622a:d3:: with SMTP id p19mr5901374qtw.385.1618541793208;
+ Thu, 15 Apr 2021 19:56:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210415155300.1135-1-aladyshev22@gmail.com>
-In-Reply-To: <20210415155300.1135-1-aladyshev22@gmail.com>
+References: <20210415140521.11352-1-fercerpav@gmail.com>
+In-Reply-To: <20210415140521.11352-1-fercerpav@gmail.com>
 From:   Joel Stanley <joel@jms.id.au>
-Date:   Fri, 16 Apr 2021 02:55:17 +0000
-Message-ID: <CACPK8XedxKUpgtXCzsmdHw7-U+ySzHmvvb8mGE8QJcxQrEMayg@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: aspeed: amd-ethanolx: Enable all used I2C busses
-To:     Konstantin Aladyshev <aladyshev22@gmail.com>
-Cc:     Supreeth Venkatesh <supreeth.venkatesh@amd.com>,
+Date:   Fri, 16 Apr 2021 02:56:21 +0000
+Message-ID: <CACPK8Xft_59tCyYnMqx10ZcSnMFZjd1MWCEEr1XYcfX-zMcV=w@mail.gmail.com>
+Subject: Re: [PATCH] arm: dts: aspeed: tiogapass: add hotplug controller
+To:     Paul Fertser <fercerpav@gmail.com>
+Cc:     linux-aspeed <linux-aspeed@lists.ozlabs.org>,
         Rob Herring <robh+dt@kernel.org>,
         Andrew Jeffery <andrew@aj.id.au>,
         devicetree <devicetree@vger.kernel.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Apr 2021 at 15:53, Konstantin Aladyshev
-<aladyshev22@gmail.com> wrote:
+On Thu, 15 Apr 2021 at 14:05, Paul Fertser <fercerpav@gmail.com> wrote:
 >
-> Enable all I2C busses that are used in AMD EthanolX CRB:
->  i2c0 - APML P0
->  i2c1 - APML P1
->  i2c2 - FPGA
->  i2c3 - 24LC128 EEPROM
->  i2c4 - P0 Power regulators
->  i2c5 - P1 Power regulators
->  i2c6 - P0/P1 Thermal diode
->  i2c7 - Thermal Sensors
->  i2c8 - BMC I2C
+> The ADM1278 IC is accessible on I2C bus and on both Wiwynn and Quanta
+> Tioga Pass implementations a pair of parallel 0.5 mOhm resistors is used
+> for current measurement.
 >
-> Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com>
+> Signed-off-by: Paul Fertser <fercerpav@gmail.com>
 
 Thanks, applied.
 
 > ---
->  arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts | 30 +++++++++++++++++++
->  1 file changed, 30 insertions(+)
+>  arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts | 5 +++++
+>  1 file changed, 5 insertions(+)
 >
-> diff --git a/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts b/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
-> index ac2d04cfaf2f..6aeb47c44eba 100644
-> --- a/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
-> +++ b/arch/arm/boot/dts/aspeed-bmc-amd-ethanolx.dts
-> @@ -151,6 +151,31 @@ &i2c1 {
->         status = "okay";
->  };
->
-> +//FPGA
-> +&i2c2 {
-> +       status = "okay";
-> +};
-> +
-> +//24LC128 EEPROM
-> +&i2c3 {
-> +       status = "okay";
-> +};
-> +
-> +//P0 Power regulators
-> +&i2c4 {
-> +       status = "okay";
-> +};
-> +
-> +//P1 Power regulators
-> +&i2c5 {
-> +       status = "okay";
-> +};
-> +
-> +//P0/P1 Thermal diode
-> +&i2c6 {
-> +       status = "okay";
-> +};
-> +
->  // Thermal Sensors
+> diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts
+> index 3cc2004fa2f2..500661956dea 100644
+> --- a/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts
+> +++ b/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts
+> @@ -591,6 +591,11 @@
 >  &i2c7 {
 >         status = "okay";
-> @@ -196,6 +221,11 @@ lm75a@4f {
->         };
+>         //HSC, AirMax Conn A
+> +       adm1278@0x45 {
+> +               compatible = "adm1275";
+> +               reg = <0x45>;
+> +               shunt-resistor-micro-ohms = <250>;
+> +       };
 >  };
 >
-> +//BMC I2C
-> +&i2c8 {
-> +       status = "okay";
-> +};
-> +
->  &kcs1 {
->         status = "okay";
->         aspeed,lpc-io-reg = <0x60>;
+>  &i2c8 {
 > --
-> 2.25.1
+> 2.17.1
 >
