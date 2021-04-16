@@ -2,101 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1053626C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7EE53626C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242273AbhDPRav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 13:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56180 "EHLO
+        id S241869AbhDPR36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 13:29:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234404AbhDPRar (ORCPT
+        with ESMTP id S234404AbhDPR34 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 13:30:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166BAC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:30:22 -0700 (PDT)
+        Fri, 16 Apr 2021 13:29:56 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025A5C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:29:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8TWUEpRZp/QTwrvwYSXbnkSx60aeb88p1od16kj1Quo=; b=EP6h+yaataVxruWXk8aKNrfi1k
-        K0yIMUSpQWcoq9exyCKf/XnXGnRr8a6iPUzUFoxVMcvCBOuTMlJrPZsfjfgNfWkQTId+jgu6FtUvU
-        TLBvi8CneTR+9DIFMgLjjMP4koEMwYc3vAlfFsrMAP7Mgza6IbWSXey3OTKthxO/trfHn/qucpbau
-        QJDCqiNDihOKNtNShpiSdC4RNw21ci0Zatd0BeewNkD2zSgY+5JIogS4W5z8Z0x1J25AQEe+YwGVo
-        EuRfhXo8OYEoypPgxzGYMS9MZoEQwiWRnnLXmC8Viy8W8tkK8wzSJ0n8ggnd15+f9dyNofQvL8MYK
-        CCrayGEw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lXSGz-00AFKB-Ko; Fri, 16 Apr 2021 17:28:59 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EF4ED3001FF;
-        Fri, 16 Apr 2021 19:28:52 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CE6B124C0E74A; Fri, 16 Apr 2021 19:28:52 +0200 (CEST)
-Date:   Fri, 16 Apr 2021 19:28:52 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Bharata B Rao <bharata@linux.vnet.ibm.com>,
-        Phil Auld <pauld@redhat.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5] sched/debug: Use sched_debug_lock to serialize use of
- cgroup_path[] only
-Message-ID: <YHnJVK5N1QMTlDgm@hirez.programming.kicks-ass.net>
-References: <20210415195426.6677-1-longman@redhat.com>
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=u8ODfuD7ZxbyadbqukUemqz4oKOx/lRV9JqKv9WQb40=; b=atOhe9o5daLEz7w+GDAl5co5lq
+        n5E6SgDm6EZrhkjz/9SouqlwlwlrfpWNHt0el7T4wrJtoj/3o2hW/F9qL7RwdV+X8ZDLKAcVMtdIH
+        GL7VSHlKNicrQ+yME7lVBfo1KPjOvrNDvMDRbIs30VdYcHKMv8ayOBYCDcr9cTkxBBKppeTDODNoj
+        z715izQb0KhHxGLWJ7o62/qtZe5mAAVr9BDcTYGSzEQa5IyHHInjO5jsnq9Ov/sFysJHVlXfXSfr0
+        3K4dabn0eZ9NDgGuhrg4cgzKyb6mtlKB852U/F0s0YhTn0/QhGaRZ7SnKHIFSD2/6NTZQwGo0/eQz
+        PB5P1XHw==;
+Received: from [2601:1c0:6280:3f0::df68]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lXSHZ-002x3R-Vy; Fri, 16 Apr 2021 17:29:30 +0000
+Subject: Re: Page BUGs
+To:     Drew Abbott <abbotta4@gmail.com>, linux-kernel@vger.kernel.org
+References: <CALY-g84i=WPVT7OKwKa1xJaORPwMUyjdX0ewqqoVsC2ihbpvtg@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <48806d4c-743a-8c63-fd86-04babb149744@infradead.org>
+Date:   Fri, 16 Apr 2021 10:29:25 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210415195426.6677-1-longman@redhat.com>
+In-Reply-To: <CALY-g84i=WPVT7OKwKa1xJaORPwMUyjdX0ewqqoVsC2ihbpvtg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 03:54:26PM -0400, Waiman Long wrote:
-> The handling of sysrq key can be activated by echoing the key to
-> /proc/sysrq-trigger or via the magic key sequence typed into a terminal
-> that is connected to the system in some way (serial, USB or other mean).
-> In the former case, the handling is done in a user context. In the
-> latter case, it is likely to be in an interrupt context.
+On 4/16/21 10:20 AM, Drew Abbott wrote:
+> Hello,
 > 
-> Currently in print_cpu() of kernel/sched/debug.c, sched_debug_lock is
-> taken with interrupt disabled for the whole duration of the calls to
-> print_*_stats() and print_rq() which could last for the quite some time
-> if the information dump happens on the serial console.
-> 
-> If the system has many cpus and the sched_debug_lock is somehow busy
-> (e.g. parallel sysrq-t), the system may hit a hard lockup panic
-> depending on the actually serial console implementation of the
-> system. For instance,
-> 
-...
-> 
-> The purpose of sched_debug_lock is to serialize the use of the global
-> cgroup_path[] buffer in print_cpu(). The rests of the printk calls don't
-> need serialization from sched_debug_lock.
-> 
-> Calling printk() with interrupt disabled can still be problematic if
-> multiple instances are running. Allocating a stack buffer of PATH_MAX
-> bytes is not feasible because of the limited size of the kernel stack.
-> 
-> The solution implemented in this patch is to allow only one caller at a
-> time to use the full size group_path[], while other simultaneous callers
-> will have to use shorter stack buffers with the possibility of path
-> name truncation. A "..." suffix will be printed if truncation may have
-> happened.  The cgroup path name is provided for informational purpose
-> only, so occasional path name truncation should not be a big problem.
-> 
-> Fixes: efe25c2c7b3a ("sched: Reinstate group names in /proc/sched_debug")
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Waiman Long <longman@redhat.com>
+> I have been troubleshooting problems with the vanilla and lts linux kernels
+> for a couple of weeks now and saw this mailing list in MAINTAINERS for
+> problems with mm.h; apologies if this is the wrong place to ask. I have
 
-Thanks!
+MAINTAINERS file says:
+
+MEMORY MANAGEMENT
+M:	Andrew Morton <akpm@linux-foundation.org>
+L:	linux-mm@kvack.org
+S:	Maintained
+W:	http://www.linux-mm.org
+T:	quilt https://ozlabs.org/~akpm/mmotm/
+T:	quilt https://ozlabs.org/~akpm/mmots/
+T:	git git://github.com/hnaz/linux-mm.git
+F:	include/linux/gfp.h
+F:	include/linux/memory_hotplug.h
+F:	include/linux/mm.h
+F:	include/linux/mmzone.h
+F:	include/linux/pagewalk.h
+F:	include/linux/vmalloc.h
+F:	mm/
+
+so linux-mm@kvack.org would be better IMO.
+
+> been experiencing many freezes and panics with this hardware:
+> https://pcpartpicker.com/user/Abbott/saved/#view=wXdgt6
+> Originally[0], many of the traces referred to cpu idling funcs that seem to
+> be addressed already[1][2], but now all of the traces refer to problems
+> with paging[3][4][5][6]. I normally mount a mergerfs filesystem at boot
+> that I thought was causing the panics[7], but I have since removed that
+> entry from fstab and can still see paging bugs without that fs (or any
+> other FUSE fs) mounted[7].
+> What can I do to keep my computer from freezing and panicking?
+> 
+> Thank you,
+> Drew Abbott
+> 
+> [0] https://bbs.archlinux.org/viewtopic.php?id=259571
+> [1] https://bugzilla.kernel.org/show_bug.cgi?id=212087
+> [2] https://bugzilla.kernel.org/show_bug.cgi?id=212543
+> [3] https://imgur.com/HT4F7p7
+> [4] https://imgur.com/pTb4Miu
+> [5] https://imgur.com/pTb4Miu
+> [6] https://imgur.com/JVueE3m
+> [7] http://0x0.st/-ATM.log
+
+[7] tells me:
+SyntaxError: JSON.parse: unexpected non-whitespace character after JSON data at line 1 column 16 of the JSON data
+
+
+
+-- 
+~Randy
+
