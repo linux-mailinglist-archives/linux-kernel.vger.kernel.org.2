@@ -2,126 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE1A361F2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C1E361F39
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235498AbhDPLya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 07:54:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49814 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229706AbhDPLy3 (ORCPT
+        id S237096AbhDPMAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 08:00:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229706AbhDPMAO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 07:54:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618574044;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xRi3iLx/d1dCutzOrV2diewuBUaVQYIWtJjdL4DqXrA=;
-        b=DK1TEerStVBGE5+gk48kDFVk0WW6WDqKeEa2wh+sn+mkXJ9lFXo4K18Lj4H8uHL2SkqEVs
-        cIl3u6pNYjP3xLNKGa4DTH3lLufJtvg/K4lSo4+bCfp/4rphHulY5vzfa3+fNwCi0+5qMl
-        jRlUElM0Nb3TQLnWQmSzzRsyNz15zT8=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-45-SZiIfyt5NbW2ZxTgjIt3Wg-1; Fri, 16 Apr 2021 07:54:03 -0400
-X-MC-Unique: SZiIfyt5NbW2ZxTgjIt3Wg-1
-Received: by mail-wr1-f71.google.com with SMTP id m16-20020a0560000250b02900ffde35c102so4351436wrz.20
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 04:54:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=xRi3iLx/d1dCutzOrV2diewuBUaVQYIWtJjdL4DqXrA=;
-        b=d30CWcb80S+K7RKIBhiRdANPXzKMT+SkLYkgAXQV1lNuNPq2cms70JC60eu6PKPgFR
-         eCBGYK3XG+OeleVt+r5E/v4fgyARVvGgYk6Lcr8aQqq9usYKyEl4HaKxClwsxpQJVVJy
-         8rO+ETP3vHjxjBhiqIesmGDG/N+0nNfWRn5Yj/HYcYcccYZpLjjTs+8SQXPO1JlzDo2l
-         QfTP0bYoZxOEWyqUCFJ97xa4HjoTKwCPe5KKbKMv5S/7Aixn9SjuQGL+gMfO+Pg+930G
-         zgV88gKnPTLG9N5Yiy1dt9FpQz4OAQJNWbfpMioWX7ijmrDDB4a048Kv/cZcMG0mRfIC
-         GlMQ==
-X-Gm-Message-State: AOAM530WYbCyxWiaSRcMANOLlHe+S0H8LIk/bGF2cT3OC3UU2SlGxboS
-        17RX7yh8McVn/8DKONyNc3O4vgkphsYTS0V5aB/tPgb6eKE+t5uPhi8Hvz5r8D/QADBE9liBEx3
-        xbInXbhFKT1kKkwcjQW8ejATA
-X-Received: by 2002:adf:bc49:: with SMTP id a9mr8859056wrh.109.1618574042105;
-        Fri, 16 Apr 2021 04:54:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz45TPUrdRBbQjp6UKDSX/x4TG0TTzsbY/zQUnfTmbSPTX9s6AXQGbir4RRmOHT+616Hu9Ffw==
-X-Received: by 2002:adf:bc49:: with SMTP id a9mr8859040wrh.109.1618574041925;
-        Fri, 16 Apr 2021 04:54:01 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c64fb.dip0.t-ipconnect.de. [91.12.100.251])
-        by smtp.gmail.com with ESMTPSA id b1sm10150075wru.90.2021.04.16.04.54.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Apr 2021 04:54:01 -0700 (PDT)
-Subject: Re: [RFC/RFT PATCH 1/3] memblock: update initialization of reserved
- pages
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
+        Fri, 16 Apr 2021 08:00:14 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F36C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 04:59:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wGfaRGk/vM3XaxINIwIwZxODviPQhYb7h8rUTm2j1IU=; b=YMCLTAOU3ok6ytzEByDqto/h9H
+        ynjZIHbSbB37QjXUCr3AO28T7EvVYqCafU8+KiN/jSvKNegsbENB6rcjFiuIymFnPEI2PWvPS1r+3
+        PZdNxgBon6abxwi5bBsmFEDTVZ+oFQ5ukBA1tHXb2ojK0XZIHJWk+Usex2q5dd2QaZpkRa+JylPWI
+        9VFUSg6dYSc1dWyYCYaOgvzqIz2x01ffel03TDAdH27loZDN443p+yJvReMb440BpLiTkxnhA5vxC
+        ZsyeaCxYGCiARkz2DLmW/He9k9TjZQN40bQJum1wfZSm/0MIMlui0SvAoa6MXxlU6hToiTwP1PcgR
+        K9zHomqA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lXN8G-0020VS-5m; Fri, 16 Apr 2021 11:59:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BEEDF300212;
+        Fri, 16 Apr 2021 13:59:30 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 787572BF88167; Fri, 16 Apr 2021 13:59:30 +0200 (CEST)
+Date:   Fri, 16 Apr 2021 13:59:30 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        kvmarm <kvmarm@lists.cs.columbia.edu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-References: <20210407172607.8812-1-rppt@kernel.org>
- <20210407172607.8812-2-rppt@kernel.org>
- <0c48f98c-7454-1458-15a5-cc5a7e1fb7cd@redhat.com>
- <CAMj1kXGw97epyP2HdHjA8Yp6+VF1j5xmd0AgVBBv3k+h_B610w@mail.gmail.com>
- <3811547a-9057-3c80-3805-2e658488ac99@redhat.com>
- <YHdPmtpzFxHE9mAt@kernel.org>
- <f5503130-c0e7-329f-86c4-727ece1c860f@redhat.com>
- <YHl4mqgh5CtNk1l7@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <1065c0ac-f9e3-2d3a-1ec4-a5c28f98c6ae@redhat.com>
-Date:   Fri, 16 Apr 2021 13:54:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Song Liu <songliubraving@fb.com>, Tejun Heo <tj@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v3 1/2] perf/core: Share an event with multiple cgroups
+Message-ID: <YHl8IpC/tJSrlg7l@hirez.programming.kicks-ass.net>
+References: <20210413155337.644993-1-namhyung@kernel.org>
+ <20210413155337.644993-2-namhyung@kernel.org>
+ <YHhS6kjeA8AvcFgz@hirez.programming.kicks-ass.net>
+ <CAM9d7chrHYNOB4ShJ=34WwXOUY-grXhkiW_wursywTH1FbZdvA@mail.gmail.com>
+ <YHlYT+tHrkNyMFuh@hirez.programming.kicks-ass.net>
+ <YHlY+qd2hF00OrFw@hirez.programming.kicks-ass.net>
+ <YHlmq2q4nNSqJBw6@hirez.programming.kicks-ass.net>
+ <CAM9d7cgjkZuHL=-38DTu8ieMNhLN86Ccg_UUZLb-ZF95Jv6=cw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YHl4mqgh5CtNk1l7@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7cgjkZuHL=-38DTu8ieMNhLN86Ccg_UUZLb-ZF95Jv6=cw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.04.21 13:44, Mike Rapoport wrote:
-> On Thu, Apr 15, 2021 at 11:30:12AM +0200, David Hildenbrand wrote:
->>> Not sure we really need a new pagetype here, PG_Reserved seems to be quite
->>> enough to say "don't touch this".  I generally agree that we could make
->>> PG_Reserved a PageType and then have several sub-types for reserved memory.
->>> This definitely will add clarity but I'm not sure that this justifies
->>> amount of churn and effort required to audit uses of PageResrved().
->>>> Then, we could mostly avoid having to query memblock at runtime to figure
->>>> out that this is special memory. This would obviously be an extension to
->>>> this series. Just a thought.
->>>
->>> Stop pushing memblock out of kernel! ;-)
->>
->> Can't stop. Won't stop. :D
->>
->> It's lovely for booting up a kernel until we have other data-structures in
->> place ;)
+On Fri, Apr 16, 2021 at 08:22:38PM +0900, Namhyung Kim wrote:
+> On Fri, Apr 16, 2021 at 7:28 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Fri, Apr 16, 2021 at 11:29:30AM +0200, Peter Zijlstra wrote:
+> >
+> > > > So I think we've had proposals for being able to close fds in the past;
+> > > > while preserving groups etc. We've always pushed back on that because of
+> > > > the resource limit issue. By having each counter be a filedesc we get a
+> > > > natural limit on the amount of resources you can consume. And in that
+> > > > respect, having to use 400k fds is things working as designed.
+> > > >
+> > > > Anyway, there might be a way around this..
+> >
+> > So how about we flip the whole thing sideways, instead of doing one
+> > event for multiple cgroups, do an event for multiple-cpus.
+> >
+> > Basically, allow:
+> >
+> >         perf_event_open(.pid=fd, cpu=-1, .flag=PID_CGROUP);
+> >
+> > Which would have the kernel create nr_cpus events [the corrolary is that
+> > we'd probably also allow: (.pid=-1, cpu=-1) ].
 > 
-> A bit more seriously, we don't have any data structure that reliably
-> represents physical memory layout and arch-independent fashion.
-> memblock is probably the best starting point for eventually having one.
+> Do you mean it'd have separate perf_events per cpu internally?
+> From a cpu's perspective, there's nothing changed, right?
+> Then it will have the same performance problem as of now.
 
-We have the (slowish) kernel resource tree after boot and the (faster) 
-memmap. I really don't see why we really need another slowish variant.
+Yes, but we'll not end up in ioctl() hell. The interface is sooo much
+better. The performance thing just means we need to think harder.
 
-We might be better off to just extend and speed up the kernel resource tree.
+I thought cgroup scheduling got a lot better with the work Ian did a
+while back? What's the actual bottleneck now?
 
-Memblock as is is not a reasonable datastructure to keep around after 
-boot: for example, how we handle boottime allocations and reserve 
-regions both as reserved.
+> > Output could be done by adding FORMAT_PERCPU, which takes the current
+> > read() format and writes a copy for each CPU event. (p)read(v)() could
+> > be used to explode or partial read that.
+> 
+> Yeah, I think it's good for read.  But what about mmap?
+> I don't think we can use file offset since it's taken for auxtrace.
+> Maybe we can simply disallow that..
 
--- 
-Thanks,
+Are you actually using mmap() to read? I had a proposal for FORMAT_GROUP
+like thing for mmap(), but I never implemented that (didn't get the
+enthousiatic response I thought it would). But yeah, there's nowhere
+near enough space in there for PERCPU.
 
-David / dhildenb
-
+Not sure how to do that, these counters must not be sampling counters
+because we can't be sharing a buffer from multiple CPUs, so data/aux
+just isn't a concern. But it's weird to have them magically behave
+differently.
