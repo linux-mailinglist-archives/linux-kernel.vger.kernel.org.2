@@ -2,117 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A593624EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 18:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A5A33624EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 18:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239170AbhDPQBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 12:01:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:45096 "EHLO foss.arm.com"
+        id S239330AbhDPQBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 12:01:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238227AbhDPQAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 12:00:35 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 95E3C11B3;
-        Fri, 16 Apr 2021 09:00:10 -0700 (PDT)
-Received: from e110455-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 747443F99C;
-        Fri, 16 Apr 2021 09:00:10 -0700 (PDT)
-Received: by e110455-lin.cambridge.arm.com (Postfix, from userid 1000)
-        id 3E537683966; Fri, 16 Apr 2021 17:00:09 +0100 (BST)
-Date:   Fri, 16 Apr 2021 17:00:09 +0100
-From:   Liviu Dudau <Liviu.Dudau@arm.com>
-To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>
-Subject: Re: [PATCH v2 5/8] MIPS: pci-legacy: stop using
- of_pci_range_to_resource
-Message-ID: <YHm0iXB/XubJcw5H@e110455-lin.cambridge.arm.com>
-References: <20210414031240.313852-1-ilya.lipnitskiy@gmail.com>
- <20210414031240.313852-6-ilya.lipnitskiy@gmail.com>
+        id S238434AbhDPQAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 12:00:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08F296124B;
+        Fri, 16 Apr 2021 16:00:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618588817;
+        bh=KvY5zBufE2U23DpSM6M5ZofVXtrCxICzoEgmFqQS7y0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hoYi2gjvo7S8HPOVL4c2hnhAKh4bAK8dCsd27fUD2JozGsYTitkKalZJVR9cR6Nrv
+         m0RqQom6EB71pA+Qs9+lYxDMRibAkCq7+HgMEsfk69iJvdKjUpYsytZSRNIGjhLuXI
+         Y/N+Rkzmdarej6Yw/PIDj8gnmUKVt0TeEva7aiOA=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 5.11.15
+Date:   Fri, 16 Apr 2021 18:00:14 +0200
+Message-Id: <1618588814229120@kroah.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210414031240.313852-6-ilya.lipnitskiy@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ilya,
+I'm announcing the release of the 5.11.15 kernel.
 
-On Tue, Apr 13, 2021 at 08:12:37PM -0700, Ilya Lipnitskiy wrote:
-> Mirror commit aeba3731b150 ("powerpc/pci: Fix IO space breakage after
-> of_pci_range_to_resource() change").
-> 
-> Most MIPS platforms do not define PCI_IOBASE, nor implement
-> pci_address_to_pio(). Moreover, IO_SPACE_LIMIT is 0xffff for most MIPS
-> platforms. of_pci_range_to_resource passes the _start address_ of the IO
-> range into pci_address_to_pio, which then checks it against
-> IO_SPACE_LIMIT and fails, because for MIPS platforms that use
-> pci-legacy (pci-lantiq, pci-rt3883, pci-mt7620), IO ranges start much
-> higher than 0xffff.
+All users of the 5.11 kernel series must upgrade.
 
-I think defining PCI_IOBASE and implementing pci_address_to_pio() would be
-easier in the long run as you will then let the core PCI code do most of
-the work, but given that this is legacy code I can understand that testing
-it would not be simple.
+The updated 5.11.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.11.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-> 
-> In fact, pci-mt7621 in staging already works around this problem, see
-> commit 09dd629eeabb ("staging: mt7621-pci: fix io space and properly set
-> resource limits")
-> 
-> So just stop using of_pci_range_to_resource, which does not work for
-> MIPS.
-> 
-> Fixes PCI errors like:
->   pci_bus 0000:00: root bus resource [io  0xffffffff]
-> 
-> Fixes: 0b0b0893d49b ("of/pci: Fix the conversion of IO ranges into IO resources")
-> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-> Cc: Liviu Dudau <Liviu.Dudau@arm.com>
-> ---
->  arch/mips/pci/pci-legacy.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/mips/pci/pci-legacy.c b/arch/mips/pci/pci-legacy.c
-> index 39052de915f3..3a909194284a 100644
-> --- a/arch/mips/pci/pci-legacy.c
-> +++ b/arch/mips/pci/pci-legacy.c
-> @@ -166,8 +166,13 @@ void pci_load_of_ranges(struct pci_controller *hose, struct device_node *node)
->  			res = hose->mem_resource;
->  			break;
->  		}
-> -		if (res != NULL)
-> -			of_pci_range_to_resource(&range, node, res);
-> +		if (res != NULL) {
-> +			res->name = node->full_name;
-> +			res->flags = range.flags;
-> +			res->start = range.cpu_addr;
-> +			res->end = range.cpu_addr + range.size - 1;
-> +			res->parent = res->child = res->sibling = NULL;
-> +		}
+thanks,
 
-Change looks reasonable to me.
-Reviewed-by: Liviu Dudau <liviu.dudau@arm.com>
+greg k-h
 
-Best regards,
-Liviu
+------------
 
->  	}
->  }
->  
-> -- 
-> 2.31.1
-> 
+ Makefile                              |    2 -
+ arch/arm64/include/asm/kvm_arm.h      |    1 
+ arch/arm64/kernel/cpufeature.c        |    1 
+ arch/arm64/kvm/debug.c                |    2 +
+ arch/riscv/kernel/entry.S             |    1 
+ block/bio.c                           |    2 -
+ drivers/block/null_blk/main.c         |   26 +++++++++++++++++++-----
+ drivers/block/null_blk/null_blk.h     |    1 
+ drivers/gpu/drm/imx/imx-ldb.c         |   10 +++++++++
+ drivers/gpu/drm/tegra/dc.c            |   10 ++++-----
+ drivers/gpu/host1x/bus.c              |   10 +++++----
+ drivers/interconnect/core.c           |    2 +
+ drivers/net/phy/sfp.c                 |   36 ++++++++++++++++++++--------------
+ fs/block_dev.c                        |    4 +++
+ fs/gfs2/super.c                       |   14 ++++++++-----
+ fs/io_uring.c                         |    2 -
+ include/linux/host1x.h                |    9 +++++++-
+ kernel/trace/ftrace.c                 |    9 +++++---
+ lib/test_xarray.c                     |   26 +++++++++++++-----------
+ lib/xarray.c                          |    4 +--
+ net/ipv4/netfilter/arp_tables.c       |    2 +
+ net/ipv4/netfilter/ip_tables.c        |    2 +
+ net/ipv6/netfilter/ip6_tables.c       |    2 +
+ net/netfilter/x_tables.c              |   10 +--------
+ tools/kvm/kvm_stat/kvm_stat.service   |    1 
+ tools/perf/util/map.c                 |    7 ++----
+ tools/testing/radix-tree/idr-test.c   |   10 +++++++--
+ tools/testing/radix-tree/multiorder.c |    2 +
+ tools/testing/radix-tree/xarray.c     |    2 +
+ 29 files changed, 141 insertions(+), 69 deletions(-)
 
--- 
-====================
-| I would like to |
-| fix the world,  |
-| but they're not |
-| giving me the   |
- \ source code!  /
-  ---------------
-    ¯\_(ツ)_/¯
+Andrew Price (1):
+      gfs2: Flag a withdraw if init_threads() fails
+
+Arnaldo Carvalho de Melo (1):
+      perf map: Tighten snprintf() string precision to pass gcc check on some 32-bit arches
+
+Arnd Bergmann (1):
+      drm/imx: imx-ldb: fix out of bounds array access warning
+
+Bob Peterson (1):
+      gfs2: report "already frozen/thawed" errors
+
+Damien Le Moal (1):
+      null_blk: fix command timeout completion handling
+
+Dmitry Osipenko (1):
+      drm/tegra: dc: Don't set PLL clock to 0Hz
+
+Florian Westphal (1):
+      netfilter: x_tables: fix compat match/target pad out-of-bound write
+
+Greg Kroah-Hartman (1):
+      Linux 5.11.15
+
+Jens Axboe (1):
+      io_uring: don't mark S_ISBLK async work as unbounded
+
+Jia-Ju Bai (1):
+      interconnect: core: fix error return code of icc_link_destroy()
+
+Matthew Wilcox (Oracle) (5):
+      XArray: Fix splitting to non-zero orders
+      radix tree test suite: Fix compilation
+      radix tree test suite: Register the main thread with the RCU library
+      idr test suite: Take RCU read lock in idr_find_test_1
+      idr test suite: Create anchor before launching throbber
+
+Mikko Perttunen (1):
+      gpu: host1x: Use different lock classes for each client
+
+Pavel Begunkov (1):
+      block: don't ignore REQ_NOWAIT for direct IO
+
+Russell King (1):
+      net: sfp: cope with SFPs that set both LOS normal and LOS inverted
+
+Stefan Raspl (1):
+      tools/kvm_stat: Add restart delay
+
+Steven Rostedt (VMware) (1):
+      ftrace: Check if pages were allocated before calling free_pages()
+
+Suzuki K Poulose (2):
+      KVM: arm64: Hide system instruction access to Trace registers
+      KVM: arm64: Disable guest access to trace filter controls
+
+Yufen Yu (1):
+      block: only update parent bi_status when bio fail
+
+Zihao Yu (1):
+      riscv,entry: fix misaligned base for excp_vect_table
+
