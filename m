@@ -2,137 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E75362607
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 18:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43957362609
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 18:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237661AbhDPQxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 12:53:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235608AbhDPQxQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 12:53:16 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF7CC061574;
-        Fri, 16 Apr 2021 09:52:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=xwaZyhGuHVF//stIgQlHvFV7S2mNDzaikOUoLUnlYCU=; b=hvEHoCOegBtEzZ29Q5fkQM2d7k
-        WoZcKE7oIkWemXrxUQANxgUpTzHvShoPAA5gT0KCd47RXMuEvAuywOebvr1SntAVPLsLNnbHbwwO7
-        SDfHvn3435dcG/F8l+BT0jZvCDbN2e2dCCFH+Zh7ZUeVTYIo+w5CXZ1OmrIE71bDk+8bLZ0wCePvK
-        Z8ZhZwu4iC10qJkgGVEVvRz1B5kFV9mmiHlhEZ514zzjWmE4u6r3BafHsORmAvELSyJjHdnnYlTe3
-        FnO1NkZCSlmk71191XRotqWcQX+2NclLuaqs7w30HG6DVYl9SXxERmxptExoNSu//mEou7SEWY9Nu
-        NbDY4MPA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lXRhO-00AD29-Ea; Fri, 16 Apr 2021 16:52:14 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5EA3E300212;
-        Fri, 16 Apr 2021 18:52:05 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3AABE20C8DE34; Fri, 16 Apr 2021 18:52:05 +0200 (CEST)
-Date:   Fri, 16 Apr 2021 18:52:05 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ali Saidi <alisaidi@amazon.com>
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        steve.capper@arm.com, benh@kernel.crashing.org,
-        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH v2] locking/qrwlock: Fix ordering in
- queued_write_lock_slowpath
-Message-ID: <YHnAtePBSB8YBQNc@hirez.programming.kicks-ass.net>
-References: <20210415172711.15480-1-alisaidi@amazon.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210415172711.15480-1-alisaidi@amazon.com>
+        id S237912AbhDPQxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 12:53:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49614 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235608AbhDPQxc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 12:53:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 2F15E611BF;
+        Fri, 16 Apr 2021 16:53:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618591987;
+        bh=9stCuRiAkm6slmsR/LRY4olcC73hbp6I2iNNHr2q5mo=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=uQk4k0uGwW7+vi3yo0eEj4cnR1oY/+vxwhLBucpi+CcD1SHkk8l8SEp9NNz6wutFr
+         qPbTzilHA2LEOBlfW0AR+WdX7EaAsdp8yK4JNCKx8L2x7d+LDDt+kF0393gdA9jNyH
+         cYwi5FsOK7rOfuTiRwX0xAVWE37FLdCRBnEgWaMHg+tjQb+RLNlHKb2J4msWaaGFPs
+         mn8d37E/zqD7CVgei/Rc9odvAjbxNSjTp/Ev5LZI4W+tSDJ4YqanOFAPdXmJO+IkXr
+         FhLvPL1kNO3uRJPTDzHfRVu5sJ+dCGJvngd9E0vTxQLP1OSLp7lvf5eL63/UP6Tesz
+         J2OKLDIGldFgg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1BF3E60CD4;
+        Fri, 16 Apr 2021 16:53:07 +0000 (UTC)
+Subject: Re: [GIT PULL] arm64 fix for 5.12-rc8/final
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210416162451.GA11506@arm.com>
+References: <20210416162451.GA11506@arm.com>
+X-PR-Tracked-List-Id: <linux-arm-kernel.lists.infradead.org>
+X-PR-Tracked-Message-Id: <20210416162451.GA11506@arm.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
+X-PR-Tracked-Commit-Id: 22315a2296f4c251fa92aec45fbbae37e9301b6c
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 06c2aac4014c38247256fe49c61b7f55890271e7
+Message-Id: <161859198705.3799.3259163036200596055.pr-tracker-bot@kernel.org>
+Date:   Fri, 16 Apr 2021 16:53:07 +0000
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The pull request you sent on Fri, 16 Apr 2021 17:24:55 +0100:
 
+> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
 
-I've edited the thing to look like so. I'll go queue it for
-locking/urgent.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/06c2aac4014c38247256fe49c61b7f55890271e7
 
----
-Subject: locking/qrwlock: Fix ordering in queued_write_lock_slowpath()
-From: Ali Saidi <alisaidi@amazon.com>
-Date: Thu, 15 Apr 2021 17:27:11 +0000
+Thank you!
 
-From: Ali Saidi <alisaidi@amazon.com>
-
-While this code is executed with the wait_lock held, a reader can
-acquire the lock without holding wait_lock.  The writer side loops
-checking the value with the atomic_cond_read_acquire(), but only truly
-acquires the lock when the compare-and-exchange is completed
-successfully which isn’t ordered. This exposes the window between the
-acquire and the cmpxchg to an A-B-A problem which allows reads
-following the lock acquisition to observe values speculatively before
-the write lock is truly acquired.
-
-We've seen a problem in epoll where the reader does a xchg while
-holding the read lock, but the writer can see a value change out from
-under it.
-
-  Writer                                | Reader
-  --------------------------------------------------------------------------------
-  ep_scan_ready_list()                  |
-  |- write_lock_irq()                   |
-      |- queued_write_lock_slowpath()   |
-	|- atomic_cond_read_acquire()   |
-				        | read_lock_irqsave(&ep->lock, flags);
-     --> (observes value before unlock) |  chain_epi_lockless()
-     |                                  |    epi->next = xchg(&ep->ovflist, epi);
-     |                                  | read_unlock_irqrestore(&ep->lock, flags);
-     |                                  |
-     |     atomic_cmpxchg_relaxed()     |
-     |-- READ_ONCE(ep->ovflist);        |
-
-A core can order the read of the ovflist ahead of the
-atomic_cmpxchg_relaxed(). Switching the cmpxchg to use acquire
-semantics addresses this issue at which point the atomic_cond_read can
-be switched to use relaxed semantics.
-
-Fixes: b519b56e378ee ("locking/qrwlock: Use atomic_cond_read_acquire() when spinning in qrwlock")
-Signed-off-by: Ali Saidi <alisaidi@amazon.com>
-[peterz: use try_cmpxchg()]
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Steve Capper <steve.capper@arm.com>
-Acked-by: Will Deacon <will@kernel.org>
-Tested-by: Steve Capper <steve.capper@arm.com>
----
- kernel/locking/qrwlock.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
---- a/kernel/locking/qrwlock.c
-+++ b/kernel/locking/qrwlock.c
-@@ -60,6 +60,8 @@ EXPORT_SYMBOL(queued_read_lock_slowpath)
-  */
- void queued_write_lock_slowpath(struct qrwlock *lock)
- {
-+	int cnts;
-+
- 	/* Put the writer into the wait queue */
- 	arch_spin_lock(&lock->wait_lock);
- 
-@@ -73,9 +75,8 @@ void queued_write_lock_slowpath(struct q
- 
- 	/* When no more readers or writers, set the locked flag */
- 	do {
--		atomic_cond_read_acquire(&lock->cnts, VAL == _QW_WAITING);
--	} while (atomic_cmpxchg_relaxed(&lock->cnts, _QW_WAITING,
--					_QW_LOCKED) != _QW_WAITING);
-+		cnts = atomic_cond_read_relaxed(&lock->cnts, VAL == _QW_WAITING);
-+	} while (!atomic_try_cmpxchg_acquire(&lock->cnts, &cnts, _QW_LOCKED));
- unlock:
- 	arch_spin_unlock(&lock->wait_lock);
- }
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
