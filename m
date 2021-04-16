@@ -2,86 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3593626CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 027DD3626D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242548AbhDPRb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 13:31:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56338 "EHLO
+        id S242623AbhDPRbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 13:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242430AbhDPRb0 (ORCPT
+        with ESMTP id S242430AbhDPRbm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 13:31:26 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE565C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:31:01 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id q11so1252526plx.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:31:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:to:cc:subject
-         :content-transfer-encoding;
-        bh=eVm7fzMrS3gNt2tz30VRFlPB65aZXiIaR8dlHiQjB+I=;
-        b=Ntoj7WicRgw6IMgnZeOI/m2F9jwhlgNQHBf2A7La2t0WF2AsQifFcjeIn5tRQs1JtO
-         PWT9YYl6QRZ6acVGszHbP/zV31pYZc3EXqmeW3rEBajwmm+ly/JmKHdH8ekus8N6f9IM
-         adkNnU6vRgusLhLWyXES8VZTfR5sZv4aGULSw7nt/mXzabI9LT+a/cwZpc3jQKGVFqxN
-         MUET8hqoCsggti/wugecvKV9TCrKugai+RFqFjvUVvv4vrtMks8k2hJakTXuw4PTh/I2
-         m7cGSW72blFJAHw5SYR9IPi2ZuU7WHpfPOtUzceVMdcGqFKNSVeSphdTInnAHtSbB8Ip
-         RLTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:to:cc:subject
-         :content-transfer-encoding;
-        bh=eVm7fzMrS3gNt2tz30VRFlPB65aZXiIaR8dlHiQjB+I=;
-        b=U8Wv2Pf+9DbzA7lkF84gRGVpPjZ1PaX1IkyCJb1/yFA0XZf8gfBCf1FqkszR9cX2d+
-         YkTwbA7GZHpGPTdJrhRz3g+tqDAu4WSnXa3BFiwDtn0XverIydC8eeRzQ2LNbv6RsJjS
-         MAqM3m7Gghuaw+LoJI4EbX9ehzsoX9XW1dk3O66bwMBmYl53ax0rAUnllj6TBrBAgFS4
-         efCeZsnnhqCpeO2QFCYlf+0FfTC0Hpy0ZyM26H6mEe3ID7gakC59Q19FE7EXv3uN2eS0
-         AGGBym7zortVUcVBOq/KDjjJAmvP3BsEBOW/GUzFTcgqSZh3/bOsQr7mXr2jyPWoH9xw
-         G1WA==
-X-Gm-Message-State: AOAM530nwDI6Douv+lZDW/hn5ZSaR6JCQy06eQyKkxbyGBeu8VYtMiIQ
-        b3OKzoMBC/RfC0JhkrT59KEjTIdchz61wtvZwr8=
-X-Google-Smtp-Source: ABdhPJy+98u0iYf8qcRv5HsBKVPk0z7QUADgd4kCmpfBRtxqK8WrVLCAFZICdFjxu/stSQHGtiYwYg==
-X-Received: by 2002:a17:90a:300f:: with SMTP id g15mr11409516pjb.88.1618594260839;
-        Fri, 16 Apr 2021 10:31:00 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id fw24sm6013644pjb.21.2021.04.16.10.30.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 10:31:00 -0700 (PDT)
-Message-ID: <6079c9d4.1c69fb81.f4140.08ad@mx.google.com>
-Date:   Fri, 16 Apr 2021 10:31:00 -0700 (PDT)
-X-Google-Original-Date: Fri, 16 Apr 2021 17:30:59 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210415144413.146131392@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: RE: [PATCH 5.11 00/23] 5.11.15-rc1 review
+        Fri, 16 Apr 2021 13:31:42 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51605C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:31:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:References:To:From:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=/83oxjoBsrKTLJD6ELhf3v9qLCntfhe0mYpEazOahKE=; b=GXkzK6JBMjUPGeJewgtWFsix03
+        Kmi5255GhtPvfQlUWAEYcjnOXPRyQ1pWa/eNR1/rmVOorpZBKIzji4wFle2g8B2SXWmpXOvlE1uNY
+        U0Ol2I5UuODVc7u0gkdyfiCWnadE4KNSlhLiVGwplq2xmT6UFIbc+oM27S3b/ehzno9ge1h0SMvdx
+        BJaWeJaL5pvlmAYJAyeES51g/qc8dz1jUReGp1tGDaVIxqmNoXZ5wypk7ILxXJ9WcFb/q//xn1Txn
+        CDCncrRKxphnSlpdYIA0yeCA8MFTvqZbbrYC9IerZRwlOkgwR+CAAl0/4vwPDOt2EqUSZFrZY2gy2
+        v9k6ynPA==;
+Received: from [2601:1c0:6280:3f0::df68]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lXSJH-002xCY-Gx; Fri, 16 Apr 2021 17:31:15 +0000
+Subject: Re: Page BUGs
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     Drew Abbott <abbotta4@gmail.com>, linux-kernel@vger.kernel.org
+References: <CALY-g84i=WPVT7OKwKa1xJaORPwMUyjdX0ewqqoVsC2ihbpvtg@mail.gmail.com>
+ <48806d4c-743a-8c63-fd86-04babb149744@infradead.org>
+Message-ID: <e39e346d-6d4c-f265-67ca-736d51f16266@infradead.org>
+Date:   Fri, 16 Apr 2021 10:31:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <48806d4c-743a-8c63-fd86-04babb149744@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Apr 2021 16:48:07 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.11.15 release.
-> There are 23 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 4/16/21 10:29 AM, Randy Dunlap wrote:
+> On 4/16/21 10:20 AM, Drew Abbott wrote:
+>> Hello,
+>>
+>> I have been troubleshooting problems with the vanilla and lts linux kernels
+>> for a couple of weeks now and saw this mailing list in MAINTAINERS for
+>> problems with mm.h; apologies if this is the wrong place to ask. I have
 > 
-> Responses should be made by Sat, 17 Apr 2021 14:44:01 +0000.
-> Anything received after that time might be too late.
+> MAINTAINERS file says:
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.15-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
-> and the diffstat can be found below.
+> MEMORY MANAGEMENT
+> M:	Andrew Morton <akpm@linux-foundation.org>
+> L:	linux-mm@kvack.org
+> S:	Maintained
+> W:	http://www.linux-mm.org
+> T:	quilt https://ozlabs.org/~akpm/mmotm/
+> T:	quilt https://ozlabs.org/~akpm/mmots/
+> T:	git git://github.com/hnaz/linux-mm.git
+> F:	include/linux/gfp.h
+> F:	include/linux/memory_hotplug.h
+> F:	include/linux/mm.h
+> F:	include/linux/mmzone.h
+> F:	include/linux/pagewalk.h
+> F:	include/linux/vmalloc.h
+> F:	mm/
 > 
-> thanks,
+> so linux-mm@kvack.org would be better IMO.
 > 
-> greg k-h
+>> been experiencing many freezes and panics with this hardware:
+>> https://pcpartpicker.com/user/Abbott/saved/#view=wXdgt6
+>> Originally[0], many of the traces referred to cpu idling funcs that seem to
+>> be addressed already[1][2], but now all of the traces refer to problems
+>> with paging[3][4][5][6]. I normally mount a mergerfs filesystem at boot
+>> that I thought was causing the panics[7], but I have since removed that
+>> entry from fstab and can still see paging bugs without that fs (or any
+>> other FUSE fs) mounted[7].
+>> What can I do to keep my computer from freezing and panicking?
+>>
+>> Thank you,
+>> Drew Abbott
+>>
+>> [0] https://bbs.archlinux.org/viewtopic.php?id=259571
+>> [1] https://bugzilla.kernel.org/show_bug.cgi?id=212087
+>> [2] https://bugzilla.kernel.org/show_bug.cgi?id=212543
+>> [3] https://imgur.com/HT4F7p7
+>> [4] https://imgur.com/pTb4Miu
+>> [5] https://imgur.com/pTb4Miu
+>> [6] https://imgur.com/JVueE3m
+>> [7] http://0x0.st/-ATM.log
 > 
+> [7] tells me:
+> SyntaxError: JSON.parse: unexpected non-whitespace character after JSON data at line 1 column 16 of the JSON data
 
-5.11.15-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+That was on Firefox.
+Opera can display it successfully.
+
+
+-- 
+~Randy
 
