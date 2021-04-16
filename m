@@ -2,142 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DCFE36236D
+	by mail.lfdr.de (Postfix) with ESMTP id 68E9036236E
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245681AbhDPPDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 11:03:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245427AbhDPPCT (ORCPT
+        id S245699AbhDPPDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 11:03:03 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44708 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S245542AbhDPPCh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 11:02:19 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96817C06138A;
-        Fri, 16 Apr 2021 08:01:54 -0700 (PDT)
-Date:   Fri, 16 Apr 2021 15:01:52 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618585313;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gjSIFZMc4fVpUnEimnjOqoL/dmLQH1GtXHPbFt00Wpo=;
-        b=vRj1oHwXAwMp4dbqwWEqu/xAYBGaVfOqhLrKFb5VA6WyxtXQGNjvs4QIBIqtYETP9gcLDD
-        SyEQl+EHnymqx91xverBRbvj5CYeuL7x68wmlzK565ZEHxvDlYPlM3BKI1OXsf0YitTPUf
-        39U90+uBO0kyd3d8P9CKAvFPX0zbQftLGQ+YKdIxB/wXyx7AW+DFRakKQxn80aAGm4Lszv
-        4xxFH18VmxrTxZ0Pdi9OXEbyS0yKBipInPjWSMnYSHukp90xybAvDCwB8gJXEmK19NDkn4
-        sJfGD2aAlyBgiEmHzXK5SowmmxvwY9xX4z/pJh7601sb6P5lPKU6cZdraEiifA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618585313;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gjSIFZMc4fVpUnEimnjOqoL/dmLQH1GtXHPbFt00Wpo=;
-        b=3fPzNzbaR8+GF4pOAuuNOweXCDQF4VUQyLbNPuI7Zhe3LYNxgd7WKLMaPNBL7uzr0KE+MY
-        nJeqeMdq6+JWj/BQ==
-From:   "tip-bot2 for Alexander Shishkin" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf: Cap allocation order at aux_watermark
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210414154955.49603-2-alexander.shishkin@linux.intel.com>
-References: <20210414154955.49603-2-alexander.shishkin@linux.intel.com>
+        Fri, 16 Apr 2021 11:02:37 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13GEXhNB172127;
+        Fri, 16 Apr 2021 11:02:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=w/yMQKuVW9fDcWIKDNdoXX1DtC9RCc8+7zazJq8dg+w=;
+ b=MY3fU53zminB1r0bRcZlHcp2yfq4FUAV6Hfji8QgWDY/2bm7q/+FbYuFVyBSqyk9Hmhk
+ +uIBHQG8VgecOFzAkCA0RHKhDW3eCrF9NEyDisEtG3xLZ1TBmp95Y0L8NC30KfxuNLZ4
+ /E2gUQmao0fISuP3J0/McVXR6x/n6fRmLW+vgln6N1SONdeHAm5HU+0nQGQInj5KqGJz
+ j/kXTib9U0nNEcyaeTpgtH1ephba2yS+7bwA9tgQPv03opxsA83shiZ5gPKuh5KbYpPU
+ gg6wlGaA9cVdRjS87pw40QPvSZBEO1RzTLpIZUZcks5tzTNgfR7k17LZcR36Mb9WpzRw Fw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37xxnpnum1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 11:02:07 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13GEYxR4177223;
+        Fri, 16 Apr 2021 11:02:06 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37xxnpnuk5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 11:02:06 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13GEwkLL005019;
+        Fri, 16 Apr 2021 15:02:04 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 37u3n8vha0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 15:02:04 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13GF227c40305106
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 16 Apr 2021 15:02:02 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3010311C050;
+        Fri, 16 Apr 2021 15:02:02 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D5E3811C04C;
+        Fri, 16 Apr 2021 15:02:01 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.64.24])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 16 Apr 2021 15:02:01 +0000 (GMT)
+Subject: Re: linux-next: Fixes tag needs some work in the kvm tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     KVM <kvm@vger.kernel.org>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210416222731.3e82b3a0@canb.auug.org.au>
+ <00222197-fb22-ab0a-97e2-11c9f85a67f1@de.ibm.com>
+ <2b825142-fdd9-be35-6d88-bb3b9c985122@redhat.com>
+ <20210417005831.3785688b@canb.auug.org.au>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <d4928233-670a-8930-f581-8e7b765b3c00@de.ibm.com>
+Date:   Fri, 16 Apr 2021 17:02:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+In-Reply-To: <20210417005831.3785688b@canb.auug.org.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Q6DfPmDgTMAAqyTRix6m6_ArjyHkJHDb
+X-Proofpoint-ORIG-GUID: mOzbzfkBCG9X2lN1LUhO8of4u-bZWqiY
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Message-ID: <161858531260.29796.6094672207320806626.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-16_07:2021-04-16,2021-04-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ mlxscore=0 impostorscore=0 spamscore=0 malwarescore=0 clxscore=1015
+ adultscore=0 lowpriorityscore=0 bulkscore=0 priorityscore=1501
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104160110
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     d68e6799a5c87f415d3bfa0dea49caee28ab00d1
-Gitweb:        https://git.kernel.org/tip/d68e6799a5c87f415d3bfa0dea49caee28ab00d1
-Author:        Alexander Shishkin <alexander.shishkin@linux.intel.com>
-AuthorDate:    Wed, 14 Apr 2021 18:49:54 +03:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 16 Apr 2021 16:32:39 +02:00
 
-perf: Cap allocation order at aux_watermark
+On 16.04.21 16:58, Stephen Rothwell wrote:
+> Hi all,
+> 
+> On Fri, 16 Apr 2021 16:02:01 +0200 Paolo Bonzini <pbonzini@redhat.com> wrote:
+>>
+>> On 16/04/21 14:38, Christian Borntraeger wrote:
+>>> On 16.04.21 14:27, Stephen Rothwell wrote:
+>>>> Hi all,
+>>>>
+>>>> In commit
+>>>>
+>>>>     c3171e94cc1c ("KVM: s390: VSIE: fix MVPG handling for prefixing and >> MSO")
+>>>>
+>>>> Fixes tag
+>>>>
+>>>>     Fixes: bdf7509bbefa ("s390/kvm: VSIE: correctly handle MVPG when in >> VSIE")
+>>>>
+>>>> has these problem(s):
+>>>>
+>>>>     - Subject does not match target commit subject
+>>>>       Just use
+>>>>      git log -1 --format='Fixes: %h ("%s")'
+>>>
+>>> Hmm, this has been sitting in kvms390/next for some time now. Is this a > new check?
+>>>    
+>>
+>> Maybe you just missed it when it was reported for kvms390?
+>>
+>> https://www.spinics.net/lists/linux-next/msg59652.html
+> 
+> It was a different commit SHA then and was reported because the Fixes
+> SHA did not exist.  It was fixed the next day, so I guess either I
+> missed reporting this different problem, or I thought at least it had
+> been fixed to use the correct SHA.  I am not completely consistent,
+> sometimes :-)
 
-Currently, we start allocating AUX pages half the size of the total
-requested AUX buffer size, ignoring the attr.aux_watermark setting. This,
-in turn, makes intel_pt driver disregard the watermark also, as it uses
-page order for its SG (ToPA) configuration.
-
-Now, this can be fixed in the intel_pt PMU driver, but seeing as it's the
-only one currently making use of high order allocations, there is no
-reason not to fix the allocator instead. This way, any other driver
-wishing to add this support would not have to worry about this.
-
-Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210414154955.49603-2-alexander.shishkin@linux.intel.com
----
- kernel/events/ring_buffer.c | 34 ++++++++++++++++++----------------
- 1 file changed, 18 insertions(+), 16 deletions(-)
-
-diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
-index bd55ccc..5286871 100644
---- a/kernel/events/ring_buffer.c
-+++ b/kernel/events/ring_buffer.c
-@@ -674,21 +674,26 @@ int rb_alloc_aux(struct perf_buffer *rb, struct perf_event *event,
- 	if (!has_aux(event))
- 		return -EOPNOTSUPP;
- 
--	/*
--	 * We need to start with the max_order that fits in nr_pages,
--	 * not the other way around, hence ilog2() and not get_order.
--	 */
--	max_order = ilog2(nr_pages);
--
--	/*
--	 * PMU requests more than one contiguous chunks of memory
--	 * for SW double buffering
--	 */
- 	if (!overwrite) {
--		if (!max_order)
--			return -EINVAL;
-+		/*
-+		 * Watermark defaults to half the buffer, and so does the
-+		 * max_order, to aid PMU drivers in double buffering.
-+		 */
-+		if (!watermark)
-+			watermark = nr_pages << (PAGE_SHIFT - 1);
- 
--		max_order--;
-+		/*
-+		 * Use aux_watermark as the basis for chunking to
-+		 * help PMU drivers honor the watermark.
-+		 */
-+		max_order = get_order(watermark);
-+	} else {
-+		/*
-+		 * We need to start with the max_order that fits in nr_pages,
-+		 * not the other way around, hence ilog2() and not get_order.
-+		 */
-+		max_order = ilog2(nr_pages);
-+		watermark = 0;
- 	}
- 
- 	rb->aux_pages = kcalloc_node(nr_pages, sizeof(void *), GFP_KERNEL,
-@@ -743,9 +748,6 @@ int rb_alloc_aux(struct perf_buffer *rb, struct perf_event *event,
- 	rb->aux_overwrite = overwrite;
- 	rb->aux_watermark = watermark;
- 
--	if (!rb->aux_watermark && !rb->aux_overwrite)
--		rb->aux_watermark = nr_pages << (PAGE_SHIFT - 1);
--
- out:
- 	if (!ret)
- 		rb->aux_pgoff = pgoff;
+Yeah, seems that my fix was only half-way correct then but it managed to get past your review.
