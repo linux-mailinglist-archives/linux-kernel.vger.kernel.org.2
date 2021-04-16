@@ -2,123 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2BE362966
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 22:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B185362971
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 22:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343588AbhDPUfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 16:35:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40456 "EHLO
+        id S1343614AbhDPUjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 16:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240036AbhDPUfw (ORCPT
+        with ESMTP id S235719AbhDPUjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 16:35:52 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400C1C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 13:35:26 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id w3-20020a05621412e3b029019a7b97dd69so4946031qvv.14
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 13:35:26 -0700 (PDT)
+        Fri, 16 Apr 2021 16:39:14 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C5AC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 13:38:47 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id z39so7470077ybh.23
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 13:38:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:cc;
-        bh=Q8aau1UBqJXGOugSq4JjsK2GmL5sgcCnZiQBPgmr8g8=;
-        b=sV4uzzHjkUs767u8LSJDe2EEyB8nEWkAdKuccwVxsSuKhlm+K0SrC9kAfpfS0J3B5A
-         8/F4pJIh/JBrv1dtYN+MyibvnL1iMLoytfTG9GyNCkzvFHJG1J9iTrT2wOTAUhsMdrwY
-         D6+FY4M0G2f2wXZzXhMn48tVjxymClzfdy4sKCFUKEkvptF/EEWg5qd4ujGJBmuoyz7U
-         eAPszhi+dxgmH1ntQ/7IFHyNTMQFJlCDiDMvKxRuQ+fvT1ezshHnx0CVhIehOrMaa3jM
-         nV3h6ITf1jtfB2m5KP1lC4yp1CRs+vg1ySfN6ua4njHZDgVC1w0BDoLaEeKoGwxnljZW
-         GQcg==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=nrK50TUoHxhq1t3QCwcADDrYS4vmPROmKvSMBMSjkd8=;
+        b=gRhfGBlgr6lC+vLBCGA3h0P3QeS+YlEnguE3a1smjDngW4JmMxemA6dTF+XGtXKabn
+         T8nFQm9DcIEYEbqFNNu5WzRcg89l/DZWfEovWgxLGFDHEHv7rPeBxLZG7rfnSOlaVEeS
+         Y5WvyfTNKeHipDfPXUND3MzOsbKvzlj38279TBTfINg+sV24PiP/y32xOi/qSqa6NApl
+         vEsrrlPWl1rLED2YYyBeiinWDcDGOYqY+rEpr0elDFGPgpJhKZDZHlBIUr5RSkY2K9JO
+         YAKSSj73GVLKLiu9q6DysP2sgOyvur52fNkzp2lD2QZBf4pN1iM1htvh2/TAPU6DUA3+
+         Fw5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:cc;
-        bh=Q8aau1UBqJXGOugSq4JjsK2GmL5sgcCnZiQBPgmr8g8=;
-        b=PTGIe4SWwi6IwClXmVW2m9ABH0AlkWml9G/7OL02IM/a/NaHYWEecg5BFwM1Tznd3M
-         dgmp1RKrhI+HhuaYFccVSAYbz1GhNM1rwRxfx68kfj1ryw0ngUj5kyq3AVcFO5/G7aC2
-         0+LRl65iXRoa8BL8+SgOTZDah12cBkl+pCi4G0ynp+vfZhueEV0gOBaGMsHok7pZUhNq
-         lOmKVVVnO0Y8y6cBPzVZ8h75pbp0oRLcIJEOw62BYpmXHWkrJfKkYaZevHGIEzPxYxGW
-         qq5BNAMGCxMkDoS7T7fo2vF/7qz74Cw/1hwFEQ80eGdXsXvLmd5ZRDc6B7VSGAh1FgUB
-         oGFg==
-X-Gm-Message-State: AOAM531gVJ4q3hnj4etcOOl1BybFuYsTK2uUtH3DezVKvncWvLMxdBuC
-        hryJYoXqTyzhfb9zxVswTT8Ifw+BS1Hz
-X-Google-Smtp-Source: ABdhPJzvyYpeO+bjD50fx+JSx7mt0QB2dcO4rSN29yNXOgFwiiVFWiAn0/Q2yZCLnvhRfbXv7sKNr4v7ZWe6
-X-Received: from jiancai.svl.corp.google.com ([2620:15c:2ce:0:a547:67f6:5e32:5814])
- (user=jiancai job=sendgmr) by 2002:a0c:c707:: with SMTP id
- w7mr10808461qvi.11.1618605325023; Fri, 16 Apr 2021 13:35:25 -0700 (PDT)
-Date:   Fri, 16 Apr 2021 13:35:21 -0700
-In-Reply-To: <20210416181421.2374588-1-jiancai@google.com>
-Message-Id: <20210416203522.2397801-1-jiancai@google.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=nrK50TUoHxhq1t3QCwcADDrYS4vmPROmKvSMBMSjkd8=;
+        b=X3OvEray0LpZIC45o83AVQ4sCBPv13g0QnA+W7QSE9fRX2sDvuHWrAoWmIX4x3AsXz
+         qCboDG4l86nhrLKfO8Rm2pVJcIzF8b5ZruPbgONtwoVnH/6ymvIahUYcKgGSPRCONYw1
+         0FDWMHPDOXY/mBnvgxbcd5U00v1eGqFtZWZOeerurs7oc/pzx+oB+ANIYI7Kcj87DG3P
+         OWGtxeDWMEmLvX7buZb0G3qZBh4bBAlC3QjHPzB6/iANZiOop4KpvGj6KsGHJiP/Egsn
+         6/Lu5Lph6ARtjZkIENshdva5DPTI1Uexh42ryR+brZDcEViZeHZ7DEdylX3g4kWALbQc
+         JCcA==
+X-Gm-Message-State: AOAM5308ZE0D+gwEPPgvs388g+NG/elYdjcT+90UqJwzwPDH/Y/Jicou
+        7yfJfXuU+TTms7kHzlQ6p1RnxihZYko80XnygXI=
+X-Google-Smtp-Source: ABdhPJw38VMGKTuPgJbCWwJYjBTHj/EMNPz+6cUS0yYMxhEa35lES/al2j0dkU8v2V3Q+uj+sFazVv/ZoOSqdhtSkeQ=
+X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:e262:3d8e:cbf:6164])
+ (user=samitolvanen job=sendgmr) by 2002:a25:56c2:: with SMTP id
+ k185mr1395704ybb.131.1618605526690; Fri, 16 Apr 2021 13:38:46 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 13:38:29 -0700
+Message-Id: <20210416203844.3803177-1-samitolvanen@google.com>
 Mime-Version: 1.0
-References: <20210416181421.2374588-1-jiancai@google.com>
 X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
-Subject: [PATCH v2] arm64: vdso: remove commas between macro name and arguments
-From:   Jian Cai <jiancai@google.com>
-Cc:     stable@vger.kernel.org, gregkh@linuxfoundation.org,
-        sashal@kernel.org, ndesaulniers@google.com,
-        natechancellor@gmail.com, manojgupta@google.com,
-        llozano@google.com, clang-built-linux@googlegroups.com,
-        Jian Cai <jiancai@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 00/15] x86: Add support for Clang CFI
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     x86@kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Sami Tolvanen <samitolvanen@google.com>
 Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LLVM's integrated assembler does not support using commas separating
-the name and arguments in .macro. However, only spaces are used in the
-manual page. This replaces commas between macro names and the subsequent
-arguments with space in calls to clock_gettime_return to make it
-compatible with IAS.
+This series adds support for Clang's Control-Flow Integrity (CFI)
+checking for x86_64. With CFI, the compiler injects a runtime check
+before each indirect function call to ensure the target is a valid
+function with the correct static type. This restricts possible call
+targets and makes it more difficult for an attacker to exploit bugs
+that allow the modification of stored function pointers. For more
+details, see:
 
-Link:
-https://sourceware.org/binutils/docs/as/Macro.html#Macro
-https://github.com/ClangBuiltLinux/linux/issues/1349
+  https://clang.llvm.org/docs/ControlFlowIntegrity.html
 
-Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Jian Cai <jiancai@google.com>
----
+The first two patches contain objtool support for CFI, and the
+remaining patches disable CFI where it shouldn't be used and fix
+other smaller issues, such as type conflicts that confuse the
+compiler.
 
-Changes v1 -> v2:
-  Keep the comma in the macro definition to be consistent with other
-  definitions.
+Note that the patches are based on next-20210416. You can also pull
+the series from
 
- arch/arm64/kernel/vdso/gettimeofday.S | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+  https://github.com/samitolvanen/linux.git x86-cfi-v1
 
-diff --git a/arch/arm64/kernel/vdso/gettimeofday.S b/arch/arm64/kernel/vdso/gettimeofday.S
-index 856fee6d3512..b6faf8b5d1fe 100644
---- a/arch/arm64/kernel/vdso/gettimeofday.S
-+++ b/arch/arm64/kernel/vdso/gettimeofday.S
-@@ -227,7 +227,7 @@ realtime:
- 	seqcnt_check fail=realtime
- 	get_ts_realtime res_sec=x10, res_nsec=x11, \
- 		clock_nsec=x15, xtime_sec=x13, xtime_nsec=x14, nsec_to_sec=x9
--	clock_gettime_return, shift=1
-+	clock_gettime_return shift=1
- 
- 	ALIGN
- monotonic:
-@@ -250,7 +250,7 @@ monotonic:
- 		clock_nsec=x15, xtime_sec=x13, xtime_nsec=x14, nsec_to_sec=x9
- 
- 	add_ts sec=x10, nsec=x11, ts_sec=x3, ts_nsec=x4, nsec_to_sec=x9
--	clock_gettime_return, shift=1
-+	clock_gettime_return shift=1
- 
- 	ALIGN
- monotonic_raw:
-@@ -271,7 +271,7 @@ monotonic_raw:
- 		clock_nsec=x15, nsec_to_sec=x9
- 
- 	add_ts sec=x10, nsec=x11, ts_sec=x13, ts_nsec=x14, nsec_to_sec=x9
--	clock_gettime_return, shift=1
-+	clock_gettime_return shift=1
- 
- 	ALIGN
- realtime_coarse:
+
+Kees Cook (3):
+  x86/extable: Do not mark exception callback as CFI
+  x86/alternatives: Use C int3 selftest but disable KASAN
+  x86, relocs: Ignore __typeid__ relocations
+
+Sami Tolvanen (12):
+  objtool: Find a destination for jumps beyond the section end
+  objtool: Add CONFIG_CFI_CLANG support
+  objtool: Add ASM_STACK_FRAME_NON_STANDARD
+  static_call: Use global functions for the self-test
+  x86: Implement function_nocfi
+  x86: Avoid CFI jump tables in IDT and entry points
+  x86/ftrace: Use function_nocfi in MCOUNT_ADDR
+  x86/purgatory: Disable CFI
+  x86, module: Ignore __typeid__ relocations
+  x86, cpu: Use LTO for cpu.c with CFI
+  x86, kprobes: Fix optprobe_template_func type mismatch
+  x86, build: Allow CONFIG_CFI_CLANG to be selected
+
+ arch/x86/Kconfig                    |  1 +
+ arch/x86/include/asm/desc.h         |  8 ++++-
+ arch/x86/include/asm/ftrace.h       |  2 +-
+ arch/x86/include/asm/page.h         | 14 +++++++++
+ arch/x86/kernel/Makefile            |  3 ++
+ arch/x86/kernel/alternative.c       | 21 +++----------
+ arch/x86/kernel/cpu/common.c        |  8 ++---
+ arch/x86/kernel/idt.c               |  2 +-
+ arch/x86/kernel/kprobes/opt.c       |  4 +--
+ arch/x86/kernel/module.c            |  4 +++
+ arch/x86/kernel/traps.c             |  2 +-
+ arch/x86/mm/extable.c               |  1 +
+ arch/x86/power/Makefile             |  2 ++
+ arch/x86/purgatory/Makefile         |  2 +-
+ arch/x86/tools/relocs.c             |  7 +++++
+ arch/x86/xen/Makefile               |  2 ++
+ include/linux/objtool.h             |  5 +++
+ kernel/static_call.c                |  4 +--
+ tools/include/linux/objtool.h       |  5 +++
+ tools/objtool/check.c               |  4 +++
+ tools/objtool/elf.c                 | 48 +++++++++++++++++++++++++++++
+ tools/objtool/include/objtool/elf.h |  2 +-
+ 22 files changed, 119 insertions(+), 32 deletions(-)
+
+
+base-commit: 18250b538735142307082e4e99e3ae5c12d44013
 -- 
 2.31.1.368.gbe11c130af-goog
 
