@@ -2,69 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 903CD362B94
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8944B362B96
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234506AbhDPWqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 18:46:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40938 "EHLO
+        id S230466AbhDPWqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 18:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231958AbhDPWp5 (ORCPT
+        with ESMTP id S231296AbhDPWqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 18:45:57 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C140C061574;
-        Fri, 16 Apr 2021 15:45:31 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lXXD1-005sC3-EJ; Fri, 16 Apr 2021 22:45:07 +0000
-Date:   Fri, 16 Apr 2021 22:45:07 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Connor Kuehl <ckuehl@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH 04/13] Kbuild: Rust support
-Message-ID: <YHoTc+5DGnvwwI0R@zeniv-ca.linux.org.uk>
-References: <CANiq72=3zZvdEsp-AH2Xj1nuvfGOQQ1WGmav6i4nFTz-3-_c_w@mail.gmail.com>
- <CANiq72=5pMzSS5V7h-QcQvYgyZUwdE=T705KtBWrNYZPjMYK3Q@mail.gmail.com>
- <20210416220416.GA11872@1wt.eu>
+        Fri, 16 Apr 2021 18:46:13 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D88C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 15:45:48 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id sd23so35644263ejb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 15:45:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EAc+sFWHuHmrU5lTSO9F5779cW2Dcf8sjmB9+TjApkI=;
+        b=ijndgSH6LCAaK+E6nFzlV7hVCrKvErhpEXwTSyZoqKwxUJOVrOmXFyisIgcC5pLUAs
+         YGyQwoK+OW2BJeNTkQMAZ35X2laLc0fQt97WCjwgRAQM6C4LOaWulag+Vf3Pc4tUzrde
+         +bxlFNIYIF5i2ctTelaglTz1wdCyMkhs9x4vqWLT0KQ96AY1OnKb5Gf8t3Fmo4nTAOPg
+         m2gUtJViLQ8lUtpDdQzGjLdJl4gX1fbOEUHIVA/XpKZ4WhaBhSp4EpdASjQaYKmsnTgw
+         FzRhKjjE0Ad7eNoqpufTgqJmIMa41KqS2xA08NfxGFnhU/NBBva5zZ2zBH1lCoLrY3R2
+         c+jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EAc+sFWHuHmrU5lTSO9F5779cW2Dcf8sjmB9+TjApkI=;
+        b=j+AR6RLPuqURuuPvOtrhlRMNwJSMnPJcdP6HsA4J9pOEmOkKSWJFeMScBrywvzF5qF
+         SuPip0t22EFXA2pBem11Ql1KWRc/L5ScyT8JrvWtwgr2e64eUBrOCB2AobImPOE9NbPk
+         F9QuMkwNcFoUMzpuetNmQ9Mvv9NN/zG0mrGQd/evMPytLnOkqA0IxfDtTSX7XHn96SLj
+         zsuym2k/2yyodYbVkXGouV0RO+aBIERnzgAM99NfU2dniFkl62c0pR3Y3LMmrFMjHdY3
+         OgqiFTfZcEHgeWKvqMJNzEYBAjq/ahX0fjhnzegeDf/sPWdB0K0/ZySTF4MDbO4jhoyX
+         GtGQ==
+X-Gm-Message-State: AOAM532idHvGu1j5EaM6HsNhIcLISs6Xfm8efCV8FKMps/nUL+dJXtrx
+        S9xvaad81AWCspF86TA5q21AChUc7Kt1pZkk1D7QGYc24CFuTA==
+X-Google-Smtp-Source: ABdhPJzdYjMOIM983g0JP8aujANOQUHsV/lsi50TJtjab69daqBjPSj6zF8t/b8Ey/gY1ykcr3cMY5s0vjsFbyJspmo=
+X-Received: by 2002:a17:907:2485:: with SMTP id zg5mr10487112ejb.43.1618613147071;
+ Fri, 16 Apr 2021 15:45:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416220416.GA11872@1wt.eu>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <20210416105142.38149-1-zhaoya.gaius@bytedance.com> <CANn89iJ5-4u98sGXt6oH5ZbWGFcYCy3T-B+qktvm3-cMkFQXKA@mail.gmail.com>
+In-Reply-To: <CANn89iJ5-4u98sGXt6oH5ZbWGFcYCy3T-B+qktvm3-cMkFQXKA@mail.gmail.com>
+From:   =?UTF-8?B?6LW15Lqa?= <zhaoya.gaius@bytedance.com>
+Date:   Sat, 17 Apr 2021 06:45:35 +0800
+Message-ID: <CAPXF5UVG+c0STZORvdaz6Mk8fwxE7DTBtTp=uF51xMrFL0R02w@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] tcp: fix silent loss when syncookie is trigered
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Florian Westphal <fw@strlen.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 12:04:16AM +0200, Willy Tarreau wrote:
+On Fri, Apr 16, 2021 at 7:52 PM Eric Dumazet <edumazet@google.com> wrote:
+>
+> On Fri, Apr 16, 2021 at 12:52 PM zhaoya <zhaoya.gaius@bytedance.com> wrote:
+> >
+> > When syncookie is triggered, since $MSSID is spliced into cookie and
+> > the legal index of msstab  is 0,1,2,3, this gives client 3 bytes
+> > of freedom, resulting in at most 3 bytes of silent loss.
+> >
+> > C ------------seq=12345-------------> S
+> > C <------seq=cookie/ack=12346-------- S S generated the cookie
+> >                                         [RFC4987 Appendix A]
+> > C ---seq=123456/ack=cookie+1-->X      S The first byte was loss.
+> > C -----seq=123457/ack=cookie+1------> S The second byte was received and
+> >                                         cookie-check was still okay and
+> >                                         handshake was finished.
+> > C <--------seq=.../ack=12348--------- S acknowledge the second byte.
+>
+>
+> I think this has been discussed in the past :
+> https://kognitio.com/blog/syn-cookies-ate-my-dog-breaking-tcp-on-linux/
+>
+> If I remember well, this can not be fixed "easily"
+>
+> I suspect you are trading one minor issue with another (which is
+> considered more practical these days)
+> Have you tried what happens if the server receives an out-of-order
+> packet after the SYN & SYN-ACK ?
+> The answer is : RST packet is sent, killing the session.
+>
+> That is the reason why sseq is not part of the hash key.
 
-> Yep but I kept it just to have comparable output code since in C
-> you'd simply use "goto leave" and not have this function call to
-> do the cleanup.
+Yes, I've tested this scenario. More sessions do get reset.
 
-... or use any number of other technics; the real question was how
-much of cleanups would be skipped by that syntax sugar.
+If a client got an RST, it knew the session failed, which was clear. However,
+if the client send a character and it was acknowledged, but the server did not
+receive it, this could cause confusion.
+>
+> In practice, secure connexions are using a setup phase where more than
+> 3 bytes are sent in the first packet.
+> We recommend using secure protocols over TCP. (prefer HTTPS over HTTP,
+> SSL over plaintext)
 
-IME anything that interacts with flow control should be as explicit
-and unambiguous as possible.  _Especially_ concerning how large
-a scope are we leaving.
+Yes, i agree with you. But the basis of practice is principle.
+Syncookie breaks the
+semantics of TCP.
+>
+> Your change would severely impair servers under DDOS ability to really
+> establish flows.
 
-There's a bunch of disciplines that make use of that kind of tools
-and do it more or less safely, but they need to be well-specified
-and very well understood.  And some tools (C++-style exceptions,
-for example) simply need to be taken out and shot, but that's
-a separate story^Wflamewar...
+Would you tell me more details.
+>
+> Now, if your patch is protected by a sysctl so that admins can choose
+> the preferred behavior, then why not...
+
+The sysctl in the POC is just for triggering problems easily.
+
+So the question is, when syncookie is triggered, which is more important,
+the practice or the principle?
