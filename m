@@ -2,88 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107F2362B91
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 903CD362B94
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234898AbhDPWpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 18:45:09 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:40444 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234404AbhDPWpH (ORCPT
+        id S234506AbhDPWqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 18:46:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231958AbhDPWp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 18:45:07 -0400
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 76F3720B83D9;
-        Fri, 16 Apr 2021 15:44:42 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 76F3720B83D9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1618613082;
-        bh=DcAhC6Pj0o6cQMeLdEBYtLThJCE+7vRtA3+eSuXbF38=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cM48Vu8GfY5PqjWuS6NErTqFuDG5RM/9oXR9vQfvKihX/5LfHXpatACVBIv0OCSNC
-         jk9e6/kA6xcbsUdiSwWgwWlTxKrAgfj9uXSTdZhlnSIYdvGwvIMaAd7PHkL3TqttqY
-         sG4sRqPw+QBkbh+bBTPtG3G33yN34ha1zkS1FcB0=
-Received: by mail-pl1-f174.google.com with SMTP id m18so12523862plc.13;
-        Fri, 16 Apr 2021 15:44:42 -0700 (PDT)
-X-Gm-Message-State: AOAM532+X8dwlLJ6H+6XsrQOTb1Lc2lR7iLmP6qp5kC+AP2ScUxVScLq
-        ECVS6XJ0OH91AxYO8mKF2HM3fP738Gv8+bEqAdw=
-X-Google-Smtp-Source: ABdhPJw6rB9a6Y6v5jK8I3KJxZFk+syWBHSe63IsrjyZbhtSyB0LIQUZ1KNrgegZRT+HhYQn0Bc6/5XuZdgw8yOJx6A=
-X-Received: by 2002:a17:903:3106:b029:e9:15e8:250e with SMTP id
- w6-20020a1709033106b02900e915e8250emr11878892plc.33.1618613082001; Fri, 16
- Apr 2021 15:44:42 -0700 (PDT)
+        Fri, 16 Apr 2021 18:45:57 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C140C061574;
+        Fri, 16 Apr 2021 15:45:31 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lXXD1-005sC3-EJ; Fri, 16 Apr 2021 22:45:07 +0000
+Date:   Fri, 16 Apr 2021 22:45:07 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Connor Kuehl <ckuehl@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH 04/13] Kbuild: Rust support
+Message-ID: <YHoTc+5DGnvwwI0R@zeniv-ca.linux.org.uk>
+References: <CANiq72=3zZvdEsp-AH2Xj1nuvfGOQQ1WGmav6i4nFTz-3-_c_w@mail.gmail.com>
+ <CANiq72=5pMzSS5V7h-QcQvYgyZUwdE=T705KtBWrNYZPjMYK3Q@mail.gmail.com>
+ <20210416220416.GA11872@1wt.eu>
 MIME-Version: 1.0
-References: <20210412003802.51613-1-mcroce@linux.microsoft.com> <75045c087db24b6e87b7ed14aa5a721c@AcuMS.aculab.com>
-In-Reply-To: <75045c087db24b6e87b7ed14aa5a721c@AcuMS.aculab.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Sat, 17 Apr 2021 00:44:06 +0200
-X-Gmail-Original-Message-ID: <CAFnufp12=8pDo-GP6BwH72YiH5C9GXOY8Me=xsFo7=+hvfujaQ@mail.gmail.com>
-Message-ID: <CAFnufp12=8pDo-GP6BwH72YiH5C9GXOY8Me=xsFo7=+hvfujaQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 0/3] introduce skb_for_each_frag()
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Julia Lawall <julia.lawall@inria.fr>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416220416.GA11872@1wt.eu>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 9:53 AM David Laight <David.Laight@aculab.com> wrote:
->
-> From: Matteo Croce
-> > Sent: 12 April 2021 01:38
-> >
-> > Introduce skb_for_each_frag, an helper macro to iterate over the SKB frags.
->
-> The real question is why, the change is:
->
-> -       for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
-> +       skb_for_each_frag(skb, i) {
->
-> The existing code isn't complicated or obscure and 'does what it
-> says on the tin'.
-> The 'helper' requires you go and look up its definition to see
-> what it is really doing.
->
-> Unless you have a cunning plan to change the definition
-> there is zero point.
->
-> A more interesting change would be something that generated:
->         unsigned int nr_frags = skb_shinfo(skb)->nr_frags;
->         for (i = 0; i < nr_frags; i++) {
-> since that will run faster for most loops.
-> But that is ~impossible to do since you can't declare
-> variables inside the (...) that are scoped to the loop.
->
+On Sat, Apr 17, 2021 at 12:04:16AM +0200, Willy Tarreau wrote:
 
-I don't know how to do it with C90.
-It would be nice to have a switch to just allow declaration of
-variables inside the (...) instead of enabling the full C99 language
-which, as Linus said[1], allows the insane mixing of variables and
-code.
+> Yep but I kept it just to have comparable output code since in C
+> you'd simply use "goto leave" and not have this function call to
+> do the cleanup.
 
-[1] https://lore.kernel.org/lkml/CA+55aFzs=DuYibWYMUFiU_R1aJHAr-8hpQhWLew8R5q4nCDraQ@mail.gmail.com/
--- 
-per aspera ad upstream
+... or use any number of other technics; the real question was how
+much of cleanups would be skipped by that syntax sugar.
+
+IME anything that interacts with flow control should be as explicit
+and unambiguous as possible.  _Especially_ concerning how large
+a scope are we leaving.
+
+There's a bunch of disciplines that make use of that kind of tools
+and do it more or less safely, but they need to be well-specified
+and very well understood.  And some tools (C++-style exceptions,
+for example) simply need to be taken out and shot, but that's
+a separate story^Wflamewar...
