@@ -2,92 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550A73621DD
+	by mail.lfdr.de (Postfix) with ESMTP id ECFD33621DF
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243662AbhDPOLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:11:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53592 "EHLO mail.kernel.org"
+        id S244307AbhDPOLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:11:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235553AbhDPOLH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:11:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3E8E611C2;
-        Fri, 16 Apr 2021 14:10:42 +0000 (UTC)
+        id S243191AbhDPOLS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 10:11:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D1E0610FC;
+        Fri, 16 Apr 2021 14:10:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618582242;
-        bh=1s9sCrJo44Veolfwl+MwQWl66gowBJVDh4jCcMWmw20=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bWtljR/0v+ciclhWmYZDIUGhhvFJ3qQ7nO0uU82MghhOsGFdSMyacApx9Rv+nHL6X
-         W5cY5QnPwP6g7dxd13lON+NP7T3wxEgswnDncwfQXbUpDa1noe9/ic1qeaxTeqr1An
-         xJUGxVeiTwbDQol4BcT+uJeJ/K8GtjgPzMatA+QGLBn8/pwaCrhafWYek6SKXGeGJX
-         JrnAkRBsacpGTrsZXVT6wqIi5rnqa1PtXSpagwrGhkYyDEvybabUi7RBZVXZcudA+H
-         4dZgdBI6yZkxxw1SMBUj5RKBCe9Uqk2xt0sX7dm9fywiRJ0wfW8Bx5Y3FStVzaPeVS
-         VyQ7HbK3kn2jA==
-Received: by mail-wm1-f46.google.com with SMTP id n10-20020a05600c4f8ab0290130f0d3cba3so2452761wmq.1;
-        Fri, 16 Apr 2021 07:10:42 -0700 (PDT)
-X-Gm-Message-State: AOAM5311rO2I/o6Ind6RThkqpjvCAbINqe/V2ca2Zxn0e895bpA76IE+
-        pQhj8cZzVF3wdYjF0bFkNNhn6QVSWsiGrmNBMrQ=
-X-Google-Smtp-Source: ABdhPJwer78kcpt2KUTk7pLNWv4YpxxYqG4ncdMLFchwkUndSOMZjtA8z9tZUxzlPor4R9hASXWQZTamma1KWyeXMwk=
-X-Received: by 2002:a7b:c14a:: with SMTP id z10mr8250595wmi.75.1618582241293;
- Fri, 16 Apr 2021 07:10:41 -0700 (PDT)
+        s=k20201202; t=1618582253;
+        bh=cAhCGbjsIcnQmKbjtlZBVSsWgb2a1Ru4th5RZmMnqJY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jJxMI97e4swiDq/Q+O4TnOuLTquXQr/xwgoXMeYgqD0WYahYOM5pJV6dADOhenoSe
+         qLvcsbtQAXCucR7OuAZ0vPZlowsKzLf9DlRlkRT+/95LD0+VefU14DSNK4Jto9Ai+i
+         kTsqsPhuaBHbJb9w1TLXFdqlnghz6GDxznamunOsek5//hphbWmsYq2XYuvCv9Wu9q
+         MqHnKysiUO2fFSL5fg2C4LYei6d+0kJo0wrT48QlMV0Y5ksAb4m9Hm/PJK65b0hSds
+         /As4l1ebVNBR8Akn7gX0LiOcEfFri1U/NpfZinY3hYORMi6MSI7+56TkSNYru21lYR
+         H7l8KvOKz4V8A==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lXPBM-0006a1-UI; Fri, 16 Apr 2021 16:10:53 +0200
+Date:   Fri, 16 Apr 2021 16:10:52 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     dillon.minfei@gmail.com
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+        lkp@intel.com, gerald.baeza@foss.st.com, erwan.leray@foss.st.com,
+        linux-serial@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v3] serial: stm32: optimize spin lock usage
+Message-ID: <YHma7H3RoLyeH650@hovoldconsulting.com>
+References: <1618567841-18546-1-git-send-email-dillon.minfei@gmail.com>
 MIME-Version: 1.0
-References: <20210409185105.188284-3-willy@infradead.org> <202104100656.N7EVvkNZ-lkp@intel.com>
- <20210410024313.GX2531743@casper.infradead.org> <20210410082158.79ad09a6@carbon>
- <CAC_iWjLXZ6-hhvmvee6r4R_N64u-hrnLqE_CSS1nQk+YaMQQnA@mail.gmail.com> <ab9f1a6c-4099-2b59-457d-fcc45d2396f4@ti.com>
-In-Reply-To: <ab9f1a6c-4099-2b59-457d-fcc45d2396f4@ti.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 16 Apr 2021 16:10:37 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1+Dpu3ef+VYA+owTVGoGqfK6APbYbLSH1_ZKT0aMYQCw@mail.gmail.com>
-Message-ID: <CAK8P3a1+Dpu3ef+VYA+owTVGoGqfK6APbYbLSH1_ZKT0aMYQCw@mail.gmail.com>
-Subject: Re: Bogus struct page layout on 32-bit
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Linux-MM <linux-mm@kvack.org>, kbuild-all@lists.01.org,
-        clang-built-linux@googlegroups.com,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1618567841-18546-1-git-send-email-dillon.minfei@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 11:27 AM 'Grygorii Strashko' via Clang Built
-Linux <clang-built-linux@googlegroups.com> wrote:
-> On 10/04/2021 11:52, Ilias Apalodimas wrote:
-> > +CC Grygorii for the cpsw part as Ivan's email is not valid anymore
-> The TI platforms am3/4/5 (cpsw) and Keystone 2 (netcp) can do only 32bit DMA even in case of LPAE (dma-ranges are used).
-> Originally, as I remember, CONFIG_ARCH_DMA_ADDR_T_64BIT has not been selected for the LPAE case
-> on TI platforms and the fact that it became set is the result of multi-paltform/allXXXconfig/DMA
-> optimizations and unification.
-> (just checked - not set in 4.14)
->
-> Probable commit 4965a68780c5 ("arch: define the ARCH_DMA_ADDR_T_64BIT config symbol in lib/Kconfig").
+On Fri, Apr 16, 2021 at 06:10:41PM +0800, dillon.minfei@gmail.com wrote:
+> From: dillon min <dillon.minfei@gmail.com>
+> 
+> This patch aims to fix two potential bug:
+> - no lock to protect uart register in this case
+> 
+>   stm32_usart_threaded_interrupt()
+>      spin_lock(&port->lock);
+>      ...
+>      stm32_usart_receive_chars()
+>        uart_handle_sysrq_char();
+>        sysrq_function();
+>        printk();
+>          stm32_usart_console_write();
+>            locked = 0; //since port->sysrq is not zero,
+>                          no lock to protect forward register
+>                          access.
+> 
+> - if add spin_trylock_irqsave() to protect uart register for sysrq = 1 case,
+>   that might got recursive locking under UP.
+>   So, use uart_prepare_sysrq_char(), uart_unlock_and_check_sysrq()
+>   move sysrq handler position to irq/thread_d handler, just record
+>   sysrq_ch in stm32_usart_receive_chars() by uart_prepare_sysrq_char()
+>   delay the sysrq process to next interrupt handler.
+> 
+>   new flow:
+> 
+>   stm32_usart_threaded_interrupt()/stm32_usart_interrupt()
+>   spin_lock_irqsave(&port->lock);
+>   ...
+>   uart_unlock_and_check_sysrq();
+>      spin_unlock_irqrestore();
+>      handle_sysrq(sysrq_ch);
+>   stm32_usart_threaded_interrupt()//stm32_usart_interrupt() return
+> 
+> Cc: Johan Hovold <johan@kernel.org>
+> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+> Cc: Gerald Baeza <gerald.baeza@foss.st.com>
+> Cc: Erwan Le Ray <erwan.leray@foss.st.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> ---
+> v3: add uart_prepare_sysrq_char(), uart_unlock_and_check_sysrq() to move
+>     sysrq handler inside interrupt routinei to avoid recursive locking,
+>     according to Johan Hovold suggestion, thanks.
+> 
+>  drivers/tty/serial/stm32-usart.c | 24 +++++++++++-------------
+>  1 file changed, 11 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+> index b3675cf25a69..981f50ec784e 100644
+> --- a/drivers/tty/serial/stm32-usart.c
+> +++ b/drivers/tty/serial/stm32-usart.c
+> @@ -271,7 +271,7 @@ static void stm32_usart_receive_chars(struct uart_port *port, bool threaded)
+>  			}
+>  		}
+>  
+> -		if (uart_handle_sysrq_char(port, c))
+> +		if (uart_prepare_sysrq_char(port, c))
+>  			continue;
+>  		uart_insert_char(port, sr, USART_SR_ORE, c, flag);
+>  	}
+> @@ -457,9 +457,10 @@ static irqreturn_t stm32_usart_interrupt(int irq, void *ptr)
+>  	struct uart_port *port = ptr;
+>  	struct stm32_port *stm32_port = to_stm32_port(port);
+>  	const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
+> +	unsigned long flags;
+>  	u32 sr;
+>  
+> -	spin_lock(&port->lock);
+> +	spin_lock_irqsave(&port->lock, flags);
+>  
+>  	sr = readl_relaxed(port->membase + ofs->isr);
+>  
+> @@ -477,7 +478,7 @@ static irqreturn_t stm32_usart_interrupt(int irq, void *ptr)
+>  	if ((sr & USART_SR_TXE) && !(stm32_port->tx_ch))
+>  		stm32_usart_transmit_chars(port);
+>  
+> -	spin_unlock(&port->lock);
+> +	uart_unlock_and_check_sysrq(port, flags);
+>  
+>  	if (stm32_port->rx_ch)
+>  		return IRQ_WAKE_THREAD;
+> @@ -489,13 +490,14 @@ static irqreturn_t stm32_usart_threaded_interrupt(int irq, void *ptr)
+>  {
+>  	struct uart_port *port = ptr;
+>  	struct stm32_port *stm32_port = to_stm32_port(port);
+> +	unsigned long flags;
+>  
+> -	spin_lock(&port->lock);
+> +	spin_lock_irqsave(&port->lock, flags);
 
-I completely missed this change in the past, and I don't really agree
-with it either.
+This essentially turns the threaded handler into a non-threaded one,
+which is a bad idea.
 
-Most 32-bit Arm platforms are in fact limited to 32-bit DMA, even when they have
-MMIO or RAM areas above the 4GB boundary that require LPAE.
+>  	if (stm32_port->rx_ch)
+>  		stm32_usart_receive_chars(port, true);
+>  
+> -	spin_unlock(&port->lock);
+> +	uart_unlock_and_check_sysrq(port, flags);
+>  
+>  	return IRQ_HANDLED;
+>  }
 
-> The TI drivers have been updated, finally to accept ARCH_DMA_ADDR_T_64BIT=y by using
-> things like (__force u32) for example.
->
-> Honestly, I've done sanity check of CPSW with LPAE=y (ARCH_DMA_ADDR_T_64BIT=y) very long time ago.
+You also didn't base this patch on tty-next, which has a number of
+updates to this driver. Before noting that myself, I had fixed a couple
+of deadlocks in this driver which turned out to have been incidentally
+fixed by an unrelated path in -next.
 
-This is of course a good idea, drivers should work with any
-combination of 32-bit
-or 64-bit phys_addr_t and dma_addr_t.
+I'll be posting a series that should fix up all of this.
 
-        Arnd
+Johan
