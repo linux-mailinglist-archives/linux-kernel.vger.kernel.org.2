@@ -2,116 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3733E3627FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 20:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20C43627EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 20:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245494AbhDPSsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 14:48:03 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:24442 "EHLO m43-7.mailgun.net"
+        id S245086AbhDPSrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 14:47:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239976AbhDPSr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 14:47:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618598854; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=HkBPprzdhBmkG9CrdjIegGPcQoQXZwaAreqKX1jyOw4=; b=VHKi6tyRgF0Sl7s2KlJGrI2IrqMWzohqxzlB4s8nE8qQDwbFnyAfXcQ39xfiQE/axZnXUPo3
- y13sBtE0sHX7Fl1azgLw3apP5DBf1AF86TDBnLsXgcY52zKftZ2jagB4+nf1TVazGdoxJBjH
- g9tfEctBPIFghTLks+fdHHG0kIw=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 6079dbb92cc44d3aeaf2c73e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Apr 2021 18:47:21
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DEDA4C4346B; Fri, 16 Apr 2021 18:47:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E9A6BC43465;
-        Fri, 16 Apr 2021 18:47:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E9A6BC43465
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
-        kvalo@codeaurora.org, ath11k@lists.infradead.org,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH v1 6/6] bus: mhi: core: Add range checks for BHI and BHIe
-Date:   Fri, 16 Apr 2021 11:47:05 -0700
-Message-Id: <1618598825-18629-7-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1618598825-18629-1-git-send-email-bbhatt@codeaurora.org>
-References: <1618598825-18629-1-git-send-email-bbhatt@codeaurora.org>
+        id S237334AbhDPSri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 14:47:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A45B9611AF;
+        Fri, 16 Apr 2021 18:47:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618598833;
+        bh=N2KsTvifrgq/rqC0brjMwrMhFZQCdz7M8vStss5BFQ4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=nF79sJC+RtSJr3mZhq6eKVwcK2vI4svdbyPBTB1AzQLNEiMlRni8RI27NgWXdzf6y
+         I0JHjhzeALc13hBv4Vo9eQyGBjhBMV6nWpw4oV1MYx/oZceej+bRdHgm2sn6JkZDdI
+         LHo9/LvhS1n/mvqsMi7zLf9MSLPYUUjFP6UwKmzdrm6V6SCAJV9ERCDLfha0Pr/3MM
+         kvDDhaFYGE2Y018D0hYf7FV84CwMIXgJaDcXMIqopcThsCUAU4HWyxfbRKEna3enTR
+         tYGj0dPcXtFDdD1u1VY7/vWwQWo1yPq4j/edRIoPhXgFV/qX8Xs0gjGVmcMA1iusgB
+         C3vWXnP4RqpQw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 70DB95C0253; Fri, 16 Apr 2021 11:47:13 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 11:47:13 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>, ojeda@kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Wedson Almeida Filho <wedsonaf@google.com>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+Message-ID: <20210416184713.GI4212@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
+ <YHkSO3TUktyPs4Nz@boqun-archlinux>
+ <CAKwvOdnRx+8LhOAnH24CeZz2a2-MwF03oB7Um_pKBq8WAoLNxw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdnRx+8LhOAnH24CeZz2a2-MwF03oB7Um_pKBq8WAoLNxw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When obtaining the BHI or BHIe offsets during the power up
-preparation phase, range checks are missing. These can help
-controller drivers avoid accessing any address outside of the
-MMIO region. Ensure that mhi_cntrl->reg_len is set before MHI
-registration as it is a required field and range checks will
-fail without it.
+On Thu, Apr 15, 2021 at 11:04:37PM -0700, Nick Desaulniers wrote:
+> On Thu, Apr 15, 2021 at 9:27 PM Boqun Feng <boqun.feng@gmail.com> wrote:
+> >
+> > [Copy LKMM people, Josh, Nick and Wedson]
+> >
+> > On Thu, Apr 15, 2021 at 08:58:16PM +0200, Peter Zijlstra wrote:
+> > > On Wed, Apr 14, 2021 at 08:45:51PM +0200, ojeda@kernel.org wrote:
+> > >
+> > > > Rust is a systems programming language that brings several key
+> > > > advantages over C in the context of the Linux kernel:
+> > > >
+> > > >   - No undefined behavior in the safe subset (when unsafe code is
+> > > >     sound), including memory safety and the absence of data races.
+> > >
+> > > And yet I see not a single mention of the Rust Memory Model and how it
+> > > aligns (or not) with the LKMM. The C11 memory model for example is a
+> > > really poor fit for LKMM.
+> > >
+> >
+> > I think Rust currently uses C11 memory model as per:
+> >
+> >         https://doc.rust-lang.org/nomicon/atomics.html
+> >
+> > , also I guess another reason that they pick C11 memory model is because
+> > LLVM has the support by default.
+> >
+> > But I think the Rust Community still wants to have a good memory model,
+> > and they are open to any kind of suggestion and input. I think we (LKMM
+> > people) should really get involved, because the recent discussion on
+> > RISC-V's atomics shows that if we didn't people might get a "broken"
+> > design because they thought C11 memory model is good enough:
+> >
+> >         https://lore.kernel.org/lkml/YGyZPCxJYGOvqYZQ@boqun-archlinux/
+> >
+> > And the benefits are mutual: a) Linux Kernel Memory Model (LKMM) is
+> > defined by combining the requirements of developers and the behavior of
+> > hardwares, it's pratical and can be a very good input for memory model
+> > designing in Rust; b) Once Rust has a better memory model, the compiler
+> > technologies whatever Rust compilers use to suppor the memory model can
+> > be adopted to C compilers and we can get that part for free.
+> 
+> Yes, I agree; I think that's a very good approach.  Avoiding the ISO
+> WG14 is interesting; at least the merits could be debated in the
+> public and not behind closed doors.
 
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
----
- drivers/bus/mhi/core/init.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+WG14 (C) and WG21 (C++) are at least somewhat open.  Here are some of
+the proposals a few of us have in flight:
 
-diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-index 1cc2f22..86ad06e 100644
---- a/drivers/bus/mhi/core/init.c
-+++ b/drivers/bus/mhi/core/init.c
-@@ -885,7 +885,8 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
- 	if (!mhi_cntrl || !mhi_cntrl->cntrl_dev || !mhi_cntrl->regs ||
- 	    !mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put ||
- 	    !mhi_cntrl->status_cb || !mhi_cntrl->read_reg ||
--	    !mhi_cntrl->write_reg || !mhi_cntrl->nr_irqs || !mhi_cntrl->irq)
-+	    !mhi_cntrl->write_reg || !mhi_cntrl->nr_irqs ||
-+	    !mhi_cntrl->irq || !mhi_cntrl->reg_len)
- 		return -EINVAL;
- 
- 	ret = parse_config(mhi_cntrl, config);
-@@ -1077,6 +1078,12 @@ int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl)
- 		dev_err(dev, "Error getting BHI offset\n");
- 		goto error_reg_offset;
- 	}
-+
-+	if (bhi_off >= mhi_cntrl->reg_len) {
-+		dev_err(dev, "BHI offset is out of range\n");
-+		ret = -EINVAL;
-+		goto error_reg_offset;
-+	}
- 	mhi_cntrl->bhi = mhi_cntrl->regs + bhi_off;
- 
- 	if (mhi_cntrl->fbc_download || mhi_cntrl->rddm_size) {
-@@ -1086,6 +1093,12 @@ int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl)
- 			dev_err(dev, "Error getting BHIE offset\n");
- 			goto error_reg_offset;
- 		}
-+
-+		if (bhie_off >= mhi_cntrl->reg_len) {
-+			dev_err(dev, "BHIe offset is out of range\n");
-+			ret = -EINVAL;
-+			goto error_reg_offset;
-+		}
- 		mhi_cntrl->bhie = mhi_cntrl->regs + bhie_off;
- 	}
- 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+P2055R0 A Relaxed Guide to memory_order_relaxed
+	http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p2055r0.pdf
+P0124R7 Linux-Kernel Memory Model (vs. that of C/C++)
+	http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p0124r7.html
+P1726R4 Pointer lifetime-end zap
+	http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p1726r4.pdf
+	https://docs.google.com/document/d/1MfagxTa6H0rTxtq9Oxyh4X53NzKqOt7y3hZBVzO_LMk/edit?usp=sharing
+P1121R2 Hazard Pointers: Proposed Interface and Wording for Concurrency TS 2
+	http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p1121r2.pdf
+P1382R1 volatile_load<T> and volatile_store<T>
+	http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p1382r1.pdf
+P1122R2 Proposed Wording for Concurrent Data Structures: Read-Copy-Update (RCU)
+	http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1122r2.pdf
+	https://docs.google.com/document/d/1MfagxTa6H0rTxtq9Oxyh4X53NzKqOt7y3hZBVzO_LMk/edit?usp=sharing
+P0190R4 Proposal for New memory order consume Definition
+	http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0190r4.pdf
+P0750R1 Consume
+	http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0750r1.html
 
+P1726R4 is of particular concern, along with consume.
+
+> > At least I personally is very intereted to help Rust on a complete and
+> > pratical memory model ;-)
+> >
+> > Josh, I think it's good if we can connect to the people working on Rust
+> > memoryg model, I think the right person is Ralf Jung and the right place
+> > is https://github.com/rust-lang/unsafe-code-guidelines, but you
+> > cerntainly know better than me ;-) Or maybe we can use Rust-for-Linux or
+> > linux-toolchains list to discuss.
+> >
+> > [...]
+> > > >   - Boqun Feng is working hard on the different options for
+> > > >     threading abstractions and has reviewed most of the `sync` PRs.
+> > >
+> > > Boqun, I know you're familiar with LKMM, can you please talk about how
+> > > Rust does things and how it interacts?
+> >
+> > As Wedson said in the other email, currently there is no code requiring
+> > synchronization between C side and Rust side, so we are currently fine.
+> > But in the longer term, we need to teach Rust memory model about the
+> > "design patterns" used in Linux kernel for parallel programming.
+> >
+> > What I have been doing so far is reviewing patches which have memory
+> > orderings in Rust-for-Linux project, try to make sure we don't include
+> > memory ordering bugs for the beginning.
+
+I believe that compatibility with both C/C++ and the Linux kernel are
+important.
+
+							Thanx, Paul
