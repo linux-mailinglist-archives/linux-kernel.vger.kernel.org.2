@@ -2,245 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94419362118
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C87FD36213B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244015AbhDPNfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 09:35:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:41714 "EHLO foss.arm.com"
+        id S242977AbhDPNkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 09:40:47 -0400
+Received: from elvis.franken.de ([193.175.24.41]:53884 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240407AbhDPNfR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 09:35:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F61F11B3;
-        Fri, 16 Apr 2021 06:34:53 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.1.222])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0AD323F85F;
-        Fri, 16 Apr 2021 06:34:50 -0700 (PDT)
-Date:   Fri, 16 Apr 2021 14:34:41 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>, will@kernel.org
-Cc:     He Zhe <zhe.he@windriver.com>, oleg@redhat.com,
-        linux-arm-kernel@lists.infradead.org, paul@paul-moore.com,
-        eparis@redhat.com, linux-audit@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] arm64: ptrace: Add is_syscall_success to handle
- compat
-Message-ID: <20210416133431.GA2303@C02TD0UTHF1T.local>
-References: <20210416075533.7720-1-zhe.he@windriver.com>
- <20210416123322.GA23184@arm.com>
+        id S235192AbhDPNkn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 09:40:43 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lXOhk-0002lT-00; Fri, 16 Apr 2021 15:40:16 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id A52AAC04CD; Fri, 16 Apr 2021 15:35:36 +0200 (CEST)
+Date:   Fri, 16 Apr 2021 15:35:36 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH v5 net-next 10/10] dt-bindings: net: korina: Add DT
+ bindings for IDT 79RC3243x SoCs
+Message-ID: <20210416133536.GA10451@alpha.franken.de>
+References: <20210416085207.63181-1-tsbogend@alpha.franken.de>
+ <20210416085207.63181-11-tsbogend@alpha.franken.de>
+ <ca4d9975-c153-94c9-dec8-bf9416c76b45@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210416123322.GA23184@arm.com>
+In-Reply-To: <ca4d9975-c153-94c9-dec8-bf9416c76b45@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 01:33:22PM +0100, Catalin Marinas wrote:
-> On Fri, Apr 16, 2021 at 03:55:31PM +0800, He Zhe wrote:
-> > The general version of is_syscall_success does not handle 32-bit
-> > compatible case, which would cause 32-bit negative return code to be
-> > recoganized as a positive number later and seen as a "success".
+On Fri, Apr 16, 2021 at 12:29:46PM +0300, Sergei Shtylyov wrote:
+> On 16.04.2021 11:52, Thomas Bogendoerfer wrote:
+> 
+> > Add device tree bindings for ethernet controller integrated into
+> > IDT 79RC3243x SoCs.
 > > 
-> > Since is_compat_thread is defined in compat.h, implementing
-> > is_syscall_success in ptrace.h would introduce build failure due to
-> > recursive inclusion of some basic headers like mutex.h. We put the
-> > implementation to ptrace.c
-> > 
-> > Signed-off-by: He Zhe <zhe.he@windriver.com>
+> > Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 > > ---
-> >  arch/arm64/include/asm/ptrace.h |  3 +++
-> >  arch/arm64/kernel/ptrace.c      | 10 ++++++++++
-> >  2 files changed, 13 insertions(+)
+> >   .../bindings/net/idt,3243x-emac.yaml          | 74 +++++++++++++++++++
+> >   1 file changed, 74 insertions(+)
+> >   create mode 100644 Documentation/devicetree/bindings/net/idt,3243x-emac.yaml
 > > 
-> > diff --git a/arch/arm64/include/asm/ptrace.h b/arch/arm64/include/asm/ptrace.h
-> > index e58bca832dff..3c415e9e5d85 100644
-> > --- a/arch/arm64/include/asm/ptrace.h
-> > +++ b/arch/arm64/include/asm/ptrace.h
-> > @@ -328,6 +328,9 @@ static inline void regs_set_return_value(struct pt_regs *regs, unsigned long rc)
-> >  	regs->regs[0] = rc;
-> >  }
-> >  
-> > +extern inline int is_syscall_success(struct pt_regs *regs);
-> > +#define is_syscall_success(regs) is_syscall_success(regs)
+> > diff --git a/Documentation/devicetree/bindings/net/idt,3243x-emac.yaml b/Documentation/devicetree/bindings/net/idt,3243x-emac.yaml
+> > new file mode 100644
+> > index 000000000000..3697af5cb66f
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/net/idt,3243x-emac.yaml
+> > @@ -0,0 +1,74 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/net/idt,3243x-emac.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > > +
-> >  /**
-> >   * regs_get_kernel_argument() - get Nth function argument in kernel
-> >   * @regs:	pt_regs of that context
-> > diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-> > index 170f42fd6101..3266201f8c60 100644
-> > --- a/arch/arm64/kernel/ptrace.c
-> > +++ b/arch/arm64/kernel/ptrace.c
-> > @@ -1909,3 +1909,13 @@ int valid_user_regs(struct user_pt_regs *regs, struct task_struct *task)
-> >  	else
-> >  		return valid_native_regs(regs);
-> >  }
+> > +title: IDT 79rc3243x Ethernet controller
 > > +
-> > +inline int is_syscall_success(struct pt_regs *regs)
-> > +{
-> > +	unsigned long val = regs->regs[0];
+> > +description: Ethernet controller integrated into IDT 79RC3243x family SoCs
 > > +
-> > +	if (is_compat_thread(task_thread_info(current)))
-> > +		val = sign_extend64(val, 31);
+> > +maintainers:
+> > +  - Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 > > +
-> > +	return !IS_ERR_VALUE(val);
-> > +}
+> > +allOf:
+> > +  - $ref: ethernet-controller.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: idt,3243x-emac
+> > +
+> > +  reg:
+> > +    maxItems: 3
+> > +
+> > +  reg-names:
+> > +    items:
+> > +      - const: korina_regs
+> > +      - const: korina_dma_rx
+> > +      - const: korina_dma_tx
+> > +
+> > +  interrupts:
+> > +    items:
+> > +      - description: RX interrupt
+> > +      - description: TX interrupt
+> > +
+> > +  interrupt-names:
+> > +    items:
+> > +      - const: korina_rx
+> > +      - const: korina_tx
+> > +
+> > +  clocks:
+> > +    maxItems: 1
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: mdioclk
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - reg-names
+> > +  - interrupts
+> > +  - interrupt-names
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +
+> > +    ethernet@60000 {
+> > +        compatible = "idt,3243x-emac";
+> > +
+> > +        reg = <0x60000 0x10000>,
+> > +              <0x40000 0x14>,
+> > +              <0x40014 0x14>;
+> > +        reg-names = "korina_regs",
+> > +                    "korina_dma_rx",
+> > +                    "korina_dma_tx";
+> > +
+> > +        interrupts-extended = <&rcpic3 0>, <&rcpic3 1>;
 > 
-> It's better to use compat_user_mode(regs) here instead of
-> is_compat_thread(). It saves us from worrying whether regs are for the
-> current context.
-> 
-> I think we should change regs_return_value() instead. This function
-> seems to be called from several other places and it has the same
-> potential problems if called on compat pt_regs.
+>    You use this prop, yet don't describe it?
 
-I think this is a problem we created for ourselves back in commit:
+that's just interrupt-parent and interrupts in one statement. And since
+make dt_binding_check didn't complained I thought that's good this way.
+Rob, do I need to describe interrupts-extended as well ?
 
-  15956689a0e60aa0 ("arm64: compat: Ensure upper 32 bits of x0 are zero on syscall return)
+I could change that to interrupt-parent/interrupts as the driver no
+longer uses dma under/overrun interrupts, which have a different
+interrupt-parent.
 
-AFAICT, the perf regs samples are the only place this matters, since for
-ptrace the compat regs are implicitly truncated to compat_ulong_t, and
-audit expects the non-truncated return value. Other architectures don't
-truncate here, so I think we're setting ourselves up for a game of
-whack-a-mole to truncate and extend wherever we need to.
+Thomas.
 
-Given that, I suspect it'd be better to do something like the below.
-
-Will, thoughts?
-
-Mark.
-
----->8----
-From df0f7c160240d9ee6f20f87a180326d3253e80fb Mon Sep 17 00:00:00 2001
-From: Mark Rutland <mark.rutland@arm.com>
-Date: Fri, 16 Apr 2021 13:58:54 +0100
-Subject: [PATCH] arm64: perf: truncate compat regs
-
-For compat userspace, it doesn't generally make sense for the upper 32
-bits of GPRs to be set, as these bits don't really exist in AArch32.
-However, for structural reasons the kernel may transiently set the upper
-32 bits of registers in pt_regs at points where a perf sample can be
-taken.
-
-We tried to avoid this happening in commit:
-
-  15956689a0e60aa0 ("arm64: compat: Ensure upper 32 bits of x0 are zero on syscall return")
-
-... by having invoke_syscall() truncate the return value for compat
-tasks, with helpers in <asm/syscall.h> extending the return value when
-required.
-
-Unfortunately this is not complete, as there are other places where we
-assign the return value, such as when el0_svc_common() sets up a return
-of -ENOSYS.
-
-Further, this approach breaks the audit code, which relies on the upper
-32 bits of the return value.
-
-Instead, let's have the perf code explicitly truncate the user regs to
-32 bits, and otherwise preserve those within the kernel.
-
-Fixes: 15956689a0e60aa0 ("arm64: compat: Ensure upper 32 bits of x0 are zero on syscall return")
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Will Deacon <will@kernel.org>
----
- arch/arm64/include/asm/syscall.h | 11 +----------
- arch/arm64/kernel/perf_regs.c    | 26 ++++++++++++++++----------
- arch/arm64/kernel/syscall.c      |  3 ---
- 3 files changed, 17 insertions(+), 23 deletions(-)
-
-diff --git a/arch/arm64/include/asm/syscall.h b/arch/arm64/include/asm/syscall.h
-index cfc0672013f6..0ebeaf6dbd45 100644
---- a/arch/arm64/include/asm/syscall.h
-+++ b/arch/arm64/include/asm/syscall.h
-@@ -35,9 +35,6 @@ static inline long syscall_get_error(struct task_struct *task,
- {
- 	unsigned long error = regs->regs[0];
- 
--	if (is_compat_thread(task_thread_info(task)))
--		error = sign_extend64(error, 31);
--
- 	return IS_ERR_VALUE(error) ? error : 0;
- }
- 
-@@ -51,13 +48,7 @@ static inline void syscall_set_return_value(struct task_struct *task,
- 					    struct pt_regs *regs,
- 					    int error, long val)
- {
--	if (error)
--		val = error;
--
--	if (is_compat_thread(task_thread_info(task)))
--		val = lower_32_bits(val);
--
--	regs->regs[0] = val;
-+	regs->regs[0] = (long) error ? error : val;
- }
- 
- #define SYSCALL_MAX_ARGS 6
-diff --git a/arch/arm64/kernel/perf_regs.c b/arch/arm64/kernel/perf_regs.c
-index f6f58e6265df..296f0c55b4e2 100644
---- a/arch/arm64/kernel/perf_regs.c
-+++ b/arch/arm64/kernel/perf_regs.c
-@@ -9,6 +9,17 @@
- #include <asm/perf_regs.h>
- #include <asm/ptrace.h>
- 
-+static u64 __perf_reg_value(struct pt_regs *regs, int idx)
-+{
-+	if ((u32)idx == PERF_REG_ARM64_SP)
-+		return regs->sp;
-+
-+	if ((u32)idx == PERF_REG_ARM64_PC)
-+		return regs->pc;
-+
-+	return regs->regs[idx];
-+}
-+
- u64 perf_reg_value(struct pt_regs *regs, int idx)
- {
- 	if (WARN_ON_ONCE((u32)idx >= PERF_REG_ARM64_MAX))
-@@ -38,20 +49,15 @@ u64 perf_reg_value(struct pt_regs *regs, int idx)
- 	 */
- 	if (compat_user_mode(regs)) {
- 		if ((u32)idx == PERF_REG_ARM64_SP)
--			return regs->compat_sp;
-+			return lower_32_bits(regs->compat_sp);
- 		if ((u32)idx == PERF_REG_ARM64_LR)
--			return regs->compat_lr;
-+			return lower_32_bits(regs->compat_lr);
- 		if (idx == 15)
--			return regs->pc;
-+			return lower_32_bits(regs->pc);
-+		return lower_32_bits(__perf_reg_value(regs, idx));
- 	}
- 
--	if ((u32)idx == PERF_REG_ARM64_SP)
--		return regs->sp;
--
--	if ((u32)idx == PERF_REG_ARM64_PC)
--		return regs->pc;
--
--	return regs->regs[idx];
-+	return __perf_reg_value(regs, idx);
- }
- 
- #define REG_RESERVED (~((1ULL << PERF_REG_ARM64_MAX) - 1))
-diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
-index b9cf12b271d7..84314fae4b5c 100644
---- a/arch/arm64/kernel/syscall.c
-+++ b/arch/arm64/kernel/syscall.c
-@@ -51,9 +51,6 @@ static void invoke_syscall(struct pt_regs *regs, unsigned int scno,
- 		ret = do_ni_syscall(regs, scno);
- 	}
- 
--	if (is_compat_task())
--		ret = lower_32_bits(ret);
--
- 	regs->regs[0] = ret;
- }
- 
 -- 
-2.11.0
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
