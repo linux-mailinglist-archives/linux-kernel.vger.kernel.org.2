@@ -2,80 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F373E362691
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D484A36269A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240521AbhDPRUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 13:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239551AbhDPRUX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 13:20:23 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A89C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:19:58 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id b17so23726170ilh.6
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:19:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=6e7t6TfWiGQDRdCZmECAbPZ2los9v9aMlAKupjzwxUM=;
-        b=jJL1VCySU07RkNPU/y7sIq1rho8Kbaay+P8s2sUhLxdHcIHxy4hegDdJ3Au33EalQD
-         7XVEmdaQh8GHpSEMKYC3uk6jfgaA94ASQW+asyqDOjR8Cbz0ErKd3GRSVLHwyCGq5T95
-         1nfa3LC/xcASYISfB66rJrEkl75mcmPDelxscE88RcI00x3N0GrzHsZ9KeZppXOBHP/L
-         oenwCVWdc3LCBkzisMq6gB+N5O/1zw4Vb1L3yVpFu8mTrlz5X5qc2baXgBtqACDPqGBg
-         hSgIskrXAb/hBa6hFCesV5Xq2ZG5LAZ+LJpsVFRzV5bP3GuZzAQ8L//bVVFz0INfPiw9
-         xcFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=6e7t6TfWiGQDRdCZmECAbPZ2los9v9aMlAKupjzwxUM=;
-        b=g7xGDX0zM3UTSLP8A/HeKqcSHMpRUSvN0OTE1ekD0UA2vAxMjGHagkhyRe1d6sI2fX
-         aXRDuGLFzdH/vva/XxtRICYTZjXgn7olXOYnYcnfPjLPZ89yXN49QUCEx2Hpebw/XVSJ
-         zjN6D6Jt2DflSGEdZ77R3HUWDxQgMiia3lCtB+46O08R2IBCy9WbeH8iQfKM+CFkft/t
-         HOXrrAe8vpbKjJib382Y7CTUnsaZDpyLUjXcqMAP0dweibPPnn3ccDP3hQAqybGhrRuy
-         FzpkrMZWavpcb0nOP7HijMpg6Bi7GnfDNXjvIvGqzlyk3CxDPOg0cQulhbHKG5nImQBK
-         0Mhw==
-X-Gm-Message-State: AOAM533K7gPUY0D01+bwxf/sRQYY4nb3Hs9s5Zetx4Rz5/3XdRx16H0f
-        MeFVL3OIPAsjZd/N8cHtytWu6s+ak17FgI/p+G6oLT9TdfKVRg==
-X-Google-Smtp-Source: ABdhPJyM0roxIn+nCrjOTRzI36tQfRmnapRL8yJe9hKwTQO2YCgJ6KCOwAiJYPxf2dTjs7l4oMa/3N7fIYaJAVE9t0k=
-X-Received: by 2002:a92:de4e:: with SMTP id e14mr1898299ilr.129.1618593598010;
- Fri, 16 Apr 2021 10:19:58 -0700 (PDT)
+        id S240850AbhDPRVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 13:21:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54132 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233606AbhDPRVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 13:21:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8CA6613BB;
+        Fri, 16 Apr 2021 17:20:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618593643;
+        bh=DgqWTJb1Z+HKN9VW4qCZgJDVVwJytGX9V+66YuoSKXg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TVRsJBjKQ6RpS0XiwN92qJPEOSAxr8oYInJt+5l04dNdv59fY8aKTcRpm8AHdKAt1
+         CoVepH6JQ0zFRJd1IMUBcCwi2+CTYJMZrz+ghjbLyK03+EBPu5r9E3fmLZ8FOx6Ujb
+         mDPmrRI94Pz15BgHslmw9+W6IxwR8mDBdGr0HtRr5vZWdXGm76E7hAjMK5ra1whajb
+         4x6pMovjYS+H/sAH6B7MPvqVJttTsHmQdokN6XezdbVocjtP4pTSlT8Fpwe4wr1ViT
+         andoyMhzN9nczztk8TkscR1XVOTpZ4nwyn2DxbbRcPEjFZvM/IH7+EM/vmsJQ4EjlR
+         xMcKgZ2NjjELA==
+Received: by mail-ej1-f42.google.com with SMTP id w3so43250948ejc.4;
+        Fri, 16 Apr 2021 10:20:43 -0700 (PDT)
+X-Gm-Message-State: AOAM533heXkYeLEr5/e04TF2CtX/yZg17pnpnj+HflJutAd4Epev2TTM
+        Fjmsa0rKB9LBiWVf2XeacOVLiqmIOLUfxx1pNg==
+X-Google-Smtp-Source: ABdhPJyCFfax6nihY7mtSy1gIy1kLGf50Frz/52eDZ9jBaYGNWv32kco7rFKkOeYCtTf3SYQt5biMyijpQlfWkCYOQM=
+X-Received: by 2002:a17:906:4fcd:: with SMTP id i13mr9385535ejw.341.1618593642471;
+ Fri, 16 Apr 2021 10:20:42 -0700 (PDT)
 MIME-Version: 1.0
-From:   Drew Abbott <abbotta4@gmail.com>
-Date:   Fri, 16 Apr 2021 13:20:28 -0400
-Message-ID: <CALY-g84i=WPVT7OKwKa1xJaORPwMUyjdX0ewqqoVsC2ihbpvtg@mail.gmail.com>
-Subject: Page BUGs
-To:     linux-kernel@vger.kernel.org
+References: <1617976766-7852-1-git-send-email-skakit@codeaurora.org>
+ <1617976766-7852-4-git-send-email-skakit@codeaurora.org> <20210414083820.GH4869@dell>
+In-Reply-To: <20210414083820.GH4869@dell>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 16 Apr 2021 12:20:30 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKYQ2EBgQJzKJSy-+D20Pmu_mzUQog03nAw=_PRY-uRjg@mail.gmail.com>
+Message-ID: <CAL_JsqKYQ2EBgQJzKJSy-+D20Pmu_mzUQog03nAw=_PRY-uRjg@mail.gmail.com>
+Subject: Re: [PATCH V2 3/4] dt-bindings: mfd: Convert pm8xxx bindings to yaml
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     satya priya <skakit@codeaurora.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org, Kiran Gunda <kgunda@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Apr 14, 2021 at 3:38 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> On Fri, 09 Apr 2021, satya priya wrote:
+>
+> > Convert pm8xxx bindings from .txt to .yaml format. Also,
+> > split this binding into two: parent binding(qcom-pm8xxx.yaml)
+> > and child node RTC binding(qcom-pm8xxx-rtc.yaml).
+> >
+> > Signed-off-by: satya priya <skakit@codeaurora.org>
+> > ---
+> > Changes in V2:
+> >  - As per Bjorn's comments, I've split this into two, one parent binding
+> >    and one child node rtc binding.
+> >  - Fixed bot errors and changed maintainer name.
+> >
+> >  .../devicetree/bindings/mfd/qcom-pm8xxx.txt        | 100 ---------------------
+> >  .../devicetree/bindings/mfd/qcom-pm8xxx.yaml       |  54 +++++++++++
+> >  2 files changed, 54 insertions(+), 100 deletions(-)
+> >  delete mode 100644 Documentation/devicetree/bindings/mfd/qcom-pm8xxx.txt
+> >  create mode 100644 Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
+>
+> Applied, thanks.
 
-I have been troubleshooting problems with the vanilla and lts linux kernels
-for a couple of weeks now and saw this mailing list in MAINTAINERS for
-problems with mm.h; apologies if this is the wrong place to ask. I have
-been experiencing many freezes and panics with this hardware:
-https://pcpartpicker.com/user/Abbott/saved/#view=wXdgt6
-Originally[0], many of the traces referred to cpu idling funcs that seem to
-be addressed already[1][2], but now all of the traces refer to problems
-with paging[3][4][5][6]. I normally mount a mergerfs filesystem at boot
-that I thought was causing the panics[7], but I have since removed that
-entry from fstab and can still see paging bugs without that fs (or any
-other FUSE fs) mounted[7].
-What can I do to keep my computer from freezing and panicking?
+You need to apply the rtc schema too. linux-next has an error on this one now.
 
-Thank you,
-Drew Abbott
-
-[0] https://bbs.archlinux.org/viewtopic.php?id=259571
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=212087
-[2] https://bugzilla.kernel.org/show_bug.cgi?id=212543
-[3] https://imgur.com/HT4F7p7
-[4] https://imgur.com/pTb4Miu
-[5] https://imgur.com/pTb4Miu
-[6] https://imgur.com/JVueE3m
-[7] http://0x0.st/-ATM.log
+Rob
