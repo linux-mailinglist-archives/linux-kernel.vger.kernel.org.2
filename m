@@ -2,95 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4EC2361FB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B952C361FB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243418AbhDPMX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 08:23:58 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:36182 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243404AbhDPMXm (ORCPT
+        id S243462AbhDPMYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 08:24:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243404AbhDPMYC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 08:23:42 -0400
-Received: from mail-ed1-f70.google.com ([209.85.208.70])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lXNVF-0006nL-6b
-        for linux-kernel@vger.kernel.org; Fri, 16 Apr 2021 12:23:17 +0000
-Received: by mail-ed1-f70.google.com with SMTP id v5-20020a0564023485b029037ff13253bcso6903054edc.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 05:23:17 -0700 (PDT)
+        Fri, 16 Apr 2021 08:24:02 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5821C061574;
+        Fri, 16 Apr 2021 05:23:37 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id z1so29863722ybf.6;
+        Fri, 16 Apr 2021 05:23:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oJWOBU898RR64I5dUgBojnrKLrF+H0PdTgSU59Ph068=;
+        b=F88mPaWYARVjBdkYiXNxWNv06dZCNfEiE9bRYpt7hK7KKzw55VR34flKRflG+TlZky
+         ynS8EVLCuLTrn4YY0MRl4/3veqV67byO44Y1SUsL9OVIGvuZC/gSwmHg0hNvtp6jKNyc
+         NRFEw7z1UNPyuswTtwXFHmmBku37m5ofWkthnZz0pRbY53CPfx8YZ9mIwKNxbM9mdiI3
+         0Q/12eTlMPqvE8Z9sqhLPu8bjXNWwIrgOICYTBK1I2pBHFaoRvPco4PULKgon3U0+EY5
+         dbVbRQ7fwteo5CgoLswR7VWsxbHgbXZUCoBlEgbkohQTUJjCBALqU3duntCU+LvJvQli
+         xQAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fzqFDF62IKS/7ZqV+8AeRm9rshpYPcGYLb2VCKEzlxc=;
-        b=JGp/9dSlbNRw1wRiPwPPDtH8Gz6aBRg9/iF/LSbCttwv+HCIzlsGw1DSd4EFlrI/be
-         iAIqnNTSrs5oA/520yilsv/87vGIC7oRqGUW4TPaN6og2hGHDAzVGrSmhkGSlY0moNUO
-         yvUDNvm9KeqYX2Hpcy37CvGQipHzMR8AVTVLM7DlPKKWSbSZFMjeiKqQjMdBEqRuZWEy
-         OKTH9SX8z/ZmKvG1U2yT0TDt96f0rRHWTV77rnI2Fb1U1fbW5DVJoJ9/81EdqCDZyLUt
-         pMUkTdKYvffhpQaHFFQHQjLv3AQRco3kEdZY4v0AGaHEWwymR50oi09AcdBsPPhAz4Zo
-         Wrvg==
-X-Gm-Message-State: AOAM530i+fvPfK4nxvkAlIi4+68yBycA4MbzV63hOEXrIDSegkExRz7L
-        tEJoIX+knxEizYSVG0KPrBi9Wkmvp9/cbW3+SAZcFDBh+Xbcct+/U3JS2yUFmxThujKM/V89k98
-        Ad9BJ0E6UnLJ6z6vb8BxkT8ZKE+X8+TcM4ev65cX7ZA==
-X-Received: by 2002:a17:906:a052:: with SMTP id bg18mr8164931ejb.18.1618575796877;
-        Fri, 16 Apr 2021 05:23:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz8rqxe4OShPzOPdaQiMJqPwX4MP+1hJHO+t8/0TCP0lXdUaa3BKe1KRRwEsifKkCWnlacHmg==
-X-Received: by 2002:a17:906:a052:: with SMTP id bg18mr8164918ejb.18.1618575796702;
-        Fri, 16 Apr 2021 05:23:16 -0700 (PDT)
-Received: from localhost.localdomain (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
-        by smtp.gmail.com with ESMTPSA id i25sm2328924edr.68.2021.04.16.05.23.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 05:23:16 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] crypto: s5p-sss - consistently use local 'dev' variable in probe()
-Date:   Fri, 16 Apr 2021 14:23:11 +0200
-Message-Id: <20210416122311.223076-3-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210416122311.223076-1-krzysztof.kozlowski@canonical.com>
-References: <20210416122311.223076-1-krzysztof.kozlowski@canonical.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oJWOBU898RR64I5dUgBojnrKLrF+H0PdTgSU59Ph068=;
+        b=UPLMiB1k+O2fTmgyeYWq+/P0zWem1npT5o908V4pOyCGM7rf7jCPfG8v2UB3SraCeE
+         NgMDNkJBk9m5oVhWMpMdaJpad9SmiQiOfZ8bqLQX2h2AlptidRVonVaXkvlNpO2jTniX
+         qJ3wPvlCIt5/Mfr5VRre3ErmGBrH7HjJi9b4JwN4vi/dGMEdY2L78yRCVesI3UmGN/Y5
+         dua2xOxboW7c1ejt/pxxCQ/yXTax4YNHmXS9CsiJBqMNt2zg/prz/8pVgAjMybsbxaK9
+         KiqPe2V0pTyQJTsntKySFwdSrCJQXVxjD39DCc69iwMTTZ7D//CQMj9kIIm4f9hrgii4
+         1NOQ==
+X-Gm-Message-State: AOAM533sG0xdHF3ZveRTKBPrqb3qhcsk14pqnMcEwS+2qXfmIfm7GQEL
+        BYMOyS8KuLAOmmIx4n2PCsUdtthU+c6LLB8UUjU=
+X-Google-Smtp-Source: ABdhPJxQmILSd73jktfvCK8N1AvhaqwM43zyeMR4u8U2bCKGdASsI/jtNsPLqlByKcaOcHTssmfTv+/86lWTiZlLLnI=
+X-Received: by 2002:a25:cfc2:: with SMTP id f185mr12128491ybg.26.1618575817094;
+ Fri, 16 Apr 2021 05:23:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-5-ojeda@kernel.org>
+ <CAKwvOdkjttdX83tL4pw+J5EnHM1MgEYDPp=YTpEagV4RrhdxwA@mail.gmail.com>
+ <CANiq72ksLeuL_uqoqbf3fhLP7M0j-7TdEvRDDmxThdmrEqD2Lw@mail.gmail.com> <CAKwvOdkyRkR0Jj5w5HWJ+o4YpOrLfTY1Vjho0bDn60fgRE-pkA@mail.gmail.com>
+In-Reply-To: <CAKwvOdkyRkR0Jj5w5HWJ+o4YpOrLfTY1Vjho0bDn60fgRE-pkA@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 16 Apr 2021 14:23:26 +0200
+Message-ID: <CANiq72=TDkRzZi7fN5y9QmtRbvoZTzxHXDg_ELjdD+YhmXzgPw@mail.gmail.com>
+Subject: Re: [PATCH 04/13] Kbuild: Rust support
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For code readability, the probe() function uses 'dev' variable instead
-of '&pdev->dev', so update remaining places.
+On Thu, Apr 15, 2021 at 8:03 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> Until then, I don't see why we need to permit developers to express
+> such flexibility for just the Rust code, or have it differ from the
+> intent of the C code. Does it make sense to set RUST_OPT_LEVEL_3 and
+> CC_OPTIMIZE_FOR_SIZE? I doubt it. That doesn't seem like a development
+> feature, but a mistake.  YAGNI.  Instead developers should clarify
+> what they care about in terms of high level intent; if someone wants
+> to micromanage optimization level flags in their forks they don't need
+> a Kconfig to do it (they're either going to hack KBUILD_CFLAGS,
+> CFLAGS_*.o, or KCFLAGS), and there's probably better mechanisms for
+> fine-tooth precision of optimizing actually hot code or not via PGO
+> and AutoFDO.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- drivers/crypto/s5p-sss.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I completely agree when we are talking about higher level optimization
+levels. From a user perspective, it does not make much sense to want
+slightly different optimizations levels or different size/performance
+trade-offs between C and Rust. However, I am thinking from the
+debugging side, i.e. mostly low or no optimization; rather than about
+micromanaging optimizations for performance.
 
-diff --git a/drivers/crypto/s5p-sss.c b/drivers/crypto/s5p-sss.c
-index 8c310816deab..55aa3a71169b 100644
---- a/drivers/crypto/s5p-sss.c
-+++ b/drivers/crypto/s5p-sss.c
-@@ -2186,14 +2186,14 @@ static int s5p_aes_probe(struct platform_device *pdev)
- 	}
- 
- 	pdata->res = res;
--	pdata->ioaddr = devm_ioremap_resource(&pdev->dev, res);
-+	pdata->ioaddr = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(pdata->ioaddr)) {
- 		if (!pdata->use_hash)
- 			return PTR_ERR(pdata->ioaddr);
- 		/* try AES without HASH */
- 		res->end -= 0x300;
- 		pdata->use_hash = false;
--		pdata->ioaddr = devm_ioremap_resource(&pdev->dev, res);
-+		pdata->ioaddr = devm_ioremap_resource(dev, res);
- 		if (IS_ERR(pdata->ioaddr))
- 			return PTR_ERR(pdata->ioaddr);
- 	}
--- 
-2.25.1
+For instance, last year I used `RUST_OPT_LEVEL_0/1` to quickly rule
+out optimizer/codegen/etc. bugs on the Rust side when we had some
+memory corruption over Rust data
+(https://github.com/Rust-for-Linux/linux/pull/28), which is important
+when dealing with compiler nightly versions. It was also nice to be
+able to easily follow along when stepping, too.
 
+Having said that, I agree that in those cases one can simply tweak the
+flags manually -- so that's why I said it is fine dropping the the
+`Kconfig` options. There might be some advantages of having them, such
+as making developers aware that those builds should work, to keep them
+tested/working, etc.; but we can do that manually too in the CI/docs
+too.
+
+Cheers,
+Miguel
