@@ -2,121 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E7936295E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 22:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B67D362960
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 22:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245683AbhDPUdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 16:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245017AbhDPUdA (ORCPT
+        id S245733AbhDPUfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 16:35:05 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:53625 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238807AbhDPUfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 16:33:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAAC9C061574;
-        Fri, 16 Apr 2021 13:32:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=5JpOyi2btqDexH91tjXQOgOsvUakTgPwzwHL+y/0r+w=; b=gnOA+R9LoD3iBsz3nvsKcyYqNt
-        zRjyXfTIagRzAzxD8dN6roXXW+9kAWTt1iQta3S3cAd1DGFMZdUmpv2lserftPVS61X4pKEWtkRlK
-        VW1lk1GFZXiL0MP4F5rKnZ9uwR6mCnFAM5RrqxlqVcFoASuJ+4LKsaEEi0oorzRFABkRiQbzFTzKA
-        49PemZEACFvqainzKYZP3a5Aw1xXbDsSpUes3hQ+iRjOjqn1lQo4FWn9zO6k+CusTna2/+Z0dMrCl
-        YvWN5xLtzOSmgQkUxe0y6LdMCxewWR7ZQ1bwS7HMYk3C/UgcGDaDgy8nNZPPr81MtchBDrl2t8Aj4
-        afL/PiCQ==;
-Received: from c-73-157-219-8.hsd1.or.comcast.net ([73.157.219.8] helo=[10.0.0.253])
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lXV8V-00APsR-GY; Fri, 16 Apr 2021 20:32:25 +0000
-Subject: Re: linux-next: Tree for Apr 16 (IMA appraise causing build error)
-To:     Nayna <nayna@linux.vnet.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-integrity@vger.kernel.org, Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-References: <20210416213625.14542675@canb.auug.org.au>
- <80839e94-f72c-4d2c-6b3a-b68beea72a27@infradead.org>
- <3b06deaa-2ec1-88cd-87aa-970b9fa4315a@linux.vnet.ibm.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <8fbd9822-bc70-f103-ace9-22733b8475e5@infradead.org>
-Date:   Fri, 16 Apr 2021 13:32:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Fri, 16 Apr 2021 16:35:03 -0400
+X-Originating-IP: 90.65.108.55
+Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 19EF2E0003;
+        Fri, 16 Apr 2021 20:34:36 +0000 (UTC)
+Date:   Fri, 16 Apr 2021 22:34:36 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     linux-kernel@vger.kernel.org, Laurent Vivier <laurent@vivier.eu>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        linux-m68k@lists.linux-m68k.org, linux-rtc@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 0/2] m68k: Add Virtual M68k Machine
+Message-ID: <YHn03F2IEvEAVx7b@piout.net>
+References: <20210323221430.3735147-1-laurent@vivier.eu>
+ <161860472066.842937.16850667459079911050.b4-ty@bootlin.com>
 MIME-Version: 1.0
-In-Reply-To: <3b06deaa-2ec1-88cd-87aa-970b9fa4315a@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <161860472066.842937.16850667459079911050.b4-ty@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 4/16/21 1:25 PM, Nayna wrote:
+On 16/04/2021 22:26:26+0200, Alexandre Belloni wrote:
+> On Tue, 23 Mar 2021 23:14:28 +0100, Laurent Vivier wrote:
+> > The most powerful m68k machine emulated by QEMU is a Quadra 800,
+> > but this machine is very limited: only 1 GiB of memory and only some
+> > specific interfaces, with no DMA.
+> > 
+> > The Virtual M68k Machine is based on Goldfish interfaces defined by Google
+> > for Android simulator. It uses Goldfish-rtc (timer and RTC),
+> > Goldfish-pic (PIC) and Goldfish-tty (for early tty).
+> > 
+> > [...]
 > 
-> On 4/16/21 2:53 PM, Randy Dunlap wrote:
->> On 4/16/21 4:36 AM, Stephen Rothwell wrote:
->>> Hi all,
->>>
->>> Changes since 20210415:
->>>
->> I noticed this build error message (on an i386 build):
->>
->> ../certs/Makefile:52: *** Could not determine digest type to use from kernel config.  Stop.
->>
->> and when I was checking on why it happened, I noticed that
->> # CONFIG_MODULES is not set
->>
->> and hence
->> ifndef CONFIG_MODULE_SIG_HASH
->> $(error Could not determine digest type to use from kernel config)
->> endif
->>
->> CONFIG_MODULE_SIG_HASH is not set/enabled/defined.
->>
->> However, the .config file does have
->> CONFIG_IMA_APPRAISE=y
->> # CONFIG_IMA_ARCH_POLICY is not set
->> # CONFIG_IMA_APPRAISE_BUILD_POLICY is not set
->> CONFIG_IMA_APPRAISE_BOOTPARAM=y
->> CONFIG_IMA_APPRAISE_MODSIG=y
->>
->> as well as
->> CONFIG_MODULE_SIG_FORMAT=y
->>
->> due to a "select" by IMA_APPRAISE_MODSIG.
->> (although I see that MODULE_SIG_FORMAT does not depend on MODULES)
->>
->>
->> Is there anything that you can do (or recommend) to prevent
->> the build error?
->>
->>
->>
->> BTW, it looks like this:
->> config IMA_APPRAISE_REQUIRE_MODULE_SIGS
->>     bool "Appraise kernel modules signatures"
->>     depends on IMA_APPRAISE_BUILD_POLICY
->>
->> could also depend on MODULES.
->>
->>
->>
->> Full i386 randconfig file is attached.
+> Applied, thanks!
 > 
+> [1/2] rtc: goldfish: remove dependency to OF
+>       commit: 3fd00fdc4f11c656a63e6a6280c0bcb63cf109a2
+> [2/2] m68k: introduce a virtual m68k machine
+>       commit: 95631785c64840f3816f7a4cc2ce1a5332f43184
 > 
-> With the new patchset "ima: kernel build support for loading the kernel module signing key", there shouldn't be a difference when generating the config file between MODULE_SIG and IMA_APPRAISE_MODSIG. Both prompt for the hash algorithm.
 
-That patchset appears to be included in today's linux-next 2021-04-16.
-
-> Can you please explain how you generate randconfig? Do you use make xconfig?
-
-with the 'make randconfig' command.
-
+Ah, obviously, I'm not applying the m68k patch.
 
 -- 
-~Randy
-
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
