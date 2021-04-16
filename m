@@ -2,132 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D8D36282C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 20:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C41362830
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 21:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240003AbhDPS5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 14:57:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235957AbhDPS5o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 14:57:44 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BA6C061574;
-        Fri, 16 Apr 2021 11:57:19 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id c195so31207566ybf.9;
-        Fri, 16 Apr 2021 11:57:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IuXR4s76KW2g16KgmTJ3s1NR8NxaS0rBglhD+4wC2bA=;
-        b=t6Eh6V9OMwi659Ak0KE8pRM5p87Dz7/7Ty3eBJkJHR3jxgYIRk0vixc1KxYDXStbk3
-         0xvaAqI02zC6EBd3wRdbUwS3/Z/BenDWtD6tLgUY2gwjWBt+8SHdws8AwkQZcTMCn7kl
-         Sp3dnKOM/qyPCfBCJ40L2kHBWxeAhGPHPN4AjRdjoXVllD5DZC/L4Wl2n0WmZDCEsFkM
-         J6Qc9+HPOeE5f+JvWQTM/3gHA99pYJs2U5IS1IiXXhX8jaOCQOY7X19eZOG14hIgMPWg
-         O1+7MnPo2thZERtolLuOH8vVpWQgb18ZVviCi3wdpOcMF7nxQ4o2D5qfJ4G5oRDOrgUh
-         2p3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IuXR4s76KW2g16KgmTJ3s1NR8NxaS0rBglhD+4wC2bA=;
-        b=NYIjMm4lEkPwIcMaUDyDT5xaKKD2U+yilwnWNNlNTT0yL5dBBkzR58BLM+F2F0f0Vz
-         Hfwc/exKTRDJYkiGFLxg+82FDOcAwaiaCELMW8jWjk41YDH6sH65lOl0JtYbmz2dYgH9
-         ATzlSpZAxMB48F1b0yanH60GxDQxyETKwFg0k+f7yntuKSHVKp24aZnXQW15ArCgdOrf
-         aXjQYPPClvmE3QTzZpQOQohHrb5+V35NE1UMXkCQZte4Gpy1i8XN+WyKSfTgIN5dukRd
-         quksGae5h3qn8rw/ZRZXODe2a8VT+nh8jhdoEsN6DCYbCdEdqLPOSd6em8rgm0XulNz0
-         ac2w==
-X-Gm-Message-State: AOAM530n34tK4h6tsiWP/rwK4NU7jOQpH1dbWd0jTCXehiLmdTS6k46f
-        3Yy3t6/Rpk7MS3DTX4T++U795QSCYyqTaoFZcFA=
-X-Google-Smtp-Source: ABdhPJx/Sef28+ab/jqRThJjs0GBqd35mSjtjTNKxxnwr7wkjUsSlz3TUt4YQ3eQatBFCI53ILW6au7VDYWbxBsQHvQ=
-X-Received: by 2002:a25:7909:: with SMTP id u9mr796140ybc.22.1618599438460;
- Fri, 16 Apr 2021 11:57:18 -0700 (PDT)
+        id S235924AbhDPTDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 15:03:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55682 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233606AbhDPTDJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 15:03:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1069611AF;
+        Fri, 16 Apr 2021 19:02:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618599764;
+        bh=YhNF1u7eDPJyBXGgiBHEF7QjgMTCBzvbSfgXtlmK2eg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=pFeqwQ/ca8tRABmm/N0sDdf82MfmJZQBKIp2hKi/eMbzQm+u2LM50LE71TiPujQHq
+         musH2AQU8wwGYCwvcLM8fK+FlYE21MO+EAlHbXEQi32o8ti/Ebl96WojnqWj2vxBY+
+         Cjrn9nZKXvBdIkRRy/j1g34CLr54deBHEnNMvkw87azrnz9oGnyKd/pnMtr8hA6RFf
+         uelrFyoyUIk4ZV5XMpACUW2b2yGjqZqP6zkUpKIzyIQ0X3YSe29vSPDast9LaR0V4D
+         ZmKrmkq0KT3eh2nubhR5OBbLVUek0AurQnD/R+3Li9bPQyy8AGgMd9FTVckpPRjOi7
+         wFZumHz/C6ZiQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 61AB15C0253; Fri, 16 Apr 2021 12:02:44 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 12:02:44 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        lttng-dev <lttng-dev@lists.lttng.org>, carlos <carlos@redhat.com>
+Subject: Re: liburcu: LTO breaking rcu_dereference on arm64 and possibly
+ other architectures ?
+Message-ID: <20210416190244.GJ4212@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <1680415903.81652.1618584736742.JavaMail.zimbra@efficios.com>
+ <YHmqd3BHwVmaUZHX@hirez.programming.kicks-ass.net>
+ <20210416160139.GF4212@paulmck-ThinkPad-P17-Gen-1>
+ <2089952450.84139.1618598408015.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-5-ojeda@kernel.org>
- <YHmTWEAS/QjX++w4@hirez.programming.kicks-ass.net> <CAHk-=wh_zb=K1B-N8mgHmSZDqTLgOm711NRXbTX_OwFAzDYg0Q@mail.gmail.com>
- <CANiq72nx7ngazsH7sZgc=HeU0cNj45F9+-rwQb7AkdYsRCmRbQ@mail.gmail.com> <YHnS92ZKZ4tRWTiA@zeniv-ca.linux.org.uk>
-In-Reply-To: <YHnS92ZKZ4tRWTiA@zeniv-ca.linux.org.uk>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Fri, 16 Apr 2021 20:57:07 +0200
-Message-ID: <CANiq72=RLf0FiuLVL-ZeLFp9P2LxTymbzhXoyQGG=tvUY_J-Sg@mail.gmail.com>
-Subject: Re: [PATCH 04/13] Kbuild: Rust support
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2089952450.84139.1618598408015.JavaMail.zimbra@efficios.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 8:10 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> How well would ? operator fit that pattern?  _If_ it's just a syntax sugar
-> along the lines of "if argument matches Err(_), return Err(_)", the types
-> shouldn't be an issue, but that might need some fun with releasing resources,
-> etc.  If it's something more elaborate... details, please.
+On Fri, Apr 16, 2021 at 02:40:08PM -0400, Mathieu Desnoyers wrote:
+> ----- On Apr 16, 2021, at 12:01 PM, paulmck paulmck@kernel.org wrote:
+> 
+> > On Fri, Apr 16, 2021 at 05:17:11PM +0200, Peter Zijlstra wrote:
+> >> On Fri, Apr 16, 2021 at 10:52:16AM -0400, Mathieu Desnoyers wrote:
+> >> > Hi Paul, Will, Peter,
+> >> > 
+> >> > I noticed in this discussion https://lkml.org/lkml/2021/4/16/118 that LTO
+> >> > is able to break rcu_dereference. This seems to be taken care of by
+> >> > arch/arm64/include/asm/rwonce.h on arm64 in the Linux kernel tree.
+> >> > 
+> >> > In the liburcu user-space library, we have this comment near rcu_dereference()
+> >> > in
+> >> > include/urcu/static/pointer.h:
+> >> > 
+> >> >  * The compiler memory barrier in CMM_LOAD_SHARED() ensures that
+> >> >  value-speculative
+> >> >  * optimizations (e.g. VSS: Value Speculation Scheduling) does not perform the
+> >> >  * data read before the pointer read by speculating the value of the pointer.
+> >> >  * Correct ordering is ensured because the pointer is read as a volatile access.
+> >> >  * This acts as a global side-effect operation, which forbids reordering of
+> >> >  * dependent memory operations. Note that such concern about dependency-breaking
+> >> >  * optimizations will eventually be taken care of by the "memory_order_consume"
+> >> >  * addition to forthcoming C++ standard.
+> >> > 
+> >> > (note: CMM_LOAD_SHARED() is the equivalent of READ_ONCE(), but was introduced in
+> >> > liburcu as a public API before READ_ONCE() existed in the Linux kernel)
+> >> > 
+> >> > Peter tells me the "memory_order_consume" is not something which can be used
+> >> > today.
+> >> > Any information on its status at C/C++ standard levels and implementation-wise ?
+> > 
+> > Actually, you really can use memory_order_consume.  All current
+> > implementations will compile it as if it was memory_order_acquire.
+> > This will work correctly, but may be slower than you would like on ARM,
+> > PowerPC, and so on.
+> > 
+> > On things like x86, the penalty is forgone optimizations, so less
+> > of a problem there.
+> 
+> OK
+> 
+> > 
+> >> > Pragmatically speaking, what should we change in liburcu to ensure we don't
+> >> > generate
+> >> > broken code when LTO is enabled ? I suspect there are a few options here:
+> >> > 
+> >> > 1) Fail to build if LTO is enabled,
+> >> > 2) Generate slower code for rcu_dereference, either on all architectures or only
+> >> >    on weakly-ordered architectures,
+> >> > 3) Generate different code depending on whether LTO is enabled or not. AFAIU
+> >> > this would only
+> >> >    work if every compile unit is aware that it will end up being optimized with
+> >> >    LTO. Not sure
+> >> >    how this could be done in the context of user-space.
+> >> > 4) [ Insert better idea here. ]
+> > 
+> > Use memory_order_consume if LTO is enabled.  That will work now, and
+> > might generate good code in some hoped-for future.
+> 
+> In the context of a user-space library, how does one check whether LTO is enabled with
+> preprocessor directives ? A quick test with gcc seems to show that both with and without
+> -flto cannot be distinguished from a preprocessor POV, e.g. the output of both
+> 
+> gcc --std=c11 -O2 -dM -E - < /dev/null
+> and
+> gcc --std=c11 -O2 -flto -dM -E - < /dev/null
+> 
+> is exactly the same. Am I missing something here ?
 
-Yes, it is just syntax sugar -- it doesn't introduce any power to the language.
+No idea.  ;-)
 
-It was introduced because it is a very common pattern when using the
-`Result` and `Option` enums. In fact, before it existed, it was just a
-simple macro that you could also implement yourself.
+> If we accept to use memory_order_consume all the time in both C and C++ code starting from
+> C11 and C++11, the following code snippet could do the trick:
+> 
+> #define CMM_ACCESS_ONCE(x) (*(__volatile__  __typeof__(x) *)&(x))
+> #define CMM_LOAD_SHARED(p) CMM_ACCESS_ONCE(p)
+> 
+> #if defined (__cplusplus)
+> # if __cplusplus >= 201103L
+> #  include <atomic>
+> #  define rcu_dereference(x)    ((std::atomic<__typeof__(x)>)(x)).load(std::memory_order_consume)
+> # else
+> #  define rcu_dereference(x)    CMM_LOAD_SHARED(x)
+> # endif
+> #else
+> # if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L)
+> #  include <stdatomic.h>
+> #  define rcu_dereference(x)    atomic_load_explicit(&(x), memory_order_consume)
+> # else
+> #  define rcu_dereference(x)    CMM_LOAD_SHARED(x)
+> # endif
+> #endif
+> 
+> This uses the volatile approach prior to C11/C++11, and moves to memory_order_consume
+> afterwards. This will bring a performance penalty on weakly-ordered architectures even
+> when -flto is not specified though.
+> 
+> Then the burden is pushed on the compiler people to eventually implement an efficient
+> memory_order_consume.
+> 
+> Is that acceptable ?
 
-For instance, given `Foo` and `Bar` types that need RAII cleanup of
-some kind (let's say `kill_foo()` and `kill_bar()`):
+That makes sense to me!
 
-    fn foo() -> KernelResult<Foo> {
-        if black_box() {
-            return Err(EINVAL);
-        }
+If it can be done reasonably, I suggest also having some way for the
+person building userspace RCU to say "I know what I am doing, so do
+it with volatile rather than memory_order_consume."
 
-        // something that gets you a `Foo`
-        let foo = ...;
-
-        Ok(foo)
-    }
-
-    fn bar() -> KernelResult<Bar> {
-        let p = foo()?;
-
-        // something that gets you a `Bar`, possibly using the `p`
-        let bar = ...;
-
-        Ok(bar)
-    }
-
-This reduces to (full example at https://godbolt.org/z/hjTxd3oP1):
-
-    bar:
-            push    rbx
-            mov     ebx, 1
-            call    qword ptr [rip + black_box@GOTPCREL]
-            test    al, al
-            jne     .LBB2_2
-            call    qword ptr [rip + kill_foo@GOTPCREL]
-            xor     ebx, ebx
-    .LBB2_2:
-            mov     eax, ebx
-            mov     edx, -1234
-            pop     rbx
-            ret
-
-You can see `bar()` calls `black_box()`. If it failed, it returns the
-EINVAL. Otherwise, it cleans up the `foo` automatically and returns
-the successful `bar`.
-
-Cheers,
-Miguel
+							Thanx, Paul
