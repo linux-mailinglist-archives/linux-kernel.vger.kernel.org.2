@@ -2,201 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BF7361AA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 09:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC57F361AA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 09:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239587AbhDPHao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 03:30:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231666AbhDPHam (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 03:30:42 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F0BC061574;
-        Fri, 16 Apr 2021 00:30:18 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 49EE022172;
-        Fri, 16 Apr 2021 09:29:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1618558211;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PbMduC+y8U2TnYB1yFy6DIbM598uMx2+jq28dZXHweQ=;
-        b=EUtjzMP9GqVLqpUQjKAWkwn0o1sw8EWtxSv8YMRSVD0469vqt05Io1/SVJgobjz7HB/r6y
-        Vjk/Jn7gR9cbQkm/qxqSnOY+yQWCWcha3iHS/TQBkEhMmvcdPKJxGg9UyvHCIIkZANcb/g
-        63rLgVagJ+mEmiydqQVNecyvEgF/m50=
+        id S239617AbhDPHbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 03:31:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45498 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234997AbhDPHbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 03:31:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDDDC6101B;
+        Fri, 16 Apr 2021 07:31:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618558273;
+        bh=spgJ/KMOc4d8eiog9zRsZ7WW404gLjnTfxQjL9agoIo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aNTwh+//3BQ+3izHpEyUUN6ZjvmAEymvE2PvOK/acHqtScRI9RkSNPmty5eVLGuOA
+         5LEVSQ8XUrZME6EjnWu2nnFqVgw9KM400jhBkizWWxoVo3TYALqAmzKLUODv7cVfRD
+         HEPZPD7JvroVHnF+/W8f92rfFp0zwxc5OxIaQjb4=
+Date:   Fri, 16 Apr 2021 09:31:11 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
+        ac100@lists.launchpad.net,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Anders Blomdell <anders.blomdell@control.lth.se>,
+        Andrea Merello <andrea.merello@gmail.com>,
+        Andres Klode <jak@jak-linux.org>,
+        Andrey Shvetsov <andrey.shvetsov@k2l.de>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Christian Brauner <christian@brauner.io>,
+        Comedi <comedi@comedi.org>, "David A. Schleef" <ds@schleef.org>,
+        dri-devel@lists.freedesktop.org,
+        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
+        Forest Bond <forest@alittletooquiet.net>,
+        Herman.Bruyninckx@mech.kuleuven.ac.be,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Ian Abbott <abbotti@mev.co.uk>,
+        Ilya Petrov <ilya.muromec@gmail.com>,
+        Jacob Feder <jacobsfeder@gmail.com>,
+        Jerry chuang <wlanfae@realtek.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "John B. Wyatt IV" <jbwyatt4@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        "J.P. Mellor" <jpmellor@rose-hulman.edu>,
+        karthik alapati <mail@karthek.com>,
+        Kees Cook <keescook@chromium.org>,
+        Kernel Team <ac100@lists.lauchpad.net>,
+        Klaas.Gadeyne@mech.kuleuven.ac.be,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-fbdev@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-tegra@vger.kernel.org, Marc Dietrich <marvin24@gmx.de>,
+        Marco Cesati <marcocesati@gmail.com>,
+        Martijn Coenen <maco@android.com>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Michael Straube <straube.linux@gmail.com>,
+        Mori Hess <fmhess@users.sourceforge.net>,
+        =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado 
+        <nfraprado@protonmail.com>,
+        Peter Hurley <peter@hurleysoftware.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Pierre-Hugues Husson <phhusson@free.fr>,
+        Robert Love <rlove@google.com>,
+        Romain Perier <romain.perier@gmail.com>,
+        Ross Schmidt <ross.schm.dev@gmail.com>,
+        "Spencer E. Olson" <olsonse@umich.edu>, Stanley@bb.sd3,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Sumera Priyadarsini <sylphrenadin@gmail.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Teddy Wang <teddy.wang@siliconmotion.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Todd Kjos <tkjos@android.com>,
+        Truxton Fulton <trux@truxton.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Wim.Meeussen@mech.kuleuven.ac.be,
+        Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
+Subject: Re: [PATCH 00/57] Rid W=1 warnings from Staging
+Message-ID: <YHk9Pw1almEsimVW@kroah.com>
+References: <20210414181129.1628598-1-lee.jones@linaro.org>
+ <20210416072749.GA1394@agape.jhs>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 16 Apr 2021 09:29:59 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc:     ath9k-devel@qca.qualcomm.com, UNGLinuxDriver@microchip.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-amlogic@lists.infradead.org, linux-oxnas@groups.io,
-        linux-omap@vger.kernel.org, linux-wireless@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-staging@lists.linux.dev,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        Andreas Larsson <andreas@gaisler.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Joyce Ooi <joyce.ooi@intel.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Fugang Duan <fugang.duan@nxp.com>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Pantelis Antoniou <pantelis.antoniou@gmail.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Byungho An <bh74.an@samsung.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Wingman Kwok <w-kwok2@ti.com>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Stanislaw Gruszka <stf_xl@wp.pl>,
-        Helmut Schaa <helmut.schaa@googlemail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?Q?J=C3=A9r=C3=B4me?= =?UTF-8?Q?_Pouiller?= 
-        <jerome.pouiller@silabs.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>
-Subject: Re: [PATCH net-next v4 2/2] of: net: fix of_get_mac_addr_nvmem() for
- non-platform devices
-In-Reply-To: <730d603b12e590c56770309b4df2bd668f7afbe3.camel@kernel.crashing.org>
-References: <20210412174718.17382-1-michael@walle.cc>
- <20210412174718.17382-3-michael@walle.cc>
- <730d603b12e590c56770309b4df2bd668f7afbe3.camel@kernel.crashing.org>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <8157eba9317609294da80472622deb28@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210416072749.GA1394@agape.jhs>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-04-16 05:24, schrieb Benjamin Herrenschmidt:
-> On Mon, 2021-04-12 at 19:47 +0200, Michael Walle wrote:
->> 
->>  /**
->>   * of_get_phy_mode - Get phy mode for given device_node
->> @@ -59,15 +60,39 @@ static int of_get_mac_addr(struct device_node *np, 
->> const char *name, u8 *addr)
->>  static int of_get_mac_addr_nvmem(struct device_node *np, u8 *addr)
->>  {
->>         struct platform_device *pdev = of_find_device_by_node(np);
->> +       struct nvmem_cell *cell;
->> +       const void *mac;
->> +       size_t len;
->>         int ret;
->> 
->> -       if (!pdev)
->> -               return -ENODEV;
->> +       /* Try lookup by device first, there might be a 
->> nvmem_cell_lookup
->> +        * associated with a given device.
->> +        */
->> +       if (pdev) {
->> +               ret = nvmem_get_mac_address(&pdev->dev, addr);
->> +               put_device(&pdev->dev);
->> +               return ret;
->> +       }
->> +
+On Fri, Apr 16, 2021 at 09:27:51AM +0200, Fabio Aiuto wrote:
+> On Wed, Apr 14, 2021 at 07:10:32PM +0100, Lee Jones wrote:
+> > This set is part of a larger effort attempting to clean-up W=1
+> > kernel builds, which are currently overwhelmingly riddled with
+> > niggly little warnings.
+> > 
+> > Lee Jones (57):
+> >   staging: r8192U_core: Remove two unused variables 'ret' and
+> >     'reset_status'
+> >   staging: android: ashmem: Supply description for 'new_range'
+> >   staging: comedi_8254: Fix descriptions for 'i8254' and 'iobase'
+> >   staging: r8192U_core: Do not use kernel-doc formatting for !kernel-doc
+> >     headers
+> >   staging: r819xU_phy: Remove some local variables from the stack
+> >   staging: r819xU_cmdpkt: Remove functionless method
+> >     'cmpk_handle_query_config_rx'
+> >   staging: wlan-ng: cfg80211: Move large struct onto the heap
+> >   staging: rtw_ioctl_set: Move 'channel_table' to the only place it's
+> >     used
+> >   staging: rtl8188eu: core: rtw_ieee80211: Fix incorrectly documented
+> >     function
+> >   staging: rtl8723bs: core: rtw_mlme: Remove a bunch of unused variables
+> >   staging: rtl8723bs: core: rtw_mlme_ext: Deal with a bunch of unused
+> >     variables
+> >   staging: rtl8712: rtl871x_mp_ioctl: Remove a bunch of unused tables
+> >   staging: rtl8723bs: core: rtw_recv: Mark debug variable as
+> >     __maybe_unused
+> >   staging: rtl8188eu: core: rtw_security: Fix some formatting and
+> >     misdocumentation
+> >   staging: rtl8723bs: core: rtw_security: Demote non-conformant
+> >     kernel-doc header
+> >   staging: rtl8723bs: core: rtw_sta_mgt: Remove unused variable 'psta'
+> >   staging: rtl8723bs: core: rtw_sta_mgt: Return error value directly
+> >   staging: octeon: ethernet-tx: Fix formatting issue in function header
+> >   staging: rtl8723bs: core: rtw_wlan_util: Remove unused variable
+> >     'start_seq'
+> >   staging: rtl8712: rtl871x_mp_ioctl: Move a large data struct onto the
+> >     heap
+> >   staging: iio: frequency: ad9834: Provide missing description for
+> >     'devid'
+> >   staging: nvec: Fix a bunch of kernel-doc issues
+> >   staging: ks7010: ks_hostif: Remove a bunch of unused variables
+> >   staging: fwserial: Demote a whole host of kernel-doc abuses
+> >   staging: sm750fb: sm750_accel: Provide description for 'accel' and fix
+> >     function naming
+> >   staging: most: net: Fix some kernel-doc formatting issues
+> >   staging: vt6655: upc: Suppress set but not used warning in macro
+> >   staging: rtl8192u: ieee80211_softmac: Move a large data struct onto
+> >     the heap
+> >   staging: most: dim2: Provide missing descriptions and fix doc-rot
+> >   staging: rtl8723bs: core: rtw_ieee80211: Remove seemingly pointless
+> >     copy
+> >   staging: rtl8723bs: core: rtw_mlme: 'retry' is only used if REJOIN is
+> >     set
+> >   staging: rtl8723bs: core: rtw_mlme_ext: 'evt_seq' is only used if
+> >     CHECK_EVENT_SEQ is set
+> >   staging: most: i2c: Fix a little doc-rot
+> >   staging: most: dim2: hal: Fix one kernel-doc header and demote two
+> >     non-conforming ones
+> >   staging: most: dim2: hal: Demote non-conformant kernel-doc headers
+> >   staging: axis-fifo: axis-fifo: Fix some formatting issues
+> >   staging: rtl8188eu: os_dep: ioctl_linux: Move 2 large data buffers
+> >     into the heap
+> >   staging: fbtft: fb_ili9320: Remove unused variable 'ret'
+> >   staging: rtl8723bs: core: rtw_ieee80211: Fix incorrectly named
+> >     function
+> >   staging: rtl8723bs: hal: odm_NoiseMonitor: Remove unused variable and
+> >     dead code
+> >   staging: rtl8188eu: os_dep: mon: Demote non-conforming kernel-doc
+> >     headers
+> >   staging: rtl8188eu: os_dep: rtw_android: Demote kernel-doc abuse
+> >   staging: rtl8723bs: hal: rtl8723b_hal_init: Remove unused variable and
+> >     dead code
+> >   staging: rtl8723bs: hal: rtl8723b_phycfg: Fix a bunch of misnamed
+> >     functions
+> >   staging: rtl8723bs: hal: sdio_halinit: 'start' is only used if debug
+> >     is enabled
+> >   staging: rtl8723bs: hal: sdio_ops: Mark used 'err' as __maybe_unused
+> >     and remove another
+> >   staging: rtl8723bs: os_dep: ioctl_cfg80211: 'ack' is used when debug
+> >     is enabled
+> >   staging: comedi: drivers: jr3_pci: Remove set but unused variable
+> >     'min_full_scale'
+> >   staging: comedi: drivers: ni_tio: Fix slightly broken kernel-doc and
+> >     demote others
+> >   staging: comedi: drivers: ni_routes: Demote non-conforming kernel-doc
+> >     headers
+> >   staging: axis-fifo: axis-fifo: Fix function naming in the
+> >     documentation
+> >   staging: rtl8723bs: hal: odm_NoiseMonitor: Remove unused variable
+> >     'func_start'
+> >   staging: rtl8723bs: core: rtw_mlme_ext: Move very large data buffer
+> >     onto the heap
+> >   staging: rtl8723bs: hal: rtl8723b_hal_init: Mark a bunch of debug
+> >     variables as __maybe_unused
+> >   staging: comedi: drivers: ni_mio_common: Move 'range_ni_E_ao_ext' to
+> >     where it is used
+> >   staging: comedi: drivers: comedi_isadma: Fix misspelling of
+> >     'dma_chan1'
+> >   staging: rtl8723bs: hal: sdio_halinit: Remove unused variable 'ret'
+> > 
+> >  drivers/staging/android/ashmem.c              |   1 +
+> >  drivers/staging/axis-fifo/axis-fifo.c         |  18 +--
+> >  drivers/staging/comedi/drivers/comedi_8254.c  |   3 +-
+> >  .../staging/comedi/drivers/comedi_isadma.c    |   2 +-
+> >  drivers/staging/comedi/drivers/jr3_pci.c      |   3 +-
+> >  .../staging/comedi/drivers/ni_mio_common.c    |   9 --
+> >  drivers/staging/comedi/drivers/ni_routes.c    |   6 +-
+> >  drivers/staging/comedi/drivers/ni_stc.h       |   9 +-
+> >  drivers/staging/comedi/drivers/ni_tio.c       |  12 +-
+> >  drivers/staging/fbtft/fb_ili9320.c            |   3 +-
+> >  drivers/staging/fwserial/fwserial.c           |  46 +++----
+> >  drivers/staging/iio/frequency/ad9834.c        |   5 +-
+> >  drivers/staging/ks7010/ks_hostif.c            |  14 +-
+> >  drivers/staging/most/dim2/dim2.c              |  23 ++--
+> >  drivers/staging/most/dim2/hal.c               |  10 +-
+> >  drivers/staging/most/i2c/i2c.c                |  12 +-
+> >  drivers/staging/most/net/net.c                |   6 +-
+> >  drivers/staging/nvec/nvec.c                   |   7 +-
+> >  drivers/staging/octeon/ethernet-tx.c          |   1 -
+> >  drivers/staging/qlge/qlge_main.c              |   4 +-
+> >  .../staging/rtl8188eu/core/rtw_ieee80211.c    |   2 +-
+> >  .../staging/rtl8188eu/core/rtw_ioctl_set.c    |   8 ++
+> >  drivers/staging/rtl8188eu/core/rtw_security.c |  10 +-
+> >  .../staging/rtl8188eu/include/rtw_mlme_ext.h  |   8 --
+> >  .../staging/rtl8188eu/os_dep/ioctl_linux.c    |  12 +-
+> >  drivers/staging/rtl8188eu/os_dep/mon.c        |   6 +-
+> >  .../staging/rtl8188eu/os_dep/rtw_android.c    |   2 +-
+> >  .../rtl8192u/ieee80211/ieee80211_softmac.c    |   9 +-
+> >  drivers/staging/rtl8192u/r8192U_core.c        |  11 +-
+> >  drivers/staging/rtl8192u/r819xU_cmdpkt.c      |  41 ------
+> >  drivers/staging/rtl8192u/r819xU_phy.c         |  48 +++++--
+> >  drivers/staging/rtl8712/rtl871x_mp_ioctl.c    |  29 ++--
+> >  drivers/staging/rtl8712/rtl871x_mp_ioctl.h    | 127 ------------------
+> >  .../staging/rtl8723bs/core/rtw_ieee80211.c    |   6 +-
+> >  drivers/staging/rtl8723bs/core/rtw_mlme.c     |  17 +--
+> >  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c |  19 +--
+> >  drivers/staging/rtl8723bs/core/rtw_recv.c     |   2 +-
+> >  drivers/staging/rtl8723bs/core/rtw_security.c |   2 +-
+> >  drivers/staging/rtl8723bs/core/rtw_sta_mgt.c  |  10 +-
+> >  .../staging/rtl8723bs/core/rtw_wlan_util.c    |   4 +-
+> >  .../staging/rtl8723bs/hal/odm_NoiseMonitor.c  |   9 +-
+> >  .../staging/rtl8723bs/hal/rtl8723b_hal_init.c |  21 +--
+> >  .../staging/rtl8723bs/hal/rtl8723b_phycfg.c   |  10 +-
+> >  drivers/staging/rtl8723bs/hal/sdio_halinit.c  |   8 +-
+> >  drivers/staging/rtl8723bs/hal/sdio_ops.c      |   7 +-
+> >  .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c |   2 +-
+> >  drivers/staging/sm750fb/sm750_accel.c         |   4 +-
+> >  drivers/staging/vt6655/upc.h                  |   2 +-
+> >  drivers/staging/wlan-ng/cfg80211.c            |  30 +++--
+> >  49 files changed, 256 insertions(+), 404 deletions(-)
+> > 
+> > Cc: ac100@lists.launchpad.net
+> > Cc: "Alexander A. Klimov" <grandmaster@al2klimov.de>
+> > Cc: Allen Pais <apais@linux.microsoft.com>
+> > Cc: Anders Blomdell <anders.blomdell@control.lth.se>
+> > Cc: Andrea Merello <andrea.merello@gmail.com>
+> > Cc: Andres Klode <jak@jak-linux.org>
+> > Cc: Andrey Shvetsov <andrey.shvetsov@k2l.de>
+> > Cc: "Arve Hjønnevåg" <arve@android.com>
+> > Cc: Christian Brauner <christian@brauner.io>
+> > Cc: Comedi <comedi@comedi.org>
+> > Cc: "David A. Schleef" <ds@schleef.org>
+> > Cc: dri-devel@lists.freedesktop.org
+> > Cc: Fabio Aiuto <fabioaiuto83@gmail.com>
+> > Cc: Florian Schilhabel <florian.c.schilhabel@googlemail.com>
+> > Cc: Forest Bond <forest@alittletooquiet.net>
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Cc: Herman.Bruyninckx@mech.kuleuven.ac.be
+> > Cc: H Hartley Sweeten <hsweeten@visionengravers.com>
+> > Cc: Hridya Valsaraju <hridya@google.com>
+> > Cc: Ian Abbott <abbotti@mev.co.uk>
+> > Cc: Ilya Petrov <ilya.muromec@gmail.com>
+> > Cc: Jacob Feder <jacobsfeder@gmail.com>
+> > Cc: Jerry chuang <wlanfae@realtek.com>
+> > Cc: Joel Fernandes <joel@joelfernandes.org>
+> > Cc: "John B. Wyatt IV" <jbwyatt4@gmail.com>
+> > Cc: Jonathan Cameron <jic23@kernel.org>
+> > Cc: "J.P. Mellor" <jpmellor@rose-hulman.edu>
+> > Cc: karthik alapati <mail@karthek.com>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Cc: Kernel Team <ac100@lists.lauchpad.net>
+> > Cc: Klaas.Gadeyne@mech.kuleuven.ac.be
+> > Cc: Larry Finger <Larry.Finger@lwfinger.net>
+> > Cc: Lars-Peter Clausen <lars@metafoo.de>
+> > Cc: Lee Jones <lee.jones@linaro.org>
+> > Cc: linux-fbdev@vger.kernel.org
+> > Cc: linux-iio@vger.kernel.org
+> > Cc: linux-pwm@vger.kernel.org
+> > Cc: linux-staging@lists.linux.dev
+> > Cc: linux-tegra@vger.kernel.org
+> > Cc: Marc Dietrich <marvin24@gmx.de>
+> > Cc: Marco Cesati <marcocesati@gmail.com>
+> > Cc: Martijn Coenen <maco@android.com>
+> > Cc: Michael Hennerich <Michael.Hennerich@analog.com>
+> > Cc: Michael Straube <straube.linux@gmail.com>
+> > Cc: Mori Hess <fmhess@users.sourceforge.net>
+> > Cc: "Nícolas F. R. A. Prado" <nfraprado@protonmail.com>
+> > Cc: Peter Hurley <peter@hurleysoftware.com>
+> > Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> > Cc: Pierre-Hugues Husson <phhusson@free.fr>
+> > Cc: Robert Love <rlove@google.com>
+> > Cc: Romain Perier <romain.perier@gmail.com>
+> > Cc: Ross Schmidt <ross.schm.dev@gmail.com>
+> > Cc: "Spencer E. Olson" <olsonse@umich.edu>
+> > Cc: Stanley@BB.SD3
+> > Cc: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+> > Cc: Sumera Priyadarsini <sylphrenadin@gmail.com>
+> > Cc: Suren Baghdasaryan <surenb@google.com>
+> > Cc: Teddy Wang <teddy.wang@siliconmotion.com>
+> > Cc: Thierry Reding <thierry.reding@gmail.com>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Todd Kjos <tkjos@android.com>
+> > Cc: Truxton Fulton <trux@truxton.com>
+> > Cc: "Uwe Kleine-König" <u.kleine-koenig@pengutronix.de>
+> > Cc: Wim.Meeussen@mech.kuleuven.ac.be
+> > Cc: WLAN FAE <wlanfae@realtek.com>
+> > Cc: Zhansaya Bagdauletkyzy <zhansayabagdaulet@gmail.com>
+> > -- 
+> > 2.27.0
+> > 
 > 
-> This smells like the wrong band aid :)
+> Hi,
 > 
-> Any struct device can contain an OF node pointer these days.
+> what about splitting this series in smaller per driver series?
 
-But not all nodes might have an associated device, see DSA for example.
-And as the name suggests of_get_mac_address() operates on a node. So
-if a driver calls of_get_mac_address() it should work on the node. What
-is wrong IMHO, is that the ethernet drivers where the corresponding 
-board
-has a nvmem_cell_lookup registered is calling of_get_mac_address(node).
-It should rather call eth_get_mac_address(dev) in the first place.
+No real need to, I can handle patch series this big easily.
 
-One would need to figure out if there is an actual device (with an
-assiciated of_node), then call eth_get_mac_address(dev) and if there
-isn't a device call of_get_mac_address(node).
+thanks,
 
-But I don't know if that is easy to figure out. Well, one could start
-with just the device where nvmem_cell_lookup is used. Then we could
-drop the workaround above.
-
-> This seems all backwards. I think we are dealing with bad evolution.
-> 
-> We need to do a lookup for the device because we get passed an of_node.
-> We should just get passed a device here... or rather stop calling
-> of_get_mac_addr() from all those drivers and instead call
-> eth_platform_get_mac_address() which in turns calls of_get_mac_addr().
-> 
-> Then the nvmem stuff gets put in eth_platform_get_mac_address().
-> 
-> of_get_mac_addr() becomes a low-level thingy that most drivers don't
-> care about.
-
-The NVMEM thing is just another (optional) way how the MAC address
-is fetched from the device tree. Thus, if the drivers have the
-of_get_mac_address() call they should automatically get the NVMEM
-method, too.
-
--michael
+greg k-h
