@@ -2,101 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFD0361964
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 07:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 233EB361965
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 07:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238202AbhDPFjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 01:39:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230250AbhDPFjm (ORCPT
+        id S238323AbhDPFkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 01:40:07 -0400
+Received: from lucky1.263xmail.com ([211.157.147.133]:39124 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230250AbhDPFkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 01:39:42 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6945C061574;
-        Thu, 15 Apr 2021 22:39:17 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id p67so12668138pfp.10;
-        Thu, 15 Apr 2021 22:39:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=q2IpgbsafY75uYCQfmC+SoKG1Ef0J5sHuVVR2O+B5xY=;
-        b=YmCBiNPQAFcGQR7D1WL53T+mLDwMDIjAavFG1l2EfFqRpVwm38lulgOISjDoT89XLC
-         Joimq34+bUIjpx+Th0wRsXa3b92v791L0QButYviz+B1YCNEGuL380HbpFMik9UbyU74
-         qxa8B5ZHYqEMjzn1uaAR7DMJ+FkH5ta8MtJtuoTL5hTjgLB7mqaEBuiN+6NzN2r2yvx0
-         RswNRaoxVis/nABOcBOEewXQwxiD3Oi9RHpvFCMxvG7FKHuYfC3hC+n14SnCsBpmh2WU
-         BZpbfP04psCL7GUkaVsEHZEtiMVBPM1Dnn9ywFm0BhJRJmDALJeHbE0ovcR9dOsKXyPw
-         SZBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=q2IpgbsafY75uYCQfmC+SoKG1Ef0J5sHuVVR2O+B5xY=;
-        b=KAHV28puv16fDRy6fs7UYO+EioK2g+3mjGvh9gFpQj4LjK6qr6/mxr/7z17RFnFjNv
-         WyU0+08ViBRHNRpZXmBxkuxdaQCT2QyxUmx/vIbx8QK/OnJ7rD53CUOYZ5gH8t346IIM
-         zmtQObGQDleL1Ir+f5tB0EbmqEBiTPNpG6DOCp8JNzg/bK0p4GIOE7Di4H+d5ZUtKY31
-         XR46SarmVYXoIj6zWL4R7pAlih51QwT5GhqMqd3v96JXA0+gZYEe27amI4ihWnJ1Q7fN
-         L7NQ/s8b8jvuZ3QIlR9QcWcBi54zzmGzkviKxuuBbvIRKEUx9wY7mk3D+g7Q2RzaFGEK
-         MjAA==
-X-Gm-Message-State: AOAM533yA1MIu+qhu2qykYCj7ncbwR9tvAKjczUzl+LdaWufI/BtE8Yy
-        hsUb+bKbqdbOdWEwNYTONpo=
-X-Google-Smtp-Source: ABdhPJzaYmoHH683P7tkrffDdBUTKJYjfW0v9Ym8+OrOOi60wx0ciD+GVBXn730Q3OIYntDtxxOPQg==
-X-Received: by 2002:a63:5a1a:: with SMTP id o26mr6550012pgb.327.1618551557230;
-        Thu, 15 Apr 2021 22:39:17 -0700 (PDT)
-Received: from localhost.localdomain ([75.167.198.216])
-        by smtp.gmail.com with ESMTPSA id q13sm3643266pfc.86.2021.04.15.22.39.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 22:39:16 -0700 (PDT)
-From:   Paul Zimmerman <pauldzim@gmail.com>
-To:     wedsonaf@google.com
-Cc:     gregkh@linuxfoundation.org, linux-doc@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ojeda@kernel.org, peterz@infradead.org,
-        rust-for-linux@vger.kernel.org, torvalds@linux-foundation.org,
-        viro@zeniv.linux.org.uk
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-Date:   Thu, 15 Apr 2021 22:39:10 -0700
-Message-Id: <20210416053910.7363-1-pauldzim@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <YHkaaTQ2KQML2iqt@google.com>
-References: <YHkaaTQ2KQML2iqt@google.com>
+        Fri, 16 Apr 2021 01:40:06 -0400
+Received: from localhost (unknown [192.168.167.13])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 32DA1CD49F;
+        Fri, 16 Apr 2021 13:39:31 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED: 0
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [124.126.19.250])
+        by smtp.263.net (postfix) whith ESMTP id P1751T140588846388992S1618551571060235_;
+        Fri, 16 Apr 2021 13:39:31 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <735a5e5a37f7a3b8da6c276590c9a4d9>
+X-RL-SENDER: zhaoxiao@uniontech.com
+X-SENDER: zhaoxiao@uniontech.com
+X-LOGIN-NAME: zhaoxiao@uniontech.com
+X-FST-TO: tglx@linutronix.de
+X-RCPT-COUNT: 16
+X-SENDER-IP: 124.126.19.250
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   zhaoxiao <zhaoxiao@uniontech.com>
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, nivedita@alum.mit.edu, clin@suse.com,
+        andriy.shevchenko@linux.intel.com, ndesaulniers@google.com,
+        dan.j.williams@intel.com, masahiroy@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     jroedel@suse.de, peterz@infradead.org, jpoimboe@redhat.com,
+        zhaoxiao <zhaoxiao@uniontech.com>
+Subject: [PATCH v2] X86: Makefile: Replace -pg with CC_FLAGS_FTRACE
+Date:   Fri, 16 Apr 2021 13:39:28 +0800
+Message-Id: <20210416053928.11576-1-zhaoxiao@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 06:02:33 +0100, Wedson Almeida Filho wrote:
-> On Fri, Apr 16, 2021 at 04:25:34AM +0000, Al Viro wrote:
->
->>> Are you stating [what you perceive as] a fact or just venting? If the former,
->>> would you mind enlightening us with some evidence?
->> 
->> How about "not everyone uses a browser as a part of their workflow"?
->
-> The documentation is available in markdown alongside the code. You don't need a
-> browser to see it. I, for one, use neovim and a rust LSP, so I can see the
-> documentation by pressing shift+k.
->
->> I realize that it might sound ridiculous for folks who spent a while
->> around Mozilla, but it's really true and kernel community actually
->> has quite a few of such freaks.
->
-> I haven't spent any time around Mozilla myself (not that there's anything wrong
-> with it), so I can't really comment on this.
->
->> And as one of those freaks I can tell
->> you where exactly I would like you to go and what I would like you to do
->> with implicit suggestions to start a browser when I need to read some
->> in-tree documentation.
->
-> I could be mistaken but you seem angry. Perhaps it wouldn't be a bad idea to
-> read your own code of conduct, I don't think you need a browser for that either.
+In preparation for x86 supporting ftrace built on other compiler
+options, let's have the x86 Makefiles remove the $(CC_FLAGS_FTRACE)
+flags, whatever these may be, rather than assuming '-pg'.
 
-Haven't you folks ever head of lynx? Good old-fashioned command-line tool that
-opens html files in a terminal window, supports following links within the file,
-good stuff like that. I don't see how the dinosaurs^W traditional folks could
-object to that!
+There should be no functional change as a result of this patch.
 
--- Paul
+Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+---
+v2: add the same change for the other Makefile in arch/x86 directory.
+ arch/x86/entry/vdso/Makefile |  8 ++++----
+ arch/x86/kernel/Makefile     | 16 ++++++++--------
+ arch/x86/kernel/cpu/Makefile |  4 ++--
+ arch/x86/lib/Makefile        |  2 +-
+ arch/x86/mm/Makefile         |  4 ++--
+ arch/x86/xen/Makefile        |  6 +++---
+ 6 files changed, 20 insertions(+), 20 deletions(-)
+
+diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
+index 05c4abc2fdfd..c5bd91bf9f93 100644
+--- a/arch/x86/entry/vdso/Makefile
++++ b/arch/x86/entry/vdso/Makefile
+@@ -96,10 +96,10 @@ $(vobjs): KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_LTO) $(GCC_PLUGINS_CFLAGS) $(
+ #
+ # vDSO code runs in userspace and -pg doesn't help with profiling anyway.
+ #
+-CFLAGS_REMOVE_vclock_gettime.o = -pg
+-CFLAGS_REMOVE_vdso32/vclock_gettime.o = -pg
+-CFLAGS_REMOVE_vgetcpu.o = -pg
+-CFLAGS_REMOVE_vsgx.o = -pg
++CFLAGS_REMOVE_vclock_gettime.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_vdso32/vclock_gettime.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_vgetcpu.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_vsgx.o = $(CC_FLAGS_FTRACE)
+ 
+ #
+ # X32 processes use x32 vDSO to access 64bit kernel data.
+diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
+index 2ddf08351f0b..2811fc6a17ba 100644
+--- a/arch/x86/kernel/Makefile
++++ b/arch/x86/kernel/Makefile
+@@ -13,14 +13,14 @@ CPPFLAGS_vmlinux.lds += -U$(UTS_MACHINE)
+ 
+ ifdef CONFIG_FUNCTION_TRACER
+ # Do not profile debug and lowlevel utilities
+-CFLAGS_REMOVE_tsc.o = -pg
+-CFLAGS_REMOVE_paravirt-spinlocks.o = -pg
+-CFLAGS_REMOVE_pvclock.o = -pg
+-CFLAGS_REMOVE_kvmclock.o = -pg
+-CFLAGS_REMOVE_ftrace.o = -pg
+-CFLAGS_REMOVE_early_printk.o = -pg
+-CFLAGS_REMOVE_head64.o = -pg
+-CFLAGS_REMOVE_sev-es.o = -pg
++CFLAGS_REMOVE_tsc.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_paravirt-spinlocks.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_pvclock.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_kvmclock.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_ftrace.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_early_printk.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_head64.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_sev-es.o = $(CC_FLAGS_FTRACE)
+ endif
+ 
+ KASAN_SANITIZE_head$(BITS).o				:= n
+diff --git a/arch/x86/kernel/cpu/Makefile b/arch/x86/kernel/cpu/Makefile
+index 637b499450d1..4435c6de9145 100644
+--- a/arch/x86/kernel/cpu/Makefile
++++ b/arch/x86/kernel/cpu/Makefile
+@@ -5,8 +5,8 @@
+ 
+ # Don't trace early stages of a secondary CPU boot
+ ifdef CONFIG_FUNCTION_TRACER
+-CFLAGS_REMOVE_common.o = -pg
+-CFLAGS_REMOVE_perf_event.o = -pg
++CFLAGS_REMOVE_common.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_perf_event.o = $(CC_FLAGS_FTRACE)
+ endif
+ 
+ # If these files are instrumented, boot hangs during the first second.
+diff --git a/arch/x86/lib/Makefile b/arch/x86/lib/Makefile
+index bad4dee4f0e4..0aa71b8a5bc1 100644
+--- a/arch/x86/lib/Makefile
++++ b/arch/x86/lib/Makefile
+@@ -21,7 +21,7 @@ KASAN_SANITIZE_cmdline.o  := n
+ KCSAN_SANITIZE_cmdline.o  := n
+ 
+ ifdef CONFIG_FUNCTION_TRACER
+-CFLAGS_REMOVE_cmdline.o = -pg
++CFLAGS_REMOVE_cmdline.o = $(CC_FLAGS_FTRACE)
+ endif
+ 
+ CFLAGS_cmdline.o := -fno-stack-protector -fno-jump-tables
+diff --git a/arch/x86/mm/Makefile b/arch/x86/mm/Makefile
+index 5864219221ca..91883d5a0293 100644
+--- a/arch/x86/mm/Makefile
++++ b/arch/x86/mm/Makefile
+@@ -12,8 +12,8 @@ KASAN_SANITIZE_mem_encrypt_identity.o	:= n
+ KCSAN_SANITIZE := n
+ 
+ ifdef CONFIG_FUNCTION_TRACER
+-CFLAGS_REMOVE_mem_encrypt.o		= -pg
+-CFLAGS_REMOVE_mem_encrypt_identity.o	= -pg
++CFLAGS_REMOVE_mem_encrypt.o		= $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_mem_encrypt_identity.o	= $(CC_FLAGS_FTRACE)
+ endif
+ 
+ obj-y				:=  init.o init_$(BITS).o fault.o ioremap.o extable.o mmap.o \
+diff --git a/arch/x86/xen/Makefile b/arch/x86/xen/Makefile
+index 40b5779fce21..179dfc124c94 100644
+--- a/arch/x86/xen/Makefile
++++ b/arch/x86/xen/Makefile
+@@ -2,9 +2,9 @@
+ 
+ ifdef CONFIG_FUNCTION_TRACER
+ # Do not profile debug and lowlevel utilities
+-CFLAGS_REMOVE_spinlock.o = -pg
+-CFLAGS_REMOVE_time.o = -pg
+-CFLAGS_REMOVE_irq.o = -pg
++CFLAGS_REMOVE_spinlock.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_time.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_irq.o = $(CC_FLAGS_FTRACE)
+ endif
+ 
+ # Make sure early boot has no stackprotector
+-- 
+2.20.1
+
+
+
