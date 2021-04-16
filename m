@@ -2,111 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F23B361D0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E842361D1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241566AbhDPJP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 05:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235020AbhDPJP2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 05:15:28 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5EEC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:15:02 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id z22so8514372plo.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:15:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xZ5QJbgcxsi5P774OAde+gyqdj3zeY4OT+RguQ4Yh8M=;
-        b=aN2W8sVheIWGZcNAWtyWNlsBq7F/94yG45zz5d+cs5hpMT5/rmZvM52iuC7wugTGTe
-         32NxhvKwVFzR3StSAVGoWnjzxVayT0FWkrcRHd8nQ9Oxf6PUmj5RMARWmJRfXf+tY3Fe
-         7npCshA71UXd5xq1/d2hV5dxUMhxhWK+XC77naU9D+29dOniktLYfu5pjyKk9NuNT8+q
-         9aCDOJVSATl5xWT/LmdtKYt99OU4G/Q032oqXc7CdFCZ0avEnJ4kxkF0jeuk3Dn+1tO6
-         r8StwudXvFWPihol2//mRYLFaFrchKVxJZFJHdgk1Q3YrRRBjG9XwsoX5zSreXzxir2g
-         jWnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xZ5QJbgcxsi5P774OAde+gyqdj3zeY4OT+RguQ4Yh8M=;
-        b=gJTc70+GNRGOmYcCYTsuhdcza62BUDXWYMcWfk5UL1sBWSdxu1RHJ7DJk35KvNcBRj
-         7+Ya+qPFKz1UqyeYNgQIG4slvR0uJaPmvYAUFydi89MjePywbpJuXhbYjQLShScwD8rM
-         UPAepscYVCt5wOhmZasBW3JiW75YJGBmG7aQFL4m/qit+Sww21urVL+K6B0PiuK+i43Z
-         9vW1dXPQ2gn6m9U1JUJGiwOO9jnHBeB64sqGy+WE+k8xDIUgeSF41ryavSPabHySOZvb
-         NRRPNR4e4hB/B9aqEdVL5fGc+oycRnQqgVadDNHo1TBmNq4YEGx9y1+GAZIdCH6nGuk6
-         Y5Dw==
-X-Gm-Message-State: AOAM532I3dvVjLIlqs+NcShrlaLpo1O5wiwTTw7mgFV9yPNV5yGc9wbC
-        Jf/EU9o7aqK/DoOYPh/ZmTs+dLbwAm7Y0+25aWYMiA==
-X-Google-Smtp-Source: ABdhPJwsng8nHmy0FYR9JGRD2atFcCX5gdaUhjcgL9PrN+cIjSiQQakDN3tUOWLHQXr620+cq5I/pFIdXZkB1m62JWs=
-X-Received: by 2002:a17:902:e543:b029:eb:8684:e00b with SMTP id
- n3-20020a170902e543b02900eb8684e00bmr6091661plf.69.1618564502401; Fri, 16 Apr
- 2021 02:15:02 -0700 (PDT)
+        id S241657AbhDPJUt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 16 Apr 2021 05:20:49 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:51438 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S241632AbhDPJUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 05:20:48 -0400
+Received: from [127.0.0.1] (unknown [119.4.252.85])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxj8vBVnlgGakIAA--.8853S2;
+        Fri, 16 Apr 2021 17:20:04 +0800 (CST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210415183619.1431-1-rdunlap@infradead.org> <CAG3jFyvi-NyOdd8DdKu_QYz593YYvJzXm65DoCLubzHE+-5zNg@mail.gmail.com>
-In-Reply-To: <CAG3jFyvi-NyOdd8DdKu_QYz593YYvJzXm65DoCLubzHE+-5zNg@mail.gmail.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Fri, 16 Apr 2021 11:14:51 +0200
-Message-ID: <CAG3jFyukH=ijvn-=2E_tGJdpUHFZ0YXte7MQqncMhoM5Eg7hVQ@mail.gmail.com>
-Subject: Re: [PATCH -next] drm: bridge: fix ANX7625 use of mipi_dsi_() functions
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Xin Ji <xji@analogixsemi.com>, Sam Ravnborg <sam@ravnborg.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Mailer: BlackBerry Email (10.3.3.3216)
+Message-ID: <20210416092003.5754967.19768.9603@loongson.cn>
+Date:   Fri, 16 Apr 2021 17:20:03 +0800
+Subject: Re: [PATCH] Revert "MIPS: make userspace mapping young by default".
+From:   =?utf-8?b?6buE5rKb?= <huangpei@loongson.cn>
+In-Reply-To: <1618562868-91115-1-git-send-email-zhouyanjie@wanyeetech.com>
+References: <1618562868-91115-1-git-send-email-zhouyanjie@wanyeetech.com>
+To:     =?utf-8?b?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>, tsbogend@alpha.franken.de
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, paul.burton@mips.com,
+        paul@crapouillou.net, siyanteng@loongson.cn, ira.weiny@intel.com,
+        yangtiezhu@loongson.cn, zhouyanjie@wanyeetech.com,
+        jun.jiang@ingenic.com, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        sernia.zhou@foxmail.com
+X-CM-TRANSID: AQAAf9Dxj8vBVnlgGakIAA--.8853S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw4kJw1kKw4kWFyrGF13XFb_yoW5tF4kpa
+        s7Ca4xCrWaq343JryxGw47Aw4rCwsrt3WUXr9ru3WUua97X34kKFnIkry8Zry8ZFZ0yryU
+        ZFyUXrs8Ga47CrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1lc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+        b7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
+        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
+        evJa73UjIFyTuYvjfUeLvtDUUUU
+X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Merged for 5.13 in drm-misc-next-fixes
+Is there any log about the panic?
 
-On Fri, 16 Apr 2021 at 10:41, Robert Foss <robert.foss@linaro.org> wrote:
->
-> Thanks Randy!
->
-> Reviewed-by: Robert Foss <robert.foss@linaro.org>
->
-> On Thu, 15 Apr 2021 at 20:36, Randy Dunlap <rdunlap@infradead.org> wrote:
-> >
-> > The Analogix DRM ANX7625 bridge driver uses mips_dsi_() function
-> > interfaces so it should select DRM_MIPI_DSI to prevent build errors.
-> >
-> >
-> > ERROR: modpost: "mipi_dsi_attach" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
-> > ERROR: modpost: "mipi_dsi_device_register_full" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
-> > ERROR: modpost: "of_find_mipi_dsi_host_by_node" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
-> > ERROR: modpost: "mipi_dsi_device_unregister" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
-> > ERROR: modpost: "mipi_dsi_detach" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
-> >
-> >
-> > Fixes: 8bdfc5dae4e3 ("drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to DP")
-> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Cc: Xin Ji <xji@analogixsemi.com>
-> > Cc: Sam Ravnborg <sam@ravnborg.org>
-> > Cc: dri-devel@lists.freedesktop.org
-> > Cc: Andrzej Hajda <a.hajda@samsung.com>
-> > Cc: Neil Armstrong <narmstrong@baylibre.com>
-> > Cc: Robert Foss <robert.foss@linaro.org>
-> > Cc: stable@vger.kernel.org
-> > ---
-> >  drivers/gpu/drm/bridge/analogix/Kconfig |    1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > --- linux-next-20210414.orig/drivers/gpu/drm/bridge/analogix/Kconfig
-> > +++ linux-next-20210414/drivers/gpu/drm/bridge/analogix/Kconfig
-> > @@ -30,6 +30,7 @@ config DRM_ANALOGIX_ANX7625
-> >         tristate "Analogix Anx7625 MIPI to DP interface support"
-> >         depends on DRM
-> >         depends on OF
-> > +       select DRM_MIPI_DSI
-> >         help
-> >           ANX7625 is an ultra-low power 4K mobile HD transmitter
-> >           designed for portable devices. It converts MIPI/DPI to
+  Original Message  
+From: 周琰杰 (Zhou Yanjie)
+Sent: 2021年4月16日星期五 16:48
+To: tsbogend@alpha.franken.de
+Cc: linux-mips@vger.kernel.org; linux-kernel@vger.kernel.org; akpm@linux-foundation.org; paul.burton@mips.com; paul@crapouillou.net; siyanteng@loongson.cn; huangpei@loongson.cn; ira.weiny@intel.com; yangtiezhu@loongson.cn; zhouyanjie@wanyeetech.com; jun.jiang@ingenic.com; dongsheng.qiu@ingenic.com; aric.pzqi@ingenic.com; rick.tyliu@ingenic.com; sernia.zhou@foxmail.com
+Subject: [PATCH] Revert "MIPS: make userspace mapping young by default".
+
+This reverts commit f685a533a7fab35c5d069dcd663f59c8e4171a75.
+
+It cause kernel panic on Ingenic X1830, so let's revert it.
+
+Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+---
+arch/mips/mm/cache.c | 31 ++++++++++++++-----------------
+1 file changed, 14 insertions(+), 17 deletions(-)
+
+diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
+index 7719d63..9cfd432 100644
+--- a/arch/mips/mm/cache.c
++++ b/arch/mips/mm/cache.c
+@@ -21,7 +21,6 @@
+#include <asm/cpu.h>
+#include <asm/cpu-features.h>
+#include <asm/setup.h>
+-#include <asm/pgtable.h>
+
+/* Cache operations. */
+void (*flush_cache_all)(void);
+@@ -157,31 +156,29 @@ unsigned long _page_cachable_default;
+EXPORT_SYMBOL(_page_cachable_default);
+
+#define PM(p)	__pgprot(_page_cachable_default | (p))
+-#define PVA(p)	PM(_PAGE_VALID | _PAGE_ACCESSED | (p))
+
+static inline void setup_protection_map(void)
+{
+protection_map[0] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+-	protection_map[1] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
+-	protection_map[2] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+-	protection_map[3] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
+-	protection_map[4] = PVA(_PAGE_PRESENT);
+-	protection_map[5] = PVA(_PAGE_PRESENT);
+-	protection_map[6] = PVA(_PAGE_PRESENT);
+-	protection_map[7] = PVA(_PAGE_PRESENT);
++	protection_map[1] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
++	protection_map[2] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
++	protection_map[3] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
++	protection_map[4] = PM(_PAGE_PRESENT);
++	protection_map[5] = PM(_PAGE_PRESENT);
++	protection_map[6] = PM(_PAGE_PRESENT);
++	protection_map[7] = PM(_PAGE_PRESENT);
+
+protection_map[8] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+-	protection_map[9] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
+-	protection_map[10] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE |
++	protection_map[9] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
++	protection_map[10] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE |
+_PAGE_NO_READ);
+-	protection_map[11] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
+-	protection_map[12] = PVA(_PAGE_PRESENT);
+-	protection_map[13] = PVA(_PAGE_PRESENT);
+-	protection_map[14] = PVA(_PAGE_PRESENT);
+-	protection_map[15] = PVA(_PAGE_PRESENT);
++	protection_map[11] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
++	protection_map[12] = PM(_PAGE_PRESENT);
++	protection_map[13] = PM(_PAGE_PRESENT);
++	protection_map[14] = PM(_PAGE_PRESENT | _PAGE_WRITE);
++	protection_map[15] = PM(_PAGE_PRESENT | _PAGE_WRITE);
+}
+
+-#undef _PVA
+#undef PM
+
+void cpu_cache_init(void)
+-- 
+2.7.4
+
