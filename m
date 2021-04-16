@@ -2,89 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C323626F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C7F362701
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243206AbhDPRh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 13:37:58 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:51729 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242995AbhDPRhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 13:37:55 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 13GHbHGh010904;
-        Fri, 16 Apr 2021 19:37:17 +0200
-Date:   Fri, 16 Apr 2021 19:37:17 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Wedson Almeida Filho <wedsonaf@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-Message-ID: <20210416173717.GA10846@1wt.eu>
-References: <20210414184604.23473-1-ojeda@kernel.org>
- <YHlz54rd1YQHsOA/@hirez.programming.kicks-ass.net>
- <YHmMJWmzz2vZ3qQH@google.com>
- <YHmc2+bKQJ/XAATF@hirez.programming.kicks-ass.net>
- <YHmuX1NA5RF7C7XS@google.com>
- <20210416161444.GA10484@1wt.eu>
- <CANiq72nbkJFPmiJXX=L8PmkouKgKG1k-CxhZYpL1hcncYwa8JA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANiq72nbkJFPmiJXX=L8PmkouKgKG1k-CxhZYpL1hcncYwa8JA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S243282AbhDPRiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 13:38:55 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:50473 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235792AbhDPRiv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 13:38:51 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618594706; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=Y3RdJh64f/A7Bekobz08o6R+GiE3qPBz/fdmi999ShQ=; b=j9DC5QyITIUDm4u4sxG+AyGIwzca5jIiQ7bdIiaZV/wItHLLni/tgWCkXJibx//eTGekgazy
+ UZSf0ZXzMlXWXn51XeVf8eKXbuN6Uvb45cH8+sLRJxCGCx6/T/cVWchrhxum/JNPCE5JYtym
+ 5ff3nOYKw5Ds9LD30AqdA2OwgfY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 6079cb82f34440a9d466ffb7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Apr 2021 17:38:10
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A7BB3C43461; Fri, 16 Apr 2021 17:38:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2F7EBC433CA;
+        Fri, 16 Apr 2021 17:38:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2F7EBC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        khsieh@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 2/3] drm/msm/dp: initialize audio_comp when audio starts
+Date:   Fri, 16 Apr 2021 10:38:03 -0700
+Message-Id: <1618594683-410-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miguel,
+Initialize audio_comp when audio starts and wait for audio_comp at
+dp_display_disable(). This will take care of both dongle unplugged
+and display off (suspend) cases.
 
-On Fri, Apr 16, 2021 at 07:10:17PM +0200, Miguel Ojeda wrote:
-> And by having the compiler enforce this safe-unsafe split, you can
-> review safe code without having to constantly worry about UB; and be
-> extra alert when dealing with `unsafe` blocks.
+Changes in v2:
+-- add dp_display_signal_audio_start()
 
-I do appreciate this safe/unsafe split and a few other things I've seen
-in the language. The equivalent I'm using in C is stronger typing and
-"const" modifiers wherever possible. Of course it's much more limited,
-it's just to explain that I do value this. I just feel like "unsafe"
-is the universal response to any question "how would I do this" while
-at the same time "safe" is the best selling argument for the language.
-As such, I strongly doubt about the real benefits once facing reality
-with everything marked unsafe. Except that it will be easier to blame
-the person having written the unsafe one-liner instead of writing 60
-cryptic lines doing the functional equivalent using some lesser known
-extensions :-/
+Changes in v3:
+-- restore dp_display_handle_plugged_change() at dp_hpd_unplug_handle().
 
-> Of course, UB is only a subset of errors, but it is a major one, and
-> particularly critical for privileged code.
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ drivers/gpu/drm/msm/dp/dp_audio.c   |  1 +
+ drivers/gpu/drm/msm/dp/dp_display.c | 11 +++++++++--
+ drivers/gpu/drm/msm/dp/dp_display.h |  1 +
+ 3 files changed, 11 insertions(+), 2 deletions(-)
 
-Not in my experience. I do create bugs that very seldomly stem from UB,
-like any of us probably. But the vast majority of my bugs are caused by
-stupid logic errors. When you invert an error check somewhere because
-the function name looks like a boolean but its result works the other
-way around, you can pass 10 times over it without noticing, and the
-compiler will not help. And these ones are due to the human brain not
-being that powerful in front of a computer, and whatever language will
-not change this. Or worse, if it's harder to express what I want, I
-will write more bugs. It happened to me quite a few times already
-trying to work around absurd gcc warnings.
+diff --git a/drivers/gpu/drm/msm/dp/dp_audio.c b/drivers/gpu/drm/msm/dp/dp_audio.c
+index 82a8673..d7e4a39 100644
+--- a/drivers/gpu/drm/msm/dp/dp_audio.c
++++ b/drivers/gpu/drm/msm/dp/dp_audio.c
+@@ -527,6 +527,7 @@ int dp_audio_hw_params(struct device *dev,
+ 	dp_audio_setup_acr(audio);
+ 	dp_audio_safe_to_exit_level(audio);
+ 	dp_audio_enable(audio, true);
++	dp_display_signal_audio_start(dp_display);
+ 	dp_display->audio_enabled = true;
+ 
+ end:
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index 0ba71c7..1784e11 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -178,6 +178,15 @@ static int dp_del_event(struct dp_display_private *dp_priv, u32 event)
+ 	return 0;
+ }
+ 
++void dp_display_signal_audio_start(struct msm_dp *dp_display)
++{
++	struct dp_display_private *dp;
++
++	dp = container_of(dp_display, struct dp_display_private, dp_display);
++
++	reinit_completion(&dp->audio_comp);
++}
++
+ void dp_display_signal_audio_complete(struct msm_dp *dp_display)
+ {
+ 	struct dp_display_private *dp;
+@@ -649,7 +658,6 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
+ 	dp_add_event(dp, EV_DISCONNECT_PENDING_TIMEOUT, 0, DP_TIMEOUT_5_SECOND);
+ 
+ 	/* signal the disconnect event early to ensure proper teardown */
+-	reinit_completion(&dp->audio_comp);
+ 	dp_display_handle_plugged_change(g_dp_display, false);
+ 
+ 	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK |
+@@ -894,7 +902,6 @@ static int dp_display_disable(struct dp_display_private *dp, u32 data)
+ 	/* wait only if audio was enabled */
+ 	if (dp_display->audio_enabled) {
+ 		/* signal the disconnect event */
+-		reinit_completion(&dp->audio_comp);
+ 		dp_display_handle_plugged_change(dp_display, false);
+ 		if (!wait_for_completion_timeout(&dp->audio_comp,
+ 				HZ * 5))
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.h b/drivers/gpu/drm/msm/dp/dp_display.h
+index 6092ba1..5173c89 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.h
++++ b/drivers/gpu/drm/msm/dp/dp_display.h
+@@ -34,6 +34,7 @@ int dp_display_get_modes(struct msm_dp *dp_display,
+ int dp_display_request_irq(struct msm_dp *dp_display);
+ bool dp_display_check_video_test(struct msm_dp *dp_display);
+ int dp_display_get_test_bpp(struct msm_dp *dp_display);
++void dp_display_signal_audio_start(struct msm_dp *dp_display);
+ void dp_display_signal_audio_complete(struct msm_dp *dp_display);
+ 
+ #endif /* _DP_DISPLAY_H_ */
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-Based on the comments in this thread and the responses often being
-around "we'll try to get this done" or "we'll bring the issue to the
-compiler team", combined with the difficulty to keep control over
-resources usage, I'm really not convinced at all it's suited for
-low-level development. I understand the interest of the experiment
-to help the language evolve into that direction, but I fear that
-the kernel will soon be as bloated and insecure as a browser, and
-that's really not to please me.
-
-Cheers,
-Willy
