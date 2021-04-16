@@ -2,209 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84ED2361721
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 03:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A56361729
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 03:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237847AbhDPBRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 21:17:09 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:17002 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236214AbhDPBRB (ORCPT
+        id S235827AbhDPBZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 21:25:10 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:44851 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234854AbhDPBZI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 21:17:01 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FLyrz6vtrzPr0F;
-        Fri, 16 Apr 2021 09:13:39 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 16 Apr 2021 09:16:30 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
-        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
-        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>
-Subject: [PATCH net v4 2/2] net: sched: fix endless tx action reschedule during deactivation
-Date:   Fri, 16 Apr 2021 09:16:49 +0800
-Message-ID: <1618535809-11952-3-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1618535809-11952-1-git-send-email-linyunsheng@huawei.com>
-References: <1618535809-11952-1-git-send-email-linyunsheng@huawei.com>
+        Thu, 15 Apr 2021 21:25:08 -0400
+Received: from mail-oo1-f71.google.com ([209.85.161.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <chris.chiu@canonical.com>)
+        id 1lXDDu-0004Fg-EF
+        for linux-kernel@vger.kernel.org; Fri, 16 Apr 2021 01:24:42 +0000
+Received: by mail-oo1-f71.google.com with SMTP id i19-20020a4addd30000b02901e60c4a9d91so1806004oov.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 18:24:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/bulXpuI8tDY/fXBLLWUp4LPd3sUmoquDA0BYMthGL8=;
+        b=ppZN1gX1EnPhJ6F7sd7AWr7blfmtiWMKJrIHhiNc7ldVxZjsmQOsj401jom2W9gPDU
+         9aAU1SvHIdshyC6+RZY6dWpiLY7JxcppUc5wU7dhLvDbRNBAISP2di2fceT3KR2cNGMb
+         EGLkLGjnKuFwIFqvB8UiSrbWJ+/CKSq2JI8GNoqNYRV6JBR04wwV9iqiCCHx2siv+VDz
+         1sbHRSHJuJ8wGw5QiR9m3+nyViIeULoyxvWIKsJV+6MpR0uPRozYmMct2JpS+Y1ZxnKy
+         tVtI4XYDtlCiwkUJ8lyODROpgvy9lk1DR98/0BboDlhVGZoEJI4DYidFyjfeJ2c9si0t
+         4vjg==
+X-Gm-Message-State: AOAM531bhOgc64OLtpKDdT6C0PGIVvkQZ+xWOiUPMpb28E0/Y+HRbaEQ
+        L4n2qAGVrlW+mn8mTqZpNoyfT6cCjqNZA+ehkZ3BPFXiJkw7xNVvA4YJxhD5v/FfCl+8UrxbvG/
+        E9QeOjSf9AnGUrp/ts693L/N+97xtkBUYs3/T1CyEMRl8fcfBqdvAIKVTuw==
+X-Received: by 2002:aca:3d86:: with SMTP id k128mr4686943oia.86.1618536281414;
+        Thu, 15 Apr 2021 18:24:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwUYMs3Voy4p3YzB2JUL6Tw+mcqQowmMYhCSZOCiwF1/JS0cUV9GKzuwm1ePj5j0g2W6M1ZSo0Rf9NKKCbhjdU=
+X-Received: by 2002:aca:3d86:: with SMTP id k128mr4686934oia.86.1618536281250;
+ Thu, 15 Apr 2021 18:24:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+References: <20210415114856.4555-1-chris.chiu@canonical.com>
+ <YHgyP8tGNM1Wi5dJ@kroah.com> <CABTNMG0MuaSkWZhiTwtWjPTg5WZ-Vdt9Ju9-RzBke9JjCBJo8Q@mail.gmail.com>
+ <20210415184637.GA15445@rowland.harvard.edu>
+In-Reply-To: <20210415184637.GA15445@rowland.harvard.edu>
+From:   Chris Chiu <chris.chiu@canonical.com>
+Date:   Fri, 16 Apr 2021 09:24:30 +0800
+Message-ID: <CABTNMG3aweq43eQcONif2_M4JF3ARmBgOKE18v7vzHvaJnjrtA@mail.gmail.com>
+Subject: Re: [PATCH v3] USB: Don't set USB_PORT_FEAT_SUSPEND on WD19's Realtek Hub
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, m.v.b@runbox.com,
+        hadess@hadess.net, linux-usb@vger.kernel.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently qdisc_run() checks the STATE_DEACTIVATED of lockless
-qdisc before calling __qdisc_run(), which ultimately clear the
-STATE_MISSED when all the skb is dequeued. If STATE_DEACTIVATED
-is set before clearing STATE_MISSED, there may be endless
-rescheduling of net_tx_action() at the end of qdisc_run_end(),
-see below:
+On Fri, Apr 16, 2021 at 2:46 AM Alan Stern <stern@rowland.harvard.edu> wrote:
+>
+> On Fri, Apr 16, 2021 at 12:13:43AM +0800, Chris Chiu wrote:
+> > One thing worth mentioning here, I never hit the hub_ext_port_status -71
+> > problem if I resume by waking up from the keyboard connected to the hub.
+>
+> I thought you said earlier that the port got into trouble while it was
+> suspending, not while it was resuming.  You wrote:
+>
+> > [ 2789.679812] usb 3-4-port3: can't suspend, status -110
+>
+> So if the problem occurs during suspend, how can it be possible to avoid
+> the problem by taking some particular action later while resuming?
+>
 
-CPU0(net_tx_atcion)  CPU1(__dev_xmit_skb)  CPU2(dev_deactivate)
-          .                   .                     .
-          .            set STATE_MISSED             .
-          .           __netif_schedule()            .
-          .                   .           set STATE_DEACTIVATED
-          .                   .                qdisc_reset()
-          .                   .                     .
-          .<---------------   .              synchronize_net()
-clear __QDISC_STATE_SCHED  |  .                     .
-          .                |  .                     .
-          .                |  .                     .
-          .                |  .           --------->.
-          .                |  .          |          .
-  test STATE_DEACTIVATED   |  .          | some_qdisc_is_busy()
-__qdisc_run() *not* called |  .          |-----return *true*
-          .                |  .                     .
-   test STATE_MISS         |  .                     .
- __netif_schedule()--------|  .                     .
-          .                   .                     .
-          .                   .                     .
+The ETIMEDOUT is still there, but the port can resume w/o problems and I
+don't really know what the hub did. I can only reset_resume the hub to bring it
+back if I'm not waking up from the connected keyboard.
 
-__qdisc_run() is not called by net_tx_atcion() in CPU0 because
-CPU2 has set STATE_DEACTIVATED flag during dev_deactivate(), and
-STATE_MISSED is only cleared in __qdisc_run(), __netif_schedule
-is called endlessly at the end of qdisc_run_end(), causing endless
-tx action rescheduling problem.
+> > But the usbcore kernel log shows me wPortStatus: 0503 wPortChane: 0004
+> > of that port while resuming. In normal cases, they are 0507:0000.
+>
+> The 0004 bit of wPortChange means that the suspend status has changed;
+> the port is no longer suspended because the device attached to that port
+> (your keyboard) issued a wakeup request.
+>
+> >  I don't know how to SetPortFeature() with setting the status change bit only.
+>
+> You can't.  Only the hub itself can set the wPortChange bits.
+>
+> > Or maybe it's just some kind of timing issue of the
+> > idle/suspend/resume signaling.
+>
+> Not timing.  It's because you woke the system up from the attached
+> keyboard.
+>
+> Alan Stern
 
-qdisc_run() called by net_tx_action() runs in the softirq context,
-which should has the same semantic as the qdisc_run() called by
-__dev_xmit_skb() protected by rcu_read_lock_bh(). And there is a
-synchronize_net() between STATE_DEACTIVATED flag being set and
-qdisc_reset()/some_qdisc_is_busy in dev_deactivate(), we can safely
-bail out for the deactived lockless qdisc in net_tx_action(), and
-qdisc_reset() will reset all skb not dequeued yet.
+Got it. I'm just confused by the USB 2.0 spec 11.24.2.7.2 that
+"Hubs may allow setting of the status change bits with a SetPortFeature()
+ request for diagnostic purposes."
 
-So add the rcu_read_lock() explicitly to protect the qdisc_run()
-and do the STATE_DEACTIVATED checking in net_tx_action() before
-calling qdisc_run_begin(). Another option is to do the checking in
-the qdisc_run_end(), but it will add unnecessary overhead for
-non-tx_action case, because __dev_queue_xmit() will not see qdisc
-with STATE_DEACTIVATED after synchronize_net(), the qdisc with
-STATE_DEACTIVATED can only be seen by net_tx_action() because of
-__netif_schedule().
+So for this case, I think USB_QUIRK_RESET_RESUME would be a
+better option to at least bring back the port. Any suggestion about what
+kind of test I can do on this hub? Thanks
 
-The STATE_DEACTIVATED checking in qdisc_run() is to avoid race
-between net_tx_action() and qdisc_reset(), see:
-commit d518d2ed8640 ("net/sched: fix race between deactivation
-and dequeue for NOLOCK qdisc"). As the bailout added above for
-deactived lockless qdisc in net_tx_action() provides better
-protection for the race without calling qdisc_run() at all, so
-remove the STATE_DEACTIVATED checking in qdisc_run().
-
-After qdisc_reset(), there is no skb in qdisc to be dequeued, so
-clear the STATE_MISSED in dev_reset_queue() too.
-
-Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
- include/net/pkt_sched.h |  7 +------
- net/core/dev.c          | 26 ++++++++++++++++++++++----
- net/sched/sch_generic.c |  4 +++-
- 3 files changed, 26 insertions(+), 11 deletions(-)
-
-diff --git a/include/net/pkt_sched.h b/include/net/pkt_sched.h
-index f5c1bee..6d7b12c 100644
---- a/include/net/pkt_sched.h
-+++ b/include/net/pkt_sched.h
-@@ -128,12 +128,7 @@ void __qdisc_run(struct Qdisc *q);
- static inline void qdisc_run(struct Qdisc *q)
- {
- 	if (qdisc_run_begin(q)) {
--		/* NOLOCK qdisc must check 'state' under the qdisc seqlock
--		 * to avoid racing with dev_qdisc_reset()
--		 */
--		if (!(q->flags & TCQ_F_NOLOCK) ||
--		    likely(!test_bit(__QDISC_STATE_DEACTIVATED, &q->state)))
--			__qdisc_run(q);
-+		__qdisc_run(q);
- 		qdisc_run_end(q);
- 	}
- }
-diff --git a/net/core/dev.c b/net/core/dev.c
-index be941ed..47cefcc 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -4958,25 +4958,43 @@ static __latent_entropy void net_tx_action(struct softirq_action *h)
- 		sd->output_queue_tailp = &sd->output_queue;
- 		local_irq_enable();
- 
-+		rcu_read_lock();
-+
- 		while (head) {
- 			struct Qdisc *q = head;
- 			spinlock_t *root_lock = NULL;
- 
- 			head = head->next_sched;
- 
--			if (!(q->flags & TCQ_F_NOLOCK)) {
--				root_lock = qdisc_lock(q);
--				spin_lock(root_lock);
--			}
- 			/* We need to make sure head->next_sched is read
- 			 * before clearing __QDISC_STATE_SCHED
- 			 */
- 			smp_mb__before_atomic();
-+
-+			if (!(q->flags & TCQ_F_NOLOCK)) {
-+				root_lock = qdisc_lock(q);
-+				spin_lock(root_lock);
-+			} else if (unlikely(test_bit(__QDISC_STATE_DEACTIVATED,
-+						     &q->state))) {
-+				/* There is a synchronize_net() between
-+				 * STATE_DEACTIVATED flag being set and
-+				 * qdisc_reset()/some_qdisc_is_busy() in
-+				 * dev_deactivate(), so we can safely bail out
-+				 * early here to avoid data race between
-+				 * qdisc_deactivate() and some_qdisc_is_busy()
-+				 * for lockless qdisc.
-+				 */
-+				clear_bit(__QDISC_STATE_SCHED, &q->state);
-+				continue;
-+			}
-+
- 			clear_bit(__QDISC_STATE_SCHED, &q->state);
- 			qdisc_run(q);
- 			if (root_lock)
- 				spin_unlock(root_lock);
- 		}
-+
-+		rcu_read_unlock();
- 	}
- 
- 	xfrm_dev_backlog(sd);
-diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-index 9bc73ea..c32ac5b 100644
---- a/net/sched/sch_generic.c
-+++ b/net/sched/sch_generic.c
-@@ -1170,8 +1170,10 @@ static void dev_reset_queue(struct net_device *dev,
- 	qdisc_reset(qdisc);
- 
- 	spin_unlock_bh(qdisc_lock(qdisc));
--	if (nolock)
-+	if (nolock) {
-+		clear_bit(__QDISC_STATE_MISSED, &qdisc->state);
- 		spin_unlock_bh(&qdisc->seqlock);
-+	}
- }
- 
- static bool some_qdisc_is_busy(struct net_device *dev)
--- 
-2.7.4
-
+Chris
