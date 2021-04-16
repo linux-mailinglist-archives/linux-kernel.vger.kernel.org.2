@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21116362974
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDD4362975
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 22:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343788AbhDPUjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 16:39:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41222 "EHLO
+        id S1343816AbhDPUjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 16:39:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343697AbhDPUjS (ORCPT
+        with ESMTP id S1343711AbhDPUjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 16:39:18 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F045C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 13:38:53 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id r18-20020a0ccc120000b02901a21aadacfcso2833992qvk.5
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 13:38:53 -0700 (PDT)
+        Fri, 16 Apr 2021 16:39:20 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A09C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 13:38:55 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id p75so7516148ybc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 13:38:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=2V8QAsj+Z02Kd4LR0nXDnyyqH7VtGeWLcnKeL+XD35A=;
-        b=CDdGyScpvVmaCh6gbf/jPPbkNh4TnKHQUO41gkbgfdgmxuRVU/J80g77PWmuWvCb5A
-         pMuHKl87ofecvT9ftF9y9n5UNOKXQ3SYtVDqIu2TfknnbvyJQ73W0feBd3VhMlWAatvj
-         HPbP/xDZKsuJ6eR4p7P9o/OWom0atBPt+gmetLcHMuyVkIGmSugShyqazxYeablZpaKE
-         oQOZMnA/xg+zHtMaDtyGVlNJxGTppzLd4ZT3YKlaj5nEXJulXjlMkQrv3xSDsbvVFjd2
-         J4v5/OcZHFwASvCTLYApY50UaKflNddGoDlQTGOJ1KLzUBD1bYjrPaUIeo8oI3/05cDq
-         F+/g==
+        bh=pmn8+hgLRHNyGuEUjdW5q+p1kqYnyhA2JKs6WoTHh2Y=;
+        b=uRFE7haSCOtcrAbD8X0LpMW7fs7JNAgip1q3xFA8l8rTOMzSEBsEL8HK1CJowtI+EU
+         o1XeFdireWjSJ0YCcYdlkgW0NEI2st5c+Fl5gozJg68z1Z2GIjjCNm6sJkKxHhG4iSEL
+         7/cKRcV2HfukH9YsK6fdiOH0tNLpdbsxIDD80IM9Z2RWVdz1XD3VN1mpmEy3Vqcb/Kzx
+         TsposH+2Q8tWGv66bUOPScT94QitM5//0wAJygdH0c+6CUi9sGb2tsf2CJrTwDAIg5jG
+         GmyfTRwxEY865LUMzXu24t/yCk4IKKtE5hmCJkM6QIeyed+u7KYY3Ih1Iih66/mkdVug
+         +vkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=2V8QAsj+Z02Kd4LR0nXDnyyqH7VtGeWLcnKeL+XD35A=;
-        b=KF7qqrw4H8JUBBshxAhat94+B0ijg3/hKHNmiKYpDv2RijClMZstiqK0nqKWU3lMaM
-         7qudQT6Y6ketvGzRRRmvICrdMVKiaX5JjvA5qdxPPCR+eFV/g9Mki826vD/qyQ6yyyIR
-         TZ94t6Vf9DK6ZdWn7Ezw0py3jbU7IjK5FMwrKgW5fWli4itnOa/O7MgTQ0u3ennaidVe
-         Fbz+Ol9Zn9nPxkf78ORkxOyR9CsmyjZSL2NnDZXN+pUQn5Xcb8r+EZplfOoYboCtKr36
-         UzEZqMMAtAjENic18EPfRwZx49rs1mO3oK3pmYokoHfgeGv7YT23V8qEE3stRSVkF5DC
-         SWbQ==
-X-Gm-Message-State: AOAM532oARh1GBNf56sjAtMkb0KzlmB6lRxyC3+LD1q2NXhLS34ADTHM
-        jyYqxMPjA3aNYE1iwm1KIZYm+OXF+8EZM50DPVY=
-X-Google-Smtp-Source: ABdhPJwBNtOC2GuqNSxtFRo/YW2dNu3RDamX5XVjt9LnAmvk0iapwxRvMqGGPKXU5a2SfpmC16u4n1T5+6nw6sxXmI8=
+        bh=pmn8+hgLRHNyGuEUjdW5q+p1kqYnyhA2JKs6WoTHh2Y=;
+        b=NKWNuucI4WL75fGPaAHjLaNFtZ9yVbvXFJL7Cg/zVv3JUf26H5N4KYM8WLv1T8ZNII
+         vO6r9pI+fb2uTgw1oJ+Jli8Gip0Y5pG6gePPhKPDXMeQqDmgBCvEhzDlO4mTwm+isVsw
+         mOsKqPVaoB0SC94HjQ/C2jI+knsvZeHGYuXtweKmL5GUCbq/5WZWcir3oFeLilDffZdn
+         dOhuVLXq0LJfINKlpCSdEnSQwJbk4GPiPVNoUJunyWQDfC8LvW4u16+hmF98YD9rNQVt
+         Ss8f3FbvffwBXW/rdS2yGxwUZlUAcOu6Cj+tZIGjEoc0DUx6qbUh4q//c27Pdi63sTpv
+         uONg==
+X-Gm-Message-State: AOAM532N2qkq/O4Kqx16rng/3tCBh02KzQEXK7FrpVoK+Wnfkvuu7LGP
+        whEzSwp3CTjcZ6yNMScBgilsn1W/l6wpHpP2Wn0=
+X-Google-Smtp-Source: ABdhPJzAoCWzAKTWZwYMUD8MhbdEgBqnpfkFsdVC5AUG01f74KhJvNXz7U9gQyUOoZ8GTKFvYGEVqUAlb8FQJo24O6E=
 X-Received: from samitolvanen1.mtv.corp.google.com ([2620:15c:201:2:e262:3d8e:cbf:6164])
- (user=samitolvanen job=sendgmr) by 2002:a0c:d80a:: with SMTP id
- h10mr10443081qvj.25.1618605532443; Fri, 16 Apr 2021 13:38:52 -0700 (PDT)
-Date:   Fri, 16 Apr 2021 13:38:32 -0700
+ (user=samitolvanen job=sendgmr) by 2002:a25:b983:: with SMTP id
+ r3mr1409748ybg.238.1618605534346; Fri, 16 Apr 2021 13:38:54 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 13:38:33 -0700
 In-Reply-To: <20210416203844.3803177-1-samitolvanen@google.com>
-Message-Id: <20210416203844.3803177-4-samitolvanen@google.com>
+Message-Id: <20210416203844.3803177-5-samitolvanen@google.com>
 Mime-Version: 1.0
 References: <20210416203844.3803177-1-samitolvanen@google.com>
 X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
-Subject: [PATCH 03/15] objtool: Add ASM_STACK_FRAME_NON_STANDARD
+Subject: [PATCH 04/15] static_call: Use global functions for the self-test
 From:   Sami Tolvanen <samitolvanen@google.com>
 To:     x86@kernel.org
 Cc:     Kees Cook <keescook@chromium.org>,
@@ -68,50 +68,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To use the STACK_FRAME_NON_STANDARD macro for a static symbol
-defined in inline assembly, we need a C declaration that implies
-global visibility. This type mismatch confuses the compiler with
-CONFIG_CFI_CLANG. This change adds an inline assembly version of
-the macro to avoid the issue.
+With CONFIG_CFI_CLANG, the compiler renames static functions. This
+breaks static_call users using static functions, because the current
+implementation assumes functions have stable names by hardcoding them
+in inline assembly. Make the self-test functions global to prevent the
+compiler from renaming them.
 
 Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 ---
- include/linux/objtool.h       | 5 +++++
- tools/include/linux/objtool.h | 5 +++++
- 2 files changed, 10 insertions(+)
+ kernel/static_call.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/objtool.h b/include/linux/objtool.h
-index 7e72d975cb76..2f29ce48ab5f 100644
---- a/include/linux/objtool.h
-+++ b/include/linux/objtool.h
-@@ -66,6 +66,11 @@ struct unwind_hint {
- 	static void __used __section(".discard.func_stack_frame_non_standard") \
- 		*__func_stack_frame_non_standard_##func = func
+diff --git a/kernel/static_call.c b/kernel/static_call.c
+index 723fcc9d20db..d09f500c2d2a 100644
+--- a/kernel/static_call.c
++++ b/kernel/static_call.c
+@@ -503,12 +503,12 @@ long __static_call_return0(void)
  
-+#define ASM_STACK_FRAME_NON_STANDARD(func)				\
-+	".pushsection .discard.func_stack_frame_non_standard, \"aw\"\n"	\
-+	".long " __stringify(func) " - .\n"				\
-+	".popsection\n"
-+
- #else /* __ASSEMBLY__ */
+ #ifdef CONFIG_STATIC_CALL_SELFTEST
  
- /*
-diff --git a/tools/include/linux/objtool.h b/tools/include/linux/objtool.h
-index 7e72d975cb76..2f29ce48ab5f 100644
---- a/tools/include/linux/objtool.h
-+++ b/tools/include/linux/objtool.h
-@@ -66,6 +66,11 @@ struct unwind_hint {
- 	static void __used __section(".discard.func_stack_frame_non_standard") \
- 		*__func_stack_frame_non_standard_##func = func
+-static int func_a(int x)
++int func_a(int x)
+ {
+ 	return x+1;
+ }
  
-+#define ASM_STACK_FRAME_NON_STANDARD(func)				\
-+	".pushsection .discard.func_stack_frame_non_standard, \"aw\"\n"	\
-+	".long " __stringify(func) " - .\n"				\
-+	".popsection\n"
-+
- #else /* __ASSEMBLY__ */
- 
- /*
+-static int func_b(int x)
++int func_b(int x)
+ {
+ 	return x+2;
+ }
 -- 
 2.31.1.368.gbe11c130af-goog
 
