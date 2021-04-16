@@ -2,183 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 523DE362708
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5DE336270E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243375AbhDPRkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 13:40:00 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:19343 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243331AbhDPRju (ORCPT
+        id S243407AbhDPRmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 13:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243342AbhDPRmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 13:39:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1618594766; x=1650130766;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=9aOtXfflAqYK+G//nkFpsljij2gTI1UQBKlJnzkYE4I=;
-  b=v+QeRMMR1RcK6I1yPfA/J0Pd1JM3KdABX47NVW4seQGSsugt0RH5aIyQ
-   FDjNuEYU2CZ6yeUaJPv7bSjyhid3UdY1GUqUHkrjGANaNw7Pbwh2VXH4N
-   ORJXx3j+YGc+XvJpsWaNHrCGXPTVvNnRdvxQU/bAIWNfun7pLRRFbN58o
-   XhEJjDwY7Y+evDRErdsHwJGWjc9pDnHTGgK8dLGiveN+kv3ZJOu/s9a9U
-   ERpwq50BTYceBNCvqjHGiRwGa0J5+PwEtq6bQTJQfCqKq59IbTNdRrSTx
-   VrbrgMdcA98uhfWtp8Fj8rdvNlPwhfZBSjgFV6u1z9o2ZoJP8Z2JFT+pz
-   Q==;
-IronPort-SDR: uLXW//bEKJ7W2A1ayYOx0KUL8nBDow7n9wtaiWlQ6JwhOBGVZdcpVUaKm5wi5Phrdp9JA0K93P
- V2RNuBnQK1xxuTKT+0f8NwSTdB77Tk8hlG/dQaKbcQWvKxDV+5IIGVQtJh93u//B3jbNxbgihD
- NOYnflDeyfZljZonrtnDRRwMQjiWrP6PxknY3Iqgf95LkbnGtM4wM/aYmxLT+nQbDReyaEKWaD
- gcQLNcEQ8cFpF/oSHkktOi8E7dWXQ7VVjqqhtLUV8umdA9qLpaNFi1zMnhAhYCtpGfFCo/P8NY
- sdc=
-X-IronPort-AV: E=Sophos;i="5.82,226,1613458800"; 
-   d="scan'208";a="116763177"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Apr 2021 10:39:24 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 16 Apr 2021 10:39:23 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2 via Frontend
- Transport; Fri, 16 Apr 2021 10:39:23 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LmCLSI5DJwjPOBwppxy4HdLI8D7xWjzFuGwZnKViK1PDXoziL/vRyAlia4ukx135mlhmUGKYtBQB+2+eHQB1DYPzxKsnES4LaybPo96n9ha6pU7zX4G0rjzeCnLxl6NndWQotO/8DUuWGo5JIIf9ITZM9kwUso/6iqhreZV+P1OI4lbnCmPnilHmfaM+dZnTCY/qPBYIWUTG/GY2umh8fweGYhQrjws1wlgp5+G3r64+uzk2MGM8qBIf4Bu7I9gk2gfDd8fK5uYPXwioSRbOfdEuKh4L4nBkJtquRXWAd6Dg8cGK4QaPUPmysxZKZjRtdgz+VZ48JReAl/bSNpOhgQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XCGKBo3syAJTlUe/Dt1wgH30oKKXl+2ofY8dOUXflGY=;
- b=VW2+XAr78cS3S1wFqmOfalcFfszS6AE5/FMX/Kg9CjnF+JpYWjrCJbOx75H/fiJ19fqCaynJ0bRJCkH0VpGcBr9WzrzB0OQW4BLwvNPE1KuydIMAJNbeHj18ssuYVjzQVUAKf+hYaDZGMq2r3msQ8rae9tNJOAZo8QX9e2izWPCDuTMV/FT9Sh2U5DWaDaVxTOoEu+LPB375euWbtlu9RFReWe9hfVQ0Rkx8jsvtGzr3nOvSji/+Q+L2X53ofuYQs6wboTTYrtzcZLWQnpyHWjs+pkOt7MHrrHey3T9zakQT1WcA3CIJu6LZn9UkodxXlj/ru5w7H3E2jsGhiON3tA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+        Fri, 16 Apr 2021 13:42:18 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC99C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:41:53 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d124so18780930pfa.13
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:41:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XCGKBo3syAJTlUe/Dt1wgH30oKKXl+2ofY8dOUXflGY=;
- b=J/6qgkWxRmP0KSKSU6wly3iiG5frsKXRpKbeMZR5u+CgIWQkKCuU/Mez2sOaufpeYn+9LDHwVImkVBLRoVlMTGQqYXE/2+AF2fqgaNZJrGMEazz+aGzXMV0kP1l6jwjT3QYRmcMUAZkAAJakE+KO1E4UTOJgpCDlmxFqU1d34CE=
-Received: from BYAPR11MB3254.namprd11.prod.outlook.com (2603:10b6:a03:7c::19)
- by BYAPR11MB3607.namprd11.prod.outlook.com (2603:10b6:a03:b2::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.20; Fri, 16 Apr
- 2021 17:39:22 +0000
-Received: from BYAPR11MB3254.namprd11.prod.outlook.com
- ([fe80::6c10:a3fe:3cd1:54c0]) by BYAPR11MB3254.namprd11.prod.outlook.com
- ([fe80::6c10:a3fe:3cd1:54c0%4]) with mapi id 15.20.4020.023; Fri, 16 Apr 2021
- 17:39:22 +0000
-From:   <Codrin.Ciubotariu@microchip.com>
-To:     <broonie@kernel.org>
-CC:     <perex@perex.cz>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <gustavoars@kernel.org>,
-        <mirq-linux@rere.qmqm.pl>, <tiwai@suse.com>, <lgirdwood@gmail.com>
-Subject: Re: [RFC PATCH 0/3] Separate BE DAI HW constraints from FE ones
-Thread-Topic: [RFC PATCH 0/3] Separate BE DAI HW constraints from FE ones
-Thread-Index: AQHXH9nLKm9Vc1LsR0iPwMHUtMwvV6qRfMkAgAAiRQCAIp5ogIABqJCAgAAKsYCAAAhcAIABezGAgAAH8oCAABL0gA==
-Date:   Fri, 16 Apr 2021 17:39:21 +0000
-Message-ID: <cba422f3-6400-2cad-9a04-369ce88eef20@microchip.com>
-References: <20210323114327.3969072-1-codrin.ciubotariu@microchip.com>
- <a0c862ec-44ba-52e0-551c-0347166ac4e9@perex.cz>
- <5e1fb981-48c1-7d5a-79a6-ba54bac26165@microchip.com>
- <4f401536-5a66-0d65-30cb-7ecf6b235539@microchip.com>
- <20210415161743.GH5514@sirena.org.uk>
- <1aff49d4-5691-67cb-3fe7-979d476f1edb@microchip.com>
- <20210415172554.GI5514@sirena.org.uk>
- <ad5d556b-601f-c6f6-347e-86a235237c02@microchip.com>
- <20210416163131.GI5560@sirena.org.uk>
-In-Reply-To: <20210416163131.GI5560@sirena.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=microchip.com;
-x-originating-ip: [2a02:2f0f:910b:600:e383:1ba5:efbb:5d44]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b438f0d8-865a-4290-1a2f-08d900fe91f4
-x-ms-traffictypediagnostic: BYAPR11MB3607:
-x-microsoft-antispam-prvs: <BYAPR11MB3607F7756B7FC3A0F151D452E74C9@BYAPR11MB3607.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: bqeSdx0NlQyGv1fV4RH15BUL/OxrvBSUHspcn2q/LqFQhBVEnef8mV5pKq4ajvyVfEjyKJ2Mare215Q8nRb6xw2wR/sZVLC7LZVVeSnKr94WAtRZoa1Ig6crbNO6AJ8wnmZmyHLnH46mGMy0caYuFgm7yDGwZq2Wve9Rpmh42En3ZbBWdHqZ/+H+5tpf9ocrcQjCqbCiGiHB0eE49ywE4OtX2wV7hFmQT78ojl0D9nVj3sbCo+8YsQUAftMjqh8QKYFWAtUQ5OCeCa3Z0cLxyT40OcUGpa8mRdtzjwhbvFIrawSUa6Ki2468mmtO49vrISyDJ+vG+QsAX8rUh5abP/IzcNSsMFVvN9yIG01Ac8c7BzwCo/S35XwW+aPwRJ/dpa7WyMoeFodPlfDztI+O8LRddXbBpr49zmXol2Sau7sAbHXv+UBX1GBdyJhvC+QdmL7EfhJ2JPHcWoYjUURT6By2Et5NSXzqUxgR/DJnYArtaLeJhbeIXLzJsyikgflqL/lHpOI3aAJ3uy28rch7p1hLhps9yBdtlFo+OTzy07BM6mE3UfhZYF4GQI8miIJz6ghEucrix9sq3AeuOZdfQil4COoPTEM4h5xt3ujZCyT2NTATei7K3mLYtNri4nCgyetHvE1wJDWPf9F3vZdm3m4NlL+pBUcbq7hp3Vcn+qtnhFDcMv1B4UTPcGpNL7k7
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3254.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(346002)(376002)(136003)(39860400002)(31696002)(91956017)(186003)(66946007)(5660300002)(31686004)(2616005)(4326008)(66476007)(54906003)(66556008)(86362001)(64756008)(66446008)(71200400001)(8936002)(76116006)(8676002)(316002)(478600001)(6506007)(53546011)(6916009)(36756003)(6486002)(38100700002)(6512007)(2906002)(122000001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?Windows-1252?Q?8JwbhEtB4Z0IN7ffTmmBUbM+aIuxtmXpkPrIkbbrXb0bya7+628LyN2m?=
- =?Windows-1252?Q?U5TYW5HtwIlZw7vBmMUvEvegO5Dz4v52fiwaYAYxkp9o/P2lBrMocSTV?=
- =?Windows-1252?Q?JUDZgttLIpVTqEjjfedf3HRocHY0I6+0mpLA8hGbWI/py6blQfbSxsMj?=
- =?Windows-1252?Q?AZtPdARBBsZbrDt0VZhXXcnXVhTUbpPGV/QTQnAEwbyIgicX5QqSaxpg?=
- =?Windows-1252?Q?jDuMnHyFmOrHkg9Tevkq6/b6pK1Vlqsjamqz2A04OytRSzpuF5ovBbwt?=
- =?Windows-1252?Q?eXWHLyFv/MPoNwmqh4gYLJo6Vizb8k5PJo7xeTK0a0df7oWRP5tPRKvc?=
- =?Windows-1252?Q?vG9C0NMDhkSPJ+9Ll5P5rlGRZ9x86JgJte/UPsUjiBnDcrNY2r0oyEE9?=
- =?Windows-1252?Q?2XU79eWdQRwAfCy1rWQPecrWT21hA2i3viKsy+sfMhQsLossBb7jxwLI?=
- =?Windows-1252?Q?4d4UDvXIrvm/X+DBLNTZgdV9Q+BEvjksthem9ADlVwyPioVPb78tVsF2?=
- =?Windows-1252?Q?wWPsawlVUMqpxe5hP3TYmfjg3Dc3LP25PQoFK3tSSMUvGB+H0Gd4sbx4?=
- =?Windows-1252?Q?SqSQJiMpjMn8MZ1oEPt559cke1MbG0Olw1bZvZ6utkDlXfgck3ZPAafJ?=
- =?Windows-1252?Q?EO9qU+7zVlOqKRgiKhL8J7IRLcxjerwwbVumGrghe7O92m0UgTSSvTrs?=
- =?Windows-1252?Q?4WEQulSZg680LgDCBIFUkkHsezidCvXGDOa+balUl5j/19WERwjetLox?=
- =?Windows-1252?Q?wbdBjcycRMZ+vwjyXe+gQtPwJCWh8pq5/j6bc+Y7VbUJ/dvdxelRZxDi?=
- =?Windows-1252?Q?cH61vyn9oY/Gnq7YF2SleTDEK5Rv4omEq+aCgeX2HL4qd70YIs/IRcId?=
- =?Windows-1252?Q?vhQhGsJ2jYeohwYQJLWB0L9N+oIV7pjMeZJiAjcWyJPgUUAiWFpIJ6R0?=
- =?Windows-1252?Q?GO2BK8CJiCD5ykfvLQH94iCLkCShcR968gO3RDWM0bCT9Cttex3jPyzL?=
- =?Windows-1252?Q?NICTTsP1O77PcYC3KPsRA9Vj6uVwqIDs72zSdp2gzXGOxd/re9hu8V5k?=
- =?Windows-1252?Q?IBr+HItnUiy6WY3rBO30huugFMZ5nb2cDWAvxnv/20WVwCSwJntD7+Zb?=
- =?Windows-1252?Q?Wdy0AqUeCI7BPamaKOOl73nq99O16GGPy5uYK8Pco47EqVQjRLCwIqUK?=
- =?Windows-1252?Q?212HOEJZ5l2DnJNYkZmwtkkF7fxbMsLMttu6osdoUh1fPxOSaBnKmJZD?=
- =?Windows-1252?Q?cBqY3V8XEcz8RMZZ7hGndYHMJZizIHMub9X0cGUcz7X7eqLN964qpfLY?=
- =?Windows-1252?Q?yityMtm4Q/oZ2jJ7eYXlGKCOy+vXywi+SkWUQIR7p8DtY7XUjkGRAhw7?=
- =?Windows-1252?Q?fFD4eLs1NgFDCG2ntCXZue6ajJqMeiADMigkQBWWmsAjIUUV0CBcmrgZ?=
- =?Windows-1252?Q?kzIJQJuDfmwQ9R7+v6/lzEmgP+ekh69lJXi7FIhhgVpoulf7GsDjZcYQ?=
- =?Windows-1252?Q?MUkzueSY?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="Windows-1252"
-Content-ID: <3E195096F60E444489B1252D6DABFCF2@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7Kx3UcFdv/eRIfY3Uc8K/OykQp2bLhtDqFTwHRlJGkc=;
+        b=k2MNufu1970ZVAMczqrdsGovu9JaJc1xX1Hp071LsHaxBvxl8xOhtkkxILO8FEllV/
+         y5iVTa5QXGlBjFuZDsFxDbRzSb4oGG1QcTl0Yb9hE8CoPDEitRXg6Wz/ZU+SjSahYk00
+         FVFeMkV3wzZl9SyGcH9OX6mzppEOaqtZpskncCTlIGxV4xR/CryjYUzTLnZwAUiOxIpf
+         +ZWk4b32gkwAAFUimvGCg1wtJ+Lae5+jLSxWnMmoFcjWPlmfheYTkIYie5DHW5MC75KD
+         7wEl5IuqBpCFj+g6oPIwmjb0V/vVeOOCUyah4XbzszmCeRTDpw2fjmU5h30R/MqCfDfN
+         pzWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7Kx3UcFdv/eRIfY3Uc8K/OykQp2bLhtDqFTwHRlJGkc=;
+        b=ZsVe+KDxR1AYjKRxWDsmg2m24D1q9mPPm0jGLzlkbMuWcX84K2UOQOGluQr8NH8YFb
+         qrYFSWgUd6Ll8t2AEIFHuI6HhDtqM+ZeLq24dZ1VhwPyUrA7UJ8BRwJVnfY9eEuDtYTm
+         F3KfIgSBTDJjH7sMPm0MPRW3DysjMvoTHO2J6iUSUAeIJJmacz1KHmAtgUei9aPdpkun
+         B4F3l+rrks4aAdgjdcRQ5GaT8lehZzyBxtfeEPxQ9r81zBkc/3bFmCAxNiGkJnkPutKC
+         aBhJlRb5gW71XCEzQrRCIt6S+VThwvd/z2yDntl06oeSIxXUEoMxk5p46OeE0w8Tsbrh
+         X12A==
+X-Gm-Message-State: AOAM530as49oeHlSc/T3uiH45UZwCGffKbKhuX3l3sRiBMpCoiyylxTh
+        Ak0jhcRyDRC+3aNdtq92BVZ+xw==
+X-Google-Smtp-Source: ABdhPJyEK6zn9gkTmeVXKDB7SUNWFl5FHVT928E8q/dwEi9HIjsdYuDs2H7QLKrXtoIGJaRkvO2LUg==
+X-Received: by 2002:aa7:864d:0:b029:24b:dd03:edec with SMTP id a13-20020aa7864d0000b029024bdd03edecmr9062588pfo.18.1618594912941;
+        Fri, 16 Apr 2021 10:41:52 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id a9sm5265558pfo.186.2021.04.16.10.41.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 10:41:52 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 11:41:50 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     peng.fan@oss.nxp.com
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        o.rempel@pengutronix.de, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH V4 4/8] remoteproc: imx_rproc: parse fsl,auto-boot
+Message-ID: <20210416174150.GA1050209@xps15>
+References: <1618493261-32606-1-git-send-email-peng.fan@oss.nxp.com>
+ <1618493261-32606-5-git-send-email-peng.fan@oss.nxp.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3254.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b438f0d8-865a-4290-1a2f-08d900fe91f4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Apr 2021 17:39:21.8853
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Q1Us7wAeeHkehOz24i2N9ctbehi1GMSaGEqCPU+XqiHOf3Tn8Aop83BAJLkkURrHSFdtTBxLhS0jTOwRBLuYtc/HQvbKMR5zl9i2cz1Wmug=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3607
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1618493261-32606-5-git-send-email-peng.fan@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.04.2021 19:31, Mark Brown wrote:
-> On Fri, Apr 16, 2021 at 04:03:05PM +0000, Codrin.Ciubotariu@microchip.com=
- wrote:
->=20
->> Thank you for the links! So basically the machine driver disappears and
->> all the components will be visible in user-space.
->=20
-> Not entirely - you still need something to say how they're wired
-> together but it'll be a *lot* simpler for anything that currently used
-> DPCM.
+On Thu, Apr 15, 2021 at 09:27:37PM +0800, peng.fan@oss.nxp.com wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> Parse fsl,auto-boot to indicate whether need remoteproc framework
+> auto boot or not.
+> 
+> When remote processor is booted before Linux Kernel up, do not parse
+> fsl,auto-boot, so only need to parse the property when rproc state is
+> RPROC_DETACHED.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/remoteproc/imx_rproc.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
+> index d633887..06dac92 100644
+> --- a/drivers/remoteproc/imx_rproc.c
+> +++ b/drivers/remoteproc/imx_rproc.c
+> @@ -654,6 +654,9 @@ static int imx_rproc_probe(struct platform_device *pdev)
+>  
+>  	INIT_WORK(&priv->rproc_work, imx_rproc_vq_work);
+>  
+> +	if (rproc->state != RPROC_DETACHED)
+> +		rproc->auto_boot = of_property_read_bool(np, "fsl,auto-boot");
+> +
 
-Right, device-tree/acpi wiring is not enough...
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
->=20
->> If there is a list with the 'steps' or tasks to achieve this? I can try
->> to pitch in.
->=20
-> Not really written down that I can think of.  I think the next steps
-> that I can think of right now are unfortunately bigger and harder ones,
-> mainly working out a way to represent digital configuration as a graph
-> that can be attached to/run in parallel with DAPM other people might
-> have some better ideas though.  Sorry, I appreciate that this isn't
-> super helpful :/
->=20
-
-I think I have good picture, a more robust card->dai_link, not with just=20
-FEs and BEs ... I will try to monitor the alsa list more, see what other=20
-people are working on. Thank you for your time!
-
-Best regards,
-Codrin
+>  	ret = rproc_add(rproc);
+>  	if (ret) {
+>  		dev_err(dev, "rproc_add failed\n");
+> -- 
+> 2.7.4
+> 
