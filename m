@@ -2,65 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EFD33622ED
+	by mail.lfdr.de (Postfix) with ESMTP id 8F40C3622EE
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245014AbhDPOkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:40:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45260 "EHLO
+        id S245193AbhDPOk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242934AbhDPOi2 (ORCPT
+        with ESMTP id S244613AbhDPOia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:38:28 -0400
+        Fri, 16 Apr 2021 10:38:30 -0400
 Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF8FC061761
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:38:02 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id w18so32626468edc.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:38:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A6BC06138A
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:38:04 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id f8so32557144edd.11
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:38:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=I7F+9DKjv4pSxsjZ8Q4NSxZmBv+NpIxPJbgx2acVLUU=;
-        b=xUDIIJR/cLuzx29sMHGLZuOY6AlLTmEc1nYFSxBrGbSXcio6hSFL/Qj5My76RSIH9v
-         2TVRPRZTGDZUYukol3Rrr41enxdOCl2w6ae1LlUjfQIp52cn4Hk2ugldcUdfREVUpYyz
-         kZ6hBID8yhhVWiYsfLKSwy6p+Exx+V2kxGKoycf7iPUKdzeESN2WkGwvJXSEBud644PT
-         I1eg02i76GgWn9puwVkudV9PSwN4mqxmZSc2KqQQyAigrLRsCAImTh+iComP6NC+Xxhc
-         HL9krOFybdi4KocyKW5QMBdfBRmX3gL/dmsrCmFfgH13kdZ2wxyGx18f2ddaKZn4iXVK
-         ppfg==
+        bh=eZSAadoVwWWKS/0qwmdM9B0hG2udBsRl+ZNcX49QlvU=;
+        b=nw2nOI9l6bUUJmtRby49O2JfdE9k1M4kUJc1s4RPv33ufbBEVEtxgscvAnToufcmDo
+         RbVeTBFbe3K1OylmmnszhZ1sts9nOAjyQ6gQAQZWgdBZLy5/fAADEWhPmjg8Kb9pBDrt
+         v4ajsDabD+SR+GdhKqXy8O+PVM9vzbs6COwHPxfWao+2YZNVqSBNb8KAKtMl8i3Yp9Fj
+         utQpfV5J7eXNzA9EyqhqZ49g+0VzXGyRprORETslu3gZEaJCebXLpeii7FClbzLtrHfa
+         bWETg/DXaJIFFqy6ADORLEp/MJfg71OENRKxzlW5QUtqlEKemuH3f0mjzQUqbicdf1vy
+         wDSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=I7F+9DKjv4pSxsjZ8Q4NSxZmBv+NpIxPJbgx2acVLUU=;
-        b=LUXk0SNflT2rrMOhYgf/JYOFO8uiRa7ixXTagDhdxSB7NynxeH9nXMdZDvGtMWXCzl
-         7idQoB4qyzsWQ1KsXpeosuC17Rx5lrIdvfveAZerkuFyK2z9kPWFwF1az4qn4NyL5eOq
-         dl/FFfSiCQ8Dbgt54IhvfqW4sKtPDkqdDNkztSPC+Yz8vlEtISN/hKhCz96e0YyfjTEm
-         KKV/JsunPQWPVG2POKsIuzO01R6ga5WHlu9DFPVMWONL7THacpUDxU4OnpRmF/2TDCcu
-         3R7Sts6QRnSD8Rr7UeQsWtF3v/e4zlodzTEGYLn5TrcSxS85GYgG1tZkW1Iny0Jzxwig
-         bPMw==
-X-Gm-Message-State: AOAM5314iaZU3F2QDhn5/wU/yjQadpsihPYK5XyldDdVbDQjdbg4WP7G
-        VSTuzRyzSVvTQIPcCn4CF/orSQ==
-X-Google-Smtp-Source: ABdhPJwNxKANqCbAqE4qRNcZ6coZt9d+It6wnNQh5h1d63Ti//CSPf5MsoYyaoVv1NgeAQygdGWyLA==
-X-Received: by 2002:a05:6402:3550:: with SMTP id f16mr10261727edd.134.1618583881703;
-        Fri, 16 Apr 2021 07:38:01 -0700 (PDT)
+        bh=eZSAadoVwWWKS/0qwmdM9B0hG2udBsRl+ZNcX49QlvU=;
+        b=JKIovRYBuOBpR0MuY4gtsY1qD90H5aYWj3EFTxz5c+rYMEkPmuyN5VHGhAN5XFR1UF
+         xn7bi/j/uyp3/HB53Uf8VcXDIqwHIRPs2/008xYTLex7usdk3AeMQOgu7avLZHjWFXHL
+         DdRDUIAsel1lLVNQUk1Lg/EzHgS6GEKtXtgagE6gBZl5sOxKIIyu/CP++ivSj1Erd408
+         Slx+V+KqalRXg/HrEDl33WrYXLlLExME2n3dZQGEUPjh2ixS+cZZmFhxIyuINptPCbG2
+         Y/kIKyMRu7j01wVrTZscXhTkte9n7c0V+FOXTjSqg0a5NB0R8kk9gv0dUn+XACROcsSl
+         XC2Q==
+X-Gm-Message-State: AOAM530D24bN+B/LNKhhw22gDx2CI0aXCcAPZLJ5ea7DQXM+TIUtMVHg
+        N64++hrZfnuksgwHxSs8c+pGBg==
+X-Google-Smtp-Source: ABdhPJyaWCWNnk1gyPCzfGXwhwfCB5WDHs+D8lShvvSaWygeMRqZlvqxZLDhhzs5ZiOecIFpI4V1ww==
+X-Received: by 2002:a50:85cd:: with SMTP id q13mr10416204edh.114.1618583882788;
+        Fri, 16 Apr 2021 07:38:02 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id j10sm1326523ejk.93.2021.04.16.07.38.00
+        by smtp.gmail.com with ESMTPSA id j10sm1326523ejk.93.2021.04.16.07.38.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 07:38:01 -0700 (PDT)
+        Fri, 16 Apr 2021 07:38:02 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
+Cc:     linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Adam Jackson <ajax@redhat.com>,
-        Ben Widawsky <ben@bwidawsk.net>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 30/40] drm/vgem/vgem_drv: Demote kernel-doc abuse
-Date:   Fri, 16 Apr 2021 15:37:15 +0100
-Message-Id: <20210416143725.2769053-31-lee.jones@linaro.org>
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Nirmoy Das <nirmoy.das@amd.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 31/40] drm/amd/amdgpu/amdgpu_gart: Correct a couple of function names in the docs
+Date:   Fri, 16 Apr 2021 15:37:16 +0100
+Message-Id: <20210416143725.2769053-32-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210416143725.2769053-1-lee.jones@linaro.org>
 References: <20210416143725.2769053-1-lee.jones@linaro.org>
@@ -73,35 +72,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/vgem/vgem_drv.c:29: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gart.c:73: warning: expecting prototype for amdgpu_dummy_page_init(). Prototype was for amdgpu_gart_dummy_page_init() instead
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gart.c:96: warning: expecting prototype for amdgpu_dummy_page_fini(). Prototype was for amdgpu_gart_dummy_page_fini() instead
 
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: "Christian König" <christian.koenig@amd.com>
-Cc: Adam Jackson <ajax@redhat.com>
-Cc: Ben Widawsky <ben@bwidawsk.net>
+Cc: Nirmoy Das <nirmoy.das@amd.com>
+Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/vgem/vgem_drv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gart.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/vgem/vgem_drv.c b/drivers/gpu/drm/vgem/vgem_drv.c
-index a0e75f1d5d016..bf38a7e319d14 100644
---- a/drivers/gpu/drm/vgem/vgem_drv.c
-+++ b/drivers/gpu/drm/vgem/vgem_drv.c
-@@ -25,7 +25,7 @@
-  *	Ben Widawsky <ben@bwidawsk.net>
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gart.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_gart.c
+index c5a9a4fb10d2b..5562b5c90c032 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gart.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gart.c
+@@ -60,7 +60,7 @@
   */
  
--/**
-+/*
-  * This is vgem, a (non-hardware-backed) GEM service.  This is used by Mesa's
-  * software renderer and the X server for efficient buffer sharing.
-  */
+ /**
+- * amdgpu_dummy_page_init - init dummy page used by the driver
++ * amdgpu_gart_dummy_page_init - init dummy page used by the driver
+  *
+  * @adev: amdgpu_device pointer
+  *
+@@ -86,7 +86,7 @@ static int amdgpu_gart_dummy_page_init(struct amdgpu_device *adev)
+ }
+ 
+ /**
+- * amdgpu_dummy_page_fini - free dummy page used by the driver
++ * amdgpu_gart_dummy_page_fini - free dummy page used by the driver
+  *
+  * @adev: amdgpu_device pointer
+  *
 -- 
 2.27.0
 
