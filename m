@@ -2,153 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11941362381
+	by mail.lfdr.de (Postfix) with ESMTP id 82DF7362382
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245514AbhDPPFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 11:05:43 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:37766 "EHLO pegase1.c-s.fr"
+        id S245724AbhDPPF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 11:05:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242887AbhDPPF0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 11:05:26 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FMKJB6MPwz9v3LN;
-        Fri, 16 Apr 2021 17:04:58 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id nfnIuGVT2LDV; Fri, 16 Apr 2021 17:04:58 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FMKJB4wVtz9v3LK;
-        Fri, 16 Apr 2021 17:04:58 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0F4968B851;
-        Fri, 16 Apr 2021 17:05:00 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id gM_a9XKodz3W; Fri, 16 Apr 2021 17:04:59 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7EF558B84C;
-        Fri, 16 Apr 2021 17:04:58 +0200 (CEST)
-Subject: Re: [PATCH v1 3/5] mm: ptdump: Provide page size to notepage()
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Steven Price <steven.price@arm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        akpm@linux-foundation.org
-Cc:     linux-arch@vger.kernel.org, linux-s390@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org
-References: <cover.1618506910.git.christophe.leroy@csgroup.eu>
- <1ef6b954fb7b0f4dfc78820f1e612d2166c13227.1618506910.git.christophe.leroy@csgroup.eu>
- <41819925-3ee5-4771-e98b-0073e8f095cf@arm.com>
- <da53d2f2-b472-0c38-bdd5-99c5a098675d@csgroup.eu>
- <1102cda1-b00f-b6ef-6bf3-22068cc11510@arm.com>
- <6ff4816b-8ff6-19de-73a2-3fcadc003ccd@csgroup.eu>
- <e39d500a-2154-3c5d-9393-8bf53a567fad@arm.com>
- <b6b5300d-35a0-3bc0-ad1d-f2af433ef27e@csgroup.eu>
-Message-ID: <b245cf06-f2e5-87a5-9a5e-64efc39d415a@csgroup.eu>
-Date:   Fri, 16 Apr 2021 17:04:56 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S245419AbhDPPFc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 11:05:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF0CA611AC;
+        Fri, 16 Apr 2021 15:05:04 +0000 (UTC)
+Date:   Fri, 16 Apr 2021 17:05:01 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Andrew G. Morgan" <morgan@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        security@kernel.org, Tycho Andersen <tycho@tycho.ws>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: [RFC PATCH] capabilities: require CAP_SETFCAP to map uid 0 (v3)
+Message-ID: <20210416150501.zam55gschpn2w56i@wittgenstein>
+References: <20210416045851.GA13811@mail.hallyn.com>
 MIME-Version: 1.0
-In-Reply-To: <b6b5300d-35a0-3bc0-ad1d-f2af433ef27e@csgroup.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210416045851.GA13811@mail.hallyn.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 16/04/2021 à 16:40, Christophe Leroy a écrit :
+On Thu, Apr 15, 2021 at 11:58:51PM -0500, Serge Hallyn wrote:
+> (Eric - this patch (v3) is a cleaned up version of the previous approach.
+> v4 is at https://git.kernel.org/pub/scm/linux/kernel/git/sergeh/linux.git/log/?h=2021-04-15/setfcap-nsfscaps-v4
+> and is the approach you suggested.  I can send it also as a separate patch
+> if you like)
 > 
+> A process running as uid 0 but without cap_setfcap currently can simply
+> unshare a new user namespace with uid 0 mapped to 0.  While this task
+> will not have new capabilities against the parent namespace, there is
+> a loophole due to the way namespaced file capabilities work.  File
+> capabilities valid in userns 1 are distinguised from file capabilities
+> valid in userns 2 by the kuid which underlies uid 0.  Therefore
+> the restricted root process can unshare a new self-mapping namespace,
+> add a namespaced file capability onto a file, then use that file
+> capability in the parent namespace.
 > 
-> Le 16/04/2021 à 15:00, Steven Price a écrit :
->> On 16/04/2021 12:08, Christophe Leroy wrote:
->>>
->>>
->>> Le 16/04/2021 à 12:51, Steven Price a écrit :
->>>> On 16/04/2021 11:38, Christophe Leroy wrote:
->>>>>
->>>>>
->>>>> Le 16/04/2021 à 11:28, Steven Price a écrit :
->>>>>> To be honest I don't fully understand why powerpc requires the page_size - it appears to be 
->>>>>> using it purely to find "holes" in the calls to note_page(), but I haven't worked out why such 
->>>>>> holes would occur.
->>>>>
->>>>> I was indeed introduced for KASAN. We have a first commit 
->>>>> https://github.com/torvalds/linux/commit/cabe8138 which uses page size to detect whether it is 
->>>>> a KASAN like stuff.
->>>>>
->>>>> Then came https://github.com/torvalds/linux/commit/b00ff6d8c as a fix. I can't remember what 
->>>>> the problem was exactly, something around the use of hugepages for kernel memory, came as part 
->>>>> of the series 
->>>>> https://patchwork.ozlabs.org/project/linuxppc-dev/cover/cover.1589866984.git.christophe.leroy@csgroup.eu/ 
->>>>
->>>>
->>>>
->>>>
->>>>
->>>> Ah, that's useful context. So it looks like powerpc took a different route to reducing the KASAN 
->>>> output to x86.
->>>>
->>>> Given the generic ptdump code has handling for KASAN already it should be possible to drop that 
->>>> from the powerpc arch code, which I think means we don't actually need to provide page size to 
->>>> notepage(). Hopefully that means more code to delete ;)
->>>>
->>>
->>> Yes ... and no.
->>>
->>> It looks like the generic ptdump handles the case when several pgdir entries points to the same 
->>> kasan_early_shadow_pte. But it doesn't take into account the powerpc case where we have regular 
->>> page tables where several (if not all) PTEs are pointing to the kasan_early_shadow_page .
->>
->> I'm not sure I follow quite how powerpc is different here. But could you have a similar check for 
->> PTEs against kasan_early_shadow_pte as the other levels already have?
->>
->> I'm just worried that page_size isn't well defined in this interface and it's going to cause 
->> problems in the future.
->>
+> To prevent that, do not allow mapping uid 0 if the process which
+> opened the uid_map file does not have CAP_SETFCAP, which is the capability
+> for setting file capabilities.
 > 
-> I'm trying. I reverted the two commits b00ff6d8c and cabe8138.
+> A further wrinkle:  a task can unshare its user namespace, then
+> open its uid_map file itself, and map (only) its own uid.  In this
+> case we do not have the credential from before unshare,  which was
+> potentially more restricted.  So, when creating a user namespace, we
+> record whether the creator had CAP_SETFCAP.  Then we can use that
+> during map_write().
 > 
-> At the moment, I don't get exactly what I expect: For linear memory I get one line for each 8M page 
-> whereas before reverting the patches I got one 16M line and one 112M line.
+> With this patch:
 > 
-> And for KASAN shadow area I get two lines for the 2x 8M pages shadowing linear mem then I get one 4M 
-> line for each PGDIR entry pointing to kasan_early_shadow_pte.
+> 1. unprivileged user can still unshare -Ur
 > 
-> 0xf8000000-0xf87fffff 0x07000000         8M   huge        rw       present
-> 0xf8800000-0xf8ffffff 0x07800000         8M   huge        rw       present
-> 0xf9000000-0xf93fffff 0x01430000         4M               r        present
-...
-> 0xfec00000-0xfeffffff 0x01430000         4M               r        present
+> ubuntu@caps:~$ unshare -Ur
+> root@caps:~# logout
 > 
-> Any idea ?
+> 2. root user can still unshare -Ur
 > 
+> ubuntu@caps:~$ sudo bash
+> root@caps:/home/ubuntu# unshare -Ur
+> root@caps:/home/ubuntu# logout
+> 
+> 3. root user without CAP_SETFCAP cannot unshare -Ur:
+> 
+> root@caps:/home/ubuntu# /sbin/capsh --drop=cap_setfcap --
+> root@caps:/home/ubuntu# /sbin/setcap cap_setfcap=p /sbin/setcap
+> unable to set CAP_SETFCAP effective capability: Operation not permitted
+> root@caps:/home/ubuntu# unshare -Ur
+> unshare: write failed /proc/self/uid_map: Operation not permitted
+> 
+> Signed-off-by: Serge Hallyn <serge@hallyn.com>
+> 
+> Changelog:
+>    * fix logic in the case of writing to another task's uid_map
+>    * rename 'ns' to 'map_ns', and make a file_ns local variable
+>    * use /* comments */
+>    * update the CAP_SETFCAP comment in capability.h
+>    * rename parent_unpriv to parent_can_setfcap (and reverse the
+>      logic)
+>    * remove printks
+>    * clarify (i hope) the code comments
+>    * update capability.h comment
+>    * renamed parent_can_setfcap to parent_could_setfcap
+>    * made the check its own disallowed_0_mapping() fn
+>    * moved the check into new_idmap_permitted
+> ---
 
+Thank you for working on this fix!
 
-I think the different with other architectures is here:
+I do prefer your approach of doing the check at user namespace creation
+time instead of moving it into the setxattr() codepath.
 
-	} else if (flag != st->current_flags || level != st->level ||
-		   addr >= st->marker[1].start_address ||
-		   pa != st->last_pa + PAGE_SIZE) {
+Let me reiterate that the ability to write through fscaps is a valid
+usecase and this should continue to work but that for locked down user
+namespace as Andrew wants to use them your patch provides a clean
+solution.
+We've are using identity mappings in quite a few scenarios partially
+when performing tests but also to write through fscaps.
+We also had reports of users that use identity mappings. They create
+their rootfs by running image extraction in an identity mapped userns
+where fscaps are written through.
+Podman has use-cases for this feature as well and has been affected by
+the regression of the first fix.
 
+>  include/linux/user_namespace.h  |  3 ++
+>  include/uapi/linux/capability.h |  3 +-
+>  kernel/user_namespace.c         | 61 +++++++++++++++++++++++++++++++--
+>  3 files changed, 63 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/user_namespace.h b/include/linux/user_namespace.h
+> index 64cf8ebdc4ec..f6c5f784be5a 100644
+> --- a/include/linux/user_namespace.h
+> +++ b/include/linux/user_namespace.h
+> @@ -63,6 +63,9 @@ struct user_namespace {
+>  	kgid_t			group;
+>  	struct ns_common	ns;
+>  	unsigned long		flags;
+> +	/* parent_could_setfcap: true if the creator if this ns had CAP_SETFCAP
+> +	 * in its effective capability set at the child ns creation time. */
+> +	bool			parent_could_setfcap;
+>  
+>  #ifdef CONFIG_KEYS
+>  	/* List of joinable keyrings in this namespace.  Modification access of
+> diff --git a/include/uapi/linux/capability.h b/include/uapi/linux/capability.h
+> index c6ca33034147..2ddb4226cd23 100644
+> --- a/include/uapi/linux/capability.h
+> +++ b/include/uapi/linux/capability.h
+> @@ -335,7 +335,8 @@ struct vfs_ns_cap_data {
+>  
+>  #define CAP_AUDIT_CONTROL    30
+>  
+> -/* Set or remove capabilities on files */
+> +/* Set or remove capabilities on files.
+> +   Map uid=0 into a child user namespace. */
+>  
+>  #define CAP_SETFCAP	     31
+>  
+> diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
+> index af612945a4d0..8c75028a9aae 100644
+> --- a/kernel/user_namespace.c
+> +++ b/kernel/user_namespace.c
+> @@ -106,6 +106,7 @@ int create_user_ns(struct cred *new)
+>  	if (!ns)
+>  		goto fail_dec;
+>  
+> +	ns->parent_could_setfcap = cap_raised(new->cap_effective, CAP_SETFCAP);
+>  	ret = ns_alloc_inum(&ns->ns);
+>  	if (ret)
+>  		goto fail_free;
+> @@ -841,6 +842,56 @@ static int sort_idmaps(struct uid_gid_map *map)
+>  	return 0;
+>  }
+>  
+> +/*
+> + * If mapping uid 0, then file capabilities created by the new namespace will
+> + * be effective in the parent namespace.  Adding file capabilities requires
+> + * CAP_SETFCAP, which the child namespace will have, so creating such a
+> + * mapping requires CAP_SETFCAP in the parent namespace.
+> + */
+> +static bool disallowed_0_mapping(const struct file *file,
+> +				 struct user_namespace *map_ns,
+> +				 struct uid_gid_map *new_map)
+> +{
+> +	int idx;
+> +	bool zeromapping = false;
+> +	const struct user_namespace *file_ns = file->f_cred->user_ns;
+> +
+> +	for (idx = 0; idx < new_map->nr_extents; idx++) {
 
-In addition to the checks everyone do, powerpc also checks "pa != st->last_pa + PAGE_SIZE".
-And it is definitely for that test that page_size argument add been added.
+I think having that loop is acceptable here since it's only called once
+at map creation time even though the forward array is not yet sorted.
 
-I see that other architectures except RISCV don't dump the physical address. But even RISCV doesn't 
-include that check.
+> +		struct uid_gid_extent *e;
+> +		u32 lower_first;
+> +
+> +		if (new_map->nr_extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
+> +			e = &new_map->extent[idx];
+> +		else
+> +			e = &new_map->forward[idx];
+> +		if (e->lower_first == 0) {
+> +			zeromapping = true;
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (!zeromapping)
+> +		return false;
+> +
+> +	if (map_ns == file_ns) {
+> +		/* The user unshared first and is writing to
+> +		 * /proc/self/uid_map.  User already has full
+> +		 * capabilites in the new namespace, so verify
+> +		 * that the parent has CAP_SETFCAP. */
+> +		if (!file_ns->parent_could_setfcap)
+> +			return true;
+> +	} else {
+> +		/* Process p1 is writing to uid_map of p2, who
+> +		 * is in a child user namespace to p1's.  So
+> +		 * we verify that p1 has CAP_SETFCAP to its
+> +		 * own namespace */
+> +		if (!file_ns_capable(file, map_ns->parent, CAP_SETFCAP))
+> +			return true;
+> +	}
+> +
+> +	return false;
+> +}
 
-That physical address dump was added by commit aaa229529244 ("powerpc/mm: Add physical address to 
-Linux page table dump") [https://github.com/torvalds/linux/commit/aaa2295]
+Maybe we can tweak this a tiny bit to get rid of the "zeromapping"?:
 
-How do other architectures deal with the problem described by the commit log of that patch ?
+static bool disallowed_0_mapping(const struct file *file,
+				 struct user_namespace *map_ns,
+				 struct uid_gid_map *new_map)
+{
+	int idx;
+	const struct user_namespace *file_ns = file->f_cred->user_ns;
+	struct uid_gid_extent *extent0 = NULL;
 
-Christophe
+	for (idx = 0; idx < new_map->nr_extents; idx++) {
+		u32 lower_first;
+
+		if (new_map->nr_extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
+			extent0 = &new_map->extent[idx];
+		else
+			extent0 = &new_map->forward[idx];
+		if (extent0->lower_first == 0)
+			break;
+
+		extent0 = NULL;
+	}
+
+	if (!extent0)
+		return false;
+
+	if (map_ns == file_ns) {
+		/* 
+		 * The user unshared first and is writing to
+		 * /proc/self/uid_map.  User already has full
+		 * capabilites in the new namespace, so verify
+		 * that the parent has CAP_SETFCAP.
+		 */
+		if (!file_ns->parent_could_setfcap)
+			return true;
+	} else {
+		/* 
+		 * Process p1 is writing to uid_map of p2, who
+		 * is in a child user namespace to p1's. So
+		 * we verify that p1 has CAP_SETFCAP to its
+		 * own namespace.
+		 */
+		if (!file_ns_capable(file, map_ns->parent, CAP_SETFCAP))
+			return true;
+	}
+
+	return false;
+}
+
+In addition I would think that expressing the logic the other way around
+is more legible. I'm not too keen on having negations in function names.
+We should probably also tweak the comment a bit and make it kernel-doc
+clean:
+
+/**
+ * verify_root_map() - check the uid 0 mapping
+ * @file: idmapping file
+ * @map_ns: user namespace of the target process
+ * @new_map: requested idmap
+ *
+ * If a process requested a mapping for uid 0 onto
+ * uid 0 verify that the process writing the map had the CAP_SETFCAP
+ * capability as the target process will be able to
+ * write fscaps that are valid in ancestor user namespaces.
+ *
+ * Return: true if the mapping is allow, false if not.
+ */
+static bool verify_root_map()
