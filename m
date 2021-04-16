@@ -2,123 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36E9361CF6
+	by mail.lfdr.de (Postfix) with ESMTP id 97392361CF5
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241408AbhDPJJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 05:09:41 -0400
-Received: from mga17.intel.com ([192.55.52.151]:57482 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241354AbhDPJJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S241352AbhDPJJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 16 Apr 2021 05:09:39 -0400
-IronPort-SDR: v0lZtNmdy28HfPmnEzqO6CadWn2HIUBM5g4k340Bvpta2I0L1ttLIYjvQSw0jl2mh/1LH+Mv08
- hMqTmlfKJe5w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="175120531"
-X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
-   d="scan'208";a="175120531"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 02:09:14 -0700
-IronPort-SDR: Yo/3KwkOHpa5Wf4bKNcz6VeTmOGVjM3sJsowFc8GKwZSCiEqLG1ZnjTPBZ6Gazj3PDH3eznpcX
- EwTwxrokmsrg==
-X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
-   d="scan'208";a="399857691"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 02:09:12 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lXKTN-004bZv-0X; Fri, 16 Apr 2021 12:09:09 +0300
-Date:   Fri, 16 Apr 2021 12:09:09 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-Cc:     Vaibhav Jain <vaibhav@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Oliver O'Halloran <oohall@gmail.com>
-Subject: Re: [PATCH v1 1/1] powerpc/papr_scm: Properly handle UUID types and
- API
-Message-ID: <YHlUNSwm8Ofy9sNr@smile.fi.intel.com>
-References: <20210415134637.17770-1-andriy.shevchenko@linux.intel.com>
- <af677216-82b4-f1fa-1d90-3d32dabf8583@linux.ibm.com>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235280AbhDPJJg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 05:09:36 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B467C061574;
+        Fri, 16 Apr 2021 02:09:12 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618564150;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HXhVcknuH7vRZ8Cv/x2IzlKP8UQuZLhEE+jqIDvzBq8=;
+        b=GBzS2yJfcnoBznVCvFFDpzAXFOpnQVzFnixFQFU0/rG+8GlCWCmN+AL48sDYbWI99x6zmQ
+        YAqnLUDtMWQCxqMwJ+l13PG5SHYuSgm1Loty033hg8qQwEyZiZM2eeQeUaTr9/RR4jcD2g
+        VeOd8I6ohaqaOT1gtteUjL71LBYbnEEfFt7h4FDdkdxm0IEkNijgI9SOPOxAhQZ7knr3Q2
+        CJdqIJrLXyVvc7cLXrlhH6H+toi44LA46bt2+MEM9cfSii9m8kj29KaYzPgmCbVkvG+zYZ
+        2u0dXabluk1ca3f2DdFQrJvtAGgIwwMilGSaIa0hMAN0B6YuCDOU82zBkyg8Bw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618564150;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HXhVcknuH7vRZ8Cv/x2IzlKP8UQuZLhEE+jqIDvzBq8=;
+        b=AokndKAbOjooNwgG2WB8jPqJmg/CJgLobKCHlN0NXUMLGOxlIOBQ8FUIB1S6ZMX0Knmw7I
+        wG9K+soas1N2uSBg==
+To:     chensong <chensong_2000@189.cn>
+Cc:     linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rostedt@goodmis.org, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, keescook@chromium.org,
+        gregkh@linuxfoundation.org, maz@kernel.org, joe@perches.com,
+        romain.perier@gmail.com, john.garry@huawei.com
+Subject: Re: [PATCH] kernel:irq:manage: request threaded irq with a specified priority
+In-Reply-To: <4a355b66-3803-586b-56c7-ce715b5e59cc@189.cn>
+References: <1618294774-24370-1-git-send-email-chensong_2000@189.cn> <875z0qzigk.ffs@nanos.tec.linutronix.de> <4a355b66-3803-586b-56c7-ce715b5e59cc@189.cn>
+Date:   Fri, 16 Apr 2021 11:09:09 +0200
+Message-ID: <87fszqvbnu.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <af677216-82b4-f1fa-1d90-3d32dabf8583@linux.ibm.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 01:28:21PM +0530, Aneesh Kumar K.V wrote:
-> On 4/15/21 7:16 PM, Andy Shevchenko wrote:
-> > Parse to and export from UUID own type, before dereferencing.
-> > This also fixes wrong comment (Little Endian UUID is something else)
-> > and should fix Sparse warnings about assigning strict types to POD.
-> > 
-> > Fixes: 43001c52b603 ("powerpc/papr_scm: Use ibm,unit-guid as the iset cookie")
-> > Fixes: 259a948c4ba1 ("powerpc/pseries/scm: Use a specific endian format for storing uuid from the device tree")
-> > Cc: Oliver O'Halloran <oohall@gmail.com>
-> > Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > ---
-> > Not tested
-> >   arch/powerpc/platforms/pseries/papr_scm.c | 13 ++++++++-----
-> >   1 file changed, 8 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
-> > index ae6f5d80d5ce..4366e1902890 100644
-> > --- a/arch/powerpc/platforms/pseries/papr_scm.c
-> > +++ b/arch/powerpc/platforms/pseries/papr_scm.c
-> > @@ -1085,8 +1085,9 @@ static int papr_scm_probe(struct platform_device *pdev)
-> >   	u32 drc_index, metadata_size;
-> >   	u64 blocks, block_size;
-> >   	struct papr_scm_priv *p;
-> > +	u8 uuid_raw[UUID_SIZE];
-> >   	const char *uuid_str;
-> > -	u64 uuid[2];
-> > +	uuid_t uuid;
-> >   	int rc;
-> >   	/* check we have all the required DT properties */
-> > @@ -1129,16 +1130,18 @@ static int papr_scm_probe(struct platform_device *pdev)
-> >   	p->hcall_flush_required = of_property_read_bool(dn, "ibm,hcall-flush-required");
-> >   	/* We just need to ensure that set cookies are unique across */
-> > -	uuid_parse(uuid_str, (uuid_t *) uuid);
-> > +	uuid_parse(uuid_str, &uuid);
-> > +
-> >   	/*
-> >   	 * cookie1 and cookie2 are not really little endian
-> > -	 * we store a little endian representation of the
-> > +	 * we store a raw buffer representation of the
-> >   	 * uuid str so that we can compare this with the label
-> >   	 * area cookie irrespective of the endian config with which
-> >   	 * the kernel is built.
-> >   	 */
-> > -	p->nd_set.cookie1 = cpu_to_le64(uuid[0]);
-> > -	p->nd_set.cookie2 = cpu_to_le64(uuid[1]);
-> > +	export_uuid(uuid_raw, &uuid);
-> > +	p->nd_set.cookie1 = get_unaligned_le64(&uuid_raw[0]);
-> > +	p->nd_set.cookie2 = get_unaligned_le64(&uuid_raw[8]);
-> 
-> ok that does the equivalent of cpu_to_le64 there. So we are good. But the
-> comment update is missing the details why we did that get_unaligned_le64.
-> Maybe raw buffer representation is the correct term?
-> Should we add an example in the comment. ie,
+On Fri, Apr 16 2021 at 12:57, chensong wrote:
+> On 2021/4/13 =E4=B8=8B=E5=8D=884:39, Thomas Gleixner wrote:
+>> It breaks because the system designer failed to assign proper priorities
+>> to the irq threads int_a, int_b and to the user space process task_a.
+>
+> yes, it's designers' responsibility to assign proper priorities, but=20
+> kernel is also obliged to provide interfaces for those designers.
 
-> /*
->  * Historically we stored the cookie in the below format.
-> for a uuid str 72511b67-0b3b-42fd-8d1d-5be3cae8bcaa
-> cookie1 was  0xfd423b0b671b5172 cookie2 was 0xaabce8cae35b1d8d
-> */
+The interface exists. sched_setscheduler(2)
 
-I'm fine with the comment. At least it will shed a light on the byte ordering
-we are expecting.
+> chrt can help designers in this case, however, the truth is lot of=20
+> customers are not familiar with it.
 
-> >   	/* might be zero */
-> >   	p->metadata_size = metadata_size;
+The truth is that real-time systems need to be carefully designed and
+parametrized. And that's only possible when _all_ of the system
+components and their constraints are known. Trying to solve it at the
+device driver level of a single device is impossible and a guarantee for
+fail.
 
--- 
-With Best Regards,
-Andy Shevchenko
+If the customer does not know how to do it, then I really have to ask
+why he's trying to use a real-time system at all. There is no real-time
+system which magically tunes itself by pulling the overall system
+constraints out of thin air.
+=20
+> what's more, chrt can also apply to userspace rt task, but userspace
+> also has sched_setscheduler to assgin proper priority inside code like
+> cyclictest, why can't driver writers have another choice?
 
+There is a very simple reason: The driver writer cannot know about the
+requirements of the complete system which is composed of kernel, drivers
+and user space applications, unless the driver writer is fully aware of
+the overall system design and constraints.
 
+How is that supposed to work on a general purpose kernel which is
+utilized for a gazillion of different use cases which all have different
+expectations?
+
+It simply cannot work because default A will only work for usecase A and
+be completely wrong for all others.
+
+> Further, what if irq handlear thread has to run on the expected priority=
+=20
+> at the very beginning? This patch helps.
+
+There is no such thing as the expected priority of an interrupt thread
+which can be applied upfront.
+
+There are ~5400 instances of request*irq() in the kernel source and
+there is no way to make priority decisions for them which work for every
+RT system out there.
+
+The kernel sets a default and the system designer, admin, user has to
+take care of tuning it to match the expectations and constraints of his
+particular application scenario.
+
+The kernel provides an userspace interface to do that. That interface
+might be a bit awkward to use, but there are tools out there which help
+with that, and if at all we can think about providing a better and
+easier to use interface for this.
+
+Trying to solve that at the kernel level is putting the cart before the
+horse.
+
+Thanks,
+
+        tglx
