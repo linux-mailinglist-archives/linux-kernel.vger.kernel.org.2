@@ -2,60 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43957362609
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 18:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2078D36261C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 18:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237912AbhDPQxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 12:53:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49614 "EHLO mail.kernel.org"
+        id S237934AbhDPQ4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 12:56:16 -0400
+Received: from mga01.intel.com ([192.55.52.88]:11721 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235608AbhDPQxc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 12:53:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2F15E611BF;
-        Fri, 16 Apr 2021 16:53:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618591987;
-        bh=9stCuRiAkm6slmsR/LRY4olcC73hbp6I2iNNHr2q5mo=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=uQk4k0uGwW7+vi3yo0eEj4cnR1oY/+vxwhLBucpi+CcD1SHkk8l8SEp9NNz6wutFr
-         qPbTzilHA2LEOBlfW0AR+WdX7EaAsdp8yK4JNCKx8L2x7d+LDDt+kF0393gdA9jNyH
-         cYwi5FsOK7rOfuTiRwX0xAVWE37FLdCRBnEgWaMHg+tjQb+RLNlHKb2J4msWaaGFPs
-         mn8d37E/zqD7CVgei/Rc9odvAjbxNSjTp/Ev5LZI4W+tSDJ4YqanOFAPdXmJO+IkXr
-         FhLvPL1kNO3uRJPTDzHfRVu5sJ+dCGJvngd9E0vTxQLP1OSLp7lvf5eL63/UP6Tesz
-         J2OKLDIGldFgg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1BF3E60CD4;
-        Fri, 16 Apr 2021 16:53:07 +0000 (UTC)
-Subject: Re: [GIT PULL] arm64 fix for 5.12-rc8/final
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210416162451.GA11506@arm.com>
-References: <20210416162451.GA11506@arm.com>
-X-PR-Tracked-List-Id: <linux-arm-kernel.lists.infradead.org>
-X-PR-Tracked-Message-Id: <20210416162451.GA11506@arm.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
-X-PR-Tracked-Commit-Id: 22315a2296f4c251fa92aec45fbbae37e9301b6c
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 06c2aac4014c38247256fe49c61b7f55890271e7
-Message-Id: <161859198705.3799.3259163036200596055.pr-tracker-bot@kernel.org>
-Date:   Fri, 16 Apr 2021 16:53:07 +0000
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
+        id S236427AbhDPQ4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 12:56:15 -0400
+IronPort-SDR: cNlLVOmq2U+697Z94jhZtwqAMfVR/0F8QDuv3VWqyIUvE8NRHGpKUAtZGiNxDbD1/jdQeq3vFR
+ hYJtRxE2w/IA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9956"; a="215606430"
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="215606430"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 09:55:49 -0700
+IronPort-SDR: Rk5PKcOKypXYtpbTYOxE2eNxdeLq0C1bfWEBt8SWTn+GL8+j2RMTmLi46vkJY0KH1tvGzgbJP6
+ JKfycXrMjzrQ==
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="425655933"
+Received: from rhweight-wrk1.ra.intel.com ([137.102.106.42])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 09:55:49 -0700
+From:   matthew.gerlach@linux.intel.com
+To:     hao.wu@intel.com, trix@redhat.com, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yilun.xu@intel.com,
+        russell.h.weight@intel.com, broonie@kernel.org,
+        linux-spi@vger.kernel.org
+Cc:     Matthew Gerlach <matthew.gerlach@linux.intel.com>
+Subject: [PATCH v3 0/2] spi: altera: Add DFL bus support for Altera SPI
+Date:   Fri, 16 Apr 2021 09:57:18 -0700
+Message-Id: <20210416165720.554144-1-matthew.gerlach@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 16 Apr 2021 17:24:55 +0100:
+From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
+This patch set adds Device Feature List (DFL) bus support for
+the Altera SPI Master controller.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/06c2aac4014c38247256fe49c61b7f55890271e7
+Patch 1 separates spi-altera.c into spi-altera-core.c and
+spi-altera-platform.c.
 
-Thank you!
+Patch 2 adds spi-altera-dfl.c.
+
+Matthew Gerlach (2):
+  spi: altera: separate core code from platform code
+  spi: altera: Add DFL bus driver for Altera API Controller
+
+ drivers/spi/Kconfig               |  18 +-
+ drivers/spi/Makefile              |   4 +-
+ drivers/spi/spi-altera-core.c     | 222 ++++++++++++++++++++++
+ drivers/spi/spi-altera-dfl.c      | 204 ++++++++++++++++++++
+ drivers/spi/spi-altera-platform.c | 172 +++++++++++++++++
+ drivers/spi/spi-altera.c          | 378 --------------------------------------
+ include/linux/spi/altera.h        |  21 +++
+ 7 files changed, 639 insertions(+), 380 deletions(-)
+ create mode 100644 drivers/spi/spi-altera-core.c
+ create mode 100644 drivers/spi/spi-altera-dfl.c
+ create mode 100644 drivers/spi/spi-altera-platform.c
+ delete mode 100644 drivers/spi/spi-altera.c
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+1.8.3.1
+
