@@ -2,97 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F007362C11
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 01:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF03A362C0F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 01:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235031AbhDPX4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 19:56:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbhDPX4O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 19:56:14 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93AE9C061574;
-        Fri, 16 Apr 2021 16:55:47 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id p6so21463692wrn.9;
-        Fri, 16 Apr 2021 16:55:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4wthoTfG2N095M+QSjMZEKkLwrzkypphGz/WswOOAXA=;
-        b=KPfIJgqsbMvWcyeDZgvaohrbarQWY4tQSocA53ct384vzydBOxJohaRVl4SiGaMgoZ
-         1zn7QaflcT4O+x1TsLrPBgjDpPeaTdi4qi3Yuf7CqYf4fl2z26SnYsY4kpAjsmpkYLjQ
-         Yc40uPVmGBx9Ly0KZtDRgAwS25s6CcNPdfChDaZET/QaIajBQQJjA9s4fK0ye7nfjz43
-         z6AJ7t/lnM4NzhmOYZ3E9Eo2rGSk0+ldz7NXZe6lrVa2idBTyhPgcu2sTVHsWzfLXk4R
-         SnjMhdNP2lPrkCSD/VFGnmtZCFBAkdrcA3Q78KN2OfK2NHo/nu3OCpsUG19P6vNUslSo
-         yq2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4wthoTfG2N095M+QSjMZEKkLwrzkypphGz/WswOOAXA=;
-        b=aT3LOtfUTq9+rXQvyNgHXRVyrMx3KVUFCwt7BKEg9q0A0NaP7Pmc3wKbTJs5ddFaHX
-         WXejBo5FuAmn0s+UdYbK5KfAKcWlqOlAzJrh4LjS/t87RJSQij7Y25ZdqGzbwDj1EYFm
-         /chp8xqGR6r3yk+DFqlRdY4Lfz6cEd+aUFCgBb+RE3udRyglF21zd53eZpoVNJ4G1FaK
-         wKRC+Kj539B/1EkKwPoM1rspLsLw7ooU+uu+JPUD19j0qvWjzXEEye9dO0b79k2R2qlP
-         f052a6wv/nBY2wf7A41/fOLrEyoDFlzVhDSmet3SpRPtN3QpZdbBUL+IZ77RH9k9lfnv
-         S4Rw==
-X-Gm-Message-State: AOAM53275WbMl47DHkXLzYwnYeTWBGhfibMmYN787PWFvqvkr4506t0L
-        IL6YADG1dEnKCmhGvDxS36Q=
-X-Google-Smtp-Source: ABdhPJzokJ3S7/Nvto/qASej34awec78j2EKo6ESTo8Rl9SrWHtb5yFKoYy3nyvWSXx0u5QLfhP9zQ==
-X-Received: by 2002:a5d:47ad:: with SMTP id 13mr1601861wrb.56.1618617346324;
-        Fri, 16 Apr 2021 16:55:46 -0700 (PDT)
-Received: from localhost.localdomain (host-84-13-30-150.opaltelecom.net. [84.13.30.150])
-        by smtp.gmail.com with ESMTPSA id u8sm12404539wrr.42.2021.04.16.16.55.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 16:55:45 -0700 (PDT)
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH] media: sp887x: drop unneeded assignment
-Date:   Sat, 17 Apr 2021 00:53:36 +0100
-Message-Id: <20210416235336.1552102-1-sudipm.mukherjee@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        id S234937AbhDPXzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 19:55:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35188 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229719AbhDPXzi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 19:55:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E912A61152;
+        Fri, 16 Apr 2021 23:55:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618617313;
+        bh=E2d1BqEFKaCE3MiFwEpfVs4ZtEN4+OGip5ZcAjHFTEk=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=eWHyUqii3l4ZDB8TDLG9zHPcmRehniBQy7CBG7NTofQxvnRdsHbR3sEmdumVtL8FU
+         vhFTJuihDrX6nALpc44cUGoGysPv+VliyJ1vtttZk1nMrWvTtHgs8iBLF2hQ6JuuWh
+         E25JBHtJceYTmledkjRKQ4p1VXYV26LS/NKHNnoPWtmoW+/7PR0dkJb4Lt2gPVuZB6
+         ERMDKkuE8KPOIzY4/5RdkNmKOQ8RCOYgrYbm6kEUo1lwykG8NmBaYw6FWR9YsQJwbQ
+         +AHOwaH/4TfN1uNVpGLIbeGWzUgq7mK32VunQtMxZ5Zcmht2sdnVNszGHY8FnLbb7b
+         fGHsmf67w3+bA==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210416063721.20538-3-nm@ti.com>
+References: <20210416063721.20538-1-nm@ti.com> <20210416063721.20538-3-nm@ti.com>
+Subject: Re: [PATCH 2/4] dt-bindings: clock: Convert ti,sci-clk to json schema
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Nishanth Menon <nm@ti.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Tero Kristo <kristo@kernel.org>
+Date:   Fri, 16 Apr 2021 16:55:11 -0700
+Message-ID: <161861731160.46595.786611690053722257@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pointer 'mem' was initialized to 'fw->data' but immediately after
-that it was assigned 'fw->data + 10'. Lets remove the extra assignement
-and initialize the pointer to the address its going to use.
+Quoting Nishanth Menon (2021-04-15 23:37:19)
+> diff --git a/Documentation/devicetree/bindings/clock/ti,sci-clk.yaml b/Do=
+cumentation/devicetree/bindings/clock/ti,sci-clk.yaml
+> new file mode 100644
+> index 000000000000..72633651f0c7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/ti,sci-clk.yaml
+> @@ -0,0 +1,52 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/ti,sci-clk.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: TI-SCI clock controller node bindings
+> +
+> +maintainers:
+> +  - Nishanth Menon <nm@ti.com>
+> +
+> +allOf:
+> +  - $ref: /schemas/clock/clock.yaml#
 
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
----
- drivers/media/dvb-frontends/sp887x.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Is this needed?
 
-diff --git a/drivers/media/dvb-frontends/sp887x.c b/drivers/media/dvb-frontends/sp887x.c
-index c89a91a3daf4..146e7f2dd3c5 100644
---- a/drivers/media/dvb-frontends/sp887x.c
-+++ b/drivers/media/dvb-frontends/sp887x.c
-@@ -140,7 +140,7 @@ static int sp887x_initial_setup (struct dvb_frontend* fe, const struct firmware
- 	u8 buf [BLOCKSIZE + 2];
- 	int i;
- 	int fw_size = fw->size;
--	const unsigned char *mem = fw->data;
-+	const unsigned char *mem = fw->data + 10;
- 
- 	dprintk("%s\n", __func__);
- 
-@@ -148,8 +148,6 @@ static int sp887x_initial_setup (struct dvb_frontend* fe, const struct firmware
- 	if (fw_size < FW_SIZE + 10)
- 		return -ENODEV;
- 
--	mem = fw->data + 10;
--
- 	/* soft reset */
- 	sp887x_writereg(state, 0xf1a, 0x000);
- 
--- 
-2.30.2
+> +
+> +description: |
+> +  Some TI SoCs contain a system controller (like the Power Management Mi=
+cro
+> +  Controller (PMMC) on Keystone 66AK2G SoC) that are responsible for con=
+trolling
+> +  the state of the various hardware modules present on the SoC. Communic=
+ation
+> +  between the host processor running an OS and the system controller hap=
+pens
+> +  through a protocol called TI System Control Interface (TI-SCI protocol=
+).
+> +
+> +  This clock controller node uses the TI SCI protocol to perform various=
+ clock
+> +  management of various hardware modules (devices) present on the SoC. T=
+his
+> +  node must be a child node of the associated TI-SCI system controller n=
+ode.
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^clock-controller$"
 
+Is this nodename pattern check required?
+
+> +
+> +  compatible:
+> +    const: ti,k2g-sci-clk
+
+I thought most things keyed off the compatible string.
+
+> +
+> +  "#clock-cells":
+> +    const: 2
+> +    description:
+> +      The two cells represent values that the TI-SCI controller defines.
+> +
+> +      The first cell should contain the device ID.
+> +
+> +      The second cell should contain the clock ID.
+> +
+> +      Please see  http://processors.wiki.ti.com/index.php/TISCI for
+> +      protocol documentation for the values to be used for different dev=
+ices.
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    k3_clks: clock-controller {
+> +        compatible =3D "ti,k2g-sci-clk";
+> +        #clock-cells =3D <2>;
+> +    };
