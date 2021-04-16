@@ -2,175 +2,454 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3631236222F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C47C362236
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235845AbhDPO1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:27:12 -0400
-Received: from mga17.intel.com ([192.55.52.151]:4721 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235814AbhDPO1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:27:09 -0400
-IronPort-SDR: /Sp6f+BVIfpyXUsXZHB56v5e4jRwlPQdr2cegVDeZIBP0dwuO9F1F3Kve8g2uwr0tAL3OYKqEU
- +ykXNDKWI82Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9956"; a="175153612"
-X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
-   d="scan'208";a="175153612"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 07:26:44 -0700
-IronPort-SDR: 0w32KQlFl1AWpDccPudMMQAdGFtLJ9GaOahaij1O3FWLPpbn3ABJ1uRjQ14OetOX/aI9NTMwzM
- 5c7qEWokIu1A==
-X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
-   d="scan'208";a="453355311"
-Received: from mhsedler-mobl1.amr.corp.intel.com (HELO [10.212.149.97]) ([10.212.149.97])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 07:26:44 -0700
-Subject: Re: [PATCH 00/10] [v7][RESEND] Migrate Pages in lieu of discard
-To:     Michal Hocko <mhocko@suse.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        yang.shi@linux.alibaba.com, rientjes@google.com,
-        ying.huang@intel.com, dan.j.williams@intel.com, david@redhat.com,
-        osalvador@suse.de, weixugc@google.com
-References: <20210401183216.443C4443@viggo.jf.intel.com>
- <YHmEm/yHpaqO6khp@dhcp22.suse.cz>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <9cd0dcde-f257-1b94-17d0-f2e24a3ce979@intel.com>
-Date:   Fri, 16 Apr 2021 07:26:43 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <YHmEm/yHpaqO6khp@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S236039AbhDPO2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:28:06 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:56727 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233606AbhDPO2E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 10:28:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618583260; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=9GpCbXu9iJiZ8BJcay3JR2dmTei9vvUKB55VySZgdUA=; b=o8FmOyFw9r+jIjgE5xJhGtwQxPUCZCKf7YGEvyRByMHOEB0nqAUtejvlcdGWb5CgQEhfmtAx
+ +AKDdfxyMyg4lW/4NIaMAzOYCDcpsp/1c+l2l1Pmt4ys5H04b52o/mlM20bwfp92YUnytQAs
+ z58oARHUo5CFkgUUIVgZVv9IqhY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60799ed7a817abd39a8bcbb4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Apr 2021 14:27:35
+ GMT
+Sender: faiyazm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E2F2DC43463; Fri, 16 Apr 2021 14:27:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from faiyazm-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: faiyazm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CC220C433C6;
+        Fri, 16 Apr 2021 14:27:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CC220C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
+From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
+To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     vinmenon@codeaurora.org, Faiyaz Mohammed <faiyazm@codeaurora.org>
+Subject: [PATCH v4] mm: slub: move sysfs slab alloc/free interfaces to debugfs
+Date:   Fri, 16 Apr 2021 19:57:19 +0530
+Message-Id: <1618583239-18124-1-git-send-email-faiyazm@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/16/21 5:35 AM, Michal Hocko wrote:
->   I have to confess that I haven't grasped the initialization
->   completely. There is a nice comment explaining a 2 socket system with
->   3 different NUMA nodes attached to it with one node being terminal.
->   This is OK if the terminal node is PMEM but how that fits into usual
->   NUMA setups. E.g.
->   4 nodes each with its set of CPUs
->   node distances:
->   node   0   1   2   3
->   0:  10  20  20  20
->   1:  20  10  20  20
->   2:  20  20  10  20
->   3:  20  20  20  10
->   Do I get it right that Node 3 would be terminal?
+alloc_calls and free_calls implementation in sysfs have two issues,
+one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
+to "one value per file" rule.
 
-Yes, I think Node 3 would end up being the terminal node in that setup.
+To overcome this issues, move the alloc_calls and free_calls implemeation
+to debugfs.
 
-That said, I'm not sure how much I expect folks to use this on
-traditional, non-tiered setups.  It's also hard to argue what the
-migration order *should* be when all the nodes are uniform.
+Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+---
+ include/linux/slub_def.h |  10 +++
+ mm/slab_common.c         |   9 +++
+ mm/slub.c                | 202 ++++++++++++++++++++++++++++++++++++++++++-----
+ 3 files changed, 200 insertions(+), 21 deletions(-)
 
-> - The demotion is controlled by node_reclaim_mode but unlike other modes
->   it applies to both direct and kswapd reclaims.
->   I do not see that explained anywhere though.
+diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
+index dcde82a..f8c268d 100644
+--- a/include/linux/slub_def.h
++++ b/include/linux/slub_def.h
+@@ -110,6 +110,9 @@ struct kmem_cache {
+ #ifdef CONFIG_SYSFS
+ 	struct kobject kobj;	/* For sysfs */
+ #endif
++#ifdef CONFIG_SLUB_DEBUG
++	struct dentry *slab_cache_dentry;
++#endif
+ #ifdef CONFIG_SLAB_FREELIST_HARDENED
+ 	unsigned long random;
+ #endif
+@@ -159,6 +162,13 @@ static inline void sysfs_slab_release(struct kmem_cache *s)
+ }
+ #endif
+ 
++#ifdef CONFIG_DEBUG_FS
++void debugfs_slab_release(struct kmem_cache *);
++#else
++static inline void debugfs_slab_release(struct kmem_cache *s)
++{
++}
++#endif
+ void object_err(struct kmem_cache *s, struct page *page,
+ 		u8 *object, char *reason);
+ 
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index 88e8339..fb28328 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -437,6 +437,9 @@ static void slab_caches_to_rcu_destroy_workfn(struct work_struct *work)
+ #else
+ 		slab_kmem_cache_release(s);
+ #endif
++#ifdef CONFIG_DEBUG_FS
++		debugfs_slab_release(s);
++#endif
+ 	}
+ }
+ 
+@@ -454,6 +457,9 @@ static int shutdown_cache(struct kmem_cache *s)
+ #ifdef SLAB_SUPPORTS_SYSFS
+ 		sysfs_slab_unlink(s);
+ #endif
++#ifdef CONFIG_DEBUG_FS
++		debugfs_slab_release(s);
++#endif
+ 		list_add_tail(&s->list, &slab_caches_to_rcu_destroy);
+ 		schedule_work(&slab_caches_to_rcu_destroy_work);
+ 	} else {
+@@ -464,6 +470,9 @@ static int shutdown_cache(struct kmem_cache *s)
+ #else
+ 		slab_kmem_cache_release(s);
+ #endif
++#ifdef CONFIG_DEBUG_FS
++		debugfs_slab_release(s);
++#endif
+ 	}
+ 
+ 	return 0;
+diff --git a/mm/slub.c b/mm/slub.c
+index 3021ce9..ab7a0d3 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -36,6 +36,7 @@
+ #include <linux/memcontrol.h>
+ #include <linux/random.h>
+ 
++#include <linux/debugfs.h>
+ #include <trace/events/kmem.h>
+ 
+ #include "internal.h"
+@@ -225,6 +226,15 @@ static inline int sysfs_slab_alias(struct kmem_cache *s, const char *p)
+ 							{ return 0; }
+ #endif
+ 
++#ifdef CONFIG_DEBUG_FS
++static void debugfs_slab_add(struct kmem_cache *);
++static int debugfs_slab_alias(struct kmem_cache *, const char *);
++#else
++static inline void debugfs_slab_add(struct kmem_cache *s) { }
++static inline int debugfs_slab_alias(struct kmem_cache *s, const char *p)
++							{ return 0; }
++#endif
++
+ static inline void stat(const struct kmem_cache *s, enum stat_item si)
+ {
+ #ifdef CONFIG_SLUB_STATS
+@@ -4521,6 +4531,8 @@ __kmem_cache_alias(const char *name, unsigned int size, unsigned int align,
+ 			s->refcount--;
+ 			s = NULL;
+ 		}
++
++		debugfs_slab_alias(s, name);
+ 	}
+ 
+ 	return s;
+@@ -4542,6 +4554,8 @@ int __kmem_cache_create(struct kmem_cache *s, slab_flags_t flags)
+ 	if (err)
+ 		__kmem_cache_release(s);
+ 
++	debugfs_slab_add(s);
++
+ 	return err;
+ }
+ 
+@@ -4682,6 +4696,8 @@ static long validate_slab_cache(struct kmem_cache *s)
+ 
+ 	return count;
+ }
++
++#ifdef CONFIG_DEBUG_FS
+ /*
+  * Generate lists of code addresses where slabcache objects are allocated
+  * and freed.
+@@ -4705,6 +4721,8 @@ struct loc_track {
+ 	struct location *loc;
+ };
+ 
++static struct dentry *slab_debugfs_root;
++
+ static void free_loc_track(struct loc_track *t)
+ {
+ 	if (t->max)
+@@ -4822,10 +4840,9 @@ static void process_slab(struct loc_track *t, struct kmem_cache *s,
+ 	put_map(map);
+ }
+ 
+-static int list_locations(struct kmem_cache *s, char *buf,
++static int list_locations(struct seq_file *seq, struct kmem_cache *s,
+ 			  enum track_item alloc)
+ {
+-	int len = 0;
+ 	unsigned long i;
+ 	struct loc_track t = { 0, 0, NULL };
+ 	int node;
+@@ -4833,7 +4850,8 @@ static int list_locations(struct kmem_cache *s, char *buf,
+ 
+ 	if (!alloc_loc_track(&t, PAGE_SIZE / sizeof(struct location),
+ 			     GFP_KERNEL)) {
+-		return sysfs_emit(buf, "Out of memory\n");
++		seq_puts(seq, "Out of memory\n");
++		return -ENOMEM;
+ 	}
+ 	/* Push back cpu slabs */
+ 	flush_all(s);
+@@ -4856,46 +4874,46 @@ static int list_locations(struct kmem_cache *s, char *buf,
+ 	for (i = 0; i < t.count; i++) {
+ 		struct location *l = &t.loc[i];
+ 
+-		len += sysfs_emit_at(buf, len, "%7ld ", l->count);
++		seq_printf(seq, "%7ld ", l->count);
+ 
+ 		if (l->addr)
+-			len += sysfs_emit_at(buf, len, "%pS", (void *)l->addr);
++			seq_printf(seq, "%pS", (void *)l->addr);
+ 		else
+-			len += sysfs_emit_at(buf, len, "<not-available>");
++			seq_puts(seq, "<not-available>");
+ 
+ 		if (l->sum_time != l->min_time)
+-			len += sysfs_emit_at(buf, len, " age=%ld/%ld/%ld",
++			seq_printf(seq, " age=%ld/%ld/%ld",
+ 					     l->min_time,
+ 					     (long)div_u64(l->sum_time,
+ 							   l->count),
+ 					     l->max_time);
+ 		else
+-			len += sysfs_emit_at(buf, len, " age=%ld", l->min_time);
++			seq_printf(seq, " age=%ld", l->min_time);
+ 
+ 		if (l->min_pid != l->max_pid)
+-			len += sysfs_emit_at(buf, len, " pid=%ld-%ld",
++			seq_printf(seq, " pid=%ld-%ld",
+ 					     l->min_pid, l->max_pid);
+ 		else
+-			len += sysfs_emit_at(buf, len, " pid=%ld",
++			seq_printf(seq, " pid=%ld",
+ 					     l->min_pid);
+ 
+ 		if (num_online_cpus() > 1 &&
+ 		    !cpumask_empty(to_cpumask(l->cpus)))
+-			len += sysfs_emit_at(buf, len, " cpus=%*pbl",
++			seq_printf(seq, " cpus=%*pbl",
+ 					     cpumask_pr_args(to_cpumask(l->cpus)));
+ 
+ 		if (nr_online_nodes > 1 && !nodes_empty(l->nodes))
+-			len += sysfs_emit_at(buf, len, " nodes=%*pbl",
++			seq_printf(seq, " nodes=%*pbl",
+ 					     nodemask_pr_args(&l->nodes));
+ 
+-		len += sysfs_emit_at(buf, len, "\n");
++		seq_puts(seq, "\n");
+ 	}
+ 
+ 	free_loc_track(&t);
+ 	if (!t.count)
+-		len += sysfs_emit_at(buf, len, "No data\n");
++		seq_puts(seq, "No data\n");
+ 
+-	return len;
++	return 0;
+ }
+ #endif	/* CONFIG_SLUB_DEBUG */
+ 
+@@ -5348,17 +5366,23 @@ SLAB_ATTR(validate);
+ 
+ static ssize_t alloc_calls_show(struct kmem_cache *s, char *buf)
+ {
+-	if (!(s->flags & SLAB_STORE_USER))
+-		return -ENOSYS;
+-	return list_locations(s, buf, TRACK_ALLOC);
++	int len = 0;
++
++	len += sprintf(buf, "Deprecated, use the equvalent under");
++	len += sprintf(buf, "/sys/kernel/debug/slab/%s/alloc_calls", s->name);
++
++	return len;
+ }
+ SLAB_ATTR_RO(alloc_calls);
+ 
+ static ssize_t free_calls_show(struct kmem_cache *s, char *buf)
+ {
+-	if (!(s->flags & SLAB_STORE_USER))
+-		return -ENOSYS;
+-	return list_locations(s, buf, TRACK_FREE);
++	int len = 0;
++
++	len += sprintf(buf, "Deprecated, use the equvalent under");
++	len += sprintf(buf, "/sys/kernel/debug/slab/%s/free_calls", s->name);
++
++	return len;
+ }
+ SLAB_ATTR_RO(free_calls);
+ #endif /* CONFIG_SLUB_DEBUG */
+@@ -5814,6 +5838,142 @@ static int __init slab_sysfs_init(void)
+ __initcall(slab_sysfs_init);
+ #endif /* CONFIG_SYSFS */
+ 
++#if defined(CONFIG_SLUB_DEBUG) && defined(CONFIG_DEBUG_FS)
++static int debugfs_slab_alias(struct kmem_cache *s, const char *name)
++{
++	struct saved_alias *al;
++
++	if (slab_state == FULL) {
++		/*
++		 * If we have a leftover link then remove it.
++		 */
++		debugfs_remove(s->slab_cache_dentry);
++		s->slab_cache_dentry = debugfs_create_symlink(name, slab_debugfs_root, NULL);
++		return IS_ERR(s->slab_cache_dentry);
++	}
++
++	al = kmalloc(sizeof(struct saved_alias), GFP_KERNEL);
++	if (!al)
++		return -ENOMEM;
++
++	al->s = s;
++	al->name = name;
++	al->next = alias_list;
++	alias_list = al;
++	return 0;
++}
++
++static int slab_debug_trace(struct seq_file *seq, void *ignored)
++{
++	struct kmem_cache *s = seq->private;
++
++	if (!(s->flags & SLAB_STORE_USER))
++		return 0;
++
++	if (strcmp(seq->file->f_path.dentry->d_name.name, "alloc_trace") == 0)
++		return list_locations(seq, s, TRACK_ALLOC);
++	else
++		return list_locations(seq, s, TRACK_FREE);
++
++	return 0;
++}
++
++static int slab_debug_trace_open(struct inode *inode, struct file *filp)
++{
++	return single_open(filp, slab_debug_trace,
++				file_inode(filp)->i_private);
++}
++
++static const struct file_operations slab_debug_fops = {
++	.open    = slab_debug_trace_open,
++	.read    = seq_read,
++	.llseek  = seq_lseek,
++	.release = single_release,
++};
++
++static void debugfs_slab_add(struct kmem_cache *s)
++{
++	const char *name;
++	int unmergeable = slab_unmergeable(s);
++
++	if (unlikely(!slab_debugfs_root))
++		return;
++
++	if (!unmergeable && disable_higher_order_debug &&
++			(slub_debug & DEBUG_METADATA_FLAGS))
++		unmergeable = 1;
++
++	if (unmergeable) {
++		/*
++		 * Slabcache can never be merged so we can use the name proper.
++		 * This is typically the case for debug situations. In that
++		 * case we can catch duplicate names easily.
++		 */
++		debugfs_remove(s->slab_cache_dentry);
++		name = s->name;
++	} else {
++		/*
++		 * Create a unique name for the slab as a target
++		 * for the symlinks.
++		 */
++		name = create_unique_id(s);
++	}
++
++	s->slab_cache_dentry = debugfs_create_dir(s->name, slab_debugfs_root);
++	if (!IS_ERR(s->slab_cache_dentry)) {
++		debugfs_create_file("alloc_trace", 0400,
++			s->slab_cache_dentry, s, &slab_debug_fops);
++
++		debugfs_create_file("free_trace", 0400,
++			s->slab_cache_dentry, s, &slab_debug_fops);
++	}
++
++	if (!unmergeable) {
++		/* Setup first alias */
++		debugfs_slab_alias(s, s->name);
++	}
++}
++
++void debugfs_slab_release(struct kmem_cache *s)
++{
++	if (slab_state >= FULL)
++		debugfs_remove_recursive(s->slab_cache_dentry);
++}
++
++static int __init slab_debugfs_init(void)
++{
++	struct kmem_cache *s;
++	int err;
++
++	slab_debugfs_root = debugfs_create_dir("slab", NULL);
++	if (!IS_ERR(slab_debugfs_root)) {
++
++		slab_state = FULL;
++
++		list_for_each_entry(s, &slab_caches, list)
++			debugfs_slab_add(s);
++	} else {
++		pr_err("Cannot create slab debugfs.\n");
++		return IS_ERR(slab_debugfs_root);
++	}
++
++	while (alias_list) {
++		struct saved_alias *al = alias_list;
++
++		alias_list = alias_list->next;
++
++		err = debugfs_slab_alias(al->s, al->name);
++		if (err)
++			pr_err("SLUB: Unable to add boot slab alias %s to debugfs\n",
++			       al->name);
++		kfree(al);
++	}
++
++	return 0;
++
++}
++__initcall(slab_debugfs_init);
++#endif
+ /*
+  * The /proc/slabinfo ABI
+  */
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of the Code Aurora Forum, hosted by The Linux Foundation
 
-That's an interesting observation.  Let me do a bit of research and I'll
-update the Documentation/ and the changelog.
-
-> - The demotion is implemented at shrink_page_list level which migrates
->   pages in the first round and then falls back to the regular reclaim
->   when migration fails. This means that the reclaim context
->   (PF_MEMALLOC) will allocate memory so it has access to full memory
->   reserves. Btw. I do not __GFP_NO_MEMALLOC anywhere in the allocation
->   mask which looks like a bug rather than an intention. Btw. using
->   GFP_NOWAIT in the allocation callback would make more things clear
->   IMO.
-
-Yes, the lack of __GFP_NO_MEMALLOC is a bug.  I'll fix that up.
-
-GFP_NOWAIT _seems_ like it will work.  I'll give it a shot.
-
-> - Memcg reclaim is excluded from all this because it is not NUMA aware
->   which makes sense to me.
-> - Anonymous pages are bit tricky because they can be demoted even when
->   they cannot be reclaimed due to no (or no available) swap storage.
->   Unless I have missed something the second round will try to reclaim
->   them even the later is true and I am not sure this is completely OK.
-
-What we want is something like this:
-
-Swap Space / Demotion OK  -> Can Reclaim
-Swap Space / Demotion Off -> Can Reclaim
-Swap Full  / Demotion OK  -> Can Reclaim
-Swap Full  / Demotion Off -> No Reclaim
-
-I *think* that's what can_reclaim_anon_pages() ends up doing.  Maybe I'm
-misunderstanding what you are referring to, though.  By "second round"
-did you mean when we do reclaim on a node which is a terminal node?
-
-> I am still trying to digest the whole thing but at least jamming
-> node_reclaim logic into kswapd seems strange to me. Need to think more
-> about that though.
-
-I'm entirely open to other ways to do the opt-in.  It seemed sane at the
-time, but I also understand the kswapd concern.
-
-> Btw. do you have any numbers from running this with some real work
-> workload?
-
-Yes, quite a bit.  Do you have a specific scenario in mind?  Folks seem
-to come at this in two different ways:
-
-Some want to know how much DRAM they can replace by buying some PMEM.
-They tend to care about how much adding the (cheaper) PMEM slows them
-down versus (expensive) DRAM.  They're making a cost-benefit call
-
-Others want to repurpose some PMEM they already have.  They want to know
-how much using PMEM in this way will speed them up.  They will basically
-take any speedup they can get.
-
-I ask because as a kernel developer with PMEM in my systems, I find the
-"I'll take what I can get" case more personally appealing.  But, the
-business folks are much more keen on the "DRAM replacement" use.  Do you
-have any thoughts on what you would like to see?
