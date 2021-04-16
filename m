@@ -2,171 +2,929 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 721FB3627DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 20:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7423627DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 20:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244624AbhDPSkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 14:40:35 -0400
-Received: from mail.efficios.com ([167.114.26.124]:36108 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236156AbhDPSke (ORCPT
+        id S244921AbhDPSmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 14:42:22 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54674 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235192AbhDPSmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 14:40:34 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id D98F3339EA4;
-        Fri, 16 Apr 2021 14:40:08 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id MfEER9SYlT-k; Fri, 16 Apr 2021 14:40:08 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 2624433A1B4;
-        Fri, 16 Apr 2021 14:40:08 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 2624433A1B4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1618598408;
-        bh=WCKBxmGTFBeDZ28R3kM5fNv86SBZcZ3ck6Twung5YT8=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=ktLdyLF6AvrGq+C+41wREeiPdB4ypB3ZWp8NOWQVioOyPUY55/P73+SPiAF67HVxV
-         zudr3HcbJWyGze3vmNjieFQP9/JlM794qXUKQE+zpVvkFC+wFiW6UsvIqMp80VSd7b
-         cRHzJ8biOfYBw4DPSgpDpoJUjNXDRSdI5YT/gHtqxIJ9Tq0PhVpx8gtkSGNM3+Y2ww
-         qXHHfnbEunp9c2WqOw/3qMPY3CbUYOuQPT266G8jbn5Yi7NaIIFyCdrwrV4SrL+bsL
-         A4sMX1ZFiBoQEHx5icfkz3wjx2Dt9zKA1uV8ENNulEWWqP8jmvJf5TiV3NlGkyNLD+
-         OC3SxlsMTWs6A==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id DbH28hQ8dRPq; Fri, 16 Apr 2021 14:40:08 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 1431033A202;
-        Fri, 16 Apr 2021 14:40:08 -0400 (EDT)
-Date:   Fri, 16 Apr 2021 14:40:08 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     paulmck <paulmck@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        lttng-dev <lttng-dev@lists.lttng.org>, carlos <carlos@redhat.com>
-Message-ID: <2089952450.84139.1618598408015.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210416160139.GF4212@paulmck-ThinkPad-P17-Gen-1>
-References: <1680415903.81652.1618584736742.JavaMail.zimbra@efficios.com> <YHmqd3BHwVmaUZHX@hirez.programming.kicks-ass.net> <20210416160139.GF4212@paulmck-ThinkPad-P17-Gen-1>
-Subject: Re: liburcu: LTO breaking rcu_dereference on arm64 and possibly
- other architectures ?
+        Fri, 16 Apr 2021 14:42:20 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13GIY2Jw051166;
+        Fri, 16 Apr 2021 14:41:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=2sMQCauwOiQgq0MVX+Uq4LnvELkwRCriHy8ioC1vXTM=;
+ b=eU8neAAfPK5TKZMb6lEuOo9vGA5NaXVbWEkhOXMlV7aUh2QDoraN3zBIjlEin233h50f
+ CK0483YutIpG30W33dBn//Cc4O8NSLi6rZSspwkN3QWk7EjSJvAt6sBKzaZe1ylEjHxo
+ My7cqzI8FlMLcZpq7Pb0RYgiTx2lHVKxt2RjTth3VZEmpyF7YBT3HjLpxxx7bED5Oydx
+ DtGA0BIN88sU4RHZziJ4uXI4x74cxRHN3fs6heKRCGV2n3l23mP0R1QNsw1QiRnN/sD4
+ KBHLf/ZbnQoLeBy+ajbicWZcWHU17D7GAfp7lt+xt35jKl7Up0qdF54fj/LZEhSEX140 6w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37xtt5a0g1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 14:41:47 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13GIYhfH052561;
+        Fri, 16 Apr 2021 14:41:47 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37xtt5a0f6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 14:41:47 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13GIWU2Q001908;
+        Fri, 16 Apr 2021 18:41:44 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 37u3n8vm0r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 18:41:44 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13GIfgJd31261150
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 16 Apr 2021 18:41:42 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EA2EDA404D;
+        Fri, 16 Apr 2021 18:41:41 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CD631A4051;
+        Fri, 16 Apr 2021 18:41:38 +0000 (GMT)
+Received: from [9.102.1.61] (unknown [9.102.1.61])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 16 Apr 2021 18:41:38 +0000 (GMT)
+Subject: Re: [PATCH v3 0/6] percpu: partial chunk depopulation
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, pratik.r.sampat@gmail.com
+References: <20210408035736.883861-1-guro@fb.com>
+ <25c78660-9f4c-34b3-3a05-68c313661a46@linux.ibm.com>
+ <YHmcorqNE5NpAN3G@google.com>
+ <7a001bf6-5708-fb04-4970-367d9845ccb9@linux.ibm.com>
+ <YHnFsL2G2bpOH8ML@carbon.dhcp.thefacebook.com>
+ <8ea7c616-95e8-e391-5373-ebaf10836d2c@linux.ibm.com>
+ <YHnYqMdyYtIdab6n@carbon.dhcp.thefacebook.com>
+From:   Pratik Sampat <psampat@linux.ibm.com>
+Message-ID: <09a8d1eb-280d-9ee9-3d68-d065db47a516@linux.ibm.com>
+Date:   Sat, 17 Apr 2021 00:11:37 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF87 (Linux)/8.8.15_GA_4007)
-Thread-Topic: liburcu: LTO breaking rcu_dereference on arm64 and possibly other architectures ?
-Thread-Index: GN3Gd8n4H94A1nWxv3DRudXtV0FXrQ==
+In-Reply-To: <YHnYqMdyYtIdab6n@carbon.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: vRKqHLhpJTmd-GC_gJuhk6KaDKvkA1RE
+X-Proofpoint-GUID: OnYEhr4O8Ssu70WG2hSZYGvL7RFUsdPh
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-16_09:2021-04-16,2021-04-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ mlxlogscore=999 malwarescore=0 phishscore=0 clxscore=1015 suspectscore=0
+ bulkscore=0 impostorscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104160131
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Apr 16, 2021, at 12:01 PM, paulmck paulmck@kernel.org wrote:
 
-> On Fri, Apr 16, 2021 at 05:17:11PM +0200, Peter Zijlstra wrote:
->> On Fri, Apr 16, 2021 at 10:52:16AM -0400, Mathieu Desnoyers wrote:
->> > Hi Paul, Will, Peter,
->> > 
->> > I noticed in this discussion https://lkml.org/lkml/2021/4/16/118 that LTO
->> > is able to break rcu_dereference. This seems to be taken care of by
->> > arch/arm64/include/asm/rwonce.h on arm64 in the Linux kernel tree.
->> > 
->> > In the liburcu user-space library, we have this comment near rcu_dereference()
->> > in
->> > include/urcu/static/pointer.h:
->> > 
->> >  * The compiler memory barrier in CMM_LOAD_SHARED() ensures that
->> >  value-speculative
->> >  * optimizations (e.g. VSS: Value Speculation Scheduling) does not perform the
->> >  * data read before the pointer read by speculating the value of the pointer.
->> >  * Correct ordering is ensured because the pointer is read as a volatile access.
->> >  * This acts as a global side-effect operation, which forbids reordering of
->> >  * dependent memory operations. Note that such concern about dependency-breaking
->> >  * optimizations will eventually be taken care of by the "memory_order_consume"
->> >  * addition to forthcoming C++ standard.
->> > 
->> > (note: CMM_LOAD_SHARED() is the equivalent of READ_ONCE(), but was introduced in
->> > liburcu as a public API before READ_ONCE() existed in the Linux kernel)
->> > 
->> > Peter tells me the "memory_order_consume" is not something which can be used
->> > today.
->> > Any information on its status at C/C++ standard levels and implementation-wise ?
-> 
-> Actually, you really can use memory_order_consume.  All current
-> implementations will compile it as if it was memory_order_acquire.
-> This will work correctly, but may be slower than you would like on ARM,
-> PowerPC, and so on.
-> 
-> On things like x86, the penalty is forgone optimizations, so less
-> of a problem there.
 
-OK
+On 17/04/21 12:04 am, Roman Gushchin wrote:
+> On Fri, Apr 16, 2021 at 11:57:03PM +0530, Pratik Sampat wrote:
+>>
+>> On 16/04/21 10:43 pm, Roman Gushchin wrote:
+>>> On Fri, Apr 16, 2021 at 08:58:33PM +0530, Pratik Sampat wrote:
+>>>> Hello Dennis,
+>>>>
+>>>> I apologize for the clutter of logs before, I'm pasting the logs of before and
+>>>> after the percpu test in the case of the patchset being applied on 5.12-rc6 and
+>>>> the vanilla kernel 5.12-rc6.
+>>>>
+>>>> On 16/04/21 7:48 pm, Dennis Zhou wrote:
+>>>>> Hello,
+>>>>>
+>>>>> On Fri, Apr 16, 2021 at 06:26:15PM +0530, Pratik Sampat wrote:
+>>>>>> Hello Roman,
+>>>>>>
+>>>>>> I've tried the v3 patch series on a POWER9 and an x86 KVM setup.
+>>>>>>
+>>>>>> My results of the percpu_test are as follows:
+>>>>>> Intel KVM 4CPU:4G
+>>>>>> Vanilla 5.12-rc6
+>>>>>> # ./percpu_test.sh
+>>>>>> Percpu:             1952 kB
+>>>>>> Percpu:           219648 kB
+>>>>>> Percpu:           219648 kB
+>>>>>>
+>>>>>> 5.12-rc6 + with patchset applied
+>>>>>> # ./percpu_test.sh
+>>>>>> Percpu:             2080 kB
+>>>>>> Percpu:           219712 kB
+>>>>>> Percpu:            72672 kB
+>>>>>>
+>>>>>> I'm able to see improvement comparable to that of what you're see too.
+>>>>>>
+>>>>>> However, on POWERPC I'm unable to reproduce these improvements with the patchset in the same configuration
+>>>>>>
+>>>>>> POWER9 KVM 4CPU:4G
+>>>>>> Vanilla 5.12-rc6
+>>>>>> # ./percpu_test.sh
+>>>>>> Percpu:             5888 kB
+>>>>>> Percpu:           118272 kB
+>>>>>> Percpu:           118272 kB
+>>>>>>
+>>>>>> 5.12-rc6 + with patchset applied
+>>>>>> # ./percpu_test.sh
+>>>>>> Percpu:             6144 kB
+>>>>>> Percpu:           119040 kB
+>>>>>> Percpu:           119040 kB
+>>>>>>
+>>>>>> I'm wondering if there's any architectural specific code that needs plumbing
+>>>>>> here?
+>>>>>>
+>>>>> There shouldn't be. Can you send me the percpu_stats debug output before
+>>>>> and after?
+>>>> I'll paste the whole debug stats before and after here.
+>>>> 5.12-rc6 + patchset
+>>>> -----BEFORE-----
+>>>> Percpu Memory Statistics
+>>>> Allocation Info:
+>>> Hm, this looks highly suspicious. Here is your stats in a more compact form:
+>>>
+>>> Vanilla
+>>>
+>>> nr_alloc            :         9038         nr_alloc            :        97046
+>>> nr_dealloc          :         6992	   nr_dealloc          :        94237
+>>> nr_cur_alloc        :         2046	   nr_cur_alloc        :         2809
+>>> nr_max_alloc        :         2178	   nr_max_alloc        :        90054
+>>> nr_chunks           :            3	   nr_chunks           :           11
+>>> nr_max_chunks       :            3	   nr_max_chunks       :           47
+>>> min_alloc_size      :            4	   min_alloc_size      :            4
+>>> max_alloc_size      :         1072	   max_alloc_size      :         1072
+>>> empty_pop_pages     :            5	   empty_pop_pages     :           29
+>>>
+>>>
+>>> Patched
+>>>
+>>> nr_alloc            :         9040         nr_alloc            :        97048
+>>> nr_dealloc          :         6994	   nr_dealloc          :        95002
+>>> nr_cur_alloc        :         2046	   nr_cur_alloc        :         2046
+>>> nr_max_alloc        :         2208	   nr_max_alloc        :        90054
+>>> nr_chunks           :            3	   nr_chunks           :           48
+>>> nr_max_chunks       :            3	   nr_max_chunks       :           48
+>>> min_alloc_size      :            4	   min_alloc_size      :            4
+>>> max_alloc_size      :         1072	   max_alloc_size      :         1072
+>>> empty_pop_pages     :           12	   empty_pop_pages     :           61
+>>>
+>>>
+>>> So it looks like the number of chunks got bigger, as well as the number of
+>>> empty_pop_pages? This contradicts to what you wrote, so can you, please, make
+>>> sure that the data is correct and we're not messing two cases?
+>>>
+>>> So it looks like for some reason sidelined (depopulated) chunks are not getting
+>>> freed completely. But I struggle to explain why the initial empty_pop_pages is
+>>> bigger with the same amount of chunks.
+>>>
+>>> So, can you, please, apply the following patch and provide an updated statistics?
+>> Unfortunately, I'm not completely well versed in this area, but yes the empty
+>> pop pages number doesn't make sense to me either.
+>>
+>> I re-ran the numbers trying to make sure my experiment setup is sane but
+>> results remain the same.
+>>
+>> Vanilla
+>> nr_alloc            :         9040         nr_alloc            :        97048
+>> nr_dealloc          :         6994	   nr_dealloc          :        94404
+>> nr_cur_alloc        :         2046	   nr_cur_alloc        :         2644
+>> nr_max_alloc        :         2169	   nr_max_alloc        :        90054
+>> nr_chunks           :            3	   nr_chunks           :           10
+>> nr_max_chunks       :            3	   nr_max_chunks       :           47
+>> min_alloc_size      :            4	   min_alloc_size      :            4
+>> max_alloc_size      :         1072	   max_alloc_size      :         1072
+>> empty_pop_pages     :            4	   empty_pop_pages     :           32
+>>
+>> With the patchset + debug patch the results are as follows:
+>> Patched
+>>
+>> nr_alloc            :         9040         nr_alloc            :        97048
+>> nr_dealloc          :         6994	   nr_dealloc          :        94349
+>> nr_cur_alloc        :         2046	   nr_cur_alloc        :         2699
+>> nr_max_alloc        :         2194	   nr_max_alloc        :        90054
+>> nr_chunks           :            3	   nr_chunks           :           48
+>> nr_max_chunks       :            3	   nr_max_chunks       :           48
+>> min_alloc_size      :            4	   min_alloc_size      :            4
+>> max_alloc_size      :         1072	   max_alloc_size      :         1072
+>> empty_pop_pages     :           12	   empty_pop_pages     :           54
+>>
+>> With the extra tracing I can see 39 entries of "Chunk (sidelined)"
+>> after the test was run. I don't see any entries for "Chunk (to depopulate)"
+>>
+>> I've snipped the results of slidelined chunks because they went on for ~600
+>> lines, if you need the full logs let me know.
+> Yes, please! That's the most interesting part!
 
-> 
->> > Pragmatically speaking, what should we change in liburcu to ensure we don't
->> > generate
->> > broken code when LTO is enabled ? I suspect there are a few options here:
->> > 
->> > 1) Fail to build if LTO is enabled,
->> > 2) Generate slower code for rcu_dereference, either on all architectures or only
->> >    on weakly-ordered architectures,
->> > 3) Generate different code depending on whether LTO is enabled or not. AFAIU
->> > this would only
->> >    work if every compile unit is aware that it will end up being optimized with
->> >    LTO. Not sure
->> >    how this could be done in the context of user-space.
->> > 4) [ Insert better idea here. ]
-> 
-> Use memory_order_consume if LTO is enabled.  That will work now, and
-> might generate good code in some hoped-for future.
+Got it. Pasting the full logs of after the percpu experiment was completed
 
-In the context of a user-space library, how does one check whether LTO is enabled with
-preprocessor directives ? A quick test with gcc seems to show that both with and without
--flto cannot be distinguished from a preprocessor POV, e.g. the output of both
+Percpu Memory Statistics
+Allocation Info:
+----------------------------------------
+   unit_size           :       655360
+   static_size         :       608920
+   reserved_size       :            0
+   dyn_size            :        46440
+   atom_size           :        65536
+   alloc_size          :       655360
 
-gcc --std=c11 -O2 -dM -E - < /dev/null
-and
-gcc --std=c11 -O2 -flto -dM -E - < /dev/null
+Global Stats:
+----------------------------------------
+   nr_alloc            :        97048
+   nr_dealloc          :        94349
+   nr_cur_alloc        :         2699
+   nr_max_alloc        :        90054
+   nr_chunks           :           48
+   nr_max_chunks       :           48
+   min_alloc_size      :            4
+   max_alloc_size      :         1072
+   empty_pop_pages     :           54
 
-is exactly the same. Am I missing something here ?
+Per Chunk Stats:
+----------------------------------------
+Chunk: <- First Chunk
+   nr_alloc            :         1081
+   max_alloc_size      :         1072
+   empty_pop_pages     :            0
+   first_bit           :        16117
+   free_bytes          :            4
+   contig_bytes        :            4
+   sum_frag            :            4
+   max_frag            :            4
+   cur_min_alloc       :            4
+   cur_med_alloc       :            8
+   cur_max_alloc       :         1072
+   memcg_aware         :            0
 
-If we accept to use memory_order_consume all the time in both C and C++ code starting from
-C11 and C++11, the following code snippet could do the trick:
+Chunk:
+   nr_alloc            :          826
+   max_alloc_size      :         1072
+   empty_pop_pages     :            6
+   first_bit           :          819
+   free_bytes          :       640660
+   contig_bytes        :       249896
+   sum_frag            :       464700
+   max_frag            :       306216
+   cur_min_alloc       :            4
+   cur_med_alloc       :            8
+   cur_max_alloc       :         1072
+   memcg_aware         :            0
 
-#define CMM_ACCESS_ONCE(x) (*(__volatile__  __typeof__(x) *)&(x))
-#define CMM_LOAD_SHARED(p) CMM_ACCESS_ONCE(p)
+Chunk:
+   nr_alloc            :            0
+   max_alloc_size      :            0
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            0
 
-#if defined (__cplusplus)
-# if __cplusplus >= 201103L
-#  include <atomic>
-#  define rcu_dereference(x)    ((std::atomic<__typeof__(x)>)(x)).load(std::memory_order_consume)
-# else
-#  define rcu_dereference(x)    CMM_LOAD_SHARED(x)
-# endif
-#else
-# if (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L)
-#  include <stdatomic.h>
-#  define rcu_dereference(x)    atomic_load_explicit(&(x), memory_order_consume)
-# else
-#  define rcu_dereference(x)    CMM_LOAD_SHARED(x)
-# endif
-#endif
+Chunk:
+   nr_alloc            :           90
+   max_alloc_size      :         1072
+   empty_pop_pages     :            0
+   first_bit           :          536
+   free_bytes          :       595752
+   contig_bytes        :        26164
+   sum_frag            :       575132
+   max_frag            :        26164
+   cur_min_alloc       :          156
+   cur_med_alloc       :         1072
+   cur_max_alloc       :         1072
+   memcg_aware         :            1
 
-This uses the volatile approach prior to C11/C++11, and moves to memory_order_consume
-afterwards. This will bring a performance penalty on weakly-ordered architectures even
-when -flto is not specified though.
+Chunk:
+   nr_alloc            :           90
+   max_alloc_size      :         1072
+   empty_pop_pages     :            0
+   first_bit           :            0
+   free_bytes          :       597428
+   contig_bytes        :        26164
+   sum_frag            :       596848
+   max_frag            :        26164
+   cur_min_alloc       :          156
+   cur_med_alloc       :          312
+   cur_max_alloc       :         1072
+   memcg_aware         :            1
 
-Then the burden is pushed on the compiler people to eventually implement an efficient
-memory_order_consume.
+Chunk:
+   nr_alloc            :           92
+   max_alloc_size      :         1072
+   empty_pop_pages     :            0
+   first_bit           :            0
+   free_bytes          :       595284
+   contig_bytes        :        26164
+   sum_frag            :       590360
+   max_frag            :        26164
+   cur_min_alloc       :          156
+   cur_med_alloc       :          312
+   cur_max_alloc       :         1072
+   memcg_aware         :            1
 
-Is that acceptable ?
+Chunk:
+   nr_alloc            :           92
+   max_alloc_size      :         1072
+   empty_pop_pages     :            0
+   first_bit           :            0
+   free_bytes          :       595284
+   contig_bytes        :        26164
+   sum_frag            :       583768
+   max_frag            :        26164
+   cur_min_alloc       :          156
+   cur_med_alloc       :          312
+   cur_max_alloc       :         1072
+   memcg_aware         :            1
 
-Thanks,
+Chunk:
+   nr_alloc            :          360
+   max_alloc_size      :         1072
+   empty_pop_pages     :            7
+   first_bit           :        26595
+   free_bytes          :       506640
+   contig_bytes        :       506540
+   sum_frag            :          100
+   max_frag            :           36
+   cur_min_alloc       :            4
+   cur_med_alloc       :          156
+   cur_max_alloc       :         1072
+   memcg_aware         :            1
 
-Mathieu
+Chunk:
+   nr_alloc            :           12
+   max_alloc_size      :         1072
+   empty_pop_pages     :            3
+   first_bit           :            0
+   free_bytes          :       647524
+   contig_bytes        :       563492
+   sum_frag            :        57872
+   max_frag            :        26164
+   cur_min_alloc       :          156
+   cur_med_alloc       :          312
+   cur_max_alloc       :         1072
+   memcg_aware         :            1
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Chunk (sidelined):
+   nr_alloc            :           52
+   max_alloc_size      :         1072
+   empty_pop_pages     :            0
+   first_bit           :            0
+   free_bytes          :       621404
+   contig_bytes        :       203104
+   sum_frag            :       603400
+   max_frag            :       260656
+   cur_min_alloc       :          156
+   cur_med_alloc       :          312
+   cur_max_alloc       :         1072
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            4
+   max_alloc_size      :         1072
+   empty_pop_pages     :            0
+   first_bit           :            0
+   free_bytes          :       652748
+   contig_bytes        :       570600
+   sum_frag            :       570600
+   max_frag            :       570600
+   cur_min_alloc       :          156
+   cur_med_alloc       :          312
+   cur_max_alloc       :         1072
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+Chunk (sidelined):
+   nr_alloc            :            0
+   max_alloc_size      :         1072
+   empty_pop_pages     :            1
+   first_bit           :            0
+   free_bytes          :       655360
+   contig_bytes        :       655360
+   sum_frag            :            0
+   max_frag            :            0
+   cur_min_alloc       :            0
+   cur_med_alloc       :            0
+   cur_max_alloc       :            0
+   memcg_aware         :            1
+
+
