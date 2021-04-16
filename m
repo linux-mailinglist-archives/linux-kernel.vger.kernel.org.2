@@ -2,104 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F346C361E88
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:23:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1436361E89
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241067AbhDPLXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 07:23:17 -0400
-Received: from mail-lf1-f41.google.com ([209.85.167.41]:34645 "EHLO
-        mail-lf1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235011AbhDPLXQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 07:23:16 -0400
-Received: by mail-lf1-f41.google.com with SMTP id n8so44300083lfh.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 04:22:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8oDIcF6tB08EFimooEXCJuWZOMCbsVJL8J7KW+y0494=;
-        b=SjdMLeTc+FTuGcnObg+mjFgdO5z6ae/qM1QYOoa+ob12NTpxuaC8NsLNt+lH9n4MRR
-         xDyetGGODYjKlkN5Df2t0PVfuGcsr50KmVTlB2ofZv134swbXv3JVUxr9HT1f0r5rJ6O
-         sOmorrdhCVqHf/IL1Qra44KzKcmXMuXL8TFei+dJnqX4ZIo3y1udK3jGqPi9EW4ObzTw
-         Fjj2qIpMrmwVQ4dHOL27/hzBqLBa94/upM8H7JacSLlTrAuWlO1u43NhVY0mGX0Ocs/X
-         xnGRljGJ+qqP8G7ELCII90Sy09M2K2b9FkNZDODexZ9szmXoy46x7uYl1h+6ID+i2uVn
-         SYiw==
-X-Gm-Message-State: AOAM531S1XR/ZTBiqOwWWw3cnxqm90jKKijbe5llICKNIXncki8orYnO
-        nlSS6R2EwE6kUMI93eFmXcsGHUVe9VebWbjV4V4=
-X-Google-Smtp-Source: ABdhPJzSKl3R647otcxPt7DfW2kE+akHQALOyeBAGe8IkdhOoFgNndMs0uRJUHHvh9jQg2IplsqKKh6uZG/nqAKYejE=
-X-Received: by 2002:a05:6512:b26:: with SMTP id w38mr2665678lfu.152.1618572169926;
- Fri, 16 Apr 2021 04:22:49 -0700 (PDT)
+        id S241770AbhDPLYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 07:24:16 -0400
+Received: from mga06.intel.com ([134.134.136.31]:60361 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235011AbhDPLYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 07:24:15 -0400
+IronPort-SDR: CX2UtKabqx/ThLARiBrF5DsL6Nk+/G/zP/JIA+Eqbe/KW6X9zy33mO/E6wVN0zfevpgFnqjrz4
+ RZUi1bRlkOMQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="256340963"
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="256340963"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 04:23:50 -0700
+IronPort-SDR: o7c4eS4/Y4o1QRqIVSMMB5UDax1ntltuDQEbP/gd9zJkeAiRFsgaex5lM/jbNbT9I/k5STWouX
+ YN+5BJ5dFETQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="419086794"
+Received: from um.fi.intel.com (HELO um) ([10.237.72.62])
+  by fmsmga008.fm.intel.com with ESMTP; 16 Apr 2021 04:23:46 -0700
+From:   Alexander Shishkin <alexander.shishkin@linux.intel.com>
+To:     Tao Zhang <taozha@codeaurora.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Tao Zhang <taozha@codeaurora.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Tingwei Zhang <tingwei@codeaurora.org>,
+        Mao Jinlong <jinlmao@codeaurora.org>,
+        Yuanfang Zhang <zhangyuanfang@codeaurora.org>,
+        alexander.shishkin@linux.intel.com
+Subject: Re: [PATCH v1 2/2] dt-bindings: arm: add property for coresight
+ component name
+In-Reply-To: <1618560476-28908-3-git-send-email-taozha@codeaurora.org>
+References: <1618560476-28908-1-git-send-email-taozha@codeaurora.org>
+ <1618560476-28908-3-git-send-email-taozha@codeaurora.org>
+Date:   Fri, 16 Apr 2021 14:23:45 +0300
+Message-ID: <87fszqfp6m.fsf@ashishki-desk.ger.corp.intel.com>
 MIME-Version: 1.0
-References: <20210413155337.644993-1-namhyung@kernel.org> <20210413155337.644993-2-namhyung@kernel.org>
- <YHhS6kjeA8AvcFgz@hirez.programming.kicks-ass.net> <CAM9d7chrHYNOB4ShJ=34WwXOUY-grXhkiW_wursywTH1FbZdvA@mail.gmail.com>
- <YHlYT+tHrkNyMFuh@hirez.programming.kicks-ass.net> <YHlY+qd2hF00OrFw@hirez.programming.kicks-ass.net>
- <YHlmq2q4nNSqJBw6@hirez.programming.kicks-ass.net>
-In-Reply-To: <YHlmq2q4nNSqJBw6@hirez.programming.kicks-ass.net>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 16 Apr 2021 20:22:38 +0900
-Message-ID: <CAM9d7cgjkZuHL=-38DTu8ieMNhLN86Ccg_UUZLb-ZF95Jv6=cw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] perf/core: Share an event with multiple cgroups
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Song Liu <songliubraving@fb.com>, Tejun Heo <tj@kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 7:28 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Fri, Apr 16, 2021 at 11:29:30AM +0200, Peter Zijlstra wrote:
->
-> > > So I think we've had proposals for being able to close fds in the past;
-> > > while preserving groups etc. We've always pushed back on that because of
-> > > the resource limit issue. By having each counter be a filedesc we get a
-> > > natural limit on the amount of resources you can consume. And in that
-> > > respect, having to use 400k fds is things working as designed.
-> > >
-> > > Anyway, there might be a way around this..
->
-> So how about we flip the whole thing sideways, instead of doing one
-> event for multiple cgroups, do an event for multiple-cpus.
->
-> Basically, allow:
->
->         perf_event_open(.pid=fd, cpu=-1, .flag=PID_CGROUP);
->
-> Which would have the kernel create nr_cpus events [the corrolary is that
-> we'd probably also allow: (.pid=-1, cpu=-1) ].
+Tao Zhang <taozha@codeaurora.org> writes:
 
-Do you mean it'd have separate perf_events per cpu internally?
-From a cpu's perspective, there's nothing changed, right?
-Then it will have the same performance problem as of now.
-
+> Add property "coresight-name" for coresight component name. This
+> allows coresight driver to read device name from device entries.
 >
-> Output could be done by adding FORMAT_PERCPU, which takes the current
-> read() format and writes a copy for each CPU event. (p)read(v)() could
-> be used to explode or partial read that.
-
-Yeah, I think it's good for read.  But what about mmap?
-I don't think we can use file offset since it's taken for auxtrace.
-Maybe we can simply disallow that..
-
+> Signed-off-by: Tao Zhang <taozha@codeaurora.org>
+> ---
+>  Documentation/devicetree/bindings/arm/coresight.txt | 2 ++
+>  1 file changed, 2 insertions(+)
 >
-> This gets rid of the nasty variadic nature of the
-> 'get-me-these-n-cgroups'. While still getting rid of the n*m fd issue
-> you're facing.
+> diff --git a/Documentation/devicetree/bindings/arm/coresight.txt b/Documentation/devicetree/bindings/arm/coresight.txt
+> index d711676..0e980ce 100644
+> --- a/Documentation/devicetree/bindings/arm/coresight.txt
+> +++ b/Documentation/devicetree/bindings/arm/coresight.txt
+> @@ -103,6 +103,8 @@ its hardware characteristcs.
+>  	  powers down the coresight component also powers down and loses its
+>  	  context. This property is currently only used for the ETM 4.x driver.
+>  
+> +	* coresight-name: the name of the coresight devices.
 
-As I said, it's not just a file descriptor problem.  In fact, performance
-is more concerning.
+Which devices? Also, is it a common practice to extend device tree
+definitions based on arbitrary driver needs, or should there be some
+sort of a discussion first?
 
-Thanks,
-Namhyung
+Regards,
+--
+Alex
