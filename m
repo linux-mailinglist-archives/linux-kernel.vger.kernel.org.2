@@ -2,67 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA4E361DDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3157361DDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240980AbhDPKT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 06:19:58 -0400
-Received: from mail-lf1-f47.google.com ([209.85.167.47]:40548 "EHLO
-        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235192AbhDPKT4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 06:19:56 -0400
-Received: by mail-lf1-f47.google.com with SMTP id f17so36909784lfu.7
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 03:19:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=agSuEBpLGw6WiRVSHHusHcU7auKlzOniosJ5ceeovxM=;
-        b=iDTsYAzFnAAs0Gz0MpDrSFKfBrFue29lmkgNh1XU5bQoRYPZ9d8Jc+C6JcFxdYTogE
-         Wvyt2D/TjtVuYys1zHPVFtBG9/NCLqwlGpXHuWPFTveeOhGisEGq6FfMaLjDVbGNvwVK
-         XwosSSM0Uk+DkEA+Fm/gCMcVTse+fAY0/JF9wlgFwuT1NmVyO5mfifq9IDc3EK+gS6LH
-         NGayQDXY+6xsfE4J6QIYIAXwplR3ArpE6YBPuG++BU2lvEPRPuZdxljJPmBlGK2rQVkr
-         7HHLq3D9ch0dMFK4B0Zao1RnMyaACMzip5euXMQH9UHmrF0cUT+/Q/qDHBBR18a2QAXg
-         WyOw==
-X-Gm-Message-State: AOAM533c/igMbBHIIr9z8ecFfgEVTeRd37nefIOTCk6EcsvZha4K2YJb
-        SKvQSD2zXpWEEyytHOjnB8/6ac6hmSd8zomI4vo=
-X-Google-Smtp-Source: ABdhPJwqfPbXlCiAAu+O3sytE2K0GpYxR8CCGwY3oHuN6cmvZ9WpPDf3orqA2EIVOnnCyOGwsaj29RL+0F95pKXAkgc=
-X-Received: by 2002:ac2:4e6d:: with SMTP id y13mr2563680lfs.509.1618568371336;
- Fri, 16 Apr 2021 03:19:31 -0700 (PDT)
+        id S241062AbhDPKW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 06:22:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53346 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235167AbhDPKWZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 06:22:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 77A01AFCD;
+        Fri, 16 Apr 2021 10:22:00 +0000 (UTC)
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
+Subject: [PATCH v8 0/8] Allocate memmap from hotadded memory (per device)
+Date:   Fri, 16 Apr 2021 12:21:45 +0200
+Message-Id: <20210416102153.8794-1-osalvador@suse.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20210413155337.644993-1-namhyung@kernel.org> <20210413155337.644993-2-namhyung@kernel.org>
- <YHhS6kjeA8AvcFgz@hirez.programming.kicks-ass.net> <CAM9d7chrHYNOB4ShJ=34WwXOUY-grXhkiW_wursywTH1FbZdvA@mail.gmail.com>
- <YHlYT+tHrkNyMFuh@hirez.programming.kicks-ass.net> <YHlY+qd2hF00OrFw@hirez.programming.kicks-ass.net>
-In-Reply-To: <YHlY+qd2hF00OrFw@hirez.programming.kicks-ass.net>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 16 Apr 2021 19:19:20 +0900
-Message-ID: <CAM9d7cjN9ZuTUCdSR-bZeuatSJnL769th_G4M=xvO542rezj1g@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] perf/core: Share an event with multiple cgroups
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Song Liu <songliubraving@fb.com>, Tejun Heo <tj@kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 6:29 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
->
-> Duh.. this is a half-finished email I meant to save for later. Anyway,
-> I'll reply more.
+Changes from v7 -> v8:
+ - Addressed feedback from David for patch#4
 
-Nevermind, and thanks for your time! :-)
+Changes from v6 -> v7:
+ - Fix check from "mm,memory_hotplug: Relax fully spanned sections check"
+ - Add fixup from "mm,memory_hotplug: Allocate memmap from the added memory range"
+ - Add Reviewed-by from David for patch#2
+ - Fix changelog in "mm,memory_hotplug: Factor out adjusting present pages into
+    adjust_present_page_count()"
 
-Namhyung
+Changes from v5 -> v6:
+ - Create memory_block_{online,offline} functions
+ - Create vmemmap_* functions to deal with vmemmap stuff, so 
+   {online,offline}_pages remain untouched
+ - Add adjust_present_page_count's patch from David
+ - Relax check in {offline,online}_pages
+ - Rework changelogs
+
+Changes from v4 -> v5:
+ - Addressed feedback from David (patch#1)
+ - Tested on x86_64 with different struct page sizes and on large/small memory
+   blocks
+ - Tested on arm64 with 4K, 64K (with and without THP) and with different struct
+   page sizes
+
+ NOTE: We might need to make this feature and hugetlb-vmemmap feature [1] mutually
+       exclusive. I raised an issue I see in [2].
+       Hugetlb-vmemmap feature has been withdrawn for the time being due to the need
+       in further changes  wrt. locking/freeing context.
+       I will keep an eye, and when the time comes again I will see how the two
+       features play together and how one another can be disabled when needed.
+
+Changes from v3 -> v4:
+ - Addressed feedback from David
+ - Wrap memmap_on_memory module thingy with #ifdef
+   on MHP_MEMMAP_ON_MEMORY
+ - Move "depend on MEMORY_HOTPLUG" to MHP_MEMMAP_ON_MEMORY
+   in generic mm/Kconfig
+ - Collect David's Reviewed-bys
+
+Changes from v2 -> v3:
+ - Addressed feedback from David
+ - Squash former patch#4 and and patch#5 into patch#1
+ - Fix config dependency CONFIR_SPARSE_VMEMMAP vs CONFIG_SPARSE_VMEMMAP_ENABLE
+ - Simplify module parameter functions
+
+Changes from v1 -> v2
+ - Addressed feedback from David
+ - Fence off the feature in case struct page size is not
+   multiple of PMD size or pageblock alignment cannot be guaranted
+ - Tested on x86_64 small and large memory_blocks
+ - Tested on arm64 4KB and 64KB page sizes (for some reason I cannot boot
+   my VM with 16KB page size).
+
+ Arm64 with 4KB page size behaves like x86_64 after [1], which made section
+ size smaller.
+ With 64KB, the feature gets fenced off due to pageblock alignment.
+
+Changes from RFCv3 -> v1:
+ - Addressed feedback from David
+ - Re-order patches
+
+Changes from v2 -> v3 (RFC):
+ - Re-order patches (Michal)
+ - Fold "mm,memory_hotplug: Introduce MHP_MEMMAP_ON_MEMORY" in patch#1
+ - Add kernel boot option to enable this feature (Michal)
+
+Changes from v1 -> v2 (RFC):
+ - Addressed feedback provided by David
+ - Add a arch_support_memmap_on_memory to be called
+   from mhp_supports_memmap_on_memory, as atm,
+   only ARM, powerpc and x86_64 have altmat support.
+
+[1] https://lore.kernel.org/lkml/cover.1611206601.git.sudaraj...
+
+Original cover letter:
+
+ The primary goal of this patchset is to reduce memory overhead of the
+ hot-added memory (at least for SPARSEMEM_VMEMMAP memory model).
+ The current way we use to populate memmap (struct page array) has two main drawbacks:
+
+ a) it consumes an additional memory until the hotadded memory itself is
+    onlined and
+ b) memmap might end up on a different numa node which is especially true
+    for movable_node configuration.
+ c) due to fragmentation we might end up populating memmap with base
+    pages
+
+ One way to mitigate all these issues is to simply allocate memmap array
+ (which is the largest memory footprint of the physical memory hotplug)
+ from the hot-added memory itself. SPARSEMEM_VMEMMAP memory model allows
+ us to map any pfn range so the memory doesn't need to be online to be
+ usable for the array. See patch 4 for more details.
+ This feature is only usable when CONFIG_SPARSEMEM_VMEMMAP is set.
+
+ [Overall design]:
+
+ Implementation wise we reuse vmem_altmap infrastructure to override
+ the default allocator used by vmemap_populate.
+ memory_block structure gains a new field called nr_vmemmap_pages,
+ which accounts for the number of vmemmap pages used by that memory_block.
+ E.g: On x86_64, that is 512 vmemmap pages on small memory bloks and 4096
+      on large memory blocks (1GB)
+
+ We also introduce new two functions: memory_block_{online,offline}.
+ These functions take care of initializing/unitializing vmemmap pages
+ prior to calling {online,offline}_pages, so the latter functions can
+ remain totally untouched.
+
+ More details can be found in the respective changelogs.
+
+David Hildenbrand (1):
+  mm,memory_hotplug: Factor out adjusting present pages into
+    adjust_present_page_count()
+
+Oscar Salvador (7):
+  drivers/base/memory: Introduce memory_block_{online,offline}
+  mm,memory_hotplug: Relax fully spanned sections check
+  mm,memory_hotplug: Allocate memmap from the added memory range
+  acpi,memhotplug: Enable MHP_MEMMAP_ON_MEMORY when supported
+  mm,memory_hotplug: Add kernel boot option to enable memmap_on_memory
+  x86/Kconfig: Introduce ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
+  arm64/Kconfig: Introduce ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
+
+ Documentation/admin-guide/kernel-parameters.txt |  17 ++
+ arch/arm64/Kconfig                              |   3 +
+ arch/x86/Kconfig                                |   3 +
+ drivers/acpi/acpi_memhotplug.c                  |   5 +-
+ drivers/base/memory.c                           | 104 ++++++++++--
+ include/linux/memory.h                          |   8 +-
+ include/linux/memory_hotplug.h                  |  17 +-
+ include/linux/memremap.h                        |   2 +-
+ include/linux/mmzone.h                          |   7 +-
+ mm/Kconfig                                      |   5 +
+ mm/Makefile                                     |   5 +-
+ mm/memory_hotplug.c                             | 217 +++++++++++++++++++++---
+ mm/sparse.c                                     |   2 -
+ 13 files changed, 348 insertions(+), 47 deletions(-)
+
+-- 
+2.16.3
+
