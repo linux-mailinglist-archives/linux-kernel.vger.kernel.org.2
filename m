@@ -2,87 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66792362BB4
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 01:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE647362BB8
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 01:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234797AbhDPXDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 19:03:19 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60492 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbhDPXDQ (ORCPT
+        id S234899AbhDPXDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 19:03:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234856AbhDPXDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 19:03:16 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618614169;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zYsmczDUOwFiI2C1OqNRUIH5SZiNDmStN6eTeuq1zKQ=;
-        b=unUul3QAQ0muFW7kvtT9Noo2VD3wluum0qlZXQtmRhJg8EhiZGpWVH4f09Tnga6lPKJeOK
-        N1owE63QqorRqKKhR3IKyz8Sdjf0mtNR4lmzAMZLWE6DAKH0GfyXFfLiQ7a400h1nuFysM
-        UBxwEeXvEX5JFWHmaFPAJ5g8Yytf20WLeLZVYabjAlCZnyeozYagC0d05kjh/G1WaBi8Wl
-        5UPzx3vawkEQwr74v78kgLrP+5Dbch+hqkpBYPuvVnHAonSsvachHKnmRnRr869KyoGpGH
-        dlP0V2hHkVEz6rx05WariVZC3XNyHIsJIX2MhoJ+t0FmANbGao5sGaiuDzo2ZA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618614169;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zYsmczDUOwFiI2C1OqNRUIH5SZiNDmStN6eTeuq1zKQ=;
-        b=7henxW8UxJAPgENWbfxYcRSU76wF4NsVoNTZq9xprkuWjOv6OPIbRO2o05VCYhDWZygJwr
-        pZsVaaSlXf4AKTCQ==
-To:     Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH 05/15] x86: Implement function_nocfi
-In-Reply-To: <202104161529.D9F98DA994@keescook>
-References: <20210416203844.3803177-1-samitolvanen@google.com> <20210416203844.3803177-6-samitolvanen@google.com> <20210416211855.GD22348@zn.tnic> <CABCJKud8TvzhcjHCpsrtCJ4B50ZUfaL48F42EhZ2zWKLteAc0Q@mail.gmail.com> <20210416220251.GE22348@zn.tnic> <CALCETrVTtKqD6fonUmT_qr0HJ0X9TWzLGq-wpm+A7XKyjn3W5g@mail.gmail.com> <20210416221414.GF22348@zn.tnic> <CALCETrUo+tR+YmfoBPWV9z_7QhU74=7tmCBD_zsfa24ZxNvfxg@mail.gmail.com> <202104161529.D9F98DA994@keescook>
-Date:   Sat, 17 Apr 2021 01:02:49 +0200
-Message-ID: <87fszpu92e.ffs@nanos.tec.linutronix.de>
+        Fri, 16 Apr 2021 19:03:33 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40767C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 16:03:08 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id z5so7406378ioc.13
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 16:03:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mh7KPhLlx4lKOuec3qu70zVXkFr1yF2gQQ0PQcauUIE=;
+        b=UJFGZGUgrqrrouEiWcHMIoZhuhTGc+Ot0YkymlGxKSqKbjNjVbjm4SiG6aWsMaJpta
+         GTKzjQdXOagv58okSyt2i6YIPbt23iXeJ0uoDafPSYycAhNuVGEnfN5GPTc22QWZ78w9
+         /It3/bnDylnpJbRnLQV+OegtKBc+ea1J2KEAQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mh7KPhLlx4lKOuec3qu70zVXkFr1yF2gQQ0PQcauUIE=;
+        b=nlRvFw0eYZRZR3LJAycIEYb25rCZWQsFssbgJXoQDF6OkUsPrSQdxX7NjsC/tJ/mLS
+         S4Ovu3cVjeawTJaJXmlEIz6SaGbElHeWKqWXb1xB7XueV4REoAqxeB6BPm57kC7PVAhV
+         cOzT9NVcZVYveBBz1q+vahmkPYplXInE4zrY9QoHsDD5TZPditS6ywLrnc4H34aeqnD2
+         9EEAJTnU1/u/PzXLThGZTcrq/+GkicxWEdWG/PskJrwLHz59yPWc78NIspjdEecM0Mw9
+         +xer3gMvE4A5epJrVLQFlch+EPvfMLTmJpIElhMfjGLElKeANHNQGiEIXzcbRu53mdOx
+         JohQ==
+X-Gm-Message-State: AOAM5329FmMBddz62ScyHZMLer0fxxqggBxnfJ4Ee08Wk2Os35VBP2zA
+        VqcFXzAkFYwvMeVAiMZM39XWEQ==
+X-Google-Smtp-Source: ABdhPJwzleM/3omurgCNaMjlaQDqHjAgQEP4qcU921wdzrTgDfEcZSteDh7nbh3eY3EvlxqnlaFkDQ==
+X-Received: by 2002:a02:9389:: with SMTP id z9mr6127773jah.60.1618614186189;
+        Fri, 16 Apr 2021 16:03:06 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id f8sm3417150ilr.20.2021.04.16.16.03.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Apr 2021 16:03:05 -0700 (PDT)
+Subject: Re: [PATCH RFC v3] media: em28xx: Fix race condition between open and
+ init function
+To:     Igor Torrente <igormtorrente@gmail.com>, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        kernel test robot <lkp@intel.com>,
+        syzbot+b2391895514ed9ef4a8e@syzkaller.appspotmail.com,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210415140724.15398-1-igormtorrente@gmail.com>
+ <d254bf85-5185-6b21-afc6-fb00a9278186@linuxfoundation.org>
+ <c18180b5-52b9-e787-654c-6967ecb81dce@gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <49c44747-1f25-11a1-1132-abfe406955b2@linuxfoundation.org>
+Date:   Fri, 16 Apr 2021 17:03:05 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <c18180b5-52b9-e787-654c-6967ecb81dce@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16 2021 at 15:37, Kees Cook wrote:
+On 4/16/21 1:33 PM, Igor Torrente wrote:
+> 
+> 
+> On 4/15/21 2:25 PM, Shuah Khan wrote:
+>> On 4/15/21 8:07 AM, Igor Matheus Andrade Torrente wrote:
+>>> Fixes a race condition - for lack of a more precise term - between
+>>> em28xx_v4l2_open and em28xx_v4l2_init, by detaching the v4l2_dev,
+>>> media_pad and vdev structs from the em28xx_v4l2, and managing the
+>>> lifetime of those objects more dynamicaly.
+>>>
+>>> The race happens when a thread[1] - containing the em28xx_v4l2_init()
+>>> code - calls the v4l2_mc_create_media_graph(), and it return a error,
+>>> if a thread[2] - running v4l2_open() - pass the verification point
+>>> and reaches the em28xx_v4l2_open() before the thread[1] finishes
+>>> the deregistration of v4l2 subsystem, the thread[1] will free all
+>>> resources before the em28xx_v4l2_open() can process their things,
+>>> because the em28xx_v4l2_init() has the dev->lock. And all this lead
+>>> the thread[2] to cause a user-after-free.
+>>>
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>> Reported-and-tested-by: 
+>>> syzbot+b2391895514ed9ef4a8e@syzkaller.appspotmail.com
+>>> Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+>>> ---
+>>>
+>>> V2: Add v4l2_i2c_new_subdev null check
+>>>      Deal with v4l2 subdevs dependencies
+>>>
+>>> V3: Fix link error when compiled as a module
+>>>
+>>> ---
+>>>   drivers/media/usb/em28xx/em28xx-camera.c |   4 +-
+>>>   drivers/media/usb/em28xx/em28xx-video.c  | 300 +++++++++++++++--------
+>>>   drivers/media/usb/em28xx/em28xx.h        |   6 +-
+>>>   3 files changed, 209 insertions(+), 101 deletions(-)
+>>>
+>>
+>> The changes looks good to me. Have you tried building as a modules and
+>> running modprobes and rmmods? You can do that without a device.
+>>
+> 
+> I tried and everything worked fine.
+> 
 
-> On Fri, Apr 16, 2021 at 03:20:17PM -0700, Andy Lutomirski wrote:
->> But obviously there is code that needs real function pointers.  How
->> about making this a first-class feature, or at least hacking around it
->> more cleanly.  For example, what does this do:
->> 
->> char entry_whatever[];
->> wrmsrl(..., (unsigned long)entry_whatever);
->
-> This is just casting. It'll still resolve to the jump table entry.
->
->> or, alternatively,
->> 
->> extern void func() __attribute__((nocfi));
->
-> __nocfi says func() should not perform checking of correct jump table
-> membership for indirect calls.
->
-> But we don't want a global marking for a function to be ignored by CFI;
-> we don't want functions to escape CFI -- we want specific _users_ to
-> either not check CFI for indirect calls (__nocfi) or we want specific
-> passed addresses to avoid going through the jump table
-> (function_nocfi()).
+Thank you.
 
-And that's why you mark entire files to be exempt without any rationale
-why it makes sense.
+Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Thanks,
+thanks,
+-- Shuah
 
-        tglx
