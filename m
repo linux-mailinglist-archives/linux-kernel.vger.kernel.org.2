@@ -2,208 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692FB36177D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 04:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5395361785
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 04:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238185AbhDPCUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 22:20:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52124 "EHLO
+        id S238211AbhDPCWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 22:22:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236747AbhDPCUV (ORCPT
+        with ESMTP id S235809AbhDPCWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 22:20:21 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63260C061574;
-        Thu, 15 Apr 2021 19:19:57 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id 31so2750907pgn.13;
-        Thu, 15 Apr 2021 19:19:57 -0700 (PDT)
+        Thu, 15 Apr 2021 22:22:47 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F202EC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 19:22:22 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id n10-20020a05600c4f8ab0290130f0d3cba3so1733735wmq.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 19:22:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=1c3XANJp3SRLg0MiJy2ydzLv+HXxXVrH+J+qpyjxeMo=;
-        b=RvLCBMeKc9B10u/JSftidewJh+NxFiz3AG+ygV5Q3aiKH9BWYKqnT6NsxNICxM+2Dm
-         cneLYlyuBmW/lgGHoKMlYGW64UftFNPUJy19PUmp28y2o8X+/skqkXqUHtuMMNSGC3xR
-         p0bQ2KI6S3TPNz28fwTfB5y2uodapSnV9LdiTt/9QlyuoDWRhKWXbFkrv+qBa3EqXK/Y
-         784ZpL34JsoPqojatFq2KivhwrMjfTnuHV4LOiEqudAa2/67Eu5XK32I3IjjdOXp3YUT
-         aktxnB8LcwFdokQOob7I93enjFBMSCFOwxIDUbywuszShurUHEJ+73pP+3p6/Jg0y+0U
-         APng==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RDRWGt7xOekmwUKUE2JEVIaFGKRBsEO59DpsTnWgs/0=;
+        b=ZfOxa43AWeSHjHBGW3m2xxgRn0MKBaCittzuqp5UzO77kBOKY+usslGnGnAr/bGr9r
+         Y/FlasLuieWL3Lhp+NU27g3OBnXe07L7YygtbptzZRtIj+cm6dx2dOyRfgtMiScUNN3W
+         Qm0cSyWf8oYh8NRjHjanPlsTr3KlqE2xCblcaA7wbs5sauhyiW6t8wqTVxa8/bdxETOj
+         DJFHBnwCjdVHdB7lQFpVM/1+0fwY/FFQGmF6ec7cG08xt6EQkbgRa0ZDbgvWCY3AZa01
+         t/eax8nlE9M8mgTwNUtBaHqr4JuErCH+9oM60bW2CZrMcCT/7nlOiovQwH3V7tGcuk6w
+         A+Kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=1c3XANJp3SRLg0MiJy2ydzLv+HXxXVrH+J+qpyjxeMo=;
-        b=iEmir+YfU4/TOFesQs2qR2b+IkMh2N4SR/8Z+EAbuJ0zDJW1bpCRvnwjK13PwkieHR
-         2XOupPur82q8Z0P16kK+s8ZtN3pBdK2yz6RgevTOCCZM+PTLAV1ONc+uL4qt0h0+jeoP
-         hxjt0/ACx+Et19ZxZjyqZcu6cvjoVq/KT0tN/pVweOikS9CLKq0qf5T6pJYUQhMAvsk+
-         aD1UDqIhghfxDhw9ug9BNKwPKVp7l95uofPswhCaXW3jPlkpdcsBHuf0C5LHKp5tD+7l
-         Va5zCxNMYMUTX2etJ48Re0cQgyqtfMVv/7WFneC2M24SLCEfSiWri8lVEyvoGYV4Uzir
-         PR9w==
-X-Gm-Message-State: AOAM531OT81HmVkfKqfORYS8eMN4syF/+y0JxJJFbJmVEBM6dP+Awe7N
-        81/RcbeqkH4QuewaPgzy5XU=
-X-Google-Smtp-Source: ABdhPJy4H/k0YeMasBgQvdxoT1mYCifNxP+u/yBrtA9K/OYh3Zvo5A41irfb4y2kPvvsTMndSaPm3w==
-X-Received: by 2002:a65:5c8a:: with SMTP id a10mr6157057pgt.233.1618539596557;
-        Thu, 15 Apr 2021 19:19:56 -0700 (PDT)
-Received: from mi-OptiPlex-7060.mioffice.cn ([209.9.72.212])
-        by smtp.gmail.com with ESMTPSA id g14sm3520255pjh.28.2021.04.15.19.19.54
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RDRWGt7xOekmwUKUE2JEVIaFGKRBsEO59DpsTnWgs/0=;
+        b=FWv6nOmBmJro7yjlmDZ6EKb4MH2+0vPLfFv81y/7yhAIWeo5vRmW+OT+PlHJ0UhUfQ
+         KkTaTUhW6GmXClWaEWzVRQdReEV61SmP0IdxOJ8mZqSe6alslJNWGaqhSW3pf7pFXbzx
+         +kI5wnMPK5qdxpBXh0Mw9biT5XKJ2aAtvsFkwpBF/gVS48ouP2+NqKlpSCkJw/Ku0RIq
+         FnJPlySzSZkUpyuIO84Y3pT3qiPiKBwfLlcvRZzI0LUTkoNnvBLayy2po9Anlcqv52Nq
+         so6caimtd12KqMinyIBYJ/ULURalDogrbhQ/oihCp0/lNJDUImfPdBxiLVjVJfzKFe5/
+         5fSA==
+X-Gm-Message-State: AOAM531LY9QJ+RMurABb0eJtqnUBpbWbItgu9blPgBvRjXm5eab+FkgC
+        dt8BgBsCumG7mBBWHHuPhHEi
+X-Google-Smtp-Source: ABdhPJxQj64FHzBBkB1XlDKKfuP/omZD2DU9RupOiJ3vBjtuXY1JXoOhozJ3FC0KYuffL3O4FaGA8Q==
+X-Received: by 2002:a7b:c5c8:: with SMTP id n8mr5790600wmk.63.1618539741456;
+        Thu, 15 Apr 2021 19:22:21 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:209:9d22:ab98:31ab:7a9d])
+        by smtp.gmail.com with ESMTPSA id f7sm3679602wrp.48.2021.04.15.19.22.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 19:19:56 -0700 (PDT)
-From:   zhuguangqing83@gmail.com
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org,
-        Guangqing Zhu <zhuguangqing83@gmail.com>
-Subject: [PATCH] rtc: Fix missing IRQF_ONESHOT as only threaded handler
-Date:   Fri, 16 Apr 2021 10:19:49 +0800
-Message-Id: <20210416021949.1569-1-zhuguangqing83@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 15 Apr 2021 19:22:21 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 03:22:16 +0100
+From:   Wedson Almeida Filho <wedsonaf@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     ojeda@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+Message-ID: <YHj02M3jMSweoP4l@google.com>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangqing Zhu <zhuguangqing83@gmail.com>
+On Thu, Apr 15, 2021 at 08:58:16PM +0200, Peter Zijlstra wrote:
+> On Wed, Apr 14, 2021 at 08:45:51PM +0200, ojeda@kernel.org wrote:
+> 
+> > Rust is a systems programming language that brings several key
+> > advantages over C in the context of the Linux kernel:
+> > 
+> >   - No undefined behavior in the safe subset (when unsafe code is
+> >     sound), including memory safety and the absence of data races.
+> 
+> And yet I see not a single mention of the Rust Memory Model and how it
+> aligns (or not) with the LKMM. The C11 memory model for example is a
+> really poor fit for LKMM.
 
-Coccinelle noticed:
-1. drivers/rtc/rtc-s5m.c:810:7-32: ERROR: Threaded IRQ with no primary
-   handler requested without IRQF_ONESHOT
-2. drivers/rtc/rtc-rk808.c:441:7-32: ERROR: Threaded IRQ with no primary
-   handler requested without IRQF_ONESHOT
-3. drivers/rtc/rtc-max77686.c:779:7-27: ERROR: Threaded IRQ with no primary
-   handler requested without IRQF_ONESHOT
-4. drivers/rtc/rtc-tps65910.c:415:7-32: ERROR: Threaded IRQ with no primary
-   handler requested without IRQF_ONESHOT
-5. drivers/rtc/rtc-lp8788.c:277:8-33: ERROR: Threaded IRQ with no primary
-   handler requested without IRQF_ONESHOT
-6. drivers/rtc/rtc-max8998.c:283:7-32: ERROR: Threaded IRQ with no primary
-   handler requested without IRQF_ONESHOT
-7. drivers/rtc/rtc-rc5t583.c:241:7-32: ERROR: Threaded IRQ with no primary
-   handler requested without IRQF_ONESHOT
-8. drivers/rtc/rtc-max8997.c:495:7-32: ERROR: Threaded IRQ with no primary
-   handler requested without IRQF_ONESHOT
+We don't intend to directly expose C data structures to Rust code (outside the
+kernel crate). Instead, we intend to provide wrappers that expose safe
+interfaces even though the implementation may use unsafe blocks. So we expect
+the vast majority of Rust code to just care about the Rust memory model.
 
-Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
----
- drivers/rtc/rtc-lp8788.c   | 2 +-
- drivers/rtc/rtc-max77686.c | 4 ++--
- drivers/rtc/rtc-max8997.c  | 2 +-
- drivers/rtc/rtc-max8998.c  | 3 ++-
- drivers/rtc/rtc-rc5t583.c  | 2 +-
- drivers/rtc/rtc-rk808.c    | 2 +-
- drivers/rtc/rtc-s5m.c      | 4 ++--
- drivers/rtc/rtc-tps65910.c | 2 +-
- 8 files changed, 11 insertions(+), 10 deletions(-)
+We admittedly don't have a huge number of wrappers yet, but we do have enough to
+implement most of Binder and so far it's been ok. We do intend to eventually
+cover other classes of drivers that may unveil unforeseen difficulties, we'll
+see.
 
-diff --git a/drivers/rtc/rtc-lp8788.c b/drivers/rtc/rtc-lp8788.c
-index c0b8fbce1082..ebb717ae6c8b 100644
---- a/drivers/rtc/rtc-lp8788.c
-+++ b/drivers/rtc/rtc-lp8788.c
-@@ -276,7 +276,7 @@ static int lp8788_alarm_irq_register(struct platform_device *pdev,
- 
- 	return devm_request_threaded_irq(&pdev->dev, rtc->irq, NULL,
- 				lp8788_alarm_irq_handler,
--				0, LP8788_ALM_IRQ, rtc);
-+				IRQF_ONESHOT, LP8788_ALM_IRQ, rtc);
- }
- 
- static int lp8788_rtc_probe(struct platform_device *pdev)
-diff --git a/drivers/rtc/rtc-max77686.c b/drivers/rtc/rtc-max77686.c
-index d51cc12114cb..a23825ccf62a 100644
---- a/drivers/rtc/rtc-max77686.c
-+++ b/drivers/rtc/rtc-max77686.c
-@@ -776,8 +776,8 @@ static int max77686_rtc_probe(struct platform_device *pdev)
- 		goto err_rtc;
- 	}
- 
--	ret = request_threaded_irq(info->virq, NULL, max77686_rtc_alarm_irq, 0,
--				   "rtc-alarm1", info);
-+	ret = request_threaded_irq(info->virq, NULL, max77686_rtc_alarm_irq,
-+				   IRQF_ONESHOT, "rtc-alarm1", info);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "Failed to request alarm IRQ: %d: %d\n",
- 			info->virq, ret);
-diff --git a/drivers/rtc/rtc-max8997.c b/drivers/rtc/rtc-max8997.c
-index 20e50d9fdf88..15843ed12e36 100644
---- a/drivers/rtc/rtc-max8997.c
-+++ b/drivers/rtc/rtc-max8997.c
-@@ -493,7 +493,7 @@ static int max8997_rtc_probe(struct platform_device *pdev)
- 	info->virq = virq;
- 
- 	ret = devm_request_threaded_irq(&pdev->dev, virq, NULL,
--				max8997_rtc_alarm_irq, 0,
-+				max8997_rtc_alarm_irq, IRQF_ONESHOT,
- 				"rtc-alarm0", info);
- 	if (ret < 0)
- 		dev_err(&pdev->dev, "Failed to request alarm IRQ: %d: %d\n",
-diff --git a/drivers/rtc/rtc-max8998.c b/drivers/rtc/rtc-max8998.c
-index c873b4509b3c..28c5b367f633 100644
---- a/drivers/rtc/rtc-max8998.c
-+++ b/drivers/rtc/rtc-max8998.c
-@@ -281,7 +281,8 @@ static int max8998_rtc_probe(struct platform_device *pdev)
- 	}
- 
- 	ret = devm_request_threaded_irq(&pdev->dev, info->irq, NULL,
--				max8998_rtc_alarm_irq, 0, "rtc-alarm0", info);
-+				max8998_rtc_alarm_irq, IRQF_ONESHOT,
-+				"rtc-alarm0", info);
- 
- 	if (ret < 0)
- 		dev_err(&pdev->dev, "Failed to request alarm IRQ: %d: %d\n",
-diff --git a/drivers/rtc/rtc-rc5t583.c b/drivers/rtc/rtc-rc5t583.c
-index 18684a7026c4..d9f4e0d4d943 100644
---- a/drivers/rtc/rtc-rc5t583.c
-+++ b/drivers/rtc/rtc-rc5t583.c
-@@ -239,7 +239,7 @@ static int rc5t583_rtc_probe(struct platform_device *pdev)
- 
- 	irq += RC5T583_IRQ_YALE;
- 	ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
--		rc5t583_rtc_interrupt, IRQF_TRIGGER_LOW,
-+		rc5t583_rtc_interrupt, IRQF_TRIGGER_LOW | IRQF_ONESHOT,
- 		"rtc-rc5t583", &pdev->dev);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "IRQ is not free.\n");
-diff --git a/drivers/rtc/rtc-rk808.c b/drivers/rtc/rtc-rk808.c
-index e920da8c08da..753583cff5d4 100644
---- a/drivers/rtc/rtc-rk808.c
-+++ b/drivers/rtc/rtc-rk808.c
-@@ -439,7 +439,7 @@ static int rk808_rtc_probe(struct platform_device *pdev)
- 
- 	/* request alarm irq of rk808 */
- 	ret = devm_request_threaded_irq(&pdev->dev, rk808_rtc->irq, NULL,
--					rk808_alarm_irq, 0,
-+					rk808_alarm_irq, IRQF_ONESHOT,
- 					"RTC alarm", rk808_rtc);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to request alarm IRQ %d: %d\n",
-diff --git a/drivers/rtc/rtc-s5m.c b/drivers/rtc/rtc-s5m.c
-index 80b66f16db89..56e82987b4a2 100644
---- a/drivers/rtc/rtc-s5m.c
-+++ b/drivers/rtc/rtc-s5m.c
-@@ -808,8 +808,8 @@ static int s5m_rtc_probe(struct platform_device *pdev)
- 	}
- 
- 	ret = devm_request_threaded_irq(&pdev->dev, info->irq, NULL,
--					s5m_rtc_alarm_irq, 0, "rtc-alarm0",
--					info);
-+					s5m_rtc_alarm_irq, IRQF_ONESHOT,
-+					"rtc-alarm0", info);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "Failed to request alarm IRQ: %d: %d\n",
- 			info->irq, ret);
-diff --git a/drivers/rtc/rtc-tps65910.c b/drivers/rtc/rtc-tps65910.c
-index bc89c62ccb9b..6ab67820d77c 100644
---- a/drivers/rtc/rtc-tps65910.c
-+++ b/drivers/rtc/rtc-tps65910.c
-@@ -413,7 +413,7 @@ static int tps65910_rtc_probe(struct platform_device *pdev)
- 	}
- 
- 	ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
--		tps65910_rtc_interrupt, IRQF_TRIGGER_LOW,
-+		tps65910_rtc_interrupt, IRQF_TRIGGER_LOW | IRQF_ONESHOT,
- 		dev_name(&pdev->dev), &pdev->dev);
- 	if (ret < 0)
- 		irq = -1;
--- 
-2.17.1
+If you have concerns that we might have overlooked, we'd be happy to hear about
+them from you (or anyone else).
 
+> HTML is not a valid documentation format. Heck, markdown itself is
+> barely readable.
+
+Are you stating [what you perceive as] a fact or just venting? If the former,
+would you mind enlightening us with some evidence?
+
+> It is really *really* hard to read. It has all sorts of weird things,
+> like operators at the beginning after a line break:
+> 
+> 	if (foo
+> 	    || bar)
+> 
+> which is just wrong. And it suffers from CamelCase, which is just about
+> the worst thing ever. Not even the C++ std libs have that (or had, back
+> when I still did knew C++).
+> 
+> I also see:
+> 
+> 	if (foo) {
+> 		...
+> 	}
+> 
+> and
+> 
+> 	if foo {
+> 	}
+> 
+> the latter, ofcourse, being complete rubbish.
+
+There are advantages to adopting the preferred style of a language (when one
+exists). We, of course, are not required to adopt it but I am of the opinion
+that we should have good reasons to diverge if that's our choice in the end.
+
+"Not having parentheses around the if-clause expression is complete rubbish"
+doesn't sound like a good reason to me.
