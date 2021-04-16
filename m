@@ -2,158 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07AD1361AFA
+	by mail.lfdr.de (Postfix) with ESMTP id 79514361AFB
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 10:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239794AbhDPH6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 03:58:35 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:39925 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239776AbhDPH6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 03:58:34 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FM7qf6TPHz9sWD;
-        Fri, 16 Apr 2021 17:58:06 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1618559889;
-        bh=j4tYcesejEmcgz3sJDlYJMq9NB1n+aTVqj5kiiFvkp8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=EG9pWrtl1p5D6BOmh4DvvUrFczJUj9z4DILh+5SEfxPoOvygJ3z7fEKRtQ1VQL+45
-         /hWXHMABlYs4WbUCn9S4DLzXQLJxa2QdAz8Ztj9VoZU4YIstXU0tMWetRrBkciYHB+
-         L1qllqVn3pl7dfiDLh9tn4kv/Q6Orfjxn+UiBbBjH8Dn/mE9goplN7PRkpbEbO09st
-         nmtW2SwauCwmUm1GuDdbJ3aitbE8bvgBVMGmo0ZINAmrZE6MII+s+EcKHF6VFoTsit
-         i4JURGLajM1d/6+XUZ20O2W+0zOVsnyjhf+pg4JJ9Toz69xReSF2YzJYblEz8lN1W8
-         o4zjiAqffg5hQ==
-Date:   Fri, 16 Apr 2021 17:58:06 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hang Lu <hangl@codeaurora.org>, Li Li <dualli@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Marco Ballesio <balejs@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>, Todd Kjos <tkjos@google.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-Subject: linux-next: manual merge of the rust tree with the char-misc tree
-Message-ID: <20210416175806.2acd314b@canb.auug.org.au>
+        id S239874AbhDPH7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 03:59:20 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33912 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S239859AbhDPH7T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 03:59:19 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13G7XxHN138687;
+        Fri, 16 Apr 2021 03:58:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=a60hQsz0xpYXDiJLKWxC2W4MYc6pkB5sdNqBWr6ssRM=;
+ b=spzbPzZMF3zeVl4NFNSTDSMdK0r/jGaaX6AKC9buToIO8TcKoy8+E04Sb87Bnp+FAt9a
+ buSSS2hjv6/og1ImD1DElmf67k4ZbaPnrE4iVPCnDFW26DbCwQA/3xNW55Vg9jNRLBPx
+ n4B2iqeJYktPHfWjnH0w3hy5s5yBY4p9R3djnyZlHY68SGlgrP8QEuayCVfui4b27vHm
+ B89lz1zNIefD2PSjRRdLnScwYYl1YOBVZyqyqk4B4CkMgSZetAAEbjulx4tjqzZqPpr9
+ wt//4Bv3MrwSVM1KC10aybQRxIgfXyoGhOclGMmegUqF8MdhSWSmotczkI0R3wh9rtpu sA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37xtqa07cg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 03:58:29 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13G7Z88Q141859;
+        Fri, 16 Apr 2021 03:58:29 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37xtqa07c4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 03:58:29 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13G7vGCH020596;
+        Fri, 16 Apr 2021 07:58:27 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 37u39hmb6w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 07:58:27 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13G7wO4W34341168
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 16 Apr 2021 07:58:25 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D00ADA4051;
+        Fri, 16 Apr 2021 07:58:24 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 85222A4040;
+        Fri, 16 Apr 2021 07:58:22 +0000 (GMT)
+Received: from [9.85.71.75] (unknown [9.85.71.75])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 16 Apr 2021 07:58:22 +0000 (GMT)
+Subject: Re: [PATCH v1 1/1] powerpc/papr_scm: Properly handle UUID types and
+ API
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Vaibhav Jain <vaibhav@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>
+References: <20210415134637.17770-1-andriy.shevchenko@linux.intel.com>
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Message-ID: <af677216-82b4-f1fa-1d90-3d32dabf8583@linux.ibm.com>
+Date:   Fri, 16 Apr 2021 13:28:21 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/DcS0KhKm_NOzQ7KFh5ShvdQ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210415134637.17770-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: rnJsI56rpExDF3Bo1wlmngO1NTDBBViL
+X-Proofpoint-ORIG-GUID: VhrjLmthWVmM633LBBbNsjhsOjnPESOb
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-15_11:2021-04-15,2021-04-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 mlxlogscore=999 spamscore=0 malwarescore=0
+ lowpriorityscore=0 priorityscore=1501 phishscore=0 bulkscore=0
+ adultscore=0 mlxscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104060000 definitions=main-2104160056
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/DcS0KhKm_NOzQ7KFh5ShvdQ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 4/15/21 7:16 PM, Andy Shevchenko wrote:
+> Parse to and export from UUID own type, before dereferencing.
+> This also fixes wrong comment (Little Endian UUID is something else)
+> and should fix Sparse warnings about assigning strict types to POD.
+> 
+> Fixes: 43001c52b603 ("powerpc/papr_scm: Use ibm,unit-guid as the iset cookie")
+> Fixes: 259a948c4ba1 ("powerpc/pseries/scm: Use a specific endian format for storing uuid from the device tree")
+> Cc: Oliver O'Halloran <oohall@gmail.com>
+> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+> Not tested
+>   arch/powerpc/platforms/pseries/papr_scm.c | 13 ++++++++-----
+>   1 file changed, 8 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
+> index ae6f5d80d5ce..4366e1902890 100644
+> --- a/arch/powerpc/platforms/pseries/papr_scm.c
+> +++ b/arch/powerpc/platforms/pseries/papr_scm.c
+> @@ -1085,8 +1085,9 @@ static int papr_scm_probe(struct platform_device *pdev)
+>   	u32 drc_index, metadata_size;
+>   	u64 blocks, block_size;
+>   	struct papr_scm_priv *p;
+> +	u8 uuid_raw[UUID_SIZE];
+>   	const char *uuid_str;
+> -	u64 uuid[2];
+> +	uuid_t uuid;
+>   	int rc;
+>   
+>   	/* check we have all the required DT properties */
+> @@ -1129,16 +1130,18 @@ static int papr_scm_probe(struct platform_device *pdev)
+>   	p->hcall_flush_required = of_property_read_bool(dn, "ibm,hcall-flush-required");
+>   
+>   	/* We just need to ensure that set cookies are unique across */
+> -	uuid_parse(uuid_str, (uuid_t *) uuid);
+> +	uuid_parse(uuid_str, &uuid);
+> +
+>   	/*
+>   	 * cookie1 and cookie2 are not really little endian
+> -	 * we store a little endian representation of the
+> +	 * we store a raw buffer representation of the
+>   	 * uuid str so that we can compare this with the label
+>   	 * area cookie irrespective of the endian config with which
+>   	 * the kernel is built.
+>   	 */
+> -	p->nd_set.cookie1 = cpu_to_le64(uuid[0]);
+> -	p->nd_set.cookie2 = cpu_to_le64(uuid[1]);
+> +	export_uuid(uuid_raw, &uuid);
+> +	p->nd_set.cookie1 = get_unaligned_le64(&uuid_raw[0]);
+> +	p->nd_set.cookie2 = get_unaligned_le64(&uuid_raw[8]);
+>   
 
-Hi all,
+ok that does the equivalent of cpu_to_le64 there. So we are good. But 
+the comment update is missing the details why we did that 
+get_unaligned_le64. Maybe raw buffer representation is the correct term?
+Should we add an example in the comment. ie,
 
-Today's linux-next merge of the rust tree got a conflict in:
+/*
+  * Historically we stored the cookie in the below format.
+for a uuid str 72511b67-0b3b-42fd-8d1d-5be3cae8bcaa
+cookie1 was  0xfd423b0b671b5172 cookie2 was 0xaabce8cae35b1d8d
+*/
 
-  include/uapi/linux/android/binder.h
 
-between commits:
 
-  432ff1e91694 ("binder: BINDER_FREEZE ioctl")
-  ae28c1be1e54 ("binder: BINDER_GET_FROZEN_INFO ioctl")
-  a7dc1e6f99df ("binder: tell userspace to dump current backtrace when dete=
-cted oneway spamming")
+>   	/* might be zero */
+>   	p->metadata_size = metadata_size;
+> 
 
-from the char-misc tree and commit:
-
-  1fed5dee5fbb ("Android: Binder IPC in Rust (WIP)")
-
-from the rust tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/uapi/linux/android/binder.h
-index 20e435fe657a,7b13c9e9aa2f..000000000000
---- a/include/uapi/linux/android/binder.h
-+++ b/include/uapi/linux/android/binder.h
-@@@ -217,31 -217,18 +217,33 @@@ struct binder_node_info_for_ref=20
-  	__u32            reserved3;
-  };
- =20
- +struct binder_freeze_info {
- +	__u32            pid;
- +	__u32            enable;
- +	__u32            timeout_ms;
- +};
- +
- +struct binder_frozen_status_info {
- +	__u32            pid;
- +	__u32            sync_recv;
- +	__u32            async_recv;
- +};
- +
-- #define BINDER_WRITE_READ		_IOWR('b', 1, struct binder_write_read)
-- #define BINDER_SET_IDLE_TIMEOUT		_IOW('b', 3, __s64)
-- #define BINDER_SET_MAX_THREADS		_IOW('b', 5, __u32)
-- #define BINDER_SET_IDLE_PRIORITY	_IOW('b', 6, __s32)
-- #define BINDER_SET_CONTEXT_MGR		_IOW('b', 7, __s32)
-- #define BINDER_THREAD_EXIT		_IOW('b', 8, __s32)
-- #define BINDER_VERSION			_IOWR('b', 9, struct binder_version)
-- #define BINDER_GET_NODE_DEBUG_INFO	_IOWR('b', 11, struct binder_node_debu=
-g_info)
-- #define BINDER_GET_NODE_INFO_FOR_REF	_IOWR('b', 12, struct binder_node_in=
-fo_for_ref)
-- #define BINDER_SET_CONTEXT_MGR_EXT	_IOW('b', 13, struct flat_binder_objec=
-t)
-- #define BINDER_FREEZE			_IOW('b', 14, struct binder_freeze_info)
-- #define BINDER_GET_FROZEN_INFO		_IOWR('b', 15, struct binder_frozen_statu=
-s_info)
-- #define BINDER_ENABLE_ONEWAY_SPAM_DETECTION	_IOW('b', 16, __u32)
-+ enum {
-+ 	BINDER_WRITE_READ		=3D _IOWR('b', 1, struct binder_write_read),
-+ 	BINDER_SET_IDLE_TIMEOUT		=3D _IOW('b', 3, __s64),
-+ 	BINDER_SET_MAX_THREADS		=3D _IOW('b', 5, __u32),
-+ 	BINDER_SET_IDLE_PRIORITY	=3D _IOW('b', 6, __s32),
-+ 	BINDER_SET_CONTEXT_MGR		=3D _IOW('b', 7, __s32),
-+ 	BINDER_THREAD_EXIT		=3D _IOW('b', 8, __s32),
-+ 	BINDER_VERSION			=3D _IOWR('b', 9, struct binder_version),
-+ 	BINDER_GET_NODE_DEBUG_INFO	=3D _IOWR('b', 11, struct binder_node_debug_i=
-nfo),
-+ 	BINDER_GET_NODE_INFO_FOR_REF	=3D _IOWR('b', 12, struct binder_node_info_=
-for_ref),
-+ 	BINDER_SET_CONTEXT_MGR_EXT	=3D _IOW('b', 13, struct flat_binder_object),
-++	BINDER_FREEZE			=3D _IOW('b', 14, struct binder_freeze_info)
-++	BINDER_GET_FROZEN_INFO		=3D _IOWR('b', 15, struct binder_frozen_status_i=
-nfo)
-++	BINDER_ENABLE_ONEWAY_SPAM_DETECTION	=3D _IOW('b', 16, __u32)
-+ };
- =20
-  /*
-   * NOTE: Two special error codes you should check for when calling
-
---Sig_/DcS0KhKm_NOzQ7KFh5ShvdQ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB5Q44ACgkQAVBC80lX
-0GxJiwgAkPJQvsnVUNQYplQn6ivTUXjVdx7vxc0tEKp3K00MG9K674dn506f2THB
-Xllg0x2S9m1KW7CrF26FHUKbjfEoxFItP/1Pj/BASo77/Cc3ty476/0jd8Anfsnr
-XLIwAQNraEDoVC6Kekuyjrx3yQPmNCx44KbatxsQ8Q5mMvT7sjmjD/7Ck2Z7RQns
-/U8m7Tia2GEG2Yl8tS81VDp8aRdTBBybTD2NA7w7RaSDZXBBODB/ckSihfmwsFa1
-H87S5qZlKd43IN0H5T48Y9pp4Ypam9SenQ9Unos3FWaFNYVip3O/WNXIlUeSHBG7
-8CMw19OUL42QU/OZWO3opq9AZbfxdA==
-=IBIc
------END PGP SIGNATURE-----
-
---Sig_/DcS0KhKm_NOzQ7KFh5ShvdQ--
