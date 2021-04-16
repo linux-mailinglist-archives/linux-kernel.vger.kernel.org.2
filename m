@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4CEC362B5D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03834362B42
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235060AbhDPWla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 18:41:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39832 "EHLO
+        id S234869AbhDPWlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 18:41:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234852AbhDPWlW (ORCPT
+        with ESMTP id S234740AbhDPWlW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 16 Apr 2021 18:41:22 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9029C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 15:40:55 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id b17so20148930pgh.7
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 15:40:55 -0700 (PDT)
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C29C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 15:40:57 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id b17so20148943pgh.7
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 15:40:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=V2616N/QYdtGiJ2WPqXN32z+9F37dE5BQ+AbPSzAlWM=;
-        b=Kvygd9Jv3cSdtacrk08etIwGlvbXGIrpJZ3Kbi2fof0pagVnuMUHM5nHqm4TWmIu0l
-         NbsEdW2P2kh3xjBHWDqpfg/e1gPhpozUNag0jYXbTdhTM22I3Dcjy9L9b7GQIOjRcYgp
-         J65JqAvMF89YzAQdk9fBdrswX5VeBIl87nLqM=
+        bh=XvcTL0RsbG+N8ibrkzli2K1A+rE+ZrcYjKP9wz2z40I=;
+        b=AufOpWxiDS8cPPrP7xzjOHsIoN36eKpOCxEXl12PAo2J/qdSsF4bqxhnWAoHrmPdgi
+         jdSwBdRJc9Q5vDcJV0vvreL74oFh6+Anm/o8pvPb8DW+i5Aelp9ZDP1HNTZ0Rp2OrdyZ
+         XPBg766uOfY2dHhRsLvb38FAjAcOn8oh7WNLY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=V2616N/QYdtGiJ2WPqXN32z+9F37dE5BQ+AbPSzAlWM=;
-        b=tKkC8/pnCNWQ5RTrDjaPxr7TtRPXyiOJYv930WHvLjzdNGD+Mq1vMBWI/hsLqDv8wm
-         6BUUR+k9q63qdJSqfY3qZhvVXIAL0CsVObMzQxzbubPxE+UxbBqV+JHQKqdS05OOaMLK
-         tpy+1YRiGrrHhqmO4C9ivFdBuwzpqX7rhuz0J6S1bVshpv7+ymJ+ld8MpXADELG1YwXE
-         DMRIHFww4SztU651lKqgXjgvyB91/1XV1/kXScfMYX6tWt3371EPKOXBAeaupfSvkl7i
-         u2//KUuAvgfnPTpTS1qMpurG8Bed1bD477C7g+/qcbrHoMcgVrOZDcwMHtYXCBZhuCAQ
-         bjaA==
-X-Gm-Message-State: AOAM533p+prG4O/YEr0F8FRPBLvcCWphqeZlz80qsZ9k5/U7XLWUPsaN
-        x16L1+juruPyq/tt0W7GxQRtcA==
-X-Google-Smtp-Source: ABdhPJx+++sgm6QScJKVRhLGDYDXTsoYpzMGpZIuovPKocdK2x9/8MdnhVgChFQiH8GmypmxYux8VA==
-X-Received: by 2002:a63:514d:: with SMTP id r13mr1079777pgl.322.1618612855514;
-        Fri, 16 Apr 2021 15:40:55 -0700 (PDT)
+        bh=XvcTL0RsbG+N8ibrkzli2K1A+rE+ZrcYjKP9wz2z40I=;
+        b=PLPR3tyHPTVtvDOiblXFGH/M4XbhS8MbCPsR36CFbtc5XMgaqoSamSNxF8Mq7vtDg+
+         WkO29giM6hQjzyM3UdYVH6vnA86ReszXotB1QgpZvX9BCZK6QhmRCAnGdOswc+L+hZ6t
+         dKgWXNvr5W/33HM/o2MtF+1vxsurU5TON3iDvn5nEfUhqxpa/bHxJN8uTnmlKklhyNu5
+         3NMqnAgn/+qymdYE6j4+qKue/neQCHYG5iSaPJA3dbeo/DddOLaBmNIVh+2HM30CtJhZ
+         xU2W9Y2ZPTkswjN9l5+nSto3cU84TxoROqQDibWfNn0cM8XDGdp8YGJfTCQqm7hLU7a8
+         4cDA==
+X-Gm-Message-State: AOAM530/G7sZ8xv9nnCytqq35u+KUxrxjQe05QMQ1NKoFRXhzgmRIz0t
+        63dkHwj/4/fFqcd8pM0pofqSbg==
+X-Google-Smtp-Source: ABdhPJzNUiYzRYYbvZn//8wjS/CeqlBImBF5oNQlkkD5V/lJHOiw3ppDJgVHdWGhvCqC6g4Hpy9jag==
+X-Received: by 2002:aa7:9791:0:b029:25c:38de:aa6b with SMTP id o17-20020aa797910000b029025c38deaa6bmr522788pfp.19.1618612856582;
+        Fri, 16 Apr 2021 15:40:56 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:dc8a:c9d0:aa5b:5386])
-        by smtp.gmail.com with ESMTPSA id r6sm5633659pgp.64.2021.04.16.15.40.54
+        by smtp.gmail.com with ESMTPSA id r6sm5633659pgp.64.2021.04.16.15.40.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 15:40:55 -0700 (PDT)
+        Fri, 16 Apr 2021 15:40:56 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Andrzej Hajda <a.hajda@samsung.com>,
         Neil Armstrong <narmstrong@baylibre.com>,
@@ -59,14 +59,14 @@ Cc:     Stephen Boyd <swboyd@chromium.org>, robdclark@chromium.org,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         linux-arm-msm@vger.kernel.org, Linus W <linus.walleij@linaro.org>,
         Douglas Anderson <dianders@chromium.org>,
-        Robert Foss <robert.foss@linaro.org>,
         Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Daniel Vetter <daniel@ffwll.ch>,
         David Airlie <airlied@linux.ie>,
+        Robert Foss <robert.foss@linaro.org>,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 02/27] drm/bridge: ti-sn65dsi86: Simplify refclk handling
-Date:   Fri, 16 Apr 2021 15:39:25 -0700
-Message-Id: <20210416153909.v4.2.Ic9c04f960190faad5290738b2a35d73661862735@changeid>
+Subject: [PATCH v4 03/27] drm/bridge: ti-sn65dsi86: Remove incorrectly tagged kerneldoc comment
+Date:   Fri, 16 Apr 2021 15:39:26 -0700
+Message-Id: <20210416153909.v4.3.I167766eeaf4c4646a3934c4dd5332decbab6bd68@changeid>
 X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
 In-Reply-To: <20210416223950.3586967-1-dianders@chromium.org>
 References: <20210416223950.3586967-1-dianders@chromium.org>
@@ -76,50 +76,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The clock framework makes it simple to deal with an optional clock.
-You can call clk_get_optional() and if the clock isn't specified it'll
-just return NULL without complaint. It's valid to pass NULL to
-enable/disable/prepare/unprepare. Let's make use of this to simplify
-things a tiny bit.
+A random comment inside a function had "/**" in front of it. That
+doesn't make sense. Remove.
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 ---
 
-(no changes since v2)
+(no changes since v1)
 
-Changes in v2:
-- Removed 2nd paragraph in commit message.
-
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/bridge/ti-sn65dsi86.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index 88df4dd0f39d..96fe8f2c0ea9 100644
+index 96fe8f2c0ea9..76f43af6735d 100644
 --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
 +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -1275,14 +1275,9 @@ static int ti_sn_bridge_probe(struct i2c_client *client,
- 		return ret;
- 	}
+@@ -788,7 +788,7 @@ static void ti_sn_bridge_enable(struct drm_bridge *bridge)
+ 	/* set dsi clk frequency value */
+ 	ti_sn_bridge_set_dsi_rate(pdata);
  
--	pdata->refclk = devm_clk_get(pdata->dev, "refclk");
--	if (IS_ERR(pdata->refclk)) {
--		ret = PTR_ERR(pdata->refclk);
--		if (ret == -EPROBE_DEFER)
--			return ret;
--		DRM_DEBUG_KMS("refclk not found\n");
--		pdata->refclk = NULL;
--	}
-+	pdata->refclk = devm_clk_get_optional(pdata->dev, "refclk");
-+	if (IS_ERR(pdata->refclk))
-+		return PTR_ERR(pdata->refclk);
- 
- 	ret = ti_sn_bridge_parse_dsi_host(pdata);
- 	if (ret)
+-	/**
++	/*
+ 	 * The SN65DSI86 only supports ASSR Display Authentication method and
+ 	 * this method is enabled by default. An eDP panel must support this
+ 	 * authentication method. We need to enable this method in the eDP panel
 -- 
 2.31.1.368.gbe11c130af-goog
 
