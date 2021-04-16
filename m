@@ -2,93 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19FB836290C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 22:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0682F36290D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 22:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244536AbhDPUIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 16:08:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34402 "EHLO
+        id S244640AbhDPUIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 16:08:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236021AbhDPUIA (ORCPT
+        with ESMTP id S236021AbhDPUIn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 16:08:00 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB41C061574;
-        Fri, 16 Apr 2021 13:07:34 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id y20-20020a1c4b140000b029011f294095d3so17144675wma.3;
-        Fri, 16 Apr 2021 13:07:34 -0700 (PDT)
+        Fri, 16 Apr 2021 16:08:43 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C36ADC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 13:08:17 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id e14so43801305ejz.11
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 13:08:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vihkSYmvJphhBDW7J7mjcXtQGD/728BY9hGUF6C9ELE=;
-        b=NWdjoFQ5V8e9Uhk67p2p21WJa8PyNVR7vJ8aEX/lyvgbNL6wAEtsTkB0eEs7cE/wfF
-         xzrQECnUTH4N20KLuILYipoIbOlktcBCU98z0mxYCeZzTGrdGTdYwu6R53t0lJ7fXZZv
-         yGHd0JVkxFlBAXCkBRsI7acf6FE+UhfNwxmZFiddoUoR5sWNj0sEeRS8rVGixF6Dtckb
-         HT1TQ0S4EjXwAtia2yHwAe61UbXe8iLjoAXWe9LsKetFm8hInRbwDE4TfhZN8Uadgpjt
-         GJMH0qXnlMDQbwGhoH6x/dR2GAa89kHZkB3+qmRCi0Wyi7cShwBy3Y33c8LKjRZxRjm+
-         lSWQ==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z/7RWfCnT+MFSVYzAj6rhZv/Tp/5lHV7PIZVXaikxkA=;
+        b=TgBtkKhTKA/3SO+uKkjRq5/DlYpoEltcTRr/ImpSWzE3QS2RpSo2qNzUXnGLTWKx5j
+         +BCpYvYl1lU1xiocJDtfK5t8hacvcJbVhYhi7bRPPO3Gv9/8fUmOYV8Hn/m11Zh8M2b3
+         V/SY4P4YrIAvVa/3bmH+XrxlSrOGHYv3+1VfA/7eAwBawvXf/o5djAsP34AuffTpSEF9
+         YwqXst09X24mWgfR+xyQZbbWroVHZ8+A8VGVqEHz59RX9atw6F6tdOLuqTLstQ2lgZz8
+         2gmDCCOfKeWJxZrTK+R5XDUncpuMfrZnnoxiu7edHVr3nSFpwcUSmxhWV121Pyhd+aXE
+         e6WQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vihkSYmvJphhBDW7J7mjcXtQGD/728BY9hGUF6C9ELE=;
-        b=Z5MEM90OQwB8oUk8K0pgmRiYYPlNJfxiQ1/ZWyPFEoFYto/FRtF6EhVOF7Ipq4nvMn
-         6esWFtq6esH7GzCXCRBuqXjZnEZ96qOr8i9QlJaT1U6KMysrY07g/2GLyf/O1f4xg/B4
-         QG0hxwEk/Z42earRgZRHEPhPQNI+02gg2+ePqippNMaQvhWEUmYHkq/oAwGsgbCMz4d7
-         lBIX3fNMdqDsqaBV5rY03AMrSu8NLlPrp2575xMGgwI5PvxtSiU+aOSMa1hXxsbJu6/M
-         g2Yctyf74V4UsiHCFONZ8EmHABI2WkAer17GA1ZpZhugjeF7KdzBJ9eR4RVZINqzVPZV
-         rtkg==
-X-Gm-Message-State: AOAM532dXI2IdtwvSvfQQPZDbT4dBwGMLuWYLSkp6huxOaJQS8cYkfqm
-        s+MKe8P9yjSnf+RdHN1REmc=
-X-Google-Smtp-Source: ABdhPJxCVzQAyC95qnIF5LcQpV/Q5M5xrQF+TDnQ6dLf7TzgwC4WQ1eJBnsjmOrsz9yMBIvM0C7ueg==
-X-Received: by 2002:a1c:b007:: with SMTP id z7mr9793796wme.14.1618603653621;
-        Fri, 16 Apr 2021 13:07:33 -0700 (PDT)
-Received: from debian (host-84-13-30-150.opaltelecom.net. [84.13.30.150])
-        by smtp.gmail.com with ESMTPSA id v4sm8869928wme.14.2021.04.16.13.07.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 13:07:33 -0700 (PDT)
-Date:   Fri, 16 Apr 2021 21:07:31 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 00/25] 5.10.31-rc1 review
-Message-ID: <YHnug+uMm8QrATRR@debian>
-References: <20210415144413.165663182@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z/7RWfCnT+MFSVYzAj6rhZv/Tp/5lHV7PIZVXaikxkA=;
+        b=jIkujOziFX4NR2XyefLkmIe+JT4hAtJRpnN+ihnKUo5yKFWFrvu0ypqaWfOpC7V27P
+         XuWiD9BNQQe3oZOEx0XJVE/FQvxe2bgZOMlUC63iW5zsVEc+TCT19uDnCQDxcqef+y8V
+         HCWb5XfAIvBgiWAKvwQAMlzUjIOjiO5E85bpx5bJ1uow+JXCue5Te1O8lCv22CoTJSGz
+         WCvbcS6cstRUvMDj6L+KedrIWVBgWhLugfMFYOcSF0QSizYM4WbR4djyHPT1Uy26rle5
+         TL5cQEUzCuO4nXUITXGgB7HLlvYFKIo51c800Wiag2C5Y+SeNcfSTvKNuIb8EjqZJdeN
+         gVYQ==
+X-Gm-Message-State: AOAM5307kbSTRT0tbde/RkMT7gQdQAAzKCojDXko0Dh9/88Cm5pQ0cQq
+        DPF24yxTSpwBdgScyx8f2/B5jRy84C+7Agq1wu1fM1cdS34=
+X-Google-Smtp-Source: ABdhPJxLbYFLHe3hs9wcNWM4Ah9JtxOJIsqYpHQn3AKLBkjhJfWEajDnBKN3ne+6r6z2JZwn9ZUv8rMczHUp+Op2Ljc=
+X-Received: by 2002:a17:907:7631:: with SMTP id jy17mr9998196ejc.418.1618603696603;
+ Fri, 16 Apr 2021 13:08:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210415144413.165663182@linuxfoundation.org>
+References: <20210415143754.16553-1-andriy.shevchenko@linux.intel.com> <YHnLCoeBDn3BcRx1@smile.fi.intel.com>
+In-Reply-To: <YHnLCoeBDn3BcRx1@smile.fi.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 16 Apr 2021 13:08:06 -0700
+Message-ID: <CAPcyv4iwiJwwgiisZTqk6F=A8hLJCGkK-4suqDMPYYiLzuLwFA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] libnvdimm: Don't use GUID APIs against raw buffer
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        "Kaneda, Erik" <erik.kaneda@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+[ add Erik ]
 
-On Thu, Apr 15, 2021 at 04:47:54PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.31 release.
-> There are 25 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 17 Apr 2021 14:44:01 +0000.
-> Anything received after that time might be too late.
+On Fri, Apr 16, 2021 at 10:36 AM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Thu, Apr 15, 2021 at 05:37:54PM +0300, Andy Shevchenko wrote:
+> > Strictly speaking the comparison between guid_t and raw buffer
+> > is not correct. Return to plain memcmp() since the data structures
+> > haven't changed to use uuid_t / guid_t the current state of affairs
+> > is inconsistent. Either it should be changed altogether or left
+> > as is.
+>
+> Dan, please review this one as well. I think here you may agree with me.
 
-Build test:
-mips (gcc version 10.3.1 20210416): 63 configs -> no new failure
-arm (gcc version 10.3.1 20210416): 105 configs -> no new failure
-x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
+You know, this is all a problem because ACPICA is using a raw buffer.
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression.
-arm: Booted on rpi3b. No regression.
-
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
---
-Regards
-Sudip
+Erik, would it be possible to use the guid_t type in ACPICA? That
+would allow NFIT to drop some ugly casts.
