@@ -2,114 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EAD336277D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 20:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB284362782
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 20:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244331AbhDPSJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 14:09:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36410 "EHLO
+        id S244349AbhDPSKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 14:10:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244362AbhDPSJN (ORCPT
+        with ESMTP id S237802AbhDPSKq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 14:09:13 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3591C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 11:08:45 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so16847732pjh.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 11:08:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8sHr1KWLYr6hUO2+6Muh8EPhx1F9Tk8jR0NrChU25Qw=;
-        b=sbEXaiiHsn3/aSCb6k95Aihy0B3zcE8x0t+7bwBKOEWSw41rec5+GbSmBF+x3vx1W+
-         22CrjlXWaHoiS4q4DLqsFhuLaMUxCI3s9iBTVJrsCbwKIf1jvEyvfo4/39HSO6Y1OPTB
-         kXinE7pzB/pIxaVPpuS0hN65eM5JWBoeW4iK9wAbCviURxQayXdM5s3G6C9jPXR+9Acx
-         +o6dG5dzwQXaOa1dKA8eJiQdhjPU72dHDgNDwH3pZDK9ftzIT9m1LtOSPG6j0w8yAMhh
-         CDFTk6TA6U4C4YF7DnVHigczZ2qBFNr7Eyzdn5xKNYwVBPCAvlaRhZM1pMRZDhD2f3GK
-         cZHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8sHr1KWLYr6hUO2+6Muh8EPhx1F9Tk8jR0NrChU25Qw=;
-        b=hcPu82f1MGcCUSh/hyrnenP8ntjKQvY023vpJrwaeW0T0wQlArYVxxFvctpL9DN+tt
-         afbzTrEm6cgEptVAlk+yG70o3JlwLuBkAXS7L8n9Jo6VYxrCyywXPPr+SjkBk6YOWDfF
-         9IMU8B8HfUr9QyPwAg5/hWb7Sg631uTN1zCdz3n3kxQN0a+7FP7aETQiWbgQDhJyafp3
-         Gb252zG13IOm6iLbFhMNo9yNJpcApeGwuCBU5oVuqi+HJvVKn7nniAbCjV+19Qv99tG3
-         DpDc0M33P9DFqs6vYm7R2xQ7qWI5lQOb+tR8FJ9x3tgpipKnMkMBOVy07kalYE1G7Ipf
-         jnaQ==
-X-Gm-Message-State: AOAM532JkhcK0mEeZtwXuCmVlYcwZJUmECWaU2zp+gihN8iTHNZHfPyR
-        oQvXyl1W0tZVyLXUA0SQKIKLKw==
-X-Google-Smtp-Source: ABdhPJyR0UqNjrwgaE5FPswaP50mdYiX9Xg7XwWgE+Ls0+GtsSCX9wkO/QEQHFbjOXib9i6gAOaJRg==
-X-Received: by 2002:a17:90a:528b:: with SMTP id w11mr11115174pjh.162.1618596525196;
-        Fri, 16 Apr 2021 11:08:45 -0700 (PDT)
-Received: from hermes.local (76-14-218-44.or.wavecable.com. [76.14.218.44])
-        by smtp.gmail.com with ESMTPSA id x29sm2543765pga.70.2021.04.16.11.08.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 11:08:44 -0700 (PDT)
-Date:   Fri, 16 Apr 2021 11:08:36 -0700
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     Haiyang Zhang <haiyangz@microsoft.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Wei Liu <liuwe@microsoft.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "bernd@petrovitsch.priv.at" <bernd@petrovitsch.priv.at>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        Shachar Raindel <shacharr@microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Subject: Re: [PATCH v7 net-next] net: mana: Add a driver for Microsoft Azure
- Network Adapter (MANA)
-Message-ID: <20210416110836.67a4a88e@hermes.local>
-In-Reply-To: <MW2PR2101MB0892EE955B75C2442E266DB9BF4C9@MW2PR2101MB0892.namprd21.prod.outlook.com>
-References: <20210416060705.21998-1-decui@microsoft.com>
-        <20210416094006.70661f47@hermes.local>
-        <MN2PR21MB12957D66D4DB4B3B7BAEFCA5CA4C9@MN2PR21MB1295.namprd21.prod.outlook.com>
-        <MW2PR2101MB0892EE955B75C2442E266DB9BF4C9@MW2PR2101MB0892.namprd21.prod.outlook.com>
+        Fri, 16 Apr 2021 14:10:46 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1451EC061574;
+        Fri, 16 Apr 2021 11:10:21 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lXSul-005p9O-6e; Fri, 16 Apr 2021 18:09:59 +0000
+Date:   Fri, 16 Apr 2021 18:09:59 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH 04/13] Kbuild: Rust support
+Message-ID: <YHnS92ZKZ4tRWTiA@zeniv-ca.linux.org.uk>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <20210414184604.23473-5-ojeda@kernel.org>
+ <YHmTWEAS/QjX++w4@hirez.programming.kicks-ass.net>
+ <CAHk-=wh_zb=K1B-N8mgHmSZDqTLgOm711NRXbTX_OwFAzDYg0Q@mail.gmail.com>
+ <CANiq72nx7ngazsH7sZgc=HeU0cNj45F9+-rwQb7AkdYsRCmRbQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANiq72nx7ngazsH7sZgc=HeU0cNj45F9+-rwQb7AkdYsRCmRbQ@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Apr 2021 17:58:45 +0000
-Dexuan Cui <decui@microsoft.com> wrote:
+On Fri, Apr 16, 2021 at 07:47:32PM +0200, Miguel Ojeda wrote:
+> On Fri, Apr 16, 2021 at 7:05 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > Typical Rust error handling should match the regular kernel
+> > IS_ERR/ERR_PTR/PTR_ERR model fairly well, although the syntax is
+> > fairly different (and it's not limited to pointers).
+> 
+> Yeah, exactly. We already have a `KernelResult<T>` type which is a
+> `Result<T, Error>`, where `Error` is a wrapper for the usual kernel
+> int errors.
+> 
+> So, for instance, a function that can either fail or return `Data`
+> would have a declaration like:
+> 
+>     pub fn foo() -> KernelResult<Data>
+> 
+> A caller that needs to handle the error can use pattern matching or
+> one of the methods in `Result`. And if they only need to bubble the
+> error up, they can use the ? operator:
+> 
+>     pub fn bar() -> KernelResult<Data> {
+>         let data = foo()?;
+> 
+>         // `data` is already a `Data` here, not a `KernelResult<Data>`
+>     }
 
-> > >
-> > > This probably should be a separate patch.
-> > > I think it is trying to address the case of VF discovery in Hyper-V/Azure where
-> > > the reported
-> > > VF from Hypervisor is bogus or confused.  
-> > 
-> > This is for the Multi vPorts feature of MANA driver, which allows one VF to
-> > create multiple vPorts (NICs). They have the same PCI device and same VF
-> > serial number, but different MACs.
-> > 
-> > So we put the change in one patch to avoid distro vendors missing this
-> > change when backporting the MANA driver.
-> > 
-> > Thanks,
-> > - Haiyang  
-> 
-> The netvsc change should come together in the same patch with this VF
-> driver, otherwise the multi-vPorts functionality doesn't work properly.
-> 
-> The netvsc change should not break any other existing VF drivers, because
-> Hyper-V NIC SR-IOV implementation requires the the NetVSC network
-> interface and the VF network interface should have the same MAC address,
-> otherwise things won't work.
-> 
-> Thanks,
-> Dexuan
+Umm...  A fairly common situation is
 
-Distro vendors should be able to handle a patch series.
-Don't see why this could not be two patch series.
+foo() returns a pointer to struct foo instance or ERR_PTR()
+bar() returns a pointer to struct bar instance of ERR_PTR()
+
+bar()
+{
+	struct foo *p;
+	struct bar *res;
+	.... // do some work, grab a mutex, etc.
+	p = foo();
+	if (IS_ERR(p))
+		res = ERR_CAST(p); // (void *)p, internally; conceptually it's
+				   // ERR_PTR(PTR_ERR(p));
+	else
+		res = blah();
+	.... // matching cleanup
+	return res;
+}
+
+How well would ? operator fit that pattern?  _If_ it's just a syntax sugar
+along the lines of "if argument matches Err(_), return Err(_)", the types
+shouldn't be an issue, but that might need some fun with releasing resources,
+etc.  If it's something more elaborate... details, please.
