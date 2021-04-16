@@ -2,107 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 027DD3626D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:31:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4083626D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242623AbhDPRbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 13:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242430AbhDPRbm (ORCPT
+        id S242690AbhDPRc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 13:32:26 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:56862 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236140AbhDPRcV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 13:31:42 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51605C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:31:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:References:To:From:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=/83oxjoBsrKTLJD6ELhf3v9qLCntfhe0mYpEazOahKE=; b=GXkzK6JBMjUPGeJewgtWFsix03
-        Kmi5255GhtPvfQlUWAEYcjnOXPRyQ1pWa/eNR1/rmVOorpZBKIzji4wFle2g8B2SXWmpXOvlE1uNY
-        U0Ol2I5UuODVc7u0gkdyfiCWnadE4KNSlhLiVGwplq2xmT6UFIbc+oM27S3b/ehzno9ge1h0SMvdx
-        BJaWeJaL5pvlmAYJAyeES51g/qc8dz1jUReGp1tGDaVIxqmNoXZ5wypk7ILxXJ9WcFb/q//xn1Txn
-        CDCncrRKxphnSlpdYIA0yeCA8MFTvqZbbrYC9IerZRwlOkgwR+CAAl0/4vwPDOt2EqUSZFrZY2gy2
-        v9k6ynPA==;
-Received: from [2601:1c0:6280:3f0::df68]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lXSJH-002xCY-Gx; Fri, 16 Apr 2021 17:31:15 +0000
-Subject: Re: Page BUGs
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Drew Abbott <abbotta4@gmail.com>, linux-kernel@vger.kernel.org
-References: <CALY-g84i=WPVT7OKwKa1xJaORPwMUyjdX0ewqqoVsC2ihbpvtg@mail.gmail.com>
- <48806d4c-743a-8c63-fd86-04babb149744@infradead.org>
-Message-ID: <e39e346d-6d4c-f265-67ca-736d51f16266@infradead.org>
-Date:   Fri, 16 Apr 2021 10:31:12 -0700
+        Fri, 16 Apr 2021 13:32:21 -0400
+Received: from [192.168.254.32] (unknown [47.187.223.33])
+        by linux.microsoft.com (Postfix) with ESMTPSA id F3E3520B8001;
+        Fri, 16 Apr 2021 10:31:55 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com F3E3520B8001
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1618594316;
+        bh=kwpaa1a5+AiPOWCdlPBsZNZGBHCN4N/Uje1fuen89+o=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=IBhckXmyPeQdehVc+Ge6lf78wD873wDdIzVc2IdOdNWzKssbmVeRJE5rBCppUoJks
+         5IMOTb/2ABmx+DYxhV2TWhBw8x6H6Uy43d/Nqx138jIklqS/zk4J40JUs3T4j8OdCq
+         ypx98NhSpkPLFwtXSEMzeAhG/gky4xpQM45JEDXc=
+Subject: Re: [RFC PATCH v2 1/1] arm64: Implement stack trace termination
+ record
+To:     Mark Brown <broonie@kernel.org>
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <659f3d5cc025896ba4c49aea431aa8b1abc2b741>
+ <20210402032404.47239-1-madvenka@linux.microsoft.com>
+ <20210402032404.47239-2-madvenka@linux.microsoft.com>
+ <20210416161740.GH5560@sirena.org.uk>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <765d0a08-d65f-162b-b20d-07a51b05d984@linux.microsoft.com>
+Date:   Fri, 16 Apr 2021 12:31:55 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <48806d4c-743a-8c63-fd86-04babb149744@infradead.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210416161740.GH5560@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/16/21 10:29 AM, Randy Dunlap wrote:
-> On 4/16/21 10:20 AM, Drew Abbott wrote:
->> Hello,
->>
->> I have been troubleshooting problems with the vanilla and lts linux kernels
->> for a couple of weeks now and saw this mailing list in MAINTAINERS for
->> problems with mm.h; apologies if this is the wrong place to ask. I have
-> 
-> MAINTAINERS file says:
-> 
-> MEMORY MANAGEMENT
-> M:	Andrew Morton <akpm@linux-foundation.org>
-> L:	linux-mm@kvack.org
-> S:	Maintained
-> W:	http://www.linux-mm.org
-> T:	quilt https://ozlabs.org/~akpm/mmotm/
-> T:	quilt https://ozlabs.org/~akpm/mmots/
-> T:	git git://github.com/hnaz/linux-mm.git
-> F:	include/linux/gfp.h
-> F:	include/linux/memory_hotplug.h
-> F:	include/linux/mm.h
-> F:	include/linux/mmzone.h
-> F:	include/linux/pagewalk.h
-> F:	include/linux/vmalloc.h
-> F:	mm/
-> 
-> so linux-mm@kvack.org would be better IMO.
-> 
->> been experiencing many freezes and panics with this hardware:
->> https://pcpartpicker.com/user/Abbott/saved/#view=wXdgt6
->> Originally[0], many of the traces referred to cpu idling funcs that seem to
->> be addressed already[1][2], but now all of the traces refer to problems
->> with paging[3][4][5][6]. I normally mount a mergerfs filesystem at boot
->> that I thought was causing the panics[7], but I have since removed that
->> entry from fstab and can still see paging bugs without that fs (or any
->> other FUSE fs) mounted[7].
->> What can I do to keep my computer from freezing and panicking?
->>
->> Thank you,
->> Drew Abbott
->>
->> [0] https://bbs.archlinux.org/viewtopic.php?id=259571
->> [1] https://bugzilla.kernel.org/show_bug.cgi?id=212087
->> [2] https://bugzilla.kernel.org/show_bug.cgi?id=212543
->> [3] https://imgur.com/HT4F7p7
->> [4] https://imgur.com/pTb4Miu
->> [5] https://imgur.com/pTb4Miu
->> [6] https://imgur.com/JVueE3m
->> [7] http://0x0.st/-ATM.log
-> 
-> [7] tells me:
-> SyntaxError: JSON.parse: unexpected non-whitespace character after JSON data at line 1 column 16 of the JSON data
+Thanks!
 
-That was on Firefox.
-Opera can display it successfully.
+Madhavan
 
-
--- 
-~Randy
-
+On 4/16/21 11:17 AM, Mark Brown wrote:
+> On Thu, Apr 01, 2021 at 10:24:04PM -0500, madvenka@linux.microsoft.com wrote:
+> 
+>> Reliable stacktracing requires that we identify when a stacktrace is
+>> terminated early. We can do this by ensuring all tasks have a final
+>> frame record at a known location on their task stack, and checking
+>> that this is the final frame record in the chain.
+> 
+> Reviewed-by: Mark Brown <broonie@kernel.org>
+> 
