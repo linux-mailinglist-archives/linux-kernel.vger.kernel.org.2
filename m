@@ -2,180 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233EB361965
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 07:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3081036196B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 07:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238323AbhDPFkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 01:40:07 -0400
-Received: from lucky1.263xmail.com ([211.157.147.133]:39124 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230250AbhDPFkG (ORCPT
+        id S238531AbhDPFlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 01:41:45 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:26771 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231598AbhDPFlo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 01:40:06 -0400
-Received: from localhost (unknown [192.168.167.13])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 32DA1CD49F;
-        Fri, 16 Apr 2021 13:39:31 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED: 0
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [124.126.19.250])
-        by smtp.263.net (postfix) whith ESMTP id P1751T140588846388992S1618551571060235_;
-        Fri, 16 Apr 2021 13:39:31 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <735a5e5a37f7a3b8da6c276590c9a4d9>
-X-RL-SENDER: zhaoxiao@uniontech.com
-X-SENDER: zhaoxiao@uniontech.com
-X-LOGIN-NAME: zhaoxiao@uniontech.com
-X-FST-TO: tglx@linutronix.de
-X-RCPT-COUNT: 16
-X-SENDER-IP: 124.126.19.250
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   zhaoxiao <zhaoxiao@uniontech.com>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, nivedita@alum.mit.edu, clin@suse.com,
-        andriy.shevchenko@linux.intel.com, ndesaulniers@google.com,
-        dan.j.williams@intel.com, masahiroy@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     jroedel@suse.de, peterz@infradead.org, jpoimboe@redhat.com,
-        zhaoxiao <zhaoxiao@uniontech.com>
-Subject: [PATCH v2] X86: Makefile: Replace -pg with CC_FLAGS_FTRACE
-Date:   Fri, 16 Apr 2021 13:39:28 +0800
-Message-Id: <20210416053928.11576-1-zhaoxiao@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 16 Apr 2021 01:41:44 -0400
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 13G5epDP031255
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 14:40:51 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 13G5epDP031255
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1618551652;
+        bh=iFOikycyQ7i5uJ+3y6p8wEYNef3YAETSQnRFp2InNPU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=vqMORC5uwkR0SD06BZH/Md9UniYKVyNm/oOVQ9a9g5+JusU6ofzdm6jVVGL+OIBgC
+         LwsJRqAxJlukIdDEZCML9/lA4sbEkefUfmvDa03SeQ+uGBX17osZhjsfytKovrk9+G
+         77VZN5q1HA3O135Z6op2+afBIIgxfAIr0THlu26MbuCWYG56kVmpW7LqJTusxF2bbE
+         hpgTvu1u2Vk5BRjK0nU+Oo9u+mQ9qeIMKC5MQKVF3qp+vNrd6LNeLgXC0Z6n5cL8xG
+         Mq6AneWA+ahyP5Skc+TASfOXYPTlbIAZbq2uRfoT0n+og1pa5Sx6CaRsKQibgIMvAs
+         2c1gOVn4AT7fA==
+X-Nifty-SrcIP: [209.85.210.179]
+Received: by mail-pf1-f179.google.com with SMTP id d124so17585844pfa.13
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 22:40:51 -0700 (PDT)
+X-Gm-Message-State: AOAM532EyaLi9bCehHZk4VR4jB/4JU8u892Cg3/FtpNldsQYE6C7U5mS
+        ms/Fx5UmRs1KAy9vrFCpo0lpzLryBlYuukzsvQU=
+X-Google-Smtp-Source: ABdhPJzM8++20ZWnUL+b7ja3YLqHEWvDSf4FOyp/GhhBVW1ckZUNcQQ05s/qrFGvMre4gVR9scNFPatRqd6x6UalKI4=
+X-Received: by 2002:a65:45cf:: with SMTP id m15mr6561675pgr.7.1618551650955;
+ Thu, 15 Apr 2021 22:40:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210327120155.500-1-ionic@ionic.de> <20210415072803.16338-1-ionic@ionic.de>
+In-Reply-To: <20210415072803.16338-1-ionic@ionic.de>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 16 Apr 2021 14:40:13 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATqZxthFKb71OUbq6WKbEi4uWdGy-nExx5wt=Mvb+hnCA@mail.gmail.com>
+Message-ID: <CAK7LNATqZxthFKb71OUbq6WKbEi4uWdGy-nExx5wt=Mvb+hnCA@mail.gmail.com>
+Subject: Re: [PATCH v3] kconfig: nconf: stop endless search loops
+To:     Mihai Moldovan <ionic@ionic.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for x86 supporting ftrace built on other compiler
-options, let's have the x86 Makefiles remove the $(CC_FLAGS_FTRACE)
-flags, whatever these may be, rather than assuming '-pg'.
+On Thu, Apr 15, 2021 at 4:28 PM Mihai Moldovan <ionic@ionic.de> wrote:
+>
+> If the user selects the very first entry in a page and performs a
+> search-up operation, or selects the very last entry in a page and
+> performs a search-down operation that will not succeed (e.g., via
+> [/]asdfzzz[Up Arrow]), nconf will never terminate searching the page.
+>
+> The reason is that in this case, the starting point will be set to -1
+> or n, which is then translated into (n - 1) (i.e., the last entry of
+> the page) or 0 (i.e., the first entry of the page) and finally the
+> search begins. This continues to work fine until the index reaches 0 or
+> (n - 1), at which point it will be decremented to -1 or incremented to
+> n, but not checked against the starting point right away. Instead, it's
+> wrapped around to the bottom or top again, after which the starting
+> point check occurs... and naturally fails.
+>
+> My original implementation added another check for -1 before wrapping
+> the running index variable around, but Masahiro Yamada pointed out that
+> the actual issue is that the comparison point (starting point) exceeds
+> bounds (i.e., the [0,n-1] interval) in the first place and that,
+> instead, the starting point should be fixed.
+>
+> This has the welcome side-effect of also fixing the case where the
+> starting point was n while searching down, which also lead to an
+> infinite loop.
+>
+> OTOH, this code is now essentially all his work.
+>
+> Amazingly, nobody seems to have been hit by this for 11 years - or at
+> the very least nobody bothered to debug and fix this.
+>
+> Signed-off-by: Mihai Moldovan <ionic@ionic.de>
+> ---
 
-There should be no functional change as a result of this patch.
+Applied to linux-kbuild. Thanks.
 
-Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
----
-v2: add the same change for the other Makefile in arch/x86 directory.
- arch/x86/entry/vdso/Makefile |  8 ++++----
- arch/x86/kernel/Makefile     | 16 ++++++++--------
- arch/x86/kernel/cpu/Makefile |  4 ++--
- arch/x86/lib/Makefile        |  2 +-
- arch/x86/mm/Makefile         |  4 ++--
- arch/x86/xen/Makefile        |  6 +++---
- 6 files changed, 20 insertions(+), 20 deletions(-)
 
-diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
-index 05c4abc2fdfd..c5bd91bf9f93 100644
---- a/arch/x86/entry/vdso/Makefile
-+++ b/arch/x86/entry/vdso/Makefile
-@@ -96,10 +96,10 @@ $(vobjs): KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_LTO) $(GCC_PLUGINS_CFLAGS) $(
- #
- # vDSO code runs in userspace and -pg doesn't help with profiling anyway.
- #
--CFLAGS_REMOVE_vclock_gettime.o = -pg
--CFLAGS_REMOVE_vdso32/vclock_gettime.o = -pg
--CFLAGS_REMOVE_vgetcpu.o = -pg
--CFLAGS_REMOVE_vsgx.o = -pg
-+CFLAGS_REMOVE_vclock_gettime.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_vdso32/vclock_gettime.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_vgetcpu.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_vsgx.o = $(CC_FLAGS_FTRACE)
- 
- #
- # X32 processes use x32 vDSO to access 64bit kernel data.
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index 2ddf08351f0b..2811fc6a17ba 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -13,14 +13,14 @@ CPPFLAGS_vmlinux.lds += -U$(UTS_MACHINE)
- 
- ifdef CONFIG_FUNCTION_TRACER
- # Do not profile debug and lowlevel utilities
--CFLAGS_REMOVE_tsc.o = -pg
--CFLAGS_REMOVE_paravirt-spinlocks.o = -pg
--CFLAGS_REMOVE_pvclock.o = -pg
--CFLAGS_REMOVE_kvmclock.o = -pg
--CFLAGS_REMOVE_ftrace.o = -pg
--CFLAGS_REMOVE_early_printk.o = -pg
--CFLAGS_REMOVE_head64.o = -pg
--CFLAGS_REMOVE_sev-es.o = -pg
-+CFLAGS_REMOVE_tsc.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_paravirt-spinlocks.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_pvclock.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_kvmclock.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_ftrace.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_early_printk.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_head64.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_sev-es.o = $(CC_FLAGS_FTRACE)
- endif
- 
- KASAN_SANITIZE_head$(BITS).o				:= n
-diff --git a/arch/x86/kernel/cpu/Makefile b/arch/x86/kernel/cpu/Makefile
-index 637b499450d1..4435c6de9145 100644
---- a/arch/x86/kernel/cpu/Makefile
-+++ b/arch/x86/kernel/cpu/Makefile
-@@ -5,8 +5,8 @@
- 
- # Don't trace early stages of a secondary CPU boot
- ifdef CONFIG_FUNCTION_TRACER
--CFLAGS_REMOVE_common.o = -pg
--CFLAGS_REMOVE_perf_event.o = -pg
-+CFLAGS_REMOVE_common.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_perf_event.o = $(CC_FLAGS_FTRACE)
- endif
- 
- # If these files are instrumented, boot hangs during the first second.
-diff --git a/arch/x86/lib/Makefile b/arch/x86/lib/Makefile
-index bad4dee4f0e4..0aa71b8a5bc1 100644
---- a/arch/x86/lib/Makefile
-+++ b/arch/x86/lib/Makefile
-@@ -21,7 +21,7 @@ KASAN_SANITIZE_cmdline.o  := n
- KCSAN_SANITIZE_cmdline.o  := n
- 
- ifdef CONFIG_FUNCTION_TRACER
--CFLAGS_REMOVE_cmdline.o = -pg
-+CFLAGS_REMOVE_cmdline.o = $(CC_FLAGS_FTRACE)
- endif
- 
- CFLAGS_cmdline.o := -fno-stack-protector -fno-jump-tables
-diff --git a/arch/x86/mm/Makefile b/arch/x86/mm/Makefile
-index 5864219221ca..91883d5a0293 100644
---- a/arch/x86/mm/Makefile
-+++ b/arch/x86/mm/Makefile
-@@ -12,8 +12,8 @@ KASAN_SANITIZE_mem_encrypt_identity.o	:= n
- KCSAN_SANITIZE := n
- 
- ifdef CONFIG_FUNCTION_TRACER
--CFLAGS_REMOVE_mem_encrypt.o		= -pg
--CFLAGS_REMOVE_mem_encrypt_identity.o	= -pg
-+CFLAGS_REMOVE_mem_encrypt.o		= $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_mem_encrypt_identity.o	= $(CC_FLAGS_FTRACE)
- endif
- 
- obj-y				:=  init.o init_$(BITS).o fault.o ioremap.o extable.o mmap.o \
-diff --git a/arch/x86/xen/Makefile b/arch/x86/xen/Makefile
-index 40b5779fce21..179dfc124c94 100644
---- a/arch/x86/xen/Makefile
-+++ b/arch/x86/xen/Makefile
-@@ -2,9 +2,9 @@
- 
- ifdef CONFIG_FUNCTION_TRACER
- # Do not profile debug and lowlevel utilities
--CFLAGS_REMOVE_spinlock.o = -pg
--CFLAGS_REMOVE_time.o = -pg
--CFLAGS_REMOVE_irq.o = -pg
-+CFLAGS_REMOVE_spinlock.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_time.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_irq.o = $(CC_FLAGS_FTRACE)
- endif
- 
- # Make sure early boot has no stackprotector
+> v2: swap constant in comparison to right side, as requested by
+>     Randy Dunlap <rdunlap@infradead.org>
+> v3: reimplement as suggested by Masahiro Yamada <masahiroy@kernel.org>,
+>     which has the side-effect of also fixing endless looping in the
+>     symmetric down-direction
+>
+>  scripts/kconfig/nconf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/scripts/kconfig/nconf.c b/scripts/kconfig/nconf.c
+> index e0f965529166..af814b39b876 100644
+> --- a/scripts/kconfig/nconf.c
+> +++ b/scripts/kconfig/nconf.c
+> @@ -504,8 +504,8 @@ static int get_mext_match(const char *match_str, match_f flag)
+>         else if (flag == FIND_NEXT_MATCH_UP)
+>                 --match_start;
+>
+> +       match_start = (match_start + items_num) % items_num;
+>         index = match_start;
+> -       index = (index + items_num) % items_num;
+>         while (true) {
+>                 char *str = k_menu_items[index].str;
+>                 if (strcasestr(str, match_str) != NULL)
+> --
+> 2.30.1
+>
+
+
 -- 
-2.20.1
-
-
-
+Best Regards
+Masahiro Yamada
