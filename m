@@ -2,203 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71D03626A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D73C73626B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241279AbhDPRVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 13:21:51 -0400
-Received: from mga01.intel.com ([192.55.52.88]:13987 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233606AbhDPRVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 13:21:50 -0400
-IronPort-SDR: usxTo4F52PJ5piVi/n2nXzVZwhG8GKREy7wmGHSiRp7UbRKi+csBEhp2pSiHRbfHFA4AknM074
- oUiAPb5sa/Uw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9956"; a="215611395"
-X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
-   d="scan'208";a="215611395"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 10:20:54 -0700
-IronPort-SDR: 7aKIREIfd33fUejts9JO8C/JGcYaQKmRX9TIcVRpgZbxyjn9wJ5qbogVNvpiG7jHljOCuydnji
- hk70wzrofMfg==
-X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
-   d="scan'208";a="425664043"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 10:20:53 -0700
-Date:   Fri, 16 Apr 2021 10:23:32 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210416102332.6f71e53e@jacob-builder>
-In-Reply-To: <20210416094547.1774e1a3@redhat.com>
-References: <BN6PR11MB40688F5AA2323AB8CC8E65E7C37C9@BN6PR11MB4068.namprd11.prod.outlook.com>
-        <20210331124038.GE1463678@nvidia.com>
-        <BN6PR11MB406854CAE9D7CE86BEAB3E23C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
-        <BN6PR11MB40687428F0D0F3B5F13EA3E0C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
-        <YGW27KFt9eQB9X2z@myrica>
-        <BN6PR11MB4068171CD1D4B823515F7EFBC37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
-        <20210401134236.GF1463678@nvidia.com>
-        <BN6PR11MB4068C4DE7AF43D44DE70F4C1C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
-        <20210401160337.GJ1463678@nvidia.com>
-        <4bea6eb9-08ad-4b6b-1e0f-c97ece58a078@redhat.com>
-        <20210415230732.GG1370958@nvidia.com>
-        <20210416061258.325e762e@jacob-builder>
-        <20210416094547.1774e1a3@redhat.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S241502AbhDPR0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 13:26:39 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:56122 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235935AbhDPR0i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 13:26:38 -0400
+Received: from [192.168.86.23] (c-73-38-52-84.hsd1.vt.comcast.net [73.38.52.84])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 246E820B8001;
+        Fri, 16 Apr 2021 10:26:11 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 246E820B8001
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1618593973;
+        bh=yI1pAMpH+mhQxjxBFxyi6XTgljNwMYGQtQI+vVWmMsk=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=slYNO8en83Yfldinakff1HJ/VLKev28A09BDDpGfNxEsBbJsFZzaRUwIL6TqVp60l
+         n+V4W/Pm2YDlMVWcvXcoKFbSRkv9U3k9t4ZtyrpKL7VlbKv/AQ5tquBIZ2Bejd650V
+         yJmIxW3UOiU6H1DyeLr5CWaC44C8wO2qaDuhG75M=
+Subject: Re: [PATCH v2 5/7] KVM: SVM: hyper-v: Remote TLB flush for SVM
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org,
+        Lan Tianyu <Tianyu.Lan@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        viremana@linux.microsoft.com
+References: <cover.1618492553.git.viremana@linux.microsoft.com>
+ <959f6cc899a17c709a2f5a71f6b2dc8c072ae600.1618492553.git.viremana@linux.microsoft.com>
+ <87sg3q7g7b.fsf@vitty.brq.redhat.com>
+From:   Vineeth Pillai <viremana@linux.microsoft.com>
+Message-ID: <f85b1db2-3a0b-0de3-78e9-2c04721f00bc@linux.microsoft.com>
+Date:   Fri, 16 Apr 2021 13:26:08 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <87sg3q7g7b.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
 
-On Fri, 16 Apr 2021 09:45:47 -0600, Alex Williamson
-<alex.williamson@redhat.com> wrote:
-
-> On Fri, 16 Apr 2021 06:12:58 -0700
-> Jacob Pan <jacob.jun.pan@linux.intel.com> wrote:
-> 
-> > Hi Jason,
-> > 
-> > On Thu, 15 Apr 2021 20:07:32 -0300, Jason Gunthorpe <jgg@nvidia.com>
-> > wrote: 
-> > > On Thu, Apr 15, 2021 at 03:11:19PM +0200, Auger Eric wrote:    
-> > > > Hi Jason,
-> > > > 
-> > > > On 4/1/21 6:03 PM, Jason Gunthorpe wrote:      
-> > > > > On Thu, Apr 01, 2021 at 02:08:17PM +0000, Liu, Yi L wrote:
-> > > > >       
-> > > > >> DMA page faults are delivered to root-complex via page request
-> > > > >> message and it is per-device according to PCIe spec. Page request
-> > > > >> handling flow is:
-> > > > >>
-> > > > >> 1) iommu driver receives a page request from device
-> > > > >> 2) iommu driver parses the page request message. Get the
-> > > > >> RID,PASID, faulted page and requested permissions etc.
-> > > > >> 3) iommu driver triggers fault handler registered by device
-> > > > >> driver with iommu_report_device_fault()      
-> > > > > 
-> > > > > This seems confused.
-> > > > > 
-> > > > > The PASID should define how to handle the page fault, not the
-> > > > > driver. 
-> > > > 
-> > > > In my series I don't use PASID at all. I am just enabling nested
-> > > > stage and the guest uses a single context. I don't allocate any
-> > > > user PASID at any point.
-> > > > 
-> > > > When there is a fault at physical level (a stage 1 fault that
-> > > > concerns the guest), this latter needs to be reported and injected
-> > > > into the guest. The vfio pci driver registers a fault handler to
-> > > > the iommu layer and in that fault handler it fills a circ bugger
-> > > > and triggers an eventfd that is listened to by the VFIO-PCI QEMU
-> > > > device. this latter retrives the faault from the mmapped circ
-> > > > buffer, it knowns which vIOMMU it is attached to, and passes the
-> > > > fault to the vIOMMU. Then the vIOMMU triggers and IRQ in the guest.
-> > > > 
-> > > > We are reusing the existing concepts from VFIO, region, IRQ to do
-> > > > that.
-> > > > 
-> > > > For that use case, would you also use /dev/ioasid?      
-> > > 
-> > > /dev/ioasid could do all the things you described vfio-pci as doing,
-> > > it can even do them the same way you just described.
-> > > 
-> > > Stated another way, do you plan to duplicate all of this code someday
-> > > for vfio-cxl? What about for vfio-platform? ARM SMMU can be hooked to
-> > > platform devices, right?
-> > > 
-> > > I feel what you guys are struggling with is some choice in the iommu
-> > > kernel APIs that cause the events to be delivered to the pci_device
-> > > owner, not the PASID owner.
-> > > 
-> > > That feels solvable.
-> > >     
-> > Perhaps more of a philosophical question for you and Alex. There is no
-> > doubt that the direction you guided for /dev/ioasid is a much cleaner
-> > one, especially after VDPA emerged as another IOMMU backed framework.  
-> 
-> I think this statement answers all your remaining questions ;)
-> 
-> > The question is what do we do with the nested translation features that
-> > have been targeting the existing VFIO-IOMMU for the last three years?
-> > That predates VDPA. Shall we put a stop marker *after* nested support
-> > and say no more extensions for VFIO-IOMMU, new features must be built
-> > on this new interface?
-> >
-> > If we were to close a checkout line for some unforeseen reasons, should
-> > we honor the customers already in line for a long time?
-> > 
-> > This is not a tactic or excuse for not working on the new /dev/ioasid
-> > interface. In fact, I believe we can benefit from the lessons learned
-> > while completing the existing. This will give confidence to the new
-> > interface. Thoughts?  
-> 
-> I understand a big part of Jason's argument is that we shouldn't be in
-> the habit of creating duplicate interfaces, we should create one, well
-> designed interfaces to share among multiple subsystems.  As new users
-> have emerged, our solution needs to change to a common one rather than
-> a VFIO specific one.  The IOMMU uAPI provides an abstraction, but at
-> the wrong level, requiring userspace interfaces for each subsystem.
-> 
-> Luckily the IOMMU uAPI is not really exposed as an actual uAPI, but
-> that changes if we proceed to enable the interfaces to tunnel it
-> through VFIO.
-> 
-> The logical answer would therefore be that we don't make that
-> commitment to the IOMMU uAPI if we believe now that it's fundamentally
-> flawed.
-> 
-I agree the uAPI data tunneling is definitely flawed in terms of
-scalability.
-
-I was just thinking it is still a small part of the overall
-picture. Considering there are other parts such as fault reporting, user
-space deployment, performance, and security. By completing the support on
-the existing VFIO framework, it would at least offer a clear landscape where
-the new /dev/ioasid can improve upon.
-
-Perhaps similar to cgroup v1 vs v2, it took a long time and with known
-limitations in v1.
-
-Anyway, I am glad we have a clear direction now.
+On 4/16/2021 5:04 AM, Vitaly Kuznetsov wrote:
+> Vineeth Pillai <viremana@linux.microsoft.com> writes:
+>
+>
+>   
+> +#if IS_ENABLED(CONFIG_HYPERV)
+> +static void hv_init_vmcb(struct vmcb *vmcb)
+> +{
+> +	struct hv_enlightenments *hve = &vmcb->hv_enlightenments;
+> +
+> +	if (npt_enabled &&
+> +	    ms_hyperv.nested_features & HV_X64_NESTED_ENLIGHTENED_TLB)
+> Nitpick: we can probably have a 'static inline' for
+>
+>   "npt_enabled && ms_hyperv.nested_features & HV_X64_NESTED_ENLIGHTENED_TLB"
+>
+> e.g. 'hv_svm_enlightened_tlbflush()'
+Makes sense, will do.
 
 Thanks,
-
-Jacob
-
-> Ideally this new /dev/ioasid interface, and making use of it as a VFIO
-> IOMMU backend, should replace type1.  Type1 will live on until that
-> interface gets to parity, at which point we may deprecate type1, but it
-> wouldn't make sense to continue to expand type1 in the same direction
-> as we intend /dev/ioasid to take over in the meantime, especially if it
-> means maintaining an otherwise dead uAPI.  Thanks,
-> 
-
-> Alex
-> 
+Vineeth
 
 
-Thanks,
 
-Jacob
+
