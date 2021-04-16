@@ -2,133 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0AE3618F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 06:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C478F3618F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 06:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238156AbhDPEfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 00:35:44 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:55063 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237767AbhDPEfl (ORCPT
+        id S234735AbhDPEjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 00:39:46 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19318 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229719AbhDPEjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 00:35:41 -0400
-Received: by mail-il1-f200.google.com with SMTP id a1-20020a92c5410000b02901689a5cd3bdso5766511ilj.21
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 21:35:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=vQTgohi03z5tK7Cg1hw3ZJisST4UH/MCqTpc+mpUM3w=;
-        b=Fsw1WBJOXsOdvxZi/pXb+r65wPqUyPJtLNfWNHe5SXYmINXqPyKItJKFLfrB8r69X2
-         +ls2rgqKxnvp6XMrgC/t65Ewt7JThi4hHvUsEl6DlKJ9Kzxy7mP96B9MPm0NXXrdxn4i
-         skY8bMrgwIyiAwvHsjZ2cm+tarbe2uPxPTFdmVtYS4sI13daBtOzuqtzFKpn4GlPr8xv
-         zHpXkoH/dtC5qMjOseeFt9z9ks566Fc2Fc3/kAzrFafFV+HN7eGx/8+Yiu2FC28vuuOC
-         H+29scZlZjY+1rHB3+7K7KIXRUBJFQTUsccw7lEeMO0IXXtRJ5v+QUBSOhUyjTo7SnBp
-         7AiQ==
-X-Gm-Message-State: AOAM532KDVWJ7r/+ivXMPDDKLn0apwruqAj4lc/VX24u63BfKhW2JYDz
-        bUAA9FLWNJkgZqEeA/L0DGNsBZay9CoqYY8dDtrHm3djniTZ
-X-Google-Smtp-Source: ABdhPJw1usrwJxPJNZPdyxUalJuLF2O2KN2oetB1VB36jzdNFtg6/b+WSHV39d4QGIjC1xLB7NXq3r61gkbTcUaBrhhTb6j06Uy0
+        Fri, 16 Apr 2021 00:39:44 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13G4Y3j9022685;
+        Fri, 16 Apr 2021 00:38:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Qg3sUk81HK+aS8G8kz99tD1f+4C08Ppu6ef3glezsJA=;
+ b=YYuMSPzeN9W+kwvAEKA7kOn9LX7MjuNZ9+epu7drmVlfmlaI/0Yjv6Zd71Aa51NX0iIw
+ 625eZBEN0L2FGzTHHRP3jaksobM2W6DZplZkkitk6KtjpGle1yRORYKpPqQWn91tUxYR
+ A8O6lkutyqCuCn1x40MQ3Otv2mGoYblAMfGmYA6TyWzDjoNwbuotcbZ2UTVaaf9vVlA3
+ zvlcaYKALH68h4D25XilhwY9ABGxxkgo4BDbnn5km+c9x5D+vB47TC7P9LDv06zdp+sM
+ hEIjhqF7KxmgHNfefADKKjMG1k4boqyB19doUNj09XsAyPKHWsEN2JIEgvwkt5ibJuDw nA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37xbpu3m36-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 00:38:53 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13G4YjJl023816;
+        Fri, 16 Apr 2021 00:38:53 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37xbpu3m1m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 00:38:52 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13G4bc0l019194;
+        Fri, 16 Apr 2021 04:38:51 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 37u3n8c7u4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 04:38:50 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13G4cQXW36962698
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 16 Apr 2021 04:38:26 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B17F9A4051;
+        Fri, 16 Apr 2021 04:38:48 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D40CFA4040;
+        Fri, 16 Apr 2021 04:38:46 +0000 (GMT)
+Received: from [9.85.71.75] (unknown [9.85.71.75])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 16 Apr 2021 04:38:46 +0000 (GMT)
+Subject: Re: [PATCH v1 1/1] powerpc/papr_scm: Properly handle UUID types and
+ API
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Vaibhav Jain <vaibhav@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>
+References: <20210415134637.17770-1-andriy.shevchenko@linux.intel.com>
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Message-ID: <266684c6-e2c8-e19b-214d-809f16e79e7b@linux.ibm.com>
+Date:   Fri, 16 Apr 2021 10:08:45 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-Received: by 2002:a5e:8419:: with SMTP id h25mr1970510ioj.43.1618547715699;
- Thu, 15 Apr 2021 21:35:15 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 21:35:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a5772005c00f8101@google.com>
-Subject: [syzbot] WARNING in ctx_sched_in
-From:   syzbot <syzbot+50d41b514809f6f4f326@syzkaller.appspotmail.com>
-To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, jolsa@redhat.com,
-        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
-        netdev@vger.kernel.org, peterz@infradead.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210415134637.17770-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 0PxvgveLwHLjJYd3ClaSZb_jAgO70mft
+X-Proofpoint-GUID: EvIvTXs2ncKiE5pD93RJbCRHHo_9nM4i
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-15_11:2021-04-15,2021-04-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=999 clxscore=1011 suspectscore=0 adultscore=0
+ lowpriorityscore=0 malwarescore=0 bulkscore=0 mlxscore=0 spamscore=0
+ phishscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104060000 definitions=main-2104160033
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 4/15/21 7:16 PM, Andy Shevchenko wrote:
+> Parse to and export from UUID own type, before dereferencing.
+> This also fixes wrong comment (Little Endian UUID is something else)
+> and should fix Sparse warnings about assigning strict types to POD.
+> 
 
-syzbot found the following issue on:
+I am wondering whether this will break older namespace created. IIRC 
+that cpu_to_le64 was done to be backward compatible with namespaces 
+created before 259a948c4ba1.
 
-HEAD commit:    79c338ab riscv: keep interrupts disabled for BREAKPOINT ex..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-console output: https://syzkaller.appspot.com/x/log.txt?x=10fb93f9d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f8af20e245283c9a
-dashboard link: https://syzkaller.appspot.com/bug?extid=50d41b514809f6f4f326
-userspace arch: riscv64
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+50d41b514809f6f4f326@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 4475 at kernel/events/core.c:3752 ctx_sched_in+0x12e/0x3ee kernel/events/core.c:3752
-Modules linked in:
-CPU: 1 PID: 4475 Comm: syz-executor.1 Not tainted 5.12.0-rc6-syzkaller-00183-g79c338ab575e #0
-Hardware name: riscv-virtio,qemu (DT)
-epc : ctx_sched_in+0x12e/0x3ee kernel/events/core.c:3752
- ra : ctx_sched_in+0x12e/0x3ee kernel/events/core.c:3752
-epc : ffffffe000279fe8 ra : ffffffe000279fe8 sp : ffffffe009e17680
- gp : ffffffe004588ad0 tp : ffffffe006398000 t0 : 0000000000000000
- t1 : 0000000000000001 t2 : 00000000000f4240 s0 : ffffffe009e176f0
- s1 : ffffffe0077edc00 a0 : ffffffe067d79118 a1 : 00000000000f0000
- a2 : 0000000000000002 a3 : ffffffe000279fe8 a4 : ffffffe006399000
- a5 : 0000000040000000 a6 : 0000000000f00000 a7 : ffffffe000280cc8
- s2 : 0000000000000007 s3 : ffffffe0077edd40 s4 : ffffffe006398000
- s5 : 0000000000000002 s6 : ffffffe00458c0d0 s7 : ffffffe067d78f70
- s8 : 0000000000000007 s9 : ffffffe067d79118 s10: ffffffe0077edc00
- s11: ffffffe0077edc08 t3 : e189d98bb4bfb900 t4 : ffffffc4042c47b2
- t5 : ffffffc4042c47ba t6 : 0000000000040000
-status: 0000000000000100 badaddr: 0000000000000000 cause: 0000000000000003
-Call Trace:
-[<ffffffe000279fe8>] ctx_sched_in+0x12e/0x3ee kernel/events/core.c:3752
-[<ffffffe00027a2e0>] perf_event_sched_in+0x38/0x74 kernel/events/core.c:2680
-[<ffffffe000280da2>] perf_event_context_sched_in kernel/events/core.c:3817 [inline]
-[<ffffffe000280da2>] __perf_event_task_sched_in+0x4ea/0x680 kernel/events/core.c:3860
-[<ffffffe0000850f8>] perf_event_task_sched_in include/linux/perf_event.h:1210 [inline]
-[<ffffffe0000850f8>] finish_task_switch.isra.0+0x284/0x318 kernel/sched/core.c:4189
-[<ffffffe002a94308>] context_switch kernel/sched/core.c:4325 [inline]
-[<ffffffe002a94308>] __schedule+0x484/0xe8c kernel/sched/core.c:5073
-[<ffffffe002a95102>] preempt_schedule_notrace+0x9c/0x19a kernel/sched/core.c:5312
-[<ffffffe0000cd54a>] rcu_read_unlock_sched_notrace include/linux/rcupdate.h:794 [inline]
-[<ffffffe0000cd54a>] trace_lock_acquire+0xf0/0x20e include/trace/events/lock.h:13
-[<ffffffe0000d3c0e>] lock_acquire+0x28/0x5a kernel/locking/lockdep.c:5481
-[<ffffffe0003b20ee>] rcu_lock_acquire include/linux/rcupdate.h:267 [inline]
-[<ffffffe0003b20ee>] rcu_read_lock include/linux/rcupdate.h:656 [inline]
-[<ffffffe0003b20ee>] percpu_ref_put_many.constprop.0+0x38/0x148 include/linux/percpu-refcount.h:317
-[<ffffffe0003baa56>] percpu_ref_put include/linux/percpu-refcount.h:338 [inline]
-[<ffffffe0003baa56>] obj_cgroup_put include/linux/memcontrol.h:713 [inline]
-[<ffffffe0003baa56>] memcg_slab_free_hook mm/slab.h:372 [inline]
-[<ffffffe0003baa56>] memcg_slab_free_hook mm/slab.h:336 [inline]
-[<ffffffe0003baa56>] do_slab_free mm/slub.c:3117 [inline]
-[<ffffffe0003baa56>] ___cache_free+0x2bc/0x3dc mm/slub.c:3168
-[<ffffffe0003be26c>] qlink_free mm/kasan/quarantine.c:146 [inline]
-[<ffffffe0003be26c>] qlist_free_all+0x56/0xac mm/kasan/quarantine.c:165
-[<ffffffe0003be774>] kasan_quarantine_reduce+0x14c/0x1c8 mm/kasan/quarantine.c:272
-[<ffffffe0003bc3f8>] __kasan_slab_alloc+0x60/0x62 mm/kasan/common.c:437
-[<ffffffe0003b8f10>] kasan_slab_alloc include/linux/kasan.h:223 [inline]
-[<ffffffe0003b8f10>] slab_post_alloc_hook mm/slab.h:516 [inline]
-[<ffffffe0003b8f10>] slab_alloc_node mm/slub.c:2907 [inline]
-[<ffffffe0003b8f10>] slab_alloc mm/slub.c:2915 [inline]
-[<ffffffe0003b8f10>] kmem_cache_alloc+0x168/0x3ca mm/slub.c:2920
-[<ffffffe0001aaee2>] kmem_cache_zalloc include/linux/slab.h:674 [inline]
-[<ffffffe0001aaee2>] taskstats_tgid_alloc kernel/taskstats.c:561 [inline]
-[<ffffffe0001aaee2>] taskstats_exit+0x3ce/0x5fe kernel/taskstats.c:600
-[<ffffffe000031bfc>] do_exit+0x3b2/0x1846 kernel/exit.c:810
-[<ffffffe00003319a>] do_group_exit+0xa0/0x198 kernel/exit.c:922
-[<ffffffe00004c558>] get_signal+0x31e/0x14ba kernel/signal.c:2781
-[<ffffffe000007e06>] do_signal arch/riscv/kernel/signal.c:271 [inline]
-[<ffffffe000007e06>] do_notify_resume+0xa8/0x930 arch/riscv/kernel/signal.c:317
-[<ffffffe000005586>] ret_from_exception+0x0/0x14
+What we need to test is create a namespace in little endian kernel and 
+read it back in via big endian and vice versa. Also we need to make sure 
+we can read the already created namespace before this patch.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> Fixes: 43001c52b603 ("powerpc/papr_scm: Use ibm,unit-guid as the iset cookie")
+> Fixes: 259a948c4ba1 ("powerpc/pseries/scm: Use a specific endian format for storing uuid from the device tree")
+> Cc: Oliver O'Halloran <oohall@gmail.com>
+> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+> Not tested
+>   arch/powerpc/platforms/pseries/papr_scm.c | 13 ++++++++-----
+>   1 file changed, 8 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/powerpc/platforms/pseries/papr_scm.c b/arch/powerpc/platforms/pseries/papr_scm.c
+> index ae6f5d80d5ce..4366e1902890 100644
+> --- a/arch/powerpc/platforms/pseries/papr_scm.c
+> +++ b/arch/powerpc/platforms/pseries/papr_scm.c
+> @@ -1085,8 +1085,9 @@ static int papr_scm_probe(struct platform_device *pdev)
+>   	u32 drc_index, metadata_size;
+>   	u64 blocks, block_size;
+>   	struct papr_scm_priv *p;
+> +	u8 uuid_raw[UUID_SIZE];
+>   	const char *uuid_str;
+> -	u64 uuid[2];
+> +	uuid_t uuid;
+>   	int rc;
+>   
+>   	/* check we have all the required DT properties */
+> @@ -1129,16 +1130,18 @@ static int papr_scm_probe(struct platform_device *pdev)
+>   	p->hcall_flush_required = of_property_read_bool(dn, "ibm,hcall-flush-required");
+>   
+>   	/* We just need to ensure that set cookies are unique across */
+> -	uuid_parse(uuid_str, (uuid_t *) uuid);
+> +	uuid_parse(uuid_str, &uuid);
+> +
+>   	/*
+>   	 * cookie1 and cookie2 are not really little endian
+> -	 * we store a little endian representation of the
+> +	 * we store a raw buffer representation of the
+>   	 * uuid str so that we can compare this with the label
+>   	 * area cookie irrespective of the endian config with which
+>   	 * the kernel is built.
+>   	 */
+> -	p->nd_set.cookie1 = cpu_to_le64(uuid[0]);
+> -	p->nd_set.cookie2 = cpu_to_le64(uuid[1]);
+> +	export_uuid(uuid_raw, &uuid);
+> +	p->nd_set.cookie1 = get_unaligned_le64(&uuid_raw[0]);
+> +	p->nd_set.cookie2 = get_unaligned_le64(&uuid_raw[8]);
+>   
+>   	/* might be zero */
+>   	p->metadata_size = metadata_size;
+> 
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
