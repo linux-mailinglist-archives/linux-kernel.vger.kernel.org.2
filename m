@@ -2,51 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4FA83626EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C0653626E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242940AbhDPReu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 13:34:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40040 "EHLO mx2.suse.de"
+        id S242868AbhDPReb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 13:34:31 -0400
+Received: from mga03.intel.com ([134.134.136.65]:37573 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236140AbhDPRes (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 13:34:48 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F30D2ADFB;
-        Fri, 16 Apr 2021 17:34:20 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id DED80DA790; Fri, 16 Apr 2021 19:32:03 +0200 (CEST)
-Date:   Fri, 16 Apr 2021 19:32:03 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Khaled ROMDHANI <khaledromdhani216@gmail.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH-next] fs/btrfs: Fix uninitialized variable
-Message-ID: <20210416173203.GE7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Khaled ROMDHANI <khaledromdhani216@gmail.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <20210413130604.11487-1-khaledromdhani216@gmail.com>
+        id S242750AbhDPRe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 13:34:29 -0400
+IronPort-SDR: kT8fvSO23NneSoNx033pmcixx9HOJuOcpWyqlGHS+ZULOA5DL98BSDI9CDPzY65KXZwIyh6kyW
+ rTcWsCVU5aZg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9956"; a="195101020"
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="195101020"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 10:34:00 -0700
+IronPort-SDR: tQrUzqzEe3V356yqOX8dVKzGb6oKF+Dpyp4L/dGsykNQFKvpC6rCseUSSOQKMjSHKIaMDLo+Fk
+ 6DHuR+ZeKZYA==
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="425668212"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 10:33:58 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1lXSLr-004iQM-GJ; Fri, 16 Apr 2021 20:33:55 +0300
+Date:   Fri, 16 Apr 2021 20:33:55 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Subject: Re: [PATCH v1 1/1] ACPI: NFIT: Import GUID before use
+Message-ID: <YHnKg4MHkZ4QIBHR@smile.fi.intel.com>
+References: <20210415135901.47131-1-andriy.shevchenko@linux.intel.com>
+ <CAPcyv4jpkZNsQEvCe_dLoq0DOTrEX36vhkJg+zqEacUkJtvWiQ@mail.gmail.com>
+ <CAHp75VcpQREYFesS9q2TeqrR29hf0CvMESM42AVGAFzEYeRr_Q@mail.gmail.com>
+ <CAPcyv4jzg23CoQeqAyAR=PUjB4HG-FSnD8G0J7S=p22ANmzDMQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210413130604.11487-1-khaledromdhani216@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <CAPcyv4jzg23CoQeqAyAR=PUjB4HG-FSnD8G0J7S=p22ANmzDMQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 02:06:04PM +0100, Khaled ROMDHANI wrote:
-> The variable zone is not initialized. It
-> may causes a failed assertion.
+On Fri, Apr 16, 2021 at 09:15:34AM -0700, Dan Williams wrote:
+> On Fri, Apr 16, 2021 at 1:58 AM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Fri, Apr 16, 2021 at 8:28 AM Dan Williams <dan.j.williams@intel.com> wrote:
+> > > On Thu, Apr 15, 2021 at 6:59 AM Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > >
+> > > > Strictly speaking the comparison between guid_t and raw buffer
+> > > > is not correct. Import GUID to variable of guid_t type and then
+> > > > compare.
+> > >
+> > > Hmm, what about something like the following instead, because it adds
+> > > safety. Any concerns about evaluating x twice in a macro should be
+> > > alleviated by the fact that ARRAY_SIZE() will fail the build if (x) is
+> > > not an array.
+> >
+> > ARRAY_SIZE doesn't check type.
+> 
+> See __must_be_array.
+> 
+> > I don't like hiding ugly casts like this.
+> 
+> See PTR_ERR, ERR_PTR, ERR_CAST.
 
-Failed assertion means the 2nd one checking that the result still fits
-to 32bit type. That would mean that none of the cases were hit, but all
-callers pass valid values.
+It's special, i.e. error pointer case. We don't handle such here.
 
-It would be better to add a default: case to catch that explicitly,
-though hitting that is considered 'will not happen'.
+> There's nothing broken about the way the code currently stands, so I'd
+> rather try to find something to move the implementation forward than
+> sideways.
+
+Submit a patch then. I rest my case b/c I consider that ugly castings worse
+than additional API call, although it's not ideal.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
