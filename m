@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28498361E8A
+	by mail.lfdr.de (Postfix) with ESMTP id 73DD6361E8B
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241846AbhDPLYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 07:24:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48572 "EHLO mx2.suse.de"
+        id S242104AbhDPLYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 07:24:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48596 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235011AbhDPLYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239904AbhDPLYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 16 Apr 2021 07:24:47 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C59AEB01F;
-        Fri, 16 Apr 2021 11:24:21 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 9ABDAB029;
+        Fri, 16 Apr 2021 11:24:22 +0000 (UTC)
 From:   Oscar Salvador <osalvador@suse.de>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     David Hildenbrand <david@redhat.com>,
@@ -23,9 +23,9 @@ Cc:     David Hildenbrand <david@redhat.com>,
         Pavel Tatashin <pasha.tatashin@soleen.com>,
         Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
-Subject: [PATCH v9 1/8] drivers/base/memory: Introduce memory_block_{online,offline}
-Date:   Fri, 16 Apr 2021 13:24:04 +0200
-Message-Id: <20210416112411.9826-2-osalvador@suse.de>
+Subject: [PATCH v9 2/8] mm,memory_hotplug: Relax fully spanned sections check
+Date:   Fri, 16 Apr 2021 13:24:05 +0200
+Message-Id: <20210416112411.9826-3-osalvador@suse.de>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20210416112411.9826-1-osalvador@suse.de>
 References: <20210416112411.9826-1-osalvador@suse.de>
@@ -35,89 +35,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a preparatory patch that introduces two new functions:
-memory_block_online() and memory_block_offline().
-
-For now, these functions will only call online_pages() and offline_pages()
-respectively, but they will be later in charge of preparing the vmemmap
-pages, carrying out the initialization and proper accounting of such
-pages.
-
-Since memory_block struct contains all the information, pass this struct
-down the chain till the end functions.
+When using self-hosted vmemmap pages, the number of pages passed to
+{online,offline}_pages might not fully span sections, but they always
+fully span pageblocks.
+Relax the check account for that case.
 
 Signed-off-by: Oscar Salvador <osalvador@suse.de>
 Reviewed-by: David Hildenbrand <david@redhat.com>
 ---
- drivers/base/memory.c | 33 +++++++++++++++++++++------------
- 1 file changed, 21 insertions(+), 12 deletions(-)
+ mm/memory_hotplug.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/base/memory.c b/drivers/base/memory.c
-index f35298425575..f209925a5d4e 100644
---- a/drivers/base/memory.c
-+++ b/drivers/base/memory.c
-@@ -169,30 +169,41 @@ int memory_notify(unsigned long val, void *v)
- 	return blocking_notifier_call_chain(&memory_chain, val, v);
- }
- 
-+static int memory_block_online(struct memory_block *mem)
-+{
-+	unsigned long start_pfn = section_nr_to_pfn(mem->start_section_nr);
-+	unsigned long nr_pages = PAGES_PER_SECTION * sections_per_block;
-+
-+	return online_pages(start_pfn, nr_pages, mem->online_type, mem->nid);
-+}
-+
-+static int memory_block_offline(struct memory_block *mem)
-+{
-+	unsigned long start_pfn = section_nr_to_pfn(mem->start_section_nr);
-+	unsigned long nr_pages = PAGES_PER_SECTION * sections_per_block;
-+
-+	return offline_pages(start_pfn, nr_pages);
-+}
-+
- /*
-  * MEMORY_HOTPLUG depends on SPARSEMEM in mm/Kconfig, so it is
-  * OK to have direct references to sparsemem variables in here.
-  */
- static int
--memory_block_action(unsigned long start_section_nr, unsigned long action,
--		    int online_type, int nid)
-+memory_block_action(struct memory_block *mem, unsigned long action)
- {
--	unsigned long start_pfn;
--	unsigned long nr_pages = PAGES_PER_SECTION * sections_per_block;
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index 0cdbbfbc5757..25e59d5dc13c 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -838,9 +838,14 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
  	int ret;
+ 	struct memory_notify arg;
  
--	start_pfn = section_nr_to_pfn(start_section_nr);
--
- 	switch (action) {
- 	case MEM_ONLINE:
--		ret = online_pages(start_pfn, nr_pages, online_type, nid);
-+		ret = memory_block_online(mem);
- 		break;
- 	case MEM_OFFLINE:
--		ret = offline_pages(start_pfn, nr_pages);
-+		ret = memory_block_offline(mem);
- 		break;
- 	default:
- 		WARN(1, KERN_WARNING "%s(%ld, %ld) unknown action: "
--		     "%ld\n", __func__, start_section_nr, action, action);
-+		     "%ld\n", __func__, mem->start_section_nr, action, action);
- 		ret = -EINVAL;
- 	}
+-	/* We can only online full sections (e.g., SECTION_IS_ONLINE) */
++	/* We can only offline full sections (e.g., SECTION_IS_ONLINE).
++	 * However, when using e.g: memmap_on_memory, some pages are initialized
++	 * prior to calling in here. The remaining amount of pages must be
++	 * pageblock aligned.
++	 */
+ 	if (WARN_ON_ONCE(!nr_pages ||
+-			 !IS_ALIGNED(pfn | nr_pages, PAGES_PER_SECTION)))
++			 !IS_ALIGNED(pfn, pageblock_nr_pages) ||
++			 !IS_ALIGNED(pfn + nr_pages, PAGES_PER_SECTION)))
+ 		return -EINVAL;
  
-@@ -210,9 +221,7 @@ static int memory_block_change_state(struct memory_block *mem,
- 	if (to_state == MEM_OFFLINE)
- 		mem->state = MEM_GOING_OFFLINE;
+ 	mem_hotplug_begin();
+@@ -1573,9 +1578,14 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
+ 	int ret, node;
+ 	char *reason;
  
--	ret = memory_block_action(mem->start_section_nr, to_state,
--				  mem->online_type, mem->nid);
--
-+	ret = memory_block_action(mem, to_state);
- 	mem->state = ret ? from_state_req : to_state;
+-	/* We can only offline full sections (e.g., SECTION_IS_ONLINE) */
++	/* We can only offline full sections (e.g., SECTION_IS_ONLINE).
++	 * However, when using e.g: memmap_on_memory, some pages are initialized
++	 * prior to calling in here. The remaining amount of pages must be
++	 * pageblock aligned.
++	 */
+ 	if (WARN_ON_ONCE(!nr_pages ||
+-			 !IS_ALIGNED(start_pfn | nr_pages, PAGES_PER_SECTION)))
++			 !IS_ALIGNED(start_pfn, pageblock_nr_pages) ||
++			 !IS_ALIGNED(start_pfn + nr_pages, PAGES_PER_SECTION)))
+ 		return -EINVAL;
  
- 	return ret;
+ 	mem_hotplug_begin();
 -- 
 2.16.3
 
