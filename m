@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 540E636191F
+	by mail.lfdr.de (Postfix) with ESMTP id C4FD9361920
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 07:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238558AbhDPFQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 01:16:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33584 "EHLO
+        id S238585AbhDPFQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 01:16:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231997AbhDPFQJ (ORCPT
+        with ESMTP id S231997AbhDPFQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 01:16:09 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A28C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 22:15:45 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id g35so18411949pgg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 22:15:45 -0700 (PDT)
+        Fri, 16 Apr 2021 01:16:13 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B03C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 22:15:49 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so15689395pjh.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 22:15:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8k6YXYK85mvc31ajI7k2coqgwaOfr7Ej3V6vhYCGVRI=;
-        b=efWsErrRy6Y+q7AbkIPIOy5Upya1t/n2SZE33fPb3OfiCt8/AoLJQ8+y3xKWrG3giU
-         /ufhSnUuwyEPh9AXrW1YrV1mDst07Js6C7JCixrgEMisbo+cOfQEAS3csT9k4iKIxQxB
-         MlQ92g9HdhU7uf7ItfpepWKimxH+L7RVtrvC4bbC9xr+PAgkSgdVvMna7FXQ2CtBuOar
-         hRpDe7r7VPNd/d4DlGDeGMwhHK+jpovUERNHZtSxPOu4z1WWMgp2J5DDsMQZ2XuL+PLs
-         r45bBJPkpvHKzN+U+a6SsByLwC/ijypTht26AWuoHyInoGpG/6fG3hlXiq77OGnPtmUt
-         raNA==
+        bh=NE/BcoGMuqPyqQGyjWQGMTxC1WpQbz3TqD3QbwUvSZY=;
+        b=x3mRR8adpG+SIPQvbajyUHRAzVYGQ9kXgMEs7JE0sm5iBBYsM7za2rneJ2x+zx7Alm
+         nvjA0ySFpVE0MWfbuJUl+trTsqrxpnkGXWgmQ1htfWCvNWccRgTDGYGaEs7Feyw4sZ41
+         Nyo0Z2ol/a0h+wdqzCXC58YJtzlmXejXT0oumYu+JvdMKtxzxN6FdzbxwmbUg8/S9Eap
+         H4ZZve05NA7mvYp2zP0e740L9pte8vGxHJ68iJKbrfp6Xk5BJVu0G0bgdZWFZhcNG0MR
+         WAdfx26I8k/nlMtz6X2Uhe00xyCK4COeU4jU9z0DBaM4bXqoCGlrnT/S13+W2n51u6bb
+         wnPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8k6YXYK85mvc31ajI7k2coqgwaOfr7Ej3V6vhYCGVRI=;
-        b=fUldpvvjyn1jpFhOYUf3bR8rv9ireb0UtzKC1wk8OcknFavfD2sEtf3cgyD9kLQdm6
-         YBI5Y+W97k34A5lU6VZrS8XnrjLLxcie/Au56KSKTOU2oPs9M0dy1pthvl7kGuWDAod5
-         tf5zg93I5jQ4xGqvgYwrgWIom17q1rg9ErYPqRq9sKqRaz5A1WbFtqlSYJ+mvW0P3+86
-         u8nfv6tMeldH3s3nc9GkjDHZeK2tQgRbf4JMg6PcDPV0XVkULVDEta9zZStMeTJOcTzr
-         NViD4Pn24twZsu+PKV+kBOIlMLYR+9JP+f79BS/0z6E/o1wQcgYiLyoNhqmKCJNN2Fss
-         DI1g==
-X-Gm-Message-State: AOAM530h6QPKQ8FQ10gR0ghuzI5ypCrXKQdOKrXiCKwDDu2F+92osf7o
-        wti4LXxKyS0N2HSnujMddkVL4A==
-X-Google-Smtp-Source: ABdhPJypRzf2gPZt+cnsgCnfpajGcfQTSzsxaz5LpZts4H35QQ/kLfNwffTKJXeXBHRxNEagMZVCfQ==
-X-Received: by 2002:a63:5857:: with SMTP id i23mr6629207pgm.152.1618550144354;
-        Thu, 15 Apr 2021 22:15:44 -0700 (PDT)
+        bh=NE/BcoGMuqPyqQGyjWQGMTxC1WpQbz3TqD3QbwUvSZY=;
+        b=AAXu5jlpKBFwlHjFpuk3Xw+5Ys0Zh+k9veAlsOfBIYQxPb+HAlwSTz5gX+ELtmnuhQ
+         HeeMVWVUs01Yv8av9K8uYsoeS7q3+Hh+qmVY9IEiNf5EcJMkYrPJh8Oqh1+XttjXxG6f
+         6P7DlzzGwZKk0WyWfcr2Wsx2pGEavH6OYyknVSdVeaSc5F+Agt2vjHy4HFH+LYWZlPW2
+         XCHMinT3n4X6HPu6YZK4XXMvVYjVrXVSQXhuWkDjlS9WkylBBFHKlOTzhxR0DJ2F8sJF
+         0ZTAAoE4Lrzje/+MgDl0833er/dEMPB+DxTJodM1yD3M3L/ReYuuAaSEK8zEMLt+NJF4
+         VVZw==
+X-Gm-Message-State: AOAM5310X/bHMepcPz7STX7Z81t3BAmmJZjJTeSu/BpCFh35jDwvA5Oo
+        eONGG+REYNwOK+rgQZOFC/MRkg==
+X-Google-Smtp-Source: ABdhPJyRUkfUK1Gz4fhB+MEe5DNop4sWVG+HsPBKJEMPEQLpoPtCsMG3b1+SKM+CihVIFoRzjH8IfQ==
+X-Received: by 2002:a17:90a:9405:: with SMTP id r5mr8098835pjo.139.1618550148926;
+        Thu, 15 Apr 2021 22:15:48 -0700 (PDT)
 Received: from localhost.localdomain ([139.177.225.235])
-        by smtp.gmail.com with ESMTPSA id j7sm3518540pfd.129.2021.04.15.22.15.40
+        by smtp.gmail.com with ESMTPSA id j7sm3518540pfd.129.2021.04.15.22.15.44
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 15 Apr 2021 22:15:44 -0700 (PDT)
+        Thu, 15 Apr 2021 22:15:48 -0700 (PDT)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     guro@fb.com, hannes@cmpxchg.org, mhocko@kernel.org,
         akpm@linux-foundation.org, shakeelb@google.com,
@@ -56,9 +56,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         duanxiongchun@bytedance.com,
         Muchun Song <songmuchun@bytedance.com>,
         Michal Hocko <mhocko@suse.com>
-Subject: [PATCH v2 1/8] mm: memcontrol: fix page charging in page replacement
-Date:   Fri, 16 Apr 2021 13:14:00 +0800
-Message-Id: <20210416051407.54878-2-songmuchun@bytedance.com>
+Subject: [PATCH v2 2/8] mm: memcontrol: bail out early when !mm in get_mem_cgroup_from_mm
+Date:   Fri, 16 Apr 2021 13:14:01 +0800
+Message-Id: <20210416051407.54878-3-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 In-Reply-To: <20210416051407.54878-1-songmuchun@bytedance.com>
 References: <20210416051407.54878-1-songmuchun@bytedance.com>
@@ -68,11 +68,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pages aren't accounted at the root level, so do not charge the page
-to the root memcg in page replacement. Although we do not display the
-value (mem_cgroup_usage) so there shouldn't be any actual problem, but
-there is a WARN_ON_ONCE in the page_counter_cancel(). Who knows if it
-will trigger? So it is better to fix it.
+When mm is NULL, we do not need to hold rcu lock and call css_tryget for
+the root memcg. And we also do not need to check !mm in every loop of
+while. So bail out early when !mm.
 
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
@@ -80,28 +78,48 @@ Reviewed-by: Shakeel Butt <shakeelb@google.com>
 Acked-by: Roman Gushchin <guro@fb.com>
 Acked-by: Michal Hocko <mhocko@suse.com>
 ---
- mm/memcontrol.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ mm/memcontrol.c | 25 ++++++++++++++-----------
+ 1 file changed, 14 insertions(+), 11 deletions(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 64ada9e650a5..f229de925aa5 100644
+index f229de925aa5..50e3cf1e263e 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -6806,9 +6806,11 @@ void mem_cgroup_migrate(struct page *oldpage, struct page *newpage)
- 	/* Force-charge the new page. The old one will be freed soon */
- 	nr_pages = thp_nr_pages(newpage);
+@@ -901,20 +901,23 @@ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
+ 	if (mem_cgroup_disabled())
+ 		return NULL;
  
--	page_counter_charge(&memcg->memory, nr_pages);
--	if (do_memsw_account())
--		page_counter_charge(&memcg->memsw, nr_pages);
-+	if (!mem_cgroup_is_root(memcg)) {
-+		page_counter_charge(&memcg->memory, nr_pages);
-+		if (do_memsw_account())
-+			page_counter_charge(&memcg->memsw, nr_pages);
-+	}
- 
- 	css_get(&memcg->css);
- 	commit_charge(newpage, memcg);
++	/*
++	 * Page cache insertions can happen without an
++	 * actual mm context, e.g. during disk probing
++	 * on boot, loopback IO, acct() writes etc.
++	 *
++	 * No need to css_get on root memcg as the reference
++	 * counting is disabled on the root level in the
++	 * cgroup core. See CSS_NO_REF.
++	 */
++	if (unlikely(!mm))
++		return root_mem_cgroup;
++
+ 	rcu_read_lock();
+ 	do {
+-		/*
+-		 * Page cache insertions can happen without an
+-		 * actual mm context, e.g. during disk probing
+-		 * on boot, loopback IO, acct() writes etc.
+-		 */
+-		if (unlikely(!mm))
++		memcg = mem_cgroup_from_task(rcu_dereference(mm->owner));
++		if (unlikely(!memcg))
+ 			memcg = root_mem_cgroup;
+-		else {
+-			memcg = mem_cgroup_from_task(rcu_dereference(mm->owner));
+-			if (unlikely(!memcg))
+-				memcg = root_mem_cgroup;
+-		}
+ 	} while (!css_tryget(&memcg->css));
+ 	rcu_read_unlock();
+ 	return memcg;
 -- 
 2.11.0
 
