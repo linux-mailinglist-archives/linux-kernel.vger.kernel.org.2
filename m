@@ -2,235 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DEFD361D9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAED0361DA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241977AbhDPJio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 05:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235027AbhDPJin (ORCPT
+        id S235349AbhDPJoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 05:44:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60465 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235027AbhDPJoD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 05:38:43 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903E1C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:38:18 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id x4so31510275edd.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:38:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=EavaO1INdIem+7EBZda4+NLy8hD5HqKnHAI/MSCV27s=;
-        b=BLBJZ9RZRzAftUg3Gq2Uo/+pfEvog3S4JycYp9c5pQJvN9gj4gSDySH/qKvfJW5C5t
-         pEdE2v9cRiN0WS0tnv88AJKDzZBBUfETZs4xWbgF69qjENaGdP2NMDbSu/6Iov/uxsAp
-         zPhKGculmILxefvHVSoYicsOOzzUg9OTA0GApHlnL3gVosuw/PjlzpFc/jYIbOjD8Cu+
-         lyi5sd+WHy4Gal7rK34BtcRY1hnfbWvjQ/BkTJvP4uwMVcyxhkp2JNE0f3E1xU9JnPSW
-         zPwY0JmqumvjsU+U/buz6/TNDtcptEIaJZ4fwJBu+sWy5ky6kZDAHFGKESgN3GOQ1+59
-         xE9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EavaO1INdIem+7EBZda4+NLy8hD5HqKnHAI/MSCV27s=;
-        b=TQ4uyazhlkgIwnBjPq3cqk0TIoKR+49byDnMN4diOXcJvFRjd4Q57RydlUdMst7l1c
-         VWAJrTLlponT1t5P1FikAMk72HxXmZaFIx4YahVQ4UpeoBWj7lb2avKawKlkxTnlbAcC
-         hcYpGbtk1Jk23d3bZQ7gEekCpyRkQ1azhKNBqUfyTHBgGpRfIjzKh29fuhZHAM4Et0YT
-         fOw4sHNVRwiNVRQ+4HmtojwsprZsKgdPp1vLyvo28RSgBqqqJzkxmeI2WUSc8MTbY4k6
-         sWGolY4KGWkeZan/EKTgRtmCWsZsIHm4Oji9X0Uuyay1j84x4gHi2q5H/QEUcRURyZyb
-         ufqQ==
-X-Gm-Message-State: AOAM531ceDpOa6MGIyyq/kFpY5QUp8Jtv2q7fiakbcnBTSpSpxz25j+q
-        Oon0nbk7aLGvFESyIK//Qiz4DaeJy2IIsduj9S91iw==
-X-Google-Smtp-Source: ABdhPJxxyYgkqwr8m+RWl5TdFXec5Bs0L5KHELiuYnC7pXfS+LflW2gY84/eA5Oz1CkTV84pRKsKLjjk50NqQZIC2Nw=
-X-Received: by 2002:a50:c3c2:: with SMTP id i2mr8886287edf.23.1618565897210;
- Fri, 16 Apr 2021 02:38:17 -0700 (PDT)
+        Fri, 16 Apr 2021 05:44:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618566218;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0tOmO2L7ffsG3OHqCgxG9Ex0uvhoWJPoKZqPNeCsosE=;
+        b=jO+0+x0s/trfIV/AT2c4dCt2XPdJSQGVix+HgC+/skfCJcXcgm9nWtp1Ga45GtmZk9wogY
+        BKuWZuwJhmwABoQyt9ZBcwN2tvfczQGe58rXyyI/aTwWQKSjv6N5e/tUnlpMEc2x86gkkf
+        UYkDerx8g2FX2g6ztQ1rB0+X7QKk0H8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-157-NQK4CrDJPaWKXSaDjWc14A-1; Fri, 16 Apr 2021 05:43:36 -0400
+X-MC-Unique: NQK4CrDJPaWKXSaDjWc14A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1596DCC624;
+        Fri, 16 Apr 2021 09:43:35 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.62])
+        by smtp.corp.redhat.com (Postfix) with SMTP id AA49169FA4;
+        Fri, 16 Apr 2021 09:43:27 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Fri, 16 Apr 2021 11:43:34 +0200 (CEST)
+Date:   Fri, 16 Apr 2021 11:43:25 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     He Zhe <zhe.he@windriver.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org, paul@paul-moore.com,
+        eparis@redhat.com, linux-audit@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] arm64: syscall.h: Add sign extension handling in
+ syscall_get_return_value for compat
+Message-ID: <20210416094324.GA1962@redhat.com>
+References: <20210416075533.7720-1-zhe.he@windriver.com>
+ <20210416075533.7720-2-zhe.he@windriver.com>
 MIME-Version: 1.0
-References: <20210415144413.165663182@linuxfoundation.org>
-In-Reply-To: <20210415144413.165663182@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 16 Apr 2021 15:08:05 +0530
-Message-ID: <CA+G9fYvRR6HPujVRzfE_-injm+Z_-Uk-x8aFG5wHnC1b6CDfhw@mail.gmail.com>
-Subject: Re: [PATCH 5.10 00/25] 5.10.31-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416075533.7720-2-zhe.he@windriver.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Apr 2021 at 20:33, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On 04/16, He Zhe wrote:
 >
-> This is the start of the stable review cycle for the 5.10.31 release.
-> There are 25 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 17 Apr 2021 14:44:01 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.31-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> --- a/arch/arm64/include/asm/syscall.h
+> +++ b/arch/arm64/include/asm/syscall.h
+> @@ -44,7 +44,12 @@ static inline long syscall_get_error(struct task_struct *task,
+>  static inline long syscall_get_return_value(struct task_struct *task,
+>  					    struct pt_regs *regs)
+>  {
+> -	return regs->regs[0];
+> +	long val = regs->regs[0];
+> +
+> +	if (is_compat_thread(task_thread_info(task)))
+> +		val = sign_extend64(val, 31);
+> +
+> +	return val;
+>  }
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+I can't really review these arm-specific patches, but with this change both
+syscall_get_error() and is_syscall_success() can use syscall_get_return_value()
+to avoid the code duplication.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Oleg.
 
-## Build
-* kernel: 5.10.31-rc1
-* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stabl=
-e-rc.git',
-'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
-* git branch: linux-5.10.y
-* git commit: 32f5704a0a4f7dcc8aa74a49dbcce359d758f6d5
-* git describe: v5.10.30-26-g32f5704a0a4f
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.30-26-g32f5704a0a4f
-
-## No regressions (compared to v5.10.30)
-
-## No fixes (compared to v5.10.30)
-
-## Test result summary
- total: 72955, pass: 61311, fail: 1785, skip: 9589, xfail: 270,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 192 total, 192 passed, 0 failed
-* arm64: 26 total, 26 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 25 total, 25 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 26 total, 26 passed, 0 failed
-
-## Test suites summary
-* fwts
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mod[
-* kselftest-vsyscall-mode-native-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
