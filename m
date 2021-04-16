@@ -2,146 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3154361E6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3443361E6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241670AbhDPLHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 07:07:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43298 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235011AbhDPLHf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 07:07:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618571230;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GPi+c282xzGJKGtsxEXKiuYYzkH/n0b1SG5+hHDFjQY=;
-        b=WgApvM0b40uNVlkMkytzWlVKqZkCa7LeGfcNxKOWsjkbehjB1lesGsIwj2U1TIU0b0pNy+
-        GXozk8SHxjd1lcjRoR5RjK3aNQh3vZmPJeL0QqwguodI7GcBFNuGBVCWwA8M1979p37ZoP
-        KzCPl2Usgbz6ALKEoJGwLK0ISxdsqNE=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-291-RlOoPjt6PCyNG30eVHyLhg-1; Fri, 16 Apr 2021 07:07:08 -0400
-X-MC-Unique: RlOoPjt6PCyNG30eVHyLhg-1
-Received: by mail-wm1-f70.google.com with SMTP id g199-20020a1c9dd00000b02901355dd71edaso86346wme.7
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 04:07:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=GPi+c282xzGJKGtsxEXKiuYYzkH/n0b1SG5+hHDFjQY=;
-        b=Hi5AwY2WooCp97Xh0JcAorGw9WGMc5FVQV06NyeKB0dKKbNgROuVdyGIfrgbr08A6i
-         27viON1jnoACM5dMGVyf0T8SKqrJNL1QnHPQC2PlLZxfrsziYElNAtcTJUIorpkCkGlO
-         O5n+FsXmgIZ2VQlX7IYEo1nxYwYkPQ2hAx8B0iSSW7uZuXSUb5PMukldWhr+Mu+OzDin
-         2kCw5dD9lBXzIsWOWmeBH4E2pl9siRc0DFzBRw7V3+VuQedUEoFq6o/UlwHhlYPV+7DZ
-         YLjyi9EQbMKEBHyBBZUkjiPnqGwtgcLLtjgIAQ7bO7wQxhRPo8oHP2g/bt1hqK6VbrPd
-         gdBQ==
-X-Gm-Message-State: AOAM530tbRV2wNaSu1i9qrm6Gs3CcwyUzrhkRLh87KCXFym7WNeqlrjb
-        u5SxaZI+BfkdH+EmaQZMxL+90p7Z948d8EZK/1Q/AXyjpAR1fT7ALm9VhwnRMdFnA8hVEAXDb2u
-        PGn7CewJNyBfzE8CvU7N7sKF1M0E2fVpxYoltF/FtJorvG9N9fD+Q/EY1dpxsKjTIIchutk+a
-X-Received: by 2002:a1c:e906:: with SMTP id q6mr7688002wmc.138.1618571227580;
-        Fri, 16 Apr 2021 04:07:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw0mCPuIda0sp2AYe64aqgt78fHBJ/WWgEzW5gY9+iWGAmyRJ/Af2N2BSCTDa29ihnvOvgA1g==
-X-Received: by 2002:a1c:e906:: with SMTP id q6mr7687976wmc.138.1618571227301;
-        Fri, 16 Apr 2021 04:07:07 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c64fb.dip0.t-ipconnect.de. [91.12.100.251])
-        by smtp.gmail.com with ESMTPSA id m15sm6348716wrx.32.2021.04.16.04.07.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Apr 2021 04:07:07 -0700 (PDT)
-Subject: Re: [PATCH v8 4/8] mm,memory_hotplug: Allocate memmap from the added
- memory range
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210416102153.8794-1-osalvador@suse.de>
- <20210416102153.8794-5-osalvador@suse.de>
- <df8220ac-4214-5ff6-0048-35553fea8c8c@redhat.com>
- <YHlpAvTPuRZtKo0i@localhost.localdomain>
- <6e659d5b-c3f1-bd72-a3af-235d6bc55b0b@redhat.com>
- <YHlufVk+2O7HsXJh@localhost.localdomain>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <b0f5f87c-af03-173c-17e3-ccf15ccb9cb1@redhat.com>
-Date:   Fri, 16 Apr 2021 13:07:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S235424AbhDPLIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 07:08:55 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:64575 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235239AbhDPLIw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 07:08:52 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FMD3F2534z9vBKy;
+        Fri, 16 Apr 2021 13:08:25 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id uWkPYTn7eSjH; Fri, 16 Apr 2021 13:08:25 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FMD3F1Bmrz9vBKv;
+        Fri, 16 Apr 2021 13:08:25 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 476858B83A;
+        Fri, 16 Apr 2021 13:08:26 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id nrkV0nkn-42U; Fri, 16 Apr 2021 13:08:26 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0214D8B81A;
+        Fri, 16 Apr 2021 13:08:24 +0200 (CEST)
+Subject: Re: [PATCH v1 3/5] mm: ptdump: Provide page size to notepage()
+To:     Steven Price <steven.price@arm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        akpm@linux-foundation.org
+Cc:     linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org, linux-mm@kvack.org
+References: <cover.1618506910.git.christophe.leroy@csgroup.eu>
+ <1ef6b954fb7b0f4dfc78820f1e612d2166c13227.1618506910.git.christophe.leroy@csgroup.eu>
+ <41819925-3ee5-4771-e98b-0073e8f095cf@arm.com>
+ <da53d2f2-b472-0c38-bdd5-99c5a098675d@csgroup.eu>
+ <1102cda1-b00f-b6ef-6bf3-22068cc11510@arm.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <6ff4816b-8ff6-19de-73a2-3fcadc003ccd@csgroup.eu>
+Date:   Fri, 16 Apr 2021 13:08:25 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <YHlufVk+2O7HsXJh@localhost.localdomain>
+In-Reply-To: <1102cda1-b00f-b6ef-6bf3-22068cc11510@arm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-> -int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
-> -		       int online_type, int nid)
-> +int mhp_init_memmap_on_memory(unsigned long pfn, unsigned long nr_pages,
-> +			      struct zone *zone)
-> +{
-> +	unsigned long end_pfn = pfn + nr_pages;
-> +	int ret;
-> +
-> +	ret = kasan_add_zero_shadow(__va(PFN_PHYS(pfn)), PFN_PHYS(nr_pages));
-> +	if (ret)
-> +		return ret;
-> +
-> +	/*
-> +	 * Initialize vmemmap pages with the corresponding node, zone links set.
 
-The "set" sounds weird. I'd remove that comment completely.
+Le 16/04/2021 à 12:51, Steven Price a écrit :
+> On 16/04/2021 11:38, Christophe Leroy wrote:
+>>
+>>
+>> Le 16/04/2021 à 11:28, Steven Price a écrit :
+>>> On 15/04/2021 18:18, Christophe Leroy wrote:
+>>>> In order to support large pages on powerpc, notepage()
+>>>> needs to know the page size of the page.
+>>>>
+>>>> Add a page_size argument to notepage().
+>>>>
+>>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>>> ---
+>>>>   arch/arm64/mm/ptdump.c         |  2 +-
+>>>>   arch/riscv/mm/ptdump.c         |  2 +-
+>>>>   arch/s390/mm/dump_pagetables.c |  3 ++-
+>>>>   arch/x86/mm/dump_pagetables.c  |  2 +-
+>>>>   include/linux/ptdump.h         |  2 +-
+>>>>   mm/ptdump.c                    | 16 ++++++++--------
+>>>>   6 files changed, 14 insertions(+), 13 deletions(-)
+>>>>
+>>> [...]
+>>>> diff --git a/mm/ptdump.c b/mm/ptdump.c
+>>>> index da751448d0e4..61cd16afb1c8 100644
+>>>> --- a/mm/ptdump.c
+>>>> +++ b/mm/ptdump.c
+>>>> @@ -17,7 +17,7 @@ static inline int note_kasan_page_table(struct mm_walk *walk,
+>>>>   {
+>>>>       struct ptdump_state *st = walk->private;
+>>>> -    st->note_page(st, addr, 4, pte_val(kasan_early_shadow_pte[0]));
+>>>> +    st->note_page(st, addr, 4, pte_val(kasan_early_shadow_pte[0]), PAGE_SIZE);
+>>>
+>>> I'm not completely sure what the page_size is going to be used for, but note that KASAN presents 
+>>> an interesting case here. We short-cut by detecting it's a KASAN region at a high level 
+>>> (PGD/P4D/PUD/PMD) and instead of walking the tree down just call note_page() *once* but with 
+>>> level==4 because we know KASAN sets up the page table like that.
+>>>
+>>> However the one call actually covers a much larger region - so while PAGE_SIZE matches the level 
+>>> it doesn't match the region covered. AFAICT this will lead to odd results if you enable KASAN on 
+>>> powerpc.
+>>
+>> Hum .... I successfully tested it with KASAN, I now realise that I tested it with 
+>> CONFIG_KASAN_VMALLOC selected. In this situation, since 
+>> https://github.com/torvalds/linux/commit/af3d0a686 we don't have any common shadow page table 
+>> anymore.
+>>
+>> I'll test again without CONFIG_KASAN_VMALLOC.
+>>
+>>>
+>>> To be honest I don't fully understand why powerpc requires the page_size - it appears to be using 
+>>> it purely to find "holes" in the calls to note_page(), but I haven't worked out why such holes 
+>>> would occur.
+>>
+>> I was indeed introduced for KASAN. We have a first commit 
+>> https://github.com/torvalds/linux/commit/cabe8138 which uses page size to detect whether it is a 
+>> KASAN like stuff.
+>>
+>> Then came https://github.com/torvalds/linux/commit/b00ff6d8c as a fix. I can't remember what the 
+>> problem was exactly, something around the use of hugepages for kernel memory, came as part of the 
+>> series 
+>> https://patchwork.ozlabs.org/project/linuxppc-dev/cover/cover.1589866984.git.christophe.leroy@csgroup.eu/ 
+> 
+> 
+> Ah, that's useful context. So it looks like powerpc took a different route to reducing the KASAN 
+> output to x86.
+> 
+> Given the generic ptdump code has handling for KASAN already it should be possible to drop that from 
+> the powerpc arch code, which I think means we don't actually need to provide page size to 
+> notepage(). Hopefully that means more code to delete ;)
+> 
 
-> +	 */
-> +	move_pfn_range_to_zone(zone, pfn, nr_pages, NULL, MIGRATE_UNMOVABLE);
-> +
-> +	/*
-> +	 * It might be that the vmemmap_pages fully span sections. If that is
-> +	 * the case, mark those sections online here as otherwise they will be
-> +	 * left offline.
-> +	 */
-> +	if (nr_pages >= PAGES_PER_SECTION)
-> +	        online_mem_sections(pfn, ALIGN_DOWN(end_pfn, PAGES_PER_SECTION));
-> +
-> +	return ret;
-> +}
-> +
-> +void mhp_deinit_memmap_on_memory(unsigned long pfn, unsigned long nr_pages)
-> +{
-> +	unsigned long end_pfn = pfn + nr_pages;
-> +        /*
-> +	 * The pages associated with this vmemmap have been offlined, so
-> +	 * we can reset its state here.
-> +	 */
-> +	remove_pfn_range_from_zone(page_zone(pfn_to_page(pfn)), pfn, nr_pages);
-> +	kasan_remove_zero_shadow(__va(PFN_PHYS(pfn)), PFN_PHYS(nr_pages));
-> +
-> +	/*
-> +	 * It might be that the vmemmap_pages fully span sections. If that is
-> +	 * the case, mark those sections offline here as otherwise they will be
-> +	 * left online.
-> +	 */
-> +	if (nr_pages >= PAGES_PER_SECTION)
-> +		offline_mem_sections(pfn, ALIGN_DOWN(end_pfn, PAGES_PER_SECTION));
+Yes ... and no.
 
-It's usually best if you undo stuff in the complete opposite order. For 
-example at this point, the memmap might already have been poisoned, yet 
-pfn_to_online_page() would return true. You should do that first.
+It looks like the generic ptdump handles the case when several pgdir entries points to the same 
+kasan_early_shadow_pte. But it doesn't take into account the powerpc case where we have regular page 
+tables where several (if not all) PTEs are pointing to the kasan_early_shadow_page .
 
-Apart from that, nothing jumped at me :)
-
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
--- 
-Thanks,
-
-David / dhildenb
-
+Christophe
