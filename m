@@ -2,79 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F8E362201
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9681E3621FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244570AbhDPOT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:19:59 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:39402 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235724AbhDPOT5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:19:57 -0400
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 16 Apr 2021 07:19:32 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 16 Apr 2021 07:19:30 -0700
-X-QCInternal: smtphost
-Received: from hydcbspbld03.qualcomm.com ([10.242.221.48])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 16 Apr 2021 19:49:16 +0530
-Received: by hydcbspbld03.qualcomm.com (Postfix, from userid 2304101)
-        id 375F8215B8; Fri, 16 Apr 2021 19:49:14 +0530 (IST)
-From:   Pradeep P V K <pragalla@codeaurora.org>
-To:     miklos@szeredi.hu
-Cc:     stummala@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Pradeep P V K <pragalla@codeaurora.org>
-Subject: [PATCH V1] fuse: Set fuse request error upon fuse abort connection
-Date:   Fri, 16 Apr 2021 19:49:12 +0530
-Message-Id: <1618582752-26178-1-git-send-email-pragalla@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S244553AbhDPOTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:19:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56216 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244534AbhDPOTn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 10:19:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0BF8610FC;
+        Fri, 16 Apr 2021 14:19:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618582758;
+        bh=A9Vvto/6OhGROCoV+7ZsOSkuzEhZQRWE4HQRxbVwIu0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oQc4JsQ7f/SPtT6OtR3zGEJgP+yxum31zvmgJhgUCkZ7vpCApDe5lKQNQWaVWRwfz
+         HW8MO7qMQW6PU6avCC/2934Aa2WCx0zSGDjyr+ZpjEfgotKnqdgXNxXSH/L6vLn+Ka
+         uXTy5tUA7NRYGksChP6Q3usNPjcpYnq8UkmBkTZR4o2P35OzlKKbYILzvALUMFICpT
+         Hxn6z1a7OuXYg6mBsiweyG42RLdGHqyF5yBZ+ALBJb3dCuF/1ChnEPdUnmN/xztYm1
+         J09DAWxdhyaV6V8sWFm9NQmdsdL1rmunX3YmpTzlF9sFdDjNsa20lEuANWl0PlwS6e
+         gcqr03oEz/Z9Q==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lXPJW-0006bT-D0; Fri, 16 Apr 2021 16:19:19 +0200
+Date:   Fri, 16 Apr 2021 16:19:18 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        dillon.minfei@gmail.com, Erwan Le Ray <erwan.leray@foss.st.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Alexandre TORGUE <alexandre.torgue@st.com>,
+        Gerald Baeza <gerald.baeza@st.com>
+Subject: Re: [PATCH 2/3] serial: stm32: fix threaded interrupt handling
+Message-ID: <YHmc5jkAXC95HVIp@hovoldconsulting.com>
+References: <20210416140557.25177-1-johan@kernel.org>
+ <20210416140557.25177-3-johan@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416140557.25177-3-johan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a minor race in setting the fuse out request error
-between fuse_abort_conn() and fuse_dev_do_read() as explained
-below.
+On Fri, Apr 16, 2021 at 04:05:56PM +0200, Johan Hovold wrote:
+> When DMA is enabled the receive handler runs in a threaded handler, but
+> the primary handler up until very recently neither disabled interrupts
 
-Thread-1			  Thread-2
-========			  ========
-->fuse_simple_request()           ->shutdown
-  ->__fuse_request_send()
-    ->queue_request()		->fuse_abort_conn()
-->fuse_dev_do_read()                ->acquire(fpq->lock)
-  ->wait_for(fpq->lock) 	  ->set err to all req's in fpq->io
-				  ->release(fpq->lock)
-  ->acquire(fpq->lock)
-  ->add req to fpq->io
+Scratch the "up until very recently" bit here since the driver still
+doesn't disable interrupt in the device (it just disables all interrupts
+in the threaded handler). The rest stands as is.
 
-The above scenario may cause Thread-1 request to add into
-fpq->io list after Thread-2 sets -ECONNABORTED err to all
-its requests in fpq->io list. This leaves Thread-1 request
-with unset err and this further misleads as a completed
-request without an err set upon request_end().
+> in the device or used IRQF_ONESHOT. This would lead to a deadlock if an
+> interrupt comes in while the threaded receive handler is running under
+> the port lock.
+> 
+> Commit ad7676812437 ("serial: stm32: fix a deadlock condition with
+> wakeup event") claimed to fix an unrelated deadlock, but unfortunately
+> also disabled interrupts in the threaded handler. While this prevents
+> the deadlock mentioned in the previous paragraph it also defeats the
+> purpose of using a threaded handler in the first place.
+> 
+> Fix this by making the interrupt one-shot and not disabling interrupts
+> in the threaded handler.
+> 
+> Note that (receive) DMA must not be used for a console port as the
+> threaded handler could be interrupted while holding the port lock,
+> something which could lead to a deadlock in case an interrupt handler
+> ends up calling printk.
 
-Handle this by setting the err appropriately.
-
-Signed-off-by: Pradeep P V K <pragalla@codeaurora.org>
----
- fs/fuse/dev.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/fuse/dev.c b/fs/fuse/dev.c
-index a5ceccc..102c56f 100644
---- a/fs/fuse/dev.c
-+++ b/fs/fuse/dev.c
-@@ -1283,6 +1283,7 @@ static ssize_t fuse_dev_do_read(struct fuse_dev *fud, struct file *file,
- 	clear_bit(FR_LOCKED, &req->flags);
- 	if (!fpq->connected) {
- 		err = fc->aborted ? -ECONNABORTED : -ENODEV;
-+		req->out.h.error = err;
- 		goto out_end;
- 	}
- 	if (err) {
--- 
-2.7.4
-
+Johan
