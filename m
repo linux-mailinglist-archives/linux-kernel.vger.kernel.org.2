@@ -2,77 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EF1E362B33
+	by mail.lfdr.de (Postfix) with ESMTP id CDD35362B35
 	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233822AbhDPWkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 18:40:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50456 "EHLO mail.kernel.org"
+        id S234985AbhDPWkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 18:40:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229719AbhDPWkg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230489AbhDPWkg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 16 Apr 2021 18:40:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D7149613C0;
+Received: by mail.kernel.org (Postfix) with ESMTPS id EDE5C613B0;
         Fri, 16 Apr 2021 22:40:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618612810;
-        bh=8goVJQUxcpgGQOGWf+xhc8/A6PiUHeDnIzDJ3htwIdo=;
+        s=k20201202; t=1618612811;
+        bh=iouLfYlxjaIJk3q65ISTxssJ+dEjZO8R/ICpAgY3eic=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=VNHQPHHcuwAbEAwrJ1P1Va9xW6BJ/Hm4LqnAPYRv2ssV2zBJwzv3bTWmwzItkIiNj
-         FIvdgJqs9FkaaU58xGswqlJXAT6kXa/AwmRQzYOol224d44pofl+/NIcvcljs0c5jF
-         l+TEgDyaEfz63KhlJtILI1+PaOCjCxktUC14mUbzPdq42jvcElnJDVKSEI7EGnLMKP
-         r33M/hZcpCMdfBrHn//0IFPSKOTxuFGP/gUcJSy51LSJ6DezP0xpRA2NNZzOQtQcwt
-         PFzgOWzd0M4O5V2w6U+mm2hKIntgQQHLRPs+PtKggzJfRWqZs6mTOE9jrjRCaGn7zV
-         kjrIUOJPqY9hg==
+        b=oxowdO8SQNn1pgVMcQFpfO2nyZwxMnk+XYov/t9tpEbbwco6HmyN+mMLtmNtuzyDq
+         8QBtdc2Zl6dR7Gf0agH8pPf+uHY2BS1I1rOOmZT0zXRL1wN4kqibYOsK6fAkj/NgFT
+         FbJmWn0ZyJtbKp6TwAoRqkixH46pUc+VhbamRtX85Al8Oqri+LwOVZo/Hmi7FMOoJi
+         E1uioyc/n8Yr+YBxZKqvOLXGJV4s3ottsi4cQPYCBBtZjpzTd2FbOxk4RF97j2r10l
+         vJ4Fhv4cocknvWifV6zltX9gIc0sXvQSc6wIaB67EXuyEX1+2xlc/c93te9DqwVnBi
+         MM05GnIuAIoCQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CBCB260CD4;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E022260CD6;
         Fri, 16 Apr 2021 22:40:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/6] r8152: support new chips
+Subject: Re: [PATCH V2 net-next] net: mvpp2: Add parsing support for different
+ IPv4 IHL values
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161861281082.23739.2086228554864615182.git-patchwork-notify@kernel.org>
+Message-Id: <161861281091.23739.14287826762066877912.git-patchwork-notify@kernel.org>
 Date:   Fri, 16 Apr 2021 22:40:10 +0000
-References: <1394712342-15778-350-Taiwan-albertk@realtek.com>
-In-Reply-To: <1394712342-15778-350-Taiwan-albertk@realtek.com>
-To:     Hayes Wang <hayeswang@realtek.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        nic_swsd@realtek.com, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
+References: <1618560917-31548-1-git-send-email-stefanc@marvell.com>
+In-Reply-To: <1618560917-31548-1-git-send-email-stefanc@marvell.com>
+To:     Stefan Chulski <stefanc@marvell.com>
+Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
+        linux-kernel@vger.kernel.org, kuba@kernel.org,
+        linux@armlinux.org.uk, mw@semihalf.com, andrew@lunn.ch,
+        rmk+kernel@armlinux.org.uk, atenart@kernel.org, lironh@marvell.com,
+        danat@marvell.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net-next.git (refs/heads/master):
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Fri, 16 Apr 2021 16:04:31 +0800 you wrote:
-> Support new RTL8153 and RTL8156 series.
+On Fri, 16 Apr 2021 11:15:17 +0300 you wrote:
+> From: Stefan Chulski <stefanc@marvell.com>
 > 
-> Hayes Wang (6):
->   r8152: set inter fram gap time depending on speed
->   r8152: adjust rtl8152_check_firmware function
->   r8152: add help function to change mtu
->   r8152: support new chips
->   r8152: support PHY firmware for RTL8156 series
->   r8152: search the configuration of vendor mode
+> Add parser entries for different IPv4 IHL values.
+> Each entry will set the L4 header offset according to the IPv4 IHL field.
+> L3 header offset will set during the parsing of the IPv4 protocol.
+> 
+> Because of missed parser support for IP header length > 20, RX IPv4 checksum HW offload fails
+> and skb->ip_summed set to CHECKSUM_NONE(checksum done by Network stack).
+> This patch adds RX IPv4 checksum HW offload capability for frames with IP header length > 20.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,1/6] r8152: set inter fram gap time depending on speed
-    https://git.kernel.org/netdev/net-next/c/5133bcc74815
-  - [net-next,2/6] r8152: adjust rtl8152_check_firmware function
-    https://git.kernel.org/netdev/net-next/c/a8a7be178e81
-  - [net-next,3/6] r8152: add help function to change mtu
-    https://git.kernel.org/netdev/net-next/c/67ce1a806f16
-  - [net-next,4/6] r8152: support new chips
-    https://git.kernel.org/netdev/net-next/c/195aae321c82
-  - [net-next,5/6] r8152: support PHY firmware for RTL8156 series
-    https://git.kernel.org/netdev/net-next/c/4a51b0e8a014
-  - [net-next,6/6] r8152: search the configuration of vendor mode
-    https://git.kernel.org/netdev/net-next/c/c2198943e33b
+  - [V2,net-next] net: mvpp2: Add parsing support for different IPv4 IHL values
+    https://git.kernel.org/netdev/net-next/c/4ad29b1a484e
 
 You are awesome, thank you!
 --
