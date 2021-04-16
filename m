@@ -2,83 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B14361702
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 03:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58843361704
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 03:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236673AbhDPBB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 21:01:29 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39804 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234548AbhDPBB2 (ORCPT
+        id S236825AbhDPBC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 21:02:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234548AbhDPBCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 21:01:28 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13G110x2122418;
-        Thu, 15 Apr 2021 20:01:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1618534860;
-        bh=eEjVY+csft1qmwgElx92CwbkqgKDWnD3XGOrvQ5KnYw=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=zDpFd+8HXXIWqZACjI6QjbV/9EP7dAAJkyUkBblykgx7mgHdyZEtAArzn2FfARDHD
-         h0bKqVPCZAoPX1ewbwn/TGsfKID32OKhK8Y9UnXWsatzqiZp1BFDSe3Byt31aUf3C+
-         Udq+TfE4fXMZ6S5DETctbqdvbLCXP8HrUibU6nXA=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13G110Nu125483
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 15 Apr 2021 20:01:00 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 15
- Apr 2021 20:01:00 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 15 Apr 2021 20:01:00 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13G1104J125843;
-        Thu, 15 Apr 2021 20:01:00 -0500
-Date:   Thu, 15 Apr 2021 20:01:00 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Jassi Brar <jassisinghbrar@gmail.com>, <s-anna@ti.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH V2] dt-bindings: mailbox: ti,secure-proxy: Convert to yaml
-Message-ID: <20210416010100.y3mbfzvx2i3x5dmz@curliness>
-References: <20210413224535.30910-1-nm@ti.com>
- <20210415211731.GA1892348@robh.at.kernel.org>
+        Thu, 15 Apr 2021 21:02:55 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615FEC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 18:02:30 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id i3so4589968edt.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 18:02:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=FLviiZ7u+W7zpUN/iahSHhCxR57RALjCp4R+bIR/q4I=;
+        b=xVMATBheO4kBDQK/42InsYS0tuwCR6LeGG+3fgwyOQjeNF72re1507kyWmxtY+yS/o
+         SEjhzBjKfTNj8mAVrv2KEdKRlk2n+wgLvH0Em9Xeyj4EVoSck7fCoO6H+cRDLR4F1tXi
+         rBi1LnGTyzy4mSi6rqkIwstEOyuHNxo7DT76bnFAxrxvnW79LAhxQClbaAu7sOJJj3oo
+         ljy7vRuEvY+CJcfbPhdz3X8v1Z5idqF6xmdCOuH+rACY0Xy4k7Go3yuhs8PBkBj+zkAb
+         Ihf2ZEKB2sI/dhi+vIGlmJqZew17l0aN2lHIxHVulL9OK4+n6wZsDZYm+7qhvE+xf/LA
+         0aRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FLviiZ7u+W7zpUN/iahSHhCxR57RALjCp4R+bIR/q4I=;
+        b=GqUPOqt7I8X01j0bhyFt5OEhDSnpxl+dqGQvezmS/9pUuFJ1PI/YfOpVMhJC0ZxRt6
+         KlCf5DGpWo12II/3p3TJAiIFi+WgsztSXvzL3xiKXQarkn2gsXrML4eXnvpHzs8z/V+W
+         UpLf5pLmirhNrKn7E5lMewJ8v5x9OqIcKBPSgVdfxhu3m0w6c4GtoXw+mxBdeJacErbI
+         +QYJqG05D3X4WQRhXx9YoazyEFdnz1UZ4kSrVZYWBCL92ukkPp0IlmUrBloZPs9/5MIf
+         /0Bch+2w20Qt9NXabIq5HDHarnuDZ2U7HcmQg/OFHpzr2vD6IIOVsyswRklEgwzFi+AG
+         3y9w==
+X-Gm-Message-State: AOAM531CxkqNXy9Nki33L1MfEEWkJh5jink39gZEKPU89YAQTgf5+S9M
+        0CLjdAN68b4/0bD/n9Pz+RtkSAEa16gGslac3egdlw==
+X-Google-Smtp-Source: ABdhPJxprpID/mPhVpOecG4jP9GfpH7JpuSGlZ2hGFIMybnx0sEmcrWACF4LYjSwXS3j6jmlAvBnG5DK2s7Ml07rh/o=
+X-Received: by 2002:a05:6402:145:: with SMTP id s5mr7280712edu.221.1618534948973;
+ Thu, 15 Apr 2021 18:02:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210415211731.GA1892348@robh.at.kernel.org>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210415144413.146131392@linuxfoundation.org>
+In-Reply-To: <20210415144413.146131392@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 16 Apr 2021 06:32:17 +0530
+Message-ID: <CA+G9fYucwKvD8=oyP8k761JbuMb8TXaCQemha5sNBzEV_yL7Ew@mail.gmail.com>
+Subject: Re: [PATCH 5.11 00/23] 5.11.15-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16:17-20210415, Rob Herring wrote:
-> > diff --git a/Documentation/devicetree/bindings/mailbox/ti,secure-proxy.yaml b/Documentation/devicetree/bindings/mailbox/ti,secure-proxy.yaml
-> > new file mode 100644
-> > index 000000000000..08a4837fdfcc
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mailbox/ti,secure-proxy.yaml
-[...]
-> > +
-> > +  interrupt-names:
-> > +    minItems: 1
-> > +    maxItems: 100
-> > +    items:
-> > +      - pattern: "^rx_[0-9]{3}$"
-> 
-> Need to drop the '-' to make this apply to all entries. Otherwise, it's 
-> just the first one.
+On Thu, 15 Apr 2021 at 20:34, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.11.15 release.
+> There are 23 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 17 Apr 2021 14:44:01 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.11.15-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.11.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Aaah.. Thanks. done in v3[1]
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 5.11.15-rc1
+* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stabl=
+e-rc.git',
+'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
+* git branch: linux-5.11.y
+* git commit: 7825299a896f0cf519f259bb9d4ccab262d8c175
+* git describe: v5.11.14-24-g7825299a896f
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11.y/build/v5.11=
+.14-24-g7825299a896f
+
+## No regressions (compared to v5.11.14)
 
 
-[1] https://lore.kernel.org/r/20210416005953.17147-1-nm@ti.com
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+## No fixes (compared to v5.11.14)
+
+## Test result summary
+ total: 74984, pass: 63321, fail: 1427, skip: 9959, xfail: 277,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 192 total, 192 passed, 0 failed
+* arm64: 26 total, 26 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 25 total, 25 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 0 passed, 1 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 26 total, 26 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
