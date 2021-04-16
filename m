@@ -2,71 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 602EF361713
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 03:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDFC4361714
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 03:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237668AbhDPBN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 21:13:26 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:17345 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235109AbhDPBNY (ORCPT
+        id S237678AbhDPBOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 21:14:25 -0400
+Received: from regular1.263xmail.com ([211.150.70.195]:55072 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235109AbhDPBOY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 21:13:24 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FLynT11LJz9yf6;
-        Fri, 16 Apr 2021 09:10:37 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 16 Apr 2021 09:12:51 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
-        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
-        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>
-Subject: [PATCH net v4 0/2] fix packet stuck problem for lockless qdisc
-Date:   Fri, 16 Apr 2021 09:13:12 +0800
-Message-ID: <1618535592-11845-1-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        Thu, 15 Apr 2021 21:14:24 -0400
+Received: from localhost (unknown [192.168.167.172])
+        by regular1.263xmail.com (Postfix) with ESMTP id AA5E61CB4;
+        Fri, 16 Apr 2021 09:13:39 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from [172.16.12.120] (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P18449T140669553202944S1618535618574890_;
+        Fri, 16 Apr 2021 09:13:39 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <f8360a91e61024aadd0a1e46da1be00b>
+X-RL-SENDER: kever.yang@rock-chips.com
+X-SENDER: yk@rock-chips.com
+X-LOGIN-NAME: kever.yang@rock-chips.com
+X-FST-TO: heiko@sntech.de
+X-RCPT-COUNT: 6
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Subject: Re: [RFC] ITS fails to allocate on rk3568/rk3566
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Peter Geis <pgwipeout@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>
+References: <CAMdYzYrQ5f-mv_VmTq_CRf9tR=j3mwRpKHNLmPFgCF9whsGFRw@mail.gmail.com>
+ <871rbeo7wf.wl-maz@kernel.org>
+ <CAMdYzYruPyiT89FrbJhuV=c36PyRwZ7sT45abnv8rTv85AKRow@mail.gmail.com>
+ <87y2dmmggt.wl-maz@kernel.org>
+ <CAMdYzYrNa_wJa9mvBkhDrvdNaDugR9Y=LEnbcVHxjxJS0UFcMg@mail.gmail.com>
+ <87tuoambdb.wl-maz@kernel.org>
+ <CAMdYzYo2+h+=39cw1t=11HUih-O+NUs4hhNaPbrU6si-AbqNiA@mail.gmail.com>
+ <871rbdt4tu.wl-maz@kernel.org>
+ <678e9950-dd85-abb2-a104-07a4db1fad49@rock-chips.com>
+ <87k0p4m0gm.wl-maz@kernel.org>
+From:   Kever Yang <kever.yang@rock-chips.com>
+Message-ID: <8d2e22f5-1c1b-e795-8757-ae078446d961@rock-chips.com>
+Date:   Fri, 16 Apr 2021 09:13:38 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+In-Reply-To: <87k0p4m0gm.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset fixes the packet stuck problem mentioned in [1].
+Hi Marc,
 
-Patch 1: Add STATE_MISSED flag to fix packet stuck problem.
-Patch 2: Fix a tx_action rescheduling problem after STATE_MISSED
-         flag is added in patch 1.
+On 2021/4/15 下午4:11, Marc Zyngier wrote:
+> Hi Kever,
+>
+> On Thu, 15 Apr 2021 08:24:33 +0100,
+> Kever Yang <kever.yang@rock-chips.com> wrote:
+>> Hi Marc, Peter,
+>>
+>>      RK356x GIC has two issues:
+>>
+>> 1. GIC only support 32bit address while rk356x supports 8GB DDR SDRAM,
+>> so we use ZONE_DMA32 to fix this issue;
+> What transactions does this affect exactly?
+The GIC on rk356x is a 32bit master, which means all the space its logic 
+need to access should be in the 4GB range.
+> Only some ITS tables? Or
+> all of them, including the command queue? What about the configuration
+> and pending tables associated with the redistributors?
+>
+>> 2. GIC version is r1p6-00rel0, RK356x interconnect does not support
+>> GIC and CPU snoop to each other, hence the GIC does not support the
+>> shareability feature.  The read of register value for shareability
+>> feature does not return as expect in GICR and GITS, so we have to
+>> workaround for it.
+> How about the cacheability attribute? Can you please provide the exact
+> set of attributes that this system actually supports for each of the
+> ITS and redistributor base registers?
 
-V4: Change STATE_NEED_RESCHEDULE to STATE_MISSED and add patch 2.
+The shareability attributes in GICR_PENDBASEER, GICR_PROPBASER, 
+GITS_BASERn, GITS_CBASER default value is 0b00, when we set 0b01 then 
+read returns 0b01.
 
-[1]. https://lkml.org/lkml/2019/10/9/42
+Since there is no ACE coherency interface for this GIC controller, all 
+the cacheability in the GIC is not support in hardware.
 
-Yunsheng Lin (2):
-  net: sched: fix packet stuck problem for lockless qdisc
-  net: sched: fix endless tx action reschedule during deactivation
+>
+> Also, please provide errata numbers for these two issues so that we
+> can properly document them and track the workarounds.
 
- include/net/pkt_sched.h   |  7 +------
- include/net/sch_generic.h | 37 ++++++++++++++++++++++++++++++++++++-
- net/core/dev.c            | 26 ++++++++++++++++++++++----
- net/sched/sch_generic.c   | 16 +++++++++++++++-
- 4 files changed, 74 insertions(+), 12 deletions(-)
+What kind of errata do you need, could you please share any kind of 
+example close to this case?
 
--- 
-2.7.4
+We consider this as a SoC implement design instead of a bug, so we will 
+add document in RK356X  TRM to describe the GIC design, but no idea how 
+to provide the errata.
+
+Here is the shareabily attribute from ARM GIC architecture specification:
+Shareability, bits [11:10] (from GITS_CBASER)
+Indicates the Shareability attributes of accesses to the command queue. 
+The possible values of this field are:
+0b00 Non-shareable.
+0b01 Inner Shareable.
+0b10 Outer Shareable.
+0b11 Reserved. Treated as 0b00.
+It is IMPLEMENTATION DEFINED whether this field has a fixed value or can 
+be programmed by software. Implementing this field with a fixed value is 
+deprecated.
+On a Warm reset, this field resets to an architecturally UNKNOWN value
+
+As you can see, "Implementing this field with a fixed value is 
+deprecated", so software should program this field to '0b00 
+Non-shareable' if the SoC design does not support the cache shareability.
+
+Thanks,
+- Kever
+>
+> Thanks,
+>
+> 	M.
+>
+
 
