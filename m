@@ -2,293 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC5B361F25
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84396361F27
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242937AbhDPLuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 07:50:35 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:14608 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242019AbhDPLud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 07:50:33 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618573808; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=c3Jgq/Y+FHaHryNJ/heTnSdqMpq1Z71MLgjZ4Qr4h4o=;
- b=EOUN117vrylhgKF776l+ttwOzVogfmw0t9jC8I/ekRCNyXye3RssOwl6xHRaax5/DkA34KDK
- vxiuV7ti+4rctWCOVrIhpOvEG/WGfXenP3yZANF4NSHsPxeTGUBaPwh4Q0w2qGc2qWSlSMHE
- HOb6wDd6+GyhIEkwlYQDd1H/YfQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 607979ed853c0a2c46933005 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 16 Apr 2021 11:50:05
- GMT
-Sender: taozha=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 05914C4346A; Fri, 16 Apr 2021 11:50:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: taozha)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 36233C433C6;
-        Fri, 16 Apr 2021 11:50:02 +0000 (UTC)
+        id S242982AbhDPLvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 07:51:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235498AbhDPLu7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 07:50:59 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3FCBC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 04:50:32 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id j12so6880100edy.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 04:50:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Sj9F+4m0QBxztbTpUZBY4iguQ75hWMqv8Hn35qn3Kqs=;
+        b=mYCnARdQtVCgcGuEaWSXIqQALIsUVH3RynrAHX4tx8Vy8XutxYjPsXVK8bnm3bOEEd
+         /QZxHesDNycqjp3mb+jlo7p8tRO3EkAQ5/lRCpkvKTabEwhj/kJVCYKJDfT800k59g7W
+         S17qLmzEpG3F40eV0u0qecyA27DelutJ67m/2+2bA4RDuy+TuCfuDd5uKsx+o+gspKxj
+         b9ipU+h5cA2E3XIQmAp9Ido3kjBpwQgX5JBCrMPLp2HKQBwPUS65wUG1QP0fxHVAScMF
+         +UsEYQ6PCgvw0jmPRl6S8Fy0AJrCBvHiPJlVYTcIAX0U9hRln5GSsy02jRVWpo4dwQvv
+         HUXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Sj9F+4m0QBxztbTpUZBY4iguQ75hWMqv8Hn35qn3Kqs=;
+        b=NHddUt6jOiIeTxgMEh2PrPuudd48LJ0Zgpr5QoVIDgEJxTuD/EICE6efGIYSvS+6bG
+         7Pn73IKeolDGaA77ZjfQnhqJGSZhqXUmpJCHk4iK/RxRknb32G0r9YQsB9oWlNUWiWAV
+         3FuIkw8eJLC+pSJ8kpiUxpqzNCFNQRA4+VptaPVFF3jVZyU9QCegimK+GDBGT1OmTFUp
+         /oerX5lsiuY5ojBcew1GQHVIp9qC2ZZpQyJZ7aSG0bqdy3cV/CdXGySgM/VRFFQv6cvr
+         UpLlyz+33sr3KWVNakC094qvMQSy1cGqApQg5v/jHRkMlQSl51jCOokJtMAHjh6e+lKb
+         5aWg==
+X-Gm-Message-State: AOAM533/DUtTGptykY6KgonjIq0K+VSxnUQ6hwi6aE5W43HSTqMudJdw
+        RYQCa74yKHg1rQBIHOYnpuaV+SjcW/+0utJeNJb8bJHpm/OcLKWu
+X-Google-Smtp-Source: ABdhPJyCNVHpzTZNInTDjK0MQL3tRDaPqUL5G1ap3ba57Y/iQSFwHULoODNJq2+VhZ4VOeFsCnxuy0DOE6IM3dQs7BY=
+X-Received: by 2002:a50:c3c2:: with SMTP id i2mr9424884edf.23.1618573831269;
+ Fri, 16 Apr 2021 04:50:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 16 Apr 2021 19:50:02 +0800
-From:   taozha@codeaurora.org
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Tingwei Zhang <tingwei@codeaurora.org>,
-        Mao Jinlong <jinlmao@codeaurora.org>,
-        Yuanfang Zhang <zhangyuanfang@codeaurora.org>,
-        Satyajit Desai <sadesai@codeaurora.org>,
-        Rama Aparna Mallavarapu <aparnam@codeaurora.org>,
-        Mulu He <muluhe@codeaurora.org>,
-        Tao Zhang <taozha@codeaurora.org>
-Subject: Re: [PATCH] coresight: add support to enable more coresight paths
-In-Reply-To: <3c280b36-82ec-7ffc-2ad1-4c901899ffe2@arm.com>
-References: <1618479207-22243-1-git-send-email-taozha@codeaurora.org>
- <3c280b36-82ec-7ffc-2ad1-4c901899ffe2@arm.com>
-Message-ID: <9facc53e6cfcfaf5a5363825b04e5641@codeaurora.org>
-X-Sender: taozha@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210415144413.487943796@linuxfoundation.org>
+In-Reply-To: <20210415144413.487943796@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 16 Apr 2021 17:20:19 +0530
+Message-ID: <CA+G9fYvszXaHxPB4ApT2t+ZU5Emm8yABhk7-zeSumbkBTqUTdw@mail.gmail.com>
+Subject: Re: [PATCH 4.9 00/47] 4.9.267-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-15 17:49, Suzuki K Poulose wrote:
-> Hi
-> 
-> On 15/04/2021 10:33, Tao Zhang wrote:
->> Current coresight implementation only supports enabling source
->> ETMs or STM. This patch adds support to enable more kinds of
->> coresight source to sink paths. We build a path from source to
->> sink when any source is enabled and store it in a list. When the
->> source is disabled, we fetch the corresponding path from the list
->> and decrement the refcount on each device in the path. The device
->> is disabled if the refcount reaches zero. Don't store path to
->> coresight data structure of source to avoid unnecessary change to
->> ABI.
->> Since some targets may have coresight sources other than STM and
->> ETMs, we need to add this change to support these coresight
->> devices.
-> 
-> While I am not against the patch, I would like to see why this change 
-> is
-> needed. Which compnents are we talking about , other than STM / ETM ?
-> Where is the "device" support code ? Without a legitimate user, we
-> cannot add this change in.
-> 
-> Some other comments below.
-> 
-We will upload coresight source device driver code in addition to 
-STM/ETM in the future. This patch is only our first step. e.g, this 
-patch can support to build a path from TPDM(a kind of coresight source 
-device on Qualcomm target) to sink. At the same time, this patch also 
-can support coresight source devices other than STM/ETM on the other 
-targets.
->> 
->> Signed-off-by: Satyajit Desai <sadesai@codeaurora.org>
->> Signed-off-by: Rama Aparna Mallavarapu <aparnam@codeaurora.org>
->> Signed-off-by: Mulu He <muluhe@codeaurora.org>
->> Signed-off-by: Tingwei Zhang <tingwei@codeaurora.org>
->> Signed-off-by: Tao Zhang <taozha@codeaurora.org>
->> ---
->>   drivers/hwtracing/coresight/coresight-core.c | 101 
->> +++++++++++++++------------
->>   1 file changed, 56 insertions(+), 45 deletions(-)
->> 
->> diff --git a/drivers/hwtracing/coresight/coresight-core.c 
->> b/drivers/hwtracing/coresight/coresight-core.c
->> index 4ba801d..7dfadb6 100644
->> --- a/drivers/hwtracing/coresight/coresight-core.c
->> +++ b/drivers/hwtracing/coresight/coresight-core.c
->> @@ -35,18 +35,16 @@ struct coresight_node {
->>   };
->>     /*
->> - * When operating Coresight drivers from the sysFS interface, only a 
->> single
->> - * path can exist from a tracer (associated to a CPU) to a sink.
->> + * struct coresight_path - path from source to sink
->> + * @path:	Address of path list.
->> + * @link:	hook to the list.
->>    */
->> -static DEFINE_PER_CPU(struct list_head *, tracer_path);
->> +struct coresight_path {
->> +	struct list_head *path;
->> +	struct list_head link;
->> +};
->>   -/*
->> - * As of this writing only a single STM can be found in CS 
->> topologies.  Since
->> - * there is no way to know if we'll ever see more and what kind of
->> - * configuration they will enact, for the time being only define a 
->> single path
->> - * for STM.
->> - */
->> -static struct list_head *stm_path;
->> +static LIST_HEAD(cs_active_paths);
->>     /*
->>    * When losing synchronisation a new barrier packet needs to be 
->> inserted at the
->> @@ -326,7 +324,7 @@ static void coresight_disable_sink(struct 
->> coresight_device *csdev)
->>   	if (ret)
->>   		return;
->>   	coresight_control_assoc_ectdev(csdev, false);
->> -	csdev->enable = false;
->> +	csdev->activated = false;
->>   }
->>     static int coresight_enable_link(struct coresight_device *csdev,
->> @@ -562,6 +560,20 @@ int coresight_enable_path(struct list_head *path, 
->> u32 mode, void *sink_data)
->>   	goto out;
->>   }
->>   +static struct coresight_device *coresight_get_source(struct 
->> list_head *path)
->> +{
->> +	struct coresight_device *csdev;
->> +
->> +	if (!path)
->> +		return NULL;
->> +
->> +	csdev = list_first_entry(path, struct coresight_node, link)->csdev;
->> +	if (csdev->type != CORESIGHT_DEV_TYPE_SOURCE)
->> +		return NULL;
->> +
->> +	return csdev;
->> +}
->> +
->>   struct coresight_device *coresight_get_sink(struct list_head *path)
->>   {
->>   	struct coresight_device *csdev;
->> @@ -1047,9 +1059,23 @@ static int coresight_validate_source(struct 
->> coresight_device *csdev,
->>   	return 0;
->>   }
->>   +static int coresight_store_path(struct list_head *path)
->> +{
->> +	struct coresight_path *node;
->> +
->> +	node = kzalloc(sizeof(struct coresight_path), GFP_KERNEL);
-> 
-> Have you run this with all the "DEBUG" whistles turned on ? This could
-> be problematic when called from a context where you are not allowed to
-> sleep. e.g, perf enable call back.
-> 
-Only coresight_enable function will call coresight_store_path, and seems 
-like coresight_enable function should be allowed to sleep since it is 
-protected by Mutex. And I find in function coresight_build_path also 
-will call kzalloc. Do you have any other concerns about calling kzalloc 
-here?
->> +	if (!node)
->> +		return -ENOMEM;
->> +
->> +	node->path = path;
->> +	list_add(&node->link, &cs_active_paths);
->> +
->> +	return 0;
->> +}
->> +
->>   int coresight_enable(struct coresight_device *csdev)
->>   {
->> -	int cpu, ret = 0;
->> +	int ret = 0;
->>   	struct coresight_device *sink;
->>   	struct list_head *path;
->>   	enum coresight_dev_subtype_source subtype;
->> @@ -1094,25 +1120,9 @@ int coresight_enable(struct coresight_device 
->> *csdev)
->>   	if (ret)
->>   		goto err_source;
->>   -	switch (subtype) {
->> -	case CORESIGHT_DEV_SUBTYPE_SOURCE_PROC:
->> -		/*
->> -		 * When working from sysFS it is important to keep track
->> -		 * of the paths that were created so that they can be
->> -		 * undone in 'coresight_disable()'.  Since there can only
->> -		 * be a single session per tracer (when working from sysFS)
->> -		 * a per-cpu variable will do just fine.
->> -		 */
->> -		cpu = source_ops(csdev)->cpu_id(csdev);
->> -		per_cpu(tracer_path, cpu) = path;
->> -		break;
->> -	case CORESIGHT_DEV_SUBTYPE_SOURCE_SOFTWARE:
->> -		stm_path = path;
->> -		break;
->> -	default:
->> -		/* We can't be here */
->> -		break;
->> -	}
->> +	ret = coresight_store_path(path);
->> +	if (ret)
->> +		goto err_source;
->>     out:
->>   	mutex_unlock(&coresight_mutex);
->> @@ -1129,8 +1139,11 @@ EXPORT_SYMBOL_GPL(coresight_enable);
->>     void coresight_disable(struct coresight_device *csdev)
->>   {
->> -	int cpu, ret;
->> +	int  ret;
->>   	struct list_head *path = NULL;
->> +	struct coresight_path *cspath = NULL;
->> +	struct coresight_path *cspath_next = NULL;
->> +	struct coresight_device *src_csdev = NULL;
->>     	mutex_lock(&coresight_mutex);
->>   @@ -1141,20 +1154,18 @@ void coresight_disable(struct 
->> coresight_device *csdev)
->>   	if (!csdev->enable || !coresight_disable_source(csdev))
->>   		goto out;
->>   -	switch (csdev->subtype.source_subtype) {
->> -	case CORESIGHT_DEV_SUBTYPE_SOURCE_PROC:
->> -		cpu = source_ops(csdev)->cpu_id(csdev);
->> -		path = per_cpu(tracer_path, cpu);
->> -		per_cpu(tracer_path, cpu) = NULL;
->> -		break;
->> -	case CORESIGHT_DEV_SUBTYPE_SOURCE_SOFTWARE:
->> -		path = stm_path;
->> -		stm_path = NULL;
->> -		break;
->> -	default:
->> -		/* We can't be here */
->> -		break;
-> 
-> --> Cut here <---
-> 
->> +	list_for_each_entry_safe(cspath, cspath_next, &cs_active_paths, 
->> link) {
->> +		src_csdev = coresight_get_source(cspath->path);
->> +		if (!src_csdev)
->> +			continue;
->> +		if (src_csdev == csdev) {
->> +			path = cspath->path;
->> +			list_del(&cspath->link);
->> +			kfree(cspath);
->> +		}
->>   	}
-> 
-> Why not add the above to 
-> coresight_{retrieve/remove/}_active_path(csdev) ?
-> 
-> 
-> 
-> Suzuki
-I didn't find coresight_{retrieve/remove/}_active_path(csdev) from 
-coresight next branch. Can you help point out the exact function name 
-that you think this part of code should be added to?
+On Thu, 15 Apr 2021 at 20:23, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.9.267 release.
+> There are 47 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 17 Apr 2021 14:44:01 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.267-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+
+
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 4.9.267-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.9.y
+* git commit: 5183cf83a541a4684e52ca704658b93e63fdf243
+* git describe: v4.9.266-48-g5183cf83a541
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
+66-48-g5183cf83a541
+
+## No regressions (compared to v4.9.266-43-ga0c17d36dea3)
+
+## No fixes (compared to v4.9.266-43-ga0c17d36dea3)
+
+## Test result summary
+ total: 54076, pass: 44392, fail: 544, skip: 8849, xfail: 291,
+
+## Build Summary
+* arm: 96 total, 96 passed, 0 failed
+* arm64: 23 total, 23 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 13 total, 13 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 13 total, 13 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
