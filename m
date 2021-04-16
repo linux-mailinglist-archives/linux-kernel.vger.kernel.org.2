@@ -2,416 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F4D3616BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 02:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BACC3616C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 02:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234975AbhDPA0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 20:26:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234940AbhDPA0S (ORCPT
+        id S235555AbhDPA0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 20:26:54 -0400
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:9609 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234940AbhDPA0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 20:26:18 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37F3C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 17:25:54 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id x12so18761161ejc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 17:25:54 -0700 (PDT)
+        Thu, 15 Apr 2021 20:26:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1618532789; x=1650068789;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=+hyz5PI6EL/gxSTMI7PTT1WpCx9a9yMj9wFcPeku1eo=;
+  b=eYj/bkdKUqf2sHTwau950dLQCTIfw3Q9baKQIJEybCP6AnptSDatPgzi
+   POta+PxpsgQi0oSyUNPW2H6sDvxeZnNmWbvXxV8jE3TfH4nzyZfdJewd4
+   bn1ehqztqPX5gdImczkdY5HnGWCBQ0OmAqWeC+lbjOpsK8IrpNr6m/2PH
+   2+b8u/x3HIBCe9AvoHo6kV1G/ewUQQ47lpomTjjhtB3RNaWrn2A+2yT1I
+   pkDXRF22i5F61T/tbsI7+Pk6tXy/J5Mvq8IMvCrGA+6D3D06/gmYZn4xB
+   vjk5rmiFqF+Hcykl7kKJeycMtGsHK0D6pEAqgn1KW59/eUl4apkXyzdSS
+   A==;
+IronPort-SDR: qQV5h89YymbQglQRl7vDunP8HRCeLZQNwWNwZwKnUzjcKUgfFzJzJMR+bKSJeHU/gWBm35e5HB
+ C2ciMe0Mrg6GZ3hKWYTv7zdOnNN2TGnUcP2zO/UmB26V6pIG/gV/w7i+5pM+U/+ZO/ylv0n3sW
+ RwIio1ClAzaEUP/RXtHmt9vezLO1aBLkPCRanIbUGu3oakHMZAe54qsll0JMFkFh0FXRMaxBGp
+ OojrlKhfE8Xnj8U9B/A6OHBcP3XEszjTlFaMFOMbVpFf5YDI/2EdQrK0gRGpyDgPgdPcScyiG5
+ 3ZE=
+X-IronPort-AV: E=Sophos;i="5.82,226,1613404800"; 
+   d="scan'208";a="164993708"
+Received: from mail-dm6nam11lp2168.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.168])
+  by ob1.hgst.iphmx.com with ESMTP; 16 Apr 2021 08:26:28 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TANVwTwTlXE3IHQVk2bSftbJFn9iyMyCSCOV1cyflhpJ4S/GPcMOPShP9ILHd2d/3n0D/80DemowOloCzniQ8rcj23/scLhSUeP61xI//NEptPSTsROTQjPymwkm/0CLCy1Nnu9jH1+X1917MOeCZQU1AyIRrDMhfrS9he23cfn9ojzHLlUuaLTuI9pRfzNy1lJPOXa7sFP50oUQNY9bIkClIl2u88EBIx7Ld+Efbx3zNKRGRzP3UWxslLITII883xgYRTJqke2v3icNexoVV2czo6bIyU1w0PIh7Z1AlZNyCyWw1EG0KScYpUVCju5HDngZJaN2H9NY243wEk7e5Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7LQ12C0NJDNUn9gLGuUPER/W+UH8ztQJ2ISITw9EHy0=;
+ b=j6FqC0psXo58v9YlGy81O9gYDMhwqFxP8tU+3L/2Yz0deI5m/5HNtn5/vPYplsbbNuA8ZRYJX89tlSg+2gDmhObX+W2O2ZSDsFD8nHKSi84p2SqaXt81BLYDx2pQekjGQr174k3Oc5fEuJHkpZYouvbuX2OlZflN2UKk7yBNtRSZOtwSdvYEt3LOzGosSg+iT2Qy2kCaDzpVqUsKgTqk8GloqEkD0qerBqEK9DKYhY79eI1KvaOx0iscs0TYnYFOd4Xdh2RcxGUASOZLNTo6hZ8HW62wJwJosYBqZ0YZztJBzJyN7LhSBWi6Rczf0gAIkOY+LN4g47/YFLlq0pCvAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6aKoPpIoAAIp9cLIWqHEj3K5gNRxoAcEk2xZXrMYbhw=;
-        b=SOM4DWif9zSpB/uGdCiw7IEU2/81N3dnKU3wcAGg4WhN6YrYicitnPbYPuMrYFlz37
-         DI+cFbkxxldGdIPQSNRGDBXh/V/LLk13HduTMnuBHNnpZ3Jgg+Il0uak0Q1lbrEwoGoN
-         sgVhlUG5hfAMcX1PzxMu3UvO2g7q81kbbFpLZXcVTNJSGj+QI0l43ZyRrcLcqA/2CuBy
-         UvpG0IaytSPZQt3vu0EWu5bHvYa62q1C/WxREkKS5A5hqpUhiECpX5TcifgrjiLLeMti
-         oOhm5Rh4DG5YXCwDu1oamJvQyJmmJWKGt9Wta3MSSFGO+ujV9dp0I/TfJ3kfnm4ethyP
-         bscA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6aKoPpIoAAIp9cLIWqHEj3K5gNRxoAcEk2xZXrMYbhw=;
-        b=XPlJhUxNRcahw5cdlxpTy3zuhVSpi9TYnI+7lQT90r46zlRa9umF0Yysg/U83Xh5AD
-         yGd7oH/skzLaKmMigvPReKJQ/Vs6ixHBOw60nuhPk4CsvcHcFq+j9f+PuQCIVtTFbj8x
-         13a5mtRAl4p2XRuM74Zv7SCRmrSd8P7MivpeR7llGvMw3tIirqe2/upqFCLDEbKE3xJm
-         YOwBmQ/D0cUXLMPtgOaSWxt+mj4XasYZarGELf55+dpxyiii7k9EqSDcg4xEt0hPENm2
-         7PxLEjfJGoDXaWFW2KpnsTLt30D92qyTLXcJ5aSD1xM1jqXVXKJb6QWTLQc1CnLepxDj
-         M08w==
-X-Gm-Message-State: AOAM530nZLYs19UOghGeLXjXhgUoZTgmRzZkY2gCL7DqeN/jTwFRZM52
-        /4M6w1Job4X85+c1ciZ22eTYUj7bQQoyIk/dB0gKFg==
-X-Google-Smtp-Source: ABdhPJzEMHqHK6/9KWBYMeHa2oKRAMpZXN10BINRbsjn9kRRuEpZ4eU+FYhHVQtMR9tAHMHB0/dBmlW8xskIOSNL4UU=
-X-Received: by 2002:a17:907:7631:: with SMTP id jy17mr5991916ejc.418.1618532753207;
- Thu, 15 Apr 2021 17:25:53 -0700 (PDT)
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7LQ12C0NJDNUn9gLGuUPER/W+UH8ztQJ2ISITw9EHy0=;
+ b=GJa5MSlTzrFOK1vEapDhrQhnN2FRis1Sd7g9YX8IXtYnB6tENDtrXUtSmMDl0EYTHtcgKNAC61YMkWzfx8NGpLf4QPdPuFdV4k+9vmvIv8YI2JMvVUj2RXXboN+qFhXgw9Vl+RQPj6dNnyTBg7EPT03pXjG8fBmaoUnvOXcOMRI=
+Received: from BL0PR04MB6514.namprd04.prod.outlook.com (2603:10b6:208:1ca::23)
+ by MN2PR04MB7072.namprd04.prod.outlook.com (2603:10b6:208:1e6::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.18; Fri, 16 Apr
+ 2021 00:26:27 +0000
+Received: from BL0PR04MB6514.namprd04.prod.outlook.com
+ ([fe80::8557:ab07:8b6b:da78]) by BL0PR04MB6514.namprd04.prod.outlook.com
+ ([fe80::8557:ab07:8b6b:da78%3]) with mapi id 15.20.4042.016; Fri, 16 Apr 2021
+ 00:26:27 +0000
+From:   Damien Le Moal <Damien.LeMoal@wdc.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>
+CC:     Palmer Dabbelt <palmer@dabbelt.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jcmvbkbc@gmail.com" <jcmvbkbc@gmail.com>,
+        "gerg@linux-m68k.org" <gerg@linux-m68k.org>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        "uclinux-dev@uclinux.org" <uclinux-dev@uclinux.org>
+Subject: Re: [PATCH v2 0/2] Fix binfmt_flat loader for RISC-V
+Thread-Topic: [PATCH v2 0/2] Fix binfmt_flat loader for RISC-V
+Thread-Index: AQHXK8WacfnVzM4zUUS2ex+k23Zi9Q==
+Date:   Fri, 16 Apr 2021 00:26:27 +0000
+Message-ID: <BL0PR04MB65143E710571C8CE7E7F0FB0E74C9@BL0PR04MB6514.namprd04.prod.outlook.com>
+References: <BL0PR04MB65148D80C819A7E3B8365242E74D9@BL0PR04MB6514.namprd04.prod.outlook.com>
+ <mhng-61cff5f4-32a0-417d-9a2f-eb6d052cf802@palmerdabbelt-glaptop>
+ <20210415055605.GB8947@lst.de> <YHjYoDA2JPxSYVu0@zeniv-ca.linux.org.uk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: zeniv.linux.org.uk; dkim=none (message not signed)
+ header.d=none;zeniv.linux.org.uk; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2400:2411:43c0:6000:c420:851d:e64f:2199]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c8512ce1-44b9-40f1-1346-08d9006e462b
+x-ms-traffictypediagnostic: MN2PR04MB7072:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR04MB707227E88852E478DA07DE08E74C9@MN2PR04MB7072.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ZfsvSaun7BnJNl+DrvmV4dNSytrMloYp2EezZ9q8mNturqYcHx4bTC5268Ad9hQw7GB/DHC1dS4makHy7DjYKzWzFiH+OrPQRP3GvWeSrYQx8Ag0oMqWTVq/NscqKGrZb9S2nMXaEqyqF9P1zm+DQwzPfatuX3JnCjOZRLYDb7vq0s0Ic2+B4NzOGKlfnz4bI2XKWJqmY8X+IFhQHkg2L1Hsc4yN3qeKjqNl4QvR0o4lST/2Qq0N1VcXov+YpG1TVQflgkNJ6q/0i3SaZmttyVPPNEBkj+Alb/GfOVmZnsTNyNJWr4kPspMvHkdH6AznreLjxl2FC0e/VCBIutyxJ6DWC5wpYACVW1h1zxUEJiuz2FgLIH4f7rm4VNFoVsL9exQPTr0F7cS0HklT9BsCkIbsHipaOytYKZR5RKJvk4O2MTvD82/r8vsOh1PY/FIR0Vvxu9IJ0yurCW99PiLLPAQXqqPUzB1pt3WfMWHuuviQNiSn7G/IX1FHZ0ZRDirE/h+N6fbQraUOLDs+0ly+RLTVa3DKeQXOWe6YeCC1JxmPyeKaAucXUwtOEXLcYKrM+dRB68F3F93Pa9WkTuU3/LCK0HrWJW49eySKwabyl94=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR04MB6514.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(366004)(39860400002)(396003)(186003)(9686003)(71200400001)(38100700002)(122000001)(478600001)(33656002)(66946007)(7696005)(86362001)(2906002)(54906003)(55016002)(316002)(52536014)(66556008)(66476007)(110136005)(53546011)(76116006)(4326008)(6506007)(91956017)(8936002)(64756008)(8676002)(66446008)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?QsXpS1P+GFHk1c0UgTxKk6ve9Uq9kT7N0uSV/Ocek2EkmyW+77+SQyl+EYen?=
+ =?us-ascii?Q?rfH3cL4dd50Zv/W66L02tQ0WyHmGm/AFUj0Mb38P0gSpSahNBZ9X1vhM1JEU?=
+ =?us-ascii?Q?yI61J/HqTbQ5zu2n/jBHh6RmJSgJlU18VYLLrxnCxG1LN6hZmAmRCuJWeDfb?=
+ =?us-ascii?Q?RdXGNCaaBrLwkL1pOZxH+hJHiJYcelJywyG/OxZYMfulGPLN4O3hRmSJoxO3?=
+ =?us-ascii?Q?mA/zJgdWXkGSfdjKAH6qvdERdf5EwZ8yJ4FYApUwKJ0ZwfHtt8OSmAyToJFl?=
+ =?us-ascii?Q?lischksOMorBEe6fkgJRhPlCo7X9ZoImX+mkCQSITHgkxPvW9XKTGJ56msCP?=
+ =?us-ascii?Q?yn4WrOcZaOtsc9BxSjfTTHX45wEY3mLrP+0yckaasUBSegHC3rb+4OXWtkb9?=
+ =?us-ascii?Q?M0zvB6+YybpTiBskpQzc3oXBhlOj6xjO+KKx9J7FCRKaeKaMXPbDfLW1JDKl?=
+ =?us-ascii?Q?ZUDYGkjDIjL/OwwC2Nv8JnqBgqNq6uUY4e2anZGR/0tj7XpLFsEWMaxFA+5P?=
+ =?us-ascii?Q?AAbqO+MUQ6cPzTljLyztlmRz38VQ/GMLqPqHthJoCQs6qDHvkqmTZhBHfugJ?=
+ =?us-ascii?Q?nX7kelY+3zX1iraufqph6RnBegeTr019Zb8oXGTQjQ4MZbDoFFEHtJkuYvnP?=
+ =?us-ascii?Q?m0XcVvVngBvDKrzJ/A3tj0oDoqVPHkmRTj1/laq+mG7nRdB5fZZ2GYLjjF9G?=
+ =?us-ascii?Q?zbUopAyKgHJffyU5B06RCfR4am+IUJ9kVx8Zyp4TYkJXdKhGNwj6gsnuKCzc?=
+ =?us-ascii?Q?3Bp1WgYzDgIh8ZgQ3F9caXHbtpedOiJFcMQzfdPClaMGTV2P+cK2sWIOtTfz?=
+ =?us-ascii?Q?pGfwx3ieHWcmc/V73UlfiVFN1AuKAoDh3TAVxYKX6rDa5hxKdR/U4PI4BO6W?=
+ =?us-ascii?Q?h9NaHULtZo+4Fh9j1w5gITYgAdKhCijktTSj+aad7JlevW5KTklVTQfisj/O?=
+ =?us-ascii?Q?zUyF2J+3MvBuTIWuuqQM836dlsqNbktk0Dd7t+iXkbS/WkOgHfDi2Z/M2Wx9?=
+ =?us-ascii?Q?8MZbZZOVydqJZ78p0pzoBz69UwK6djRFOHn8xSqre93+5wZ7k3JIwYAruySd?=
+ =?us-ascii?Q?OSdIOIGMmL2k3BrsLhvX3BKJ7uGgbLCPy5lGxQO6AWxDH8gfqPtI8jf29Vfq?=
+ =?us-ascii?Q?iHRt16ePUcEioCUs5VZy60iuGjcH9+ILAnh2PILjRqzcwqJvm5FuPOw8wGw0?=
+ =?us-ascii?Q?MdkcEjRCvTjT7fo7YMFqHGYM+9SlZpEIdLg12k+npI+guAkYxzcyET6GPfzL?=
+ =?us-ascii?Q?EpeUJGMOKXvkbr8xLT/bEbv+QDQBTYO/oYiyOVy69twTzd9yD4wKDhDxrbo5?=
+ =?us-ascii?Q?qPruePBRYrWQBpaY4Wi4+No5kepcGq1bhbs4kn4zScSqauO8FE1L/oCH85mc?=
+ =?us-ascii?Q?B0f2iSq1nS4NkIlP/DMdXx5ZyR6c5kGw4H+WGBL/evxQrM4QWw=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210407222625.320177-1-ben.widawsky@intel.com>
- <20210407222625.320177-8-ben.widawsky@intel.com> <CAPcyv4hSvN_O7UUaD=AR=F3bOesDnJFsEeHZ4=fLQySiGxVekw@mail.gmail.com>
- <20210415235016.uobdn4m6bq35f4ob@intel.com>
-In-Reply-To: <20210415235016.uobdn4m6bq35f4ob@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 15 Apr 2021 17:25:41 -0700
-Message-ID: <CAPcyv4j7R+XLA26gK6ArHW77Xz2gRus=8-bK+Oyqk=3fssK0Uw@mail.gmail.com>
-Subject: Re: [PATCH 7/7] cxl: Add HDM decoder capbilities
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-cxl@vger.kernel.org, Linux PCI <linux-pci@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        "Schofield, Alison" <alison.schofield@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR04MB6514.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c8512ce1-44b9-40f1-1346-08d9006e462b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Apr 2021 00:26:27.0986
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZHT04CDAsT9wWBAHUclBG/pknEDwrZVeAiKM6kHo7Zhp0bLs7fgadX7CehUOqhufCGp+fsNnz0gD6EjhdRA5mg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR04MB7072
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 4:50 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
->
-> Thanks for looking. Mostly trivial agreements or disagreements which I don't
-> care much about, but I'd really like you to focus on the last point, please.
->
-> On 21-04-15 16:27:14, Dan Williams wrote:
-> > On Wed, Apr 7, 2021 at 3:26 PM Ben Widawsky <ben.widawsky@intel.com> wrote:
-> > >
-> > > An HDM decoder is defined in the CXL 2.0 specification as a mechanism
-> > > that allow devices and upstream ports to claim memory address ranges and
-> > > participate in interleave sets. HDM decoder registers are within the
-> > > component register block defined in CXL 2.0 8.2.3 CXL 2.0 Component
-> > > Registers as part of the CXL.cache and CXL.mem subregion.
-> > >
-> > > The Component Register Block is found via the Register Locator DVSEC
-> > > in a similar fashion to how the CXL Device Register Block is found. The
-> > > primary difference is the capability id size of the Component Register
-> > > Block is a single DWORD instead of 4 DWORDS.
-> > >
-> > > It's now possible to configure a CXL type 3 device's HDM decoder.
-> >
-> > It's always been possible and this patch just prepares for programming
-> > them, but does not actually touch them yet. So let's drop this as I'm
-> > not sure what it is saying.
-> >
-> > > Such
-> > > programming is expected for CXL devices with persistent memory, and hot
-> > > plugged CXL devices that participate in CXL.mem with volatile memory.
-> >
-> > Let's drop this as well because the state of what the OS is expected
-> > to program is platform and topology specific. The OS needs to be
-> > prepared for the HDMs to be unprogrammed, validly programmed in a
-> > state the OS will leave untouched, and/or validly programmed in a way
-> > the OS wants to redo.
-> >
->
-> Okay to both.
->
-> > >
-> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> > > ---
-> > >  drivers/cxl/core.c | 73 ++++++++++++++++++++++++++++++++++++++++++++++
-> > >  drivers/cxl/cxl.h  | 48 ++++++++++++++++++++++++++++++
-> > >  drivers/cxl/mem.c  | 37 ++++++++++++++++++++---
-> > >  drivers/cxl/pci.h  |  1 +
-> > >  4 files changed, 155 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/drivers/cxl/core.c b/drivers/cxl/core.c
-> > > index 65cd704581bc..db6a83eed0a2 100644
-> > > --- a/drivers/cxl/core.c
-> > > +++ b/drivers/cxl/core.c
-> > > @@ -479,6 +479,79 @@ struct cxl_port *devm_cxl_add_port(struct device *host,
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(devm_cxl_add_port);
-> > >
-> > > +void cxl_setup_component_regs(struct device *dev, void __iomem *base,
-> > > +                             struct cxl_component_regs *regs)
-> > > +{
-> > > +       int cap, cap_count;
-> > > +       u64 cap_array;
-> > > +
-> > > +       *regs = (struct cxl_component_regs) { 0 };
-> > > +
-> > > +       /*
-> > > +        * CXL.cache and CXL.mem registers are at offset 0x1000 as defined in
-> > > +        * CXL 2.0 8.2.4 Table 141.
-> > > +        *
-> > > +        * TODO: Map other registers as needed.
-> >
-> > That TODO goes without saying.
-> >
->
-> I don't agree with this. The device register implementation is complete as is,
-> and this one is not.
-
-...but there's a pile of stuff in the component registers that the
-kernel will never care about. So if the bar is "remove when all
-capabilities are mapped" then the TODO never gets removed.
-
->
-> > > +        */
-> > > +       base += CXL_CM_OFFSET;
-> > > +
-> > > +       cap_array = readq(base + CXL_CM_CAP_HDR_OFFSET);
-> > > +
-> > > +       if (FIELD_GET(CXL_CM_CAP_HDR_ID_MASK, cap_array) != CM_CAP_HDR_CAP_ID) {
-> > > +               dev_err(dev,
-> > > +                       "Couldn't locate the CXL.cache and CXL.mem capability array header./n");
-> > > +               return;
-> > > +       }
-> > > +
-> > > +       /* It's assumed that future versions will be backward compatible */
-> >
-> > If future versions are backwards compatible then why check? If someone
-> > wants a driver that supports new capabilities then update the driver,
-> > but validating that the version is non-zero seems to be a pedantic
-> > check for no good reason to me.
-> >
->
-> This was specifically meant as a way to prevent the driver being used for 1.1
-> without explicit support being added (and then dropping this check).
-
-Seems premature to assume this code path would be reused for 1.1, also
-CXL 1.1 also puts version1 here. The difference between 1.1 and 2.0
-component registers is more potential capability ids, not a different
-capability version number if I'm reading the specs correctly.
-
-> You're
-> right though , it should be !=, it should have been <. It's sounding like you'd
-> rather I remove it entirely rather than fix it though. Is that correct?
->
-> > > +#define CAPID_VERSION_CHECK(data, mask, expected, capability_msg)              \
-> > > +       do {                                                                   \
-> > > +               if (FIELD_GET(mask, data) < expected) {                        \
-> > > +                       dev_err(dev,                                           \
-> > > +                               capability_msg                                 \
-> > > +                               " version %ld is below expected %d",           \
-> > > +                               FIELD_GET(mask, data), expected);              \
-> > > +                       return;                                                \
-> >
-> > Ugh, "return" in a macro, please no.
-> >
->
-> Okay. If you're okay with the macro, I'll rewrite it to bool and then return
-> based on that.
-
-No, per above, I still don't think this is adding any value.
-
->
-> > > +               }                                                              \
-> > > +       } while (0)
-> > > +
-> > > +       CAPID_VERSION_CHECK(cap_array, CXL_CM_CAP_HDR_VERSION_MASK,
-> > > +                           CM_CAP_HDR_CAP_VERSION, "Capability array header");
-> > > +       CAPID_VERSION_CHECK(cap_array, CXL_CM_CAP_HDR_CACHE_MEM_VERSION_MASK,
-> > > +                           CM_CAP_HDR_CACHE_MEM_VERSION,
-> > > +                           "Capability array header CXL.cache CXL.mem");
-> > > +
-> > > +       cap_count = FIELD_GET(CXL_CM_CAP_HDR_ARRAY_SIZE_MASK, cap_array);
-> > > +
-> > > +       for (cap = 1; cap <= cap_count; cap++) {
-> > > +               void __iomem *register_block;
-> > > +               u32 hdr;
-> > > +               u16 cap_id, offset;
-> > > +
-> > > +               hdr = readl(base + cap * 0x4);
-> > > +
-> > > +               cap_id = FIELD_GET(CXL_CM_CAP_HDR_ID_MASK, hdr);
-> > > +               offset = FIELD_GET(CXL_CM_CAP_PTR_MASK, hdr);
-> > > +               register_block = base + offset;
-> > > +
-> > > +               switch (cap_id) {
-> > > +               case CXL_CM_CAP_CAP_ID_HDM:
-> > > +                       CAPID_VERSION_CHECK(hdr, CXL_CM_CAP_HDR_VERSION_MASK,
-> > > +                                           CXL_CM_CAP_CAP_HDM_VERSION,
-> > > +                                           "HDM decoder capability");
-> > > +                       dev_dbg(dev, "found HDM decoder capability (0x%x)\n",
-> > > +                               offset);
-> > > +                       regs->hdm_decoder = register_block;
-> > > +                       break;
-> > > +               default:
-> > > +                       dev_dbg(dev, "Unknown CM cap ID: %d (0x%x)\n", cap_id,
-> >
-> > Hex cap id? Perhaps rather than "Unknown" this can just say "Skipping"
-> > because some of these are technically it's just the kernel does not
-> > care.
-> >
->
-> I just sent some patches for devices that I'd like to include for 5.12 to this
-> effect. I'll fix this here too.
->
-> > > +                               offset);
-> > > +                       break;
-> > > +               }
-> > > +       }
-> > > +}
-> > > +EXPORT_SYMBOL_GPL(cxl_setup_component_regs);
-> > > +
-> > >  /*
-> > >   * cxl_setup_device_regs() - Detect CXL Device register blocks
-> > >   * @dev: Host device of the @base mapping
-> > > diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> > > index 0211f44c95a2..a4ad1176dc5a 100644
-> > > --- a/drivers/cxl/cxl.h
-> > > +++ b/drivers/cxl/cxl.h
-> > > @@ -8,6 +8,31 @@
-> > >  #include <linux/bitops.h>
-> > >  #include <linux/io.h>
-> > >
-> > > +/* CXL 2.0 8.2.5 CXL.cache and CXL.mem Registers*/
-> > > +#define CXL_CM_OFFSET 0x1000
-> > > +#define CXL_CM_CAP_HDR_OFFSET 0x0
-> > > +#define   CXL_CM_CAP_HDR_ID_MASK GENMASK(15, 0)
-> > > +#define     CM_CAP_HDR_CAP_ID 1
-> > > +#define   CXL_CM_CAP_HDR_VERSION_MASK GENMASK(19, 16)
-> > > +#define     CM_CAP_HDR_CAP_VERSION 1
-> > > +#define   CXL_CM_CAP_HDR_CACHE_MEM_VERSION_MASK GENMASK(23, 20)
-> > > +#define     CM_CAP_HDR_CACHE_MEM_VERSION 1
-> > > +#define   CXL_CM_CAP_HDR_ARRAY_SIZE_MASK GENMASK(31, 24)
-> > > +#define CXL_CM_CAP_PTR_MASK GENMASK(31, 20)
-> > > +
-> > > +#define   CXL_CM_CAP_CAP_ID_HDM 0x5
-> > > +#define   CXL_CM_CAP_CAP_HDM_VERSION 1
-> > > +
-> > > +/* HDM decoders CXL 2.0 8.2.5.12 CXL HDM Decoder Capability Structure */
-> > > +#define CXL_HDM_DECODER_CAP_OFFSET 0x0
-> > > +#define   CXL_HDM_DECODER_COUNT_MASK GENMASK(3, 0)
-> > > +#define   CXL_HDM_DECODER_TARGET_COUNT_MASK GENMASK(7, 4)
-> > > +#define CXL_HDM_DECODER0_BASE_LOW_OFFSET 0x10
-> > > +#define CXL_HDM_DECODER0_BASE_HIGH_OFFSET 0x14
-> > > +#define CXL_HDM_DECODER0_SIZE_LOW_OFFSET 0x18
-> > > +#define CXL_HDM_DECODER0_SIZE_HIGH_OFFSET 0x1c
-> > > +#define CXL_HDM_DECODER0_CTRL_OFFSET 0x20
-> > > +
-> > >  /* CXL 2.0 8.2.8.1 Device Capabilities Array Register */
-> > >  #define CXLDEV_CAP_ARRAY_OFFSET 0x0
-> > >  #define   CXLDEV_CAP_ARRAY_CAP_ID 0
-> > > @@ -35,11 +60,26 @@
-> > >  #define CXLDEV_MBOX_PAYLOAD_OFFSET 0x20
-> > >
-> > >  /* See note for 'struct cxl_regs' for the rationale of this organization */
-> > > +#define CXL_COMPONENT_REGS() \
-> > > +       void __iomem *hdm_decoder
-> > > +
-> > >  #define CXL_DEVICE_REGS() \
-> > >         void __iomem *status; \
-> > >         void __iomem *mbox; \
-> > >         void __iomem *memdev
-> > >
-> > > +/**
-> > > + * struct cxl_component_regs - Common container of CXL component register block
-> > > + *                            base pointers.
-> > > + *
-> > > + * The only component registers that we care about are the CXL.cache and CXL.mem
-> > > + * registers which are at offset 0x1000 from the component register base (CXL
-> > > + * 2.0 8.2.4)
-> > > + */
-> >
-> > I don't think kernel-doc will be happy about this, so probably follow
-> > the same fixup I did when Jonathan pointed this out for the cxl_port
-> > patches.
-> >
->
-> I must have missed something on this. I thought the issue with yours was the way
-> in which you were calling out the structure members. I skipped this completely
-> in mine. Is the ask here to add "@hdm" to the documentation? I don't see any
-> other issue here.
-
-The issue is that this is a struct entry with no description of the
-members. I ended up doing this for device registers:
-
-/*
- * CXL_DEVICE_REGS - Common set of CXL Device register block base pointers
- * @status: CXL 2.0 8.2.8.3 Device Status Registers
- * @mbox: CXL 2.0 8.2.8.4 Mailbox Registers
- * @memdev: CXL 2.0 8.2.8.5 Memory Device Registers
- */
-#define CXL_DEVICE_REGS() \
-        void __iomem *status; \
-        void __iomem *mbox; \
-        void __iomem *memdev
-
-/* See note for 'struct cxl_regs' for the rationale of this organization */
-struct cxl_device_regs {
-        CXL_DEVICE_REGS();
-};
-
-...i.e. just abandon kernel-doc for this organization, but this might
-be more evidence that this arrangement is more clever than its worth.
-
->
-> > > +struct cxl_component_regs {
-> > > +       CXL_COMPONENT_REGS();
-> > > +};
-> > > +
-> > >  /**
-> > >   * struct cxl_device_regs - Common container of CXL Device register
-> > >   *                         block base pointers
-> > > @@ -59,6 +99,12 @@ struct cxl_device_regs {
-> > >   * The specificity reads naturally from left-to-right.
-> > >   */
-> > >  struct cxl_regs {
-> > > +       union {
-> > > +               struct {
-> > > +                       CXL_COMPONENT_REGS();
-> > > +               };
-> > > +               struct cxl_component_regs component;
-> > > +       };
-> > >         union {
-> > >                 struct {
-> > >                         CXL_DEVICE_REGS();
-> > > @@ -67,6 +113,8 @@ struct cxl_regs {
-> > >         };
-> > >  };
-> > >
-> > > +void cxl_setup_component_regs(struct device *dev, void __iomem *base,
-> > > +                             struct cxl_component_regs *regs);
-> > >  void cxl_setup_device_regs(struct device *dev, void __iomem *base,
-> > >                            struct cxl_device_regs *regs);
-> > >
-> > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > > index b7342aaf38c4..e915e3743b76 100644
-> > > --- a/drivers/cxl/mem.c
-> > > +++ b/drivers/cxl/mem.c
-> > > @@ -974,6 +974,21 @@ static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
-> > >         return 0;
-> > >  }
-> > >
-> > > +static int __cxl_setup_component_regs(struct cxl_mem *cxlm, void __iomem *base)
-> > > +{
-> > > +       struct cxl_regs *regs = &cxlm->regs;
-> > > +       struct pci_dev *pdev = cxlm->pdev;
-> > > +       struct device *dev = &pdev->dev;
-> > > +
-> > > +       cxl_setup_component_regs(dev, base, &regs->component);
-> > > +       if (!regs->hdm_decoder) {
-> > > +               dev_err(dev, "HDM decoder registers not found\n");
-> > > +               return -ENXIO;
-> >
-> > I was hoping this patch would show the justification of the
-> > organization proposed in patch-6, but it doesn't and I think we're
-> > better off open coding the error check in cxl_mem_setup_regs().
->
-> Open coding is functionally equivalent and I think much less tidy, in particular
-> if you consider adding more register block types in the future
-
-I'm not seeing much register block type support being added in the
-near term beyond HDMs.
-
-> (and
-> specifically, more component register types in the blocks, in the future). I
-> would predict that this kind of cleanup will happen at some point, however if
-> you'd prefer to kick the can down the road, we can do that.
->
-> If the heartburn is over the naming specifically, it would be my preference to
-> fix that rather than open-coding.
-
-It just feels like the helpers here are too tiny to provide any
-significant cleanup.
-
->
-> Addressing the feedback from patch 6 here, since they're tied together, "__"
-> prefix is, I want to call the core function but I have certain expectations
-> about the results of that function, and thus the wrapper (sounds like you got
-> that). TBF, the naming is backward as I'd prefer the core function be
-> __cxl_setup.., and this one be something like cxl_mem_setup_component_regs(). I
-> just didn't want to touch the thing you'd previously named. Perhaps that naming
-> more appropriately construes what I'm trying to do?
-
-I'm open to better naming, but not __func() wrapping func().
+On 2021/04/16 9:22, Al Viro wrote:=0A=
+> On Thu, Apr 15, 2021 at 07:56:05AM +0200, Christoph Hellwig wrote:=0A=
+>> binfmt_flat tends to go through Greg's uclinux tree, adding him and=0A=
+>> the list.=0A=
+> =0A=
+> 	FWIW, my involvement with binfmt_flat had been pretty much nil -=0A=
+> the least trivial had been "binfmt_flat: flat_{get,put}_addr_from_rp()=0A=
+> should be able to fail" about 4 years ago and that fell out of hunting=0A=
+> for places where __get_user() had been used without checking error values=
+.=0A=
+> =0A=
+> 	It's in fs/*, but I've no way to test it and I have pretty much=0A=
+> zero familiarity with the guts of that one, so I can't give any useful=0A=
+> feedback on that series.  So consider the Christoph's comment seconded -=
+=0A=
+> you want it reviewed by gerg et.al., and it probably ought to go via=0A=
+> gerg/uclinux.git tree.=0A=
+> =0A=
+> 	I'm reasonably familiar with binfmt_{elf,misc,script}; anything=0A=
+> else gets touched as part of larger series and only with sanity checks=0A=
+> from other folks, if the changes are not entirely trivial.=0A=
+=0A=
+Al,=0A=
+=0A=
+Thanks for the clarification. Would it make sense to have an entry in=0A=
+MAINTAINERS file pointing to Greg and the uclinux tree for binfmt_flat.c ?=
+=0A=
+Greg ?=0A=
+=0A=
+=0A=
+-- =0A=
+Damien Le Moal=0A=
+Western Digital Research=0A=
