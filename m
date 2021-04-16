@@ -2,121 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEEDC3617F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 05:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40CA33617F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 05:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235250AbhDPDBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 23:01:42 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:58561 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234548AbhDPDBk (ORCPT
+        id S237269AbhDPDEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 23:04:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234751AbhDPDEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 23:01:40 -0400
-X-UUID: 1bdd5d1b344c4fc6b909347dc6b1f5c4-20210416
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=MTAy3dK7ZeeTqAFn6CDQfuUe2LUsEJXiuvm05pj0FSo=;
-        b=KRDqCfuCAN6kvJxmqjtLn83qxuYVTBV73wN+hQvJ1XYN5LqOOoEAAqan8vhDhjUutIHtyhD9x4/nf/+aDSwMY3gspbcx6XqVn0iuCm/rBJvLIeUhPJNX4pSf8dq0mieRUMtOJ7KBdA6WAsC8flmh1UPN3JvDWzMA9YEtnvKNrVw=;
-X-UUID: 1bdd5d1b344c4fc6b909347dc6b1f5c4-20210416
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <flora.fu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 24531458; Fri, 16 Apr 2021 11:01:13 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 16 Apr 2021 11:01:10 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 16 Apr 2021 11:01:10 +0800
-Message-ID: <1618542070.27491.15.camel@mtksdccf07>
-Subject: Re: [PATCH 4/8] dt-bindings: arm: mediatek: Add new document
- bindings for APU
-From:   Flora Fu <flora.fu@mediatek.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Pi-Cheng Chen <pi-cheng.chen@mediatek.com>,
-        Chiawen Lee <chiawen.lee@mediatek.com>,
-        Chun-Jie Chen <chun-jie.chen@mediatek.com>,
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>
-Date:   Fri, 16 Apr 2021 11:01:10 +0800
-In-Reply-To: <CAL_JsqLKaYY=NHm1hD=YaQgvDOBTtraoUqcycA7tu7n-f2GVDw@mail.gmail.com>
-References: <1617766086-5502-1-git-send-email-flora.fu@mediatek.com>
-         <1617766086-5502-5-git-send-email-flora.fu@mediatek.com>
-         <20210409182538.GA3913794@robh.at.kernel.org>
-         <1618209895.25062.11.camel@mtksdccf07>
-         <CAL_JsqLKaYY=NHm1hD=YaQgvDOBTtraoUqcycA7tu7n-f2GVDw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Thu, 15 Apr 2021 23:04:02 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC918C061574;
+        Thu, 15 Apr 2021 20:03:38 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id ef17so7140901qvb.0;
+        Thu, 15 Apr 2021 20:03:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q26+v9m6OHwgu5yJO9W58aHk+91HmRzWJqWAxjmAjYg=;
+        b=Eyr7g0DXodj0YWyiHAZQvIHMwU0PVbUa4XiJJaYRoMR1fz/x6N15b6AglJ/HyiI0Nw
+         R53FNij7DbgHDMAwyiggIBuiiGvIobBsKLX9p/LP4Q190TKIKqJI3XntLvkiasHGB/GM
+         OpjCvykQFFbeGC+W6jiisQeZIGpu6utfnPIcE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q26+v9m6OHwgu5yJO9W58aHk+91HmRzWJqWAxjmAjYg=;
+        b=Yeb2/US8ViunPtpdvfbhB3WLugvYu33DAwkDDtRI+f3lNsasadx3jLyTk8DzYkoesP
+         5D7FsYsBHUH9h2SWuwGlXeTzoVKLqAPOI2Q/RrizWMDoFcMzntGNlWF8bJR9xTeKZw69
+         NiPUWlBzaOpG0KgOi4TebImNERGsmGrcXMJs01vBa4xN/TqcKuB/tyiQi9Zi9799Ez3N
+         K3MwyemytLEDquEUquHNsF2KMj+u57szWwo3OZENsgtxKYGV19FnjBQXQo2v4qTiZkZX
+         YWHpzgtY9TQabqwwy26UbyhXMXouga1l4tjdgLUBFwhERoWnc5lQt+ps4sZwoZxs9J5y
+         mziQ==
+X-Gm-Message-State: AOAM53293J9lVLxVgJvhEOG/jm1banf0u2mHfCSG6LVF+5zC/Ls2YZiw
+        LmFmW+cgFkbd7Bik+Wyl2gfd9LFfkCN4EjhU5fw=
+X-Google-Smtp-Source: ABdhPJxsDfazEoAzmRD7FlKhlHPECMQcCoMQ1AW1TfMq+yhvzo+OtyjUw7EkrvsL1LWKEEylHKzYzXAlfCRCBWIHjNs=
+X-Received: by 2002:a0c:eb06:: with SMTP id j6mr6422476qvp.10.1618542218062;
+ Thu, 15 Apr 2021 20:03:38 -0700 (PDT)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 9F4E1F87D3F9E72542DAD2DF050407D939B7DB684CFA915AFE9C5AC433219D722000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20210316085932.2601-1-troy_lee@aspeedtech.com>
+In-Reply-To: <20210316085932.2601-1-troy_lee@aspeedtech.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Fri, 16 Apr 2021 03:03:25 +0000
+Message-ID: <CACPK8XeYtaLLWDMR8xZhERrQ_WCUJ2RM_JZmZNQ6oZSvgSDM_w@mail.gmail.com>
+Subject: Re: [PATCH v1] ARM: dts: Fix 64MiB OpenBMC flash layout and aspeed-ast2600-evb.dts
+To:     Troy Lee <troy_lee@aspeedtech.com>
+Cc:     John Wang <wangzhiqiang.bj@bytedance.com>,
+        =?UTF-8?B?6YOB6Zu3?= <yulei.sh@bytedance.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>, leetroy@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTA0LTE1IGF0IDE2OjI0IC0wNTAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
-T24gTW9uLCBBcHIgMTIsIDIwMjEgYXQgMTo0NSBBTSBGbG9yYSBGdSA8ZmxvcmEuZnVAbWVkaWF0
-ZWsuY29tPiB3cm90ZToNCj4gPg0KPiA+IE9uIEZyaSwgMjAyMS0wNC0wOSBhdCAxMzoyNSAtMDUw
-MCwgUm9iIEhlcnJpbmcgd3JvdGU6DQo+ID4gPiBPbiBXZWQsIEFwciAwNywgMjAyMSBhdCAxMToy
-ODowMkFNICswODAwLCBGbG9yYSBGdSB3cm90ZToNCj4gPiA+ID4gRG9jdW1lbnQgdGhlIGFwdXN5
-cyBiaW5kaW5ncy4NCj4gPiA+ID4NCj4gPiA+ID4gU2lnbmVkLW9mZi1ieTogRmxvcmEgRnUgPGZs
-b3JhLmZ1QG1lZGlhdGVrLmNvbT4NCj4gPiA+ID4gLS0tDQo+ID4gPiA+ICAuLi4vYXJtL21lZGlh
-dGVrL21lZGlhdGVrLGFwdXN5cy55YW1sICAgICAgICAgfCA1NiArKysrKysrKysrKysrKysrKysr
-DQo+ID4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgNTYgaW5zZXJ0aW9ucygrKQ0KPiA+ID4gPiAgY3Jl
-YXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9hcm0vbWVk
-aWF0ZWsvbWVkaWF0ZWssYXB1c3lzLnlhbWwNCj4gPiA+ID4NCj4gPiA+ID4gZGlmZiAtLWdpdCBh
-L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9hcm0vbWVkaWF0ZWsvbWVkaWF0ZWss
-YXB1c3lzLnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvYXJtL21lZGlh
-dGVrL21lZGlhdGVrLGFwdXN5cy55YW1sDQo+ID4gPiA+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0DQo+
-ID4gPiA+IGluZGV4IDAwMDAwMDAwMDAwMC4uZGMwNGE0NmYxYmFkDQo+ID4gPiA+IC0tLSAvZGV2
-L251bGwNCj4gPiA+ID4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Fy
-bS9tZWRpYXRlay9tZWRpYXRlayxhcHVzeXMueWFtbA0KPiA+ID4gPiBAQCAtMCwwICsxLDU2IEBA
-DQo+ID4gPiA+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiAoR1BMLTIuMCBPUiBCU0QtMi1D
-bGF1c2UpDQo+ID4gPiA+ICslWUFNTCAxLjINCj4gPiA+ID4gKy0tLQ0KPiA+ID4gPiArJGlkOiBo
-dHRwczovL3VybGRlZmVuc2UuY29tL3YzL19faHR0cDovL2RldmljZXRyZWUub3JnL3NjaGVtYXMv
-YXJtL21lZGlhdGVrL21lZGlhdGVrLGFwdXN5cy55YW1sKl9fO0l3ISFDVFJOS0E5d01nMEFSYnch
-M3J5S0ZUQTJDdnNWc3M0UHQyWk9HN3d2NGpnUi0yTFB4dUduMzBJeEZtcHhveFNSZHpOZGY4RnJB
-WVl2WldjdyQNCj4gPiA+ID4gKyRzY2hlbWE6IGh0dHBzOi8vdXJsZGVmZW5zZS5jb20vdjMvX19o
-dHRwOi8vZGV2aWNldHJlZS5vcmcvbWV0YS1zY2hlbWFzL2NvcmUueWFtbCpfXztJdyEhQ1RSTktB
-OXdNZzBBUmJ3ITNyeUtGVEEyQ3ZzVnNzNFB0MlpPRzd3djRqZ1ItMkxQeHVHbjMwSXhGbXB4b3hT
-UmR6TmRmOEZyQVJsaENRMHckDQo+ID4gPiA+ICsNCj4gPiA+ID4gK3RpdGxlOiBNZWRpYVRlayBB
-UFVTWVMgQ29udHJvbGxlcg0KPiA+ID4gPiArDQo+ID4gPiA+ICttYWludGFpbmVyczoNCj4gPiA+
-ID4gKyAgLSBGbG9yYSBGdSA8ZmxvcmEuZnVAbWVkaWF0ZWsuY29tPg0KPiA+ID4gPiArDQo+ID4g
-PiA+ICtkZXNjcmlwdGlvbjoNCj4gPiA+ID4gKyAgVGhlIE1lZGlhdGVrIGFwdXN5cyBjb250cm9s
-bGVyIHByb3ZpZGVzIGZ1bmN0aW9uYWwgY29uZmlndXJhdGlvbnMgYW5kIGNsb2Nrcw0KPiA+ID4g
-PiArICB0byB0aGUgc3lzdGVtLg0KPiA+ID4gPiArDQo+ID4gPiA+ICtwcm9wZXJ0aWVzOg0KPiA+
-ID4gPiArICBjb21wYXRpYmxlOg0KPiA+ID4gPiArICAgIGl0ZW1zOg0KPiA+ID4gPiArICAgICAg
-LSBlbnVtOg0KPiA+ID4gPiArICAgICAgICAgIC0gbWVkaWF0ZWssbXQ4MTkyLWFwdV9tYm94DQo+
-ID4gPiA+ICsgICAgICAgICAgLSBtZWRpYXRlayxtdDgxOTItYXB1X2Nvbm4NCj4gPiA+ID4gKyAg
-ICAgICAgICAtIG1lZGlhdGVrLG10ODE5Mi1hcHVfdmNvcmUNCj4gPiA+DQo+ID4gPiBzL18vLS8N
-Cj4gPiA+DQo+ID4NCj4gPiBPSy4gSSB3aWxsIHVwZGF0ZSBleHByZXNzaW9uIHN0cmluZ3MgaW4g
-dGhlIG5leHQgdmVyc2lvbi4NCj4gPg0KPiA+ID4gPiArICAgICAgLSBjb25zdDogc3lzY29uDQo+
-ID4gPiA+ICsNCj4gPiA+ID4gKyAgcmVnOg0KPiA+ID4gPiArICAgIG1heEl0ZW1zOiAxDQo+ID4g
-PiA+ICsNCj4gPiA+ID4gKyAgJyNjbG9jay1jZWxscyc6DQo+ID4gPiA+ICsgICAgY29uc3Q6IDEN
-Cj4gPiA+ID4gKw0KPiA+ID4gPiArcmVxdWlyZWQ6DQo+ID4gPiA+ICsgIC0gY29tcGF0aWJsZQ0K
-PiA+ID4gPiArICAtIHJlZw0KPiA+ID4gPiArDQo+ID4gPiA+ICthZGRpdGlvbmFsUHJvcGVydGll
-czogZmFsc2UNCj4gPiA+ID4gKw0KPiA+ID4gPiArZXhhbXBsZXM6DQo+ID4gPiA+ICsgIC0gfA0K
-PiA+ID4gPiArICAgIGFwdV9tYm94OiBhcHVfbWJveEAxOTAwMDAwMCB7DQo+ID4gPg0KPiA+ID4g
-bWFpbGJveEAuLi4/IElzIHRoaXMgYSBtYWlsYm94IHByb3ZpZGVyPw0KPiA+ID4NCj4gPg0KPiA+
-IFllcywgdGhlIGFwdV9tYm94IGlzIHRoZSBmb3Igc2V0dXAgbWFpbGJveCBpbiB0aGUgQVBVIGhh
-cmR3YXJlLg0KPiANCj4gVGhlbiB5b3UgbmVlZCAjbWJveC1jZWxscyBoZXJlLg0KPiANCj4gQW5k
-IGluIHRoYXQgY2FzZSwgd2hhdCBtYWtlcyBpdCBhIHN5c2Nvbj8NCj4gDQpUaGUgYXB1X21ib3gg
-YXJlIHJlZ2lzdGVycyBmb3Igc2V0dXAgbWFpbCBib3ggY29tbXVuaWNhdGlvbnMgYmV0d2VlbiBh
-cHUNCnByb2Nlc3NvciBhbmQgdGhlIEFQIHNpZGUga2VybmVsIGRyaXZlcnMuIEl0IGFsc28gaGFz
-IHNwYXJlIHJlZ2lzdGVycw0KdGhhdCByZXNlcnZlZCBmb3Iga2VlcCBzcGVjaWZpYyBpbmZvcm1h
-dGlvbiBiZXR3ZWVuIGFwdSBhbmQgQVAgc2lkZS4NClRoYXQncyB3aHkgSSBzZXQgaXQgYXMgc3lz
-Y29uIHRvIGF2b2lkIGlvcmVtYXAgZnJvbSB1c2Vycy4gRG8geW91IHRoaW5rDQppdCBpcyByZWFz
-b25hYmxlIG9yIGl0IGlzIGJldHRlciB0byBiZSBrZXB0IGluc2lkZSB0aGUgdXNlciBub2RlcyB3
-aGVuDQp1c2luZyBpdD8NCg0KPiA+DQo+ID4gPiA+ICsgICAgICAgIGNvbXBhdGlibGUgPSAibWVk
-aWF0ZWssbXQ4MTkyLWFwdV9tYm94IiwgInN5c2NvbiI7DQo+ID4gPiA+ICsgICAgICAgIHJlZyA9
-IDwweDE5MDAwMDAwIDB4MTAwMD47DQo+ID4gPiA+ICsgICAgfTsNCg0K
+On Tue, 16 Mar 2021 at 08:59, Troy Lee <troy_lee@aspeedtech.com> wrote:
+>
+> Aspeed AST2600 u-boot requires 600KiB+ flash space. Sharing the same
+> openbmc-flash-layout-64.dtsi requires to resize the flash partition.
+>
+> The updated flash layout as follows:
+> - u-boot: 896 KiB
+> - u-boot-env: 128 KiB
+> - kernel: 9MiB
+> - rofs: 32 MiB
+> - rwfs: 22 MiB
 
+Changing the 64MB layout will break the systems that are already using
+this layout. I'll get the Bytedance people to chime in, as theirs is
+the only system using this layout so far.
+
+John, Lei?
+
+>
+> Signed-off-by: Troy Lee <troy_lee@aspeedtech.com>
+> ---
+>  arch/arm/boot/dts/aspeed-ast2600-evb.dts      | 32 +------------------
+>  .../arm/boot/dts/openbmc-flash-layout-64.dtsi | 18 +++++------
+>  2 files changed, 10 insertions(+), 40 deletions(-)
+>
+> diff --git a/arch/arm/boot/dts/aspeed-ast2600-evb.dts b/arch/arm/boot/dts/aspeed-ast2600-evb.dts
+> index 89be13197780..2cfae9cfed3a 100644
+> --- a/arch/arm/boot/dts/aspeed-ast2600-evb.dts
+> +++ b/arch/arm/boot/dts/aspeed-ast2600-evb.dts
+> @@ -121,37 +121,7 @@ flash@0 {
+>                 m25p,fast-read;
+>                 label = "bmc";
+>                 spi-max-frequency = <50000000>;
+> -
+> -               partitions {
+> -                       compatible = "fixed-partitions";
+> -                       #address-cells = <1>;
+> -                       #size-cells = <1>;
+> -
+> -                       u-boot@0 {
+> -                               reg = <0x0 0xe0000>; // 896KB
+> -                               label = "u-boot";
+> -                       };
+> -
+> -                       u-boot-env@e0000 {
+> -                               reg = <0xe0000 0x20000>; // 128KB
+> -                               label = "u-boot-env";
+> -                       };
+> -
+> -                       kernel@100000 {
+> -                               reg = <0x100000 0x900000>; // 9MB
+> -                               label = "kernel";
+> -                       };
+> -
+> -                       rofs@a00000 {
+> -                               reg = <0xa00000 0x2000000>; // 32MB
+> -                               label = "rofs";
+> -                       };
+> -
+> -                       rwfs@6000000 {
+> -                               reg = <0x2a00000 0x1600000>; // 22MB
+> -                               label = "rwfs";
+> -                       };
+> -               };
+> +#include "openbmc-flash-layout-64.dtsi"
+>         };
+>  };
+>
+> diff --git a/arch/arm/boot/dts/openbmc-flash-layout-64.dtsi b/arch/arm/boot/dts/openbmc-flash-layout-64.dtsi
+> index 91163867be34..31f59de5190b 100644
+> --- a/arch/arm/boot/dts/openbmc-flash-layout-64.dtsi
+> +++ b/arch/arm/boot/dts/openbmc-flash-layout-64.dtsi
+> @@ -9,27 +9,27 @@ partitions {
+>         #size-cells = <1>;
+>
+>         u-boot@0 {
+> -               reg = <0x0 0x60000>; // 384KB
+> +               reg = <0x0 0xe0000>; // 896KB
+>                 label = "u-boot";
+>         };
+>
+> -       u-boot-env@60000 {
+> -               reg = <0x60000 0x20000>; // 128KB
+> +       u-boot-env@e0000 {
+> +               reg = <0xe0000 0x20000>; // 128KB
+>                 label = "u-boot-env";
+>         };
+>
+> -       kernel@80000 {
+> -               reg = <0x80000 0x500000>; // 5MB
+> +       kernel@100000 {
+> +               reg = <0x100000 0x900000>; // 9MB
+>                 label = "kernel";
+>         };
+>
+> -       rofs@580000 {
+> -               reg = <0x580000 0x2a80000>; // 42.5MB
+> +       rofs@a00000 {
+> +               reg = <0xa00000 0x2000000>; // 32MB
+>                 label = "rofs";
+>         };
+>
+> -       rwfs@3000000 {
+> -               reg = <0x3000000 0x1000000>; // 16MB
+> +       rwfs@6000000 {
+> +               reg = <0x2a00000 0x1600000>; // 22MB
+>                 label = "rwfs";
+>         };
+>  };
+> --
+> 2.25.1
+>
