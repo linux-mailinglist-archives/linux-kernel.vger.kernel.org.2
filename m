@@ -2,75 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1F7361BD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EAA9361BC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240523AbhDPIgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 04:36:15 -0400
-Received: from mail-qt1-f180.google.com ([209.85.160.180]:46725 "EHLO
-        mail-qt1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240500AbhDPIgL (ORCPT
+        id S240429AbhDPIf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 04:35:56 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:58395 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239471AbhDPIfz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 04:36:11 -0400
-Received: by mail-qt1-f180.google.com with SMTP id d6so1973078qtx.13;
-        Fri, 16 Apr 2021 01:35:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DXu78L1cWa3O40BlxHBypy2EDCIHUvn4ujVswlz20VI=;
-        b=EjJFyQJ9oxWiw+2qNf7HZfImIc4SLSDSlyG4j528th4CdufdvCT9Bi/wAzXklmr7lY
-         84mjfMM0AYk/IMat0Qv/UwFY30rOLihYEzT34fA5LwFX5oF+gEewK5SbhYfiZxn4QM2B
-         HN29gyfYHHhybxVdHQrXJiPREUvEWxEb+rnE0L1yn5Blc/sJwS4TfoeT4IpDDSN1qXmG
-         wKZAYFt7jMmNq4fsfpCL8jXRfT+qSQuIOYtEIY+WSZknCc/FvqAIij0j6Z01AQ3a56eC
-         cIwRD2qTnkUdwIYV0Rr+rHncwwhJm6JXJ6Dx0Pd/OR8f0840Z6qAkIEautl/kt+sswQI
-         pvHQ==
-X-Gm-Message-State: AOAM533H1oYilk7dRZhaJMRNcWXSzvWOyE574pvJLHJLUea3vlcrsauk
-        ttOo7QNdV/oewuPfSWbEOngIn2NCXiW4bQ==
-X-Google-Smtp-Source: ABdhPJzqIpQ2leik764+IfGqMOAd+ma6XX7Ib4BJS+Ow4/ke/cXs5QjDWaLsxMOVD+F1T6msW49eZQ==
-X-Received: by 2002:ac8:594d:: with SMTP id 13mr6940953qtz.151.1618562145427;
-        Fri, 16 Apr 2021 01:35:45 -0700 (PDT)
-Received: from black.ru.oracle.com (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
-        by smtp.googlemail.com with ESMTPSA id k17sm3363778qtp.26.2021.04.16.01.35.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 01:35:45 -0700 (PDT)
-From:   Denis Efremov <efremov@linux.com>
-To:     linux-block@vger.kernel.org
-Cc:     Denis Efremov <efremov@linux.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] floppy: cleanups: remove FLOPPY_SILENT_DCL_CLEAR undef
-Date:   Fri, 16 Apr 2021 11:34:49 +0300
-Message-Id: <20210416083449.72700-6-efremov@linux.com>
+        Fri, 16 Apr 2021 04:35:55 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lXJwc-0004d5-Cb; Fri, 16 Apr 2021 08:35:18 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] sched/core: Add in additional const on preempt_modes array declaration
+Date:   Fri, 16 Apr 2021 09:35:18 +0100
+Message-Id: <20210416083518.2031981-1-colin.king@canonical.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210416083449.72700-1-efremov@linux.com>
-References: <20210416083449.72700-1-efremov@linux.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-FLOPPY_SILENT_DCL_CLEAR is not defined anywhere and comes from pre-git
-era. Just drop this undef. There is FD_SILENT_DCL_CLEAR which is really
-used.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Denis Efremov <efremov@linux.com>
+Checkpatch warnings that there is a missing const, fix this by adding it.
+Clean us up warning:
+
+"WARNING: static const char * array should probably be static
+const char * const"
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/block/floppy.c | 2 --
- 1 file changed, 2 deletions(-)
+ kernel/sched/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
-index c584657bacab..678ea45f2388 100644
---- a/drivers/block/floppy.c
-+++ b/drivers/block/floppy.c
-@@ -145,8 +145,6 @@
-  * Better audit of register_blkdev.
-  */
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 42c06fccade5..beaa6263f4c3 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5472,7 +5472,7 @@ static ssize_t sched_dynamic_write(struct file *filp, const char __user *ubuf,
  
--#undef  FLOPPY_SILENT_DCL_CLEAR
--
- #define REALLY_SLOW_IO
- 
- #define DEBUGT 2
+ static int sched_dynamic_show(struct seq_file *m, void *v)
+ {
+-	static const char * preempt_modes[] = {
++	static const char * const preempt_modes[] = {
+ 		"none", "voluntary", "full"
+ 	};
+ 	int i;
 -- 
 2.30.2
 
