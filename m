@@ -2,72 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2CA5362717
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC7536271C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243525AbhDPRqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 13:46:31 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:36825 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S235877AbhDPRqa (ORCPT
+        id S243574AbhDPRq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 13:46:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235877AbhDPRqw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 13:46:30 -0400
-Received: (qmail 48215 invoked by uid 1000); 16 Apr 2021 13:46:04 -0400
-Date:   Fri, 16 Apr 2021 13:46:04 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Anirudh Rayabharam <mail@anirudhrb.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+eb4674092e6cc8d9e0bd@syzkaller.appspotmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: [syzbot] general protection fault in gadget_setup
-Message-ID: <20210416174604.GA47856@rowland.harvard.edu>
-References: <00000000000075c58405bfd6228c@google.com>
- <CACT4Y+bTjQz=RBXVNrVMQ9xPz5CzGNBE854fsb0ukS-2_wdi3Q@mail.gmail.com>
- <20210413161311.GC1454681@rowland.harvard.edu>
- <YHkjUwhlCYIxCUYt@anirudhrb.com>
- <20210416152734.GB42403@rowland.harvard.edu>
- <YHnD0AVXiwdsw46L@anirudhrb.com>
+        Fri, 16 Apr 2021 13:46:52 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C837DC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:46:24 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d8so14368759plh.11
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:46:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7wXuYb2sAQupo2LG+aIJB2xPslEGiIuMvjBT329yg3U=;
+        b=J5PjHQGscCeSuO/gbZXuoewf8jGW9qKmFdTqS24XZn2uTUgChpjgJRSE0zIyVx56Wh
+         K6ruEk05Qdf/5KJuHfJh2gsM6DgcJMLk5XKJdzJRHkL5lactllzN9rrVHBS3m4GBuPHW
+         eErmAOFfOjDA/Gt40EEImNaXyzYe9+WbtA+ropKWwpYzYE1tOk8HmAhaJuhfg8l14tS1
+         CfAvjkhATJRg+pCAjnA8NuY+7lDvuXhPFECRnCp9ZI6N07vSV0SN/rLQq6OvPXv2/Jtt
+         nNvYqgvphMkTuvocMNUxcBqqrnKDOd6jNIrLIhFiOp9Oxgy7/iZfIezi6KBvTcO48Upy
+         qVRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7wXuYb2sAQupo2LG+aIJB2xPslEGiIuMvjBT329yg3U=;
+        b=guvBkyYcxPqnbE9+reJzYMIbnqpOG9jRNC1Hqyq/tQ3f/kBvGizbShSuoKICNm2E+V
+         XOxbJxLS2eNcQ5At82U/rXFfxh2taLKPgC6que06vDIvCQEau8Dqe76TZ+IMZofVtC33
+         Xt1tGbCBBRT32F1kR5U+g0LWYIbv6AGvG7EaYBR8mbthHl6DeaPUChF/u9YOv/d4WUEL
+         JICSv+MhE3QdZXo23hmeIQEVHGT5vOQHzCqmCB8Nx/dqRTeLhShNeMNb59K4wWsWmJMP
+         UdFh4JqRCwEY/ZoJ+LLEO6AyivP0dNRjBYjdReonaT7uT13JFOg49lCN5u5lyEH6kwOW
+         iP7w==
+X-Gm-Message-State: AOAM53019mkg+pWUGFs3HcwX/v8AhQO9IwsxP67o/lB8wEid1cb2Lwo1
+        llB39R5MKVAS/RCtYgfxQj8Llg==
+X-Google-Smtp-Source: ABdhPJzfFYb59axooQ1Dcvl2ibVjHLLezR7oN3SWOQimhjaIEN5XT1qNMQndTGWqeZYEeUsA9MoKxA==
+X-Received: by 2002:a17:902:f1d3:b029:ec:7b6e:5826 with SMTP id e19-20020a170902f1d3b02900ec7b6e5826mr4473776plc.22.1618595184388;
+        Fri, 16 Apr 2021 10:46:24 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id w123sm1891141pfb.109.2021.04.16.10.46.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 10:46:24 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 11:46:22 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     peng.fan@oss.nxp.com
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        o.rempel@pengutronix.de, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH V4 6/8] remoteproc: imx_rproc: make clk optional
+Message-ID: <20210416174622.GC1050209@xps15>
+References: <1618493261-32606-1-git-send-email-peng.fan@oss.nxp.com>
+ <1618493261-32606-7-git-send-email-peng.fan@oss.nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YHnD0AVXiwdsw46L@anirudhrb.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1618493261-32606-7-git-send-email-peng.fan@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 10:35:20PM +0530, Anirudh Rayabharam wrote:
-> On Fri, Apr 16, 2021 at 11:27:34AM -0400, Alan Stern wrote:
-> > Actually, I wanted to move this emulation code into a new subroutine and 
-> > then call that subroutine from _both_ places.  Would you like to write 
+On Thu, Apr 15, 2021 at 09:27:39PM +0800, peng.fan@oss.nxp.com wrote:
+> From: Peng Fan <peng.fan@nxp.com>
 > 
-> Does it really need to be called from both places?
-
-You know, I was going to say Yes, but now I think you're right; it's not 
-needed in dummy_udc_stop.  This is because core.c always calls 
-usb_gadget_disconnect before usb_gadget_udc_stop.  And we can rely on 
-this behavior; it's obviously necessary to disconnect from the host 
-before stopping the UDC driver.
-
-On the other hand, while checking that fact I noticed that 
-soft_connect_store in core.c doesn't call synchronize_irq in between the 
-other two, the way usb_gadget_remove_driver does.  That seems like a bug 
--- if it's necessary to synchronize with the IRQ handler on one path, it 
-should be necessary on the other path as well.  But that's a matter for 
-a separate patch.
-
-Alan Stern
-
-> > and submit a patch that does this?
+> To i.MX7ULP, M4 is the master to control everything, no need to provide
+> clk from Linux side. So make clk optional when method is IMX_RPROC_NONE.
 > 
-> Sure! I will do that.
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/remoteproc/imx_rproc.c | 46 ++++++++++++++++++++++++++++--------------
+>  1 file changed, 31 insertions(+), 15 deletions(-)
 > 
-> Thanks!
+> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
+> index 2b633fd..56dfcc1 100644
+> --- a/drivers/remoteproc/imx_rproc.c
+> +++ b/drivers/remoteproc/imx_rproc.c
+> @@ -606,6 +606,35 @@ static int imx_rproc_detect_mode(struct imx_rproc *priv)
+>  	return 0;
+>  }
+>  
+> +static int imx_rproc_clk_enable(struct imx_rproc *priv)
+> +{
+> +	const struct imx_rproc_dcfg *dcfg = priv->dcfg;
+> +	struct device *dev = priv->dev;
+> +	int ret;
+> +
+> +	/* Remote core is not under control of Linux */
+> +	if (dcfg->method == IMX_RPROC_NONE)
+> +		return 0;
+> +
+> +	priv->clk = devm_clk_get(dev, NULL);
+> +	if (IS_ERR(priv->clk)) {
+> +		dev_err(dev, "Failed to get clock\n");
+> +		return PTR_ERR(priv->clk);
+> +	}
+> +
+> +	/*
+> +	 * clk for M4 block including memory. Should be
+> +	 * enabled before .start for FW transfer.
+> +	 */
+> +	ret = clk_prepare_enable(priv->clk);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to enable clock\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int imx_rproc_probe(struct platform_device *pdev)
+>  {
+>  	struct device *dev = &pdev->dev;
+> @@ -654,22 +683,9 @@ static int imx_rproc_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto err_put_mbox;
+>  
+> -	priv->clk = devm_clk_get(dev, NULL);
+> -	if (IS_ERR(priv->clk)) {
+> -		dev_err(dev, "Failed to get clock\n");
+> -		ret = PTR_ERR(priv->clk);
+> -		goto err_put_mbox;
+> -	}
+> -
+> -	/*
+> -	 * clk for M4 block including memory. Should be
+> -	 * enabled before .start for FW transfer.
+> -	 */
+> -	ret = clk_prepare_enable(priv->clk);
+> -	if (ret) {
+> -		dev_err(&rproc->dev, "Failed to enable clock\n");
+> +	ret = imx_rproc_clk_enable(priv);
+> +	if (ret)
+
+Much better
+
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+
+>  		goto err_put_mbox;
+> -	}
+>  
+>  	INIT_WORK(&priv->rproc_work, imx_rproc_vq_work);
+>  
+> -- 
+> 2.7.4
 > 
-> 	- Anirudh.
