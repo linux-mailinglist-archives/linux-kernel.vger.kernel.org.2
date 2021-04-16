@@ -2,155 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C27D63620DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC293620ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242084AbhDPN07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 09:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235674AbhDPN0y (ORCPT
+        id S243483AbhDPN2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 09:28:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25481 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241311AbhDPN2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 09:26:54 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F41C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 06:26:28 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id s5so19993137qkj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 06:26:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k24lqJA2ePgDpS0UJ8YujxsEtI+mMUkUT/FN9W10Nn0=;
-        b=FeyWiBbo6D0ayzDOL/QHTiIvzz4cEaXWx8o+6YjmlNc6Nojn5S7stz/I5wqw7CqjW5
-         M5UbGm8i3ECiPd9eAFPJZxhRkKZ3TmSXoTfarTKV9INdGtXaLj19zEjTudfSoH60/N0U
-         vT3v6qrzqvnQE6ajASowQH7QZ5lt+0ebHy6DQVl9wYS6WlTGAkNxbXHos/cbJucXS9Ng
-         5nB4cf50FEyO4xM9DuFWQq7MNGssjm3u1w2aHY+rawvqWaq3gM3CrQYh1xPUa5kOQvSl
-         kf8zbpEYPiH5wF1/cyTIJAQMYquv6WuePY8UKYy+il+998GMV2mIf6IP8s0TpEwAqEUo
-         9HjQ==
+        Fri, 16 Apr 2021 09:28:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618579665;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JAKUqXFHXuyIOfRcOhTnPnVKgo/XPbGiNpXU9KPW1QA=;
+        b=Z94XpQHvuhQ3w8zOHIMkRRau4BO+WQaM+PRypVmTn+TDqAfgrIFOge9nX+cGMuX7r+ELEn
+        HFheITuz4wJACJltQu5Nfn3yJ6Z0ZNVrXnADmVeoyK6RJa0TRCymaRBEnB228xdN7JVcVM
+        lrNh8SlHhOu/vnAlZCc2VOvgpJD+BMM=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-42-Gc-9nF__M2SVcsZNRzeJtw-1; Fri, 16 Apr 2021 09:27:43 -0400
+X-MC-Unique: Gc-9nF__M2SVcsZNRzeJtw-1
+Received: by mail-ed1-f72.google.com with SMTP id l7-20020aa7c3070000b029038502ffe9f2so1264614edq.16
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 06:27:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k24lqJA2ePgDpS0UJ8YujxsEtI+mMUkUT/FN9W10Nn0=;
-        b=Oba9xeeJW7OOFvL0o8eodHFgMlhdGPaeDNttTZkkf86hJNvnAjkbAkEAnSYhI3rbwT
-         lJaKWpX3p09VhSfNSHEbM5qVDKo4a2TcnuOzyIeWwyMG61PPKq3iJoBaj2QeWwwHEM16
-         2RIOgP2twMsa5oO6tXIcgoGMY/SzGRhRYxwUpHF87+WO3LwpNuTxorTqSsYB2DRT9B8z
-         /nccjiRz8JlV1zrysqdzSHwd5Wp/h9+Sv5uS+EIsZjXXC9nA8G8GI/90wkcd9Vhrr7Vo
-         HuCFuVFzcgtEtK+VHejDq3Wk+ExCV5f+G7qKaGvvR+tQKhLFcIa40fh2hdcGNXMHGfQy
-         MDbg==
-X-Gm-Message-State: AOAM531q8wMQq4AzmeMII+If9m6bo/eealfWPg70z094Op3MmxzoU+VY
-        9vq07nMLQ/6Px50XxBZeaoasMt4IqKUHHLmRjYQjsQ==
-X-Google-Smtp-Source: ABdhPJxACO1LwUaPtjWtjSqHcBL2a8SxwHYAxGs7vuj8cOySNe9dSMuGs8671Ti9HBUk2JMxavnR9B4rkr4vFU39r/E=
-X-Received: by 2002:a37:a993:: with SMTP id s141mr8833864qke.265.1618579587454;
- Fri, 16 Apr 2021 06:26:27 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JAKUqXFHXuyIOfRcOhTnPnVKgo/XPbGiNpXU9KPW1QA=;
+        b=Z8MBQdquEePyhNjDKc1rYgEjI3EmgvO4duNPBtaFuEVQdRufpmottr6ncNsPlU5fnw
+         Y1MJz4CCe3LYyuUDgER0PF0sDsrVujeG6UKy4xC7VxmWEpA6DsTIuAmfTqFHh91uFY7Z
+         fMvB9NrHUA1g6w5jHvZxjqd1qcqTZxfTLqVc/voUcq+yjrUBKRSnqBsJT95ul/Nvy1AE
+         010G/KAVVNaVUoX7e5AsRhm4v3hP/2K3i6cgtyUW2q+MsQoQcjc1g2x7ZR0lNgP7DxF7
+         g0GkB/7ofSRGqd/Z3NReLs/XE2X9g0884HrfYST/2jNyV4CuK/oBwYU/Oyz3EbPnYC4Q
+         sk9w==
+X-Gm-Message-State: AOAM533CsvDpgZsIdr6yGKKY3md3PUiN3HA2/IlcwNoJou51laJcACFq
+        EMINtZspQ22Z7SLS9ZEgaitGBWi2njOtibSsGbeiTz97FL0hsF+uII8JdsSPDp8ZEbPfY6O+6a2
+        RldO8WxySChtlHFhZlIf6d6rM
+X-Received: by 2002:a17:906:3e4a:: with SMTP id t10mr7812294eji.553.1618579662295;
+        Fri, 16 Apr 2021 06:27:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw6UeUn5HRMxz6UHppX8f3UHpv0mBTcngffZpbHmagQPNNqqfWIQKVS47kiiMglIJ9lySwYmg==
+X-Received: by 2002:a17:906:3e4a:: with SMTP id t10mr7812280eji.553.1618579662121;
+        Fri, 16 Apr 2021 06:27:42 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id p7sm4198620eja.103.2021.04.16.06.27.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Apr 2021 06:27:41 -0700 (PDT)
+Subject: Re: [PATCH v2] tools: do not include scripts/Kbuild.include
+To:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org
+Cc:     Janosch Frank <frankja@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        netdev@vger.kernel.org
+References: <20210416130051.239782-1-masahiroy@kernel.org>
+ <ee99eb80-5711-9349-23a4-0faf8d7b60a8@de.ibm.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c2b0b348-e114-14d0-44c0-11d0ce6f7760@redhat.com>
+Date:   Fri, 16 Apr 2021 15:27:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <000000000000ae236f05bfde0678@google.com> <20210413134147.54556d9d@gandalf.local.home>
- <20210413134314.16068eeb@gandalf.local.home> <CACT4Y+ZrkE=ZKKncTOJRJgOTNfU8PGz=k+8V+0602ftTCHkc6Q@mail.gmail.com>
- <20210413144009.6ed2feb8@gandalf.local.home> <20210413144335.4ff14cf2@gandalf.local.home>
- <CACT4Y+YipDUHQiqJ=gtEeBQGz2AjqT6e_fje5DHsm0a5e+-GRQ@mail.gmail.com> <20210416091300.0758c62a@gandalf.local.home>
-In-Reply-To: <20210416091300.0758c62a@gandalf.local.home>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 16 Apr 2021 15:26:15 +0200
-Message-ID: <CACT4Y+YutXjDarTu_J=EjsDDgt5LzXyNjN-hd1ZpWg6kDYgw6g@mail.gmail.com>
-Subject: Re: Bisections with different bug manifestations
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     syzkaller <syzkaller@googlegroups.com>,
-        syzbot <syzbot+61e04e51b7ac86930589@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, KVM list <kvm@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, masahiroy@kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        rafael.j.wysocki@intel.com,
-        Sean Christopherson <seanjc@google.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Will Deacon <will@kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <ee99eb80-5711-9349-23a4-0faf8d7b60a8@de.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 3:13 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Fri, 16 Apr 2021 09:51:45 +0200
-> Dmitry Vyukov <dvyukov@google.com> wrote:
-> >
-> > If you look at substantial base of bisection logs, you will find lots
-> > of cases where bug types, functions don't match. Kernel crashes
-> > differently even on the same revision. And obviously things change if
-> > you change revisions. Also if you see presumably a different bug, what
-> > does it say regarding the original bug.
->
-> Yes, but there are also several types of cases where the issue will be the
-> same. Namely lockdep. I agree that use after free warnings can have a side
-> effect, and may be more difficult.
+On 16/04/21 15:26, Christian Borntraeger wrote:
+> 
+> 
+> On 16.04.21 15:00, Masahiro Yamada wrote:
+>> Since commit d9f4ff50d2aa ("kbuild: spilt cc-option and friends to
+>> scripts/Makefile.compiler"), some kselftests fail to build.
+>>
+>> The tools/ directory opted out Kbuild, and went in a different
+>> direction. They copy any kind of files to the tools/ directory
+>> in order to do whatever they want in their world.
+>>
+>> tools/build/Build.include mimics scripts/Kbuild.include, but some
+>> tool Makefiles included the Kbuild one to import a feature that is
+>> missing in tools/build/Build.include:
+>>
+>>   - Commit ec04aa3ae87b ("tools/thermal: tmon: use "-fstack-protector"
+>>     only if supported") included scripts/Kbuild.include from
+>>     tools/thermal/tmon/Makefile to import the cc-option macro.
+>>
+>>   - Commit c2390f16fc5b ("selftests: kvm: fix for compilers that do
+>>     not support -no-pie") included scripts/Kbuild.include from
+>>     tools/testing/selftests/kvm/Makefile to import the try-run macro.
+>>
+>>   - Commit 9cae4ace80ef ("selftests/bpf: do not ignore clang
+>>     failures") included scripts/Kbuild.include from
+>>     tools/testing/selftests/bpf/Makefile to import the .DELETE_ON_ERROR
+>>     target.
+>>
+>>   - Commit 0695f8bca93e ("selftests/powerpc: Handle Makefile for
+>>     unrecognized option") included scripts/Kbuild.include from
+>>     tools/testing/selftests/powerpc/pmu/ebb/Makefile to import the
+>>     try-run macro.
+>>
+>> Copy what they need into tools/build/Build.include, and make them
+>> include it instead of scripts/Kbuild.include.
+>>
+>> Link: 
+>> https://lore.kernel.org/lkml/86dadf33-70f7-a5ac-cb8c-64966d2f45a1@linux.ibm.com/ 
+>>
+>> Fixes: d9f4ff50d2aa ("kbuild: spilt cc-option and friends to 
+>> scripts/Makefile.compiler")
+>> Reported-by: Janosch Frank <frankja@linux.ibm.com>
+>> Reported-by: Christian Borntraeger <borntraeger@de.ibm.com>
+>> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> 
+> looks better.
+> Tested-by: Christian Borntraeger <borntraeger@de.ibm.com>
+> 
 
-But how do we know it's lockdep, rather than a use-after-free
-manifested as lockdep?
-A Significant portion of kernel bugs are caused by concurrency and can
-manifest in different ways, e.g. these are not lockdep, or WARN, or
-use-after-free, but rather a race in nature.
+Thank you very much Masahiro, this look great.
 
-> But there's many other bugs that remain
-> consistent across kernels. And if you stumble on one of them, look for it
-> only.
+Paolo
 
-For example? Does not look to be true for WARN, BUG, KASAN,
-"inconsistent lock state".
-
-
-> And if you hit another bug, and if it doesn't crash, then ignore it (of
-> course this could be an issue if you have panic on warning set). But
-> otherwise, just skip it.
-
-It's not possible to skip, say, BUG.
-And if we skip, say, a use-after-free, how do we know we are not
-making things worse? Because now we are running on corrupted memory,
-so anything can happen. Definitely a stray lockdep report can happen,
-or other way around not happen when it should...
-
-> > I would very much like to improve automatic bisection quality, but it
-> > does not look trivial at all.
-> >
-> > Some random examples where, say, your hypothesis of WARN-to-WARN,
-> > BUG-to-BUG does not hold even on the same kernel revision (add to this
->
-> At least lockdep to lockdep, as when I do manual bisects, that's exactly
-> what I look for, and ignore all other warnings. And that has found the
-> problem commit pretty much every time.
-
-What lockdep bug types do you mean? All?
-In the examples above you can see at least "inconsistent lock state"
-mixed with 2 other completely different bug types.
-
-> > different revisions and the fact that a different bug does not give
-> > info regarding the original bug):
-> >
->
-> Can you tell me that all these examples bisected to the commit that caused
-> the bug? Because if it did not, then you may have just proved my point ;-)
-
-I don't know now what was the result, but for a single run these were
-manifestations of the same root bug.
-E.g. see below, that's UAF in fuse_dev_do_read vs WARNING in
-request_end. request_end is also fuse. And you can see that a memory
-corruption causing a random bug type, in this case WARNING, but can as
-well be LOCKDEP.
-
-
-> > run #0: crashed: KASAN: use-after-free Read in fuse_dev_do_read
-> > run #1: crashed: WARNING in request_end
-> > run #2: crashed: KASAN: use-after-free Read in fuse_dev_do_read
-> > run #3: OK
-> > run #4: OK
