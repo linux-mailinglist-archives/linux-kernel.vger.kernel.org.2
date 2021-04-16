@@ -2,91 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FFD2361853
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 05:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 131B0361855
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 05:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238248AbhDPDrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 23:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234662AbhDPDro (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 23:47:44 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE16C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 20:47:19 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id em21-20020a17090b0155b029014e204a81e6so5755101pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 20:47:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Jvn+FcPs/a8mF8oTY+ng564VcLse+XohALlgtHB3uwo=;
-        b=fVtzqO2Oan3mRRwUs6ytpq9WeFjhRKIeSqlX275fOf6HbWmZHvPwxONXFNFxRyatyE
-         wZSz2oOyXqRqEvqeOmNaVOFKTwnBlbuMCbXJNqHzeahF10FO2tEU2zteKY5MoRtSAceL
-         MJD6S1zb4K6/B8renhWJu4/Ln1ufTBcV8Fo6u37Uea8nEf/Jp/RcYFDe4JsSx4tEADnP
-         mcBIN9EMTBmyvZIRhGnJSqRB2+AX2V4QcrDusA7CTyFbXr9bHiGAT6YCS0OrFjNZ/YXQ
-         kVaXmTzublVV/LfJ+6rYWRdM1TVTRw85loS9mB4WHpVfpruaKpXZ3S0M2wOXFW16nYuq
-         aH5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Jvn+FcPs/a8mF8oTY+ng564VcLse+XohALlgtHB3uwo=;
-        b=iH4Q3AYo84GwQf4P6e2qGhHQwe+VbH5mRfxBXkT6zszsF5bROB3JGKz/3aGDAnAMlj
-         5SYlYK5sbSCw2LCaw3Qf0Zld8M0CmKiPPIOytpic0FZQrKnAhWvheufAXvDb9mSDlfFt
-         qzQoyJbVwgklrG5IyvkaxdDPx/Ne6377sftg3VcoDajSjG5SgC239oJi2kmDmbvzNI7f
-         9VcxAnBcf4Xbe79byze7QPtWHPBVyCvSLCY555Os6/tLtGjG2OrruEbJGCSHkP4CUwaw
-         9s3VCvSjiu2nEefr+PPWCHitF9nD+V2m2puwRJUUUzxjrHqE4vX9jY5QSinmjldZiFcg
-         MeJQ==
-X-Gm-Message-State: AOAM5329KE3MG+qYSbFpgl9G+uFy1NbWIpjB3MUZkvekNJ8l355ji4wd
-        MHO3gGoTIbwdr6NwafoWxqw=
-X-Google-Smtp-Source: ABdhPJyPo6utWxE0Gwapva5Ja+v1DD4LsFNIwStS89Rfk+n5ieosIu/rgOG6S9Fsd8Ze2p2t8fv2zA==
-X-Received: by 2002:a17:902:e051:b029:eb:4411:db58 with SMTP id x17-20020a170902e051b02900eb4411db58mr7387386plx.11.1618544839034;
-        Thu, 15 Apr 2021 20:47:19 -0700 (PDT)
-Received: from mi-OptiPlex-7060.mioffice.cn ([43.224.245.180])
-        by smtp.gmail.com with ESMTPSA id q25sm3326239pfh.83.2021.04.15.20.47.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 20:47:18 -0700 (PDT)
-From:   zhuguangqing83@gmail.com
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Guangqing Zhu <zhuguangqing83@gmail.com>
-Subject: [PATCH] regulator: mt6360: Fix missing IRQF_ONESHOT as only threaded handler
-Date:   Fri, 16 Apr 2021 11:47:12 +0800
-Message-Id: <20210416034712.7891-1-zhuguangqing83@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S238274AbhDPDsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 23:48:55 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:34191 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234662AbhDPDsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 23:48:54 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FM2Hc3Ggxz9sWK;
+        Fri, 16 Apr 2021 13:48:28 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618544909;
+        bh=jcHWWMyjMUodiLSx+/C3LM6HFIlSsRyRg1+sxGF04os=;
+        h=Date:From:To:Cc:Subject:From;
+        b=uUP2lXsbWCDvQOru9Xx3z1JM5Xu1UL17z3YXo4/EJsSZzs1WImJeEkUr/xXxA+J1g
+         ZDUA52ogO03Sa8CxQUsKyWRgUBk6wguYfICXYpR1D3MhSSU2tVr+8ySyQisPioyMzF
+         3nRqnJV8MuxB7aEsR/8+201D7TlQkWJtgnn1AmqPUyi7KcimsOVSBVw+wMGezjPwHn
+         m81Iphgxj+yqgdvrphg71rcZcb3I1bQjq1F9EEWpLyttpYvZKP2wLREe/1MgyLhjuI
+         WCS3k6m1+1f7vMtbXSthuAiS97dWe5Umfqdc5IzMx0Tz6bjUDb80O3Arvdl68yRjZm
+         pfUXkGA4eE4Lw==
+Date:   Fri, 16 Apr 2021 13:48:27 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the mmc tree
+Message-ID: <20210416134827.1f35b1cd@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/86kXta5iqx4f+ctm/vsFH2P";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangqing Zhu <zhuguangqing83@gmail.com>
+--Sig_/86kXta5iqx4f+ctm/vsFH2P
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Coccinelle noticed:
-drivers/regulator/mt6360-regulator.c:386:8-33: ERROR: Threaded IRQ with no
-primary handler requested without IRQF_ONESHOT
+Hi all,
 
-Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
----
- drivers/regulator/mt6360-regulator.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+After merging the mmc tree, today's linux-next build (x86_64 allmodconfig)
+failed like this:
 
-diff --git a/drivers/regulator/mt6360-regulator.c b/drivers/regulator/mt6360-regulator.c
-index 4d34be94d166..34c354721ef0 100644
---- a/drivers/regulator/mt6360-regulator.c
-+++ b/drivers/regulator/mt6360-regulator.c
-@@ -383,8 +383,8 @@ static int mt6360_regulator_irq_register(struct platform_device *pdev,
- 		if (irq < 0)
- 			return irq;
- 
--		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL, irq_desc->handler, 0,
--						irq_desc->name, rdev);
-+		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL, irq_desc->handler,
-+						IRQF_ONESHOT, irq_desc->name, rdev);
- 		if (ret) {
- 			dev_err(&pdev->dev, "Fail to request %s irq\n", irq_desc->name);
- 			return ret;
--- 
-2.17.1
+In file included from drivers/memstick/host/r592.h:13,
+                 from drivers/memstick/host/r592.c:21:
+drivers/memstick/host/r592.c: In function 'r592_flush_fifo_write':
+include/linux/kfifo.h:588:1: warning: ignoring return value of '__kfifo_uin=
+t_must_check_helper' declared with attribute 'warn_unused_result' [-Wunused=
+-result]
+  588 | __kfifo_uint_must_check_helper( \
+      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  589 | ({ \
+      | ~~~~
+  590 |  typeof((fifo) + 1) __tmp =3D (fifo); \
+      |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  591 |  typeof(__tmp->ptr) __buf =3D (buf); \
+      |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  592 |  unsigned long __n =3D (n); \
+      |  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+  593 |  const size_t __recsize =3D sizeof(*__tmp->rectype); \
+      |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  594 |  struct __kfifo *__kfifo =3D &__tmp->kfifo; \
+      |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  595 |  (__recsize) ?\
+      |  ~~~~~~~~~~~~~~
+  596 |  __kfifo_out_r(__kfifo, __buf, __n, __recsize) : \
+      |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  597 |  __kfifo_out(__kfifo, __buf, __n); \
+      |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  598 | }) \
+      | ~~~~
+  599 | )
+      | ~
+drivers/memstick/host/r592.c:367:2: note: in expansion of macro 'kfifo_out'
+  367 |  kfifo_out(&dev->pio_fifo, buffer, 4);
+      |  ^~~~~~~~~
 
+Caused by commit
+
+  4b00ed3c5072 ("memstick: r592: remove unused variable")
+
+Please check the fixes for "simple, robot reported" warnings :-(
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/86kXta5iqx4f+ctm/vsFH2P
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB5CQsACgkQAVBC80lX
+0GxQ+wf9ElSbY8Df3AF0ueX/VukqyrRbGBeknXhHGRja57F39ffh2rMfvq168g+O
+WFzzOuybZk3bO1x3LkXVEpINe4SbN/CDtCgLQR2YqbMc21huwOtpAvK5yUpwKbK7
+Ai7xeaxCkU2vd2jA6LUk2WROOZwniLwRtRM0uT84n6XaFdngWzRVf/B2gjRVQTr4
+FBCcXx7tir+BeQK9tC+iIN5LB/XmaQF0Juhz/Q5XJ9fPweM8aYwPlhEF6TEhgIsM
+mE5eKlMD6NX9kfdSYhmS0iVpyQhOn17xtboQCohFbeTlC7kQuVetYs2qE0ioJmIa
+7lug58EtYSFL9SNlisamyakIqFT56A==
+=fpTg
+-----END PGP SIGNATURE-----
+
+--Sig_/86kXta5iqx4f+ctm/vsFH2P--
