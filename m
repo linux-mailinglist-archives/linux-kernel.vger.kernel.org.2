@@ -2,229 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AED83618AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 06:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58AC63618B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 06:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236593AbhDPEQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 00:16:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48964 "EHLO
+        id S237842AbhDPET4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 00:19:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234757AbhDPEQK (ORCPT
+        with ESMTP id S234757AbhDPETy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 00:16:10 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B49EC061574;
-        Thu, 15 Apr 2021 21:15:46 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lXFtP-005fj1-Hl; Fri, 16 Apr 2021 04:15:43 +0000
-Date:   Fri, 16 Apr 2021 04:15:43 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH] fs: split receive_fd_replace from __receive_fd
-Message-ID: <YHkPb7LSzadhpG6H@zeniv-ca.linux.org.uk>
-References: <20210325082209.1067987-1-hch@lst.de>
- <20210325082209.1067987-2-hch@lst.de>
- <202104021157.7B388D1B2@keescook>
+        Fri, 16 Apr 2021 00:19:54 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEEBFC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 21:19:30 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id n2so40085304ejy.7
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 21:19:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BYPjZinW4Vog3I9TnLyI0GoInS9aoZ8KHr6MlIE/U9Y=;
+        b=JV97mdetnzQPwWYULXzQjwsDFwoXrfrVaelXO+XvlFqj7bz4KYuzZKmPuao7s+MaUK
+         4Bdx2aPtqgH2NwImTLgv0agvRRC8e3CjWz6v99oxuUgfCaFuXqJbQNO8kbtgrZZNSxN9
+         F2gE5PpzvsAj5vkcViGixiDc5dGMp7wcJd0JzucJf/X44Zzm6T/8D8TBh2u67RPxbfRO
+         z2fmcWX3BDU2+NB75rYo683lljBvPaJV4CdNY9JlA3F6SRh/29U7DUIl+8RKiTnTqiyi
+         8HySzAT3iqDNgJ+qIwg9U/9CJg/3qGDxgGoXlAUJ1FVrOdlfxchghfPIx/9bLOhfgtkW
+         SS4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BYPjZinW4Vog3I9TnLyI0GoInS9aoZ8KHr6MlIE/U9Y=;
+        b=R/sbymcj1pZt+az6GqA2NhtRXGdKUOIlvihqgKyH7U6mkE6FThZpbQa57Mq9mHmC3/
+         m7URaOyzAEigcouUVN64rhtoUfYQsHUY9o3dzqSGlbgHJKmv54W30vIipPWB+SWeI8Fk
+         3XSpWPnULOMpJjZ7QXdRLJwOS+H6m7n4/nPHF88Eia+eXZn2ryoRBZlvrFoCsG3DWIvx
+         T+WN/JT+JJwgkJmzm3cY0lYXEbvLVrbrPBW8UEB9kT+wEQvMUi6dPcq6NZ7jkCHQquCi
+         WzC2aFn/t4HYm5BvhcZwm1l1gCI9E2eI5tV/tnu4d5RZORXCd9MMNLDcLmDPCfU//L5z
+         Mnzw==
+X-Gm-Message-State: AOAM532ES3yz/gzI/hPG2ucHHm6aM53sH7MLExMcUfRIaVeQNhh1BzxY
+        1Ag5svMHGPc96BNSIiRvhxc90+VPfrwtPC/Ijdd+7Q==
+X-Google-Smtp-Source: ABdhPJxD9dfxeOsgGmfqe+w1gIEwZ7QHRp/Y/l6TVaR6etOgU4eBcst1e8X7wND65V5EZEqALyErpFcU6soADVBAuMQ=
+X-Received: by 2002:a17:907:20e9:: with SMTP id rh9mr6672157ejb.523.1618546769476;
+ Thu, 15 Apr 2021 21:19:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202104021157.7B388D1B2@keescook>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <20210416025745.8698-1-apopple@nvidia.com>
+In-Reply-To: <20210416025745.8698-1-apopple@nvidia.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 15 Apr 2021 21:19:18 -0700
+Message-ID: <CAPcyv4grDqR09QWv68sJY=AXMDom5MSj40nOHaE+nKP9d9qc+g@mail.gmail.com>
+Subject: Re: [PATCH v4] kernel/resource: Fix locking in request_free_mem_region
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Muchun Song <smuchun@gmail.com>,
+        kernel test robot <oliver.sang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 12:01:05PM -0700, Kees Cook wrote:
-> On Thu, Mar 25, 2021 at 09:22:09AM +0100, Christoph Hellwig wrote:
-> > receive_fd_replace shares almost no code with the general case, so split
-> > it out.  Also remove the "Bump the sock usage counts" comment from
-> > both copies, as that is now what __receive_sock actually does.
-> > 
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> 
-> I'm okay with repeating code in fs/file.c. What I wanted to avoid was
-> open coded combinations in various callers.
+On Thu, Apr 15, 2021 at 7:58 PM Alistair Popple <apopple@nvidia.com> wrote:
+>
+> request_free_mem_region() is used to find an empty range of physical
+> addresses for hotplugging ZONE_DEVICE memory. It does this by iterating
+> over the range of possible addresses using region_intersects() to see if
+> the range is free.
+>
+> region_intersects() obtains a read lock before walking the resource tree
+> to protect against concurrent changes. However it drops the lock prior
+> to returning. This means by the time request_mem_region() is called in
+> request_free_mem_region() another thread may have already reserved the
+> requested region resulting in unexpected failures and a message in the
+> kernel log from hitting this condition:
+>
+>         /*
+>          * mm/hmm.c reserves physical addresses which then
+>          * become unavailable to other users.  Conflicts are
+>          * not expected.  Warn to aid debugging if encountered.
+>          */
+>         if (conflict->desc == IORES_DESC_DEVICE_PRIVATE_MEMORY) {
+>                 pr_warn("Unaddressable device %s %pR conflicts with %pR",
+>                         conflict->name, conflict, res);
+>
+> To fix this create versions of region_intersects() and
+> request_mem_region() that allow the caller to take the appropriate lock
+> such that it may be held over the required calls.
+>
+> Instead of creating another version of devm_request_mem_region() that
+> doesn't take the lock open-code it to allow the caller to pre-allocate
+> the required memory prior to taking the lock.
+>
+> On some architectures and kernel configurations revoke_iomem() also
+> calls resource code so cannot be called with the resource lock held.
+> Therefore call it only after dropping the lock.
 
-... and that got you a lovely userland ABI, where you have
+The patch is difficult to read because too many things are being
+changed at once, and the changelog seems to confirm that. Can you try
+breaking this down into a set of incremental changes? Not only will
+this ease review it will distribute any regressions over multiple
+bisection targets.
 
-	(1) newfd >= 0, SECCOMP_ADDFD_FLAG_SETFD is present => replace
-	(2) newfd < 0, SECCOMP_ADDFD_FLAG_SETFD is present => insert
-	(3) newfd == 0, SECCOMP_ADDFD_FLAG_SETFD not present => insert
-	(4) newfd != 0, SECCOMP_ADDFD_FLAG_SETFD not present => -EINVAL
+Something like:
 
-IMO (2) is a bug.  Whether we still can fix it or not... no idea, depends
-on whether the actual userland has come to depend upon it.
+* Refactor region_intersects() to allow external locking
+* Refactor __request_region() to allow external locking
+* Push revoke_iomem() down into...
+* Fix resource_lock usage in [devm_]request_free_mem_region()
 
-I suggest turning (2) into an error (-EBADF is what you'd get from
-attempt to set something at such descriptor) and seeing if anything
-breaks.  And having SECCOMP_ADDFD_FLAG_SETFD status passed into kaddfd
-explicitly, with explicit check in seccomp_handle_addfd().  As in
-
-commit 42eb0d54c08a0331d6d295420f602237968d792b
-Author: Christoph Hellwig <hch@lst.de>
-Date:   Thu Mar 25 09:22:09 2021 +0100
-
-    fs: split receive_fd_replace from __receive_fd
-    
-    receive_fd_replace shares almost no code with the general case, so split
-    it out.  Also remove the "Bump the sock usage counts" comment from
-    both copies, as that is now what __receive_sock actually does.
-    
-    [AV: ... and make the only user of receive_fd_replace() choose between
-    it and receive_fd() according to what userland had passed to it in
-    flags]
-    
-    Signed-off-by: Christoph Hellwig <hch@lst.de>
-    Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-
-diff --git a/fs/file.c b/fs/file.c
-index f3a4bac2cbe9..d8ccb95a7f41 100644
---- a/fs/file.c
-+++ b/fs/file.c
-@@ -1068,8 +1068,6 @@ int replace_fd(unsigned fd, struct file *file, unsigned flags)
- 
- /**
-  * __receive_fd() - Install received file into file descriptor table
-- *
-- * @fd: fd to install into (if negative, a new fd will be allocated)
-  * @file: struct file that was received from another process
-  * @ufd: __user pointer to write new fd number to
-  * @o_flags: the O_* flags to apply to the new fd entry
-@@ -1083,7 +1081,7 @@ int replace_fd(unsigned fd, struct file *file, unsigned flags)
-  *
-  * Returns newly install fd or -ve on error.
-  */
--int __receive_fd(int fd, struct file *file, int __user *ufd, unsigned int o_flags)
-+int __receive_fd(struct file *file, int __user *ufd, unsigned int o_flags)
- {
- 	int new_fd;
- 	int error;
-@@ -1092,32 +1090,33 @@ int __receive_fd(int fd, struct file *file, int __user *ufd, unsigned int o_flag
- 	if (error)
- 		return error;
- 
--	if (fd < 0) {
--		new_fd = get_unused_fd_flags(o_flags);
--		if (new_fd < 0)
--			return new_fd;
--	} else {
--		new_fd = fd;
--	}
-+	new_fd = get_unused_fd_flags(o_flags);
-+	if (new_fd < 0)
-+		return new_fd;
- 
- 	if (ufd) {
- 		error = put_user(new_fd, ufd);
- 		if (error) {
--			if (fd < 0)
--				put_unused_fd(new_fd);
-+			put_unused_fd(new_fd);
- 			return error;
- 		}
- 	}
- 
--	if (fd < 0) {
--		fd_install(new_fd, get_file(file));
--	} else {
--		error = replace_fd(new_fd, file, o_flags);
--		if (error)
--			return error;
--	}
-+	fd_install(new_fd, get_file(file));
-+	__receive_sock(file);
-+	return new_fd;
-+}
- 
--	/* Bump the sock usage counts, if any. */
-+int receive_fd_replace(int new_fd, struct file *file, unsigned int o_flags)
-+{
-+	int error;
-+
-+	error = security_file_receive(file);
-+	if (error)
-+		return error;
-+	error = replace_fd(new_fd, file, o_flags);
-+	if (error)
-+		return error;
- 	__receive_sock(file);
- 	return new_fd;
- }
-diff --git a/include/linux/file.h b/include/linux/file.h
-index 225982792fa2..2de2e4613d7b 100644
---- a/include/linux/file.h
-+++ b/include/linux/file.h
-@@ -92,23 +92,20 @@ extern void put_unused_fd(unsigned int fd);
- 
- extern void fd_install(unsigned int fd, struct file *file);
- 
--extern int __receive_fd(int fd, struct file *file, int __user *ufd,
-+extern int __receive_fd(struct file *file, int __user *ufd,
- 			unsigned int o_flags);
- static inline int receive_fd_user(struct file *file, int __user *ufd,
- 				  unsigned int o_flags)
- {
- 	if (ufd == NULL)
- 		return -EFAULT;
--	return __receive_fd(-1, file, ufd, o_flags);
-+	return __receive_fd(file, ufd, o_flags);
- }
- static inline int receive_fd(struct file *file, unsigned int o_flags)
- {
--	return __receive_fd(-1, file, NULL, o_flags);
--}
--static inline int receive_fd_replace(int fd, struct file *file, unsigned int o_flags)
--{
--	return __receive_fd(fd, file, NULL, o_flags);
-+	return __receive_fd(file, NULL, o_flags);
- }
-+int receive_fd_replace(int new_fd, struct file *file, unsigned int o_flags);
- 
- extern void flush_delayed_fput(void);
- extern void __fput_sync(struct file *);
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 1d60fc2c9987..4fe19cecaa94 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -119,8 +119,11 @@ struct seccomp_kaddfd {
- 	int fd;
- 	unsigned int flags;
- 
--	/* To only be set on reply */
--	int ret;
-+	union {
-+		bool setfd;
-+		/* To only be set on reply */
-+		int ret;
-+	};
- 	struct completion completion;
- 	struct list_head list;
- };
-@@ -1069,7 +1072,11 @@ static void seccomp_handle_addfd(struct seccomp_kaddfd *addfd)
- 	 * that it has been handled.
- 	 */
- 	list_del_init(&addfd->list);
--	addfd->ret = receive_fd_replace(addfd->fd, addfd->file, addfd->flags);
-+	if (!addfd->setfd)
-+		addfd->ret = receive_fd(addfd->file, addfd->flags);
-+	else
-+		addfd->ret = receive_fd_replace(addfd->fd, addfd->file,
-+						addfd->flags);
- 	complete(&addfd->completion);
- }
- 
-@@ -1583,8 +1590,8 @@ static long seccomp_notify_addfd(struct seccomp_filter *filter,
- 		return -EBADF;
- 
- 	kaddfd.flags = addfd.newfd_flags;
--	kaddfd.fd = (addfd.flags & SECCOMP_ADDFD_FLAG_SETFD) ?
--		    addfd.newfd : -1;
-+	kaddfd.setfd = addfd.flags & SECCOMP_ADDFD_FLAG_SETFD;
-+	kaddfd.fd = addfd.newfd;
- 	init_completion(&kaddfd.completion);
- 
- 	ret = mutex_lock_interruptible(&filter->notify_lock);
+The revoke_iomem() change seems like something that should be moved
+into a leaf helper and not called by __request_free_mem_region()
+directly.
