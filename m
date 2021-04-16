@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 311A23622E6
+	by mail.lfdr.de (Postfix) with ESMTP id A1A1A3622E7
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245078AbhDPOjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:39:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45216 "EHLO
+        id S244970AbhDPOjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:39:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244434AbhDPOiV (ORCPT
+        with ESMTP id S244187AbhDPOiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:38:21 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C1EC061761
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:37:55 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id h10so32526047edt.13
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:37:55 -0700 (PDT)
+        Fri, 16 Apr 2021 10:38:22 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A2EC061347
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:37:56 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id m3so32537107edv.5
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:37:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=H6lJM5vDlPCigZaMaZ137qXfyZxXCNgpbaNiX62r2Ss=;
-        b=flSVCO6bULmEgKESUIhxGFuVTNcmVsqnwVrbn6m72srwUAYXKxBZS5Q/oDRhGv11DB
-         v2a+c3zWguVvSFBphtnT73j9vAYOvHTNhi79odq04gfZLHYc8P+C4KTSZfBLdj8PyqNi
-         BysQPAg5pgN8mANchtugw5z6tOHIVzKAx7bDEr8rmeH8ZQ8wjCv2lHbOIbX9jNKGxnLM
-         ha5i5bwbGCMi3MrzIg5/rf/uHde9U+WFKoCGDBgH6kOx9yXAPH+LqQIFyTVIgV/dHEsc
-         SyIsLANSeD5YaFr6F/3jY5GkhhiKLkX0scp2o5vzC6FMlIjMpnzTMnNQ3SCT8WDCRs+9
-         AjbQ==
+        bh=9TISBbCiRhBu677uKtWLY+O2n+9ENYFzE4E3l/7xu74=;
+        b=WPFZRx2AOSEV7kKeL23SmikYGo6CGMuOXLlBxUeoNSKckHHvsWnzqy+JPsd3EzEUJn
+         yy9JVK9GGo6jFgOv+QsgJukksMc8hJ3wnsoXPudyULwoeH0FV5yh6A2XrJYWmCi/AFh+
+         GPCfWPJELgYoscWMFR7mdIppujI3OPj/XfbHtjhYZbPTtc8nlRgMEemRcijC76Q3GgDE
+         LI+lqrTQ/RJHwQrsDFje7aHIH2nGuJL0YhAuhKQqDzB/EqhBqtBX5+SJ5gW+lD9WGey2
+         RRyvf8tj+kggo9Y0DuIuB1LuDNaN4AF/yQKght+XeqMA/2ZhfsR88UWku5OG0QzaTfTt
+         q0wQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=H6lJM5vDlPCigZaMaZ137qXfyZxXCNgpbaNiX62r2Ss=;
-        b=d3ENPc8Ke58vlzRiOPv12pjvcDYnAp3jEMsdi+TT/3XdKsysOcXrwoKnbRwHfw2bVY
-         eVqX8kLK3ZlBEifSFU8J4K07GWU9aObbbqAcPgFN1sn0xsOD51LKjAq5R1OWjspSX42a
-         gNJHCb4046EqJwoXegBP8nfJ7j0Tt3Gz3ODZavlTLlmbDcLQ1hBb91hjoeRW4KOwyt2L
-         EfkyNk/cW1mD7V9xbjlWL7zH0vFd77B7S32i9Hj5lP7DPcA5WL0hUZfeVtHHXTWO7Vo7
-         ryDEFilSR+MU4wl2qBNeParjvSyp+SfMUPPiUva46n36S4u9DfxhK/7OBrr1dCMd0B8P
-         qtPA==
-X-Gm-Message-State: AOAM5327TWiFzQpYNGluyVsovGfJ9g06z1OPyTNaGNuYhusQgrPLmSxy
-        kDZFOWAyA7CAnYiohQgGYZetnA==
-X-Google-Smtp-Source: ABdhPJyb4be2bRHCUASGhOYcF9QNbDlJuZvsy9N/XCm+mUih0S3RcBA88c3OyeoKleXaK17tAQDyYw==
-X-Received: by 2002:a50:9b12:: with SMTP id o18mr10607699edi.376.1618583874356;
-        Fri, 16 Apr 2021 07:37:54 -0700 (PDT)
+        bh=9TISBbCiRhBu677uKtWLY+O2n+9ENYFzE4E3l/7xu74=;
+        b=P4Wd5mQwtgG1kfwb5UCaQMJz4VYhg3ibUEGKPXRR/M385U4+PyMVAmh5eq8qzWtpKN
+         ULhyANJMC8JF//uKrMLA7Qggrimp0AnrYp4Ii+jlvyOmeN7yTlyXncYHOclGAqOL96Dc
+         3VTVmjwje7DAGIojb0lQ+nCxUu/JczfKJLKnm7FLxs+ThtloMYqeD4CFU2Edcs32cKB0
+         1a1/GpD8zVdsEv0WteW9AgdmpIVqoJvbHVZ5nlD5lHb6M/c3jwD4juyKaXN9yq4Kyq9A
+         3lxagHq1jZ/ZoRFV4wJLVrqfJ/nX0SZZ1M2V6XiJqjr1Fe0KVgW2/2CHnDtLfo3X7fXI
+         1w7Q==
+X-Gm-Message-State: AOAM531XXHiPawfQ/CCaG+hje1IMdhCG9oCcX9wHBrlZC1gvJ07EF7qf
+        4tvkf6qF0wFxu9ZWb5s6BqSXuA==
+X-Google-Smtp-Source: ABdhPJwaBHWHa3mmVDMl+qoKDnlJQf+hamKu6uJRFFXIt3+UT2zjv3ODxR5KwRlyUDvLklFhP3fIkw==
+X-Received: by 2002:aa7:d587:: with SMTP id r7mr9354550edq.388.1618583875381;
+        Fri, 16 Apr 2021 07:37:55 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id j10sm1326523ejk.93.2021.04.16.07.37.53
+        by smtp.gmail.com with ESMTPSA id j10sm1326523ejk.93.2021.04.16.07.37.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 07:37:53 -0700 (PDT)
+        Fri, 16 Apr 2021 07:37:54 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
+Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
         linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 23/40] drm/ttm/ttm_bo: Fix incorrectly documented function 'ttm_bo_cleanup_refs'
-Date:   Fri, 16 Apr 2021 15:37:08 +0100
-Message-Id: <20210416143725.2769053-24-lee.jones@linaro.org>
+Subject: [PATCH 24/40] drm/scheduler/sched_entity: Fix some function name disparity
+Date:   Fri, 16 Apr 2021 15:37:09 +0100
+Message-Id: <20210416143725.2769053-25-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210416143725.2769053-1-lee.jones@linaro.org>
 References: <20210416143725.2769053-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -71,33 +71,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/ttm/ttm_bo.c:293: warning: expecting prototype for function ttm_bo_cleanup_refs(). Prototype was for ttm_bo_cleanup_refs() instead
+ drivers/gpu/drm/scheduler/sched_entity.c:204: warning: expecting prototype for drm_sched_entity_kill_jobs(). Prototype was for drm_sched_entity_kill_jobs_cb() instead
+ drivers/gpu/drm/scheduler/sched_entity.c:262: warning: expecting prototype for drm_sched_entity_cleanup(). Prototype was for drm_sched_entity_fini() instead
+ drivers/gpu/drm/scheduler/sched_entity.c:305: warning: expecting prototype for drm_sched_entity_fini(). Prototype was for drm_sched_entity_destroy() instead
 
-Cc: Christian Koenig <christian.koenig@amd.com>
-Cc: Huang Rui <ray.huang@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: "Christian König" <christian.koenig@amd.com>
 Cc: dri-devel@lists.freedesktop.org
 Cc: linux-media@vger.kernel.org
 Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/ttm/ttm_bo.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/scheduler/sched_entity.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
-index cfd0b92923973..defec9487e1de 100644
---- a/drivers/gpu/drm/ttm/ttm_bo.c
-+++ b/drivers/gpu/drm/ttm/ttm_bo.c
-@@ -274,7 +274,7 @@ static void ttm_bo_flush_all_fences(struct ttm_buffer_object *bo)
+diff --git a/drivers/gpu/drm/scheduler/sched_entity.c b/drivers/gpu/drm/scheduler/sched_entity.c
+index f0790e9471d1a..0249c74501888 100644
+--- a/drivers/gpu/drm/scheduler/sched_entity.c
++++ b/drivers/gpu/drm/scheduler/sched_entity.c
+@@ -192,7 +192,7 @@ long drm_sched_entity_flush(struct drm_sched_entity *entity, long timeout)
+ EXPORT_SYMBOL(drm_sched_entity_flush);
+ 
+ /**
+- * drm_sched_entity_kill_jobs - helper for drm_sched_entity_kill_jobs
++ * drm_sched_entity_kill_jobs_cb - helper for drm_sched_entity_kill_jobs
+  *
+  * @f: signaled fence
+  * @cb: our callback structure
+@@ -250,7 +250,7 @@ static void drm_sched_entity_kill_jobs(struct drm_sched_entity *entity)
  }
  
  /**
-- * function ttm_bo_cleanup_refs
-+ * ttm_bo_cleanup_refs
-  * If bo idle, remove from lru lists, and unref.
-  * If not idle, block if possible.
+- * drm_sched_entity_cleanup - Destroy a context entity
++ * drm_sched_entity_fini - Destroy a context entity
+  *
+  * @entity: scheduler entity
+  *
+@@ -295,7 +295,7 @@ void drm_sched_entity_fini(struct drm_sched_entity *entity)
+ EXPORT_SYMBOL(drm_sched_entity_fini);
+ 
+ /**
+- * drm_sched_entity_fini - Destroy a context entity
++ * drm_sched_entity_destroy - Destroy a context entity
+  *
+  * @entity: scheduler entity
   *
 -- 
 2.27.0
