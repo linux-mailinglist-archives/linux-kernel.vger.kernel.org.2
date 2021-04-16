@@ -2,127 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07066361D9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DEFD361D9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241995AbhDPJi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 05:38:57 -0400
-Received: from jptosegrel01.sonyericsson.com ([124.215.201.71]:12904 "EHLO
-        JPTOSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235027AbhDPJiv (ORCPT
+        id S241977AbhDPJio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 05:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235027AbhDPJin (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 05:38:51 -0400
-From:   Peter Enderborg <peter.enderborg@sony.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>, NeilBrown <neilb@suse.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mike Rapoport <rppt@kernel.org>, <linux-media@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <linaro-mm-sig@lists.linaro.org>
-CC:     Peter Enderborg <peter.enderborg@sony.com>
-Subject: [PATCH] dma-buf: Add DmaBufTotal counter in meminfo
-Date:   Fri, 16 Apr 2021 11:37:19 +0200
-Message-ID: <20210416093719.6197-1-peter.enderborg@sony.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 16 Apr 2021 05:38:43 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903E1C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:38:18 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id x4so31510275edd.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:38:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=EavaO1INdIem+7EBZda4+NLy8hD5HqKnHAI/MSCV27s=;
+        b=BLBJZ9RZRzAftUg3Gq2Uo/+pfEvog3S4JycYp9c5pQJvN9gj4gSDySH/qKvfJW5C5t
+         pEdE2v9cRiN0WS0tnv88AJKDzZBBUfETZs4xWbgF69qjENaGdP2NMDbSu/6Iov/uxsAp
+         zPhKGculmILxefvHVSoYicsOOzzUg9OTA0GApHlnL3gVosuw/PjlzpFc/jYIbOjD8Cu+
+         lyi5sd+WHy4Gal7rK34BtcRY1hnfbWvjQ/BkTJvP4uwMVcyxhkp2JNE0f3E1xU9JnPSW
+         zPwY0JmqumvjsU+U/buz6/TNDtcptEIaJZ4fwJBu+sWy5ky6kZDAHFGKESgN3GOQ1+59
+         xE9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=EavaO1INdIem+7EBZda4+NLy8hD5HqKnHAI/MSCV27s=;
+        b=TQ4uyazhlkgIwnBjPq3cqk0TIoKR+49byDnMN4diOXcJvFRjd4Q57RydlUdMst7l1c
+         VWAJrTLlponT1t5P1FikAMk72HxXmZaFIx4YahVQ4UpeoBWj7lb2avKawKlkxTnlbAcC
+         hcYpGbtk1Jk23d3bZQ7gEekCpyRkQ1azhKNBqUfyTHBgGpRfIjzKh29fuhZHAM4Et0YT
+         fOw4sHNVRwiNVRQ+4HmtojwsprZsKgdPp1vLyvo28RSgBqqqJzkxmeI2WUSc8MTbY4k6
+         sWGolY4KGWkeZan/EKTgRtmCWsZsIHm4Oji9X0Uuyay1j84x4gHi2q5H/QEUcRURyZyb
+         ufqQ==
+X-Gm-Message-State: AOAM531ceDpOa6MGIyyq/kFpY5QUp8Jtv2q7fiakbcnBTSpSpxz25j+q
+        Oon0nbk7aLGvFESyIK//Qiz4DaeJy2IIsduj9S91iw==
+X-Google-Smtp-Source: ABdhPJxxyYgkqwr8m+RWl5TdFXec5Bs0L5KHELiuYnC7pXfS+LflW2gY84/eA5Oz1CkTV84pRKsKLjjk50NqQZIC2Nw=
+X-Received: by 2002:a50:c3c2:: with SMTP id i2mr8886287edf.23.1618565897210;
+ Fri, 16 Apr 2021 02:38:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=crzlbGwi c=1 sm=1 tr=0 a=9drRLWArJOlETflmpfiyCA==:117 a=3YhXtTcJ-WEA:10 a=z6gsHLkEAAAA:8 a=USQXLDy_ZNVIum19Oj8A:9 a=d-OLMTCWyvARjPbQ-enb:22 a=pHzHmUro8NiASowvMSCR:22 a=Ew2E2A-JSTLzCXPT_086:22
-X-SEG-SpamProfiler-Score: 0
+References: <20210415144413.165663182@linuxfoundation.org>
+In-Reply-To: <20210415144413.165663182@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 16 Apr 2021 15:08:05 +0530
+Message-ID: <CA+G9fYvRR6HPujVRzfE_-injm+Z_-Uk-x8aFG5wHnC1b6CDfhw@mail.gmail.com>
+Subject: Re: [PATCH 5.10 00/25] 5.10.31-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds a total used dma-buf memory. Details
-can be found in debugfs, however it is not for everyone
-and not always available.
+On Thu, 15 Apr 2021 at 20:33, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.31 release.
+> There are 25 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 17 Apr 2021 14:44:01 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.31-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
----
- drivers/dma-buf/dma-buf.c | 12 ++++++++++++
- fs/proc/meminfo.c         |  2 ++
- include/linux/dma-buf.h   |  1 +
- 3 files changed, 15 insertions(+)
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-index f264b70c383e..9f88171b394c 100644
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -37,6 +37,7 @@ struct dma_buf_list {
- };
- 
- static struct dma_buf_list db_list;
-+static atomic_long_t dma_buf_size;
- 
- static char *dmabuffs_dname(struct dentry *dentry, char *buffer, int buflen)
- {
-@@ -79,6 +80,7 @@ static void dma_buf_release(struct dentry *dentry)
- 	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
- 		dma_resv_fini(dmabuf->resv);
- 
-+	atomic_long_sub(dmabuf->size, &dma_buf_size);
- 	module_put(dmabuf->owner);
- 	kfree(dmabuf->name);
- 	kfree(dmabuf);
-@@ -586,6 +588,7 @@ struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info)
- 	mutex_lock(&db_list.lock);
- 	list_add(&dmabuf->list_node, &db_list.head);
- 	mutex_unlock(&db_list.lock);
-+	atomic_long_add(dmabuf->size, &dma_buf_size);
- 
- 	return dmabuf;
- 
-@@ -1346,6 +1349,15 @@ void dma_buf_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map)
- }
- EXPORT_SYMBOL_GPL(dma_buf_vunmap);
- 
-+/**
-+ * dma_buf_get_size - Return the used nr pages by dma-buf
-+ */
-+long dma_buf_get_size(void)
-+{
-+	return atomic_long_read(&dma_buf_size) >> PAGE_SHIFT;
-+}
-+EXPORT_SYMBOL_GPL(dma_buf_get_size);
-+
- #ifdef CONFIG_DEBUG_FS
- static int dma_buf_debug_show(struct seq_file *s, void *unused)
- {
-diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-index 6fa761c9cc78..3c1a82b51a6f 100644
---- a/fs/proc/meminfo.c
-+++ b/fs/proc/meminfo.c
-@@ -16,6 +16,7 @@
- #ifdef CONFIG_CMA
- #include <linux/cma.h>
- #endif
-+#include <linux/dma-buf.h>
- #include <asm/page.h>
- #include "internal.h"
- 
-@@ -145,6 +146,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
- 	show_val_kb(m, "CmaFree:        ",
- 		    global_zone_page_state(NR_FREE_CMA_PAGES));
- #endif
-+	show_val_kb(m, "DmaBufTotal:    ", dma_buf_get_size());
- 
- 	hugetlb_report_meminfo(m);
- 
-diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index efdc56b9d95f..f6481315a377 100644
---- a/include/linux/dma-buf.h
-+++ b/include/linux/dma-buf.h
-@@ -507,4 +507,5 @@ int dma_buf_mmap(struct dma_buf *, struct vm_area_struct *,
- 		 unsigned long);
- int dma_buf_vmap(struct dma_buf *dmabuf, struct dma_buf_map *map);
- void dma_buf_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map);
-+long dma_buf_get_size(void);
- #endif /* __DMA_BUF_H__ */
--- 
-2.17.1
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+## Build
+* kernel: 5.10.31-rc1
+* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stabl=
+e-rc.git',
+'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
+* git branch: linux-5.10.y
+* git commit: 32f5704a0a4f7dcc8aa74a49dbcce359d758f6d5
+* git describe: v5.10.30-26-g32f5704a0a4f
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
+.30-26-g32f5704a0a4f
+
+## No regressions (compared to v5.10.30)
+
+## No fixes (compared to v5.10.30)
+
+## Test result summary
+ total: 72955, pass: 61311, fail: 1785, skip: 9589, xfail: 270,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 192 total, 192 passed, 0 failed
+* arm64: 26 total, 26 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 25 total, 25 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 26 total, 26 passed, 0 failed
+
+## Test suites summary
+* fwts
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mod[
+* kselftest-vsyscall-mode-native-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
