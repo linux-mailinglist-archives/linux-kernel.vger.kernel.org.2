@@ -2,76 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C86BA3625F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 18:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 557FE3625FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 18:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236924AbhDPQqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 12:46:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235595AbhDPQqx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 12:46:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947DBC061574;
-        Fri, 16 Apr 2021 09:46:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BxSXtPsAmxUFlWPdD98J/97elcMLJtVAfMQiYC0wrec=; b=nS9gVgOCNBVzeS3pqL5W4rnkMr
-        aJPl02WUaeZA81Upi/OJP409n6KoLw5d8mcWR1zbyR3sRlv3hWbP5IATF7arA4qjeE2dYjUz7jtk2
-        hkT9rqZA5KXsM3f1MBCDH6wckYcadrBJOeTcSh8a5k8zp1u40wZMEEl9OGDBA8wtTBBeKEz4IcJTO
-        IDPmCDeLvJRDctFn+NglDOY+rpPbvZODAksJGozKVR0R1K36mHGFor4GcQtHcTvdAmP0oR8h7+DxW
-        aNZcG/TM1aoyO6aSzAv0HEmqXT426M26Ii64sQNZv6AB8/hqbY68PvJKE2sTrzV7PK7iDrulkxgsg
-        WC+0UejQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lXRbW-00ACjP-BC; Fri, 16 Apr 2021 16:46:04 +0000
-Date:   Fri, 16 Apr 2021 17:46:02 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Peter Gonda <pgonda@google.com>,
-        David Hildenbrand <david@redhat.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFCv2 00/13] TDX and guest memory unmapping
-Message-ID: <20210416164602.GN2531743@casper.infradead.org>
-References: <20210416154106.23721-1-kirill.shutemov@linux.intel.com>
+        id S237257AbhDPQuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 12:50:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235437AbhDPQuX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 12:50:23 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6745261008;
+        Fri, 16 Apr 2021 16:49:57 +0000 (UTC)
+Date:   Fri, 16 Apr 2021 12:49:55 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     zhaoxiao <zhaoxiao@uniontech.com>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        nivedita@alum.mit.edu, clin@suse.com,
+        andriy.shevchenko@linux.intel.com, ndesaulniers@google.com,
+        dan.j.williams@intel.com, masahiroy@kernel.org,
+        linux-kernel@vger.kernel.org, jroedel@suse.de, peterz@infradead.org
+Subject: Re: [PATCH v2] X86: Makefile: Replace -pg with CC_FLAGS_FTRACE
+Message-ID: <20210416124955.64e824e3@gandalf.local.home>
+In-Reply-To: <20210416151258.gjchvi7c5uneiy63@treble>
+References: <20210416053928.11576-1-zhaoxiao@uniontech.com>
+        <20210416151258.gjchvi7c5uneiy63@treble>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416154106.23721-1-kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 06:40:53PM +0300, Kirill A. Shutemov wrote:
-> TDX integrity check failures may lead to system shutdown host kernel must
-> not allow any writes to TD-private memory. This requirment clashes with
-> KVM design: KVM expects the guest memory to be mapped into host userspace
-> (e.g. QEMU).
+On Fri, 16 Apr 2021 10:12:58 -0500
+Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+
+> Adding Steven Rostedt (ftrace maintainer).
+
+Thanks.
+
 > 
-> This patchset aims to start discussion on how we can approach the issue.
-> 
-> The core of the change is in the last patch. Please see more detailed
-> description of the issue and proposoal of the solution there.
+> On Fri, Apr 16, 2021 at 01:39:28PM +0800, zhaoxiao wrote:
+> > In preparation for x86 supporting ftrace built on other compiler
+> > options, let's have the x86 Makefiles remove the $(CC_FLAGS_FTRACE)
+> > flags, whatever these may be, rather than assuming '-pg'.
+> > 
+> > There should be no functional change as a result of this patch.
+> > 
+> > Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+> > ---
+> > v2: add the same change for the other Makefile in arch/x86 directory.
+> >  arch/x86/entry/vdso/Makefile |  8 ++++----
+> >  arch/x86/kernel/Makefile     | 16 ++++++++--------
+> >  arch/x86/kernel/cpu/Makefile |  4 ++--
+> >  arch/x86/lib/Makefile        |  2 +-
+> >  arch/x86/mm/Makefile         |  4 ++--
+> >  arch/x86/xen/Makefile        |  6 +++---
+> >  6 files changed, 20 insertions(+), 20 deletions(-)
+> > 
 
-This seems to have some parallels with s390's arch_make_page_accessible().
-Is there any chance to combine the two, so we don't end up with duplicated
-hooks all over the MM for this kind of thing?
+I'm good with switching "-pg" over to "$(CC_FLAGS_FTRACE)" globally.
 
-https://patchwork.kernel.org/project/kvm/cover/20200214222658.12946-1-borntraeger@de.ibm.com/
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-and recent THP/Folio-related discussion:
-https://lore.kernel.org/linux-mm/20210409194059.GW2531743@casper.infradead.org/
+-- Steve
