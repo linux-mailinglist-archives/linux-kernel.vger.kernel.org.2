@@ -2,178 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40CA33617F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 05:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B574361813
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 05:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237269AbhDPDEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 23:04:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33352 "EHLO
+        id S235077AbhDPDI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 23:08:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234751AbhDPDEC (ORCPT
+        with ESMTP id S234903AbhDPDIw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 23:04:02 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC918C061574;
-        Thu, 15 Apr 2021 20:03:38 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id ef17so7140901qvb.0;
-        Thu, 15 Apr 2021 20:03:38 -0700 (PDT)
+        Thu, 15 Apr 2021 23:08:52 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3288C061574;
+        Thu, 15 Apr 2021 20:08:23 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id n38so17430067pfv.2;
+        Thu, 15 Apr 2021 20:08:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q26+v9m6OHwgu5yJO9W58aHk+91HmRzWJqWAxjmAjYg=;
-        b=Eyr7g0DXodj0YWyiHAZQvIHMwU0PVbUa4XiJJaYRoMR1fz/x6N15b6AglJ/HyiI0Nw
-         R53FNij7DbgHDMAwyiggIBuiiGvIobBsKLX9p/LP4Q190TKIKqJI3XntLvkiasHGB/GM
-         OpjCvykQFFbeGC+W6jiisQeZIGpu6utfnPIcE=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=uFKS1WFTegraebrT+gI7cJRe7sDUnuGWyUREin+ouco=;
+        b=YkfygmwWDmCVEsZLunBUBrilsLiA7IDScQtDDzAj1O22eaBGUAhpgnVjJ0bPLP2DV8
+         ABXF+F3OcIAaOOSmIBZjD5lHAQfWI7rXaceSqRgKG5X1PDlzYeoBg/xafuj3LjCrlPbG
+         AAhmkmcgCP2q9NnjFZK++3AjbBI6/eKREP579HKQQvtgTA6ivrz2C0hSflYVX7q3g93W
+         JxHKKEO3j7OVCYMBwgNK8FeBGqowy0bELkQW6ZC5M+Ge1sIvKOZ9kOJt9rLkCbR8rPYx
+         k69yWUvo9XBnvaEtZRYMxs0OHY6L0TGhr6F8VTuOwdb4/CAQoohkMsNrprP0dG+EuDCs
+         VAIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q26+v9m6OHwgu5yJO9W58aHk+91HmRzWJqWAxjmAjYg=;
-        b=Yeb2/US8ViunPtpdvfbhB3WLugvYu33DAwkDDtRI+f3lNsasadx3jLyTk8DzYkoesP
-         5D7FsYsBHUH9h2SWuwGlXeTzoVKLqAPOI2Q/RrizWMDoFcMzntGNlWF8bJR9xTeKZw69
-         NiPUWlBzaOpG0KgOi4TebImNERGsmGrcXMJs01vBa4xN/TqcKuB/tyiQi9Zi9799Ez3N
-         K3MwyemytLEDquEUquHNsF2KMj+u57szWwo3OZENsgtxKYGV19FnjBQXQo2v4qTiZkZX
-         YWHpzgtY9TQabqwwy26UbyhXMXouga1l4tjdgLUBFwhERoWnc5lQt+ps4sZwoZxs9J5y
-         mziQ==
-X-Gm-Message-State: AOAM53293J9lVLxVgJvhEOG/jm1banf0u2mHfCSG6LVF+5zC/Ls2YZiw
-        LmFmW+cgFkbd7Bik+Wyl2gfd9LFfkCN4EjhU5fw=
-X-Google-Smtp-Source: ABdhPJxsDfazEoAzmRD7FlKhlHPECMQcCoMQ1AW1TfMq+yhvzo+OtyjUw7EkrvsL1LWKEEylHKzYzXAlfCRCBWIHjNs=
-X-Received: by 2002:a0c:eb06:: with SMTP id j6mr6422476qvp.10.1618542218062;
- Thu, 15 Apr 2021 20:03:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210316085932.2601-1-troy_lee@aspeedtech.com>
-In-Reply-To: <20210316085932.2601-1-troy_lee@aspeedtech.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Fri, 16 Apr 2021 03:03:25 +0000
-Message-ID: <CACPK8XeYtaLLWDMR8xZhERrQ_WCUJ2RM_JZmZNQ6oZSvgSDM_w@mail.gmail.com>
-Subject: Re: [PATCH v1] ARM: dts: Fix 64MiB OpenBMC flash layout and aspeed-ast2600-evb.dts
-To:     Troy Lee <troy_lee@aspeedtech.com>
-Cc:     John Wang <wangzhiqiang.bj@bytedance.com>,
-        =?UTF-8?B?6YOB6Zu3?= <yulei.sh@bytedance.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>, leetroy@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=uFKS1WFTegraebrT+gI7cJRe7sDUnuGWyUREin+ouco=;
+        b=eye7gZm7ZBS/u9+fCKv1lw6eXO9ST7gJ7y/hJGkb5l2HaZOtKH/odfUoqy6PKbIWq1
+         IJYvaiN05Im+SZmeDfygmyEjht5ZB/R72bjDqTM+eAHVkAYAOZEsFBcAONvi6JeQw7hZ
+         nSzTB7hsEMc5AC9qhd/tRFCbzr4EulsBviWAHLff0Nh5aGamSlcZmPvPAT+C4S9GSvyu
+         iM+y2sUPJsy7QFauOR2U/xJFQCXcZQfFtvl/lXwwtQQLg6aA5B1DLt3YIq0rTLw0b8hO
+         qCG6juPjKhSWsrUzy6ogT24VMUgcYWM87wQgxCAZRo4320f/K6bRnwuLIJENk+eZYm/D
+         yQXg==
+X-Gm-Message-State: AOAM530rkO/AKe8xz5/1c/n0dzumQbu5hRlztZng+fZN264fACVrbstb
+        JDUZw7gTSKVI4AoCONHhLzVNoFkpUuw=
+X-Google-Smtp-Source: ABdhPJxvnnkermnsBPvw4vDQQcMspMPBLn164mh+/HbqfeJn6OqJVYNt2NtPxYaMdKw34BrqNa7PsA==
+X-Received: by 2002:a63:c111:: with SMTP id w17mr6101708pgf.127.1618542503102;
+        Thu, 15 Apr 2021 20:08:23 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.6])
+        by smtp.googlemail.com with ESMTPSA id r1sm3654698pfh.153.2021.04.15.20.08.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 15 Apr 2021 20:08:22 -0700 (PDT)
+From:   Wanpeng Li <kernellwp@gmail.com>
+X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: [PATCH] KVM: Boost vCPU candidiate in user mode which is delivering interrupt
+Date:   Fri, 16 Apr 2021 11:08:10 +0800
+Message-Id: <1618542490-14756-1-git-send-email-wanpengli@tencent.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Mar 2021 at 08:59, Troy Lee <troy_lee@aspeedtech.com> wrote:
->
-> Aspeed AST2600 u-boot requires 600KiB+ flash space. Sharing the same
-> openbmc-flash-layout-64.dtsi requires to resize the flash partition.
->
-> The updated flash layout as follows:
-> - u-boot: 896 KiB
-> - u-boot-env: 128 KiB
-> - kernel: 9MiB
-> - rofs: 32 MiB
-> - rwfs: 22 MiB
+From: Wanpeng Li <wanpengli@tencent.com>
 
-Changing the 64MB layout will break the systems that are already using
-this layout. I'll get the Bytedance people to chime in, as theirs is
-the only system using this layout so far.
+Both lock holder vCPU and IPI receiver that has halted are condidate for 
+boost. However, the PLE handler was originally designed to deal with the 
+lock holder preemption problem. The Intel PLE occurs when the spinlock 
+waiter is in kernel mode. This assumption doesn't hold for IPI receiver, 
+they can be in either kernel or user mode. the vCPU candidate in user mode 
+will not be boosted even if they should respond to IPIs. Some benchmarks 
+like pbzip2, swaptions etc do the TLB shootdown in kernel mode and most
+of the time they are running in user mode. It can lead to a large number 
+of continuous PLE events because the IPI sender causes PLE events 
+repeatedly until the receiver is scheduled while the receiver is not 
+candidate for a boost.
 
-John, Lei?
+This patch boosts the vCPU candidiate in user mode which is delivery 
+interrupt. We can observe the speed of pbzip2 improves 10% in 96 vCPUs 
+VM in over-subscribe scenario (The host machine is 2 socket, 48 cores, 
+96 HTs Intel CLX box). There is no performance regression for other 
+benchmarks like Unixbench spawn (most of the time contend read/write 
+lock in kernel mode), ebizzy (most of the time contend read/write sem 
+and TLB shoodtdown in kernel mode).
 
->
-> Signed-off-by: Troy Lee <troy_lee@aspeedtech.com>
-> ---
->  arch/arm/boot/dts/aspeed-ast2600-evb.dts      | 32 +------------------
->  .../arm/boot/dts/openbmc-flash-layout-64.dtsi | 18 +++++------
->  2 files changed, 10 insertions(+), 40 deletions(-)
->
-> diff --git a/arch/arm/boot/dts/aspeed-ast2600-evb.dts b/arch/arm/boot/dts/aspeed-ast2600-evb.dts
-> index 89be13197780..2cfae9cfed3a 100644
-> --- a/arch/arm/boot/dts/aspeed-ast2600-evb.dts
-> +++ b/arch/arm/boot/dts/aspeed-ast2600-evb.dts
-> @@ -121,37 +121,7 @@ flash@0 {
->                 m25p,fast-read;
->                 label = "bmc";
->                 spi-max-frequency = <50000000>;
-> -
-> -               partitions {
-> -                       compatible = "fixed-partitions";
-> -                       #address-cells = <1>;
-> -                       #size-cells = <1>;
-> -
-> -                       u-boot@0 {
-> -                               reg = <0x0 0xe0000>; // 896KB
-> -                               label = "u-boot";
-> -                       };
-> -
-> -                       u-boot-env@e0000 {
-> -                               reg = <0xe0000 0x20000>; // 128KB
-> -                               label = "u-boot-env";
-> -                       };
-> -
-> -                       kernel@100000 {
-> -                               reg = <0x100000 0x900000>; // 9MB
-> -                               label = "kernel";
-> -                       };
-> -
-> -                       rofs@a00000 {
-> -                               reg = <0xa00000 0x2000000>; // 32MB
-> -                               label = "rofs";
-> -                       };
-> -
-> -                       rwfs@6000000 {
-> -                               reg = <0x2a00000 0x1600000>; // 22MB
-> -                               label = "rwfs";
-> -                       };
-> -               };
-> +#include "openbmc-flash-layout-64.dtsi"
->         };
->  };
->
-> diff --git a/arch/arm/boot/dts/openbmc-flash-layout-64.dtsi b/arch/arm/boot/dts/openbmc-flash-layout-64.dtsi
-> index 91163867be34..31f59de5190b 100644
-> --- a/arch/arm/boot/dts/openbmc-flash-layout-64.dtsi
-> +++ b/arch/arm/boot/dts/openbmc-flash-layout-64.dtsi
-> @@ -9,27 +9,27 @@ partitions {
->         #size-cells = <1>;
->
->         u-boot@0 {
-> -               reg = <0x0 0x60000>; // 384KB
-> +               reg = <0x0 0xe0000>; // 896KB
->                 label = "u-boot";
->         };
->
-> -       u-boot-env@60000 {
-> -               reg = <0x60000 0x20000>; // 128KB
-> +       u-boot-env@e0000 {
-> +               reg = <0xe0000 0x20000>; // 128KB
->                 label = "u-boot-env";
->         };
->
-> -       kernel@80000 {
-> -               reg = <0x80000 0x500000>; // 5MB
-> +       kernel@100000 {
-> +               reg = <0x100000 0x900000>; // 9MB
->                 label = "kernel";
->         };
->
-> -       rofs@580000 {
-> -               reg = <0x580000 0x2a80000>; // 42.5MB
-> +       rofs@a00000 {
-> +               reg = <0xa00000 0x2000000>; // 32MB
->                 label = "rofs";
->         };
->
-> -       rwfs@3000000 {
-> -               reg = <0x3000000 0x1000000>; // 16MB
-> +       rwfs@6000000 {
-> +               reg = <0x2a00000 0x1600000>; // 22MB
->                 label = "rwfs";
->         };
->  };
-> --
-> 2.25.1
->
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+---
+ arch/x86/kvm/x86.c       | 8 ++++++++
+ include/linux/kvm_host.h | 1 +
+ virt/kvm/kvm_main.c      | 6 ++++++
+ 3 files changed, 15 insertions(+)
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 0d2dd3f..0f16fa5 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -11069,6 +11069,14 @@ bool kvm_arch_dy_runnable(struct kvm_vcpu *vcpu)
+ 	return false;
+ }
+ 
++bool kvm_arch_interrupt_delivery(struct kvm_vcpu *vcpu)
++{
++	if (vcpu->arch.apicv_active && static_call(kvm_x86_dy_apicv_has_pending_interrupt)(vcpu))
++		return true;
++
++	return false;
++}
++
+ bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
+ {
+ 	return vcpu->arch.preempted_in_kernel;
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 3b06d12..5012fc4 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -954,6 +954,7 @@ int kvm_arch_vcpu_runnable(struct kvm_vcpu *vcpu);
+ bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu);
+ int kvm_arch_vcpu_should_kick(struct kvm_vcpu *vcpu);
+ bool kvm_arch_dy_runnable(struct kvm_vcpu *vcpu);
++bool kvm_arch_interrupt_delivery(struct kvm_vcpu *vcpu);
+ int kvm_arch_post_init_vm(struct kvm *kvm);
+ void kvm_arch_pre_destroy_vm(struct kvm *kvm);
+ 
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 0a481e7..781d2db 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -3012,6 +3012,11 @@ static bool vcpu_dy_runnable(struct kvm_vcpu *vcpu)
+ 	return false;
+ }
+ 
++bool __weak kvm_arch_interrupt_delivery(struct kvm_vcpu *vcpu)
++{
++	return false;
++}
++
+ void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool yield_to_kernel_mode)
+ {
+ 	struct kvm *kvm = me->kvm;
+@@ -3045,6 +3050,7 @@ void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool yield_to_kernel_mode)
+ 			    !vcpu_dy_runnable(vcpu))
+ 				continue;
+ 			if (READ_ONCE(vcpu->preempted) && yield_to_kernel_mode &&
++				!kvm_arch_interrupt_delivery(vcpu) &&
+ 				!kvm_arch_vcpu_in_kernel(vcpu))
+ 				continue;
+ 			if (!kvm_vcpu_eligible_for_directed_yield(vcpu))
+-- 
+2.7.4
+
