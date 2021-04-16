@@ -2,166 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6090536174C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 04:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52BD3361763
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 04:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237975AbhDPCEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 22:04:09 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:17362 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235043AbhDPCEE (ORCPT
+        id S238021AbhDPCI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 22:08:59 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16467 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235058AbhDPCI5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 22:04:04 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FLzwT1z70zkkWr;
-        Fri, 16 Apr 2021 10:01:45 +0800 (CST)
-Received: from [10.67.102.118] (10.67.102.118) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 16 Apr 2021 10:03:23 +0800
-Subject: Re: [RFC PATCH] USB:XHCI:skip hub registration
-To:     Alan Stern <stern@rowland.harvard.edu>
-CC:     <gregkh@linuxfoundation.org>, <mathias.nyman@intel.com>,
-        <liudongdong3@huawei.com>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kong.kongxinwei@hisilicon.com>,
-        <yisen.zhuang@huawei.com>
-References: <1618489358-42283-1-git-send-email-liulongfang@huawei.com>
- <20210415144323.GC1530055@rowland.harvard.edu>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <3dad6f4f-6386-427c-c36c-7d26b9a76fa4@huawei.com>
-Date:   Fri, 16 Apr 2021 10:03:21 +0800
+        Thu, 15 Apr 2021 22:08:57 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FM01f0K4Mzrf7f;
+        Fri, 16 Apr 2021 10:06:14 +0800 (CST)
+Received: from [127.0.0.1] (10.174.179.202) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Fri, 16 Apr 2021
+ 10:08:25 +0800
+Subject: Re: [PATCH 1/1] char: hpet: Remove unused local variable 'm' in
+ hpet_interrupt()
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Clemens Ladisch <clemens@ladisch.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Nils Carlson <nils.carlson@ericsson.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210415142404.3846-1-thunder.leizhen@huawei.com>
+ <YHhTVXS4u5jXG5Fc@kroah.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <f821054a-0bb2-2a66-4b7d-ceaf48705700@huawei.com>
+Date:   Fri, 16 Apr 2021 10:08:25 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210415144323.GC1530055@rowland.harvard.edu>
-Content-Type: text/plain; charset="gbk"
+In-Reply-To: <YHhTVXS4u5jXG5Fc@kroah.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.118]
+X-Originating-IP: [10.174.179.202]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/15 22:43, Alan Stern wrote:
-> On Thu, Apr 15, 2021 at 08:22:38PM +0800, Longfang Liu wrote:
->> When the number of ports on the USB hub is 0, skip the registration
->> operation of the USB hub.
->>
->> The current Kunpeng930's XHCI hardware controller is defective. The number
->> of ports on its USB3.0 bus controller is 0, and the number of ports on
->> the USB2.0 bus controller is 1.
->>
->> In order to solve this problem that the USB3.0 controller does not have
->> a port which causes the registration of the hub to fail, this patch passes
->> the defect information by adding flags in the quirks of xhci and usb_hcd,
->> and finally skips the registration process of the hub directly according
->> to the results of these flags when the hub is initialized.
->>
->> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
-> 
-> The objections that Greg raised are all good ones.
-> 
-> But even aside from them, this patch doesn't actually do what the 
-> description says.  The patch doesn't remove the call to usb_add_hcd 
-> for the USB-3 bus.  If you simply skipped that call (and the 
-> corresponding call to usb_remove_hcd) when there are no 
-> ports on the root hub, none of the stuff in this patch would be needed.
-> 
-> Alan Stern
-> 
 
-"[RFC PATCH] USB:XHCI:Adjust the log level of hub"
-The current method is an improved method of the above patch.
-This patch just make it skip registering USB-3 root hub if that hub has no ports,
-after skipping registering, no port will not report error log,the goal of this
-patch is reached without error log output.
-Thanks.
-Longfang.
 
+On 2021/4/15 22:53, Greg Kroah-Hartman wrote:
+> On Thu, Apr 15, 2021 at 10:24:04PM +0800, Zhen Lei wrote:
+>> Commit 273ef9509b79 ("drivers/char/hpet.c: fix periodic-emulation for
+>> delayed interrupt") removed the reference to local variable 'm', but
+>> forgot to remove the definition and assignment of it. Due to
+>> read_counter() indirectly calls "read barrier", the performance is
+>> slightly degraded.
+>>
+>> Since the following comments give some description based on 'm', so move
+>> the assignment of 'm' into it.
+>>
+>> Fixes: 273ef9509b79 ("drivers/char/hpet.c: fix periodic-emulation for delayed interrupt")
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 >> ---
->>  drivers/usb/core/hub.c      | 6 ++++++
->>  drivers/usb/host/xhci-pci.c | 4 ++++
->>  drivers/usb/host/xhci.c     | 5 +++++
->>  drivers/usb/host/xhci.h     | 1 +
->>  include/linux/usb/hcd.h     | 1 +
->>  5 files changed, 17 insertions(+)
+>>  drivers/char/hpet.c | 8 +++++---
+>>  1 file changed, 5 insertions(+), 3 deletions(-)
 >>
->> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
->> index b1e14be..2d6869d 100644
->> --- a/drivers/usb/core/hub.c
->> +++ b/drivers/usb/core/hub.c
->> @@ -1769,9 +1769,15 @@ static int hub_probe(struct usb_interface *intf, const struct usb_device_id *id)
->>  	struct usb_host_interface *desc;
->>  	struct usb_device *hdev;
->>  	struct usb_hub *hub;
->> +	struct usb_hcd *hcd;
+>> diff --git a/drivers/char/hpet.c b/drivers/char/hpet.c
+>> index ed3b7dab678dbd1..46950a0cda181a1 100644
+>> --- a/drivers/char/hpet.c
+>> +++ b/drivers/char/hpet.c
+>> @@ -156,14 +156,16 @@ static irqreturn_t hpet_interrupt(int irq, void *data)
+>>  	 * This has the effect of treating non-periodic like periodic.
+>>  	 */
+>>  	if ((devp->hd_flags & (HPET_IE | HPET_PERIODIC)) == HPET_IE) {
+>> -		unsigned long m, t, mc, base, k;
+>> +		unsigned long t, mc, base, k;
+>>  		struct hpet __iomem *hpet = devp->hd_hpet;
+>>  		struct hpets *hpetp = devp->hd_hpets;
 >>  
->>  	desc = intf->cur_altsetting;
->>  	hdev = interface_to_usbdev(intf);
->> +	hcd = bus_to_hcd(hdev->bus);
->> +	if (hcd->usb3_no_port) {
->> +		dev_warn(&intf->dev, "USB hub has no port\n");
->> +		return -ENODEV;
->> +	}
->>  
->>  	/*
->>  	 * Set default autosuspend delay as 0 to speedup bus suspend,
->> diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
->> index ef513c2..63b89a4 100644
->> --- a/drivers/usb/host/xhci-pci.c
->> +++ b/drivers/usb/host/xhci-pci.c
->> @@ -281,6 +281,10 @@ static void xhci_pci_quirks(struct device *dev, struct xhci_hcd *xhci)
->>  	if (xhci->quirks & XHCI_RESET_ON_RESUME)
->>  		xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
->>  				"QUIRK: Resetting on resume");
->> +
->> +	if (pdev->vendor == PCI_VENDOR_ID_HUAWEI &&
->> +	    pdev->device == 0xa23c)
->> +		xhci->quirks |= XHCI_USB3_NOPORT;
->>  }
->>  
->>  #ifdef CONFIG_ACPI
->> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
->> index bee5dec..e3e3573 100644
->> --- a/drivers/usb/host/xhci.c
->> +++ b/drivers/usb/host/xhci.c
->> @@ -5184,6 +5184,11 @@ int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks)
->>  		/* xHCI private pointer was set in xhci_pci_probe for the second
->>  		 * registered roothub.
->>  		 */
->> +		if (xhci->quirks & XHCI_USB3_NOPORT) {
->> +			xhci_info(xhci, "xHCI host has no port\n");
->> +			hcd->usb3_no_port = 1;
->> +		}
->> +
->>  		return 0;
->>  	}
->>  
->> diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
->> index 2c6c4f8..d3c658f 100644
->> --- a/drivers/usb/host/xhci.h
->> +++ b/drivers/usb/host/xhci.h
->> @@ -1874,6 +1874,7 @@ struct xhci_hcd {
->>  #define XHCI_RESET_PLL_ON_DISCONNECT	BIT_ULL(34)
->>  #define XHCI_SNPS_BROKEN_SUSPEND    BIT_ULL(35)
->>  #define XHCI_RENESAS_FW_QUIRK	BIT_ULL(36)
->> +#define XHCI_USB3_NOPORT	BIT_ULL(37)
->>  
->>  	unsigned int		num_active_eps;
->>  	unsigned int		limit_active_eps;
->> diff --git a/include/linux/usb/hcd.h b/include/linux/usb/hcd.h
->> index 3dbb42c..7df23a0f 100644
->> --- a/include/linux/usb/hcd.h
->> +++ b/include/linux/usb/hcd.h
->> @@ -172,6 +172,7 @@ struct usb_hcd {
->>  	unsigned		tpl_support:1; /* OTG & EH TPL support */
->>  	unsigned		cant_recv_wakeups:1;
->>  			/* wakeup requests from downstream aren't received */
->> +	unsigned		usb3_no_port:1; /* xHCI main_hcd has no port */
->>  
->>  	unsigned int		irq;		/* irq allocated */
->>  	void __iomem		*regs;		/* device memory/io */
->> -- 
->> 2.8.1
->>
+>>  		t = devp->hd_ireqfreq;
+>> -		m = read_counter(&devp->hd_timer->hpet_compare);
+>>  		mc = read_counter(&hpet->hpet_mc);
+>> -		/* The time for the next interrupt would logically be t + m,
+>> +		/*
+>> +		 * m = read_counter(&devp->hd_timer->hpet_compare);
+> 
+> Why did you comment this out?
+> 
+> And are you sure that yuou are not required to actually read that
+> counter, even if you do not do anything with the value?  Lots of
+> hardware works in odd ways...
+> 
+> Have you tested and verified that this still works properly?
+
+Sorry, I didn't actually test it. I didn't see any dependency on
+this read operation for other members' reads and writes. If this
+read operation is potentially required, hopefully there is an
+explanatory note next to it.
+
+> 
+> thanks,
+> 
+> greg k-h
+> 
 > .
 > 
+
