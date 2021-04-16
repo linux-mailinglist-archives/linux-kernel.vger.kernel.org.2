@@ -2,76 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9681E3621FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1DA3362210
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244553AbhDPOTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:19:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56216 "EHLO mail.kernel.org"
+        id S244626AbhDPOVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:21:13 -0400
+Received: from mga05.intel.com ([192.55.52.43]:58573 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244534AbhDPOTn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:19:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0BF8610FC;
-        Fri, 16 Apr 2021 14:19:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618582758;
-        bh=A9Vvto/6OhGROCoV+7ZsOSkuzEhZQRWE4HQRxbVwIu0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oQc4JsQ7f/SPtT6OtR3zGEJgP+yxum31zvmgJhgUCkZ7vpCApDe5lKQNQWaVWRwfz
-         HW8MO7qMQW6PU6avCC/2934Aa2WCx0zSGDjyr+ZpjEfgotKnqdgXNxXSH/L6vLn+Ka
-         uXTy5tUA7NRYGksChP6Q3usNPjcpYnq8UkmBkTZR4o2P35OzlKKbYILzvALUMFICpT
-         Hxn6z1a7OuXYg6mBsiweyG42RLdGHqyF5yBZ+ALBJb3dCuF/1ChnEPdUnmN/xztYm1
-         J09DAWxdhyaV6V8sWFm9NQmdsdL1rmunX3YmpTzlF9sFdDjNsa20lEuANWl0PlwS6e
-         gcqr03oEz/Z9Q==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lXPJW-0006bT-D0; Fri, 16 Apr 2021 16:19:19 +0200
-Date:   Fri, 16 Apr 2021 16:19:18 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        dillon.minfei@gmail.com, Erwan Le Ray <erwan.leray@foss.st.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Alexandre TORGUE <alexandre.torgue@st.com>,
-        Gerald Baeza <gerald.baeza@st.com>
-Subject: Re: [PATCH 2/3] serial: stm32: fix threaded interrupt handling
-Message-ID: <YHmc5jkAXC95HVIp@hovoldconsulting.com>
-References: <20210416140557.25177-1-johan@kernel.org>
- <20210416140557.25177-3-johan@kernel.org>
+        id S244572AbhDPOVG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 10:21:06 -0400
+IronPort-SDR: cFbW7orWKL2rW5S2l9NzG+cukxfC0p9/gjPDXiKPx/txQ7AbrThf5lv4Zf3OJ42t3vCl1cYH3o
+ G4myVGGOgBSg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9956"; a="280364116"
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="280364116"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 07:20:41 -0700
+IronPort-SDR: B7Ib3nZkSHvV9A+S3y+55TbrrjAUe0wBDXBvsv5N1anIo+a7dYHaSg6HUm7bj65D/3U4205g+5
+ DemFaL/Q9pbg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="522722964"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 16 Apr 2021 07:20:30 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 14D9D12A; Fri, 16 Apr 2021 17:20:46 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v2 1/4] fbtft: Replace custom ->reset() with generic one
+Date:   Fri, 16 Apr 2021 17:20:41 +0300
+Message-Id: <20210416142044.17766-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416140557.25177-3-johan@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 04:05:56PM +0200, Johan Hovold wrote:
-> When DMA is enabled the receive handler runs in a threaded handler, but
-> the primary handler up until very recently neither disabled interrupts
+The custom ->reset() repeats the generic one, replace it.
 
-Scratch the "up until very recently" bit here since the driver still
-doesn't disable interrupt in the device (it just disables all interrupts
-in the threaded handler). The rest stands as is.
+Note, in newer kernels the context of the function is a sleeping one,
+it's fine to switch over to the sleeping functions. Keeping the reset
+line asserted longer than 20 microseconds is also okay, it's an idling
+state of the hardware.
 
-> in the device or used IRQF_ONESHOT. This would lead to a deadlock if an
-> interrupt comes in while the threaded receive handler is running under
-> the port lock.
-> 
-> Commit ad7676812437 ("serial: stm32: fix a deadlock condition with
-> wakeup event") claimed to fix an unrelated deadlock, but unfortunately
-> also disabled interrupts in the threaded handler. While this prevents
-> the deadlock mentioned in the previous paragraph it also defeats the
-> purpose of using a threaded handler in the first place.
-> 
-> Fix this by making the interrupt one-shot and not disabling interrupts
-> in the threaded handler.
-> 
-> Note that (receive) DMA must not be used for a console port as the
-> threaded handler could be interrupted while holding the port lock,
-> something which could lead to a deadlock in case an interrupt handler
-> ends up calling printk.
+Fixes: b2ebd4be6fa1 ("staging: fbtft: add fb_agm1264k-fl driver")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2: new patch split from the bigger fix (Greg)
+ drivers/staging/fbtft/fb_agm1264k-fl.c | 14 --------------
+ 1 file changed, 14 deletions(-)
 
-Johan
+diff --git a/drivers/staging/fbtft/fb_agm1264k-fl.c b/drivers/staging/fbtft/fb_agm1264k-fl.c
+index eeeeec97ad27..4dfc22d05a40 100644
+--- a/drivers/staging/fbtft/fb_agm1264k-fl.c
++++ b/drivers/staging/fbtft/fb_agm1264k-fl.c
+@@ -77,19 +77,6 @@ static int init_display(struct fbtft_par *par)
+ 	return 0;
+ }
+ 
+-static void reset(struct fbtft_par *par)
+-{
+-	if (!par->gpio.reset)
+-		return;
+-
+-	dev_dbg(par->info->device, "%s()\n", __func__);
+-
+-	gpiod_set_value(par->gpio.reset, 0);
+-	udelay(20);
+-	gpiod_set_value(par->gpio.reset, 1);
+-	mdelay(120);
+-}
+-
+ /* Check if all necessary GPIOS defined */
+ static int verify_gpios(struct fbtft_par *par)
+ {
+@@ -439,7 +426,6 @@ static struct fbtft_display display = {
+ 		.set_addr_win = set_addr_win,
+ 		.verify_gpios = verify_gpios,
+ 		.request_gpios_match = request_gpios_match,
+-		.reset = reset,
+ 		.write = write,
+ 		.write_register = write_reg8_bus8,
+ 		.write_vmem = write_vmem,
+-- 
+2.30.2
+
