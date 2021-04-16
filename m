@@ -2,165 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71EE33623FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3A1362405
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343766AbhDPPd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 11:33:29 -0400
-Received: from mail-eopbgr750047.outbound.protection.outlook.com ([40.107.75.47]:39301
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234887AbhDPPdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 11:33:25 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T/BjQ0JWEw9aUvAf2iN16R2l4ra/s/YANghlLU9v93M5ZoreojI+vBwZpxaxlyCGkZO+Ham4Lv8pVmp8sKnmPAKbi6A73JNQ2Ftnw4aRtYl/1CA41eUBj5JiT6v7wueDfiI2eb2bG3ZlLyDN5qqYQ5BvZhOGR3McSoAUIhE7hQzBqGASmQU/erS2lBMePbZSqFxM9OYWkGw1KFxcBFY4sOx9nvO83HNhPO6Z5HjxyiER2902F2e/D1nby1u1nGztVIxtlaK52gkm4dUb+/XjGOm7+07poOXPsLx9wCvz2NEGzYXAnpERvvy2Ansu8121+JFnmebdlgbQxxxKMxi/8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mCOjr6LTjaXslOxvQqwfEcAnHGmC/nrROa/oE564FfY=;
- b=Gewh55GnMkjOzyWmqAP+1ZLpCEa5KvzcqLS4M7DQWqK7FqxjctKPpq0ICdDtrw3pBYc+vFkYFdATbJ0MsoOTX+1qU1ve6oVtUxFN3ZasXUCqxKDIYyiaHUTxsDkPR3FJoloyt9xy9ZInWv9ZgELuqtRRzHk6xsL0ril/BFbQUKvCfmEKAYqPYmTVFivlct6WWxqwK8bJZw4i/eOrBxckAHvqay9mb2Z1EcyXTb8Z7Hscd2QI34SqEh1JVttlmuWZFEUBtD4t5Hn8xuG4PMgH9o+vKDEm7Clajd1DV8EaG7QbNzbjRPgYSdCuY9/5bTpFyOcLsTgmvbL2zOw1pnBNjg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mCOjr6LTjaXslOxvQqwfEcAnHGmC/nrROa/oE564FfY=;
- b=weSYTlTYxsDPlzgZAbLpLkeYQCYa2gBbRIynP2WER0cb1Bm5NnzVc3LV6ViLw9voMy5jjupNeA3oKqx/p1rZzZ7oexR4l8XoU0rik2/CrJ03l9VYWiovBbfaGe+rDZ9hce+9IIQn1tVXa6ClO7IADoGBH1zoIV+kUj8gP+QUfiE=
-Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
- header.d=none;lists.freedesktop.org; dmarc=none action=none
- header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4783.namprd12.prod.outlook.com (2603:10b6:208:3e::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Fri, 16 Apr
- 2021 15:32:59 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6d4d:4674:1cf6:8d34]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::6d4d:4674:1cf6:8d34%6]) with mapi id 15.20.4020.025; Fri, 16 Apr 2021
- 15:32:59 +0000
-Subject: Re: [PATCH 27/40] drm/ttm/ttm_device: Demote kernel-doc abuses
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Huang Rui <ray.huang@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-References: <20210416143725.2769053-1-lee.jones@linaro.org>
- <20210416143725.2769053-28-lee.jones@linaro.org>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <e5d30ac1-3037-0101-0e1a-9df6a8580c70@amd.com>
-Date:   Fri, 16 Apr 2021 17:32:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-In-Reply-To: <20210416143725.2769053-28-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:5d8d:1198:63ca:8fe4]
-X-ClientProxiedBy: FR3P281CA0066.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:4b::17) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S1343682AbhDPPeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 11:34:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234887AbhDPPeW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 11:34:22 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C053FC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 08:33:57 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id n127so2757653wmb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 08:33:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ytm6x2vLN84smHgW7vb9p/KsJj33G3R6bvIaflLv16E=;
+        b=hJXWLfp4f8CDzTqfIgdSOObQIM1FLOSrZ2p0XRVjGVtTQi4L+zsddWxRrhd4kWa7n5
+         X3ydnDUq9ENQeqWuhpQ390B65NX0dxsqk6MoVuNK6IeWQF4VkNmJu5a8gd9aHQosmUs6
+         nWtcutBvfOyzxz9QkWvxlEJXnplGbhvOLECd7FYnvdJZX5h/Z+uHG/BaXbS7yCJPnodK
+         Dz1jB/kk7PsZZ3I0jmXb3sx5LkoXoLCIKAmb6JdAl+DBvXK0XW7zQ7+maLVlgz3K/H4e
+         aEYAoCCpW1z6qx9z0St9cTzk6VsvofHR9i5pU84J7acECE0VRI6BCXYPFAcCGgbrFNa4
+         oRIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ytm6x2vLN84smHgW7vb9p/KsJj33G3R6bvIaflLv16E=;
+        b=S7RMyFiYbzw3x0fVwKhQLbgY935qzjHo5S/jxi5q5eact5ccg2ATAl99GtpHFvzG7h
+         BetuzWxOodwVqaUGDIe/kxA8JM7CyZkaWbzPtD1XwsRU0pV09E+RvRTBfpJmOLhcAS2y
+         9gDEn2sbTlOPFuSw8JxxevIYR6V5IdkvoWWNgHFg3/dxTNBz2G6B9IUDBzKBeaZs0OTO
+         PWPw6jFtixHojSK5B+mnz++effhngG0aWmirAUr3DPBY2MQXJbIr9tuYJeQweNuIkqVk
+         DbL4XsBZvlFspiq3dykyFeOwSg6J7fU0C+u0mecEW/SIytqIYvMhw3EbSnU5r5QakYcy
+         BCuA==
+X-Gm-Message-State: AOAM530a7Qy6Ot8AJNGBmPgWS9S4pGfYJQiHQMwR3Vyb7ksZ3LXFIvCQ
+        h7zZdqUnSL6/lJ6NK5oQDPfz
+X-Google-Smtp-Source: ABdhPJwdoLg+1ErpoqLIywM8fzr1a2vNVP9e9Ue/4v+FeKMWMF2/CbGEFdt4Cf7AmMquJc5zsiXF/w==
+X-Received: by 2002:a1c:6646:: with SMTP id a67mr8967894wmc.86.1618587236337;
+        Fri, 16 Apr 2021 08:33:56 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:209:51db:fb7a:d252:e3c1])
+        by smtp.gmail.com with ESMTPSA id h17sm11209854wru.67.2021.04.16.08.33.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 08:33:56 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 16:33:51 +0100
+From:   Wedson Almeida Filho <wedsonaf@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     ojeda@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+Message-ID: <YHmuX1NA5RF7C7XS@google.com>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <YHlz54rd1YQHsOA/@hirez.programming.kicks-ass.net>
+ <YHmMJWmzz2vZ3qQH@google.com>
+ <YHmc2+bKQJ/XAATF@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:5d8d:1198:63ca:8fe4] (2a02:908:1252:fb60:5d8d:1198:63ca:8fe4) by FR3P281CA0066.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:4b::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.6 via Frontend Transport; Fri, 16 Apr 2021 15:32:58 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b942ab02-1131-4f6e-2b15-08d900ecea33
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4783:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4783DC04709DCF9A0B3443AE834C9@MN2PR12MB4783.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TFgaPaSaH1J2G21lYQGIzFtzN1oHdLGx+joK7hTTZ/zlMZzQMNcA3DospUhsSpDGZAuklcr9UXd8nk5gzQMh9Iy0Wm14la/3hxfiuH6VxEOvbeLbry9HISI+i/tLv8Es/d8ch33Alp4a8U0l6yft4Gfw3FCtqQww9i8NCkDvDMtGIr/Qhn6vkr1yPGM4cnxigH2K94eFurEffrBjt9jVcqukUUFzIB8/SigQZjwYh7YACP8/QgeD7VgGCKXNsXnXXbDQe2PsKUbBc+luVnwT/w7HUJE2IOiqQpdbZbBgMMHHRO/k0dA1+AYUjmqjBs0mjQVrJSODgrdUYC4+vvgyInLinIuCTkAayoE+pD1U3FxKJ6GcJxx+S0pS874mDZt1MCj666MusMwpGIEST8hr6N/gNkL3i2fdUOmPq7/q7RvOHVRNlHpizPHsUnKVymWMB3UsozhA65wiBkh9gkyZY/xvHm8KW6ppdK/4z9aeN3+JMOZP7G/8UZ70/JMJd9KX4qPb2bvAKidxSzmYb9UO2mXTqTMAK2PaP4A0lTVwDUWuEi8Y+V7wfUaplbDuvLlAf8b4Wtei9uVn7Wu6ayaT35KtaRA56BI/2AS21MdWIMHEWF0bf+YvXPXLAK75TZRgLU+qUDTBvjwmJEXOAmk9TvQ8aqWxfphDM/wXEUmn2oqVHB1BmHvhj9sHmrS2DiHv
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(39860400002)(376002)(346002)(38100700002)(52116002)(66476007)(186003)(66556008)(83380400001)(6916009)(54906003)(8676002)(316002)(5660300002)(66946007)(66574015)(16526019)(4326008)(36756003)(2906002)(31696002)(6666004)(478600001)(31686004)(86362001)(2616005)(6486002)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?dXE5VkJlY2N2c1FSdTE1a0lyMFNCcTFhKy9NTmR3dEhMWkc4enpWdE5YTnVU?=
- =?utf-8?B?dlVRakFnTm5hZmNKZ21iRng3WFM2cXZ6MkJXdHZiRlZRdmtpWE8xNGdHOU1t?=
- =?utf-8?B?SmZROW9ldlJKUmFZUjF4L2svNndtUytKRzhZbXBKSS80ckdhTVhBeWVtZWl4?=
- =?utf-8?B?VitJTWp6R0MzYUcvb2lucVdMNUY0c3dFazhtcmpDNWw0UXhlUEhSajQyS3Fs?=
- =?utf-8?B?dDBoTldWbHhFQ2t1SWorMGw5YzBWaUYzT0hpcDJlWnZNYnIvU0FIZHNTYVZL?=
- =?utf-8?B?WWdPanFkRzdUWWFoWjNWdUlqRnhMV3lFaTVmN2VJZEZqM1ZtUUUxOTJjL2xP?=
- =?utf-8?B?c093Yi8weWU1NmFNai9uRHFLRzVyVnBMZDBMRndqQ2JvZTBUYjg3cFBqclMw?=
- =?utf-8?B?Y21zNHlEWjByK29kSHNjUGJBaldCY0pYenFEN0VFcml3VERhdEJjYjhwaEVD?=
- =?utf-8?B?cTNEdUxWaGU4NWYzZEZ6cGpoeUFtbFFvQmJrZGthK0diT3NzQlZUVzJGbUxa?=
- =?utf-8?B?RWhLaVZlNFJObmFjcjM2V3pXNElNSGRjSUVlR2VXaVFOM3pITkgvMGp5Tm9m?=
- =?utf-8?B?dFowaVpqVnZoT2tOQnNaaTc1SHFjTHpoSDFUcXllMUFXWHdhOUUzaWRXbTR6?=
- =?utf-8?B?Sy8wa3hUOUtsQ1JUT1dBQi9ycUdNUGVXVnVpaU1SeGNwMjV2ckJQenFva2Nq?=
- =?utf-8?B?YWNLYy9IUEsrc2hkaDlqcVFrS1JzamVyYThOcjU1dlhpVzd6dUdxQjQ1dnUx?=
- =?utf-8?B?YXg2QnJTcUZ3SUNjMzRpUFFhWCtBYjI1d2JVQjY4aXJDdjl0WHREZU5LaTZR?=
- =?utf-8?B?dURIaW14ZzhyY1lEUUxCSlFtS1oxMThqejF3NG05M3FLZE5LS1lEU0lHcDlh?=
- =?utf-8?B?am5LVkJ2aFkwUEFmVFFVblZ5YVJPNE1vV1lhSlRZaUc4bzE2RURlb3lYNnVJ?=
- =?utf-8?B?YVB0VEhiOVRGOHQrUVZmOEVXSlpMUUZpakFuSWwxVUZoM1pOMWlQUnY4Q2RS?=
- =?utf-8?B?aGh2NjZZV1doZTR5R2FCYno3VC9ESjFQRm1jbXJCbWJOb3ZZeWFiZEt3TDhy?=
- =?utf-8?B?bEh0Nlh5Mkc1QWp0Y0RFYWFUaHlOazFmNFZmVEk1UXQxOTI0aXhIeWRPQnNo?=
- =?utf-8?B?OUdtdWN1ZTFLT0FnckV6M1dpNXFIVEw3Q3B1QVNKSE9FdjBnOWpra054QXlm?=
- =?utf-8?B?QS9QNkRDclFmajZSdDV2aVVhc0pWTnhRZkFsZGt0N3lVQVJPSUJCNStldmFz?=
- =?utf-8?B?bXhjR0pSUlVjdWFuNkpndytpT2dTcG9nMTNsSzBsVERVaUhqZkpsYjhJQkJN?=
- =?utf-8?B?QW5WM0l3cmM4QnJLWkc5b3IwbHM2aGVFbDVpaFZEbFl3VVkyRVJJWlpmSXVM?=
- =?utf-8?B?aFdJeUxBbldFdU03UmdSdzROTUdsbElBMjNXRXptK212SnVIRmpNUWNPcWJh?=
- =?utf-8?B?Ry94Mlh5NDU0dWR0TEpiV0p5RnZrQmxrUGFSRHBURzdoRzgrZHFwMGRIbHA2?=
- =?utf-8?B?WGhWNVFUNXlFeFBUd0k0cCtIZzNWNGc1RVVRVnZUYjV6bFRpU1BNbHhtWmJm?=
- =?utf-8?B?bDI3bVBqcWNzcDcyTmRxUHdYOElITTJwMUh5NnZJRFdMSm9UN01zai8wRGJN?=
- =?utf-8?B?UHkzSTdsY3RYMERFTnFFTkx2RnlwaTRhNmxScTlCaURtYkZ2dWxUdE9SWlB6?=
- =?utf-8?B?TkZLU2lqNVFqUEplZDFrUmorWjhEM054NDRlYWxhOExoRkIwOGpYd1BKZWEx?=
- =?utf-8?B?MzhYYlhYOCtoRlFpNVluMXhxWTgydTBwcmFmSjZLeG1IUWVxSk1SUTR0VW5i?=
- =?utf-8?B?cTZFVFJyb21BUDd0d3U2R3Iwc1NTRFIzNllOQ1RKOWV5MXM1OWF5eHBJMm5I?=
- =?utf-8?Q?FA7cHJBwri/kP?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b942ab02-1131-4f6e-2b15-08d900ecea33
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2021 15:32:59.3548
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FhkCUOrG3bGoo+M1P8CQYhyAP3oG15qXc+zVU1u8Gj6ExsR7jO/YEb7kGY1SeNoZ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4783
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHmc2+bKQJ/XAATF@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 16.04.21 um 16:37 schrieb Lee Jones:
-> Fixes the following W=1 kernel build warning(s):
->
->   drivers/gpu/drm/ttm/ttm_device.c:42: warning: Function parameter or member 'ttm_global_mutex' not described in 'DEFINE_MUTEX'
->   drivers/gpu/drm/ttm/ttm_device.c:42: warning: expecting prototype for ttm_global_mutex(). Prototype was for DEFINE_MUTEX() instead
->   drivers/gpu/drm/ttm/ttm_device.c:112: warning: Function parameter or member 'ctx' not described in 'ttm_global_swapout'
->   drivers/gpu/drm/ttm/ttm_device.c:112: warning: Function parameter or member 'gfp_flags' not described in 'ttm_global_swapout'
->   drivers/gpu/drm/ttm/ttm_device.c:112: warning: expecting prototype for A buffer object shrink method that tries to swap out the first(). Prototype was for ttm_global_swapout() instead
->
-> Cc: Christian Koenig <christian.koenig@amd.com>
-> Cc: Huang Rui <ray.huang@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Fri, Apr 16, 2021 at 04:19:07PM +0200, Peter Zijlstra wrote:
+> Does this also not prohibit constructs where modification must be done
+> while holding two locks, but reading can be done while holding either
+> lock?
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
+I don't believe it does. Remember that we have full control of the abstractions,
+so we can (and will when the need arises) build an abstraction that provides the
+functionality you describe. For the read path, we can have functions that return
+a read-only guard (which is the gateway to the data in Rust) when locking either
+of the locks, or when showing evidence that either lock is already locked (i.e.,
+by temporarily transferring ownership of another guard). Note that this is
+another area where Rust offers advantages: read-only guards (in C, if you take a
+read lock, nothing prevents you from making changes to fields you should only be
+allowed to read); and the ability to take temporary ownership, giving it back
+even within the same function.
 
-> ---
->   drivers/gpu/drm/ttm/ttm_device.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/ttm/ttm_device.c b/drivers/gpu/drm/ttm/ttm_device.c
-> index 9b787b3caeb50..a8bec8358350d 100644
-> --- a/drivers/gpu/drm/ttm/ttm_device.c
-> +++ b/drivers/gpu/drm/ttm/ttm_device.c
-> @@ -36,7 +36,7 @@
->   
->   #include "ttm_module.h"
->   
-> -/**
-> +/*
->    * ttm_global_mutex - protecting the global state
->    */
->   DEFINE_MUTEX(ttm_global_mutex);
-> @@ -104,7 +104,7 @@ static int ttm_global_init(void)
->   	return ret;
->   }
->   
-> -/**
-> +/*
->    * A buffer object shrink method that tries to swap out the first
->    * buffer object on the global::swap_lru list.
->    */
+Similarly, to access a mutable guard, you'd have to show evidence that both
+locks are held.
 
+> That's a semi common scheme in the kernel, but not something that's
+> expressible by, for example, the Java sync keyword.
+> 
+> It also very much doesn't work for RCU, where modification must be done
+> under a lock, but access is done essentially lockless.
+
+Why not? RCU is a lock -- it may have zero cost in most (all?) architectures on
+the read path, but it is a lock. We can model access to variables/fields
+protected by it just like any other lock, with the implementation of lock/unlock
+optimizing to no-ops on the read path where possible.
+
+In fact, this is also an advantage of Rust. It would *force* developers to
+lock/unlock the RCU lock before they can access the protected data.
+
+> I would much rather have a language extention where we can associate
+> custom assertions with variable access, sorta like a sanitizer:
+> 
+> static inline void assert_foo_bar(struct foo *f)
+> {
+> 	lockdep_assert_held(&f->lock);
+> }
+> 
+> struct foo {
+> 	spinlock_t lock;
+> 	int bar __assert__(assert_foo_bar);
+> };
+> 
+> Such things can be optional and only enabled for debug builds on new
+> compilers.
+
+These would be great, but would still fall short of the compile-time guaranteed
+safety that Rust offers in these cases.
+
+> C does indeed not have the concept of ownership, unlike modern C++ I
+> think. But I would much rather see a C language extention for that than
+> go Rust.
+> 
+> This would mean a far more agressive push for newer C compilers than
+> we've ever done before, but at least it would all still be a single
+> language. Convertion to the new stuff can be done gradually and where
+> it makes sense and new extentions can be evaluated on performance impact
+> etc.
+
+I encourage you to pursue this. We'd all benefit from better C. I'd be happy to
+review and provide feedback on proposed extensions that are deemed
+equivalent/better than what Rust offers.
+
+My background is also in C. I'm no Rust fanboy, I'm just taking what I think is
+a pragmatic view of the available options.
