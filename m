@@ -2,160 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4187B362126
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE9A362131
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244101AbhDPNix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 09:38:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50360 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235535AbhDPNis (ORCPT
+        id S244152AbhDPNjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 09:39:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244120AbhDPNjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 09:38:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618580303;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ORKl8cG3pXQFZT6dMTWhjbu3j7T6kEqKkWZLykCofkk=;
-        b=A677PCkGXoMrtrw2EifpBvHZ3IlbQ/abd6eu3vZnRHODEX1WMLDtjkYa1w0A6yTYKUrHeF
-        istzAxTU86oEQVH0fyiCsrEz9YwSho0JWPWvv3eGdiu9qTxkavO028wLMp+VMmsvv+eEuR
-        SfgctE7vGjBPmwAwZyJ0S1bDYKWl2kA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-269-rdYtHHQlPP-nLVltZYYZvA-1; Fri, 16 Apr 2021 09:38:21 -0400
-X-MC-Unique: rdYtHHQlPP-nLVltZYYZvA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3FFCA107ACCA;
-        Fri, 16 Apr 2021 13:38:18 +0000 (UTC)
-Received: from [10.36.113.21] (ovpn-113-21.ams2.redhat.com [10.36.113.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3276A19D9F;
-        Fri, 16 Apr 2021 13:38:04 +0000 (UTC)
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
- APIs
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-References: <BN6PR11MB40688F5AA2323AB8CC8E65E7C37C9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210331124038.GE1463678@nvidia.com>
- <BN6PR11MB406854CAE9D7CE86BEAB3E23C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <BN6PR11MB40687428F0D0F3B5F13EA3E0C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <YGW27KFt9eQB9X2z@myrica>
- <BN6PR11MB4068171CD1D4B823515F7EFBC37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210401134236.GF1463678@nvidia.com>
- <BN6PR11MB4068C4DE7AF43D44DE70F4C1C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210401160337.GJ1463678@nvidia.com>
- <4bea6eb9-08ad-4b6b-1e0f-c97ece58a078@redhat.com>
- <20210415230732.GG1370958@nvidia.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <b1492fd3-8ce2-1632-3b14-73d8d4356fd7@redhat.com>
-Date:   Fri, 16 Apr 2021 15:38:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Fri, 16 Apr 2021 09:39:18 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C2EC061574;
+        Fri, 16 Apr 2021 06:38:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Oj/fWAhs31bJWwFY86CV59sd9Zza6E359cV1eJHfuf8=; b=YvswR+OJUHyRCNkqXe+cj7OE/x
+        moZv4q23OFJExA8D9F7fO4a1wuLpujs1DV1tr/G+hp/+oaG4ibrZuel2zUse16Uetw94gutySbxNF
+        CygLbNlxkkYS2ro7ptyMy+hw94RkunBsMdN+NPKbsq7K1mBrK97ERS/OYPTOzG1wrtQ/CAJxYPXfG
+        V5vQtNXOSVZ2YaXWpDyAOQCvAHHJvZ3ki7TJBRBB5ndnhdHx6jmCM7inL2z2aBTcoYR7IrFVrA7dn
+        F1EH2QZNfCa2hqiMszrLp0ycBQ4uFGovqD8ZSShiNJHjU7hKCl0n1ZWpOWvK3xExHYO+urcJghj1R
+        gBjisRUA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lXOg5-002GOp-Ce; Fri, 16 Apr 2021 13:38:36 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 85CD5300222;
+        Fri, 16 Apr 2021 15:38:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 281262C067030; Fri, 16 Apr 2021 15:38:32 +0200 (CEST)
+Date:   Fri, 16 Apr 2021 15:38:32 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     ojeda@kernel.org
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH 04/13] Kbuild: Rust support
+Message-ID: <YHmTWEAS/QjX++w4@hirez.programming.kicks-ass.net>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <20210414184604.23473-5-ojeda@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210415230732.GG1370958@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414184604.23473-5-ojeda@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+On Wed, Apr 14, 2021 at 08:45:55PM +0200, ojeda@kernel.org wrote:
+> diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+> index 1b6094a13034..3665c49c4dcf 100644
+> --- a/scripts/Makefile.build
+> +++ b/scripts/Makefile.build
+> @@ -26,6 +26,7 @@ EXTRA_CPPFLAGS :=
+>  EXTRA_LDFLAGS  :=
+>  asflags-y  :=
+>  ccflags-y  :=
+> +rustcflags-y :=
+>  cppflags-y :=
+>  ldflags-y  :=
+>  
+> @@ -287,6 +288,24 @@ quiet_cmd_cc_lst_c = MKLST   $@
+>  $(obj)/%.lst: $(src)/%.c FORCE
+>  	$(call if_changed_dep,cc_lst_c)
+>  
+> +# Compile Rust sources (.rs)
+> +# ---------------------------------------------------------------------------
+> +
+> +rustc_cross_flags := --target=$(srctree)/arch/$(SRCARCH)/rust/target.json
+> +
+> +quiet_cmd_rustc_o_rs = $(RUSTC_OR_CLIPPY_QUIET) $(quiet_modtag) $@
+> +      cmd_rustc_o_rs = \
+> +	RUST_MODFILE=$(modfile) \
+> +	$(RUSTC_OR_CLIPPY) $(rustc_flags) $(rustc_cross_flags) \
+> +		--extern alloc --extern kernel \
+> +		--crate-type rlib --out-dir $(obj) -L $(objtree)/rust/ \
+> +		--crate-name $(patsubst %.o,%,$(notdir $@)) $<; \
+> +	mv $(obj)/$(subst .o,,$(notdir $@)).d $(depfile); \
+> +	sed -i '/^\#/d' $(depfile)
+> +
+> +$(obj)/%.o: $(src)/%.rs FORCE
+> +	$(call if_changed_dep,rustc_o_rs)
+> +
+>  # Compile assembler sources (.S)
+>  # ---------------------------------------------------------------------------
+>  
 
-On 4/16/21 1:07 AM, Jason Gunthorpe wrote:
-> On Thu, Apr 15, 2021 at 03:11:19PM +0200, Auger Eric wrote:
->> Hi Jason,
->>
->> On 4/1/21 6:03 PM, Jason Gunthorpe wrote:
->>> On Thu, Apr 01, 2021 at 02:08:17PM +0000, Liu, Yi L wrote:
->>>
->>>> DMA page faults are delivered to root-complex via page request message and
->>>> it is per-device according to PCIe spec. Page request handling flow is:
->>>>
->>>> 1) iommu driver receives a page request from device
->>>> 2) iommu driver parses the page request message. Get the RID,PASID, faulted
->>>>    page and requested permissions etc.
->>>> 3) iommu driver triggers fault handler registered by device driver with
->>>>    iommu_report_device_fault()
->>>
->>> This seems confused.
->>>
->>> The PASID should define how to handle the page fault, not the driver.
->>
->> In my series I don't use PASID at all. I am just enabling nested stage
->> and the guest uses a single context. I don't allocate any user PASID at
->> any point.
->>
->> When there is a fault at physical level (a stage 1 fault that concerns
->> the guest), this latter needs to be reported and injected into the
->> guest. The vfio pci driver registers a fault handler to the iommu layer
->> and in that fault handler it fills a circ bugger and triggers an eventfd
->> that is listened to by the VFIO-PCI QEMU device. this latter retrives
->> the faault from the mmapped circ buffer, it knowns which vIOMMU it is
->> attached to, and passes the fault to the vIOMMU.
->> Then the vIOMMU triggers and IRQ in the guest.
->>
->> We are reusing the existing concepts from VFIO, region, IRQ to do that.
->>
->> For that use case, would you also use /dev/ioasid?
-> 
-> /dev/ioasid could do all the things you described vfio-pci as doing,
-> it can even do them the same way you just described.
-> 
-> Stated another way, do you plan to duplicate all of this code someday
-> for vfio-cxl? What about for vfio-platform? ARM SMMU can be hooked to
-> platform devices, right?
-vfio regions and IRQ related APIs are common user interfaces exposed by
-all vfio drivers, including platform. Then the actual circular buffer
-implementation details can be put in a common lib.
+So if I read all this right, rust compiles to .o and, like any other .o
+file is then fed into objtool (for x86_64). Did you have any problems
+with objtool? Does it generate correct ORC unwind information?
 
-as for the thin vfio iommu wrappers, the ones you don't like, they are
-implemented in type1 code.
+AFAICT rust has try/throw/catch exception handling (like
+C++/Java/others) which is typically implemented with stack unwinding of
+its own.
 
-Maybe the need for /dev/ioasid is more crying for PASID management but
-for the nested use case, that's not obvious to me and in your different
-replies, it was not crystal clear where the use case belongs to.
-
-The redesign requirement came pretty late in the development process.
-The iommu user API is upstream for a while, the VFIO interfaces have
-been submitted a long time ago and under review for a bunch of time.
-Redesigning everything with a different API, undefined at this point, is
-a major setback for our work and will have a large impact on the
-introduction of features companies are looking forward, hence our
-frustration.
-
-Thanks
-
-Eric
-
-
-> 
-> I feel what you guys are struggling with is some choice in the iommu
-> kernel APIs that cause the events to be delivered to the pci_device
-> owner, not the PASID owner.
-> 
-> That feels solvable.
-> 
-> Jason
-> 
-
+Does all that interact sanely?
