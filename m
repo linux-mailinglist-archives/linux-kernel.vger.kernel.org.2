@@ -2,105 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6116D361FFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:38:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F66A362009
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242146AbhDPMio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 08:38:44 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9636 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235243AbhDPMil (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 08:38:41 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13GCZX3m037291;
-        Fri, 16 Apr 2021 08:38:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=8iOl2pgc+pfrz28oppTEemV2d1omLs4ADa4tFM33Xlc=;
- b=VDFkjS+4LeYpNPu6fC7SQWNuxOwac7Q7+B2TV/pTqlrUIOJg0rgQhbwSgvERD+mUssB4
- EXZarjciy0LxqzwVoXOePZVW2NnSTgZzCrrCOxuasIt2+BUAG1Sn+R/H+2KOFhxcTphx
- xcDBBhQfk5NaSoVElMRLsRevQBJm6iQkFbCtej7/NKfRy1IIhtED9YJtNVNWL2bYv4UB
- xVzLmXmKh+EUV6XaIZYxJABihIGBgbdkDsY33D6IhEkalHK8W6cm5vE4yBAUMA5jQ530
- I+Q/YLNzrxBspepXZrNLe/AwJxIMSoIpN41fYO7xuSo/p86k8WWMxV2UhtcjFI45rdP8 jA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37xxnphcvr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 08:38:10 -0400
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13GCZjMX038176;
-        Fri, 16 Apr 2021 08:38:09 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37xxnphcuv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 08:38:09 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13GCRj8W006769;
-        Fri, 16 Apr 2021 12:38:08 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 37u3n8cf0h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 16 Apr 2021 12:38:08 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13GCc5Ea42795498
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 16 Apr 2021 12:38:05 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B6D0AAE055;
-        Fri, 16 Apr 2021 12:38:05 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 18E3DAE04D;
-        Fri, 16 Apr 2021 12:38:05 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.64.24])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 16 Apr 2021 12:38:05 +0000 (GMT)
-Subject: Re: linux-next: Fixes tag needs some work in the kvm tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210416222731.3e82b3a0@canb.auug.org.au>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <00222197-fb22-ab0a-97e2-11c9f85a67f1@de.ibm.com>
-Date:   Fri, 16 Apr 2021 14:38:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S234504AbhDPMoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 08:44:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34054 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233916AbhDPMoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 08:44:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C630761107;
+        Fri, 16 Apr 2021 12:43:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618577027;
+        bh=oMN+Rlt12ndCbHJtP/UKi3IFuOfxmSEY0U7Ig87hsUw=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=e3kULCrMHEwHUvtymYCy+3Ba9HRgWBsJ5hZwmce+xKW/V9Pv8g/xNk7PF7DJyDql9
+         piBgMah+1N5w6vufMdMXc5kbx59VYeF6WOVnS2enLk7Zf905sY92SUMotEyikUv52p
+         dhtc826AuWt/zuy+sk4SDRFgAZEXyt7ngu2Zx+qTs5FxjnUX2g/sLrEtw1DJqN6UnI
+         Iuf2D2FZWe+0Urf2omIbC5o4yigTYeqEdAfhir+XqtqYZN6xu0IOGbCkrjden+pGid
+         YgwoEUuQ4JkiDhPyk7Wx2WCOWMdbfTS2fNrD+Di6a+MEBO4cX/J3namvo2xJRyjapD
+         LdbdnEgqpkdPA==
+Subject: Re: [PATCH v4 5/5] clk: ti: add am33xx/am43xx spread spectrum clock
+ support
+To:     Dario Binacchi <dariobin@libero.it>, linux-kernel@vger.kernel.org
+Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        linux-omap@vger.kernel.org
+References: <20210401193741.24639-1-dariobin@libero.it>
+ <20210401193741.24639-6-dariobin@libero.it>
+From:   Tero Kristo <kristo@kernel.org>
+Message-ID: <b88d012a-b74c-6bd6-7465-3391921c9092@kernel.org>
+Date:   Fri, 16 Apr 2021 15:43:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210416222731.3e82b3a0@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <20210401193741.24639-6-dariobin@libero.it>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: jhd4b3CO_inSOEuzwgnTPLcvLjuMOTHn
-X-Proofpoint-ORIG-GUID: RrMXz8aLz6p4OEC2DXqGZd9WGSa9MuRX
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-16_07:2021-04-15,2021-04-16 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- mlxscore=0 impostorscore=0 spamscore=0 malwarescore=0 clxscore=1015
- adultscore=0 lowpriorityscore=0 bulkscore=0 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104160094
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.04.21 14:27, Stephen Rothwell wrote:
-> Hi all,
-> 
-> In commit
-> 
->    c3171e94cc1c ("KVM: s390: VSIE: fix MVPG handling for prefixing and MSO")
-> 
-> Fixes tag
-> 
->    Fixes: bdf7509bbefa ("s390/kvm: VSIE: correctly handle MVPG when in VSIE")
-> 
-> has these problem(s):
-> 
->    - Subject does not match target commit subject
->      Just use
-> 	git log -1 --format='Fixes: %h ("%s")'
+Hi Dario,
 
-Hmm, this has been sitting in kvms390/next for some time now. Is this a new check?
+Spent some time looking at this, had to read through the TRM chapter of 
+it also in quite detailed level to figure out how this is supposed to 
+work out.
+
+Other than couple of minor nits below, the code seems ok to me. What is 
+the testing that has been done with this?
+
+On 01/04/2021 22:37, Dario Binacchi wrote:
+> The patch enables spread spectrum clocking (SSC) for MPU and LCD PLLs.
+> As reported by the TI spruh73x/spruhl7x RM, SSC is only supported for
+> the DISP/LCD and MPU PLLs on am33xx/am43xx. SSC is not supported for
+> DDR, PER, and CORE PLLs.
+> 
+> Calculating the required values and setting the registers accordingly
+> was taken from the set_mpu_spreadspectrum routine contained in the
+> arch/arm/mach-omap2/am33xx/clock_am33xx.c file of the u-boot project.
+> 
+> In locked condition, DPLL output clock = CLKINP *[M/N]. In case of
+> SSC enabled, the reference manual explains that there is a restriction
+> of range of M values. Since the omap2_dpll_round_rate routine attempts
+> to select the minimum possible N, the value of M obtained is not
+> guaranteed to be within the range required. With the new "ti,min-div"
+> parameter it is possible to increase N and consequently M to satisfy the
+> constraint imposed by SSC.
+> 
+> Signed-off-by: Dario Binacchi <dariobin@libero.it>
+> 
+> ---
+
+<snip>
+
+>   	/* REVISIT: Set ramp-up delay? */
+> diff --git a/include/linux/clk/ti.h b/include/linux/clk/ti.h
+> index c62f6fa6763d..cba093de62d8 100644
+> --- a/include/linux/clk/ti.h
+> +++ b/include/linux/clk/ti.h
+> @@ -63,6 +63,18 @@ struct clk_omap_reg {
+>    * @auto_recal_bit: bitshift of the driftguard enable bit in @control_reg
+>    * @recal_en_bit: bitshift of the PRM_IRQENABLE_* bit for recalibration IRQs
+>    * @recal_st_bit: bitshift of the PRM_IRQSTATUS_* bit for recalibration IRQs
+> + * @ssc_deltam_reg: register containing the DPLL SSC frequency spreading
+> + * @ssc_modfreq_reg: register containing the DPLL SSC modulation frequency
+> + * @ssc_modfreq_mant_mask: mask of the mantissa component in @ssc_modfreq_reg
+> + * @ssc_modfreq_exp_mask: mask of the exponent component in @ssc_modfreq_reg
+> + * @ssc_enable_mask: mask of the DPLL SSC enable bit in @control_reg
+> + * @ssc_ack_mask: mask of the DPLL SSC turned on/off bit in @control_reg
+> + * @ssc_downspread_mask: mask of the DPLL SSC low frequency only bit in
+> + *                       @control_reg
+> + * @ssc_modfreq: the DPLL SSC frequency modulation in kHz
+> + * @ssc_deltam: the DPLL SSC frequency spreading in permille (10th of percent)
+> + * @ssc_downspread: require the only low frequency spread of the DPLL in SSC
+> + *                   mode
+>    * @flags: DPLL type/features (see below)
+>    *
+>    * Possible values for @flags:
+> @@ -110,6 +122,18 @@ struct dpll_data {
+>   	u8			auto_recal_bit;
+>   	u8			recal_en_bit;
+>   	u8			recal_st_bit;
+> +	struct clk_omap_reg	ssc_deltam_reg;
+> +	struct clk_omap_reg	ssc_modfreq_reg;
+> +	u32			ssc_deltam_int_mask;
+> +	u32			ssc_deltam_frac_mask;
+> +	u32			ssc_modfreq_mant_mask;
+> +	u32			ssc_modfreq_exp_mask;
+> +	u32                     ssc_enable_mask;
+> +	u32                     ssc_ack_mask;
+
+ssc_ack_mask is not used for anything in the code.
+
+> +	u32                     ssc_downspread_mask;
+> +	u32                     ssc_modfreq;
+> +	u32                     ssc_deltam;
+> +	u8                      ssc_downspread;
+
+ssc_downspread should be boolean?
+
+>   	u8			flags;
+>   };
+>   
+> 
+
