@@ -2,119 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C364136193F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 07:26:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C43E361949
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 07:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235615AbhDPF0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 01:26:05 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:47140 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229955AbhDPF0E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 01:26:04 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FM4Rj5BTJzB09bL;
-        Fri, 16 Apr 2021 07:25:37 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id IiPlMveTf2d4; Fri, 16 Apr 2021 07:25:37 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FM4Rj3d6HzB09bK;
-        Fri, 16 Apr 2021 07:25:37 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4E55D8B81C;
-        Fri, 16 Apr 2021 07:25:38 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 2-smQfjtxhxm; Fri, 16 Apr 2021 07:25:38 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7F75E8B81A;
-        Fri, 16 Apr 2021 07:25:37 +0200 (CEST)
-Subject: Re: [PATCH v1 4/5] mm: ptdump: Support hugepd table entries
-To:     Daniel Axtens <dja@axtens.net>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Steven Price <steven.price@arm.com>, akpm@linux-foundation.org
-Cc:     linux-arch@vger.kernel.org, linux-s390@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org
-References: <cover.1618506910.git.christophe.leroy@csgroup.eu>
- <f41a177a0fd5a71db616e586a9ec5c51102c6656.1618506910.git.christophe.leroy@csgroup.eu>
- <87zgxzyvn3.fsf@dja-thinkpad.axtens.net>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <0e7b9312-888c-2e53-b7fd-a887fd9fb429@csgroup.eu>
-Date:   Fri, 16 Apr 2021 07:25:36 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S237810AbhDPF1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 01:27:35 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:52448 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236464AbhDPF1a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 01:27:30 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13G5QqFO100260;
+        Fri, 16 Apr 2021 00:26:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1618550812;
+        bh=OGWmPUCq+G+tmdEY0d0MYzZx+ArvEQd++b9Kv5/YV/E=;
+        h=From:To:CC:Subject:Date;
+        b=bKVPKDEfLI2hpgA9W5zUZ+v+2bH+DJh7fvypqo7urWwKY/ggxJdKUdLtFYoqfqYz6
+         c3xBY35VBjYNuvG8dzBASwFwfRBe9DfXrX8YnIbOtlDITgos/pO9XA3ka1n1FX4Uoa
+         BZSpMEUfiF6x+WLYrjbI1VIN1Q/mOksR9ICq0AFw=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13G5Qqpt114854
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 16 Apr 2021 00:26:52 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 16
+ Apr 2021 00:26:52 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 16 Apr 2021 00:26:52 -0500
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13G5QlLL023847;
+        Fri, 16 Apr 2021 00:26:48 -0500
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <linux-can@vger.kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>
+Subject: [PATCH v4 0/3] CAN TRANSCEIVER: Add support for CAN transceivers
+Date:   Fri, 16 Apr 2021 10:56:44 +0530
+Message-ID: <20210416052647.2758-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <87zgxzyvn3.fsf@dja-thinkpad.axtens.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+The following series of patches add support for CAN transceivers.
 
-Le 16/04/2021 à 01:29, Daniel Axtens a écrit :
-> Hi Christophe,
-> 
->> Which hugepd, page table entries can be at any level
->> and can be of any size.
->>
->> Add support for them.
->>
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->> ---
->>   mm/ptdump.c | 17 +++++++++++++++--
->>   1 file changed, 15 insertions(+), 2 deletions(-)
->>
->> diff --git a/mm/ptdump.c b/mm/ptdump.c
->> index 61cd16afb1c8..6efdb8c15a7d 100644
->> --- a/mm/ptdump.c
->> +++ b/mm/ptdump.c
->> @@ -112,11 +112,24 @@ static int ptdump_pte_entry(pte_t *pte, unsigned long addr,
->>   {
->>   	struct ptdump_state *st = walk->private;
->>   	pte_t val = ptep_get(pte);
->> +	unsigned long page_size = next - addr;
->> +	int level;
->> +
->> +	if (page_size >= PGDIR_SIZE)
->> +		level = 0;
->> +	else if (page_size >= P4D_SIZE)
->> +		level = 1;
->> +	else if (page_size >= PUD_SIZE)
->> +		level = 2;
->> +	else if (page_size >= PMD_SIZE)
->> +		level = 3;
->> +	else
->> +		level = 4;
->>   
->>   	if (st->effective_prot)
->> -		st->effective_prot(st, 4, pte_val(val));
->> +		st->effective_prot(st, level, pte_val(val));
->>   
->> -	st->note_page(st, addr, 4, pte_val(val), PAGE_SIZE);
->> +	st->note_page(st, addr, level, pte_val(val), page_size);
-> 
-> It seems to me that passing both level and page_size is a bit redundant,
-> but I guess it does reduce the impact on each arch's code?
+TCAN1042 has a standby signal that needs to be pulled high for
+sending/receiving messages[1]. TCAN1043 has a enable signal along with
+standby signal that needs to be pulled up for sending/receiving
+messages[2], and other combinations of the two lines can be used to put the
+transceiver in different states to reduce power consumption. On boards
+like the AM654-idk and J721e-evm these signals are controlled using gpios.
 
-Exactly, as shown above, the level can be re-calculated based on the page size, but it would be a 
-unnecessary impact on all architectures and would duplicate the re-calculation of the level whereas 
-in most cases we get it for free from the caller.
+Patch 1 rewords the comment that restricts max_link_rate attribute to have
+units of Mbps.
 
-> 
-> Kind regards,
-> Daniel
-> 
->>   
->>   	return 0;
->>   }
->> -- 
->> 2.25.0
+Patch 2 models the transceiver as a phy device tree node with properties
+for max bit rate supported, gpio properties for indicating gpio pin numbers
+to which standby and enable signals are connected.
+
+Patch 2 adds a generic driver to support CAN transceivers.
+
+changes since v3:
+- dropped patch 2(in v3)
+- changed the node name property in patch 3(in v3)
+- picked up Rob Herring's reviewed-by for patch 3(in v3)
+
+changes since v2:
+- dropped 5 and 6 patches and to be sent via linux-can-next
+- added static keyword for can_transceiver_phy_probe()
+- changed enable gpio example to active high in patch 3
+- Rearranged the file names in alphabetical order in Makefile
+  and MAINTAINERS file
+
+changes since v1:
+- Added patch 1 (in v2) that rewords the comment that restrict
+  max_link_rate attribute to have units of Mbps.
+- Added patch 2 (in v2) that adds an API for
+  devm_of_phy_optional_get_by_index
+- Patch 1 (in v1)
+  - updated MAINTAINERS file
+- Patch 2 (in v1)
+  - replaced m_can with CAN to make the driver independent of CAN driver
+  - Added prefix CAN_TRANSCEIVER for EN_PRESENT and STB_PRESENT
+  - Added new line before return statements in power_on() and power_off
+  - Added error handling patch for devm_kzalloc()
+  - used the max_link_rate attribute directly instead of dividing it by
+    1000000
+  - removed the spaces before GPIOD_OUT_LOW in devm_gpiod_get()
+  - Corrected requested value for standby-gpios to GPIOD_OUT_HIGH
+  - Updated MAINTAINERS file
+- Patch 3 (in v1)
+  - replaced minItems with maxItems
+  - Removed phy-names property as there is only one phy
+- Patch 4 (in v1)
+  - replaced dev_warn with dev_info when no transceiver is found
+  - Added struct phy * field in m_can_classdev struct
+  - moved phy_power_on and phy_power_off to m_can_open and m_can_close
+    respectively
+  - Moved the check for max_bit_rate to generice transceiver driver
+
+[1] - https://www.ti.com/lit/ds/symlink/tcan1042h.pdf
+[2] - https://www.ti.com/lit/ds/symlink/tcan1043-q1.pdf
+
+
+Aswath Govindraju (3):
+  phy: core: Reword the comment specifying the units of max_link_rate to
+    be Mbps
+  dt-bindings: phy: Add binding for TI TCAN104x CAN transceivers
+  phy: phy-can-transceiver: Add support for generic CAN transceiver
+    driver
+
+ .../bindings/phy/ti,tcan104x-can.yaml         |  56 +++++++
+ MAINTAINERS                                   |   2 +
+ drivers/phy/Kconfig                           |   9 ++
+ drivers/phy/Makefile                          |   1 +
+ drivers/phy/phy-can-transceiver.c             | 146 ++++++++++++++++++
+ include/linux/phy/phy.h                       |   2 +-
+ 6 files changed, 215 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+ create mode 100644 drivers/phy/phy-can-transceiver.c
+
+-- 
+2.17.1
+
