@@ -2,108 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2127361DD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 968D2361DD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240811AbhDPKNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 06:13:14 -0400
-Received: from m12-14.163.com ([220.181.12.14]:57070 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239216AbhDPKNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 06:13:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=DBxpB
-        nFi6nwZpjt7AR3toFc2XaJmljNpCiXZBY+5bG0=; b=mMWVVG6STYatFqvjcdvPM
-        NMD/z2k8MHlMoPtAMBIxuNGfh8gyR6LACkDrxFZcHlGKcYNhgdspCe1IAVeVVPLL
-        d5BbsOq0NIVV0GnB3vYwWjC/ZwdthxGNAN2Rbql0/JuN8yZoY+1DHLUBV86Pj1if
-        /HBOYNbprjtdyfilSMUyq4=
-Received: from localhost.localdomain (unknown [183.46.98.96])
-        by smtp10 (Coremail) with SMTP id DsCowADnkjAGY3lgfNzBDg--.11814S2;
-        Fri, 16 Apr 2021 18:12:24 +0800 (CST)
-From:   =?UTF-8?q?=C2=A0Zhongjun=20Tan?= <hbut_tan@163.com>
-To:     casey@schaufler-ca.com, jmorris@namei.org, serge@hallyn.com
-Cc:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zhongjun Tan <tanzhongjun@yulong.com>
-Subject: [PATCH v2] lsm:fix a missing-check bug in smack_sb_eat_lsm_opts()
-Date:   Fri, 16 Apr 2021 18:12:10 +0800
-Message-Id: <20210416101210.1175-1-hbut_tan@163.com>
-X-Mailer: git-send-email 2.30.0.windows.2
+        id S240868AbhDPKOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 06:14:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239471AbhDPKOm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 06:14:42 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F05C061756;
+        Fri, 16 Apr 2021 03:14:17 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id j4so4426848lfp.0;
+        Fri, 16 Apr 2021 03:14:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=eIvqPPBbAvNqFx12cHL1B4vffzpZCMAWEVEbWEu/lPo=;
+        b=PLLod+j3TGvIeZ8l2Oja4vThf+Quu/N0GlL7m3yv2HJSbAMdBjXMjRxtplAvREq6Rc
+         7oLFkSzOr0MpHyU1Vk3kH+VuBvtfhSWA6KpvOG72fHIRHccT0lkU0aOpyBLvU/7aXJKm
+         tbxXpUDevLmmQ31DKMOJeKaFfrWEo/82sMge25xIF6b7N1kC8KpkZCH+99N8isQBzoxt
+         MJ19CptHgUAfAbwyPDRSqLloNMpTrBhUAKCc68DLB8x+/geNn5Je02pcEbW3A34uyI7+
+         8ePu9V04PcfKcZ1XCvSxFJ6/S55J53b8RdKj8GDiAhdZ3UtsqzvG6tkJ2dp8Nvg9rkzP
+         zqvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=eIvqPPBbAvNqFx12cHL1B4vffzpZCMAWEVEbWEu/lPo=;
+        b=KI1JSMLABtLW6pnLRRqMR/GCc8k34DNbTmzqcZrDQsVfXM5qFyRjt3UljzmomLG35p
+         erc+jxQaHIJ5AZzSvIydPsnDmgPcUCZGcG2/b77yjn91COBdG/4FNWrl16QcXR6cSNoB
+         GPKrgtNUfJAa1lDe8TxVtawx8PRHawrJEuWCnh57mqGSdHSpo99lY9FalNJ6HctnbP17
+         2SsGXjmIwGtnPGANNeMSSmz0y0Br89JZ4IGsi4mk2HXKPMqsYitPuSzH32PGm5tLY8B0
+         nenJ4Usl/U2uKiGSAgfw6BErg62/aNBKGhX53XtZy2yAGOOruYfTzh2xh6Ip5HLy7Vwa
+         /hyw==
+X-Gm-Message-State: AOAM533GlC6WtNlt0DA74vlZM+vrb6m6UNjKqQZDbX+WwT8rN+Pj8U6o
+        KQg9VaDY5dn319/6hRZERCk=
+X-Google-Smtp-Source: ABdhPJz1BqIqw4B+wW1PzwZbDX3tu/8kF/ZmeHD7vy14wWmPIReixXyQfeqFKietpNVF3CusHKBR+w==
+X-Received: by 2002:a19:911e:: with SMTP id t30mr2560275lfd.292.1618568056357;
+        Fri, 16 Apr 2021 03:14:16 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id s13sm892724ljc.26.2021.04.16.03.14.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 03:14:15 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Fri, 16 Apr 2021 12:14:14 +0200
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH v2 0/5] kvfree_rcu() miscellaneous fixes
+Message-ID: <20210416101414.GA2711@pc638.lan>
+References: <20210415172000.15086-1-urezki@gmail.com>
+ <20210416011026.GD4212@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DsCowADnkjAGY3lgfNzBDg--.11814S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Kr1DKF1xGry3tF47Xr4UCFg_yoW8Wrykpr
-        sakFnxGrnYqFs2qa93WF1vqF4rGa1kKr1UWrZF9w13J3WYq34kKrWqqFy3tF1xGFWrtr4a
-        9rs0vr45WF1UAFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jPKsbUUUUU=
-X-Originating-IP: [183.46.98.96]
-X-CM-SenderInfo: xkex3sxwdqqiywtou0bp/xtbBXgh2xlaD6oCNkAAAsE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416011026.GD4212@paulmck-ThinkPad-P17-Gen-1>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhongjun Tan <tanzhongjun@yulong.com>
+On Thu, Apr 15, 2021 at 06:10:26PM -0700, Paul E. McKenney wrote:
+> On Thu, Apr 15, 2021 at 07:19:55PM +0200, Uladzislau Rezki (Sony) wrote:
+> > This is a v2 of a small series. See the changelog below:
+> > 
+> > V1 -> V2:
+> > - document the rcu_delay_page_cache_fill_msec parameter;
+> > - drop the "kvfree_rcu: introduce "flags" variable" patch;
+> > - reword commit messages;
+> > - in the patch [1], do not use READ_ONCE() instances in
+> >   get_cached_bnode()/put_cached_bnode() it is protected
+> >   by the lock.
+> > - Capitalize the word following by ":" in commit messages.
+> > 
+> > Uladzislau Rezki (Sony) (4):
+> > [1]  kvfree_rcu: Use [READ/WRITE]_ONCE() macros to access to nr_bkv_objs
+> > [2]  kvfree_rcu: Add a bulk-list check when a scheduler is run
+> > [3]  kvfree_rcu: Update "monitor_todo" once a batch is started
+> > [4]  kvfree_rcu: Use kfree_rcu_monitor() instead of open-coded variant
+> > 
+> > Zhang Qiang (1):
+> > [5]  kvfree_rcu: Release a page cache under memory pressure
+> 
+> I have queued these, thank you both!  And they pass touch tests, but
+> could you please check that "git am -3" correctly resolved a couple of
+> conflicts, one in Documentation/admin-guide/kernel-parameters.txt and
+> the other in kernel/rcu/tree.c?
+> 
+Thanks!
 
-In smack_sb_eat_lsm_opts(), 'arg' is allocated by kmemdup_nul().
-It returns NULL when fails. So 'arg' should be checked. And 'mnt_opts'
-should be freed when error.
+I have double checked it. I see that everything is in place and
+has been correctly applied on your latest "dev".
 
-Signed-off-by: Zhongjun Tan <tanzhongjun@yulong.com>
----
-v2:fix brace error 
-
- security/smack/smack_lsm.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
-
-diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-index 223a6da..1e4c66f 100644
---- a/security/smack/smack_lsm.c
-+++ b/security/smack/smack_lsm.c
-@@ -696,10 +696,11 @@ static int smack_sb_eat_lsm_opts(char *options, void **mnt_opts)
- {
- 	char *from = options, *to = options;
- 	bool first = true;
-+	int rc;
- 
- 	while (1) {
- 		char *next = strchr(from, ',');
--		int token, len, rc;
-+		int token, len;
- 		char *arg = NULL;
- 
- 		if (next)
-@@ -710,13 +711,14 @@ static int smack_sb_eat_lsm_opts(char *options, void **mnt_opts)
- 		token = match_opt_prefix(from, len, &arg);
- 		if (token != Opt_error) {
- 			arg = kmemdup_nul(arg, from + len - arg, GFP_KERNEL);
-+			if (!arg) {
-+				rc = -ENOMEM;
-+				goto free_mnt_opts;
-+			}
- 			rc = smack_add_opt(token, arg, mnt_opts);
- 			if (unlikely(rc)) {
- 				kfree(arg);
--				if (*mnt_opts)
--					smack_free_mnt_opts(*mnt_opts);
--				*mnt_opts = NULL;
--				return rc;
-+				goto free_mnt_opts;
- 			}
- 		} else {
- 			if (!first) {	// copy with preceding comma
-@@ -734,6 +736,13 @@ static int smack_sb_eat_lsm_opts(char *options, void **mnt_opts)
- 	}
- 	*to = '\0';
- 	return 0;
-+
-+free_mnt_opts:
-+	if (*mnt_opts) {
-+		smack_free_mnt_opts(*mnt_opts);
-+		*mnt_opts = NULL;
-+	}
-+	return rc;
- }
- 
- /**
--- 
-1.9.1
-
+--
+Vlad Rezki
