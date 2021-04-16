@@ -2,105 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B2C361BF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52560361BFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240585AbhDPIll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 04:41:41 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:4861 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240572AbhDPIlb (ORCPT
+        id S240617AbhDPIly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 04:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240598AbhDPIlx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 04:41:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1618562466; x=1650098466;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=xboU3TO7GJRPpG7WTJfaV2IWSqO0VeAzKYAu121oemk=;
-  b=YydCYjO5OLgNMX8h2lAx20sJjGWoVg+EorRIbLKTrbhpBAybXhp6shrX
-   pDl6wOT8E/XAOm88/EPPhy4vJh1CQu6fYK+XLXWWbh/m7D0hu49/ITzGC
-   GepcWEGxenG2UDxzAovEjUzKWOAvMr38Xna2XdZgMZHdoPhDRKj/HSysv
-   vEqVAgqSi+5BcAj0DEnLfZijW3uEt+1Fft5X67J4tJwPBy+eKr4WKP2Kq
-   gg6YT1cfUZejEOO9zFzA3RbS3WOxAoHi6mIIJT/HkEiLFdfvxRnKCE7NG
-   QgKtSbgv3yS2HBDWtWB1jPaa0uYieQsjWCovGpRnGhSg0uZqx7rcVFiEy
-   Q==;
-IronPort-SDR: JSWFwF3awOSEQ3akSCeSKD45X3NpLH0YyknPPOgcJR94ZsEiggTU/oFclO8tV5jmD4QJOL/dBF
- ALUbxnZ3FHK4CUzoEz7e1PSD6gaWFmcItkdb+SJ/nXHa37i7oFynx9gHwVn1YNFd/yk+i1Obfy
- H2BJIa7m3agPeQ29C+L6QWnA4Qo3jdDDgSlUrDxE/ueqKsr94szIX2lF0c6d9JsM+Tdvskahn4
- XyMyAXJIDdruThOtWv53o1yncMH9M8tNFUV7AjMYX35QkO8UAzC5xMPVIOu2k/6wb+lsI1ffCr
- fwU=
-X-IronPort-AV: E=Sophos;i="5.82,226,1613458800"; 
-   d="scan'208";a="111062406"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 16 Apr 2021 01:41:05 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 16 Apr 2021 01:41:06 -0700
-Received: from mchp-dev-shegelun.microchip.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Fri, 16 Apr 2021 01:41:03 -0700
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Steen Hegelund <steen.hegelund@microchip.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>
-Subject: [PATCH v9 3/3] arm64: dts: reset: add microchip sparx5 switch reset driver
-Date:   Fri, 16 Apr 2021 10:40:54 +0200
-Message-ID: <20210416084054.2922327-4-steen.hegelund@microchip.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210416084054.2922327-1-steen.hegelund@microchip.com>
-References: <20210416084054.2922327-1-steen.hegelund@microchip.com>
+        Fri, 16 Apr 2021 04:41:53 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD4AC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 01:41:29 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id 20so9642965pll.7
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 01:41:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=He3oTSlwnFPi0gSb22caSHrtR7K6cmAux7Z+2T9Xo1o=;
+        b=hacERswIX9cIS1UJydG+GKquH1hgrwS2+nCAq/Bgnj2hhImJuvM1HgFl4cg3S6pZev
+         JCM/D2hsoeC9Cts3k/lDE+Tk9+6VMkX2XSjBRWjIaS+bPe6By0MTX5I0WkSokhwkTZ2s
+         IbESokhSKgVQrq92WrdxoWpJ2zDl3xWxv0TymTHlFtLoHnW/4sc2o/IGhHEL6OREV5PB
+         6L4ls7hRTeG8WWZxbf/vK4servXkCqbwQ9exsc6rCarR8bBKnafSkErOolvEAnnBOVyk
+         YimIDDJRfC/4fGCP6QUmjQnHe0SUetMfhL8E10Ju8nu1Lfygrl+Nh+deXzi9RCwd4o03
+         s9RA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=He3oTSlwnFPi0gSb22caSHrtR7K6cmAux7Z+2T9Xo1o=;
+        b=neOD+Ng8v0Jle+TIiInTeEtxxt3HLPSzrQ9eZ4Wr/R9yXxAd/IBenA8odTLP8hLD7u
+         jtGXyHvZdzyCkQgkoCqWYROCkzIdq9qZT+Bxu+7nXA9E8XPeR2pi6sRZicP+k4Ps5/LV
+         5XNVfDlYIq9awGj+tpA0LUvMZIeC1ydUCrIwSjIYqrSWthf5rp2Qi/ecuK6grwOPqI5j
+         VaPTmG79frT9ReI4kzAG55DI1xS40ryb1/KQp7WEaLXS3s3a66pu5SlOqwuD8ODjRYQV
+         ojNspVgFVkHIEZHa4GKrPEPa4ZiuuP8lYT01UNpGTNx/fRFs6tFub4TFddpV53eGj1VR
+         uy0w==
+X-Gm-Message-State: AOAM533aKW1FkXVrL5owMScaWXonAM6XcDjjWLbxGJM5+J640O4IQ9FP
+        KJ37l4qzmBj2dqxaTGMZ/kL6yhXzQmEWwQpK4V+jIA==
+X-Google-Smtp-Source: ABdhPJwF2oXeuk5v0ZBd9FHld186Dr4jfV9Bgsh1mreQZM+bGYmRq9h7B9YLZnGn9NgnTr0mVBmGQE0fwbP36eT7Of4=
+X-Received: by 2002:a17:90b:392:: with SMTP id ga18mr8091538pjb.222.1618562488639;
+ Fri, 16 Apr 2021 01:41:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20210415183619.1431-1-rdunlap@infradead.org>
+In-Reply-To: <20210415183619.1431-1-rdunlap@infradead.org>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Fri, 16 Apr 2021 10:41:17 +0200
+Message-ID: <CAG3jFyvi-NyOdd8DdKu_QYz593YYvJzXm65DoCLubzHE+-5zNg@mail.gmail.com>
+Subject: Re: [PATCH -next] drm: bridge: fix ANX7625 use of mipi_dsi_() functions
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Xin Ji <xji@analogixsemi.com>, Sam Ravnborg <sam@ravnborg.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This provides reset driver support for the Microchip Sparx5 PCB134 and
-PCB135 reference boards.
+Thanks Randy!
 
-The Sparx5 Switch will no longer use the Ocelot Chip Reset Driver (with the
-compatible string "microchip,sparx5-chip-reset"), but use a separate driver
-that exposes a reset controller interface and has the compatiple string
-"microchip,sparx5-switch-reset".
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
 
-Eventually the Sparx5 reset support will be removed from the Ocelot chip
-reset driver.
-
-Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
----
- arch/arm64/boot/dts/microchip/sparx5.dtsi | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-index 380281f312d8..dc3ada5cf9fc 100644
---- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-@@ -132,9 +132,12 @@ mux: mux-controller {
- 			};
- 		};
- 
--		reset@611010008 {
--			compatible = "microchip,sparx5-chip-reset";
-+		reset: reset-controller@611010008 {
-+			compatible = "microchip,sparx5-switch-reset";
- 			reg = <0x6 0x11010008 0x4>;
-+			reg-names = "gcb";
-+			#reset-cells = <1>;
-+			cpu-syscon = <&cpu_ctrl>;
- 		};
- 
- 		uart0: serial@600100000 {
--- 
-2.31.1
-
+On Thu, 15 Apr 2021 at 20:36, Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> The Analogix DRM ANX7625 bridge driver uses mips_dsi_() function
+> interfaces so it should select DRM_MIPI_DSI to prevent build errors.
+>
+>
+> ERROR: modpost: "mipi_dsi_attach" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
+> ERROR: modpost: "mipi_dsi_device_register_full" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
+> ERROR: modpost: "of_find_mipi_dsi_host_by_node" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
+> ERROR: modpost: "mipi_dsi_device_unregister" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
+> ERROR: modpost: "mipi_dsi_detach" [drivers/gpu/drm/bridge/analogix/anx7625.ko] undefined!
+>
+>
+> Fixes: 8bdfc5dae4e3 ("drm/bridge: anx7625: Add anx7625 MIPI DSI/DPI to DP")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Cc: Xin Ji <xji@analogixsemi.com>
+> Cc: Sam Ravnborg <sam@ravnborg.org>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: Andrzej Hajda <a.hajda@samsung.com>
+> Cc: Neil Armstrong <narmstrong@baylibre.com>
+> Cc: Robert Foss <robert.foss@linaro.org>
+> Cc: stable@vger.kernel.org
+> ---
+>  drivers/gpu/drm/bridge/analogix/Kconfig |    1 +
+>  1 file changed, 1 insertion(+)
+>
+> --- linux-next-20210414.orig/drivers/gpu/drm/bridge/analogix/Kconfig
+> +++ linux-next-20210414/drivers/gpu/drm/bridge/analogix/Kconfig
+> @@ -30,6 +30,7 @@ config DRM_ANALOGIX_ANX7625
+>         tristate "Analogix Anx7625 MIPI to DP interface support"
+>         depends on DRM
+>         depends on OF
+> +       select DRM_MIPI_DSI
+>         help
+>           ANX7625 is an ultra-low power 4K mobile HD transmitter
+>           designed for portable devices. It converts MIPI/DPI to
