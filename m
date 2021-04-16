@@ -2,123 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD763362227
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD36836222E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235648AbhDPOYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:24:13 -0400
-Received: from mga05.intel.com ([192.55.52.43]:58771 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233916AbhDPOYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:24:11 -0400
-IronPort-SDR: Bt4GF+FuRQqU/l95hose+W77oPu0RAs+MJ3yNuwEi/pCr/Tx8q+YQtxAJU5WwYEMkyZc4rJKFK
- XCqhuZBI/TdQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9956"; a="280364393"
-X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
-   d="scan'208";a="280364393"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 07:23:46 -0700
-IronPort-SDR: c+FI3oydeo1UnYvVMy7D0CuxTiDIzFiG/ULHSqqKGuFXsu/k0ae4CcJ8Zv7aU0bzsx9FKqgiGB
- TrXX879pyXsQ==
-X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
-   d="scan'208";a="425615875"
-Received: from lelicken-mobl2.ger.corp.intel.com (HELO localhost) ([10.249.37.239])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 07:23:40 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>, Wolfram Sang <wsa@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     linux-i2c@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        intel-gfx@lists.freedesktop.org
-Subject: Re: [PATCH v19 6/6] drm/i915/selftests: Rename functions names
-In-Reply-To: <20210414172916.2689361-7-hsinyi@chromium.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210414172916.2689361-1-hsinyi@chromium.org> <20210414172916.2689361-7-hsinyi@chromium.org>
-Date:   Fri, 16 Apr 2021 17:23:37 +0300
-Message-ID: <87y2dicnpy.fsf@intel.com>
+        id S235763AbhDPO1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:27:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37965 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233606AbhDPO1E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 10:27:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618583199;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=t1Hv2NbQ/MlDR82Y8nOIlqSLTEiVX08oupchgjJ9jRA=;
+        b=O1rjioiI59LvC+S4nBSeMhvzoA5ceS7spb7jFCdkjrRNpFC6fI2SWlI3K6TOtlvalhf1eK
+        N8JyO3WbCICOTkpav9TbWyRS8TN7sLxljNHIGja8vud0uQjveKKbJMfRJFUsKy+0WG39bV
+        fUYD+aLmoTlKKHb4d/5H4oRLVS0daMQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-125-Zj04weCaOsqjgL2F0OCe8Q-1; Fri, 16 Apr 2021 10:26:35 -0400
+X-MC-Unique: Zj04weCaOsqjgL2F0OCe8Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C4FE0BBEE4;
+        Fri, 16 Apr 2021 14:26:32 +0000 (UTC)
+Received: from [10.36.113.21] (ovpn-113-21.ams2.redhat.com [10.36.113.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 321F25D9C0;
+        Fri, 16 Apr 2021 14:26:21 +0000 (UTC)
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
+ APIs
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>
+References: <BN6PR11MB406854CAE9D7CE86BEAB3E23C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <BN6PR11MB40687428F0D0F3B5F13EA3E0C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <YGW27KFt9eQB9X2z@myrica>
+ <BN6PR11MB4068171CD1D4B823515F7EFBC37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <20210401134236.GF1463678@nvidia.com>
+ <BN6PR11MB4068C4DE7AF43D44DE70F4C1C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <20210401160337.GJ1463678@nvidia.com>
+ <4bea6eb9-08ad-4b6b-1e0f-c97ece58a078@redhat.com>
+ <20210415230732.GG1370958@nvidia.com>
+ <b1492fd3-8ce2-1632-3b14-73d8d4356fd7@redhat.com>
+ <20210416140524.GI1370958@nvidia.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <f71c1e37-6466-e931-be1d-b9b36d785596@redhat.com>
+Date:   Fri, 16 Apr 2021 16:26:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210416140524.GI1370958@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Apr 2021, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
-> pm_resume and pm_suspend might be conflict with the ones defined in
-> include/linux/suspend.h. Rename pm_resume{suspend} to
-> i915_pm_resume{suspend} since they are only used here.
+Hi,
+On 4/16/21 4:05 PM, Jason Gunthorpe wrote:
+> On Fri, Apr 16, 2021 at 03:38:02PM +0200, Auger Eric wrote:
+> 
+>> The redesign requirement came pretty late in the development process.
+>> The iommu user API is upstream for a while, the VFIO interfaces have
+>> been submitted a long time ago and under review for a bunch of time.
+>> Redesigning everything with a different API, undefined at this point, is
+>> a major setback for our work and will have a large impact on the
+>> introduction of features companies are looking forward, hence our
+>> frustration.
+> 
+> I will answer both you and Jacob at once.
+> 
+> This is uAPI, once it is set it can never be changed.
+> 
+> The kernel process and philosophy is to invest heavily in uAPI
+> development and review to converge on the best uAPI possible.
+> 
+> Many past submissions have take a long time to get this right, there
+> are several high profile uAPI examples.
+> 
+> Do you think this case is so special, or the concerns so minor, that it
+> should get to bypass all of the normal process?
 
-I agree with the rationale here.
+That's not my intent to bypass any process. I am just trying to
+understand what needs to be re-designed and for what use case.
+> 
+> Ask yourself, is anyone advocating for the current direction on
+> technical merits alone?
+> 
+> Certainly the patches I last saw where completely disgusting from a
+> uAPI design perspective.
+> 
+> It was against the development process to organize this work the way
+> it was done. Merging a wack of dead code to the kernel to support a
+> uAPI vision that was never clearly articulated was a big mistake.
+> 
+> Start from the beginning. Invest heavily in defining a high quality
+> uAPI. Clearly describe the uAPI to all stake holders.
+This was largely done during several confs including plumber, KVM forum,
+for several years. Also API docs were shared on the ML. I don't remember
+any voice was raised at those moments.
 
-Do you need this to be part of your series, or shall we just pick this
-up for i915? (We might consider renaming to something else or prefix the
-functions with _ though, as we also have existing i915_pm_suspend and
-i915_pm_resume elsewhere.)
+ Break up the
+> implementation into patch series without dead code. Make the
+> patches. Remove the dead code this group has already added.
+> 
+> None of this should be a surprise. The VDPA discussion and related
+> "what is a mdev" over a year ago made it pretty clear VFIO is not the
+> exclusive user of "IOMMU in userspace" and that places limits on what
+> kind of uAPIs expansion it should experience going forward.
+Maybe clear for you but most probably not for many other stakeholders.
 
-BR,
-Jani.
+Anyway I do not intend to further argue and I will be happy to learn
+from you and work with you, Jacob, Liu and all other stakeholders to
+define a better integration.
 
->
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> ---
->  drivers/gpu/drm/i915/selftests/i915_gem.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/gpu/drm/i915/selftests/i915_gem.c b/drivers/gpu/drm/i915/selftests/i915_gem.c
-> index dc394fb7ccfa..525afda9d31f 100644
-> --- a/drivers/gpu/drm/i915/selftests/i915_gem.c
-> +++ b/drivers/gpu/drm/i915/selftests/i915_gem.c
-> @@ -94,7 +94,7 @@ static int pm_prepare(struct drm_i915_private *i915)
->  	return 0;
->  }
->  
-> -static void pm_suspend(struct drm_i915_private *i915)
-> +static void i915_pm_suspend(struct drm_i915_private *i915)
->  {
->  	intel_wakeref_t wakeref;
->  
-> @@ -116,7 +116,7 @@ static void pm_hibernate(struct drm_i915_private *i915)
->  	}
->  }
->  
-> -static void pm_resume(struct drm_i915_private *i915)
-> +static void i915_pm_resume(struct drm_i915_private *i915)
->  {
->  	intel_wakeref_t wakeref;
->  
-> @@ -152,12 +152,12 @@ static int igt_gem_suspend(void *arg)
->  	if (err)
->  		goto out;
->  
-> -	pm_suspend(i915);
-> +	i915_pm_suspend(i915);
->  
->  	/* Here be dragons! Note that with S3RST any S3 may become S4! */
->  	simulate_hibernate(i915);
->  
-> -	pm_resume(i915);
-> +	i915_pm_resume(i915);
->  
->  	err = switch_to_context(ctx);
->  out:
-> @@ -192,7 +192,7 @@ static int igt_gem_hibernate(void *arg)
->  	/* Here be dragons! */
->  	simulate_hibernate(i915);
->  
-> -	pm_resume(i915);
-> +	i915_pm_resume(i915);
->  
->  	err = switch_to_context(ctx);
->  out:
+Thanks
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Eric
+> 
+> Jason
+> 
+
