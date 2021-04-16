@@ -2,113 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1AE5361E34
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D1E2361E37
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242074AbhDPKru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 06:47:50 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:36217 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235225AbhDPKrt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 06:47:49 -0400
-X-Originating-IP: 81.185.167.252
-Received: from [192.168.43.237] (252.167.185.81.rev.sfr.net [81.185.167.252])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 62B3840011;
-        Fri, 16 Apr 2021 10:47:18 +0000 (UTC)
-Subject: Re: [PATCH] riscv: Protect kernel linear mapping only if
- CONFIG_STRICT_KERNEL_RWX is set
-To:     Anup Patel <anup@brainfault.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, linux-doc@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        kasan-dev@googlegroups.com,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-References: <20210415110426.2238-1-alex@ghiti.fr>
- <CAAhSdy2pD2q99-g3QSSHbpqw1ZD402fStFmbKNFzht2m=MS8mQ@mail.gmail.com>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <f659c498-a273-f249-a81b-cab1ed1ba2bb@ghiti.fr>
-Date:   Fri, 16 Apr 2021 06:47:19 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S242223AbhDPKsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 06:48:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:38542 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235352AbhDPKr6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 06:47:58 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9AC96106F;
+        Fri, 16 Apr 2021 03:47:33 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 11B2F3F85F;
+        Fri, 16 Apr 2021 03:47:31 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ruifeng Zhang <ruifeng.zhang0110@gmail.com>
+Cc:     linux@armlinux.org.uk, sudeep.holla@arm.com,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, a.p.zijlstra@chello.nl,
+        mingo@kernel.org, ruifeng.zhang1@unisoc.com, nianfu.bai@unisoc.com,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/1] arm: topology: parse the topology from the dt
+In-Reply-To: <44ab835f-3456-6bd9-97e9-5936cf5372da@arm.com>
+References: <20210414122326.5255-1-ruifeng.zhang0110@gmail.com> <8735vrmnc7.mognet@arm.com> <b7a76995-f6c3-67c5-b14e-d40587495d7e@arm.com> <CAG7+-3Nv=m0pd8t0eQEUv5zSeg86hfkKcs_VLzsbzWFabYbTTQ@mail.gmail.com> <87wnt2lglo.mognet@arm.com> <44ab835f-3456-6bd9-97e9-5936cf5372da@arm.com>
+Date:   Fri, 16 Apr 2021 11:47:29 +0100
+Message-ID: <87r1jald4u.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAAhSdy2pD2q99-g3QSSHbpqw1ZD402fStFmbKNFzht2m=MS8mQ@mail.gmail.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anup,
+On 16/04/21 12:39, Dietmar Eggemann wrote:
+> On 16/04/2021 11:32, Valentin Schneider wrote:
+>> On 16/04/21 15:47, Ruifeng Zhang wrote:
+>>> For more requirements, if all cores in one physical cluster, the
+>>> {aff2} of all cores are the same value.
+>>> i.e. the sc9863a,
+>>> core0: 0000000081000000
+>>> core1: 0000000081000100
+>>> core2: 0000000081000200
+>>> core3: 0000000081000300
+>>> core4: 0000000081000400
+>>> core5: 0000000081000500
+>>> core6: 0000000081000600
+>>> core7: 0000000081000700
+>>>
+>>> According to MPIDR all cores will parse to the one cluster, but it's
+>>> the big.LITTLE system, it's need two logic cluster for schedule or
+>>> cpufreq.
+>>> So I think it's better to add the logic of parse topology from DT.
+>>
+>> Ah, so it's a slightly different issue, but still one that requires a
+>> different means of specifying topology.
+>
+> I'm confused. Do you have the MT bit set to 1 then? So the issue that
+> the mpidr handling in arm32's store_cpu_topology() is not correct does
+> not exist?
+>
+> With DynamIQ you have only *one* cluster, you should also be able to run
+> your big.LITTLE system with only an MC sched domain.
+>
+> # cat /proc/schedstat
+> cpu0 ....
+> domain0 ff ... <- MC
+> ...
+>
 
-Le 4/16/21 à 6:41 AM, Anup Patel a écrit :
-> On Thu, Apr 15, 2021 at 4:34 PM Alexandre Ghiti <alex@ghiti.fr> wrote:
->>
->> If CONFIG_STRICT_KERNEL_RWX is not set, we cannot set different permissions
->> to the kernel data and text sections, so make sure it is defined before
->> trying to protect the kernel linear mapping.
->>
->> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
-> 
-> Maybe you should add "Fixes:" tag in commit tag ?
+You're right, this is actually a DynamIQ system, not a (legacy) big.LITTLE
+one, so all CPUs are under the same LLC (the DSU). I probably should have
+checked this earlier on, but this is quite obvious from sc9863a.dtsi:
 
-Yes you're right I should have done that. Maybe Palmer will squash it as 
-it just entered for-next?
+                cpu-map {
+                        cluster0 {
+                                core0 {
+                                        cpu = <&CPU0>;
+                                };
+                                core1 {
+                                        cpu = <&CPU1>;
+                                };
+                                core2 {
+                                        cpu = <&CPU2>;
+                                };
+                                core3 {
+                                        cpu = <&CPU3>;
+                                };
+                                core4 {
+                                        cpu = <&CPU4>;
+                                };
+                                core5 {
+                                        cpu = <&CPU5>;
+                                };
+                                core6 {
+                                        cpu = <&CPU6>;
+                                };
+                                core7 {
+                                        cpu = <&CPU7>;
+                                };
+                        };
+                };
 
-> 
-> Otherwise it looks good.
-> 
-> Reviewed-by: Anup Patel <anup@brainfault.org>
+All CPUs are in the same cluster, and the MPIDR values actually match that.
 
-Thank you!
-
-Alex
-
-> 
-> Regards,
-> Anup
-> 
->> ---
->>   arch/riscv/kernel/setup.c | 8 ++++----
->>   1 file changed, 4 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
->> index 626003bb5fca..ab394d173cd4 100644
->> --- a/arch/riscv/kernel/setup.c
->> +++ b/arch/riscv/kernel/setup.c
->> @@ -264,12 +264,12 @@ void __init setup_arch(char **cmdline_p)
->>
->>          sbi_init();
->>
->> -       if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX))
->> +       if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX)) {
->>                  protect_kernel_text_data();
->> -
->> -#if defined(CONFIG_64BIT) && defined(CONFIG_MMU)
->> -       protect_kernel_linear_mapping_text_rodata();
->> +#ifdef CONFIG_64BIT
->> +               protect_kernel_linear_mapping_text_rodata();
->>   #endif
->> +       }
->>
->>   #ifdef CONFIG_SWIOTLB
->>          swiotlb_init(1);
->> --
->> 2.20.1
->>
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
+> You can introduce a cpu-map to create what we called Phantom Domains in
+> Android products.
+>
+> # cat /proc/schedstat
+>
+> cpu0 ....
+> domain0 0f ... <- MC
+> domain1 ff ... < DIE
+>
+> Is this what you need for your arm32 kernel system? Adding the
+> possibility to parse cpu-map to create Phantom Domains?
