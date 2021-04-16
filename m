@@ -2,123 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 624F4362963
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 22:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2BE362966
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 22:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343554AbhDPUfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 16:35:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54910 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343509AbhDPUfW (ORCPT
+        id S1343588AbhDPUfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 16:35:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240036AbhDPUfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 16:35:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618605296;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cnQ1WYK1Q/fzVZJP5dTDD7O6rnfjXe0Zb86HEbMOmAg=;
-        b=E628u2pWL3sHBsPhpu04Pq8htTzbljPYFYunrFBs2C1RVE/LckwTQFF7uFDzO/C4nqYvWq
-        HtE1Hzhf74VXRrdmOBClEwR1CpmEplP6Y7F2vT0xp7akT61qsZ7gfjyLMY2r8dpomvv/UR
-        xNBIAALROvwMrp5BhiSrzbBAf6UzvXo=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-314-JAAQf8rROv6zZbi-RCe4mg-1; Fri, 16 Apr 2021 16:34:53 -0400
-X-MC-Unique: JAAQf8rROv6zZbi-RCe4mg-1
-Received: by mail-ot1-f71.google.com with SMTP id i19-20020a0568300113b02902907bfc618fso1807911otp.8
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 13:34:52 -0700 (PDT)
+        Fri, 16 Apr 2021 16:35:52 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400C1C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 13:35:26 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id w3-20020a05621412e3b029019a7b97dd69so4946031qvv.14
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 13:35:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:cc;
+        bh=Q8aau1UBqJXGOugSq4JjsK2GmL5sgcCnZiQBPgmr8g8=;
+        b=sV4uzzHjkUs767u8LSJDe2EEyB8nEWkAdKuccwVxsSuKhlm+K0SrC9kAfpfS0J3B5A
+         8/F4pJIh/JBrv1dtYN+MyibvnL1iMLoytfTG9GyNCkzvFHJG1J9iTrT2wOTAUhsMdrwY
+         D6+FY4M0G2f2wXZzXhMn48tVjxymClzfdy4sKCFUKEkvptF/EEWg5qd4ujGJBmuoyz7U
+         eAPszhi+dxgmH1ntQ/7IFHyNTMQFJlCDiDMvKxRuQ+fvT1ezshHnx0CVhIehOrMaa3jM
+         nV3h6ITf1jtfB2m5KP1lC4yp1CRs+vg1ySfN6ua4njHZDgVC1w0BDoLaEeKoGwxnljZW
+         GQcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cnQ1WYK1Q/fzVZJP5dTDD7O6rnfjXe0Zb86HEbMOmAg=;
-        b=mS5ojYcrkKEY42tRXCxDSdVsR53jhKCbOfNTpcpak+4ILEkG5sQRZ4/tQ2aUnI41B9
-         7+rbQnz1rHEPceKtd3yYUB0k32vvDaHd0t/bKHlflLgDZHT36uaNcM46Ade8O72De4A5
-         wxsg+nV7rlmAqeQXJsFVU+ZsX+5RVjgcY1jmxvf7XrvHCWQTzPND4wW8yssM6vRdJ3zn
-         XB3NBZ9reZJom1rrDU6EF90Ly/UsIZhiqJelI4aavGkLhi4edct6kd2gUmSu/DbS8VUn
-         lSD0TM8SPj+gKbCquNtsZl8QtFhkqAUA42iBk+ZbbGL8QJd8dhUjqWKgbXVVY0ZaV47K
-         3Qnw==
-X-Gm-Message-State: AOAM530Y7KvdixFMv8+mIC56v0BQCjdmYy3fdCL2BykVFI17m9OO5saZ
-        u561FbtK147hmGqgYH+EIlrx8Zak2OsM/9PB+UkojvMxGdr0uDFG87x5+GHezcQQaPskxZZteb2
-        KaXFjk8qs+qnkfbmLUcIxDBer
-X-Received: by 2002:a05:6808:c7:: with SMTP id t7mr1055081oic.43.1618605292401;
-        Fri, 16 Apr 2021 13:34:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwDMeiBTSr4JPC5fMGzlWAn3gckHs2z8NaKVn5KrdX3KcjblRSMUGrgWzBCK6PA2rqcIxQZiA==
-X-Received: by 2002:a05:6808:c7:: with SMTP id t7mr1055071oic.43.1618605292143;
-        Fri, 16 Apr 2021 13:34:52 -0700 (PDT)
-Received: from [192.168.0.173] (ip68-103-222-6.ks.ok.cox.net. [68.103.222.6])
-        by smtp.gmail.com with ESMTPSA id c21sm1431581ooa.48.2021.04.16.13.34.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Apr 2021 13:34:51 -0700 (PDT)
-Subject: Re: [PATCH 04/13] Kbuild: Rust support
-To:     Willy Tarreau <w@1wt.eu>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <20210414184604.23473-1-ojeda@kernel.org>
- <20210414184604.23473-5-ojeda@kernel.org>
- <YHmTWEAS/QjX++w4@hirez.programming.kicks-ass.net>
- <CAHk-=wh_zb=K1B-N8mgHmSZDqTLgOm711NRXbTX_OwFAzDYg0Q@mail.gmail.com>
- <CANiq72nx7ngazsH7sZgc=HeU0cNj45F9+-rwQb7AkdYsRCmRbQ@mail.gmail.com>
- <YHnS92ZKZ4tRWTiA@zeniv-ca.linux.org.uk>
- <CANiq72=RLf0FiuLVL-ZeLFp9P2LxTymbzhXoyQGG=tvUY_J-Sg@mail.gmail.com>
- <20210416202215.GA11236@1wt.eu>
-From:   Connor Kuehl <ckuehl@redhat.com>
-Message-ID: <efe80452-fac9-247a-1e2b-a73553f605e8@redhat.com>
-Date:   Fri, 16 Apr 2021 15:34:50 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210416202215.GA11236@1wt.eu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:cc;
+        bh=Q8aau1UBqJXGOugSq4JjsK2GmL5sgcCnZiQBPgmr8g8=;
+        b=PTGIe4SWwi6IwClXmVW2m9ABH0AlkWml9G/7OL02IM/a/NaHYWEecg5BFwM1Tznd3M
+         dgmp1RKrhI+HhuaYFccVSAYbz1GhNM1rwRxfx68kfj1ryw0ngUj5kyq3AVcFO5/G7aC2
+         0+LRl65iXRoa8BL8+SgOTZDah12cBkl+pCi4G0ynp+vfZhueEV0gOBaGMsHok7pZUhNq
+         lOmKVVVnO0Y8y6cBPzVZ8h75pbp0oRLcIJEOw62BYpmXHWkrJfKkYaZevHGIEzPxYxGW
+         qq5BNAMGCxMkDoS7T7fo2vF/7qz74Cw/1hwFEQ80eGdXsXvLmd5ZRDc6B7VSGAh1FgUB
+         oGFg==
+X-Gm-Message-State: AOAM531gVJ4q3hnj4etcOOl1BybFuYsTK2uUtH3DezVKvncWvLMxdBuC
+        hryJYoXqTyzhfb9zxVswTT8Ifw+BS1Hz
+X-Google-Smtp-Source: ABdhPJzvyYpeO+bjD50fx+JSx7mt0QB2dcO4rSN29yNXOgFwiiVFWiAn0/Q2yZCLnvhRfbXv7sKNr4v7ZWe6
+X-Received: from jiancai.svl.corp.google.com ([2620:15c:2ce:0:a547:67f6:5e32:5814])
+ (user=jiancai job=sendgmr) by 2002:a0c:c707:: with SMTP id
+ w7mr10808461qvi.11.1618605325023; Fri, 16 Apr 2021 13:35:25 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 13:35:21 -0700
+In-Reply-To: <20210416181421.2374588-1-jiancai@google.com>
+Message-Id: <20210416203522.2397801-1-jiancai@google.com>
+Mime-Version: 1.0
+References: <20210416181421.2374588-1-jiancai@google.com>
+X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
+Subject: [PATCH v2] arm64: vdso: remove commas between macro name and arguments
+From:   Jian Cai <jiancai@google.com>
+Cc:     stable@vger.kernel.org, gregkh@linuxfoundation.org,
+        sashal@kernel.org, ndesaulniers@google.com,
+        natechancellor@gmail.com, manojgupta@google.com,
+        llozano@google.com, clang-built-linux@googlegroups.com,
+        Jian Cai <jiancai@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/16/21 3:22 PM, Willy Tarreau wrote:
-> So it simply does the equivalent of:
-> 
->   #define EINVAL -1234
-> 
->   struct result {
->      int status;
->      int error;
->   };
+LLVM's integrated assembler does not support using commas separating
+the name and arguments in .macro. However, only spaces are used in the
+manual page. This replaces commas between macro names and the subsequent
+arguments with space in calls to clock_gettime_return to make it
+compatible with IAS.
 
-Result and Option types are more like a union with a tag that
-describes which variant it is.
+Link:
+https://sourceware.org/binutils/docs/as/Macro.html#Macro
+https://github.com/ClangBuiltLinux/linux/issues/1349
 
-struct foo_result {
-    /* if ok, then access foo_or_err.successful_foo
-     *        else, access foo_or_err.error
-     */
-    bool ok;
-    union {
-        struct foo successful_foo;
-        int error;
-    } foo_or_err;
-};
+Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Jian Cai <jiancai@google.com>
+---
 
-> [..]
-> 
-> So it simply returns a pair of values instead of a single one, which
+Changes v1 -> v2:
+  Keep the comma in the macro definition to be consistent with other
+  definitions.
 
-It will only return 1 value.
+ arch/arm64/kernel/vdso/gettimeofday.S | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/kernel/vdso/gettimeofday.S b/arch/arm64/kernel/vdso/gettimeofday.S
+index 856fee6d3512..b6faf8b5d1fe 100644
+--- a/arch/arm64/kernel/vdso/gettimeofday.S
++++ b/arch/arm64/kernel/vdso/gettimeofday.S
+@@ -227,7 +227,7 @@ realtime:
+ 	seqcnt_check fail=realtime
+ 	get_ts_realtime res_sec=x10, res_nsec=x11, \
+ 		clock_nsec=x15, xtime_sec=x13, xtime_nsec=x14, nsec_to_sec=x9
+-	clock_gettime_return, shift=1
++	clock_gettime_return shift=1
+ 
+ 	ALIGN
+ monotonic:
+@@ -250,7 +250,7 @@ monotonic:
+ 		clock_nsec=x15, xtime_sec=x13, xtime_nsec=x14, nsec_to_sec=x9
+ 
+ 	add_ts sec=x10, nsec=x11, ts_sec=x3, ts_nsec=x4, nsec_to_sec=x9
+-	clock_gettime_return, shift=1
++	clock_gettime_return shift=1
+ 
+ 	ALIGN
+ monotonic_raw:
+@@ -271,7 +271,7 @@ monotonic_raw:
+ 		clock_nsec=x15, nsec_to_sec=x9
+ 
+ 	add_ts sec=x10, nsec=x11, ts_sec=x13, ts_nsec=x14, nsec_to_sec=x9
+-	clock_gettime_return, shift=1
++	clock_gettime_return shift=1
+ 
+ 	ALIGN
+ realtime_coarse:
+-- 
+2.31.1.368.gbe11c130af-goog
 
