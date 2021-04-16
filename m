@@ -2,181 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB8E362460
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EFB536246B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235233AbhDPPq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 11:46:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27076 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229706AbhDPPq0 (ORCPT
+        id S235524AbhDPPsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 11:48:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235385AbhDPPsl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 11:46:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618587961;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+V9UhMqnrz0m5BFyjioo3UODppoBERP+RK637kpLhFQ=;
-        b=YhSXTY1mfQUhhgkSmwCfevzgXIp5iC2LKEIZHxhDPb5hiHEqP3TS7lko0WXPGqlV97IUz8
-        ZCqx6AJmMp3rlWnvqwVXab3IOTBJz1y03+pdE+vl6BX38Km/mh6480XAdLTDBwzqwpXHNL
-        JK6Nt/YxUS/rn9AaboQ2DG7XVgTm5kE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-171-ivyrcChoPeK9TTHA9mOkJg-1; Fri, 16 Apr 2021 11:45:59 -0400
-X-MC-Unique: ivyrcChoPeK9TTHA9mOkJg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DACF8107ACE6;
-        Fri, 16 Apr 2021 15:45:55 +0000 (UTC)
-Received: from redhat.com (ovpn-117-254.rdu2.redhat.com [10.10.117.254])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 940205DDAD;
-        Fri, 16 Apr 2021 15:45:48 +0000 (UTC)
-Date:   Fri, 16 Apr 2021 09:45:47 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210416094547.1774e1a3@redhat.com>
-In-Reply-To: <20210416061258.325e762e@jacob-builder>
-References: <BN6PR11MB40688F5AA2323AB8CC8E65E7C37C9@BN6PR11MB4068.namprd11.prod.outlook.com>
-        <20210331124038.GE1463678@nvidia.com>
-        <BN6PR11MB406854CAE9D7CE86BEAB3E23C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
-        <BN6PR11MB40687428F0D0F3B5F13EA3E0C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
-        <YGW27KFt9eQB9X2z@myrica>
-        <BN6PR11MB4068171CD1D4B823515F7EFBC37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
-        <20210401134236.GF1463678@nvidia.com>
-        <BN6PR11MB4068C4DE7AF43D44DE70F4C1C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
-        <20210401160337.GJ1463678@nvidia.com>
-        <4bea6eb9-08ad-4b6b-1e0f-c97ece58a078@redhat.com>
-        <20210415230732.GG1370958@nvidia.com>
-        <20210416061258.325e762e@jacob-builder>
+        Fri, 16 Apr 2021 11:48:41 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0626EC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 08:48:16 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id o5so29333697qkb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 08:48:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jEiyTnsJBz+3LM/AEUTcCopsniGZUGJiJXoqEYpAchc=;
+        b=GsMQU312d3+bjYcyvWaGgihp/toAeub1wsouXLWaXNwHYTQaB7LwP4IBLj9mu2lQLa
+         8h8x0rgNlRDCog9rTth+hGVzB34zfq9Hn3qbM0yWNpIEM+M4VgKrqe3l4Muu07uoa450
+         Pn4cQBsp2krJTlXaDZUKJfDdrEsDatYx/bikcvg3T99IY65JF9VI2D9rfDuL/hSo/kpH
+         179UmXP0GzkfbtHB8zlDMj+pyZUnUxNL5Y3alLTVYdvXhGgYCirxlTJNb5x0VUwDDlKA
+         7A4xLUEhJ4m5eLGA0Fe9TfGq4nMexHI/lTIoYQjFJctKJWRPCGh0kF0Kg7Yl5t5wxF40
+         681g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jEiyTnsJBz+3LM/AEUTcCopsniGZUGJiJXoqEYpAchc=;
+        b=E4eqHFEPoRSN0hYtS7sKScpdY1Q+8prabepAuml/LJf8IdndWQPZ3Utqy9IUX69jjt
+         eJYlzoGd4XdAtohGdYaz80A/IaRL1m4uPZ4+lKmJRaPaoSukvjHaClXcF29rUdJ34mFW
+         Tn97eSeiOGKSZ1c7z3ySoghWP7nnvkP6+pQlMEknGKfogW6aauWyzAzk6BmhUoOauQOL
+         G60YXtABVJGVtvXGYiUc0ngxYXwBjPH/O3vSF3o2ak72vvn1XMN+sy74YFHPKHuG6HFl
+         +nCqho57sIizZmk4XHITAuyoFlOBslPr1gadp1Tt9XHJFMYEkuk2zU4CgrgLpD1GmxAk
+         ZBHQ==
+X-Gm-Message-State: AOAM5337MecSvqSX8O1uTDEUqbkUL8l2Av4WIPj2m2Ko04IyA6ALm3f+
+        Svghi7EBtvs3l7pc1F2ZK7NBGQ==
+X-Google-Smtp-Source: ABdhPJx8OHfpY+zeHutioHIMaFCsw6/lrznUI43UQbq4vAQuxuNUNahlfp72uTPIFNmy8blO6S7sZw==
+X-Received: by 2002:a37:6f87:: with SMTP id k129mr9461373qkc.470.1618588095311;
+        Fri, 16 Apr 2021 08:48:15 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id 26sm4153612qtd.73.2021.04.16.08.48.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 08:48:14 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 11:48:14 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Waiman Long <llong@redhat.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Subject: Re: [PATCH v3 1/5] mm/memcg: Pass both memcg and lruvec to
+ mod_memcg_lruvec_state()
+Message-ID: <YHmxvlkBBlUUYKPG@cmpxchg.org>
+References: <20210414012027.5352-1-longman@redhat.com>
+ <20210414012027.5352-2-longman@redhat.com>
+ <YHhsapGx3vTlyZvF@cmpxchg.org>
+ <59a85df9-3e77-1d43-8673-2ff50a741130@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <59a85df9-3e77-1d43-8673-2ff50a741130@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Apr 2021 06:12:58 -0700
-Jacob Pan <jacob.jun.pan@linux.intel.com> wrote:
-
-> Hi Jason,
-> 
-> On Thu, 15 Apr 2021 20:07:32 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
-> 
-> > On Thu, Apr 15, 2021 at 03:11:19PM +0200, Auger Eric wrote:  
-> > > Hi Jason,
+On Thu, Apr 15, 2021 at 12:59:21PM -0400, Waiman Long wrote:
+> On 4/15/21 12:40 PM, Johannes Weiner wrote:
+> > On Tue, Apr 13, 2021 at 09:20:23PM -0400, Waiman Long wrote:
+> > > The caller of mod_memcg_lruvec_state() has both memcg and lruvec readily
+> > > available. So both of them are now passed to mod_memcg_lruvec_state()
+> > > and __mod_memcg_lruvec_state(). The __mod_memcg_lruvec_state() is
+> > > updated to allow either of the two parameters to be set to null. This
+> > > makes mod_memcg_lruvec_state() equivalent to mod_memcg_state() if lruvec
+> > > is null.
 > > > 
-> > > On 4/1/21 6:03 PM, Jason Gunthorpe wrote:    
-> > > > On Thu, Apr 01, 2021 at 02:08:17PM +0000, Liu, Yi L wrote:
-> > > >     
-> > > >> DMA page faults are delivered to root-complex via page request
-> > > >> message and it is per-device according to PCIe spec. Page request
-> > > >> handling flow is:
-> > > >>
-> > > >> 1) iommu driver receives a page request from device
-> > > >> 2) iommu driver parses the page request message. Get the RID,PASID,
-> > > >> faulted page and requested permissions etc.
-> > > >> 3) iommu driver triggers fault handler registered by device driver
-> > > >> with iommu_report_device_fault()    
-> > > > 
-> > > > This seems confused.
-> > > > 
-> > > > The PASID should define how to handle the page fault, not the driver.
-> > > >    
-> > > 
-> > > In my series I don't use PASID at all. I am just enabling nested stage
-> > > and the guest uses a single context. I don't allocate any user PASID at
-> > > any point.
-> > > 
-> > > When there is a fault at physical level (a stage 1 fault that concerns
-> > > the guest), this latter needs to be reported and injected into the
-> > > guest. The vfio pci driver registers a fault handler to the iommu layer
-> > > and in that fault handler it fills a circ bugger and triggers an eventfd
-> > > that is listened to by the VFIO-PCI QEMU device. this latter retrives
-> > > the faault from the mmapped circ buffer, it knowns which vIOMMU it is
-> > > attached to, and passes the fault to the vIOMMU.
-> > > Then the vIOMMU triggers and IRQ in the guest.
-> > > 
-> > > We are reusing the existing concepts from VFIO, region, IRQ to do that.
-> > > 
-> > > For that use case, would you also use /dev/ioasid?    
+> > > The new __mod_memcg_lruvec_state() function will be used in the next
+> > > patch as a replacement of mod_memcg_state() in mm/percpu.c for the
+> > > consolidation of the memory uncharge and vmstat update functions in
+> > > the kmem_cache_free() path.
+> > This requires users who want both to pass a pgdat that can be derived
+> > from the lruvec. This is error prone, and we just acked a patch that
+> > removes this very thing from mem_cgroup_page_lruvec().
 > > 
-> > /dev/ioasid could do all the things you described vfio-pci as doing,
-> > it can even do them the same way you just described.
+> > With the suggestion for patch 2, this shouldn't be necessary anymore,
+> > though. And sort of underlines my point around that combined function
+> > creating akwward code above and below it.
 > > 
-> > Stated another way, do you plan to duplicate all of this code someday
-> > for vfio-cxl? What about for vfio-platform? ARM SMMU can be hooked to
-> > platform devices, right?
-> > 
-> > I feel what you guys are struggling with is some choice in the iommu
-> > kernel APIs that cause the events to be delivered to the pci_device
-> > owner, not the PASID owner.
-> > 
-> > That feels solvable.
-> >   
-> Perhaps more of a philosophical question for you and Alex. There is no
-> doubt that the direction you guided for /dev/ioasid is a much cleaner one,
-> especially after VDPA emerged as another IOMMU backed framework.
+> The reason of passing in the pgdat is because of the caching of vmstat data.
+> lruvec may be gone if the corresponding memory cgroup is removed, but pgdat
+> should stay put. That is why I put pgdat in the obj_stock for caching. I
+> could also put the node id instead of pgdat.
 
-I think this statement answers all your remaining questions ;)
+Internally storing the pgdat is fine.
 
-> The question is what do we do with the nested translation features that have
-> been targeting the existing VFIO-IOMMU for the last three years? That
-> predates VDPA. Shall we put a stop marker *after* nested support and say no
-> more extensions for VFIO-IOMMU, new features must be built on this new
-> interface?
->
-> If we were to close a checkout line for some unforeseen reasons, should we
-> honor the customers already in line for a long time?
-> 
-> This is not a tactic or excuse for not working on the new /dev/ioasid
-> interface. In fact, I believe we can benefit from the lessons learned while
-> completing the existing. This will give confidence to the new
-> interface. Thoughts?
-
-I understand a big part of Jason's argument is that we shouldn't be in
-the habit of creating duplicate interfaces, we should create one, well
-designed interfaces to share among multiple subsystems.  As new users
-have emerged, our solution needs to change to a common one rather than
-a VFIO specific one.  The IOMMU uAPI provides an abstraction, but at
-the wrong level, requiring userspace interfaces for each subsystem.
-
-Luckily the IOMMU uAPI is not really exposed as an actual uAPI, but
-that changes if we proceed to enable the interfaces to tunnel it
-through VFIO.
-
-The logical answer would therefore be that we don't make that
-commitment to the IOMMU uAPI if we believe now that it's fundamentally
-flawed.
-
-Ideally this new /dev/ioasid interface, and making use of it as a VFIO
-IOMMU backend, should replace type1.  Type1 will live on until that
-interface gets to parity, at which point we may deprecate type1, but it
-wouldn't make sense to continue to expand type1 in the same direction
-as we intend /dev/ioasid to take over in the meantime, especially if it
-means maintaining an otherwise dead uAPI.  Thanks,
-
-Alex
-
+I was talking about the interface requiring the user to pass redundant
+information (pgdat, can be derived from lruvec) because the parameter
+is overloaded to modify the function's behavior, which is unintuitive.
