@@ -2,55 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 565FD36236B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF68362369
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245642AbhDPPC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 11:02:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50908 "EHLO
+        id S245562AbhDPPCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 11:02:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245129AbhDPPCS (ORCPT
+        with ESMTP id S244999AbhDPPCS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 16 Apr 2021 11:02:18 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB8F6C061756;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B49BC061761;
         Fri, 16 Apr 2021 08:01:53 -0700 (PDT)
 Date:   Fri, 16 Apr 2021 15:01:51 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618585312;
+        s=2020; t=1618585311;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yHU3lJHYZ6KWw55s6+nf0IPPZ47KX7Y5NhSPg3HfFfE=;
-        b=NXMIEi7EgozZRZAyYSxd+DnvwxA/n5wB2FUiLdfLF8xpHoFds7crGtiZXQs+PJff9kfF1u
-        iW2FQIS50pTRzen+jyfXmoTDNaIJ+Y64nVe4ShbvGMmDSSSoaNHI/P/LL43cGSFlKQKC5T
-        ZaRTN3DJTogAPSUJ+a1Ma654rxv2YeoPnLHBjmzVMyc9RWIkTnsiCr7GAjovSgMCSmln54
-        8nFcldj65nRgEvBRVM91OAYspxCGRKAqkjaEWcwtnKa8Uam7oA3gogq7+YKapRr9RRX2aP
-        6PRKjltevmaN4zHJQmxuw31ewExz8QEn8Z7pDrMM5h8Pe9mP4dfAaHEk8eJUgA==
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=mAh4bgJ2fRGppXqlZ7rsFQ20NBPa8qaQZN+eZUiu1K0=;
+        b=YV7+DbyH75wRNUc696urPrmkyD6mgwytlDcLV3XUZ36QUFJGAp7dOYPjRYCxRTq+0cctg5
+        u9rgWDPVCMPSWaiXbiZemJNCe0xDefwPyKDVoXXDWgTmZQ1S9GaX/RtJItG9KpNa5k/r/w
+        4fGoIa+24MFOoptDJPFsC/pHAkqQTtMWgpEeW5GqRl4zkUHqGuSYIfiETKXZR4Fk4FpZ1i
+        gR54ApF2iC6tbREw9sNeibo7wS2sG1FR4cbTBC3k+0Hmzjb6hO07fiiH7PPpPHZWDlrm7M
+        CeTZg3Ngnd95SWsoEJzckR67gmTbza296VOxCxjGx84B/8r4fb8/r3dRrL2m6g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618585312;
+        s=2020e; t=1618585311;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yHU3lJHYZ6KWw55s6+nf0IPPZ47KX7Y5NhSPg3HfFfE=;
-        b=PE+lGRkm/UTQF+x84JrO+Jy7hfZjSmTkG0EazwEC1oQ5j4hdhPMl7hGOr/9l9j7dw50hC8
-        fYSt9WhrM4/TDcDA==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=mAh4bgJ2fRGppXqlZ7rsFQ20NBPa8qaQZN+eZUiu1K0=;
+        b=h3uX4KuRNXuUeRFyu2c02E7fXzenCVEAXY2/c4WrxeyWTuomZbe7ZL5a1flamyWgqg0oQL
+        OHez5UFFk9nohTAA==
+From:   "tip-bot2 for Marco Elver" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf: Rework perf_event_exit_event()
-Cc:     Marco Elver <elver@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+Subject: [tip: perf/core] perf: Support only inheriting events if cloned with
+ CLONE_THREAD
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Marco Elver <elver@google.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210408103605.1676875-2-elver@google.com>
-References: <20210408103605.1676875-2-elver@google.com>
 MIME-Version: 1.0
-Message-ID: <161858531185.29796.13598961985814328547.tip-bot2@tip-bot2>
+Message-ID: <161858531109.29796.11586507795662176362.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,270 +56,158 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     ef54c1a476aef7eef26fe13ea10dc090952c00f8
-Gitweb:        https://git.kernel.org/tip/ef54c1a476aef7eef26fe13ea10dc090952c00f8
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Thu, 08 Apr 2021 12:35:56 +02:00
+Commit-ID:     2b26f0aa004995f49f7b6f4100dd0e4c39a9ed5f
+Gitweb:        https://git.kernel.org/tip/2b26f0aa004995f49f7b6f4100dd0e4c39a9ed5f
+Author:        Marco Elver <elver@google.com>
+AuthorDate:    Thu, 08 Apr 2021 12:35:58 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Fri, 16 Apr 2021 16:32:40 +02:00
 
-perf: Rework perf_event_exit_event()
+perf: Support only inheriting events if cloned with CLONE_THREAD
 
-Make perf_event_exit_event() more robust, such that we can use it from
-other contexts. Specifically the up and coming remove_on_exec.
+Adds bit perf_event_attr::inherit_thread, to restricting inheriting
+events only if the child was cloned with CLONE_THREAD.
 
-For this to work we need to address a few issues. Remove_on_exec will
-not destroy the entire context, so we cannot rely on TASK_TOMBSTONE to
-disable event_function_call() and we thus have to use
-perf_remove_from_context().
+This option supports the case where an event is supposed to be
+process-wide only (including subthreads), but should not propagate
+beyond the current process's shared environment.
 
-When using perf_remove_from_context(), there's two races to consider.
-The first is against close(), where we can have concurrent tear-down
-of the event. The second is against child_list iteration, which should
-not find a half baked event.
-
-To address this, teach perf_remove_from_context() to special case
-!ctx->is_active and about DETACH_CHILD.
-
-[ elver@google.com: fix racing parent/child exit in sync_child_event(). ]
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Marco Elver <elver@google.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210408103605.1676875-2-elver@google.com
+Link: https://lore.kernel.org/lkml/YBvj6eJR%2FDY2TsEB@hirez.programming.kicks-ass.net/
 ---
- include/linux/perf_event.h |   1 +-
- kernel/events/core.c       | 142 ++++++++++++++++++++----------------
- 2 files changed, 80 insertions(+), 63 deletions(-)
+ include/linux/perf_event.h      |  5 +++--
+ include/uapi/linux/perf_event.h |  3 ++-
+ kernel/events/core.c            | 21 ++++++++++++++-------
+ kernel/fork.c                   |  2 +-
+ 4 files changed, 20 insertions(+), 11 deletions(-)
 
 diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 3f7f89e..3d478ab 100644
+index 3d478ab..1660039 100644
 --- a/include/linux/perf_event.h
 +++ b/include/linux/perf_event.h
-@@ -607,6 +607,7 @@ struct swevent_hlist {
- #define PERF_ATTACH_TASK_DATA	0x08
- #define PERF_ATTACH_ITRACE	0x10
- #define PERF_ATTACH_SCHED_CB	0x20
-+#define PERF_ATTACH_CHILD	0x40
+@@ -958,7 +958,7 @@ extern void __perf_event_task_sched_in(struct task_struct *prev,
+ 				       struct task_struct *task);
+ extern void __perf_event_task_sched_out(struct task_struct *prev,
+ 					struct task_struct *next);
+-extern int perf_event_init_task(struct task_struct *child);
++extern int perf_event_init_task(struct task_struct *child, u64 clone_flags);
+ extern void perf_event_exit_task(struct task_struct *child);
+ extern void perf_event_free_task(struct task_struct *task);
+ extern void perf_event_delayed_put(struct task_struct *task);
+@@ -1449,7 +1449,8 @@ perf_event_task_sched_in(struct task_struct *prev,
+ static inline void
+ perf_event_task_sched_out(struct task_struct *prev,
+ 			  struct task_struct *next)			{ }
+-static inline int perf_event_init_task(struct task_struct *child)	{ return 0; }
++static inline int perf_event_init_task(struct task_struct *child,
++				       u64 clone_flags)			{ return 0; }
+ static inline void perf_event_exit_task(struct task_struct *child)	{ }
+ static inline void perf_event_free_task(struct task_struct *task)	{ }
+ static inline void perf_event_delayed_put(struct task_struct *task)	{ }
+diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+index ad15e40..813efb6 100644
+--- a/include/uapi/linux/perf_event.h
++++ b/include/uapi/linux/perf_event.h
+@@ -389,7 +389,8 @@ struct perf_event_attr {
+ 				cgroup         :  1, /* include cgroup events */
+ 				text_poke      :  1, /* include text poke events */
+ 				build_id       :  1, /* use build id in mmap2 events */
+-				__reserved_1   : 29;
++				inherit_thread :  1, /* children only inherit if cloned with CLONE_THREAD */
++				__reserved_1   : 28;
  
- struct perf_cgroup;
- struct perf_buffer;
+ 	union {
+ 		__u32		wakeup_events;	  /* wakeup every n events */
 diff --git a/kernel/events/core.c b/kernel/events/core.c
-index f079431..318ff7b 100644
+index 10ed2cd..3e3c00f 100644
 --- a/kernel/events/core.c
 +++ b/kernel/events/core.c
-@@ -2205,6 +2205,26 @@ out:
- 	perf_event__header_size(leader);
- }
+@@ -11653,6 +11653,9 @@ static int perf_copy_attr(struct perf_event_attr __user *uattr,
+ 	    (attr->sample_type & PERF_SAMPLE_WEIGHT_STRUCT))
+ 		return -EINVAL;
  
-+static void sync_child_event(struct perf_event *child_event);
++	if (!attr->inherit && attr->inherit_thread)
++		return -EINVAL;
 +
-+static void perf_child_detach(struct perf_event *event)
-+{
-+	struct perf_event *parent_event = event->parent;
-+
-+	if (!(event->attach_state & PERF_ATTACH_CHILD))
-+		return;
-+
-+	event->attach_state &= ~PERF_ATTACH_CHILD;
-+
-+	if (WARN_ON_ONCE(!parent_event))
-+		return;
-+
-+	lockdep_assert_held(&parent_event->child_mutex);
-+
-+	sync_child_event(event);
-+	list_del_init(&event->child_list);
-+}
-+
- static bool is_orphaned_event(struct perf_event *event)
+ out:
+ 	return ret;
+ 
+@@ -12873,12 +12876,13 @@ static int
+ inherit_task_group(struct perf_event *event, struct task_struct *parent,
+ 		   struct perf_event_context *parent_ctx,
+ 		   struct task_struct *child, int ctxn,
+-		   int *inherited_all)
++		   u64 clone_flags, int *inherited_all)
  {
- 	return event->state == PERF_EVENT_STATE_DEAD;
-@@ -2312,6 +2332,7 @@ group_sched_out(struct perf_event *group_event,
- }
+ 	int ret;
+ 	struct perf_event_context *child_ctx;
  
- #define DETACH_GROUP	0x01UL
-+#define DETACH_CHILD	0x02UL
- 
- /*
-  * Cross CPU call to remove a performance event
-@@ -2335,6 +2356,8 @@ __perf_remove_from_context(struct perf_event *event,
- 	event_sched_out(event, cpuctx, ctx);
- 	if (flags & DETACH_GROUP)
- 		perf_group_detach(event);
-+	if (flags & DETACH_CHILD)
-+		perf_child_detach(event);
- 	list_del_event(event, ctx);
- 
- 	if (!ctx->nr_events && ctx->is_active) {
-@@ -2363,25 +2386,21 @@ static void perf_remove_from_context(struct perf_event *event, unsigned long fla
- 
- 	lockdep_assert_held(&ctx->mutex);
- 
--	event_function_call(event, __perf_remove_from_context, (void *)flags);
--
- 	/*
--	 * The above event_function_call() can NO-OP when it hits
--	 * TASK_TOMBSTONE. In that case we must already have been detached
--	 * from the context (by perf_event_exit_event()) but the grouping
--	 * might still be in-tact.
-+	 * Because of perf_event_exit_task(), perf_remove_from_context() ought
-+	 * to work in the face of TASK_TOMBSTONE, unlike every other
-+	 * event_function_call() user.
- 	 */
--	WARN_ON_ONCE(event->attach_state & PERF_ATTACH_CONTEXT);
--	if ((flags & DETACH_GROUP) &&
--	    (event->attach_state & PERF_ATTACH_GROUP)) {
--		/*
--		 * Since in that case we cannot possibly be scheduled, simply
--		 * detach now.
--		 */
--		raw_spin_lock_irq(&ctx->lock);
--		perf_group_detach(event);
-+	raw_spin_lock_irq(&ctx->lock);
-+	if (!ctx->is_active) {
-+		__perf_remove_from_context(event, __get_cpu_context(ctx),
-+					   ctx, (void *)flags);
- 		raw_spin_unlock_irq(&ctx->lock);
-+		return;
+-	if (!event->attr.inherit) {
++	if (!event->attr.inherit ||
++	    (event->attr.inherit_thread && !(clone_flags & CLONE_THREAD))) {
+ 		*inherited_all = 0;
+ 		return 0;
  	}
-+	raw_spin_unlock_irq(&ctx->lock);
-+
-+	event_function_call(event, __perf_remove_from_context, (void *)flags);
- }
- 
+@@ -12910,7 +12914,8 @@ inherit_task_group(struct perf_event *event, struct task_struct *parent,
  /*
-@@ -12377,14 +12396,17 @@ void perf_pmu_migrate_context(struct pmu *pmu, int src_cpu, int dst_cpu)
- }
- EXPORT_SYMBOL_GPL(perf_pmu_migrate_context);
- 
--static void sync_child_event(struct perf_event *child_event,
--			       struct task_struct *child)
-+static void sync_child_event(struct perf_event *child_event)
+  * Initialize the perf_event context in task_struct
+  */
+-static int perf_event_init_context(struct task_struct *child, int ctxn)
++static int perf_event_init_context(struct task_struct *child, int ctxn,
++				   u64 clone_flags)
  {
- 	struct perf_event *parent_event = child_event->parent;
- 	u64 child_val;
- 
--	if (child_event->attr.inherit_stat)
--		perf_event_read_event(child_event, child);
-+	if (child_event->attr.inherit_stat) {
-+		struct task_struct *task = child_event->ctx->task;
-+
-+		if (task && task != TASK_TOMBSTONE)
-+			perf_event_read_event(child_event, task);
-+	}
- 
- 	child_val = perf_event_count(child_event);
- 
-@@ -12399,60 +12421,53 @@ static void sync_child_event(struct perf_event *child_event,
- }
- 
- static void
--perf_event_exit_event(struct perf_event *child_event,
--		      struct perf_event_context *child_ctx,
--		      struct task_struct *child)
-+perf_event_exit_event(struct perf_event *event, struct perf_event_context *ctx)
- {
--	struct perf_event *parent_event = child_event->parent;
-+	struct perf_event *parent_event = event->parent;
-+	unsigned long detach_flags = 0;
- 
--	/*
--	 * Do not destroy the 'original' grouping; because of the context
--	 * switch optimization the original events could've ended up in a
--	 * random child task.
--	 *
--	 * If we were to destroy the original group, all group related
--	 * operations would cease to function properly after this random
--	 * child dies.
--	 *
--	 * Do destroy all inherited groups, we don't care about those
--	 * and being thorough is better.
--	 */
--	raw_spin_lock_irq(&child_ctx->lock);
--	WARN_ON_ONCE(child_ctx->is_active);
-+	if (parent_event) {
-+		/*
-+		 * Do not destroy the 'original' grouping; because of the
-+		 * context switch optimization the original events could've
-+		 * ended up in a random child task.
-+		 *
-+		 * If we were to destroy the original group, all group related
-+		 * operations would cease to function properly after this
-+		 * random child dies.
-+		 *
-+		 * Do destroy all inherited groups, we don't care about those
-+		 * and being thorough is better.
-+		 */
-+		detach_flags = DETACH_GROUP | DETACH_CHILD;
-+		mutex_lock(&parent_event->child_mutex);
-+	}
- 
--	if (parent_event)
--		perf_group_detach(child_event);
--	list_del_event(child_event, child_ctx);
--	perf_event_set_state(child_event, PERF_EVENT_STATE_EXIT); /* is_event_hup() */
--	raw_spin_unlock_irq(&child_ctx->lock);
-+	perf_remove_from_context(event, detach_flags);
-+
-+	raw_spin_lock_irq(&ctx->lock);
-+	if (event->state > PERF_EVENT_STATE_EXIT)
-+		perf_event_set_state(event, PERF_EVENT_STATE_EXIT);
-+	raw_spin_unlock_irq(&ctx->lock);
- 
- 	/*
--	 * Parent events are governed by their filedesc, retain them.
-+	 * Child events can be freed.
+ 	struct perf_event_context *child_ctx, *parent_ctx;
+ 	struct perf_event_context *cloned_ctx;
+@@ -12950,7 +12955,8 @@ static int perf_event_init_context(struct task_struct *child, int ctxn)
  	 */
--	if (!parent_event) {
--		perf_event_wakeup(child_event);
-+	if (parent_event) {
-+		mutex_unlock(&parent_event->child_mutex);
-+		/*
-+		 * Kick perf_poll() for is_event_hup();
-+		 */
-+		perf_event_wakeup(parent_event);
-+		free_event(event);
-+		put_event(parent_event);
- 		return;
+ 	perf_event_groups_for_each(event, &parent_ctx->pinned_groups) {
+ 		ret = inherit_task_group(event, parent, parent_ctx,
+-					 child, ctxn, &inherited_all);
++					 child, ctxn, clone_flags,
++					 &inherited_all);
+ 		if (ret)
+ 			goto out_unlock;
  	}
--	/*
--	 * Child events can be cleaned up.
--	 */
--
--	sync_child_event(child_event, child);
+@@ -12966,7 +12972,8 @@ static int perf_event_init_context(struct task_struct *child, int ctxn)
  
- 	/*
--	 * Remove this event from the parent's list
--	 */
--	WARN_ON_ONCE(parent_event->ctx->parent_ctx);
--	mutex_lock(&parent_event->child_mutex);
--	list_del_init(&child_event->child_list);
--	mutex_unlock(&parent_event->child_mutex);
--
--	/*
--	 * Kick perf_poll() for is_event_hup().
-+	 * Parent events are governed by their filedesc, retain them.
- 	 */
--	perf_event_wakeup(parent_event);
--	free_event(child_event);
--	put_event(parent_event);
-+	perf_event_wakeup(event);
- }
+ 	perf_event_groups_for_each(event, &parent_ctx->flexible_groups) {
+ 		ret = inherit_task_group(event, parent, parent_ctx,
+-					 child, ctxn, &inherited_all);
++					 child, ctxn, clone_flags,
++					 &inherited_all);
+ 		if (ret)
+ 			goto out_unlock;
+ 	}
+@@ -13008,7 +13015,7 @@ out_unlock:
+ /*
+  * Initialize the perf_event context in task_struct
+  */
+-int perf_event_init_task(struct task_struct *child)
++int perf_event_init_task(struct task_struct *child, u64 clone_flags)
+ {
+ 	int ctxn, ret;
  
- static void perf_event_exit_task_context(struct task_struct *child, int ctxn)
-@@ -12509,7 +12524,7 @@ static void perf_event_exit_task_context(struct task_struct *child, int ctxn)
- 	perf_event_task(child, child_ctx, 0);
+@@ -13017,7 +13024,7 @@ int perf_event_init_task(struct task_struct *child)
+ 	INIT_LIST_HEAD(&child->perf_event_list);
  
- 	list_for_each_entry_safe(child_event, next, &child_ctx->event_list, event_entry)
--		perf_event_exit_event(child_event, child_ctx, child);
-+		perf_event_exit_event(child_event, child_ctx);
+ 	for_each_task_context_nr(ctxn) {
+-		ret = perf_event_init_context(child, ctxn);
++		ret = perf_event_init_context(child, ctxn, clone_flags);
+ 		if (ret) {
+ 			perf_event_free_task(child);
+ 			return ret;
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 0acc8ed..3728a64 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2078,7 +2078,7 @@ static __latent_entropy struct task_struct *copy_process(
+ 	if (retval)
+ 		goto bad_fork_cleanup_policy;
  
- 	mutex_unlock(&child_ctx->mutex);
- 
-@@ -12769,6 +12784,7 @@ inherit_event(struct perf_event *parent_event,
- 	 */
- 	raw_spin_lock_irqsave(&child_ctx->lock, flags);
- 	add_event_to_ctx(child_event, child_ctx);
-+	child_event->attach_state |= PERF_ATTACH_CHILD;
- 	raw_spin_unlock_irqrestore(&child_ctx->lock, flags);
- 
- 	/*
+-	retval = perf_event_init_task(p);
++	retval = perf_event_init_task(p, clone_flags);
+ 	if (retval)
+ 		goto bad_fork_cleanup_policy;
+ 	retval = audit_alloc(p);
