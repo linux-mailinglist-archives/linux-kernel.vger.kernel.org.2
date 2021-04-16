@@ -2,76 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7FC362787
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 20:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EAD336277D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 20:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244431AbhDPSLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 14:11:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36944 "EHLO
+        id S244331AbhDPSJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 14:09:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244362AbhDPSLf (ORCPT
+        with ESMTP id S244362AbhDPSJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 14:11:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C87E2C061574;
-        Fri, 16 Apr 2021 11:11:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=iy+YquCQolFdhIFqaFYddxkruv3V6Zn88c7KpgInMyI=; b=oZ3MAr1HcgC8j/7GZ0Rqd8avEW
-        oDQP525+WZ6SRSMzTL/fDoBmU2oyLhIPa6ZDdXj+E98Rfch1fmDBiEhxfqO0IgQTsOZCLtlXC4eGu
-        Q9gbp7N2t4fyhg7zai6c0Wwhh5BA0yt+KznYssYMlVKFfW9Gu3cydiA94cU5G7o4IE2ZDbFxj71bS
-        /DX+Vhnvo0arE6cdvR36QjL/A41Fn36WoIbviaI7C7Ft0yUUfad7wEs/9hCyuR7gM6N83bC5U8zcZ
-        NyO2gnTg1HAE4A0PfneTSPaJXjidrc2ULpKLxgr0/3gaQjiR9oJ9rHwz5W0hLV/r8snMu50G4Zu4b
-        hcanTdBw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lXStJ-00AHbV-FC; Fri, 16 Apr 2021 18:09:04 +0000
-Date:   Fri, 16 Apr 2021 19:08:29 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Willy Tarreau <w@1wt.eu>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-Message-ID: <20210416180829.GO2531743@casper.infradead.org>
-References: <20210414184604.23473-1-ojeda@kernel.org>
- <YHlz54rd1YQHsOA/@hirez.programming.kicks-ass.net>
- <YHmMJWmzz2vZ3qQH@google.com>
- <YHmc2+bKQJ/XAATF@hirez.programming.kicks-ass.net>
- <YHmuX1NA5RF7C7XS@google.com>
- <20210416161444.GA10484@1wt.eu>
- <CANiq72nbkJFPmiJXX=L8PmkouKgKG1k-CxhZYpL1hcncYwa8JA@mail.gmail.com>
- <YHnG+GRwiMqgHGs5@hirez.programming.kicks-ass.net>
+        Fri, 16 Apr 2021 14:09:13 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3591C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 11:08:45 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so16847732pjh.1
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 11:08:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=8sHr1KWLYr6hUO2+6Muh8EPhx1F9Tk8jR0NrChU25Qw=;
+        b=sbEXaiiHsn3/aSCb6k95Aihy0B3zcE8x0t+7bwBKOEWSw41rec5+GbSmBF+x3vx1W+
+         22CrjlXWaHoiS4q4DLqsFhuLaMUxCI3s9iBTVJrsCbwKIf1jvEyvfo4/39HSO6Y1OPTB
+         kXinE7pzB/pIxaVPpuS0hN65eM5JWBoeW4iK9wAbCviURxQayXdM5s3G6C9jPXR+9Acx
+         +o6dG5dzwQXaOa1dKA8eJiQdhjPU72dHDgNDwH3pZDK9ftzIT9m1LtOSPG6j0w8yAMhh
+         CDFTk6TA6U4C4YF7DnVHigczZ2qBFNr7Eyzdn5xKNYwVBPCAvlaRhZM1pMRZDhD2f3GK
+         cZHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8sHr1KWLYr6hUO2+6Muh8EPhx1F9Tk8jR0NrChU25Qw=;
+        b=hcPu82f1MGcCUSh/hyrnenP8ntjKQvY023vpJrwaeW0T0wQlArYVxxFvctpL9DN+tt
+         afbzTrEm6cgEptVAlk+yG70o3JlwLuBkAXS7L8n9Jo6VYxrCyywXPPr+SjkBk6YOWDfF
+         9IMU8B8HfUr9QyPwAg5/hWb7Sg631uTN1zCdz3n3kxQN0a+7FP7aETQiWbgQDhJyafp3
+         Gb252zG13IOm6iLbFhMNo9yNJpcApeGwuCBU5oVuqi+HJvVKn7nniAbCjV+19Qv99tG3
+         DpDc0M33P9DFqs6vYm7R2xQ7qWI5lQOb+tR8FJ9x3tgpipKnMkMBOVy07kalYE1G7Ipf
+         jnaQ==
+X-Gm-Message-State: AOAM532JkhcK0mEeZtwXuCmVlYcwZJUmECWaU2zp+gihN8iTHNZHfPyR
+        oQvXyl1W0tZVyLXUA0SQKIKLKw==
+X-Google-Smtp-Source: ABdhPJyR0UqNjrwgaE5FPswaP50mdYiX9Xg7XwWgE+Ls0+GtsSCX9wkO/QEQHFbjOXib9i6gAOaJRg==
+X-Received: by 2002:a17:90a:528b:: with SMTP id w11mr11115174pjh.162.1618596525196;
+        Fri, 16 Apr 2021 11:08:45 -0700 (PDT)
+Received: from hermes.local (76-14-218-44.or.wavecable.com. [76.14.218.44])
+        by smtp.gmail.com with ESMTPSA id x29sm2543765pga.70.2021.04.16.11.08.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 11:08:44 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 11:08:36 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     Haiyang Zhang <haiyangz@microsoft.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Wei Liu <liuwe@microsoft.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "bernd@petrovitsch.priv.at" <bernd@petrovitsch.priv.at>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        Shachar Raindel <shacharr@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+Subject: Re: [PATCH v7 net-next] net: mana: Add a driver for Microsoft Azure
+ Network Adapter (MANA)
+Message-ID: <20210416110836.67a4a88e@hermes.local>
+In-Reply-To: <MW2PR2101MB0892EE955B75C2442E266DB9BF4C9@MW2PR2101MB0892.namprd21.prod.outlook.com>
+References: <20210416060705.21998-1-decui@microsoft.com>
+        <20210416094006.70661f47@hermes.local>
+        <MN2PR21MB12957D66D4DB4B3B7BAEFCA5CA4C9@MN2PR21MB1295.namprd21.prod.outlook.com>
+        <MW2PR2101MB0892EE955B75C2442E266DB9BF4C9@MW2PR2101MB0892.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHnG+GRwiMqgHGs5@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 07:18:48PM +0200, Peter Zijlstra wrote:
-> On Fri, Apr 16, 2021 at 07:10:17PM +0200, Miguel Ojeda wrote:
+On Fri, 16 Apr 2021 17:58:45 +0000
+Dexuan Cui <decui@microsoft.com> wrote:
+
+> > >
+> > > This probably should be a separate patch.
+> > > I think it is trying to address the case of VF discovery in Hyper-V/Azure where
+> > > the reported
+> > > VF from Hypervisor is bogus or confused.  
+> > 
+> > This is for the Multi vPorts feature of MANA driver, which allows one VF to
+> > create multiple vPorts (NICs). They have the same PCI device and same VF
+> > serial number, but different MACs.
+> > 
+> > So we put the change in one patch to avoid distro vendors missing this
+> > change when backporting the MANA driver.
+> > 
+> > Thanks,
+> > - Haiyang  
 > 
-> > Of course, UB is only a subset of errors, but it is a major one, and
-> > particularly critical for privileged code.
+> The netvsc change should come together in the same patch with this VF
+> driver, otherwise the multi-vPorts functionality doesn't work properly.
 > 
-> I've seen relatively few UBSAN warnings that weren't due to UBSAN being
-> broken.
+> The netvsc change should not break any other existing VF drivers, because
+> Hyper-V NIC SR-IOV implementation requires the the NetVSC network
+> interface and the VF network interface should have the same MAC address,
+> otherwise things won't work.
+> 
+> Thanks,
+> Dexuan
 
-Lucky you.
-
-84c34df158cf215b0cd1475ab3b8e6f212f81f23
-
-(i'd argue this is C being broken; promoting only as far as int, when
-assigning to an unsigned long is Bad, but until/unless either GCC fixes
-that or the language committee realises that being stuck in the 1970s
-is Bad, people are going to keep making this kind of mistake)
+Distro vendors should be able to handle a patch series.
+Don't see why this could not be two patch series.
