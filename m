@@ -2,59 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF62362656
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53CA5362657
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238786AbhDPRI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 13:08:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235535AbhDPRI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 13:08:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1FC516109F;
-        Fri, 16 Apr 2021 17:08:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618592882;
-        bh=yU2yD2hb7AoULWvQr+2/jUs6bcPJdw2gUXHVD9sbjvw=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=YVCGKHLA2/tbN0G2GguCtD/RWJXVBr66zHIbMYAlBiSjdkBfh99KnL+jUFWJmrNGF
-         Bd5n+cTmEvX3ACNnqUY2tnEPE1+MSKXDkdQTXYDYjZ2hXL+RLmoexyvHsVCXL/8m2s
-         rI+REJqBp8anBSzTdcU8EkJuNYSzdmgQv5RIOVFn1V+XfB8f7KcrsAuHpKmrOXJIgO
-         Gout30y0tH0QcPdCX6qO9FRmqnPuVWuhRri3aY5fX0XrRHSkB20D2CZ/dTx2tqXInM
-         U1KmW+rANlowGiwdO90LCjNRlGXN1WJQc2E54RvFa8pgR4k7OqXO+GktY0R5wwK3Vd
-         PDjGm6U/1lfqA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0B4D960CD1;
-        Fri, 16 Apr 2021 17:08:02 +0000 (UTC)
-Subject: Re: [GIT PULL] RISC-V Fixes for 5.12-rc8 (or 5.12)
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <mhng-769b7cf7-7dfb-455a-9bb3-99f5cd952dbe@palmerdabbelt-glaptop>
-References: <mhng-769b7cf7-7dfb-455a-9bb3-99f5cd952dbe@palmerdabbelt-glaptop>
-X-PR-Tracked-List-Id: <linux-riscv.lists.infradead.org>
-X-PR-Tracked-Message-Id: <mhng-769b7cf7-7dfb-455a-9bb3-99f5cd952dbe@palmerdabbelt-glaptop>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.12-rc8
-X-PR-Tracked-Commit-Id: 7ae11635ec90072083503c6b6485cdffe46203b3
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 151501160401e2dc669ea7dac2c599b53f220c33
-Message-Id: <161859288198.9941.13644971507967591628.pr-tracker-bot@kernel.org>
-Date:   Fri, 16 Apr 2021 17:08:01 +0000
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+        id S239008AbhDPRJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 13:09:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34658 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235730AbhDPRJD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 13:09:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618592918;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=04d/YP/XeREquXdVGX4E7+iWkSvKezEziIy7Br93wNo=;
+        b=K3dEhQh2Wh29PqYLBCwhdsu7NynwdPvR7SJaBbE1hOGsB3dIlm98Q8ghap4PhTTf5FaEHG
+        5kyuxmJgyjSMfl0UtmayrYY7kG8gJEPdVeecp5Ls0qK7AyayxfrZ/yjyahOFeu4Pxl666v
+        kDzxpyq5vOXCMklR/LP8LbSAFZTP9DM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-154-t1CdtVGrNiG8scC-Sd9o6A-1; Fri, 16 Apr 2021 13:08:35 -0400
+X-MC-Unique: t1CdtVGrNiG8scC-Sd9o6A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B8AC1874998;
+        Fri, 16 Apr 2021 17:08:33 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0E9675D749;
+        Fri, 16 Apr 2021 17:08:24 +0000 (UTC)
+Date:   Fri, 16 Apr 2021 19:08:23 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     David Laight <David.Laight@aculab.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, brouer@redhat.com
+Subject: Re: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
+Message-ID: <20210416190823.3b3aace0@carbon>
+In-Reply-To: <20210416152755.GL2531743@casper.infradead.org>
+References: <20210410205246.507048-2-willy@infradead.org>
+        <20210411114307.5087f958@carbon>
+        <20210411103318.GC2531743@casper.infradead.org>
+        <20210412011532.GG2531743@casper.infradead.org>
+        <20210414101044.19da09df@carbon>
+        <20210414115052.GS2531743@casper.infradead.org>
+        <20210414211322.3799afd4@carbon>
+        <20210414213556.GY2531743@casper.infradead.org>
+        <a50c3156fe8943ef964db4345344862f@AcuMS.aculab.com>
+        <20210415200832.32796445@carbon>
+        <20210416152755.GL2531743@casper.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 16 Apr 2021 09:57:52 -0700 (PDT):
+On Fri, 16 Apr 2021 16:27:55 +0100
+Matthew Wilcox <willy@infradead.org> wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.12-rc8
+> On Thu, Apr 15, 2021 at 08:08:32PM +0200, Jesper Dangaard Brouer wrote:
+> > See below patch.  Where I swap32 the dma address to satisfy
+> > page->compound having bit zero cleared. (It is the simplest fix I could
+> > come up with).  
+> 
+> I think this is slightly simpler, and as a bonus code that assumes the
+> old layout won't compile.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/151501160401e2dc669ea7dac2c599b53f220c33
+This is clever, I like it!  When reading the code one just have to
+remember 'unsigned long' size difference between 64-bit vs 32-bit.
+And I assume compiler can optimize the sizeof check out then doable.
 
-Thank you!
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 6613b26a8894..5aacc1c10a45 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -97,10 +97,10 @@ struct page {
+>  		};
+>  		struct {	/* page_pool used by netstack */
+>  			/**
+> -			 * @dma_addr: might require a 64-bit value even on
+> +			 * @dma_addr: might require a 64-bit value on
+>  			 * 32-bit architectures.
+>  			 */
+> -			dma_addr_t dma_addr;
+> +			unsigned long dma_addr[2];
+>  		};
+>  		struct {	/* slab, slob and slub */
+>  			union {
+> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+> index b5b195305346..db7c7020746a 100644
+> --- a/include/net/page_pool.h
+> +++ b/include/net/page_pool.h
+> @@ -198,7 +198,17 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
+>  
+>  static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
+>  {
+> -	return page->dma_addr;
+> +	dma_addr_t ret = page->dma_addr[0];
+> +	if (sizeof(dma_addr_t) > sizeof(unsigned long))
+> +		ret |= (dma_addr_t)page->dma_addr[1] << 32;
+> +	return ret;
+> +}
+> +
+> +static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
+> +{
+> +	page->dma_addr[0] = addr;
+> +	if (sizeof(dma_addr_t) > sizeof(unsigned long))
+> +		page->dma_addr[1] = addr >> 32;
+>  }
+>  
+>  static inline bool is_page_pool_compiled_in(void)
+> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> index ad8b0707af04..f014fd8c19a6 100644
+> --- a/net/core/page_pool.c
+> +++ b/net/core/page_pool.c
+> @@ -174,8 +174,10 @@ static void page_pool_dma_sync_for_device(struct page_pool *pool,
+>  					  struct page *page,
+>  					  unsigned int dma_sync_size)
+>  {
+> +	dma_addr_t dma_addr = page_pool_get_dma_addr(page);
+> +
+>  	dma_sync_size = min(dma_sync_size, pool->p.max_len);
+> -	dma_sync_single_range_for_device(pool->p.dev, page->dma_addr,
+> +	dma_sync_single_range_for_device(pool->p.dev, dma_addr,
+>  					 pool->p.offset, dma_sync_size,
+>  					 pool->p.dma_dir);
+>  }
+> @@ -226,7 +228,7 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
+>  		put_page(page);
+>  		return NULL;
+>  	}
+> -	page->dma_addr = dma;
+> +	page_pool_set_dma_addr(page, dma);
+>  
+>  	if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
+>  		page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
+> @@ -294,13 +296,13 @@ void page_pool_release_page(struct page_pool *pool, struct page *page)
+>  		 */
+>  		goto skip_dma_unmap;
+>  
+> -	dma = page->dma_addr;
+> +	dma = page_pool_get_dma_addr(page);
+>  
+> -	/* When page is unmapped, it cannot be returned our pool */
+> +	/* When page is unmapped, it cannot be returned to our pool */
+>  	dma_unmap_page_attrs(pool->p.dev, dma,
+>  			     PAGE_SIZE << pool->p.order, pool->p.dma_dir,
+>  			     DMA_ATTR_SKIP_CPU_SYNC);
+> -	page->dma_addr = 0;
+> +	page_pool_set_dma_addr(page, 0);
+>  skip_dma_unmap:
+>  	/* This may be the last page returned, releasing the pool, so
+>  	 * it is not safe to reference pool afterwards.
+> 
+
+
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
