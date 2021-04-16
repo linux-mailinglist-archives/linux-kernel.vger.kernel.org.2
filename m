@@ -2,117 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39892361E28
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2385A361E25
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241786AbhDPKm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 06:42:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241749AbhDPKm1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 06:42:27 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10AA3C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 03:42:03 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id w186so9515552wmg.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 03:42:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zex7i7Gm7ilDvh/qRtb14tTVDUsTiPnIyJ8lJBlTVDY=;
-        b=o+NE8pGADgY4FrSGIXWUfJDlnJ1juLdQCdEiocUx/f4kBswMU6EacEfCbch4zfDr8H
-         +8aCGjJXpl6SK20MOt1VpdXaX4BbkHmki5A2hh1gmZ20w2EMJP1VjnEsC8VADb9byTqY
-         lE+sl5rG/g22g2pLcBDdBqPUtuuihLLbi7A6mVCOjdUC+LZqLYwD2VrW6Q33ZmABcitG
-         osCWWS16aeTjD/SapJryOxU2/k5hi64Zs2KKTkPikhugxITJ9wbjvvaZwkFN1zhfoIGY
-         lMbuOFwM6i8S1cr0T1JDeA7IJyAS5SdymT8sxxaVslfrawq50NfS7neQz6FJIXPKg4kh
-         wuBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zex7i7Gm7ilDvh/qRtb14tTVDUsTiPnIyJ8lJBlTVDY=;
-        b=jwsc84bR8ypJJ9OItgfq02Vwyd94tr8DPZxzpVuMF82GtpnFdxzhluI0WIwK3ZOtgT
-         rpT/KSbtwuKs2B3yJs/HoSmaRQNoLZcBIH2DFgEYB3Qlr+CuTxPy2oQ8/dFjxgWO4RXq
-         e5mWc+umXC6xEjfY6N0r8CLH4dYbq8dNohdrvfG+5fjbEos9H4DC/33pOfo+az1QGlCM
-         CVatzFxM53bc59abbH7WBKA0Mq5y1yEifyrNLCRMAk68osIoka4UFecguKPsEayxrlql
-         zmIJapMku60Tdt7vYIVC5JK4zTRw/VfYqk/RDCPLCdUETAsPQXOT3CThpKa4Y0d82gnJ
-         4b8w==
-X-Gm-Message-State: AOAM532d6XinD/P3fGYrzB1eRu1FSgPs5fPJ+sHs4XGJdQLuMe3EhfxQ
-        pN77dxQGU6LQrAktEEAEbhJs5q+ywjEkbvaq/fpr7A==
-X-Google-Smtp-Source: ABdhPJzSZVwXQXIP/gEzyKiBpeLInXpc+75cZ3dvpf3JNqEHMcXwCYZIJpV2ZQZVzZT+LiXa+F2urN3JdQz1K4fuTB0=
-X-Received: by 2002:a7b:c348:: with SMTP id l8mr7746989wmj.152.1618569721686;
- Fri, 16 Apr 2021 03:42:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210415110426.2238-1-alex@ghiti.fr>
-In-Reply-To: <20210415110426.2238-1-alex@ghiti.fr>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Fri, 16 Apr 2021 16:11:50 +0530
-Message-ID: <CAAhSdy2pD2q99-g3QSSHbpqw1ZD402fStFmbKNFzht2m=MS8mQ@mail.gmail.com>
-Subject: Re: [PATCH] riscv: Protect kernel linear mapping only if
- CONFIG_STRICT_KERNEL_RWX is set
-To:     Alexandre Ghiti <alex@ghiti.fr>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, linux-doc@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        kasan-dev@googlegroups.com,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S241734AbhDPKmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 06:42:23 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39476 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229502AbhDPKmW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 06:42:22 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 59572AFEC;
+        Fri, 16 Apr 2021 10:41:57 +0000 (UTC)
+Date:   Fri, 16 Apr 2021 12:41:57 +0200
+Message-ID: <s5hlf9iqznu.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: seq: oss: Fix inconsistent indenting
+In-Reply-To: <1618567244-5704-1-git-send-email-yang.lee@linux.alibaba.com>
+References: <1618567244-5704-1-git-send-email-yang.lee@linux.alibaba.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 4:34 PM Alexandre Ghiti <alex@ghiti.fr> wrote:
->
-> If CONFIG_STRICT_KERNEL_RWX is not set, we cannot set different permissions
-> to the kernel data and text sections, so make sure it is defined before
-> trying to protect the kernel linear mapping.
->
-> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
-
-Maybe you should add "Fixes:" tag in commit tag ?
-
-Otherwise it looks good.
-
-Reviewed-by: Anup Patel <anup@brainfault.org>
-
-Regards,
-Anup
-
+On Fri, 16 Apr 2021 12:00:44 +0200,
+Yang Li wrote:
+> 
+> Kernel test robot throws below warning ->
+> 
+> smatch warnings:
+> sound/core/seq/oss/seq_oss_event.c:297 note_on_event() warn:
+> inconsistent indenting
+> 
+> Fixed the inconsistent indenting.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 > ---
->  arch/riscv/kernel/setup.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-> index 626003bb5fca..ab394d173cd4 100644
-> --- a/arch/riscv/kernel/setup.c
-> +++ b/arch/riscv/kernel/setup.c
-> @@ -264,12 +264,12 @@ void __init setup_arch(char **cmdline_p)
->
->         sbi_init();
->
-> -       if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX))
-> +       if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX)) {
->                 protect_kernel_text_data();
-> -
-> -#if defined(CONFIG_64BIT) && defined(CONFIG_MMU)
-> -       protect_kernel_linear_mapping_text_rodata();
-> +#ifdef CONFIG_64BIT
-> +               protect_kernel_linear_mapping_text_rodata();
->  #endif
-> +       }
->
->  #ifdef CONFIG_SWIOTLB
->         swiotlb_init(1);
-> --
-> 2.20.1
->
+>  sound/core/seq/oss/seq_oss_event.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/core/seq/oss/seq_oss_event.c b/sound/core/seq/oss/seq_oss_event.c
+> index 7b7c925..9a42713 100644
+> --- a/sound/core/seq/oss/seq_oss_event.c
+> +++ b/sound/core/seq/oss/seq_oss_event.c
+> @@ -294,7 +294,7 @@
+>  				/* set volume to zero -- note off */
+>  			//	type = SNDRV_SEQ_EVENT_NOTEOFF;
+>  			//else
+> -				if (info->ch[ch].vel)
+> +			if (info->ch[ch].vel)
+>  				/* sample already started -- volume change */
+>  				type = SNDRV_SEQ_EVENT_KEYPRESS;
+
+The line was aligned with the commented if block.
+If any, we should rather clean up and re-format the whole block.
+(But, OTOH, you shouldn't remove the stuff without understanding
+the context.)
+
+
+thanks,
+
+Takashi
