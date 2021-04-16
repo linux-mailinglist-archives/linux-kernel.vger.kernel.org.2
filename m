@@ -2,107 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E776D361D84
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 643DD361D86
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235354AbhDPJyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 05:54:25 -0400
-Received: from m12-16.163.com ([220.181.12.16]:45333 "EHLO m12-16.163.com"
+        id S240406AbhDPJ4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 05:56:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:37698 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242273AbhDPJyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 05:54:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=rfaZi
-        75ykphmZytDo8j3USUV+G9FAfZwR9DbVC9yRWs=; b=kSXeBUI1sRoSQ7QJHc0/p
-        h3ja45WotuY0RGleR+hU80oet1Oj6PUvcdzmyQHKT9rv56hmSpBANF1O/ntFeB/S
-        fnFVeKpsCdwV2P9HSlwx4ybSWx3P7dq3jM/KW/VwI2I3iaS6rCkkul1aWlai0QOu
-        8v7wZi6UkTItHdBHK/cBZg=
-Received: from localhost.localdomain (unknown [183.46.98.96])
-        by smtp12 (Coremail) with SMTP id EMCowAAnLRmLXnlgwwaZlw--.14718S2;
-        Fri, 16 Apr 2021 17:53:17 +0800 (CST)
-From:   =?UTF-8?q?=C2=A0Zhongjun=20Tan?= <hbut_tan@163.com>
-To:     casey@schaufler-ca.com, jmorris@namei.org, serge@hallyn.com
-Cc:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zhongjun Tan <tanzhongjun@yulong.com>
-Subject: [PATCH] lsm:fix a missing-check bug in smack_sb_eat_lsm_opts()
-Date:   Fri, 16 Apr 2021 17:53:03 +0800
-Message-Id: <20210416095303.530-1-hbut_tan@163.com>
-X-Mailer: git-send-email 2.30.0.windows.2
+        id S240218AbhDPJ4L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 05:56:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C1BD106F;
+        Fri, 16 Apr 2021 02:55:46 -0700 (PDT)
+Received: from [10.57.57.112] (unknown [10.57.57.112])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0DAE73FA35;
+        Fri, 16 Apr 2021 02:55:43 -0700 (PDT)
+Subject: Re: [PATCH 2/2] perf cs-etm: Set time on synthesised samples to
+ preserve ordering
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     coresight@lists.linaro.org, al.grant@arm.com,
+        branislav.rankov@arm.com, denik@chromium.org,
+        suzuki.poulose@arm.com, Mike Leach <mike.leach@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210414143919.12605-1-james.clark@arm.com>
+ <20210414143919.12605-2-james.clark@arm.com>
+ <06e1cc2e-1108-81cd-59e4-79277807b80c@arm.com>
+ <20210415123953.GB1011890@leoy-ThinkPad-X240s>
+ <4c173b86-b045-0514-b293-c39cc74d353d@arm.com>
+ <20210415143329.GC1011890@leoy-ThinkPad-X240s>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <476662dd-eddb-e537-9940-6bc5b3293d2b@arm.com>
+Date:   Fri, 16 Apr 2021 12:55:42 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EMCowAAnLRmLXnlgwwaZlw--.14718S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Kr48Gw1DZFW8Kr1UAr4DCFg_yoW8Wr4rpr
-        sakFnxGr9YqFs2qa93GF1vqF4rGa1kKryUWrZF9w13X3W5X34kKFWqqFy3tF1xGFW8tr4a
-        9rs0vr4UWF1UAFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jvFAJUUUUU=
-X-Originating-IP: [183.46.98.96]
-X-CM-SenderInfo: xkex3sxwdqqiywtou0bp/xtbBXhN2xlaD6oBAYwABsg
+In-Reply-To: <20210415143329.GC1011890@leoy-ThinkPad-X240s>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhongjun Tan <tanzhongjun@yulong.com>
-
-In smack_sb_eat_lsm_opts(), 'arg' is allocated by kmemdup_nul().
-It returns NULL when fails. So 'arg' should be checked. And 'mnt_opts'
-should be freed when error.
-
-Signed-off-by: Zhongjun Tan <tanzhongjun@yulong.com>
----
- security/smack/smack_lsm.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
-
-diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-index 223a6da..0d5439f 100644
---- a/security/smack/smack_lsm.c
-+++ b/security/smack/smack_lsm.c
-@@ -696,10 +696,11 @@ static int smack_sb_eat_lsm_opts(char *options, void **mnt_opts)
- {
- 	char *from = options, *to = options;
- 	bool first = true;
-+	int rc;
- 
- 	while (1) {
- 		char *next = strchr(from, ',');
--		int token, len, rc;
-+		int token, len;
- 		char *arg = NULL;
- 
- 		if (next)
-@@ -710,13 +711,14 @@ static int smack_sb_eat_lsm_opts(char *options, void **mnt_opts)
- 		token = match_opt_prefix(from, len, &arg);
- 		if (token != Opt_error) {
- 			arg = kmemdup_nul(arg, from + len - arg, GFP_KERNEL);
-+			if (!arg) {
-+				rc = -ENOMEM;
-+				goto free_mnt_opts;
- 			rc = smack_add_opt(token, arg, mnt_opts);
-+			}
- 			if (unlikely(rc)) {
- 				kfree(arg);
--				if (*mnt_opts)
--					smack_free_mnt_opts(*mnt_opts);
--				*mnt_opts = NULL;
--				return rc;
-+				goto free_mnt_opts;
- 			}
- 		} else {
- 			if (!first) {	// copy with preceding comma
-@@ -734,6 +736,13 @@ static int smack_sb_eat_lsm_opts(char *options, void **mnt_opts)
- 	}
- 	*to = '\0';
- 	return 0;
-+
-+free_mnt_opts:
-+	if (*mnt_opts) {
-+		smack_free_mnt_opts(*mnt_opts);
-+		*mnt_opts = NULL;
-+	}
-+	return rc;
- }
- 
- /**
--- 
-1.9.1
 
 
+On 15/04/2021 17:33, Leo Yan wrote:
+> Hi James,
+> 
+> On Thu, Apr 15, 2021 at 03:51:46PM +0300, James Clark wrote:
+> 
+> [...]
+> 
+>>> For the orignal perf data file with "--per-thread" option, the decoder
+>>> runs into the condition for "etm->timeless_decoding"; and it doesn't
+>>> contain ETM timestamp.
+>>>
+>>> Afterwards, the injected perf data file also misses ETM timestamp and
+>>> hit the condition "etm->timeless_decoding".
+>>>
+>>> So I am confusing why the original perf data can be processed properly
+>>> but fails to handle the injected perf data file.
+>>
+>> Hi Leo,
+>>
+>> My patch only deals with per-cpu mode. With per-thread mode everything is already working
+>> because _none_ of the events have timestamps because they are not enabled by default:
+>>
+>> 	/* In per-cpu case, always need the time of mmap events etc */
+>> 	if (!perf_cpu_map__empty(cpus))
+>> 		evsel__set_sample_bit(tracking_evsel, TIME);
+>>
+>> When none of the events have timestamps, I think perf doesn't use the ordering code in
+>> ordered-events.c. So when the inject file is opened, the events are read in file order.
+> 
+> The explination makes sense to me.  One thinking: if the original file
+> doesn't use the ordered event, is it possible for the injected file to
+> not use the ordered event as well?
+
+Yes if you inject on a file with no timestamps and then open it, then the function queue_event()
+in ordered_events.c is not hit.
+
+If you create a file based on one with timestamps, then the queue_event() function is hit
+even on the injected file.
+
+The relevant bit of code is here:
+
+	if (tool->ordered_events) {
+		u64 timestamp = -1ULL;
+
+		ret = evlist__parse_sample_timestamp(evlist, event, &timestamp);
+		if (ret && ret != -1)
+			return ret;
+
+		ret = perf_session__queue_event(session, event, timestamp, file_offset);
+		if (ret != -ETIME)
+			return ret;
+	}
+
+	return perf_session__deliver_event(session, event, tool, file_offset);
+
+If tool->ordered_events is set AND the timestamp for the sample parses to be non zero
+and non -1:
+
+	if (!timestamp || timestamp == ~0ULL)
+		return -ETIME;
+
+Then the event is added into the queue, otherwise it goes straight through to perf_session__deliver_event()
+The ordering can be disabled manually with tool->ordered_events and --disable-order and is also disabled
+with --dump-raw-trace.
+
+It seems like processing the file only really works when all events are unordered but in the right order,
+or ordered with the right timestamps set.
+
+> 
+> Could you confirm Intel-pt can work well for per-cpu mode for inject
+> file?
+
+Yes it seems like synthesised samples are assigned sensible timestamps.
+
+	perf record -e intel_pt//u top
+	perf inject -i perf.data -o perf-intel-per-cpu.inject.data --itrace=i100i --strip
+	perf report -i perf-intel-per-cpu.inject.data -D
+
+Results in the correct binary and DSO names and the SAMPLE timestamp is after the COMM:
+
+	0 381165621595220 0x1200 [0x38]: PERF_RECORD_COMM exec: top:20173/20173
+	
+	...
+	
+	2 381165622169297 0x13b0 [0x38]: PERF_RECORD_SAMPLE(IP, 0x2): 20173/20173: 0x7fdaa14abf53 period: 100 addr: 0
+ 	... thread: top:20173
+ 	...... dso: /lib/x86_64-linux-gnu/ld-2.27.so
+
+Per-thread also works, but no samples or events have timestamps.
+
+> 
+>> So it's not really about --per-thread vs per-cpu mode, it's actually about whether
+>> PERF_SAMPLE_TIME is set, which is set as a by-product of per-cpu mode.
+>>
+>> I hope I understood your question properly.
+> 
+> Thanks for info, sorry if I miss any info you have elaborated.
+> 
+> Leo
+> 
