@@ -2,149 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8F0361743
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 03:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6090536174C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 04:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237969AbhDPB6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 21:58:21 -0400
-Received: from mga17.intel.com ([192.55.52.151]:49597 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235043AbhDPB6V (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 21:58:21 -0400
-IronPort-SDR: JZ1mDsJUbB0K+0WAGmev8DtB94ZVt0cZfp2qcNBV6Sddo74I/tnX/Pa38vgWxO6oW8vG6byNeL
- Io8yjUyGzV1g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="175082909"
-X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
-   d="scan'208";a="175082909"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 18:57:55 -0700
-IronPort-SDR: SDgojf8CaZd2LrTpdIhvbKReJAfwSite5mO4S5ZoHzggMfEENB74EiNJIGdor4iDTRgwN+3idN
- BJtuAtZ6NJvw==
-X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
-   d="scan'208";a="425410740"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.6]) ([10.238.4.6])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 18:57:52 -0700
-Subject: Re: [PATCH v3 12/27] perf parse-events: Support no alias assigned
- event inside hybrid PMU
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210329070046.8815-1-yao.jin@linux.intel.com>
- <20210329070046.8815-13-yao.jin@linux.intel.com> <YHgdixeqOu2NarkC@krava>
- <132fc848-7252-0d7f-4a5f-020e8f79012e@linux.intel.com>
- <YHhJeuYMA/0Jof55@krava>
- <7773d38a-4e1a-a610-367d-094f099d209d@linux.intel.com>
- <YHiWaDYzC9xEwLcp@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <e62a2ae3-5703-75dc-3382-b46bce099c26@linux.intel.com>
-Date:   Fri, 16 Apr 2021 09:57:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S237975AbhDPCEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 22:04:09 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:17362 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235043AbhDPCEE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 22:04:04 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FLzwT1z70zkkWr;
+        Fri, 16 Apr 2021 10:01:45 +0800 (CST)
+Received: from [10.67.102.118] (10.67.102.118) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 16 Apr 2021 10:03:23 +0800
+Subject: Re: [RFC PATCH] USB:XHCI:skip hub registration
+To:     Alan Stern <stern@rowland.harvard.edu>
+CC:     <gregkh@linuxfoundation.org>, <mathias.nyman@intel.com>,
+        <liudongdong3@huawei.com>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kong.kongxinwei@hisilicon.com>,
+        <yisen.zhuang@huawei.com>
+References: <1618489358-42283-1-git-send-email-liulongfang@huawei.com>
+ <20210415144323.GC1530055@rowland.harvard.edu>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <3dad6f4f-6386-427c-c36c-7d26b9a76fa4@huawei.com>
+Date:   Fri, 16 Apr 2021 10:03:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <YHiWaDYzC9xEwLcp@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <20210415144323.GC1530055@rowland.harvard.edu>
+Content-Type: text/plain; charset="gbk"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.118]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
-
-On 4/16/2021 3:39 AM, Jiri Olsa wrote:
-> On Thu, Apr 15, 2021 at 10:53:33PM +0800, Jin, Yao wrote:
+On 2021/4/15 22:43, Alan Stern wrote:
+> On Thu, Apr 15, 2021 at 08:22:38PM +0800, Longfang Liu wrote:
+>> When the number of ports on the USB hub is 0, skip the registration
+>> operation of the USB hub.
+>>
+>> The current Kunpeng930's XHCI hardware controller is defective. The number
+>> of ports on its USB3.0 bus controller is 0, and the number of ports on
+>> the USB2.0 bus controller is 1.
+>>
+>> In order to solve this problem that the USB3.0 controller does not have
+>> a port which causes the registration of the hub to fail, this patch passes
+>> the defect information by adding flags in the quirks of xhci and usb_hcd,
+>> and finally skips the registration process of the hub directly according
+>> to the results of these flags when the hub is initialized.
+>>
+>> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
 > 
-> SNIP
+> The objections that Greg raised are all good ones.
 > 
->>
->> With my current code,
->>
->> static int parse_events__with_hybrid_pmu(struct parse_events_state *parse_state,
->> 					 const char *str, char *pmu_name,
->> 					 struct list_head *list)
->> {
->> 	struct parse_events_state ps = {
->> 		.list           = LIST_HEAD_INIT(ps.list),
->> 		.stoken         = PE_START_EVENTS,
->> 		.pmu_name       = pmu_name,
->> 		.idx            = parse_state->idx,
->> 	};
->> 	int ret;
->>
->> 	ret = parse_events__scanner(str, &ps);
->> 	perf_pmu__parse_cleanup();
->>
->> 	if (!ret) {
->> 		if (!list_empty(&ps.list)) {
->> 			list_splice(&ps.list, list);
->> 			parse_state->idx = ps.idx;
->> 		}
->> 	}
->>
->> 	return ret;
->> }
->>
->> The new created evsels are added to the tail of list (ps.list) and ps.list
->> is joined to the list (the parameter 'list').
->>
->> If we want to reuse the __parse_events(), we may need to:
->>
->> struct evlist *evlist = evlist__new();
+> But even aside from them, this patch doesn't actually do what the 
+> description says.  The patch doesn't remove the call to usb_add_hcd 
+> for the USB-3 bus.  If you simply skipped that call (and the 
+> corresponding call to usb_remove_hcd) when there are no 
+> ports on the root hub, none of the stuff in this patch would be needed.
 > 
-> there's the original evlist pointer passed to the initial parser
-> that we should use no?
->
-
-Unfortunately the answer is no. :(
-
-For "cpu_core/LLC-loads/", if we do the parser twice by just calling __parse_events, actually the 
-__parse_events will be called two times.
-
-int __parse_events(struct evlist *evlist, const char *str,
-		   struct parse_events_error *err, struct perf_pmu *fake_pmu,
-		   char *pmu_name)
-{
-	struct parse_events_state parse_state = {
-		.list	  = LIST_HEAD_INIT(parse_state.list),
-		...
-	};
-
-	ret = parse_events__scanner(str, &parse_state);
-	perf_pmu__parse_cleanup();
-
-	if (!ret && list_empty(&parse_state.list)) {
-		WARN_ONCE(true, "WARNING: event parser found nothing\n");
-		return -1;
-	}
-	...
-}
-
-When returning to the first __parse_events,'parse_state.list' is an empty list so it would return 
-"WARNING: event parser found nothing".
-
-So in my patch, I pass a list pointer in and the new created evsels will be added to this list.
-
->>
->> __parse_events(evlist, str, NULL, NULL);
->> Add the evsels in evlist to the tail of list (the parameter 'list')
->> evlist__delete(evlist);
->>
->> Is my understanding correct?
->>
->> Yes, we have to change the interface of __parse_events() by adding a new
->> parameter 'pmu_name', which will bring much more changes. I agree to make
->> this change in follow-up patches.
+> Alan Stern
 > 
-> let's check on this over the next version
->
 
-That's fine, thanks.
+"[RFC PATCH] USB:XHCI:Adjust the log level of hub"
+The current method is an improved method of the above patch.
+This patch just make it skip registering USB-3 root hub if that hub has no ports,
+after skipping registering, no port will not report error log,the goal of this
+patch is reached without error log output.
+Thanks.
+Longfang.
 
-Thanks
-Jin Yao
-
-> thanks,
-> jirka
+>> ---
+>>  drivers/usb/core/hub.c      | 6 ++++++
+>>  drivers/usb/host/xhci-pci.c | 4 ++++
+>>  drivers/usb/host/xhci.c     | 5 +++++
+>>  drivers/usb/host/xhci.h     | 1 +
+>>  include/linux/usb/hcd.h     | 1 +
+>>  5 files changed, 17 insertions(+)
+>>
+>> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+>> index b1e14be..2d6869d 100644
+>> --- a/drivers/usb/core/hub.c
+>> +++ b/drivers/usb/core/hub.c
+>> @@ -1769,9 +1769,15 @@ static int hub_probe(struct usb_interface *intf, const struct usb_device_id *id)
+>>  	struct usb_host_interface *desc;
+>>  	struct usb_device *hdev;
+>>  	struct usb_hub *hub;
+>> +	struct usb_hcd *hcd;
+>>  
+>>  	desc = intf->cur_altsetting;
+>>  	hdev = interface_to_usbdev(intf);
+>> +	hcd = bus_to_hcd(hdev->bus);
+>> +	if (hcd->usb3_no_port) {
+>> +		dev_warn(&intf->dev, "USB hub has no port\n");
+>> +		return -ENODEV;
+>> +	}
+>>  
+>>  	/*
+>>  	 * Set default autosuspend delay as 0 to speedup bus suspend,
+>> diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
+>> index ef513c2..63b89a4 100644
+>> --- a/drivers/usb/host/xhci-pci.c
+>> +++ b/drivers/usb/host/xhci-pci.c
+>> @@ -281,6 +281,10 @@ static void xhci_pci_quirks(struct device *dev, struct xhci_hcd *xhci)
+>>  	if (xhci->quirks & XHCI_RESET_ON_RESUME)
+>>  		xhci_dbg_trace(xhci, trace_xhci_dbg_quirks,
+>>  				"QUIRK: Resetting on resume");
+>> +
+>> +	if (pdev->vendor == PCI_VENDOR_ID_HUAWEI &&
+>> +	    pdev->device == 0xa23c)
+>> +		xhci->quirks |= XHCI_USB3_NOPORT;
+>>  }
+>>  
+>>  #ifdef CONFIG_ACPI
+>> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+>> index bee5dec..e3e3573 100644
+>> --- a/drivers/usb/host/xhci.c
+>> +++ b/drivers/usb/host/xhci.c
+>> @@ -5184,6 +5184,11 @@ int xhci_gen_setup(struct usb_hcd *hcd, xhci_get_quirks_t get_quirks)
+>>  		/* xHCI private pointer was set in xhci_pci_probe for the second
+>>  		 * registered roothub.
+>>  		 */
+>> +		if (xhci->quirks & XHCI_USB3_NOPORT) {
+>> +			xhci_info(xhci, "xHCI host has no port\n");
+>> +			hcd->usb3_no_port = 1;
+>> +		}
+>> +
+>>  		return 0;
+>>  	}
+>>  
+>> diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+>> index 2c6c4f8..d3c658f 100644
+>> --- a/drivers/usb/host/xhci.h
+>> +++ b/drivers/usb/host/xhci.h
+>> @@ -1874,6 +1874,7 @@ struct xhci_hcd {
+>>  #define XHCI_RESET_PLL_ON_DISCONNECT	BIT_ULL(34)
+>>  #define XHCI_SNPS_BROKEN_SUSPEND    BIT_ULL(35)
+>>  #define XHCI_RENESAS_FW_QUIRK	BIT_ULL(36)
+>> +#define XHCI_USB3_NOPORT	BIT_ULL(37)
+>>  
+>>  	unsigned int		num_active_eps;
+>>  	unsigned int		limit_active_eps;
+>> diff --git a/include/linux/usb/hcd.h b/include/linux/usb/hcd.h
+>> index 3dbb42c..7df23a0f 100644
+>> --- a/include/linux/usb/hcd.h
+>> +++ b/include/linux/usb/hcd.h
+>> @@ -172,6 +172,7 @@ struct usb_hcd {
+>>  	unsigned		tpl_support:1; /* OTG & EH TPL support */
+>>  	unsigned		cant_recv_wakeups:1;
+>>  			/* wakeup requests from downstream aren't received */
+>> +	unsigned		usb3_no_port:1; /* xHCI main_hcd has no port */
+>>  
+>>  	unsigned int		irq;		/* irq allocated */
+>>  	void __iomem		*regs;		/* device memory/io */
+>> -- 
+>> 2.8.1
+>>
+> .
 > 
