@@ -2,229 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D69F3616F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 02:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 406953616F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 02:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237559AbhDPAt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 20:49:27 -0400
-Received: from mail-co1nam11on2063.outbound.protection.outlook.com ([40.107.220.63]:57440
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237446AbhDPAtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 20:49:24 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gP4cNNQ3v2DvU8s1MLQBXwpttQRulWZhfkyj0fP0c5/nwcCCKaXmYFDdu4UdYGSlE9laivLJ7tSPYuT7CVYwGB+7rEpQPM3A9EI663aIoTYmNTlr6Deo5yU3KbhzYGIMWyFBQSvchvZKys4RSJdVyxlx0gvX6pGAu9LNSY7HENv2niFYsquRIQkmSO137enfWQdkt1RCRDfXEUUTZg8WZ/ZWVVb9rK70xSUt15y3QCjrJgvlFq2y0ScsboSUMGjNiKSyLepkLlhoFcyE5+F7/YFBNDuuanepyoxEGihwUBAkQYtjHIVhDYFkkQL+69HcPuz+CTqgfll/cw/L0CzGdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W/EezMl+AMRAE05C1QQmPwko1nGRNn78okU3d+kht3E=;
- b=ctAVbgNYIYVp0sCPwgmcQrTySJ3SqOW4FXj8ConkW2mZPLc3wWExPpuUH/JulG7EP1TTCk3CTC9GGXNDAMqAYdA31k7vwKtdb/2FICHoHKJ795WuSFpGdvw2IQKu0ejRIiPYiLhNhqRST3UNFEtr+iSylcCr/LWK6ah7In42HGZwvPha0yPfOD8Vp4hjNOqAC4NT69PsF827Tjr33gyhUiVdX4V7BjuIMOGsJzOa+dfbBeuJmTZ2dQI0332BTMBbV30ZDoFGgjjuRuNAqtM341q8vfUi1M8udnrv6AfoIk3EYMhD9up1UiBFiqChJTze5whsdYXmf0JH9erjCx1BHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S235285AbhDPAvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 20:51:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234662AbhDPAvB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 20:51:01 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36151C061574;
+        Thu, 15 Apr 2021 17:50:36 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id l131so21157821oih.0;
+        Thu, 15 Apr 2021 17:50:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W/EezMl+AMRAE05C1QQmPwko1nGRNn78okU3d+kht3E=;
- b=oDYN11H22RCWmnhtWNFYLAGCEbUHlTGmR3I3F8qg9C1IOYTIDOxUg0jad1HuMeguDWvr+Dual/efHpbLvHBZ4Pi4x6kJfaC0cbFGC4aUBEEIppnnt8RsFacTInGRVHGHActkegx32Az77T2HO4iCXihgq1VG8IqsyT0O04ABKeo=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=windriver.com;
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
- by CY4PR11MB1256.namprd11.prod.outlook.com (2603:10b6:903:25::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.21; Fri, 16 Apr
- 2021 00:49:00 +0000
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::f45f:e820:49f5:3725]) by CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::f45f:e820:49f5:3725%6]) with mapi id 15.20.3999.037; Fri, 16 Apr 2021
- 00:49:00 +0000
-From:   quanyang.wang@windriver.com
-To:     Mark Brown <broonie@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
-Cc:     linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Quanyang Wang <quanyang.wang@windriver.com>
-Subject: [PATCH 5/5] spi: spi-zynqmp-gqspi: return -ENOMEM if dma_map_single fails
-Date:   Fri, 16 Apr 2021 08:46:52 +0800
-Message-Id: <20210416004652.2975446-6-quanyang.wang@windriver.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210416004652.2975446-1-quanyang.wang@windriver.com>
-References: <20210416004652.2975446-1-quanyang.wang@windriver.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: SJ0PR13CA0026.namprd13.prod.outlook.com
- (2603:10b6:a03:2c0::31) To CY4PR11MB0071.namprd11.prod.outlook.com
- (2603:10b6:910:7a::30)
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6kzta8uKesbWaKzE8NYSb8RMOX+yoIWsIqJJLxJth3Q=;
+        b=F3e8DCK+JXDEvA7EXEPXgiBaVBMKkwDAku1thnwHuWP7zmU3DMI3h7YCjcUkRgwIZU
+         K66+gbC/5zssw7nmEs2Z894Dqhz7OpuhC7OrfzSkHnrhBPziSfmm+OTsbGIypVYnz47W
+         CUV9PIrDOZfizEpQmHs5v7x39FqpiadtUm7ilRGj/9kp2vRN30QXI+N1+Pom/MHketUy
+         pOqNIZBSzK3LdJlAOjpoyODhiOBaMYuxtrXX5GlN7gj0Ac3ijgCWtUGWY3EO5BR90BDv
+         3QJcoUWOMSasM2op0hFEra64jcYjulw6ubvLh3N5UsSIeYf2rk31TR1EV8w3cSpmvSWe
+         +pdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=6kzta8uKesbWaKzE8NYSb8RMOX+yoIWsIqJJLxJth3Q=;
+        b=HRLoOPB/+yazb6+7MKIVtJYx+GqeDalNTiBrKtkyrhTuONmmqFaCM7BPdcOCbLwa4z
+         xdcUbYKmhcSvvRjrcTO43I/brtDL9iFSySRJlH9df6c6OFyYCqDLVGRu4sfVGptMGVd8
+         txfXh3SrY5M6X8bBe14L61glkwid9KpZvmXSB2A1+6F4w67glNYhevNw2T8J3IwaSMfo
+         H6gYYq7NGaJgPMJi5kLNYNNOtnDu3XyGZip7AOc/62kb/WH1d+7TZw8kGZq0PR4r9JDb
+         mcjS6mV9QKyTP3u3fadGsjxJlBkV93gKOzjBxkvOgN+2E5SKXcgO93h9aElXYfjzuUCU
+         fghA==
+X-Gm-Message-State: AOAM5324q38V9m0FqbtKRpjucex0R9VfLg8NSn53s3dmIoa3EBBwPA/V
+        QlMKG5p2xtEtF5cdHK0Ug6g=
+X-Google-Smtp-Source: ABdhPJzHR2COcT8/rvGFMguCT5mGiLDP//SLtie4LI+hn6Vl020EcFsVnjRS/P45zojunmJqWW+56w==
+X-Received: by 2002:aca:fdc7:: with SMTP id b190mr4563135oii.14.1618534235647;
+        Thu, 15 Apr 2021 17:50:35 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l203sm1003452oig.41.2021.04.15.17.50.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Apr 2021 17:50:35 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] watchdog: aspeed: fix integer overflow in set_timeout
+ handler
+To:     rentao.bupt@gmail.com, Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org, Tao Ren <taoren@fb.com>,
+        Amithash Prasad <amithash@fb.com>
+References: <20210416001208.16788-1-rentao.bupt@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <469ac948-d65b-471f-102f-726466c19c5c@roeck-us.net>
+Date:   Thu, 15 Apr 2021 17:50:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pek-qwang2-d1.wrs.com (60.247.85.82) by SJ0PR13CA0026.namprd13.prod.outlook.com (2603:10b6:a03:2c0::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.8 via Frontend Transport; Fri, 16 Apr 2021 00:48:57 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bdcf291b-8a08-4072-d5f6-08d900716c14
-X-MS-TrafficTypeDiagnostic: CY4PR11MB1256:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CY4PR11MB125622A5587680B1C774B99EF04C9@CY4PR11MB1256.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Bi5Lwz+ZW5n+X6LAFjj9hsz8FBLP1ciDR3vdv0936TS8Rg88CLvyD1ls+uou6YIKqsMfTlTRtM1xPpZnukzi9R5fokp5BWRl4QzJLS3keLaFWNtEC/OaDUtOfLyhKBc3w5vxkP3UcxPwokobB8UcrWx4+QIMPyZ7l5mdlsH0yBJh7zEOm6Z4deu+2kJu/1jQwhUuBoTiVp3lnmDXcADLMObFFrTf3VU4CyM9Fe65ipr3U4rT23OylV+5B6Rspmd4TE8LsUlWI+SRTKZ5R+O2v5H8FODodsBFgHiGuwWS5O2TpQslcd/Bp1n+tBrIN61Y4PuJTpos6LmAiDjK1WAzraPxQy4eiSOCtPWvt7IVauvGYPDeo4yIxVpieag6LPs9DKdxC6wjM7m4m/uCDS9Yj7NB/KhryBBZu3lD0MqUshoqLAIGBH8MJr+m58VBfeR0bzTvGqsvcixOro2yzPkrR7hn8FyPp6O07SPPh6/op+qR2hp9aDTHE9MvDT+8uPtW9j9jhMwHqfGAarOXp9vQczn7qVwlVeIGuiwJzi5/KuaWe9LgJ2hV3baW4GjQJOtekHUMw63cgSJysZe3TD87F4zjwVBOeNeZ3jkzqYB1G16UTiDvTn5FKhfZEd/6hmhR7q5EBgGylKQP4ifaGEuOSQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39840400004)(376002)(366004)(346002)(396003)(136003)(956004)(66476007)(2616005)(6666004)(66946007)(86362001)(83380400001)(4326008)(6506007)(66556008)(107886003)(5660300002)(52116002)(1076003)(6486002)(9686003)(2906002)(316002)(26005)(36756003)(8676002)(6512007)(38100700002)(110136005)(38350700002)(16526019)(478600001)(186003)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?sH5eort9NIO7eIyRFUygEWDWc82HIWBJqWX97AGQQItfqW5O8wtHbtQ2jbqP?=
- =?us-ascii?Q?fQ5ihyP1IV5enTo0cxbiO9QhId1doySpx5FChDzi8eMck2DDgz9zFF1cvSsM?=
- =?us-ascii?Q?HSFHXoMFS9vZoxIZ2wo8jPXzDv6ENNinLsDh9WgdSx2UNnV8zlP7dWKu+SqJ?=
- =?us-ascii?Q?eFTPDHQMnMcEJEpVYcZT5oeVtAVv/EwVLc7BWQ2fsgrtdQy5bXYefrxPF5FD?=
- =?us-ascii?Q?UTLqaK5QEbaD9bneXsr2MJ/ENRN69IVsgRXi6RM334Ke8xi8qwL/Ah536XyB?=
- =?us-ascii?Q?acbJ/L6xjeuiWXnY++2CLrHpBsGUzP40xs0DYKPWGCwLsKvfbBvT+K+iw/Ny?=
- =?us-ascii?Q?v7AWZ7mKKksMHs53ZuDh1HljNIIeDwOn4wR+auVW5TCBnFyye7CERrUabx7v?=
- =?us-ascii?Q?bBDb50hI98HZWb66ep+KqWUdriYhJb1k6OyYp9ntVYsiKQnSVPuIXRpKh1nP?=
- =?us-ascii?Q?JHA5DAupAKUA2nc65A/fZtmQyChxulcltRoSk/yaID0ZY+adsX3MLWb7pZuG?=
- =?us-ascii?Q?JAKDjxCenjXWdpbK5TlGIuQL3ln9vGZRZuTDkRJrEkCrJCIZJIF8rKg5wVBw?=
- =?us-ascii?Q?tMYffp4YNmvviBgwn4MFCHhR/nLqDa4oEkAvZuWVkF+rmgQFsMY2FKbSuqT/?=
- =?us-ascii?Q?FJq7P+nQdsBMIIwVju3Nwh1T3FUNe38bSt/iu/gQuwH0qW5W4OTqAKfhJMXu?=
- =?us-ascii?Q?9NwwUJQDTuFAI5IO/I77LHTdw0C2gwC6xRggVe9zJ42xmdwo9+BjmP1TAa1E?=
- =?us-ascii?Q?PuwOwFiWCQmUB3GYrvF6d5iO7dI3oLNs+RkAnERWymL1i+HXIjFMZoARhosq?=
- =?us-ascii?Q?Svu5y9dh8MMGhKl8o5RilKbRMIpNV4todH4Aqw0RANr5YJ+8M9/fA3XiajBT?=
- =?us-ascii?Q?AHGYKzrd0bSw94HtTfzVp4THYI7ztGKVE5UtGdUkYTvclMjiNI68PuYs5SYu?=
- =?us-ascii?Q?ryDdqfpinqPzzOi2Bo/FwCLdOhjnEgToHcwQdlKmusS4j18NJVh28leTvhOq?=
- =?us-ascii?Q?XdJdpoZP++3H3RVHzjaD6cOLSjZAX1XhKUQtSpg7Xnm1V7z6dUAZ6K/pCMlP?=
- =?us-ascii?Q?UPXnfkl/LXIfK/t4u4wLmlDigilwgxE6SejQhNFQNILmSLTQUWrVIX72tgSN?=
- =?us-ascii?Q?GHKsPLRrZ80Y1BZCi9rOzD7OQYpLJS/KVo2OO8YFlBoRfYUt+RrVl+7IeM3M?=
- =?us-ascii?Q?rIApggsu94LwB2TP6V9yg2wFy2hO9g0viPo9d+HGME/Pys6PvjFJKu2kagGs?=
- =?us-ascii?Q?REL+28MmKwy4134ea6DlvPsJp9V0+5ahAYG19f74wbmtAiZDPNHNW9Z6nbnZ?=
- =?us-ascii?Q?ns1ID5NBwlXV4wmlAxtIMjr2?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bdcf291b-8a08-4072-d5f6-08d900716c14
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2021 00:48:59.9072
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jYrkqdtiav9mgpSi3fOXbuhD4QWLtnuv2symjG02Ofrt6wl5Yu9eSx6zNHqga29M9zN5gBW9xQWJsBRK30HyMmcjFYqQzaxh6fMnFMAhUfc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1256
+In-Reply-To: <20210416001208.16788-1-rentao.bupt@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quanyang Wang <quanyang.wang@windriver.com>
+On 4/15/21 5:12 PM, rentao.bupt@gmail.com wrote:
+> From: Tao Ren <rentao.bupt@gmail.com>
+> 
+> Fix the time comparison (timeout vs. max_hw_heartbeat_ms) in set_timeout
+> handler to avoid potential integer overflow when the supplied timeout is
+> greater than aspeed's maximum allowed timeout (4294 seconds).
+> 
+> Fixes: efa859f7d786 ("watchdog: Add Aspeed watchdog driver")
+> Reported-by: Amithash Prasad <amithash@fb.com>
+> Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
+> ---
+>  drivers/watchdog/aspeed_wdt.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/watchdog/aspeed_wdt.c b/drivers/watchdog/aspeed_wdt.c
+> index 7e00960651fa..9f77272dc906 100644
+> --- a/drivers/watchdog/aspeed_wdt.c
+> +++ b/drivers/watchdog/aspeed_wdt.c
+> @@ -145,9 +145,8 @@ static int aspeed_wdt_set_timeout(struct watchdog_device *wdd,
+>  	struct aspeed_wdt *wdt = to_aspeed_wdt(wdd);
+>  	u32 actual;
+>  
+> -	wdd->timeout = timeout;
+> -
+> -	actual = min(timeout, wdd->max_hw_heartbeat_ms * 1000);
+> +	actual = min(timeout, wdd->max_hw_heartbeat_ms / 1000);
+> +	wdd->timeout = actual;
+>  
+>  	writel(actual * WDT_RATE_1MHZ, wdt->base + WDT_RELOAD_VALUE);
+>  	writel(WDT_RESTART_MAGIC, wdt->base + WDT_RESTART);
+> 
 
-The spi controller supports 44-bit address space on AXI in DMA mode,
-so set dma_addr_t width to 44-bit to avoid using a swiotlb mapping.
-In addition, if dma_map_single fails, it should return immediately
-instead of continuing doing the DMA operation which bases on invalid
-address.
+If the provided timeout is larger than the supported hardware timeout,
+the watchdog core will ping the hardware on behalf of userspace.
+The above code would defeat that mechanism for no good reason.
 
-This fixes the following crash which occurs in reading a big block
-from flash:
+NACK.
 
-[  123.633577] zynqmp-qspi ff0f0000.spi: swiotlb buffer is full (sz: 4194304 bytes), total 32768 (slots), used 0 (slots)
-[  123.644230] zynqmp-qspi ff0f0000.spi: ERR:rxdma:memory not mapped
-[  123.784625] Unable to handle kernel paging request at virtual address 00000000003fffc0
-[  123.792536] Mem abort info:
-[  123.795313]   ESR = 0x96000145
-[  123.798351]   EC = 0x25: DABT (current EL), IL = 32 bits
-[  123.803655]   SET = 0, FnV = 0
-[  123.806693]   EA = 0, S1PTW = 0
-[  123.809818] Data abort info:
-[  123.812683]   ISV = 0, ISS = 0x00000145
-[  123.816503]   CM = 1, WnR = 1
-[  123.819455] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000805047000
-[  123.825887] [00000000003fffc0] pgd=0000000803b45003, p4d=0000000803b45003, pud=0000000000000000
-[  123.834586] Internal error: Oops: 96000145 [#1] PREEMPT SMP
-
-Fixes: 1c26372e5aa9 ("spi: spi-zynqmp-gqspi: Update driver to use spi-mem framework")
-Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
----
- drivers/spi/spi-zynqmp-gqspi.c | 26 ++++++++++++++++++++------
- 1 file changed, 20 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/spi/spi-zynqmp-gqspi.c b/drivers/spi/spi-zynqmp-gqspi.c
-index 419bc1e6358b..328b6559bb19 100644
---- a/drivers/spi/spi-zynqmp-gqspi.c
-+++ b/drivers/spi/spi-zynqmp-gqspi.c
-@@ -733,7 +733,7 @@ static irqreturn_t zynqmp_qspi_irq(int irq, void *dev_id)
-  * zynqmp_qspi_setuprxdma - This function sets up the RX DMA operation
-  * @xqspi:	xqspi is a pointer to the GQSPI instance.
-  */
--static void zynqmp_qspi_setuprxdma(struct zynqmp_qspi *xqspi)
-+static int zynqmp_qspi_setuprxdma(struct zynqmp_qspi *xqspi)
- {
- 	u32 rx_bytes, rx_rem, config_reg;
- 	dma_addr_t addr;
-@@ -747,7 +747,7 @@ static void zynqmp_qspi_setuprxdma(struct zynqmp_qspi *xqspi)
- 		zynqmp_gqspi_write(xqspi, GQSPI_CONFIG_OFST, config_reg);
- 		xqspi->mode = GQSPI_MODE_IO;
- 		xqspi->dma_rx_bytes = 0;
--		return;
-+		return 0;
- 	}
- 
- 	rx_rem = xqspi->bytes_to_receive % 4;
-@@ -755,8 +755,10 @@ static void zynqmp_qspi_setuprxdma(struct zynqmp_qspi *xqspi)
- 
- 	addr = dma_map_single(xqspi->dev, (void *)xqspi->rxbuf,
- 			      rx_bytes, DMA_FROM_DEVICE);
--	if (dma_mapping_error(xqspi->dev, addr))
-+	if (dma_mapping_error(xqspi->dev, addr)) {
- 		dev_err(xqspi->dev, "ERR:rxdma:memory not mapped\n");
-+		return -ENOMEM;
-+	}
- 
- 	xqspi->dma_rx_bytes = rx_bytes;
- 	xqspi->dma_addr = addr;
-@@ -777,6 +779,8 @@ static void zynqmp_qspi_setuprxdma(struct zynqmp_qspi *xqspi)
- 
- 	/* Write the number of bytes to transfer */
- 	zynqmp_gqspi_write(xqspi, GQSPI_QSPIDMA_DST_SIZE_OFST, rx_bytes);
-+
-+	return 0;
- }
- 
- /**
-@@ -813,11 +817,17 @@ static void zynqmp_qspi_write_op(struct zynqmp_qspi *xqspi, u8 tx_nbits,
-  * @genfifoentry:	genfifoentry is pointer to the variable in which
-  *			GENFIFO	mask is returned to calling function
-  */
--static void zynqmp_qspi_read_op(struct zynqmp_qspi *xqspi, u8 rx_nbits,
-+static int zynqmp_qspi_read_op(struct zynqmp_qspi *xqspi, u8 rx_nbits,
- 				u32 genfifoentry)
- {
--	zynqmp_qspi_setuprxdma(xqspi);
-+	int ret;
-+
-+	ret = zynqmp_qspi_setuprxdma(xqspi);
-+	if (ret)
-+		return ret;
- 	zynqmp_qspi_fillgenfifo(xqspi, rx_nbits, genfifoentry);
-+
-+	return 0;
- }
- 
- /**
-@@ -1031,8 +1041,11 @@ static int zynqmp_qspi_exec_op(struct spi_mem *mem,
- 			xqspi->rxbuf = (u8 *)op->data.buf.in;
- 			xqspi->bytes_to_receive = op->data.nbytes;
- 			xqspi->bytes_to_transfer = 0;
--			zynqmp_qspi_read_op(xqspi, op->data.buswidth,
-+			err = zynqmp_qspi_read_op(xqspi, op->data.buswidth,
- 					    genfifoentry);
-+			if (err)
-+				goto return_err;
-+
- 			zynqmp_gqspi_write(xqspi, GQSPI_CONFIG_OFST,
- 					   zynqmp_gqspi_read
- 					   (xqspi, GQSPI_CONFIG_OFST) |
-@@ -1159,6 +1172,7 @@ static int zynqmp_qspi_probe(struct platform_device *pdev)
- 		goto clk_dis_all;
- 	}
- 
-+	dma_set_mask(&pdev->dev, DMA_BIT_MASK(44));
- 	ctlr->bits_per_word_mask = SPI_BPW_MASK(8);
- 	ctlr->num_chipselect = GQSPI_DEFAULT_NUM_CS;
- 	ctlr->mem_ops = &zynqmp_qspi_mem_ops;
--- 
-2.25.1
-
+Guenter
