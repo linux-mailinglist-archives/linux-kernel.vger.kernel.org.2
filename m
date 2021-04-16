@@ -2,121 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3F7361857
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 05:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F4F36185B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 05:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238282AbhDPDtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 23:49:41 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:38705 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234662AbhDPDte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 23:49:34 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FM2JN5N7Qz9sRK;
-        Fri, 16 Apr 2021 13:49:08 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1618544948;
-        bh=3qi+EVpAA9jE8avfFTx8hF47aGoPAkBUd3YXLg1Crrs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nkbZRP8vfer3IZBEK9PvsQ0Z/koBeWl95wYSqPEPdZg83cwOnNuW9hBLtKBL5qePX
-         x2D3cNYAlRTdFJE/OsfYOU2su/xVe3zYqY/pT80+7Kr4PXYYM396gnPO1wkOw3N87Q
-         9u/jZNYyHLyOGS6FYcneHgklCramtERn76t17Z+I8lzE8TijjSZDTFOC6ORGCzZddg
-         v7bOVHLBv8PYf6osjK7OkwO2SXgBL0+v5CNvXrL2UWf6RRraFdyvvznO1JT6tSgTMr
-         X8iQvCjUZ/MOFmPBdKydjNIfbr3rKPS3Q+kz8IO+O2Vj471fJaiF9aVXTVzAZSDSaw
-         T0+jgxVHEm2Pg==
-Date:   Fri, 16 Apr 2021 13:49:07 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the mmc tree
-Message-ID: <20210416134907.356dad53@canb.auug.org.au>
-In-Reply-To: <20210416134827.1f35b1cd@canb.auug.org.au>
-References: <20210416134827.1f35b1cd@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/dd+_vlhjOu/_gJTNgmxArlj";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S238279AbhDPDwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 23:52:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234662AbhDPDwa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 23:52:30 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45DCC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 20:52:05 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id p12so18328109pgj.10
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 20:52:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=areca-com-tw.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:date:mime-version
+         :content-transfer-encoding;
+        bh=xa3dF3mWjOGHQTSXewzVQttORbJ1MeBGLJ4z7sU7nWs=;
+        b=H8Gy/Fb5XMHP3uA3YY/JTZVRZJQYbZ8rhPUUvF8++jKCop+8uh0i+e7VLFdLxkwUa9
+         1ELHfXzFoOl356/lx5OpqKHCK67oAaO8P76Ts2xFC/DBD99LxzeC+RHh48DL03S52nZV
+         1lr5RZ/YbDAUmbIWFCeJKyiUF0TzM+Y33miYkmT95PM8aNLbDSYP+hx/lSX0AjYkR0tE
+         o2fv7saWCVNRt8e2/5gTHEkHALFo/Pf+qVN164hrHFjdi3lIhDBo2eQaWjey01b4ifhh
+         eytK70rTOBKUgPZ7dcHcbyJEfWTp7sPvEAhMSNEOUMVL6h0gfZZwy61Cw71DUcSLRVfR
+         0Yfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:date:mime-version
+         :content-transfer-encoding;
+        bh=xa3dF3mWjOGHQTSXewzVQttORbJ1MeBGLJ4z7sU7nWs=;
+        b=SC6srIMnTHJxo27ukPVc7ISp99UDEVLbKaHM2mu1coA6NTjwYYWB/sovykT6COZSei
+         vqbC/5TN+a/ge+Vnzu3bXIGiya5l2CRIqU/xNZffs5R2LGtPab34PLbGVz8s2sLp7In0
+         ZbYmJoV7tQyaNNgWw6BV/PJnywWMF9wf3YRZ1zgjatI1wYdaaAAU05K4H/tCiRN7W5y8
+         Z3nuHDpcfLRAwhVXWjFubIhDBRhCU6eLv5keRDifUS0NYwu1oGSjfCcFdp4sZBW881UV
+         U/401+AKpT3ZYC1y/h3YsuPYwdaYk7KcDKy4YaF7uQgdpAq9REBE7yEfRM1s+lXelTol
+         g+KA==
+X-Gm-Message-State: AOAM531fwZEph8EA+fr1hF5bTfpx+fUZYuOxPm3U4QsW03nc9SnbQQd7
+        MVMEQoMCwSF+FHuPnJWMtWhbZH5DT5T9kQ==
+X-Google-Smtp-Source: ABdhPJxEEFy28l5SGUuxFlvC3roQ4r/ScQbK4MIl3JpYg3srilQ1v/nNZbfinScmy5WvTXNg7thMdw==
+X-Received: by 2002:a63:6ec5:: with SMTP id j188mr6133824pgc.394.1618545125170;
+        Thu, 15 Apr 2021 20:52:05 -0700 (PDT)
+Received: from centos78 (60-248-88-209.HINET-IP.hinet.net. [60.248.88.209])
+        by smtp.gmail.com with ESMTPSA id g24sm3771557pgn.18.2021.04.15.20.52.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 15 Apr 2021 20:52:04 -0700 (PDT)
+Message-ID: <3a7f39b4f8d3a3a2400556e6ce410810f0508829.camel@areca.com.tw>
+Subject: [PATH 2/2] scsi: arcmsr: update driver version to
+ v1.50.00.04-20210414
+From:   ching Huang <ching2048@areca.com.tw>
+To:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
+        linux-scsi@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Fri, 16 Apr 2021 11:52:03 +0800
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-10.el7) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/dd+_vlhjOu/_gJTNgmxArlj
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: ching Huang <ching2048@areca.com.tw>
 
-Hi all,
+Update driver version to v1.50.00.04-20210414.
 
-This is actually just a warning.
+Signed-off-by: ching Huang <ching2048@areca.com.tw>
+---
 
-On Fri, 16 Apr 2021 13:48:27 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Hi all,
->=20
-> After merging the mmc tree, today's linux-next build (x86_64 allmodconfig)
-> failed like this:
->=20
-> In file included from drivers/memstick/host/r592.h:13,
->                  from drivers/memstick/host/r592.c:21:
-> drivers/memstick/host/r592.c: In function 'r592_flush_fifo_write':
-> include/linux/kfifo.h:588:1: warning: ignoring return value of '__kfifo_u=
-int_must_check_helper' declared with attribute 'warn_unused_result' [-Wunus=
-ed-result]
->   588 | __kfifo_uint_must_check_helper( \
->       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   589 | ({ \
->       | ~~~~
->   590 |  typeof((fifo) + 1) __tmp =3D (fifo); \
->       |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   591 |  typeof(__tmp->ptr) __buf =3D (buf); \
->       |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   592 |  unsigned long __n =3D (n); \
->       |  ~~~~~~~~~~~~~~~~~~~~~~~~~~
->   593 |  const size_t __recsize =3D sizeof(*__tmp->rectype); \
->       |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   594 |  struct __kfifo *__kfifo =3D &__tmp->kfifo; \
->       |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   595 |  (__recsize) ?\
->       |  ~~~~~~~~~~~~~~
->   596 |  __kfifo_out_r(__kfifo, __buf, __n, __recsize) : \
->       |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   597 |  __kfifo_out(__kfifo, __buf, __n); \
->       |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   598 | }) \
->       | ~~~~
->   599 | )
->       | ~
-> drivers/memstick/host/r592.c:367:2: note: in expansion of macro 'kfifo_ou=
-t'
->   367 |  kfifo_out(&dev->pio_fifo, buffer, 4);
->       |  ^~~~~~~~~
->=20
-> Caused by commit
->=20
->   4b00ed3c5072 ("memstick: r592: remove unused variable")
+diff --git a/drivers/scsi/arcmsr/arcmsr.h b/drivers/scsi/arcmsr/arcmsr.h
+index 0f6abd2..eb0ef73 100644
+--- a/drivers/scsi/arcmsr/arcmsr.h
++++ b/drivers/scsi/arcmsr/arcmsr.h
+@@ -49,7 +49,7 @@ struct device_attribute;
+ #define ARCMSR_MAX_OUTSTANDING_CMD	1024
+ #define ARCMSR_DEFAULT_OUTSTANDING_CMD	128
+ #define ARCMSR_MIN_OUTSTANDING_CMD	32
+-#define ARCMSR_DRIVER_VERSION		"v1.50.00.02-20200819"
++#define ARCMSR_DRIVER_VERSION		"v1.50.00.04-20210414"
+ #define ARCMSR_SCSI_INITIATOR_ID	255
+ #define ARCMSR_MAX_XFER_SECTORS		512
+ #define ARCMSR_MAX_XFER_SECTORS_B	4096
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/dd+_vlhjOu/_gJTNgmxArlj
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB5CTQACgkQAVBC80lX
-0GwgKAf/f3KFEewMzmmh1J7yQlcHiylGbUweYWZsiy8gsCtS0wdA/BU8qSeapq+i
-D7d4zDwJlbBMqORy2sYuW2MgCpZ9ZD4mzhLxgRm6/CjD+8Xo4Fa0+xUE33gMXV8f
-rPA14Jk9RI5+KjaPR/U4PC3eHUIHCCGLsxCACrx8GTcmIuNCJ7ltOMtcFOmIsg4A
-Vym4isBeJE/jRcR4Xl7bbDRugrkyC1V7eXtKqo8/AG73zvrdHPClllk1hn+gkJZX
-MpBsDhk+q9TX4E69qflDpdpaVkiCdfSpBYjephDiyg5ijugu1mGnyZs/D0An0R1o
-E3aiNQL8M2qhCfqKJHMtBOa8p1x+jQ==
-=chKg
------END PGP SIGNATURE-----
-
---Sig_/dd+_vlhjOu/_gJTNgmxArlj--
