@@ -2,90 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D134361C62
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B42361C67
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240699AbhDPIvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 04:51:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40918 "EHLO mail.kernel.org"
+        id S240875AbhDPIwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 04:52:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53912 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240223AbhDPIve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 04:51:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B17B061107;
-        Fri, 16 Apr 2021 08:51:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618563069;
-        bh=G20fHV8vaPYOZuC6bTk72/oUnsXRu84bnbsf13JZmRI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GnF3XUS3RhH9h9JHdtddbI5eZLxqQMnxkdnEvZx6UGHHsi8TJ81OQojgjmBIzQCEu
-         1TQZmcXPt4V1rax7BxmPJVQDGB/9QtUQIxk8BhOgNfPs1SGCrIhTjnU9Oix9A7OWZO
-         6Y06OecRcy1jyn3/DKFbxzbsxt6Cd/SijD1TCEFm2qkBplV+y1q+F6VGz7XXnF8gYE
-         bbyMEk0Je6cYdc7z7G+jUZzIZgjFB4vqX8IoO2MAaRXOjSWJnQI7mm7rCF3yXdwknV
-         Mg7zeIl0Ly6oVKzAP1FT3JNE7XBb7NXJCyCORqVds3wXizvG4IXpZtmHXbR9ORpTnF
-         7Wc84BwRSOCTA==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lXKBx-0001M3-Dk; Fri, 16 Apr 2021 10:51:09 +0200
-Date:   Fri, 16 Apr 2021 10:51:09 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Erwan LE RAY <erwan.leray@foss.st.com>
-Cc:     dillon min <dillon.minfei@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        kernel test robot <lkp@intel.com>,
-        linux-serial@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        Gerald Baeza <gerald.baeza@foss.st.com>
-Subject: Re: [PATCH v2] serial: stm32: optimize spin lock usage
-Message-ID: <YHlP/SryZXr/nNLM@hovoldconsulting.com>
-References: <1618219898-4600-1-git-send-email-dillon.minfei@gmail.com>
- <YHRGPpQ03XgBMkiy@hovoldconsulting.com>
- <CAL9mu0JF-9hy3Z_ytpEO+hzKh0D+f-0gYaUBEA0v28EOHpC80w@mail.gmail.com>
- <CAL9mu0Ke97FUZ03jvdH8Lz2qRnVY82B7tAEtjbhW97sPOVkAxQ@mail.gmail.com>
- <e17fddfb-f9b8-238f-da74-a4746f33134f@foss.st.com>
+        id S236538AbhDPIwe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 04:52:34 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A5205AEC6;
+        Fri, 16 Apr 2021 08:52:08 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: [PATCH v5 net-next 00/10] net: Korina improvements
+Date:   Fri, 16 Apr 2021 10:51:56 +0200
+Message-Id: <20210416085207.63181-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e17fddfb-f9b8-238f-da74-a4746f33134f@foss.st.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Please avoid top-posting. ]
+While converting Mikrotik RB532 support to use device tree I stumbled
+over the korina ethernet driver, which used way too many MIPS specific
+hacks. This series cleans this all up and adds support for device tree.
 
-On Thu, Apr 15, 2021 at 07:09:14PM +0200, Erwan LE RAY wrote:
-> Hi Dillon,
-> 
-> STM32MP151 is mono-core, but both STM32MP153 and STM32MP157 are 
-> dual-core (see 
-> https://www.st.com/content/st_com/en/products/microcontrollers-microprocessors/stm32-arm-cortex-mpus.html).
-> So your point is fully relevant, thanks.
-> 
-> ST already fixed the same issue in st-asc.c driver in the past (see 
-> ef49ffd8), because a systematic deadlock was detected with RT kernel.
+Changes in v5:
+  - fixed email address in binding document, which prevented sending it
 
-That's not the same issue. The above mentioned commit fixed an issue on
-*RT* where local_irq_save() should be avoided.
+Changes in v4:
+  - improve error returns in mdio_read further
+  - added clock name and improved clk handling
+  - fixed bindind errors
 
-> You proposed a first implementation in your patch, and a second one in 
-> the discussion. It seems that your initial proposal (ie your V2 patch) 
-> is the most standard one (implemented in 6 drivers). The second 
-> implementation is implemented by only 1 company.
-> 
-> It looks that the solution is to avoid locking in the sysrq case and 
-> trylock in the oops_in_progress case (see detailed analysis in 
-> 677fe555cbfb1).
->
-> So your initial patch looks to the right proposal, but it would be safer 
-> if Greg could confirm it.
+Changes in v3:
+  - use readl_poll_timeout_atomic in mdio_wait
+  - return -ETIMEDOUT, if mdio_wait failed
+  - added DT binding and changed name to idt,3243x-emac
+  - fixed usage of of_get_mac_address for net-next
 
-That would only fix the RT issue (and by making the sysrq one slightly
-worse).
+Changes in v2:
+  - added device tree support to get rid of idt_cpu_freq
+  - fixed compile test on 64bit archs
+  - fixed descriptor current address handling by storing/using mapped
+    dma addresses (dma controller modifies current address)
 
-Using uart_unlock_and_check_sysrq() would address both issues.
+Thomas Bogendoerfer (10):
+  net: korina: Fix MDIO functions
+  net: korina: Use devres functions
+  net: korina: Remove not needed cache flushes
+  net: korina: Remove nested helpers
+  net: korina: Use DMA API
+  net: korina: Only pass mac address via platform data
+  net: korina: Add support for device tree
+  net: korina: Get mdio input clock via common clock framework
+  net: korina: Make driver COMPILE_TESTable
+  dt-bindings: net: korina: Add DT bindings for IDT 79RC3243x SoCs
 
-Johan
+ .../bindings/net/idt,3243x-emac.yaml          |  74 +++
+ arch/mips/rb532/devices.c                     |   5 +-
+ drivers/net/ethernet/Kconfig                  |   3 +-
+ drivers/net/ethernet/korina.c                 | 601 +++++++++++++-----
+ 4 files changed, 511 insertions(+), 172 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/idt,3243x-emac.yaml
+
+-- 
+2.29.2
+
