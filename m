@@ -2,94 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22166361D80
+	by mail.lfdr.de (Postfix) with ESMTP id E776D361D84
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242226AbhDPJwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 05:52:44 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16470 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239120AbhDPJwm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 05:52:42 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FMBJk5Hy6zwSDG;
-        Fri, 16 Apr 2021 17:49:58 +0800 (CST)
-Received: from [10.174.178.100] (10.174.178.100) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 16 Apr 2021 17:52:16 +0800
-Subject: Re: [PATCH 4.19 00/13] 4.19.188-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210415144411.596695196@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <1968a47e-4ef3-dce5-e70d-1e076e880bfa@huawei.com>
-Date:   Fri, 16 Apr 2021 17:52:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S235354AbhDPJyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 05:54:25 -0400
+Received: from m12-16.163.com ([220.181.12.16]:45333 "EHLO m12-16.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242273AbhDPJyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 05:54:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=rfaZi
+        75ykphmZytDo8j3USUV+G9FAfZwR9DbVC9yRWs=; b=kSXeBUI1sRoSQ7QJHc0/p
+        h3ja45WotuY0RGleR+hU80oet1Oj6PUvcdzmyQHKT9rv56hmSpBANF1O/ntFeB/S
+        fnFVeKpsCdwV2P9HSlwx4ybSWx3P7dq3jM/KW/VwI2I3iaS6rCkkul1aWlai0QOu
+        8v7wZi6UkTItHdBHK/cBZg=
+Received: from localhost.localdomain (unknown [183.46.98.96])
+        by smtp12 (Coremail) with SMTP id EMCowAAnLRmLXnlgwwaZlw--.14718S2;
+        Fri, 16 Apr 2021 17:53:17 +0800 (CST)
+From:   =?UTF-8?q?=C2=A0Zhongjun=20Tan?= <hbut_tan@163.com>
+To:     casey@schaufler-ca.com, jmorris@namei.org, serge@hallyn.com
+Cc:     linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zhongjun Tan <tanzhongjun@yulong.com>
+Subject: [PATCH] lsm:fix a missing-check bug in smack_sb_eat_lsm_opts()
+Date:   Fri, 16 Apr 2021 17:53:03 +0800
+Message-Id: <20210416095303.530-1-hbut_tan@163.com>
+X-Mailer: git-send-email 2.30.0.windows.2
 MIME-Version: 1.0
-In-Reply-To: <20210415144411.596695196@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.100]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EMCowAAnLRmLXnlgwwaZlw--.14718S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Kr48Gw1DZFW8Kr1UAr4DCFg_yoW8Wr4rpr
+        sakFnxGr9YqFs2qa93GF1vqF4rGa1kKryUWrZF9w13X3W5X34kKFWqqFy3tF1xGFW8tr4a
+        9rs0vr4UWF1UAFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jvFAJUUUUU=
+X-Originating-IP: [183.46.98.96]
+X-CM-SenderInfo: xkex3sxwdqqiywtou0bp/xtbBXhN2xlaD6oBAYwABsg
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Zhongjun Tan <tanzhongjun@yulong.com>
+
+In smack_sb_eat_lsm_opts(), 'arg' is allocated by kmemdup_nul().
+It returns NULL when fails. So 'arg' should be checked. And 'mnt_opts'
+should be freed when error.
+
+Signed-off-by: Zhongjun Tan <tanzhongjun@yulong.com>
+---
+ security/smack/smack_lsm.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
+
+diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+index 223a6da..0d5439f 100644
+--- a/security/smack/smack_lsm.c
++++ b/security/smack/smack_lsm.c
+@@ -696,10 +696,11 @@ static int smack_sb_eat_lsm_opts(char *options, void **mnt_opts)
+ {
+ 	char *from = options, *to = options;
+ 	bool first = true;
++	int rc;
+ 
+ 	while (1) {
+ 		char *next = strchr(from, ',');
+-		int token, len, rc;
++		int token, len;
+ 		char *arg = NULL;
+ 
+ 		if (next)
+@@ -710,13 +711,14 @@ static int smack_sb_eat_lsm_opts(char *options, void **mnt_opts)
+ 		token = match_opt_prefix(from, len, &arg);
+ 		if (token != Opt_error) {
+ 			arg = kmemdup_nul(arg, from + len - arg, GFP_KERNEL);
++			if (!arg) {
++				rc = -ENOMEM;
++				goto free_mnt_opts;
+ 			rc = smack_add_opt(token, arg, mnt_opts);
++			}
+ 			if (unlikely(rc)) {
+ 				kfree(arg);
+-				if (*mnt_opts)
+-					smack_free_mnt_opts(*mnt_opts);
+-				*mnt_opts = NULL;
+-				return rc;
++				goto free_mnt_opts;
+ 			}
+ 		} else {
+ 			if (!first) {	// copy with preceding comma
+@@ -734,6 +736,13 @@ static int smack_sb_eat_lsm_opts(char *options, void **mnt_opts)
+ 	}
+ 	*to = '\0';
+ 	return 0;
++
++free_mnt_opts:
++	if (*mnt_opts) {
++		smack_free_mnt_opts(*mnt_opts);
++		*mnt_opts = NULL;
++	}
++	return rc;
+ }
+ 
+ /**
+-- 
+1.9.1
 
 
-On 2021/4/15 22:47, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.188 release.
-> There are 13 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 17 Apr 2021 14:44:01 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.188-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
-
-Tested on arm64 and x86 for 4.19.188-rc1,
-
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-4.19.y
-Version: 4.19.188-rc1
-Commit: 9f5de887b160253cf03d6ae91e72ba7dbd4a2317
-Compiler: gcc version 7.3.0 (GCC)
-
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 5723
-passed: 5723
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 5723
-passed: 5723
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
