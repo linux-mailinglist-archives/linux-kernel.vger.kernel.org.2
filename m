@@ -2,164 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F94361DD8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65361361DDA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240889AbhDPKRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 06:17:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:38056 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238871AbhDPKRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 06:17:04 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A3BEB106F;
-        Fri, 16 Apr 2021 03:16:39 -0700 (PDT)
-Received: from [10.57.57.112] (unknown [10.57.57.112])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 74FB03FA35;
-        Fri, 16 Apr 2021 03:16:37 -0700 (PDT)
-Subject: Re: [PATCH 2/2] perf cs-etm: Set time on synthesised samples to
- preserve ordering
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     coresight@lists.linaro.org, al.grant@arm.com,
-        branislav.rankov@arm.com, denik@chromium.org,
-        suzuki.poulose@arm.com, Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
+        id S240929AbhDPKSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 06:18:54 -0400
+Received: from mail-lf1-f49.google.com ([209.85.167.49]:36699 "EHLO
+        mail-lf1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238871AbhDPKSp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 06:18:45 -0400
+Received: by mail-lf1-f49.google.com with SMTP id n138so44049569lfa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 03:18:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=++isrNpC3mIHok4YR8XvI/+XcBPWIqUXXvBAj0ra310=;
+        b=qQZnvzLZHzSEaVRI+Ob/AfI98YUHG6WP6VJ62JS8+xBCfQ3AtK+VQLVVbNp0lA4qEy
+         gq8HpzApaQ6PeiYSR17veznCCPIPDLvqqVLxdEzWwuED2ZveD9G6EwxU2E1E+OVKUhsw
+         g3uHgxYCEEd58uFKlbNfE6r0RTXXYrJqiiNTCME6WtN2cbKGa83IS+M7qWs7Aw5msYb0
+         yBqEEPBbnue+6i1c6sgi7+orfbyc0QTFeoHFvt6G5D+odwfl7V0vgtRlT7dCQa1X5+cv
+         VMqdRtt62IERliZgSo0QXmtIJrx4+ei59EK53TVpRAAG1dXZximWOYwx68lPun8019Eu
+         DG4Q==
+X-Gm-Message-State: AOAM531D9JDGofJiMOPVeunPrOEseJoKsQ/0pkm4NIh4/wZ60bkY/l0p
+        gAhtIMsDuHZu+SmBpSGJGgtz6DRP5+cp0MdWOftqZWmoCr0=
+X-Google-Smtp-Source: ABdhPJzBKgwqhOC7u0MZhfXaXdasp9C7939AOcA7k2+08z/koohDShK+5rCTZicJygnGugr1ie/dNNQ7P9SSicSGBBk=
+X-Received: by 2002:a05:6512:b26:: with SMTP id w38mr2506117lfu.152.1618568300183;
+ Fri, 16 Apr 2021 03:18:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210413155337.644993-1-namhyung@kernel.org> <20210413155337.644993-2-namhyung@kernel.org>
+ <YHhS6kjeA8AvcFgz@hirez.programming.kicks-ass.net> <CAM9d7chrHYNOB4ShJ=34WwXOUY-grXhkiW_wursywTH1FbZdvA@mail.gmail.com>
+ <YHlYT+tHrkNyMFuh@hirez.programming.kicks-ass.net>
+In-Reply-To: <YHlYT+tHrkNyMFuh@hirez.programming.kicks-ass.net>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 16 Apr 2021 19:18:08 +0900
+Message-ID: <CAM9d7cjcGUPcRJhSiHZukuHbnbPc8dh88Gb83k8689s3ug_1Og@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] perf/core: Share an event with multiple cgroups
+To:     Peter Zijlstra <peterz@infradead.org>, Tejun Heo <tj@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210414143919.12605-1-james.clark@arm.com>
- <20210414143919.12605-2-james.clark@arm.com> <20210415195416.GB937505@xps15>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <0ca8c095-9165-bcd1-26bc-3e5d2191affb@arm.com>
-Date:   Fri, 16 Apr 2021 13:16:36 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210415195416.GB937505@xps15>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Song Liu <songliubraving@fb.com>,
+        kernel test robot <lkp@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 16, 2021 at 6:27 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Fri, Apr 16, 2021 at 08:48:12AM +0900, Namhyung Kim wrote:
+> > On Thu, Apr 15, 2021 at 11:51 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> > > On Tue, Apr 13, 2021 at 08:53:36AM -0700, Namhyung Kim wrote:
+>
+> > > > cgroup event counting (i.e. perf stat).
+> > > >
+> > > >  * PERF_EVENT_IOC_ATTACH_CGROUP - it takes a buffer consists of a
+> > > >      64-bit array to attach given cgroups.  The first element is a
+> > > >      number of cgroups in the buffer, and the rest is a list of cgroup
+> > > >      ids to add a cgroup info to the given event.
+> > >
+> > > WTH is a cgroup-id? The syscall takes a fd to the path, why have two
+> > > different ways?
+> >
+> > As you know, we already use cgroup-id for sampling.  Yeah we
+> > can do it with the fd but one of the point in this patch is to reduce
+> > the number of file descriptors. :)
+>
+> Well, I found those patches again after I wrote that. But I'm still not
+> sure what a cgroup-id is from userspace.
 
+It's a file handle that can be get from name_to_handle_at(2).
 
-On 15/04/2021 22:54, Mathieu Poirier wrote:
-> On Wed, Apr 14, 2021 at 05:39:19PM +0300, James Clark wrote:
->> The following attribute is set when synthesising samples in
->> timed decoding mode:
->>
->>     attr.sample_type |= PERF_SAMPLE_TIME;
->>
->> This results in new samples that appear to have timestamps but
->> because we don't assign any timestamps to the samples, when the
->> resulting inject file is opened again, the synthesised samples
->> will be on the wrong side of the MMAP or COMM events.
->>
-> 
-> I understand the problem.  Once again an issue caused by CS and the kernel
-> having a different view of time. 
-> 
->> For example this results in the samples being associated with
->> the perf binary, rather than the target of the record:
->>
->>     perf record -e cs_etm/@tmc_etr0/u top
->>     perf inject -i perf.data -o perf.inject --itrace=i100il
->>     perf report -i perf.inject
->>
->> Where 'Command' == perf should show as 'top':
->>
->>     # Overhead  Command  Source Shared Object  Source Symbol           Target Symbol           Basic Block Cycles
->>     # ........  .......  ....................  ......................  ......................  ..................
->>     #
->>         31.08%  perf     [unknown]             [.] 0x000000000040c3f8  [.] 0x000000000040c3e8  -
->>
->> If the perf.data file is opened directly with perf, without the
->> inject step, then this already works correctly because the
->> events are synthesised after the COMM and MMAP events and
->> no second sorting happens. Re-sorting only happens when opening
->> the perf.inject file for the second time so timestamps are
->> needed.
->>
->> Using the timestamp from the AUX record mirrors the current
->> behaviour when opening directly with perf, because the events
->> are generated on the call to cs_etm__process_queues().
->>
->> Signed-off-by: James Clark <james.clark@arm.com>
->> Co-developed-by: Al Grant <al.grant@arm.com>
->> Signed-off-by: Al Grant <al.grant@arm.com>
-> 
-> Suzuki is correct, your name has to appear after Al's.
-> 
->> ---
->>  tools/perf/util/cs-etm.c | 10 ++++++++--
->>  1 file changed, 8 insertions(+), 2 deletions(-)
->>
->> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
->> index c25da2ffa8f3..d0fa9dce47f1 100644
->> --- a/tools/perf/util/cs-etm.c
->> +++ b/tools/perf/util/cs-etm.c
->> @@ -54,6 +54,7 @@ struct cs_etm_auxtrace {
->>  	u8 sample_instructions;
->>  
->>  	int num_cpu;
->> +	u64 latest_kernel_timestamp;
->>  	u32 auxtrace_type;
->>  	u64 branches_sample_type;
->>  	u64 branches_id;
->> @@ -1192,6 +1193,8 @@ static int cs_etm__synth_instruction_sample(struct cs_etm_queue *etmq,
->>  	event->sample.header.misc = cs_etm__cpu_mode(etmq, addr);
->>  	event->sample.header.size = sizeof(struct perf_event_header);
->>  
->> +	if (!etm->timeless_decoding)
->> +		sample.time = etm->latest_kernel_timestamp;
->>  	sample.ip = addr;
->>  	sample.pid = tidq->pid;
->>  	sample.tid = tidq->tid;
->> @@ -1248,6 +1251,8 @@ static int cs_etm__synth_branch_sample(struct cs_etm_queue *etmq,
->>  	event->sample.header.misc = cs_etm__cpu_mode(etmq, ip);
->>  	event->sample.header.size = sizeof(struct perf_event_header);
->>  
->> +	if (!etm->timeless_decoding)
->> +		sample.time = etm->latest_kernel_timestamp;
->>  	sample.ip = ip;
->>  	sample.pid = tidq->pid;
->>  	sample.tid = tidq->tid;
->> @@ -2412,9 +2417,10 @@ static int cs_etm__process_event(struct perf_session *session,
->>  	else if (event->header.type == PERF_RECORD_SWITCH_CPU_WIDE)
->>  		return cs_etm__process_switch_cpu_wide(etm, event);
->>  
->> -	if (!etm->timeless_decoding &&
->> -	    event->header.type == PERF_RECORD_AUX)
->> +	if (!etm->timeless_decoding && event->header.type == PERF_RECORD_AUX) {
->> +		etm->latest_kernel_timestamp = sample_kernel_timestamp;
-> 
-> It will be fun to fix this when 8.4 comes out but for now it's the best we've
-> got.
-> 
+>
+> How does userspace get one given a cgroup? (I actually mounted cgroupfs
+> in order to see if there's some new 'id' file to read, there is not)
+> Does having the cgroup-id ensure the cgroup exists? Can the cgroup-id
+> get re-used?
 
-Thanks for the reviews Leo, Mathieu and Suzuki. Yes I think for 8.4 we can also do something
-very similar to Leo's "perf arm-spe: Bail out if the trace is later than perf event"
-patch where decoding is paused until the other events with later timestamps
-have been received. At the moment the CS decoding happens all at once.
+It doesn't guarantee the existence of the cgroup as far as I know.
+The cgroup can go away anytime.  Actually it doesn't matter for
+this interface as users will get 0 result for them.  So I didn't check
+the validity of the cgroup-id in the code.
 
-I will submit a new set with the fixes and better variable name.
+And I don't think the cgroup-id is reused without reboot at least
+for 64 bit systems.  It's came from a 64 bit integer increased
+when a new cgroup is created.  Tejun?
 
-James
+>
+> I really don't konw what the thing is. I don't use cgroups, like ever,
+> except when I'm forced to due to some regression or bugreport.
 
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> 
->>  		return cs_etm__process_queues(etm);
->> +	}
->>  
->>  	return 0;
->>  }
->> -- 
->> 2.28.0
->>
+I hope I made it clear.
+
+>
+> > Also, having cgroup-id is good to match with the result (from read)
+> > as it contains the cgroup information.
+>
+> What?
+
+I mean we need to match the result to a cgroup.  Either by passing
+cgroup-id through ioctl or add the info in the read format.
+
+>
+> > > >  * PERF_EVENT_IOC_READ_CGROUP - it takes a buffer consists of a 64-bit
+> > > >      array to get the event counter values.  The first element is size
+> > > >      of the array in byte, and the second element is a cgroup id to
+> > > >      read.  The rest is to save the counter value and timings.
+> > >
+> > > :-(
+> > >
+> > > So basically you're doing a whole seconds cgroup interface, one that
+> > > violates the one counter per file premise and lives off of ioctl()s.
+> >
+> > Right, but I'm not sure that we really want a separate event for each
+> > cgroup if underlying hardware events are all the same.
+>
+> Sure, I see where you're coming from; I just don't much like where it
+> got you :-)
+
+Ok, let's make it better. :-)
+
+>
+> > > *IF* we're going to do something like this, I feel we should explore the
+> > > whole vector-per-fd concept before proceeding. Can we make it less yuck
+> > > (less special ioctl() and more regular file ops. Can we apply the
+> > > concept to more things?
+> >
+> > Ideally it'd do without keeping file descriptors open.  Maybe we can make
+> > the vector accept various types like vector-per-cgroup_id or so.
+>
+> So I think we've had proposals for being able to close fds in the past;
+> while preserving groups etc. We've always pushed back on that because of
+> the resource limit issue. By having each counter be a filedesc we get a
+> natural limit on the amount of resources you can consume. And in that
+> respect, having to use 400k fds is things working as designed.
+>
+> Anyway, there might be a way around this..
+
+It's not just a file descriptor problem.  By having each counter per cgroup
+it should pay the price on multiplexing or event scheduling.  That caused
+serious performance problems in production environment so we had
+to limit the number of cgroups monitored at a time.
+
+>
+> > > The second patch extends the ioctl() to be more read() like, instead of
+> > > doing the sane things and extending read() by adding PERF_FORMAT_VECTOR
+> > > or whatever. In fact, this whole second ioctl() doesn't make sense to
+> > > have if we do indeed want to do vector-per-fd.
+> >
+> > One of the upside of the ioctl() is that we can pass cgroup-id to read.
+> > Probably we can keep the index in the vector and set the file offset
+> > with it.  Or else just read the whole vector, and then it has a cgroup-id
+> > in the output like PERF_FORMAT_CGROUP?
+> >
+> > >
+> > > Also, I suppose you can already fake this, by having a
+> > > SW_CGROUP_SWITCHES (sorry, I though I picked those up, done now) event
+> >
+> > Thanks!
+> >
+> > > with PERF_SAMPLE_READ|PERF_SAMPLE_CGROUP and PERF_FORMAT_GROUP in a
+> > > group with a bunch of events. Then the buffer will fill with the values
+> > > you use here.
+> >
+> > Right, I'll do an experiment with it.
+> >
+> > >
+> > > Yes, I suppose it has higher overhead, but you get the data you want
+> > > without having to do terrible things like this.
+> >
+> > That's true.  And we don't need many things in the perf record like
+> > synthesizing task/mmap info.  Also there's a risk we can miss some
+> > samples for some reason.
+> >
+> > Another concern is that it'd add huge slow down in the perf event
+> > open as it creates a mixed sw/hw group.  The synchronized_rcu in
+> > the move_cgroup path caused significant problems in my
+> > environment as it adds up in proportion to the number of cpus.
+>
+> Since when is perf_event_open() a performance concern? That thing is
+> slow in all possible ways.
+
+I found that perf record is stuck in the perf_event_open for several
+*seconds*.  And the worst part is that it'll prevent other users from
+moving forward as it holds the ctx->mutex.  So I got some complaints
+from random users for their mysterious slow down in the perf (like
+in open, enable, disable and close).
+
+Thanks,
+Namhyung
