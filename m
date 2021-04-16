@@ -2,97 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC10361B6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 10:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5952361B77
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 10:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240283AbhDPIJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 04:09:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240252AbhDPIJK (ORCPT
+        id S238992AbhDPILP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 04:11:15 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:57349 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234708AbhDPILO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 04:09:10 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C27C061574;
-        Fri, 16 Apr 2021 01:08:46 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id n127so2019154wmb.5;
-        Fri, 16 Apr 2021 01:08:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=3fxufJIKY9M0ESBy2+S1qlqYMJSKzUOHQ6YV4z83AzU=;
-        b=fCkmtgEfV100eUu8UAne1zSXWjUQ3uIRWP1wQCBKCM9aHDsFfiaDJv4lqaQvoI4YEJ
-         fMwuEI/ke9t6dDRDRCkCXqD30xrtmZLrqFV9WQjEe4bfuHEgNRMIbI7SDYkF8Zic+OrQ
-         y0tFJIaQ8DBcW8dkplQ4Xi2xhByHuqGRs7t2oNpQkuiubzh6mGlm6+Gmn6/dEt2QZXpx
-         iq/JvcsFZZMCpmOFbPm7GCpkHH+P0PzCxbgcoZaUYypYtcMB0gw7sEmkkJQ8T17c1IUi
-         lI6NhWOgsg6EOkrus1gjB6bl3wOB9kIU+q/2TOqHdvpBIUXcmT5JYWOSLc0BrSv5LlY3
-         KThQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=3fxufJIKY9M0ESBy2+S1qlqYMJSKzUOHQ6YV4z83AzU=;
-        b=NCITGP03KpqB1dgned9Ir8lvxTho7+gO4AfcY1pVFNT/Pp8ybRY/sMG6k9H7KBgk40
-         2ukd+ekXxHJvy/5kHyIZFb2bl1lpcXn3DqZbo2C7QH77zNmNwrT2l88juqvirk7Lntv5
-         +EKMMF5NiLJ/BbWAZc1jdczhC+kqzpdufV5cAiGx/bugNaYndbyf78g2GcKLet2tx+BY
-         yX5BYOyOV4ZqDwKiZfWplofoUODk+iNQFMf6s+UsmfIKFr8nOwxfmy/pCjQpiSjJviVB
-         iGKOjOrhUo0fXA+mGanv5Za/09QTJa1FWxTG4itwm0knfuz7TgjxB2635fNIKCURo8Rj
-         Ci5Q==
-X-Gm-Message-State: AOAM533wfsBBUzspJccZ/O6fLfX68RXI7/voHFkVGQPHsWvucpj5V4pt
-        xwLIQIJKN7RhHMlTb/zVjp6xvBqlQOlXtg==
-X-Google-Smtp-Source: ABdhPJz+Aqy2dlorvethG/BD83GHwM/hMdQRX11Z61JhM2x2P2PEAKvIPGP1l9DT/vHP7HTLYUrqfA==
-X-Received: by 2002:a7b:c346:: with SMTP id l6mr7026599wmj.34.1618560524809;
-        Fri, 16 Apr 2021 01:08:44 -0700 (PDT)
-Received: from localhost (200116b8206a30116607e2acfb3e7251.dip.versatel-1u1.de. [2001:16b8:206a:3011:6607:e2ac:fb3e:7251])
-        by smtp.gmail.com with ESMTPSA id k11sm5192808wrx.88.2021.04.16.01.08.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 01:08:44 -0700 (PDT)
-Date:   Fri, 16 Apr 2021 10:08:43 +0200
-From:   Malte Deiseroth <mdeiseroth88@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] usb: misc: adutux: fix whitespace coding style issue
-Message-ID: <20210416080843.GA137657@utop>
+        Fri, 16 Apr 2021 04:11:14 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 3CE585804BC;
+        Fri, 16 Apr 2021 04:10:50 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 16 Apr 2021 04:10:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=yPZi+7KiR50TB/v3JPVHEco9xo9
+        fjXzN5jg2sgQKdFM=; b=mjgw0FuD0Jin/r8kx/exjEhE1tnZCaSNmsiVg+4lnKA
+        KKD0Fw/Wdlh3JHb9QRZjqVSS4rpjIQHxjZI7lnHY2Jh7xOOZtPqzP+JJkAojOTDt
+        GdazMszYE9YfogxKegPmtY14D5WSZourRmjWA8bsF4p3tyjV62G8FOHnWxxRYx8O
+        PfwzfU+nSt+Sl+RmUb/nkjkpOzVa9M9M81ER6DbqVA45OrgzezMF7dyVigW2wuW3
+        UEOcLiV9OhZzLedAHDT332jAINkrDEwdU1UMVklbwjP/T2QWJJf787DSRYfX3tEV
+        Oaev3LXFovVllgXykGtTUHOPhAgTYvgGQtCsSmFXGOQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=yPZi+7
+        KiR50TB/v3JPVHEco9xo9fjXzN5jg2sgQKdFM=; b=YZN4FkBAj+Bl0O1WbmyJmv
+        8EyEzbkflaXJNaHbBrnMgbYccSpcg0QTwuelrGr/Cp1bZRhJUOD89cJyq1js/8Gg
+        VbHghK+iY5uY6QKr9Q+91XI1NEi0CNAsOB0GnD63Saqy3nt6D6lDVYR9R/L9afPh
+        7CcIx0lMJhy0vz40ZKaSQrRAGQTiu09QoewXkGza59n2A+OQYJGBZx/S0RUflM2R
+        Y7SDlPkEdkmaQXoi2tC/0UY5CLOZkZj1/JY4zvjOCZkzd3pfk1P9tMSYWNapVtXg
+        ZTKeNPy3vHdo0SVz5U5aBXjMvvEPV1SxFCyRuEHC3v8sTTDJBWcT3dljp3bK+RHg
+        ==
+X-ME-Sender: <xms:iEZ5YENYoU7ae4OjwmN5Xp_NbS9ufbbZsJpuIlmSW4Okio8Bxfa3KA>
+    <xme:iEZ5YK_iuC-mPDBQ0WzuPBoeRW4UGafdSDdmJY5Lbebfls_-VRE6dEF6Z8er8xswC
+    EFtU177Vav3Bg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudelhedgtdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
+    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:iEZ5YLQWFiDkS28ddLNjUlK5yXsed2hePUdUmTOjuvLn9ZULIdVGZQ>
+    <xmx:iEZ5YMvOoMxg2RmLKuyUPMyO_oZX5YTxEv_qXjmxuiZ9I8ipQRKLgQ>
+    <xmx:iEZ5YMcyqoM1H-D7bLfDuGHAyrAO7K8g_RJeanRKBwP9We39AZEsAQ>
+    <xmx:ikZ5YDwUCFNL6qJL7b_ZBn8hUFlpBgPCEj037n-7hlfhHfsjcs_MJQ>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 81D0624005B;
+        Fri, 16 Apr 2021 04:10:48 -0400 (EDT)
+Date:   Fri, 16 Apr 2021 10:10:46 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Hang Lu <hangl@codeaurora.org>,
+        Li Li <dualli@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Marco Ballesio <balejs@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Todd Kjos <tkjos@google.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>
+Subject: Re: linux-next: manual merge of the rust tree with the char-misc tree
+Message-ID: <YHlGhmEEQIc8u9uj@kroah.com>
+References: <20210416175806.2acd314b@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210416175806.2acd314b@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correct missing space error ceckpatch.pl is complaining about.
+On Fri, Apr 16, 2021 at 05:58:06PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the rust tree got a conflict in:
+> 
+>   include/uapi/linux/android/binder.h
+> 
+> between commits:
+> 
+>   432ff1e91694 ("binder: BINDER_FREEZE ioctl")
+>   ae28c1be1e54 ("binder: BINDER_GET_FROZEN_INFO ioctl")
+>   a7dc1e6f99df ("binder: tell userspace to dump current backtrace when detected oneway spamming")
+> 
+> from the char-misc tree and commit:
+> 
+>   1fed5dee5fbb ("Android: Binder IPC in Rust (WIP)")
+> 
+> from the rust tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-Signed-off-by: Malte Deiseroth <mdeiseroth88@gmail.com>
----
- drivers/usb/misc/adutux.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Hah, yeah, it is going to hit this and needs to be fixed up in the rust
+code.  If they really want this as an enum, we can talk about it :)
 
-diff --git a/drivers/usb/misc/adutux.c b/drivers/usb/misc/adutux.c
-index 45a387979935..6d15a097b007 100644
---- a/drivers/usb/misc/adutux.c
-+++ b/drivers/usb/misc/adutux.c
-@@ -183,10 +183,10 @@ static void adu_interrupt_in_callback(struct urb *urb)
- 				dev->interrupt_in_buffer, urb->actual_length);
- 
- 			dev->read_buffer_length += urb->actual_length;
--			dev_dbg(&dev->udev->dev,"%s reading  %d\n", __func__,
-+			dev_dbg(&dev->udev->dev, "%s reading  %d\n", __func__,
- 				urb->actual_length);
- 		} else {
--			dev_dbg(&dev->udev->dev,"%s : read_buffer overflow\n",
-+			dev_dbg(&dev->udev->dev, "%s : read_buffer overflow\n",
- 				__func__);
- 		}
- 	}
-@@ -726,7 +726,7 @@ static int adu_probe(struct usb_interface *interface,
- 		retval = -EIO;
- 		goto error;
- 	}
--	dev_dbg(&interface->dev,"serial_number=%s", dev->serial_number);
-+	dev_dbg(&interface->dev, "serial_number=%s", dev->serial_number);
- 
- 	/* we can register the device now, as it is ready */
- 	usb_set_intfdata(interface, dev);
--- 
-2.27.0
+thanks,
 
+greg k-h
