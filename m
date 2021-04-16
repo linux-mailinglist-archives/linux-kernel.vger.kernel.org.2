@@ -2,71 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8153622F2
+	by mail.lfdr.de (Postfix) with ESMTP id 68A2F3622F3
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244957AbhDPOkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:40:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45338 "EHLO
+        id S243350AbhDPOk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:40:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244655AbhDPOie (ORCPT
+        with ESMTP id S244497AbhDPOil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:38:34 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47165C061347
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:38:08 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id g5so35780788ejx.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:38:08 -0700 (PDT)
+        Fri, 16 Apr 2021 10:38:41 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9280EC06134E
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:38:09 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id sd23so33835238ejb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:38:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=N0J5Bxl7vhdML2GM3ovQErwfTec12UCEbn+lGIO9lAc=;
-        b=Y9TWecd7BKcNNCyqA8M5xkHBbkrb0RLig/181L5KKhITa6WQrpLWHcWzAOUIpBbztH
-         mfRFZYAaWiwyACw5lHpXyoD70Ly9TRr4SOMk5VawhA49+MUL7RyTRAajxJcDKndra2eH
-         V4RfFTTeH2LlPtlHCKTk2r9xYprOHtVxqcZAqTx3FazjAI/9jOiGACuJN1F1+rFv/U1u
-         E8PDt+mxyQaPN12boKUE0/+Sz3/u7luoqbIKEhu5RM1PsrE3aj8Zc7W4n1wcjHpJ5+xZ
-         2s7FZNTpszGtEwl1ty0W7VtlLhxWznOCaALkgQwHeA7SDpHoiMfZyMB0Cyhuer6c5ThR
-         h2CQ==
+        bh=JrproNEUMCgSjmh/8B0I/rNyBQoaOU4LantvG8VttuY=;
+        b=AbhwF2o8lWGjI+FDsAThxXdYjTFw6ntHJ+FjLaceNvJgOS2Y7pl+JkE3/1i576V58B
+         YvDUmpqhZuyg4ON7XYVatcqM580H8JN3lJS9HLyvlLYjuXBs5xAjEta/3co9QOEIr43v
+         XLrqP7juFl6LHY7r+NdZVb0uIbH4dibSpJu6wGgmMky1EuVOjhAXtvsFFHpR0y46mchQ
+         rNSYZwaCr8ePffvLwn7sdYpMKrD+vBBEloIRYGDJwzMvm6Upd6Mr0PlQYUiNkmTcHqFp
+         eVdmSNrJHUvjzz7h9vB9PlsqKdu6rTezQq6HeQ7z78UZtM0LGOPupSB1p9WxIUVHznWW
+         Y/hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=N0J5Bxl7vhdML2GM3ovQErwfTec12UCEbn+lGIO9lAc=;
-        b=pxJO6FMATwteVT7wNWAwZXIVolVyvvgMjrMDxWMcrB0siFgNFIRK9zhbPwkpVhlxXS
-         el7jNot9nLv7Jx8C+ZMHZ9oYhZuSsBGGAqxtQOO+QwUaCPmbDbqLcOULYZ+xv2tH1seo
-         wT/PSuyPdqMX2DzKjP6rfV11/U6v1suJ0EZnDPqPI7b6yeoVx96h2kPtN4ivoDih8EYX
-         D+PNVg0wRPQsw2PniB6JBrSW5sM4oRVFR+w4B76growNWsseeMV0vWCK3VLQwqnv2x8G
-         8M7tAWgt3vcwKgsfoK9UoHWFKkQdWBN+crQNxgbohkplp6Ln/lR0LA14kuBilH6IQscQ
-         PLxw==
-X-Gm-Message-State: AOAM530S57JfViuTBe8fcShajMmq3WSWOOcQqLcjgHxFgdpzC4swPpQZ
-        f1R3kZ5wy3soGrgHvxqDEhtpbA==
-X-Google-Smtp-Source: ABdhPJwQfIUje2tlYBZv8vPpUeMPQ8VZakZYwR5uwBK9VUsCi0n8gtjtebQD5JAd2uGQhYmRaUFAPA==
-X-Received: by 2002:a17:906:4119:: with SMTP id j25mr8642477ejk.459.1618583887046;
-        Fri, 16 Apr 2021 07:38:07 -0700 (PDT)
+        bh=JrproNEUMCgSjmh/8B0I/rNyBQoaOU4LantvG8VttuY=;
+        b=q/0lVzvOoRoKdSe1kPR83SBxKBo3d2ElUTQw0+Z52vlGjV5iU1jrGbn2wRLw7GB15D
+         cP91mU2G+G8RjZFdMiu7S0ve+60koo+TrvheKlgpcOa6WjPmgOof/Y8n6B8IpCuxqjyb
+         tDnpB60d3gXK9dgLd/ndEixNgFJl0rJHy5aNJ0sOjSKp5p4IhwOzVn1OcQmj4MFupVPU
+         WWvRWr1gVw7ffeQvJIVhMZlDMbX+l6mQ8Wj/rh2sbylIoeKoqDueWvjTaBkuCN2Nv85o
+         hT6PSmceUlgzNznP0w2MIpwak3LALXRAi0YzirRUT/baOls4BiYp2p9lUhdtVHZfYdig
+         cD1A==
+X-Gm-Message-State: AOAM5307FL79CvgOQReXcpzePIrjJxxHkxxTm7HbOgWSrdz/Xi3lQvxO
+        v6Uc+72IxM1wN5FHKvZo868oHA==
+X-Google-Smtp-Source: ABdhPJxRohIyR/YCoUD5YI/XkzLdyuPidmXlmk0d8AmwuQ7/5UcOVVluw10vUFCBA6T3eZAmMx7dlA==
+X-Received: by 2002:a17:906:dbcd:: with SMTP id yc13mr8165471ejb.99.1618583888233;
+        Fri, 16 Apr 2021 07:38:08 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id j10sm1326523ejk.93.2021.04.16.07.38.06
+        by smtp.gmail.com with ESMTPSA id j10sm1326523ejk.93.2021.04.16.07.38.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 07:38:06 -0700 (PDT)
+        Fri, 16 Apr 2021 07:38:07 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+Cc:     linux-kernel@vger.kernel.org, Inki Dae <inki.dae@samsung.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Jerome Glisse <glisse@freedesktop.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 35/40] drm/amd/amdgpu/amdgpu_cs: Repair some function naming disparity
-Date:   Fri, 16 Apr 2021 15:37:20 +0100
-Message-Id: <20210416143725.2769053-36-lee.jones@linaro.org>
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Akshu Agarwal <akshua@gmail.com>,
+        Ajay Kumar <ajaykumar.rs@samsung.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: [PATCH 36/40] drm/exynos/exynos7_drm_decon: Realign function name with its header
+Date:   Fri, 16 Apr 2021 15:37:21 +0100
+Message-Id: <20210416143725.2769053-37-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210416143725.2769053-1-lee.jones@linaro.org>
 References: <20210416143725.2769053-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -74,56 +76,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c:685: warning: expecting prototype for cs_parser_fini(). Prototype was for amdgpu_cs_parser_fini() instead
- drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c:1502: warning: expecting prototype for amdgpu_cs_wait_all_fence(). Prototype was for amdgpu_cs_wait_all_fences() instead
- drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c:1656: warning: expecting prototype for amdgpu_cs_find_bo_va(). Prototype was for amdgpu_cs_find_mapping() instead
+ drivers/gpu/drm/exynos/exynos7_drm_decon.c:355: warning: expecting prototype for shadow_protect_win(). Prototype was for decon_shadow_protect_win() instead
 
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Inki Dae <inki.dae@samsung.com>
+Cc: Joonyoung Shim <jy0922.shim@samsung.com>
+Cc: Seung-Woo Kim <sw0312.kim@samsung.com>
+Cc: Kyungmin Park <kyungmin.park@samsung.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Jerome Glisse <glisse@freedesktop.org>
-Cc: amd-gfx@lists.freedesktop.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc: Akshu Agarwal <akshua@gmail.com>
+Cc: Ajay Kumar <ajaykumar.rs@samsung.com>
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-samsung-soc@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/exynos/exynos7_drm_decon.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-index b5c7669980458..90136f9dedd65 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c
-@@ -672,7 +672,7 @@ static int amdgpu_cs_sync_rings(struct amdgpu_cs_parser *p)
+diff --git a/drivers/gpu/drm/exynos/exynos7_drm_decon.c b/drivers/gpu/drm/exynos/exynos7_drm_decon.c
+index 431c5d32f9a47..9b5e6f94e5585 100644
+--- a/drivers/gpu/drm/exynos/exynos7_drm_decon.c
++++ b/drivers/gpu/drm/exynos/exynos7_drm_decon.c
+@@ -344,7 +344,7 @@ static void decon_win_set_colkey(struct decon_context *ctx, unsigned int win)
  }
  
  /**
-- * cs_parser_fini() - clean parser states
-+ * amdgpu_cs_parser_fini() - clean parser states
-  * @parser:	parser structure holding parsing context.
-  * @error:	error number
-  * @backoff:	indicator to backoff the reservation
-@@ -1488,7 +1488,7 @@ int amdgpu_cs_fence_to_handle_ioctl(struct drm_device *dev, void *data,
- }
- 
- /**
-- * amdgpu_cs_wait_all_fence - wait on all fences to signal
-+ * amdgpu_cs_wait_all_fences - wait on all fences to signal
+- * shadow_protect_win() - disable updating values from shadow registers at vsync
++ * decon_shadow_protect_win() - disable updating values from shadow registers at vsync
   *
-  * @adev: amdgpu device
-  * @filp: file private
-@@ -1639,7 +1639,7 @@ int amdgpu_cs_wait_fences_ioctl(struct drm_device *dev, void *data,
- }
- 
- /**
-- * amdgpu_cs_find_bo_va - find bo_va for VM address
-+ * amdgpu_cs_find_mapping - find bo_va for VM address
-  *
-  * @parser: command submission parser context
-  * @addr: VM address
+  * @ctx: display and enhancement controller context
+  * @win: window to protect registers for
 -- 
 2.27.0
 
