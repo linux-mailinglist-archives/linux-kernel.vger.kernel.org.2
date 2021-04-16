@@ -2,135 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AA5F3627A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 20:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0813627AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 20:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236033AbhDPSYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 14:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39736 "EHLO
+        id S244660AbhDPS0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 14:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234312AbhDPSYb (ORCPT
+        with ESMTP id S235735AbhDPS0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 14:24:31 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7380C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 11:24:05 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 101-20020a9d0d6e0000b02902816815ff62so20659202oti.9
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 11:24:05 -0700 (PDT)
+        Fri, 16 Apr 2021 14:26:32 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82180C061574;
+        Fri, 16 Apr 2021 11:26:07 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id z22so9304959plo.3;
+        Fri, 16 Apr 2021 11:26:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc;
-        bh=NGL2DZ81iiy8zZ9X98sR3lExSRtmhzsEE2kmMo2vY6Y=;
-        b=qRxg1AQVpABQRxRIqNU5TKPRxviJzaAJJQvMgYRNOw77gh3Yu7WQSV0s+T33hqXGiZ
-         YBFdsywjmDeOsHpxDxYDsyBhOUeP377VvaPhkfyg1tqcZdAk8HxXX3LG3j/0I+oOX4Yr
-         ggCsVdEKnxJGiqAcoWSC1Eg4vrEBC8ZnMNIH93EITdtCdb3PHD2BnenltnN05fYQ2WMi
-         gm48T9giGwX9vwYFGU0RAs+fLMtWFJ5iGTQJSlvpbPpgFGkXLK1+hmGMSI1W4ilk9T+O
-         8ruuAxK28VWV0B/hOOHgqrB69eysFrQkUM91ZAAW/yMAz7cEA/VNS3cd9pYTDqiN3rQw
-         S2sw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=+NoMdFRqvCj0wjEu2wU+EppPHqkD5aPuBzCUVO8B5Dw=;
+        b=I7NkKx+ryboIFsQYOl0hn9Owr8ah4PzLF123GS1rr/xs+Is+upY0kBQ6YKQF01qdjT
+         /JXCewbuJ6m9FkA+hTJ0ZLNndSrBrcAxe1SL6n+h8Dz/6WwoLJGOl3Usr09pFM+DDcyZ
+         HJpE32jNzCiYvUL/nDIlAczIlyUI4lF30PKHl8NsfqW4O8uK4lBvECjt4Wbi84sc0yUO
+         TBw88FWyBysNTaVA0RWN6HfYwvdJzPzqKYBclHUW4yQSNJtWsJQzFIky0SHayASO+TKR
+         MGpyBRr6Fzxc539M6xaRvLtYi/XqzOG3e21wiGh1pwMNcYgqwMmamry8dLyz86+6T+LX
+         24uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:cc;
-        bh=NGL2DZ81iiy8zZ9X98sR3lExSRtmhzsEE2kmMo2vY6Y=;
-        b=iAqqE4QDEcpSQUNa3O5+lg1/SgrwOLnUsElCcnuskKpOOaDm9x+p/ehG7xt/jbcY8j
-         iYca0qjXQ5Ie3AdxI9Pq+DBgRcKxgUNavOGOvbTbliZqjS6lVGACm6Vqe0srWH9m/LU+
-         HVIcU4YeodAktQ8O5+E5EvVmRBUpINLVdGlY0K4dJFSvMY3yLaPA2zTI48OfjNml7OuX
-         zX/mhGPJD+icdkkXiNHDzXuYr3dnStxewkhRfQ+h8S3BlWXsMOh5MsaZQVmyhziKqCDq
-         101vkYxqvM36fa+xPMdSy7MqsKu5BM+pKzQoazIwHh2aF385B9x3nPW5aNJvRQnE6AK6
-         cTuw==
-X-Gm-Message-State: AOAM531FE5sRI19mGl5WjzO5lXbVN/mdQJp1hauLzOW/ueGz9+IaKXY7
-        tC/DwwymivK5tsHLC4h9c2h69annVGNJxPyIADSkrQ==
-X-Received: by 2002:a05:6830:200e:: with SMTP id e14mt4156138otp.111.1618597444844;
- Fri, 16 Apr 2021 11:24:04 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+NoMdFRqvCj0wjEu2wU+EppPHqkD5aPuBzCUVO8B5Dw=;
+        b=LoTDgqrTAyK5bNPRl/F+wExhYebrUbV2sTtzQfrukRsuawPR/MLzbRk3D7JP4AS+nw
+         +x8tNLzF/eSNF4D9YU0KmB07Rve8zEXtNZp/BvPxFhpHv9ycGKQhwCvPYShKdVX9wu1H
+         HirGBD+2ih9N+njFyNUqmr0YGL5PNPDz7vUHGF1cknfB/J1kXV5l9Z+FhAVGmUybApuE
+         mtq3l9funY4xAL1hrYMChw+p77d6oo+1eYvp+++/quE6i2sA/BTCu4hluM1Koowd1yV0
+         B6Y+1IXcdERfXpF59f52itO9pe6wHYdJUPtfsgYg2Y3+SLdNuD9hzKvVY43p87UDWaQm
+         ou4A==
+X-Gm-Message-State: AOAM530hnCBYR900onZw95Xa1b72M36gpAUtuTfYDG3c6jEYbsALwcR9
+        aNGqxkg5jyAazdF6AWDWL0o=
+X-Google-Smtp-Source: ABdhPJw2kWFT896TOOCfe5suf1zLJSSp2jHsX2kBjJGSkduJ7jRvKnfFRK8cKa3n/6vBVu3+CGwaVQ==
+X-Received: by 2002:a17:90b:344e:: with SMTP id lj14mr11195691pjb.89.1618597567017;
+        Fri, 16 Apr 2021 11:26:07 -0700 (PDT)
+Received: from taoren-ubuntu-R90MNF91 (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
+        by smtp.gmail.com with ESMTPSA id x1sm5324218pgp.24.2021.04.16.11.26.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 16 Apr 2021 11:26:06 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 11:25:59 -0700
+From:   Tao Ren <rentao.bupt@gmail.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org, Tao Ren <taoren@fb.com>,
+        Amithash Prasad <amithash@fb.com>
+Subject: Re: [PATCH v2] watchdog: aspeed: fix integer overflow in set_timeout
+ handler
+Message-ID: <20210416182558.GA4816@taoren-ubuntu-R90MNF91>
+References: <20210416021337.18715-1-rentao.bupt@gmail.com>
+ <2771f72a-cc3c-54a5-cc2c-715ea61be6b7@roeck-us.net>
 MIME-Version: 1.0
-References: <20210416181421.2374588-1-jiancai@google.com>
-In-Reply-To: <20210416181421.2374588-1-jiancai@google.com>
-From:   Jian Cai <jiancai@google.com>
-Date:   Fri, 16 Apr 2021 11:23:53 -0700
-Message-ID: <CA+SOCLL28Hej9zMmKJpU5vffVGviDo59uG=kWm0zPtCyZodR5g@mail.gmail.com>
-Subject: Re: [PATCH] arm64: vdso: remove commas between macro name and arguments
-Cc:     "# 3.4.x" <stable@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Manoj Gupta <manojgupta@google.com>,
-        Luis Lozano <llozano@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2771f72a-cc3c-54a5-cc2c-715ea61be6b7@roeck-us.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I should've mentioned this patch is for 4.19 only as the code has been
-rewritten in later versions, but requires a large amount of backports
-(https://github.com/ClangBuiltLinux/linux/issues/1349). This is the
-only blocker for 4.19 migration to LLVM's integrated assembler on CrOS
-that I am aware of.
+On Thu, Apr 15, 2021 at 10:07:32PM -0700, Guenter Roeck wrote:
+> On 4/15/21 7:13 PM, rentao.bupt@gmail.com wrote:
+> > From: Tao Ren <rentao.bupt@gmail.com>
+> > 
+> > Fix the time comparison (timeout vs. max_hw_heartbeat_ms) in set_timeout
+> > handler to avoid potential integer overflow when the supplied timeout is
+> > greater than aspeed's maximum allowed timeout (4294 seconds).
+> > 
+> 
+> I think this is the wrong focus: What this fixes is the wrong hardware
+> timeout calculation. Again, I think that the wrong calculation leads to
+> the overflow should not be the focus of this patch, though it can of
+> course be mentioned.
+> 
+> I'll leave it up to Wim to decide if he wants to apply the patch with the
+> current explanation.
+> 
+> Thanks,
+> Guenter
 
-Thanks,
-Jian
+Sorry I didn't get your point correctly, and I guess it was because of
+my lack of knowledge in timeout/max_hw_heartbeat_ms/worker (hopefully
+my understanding is correct now :))
 
-On Fri, Apr 16, 2021 at 11:14 AM Jian Cai <jiancai@google.com> wrote:
->
-> LLVM's integrated assembler does not support using commas separating
-> the name and arguments in .macro. However, only spaces are used in the
-> manual page. This replaces commas between macro names and the subsequent
-> arguments with space in calls to clock_gettime_return to make it
-> compatible with IAS.
->
-> Link:
-> https://sourceware.org/binutils/docs/as/Macro.html#Macro
-> Signed-off-by: Jian Cai <jiancai@google.com>
-> ---
->  arch/arm64/kernel/vdso/gettimeofday.S | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/arm64/kernel/vdso/gettimeofday.S b/arch/arm64/kernel/vdso/gettimeofday.S
-> index 856fee6d3512..7ee685d9adfc 100644
-> --- a/arch/arm64/kernel/vdso/gettimeofday.S
-> +++ b/arch/arm64/kernel/vdso/gettimeofday.S
-> @@ -122,7 +122,7 @@ x_tmp               .req    x8
->  9998:
->         .endm
->
-> -       .macro clock_gettime_return, shift=0
-> +       .macro clock_gettime_return shift=0
->         .if \shift == 1
->         lsr     x11, x11, x12
->         .endif
-> @@ -227,7 +227,7 @@ realtime:
->         seqcnt_check fail=realtime
->         get_ts_realtime res_sec=x10, res_nsec=x11, \
->                 clock_nsec=x15, xtime_sec=x13, xtime_nsec=x14, nsec_to_sec=x9
-> -       clock_gettime_return, shift=1
-> +       clock_gettime_return shift=1
->
->         ALIGN
->  monotonic:
-> @@ -250,7 +250,7 @@ monotonic:
->                 clock_nsec=x15, xtime_sec=x13, xtime_nsec=x14, nsec_to_sec=x9
->
->         add_ts sec=x10, nsec=x11, ts_sec=x3, ts_nsec=x4, nsec_to_sec=x9
-> -       clock_gettime_return, shift=1
-> +       clock_gettime_return shift=1
->
->         ALIGN
->  monotonic_raw:
-> @@ -271,7 +271,7 @@ monotonic_raw:
->                 clock_nsec=x15, nsec_to_sec=x9
->
->         add_ts sec=x10, nsec=x11, ts_sec=x13, ts_nsec=x14, nsec_to_sec=x9
-> -       clock_gettime_return, shift=1
-> +       clock_gettime_return shift=1
->
->         ALIGN
->  realtime_coarse:
-> --
-> 2.31.1.368.gbe11c130af-goog
->
+Let me drop this patch and send a new one with different subject and
+description soon.
+
+
+Cheers,
+
+Tao
