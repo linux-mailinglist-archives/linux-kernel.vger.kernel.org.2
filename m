@@ -2,143 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D88E362A92
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 23:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5E4362A96
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 23:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235447AbhDPVuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 17:50:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233514AbhDPVuB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 17:50:01 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E82B5C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 14:49:35 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id v72so10976518ybe.11
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 14:49:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=KvvOpfTc4a7owgj9qx4TrZM/bIZMtNXq+vl9JoXOzqI=;
-        b=nuw2AQJBvaPpIDkYxZ/NyiGn3Xw6BAmH4ZACrt503WkvveO2ZmrQs/l6tkL2yvPVOs
-         ZfcRm33b3c9vz4ZxWDxFUqbT+sQQ6IsdNl+w3TxlNYqQsTT3RRW4HyOIZU5pSBODCmS7
-         Q7lSFc+1pQ77Sf9LxHdw4amSSaWYCK8Zo7nZBvru2a8ueqopVz5Evp3DMTn7ugiyrIuq
-         egnoGaWRynQP8dCEVHpHHJC4VP0ylIco0Aky6JicnvJXX0G0t3Jm1FOt4ySjIEGKPAmF
-         vKKfcVX/FD245FrBxXtFFXQ5HqG63Xe+H9MLVOj8HV2l6oXmpR+Wo27tqSQHVtUg51t9
-         /w0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=KvvOpfTc4a7owgj9qx4TrZM/bIZMtNXq+vl9JoXOzqI=;
-        b=ttF0EJdxJVj79J43D+ic2rLMwj5FaODDd1UjZLUOST9ssTUGNUKYQXzfY1qac5jMEu
-         /lZh9Jf1bwlA3JmU8/UsP9jpyhntRG83RtNIsWtlA+OWBHU7Mvlc7VeygiMBiqOB0/Ek
-         TLp48/gb+p/oM3q8b+ChWNckttvG1Uebr0r2WjXcy1QWMSsi9N0ZpxBqubV8+3E5QZ0c
-         QYRGRt6t0DAdkEAci79/hTl7NFcq1m7gBafJypXdJPb/OzK/u063n8LLR5cBMvceQz9g
-         UlysAZiVD4/Xb5KD57IQ5ZWrm79CZ0aens79iQoCkQ52TpW1QRtTVMnzz5HXUzEAKYGp
-         g67w==
-X-Gm-Message-State: AOAM533WUIjK0pVuCpa3Wj72R+1bxY/pudK2tuYxV2DKPewfYnbPhjrD
-        eBZKJ6c5RfhlgyLzEjZy2x9DrbNDyGTaV7+wG7vPlg==
-X-Google-Smtp-Source: ABdhPJyGYpjOg00219ebxlH56/gPiRksAFiaDeydaENh/F85nsRvUUalNMPmatmdM4Yz8VaiLMg3G0Bt7IjUko3hY/U=
-X-Received: by 2002:a25:7085:: with SMTP id l127mr1733643ybc.293.1618609774803;
- Fri, 16 Apr 2021 14:49:34 -0700 (PDT)
+        id S236524AbhDPVup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 17:50:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37928 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235422AbhDPVun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 17:50:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65231610E7;
+        Fri, 16 Apr 2021 21:50:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618609818;
+        bh=6L+fBTnmXvjsKWrq+HTLgNRFc6T2FEzJaeGZu54L3xw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jtw4MNhroJlPkFSgpIpEC6vw4e5o1aGJ0y+OTA0fN19gGfPlx1syvCHuxaHwoADS/
+         XgZZF01qddyct+5BxoHlsjaGtULVxij8upBpncr4aOPhbPRRXGAPyZAZz8+sOhdAx+
+         7LYk2zQlq+iKdsrBiuebvUVUtcRJxaIlTmIhjg9gvB1AM/BTRMbBG5JDbbjfDJjVFC
+         msZD+ez7/wJsNX7qMQzo9dihYLx5m6gJX1QawIhIuXk6QAq6V6U+Xj3QxyVi5kbvFr
+         gbwzUF8GrGf0Vz96T6/9WPL4pATCGjo0ezhfM/vN44mGrW+xtZfQG7KMkQsios1ckH
+         kZSLbPpriOUDQ==
+Date:   Fri, 16 Apr 2021 14:50:17 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Hayes Wang <hayeswang@realtek.com>
+Cc:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <nic_swsd@realtek.com>, <linux-kernel@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH net-next 4/6] r8152: support new chips
+Message-ID: <20210416145017.1946f013@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1394712342-15778-354-Taiwan-albertk@realtek.com>
+References: <1394712342-15778-350-Taiwan-albertk@realtek.com>
+        <1394712342-15778-354-Taiwan-albertk@realtek.com>
 MIME-Version: 1.0
-References: <20210416203844.3803177-1-samitolvanen@google.com>
- <20210416203844.3803177-6-samitolvanen@google.com> <20210416211855.GD22348@zn.tnic>
-In-Reply-To: <20210416211855.GD22348@zn.tnic>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Fri, 16 Apr 2021 14:49:23 -0700
-Message-ID: <CABCJKud8TvzhcjHCpsrtCJ4B50ZUfaL48F42EhZ2zWKLteAc0Q@mail.gmail.com>
-Subject: Re: [PATCH 05/15] x86: Implement function_nocfi
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     X86 ML <x86@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 2:18 PM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Fri, Apr 16, 2021 at 01:38:34PM -0700, Sami Tolvanen wrote:
-> > With CONFIG_CFI_CLANG, the compiler replaces function addresses in
-> > instrumented C code with jump table addresses. This change implements
-> > the function_nocfi() macro, which returns the actual function address
-> > instead.
-> >
-> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> > ---
-> >  arch/x86/include/asm/page.h | 14 ++++++++++++++
-> >  1 file changed, 14 insertions(+)
-> >
-> > diff --git a/arch/x86/include/asm/page.h b/arch/x86/include/asm/page.h
-> > index 7555b48803a8..5499a05c44fc 100644
-> > --- a/arch/x86/include/asm/page.h
-> > +++ b/arch/x86/include/asm/page.h
-> > @@ -71,6 +71,20 @@ static inline void copy_user_page(void *to, void *fr=
-om, unsigned long vaddr,
-> >  extern bool __virt_addr_valid(unsigned long kaddr);
-> >  #define virt_addr_valid(kaddr)       __virt_addr_valid((unsigned long)=
- (kaddr))
-> >
-> > +#ifdef CONFIG_CFI_CLANG
->
-> Almost every patch is talking about this magical config symbol but it
-> is nowhere to be found. How do I disable it, is there a Kconfig entry
-> somewhere, etc, etc?
+On Fri, 16 Apr 2021 16:04:35 +0800 Hayes Wang wrote:
+> Support RTL8153C, RTL8153D, RTL8156A, and RTL8156B. The RTL8156A
+> and RTL8156B are the 2.5G ethernet.
+> 
+> Signed-off-by: Hayes Wang <hayeswang@realtek.com>
 
-As I mentioned in the cover letter, this series is based on
-linux-next. I forgot to include a link to the original patch series
-that adds CONFIG_CFI_CLANG, but I'll be sure to point to it in the
-next version. Sorry about the confusion.
+> +	switch (tp->version) {
+> +	case RTL_VER_10:
+> +		data = ocp_reg_read(tp, 0xad40);
+> +		data &= ~0x3ff;
+> +		data |= BIT(7) | BIT(2);
+> +		ocp_reg_write(tp, 0xad40, data);
+> +
+> +		data = ocp_reg_read(tp, 0xad4e);
+> +		data |= BIT(4);
+> +		ocp_reg_write(tp, 0xad4e, data);
+> +		data = ocp_reg_read(tp, 0xad16);
+> +		data &= ~0x3ff;
+> +		data |= 0x6;
+> +		ocp_reg_write(tp, 0xad16, data);
+> +		data = ocp_reg_read(tp, 0xad32);
+> +		data &= ~0x3f;
+> +		data |= 6;
+> +		ocp_reg_write(tp, 0xad32, data);
+> +		data = ocp_reg_read(tp, 0xac08);
+> +		data &= ~(BIT(12) | BIT(8));
+> +		ocp_reg_write(tp, 0xac08, data);
+> +		data = ocp_reg_read(tp, 0xac8a);
+> +		data |= BIT(12) | BIT(13) | BIT(14);
+> +		data &= ~BIT(15);
+> +		ocp_reg_write(tp, 0xac8a, data);
+> +		data = ocp_reg_read(tp, 0xad18);
+> +		data |= BIT(10);
+> +		ocp_reg_write(tp, 0xad18, data);
+> +		data = ocp_reg_read(tp, 0xad1a);
+> +		data |= 0x3ff;
+> +		ocp_reg_write(tp, 0xad1a, data);
+> +		data = ocp_reg_read(tp, 0xad1c);
+> +		data |= 0x3ff;
+> +		ocp_reg_write(tp, 0xad1c, data);
+> +
+> +		data = sram_read(tp, 0x80ea);
+> +		data &= ~0xff00;
+> +		data |= 0xc400;
+> +		sram_write(tp, 0x80ea, data);
+> +		data = sram_read(tp, 0x80eb);
+> +		data &= ~0x0700;
+> +		data |= 0x0300;
+> +		sram_write(tp, 0x80eb, data);
+> +		data = sram_read(tp, 0x80f8);
+> +		data &= ~0xff00;
+> +		data |= 0x1c00;
+> +		sram_write(tp, 0x80f8, data);
+> +		data = sram_read(tp, 0x80f1);
+> +		data &= ~0xff00;
+> +		data |= 0x3000;
+> +		sram_write(tp, 0x80f1, data);
 
-> > +/*
-> > + * With CONFIG_CFI_CLANG, the compiler replaces function address
-> > + * references with the address of the function's CFI jump table
-> > + * entry. The function_nocfi macro always returns the address of the
-> > + * actual function instead.
-> > + */
-> > +#define function_nocfi(x) ({                                         \
-> > +     void *addr;                                                     \
-> > +     asm("leaq " __stringify(x) "(%%rip), %0\n\t" : "=3Dr" (addr));   =
- \
-> > +     addr;                                                           \
-> > +})
->
-> Also, eww.
->
-> It seems all these newfangled things we get, mean obfuscating code even
-> more. What's wrong with using __nocfi instead? That's nicely out of the
-> way so slap that in front of functions.
+> +	switch (tp->version) {
+> +	case RTL_VER_12:
+> +		ocp_reg_write(tp, 0xbf86, 0x9000);
+> +		data = ocp_reg_read(tp, 0xc402);
+> +		data |= BIT(10);
+> +		ocp_reg_write(tp, 0xc402, data);
+> +		data &= ~BIT(10);
+> +		ocp_reg_write(tp, 0xc402, data);
+> +		ocp_reg_write(tp, 0xbd86, 0x1010);
+> +		ocp_reg_write(tp, 0xbd88, 0x1010);
+> +		data = ocp_reg_read(tp, 0xbd4e);
+> +		data &= ~(BIT(10) | BIT(11));
+> +		data |= BIT(11);
+> +		ocp_reg_write(tp, 0xbd4e, data);
+> +		data = ocp_reg_read(tp, 0xbf46);
+> +		data &= ~0xf00;
+> +		data |= 0x700;
+> +		ocp_reg_write(tp, 0xbf46, data);
 
-__nocfi only disables CFI checking in a function, the compiler still
-changes function addresses to point to the CFI jump table, which is
-why we need function_nocfi().
+> +	data = r8153_phy_status(tp, 0);
+> +	switch (data) {
+> +	case PHY_STAT_EXT_INIT:
+> +		rtl8152_apply_firmware(tp, true);
+> +
+> +		data = ocp_reg_read(tp, 0xa466);
+> +		data &= ~BIT(0);
+> +		ocp_reg_write(tp, 0xa466, data);
 
-> Also, did you even build this on, say, 32-bit allmodconfig?
->
-> Oh well.
->
-> In file included from ./include/linux/ftrace.h:22:0,
->                  from ./include/linux/init_task.h:9,
->                  from init/init_task.c:2:
-> ./include/linux/ftrace.h: In function =E2=80=98ftrace_init_nop=E2=80=99:
-> ./arch/x86/include/asm/ftrace.h:9:40: error: implicit declaration of func=
-tion =E2=80=98function_nocfi=E2=80=99 [-Werror=3Dimplicit-function-declarat=
-ion]
+What are all these magic constants? :(
 
-This is defined in linux-next, but I do see another issue, which I'll
-fix in v2. Note that CFI_CLANG itself cannot be selected on 32-bit
-x86.
+> @@ -6878,7 +8942,11 @@ static int rtl8152_probe(struct usb_interface *intf,
+>  	set_ethernet_addr(tp);
+>  
+>  	usb_set_intfdata(intf, tp);
+> -	netif_napi_add(netdev, &tp->napi, r8152_poll, RTL8152_NAPI_WEIGHT);
+> +
+> +	if (tp->support_2500full)
+> +		netif_napi_add(netdev, &tp->napi, r8152_poll, 256);
 
-Sami
+why 256? We have 100G+ drivers all using 64 what's special here?
+
+> +	else
+> +		netif_napi_add(netdev, &tp->napi, r8152_poll, 64);
+
