@@ -2,130 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B9E36271E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2F2362723
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243640AbhDPRrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 13:47:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47599 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235877AbhDPRrB (ORCPT
+        id S243679AbhDPRro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 13:47:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243597AbhDPRrn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 13:47:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618595196;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UwAq3mjTqcl8JnB7zCamgcUlnZYnBtvHAiM1ilKgZu8=;
-        b=NI1HjptsDyNRS2dRcRY/EC1+6YtETYQDR5FHfFA0udAGUEMtrCb7L+jwjlsLZRzJp8X7C2
-        smgpMFTiQpShRXfI8LqV23eM5cx/uuRIJyya0d8R+QkurC66DQSuSfsz/sdjlOkv8rMH3n
-        fpdSeJg4U/I8wjY6JUaOvz1g4N+h3HQ=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-16-EzQ6tTD3NQGwVP2YyFcsbQ-1; Fri, 16 Apr 2021 13:46:34 -0400
-X-MC-Unique: EzQ6tTD3NQGwVP2YyFcsbQ-1
-Received: by mail-oi1-f200.google.com with SMTP id r204-20020aca44d50000b029013da91480a0so9712636oia.17
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:46:34 -0700 (PDT)
+        Fri, 16 Apr 2021 13:47:43 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4509BC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:47:17 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id w8so15352817pfn.9
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 10:47:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7KzCp5SZQ4n6aE/PkZv5EsNr8oR/kNNNZI4+o5RebUo=;
+        b=b9owdBkmwCbVQFzLYGtUvkObEEJZZ+1P/Lnl3/qCmxzd1N22iJduMKm7s2bjUAMwQx
+         8rk7lEQ8pQDdrfJJc5uQkRUH5kbyReRXy++EiR6DLDQXQlnWdtFeBjf3qO7OXdf9r7fN
+         xHifN4IMshFJiTY/MHe+9g+vVEsxSRYep4geOXnT2Jt+lLOVnp5jV3Z8xOTMLYpck/WG
+         SR6+9+HOcumHLEb4JNNvmHhsTjEPgTVn+MbCIIc/2fnUB4Uk8xHC31I+v9XfTrFm9GZU
+         eibwUUkwv4m1bVRUrqIGVvaDF/7GVbUQ/ydoo89MAkZkndsGKukdVt8Hs6YHMFLzFcx0
+         WRNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UwAq3mjTqcl8JnB7zCamgcUlnZYnBtvHAiM1ilKgZu8=;
-        b=rypNW5OSJw2zTrrR7L0gsporKyVMXvEZH9/upO3mCSB1llxLkX74P6eCXPRI17MxaI
-         kcv91KO40XD1otZnHUNIkOQRrGzoInT9bscIg5Qb7K6e5vB1X5n9q8beMQoEnY01fIwc
-         clPe6Fkhoy0FyNTaLa0Y0YGBFlutzTIrQyzeHxn35aJRl6QnnCiSCq0jx4AZ6rfpWVbD
-         obFTTTa5THPbw7jgphsNA7994TuxCMvRmOMLzdIxkFdoERmbmri8R9KoRv8U/nmthXeP
-         EwjOcX0xhElvfc/c0u+P78QZ+ij78FZZzoqclWMueXD6nxv4xKozEnpWxAZWp90D/UqZ
-         wVLg==
-X-Gm-Message-State: AOAM531jw03jCz+EEwqHbuAd0nNoILCxXum5bFNVh9qVHBYt5dze6aY1
-        T9MKBKbOAZjSMiflaKCI29pWXTIjjmjOvy0vFIEOc4KA3TG+2+OKUlpagE/M3OGjE9cP1uW8xiw
-        +Y/1/+jyHUjbPitrAKWfIfUJBGtgWic2wlxwqpes2pDnI0lAUZvzw1/v1ZvjdtpJu71n5ekgyIA
-        ==
-X-Received: by 2002:a9d:1d26:: with SMTP id m35mr4656008otm.266.1618595193467;
-        Fri, 16 Apr 2021 10:46:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyqmjn4JZgbtPJEhjtjFp39QSapQwN3qRjLDpF9oiDAS4DSPTNYxB/uSTzFnddcPY6N0Oc0UQ==
-X-Received: by 2002:a9d:1d26:: with SMTP id m35mr4655978otm.266.1618595193194;
-        Fri, 16 Apr 2021 10:46:33 -0700 (PDT)
-Received: from [192.168.0.173] (ip68-103-222-6.ks.ok.cox.net. [68.103.222.6])
-        by smtp.gmail.com with ESMTPSA id y2sm1365951ooa.10.2021.04.16.10.46.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Apr 2021 10:46:32 -0700 (PDT)
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-To:     Willy Tarreau <w@1wt.eu>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Wedson Almeida Filho <wedsonaf@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210414184604.23473-1-ojeda@kernel.org>
- <YHlz54rd1YQHsOA/@hirez.programming.kicks-ass.net>
- <YHmMJWmzz2vZ3qQH@google.com>
- <YHmc2+bKQJ/XAATF@hirez.programming.kicks-ass.net>
- <YHmuX1NA5RF7C7XS@google.com> <20210416161444.GA10484@1wt.eu>
- <CANiq72nbkJFPmiJXX=L8PmkouKgKG1k-CxhZYpL1hcncYwa8JA@mail.gmail.com>
- <20210416173717.GA10846@1wt.eu>
-From:   Connor Kuehl <ckuehl@redhat.com>
-Message-ID: <d33dbe20-698a-7dba-2e46-ece325a1c849@redhat.com>
-Date:   Fri, 16 Apr 2021 12:46:31 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7KzCp5SZQ4n6aE/PkZv5EsNr8oR/kNNNZI4+o5RebUo=;
+        b=uP7lYkxh/pBzDjUPH9lEt2JvSzCwCpzCh1TcGvcMjA31uL3LX/uMr/gHD/1k8XfWtc
+         OgXvpvsXyQk6dV69nQnCglpsMusu9j3gS8zK7Yp4wjrmXcrDAgkMrwZfvMwbWhQkFIXm
+         cJcXLfSJ3iUpwitFVdrMPojXKMC/U2iSI+wcpJK6yyrRHL79ewRbAIWByoGkm/g8LHbv
+         fjeMsMYXP+Ypi5GrKwWaeFWq12B4xs+g0skGvj6n/f+raXgvn+R2uGiGjccqj2DDzqLz
+         Fc3+DZHg1ytCr21Gd44nuvXeyGWf/KLupXTVgc1E8Y5N9lJPNY563NKtNAa4W7PH32il
+         KKJg==
+X-Gm-Message-State: AOAM530C+2xFMdCCDgA60B+gaz8J2wruW73tlvSVZZhM3KhU+ZtgdM3U
+        zhEBHHma2bmTTaHt/Yo34BUuMQ==
+X-Google-Smtp-Source: ABdhPJwi7oTNxU9nTxZiQwipdj2kfGpyZICOgioceA0PnOFydpJH5SRcxCqdYrnQGTogNU+AMQmBfg==
+X-Received: by 2002:a63:1b5e:: with SMTP id b30mr236720pgm.254.1618595236773;
+        Fri, 16 Apr 2021 10:47:16 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id 123sm5339437pfx.180.2021.04.16.10.47.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 10:47:11 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 11:47:09 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     peng.fan@oss.nxp.com
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        o.rempel@pengutronix.de, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH V4 7/8] remoteproc: imx_rproc: support i.MX7ULP
+Message-ID: <20210416174709.GD1050209@xps15>
+References: <1618493261-32606-1-git-send-email-peng.fan@oss.nxp.com>
+ <1618493261-32606-8-git-send-email-peng.fan@oss.nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20210416173717.GA10846@1wt.eu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1618493261-32606-8-git-send-email-peng.fan@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/16/21 12:37 PM, Willy Tarreau wrote:
-> Hi Miguel,
+On Thu, Apr 15, 2021 at 09:27:40PM +0800, peng.fan@oss.nxp.com wrote:
+> From: Peng Fan <peng.fan@nxp.com>
 > 
-> On Fri, Apr 16, 2021 at 07:10:17PM +0200, Miguel Ojeda wrote:
->> And by having the compiler enforce this safe-unsafe split, you can
->> review safe code without having to constantly worry about UB; and be
->> extra alert when dealing with `unsafe` blocks.
+> i.MX7ULP A7 core runs under control of M4 core, M4 core starts by ROM
+> and powers most serivces used by A7 core, so A7 core has no power to
+
+s/serivces/services
+
+> start and stop M4 core. And the M4 core's state is default RPROC_DETACHED
+> and remoteproc framework not able to stop the M4 core.
 > 
-> I do appreciate this safe/unsafe split and a few other things I've seen
-> in the language. The equivalent I'm using in C is stronger typing and
-> "const" modifiers wherever possible. Of course it's much more limited,
-> it's just to explain that I do value this. I just feel like "unsafe"
-> is the universal response to any question "how would I do this" while
-> at the same time "safe" is the best selling argument for the language.
-> As such, I strongly doubt about the real benefits once facing reality
-> with everything marked unsafe. Except that it will be easier to blame
-> the person having written the unsafe one-liner instead of writing 60
-> cryptic lines doing the functional equivalent using some lesser known
-> extensions :-/
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/remoteproc/imx_rproc.c | 25 ++++++++++++++++++++++++-
+>  1 file changed, 24 insertions(+), 1 deletion(-)
 > 
-
-It's possible that many of the questions you've been specifically asking
-about, by sheer coincidence, are targeted towards the problems that would
-indeed require a lower-level abstraction built within an unsafe block; meaning
-you've managed to evade the tons of other upper layers that could be written
-in safe Rust.
-
-Indeed, at a certain layer, unsafe is unavoidable for the kind of work that
-is done in the kernel. The goal is to shrink the unsafe blocks as much as
-possible and confirm the correctness of those pieces, then build safe
-abstractions on top of it.
-
-For what it's worth, if there was some post-human apocalyptic world where
-literally everything had to go inside an unsafe block, the silver lining
-in a hypothetical situation like this is that unsafe does not disable all
-of Rust's static analysis like the borrow checker, etc. It allows you to
-do things like directly dereference a pointer, etc. Unsafe also doesn't
-automatically mean that the code is wrong or that it has memory issues;
-it just means that the compiler can't guarantee that it doesn't based on
-what you do in the unsafe block.
-
-Connor
-
+> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
+> index 56dfcc1..0592865 100644
+> --- a/drivers/remoteproc/imx_rproc.c
+> +++ b/drivers/remoteproc/imx_rproc.c
+> @@ -136,6 +136,14 @@ static const struct imx_rproc_att imx_rproc_att_imx8mq[] = {
+>  	{ 0x40000000, 0x40000000, 0x80000000, 0 },
+>  };
+>  
+> +static const struct imx_rproc_att imx_rproc_att_imx7ulp[] = {
+> +	{0x1FFD0000, 0x1FFD0000, 0x30000, ATT_OWN},
+> +	{0x20000000, 0x20000000, 0x10000, ATT_OWN},
+> +	{0x2F000000, 0x2F000000, 0x20000, ATT_OWN},
+> +	{0x2F020000, 0x2F020000, 0x20000, ATT_OWN},
+> +	{0x60000000, 0x60000000, 0x40000000, 0}
+> +};
+> +
+>  static const struct imx_rproc_att imx_rproc_att_imx7d[] = {
+>  	/* dev addr , sys addr  , size	    , flags */
+>  	/* OCRAM_S (M4 Boot code) - alias */
+> @@ -196,6 +204,12 @@ static const struct imx_rproc_dcfg imx_rproc_cfg_imx8mq = {
+>  	.method		= IMX_RPROC_MMIO,
+>  };
+>  
+> +static const struct imx_rproc_dcfg imx_rproc_cfg_imx7ulp = {
+> +	.att		= imx_rproc_att_imx7ulp,
+> +	.att_size	= ARRAY_SIZE(imx_rproc_att_imx7ulp),
+> +	.method		= IMX_RPROC_NONE,
+> +};
+> +
+>  static const struct imx_rproc_dcfg imx_rproc_cfg_imx7d = {
+>  	.src_reg	= IMX7D_SRC_SCR,
+>  	.src_mask	= IMX7D_M4_RST_MASK,
+> @@ -238,6 +252,9 @@ static int imx_rproc_stop(struct rproc *rproc)
+>  	struct device *dev = priv->dev;
+>  	int ret;
+>  
+> +	if (dcfg->method == IMX_RPROC_NONE)
+> +		return -EOPNOTSUPP;
+> +
+>  	ret = regmap_update_bits(priv->regmap, dcfg->src_reg,
+>  				 dcfg->src_mask, dcfg->src_stop);
+>  	if (ret)
+> @@ -580,8 +597,13 @@ static int imx_rproc_detect_mode(struct imx_rproc *priv)
+>  	int ret;
+>  	u32 val;
+>  
+> -	if (dcfg->method != IMX_RPROC_MMIO)
+> +	switch (dcfg->method) {
+> +	case IMX_RPROC_NONE:
+> +		priv->rproc->state = RPROC_DETACHED;
+>  		return 0;
+> +	default:
+> +		break;
+> +	}
+>  
+>  	regmap = syscon_regmap_lookup_by_phandle(dev->of_node, "syscon");
+>  	if (IS_ERR(regmap)) {
+> @@ -726,6 +748,7 @@ static int imx_rproc_remove(struct platform_device *pdev)
+>  }
+>  
+>  static const struct of_device_id imx_rproc_of_match[] = {
+> +	{ .compatible = "fsl,imx7ulp-cm4", .data = &imx_rproc_cfg_imx7ulp },
+>  	{ .compatible = "fsl,imx7d-cm4", .data = &imx_rproc_cfg_imx7d },
+>  	{ .compatible = "fsl,imx6sx-cm4", .data = &imx_rproc_cfg_imx6sx },
+>  	{ .compatible = "fsl,imx8mq-cm4", .data = &imx_rproc_cfg_imx8mq },
+> -- 
+> 2.7.4
+> 
