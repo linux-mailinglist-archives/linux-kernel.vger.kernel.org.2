@@ -2,113 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B708F362B2D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0EF362B3C
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234911AbhDPWjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 18:39:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50328 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234662AbhDPWjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 18:39:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9FA46137D;
-        Fri, 16 Apr 2021 22:38:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618612728;
-        bh=fLShCm6HfuN+aWirA8byWk1J3cvvfDXcNCJir5OTQNw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=BFCcLVE/r/1B67KiATn/UaC9F3n9ulTT00juDdRaMBWTJiZU1MLvNizP7B7x/Ykx+
-         3JgdGYyef/bPaSEBVr6un3/eAFZhxtUTx1FqfEOj2lWnQwQUEPbV5BetspS5Ciz7YX
-         AHbLMoEcxI7fJr+Sqm9bXP8CDAMh8Ia2AOnwPGZP5hwJCuMX+DoBQooUGtiJABoNIz
-         b9rfXzfzbBug8IRC3D3ZhqBiuuNSC4WhiwFqSOtN1uBJTM5CBHJf2QaoFWTmZErd64
-         4GcR4AX33ourRk/klSiFh+728jYDArpHXMi9pdePgum4t2V4sE5Q/9ZBX9Ttjr5W3O
-         da/2rHBDjAMFA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id AE0515C0253; Fri, 16 Apr 2021 15:38:48 -0700 (PDT)
-Date:   Fri, 16 Apr 2021 15:38:48 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
-        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
-        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
-        ak@linux.intel.com, Chris Mason <clm@fb.com>
-Subject: Re: [PATCH v8 clocksource 1/5] clocksource: Provide module
- parameters to inject delays in watchdog
-Message-ID: <20210416223848.GL4212@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210414043435.GA2812539@paulmck-ThinkPad-P17-Gen-1>
- <20210414043602.2812981-1-paulmck@kernel.org>
- <878s5iuh10.ffs@nanos.tec.linutronix.de>
+        id S234688AbhDPWlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 18:41:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231666AbhDPWlS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 18:41:18 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3145C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 15:40:53 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id p12so20134022pgj.10
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 15:40:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ViswrO4sNM/Xqi4udoIc8TV1g5Dhwym3dG9TOSi7ivs=;
+        b=TMpqd+SZZNmTBRTV6uWewh2kSXCh2ZpBo6CN20Dp1CF52eaoP14/KHfKKwODaGwtt5
+         xl0iLUpo8safOBqsFCvyhS5LCcuKLHRmVOjaOrgrg9NYd9R1G99pU2Ryy6JuC3vJBP5U
+         5TgykYHu6b4idrMShUykAgXxtyU1Zhne4XTJ0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ViswrO4sNM/Xqi4udoIc8TV1g5Dhwym3dG9TOSi7ivs=;
+        b=q3F0JQ4RUSiVWZyFMtQL1zas+VG66oDGmlxunKXJ477+SFgihNCAuOO3n7DozqZZur
+         Oca8lYorPGWuFpQZuIKuMPMJiMJdZfq2uPTNn+ONk7cljQBnFp3HOMn5T3QDlye6ySnB
+         4dnH3XLVL8xrwWWuX6ZQ/nLEIF8Y//byr7mBG1RvuOJtZGJu5Vb8h+CKBHteuKlbLpIV
+         8Tla76YHbgue6Alqmq9o+rwWz6j270NcVsGZ0W8M7gpMbUPF+YfRgrSTNGatw2YWfUqn
+         atz4XHj4XcmFWG5q5JelQHZMR5mhZAxh/4AthTC3/xPYta//1cMc+y3M2gG96pnrYdQh
+         Ll9g==
+X-Gm-Message-State: AOAM5339wGPl6dFiHWDrKJ89EFpvUQPeWo1y29E0Rm6GlEitMKyjAKPu
+        yOELiEjqMu1D9gc6ceH4BH2RTw==
+X-Google-Smtp-Source: ABdhPJx6lCORDd6OQS0dzEmoduf0wcmDKI4UY+j+Y/gi2+7rXDlEFFzUVrPJJjly2rZhsMrKa7vSlw==
+X-Received: by 2002:a63:c446:: with SMTP id m6mr1059717pgg.71.1618612853290;
+        Fri, 16 Apr 2021 15:40:53 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:dc8a:c9d0:aa5b:5386])
+        by smtp.gmail.com with ESMTPSA id r6sm5633659pgp.64.2021.04.16.15.40.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 15:40:52 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>, robdclark@chromium.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Steev Klimaszewski <steev@kali.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Linus W <linus.walleij@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Robert Foss <robert.foss@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 00/27] drm: Fix EDID reading on ti-sn65dsi86; solve some chicken-and-egg problems
+Date:   Fri, 16 Apr 2021 15:39:23 -0700
+Message-Id: <20210416223950.3586967-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <878s5iuh10.ffs@nanos.tec.linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 10:10:51PM +0200, Thomas Gleixner wrote:
-> On Tue, Apr 13 2021 at 21:35, Paul E. McKenney wrote:
-> >  
-> > +static int inject_delay_freq;
-> > +module_param(inject_delay_freq, int, 0644);
-> > +static int inject_delay_run = 1;
-> > +module_param(inject_delay_run, int, 0644);
-> 
-> int? Can't we just make them 'unsigned int'? Negative values are not
-> that useful.
-> 
-> > +static int max_read_retries = 3;
-> > +module_param(max_read_retries, int, 0644);
-> 
-> max_read_retries is unused here. Should be in the patch which actually
-> uses it.
+The primary goal of this series is to try to properly fix EDID reading
+for eDP panels using the ti-sn65dsi86 bridge.
 
-Good point, I will make all three unsigned int and move max_read_retries
-to 2/5 ("clocksource: Retry clock read if long delays detected").
+Previously we had a patch that added EDID reading but it turned out
+not to work at bootup. This caused some extra churn at bootup as we
+tried (and failed) to read the EDID several times and also ended up
+forcing us to use the hardcoded mode at boot. With this patch series I
+believe EDID reading is reliable at boot now and we never use the
+hardcoded mode.
 
-> > +static void clocksource_watchdog_inject_delay(void)
-> > +{
-> > +	int i;
-> > +	static int injectfail = -1;
-> > +
-> > +	if (inject_delay_freq <= 0 || inject_delay_run <= 0)
-> > +		return;
-> > +	if (injectfail < 0 || injectfail > INT_MAX / 2)
-> > +		injectfail = inject_delay_run;
-> > +	if (!(++injectfail / inject_delay_run % inject_delay_freq)) {
-> 
-> Operator precedence based cleverness is really easy to parse - NOT!
-> 
-> > +		pr_warn("%s(): Injecting delay.\n", __func__);
-> > +		for (i = 0; i < 2 * WATCHDOG_THRESHOLD / NSEC_PER_MSEC; i++)
-> > +			udelay(1000);
-> > +		pr_warn("%s(): Done injecting delay.\n", __func__);
-> > +	}
-> > +
-> > +	WARN_ON_ONCE(injectfail < 0);
-> > +}
-> 
-> Brain melt stage reached by now.
-> 
->         static unsigned int invocations, injections;
-> 
->         if (!inject_delay_period || !inject_delay_repeat)
->         	return;
-> 
->         if (!(invocations % inject_delay_period)) {
->         	mdelay(2 * WATCHDOG_THRESHOLD / NSEC_PER_MSEC);
->                 if (++injections < inject_delay_repeat)
->                 	return;
->                 injections = 0;
->         }
-> 
->         invocations++;
-> }
-> 
-> Hmm?
+This series is the logical successor to the 3-part series containing
+the patch ("drm/bridge: ti-sn65dsi86: Properly get the EDID, but only
+if refclk") [1] though only one actual patch is the same between the
+two.
 
-That is quite a bit nicer than the interacting parameters that I
-had.  I will rework along these lines.
+This series starts out with some general / obvious fixes and moves on
+to some more specific and maybe controversial ones. I wouldn't object
+to some of the earlier ones landing if they look ready.
 
-							Thanx, Paul
+This patch was developed agains linuxnext (next-20210416) on a
+sc7180-trogdor-lazor device. To get things booting for me, I had to
+use Stephen's patch [2] to keep from crashing but otherwise all the
+patches I needed were here.
+
+Primary change between v2 and v3 is to stop doing the EDID caching in
+the core. I also added Andrzej's review tags.
+
+Between v3 and v4 this series grew a whole lot. I changed it so that
+the EDID reading is actually driven by the panel driver now as was
+suggested by Andrzej. While I still believe that the old approach
+wasn't too bad I'm still switching. Why?
+
+The main reason is that I think it's useful in general for the panel
+code to have access to the DDC bus and to be able to read the
+EDID. This may allow us to more easily have the panel code support
+multiple sources of panels--it can read the EDID and possibly adjust
+timings based on the model ID. It also allows the panel code (or
+perhaps backlight code?) to send DDC commands if they are need for a
+particular panel.
+
+At the moment, once the panel is provided the DDC bus then existing
+code will assume that it should be in charge of reading the
+EDID. While it doesn't have to work that way, it seems sane to build
+on what's already there.
+
+In order to expose the DDC bus to the panel, I had to solve a bunch of
+chicken-and-egg problems in terms of probe ordering between the bridge
+and the panel. I've broken the bridge driver into several sub drivers
+to make this happen. At the moment the sub-drivers are just there to
+solve the probe problem, but conceivably someone could use them to
+break the driver up in the future if need be.
+
+I apologize in advance for the length of this series. I'm currently
+working through getting commit access to drm-misc [3] so I can land
+the first several patches which are already reviewed. There are still
+a lot of patches even after the first few, but hopefully you can see
+that there are only so many because they're broken up into nice and
+reviewable bite-sized-chunks. :-)
+
+[1] https://lore.kernel.org/r/20210304155144.3.I60a7fb23ce4589006bc95c64ab8d15c74b876e68@changeid/
+[2] https://lore.kernel.org/r/161706912161.3012082.17313817257247946143@swboyd.mtv.corp.google.com/
+[3] https://gitlab.freedesktop.org/freedesktop/freedesktop/-/issues/348
+
+Changes in v4:
+- Reword commit mesage slightly.
+
+Changes in v3:
+- Removed "NOTES" from commit message.
+
+Changes in v2:
+- Removed 2nd paragraph in commit message.
+
+Douglas Anderson (27):
+  drm/bridge: Fix the stop condition of drm_bridge_chain_pre_enable()
+  drm/bridge: ti-sn65dsi86: Simplify refclk handling
+  drm/bridge: ti-sn65dsi86: Remove incorrectly tagged kerneldoc comment
+  drm/bridge: ti-sn65dsi86: Reorder remove()
+  drm/bridge: ti-sn65dsi86: Move drm_panel_unprepare() to post_disable()
+  drm/bridge: ti-sn65dsi86: Get rid of the useless detect() function
+  drm/panel: panel-simple: Use runtime pm to avoid excessive unprepare /
+    prepare
+  drm/bridge: ti-sn65dsi86: Rename the main driver data structure
+  drm/bridge: ti-sn65dsi86: More renames in prep for sub-devices
+  drm/bridge: ti-sn65dsi86: Clean debugfs code
+  drm/bridge: ti-sn65dsi86: Add local var for "dev" to simplify probe
+  drm/bridge: ti-sn65dsi86: Cleanup managing of drvdata
+  drm/bridge: ti-sn65dsi86: Use devm to do our runtime_disable
+  drm/bridge: ti-sn65dsi86: Move all the chip-related init to the start
+  drm/bridge: ti-sn65dsi86: Break GPIO and MIPI-to-eDP bridge into
+    sub-drivers
+  drm/panel: panel-simple: Get rid of hacky HPD chicken-and-egg code
+  drm/bridge: ti-sn65dsi86: Use pm_runtime autosuspend
+  drm/bridge: ti-sn65dsi86: Code motion of refclk management functions
+  drm/bridge: ti-sn65dsi86: If refclk, DP AUX can happen w/out
+    pre-enable
+  drm/bridge: ti-sn65dsi86: Promote the AUX channel to its own sub-dev
+  i2c: i2c-core-of: Fix corner case of finding adapter by node
+  drm/panel: panel-simple: Remove extra call:
+    drm_connector_update_edid_property()
+  drm/panel: panel-simple: Power the panel when reading the EDID
+  drm/panel: panel-simple: Cache the EDID as long as we retain power
+  drm/bridge: ti-sn65dsi86: Don't read EDID blob over DDC
+  arm64: dts: qcom: Link the panel to the bridge's DDC bus
+  drm/panel: panel-simple: Prepare/unprepare are refcounted, not forced
+
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi |   1 +
+ drivers/gpu/drm/bridge/Kconfig               |   1 +
+ drivers/gpu/drm/bridge/ti-sn65dsi86.c        | 748 ++++++++++++-------
+ drivers/gpu/drm/drm_bridge.c                 |   3 +
+ drivers/gpu/drm/panel/Kconfig                |   1 +
+ drivers/gpu/drm/panel/panel-simple.c         | 123 +--
+ drivers/i2c/i2c-core-of.c                    |  17 +-
+ 7 files changed, 555 insertions(+), 339 deletions(-)
+
+-- 
+2.31.1.368.gbe11c130af-goog
+
