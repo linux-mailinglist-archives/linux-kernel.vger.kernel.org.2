@@ -2,134 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F094361FF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E50A3361FF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:36:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239255AbhDPMeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 08:34:46 -0400
-Received: from jptosegrel01.sonyericsson.com ([124.215.201.71]:12179 "EHLO
-        JPTOSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234291AbhDPMek (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 08:34:40 -0400
-From:   Peter Enderborg <peter.enderborg@sony.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>, NeilBrown <neilb@suse.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mike Rapoport <rppt@kernel.org>, <linux-media@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>,
-        <linaro-mm-sig@lists.linaro.org>,
-        Matthew Wilcox <willy@infradead.org>
-CC:     Peter Enderborg <peter.enderborg@sony.com>
-Subject: [PATCH v2] dma-buf: Add DmaBufTotal counter in meminfo
-Date:   Fri, 16 Apr 2021 14:33:52 +0200
-Message-ID: <20210416123352.10747-1-peter.enderborg@sony.com>
-X-Mailer: git-send-email 2.17.1
+        id S240227AbhDPMgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 08:36:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59416 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234291AbhDPMgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 08:36:11 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1618576545; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/0NXzHc9C8GdWfSwnMIwDRzLMUHI+KIfop/E4cJH7Jg=;
+        b=tP9KOVEDOaM7So8SGRLXgp7ANRlSAxH4MY5wrOUuBb6O31oVpHWz0GSj5wGPcIEvutyVrP
+        hfbCN0DXoMql+zbEVRjZUU7+wKRk2TlzqvulmCyP2/Rl5a1kph9jVQXAZjdozRk1o/RSGq
+        khWiykqBZJR77ljxa6TEMC84NO6U9is=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BDA68ABED;
+        Fri, 16 Apr 2021 12:35:45 +0000 (UTC)
+Date:   Fri, 16 Apr 2021 14:35:39 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        yang.shi@linux.alibaba.com, rientjes@google.com,
+        ying.huang@intel.com, dan.j.williams@intel.com, david@redhat.com,
+        osalvador@suse.de, weixugc@google.com
+Subject: Re: [PATCH 00/10] [v7][RESEND] Migrate Pages in lieu of discard
+Message-ID: <YHmEm/yHpaqO6khp@dhcp22.suse.cz>
+References: <20210401183216.443C4443@viggo.jf.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=crzlbGwi c=1 sm=1 tr=0 a=9drRLWArJOlETflmpfiyCA==:117 a=3YhXtTcJ-WEA:10 a=z6gsHLkEAAAA:8 a=USQXLDy_ZNVIum19Oj8A:9 a=d-OLMTCWyvARjPbQ-enb:22 a=pHzHmUro8NiASowvMSCR:22 a=Ew2E2A-JSTLzCXPT_086:22
-X-SEG-SpamProfiler-Score: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401183216.443C4443@viggo.jf.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds a total used dma-buf memory. Details
-can be found in debugfs, however it is not for everyone
-and not always available. dma-buf are indirect allocated by
-userspace. So with this value we can monitor and detect
-userspace applications that have problems.
+Hi,
+I am really sorry to jump into this train sooo late. I have quickly
+glanced through the series and I have some questions/concerns. Let me
+express them here rather than in specific patches.
 
-Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
----
- drivers/dma-buf/dma-buf.c | 12 ++++++++++++
- fs/proc/meminfo.c         |  5 ++++-
- include/linux/dma-buf.h   |  1 +
- 3 files changed, 17 insertions(+), 1 deletion(-)
+First of all I do think that demotion is a useful way to balance the
+memory in general. And that is not really bound to PMEM equipped
+systems. There are larger NUMA machines which are not trivial to
+partition and our existing NUMA APIs are far from ideal to help with
+that.
 
-diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-index f264b70c383e..9f88171b394c 100644
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -37,6 +37,7 @@ struct dma_buf_list {
- };
- 
- static struct dma_buf_list db_list;
-+static atomic_long_t dma_buf_size;
- 
- static char *dmabuffs_dname(struct dentry *dentry, char *buffer, int buflen)
- {
-@@ -79,6 +80,7 @@ static void dma_buf_release(struct dentry *dentry)
- 	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
- 		dma_resv_fini(dmabuf->resv);
- 
-+	atomic_long_sub(dmabuf->size, &dma_buf_size);
- 	module_put(dmabuf->owner);
- 	kfree(dmabuf->name);
- 	kfree(dmabuf);
-@@ -586,6 +588,7 @@ struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info)
- 	mutex_lock(&db_list.lock);
- 	list_add(&dmabuf->list_node, &db_list.head);
- 	mutex_unlock(&db_list.lock);
-+	atomic_long_add(dmabuf->size, &dma_buf_size);
- 
- 	return dmabuf;
- 
-@@ -1346,6 +1349,15 @@ void dma_buf_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map)
- }
- EXPORT_SYMBOL_GPL(dma_buf_vunmap);
- 
-+/**
-+ * dma_buf_get_size - Return the used nr pages by dma-buf
-+ */
-+long dma_buf_get_size(void)
-+{
-+	return atomic_long_read(&dma_buf_size) >> PAGE_SHIFT;
-+}
-+EXPORT_SYMBOL_GPL(dma_buf_get_size);
-+
- #ifdef CONFIG_DEBUG_FS
- static int dma_buf_debug_show(struct seq_file *s, void *unused)
- {
-diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-index 6fa761c9cc78..178f6ffb1618 100644
---- a/fs/proc/meminfo.c
-+++ b/fs/proc/meminfo.c
-@@ -16,6 +16,7 @@
- #ifdef CONFIG_CMA
- #include <linux/cma.h>
- #endif
-+#include <linux/dma-buf.h>
- #include <asm/page.h>
- #include "internal.h"
- 
-@@ -145,7 +146,9 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
- 	show_val_kb(m, "CmaFree:        ",
- 		    global_zone_page_state(NR_FREE_CMA_PAGES));
- #endif
--
-+#ifdef CONFIG_DMA_SHARED_BUFFER
-+	show_val_kb(m, "DmaBufTotal:    ", dma_buf_get_size());
-+#endif
- 	hugetlb_report_meminfo(m);
- 
- 	arch_report_meminfo(m);
-diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index efdc56b9d95f..f6481315a377 100644
---- a/include/linux/dma-buf.h
-+++ b/include/linux/dma-buf.h
-@@ -507,4 +507,5 @@ int dma_buf_mmap(struct dma_buf *, struct vm_area_struct *,
- 		 unsigned long);
- int dma_buf_vmap(struct dma_buf *dmabuf, struct dma_buf_map *map);
- void dma_buf_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map);
-+long dma_buf_get_size(void);
- #endif /* __DMA_BUF_H__ */
+I do appreciate that the whole thing is an opt in because this might
+break workloads which are careful with the placement. I am not sure
+there is a way to handle constrains in an optimal way if that is
+possible at all in some cases (e.g. do we have a way to track page to
+its cpuset resp. task mempolicy in all cases?).
+
+The cover letter is focusing on usecases but it doesn't really provide
+so let me try to lay it down here (let's see whether I missed something
+important).
+- order for demontion defines a very simple fallback to a single node
+  based on the proximity but cycles are not allowed in the fallback
+  mask.
+  I have to confess that I haven't grasped the initialization
+  completely. There is a nice comment explaining a 2 socket system with
+  3 different NUMA nodes attached to it with one node being terminal.
+  This is OK if the terminal node is PMEM but how that fits into usual
+  NUMA setups. E.g.
+  4 nodes each with its set of CPUs
+  node distances:
+  node   0   1   2   3
+  0:  10  20  20  20
+  1:  20  10  20  20
+  2:  20  20  10  20
+  3:  20  20  20  10
+  Do I get it right that Node 3 would be terminal?
+- The demotion is controlled by node_reclaim_mode but unlike other modes
+  it applies to both direct and kswapd reclaims.
+  I do not see that explained anywhere though.
+- The demotion is implemented at shrink_page_list level which migrates
+  pages in the first round and then falls back to the regular reclaim
+  when migration fails. This means that the reclaim context
+  (PF_MEMALLOC) will allocate memory so it has access to full memory
+  reserves. Btw. I do not __GFP_NO_MEMALLOC anywhere in the allocation
+  mask which looks like a bug rather than an intention. Btw. using
+  GFP_NOWAIT in the allocation callback would make more things clear
+  IMO.
+- Memcg reclaim is excluded from all this because it is not NUMA aware
+  which makes sense to me.
+- Anonymous pages are bit tricky because they can be demoted even when
+  they cannot be reclaimed due to no (or no available) swap storage.
+  Unless I have missed something the second round will try to reclaim
+  them even the later is true and I am not sure this is completely OK.
+
+I hope I've captured all important parts. There are some more details
+but they do not seem that important. 
+
+I am still trying to digest the whole thing but at least jamming
+node_reclaim logic into kswapd seems strange to me. Need to think more
+about that though.
+
+Btw. do you have any numbers from running this with some real work
+workload?
 -- 
-2.17.1
-
+Michal Hocko
+SUSE Labs
