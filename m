@@ -2,144 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DF79362062
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E191F362075
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235436AbhDPNBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 09:01:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:40958 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233259AbhDPNBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 09:01:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7604111B3;
-        Fri, 16 Apr 2021 06:00:35 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9E1B33F85F;
-        Fri, 16 Apr 2021 06:00:33 -0700 (PDT)
-Subject: Re: [PATCH v1 3/5] mm: ptdump: Provide page size to notepage()
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        id S240753AbhDPNEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 09:04:21 -0400
+Received: from conuserg-10.nifty.com ([210.131.2.77]:62731 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234291AbhDPNEG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 09:04:06 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id 13GD0vCC002141;
+        Fri, 16 Apr 2021 22:00:57 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 13GD0vCC002141
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1618578059;
+        bh=Bj3vmQYuw6AVeyGMQICNThf6rcoOcN89RQenb/sBZqc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cohJ7HYOsMdZ1GxI+GPzxKdV6N29fjrZk2jG+NGNstD314tHgEbG1QBPeqxMrUsyr
+         7++2XZI+7lWdwgeNa4be4MW81jDO6eWRJk3EhPU7BoQ2Q9u4UoAU1Na4K+ouH8aBwq
+         r3bvf4X+WQ10oGdloNZbFLbtpcbX6iHUXuvbbfcH6til8Qc1zsKomaY8HoWwPcfR4o
+         bDrOpsyGuwxcIwnHtNyaiZKvlc7CU1DMChm0gv/vpRVwRclMie2D0YSh3JvTEEg6rp
+         muPa6be/33bZI1soC0khkf0soRvW3ohefQLjYRjiDLNIkcMn8UCpEPn6Z507ju6Ys7
+         mMSBmrcjdC8Tw==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Janosch Frank <frankja@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
-        akpm@linux-foundation.org
-Cc:     linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, x86@kernel.org, linux-mm@kvack.org
-References: <cover.1618506910.git.christophe.leroy@csgroup.eu>
- <1ef6b954fb7b0f4dfc78820f1e612d2166c13227.1618506910.git.christophe.leroy@csgroup.eu>
- <41819925-3ee5-4771-e98b-0073e8f095cf@arm.com>
- <da53d2f2-b472-0c38-bdd5-99c5a098675d@csgroup.eu>
- <1102cda1-b00f-b6ef-6bf3-22068cc11510@arm.com>
- <6ff4816b-8ff6-19de-73a2-3fcadc003ccd@csgroup.eu>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <e39d500a-2154-3c5d-9393-8bf53a567fad@arm.com>
-Date:   Fri, 16 Apr 2021 14:00:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        netdev@vger.kernel.org
+Subject: [PATCH v2] tools: do not include scripts/Kbuild.include
+Date:   Fri, 16 Apr 2021 22:00:51 +0900
+Message-Id: <20210416130051.239782-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <6ff4816b-8ff6-19de-73a2-3fcadc003ccd@csgroup.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/04/2021 12:08, Christophe Leroy wrote:
-> 
-> 
-> Le 16/04/2021 à 12:51, Steven Price a écrit :
->> On 16/04/2021 11:38, Christophe Leroy wrote:
->>>
->>>
->>> Le 16/04/2021 à 11:28, Steven Price a écrit :
->>>> On 15/04/2021 18:18, Christophe Leroy wrote:
->>>>> In order to support large pages on powerpc, notepage()
->>>>> needs to know the page size of the page.
->>>>>
->>>>> Add a page_size argument to notepage().
->>>>>
->>>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->>>>> ---
->>>>>   arch/arm64/mm/ptdump.c         |  2 +-
->>>>>   arch/riscv/mm/ptdump.c         |  2 +-
->>>>>   arch/s390/mm/dump_pagetables.c |  3 ++-
->>>>>   arch/x86/mm/dump_pagetables.c  |  2 +-
->>>>>   include/linux/ptdump.h         |  2 +-
->>>>>   mm/ptdump.c                    | 16 ++++++++--------
->>>>>   6 files changed, 14 insertions(+), 13 deletions(-)
->>>>>
->>>> [...]
->>>>> diff --git a/mm/ptdump.c b/mm/ptdump.c
->>>>> index da751448d0e4..61cd16afb1c8 100644
->>>>> --- a/mm/ptdump.c
->>>>> +++ b/mm/ptdump.c
->>>>> @@ -17,7 +17,7 @@ static inline int note_kasan_page_table(struct 
->>>>> mm_walk *walk,
->>>>>   {
->>>>>       struct ptdump_state *st = walk->private;
->>>>> -    st->note_page(st, addr, 4, pte_val(kasan_early_shadow_pte[0]));
->>>>> +    st->note_page(st, addr, 4, pte_val(kasan_early_shadow_pte[0]), 
->>>>> PAGE_SIZE);
->>>>
->>>> I'm not completely sure what the page_size is going to be used for, 
->>>> but note that KASAN presents an interesting case here. We short-cut 
->>>> by detecting it's a KASAN region at a high level (PGD/P4D/PUD/PMD) 
->>>> and instead of walking the tree down just call note_page() *once* 
->>>> but with level==4 because we know KASAN sets up the page table like 
->>>> that.
->>>>
->>>> However the one call actually covers a much larger region - so while 
->>>> PAGE_SIZE matches the level it doesn't match the region covered. 
->>>> AFAICT this will lead to odd results if you enable KASAN on powerpc.
->>>
->>> Hum .... I successfully tested it with KASAN, I now realise that I 
->>> tested it with CONFIG_KASAN_VMALLOC selected. In this situation, 
->>> since https://github.com/torvalds/linux/commit/af3d0a686 we don't 
->>> have any common shadow page table anymore.
->>>
->>> I'll test again without CONFIG_KASAN_VMALLOC.
->>>
->>>>
->>>> To be honest I don't fully understand why powerpc requires the 
->>>> page_size - it appears to be using it purely to find "holes" in the 
->>>> calls to note_page(), but I haven't worked out why such holes would 
->>>> occur.
->>>
->>> I was indeed introduced for KASAN. We have a first commit 
->>> https://github.com/torvalds/linux/commit/cabe8138 which uses page 
->>> size to detect whether it is a KASAN like stuff.
->>>
->>> Then came https://github.com/torvalds/linux/commit/b00ff6d8c as a 
->>> fix. I can't remember what the problem was exactly, something around 
->>> the use of hugepages for kernel memory, came as part of the series 
->>> https://patchwork.ozlabs.org/project/linuxppc-dev/cover/cover.1589866984.git.christophe.leroy@csgroup.eu/ 
->>
->>
->>
->> Ah, that's useful context. So it looks like powerpc took a different 
->> route to reducing the KASAN output to x86.
->>
->> Given the generic ptdump code has handling for KASAN already it should 
->> be possible to drop that from the powerpc arch code, which I think 
->> means we don't actually need to provide page size to notepage(). 
->> Hopefully that means more code to delete ;)
->>
-> 
-> Yes ... and no.
-> 
-> It looks like the generic ptdump handles the case when several pgdir 
-> entries points to the same kasan_early_shadow_pte. But it doesn't take 
-> into account the powerpc case where we have regular page tables where 
-> several (if not all) PTEs are pointing to the kasan_early_shadow_page .
+Since commit d9f4ff50d2aa ("kbuild: spilt cc-option and friends to
+scripts/Makefile.compiler"), some kselftests fail to build.
 
-I'm not sure I follow quite how powerpc is different here. But could you 
-have a similar check for PTEs against kasan_early_shadow_pte as the 
-other levels already have?
+The tools/ directory opted out Kbuild, and went in a different
+direction. They copy any kind of files to the tools/ directory
+in order to do whatever they want in their world.
 
-I'm just worried that page_size isn't well defined in this interface and 
-it's going to cause problems in the future.
+tools/build/Build.include mimics scripts/Kbuild.include, but some
+tool Makefiles included the Kbuild one to import a feature that is
+missing in tools/build/Build.include:
 
-Steve
+ - Commit ec04aa3ae87b ("tools/thermal: tmon: use "-fstack-protector"
+   only if supported") included scripts/Kbuild.include from
+   tools/thermal/tmon/Makefile to import the cc-option macro.
+
+ - Commit c2390f16fc5b ("selftests: kvm: fix for compilers that do
+   not support -no-pie") included scripts/Kbuild.include from
+   tools/testing/selftests/kvm/Makefile to import the try-run macro.
+
+ - Commit 9cae4ace80ef ("selftests/bpf: do not ignore clang
+   failures") included scripts/Kbuild.include from
+   tools/testing/selftests/bpf/Makefile to import the .DELETE_ON_ERROR
+   target.
+
+ - Commit 0695f8bca93e ("selftests/powerpc: Handle Makefile for
+   unrecognized option") included scripts/Kbuild.include from
+   tools/testing/selftests/powerpc/pmu/ebb/Makefile to import the
+   try-run macro.
+
+Copy what they need into tools/build/Build.include, and make them
+include it instead of scripts/Kbuild.include.
+
+Link: https://lore.kernel.org/lkml/86dadf33-70f7-a5ac-cb8c-64966d2f45a1@linux.ibm.com/
+Fixes: d9f4ff50d2aa ("kbuild: spilt cc-option and friends to scripts/Makefile.compiler")
+Reported-by: Janosch Frank <frankja@linux.ibm.com>
+Reported-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+Changes in v2:
+  - copy macros to tools/build/BUild.include
+
+ tools/build/Build.include                     | 24 +++++++++++++++++++
+ tools/testing/selftests/bpf/Makefile          |  2 +-
+ tools/testing/selftests/kvm/Makefile          |  2 +-
+ .../selftests/powerpc/pmu/ebb/Makefile        |  2 +-
+ tools/thermal/tmon/Makefile                   |  2 +-
+ 5 files changed, 28 insertions(+), 4 deletions(-)
+
+diff --git a/tools/build/Build.include b/tools/build/Build.include
+index 585486e40995..2cf3b1bde86e 100644
+--- a/tools/build/Build.include
++++ b/tools/build/Build.include
+@@ -100,3 +100,27 @@ cxx_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(CXXFLAGS) -D"BUILD_STR(s)=\#s" $(CXX
+ ## HOSTCC C flags
+ 
+ host_c_flags = -Wp,-MD,$(depfile) -Wp,-MT,$@ $(KBUILD_HOSTCFLAGS) -D"BUILD_STR(s)=\#s" $(HOSTCFLAGS_$(basetarget).o) $(HOSTCFLAGS_$(obj))
++
++# output directory for tests below
++TMPOUT = .tmp_$$$$
++
++# try-run
++# Usage: option = $(call try-run, $(CC)...-o "$$TMP",option-ok,otherwise)
++# Exit code chooses option. "$$TMP" serves as a temporary file and is
++# automatically cleaned up.
++try-run = $(shell set -e;		\
++	TMP=$(TMPOUT)/tmp;		\
++	mkdir -p $(TMPOUT);		\
++	trap "rm -rf $(TMPOUT)" EXIT;	\
++	if ($(1)) >/dev/null 2>&1;	\
++	then echo "$(2)";		\
++	else echo "$(3)";		\
++	fi)
++
++# cc-option
++# Usage: cflags-y += $(call cc-option,-march=winchip-c6,-march=i586)
++cc-option = $(call try-run, \
++	$(CC) -Werror $(1) -c -x c /dev/null -o "$$TMP",$(1),$(2))
++
++# delete partially updated (i.e. corrupted) files on error
++.DELETE_ON_ERROR:
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 044bfdcf5b74..17a5cdf48d37 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+-include ../../../../scripts/Kbuild.include
++include ../../../build/Build.include
+ include ../../../scripts/Makefile.arch
+ include ../../../scripts/Makefile.include
+ 
+diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+index a6d61f451f88..5ef141f265bd 100644
+--- a/tools/testing/selftests/kvm/Makefile
++++ b/tools/testing/selftests/kvm/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-include ../../../../scripts/Kbuild.include
++include ../../../build/Build.include
+ 
+ all:
+ 
+diff --git a/tools/testing/selftests/powerpc/pmu/ebb/Makefile b/tools/testing/selftests/powerpc/pmu/ebb/Makefile
+index af3df79d8163..c5ecb4634094 100644
+--- a/tools/testing/selftests/powerpc/pmu/ebb/Makefile
++++ b/tools/testing/selftests/powerpc/pmu/ebb/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+-include ../../../../../../scripts/Kbuild.include
++include ../../../../../build/Build.include
+ 
+ noarg:
+ 	$(MAKE) -C ../../
+diff --git a/tools/thermal/tmon/Makefile b/tools/thermal/tmon/Makefile
+index 59e417ec3e13..9db867df7679 100644
+--- a/tools/thermal/tmon/Makefile
++++ b/tools/thermal/tmon/Makefile
+@@ -1,6 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ # We need this for the "cc-option" macro.
+-include ../../../scripts/Kbuild.include
++include ../../build/Build.include
+ 
+ VERSION = 1.0
+ 
+-- 
+2.27.0
+
