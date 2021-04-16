@@ -2,365 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 004323619D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 08:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A84D3619D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 08:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239011AbhDPG0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 02:26:07 -0400
-Received: from mga05.intel.com ([192.55.52.43]:30582 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233959AbhDPG0G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 02:26:06 -0400
-IronPort-SDR: K4CAWUB0Uyh3vuSxkrxkL2KFO0xjDCxfQxML6rkUUqbJl1uaeHVBZdPRl+rjYb2MSeuQb4jc1q
- a4b86AqkaKoQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="280314645"
-X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
-   d="scan'208";a="280314645"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 23:25:39 -0700
-IronPort-SDR: ULdwpRpE9UwAH7Qs82NdWV6+tIVkhtATkij5XDwwkGSmu9LyOD6d9mo/XeCr/VeHjMUD3F3ohO
- UiJxns4KEZEQ==
-X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
-   d="scan'208";a="399822383"
-Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2021 23:25:33 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Dennis Zhou <dennis@kernel.org>, <akpm@linux-foundation.org>,
-        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
-        <vbabka@suse.cz>, <alex.shi@linux.alibaba.com>,
-        <willy@infradead.org>, <minchan@kernel.org>,
-        <richard.weiyang@gmail.com>, <hughd@google.com>,
-        <tim.c.chen@linux.intel.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>
-Subject: Re: [PATCH 1/5] mm/swapfile: add percpu_ref support for swap
-References: <46a51c49-2887-0c1a-bcf3-e1ebe9698ebf@huawei.com>
-        <874kg9u0jo.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <75e27441-7744-7a10-e709-c8cd00830099@huawei.com>
-        <87tuo9sjpj.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <YHZlJZh8T4ZhLhp6@google.com>
-        <877dl5seig.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <YHZqCy/y2YLCOcbD@google.com>
-        <87zgy1qv1h.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <YHcB36r5gOyXnozT@google.com>
-        <87o8egp1bk.fsf@yhuang6-desk1.ccr.corp.intel.com>
-        <YHhOLuIAR3QJ1jx4@google.com>
-        <32f4c6f4-c969-c434-82d6-66a0e76ac4c6@huawei.com>
-Date:   Fri, 16 Apr 2021 14:25:31 +0800
-In-Reply-To: <32f4c6f4-c969-c434-82d6-66a0e76ac4c6@huawei.com> (Miaohe Lin's
-        message of "Fri, 16 Apr 2021 10:27:11 +0800")
-Message-ID: <8735vqoiec.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S239070AbhDPG0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 02:26:17 -0400
+Received: from mail-eopbgr1310081.outbound.protection.outlook.com ([40.107.131.81]:23376
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233959AbhDPG0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 02:26:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HiMNRapwjy6k0/Y0+9Tw1nZsTxlBoF8iJ2RtrL+w2IwVPMKiwQaHEHpXeb8tOL89D7fqmKRBcqYrErUg7lWANwngsGcz2/FMHTu75W8myzD0t3YgTKOyftJWVH1xEi0PGQFEGy2POWx0Hs+f2f+F5rPSdiqgul6DS4b5WEYCl6RIG36X/8VoACTiR3bdrZwNXYFEyIuGlzKPFhnmJnGfGvvhSBFgf2WRglFIvfeQaRGR2RGG1mcTp2hIyi8ax1BeplN82b2K8KnQxW4Pny4QnJF9iD7u9qJ6rUGtKbvGmS8Wg3FT1kQ3Msrk6/7+b1jeJaEXcd9HAaASk2Sl9pSCfw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pK+HtwbKNENk7cQSrswMCLnd9c69GXmaxKdieFnVzjA=;
+ b=fFbnrEQMog0FQOGuvMZw7ey9gN3Qh/agzu6C4hxcC0H+IuiZ7dZRIVJvEzSMIfpMS/Tzwn4xsBiIacPNXpON6uA3uuB4jKCk4hIOFIYH7TJ+0IhdI/kAIIgs2rbfJN+PwgV9VNodcrei7cLJD1SbMunxoj0nFnNlDBqn6pPUETKAoheRtPi14Duesq8MLKaFAbzlkbYZn/Ivz8a9f2RyYdu64rJ2tTeC3XLzBkLAkd9UeZUndgIxwMjkRsD3aW3y5gQwTW81HrvG4mazBSTk7TZaLD0xOUPf+c5xOLvIOLEZhh8a/ZT6hD0+YL49Q/S1Icuf84Sj/kLzygfG6epN8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
+ dkim=pass header.d=oppo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pK+HtwbKNENk7cQSrswMCLnd9c69GXmaxKdieFnVzjA=;
+ b=ftg3Lp/GNP1ft6LjWf7OQV7V/YD7fTKivfOycAXzzyocf3uGHofAnNtbDkMZtLM7GYOBTXmyA0iVgqQRJfzz0HtdRfVPXsjH8gPPkYebbpwmB68YAaS+WTCqW3CO52Vz+m5aZirzdFsC9PzDeoBJVWZls/TAtIi8rhxLJV8I69M=
+Received: from TY2PR02MB3709.apcprd02.prod.outlook.com (2603:1096:404:b1::19)
+ by TYZPR02MB5213.apcprd02.prod.outlook.com (2603:1096:400:73::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.18; Fri, 16 Apr
+ 2021 06:25:44 +0000
+Received: from TY2PR02MB3709.apcprd02.prod.outlook.com
+ ([fe80::d904:1402:77b8:4765]) by TY2PR02MB3709.apcprd02.prod.outlook.com
+ ([fe80::d904:1402:77b8:4765%5]) with mapi id 15.20.4042.018; Fri, 16 Apr 2021
+ 06:25:44 +0000
+From:   =?utf-8?B?6Z+p5aSn6bmPKEhhbiBEYXBlbmcp?= <handapeng@oppo.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Mike Rapoport <rppt@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arseny Solokha <asolokha@kb.kras.ru>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>
+CC:     =?utf-8?B?6ZmI5a6J5bqGKEFucWluZyk=?= <chenanqing@oppo.com>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIHN5bWJvbCA6IE1ha2UgdGhlIHNpemUgb2YgdGhl?=
+ =?utf-8?Q?_compile-related_array_fixed?=
+Thread-Topic: [PATCH] symbol : Make the size of the compile-related array
+ fixed
+Thread-Index: AdcybivXL0bXOBP7T6+n0IM9hXFNfwAGMgWAAAAjUAAAACCa0A==
+Date:   Fri, 16 Apr 2021 06:25:44 +0000
+Message-ID: <TY2PR02MB37095449954E5311948E1457CB4C9@TY2PR02MB3709.apcprd02.prod.outlook.com>
+References: <TY2PR02MB3709103991CF81E89C8F1E37CB4C9@TY2PR02MB3709.apcprd02.prod.outlook.com>
+ <db764cb6-4294-10c0-56ed-a0fe3b307018@csgroup.eu>
+ <2dfd1880-556e-1324-0b22-0907d24c7d5a@csgroup.eu>
+In-Reply-To: <2dfd1880-556e-1324-0b22-0907d24c7d5a@csgroup.eu>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: csgroup.eu; dkim=none (message not signed)
+ header.d=none;csgroup.eu; dmarc=none action=none header.from=oppo.com;
+x-originating-ip: [58.255.79.104]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4b585f49-b621-4968-4997-08d900a07734
+x-ms-traffictypediagnostic: TYZPR02MB5213:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <TYZPR02MB5213679C8CD11D757CD8F274CB4C9@TYZPR02MB5213.apcprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Pa9HJE8GI0haSVljC3TvD0xQdXKWUyFx12cvjLB0iBPOQ1d4cfmkY0P491DWyzTosfQalN+OEV42inlyjW7TsMLCJ3ffjYPKcAJk5LnntTHSKv6s/TWlLNmS5wZX6MBXss/QPDRL5kIfIXGNwoWYfxdqT23t7r5e35pIPIdrjIkSFylRhb72KT7FLO++Shb3H6dVXY3FvoJU5umIoJhdSBzu+Tmmxl1/onOfDShjUtQDRFDTVySLOKHMAOK5UPcpLh3A9ih2cHZ/otd8bCpgC/vEmTmKcMXZVKR+jw0AhnnUyN5IGBlKPCuUkPH+LhYXpUS6jWOzU1rOgYyE7jYfrjfgw0cAIUfHDk+98a9mpmIaaEhWAOyv4Df/Zc8TxvonWNLjTXkCYLwByuOls4Ydf/P+WZAJINJkSG3UGG3pxTHSzRPkrMvfNG1G6Il+mIpAy2xvQoV+fYTrs6XHkHSee3d1+LdsJ0OuP5LRBRWKgPUs+b5M4dpNDHJh3dmgwlEF6EzLeNb7+M3vBCEAXhRtHuumfoLuBYVoHQ6qjM+He1oPck9dcWD5HQZljs+YEEC4v5LSDXZO9FTtHSzj9ufxpCZG6F6zCjvwkqOomZg4ZrGQpsyhd4iz84DUoRc9OTjuIecmEh6ZR7RiAruCwe3rE38GmWFbhhjXY8iHKAqzIGs=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR02MB3709.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(136003)(39860400002)(376002)(26005)(7416002)(38100700002)(2906002)(86362001)(52536014)(71200400001)(9686003)(224303003)(5660300002)(921005)(66946007)(6506007)(66556008)(107886003)(53546011)(66476007)(186003)(7696005)(122000001)(76116006)(64756008)(316002)(55016002)(8936002)(4326008)(110136005)(66446008)(85182001)(478600001)(83380400001)(66574015)(33656002)(11606007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?bk4xMHpEeFh2Wkc2eG1HK1FndGMvd0llMTRSdytDVGpMSjNweUlIUlUyMjVV?=
+ =?utf-8?B?OEpCQURqcnVqZ1c5MzNxNFZRSVYxRTlIVk5qQ210Yno3Sk1TRHNKNitCZys0?=
+ =?utf-8?B?R2pGRXVTaUVQZVZNS044NXE2czdZSXI4L0ZJbWx3V3ZlakROd1JrbTV0RXAv?=
+ =?utf-8?B?N3FzWnJDYk4rVVJ6Y29XWW9Za2VjUnhKZzdyRzZQOTQyUU04SUJFT0lTckNB?=
+ =?utf-8?B?QzRhOFNua0tvTmY0NjJtQXVWelFuYzhEc0JnTEVmQW14cnVvVkFSQkdyd0xr?=
+ =?utf-8?B?R2ozTVVVaXVpeU0wZnZBMExTNWlUblJJcXFVSmVJcVZMV0szN0NBekNBeXph?=
+ =?utf-8?B?WXJVVXM5Uk5YSnlSblBSL0JEaXZKMy9neUtOdGVUY3J6bHdrYkJpWHMvL21y?=
+ =?utf-8?B?L0pnZWU2N1g4MnNmU2IwUGhnTW00YmpBZmR4R3dSZGJuNXcwbDQ4KzJ6c3d6?=
+ =?utf-8?B?Mm4ya09DdVVJNmpHL2pxcGlvOGJhcUdPS1hwai9ZalQvVVp5SUtjWWR3T01F?=
+ =?utf-8?B?UEgrd0ZySjhVWGhDS0xWZmZkdW8zL2tVeTFyNEdOWW85REZrOEZ1RmhzL2l5?=
+ =?utf-8?B?MytGcGpMSmNZSWJLT3ZpM05CMVVEcDlKQnlib1ZISi94VjZwRGpxQ3lzWisx?=
+ =?utf-8?B?WnZ6ZWRULzd5d0UyMW9mZmEybmI1bTh4amhrQmo3MFBnOHMwdlpoT2kwNDJK?=
+ =?utf-8?B?OStVUFFuL2RXKzJVS2tnQWpIUmg3UHdPdjUrREpmUnR3RUF2SFNiTmw0Vjhp?=
+ =?utf-8?B?bEhnUkwvSmZ5MmFaeEx0Zy9TQ0JUMUF0TU9FcjI3WG1kNDdWTEkva2s2aGJu?=
+ =?utf-8?B?WW1MZFdoZ1A5azkza2lpd2xIY0pRRVNlaTQzMUlGUVZNZ25jNnhid2FhRWl1?=
+ =?utf-8?B?TmZaVDczb09uVk1ycWRwZE96UGZsK0RwdnRJWW1zanpBMmE0a2ZmM0s5RUtm?=
+ =?utf-8?B?WWxCeVp0YnozeVhlWkFvZTJyQzB5QXMybGtEY0N2YllhRTJSWENtWXQraG5o?=
+ =?utf-8?B?TnozRVF4Tml1Nnc0bkpxbCtPS21vekpKUTljUm9DVURueFFuUFZteWh4dnF6?=
+ =?utf-8?B?K21oejN1TmdSa1FkMEdZMDVEeERybE5nczI2YzZNUDZmOWdNWGN0OTdTZm95?=
+ =?utf-8?B?QUwxT05jeGl0Rll2aExkS2tSU2xPcnBHZU5GTnJDcWJSUVZMNUhVeElldk5Z?=
+ =?utf-8?B?TExISnIwRVFDRWVuazFqYWk3VzVtdjE4emVoNkM4aHM3Z0ZLVjZmYTFoQytj?=
+ =?utf-8?B?QnErUi9KMHZBbE5BKzdsc1k4YitjTnRSTWk1QlBZbFR6alNaUUcyM2RkWm1J?=
+ =?utf-8?B?OVpuUkx6OXFuQ3VHMWdJcGg5aG5iUTNTbGxyVGl1K0ozaHQ0VUkwYkVZZnBq?=
+ =?utf-8?B?TTZBeXRBdnVvaUFKNlo5MGw4RE03VFBXdEgyWmVzT0hnYmMrbHoyVTdwb2d6?=
+ =?utf-8?B?UG4zWTJBblJYOUk3NXUrVjRsQmZ1M2ZTYVBsak5KaFJ0TnhhaTJxRUdHbGZ3?=
+ =?utf-8?B?ZGd3L3VHZitRMzJxQTFaY09ZMnd4VnM4Mkg1dTROQ3FaeTFsNHA0eXJ0YUNl?=
+ =?utf-8?B?THhXUGkxTnhSdlFLMms1UDlpWG42YVBlYVQyY0tEdXR2ZXpDcFphMmdvK1lE?=
+ =?utf-8?B?STF6RktDNzNsZ2VERWJKZzBxbTVBVWlOQUdlVUdHVVhnTzZ6SDRRTFBFQ0Za?=
+ =?utf-8?B?YXpsRTRLTWhpM08xM0ZNdm9HdllMblRTQUZ4U2tWNnJpQTBESXIvUjhyR0d4?=
+ =?utf-8?Q?eHnswyMzeql8g5DbacSCrrpmdDnWbt3+P/R+ZVp?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY2PR02MB3709.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4b585f49-b621-4968-4997-08d900a07734
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Apr 2021 06:25:44.2749
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Vx09V4Pm3G6mgd3sxuzGWv8u7ZMPdMo8ABr3wwfG2O3G30eX3gD07wSDr6u1jt24vaWSucp3TSkbQDDAu6i0SQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR02MB5213
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Miaohe Lin <linmiaohe@huawei.com> writes:
-
-> On 2021/4/15 22:31, Dennis Zhou wrote:
->> On Thu, Apr 15, 2021 at 01:24:31PM +0800, Huang, Ying wrote:
->>> Dennis Zhou <dennis@kernel.org> writes:
->>>
->>>> On Wed, Apr 14, 2021 at 01:44:58PM +0800, Huang, Ying wrote:
->>>>> Dennis Zhou <dennis@kernel.org> writes:
->>>>>
->>>>>> On Wed, Apr 14, 2021 at 11:59:03AM +0800, Huang, Ying wrote:
->>>>>>> Dennis Zhou <dennis@kernel.org> writes:
->>>>>>>
->>>>>>>> Hello,
->>>>>>>>
->>>>>>>> On Wed, Apr 14, 2021 at 10:06:48AM +0800, Huang, Ying wrote:
->>>>>>>>> Miaohe Lin <linmiaohe@huawei.com> writes:
->>>>>>>>>
->>>>>>>>>> On 2021/4/14 9:17, Huang, Ying wrote:
->>>>>>>>>>> Miaohe Lin <linmiaohe@huawei.com> writes:
->>>>>>>>>>>
->>>>>>>>>>>> On 2021/4/12 15:24, Huang, Ying wrote:
->>>>>>>>>>>>> "Huang, Ying" <ying.huang@intel.com> writes:
->>>>>>>>>>>>>
->>>>>>>>>>>>>> Miaohe Lin <linmiaohe@huawei.com> writes:
->>>>>>>>>>>>>>
->>>>>>>>>>>>>>> We will use percpu-refcount to serialize against concurrent swapoff. This
->>>>>>>>>>>>>>> patch adds the percpu_ref support for later fixup.
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>>>>>>>>>>>>>> ---
->>>>>>>>>>>>>>>  include/linux/swap.h |  2 ++
->>>>>>>>>>>>>>>  mm/swapfile.c        | 25 ++++++++++++++++++++++---
->>>>>>>>>>>>>>>  2 files changed, 24 insertions(+), 3 deletions(-)
->>>>>>>>>>>>>>>
->>>>>>>>>>>>>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
->>>>>>>>>>>>>>> index 144727041e78..849ba5265c11 100644
->>>>>>>>>>>>>>> --- a/include/linux/swap.h
->>>>>>>>>>>>>>> +++ b/include/linux/swap.h
->>>>>>>>>>>>>>> @@ -240,6 +240,7 @@ struct swap_cluster_list {
->>>>>>>>>>>>>>>   * The in-memory structure used to track swap areas.
->>>>>>>>>>>>>>>   */
->>>>>>>>>>>>>>>  struct swap_info_struct {
->>>>>>>>>>>>>>> +	struct percpu_ref users;	/* serialization against concurrent swapoff */
->>>>>>>>>>>>>>>  	unsigned long	flags;		/* SWP_USED etc: see above */
->>>>>>>>>>>>>>>  	signed short	prio;		/* swap priority of this type */
->>>>>>>>>>>>>>>  	struct plist_node list;		/* entry in swap_active_head */
->>>>>>>>>>>>>>> @@ -260,6 +261,7 @@ struct swap_info_struct {
->>>>>>>>>>>>>>>  	struct block_device *bdev;	/* swap device or bdev of swap file */
->>>>>>>>>>>>>>>  	struct file *swap_file;		/* seldom referenced */
->>>>>>>>>>>>>>>  	unsigned int old_block_size;	/* seldom referenced */
->>>>>>>>>>>>>>> +	struct completion comp;		/* seldom referenced */
->>>>>>>>>>>>>>>  #ifdef CONFIG_FRONTSWAP
->>>>>>>>>>>>>>>  	unsigned long *frontswap_map;	/* frontswap in-use, one bit per page */
->>>>>>>>>>>>>>>  	atomic_t frontswap_pages;	/* frontswap pages in-use counter */
->>>>>>>>>>>>>>> diff --git a/mm/swapfile.c b/mm/swapfile.c
->>>>>>>>>>>>>>> index 149e77454e3c..724173cd7d0c 100644
->>>>>>>>>>>>>>> --- a/mm/swapfile.c
->>>>>>>>>>>>>>> +++ b/mm/swapfile.c
->>>>>>>>>>>>>>> @@ -39,6 +39,7 @@
->>>>>>>>>>>>>>>  #include <linux/export.h>
->>>>>>>>>>>>>>>  #include <linux/swap_slots.h>
->>>>>>>>>>>>>>>  #include <linux/sort.h>
->>>>>>>>>>>>>>> +#include <linux/completion.h>
->>>>>>>>>>>>>>>  
->>>>>>>>>>>>>>>  #include <asm/tlbflush.h>
->>>>>>>>>>>>>>>  #include <linux/swapops.h>
->>>>>>>>>>>>>>> @@ -511,6 +512,15 @@ static void swap_discard_work(struct work_struct *work)
->>>>>>>>>>>>>>>  	spin_unlock(&si->lock);
->>>>>>>>>>>>>>>  }
->>>>>>>>>>>>>>>  
->>>>>>>>>>>>>>> +static void swap_users_ref_free(struct percpu_ref *ref)
->>>>>>>>>>>>>>> +{
->>>>>>>>>>>>>>> +	struct swap_info_struct *si;
->>>>>>>>>>>>>>> +
->>>>>>>>>>>>>>> +	si = container_of(ref, struct swap_info_struct, users);
->>>>>>>>>>>>>>> +	complete(&si->comp);
->>>>>>>>>>>>>>> +	percpu_ref_exit(&si->users);
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> Because percpu_ref_exit() is used, we cannot use percpu_ref_tryget() in
->>>>>>>>>>>>>> get_swap_device(), better to add comments there.
->>>>>>>>>>>>>
->>>>>>>>>>>>> I just noticed that the comments of percpu_ref_tryget_live() says,
->>>>>>>>>>>>>
->>>>>>>>>>>>>  * This function is safe to call as long as @ref is between init and exit.
->>>>>>>>>>>>>
->>>>>>>>>>>>> While we need to call get_swap_device() almost at any time, so it's
->>>>>>>>>>>>> better to avoid to call percpu_ref_exit() at all.  This will waste some
->>>>>>>>>>>>> memory, but we need to follow the API definition to avoid potential
->>>>>>>>>>>>> issues in the long term.
->>>>>>>>>>>>
->>>>>>>>>>>> I have to admit that I'am not really familiar with percpu_ref. So I read the
->>>>>>>>>>>> implementation code of the percpu_ref and found percpu_ref_tryget_live() could
->>>>>>>>>>>> be called after exit now. But you're right we need to follow the API definition
->>>>>>>>>>>> to avoid potential issues in the long term.
->>>>>>>>>>>>
->>>>>>>>>>>>>
->>>>>>>>>>>>> And we need to call percpu_ref_init() before insert the swap_info_struct
->>>>>>>>>>>>> into the swap_info[].
->>>>>>>>>>>>
->>>>>>>>>>>> If we remove the call to percpu_ref_exit(), we should not use percpu_ref_init()
->>>>>>>>>>>> here because *percpu_ref->data is assumed to be NULL* in percpu_ref_init() while
->>>>>>>>>>>> this is not the case as we do not call percpu_ref_exit(). Maybe percpu_ref_reinit()
->>>>>>>>>>>> or percpu_ref_resurrect() will do the work.
->>>>>>>>>>>>
->>>>>>>>>>>> One more thing, how could I distinguish the killed percpu_ref from newly allocated one?
->>>>>>>>>>>> It seems percpu_ref_is_dying is only safe to call when @ref is between init and exit.
->>>>>>>>>>>> Maybe I could do this in alloc_swap_info()?
->>>>>>>>>>>
->>>>>>>>>>> Yes.  In alloc_swap_info(), you can distinguish newly allocated and
->>>>>>>>>>> reused swap_info_struct.
->>>>>>>>>>>
->>>>>>>>>>>>>
->>>>>>>>>>>>>>> +}
->>>>>>>>>>>>>>> +
->>>>>>>>>>>>>>>  static void alloc_cluster(struct swap_info_struct *si, unsigned long idx)
->>>>>>>>>>>>>>>  {
->>>>>>>>>>>>>>>  	struct swap_cluster_info *ci = si->cluster_info;
->>>>>>>>>>>>>>> @@ -2500,7 +2510,7 @@ static void enable_swap_info(struct swap_info_struct *p, int prio,
->>>>>>>>>>>>>>>  	 * Guarantee swap_map, cluster_info, etc. fields are valid
->>>>>>>>>>>>>>>  	 * between get/put_swap_device() if SWP_VALID bit is set
->>>>>>>>>>>>>>>  	 */
->>>>>>>>>>>>>>> -	synchronize_rcu();
->>>>>>>>>>>>>>> +	percpu_ref_reinit(&p->users);
->>>>>>>>>>>>>>
->>>>>>>>>>>>>> Although the effect is same, I think it's better to use
->>>>>>>>>>>>>> percpu_ref_resurrect() here to improve code readability.
->>>>>>>>>>>>>
->>>>>>>>>>>>> Check the original commit description for commit eb085574a752 "mm, swap:
->>>>>>>>>>>>> fix race between swapoff and some swap operations" and discussion email
->>>>>>>>>>>>> thread as follows again,
->>>>>>>>>>>>>
->>>>>>>>>>>>> https://lore.kernel.org/linux-mm/20171219053650.GB7829@linux.vnet.ibm.com/
->>>>>>>>>>>>>
->>>>>>>>>>>>> I found that the synchronize_rcu() here is to avoid to call smp_rmb() or
->>>>>>>>>>>>> smp_load_acquire() in get_swap_device().  Now we will use
->>>>>>>>>>>>> percpu_ref_tryget_live() in get_swap_device(), so we will need to add
->>>>>>>>>>>>> the necessary memory barrier, or make sure percpu_ref_tryget_live() has
->>>>>>>>>>>>> ACQUIRE semantics.  Per my understanding, we need to change
->>>>>>>>>>>>> percpu_ref_tryget_live() for that.
->>>>>>>>>>>>>
->>>>>>>>>>>>
->>>>>>>>>>>> Do you mean the below scene is possible?
->>>>>>>>>>>>
->>>>>>>>>>>> cpu1
->>>>>>>>>>>> swapon()
->>>>>>>>>>>>   ...
->>>>>>>>>>>>   percpu_ref_init
->>>>>>>>>>>>   ...
->>>>>>>>>>>>   setup_swap_info
->>>>>>>>>>>>   /* smp_store_release() is inside percpu_ref_reinit */
->>>>>>>>>>>>   percpu_ref_reinit
->>>>>>>>>>>
->>>>>>>>>>> spin_unlock() has RELEASE semantics already.
->>>>>>>>>>>
->>>>>>>>>>>>   ...
->>>>>>>>>>>>
->>>>>>>>>>>> cpu2
->>>>>>>>>>>> get_swap_device()
->>>>>>>>>>>>   /* ignored  smp_rmb() */
->>>>>>>>>>>>   percpu_ref_tryget_live
->>>>>>>>>>>
->>>>>>>>>>> Some kind of ACQUIRE is required here to guarantee the refcount is
->>>>>>>>>>> checked before fetching the other fields of swap_info_struct.  I have
->>>>>>>>>>> sent out a RFC patch to mailing list to discuss this.
->>>>>>>>
->>>>>>>> I'm just catching up and following along a little bit. I apologize I
->>>>>>>> haven't read the swap code, but my understanding is you are trying to
->>>>>>>> narrow a race condition with swapoff. That makes sense to me. I'm not
->>>>>>>> sure I follow the need to race with reinitializing the ref though? Is it
->>>>>>>> not possible to wait out the dying swap info and then create a new one
->>>>>>>> rather than push acquire semantics?
->>>>>>>
->>>>>>> We want to check whether the swap entry is valid (that is, the swap
->>>>>>> device isn't swapped off now), prevent it from swapping off, then access
->>>>>>> the swap_info_struct data structure.  When accessing swap_info_struct,
->>>>>>> we want to guarantee the ordering, so that we will not reference
->>>>>>> uninitialized fields of swap_info_struct.
->>>>>>>
->>>>>>
->>>>>> So in the normal context of percpu_ref, once someone can access it, the
->>>>>> elements that it is protecting are expected to be initialized.
->>>>>
->>>>> If we can make sure that all elements being initialized fully, why not
->>>>> just use percpu_ref_get() instead of percpu_ref_tryget*()?
->>>>>
->>>>
->>>> Generally, the lookup is protected with rcu and then
->>>> percpu_ref_tryget*() is used to obtain a reference. percpu_ref_get() is
->>>> only good if you already have a ref as it increments regardless of being
->>>> 0.
->>>>
->>>> What I mean is if you can get a ref, that means the object hasn't been
->>>> destroyed. This differs from the semantics you are looking for which I
->>>> understand to be: I have long lived pointers to objects. The object may
->>>> die, but I may resurrect it and I want the old pointers to still be
->>>> valid.
->>>>
->>>> When is it possible for someone to have a pointer to the swap device and
->>>> the refcount goes to 0? It might be better to avoid this situation than
->>>> add acquire semantics.
->>>>
->>>>>> In the basic case for swap off, I'm seeing the goal as to prevent
->>>>>> destruction until anyone currently accessing swap is done. In this
->>>>>> case wouldn't we always be protecting a live struct?
->>>>>>
->>>>>> I'm maybe not understanding what conditions you're trying to revive the
->>>>>> percpu_ref?
->>>>>
->>>>> A swap entry likes an indirect pointer to a swap device.  We may hold a
->>>>> swap entry for long time, so that the swap device is swapoff/swapon.
->>>>> Then we need to make sure the swap device are fully initialized before
->>>>> accessing the swap device via the swap entry.
->>>>>
->>>>
->>>> So if I have some number of outstanding references, and then
->>>> percpu_ref_kill() is called, then only those that have the pointer will
->>>> be able to use the swap device as those references are still good. Prior
->>>> to calling percpu_ref_kill(), call_rcu() needs to be called on lookup
->>>> data structure.
->>>>
->>>> My personal understanding of tryget() vs tryget_live() is that it
->>>> provides a 2 phase clean up and bounds the ability for new users to come
->>>> in (cgroup destruction is a primary user). As tryget() might inevitably
->>>> let a cgroup live long past its removal, tryget_live() will say oh
->>>> you're in the process of dying do something else.
->>>
->>> OK.  I think that I understand your typical use case now.  The resource
->>> producer code may look like,
->>>
->>>   obj = kmalloc();
->>>   /* Initialize obj fields */
->>>   percpu_ref_init(&obj->ref);
->>>   rcu_assign_pointer(global_p, obj);
->>>
->>> The resource reclaimer looks like,
->>>
->>>   p = global_p;
->>>   global_p = NULL;
->>>   percpu_ref_kill(&p->ref);
->>>   /* wait until percpu_ref_is_zero(&p->ref) */
->>>   /* free resources pointed by obj fields */
->>>   kfree(p);
->>>
->>> The resource producer looks like,
->>>
->>>   rcu_read_lock();
->>>   p = rcu_dereference(global_p);
->>>   if (!p || !percpu_ref_tryget_live(&p->ref)) {
->>>           /* Invalid pointer, go out */
->>>   }
->>>   rcu_read_unlock();
->>>   /* use p */
->>>   percpu_ref_put(&p->ref);
->>>
->>> For this use case, it's not necessary to make percpu_ref_tryget_live()
->>> ACQUIRE operation.  Because refcount doesn't act as a flag to indicate
->>> whether the object has been fully initialized, global_p does.  And
->>> the data dependency guaranteed the required ordering.
->>>
->> 
->> Yes this is spot on.
->> 
->>> The use case of swap is different.  Where global_p always points to
->>> the obj (never freed) even if the resources pointed by obj fields has
->>> been freed.  And we want to use refcount as a flag to indicate whether
->>> the object is fully initialized.  This is hard to be changed, because
->>> the global_p is used to identify the stalled pointer from the totally
->>> invalid pointer.
->>>
->> 
->> Apologies ahead of time for this possibly dumb question. Is it possible
->> to have swapon swap out the global_p with
->> old_obj = rcu_access_pointer(global_p);
->> rcu_assign_pointer(global_p, obj);
->> kfree_rcu(remove_old_obj) or call_rcu();
->> 
->> Then the obj pointed to by global_p would always be valid, but only
->> would be alive again if it got the new pointer?
->
-> Many thanks for both of you! Looks like a nice solution! Will try to do it in v2.
-> Thanks again! :)
-
-Think about this again.  This means that we need to free the old
-swap_info_struct at some time.  So something like RCU is needed to
-enclose the accessor.  But some accessor doesn't follow this, and it
-appears overkill to change all these accessors.  So I think at least as
-the first step, smp_rmb() appears more appropriate.
-
-Best Regards,
-Huang, Ying
-
->> 
->>> If all other users follow the typical use case above, we may find some
->>> other way to resolve the problem inside swap code, such as adding
->>> smp_rmb() after percpu_ref_tryget_live().
->>>
->> 
->> I would prefer it.
->> 
->>> Best Regards,
->>> Huang, Ying
->> 
->> Thanks,
->> Dennis
->> 
->> .
->> 
+VGhlIHJhdyB0ZXh0IGlzIHNob3duIGJlbG93Og0KPT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCkZyb20gNTQwZTZhNmMz
+NmU2MzcyZDRmOTllZWI0YTUwYzhlYWE2ZDc5ODliMyBNb24gU2VwIDE3IDAwOjAwOjAwIDIwMDEN
+CkZyb206IEhhbiBEYXBlbmcgPGhhbmRhcGVuZ0BvcHBvLmNvbT4NCkRhdGU6IEZyaSwgMTYgQXBy
+IDIwMjEgMTA6MzY6MzggKzA4MDANClN1YmplY3Q6IFtQQVRDSF0gc3ltYm9sIDogTWFrZSB0aGUg
+c2l6ZSBvZiB0aGUgY29tcGlsZS1yZWxhdGVkIGFycmF5IGZpeGVkDQoNCkZvciB0aGUgc2FtZSBj
+b2RlLCB0aGUgbWFjaGluZSdzIHVzZXIgbmFtZSwgaG9zdG5hbWUsIG9yIGNvbXBpbGF0aW9uIHRp
+bWUNCm1heSBjYXVzZSB0aGUga2VybmVsIHN5bWJvbCBhZGRyZXNzIHRvIGJlIGluY29uc2lzdGVu
+dCwgd2hpY2ggaXMgbm90DQpmcmllbmRseSB0byBzb21lIHN5bWJvbC1kZXBlbmRlbnQgc29mdHdh
+cmUsIHN1Y2ggYXMgQ3Jhc2guDQoNClNpZ25lZC1vZmYtYnk6IEhhbiBEYXBlbmcgPGhhbmRhcGVu
+Z0BvcHBvLmNvbT4NCi0tLQ0KIGFyY2gvcG93ZXJwYy9tbS9ub2hhc2gva2FzbHJfYm9va2UuYyB8
+IDIgKy0NCiBhcmNoL3MzOTAvYm9vdC92ZXJzaW9uLmMgICAgICAgICAgICAgfCAyICstDQogYXJj
+aC94ODYvYm9vdC9jb21wcmVzc2VkL2thc2xyLmMgICAgIHwgMiArLQ0KIGFyY2gveDg2L2Jvb3Qv
+dmVyc2lvbi5jICAgICAgICAgICAgICB8IDIgKy0NCiBpbml0L3ZlcnNpb24uYyAgICAgICAgICAg
+ICAgICAgICAgICAgfCA0ICsrLS0NCiBzY3JpcHRzL21rY29tcGlsZV9oICAgICAgICAgICAgICAg
+ICAgfCAyICsrDQogNiBmaWxlcyBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDYgZGVsZXRpb25z
+KC0pDQoNCmRpZmYgLS1naXQgYS9hcmNoL3Bvd2VycGMvbW0vbm9oYXNoL2thc2xyX2Jvb2tlLmMg
+Yi9hcmNoL3Bvd2VycGMvbW0vbm9oYXNoL2thc2xyX2Jvb2tlLmMNCmluZGV4IDRjNzRlOGE1NDgy
+Yi4uNDk0ZWY0MDhlNjBjIDEwMDY0NA0KLS0tIGEvYXJjaC9wb3dlcnBjL21tL25vaGFzaC9rYXNs
+cl9ib29rZS5jDQorKysgYi9hcmNoL3Bvd2VycGMvbW0vbm9oYXNoL2thc2xyX2Jvb2tlLmMNCkBA
+IC0zNyw3ICszNyw3IEBAIHN0cnVjdCByZWdpb25zIHsNCiB9Ow0KIA0KIC8qIFNpbXBsaWZpZWQg
+YnVpbGQtc3BlY2lmaWMgc3RyaW5nIGZvciBzdGFydGluZyBlbnRyb3B5LiAqLw0KLXN0YXRpYyBj
+b25zdCBjaGFyIGJ1aWxkX3N0cltdID0gVVRTX1JFTEVBU0UgIiAoIiBMSU5VWF9DT01QSUxFX0JZ
+ICJAIg0KK3N0YXRpYyBjb25zdCBjaGFyIGJ1aWxkX3N0cltDT01QSUxFX1NUUl9NQVhdID0gVVRT
+X1JFTEVBU0UgIiAoIiBMSU5VWF9DT01QSUxFX0JZICJAIg0KIAkJTElOVVhfQ09NUElMRV9IT1NU
+ICIpICgiIExJTlVYX0NPTVBJTEVSICIpICIgVVRTX1ZFUlNJT047DQogDQogc3RydWN0IHJlZ2lv
+bnMgX19pbml0ZGF0YSByZWdpb25zOw0KZGlmZiAtLWdpdCBhL2FyY2gvczM5MC9ib290L3ZlcnNp
+b24uYyBiL2FyY2gvczM5MC9ib290L3ZlcnNpb24uYw0KaW5kZXggZDMyZTU4YmRkYTZhLi42Mjc0
+MTZhMjdkNzQgMTAwNjQ0DQotLS0gYS9hcmNoL3MzOTAvYm9vdC92ZXJzaW9uLmMNCisrKyBiL2Fy
+Y2gvczM5MC9ib290L3ZlcnNpb24uYw0KQEAgLTMsNSArMyw1IEBADQogI2luY2x1ZGUgPGdlbmVy
+YXRlZC9jb21waWxlLmg+DQogI2luY2x1ZGUgImJvb3QuaCINCiANCi1jb25zdCBjaGFyIGtlcm5l
+bF92ZXJzaW9uW10gPSBVVFNfUkVMRUFTRQ0KK2NvbnN0IGNoYXIga2VybmVsX3ZlcnNpb25bQ09N
+UElMRV9TVFJfTUFYXSA9IFVUU19SRUxFQVNFDQogCSIgKCIgTElOVVhfQ09NUElMRV9CWSAiQCIg
+TElOVVhfQ09NUElMRV9IT1NUICIpICIgVVRTX1ZFUlNJT047DQpkaWZmIC0tZ2l0IGEvYXJjaC94
+ODYvYm9vdC9jb21wcmVzc2VkL2thc2xyLmMgYi9hcmNoL3g4Ni9ib290L2NvbXByZXNzZWQva2Fz
+bHIuYw0KaW5kZXggYjkyZmZmYmU3NjFmLi43YjcyYjUxOGE0YzggMTAwNjQ0DQotLS0gYS9hcmNo
+L3g4Ni9ib290L2NvbXByZXNzZWQva2FzbHIuYw0KKysrIGIvYXJjaC94ODYvYm9vdC9jb21wcmVz
+c2VkL2thc2xyLmMNCkBAIC00Myw3ICs0Myw3IEBADQogZXh0ZXJuIHVuc2lnbmVkIGxvbmcgZ2V0
+X2NtZF9saW5lX3B0cih2b2lkKTsNCiANCiAvKiBTaW1wbGlmaWVkIGJ1aWxkLXNwZWNpZmljIHN0
+cmluZyBmb3Igc3RhcnRpbmcgZW50cm9weS4gKi8NCi1zdGF0aWMgY29uc3QgY2hhciBidWlsZF9z
+dHJbXSA9IFVUU19SRUxFQVNFICIgKCIgTElOVVhfQ09NUElMRV9CWSAiQCINCitzdGF0aWMgY29u
+c3QgY2hhciBidWlsZF9zdHJbQ09NUElMRV9TVFJfTUFYXSA9IFVUU19SRUxFQVNFICIgKCIgTElO
+VVhfQ09NUElMRV9CWSAiQCINCiAJCUxJTlVYX0NPTVBJTEVfSE9TVCAiKSAoIiBMSU5VWF9DT01Q
+SUxFUiAiKSAiIFVUU19WRVJTSU9OOw0KIA0KIHN0YXRpYyB1bnNpZ25lZCBsb25nIHJvdGF0ZV94
+b3IodW5zaWduZWQgbG9uZyBoYXNoLCBjb25zdCB2b2lkICphcmVhLA0KZGlmZiAtLWdpdCBhL2Fy
+Y2gveDg2L2Jvb3QvdmVyc2lvbi5jIGIvYXJjaC94ODYvYm9vdC92ZXJzaW9uLmMNCmluZGV4IGEx
+YWFhZjZjMDZhNi4uMDhmZWFhMmQ3YTEwIDEwMDY0NA0KLS0tIGEvYXJjaC94ODYvYm9vdC92ZXJz
+aW9uLmMNCisrKyBiL2FyY2gveDg2L2Jvb3QvdmVyc2lvbi5jDQpAQCAtMTQsNiArMTQsNiBAQA0K
+ICNpbmNsdWRlIDxnZW5lcmF0ZWQvdXRzcmVsZWFzZS5oPg0KICNpbmNsdWRlIDxnZW5lcmF0ZWQv
+Y29tcGlsZS5oPg0KIA0KLWNvbnN0IGNoYXIga2VybmVsX3ZlcnNpb25bXSA9DQorY29uc3QgY2hh
+ciBrZXJuZWxfdmVyc2lvbltDT01QSUxFX1NUUl9NQVhdID0NCiAJVVRTX1JFTEVBU0UgIiAoIiBM
+SU5VWF9DT01QSUxFX0JZICJAIiBMSU5VWF9DT01QSUxFX0hPU1QgIikgIg0KIAlVVFNfVkVSU0lP
+TjsNCmRpZmYgLS1naXQgYS9pbml0L3ZlcnNpb24uYyBiL2luaXQvdmVyc2lvbi5jDQppbmRleCA5
+MmFmYzc4MmIwNDMuLmFkZmM5ZTkxYjU2YiAxMDA2NDQNCi0tLSBhL2luaXQvdmVyc2lvbi5jDQor
+KysgYi9pbml0L3ZlcnNpb24uYw0KQEAgLTM1LDExICszNSwxMSBAQCBzdHJ1Y3QgdXRzX25hbWVz
+cGFjZSBpbml0X3V0c19ucyA9IHsNCiBFWFBPUlRfU1lNQk9MX0dQTChpbml0X3V0c19ucyk7DQog
+DQogLyogRklYRUQgU1RSSU5HUyEgRG9uJ3QgdG91Y2ghICovDQotY29uc3QgY2hhciBsaW51eF9i
+YW5uZXJbXSA9DQorY29uc3QgY2hhciBsaW51eF9iYW5uZXJbQ09NUElMRV9TVFJfTUFYXSA9DQog
+CSJMaW51eCB2ZXJzaW9uICIgVVRTX1JFTEVBU0UgIiAoIiBMSU5VWF9DT01QSUxFX0JZICJAIg0K
+IAlMSU5VWF9DT01QSUxFX0hPU1QgIikgKCIgTElOVVhfQ09NUElMRVIgIikgIiBVVFNfVkVSU0lP
+TiAiXG4iOw0KIA0KLWNvbnN0IGNoYXIgbGludXhfcHJvY19iYW5uZXJbXSA9DQorY29uc3QgY2hh
+ciBsaW51eF9wcm9jX2Jhbm5lcltDT01QSUxFX1NUUl9NQVhdID0NCiAJIiVzIHZlcnNpb24gJXMi
+DQogCSIgKCIgTElOVVhfQ09NUElMRV9CWSAiQCIgTElOVVhfQ09NUElMRV9IT1NUICIpIg0KIAki
+ICgiIExJTlVYX0NPTVBJTEVSICIpICVzXG4iOw0KZGlmZiAtLWdpdCBhL3NjcmlwdHMvbWtjb21w
+aWxlX2ggYi9zY3JpcHRzL21rY29tcGlsZV9oDQppbmRleCA0YWU3MzUwMzlkYWYuLjAyYjlkOWQ1
+NGRhOSAxMDA3NTUNCi0tLSBhL3NjcmlwdHMvbWtjb21waWxlX2gNCisrKyBiL3NjcmlwdHMvbWtj
+b21waWxlX2gNCkBAIC02NSw2ICs2NSw4IEBAIFVUU19WRVJTSU9OPSIkKGVjaG8gJFVUU19WRVJT
+SU9OICRDT05GSUdfRkxBR1MgJFRJTUVTVEFNUCB8IGN1dCAtYiAtJFVUU19MRU4pIg0KICAgTERf
+VkVSU0lPTj0kKCRMRCAtdiB8IGhlYWQgLW4xIHwgc2VkICdzLyhjb21wYXRpYmxlIHdpdGggW14p
+XSopLy8nIFwNCiAJCSAgICAgIHwgc2VkICdzL1tbOnNwYWNlOl1dKiQvLycpDQogICBwcmludGYg
+JyNkZWZpbmUgTElOVVhfQ09NUElMRVIgIiVzIlxuJyAiJENDX1ZFUlNJT04sICRMRF9WRVJTSU9O
+Ig0KKw0KKyAgZWNobyBcI2RlZmluZSBDT01QSUxFX1NUUl9NQVggNTEyDQogfSA+IC50bXBjb21w
+aWxlDQogDQogIyBPbmx5IHJlcGxhY2UgdGhlIHJlYWwgY29tcGlsZS5oIGlmIHRoZSBuZXcgb25l
+IGlzIGRpZmZlcmVudCwNCi0tIA0KMi4yNy4wDQoNCj09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT0NClRoaXMgc3RhdGVtZW50IGlzIGF1dG9tYXRpY2FsbHkgYXR0YWNoZWQgdG8gb3VyIGNvbXBh
+bnkncyBtYWlsIGNsaWVudC4NCk91ciBjb21wYW55IGVuY291cmFnZXMgZ2l2aW5nIGNvZGUgYmFj
+ayB0byB0aGUgY29tbXVuaXR5LCBubyBwcm9ibGVtLCBJIHdpbGwgdGFrZSByZXNwb25zaWJpbGl0
+eSBmb3IgdGhpcy4NCg0KVGhhbmsgeW91IQ0KDQotLS0tLemCruS7tuWOn+S7ti0tLS0tDQrlj5Hk
+u7bkuro6IENocmlzdG9waGUgTGVyb3kgPGNocmlzdG9waGUubGVyb3lAY3Nncm91cC5ldT4gDQrl
+j5HpgIHml7bpl7Q6IDIwMjHlubQ05pyIMTbml6UgMTQ6MTMNCuaUtuS7tuS6ujog6Z+p5aSn6bmP
+KEhhbiBEYXBlbmcpIDxoYW5kYXBlbmdAb3Bwby5jb20+OyBNaWNoYWVsIEVsbGVybWFuIDxtcGVA
+ZWxsZXJtYW4uaWQuYXU+OyBCZW5qYW1pbiBIZXJyZW5zY2htaWR0IDxiZW5oQGtlcm5lbC5jcmFz
+aGluZy5vcmc+OyBQYXVsIE1hY2tlcnJhcyA8cGF1bHVzQHNhbWJhLm9yZz47IEhlaWtvIENhcnN0
+ZW5zIDxoY2FAbGludXguaWJtLmNvbT47IFZhc2lseSBHb3JiaWsgPGdvckBsaW51eC5pYm0uY29t
+PjsgQ2hyaXN0aWFuIEJvcm50cmFlZ2VyIDxib3JudHJhZWdlckBkZS5pYm0uY29tPjsgVGhvbWFz
+IEdsZWl4bmVyIDx0Z2x4QGxpbnV0cm9uaXguZGU+OyBJbmdvIE1vbG5hciA8bWluZ29AcmVkaGF0
+LmNvbT47IEJvcmlzbGF2IFBldGtvdiA8YnBAYWxpZW44LmRlPjsgeDg2QGtlcm5lbC5vcmc7IEgu
+IFBldGVyIEFudmluIDxocGFAenl0b3IuY29tPjsgTWFzYWhpcm8gWWFtYWRhIDxtYXNhaGlyb3lA
+a2VybmVsLm9yZz47IE1pY2hhbCBNYXJlayA8bWljaGFsLmxrbWxAbWFya292aS5uZXQ+OyBNaWtl
+IFJhcG9wb3J0IDxycHB0QGtlcm5lbC5vcmc+OyBQZWtrYSBFbmJlcmcgPHBlbmJlcmdAa2VybmVs
+Lm9yZz47IEFuZHJldyBNb3J0b24gPGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc+OyBBcnNlbnkg
+U29sb2toYSA8YXNvbG9raGFAa2Iua3Jhcy5ydT47IEFydmluZCBTYW5rYXIgPG5pdmVkaXRhQGFs
+dW0ubWl0LmVkdT47IEtlZXMgQ29vayA8a2Vlc2Nvb2tAY2hyb21pdW0ub3JnPjsgSm9lcmcgUm9l
+ZGVsIDxqcm9lZGVsQHN1c2UuZGU+OyBDaHJpc3RpYW4gQnJhdW5lciA8Y2hyaXN0aWFuLmJyYXVu
+ZXJAdWJ1bnR1LmNvbT47IEtpcmlsbCBUa2hhaSA8a3RraGFpQHZpcnR1b3p6by5jb20+OyBsaW51
+eHBwYy1kZXZAbGlzdHMub3psYWJzLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsg
+bGludXgtczM5MEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtidWlsZEB2Z2VyLmtlcm5lbC5vcmcN
+CuaKhOmAgTog6ZmI5a6J5bqGKEFucWluZykgPGNoZW5hbnFpbmdAb3Bwby5jb20+DQrkuLvpopg6
+IFJlOiBbUEFUQ0hdIHN5bWJvbCA6IE1ha2UgdGhlIHNpemUgb2YgdGhlIGNvbXBpbGUtcmVsYXRl
+ZCBhcnJheSBmaXhlZA0KDQpBbHNvLCB0aGUgZm9sbG93aW5nIHN0YXRlbWVudCB3aGljaCBhcHBl
+YXJzIGF0IHRoZSBlbmQgb2YgeW91ciBtYWlsIGlzIHB1enpsaW5nLiBXaGF0IGNhbiB3ZSBkbyB3
+aXRoIHlvdXIgcGF0Y2ggaWYgdGhlcmUgYXJlIHN1Y2ggbGltaXRhdGlvbnMgPw0KDQpUaGlzIGUt
+bWFpbCBhbmQgaXRzIGF0dGFjaG1lbnRzIGNvbnRhaW4gY29uZmlkZW50aWFsIGluZm9ybWF0aW9u
+IGZyb20gT1BQTywgd2hpY2ggaXMgaW50ZW5kZWQgb25seSBmb3IgdGhlIHBlcnNvbiBvciBlbnRp
+dHkgd2hvc2UgYWRkcmVzcyBpcyBsaXN0ZWQgYWJvdmUuIEFueSB1c2Ugb2YgdGhlIGluZm9ybWF0
+aW9uIGNvbnRhaW5lZCBoZXJlaW4gaW4gYW55IHdheSAoaW5jbHVkaW5nLCBidXQgbm90IGxpbWl0
+ZWQgdG8sIHRvdGFsIG9yIHBhcnRpYWwgZGlzY2xvc3VyZSwgcmVwcm9kdWN0aW9uLCBvcg0KZGlz
+c2VtaW5hdGlvbikgYnkgcGVyc29ucyBvdGhlciB0aGFuIHRoZSBpbnRlbmRlZCByZWNpcGllbnQo
+cykgaXMgcHJvaGliaXRlZC4gSWYgeW91IHJlY2VpdmUgdGhpcyBlLW1haWwgaW4gZXJyb3IsIHBs
+ZWFzZSBub3RpZnkgdGhlIHNlbmRlciBieSBwaG9uZSBvciBlbWFpbCBpbW1lZGlhdGVseSBhbmQg
+ZGVsZXRlIGl0IQ0KDQoNCg0KTGUgMTYvMDQvMjAyMSDDoCAwODowOCwgQ2hyaXN0b3BoZSBMZXJv
+eSBhIMOpY3JpdMKgOg0KPiBIaSwNCj4gDQo+IFRoaXMgbWFpbCBpcyB1bnJlYWRhYmxlLg0KPiAN
+Cj4gUGxlYXNlIHNlbmQgeW91ciBwYXRjaCBhcyByYXcgdGV4dCBtYWlsLCBub3QgYXMgYXR0YWNo
+ZWQgZmlsZS4NCj4gDQo+IFRoYW5rcw0KPiBDaHJpc3RvcGhlDQo+IA0KPiBMZSAxNi8wNC8yMDIx
+IMOgIDA1OjEyLCDpn6nlpKfpuY8oSGFuIERhcGVuZykgYSDDqWNyaXTCoDoNCj4+IC0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLQ0KPj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPj4gKk9QUE8qDQo+PiAq
+DQo+PiAqDQo+PiDmnKznlLXlrZDpgq7ku7blj4rlhbbpmYTku7blkKvmnIlPUFBP5YWs5Y+455qE
+5L+d5a+G5L+h5oGv77yM5LuF6ZmQ5LqO6YKu5Lu25oyH5piO55qE5pS25Lu25Lq65L2/55So77yI
+5YyF5ZCr5Liq5Lq65Y+K576k57uE77yJ44CC56aB5q2i5Lu75L2V5Lq6DQo+PiDlnKgg5pyq57uP
+5o6I5p2D55qE5oOF5Ya15LiL5Lul5Lu75L2V5b2i5byP5L2/55So44CC5aaC5p6c5oKo6ZSZ5pS2
+5LqG5pys6YKu5Lu277yM6K+356uL5Y2z5Lul55S15a2Q6YKu5Lu26YCa55+l5Y+R5Lu25Lq65bm2
+5Yig6Zmk5pys6YKu5Lu25Y+K5YW2DQo+PiDpmYTku7bjgIINCj4+DQo+PiBUaGlzIGUtbWFpbCBh
+bmQgaXRzIGF0dGFjaG1lbnRzIGNvbnRhaW4gY29uZmlkZW50aWFsIGluZm9ybWF0aW9uIGZyb20g
+DQo+PiBPUFBPLMKgd2hpY2ggaXMgaW50ZW5kZWQgb25seSBmb3IgdGhlIHBlcnNvbiBvciBlbnRp
+dHkgd2hvc2UgYWRkcmVzcyANCj4+IGlzIGxpc3RlZCBhYm92ZS4gQW55IHVzZSBvZiB0aGUgaW5m
+b3JtYXRpb24gY29udGFpbmVkIGhlcmVpbiBpbiBhbnkgDQo+PiB3YXkgKGluY2x1ZGluZyzCoGJ1
+dCBub3QgbGltaXRlZCB0byzCoHRvdGFsIG9yIHBhcnRpYWwgZGlzY2xvc3VyZSzCoA0KPj4gcmVw
+cm9kdWN0aW9uLMKgb3INCj4+IGRpc3NlbWluYXRpb24pwqBieSBwZXJzb25zIG90aGVyIHRoYW4g
+dGhlIGludGVuZGVkIHJlY2lwaWVudChzKcKgaXMgDQo+PiBwcm9oaWJpdGVkLiBJZiB5b3UgcmVj
+ZWl2ZSB0aGlzIGUtbWFpbCBpbiBlcnJvcizCoHBsZWFzZSBub3RpZnkgdGhlIHNlbmRlciBieSBw
+aG9uZSBvciBlbWFpbCBpbW1lZGlhdGVseSBhbmQgZGVsZXRlIGl0IQ0KPj4NCg==
