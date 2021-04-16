@@ -2,191 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C731361CEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE518361CF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241090AbhDPJFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 05:05:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50952 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241167AbhDPJF0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 05:05:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618563901;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CXZtb/9V50pvn916phJza4VdieTQX2m9DR3I2BJV+/M=;
-        b=LmMmYvjERPCmU4YBoKiP59A0ay9LSyrpsWBL6fjH3SZI0TcDVIAnWb0IRAoEtn6h3KSKWF
-        1rO2sddxva5tN6+sLQFJY+h/PbNyerE1G/6Fyei58VXoUeeBfWN0rrAsWDtaz1FRwAID5J
-        FRtF//nmjzo6ENGRrP/+ZkyFcb4XSXU=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-486-WRkdYlZ6Nb2EHoZ6dqzMMQ-1; Fri, 16 Apr 2021 05:04:59 -0400
-X-MC-Unique: WRkdYlZ6Nb2EHoZ6dqzMMQ-1
-Received: by mail-ej1-f71.google.com with SMTP id n10-20020a1709061d0ab029037caa96b8c5so1825502ejh.23
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:04:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=CXZtb/9V50pvn916phJza4VdieTQX2m9DR3I2BJV+/M=;
-        b=l4SLiq6z42J09lbXk9KTSdDUL+yAabT3+qgCQIm4/m9qbU3jxTVHUS9qyckMexJoVp
-         A7q06Xl3sv3HgXnJ8BdinIv9hgA+DJ4XTz6aTnvo5RuJ++xHwo2YbuQEQLWghoFaPxSN
-         tURueeyRLA55bVmzGyWwm+V8s2plN3u4DmYS2lUkxAAFwvHL74UvkXXXDc3QcFelny9T
-         urHSeIufSVlAgnuEluUE1sU6lpOqmvAZSfohlJf77/tT7KYZg1nnecp2UF5XB0Lusjbl
-         aNeNHmDJ5lboqhADcDoxlmSUKXP10Cl1IS9dCbEEjdxswTPf+/E1XgiPxPqQMdDir5MW
-         KK5Q==
-X-Gm-Message-State: AOAM530Mdt/oJQZP6bltoRuPO7QsqLH+5mj8W8AgFGz//FkDj0RH6tl6
-        eSgOZw62EEkDJTT60An2HQCN7DGMSPF9TKEJ1/Vg4+R7raestdHQgPWufqOV835SDFD0OhuODji
-        xqtX/7DKoaFExi3PTHt+udcwu
-X-Received: by 2002:a50:ee17:: with SMTP id g23mr8859587eds.45.1618563898512;
-        Fri, 16 Apr 2021 02:04:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxRNTz62KVaajOAGLyQ67JSzj1vlwK/bkfGBPG4DOXdQmzYcTrZ+IL+vqblDlxIPHl/JcgdpA==
-X-Received: by 2002:a50:ee17:: with SMTP id g23mr8859574eds.45.1618563898386;
-        Fri, 16 Apr 2021 02:04:58 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id bu8sm644309edb.77.2021.04.16.02.04.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 02:04:57 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Vineeth Pillai <viremana@linux.microsoft.com>
-Cc:     Vineeth Pillai <viremana@linux.microsoft.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org,
-        Lan Tianyu <Tianyu.Lan@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>
-Subject: Re: [PATCH v2 5/7] KVM: SVM: hyper-v: Remote TLB flush for SVM
-In-Reply-To: <959f6cc899a17c709a2f5a71f6b2dc8c072ae600.1618492553.git.viremana@linux.microsoft.com>
-References: <cover.1618492553.git.viremana@linux.microsoft.com>
- <959f6cc899a17c709a2f5a71f6b2dc8c072ae600.1618492553.git.viremana@linux.microsoft.com>
-Date:   Fri, 16 Apr 2021 11:04:56 +0200
-Message-ID: <87sg3q7g7b.fsf@vitty.brq.redhat.com>
+        id S241215AbhDPJIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 05:08:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46118 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235236AbhDPJID (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 05:08:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 299C96121E
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 09:07:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618564059;
+        bh=S1RgGOvLnt8Uq+i5YbXxuESPSFtFlBFj8NXZsRYtyYU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TrbtffF9jVbxJ+tb3hJiiPgd2BcMAxp2TSa1h8omIasuU+URPtW7urBygsErjRQvE
+         exLWkyz0NyDc2WeOVvo8NRj7GUKwW/QgrkhXBE3Gbk3xh4KU2Pt3SrqAkrEwObwrY8
+         WKwuKbLhV+NY5hGILQM0iMFowvDlA2SlgB0K/8xQ8PHKfjR/upvWZhi+lmy5W/PZgB
+         xOY6JLarkmgreVxiiThVeTihatl3aHoPjhjSP92oqPCvLGEZOlsSiETxX3o2FyT5Gd
+         tKtoBdyW2aBcXL/LJmhBMNqmJm6S7X3RathWWCZTUKs9+r8Sikr2JwVbn6e0zPQRU8
+         T5q+nvh3YXiXQ==
+Received: by mail-ed1-f45.google.com with SMTP id i3so5702557edt.1
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 02:07:39 -0700 (PDT)
+X-Gm-Message-State: AOAM533KbB/+hUktCOngLpoX2DL90gUwP16kD6YTGSgi8FkGwKed3nOK
+        xebRbugbNxT5QExbVGLr/G9oz9MDOiN4bDHBZHE=
+X-Google-Smtp-Source: ABdhPJyoLKjcIf5H3PNFNwAinXaqu3cZQXJay5heRNq9YsT2IQ1iB7QMeeaB0QcE6v0s0pHHd4CoF8oe7YmBOMxa694=
+X-Received: by 2002:a05:6402:11c9:: with SMTP id j9mr8734093edw.348.1618564057803;
+ Fri, 16 Apr 2021 02:07:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1616403070-35776-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <1616403070-35776-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Fri, 16 Apr 2021 11:07:25 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPdPcQ1=UZiUumuLz8JSR2gTh=a-E01WE8ffdaa4+vsHUw@mail.gmail.com>
+Message-ID: <CAJKOXPdPcQ1=UZiUumuLz8JSR2gTh=a-E01WE8ffdaa4+vsHUw@mail.gmail.com>
+Subject: Re: [PATCH] drm/omap: dsi: Add missing IRQF_ONESHOT
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     tomba@kernel.org, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vineeth Pillai <viremana@linux.microsoft.com> writes:
-
-> Enable remote TLB flush for SVM.
+On Mon, 22 Mar 2021 at 09:53, Yang Li <yang.lee@linux.alibaba.com> wrote:
 >
-> Signed-off-by: Vineeth Pillai <viremana@linux.microsoft.com>
+> fixed the following coccicheck:
+> ./drivers/gpu/drm/omapdrm/dss/dsi.c:4329:7-27: ERROR: Threaded IRQ with
+> no primary handler requested without IRQF_ONESHOT
+>
+> Make sure threaded IRQs without a primary handler are always request
+> with IRQF_ONESHOT
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 > ---
->  arch/x86/kvm/svm/svm.c | 37 +++++++++++++++++++++++++++++++++++++
->  1 file changed, 37 insertions(+)
+>  drivers/gpu/drm/omapdrm/dss/dsi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 2ad1f55c88d0..de141d5ae5fb 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -37,6 +37,7 @@
->  #include <asm/spec-ctrl.h>
->  #include <asm/cpu_device_id.h>
->  #include <asm/traps.h>
-> +#include <asm/mshyperv.h>
->  
->  #include <asm/virtext.h>
->  #include "trace.h"
-> @@ -44,6 +45,8 @@
->  #include "svm.h"
->  #include "svm_ops.h"
->  
-> +#include "hyperv.h"
-> +
->  #define __ex(x) __kvm_handle_fault_on_reboot(x)
->  
->  MODULE_AUTHOR("Qumranet");
-> @@ -931,6 +934,8 @@ static __init void svm_set_cpu_caps(void)
->  		kvm_cpu_cap_set(X86_FEATURE_VIRT_SSBD);
->  }
->  
-> +static struct kvm_x86_ops svm_x86_ops;
-> +
->  static __init int svm_hardware_setup(void)
->  {
->  	int cpu;
-> @@ -1000,6 +1005,16 @@ static __init int svm_hardware_setup(void)
->  	kvm_configure_mmu(npt_enabled, get_max_npt_level(), PG_LEVEL_1G);
->  	pr_info("kvm: Nested Paging %sabled\n", npt_enabled ? "en" : "dis");
->  
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +	if (ms_hyperv.nested_features & HV_X64_NESTED_ENLIGHTENED_TLB
-> +	    && npt_enabled) {
-> +		pr_info("kvm: Hyper-V enlightened NPT TLB flush enabled\n");
-> +		svm_x86_ops.tlb_remote_flush = kvm_hv_remote_flush_tlb;
-> +		svm_x86_ops.tlb_remote_flush_with_range =
-> +				kvm_hv_remote_flush_tlb_with_range;
-> +	}
-> +#endif
-> +
->  	if (nrips) {
->  		if (!boot_cpu_has(X86_FEATURE_NRIPS))
->  			nrips = false;
-> @@ -1120,6 +1135,21 @@ static void svm_check_invpcid(struct vcpu_svm *svm)
->  	}
->  }
->  
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +static void hv_init_vmcb(struct vmcb *vmcb)
-> +{
-> +	struct hv_enlightenments *hve = &vmcb->hv_enlightenments;
-> +
-> +	if (npt_enabled &&
-> +	    ms_hyperv.nested_features & HV_X64_NESTED_ENLIGHTENED_TLB)
+> diff --git a/drivers/gpu/drm/omapdrm/dss/dsi.c b/drivers/gpu/drm/omapdrm/dss/dsi.c
+> index b31d750..844cb0b 100644
+> --- a/drivers/gpu/drm/omapdrm/dss/dsi.c
+> +++ b/drivers/gpu/drm/omapdrm/dss/dsi.c
+> @@ -4326,7 +4326,7 @@ static int omap_dsi_register_te_irq(struct dsi_data *dsi,
+>
+>         irq_set_status_flags(te_irq, IRQ_NOAUTOEN);
+>
+> -       err = request_threaded_irq(te_irq, NULL, omap_dsi_te_irq_handler,
+> +       err = request_threaded_irq(te_irq | IRQF_ONESHOT, NULL, omap_dsi_te_irq_handler,
+>                                    IRQF_TRIGGER_RISING, "TE", dsi);
 
-Nitpick: we can probably have a 'static inline' for 
+Did you test it? There are several patches like this all over the tree
+so it looks like "let's fix everything from Coccinelle". It's a trend
+recently... multiple people send these patches. The point is that you
+should not blindly follow coccinelle but adjust the change for real
+case (e.g. is it a nested interrupt). Without this consideration and
+testing - NACK.
 
- "npt_enabled && ms_hyperv.nested_features & HV_X64_NESTED_ENLIGHTENED_TLB"
-
-e.g. 'hv_svm_enlightened_tlbflush()'
-
-> +		hve->hv_enlightenments_control.enlightened_npt_tlb = 1;
-> +}
-> +#else
-> +static inline void hv_init_vmcb(struct vmcb *vmcb)
-> +{
-> +}
-> +#endif
-> +
->  static void init_vmcb(struct vcpu_svm *svm)
->  {
->  	struct vmcb_control_area *control = &svm->vmcb->control;
-> @@ -1282,6 +1312,8 @@ static void init_vmcb(struct vcpu_svm *svm)
->  		}
->  	}
->  
-> +	hv_init_vmcb(svm->vmcb);
-> +
->  	vmcb_mark_all_dirty(svm->vmcb);
->  
->  	enable_gif(svm);
-> @@ -3975,6 +4007,11 @@ static void svm_load_mmu_pgd(struct kvm_vcpu *vcpu, unsigned long root,
->  		svm->vmcb->control.nested_cr3 = cr3;
->  		vmcb_mark_dirty(svm->vmcb, VMCB_NPT);
->  
-> +#if IS_ENABLED(CONFIG_HYPERV)
-> +		if (kvm_x86_ops.tlb_remote_flush)
-> +			kvm_update_arch_tdp_pointer(vcpu->kvm, vcpu, cr3);
-> +#endif
-> +
->  		/* Loading L2's CR3 is handled by enter_svm_guest_mode.  */
->  		if (!test_bit(VCPU_EXREG_CR3, (ulong *)&vcpu->arch.regs_avail))
->  			return;
-
--- 
-Vitaly
-
+Best regards,
+Krzysztof
