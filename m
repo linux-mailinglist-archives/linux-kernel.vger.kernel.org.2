@@ -2,111 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ECE636239A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 450DF3623B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245723AbhDPPPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 11:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244655AbhDPPMx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 11:12:53 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F86BC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 08:11:50 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id s16so22740650iog.9
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 08:11:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/ICI3BCnkNSFzXzic3cRkcOXWXJoyOOpaEJYmsxWhlw=;
-        b=J3JDgMfCQ0l+9nfgPwWvLQNLBNBuizNWHopccHJySGViU0iTOo8HMqa3DIEAeH+al8
-         8fHu4VIzVUNG3z6xw8b+B6pgZ5Lah/cxglpnhnrztHWlml3bVXYPd9ZcodOsyw4AzHa0
-         6ROZrTFFFvpXGXqMg1YqGlaWCiy1ht2rxdM5Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/ICI3BCnkNSFzXzic3cRkcOXWXJoyOOpaEJYmsxWhlw=;
-        b=WgTPCzjE6LjfAZf9SqDePYX/8fyLK0w8kSgBFcS+bMv5XY0xbkRT8lP9avuiSpOFVg
-         V34bj3HpowSARB6+YGd6zDfCRgUNGSLVYJCZ6H25iZq/u/Ngf9DxyP0n3thHJt5EAYDk
-         H70pZc9lbSurIhBt4afZc8swM/2LoT+QuHLyLYaGv8Wt6NI6mzRP/WQfVKU9ZUNx6iZr
-         y942q3Ai3Hg0WNqB8jE8EKZWN/UtQtkzgar1E9FT4wT3/GcnjOy5HjmeR5bOQkmSesrE
-         47mYgVZ+DEpIDkoyuxA7sXNWPsiltbL9zMlzlM7/k0YJWCU70U3DXP2VU2HBAAb2o9mo
-         NGlA==
-X-Gm-Message-State: AOAM531BSK+J2ctfW+FavRGse419o2cXPmYmj/H753h0x9hmh75UEtio
-        Zg7Z8xHjhej+6X+wPNJ6EY5A7kynN94t2ebD9iTHQCwCyJk=
-X-Google-Smtp-Source: ABdhPJz3Anr6taj83RjN2Oj9SkvDs2A4WXubu0aJ3eWvF2oI6huqSI625CIj2e3PFTZmn7IA4g209PU6m8mak3TOycQ=
-X-Received: by 2002:a02:c85c:: with SMTP id r28mr4543871jao.80.1618585909875;
- Fri, 16 Apr 2021 08:11:49 -0700 (PDT)
+        id S1343653AbhDPPRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 11:17:44 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:37762 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343531AbhDPPPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 11:15:53 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FMKXD004dz9v3Lf;
+        Fri, 16 Apr 2021 17:15:23 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id WK3DlU5pFCvu; Fri, 16 Apr 2021 17:15:23 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FMKXC6BwFz9v3Ld;
+        Fri, 16 Apr 2021 17:15:23 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 766108B84E;
+        Fri, 16 Apr 2021 17:15:25 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 5GrWiUHi_Hri; Fri, 16 Apr 2021 17:15:25 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5295F8B84C;
+        Fri, 16 Apr 2021 17:15:24 +0200 (CEST)
+Subject: Re: [PATCH v1 3/5] mm: ptdump: Provide page size to notepage()
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Steven Price <steven.price@arm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        akpm@linux-foundation.org
+Cc:     linux-arch@vger.kernel.org, linux-s390@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org
+References: <cover.1618506910.git.christophe.leroy@csgroup.eu>
+ <1ef6b954fb7b0f4dfc78820f1e612d2166c13227.1618506910.git.christophe.leroy@csgroup.eu>
+ <41819925-3ee5-4771-e98b-0073e8f095cf@arm.com>
+ <da53d2f2-b472-0c38-bdd5-99c5a098675d@csgroup.eu>
+ <1102cda1-b00f-b6ef-6bf3-22068cc11510@arm.com>
+ <6ff4816b-8ff6-19de-73a2-3fcadc003ccd@csgroup.eu>
+ <e39d500a-2154-3c5d-9393-8bf53a567fad@arm.com>
+ <b6b5300d-35a0-3bc0-ad1d-f2af433ef27e@csgroup.eu>
+ <b245cf06-f2e5-87a5-9a5e-64efc39d415a@csgroup.eu>
+Message-ID: <10adad00-14de-61b6-ce2a-bdde23a34bcf@csgroup.eu>
+Date:   Fri, 16 Apr 2021 17:15:23 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-References: <20210409093738.GH6048@kadam> <d3cd5c0b-f30e-6130-582d-7b68d8320507@codeaurora.org>
- <CAJs_Fx7fgeURHzm2k-Bb8h_xy1=-5vrbt+jt5J=vEzr1rEd8Cw@mail.gmail.com> <20210416043336.GM6048@kadam>
-In-Reply-To: <20210416043336.GM6048@kadam>
-From:   Rob Clark <robdclark@chromium.org>
-Date:   Fri, 16 Apr 2021 08:15:22 -0700
-Message-ID: <CAJs_Fx4WY9B_FudZtSe1hOkLbqy5pFZ=O-dfNJWtWMkJ=8ySbg@mail.gmail.com>
-Subject: Re: [kbuild] drivers/gpu/drm/msm/adreno/a3xx_gpu.c:600
- a3xx_gpu_init() error: passing non negative 1 to ERR_PTR
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Akhil P Oommen <akhilpo@codeaurora.org>, kbuild@lists.01.org,
-        lkp@intel.com, kbuild-all@lists.01.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b245cf06-f2e5-87a5-9a5e-64efc39d415a@csgroup.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 9:33 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> On Thu, Apr 15, 2021 at 04:21:01PM -0700, Rob Clark wrote:
-> > > > 5785dd7a8ef0de Akhil P Oommen 2020-10-28  571         icc_path = devm_of_icc_get(&pdev->dev, "gfx-mem");
-> > > > 5785dd7a8ef0de Akhil P Oommen 2020-10-28  572         ret = IS_ERR(icc_path);
-> > > > 5785dd7a8ef0de Akhil P Oommen 2020-10-28  573         if (ret)
-> > > > 5785dd7a8ef0de Akhil P Oommen 2020-10-28  574                 goto fail;
-> > > >
-> > > > IS_ERR() returns/true false so this will lead to an Oops in the caller.
-> > > >
-> > > >       icc_path = devm_of_icc_get(&pdev->dev, "gfx-mem");
-> > > >       if (IS_ERR(icc_path)) {
-> > > >               ret = PTR_ERR(icc_path);
-> > > >               goto fail;
-> > > >       }
-> > > Agree.
-> > >
-> > > >
-> > > > 5785dd7a8ef0de Akhil P Oommen 2020-10-28  575
-> > > > 5785dd7a8ef0de Akhil P Oommen 2020-10-28  576         ocmem_icc_path = devm_of_icc_get(&pdev->dev, "ocmem");
-> > > > 5785dd7a8ef0de Akhil P Oommen 2020-10-28  577         ret = IS_ERR(ocmem_icc_path);
-> > > > 5785dd7a8ef0de Akhil P Oommen 2020-10-28  578         if (ret) {
-> > > > 5785dd7a8ef0de Akhil P Oommen 2020-10-28  579                 /* allow -ENODATA, ocmem icc is optional */
-> > > > 5785dd7a8ef0de Akhil P Oommen 2020-10-28  580                 if (ret != -ENODATA)
-> > > > 5785dd7a8ef0de Akhil P Oommen 2020-10-28  581                         goto fail;
-> > > >
-> > > > Same.  ret is true/false so it can't be equal to -ENODATA, plus the
-> > > > caller will Oops.
-> > > >
-> > > > Btw, this patch removed the assignments:
-> > > >
-> > > >               gpu->icc_path = of_icc_get(dev, "gfx-mem");
-> > > >               gpu->ocmem_icc_path = of_icc_get(dev, "ocmem");
-> > > >
-> > > > So I think "gpu->icc_path" and "gpu->ocmem_icc_path" are always
-> > > > NULL/unused and they should be removed.
-> > > >
-> > > Agree. Will share a fix.
-> > > Thanks, Dan.
-> >
-> > gpu->ocmem_icc_path/icc_path is used on older devices.. it sounds like
-> > we broke some older devices and no one has noticed yet?
->
-> This is error paths and dead code.  Probably no one is affected in
-> real life.
->
 
-oh, right, we are using devm now, so we can drop the icc_put()s
 
-BR,
--R
+Le 16/04/2021 à 17:04, Christophe Leroy a écrit :
+> 
+> 
+> Le 16/04/2021 à 16:40, Christophe Leroy a écrit :
+>>
+>>
+>> Le 16/04/2021 à 15:00, Steven Price a écrit :
+>>> On 16/04/2021 12:08, Christophe Leroy wrote:
+>>>>
+>>>>
+>>>> Le 16/04/2021 à 12:51, Steven Price a écrit :
+>>>>> On 16/04/2021 11:38, Christophe Leroy wrote:
+>>>>>>
+>>>>>>
+>>>>>> Le 16/04/2021 à 11:28, Steven Price a écrit :
+>>>>>>> To be honest I don't fully understand why powerpc requires the page_size - it appears to be 
+>>>>>>> using it purely to find "holes" in the calls to note_page(), but I haven't worked out why 
+>>>>>>> such holes would occur.
+>>>>>>
+>>>>>> I was indeed introduced for KASAN. We have a first commit 
+>>>>>> https://github.com/torvalds/linux/commit/cabe8138 which uses page size to detect whether it is 
+>>>>>> a KASAN like stuff.
+>>>>>>
+>>>>>> Then came https://github.com/torvalds/linux/commit/b00ff6d8c as a fix. I can't remember what 
+>>>>>> the problem was exactly, something around the use of hugepages for kernel memory, came as part 
+>>>>>> of the series 
+>>>>>> https://patchwork.ozlabs.org/project/linuxppc-dev/cover/cover.1589866984.git.christophe.leroy@csgroup.eu/ 
+>>>>>
+>>>>>
+>>>>>
+>>>>>
+>>>>>
+>>>>>
+>>>>> Ah, that's useful context. So it looks like powerpc took a different route to reducing the 
+>>>>> KASAN output to x86.
+>>>>>
+>>>>> Given the generic ptdump code has handling for KASAN already it should be possible to drop that 
+>>>>> from the powerpc arch code, which I think means we don't actually need to provide page size to 
+>>>>> notepage(). Hopefully that means more code to delete ;)
+>>>>>
+>>>>
+>>>> Yes ... and no.
+>>>>
+>>>> It looks like the generic ptdump handles the case when several pgdir entries points to the same 
+>>>> kasan_early_shadow_pte. But it doesn't take into account the powerpc case where we have regular 
+>>>> page tables where several (if not all) PTEs are pointing to the kasan_early_shadow_page .
+>>>
+>>> I'm not sure I follow quite how powerpc is different here. But could you have a similar check for 
+>>> PTEs against kasan_early_shadow_pte as the other levels already have?
+>>>
+>>> I'm just worried that page_size isn't well defined in this interface and it's going to cause 
+>>> problems in the future.
+>>>
+>>
+>> I'm trying. I reverted the two commits b00ff6d8c and cabe8138.
+>>
+>> At the moment, I don't get exactly what I expect: For linear memory I get one line for each 8M 
+>> page whereas before reverting the patches I got one 16M line and one 112M line.
+>>
+>> And for KASAN shadow area I get two lines for the 2x 8M pages shadowing linear mem then I get one 
+>> 4M line for each PGDIR entry pointing to kasan_early_shadow_pte.
+>>
+>> 0xf8000000-0xf87fffff 0x07000000         8M   huge        rw       present
+>> 0xf8800000-0xf8ffffff 0x07800000         8M   huge        rw       present
+>> 0xf9000000-0xf93fffff 0x01430000         4M               r        present
+> ...
+>> 0xfec00000-0xfeffffff 0x01430000         4M               r        present
+>>
+>> Any idea ?
+>>
+> 
+> 
+> I think the different with other architectures is here:
+> 
+>      } else if (flag != st->current_flags || level != st->level ||
+>             addr >= st->marker[1].start_address ||
+>             pa != st->last_pa + PAGE_SIZE) {
+> 
+> 
+> In addition to the checks everyone do, powerpc also checks "pa != st->last_pa + PAGE_SIZE".
+> And it is definitely for that test that page_size argument add been added.
+
+By replacing that test by (pa - st->start_pa != addr - st->start_address) it works again. So we 
+definitely don't need the real page size.
+
+
+> 
+> I see that other architectures except RISCV don't dump the physical address. But even RISCV doesn't 
+> include that check.
+> 
+> That physical address dump was added by commit aaa229529244 ("powerpc/mm: Add physical address to 
+> Linux page table dump") [https://github.com/torvalds/linux/commit/aaa2295]
+> 
+> How do other architectures deal with the problem described by the commit log of that patch ?
+> 
+> Christophe
