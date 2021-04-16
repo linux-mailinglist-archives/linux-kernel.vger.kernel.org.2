@@ -2,88 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B055236170E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 03:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 602EF361713
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 03:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237591AbhDPBKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 21:10:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235109AbhDPBKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 21:10:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE466610FA;
-        Fri, 16 Apr 2021 01:10:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618535426;
-        bh=DDPxXNXS/rJP4y5KwGUDxdlz3sVdU3Oosv2avVATV7M=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=dopiHwRImzlmAeHlaRVruHDFBVQCEMPvDy5cnyWBXalL02byJ3FFfbTS56w8bYDkq
-         G7AEaMFZ5u65EwANFgpuHPe+WrDxTAiEkeUDtMCjXomnSYKBmZpxL3+kh4AZjDcLL0
-         ivp6lgLxqFvpeAACOxy8mY9VlkwbWpc8C0B+BXCC45S4/nemI/rGjXBigqH9SczuYw
-         sTrhcWT0S2OQMxGMRg33bfbXhQQHRBGb5wj3GcG3pfGGNwjAdLMdXi+j1VazQsuD1m
-         5hCmIsG9odnFJogFHHrI+hCLjtLpSRefjoLX9SZKiENszyCPj+ZglLCCGLt+YskfZI
-         argFzXRNY6YFA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 901EC5C013E; Thu, 15 Apr 2021 18:10:26 -0700 (PDT)
-Date:   Thu, 15 Apr 2021 18:10:26 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH v2 0/5] kvfree_rcu() miscellaneous fixes
-Message-ID: <20210416011026.GD4212@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210415172000.15086-1-urezki@gmail.com>
+        id S237668AbhDPBN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 21:13:26 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:17345 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235109AbhDPBNY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 21:13:24 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FLynT11LJz9yf6;
+        Fri, 16 Apr 2021 09:10:37 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 16 Apr 2021 09:12:51 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
+        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
+        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
+        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
+        <JKosina@suse.com>
+Subject: [PATCH net v4 0/2] fix packet stuck problem for lockless qdisc
+Date:   Fri, 16 Apr 2021 09:13:12 +0800
+Message-ID: <1618535592-11845-1-git-send-email-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210415172000.15086-1-urezki@gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 07:19:55PM +0200, Uladzislau Rezki (Sony) wrote:
-> This is a v2 of a small series. See the changelog below:
-> 
-> V1 -> V2:
-> - document the rcu_delay_page_cache_fill_msec parameter;
-> - drop the "kvfree_rcu: introduce "flags" variable" patch;
-> - reword commit messages;
-> - in the patch [1], do not use READ_ONCE() instances in
->   get_cached_bnode()/put_cached_bnode() it is protected
->   by the lock.
-> - Capitalize the word following by ":" in commit messages.
-> 
-> Uladzislau Rezki (Sony) (4):
-> [1]  kvfree_rcu: Use [READ/WRITE]_ONCE() macros to access to nr_bkv_objs
-> [2]  kvfree_rcu: Add a bulk-list check when a scheduler is run
-> [3]  kvfree_rcu: Update "monitor_todo" once a batch is started
-> [4]  kvfree_rcu: Use kfree_rcu_monitor() instead of open-coded variant
-> 
-> Zhang Qiang (1):
-> [5]  kvfree_rcu: Release a page cache under memory pressure
+This patchset fixes the packet stuck problem mentioned in [1].
 
-I have queued these, thank you both!  And they pass touch tests, but
-could you please check that "git am -3" correctly resolved a couple of
-conflicts, one in Documentation/admin-guide/kernel-parameters.txt and
-the other in kernel/rcu/tree.c?
+Patch 1: Add STATE_MISSED flag to fix packet stuck problem.
+Patch 2: Fix a tx_action rescheduling problem after STATE_MISSED
+         flag is added in patch 1.
 
-						Thanx, Paul
+V4: Change STATE_NEED_RESCHEDULE to STATE_MISSED and add patch 2.
 
->  .../admin-guide/kernel-parameters.txt         |  5 +
->  kernel/rcu/tree.c                             | 92 +++++++++++++++----
->  2 files changed, 77 insertions(+), 20 deletions(-)
-> 
-> -- 
-> 2.20.1
-> 
+[1]. https://lkml.org/lkml/2019/10/9/42
+
+Yunsheng Lin (2):
+  net: sched: fix packet stuck problem for lockless qdisc
+  net: sched: fix endless tx action reschedule during deactivation
+
+ include/net/pkt_sched.h   |  7 +------
+ include/net/sch_generic.h | 37 ++++++++++++++++++++++++++++++++++++-
+ net/core/dev.c            | 26 ++++++++++++++++++++++----
+ net/sched/sch_generic.c   | 16 +++++++++++++++-
+ 4 files changed, 74 insertions(+), 12 deletions(-)
+
+-- 
+2.7.4
+
