@@ -2,144 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6E5362050
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:55:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ACD3362059
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235457AbhDPMya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 08:54:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49068 "EHLO mx2.suse.de"
+        id S242218AbhDPM4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 08:56:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242500AbhDPMyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 08:54:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DFF38ABED;
-        Fri, 16 Apr 2021 12:53:46 +0000 (UTC)
-From:   Takashi Iwai <tiwai@suse.de>
-To:     dri-devel@lists.freedesktop.org
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH] drm: Fix fbcon blank on QEMU graphics drivers
-Date:   Fri, 16 Apr 2021 14:53:44 +0200
-Message-Id: <20210416125344.13550-1-tiwai@suse.de>
-X-Mailer: git-send-email 2.26.2
+        id S235159AbhDPM4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 08:56:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9214D610F7;
+        Fri, 16 Apr 2021 12:56:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618577782;
+        bh=23ztddlsot1OiQSW+jzU3lc5crCjHpuBOHg6FE7NOCU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=P972PMau0T07t60h85tJxSn33x3UtULfNyKnBNRM5nHmj4MfPU3BooB+x/C4p1Llg
+         P7oPK0cLuVWbHfXf8vVzq7SmjjtAvZ4vvdSJmr81cir37VEMu7R0auoPZ5gJmTvI/p
+         iphIlcwbC9RPlOXJ13yyN+knbnZSTf8Jm027993ChzA91chBKh4pExyaNzCblvEFY3
+         14qc0XeiEujNFSft896KpijgiRH4xds17tpODiP8UkE6OzO15TqdXWx9U95rRI4/Xm
+         ZRPjsvr1B9Mpz/Z8JIzWa39xTBWoikb8Xt4PyfyfoPo8OwDQ9qZb1sVNbwmilwwCYL
+         nI25mWeNnvUQw==
+Date:   Fri, 16 Apr 2021 13:55:58 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     quanyang.wang@windriver.com
+Cc:     Michal Simek <michal.simek@xilinx.com>,
+        Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] spi: spi-zynqmp-gqspi: fix clk_enable/disable
+ imbalance issue
+Message-ID: <20210416125558.GA5560@sirena.org.uk>
+References: <20210416004652.2975446-1-quanyang.wang@windriver.com>
+ <20210416004652.2975446-2-quanyang.wang@windriver.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="y0ulUmNC+osPPQO6"
+Content-Disposition: inline
+In-Reply-To: <20210416004652.2975446-2-quanyang.wang@windriver.com>
+X-Cookie: Snow Day -- stay home.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the DRM fbcon helper for console blank,
-drm_fb_helper_blank(), simply calls drm_fb_helper_dpms() and always
-returns zero, supposing the driver dealing with DPMS or atomic
-crtc->active flip to handle blanking the screen.  It works on most of
-devices, but broken on most of KVM/QEMU graphics: bochs, qxl and
-cirrus drivers just ignore crtc->active state change as blanking (or
-cirrus ignoring DPMS).  In practice, when you run like
-  % setterm --blank force
-on a VT console, the screen freezes without actually blanking.
 
-A simple fix for this problem would be not to rely on DPMS but let
-fbcon performs the generic blank code.  This can be achieved just by
-returning an error from drm_fb_helper_blank().
+--y0ulUmNC+osPPQO6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-In this patch, we add a flag, no_dpms_blank, to drm_fb_helper for
-indicating that the driver doesn't handle blank via DPMS or
-crtc->active flip.  When this flag is set, drm_fb_helper_blank()
-simply returns an error, so that fbcon falls back to its generic blank
-handler.  The flag is set to both bochs and qxl drivers in this patch,
-while cirrus is left untouched as it's declared as to-be-deprecated.
+On Fri, Apr 16, 2021 at 08:46:48AM +0800, quanyang.wang@windriver.com wrote:
 
-Link: https://lore.kernel.org/dri-devel/20170726205636.19144-1-tiwai@suse.de/
-BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1095700
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
+> Since pm_runtime works now, clks can be enabled/disabled by calling
+> zynqmp_runtime_suspend/resume. So we don't need to enable these clks
+> explicitly in zynqmp_qspi_setup_op. Remove them to fix this issue.
 
-Here I whip a dead horse again, revisiting the long-standing issue
-stated in the previous patch set in 2017:
-  https://lore.kernel.org/dri-devel/20170726205636.19144-1-tiwai@suse.de/
+> Fixes: 1c26372e5aa9 ("spi: spi-zynqmp-gqspi: Update driver to use spi-mem framework")
 
-I thought to refresh the previous patch set at first, but it seems
-invalid for the atomic modeset case.  And for the atomic, it's even
-more difficult to propagate the return from the bottom to up.
-So I ended up with this approach as it's much simpler.
+Are you *sure* this fixes is accurate?  The patch (and several of the
+others that flag the same commit) doesn't apply against for-5.12, though
+at this point there's not really enough time to send another pull request
+so it doesn't super matter though someone will probably need to help out
+with stable backports.
 
-But if there is any better way (even simpler or more robust), I'd
-happily rewrite, too.
+--y0ulUmNC+osPPQO6
+Content-Type: application/pgp-signature; name="signature.asc"
 
----
- drivers/gpu/drm/bochs/bochs_drv.c | 3 +++
- drivers/gpu/drm/drm_fb_helper.c   | 5 +++++
- drivers/gpu/drm/qxl/qxl_drv.c     | 3 +++
- include/drm/drm_fb_helper.h       | 8 ++++++++
- 4 files changed, 19 insertions(+)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/drivers/gpu/drm/bochs/bochs_drv.c b/drivers/gpu/drm/bochs/bochs_drv.c
-index b469624fe40d..816899a266ff 100644
---- a/drivers/gpu/drm/bochs/bochs_drv.c
-+++ b/drivers/gpu/drm/bochs/bochs_drv.c
-@@ -132,6 +132,9 @@ static int bochs_pci_probe(struct pci_dev *pdev,
- 		goto err_unload;
- 
- 	drm_fbdev_generic_setup(dev, 32);
-+	if (dev->fb_helper)
-+		dev->fb_helper->no_dpms_blank = true;
-+
- 	return ret;
- 
- err_unload:
-diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_helper.c
-index f6baa2046124..b892f02ff2f1 100644
---- a/drivers/gpu/drm/drm_fb_helper.c
-+++ b/drivers/gpu/drm/drm_fb_helper.c
-@@ -332,9 +332,14 @@ static void drm_fb_helper_dpms(struct fb_info *info, int dpms_mode)
-  */
- int drm_fb_helper_blank(int blank, struct fb_info *info)
- {
-+	struct drm_fb_helper *fb_helper = info->par;
-+
- 	if (oops_in_progress)
- 		return -EBUSY;
- 
-+	if (fb_helper->no_dpms_blank)
-+		return -EINVAL;
-+
- 	switch (blank) {
- 	/* Display: On; HSync: On, VSync: On */
- 	case FB_BLANK_UNBLANK:
-diff --git a/drivers/gpu/drm/qxl/qxl_drv.c b/drivers/gpu/drm/qxl/qxl_drv.c
-index 1864467f1063..58ecfaeed7c1 100644
---- a/drivers/gpu/drm/qxl/qxl_drv.c
-+++ b/drivers/gpu/drm/qxl/qxl_drv.c
-@@ -120,6 +120,9 @@ qxl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		goto modeset_cleanup;
- 
- 	drm_fbdev_generic_setup(&qdev->ddev, 32);
-+	if (qdev->fb_helper)
-+		qdev->fb_helper->no_dpms_blank = true;
-+
- 	return 0;
- 
- modeset_cleanup:
-diff --git a/include/drm/drm_fb_helper.h b/include/drm/drm_fb_helper.h
-index 3b273f9ca39a..151be4219c32 100644
---- a/include/drm/drm_fb_helper.h
-+++ b/include/drm/drm_fb_helper.h
-@@ -176,6 +176,14 @@ struct drm_fb_helper {
- 	 */
- 	bool deferred_setup;
- 
-+	/**
-+	 * @no_dpms_blank:
-+	 *
-+	 * A flag indicating that the driver doesn't support blanking.
-+	 * Then fbcon core code falls back to its generic handler.
-+	 */
-+	bool no_dpms_blank;
-+
- 	/**
- 	 * @preferred_bpp:
- 	 *
--- 
-2.26.2
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB5iV0ACgkQJNaLcl1U
+h9BrBgf9E/nnQ0hiXYFB/JYFD0fau71PNa16pFQ7bKnHt3CfKxLrtbdnmB4Y3VTR
+tfgTrNfwJ2dTMzRiaI8O5uZKuWu++rlIGeqgtNWd+IfRF1q//9U8CYGCUFvsLsyX
+x39mt7kX3E2SrBV7kS4UUREl6NBZ7FFSXr/3L6VV3/4c720m9DkRh1wEB7T3+iKZ
+z4ivj0z8KC/IjH8PgWdL8ZQEJ7NgKiMjJSoMA7teMrVVYBxsDaDa+d0jotU/BORq
+mYv6B7C1ih5zmGbhMp16eTk64/qfKuIW58J0G+0KiNtscsFStpWClOz9CowdKqtk
+I/ZBrcJk+bZXCvezq3JVVvDpzHBPRQ==
+=jZVz
+-----END PGP SIGNATURE-----
 
+--y0ulUmNC+osPPQO6--
