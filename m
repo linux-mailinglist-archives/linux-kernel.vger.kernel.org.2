@@ -2,90 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E790361E65
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9F0361E68
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241197AbhDPLGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 07:06:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235120AbhDPLGh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 07:06:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 087F9C061574;
-        Fri, 16 Apr 2021 04:06:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=q8yzRZdY2wah1G/yCTkxWNbB0jFfZUvqQ3uEjV6WRbg=; b=hh9zQfxDvG2X4xo9Vk3zOGv+gZ
-        QKntKgbYQxOmJbb/qwMrADTgbL8yz3oUhd3HEVZJgrY81Z+RWvtUKKoC8013lyugG2k8O7umfbJam
-        gAhDbhGAPve6oN0MKZsJdwlfW5fC1MWvd6G5LMajXM5TqmIFfFtrkgHcaAZHgvXMnGtFGhwT/4HmK
-        CsjhiBL3nsVtLo7E7Dvy9fj8xomDDJge0rOCzwzXKycyeIlDt/8ml1XDq6Qx+KbmBhQ5d1+BhQ6W5
-        Piq3UrI2NLCuHxk3SVM4ryUk+gw6UwwBM7IiZJ4NrS7iOhjfU6YhJB+tUEtO+rntTBicYBF62ikeR
-        Oi9OJ1dA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lXMIL-009rDn-92; Fri, 16 Apr 2021 11:06:01 +0000
-Date:   Fri, 16 Apr 2021 12:05:53 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Arnd Bergmann <arnd@kernel.org>, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
-Message-ID: <20210416110553.GH2531743@casper.infradead.org>
-References: <20210414101044.19da09df@carbon>
- <20210414115052.GS2531743@casper.infradead.org>
- <20210414211322.3799afd4@carbon>
- <20210414213556.GY2531743@casper.infradead.org>
- <a50c3156fe8943ef964db4345344862f@AcuMS.aculab.com>
- <20210415200832.32796445@carbon>
- <20210415182155.GD2531743@casper.infradead.org>
- <5179a01a462f43d6951a65de2a299070@AcuMS.aculab.com>
- <20210415222211.GG2531743@casper.infradead.org>
- <f51e1aa98cb94880a236d58c75c20994@AcuMS.aculab.com>
+        id S241372AbhDPLHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 07:07:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56748 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235011AbhDPLHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 07:07:15 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0C080ADE2;
+        Fri, 16 Apr 2021 11:06:50 +0000 (UTC)
+To:     lipeifeng@oppo.com, peifengl55@gmail.com, schwidefsky@de.ibm.com,
+        heiko.carstens@de.ibm.com
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210414023803.937-1-lipeifeng@oppo.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [RFC] mm: support multi_freearea to the reduction of external
+ fragmentation
+Message-ID: <a7bb16c0-31b2-6aa5-2186-8c957955649e@suse.cz>
+Date:   Fri, 16 Apr 2021 13:06:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f51e1aa98cb94880a236d58c75c20994@AcuMS.aculab.com>
+In-Reply-To: <20210414023803.937-1-lipeifeng@oppo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 07:32:35AM +0000, David Laight wrote:
-> From: Matthew Wilcox <willy@infradead.org>
-> > Sent: 15 April 2021 23:22
-> > 
-> > On Thu, Apr 15, 2021 at 09:11:56PM +0000, David Laight wrote:
-> > > Isn't it possible to move the field down one long?
-> > > This might require an explicit zero - but this is not a common
-> > > code path - the extra write will be noise.
-> > 
-> > Then it overlaps page->mapping.  See emails passim.
+On 4/14/21 4:38 AM, lipeifeng@oppo.com wrote:
+> From: lipeifeng <lipeifeng@oppo.com>
 > 
-> The rules on overlaps make be wonder if every 'long'
-> should be in its own union.
-
-That was what we used to have.  It was worse.
-
-> The comments would need to say when each field is used.
-> It would, at least, make these errors less common.
+> This patch would "sort" the free-pages in buddy by pages-PFN to concentrate
+> low-order-pages allocation in the front area of memory and high-order-pages
+> allcation on the contrary so that few memory-pollution in the back area of
+> memory and the probablity of high-order-pages allocation would be increased
+> significantly.
+> -----------------------------------------------------------------------
 > 
-> That doesn't solve the 64bit dma_addr though.
+>   1) Divide memory into several segments by pages-PFN
+>      "Multi_freearea" would divide memory into FREE_AREA_COUNTS segments
+>      by pages-PFN,each memory-segment corresponds to a free_area.
 > 
-> Actually rather that word-swapping dma_addr on 32bit BE
-> could you swap over the two fields it overlays with.
-> That might look messy in the .h, but it doesn't require
-> an accessor function to do the swap - easily missed.
+>      Example: machine(4G of physical memery) and FREE_AREA_COUNTS(4):
+>         page-PFN:0x0     0x40000(1G)   0x80000(2G)  0xc0000(3G) 0xFFFFF(4G)
+>                  |------------|--------------|--------------|-------------|
+>         free_area:  [0][]           [1][]           [2][]        [3][]
+> 
+>      NOTE: Selecting the corresponding freearea when pages are freed back
+> 	       to buddy:
+>         - pages-PFN[0, free_area_segment[0].max_pfn] -> free_area[0][]
+>         - pages-PFN[free_area_segment[flc - 1].max_pfn,
+> 	            free_area_segment[flc].max_pfn] -> free_area[flc][]
+>                    (flc > 0)
+> 
+>      By this way, all pages in the same segment/free_area is within a
+>      certain range of pages-PFN.
+> 
+>   2) Select the corresponding freearea to alloc-pages
+>      "Multi_freearea" would select the corresponding free_area by the
+>      allocation-order when alloc-pages.
+>         - order <  HIGH_ORDER_TO_FLC:
+> 	        free_area[0] -> ... -> free_area[FREE_AREA_COUNTS - 1]
+>         - order >= HIGH_ORDER_TO_FLC:
+> 	        free_area[FREE_AREA_COUNTS - 1] -> ... -> free_area[0]
+> 
+>      Example:
+>         The machine(4G of physical memery) and FREE_AREA_COUNTS(4)
+>         and HIGH_ORDER_TO_FLC(3).
+> 	If user allocs page(order = 0),it would take page from
+> 	free_area[0][] first, if that fails,try free_area[1][] and so on.
+> 	If user allocs page(order = 4),it would take page from
+> 	free_area[3][] first, if that fails,try free_area[2][] and so on.
+> 
+>      By this way,low-order pages will be concentrated in the front area
+>      of memory.Because of few memory-pollution in the back area of memory,
+>      the sussessful probablity of high-order allocation would be improved.
+> 
+>   3) Adjust the location of free-pages in the free_list
+>      "Multi_freearea" would place free-pages in the head of free_list if
+>      pages-PFN is smaller than free_area_segment[flc]->median_pfn and in
+>      the tail of free_list on the contrary.
+> 
+>      Example:
+>         page-PFN:        free_area_segment[flc]->median_pfn
+>                                         |
+>         free_list: page->page->page->...|...page->page->page
+>         pages-PFN:|   < median_pfn      |  >= median_pfn    |
+> 
+>      Because it would take pages from the head of the freelist first in
+>      buddy system,the free-pages in the tail are more likely to keep in the
+>      buddy system.The closer the PFN of pages kept in buddy system, the
+>      greater the probablity of merging that into high-order pages.
 
-No.
+I think this part 3) would be worth to be tried separately first, as it's not a
+big change compared to the other ones.
