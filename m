@@ -2,107 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC61B362B23
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B708F362B2D
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 00:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232130AbhDPWiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 18:38:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231296AbhDPWiQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 18:38:16 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5E5C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 15:37:49 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id h15so1577305pfv.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 15:37:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NDhS9ea/Ghy92VBWAgivjVBpdpN6nWgmnBRq9q7wlPI=;
-        b=D8UkrwRL94aleXQSNpyGSiYhqv/HLOAHwV5Ki9OjU8tDlDV2mvmiEPsCX7g46fNsKP
-         13Cjxc9eXQo7iZcFwO+hiZCkUp7SvAnf2ZEP2ye+dUsmgDNFEpLdEgFk8QAwdhfbF9jB
-         QzyvzX7nISRqZelsff9tB0CnX9wLJPmVHM7A4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NDhS9ea/Ghy92VBWAgivjVBpdpN6nWgmnBRq9q7wlPI=;
-        b=OFwhpxDbLimu6ScFC35qQoCKsv+KlT8Fwmy44DNf/15kWGgCTtp6j6UZkDzeNo4dtr
-         OJZ00+HPqU76hm+Mrgh0swPSdNFs4Nu0ToRfsYKVC3YqoUPaYXpxl/tyuTOlrBkMiq3y
-         I3SdGMNqCIOtiAYUrp7AI07bk9ekV4u5gt+4nChU3SaUA1A06qt0W37EwDyOEcpSOXYJ
-         IW+gG0K5HSOxIF/CRP4NRXS2gvUP6sXo9pkyZFEirVw9A4fLHkGBd7+hgyDPIQhC21hT
-         XoFI4BUlro7FFfv9HmatznAnPNBolK1Zuml10tZMIczVxbUdoR+QutNLu+z+YDKF7Fed
-         taLA==
-X-Gm-Message-State: AOAM533AhbIrf2t3+gy+g2wOzoUKkI88zsoUIYYqsI8I9Zu+VEoaf98K
-        f/fSPxPUboB7c+JoP3SqyoQ8Eg==
-X-Google-Smtp-Source: ABdhPJyLPR+dwiUvHFg0+P777OMbFma5qhQIoK2X34lCfZk57mmU7EZkViqoUPbRixjENrAKVezlGA==
-X-Received: by 2002:aa7:8486:0:b029:250:f6fc:ae93 with SMTP id u6-20020aa784860000b0290250f6fcae93mr9648698pfn.39.1618612669362;
-        Fri, 16 Apr 2021 15:37:49 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h21sm2461475pfh.130.2021.04.16.15.37.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 15:37:48 -0700 (PDT)
-Date:   Fri, 16 Apr 2021 15:37:47 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH 05/15] x86: Implement function_nocfi
-Message-ID: <202104161529.D9F98DA994@keescook>
-References: <20210416203844.3803177-1-samitolvanen@google.com>
- <20210416203844.3803177-6-samitolvanen@google.com>
- <20210416211855.GD22348@zn.tnic>
- <CABCJKud8TvzhcjHCpsrtCJ4B50ZUfaL48F42EhZ2zWKLteAc0Q@mail.gmail.com>
- <20210416220251.GE22348@zn.tnic>
- <CALCETrVTtKqD6fonUmT_qr0HJ0X9TWzLGq-wpm+A7XKyjn3W5g@mail.gmail.com>
- <20210416221414.GF22348@zn.tnic>
- <CALCETrUo+tR+YmfoBPWV9z_7QhU74=7tmCBD_zsfa24ZxNvfxg@mail.gmail.com>
+        id S234911AbhDPWjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 18:39:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50328 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234662AbhDPWjO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 18:39:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9FA46137D;
+        Fri, 16 Apr 2021 22:38:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618612728;
+        bh=fLShCm6HfuN+aWirA8byWk1J3cvvfDXcNCJir5OTQNw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=BFCcLVE/r/1B67KiATn/UaC9F3n9ulTT00juDdRaMBWTJiZU1MLvNizP7B7x/Ykx+
+         3JgdGYyef/bPaSEBVr6un3/eAFZhxtUTx1FqfEOj2lWnQwQUEPbV5BetspS5Ciz7YX
+         AHbLMoEcxI7fJr+Sqm9bXP8CDAMh8Ia2AOnwPGZP5hwJCuMX+DoBQooUGtiJABoNIz
+         b9rfXzfzbBug8IRC3D3ZhqBiuuNSC4WhiwFqSOtN1uBJTM5CBHJf2QaoFWTmZErd64
+         4GcR4AX33ourRk/klSiFh+728jYDArpHXMi9pdePgum4t2V4sE5Q/9ZBX9Ttjr5W3O
+         da/2rHBDjAMFA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id AE0515C0253; Fri, 16 Apr 2021 15:38:48 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 15:38:48 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
+        ak@linux.intel.com, Chris Mason <clm@fb.com>
+Subject: Re: [PATCH v8 clocksource 1/5] clocksource: Provide module
+ parameters to inject delays in watchdog
+Message-ID: <20210416223848.GL4212@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210414043435.GA2812539@paulmck-ThinkPad-P17-Gen-1>
+ <20210414043602.2812981-1-paulmck@kernel.org>
+ <878s5iuh10.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALCETrUo+tR+YmfoBPWV9z_7QhU74=7tmCBD_zsfa24ZxNvfxg@mail.gmail.com>
+In-Reply-To: <878s5iuh10.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 03:20:17PM -0700, Andy Lutomirski wrote:
-> But obviously there is code that needs real function pointers.  How
-> about making this a first-class feature, or at least hacking around it
-> more cleanly.  For example, what does this do:
+On Fri, Apr 16, 2021 at 10:10:51PM +0200, Thomas Gleixner wrote:
+> On Tue, Apr 13 2021 at 21:35, Paul E. McKenney wrote:
+> >  
+> > +static int inject_delay_freq;
+> > +module_param(inject_delay_freq, int, 0644);
+> > +static int inject_delay_run = 1;
+> > +module_param(inject_delay_run, int, 0644);
 > 
-> char entry_whatever[];
-> wrmsrl(..., (unsigned long)entry_whatever);
-
-This is just casting. It'll still resolve to the jump table entry.
-
-> or, alternatively,
+> int? Can't we just make them 'unsigned int'? Negative values are not
+> that useful.
 > 
-> extern void func() __attribute__((nocfi));
+> > +static int max_read_retries = 3;
+> > +module_param(max_read_retries, int, 0644);
+> 
+> max_read_retries is unused here. Should be in the patch which actually
+> uses it.
 
-__nocfi says func() should not perform checking of correct jump table
-membership for indirect calls.
+Good point, I will make all three unsigned int and move max_read_retries
+to 2/5 ("clocksource: Retry clock read if long delays detected").
 
-But we don't want a global marking for a function to be ignored by CFI;
-we don't want functions to escape CFI -- we want specific _users_ to
-either not check CFI for indirect calls (__nocfi) or we want specific
-passed addresses to avoid going through the jump table
-(function_nocfi()).
+> > +static void clocksource_watchdog_inject_delay(void)
+> > +{
+> > +	int i;
+> > +	static int injectfail = -1;
+> > +
+> > +	if (inject_delay_freq <= 0 || inject_delay_run <= 0)
+> > +		return;
+> > +	if (injectfail < 0 || injectfail > INT_MAX / 2)
+> > +		injectfail = inject_delay_run;
+> > +	if (!(++injectfail / inject_delay_run % inject_delay_freq)) {
+> 
+> Operator precedence based cleverness is really easy to parse - NOT!
+> 
+> > +		pr_warn("%s(): Injecting delay.\n", __func__);
+> > +		for (i = 0; i < 2 * WATCHDOG_THRESHOLD / NSEC_PER_MSEC; i++)
+> > +			udelay(1000);
+> > +		pr_warn("%s(): Done injecting delay.\n", __func__);
+> > +	}
+> > +
+> > +	WARN_ON_ONCE(injectfail < 0);
+> > +}
+> 
+> Brain melt stage reached by now.
+> 
+>         static unsigned int invocations, injections;
+> 
+>         if (!inject_delay_period || !inject_delay_repeat)
+>         	return;
+> 
+>         if (!(invocations % inject_delay_period)) {
+>         	mdelay(2 * WATCHDOG_THRESHOLD / NSEC_PER_MSEC);
+>                 if (++injections < inject_delay_repeat)
+>                 	return;
+>                 injections = 0;
+>         }
+> 
+>         invocations++;
+> }
+> 
+> Hmm?
 
-So, instead of a cast, a wrapper is used to bypass instrumentation in
-the very few cases its needed.
+That is quite a bit nicer than the interacting parameters that I
+had.  I will rework along these lines.
 
-(Note that such a wrapper is no-op without CFI enabled.)
-
--- 
-Kees Cook
+							Thanx, Paul
