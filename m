@@ -2,57 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 142DA3624A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE2D3624A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237561AbhDPPy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 11:54:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236083AbhDPPyL (ORCPT
+        id S237336AbhDPPyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 11:54:54 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:58240 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236027AbhDPPyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 11:54:11 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E523C061574;
-        Fri, 16 Apr 2021 08:53:46 -0700 (PDT)
+        Fri, 16 Apr 2021 11:54:10 -0400
 Date:   Fri, 16 Apr 2021 15:53:44 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618588424;
+        s=2020; t=1618588425;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2NG2ae6qWkx7VLt4SEQZgI98U9N8e1QuSJT29lV0Mpc=;
-        b=v3be3G1hj7j2BX+LsrgU0hh7ujtp5oWz6HPZu1GewRbF5D91UNMTCxMm4o+NjAOmX3Fkcp
-        u0fDqMDcg8Kbr3PBnAkzzrIgAVqACuP8svkLg4Khlw3gMoXjibI2mUaDuHgbOk5DwsVH5+
-        Zes4klj9L+VpnB1aXhEeXoJdtGAt4PYP8qqjHQpUOr4JXz9D4cOlYzZI1pY2Z0ATRgkQhP
-        CMVlTqJ+BKkeHua89cSkesXoCdoFXzYMPUF5tYs9Oa6wuaLqVrHftLVRPRMOWBnQY9qrkq
-        lub+HaNQR1V2W0GDVC3aa2pXNtnmBu3abfQFnUnT4PBgl0ZW+uTFHN8vTafXcw==
+        bh=6qE2yJxzonP8C3SKSYcvuIhy8zvJ6gGv7M6CIrXOX8M=;
+        b=Q75a8yZl/VC20snywhYzn914oswykE18phOuGiAn0/HyMovtSG24Darmf9rEBBds4XuEs8
+        01395IK1TMqq4qtcsZ0CbPkVO/ZZpsad+QOjFg0SBw0RZ0Tc9zNyryZ6o5Kt47bSbRBBqM
+        IKoM3rvy7YMBzGOXmtG+n0XG5k+lz83mQ5noiJEl0cC2keeDYQuxR7vXug4nOCbsYw6hYP
+        231pG5PrlF8d9c09PGcM3MhMMuiQBliiSrbVUX/0OzjdYUNw6yWAVCboTyidYExiO85t3H
+        Q+A4UPhdt2tw9doFruvalBR0JK0P3BBbeAJru5XD8joJRLSCW3KIc4Tq6lPTXQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618588424;
+        s=2020e; t=1618588425;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2NG2ae6qWkx7VLt4SEQZgI98U9N8e1QuSJT29lV0Mpc=;
-        b=qkSRqKPPQry/H6Z/tEmqHKLRBvR1e8yQHlLUepG14//VgN+3yTbvU9Qc739HdvJuqxyIE3
-        lKW973dwv7UNcaCQ==
-From:   "tip-bot2 for Mel Gorman" <tip-bot2@linutronix.de>
+        bh=6qE2yJxzonP8C3SKSYcvuIhy8zvJ6gGv7M6CIrXOX8M=;
+        b=GujCNFZu47yyAfLi0n0B7crlSlgxGQMrb3lyJeN3waCs7K7BUpoP9UGXco1DANn9XfMk+L
+        oOEuY8s27kVoQoCg==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/numa: Allow runtime enabling/disabling of
- NUMA balance without SCHED_DEBUG
-Cc:     Mel Gorman <mgorman@suse.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+Subject: [tip: sched/core] cpumask: Introduce DYING mask
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Valentin Schneider <valentin.schneider@arm.com>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210324133916.GQ15768@suse.de>
-References: <20210324133916.GQ15768@suse.de>
+In-Reply-To: <20210310150109.151441252@infradead.org>
+References: <20210310150109.151441252@infradead.org>
 MIME-Version: 1.0
-Message-ID: <161858842405.29796.3492604972677273238.tip-bot2@tip-bot2>
+Message-ID: <161858842478.29796.12244189943849858201.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -63,52 +58,105 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     b7cc6ec744b307db59568c654a8904a5928aa855
-Gitweb:        https://git.kernel.org/tip/b7cc6ec744b307db59568c654a8904a5928aa855
-Author:        Mel Gorman <mgorman@suse.de>
-AuthorDate:    Wed, 24 Mar 2021 13:39:16 
+Commit-ID:     e40f74c535b8a0ecf3ef0388b51a34cdadb34fb5
+Gitweb:        https://git.kernel.org/tip/e40f74c535b8a0ecf3ef0388b51a34cdadb34fb5
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Tue, 19 Jan 2021 18:43:45 +01:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 16 Apr 2021 17:06:33 +02:00
+CommitterDate: Fri, 16 Apr 2021 17:06:32 +02:00
 
-sched/numa: Allow runtime enabling/disabling of NUMA balance without SCHED_DEBUG
+cpumask: Introduce DYING mask
 
-The ability to enable/disable NUMA balancing is not a debugging feature
-and should not depend on CONFIG_SCHED_DEBUG.  For example, machines within
-a HPC cluster may disable NUMA balancing temporarily for some jobs and
-re-enable it for other jobs without needing to reboot.
+Introduce a cpumask that indicates (for each CPU) what direction the
+CPU hotplug is currently going. Notably, it tracks rollbacks. Eg. when
+an up fails and we do a roll-back down, it will accurately reflect the
+direction.
 
-This patch removes the dependency on CONFIG_SCHED_DEBUG for
-kernel.numa_balancing sysctl. The other numa balancing related sysctls
-are left as-is because if they need to be tuned then it is more likely
-that NUMA balancing needs to be fixed instead.
-
-Signed-off-by: Mel Gorman <mgorman@suse.de>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Tested-by: Valentin Schneider <valentin.schneider@arm.com>
-Link: https://lkml.kernel.org/r/20210324133916.GQ15768@suse.de
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+Link: https://lkml.kernel.org/r/20210310150109.151441252@infradead.org
 ---
- kernel/sysctl.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ include/linux/cpumask.h | 20 ++++++++++++++++++++
+ kernel/cpu.c            |  6 ++++++
+ 2 files changed, 26 insertions(+)
 
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 62fbd09..8042098 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -1753,6 +1753,9 @@ static struct ctl_table kern_table[] = {
- 		.proc_handler	= proc_dointvec_minmax,
- 		.extra1		= SYSCTL_ONE,
- 	},
-+#endif /* CONFIG_NUMA_BALANCING */
-+#endif /* CONFIG_SCHED_DEBUG */
-+#ifdef CONFIG_NUMA_BALANCING
- 	{
- 		.procname	= "numa_balancing",
- 		.data		= NULL, /* filled in by handler */
-@@ -1763,7 +1766,6 @@ static struct ctl_table kern_table[] = {
- 		.extra2		= SYSCTL_ONE,
- 	},
- #endif /* CONFIG_NUMA_BALANCING */
--#endif /* CONFIG_SCHED_DEBUG */
- 	{
- 		.procname	= "sched_rt_period_us",
- 		.data		= &sysctl_sched_rt_period,
+diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+index a584336..e6b948a 100644
+--- a/include/linux/cpumask.h
++++ b/include/linux/cpumask.h
+@@ -91,10 +91,12 @@ extern struct cpumask __cpu_possible_mask;
+ extern struct cpumask __cpu_online_mask;
+ extern struct cpumask __cpu_present_mask;
+ extern struct cpumask __cpu_active_mask;
++extern struct cpumask __cpu_dying_mask;
+ #define cpu_possible_mask ((const struct cpumask *)&__cpu_possible_mask)
+ #define cpu_online_mask   ((const struct cpumask *)&__cpu_online_mask)
+ #define cpu_present_mask  ((const struct cpumask *)&__cpu_present_mask)
+ #define cpu_active_mask   ((const struct cpumask *)&__cpu_active_mask)
++#define cpu_dying_mask    ((const struct cpumask *)&__cpu_dying_mask)
+ 
+ extern atomic_t __num_online_cpus;
+ 
+@@ -826,6 +828,14 @@ set_cpu_active(unsigned int cpu, bool active)
+ 		cpumask_clear_cpu(cpu, &__cpu_active_mask);
+ }
+ 
++static inline void
++set_cpu_dying(unsigned int cpu, bool dying)
++{
++	if (dying)
++		cpumask_set_cpu(cpu, &__cpu_dying_mask);
++	else
++		cpumask_clear_cpu(cpu, &__cpu_dying_mask);
++}
+ 
+ /**
+  * to_cpumask - convert an NR_CPUS bitmap to a struct cpumask *
+@@ -900,6 +910,11 @@ static inline bool cpu_active(unsigned int cpu)
+ 	return cpumask_test_cpu(cpu, cpu_active_mask);
+ }
+ 
++static inline bool cpu_dying(unsigned int cpu)
++{
++	return cpumask_test_cpu(cpu, cpu_dying_mask);
++}
++
+ #else
+ 
+ #define num_online_cpus()	1U
+@@ -927,6 +942,11 @@ static inline bool cpu_active(unsigned int cpu)
+ 	return cpu == 0;
+ }
+ 
++static inline bool cpu_dying(unsigned int cpu)
++{
++	return false;
++}
++
+ #endif /* NR_CPUS > 1 */
+ 
+ #define cpu_is_offline(cpu)	unlikely(!cpu_online(cpu))
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 23505d6..838dcf2 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -160,6 +160,9 @@ static int cpuhp_invoke_callback(unsigned int cpu, enum cpuhp_state state,
+ 	int (*cb)(unsigned int cpu);
+ 	int ret, cnt;
+ 
++	if (cpu_dying(cpu) != !bringup)
++		set_cpu_dying(cpu, !bringup);
++
+ 	if (st->fail == state) {
+ 		st->fail = CPUHP_INVALID;
+ 		return -EAGAIN;
+@@ -2512,6 +2515,9 @@ EXPORT_SYMBOL(__cpu_present_mask);
+ struct cpumask __cpu_active_mask __read_mostly;
+ EXPORT_SYMBOL(__cpu_active_mask);
+ 
++struct cpumask __cpu_dying_mask __read_mostly;
++EXPORT_SYMBOL(__cpu_dying_mask);
++
+ atomic_t __num_online_cpus __read_mostly;
+ EXPORT_SYMBOL(__num_online_cpus);
+ 
