@@ -2,110 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6BCF3623E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 770813623EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343491AbhDPP2D convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 16 Apr 2021 11:28:03 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:48407 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S236062AbhDPP2A (ORCPT
+        id S1343670AbhDPP3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 11:29:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243009AbhDPP3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 11:28:00 -0400
-Received: (qmail 43914 invoked by uid 1000); 16 Apr 2021 11:27:34 -0400
-Date:   Fri, 16 Apr 2021 11:27:34 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Anirudh Rayabharam <mail@anirudhrb.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+eb4674092e6cc8d9e0bd@syzkaller.appspotmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: [syzbot] general protection fault in gadget_setup
-Message-ID: <20210416152734.GB42403@rowland.harvard.edu>
-References: <00000000000075c58405bfd6228c@google.com>
- <CACT4Y+bTjQz=RBXVNrVMQ9xPz5CzGNBE854fsb0ukS-2_wdi3Q@mail.gmail.com>
- <20210413161311.GC1454681@rowland.harvard.edu>
- <YHkjUwhlCYIxCUYt@anirudhrb.com>
+        Fri, 16 Apr 2021 11:29:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCF8C06175F;
+        Fri, 16 Apr 2021 08:29:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1toLz+6Q9HQNcw3MQRhWkEtoAVrOWnWFJOtvRcLCOTo=; b=AfDcl5h/43wjmPGPvOHoHHxUtH
+        VUrHqD3LImr52YJgVp8v99CpXw49O+3ABZxg5dh2xjPUhMw9cBqhZ/eHIxjqVBmWAJ5j2VFJliPqP
+        BQOm1fzjrGaws2wsSyby1unfkL+/Wxc1aXKKpQCeRlWZhNlLgNueCFlXNMIQiSGoqCfvjgZ9Is6GB
+        hFY2A2C7bLXBzhULxoFqzdLwiH6FLDnAub0LrzdQzZam5myqe1duHZgtATotK/lfgrQQkIZGYhNry
+        QenDpI12d1AnF7t8sVRmpZ4hU7p/p1rPmDOPveX4AC6sl4F0D+bQ9ZY+9PGK+tPLJDf+e8Y0+WANo
+        iep2axvg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lXQNv-00A7Ug-LK; Fri, 16 Apr 2021 15:28:22 +0000
+Date:   Fri, 16 Apr 2021 16:27:55 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     David Laight <David.Laight@aculab.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Arnd Bergmann <arnd@kernel.org>, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
+Message-ID: <20210416152755.GL2531743@casper.infradead.org>
+References: <20210410205246.507048-2-willy@infradead.org>
+ <20210411114307.5087f958@carbon>
+ <20210411103318.GC2531743@casper.infradead.org>
+ <20210412011532.GG2531743@casper.infradead.org>
+ <20210414101044.19da09df@carbon>
+ <20210414115052.GS2531743@casper.infradead.org>
+ <20210414211322.3799afd4@carbon>
+ <20210414213556.GY2531743@casper.infradead.org>
+ <a50c3156fe8943ef964db4345344862f@AcuMS.aculab.com>
+ <20210415200832.32796445@carbon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <YHkjUwhlCYIxCUYt@anirudhrb.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210415200832.32796445@carbon>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 11:10:35AM +0530, Anirudh Rayabharam wrote:
-> On Tue, Apr 13, 2021 at 12:13:11PM -0400, Alan Stern wrote:
-> > Maybe we can test this reasoning by putting a delay just before the call 
-> > to dum->driver->setup.  That runs in the timer handler, so it's not a 
-> > good place to delay, but it may be okay just for testing purposes.
-> > 
-> > Hopefully this patch will make the race a lot more likely to occur.  Is 
-> 
-> Hi Alan, 
-> 
-> Indeed, I was able to reproduce this bug easily on my machine with your
-> delay patch applied and using this syzkaller program:
-> 
-> syz_usb_connect$cdc_ncm(0x1, 0x6e, &(0x7f0000000040)={{0x12, 0x1, 0x0, 0x2, 0x0, 0x0, 0x8, 0x525, 0xa4a1, 0x40, 0x1, 0x2, 0x3, 0x1, [{{0x9, 0x2, 0x5c, 0x2, 0x1, 0x0, 0x0, 0x0, {{0x9, 0x4, 0x0, 0x0, 0x1, 0x2, 0xd, 0x0, 0x0, {{0x5}, {0x5}, {0xd}, {0x6}}, {{0x9, 0x5, 0x81, 0x3, 0x200}}}}}}]}}, &(0x7f0000000480)={0x0, 0x0, 0x0, 0x0, 0x3, [{0x0, 0x0}, {0x0, 0x0}, {0x0, 0x0}]})
-> 
-> I also tested doing the synchronize_irq emulation in dummy_pullup and it
-> fixed the issue. The patch is below.
+On Thu, Apr 15, 2021 at 08:08:32PM +0200, Jesper Dangaard Brouer wrote:
+> See below patch.  Where I swap32 the dma address to satisfy
+> page->compound having bit zero cleared. (It is the simplest fix I could
+> come up with).
 
-That's great!  Thanks for testing.
+I think this is slightly simpler, and as a bonus code that assumes the
+old layout won't compile.
 
-> Thanks!
-> 
-> 	- Anirudh.
-> 
-> diff --git a/drivers/usb/gadget/udc/dummy_hcd.c b/drivers/usb/gadget/udc/dummy_hcd.c
-> index ce24d4f28f2a..931d4612d859 100644
-> --- a/drivers/usb/gadget/udc/dummy_hcd.c
-> +++ b/drivers/usb/gadget/udc/dummy_hcd.c
-> @@ -903,6 +903,12 @@ static int dummy_pullup(struct usb_gadget *_gadget, int value)
->  	spin_lock_irqsave(&dum->lock, flags);
->  	dum->pullup = (value != 0);
->  	set_link_state(dum_hcd);
-> +	/* emulate synchronize_irq(): wait for callbacks to finish */
-> +	while (dum->callback_usage > 0) {
-> +		spin_unlock_irqrestore(&dum->lock, flags);
-> +		usleep_range(1000, 2000);
-> +		spin_lock_irqsave(&dum->lock, flags);
-> +	}
-
-We should do this only if value == 0.  No synchronization is needed when 
-the pullup is turned on.
-
-Also, there should be a comment explaining that this is necessary 
-because there's no other place to emulate the call made to 
-synchronize_irq() in core.c:usb_gadget_remove_driver().
-
->  	spin_unlock_irqrestore(&dum->lock, flags);
->  
->  	usb_hcd_poll_rh_status(dummy_hcd_to_hcd(dum_hcd));
-> @@ -1005,13 +1011,6 @@ static int dummy_udc_stop(struct usb_gadget *g)
->  	dum->ints_enabled = 0;
->  	stop_activity(dum);
->  
-> -	/* emulate synchronize_irq(): wait for callbacks to finish */
-> -	while (dum->callback_usage > 0) {
-> -		spin_unlock_irq(&dum->lock);
-> -		usleep_range(1000, 2000);
-> -		spin_lock_irq(&dum->lock);
-> -	}
-> -
->  	dum->driver = NULL;
->  	spin_unlock_irq(&dum->lock);
-
-Actually, I wanted to move this emulation code into a new subroutine and 
-then call that subroutine from _both_ places.  Would you like to write 
-and submit a patch that does this?
-
-Alan Stern
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 6613b26a8894..5aacc1c10a45 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -97,10 +97,10 @@ struct page {
+ 		};
+ 		struct {	/* page_pool used by netstack */
+ 			/**
+-			 * @dma_addr: might require a 64-bit value even on
++			 * @dma_addr: might require a 64-bit value on
+ 			 * 32-bit architectures.
+ 			 */
+-			dma_addr_t dma_addr;
++			unsigned long dma_addr[2];
+ 		};
+ 		struct {	/* slab, slob and slub */
+ 			union {
+diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+index b5b195305346..db7c7020746a 100644
+--- a/include/net/page_pool.h
++++ b/include/net/page_pool.h
+@@ -198,7 +198,17 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
+ 
+ static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
+ {
+-	return page->dma_addr;
++	dma_addr_t ret = page->dma_addr[0];
++	if (sizeof(dma_addr_t) > sizeof(unsigned long))
++		ret |= (dma_addr_t)page->dma_addr[1] << 32;
++	return ret;
++}
++
++static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
++{
++	page->dma_addr[0] = addr;
++	if (sizeof(dma_addr_t) > sizeof(unsigned long))
++		page->dma_addr[1] = addr >> 32;
+ }
+ 
+ static inline bool is_page_pool_compiled_in(void)
+diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+index ad8b0707af04..f014fd8c19a6 100644
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -174,8 +174,10 @@ static void page_pool_dma_sync_for_device(struct page_pool *pool,
+ 					  struct page *page,
+ 					  unsigned int dma_sync_size)
+ {
++	dma_addr_t dma_addr = page_pool_get_dma_addr(page);
++
+ 	dma_sync_size = min(dma_sync_size, pool->p.max_len);
+-	dma_sync_single_range_for_device(pool->p.dev, page->dma_addr,
++	dma_sync_single_range_for_device(pool->p.dev, dma_addr,
+ 					 pool->p.offset, dma_sync_size,
+ 					 pool->p.dma_dir);
+ }
+@@ -226,7 +228,7 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
+ 		put_page(page);
+ 		return NULL;
+ 	}
+-	page->dma_addr = dma;
++	page_pool_set_dma_addr(page, dma);
+ 
+ 	if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
+ 		page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
+@@ -294,13 +296,13 @@ void page_pool_release_page(struct page_pool *pool, struct page *page)
+ 		 */
+ 		goto skip_dma_unmap;
+ 
+-	dma = page->dma_addr;
++	dma = page_pool_get_dma_addr(page);
+ 
+-	/* When page is unmapped, it cannot be returned our pool */
++	/* When page is unmapped, it cannot be returned to our pool */
+ 	dma_unmap_page_attrs(pool->p.dev, dma,
+ 			     PAGE_SIZE << pool->p.order, pool->p.dma_dir,
+ 			     DMA_ATTR_SKIP_CPU_SYNC);
+-	page->dma_addr = 0;
++	page_pool_set_dma_addr(page, 0);
+ skip_dma_unmap:
+ 	/* This may be the last page returned, releasing the pool, so
+ 	 * it is not safe to reference pool afterwards.
