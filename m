@@ -2,91 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7AC8362327
+	by mail.lfdr.de (Postfix) with ESMTP id F2CF3362328
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244946AbhDPOvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233916AbhDPOvT (ORCPT
+        id S241947AbhDPOwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:52:44 -0400
+Received: from mail.efficios.com ([167.114.26.124]:46056 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233916AbhDPOwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:51:19 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446EEC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:50:52 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id u8so20890931qtq.12
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 07:50:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kepstin.ca; s=google;
-        h=message-id:subject:from:to:date:in-reply-to:references:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=F9UU+jQfSexw8hhu+M3eVO5mGHcQtJmjLJ/mzZBvj3w=;
-        b=T0vJs/lJAC0Ybn7Efy634+G7ZKmCufJ9QoDi698/qShOzuzBCeI5+4ldpRnyU+OK5P
-         QijOq7Xsc9jJMvEMV8FPzsJoNMBtS6w9PwwGt1SYFccVf8AxKNUYCGQ+7Qaq0E3159ls
-         IHKYMHD9pCbLNhsuAwqdBCExzdKTJXJZYo96A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=F9UU+jQfSexw8hhu+M3eVO5mGHcQtJmjLJ/mzZBvj3w=;
-        b=jeAaKSSPy2jvsZZAZf0FyGLE9gjDuOd6MBiuYKlO6ymK4PkynBvsiUGnctxozOFyeu
-         n0lHeRi8b70Gzbc/mu7ZY/zk8I6Dw9oihQRYus1JEBVDpQ6u2IPMlXTm4Fu0tnsU/TTq
-         Wt3GQF0bnIN2p6ONEkdKUMCBkQDWVyjQnGtuKRmVllUtKJHlOUjRFPtisYTRMrjyUYL8
-         +nkJ5oFDsUFVVHGEAV5+3nprAv7C7u2GMYSEaJbnchKdrP0UCXttI6Mpwz0JG/TxAYbt
-         0cQy55ZgrWvAUC+GXDybTjO2Srg3IcGbEOkxOE9Jhn/JrAYc+ZPDvFMJm6eUB8Siunih
-         Mwfw==
-X-Gm-Message-State: AOAM532LDc+nh53F6UmTU8MFwD4EtoqtrgzAYJNGqeDKaYbw1/oUAJZz
-        umxH5xfyun6MGUFjowMMGsx8i2VaxJsRdtHw
-X-Google-Smtp-Source: ABdhPJywamb1TLItL6hxBu1k1N+8qI7IzVo29e3lYbx9KXCvkTtePLSyJAjSMJnORNIIIibEMnqwIQ==
-X-Received: by 2002:a05:622a:1208:: with SMTP id y8mr8288221qtx.215.1618584651456;
-        Fri, 16 Apr 2021 07:50:51 -0700 (PDT)
-Received: from saya.kepstin.ca (dhcp-108-168-125-232.cable.user.start.ca. [108.168.125.232])
-        by smtp.gmail.com with ESMTPSA id k126sm4231654qkb.4.2021.04.16.07.50.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 07:50:50 -0700 (PDT)
-Message-ID: <65e556b53fad029474fd948afecf0e226aa01f87.camel@kepstin.ca>
-Subject: Re: [PATCH v4] tools/power turbostat: Fix RAPL summary collection
- on AMD processors
-From:   Calvin Walton <calvin.walton@kepstin.ca>
-To:     Terry Bowman <terry.bowman@amd.com>, lenb@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 16 Apr 2021 10:50:48 -0400
-In-Reply-To: <68be4830-36ec-85ad-56ae-ee3cf9b9589c@amd.com>
-References: <20210330213825.77294-1-terry.bowman@amd.com>
-         <17d15837848eddd8445b206356531b9b5aae644b.camel@kepstin.ca>
-         <68be4830-36ec-85ad-56ae-ee3cf9b9589c@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
+        Fri, 16 Apr 2021 10:52:43 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id E134C337C33;
+        Fri, 16 Apr 2021 10:52:17 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id UbIckL3755HT; Fri, 16 Apr 2021 10:52:16 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id D6B0C337D2E;
+        Fri, 16 Apr 2021 10:52:16 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com D6B0C337D2E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1618584736;
+        bh=g0ai6snWg1lDRvmE/hHbxe1m+3pDLWhw8fngE/SLcKA=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=CseBk2MS2SPiUiyncAdh1UtyCTA2lF77Ob7wmxRKkDq02ohqOZzvEnzu+OgVzLyAW
+         K22Yd/JgnlOJVPejDFn9MUFXpsdEcO4pnm1sqCs2tFR1srTCFPvWwhBohRR2ihsxmp
+         0uXUsoxoOfkJLsqdky2h9lvdZ3wdWh/YP5E/wzc4HxmCVtv+kZIziHlzPj/z1wKJ2z
+         p3o5ga+WFCLYFFW7HgkxGKue7aQlZ72USRxcm1AczWxkM5JcoPpUirFPaBaIvoq+xF
+         CwVcV4G0buNIPMYTW++01XsVuxeqkcKRhUXsTAb8iIEwWn5nFtB+VYk5qn2wOXqvzW
+         2HEYR/l3Zo0PA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id XPTxFdlzpXms; Fri, 16 Apr 2021 10:52:16 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id C6F9B337AF7;
+        Fri, 16 Apr 2021 10:52:16 -0400 (EDT)
+Date:   Fri, 16 Apr 2021 10:52:16 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     paulmck <paulmck@kernel.org>, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        lttng-dev <lttng-dev@lists.lttng.org>
+Message-ID: <1680415903.81652.1618584736742.JavaMail.zimbra@efficios.com>
+Subject: liburcu: LTO breaking rcu_dereference on arm64 and possibly other
+ architectures ?
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF87 (Linux)/8.8.15_GA_4007)
+Thread-Index: WQ3F/UwlNJdCRe7pLcscx5UrzpNaiw==
+Thread-Topic: liburcu: LTO breaking rcu_dereference on arm64 and possibly other architectures ?
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-04-16 at 06:42 -0500, Terry Bowman wrote:
-> 
-> Hi Calvin,
-> 
-> Thanks for the feedback. I'll begin making the change and testing.
-> I'll 
-> respond with V2 patch in this thread.
-> 
-> Regards,
-> Terry
+Hi Paul, Will, Peter,
 
-It looks like there might already be a patch in the pipeline for this
-issue; see Chen Yu's response to my patch here:
-https://lkml.org/lkml/2021/4/14/1322
-I'm hoping we get some clarification of the status soon.
+I noticed in this discussion https://lkml.org/lkml/2021/4/16/118 that LTO
+is able to break rcu_dereference. This seems to be taken care of by
+arch/arm64/include/asm/rwonce.h on arm64 in the Linux kernel tree.
 
-While you're respinning your patch, there's one other issue that I
-noticed - all the idx/offset-related functions pass the offset value in
-a variable of type "int" (32bit signed integer), but the offset of the
-AMD MSR_CORE_ENERGY_STAT MSR is 0xC001029A, which exceeds INT_MAX. The
-offsets should all use "off_t" to get a 64bit type and avoid wrapping
-or sign extension issues.
+In the liburcu user-space library, we have this comment near rcu_dereference() in
+include/urcu/static/pointer.h:
+
+ * The compiler memory barrier in CMM_LOAD_SHARED() ensures that value-speculative
+ * optimizations (e.g. VSS: Value Speculation Scheduling) does not perform the
+ * data read before the pointer read by speculating the value of the pointer.
+ * Correct ordering is ensured because the pointer is read as a volatile access.
+ * This acts as a global side-effect operation, which forbids reordering of
+ * dependent memory operations. Note that such concern about dependency-breaking
+ * optimizations will eventually be taken care of by the "memory_order_consume"
+ * addition to forthcoming C++ standard.
+
+(note: CMM_LOAD_SHARED() is the equivalent of READ_ONCE(), but was introduced in
+liburcu as a public API before READ_ONCE() existed in the Linux kernel)
+
+Peter tells me the "memory_order_consume" is not something which can be used today.
+Any information on its status at C/C++ standard levels and implementation-wise ?
+
+Pragmatically speaking, what should we change in liburcu to ensure we don't generate
+broken code when LTO is enabled ? I suspect there are a few options here:
+
+1) Fail to build if LTO is enabled,
+2) Generate slower code for rcu_dereference, either on all architectures or only
+   on weakly-ordered architectures,
+3) Generate different code depending on whether LTO is enabled or not. AFAIU this would only
+   work if every compile unit is aware that it will end up being optimized with LTO. Not sure
+   how this could be done in the context of user-space.
+4) [ Insert better idea here. ]
+
+Thoughts ?
+
+Thanks,
+
+Mathieu
 
 -- 
-Calvin Walton <calvin.walton@kepstin.ca>
-
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
