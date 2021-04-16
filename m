@@ -2,113 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD793620D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B767F3620E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243838AbhDPNVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 09:21:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235361AbhDPNVj (ORCPT
+        id S243900AbhDPN1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 09:27:18 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10060 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235674AbhDPN1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 09:21:39 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0464AC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 06:21:14 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id nm3-20020a17090b19c3b029014e1bbf6c60so10418125pjb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 06:21:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jNEOUMLacDExesI1dUec+Ag9poKcQi7/Bd0G3kzBs+E=;
-        b=D9/9AyaxROOMxeGsn1K8bCTaAQz95ClMBt4f11oG2tHr3a0M33smsXCK4q9FqRHGBh
-         rJr717NgoXD6Xjlj0KIusADW3eOuGNlu6va6ZfniMI+gCRFsH04lKBZ3t+IYqN3AAggx
-         JuLfL0nFO//BkVvzHzeY7uYBlFzBGZRnUuCpYIDi5d6NS77FI6UbzUYAGQyFqSQiBz+7
-         wHOICFkSF0jU+ggXpXJf7pgFZKIOBfsIH/TyRMLY2mQjgN89BBvsPRBaAn4Cx16OTMNP
-         Ru+6MiBawOLCueVpyWyWqsDR5GhtvGaYZ+iKz+/uNAhWQhb1oemX8vjWp4E6VVkauGqd
-         h3Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jNEOUMLacDExesI1dUec+Ag9poKcQi7/Bd0G3kzBs+E=;
-        b=GY05gwG3vXxhjYKk0Sz+bvr8QVcAzcbCB1tIZjo4J/K4r+O5NLWFvshIZQUFMsSuUX
-         AlZJT30NBvPMi67PqDVWW6KBZYHfJiTYwihO9fug87BrwrQad4C8Vviu/5re2BRhkpIs
-         PRj1mDB7F17YydglZ0XkoZuK9347MbtooHMWKDvw5q2wMICZh8rvF9CbDbskIHiu7yfu
-         YOPjo0LtD8omv0helSTG70zsgbDU3KPsGKr13nyC3np7MRoERZzdJ9orMZil9BKt86xf
-         NCpQvykh9w+NDGRtAKDcgcZi5Npy4XESQhsOgS/uOziT3d1OBQAPlXstWvEQ4/xTieqH
-         0U7Q==
-X-Gm-Message-State: AOAM533cemWKTqWXSeD8c2+TLOytJ1IMVOiqJAyAkLRC5euI3ShIcZ6Z
-        tswQXt07GUnbbc8eUIZIDbw6KQ==
-X-Google-Smtp-Source: ABdhPJyveue9gtWWLnn5Yel0ovmrx50udM1NmcCIuMHesFmn1b5+ri0JefXJZCkA45mBIEbj4zuSzg==
-X-Received: by 2002:a17:90a:150e:: with SMTP id l14mr6643850pja.208.1618579273482;
-        Fri, 16 Apr 2021 06:21:13 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([204.124.180.30])
-        by smtp.gmail.com with ESMTPSA id x13sm6617982pja.3.2021.04.16.06.21.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 06:21:12 -0700 (PDT)
-Date:   Fri, 16 Apr 2021 21:21:04 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Al Grant <Al.Grant@arm.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 4/6] perf arm-spe: Assign kernel time to synthesized
- event
-Message-ID: <20210416132104.GG1011890@leoy-ThinkPad-X240s>
-References: <20210412091006.468557-1-leo.yan@linaro.org>
- <20210412091006.468557-5-leo.yan@linaro.org>
- <9036368a-e824-3d63-da5b-54cf32a86aed@arm.com>
- <20210415152348.GF1011890@leoy-ThinkPad-X240s>
- <c9c060d1-0884-b67d-7689-6b45ad10baa9@arm.com>
+        Fri, 16 Apr 2021 09:27:15 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13GD2sdn042295;
+        Fri, 16 Apr 2021 09:26:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=aquu956fTIgz3+7lHAMaLfz7OxkPFtlsRwWtasPoQFk=;
+ b=QK8NVpZ19MXq25sAj1JJHLyZ0/RzDgoe/m614DZYRlLTMcpispCtiyqE6lQfPZD/c7oo
+ Uuamk1zCbI2lJo3BA5q96got9BF0iilqHa8Mao0numS4RNkTNWB2dMvMrVn2Tz4YOKmT
+ 9Vh3p4Hkw9+YqIlv+MS9rHtJ13AWwytVSunNaxUgxpiH2ITjY9EncXHrO8/ClpNMH+nD
+ yadcRcWRhhXFcN6RJLajkF3+QB/j8LeMG+5LtmYJHAWeJfpAhHxHXOTkmBvQmfkTT2nT
+ uQ7pDq9IEIZsfLxQXpfZGVKMZIjbUD0/RXhnxKf4iixssNqwUR02ev7GtQ3fU/ooZPda sA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37y8rnvu96-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 09:26:13 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13GD2qfE042187;
+        Fri, 16 Apr 2021 09:26:11 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37y8rnvu3w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 09:26:11 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13GDNG9O019900;
+        Fri, 16 Apr 2021 13:26:05 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06fra.de.ibm.com with ESMTP id 37u39hadvx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 13:26:05 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13GDQ3ho46137672
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 16 Apr 2021 13:26:03 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3A9A14C052;
+        Fri, 16 Apr 2021 13:26:03 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C3F3B4C044;
+        Fri, 16 Apr 2021 13:26:01 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.64.24])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 16 Apr 2021 13:26:01 +0000 (GMT)
+Subject: Re: [PATCH v2] tools: do not include scripts/Kbuild.include
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org
+Cc:     Janosch Frank <frankja@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        netdev@vger.kernel.org
+References: <20210416130051.239782-1-masahiroy@kernel.org>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <ee99eb80-5711-9349-23a4-0faf8d7b60a8@de.ibm.com>
+Date:   Fri, 16 Apr 2021 15:26:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+In-Reply-To: <20210416130051.239782-1-masahiroy@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: -nujXjQtsLSCrONtCNjn6qt7wKYvylhh
+X-Proofpoint-ORIG-GUID: 7gO-O2XrzlXYQU9_QTO3narixz6-3GWN
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c9c060d1-0884-b67d-7689-6b45ad10baa9@arm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-16_07:2021-04-15,2021-04-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ phishscore=0 priorityscore=1501 malwarescore=0 mlxlogscore=999 bulkscore=0
+ impostorscore=0 spamscore=0 lowpriorityscore=0 mlxscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104160097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 03:51:25PM +0300, James Clark wrote:
 
-[...]
 
-> >> I noticed that in arm_spe_recording_options() the TIME sample bit is set regardless of any options.
-> >> I don't know of a way to remove this, and if there isn't, does that mean that all the code in this
-> >> file that looks at spe->timeless_decoding is untested and has never been hit?
-> >>
-> >> Unless there is a way to get a perf file with only the AUXTRACE event and no others? I think that one
-> >> might have no timestamp set. Otherwise other events will always have timestamps so spe->timeless_decoding
-> >> is always false.
-> > 
-> > Good point.  To be honest, I never noticed this issue until you
-> > mentioned this.
-> > 
-> > We should fix for the "timeless" flow; and it's questionable for the
-> > function arm_spe_recording_options(), except for setting
-> > PERF_SAMPLE_TIME, it also hard codes for setting
-> > PERF_SAMPLE_CPU and PERF_SAMPLE_TID.  Might need to carefully go
-> > through this function.
-> > 
+On 16.04.21 15:00, Masahiro Yamada wrote:
+> Since commit d9f4ff50d2aa ("kbuild: spilt cc-option and friends to
+> scripts/Makefile.compiler"), some kselftests fail to build.
 > 
-> Yeah, it's not strictly related to your change, which is definitely an improvement.
-> But maybe we should have a look at the SPE implementation relating to timestamps as a whole.
+> The tools/ directory opted out Kbuild, and went in a different
+> direction. They copy any kind of files to the tools/ directory
+> in order to do whatever they want in their world.
+> 
+> tools/build/Build.include mimics scripts/Kbuild.include, but some
+> tool Makefiles included the Kbuild one to import a feature that is
+> missing in tools/build/Build.include:
+> 
+>   - Commit ec04aa3ae87b ("tools/thermal: tmon: use "-fstack-protector"
+>     only if supported") included scripts/Kbuild.include from
+>     tools/thermal/tmon/Makefile to import the cc-option macro.
+> 
+>   - Commit c2390f16fc5b ("selftests: kvm: fix for compilers that do
+>     not support -no-pie") included scripts/Kbuild.include from
+>     tools/testing/selftests/kvm/Makefile to import the try-run macro.
+> 
+>   - Commit 9cae4ace80ef ("selftests/bpf: do not ignore clang
+>     failures") included scripts/Kbuild.include from
+>     tools/testing/selftests/bpf/Makefile to import the .DELETE_ON_ERROR
+>     target.
+> 
+>   - Commit 0695f8bca93e ("selftests/powerpc: Handle Makefile for
+>     unrecognized option") included scripts/Kbuild.include from
+>     tools/testing/selftests/powerpc/pmu/ebb/Makefile to import the
+>     try-run macro.
+> 
+> Copy what they need into tools/build/Build.include, and make them
+> include it instead of scripts/Kbuild.include.
+> 
+> Link: https://lore.kernel.org/lkml/86dadf33-70f7-a5ac-cb8c-64966d2f45a1@linux.ibm.com/
+> Fixes: d9f4ff50d2aa ("kbuild: spilt cc-option and friends to scripts/Makefile.compiler")
+> Reported-by: Janosch Frank <frankja@linux.ibm.com>
+> Reported-by: Christian Borntraeger <borntraeger@de.ibm.com>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Totally agree, at least this patch series should not introduce any
-barrier for timeless case.  I will go back to verify it; if you'd
-like to fix timeless issue, please feel free to go ahead.
-
-Thanks,
-Leo
+looks better.
+Tested-by: Christian Borntraeger <borntraeger@de.ibm.com>
