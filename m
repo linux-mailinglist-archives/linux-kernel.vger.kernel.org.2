@@ -2,110 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC09361A70
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 09:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B400C361A83
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 09:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239131AbhDPHVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 03:21:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230466AbhDPHVt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 03:21:49 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471B5C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 00:21:25 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id j3so12989232qvs.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 00:21:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wjmD73GPpy2QbsTxbpbJAucxJYCt7dBmfHIx/C3Hj5U=;
-        b=nu9OwTXrpMDNPvqq2iAKRq4pBy+2naRJYAi61Oux7KKTpTV2uDlMOELJRZe/KW0Z/l
-         Z+6XaCmV9b2o9Jc3tpiK+RPxHLVZMYnun6G1e84agmCOQYYhmaNqZI6pX4+WR5MC3sCV
-         7/OEra7nrNmsZGborSeXxxr+uGqVI3QrQFpRmoHfhwvD/Xxi7ZsxP2TnIudtTvWCB7Q5
-         axzqI1g1A7zuQgAhk3ENd88sCzhnWukzNCc7ROW9RTQwJ3H4mcmCsNBDicoBaDvwAyNy
-         wXiszwJWU9UvkztZu7mB8gu7CVYnQWOOr7p5cdgvgYmZ7ERtxtr6tXD7BJDyg6Amo9/E
-         nifQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wjmD73GPpy2QbsTxbpbJAucxJYCt7dBmfHIx/C3Hj5U=;
-        b=drHU/520ipbescIngMSVJyvjeEnQefIMHM1jRYTdlKhosN3YDFvM7x8XjEA5qzDz2T
-         OiBy39PCE+Me16hxg1ytOdwHQyELUPUUpzg9r8XAFpfoHxhup4DPbPzIMwd5ZaOlXs2Y
-         KFcQz1Njh8qB2tGrOhAmwqSiJhzWarxRD3XJnAx6wPBoaet/NIQ/hy3ho4Wz8qDLvb9u
-         17qbL5QCtU9oRnWSCQXd2a3nONvrMwBpnIY+DXGr6beFLbwyoIkQotxgwOeMGqTbngmf
-         VLz9v379qCa/+7fzdzHQnM0R9vOY+yQ5RttdM1Fose34C8YlS+WqOmFdJVT7zj/97kkJ
-         vqsw==
-X-Gm-Message-State: AOAM532t4WpsLzxd1sRH8pvob8HAzAU8buVcMCGcnj07FYiKdgSjSWXb
-        xjszAfxnMoGkNhqPjn6OFH0418uSByQHjGhOI6ecVA==
-X-Google-Smtp-Source: ABdhPJw3kEHh/UQ6eNJ/oZf4yxIHMjsXukXccmBLxb3LC8DY+slR11/4BD4jxSF26gGaypErVDi6pHqHlV2Y+52cwo4=
-X-Received: by 2002:a0c:d786:: with SMTP id z6mr6484078qvi.18.1618557684261;
- Fri, 16 Apr 2021 00:21:24 -0700 (PDT)
+        id S239584AbhDPHXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 03:23:35 -0400
+Received: from elvis.franken.de ([193.175.24.41]:53271 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239521AbhDPHXc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 03:23:32 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lXIol-0007qW-01; Fri, 16 Apr 2021 09:23:07 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id DE657C04CD; Fri, 16 Apr 2021 09:22:01 +0200 (CEST)
+Date:   Fri, 16 Apr 2021 09:22:01 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>
+Subject: Re: [PATCH v2 0/8] MIPS: fixes for PCI legacy drivers (rt2880,
+ rt3883)
+Message-ID: <20210416072201.GA5371@alpha.franken.de>
+References: <20210414031240.313852-1-ilya.lipnitskiy@gmail.com>
 MIME-Version: 1.0
-References: <00000000000075c58405bfd6228c@google.com> <CACT4Y+bTjQz=RBXVNrVMQ9xPz5CzGNBE854fsb0ukS-2_wdi3Q@mail.gmail.com>
- <20210413161311.GC1454681@rowland.harvard.edu> <CACT4Y+YEw4iJPxY4b6LPXrU91TODfu09dG=53exvQkwjPBg23w@mail.gmail.com>
- <20210413165724.GD1454681@rowland.harvard.edu> <CACT4Y+aX-cMJxMYmWms3MG-4=Rb9eG_N+pOjorRHoV1MGQXtkA@mail.gmail.com>
- <20210415205957.GA19917@rowland.harvard.edu>
-In-Reply-To: <20210415205957.GA19917@rowland.harvard.edu>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 16 Apr 2021 09:21:12 +0200
-Message-ID: <CACT4Y+aYfVxcXYOHwheW7Wp2oYcKm_zumeASo57Dy7deDfZJKA@mail.gmail.com>
-Subject: Re: [syzbot] general protection fault in gadget_setup
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     syzbot <syzbot+eb4674092e6cc8d9e0bd@syzkaller.appspotmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210414031240.313852-1-ilya.lipnitskiy@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 10:59 PM Alan Stern <stern@rowland.harvard.edu> wrote:
->
-> On Tue, Apr 13, 2021 at 07:11:11PM +0200, Dmitry Vyukov wrote:
-> > On Tue, Apr 13, 2021 at 6:57 PM Alan Stern <stern@rowland.harvard.edu> wrote:
-> > >
-> > > On Tue, Apr 13, 2021 at 06:47:47PM +0200, Dmitry Vyukov wrote:
-> > > > On Tue, Apr 13, 2021 at 6:13 PM Alan Stern <stern@rowland.harvard.edu> wrote:
-> > > > > Hopefully this patch will make the race a lot more likely to occur.  Is
-> > > > > there any way to tell syzkaller to test it, despite the fact that
-> > > > > syzkaller doesn't think it has a reproducer for this issue?
-> > > >
-> > > > If there is no reproducer the only way syzbot can test it is if it's
-> > > > in linux-next under CONFIG_DEBUG_AID_FOR_SYZBOT:
-> > > > http://bit.do/syzbot#no-custom-patches
-> > >
-> > > There _is_ a theoretical reproducer: the test that provoked syzkaller's
-> > > original bug report.  But syzkaller doesn't realize that it is (or may
-> > > be) a reproducer.
-> > >
-> > > It ought to be possible to ask syzkaller to run a particular test that
-> > > it has done before, with a patch applied -- and without having to add
-> > > anything to linux-next.
-> >
-> > Yes, this is possible:
-> > http://bit.do/syzbot#syzkaller-reproducers
->
-> That's not really what I had in mind.  I don't want to spend the time
-> and effort installing syskaller on my own system; I want to tell syzbot
-> to run a particular syzkaller program (the one that originally led to
-> this bug report) on a patched kernel.
->
-> The syzbot instructions say that it can test bugs with reproducers.  The
-> problem here is that there doesn't seem to be any way to tell it to use
-> a particular syzkaller program as a reproducer.
+On Tue, Apr 13, 2021 at 08:12:32PM -0700, Ilya Lipnitskiy wrote:
+> One major fix for rt2880-pci in the first patch - fixes breakage that
+> existed since v4.14.
+> 
+> Other more minor fixes, cleanups, and improvements that either free up
+> memory, make dmesg messages clearer, or remove redundant dmesg output.
+> 
+> v2:
+> - Do not use internal pci-rt2880 config read and write functions after
+>   the device has been registered with the PCI subsystem to avoid races.
+>   Use safe pci_bus_{read,write}_config_{d}word wrappers instead.
+> 
+> Ilya Lipnitskiy (8):
+>   MIPS: pci-rt2880: fix slot 0 configuration
+>   MIPS: pci-rt2880: remove unneeded locks
+>   MIPS: pci-rt3883: trivial: remove unused variable
+>   MIPS: pci-rt3883: more accurate DT error messages
+>   MIPS: pci-legacy: stop using of_pci_range_to_resource
+>   MIPS: pci-legacy: remove redundant info messages
+>   MIPS: pci-legacy: remove busn_resource field
+>   MIPS: pci-legacy: use generic pci_enable_resources
+> 
+>  arch/mips/include/asm/pci.h |  1 -
+>  arch/mips/pci/pci-legacy.c  | 57 ++++++-------------------------------
+>  arch/mips/pci/pci-rt2880.c  | 50 ++++++++++++++++----------------
+>  arch/mips/pci/pci-rt3883.c  | 10 ++-----
+>  4 files changed, 35 insertions(+), 83 deletions(-)
 
-Hi Alan,
+series applied to mips-next.
 
-This makes sense and I've found an existing feature request:
-https://github.com/google/syzkaller/issues/1611
-I've added a reference to this thread there.
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
