@@ -2,209 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3FAB3619CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 08:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE7C3619CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 08:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238834AbhDPGT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 02:19:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234010AbhDPGT4 (ORCPT
+        id S238796AbhDPGWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 02:22:49 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:17346 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234010AbhDPGWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 02:19:56 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 023D4C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 23:19:29 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id p16so9457920plf.12
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 23:19:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=0ULK0xvK0AaFlmfdN+zJSVpnvXjW9mKLMCPfk6y9Zqk=;
-        b=L2OY2xrZoPg+ieFLphuZXE6ah4Tib0x7joZuFxOKOvs9qtSslCdV+QMWs13wJwQ1FG
-         Oji259pHpJ2SWk4UC73GJMvYuGN2d0C5fOXxia/Ip7UPm15DOCNwFS2Ju8Wph7l1Ay2c
-         UI8P80yqJr9tq5DwToPtYo3557gcpbOAuRMQ8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=0ULK0xvK0AaFlmfdN+zJSVpnvXjW9mKLMCPfk6y9Zqk=;
-        b=mL9Ga0uCHtt88NRQ/QjwffLOCakkOdhjSuGw2zpRwKC2jC/ynUT5Ivsl+qsJ/iZzYC
-         Nr2PF11v8PW3tckK/sCvw0KKB0A6vrOZQkpE25IQwQZEt1Od+Wwa4KtfPRG3zOGAfiJ/
-         cRxVTLjMd2i5Aydmi6TRDf3dTlNm4B1pnEP9HkI9IPsNT0UxPZgnewjXb65q/1dKbAf1
-         wMi1F+DvzQOQ11uweT/plUPqNUkrUpU9Lbb5JHZlMlmhqPXlm2R5fYSQzCP/AT+YimDE
-         cicD7uceYcYVcGSvdYHtQwr0lIDJkY0RSVcKrLYEFIIueIGn3mtD/kH9VxDXcEYotKYS
-         iyJQ==
-X-Gm-Message-State: AOAM531QWNLnYBm+5vjZgcSuJ0NpVAvELt8bKBPLQMnRLdtSFAIbhkLi
-        TveY5SeSovpiyrZP6Ob6zPdn2oqgnFEUCZ9i
-X-Google-Smtp-Source: ABdhPJx5xwIuXgveR7HKXPlcXFYOIud0Fw77KSQASP6cWHg5E48ghJHxORI0F4LCfP4cdBQhfMU14Q==
-X-Received: by 2002:a17:902:d2c9:b029:e9:67f7:9844 with SMTP id n9-20020a170902d2c9b02900e967f79844mr7778864plc.66.1618553969299;
-        Thu, 15 Apr 2021 23:19:29 -0700 (PDT)
-Received: from localhost (2001-44b8-111e-5c00-09c3-a49e-2955-78c6.static.ipv6.internode.on.net. [2001:44b8:111e:5c00:9c3:a49e:2955:78c6])
-        by smtp.gmail.com with ESMTPSA id l3sm4151589pju.44.2021.04.15.23.19.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Apr 2021 23:19:28 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     =?utf-8?B?6Z+p5aSn6bmPKEhhbiBEYXBlbmcp?= <handapeng@oppo.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "x86\@kernel.org" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Mike Rapoport <rppt@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arseny Solokha <asolokha@kb.kras.ru>,
-        =?utf-8?B?6Z+p5aSn6bmPKEhhbiBEYXBlbmcp?= <handapeng@oppo.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        "linuxppc-dev\@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-s390\@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-kbuild\@vger.kernel.org" <linux-kbuild@vger.kernel.org>
-Cc:     =?utf-8?B?6ZmI5a6J5bqGKEFucWluZyk=?= <chenanqing@oppo.com>
-Subject: Re: [PATCH] symbol : Make the size of the compile-related array fixed
-In-Reply-To: <TY2PR02MB3709103991CF81E89C8F1E37CB4C9@TY2PR02MB3709.apcprd02.prod.outlook.com>
-References: <TY2PR02MB3709103991CF81E89C8F1E37CB4C9@TY2PR02MB3709.apcprd02.prod.outlook.com>
-Date:   Fri, 16 Apr 2021 16:19:24 +1000
-Message-ID: <87h7k6g39v.fsf@linkitivity.dja.id.au>
+        Fri, 16 Apr 2021 02:22:47 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FM5fV55S3z7vDh;
+        Fri, 16 Apr 2021 14:20:02 +0800 (CST)
+Received: from huawei.com (10.67.174.47) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Fri, 16 Apr 2021
+ 14:22:11 +0800
+From:   He Ying <heying24@huawei.com>
+To:     <tglx@linutronix.de>, <maz@kernel.org>,
+        <julien.thierry.kdev@gmail.com>, <catalin.marinas@arm.com>
+CC:     <linux-kernel@vger.kernel.org>, <heying24@huawei.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [RFC PATCH] irqchip/gic-v3: Do not enable irqs when handling spurious interrups
+Date:   Fri, 16 Apr 2021 02:22:17 -0400
+Message-ID: <20210416062217.25157-1-heying24@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
+X-Originating-IP: [10.67.174.47]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+We found this problem in our kernel src tree:
 
-Thanks for your contribution to the kernel!
+[   14.816231] ------------[ cut here ]------------
+[   14.816231] kernel BUG at irq.c:99!
+[   14.816232] Internal error: Oops - BUG: 0 [#1] SMP
+[   14.816232] Process swapper/0 (pid: 0, stack limit = 0x(____ptrval____))
+[   14.816233] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G           O      4.19.95-1.h1.AOS2.0.aarch64 #14
+[   14.816233] Hardware name: evb (DT)
+[   14.816234] pstate: 80400085 (Nzcv daIf +PAN -UAO)
+[   14.816234] pc : asm_nmi_enter+0x94/0x98
+[   14.816235] lr : asm_nmi_enter+0x18/0x98
+[   14.816235] sp : ffff000008003c50
+[   14.816235] pmr_save: 00000070
+[   14.816237] x29: ffff000008003c50 x28: ffff0000095f56c0
+[   14.816238] x27: 0000000000000000 x26: ffff000008004000
+[   14.816239] x25: 00000000015e0000 x24: ffff8008fb916000
+[   14.816240] x23: 0000000020400005 x22: ffff0000080817cc
+[   14.816241] x21: ffff000008003da0 x20: 0000000000000060
+[   14.816242] x19: 00000000000003ff x18: ffffffffffffffff
+[   14.816243] x17: 0000000000000008 x16: 003d090000000000
+[   14.816244] x15: ffff0000095ea6c8 x14: ffff8008fff5ab40
+[   14.816244] x13: ffff8008fff58b9d x12: 0000000000000000
+[   14.816245] x11: ffff000008c8a200 x10: 000000008e31fca5
+[   14.816246] x9 : ffff000008c8a208 x8 : 000000000000000f
+[   14.816247] x7 : 0000000000000004 x6 : ffff8008fff58b9e
+[   14.816248] x5 : 0000000000000000 x4 : 0000000080000000
+[   14.816249] x3 : 0000000000000000 x2 : 0000000080000000
+[   14.816250] x1 : 0000000000120000 x0 : ffff0000095f56c0
+[   14.816251] Call trace:
+[   14.816251]  asm_nmi_enter+0x94/0x98
+[   14.816251]  el1_irq+0x8c/0x180
+[   14.816252]  gic_handle_irq+0xbc/0x2e4
+[   14.816252]  el1_irq+0xcc/0x180
+[   14.816253]  arch_timer_handler_virt+0x38/0x58
+[   14.816253]  handle_percpu_devid_irq+0x90/0x240
+[   14.816253]  generic_handle_irq+0x34/0x50
+[   14.816254]  __handle_domain_irq+0x68/0xc0
+[   14.816254]  gic_handle_irq+0xf8/0x2e4
+[   14.816255]  el1_irq+0xcc/0x180
+[   14.816255]  arch_cpu_idle+0x34/0x1c8
+[   14.816255]  default_idle_call+0x24/0x44
+[   14.816256]  do_idle+0x1d0/0x2c8
+[   14.816256]  cpu_startup_entry+0x28/0x30
+[   14.816256]  rest_init+0xb8/0xc8
+[   14.816257]  start_kernel+0x4c8/0x4f4
+[   14.816257] Code: 940587f1 d5384100 b9401001 36a7fd01 (d4210000)
+[   14.816258] Modules linked in: start_dp(O) smeth(O)
+[   15.103092] ---[ end trace 701753956cb14aa8 ]---
+[   15.103093] Kernel panic - not syncing: Fatal exception in interrupt
+[   15.103099] SMP: stopping secondary CPUs
+[   15.103100] Kernel Offset: disabled
+[   15.103100] CPU features: 0x36,a2400218
+[   15.103100] Memory Limit: none
 
-I notice that your patch is sumbitted as an attachment. In future,
-please could you submit your patch inline, rather than as an attachment?
-See https://www.kernel.org/doc/html/v4.15/process/5.Posting.html
-I'd recommend you use git send-email if possible: see e.g.
-https://www.kernel.org/doc/html/v4.15/process/email-clients.html
+Our kernel src tree is based on 4.19.95 and backports arm64 pseudo-NMI
+patches but doesn't support nested NMI. Its top relative commit is
+commit 17ce302f3117 ("arm64: Fix interrupt tracing in the presence of NMIs").
 
-> Subject: [PATCH] symbol : Make the size of the compile-related array fixed
->
-> For the same code, the machine's user name, hostname, or compilation time
-> may cause the kernel symbol address to be inconsistent, which is not
-> friendly to some symbol-dependent software, such as Crash.
+I look into this issue and find that it's caused by 'BUG_ON(in_nmi())'
+in nmi_enter(). From the call trace, we find two 'el1_irqs' which
+means an interrupt preempts the other one and the new one is an NMI.
+Furthermore, by adding some prints, we find the first irq also calls
+nmi_enter(), but its priority is not GICD_INT_NMI_PRI and its irq number
+is 1023. It enables irq by calling gic_arch_enable_irqs() in
+gic_handle_irq(). At this moment, the second irq preempts the first irq
+and it's an NMI but current context is already in nmi. So that may be
+the problem.
 
-If I understand correctly, this patch makes it easier to recompile the
-kernel from the same source but at a different time or on a different
-machine or with a different user, but still get the same symbols.
-Is that right?
+In my opinion, when handling spurious interrupts, we shouldn't enable irqs.
+My reason is that for spurious interrupts we may enter nmi context in
+el1_irq() because current PMR may be GIC_PRIO_IRQOFF. If we enable irqs
+at this time, another NMI may happen and preempt this spurious interrupt
+but the context is already in nmi. That causes a bug on if nested NMI is
+not supported. Even for nested nmi, I think it's not a normal scenario.
 
-I wonder if there are other reproducible build techniques that might be
-simpler to apply? There is a kernel documentation page at
-https://www.kernel.org/doc/html/latest/kbuild/reproducible-builds.html
-which gives exisiting techniques to override the date, user and host.
-Would they be sufficient to address your use case?
+Fixes: 17ce302f3117 ("arm64: Fix interrupt tracing in the presence of NMIs")
+Signed-off-by: He Ying <heying24@huawei.com>
+---
+ drivers/irqchip/irq-gic-v3.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Kind regards,
-Daniel
+diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+index 94b89258d045..d3b52734a2c5 100644
+--- a/drivers/irqchip/irq-gic-v3.c
++++ b/drivers/irqchip/irq-gic-v3.c
+@@ -654,15 +654,15 @@ static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs
+ 		return;
+ 	}
+ 
++	/* Check for special IDs first */
++	if ((irqnr >= 1020 && irqnr <= 1023))
++		return;
++
+ 	if (gic_prio_masking_enabled()) {
+ 		gic_pmr_mask_irqs();
+ 		gic_arch_enable_irqs();
+ 	}
+ 
+-	/* Check for special IDs first */
+-	if ((irqnr >= 1020 && irqnr <= 1023))
+-		return;
+-
+ 	if (static_branch_likely(&supports_deactivate_key))
+ 		gic_write_eoir(irqnr);
+ 	else
+-- 
+2.17.1
 
->
-> Signed-off-by: Han Dapeng <handapeng@oppo.com>
-> ---
->  arch/powerpc/mm/nohash/kaslr_booke.c | 2 +-
->  arch/s390/boot/version.c             | 2 +-
->  arch/x86/boot/compressed/kaslr.c     | 2 +-
->  arch/x86/boot/version.c              | 2 +-
->  init/version.c                       | 4 ++--
->  scripts/mkcompile_h                  | 2 ++
->  6 files changed, 8 insertions(+), 6 deletions(-)
->
-> diff --git a/arch/powerpc/mm/nohash/kaslr_booke.c b/arch/powerpc/mm/nohash/kaslr_booke.c
-> index 4c74e8a5482b..494ef408e60c 100644
-> --- a/arch/powerpc/mm/nohash/kaslr_booke.c
-> +++ b/arch/powerpc/mm/nohash/kaslr_booke.c
-> @@ -37,7 +37,7 @@ struct regions {
->  };
->  
->  /* Simplified build-specific string for starting entropy. */
-> -static const char build_str[] = UTS_RELEASE " (" LINUX_COMPILE_BY "@"
-> +static const char build_str[COMPILE_STR_MAX] = UTS_RELEASE " (" LINUX_COMPILE_BY "@"
->  		LINUX_COMPILE_HOST ") (" LINUX_COMPILER ") " UTS_VERSION;
->  
->  struct regions __initdata regions;
-> diff --git a/arch/s390/boot/version.c b/arch/s390/boot/version.c
-> index d32e58bdda6a..627416a27d74 100644
-> --- a/arch/s390/boot/version.c
-> +++ b/arch/s390/boot/version.c
-> @@ -3,5 +3,5 @@
->  #include <generated/compile.h>
->  #include "boot.h"
->  
-> -const char kernel_version[] = UTS_RELEASE
-> +const char kernel_version[COMPILE_STR_MAX] = UTS_RELEASE
->  	" (" LINUX_COMPILE_BY "@" LINUX_COMPILE_HOST ") " UTS_VERSION;
-> diff --git a/arch/x86/boot/compressed/kaslr.c b/arch/x86/boot/compressed/kaslr.c
-> index b92fffbe761f..7b72b518a4c8 100644
-> --- a/arch/x86/boot/compressed/kaslr.c
-> +++ b/arch/x86/boot/compressed/kaslr.c
-> @@ -43,7 +43,7 @@
->  extern unsigned long get_cmd_line_ptr(void);
->  
->  /* Simplified build-specific string for starting entropy. */
-> -static const char build_str[] = UTS_RELEASE " (" LINUX_COMPILE_BY "@"
-> +static const char build_str[COMPILE_STR_MAX] = UTS_RELEASE " (" LINUX_COMPILE_BY "@"
->  		LINUX_COMPILE_HOST ") (" LINUX_COMPILER ") " UTS_VERSION;
->  
->  static unsigned long rotate_xor(unsigned long hash, const void *area,
-> diff --git a/arch/x86/boot/version.c b/arch/x86/boot/version.c
-> index a1aaaf6c06a6..08feaa2d7a10 100644
-> --- a/arch/x86/boot/version.c
-> +++ b/arch/x86/boot/version.c
-> @@ -14,6 +14,6 @@
->  #include <generated/utsrelease.h>
->  #include <generated/compile.h>
->  
-> -const char kernel_version[] =
-> +const char kernel_version[COMPILE_STR_MAX] =
->  	UTS_RELEASE " (" LINUX_COMPILE_BY "@" LINUX_COMPILE_HOST ") "
->  	UTS_VERSION;
-> diff --git a/init/version.c b/init/version.c
-> index 92afc782b043..adfc9e91b56b 100644
-> --- a/init/version.c
-> +++ b/init/version.c
-> @@ -35,11 +35,11 @@ struct uts_namespace init_uts_ns = {
->  EXPORT_SYMBOL_GPL(init_uts_ns);
->  
->  /* FIXED STRINGS! Don't touch! */
-> -const char linux_banner[] =
-> +const char linux_banner[COMPILE_STR_MAX] =
->  	"Linux version " UTS_RELEASE " (" LINUX_COMPILE_BY "@"
->  	LINUX_COMPILE_HOST ") (" LINUX_COMPILER ") " UTS_VERSION "\n";
->  
-> -const char linux_proc_banner[] =
-> +const char linux_proc_banner[COMPILE_STR_MAX] =
->  	"%s version %s"
->  	" (" LINUX_COMPILE_BY "@" LINUX_COMPILE_HOST ")"
->  	" (" LINUX_COMPILER ") %s\n";
-> diff --git a/scripts/mkcompile_h b/scripts/mkcompile_h
-> index 4ae735039daf..02b9d9d54da9 100755
-> --- a/scripts/mkcompile_h
-> +++ b/scripts/mkcompile_h
-> @@ -65,6 +65,8 @@ UTS_VERSION="$(echo $UTS_VERSION $CONFIG_FLAGS $TIMESTAMP | cut -b -$UTS_LEN)"
->    LD_VERSION=$($LD -v | head -n1 | sed 's/(compatible with [^)]*)//' \
->  		      | sed 's/[[:space:]]*$//')
->    printf '#define LINUX_COMPILER "%s"\n' "$CC_VERSION, $LD_VERSION"
-> +
-> +  echo \#define COMPILE_STR_MAX 512
->  } > .tmpcompile
->  
->  # Only replace the real compile.h if the new one is different,
-> -- 
-> 2.27.0
