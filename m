@@ -2,237 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58843361704
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 03:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58623361705
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 03:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236825AbhDPBC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 21:02:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35614 "EHLO
+        id S237202AbhDPBFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 21:05:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234548AbhDPBCz (ORCPT
+        with ESMTP id S234548AbhDPBFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 21:02:55 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615FEC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 18:02:30 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id i3so4589968edt.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Apr 2021 18:02:30 -0700 (PDT)
+        Thu, 15 Apr 2021 21:05:18 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBB4C061574;
+        Thu, 15 Apr 2021 18:04:52 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id t22so12755606ply.1;
+        Thu, 15 Apr 2021 18:04:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=FLviiZ7u+W7zpUN/iahSHhCxR57RALjCp4R+bIR/q4I=;
-        b=xVMATBheO4kBDQK/42InsYS0tuwCR6LeGG+3fgwyOQjeNF72re1507kyWmxtY+yS/o
-         SEjhzBjKfTNj8mAVrv2KEdKRlk2n+wgLvH0Em9Xeyj4EVoSck7fCoO6H+cRDLR4F1tXi
-         rBi1LnGTyzy4mSi6rqkIwstEOyuHNxo7DT76bnFAxrxvnW79LAhxQClbaAu7sOJJj3oo
-         ljy7vRuEvY+CJcfbPhdz3X8v1Z5idqF6xmdCOuH+rACY0Xy4k7Go3yuhs8PBkBj+zkAb
-         Ihf2ZEKB2sI/dhi+vIGlmJqZew17l0aN2lHIxHVulL9OK4+n6wZsDZYm+7qhvE+xf/LA
-         0aRw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zW+2RjEmQ33ClxtXsyeF3sXRy7GheA02ksCqVa3Oi5o=;
+        b=Vx/hKylt6Xe45ZhvpJZhO7s4wZ6BizS8QMcmoPZgyPUMfejuvrZenHFGHS60Bn8mqL
+         bh7NqX1iD9BooWbcvRGv404xaB3c36HSMWkaarH9r+IqZyzJH+0Ukzu2zfwvu9WXOWha
+         TxZQUIchEDefcvolaxckuC+fyn0QatNkk1nSu2NJFyt8d1+t2AvmpN3Ymcz1cMVn/sLu
+         iT/vZpzUyJYUJ5Q0oAX77irBvR2bpX8SD34G/L2iwmZsm/+U9PS2oIrUoozIThGl5cug
+         zZYWdip2Pc6vD42Jbn5tjHKut/J/q1qrUBW4mC8kZ8DQh+pQ8S/hiS9mIO1h3C3Ntuxh
+         aIeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=FLviiZ7u+W7zpUN/iahSHhCxR57RALjCp4R+bIR/q4I=;
-        b=GqUPOqt7I8X01j0bhyFt5OEhDSnpxl+dqGQvezmS/9pUuFJ1PI/YfOpVMhJC0ZxRt6
-         KlCf5DGpWo12II/3p3TJAiIFi+WgsztSXvzL3xiKXQarkn2gsXrML4eXnvpHzs8z/V+W
-         UpLf5pLmirhNrKn7E5lMewJ8v5x9OqIcKBPSgVdfxhu3m0w6c4GtoXw+mxBdeJacErbI
-         +QYJqG05D3X4WQRhXx9YoazyEFdnz1UZ4kSrVZYWBCL92ukkPp0IlmUrBloZPs9/5MIf
-         /0Bch+2w20Qt9NXabIq5HDHarnuDZ2U7HcmQg/OFHpzr2vD6IIOVsyswRklEgwzFi+AG
-         3y9w==
-X-Gm-Message-State: AOAM531CxkqNXy9Nki33L1MfEEWkJh5jink39gZEKPU89YAQTgf5+S9M
-        0CLjdAN68b4/0bD/n9Pz+RtkSAEa16gGslac3egdlw==
-X-Google-Smtp-Source: ABdhPJxprpID/mPhVpOecG4jP9GfpH7JpuSGlZ2hGFIMybnx0sEmcrWACF4LYjSwXS3j6jmlAvBnG5DK2s7Ml07rh/o=
-X-Received: by 2002:a05:6402:145:: with SMTP id s5mr7280712edu.221.1618534948973;
- Thu, 15 Apr 2021 18:02:28 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zW+2RjEmQ33ClxtXsyeF3sXRy7GheA02ksCqVa3Oi5o=;
+        b=Brxw3daqSFhiu5AK1RUZNogrDQ1BPLE866EJIg51x2CsepIjLlPp4iNzzpXbyL+nQ0
+         3S7DhAnAQmZRLbeSJM0C5QYiJ1PuseCRUs0ERfc0AIEhdggaDYtlQzzCuLdOYmUdF+tY
+         a3IV+Xgejz/pJc0Mh7PsexhLceLvjA09XxsYg4Q8IJSBpjYJwZzkqaeokdSaeG9QQRKl
+         rBfnYT5XX3mv7mcr8Jp5ZVmFTXfxv6T0aSqVRl2AF4/vFeyfwKufSfPpEzd4R6lacqm4
+         dJlkkj4scFXJADtm6LdkpBnAGWWYeJVFO2sN+JilNpJm1rwyPUMMKkYtS5+VqS9pNvJe
+         4x6w==
+X-Gm-Message-State: AOAM532hEfO6wEjrGNACoIMWEXfUpNVDzzvNpnZOBD0B50rKFlaMpiVD
+        6db1dV/Tdx+3Be1VYpyyDLY=
+X-Google-Smtp-Source: ABdhPJz+X7KlZMN9/YSJKDyllmXtRhLjlKGfoKGGlLj+rhTaMtcvGTNXrb0BVe2L4xoHvAe9DXhrAg==
+X-Received: by 2002:a17:902:c3d4:b029:eb:4d0c:7d1f with SMTP id j20-20020a170902c3d4b02900eb4d0c7d1fmr6952420plj.57.1618535092361;
+        Thu, 15 Apr 2021 18:04:52 -0700 (PDT)
+Received: from taoren-ubuntu-R90MNF91 (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
+        by smtp.gmail.com with ESMTPSA id c125sm3023843pfa.74.2021.04.15.18.04.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 15 Apr 2021 18:04:52 -0700 (PDT)
+Date:   Thu, 15 Apr 2021 18:04:45 -0700
+From:   Tao Ren <rentao.bupt@gmail.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org, Tao Ren <taoren@fb.com>,
+        Amithash Prasad <amithash@fb.com>
+Subject: Re: [PATCH] watchdog: aspeed: fix integer overflow in set_timeout
+ handler
+Message-ID: <20210416010444.GA17388@taoren-ubuntu-R90MNF91>
+References: <20210416001208.16788-1-rentao.bupt@gmail.com>
+ <469ac948-d65b-471f-102f-726466c19c5c@roeck-us.net>
 MIME-Version: 1.0
-References: <20210415144413.146131392@linuxfoundation.org>
-In-Reply-To: <20210415144413.146131392@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 16 Apr 2021 06:32:17 +0530
-Message-ID: <CA+G9fYucwKvD8=oyP8k761JbuMb8TXaCQemha5sNBzEV_yL7Ew@mail.gmail.com>
-Subject: Re: [PATCH 5.11 00/23] 5.11.15-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <469ac948-d65b-471f-102f-726466c19c5c@roeck-us.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Apr 2021 at 20:34, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.11.15 release.
-> There are 23 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 17 Apr 2021 14:44:01 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.11.15-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.11.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Thu, Apr 15, 2021 at 05:50:32PM -0700, Guenter Roeck wrote:
+> On 4/15/21 5:12 PM, rentao.bupt@gmail.com wrote:
+> > From: Tao Ren <rentao.bupt@gmail.com>
+> > 
+> > Fix the time comparison (timeout vs. max_hw_heartbeat_ms) in set_timeout
+> > handler to avoid potential integer overflow when the supplied timeout is
+> > greater than aspeed's maximum allowed timeout (4294 seconds).
+> > 
+> > Fixes: efa859f7d786 ("watchdog: Add Aspeed watchdog driver")
+> > Reported-by: Amithash Prasad <amithash@fb.com>
+> > Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
+> > ---
+> >  drivers/watchdog/aspeed_wdt.c | 5 ++---
+> >  1 file changed, 2 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/watchdog/aspeed_wdt.c b/drivers/watchdog/aspeed_wdt.c
+> > index 7e00960651fa..9f77272dc906 100644
+> > --- a/drivers/watchdog/aspeed_wdt.c
+> > +++ b/drivers/watchdog/aspeed_wdt.c
+> > @@ -145,9 +145,8 @@ static int aspeed_wdt_set_timeout(struct watchdog_device *wdd,
+> >  	struct aspeed_wdt *wdt = to_aspeed_wdt(wdd);
+> >  	u32 actual;
+> >  
+> > -	wdd->timeout = timeout;
+> > -
+> > -	actual = min(timeout, wdd->max_hw_heartbeat_ms * 1000);
+> > +	actual = min(timeout, wdd->max_hw_heartbeat_ms / 1000);
+> > +	wdd->timeout = actual;
+> >  
+> >  	writel(actual * WDT_RATE_1MHZ, wdt->base + WDT_RELOAD_VALUE);
+> >  	writel(WDT_RESTART_MAGIC, wdt->base + WDT_RESTART);
+> > 
+> 
+> If the provided timeout is larger than the supported hardware timeout,
+> the watchdog core will ping the hardware on behalf of userspace.
+> The above code would defeat that mechanism for no good reason.
+> 
+> NACK.
+> 
+> Guenter
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Thanks Guenter for Joel for the quick review!
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 5.11.15-rc1
-* git: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stabl=
-e-rc.git',
-'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
-* git branch: linux-5.11.y
-* git commit: 7825299a896f0cf519f259bb9d4ccab262d8c175
-* git describe: v5.11.14-24-g7825299a896f
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11.y/build/v5.11=
-.14-24-g7825299a896f
-
-## No regressions (compared to v5.11.14)
+The integer overflow happens at (actual * WDT_RATE_1MHZ). For example,
+if a user tries to set timeout to 4295 seconds, then the hardware would
+be programmed to timeout after about 32 milliseconds. I would say this
+behavior is not expected?
 
 
-## No fixes (compared to v5.11.14)
+Cheers,
 
-## Test result summary
- total: 74984, pass: 63321, fail: 1427, skip: 9959, xfail: 277,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 192 total, 192 passed, 0 failed
-* arm64: 26 total, 26 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 25 total, 25 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 0 passed, 1 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 26 total, 26 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Tao
