@@ -2,143 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211D0362416
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C87C836241A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343829AbhDPPi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 11:38:27 -0400
-Received: from mail-dm6nam12on2043.outbound.protection.outlook.com ([40.107.243.43]:48192
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S241097AbhDPPi0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 11:38:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NTiU5h6vfp4KcEalntzPQizsNqCF3fQio0JE3dtbKmqR/lBB3xkHMSCsmxvSWwOYeYUGW4J4m6qTIgTLda92EpMGIODGXRHcO/Te2PZghavP4FZx5bKEESQxGFYBnGQl/FhI2+ByvC/rwp/YJCTM3LxX+OQqfInJ0DyzJv2XGmpDoe1o+wucor9/i7Kt80AAdzoKUAtELlaBU6NOqXm6mdZY27jhs1pzjUWPkf/ikjKxZY1slQHlKKqtip3SPN/4xX7195CWtJePWqS7E4MbD9Rf6sBEzvAU7joEIAPnJjOPSTuwO17BTiwDEubdNfqiX8/TmnKTQv7BSmRedwdwpQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7W6INf0n7RwfJpCldr2Du66b8ZID3RT7+RTKjZwojBo=;
- b=FASr2EhJiq3F046awHP6FtfxaCLVfDT9a0jWlbjc8BLx+ieqMaHNFLire5wl3T2p5ZCnJawq5Awkm0eVrWLBYCn9ejh2vM1Z8f6zCgFwIBRifWDa6wK8ZyAXksxCILb/IoambIB7jHRKNBH86AFvRnP8QtByauPi3WjXD2kmAKhwddVXs0p9/LhDcNW3xwSxOwgFG39kf/QbniA0eRF9SCLoRHO9xeQfeOQIHIBYSJD0V7FpF9TGgxvR4GOucOMDWlz6L1zL45n5VuU3WscrJZ2no0maMy/Q3XlVCySG7aG/I6svZ0CPMcxlK2gSdIs3RQ6srZcPM33eeYeIQA3Zuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7W6INf0n7RwfJpCldr2Du66b8ZID3RT7+RTKjZwojBo=;
- b=OOrq+MJi5anx38DB3TK9dF0Q9m7IziVsw7bt6caYas59A7F4Ud/TIiAPEQdHnvjQVNaaVnLuYbqY4MSI7Xz5o26DrlRrWhp7v7mPsdr8wwgPO5wSmMYBglAQDtqRx+ETqAwXwSfz/X+M6/0IUOhVTdZ6sUzT+82fjE/V6MfHyf0=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
- by CY4PR1101MB2342.namprd11.prod.outlook.com (2603:10b6:903:b7::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Fri, 16 Apr
- 2021 15:37:59 +0000
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::f45f:e820:49f5:3725]) by CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::f45f:e820:49f5:3725%6]) with mapi id 15.20.3999.037; Fri, 16 Apr 2021
- 15:37:59 +0000
-Subject: Re: [PATCH 1/5] spi: spi-zynqmp-gqspi: fix clk_enable/disable
- imbalance issue
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Michal Simek <michal.simek@xilinx.com>,
-        Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20210416004652.2975446-1-quanyang.wang@windriver.com>
- <20210416004652.2975446-2-quanyang.wang@windriver.com>
- <20210416125558.GA5560@sirena.org.uk>
- <03f4152a-e66e-6b4a-5b4a-5f79f9ce2302@windriver.com>
- <20210416151235.GC5560@sirena.org.uk>
-From:   Quanyang Wang <quanyang.wang@windriver.com>
-Message-ID: <1c7f42ed-cd2f-4fff-61c9-4460720dfd84@windriver.com>
-Date:   Fri, 16 Apr 2021 23:37:27 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-In-Reply-To: <20210416151235.GC5560@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [111.196.167.14]
-X-ClientProxiedBy: HK2PR02CA0168.apcprd02.prod.outlook.com
- (2603:1096:201:1f::28) To CY4PR11MB0071.namprd11.prod.outlook.com
- (2603:10b6:910:7a::30)
+        id S1343832AbhDPPjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 11:39:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52402 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236141AbhDPPjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 11:39:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F040561222;
+        Fri, 16 Apr 2021 15:39:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618587567;
+        bh=ysgpDz+BTTXYH0RnwQoQvpA6pJla49qmtt338wMhnUQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=sA/oNszQk49bAP/+H3BmykaTAQenh0iw/Gpf7uZ+GwDgztxBf05slIkJ18rtE3vgt
+         6QAX+ltavm9lwirWjcgh+xIT+8pAJF2SmfSKB3ljq+JiNQFSUUiYMRQ+i4yM9C9gxd
+         j3phuIcFMg2fM8hlack0KOlcPk1Fzlx3ZzuSd0FHbGz3rBtMVfgHCwJM9kij8xZkaj
+         w3hZ74yumnv50xxRMCuJfBdxa3mJmGkWGbAK/83+9CyOGbmJDOd5kr6cwNXQwCRk09
+         kLMQIvZlBpeA5eH5Uq5CWKBvRRjVkjpbGo7ub8jYpasd2QZ800U5T+kQM8XziNmiVA
+         KGLAmXuUUfXLw==
+Received: by mail-ej1-f46.google.com with SMTP id w23so26962029ejb.9;
+        Fri, 16 Apr 2021 08:39:26 -0700 (PDT)
+X-Gm-Message-State: AOAM531eCdSgwLYf3jaXNtVYynLhC/Kq37Ha//da4IFdtBVKyk2lUhWD
+        jyOMojJGLZiL4Y/Y7sfZyiC2xjhkd5dpCYPgpA==
+X-Google-Smtp-Source: ABdhPJzFqy5Zhk2BT4rI/0OIAYEXZHtqzMK+r4zLrmuDcRgl1XfMcGCbqbDrhsyfDhzhIy4/n6neYfSAgSfwWszGhb8=
+X-Received: by 2002:a17:906:7806:: with SMTP id u6mr8390324ejm.130.1618587565661;
+ Fri, 16 Apr 2021 08:39:25 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.109] (111.196.167.14) by HK2PR02CA0168.apcprd02.prod.outlook.com (2603:1096:201:1f::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Fri, 16 Apr 2021 15:37:56 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6e97dbd3-d7a7-4ddc-0337-08d900ed9d1a
-X-MS-TrafficTypeDiagnostic: CY4PR1101MB2342:
-X-Microsoft-Antispam-PRVS: <CY4PR1101MB23425C9C185AA9CBF9293890F04C9@CY4PR1101MB2342.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SAR8j8dWxeMejudEOVZQOCgEA1eMXBY/2TcQh56/kgu4aDGEU8KjJ3Qk6Nc51sRn6vBBUXCTs5UbI7+A5al4vqMeQn98uo3+CC2zjxzGVBFxc9pe8N31DKp2g6GnZ/NeSIviNG8GAu4VlPr0q3FlxiEU4tRfaj6ID+M9OKg6ExbH573KTZzBlQHLYf5ujz2Br/sTL+63Fh5pMAx10DSqKhOBeOge5MOKWQQK8d3CASp3QkSLX5/Hf284V7+aZ+iQMX2/ONj6SbmlCpKEAavDQQupd6rfNx4BFvGkmICJ+uBYTNCBtiwS4YGXHJfW0Je4l93s+KmeqSYhp3lu5Od9JECelMZhBR2pI4vU9M8D3cfzjr/4tGW1S67eGbIPC8+bxI2/TdabezOY/K7RBs4H14C44qA1sy6HbKCe+PLzMyIQS6PVV3OVYZelxxj50hUs8zPqYA0skomy7wX3Ga+yN6uatvT8dpMFoyMYldP/+BuhN4tOu6Q4bGSC8s37j+mzRxktC9DAsHCmXw4URPtNnB+LP4BgAWs4rkA5FbfHzsIdUZVrUXo3pOZnZFn6WKznAvvvxOCSAm8nsYqRmDIW8mGudCKeqacF1FeTrghFkyBXPXuVfIm9LC1pS6Zi2tsSH0y1q5YzIGEZKemCGCblqphpKrkdx67l38vqPUkUqons3cq74y2gl6M0RtMlybBIajMWDplnBOEDCpecNGIF+Pcau6iP6L3U9677UDTtOlQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(39850400004)(396003)(376002)(26005)(16576012)(4326008)(6916009)(5660300002)(956004)(478600001)(16526019)(83380400001)(2616005)(316002)(186003)(6666004)(31686004)(36756003)(31696002)(54906003)(66946007)(66556008)(66476007)(2906002)(8676002)(86362001)(52116002)(8936002)(6486002)(38350700002)(38100700002)(4744005)(44832011)(53546011)(13296009)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?JBWjlM3W0oK4Ie+bxzmDXSCxnduQaXmQRleJpHbGl2PZVbmkK3nAy1vU?=
- =?Windows-1252?Q?fCkA/3raGBTRgf69qZgIPkMkAvYoIdzgZsjP80XIM/vnmn6qC6Np0Jv/?=
- =?Windows-1252?Q?+1+IDl6UBhiEWGhvwEHpWt3SZC0YNMdmjtpxtiS+EVYo2DEnAh4yvg8f?=
- =?Windows-1252?Q?R200iwyoHvjy1VjnHjAWrXz1xwZsA1AFBrp49EaXNWukdT2uVht4OHcz?=
- =?Windows-1252?Q?Q9Zg9g9LklRiUdIyNJujucBqal/8imAllU3qzs8HUJ1r9E+kpbCLNdZ1?=
- =?Windows-1252?Q?oCU36pWEXraUOsUyyVmQxrWnZLMPWZ3MXRv3RRVzfDITDtBtApWSxX3N?=
- =?Windows-1252?Q?W5mCorvnjZiT02KtNva5+YqpoTMdmX/utoMn8CtmEPTKmf21sbuT888U?=
- =?Windows-1252?Q?Dd6JZRt0EC+ssCe8Yis9RXV/lMDWXPaybTWL+bgTfzvfgfsdmfvobARU?=
- =?Windows-1252?Q?9XgDKTjM7G19tOjoPwpCNt6b6INzDBBzgzNXAore2E85ATi1ixUi826D?=
- =?Windows-1252?Q?KFWDrz3cjxUVgZr4u/36F74P9aJk9igOehWiYVNvw+A+e43BfEceAQhG?=
- =?Windows-1252?Q?Jr2XfcgkLbqN5H7wvFdOo9dgX+wzIJG4jJHlN7WkhM6wp3PLG66p+ddE?=
- =?Windows-1252?Q?DZEA6U1rnhDOlnWJAl8FoIgJpNyxdJPGPfs2qhrRxCIc9tpMxyDmtDHi?=
- =?Windows-1252?Q?xSFAOo64FCvvNXWW6dbekfzPEor3zuYm05uWcxnqGGqLvoaCwWxzhqhF?=
- =?Windows-1252?Q?9a8vE3lPryO5EvNemZkyMhE551Y7xSeeA05JTTkEz8KZQPGJAWqdh6cC?=
- =?Windows-1252?Q?DnlpFwCoMxj243qya47XhAfy4JQ9tcq518QmEGEv7lWsuLU2xdvozHW4?=
- =?Windows-1252?Q?ypcnlioXHQN94z5KrkxCOzMfPQuFDL4UF9KbSunHpZJfdpVnfe5U6xI+?=
- =?Windows-1252?Q?j37m5M272j20aT2Ubx2zTrxPARoL2LOAXZwUzHow4oZmhfLmYbLdjujL?=
- =?Windows-1252?Q?MAE3oXh+Renv1GHSSAMiQzti6wid7irPROOET6Xw5jfKf6pT5vbC22In?=
- =?Windows-1252?Q?eNsAc043OhR5b2AieCZsEx73nmmEMBGoZTtBYuX9XsQTLvbrSxy+ihbo?=
- =?Windows-1252?Q?AKQgFVGrkGZSOAEAqkFBwR0tDWvvbHWXOVMij31N0s6WvuDvtV2myY35?=
- =?Windows-1252?Q?wpuscqLFuzOsrLBFq9xoDURjljCsIRzgGSkPBQR4Gxo7DE0C899eKIDj?=
- =?Windows-1252?Q?Xfy1itlSjPMKJ5NieAfm+yGMSq1wSPEA2HAEMaKD+ykrZntpE6tIEg1o?=
- =?Windows-1252?Q?GA85nDBfOfcO4d99cawRKgDIOOAktfcBG6ptX4C/Ulv32Kq9eT3jsZbo?=
- =?Windows-1252?Q?/xDqVLxxdj588nXAfDo5nIrhlWlwLPIViMIzAIhiTXKxUjz04fqAqtBN?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6e97dbd3-d7a7-4ddc-0337-08d900ed9d1a
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2021 15:37:59.3582
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: joWOdtoy7GK1JubmuvHX1Z4I84QYlBRy6xBlh03+EHzRwSAc9P3E0gd97WHy4GuAg4dQBc3ghg2JC6ZHVar6sVI9+4Nu6RAjGftgNccqHts=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1101MB2342
+References: <20210412132745.76609-1-clemens.gruber@pqgruber.com>
+ <20210412132745.76609-4-clemens.gruber@pqgruber.com> <YHmXPyf+XjgJs3C8@orome.fritz.box>
+In-Reply-To: <YHmXPyf+XjgJs3C8@orome.fritz.box>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 16 Apr 2021 10:39:12 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJ3MU+iCr+R784r7UkPEsmDUgsgL-Qvi7edKnpe3T8M5g@mail.gmail.com>
+Message-ID: <CAL_JsqJ3MU+iCr+R784r7UkPEsmDUgsgL-Qvi7edKnpe3T8M5g@mail.gmail.com>
+Subject: Re: [PATCH v8 4/8] dt-bindings: pwm: Support new PWM_USAGE_POWER flag
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Clemens Gruber <clemens.gruber@pqgruber.com>,
+        Linux PWM List <linux-pwm@vger.kernel.org>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
-
-On 4/16/21 11:12 PM, Mark Brown wrote:
-> On Fri, Apr 16, 2021 at 10:04:30PM +0800, quanyang.wang wrote:
+On Fri, Apr 16, 2021 at 8:54 AM Thierry Reding <thierry.reding@gmail.com> wrote:
 >
->> I am sorry. These patches should NOT be with "Fixes" tag since they base on
->> the patches
->> which are not with "Fixes". May I send a V2 patch series which remove these
->> "Fixes" tags?
-> Well, if they're fixing bugs that were present in the named commit then
-> the the tag makes sense, it's just a question of if they are actually
-> for that commit or if they are fixing things for other commits like the
-> runtime PM enablement.
+> On Mon, Apr 12, 2021 at 03:27:41PM +0200, Clemens Gruber wrote:
+> > Add the flag and corresponding documentation for PWM_USAGE_POWER.
+> >
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> > ---
+> >  Documentation/devicetree/bindings/pwm/pwm.txt | 3 +++
+> >  include/dt-bindings/pwm/pwm.h                 | 1 +
+> >  2 files changed, 4 insertions(+)
+>
+> Rob, what are your thoughts on this? I've been thinking about this some
+> more and I'm having second thoughts about putting this into device tree
+> because it doesn't actually describe a property of the PWM hardware but
+> rather a use-case specific hint. It's a bit of a gray area because this
+> is just part of the PWM specifier which already has use-case specific
+> "configuration", such as the period and the polarity.
 
-Yes,  they are fixing bugs which are introduced by the named commit.
+I'm pretty neutral. My main hesitation from what I've followed is
+'power' seems a bit indirect. A PWM signal doesn't have a 'power' any
+more than a GPIO signal does.
 
-But if only picking they to stable without the patch "spi: 
-spi-zynqmp-gqspi: Fix runtime PM imbalance in zynqmp_qspi_probe",
+> Perhaps a better place for this is within the PWM API? We could add the
+> same information into struct pwm_state and then consumers that don't
+> care about specifics of the signal (such as pwm-backlight) can set that
+> flag when they request a state to be applied.
 
-this spi driver will not work. I don't know how to handle this 
-condition, so I send a V2 patch series to delete the tags.
+Yeah, seems like this is fairly well tied to the class of consumer.
 
-Thanks,
-
-Quanyang
-
+Rob
