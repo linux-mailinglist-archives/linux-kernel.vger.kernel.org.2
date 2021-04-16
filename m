@@ -2,144 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 147723626DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379E43626CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 19:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242739AbhDPRct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 13:32:49 -0400
-Received: from mx315.baidu.com ([180.101.52.204]:39257 "EHLO
-        njjs-sys-mailin01.njjs.baidu.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236140AbhDPRcr (ORCPT
+        id S242499AbhDPRbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 13:31:24 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2877 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242430AbhDPRbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 13:32:47 -0400
-X-Greylist: delayed 589 seconds by postgrey-1.27 at vger.kernel.org; Fri, 16 Apr 2021 13:32:47 EDT
-Received: from unknown.domain.tld (bjhw-sys-rpm015653cc5.bjhw.baidu.com [10.227.53.39])
-        by njjs-sys-mailin01.njjs.baidu.com (Postfix) with ESMTP id 7FF6A7F00049;
-        Sat, 17 Apr 2021 01:22:31 +0800 (CST)
-From:   chukaiping <chukaiping@baidu.com>
-To:     mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
-        akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH v2] mm/compaction:let proactive compaction order configurable
-Date:   Sat, 17 Apr 2021 01:22:31 +0800
-Message-Id: <1618593751-32148-1-git-send-email-chukaiping@baidu.com>
-X-Mailer: git-send-email 1.7.1
+        Fri, 16 Apr 2021 13:31:23 -0400
+Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FMNN81KF4z688M0;
+        Sat, 17 Apr 2021 01:23:36 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 16 Apr 2021 19:30:56 +0200
+Received: from localhost (10.52.127.203) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 16 Apr
+ 2021 18:30:55 +0100
+Date:   Fri, 16 Apr 2021 18:29:27 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Lee Jones <lee.jones@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-iio@vger.kernel.org>, <linux-staging@lists.linux.dev>
+Subject: Re: [PATCH 21/57] staging: iio: frequency: ad9834: Provide missing
+ description for 'devid'
+Message-ID: <20210416182927.00000f60@Huawei.com>
+In-Reply-To: <20210414181129.1628598-22-lee.jones@linaro.org>
+References: <20210414181129.1628598-1-lee.jones@linaro.org>
+        <20210414181129.1628598-22-lee.jones@linaro.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.127.203]
+X-ClientProxiedBy: lhreml717-chm.china.huawei.com (10.201.108.68) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the proactive compaction order is fixed to
-COMPACTION_HPAGE_ORDER(9), it's OK in most machines with lots of
-normal 4KB memory, but it's too high for the machines with small
-normal memory, for example the machines with most memory configured
-as 1GB hugetlbfs huge pages. In these machines the max order of
-free pages is often below 9, and it's always below 9 even with hard
-compaction. This will lead to proactive compaction be triggered very
-frequently. In these machines we only care about order of 3 or 4.
-This patch export the oder to proc and let it configurable
-by user, and the default value is still COMPACTION_HPAGE_ORDER.
+On Wed, 14 Apr 2021 19:10:53 +0100
+Lee Jones <lee.jones@linaro.org> wrote:
 
-Signed-off-by: chukaiping <chukaiping@baidu.com>
-Reported-by: kernel test robot <lkp@intel.com>
----
+> Also demote kernel-doc abuses
+> 
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/staging/iio/frequency/ad9834.c:87: warning: Function parameter or member 'devid' not described in 'ad9834_state'
+>  drivers/staging/iio/frequency/ad9834.c:93: warning: cannot understand function prototype: 'enum ad9834_supported_device_ids '
+>  drivers/staging/iio/frequency/ad9834.c:320: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+> 
+> Cc: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: Michael Hennerich <Michael.Hennerich@analog.com>
+> Cc: Jonathan Cameron <jic23@kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: linux-iio@vger.kernel.org
+> Cc: linux-staging@lists.linux.dev
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Changes in v2:
-    - fix the compile error in ia64 and powerpc
-    - change the hard coded max order number from 10 to MAX_ORDER - 1
+I was leaving the staging stuff in IIO related to W=1 as good material
+for newbies, but I guess if you are blanket cleaning it up then fair
+enough.
 
- include/linux/compaction.h |    1 +
- kernel/sysctl.c            |   11 +++++++++++
- mm/compaction.c            |   14 +++++++++++---
- 3 files changed, 23 insertions(+), 3 deletions(-)
+Sounds like Greg will take the whole series so,
 
-diff --git a/include/linux/compaction.h b/include/linux/compaction.h
-index ed4070e..151ccd1 100644
---- a/include/linux/compaction.h
-+++ b/include/linux/compaction.h
-@@ -83,6 +83,7 @@ static inline unsigned long compact_gap(unsigned int order)
- #ifdef CONFIG_COMPACTION
- extern int sysctl_compact_memory;
- extern unsigned int sysctl_compaction_proactiveness;
-+extern unsigned int sysctl_compaction_order;
- extern int sysctl_compaction_handler(struct ctl_table *table, int write,
- 			void *buffer, size_t *length, loff_t *ppos);
- extern int sysctl_extfrag_threshold;
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 62fbd09..a607d4d 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -195,6 +195,8 @@ enum sysctl_writes_mode {
- #endif /* CONFIG_SMP */
- #endif /* CONFIG_SCHED_DEBUG */
- 
-+static int max_buddy_zone = MAX_ORDER - 1;
-+
- #ifdef CONFIG_COMPACTION
- static int min_extfrag_threshold;
- static int max_extfrag_threshold = 1000;
-@@ -2871,6 +2873,15 @@ int proc_do_static_key(struct ctl_table *table, int write,
- 		.extra2		= &one_hundred,
- 	},
- 	{
-+		.procname       = "compaction_order",
-+		.data           = &sysctl_compaction_order,
-+		.maxlen         = sizeof(sysctl_compaction_order),
-+		.mode           = 0644,
-+		.proc_handler   = proc_dointvec_minmax,
-+		.extra1         = SYSCTL_ZERO,
-+		.extra2         = &max_buddy_zone,
-+	},
-+	{
- 		.procname	= "extfrag_threshold",
- 		.data		= &sysctl_extfrag_threshold,
- 		.maxlen		= sizeof(int),
-diff --git a/mm/compaction.c b/mm/compaction.c
-index e04f447..bfd1d5e 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -1925,16 +1925,16 @@ static bool kswapd_is_running(pg_data_t *pgdat)
- 
- /*
-  * A zone's fragmentation score is the external fragmentation wrt to the
-- * COMPACTION_HPAGE_ORDER. It returns a value in the range [0, 100].
-+ * sysctl_compaction_order. It returns a value in the range [0, 100].
-  */
- static unsigned int fragmentation_score_zone(struct zone *zone)
- {
--	return extfrag_for_order(zone, COMPACTION_HPAGE_ORDER);
-+	return extfrag_for_order(zone, sysctl_compaction_order);
- }
- 
- /*
-  * A weighted zone's fragmentation score is the external fragmentation
-- * wrt to the COMPACTION_HPAGE_ORDER scaled by the zone's size. It
-+ * wrt to the sysctl_compaction_order scaled by the zone's size. It
-  * returns a value in the range [0, 100].
-  *
-  * The scaling factor ensures that proactive compaction focuses on larger
-@@ -2666,6 +2666,7 @@ static void compact_nodes(void)
-  * background. It takes values in the range [0, 100].
-  */
- unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
-+unsigned int __read_mostly sysctl_compaction_order;
- 
- /*
-  * This is the entry point for compacting all nodes via
-@@ -2958,6 +2959,13 @@ static int __init kcompactd_init(void)
- 	int nid;
- 	int ret;
- 
-+	/*
-+	 * move the initialization of sysctl_compaction_order to here to
-+	 * eliminate compile error in ia64 and powerpc architecture because
-+	 * COMPACTION_HPAGE_ORDER is a variable in this architecture
-+	 */
-+	sysctl_compaction_order = COMPACTION_HPAGE_ORDER;
-+
- 	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN,
- 					"mm/compaction:online",
- 					kcompactd_cpu_online, NULL);
--- 
-1.7.1
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+> ---
+>  drivers/staging/iio/frequency/ad9834.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/iio/frequency/ad9834.c b/drivers/staging/iio/frequency/ad9834.c
+> index 60a3ae5587b90..94b131ef8a22c 100644
+> --- a/drivers/staging/iio/frequency/ad9834.c
+> +++ b/drivers/staging/iio/frequency/ad9834.c
+> @@ -58,6 +58,7 @@
+>   * @spi:		spi_device
+>   * @mclk:		external master clock
+>   * @control:		cached control word
+> + * @devid:		device id
+>   * @xfer:		default spi transfer
+>   * @msg:		default spi message
+>   * @freq_xfer:		tuning word spi transfer
+> @@ -86,7 +87,7 @@ struct ad9834_state {
+>  	__be16				freq_data[2];
+>  };
+>  
+> -/**
+> +/*
+>   * ad9834_supported_device_ids:
+>   */
+>  
+> @@ -316,7 +317,7 @@ ssize_t ad9834_show_out1_wavetype_available(struct device *dev,
+>  static IIO_DEVICE_ATTR(out_altvoltage0_out1_wavetype_available, 0444,
+>  		       ad9834_show_out1_wavetype_available, NULL, 0);
+>  
+> -/**
+> +/*
+>   * see dds.h for further information
+>   */
+>  
 
