@@ -2,188 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA22362915
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 22:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C8AF362918
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 22:13:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244805AbhDPUMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 16:12:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234654AbhDPUMF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 16:12:05 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9742C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 13:11:38 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id 65so31457283ybc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 13:11:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WzdJn/Q16Eep/81wUMqsJd8vfyBz4vwOCErhGAmHKTg=;
-        b=TBHeMpajO2+25yRUvsuIBQwizDSHJLNzB+yKR0aFiVj/HWSZOJ/+wPi7iTGyATOAfZ
-         /6A/8XA0kyerHMgcB5p7Fn0ccNF634eZ6e1FduIJDgxyhBtZc6hZKag10A8QGrnWqMag
-         5p3D+QejKADFVk8YI2wgi9Np8e4+Sty6QsA1M2aahquWlALZNfqWVhE1Ec82EFS0+XWP
-         fRZBNAN3pDl2oI91SEkHOyI7i1zriSaXjc3yd0Te+HeUAYUXNwTT1vmbO2cLOQz/Dfid
-         bOGykk/8AMT1Cspsgwy9w+SJz27Cd3YPGH3MPysV0MKDZXqctRvN0LpIzyMPfN10l4jC
-         TC2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WzdJn/Q16Eep/81wUMqsJd8vfyBz4vwOCErhGAmHKTg=;
-        b=EMC/+k9cv3WU2/d0XkPgFPAASBJczVJHcxvLz9bv0L7M8WtxOF/PYA93Za9JbDUSgy
-         9/2K1YsE3DmK5xbKpaU7ym45tHUR0GgpsIT1JSApOi3PfsOEFNVXDUXXDt74SAQ5NjjF
-         /pcD3D+p3BVNL2M3V28W1oaVgLIW9e1z+XhJFkqe4SQpCs66D1m5wZ/sS4OYfy0l5Y+N
-         eRnsejXaMqMQNz/pOVLlfQ/MNiJ8fNgUvTessqcfy4qA+r5+1X16bWNdHLWfrW06OTfm
-         9ureeltLJE/eihy8SFYCjm2hzIDoGZP0oQ3gW6q6Z797JbrViWNQcsSK9CdH+QG02yJl
-         N5sQ==
-X-Gm-Message-State: AOAM532xs0cHhSRSl5sa/rozLoDtxNq8K2prL4NUCLjBIekoY/e02D1H
-        mSu6lWvncLdr6ldDJU0SSdr1L2+qH/5PNyZMZpxDUQ==
-X-Google-Smtp-Source: ABdhPJxgXE27EItc28o951Czcqko0Ot5y3qRWIIpIfgDfqzR12Sa2QBgMnElKrCWhgUa6lWVDvHsBfPm7U2GvWMHC0c=
-X-Received: by 2002:a25:6a88:: with SMTP id f130mr1227903ybc.234.1618603897688;
- Fri, 16 Apr 2021 13:11:37 -0700 (PDT)
+        id S244834AbhDPUNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 16:13:42 -0400
+Received: from mail-bn8nam11on2094.outbound.protection.outlook.com ([40.107.236.94]:25025
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234654AbhDPUNk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 16:13:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PkKw/wIP1rbZx9FO1iCmZipwHxot7yyZOZS4LpW9iywvNX0qBgirnK2edPmSWY03EhKa/Jb3mk8WuIC078SWZAab6QczmZQcraCOQao7nxEZKy9B52bFghx82ZM4LfjqqddqsgNzf8rBuSfzV2UqZwwk6/+DpmKStcwmcEW5LcKDmw/3gEEFu7WYjxaOtaWZYLpnOG58YdO53Ds0RaflZHlt/ydBICSbYNAP9vXTlpIf2nwo4qVpm6PvrGXKUSMprFl7eLlbuJ3M5kxZxuNf4f9DgDWxQOWxACOBPtaKUNBBJ0W0cscUd3WR4WSjMpouhZbGKZolhGPpPr5efrQLVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PshSBGlCOQuckGUOCNxXcXNZG712YmSdeQ8qUX/FVTw=;
+ b=N6TuJCmVbD5MmROuwznYo7GGlvJY51C3UpnnoQVjtkRjl2BHUb0z7d8MGdKw7PtT8wj2p/xxG84E/oEyK+krx6yTIwZy/Get7qwVKmKi4o/R51WglO+MTtM0miS9YDsYLWTL+nOuC2HyVfWQf4i3B8ykAd5IEvckCx14dBCfcho7OcZTc0/E88/eKbtM6Q3LxJ3ykj9GUMmPVQlHOJHnFhBKGtYbmNbB11KuqmJj47hV2kmTQqPMV7Q70K3XB14PoE+p3y1Ia4SEQ7c7GGtdYeULNb2H7a5G9rHJib8sqU9vw8cfs4YC2TC1b3RnNS9V7D8cKctvPOonOhqGYHaBzw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PshSBGlCOQuckGUOCNxXcXNZG712YmSdeQ8qUX/FVTw=;
+ b=KM4G/Cs7c8074rpFJV6+MYxGAn2Y2zlW3t2IdOedmcJ0nYLr91MZq++fDTfIi2lBwL8XS6HE599gsyOgKHZ06TuIRqio86Ylsbed0eF/h7x19P7DwPbVmzxctho/aiqteryXMmGlj1TaCfEgCAFfHofYCAVX4neUdscLlpxTBe0=
+Authentication-Results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none
+ header.from=microsoft.com;
+Received: from BL0PR2101MB1092.namprd21.prod.outlook.com
+ (2603:10b6:207:37::26) by BL0PR2101MB1076.namprd21.prod.outlook.com
+ (2603:10b6:207:37::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.4; Fri, 16 Apr
+ 2021 20:13:14 +0000
+Received: from BL0PR2101MB1092.namprd21.prod.outlook.com
+ ([fe80::6509:a15d:8847:e962]) by BL0PR2101MB1092.namprd21.prod.outlook.com
+ ([fe80::6509:a15d:8847:e962%3]) with mapi id 15.20.4065.009; Fri, 16 Apr 2021
+ 20:13:13 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     davem@davemloft.net, kuba@kernel.org, kys@microsoft.com,
+        haiyangz@microsoft.com, stephen@networkplumber.org,
+        sthemmin@microsoft.com, wei.liu@kernel.org, liuwe@microsoft.com,
+        netdev@vger.kernel.org, leon@kernel.org, andrew@lunn.ch,
+        bernd@petrovitsch.priv.at, rdunlap@infradead.org,
+        shacharr@microsoft.com
+Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        Dexuan Cui <decui@microsoft.com>
+Subject: [PATCH v8 net-next 0/2] net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)
+Date:   Fri, 16 Apr 2021 13:11:57 -0700
+Message-Id: <20210416201159.25807-1-decui@microsoft.com>
+X-Mailer: git-send-email 2.17.1
+Reply-To: decui@microsoft.com
+Content-Type: text/plain
+X-Originating-IP: [2001:4898:80e8:f:1c9c:ebc0:6a19:ff8e]
+X-ClientProxiedBy: MW4PR03CA0024.namprd03.prod.outlook.com
+ (2603:10b6:303:8f::29) To BL0PR2101MB1092.namprd21.prod.outlook.com
+ (2603:10b6:207:37::26)
 MIME-Version: 1.0
-References: <20210416192413.1514419-1-eric.dumazet@gmail.com> <YHnpBm36PcIINhWi@zeniv-ca.linux.org.uk>
-In-Reply-To: <YHnpBm36PcIINhWi@zeniv-ca.linux.org.uk>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 16 Apr 2021 22:11:26 +0200
-Message-ID: <CANn89i+mWh3=36R8Y8Fra0wQY4p82EPDNgZ=O5P7+d8meGxsiA@mail.gmail.com>
-Subject: Re: [PATCH] x86/uaccess: small optimization in unsafe_copy_to_user()
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from decui-u1804.corp.microsoft.com (2001:4898:80e8:f:1c9c:ebc0:6a19:ff8e) by MW4PR03CA0024.namprd03.prod.outlook.com (2603:10b6:303:8f::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Fri, 16 Apr 2021 20:13:11 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9ac59224-6131-4f2a-b79e-08d901141027
+X-MS-TrafficTypeDiagnostic: BL0PR2101MB1076:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR2101MB1076388600A42B7D08420037BF4C9@BL0PR2101MB1076.namprd21.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dSoNBw1xswk80+xodmW4zFV512ITwLiqvNaMyqmCGOAkqAi+uKUXiMNIYCXZQ4mfh58c1BqBzso6OBZPWxaq2IZyC47xCeeHSfmBGSKs9kpdrvocKHV6TB+193xnAwVVADvidpFPbMjxT8aGHbV4+ZgWquQMb91WAC32bNidznXKEYpNqgs7bK3NJ2whgC2kXyUTRPFaeKn0FHVuRw23+DmTiPIfVNc/zoVNSlhW3UHFMdgONtJm6fRrXsqZ1FAJg1N6wl6gS0VLrsmMcplkF/5jDcazFk2SonsL+Q52YdlonFPG0lV8XOXkv896F4fkZ6mpyCX57gXVIjO7ocQWPzpfCTd4oZKZmvkQyvPoXu/NOzjLGrtlpwPl3DA0YTiAk69jXU/ReyK+4QLBqWF0dnHXXiTjbtSKuVSpPfmstBHrKfn++LYud8uxNoVgdqE7FfiHDE97678g4oOtwb4tD8kf8/LBBg4b8N2bvVvbyw3WOdCRIkIitNdkQwcMkW8LYZQf9KnCB0JgOMhXBusGOjR+VknjGugQRvVowyW5dNPfsnVKos+GNH1IlayeajF+pIT74w8z4kXEhp7JGD+90lGxDQBuDAyWfUhZSNUC2PnKHh1E+okTWmmy6I1wF+dFD/WKfux9pCHMVjQ8BC+msg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR2101MB1092.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(366004)(136003)(396003)(376002)(47530400004)(6486002)(82960400001)(107886003)(66476007)(186003)(5660300002)(8676002)(82950400001)(36756003)(478600001)(16526019)(7416002)(316002)(66946007)(38100700002)(8936002)(6666004)(6636002)(66556008)(86362001)(52116002)(1076003)(10290500003)(2906002)(7696005)(4326008)(83380400001)(2616005)(3450700001)(921005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?zoTwVWZO5svL60Rx3G1ODQAPSkYbXZTRektQGKES4ypfN3vd/I+CCtU17d9d?=
+ =?us-ascii?Q?JXi88XrfCnt5j+Aaexcsl/DMQFIlliJfaAO6/H/dP+HLkFQwI8Thz1BVeEWT?=
+ =?us-ascii?Q?FnZ/c0VEgY07yqmL52ULgU1Vv+xOY4dna0A8FeNbYrud6hJ6zms2L9xz6r+Y?=
+ =?us-ascii?Q?tjQ3lkIh06aYqhbK9St3rZnbzB2n90/S+xgcD3LDLLwiRykjCay39eTVo2Mk?=
+ =?us-ascii?Q?Afrjpw4bq5YgWKr/FrDYX8Q/MMMSD03weSJq6MH2uTKFJXzEWdnmG8l3Bnk8?=
+ =?us-ascii?Q?w5qd3rfTCcfH+GlJtDqRCu+sLKUEFo01ZUPvrC4ikinosF2fOlK3Uhpihqav?=
+ =?us-ascii?Q?NrTWPMNw3H/7xhyNsqd9v7JCdkvO7F7/Y5IikBCuqOSr9dPKi6FX9mLuQYRN?=
+ =?us-ascii?Q?ekwzROZr/Z0YrbmW8bN+sZuZc9bE5hi0N2hdvRyNGialVtSnXS+TpJRT8AiD?=
+ =?us-ascii?Q?49me7F87Jn5Eph6d1nqhTgpmQmZqURCpfjkfDCNwkMZpaYgTB6qwcW3A+2L9?=
+ =?us-ascii?Q?KxqrMLYE2ZGs8H8hJwg5tuIKpDDxxP0F0kMlk8jaHzlg+N2IjcWBsJECr3bP?=
+ =?us-ascii?Q?U24IYZutPENjMOj8txg5mvdF+kfHVabnc+6oQDqDs1VX3BLeQwCag5p+7lRS?=
+ =?us-ascii?Q?lcukxfUiDZE0cJ5CJvmB6OQvoaFDjUMNLpxASvuuvqLA1gPMFQV016nKE9jf?=
+ =?us-ascii?Q?afEGHFH+W3ROcdwIIPJv4wwlnsyg0hs+WcOaRzgDSF7MPvka78fMum1ZD54v?=
+ =?us-ascii?Q?DWoxN+vSNF15YySEC/whlNUfq8yMAh8Io03qz4ST1k+Rp90mwXYAZQpAlOQg?=
+ =?us-ascii?Q?mxdVJoUtFDAejaz41aYkkbMvXUppbqC54Ka2LeSi0O2uELndry4LjFs6c5lL?=
+ =?us-ascii?Q?xu1n+z+YN8hQT+MyJef7JurJrBfJ3HsUSEoLKxKMbk4Ng8gImL11j0zcXxye?=
+ =?us-ascii?Q?kJZIykfoLGkyQvAeWBwRNlUnarMKciTFL52/jLOo5uZsxOfdfi8curOwFDSd?=
+ =?us-ascii?Q?YLylUDGqv85VVmkWxqqMcVu9PJ8FTe4FvOzh5GRy1PW9ZOfiCRZdINpuC6SY?=
+ =?us-ascii?Q?HIdD3bNzvUW4EfRViSTrk9vzfBQsfx6wAvDh/9ZmzS1POxXz8ObBWTvAUxlH?=
+ =?us-ascii?Q?cc12652auCm7+gtbuILO9WW4ceo5l1cwP31DqmMW8SGqFWR3Mn7rHDp/JZ7t?=
+ =?us-ascii?Q?H73z4V7JzTG7TzC8bVfuwhgJp8EqWBi58ZT0je69E2W6P3/jsVcmUQRMnr/H?=
+ =?us-ascii?Q?rxIZrylafaP5incEYy/cSEGLhXwzucOVLPnl7BOdvqQLaY39cz9++FJFYnek?=
+ =?us-ascii?Q?VgOYQhKxq0nCbX3wABaPHbKgGk0fXSu2TYX2zyLSRkt+39b4Xr4hcDEfLYxz?=
+ =?us-ascii?Q?JYMnMevTyvRDsdMgRo6DBy9Ixll8?=
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9ac59224-6131-4f2a-b79e-08d901141027
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR2101MB1092.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2021 20:13:13.6505
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8DPjiWXUU+Yqop0owr6Eo8wWOYQG6uo5S0YB+dTgRU0sON2+FPNTSfKtbIktWzbh77NGiaSI1q02JzMxqzHVvw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR2101MB1076
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 9:44 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> On Fri, Apr 16, 2021 at 12:24:13PM -0700, Eric Dumazet wrote:
-> > From: Eric Dumazet <edumazet@google.com>
-> >
-> > We have to loop only to copy u64 values.
-> > After this first loop, we copy at most one u32, one u16 and one byte.
->
-> Does it actually yield a better code?
->
+The patchset adds the VF driver for Microsoft Azure Network Adapter (MANA),
+and also changes the hv_netvsc driver's netvsc/VF binding logic to check
+both the MAC address and the serial number (this is required by the MANA VF
+driver).
 
-Yes, my patch gives a better code, on actual kernel use-case
+v7 contains both the netvsc change and the VF driver. This version (v8)
+posts them in 2 separate patches, as suggested by Stephen Hemminger.
 
-(net-next tree, look at put_cmsg())
+Please refer to "[PATCH v8 net-next 2/2]" for the history of v1~v7.
 
-5ca: 48 89 0f              mov    %rcx,(%rdi)
- 5cd: 89 77 08              mov    %esi,0x8(%rdi)
- 5d0: 89 57 0c              mov    %edx,0xc(%rdi)
- 5d3: 48 83 c7 10          add    $0x10,%rdi
- 5d7: 48 83 c1 f0          add    $0xfffffffffffffff0,%rcx
- 5db: 48 83 f9 07          cmp    $0x7,%rcx
- 5df: 76 40                jbe    621 <put_cmsg+0x111>
- 5e1: 66 66 66 66 66 66 2e data16 data16 data16 data16 data16 nopw
-%cs:0x0(%rax,%rax,1)
- 5e8: 0f 1f 84 00 00 00 00
- 5ef: 00
- 5f0: 49 8b 10              mov    (%r8),%rdx
- 5f3: 48 89 17              mov    %rdx,(%rdi)
- 5f6: 48 83 c7 08          add    $0x8,%rdi
- 5fa: 49 83 c0 08          add    $0x8,%r8
- 5fe: 48 83 c1 f8          add    $0xfffffffffffffff8,%rcx
- 602: 48 83 f9 07          cmp    $0x7,%rcx
- 606: 77 e8                ja     5f0 <put_cmsg+0xe0>
- 608: eb 17                jmp    621 <put_cmsg+0x111>
- 60a: 66 0f 1f 44 00 00    nopw   0x0(%rax,%rax,1)
- 610: 41 8b 10              mov    (%r8),%edx
- 613: 89 17                mov    %edx,(%rdi)
- 615: 48 83 c7 04          add    $0x4,%rdi
- 619: 49 83 c0 04          add    $0x4,%r8
- 61d: 48 83 c1 fc          add    $0xfffffffffffffffc,%rcx
- 621: 48 83 f9 03          cmp    $0x3,%rcx
- 625: 77 e9                ja     610 <put_cmsg+0x100>
- 627: eb 1a                jmp    643 <put_cmsg+0x133>
- 629: 0f 1f 80 00 00 00 00 nopl   0x0(%rax)
- 630: 41 0f b7 10          movzwl (%r8),%edx
- 634: 66 89 17              mov    %dx,(%rdi)
- 637: 48 83 c7 02          add    $0x2,%rdi
- 63b: 49 83 c0 02          add    $0x2,%r8
- 63f: 48 83 c1 fe          add    $0xfffffffffffffffe,%rcx
- 643: 48 83 f9 01          cmp    $0x1,%rcx
- 647: 77 e7                ja     630 <put_cmsg+0x120>
- 649: eb 15                jmp    660 <put_cmsg+0x150>
- 64b: 0f 1f 44 00 00        nopl   0x0(%rax,%rax,1)
- 650: 41 0f b6 08          movzbl (%r8),%ecx
- 654: 88 0f                mov    %cl,(%rdi)
- 656: 48 83 c7 01          add    $0x1,%rdi
- 65a: 49 83 c0 01          add    $0x1,%r8
- 65e: 31 c9                xor    %ecx,%ecx
- 660: 48 85 c9              test   %rcx,%rcx
- 663: 75 eb                jne    650 <put_cmsg+0x140>
+Thanks,
+Dexuan
 
+Dexuan Cui (2):
+  hv_netvsc: Make netvsc/VF binding check both MAC and serial number
+  net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)
 
-> FWIW, this
-> void bar(unsigned);
-> void foo(unsigned n)
-> {
->         while (n >= 8) {
->                 bar(n);
->                 n -= 8;
->         }
->         while (n >= 4) {
->                 bar(n);
->                 n -= 4;
->         }
->         while (n >= 2) {
->                 bar(n);
->                 n -= 2;
->         }
->         while (n >= 1) {
->                 bar(n);
->                 n -= 1;
->         }
-> }
->
-> will compile (with -O2) to
->         pushq   %rbp
->         pushq   %rbx
->         movl    %edi, %ebx
->         subq    $8, %rsp
->         cmpl    $7, %edi
->         jbe     .L2
->         movl    %edi, %ebp
-> .L3:
->         movl    %ebp, %edi
->         subl    $8, %ebp
->         call    bar@PLT
->         cmpl    $7, %ebp
->         ja      .L3
->         andl    $7, %ebx
-> .L2:
->         cmpl    $3, %ebx
->         jbe     .L4
->         movl    %ebx, %edi
->         andl    $3, %ebx
->         call    bar@PLT
-> .L4:
->         cmpl    $1, %ebx
->         jbe     .L5
->         movl    %ebx, %edi
->         andl    $1, %ebx
->         call    bar@PLT
-> .L5:
->         testl   %ebx, %ebx
->         je      .L1
->         addq    $8, %rsp
->         movl    $1, %edi
->         popq    %rbx
->         popq    %rbp
->         jmp     bar@PLT
-> .L1:
->         addq    $8, %rsp
->         popq    %rbx
->         popq    %rbp
->         ret
->
-> i.e. loop + if + if + if...
+ MAINTAINERS                                   |    4 +-
+ drivers/net/ethernet/Kconfig                  |    1 +
+ drivers/net/ethernet/Makefile                 |    1 +
+ drivers/net/ethernet/microsoft/Kconfig        |   29 +
+ drivers/net/ethernet/microsoft/Makefile       |    5 +
+ drivers/net/ethernet/microsoft/mana/Makefile  |    6 +
+ drivers/net/ethernet/microsoft/mana/gdma.h    |  673 ++++++
+ .../net/ethernet/microsoft/mana/gdma_main.c   | 1415 ++++++++++++
+ .../net/ethernet/microsoft/mana/hw_channel.c  |  843 ++++++++
+ .../net/ethernet/microsoft/mana/hw_channel.h  |  190 ++
+ drivers/net/ethernet/microsoft/mana/mana.h    |  533 +++++
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 1895 +++++++++++++++++
+ .../ethernet/microsoft/mana/mana_ethtool.c    |  250 +++
+ .../net/ethernet/microsoft/mana/shm_channel.c |  291 +++
+ .../net/ethernet/microsoft/mana/shm_channel.h |   21 +
+ drivers/net/hyperv/netvsc_drv.c               |   14 +-
+ 16 files changed, 6168 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/net/ethernet/microsoft/Kconfig
+ create mode 100644 drivers/net/ethernet/microsoft/Makefile
+ create mode 100644 drivers/net/ethernet/microsoft/mana/Makefile
+ create mode 100644 drivers/net/ethernet/microsoft/mana/gdma.h
+ create mode 100644 drivers/net/ethernet/microsoft/mana/gdma_main.c
+ create mode 100644 drivers/net/ethernet/microsoft/mana/hw_channel.c
+ create mode 100644 drivers/net/ethernet/microsoft/mana/hw_channel.h
+ create mode 100644 drivers/net/ethernet/microsoft/mana/mana.h
+ create mode 100644 drivers/net/ethernet/microsoft/mana/mana_en.c
+ create mode 100644 drivers/net/ethernet/microsoft/mana/mana_ethtool.c
+ create mode 100644 drivers/net/ethernet/microsoft/mana/shm_channel.c
+ create mode 100644 drivers/net/ethernet/microsoft/mana/shm_channel.h
+
+-- 
+2.25.1
+
