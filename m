@@ -2,815 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A233624F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 18:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7599F36250F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 18:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239510AbhDPQBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 12:01:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34250 "EHLO mail.kernel.org"
+        id S238941AbhDPQB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 12:01:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:45116 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238764AbhDPQAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 12:00:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 46DC66137D;
-        Fri, 16 Apr 2021 16:00:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618588826;
-        bh=e7+5cqQ0NBdTAw2gSC95Ai1/s719OT2P01Ragq4a6C8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VmPPtGHhl72Znwqd66wb//+Msk+nWiDzn4IhOjgO4QBLthMld7kC791Gycv3ozrWD
-         4M7JQV7NpLWheBfl9hH5hVkh2jQ3GVjkrJvyZzKJpLMbaX3xOkHMPlpa+7vDOLyp3R
-         QU+XGF9+Bn75I0fVc8wxJtnU8Rs3oAsqiUwI4u6o=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Linux 5.10.31
-Date:   Fri, 16 Apr 2021 18:00:20 +0200
-Message-Id: <161858882022475@kroah.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <1618588820170148@kroah.com>
-References: <1618588820170148@kroah.com>
+        id S238563AbhDPQAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 12:00:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DCBA011B3;
+        Fri, 16 Apr 2021 09:00:29 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 098F13F99C;
+        Fri, 16 Apr 2021 09:00:27 -0700 (PDT)
+Subject: Re: [PATCH v1 3/5] mm: ptdump: Provide page size to notepage()
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        akpm@linux-foundation.org
+Cc:     linux-arch@vger.kernel.org, linux-s390@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org
+References: <cover.1618506910.git.christophe.leroy@csgroup.eu>
+ <1ef6b954fb7b0f4dfc78820f1e612d2166c13227.1618506910.git.christophe.leroy@csgroup.eu>
+ <41819925-3ee5-4771-e98b-0073e8f095cf@arm.com>
+ <da53d2f2-b472-0c38-bdd5-99c5a098675d@csgroup.eu>
+ <1102cda1-b00f-b6ef-6bf3-22068cc11510@arm.com>
+ <6ff4816b-8ff6-19de-73a2-3fcadc003ccd@csgroup.eu>
+ <e39d500a-2154-3c5d-9393-8bf53a567fad@arm.com>
+ <b6b5300d-35a0-3bc0-ad1d-f2af433ef27e@csgroup.eu>
+ <b245cf06-f2e5-87a5-9a5e-64efc39d415a@csgroup.eu>
+ <10adad00-14de-61b6-ce2a-bdde23a34bcf@csgroup.eu>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <a94fa51b-577f-b520-f8e8-a9304425c265@arm.com>
+Date:   Fri, 16 Apr 2021 17:00:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <10adad00-14de-61b6-ce2a-bdde23a34bcf@csgroup.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-diff --git a/Makefile b/Makefile
-index 872af26e085a..c4c0b47e6ede 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- VERSION = 5
- PATCHLEVEL = 10
--SUBLEVEL = 30
-+SUBLEVEL = 31
- EXTRAVERSION =
- NAME = Dare mighty things
- 
-diff --git a/arch/arm64/include/asm/kvm_arm.h b/arch/arm64/include/asm/kvm_arm.h
-index 64ce29378467..395cb22d9f7d 100644
---- a/arch/arm64/include/asm/kvm_arm.h
-+++ b/arch/arm64/include/asm/kvm_arm.h
-@@ -277,6 +277,7 @@
- #define CPTR_EL2_DEFAULT	CPTR_EL2_RES1
- 
- /* Hyp Debug Configuration Register bits */
-+#define MDCR_EL2_TTRF		(1 << 19)
- #define MDCR_EL2_TPMS		(1 << 14)
- #define MDCR_EL2_E2PB_MASK	(UL(0x3))
- #define MDCR_EL2_E2PB_SHIFT	(UL(12))
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index 7da9a7cee4ce..5001c43ea6c3 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -382,7 +382,6 @@ static const struct arm64_ftr_bits ftr_id_aa64dfr0[] = {
- 	 * of support.
- 	 */
- 	S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_EXACT, ID_AA64DFR0_PMUVER_SHIFT, 4, 0),
--	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_EXACT, ID_AA64DFR0_TRACEVER_SHIFT, 4, 0),
- 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_EXACT, ID_AA64DFR0_DEBUGVER_SHIFT, 4, 0x6),
- 	ARM64_FTR_END,
- };
-diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
-index 7a7e425616b5..dbc890511631 100644
---- a/arch/arm64/kvm/debug.c
-+++ b/arch/arm64/kvm/debug.c
-@@ -89,6 +89,7 @@ void kvm_arm_reset_debug_ptr(struct kvm_vcpu *vcpu)
-  *  - Debug ROM Address (MDCR_EL2_TDRA)
-  *  - OS related registers (MDCR_EL2_TDOSA)
-  *  - Statistical profiler (MDCR_EL2_TPMS/MDCR_EL2_E2PB)
-+ *  - Self-hosted Trace Filter controls (MDCR_EL2_TTRF)
-  *
-  * Additionally, KVM only traps guest accesses to the debug registers if
-  * the guest is not actively using them (see the KVM_ARM64_DEBUG_DIRTY
-@@ -112,6 +113,7 @@ void kvm_arm_setup_debug(struct kvm_vcpu *vcpu)
- 	vcpu->arch.mdcr_el2 = __this_cpu_read(mdcr_el2) & MDCR_EL2_HPMN_MASK;
- 	vcpu->arch.mdcr_el2 |= (MDCR_EL2_TPM |
- 				MDCR_EL2_TPMS |
-+				MDCR_EL2_TTRF |
- 				MDCR_EL2_TPMCR |
- 				MDCR_EL2_TDRA |
- 				MDCR_EL2_TDOSA);
-diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
-index 744f3209c48d..76274a4a1d8e 100644
---- a/arch/riscv/kernel/entry.S
-+++ b/arch/riscv/kernel/entry.S
-@@ -447,6 +447,7 @@ ENDPROC(__switch_to)
- #endif
- 
- 	.section ".rodata"
-+	.align LGREG
- 	/* Exception vector table */
- ENTRY(excp_vect_table)
- 	RISCV_PTR do_trap_insn_misaligned
-diff --git a/block/bio.c b/block/bio.c
-index fa01bef35bb1..9c931df2d986 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -313,7 +313,7 @@ static struct bio *__bio_chain_endio(struct bio *bio)
- {
- 	struct bio *parent = bio->bi_private;
- 
--	if (!parent->bi_status)
-+	if (bio->bi_status && !parent->bi_status)
- 		parent->bi_status = bio->bi_status;
- 	bio_put(bio);
- 	return parent;
-diff --git a/drivers/block/null_blk.h b/drivers/block/null_blk.h
-index c24d9b5ad81a..7de703f28617 100644
---- a/drivers/block/null_blk.h
-+++ b/drivers/block/null_blk.h
-@@ -20,6 +20,7 @@ struct nullb_cmd {
- 	blk_status_t error;
- 	struct nullb_queue *nq;
- 	struct hrtimer timer;
-+	bool fake_timeout;
- };
- 
- struct nullb_queue {
-diff --git a/drivers/block/null_blk_main.c b/drivers/block/null_blk_main.c
-index 4685ea401d5b..bb3686c3869d 100644
---- a/drivers/block/null_blk_main.c
-+++ b/drivers/block/null_blk_main.c
-@@ -1367,10 +1367,13 @@ static blk_status_t null_handle_cmd(struct nullb_cmd *cmd, sector_t sector,
- 	}
- 
- 	if (dev->zoned)
--		cmd->error = null_process_zoned_cmd(cmd, op,
--						    sector, nr_sectors);
-+		sts = null_process_zoned_cmd(cmd, op, sector, nr_sectors);
- 	else
--		cmd->error = null_process_cmd(cmd, op, sector, nr_sectors);
-+		sts = null_process_cmd(cmd, op, sector, nr_sectors);
-+
-+	/* Do not overwrite errors (e.g. timeout errors) */
-+	if (cmd->error == BLK_STS_OK)
-+		cmd->error = sts;
- 
- out:
- 	nullb_complete_cmd(cmd);
-@@ -1449,8 +1452,20 @@ static bool should_requeue_request(struct request *rq)
- 
- static enum blk_eh_timer_return null_timeout_rq(struct request *rq, bool res)
- {
-+	struct nullb_cmd *cmd = blk_mq_rq_to_pdu(rq);
-+
- 	pr_info("rq %p timed out\n", rq);
--	blk_mq_complete_request(rq);
-+
-+	/*
-+	 * If the device is marked as blocking (i.e. memory backed or zoned
-+	 * device), the submission path may be blocked waiting for resources
-+	 * and cause real timeouts. For these real timeouts, the submission
-+	 * path will complete the request using blk_mq_complete_request().
-+	 * Only fake timeouts need to execute blk_mq_complete_request() here.
-+	 */
-+	cmd->error = BLK_STS_TIMEOUT;
-+	if (cmd->fake_timeout)
-+		blk_mq_complete_request(rq);
- 	return BLK_EH_DONE;
- }
- 
-@@ -1471,6 +1486,7 @@ static blk_status_t null_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	cmd->rq = bd->rq;
- 	cmd->error = BLK_STS_OK;
- 	cmd->nq = nq;
-+	cmd->fake_timeout = should_timeout_request(bd->rq);
- 
- 	blk_mq_start_request(bd->rq);
- 
-@@ -1487,7 +1503,7 @@ static blk_status_t null_queue_rq(struct blk_mq_hw_ctx *hctx,
- 			return BLK_STS_OK;
- 		}
- 	}
--	if (should_timeout_request(bd->rq))
-+	if (cmd->fake_timeout)
- 		return BLK_STS_OK;
- 
- 	return null_handle_cmd(cmd, sector, nr_sectors, req_op(bd->rq));
-diff --git a/drivers/gpu/drm/imx/imx-ldb.c b/drivers/gpu/drm/imx/imx-ldb.c
-index 41e2978cb1eb..75036aaa0c63 100644
---- a/drivers/gpu/drm/imx/imx-ldb.c
-+++ b/drivers/gpu/drm/imx/imx-ldb.c
-@@ -190,6 +190,11 @@ static void imx_ldb_encoder_enable(struct drm_encoder *encoder)
- 	int dual = ldb->ldb_ctrl & LDB_SPLIT_MODE_EN;
- 	int mux = drm_of_encoder_active_port_id(imx_ldb_ch->child, encoder);
- 
-+	if (mux < 0 || mux >= ARRAY_SIZE(ldb->clk_sel)) {
-+		dev_warn(ldb->dev, "%s: invalid mux %d\n", __func__, mux);
-+		return;
-+	}
-+
- 	drm_panel_prepare(imx_ldb_ch->panel);
- 
- 	if (dual) {
-@@ -248,6 +253,11 @@ imx_ldb_encoder_atomic_mode_set(struct drm_encoder *encoder,
- 	int mux = drm_of_encoder_active_port_id(imx_ldb_ch->child, encoder);
- 	u32 bus_format = imx_ldb_ch->bus_format;
- 
-+	if (mux < 0 || mux >= ARRAY_SIZE(ldb->clk_sel)) {
-+		dev_warn(ldb->dev, "%s: invalid mux %d\n", __func__, mux);
-+		return;
-+	}
-+
- 	if (mode->clock > 170000) {
- 		dev_warn(ldb->dev,
- 			 "%s: mode exceeds 170 MHz pixel clock\n", __func__);
-diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
-index 3a244ef7f30f..3aa9a7406085 100644
---- a/drivers/gpu/drm/tegra/dc.c
-+++ b/drivers/gpu/drm/tegra/dc.c
-@@ -1688,6 +1688,11 @@ static void tegra_dc_commit_state(struct tegra_dc *dc,
- 			dev_err(dc->dev,
- 				"failed to set clock rate to %lu Hz\n",
- 				state->pclk);
-+
-+		err = clk_set_rate(dc->clk, state->pclk);
-+		if (err < 0)
-+			dev_err(dc->dev, "failed to set clock %pC to %lu Hz: %d\n",
-+				dc->clk, state->pclk, err);
- 	}
- 
- 	DRM_DEBUG_KMS("rate: %lu, div: %u\n", clk_get_rate(dc->clk),
-@@ -1698,11 +1703,6 @@ static void tegra_dc_commit_state(struct tegra_dc *dc,
- 		value = SHIFT_CLK_DIVIDER(state->div) | PIXEL_CLK_DIVIDER_PCD1;
- 		tegra_dc_writel(dc, value, DC_DISP_DISP_CLOCK_CONTROL);
- 	}
--
--	err = clk_set_rate(dc->clk, state->pclk);
--	if (err < 0)
--		dev_err(dc->dev, "failed to set clock %pC to %lu Hz: %d\n",
--			dc->clk, state->pclk, err);
- }
- 
- static void tegra_dc_stop(struct tegra_dc *dc)
-diff --git a/drivers/gpu/host1x/bus.c b/drivers/gpu/host1x/bus.c
-index e201f62d62c0..9e2cb6968819 100644
---- a/drivers/gpu/host1x/bus.c
-+++ b/drivers/gpu/host1x/bus.c
-@@ -704,8 +704,9 @@ void host1x_driver_unregister(struct host1x_driver *driver)
- EXPORT_SYMBOL(host1x_driver_unregister);
- 
- /**
-- * host1x_client_register() - register a host1x client
-+ * __host1x_client_register() - register a host1x client
-  * @client: host1x client
-+ * @key: lock class key for the client-specific mutex
-  *
-  * Registers a host1x client with each host1x controller instance. Note that
-  * each client will only match their parent host1x controller and will only be
-@@ -714,13 +715,14 @@ EXPORT_SYMBOL(host1x_driver_unregister);
-  * device and call host1x_device_init(), which will in turn call each client's
-  * &host1x_client_ops.init implementation.
-  */
--int host1x_client_register(struct host1x_client *client)
-+int __host1x_client_register(struct host1x_client *client,
-+			     struct lock_class_key *key)
- {
- 	struct host1x *host1x;
- 	int err;
- 
- 	INIT_LIST_HEAD(&client->list);
--	mutex_init(&client->lock);
-+	__mutex_init(&client->lock, "host1x client lock", key);
- 	client->usecount = 0;
- 
- 	mutex_lock(&devices_lock);
-@@ -741,7 +743,7 @@ int host1x_client_register(struct host1x_client *client)
- 
- 	return 0;
- }
--EXPORT_SYMBOL(host1x_client_register);
-+EXPORT_SYMBOL(__host1x_client_register);
- 
- /**
-  * host1x_client_unregister() - unregister a host1x client
-diff --git a/drivers/interconnect/core.c b/drivers/interconnect/core.c
-index 5ad519c9f239..8a1e70e00876 100644
---- a/drivers/interconnect/core.c
-+++ b/drivers/interconnect/core.c
-@@ -942,6 +942,8 @@ int icc_link_destroy(struct icc_node *src, struct icc_node *dst)
- 		       GFP_KERNEL);
- 	if (new)
- 		src->links = new;
-+	else
-+		ret = -ENOMEM;
- 
- out:
- 	mutex_unlock(&icc_lock);
-diff --git a/drivers/net/phy/sfp-bus.c b/drivers/net/phy/sfp-bus.c
-index fb954e814180..4cf874fb5c5b 100644
---- a/drivers/net/phy/sfp-bus.c
-+++ b/drivers/net/phy/sfp-bus.c
-@@ -349,14 +349,13 @@ void sfp_parse_support(struct sfp_bus *bus, const struct sfp_eeprom_id *id,
- 	}
- 
- 	/* If we haven't discovered any modes that this module supports, try
--	 * the encoding and bitrate to determine supported modes. Some BiDi
--	 * modules (eg, 1310nm/1550nm) are not 1000BASE-BX compliant due to
--	 * the differing wavelengths, so do not set any transceiver bits.
-+	 * the bitrate to determine supported modes. Some BiDi modules (eg,
-+	 * 1310nm/1550nm) are not 1000BASE-BX compliant due to the differing
-+	 * wavelengths, so do not set any transceiver bits.
- 	 */
- 	if (bitmap_empty(modes, __ETHTOOL_LINK_MODE_MASK_NBITS)) {
--		/* If the encoding and bit rate allows 1000baseX */
--		if (id->base.encoding == SFF8024_ENCODING_8B10B && br_nom &&
--		    br_min <= 1300 && br_max >= 1200)
-+		/* If the bit rate allows 1000baseX */
-+		if (br_nom && br_min <= 1300 && br_max >= 1200)
- 			phylink_set(modes, 1000baseX_Full);
- 	}
- 
-diff --git a/drivers/net/phy/sfp.c b/drivers/net/phy/sfp.c
-index 7a680b5177f5..2fff62695455 100644
---- a/drivers/net/phy/sfp.c
-+++ b/drivers/net/phy/sfp.c
-@@ -1501,15 +1501,19 @@ static void sfp_sm_link_down(struct sfp *sfp)
- 
- static void sfp_sm_link_check_los(struct sfp *sfp)
- {
--	unsigned int los = sfp->state & SFP_F_LOS;
-+	const __be16 los_inverted = cpu_to_be16(SFP_OPTIONS_LOS_INVERTED);
-+	const __be16 los_normal = cpu_to_be16(SFP_OPTIONS_LOS_NORMAL);
-+	__be16 los_options = sfp->id.ext.options & (los_inverted | los_normal);
-+	bool los = false;
- 
- 	/* If neither SFP_OPTIONS_LOS_INVERTED nor SFP_OPTIONS_LOS_NORMAL
--	 * are set, we assume that no LOS signal is available.
-+	 * are set, we assume that no LOS signal is available. If both are
-+	 * set, we assume LOS is not implemented (and is meaningless.)
- 	 */
--	if (sfp->id.ext.options & cpu_to_be16(SFP_OPTIONS_LOS_INVERTED))
--		los ^= SFP_F_LOS;
--	else if (!(sfp->id.ext.options & cpu_to_be16(SFP_OPTIONS_LOS_NORMAL)))
--		los = 0;
-+	if (los_options == los_inverted)
-+		los = !(sfp->state & SFP_F_LOS);
-+	else if (los_options == los_normal)
-+		los = !!(sfp->state & SFP_F_LOS);
- 
- 	if (los)
- 		sfp_sm_next(sfp, SFP_S_WAIT_LOS, 0);
-@@ -1519,18 +1523,22 @@ static void sfp_sm_link_check_los(struct sfp *sfp)
- 
- static bool sfp_los_event_active(struct sfp *sfp, unsigned int event)
- {
--	return (sfp->id.ext.options & cpu_to_be16(SFP_OPTIONS_LOS_INVERTED) &&
--		event == SFP_E_LOS_LOW) ||
--	       (sfp->id.ext.options & cpu_to_be16(SFP_OPTIONS_LOS_NORMAL) &&
--		event == SFP_E_LOS_HIGH);
-+	const __be16 los_inverted = cpu_to_be16(SFP_OPTIONS_LOS_INVERTED);
-+	const __be16 los_normal = cpu_to_be16(SFP_OPTIONS_LOS_NORMAL);
-+	__be16 los_options = sfp->id.ext.options & (los_inverted | los_normal);
-+
-+	return (los_options == los_inverted && event == SFP_E_LOS_LOW) ||
-+	       (los_options == los_normal && event == SFP_E_LOS_HIGH);
- }
- 
- static bool sfp_los_event_inactive(struct sfp *sfp, unsigned int event)
- {
--	return (sfp->id.ext.options & cpu_to_be16(SFP_OPTIONS_LOS_INVERTED) &&
--		event == SFP_E_LOS_HIGH) ||
--	       (sfp->id.ext.options & cpu_to_be16(SFP_OPTIONS_LOS_NORMAL) &&
--		event == SFP_E_LOS_LOW);
-+	const __be16 los_inverted = cpu_to_be16(SFP_OPTIONS_LOS_INVERTED);
-+	const __be16 los_normal = cpu_to_be16(SFP_OPTIONS_LOS_NORMAL);
-+	__be16 los_options = sfp->id.ext.options & (los_inverted | los_normal);
-+
-+	return (los_options == los_inverted && event == SFP_E_LOS_HIGH) ||
-+	       (los_options == los_normal && event == SFP_E_LOS_LOW);
- }
- 
- static void sfp_sm_fault(struct sfp *sfp, unsigned int next_state, bool warn)
-diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/events_base.c
-index b91c19b90b8b..29bec0720514 100644
---- a/drivers/xen/events/events_base.c
-+++ b/drivers/xen/events/events_base.c
-@@ -1809,7 +1809,7 @@ static void lateeoi_ack_dynirq(struct irq_data *data)
- 
- 	if (VALID_EVTCHN(evtchn)) {
- 		do_mask(info, EVT_MASK_REASON_EOI_PENDING);
--		event_handler_exit(info);
-+		ack_dynirq(data);
- 	}
- }
- 
-@@ -1820,7 +1820,7 @@ static void lateeoi_mask_ack_dynirq(struct irq_data *data)
- 
- 	if (VALID_EVTCHN(evtchn)) {
- 		do_mask(info, EVT_MASK_REASON_EXPLICIT);
--		event_handler_exit(info);
-+		ack_dynirq(data);
- 	}
- }
- 
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index 6516051807b8..718533f0fb90 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -280,6 +280,8 @@ __blkdev_direct_IO_simple(struct kiocb *iocb, struct iov_iter *iter,
- 		bio.bi_opf = dio_bio_write_op(iocb);
- 		task_io_account_write(ret);
- 	}
-+	if (iocb->ki_flags & IOCB_NOWAIT)
-+		bio.bi_opf |= REQ_NOWAIT;
- 	if (iocb->ki_flags & IOCB_HIPRI)
- 		bio_set_polled(&bio, iocb);
- 
-@@ -433,6 +435,8 @@ __blkdev_direct_IO(struct kiocb *iocb, struct iov_iter *iter, int nr_pages)
- 			bio->bi_opf = dio_bio_write_op(iocb);
- 			task_io_account_write(bio->bi_iter.bi_size);
- 		}
-+		if (iocb->ki_flags & IOCB_NOWAIT)
-+			bio->bi_opf |= REQ_NOWAIT;
- 
- 		dio->size += bio->bi_iter.bi_size;
- 		pos += bio->bi_iter.bi_size;
-diff --git a/fs/gfs2/super.c b/fs/gfs2/super.c
-index ddd40c96f7a2..077dc8c035a8 100644
---- a/fs/gfs2/super.c
-+++ b/fs/gfs2/super.c
-@@ -169,8 +169,10 @@ int gfs2_make_fs_rw(struct gfs2_sbd *sdp)
- 	int error;
- 
- 	error = init_threads(sdp);
--	if (error)
-+	if (error) {
-+		gfs2_withdraw_delayed(sdp);
- 		return error;
-+	}
- 
- 	j_gl->gl_ops->go_inval(j_gl, DIO_METADATA);
- 	if (gfs2_withdrawn(sdp)) {
-@@ -767,11 +769,13 @@ void gfs2_freeze_func(struct work_struct *work)
- static int gfs2_freeze(struct super_block *sb)
- {
- 	struct gfs2_sbd *sdp = sb->s_fs_info;
--	int error = 0;
-+	int error;
- 
- 	mutex_lock(&sdp->sd_freeze_mutex);
--	if (atomic_read(&sdp->sd_freeze_state) != SFS_UNFROZEN)
-+	if (atomic_read(&sdp->sd_freeze_state) != SFS_UNFROZEN) {
-+		error = -EBUSY;
- 		goto out;
-+	}
- 
- 	for (;;) {
- 		if (gfs2_withdrawn(sdp)) {
-@@ -812,10 +816,10 @@ static int gfs2_unfreeze(struct super_block *sb)
- 	struct gfs2_sbd *sdp = sb->s_fs_info;
- 
- 	mutex_lock(&sdp->sd_freeze_mutex);
--        if (atomic_read(&sdp->sd_freeze_state) != SFS_FROZEN ||
-+	if (atomic_read(&sdp->sd_freeze_state) != SFS_FROZEN ||
- 	    !gfs2_holder_initialized(&sdp->sd_freeze_gh)) {
- 		mutex_unlock(&sdp->sd_freeze_mutex);
--                return 0;
-+		return -EINVAL;
- 	}
- 
- 	gfs2_freeze_unlock(&sdp->sd_freeze_gh);
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 0de27e75460d..dc1b0f6fd49b 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -1439,7 +1439,7 @@ static void io_prep_async_work(struct io_kiocb *req)
- 	if (req->flags & REQ_F_ISREG) {
- 		if (def->hash_reg_file || (ctx->flags & IORING_SETUP_IOPOLL))
- 			io_wq_hash_work(&req->work, file_inode(req->file));
--	} else {
-+	} else if (!req->file || !S_ISBLK(file_inode(req->file)->i_mode)) {
- 		if (def->unbound_nonreg_file)
- 			req->work.flags |= IO_WQ_WORK_UNBOUND;
- 	}
-diff --git a/include/linux/host1x.h b/include/linux/host1x.h
-index ce59a6a6a008..9eb77c87a83b 100644
---- a/include/linux/host1x.h
-+++ b/include/linux/host1x.h
-@@ -320,7 +320,14 @@ static inline struct host1x_device *to_host1x_device(struct device *dev)
- int host1x_device_init(struct host1x_device *device);
- int host1x_device_exit(struct host1x_device *device);
- 
--int host1x_client_register(struct host1x_client *client);
-+int __host1x_client_register(struct host1x_client *client,
-+			     struct lock_class_key *key);
-+#define host1x_client_register(class) \
-+	({ \
-+		static struct lock_class_key __key; \
-+		__host1x_client_register(class, &__key); \
-+	})
-+
- int host1x_client_unregister(struct host1x_client *client);
- 
- int host1x_client_suspend(struct host1x_client *client);
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 82041bbf8fc2..b1983c2aeb53 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -3230,7 +3230,8 @@ ftrace_allocate_pages(unsigned long num_to_init)
- 	pg = start_pg;
- 	while (pg) {
- 		order = get_count_order(pg->size / ENTRIES_PER_PAGE);
--		free_pages((unsigned long)pg->records, order);
-+		if (order >= 0)
-+			free_pages((unsigned long)pg->records, order);
- 		start_pg = pg->next;
- 		kfree(pg);
- 		pg = start_pg;
-@@ -6452,7 +6453,8 @@ void ftrace_release_mod(struct module *mod)
- 		clear_mod_from_hashes(pg);
- 
- 		order = get_count_order(pg->size / ENTRIES_PER_PAGE);
--		free_pages((unsigned long)pg->records, order);
-+		if (order >= 0)
-+			free_pages((unsigned long)pg->records, order);
- 		tmp_page = pg->next;
- 		kfree(pg);
- 		ftrace_number_of_pages -= 1 << order;
-@@ -6812,7 +6814,8 @@ void ftrace_free_mem(struct module *mod, void *start_ptr, void *end_ptr)
- 		if (!pg->index) {
- 			*last_pg = pg->next;
- 			order = get_count_order(pg->size / ENTRIES_PER_PAGE);
--			free_pages((unsigned long)pg->records, order);
-+			if (order >= 0)
-+				free_pages((unsigned long)pg->records, order);
- 			ftrace_number_of_pages -= 1 << order;
- 			ftrace_number_of_groups--;
- 			kfree(pg);
-diff --git a/lib/test_xarray.c b/lib/test_xarray.c
-index 8294f43f4981..8b1c318189ce 100644
---- a/lib/test_xarray.c
-+++ b/lib/test_xarray.c
-@@ -1530,24 +1530,24 @@ static noinline void check_store_range(struct xarray *xa)
- 
- #ifdef CONFIG_XARRAY_MULTI
- static void check_split_1(struct xarray *xa, unsigned long index,
--							unsigned int order)
-+				unsigned int order, unsigned int new_order)
- {
--	XA_STATE(xas, xa, index);
--	void *entry;
--	unsigned int i = 0;
-+	XA_STATE_ORDER(xas, xa, index, new_order);
-+	unsigned int i;
- 
- 	xa_store_order(xa, index, order, xa, GFP_KERNEL);
- 
- 	xas_split_alloc(&xas, xa, order, GFP_KERNEL);
- 	xas_lock(&xas);
- 	xas_split(&xas, xa, order);
-+	for (i = 0; i < (1 << order); i += (1 << new_order))
-+		__xa_store(xa, index + i, xa_mk_index(index + i), 0);
- 	xas_unlock(&xas);
- 
--	xa_for_each(xa, index, entry) {
--		XA_BUG_ON(xa, entry != xa);
--		i++;
-+	for (i = 0; i < (1 << order); i++) {
-+		unsigned int val = index + (i & ~((1 << new_order) - 1));
-+		XA_BUG_ON(xa, xa_load(xa, index + i) != xa_mk_index(val));
- 	}
--	XA_BUG_ON(xa, i != 1 << order);
- 
- 	xa_set_mark(xa, index, XA_MARK_0);
- 	XA_BUG_ON(xa, !xa_get_mark(xa, index, XA_MARK_0));
-@@ -1557,14 +1557,16 @@ static void check_split_1(struct xarray *xa, unsigned long index,
- 
- static noinline void check_split(struct xarray *xa)
- {
--	unsigned int order;
-+	unsigned int order, new_order;
- 
- 	XA_BUG_ON(xa, !xa_empty(xa));
- 
- 	for (order = 1; order < 2 * XA_CHUNK_SHIFT; order++) {
--		check_split_1(xa, 0, order);
--		check_split_1(xa, 1UL << order, order);
--		check_split_1(xa, 3UL << order, order);
-+		for (new_order = 0; new_order < order; new_order++) {
-+			check_split_1(xa, 0, order, new_order);
-+			check_split_1(xa, 1UL << order, order, new_order);
-+			check_split_1(xa, 3UL << order, order, new_order);
-+		}
- 	}
- }
- #else
-diff --git a/lib/xarray.c b/lib/xarray.c
-index 5fa51614802a..ed775dee1074 100644
---- a/lib/xarray.c
-+++ b/lib/xarray.c
-@@ -1011,7 +1011,7 @@ void xas_split_alloc(struct xa_state *xas, void *entry, unsigned int order,
- 
- 	do {
- 		unsigned int i;
--		void *sibling;
-+		void *sibling = NULL;
- 		struct xa_node *node;
- 
- 		node = kmem_cache_alloc(radix_tree_node_cachep, gfp);
-@@ -1021,7 +1021,7 @@ void xas_split_alloc(struct xa_state *xas, void *entry, unsigned int order,
- 		for (i = 0; i < XA_CHUNK_SIZE; i++) {
- 			if ((i & mask) == 0) {
- 				RCU_INIT_POINTER(node->slots[i], entry);
--				sibling = xa_mk_sibling(0);
-+				sibling = xa_mk_sibling(i);
- 			} else {
- 				RCU_INIT_POINTER(node->slots[i], sibling);
- 			}
-diff --git a/net/ipv4/netfilter/arp_tables.c b/net/ipv4/netfilter/arp_tables.c
-index d1e04d2b5170..e0093411d85d 100644
---- a/net/ipv4/netfilter/arp_tables.c
-+++ b/net/ipv4/netfilter/arp_tables.c
-@@ -1193,6 +1193,8 @@ static int translate_compat_table(struct net *net,
- 	if (!newinfo)
- 		goto out_unlock;
- 
-+	memset(newinfo->entries, 0, size);
-+
- 	newinfo->number = compatr->num_entries;
- 	for (i = 0; i < NF_ARP_NUMHOOKS; i++) {
- 		newinfo->hook_entry[i] = compatr->hook_entry[i];
-diff --git a/net/ipv4/netfilter/ip_tables.c b/net/ipv4/netfilter/ip_tables.c
-index f15bc21d7301..f77ea0dbe656 100644
---- a/net/ipv4/netfilter/ip_tables.c
-+++ b/net/ipv4/netfilter/ip_tables.c
-@@ -1428,6 +1428,8 @@ translate_compat_table(struct net *net,
- 	if (!newinfo)
- 		goto out_unlock;
- 
-+	memset(newinfo->entries, 0, size);
-+
- 	newinfo->number = compatr->num_entries;
- 	for (i = 0; i < NF_INET_NUMHOOKS; i++) {
- 		newinfo->hook_entry[i] = compatr->hook_entry[i];
-diff --git a/net/ipv6/netfilter/ip6_tables.c b/net/ipv6/netfilter/ip6_tables.c
-index 2e2119bfcf13..eb2b5404806c 100644
---- a/net/ipv6/netfilter/ip6_tables.c
-+++ b/net/ipv6/netfilter/ip6_tables.c
-@@ -1443,6 +1443,8 @@ translate_compat_table(struct net *net,
- 	if (!newinfo)
- 		goto out_unlock;
- 
-+	memset(newinfo->entries, 0, size);
-+
- 	newinfo->number = compatr->num_entries;
- 	for (i = 0; i < NF_INET_NUMHOOKS; i++) {
- 		newinfo->hook_entry[i] = compatr->hook_entry[i];
-diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
-index 6bd31a7a27fc..92e9d4ebc5e8 100644
---- a/net/netfilter/x_tables.c
-+++ b/net/netfilter/x_tables.c
-@@ -733,7 +733,7 @@ void xt_compat_match_from_user(struct xt_entry_match *m, void **dstptr,
- {
- 	const struct xt_match *match = m->u.kernel.match;
- 	struct compat_xt_entry_match *cm = (struct compat_xt_entry_match *)m;
--	int pad, off = xt_compat_match_offset(match);
-+	int off = xt_compat_match_offset(match);
- 	u_int16_t msize = cm->u.user.match_size;
- 	char name[sizeof(m->u.user.name)];
- 
-@@ -743,9 +743,6 @@ void xt_compat_match_from_user(struct xt_entry_match *m, void **dstptr,
- 		match->compat_from_user(m->data, cm->data);
- 	else
- 		memcpy(m->data, cm->data, msize - sizeof(*cm));
--	pad = XT_ALIGN(match->matchsize) - match->matchsize;
--	if (pad > 0)
--		memset(m->data + match->matchsize, 0, pad);
- 
- 	msize += off;
- 	m->u.user.match_size = msize;
-@@ -1116,7 +1113,7 @@ void xt_compat_target_from_user(struct xt_entry_target *t, void **dstptr,
- {
- 	const struct xt_target *target = t->u.kernel.target;
- 	struct compat_xt_entry_target *ct = (struct compat_xt_entry_target *)t;
--	int pad, off = xt_compat_target_offset(target);
-+	int off = xt_compat_target_offset(target);
- 	u_int16_t tsize = ct->u.user.target_size;
- 	char name[sizeof(t->u.user.name)];
- 
-@@ -1126,9 +1123,6 @@ void xt_compat_target_from_user(struct xt_entry_target *t, void **dstptr,
- 		target->compat_from_user(t->data, ct->data);
- 	else
- 		memcpy(t->data, ct->data, tsize - sizeof(*ct));
--	pad = XT_ALIGN(target->targetsize) - target->targetsize;
--	if (pad > 0)
--		memset(t->data + target->targetsize, 0, pad);
- 
- 	tsize += off;
- 	t->u.user.target_size = tsize;
-diff --git a/tools/kvm/kvm_stat/kvm_stat.service b/tools/kvm/kvm_stat/kvm_stat.service
-index 71aabaffe779..8f13b843d5b4 100644
---- a/tools/kvm/kvm_stat/kvm_stat.service
-+++ b/tools/kvm/kvm_stat/kvm_stat.service
-@@ -9,6 +9,7 @@ Type=simple
- ExecStart=/usr/bin/kvm_stat -dtcz -s 10 -L /var/log/kvm_stat.csv
- ExecReload=/bin/kill -HUP $MAINPID
- Restart=always
-+RestartSec=60s
- SyslogIdentifier=kvm_stat
- SyslogLevel=debug
- 
-diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
-index f44ede437dc7..e2537d5acab0 100644
---- a/tools/perf/util/map.c
-+++ b/tools/perf/util/map.c
-@@ -77,8 +77,7 @@ static inline bool replace_android_lib(const char *filename, char *newfilename)
- 	if (strstarts(filename, "/system/lib/")) {
- 		char *ndk, *app;
- 		const char *arch;
--		size_t ndk_length;
--		size_t app_length;
-+		int ndk_length, app_length;
- 
- 		ndk = getenv("NDK_ROOT");
- 		app = getenv("APP_PLATFORM");
-@@ -106,8 +105,8 @@ static inline bool replace_android_lib(const char *filename, char *newfilename)
- 		if (new_length > PATH_MAX)
- 			return false;
- 		snprintf(newfilename, new_length,
--			"%s/platforms/%s/arch-%s/usr/lib/%s",
--			ndk, app, arch, libname);
-+			"%.*s/platforms/%.*s/arch-%s/usr/lib/%s",
-+			ndk_length, ndk, app_length, app, arch, libname);
- 
- 		return true;
- 	}
-diff --git a/tools/testing/radix-tree/idr-test.c b/tools/testing/radix-tree/idr-test.c
-index 3b796dd5e577..6ce7460f3c7a 100644
---- a/tools/testing/radix-tree/idr-test.c
-+++ b/tools/testing/radix-tree/idr-test.c
-@@ -301,16 +301,20 @@ void idr_find_test_1(int anchor_id, int throbber_id)
- 	pthread_t throbber;
- 	time_t start = time(NULL);
- 
--	pthread_create(&throbber, NULL, idr_throbber, &throbber_id);
--
- 	BUG_ON(idr_alloc(&find_idr, xa_mk_value(anchor_id), anchor_id,
- 				anchor_id + 1, GFP_KERNEL) != anchor_id);
- 
-+	pthread_create(&throbber, NULL, idr_throbber, &throbber_id);
-+
-+	rcu_read_lock();
- 	do {
- 		int id = 0;
- 		void *entry = idr_get_next(&find_idr, &id);
-+		rcu_read_unlock();
- 		BUG_ON(entry != xa_mk_value(id));
-+		rcu_read_lock();
- 	} while (time(NULL) < start + 11);
-+	rcu_read_unlock();
- 
- 	pthread_join(throbber, NULL);
- 
-@@ -577,6 +581,7 @@ void ida_tests(void)
- 
- int __weak main(void)
- {
-+	rcu_register_thread();
- 	radix_tree_init();
- 	idr_checks();
- 	ida_tests();
-@@ -584,5 +589,6 @@ int __weak main(void)
- 	rcu_barrier();
- 	if (nr_allocated)
- 		printf("nr_allocated = %d\n", nr_allocated);
-+	rcu_unregister_thread();
- 	return 0;
- }
-diff --git a/tools/testing/radix-tree/multiorder.c b/tools/testing/radix-tree/multiorder.c
-index 9eae0fb5a67d..e00520cc6349 100644
---- a/tools/testing/radix-tree/multiorder.c
-+++ b/tools/testing/radix-tree/multiorder.c
-@@ -224,7 +224,9 @@ void multiorder_checks(void)
- 
- int __weak main(void)
- {
-+	rcu_register_thread();
- 	radix_tree_init();
- 	multiorder_checks();
-+	rcu_unregister_thread();
- 	return 0;
- }
-diff --git a/tools/testing/radix-tree/xarray.c b/tools/testing/radix-tree/xarray.c
-index e61e43efe463..f20e12cbbfd4 100644
---- a/tools/testing/radix-tree/xarray.c
-+++ b/tools/testing/radix-tree/xarray.c
-@@ -25,11 +25,13 @@ void xarray_tests(void)
- 
- int __weak main(void)
- {
-+	rcu_register_thread();
- 	radix_tree_init();
- 	xarray_tests();
- 	radix_tree_cpu_dead(1);
- 	rcu_barrier();
- 	if (nr_allocated)
- 		printf("nr_allocated = %d\n", nr_allocated);
-+	rcu_unregister_thread();
- 	return 0;
- }
+On 16/04/2021 16:15, Christophe Leroy wrote:
+> 
+> 
+> Le 16/04/2021 à 17:04, Christophe Leroy a écrit :
+>>
+>>
+>> Le 16/04/2021 à 16:40, Christophe Leroy a écrit :
+>>>
+>>>
+>>> Le 16/04/2021 à 15:00, Steven Price a écrit :
+>>>> On 16/04/2021 12:08, Christophe Leroy wrote:
+>>>>>
+>>>>>
+>>>>> Le 16/04/2021 à 12:51, Steven Price a écrit :
+>>>>>> On 16/04/2021 11:38, Christophe Leroy wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> Le 16/04/2021 à 11:28, Steven Price a écrit :
+>>>>>>>> To be honest I don't fully understand why powerpc requires the 
+>>>>>>>> page_size - it appears to be using it purely to find "holes" in 
+>>>>>>>> the calls to note_page(), but I haven't worked out why such 
+>>>>>>>> holes would occur.
+>>>>>>>
+>>>>>>> I was indeed introduced for KASAN. We have a first commit 
+>>>>>>> https://github.com/torvalds/linux/commit/cabe8138 which uses page 
+>>>>>>> size to detect whether it is a KASAN like stuff.
+>>>>>>>
+>>>>>>> Then came https://github.com/torvalds/linux/commit/b00ff6d8c as a 
+>>>>>>> fix. I can't remember what the problem was exactly, something 
+>>>>>>> around the use of hugepages for kernel memory, came as part of 
+>>>>>>> the series 
+>>>>>>> https://patchwork.ozlabs.org/project/linuxppc-dev/cover/cover.1589866984.git.christophe.leroy@csgroup.eu/ 
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> Ah, that's useful context. So it looks like powerpc took a 
+>>>>>> different route to reducing the KASAN output to x86.
+>>>>>>
+>>>>>> Given the generic ptdump code has handling for KASAN already it 
+>>>>>> should be possible to drop that from the powerpc arch code, which 
+>>>>>> I think means we don't actually need to provide page size to 
+>>>>>> notepage(). Hopefully that means more code to delete ;)
+>>>>>>
+>>>>>
+>>>>> Yes ... and no.
+>>>>>
+>>>>> It looks like the generic ptdump handles the case when several 
+>>>>> pgdir entries points to the same kasan_early_shadow_pte. But it 
+>>>>> doesn't take into account the powerpc case where we have regular 
+>>>>> page tables where several (if not all) PTEs are pointing to the 
+>>>>> kasan_early_shadow_page .
+>>>>
+>>>> I'm not sure I follow quite how powerpc is different here. But could 
+>>>> you have a similar check for PTEs against kasan_early_shadow_pte as 
+>>>> the other levels already have?
+>>>>
+>>>> I'm just worried that page_size isn't well defined in this interface 
+>>>> and it's going to cause problems in the future.
+>>>>
+>>>
+>>> I'm trying. I reverted the two commits b00ff6d8c and cabe8138.
+>>>
+>>> At the moment, I don't get exactly what I expect: For linear memory I 
+>>> get one line for each 8M page whereas before reverting the patches I 
+>>> got one 16M line and one 112M line.
+>>>
+>>> And for KASAN shadow area I get two lines for the 2x 8M pages 
+>>> shadowing linear mem then I get one 4M line for each PGDIR entry 
+>>> pointing to kasan_early_shadow_pte.
+>>>
+>>> 0xf8000000-0xf87fffff 0x07000000         8M   huge        rw       
+>>> present
+>>> 0xf8800000-0xf8ffffff 0x07800000         8M   huge        rw       
+>>> present
+>>> 0xf9000000-0xf93fffff 0x01430000         4M               r        
+>>> present
+>> ...
+>>> 0xfec00000-0xfeffffff 0x01430000         4M               r        
+>>> present
+>>>
+>>> Any idea ?
+>>>
+>>
+>>
+>> I think the different with other architectures is here:
+>>
+>>      } else if (flag != st->current_flags || level != st->level ||
+>>             addr >= st->marker[1].start_address ||
+>>             pa != st->last_pa + PAGE_SIZE) {
+>>
+>>
+>> In addition to the checks everyone do, powerpc also checks "pa != 
+>> st->last_pa + PAGE_SIZE".
+>> And it is definitely for that test that page_size argument add been 
+>> added.
+> 
+> By replacing that test by (pa - st->start_pa != addr - 
+> st->start_address) it works again. So we definitely don't need the real 
+> page size.
+
+Yes that should work. Thanks for figuring it out!
+
+> 
+>>
+>> I see that other architectures except RISCV don't dump the physical 
+>> address. But even RISCV doesn't include that check.
+
+Yes not having the physical address certainly simplifies things - 
+although I can see why that can be handy to see. The disadvantage is 
+that user space or vmalloc()'d memory will produce a lot of output 
+because the physical addresses are unlikely to be contiguous. And for 
+most uses you don't need the information.
+
+>> That physical address dump was added by commit aaa229529244 
+>> ("powerpc/mm: Add physical address to Linux page table dump") 
+>> [https://github.com/torvalds/linux/commit/aaa2295]
+>>
+>> How do other architectures deal with the problem described by the 
+>> commit log of that patch ?
+
+AFAIK other architectures are "broken" in this regard. In practice I 
+don't think it often causes an issue though.
+
+Steve
