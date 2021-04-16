@@ -2,438 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B1C362764
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 20:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8E8362768
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 20:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244232AbhDPSFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 14:05:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35478 "EHLO
+        id S244296AbhDPSFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 14:05:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234898AbhDPSE7 (ORCPT
+        with ESMTP id S244245AbhDPSFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 14:04:59 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1789C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 11:04:33 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id c4so7061111ybp.6
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 11:04:33 -0700 (PDT)
+        Fri, 16 Apr 2021 14:05:14 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1DDC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 11:04:49 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id l4so43352557ejc.10
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 11:04:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=/H+m+ALhQKW7Ilv+GzFO9pjCjZCj8F3VFmPCGy2tCIo=;
-        b=vLxB60jVT0HTycIJZPpEqlQuwieieL8FDJrJIuCXXvh2kzWOc1RBN2K7mIEmvdiws9
-         jjY94AbGyrgyj2x5BwWsn95lOw2WMQE8arPljZoMOuE4vvDU/RvOHigmVKszYaoDFEwc
-         7jbeJyqevWz+nNycoYkpxn0pmIhZIUwBWySRdOuU6XOf8D0cTXyoTQkM4cYem/tMyOcs
-         6VZH5U0THlUzmkYP3vrcF2lvDbCkaK9lcNliKcIivI0S3Fk/vj1ogCRhwX9VpVAQkohc
-         ZaNmg0v1KzeXjrk3CHe8p25Ajh1Yp2iDT4ZFuvIocKan8xBm+hd0a1x3R/ukOR/LuiKW
-         57Nw==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Uc9tpLdABKe3k+bL9U1Q0ClltNGtCJ/DmDcgCrhYdYg=;
+        b=K3Y4k6P9B2fQV4CiR+khvfZXow2zdY2hX27fW9sgnIblaRE2hi2taF7p9Q4+AVcl4s
+         PfD8Ve5pKKASpKAll7IWIR3sutavY35ZyGnoSeGS8TSFfO7pt0sY4jZ2NOXX3aa+uGEt
+         hS8GPNmg0Kma0AUOiHZGH3XRkgHpY3q9QceqDF/VvGGr6hxG6R/PlKMfXoOLDzdf8+FE
+         JWH+eP92Afm41WhA/O1edLt5VLQcWd/s3RUB7P/6f157Rp/NIu9TD3WCQCkg/FgRiFYR
+         csxIBYc1ZQnzWAR8kN1svzNl5N3wrbg/gOMMMDKcCXCLEOdXR8MKYtIJJrmNX1ZgDtAA
+         gCWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=/H+m+ALhQKW7Ilv+GzFO9pjCjZCj8F3VFmPCGy2tCIo=;
-        b=fcIcQbRt5W0x824p8+r8GWB4p0SwCUXDTJWlIQ18bofawWbq9gJOLYGVVq9cJKXdEp
-         z24LhsEGZ6/x+xmIuHkQqzr9ckRkJyJjIZhaijiWXXkvq6b3EUdHCQBguce5YhzXf2Ly
-         rs9qwLS61G0Y991vYcrT/1Q2ddQ7bDu4VElYRXDLuVoZetKLJlhDZsKSyHc+LBBSNp9r
-         fP4pzNFA8FUyvASXIX6MDw7cQBFeiSciq+3ljtjpUMD/OCuQhuX1eA7/nqbMWLtx1Vv3
-         lbH8irmUjeVVHy9e2EhZRReDwRXGgRrppkxtQR/l1j3ttzx6aWtlHqW6n3+LPt2FU6Ii
-         FX0g==
-X-Gm-Message-State: AOAM531ncgrVIGgo6unu/4jsRw28CKZKyM4wUkChmqmZhCDN3wJAhKUp
-        CrJvM/FaGdPKfn+AfIar5Kv+kKP87fI+Og==
-X-Google-Smtp-Source: ABdhPJz30tGFtJUwlKaM9nGSiqouCiCRUIXx70H9H9TaPmMQbbQyemicL7XoJFvdOrIc/8Fgpl7n5m+InP/OtQ==
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:78ba:f620:dba8:af82])
- (user=dlatypov job=sendgmr) by 2002:a25:943:: with SMTP id
- u3mr432192ybm.489.1618596273231; Fri, 16 Apr 2021 11:04:33 -0700 (PDT)
-Date:   Fri, 16 Apr 2021 11:04:27 -0700
-Message-Id: <20210416180427.1545645-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
-Subject: [PATCH v6] lib: add basic KUnit test for lib/math
-From:   Daniel Latypov <dlatypov@google.com>
-To:     andriy.shevchenko@linux.intel.com
-Cc:     brendanhiggins@google.com, davidgow@google.com,
-        linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Daniel Latypov <dlatypov@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Uc9tpLdABKe3k+bL9U1Q0ClltNGtCJ/DmDcgCrhYdYg=;
+        b=pZiZjix4N2qJhcjFy5MKgcaA3DDNdU2c9qJqNB2/eRUbytZEMNQN++hoT0IJJcV25L
+         P7etHDIKRBbg1/k6E5qZfGkBEKTUODb62AD34z703M5C0mmnvFTaRcVjZqZHrG3vbTO8
+         kqp9WP7LYbrY5cXhZ0OqwNjK2qDBBOyW1DuyX9zaSE8fHHSQHz3D5bptVH4HqSVbK0f1
+         FBZlTXYSTTRBfyuJ5I9Vb/Oq/+vRQD8JD/s4YS0yckXpjU00dLMeoMc1K8ub0qY4/+nC
+         aNKk+/saSm3FEg5TvIqxhYJJzh/4BIaNKmG5j5Y/AQiix20J9xoMWDoohrnCRkiywRlV
+         Yiqg==
+X-Gm-Message-State: AOAM531CMzKWDOSW19CyPCw4LSk45gv2bOWIo4/kJpdjUHq7qhfGK7/B
+        jPJN2UR68bwa9e6B8wld8N3SD/4Gx3epPCoWEaxsTniep6Q=
+X-Google-Smtp-Source: ABdhPJzkDt6LekTblXCPYAUVMDzlqIo96JgBbNZCYuPdE91LgUOXmqNtScSYjIQX27TBLJw8r7il/9ZzZaWobeHGEDM=
+X-Received: by 2002:a17:906:4fcd:: with SMTP id i13mr9559800ejw.341.1618596287889;
+ Fri, 16 Apr 2021 11:04:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210415135901.47131-1-andriy.shevchenko@linux.intel.com>
+ <CAPcyv4jpkZNsQEvCe_dLoq0DOTrEX36vhkJg+zqEacUkJtvWiQ@mail.gmail.com>
+ <CAHp75VcpQREYFesS9q2TeqrR29hf0CvMESM42AVGAFzEYeRr_Q@mail.gmail.com>
+ <CAPcyv4jzg23CoQeqAyAR=PUjB4HG-FSnD8G0J7S=p22ANmzDMQ@mail.gmail.com> <YHnKg4MHkZ4QIBHR@smile.fi.intel.com>
+In-Reply-To: <YHnKg4MHkZ4QIBHR@smile.fi.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 16 Apr 2021 11:04:36 -0700
+Message-ID: <CAPcyv4j+66FaPHPLkF+ZPQq=uncYJ1Mx8JMzZnhp86qS=JewjQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] ACPI: NFIT: Import GUID before use
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add basic test coverage for files that don't require any config options:
-* part of math.h (what seem to be the most commonly used macros)
-* gcd.c
-* lcm.c
-* int_sqrt.c
-* reciprocal_div.c
-(Ignored int_pow.c since it's a simple textbook algorithm.)
+On Fri, Apr 16, 2021 at 10:34 AM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Fri, Apr 16, 2021 at 09:15:34AM -0700, Dan Williams wrote:
+> > On Fri, Apr 16, 2021 at 1:58 AM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > > On Fri, Apr 16, 2021 at 8:28 AM Dan Williams <dan.j.williams@intel.com> wrote:
+> > > > On Thu, Apr 15, 2021 at 6:59 AM Andy Shevchenko
+> > > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > >
+> > > > > Strictly speaking the comparison between guid_t and raw buffer
+> > > > > is not correct. Import GUID to variable of guid_t type and then
+> > > > > compare.
+> > > >
+> > > > Hmm, what about something like the following instead, because it adds
+> > > > safety. Any concerns about evaluating x twice in a macro should be
+> > > > alleviated by the fact that ARRAY_SIZE() will fail the build if (x) is
+> > > > not an array.
+> > >
+> > > ARRAY_SIZE doesn't check type.
+> >
+> > See __must_be_array.
+> >
+> > > I don't like hiding ugly casts like this.
+> >
+> > See PTR_ERR, ERR_PTR, ERR_CAST.
+>
+> It's special, i.e. error pointer case. We don't handle such here.
+>
+> > There's nothing broken about the way the code currently stands, so I'd
+> > rather try to find something to move the implementation forward than
+> > sideways.
+>
+> Submit a patch then. I rest my case b/c I consider that ugly castings worse
+> than additional API call, although it's not ideal.
 
-These tests aren't particularly interesting, but they
-* provide short and simple examples of parameterized tests
-* provide a place to add tests for any new files in this dir
-* are written so adding new test cases to cover edge cases should be easy
-  * looking at code coverage, we hit all the branches in the .c files
-
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
-Reviewed-by: David Gow <davidgow@google.com>
----
-Changes since v5:
-* add in test cases for roundup/rounddown
-* address misc comments from David
-
-Changes since v4:
-* add in test cases for some math.h macros (abs, round_up/round_down,
-  div_round_down/closest)
-* use parameterized testing less to keep things terser
-
-Changes since v3:
-* fix `checkpatch.pl --strict` warnings
-* add test cases for gcd(0,0) and lcm(0,0)
-* minor: don't test both gcd(a,b) and gcd(b,a) when a == b
-
-Changes since v2: mv math_test.c => math_kunit.c
-
-Changes since v1:
-* Rebase and rewrite to use the new parameterized testing support.
-* misc: fix overflow in literal and inline int_sqrt format string.
-* related: commit 1f0e943df68a ("Documentation: kunit: provide guidance
-for testing many inputs") was merged explaining the patterns shown here.
-  * there's an in-flight patch to update it for parameterized testing.
----
- lib/math/Kconfig      |  12 ++
- lib/math/Makefile     |   2 +
- lib/math/math_kunit.c | 291 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 305 insertions(+)
- create mode 100644 lib/math/math_kunit.c
-
-diff --git a/lib/math/Kconfig b/lib/math/Kconfig
-index f19bc9734fa7..a974d4db0f9c 100644
---- a/lib/math/Kconfig
-+++ b/lib/math/Kconfig
-@@ -15,3 +15,15 @@ config PRIME_NUMBERS
- 
- config RATIONAL
- 	bool
-+
-+config MATH_KUNIT_TEST
-+	tristate "KUnit test for lib/math and math.h" if !KUNIT_ALL_TESTS
-+	depends on KUNIT
-+	default KUNIT_ALL_TESTS
-+	help
-+		This builds unit tests for lib/math and math.h.
-+
-+		For more information on KUnit and unit tests in general, please refer
-+		to the KUnit documentation in Documentation/dev-tools/kunit/.
-+
-+		If unsure, say N.
-diff --git a/lib/math/Makefile b/lib/math/Makefile
-index be6909e943bd..30abb7a8d564 100644
---- a/lib/math/Makefile
-+++ b/lib/math/Makefile
-@@ -4,3 +4,5 @@ obj-y += div64.o gcd.o lcm.o int_pow.o int_sqrt.o reciprocal_div.o
- obj-$(CONFIG_CORDIC)		+= cordic.o
- obj-$(CONFIG_PRIME_NUMBERS)	+= prime_numbers.o
- obj-$(CONFIG_RATIONAL)		+= rational.o
-+
-+obj-$(CONFIG_MATH_KUNIT_TEST)	+= math_kunit.o
-diff --git a/lib/math/math_kunit.c b/lib/math/math_kunit.c
-new file mode 100644
-index 000000000000..556c23b17c3c
---- /dev/null
-+++ b/lib/math/math_kunit.c
-@@ -0,0 +1,291 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Simple KUnit suite for math helper funcs that are always enabled.
-+ *
-+ * Copyright (C) 2020, Google LLC.
-+ * Author: Daniel Latypov <dlatypov@google.com>
-+ */
-+
-+#include <kunit/test.h>
-+#include <linux/gcd.h>
-+#include <linux/kernel.h>
-+#include <linux/lcm.h>
-+#include <linux/reciprocal_div.h>
-+
-+static void abs_test(struct kunit *test)
-+{
-+	KUNIT_EXPECT_EQ(test, abs((char)0), (char)0);
-+	KUNIT_EXPECT_EQ(test, abs((char)42), (char)42);
-+	KUNIT_EXPECT_EQ(test, abs((char)-42), (char)42);
-+
-+	/* The expression in the macro is actually promoted to an int. */
-+	KUNIT_EXPECT_EQ(test, abs((short)0),  0);
-+	KUNIT_EXPECT_EQ(test, abs((short)42),  42);
-+	KUNIT_EXPECT_EQ(test, abs((short)-42),  42);
-+
-+	KUNIT_EXPECT_EQ(test, abs(0),  0);
-+	KUNIT_EXPECT_EQ(test, abs(42),  42);
-+	KUNIT_EXPECT_EQ(test, abs(-42),  42);
-+
-+	KUNIT_EXPECT_EQ(test, abs(0L), 0L);
-+	KUNIT_EXPECT_EQ(test, abs(42L), 42L);
-+	KUNIT_EXPECT_EQ(test, abs(-42L), 42L);
-+
-+	KUNIT_EXPECT_EQ(test, abs(0LL), 0LL);
-+	KUNIT_EXPECT_EQ(test, abs(42LL), 42LL);
-+	KUNIT_EXPECT_EQ(test, abs(-42LL), 42LL);
-+
-+	/* Unsigned types get casted to signed. */
-+	KUNIT_EXPECT_EQ(test, abs(0ULL), 0LL);
-+	KUNIT_EXPECT_EQ(test, abs(42ULL), 42LL);
-+}
-+
-+static void int_sqrt_test(struct kunit *test)
-+{
-+	KUNIT_EXPECT_EQ(test, int_sqrt(0UL), 0UL);
-+	KUNIT_EXPECT_EQ(test, int_sqrt(1UL), 1UL);
-+	KUNIT_EXPECT_EQ(test, int_sqrt(4UL), 2UL);
-+	KUNIT_EXPECT_EQ(test, int_sqrt(5UL), 2UL);
-+	KUNIT_EXPECT_EQ(test, int_sqrt(8UL), 2UL);
-+	KUNIT_EXPECT_EQ(test, int_sqrt(1UL << 30), 1UL << 15);
-+}
-+
-+static void round_up_test(struct kunit *test)
-+{
-+	KUNIT_EXPECT_EQ(test, round_up(0, 1), 0);
-+	KUNIT_EXPECT_EQ(test, round_up(1, 2), 2);
-+	KUNIT_EXPECT_EQ(test, round_up(3, 2), 4);
-+	KUNIT_EXPECT_EQ(test, round_up((1 << 30) - 1, 2), 1 << 30);
-+	KUNIT_EXPECT_EQ(test, round_up((1 << 30) - 1, 1 << 29), 1 << 30);
-+}
-+
-+static void round_down_test(struct kunit *test)
-+{
-+	KUNIT_EXPECT_EQ(test, round_down(0, 1), 0);
-+	KUNIT_EXPECT_EQ(test, round_down(1, 2), 0);
-+	KUNIT_EXPECT_EQ(test, round_down(3, 2), 2);
-+	KUNIT_EXPECT_EQ(test, round_down((1 << 30) - 1, 2), (1 << 30) - 2);
-+	KUNIT_EXPECT_EQ(test, round_down((1 << 30) - 1, 1 << 29), 1 << 29);
-+}
-+
-+/* These versions can round to numbers that aren't a power of two */
-+static void roundup_test(struct kunit *test)
-+{
-+	KUNIT_EXPECT_EQ(test, roundup(0, 1), 0);
-+	KUNIT_EXPECT_EQ(test, roundup(1, 2), 2);
-+	KUNIT_EXPECT_EQ(test, roundup(3, 2), 4);
-+	KUNIT_EXPECT_EQ(test, roundup((1 << 30) - 1, 2), 1 << 30);
-+	KUNIT_EXPECT_EQ(test, roundup((1 << 30) - 1, 1 << 29), 1 << 30);
-+
-+	KUNIT_EXPECT_EQ(test, roundup(3, 2), 4);
-+	KUNIT_EXPECT_EQ(test, roundup(4, 3), 6);
-+}
-+
-+static void rounddown_test(struct kunit *test)
-+{
-+	KUNIT_EXPECT_EQ(test, rounddown(0, 1), 0);
-+	KUNIT_EXPECT_EQ(test, rounddown(1, 2), 0);
-+	KUNIT_EXPECT_EQ(test, rounddown(3, 2), 2);
-+	KUNIT_EXPECT_EQ(test, rounddown((1 << 30) - 1, 2), (1 << 30) - 2);
-+	KUNIT_EXPECT_EQ(test, rounddown((1 << 30) - 1, 1 << 29), 1 << 29);
-+
-+	KUNIT_EXPECT_EQ(test, rounddown(3, 2), 2);
-+	KUNIT_EXPECT_EQ(test, rounddown(4, 3), 3);
-+}
-+
-+static void div_round_up_test(struct kunit *test)
-+{
-+	KUNIT_EXPECT_EQ(test, DIV_ROUND_UP(0, 1), 0);
-+	KUNIT_EXPECT_EQ(test, DIV_ROUND_UP(20, 10), 2);
-+	KUNIT_EXPECT_EQ(test, DIV_ROUND_UP(21, 10), 3);
-+	KUNIT_EXPECT_EQ(test, DIV_ROUND_UP(21, 20), 2);
-+	KUNIT_EXPECT_EQ(test, DIV_ROUND_UP(21, 99), 1);
-+}
-+
-+static void div_round_closest_test(struct kunit *test)
-+{
-+	KUNIT_EXPECT_EQ(test, DIV_ROUND_CLOSEST(0, 1), 0);
-+	KUNIT_EXPECT_EQ(test, DIV_ROUND_CLOSEST(20, 10), 2);
-+	KUNIT_EXPECT_EQ(test, DIV_ROUND_CLOSEST(21, 10), 2);
-+	KUNIT_EXPECT_EQ(test, DIV_ROUND_CLOSEST(25, 10), 3);
-+}
-+
-+/* Generic test case for unsigned long inputs. */
-+struct test_case {
-+	unsigned long a, b;
-+	unsigned long result;
-+};
-+
-+static struct test_case gcd_cases[] = {
-+	{
-+		.a = 0, .b = 0,
-+		.result = 0,
-+	},
-+	{
-+		.a = 0, .b = 1,
-+		.result = 1,
-+	},
-+	{
-+		.a = 2, .b = 2,
-+		.result = 2,
-+	},
-+	{
-+		.a = 2, .b = 4,
-+		.result = 2,
-+	},
-+	{
-+		.a = 3, .b = 5,
-+		.result = 1,
-+	},
-+	{
-+		.a = 3 * 9, .b = 3 * 5,
-+		.result = 3,
-+	},
-+	{
-+		.a = 3 * 5 * 7, .b = 3 * 5 * 11,
-+		.result = 15,
-+	},
-+	{
-+		.a = 1 << 21,
-+		.b = (1 << 21) - 1,
-+		.result = 1,
-+	},
-+};
-+
-+KUNIT_ARRAY_PARAM(gcd, gcd_cases, NULL);
-+
-+static void gcd_test(struct kunit *test)
-+{
-+	const char *message_fmt = "gcd(%lu, %lu)";
-+	const struct test_case *test_param = test->param_value;
-+
-+	KUNIT_EXPECT_EQ_MSG(test, test_param->result,
-+			    gcd(test_param->a, test_param->b),
-+			    message_fmt, test_param->a,
-+			    test_param->b);
-+
-+	if (test_param->a == test_param->b)
-+		return;
-+
-+	/* gcd(a,b) == gcd(b,a) */
-+	KUNIT_EXPECT_EQ_MSG(test, test_param->result,
-+			    gcd(test_param->b, test_param->a),
-+			    message_fmt, test_param->b,
-+			    test_param->a);
-+}
-+
-+static struct test_case lcm_cases[] = {
-+	{
-+		.a = 0, .b = 0,
-+		.result = 0,
-+	},
-+	{
-+		.a = 0, .b = 1,
-+		.result = 0,
-+	},
-+	{
-+		.a = 1, .b = 2,
-+		.result = 2,
-+	},
-+	{
-+		.a = 2, .b = 2,
-+		.result = 2,
-+	},
-+	{
-+		.a = 3 * 5, .b = 3 * 7,
-+		.result = 3 * 5 * 7,
-+	},
-+};
-+
-+KUNIT_ARRAY_PARAM(lcm, lcm_cases, NULL);
-+
-+static void lcm_test(struct kunit *test)
-+{
-+	const char *message_fmt = "lcm(%lu, %lu)";
-+	const struct test_case *test_param = test->param_value;
-+
-+	KUNIT_EXPECT_EQ_MSG(test, test_param->result,
-+			    lcm(test_param->a, test_param->b),
-+			    message_fmt, test_param->a,
-+			    test_param->b);
-+
-+	if (test_param->a == test_param->b)
-+		return;
-+
-+	/* lcm(a,b) == lcm(b,a) */
-+	KUNIT_EXPECT_EQ_MSG(test, test_param->result,
-+			    lcm(test_param->b, test_param->a),
-+			    message_fmt, test_param->b,
-+			    test_param->a);
-+}
-+
-+struct u32_test_case {
-+	u32 a, b;
-+	u32 result;
-+};
-+
-+static struct u32_test_case reciprocal_div_cases[] = {
-+	{
-+		.a = 0, .b = 1,
-+		.result = 0,
-+	},
-+	{
-+		.a = 42, .b = 20,
-+		.result = 2,
-+	},
-+	{
-+		.a = 42, .b = 9999,
-+		.result = 0,
-+	},
-+	{
-+		.a = (1 << 16), .b = (1 << 14),
-+		.result = 1 << 2,
-+	},
-+};
-+
-+KUNIT_ARRAY_PARAM(reciprocal_div, reciprocal_div_cases, NULL);
-+
-+static void reciprocal_div_test(struct kunit *test)
-+{
-+	const struct u32_test_case *test_param = test->param_value;
-+	struct reciprocal_value rv = reciprocal_value(test_param->b);
-+
-+	KUNIT_EXPECT_EQ_MSG(test, test_param->result,
-+			    reciprocal_divide(test_param->a, rv),
-+			    "reciprocal_divide(%u, %u)",
-+			    test_param->a, test_param->b);
-+}
-+
-+static void reciprocal_scale_test(struct kunit *test)
-+{
-+	KUNIT_EXPECT_EQ(test, reciprocal_scale(0u, 100), 0u);
-+	KUNIT_EXPECT_EQ(test, reciprocal_scale(1u, 100), 0u);
-+	KUNIT_EXPECT_EQ(test, reciprocal_scale(1u << 4, 1 << 28), 1u);
-+	KUNIT_EXPECT_EQ(test, reciprocal_scale(1u << 16, 1 << 28), 1u << 12);
-+	KUNIT_EXPECT_EQ(test, reciprocal_scale(~0u, 1 << 28), (1u << 28) - 1);
-+}
-+
-+static struct kunit_case math_test_cases[] = {
-+	KUNIT_CASE(abs_test),
-+	KUNIT_CASE(int_sqrt_test),
-+	KUNIT_CASE(round_up_test),
-+	KUNIT_CASE(round_down_test),
-+	KUNIT_CASE(roundup_test),
-+	KUNIT_CASE(rounddown_test),
-+	KUNIT_CASE(div_round_up_test),
-+	KUNIT_CASE(div_round_closest_test),
-+	KUNIT_CASE_PARAM(gcd_test, gcd_gen_params),
-+	KUNIT_CASE_PARAM(lcm_test, lcm_gen_params),
-+	KUNIT_CASE_PARAM(reciprocal_div_test, reciprocal_div_gen_params),
-+	KUNIT_CASE(reciprocal_scale_test),
-+	{}
-+};
-+
-+static struct kunit_suite math_test_suite = {
-+	.name = "lib-math",
-+	.test_cases = math_test_cases,
-+};
-+
-+kunit_test_suites(&math_test_suite);
-+
-+MODULE_LICENSE("GPL v2");
-
-base-commit: 7e25f40eab52c57ff6772d27d2aef3640a3237d7
--- 
-2.31.1.368.gbe11c130af-goog
-
+It sounds like you'll NAK that patch, and I'm not too enthusiastic
+about these proposed changes either because I disagree that the code
+is incorrect. Is there another compromise?
