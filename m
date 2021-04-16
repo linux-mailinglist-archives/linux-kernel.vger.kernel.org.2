@@ -2,124 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97392361CF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08FBF361CFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241352AbhDPJJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 05:09:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235280AbhDPJJg (ORCPT
+        id S241479AbhDPJLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 05:11:50 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:59433 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234914AbhDPJLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 05:09:36 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B467C061574;
-        Fri, 16 Apr 2021 02:09:12 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618564150;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HXhVcknuH7vRZ8Cv/x2IzlKP8UQuZLhEE+jqIDvzBq8=;
-        b=GBzS2yJfcnoBznVCvFFDpzAXFOpnQVzFnixFQFU0/rG+8GlCWCmN+AL48sDYbWI99x6zmQ
-        YAqnLUDtMWQCxqMwJ+l13PG5SHYuSgm1Loty033hg8qQwEyZiZM2eeQeUaTr9/RR4jcD2g
-        VeOd8I6ohaqaOT1gtteUjL71LBYbnEEfFt7h4FDdkdxm0IEkNijgI9SOPOxAhQZ7knr3Q2
-        CJdqIJrLXyVvc7cLXrlhH6H+toi44LA46bt2+MEM9cfSii9m8kj29KaYzPgmCbVkvG+zYZ
-        2u0dXabluk1ca3f2DdFQrJvtAGgIwwMilGSaIa0hMAN0B6YuCDOU82zBkyg8Bw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618564150;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HXhVcknuH7vRZ8Cv/x2IzlKP8UQuZLhEE+jqIDvzBq8=;
-        b=AokndKAbOjooNwgG2WB8jPqJmg/CJgLobKCHlN0NXUMLGOxlIOBQ8FUIB1S6ZMX0Knmw7I
-        wG9K+soas1N2uSBg==
-To:     chensong <chensong_2000@189.cn>
-Cc:     linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rostedt@goodmis.org, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, keescook@chromium.org,
-        gregkh@linuxfoundation.org, maz@kernel.org, joe@perches.com,
-        romain.perier@gmail.com, john.garry@huawei.com
-Subject: Re: [PATCH] kernel:irq:manage: request threaded irq with a specified priority
-In-Reply-To: <4a355b66-3803-586b-56c7-ce715b5e59cc@189.cn>
-References: <1618294774-24370-1-git-send-email-chensong_2000@189.cn> <875z0qzigk.ffs@nanos.tec.linutronix.de> <4a355b66-3803-586b-56c7-ce715b5e59cc@189.cn>
-Date:   Fri, 16 Apr 2021 11:09:09 +0200
-Message-ID: <87fszqvbnu.ffs@nanos.tec.linutronix.de>
+        Fri, 16 Apr 2021 05:11:48 -0400
+Received: from 36-229-228-200.dynamic-ip.hinet.net ([36.229.228.200] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1lXKVK-0007AL-BE; Fri, 16 Apr 2021 09:11:11 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     kbusch@kernel.org, axboe@fb.com, hch@lst.de, sagi@grimberg.me
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Prike Liang <Prike.Liang@amd.com>,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        linux-nvme@lists.infradead.org (open list:NVM EXPRESS DRIVER),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] nvme: Favor D3cold for suspend if NVMe device supports it
+Date:   Fri, 16 Apr 2021 17:10:55 +0800
+Message-Id: <20210416091056.1209937-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16 2021 at 12:57, chensong wrote:
-> On 2021/4/13 =E4=B8=8B=E5=8D=884:39, Thomas Gleixner wrote:
->> It breaks because the system designer failed to assign proper priorities
->> to the irq threads int_a, int_b and to the user space process task_a.
->
-> yes, it's designers' responsibility to assign proper priorities, but=20
-> kernel is also obliged to provide interfaces for those designers.
+On AMD platforms that use s2idle, NVMe timeouts on s2idle resume,
+because their SMU FW may cut off NVMe power during sleep.
 
-The interface exists. sched_setscheduler(2)
+Unlike Intel platforms where the power resources are generally
+controlled by root port, the power resources is controlled by NVMe
+device itself on recent AMD platforms:
+...
+    Scope (\_SB.PCI0.GP24.NVME)
+    {
+        Name (_PR0, Package (0x01)  // _PR0: Power Resources for D0
+        {
+            P0NV
+        })
+        Name (_PR2, Package (0x01)  // _PR2: Power Resources for D2
+        {
+            P0NV
+        })
+        Name (_PR3, Package (0x01)  // _PR3: Power Resources for D3hot
+        {
+            P0NV
+        })
+        Method (_PS0, 0, NotSerialized)  // _PS0: Power State 0
+        {
+        }
 
-> chrt can help designers in this case, however, the truth is lot of=20
-> customers are not familiar with it.
+        Method (_PS3, 0, NotSerialized)  // _PS3: Power State 3
+        {
+        }
+    }
+...
+And it's a great indication that the NVMe should use D3cold for sleep
+instead of staying at D0.
 
-The truth is that real-time systems need to be carefully designed and
-parametrized. And that's only possible when _all_ of the system
-components and their constraints are known. Trying to solve it at the
-device driver level of a single device is impossible and a guarantee for
-fail.
+So use NVME_QUIRK_SIMPLE_SUSPEND if the ACPI counterpart of NVMe device
+supports D3cold.
 
-If the customer does not know how to do it, then I really have to ask
-why he's trying to use a real-time system at all. There is no real-time
-system which magically tunes itself by pulling the overall system
-constraints out of thin air.
-=20
-> what's more, chrt can also apply to userspace rt task, but userspace
-> also has sched_setscheduler to assgin proper priority inside code like
-> cyclictest, why can't driver writers have another choice?
+Tested on HP EliteBook 840 G7/G8.
 
-There is a very simple reason: The driver writer cannot know about the
-requirements of the complete system which is composed of kernel, drivers
-and user space applications, unless the driver writer is fully aware of
-the overall system design and constraints.
+BugLink: https://gitlab.freedesktop.org/drm/amd/-/issues/1230
+References: https://lore.kernel.org/linux-nvme/1618458725-17164-1-git-send-email-Prike.Liang@amd.com/
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: Prike Liang <Prike.Liang@amd.com>
+Cc: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ drivers/nvme/host/pci.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-How is that supposed to work on a general purpose kernel which is
-utilized for a gazillion of different use cases which all have different
-expectations?
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 7249ae74f71f..cc190324a919 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -2840,6 +2840,13 @@ static bool nvme_acpi_storage_d3(struct pci_dev *dev)
+ 	acpi_status status;
+ 	u8 val;
+ 
++	/*
++	 * If the device itself supports D3cold, use that instead of D0 ASPM +
++	 * NVMe APST.
++	 */
++	if (pci_pr3_present(dev))
++		return true;
++
+ 	/*
+ 	 * Look for _DSD property specifying that the storage device on the port
+ 	 * must use D3 to support deep platform power savings during
+-- 
+2.30.2
 
-It simply cannot work because default A will only work for usecase A and
-be completely wrong for all others.
-
-> Further, what if irq handlear thread has to run on the expected priority=
-=20
-> at the very beginning? This patch helps.
-
-There is no such thing as the expected priority of an interrupt thread
-which can be applied upfront.
-
-There are ~5400 instances of request*irq() in the kernel source and
-there is no way to make priority decisions for them which work for every
-RT system out there.
-
-The kernel sets a default and the system designer, admin, user has to
-take care of tuning it to match the expectations and constraints of his
-particular application scenario.
-
-The kernel provides an userspace interface to do that. That interface
-might be a bit awkward to use, but there are tools out there which help
-with that, and if at all we can think about providing a better and
-easier to use interface for this.
-
-Trying to solve that at the kernel level is putting the cart before the
-horse.
-
-Thanks,
-
-        tglx
