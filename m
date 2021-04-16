@@ -2,146 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C03936208F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F02362095
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243653AbhDPNJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 09:09:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243431AbhDPNJU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 09:09:20 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6149C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 06:08:55 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id s16so22345370iog.9
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 06:08:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uIsY7rTiA+VYMrCL0Fk+IRPmeXg2RKOGnKhn6jk88kE=;
-        b=tFyHUHgdMoZuhKobVdbX2vg8qAX7TnojQWkhHz9Ak0pCsoCpXT12YGpXihZIDn6cHY
-         76bIRnoSoxcU9vlHDlv5LO540YctIM9vnF6ehSra3UAiJmV5/oMtoxD+vAeJFwUi8A76
-         SieIzgCha1dTrT/oBzi2Vn86SFQY/icxVndiVcjkFmrhOwtNSxX0pLZsM+BRHFjZFutl
-         32e4NvSs9rrSOSTP1eM5EFP32EMV3WDZybHcWen/vCsFxcDqF050TA1b86DwzrFjkRBQ
-         SEzn9j6xvzV+k0hKCinhT9DGl33HAOY7VAQY7jHee5JnmEkKYsuA/hLHRs9H3bFv/eTf
-         MylA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uIsY7rTiA+VYMrCL0Fk+IRPmeXg2RKOGnKhn6jk88kE=;
-        b=F11mkNSXBP1pGMwiYgw9jusdg7oeFkE9HsE4EPJs3d3PMphI+FaWlJSVv7JSetyfNp
-         Abkk30E+L1eGiW8l2vb6ov05I/oG6yT+Y5glefk2FGEvumjRoA0G/JScWBX5eWuo5X5A
-         b+zQXtv9z1Y9z51vd+GVn/NY0f22YCEH+3GY2vxMH/wcvRnecGIoCjmB926m09uzq9MA
-         YTJPTOQWcyx5g2HYq0PM8GB2qZkHzzk1EoOxicDDSWtSZ0U+Pd28C4vLESHFz55Tsixm
-         8Qy3sfd2ywZlUGPOLyEwGwgcHb4xuO10TTFWex3z9SQ2PuIeCczTaxdGiZx6+1rGtr2k
-         9ABg==
-X-Gm-Message-State: AOAM531+SJkE3JVMJ/JDJvdyIVUXT8QogPnnwr2sd1p8ORDowymAK2+I
-        HhuBXiJUrxSUjFPkM3LFWlAQeA==
-X-Google-Smtp-Source: ABdhPJyO/6DXTD88pvOp8rSOlXVJJ35Xta+9suI4ouLqEEhZDpNAUjVHC5RN3PwkZ+QI33qsrrtoOw==
-X-Received: by 2002:a6b:7601:: with SMTP id g1mr2792815iom.37.1618578535272;
-        Fri, 16 Apr 2021 06:08:55 -0700 (PDT)
-Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id e6sm2713535ilr.81.2021.04.16.06.08.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 06:08:55 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     bjorn.andersson@linaro.org, agross@kernel.org, robh+dt@kernel.org,
-        elder@kernel.org, linux-arm-msm@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 2/2] net: ipa: optionally define firmware name via DT
-Date:   Fri, 16 Apr 2021 08:08:50 -0500
-Message-Id: <20210416130850.1970247-3-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210416130850.1970247-1-elder@linaro.org>
-References: <20210416130850.1970247-1-elder@linaro.org>
+        id S243429AbhDPNL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 09:11:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39534 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235445AbhDPNLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 09:11:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8062061153;
+        Fri, 16 Apr 2021 13:11:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618578689;
+        bh=H5tvqGKtsytmfz9hrh5Tz3t3yEGosI9S7z/zgAa6I5o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hzdoGw1lcLOWBafrJ2vv0zLT1VF1BjVcGl4k9Xu/VZiu/6PadIksHw49WhkCMRhjw
+         NGaXYhbyks/bTcBS7aeR3vWTH5TRknBPyCs5E64N/jrRlDYJ8KbitTu37do3e25ISF
+         JwdObOyySYAdVXSH56NnXIlmD1dTrAXWgGRda8Un12mS7Onc27+U2NpS03002Ly3Eh
+         uSFVs4RHep5eelQ5xVHAN62uH4CgMfuA2OqUU3KvdJCL1x56X04kLWre4S/3Rd8Fyd
+         RAN9lmEuDcnZhFM07b99P4NTF+NJ+oRhHhToBjz44xL9o8LgAgNHmmVPY5WLfjHATA
+         ZD5oe7T417Z6w==
+Date:   Fri, 16 Apr 2021 16:11:25 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/kprobes: Simplify alloc_insn_page() with
+ __vmalloc_node_range
+Message-ID: <YHmM/ZWaO95o6cZo@kernel.org>
+References: <20210413180231.19b72601@xhacker.debian>
+ <20210413220030.d1cbbc63659dcbc52876696d@kernel.org>
+ <20210414152728.418a41fb@xhacker.debian>
+ <YHbqN0B5QnpWtzc/@kernel.org>
+ <20210416150616.027f5bae@xhacker.debian>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416150616.027f5bae@xhacker.debian>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IPA initialization includes loading some firmware.  This step is
-done either by the modem or by the AP under Trust Zone.  If the
-AP loads firmware, the name of the firmware file is currently
-hard-coded ("ipa_fws.mdt").
+On Fri, Apr 16, 2021 at 03:06:16PM +0800, Jisheng Zhang wrote:
+> On Wed, 14 Apr 2021 16:12:23 +0300 Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> 
+> 
+> > > So kprobes ss ins slot page "must be in the range of relative branching only
+> > > for x86 and arm"
+> > >
+> > > And Jarkko's "arch/x86: kprobes: Remove MODULES dependency" series look
+> > > much better. The last version is v5, I'm not sure whether Jarkko will
+> > > send new version to mainline the series.  
+> > 
+> > Ya, I got really busy with upstreaming SGX. That's why this was left out
+> > (but luckily SGX got finally into upstream).
+> > 
+> > Thanks for reminding. Any motivation to pick it up and continue where I
+> > left of?
+> > 
+> 
+> I can try, I will try to send patches once next rc1 is released.
+> 
+> thanks
 
-Add the ability to specify the relative path of the firmware file to
-use in a property in the Device Tree IPA node.  If the property is
-not found (or if any other error occurs attempting to get it), fall
-back to using a default relative path.
+Alright, thanks. Be sure to CC me, I'm happy to test them in my
+environment.
 
-Use the "old" fixed name as the default.  Rename the symbol that
-represents this default to emphasize its purpose.
-
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/ipa_main.c | 23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/ipa/ipa_main.c b/drivers/net/ipa/ipa_main.c
-index aad915e2ce523..9915603ed10ba 100644
---- a/drivers/net/ipa/ipa_main.c
-+++ b/drivers/net/ipa/ipa_main.c
-@@ -67,7 +67,7 @@
-  */
- 
- /* The name of the GSI firmware file relative to /lib/firmware */
--#define IPA_FWS_PATH		"ipa_fws.mdt"
-+#define IPA_FW_PATH_DEFAULT	"ipa_fws.mdt"
- #define IPA_PAS_ID		15
- 
- /* Shift of 19.2 MHz timestamp to achieve lower resolution timestamps */
-@@ -517,6 +517,7 @@ static int ipa_firmware_load(struct device *dev)
- 	struct device_node *node;
- 	struct resource res;
- 	phys_addr_t phys;
-+	const char *path;
- 	ssize_t size;
- 	void *virt;
- 	int ret;
-@@ -534,9 +535,17 @@ static int ipa_firmware_load(struct device *dev)
- 		return ret;
- 	}
- 
--	ret = request_firmware(&fw, IPA_FWS_PATH, dev);
-+	/* Use name from DTB if specified; use default for *any* error */
-+	ret = of_property_read_string(dev->of_node, "firmware-name", &path);
- 	if (ret) {
--		dev_err(dev, "error %d requesting \"%s\"\n", ret, IPA_FWS_PATH);
-+		dev_dbg(dev, "error %d getting \"firmware-name\" resource\n",
-+			ret);
-+		path = IPA_FW_PATH_DEFAULT;
-+	}
-+
-+	ret = request_firmware(&fw, path, dev);
-+	if (ret) {
-+		dev_err(dev, "error %d requesting \"%s\"\n", ret, path);
- 		return ret;
- 	}
- 
-@@ -549,13 +558,11 @@ static int ipa_firmware_load(struct device *dev)
- 		goto out_release_firmware;
- 	}
- 
--	ret = qcom_mdt_load(dev, fw, IPA_FWS_PATH, IPA_PAS_ID,
--			    virt, phys, size, NULL);
-+	ret = qcom_mdt_load(dev, fw, path, IPA_PAS_ID, virt, phys, size, NULL);
- 	if (ret)
--		dev_err(dev, "error %d loading \"%s\"\n", ret, IPA_FWS_PATH);
-+		dev_err(dev, "error %d loading \"%s\"\n", ret, path);
- 	else if ((ret = qcom_scm_pas_auth_and_reset(IPA_PAS_ID)))
--		dev_err(dev, "error %d authenticating \"%s\"\n", ret,
--			IPA_FWS_PATH);
-+		dev_err(dev, "error %d authenticating \"%s\"\n", ret, path);
- 
- 	memunmap(virt);
- out_release_firmware:
--- 
-2.27.0
-
+/Jarkko
