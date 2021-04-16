@@ -2,72 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2AD53623B1
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6F93623B0
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343607AbhDPPR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 11:17:27 -0400
-Received: from smtprelay0213.hostedemail.com ([216.40.44.213]:48228 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S244671AbhDPPOl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 11:14:41 -0400
-Received: from omf09.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 1E7E7182CED5B;
-        Fri, 16 Apr 2021 15:12:05 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id 9F81C1E04DB;
-        Fri, 16 Apr 2021 15:12:03 +0000 (UTC)
-Message-ID: <9e5a552b8b1f65af3eb4d2371a19c33d97f642d0.camel@perches.com>
-Subject: Re: [PATCH 1/5] scsi: BusLogic: Fix missing `pr_cont' use
-From:   Joe Perches <joe@perches.com>
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     Khalid Aziz <khalid@gonehiking.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Date:   Fri, 16 Apr 2021 08:12:01 -0700
-In-Reply-To: <alpine.DEB.2.21.2104161627130.44318@angie.orcam.me.uk>
-References: <alpine.DEB.2.21.2104141244520.44318@angie.orcam.me.uk>
-          <alpine.DEB.2.21.2104141419040.44318@angie.orcam.me.uk>
-          <787aae5540612555a8bf92de2083c8fa74e52ce9.camel@perches.com>
-          <alpine.DEB.2.21.2104161224300.44318@angie.orcam.me.uk>
-         <86c10671ff86f96004a6d6c3c08aed3e27d58d0a.camel@perches.com>
-         <alpine.DEB.2.21.2104161627130.44318@angie.orcam.me.uk>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S245016AbhDPPRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 11:17:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245397AbhDPPN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 11:13:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C69EE61166;
+        Fri, 16 Apr 2021 15:12:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618585979;
+        bh=vRTu21aTAGPsQ0NwM6AMDJ+Nc41b7EFjriw0cXrcLxQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VBauDUbkra3OUcK+3rWa9RGPHeETx1Xes3Y/hE/J15heIabrFo8hjxYUPBD+6mFOQ
+         EexGpFt33P+pMgiZSsOFP16BzkBTqvPZnemJDX4k8+yjPHtVYFNpjhbGcrnmpLtR4a
+         asrgKuHQZCgioyurIlObEhBSjb6tOaLZy+K+1eq0vBNcuFYxsI5edWI19St71s9B93
+         /rJa3Cxpo5TMQ12Eu6LAQR7W2nseXMJWg5yMQ0+K/fs4vfHaeZpZ7R2wuUbhq3pxSF
+         wjwZwePciJ5miS1OkAW5hGgRgLndGZaC8CjtscMnqMyK2ktFdvxyE1P5bRbjOAx8x/
+         tPuIUWFlcsCPw==
+Date:   Fri, 16 Apr 2021 16:12:35 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "quanyang.wang" <quanyang.wang@windriver.com>
+Cc:     Michal Simek <michal.simek@xilinx.com>,
+        Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] spi: spi-zynqmp-gqspi: fix clk_enable/disable
+ imbalance issue
+Message-ID: <20210416151235.GC5560@sirena.org.uk>
+References: <20210416004652.2975446-1-quanyang.wang@windriver.com>
+ <20210416004652.2975446-2-quanyang.wang@windriver.com>
+ <20210416125558.GA5560@sirena.org.uk>
+ <03f4152a-e66e-6b4a-5b4a-5f79f9ce2302@windriver.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 9F81C1E04DB
-X-Spam-Status: No, score=0.10
-X-Stat-Signature: s9mxuosraujha4i8xyc6wiu14nyngk5u
-X-Rspamd-Server: rspamout01
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18h5DhmD5kG2CH6aqwm9teq+oQ9Oz950oY=
-X-HE-Tag: 1618585923-648852
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/Uq4LBwYP4y1W6pO"
+Content-Disposition: inline
+In-Reply-To: <03f4152a-e66e-6b4a-5b4a-5f79f9ce2302@windriver.com>
+X-Cookie: Snow Day -- stay home.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-04-16 at 16:28 +0200, Maciej W. Rozycki wrote:
-> On Fri, 16 Apr 2021, Joe Perches wrote:
-> 
-> > > I'm not sure if that complex message 
-> > > routing via `blogic_msg' is worth having even, rather than calling 
-> > > `printk' or suitable variants directly.
-> > 
-> > It's to allow the message content to be added to the internal
-> > 	&adapter->msgbuf[adapter->msgbuflen]
-> > with strcpy for later use with blogic_show_info()/seq_write.
-> 
->  I know, but it's not clear to me if it's worth it (a potential buffer 
-> overrun there too, BTW).
 
-It's seq_ output so it's nominally an ABI.
-But then again, I don't use this at all so I don't care much either.
+--/Uq4LBwYP4y1W6pO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-It's also odd/bad form that one output KERN_<level> does not match
-its blogic_<level> (blogic_info is emitted at KERN_NOTICE)
+On Fri, Apr 16, 2021 at 10:04:30PM +0800, quanyang.wang wrote:
 
+> I am sorry. These patches should NOT be with "Fixes" tag since they base on
+> the patches
 
+> which are not with "Fixes". May I send a V2 patch series which remove these
+> "Fixes" tags?
 
+Well, if they're fixing bugs that were present in the named commit then
+the the tag makes sense, it's just a question of if they are actually
+for that commit or if they are fixing things for other commits like the
+runtime PM enablement.
+
+--/Uq4LBwYP4y1W6pO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB5qWIACgkQJNaLcl1U
+h9ArnAf/efPHWmHEf6MbNCWOJgi+PQaQpqHKi3GyYbbeQ5cnRGObWE7GbiRM/A2p
+TGpudbDmneHszF+avzLsSCWjDjOhKuW2prch0dz4uO5bo+eac5f6nCFeZT+nzIU8
+50yQPAmHpZb6pqhXfbQwDqv6RU+s104DjLo8XdnxiWDnxIkWYsmiCVcP3kgAoJ5w
+y5bl2sWN1FiLGNX7lUOXMEDhpeLpFKO3q5PyfB6CPpULIcwNRUGILfxfzMZDmUXm
+3TfTjUK8vh4s3qbUT/s3S2Vy3QNAEG548EMr561IAdiThdaY/MmXYMf9xuWBw1lo
+Wfs+0J2/sLs7lDZNbMPFeoeq7LH0Mw==
+=LjTP
+-----END PGP SIGNATURE-----
+
+--/Uq4LBwYP4y1W6pO--
