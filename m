@@ -2,287 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8AF361E56
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4340F361E57
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 12:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242598AbhDPK5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 06:57:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:38782 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242565AbhDPK5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 06:57:11 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E1E9C106F;
-        Fri, 16 Apr 2021 03:56:46 -0700 (PDT)
-Received: from e121896.arm.com (unknown [10.57.57.112])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 40A0E3F85F;
-        Fri, 16 Apr 2021 03:56:44 -0700 (PDT)
-From:   James Clark <james.clark@arm.com>
-To:     coresight@lists.linaro.org, mathieu.poirier@linaro.org,
-        acme@kernel.org
-Cc:     al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
-        suzuki.poulose@arm.com, James Clark <james.clark@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/2] perf cs-etm: Refactor timestamp variable names
-Date:   Fri, 16 Apr 2021 13:56:32 +0300
-Message-Id: <20210416105632.8771-3-james.clark@arm.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210416105632.8771-1-james.clark@arm.com>
-References: <20210416105632.8771-1-james.clark@arm.com>
+        id S242622AbhDPK5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 06:57:16 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56590 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242589AbhDPK5O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 06:57:14 -0400
+Date:   Fri, 16 Apr 2021 10:56:47 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618570608;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YQ4lprZqt+8n8gDiVEn8FcY2iGhKtVDymOj7pvaCp2I=;
+        b=m1fJpzsMCrFBvP2uVYCeIX60HPvCPi70fvn4QxSAxjsx8ZV6jH+VqgrtSRQjcE16Z0i3es
+        f2F7wdD2cvg7/6l+MKG3ptC1kVWTWGY1Wl/g5/8GiQAUV28MwIu8BOnirPKH+PFiV61BIo
+        OdHrytu0VBY+SiCEqVgufvh6fLtyQxycLrvDMKtYTOMbPT12ngS5PU3qhr566+3fFozmSk
+        /UMQAcJMIYhFnfB6hrmRb2Q6wvbL+7El+EBSl8GOaZxg6HrdoFbyUfmRC10+Tn46UqcsfW
+        J0Se8lrG4HNWFQFWEiUgR4vcagQ0q4gvAjQDuD9SANlLYyCpmD4kIUFhmsp/qw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618570608;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YQ4lprZqt+8n8gDiVEn8FcY2iGhKtVDymOj7pvaCp2I=;
+        b=u66uUyFGeOeTiYKI+bqgMce2wlyXXEdjlPWi2TBw7VcBuMYHqv+T5hQRAWReO53KyZFLGm
+        YZ6cUYgOoK9rqMDQ==
+From:   "tip-bot2 for Mike Travis" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/platform] x86/platform/uv: Use x2apic enabled bit as set by
+ BIOS to indicate APIC mode
+Cc:     Mike Travis <mike.travis@hpe.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210408160047.1703-1-mike.travis@hpe.com>
+References: <20210408160047.1703-1-mike.travis@hpe.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <161857060761.29796.13495516816737315712.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove ambiguity in variable names relating to timestamps.
-A later commit will save the sample kernel timestamp in one
-of the etm structs, so name all elements appropriately to
-avoid confusion.
+The following commit has been merged into the x86/platform branch of tip:
 
-This is also removes some ambiguity arising from the fact
-that the --timestamp argument to perf record refers to
-sample kernel timestamps, and the /timestamp/ event modifier
-refers to CS timestamps, so the term is overloaded.
+Commit-ID:     26d4be3ea1b77cc00b5b638faed7a357204f9150
+Gitweb:        https://git.kernel.org/tip/26d4be3ea1b77cc00b5b638faed7a357204f9150
+Author:        Mike Travis <mike.travis@hpe.com>
+AuthorDate:    Thu, 08 Apr 2021 11:00:47 -05:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 16 Apr 2021 12:51:03 +02:00
 
-Signed-off-by: James Clark <james.clark@arm.com>
+x86/platform/uv: Use x2apic enabled bit as set by BIOS to indicate APIC mode
+
+BIOS now sets the x2apic enabled bit (and the ACPI table) for extended
+APIC modes. Use that bit to indicate if extended mode is set.
+
+ [ bp: Fixup subject prefix, merge subsequent fix
+   https://lkml.kernel.org/r/20210415220626.223955-1-mike.travis@hpe.com ]
+
+Signed-off-by: Mike Travis <mike.travis@hpe.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210408160047.1703-1-mike.travis@hpe.com
 ---
- .../perf/util/cs-etm-decoder/cs-etm-decoder.c | 18 ++++----
- tools/perf/util/cs-etm.c                      | 42 +++++++++----------
- tools/perf/util/cs-etm.h                      |  4 +-
- 3 files changed, 31 insertions(+), 33 deletions(-)
+ arch/x86/kernel/apic/x2apic_uv_x.c | 30 ++++++++++++-----------------
+ 1 file changed, 13 insertions(+), 17 deletions(-)
 
-diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-index 059bcec3f651..b01d363b9301 100644
---- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-+++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-@@ -276,13 +276,13 @@ cs_etm_decoder__do_soft_timestamp(struct cs_etm_queue *etmq,
- 				  const uint8_t trace_chan_id)
- {
- 	/* No timestamp packet has been received, nothing to do */
--	if (!packet_queue->timestamp)
-+	if (!packet_queue->cs_timestamp)
- 		return OCSD_RESP_CONT;
- 
--	packet_queue->timestamp = packet_queue->next_timestamp;
-+	packet_queue->cs_timestamp = packet_queue->next_cs_timestamp;
- 
- 	/* Estimate the timestamp for the next range packet */
--	packet_queue->next_timestamp += packet_queue->instr_count;
-+	packet_queue->next_cs_timestamp += packet_queue->instr_count;
- 	packet_queue->instr_count = 0;
- 
- 	/* Tell the front end which traceid_queue needs attention */
-@@ -308,8 +308,8 @@ cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
- 	 * Function do_soft_timestamp() will report the value to the front end,
- 	 * hence asking the decoder to keep decoding rather than stopping.
- 	 */
--	if (packet_queue->timestamp) {
--		packet_queue->next_timestamp = elem->timestamp;
-+	if (packet_queue->cs_timestamp) {
-+		packet_queue->next_cs_timestamp = elem->timestamp;
- 		return OCSD_RESP_CONT;
- 	}
- 
-@@ -320,8 +320,8 @@ cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
- 	 * which instructions started by subtracting the number of instructions
- 	 * executed to the timestamp.
- 	 */
--	packet_queue->timestamp = elem->timestamp - packet_queue->instr_count;
--	packet_queue->next_timestamp = elem->timestamp;
-+	packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
-+	packet_queue->next_cs_timestamp = elem->timestamp;
- 	packet_queue->instr_count = 0;
- 
- 	/* Tell the front end which traceid_queue needs attention */
-@@ -334,8 +334,8 @@ cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
- static void
- cs_etm_decoder__reset_timestamp(struct cs_etm_packet_queue *packet_queue)
- {
--	packet_queue->timestamp = 0;
--	packet_queue->next_timestamp = 0;
-+	packet_queue->cs_timestamp = 0;
-+	packet_queue->next_cs_timestamp = 0;
- 	packet_queue->instr_count = 0;
- }
- 
-diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-index 7e63e7dedc33..533f6f2f0685 100644
---- a/tools/perf/util/cs-etm.c
-+++ b/tools/perf/util/cs-etm.c
-@@ -38,8 +38,6 @@
- #include <tools/libc_compat.h>
- #include "util/synthetic-events.h"
- 
--#define MAX_TIMESTAMP (~0ULL)
--
- struct cs_etm_auxtrace {
- 	struct auxtrace auxtrace;
- 	struct auxtrace_queues queues;
-@@ -86,7 +84,7 @@ struct cs_etm_queue {
- 	struct cs_etm_decoder *decoder;
- 	struct auxtrace_buffer *buffer;
- 	unsigned int queue_nr;
--	u8 pending_timestamp;
-+	u8 pending_timestamp_chan_id;
- 	u64 offset;
- 	const unsigned char *buf;
- 	size_t buf_len, buf_used;
-@@ -208,7 +206,7 @@ void cs_etm__etmq_set_traceid_queue_timestamp(struct cs_etm_queue *etmq,
- 	 * be more than one channel per cs_etm_queue, we need to specify
- 	 * what traceID queue needs servicing.
- 	 */
--	etmq->pending_timestamp = trace_chan_id;
-+	etmq->pending_timestamp_chan_id = trace_chan_id;
- }
- 
- static u64 cs_etm__etmq_get_timestamp(struct cs_etm_queue *etmq,
-@@ -216,22 +214,22 @@ static u64 cs_etm__etmq_get_timestamp(struct cs_etm_queue *etmq,
- {
- 	struct cs_etm_packet_queue *packet_queue;
- 
--	if (!etmq->pending_timestamp)
-+	if (!etmq->pending_timestamp_chan_id)
- 		return 0;
- 
- 	if (trace_chan_id)
--		*trace_chan_id = etmq->pending_timestamp;
-+		*trace_chan_id = etmq->pending_timestamp_chan_id;
- 
- 	packet_queue = cs_etm__etmq_get_packet_queue(etmq,
--						     etmq->pending_timestamp);
-+						     etmq->pending_timestamp_chan_id);
- 	if (!packet_queue)
- 		return 0;
- 
- 	/* Acknowledge pending status */
--	etmq->pending_timestamp = 0;
-+	etmq->pending_timestamp_chan_id = 0;
- 
- 	/* See function cs_etm_decoder__do_{hard|soft}_timestamp() */
--	return packet_queue->timestamp;
-+	return packet_queue->cs_timestamp;
- }
- 
- static void cs_etm__clear_packet_queue(struct cs_etm_packet_queue *queue)
-@@ -814,7 +812,7 @@ static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
- 	int ret = 0;
- 	unsigned int cs_queue_nr;
- 	u8 trace_chan_id;
--	u64 timestamp;
-+	u64 cs_timestamp;
- 	struct cs_etm_queue *etmq = queue->priv;
- 
- 	if (list_empty(&queue->head) || etmq)
-@@ -854,7 +852,7 @@ static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
- 
- 		/*
- 		 * Run decoder on the trace block.  The decoder will stop when
--		 * encountering a timestamp, a full packet queue or the end of
-+		 * encountering a CS timestamp, a full packet queue or the end of
- 		 * trace for that block.
- 		 */
- 		ret = cs_etm__decode_data_block(etmq);
-@@ -865,10 +863,10 @@ static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
- 		 * Function cs_etm_decoder__do_{hard|soft}_timestamp() does all
- 		 * the timestamp calculation for us.
- 		 */
--		timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
-+		cs_timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
- 
- 		/* We found a timestamp, no need to continue. */
--		if (timestamp)
-+		if (cs_timestamp)
- 			break;
- 
- 		/*
-@@ -892,7 +890,7 @@ static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
- 	 * queue and will be processed in cs_etm__process_queues().
- 	 */
- 	cs_queue_nr = TO_CS_QUEUE_NR(queue_nr, trace_chan_id);
--	ret = auxtrace_heap__add(&etm->heap, cs_queue_nr, timestamp);
-+	ret = auxtrace_heap__add(&etm->heap, cs_queue_nr, cs_timestamp);
- out:
+diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
+index c9ddd23..f5a48e6 100644
+--- a/arch/x86/kernel/apic/x2apic_uv_x.c
++++ b/arch/x86/kernel/apic/x2apic_uv_x.c
+@@ -369,6 +369,15 @@ static int __init early_get_arch_type(void)
  	return ret;
  }
-@@ -2221,7 +2219,7 @@ static int cs_etm__process_queues(struct cs_etm_auxtrace *etm)
- 	int ret = 0;
- 	unsigned int cs_queue_nr, queue_nr;
- 	u8 trace_chan_id;
--	u64 timestamp;
-+	u64 cs_timestamp;
- 	struct auxtrace_queue *queue;
- 	struct cs_etm_queue *etmq;
- 	struct cs_etm_traceid_queue *tidq;
-@@ -2283,9 +2281,9 @@ static int cs_etm__process_queues(struct cs_etm_auxtrace *etm)
- 		if (ret)
- 			goto out;
  
--		timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
-+		cs_timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
- 
--		if (!timestamp) {
-+		if (!cs_timestamp) {
- 			/*
- 			 * Function cs_etm__decode_data_block() returns when
- 			 * there is no more traces to decode in the current
-@@ -2308,7 +2306,7 @@ static int cs_etm__process_queues(struct cs_etm_auxtrace *etm)
- 		 * this queue/traceID.
- 		 */
- 		cs_queue_nr = TO_CS_QUEUE_NR(queue_nr, trace_chan_id);
--		ret = auxtrace_heap__add(&etm->heap, cs_queue_nr, timestamp);
-+		ret = auxtrace_heap__add(&etm->heap, cs_queue_nr, cs_timestamp);
- 	}
- 
- out:
-@@ -2380,7 +2378,7 @@ static int cs_etm__process_event(struct perf_session *session,
- 				 struct perf_tool *tool)
++/* UV system found, check which APIC MODE BIOS already selected */
++static void __init early_set_apic_mode(void)
++{
++	if (x2apic_enabled())
++		uv_system_type = UV_X2APIC;
++	else
++		uv_system_type = UV_LEGACY_APIC;
++}
++
+ static int __init uv_set_system_type(char *_oem_id, char *_oem_table_id)
  {
- 	int err = 0;
--	u64 timestamp;
-+	u64 sample_kernel_timestamp;
- 	struct cs_etm_auxtrace *etm = container_of(session->auxtrace,
- 						   struct cs_etm_auxtrace,
- 						   auxtrace);
-@@ -2394,11 +2392,11 @@ static int cs_etm__process_event(struct perf_session *session,
+ 	/* Save OEM_ID passed from ACPI MADT */
+@@ -404,11 +413,12 @@ static int __init uv_set_system_type(char *_oem_id, char *_oem_table_id)
+ 		else
+ 			uv_hubless_system |= 0x8;
+ 
+-		/* Copy APIC type */
++		/* Copy OEM Table ID */
+ 		uv_stringify(sizeof(oem_table_id), oem_table_id, _oem_table_id);
+ 
+ 		pr_info("UV: OEM IDs %s/%s, SystemType %d, HUBLESS ID %x\n",
+ 			oem_id, oem_table_id, uv_system_type, uv_hubless_system);
++
+ 		return 0;
  	}
  
- 	if (sample->time && (sample->time != (u64) -1))
--		timestamp = sample->time;
-+		sample_kernel_timestamp = sample->time;
- 	else
--		timestamp = 0;
-+		sample_kernel_timestamp = 0;
+@@ -453,6 +463,7 @@ static int __init uv_set_system_type(char *_oem_id, char *_oem_table_id)
+ 	early_set_hub_type();
  
--	if (timestamp || etm->timeless_decoding) {
-+	if (sample_kernel_timestamp || etm->timeless_decoding) {
- 		err = cs_etm__update_queues(etm);
- 		if (err)
- 			return err;
-diff --git a/tools/perf/util/cs-etm.h b/tools/perf/util/cs-etm.h
-index 36428918411e..d65c7b19407d 100644
---- a/tools/perf/util/cs-etm.h
-+++ b/tools/perf/util/cs-etm.h
-@@ -171,8 +171,8 @@ struct cs_etm_packet_queue {
- 	u32 head;
- 	u32 tail;
- 	u32 instr_count;
--	u64 timestamp;
--	u64 next_timestamp;
-+	u64 cs_timestamp;
-+	u64 next_cs_timestamp;
- 	struct cs_etm_packet packet_buffer[CS_ETM_PACKET_MAX_BUFFER];
- };
+ 	/* Other UV setup functions */
++	early_set_apic_mode();
+ 	early_get_pnodeid();
+ 	early_get_apic_socketid_shift();
+ 	x86_platform.is_untracked_pat_range = uv_is_untracked_pat_range;
+@@ -472,29 +483,14 @@ static int __init uv_acpi_madt_oem_check(char *_oem_id, char *_oem_table_id)
+ 	if (uv_set_system_type(_oem_id, _oem_table_id) == 0)
+ 		return 0;
  
--- 
-2.28.0
-
+-	/* Save and Decode OEM Table ID */
++	/* Save for display of the OEM Table ID */
+ 	uv_stringify(sizeof(oem_table_id), oem_table_id, _oem_table_id);
+ 
+-	/* This is the most common hardware variant, x2apic mode */
+-	if (!strcmp(oem_table_id, "UVX"))
+-		uv_system_type = UV_X2APIC;
+-
+-	/* Only used for very small systems, usually 1 chassis, legacy mode  */
+-	else if (!strcmp(oem_table_id, "UVL"))
+-		uv_system_type = UV_LEGACY_APIC;
+-
+-	else
+-		goto badbios;
+-
+ 	pr_info("UV: OEM IDs %s/%s, System/UVType %d/0x%x, HUB RevID %d\n",
+ 		oem_id, oem_table_id, uv_system_type, is_uv(UV_ANY),
+ 		uv_min_hub_revision_id);
+ 
+ 	return 0;
+-
+-badbios:
+-	pr_err("UV: UVarchtype:%s not supported\n", uv_archtype);
+-	BUG();
+ }
+ 
+ enum uv_system_type get_uv_system_type(void)
