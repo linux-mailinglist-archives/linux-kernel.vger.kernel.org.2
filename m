@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2CF3362328
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9B1C362332
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 16:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241947AbhDPOwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 10:52:44 -0400
-Received: from mail.efficios.com ([167.114.26.124]:46056 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233916AbhDPOwn (ORCPT
+        id S236710AbhDPO6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 10:58:44 -0400
+Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:21018 "EHLO
+        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235784AbhDPO6n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 10:52:43 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id E134C337C33;
-        Fri, 16 Apr 2021 10:52:17 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id UbIckL3755HT; Fri, 16 Apr 2021 10:52:16 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id D6B0C337D2E;
-        Fri, 16 Apr 2021 10:52:16 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com D6B0C337D2E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1618584736;
-        bh=g0ai6snWg1lDRvmE/hHbxe1m+3pDLWhw8fngE/SLcKA=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=CseBk2MS2SPiUiyncAdh1UtyCTA2lF77Ob7wmxRKkDq02ohqOZzvEnzu+OgVzLyAW
-         K22Yd/JgnlOJVPejDFn9MUFXpsdEcO4pnm1sqCs2tFR1srTCFPvWwhBohRR2ihsxmp
-         0uXUsoxoOfkJLsqdky2h9lvdZ3wdWh/YP5E/wzc4HxmCVtv+kZIziHlzPj/z1wKJ2z
-         p3o5ga+WFCLYFFW7HgkxGKue7aQlZ72USRxcm1AczWxkM5JcoPpUirFPaBaIvoq+xF
-         CwVcV4G0buNIPMYTW++01XsVuxeqkcKRhUXsTAb8iIEwWn5nFtB+VYk5qn2wOXqvzW
-         2HEYR/l3Zo0PA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id XPTxFdlzpXms; Fri, 16 Apr 2021 10:52:16 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id C6F9B337AF7;
-        Fri, 16 Apr 2021 10:52:16 -0400 (EDT)
-Date:   Fri, 16 Apr 2021 10:52:16 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     paulmck <paulmck@kernel.org>, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        lttng-dev <lttng-dev@lists.lttng.org>
-Message-ID: <1680415903.81652.1618584736742.JavaMail.zimbra@efficios.com>
-Subject: liburcu: LTO breaking rcu_dereference on arm64 and possibly other
- architectures ?
+        Fri, 16 Apr 2021 10:58:43 -0400
+Received: from pps.filterd (m0134425.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13GEj6qu029713;
+        Fri, 16 Apr 2021 14:57:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pps0720; bh=ANeabVMz/5+G24ihAqcUDXTzVxOXBSe47zWvNvMOVTo=;
+ b=RrBTUwtI8fvzo94sWfvZ2ZFhzfEjC/ndFAXGy4LAWkiXqADXCGF4mFa+6DLcqdvL9Oop
+ O7vDoDcj82k0/CYQGlGKM8BCw7/js80fGUxj4oySD9yKmEbHLH1dBteKGv1dnSAHXErX
+ D3mz5RxRvonGoUkHH9Qcg6eDy4dTWYQ3V+0x25lhGRDJzp859iSCoTcNr1MZ9udIik8G
+ 2uHFCfWQq1svAymVCy+jjgHlKrfzbaMDWe8t5DFtl3rj4rDt+H2bmRXwiAQX7pskduW8
+ tSieiELzOSgUInq7F+WzMVs/+QUOfC5yJeCHa1Crpi4cvwxeFHWemlFvq0Kq67DjqJ/m Ug== 
+Received: from g4t3427.houston.hpe.com (g4t3427.houston.hpe.com [15.241.140.73])
+        by mx0b-002e3701.pphosted.com with ESMTP id 37yapfs2p3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 16 Apr 2021 14:57:55 +0000
+Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
+        by g4t3427.houston.hpe.com (Postfix) with ESMTP id AC28A57;
+        Fri, 16 Apr 2021 14:57:54 +0000 (UTC)
+Received: from swahl-home.5wahls.com (unknown [16.214.132.81])
+        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id A1EBF4B;
+        Fri, 16 Apr 2021 14:57:53 +0000 (UTC)
+Date:   Fri, 16 Apr 2021 09:57:53 -0500
+From:   Steve Wahl <steve.wahl@hpe.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     steve.wahl@hpe.com, mike.travis@hpe.com, dimitri.sivanich@hpe.com,
+        russ.anderson@hpe.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/platform/uv: Fix inconsistent indenting
+Message-ID: <YHml8enBsBMpdZmS@swahl-home.5wahls.com>
+References: <1618567840-15891-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF87 (Linux)/8.8.15_GA_4007)
-Thread-Index: WQ3F/UwlNJdCRe7pLcscx5UrzpNaiw==
-Thread-Topic: liburcu: LTO breaking rcu_dereference on arm64 and possibly other architectures ?
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1618567840-15891-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Proofpoint-ORIG-GUID: p0B3MKK1zkBoQsqvduc-vxuMgq5oORjz
+X-Proofpoint-GUID: p0B3MKK1zkBoQsqvduc-vxuMgq5oORjz
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-16_07:2021-04-16,2021-04-16 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 suspectscore=0 mlxlogscore=931 bulkscore=0 phishscore=0
+ lowpriorityscore=0 clxscore=1015 mlxscore=0 spamscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104160111
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul, Will, Peter,
+Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
 
-I noticed in this discussion https://lkml.org/lkml/2021/4/16/118 that LTO
-is able to break rcu_dereference. This seems to be taken care of by
-arch/arm64/include/asm/rwonce.h on arm64 in the Linux kernel tree.
-
-In the liburcu user-space library, we have this comment near rcu_dereference() in
-include/urcu/static/pointer.h:
-
- * The compiler memory barrier in CMM_LOAD_SHARED() ensures that value-speculative
- * optimizations (e.g. VSS: Value Speculation Scheduling) does not perform the
- * data read before the pointer read by speculating the value of the pointer.
- * Correct ordering is ensured because the pointer is read as a volatile access.
- * This acts as a global side-effect operation, which forbids reordering of
- * dependent memory operations. Note that such concern about dependency-breaking
- * optimizations will eventually be taken care of by the "memory_order_consume"
- * addition to forthcoming C++ standard.
-
-(note: CMM_LOAD_SHARED() is the equivalent of READ_ONCE(), but was introduced in
-liburcu as a public API before READ_ONCE() existed in the Linux kernel)
-
-Peter tells me the "memory_order_consume" is not something which can be used today.
-Any information on its status at C/C++ standard levels and implementation-wise ?
-
-Pragmatically speaking, what should we change in liburcu to ensure we don't generate
-broken code when LTO is enabled ? I suspect there are a few options here:
-
-1) Fail to build if LTO is enabled,
-2) Generate slower code for rcu_dereference, either on all architectures or only
-   on weakly-ordered architectures,
-3) Generate different code depending on whether LTO is enabled or not. AFAIU this would only
-   work if every compile unit is aware that it will end up being optimized with LTO. Not sure
-   how this could be done in the context of user-space.
-4) [ Insert better idea here. ]
-
-Thoughts ?
-
-Thanks,
-
-Mathieu
+On Fri, Apr 16, 2021 at 06:10:40PM +0800, Yang Li wrote:
+> Kernel test robot throws below warning ->
+> 
+> smatch warnings:
+> arch/x86/kernel/apic/x2apic_uv_x.c:111 early_get_pnodeid() warn:
+> inconsistent indenting
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>  arch/x86/kernel/apic/x2apic_uv_x.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
+> index 52bc217..3e7534e 100644
+> --- a/arch/x86/kernel/apic/x2apic_uv_x.c
+> +++ b/arch/x86/kernel/apic/x2apic_uv_x.c
+> @@ -108,7 +108,7 @@ static void __init early_get_pnodeid(void)
+>  	} else if (UVH_RH_GAM_ADDR_MAP_CONFIG) {
+>  		union uvh_rh_gam_addr_map_config_u  m_n_config;
+>  
+> -	m_n_config.v = uv_early_read_mmr(UVH_RH_GAM_ADDR_MAP_CONFIG);
+> +		m_n_config.v = uv_early_read_mmr(UVH_RH_GAM_ADDR_MAP_CONFIG);
+>  		uv_cpuid.n_skt = m_n_config.s.n_skt;
+>  		if (is_uv(UV3))
+>  			uv_cpuid.m_skt = m_n_config.s3.m_skt;
+> -- 
+> 1.8.3.1
+> 
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Steve Wahl, Hewlett Packard Enterprise
