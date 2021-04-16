@@ -2,364 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E713617E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 04:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEEDC3617F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 05:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236406AbhDPC6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 15 Apr 2021 22:58:18 -0400
-Received: from mail-co1nam11on2049.outbound.protection.outlook.com ([40.107.220.49]:43201
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234548AbhDPC6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 15 Apr 2021 22:58:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Snaw5DM9d03nR61oZ+8aOv1nIlYcEg99zcFcAN+ePoid6dnHOAx43N+7ksCZG3ZxHoo5bQ9h2AXvt5/0VUjuovgyxomFyrEhcxxn0cQSzOKh9r9Mnvr/NeAfZ6tqYDPWxc6g539T+F3MpL67d7iP+ckAU9eOXjzGlx7sbMY7ruNl+epH6qwjvnelqisGKCQPWQSfdaXkA0TWVK2ANmYXunvRAFdXgBq3NKHKhKEExVMBnXt5LaYtRHKAYgx1wocUyNKiFEwbtkn6TcudBaMd5KgCJCn9vN981xP8Zn0DCLgaTQahd9eKyO8BGp5ME4XaBD6jAGrykdtcmEBmVDGFHA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZIPKHytiR9Z6OMBBWky13pFcoElsIG9yibQSkT6RgA0=;
- b=R334mThzRNS0XLbxM9s9+VaOOjV3nRR5Sa49i4h7JfIRAxr4QWRyKW8nPnTNomy0nW/yzStumr/feLx1d4hgz1zLKNzNc5JylmxJWa6c5O4NIUhuoYz+K7cXBIg3Ipvf87HnfnYKAJCn/FfxQMOf9ehwXYb7ErgIvoUl0RGhBw2n3Gk3/VK6YmZMlH9jiS4a/lDZiTZrqP/umuGzq4TMyF68lux3eTcGrZv2sP+MxxuEesl61nPLYBw1QEMBFlOHsSgbLgm4KVcESp7U9tx1+Y02RhVAPHyC0gOMI0KedGAIBIQkQHaX+nnOSwnIEMWiFji909CTi6xagvcerywxuA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.35) smtp.rcpttodomain=linux-foundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=none sp=none pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZIPKHytiR9Z6OMBBWky13pFcoElsIG9yibQSkT6RgA0=;
- b=ZE++xn3ZSJkz6KEh6Pb8eDKOpYmsroibb1mZOQjruoK8LYJO6Idllm/n8idRbZVRoRPzvI5HRfmaJjtIdhrqHzj56STaUwZvEcSOK4EGTUU++sMTte+Q/MVBli2TyMIKnVr1jVdVm63f40ECy4ThottzHCmgmTFayC/tH6oF7j4r1f9XNIo5fENeihdXmfwaX16VW/T6CKL2SunSUz33NXs2YEMp2NEmKSWZdHCxYDm7yQd7OsP+LKFlEmoTefE6cBOItnNU+2oXv/9ZCtmrNvyI0xM1NnoIIxDGumGRNCWmFdvFJn81TAhipLfAdujctJcWVGnbwakmdx8VZR5U2A==
-Received: from BN9PR03CA0277.namprd03.prod.outlook.com (2603:10b6:408:f5::12)
- by MN2PR12MB3086.namprd12.prod.outlook.com (2603:10b6:208:c7::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.18; Fri, 16 Apr
- 2021 02:57:51 +0000
-Received: from BN8NAM11FT042.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:f5:cafe::9) by BN9PR03CA0277.outlook.office365.com
- (2603:10b6:408:f5::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.18 via Frontend
- Transport; Fri, 16 Apr 2021 02:57:51 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
- smtp.mailfrom=nvidia.com; linux-foundation.org; dkim=none (message not
- signed) header.d=none;linux-foundation.org; dmarc=pass action=none
- header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.35; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.35) by
- BN8NAM11FT042.mail.protection.outlook.com (10.13.177.85) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4042.16 via Frontend Transport; Fri, 16 Apr 2021 02:57:51 +0000
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 16 Apr
- 2021 02:57:50 +0000
-Received: from localhost (172.20.145.6) by DRHQMAIL107.nvidia.com (10.27.9.16)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 16 Apr 2021 02:57:50
- +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <david@redhat.com>, <daniel.vetter@ffwll.ch>,
-        <dan.j.williams@intel.com>, <gregkh@linuxfoundation.org>,
-        <jhubbard@nvidia.com>, <jglisse@redhat.com>,
-        <bsingharora@gmail.com>, <smuchun@gmail.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        kernel test robot <oliver.sang@intel.com>
-Subject: [PATCH v4] kernel/resource: Fix locking in request_free_mem_region
-Date:   Fri, 16 Apr 2021 12:57:45 +1000
-Message-ID: <20210416025745.8698-1-apopple@nvidia.com>
-X-Mailer: git-send-email 2.20.1
+        id S235250AbhDPDBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 15 Apr 2021 23:01:42 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:58561 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234548AbhDPDBk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 15 Apr 2021 23:01:40 -0400
+X-UUID: 1bdd5d1b344c4fc6b909347dc6b1f5c4-20210416
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=MTAy3dK7ZeeTqAFn6CDQfuUe2LUsEJXiuvm05pj0FSo=;
+        b=KRDqCfuCAN6kvJxmqjtLn83qxuYVTBV73wN+hQvJ1XYN5LqOOoEAAqan8vhDhjUutIHtyhD9x4/nf/+aDSwMY3gspbcx6XqVn0iuCm/rBJvLIeUhPJNX4pSf8dq0mieRUMtOJ7KBdA6WAsC8flmh1UPN3JvDWzMA9YEtnvKNrVw=;
+X-UUID: 1bdd5d1b344c4fc6b909347dc6b1f5c4-20210416
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <flora.fu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 24531458; Fri, 16 Apr 2021 11:01:13 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 16 Apr 2021 11:01:10 +0800
+Received: from [172.21.84.99] (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 16 Apr 2021 11:01:10 +0800
+Message-ID: <1618542070.27491.15.camel@mtksdccf07>
+Subject: Re: [PATCH 4/8] dt-bindings: arm: mediatek: Add new document
+ bindings for APU
+From:   Flora Fu <flora.fu@mediatek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Pi-Cheng Chen <pi-cheng.chen@mediatek.com>,
+        Chiawen Lee <chiawen.lee@mediatek.com>,
+        Chun-Jie Chen <chun-jie.chen@mediatek.com>,
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Date:   Fri, 16 Apr 2021 11:01:10 +0800
+In-Reply-To: <CAL_JsqLKaYY=NHm1hD=YaQgvDOBTtraoUqcycA7tu7n-f2GVDw@mail.gmail.com>
+References: <1617766086-5502-1-git-send-email-flora.fu@mediatek.com>
+         <1617766086-5502-5-git-send-email-flora.fu@mediatek.com>
+         <20210409182538.GA3913794@robh.at.kernel.org>
+         <1618209895.25062.11.camel@mtksdccf07>
+         <CAL_JsqLKaYY=NHm1hD=YaQgvDOBTtraoUqcycA7tu7n-f2GVDw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 64eca62e-18ca-42ef-9745-08d900836cf0
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3086:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB30861080C4779EEA84F75B46DF4C9@MN2PR12MB3086.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1443;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8df7rxsLk5IAGGeE5K6TSzeBLA6hAovSwWsnSCjoGmO6NpTw6Q8Sdo1fzAHTlYJ6DbZj3PYbWcQ55NJJZiE/PKMLYr58Cel/HGIaerTUg646fWm/hMWhHwFVPLCDNxIEXKcKxeLlQ16CheRlSzNEyJDmagg23OeudmrVFUYbrIYUEiolNKhiTkIhnFb8o/IrErb3B1vhvUy4vf5KEaNl+n+APhvWVuCqHl+VS5HYaGGJKf/dRgEcuen0Bfa0R1mIjD87Z1O0v3q45ej5bq2IkYraHHTziqpTO1AB4WZqh/d/DyFW3ll53CMJu7Y39K98LRAaVJo3JIf4pZ928e/K39lkAiQqVzW+QM3bJqUj7T35ZdoaZRz8SNY1Qs6A1LBHQBC53Wg1K4gQHteyVJkCwsp1n0J3s7++QxEukD0W0654OU1361Q4PraStU93CvQNOHHJIVSfe6B79hZPEjA9+LlidGfljoZc869WKddWRoPORBSMeUygRK8FodEH7EaAAEGB/8ssikdvtky3VbiJ+t/+olzjtKTTwKclXmFjnxXoF8VLkaFgE9JJoDOB087TkbGl2BaI2nvgI1i5v46ekfcoyAvB9zqMmzNsVfuM6pi7iXYpPx9s2hlochCHXB669kNG1Dyl0RFcXrDk/pXhXT+wrDQoXDIkRLjYYcgqtd8=
-X-Forefront-Antispam-Report: CIP:216.228.112.35;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid02.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(136003)(39860400002)(376002)(396003)(36840700001)(46966006)(36906005)(26005)(70206006)(6916009)(316002)(336012)(426003)(2906002)(36756003)(36860700001)(86362001)(70586007)(7636003)(83380400001)(186003)(16526019)(54906003)(5660300002)(47076005)(7416002)(478600001)(82310400003)(82740400003)(1076003)(6666004)(4326008)(8936002)(8676002)(2616005)(356005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Apr 2021 02:57:51.6239
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 64eca62e-18ca-42ef-9745-08d900836cf0
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.35];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT042.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3086
+X-TM-SNTS-SMTP: 9F4E1F87D3F9E72542DAD2DF050407D939B7DB684CFA915AFE9C5AC433219D722000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-request_free_mem_region() is used to find an empty range of physical
-addresses for hotplugging ZONE_DEVICE memory. It does this by iterating
-over the range of possible addresses using region_intersects() to see if
-the range is free.
-
-region_intersects() obtains a read lock before walking the resource tree
-to protect against concurrent changes. However it drops the lock prior
-to returning. This means by the time request_mem_region() is called in
-request_free_mem_region() another thread may have already reserved the
-requested region resulting in unexpected failures and a message in the
-kernel log from hitting this condition:
-
-        /*
-         * mm/hmm.c reserves physical addresses which then
-         * become unavailable to other users.  Conflicts are
-         * not expected.  Warn to aid debugging if encountered.
-         */
-        if (conflict->desc == IORES_DESC_DEVICE_PRIVATE_MEMORY) {
-                pr_warn("Unaddressable device %s %pR conflicts with %pR",
-                        conflict->name, conflict, res);
-
-To fix this create versions of region_intersects() and
-request_mem_region() that allow the caller to take the appropriate lock
-such that it may be held over the required calls.
-
-Instead of creating another version of devm_request_mem_region() that
-doesn't take the lock open-code it to allow the caller to pre-allocate
-the required memory prior to taking the lock.
-
-On some architectures and kernel configurations revoke_iomem() also
-calls resource code so cannot be called with the resource lock held.
-Therefore call it only after dropping the lock.
-
-Fixes: 4ef589dc9b10c ("mm/hmm/devmem: device memory hotplug using ZONE_DEVICE")
-Signed-off-by: Alistair Popple <apopple@nvidia.com>
-Acked-by: Balbir Singh <bsingharora@gmail.com>
-Reported-by: kernel test robot <oliver.sang@intel.com>
-
----
-
-Changes for v4:
-
-- Update commit log
-- Moved calling revoke_iomem() to before devres_add(). This shouldn't
-  change anything but it maintains the original ordering.
-- Fixed freeing of devres in case of failure.
-- Rebased onto linux-next
----
- kernel/resource.c | 144 ++++++++++++++++++++++++++++++----------------
- 1 file changed, 94 insertions(+), 50 deletions(-)
-
-diff --git a/kernel/resource.c b/kernel/resource.c
-index 7e00239a023a..f1f7fe089fc8 100644
---- a/kernel/resource.c
-+++ b/kernel/resource.c
-@@ -502,6 +502,34 @@ int __weak page_is_ram(unsigned long pfn)
- }
- EXPORT_SYMBOL_GPL(page_is_ram);
- 
-+static int __region_intersects(resource_size_t start, size_t size,
-+			       unsigned long flags, unsigned long desc)
-+{
-+	struct resource res;
-+	int type = 0; int other = 0;
-+	struct resource *p;
-+
-+	res.start = start;
-+	res.end = start + size - 1;
-+
-+	for (p = iomem_resource.child; p ; p = p->sibling) {
-+		bool is_type = (((p->flags & flags) == flags) &&
-+				((desc == IORES_DESC_NONE) ||
-+				 (desc == p->desc)));
-+
-+		if (resource_overlaps(p, &res))
-+			is_type ? type++ : other++;
-+	}
-+
-+	if (type == 0)
-+		return REGION_DISJOINT;
-+
-+	if (other == 0)
-+		return REGION_INTERSECTS;
-+
-+	return REGION_MIXED;
-+}
-+
- /**
-  * region_intersects() - determine intersection of region with known resources
-  * @start: region start address
-@@ -525,31 +553,12 @@ EXPORT_SYMBOL_GPL(page_is_ram);
- int region_intersects(resource_size_t start, size_t size, unsigned long flags,
- 		      unsigned long desc)
- {
--	struct resource res;
--	int type = 0; int other = 0;
--	struct resource *p;
--
--	res.start = start;
--	res.end = start + size - 1;
-+	int rc;
- 
- 	read_lock(&resource_lock);
--	for (p = iomem_resource.child; p ; p = p->sibling) {
--		bool is_type = (((p->flags & flags) == flags) &&
--				((desc == IORES_DESC_NONE) ||
--				 (desc == p->desc)));
--
--		if (resource_overlaps(p, &res))
--			is_type ? type++ : other++;
--	}
-+	rc = __region_intersects(start, size, flags, desc);
- 	read_unlock(&resource_lock);
--
--	if (type == 0)
--		return REGION_DISJOINT;
--
--	if (other == 0)
--		return REGION_INTERSECTS;
--
--	return REGION_MIXED;
-+	return rc;
- }
- EXPORT_SYMBOL_GPL(region_intersects);
- 
-@@ -1150,31 +1159,16 @@ struct address_space *iomem_get_mapping(void)
- 	return smp_load_acquire(&iomem_inode)->i_mapping;
- }
- 
--/**
-- * __request_region - create a new busy resource region
-- * @parent: parent resource descriptor
-- * @start: resource start address
-- * @n: resource region size
-- * @name: reserving caller's ID string
-- * @flags: IO resource flags
-- */
--struct resource * __request_region(struct resource *parent,
--				   resource_size_t start, resource_size_t n,
--				   const char *name, int flags)
-+static bool request_region_locked(struct resource *parent,
-+				    struct resource *res, resource_size_t start,
-+				    resource_size_t n, const char *name, int flags)
- {
- 	DECLARE_WAITQUEUE(wait, current);
--	struct resource *res = alloc_resource(GFP_KERNEL);
--	struct resource *orig_parent = parent;
--
--	if (!res)
--		return NULL;
- 
- 	res->name = name;
- 	res->start = start;
- 	res->end = start + n - 1;
- 
--	write_lock(&resource_lock);
--
- 	for (;;) {
- 		struct resource *conflict;
- 
-@@ -1209,14 +1203,37 @@ struct resource * __request_region(struct resource *parent,
- 			write_lock(&resource_lock);
- 			continue;
- 		}
-+		return false;
-+	}
-+
-+	return true;
-+}
-+
-+/**
-+ * __request_region - create a new busy resource region
-+ * @parent: parent resource descriptor
-+ * @start: resource start address
-+ * @n: resource region size
-+ * @name: reserving caller's ID string
-+ * @flags: IO resource flags
-+ */
-+struct resource *__request_region(struct resource *parent,
-+				  resource_size_t start, resource_size_t n,
-+				  const char *name, int flags)
-+{
-+	struct resource *res = alloc_resource(GFP_KERNEL);
-+
-+	if (!res)
-+		return NULL;
-+
-+	write_lock(&resource_lock);
-+	if (!request_region_locked(parent, res, start, n, name, flags)) {
- 		/* Uhhuh, that didn't work out.. */
- 		free_resource(res);
- 		res = NULL;
--		break;
- 	}
- 	write_unlock(&resource_lock);
--
--	if (res && orig_parent == &iomem_resource)
-+	if (res && parent == &iomem_resource)
- 		revoke_iomem(res);
- 
- 	return res;
-@@ -1758,26 +1775,53 @@ static struct resource *__request_free_mem_region(struct device *dev,
- {
- 	resource_size_t end, addr;
- 	struct resource *res;
-+	struct region_devres *dr = NULL;
-+
-+	res = alloc_resource(GFP_KERNEL);
-+	if (!res)
-+		return ERR_PTR(-ENOMEM);
-+
-+	if (dev) {
-+		dr = devres_alloc(devm_region_release, sizeof(struct region_devres),
-+				  GFP_KERNEL);
-+		if (!dr) {
-+			free_resource(res);
-+			return ERR_PTR(-ENOMEM);
-+		}
-+	}
- 
- 	size = ALIGN(size, 1UL << PA_SECTION_SHIFT);
- 	end = min_t(unsigned long, base->end, (1UL << MAX_PHYSMEM_BITS) - 1);
- 	addr = end - size + 1UL;
- 
-+	write_lock(&resource_lock);
- 	for (; addr > size && addr >= base->start; addr -= size) {
--		if (region_intersects(addr, size, 0, IORES_DESC_NONE) !=
-+		if (__region_intersects(addr, size, 0, IORES_DESC_NONE) !=
- 				REGION_DISJOINT)
- 			continue;
- 
--		if (dev)
--			res = devm_request_mem_region(dev, addr, size, name);
--		else
--			res = request_mem_region(addr, size, name);
--		if (!res)
--			return ERR_PTR(-ENOMEM);
-+		if (!request_region_locked(&iomem_resource, res, addr,
-+						   size, name, 0))
-+			break;
-+
-+		write_unlock(&resource_lock);
-+		revoke_iomem(res);
- 		res->desc = IORES_DESC_DEVICE_PRIVATE_MEMORY;
-+		if (dev) {
-+			dr->parent = &iomem_resource;
-+			dr->start = addr;
-+			dr->n = size;
-+			devres_add(dev, dr);
-+		}
-+
- 		return res;
- 	}
- 
-+	write_unlock(&resource_lock);
-+	free_resource(res);
-+	if (dev)
-+		devres_free(dr);
-+
- 	return ERR_PTR(-ERANGE);
- }
- 
--- 
-2.20.1
+T24gVGh1LCAyMDIxLTA0LTE1IGF0IDE2OjI0IC0wNTAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
+T24gTW9uLCBBcHIgMTIsIDIwMjEgYXQgMTo0NSBBTSBGbG9yYSBGdSA8ZmxvcmEuZnVAbWVkaWF0
+ZWsuY29tPiB3cm90ZToNCj4gPg0KPiA+IE9uIEZyaSwgMjAyMS0wNC0wOSBhdCAxMzoyNSAtMDUw
+MCwgUm9iIEhlcnJpbmcgd3JvdGU6DQo+ID4gPiBPbiBXZWQsIEFwciAwNywgMjAyMSBhdCAxMToy
+ODowMkFNICswODAwLCBGbG9yYSBGdSB3cm90ZToNCj4gPiA+ID4gRG9jdW1lbnQgdGhlIGFwdXN5
+cyBiaW5kaW5ncy4NCj4gPiA+ID4NCj4gPiA+ID4gU2lnbmVkLW9mZi1ieTogRmxvcmEgRnUgPGZs
+b3JhLmZ1QG1lZGlhdGVrLmNvbT4NCj4gPiA+ID4gLS0tDQo+ID4gPiA+ICAuLi4vYXJtL21lZGlh
+dGVrL21lZGlhdGVrLGFwdXN5cy55YW1sICAgICAgICAgfCA1NiArKysrKysrKysrKysrKysrKysr
+DQo+ID4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgNTYgaW5zZXJ0aW9ucygrKQ0KPiA+ID4gPiAgY3Jl
+YXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9hcm0vbWVk
+aWF0ZWsvbWVkaWF0ZWssYXB1c3lzLnlhbWwNCj4gPiA+ID4NCj4gPiA+ID4gZGlmZiAtLWdpdCBh
+L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9hcm0vbWVkaWF0ZWsvbWVkaWF0ZWss
+YXB1c3lzLnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvYXJtL21lZGlh
+dGVrL21lZGlhdGVrLGFwdXN5cy55YW1sDQo+ID4gPiA+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0DQo+
+ID4gPiA+IGluZGV4IDAwMDAwMDAwMDAwMC4uZGMwNGE0NmYxYmFkDQo+ID4gPiA+IC0tLSAvZGV2
+L251bGwNCj4gPiA+ID4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Fy
+bS9tZWRpYXRlay9tZWRpYXRlayxhcHVzeXMueWFtbA0KPiA+ID4gPiBAQCAtMCwwICsxLDU2IEBA
+DQo+ID4gPiA+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiAoR1BMLTIuMCBPUiBCU0QtMi1D
+bGF1c2UpDQo+ID4gPiA+ICslWUFNTCAxLjINCj4gPiA+ID4gKy0tLQ0KPiA+ID4gPiArJGlkOiBo
+dHRwczovL3VybGRlZmVuc2UuY29tL3YzL19faHR0cDovL2RldmljZXRyZWUub3JnL3NjaGVtYXMv
+YXJtL21lZGlhdGVrL21lZGlhdGVrLGFwdXN5cy55YW1sKl9fO0l3ISFDVFJOS0E5d01nMEFSYnch
+M3J5S0ZUQTJDdnNWc3M0UHQyWk9HN3d2NGpnUi0yTFB4dUduMzBJeEZtcHhveFNSZHpOZGY4RnJB
+WVl2WldjdyQNCj4gPiA+ID4gKyRzY2hlbWE6IGh0dHBzOi8vdXJsZGVmZW5zZS5jb20vdjMvX19o
+dHRwOi8vZGV2aWNldHJlZS5vcmcvbWV0YS1zY2hlbWFzL2NvcmUueWFtbCpfXztJdyEhQ1RSTktB
+OXdNZzBBUmJ3ITNyeUtGVEEyQ3ZzVnNzNFB0MlpPRzd3djRqZ1ItMkxQeHVHbjMwSXhGbXB4b3hT
+UmR6TmRmOEZyQVJsaENRMHckDQo+ID4gPiA+ICsNCj4gPiA+ID4gK3RpdGxlOiBNZWRpYVRlayBB
+UFVTWVMgQ29udHJvbGxlcg0KPiA+ID4gPiArDQo+ID4gPiA+ICttYWludGFpbmVyczoNCj4gPiA+
+ID4gKyAgLSBGbG9yYSBGdSA8ZmxvcmEuZnVAbWVkaWF0ZWsuY29tPg0KPiA+ID4gPiArDQo+ID4g
+PiA+ICtkZXNjcmlwdGlvbjoNCj4gPiA+ID4gKyAgVGhlIE1lZGlhdGVrIGFwdXN5cyBjb250cm9s
+bGVyIHByb3ZpZGVzIGZ1bmN0aW9uYWwgY29uZmlndXJhdGlvbnMgYW5kIGNsb2Nrcw0KPiA+ID4g
+PiArICB0byB0aGUgc3lzdGVtLg0KPiA+ID4gPiArDQo+ID4gPiA+ICtwcm9wZXJ0aWVzOg0KPiA+
+ID4gPiArICBjb21wYXRpYmxlOg0KPiA+ID4gPiArICAgIGl0ZW1zOg0KPiA+ID4gPiArICAgICAg
+LSBlbnVtOg0KPiA+ID4gPiArICAgICAgICAgIC0gbWVkaWF0ZWssbXQ4MTkyLWFwdV9tYm94DQo+
+ID4gPiA+ICsgICAgICAgICAgLSBtZWRpYXRlayxtdDgxOTItYXB1X2Nvbm4NCj4gPiA+ID4gKyAg
+ICAgICAgICAtIG1lZGlhdGVrLG10ODE5Mi1hcHVfdmNvcmUNCj4gPiA+DQo+ID4gPiBzL18vLS8N
+Cj4gPiA+DQo+ID4NCj4gPiBPSy4gSSB3aWxsIHVwZGF0ZSBleHByZXNzaW9uIHN0cmluZ3MgaW4g
+dGhlIG5leHQgdmVyc2lvbi4NCj4gPg0KPiA+ID4gPiArICAgICAgLSBjb25zdDogc3lzY29uDQo+
+ID4gPiA+ICsNCj4gPiA+ID4gKyAgcmVnOg0KPiA+ID4gPiArICAgIG1heEl0ZW1zOiAxDQo+ID4g
+PiA+ICsNCj4gPiA+ID4gKyAgJyNjbG9jay1jZWxscyc6DQo+ID4gPiA+ICsgICAgY29uc3Q6IDEN
+Cj4gPiA+ID4gKw0KPiA+ID4gPiArcmVxdWlyZWQ6DQo+ID4gPiA+ICsgIC0gY29tcGF0aWJsZQ0K
+PiA+ID4gPiArICAtIHJlZw0KPiA+ID4gPiArDQo+ID4gPiA+ICthZGRpdGlvbmFsUHJvcGVydGll
+czogZmFsc2UNCj4gPiA+ID4gKw0KPiA+ID4gPiArZXhhbXBsZXM6DQo+ID4gPiA+ICsgIC0gfA0K
+PiA+ID4gPiArICAgIGFwdV9tYm94OiBhcHVfbWJveEAxOTAwMDAwMCB7DQo+ID4gPg0KPiA+ID4g
+bWFpbGJveEAuLi4/IElzIHRoaXMgYSBtYWlsYm94IHByb3ZpZGVyPw0KPiA+ID4NCj4gPg0KPiA+
+IFllcywgdGhlIGFwdV9tYm94IGlzIHRoZSBmb3Igc2V0dXAgbWFpbGJveCBpbiB0aGUgQVBVIGhh
+cmR3YXJlLg0KPiANCj4gVGhlbiB5b3UgbmVlZCAjbWJveC1jZWxscyBoZXJlLg0KPiANCj4gQW5k
+IGluIHRoYXQgY2FzZSwgd2hhdCBtYWtlcyBpdCBhIHN5c2Nvbj8NCj4gDQpUaGUgYXB1X21ib3gg
+YXJlIHJlZ2lzdGVycyBmb3Igc2V0dXAgbWFpbCBib3ggY29tbXVuaWNhdGlvbnMgYmV0d2VlbiBh
+cHUNCnByb2Nlc3NvciBhbmQgdGhlIEFQIHNpZGUga2VybmVsIGRyaXZlcnMuIEl0IGFsc28gaGFz
+IHNwYXJlIHJlZ2lzdGVycw0KdGhhdCByZXNlcnZlZCBmb3Iga2VlcCBzcGVjaWZpYyBpbmZvcm1h
+dGlvbiBiZXR3ZWVuIGFwdSBhbmQgQVAgc2lkZS4NClRoYXQncyB3aHkgSSBzZXQgaXQgYXMgc3lz
+Y29uIHRvIGF2b2lkIGlvcmVtYXAgZnJvbSB1c2Vycy4gRG8geW91IHRoaW5rDQppdCBpcyByZWFz
+b25hYmxlIG9yIGl0IGlzIGJldHRlciB0byBiZSBrZXB0IGluc2lkZSB0aGUgdXNlciBub2RlcyB3
+aGVuDQp1c2luZyBpdD8NCg0KPiA+DQo+ID4gPiA+ICsgICAgICAgIGNvbXBhdGlibGUgPSAibWVk
+aWF0ZWssbXQ4MTkyLWFwdV9tYm94IiwgInN5c2NvbiI7DQo+ID4gPiA+ICsgICAgICAgIHJlZyA9
+IDwweDE5MDAwMDAwIDB4MTAwMD47DQo+ID4gPiA+ICsgICAgfTsNCg0K
 
