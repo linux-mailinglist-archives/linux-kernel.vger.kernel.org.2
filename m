@@ -2,109 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F112F361BD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9669F361BD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240517AbhDPIgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 04:36:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240487AbhDPIgK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 04:36:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E63046117A;
-        Fri, 16 Apr 2021 08:35:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618562145;
-        bh=3fqUinZK9zKoBF4djR3n5P+LR2PK0OAFRag8ham6HF0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ELQ7Hx/RT6vhndZPrvCgO3jKinPLP8Rc3MaaJz0gMxb97SVX8SCldaQygzA5WgR9Q
-         v8/E8WVkd4gpYLheYvc6RfUWI/wqrm+W3UF4SXBRAeqziZOv3lMrrR0jQSxq+Lz1pa
-         p4XnQyIBCxf7JEL9jGWysRBtqqESZKKd6LD4DMBKw7hjKiQ+lC5U4C6ob+SpoImel2
-         CARPpFP/IU1EiHc0APCQR2ivvGUD08Nnyb1xVa1L3rtFxeBXBEDHdOysA+JN7cwFfH
-         eHlPOHSYTphO6WJJsmJJ7dP4Bu8PU4P83JR4YNncfVEaOgg7NkVdFcW+7y/n8AAFb6
-         q2aIry6J8dyKg==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lXJx3-0001HE-Hr; Fri, 16 Apr 2021 10:35:45 +0200
-Date:   Fri, 16 Apr 2021 10:35:45 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     dillon min <dillon.minfei@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        kernel test robot <lkp@intel.com>,
-        linux-serial@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        Gerald Baeza <gerald.baeza@foss.st.com>,
-        Erwan Le Ray <erwan.leray@foss.st.com>
-Subject: Re: [PATCH v2] serial: stm32: optimize spin lock usage
-Message-ID: <YHlMYZCCxL+SS9ye@hovoldconsulting.com>
-References: <1618219898-4600-1-git-send-email-dillon.minfei@gmail.com>
- <YHRGPpQ03XgBMkiy@hovoldconsulting.com>
- <CAL9mu0JF-9hy3Z_ytpEO+hzKh0D+f-0gYaUBEA0v28EOHpC80w@mail.gmail.com>
- <CAL9mu0Ke97FUZ03jvdH8Lz2qRnVY82B7tAEtjbhW97sPOVkAxQ@mail.gmail.com>
+        id S240545AbhDPIgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 04:36:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54612 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239093AbhDPIga (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 04:36:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618562166;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gAIh4WsVS/ayzhp5HjJe99OkPRqXPu6YrMhzHKnuu4E=;
+        b=WN/DN/lFgtSz2MQF9gvZefpOfOtoSiqDggFsEuNIJHlJzjj3HcwyR+Rgizimoz8dBV1M7y
+        Za08/gB5l5TTJHzxSu5sr6bx/uigrWMac4spP1sJXW77+M9OmkUT0iIAcHWfyq1YajwMGz
+        v8rooabi5h/F/DagGAxm7DoucbuoKvY=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-321-u1nZd45cOEqySIFYD54USQ-1; Fri, 16 Apr 2021 04:36:04 -0400
+X-MC-Unique: u1nZd45cOEqySIFYD54USQ-1
+Received: by mail-ed1-f72.google.com with SMTP id w15-20020a056402268fb02903828f878ec5so6593331edd.5
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 01:36:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=gAIh4WsVS/ayzhp5HjJe99OkPRqXPu6YrMhzHKnuu4E=;
+        b=BE1+CdI2rh3iv+xslQWpUVDudMPyuVmnI4BsBTRzSzJOyOqv3rlPXTKta/8NfmrvrE
+         gklOn7SLFrW07omdBpSSKKHOHQz5PaBwtLCjEBTg5IO2wnKMP0NPRWjtuYZVg1+NKuPX
+         BK0MdjsWAnrRaKsM7ts1mvf2+JtX1Oa+XMz2XKWcviLGogB1xpdljB7rIXASJbOD/tQC
+         YcftBM8GbwmP5PW5s6fB1P9SYFi7sE2G1FfhQdyQN1QN8duyXydBBehX2S7OHMGqikDJ
+         RZmlwRCr7RSPiDC1eJAa8mEGUPJ1nm/shmZuNMlGzPKxoKNE+0yPJdumoQo5da1sKbxH
+         BKHA==
+X-Gm-Message-State: AOAM530Z+cKcVjBi+yl+/rVAiCybeEF/nxKbj6H+6DkkdByiegGYxMNJ
+        wttw+yYbQZW+eQd1t4kOUkVjU6/HbwoPDyIyVeudEJO2gDiHMpCyf8aueDrddjieoKvcl9yolDp
+        4Zrhk74hDJej6oMUkN3DOoI85
+X-Received: by 2002:a17:906:2b03:: with SMTP id a3mr7529694ejg.481.1618562162786;
+        Fri, 16 Apr 2021 01:36:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxgAusKooTgufLR2oxQaNZJSdVLxPdce8E3XlDxu6rxKUOMWItS6xghBQPlz5lFNQCfdDw8FQ==
+X-Received: by 2002:a17:906:2b03:: with SMTP id a3mr7529674ejg.481.1618562162630;
+        Fri, 16 Apr 2021 01:36:02 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c64fb.dip0.t-ipconnect.de. [91.12.100.251])
+        by smtp.gmail.com with ESMTPSA id k16sm3764251ejv.37.2021.04.16.01.36.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Apr 2021 01:36:02 -0700 (PDT)
+Subject: Re: [PATCH v9 6/7] mm: Make alloc_contig_range handle in-use hugetlb
+ pages
+To:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>
+References: <20210416070023.4742-1-osalvador@suse.de>
+ <20210416070023.4742-7-osalvador@suse.de>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <02de399f-1ecf-98d6-6a78-1301f9a97d5a@redhat.com>
+Date:   Fri, 16 Apr 2021 10:36:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL9mu0Ke97FUZ03jvdH8Lz2qRnVY82B7tAEtjbhW97sPOVkAxQ@mail.gmail.com>
+In-Reply-To: <20210416070023.4742-7-osalvador@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 07:44:39AM +0800, dillon min wrote:
-> Hi Johan, Erwan
-> 
-> It seems still a bit of a problem in the current version, not deadlock
-> but access register at the same time.
-> 
-> For driver , we should consider it running under smp, let's think
-> about it for this case:
-> 
-> static void stm32_usart_console_write(struct console *co, const char *s,
->                                       unsigned int cnt)
-> {
->          .....
->          local_irq_save(flags);
->          if (port->sysrq)
->                     locked = 0;
->          .....
->          access register cr1, tdr, isr
->          .....
-> 
->          local_irq_restore(flags);
-> }
-> 
-> if port->sysrq is 1, stm32_usart_console_write() just disable local
-> irq response by local_irq_save(), at the time of access register cr1,
-> tdr, isr. an TXE interrupt raised, for other cores(I know stm32
-> mpu/mcu do not have multi cores, just assume it has), it still has a
-> chance to handle interrupt.  Then there is no lock to protect the uart
-> register.
 
-Right, the sysrq handling is a bit of a hack.
+> -int isolate_or_dissolve_huge_page(struct page *page)
+> +int isolate_or_dissolve_huge_page(struct page *page, struct list_head *list)
+>   {
+>   	struct hstate *h;
+>   	struct page *head;
+> +	int ret = -EBUSY;
+>   
+>   	/*
+>   	 * The page might have been dissolved from under our feet, so make sure
+> @@ -2373,13 +2380,18 @@ int isolate_or_dissolve_huge_page(struct page *page)
+>   
+>   	/*
+>   	 * Fence off gigantic pages as there is a cyclic dependency between
+> -	 * alloc_contig_range and them. Return -ENOME as this has the effect
+> +	 * alloc_contig_range and them. Return -ENOMEM as this has the effect
 
-> changes to below, should be more safe:
+Nit: belongs into previous patch.
+
+>   	 * of bailing out right away without further retrying.
+>   	 */
+>   	if (hstate_is_gigantic(h))
+>   		return -ENOMEM;
+>   
+> -	return alloc_and_dissolve_huge_page(h, head);
+> +	if (page_count(head) && isolate_huge_page(head, list))
+> +		ret = 0;
+> +	else if (!page_count(head))
+> +		ret = alloc_and_dissolve_huge_page(h, head, list);
+> +
+> +	return ret;
+>   }
+>   
+>   struct page *alloc_huge_page(struct vm_area_struct *vma,
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index bb8321026c0c..5199b9696bab 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -1703,8 +1703,9 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
+>   	LIST_HEAD(clean_pages);
+>   
+>   	list_for_each_entry_safe(page, next, page_list, lru) {
+> -		if (page_is_file_lru(page) && !PageDirty(page) &&
+> -		    !__PageMovable(page) && !PageUnevictable(page)) {
+> +		if (!PageHuge(page) && page_is_file_lru(page) &&
+> +		    !PageDirty(page) && !__PageMovable(page) &&
+> +		    !PageUnevictable(page)) {
+
+Nit: adding to the end of the list would require less modifications ;)
+
+>   			ClearPageActive(page);
+>   			list_move(&page->lru, &clean_pages);
+>   		}
 > 
-> .....
-> if (port->sysrq || oops_in_progress)
->       locked = spin_trylock_irqsave(&port->lock, flags);
 
-Except that the lock debugging code would detect the attempt at
-recursive locking here and complain loudly on UP.
+Acked-by: David Hildenbrand <david@redhat.com>
 
-If you really want to fix this, we have uart_unlock_and_check_sysrq()
-which can be used to defer sysrq processing until the interrupt handler
-has released the lock.
+-- 
+Thanks,
 
-> else
->       spin_lock_irqsave(&port->lock, flags);
-> 
-> ....
-> 
-> if (locked)
->      spin_unlock_irqrestore(&port->lock, flags);
+David / dhildenb
 
-Johan
