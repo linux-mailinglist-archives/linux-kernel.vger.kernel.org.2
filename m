@@ -2,75 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2614361F11
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16B0A361F14
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 13:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236893AbhDPLqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 07:46:37 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:49128 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240598AbhDPLqf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 07:46:35 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrewsh)
-        with ESMTPSA id 44BED1F435B8
-Subject: Re: [PATCH 09/13] Samples: Rust examples
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-References: <20210414184604.23473-1-ojeda@kernel.org>
- <20210414184604.23473-10-ojeda@kernel.org>
- <CAHk-=wjdZ1KksHHHuekeAx9kKFXEyt+rg0P=yRD1Bia_01wucg@mail.gmail.com>
- <CANiq72mpjQh01QovUPCjdHDS-zVHroxymet67GOHvotW8wGdVg@mail.gmail.com>
-From:   Andrej Shadura <andrew.shadura@collabora.co.uk>
-Organization: Collabora
-Message-ID: <dcaca535-2df3-3224-82c3-1a49a2208f30@collabora.co.uk>
-Date:   Fri, 16 Apr 2021 13:46:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S242240AbhDPLrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 07:47:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47862 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240473AbhDPLrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 07:47:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2C5F610FC;
+        Fri, 16 Apr 2021 11:46:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618573601;
+        bh=Ls818vfdmxh0kbfURMXnvoqBE1G/Wvr1I49oaH5MzL4=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=a0Tm1bdyIVwIXoc3ibleEqxd0G1OHGA2pQQn86dnNgUOVrybfv/1yLhbX9W3P8QbR
+         Q1WGmpVM/p0ql57EWh9v+sJNS25Cb9oSHq1qnbgMPl4ZYfd5OYLF/oJFf92rBpJnPq
+         2GXEaui3D0PNFarim7GbtiMwDbQVdVrrxhRHFZYU5VJOmdp3blq0/pcFE80Ypsz4cs
+         hIgpJB3EDPKWSXIUqotdQhz+cpExtOyW8dIC342fj2DmnCcqMG8AvWs3EQC0erq/id
+         m1+3mJ2lTQc/2xI9uonPfq9nE/7MSwparvJHb7t0Os52SJP8H6dhRIptQnNsbeejgb
+         kcwY1Oy1yqtJQ==
+Date:   Fri, 16 Apr 2021 13:46:37 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Juergen Gross <jgross@suse.com>
+cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        Hillf Danton <hdanton@sina.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v3] net: sched: fix packet stuck problem for lockless
+ qdisc
+In-Reply-To: <70dc383f-6a10-a16b-3972-060cdd8ec2d4@suse.com>
+Message-ID: <nycvar.YFH.7.76.2104161344340.18270@cbobk.fhfr.pm>
+References: <1616641991-14847-1-git-send-email-linyunsheng@huawei.com> <20210409090909.1767-1-hdanton@sina.com> <20210412032111.1887-1-hdanton@sina.com> <20210412072856.2046-1-hdanton@sina.com> <20210413022129.2203-1-hdanton@sina.com> <20210413032620.2259-1-hdanton@sina.com>
+ <20210413071241.2325-1-hdanton@sina.com> <20210413083352.2424-1-hdanton@sina.com> <1cd37014-4b2a-b82c-0cfc-6beffb8d36de@huawei.com> <70dc383f-6a10-a16b-3972-060cdd8ec2d4@suse.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <CANiq72mpjQh01QovUPCjdHDS-zVHroxymet67GOHvotW8wGdVg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, 13 Apr 2021, Juergen Gross wrote:
 
-On 14/04/2021 21:42, Miguel Ojeda wrote:
-> On Wed, Apr 14, 2021 at 9:34 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
->>
->> Honestly, I'd like to see a real example. This is fine for testing,
->> but I'd like to see something a bit more real, and a bit less special
->> than the Android "binder" WIP that comes a few patches later.
->>
->> Would there be some kind of real driver or something that people could
->> use as a example of a real piece of code that actually does something
->> meaningful?
+> > what Jiri said about "I am still planning to have Yunsheng Lin's
+> > (CCing) fix [1] tested in the coming days." is that Juergen has
+> > done the test and provide a "Tested-by" tag.
 > 
-> Yeah, we are planning to write a couple of drivers that talk to actual
-> hardware. Not sure which ones we will do, but we will have them
-> written.
+> Correct. And I did this after Jiri asking me to do so.
 
-I’m curious what’s the procedure and approach in general to adding new
-APIs? I was thinking of trying to port my driver but it needs USB HID
-and either LEDs or hwrandom (depending on which part I start porting
-first), so obviously it’s not doable right now, but I’m thinking about
-maybe helping with at least some of those.
+Exactly, Juergen's setup is the one where this issue is being reproduced 
+reliably for us, and Juergen verified that your patch fixes that issue.
+
+Seeing that you now also addressed the STATE_DEACTIVATED issue (which we 
+don't have reproducer for though), I think your series should be good to 
+go if the STATE_DEACTIVATED fix has been verified independently.
+
+Thanks!
 
 -- 
-Cheers,
-  Andrej
+Jiri Kosina
+SUSE Labs
+
