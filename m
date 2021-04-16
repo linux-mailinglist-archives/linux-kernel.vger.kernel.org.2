@@ -2,74 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F02362095
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C086362094
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 15:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243429AbhDPNL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 09:11:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39534 "EHLO mail.kernel.org"
+        id S235599AbhDPNKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 09:10:45 -0400
+Received: from mga07.intel.com ([134.134.136.100]:56177 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235445AbhDPNLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 09:11:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8062061153;
-        Fri, 16 Apr 2021 13:11:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618578689;
-        bh=H5tvqGKtsytmfz9hrh5Tz3t3yEGosI9S7z/zgAa6I5o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hzdoGw1lcLOWBafrJ2vv0zLT1VF1BjVcGl4k9Xu/VZiu/6PadIksHw49WhkCMRhjw
-         NGaXYhbyks/bTcBS7aeR3vWTH5TRknBPyCs5E64N/jrRlDYJ8KbitTu37do3e25ISF
-         JwdObOyySYAdVXSH56NnXIlmD1dTrAXWgGRda8Un12mS7Onc27+U2NpS03002Ly3Eh
-         uSFVs4RHep5eelQ5xVHAN62uH4CgMfuA2OqUU3KvdJCL1x56X04kLWre4S/3Rd8Fyd
-         RAN9lmEuDcnZhFM07b99P4NTF+NJ+oRhHhToBjz44xL9o8LgAgNHmmVPY5WLfjHATA
-         ZD5oe7T417Z6w==
-Date:   Fri, 16 Apr 2021 16:11:25 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/kprobes: Simplify alloc_insn_page() with
- __vmalloc_node_range
-Message-ID: <YHmM/ZWaO95o6cZo@kernel.org>
-References: <20210413180231.19b72601@xhacker.debian>
- <20210413220030.d1cbbc63659dcbc52876696d@kernel.org>
- <20210414152728.418a41fb@xhacker.debian>
- <YHbqN0B5QnpWtzc/@kernel.org>
- <20210416150616.027f5bae@xhacker.debian>
+        id S235528AbhDPNKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 09:10:43 -0400
+IronPort-SDR: 9z2aWpXI45KDrmBCNLOkinMQK3T8n2Nk6LH9oo+tMVXhLjOKIhUgd5PohIYB1RbdFfvLwJNj9H
+ Nq1l2hO5QP5Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,9955"; a="258994681"
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="258994681"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 06:10:18 -0700
+IronPort-SDR: bNdvfTep5YEmj6Da3ykd0jME7lPZtO68SgGihYTvPURY4blc1mzqZfn57deXfbO2oHSXU3vBh9
+ faWSbcPiLvBQ==
+X-IronPort-AV: E=Sophos;i="5.82,226,1613462400"; 
+   d="scan'208";a="422006223"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2021 06:10:18 -0700
+Date:   Fri, 16 Apr 2021 06:12:58 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Auger Eric <eric.auger@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210416061258.325e762e@jacob-builder>
+In-Reply-To: <20210415230732.GG1370958@nvidia.com>
+References: <BN6PR11MB40688F5AA2323AB8CC8E65E7C37C9@BN6PR11MB4068.namprd11.prod.outlook.com>
+        <20210331124038.GE1463678@nvidia.com>
+        <BN6PR11MB406854CAE9D7CE86BEAB3E23C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+        <BN6PR11MB40687428F0D0F3B5F13EA3E0C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+        <YGW27KFt9eQB9X2z@myrica>
+        <BN6PR11MB4068171CD1D4B823515F7EFBC37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+        <20210401134236.GF1463678@nvidia.com>
+        <BN6PR11MB4068C4DE7AF43D44DE70F4C1C37B9@BN6PR11MB4068.namprd11.prod.outlook.com>
+        <20210401160337.GJ1463678@nvidia.com>
+        <4bea6eb9-08ad-4b6b-1e0f-c97ece58a078@redhat.com>
+        <20210415230732.GG1370958@nvidia.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416150616.027f5bae@xhacker.debian>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 03:06:16PM +0800, Jisheng Zhang wrote:
-> On Wed, 14 Apr 2021 16:12:23 +0300 Jarkko Sakkinen <jarkko@kernel.org> wrote:
-> 
-> 
-> > > So kprobes ss ins slot page "must be in the range of relative branching only
-> > > for x86 and arm"
-> > >
-> > > And Jarkko's "arch/x86: kprobes: Remove MODULES dependency" series look
-> > > much better. The last version is v5, I'm not sure whether Jarkko will
-> > > send new version to mainline the series.  
-> > 
-> > Ya, I got really busy with upstreaming SGX. That's why this was left out
-> > (but luckily SGX got finally into upstream).
-> > 
-> > Thanks for reminding. Any motivation to pick it up and continue where I
-> > left of?
-> > 
-> 
-> I can try, I will try to send patches once next rc1 is released.
-> 
-> thanks
+Hi Jason,
 
-Alright, thanks. Be sure to CC me, I'm happy to test them in my
-environment.
+On Thu, 15 Apr 2021 20:07:32 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-/Jarkko
+> On Thu, Apr 15, 2021 at 03:11:19PM +0200, Auger Eric wrote:
+> > Hi Jason,
+> > 
+> > On 4/1/21 6:03 PM, Jason Gunthorpe wrote:  
+> > > On Thu, Apr 01, 2021 at 02:08:17PM +0000, Liu, Yi L wrote:
+> > >   
+> > >> DMA page faults are delivered to root-complex via page request
+> > >> message and it is per-device according to PCIe spec. Page request
+> > >> handling flow is:
+> > >>
+> > >> 1) iommu driver receives a page request from device
+> > >> 2) iommu driver parses the page request message. Get the RID,PASID,
+> > >> faulted page and requested permissions etc.
+> > >> 3) iommu driver triggers fault handler registered by device driver
+> > >> with iommu_report_device_fault()  
+> > > 
+> > > This seems confused.
+> > > 
+> > > The PASID should define how to handle the page fault, not the driver.
+> > >  
+> > 
+> > In my series I don't use PASID at all. I am just enabling nested stage
+> > and the guest uses a single context. I don't allocate any user PASID at
+> > any point.
+> > 
+> > When there is a fault at physical level (a stage 1 fault that concerns
+> > the guest), this latter needs to be reported and injected into the
+> > guest. The vfio pci driver registers a fault handler to the iommu layer
+> > and in that fault handler it fills a circ bugger and triggers an eventfd
+> > that is listened to by the VFIO-PCI QEMU device. this latter retrives
+> > the faault from the mmapped circ buffer, it knowns which vIOMMU it is
+> > attached to, and passes the fault to the vIOMMU.
+> > Then the vIOMMU triggers and IRQ in the guest.
+> > 
+> > We are reusing the existing concepts from VFIO, region, IRQ to do that.
+> > 
+> > For that use case, would you also use /dev/ioasid?  
+> 
+> /dev/ioasid could do all the things you described vfio-pci as doing,
+> it can even do them the same way you just described.
+> 
+> Stated another way, do you plan to duplicate all of this code someday
+> for vfio-cxl? What about for vfio-platform? ARM SMMU can be hooked to
+> platform devices, right?
+> 
+> I feel what you guys are struggling with is some choice in the iommu
+> kernel APIs that cause the events to be delivered to the pci_device
+> owner, not the PASID owner.
+> 
+> That feels solvable.
+> 
+Perhaps more of a philosophical question for you and Alex. There is no
+doubt that the direction you guided for /dev/ioasid is a much cleaner one,
+especially after VDPA emerged as another IOMMU backed framework.
+
+The question is what do we do with the nested translation features that have
+been targeting the existing VFIO-IOMMU for the last three years? That
+predates VDPA. Shall we put a stop marker *after* nested support and say no
+more extensions for VFIO-IOMMU, new features must be built on this new
+interface?
+
+If we were to close a checkout line for some unforeseen reasons, should we
+honor the customers already in line for a long time?
+
+This is not a tactic or excuse for not working on the new /dev/ioasid
+interface. In fact, I believe we can benefit from the lessons learned while
+completing the existing. This will give confidence to the new
+interface. Thoughts?
+
+> Jason
+
+
+Thanks,
+
+Jacob
