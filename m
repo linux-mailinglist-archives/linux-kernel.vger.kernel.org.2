@@ -2,343 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F4FB361C50
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9366E361C4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 11:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241160AbhDPIsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 04:48:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46348 "EHLO mx2.suse.de"
+        id S241342AbhDPIsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 04:48:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240940AbhDPIrw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 04:47:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BB6A5AF3D;
-        Fri, 16 Apr 2021 08:47:17 +0000 (UTC)
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: [PATCH v4 net-next 09/10] net: korina: Make driver COMPILE_TESTable
-Date:   Fri, 16 Apr 2021 10:47:10 +0200
-Message-Id: <20210416084712.62561-10-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210416084712.62561-1-tsbogend@alpha.franken.de>
-References: <20210416084712.62561-1-tsbogend@alpha.franken.de>
+        id S240918AbhDPIrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 04:47:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 129B561152;
+        Fri, 16 Apr 2021 08:47:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618562844;
+        bh=tMfZZI7wDgcErE81PEljNtPPfVUB8rsBAM0RyZ9q+ec=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VudZc+IcuueMcbLQgEmtpuyLGVpG/rpz/LFmBBuWJNAhoFNaeYPNYtHU3fM9Ls5iE
+         eM2X62QivRqxwAjSDj/vXNEwAETmvdI+6eyJJS/NCtqQm1VP7fHTHrl98z0rcVD28T
+         MeAmq+/z6dL0QPYaxoBYsWRYTRogN3c2rbX9FVkcY4LpSSTVsM7FgQXQi9N3ZUrhLd
+         44luQfzWmrqPGk6y8tCMGPZTDrBBIMn9MnZVUM93MJKyDKr2NrIJ2U6KnkIufawQ+b
+         6x2ZuE6nawq7G2QlPAjitQ4Z+vcpqLyPTjNMhMDiKxwqrjUAcC8Gy/rZXg4rRWA3jZ
+         3AsTNWiF+7CJA==
+Received: by mail-ed1-f49.google.com with SMTP id bx20so30165782edb.12;
+        Fri, 16 Apr 2021 01:47:23 -0700 (PDT)
+X-Gm-Message-State: AOAM533NP/yBSi3ed0eN0YFJaAOTanHvwzDzsCi/lD7h/Jerq5D+Fgme
+        TRjRCeeJbOjbXR6qh2v3A8fcO86pUyjpdAz5FRI=
+X-Google-Smtp-Source: ABdhPJwBH137n6LlWEJeuS6vyGz1Okcc2OVHIcOTnZrZMbDjFkUEQKuzi/EZXh72wQfZQ3mH2/MZ/dOJcnklG8DHSV4=
+X-Received: by 2002:a05:6402:35d3:: with SMTP id z19mr8641928edc.143.1618562842732;
+ Fri, 16 Apr 2021 01:47:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210416031747.28504-1-zhuguangqing83@gmail.com>
+In-Reply-To: <20210416031747.28504-1-zhuguangqing83@gmail.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Fri, 16 Apr 2021 10:47:11 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPeEHRZboCJs+eScjsLDybDzXSaP3jBLkAYiQt_7Ft2nog@mail.gmail.com>
+Message-ID: <CAJKOXPeEHRZboCJs+eScjsLDybDzXSaP3jBLkAYiQt_7Ft2nog@mail.gmail.com>
+Subject: Re: [PATCH] Input: goodix - Fix missing IRQF_ONESHOT as only threaded handler
+To:     zhuguangqing83@gmail.com
+Cc:     Bastien Nocera <hadess@hadess.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move structs/defines for ethernet/dma register into driver, since they
-are only used for this driver and remove any MIPS specific includes.
-This makes it possible to COMPILE_TEST the driver.
+On Fri, 16 Apr 2021 at 05:18, <zhuguangqing83@gmail.com> wrote:
+>
+> From: Guangqing Zhu <zhuguangqing83@gmail.com>
+>
+> Coccinelle noticed:
+> drivers/input/touchscreen/goodix.c:497:8-33: ERROR: Threaded IRQ with no
+> primary handler requested without IRQF_ONESHOT
+>
+> Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
+> ---
+>  drivers/input/touchscreen/goodix.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
----
- drivers/net/ethernet/Kconfig  |   2 +-
- drivers/net/ethernet/korina.c | 249 ++++++++++++++++++++++++++++++++--
- 2 files changed, 239 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/ethernet/Kconfig b/drivers/net/ethernet/Kconfig
-index c059b4bd3f23..453d202a28c1 100644
---- a/drivers/net/ethernet/Kconfig
-+++ b/drivers/net/ethernet/Kconfig
-@@ -97,7 +97,7 @@ config JME
- 
- config KORINA
- 	tristate "Korina (IDT RC32434) Ethernet support"
--	depends on MIKROTIK_RB532
-+	depends on MIKROTIK_RB532 || COMPILE_TEST
- 	select MII
- 	help
- 	  If you have a Mikrotik RouterBoard 500 or IDT RC32434
-diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
-index e95c8d87d893..5f39a5bba531 100644
---- a/drivers/net/ethernet/korina.c
-+++ b/drivers/net/ethernet/korina.c
-@@ -59,18 +59,244 @@
- #include <linux/pgtable.h>
- #include <linux/clk.h>
- 
--#include <asm/bootinfo.h>
--#include <asm/bitops.h>
--#include <asm/io.h>
--#include <asm/dma.h>
--
--#include <asm/mach-rc32434/eth.h>
--#include <asm/mach-rc32434/dma_v.h>
--
- #define DRV_NAME	"korina"
- #define DRV_VERSION	"0.20"
- #define DRV_RELDATE	"15Sep2017"
- 
-+struct eth_regs {
-+	u32 ethintfc;
-+	u32 ethfifott;
-+	u32 etharc;
-+	u32 ethhash0;
-+	u32 ethhash1;
-+	u32 ethu0[4];		/* Reserved. */
-+	u32 ethpfs;
-+	u32 ethmcp;
-+	u32 eth_u1[10];		/* Reserved. */
-+	u32 ethspare;
-+	u32 eth_u2[42];		/* Reserved. */
-+	u32 ethsal0;
-+	u32 ethsah0;
-+	u32 ethsal1;
-+	u32 ethsah1;
-+	u32 ethsal2;
-+	u32 ethsah2;
-+	u32 ethsal3;
-+	u32 ethsah3;
-+	u32 ethrbc;
-+	u32 ethrpc;
-+	u32 ethrupc;
-+	u32 ethrfc;
-+	u32 ethtbc;
-+	u32 ethgpf;
-+	u32 eth_u9[50];		/* Reserved. */
-+	u32 ethmac1;
-+	u32 ethmac2;
-+	u32 ethipgt;
-+	u32 ethipgr;
-+	u32 ethclrt;
-+	u32 ethmaxf;
-+	u32 eth_u10;		/* Reserved. */
-+	u32 ethmtest;
-+	u32 miimcfg;
-+	u32 miimcmd;
-+	u32 miimaddr;
-+	u32 miimwtd;
-+	u32 miimrdd;
-+	u32 miimind;
-+	u32 eth_u11;		/* Reserved. */
-+	u32 eth_u12;		/* Reserved. */
-+	u32 ethcfsa0;
-+	u32 ethcfsa1;
-+	u32 ethcfsa2;
-+};
-+
-+/* Ethernet interrupt registers */
-+#define ETH_INT_FC_EN		BIT(0)
-+#define ETH_INT_FC_ITS		BIT(1)
-+#define ETH_INT_FC_RIP		BIT(2)
-+#define ETH_INT_FC_JAM		BIT(3)
-+#define ETH_INT_FC_OVR		BIT(4)
-+#define ETH_INT_FC_UND		BIT(5)
-+#define ETH_INT_FC_IOC		0x000000c0
-+
-+/* Ethernet FIFO registers */
-+#define ETH_FIFI_TT_TTH_BIT	0
-+#define ETH_FIFO_TT_TTH		0x0000007f
-+
-+/* Ethernet ARC/multicast registers */
-+#define ETH_ARC_PRO		BIT(0)
-+#define ETH_ARC_AM		BIT(1)
-+#define ETH_ARC_AFM		BIT(2)
-+#define ETH_ARC_AB		BIT(3)
-+
-+/* Ethernet SAL registers */
-+#define ETH_SAL_BYTE_5		0x000000ff
-+#define ETH_SAL_BYTE_4		0x0000ff00
-+#define ETH_SAL_BYTE_3		0x00ff0000
-+#define ETH_SAL_BYTE_2		0xff000000
-+
-+/* Ethernet SAH registers */
-+#define ETH_SAH_BYTE1		0x000000ff
-+#define ETH_SAH_BYTE0		0x0000ff00
-+
-+/* Ethernet GPF register */
-+#define ETH_GPF_PTV		0x0000ffff
-+
-+/* Ethernet PFG register */
-+#define ETH_PFS_PFD		BIT(0)
-+
-+/* Ethernet CFSA[0-3] registers */
-+#define ETH_CFSA0_CFSA4		0x000000ff
-+#define ETH_CFSA0_CFSA5		0x0000ff00
-+#define ETH_CFSA1_CFSA2		0x000000ff
-+#define ETH_CFSA1_CFSA3		0x0000ff00
-+#define ETH_CFSA1_CFSA0		0x000000ff
-+#define ETH_CFSA1_CFSA1		0x0000ff00
-+
-+/* Ethernet MAC1 registers */
-+#define ETH_MAC1_RE		BIT(0)
-+#define ETH_MAC1_PAF		BIT(1)
-+#define ETH_MAC1_RFC		BIT(2)
-+#define ETH_MAC1_TFC		BIT(3)
-+#define ETH_MAC1_LB		BIT(4)
-+#define ETH_MAC1_MR		BIT(31)
-+
-+/* Ethernet MAC2 registers */
-+#define ETH_MAC2_FD		BIT(0)
-+#define ETH_MAC2_FLC		BIT(1)
-+#define ETH_MAC2_HFE		BIT(2)
-+#define ETH_MAC2_DC		BIT(3)
-+#define ETH_MAC2_CEN		BIT(4)
-+#define ETH_MAC2_PE		BIT(5)
-+#define ETH_MAC2_VPE		BIT(6)
-+#define ETH_MAC2_APE		BIT(7)
-+#define ETH_MAC2_PPE		BIT(8)
-+#define ETH_MAC2_LPE		BIT(9)
-+#define ETH_MAC2_NB		BIT(12)
-+#define ETH_MAC2_BP		BIT(13)
-+#define ETH_MAC2_ED		BIT(14)
-+
-+/* Ethernet IPGT register */
-+#define ETH_IPGT		0x0000007f
-+
-+/* Ethernet IPGR registers */
-+#define ETH_IPGR_IPGR2		0x0000007f
-+#define ETH_IPGR_IPGR1		0x00007f00
-+
-+/* Ethernet CLRT registers */
-+#define ETH_CLRT_MAX_RET	0x0000000f
-+#define ETH_CLRT_COL_WIN	0x00003f00
-+
-+/* Ethernet MAXF register */
-+#define ETH_MAXF		0x0000ffff
-+
-+/* Ethernet test registers */
-+#define ETH_TEST_REG		BIT(2)
-+#define ETH_MCP_DIV		0x000000ff
-+
-+/* MII registers */
-+#define ETH_MII_CFG_RSVD	0x0000000c
-+#define ETH_MII_CMD_RD		BIT(0)
-+#define ETH_MII_CMD_SCN		BIT(1)
-+#define ETH_MII_REG_ADDR	0x0000001f
-+#define ETH_MII_PHY_ADDR	0x00001f00
-+#define ETH_MII_WTD_DATA	0x0000ffff
-+#define ETH_MII_RDD_DATA	0x0000ffff
-+#define ETH_MII_IND_BSY		BIT(0)
-+#define ETH_MII_IND_SCN		BIT(1)
-+#define ETH_MII_IND_NV		BIT(2)
-+
-+/* Values for the DEVCS field of the Ethernet DMA Rx and Tx descriptors. */
-+#define ETH_RX_FD		BIT(0)
-+#define ETH_RX_LD		BIT(1)
-+#define ETH_RX_ROK		BIT(2)
-+#define ETH_RX_FM		BIT(3)
-+#define ETH_RX_MP		BIT(4)
-+#define ETH_RX_BP		BIT(5)
-+#define ETH_RX_VLT		BIT(6)
-+#define ETH_RX_CF		BIT(7)
-+#define ETH_RX_OVR		BIT(8)
-+#define ETH_RX_CRC		BIT(9)
-+#define ETH_RX_CV		BIT(10)
-+#define ETH_RX_DB		BIT(11)
-+#define ETH_RX_LE		BIT(12)
-+#define ETH_RX_LOR		BIT(13)
-+#define ETH_RX_CES		BIT(14)
-+#define ETH_RX_LEN_BIT		16
-+#define ETH_RX_LEN		0xffff0000
-+
-+#define ETH_TX_FD		BIT(0)
-+#define ETH_TX_LD		BIT(1)
-+#define ETH_TX_OEN		BIT(2)
-+#define ETH_TX_PEN		BIT(3)
-+#define ETH_TX_CEN		BIT(4)
-+#define ETH_TX_HEN		BIT(5)
-+#define ETH_TX_TOK		BIT(6)
-+#define ETH_TX_MP		BIT(7)
-+#define ETH_TX_BP		BIT(8)
-+#define ETH_TX_UND		BIT(9)
-+#define ETH_TX_OF		BIT(10)
-+#define ETH_TX_ED		BIT(11)
-+#define ETH_TX_EC		BIT(12)
-+#define ETH_TX_LC		BIT(13)
-+#define ETH_TX_TD		BIT(14)
-+#define ETH_TX_CRC		BIT(15)
-+#define ETH_TX_LE		BIT(16)
-+#define ETH_TX_CC		0x001E0000
-+
-+/* DMA descriptor (in physical memory). */
-+struct dma_desc {
-+	u32 control;			/* Control. use DMAD_* */
-+	u32 ca;				/* Current Address. */
-+	u32 devcs;			/* Device control and status. */
-+	u32 link;			/* Next descriptor in chain. */
-+};
-+
-+#define DMA_DESC_COUNT_BIT		0
-+#define DMA_DESC_COUNT_MSK		0x0003ffff
-+#define DMA_DESC_DS_BIT			20
-+#define DMA_DESC_DS_MSK			0x00300000
-+
-+#define DMA_DESC_DEV_CMD_BIT		22
-+#define DMA_DESC_DEV_CMD_MSK		0x01c00000
-+
-+/* DMA descriptors interrupts */
-+#define DMA_DESC_COF			BIT(25) /* Chain on finished */
-+#define DMA_DESC_COD			BIT(26) /* Chain on done */
-+#define DMA_DESC_IOF			BIT(27) /* Interrupt on finished */
-+#define DMA_DESC_IOD			BIT(28) /* Interrupt on done */
-+#define DMA_DESC_TERM			BIT(29) /* Terminated */
-+#define DMA_DESC_DONE			BIT(30) /* Done */
-+#define DMA_DESC_FINI			BIT(31) /* Finished */
-+
-+/* DMA register (within Internal Register Map).  */
-+struct dma_reg {
-+	u32 dmac;		/* Control. */
-+	u32 dmas;		/* Status. */
-+	u32 dmasm;		/* Mask. */
-+	u32 dmadptr;		/* Descriptor pointer. */
-+	u32 dmandptr;		/* Next descriptor pointer. */
-+};
-+
-+/* DMA channels specific registers */
-+#define DMA_CHAN_RUN_BIT		BIT(0)
-+#define DMA_CHAN_DONE_BIT		BIT(1)
-+#define DMA_CHAN_MODE_BIT		BIT(2)
-+#define DMA_CHAN_MODE_MSK		0x0000000c
-+#define	 DMA_CHAN_MODE_AUTO		0
-+#define	 DMA_CHAN_MODE_BURST		1
-+#define	 DMA_CHAN_MODE_XFRT		2
-+#define	 DMA_CHAN_MODE_RSVD		3
-+#define DMA_CHAN_ACT_BIT		BIT(4)
-+
-+/* DMA status registers */
-+#define DMA_STAT_FINI			BIT(0)
-+#define DMA_STAT_DONE			BIT(1)
-+#define DMA_STAT_CHAIN			BIT(2)
-+#define DMA_STAT_ERR			BIT(3)
-+#define DMA_STAT_HALT			BIT(4)
-+
- #define STATION_ADDRESS_HIGH(dev) (((dev)->dev_addr[0] << 8) | \
- 				   ((dev)->dev_addr[1]))
- #define STATION_ADDRESS_LOW(dev)  (((dev)->dev_addr[2] << 24) | \
-@@ -100,6 +326,7 @@ enum chain_status {
- 	desc_empty
- };
- 
-+#define DMA_COUNT(count)	((count) & DMA_DESC_COUNT_MSK)
- #define IS_DMA_FINISHED(X)	(((X) & (DMA_DESC_FINI)) != 0)
- #define IS_DMA_DONE(X)		(((X) & (DMA_DESC_DONE)) != 0)
- #define RCVPKT_LENGTH(X)	(((X) & ETH_RX_LEN) >> ETH_RX_LEN_BIT)
-@@ -453,14 +680,14 @@ static int korina_rx(struct net_device *dev, int limit)
- 
- 		lp->rx_next_done = (lp->rx_next_done + 1) & KORINA_RDS_MASK;
- 		rd = &lp->rd_ring[lp->rx_next_done];
--		writel(~DMA_STAT_DONE, &lp->rx_dma_regs->dmas);
-+		writel((u32)~DMA_STAT_DONE, &lp->rx_dma_regs->dmas);
- 	}
- 
- 	dmas = readl(&lp->rx_dma_regs->dmas);
- 
- 	if (dmas & DMA_STAT_HALT) {
--		writel(~(DMA_STAT_HALT | DMA_STAT_ERR),
--				&lp->rx_dma_regs->dmas);
-+		writel((u32)~(DMA_STAT_HALT | DMA_STAT_ERR),
-+		       &lp->rx_dma_regs->dmas);
- 
- 		lp->dma_halt_cnt++;
- 		rd->devcs = 0;
--- 
-2.29.2
+Did you test it? There are several patches like this all over the tree
+so it looks like "let's fix everything from Coccinelle" because you
+ignored at least in some of the cases that the handler is not the
+default primary one. I am not saying that the change is bad, but
+rather it looks automated and needs more consideration.
 
+Best regards,
+Krzysztof
+Best regards,
+Krzysztof
