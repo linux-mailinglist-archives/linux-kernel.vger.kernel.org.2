@@ -2,89 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 639793623CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E96A3623CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 17:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343587AbhDPPVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 11:21:55 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:48199 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S245435AbhDPPUs (ORCPT
+        id S1343617AbhDPPWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 11:22:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245198AbhDPPVS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 11:20:48 -0400
-Received: (qmail 43577 invoked by uid 1000); 16 Apr 2021 11:20:21 -0400
-Date:   Fri, 16 Apr 2021 11:20:21 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     liulongfang <liulongfang@huawei.com>
-Cc:     gregkh@linuxfoundation.org, mathias.nyman@intel.com,
-        liudongdong3@huawei.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kong.kongxinwei@hisilicon.com,
-        yisen.zhuang@huawei.com
-Subject: Re: [RFC PATCH] USB:XHCI:skip hub registration
-Message-ID: <20210416152021.GA42403@rowland.harvard.edu>
-References: <1618489358-42283-1-git-send-email-liulongfang@huawei.com>
- <20210415144323.GC1530055@rowland.harvard.edu>
- <3dad6f4f-6386-427c-c36c-7d26b9a76fa4@huawei.com>
+        Fri, 16 Apr 2021 11:21:18 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 820F4C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 08:20:52 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id h13so10526449qka.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 08:20:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vJQzDyPMzRCR3Pj66zSN4Mp2TuH3DXRBeVPYYvWoKrU=;
+        b=uEKYeSNXrs0vvy9Juj5zS5C4UGxfquZmEwu9JoW5KpfTcfCHeCtkFbqIiVnFqv4n1m
+         6GPV/7cnX9H9daoTZHsDYLZC/9P89NumjGeKNXhrqm+i4ErxteTIZxdXgqIhxYPJw0QX
+         BJOhfLNXfzZjE0lN2V9R6M6uOnyWXieqY2wCh1LNziVouc59fcrDODJbLIiQ62La2+YC
+         FkGGQPSMMjnHIFktdRH+Nhdk16hG28vH1LHYKEcbEtDr0EY/2maOggPIWETx8NKfcrHs
+         iq5bsLelijNu3aUF0D3WYUglqbZRXgkJTszbpCW0QgGfoeipKRTaZ0drVNOatoDOob8a
+         Gojw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vJQzDyPMzRCR3Pj66zSN4Mp2TuH3DXRBeVPYYvWoKrU=;
+        b=tgwgjB8PXth0L40aklHjipF0g3SIpA/yJA/rlM4DycROsCGiHdAKRwRaP3wuDfWW4h
+         UQ+vmRo3UvDBYZpo1XsHmlmmORBEkWdfkwrct4TAr+3iOvUK8Op6Bh9CoxX+mwTlAM6E
+         zO7sepEEo9oowinY6kMxz1oodCOw0GR5Bj0zqRNmJ0Rk3ayBwUSzlS8yDtr5bO6W8Txd
+         +3Pki5Pb2jNBw7C+JlEtjG6l+6fMTo7Cc4YkvfWdiNlandr+ldWfgCIjvM7KelcRaOSk
+         DkD5Sn1EuowvJlIorYchkJX/alnibOhYIwGkthn2+kpWepFvTv9KmMhUMiTPaUP8avff
+         oOLw==
+X-Gm-Message-State: AOAM532UZmWC2Y7K+f0mUMD0iigRv+OClFcC88YojQ6/5lVUcSCMBjkq
+        r34CT+K2leyUibd75sIVDhL3Hg==
+X-Google-Smtp-Source: ABdhPJzS50rG84nFsNhmYFRBrJz0q3QKdkqei7X0wdsmuaffsPY8xFLGy5knA6Iix4oozzqyZBJnvw==
+X-Received: by 2002:a05:620a:22a5:: with SMTP id p5mr9275130qkh.480.1618586451806;
+        Fri, 16 Apr 2021 08:20:51 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id w4sm4393844qkd.94.2021.04.16.08.20.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 08:20:50 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 11:20:49 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     guro@fb.com, mhocko@kernel.org, akpm@linux-foundation.org,
+        shakeelb@google.com, vdavydov.dev@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        duanxiongchun@bytedance.com
+Subject: Re: [PATCH v2 5/8] mm: memcontrol: rename lruvec_holds_page_lru_lock
+ to page_matches_lruvec
+Message-ID: <YHmrUaho1SLSCfk7@cmpxchg.org>
+References: <20210416051407.54878-1-songmuchun@bytedance.com>
+ <20210416051407.54878-6-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3dad6f4f-6386-427c-c36c-7d26b9a76fa4@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210416051407.54878-6-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 10:03:21AM +0800, liulongfang wrote:
-> On 2021/4/15 22:43, Alan Stern wrote:
-> > On Thu, Apr 15, 2021 at 08:22:38PM +0800, Longfang Liu wrote:
-> >> When the number of ports on the USB hub is 0, skip the registration
-> >> operation of the USB hub.
-> >>
-> >> The current Kunpeng930's XHCI hardware controller is defective. The number
-> >> of ports on its USB3.0 bus controller is 0, and the number of ports on
-> >> the USB2.0 bus controller is 1.
-> >>
-> >> In order to solve this problem that the USB3.0 controller does not have
-> >> a port which causes the registration of the hub to fail, this patch passes
-> >> the defect information by adding flags in the quirks of xhci and usb_hcd,
-> >> and finally skips the registration process of the hub directly according
-> >> to the results of these flags when the hub is initialized.
-> >>
-> >> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
-> > 
-> > The objections that Greg raised are all good ones.
-> > 
-> > But even aside from them, this patch doesn't actually do what the 
-> > description says.  The patch doesn't remove the call to usb_add_hcd 
-> > for the USB-3 bus.  If you simply skipped that call (and the 
-> > corresponding call to usb_remove_hcd) when there are no 
-> > ports on the root hub, none of the stuff in this patch would be needed.
-> > 
-> > Alan Stern
-> > 
+On Fri, Apr 16, 2021 at 01:14:04PM +0800, Muchun Song wrote:
+> lruvec_holds_page_lru_lock() doesn't check anything about locking and is
+> used to check whether the page belongs to the lruvec. So rename it to
+> page_matches_lruvec().
 > 
-> "[RFC PATCH] USB:XHCI:Adjust the log level of hub"
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-I don't understand.  What patch is that?  Do you have a URL for it?
+The rename makes sense, since the previous name was defined by a
+specific use case rather than what it does. That said, it did imply a
+lock context that makes the test result stable. Without that the
+function could use a short comment, IMO. How about:
 
-> The current method is an improved method of the above patch.
-> This patch just make it skip registering USB-3 root hub if that hub has no ports,
+/* Test requires a stable page->memcg binding, see page_memcg() */
 
-No, that isn't what this patch does.
-
-If the root hub wasn't registered, hub_probe wouldn't get called.  But 
-with your patch, the system tries to register the root hub, and it does 
-call hub_probe, and then that function fails with a warning message.
-
-The way to _really_ akip registering the root hub is to change the 
-xhci-hcd code.  Make it skip calling usb_add_hcd.
-
-> after skipping registering, no port will not report error log,the goal of this
-> patch is reached without error log output.
-
-Why do you want to get rid of the error log output?  There really _is_ 
-an error, because the USB-3 hardware on your controller is defective.  
-Since the hardware is buggy, we _should_ print an error message in the 
-kernel log.
-
-Alan Stern
+With that,
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
