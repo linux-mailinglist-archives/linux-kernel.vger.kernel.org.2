@@ -2,293 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB1BB362047
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4CC362056
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Apr 2021 14:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240132AbhDPMxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 08:53:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235225AbhDPMxD (ORCPT
+        id S241350AbhDPMym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 08:54:42 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:32415 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235495AbhDPMyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 08:53:03 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 731FEC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 05:52:37 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id s15so32145806edd.4
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 05:52:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=KTkYOAU15O6ddpvrFVWV/b1BQ82JMUlbrUjNluG6qEo=;
-        b=v209aRrcikMtJ/aXzByV2BH5ZeO5XaIB37LtCoVmRq38grUUtiEP9lhSQ/d27p0fdO
-         4qA1nv6bifpm1geNYr/llU7/enlg3ghsx35eIDsxI/Pai1XVHcciwkyv0vFqGWrfZirS
-         jEIvOjxTsPA8JeNpLOSuDN28t+lsktl4Ywnd7jcNPNgXXmBKXq/c2hqfaGnDOoqSUGmD
-         DT/8HfZ1xMQRP7qT8FfbuNLoDULQ0nlN5oaRn2Lrrje1OG5A2yIf5DnqF1L0gsnG/4Lw
-         6VLEqNShuM6PwcavM3tJLO8K0PTQToOoavD79+l68oOC4yn6qTG0TfPWbZSkQC2e1W6T
-         VsEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=KTkYOAU15O6ddpvrFVWV/b1BQ82JMUlbrUjNluG6qEo=;
-        b=px9PaNZZg5CMgRKEYoLulrhj1o0Twvp8E7TnnvIDNFt0E65RCUNMbQ7PiZ1GrrFmzp
-         RGdxi52CRoZ1aYJgia7dkz32Z+vPCKrjnSr9jMAsvQx/H1caVUv0tcwlqNkFeo2PtB3q
-         wQM1fbCT2O9e92E6cBAe5FsnVjs64h8CvgwYCvHLvQW1hl5tGO44x5HW6XzDR9sqXWcC
-         Gw+BJhDjfmbTT9PGOkLxqqAeGbhWw6N/Xk7j+rPDm6HloADj5xk5mdh5O20t5kNTBt93
-         fHxEVgD/I62bXZ7DnUK5yEHZRb+8+BWyXRlDUDl9Ts9brmg61RsXzsg9nmCDVVBT6ENX
-         VVHA==
-X-Gm-Message-State: AOAM532FqZcPFa9Y6pU9tuEo1Vyaa6Ak8rp4+tGwpdhkIFUHHQ3d1P6b
-        qnvm1+LHpq1u0gD0rfxBaXav7ytdOw+rcKI+Xnitzg==
-X-Google-Smtp-Source: ABdhPJz74ERMYu2Ow/lALdeVQZ7YXVRrSfFenIfahNCkLsDbtmiuy+mej1TaJ2PYtdu5Ez3mTy6VbDiRz19EWPNZkBU=
-X-Received: by 2002:a50:c3c2:: with SMTP id i2mr9707333edf.23.1618577555985;
- Fri, 16 Apr 2021 05:52:35 -0700 (PDT)
+        Fri, 16 Apr 2021 08:54:40 -0400
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 13GCruXn017060;
+        Fri, 16 Apr 2021 21:53:57 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 13GCruXn017060
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1618577637;
+        bh=FpBTE/PmjepHTlzWsrX59REOgQgL2WrtsCCIoF/CYWE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pnl4cChP9BDT4wIiEZMCXce74IYPbyviH0geJnOMydzhvTMMKqvimUCJ8LuO/ydUi
+         B7GCRGzMyz8AbBjXaIdqdOj97w4Mvl4+xM1yl+DjOmMRHy8sXXrxwF2VPV6p3HkIDh
+         n6j6f7LmOePGYddtG4MeM1IJTF09NZL2HYvxNn0VmUbtcoGAQN0WIk8JwzmNwqxNuH
+         IfVvglF9RnOeg2qR9OQZYFuxmRVvfEgsWCD65f5cmxQGtubERM4wyCwE/Fx0XhOF6+
+         fHFg+T4J4DNZEIcoxa3aGVqRu3zGr7QifJpt93kYMOXSvEw6iuQScro++18+YzyjqF
+         Xuddd4D8zQwkQ==
+X-Nifty-SrcIP: [209.85.216.43]
+Received: by mail-pj1-f43.google.com with SMTP id em21-20020a17090b0155b029014e204a81e6so6371593pjb.1;
+        Fri, 16 Apr 2021 05:53:57 -0700 (PDT)
+X-Gm-Message-State: AOAM530bgqjsO3lWF/tHwnQMGcasjhkPXEs8XTPkhXTB07EP/ZLEsXmv
+        3mp4/TT+UMxTuIlUFayxCQxemxeq34bCCblaPSY=
+X-Google-Smtp-Source: ABdhPJxb/FC19twtF+zRiYRXoqGzOZCJTyiYCPanDW2DbASdA2RE0I7WCFpU5qPpBix6mu/jtdFnthAB/xgwIUGoUjg=
+X-Received: by 2002:a17:90a:1056:: with SMTP id y22mr9094969pjd.153.1618577636323;
+ Fri, 16 Apr 2021 05:53:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210415144413.352638802@linuxfoundation.org>
-In-Reply-To: <20210415144413.352638802@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 16 Apr 2021 18:22:24 +0530
-Message-ID: <CA+G9fYs9S357Qj9vtHjXuPTvEDsFnD8zmEptTF-rh76KyUVoNw@mail.gmail.com>
-Subject: Re: [PATCH 4.4 00/38] 4.4.267-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
+References: <20210415072700.147125-1-masahiroy@kernel.org> <20210415072700.147125-2-masahiroy@kernel.org>
+ <eb623ea6-a2f4-9692-ff3d-cb9f9b9ea15f@de.ibm.com> <0eeed665-a105-917b-e7fb-8dafe2ae9d94@de.ibm.com>
+In-Reply-To: <0eeed665-a105-917b-e7fb-8dafe2ae9d94@de.ibm.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 16 Apr 2021 21:53:18 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASfiiLJd9dOpaJ47pJ4FzgV8JL3vU8okOYz0=eaE4OYgQ@mail.gmail.com>
+Message-ID: <CAK7LNASfiiLJd9dOpaJ47pJ4FzgV8JL3vU8okOYz0=eaE4OYgQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] tools: do not include scripts/Kbuild.include
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Harish <harish@linux.ibm.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf <bpf@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        kvm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 15 Apr 2021 at 20:20, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Fri, Apr 16, 2021 at 2:56 PM Christian Borntraeger
+<borntraeger@de.ibm.com> wrote:
 >
-> This is the start of the stable review cycle for the 4.4.267 release.
-> There are 38 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
 >
-> Responses should be made by Sat, 17 Apr 2021 14:44:01 +0000.
-> Anything received after that time might be too late.
+> On 15.04.21 10:06, Christian Borntraeger wrote:
+> >
+> > On 15.04.21 09:27, Masahiro Yamada wrote:
+> >> Since commit d9f4ff50d2aa ("kbuild: spilt cc-option and friends to
+> >> scripts/Makefile.compiler"), some kselftests fail to build.
+> >>
+> >> The tools/ directory opted out Kbuild, and went in a different
+> >> direction. They copy any kind of files to the tools/ directory
+> >> in order to do whatever they want to do in their world.
+> >>
+> >> tools/build/Build.include mimics scripts/Kbuild.include, but some
+> >> tool Makefiles included the Kbuild one to import a feature that is
+> >> missing in tools/build/Build.include:
+> >>
+> >>   - Commit ec04aa3ae87b ("tools/thermal: tmon: use "-fstack-protector"
+> >>     only if supported") included scripts/Kbuild.include from
+> >>     tools/thermal/tmon/Makefile to import the cc-option macro.
+> >>
+> >>   - Commit c2390f16fc5b ("selftests: kvm: fix for compilers that do
+> >>     not support -no-pie") included scripts/Kbuild.include from
+> >>     tools/testing/selftests/kvm/Makefile to import the try-run macro.
+> >>
+> >>   - Commit 9cae4ace80ef ("selftests/bpf: do not ignore clang
+> >>     failures") included scripts/Kbuild.include from
+> >>     tools/testing/selftests/bpf/Makefile to import the .DELETE_ON_ERROR
+> >>     target.
+> >>
+> >>   - Commit 0695f8bca93e ("selftests/powerpc: Handle Makefile for
+> >>     unrecognized option") included scripts/Kbuild.include from
+> >>     tools/testing/selftests/powerpc/pmu/ebb/Makefile to import the
+> >>     try-run macro.
+> >>
+> >> Copy what they want there, and stop including scripts/Kbuild.include
+> >> from the tool Makefiles.
+> >>
+> >> Link: https://lore.kernel.org/lkml/86dadf33-70f7-a5ac-cb8c-64966d2f45a1@linux.ibm.com/
+> >> Fixes: d9f4ff50d2aa ("kbuild: spilt cc-option and friends to scripts/Makefile.compiler")
+> >> Reported-by: Janosch Frank <frankja@linux.ibm.com>
+> >> Reported-by: Christian Borntraeger <borntraeger@de.ibm.com>
+> >> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> >
+> > When applying this on top of d9f4ff50d2aa ("kbuild: spilt cc-option and friends to scripts/Makefile.compiler")
+> >
+> > I still do get
+> >
+> > # ==== Test Assertion Failure ====
+> > #   lib/kvm_util.c:142: vm->fd >= 0
+> > #   pid=315635 tid=315635 - Invalid argument
+> > #      1    0x0000000001002f4b: vm_open at kvm_util.c:142
+> > #      2     (inlined by) vm_create at kvm_util.c:258
+> > #      3    0x00000000010015ef: test_add_max_memory_regions at set_memory_region_test.c:351
+> > #      4     (inlined by) main at set_memory_region_test.c:397
+> > #      5    0x000003ff971abb89: ?? ??:0
+> > #      6    0x00000000010017ad: .annobin_abi_note.c.hot at crt1.o:?
+> > #   KVM_CREATE_VM ioctl failed, rc: -1 errno: 22
+> > not ok 7 selftests: kvm: set_memory_region_test # exit=254
+> >
+> > and the testcase compilation does not pickup the pgste option.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.267-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
+> What does work is the following:
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index a6d61f451f88..d9c6d9c2069e 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -1,5 +1,6 @@
+>   # SPDX-License-Identifier: GPL-2.0-only
+>   include ../../../../scripts/Kbuild.include
+> +include ../../../../scripts/Makefile.compiler
 >
-> thanks,
+>   all:
 >
-> greg k-h
+>
+> as it does pickup the linker option handling.
 
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Kbuild and the tools are divorced.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+They cannot be married unless the tools/
+build system is largely refactored.
+That will be a tons of works (and
+I am not sure if it is welcome).
 
-## Build
-* kernel: 4.4.267-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.4.y
-* git commit: d5830a9390f6eccae1c50d2f4a82473ded6ea346
-* git describe: v4.4.266-39-gd5830a9390f6
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.2=
-66-39-gd5830a9390f6
-
-## No regressions (compared to v4.4.266-35-gafa6a544124b)
-
-## No fixes (compared to v4.4.266-35-gafa6a544124b)
-
-## Test result summary
- total: 44985, pass: 36787, fail: 370, skip: 7578, xfail: 250,
-
-## Build Summary
-* arm: 96 total, 96 passed, 0 failed
-* arm64: 23 total, 23 passed, 0 failed
-* i386: 13 total, 13 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 36 total, 36 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 13 total, 13 passed, 0 failed
-
-## Test suites summary
-* fwts
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* perf
-* ssuite
-* v4l2-compliance
+The Kbuild refactoring should not be bothered by
+the tools.
+For now, I want them separated from each other.
 
 
-## Build
-* kernel: 4.4.267-rc1
-* git: https://git.linaro.org/lkft/arm64-stable-rc.git
-* git branch: 4.4.267-rc1-hikey-20210415-988
-* git commit: f84c762ec9c5916bcd6a9bb420e560756fd14261
-* git describe: 4.4.267-rc1-hikey-20210415-988
-* test details:
-https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4-oe/build/4.4.=
-267-rc1-hikey-20210415-988
-
-## Regressions (compared to 4.4.267-rc1-hikey-20210412-985)
-No regressions found.
-
-## Fixes (compared to 4.4.267-rc1-hikey-20210412-985)
-No fixes found.
-
-## Test result summary
- total: 2480, pass: 1851, fail: 69, skip: 546, xfail: 14,
-
-## Build Summary
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-
-## Test suites summary
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-intel_pstate
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-cve-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* perf
-* spectre-meltdown-checker-test
-* v4l2-compliance
 
 --
-Linaro LKFT
-https://lkft.linaro.org
+Best Regards
+
+Masahiro Yamada
