@@ -2,101 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3680363142
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 18:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E68B363147
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 19:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236676AbhDQQvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 12:51:39 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35914 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236537AbhDQQvh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 12:51:37 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618678269;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JHFXeGeB1Nk5jAgFZcyB5X1ecx9JoHUIaZELA0L/4f0=;
-        b=LG8UaleyeUrauZhgFf+XBK2TYirPlCOGnwzhIA7HwRq6h2pWxwz829+x0HzBT27UQZunJH
-        IApRZqEhWG5MSxgI+spfQ4QXjJBQYUyqsBMEXHaSluCZnSuOCCsP9NUApT8/1gIl0nuCnM
-        zQQTfTpjvS7sGXnNAhIc//k0V75UJALatBfxgqw35jNXBmvYuVqo9dug0tZcs3wB6oxMGR
-        9RCLF3ZePVx21Wolfsmdvyxj4CSgJfvO0OYhCeWyvsZpGcJmmAS4q/zmUIqUeNWb3SVnX7
-        ipBApw1qnBSYMCIVdld4Tmn1NoyYl/bJC+BiuN5C4Oj4DOgs4QijmcUq98uypQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618678269;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JHFXeGeB1Nk5jAgFZcyB5X1ecx9JoHUIaZELA0L/4f0=;
-        b=nLWYl9mO+WHo7N8mTVq45amwkdyV59XhO18vq6fw5rj1f0t/CY8Xbx0i8PbKBgAggC29+j
-        E8vQUBP4tLGbKeBg==
-To:     Peter Xu <peterx@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Alex Belits <abelits@marvell.com>
-Subject: Re: [PATCH v5] hrtimer: avoid retrigger_next_event IPI
-In-Reply-To: <87pmysswtj.ffs@nanos.tec.linutronix.de>
-References: <20210407135301.GA16985@fuller.cnet> <87o8en4k9a.ffs@nanos.tec.linutronix.de> <20210409165146.GA40118@fuller.cnet> <87lf9q4lue.ffs@nanos.tec.linutronix.de> <20210413170431.GA16190@fuller.cnet> <20210415153935.GA69750@fuller.cnet> <87im4nv0fh.ffs@nanos.tec.linutronix.de> <20210415204017.GA111847@fuller.cnet> <20210416160023.GA6187@fuller.cnet> <20210416171321.GU4440@xz-x1> <87pmysswtj.ffs@nanos.tec.linutronix.de>
-Date:   Sat, 17 Apr 2021 18:51:08 +0200
-Message-ID: <87mttwsvlv.ffs@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S236681AbhDQRCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 13:02:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56532 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236568AbhDQRCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 13:02:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 083AF610C7;
+        Sat, 17 Apr 2021 17:02:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618678925;
+        bh=5OLfU/Eg46A4P3CBcJoqaOXMQvnzXGCgOe26Z5lYtws=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Lx6I9k8wC/rFu4cAfPGkDcg4m0i89GDk70U7maTnFlVhyKmaXY1fPaIO34+8fGX/i
+         Bmea8OLoIDCJ/3PQRjLXcbZTphSD/W9YgP4QoANYsBdYflLAXuMXllUZaUgUFAtvAq
+         QIQOijHO4slrOkOUh5Zn5IfDsYVZpkGRuAS0dLE4x6tnsl3ch5RI5AQFjEBy8umvc0
+         3N0ExhXYGPD9PY6TzSiBd242fPxxcVBZ5YkxrajG+wAWFgc0COGlDggT+DiWIO9Gnm
+         0opHRRAtNmlGgPYsrnnUzpU13VCZPWnCrjt6F6NL6xzUxnaALH81jynIiTUjp//p0Z
+         RmrBGBTsyJf/g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E851360986;
+        Sat, 17 Apr 2021 17:02:04 +0000 (UTC)
+Subject: Re: [GIT PULL] cxl fixes for v5.12-rc8 / final
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAPcyv4imrTM21eU+3ippyLcmHAo5V8_MtmyL49Z01-L1pg6HQQ@mail.gmail.com>
+References: <CAPcyv4imrTM21eU+3ippyLcmHAo5V8_MtmyL49Z01-L1pg6HQQ@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-cxl.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAPcyv4imrTM21eU+3ippyLcmHAo5V8_MtmyL49Z01-L1pg6HQQ@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/cxl/cxl tags/cxl-fixes-for-5.12-rc8
+X-PR-Tracked-Commit-Id: fae8817ae804a682c6823ad1672438f39fc46c28
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 7c22677407243d63df3aee1bb2f6d9aa12c01a24
+Message-Id: <161867892489.3103.7111455499538323212.pr-tracker-bot@kernel.org>
+Date:   Sat, 17 Apr 2021 17:02:04 +0000
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17 2021 at 18:24, Thomas Gleixner wrote:
-> On Fri, Apr 16 2021 at 13:13, Peter Xu wrote:
->> On Fri, Apr 16, 2021 at 01:00:23PM -0300, Marcelo Tosatti wrote:
->>>  
->>> +#define CLOCK_SET_BASES ((1U << HRTIMER_BASE_REALTIME) |	\
->>> +			 (1U << HRTIMER_BASE_REALTIME_SOFT) |	\
->>> +			 (1U << HRTIMER_BASE_TAI) |		\
->>> +			 (1U << HRTIMER_BASE_TAI_SOFT))
->>> +
->>> +static bool need_reprogram_timer(struct hrtimer_cpu_base *cpu_base)
->>> +{
->>> +	if (cpu_base->softirq_activated)
->>> +		return true;
->>
->> A pure question on whether this check is needed...
->>
->> Here even if softirq_activated==1 (as softirq is going to happen), as long as
->> (cpu_base->active_bases & CLOCK_SET_BASES)==0, shouldn't it already mean that
->> "yes indeed clock was set, but no need to kick this cpu as no relevant timer"?
->> As that question seems to be orthogonal to whether a softirq is going to
->> trigger on that cpu.
->
-> That's correct and it's not any different from firing the IPI because in
-> both cases the update happens with the base lock of the CPU in question
-> held. And if there are no active timers in any of the affected bases,
-> then there is no need to reevaluate the next expiry because the offset
-> update does not affect any armed timers. It just makes sure that the
-> next enqueu of a timer on such a base will see the the correct offset.
->
-> I'll just zap it.
+The pull request you sent on Fri, 16 Apr 2021 20:10:09 -0700:
 
-But the whole thing is still wrong in two aspects:
+> git://git.kernel.org/pub/scm/linux/kernel/git/cxl/cxl tags/cxl-fixes-for-5.12-rc8
 
-    1) BOOTTIME can be one of the affected clocks when sleep time
-       (suspended time) is injected because that uses the same mechanism.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/7c22677407243d63df3aee1bb2f6d9aa12c01a24
 
-       Sorry for missing that earlier when I asked to remove it, but
-       that's trivial to fix by adding the BOOTTIME base back.
+Thank you!
 
-    2) What's worse is that on resume this might break because that
-       mechanism is also used to enforce the reprogramming of the clock
-       event devices and there we cannot be selective on clock bases.
-
-       I need to dig deeper into that because suspend/resume has changed
-       a lot over time, so this might be just a historical leftover. But
-       without proper analysis we might end up with subtle and hard to
-       debug wreckage.
-
-Thanks,
-
-        tglx
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
