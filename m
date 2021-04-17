@@ -2,105 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B51E362DAB
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 06:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D726362DAE
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 06:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232550AbhDQEVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 00:21:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56816 "EHLO
+        id S231941AbhDQEYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 00:24:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhDQEVR (ORCPT
+        with ESMTP id S229465AbhDQEYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 00:21:17 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6A0C061574;
-        Fri, 16 Apr 2021 21:20:51 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id k25so29986349oic.4;
-        Fri, 16 Apr 2021 21:20:51 -0700 (PDT)
+        Sat, 17 Apr 2021 00:24:44 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7174C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 21:24:16 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 12so47708555lfq.13
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 21:24:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Yf4cGa1gDUioK7Tp5qZNGmRyNKmLAms5q26b5QKwv4I=;
-        b=piQInaLBoIAceOzFkrF0BoCeDSvSZtOAd8AiEd43+fyfVbehfg9SI7YxxzSHizd1xk
-         76N94AEBwmsNbyaM0xNh7YAmEMg6EBFyU3J9+3p5gxmSXeo8eiMdOrMj/xb88dPk4Oy4
-         fInFcdW9LXm29s0pPouGUFfihn0wmDNyptLw3JMhglRHeukM/2WtNI/yowPcNbkc5coE
-         kSOTsXPHDhq9aBPe06d4kiCIyRVkqR/e6aiWCJaLBOQG3rFP7hJVB07fW/tsYdtbOc0J
-         mshqqYuvvk5FCkcw8uzD68QKqCRbUvTIgsCDDdzVfyfEjjSF5brz7IqljNzUSYRKiOP9
-         jDeg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dC0Ua26Rxhnd0n6CHTRnAJbktP1VUUbdUEYM+ldETTs=;
+        b=oLz758tToKci7zsi0yL0Scc7eybfO9b01MpTabJVy82AvrHxAm2Q8Bl580gyU51ORl
+         5O+hqfRQo/6iYzb6O/esTi7MhnB6inJ0UZ/cuMm5NCWSGF2LNtJrP8UzjS/jpcV3dYad
+         niAlpUWRvdSPNLTDAVSOb0zS9baNZ+yioNktaRnNcad2e6nypv+8Y4eSUqBy996u3E+p
+         dzuLhBxP2Nin+DHWvtnMYL4gfn2ujPEJkjlcfStQ5exWrdbLtmwnLwNSGW87LDnt9nVW
+         0diE7nHwTIYX3X25SJy70YHdEdFqr+IDG6Fbh5R/Y3Fd7APM7uiRGoj+GA3ywBCA3jQF
+         xLQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Yf4cGa1gDUioK7Tp5qZNGmRyNKmLAms5q26b5QKwv4I=;
-        b=TYdRjeLiiPPZ+X5seF981TRnj93IIKyfEZQ9gf9gjbRB8Houy1KLo5Ah4CMhCi4I1o
-         yG43qwzPcmC/M4R9gNzijqm6qKRY3iESOyiYhx80dqh9acfShVN3vwHJNQu0gxOQiogu
-         cu2fzGcnbq3RiMZvxpQnpDJRMyglt1v6V0nBMHwRZa+LEHBM9vtvCCE4/Qzn5CHXqE2a
-         qPq4e2b8FLtdpN6Aj9MT5XtySRL0h7l2vu09HJa/LuYACK+tFXwVkL/A9QUtPO/qnMG5
-         IatrJI/J9TQpJuoK3m25MGYv35OTacMqWLkIiFqIYWXNjkgE3aRbmeEK6Qi++4LIZkEK
-         Ep6A==
-X-Gm-Message-State: AOAM532E8CjXNI0I3UMQe1LyDOp2MDaJfYO9/cD2KP9rCIUkGaO/R3aQ
-        dbVUrm5R2YFAwNKhmvVkaqriJZ7/ed0=
-X-Google-Smtp-Source: ABdhPJxAT7odgGlh+hNxttap8x0zum9s/e3YiZYiZCZNA4kSTGiSQQY4Cn2fQzPSS4tsk9DfBcifFQ==
-X-Received: by 2002:aca:a990:: with SMTP id s138mr9144164oie.80.1618633250989;
-        Fri, 16 Apr 2021 21:20:50 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h184sm1866764oia.1.2021.04.16.21.20.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 16 Apr 2021 21:20:50 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 16 Apr 2021 21:20:48 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     rentao.bupt@gmail.com
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org, Tao Ren <taoren@fb.com>,
-        Amithash Prasad <amithash@fb.com>
-Subject: Re: [PATCH] watchdog: aspeed: fix hardware timeout calculation
-Message-ID: <20210417042048.GA109800@roeck-us.net>
-References: <20210417034249.5978-1-rentao.bupt@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dC0Ua26Rxhnd0n6CHTRnAJbktP1VUUbdUEYM+ldETTs=;
+        b=MyACeSMtj6zYQDKhWNmWEq7CNS1e13Qe1bXnYcDXl8dBmc90qqfbvxzJi77g8wHvRr
+         us1MsJmXot7i/SpBrjdrIquydxu97tzKHMYfNRwV1Hg9FXdGUKhMSMasvY8TNwxEkiLX
+         VnMwGokReABewg7Z8LKa5JwtJlIyG5WAtz3u4JUwGwFenV61m8HM/zQPy8l4EGDDLGIA
+         BEsmoU6vQxBw0/fLLgbfMAN67rOgGVfMHm9Io+xxWP9tJQpfuhy3buN8NkCjE0yfjLVY
+         zpUdMuiUw8oJ5imrcgSkZboPhbQH1LqwAdZdIA0iHShwSnV8sVPy7DOYmZW+HMXmdmZJ
+         L02g==
+X-Gm-Message-State: AOAM5316odRAAH1UrYGXc/ZacTl3w0fEG2YIgn5drjr3nmzEPa558ZxG
+        IR20NOzkgBc1vRL2paqqBMYuDcnRVFYQav0Vyt92PQ==
+X-Google-Smtp-Source: ABdhPJzmV9SsVkwYJidvbnM4iWS8L0mm8LtiTIuV/aB/PYpvnOKcYLGWvpGibFQPijvf3rE6GcpLQP9erwMtTMvFSCo=
+X-Received: by 2002:a05:6512:138e:: with SMTP id p14mr3589595lfa.47.1618633455136;
+ Fri, 16 Apr 2021 21:24:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210417034249.5978-1-rentao.bupt@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <cover.1618388989.git.npache@redhat.com> <0fa191715b236766ad13c5f786d8daf92a9a0cf2.1618388989.git.npache@redhat.com>
+ <e26fbcc8-ba3e-573a-523d-9c5d5f84bc46@tessares.net> <CABVgOSm9Lfcu--iiFo=PNLCWCj4vkxqAqO0aZT9B2r3Kw5Fhaw@mail.gmail.com>
+ <b57a1cc8-4921-6ed5-adb8-0510d1918d28@tessares.net>
+In-Reply-To: <b57a1cc8-4921-6ed5-adb8-0510d1918d28@tessares.net>
+From:   David Gow <davidgow@google.com>
+Date:   Sat, 17 Apr 2021 12:24:03 +0800
+Message-ID: <CABVgOS=QDATYk3nn1jLHhVRh7rXoTp1+jQhUE5pZq8P9M0VpUA@mail.gmail.com>
+Subject: Re: [PATCH v2 5/6] kunit: mptcp: adhear to KUNIT formatting standard
+To:     Matthieu Baerts <matthieu.baerts@tessares.net>
+Cc:     Nico Pache <npache@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-ext4@vger.kernel.org, Networking <netdev@vger.kernel.org>,
+        rafael@kernel.org, linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        mathew.j.martineau@linux.intel.com, davem@davemloft.net,
+        Mark Brown <broonie@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>, mptcp@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 08:42:49PM -0700, rentao.bupt@gmail.com wrote:
-> From: Tao Ren <rentao.bupt@gmail.com>
-> 
-> Fix hardware timeout calculation in aspeed_wdt_set_timeout function to
-> ensure the reload value does not exceed the hardware limit.
-> 
-> Fixes: efa859f7d786 ("watchdog: Add Aspeed watchdog driver")
-> Reported-by: Amithash Prasad <amithash@fb.com>
-> Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
+Hi Matt,
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> Like patch 1/6, I can apply it in MPTCP tree and send it later to
+> net-next with other patches.
+> Except if you guys prefer to apply it in KUnit tree and send it to
+> linux-next?
 
-> ---
->  drivers/watchdog/aspeed_wdt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/watchdog/aspeed_wdt.c b/drivers/watchdog/aspeed_wdt.c
-> index 7e00960651fa..507fd815d767 100644
-> --- a/drivers/watchdog/aspeed_wdt.c
-> +++ b/drivers/watchdog/aspeed_wdt.c
-> @@ -147,7 +147,7 @@ static int aspeed_wdt_set_timeout(struct watchdog_device *wdd,
->  
->  	wdd->timeout = timeout;
->  
-> -	actual = min(timeout, wdd->max_hw_heartbeat_ms * 1000);
-> +	actual = min(timeout, wdd->max_hw_heartbeat_ms / 1000);
->  
->  	writel(actual * WDT_RATE_1MHZ, wdt->base + WDT_RELOAD_VALUE);
->  	writel(WDT_RESTART_MAGIC, wdt->base + WDT_RESTART);
-> -- 
-> 2.17.1
-> 
+Given 1/6 is going to net-next, it makes sense to send this out that
+way too, then, IMHO.
+The only slight concern I have is that the m68k test config patch in
+the series will get split from the others, but that should resolve
+itself when they pick up the last patch.
+
+At the very least, this shouldn't cause any conflicts with anything
+we're doing in the KUnit tree.
+
+Cheers,
+-- David
