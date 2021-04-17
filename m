@@ -2,370 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1FE2362DE2
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 07:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0316F362DE9
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 07:52:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbhDQFdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 01:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhDQFdD (ORCPT
+        id S229988AbhDQFsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 01:48:25 -0400
+Received: from mail.kingsoft.com ([114.255.44.146]:55433 "EHLO
+        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229614AbhDQFsY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 01:33:03 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA77CC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 22:32:37 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id c15so19636239wro.13
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 22:32:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Yel8kZ2Tma5qDHkl5VF5hUJv3VRyJBHjD01XcbFMm7o=;
-        b=FQeRAuHlScrBu6MaDSe9PflLWcLWOp7EliDRc9b5tvICvRAMo75ftKKbT1k1wZ6eJN
-         rW+6UpKSlakpb0vJdaoOyAXDMLYZMbRxMsjqRTOazR5LHZ4gbH/1045yCfA8YpV5osKA
-         2qJ3BMMT92CpfwV7WxWhg9xFX6V7xXrZX/d1UOas4dtwL8cDN+L4OC2CiGzsPZNrcEj3
-         IIQTBaeApIn/e36fWpvlutCVAS3oaXzYDLCyXl50k3hamJSDkB3FWoUGaMAyJkozGGns
-         CNYjbms2JALKoPLg+gNdtLKkblqV1L1ymmzQ6m81wNUY2FSdsIoDZz+UwzlOR9n0NHHl
-         MTtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Yel8kZ2Tma5qDHkl5VF5hUJv3VRyJBHjD01XcbFMm7o=;
-        b=Bt4YKYpXet4/GeUhMx2mhkqWQKDHPyqOjUWoK9HMSsFc/ImQ0iT2SxNjIExIJTkPrm
-         5sGoxqCzI0h9IDRhWYzoVZSNXgwDhU1GbKKUom0Ia4qUdkXEEjJRiOKcEPZf9dcEUqrR
-         sxXdBzxlRqf3iiGM8V/7mfEtUgovPyPflW/+vlu+liIE2aI0R8pvTnokCYpdashW/ONf
-         gmQN77E7d3+HoY2XRwXAzlZoFq/Mt7SD5ywwVEudnK66JrZxDzkEW9XvTvuhAUiVwwZG
-         ntXeE3GXiUAwynMYOOwy6JFrj+tjVKD1f0Mc/RiB1XFCxC89KPRh1CH28dnjQ9E8qVZR
-         LE7w==
-X-Gm-Message-State: AOAM5335dRpzK8XdxIKASYLuPzCMPd7wz6QgMCaGv9JJNbMTPCitvO8G
-        +nfljy316V1tAHtyT/oYj5cw1g==
-X-Google-Smtp-Source: ABdhPJw61fNpL5fSjrTieaEhqFpiY7r82WcRE8yKeIbtOkcHwNUSzz6t/vjSZhernYbDulhiaFEzTQ==
-X-Received: by 2002:a5d:6d41:: with SMTP id k1mr2702788wri.66.1618637556090;
-        Fri, 16 Apr 2021 22:32:36 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:689d:e652:825c:501e? ([2a01:e34:ed2f:f020:689d:e652:825c:501e])
-        by smtp.googlemail.com with ESMTPSA id y17sm13822381wrq.76.2021.04.16.22.32.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Apr 2021 22:32:35 -0700 (PDT)
-Subject: Re: [PATCH v7 2/9] reboot: thermal: Export hardware protection
- shutdown
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "agross@kernel.org" <agross@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Matteo Croce <mcroce@microsoft.com>,
+        Sat, 17 Apr 2021 01:48:24 -0400
+X-AuditID: 0a580157-f07ff700000551c1-47-607a76884173
+Received: from mail.kingsoft.com (localhost [10.88.1.79])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id 5D.90.20929.8867A706; Sat, 17 Apr 2021 13:47:52 +0800 (HKT)
+Received: from alex-virtual-machine (10.88.1.103) by KSBJMAIL4.kingsoft.cn
+ (10.88.1.79) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 17 Apr
+ 2021 13:47:51 +0800
+Date:   Sat, 17 Apr 2021 13:47:51 +0800
+From:   Aili Yao <yaoaili@kingsoft.com>
+To:     Naoya Horiguchi <nao.horiguchi@gmail.com>
+CC:     <linux-mm@kvack.org>, Tony Luck <tony.luck@intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        linux-pm@vger.kernel.org
-References: <cover.1618377272.git.matti.vaittinen@fi.rohmeurope.com>
- <adf417797006c996605a03c8bacfb4961e8f0b42.1618377272.git.matti.vaittinen@fi.rohmeurope.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <ce0918d9-bedb-e48f-5779-c0ef47c6909d@linaro.org>
-Date:   Sat, 17 Apr 2021 07:32:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Oscar Salvador <osalvador@suse.de>,
+        "David Hildenbrand" <david@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "Andy Lutomirski" <luto@kernel.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        <linux-kernel@vger.kernel.org>, <yaoaili@kingsoft.com>
+Subject: Re: [PATCH v1 0/3] mm,hwpoison: fix sending SIGBUS for Action
+ Required MCE
+Message-ID: <20210417134751.0bee9e73@alex-virtual-machine>
+In-Reply-To: <20210412224320.1747638-1-nao.horiguchi@gmail.com>
+References: <20210412224320.1747638-1-nao.horiguchi@gmail.com>
+Organization: kingsoft
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <adf417797006c996605a03c8bacfb4961e8f0b42.1618377272.git.matti.vaittinen@fi.rohmeurope.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.88.1.103]
+X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL4.kingsoft.cn
+ (10.88.1.79)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupgkeLIzCtJLcpLzFFi42LhimD01+0oq0owePCUy2LO+jVsFp83/GOz
+        +Lr+F7PF5V1z2CzurfnPanF+11pWi1Xz7jBbXGw8wGhxZlqRxZsL91gcuDy+t/axeOycdZfd
+        Y/Gel0wem1Z1snls+jSJ3ePEjN8sHi+ubmTxeL/vKpvH5tPVHp83yQVwRXHZpKTmZJalFunb
+        JXBlHG2+xliwS6yifelhtgbGc4JdjJwcEgImEj8WvmDsYuTiEBKYziQx4+psNgjnOaPE38UL
+        mUCqWARUJbYsnMoMYrMB2bvuzWIFsUUEdCUmbOsF62YWeMAkMf/0TjaQhLBAqMTl7ktgNq+A
+        lcS+NTvBBnEK2Euc2XaIEcQWErCT2Nm4CszmFxCT6L3yH6iGA+gke4nH6xUhWgUlTs58wgJi
+        MwvoSJxYdYwZwpaX2P52DjPEGEWJw0t+sUN8Iy9x9/d0Rgg7VqLpwC22CYzCs5CMmoVk1Cwk
+        oxYwMq9iZCnOTTfcxAiJrPAdjPOaPuodYmTiYDzEKMHBrCTCa9xZkSDEm5JYWZValB9fVJqT
+        WnyIUZqDRUmcVzu9LEFIID2xJDU7NbUgtQgmy8TBKdXAFMWbW/R5fvr9jKmPD7JpBOZP0Zo7
+        yaksxclpJ6vFM16zmj7n6tXm/CI1jbUrFHWjd0+bOvffi/mrBB7d0Gi6+jaPcdVUpnr3St/K
+        Pr62A7s8t3c8mGp7x1mSp9ORZcvJnwcN9W6+2nB4zSrxZV0cZ5ifXtw0rYxl1v9UiwmNRtPY
+        OJpn/zhhMOndhCTWoP0Z7bw19xjna/zoX2/5LZGNj6erujDyfWyX8/bfxjfvfWrOnbq0ene+
+        7H7HDa+YujnmGLRmrAksTfzQLHeVW9Jwukb88k7jcPHjPA+fLm0XEZ1zfMaqy+WiIr2MCiku
+        Dfs73m9a+bt6nVO16AolBq8rd3MUSjeLO6qLb6ji2hGoxFKckWioxVxUnAgARF3BthsDAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/04/2021 07:52, Matti Vaittinen wrote:
-> Thermal core contains a logic for safety shutdown. System is attempted to
-> be powered off if temperature exceeds safety limits.
+On Tue, 13 Apr 2021 07:43:17 +0900
+Naoya Horiguchi <nao.horiguchi@gmail.com> wrote:
+
+> Hi,
 > 
-> Currently this can be also utilized by regulator subsystem as a final
-> protection measure if PMICs report dangerous over-voltage, over-current or
-> over-temperature and if per regulator counter measures fail or do not
-> exist.
+> I wrote this patchset to materialize what I think is the current
+> allowable solution mentioned by the previous discussion [1].
+> I simply borrowed Tony's mutex patch and Aili's return code patch,
+> then I queued another one to find error virtual address in the best
+> effort manner.  I know that this is not a perfect solution, but
+> should work for some typical case.
 > 
-> Move this logic to kernel/reboot.c and export the functionality for other
-> subsystems to use. Also replace the mutex with a spinlock to allow using
-> the function from any context.
+> My simple testing showed this patchset seems to work as intended,
+> but if you have the related testcases, could you please test and
+> let me have some feedback?
 > 
-> Also the EMIF bus code has implemented a safety shut-down. EMIF does not
-> attempt orderly_poweroff at all. Thus the EMIF code is not converted to use
-> this new function.
+> Thanks,
+> Naoya Horiguchi
 > 
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> [1]: https://lore.kernel.org/linux-mm/20210331192540.2141052f@alex-virtual-machine/
 > ---
-> Changelog
->  v7:
->   - new patch
+> Summary:
 > 
-> Please note - this patch has received only a minimal amount of testing.
-> (The new API call was tested to shut-down my system at driver probe but
-> no odd corner-cases have been tested).
+> Aili Yao (1):
+>       mm,hwpoison: return -EHWPOISON when page already
 > 
-> Any testing for thermal shutdown is appreciated.
-> ---
->  drivers/thermal/thermal_core.c | 63 ++-----------------------
->  include/linux/reboot.h         |  1 +
->  kernel/reboot.c                | 86 ++++++++++++++++++++++++++++++++++
-
-Please send a patch implementing the reboot/shutdown and then another
-one replacing the thermal shutdown code by a call to the new API.
-
->  3 files changed, 91 insertions(+), 59 deletions(-)
+> Naoya Horiguchi (1):
+>       mm,hwpoison: add kill_accessing_process() to find error virtual address
 > 
-> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-> index 996c038f83a4..b1444845af38 100644
-> --- a/drivers/thermal/thermal_core.c
-> +++ b/drivers/thermal/thermal_core.c
-> @@ -36,10 +36,8 @@ static LIST_HEAD(thermal_governor_list);
->  
->  static DEFINE_MUTEX(thermal_list_lock);
->  static DEFINE_MUTEX(thermal_governor_lock);
-> -static DEFINE_MUTEX(poweroff_lock);
->  
->  static atomic_t in_suspend;
-> -static bool power_off_triggered;
->  
->  static struct thermal_governor *def_governor;
->  
-> @@ -327,70 +325,18 @@ static void handle_non_critical_trips(struct thermal_zone_device *tz, int trip)
->  		       def_governor->throttle(tz, trip);
->  }
->  
-> -/**
-> - * thermal_emergency_poweroff_func - emergency poweroff work after a known delay
-> - * @work: work_struct associated with the emergency poweroff function
-> - *
-> - * This function is called in very critical situations to force
-> - * a kernel poweroff after a configurable timeout value.
-> - */
-> -static void thermal_emergency_poweroff_func(struct work_struct *work)
-> -{
-> -	/*
-> -	 * We have reached here after the emergency thermal shutdown
-> -	 * Waiting period has expired. This means orderly_poweroff has
-> -	 * not been able to shut off the system for some reason.
-> -	 * Try to shut down the system immediately using kernel_power_off
-> -	 * if populated
-> -	 */
-> -	WARN(1, "Attempting kernel_power_off: Temperature too high\n");
-> -	kernel_power_off();
-> -
-> -	/*
-> -	 * Worst of the worst case trigger emergency restart
-> -	 */
-> -	WARN(1, "Attempting emergency_restart: Temperature too high\n");
-> -	emergency_restart();
-> -}
-> -
-> -static DECLARE_DELAYED_WORK(thermal_emergency_poweroff_work,
-> -			    thermal_emergency_poweroff_func);
-> -
-> -/**
-> - * thermal_emergency_poweroff - Trigger an emergency system poweroff
-> - *
-> - * This may be called from any critical situation to trigger a system shutdown
-> - * after a known period of time. By default this is not scheduled.
-> - */
-> -static void thermal_emergency_poweroff(void)
-> +void thermal_zone_device_critical(struct thermal_zone_device *tz)
->  {
-> -	int poweroff_delay_ms = CONFIG_THERMAL_EMERGENCY_POWEROFF_DELAY_MS;
->  	/*
->  	 * poweroff_delay_ms must be a carefully profiled positive value.
-> -	 * Its a must for thermal_emergency_poweroff_work to be scheduled
-> +	 * Its a must for forced_emergency_poweroff_work to be scheduled.
->  	 */
-> -	if (poweroff_delay_ms <= 0)
-> -		return;
-> -	schedule_delayed_work(&thermal_emergency_poweroff_work,
-> -			      msecs_to_jiffies(poweroff_delay_ms));
-> -}
-> +	int poweroff_delay_ms = CONFIG_THERMAL_EMERGENCY_POWEROFF_DELAY_MS;
->  
-> -void thermal_zone_device_critical(struct thermal_zone_device *tz)
-> -{
->  	dev_emerg(&tz->device, "%s: critical temperature reached, "
->  		  "shutting down\n", tz->type);
->  
-> -	mutex_lock(&poweroff_lock);
-> -	if (!power_off_triggered) {
-> -		/*
-> -		 * Queue a backup emergency shutdown in the event of
-> -		 * orderly_poweroff failure
-> -		 */
-> -		thermal_emergency_poweroff();
-> -		orderly_poweroff(true);
-> -		power_off_triggered = true;
-> -	}
-> -	mutex_unlock(&poweroff_lock);
-> +	hw_protection_shutdown("Temperature too high", poweroff_delay_ms);
->  }
->  EXPORT_SYMBOL(thermal_zone_device_critical);
->  
-> @@ -1549,7 +1495,6 @@ static int __init thermal_init(void)
->  	ida_destroy(&thermal_cdev_ida);
->  	mutex_destroy(&thermal_list_lock);
->  	mutex_destroy(&thermal_governor_lock);
-> -	mutex_destroy(&poweroff_lock);
->  	return result;
->  }
->  postcore_initcall(thermal_init);
-> diff --git a/include/linux/reboot.h b/include/linux/reboot.h
-> index 3734cd8f38a8..af907a3d68d1 100644
-> --- a/include/linux/reboot.h
-> +++ b/include/linux/reboot.h
-> @@ -79,6 +79,7 @@ extern char poweroff_cmd[POWEROFF_CMD_PATH_LEN];
->  
->  extern void orderly_poweroff(bool force);
->  extern void orderly_reboot(void);
-> +void hw_protection_shutdown(const char *reason, int ms_until_forced);
->  
->  /*
->   * Emergency restart, callable from an interrupt handler.
-> diff --git a/kernel/reboot.c b/kernel/reboot.c
-> index a6ad5eb2fa73..1b5fa6d213d4 100644
-> --- a/kernel/reboot.c
-> +++ b/kernel/reboot.c
-> @@ -518,6 +518,92 @@ void orderly_reboot(void)
->  }
->  EXPORT_SYMBOL_GPL(orderly_reboot);
->  
-> +/**
-> + * hw_failure_emergency_poweroff_func - emergency poweroff work after a known delay
-> + * @work: work_struct associated with the emergency poweroff function
-> + *
-> + * This function is called in very critical situations to force
-> + * a kernel poweroff after a configurable timeout value.
-> + */
-> +static void hw_failure_emergency_poweroff_func(struct work_struct *work)
-> +{
-> +	/*
-> +	 * We have reached here after the emergency shutdown waiting period has
-> +	 * expired. This means orderly_poweroff has not been able to shut off
-> +	 * the system for some reason.
-> +	 *
-> +	 * Try to shut down the system immediately using kernel_power_off
-> +	 * if populated
-> +	 */
-> +	WARN(1, "Hardware protection timed-out. Trying forced poweroff\n");
-> +	kernel_power_off();
-> +
-> +	/*
-> +	 * Worst of the worst case trigger emergency restart
-> +	 */
-> +	WARN(1,
-> +	     "Hardware protection shutdown failed. Trying emergency restart\n");
-> +	emergency_restart();
-> +}
-> +
-> +static DECLARE_DELAYED_WORK(hw_failure_emergency_poweroff_work,
-> +			    hw_failure_emergency_poweroff_func);
-> +
-> +/**
-> + * hw_failure_emergency_poweroff - Trigger an emergency system poweroff
-> + *
-> + * This may be called from any critical situation to trigger a system shutdown
-> + * after a given period of time. If time is negative this is not scheduled.
-> + */
-> +static void hw_failure_emergency_poweroff(int poweroff_delay_ms)
-> +{
-> +	if (poweroff_delay_ms <= 0)
-> +		return;
-> +	schedule_delayed_work(&hw_failure_emergency_poweroff_work,
-> +			      msecs_to_jiffies(poweroff_delay_ms));
-> +}
-> +
-> +static bool prot_power_off_triggered;
-> +static DEFINE_SPINLOCK(poweroff_lock);
-> +
-> +/**
-> + * hw_protection_shutdown - Trigger an emergency system poweroff
-> + *
-> + * @reason:		Reason of emergency shutdown to be printed.
-> + * @ms_until_forced:	Time to wait for orderly shutdown before tiggering a
-> + *			forced shudown. Negative value disables the forced
-> + *			shutdown.
-> + *
-> + * Initiate an emergency system shutdown in order to protect hardware from
-> + * further damage. Usage examples include a thermal protection or a voltage or
-> + * current regulator failures.
-> + * NOTE: The request is ignored if protection shutdown is already pending even
-> + * if the previous request has given a large timeout for forced shutdown.
-> + * Can be called from any context.
-> + */
-> +void hw_protection_shutdown(const char *reason, int ms_until_forced)
-> +{
-> +	unsigned long flags;
-> +
-> +	pr_emerg("HARDWARE PROTECTION shutdown (%s)\n", reason);
-> +
-> +	spin_lock_irqsave(&poweroff_lock, flags);
-> +	if (prot_power_off_triggered) {
-> +		spin_unlock(&poweroff_lock);
+> Tony Luck (1):
+>       mm/memory-failure: Use a mutex to avoid memory_failure() races
+> 
+>  arch/x86/kernel/cpu/mce/core.c |  13 +++-
+>  include/linux/swapops.h        |   5 ++
+>  mm/memory-failure.c            | 166 ++++++++++++++++++++++++++++++++++++++++-
+>  3 files changed, 178 insertions(+), 6 deletions(-)
 
-Why not spin_unlock_irqrestore() ?
+Hi Naoya,
 
-> +		return;
-> +	}
-> +	prot_power_off_triggered = true;
-> +	spin_unlock_irqrestore(&poweroff_lock, flags);
+Thanks for your patch and complete fix for this race issue.
 
-Why not take the spin_lock definitively for all the procedure ?
+I test your patches, mainly it worked as expected, but in some cases it failed, I checked  it
+and find some doubt places, could you help confirm it?
 
-eg.
-
+1. there is a compile warning:
+static int hwpoison_pte_range(pmd_t *pmdp, unsigned long addr,
+			      unsigned long end, struct mm_walk *walk)
 {
-	...
+	struct hwp_walk *hwp = (struct hwp_walk *)walk->private;
+	int ret;    ---- here
 
-	pr_emerg( ... );
+It seems this ret may not be initialized, and some time ret may be error retruned?
 
-	if (spin_trylock(&lock))
-		return;
+and for this:
+static int check_hwpoisoned_entry(pte_t pte, unsigned long addr, short shift,
+				unsigned long poisoned_pfn, struct to_kill *tk)
+{
+	unsigned long pfn;
 
-	hw_failure_emergency_poweroff(ms_until_forced);
+I think it better to be initialized too.
 
-	orderly_poweroff(true);
-}
+2. In the function hwpoison_pte_range():
+if (pfn <= hwp->pfn && hwp->pfn < pfn + PMD_SIZE) this check seem we should use PMD_SIZE/PAGE_SIZE or some macro like this?
 
-No need of prot_power_off_triggered and the spin_lock can be declared
-static inside the function.
+3. unsigned long hwpoison_vaddr = addr + (hwp->pfn << PAGE_SHIFT & ~PMD_MASK); this seems not exact accurate?
 
-> +	/*
-> +	 * Queue a backup emergency shutdown in the event of
-> +	 * orderly_poweroff failure
-> +	 */
-> +	hw_failure_emergency_poweroff(ms_until_forced);
-> +	orderly_poweroff(true);
-> +}
-> +EXPORT_SYMBOL_GPL(hw_protection_shutdown);
-> +
->  static int __init reboot_setup(char *str)
->  {
->  	for (;;) {
-> 
+4. static int set_to_kill(struct to_kill *tk, unsigned long addr, short shift)
+{
+	if (tk->addr) {    --- I am not sure about this check and if it will lead failure.
+		return 1;
+	}
+In my test, it seems sometimes it will hit this branch, I don't know it's multi entry issue or multi posion issue.
+when i get to this fail, there is not enough log for this, but i can't reproduce it after that.
 
+wolud you help confirm this and if any changes, please post again and I will do the test again.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Thansk
+Aili Yao
