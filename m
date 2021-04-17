@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54CC0362F97
+	by mail.lfdr.de (Postfix) with ESMTP id C4DEC362F98
 	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 13:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236361AbhDQLbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 07:31:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36416 "EHLO
+        id S236375AbhDQLbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 07:31:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236226AbhDQLam (ORCPT
+        with ESMTP id S236231AbhDQLan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 07:30:42 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5D0CC061761;
-        Sat, 17 Apr 2021 04:30:15 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id e14so45809514ejz.11;
-        Sat, 17 Apr 2021 04:30:15 -0700 (PDT)
+        Sat, 17 Apr 2021 07:30:43 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF05BC061763;
+        Sat, 17 Apr 2021 04:30:16 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id sd23so37191134ejb.12;
+        Sat, 17 Apr 2021 04:30:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=TRa3Sz1jxpiHgGK3l0+BR6ViiX/+KtB8X1pc8tNr5BA=;
-        b=UxWpkQZTVCLbvHFEZEnU0eLmU9PmJkiTiGud3ua3H5TUUuDboNjUZU1wvVA9Vauvmz
-         q8H5nlYTFr61FSWWW+oMxCErulReHvStoHZXm4a9YimMQNaMFV2kHzEj0DTkyPXnkHAM
-         aG8ST760j6b7rSWPCEW/NFjHWltTsW3LLfDVhXBU0pDyp5fdovYsvpe8uoOlkuOsKYDn
-         5VN4/KcYfAV8GAdB8nbSzQL30JFP4S3XPBZ7opVohHSabPWOGGy2gTETcOBQArrg5Mz4
-         HrJhLIF8Ap914URwfnlUwLrPKVbQCNh2ESV5lxZr+9uD7A4u075V+9QNAS281h4I3Zbt
-         Qq4A==
+        bh=y3wm7faQjf3OHfSZwDN9B47guWYbbRlys9qJW4VJCQI=;
+        b=YS3bWQV33LBDIsf0GQbDPJwfKepFfw+Dswv6TFLEy006J1DL3ISiAOFfkFoQwQdrJ2
+         Htko0opDCb7zWI2nNTo6Z8Z/6uhXFtOHs8e9JTl8TMoEI7StawB2KhWTiVMD1cA0c5KB
+         fnaZgJ96uPSQMTEeK9FptQkgMhxBqqBpHWWdFMwPgIlgzvGT/1AW9dIQLPNd1AUGkGeO
+         NkPPBwqWo/esyfI0g40bFC7pFksQwGG0QQMom9jwQo7sejkbaaXmtvV6WESfwhEBCa/u
+         ATHi4SMtCY0dw5J10/slRCWtBNIwz1tOsCIm8093TMgyBL9D+DsiCcEBswxTkjcmORxG
+         FvNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=TRa3Sz1jxpiHgGK3l0+BR6ViiX/+KtB8X1pc8tNr5BA=;
-        b=swcb5NzPqFfMpSKoba9dzVVoEncey4PkMR/QQFocUfR0z+uwJMw1ALHPb8bdjgwoyv
-         4o3YOdm/y/ilYLMP3KtboG6eqgoLjLW/We0lMmf6bFa261dMSc6BW/+EUP/hAnAZFkMv
-         b1T61icGrcFitGAjegMhbNGw6S8QaXTqDzJXfY9Bxjy5iWZ3DdrOf9QREYgtnMinEqji
-         kGYcNeJsg4cKAnVUAFLtZjGYeqnuaTIHe6zTDtIG5bPnWY4cDO9IuqGCshPjaXbV5oFE
-         37XeP2TG/edwk8PoLEpv9DGUkVHDFjVGpA2/kfXLq/p2ykoDIDrtuOdEaws8JJzO2mGg
-         bw0Q==
-X-Gm-Message-State: AOAM531qjKhDPZLvbGh4s13F8JBQUlWPnv9X5j0s0NlNDthsW4RgPaHi
-        gO6WAOw4SVAeckC7z6Cfh9Q=
-X-Google-Smtp-Source: ABdhPJz/BvHl5h8iOnTT71av4QuClNlMfDbXbT/HEfeUKCP98y5JB7MZ5urAlVG9xJOe1kslFYkC9w==
-X-Received: by 2002:a17:906:c419:: with SMTP id u25mr13021703ejz.332.1618659014468;
-        Sat, 17 Apr 2021 04:30:14 -0700 (PDT)
+        bh=y3wm7faQjf3OHfSZwDN9B47guWYbbRlys9qJW4VJCQI=;
+        b=dkTuOTr4wOdHeO3EPuCBvXgt83fHNZwiuOqXszMClqMRdWvDRLyN0TlMcZNmxIHn1D
+         YvlzIxdo038tybfAhWLVWk/RTx/ycHtCkT1O1rjmg/wKBiDw3tiP+U8rqG9ZjHVKSbGg
+         EkSBiftWj+lr+V0df0vbbAJfEMLlmf0EjpP9DOGzQP/Alpzbkm0o/nJHHXmj98sSDAOv
+         lur7o5RdDBKCoW2i31pqEfGSVZb5A7sWRGQd5Z1qAd9PVG11KyBJRqYhjG6H0elA+R7j
+         JNvAmcnRqKQZQiGloq3xPTfmNAZT+IvVa64zM+x8nZjEagol9SrHzJBx+QXPVU3Vx2z3
+         YZ/g==
+X-Gm-Message-State: AOAM533BxGlr6747+vN8df7r3JS8o+1NUsbND35QJun3/HvHB+xjMKBl
+        B6p0fVh+yz62k9zfqdvPslc=
+X-Google-Smtp-Source: ABdhPJzb3y9MXZdf7V8IoJrEab1zt8geOX/i3hCvDrAJrasP+3Sg9fE2m7sAT9v+6j8iCJXxAfNYCQ==
+X-Received: by 2002:a17:906:c08f:: with SMTP id f15mr12843436ejz.318.1618659015690;
+        Sat, 17 Apr 2021 04:30:15 -0700 (PDT)
 Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id f20sm3022875ejw.36.2021.04.17.04.30.13
+        by smtp.gmail.com with ESMTPSA id f20sm3022875ejw.36.2021.04.17.04.30.14
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 17 Apr 2021 04:30:14 -0700 (PDT)
+        Sat, 17 Apr 2021 04:30:15 -0700 (PDT)
 From:   Johan Jonker <jbx6244@gmail.com>
 To:     heiko@sntech.de
 Cc:     robh+dt@kernel.org, zhangqing@rock-chips.com,
         enric.balletbo@collabora.com, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v9 10/15] dt-bindings: add power-domain header for RK3568 SoCs
-Date:   Sat, 17 Apr 2021 13:29:47 +0200
-Message-Id: <20210417112952.8516-11-jbx6244@gmail.com>
+Subject: [PATCH v9 11/15] dt-bindings: arm: rockchip: convert pmu.txt to YAML
+Date:   Sat, 17 Apr 2021 13:29:48 +0200
+Message-Id: <20210417112952.8516-12-jbx6244@gmail.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20210417112952.8516-1-jbx6244@gmail.com>
 References: <20210417112952.8516-1-jbx6244@gmail.com>
@@ -63,57 +63,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Elaine Zhang <zhangqing@rock-chips.com>
+Current dts files with 'pmu' nodes are manually verified.
+In order to automate this process pmu.txt
+has to be converted to yaml.
 
-According to a description from TRM, add all the power domains
-
-Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- include/dt-bindings/power/rk3568-power.h | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
- create mode 100644 include/dt-bindings/power/rk3568-power.h
+ .../devicetree/bindings/arm/rockchip/pmu.txt       | 16 -------
+ .../devicetree/bindings/arm/rockchip/pmu.yaml      | 49 ++++++++++++++++++++++
+ 2 files changed, 49 insertions(+), 16 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/arm/rockchip/pmu.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/rockchip/pmu.yaml
 
-diff --git a/include/dt-bindings/power/rk3568-power.h b/include/dt-bindings/power/rk3568-power.h
+diff --git a/Documentation/devicetree/bindings/arm/rockchip/pmu.txt b/Documentation/devicetree/bindings/arm/rockchip/pmu.txt
+deleted file mode 100644
+index 3ee9b428b..000000000
+--- a/Documentation/devicetree/bindings/arm/rockchip/pmu.txt
++++ /dev/null
+@@ -1,16 +0,0 @@
+-Rockchip power-management-unit:
+--------------------------------
+-
+-The pmu is used to turn off and on different power domains of the SoCs
+-This includes the power to the CPU cores.
+-
+-Required node properties:
+-- compatible value : = "rockchip,rk3066-pmu";
+-- reg : physical base address and the size of the registers window
+-
+-Example:
+-
+-	pmu@20004000 {
+-		compatible = "rockchip,rk3066-pmu";
+-		reg = <0x20004000 0x100>;
+-	};
+diff --git a/Documentation/devicetree/bindings/arm/rockchip/pmu.yaml b/Documentation/devicetree/bindings/arm/rockchip/pmu.yaml
 new file mode 100644
-index 000000000..6cc1af1a9
+index 000000000..0b816943d
 --- /dev/null
-+++ b/include/dt-bindings/power/rk3568-power.h
-@@ -0,0 +1,32 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __DT_BINDINGS_POWER_RK3568_POWER_H__
-+#define __DT_BINDINGS_POWER_RK3568_POWER_H__
++++ b/Documentation/devicetree/bindings/arm/rockchip/pmu.yaml
+@@ -0,0 +1,49 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/arm/rockchip/pmu.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+/* VD_CORE */
-+#define RK3568_PD_CPU_0		0
-+#define RK3568_PD_CPU_1		1
-+#define RK3568_PD_CPU_2		2
-+#define RK3568_PD_CPU_3		3
-+#define RK3568_PD_CORE_ALIVE	4
++title: Rockchip Power Management Unit (PMU)
 +
-+/* VD_PMU */
-+#define RK3568_PD_PMU		5
++maintainers:
++  - Elaine Zhang <zhangqing@rock-chips.com>
++  - Heiko Stuebner <heiko@sntech.de>
 +
-+/* VD_NPU */
-+#define RK3568_PD_NPU		6
++description: |
++  The PMU is used to turn on and off different power domains of the SoCs.
++  This includes the power to the CPU cores.
 +
-+/* VD_GPU */
-+#define RK3568_PD_GPU		7
++select:
++  properties:
++    compatible:
++      contains:
++        enum:
++          - rockchip,rk3066-pmu
 +
-+/* VD_LOGIC */
-+#define RK3568_PD_VI		8
-+#define RK3568_PD_VO		9
-+#define RK3568_PD_RGA		10
-+#define RK3568_PD_VPU		11
-+#define RK3568_PD_CENTER	12
-+#define RK3568_PD_RKVDEC	13
-+#define RK3568_PD_RKVENC	14
-+#define RK3568_PD_PIPE		15
-+#define RK3568_PD_LOGIC_ALIVE	16
++  required:
++    - compatible
 +
-+#endif
++properties:
++  compatible:
++    items:
++      - enum:
++          - rockchip,rk3066-pmu
++      - const: syscon
++      - const: simple-mfd
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: true
++
++examples:
++  - |
++    pmu@20004000 {
++      compatible = "rockchip,rk3066-pmu", "syscon", "simple-mfd";
++      reg = <0x20004000 0x100>;
++    };
 -- 
 2.11.0
 
