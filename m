@@ -2,117 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9213632B5
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 01:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1043632B8
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 01:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235984AbhDQXxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 19:53:34 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:37532 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbhDQXxd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 19:53:33 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618703585;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=C7Maz4mAaNbdh6Ve2gjfbQ91hhlq7K86k/cKBnBKj+o=;
-        b=JL1VKzqbrIa3SYfPGHkP301KVkKx9iseYHaE147CV1T99SWZRu9M2xrlejpo+7+id7X6hE
-        xU994hSS7pS+5vaHzabhxnBSzi7WeTDUgvKifckC5vOh8gVZ8cHvo/xkx6hhDDfUnHcl5S
-        bm3TQp5BrtEExphqWcvcHiWnyyRl9Le5qxGPwy5mjNNd5obEbatAvU9AwHi/jlipgGFl7O
-        DvEYZ3870Mp6klLWpcw80tcGKJgS+tZYC0wSdbhj4o83cmf4bGeTWZfhgskZQkUx8SfxOa
-        MLWQzOuIDEZCdKl9d8A8RpkVZMF2XmSNjeE2j+G9kEKivmnWSa498TktT31zKw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618703585;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=C7Maz4mAaNbdh6Ve2gjfbQ91hhlq7K86k/cKBnBKj+o=;
-        b=2k5HzHcHvjwxNHzQGyVxfekEzoHigrWN6JBN2/crbtZzWYKhTbil2dKtjrfLjpP8XiVd6Y
-        ShR7AaM9h8O6iEBA==
-To:     Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        David Laight <David.Laight@aculab.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH 05/15] x86: Implement function_nocfi
-In-Reply-To: <CALCETrWUS52tzLNiWL5sAVVB5-ko1EW73-TEiO=eZ5jF_QyGPQ@mail.gmail.com>
-References: <20210416203844.3803177-1-samitolvanen@google.com> <20210416203844.3803177-6-samitolvanen@google.com> <20210416211855.GD22348@zn.tnic> <CABCJKud8TvzhcjHCpsrtCJ4B50ZUfaL48F42EhZ2zWKLteAc0Q@mail.gmail.com> <20210416220251.GE22348@zn.tnic> <CALCETrVTtKqD6fonUmT_qr0HJ0X9TWzLGq-wpm+A7XKyjn3W5g@mail.gmail.com> <202104161519.1D37B6D26@keescook> <CALCETrV6WYx7dt56aCuUYsrrFya==zYR+p-YZnaATptnaO7w2A@mail.gmail.com> <202104161601.CFB2CCF84F@keescook> <CALCETrWUS52tzLNiWL5sAVVB5-ko1EW73-TEiO=eZ5jF_QyGPQ@mail.gmail.com>
-Date:   Sun, 18 Apr 2021 01:53:05 +0200
-Message-ID: <877dl0sc2m.ffs@nanos.tec.linutronix.de>
+        id S236031AbhDQX5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 19:57:01 -0400
+Received: from mga03.intel.com ([134.134.136.65]:23512 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230031AbhDQX5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 19:57:00 -0400
+IronPort-SDR: qEj99afdF70h+L+kQPwdAFMaHmRZ8a1y89tUN1dg+hNWftGqXQu4VHpbpwHIxjMuG9LHeKXXZf
+ Olm8zEFZQrvw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9957"; a="195219579"
+X-IronPort-AV: E=Sophos;i="5.82,230,1613462400"; 
+   d="scan'208";a="195219579"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2021 16:56:32 -0700
+IronPort-SDR: 3fuMSAGRb86Hf3eb8E9V6jW3k6KpeEg6NX2I8eL0bgE2nrRtrFOwIq5B58W4AZ6rowg8OZcUlL
+ PC3RYrfQ8kmA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,230,1613462400"; 
+   d="scan'208";a="384633843"
+Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 17 Apr 2021 16:56:29 -0700
+Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lXunc-000158-Df; Sat, 17 Apr 2021 23:56:28 +0000
+Date:   Sun, 18 Apr 2021 07:56:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/urgent] BUILD SUCCESS
+ 84a24bf8c52e66b7ac89ada5e3cfbe72d65c1896
+Message-ID: <607b759b.j2kYG3eJobnKYtr4%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17 2021 at 16:19, Andy Lutomirski wrote:
-> On Fri, Apr 16, 2021 at 4:40 PM Kees Cook <keescook@chromium.org> wrote:
->> Okay, you're saying you want __builtin_gimme_body_p() to be a constant
->> expression for the compiler, not inline asm?
->
-> Yes.
->
-> I admit that, in the trivial case where the asm code is *not* a
-> C-ABI-compliant function, giving a type that doesn't fool the compiler
-> into thinking that it might be is probably the best fix.  Maybe we
-> should standardize something, e.g.:
->
-> struct raw_symbol;  /* not defined anywhere */
-> #define DECLARE_RAW_SYMBOL(x) struct raw_symbol x[]
->
-> and then we write this:
->
-> DECLARE_RAW_SYMBOL(entry_SYSCALL_64);
->
-> wrmsrl(..., (unsigned long)entry_SYSCALL_64);
->
-> It would be a bit nifty if we didn't need a forward declaration, but
-> I'm not immediately seeing a way to do this without hacks that we'll
-> probably regret;
->
-> But this doesn't help the case in which the symbol is an actual
-> C-callable function and we want to be able to call it, too.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/urgent
+branch HEAD: 84a24bf8c52e66b7ac89ada5e3cfbe72d65c1896  locking/qrwlock: Fix ordering in queued_write_lock_slowpath()
 
-The right way to solve this is that the compiler provides a builtin
+elapsed time: 723m
 
- function_nocfi() +/- the naming bikeshed
+configs tested: 119
+configs skipped: 2
 
-which works for
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-      foo = function_nocfi(bar);
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+powerpc                       ebony_defconfig
+powerpc                     ksi8560_defconfig
+powerpc                      pcm030_defconfig
+powerpc                      pasemi_defconfig
+m68k                          amiga_defconfig
+ia64                          tiger_defconfig
+mips                  decstation_64_defconfig
+powerpc                        icon_defconfig
+powerpc                      arches_defconfig
+arm                        vexpress_defconfig
+powerpc                       eiger_defconfig
+sh                            hp6xx_defconfig
+arm                        trizeps4_defconfig
+powerpc                   motionpro_defconfig
+powerpc                     powernv_defconfig
+sh                             espt_defconfig
+m68k                        mvme147_defconfig
+sh                           se7780_defconfig
+sh                          lboxre2_defconfig
+mips                           gcw0_defconfig
+arm                       aspeed_g5_defconfig
+xtensa                    smp_lx200_defconfig
+powerpc                     sbc8548_defconfig
+sh                   rts7751r2dplus_defconfig
+powerpc                      ppc44x_defconfig
+arm                            zeus_defconfig
+sh                           se7705_defconfig
+arm                       omap2plus_defconfig
+powerpc                     mpc83xx_defconfig
+mips                      loongson3_defconfig
+riscv                          rv32_defconfig
+i386                             alldefconfig
+arm                        shmobile_defconfig
+mips                      pic32mzda_defconfig
+m68k                          atari_defconfig
+openrisc                            defconfig
+arm                         s3c2410_defconfig
+arm                         bcm2835_defconfig
+powerpc                    socrates_defconfig
+arm                             rpc_defconfig
+arm                      footbridge_defconfig
+arm                        neponset_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a003-20210417
+x86_64               randconfig-a002-20210417
+x86_64               randconfig-a005-20210417
+x86_64               randconfig-a001-20210417
+x86_64               randconfig-a006-20210417
+x86_64               randconfig-a004-20210417
+i386                 randconfig-a003-20210417
+i386                 randconfig-a006-20210417
+i386                 randconfig-a001-20210417
+i386                 randconfig-a005-20210417
+i386                 randconfig-a004-20210417
+i386                 randconfig-a002-20210417
+i386                 randconfig-a015-20210417
+i386                 randconfig-a014-20210417
+i386                 randconfig-a013-20210417
+i386                 randconfig-a012-20210417
+i386                 randconfig-a016-20210417
+i386                 randconfig-a011-20210417
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-and
+clang tested configs:
+x86_64               randconfig-a014-20210417
+x86_64               randconfig-a015-20210417
+x86_64               randconfig-a011-20210417
+x86_64               randconfig-a013-20210417
+x86_64               randconfig-a012-20210417
+x86_64               randconfig-a016-20210417
 
-static unsigned long foo[] = {
-       function_nocfi(bar1),
-       function_nocfi(bar2),
-};
-
-which are pretty much the only possible 2 usecases. If the compiler
-wants to have function_nocfi_in_code() and function_nocfi_const()
-because it can't figure it out on it's own, then I can live with that,
-but that's still several orders of magnitudes better than having to work
-around it by whatever nasty macro/struct magic.
-
-I don't care about the slightly more unreadable code, but if that
-builtin has a descriptive name, then it's even useful for documentary
-purposes. And it can be easily grepped for which makes it subject to
-static code analysers which can help to detect abuse.
-
-Anything which requires to come up with half baken constructs to work
-around the shortcomings of the compiler are wrong to begin with.
-
-Thanks,
-
-        tglx
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
