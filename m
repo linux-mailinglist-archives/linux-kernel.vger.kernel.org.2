@@ -2,83 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9745A3630AE
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 16:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5CC3630B2
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 16:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236586AbhDQOg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 10:36:57 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:51833 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236517AbhDQOg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 10:36:56 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 13HEaKSO015819;
-        Sat, 17 Apr 2021 16:36:20 +0200
-Date:   Sat, 17 Apr 2021 16:36:20 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-Message-ID: <20210417143620.GB15678@1wt.eu>
-References: <YHmMJWmzz2vZ3qQH@google.com>
- <YHmc2+bKQJ/XAATF@hirez.programming.kicks-ass.net>
- <YHmuX1NA5RF7C7XS@google.com>
- <20210416161444.GA10484@1wt.eu>
- <CANiq72nbkJFPmiJXX=L8PmkouKgKG1k-CxhZYpL1hcncYwa8JA@mail.gmail.com>
- <YHnG+GRwiMqgHGs5@hirez.programming.kicks-ass.net>
- <20210416180829.GO2531743@casper.infradead.org>
- <YHrDwdQwEk2mSQWa@hirez.programming.kicks-ass.net>
- <20210417114623.GA15120@1wt.eu>
- <YHrvq6/d4iw8SLAc@hirez.programming.kicks-ass.net>
+        id S236587AbhDQOia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 10:38:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236554AbhDQOi3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 10:38:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E127AC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 07:38:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=l3T4NKXuj5bajMrk/OIXwH4WBKYIfPqVTOo37Ue8jmA=; b=oBjfi46PYZUAuElktRLsV4dYwL
+        tF5WkLyrZt/8+IQzlEt/GfnwwCggR2ckcjIJAcs3o80RAEr81I2eWU9R4D57A4tMT+IgeQ0408qo4
+        rakRrmvrepx3UhI8qq+5QOEVoSD8SS5r0eFoEC2ujftYbzbtnG6/XSX//SUfHSaOJrzIfYpUIdEqq
+        paCaYFWBcbbsYDtZWEbgwoVsoBGReR4/KkEdxvLnc1dCkc480j7T3RJdd9uHVwlBkiuGygjvrlVUN
+        j7wd86ulxgb4lFTq5a7uZF2z7fE/GCrVlXpLXcdC8ig5dMF/RXV/d+nMdc9F00rJKIEr9EPHG90mG
+        gS/EJnrA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lXm3f-00BM7k-8m; Sat, 17 Apr 2021 14:36:39 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9F48D3001D0;
+        Sat, 17 Apr 2021 16:36:25 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7DBF8201F8C56; Sat, 17 Apr 2021 16:36:25 +0200 (CEST)
+Date:   Sat, 17 Apr 2021 16:36:25 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     zhouchuangao <zhouchuangao@vivo.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Michal Hocko <mhocko@suse.com>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kernel/hung_task: Add a whitelist and blacklist
+ mechanism.
+Message-ID: <YHryaegfV9jo6aiL@hirez.programming.kicks-ass.net>
+References: <1618668783-39601-1-git-send-email-zhouchuangao@vivo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YHrvq6/d4iw8SLAc@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1618668783-39601-1-git-send-email-zhouchuangao@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 04:24:43PM +0200, Peter Zijlstra wrote:
-> On Sat, Apr 17, 2021 at 01:46:23PM +0200, Willy Tarreau wrote:
-> > For me the old trick of casting one side as long long still works:
-> > 
-> >   unsigned long long mul3264(unsigned int a, unsigned int b)
-> >   {
-> >         return (unsigned long long)a * b;
-> >   }
-> > 
-> > i386:
-> >   00000000 <mul3264>:
-> >      0: 8b 44 24 08           mov    0x8(%esp),%eax
-> >      4: f7 64 24 04           mull   0x4(%esp)
-> >      8: c3                    ret    
-> > 
-> > x86_64:
-> >   0000000000000000 <mul3264>:
-> >      0: 89 f8                 mov    %edi,%eax
-> >      2: 89 f7                 mov    %esi,%edi
-> >      4: 48 0f af c7           imul   %rdi,%rax
-> >      8: c3                    retq   
-> > 
-> > Or maybe you had something else in mind ?
-> 
-> Last time I tried it, the thing refused :/ which is how we ended up with
-> mul_u32_u32() in asm.
+On Sat, Apr 17, 2021 at 07:13:01AM -0700, zhouchuangao wrote:
+> eg:
+> In Android system, we usually and some processes to the whitelist.
+> static task_t task_whitelist[] = {
+> 	{"mdrt_thread", HUNG_TASK_WHITELIST},
+> 	{"chre_kthread", HUNG_TASK_WHITELIST},
+> 	{"scp_power_reset", HUNG_TASK_WHITELIST},
+> 	{"ccci_fsm1", HUNG_TASK_WHITELIST},
+> 	{"qos_ipi_recv", HUNG_TASK_WHITELIST},
+> 	{NULL, 0},
+> };
 
-Oh I trust you, I do remember having noticed it on one gcc version as
-well (maybe 4.5). But I've been successfully using this since 2.95, and
-could quickly recheck that 4.7, 4.8, 5.4, 6.5, 7.4, 9.3 and 11-trunk do
-produce the code above, which is reassuring, as we all prefer to limit
-the amount of asm statements.
-
-Willy
+What are these tasks doing that the hung-task detector fires on them?
+Should you fix that instead?
