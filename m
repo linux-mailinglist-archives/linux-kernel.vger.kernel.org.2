@@ -2,112 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0DA0362FA4
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 13:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1403A362FB4
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 13:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236190AbhDQLkA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 17 Apr 2021 07:40:00 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:44938 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231387AbhDQLj6 (ORCPT
+        id S236218AbhDQLvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 07:51:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236092AbhDQLvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 07:39:58 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-286-5uilHBoVOxeAFJZU7Wda9w-1; Sat, 17 Apr 2021 12:39:29 +0100
-X-MC-Unique: 5uilHBoVOxeAFJZU7Wda9w-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Sat, 17 Apr 2021 12:39:29 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Sat, 17 Apr 2021 12:39:29 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'Maciej W. Rozycki'" <macro@orcam.me.uk>,
-        Joe Perches <joe@perches.com>
-CC:     Khalid Aziz <khalid@gonehiking.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH 1/5] scsi: BusLogic: Fix missing `pr_cont' use
-Thread-Topic: [PATCH 1/5] scsi: BusLogic: Fix missing `pr_cont' use
-Thread-Index: AQHXMq4Y+WsIhBBiNEu36L38d+a4baq4klBA
-Date:   Sat, 17 Apr 2021 11:39:28 +0000
-Message-ID: <6679310a77984cc0af9f48f5616b840c@AcuMS.aculab.com>
-References: <alpine.DEB.2.21.2104141244520.44318@angie.orcam.me.uk>
-  <alpine.DEB.2.21.2104141419040.44318@angie.orcam.me.uk>
- <787aae5540612555a8bf92de2083c8fa74e52ce9.camel@perches.com>
- <alpine.DEB.2.21.2104161224300.44318@angie.orcam.me.uk>
-In-Reply-To: <alpine.DEB.2.21.2104161224300.44318@angie.orcam.me.uk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 17 Apr 2021 07:51:54 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC21C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 04:51:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oWCSjXq9cCrRHXmsTIGL+nDa8uwGrLxoVpVcRfRLUwA=; b=UhDw7RFqU6kf1UX3IAZfUoSdhJ
+        u9ZVv8WI1bMUcC+mgJiEeW8TK5Qbtapg4ZdloRS47UFP8xlSRqTWiFGt0CmEdV9KetY1psxY/ciWy
+        wbv21+lWevlkrhi2TDwZ5Rs1KpcPo0lU+U8eyfIlHmp/Bj+OJsEbtQfukwSXpS4/+FTg1RaPBNRRD
+        /3mxoTC3mcxLtglVEzY7608FQ0k3indO5RZU1hxz8KJ+vfKeqgsScjN7dXIXV5ogvWnCEBOXgY2KM
+        81FZsNMwiaOzXk++YYb98U64grgwVVTUcQeAQCCPmHZZUKQDqlBC6n5b8V8n+6i2EakYzeNpEsA/O
+        Fs9cZ3Ag==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lXjTc-00BDSS-KJ; Sat, 17 Apr 2021 11:51:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1CF91300212;
+        Sat, 17 Apr 2021 13:42:06 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0592F28591526; Sat, 17 Apr 2021 13:42:05 +0200 (CEST)
+Date:   Sat, 17 Apr 2021 13:42:05 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [tip:sched/core 23/23] kernel/sched/topology.c:17:2: error:
+ 'sched_debug_verbose' undeclared; did you mean 'sched_debug_setup'?
+Message-ID: <YHrJjbbyhcpI8IAK@hirez.programming.kicks-ass.net>
+References: <202104171441.AKFwtRfO-lkp@intel.com>
+ <20210417090628.GA9196@zn.tnic>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210417090628.GA9196@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej W. Rozycki
-> Sent: 16 April 2021 11:49
+On Sat, Apr 17, 2021 at 11:06:28AM +0200, Borislav Petkov wrote:
+> On Sat, Apr 17, 2021 at 02:47:46PM +0800, kernel test robot wrote:
+> >    kernel/sched/topology.c: In function 'sched_debug_setup':
+> > >> kernel/sched/topology.c:17:2: error: 'sched_debug_verbose' undeclared (first use in this function); did you mean 'sched_debug_setup'?
+> >       17 |  sched_debug_verbose = true;
 > 
-> On Thu, 15 Apr 2021, Joe Perches wrote:
+> I guess it needs this:
 > 
-> > In patch 2, vscnprintf should probably be used to make sure it's
-> > 0 terminated.
+> ---
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index 55232db745ac..916bb96ff9a6 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -2364,6 +2364,7 @@ extern struct sched_entity *__pick_last_entity(struct cfs_rq *cfs_rq);
+>  
+>  #ifdef	CONFIG_SCHED_DEBUG
+>  extern bool sched_debug_enabled;
+> +extern bool sched_debug_verbose;
+>  
+>  extern void print_cfs_stats(struct seq_file *m, int cpu);
+>  extern void print_rt_stats(struct seq_file *m, int cpu);
 > 
->  Why?  C99 has this[1]:
-> 
-> "The vsnprintf function is equivalent to snprintf, with the variable
-> argument list replaced by arg, which shall have been initialized by the
-> va_start macro (and possibly subsequent va_arg calls)."
 
-vscnprintf() is normally the function you want (not vsnprintf())
-because the return value is the number of characters actually
-put into the buffer, not the number that would have been written
-had the buffer been long enough.
-Return values larger than the buffer size are almost never
-allowed for - and are probably a set of 'buffer overflow' bugs.
-
-While probably justified by saying that it lets you malloc()
-a big enough buffer and try again, the return value is almost
-certainly just historic.
-
-The original sprintf() libc code allocated a FILE structure on
-stack set to fully-buffered with the current buffer pointer set
-to the caller's buffer and a buffer length of MAXINT.
-It then just called vprintf() to do the work.
-
-snprintf() was done the same way, except the buffer length was
-set and the 'write character' (or 'flush buffer') function
-intercepted to avoid writes beyond the buffer end.
-(Possibly by re-routing the writes to a global buffer.)
-The return value from vprintf() gets returned to the user.
-
-The Unix versions have always '\0' terminated the buffer.
-Only Microsoft has ever released an snprintf() that doesn't
-'\0' terminate the output - another source of bugs.
-
-Personally I think bounded string functions should
-return the buffer size on overflow.
-This means sequences of:
-	offset += xxx(buf + offset, sizeof buf - offset, ...);
-are safe and the overflow can be detected right at the end.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Right, sorry for messing that up. Pushed out that commit with this
+folded. If it gives any more trouble just kill the commit, it's the
+topmost commit anyway.
