@@ -2,120 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE623630B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 16:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0FE3630BC
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 16:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236529AbhDQOuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 10:50:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33438 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236187AbhDQOuX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 10:50:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78EEE610CD;
-        Sat, 17 Apr 2021 14:49:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618670996;
-        bh=qehR/qi1HdpadgVx4RXRuIlyvC1z5fqzguqhj2k70oM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qKO66V5uRMBz/SaS5RCWc+6FwVV1Qd8rmptpEUkUfbB5AIzrhaegfdqvqZHeLwndv
-         5ytO2BuDO0x/vtkEzgpBCd3jtco/kFonXd0odds6Fm0hKJJjVRnO4uC2s3gYzCc/Yr
-         fk9/ah/KHiMENIkEuvMXyFkPS9fj84AM6YiOODRzJslViyn7j9JIQq2Nfl7IpUXWgo
-         H9synoDM8lJ3K6w/JNowfj9shByw1C9m8oPLfRtY0MiTFX10DRY2yXURpvtgIxPo4r
-         sRdhZl1QHqf+8ojZTU5GhKtT5dMyE51OlklFZ+KuBaoxEm5oitvvDTfz4NymBcxMxv
-         En5Rh5zvrpfQg==
-Received: by pali.im (Postfix)
-        id 94E1B9F7; Sat, 17 Apr 2021 16:49:53 +0200 (CEST)
-Date:   Sat, 17 Apr 2021 16:49:53 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Marek Behun <marek.behun@nic.cz>, Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH] arm64: dts: marvell: armada-37xx: Set linux,pci-domain
- to zero
-Message-ID: <20210417144953.pznysgn5rdraxggx@pali>
-References: <20210412123936.25555-1-pali@kernel.org>
- <CAL_JsqLSse=W3TFu=Wc=eEAV4fKDGfsQ6JUvO3KyG_pnGTVg6A@mail.gmail.com>
- <20210415083640.ntg6kv6ayppxldgd@pali>
- <20210415104537.403de52e@thinkpad>
- <CAL_JsqL2gjprb3MDv8KPSpe0CUBFjGajnMbF71DM+F9Yewp2uw@mail.gmail.com>
+        id S236567AbhDQOvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 10:51:42 -0400
+Received: from conuserg-10.nifty.com ([210.131.2.77]:23576 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236287AbhDQOvi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 10:51:38 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id 13HEodoF021728;
+        Sat, 17 Apr 2021 23:50:40 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 13HEodoF021728
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1618671040;
+        bh=wk8ZozLuLgTh8OI9eh8aeLslD6n/gVEC+NMmhcoYbkY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=i3JjVOzNE4u2snfGxtuYrPx+2s6yiHBSSEcodolDoX5WzCVoX52J9hz7VpeML+TYB
+         YFVaT2e1Pz5DvNYBwxzBenYWBDXMnl3jw1//vXH+u7CDpYYLHAh09Va06Wr5zmapHz
+         07oW48KLxZ6RO6egM26w+0IptJqt6Y1Z/fj7p/swTU8MeYlogDfq9tAbtWKXA4h6r8
+         MsBucJhlML+Iuir77RK/B+o64b07h03pZdApehP/ab+YwjXK7EjgsYnNNdYYSU300p
+         aFXpaMwMAcXWwBnOC9ahem5f/BV0FA83MCxUTXQGok6YNAg5aDNolj4EjsfHDYle0H
+         Nv3/LxCP8hIZQ==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] kconfig: remove unused PACKAGE definition
+Date:   Sat, 17 Apr 2021 23:50:36 +0900
+Message-Id: <20210417145037.349822-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL_JsqL2gjprb3MDv8KPSpe0CUBFjGajnMbF71DM+F9Yewp2uw@mail.gmail.com>
-User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 15 April 2021 10:13:17 Rob Herring wrote:
-> On Thu, Apr 15, 2021 at 3:45 AM Marek Behun <marek.behun@nic.cz> wrote:
-> >
-> > On Thu, 15 Apr 2021 10:36:40 +0200
-> > Pali Rohár <pali@kernel.org> wrote:
-> >
-> > > On Tuesday 13 April 2021 13:17:29 Rob Herring wrote:
-> > > > On Mon, Apr 12, 2021 at 7:41 AM Pali Rohár <pali@kernel.org> wrote:
-> > > > >
-> > > > > Since commit 526a76991b7b ("PCI: aardvark: Implement driver 'remove'
-> > > > > function and allow to build it as module") PCIe controller driver for
-> > > > > Armada 37xx can be dynamically loaded and unloaded at runtime. Also driver
-> > > > > allows dynamic binding and unbinding of PCIe controller device.
-> > > > >
-> > > > > Kernel PCI subsystem assigns by default dynamically allocated PCI domain
-> > > > > number (starting from zero) for this PCIe controller every time when device
-> > > > > is bound. So PCI domain changes after every unbind / bind operation.
-> > > >
-> > > > PCI host bridges as a module are relatively new, so seems likely a bug to me.
-> > >
-> > > Why a bug? It is there since 5.10 and it is working.
-> 
-> I mean historically, the PCI subsystem didn't even support host
-> bridges as a module. They weren't even proper drivers and it was all
-> arch specific code. Most of the host bridge drivers are still built-in
-> only. This seems like a small detail that was easily overlooked.
-> unbind is not a well tested path.
+Commit 3b9fa0931dd8 ("[PATCH] Kconfig i18n support") added this code,
+and then commit ("kconfig: drop localization support") removed the
+i18n support entirely.
 
-Ok! Just to note that during my testing I have not spotted any issue.
+Remove the left-over.
 
-> > > > > Alternative way for assigning PCI domain number is to use static allocated
-> > > > > numbers defined in Device Tree. This option has requirement that every PCI
-> > > > > controller in system must have defined PCI bus number in Device Tree.
-> > > >
-> > > > That seems entirely pointless from a DT point of view with a single PCI bridge.
-> > >
-> > > If domain id is not specified in DT then kernel uses counter and assigns
-> > > counter++. So it is not pointless if we want to have stable domain id.
-> >
-> > What Rob is trying to say is that
-> > - the bug is that kernel assigns counter++
-> > - device-tree should not be used to fix problems with how kernel does
-> >   things
-> > - if a device has only one PCIe controller, it is pointless to define
-> >   it's pci-domain. If there were multiple controllers, then it would
-> >   make sense, but there is only one
-> 
-> Yes. I think what we want here is a domain bitmap rather than a
-> counter and we assign the lowest free bit. That could also allow for
-> handling a mixture of fixed domain numbers and dynamically assigned
-> ones.
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-Currently this code is implemented in pci_bus_find_domain_nr() function.
-IIRC domain number is 16bit integer, so plain bitmap would consume 8 kB
-of memory. I'm not sure if it is fine or some other tree-based structure
-for allocated domain numbers is needed.
+ scripts/kconfig/lkc.h | 4 ----
+ 1 file changed, 4 deletions(-)
 
-> You could create scenarios where the numbers change on you, but it
-> wouldn't be any different than say plugging in USB serial adapters.
-> You get the same ttyUSBx device when you re-attach unless there's been
-> other ttyUSBx devices attached/detached.
+diff --git a/scripts/kconfig/lkc.h b/scripts/kconfig/lkc.h
+index 45599c52478d..fa8c010aa683 100644
+--- a/scripts/kconfig/lkc.h
++++ b/scripts/kconfig/lkc.h
+@@ -20,10 +20,6 @@ extern "C" {
+ 
+ #define SRCTREE "srctree"
+ 
+-#ifndef PACKAGE
+-#define PACKAGE "linux"
+-#endif
+-
+ #ifndef CONFIG_
+ #define CONFIG_ "CONFIG_"
+ #endif
+-- 
+2.27.0
 
-This should be fine for most scenarios. Dynamically attaching /
-detaching PCI domain is not such common action...
-
-Will you implement this new feature?
