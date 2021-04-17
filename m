@@ -2,102 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9265E362FDD
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9C7362FDE
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236242AbhDQM2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 08:28:53 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35054 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235901AbhDQM2u (ORCPT
+        id S236249AbhDQMaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 08:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236058AbhDQMav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 08:28:50 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618662503;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0abE3J5vsoXiEgTyesb4PssHvHXbBvKJFFhaFzAtlkg=;
-        b=YWa4DWKSzwHANiXj8IOp7ATpYHy9CzLBvMW3M5kbkCe9mdUzm4XssLiUYd4Nseg45YPlG2
-        +kqtvrSoF7tnf16dUWHk4gZqBqUkrhglzAqnan+rhuMTlewRApMk3po6derfvCbrcp/0qX
-        0mNZBqtdehc7hBMpDmQigRAmwiZDmPXIcmkgITTvppiJlYejKm3WipXo49Bigbab68f869
-        wR6WZhru3JslHnHa2V8L2Kqf01dMGMq6IsFZHzHmERmKKYkVlASKfevynmXJYEaqxee5YY
-        sJBMkeVAjtKYeOq+uGhcnm1rJttreutVp6d1nTfhBhQLSPkkLufbssY81vQQDQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618662503;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0abE3J5vsoXiEgTyesb4PssHvHXbBvKJFFhaFzAtlkg=;
-        b=3v8p3dWRhzejX1WCKGYYEX19kktknh93Ucr6zxO+wAwCnJjFhSvabZ80Ux2frc0IHgBy04
-        osAJ+T91kDE/UtAA==
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
-        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
-        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
-        ak@linux.intel.com, "Paul E. McKenney" <paulmck@kernel.org>,
-        Chris Mason <clm@fb.com>
-Subject: Re: [PATCH v8 clocksource 3/5] clocksource: Check per-CPU clock synchronization when marked unstable
-In-Reply-To: <20210414043602.2812981-3-paulmck@kernel.org>
-References: <20210414043435.GA2812539@paulmck-ThinkPad-P17-Gen-1> <20210414043602.2812981-3-paulmck@kernel.org>
-Date:   Sat, 17 Apr 2021 14:28:22 +0200
-Message-ID: <87v98lrt7d.ffs@nanos.tec.linutronix.de>
+        Sat, 17 Apr 2021 08:30:51 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EBD3C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 05:30:25 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FMsqJ1ckGz9vG3;
+        Sat, 17 Apr 2021 22:30:19 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1618662620;
+        bh=mtQXXNJfragy4YQoBiwVomNkLwmcNxRqSSFA0RO5LCo=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=aCXQ421yZApjtSXo4wDJS5qyT1JaMFSEi8NEckR1sYexHW87ktiqBKTQh9rp4jq4B
+         b3RAJU5OL25nzAG9tJ/ylT8EjLNhIJeahLFUNn5ZaCnS6FES6iHeBq0pk4wPjiYnx6
+         iNwXBy/HK60pJlzELKvX1eyq8QWlGZOMjxAB7XSamDg7JqbFawr9Is+d6i4jNvqKiP
+         n41xrIzhRWrwW5XFQ6oobgw0u66Qz+LouPxrvvuv//RrfLT4aln0SI206UUVgWkTJs
+         /RJ+8l7g6MGSVIxx8L0/odoo8YM041S2FV3bD4zfpnH4Zbl4JaEGK+9LPn0//nSdqH
+         bSJUoxa3H5cGg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>
+Cc:     benh@kernel.crashing.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/pseries: Add shutdown() to vio_driver and vio_bus
+In-Reply-To: <f326def4-0db0-f924-1700-dd7be3154153@linux.ibm.com>
+References: <20210402001325.939668-1-tyreld@linux.ibm.com>
+ <f326def4-0db0-f924-1700-dd7be3154153@linux.ibm.com>
+Date:   Sat, 17 Apr 2021 22:30:14 +1000
+Message-ID: <87im4ldrft.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13 2021 at 21:36, Paul E. McKenney wrote:
-> diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
-> index 1fc0962c89c0..97eeaf164296 100644
-> --- a/arch/x86/kernel/kvmclock.c
-> +++ b/arch/x86/kernel/kvmclock.c
-> @@ -169,7 +169,7 @@ struct clocksource kvm_clock = {
->  	.read	= kvm_clock_get_cycles,
->  	.rating	= 400,
->  	.mask	= CLOCKSOURCE_MASK(64),
-> -	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
-> +	.flags	= CLOCK_SOURCE_IS_CONTINUOUS | CLOCK_SOURCE_VERIFY_PERCPU,
+Tyrel Datwyler <tyreld@linux.ibm.com> writes:
+> On 4/1/21 5:13 PM, Tyrel Datwyler wrote:
+>> Currently, neither the vio_bus or vio_driver structures provide support
+>> for a shutdown() routine.
+>> 
+>> Add support for shutdown() by allowing drivers to provide a
+>> implementation via function pointer in their vio_driver struct and
+>> provide a proper implementation in the driver template for the vio_bus
+>> that calls a vio drivers shutdown() if defined.
+>> 
+>> In the case that no shutdown() is defined by a vio driver and a kexec is
+>> in progress we implement a big hammer that calls remove() to ensure no
+>> further DMA for the devices is possible.
+>> 
+>> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+>> ---
+>
+> Ping... any comments, problems with this approach?
 
-kvm_clock is not marked with CLOCK_SOURCE_MUST_VERIFY, so what's the
-point of adding this here? It's not subject to be monitored by the
-watchdog muck.
+The kexec part seems like a bit of a hack.
 
-> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-> index f70dffc2771f..56289170753c 100644
-> --- a/arch/x86/kernel/tsc.c
-> +++ b/arch/x86/kernel/tsc.c
-> @@ -1151,7 +1151,8 @@ static struct clocksource clocksource_tsc = {
->  	.mask			= CLOCKSOURCE_MASK(64),
->  	.flags			= CLOCK_SOURCE_IS_CONTINUOUS |
->  				  CLOCK_SOURCE_VALID_FOR_HRES |
-> -				  CLOCK_SOURCE_MUST_VERIFY,
-> +				  CLOCK_SOURCE_MUST_VERIFY |
-> +				  CLOCK_SOURCE_VERIFY_PERCPU,
+It also doesn't help for kdump, when none of the shutdown code is run.
 
-While this one is part of the horror show.
+How many drivers do we have? Can we just implement a proper shutdown for
+them?
 
-> +static u64 csnow_mid;
-> +static cpumask_t cpus_ahead;
-> +static cpumask_t cpus_behind;
-> +
-> +static void clocksource_verify_one_cpu(void *csin)
-> +{
-> +	struct clocksource *cs = (struct clocksource *)csin;
-> +
-> +	csnow_mid = cs->read(cs);
-> +}
-> +
-> +static void clocksource_verify_percpu(struct clocksource *cs)
-> +{
-> +	int64_t cs_nsec, cs_nsec_max, cs_nsec_min;
-> +	u64 csnow_begin, csnow_end;
-> +	bool firsttime = 1;
-> +	int testcpu;
-> +	s64 delta;
-> +	int cpu;
-
-        int testcpu, cpu; :)
-
+cheers
