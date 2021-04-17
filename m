@@ -2,93 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDBA336328E
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 00:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 868C3363292
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 00:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237141AbhDQWMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 18:12:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33764 "EHLO
+        id S237106AbhDQWjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 18:39:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231854AbhDQWMg (ORCPT
+        with ESMTP id S235439AbhDQWjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 18:12:36 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE0E2C06174A
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 15:12:07 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id o5so1975488ljc.1
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 15:12:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+YOjTok1ja7/6itKWpyudalV8VLi+Uvt4/y+1cqETJo=;
-        b=FQKwGiOW9jgCKW4PHPBlhmZgxF3YF8NmFeufKyHyndb7jrFHeDS3JL9KNJPkJFoNvE
-         +9FKlJ/CaG594RSCuXcvE3Ci6VcuYJnXmwKXGRbTYaUXLp+qKvyp6Wa+WAqO+9sjDIms
-         TV1RXrT+urloum+8BSf8sCC3MUupKvJUm7CPc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+YOjTok1ja7/6itKWpyudalV8VLi+Uvt4/y+1cqETJo=;
-        b=NjFbokfvrrFbASkJcLIwpGfAJueGu3v61FCbJVebCtDowatZsA1eAJXtDwPG9G7NVR
-         h9Bxl22LrQ74j3jLOrA8C2IJmemh38/blSXCjjAANwFfKNG4c8QwzbKtcB0R0/Sd5Iny
-         8sAbdSjQEQQ88MIo59oiyJSfvmwZB/w11WIu499oSARRMTaoMxIjpOnOZyAa/BgoeRlK
-         yisgXzAUI8kYovXVwr6uC4DnoqW1SdJqWQUZe6NTT2QGVDE/HbBS3omlu00jxrB9NMOS
-         ODX2BOgcVe23yXq9UUHUK2OK1jMDxeq7YAUXSSStzne14cKJDydjxHbwYGmGOtCuLidX
-         peXw==
-X-Gm-Message-State: AOAM531qXB0OJaI+btsJvRLraNFP0TmfFYoiHXlB9wlMUnh5nkfIheqT
-        yDE0BAWjyr492GzIXZJw+okqZrZeKVUs81DF
-X-Google-Smtp-Source: ABdhPJyTZuHdWCP4LOdVE2bo3lzQO3+VBByaSy/+8adpUb+4YYMcUlgeZFH4x8yo8iLMR6G9U8j5aA==
-X-Received: by 2002:a2e:9953:: with SMTP id r19mr6532417ljj.132.1618697526032;
-        Sat, 17 Apr 2021 15:12:06 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id i8sm1383772lfc.115.2021.04.17.15.12.05
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Apr 2021 15:12:05 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id 12so50022633lfq.13
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 15:12:05 -0700 (PDT)
-X-Received: by 2002:ac2:58fc:: with SMTP id v28mr6968301lfo.201.1618697525005;
- Sat, 17 Apr 2021 15:12:05 -0700 (PDT)
+        Sat, 17 Apr 2021 18:39:44 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 626A7C06174A
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 15:39:17 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618699154;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n5sXavjPCFd/ZFOTvM8k2uhVeaJKPcnBNpPVYu832dU=;
+        b=bVojwiVqxwYpf9tnvK95m6gImImm87OqoE+yJ542df9XMqoe/UXqONOgj1Y3rrI8et3VAf
+        2P0sl+YNs6d08q0XDaApiHn5FAavwhvRWLc0TOUx10IU29Pzp2g+XmwYCxZ/SGo9bIZcVD
+        MtWGFqPzwR0hJKzq5GR+rDsi8f49QMklFcyhTr6sj+ZZHKtQ023krpQTw3R7LT2Cjl9SDr
+        RJTF15OTJLwbhfR8h4tqt94wAsisZttwjWfKsAAa+FgryAHHlrmeneblHQzfbGFNgUE058
+        3SEsubUxTXvTevwNqC8gZuyQuJosNf6ba7pfjn/JsOWG2cEjBXc46WRbSr5Mgg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618699154;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n5sXavjPCFd/ZFOTvM8k2uhVeaJKPcnBNpPVYu832dU=;
+        b=+frV6F/7u2pP162MVrjtmLlgQLLCJ2Vi35USbVH/QbHh/V8esJ0adzZWhGNgsCX676QVGt
+        xfb9BJSfrLszIaBA==
+To:     Mike Travis <mike.travis@hpe.com>
+Cc:     Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Steve Wahl <steve.wahl@hpe.com>, x86@kernel.org,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Fix set apic mode from x2apic enabled bit patch
+In-Reply-To: <20210415220626.223955-1-mike.travis@hpe.com>
+References: <20210415220626.223955-1-mike.travis@hpe.com>
+Date:   Sun, 18 Apr 2021 00:39:13 +0200
+Message-ID: <87k0p0sfhq.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210416192413.1514419-1-eric.dumazet@gmail.com>
- <CAHk-=wjbvzCAhAtvG0d81W5o0-KT5PPTHhfJ5ieDFq+bGtgOYg@mail.gmail.com>
- <CAHk-=wgdyusj4Sz6zVOGvD8pNiYmPik3t4-o0TXB9cTUgz_0uw@mail.gmail.com>
- <CAHk-=wjYVZZpqDGH2Q=kMOyOqBhpbt8t8JdEWZHDGrPiV=_ifA@mail.gmail.com>
- <YHskaCSFOE1AYyoP@zeniv-ca.linux.org.uk> <YHtFciNvBWYJ0ku2@zeniv-ca.linux.org.uk>
- <YHtGhqBXhWlUHHRm@zeniv-ca.linux.org.uk>
-In-Reply-To: <YHtGhqBXhWlUHHRm@zeniv-ca.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 17 Apr 2021 15:11:49 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wi+8sz1kjpVnZ_MNbX0YNzGBXTTu4UyiR+1RWrFdbJ7Hw@mail.gmail.com>
-Message-ID: <CAHk-=wi+8sz1kjpVnZ_MNbX0YNzGBXTTu4UyiR+1RWrFdbJ7Hw@mail.gmail.com>
-Subject: Re: [PATCH] x86/uaccess: small optimization in unsafe_copy_to_user()
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "Theodore Ts'o" <tytso@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 1:35 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+Mike!
+
+On Thu, Apr 15 2021 at 17:06, Mike Travis wrote:
+
+I'm slowly getting tired of the fact that every patch coming from you
+fails to comply with the minimal requirements of the documented
+procedures.
+
+$subject: [PATCH] Fix set apic mode from x2apic enabled bit patch
+
+Documentation clearly states, that there has to be a subsystem
+prefix. It's not rocket science to figure it out:
+
+# git log arch/x86/kernel/apic/x2apic_uv_x.c
+
+gives you a pretty good hint that the prefix should be:
+
+ x86/platform/uv:
+
+It's not that hard and it's not optional.
+
+Also what the heck means:
+
+     Fix set apic mode from x2apic enabled bit patch
+
+Again documentation is very clear about what the subject line, aka git
+shortlog of a patch should look like.
+
+This sentence is just word salad and does not give any clue of what this
+is about. Even you wont be able to decode this 3 month from now. Simply
+because it's word salad.
+
+I don't care what kind of standards you have @hpe, but I very much care
+about the standards of the kernel.
+
+> Do not set uv_system_type for hubless UV systems as it tricks the
+> is_uv_system function into thinking it's a UV hubbed system and includes
+> a UV HUB RTC.  This causes UV RTC init to panic on UV hubless systems.
+
+And yet more word salad. Can you please describe the precise technical
+problem and not use metaphors of functions which are thinking?
+
+Aside of that this does not describe the change at all. The change is:
+
+> -		early_set_apic_mode();
+
+but your changelog blurbs about "thinking it's an UV hubbed system".
+
+How the heck can this make sense for someone who is not part of the @hpe
+universe mindset?
+
+> Fixes: 41e2da9b5e67 ("x86/platform/uv: Use x2apic enabled bit as set by BIOS to indicate APIC mode")
 >
-> No, wait - we have non-NULL buf->prev_reclen, so we'll hit
-> with buf->error completely ignored.  Nevermind.
+> [41e2da9b5e67 was accepted into tip x86/platform branch but not yet
+> pulled into the linus tree.]
 
-Yeah, I'm pretty sure I even tested that -EINTR case at one point.
+Truly useful. The only value of that information is that the maintainer
+has to manualy remove it because it's irrelevant for the final commit
+message of the change which ends up on top of that commit in that
+branch. You can stick this into the section below '---' if you think
+it's helpful, but then maintainers and tools can just ignore it.
 
-Of course, it could easily have gotten broken again, so that's not a
-strong argument.
+TBH, it's not helpful at all because tooling already tells us that
+41e2da9b5e67 is not in Linus tree and only queued in tip x86/platform.
 
-That said, the "buf->err" handling has always been very confusing, and
-it would be lovely to get rid of that confusion.
+Commit SHAs are supposed to be unique for a reason...
 
-I don't remember why we did it that way, but I think it's because
-low-level filesystems ended up changing the error that the filldir()
-function returned or something like that.
+> Signed-off-by: Mike Travis <mike.travis@hpe.com>
+> Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
+> Reviewed-by: Dimitri Sivanich <dimitri.sivanich@hpe.com>
 
-         Linus
+The value of these reviewed-by tags is close to zero because they are
+just documenting that the change is ok at the @hpe universe level...
+
+> ---
+>  arch/x86/kernel/apic/x2apic_uv_x.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
+> index 2e99605f9a05..68ef9abc91f7 100644
+> --- a/arch/x86/kernel/apic/x2apic_uv_x.c
+> +++ b/arch/x86/kernel/apic/x2apic_uv_x.c
+> @@ -413,9 +413,8 @@ static int __init uv_set_system_type(char *_oem_id, char *_oem_table_id)
+>  		else
+>  			uv_hubless_system |= 0x8;
+>  
+> -		/* Copy OEM Table ID and set APIC Mode */
+> +		/* Copy OEM Table ID */
+>  		uv_stringify(sizeof(oem_table_id), oem_table_id, _oem_table_id);
+> -		early_set_apic_mode();
+
+So the patch itself tells me more about what's going on than the
+changelog:
+
+  Setting up the APIC mode at this place is wrong.
+
+But it does not tell me WHY. Neither does the changelog because of
+useless word salad...
+
+If you can't come up with something sensible anytime soon before the
+merge window opens then I'm simply going to revert 41e2da9b5e67 and you
+can try again for the next cycle.
+
+Thanks,
+
+        tglx
+
