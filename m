@@ -2,107 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D318362E0F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 08:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78C85362E15
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 08:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230269AbhDQGcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 02:32:09 -0400
-Received: from mailoutvs2.siol.net ([185.57.226.193]:55271 "EHLO mail.siol.net"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229614AbhDQGcI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 02:32:08 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Zimbra) with ESMTP id BF64B523653;
-        Sat, 17 Apr 2021 08:31:40 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at psrvmta12.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta12.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id n-saAgAigrm7; Sat, 17 Apr 2021 08:31:40 +0200 (CEST)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Zimbra) with ESMTPS id 749A95238C1;
-        Sat, 17 Apr 2021 08:31:40 +0200 (CEST)
-Received: from jernej-laptop.localnet (89-212-178-211.dynamic.t-2.net [89.212.178.211])
-        (Authenticated sender: jernej.skrabec@siol.net)
-        by mail.siol.net (Zimbra) with ESMTPA id E0502523653;
-        Sat, 17 Apr 2021 08:31:39 +0200 (CEST)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Neil Armstrong <narmstrong@baylibre.com>
-Cc:     jonas@kwiboo.se, robert.foss@linaro.org,
-        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        hverkuil-cisco@xs4all.nl
-Subject: Re: [PATCH 0/2] drm/bridge: dw-hdmi: disable loading of DW-HDMI CEC sub-driver
-Date:   Sat, 17 Apr 2021 08:31:39 +0200
-Message-ID: <9525152.Q8VVBrNj5Z@jernej-laptop>
-In-Reply-To: <96b9e144-0791-4c19-3e3c-b0e9efb86138@baylibre.com>
-References: <20210416092737.1971876-1-narmstrong@baylibre.com> <YHlfqJIlUh7eytty@pendragon.ideasonboard.com> <96b9e144-0791-4c19-3e3c-b0e9efb86138@baylibre.com>
+        id S230316AbhDQGfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 02:35:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229854AbhDQGfd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 02:35:33 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F98CC061574;
+        Fri, 16 Apr 2021 23:35:07 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id c1so25138578ljd.7;
+        Fri, 16 Apr 2021 23:35:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=p+TZ8j0+H5es+BHvK/OjBPld0E8cxCO9gniyDTsW9R8=;
+        b=hiVtECvw25e8t9YjzDtZabomrYjhXia1cP1fj+94F4tIdnlCdYIP45+DPRVcs55qDU
+         Xm8YdyHPD++PwpeQ8IMk5ZgtsoglSOyjXx0/mqVwTMaKctp0OCc4i2g8P5vy1jHiTT3A
+         F2CpgJXLc7hJhDMTIywL+D3bGRxeuBvutU9XFAJsKHGJw2Y18xLVpksmfoFtYIfmfr26
+         2e8aNF1cpHhj8khuxFYAVkmsYbV7PSgHvHYouR6qIdBZaBN14pHlM/SiwBMnP81/ZOzG
+         Vw/tp6Yo3yV87ZMjnccF6keD1Afl5MFL3Y0QY0DcnhNsYst9tJa+eyU2uf6/zjWJkUjq
+         UalQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=p+TZ8j0+H5es+BHvK/OjBPld0E8cxCO9gniyDTsW9R8=;
+        b=jRumZsREWANLsCwl5edLaYl5zJs226vuLSGZxYfsy96wTjqEsQGkDj4qINwbTUu0XN
+         DgED3iPwrp7pdzCuB1XkH8pXvlX73wuyrxdODARe1zIXESalMQYZQ0M/YtQrkIlEvtwL
+         1gjH63UR1xFdAF2eS3L0LRERBIKakkQcdR83tOSjRYIWwlQR7KjwYNUSSRjLMso/GJKb
+         pLKLKmB2Jly6EnHkLdCfXWHA2B/R5pa7xdlHIZMW5+vIW9Y4X1ZbmhSQMjbERCHJqd8j
+         YvM6pPHEoiKoOGfoGua/V6rpsXo3v8iJlizxcXqRG7OnvGBAemvqlVkt65o99myinFo8
+         UK1Q==
+X-Gm-Message-State: AOAM531jyH7x4+PuNsqc3S+H/P1k9VC2yQqG13BcF4Pd3FOUr9STwuno
+        cDdpBpD3/1BeoP5FNIxWV2h9MdrpVmUuBCKLZoz5+/GkQys=
+X-Google-Smtp-Source: ABdhPJzkNrQJ5fEYR93BzLNQHyKWYr9IDXgS8crzj/TovLA91Qqreqc2Th9w81FfmRITCNRPvKzwOtmzz/BcIO1Gm6s=
+X-Received: by 2002:a2e:90d2:: with SMTP id o18mr4652065ljg.391.1618641305499;
+ Fri, 16 Apr 2021 23:35:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <1618197759-128087-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1618197759-128087-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Julian Calaby <julian.calaby@gmail.com>
+Date:   Sat, 17 Apr 2021 16:34:54 +1000
+Message-ID: <CAGRGNgVucQWcGiUnWtsC=oRDXrWkQ13CFojOcM7xU+4TukUoOA@mail.gmail.com>
+Subject: Re: [PATCH] scsi: a100u2w: remove useless variable
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     "James E. J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Linux SCSI List <linux-scsi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CC Hans Verkuil
+Hi Jiapeng,
 
-Dne petek, 16. april 2021 ob 13:38:59 CEST je Neil Armstrong napisal(a):
-> On 16/04/2021 11:58, Laurent Pinchart wrote:
-> > Hi Neil,
-> > 
-> > On Fri, Apr 16, 2021 at 11:27:35AM +0200, Neil Armstrong wrote:
-> >> This adds DW-HDMI driver a glue option to disable loading of the CEC
-> >> sub-driver.
-> >> 
-> >> On some SoCs, the CEC functionality is enabled in the IP config bits, but
-> >> the CEC bus is non-functional like on Amlogic SoCs, where the CEC config
-> >> bit is set but the DW-HDMI CEC signal is not connected to a physical
-> >> pin, leading to some confusion when the DW-HDMI CEC controller can't
-> >> communicate on the bus.> 
-> > If we can't trust the CEC config bit, would it be better to not use it
-> > at all, and instead let each platform glue logic tell whether to enable
-> > CEC or not ?
-> 
-> Actually, the CEC config bit is right, the HW exists and should be
-> functional, but this bit doesn't tell if the CEC signal is connected to
-> something.
+On Mon, Apr 12, 2021 at 1:23 PM Jiapeng Chong
+<jiapeng.chong@linux.alibaba.com> wrote:
+>
+> Fix the following gcc warning:
+>
+> drivers/scsi/a100u2w.c:1092:8: warning: variable =E2=80=98bios_phys=E2=80=
+=99 set but not
+> used [-Wunused-but-set-variable].
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/scsi/a100u2w.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/scsi/a100u2w.c b/drivers/scsi/a100u2w.c
+> index 66c5143..855a3fe 100644
+> --- a/drivers/scsi/a100u2w.c
+> +++ b/drivers/scsi/a100u2w.c
+> @@ -1089,7 +1089,6 @@ static int inia100_probe_one(struct pci_dev *pdev,
+>         int error =3D -ENODEV;
+>         u32 sz;
+>         unsigned long biosaddr;
+> -       char *bios_phys;
+>
+>         if (pci_enable_device(pdev))
+>                 goto out;
+> @@ -1141,7 +1140,7 @@ static int inia100_probe_one(struct pci_dev *pdev,
+>
+>         biosaddr =3D host->BIOScfg;
+>         biosaddr =3D (biosaddr << 4);
+> -       bios_phys =3D phys_to_virt(biosaddr);
+> +       phys_to_virt(biosaddr);
 
-I'm in favour of Neil's solution. Currently we have only one exception.
+Does phys_to_virt() have side effects? If it doesn't, there's a lot
+more stuff that can get deleted here.
 
-> 
-> This lies in the IP integration, like other bits under the
-> "amlogic,meson-*-dw-hdmi" umbrella.
-> 
-> The first attempt was by Hans using DT, but adding a property in DT for a
-> vendor specific compatible doesn't make sense. Another idea would be to
-> describe the CEC signal endpoint like we do for video signal, but I think
-> this is out of scope and this solution is much simpler and straightforward,
-> and it's more an exception than a general use case to solve.
+Thanks,
 
-Note that we still need DT property for disabling CEC. I have one Allwinner H3 
-board where board designer decided to use GPIO CEC implementation instead of 
-DW HDMI one (vendor Linux doesn't implement DW HDMI CEC driver). Other H3 
-boards happily use DW HDMI CEC.
+--=20
+Julian Calaby
 
-Best regards,
-Jernej
-
-> 
-> Neil
-> 
-> >> Jernej Skrabec (1):
-> >>   drm/bridge/synopsys: dw-hdmi: Add an option to suppress loading CEC
-> >>   
-> >>     driver
-> >> 
-> >> Neil Armstrong (1):
-> >>   drm/meson: dw-hdmi: disable DW-HDMI CEC sub-driver
-> >>  
-> >>  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 2 +-
-> >>  drivers/gpu/drm/meson/meson_dw_hdmi.c     | 1 +
-> >>  include/drm/bridge/dw_hdmi.h              | 2 ++
-> >>  3 files changed, 4 insertions(+), 1 deletion(-)
-
-
-
-
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
