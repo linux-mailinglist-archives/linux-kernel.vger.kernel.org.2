@@ -2,90 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CA8362C35
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 02:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F892362C3D
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 02:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235169AbhDQADG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 20:03:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235056AbhDQADD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 20:03:03 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D003C06175F;
-        Fri, 16 Apr 2021 17:02:34 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618617752;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xAJKO8dWaz92ciG9zIlL+Ikr/RFMxTd4id9MFoOL6bc=;
-        b=BQXVF4t3ExWyQ3Vf3r8aYeZLNQy1SwgLH0Qp0MjoSfMVfT5+SpmyUjHZjdVpQS8uZtF5RJ
-        PofMRXYf+QoSfDvGPhJl1lBkA0hJuJeh4X2lGN1kg3+0nqRzmgKfwDB0t5yJE2lpHEwx8k
-        JK8XKGlUR/FwioDmCGTl1CUEsxt6q0cO91otV03ZSsL8kl24X8+cEfk+trbSRoYhCsKJPo
-        VZp9sDn5I6xhCoRHsYEKDtenfpWF8F1+fFEJ7OwVIH06CF3USV1kd4j65CdKzKMfT7Nnzu
-        J3H8w1vaWLadlqoHETk2/q74+1r9st7F6FuvYG91kX+xy3R5Wikgl3RQXLE91Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618617752;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xAJKO8dWaz92ciG9zIlL+Ikr/RFMxTd4id9MFoOL6bc=;
-        b=IRiiJJW6d+3NSThZL1todwLecniMG+DONP2KvG/Z9I42DlVB97mhnAyx4zeCk7jQHWtZLK
-        +Rzih2iiyKn2vQBw==
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>, x86@kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 06/15] x86: Avoid CFI jump tables in IDT and entry points
-In-Reply-To: <202104161642.B72BD68@keescook>
-References: <20210416203844.3803177-1-samitolvanen@google.com> <20210416203844.3803177-7-samitolvanen@google.com> <87im4luaq7.ffs@nanos.tec.linutronix.de> <202104161642.B72BD68@keescook>
-Date:   Sat, 17 Apr 2021 02:02:31 +0200
-Message-ID: <87czutu6aw.ffs@nanos.tec.linutronix.de>
+        id S234761AbhDQAGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 20:06:18 -0400
+Received: from mout.gmx.net ([212.227.17.22]:37635 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229719AbhDQAGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 20:06:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1618617928;
+        bh=KjFgAhHrkpNz9EPaCLaTNNTqXBQS/P/3r7U4JKhYPqI=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=Ql1z4G/QUAp0bQJ60lrDbszRKAfdauHD7jjObsNfAfPwaeSRScQS+XiwnZ5asucfs
+         jJGL16gxGIIyEri8M3w/2Gfuvjh+wKMvPqS2EF1c3gBjAHiYDlpT/BFo82rvVHKD5y
+         5y2ORCbMsmPOQfNngdhBlaaMN+OIebSrVWSZ9fb8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.191.218.101]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mlw3X-1lxmTj0Jox-00iz88; Sat, 17
+ Apr 2021 02:05:28 +0200
+Message-ID: <d725b19b4c02273eaab38a10853fa6fb6d5bc76c.camel@gmx.de>
+Subject: Re: [patch] x86/crash: fix crash_setup_memmap_entries()
+ out-of-bounds access
+From:   Mike Galbraith <efault@gmx.de>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, DaveYoung <dyoung@redhat.com>,
+        Baoquan He <bhe@redhat.com>, kexec@lists.infradead.org,
+        x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>
+Date:   Sat, 17 Apr 2021 02:05:27 +0200
+In-Reply-To: <87sg3puco5.ffs@nanos.tec.linutronix.de>
+References: <9efaad2ba042b8791cbe8c3e7cad491fe05e06eb.camel@gmx.de>
+         <20210416110701.GA3835@dhcp-128-65.nay.redhat.com>
+         <063a63ddea914ac654cbe9a1d1d6c76986af7882.camel@gmx.de>
+         <20210416114708.GB79779@dhcp-128-65.nay.redhat.com>
+         <725fa3dc1da2737f0f6188a1a9701bead257ea9d.camel@gmx.de>
+         <20210416121636.GA22348@zn.tnic>
+         <a853ea8535151fd8b267d8e68a45b33748978d8a.camel@gmx.de>
+         <20210416144459.GB22348@zn.tnic>
+         <7826c19ecd583700f56d2db33360e8032e812ecf.camel@gmx.de>
+         <87sg3puco5.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:sBg6Es7fLrlg9PB225h4Bij43J9yGqJTutgGTFbK1oHimitSIms
+ kqGJNFI5Xizlrs5Xw/veeWOQusUlhLejKVQ3rasDMJYyYkDUi2GNpA1ajaYqdR0R4dbA4rU
+ JOUqQZ9EC+9ECXpqg0AxuDaKAeQulEjLeJ7kPhQH3ENh5YXT0deedSfGwifFtTiGtwbJZ+K
+ 0Pfq4QXiW8wYH9FcdVu3w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:bevRDzDpV+s=:8YKDRaa9+WHmHpFjWv6bU+
+ GwgwW3qowiu0ds258hRIF6wWP/1fsaUArHxBSzr6G2uxpUQGQTWUYDlvg4nxlxi6UEQrTBVD2
+ x5BWLJpd5xJfo4C52HVBzoBpWOquMhjcWjmP1E5LwEB5t1S3Lox/cAgqEK+nrVdry+qiayOcX
+ /HhWyLLbVuqAqQqDRH+hF6/0xDpmAwEWPf/WXmnktcbAH1LOm1wFYua0VKm/AhiNvfzDU9iDe
+ 7L5wHkPnTvM53kN79k0SGeJFGpxcUs5gJByk/vf4OW3U3h5pbCebGBOTRjmDK8qtlK3W2+OdT
+ rW31KMc+602u93wuBIVv/K0x8dDrBiSrkdAD8qk9HjmU5AWV2a6TRpH4S9NzOieADRcZaYOQc
+ Yxj/Lr6qcXAZg93S3E6h7M1GBgFxI5Mrt2pVV/Q8kH3KNfLyE8GTGQOAU/f7H2qvsOcvJLazu
+ +bp4IXEuiXVYq3mx/uyAJ7yq/o4YeLyAfRySytMhFZKjpnjtZ0uP+ip0PuAzqvnoMJMvqaFW/
+ PsfsVeFTErdR41FcfLbnV33rBNb25ahuY6XSTl8vD1J2KLLiMGuvm8e+HtJsZoeijM5olPNHq
+ aVnCKxgrRY6ea8GFXo1icw2M5N5KknDSBRZiVZVcVi5j3cPlt5SVy3kdzsSSXu1Qo4sTecpXC
+ GDU1+OyGexd1t6EgV8RPEqJUvHBx4nQkz8kHnXnSySulP5uG8Va1UnwAYlHdKK2Wgd+ty1AOb
+ 1K7T3M4S3rR/YKESDULIPFYv1d/2Vk5hZeAhUTYZ7s7qfT1gfAHLwv5OCiSCwaOLWA6HRsFJs
+ WcDQmKA4X95adZBA2XucyOGtimgKxS+0g2kTH6njM5weRtAX6MwfemcxlQUXnY6yRbBtMWaTs
+ VYkrEnfo5C6IndmBBi9tqdXbnggfkZ3yAbhxjE3k/Y1kSMajb5AMfLiMQnmlfz7dL60u7MGVa
+ yVeurRp9Pa9hrHjCe2jfK1U93igQ09tT3c3VnY8VtxL4msg8L4kFyrM09dCGCBA/p3gh6aaOs
+ GQhlzTTru+VMLLAKsah+JLeFW6kHr67jhEu1d4I+2aZvWC3WQodOeP3GfPWOYCcWzQC60KEzc
+ KUdCYvbq6aO1jVSedb6WBFUEVfFm3C/S8UCRSUiYuJARRGwDe0xaZ2Vb/iPN29FHLShkaUHA2
+ KGTuYaC7f95gi2AjzLyrQVUbmzBpKFRrYr8BJcPoFpdmJAu4sHuTAOIxulZ8tbRsCoFt4=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16 2021 at 16:56, Kees Cook wrote:
-> On Sat, Apr 17, 2021 at 12:26:56AM +0200, Thomas Gleixner wrote:
->> Where is the analysis why excluding 
->> 
->> > +CFLAGS_REMOVE_idt.o		:= $(CC_FLAGS_CFI)
->> > +CFLAGS_REMOVE_paravirt.o	:= $(CC_FLAGS_CFI)
->> 
->> all of idt.c and paravirt.c is correct and how that is going to be
->> correct in the future?
->> 
->> These files are excluded from CFI, so I can add whatever I want to them
->> and circumvent the purpose of CFI, right?
->> 
->> Brilliant plan that. But I know, sekurity ...
+On Fri, 2021-04-16 at 23:44 +0200, Thomas Gleixner wrote:
 >
-> *sigh* we're on the same side. :P I will choose to understand your
-> comments here as:
->
-> "How will enforcement of CFI policy be correctly maintained here if
-> the justification for disabling it for whole compilation units is not
-> clearly understandable by other developers not familiar with the nuances
-> of its application?"
+> Can all of you involved stop this sandpit fight and do something useful
+> to fix that obvious bug already?
 
-Plus, if there is a justification for disabling it for a whole
-compilation unit:
+?? We're not fighting afaik.  Boris hated my changelog enough to offer
+to write a better one, and I'm fine with that.  It's a seven year old
+*latent* buglet of microscopic proportions, hardly a pressing issue.
 
- Where is the tooling which makes sure that this compilation unit is not
- later on filled with code which should be subject to CFI?
-
-Thanks,
-
-        tglx
-
+	-Mike
 
