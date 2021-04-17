@@ -2,109 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78C85362E15
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 08:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B077E362E1F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 08:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230316AbhDQGfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 02:35:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbhDQGfd (ORCPT
+        id S230345AbhDQGrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 02:47:40 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:57882 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229629AbhDQGrj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 02:35:33 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F98CC061574;
-        Fri, 16 Apr 2021 23:35:07 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id c1so25138578ljd.7;
-        Fri, 16 Apr 2021 23:35:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=p+TZ8j0+H5es+BHvK/OjBPld0E8cxCO9gniyDTsW9R8=;
-        b=hiVtECvw25e8t9YjzDtZabomrYjhXia1cP1fj+94F4tIdnlCdYIP45+DPRVcs55qDU
-         Xm8YdyHPD++PwpeQ8IMk5ZgtsoglSOyjXx0/mqVwTMaKctp0OCc4i2g8P5vy1jHiTT3A
-         F2CpgJXLc7hJhDMTIywL+D3bGRxeuBvutU9XFAJsKHGJw2Y18xLVpksmfoFtYIfmfr26
-         2e8aNF1cpHhj8khuxFYAVkmsYbV7PSgHvHYouR6qIdBZaBN14pHlM/SiwBMnP81/ZOzG
-         Vw/tp6Yo3yV87ZMjnccF6keD1Afl5MFL3Y0QY0DcnhNsYst9tJa+eyU2uf6/zjWJkUjq
-         UalQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=p+TZ8j0+H5es+BHvK/OjBPld0E8cxCO9gniyDTsW9R8=;
-        b=jRumZsREWANLsCwl5edLaYl5zJs226vuLSGZxYfsy96wTjqEsQGkDj4qINwbTUu0XN
-         DgED3iPwrp7pdzCuB1XkH8pXvlX73wuyrxdODARe1zIXESalMQYZQ0M/YtQrkIlEvtwL
-         1gjH63UR1xFdAF2eS3L0LRERBIKakkQcdR83tOSjRYIWwlQR7KjwYNUSSRjLMso/GJKb
-         pLKLKmB2Jly6EnHkLdCfXWHA2B/R5pa7xdlHIZMW5+vIW9Y4X1ZbmhSQMjbERCHJqd8j
-         YvM6pPHEoiKoOGfoGua/V6rpsXo3v8iJlizxcXqRG7OnvGBAemvqlVkt65o99myinFo8
-         UK1Q==
-X-Gm-Message-State: AOAM531jyH7x4+PuNsqc3S+H/P1k9VC2yQqG13BcF4Pd3FOUr9STwuno
-        cDdpBpD3/1BeoP5FNIxWV2h9MdrpVmUuBCKLZoz5+/GkQys=
-X-Google-Smtp-Source: ABdhPJzkNrQJ5fEYR93BzLNQHyKWYr9IDXgS8crzj/TovLA91Qqreqc2Th9w81FfmRITCNRPvKzwOtmzz/BcIO1Gm6s=
-X-Received: by 2002:a2e:90d2:: with SMTP id o18mr4652065ljg.391.1618641305499;
- Fri, 16 Apr 2021 23:35:05 -0700 (PDT)
+        Sat, 17 Apr 2021 02:47:39 -0400
+X-UUID: 2eee8d440e83429a8258b4b7ca98f808-20210417
+X-UUID: 2eee8d440e83429a8258b4b7ca98f808-20210417
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <qii.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 2077237746; Sat, 17 Apr 2021 14:47:10 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sat, 17 Apr 2021 14:47:08 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 17 Apr 2021 14:47:08 +0800
+From:   Qii Wang <qii.wang@mediatek.com>
+To:     <wsa@the-dreams.de>
+CC:     <matthias.bgg@gmail.com>, <linux-i2c@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
+        <qii.wang@mediatek.com>
+Subject: [PATCH 0/3] Add some fix patches
+Date:   Sat, 17 Apr 2021 14:46:49 +0800
+Message-ID: <1618642012-10444-1-git-send-email-qii.wang@mediatek.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-References: <1618197759-128087-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1618197759-128087-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Julian Calaby <julian.calaby@gmail.com>
-Date:   Sat, 17 Apr 2021 16:34:54 +1000
-Message-ID: <CAGRGNgVucQWcGiUnWtsC=oRDXrWkQ13CFojOcM7xU+4TukUoOA@mail.gmail.com>
-Subject: Re: [PATCH] scsi: a100u2w: remove useless variable
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     "James E. J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Linux SCSI List <linux-scsi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiapeng,
+This series are based on 5.12-rc2 and we provide three i2c patches
+to fix some historical issues.
 
-On Mon, Apr 12, 2021 at 1:23 PM Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
->
-> Fix the following gcc warning:
->
-> drivers/scsi/a100u2w.c:1092:8: warning: variable =E2=80=98bios_phys=E2=80=
-=99 set but not
-> used [-Wunused-but-set-variable].
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  drivers/scsi/a100u2w.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/scsi/a100u2w.c b/drivers/scsi/a100u2w.c
-> index 66c5143..855a3fe 100644
-> --- a/drivers/scsi/a100u2w.c
-> +++ b/drivers/scsi/a100u2w.c
-> @@ -1089,7 +1089,6 @@ static int inia100_probe_one(struct pci_dev *pdev,
->         int error =3D -ENODEV;
->         u32 sz;
->         unsigned long biosaddr;
-> -       char *bios_phys;
->
->         if (pci_enable_device(pdev))
->                 goto out;
-> @@ -1141,7 +1140,7 @@ static int inia100_probe_one(struct pci_dev *pdev,
->
->         biosaddr =3D host->BIOScfg;
->         biosaddr =3D (biosaddr << 4);
-> -       bios_phys =3D phys_to_virt(biosaddr);
-> +       phys_to_virt(biosaddr);
+Qii Wang (3):
+  i2c: mediatek: Fix send master code at more than 1MHz
+  i2c: mediatek: Fix wrong dma sync flag
+  i2c: mediatek: Use scl_int_delay_ns to compensate clock-stretching
 
-Does phys_to_virt() have side effects? If it doesn't, there's a lot
-more stuff that can get deleted here.
+ drivers/i2c/busses/i2c-mt65xx.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-Thanks,
-
---=20
-Julian Calaby
-
-Email: julian.calaby@gmail.com
-Profile: http://www.google.com/profiles/julian.calaby/
+-- 
+1.9.1
