@@ -2,78 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB983632B4
+	by mail.lfdr.de (Postfix) with ESMTP id BB9213632B5
 	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 01:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbhDQXwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 19:52:42 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:60585 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230216AbhDQXwl (ORCPT
+        id S235984AbhDQXxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 19:53:34 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37532 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230031AbhDQXxd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 19:52:41 -0400
-X-Originating-IP: 90.65.108.55
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 61FAB240002;
-        Sat, 17 Apr 2021 23:52:12 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] imx-sc: remove .read_alarm
-Date:   Sun, 18 Apr 2021 01:52:05 +0200
-Message-Id: <20210417235205.994119-1-alexandre.belloni@bootlin.com>
-X-Mailer: git-send-email 2.30.2
+        Sat, 17 Apr 2021 19:53:33 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618703585;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=C7Maz4mAaNbdh6Ve2gjfbQ91hhlq7K86k/cKBnBKj+o=;
+        b=JL1VKzqbrIa3SYfPGHkP301KVkKx9iseYHaE147CV1T99SWZRu9M2xrlejpo+7+id7X6hE
+        xU994hSS7pS+5vaHzabhxnBSzi7WeTDUgvKifckC5vOh8gVZ8cHvo/xkx6hhDDfUnHcl5S
+        bm3TQp5BrtEExphqWcvcHiWnyyRl9Le5qxGPwy5mjNNd5obEbatAvU9AwHi/jlipgGFl7O
+        DvEYZ3870Mp6klLWpcw80tcGKJgS+tZYC0wSdbhj4o83cmf4bGeTWZfhgskZQkUx8SfxOa
+        MLWQzOuIDEZCdKl9d8A8RpkVZMF2XmSNjeE2j+G9kEKivmnWSa498TktT31zKw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618703585;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=C7Maz4mAaNbdh6Ve2gjfbQ91hhlq7K86k/cKBnBKj+o=;
+        b=2k5HzHcHvjwxNHzQGyVxfekEzoHigrWN6JBN2/crbtZzWYKhTbil2dKtjrfLjpP8XiVd6Y
+        ShR7AaM9h8O6iEBA==
+To:     Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        David Laight <David.Laight@aculab.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH 05/15] x86: Implement function_nocfi
+In-Reply-To: <CALCETrWUS52tzLNiWL5sAVVB5-ko1EW73-TEiO=eZ5jF_QyGPQ@mail.gmail.com>
+References: <20210416203844.3803177-1-samitolvanen@google.com> <20210416203844.3803177-6-samitolvanen@google.com> <20210416211855.GD22348@zn.tnic> <CABCJKud8TvzhcjHCpsrtCJ4B50ZUfaL48F42EhZ2zWKLteAc0Q@mail.gmail.com> <20210416220251.GE22348@zn.tnic> <CALCETrVTtKqD6fonUmT_qr0HJ0X9TWzLGq-wpm+A7XKyjn3W5g@mail.gmail.com> <202104161519.1D37B6D26@keescook> <CALCETrV6WYx7dt56aCuUYsrrFya==zYR+p-YZnaATptnaO7w2A@mail.gmail.com> <202104161601.CFB2CCF84F@keescook> <CALCETrWUS52tzLNiWL5sAVVB5-ko1EW73-TEiO=eZ5jF_QyGPQ@mail.gmail.com>
+Date:   Sun, 18 Apr 2021 01:53:05 +0200
+Message-ID: <877dl0sc2m.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RTC core properly handles RTC without .read_alarm and doesn't use it to
-set alarms. .read_alarm can be safely dropped.
+On Sat, Apr 17 2021 at 16:19, Andy Lutomirski wrote:
+> On Fri, Apr 16, 2021 at 4:40 PM Kees Cook <keescook@chromium.org> wrote:
+>> Okay, you're saying you want __builtin_gimme_body_p() to be a constant
+>> expression for the compiler, not inline asm?
+>
+> Yes.
+>
+> I admit that, in the trivial case where the asm code is *not* a
+> C-ABI-compliant function, giving a type that doesn't fool the compiler
+> into thinking that it might be is probably the best fix.  Maybe we
+> should standardize something, e.g.:
+>
+> struct raw_symbol;  /* not defined anywhere */
+> #define DECLARE_RAW_SYMBOL(x) struct raw_symbol x[]
+>
+> and then we write this:
+>
+> DECLARE_RAW_SYMBOL(entry_SYSCALL_64);
+>
+> wrmsrl(..., (unsigned long)entry_SYSCALL_64);
+>
+> It would be a bit nifty if we didn't need a forward declaration, but
+> I'm not immediately seeing a way to do this without hacks that we'll
+> probably regret;
+>
+> But this doesn't help the case in which the symbol is an actual
+> C-callable function and we want to be able to call it, too.
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
----
- drivers/rtc/rtc-imx-sc.c | 11 -----------
- 1 file changed, 11 deletions(-)
+The right way to solve this is that the compiler provides a builtin
 
-diff --git a/drivers/rtc/rtc-imx-sc.c b/drivers/rtc/rtc-imx-sc.c
-index cc9fbab49999..814d516645e2 100644
---- a/drivers/rtc/rtc-imx-sc.c
-+++ b/drivers/rtc/rtc-imx-sc.c
-@@ -80,16 +80,6 @@ static int imx_sc_rtc_alarm_irq_enable(struct device *dev, unsigned int enable)
- 	return imx_scu_irq_group_enable(SC_IRQ_GROUP_RTC, SC_IRQ_RTC, enable);
- }
- 
--static int imx_sc_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alrm)
--{
--	/*
--	 * SCU firmware does NOT provide read alarm API, but .read_alarm
--	 * callback is required by RTC framework to support alarm function,
--	 * so just return here.
--	 */
--	return 0;
--}
--
- static int imx_sc_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
- {
- 	struct imx_sc_msg_timer_rtc_set_alarm msg;
-@@ -127,7 +117,6 @@ static int imx_sc_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
- static const struct rtc_class_ops imx_sc_rtc_ops = {
- 	.read_time = imx_sc_rtc_read_time,
- 	.set_time = imx_sc_rtc_set_time,
--	.read_alarm = imx_sc_rtc_read_alarm,
- 	.set_alarm = imx_sc_rtc_set_alarm,
- 	.alarm_irq_enable = imx_sc_rtc_alarm_irq_enable,
- };
--- 
-2.30.2
+ function_nocfi() +/- the naming bikeshed
 
+which works for
+
+      foo = function_nocfi(bar);
+
+and
+
+static unsigned long foo[] = {
+       function_nocfi(bar1),
+       function_nocfi(bar2),
+};
+
+which are pretty much the only possible 2 usecases. If the compiler
+wants to have function_nocfi_in_code() and function_nocfi_const()
+because it can't figure it out on it's own, then I can live with that,
+but that's still several orders of magnitudes better than having to work
+around it by whatever nasty macro/struct magic.
+
+I don't care about the slightly more unreadable code, but if that
+builtin has a descriptive name, then it's even useful for documentary
+purposes. And it can be easily grepped for which makes it subject to
+static code analysers which can help to detect abuse.
+
+Anything which requires to come up with half baken constructs to work
+around the shortcomings of the compiler are wrong to begin with.
+
+Thanks,
+
+        tglx
