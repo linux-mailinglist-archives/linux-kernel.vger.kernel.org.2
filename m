@@ -2,528 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70501362E3F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 09:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E864362E40
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 09:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbhDQHPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 03:15:21 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:6754 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229631AbhDQHPU (ORCPT
+        id S230461AbhDQHPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 03:15:39 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:43874 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229854AbhDQHPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 03:15:20 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13H74Ue0067913;
-        Sat, 17 Apr 2021 03:14:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=rJDZi1uJX1GW0A5Dv58jDIJGluca3j+lg90zVEyu5G0=;
- b=ZJSF6LIUXkvMbCvJL91VNdk3uWyRtXWvBahczJZtiK7HzSq+8hUjTEb3gq6UTjhMAAN8
- KPlT7+blW/rGw1vjSJE63MAVRxiDbCA8Aa8DotGQ4+ZMij/SAYiYZJUuVshDhaHzM8Wx
- BuxR1acVWYs+1hL6h9epu7m6T2s6zHFtRFwd79PMNHv21GKCAhWLveNCQjKDIApZnqzb
- 8w3JFNpd7FK4tYQYNznB/pSk1pXJ/4BYNiRO+1YUlkiu0a1JefmvUG1O33Inpy0Q5Xws
- OWsDC/QbOf2WxqBGYXKS82roZ+83ORFthl+HUf9HoTdAXx0CuflpGw927Q3/EQecy8oB rg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37y7tec23s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 17 Apr 2021 03:14:46 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13H75xcH071024;
-        Sat, 17 Apr 2021 03:14:46 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37y7tec22t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 17 Apr 2021 03:14:46 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13H7D5mv028051;
-        Sat, 17 Apr 2021 07:14:44 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma02fra.de.ibm.com with ESMTP id 37yqa881gv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 17 Apr 2021 07:14:43 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13H7EJWg36962632
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 17 Apr 2021 07:14:19 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7C8D4A4051;
-        Sat, 17 Apr 2021 07:14:41 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6BC5FA4057;
-        Sat, 17 Apr 2021 07:14:31 +0000 (GMT)
-Received: from [9.199.53.39] (unknown [9.199.53.39])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sat, 17 Apr 2021 07:14:31 +0000 (GMT)
-Subject: Re: [PATCH v3 0/6] percpu: partial chunk depopulation
-To:     Dennis Zhou <dennis@kernel.org>
-Cc:     Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
+        Sat, 17 Apr 2021 03:15:35 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13H7A01X115870;
+        Sat, 17 Apr 2021 07:14:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=Yu8YYjqvKYSxUTWB7cXiGOpExHEyBoNer2abnR5NU/g=;
+ b=SXVAHtnRTUeqkoOS0abSPuAymhDFaSfKlfau/mry4bQl53RWv4hr1hf/HkgD5zO+fuGs
+ 20nvGhI4q3kIYJyN0GRrl/fyu0ozNoDKr8SGztgrYwTkxXzFw8zBud4kXUuGZYASuOk+
+ L0dNQKFk3cUniCpzn/ABaChTUz2NLE2lERI9yKpFAarZfoG5SlSlefpkFNqJRjVS/r8n
+ S5ntKNlaXwlv1LUrP1qSYcDt48buS2++bK22U3J6i41HJbLvNU3OeufZIXkbZCtQUz4U
+ XWIMCzAmUi5PvZ0qelV1Q2ccf3pjep/j3twWd03xGPzwM4F6bL7vk9+tVVK7sRNj/yi9 qQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 37yq3rr5gd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 17 Apr 2021 07:14:37 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13H7AZhQ051109;
+        Sat, 17 Apr 2021 07:14:37 GMT
+Received: from nam04-bn3-obe.outbound.protection.outlook.com (mail-bn3nam04lp2054.outbound.protection.outlook.com [104.47.46.54])
+        by userp3030.oracle.com with ESMTP id 37ymssucek-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 17 Apr 2021 07:14:37 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Mj3Sdpiq/x1SRrBWy9/V60lpF+aXVyrF7Kl2CGPlIx6KU6UQzdCkzZ140WjknNd01tDGHCvrLMHyQ2C4VPERmHSc8pEDICOUr36H1p/uhQ1zRh0quiQBOjaPuOa1GZrAbqCxLG7k1lDLF3DnZKFPSpkJ601iyTfQKTgX7G/VIF9hs68xQB/woXjS/C/3cz1ATkMGFAcSaQY2m4s/tLNdazZ3HpRqW3T3A7qwNpT35qNku56CP8zRN7JN1/+DKqOAxOJP9kIXz0zfn7jwbJmZC5Xp9Vie7HAboDUyGkG2crNIRQsGtNKBNdpgflHWq3W7EKmzNR29JB6eyYX9lvclUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Yu8YYjqvKYSxUTWB7cXiGOpExHEyBoNer2abnR5NU/g=;
+ b=nX/5jAbEK5wq4Uy6PBwA+5gkPQOd7in4kHhOicG1ZuDLbbZ26rMw4liI40H+tUpRf3rrpt0/xnNcDKjQ0UYc+FHWjoq/GxBIE8Y9wn1AO1ohELxNId/7zZ2lvIwL7Lcwp8J9HypdCdh2EPUhWuc3xljM1BEfejPJ7E0F7AXyINFXivwOqes3pIC0/clV+GgpOd3OG8zLfKnwyvF7Fe59Hof3h+sb4Mo5bbX7xipDw94ski4jyMOLG1oZ01l7trJAW+Et0qLmngzNM09OGv3N9nHherTJ9mSDFZJ81TOicmLjPCHRNxaOMnyZzFvhm6oA9iDne0aFAZzCeSlNOz6ejw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Yu8YYjqvKYSxUTWB7cXiGOpExHEyBoNer2abnR5NU/g=;
+ b=mE7SyCx/O5Ej0phlq9ltvPTXooDfenEHrOylH7iR+zBMwdx2X5x0e3ZXZJqdK6aXJBWpGsqLbDotPv9xB+WtgnNcsqxXCvFV+EEYq1pd+pimP8E/U/bLVXm2lWJfw7dSdV5Ww0ntifJXH4qTCLAdIk3BTRc5nge4lRUQp402R/8=
+Received: from CY4PR1001MB2357.namprd10.prod.outlook.com
+ (2603:10b6:910:42::14) by CY4PR10MB1895.namprd10.prod.outlook.com
+ (2603:10b6:903:123::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Sat, 17 Apr
+ 2021 07:14:34 +0000
+Received: from CY4PR1001MB2357.namprd10.prod.outlook.com
+ ([fe80::2419:5987:3a8f:f376]) by CY4PR1001MB2357.namprd10.prod.outlook.com
+ ([fe80::2419:5987:3a8f:f376%6]) with mapi id 15.20.3977.038; Sat, 17 Apr 2021
+ 07:14:34 +0000
+From:   William Kucharski <william.kucharski@oracle.com>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, pratik.r.sampat@gmail.com
-References: <20210408035736.883861-1-guro@fb.com>
- <25c78660-9f4c-34b3-3a05-68c313661a46@linux.ibm.com>
- <YHmcorqNE5NpAN3G@google.com>
- <7a001bf6-5708-fb04-4970-367d9845ccb9@linux.ibm.com>
- <YHnFsL2G2bpOH8ML@carbon.dhcp.thefacebook.com>
- <8ea7c616-95e8-e391-5373-ebaf10836d2c@linux.ibm.com>
- <YHnYqMdyYtIdab6n@carbon.dhcp.thefacebook.com>
- <09a8d1eb-280d-9ee9-3d68-d065db47a516@linux.ibm.com>
- <YHng5nAPSLJHnRY9@carbon.dhcp.thefacebook.com>
- <2a0d371d-79f6-e7aa-6dcd-3b29264e1feb@linux.ibm.com>
- <YHoF+XfC8Ul2/KPj@google.com>
-From:   Pratik Sampat <psampat@linux.ibm.com>
-Message-ID: <3b6724dd-e345-c730-ad18-492cfd6af885@linux.ibm.com>
-Date:   Sat, 17 Apr 2021 12:44:24 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <YHoF+XfC8Ul2/KPj@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RESEND][PATCH 0/6] Constify struct page arguments
+Thread-Topic: [RESEND][PATCH 0/6] Constify struct page arguments
+Thread-Index: AQHXMxZ4je/lzJomLE2vlJJ6LGu94Kq4THSA
+Date:   Sat, 17 Apr 2021 07:14:34 +0000
+Message-ID: <D5C0B139-FDFA-4A89-8235-821747D8700E@oracle.com>
+References: <20210416231531.2521383-1-willy@infradead.org>
+In-Reply-To: <20210416231531.2521383-1-willy@infradead.org>
+Accept-Language: en-US
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: BIBXjbyia3s33hNyIRLcQNoOKiyy7LfQ
-X-Proofpoint-GUID: ljQzhbS2v0RHFZDjhtC4I7H5mGpH-MnY
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-17_06:2021-04-16,2021-04-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 mlxlogscore=999 impostorscore=0 malwarescore=0
- lowpriorityscore=0 bulkscore=0 phishscore=0 adultscore=0 spamscore=0
- mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104170046
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.80.0.2.43)
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=oracle.com;
+x-originating-ip: [2601:285:8200:4089:d524:a73e:4ba2:9091]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d0217a46-3cdc-497b-573a-08d901707428
+x-ms-traffictypediagnostic: CY4PR10MB1895:
+x-microsoft-antispam-prvs: <CY4PR10MB1895FD7BE67FE1AF99E6DD85814B9@CY4PR10MB1895.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: cFW/O9Zl09jEdYtmtQmwh4B8otaVc/6gcW33vGSbwxJRv120hXJWbTQsRHEi19FGCPC5YHdYiqRUZeI+e7WX3RUBq6wuNv3LWZ5bJOULUc/37OprWtsLxUVjY0Dc4JobthNRDjsQiDoKXqEZCk7OBD0kJUUkfy1h0HNy+gtUoYJwpvXrhdG/u4wB24yR/PQZqo48iccfJTKMZNRTwngQKvAV/3XGnMoyPPU1iTs9VNcz8q3KmAMVeLVgNwOZIzrOHnHRFAK4gNEFBXD6OxYioZAbUhzSWmS1PGjGU0Mr4SR9t33GXF1g/upikbkisO2dyPo3bbe3n65nyDOSMKSP1Uqx6zmMPXjv0Afo0ACUp21aWx+7mx9e+6xO/QLIKXpeC4JZyr6/LxoEZzwGos3wuCgmvCOyPbPKTlHVqHMbxRokbSgSagEKXmOpXmXFyp+PES42HXl/zQnnG8TWyOdbfm1gTl1dtLfKIL4TDNNDua18zF48uvNqWrRYVVpZohbNfogasqquFujHvIYQmMjyA3F6jwvfaqsQEVe7dLepIfqDYZO/TgtfUvAHMDVuJnmMFDjw3QbzYwEEUQem4b9MeiSqebbsAtQfhIeDH7M8n3A628HqG1X8FvwPkdVs6VEawAUgW74S6IOLmEbDerpYRRS0JwPvph1NrO0G0XkzQRQ=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1001MB2357.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(346002)(376002)(366004)(396003)(6512007)(122000001)(186003)(64756008)(76116006)(2616005)(4326008)(71200400001)(66946007)(66476007)(83380400001)(66556008)(2906002)(8936002)(478600001)(86362001)(6916009)(6486002)(66446008)(8676002)(54906003)(38100700002)(33656002)(53546011)(6506007)(316002)(44832011)(36756003)(5660300002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?nBdq90ve1BanrzW6rVvXalhO2vTOG3bL2xWQwXV7xDtuIxUGZit+1aQv8bFl?=
+ =?us-ascii?Q?7WSfh/9fVDeTL5+O7ul/1wdD1H3QUwbFVkJulFRMtP16kP6AiYHJT6XnRNTH?=
+ =?us-ascii?Q?brjR/erbMJ3PHBytUFoZwHSChdgLVIDf05WEFbq6cRupiYN8+JeqiiipTHUh?=
+ =?us-ascii?Q?912HlSsq7HouQT9XH3b4fs1ICClLUYzY5qx2AO+bYAytQhtsu1vEFTGp5SAI?=
+ =?us-ascii?Q?6sMxTbmzBtPp2rbvNgyRwWP3dfLfSDTbUf/cQvVuMOVqrtOTS+IKF9Uf9Ze4?=
+ =?us-ascii?Q?iczErGqN89WCxC2h1zjIpJY9aFS2p7OhSHbH7UeeiA+PwncrbVS6s1qI4kPR?=
+ =?us-ascii?Q?ym7p65/C/De0/W8DXVVQRvlAmIpoQRyBR5HY65Vsb8CAf/tjTk7dlCBLbEsY?=
+ =?us-ascii?Q?JQLOUrpVtJC/+KgQ+GVR8oT4QuXyyv3rKlkiePBMASCEfcYorUhxSf+JAtGm?=
+ =?us-ascii?Q?JEUvnInpnIIO+2KAcmVLsObBzeW9LCfWUxHu+IgIerQFreTOUrbwigyyw9nK?=
+ =?us-ascii?Q?8h3djlfz6a29H+/MT4uCFVlrenKrYpAcqg9rEElrKiQh47vO1phgLK7j0lRl?=
+ =?us-ascii?Q?F7rvXFzd7wp4bHUNBGhhWyr5Fz3Z/KZC6o/QAEUwMs2c8ZM6EhgiBpKRe350?=
+ =?us-ascii?Q?FpAFqbttmIbbIMy+jbrZ5Gg8UlxlZB1SCpuRiMxbWtAxB0Y0sRrcMbf33agj?=
+ =?us-ascii?Q?B1AkDD0k/A9jPfBb8qrpjOo86C/omZa0TGN44HPUO22U6ykIUNiqC1IUOoOB?=
+ =?us-ascii?Q?LfNUgsijeX0cEvWp0mAoFk1PaP9JDlLNGonVhxNVY+hgtjvmWoIIRgw9FWj5?=
+ =?us-ascii?Q?lgQDzyYznN9ZDRAUz2a+By+zZ7R3L2Pdp5eoDzzrYb99fqRghrQrxAMWfWgo?=
+ =?us-ascii?Q?/3eL0oQsPfoFwbHuQ/X+Un6dFvOeuGSNTSXYmWC8ZNMv/7AAMUZi/Dim44Ym?=
+ =?us-ascii?Q?EOn0+cna0DZdc42USB29uv5YmY2spvkCoBZ7TY77jn4fsxXuZiyAR0sgu0/N?=
+ =?us-ascii?Q?4Owx5jFO+HHvTqzxqK+LNqCaQcL1mnjsmtMzDUnxyiEoWJXLVaSSJWr/YDEz?=
+ =?us-ascii?Q?g1jQgJaYg0UZxQ71g45gxZ+C/vLinWGqqbmYoq02Zxt4AvjtXVIlS0qxHB3Q?=
+ =?us-ascii?Q?TwhY/oq0MApZOyz840OQhBc2XNES1DnAEMYgbrlV3CYWwe2J6FshDghcXJks?=
+ =?us-ascii?Q?zWaBbP22+iM0PBHcP0wAAiV2R3gmYJiCRM97u0PEoSRC6lUsy068xEeHbTIm?=
+ =?us-ascii?Q?WO3zKJcR+pk3cfjeiSfm/VWVKJSbkjdi9oTZRFQfgyTRL8BjXI7OGoAe+oRQ?=
+ =?us-ascii?Q?Ub2OSZALdpWurzCcMv9k8FdEoZhCUG1GjNuJh0CgcZyML0UwvDhyxxtf0+mW?=
+ =?us-ascii?Q?t6Fs7aZ5ZpNDlOsmTm9X7KPy7drs?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <D72B30980EFA1B4EB61DE5E741B66568@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR1001MB2357.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d0217a46-3cdc-497b-573a-08d901707428
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Apr 2021 07:14:34.5122
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: C0nOU/XhQw4fwU0D6I8ut8lhzR0u91L501J0jBUE9X6HZANMG2Q/zdqnXbEwbDwEgWFBI4yeh7vH2vM0Be27nYSD7He2F9V3zWaZl8rQFAU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR10MB1895
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9956 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ bulkscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104170047
+X-Proofpoint-GUID: DqHg4wvapW18M7tqBsvHw_KEXbQa8qAV
+X-Proofpoint-ORIG-GUID: DqHg4wvapW18M7tqBsvHw_KEXbQa8qAV
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9956 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 suspectscore=0
+ bulkscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0 mlxlogscore=999
+ impostorscore=0 priorityscore=1501 phishscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104170047
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Looks good to me and I like the cleanup.
 
+For the series:
 
-On 17/04/21 3:17 am, Dennis Zhou wrote:
-> Hello,
->
-> On Sat, Apr 17, 2021 at 01:14:03AM +0530, Pratik Sampat wrote:
->>
->> On 17/04/21 12:39 am, Roman Gushchin wrote:
->>> On Sat, Apr 17, 2021 at 12:11:37AM +0530, Pratik Sampat wrote:
->>>> On 17/04/21 12:04 am, Roman Gushchin wrote:
->>>>> On Fri, Apr 16, 2021 at 11:57:03PM +0530, Pratik Sampat wrote:
->>>>>> On 16/04/21 10:43 pm, Roman Gushchin wrote:
->>>>>>> On Fri, Apr 16, 2021 at 08:58:33PM +0530, Pratik Sampat wrote:
->>>>>>>> Hello Dennis,
->>>>>>>>
->>>>>>>> I apologize for the clutter of logs before, I'm pasting the logs of before and
->>>>>>>> after the percpu test in the case of the patchset being applied on 5.12-rc6 and
->>>>>>>> the vanilla kernel 5.12-rc6.
->>>>>>>>
->>>>>>>> On 16/04/21 7:48 pm, Dennis Zhou wrote:
->>>>>>>>> Hello,
->>>>>>>>>
->>>>>>>>> On Fri, Apr 16, 2021 at 06:26:15PM +0530, Pratik Sampat wrote:
->>>>>>>>>> Hello Roman,
->>>>>>>>>>
->>>>>>>>>> I've tried the v3 patch series on a POWER9 and an x86 KVM setup.
->>>>>>>>>>
->>>>>>>>>> My results of the percpu_test are as follows:
->>>>>>>>>> Intel KVM 4CPU:4G
->>>>>>>>>> Vanilla 5.12-rc6
->>>>>>>>>> # ./percpu_test.sh
->>>>>>>>>> Percpu:             1952 kB
->>>>>>>>>> Percpu:           219648 kB
->>>>>>>>>> Percpu:           219648 kB
->>>>>>>>>>
->>>>>>>>>> 5.12-rc6 + with patchset applied
->>>>>>>>>> # ./percpu_test.sh
->>>>>>>>>> Percpu:             2080 kB
->>>>>>>>>> Percpu:           219712 kB
->>>>>>>>>> Percpu:            72672 kB
->>>>>>>>>>
->>>>>>>>>> I'm able to see improvement comparable to that of what you're see too.
->>>>>>>>>>
->>>>>>>>>> However, on POWERPC I'm unable to reproduce these improvements with the patchset in the same configuration
->>>>>>>>>>
->>>>>>>>>> POWER9 KVM 4CPU:4G
->>>>>>>>>> Vanilla 5.12-rc6
->>>>>>>>>> # ./percpu_test.sh
->>>>>>>>>> Percpu:             5888 kB
->>>>>>>>>> Percpu:           118272 kB
->>>>>>>>>> Percpu:           118272 kB
->>>>>>>>>>
->>>>>>>>>> 5.12-rc6 + with patchset applied
->>>>>>>>>> # ./percpu_test.sh
->>>>>>>>>> Percpu:             6144 kB
->>>>>>>>>> Percpu:           119040 kB
->>>>>>>>>> Percpu:           119040 kB
->>>>>>>>>>
->>>>>>>>>> I'm wondering if there's any architectural specific code that needs plumbing
->>>>>>>>>> here?
->>>>>>>>>>
->>>>>>>>> There shouldn't be. Can you send me the percpu_stats debug output before
->>>>>>>>> and after?
->>>>>>>> I'll paste the whole debug stats before and after here.
->>>>>>>> 5.12-rc6 + patchset
->>>>>>>> -----BEFORE-----
->>>>>>>> Percpu Memory Statistics
->>>>>>>> Allocation Info:
->>>>>>> Hm, this looks highly suspicious. Here is your stats in a more compact form:
->>>>>>>
->>>>>>> Vanilla
->>>>>>>
->>>>>>> nr_alloc            :         9038         nr_alloc            :        97046
->>>>>>> nr_dealloc          :         6992	   nr_dealloc          :        94237
->>>>>>> nr_cur_alloc        :         2046	   nr_cur_alloc        :         2809
->>>>>>> nr_max_alloc        :         2178	   nr_max_alloc        :        90054
->>>>>>> nr_chunks           :            3	   nr_chunks           :           11
->>>>>>> nr_max_chunks       :            3	   nr_max_chunks       :           47
->>>>>>> min_alloc_size      :            4	   min_alloc_size      :            4
->>>>>>> max_alloc_size      :         1072	   max_alloc_size      :         1072
->>>>>>> empty_pop_pages     :            5	   empty_pop_pages     :           29
->>>>>>>
->>>>>>>
->>>>>>> Patched
->>>>>>>
->>>>>>> nr_alloc            :         9040         nr_alloc            :        97048
->>>>>>> nr_dealloc          :         6994	   nr_dealloc          :        95002
->>>>>>> nr_cur_alloc        :         2046	   nr_cur_alloc        :         2046
->>>>>>> nr_max_alloc        :         2208	   nr_max_alloc        :        90054
->>>>>>> nr_chunks           :            3	   nr_chunks           :           48
->>>>>>> nr_max_chunks       :            3	   nr_max_chunks       :           48
->>>>>>> min_alloc_size      :            4	   min_alloc_size      :            4
->>>>>>> max_alloc_size      :         1072	   max_alloc_size      :         1072
->>>>>>> empty_pop_pages     :           12	   empty_pop_pages     :           61
->>>>>>>
->>>>>>>
->>>>>>> So it looks like the number of chunks got bigger, as well as the number of
->>>>>>> empty_pop_pages? This contradicts to what you wrote, so can you, please, make
->>>>>>> sure that the data is correct and we're not messing two cases?
->>>>>>>
->>>>>>> So it looks like for some reason sidelined (depopulated) chunks are not getting
->>>>>>> freed completely. But I struggle to explain why the initial empty_pop_pages is
->>>>>>> bigger with the same amount of chunks.
->>>>>>>
->>>>>>> So, can you, please, apply the following patch and provide an updated statistics?
->>>>>> Unfortunately, I'm not completely well versed in this area, but yes the empty
->>>>>> pop pages number doesn't make sense to me either.
->>>>>>
->>>>>> I re-ran the numbers trying to make sure my experiment setup is sane but
->>>>>> results remain the same.
->>>>>>
->>>>>> Vanilla
->>>>>> nr_alloc            :         9040         nr_alloc            :        97048
->>>>>> nr_dealloc          :         6994	   nr_dealloc          :        94404
->>>>>> nr_cur_alloc        :         2046	   nr_cur_alloc        :         2644
->>>>>> nr_max_alloc        :         2169	   nr_max_alloc        :        90054
->>>>>> nr_chunks           :            3	   nr_chunks           :           10
->>>>>> nr_max_chunks       :            3	   nr_max_chunks       :           47
->>>>>> min_alloc_size      :            4	   min_alloc_size      :            4
->>>>>> max_alloc_size      :         1072	   max_alloc_size      :         1072
->>>>>> empty_pop_pages     :            4	   empty_pop_pages     :           32
->>>>>>
->>>>>> With the patchset + debug patch the results are as follows:
->>>>>> Patched
->>>>>>
->>>>>> nr_alloc            :         9040         nr_alloc            :        97048
->>>>>> nr_dealloc          :         6994	   nr_dealloc          :        94349
->>>>>> nr_cur_alloc        :         2046	   nr_cur_alloc        :         2699
->>>>>> nr_max_alloc        :         2194	   nr_max_alloc        :        90054
->>>>>> nr_chunks           :            3	   nr_chunks           :           48
->>>>>> nr_max_chunks       :            3	   nr_max_chunks       :           48
->>>>>> min_alloc_size      :            4	   min_alloc_size      :            4
->>>>>> max_alloc_size      :         1072	   max_alloc_size      :         1072
->>>>>> empty_pop_pages     :           12	   empty_pop_pages     :           54
->>>>>>
->>>>>> With the extra tracing I can see 39 entries of "Chunk (sidelined)"
->>>>>> after the test was run. I don't see any entries for "Chunk (to depopulate)"
->>>>>>
->>>>>> I've snipped the results of slidelined chunks because they went on for ~600
->>>>>> lines, if you need the full logs let me know.
->>>>> Yes, please! That's the most interesting part!
->>>> Got it. Pasting the full logs of after the percpu experiment was completed
->>> Thanks!
->>>
->>> Would you mind to apply the following patch and test again?
->>>
->>> --
->>>
->>> diff --git a/mm/percpu.c b/mm/percpu.c
->>> index ded3a7541cb2..532c6a7ebdfd 100644
->>> --- a/mm/percpu.c
->>> +++ b/mm/percpu.c
->>> @@ -2296,6 +2296,9 @@ void free_percpu(void __percpu *ptr)
->>>                                   need_balance = true;
->>>                                   break;
->>>                           }
->>> +
->>> +               chunk->depopulated = false;
->>> +               pcpu_chunk_relocate(chunk, -1);
->>>           } else if (chunk != pcpu_first_chunk && chunk != pcpu_reserved_chunk &&
->>>                      !chunk->isolated &&
->>>                      (pcpu_nr_empty_pop_pages[pcpu_chunk_type(chunk)] >
->>>
->> Sure thing.
->>
->> I see much lower sideline chunks. In one such test run I saw zero occurrences
->> of slidelined chunks
->>
->> Pasting the full logs as an example:
->>
->> BEFORE
->> Percpu Memory Statistics
->> Allocation Info:
->> ----------------------------------------
->>    unit_size           :       655360
->>    static_size         :       608920
->>    reserved_size       :            0
->>    dyn_size            :        46440
->>    atom_size           :        65536
->>    alloc_size          :       655360
->>
->> Global Stats:
->> ----------------------------------------
->>    nr_alloc            :         9038
->>    nr_dealloc          :         6992
->>    nr_cur_alloc        :         2046
->>    nr_max_alloc        :         2200
->>    nr_chunks           :            3
->>    nr_max_chunks       :            3
->>    min_alloc_size      :            4
->>    max_alloc_size      :         1072
->>    empty_pop_pages     :           12
->>
->> Per Chunk Stats:
->> ----------------------------------------
->> Chunk: <- First Chunk
->>    nr_alloc            :         1092
->>    max_alloc_size      :         1072
->>    empty_pop_pages     :            0
->>    first_bit           :        16247
->>    free_bytes          :            4
->>    contig_bytes        :            4
->>    sum_frag            :            4
->>    max_frag            :            4
->>    cur_min_alloc       :            4
->>    cur_med_alloc       :            8
->>    cur_max_alloc       :         1072
->>    memcg_aware         :            0
->>
->> Chunk:
->>    nr_alloc            :          594
->>    max_alloc_size      :          992
->>    empty_pop_pages     :            8
->>    first_bit           :          456
->>    free_bytes          :       645008
->>    contig_bytes        :       319984
->>    sum_frag            :       325024
->>    max_frag            :       318680
->>    cur_min_alloc       :            4
->>    cur_med_alloc       :            8
->>    cur_max_alloc       :          424
->>    memcg_aware         :            0
->>
->> Chunk:
->>    nr_alloc            :          360
->>    max_alloc_size      :         1072
->>    empty_pop_pages     :            4
->>    first_bit           :        26595
->>    free_bytes          :       506640
->>    contig_bytes        :       506540
->>    sum_frag            :          100
->>    max_frag            :           32
->>    cur_min_alloc       :            4
->>    cur_med_alloc       :          156
->>    cur_max_alloc       :         1072
->>    memcg_aware         :            1
->>
->>
->> AFTER
->> Percpu Memory Statistics
->> Allocation Info:
->> ----------------------------------------
->>    unit_size           :       655360
->>    static_size         :       608920
->>    reserved_size       :            0
->>    dyn_size            :        46440
->>    atom_size           :        65536
->>    alloc_size          :       655360
->>
->> Global Stats:
->> ----------------------------------------
->>    nr_alloc            :        97046
->>    nr_dealloc          :        94304
->>    nr_cur_alloc        :         2742
->>    nr_max_alloc        :        90054
->>    nr_chunks           :           11
->>    nr_max_chunks       :           47
->>    min_alloc_size      :            4
->>    max_alloc_size      :         1072
->>    empty_pop_pages     :           18
->>
->> Per Chunk Stats:
->> ----------------------------------------
->> Chunk: <- First Chunk
->>    nr_alloc            :         1092
->>    max_alloc_size      :         1072
->>    empty_pop_pages     :            0
->>    first_bit           :        16247
->>    free_bytes          :            4
->>    contig_bytes        :            4
->>    sum_frag            :            4
->>    max_frag            :            4
->>    cur_min_alloc       :            4
->>    cur_med_alloc       :            8
->>    cur_max_alloc       :         1072
->>    memcg_aware         :            0
->>
->> Chunk:
->>    nr_alloc            :          838
->>    max_alloc_size      :         1072
->>    empty_pop_pages     :            7
->>    first_bit           :          464
->>    free_bytes          :       640476
->>    contig_bytes        :       290672
->>    sum_frag            :       349804
->>    max_frag            :       304344
->>    cur_min_alloc       :            4
->>    cur_med_alloc       :            8
->>    cur_max_alloc       :         1072
->>    memcg_aware         :            0
->>
->> Chunk:
->>    nr_alloc            :           90
->>    max_alloc_size      :         1072
->>    empty_pop_pages     :            0
->>    first_bit           :          536
->>    free_bytes          :       595752
->>    contig_bytes        :        26164
->>    sum_frag            :       575132
->>    max_frag            :        26164
->>    cur_min_alloc       :          156
->>    cur_med_alloc       :         1072
->>    cur_max_alloc       :         1072
->>    memcg_aware         :            1
->>
->> Chunk:
->>    nr_alloc            :           90
->>    max_alloc_size      :         1072
->>    empty_pop_pages     :            0
->>    first_bit           :            0
->>    free_bytes          :       597428
->>    contig_bytes        :        26164
->>    sum_frag            :       596848
->>    max_frag            :        26164
->>    cur_min_alloc       :          156
->>    cur_med_alloc       :          312
->>    cur_max_alloc       :         1072
->>    memcg_aware         :            1
->>
->> Chunk:
->>    nr_alloc            :           92
->>    max_alloc_size      :         1072
->>    empty_pop_pages     :            0
->>    first_bit           :            0
->>    free_bytes          :       595284
->>    contig_bytes        :        26164
->>    sum_frag            :       590360
->>    max_frag            :        26164
->>    cur_min_alloc       :          156
->>    cur_med_alloc       :          312
->>    cur_max_alloc       :         1072
->>    memcg_aware         :            1
->>
->> Chunk:
->>    nr_alloc            :           92
->>    max_alloc_size      :         1072
->>    empty_pop_pages     :            0
->>    first_bit           :            0
->>    free_bytes          :       595284
->>    contig_bytes        :        26164
->>    sum_frag            :       583768
->>    max_frag            :        26164
->>    cur_min_alloc       :          156
->>    cur_med_alloc       :          312
->>    cur_max_alloc       :         1072
->>    memcg_aware         :            1
->>
->> Chunk:
->>    nr_alloc            :          360
->>    max_alloc_size      :         1072
->>    empty_pop_pages     :            7
->>    first_bit           :        26595
->>    free_bytes          :       506640
->>    contig_bytes        :       506540
->>    sum_frag            :          100
->>    max_frag            :           32
->>    cur_min_alloc       :            4
->>    cur_med_alloc       :          156
->>    cur_max_alloc       :         1072
->>    memcg_aware         :            1
->>
->> Chunk:
->>    nr_alloc            :           12
->>    max_alloc_size      :         1072
->>    empty_pop_pages     :            3
->>    first_bit           :            0
->>    free_bytes          :       647524
->>    contig_bytes        :       563492
->>    sum_frag            :        57872
->>    max_frag            :        26164
->>    cur_min_alloc       :          156
->>    cur_med_alloc       :          312
->>    cur_max_alloc       :         1072
->>    memcg_aware         :            1
->>
->> Chunk:
->>    nr_alloc            :            0
->>    max_alloc_size      :         1072
->>    empty_pop_pages     :            1
->>    first_bit           :            0
->>    free_bytes          :       655360
->>    contig_bytes        :       655360
->>    sum_frag            :            0
->>    max_frag            :            0
->>    cur_min_alloc       :            0
->>    cur_med_alloc       :            0
->>    cur_max_alloc       :            0
->>    memcg_aware         :            1
->>
->> Chunk (sidelined):
->>    nr_alloc            :           72
->>    max_alloc_size      :         1072
->>    empty_pop_pages     :            0
->>    first_bit           :            0
->>    free_bytes          :       608344
->>    contig_bytes        :       145552
->>    sum_frag            :       590340
->>    max_frag            :       145552
->>    cur_min_alloc       :          156
->>    cur_med_alloc       :          312
->>    cur_max_alloc       :         1072
->>    memcg_aware         :            1
->>
->> Chunk (sidelined):
->>    nr_alloc            :            4
->>    max_alloc_size      :         1072
->>    empty_pop_pages     :            0
->>    first_bit           :            0
->>    free_bytes          :       652748
->>    contig_bytes        :       426720
->>    sum_frag            :       426720
->>    max_frag            :       426720
->>    cur_min_alloc       :          156
->>    cur_med_alloc       :          312
->>    cur_max_alloc       :         1072
->>    memcg_aware         :            1
->>
->>
->   
-> Thank you Pratik for testing this and working with us to resolve this. I
-> greatly appreciate it!
->
-> Thanks,
-> Dennis
+Reviewed-by: William Kucharski <william.kucharski@oracle.com>
 
-No worries at all, glad I could be of some help!
-
-Thank you,
-Pratik
+> On Apr 16, 2021, at 5:15 PM, Matthew Wilcox (Oracle) <willy@infradead.org=
+> wrote:
+>=20
+> [I'm told that patches 2-6 did not make it to the list; resending and
+> cc'ing lkml this time]
+>=20
+> While working on various solutions to the 32-bit struct page size
+> regression, one of the problems I found was the networking stack expects
+> to be able to pass const struct page pointers around, and the mm doesn't
+> provide a lot of const-friendly functions to call.  The root tangle of
+> problems is that a lot of functions call VM_BUG_ON_PAGE(), which calls
+> dump_page(), which calls a lot of functions which don't take a const
+> struct page (but could be const).
+>=20
+> I have other things I need to work on, but I offer these patches as a few
+> steps towards being able to make dump_page() take a const page pointer.
+>=20
+> Matthew Wilcox (Oracle) (6):
+>  mm: Make __dump_page static
+>  mm/debug: Factor PagePoisoned out of __dump_page
+>  mm/page_owner: Constify dump_page_owner
+>  mm: Make compound_head const-preserving
+>  mm: Constify get_pfnblock_flags_mask and get_pfnblock_migratetype
+>  mm: Constify page_count and page_ref_count
+>=20
+> include/linux/mmdebug.h         |  3 +--
+> include/linux/page-flags.h      | 10 +++++-----
+> include/linux/page_owner.h      |  6 +++---
+> include/linux/page_ref.h        |  4 ++--
+> include/linux/pageblock-flags.h |  2 +-
+> mm/debug.c                      | 25 +++++++------------------
+> mm/page_alloc.c                 | 16 ++++++++--------
+> mm/page_owner.c                 |  2 +-
+> 8 files changed, 28 insertions(+), 40 deletions(-)
+>=20
+> --=20
+> 2.30.2
+>=20
+>=20
 
