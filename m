@@ -2,241 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E68B362E52
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5FF362E51
 	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 09:29:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235810AbhDQH36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 03:29:58 -0400
-Received: from mga17.intel.com ([192.55.52.151]:20315 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229631AbhDQH35 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 03:29:57 -0400
-IronPort-SDR: l8lZ7DmQIGQ+eyxkXZAqagKtixuyuZDeGkRkjsVkplNN099oQQ30PBYWoTuwUUhj8yHUNflXPM
- OKx0EU5RuN/Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9956"; a="175258241"
-X-IronPort-AV: E=Sophos;i="5.82,228,1613462400"; 
-   d="scan'208";a="175258241"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2021 00:29:31 -0700
-IronPort-SDR: frdU8d17va/1qbVBz0tBzHNPTiLJOI78JMSw+wKTKECyibahmhxjzxZW3PaPY1ZvhZ3/1TFKHQ
- wUxjhrZ1Vl5w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,228,1613462400"; 
-   d="scan'208";a="383260751"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 17 Apr 2021 00:29:29 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lXfOT-0000ju-5I; Sat, 17 Apr 2021 07:29:29 +0000
-Date:   Sat, 17 Apr 2021 15:28:58 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:timers/core] BUILD SUCCESS
- 9c336c9935cff267470bb3aaa85c66fac194b650
-Message-ID: <607a8e3a.RBRX3/SQ5rodFWtE%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S235772AbhDQH3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 03:29:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229631AbhDQH3l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 03:29:41 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB75C061574;
+        Sat, 17 Apr 2021 00:29:13 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id g35so20640473pgg.9;
+        Sat, 17 Apr 2021 00:29:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Rh+LLyuUC21RXq9XkEfu7UxePoJYFAfS/R5i3+yiN0Q=;
+        b=iVJmcFdZElVJ0EKUFNmO1njWxmViHa4WdBL2LMETXZ5WIpnYw7CfQsYalBwktpcMMy
+         gbtBsAUrdBdhZd0tjEziYUD1ep4LwiOr5Q4hxr7QVjA14eiAIeQcylklfyPHGuXr8Vgo
+         UrApGFC472p97VeERD+LNJccD1eInp4HAJzfqP68d52DA1V5iXQSZBnu0/4iaVLTNntI
+         GyQcd1WPeyZWUGS4Qoiikg1QI4ta35z5rff5FkDAxQYkzCbb85+tuUXbdjxKmqR9Kdma
+         4VJNtYnH/5teEg70XsTXmqwqn2tLoDr+VYQhnLpblWE2CubQ27CdG62hx3FQmZi42yVk
+         wZqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Rh+LLyuUC21RXq9XkEfu7UxePoJYFAfS/R5i3+yiN0Q=;
+        b=C/TkKMiyEht5FInvT1ZqybHB6gzMfhqCJvmXXAVuDx0vOyi91fKsfA15Zyi63oGMqe
+         jz/Rxcda1O65aRk6kR7bnMgJfQx6KRT/6vGBd/T3UTasZsZqZXdqFpeCoANS0VwLK3dS
+         bsa1JOoZZKpHZmDZJWvl5Pf3o84+3ciLkYwdp5DTOnrpAx8inIv8BscD1QpTMuz7xhjD
+         1LTtwDks76H+W4GuQ2ZnZSOe64i/7PJj8mS1JXd34ZT9PDKV10s9tzCziJb4TPUygMwU
+         bAG5C4tK6OIMBAlKH1ChplQz72E6/cf/32ack1hf3DvKCZB9Pdltu0ICVPqiriLwBGJS
+         rtFg==
+X-Gm-Message-State: AOAM532Xx9CR4ECE+dgTrPgYCeLUEjRl/8FGpiLKoFJwoulKxtteytI0
+        e8OOF55EFXN5f+So78xe28g=
+X-Google-Smtp-Source: ABdhPJyX5O5Y7rZAeFbAE5I2m5OdbcRi0PgfKsEPGOCc3ns6NqxQGWMZA08UHuCSwwLHsmiO4OTO5w==
+X-Received: by 2002:a65:5b85:: with SMTP id i5mr2406337pgr.269.1618644553283;
+        Sat, 17 Apr 2021 00:29:13 -0700 (PDT)
+Received: from localhost.localdomain ([138.197.212.246])
+        by smtp.gmail.com with ESMTPSA id a7sm6125860pfg.65.2021.04.17.00.29.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Apr 2021 00:29:12 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Alex Ryabchenko <d3adme4t@gmail.com>
+Subject: [PATCH v2 net-next] net: ethernet: mediatek: fix a typo bug in flow offloading
+Date:   Sat, 17 Apr 2021 15:29:04 +0800
+Message-Id: <20210417072905.207032-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/core
-branch HEAD: 9c336c9935cff267470bb3aaa85c66fac194b650  tick/broadcast: Allow late registered device to enter oneshot mode
+Issue was traffic problems after a while with increased ping times if
+flow offload is active. It turns out that key_offset with cookie is
+needed in rhashtable_params but was re-assigned to head_offset.
+Fix the assignment.
 
-elapsed time: 724m
-
-configs tested: 179
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-mips                         tb0219_defconfig
-arm                             mxs_defconfig
-parisc                generic-64bit_defconfig
-arm                        mvebu_v5_defconfig
-arm                         vf610m4_defconfig
-powerpc                 mpc837x_mds_defconfig
-powerpc                       ebony_defconfig
-powerpc                     ksi8560_defconfig
-arm                    vt8500_v6_v7_defconfig
-arm                        clps711x_defconfig
-arm                         at91_dt_defconfig
-arc                      axs103_smp_defconfig
-mips                      maltaaprp_defconfig
-arm                          imote2_defconfig
-mips                       capcella_defconfig
-sh                        edosk7705_defconfig
-powerpc                 mpc837x_rdb_defconfig
-mips                           ip28_defconfig
-ia64                             allmodconfig
-powerpc                    adder875_defconfig
-mips                      pistachio_defconfig
-arm                         lpc18xx_defconfig
-mips                           ip27_defconfig
-powerpc                 mpc8272_ads_defconfig
-arm                        magician_defconfig
-xtensa                       common_defconfig
-sh                     magicpanelr2_defconfig
-powerpc                         ps3_defconfig
-arm                          pcm027_defconfig
-sparc64                             defconfig
-arm                            xcep_defconfig
-sh                   rts7751r2dplus_defconfig
-powerpc                      arches_defconfig
-arm                        vexpress_defconfig
-powerpc                       eiger_defconfig
-sh                            hp6xx_defconfig
-arm                        trizeps4_defconfig
-arm                     davinci_all_defconfig
-sh                           se7750_defconfig
-powerpc                      pcm030_defconfig
-arm                       aspeed_g5_defconfig
-powerpc                 mpc834x_mds_defconfig
-sh                           se7751_defconfig
-arm                            pleb_defconfig
-arm                        mini2440_defconfig
-sparc                       sparc32_defconfig
-mips                           ip22_defconfig
-powerpc                   motionpro_defconfig
-powerpc                     powernv_defconfig
-sh                             espt_defconfig
-m68k                        mvme147_defconfig
-sh                           se7780_defconfig
-sh                          lboxre2_defconfig
-arm                           sama5_defconfig
-ia64                        generic_defconfig
-csky                                defconfig
-mips                           ip32_defconfig
-sh                             shx3_defconfig
-powerpc                     mpc512x_defconfig
-powerpc                       holly_defconfig
-um                               alldefconfig
-arm                            mps2_defconfig
-arc                     nsimosci_hs_defconfig
-arm                        multi_v7_defconfig
-arm                       imx_v4_v5_defconfig
-arm                         socfpga_defconfig
-sh                ecovec24-romimage_defconfig
-powerpc                          allmodconfig
-arm                            zeus_defconfig
-sh                           se7705_defconfig
-arm                       omap2plus_defconfig
-powerpc                     mpc83xx_defconfig
-mips                      loongson3_defconfig
-riscv                          rv32_defconfig
-h8300                            allyesconfig
-arm                        cerfcube_defconfig
-mips                        vocore2_defconfig
-powerpc                     kilauea_defconfig
-powerpc                 mpc8540_ads_defconfig
-mips                            ar7_defconfig
-mips                     cu1000-neo_defconfig
-powerpc                     sequoia_defconfig
-powerpc                    ge_imp3a_defconfig
-powerpc                     taishan_defconfig
-arm                          iop32x_defconfig
-powerpc                        cell_defconfig
-powerpc                 canyonlands_defconfig
-sh                        sh7785lcr_defconfig
-s390                          debug_defconfig
-openrisc                  or1klitex_defconfig
-arm64                            alldefconfig
-sh                          r7785rp_defconfig
-powerpc                          g5_defconfig
-mips                        maltaup_defconfig
-i386                             alldefconfig
-arm                        shmobile_defconfig
-mips                      pic32mzda_defconfig
-m68k                          atari_defconfig
-openrisc                            defconfig
-arm                         s3c2410_defconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210416
-i386                 randconfig-a006-20210416
-i386                 randconfig-a001-20210416
-i386                 randconfig-a005-20210416
-i386                 randconfig-a004-20210416
-i386                 randconfig-a002-20210416
-x86_64               randconfig-a014-20210416
-x86_64               randconfig-a015-20210416
-x86_64               randconfig-a011-20210416
-x86_64               randconfig-a013-20210416
-x86_64               randconfig-a012-20210416
-x86_64               randconfig-a016-20210416
-i386                 randconfig-a015-20210416
-i386                 randconfig-a014-20210416
-i386                 randconfig-a013-20210416
-i386                 randconfig-a012-20210416
-i386                 randconfig-a016-20210416
-i386                 randconfig-a011-20210416
-x86_64               randconfig-a003-20210417
-x86_64               randconfig-a002-20210417
-x86_64               randconfig-a005-20210417
-x86_64               randconfig-a001-20210417
-x86_64               randconfig-a006-20210417
-x86_64               randconfig-a004-20210417
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a003-20210416
-x86_64               randconfig-a002-20210416
-x86_64               randconfig-a005-20210416
-x86_64               randconfig-a001-20210416
-x86_64               randconfig-a006-20210416
-x86_64               randconfig-a004-20210416
-
+Fixes: 502e84e2382d ("net: ethernet: mtk_eth_soc: add flow offloading support")
+Signed-off-by: DENG Qingfang <dqfext@gmail.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+v1 -> v2:
+  Refined commit message according to Frank.
+
+ drivers/net/ethernet/mediatek/mtk_ppe_offload.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/mediatek/mtk_ppe_offload.c b/drivers/net/ethernet/mediatek/mtk_ppe_offload.c
+index 4975106fbc42..f47f319f3ae0 100644
+--- a/drivers/net/ethernet/mediatek/mtk_ppe_offload.c
++++ b/drivers/net/ethernet/mediatek/mtk_ppe_offload.c
+@@ -43,7 +43,7 @@ struct mtk_flow_entry {
+ 
+ static const struct rhashtable_params mtk_flow_ht_params = {
+ 	.head_offset = offsetof(struct mtk_flow_entry, node),
+-	.head_offset = offsetof(struct mtk_flow_entry, cookie),
++	.key_offset = offsetof(struct mtk_flow_entry, cookie),
+ 	.key_len = sizeof(unsigned long),
+ 	.automatic_shrinking = true,
+ };
+-- 
+2.25.1
+
