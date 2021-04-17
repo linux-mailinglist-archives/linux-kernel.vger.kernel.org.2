@@ -2,76 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5877362C47
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 02:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A55DB362C4B
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 02:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235142AbhDQAJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 20:09:52 -0400
-Received: from smtprelay0153.hostedemail.com ([216.40.44.153]:34400 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234999AbhDQAJv (ORCPT
+        id S235176AbhDQAKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 20:10:55 -0400
+Received: from mail-pl1-f173.google.com ([209.85.214.173]:34544 "EHLO
+        mail-pl1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231958AbhDQAKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 20:09:51 -0400
-Received: from omf09.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id CC906182CED34;
-        Sat, 17 Apr 2021 00:09:24 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id 66D9C1E04D4;
-        Sat, 17 Apr 2021 00:09:23 +0000 (UTC)
-Message-ID: <8cf34ba1ecc98fd16eb29d298e7a924db810923d.camel@perches.com>
-Subject: Re: [PATCH 1/5] scsi: BusLogic: Fix missing `pr_cont' use
-From:   Joe Perches <joe@perches.com>
-To:     Khalid Aziz <khalid@gonehiking.org>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Date:   Fri, 16 Apr 2021 17:09:21 -0700
-In-Reply-To: <a5a70c48-d980-b0e0-6bbd-34dae9c59c59@gonehiking.org>
-References: <alpine.DEB.2.21.2104141244520.44318@angie.orcam.me.uk>
-         <alpine.DEB.2.21.2104141419040.44318@angie.orcam.me.uk>
-         <787aae5540612555a8bf92de2083c8fa74e52ce9.camel@perches.com>
-         <a5a70c48-d980-b0e0-6bbd-34dae9c59c59@gonehiking.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Fri, 16 Apr 2021 20:10:54 -0400
+Received: by mail-pl1-f173.google.com with SMTP id t22so14482045ply.1;
+        Fri, 16 Apr 2021 17:10:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HdgLgf4++L+hPBdBpKCHERQ4SDuSpyDo8YojGbWccSs=;
+        b=Tkn8tIaHPeX66UId9jeCrYLexGUUirWJ7ApmW0hNuHWH+/2olXJWr+0JF+caNozxau
+         0ZntKyGqFv1av7TfPaqAJWGRr6un1/Keh287O/zbIyaxHt3+Tb4fQdoho2h7sFwVzj4N
+         78GHRkG5X/0C8CYAlZsYXGwpgmQVZ4Bp9+Pv8t1IvY2g12GKtGIQCgnHywNhUZeAisKc
+         7YAm6L1SFRpvpVbnsfx4Pv/+aZL7XQOVgWuJdrzYvlxRZ+R/bxvjTZkiMQ84qmUR8JXf
+         h8pA2LXY2fDk8jAdHbyFGWSsotUnws1Lye+OfnYjqVpiYqWR/AQ2gJ4xiRUam85N4klu
+         Dvbg==
+X-Gm-Message-State: AOAM531nsKARq96b4YuU/EyF0RMcL0Jr7OIJFuPAV/VJ/CoG2FkYBfuY
+        bXimVGaqSHb9Jsg6SlIp4r0CxuZPYZEbSQ==
+X-Google-Smtp-Source: ABdhPJyrdUDhh1VEpWEgWuRgLwDGj1MJHhyfDvyurM0Vgp9DKQVEEbax9LoLWPokxRbK2wssHToVYw==
+X-Received: by 2002:a17:90a:c501:: with SMTP id k1mr12119541pjt.101.1618618228656;
+        Fri, 16 Apr 2021 17:10:28 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id d5sm6215781pgj.36.2021.04.16.17.10.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Apr 2021 17:10:27 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 161F7403DC; Sat, 17 Apr 2021 00:10:27 +0000 (UTC)
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     rafael@kernel.org, gregkh@linuxfoundation.org,
+        viro@zeniv.linux.org.uk, jack@suse.cz, bvanassche@acm.org,
+        jeyu@kernel.org, ebiederm@xmission.com
+Cc:     mchehab@kernel.org, keescook@chromium.org,
+        linux-fsdevel@vger.kernel.org, kernel@tuxforce.de,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: [RFC v2 0/6] vfs: provide automatic kernel freeze / resume
+Date:   Sat, 17 Apr 2021 00:10:20 +0000
+Message-Id: <20210417001026.23858-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.23.0.rc1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 66D9C1E04D4
-X-Spam-Status: No, score=0.10
-X-Stat-Signature: fhwd9n9k5g43ak3wfbp58uw5n17m7nwr
-X-Rspamd-Server: rspamout01
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19ybrwbqstP3pzcDcR7uo67LPUjBpaEE1c=
-X-HE-Tag: 1618618163-710678
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-04-16 at 14:41 -0600, Khalid Aziz wrote:
-> On 4/15/21 8:08 PM, Joe Perches wrote:
-> > And while it's a lot more code, I'd prefer a solution that looks more
-> > like the other commonly used kernel logging extension mechanisms
-> > where adapter is placed before the format, ... in the argument list.
-> 
-> Hi Joe,
-> 
-> I don't mind making these changes. It is quite a bit of code but
-> consistency with other kernel code is useful. Would you like to finalize
-> this patch, or would you prefer that I take this patch as starting point
-> and finalize it?
+This picks up where I left off in 2017, I was inclined to respin this
+up again due to a new issue Lukas reported which is easy to reproduce.
+I posted a stop-gap patch for that issue [0] and a test case, however,
+*this* is the work we want upstream to fix these sorts of issues.
 
-Probably better to apply Maciej's patches first and then something
-like this.
+As discussed long ago though at LSFMM, we have much work to do. However,
+we can take small strides to get us closer. This is trying to take one
+step. It addresses most of the comments and feedback from the last
+series I posted, however it doesn't address the biggest two issues:
 
-btw: the coccinelle script was
+ o provide clean and clear semantics between userspace ioctls /
+   automatic fs freeze, and freeze bdev. This also involves moving the
+   counter stuff from bdev to the superblock. This is pending work.
+ o The loopback hack which breaks the reverse ordering isn't addressed,
+   perhaps just flagging it suffices for now?
+ o The long term desirable DAG *is* plausable and I have an initial
+   kernel graph implementation which I could use, but that may take
+   longer to merge.
 
-@@
-expression a, b;
-@@
+What this series *does* address based on the last series is:
 
-	\(blogic_announce\|blogic_info\|blogic_notice\|blogic_warn\|blogic_err\)(
--		a, b
-+		b, a
-		, ...)
+  o Rebased onto linux-next tag next-20210415
+  o Fixed RCU complaints. The issue was that I was adding new fs levels, and
+    this increated undesirably also the amount of rw semaphores, but we were
+    just using the new levels to distinguish *who* was triggering the suspend,
+    it was either inside the kernel and automatic, or triggered by userspace.
+  o thaw_super_locked() was added but that unlocks the sb sb->s_umount,
+    our exclusive reverse iterate supers however will want to hold that
+    semaphore, so we provide a helper which lets the caller do the unlocking
+    for you, and make thaw_super_locked() a user of that.
+  o WQ_FREEZABLE is now dealt with
+  o I have folded the fs freezer removal stuff into the patch which adds
+    the automatic fs frezer / thaw work from the kernel as otherwise separting
+    this would create intermediate steps which would produce kernels which
+    can stall on suspend / resume.
 
+[0] https://lkml.kernel.org/r/20210416235850.23690-1-mcgrof@kernel.org
+[1] https://lkml.kernel.org/r/20171129232356.28296-1-mcgrof@kernel.org              
+
+Luis Chamberlain (6):
+  fs: provide unlocked helper for freeze_super()
+  fs: add frozen sb state helpers
+  fs: add a helper for thaw_super_locked() which does not unlock
+  fs: distinguish between user initiated freeze and kernel initiated
+    freeze
+  fs: add iterate_supers_excl() and iterate_supers_reverse_excl()
+  fs: add automatic kernel fs freeze / thaw and remove kthread freezing
+
+ fs/btrfs/disk-io.c     |   4 +-
+ fs/btrfs/scrub.c       |   2 +-
+ fs/cifs/cifsfs.c       |  10 +-
+ fs/cifs/dfs_cache.c    |   2 +-
+ fs/ext4/ext4_jbd2.c    |   2 +-
+ fs/ext4/super.c        |   2 -
+ fs/f2fs/gc.c           |   7 +-
+ fs/f2fs/segment.c      |   6 +-
+ fs/gfs2/glock.c        |   6 +-
+ fs/gfs2/main.c         |   4 +-
+ fs/jfs/jfs_logmgr.c    |  11 +-
+ fs/jfs/jfs_txnmgr.c    |  31 ++--
+ fs/nilfs2/segment.c    |  48 +++---
+ fs/super.c             | 321 ++++++++++++++++++++++++++++++++++-------
+ fs/xfs/xfs_log.c       |   3 +-
+ fs/xfs/xfs_mru_cache.c |   2 +-
+ fs/xfs/xfs_pwork.c     |   2 +-
+ fs/xfs/xfs_super.c     |  14 +-
+ fs/xfs/xfs_trans.c     |   3 +-
+ fs/xfs/xfs_trans_ail.c |   7 +-
+ include/linux/fs.h     |  64 +++++++-
+ kernel/power/process.c |  15 +-
+ 22 files changed, 405 insertions(+), 161 deletions(-)
+
+-- 
+2.29.2
 
