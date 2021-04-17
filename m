@@ -2,188 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9023C362DA5
+	by mail.lfdr.de (Postfix) with ESMTP id 954ED362DA8
 	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 06:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbhDQEPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 00:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55410 "EHLO
+        id S232002AbhDQERR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 00:17:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhDQEOt (ORCPT
+        with ESMTP id S229547AbhDQERQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 00:14:49 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB53EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 21:13:53 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id cu16so13044821pjb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 21:13:53 -0700 (PDT)
+        Sat, 17 Apr 2021 00:17:16 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21FCC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 21:16:50 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id u20so33173707lja.13
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 21:16:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ylgfgCTB63uVvdacThJs9TcQmae/fWoutKmKR8VmUn4=;
-        b=y4PC6dhtLnxM+GheU9KrGq+aZszXhMW31nY1EERC+Q72IGwebhRGazT63ogIYWDj9U
-         bDAh3OQw+ccOX2q0qvSG2KEEMjFgOT4A45hkFRtshiPAth22yLZ2MF3dhsUkV5YBqEvl
-         4dOGTAwsLEvtH1HBM5TYHtqF7EqdsZ3Ek8cIgdkIsk0M0SGrv5+rYesR4Ol/RBZGkTPr
-         bqq+nda5GpPH4KS5Belg9AP4J6t5ACS7h9yC4GhWf+1yzPr8RMMLCdWP+JznF/FtmnFo
-         Oef0zZVhvFSkR9DoOF6bQ9aQykFqqsHWSvCrnJ/Cj/lnFL/OABVuwCXJ5q3/sotSBdg4
-         p8OA==
+        bh=fGVMmGP8qLWqxfzlvKNYjiwykEo01hrsV+jCrcf2K9A=;
+        b=fOsAgPf8o6Dbhq3uqWlVbEOlFNhmZSJvTgrDnSpAF/JcfY7XTI+pTsL+8B7RwdJajg
+         8/ZW9B50SAuqcQ5ePSKTa2S+0n+SHk7n2QJV2Uk/G8cXqZx+0FBr8wnt8Gspz5Jn0nXR
+         b/7TP3jV144sT4gCZhqxdl+VwK+wPQ9nlhMWwpSm3qMpueE19aYFrf08f8PgWnzI4eJ6
+         q5cC/Xu+GFoPi+Zv89RV9aMKtC5uD6r07NMI70W8FCCzl2S6nc9/tTgct4LXethwme1I
+         0wxdA/42h9lzA7ix5Q6r1YD55fqDQjNXo+9bW+bCK6LWmglgnOwjSLVfLFnQFZX0jYGN
+         xlsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ylgfgCTB63uVvdacThJs9TcQmae/fWoutKmKR8VmUn4=;
-        b=aQjjmfDPFpHSFir5H54/2BD3Jady5QjLjz47yz9ltTyZznmMNkfGxpFSPluUtiRl+s
-         dqDm3COZ39Zy8dGizxdz/2YI5L5nY9pex9aOncjYm/zz09/pegCxDM3tryXMqKkjtw8l
-         YYbq0pZiZnT75mW1ShxrQa5eYFHWzR0GsLBXKx/PJ9987JUiXzeB3KzUbZrl7J1LIIkO
-         sRlYjwJHpsq3xE4dLpSyAJERc0UVPGsUCyPkF0/ozDSGWR5ia8espext628/7FGXmZ++
-         +2tJe8aWEKwE2siu8+iYANlmfkvr+ImKwjqaoCfrBG5DrQaU7Pg/hrArYeQ9CEKrLbcz
-         r0Aw==
-X-Gm-Message-State: AOAM533kHvTZLyK3oL9MzTXAPgkJj8KGQva/0y7Gi65PJfKuSmZKJR8X
-        fpR6DZ32libwG/ZStXiszwVENJzhEMNGeiEbjIyXNQ==
-X-Google-Smtp-Source: ABdhPJyTA/qdCYB5+347wvSUfF0S0QefLWSkq+r4WoEHhHvTfIvW8GVDcnUKBnDhsKr6eX5RccpxInyNQNh1cYXazl8=
-X-Received: by 2002:a17:90a:a895:: with SMTP id h21mr13280750pjq.13.1618632833248;
- Fri, 16 Apr 2021 21:13:53 -0700 (PDT)
+        bh=fGVMmGP8qLWqxfzlvKNYjiwykEo01hrsV+jCrcf2K9A=;
+        b=q78PycLZtV8JFchyAmx924mFIJtDIgCPL0b6gsA8wskUwAiTyDDhngY/ABrdV5fUGx
+         n9tVcGvJVKvi8tfMlvrxaID1oYRyPd7KXLmuW/sfiP67lWSN85JZsVD6bVtuyApNm8Yn
+         KIX1hNPVo7cfa37B6oliskgz05k+qzwYS07onz4Wbv+YDTyDj+oXCLj/ulCR3wAoJIJS
+         DuTipskjoidZWP55sFd0SsM81B0Snu1I89lzKkPqM8UKSN6HYRvKFbKBlNaUCB8Xb/vE
+         4KAQu4qd/WGdoCWR7wa8vG2WRHuzhBVkYSVeSLKb63V9c41oVisu3sR6t3NjxRIeWEGS
+         roAQ==
+X-Gm-Message-State: AOAM530beP03vts8w1slT8F/Q85VUvzyJXEZ7/6sOlZxn5vQ48/hk70q
+        Xg0eA9iVLo+XPd0K54JkYEF52x46e3VsQtjJsqXYJw==
+X-Google-Smtp-Source: ABdhPJyB5dG7lvpLgm/JXqI0ZZJiAvl68+1WjW8NOUNoozxo70lJ+PFqZkzI7DVVieLWqqR8Cg4J0DDn0aW+uJj9ADM=
+X-Received: by 2002:a2e:bb95:: with SMTP id y21mr1452149lje.510.1618633008874;
+ Fri, 16 Apr 2021 21:16:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210415084005.25049-1-songmuchun@bytedance.com>
- <20210415084005.25049-6-songmuchun@bytedance.com> <33a4f2fe-72c2-a3a1-9205-461ddde9b162@oracle.com>
-In-Reply-To: <33a4f2fe-72c2-a3a1-9205-461ddde9b162@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sat, 17 Apr 2021 12:13:17 +0800
-Message-ID: <CAMZfGtWXpTfeHeuHJdX5hjd03sNabZeh7Uzw7sPqgOFCWQDDZA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v20 5/9] mm: hugetlb: defer freeing of
- HugeTLB pages
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, bp@alien8.de,
-        X86 ML <x86@kernel.org>, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20210416180427.1545645-1-dlatypov@google.com>
+In-Reply-To: <20210416180427.1545645-1-dlatypov@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Sat, 17 Apr 2021 12:16:37 +0800
+Message-ID: <CABVgOS=A2jBjyspJHLK7Pc3+2HzK6NWFKDtejCVO88UnLySRig@mail.gmail.com>
+Subject: Re: [PATCH v6] lib: add basic KUnit test for lib/math
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 7:56 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+On Sat, Apr 17, 2021 at 2:04 AM Daniel Latypov <dlatypov@google.com> wrote:
 >
-> On 4/15/21 1:40 AM, Muchun Song wrote:
-> > In the subsequent patch, we should allocate the vmemmap pages when
-> > freeing a HugeTLB page. But update_and_free_page() can be called
-> > under any context, so we cannot use GFP_KERNEL to allocate vmemmap
-> > pages. However, we can defer the actual freeing in a kworker to
-> > prevent from using GFP_ATOMIC to allocate the vmemmap pages.
+> Add basic test coverage for files that don't require any config options:
+> * part of math.h (what seem to be the most commonly used macros)
+> * gcd.c
+> * lcm.c
+> * int_sqrt.c
+> * reciprocal_div.c
+> (Ignored int_pow.c since it's a simple textbook algorithm.)
 >
-> Thanks!  I knew we would need to introduce a kworker for this when I
-> removed the kworker previously used in free_huge_page.
-
-Yeah, but another choice is using GFP_ATOMIC to allocate vmemmap
-pages when we are in an atomic context. If not atomic context, just
-use GFP_KERNEL. In this case, we can drop kworker.
-
+> These tests aren't particularly interesting, but they
+> * provide short and simple examples of parameterized tests
+> * provide a place to add tests for any new files in this dir
+> * are written so adding new test cases to cover edge cases should be easy
+>   * looking at code coverage, we hit all the branches in the .c files
 >
-> > The __update_and_free_page() is where the call to allocate vmemmmap
-> > pages will be inserted.
->
-> This patch adds the functionality required for __update_and_free_page
-> to potentially sleep and fail.  More questions will come up in the
-> subsequent patch when code must deal with the failures.
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> Reviewed-by: David Gow <davidgow@google.com>
+> ---
 
-Right. More questions are welcome.
+Thanks: I've tested this version, and am happy with it. A part of me
+still kind-of would like there to be names for the parameters, but I
+definitely understand that it doesn't really work well for the lcm and
+gcd cases where we're doing both (a,b) and (b,a). So let's keep it
+as-is.
 
->
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  mm/hugetlb.c         | 73 ++++++++++++++++++++++++++++++++++++++++++++++++----
-> >  mm/hugetlb_vmemmap.c | 12 ---------
-> >  mm/hugetlb_vmemmap.h | 17 ++++++++++++
-> >  3 files changed, 85 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > index 923d05e2806b..eeb8f5480170 100644
-> > --- a/mm/hugetlb.c
-> > +++ b/mm/hugetlb.c
-> > @@ -1376,7 +1376,7 @@ static void remove_hugetlb_page(struct hstate *h, struct page *page,
-> >       h->nr_huge_pages_node[nid]--;
-> >  }
-> >
-> > -static void update_and_free_page(struct hstate *h, struct page *page)
-> > +static void __update_and_free_page(struct hstate *h, struct page *page)
-> >  {
-> >       int i;
-> >       struct page *subpage = page;
-> > @@ -1399,12 +1399,73 @@ static void update_and_free_page(struct hstate *h, struct page *page)
-> >       }
-> >  }
-> >
-> > +/*
-> > + * As update_and_free_page() can be called under any context, so we cannot
-> > + * use GFP_KERNEL to allocate vmemmap pages. However, we can defer the
-> > + * actual freeing in a workqueue to prevent from using GFP_ATOMIC to allocate
-> > + * the vmemmap pages.
-> > + *
-> > + * free_hpage_workfn() locklessly retrieves the linked list of pages to be
-> > + * freed and frees them one-by-one. As the page->mapping pointer is going
-> > + * to be cleared in free_hpage_workfn() anyway, it is reused as the llist_node
-> > + * structure of a lockless linked list of huge pages to be freed.
-> > + */
-> > +static LLIST_HEAD(hpage_freelist);
-> > +
-> > +static void free_hpage_workfn(struct work_struct *work)
-> > +{
-> > +     struct llist_node *node;
-> > +
-> > +     node = llist_del_all(&hpage_freelist);
-> > +
-> > +     while (node) {
-> > +             struct page *page;
-> > +             struct hstate *h;
-> > +
-> > +             page = container_of((struct address_space **)node,
-> > +                                  struct page, mapping);
-> > +             node = node->next;
-> > +             page->mapping = NULL;
-> > +             h = page_hstate(page);
->
-> The VM_BUG_ON_PAGE(!PageHuge(page), page) in page_hstate is going to
-> trigger because a previous call to remove_hugetlb_page() will
-> set_compound_page_dtor(page, NULL_COMPOUND_DTOR)
+Hopefully we can get these in for 5.13!
 
-Sorry, I did not realise that. Thanks for your reminder.
-
->
-> Note how h(hstate) is grabbed before calling update_and_free_page in
-> existing code.
->
-> We could potentially drop the !PageHuge(page) in page_hstate.  Or,
-> perhaps just use 'size_to_hstate(page_size(page))' in free_hpage_workfn.
-
-I prefer not to change the behavior of page_hstate(). So I
-should use 'size_to_hstate(page_size(page))' directly.
-
-Thanks Mike.
-
-
-> --
-> Mike Kravetz
+Cheers,
+-- David
