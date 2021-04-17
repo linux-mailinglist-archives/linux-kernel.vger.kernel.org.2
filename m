@@ -2,105 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C343631A0
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 19:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 376463631A6
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 19:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236821AbhDQRtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 13:49:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236643AbhDQRtp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 13:49:45 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51623C061574;
-        Sat, 17 Apr 2021 10:49:18 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id e7so20775797wrs.11;
-        Sat, 17 Apr 2021 10:49:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gMhNbNGvJIy0W54t2+jjd5JvuAH30UWhJb9UCM3Fxt0=;
-        b=QNgw8v1ODQ3popOSFT98BMtFTy2lrtW8i48CVEVxG4v2bh5CEilJ1jDNmncMac5W0I
-         Vi0+aA3LiEpkCxZ3o3Lj2x+PdJbDstXZofauACi85ffINBtEybopFOnmAWndkzQBqumP
-         MYoKs2Ukz6kOE0m6VuFparSXUncmDhI2wAvt616JxLwJOmMRFns3Ok9u2D4bZepKfsML
-         yVJs8tcVNwKaDBDT/JdzseNlahAlNVs4Mg+UJiQImi7fjlvVoOaKehazrnpfwXfBfl8V
-         cQpkiYlCv77bl7rB8NtVwaoG8MPGftpq44WSgiaf/uyW+oGGNS2FzgDmIv0Z/O0xJEFJ
-         4Tcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gMhNbNGvJIy0W54t2+jjd5JvuAH30UWhJb9UCM3Fxt0=;
-        b=jXP1LqROayXCGIeAW9poAaskkLifU5xCLDV67LEeOdWNTqgfUy43HPEApA3B87XKvo
-         ATDXf39kST8+93gtC4iVmlPGI0Eb89ui3SycW6LGR32xyiHzqCHC+QJukxN+r7BaNGBn
-         LKg9A8itUCiEh8nl2xrIDHEgqrlP9sFbsRWFlb09rJZ3+ut29kQiMmG3RXrcr/4YxCZl
-         k6x2TT8VWslX+wTmCbBJmxpXoL6aGEligQlsFjTfnvd8xWV4EgstjPtBz7DG1NJRo3AJ
-         ZmZm4unDRSlBq+6e0fFavOMB6sAjLAyjkZlhD9zGbf+trU6NrxK8X2jEf0n43ieCOqKG
-         Di9A==
-X-Gm-Message-State: AOAM532TXs+0xoFqbesr6XI/nlrHWXWVc8jNU84B3DGk2097YQcDFLpY
-        /UZC+MR1crI8X+gtpP5bIq2tU5BB+VcVHmMxw/gW/4AYCsD7CQ==
-X-Google-Smtp-Source: ABdhPJzZ03PjLvSbr+EYaGObqqYd6gtKUzZhFhFFqRCVQqnl3bd+oCaXlHlIsjYz7jpf/2N8aX8WRprUkQrNrPegMV4=
-X-Received: by 2002:a5d:4412:: with SMTP id z18mr5508193wrq.28.1618681757094;
- Sat, 17 Apr 2021 10:49:17 -0700 (PDT)
+        id S236890AbhDQRyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 13:54:37 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:30719 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236692AbhDQRyf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 13:54:35 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618682049; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=WdPueMETllMURIOix1ZcNxcr/xst331JFouT0N99A6U=;
+ b=KEo7+gfOV3IU4FjsupnbFt1HGcC+CxF6JcUMgfyzA8P01Lds5kc37BxvZ23XCQNso/GCtwJi
+ WDoY6UHi+kWyWn3ChJY8OWR2m3mYiDk0jRRFALlS7T4awC4BrlyQsXwMqkGwKbOK9ukgvXyv
+ i37r9AUxT0i9npQ+i7yY2JNRHUI=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 607b20c0f34440a9d42a53a8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 17 Apr 2021 17:54:08
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C53CBC433D3; Sat, 17 Apr 2021 17:54:08 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D29D7C433F1;
+        Sat, 17 Apr 2021 17:54:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D29D7C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210417161912.62811-1-caleb@connolly.tech>
-In-Reply-To: <20210417161912.62811-1-caleb@connolly.tech>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Sat, 17 Apr 2021 10:52:49 -0700
-Message-ID: <CAF6AEGv2701e+FMKX12+rHYwLpv06-kAo364Us7wEw6pAoC7Dg@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm: always parse interconnects
-To:     Caleb Connolly <caleb@connolly.tech>
-Cc:     Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kalyan Thota <kalyant@codeaurora.org>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rob Clark <robdclark@chromium.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] mwifiex: Remove unneeded variable: "ret"
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210317063353.1055-1-zuoqilin1@163.com>
+References: <20210317063353.1055-1-zuoqilin1@163.com>
+To:     zuoqilin1@163.com
+Cc:     amitkarwar@gmail.com, ganapathi017@gmail.com,
+        sharvari.harisangam@nxp.com, huxinming820@gmail.com,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zuoqilin <zuoqilin@yulong.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210417175408.C53CBC433D3@smtp.codeaurora.org>
+Date:   Sat, 17 Apr 2021 17:54:08 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 9:21 AM Caleb Connolly <caleb@connolly.tech> wrote:
->
-> The WARN_ON in dpu_runtime_resume() fires constantly on non-SC7180
-> platforms. As SDM845 now has interconnects hooked up we should always
-> try and parse them.
->
-> Fixes: 627dc55c273d ("drm/msm/disp/dpu1: icc path needs to be set before dpu runtime resume")
-> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+zuoqilin1@163.com wrote:
 
-I believe this series in msm-next already solves this
+> From: zuoqilin <zuoqilin@yulong.com>
+> 
+> Remove unneeded variable: "ret"
+> 
+> Signed-off-by: zuoqilin <zuoqilin@yulong.com>
 
-https://patchwork.freedesktop.org/series/88644/
+Patch applied to wireless-drivers-next.git, thanks.
 
-BR,
--R
+c81852a48e13 mwifiex: Remove unneeded variable: "ret"
 
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> index 85f2c3564c96..fb061e666faa 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> @@ -933,8 +933,7 @@ static int dpu_kms_hw_init(struct msm_kms *kms)
->                 DPU_DEBUG("REG_DMA is not defined");
->         }
->
-> -       if (of_device_is_compatible(dev->dev->of_node, "qcom,sc7180-mdss"))
-> -               dpu_kms_parse_data_bus_icc_path(dpu_kms);
-> +       dpu_kms_parse_data_bus_icc_path(dpu_kms);
->
->         pm_runtime_get_sync(&dpu_kms->pdev->dev);
->
-> --
-> 2.30.2
->
->
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210317063353.1055-1-zuoqilin1@163.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
