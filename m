@@ -2,268 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 592F7363089
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 16:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADFC036308C
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 16:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236405AbhDQOK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 10:10:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42533 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236058AbhDQOK2 (ORCPT
+        id S236465AbhDQONt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 10:13:49 -0400
+Received: from mail-m121142.qiye.163.com ([115.236.121.142]:17260 "EHLO
+        mail-m121142.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236287AbhDQONp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 10:10:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618668601;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jS6gcU0zW/ISDMDIvxFLcjXPgIR+GWA8fBcDp8K5zUU=;
-        b=M9YFN3ZtB0nkj9P+sIvlZTpmKrl2FAw1X4zBiIovPzCOrKMLqIgvsL+HRKBzMa7ZxIiwVD
-        JRB7y9R8u7ByoldNWU1rzd6NvxshKPCDmJBVFfI7eYx1nWn5XeYjqx18nRQsq5+7GXsdtk
-        rKsUwAnQG3o7Af63qttRAO/TCzZn5Mw=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-196-zj2m0unjOxe6jDNE1NzZjQ-1; Sat, 17 Apr 2021 10:09:59 -0400
-X-MC-Unique: zj2m0unjOxe6jDNE1NzZjQ-1
-Received: by mail-qk1-f199.google.com with SMTP id h23-20020a05620a0537b02902e08ab174dbso1105513qkh.19
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 07:09:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jS6gcU0zW/ISDMDIvxFLcjXPgIR+GWA8fBcDp8K5zUU=;
-        b=Cl59dn2oDX6yz8uXNJ3wrJ/DlQvZwAIvK3ZsVSYsBv6uGdz9iBhFlrRtSwsv/jkqp2
-         SSDyGTRt7BHoJ1FQDxN8NLrF/eXzsHKc4AOUQH1b4qHPaAqPbf9ox+jxzNlqxXP0UCfi
-         P3WNGcoyBMuB5W7PHumZnWMk+yY0LULHw1qS2aP48vSBIA1o65C4Uty8k1600FxHrdSA
-         csvX6eqrDcJyEr5kY2msuM2Dtjoh8+8mf1CLr8Inrx8bBAjMRKkAhaH4ZxkCED/8nj6C
-         8IENcbRdvl3mj9162t/xDHHtpWisMuNdFDtPtGkSzbn+xqWOVEQuyY5j3Pzk8tqvnnjy
-         8xEg==
-X-Gm-Message-State: AOAM531yiyL89/UUKOQ/nqLIM/H+L4il1WqFRAGJVHMWY3aPg12E8uQ+
-        RZQcBNvCbETU5Y+bgaPZOAbUU3tWuTBb4pd75Pepzg9L0VUJO7Or4hsAXW4VZJdMBwTwzBYErSZ
-        iJy9XyZ4pbECs7KmGUeZMJb8t
-X-Received: by 2002:ac8:6711:: with SMTP id e17mr3846143qtp.139.1618668598936;
-        Sat, 17 Apr 2021 07:09:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxwAwFY81d7batTgRNwYqmKQ0Wbywvgn18Mz3Drx+qUeJvOqgt2pxy8AbjoBogR7HfZLBKxkg==
-X-Received: by 2002:ac8:6711:: with SMTP id e17mr3846119qtp.139.1618668598533;
-        Sat, 17 Apr 2021 07:09:58 -0700 (PDT)
-Received: from xz-x1 (bras-base-toroon474qw-grc-88-174-93-75-154.dsl.bell.ca. [174.93.75.154])
-        by smtp.gmail.com with ESMTPSA id h7sm5618220qtj.15.2021.04.17.07.09.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Apr 2021 07:09:57 -0700 (PDT)
-Date:   Sat, 17 Apr 2021 10:09:56 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Jones <drjones@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [PATCH v2] kvm/selftests: Fix race condition with dirty_log_test
-Message-ID: <20210417140956.GV4440@xz-x1>
-References: <20210413213641.23742-1-peterx@redhat.com>
- <f5f5f2c8-6edd-129d-b570-47d8eaca94c0@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f5f5f2c8-6edd-129d-b570-47d8eaca94c0@redhat.com>
+        Sat, 17 Apr 2021 10:13:45 -0400
+Received: from ubuntu.localdomain (unknown [36.152.145.182])
+        by mail-m121142.qiye.163.com (Hmail) with ESMTPA id 2F07080139;
+        Sat, 17 Apr 2021 22:13:15 +0800 (CST)
+From:   zhouchuangao <zhouchuangao@vivo.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Michal Hocko <mhocko@suse.com>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        zhouchuangao <zhouchuangao@vivo.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] kernel/hung_task: Add a whitelist and blacklist mechanism.
+Date:   Sat, 17 Apr 2021 07:13:01 -0700
+Message-Id: <1618668783-39601-1-git-send-email-zhouchuangao@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGR5LSVZDQhpCHU5ITk0eSUlVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NEk6Qhw5PD8OSxcRHRg*Pxop
+        MExPCzJVSlVKTUpDTU1DTEJOQkpCVTMWGhIXVQETFA4YEw4aFRwaFDsNEg0UVRgUFkVZV1kSC1lB
+        WUhNVUpOSVVKT05VSkNJWVdZCAFZQUxNTkg3Bg++
+X-HM-Tid: 0a78e02db6aeb037kuuu2f07080139
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paolo,
+The main purpose of this patch is to add a whitelist and blacklist
+mechanism to the hung task thread.
 
-Please hold-on with this patch since I got another report that this patch can
-still trigger test failure if even heavier workload (e.g., "taskset -c 0
-./dirty_log_test" plus another one or multiple "taskset -c 0 while :; do:;
-done").  So I plan to do it in another way.  I tested longer yesterday but
-haven't updated this patch yet.  More below.
+1. Add a /sys/module/hung_task/parameters/hung_seconds interface,
+so you can write a specific time to 'hung_seconds' to hang a shell
+process for a while. This interface is convenient for us to debug
+the function of hung task thread.
+eg:
+echo 100 > /sys/module/hung_task/parameters/hung_seconds
+This will put the current shell process into D state for 100s.
 
-On Sat, Apr 17, 2021 at 02:59:48PM +0200, Paolo Bonzini wrote:
-> On 13/04/21 23:36, Peter Xu wrote:
-> > This patch closes this race by allowing the main thread to give the vcpu thread
-> > chance to do a VMENTER to complete that write operation.  It's done by adding a
-> > vcpu loop counter (must be defined as volatile as main thread will do read
-> > loop), then the main thread can guarantee the vcpu got at least another VMENTER
-> > by making sure the guest_vcpu_loops increases by 2.
-> > 
-> > Dirty ring does not need this since dirty_ring_last_page would already help
-> > avoid this specific race condition.
-> 
-> Just a nit, the comment and commit message should mention KVM_RUN rather
-> than vmentry; it's possible to be preempted many times in vcpu_enter_guest
-> without making progress, but those wouldn't return to userspace and thus
-> would not update guest_vcpu_loops.
+2. Add whitelist and blacklist. If a D state process is on the
+whitelist, it will skip checking for that process. In contrast, if
+the process is on a blacklist, panic is triggered.
+Different use scenarios can make different whitelist and blacklist.
 
-But what I really wanted to emphasize is the vmentry point rather than KVM_RUN,
-e.g., KVM_RUN can return without an vmentry, while the vmentry is the exactly
-point that data will be flushed.
+eg:
+In Android system, we usually and some processes to the whitelist.
+static task_t task_whitelist[] = {
+	{"mdrt_thread", HUNG_TASK_WHITELIST},
+	{"chre_kthread", HUNG_TASK_WHITELIST},
+	{"scp_power_reset", HUNG_TASK_WHITELIST},
+	{"ccci_fsm1", HUNG_TASK_WHITELIST},
+	{"qos_ipi_recv", HUNG_TASK_WHITELIST},
+	{NULL, 0},
+};
 
-> 
-> Also, volatile is considered harmful even in userspace/test code[1].
-> Technically rather than volatile one should use an atomic load (even a
-> relaxed one), but in practice it's okay to use volatile too *for this
-> specific use* (READ_ONCE/WRITE_ONCE are volatile reads and writes as well).
-> If the selftests gained 32-bit support, one should not use volatile because
-> neither reads or writes to uint64_t variables would be guaranteed to be
-> atomic.
+3. Add a new member hung_state to task_struct to identify the type
+of the D state process being detected.
+A value of 0x1(HUNG_TASK_WHITELIST) indicates that the process is
+on the whitelist.
+A value of 0x2(HUNG_TASK_BLACKLIST) indicates that the process is
+on the blacklist.
+The remaining bits are reserved, and there may be other scenarios
+entering the D state that need to be added to hung_state.
 
-Indeed!  I'll start to use atomics.
+Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
+---
+ include/linux/sched.h |  1 +
+ kernel/hung_task.c    | 88 +++++++++++++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 87 insertions(+), 2 deletions(-)
 
-Regarding why this patch won't really solve all race conditions... The problem
-is I think one guest memory write operation (of this specific test) contains a
-few micro-steps when page is during kvm dirty tracking (here I'm only
-considering write-protect rather than pml but pml should be similar at least
-when the log buffer is full):
-
-  (1) Guest read 'iteration' number into register, prepare to write, page fault
-  (2) Set dirty bit in either dirty bitmap or dirty ring
-  (3) Return to guest, data written
-
-When we verify the data, we assumed that all these steps are "atomic", say,
-when (1) happened for this page, we assume (2) & (3) must have happened.  We
-had some trick to workaround "un-atomicity" of above three steps, as this patch
-wanted to fix atomicity of step (2)+(3) by explicitly letting the main thread
-wait for at least one vmenter of vcpu thread, which should work.  However what
-I overlooked is probably that we still have race when (1) and (2) can be
-interrupted.
-
-As an example of how step (1) and (2) got interrupted, I simply tried to trace
-kvm_vcpu_mark_page_dirty() and dump stack for vmexit cases, then we can see at
-least a bunch of cases where vcpu can be scheduled out even before setting the
-dirty bit:
-
-@out[
-    __schedule+1742
-    __schedule+1742
-    __cond_resched+52
-    kmem_cache_alloc+583
-    kvm_mmu_topup_memory_cache+33
-    direct_page_fault+237
-    kvm_mmu_page_fault+103
-    vmx_handle_exit+288
-    vcpu_enter_guest+2460
-    kvm_arch_vcpu_ioctl_run+325
-    kvm_vcpu_ioctl+526
-    __x64_sys_ioctl+131
-    do_syscall_64+51
-    entry_SYSCALL_64_after_hwframe+68
-]: 4
-@out[
-    __schedule+1742
-    __schedule+1742
-    __cond_resched+52
-    down_read+14
-    get_user_pages_unlocked+90
-    hva_to_pfn+206
-    try_async_pf+132
-    direct_page_fault+320
-    kvm_mmu_page_fault+103
-    vmx_handle_exit+288
-    vcpu_enter_guest+2460
-    kvm_arch_vcpu_ioctl_run+325
-    kvm_vcpu_ioctl+526
-    __x64_sys_ioctl+131
-    do_syscall_64+51
-    entry_SYSCALL_64_after_hwframe+68
-]: 23
-@out[
-    __schedule+1742
-    __schedule+1742
-    __cond_resched+52
-    __alloc_pages+663
-    alloc_pages_vma+128
-    wp_page_copy+773
-    __handle_mm_fault+3155
-    handle_mm_fault+151
-    __get_user_pages+664
-    get_user_pages_unlocked+197
-    hva_to_pfn+206
-    try_async_pf+132
-    direct_page_fault+320
-    kvm_mmu_page_fault+103
-    vmx_handle_exit+288
-    vcpu_enter_guest+2460
-    kvm_arch_vcpu_ioctl_run+325
-    kvm_vcpu_ioctl+526
-    __x64_sys_ioctl+131
-    do_syscall_64+51
-    entry_SYSCALL_64_after_hwframe+68
-]: 1406
-@out[
-    __schedule+1742
-    __schedule+1742
-    __cond_resched+52
-    hva_to_pfn+157
-    try_async_pf+132
-    direct_page_fault+320
-    kvm_mmu_page_fault+103
-    vmx_handle_exit+288
-    vcpu_enter_guest+2460
-    kvm_arch_vcpu_ioctl_run+325
-    kvm_vcpu_ioctl+526
-    __x64_sys_ioctl+131
-    do_syscall_64+51
-    entry_SYSCALL_64_after_hwframe+68
-]: 2579
-@out[
-    __schedule+1742
-    __schedule+1742
-    __cond_resched+52
-    mmu_notifier_invalidate_range_start+9
-    wp_page_copy+296
-    __handle_mm_fault+3155
-    handle_mm_fault+151
-    __get_user_pages+664
-    get_user_pages_unlocked+197
-    hva_to_pfn+206
-    try_async_pf+132
-    direct_page_fault+320
-    kvm_mmu_page_fault+103
-    vmx_handle_exit+288
-    vcpu_enter_guest+2460
-    kvm_arch_vcpu_ioctl_run+325
-    kvm_vcpu_ioctl+526
-    __x64_sys_ioctl+131
-    do_syscall_64+51
-    entry_SYSCALL_64_after_hwframe+68
-]: 3309
-@out[
-    __schedule+1742
-    __schedule+1742
-    __cond_resched+52
-    __get_user_pages+530
-    get_user_pages_unlocked+197
-    hva_to_pfn+206
-    try_async_pf+132
-    direct_page_fault+320
-    kvm_mmu_page_fault+103
-    vmx_handle_exit+288
-    vcpu_enter_guest+2460
-    kvm_arch_vcpu_ioctl_run+325
-    kvm_vcpu_ioctl+526
-    __x64_sys_ioctl+131
-    do_syscall_64+51
-    entry_SYSCALL_64_after_hwframe+68
-]: 4499
-
-It means... it can always happen that the vcpu reads a very old "iteration"
-value in step 1 and it doesn't set dirty bit (step 2) or write it to memory
-(step 3) until, say, 1 year later.. :) Then the verify won't pass since the
-main thread iteration has been much newer, then main thread shouts at us.
-
-So far I don't see an easy way to guarantee all steps 1-3 atomicity (as this
-patch only achieved steps 2-3), but to sync at the GUEST_SYNC() point of guest
-code when we do verification of the dirty bits.  Drew mentioned something like
-this previously in the bugzilla, I wanted to give it a shot with a lighter
-sync, but seems not working.
-
-Paolo, Drew, Sean - feel free to shoot if any of you have a better idea.
-
-As I mentioned I tested v2 of this patch and so far no issue found.  I'll post
-it later today, so maybe we can continue discuss there too (btw, I also found
-another signal race there; so I'll post a series with 2 patches).
-
-Thanks,
-
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 8d5264b..8ffbdf6 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -973,6 +973,7 @@ struct task_struct {
+ 	unsigned long			last_switch_count;
+ 	unsigned long			last_switch_time;
+ 	unsigned long			killed_time;
++	unsigned long			hung_state;
+ #endif
+ 	/* Filesystem information: */
+ 	struct fs_struct		*fs;
+diff --git a/kernel/hung_task.c b/kernel/hung_task.c
+index bb2e3e1..952a44c 100644
+--- a/kernel/hung_task.c
++++ b/kernel/hung_task.c
+@@ -72,6 +72,57 @@ unsigned int __read_mostly sysctl_hung_task_all_cpu_backtrace;
+ unsigned int __read_mostly sysctl_hung_task_panic =
+ 				CONFIG_BOOTPARAM_HUNG_TASK_PANIC_VALUE;
+ 
++#define HUNG_TASK_WHITELIST		0x1
++#define HUNG_TASK_BLACKLIST		0x2
++
++typedef struct {
++	char *task_comm;
++	unsigned long flag;
++} task_t;
++
++static task_t task_whitelist[] = {
++	{NULL, 0},
++};
++
++static task_t task_blacklist[] = {
++	{"init", HUNG_TASK_BLACKLIST},
++	{NULL, 0},
++};
++
++static bool task_in_blacklist(struct task_struct *tsk)
++{
++	task_t *info = NULL;
++
++	if (tsk->hung_state & HUNG_TASK_BLACKLIST)
++		return true;
++
++	for (info = task_blacklist; info->task_comm; info++) {
++		if (!strcmp(tsk->comm, info->task_comm)) {
++			tsk->hung_state |= HUNG_TASK_BLACKLIST;
++			return true;
++		}
++	}
++
++	return false;
++}
++
++static bool task_in_whitelist(struct task_struct *tsk)
++{
++	task_t *info = NULL;
++
++	if (tsk->hung_state & HUNG_TASK_WHITELIST)
++		return true;
++
++	for (info = task_whitelist; info->task_comm; info++) {
++		if (!strcmp(tsk->comm, info->task_comm)) {
++			tsk->hung_state |= HUNG_TASK_WHITELIST;
++			return true;
++		}
++	}
++
++	return false;
++}
++
+ static int
+ hung_task_panic(struct notifier_block *this, unsigned long event, void *ptr)
+ {
+@@ -111,6 +162,12 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
+ 	if (time_is_after_jiffies(t->last_switch_time + timeout * HZ))
+ 		return;
+ 
++	/* Check if process 't' is in the whitelist. */
++	if (task_in_whitelist(t)) {
++		pr_info("skip hung task: %s\n", t->comm);
++		return;
++	}
++
+ 	trace_sched_process_hang(t);
+ 
+ 	if (sysctl_hung_task_panic) {
+@@ -118,7 +175,6 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
+ 		hung_task_show_lock = true;
+ 		hung_task_call_panic = true;
+ 	}
+-
+ 	/*
+ 	 * Ok, the task did not get scheduled for more than 2 minutes,
+ 	 * complain:
+@@ -141,6 +197,12 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
+ 			hung_task_show_all_bt = true;
+ 	}
+ 
++	/* Check if process 't' is in the blacklist. */
++	if (task_in_blacklist(t)) {
++		pr_err("critical task blocked: (%d)%s\n", t->pid, t->comm);
++		hung_task_call_panic = true;
++	}
++
+ 	touch_nmi_watchdog();
+ }
+ 
+@@ -253,8 +315,10 @@ static void check_hung_uninterruptible_tasks(unsigned long timeout)
+ 		trigger_all_cpu_backtrace();
+ 	}
+ 
+-	if (hung_task_call_panic)
++	if (hung_task_call_panic) {
++		show_state_filter(TASK_UNINTERRUPTIBLE);
+ 		panic("hung_task: blocked tasks");
++	}
+ }
+ 
+ static long hung_timeout_jiffies(unsigned long last_checked,
+@@ -322,6 +386,7 @@ static int watchdog(void *dummy)
+ 	unsigned long hung_last_checked = jiffies;
+ 
+ 	set_user_nice(current, 0);
++	pr_info("khungtaskd started...\n");
+ 
+ 	for ( ; ; ) {
+ 		unsigned long timeout = sysctl_hung_task_timeout_secs;
+@@ -357,3 +422,22 @@ static int __init hung_task_init(void)
+ 	return 0;
+ }
+ subsys_initcall(hung_task_init);
++
++static int hung_task_test(const char *val, const struct kernel_param *kp)
++{
++	unsigned long sec = 0;
++	if (kstrtoul(val, 10, &sec))
++		return -EINVAL;
++
++	pr_info("Hung task Dsleep %ld s, start!\n", sec);
++	msleep(sec * 1000);
++	pr_info("Hung task Dsleep %ld s, end!\n", sec);
++
++	return 0;
++}
++
++static const struct kernel_param_ops hung_task_test_ops = {
++	.set = hung_task_test,
++};
++
++module_param_cb(hung_seconds, &hung_task_test_ops, NULL, 0600);
 -- 
-Peter Xu
+2.7.4
 
