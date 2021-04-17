@@ -2,100 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 852CF362F1F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 12:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3255362F2D
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 12:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236044AbhDQKRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 06:17:13 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:34586 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229972AbhDQKRL (ORCPT
+        id S236153AbhDQKUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 06:20:41 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:17357 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236093AbhDQKU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 06:17:11 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618654603;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3NXWguBIdanTM1mMJm6zQ6PV0EHjgoeyGYbzR/j6ivk=;
-        b=Jk4XNHYpy88REhvfVJBJTQZwLtk3ad6VYFjs4t36LgPAPkDBrCQaJEE3Bj2aIRcKLzSKIF
-        3VDHM41LJIE+9abFbCrx70IN3nO539IhTBsUcaBmeS8633jicpz2XDk8Mia42lK5lgty7h
-        IURc71glQcBezs3dDPK2Nvp24T/NlP8zGfjmHxPBq1tyAq5gDguHmTEchEop5SSoiO4aAF
-        FiW/kzDxMu1n2f9vTOp2zhIyBzLzQsHCWTqswc3agwIEWGCkCt+0h9MR0BHoFylHLxq37N
-        FAGL+zHtaSfF+i61Jgmdqk631Sjg0q1h4tmzrGY7i8+oOhDzbpMqZ3yiV4UeLQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618654603;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3NXWguBIdanTM1mMJm6zQ6PV0EHjgoeyGYbzR/j6ivk=;
-        b=f0HCme8IUTL9Jls6iUuXsmcFqhPwp+8/RCkxl7beGPROqivH1L7nOWx8/V8XsonAxdJlrq
-        7pjDQZnbJcdWFBCA==
-To:     Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH 05/15] x86: Implement function_nocfi
-In-Reply-To: <87fszpu92e.ffs@nanos.tec.linutronix.de>
-References: <20210416203844.3803177-1-samitolvanen@google.com> <20210416203844.3803177-6-samitolvanen@google.com> <20210416211855.GD22348@zn.tnic> <CABCJKud8TvzhcjHCpsrtCJ4B50ZUfaL48F42EhZ2zWKLteAc0Q@mail.gmail.com> <20210416220251.GE22348@zn.tnic> <CALCETrVTtKqD6fonUmT_qr0HJ0X9TWzLGq-wpm+A7XKyjn3W5g@mail.gmail.com> <20210416221414.GF22348@zn.tnic> <CALCETrUo+tR+YmfoBPWV9z_7QhU74=7tmCBD_zsfa24ZxNvfxg@mail.gmail.com> <202104161529.D9F98DA994@keescook> <87fszpu92e.ffs@nanos.tec.linutronix.de>
-Date:   Sat, 17 Apr 2021 12:16:43 +0200
-Message-ID: <875z0ltdv8.ffs@nanos.tec.linutronix.de>
+        Sat, 17 Apr 2021 06:20:27 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FMptC5ng1z7vcT;
+        Sat, 17 Apr 2021 18:17:39 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 17 Apr 2021 18:19:49 +0800
+From:   Yicong Yang <yangyicong@hisilicon.com>
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <coresight@lists.linaro.org>, <linux-pci@vger.kernel.org>
+CC:     <alexander.shishkin@linux.intel.com>, <helgaas@kernel.org>,
+        <gregkh@linuxfoundation.org>, <lorenzo.pieralisi@arm.com>,
+        <will@kernel.org>, <mark.rutland@arm.com>,
+        <mathieu.poirier@linaro.org>, <suzuki.poulose@arm.com>,
+        <mike.leach@linaro.org>, <leo.yan@linaro.org>,
+        <jonathan.cameron@huawei.com>, <song.bao.hua@hisilicon.com>,
+        <john.garry@huawei.com>, <prime.zeng@huawei.com>,
+        <liuqi115@huawei.com>, <zhangshaokun@hisilicon.com>,
+        <yangyicong@hisilicon.com>, <linuxarm@huawei.com>
+Subject: [PATCH RESEND 0/4] Add support for HiSilicon PCIe Tune and Trace device
+Date:   Sat, 17 Apr 2021 18:17:07 +0800
+Message-ID: <1618654631-42454-1-git-send-email-yangyicong@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
 Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17 2021 at 01:02, Thomas Gleixner wrote:
-> On Fri, Apr 16 2021 at 15:37, Kees Cook wrote:
->
->> On Fri, Apr 16, 2021 at 03:20:17PM -0700, Andy Lutomirski wrote:
->>> But obviously there is code that needs real function pointers.  How
->>> about making this a first-class feature, or at least hacking around it
->>> more cleanly.  For example, what does this do:
->>> 
->>> char entry_whatever[];
->>> wrmsrl(..., (unsigned long)entry_whatever);
->>
->> This is just casting. It'll still resolve to the jump table entry.
->>
->>> or, alternatively,
->>> 
->>> extern void func() __attribute__((nocfi));
->>
->> __nocfi says func() should not perform checking of correct jump table
->> membership for indirect calls.
->>
->> But we don't want a global marking for a function to be ignored by CFI;
->> we don't want functions to escape CFI -- we want specific _users_ to
->> either not check CFI for indirect calls (__nocfi) or we want specific
->> passed addresses to avoid going through the jump table
->> (function_nocfi()).
->
-> And that's why you mark entire files to be exempt without any rationale
-> why it makes sense.
+[RESEND with perf and coresight folks Cc'ed]
 
-The reason why you have to do that is because function_nocfi() is not
-provided by the compiler.
+HiSilicon PCIe tune and trace device (PTT) is a PCIe Root Complex
+integrated Endpoint (RCiEP) device, providing the capability
+to dynamically monitor and tune the PCIe traffic (tune),
+and trace the TLP headers (trace).
 
-So you need to hack around that with that macro which fails to work
-e.g. for the idt data arrays.
+PTT tune is designed for monitoring and adjusting PCIe link parameters.
+We provide several parameters of the PCIe link. Through the driver,
+user can adjust the value of certain parameter to affect the PCIe link
+for the purpose of enhancing the performance in certian situation.
 
-Is there any fundamental reason why the compiler does not provide that
-in a form which allows to use it everywhere?
+PTT trace is designed for dumping the TLP headers to the memory, which
+can be used to analyze the transactions and usage condition of the PCIe
+Link. Users can choose filters to trace headers, by either requester
+ID, or those downstream of a set of Root Ports on the same core of the
+PTT device. It's also supported to trace the headers of certain type and
+of certain direction.
 
-It's not too much asked from a tool which provides new functionality to
-provide it in a way which is usable.
+We use debugfs to expose the interface. For tune, one parameter is a
+debugfs file and user can set/get the value by reading/writing the
+file. For trace, we have several control files for the user to
+configure the trace parameters like filters, TLP type and format,
+the desired trace data size and so on. There is one data file for
+dumping the traced data to the user. The traced data maybe hundreds
+of megabytes so sysfs cannot support. The reason for debugfs rather
+than character device is that we don't want to have additional
+userspace tools. The operation through debugfs is easier and a bit
+like ftrace.
 
-Thanks,
+The reason for not using perf is because there is no current support
+for uncore tracing in the perf facilities. We have our own format
+of data and don't need perf doing the parsing. The setting through
+perf tools doesn't seem to be friendly as well. For example,
+we cannot count on perf to decode the usual format BDF number like
+<domain>:<bus>:<dev>.<fn>, which user can use to filter the TLP
+headers through the PTT device.
 
-        tglx
+A similar approach for implementing this function is ETM, which use
+sysfs for configuring and a character device for dumping data.
+
+Greg has some comments on our implementation and doesn't advocate
+to build driver on debugfs [1]. So I resend this series to
+collect more feedbacks on the implementation of this driver.
+
+Hi perf and ETM related experts, is it suggested to adapt this driver
+to perf? Or is the debugfs approach acceptable? Otherwise use
+sysfs + character device like ETM and use perf tools for decoding it?
+Any comments is welcomed.
+
+[1] https://lore.kernel.org/linux-pci/1617713154-35533-1-git-send-email-yangyicong@hisilicon.com/
+
+Yicong Yang (4):
+  hwtracing: Add trace function support for HiSilicon PCIe Tune and
+    Trace device
+  hwtracing: Add tune function support for HiSilicon PCIe Tune and Trace
+    device
+  docs: Add HiSilicon PTT device driver documentation
+  MAINTAINERS: Add maintainer for HiSilicon PTT driver
+
+ Documentation/trace/hisi-ptt.rst       |  326 +++++++
+ MAINTAINERS                            |    7 +
+ drivers/Makefile                       |    1 +
+ drivers/hwtracing/Kconfig              |    2 +
+ drivers/hwtracing/hisilicon/Kconfig    |   11 +
+ drivers/hwtracing/hisilicon/Makefile   |    2 +
+ drivers/hwtracing/hisilicon/hisi_ptt.c | 1636 ++++++++++++++++++++++++++++++++
+ 7 files changed, 1985 insertions(+)
+ create mode 100644 Documentation/trace/hisi-ptt.rst
+ create mode 100644 drivers/hwtracing/hisilicon/Kconfig
+ create mode 100644 drivers/hwtracing/hisilicon/Makefile
+ create mode 100644 drivers/hwtracing/hisilicon/hisi_ptt.c
+
+-- 
+2.8.1
+
