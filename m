@@ -2,157 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60775362CFD
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 04:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE1F362D00
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 04:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235491AbhDQCry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 22:47:54 -0400
-Received: from [43.250.32.171] ([43.250.32.171]:13286 "EHLO email.cn"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231997AbhDQCrw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 22:47:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=Date:From:To; bh=9svKhiJCSGJEfqRKWrQE5iQRWDKGyHTzP15kP
-        /2Be0Y=; b=TXVhYu0oWPlNPAIjyJvELIusrU5widLy8DG2XcFpWFzEwJUVn25Kd
-        6bSmDgdOA3I4aNJ97NEY9Y+oqPDiMh0vhx7yoHI0hgwxPX0n4rIEpdWbTIkiIwYi
-        pNb01BkH8sYTZKoQv8izk9lOCLt28+GyOQmc2IOkiKBfC2983IUC3g=
-Received: from bobwxc.top (unknown [120.238.248.129])
-        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgB36c8mTHpgJV5hAA--.23207S2;
-        Sat, 17 Apr 2021 10:47:04 +0800 (CST)
-Date:   Sat, 17 Apr 2021 10:47:02 +0800
-From:   "Wu X.C." <bobwxc@email.cn>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Alex Shi <alexs@kernel.org>,
-        Federico Vaga <federico.vaga@vaga.pv.it>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Tsugikazu Shibata <tshibata@ab.jp.nec.com>,
-        SeongJae Park <sjpark@amazon.de>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 0/2] Add a new translation tool scripts/trslt.py
-Message-ID: <20210417024702.GA21292@bobwxc.top>
-References: <cover.1618208899.git.bobwxc@email.cn>
- <871rbbi7pn.fsf@meer.lwn.net>
+        id S235369AbhDQCxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 22:53:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231997AbhDQCxP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 22:53:15 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5CC2C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 19:52:49 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id ot17-20020a17090b3b51b0290109c9ac3c34so17385726pjb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 19:52:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3y4uMJwxdfxzyakbODD1x0NzAbS7Yk2HNyccYDXmfCI=;
+        b=uhJmRC/aYBTjuTZ2C05qdctiZJlM6K2Ig6e358l38mvItPTVNPJ3EWIJ7wdzpJB7vT
+         3e/HSVZWbU+nI4+hXfwZckvT6bb14TlDq9eunjskYgGcNQ1qH4Lcw09LFddKDgYbhYCF
+         RAOWUn/MKlyD2nDbuEgMCLz4IBdvq5dQAtGJg+vcH9orrFRqHSnDSZ+Zua/A6i1cRvb2
+         FcflbOWw39G+FaGYnam0OICqLbAjA5ZhXpG+ww35/rmNZNbMX5nV+vLf06Xa8c5z/ieU
+         zWfQY8oUDJH8N+5qWpAaO3fXbn6JGwVhRqcQh7Lvf9jdfZlLG7FIIE8XMl3w5lJkMq5c
+         ukDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3y4uMJwxdfxzyakbODD1x0NzAbS7Yk2HNyccYDXmfCI=;
+        b=ph35MCZinilgfZRH02ZDPeTekGxqQe93i5PMwl62QbORnUkaPGyVo2ALOLaBdTtNrv
+         64cywE/Ws3jRlD1N01olZbbcOXk/nmgmTnU8eoNIkjTcKYyL8IdZRnL6CcErMW5klr8n
+         GFwVROyzTBuPA6/rwZBlBggT8GIFl2ifSsz838Vyw9UQtuu4NA9HjWYU+BUEOzdrR/GV
+         RPWFusT4mpgaGSGJKjJebIGco0xpBLE6Kzz4/ime0Cb4deSlnuWXjxzJZ1Txu9cddL0T
+         A60zDR/n2edkDcUp5cD+k8B+eY3OC5CAtu4LIcsqRywn4sClpiCPPhTcLlUIauOfZqtB
+         r2lw==
+X-Gm-Message-State: AOAM533kImL3QE8SZn5d+4MK7Yktj2fJQZ1iQ8TnfQZyjCVU2Q7fPyUT
+        PFhydtxl6QMTKV2ZQDHvmBDX13xgks//oV9Fi0GBcQ==
+X-Google-Smtp-Source: ABdhPJw/MdTLGomUJTFifNOlyECCO5Kfd1e6fcMYTr7DRYck2137jMjE8g4Kt+HVeQXO4eht//z+fqK0V19E4upYe6Q=
+X-Received: by 2002:a17:90a:a895:: with SMTP id h21mr12995333pjq.13.1618627969184;
+ Fri, 16 Apr 2021 19:52:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="0F1p//8PRICkK4MW"
-Content-Disposition: inline
-In-Reply-To: <871rbbi7pn.fsf@meer.lwn.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CM-TRANSID: LCKnCgB36c8mTHpgJV5hAA--.23207S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1kWFW8Kr43Jr4DXw1rCrg_yoW8tFWUpF
-        yrG3ZrKF4qqw42yr4Ikw4UXF1rAFn7Kw45Gry5trn3A398Jr92qF4rKryY9FWqqr9Yq3Wj
-        vw4jvrWDWF1DZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUgIb7Iv0xC_Kw4lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
-        cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
-        v20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j6r4UM28EF7xvwVC2
-        z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r4UJwAS0I0E0xvYzx
-        vE52x082IY62kv0487M2AExVA0xI801c8C04v7Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-        7VCjz48v1sIEY20_Cr1UJr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw2
-        8IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Cr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_
-        Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17
-        CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0
-        I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I
-        8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU
-        0xZFpf9x07jHBTOUUUUU=
-X-Originating-IP: [120.238.248.129]
-X-CM-SenderInfo: pere453f6hztlloou0/
+References: <20210416051407.54878-1-songmuchun@bytedance.com>
+ <20210416051407.54878-6-songmuchun@bytedance.com> <YHmrUaho1SLSCfk7@cmpxchg.org>
+In-Reply-To: <YHmrUaho1SLSCfk7@cmpxchg.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Sat, 17 Apr 2021 10:52:12 +0800
+Message-ID: <CAMZfGtVOATBUgP7ZiyM4w9twhd1-z-gTd865r+Lb0CPtt=ZJjg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2 5/8] mm: memcontrol: rename
+ lruvec_holds_page_lru_lock to page_matches_lruvec
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---0F1p//8PRICkK4MW
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Apr 15, 2021 at 03:00:36PM -0600, Jonathan Corbet wrote:
-> Wu XiangCheng <bobwxc@email.cn> writes:
->=20
-> > Hi all,
+On Fri, Apr 16, 2021 at 11:20 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> On Fri, Apr 16, 2021 at 01:14:04PM +0800, Muchun Song wrote:
+> > lruvec_holds_page_lru_lock() doesn't check anything about locking and is
+> > used to check whether the page belongs to the lruvec. So rename it to
+> > page_matches_lruvec().
 > >
-> > This set of patches aim to add a new translation tool - trslt.py, which
-> > can control the transltions version corresponding to source files.
-> >
-> > For a long time, kernel documentation translations lacks a way to contr=
-ol the
-> > version corresponding to the source files. If you translate a file and =
-then
-> > someone updates the source file, there will be a problem. It's hard to =
-know
-> > which version the existing translation corresponds to, and even harder =
-to sync
-> > them.=20
-> >
-> > The common way now is to check the date, but this is not exactly accura=
-te,
-> > especially for documents that are often updated. And some translators w=
-rite=20
-> > corresponding commit ID in the commit log for reference, it is a good w=
-ay,=20
-> > but still a little troublesome.
-> >
-> > Thus, the purpose of ``trslt.py`` is to add a new annotating tag to the=
- file
-> > to indicate corresponding version of the source file::
-> >
-> > .. translation_origin_commit: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-> >
-> > The script will automatically copy file and generate tag when creating =
-new
-> > translation, and give update suggestions based on those tags when updat=
-ing
-> > translations.
-> >
-> > More details please read doc in [Patch 2/2].
->=20
-> So, like Federico, I'm unconvinced about putting this into the
-> translated text itself.  This is metadata, and I'd put it with the rest
-> of the metadata.  My own suggestion would be a tag like:
->=20
->   Translates: 6161a4b18a66 ("docs: reporting-issues: make people CC the r=
-egressions list")
->=20
-> It would be an analogue to the Fixes tag in this regard; you could have
-> more than one of them if need be.
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>
+> The rename makes sense, since the previous name was defined by a
+> specific use case rather than what it does. That said, it did imply a
+> lock context that makes the test result stable. Without that the
+> function could use a short comment, IMO. How about:
+>
+> /* Test requires a stable page->memcg binding, see page_memcg() */
 
-Yes, that's also a good idea rather than add a tag to text itself.
+Make sense. I will add this comment.
 
->=20
-> I'm not sure we really need a script in the kernel tree for this; it
-> seems like what you really want is some sort of git commit hook.  That
-> said, if you come up with something useful, we can certainly find a
-> place for it.
+>
+> With that,
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Emmm, thought again.
-
-Maybe we just need a doc to tell people recommended practice, just put a
-script or hook in the doc.
-
-Use it or not, depend on themselves. That's may easier, but I'm worried
-about whether this loose approach will work better.
-
-Thanks!
-
-Wu X.C.
-
---0F1p//8PRICkK4MW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEERbo3U5kJpaCtFl1PtlsoEiKCsIUFAmB6TCIACgkQtlsoEiKC
-sIV0DQwAs6kC2TRcIs+42F2bspvSpcjeU3W05y/wwZPppem7GMUw5tyqs9kG/Qhm
-mnSbfiPzI6OqhZcYmuXKkZ6kZdRFc92QOlm17kiuhJd6dIanj3+6AfqSGHVmYyNJ
-H2VKs+nBvDDkYGtt/sF2iyee0jTnBRZ4d9bkP9nmfVqg7EMv1v/q17crfSaiEZ0A
-S8XndocCCRt2QaIMLJNWc+Zz3V0TYxo3xexJfQfnLIRlIiqkf0+tVBGEixTh4TJ2
-RXY2upHv+Em01alhDBpQw70hwKjMMRdboDlo9dK6GGNTeF/2Dn3HSXC2nvkBl3U6
-e2RFR9496z5cs7ilBSxGHjw0lTeNjmI7JFcIrVEFn/zagDK8seyOsjkX65XRO80W
-xtNqIHmVQTKzTwkYFMmqGhp5qPx6i8oyeQwMNunSwEY4v6xEOo/ykinbE7TiQQNp
-3GyizNMD1QImMLG/P4AbwKlafqsuLJh2+hIWAySOgVKon6nUfMkac/zYRnLbVf+Y
-rFTxKRaa
-=4rpE
------END PGP SIGNATURE-----
-
---0F1p//8PRICkK4MW--
-
+Thanks.
