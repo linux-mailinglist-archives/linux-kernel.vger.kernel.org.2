@@ -2,75 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9C7362FDE
+	by mail.lfdr.de (Postfix) with ESMTP id AA57A362FE0
 	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236249AbhDQMaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 08:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236058AbhDQMav (ORCPT
+        id S236279AbhDQMbz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 17 Apr 2021 08:31:55 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:40689 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236058AbhDQMby (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 08:30:51 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EBD3C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 05:30:25 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FMsqJ1ckGz9vG3;
-        Sat, 17 Apr 2021 22:30:19 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1618662620;
-        bh=mtQXXNJfragy4YQoBiwVomNkLwmcNxRqSSFA0RO5LCo=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=aCXQ421yZApjtSXo4wDJS5qyT1JaMFSEi8NEckR1sYexHW87ktiqBKTQh9rp4jq4B
-         b3RAJU5OL25nzAG9tJ/ylT8EjLNhIJeahLFUNn5ZaCnS6FES6iHeBq0pk4wPjiYnx6
-         iNwXBy/HK60pJlzELKvX1eyq8QWlGZOMjxAB7XSamDg7JqbFawr9Is+d6i4jNvqKiP
-         n41xrIzhRWrwW5XFQ6oobgw0u66Qz+LouPxrvvuv//RrfLT4aln0SI206UUVgWkTJs
-         /RJ+8l7g6MGSVIxx8L0/odoo8YM041S2FV3bD4zfpnH4Zbl4JaEGK+9LPn0//nSdqH
-         bSJUoxa3H5cGg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>
-Cc:     benh@kernel.crashing.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc/pseries: Add shutdown() to vio_driver and vio_bus
-In-Reply-To: <f326def4-0db0-f924-1700-dd7be3154153@linux.ibm.com>
-References: <20210402001325.939668-1-tyreld@linux.ibm.com>
- <f326def4-0db0-f924-1700-dd7be3154153@linux.ibm.com>
-Date:   Sat, 17 Apr 2021 22:30:14 +1000
-Message-ID: <87im4ldrft.fsf@mpe.ellerman.id.au>
+        Sat, 17 Apr 2021 08:31:54 -0400
+X-Originating-IP: 90.89.138.59
+Received: from xps13 (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr [90.89.138.59])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 2A81A240003;
+        Sat, 17 Apr 2021 12:31:24 +0000 (UTC)
+Date:   Sat, 17 Apr 2021 14:31:24 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: fix an error code in
+ nand_setup_interface()
+Message-ID: <20210417143124.6a79c71c@xps13>
+In-Reply-To: <20210417102426.GP6048@kadam>
+References: <YHaEEYg2DUFwnxSo@mwanda>
+        <20210416170040.4e467039@xps13>
+        <20210417102426.GP6048@kadam>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tyrel Datwyler <tyreld@linux.ibm.com> writes:
-> On 4/1/21 5:13 PM, Tyrel Datwyler wrote:
->> Currently, neither the vio_bus or vio_driver structures provide support
->> for a shutdown() routine.
->> 
->> Add support for shutdown() by allowing drivers to provide a
->> implementation via function pointer in their vio_driver struct and
->> provide a proper implementation in the driver template for the vio_bus
->> that calls a vio drivers shutdown() if defined.
->> 
->> In the case that no shutdown() is defined by a vio driver and a kexec is
->> in progress we implement a big hammer that calls remove() to ensure no
->> further DMA for the devices is possible.
->> 
->> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
->> ---
->
-> Ping... any comments, problems with this approach?
+Hi Dan,
 
-The kexec part seems like a bit of a hack.
+Dan Carpenter <dan.carpenter@oracle.com> wrote on Sat, 17 Apr 2021
+13:24:26 +0300:
 
-It also doesn't help for kdump, when none of the shutdown code is run.
+> On Fri, Apr 16, 2021 at 05:00:40PM +0200, Miquel Raynal wrote:
+> > Hi Dan,
+> > 
+> > Dan Carpenter <dan.carpenter@oracle.com> wrote on Wed, 14 Apr 2021
+> > 08:56:33 +0300:
+> >   
+> > > We should return an error code if the timing mode is not acknowledged
+> > > by the NAND chip.  
+> > 
+> > This truly is questionable (and I am not yet decided whether the answer
+> > should be yes or no).
+> > 
+> > Returning an error here would produce the entire boot sequence to fail,
+> > even though the NAND chip would work in mode 0.
+> > 
+> > Not returning an error would print the below warning (so the
+> > user/developer is warned) and continue the boot with the slowest
+> > timing interface.
+> > 
+> > Honestly I would be more in favor of letting things as they are
+> > because I don't think this may be considered as a buggy situation, but I
+> > am open to discussion.
+> >   
+> 
+> If we decided that the original code is correct then one way to silence
+> the warning would be to do:
+> 
+> 	if (tmode_param[0] != chip->best_interface_config->timings.mode) {
+> 		pr_warn("timing mode %d not acknowledged by the NAND chip\n",
+>  			chip->best_interface_config->timings.mode);
+> 		ret = 0;
+> 		goto err_reset_chip;
+> 	}
+> 
+> Setting "ret = 0;" right before the goto makes the code look more
+> intentional to human readers as well.
 
-How many drivers do we have? Can we just implement a proper shutdown for
-them?
+Absolutely right. Let's got for it then.
 
-cheers
+Cheers,
+Miquèl
