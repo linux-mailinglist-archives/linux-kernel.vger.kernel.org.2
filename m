@@ -2,89 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77272362F3C
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 12:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C88362F52
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 12:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235455AbhDQKcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 06:32:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51664 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230510AbhDQKcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 06:32:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D813A61209;
-        Sat, 17 Apr 2021 10:31:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618655513;
-        bh=bKkHYDWEnUxH4+NZsQzc9XdOBx/eAasVlApeofpvQ3M=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=F8vK55v7UAeYClMXwewtQLHQ0TzAI75Gda/Ijyqb1bmDwdQP0a9qNJCXMN7YbFjAS
-         dG8/5lw8Oh/K1rCPVqp5z1w7J4kKWAX0DkrnhWpkRSTuwOC7TPzuxif0+RqWn8cqRX
-         pZUZxJgGN2u31XYsKolc/RRqCot3uzixXu+xCEwO9gitdkvxQC6D/X0UdL/QXE36np
-         iD8Zr5qX8eqgiDJ8foVPlr+kPJNA1ItqyDhMGuNuBHDo9yh0U368iVOPkCABjyVsAC
-         C3JEgc3qOIsozYto2rSELYyYwBSIA8CHj7yzKeDCuHRrrcWelfXpNbZ8dp+qY4qF47
-         TbQLKsvP+wzrw==
-Received: by mail-wr1-f51.google.com with SMTP id c15so20076620wro.13;
-        Sat, 17 Apr 2021 03:31:53 -0700 (PDT)
-X-Gm-Message-State: AOAM531A/Ralkr5Ef+2lVwSBGEoVJlcbZhxe/rCXiWY/fIFgKSBFosAk
-        et490+SZLCHJFTU6LoY0sitPb1R++jCrTuUTobE=
-X-Google-Smtp-Source: ABdhPJycE8LG0z9YxCgms5+k71EBmr9DkHzd41Oc6z9ytag0KDWOSXF5lk8cL6Kn2M30kai4QRK7X3xc1d9fGPyxl30=
-X-Received: by 2002:adf:db4f:: with SMTP id f15mr3734418wrj.99.1618655512568;
- Sat, 17 Apr 2021 03:31:52 -0700 (PDT)
+        id S235860AbhDQKlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 06:41:44 -0400
+Received: from jptosegrel01.sonyericsson.com ([124.215.201.71]:1390 "EHLO
+        JPTOSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236006AbhDQKlg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 06:41:36 -0400
+From:   Peter Enderborg <peter.enderborg@sony.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@suse.com>, NeilBrown <neilb@suse.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mike Rapoport <rppt@kernel.org>, <linux-media@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>,
+        <linaro-mm-sig@lists.linaro.org>,
+        Matthew Wilcox <willy@infradead.org>
+CC:     Peter Enderborg <peter.enderborg@sony.com>
+Subject: [PATCH v4] dma-buf: Add DmaBufTotal counter in meminfo
+Date:   Sat, 17 Apr 2021 12:40:32 +0200
+Message-ID: <20210417104032.5521-1-peter.enderborg@sony.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210410205246.507048-2-willy@infradead.org> <20210411114307.5087f958@carbon>
- <20210411103318.GC2531743@casper.infradead.org> <20210412011532.GG2531743@casper.infradead.org>
- <20210414101044.19da09df@carbon> <20210414115052.GS2531743@casper.infradead.org>
- <20210414211322.3799afd4@carbon> <20210414213556.GY2531743@casper.infradead.org>
- <a50c3156fe8943ef964db4345344862f@AcuMS.aculab.com> <20210415200832.32796445@carbon>
- <20210416152755.GL2531743@casper.infradead.org>
-In-Reply-To: <20210416152755.GL2531743@casper.infradead.org>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sat, 17 Apr 2021 12:31:37 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2dekzohOrHpLq6yyuaoyC4UOxxucu6kX2oddeq5Jdqfg@mail.gmail.com>
-Message-ID: <CAK8P3a2dekzohOrHpLq6yyuaoyC4UOxxucu6kX2oddeq5Jdqfg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        David Laight <David.Laight@aculab.com>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=crzlbGwi c=1 sm=1 tr=0 a=fZcToFWbXLKijqHhjJ02CA==:117 a=3YhXtTcJ-WEA:10 a=z6gsHLkEAAAA:8 a=tkJolnyHCId0vxgkOZ0A:9 a=d-OLMTCWyvARjPbQ-enb:22 a=pHzHmUro8NiASowvMSCR:22 a=Ew2E2A-JSTLzCXPT_086:22
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 5:27 PM Matthew Wilcox <willy@infradead.org> wrote:
-> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-> index b5b195305346..db7c7020746a 100644
-> --- a/include/net/page_pool.h
-> +++ b/include/net/page_pool.h
-> @@ -198,7 +198,17 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
->
->  static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
->  {
-> -       return page->dma_addr;
-> +       dma_addr_t ret = page->dma_addr[0];
-> +       if (sizeof(dma_addr_t) > sizeof(unsigned long))
-> +               ret |= (dma_addr_t)page->dma_addr[1] << 32;
-> +       return ret;
-> +}
+This adds a total used dma-buf memory. Details
+can be found in debugfs, however it is not for everyone
+and not always available. dma-buf are indirect allocated by
+userspace. So with this value we can monitor and detect
+userspace applications that have problems.
 
-Have you considered using a PFN type address here? I suspect you
-can prove that shifting the DMA address by PAGE_BITS would
-make it fit into an 'unsigned long' on all 32-bit architectures with
-64-bit dma_addr_t. This requires that page->dma_addr to be
-page aligned, as well as fit into 44 bits. I recently went through the
-maximum address space per architecture to define a
-MAX_POSSIBLE_PHYSMEM_BITS, and none of them have more than
-40 here, presumably the same is true for dma address space.
+Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
+---
+ drivers/dma-buf/dma-buf.c | 13 +++++++++++++
+ fs/proc/meminfo.c         |  5 ++++-
+ include/linux/dma-buf.h   |  1 +
+ 3 files changed, 18 insertions(+), 1 deletion(-)
 
-        Arnd
+diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+index f264b70c383e..197e5c45dd26 100644
+--- a/drivers/dma-buf/dma-buf.c
++++ b/drivers/dma-buf/dma-buf.c
+@@ -37,6 +37,7 @@ struct dma_buf_list {
+ };
+ 
+ static struct dma_buf_list db_list;
++static atomic_long_t dma_buf_global_allocated;
+ 
+ static char *dmabuffs_dname(struct dentry *dentry, char *buffer, int buflen)
+ {
+@@ -79,6 +80,7 @@ static void dma_buf_release(struct dentry *dentry)
+ 	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
+ 		dma_resv_fini(dmabuf->resv);
+ 
++	atomic_long_sub(dmabuf->size, &dma_buf_global_allocated);
+ 	module_put(dmabuf->owner);
+ 	kfree(dmabuf->name);
+ 	kfree(dmabuf);
+@@ -586,6 +588,7 @@ struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info)
+ 	mutex_lock(&db_list.lock);
+ 	list_add(&dmabuf->list_node, &db_list.head);
+ 	mutex_unlock(&db_list.lock);
++	atomic_long_add(dmabuf->size, &dma_buf_global_allocated);
+ 
+ 	return dmabuf;
+ 
+@@ -1346,6 +1349,16 @@ void dma_buf_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map)
+ }
+ EXPORT_SYMBOL_GPL(dma_buf_vunmap);
+ 
++/**
++ * dma_buf_allocated_pages - Return the used nr of pages
++ * allocated for dma-buf
++ */
++long dma_buf_allocated_pages(void)
++{
++	return atomic_long_read(&dma_buf_global_allocated) >> PAGE_SHIFT;
++}
++EXPORT_SYMBOL_GPL(dma_buf_allocated_pages);
++
+ #ifdef CONFIG_DEBUG_FS
+ static int dma_buf_debug_show(struct seq_file *s, void *unused)
+ {
+diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
+index 6fa761c9cc78..ccc7c40c8db7 100644
+--- a/fs/proc/meminfo.c
++++ b/fs/proc/meminfo.c
+@@ -16,6 +16,7 @@
+ #ifdef CONFIG_CMA
+ #include <linux/cma.h>
+ #endif
++#include <linux/dma-buf.h>
+ #include <asm/page.h>
+ #include "internal.h"
+ 
+@@ -145,7 +146,9 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+ 	show_val_kb(m, "CmaFree:        ",
+ 		    global_zone_page_state(NR_FREE_CMA_PAGES));
+ #endif
+-
++#ifdef CONFIG_DMA_SHARED_BUFFER
++	show_val_kb(m, "DmaBufTotal:    ", dma_buf_allocated_pages());
++#endif
+ 	hugetlb_report_meminfo(m);
+ 
+ 	arch_report_meminfo(m);
+diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+index efdc56b9d95f..5b05816bd2cd 100644
+--- a/include/linux/dma-buf.h
++++ b/include/linux/dma-buf.h
+@@ -507,4 +507,5 @@ int dma_buf_mmap(struct dma_buf *, struct vm_area_struct *,
+ 		 unsigned long);
+ int dma_buf_vmap(struct dma_buf *dmabuf, struct dma_buf_map *map);
+ void dma_buf_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map);
++long dma_buf_allocated_pages(void);
+ #endif /* __DMA_BUF_H__ */
+-- 
+2.17.1
+
