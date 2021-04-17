@@ -2,103 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D316A362D2E
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 05:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AAEE362D2F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 05:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235611AbhDQDU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 23:20:28 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:57035 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234999AbhDQDUQ (ORCPT
+        id S235428AbhDQD0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 23:26:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231997AbhDQD0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 23:20:16 -0400
-Received: from fsav103.sakura.ne.jp (fsav103.sakura.ne.jp [27.133.134.230])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 13H3J5UU012332;
-        Sat, 17 Apr 2021 12:19:05 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav103.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp);
- Sat, 17 Apr 2021 12:19:05 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav103.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 13H3J55V012327
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sat, 17 Apr 2021 12:19:05 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [syzbot] unexpected kernel reboot (4)
-To:     Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+9ce030d4c89856b27619@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>
-References: <000000000000301a4d05bfe14b8f@google.com>
- <CACT4Y+ZT2m7t+o9=VYCE32U_1aUVJXRp_5KgJSdEZC1YXy=qgA@mail.gmail.com>
- <CA+fCnZcWEuYeOx6-0LY+cqtGVbMx2OiyhEELErdfwaHGcUWHbQ@mail.gmail.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <55f68dce-77e8-b142-0822-fca14b13d4bd@i-love.sakura.ne.jp>
-Date:   Sat, 17 Apr 2021 12:19:06 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        Fri, 16 Apr 2021 23:26:07 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1D0C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 20:25:41 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id w3so44908061ejc.4
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 20:25:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=WiTsWqeV3t2x9ikLj20hBA8e/9UUZ/sS0LIdWopzgJw=;
+        b=zZi1DYhYfCAX8+wpHDkgCFrEaVlN8lv6zgnzOfAywVOZyAVUtqcx5SZ5MQzrLD+MIg
+         ht+jGsPDLzCUxkj+v5smSoFrluIFa+zMtIfr6IcKisYQcah9MmjQhhisXimcrKDmj8rg
+         bB39uI7NS0gpD8FCXUZU+5sZxjBsvy2XTr4dYolxNk3TPRjA0K88fFwkLkC92ZvCTps0
+         vgWojhbFszNfJvSipnqO5bAuDEO48IbUWlNzd2L73stQ/7zEli/TdAmuFFc5k6k4ux7d
+         vJp9BNY/9bSNsMFE5YotlZXZIOgU6yHXk0OYeln3AUXFRd5hv9PjDR1LOoE2K7aLAReB
+         vgGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=WiTsWqeV3t2x9ikLj20hBA8e/9UUZ/sS0LIdWopzgJw=;
+        b=ffVwnPZZtJipT5G75fwhZZPN0ItF9nCNN9kMJWMMAbYp9YMhYgQ2peYddbyZbledlu
+         dZH41ywgkS/DtzIvyRwi8xZNhPYixzQIMhOUBleqtS0TPblARK24hLyGuHnblPlTD71L
+         O38URNj+Lt8TvvIRTAPCUXXx4kdqEviXxN++RuDr3k5jmyJKALaZ5C/5KRMwtC9A0ZRF
+         t9kSjNdHt3kEUFU5ZJstKC/iB3342vCSEzT4O1PKpIyu1loMN1KOOsqDEeTjgGX+UlYS
+         uxqVd1Ofm6QwVdNDB8DgjA4i6k/XCaRTv3GiBMDAaYd0jWCqx+QNMWkYPrOPApYa6/MT
+         jrEA==
+X-Gm-Message-State: AOAM532M5G/El74RbeRVrC/yOCQmlS/FC/IhcQaqhOJsWnhhYEeLzTzS
+        rtm+uU8GTmQTHnVMAyOaWxIVxKKA4vUp3m/2wuTbNxnzhqikcg==
+X-Google-Smtp-Source: ABdhPJzhP/d5r5MCA8c5O3EKtsr6nKURNW9JgWhqYU0ARu+Tgyy09rsNfRCnS7qLLeEgVIGM4c4UU+UTtDfSkZ5pAeA=
+X-Received: by 2002:a17:906:ef2:: with SMTP id x18mr11475415eji.323.1618629938929;
+ Fri, 16 Apr 2021 20:25:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+fCnZcWEuYeOx6-0LY+cqtGVbMx2OiyhEELErdfwaHGcUWHbQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 16 Apr 2021 20:25:28 -0700
+Message-ID: <CAPcyv4iUPPY7XpwwY1zK3VGUY72p+zZckSCwgWuvJa183Y_QBA@mail.gmail.com>
+Subject: [GIT PULL] libnvdimm fixes for v5.12-rc8 / final
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/04/15 0:39, Andrey Konovalov wrote:
-> On Wed, Apr 14, 2021 at 7:45 AM Dmitry Vyukov <dvyukov@google.com> wrote:
->> The reproducer connects some USB HID device and communicates with the driver.
->> Previously we observed reboots because HID devices can trigger reboot
->> SYSRQ, but we disable it with "CONFIG_MAGIC_SYSRQ is not set".
->> How else can a USB device reboot the machine? Is it possible to disable it?
->> I don't see any direct includes of <linux/reboot.h> in drivers/usb/*
-> 
-> This happens when a keyboard sends the Ctrl+Alt+Del sequence, see
-> fn_boot_it()->ctrl_alt_del() in drivers/tty/vt/keyboard.c.
-> 
+Hi Linus, please pull from:
 
-Regarding ctrl_alt_del() problem, doing
+...to receive a handful of libnvdimm fixups.
 
-  sh -c 'echo 0 > /proc/sys/kernel/ctrl-alt-del; echo $$ > /proc/sys/kernel/cad_pid'
+The largest change is for a regression that landed during -rc1 for
+block-device read-only handling. Vaibhav found a new use for the
+ability (originally introduced by virtio_pmem) to call back to the
+platform to flush data, but also found an original bug in that
+implementation. Lastly, Arnd cleans up some compile warnings in dax.
 
-as root before start fuzzing might help.
+This has all appeared in -next with no reported issues.
 
-Also, with the command above, reproducer still triggers suspend operation which freezes userspace processes.
-This could possibly be one of causes for no output / lost connections. Try disabling freeze/suspend related configs?
+---
 
-[   60.881255][ T6280] usb 5-1: new high-speed USB device number 2 using dummy_hcd
-[   61.260648][ T6280] usb 5-1: config 0 interface 0 altsetting 0 endpoint 0x81 has an invalid bInterval 0, changing to 7
-[   61.274056][ T6280] usb 5-1: New USB device found, idVendor=0926, idProduct=3333, bcdDevice= 0.40
-[   61.284700][ T6280] usb 5-1: New USB device strings: Mfr=0, Product=0, SerialNumber=0
-[   61.289556][ T6280] usb 5-1: config 0 descriptor??
-[   61.780871][ T6280] keytouch 0003:0926:3333.0002: fixing up Keytouch IEC report descriptor
-[   61.792015][ T6280] input: HID 0926:3333 as /devices/platform/dummy_hcd.0/usb5/5-1/5-1:0.0/0003:0926:3333.0002/input/input5
-[   61.871612][ T6280] keytouch 0003:0926:3333.0002: input,hidraw1: USB HID v0.00 Keyboard [HID 0926:3333] on usb-dummy_hcd.0-1/input0
-[   62.137706][ T6847] PM: suspend entry (s2idle)
-[   62.147914][ T6847] Filesystems sync: 0.007 seconds
-[   62.152031][ T6847] Freezing user space processes ... (elapsed 0.003 seconds) done.
-[   62.158369][ T6847] OOM killer disabled.
-[   62.159673][ T6847] Freezing remaining freezable tasks ... (elapsed 0.003 seconds) done.
-[   62.167440][ T6847] vhci_hcd vhci_hcd.15: suspend vhci_hcd
-[   62.169569][ T6847] vhci_hcd vhci_hcd.14: suspend vhci_hcd
-[   62.171562][ T6847] vhci_hcd vhci_hcd.13: suspend vhci_hcd
-[   62.173500][ T6847] vhci_hcd vhci_hcd.12: suspend vhci_hcd
-[   62.175740][ T6847] vhci_hcd vhci_hcd.11: suspend vhci_hcd
-[   62.177677][ T6847] vhci_hcd vhci_hcd.10: suspend vhci_hcd
-[   62.179725][ T6847] vhci_hcd vhci_hcd.9: suspend vhci_hcd
-[   62.181602][ T6847] vhci_hcd vhci_hcd.8: suspend vhci_hcd
-[   62.183681][ T6847] vhci_hcd vhci_hcd.7: suspend vhci_hcd
-[   62.185594][ T6847] vhci_hcd vhci_hcd.6: suspend vhci_hcd
-[   62.187552][ T6847] vhci_hcd vhci_hcd.5: suspend vhci_hcd
-[   62.189566][ T6847] vhci_hcd vhci_hcd.4: suspend vhci_hcd
-[   62.191767][ T6847] vhci_hcd vhci_hcd.3: suspend vhci_hcd
-[   62.193657][ T6847] vhci_hcd vhci_hcd.2: suspend vhci_hcd
-[   62.195634][ T6847] vhci_hcd vhci_hcd.1: suspend vhci_hcd
-[   62.197430][ T6847] vhci_hcd vhci_hcd.0: suspend vhci_hcd
-[   62.249881][    T8] mptbase: ioc0: pci-suspend: pdev=0xffff888005495000, slot=0000:00:10.0, Entering operating state [D0]
+The following changes since commit e49d033bddf5b565044e2abe4241353959bc9120:
 
+  Linux 5.12-rc6 (2021-04-04 14:15:36 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm
+tags/libnvdimm-fixes-for-5.12-rc8
+
+for you to fetch changes up to 11d2498f1568a0f923dc8ef7621de15a9e89267f:
+
+  Merge branch 'for-5.12/dax' into libnvdimm-fixes (2021-04-09 22:00:09 -0700)
+
+----------------------------------------------------------------
+libnvdimm fixes for v5.12-rc8
+
+- Fix a regression of read-only handling in the pmem driver.
+
+- Fix a compile warning.
+
+- Fix support for platform cache flush commands on powerpc/papr
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      dax: avoid -Wempty-body warnings
+
+Dan Williams (2):
+      libnvdimm: Notify disk drivers to revalidate region read-only
+      Merge branch 'for-5.12/dax' into libnvdimm-fixes
+
+Vaibhav Jain (1):
+      libnvdimm/region: Fix nvdimm_has_flush() to handle ND_REGION_ASYNC
+
+ drivers/dax/bus.c            |  6 ++----
+ drivers/nvdimm/bus.c         | 14 ++++++--------
+ drivers/nvdimm/pmem.c        | 37 +++++++++++++++++++++++++++++++++----
+ drivers/nvdimm/region_devs.c | 16 ++++++++++++++--
+ include/linux/nd.h           |  1 +
+ 5 files changed, 56 insertions(+), 18 deletions(-)
