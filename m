@@ -2,81 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B9EB363232
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 22:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21465363235
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 22:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236877AbhDQUSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 16:18:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37692 "EHLO
+        id S237046AbhDQUX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 16:23:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236491AbhDQUSe (ORCPT
+        with ESMTP id S236491AbhDQUXZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 16:18:34 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BC30C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 13:18:07 -0700 (PDT)
+        Sat, 17 Apr 2021 16:23:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1CCBC061574;
+        Sat, 17 Apr 2021 13:22:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=8Uc7dhzIc/p5Iji54e1aRZ450Xs9Pb7y+6pkjxagzLA=; b=GZSLEoK2gynTCSRjWeTnq3bQeh
-        Yh9OLJ4OibIw5oCLBjvsehNiN+S80FKnpFxPhpvu6I12wCe/TM8nob8DjN4oRtEcyQNbBO6hPH7u6
-        tO2w/FdELtV770/4v7wwXZES+VALvUOfS4rtbGQ2evjkviQQVgkwWX5tCydtVazMZvRuxfeYvBzkM
-        lT/vQjJYKxuBB4L8QEJMdnxsVSScogvk0g2tTny+Zxhp8Y59osuxdDtXnTacrKdSje1zmq8OQ8WSu
-        zH72KWE5G4gVLxC4aZQ/XPyOTQTLzt6+CscuugQD39URHof95HKR1iXmFaBrERiSboZ+Y0MeCU5+3
-        Y0QAjbYQ==;
-Received: from [2601:1c0:6280:3f0::df68]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lXrOG-006AUO-5D; Sat, 17 Apr 2021 20:18:04 +0000
-To:     PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        LKML <linux-kernel@vger.kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Subject: PPC_FPU, ALTIVEC: enable_kernel_fp, put_vr, get_vr
-Message-ID: <7107fcae-5c7a-ac94-8d89-326f2cd4cd33@infradead.org>
-Date:   Sat, 17 Apr 2021 13:17:59 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BnSKcc0JSuohlN33+Pj8bhxKsI7DT+Owp2PFJxUm9vg=; b=OEMC9XOgR/fKU/0oPNUu/P7cCL
+        FT4t01GafWZlc1vjwl9KSjRt1IY8zFxgga7gHLRR+WCKupSKq6t9mxOaZIZufePDNN7mCVh1kH9jR
+        F0u0g7a9CwiXrlGEHglrLCjcUmY6riPVWU0Qfcwq6bjvHqJmgaIV9kM3woRxgGCelw9NDnFMhLDTu
+        ddS052/dNjJg/5EC844nFoPlje4sglQZ/dDMtCOaSHxgsq/MS3GcQFiMjlzkT3lk3nRsLRtoZo+VR
+        X2xbTp+70dqUigqbpfzkNLRorcOijpiu4WZdd3t8LIzJQrj1saQRlw3+7gG/AlVzE/uFz4w1OL3ap
+        wbKEi5/Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lXrSi-00Belm-JF; Sat, 17 Apr 2021 20:22:44 +0000
+Date:   Sat, 17 Apr 2021 21:22:40 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     brouer@redhat.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        mcroce@linux.microsoft.com, grygorii.strashko@ti.com,
+        arnd@kernel.org, hch@lst.de, linux-snps-arc@lists.infradead.org,
+        mhocko@kernel.org, mgorman@suse.de
+Subject: Re: [PATCH 1/2] mm: Fix struct page layout on 32-bit systems
+Message-ID: <20210417202240.GS2531743@casper.infradead.org>
+References: <20210416230724.2519198-1-willy@infradead.org>
+ <20210416230724.2519198-2-willy@infradead.org>
+ <20210417024522.GP2531743@casper.infradead.org>
+ <YHspptFx+T588KcG@apalos.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHspptFx+T588KcG@apalos.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sat, Apr 17, 2021 at 09:32:06PM +0300, Ilias Apalodimas wrote:
+> > +static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
+> > +{
+> > +	page->dma_addr[0] = addr;
+> > +	if (sizeof(dma_addr_t) > sizeof(unsigned long))
+> > +		page->dma_addr[1] = addr >> 16 >> 16;
+> 
+> The 'error' that was reported will never trigger right?
+> I assume this was compiled with dma_addr_t as 32bits (so it triggered the
+> compilation error), but the if check will never allow this codepath to run.
+> If so can we add a comment explaining this, since none of us will remember why
+> in 6 months from now?
 
-kernel test robot reports:
+That's right.  I compiled it all three ways -- 32-bit, 64-bit dma, 32-bit long
+and 64-bit.  The 32/64 bit case turn into:
 
->> drivers/cpufreq/pmac32-cpufreq.c:262:2: error: implicit declaration of function 'enable_kernel_fp' [-Werror,-Wimplicit-function-declaration]
-           enable_kernel_fp();
-           ^
+	if (0)
+		page->dma_addr[1] = addr >> 16 >> 16;
 
-when
-# CONFIG_PPC_FPU is not set
-CONFIG_ALTIVEC=y
+which gets elided.  So the only case that has to work is 64-bit dma and
+32-bit long.
 
-I see at least one other place that does not handle that
-combination well, here:
-
-../arch/powerpc/lib/sstep.c: In function 'do_vec_load':
-../arch/powerpc/lib/sstep.c:637:3: error: implicit declaration of function 'put_vr' [-Werror=implicit-function-declaration]
-  637 |   put_vr(rn, &u.v);
-      |   ^~~~~~
-../arch/powerpc/lib/sstep.c: In function 'do_vec_store':
-../arch/powerpc/lib/sstep.c:660:3: error: implicit declaration of function 'get_vr'; did you mean 'get_oc'? [-Werror=implicit-function-declaration]
-  660 |   get_vr(rn, &u.v);
-      |   ^~~~~~
-
-
-Should the code + Kconfigs/Makefiles handle that kind of
-kernel config or should ALTIVEC always mean PPC_FPU as well?
-
-I have patches to fix the build errors with the config as
-reported but I don't know if that's the right thing to do...
-
-thanks.
--- 
-~Randy
+I can replace this with upper_32_bits().
 
