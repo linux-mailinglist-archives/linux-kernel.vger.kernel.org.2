@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DD98362EF4
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 11:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27370362EF7
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 11:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236052AbhDQJmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 05:42:22 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:17371 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbhDQJmN (ORCPT
+        id S236083AbhDQJma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 05:42:30 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16476 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236041AbhDQJmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 05:42:13 -0400
+        Sat, 17 Apr 2021 05:42:17 -0400
 Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FMp2b2Sy1zlYMq;
-        Sat, 17 Apr 2021 17:39:51 +0800 (CST)
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FMp2C1LWnzyPLG;
+        Sat, 17 Apr 2021 17:39:31 +0800 (CST)
 Received: from huawei.com (10.175.104.175) by DGGEMS410-HUB.china.huawei.com
  (10.3.19.210) with Microsoft SMTP Server id 14.3.498.0; Sat, 17 Apr 2021
- 17:41:38 +0800
+ 17:41:39 +0800
 From:   Miaohe Lin <linmiaohe@huawei.com>
 To:     <akpm@linux-foundation.org>
 CC:     <ying.huang@intel.com>, <dennis@kernel.org>,
@@ -26,9 +26,9 @@ CC:     <ying.huang@intel.com>, <dennis@kernel.org>,
         <alexs@kernel.org>, <david@redhat.com>, <minchan@kernel.org>,
         <richard.weiyang@gmail.com>, <linux-kernel@vger.kernel.org>,
         <linux-mm@kvack.org>, <linmiaohe@huawei.com>
-Subject: [PATCH v2 2/5] mm/swapfile: use percpu_ref to serialize against concurrent swapoff
-Date:   Sat, 17 Apr 2021 05:40:36 -0400
-Message-ID: <20210417094039.51711-3-linmiaohe@huawei.com>
+Subject: [PATCH v2 3/5] swap: fix do_swap_page() race with swapoff
+Date:   Sat, 17 Apr 2021 05:40:37 -0400
+Message-ID: <20210417094039.51711-4-linmiaohe@huawei.com>
 X-Mailer: git-send-email 2.19.1
 In-Reply-To: <20210417094039.51711-1-linmiaohe@huawei.com>
 References: <20210417094039.51711-1-linmiaohe@huawei.com>
@@ -41,127 +41,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use percpu_ref to serialize against concurrent swapoff. Also remove the
-SWP_VALID flag because it's used together with RCU solution.
+When I was investigating the swap code, I found the below possible race
+window:
 
+CPU 1                                   	CPU 2
+-----                                   	-----
+do_swap_page
+  swap_readpage(skip swap cache case)
+    if (data_race(sis->flags & SWP_FS_OPS)) {
+                                        	swapoff
+					  	  p->flags = &= ~SWP_VALID;
+					  	  ..
+					  	  synchronize_rcu();
+					  	  ..
+					  	  p->swap_file = NULL;
+    struct file *swap_file = sis->swap_file;
+    struct address_space *mapping = swap_file->f_mapping;[oops!]
+
+Note that for the pages that are swapped in through swap cache, this isn't
+an issue. Because the page is locked, and the swap entry will be marked
+with SWAP_HAS_CACHE, so swapoff() can not proceed until the page has been
+unlocked.
+
+Using current get/put_swap_device() to guard against concurrent swapoff for
+swap_readpage() looks terrible because swap_readpage() may take really long
+time. And this race may not be really pernicious because swapoff is usually
+done when system shutdown only. To reduce the performance overhead on the
+hot-path as much as possible, it appears we can use the percpu_ref to close
+this race window(as suggested by Huang, Ying).
+
+Fixes: 0bcac06f27d7 ("mm,swap: skip swapcache for swapin of synchronous device")
+Reported-by: kernel test robot <lkp@intel.com> (auto build test ERROR)
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 ---
- include/linux/swap.h |  3 +--
- mm/swapfile.c        | 43 +++++++++++++++++--------------------------
- 2 files changed, 18 insertions(+), 28 deletions(-)
+ include/linux/swap.h | 9 +++++++++
+ mm/memory.c          | 9 +++++++++
+ 2 files changed, 18 insertions(+)
 
 diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 8be36eb58b7a..993693b38109 100644
+index 993693b38109..523c2411a135 100644
 --- a/include/linux/swap.h
 +++ b/include/linux/swap.h
-@@ -177,7 +177,6 @@ enum {
- 	SWP_PAGE_DISCARD = (1 << 10),	/* freed swap page-cluster discards */
- 	SWP_STABLE_WRITES = (1 << 11),	/* no overwrite PG_writeback pages */
- 	SWP_SYNCHRONOUS_IO = (1 << 12),	/* synchronous IO is efficient */
--	SWP_VALID	= (1 << 13),	/* swap is valid to be operated on? */
- 					/* add others here before... */
- 	SWP_SCANNING	= (1 << 14),	/* refcount in scan_swap_map */
- };
-@@ -514,7 +513,7 @@ sector_t swap_page_sector(struct page *page);
- 
- static inline void put_swap_device(struct swap_info_struct *si)
- {
--	rcu_read_unlock();
-+	percpu_ref_put(&si->users);
+@@ -528,6 +528,15 @@ static inline struct swap_info_struct *swp_swap_info(swp_entry_t entry)
+ 	return NULL;
  }
  
- #else /* CONFIG_SWAP */
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 66515a3a2824..90e197bc2eeb 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -1279,18 +1279,12 @@ static unsigned char __swap_entry_free_locked(struct swap_info_struct *p,
-  * via preventing the swap device from being swapoff, until
-  * put_swap_device() is called.  Otherwise return NULL.
-  *
-- * The entirety of the RCU read critical section must come before the
-- * return from or after the call to synchronize_rcu() in
-- * enable_swap_info() or swapoff().  So if "si->flags & SWP_VALID" is
-- * true, the si->map, si->cluster_info, etc. must be valid in the
-- * critical section.
-- *
-  * Notice that swapoff or swapoff+swapon can still happen before the
-- * rcu_read_lock() in get_swap_device() or after the rcu_read_unlock()
-- * in put_swap_device() if there isn't any other way to prevent
-- * swapoff, such as page lock, page table lock, etc.  The caller must
-- * be prepared for that.  For example, the following situation is
-- * possible.
-+ * percpu_ref_tryget_live() in get_swap_device() or after the
-+ * percpu_ref_put() in put_swap_device() if there isn't any other way
-+ * to prevent swapoff, such as page lock, page table lock, etc.  The
-+ * caller must be prepared for that.  For example, the following
-+ * situation is possible.
-  *
-  *   CPU1				CPU2
-  *   do_swap_page()
-@@ -1318,21 +1312,24 @@ struct swap_info_struct *get_swap_device(swp_entry_t entry)
- 	si = swp_swap_info(entry);
- 	if (!si)
- 		goto bad_nofile;
--
--	rcu_read_lock();
--	if (data_race(!(si->flags & SWP_VALID)))
--		goto unlock_out;
-+	if (!percpu_ref_tryget_live(&si->users))
++static inline struct swap_info_struct *get_swap_device(swp_entry_t entry)
++{
++	return NULL;
++}
++
++static inline void put_swap_device(struct swap_info_struct *si)
++{
++}
++
+ #define swap_address_space(entry)		(NULL)
+ #define get_nr_swap_pages()			0L
+ #define total_swap_pages			0L
+diff --git a/mm/memory.c b/mm/memory.c
+index 27014c3bde9f..7a2fe12cf641 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3311,6 +3311,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ {
+ 	struct vm_area_struct *vma = vmf->vma;
+ 	struct page *page = NULL, *swapcache;
++	struct swap_info_struct *si = NULL;
+ 	swp_entry_t entry;
+ 	pte_t pte;
+ 	int locked;
+@@ -3338,6 +3339,10 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 		goto out;
+ 	}
+ 
++	/* Prevent swapoff from happening to us. */
++	si = get_swap_device(entry);
++	if (unlikely(!si))
 +		goto out;
-+	/*
-+	 * Guarantee we will not reference uninitialized fields
-+	 * of swap_info_struct.
-+	 */
-+	smp_rmb();
- 	offset = swp_offset(entry);
- 	if (offset >= si->max)
--		goto unlock_out;
-+		goto put_out;
  
- 	return si;
- bad_nofile:
- 	pr_err("%s: %s%08lx\n", __func__, Bad_file, entry.val);
+ 	delayacct_set_flag(current, DELAYACCT_PF_SWAPIN);
+ 	page = lookup_swap_cache(entry, vma, vmf->address);
+@@ -3514,6 +3519,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ unlock:
+ 	pte_unmap_unlock(vmf->pte, vmf->ptl);
  out:
- 	return NULL;
--unlock_out:
--	rcu_read_unlock();
-+put_out:
-+	percpu_ref_put(&si->users);
- 	return NULL;
++	if (si)
++		put_swap_device(si);
+ 	return ret;
+ out_nomap:
+ 	pte_unmap_unlock(vmf->pte, vmf->ptl);
+@@ -3525,6 +3532,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 		unlock_page(swapcache);
+ 		put_page(swapcache);
+ 	}
++	if (si)
++		put_swap_device(si);
+ 	return ret;
  }
  
-@@ -2475,7 +2472,7 @@ static void setup_swap_info(struct swap_info_struct *p, int prio,
- 
- static void _enable_swap_info(struct swap_info_struct *p)
- {
--	p->flags |= SWP_WRITEOK | SWP_VALID;
-+	p->flags |= SWP_WRITEOK;
- 	atomic_long_add(p->pages, &nr_swap_pages);
- 	total_swap_pages += p->pages;
- 
-@@ -2507,7 +2504,7 @@ static void enable_swap_info(struct swap_info_struct *p, int prio,
- 	spin_unlock(&swap_lock);
- 	/*
- 	 * Guarantee swap_map, cluster_info, etc. fields are valid
--	 * between get/put_swap_device() if SWP_VALID bit is set
-+	 * between get/put_swap_device().
- 	 */
- 	percpu_ref_resurrect(&p->users);
- 	spin_lock(&swap_lock);
-@@ -2625,12 +2622,6 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
- 
- 	reenable_swap_slots_cache_unlock();
- 
--	spin_lock(&swap_lock);
--	spin_lock(&p->lock);
--	p->flags &= ~SWP_VALID;		/* mark swap device as invalid */
--	spin_unlock(&p->lock);
--	spin_unlock(&swap_lock);
--
- 	percpu_ref_kill(&p->users);
- 	/*
- 	 * We need synchronize_rcu() here to protect the accessing
 -- 
 2.19.1
 
