@@ -2,120 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A28362E6F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 10:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B59E8362E72
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 10:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236003AbhDQH76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 03:59:58 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16473 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235980AbhDQH75 (ORCPT
+        id S236028AbhDQIDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 04:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235981AbhDQIDU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 03:59:57 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FMlm51db4zyNvN;
-        Sat, 17 Apr 2021 15:57:09 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 17 Apr 2021 15:59:20 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH] mm: Move HOLES_IN_ZONE into mm
-Date:   Sat, 17 Apr 2021 15:59:46 +0800
-Message-ID: <20210417075946.181402-1-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.26.2
+        Sat, 17 Apr 2021 04:03:20 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6017BC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 01:02:51 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id u21so45405750ejo.13
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 01:02:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PLuLkF1IGWypPI+HiFb6Lc3kbaqrvgXd5rUpp6F9OyA=;
+        b=f+fB8uprWV4VzDEpOVgLGalnWXSkba8mHn2f/QgTiso7d+EBzMNLlXbHyXVbmU9/SU
+         8Toc6/TybN0Tm32Iuf39deCQf/CDvKOghOYk/pRERBtjMI4iomcdBdGkpI3hsu/xHMOf
+         sTO7wkJj0piCgTtOL5WwyCohvOpc8UATN2j/YyiyO/SK5AA1vlFQcUmohKN/aVRKLP06
+         JNolTMYL+cDFXUHMbqMhXrxjLx7qwBxf9aQS73B2jyqg0tmHzReT8gPMYvFdxMIPSjca
+         nT0j7cE4klZDLfvOJIcHP92M4tD60c+bZ4bv2m8nmToU3O0abLogE76OPzw8setdqz8l
+         TJAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PLuLkF1IGWypPI+HiFb6Lc3kbaqrvgXd5rUpp6F9OyA=;
+        b=SZt7JtAW3BoTHooryh3dqDfjpLGqJo6/DSOSnOeBgGC7WrsO5mxCsH6PNncKed7AsA
+         zlyJbOuSuHXZfK17N57+EjBbB2jl9cXbjCvkLV8wjHOPatEaNaJ7RUVRUJgwciTbG1GH
+         i9vUsTl2gLUseKWqBKqnbk3mRCn/5aIQgNOcMgMICBeivcxCBn/DsX78loKorovmowpj
+         O87kqpBCm3NS0v+tYOZeRZV0AoXA/eNJTprCSjoG7/ZpZO13kbodV3ukT8cOVp10e1ho
+         JerBLbzFFalGJSir//elkoUWt7UFmk8wCgIAHOyziEdfPMeI0OKv8cdNKF5jqLZKQhTC
+         r87w==
+X-Gm-Message-State: AOAM530atmkKylrQJvpW4jP4Gk54aj0BHCacdNoS0Pw6dBtz5YamuAAq
+        cZrQKTGFALNgiLNKvUJYFI24iA==
+X-Google-Smtp-Source: ABdhPJyIqgVZdxEPXFYbJlfPKeXXYMcbzGuCDPRZzGHX6+Kox4v/z173UZ4qXydlYv5wMfKAokc0oA==
+X-Received: by 2002:a17:906:9a81:: with SMTP id ag1mr12006771ejc.464.1618646570130;
+        Sat, 17 Apr 2021 01:02:50 -0700 (PDT)
+Received: from tsr-lap-08.nix.tessares.net ([2a02:578:85b0:e00:5c1f:7c5f:b466:7696])
+        by smtp.gmail.com with ESMTPSA id mj7sm5853512ejb.39.2021.04.17.01.02.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Apr 2021 01:02:49 -0700 (PDT)
+Subject: Re: [PATCH v2 5/6] kunit: mptcp: adhear to KUNIT formatting standard
+To:     David Gow <davidgow@google.com>, Nico Pache <npache@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-ext4@vger.kernel.org, Networking <netdev@vger.kernel.org>,
+        rafael@kernel.org, linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        mathew.j.martineau@linux.intel.com, davem@davemloft.net,
+        Mark Brown <broonie@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>, mptcp@lists.linux.dev
+References: <cover.1618388989.git.npache@redhat.com>
+ <0fa191715b236766ad13c5f786d8daf92a9a0cf2.1618388989.git.npache@redhat.com>
+ <e26fbcc8-ba3e-573a-523d-9c5d5f84bc46@tessares.net>
+ <CABVgOSm9Lfcu--iiFo=PNLCWCj4vkxqAqO0aZT9B2r3Kw5Fhaw@mail.gmail.com>
+ <b57a1cc8-4921-6ed5-adb8-0510d1918d28@tessares.net>
+ <CABVgOS=QDATYk3nn1jLHhVRh7rXoTp1+jQhUE5pZq8P9M0VpUA@mail.gmail.com>
+From:   Matthieu Baerts <matthieu.baerts@tessares.net>
+Message-ID: <8b8aecaa-2651-2401-e5ad-499b2c920c6d@tessares.net>
+Date:   Sat, 17 Apr 2021 10:02:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+In-Reply-To: <CABVgOS=QDATYk3nn1jLHhVRh7rXoTp1+jQhUE5pZq8P9M0VpUA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit a55749639dc1 ("ia64: drop marked broken DISCONTIGMEM and VIRTUAL_MEM_MAP")
-drop VIRTUAL_MEM_MAP, so there is no need HOLES_IN_ZONE on ia64.
+Hi David, Nico,
 
-Also move HOLES_IN_ZONE into mm/Kconfig, select it if architecture needs
-this feature.
+On 17/04/2021 06:24, David Gow wrote:
+> Hi Matt,
+> 
+>> Like patch 1/6, I can apply it in MPTCP tree and send it later to
+>> net-next with other patches.
+>> Except if you guys prefer to apply it in KUnit tree and send it to
+>> linux-next?
+> 
+> Given 1/6 is going to net-next, it makes sense to send this out that
+> way too, then, IMHO.
 
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- arch/arm64/Kconfig | 4 +---
- arch/ia64/Kconfig  | 3 ---
- arch/mips/Kconfig  | 3 ---
- mm/Kconfig         | 3 +++
- 4 files changed, 4 insertions(+), 9 deletions(-)
+Great!
+Mat sent this patch to net-next and David already applied it (thanks!):
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index f0b17d758912..3c5a53e0db91 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -202,6 +202,7 @@ config ARM64
- 	select HAVE_KPROBES
- 	select HAVE_KRETPROBES
- 	select HAVE_GENERIC_VDSO
-+	select HOLES_IN_ZONE
- 	select IOMMU_DMA if IOMMU_SUPPORT
- 	select IRQ_DOMAIN
- 	select IRQ_FORCED_THREADING
-@@ -1053,9 +1054,6 @@ config NEED_PER_CPU_EMBED_FIRST_CHUNK
- 	def_bool y
- 	depends on NUMA
- 
--config HOLES_IN_ZONE
--	def_bool y
--
- source "kernel/Kconfig.hz"
- 
- config ARCH_SPARSEMEM_ENABLE
-diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
-index 279252e3e0f7..36499e99102d 100644
---- a/arch/ia64/Kconfig
-+++ b/arch/ia64/Kconfig
-@@ -308,9 +308,6 @@ config NODES_SHIFT
- 	  MAX_NUMNODES will be 2^(This value).
- 	  If in doubt, use the default.
- 
--config HOLES_IN_ZONE
--	bool
--
- config HAVE_ARCH_NODEDATA_EXTENSION
- 	def_bool y
- 	depends on NUMA
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 7a174ea61ca5..c6d522fbd67d 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -1233,9 +1233,6 @@ config HAVE_PLAT_MEMCPY
- config ISA_DMA_API
- 	bool
- 
--config HOLES_IN_ZONE
--	bool
--
- config SYS_SUPPORTS_RELOCATABLE
- 	bool
- 	help
-diff --git a/mm/Kconfig b/mm/Kconfig
-index a8a367c30053..afc57cbf1cea 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -128,6 +128,9 @@ config HAVE_FAST_GUP
- 	depends on MMU
- 	bool
- 
-+config HOLES_IN_ZONE
-+	bool
-+
- # Don't discard allocated memory used to track "memory" and "reserved" memblocks
- # after early boot, so it can still be used to test for validity of memory.
- # Also, memblocks are updated with memory hot(un)plug.
+https://git.kernel.org/netdev/net-next/c/3fcc8a25e391
+
+> The only slight concern I have is that the m68k test config patch in
+> the series will get split from the others, but that should resolve
+> itself when they pick up the last patch.
+
+I see. I guess for this MPTCP patch, we are fine because 
+MPTCP_KUNIT_TESTS was not used in m68k config.
+
+ > At the very least, this shouldn't cause any conflicts with anything
+ > we're doing in the KUnit tree.
+
+Thanks for having checked!
+
+Cheers,
+Matt
 -- 
-2.26.2
-
+Tessares | Belgium | Hybrid Access Solutions
+www.tessares.net
