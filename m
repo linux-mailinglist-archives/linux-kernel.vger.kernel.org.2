@@ -2,109 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDBF5362FAD
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 13:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E367362FAF
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 13:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236204AbhDQLrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 07:47:33 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:51820 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236058AbhDQLrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 07:47:32 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 13HBkNMJ015171;
-        Sat, 17 Apr 2021 13:46:23 +0200
-Date:   Sat, 17 Apr 2021 13:46:23 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-Message-ID: <20210417114623.GA15120@1wt.eu>
-References: <20210414184604.23473-1-ojeda@kernel.org>
- <YHlz54rd1YQHsOA/@hirez.programming.kicks-ass.net>
- <YHmMJWmzz2vZ3qQH@google.com>
- <YHmc2+bKQJ/XAATF@hirez.programming.kicks-ass.net>
- <YHmuX1NA5RF7C7XS@google.com>
- <20210416161444.GA10484@1wt.eu>
- <CANiq72nbkJFPmiJXX=L8PmkouKgKG1k-CxhZYpL1hcncYwa8JA@mail.gmail.com>
- <YHnG+GRwiMqgHGs5@hirez.programming.kicks-ass.net>
- <20210416180829.GO2531743@casper.infradead.org>
- <YHrDwdQwEk2mSQWa@hirez.programming.kicks-ass.net>
+        id S236207AbhDQLtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 07:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236009AbhDQLtc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 07:49:32 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB905C061574;
+        Sat, 17 Apr 2021 04:49:06 -0700 (PDT)
+Date:   Sat, 17 Apr 2021 11:49:03 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618660144;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=rFC/rWkjSJET2j48jfBQ2jr1THdQBw4FW0cnT1t61Gk=;
+        b=iTwbxXJ4h0lbd5FXMG8qKPv5+dyVxKStcEjZVgTQ5sLGkuWw5UtSG+v+zVjGwlu4y3tIY2
+        kW3mqW1epJekTVgIKDcjFNNs+7RgSIwyp/bGxPOxcxOz8jNXgkam14An8nHYhbR85BpK7E
+        +sBg8TVXbq0zgCuGZz7ZovF4ZnOtO+RJjB9DEZvwmQ43ZAG/sBAA4D679Y+8yb5OqVF3zT
+        IYO0mGzdo00WjduDtKPrT6x/de9HLXv9jAkc0g+nzAc0D7j9+wOSZezBR9j1eGG0rDbe14
+        o77+AHW6WTYPqPPTDsUYmwWvaNLLpdiQzrCMQzcUKZLKL4Ab08zbQ+udpifdfw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618660144;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=rFC/rWkjSJET2j48jfBQ2jr1THdQBw4FW0cnT1t61Gk=;
+        b=zEf8ELqoLreGZjsMKSXdcbE0KvsEPK8NrJmG/1jo5qBDmArZV5bp0VR7cbKJ7ItZZDdkWd
+        xl/p7G1KzrFXOCCw==
+From:   "tip-bot2 for Ali Saidi" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/urgent] locking/qrwlock: Fix ordering in
+ queued_write_lock_slowpath()
+Cc:     Ali Saidi <alisaidi@amazon.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Steve Capper <steve.capper@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHrDwdQwEk2mSQWa@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Message-ID: <161866014365.29796.9238636476613418213.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 01:17:21PM +0200, Peter Zijlstra wrote:
-> Well, I think the rules actually make sense, at the point in the syntax
-> tree where + happens, we have 'unsigned char' and 'int', so at that
-> point we promote to 'int'. Subsequently 'int' gets shifted and bad
-> things happen.
+The following commit has been merged into the locking/urgent branch of tip:
 
-That's always the problem caused by signedness being applied to the
-type while modern machines do not care about that and use it during
-(or even after) the operation instead :-/
+Commit-ID:     84a24bf8c52e66b7ac89ada5e3cfbe72d65c1896
+Gitweb:        https://git.kernel.org/tip/84a24bf8c52e66b7ac89ada5e3cfbe72d65=
+c1896
+Author:        Ali Saidi <alisaidi@amazon.com>
+AuthorDate:    Thu, 15 Apr 2021 17:27:11=20
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Sat, 17 Apr 2021 13:40:50 +02:00
 
-We'd need to define some macros to zero-extend and sign-extend some
-values to avoid such issues. I'm sure this would be more intuitive
-than trying to guess how many casts (and in what order) to place to
-make sure an operation works as desired.
+locking/qrwlock: Fix ordering in queued_write_lock_slowpath()
 
-> The 'unsigned long' doesn't happen until quite a bit later.
-> 
-> Anyway, the rules are imo fairly clear and logical, but yes they can be
-> annoying. The really silly thing here is that << and >> have UB at all,
-> and I would love a -fwrapv style flag that simply defines it. Yes it
-> will generate worse code in some cases, but having the UB there is just
-> stupid.
+While this code is executed with the wait_lock held, a reader can
+acquire the lock without holding wait_lock.  The writer side loops
+checking the value with the atomic_cond_read_acquire(), but only truly
+acquires the lock when the compare-and-exchange is completed
+successfully which isn=E2=80=99t ordered. This exposes the window between the
+acquire and the cmpxchg to an A-B-A problem which allows reads
+following the lock acquisition to observe values speculatively before
+the write lock is truly acquired.
 
-I'd also love to have a UB-less mode with well defined semantics for
-plenty of operations that are known to work well on modern machines,
-like integer wrapping, bit shifts ignoring higher bits etc. Lots of
-stuff we often have to write useless code for, just to please the
-compiler.
+We've seen a problem in epoll where the reader does a xchg while
+holding the read lock, but the writer can see a value change out from
+under it.
 
-> That of course doesn't help your case here, it would simply misbehave
-> and not be UB.
-> 
-> Another thing the C rules cannot really express is a 32x32->64
-> multiplication, some (older) versions of GCC can be tricked into it, but
-> mostly it just doesn't want to do that sanely and the C rules are
-> absolutely no help there.
+  Writer                                | Reader
+  ---------------------------------------------------------------------------=
+-----
+  ep_scan_ready_list()                  |
+  |- write_lock_irq()                   |
+      |- queued_write_lock_slowpath()   |
+	|- atomic_cond_read_acquire()   |
+				        | read_lock_irqsave(&ep->lock, flags);
+     --> (observes value before unlock) |  chain_epi_lockless()
+     |                                  |    epi->next =3D xchg(&ep->ovflist,=
+ epi);
+     |                                  | read_unlock_irqrestore(&ep->lock, f=
+lags);
+     |                                  |
+     |     atomic_cmpxchg_relaxed()     |
+     |-- READ_ONCE(ep->ovflist);        |
 
-For me the old trick of casting one side as long long still works:
+A core can order the read of the ovflist ahead of the
+atomic_cmpxchg_relaxed(). Switching the cmpxchg to use acquire
+semantics addresses this issue at which point the atomic_cond_read can
+be switched to use relaxed semantics.
 
-  unsigned long long mul3264(unsigned int a, unsigned int b)
-  {
-        return (unsigned long long)a * b;
-  }
+Fixes: b519b56e378ee ("locking/qrwlock: Use atomic_cond_read_acquire() when s=
+pinning in qrwlock")
+Signed-off-by: Ali Saidi <alisaidi@amazon.com>
+[peterz: use try_cmpxchg()]
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Steve Capper <steve.capper@arm.com>
+Acked-by: Will Deacon <will@kernel.org>
+Acked-by: Waiman Long <longman@redhat.com>
+Tested-by: Steve Capper <steve.capper@arm.com>
+---
+ kernel/locking/qrwlock.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-i386:
-  00000000 <mul3264>:
-     0: 8b 44 24 08           mov    0x8(%esp),%eax
-     4: f7 64 24 04           mull   0x4(%esp)
-     8: c3                    ret    
-
-x86_64:
-  0000000000000000 <mul3264>:
-     0: 89 f8                 mov    %edi,%eax
-     2: 89 f7                 mov    %esi,%edi
-     4: 48 0f af c7           imul   %rdi,%rax
-     8: c3                    retq   
-
-Or maybe you had something else in mind ?
-
-Willy
+diff --git a/kernel/locking/qrwlock.c b/kernel/locking/qrwlock.c
+index 4786dd2..b94f383 100644
+--- a/kernel/locking/qrwlock.c
++++ b/kernel/locking/qrwlock.c
+@@ -60,6 +60,8 @@ EXPORT_SYMBOL(queued_read_lock_slowpath);
+  */
+ void queued_write_lock_slowpath(struct qrwlock *lock)
+ {
++	int cnts;
++
+ 	/* Put the writer into the wait queue */
+ 	arch_spin_lock(&lock->wait_lock);
+=20
+@@ -73,9 +75,8 @@ void queued_write_lock_slowpath(struct qrwlock *lock)
+=20
+ 	/* When no more readers or writers, set the locked flag */
+ 	do {
+-		atomic_cond_read_acquire(&lock->cnts, VAL =3D=3D _QW_WAITING);
+-	} while (atomic_cmpxchg_relaxed(&lock->cnts, _QW_WAITING,
+-					_QW_LOCKED) !=3D _QW_WAITING);
++		cnts =3D atomic_cond_read_relaxed(&lock->cnts, VAL =3D=3D _QW_WAITING);
++	} while (!atomic_try_cmpxchg_acquire(&lock->cnts, &cnts, _QW_LOCKED));
+ unlock:
+ 	arch_spin_unlock(&lock->wait_lock);
+ }
