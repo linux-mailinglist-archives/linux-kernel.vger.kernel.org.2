@@ -2,63 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E48362DB9
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 06:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C5F362DBA
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 06:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235734AbhDQEiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 00:38:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60584 "EHLO
+        id S235790AbhDQEjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 00:39:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235691AbhDQEiw (ORCPT
+        with ESMTP id S235567AbhDQEi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 00:38:52 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C67DC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 21:38:26 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id nk8so1906603pjb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 21:38:26 -0700 (PDT)
+        Sat, 17 Apr 2021 00:38:58 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E70C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 21:38:31 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id ot17-20020a17090b3b51b0290109c9ac3c34so17466157pjb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 21:38:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CzztEYThC68iA+/H3mXFzISa6K0UiM/T7EUy8N400kM=;
-        b=ZwQpZdb4P0z3JJJBaiDRn34BsDhgV7N2sSEU+RfSVAHDy77bCYUa42yOlGOKs0A7TU
-         Kj/xw6XNgYv+qS/dwBKrd0p60qYp8yqtTQL3ftFDEKcKFFzEeWz0rK/vStgWPGu4vVXi
-         Ekr8fx3oRHT4pJI4I3clORCRCha9uLyLk1MfV1EJQuayfM3Yzqo3rDKwziEv+xt7lfBX
-         8/9AC9jvuQdU5UU3o0mHBbePSwRw8Gw3WvWgATwgkfdqt5vxl4KGi2Va3k23f+nUNrt3
-         7wbApWm3nKoM1btFRS9BmewuR1HjYvLBDNKauYYE1i9M8bWV4DB+JqUdbbxCFb6xTO0n
-         OCgw==
+        bh=j8wWJIpwyMTu3hxIlWXzmIud8VzdA+zaDtz12NM5n5U=;
+        b=gOlDpI9W4hNk8OJOLpqJsXe7e3d8XW3uIRecNncUmDast0FIsNwEoukqsd92tIuXYS
+         4S9+Hg1qJokG2rU5GBwTlujrn6cb7eUE/O5soU6MDUsB6ZnMlldD6aeX97Vf0sjZUH6J
+         rOOyszSYismDKyNKucJHCd9d7lB3hROGCDbpF57945bR5Lh/+0wSFO9LnmJaZJKqIX4N
+         oL/XuAorQSZlwsgaDUvjvU5w6A/dZh3lZuzTzXKZyR0Fj/+TGjI4tbqSUScR4IvQig6O
+         Mfwui3WpKH1vmNkVObxYjB9OtobnsE1qegYgcKfLd2VCr0pxUCUoGNJCfvboZYFIVTQH
+         V7tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CzztEYThC68iA+/H3mXFzISa6K0UiM/T7EUy8N400kM=;
-        b=ZpHtJ4s6hhks0bjbvyVC68aTmhjiqZNXnch7eJC+R5auQz/AkEt9UHyl9Ku0uILDbU
-         76TSj5+Lu3SxYjPNw7AIAauDxde/BptSczdANBHFJLwqav+Fu2XQbOETYJMFkj4X2jh5
-         psFv33m0UlKZrJc3gCUE45b2meVsIbcLbzWWThrjBxLDr3+pRmssMlLyNLrUdq27qilV
-         B2VwH0oGzIQ22R69vLVA9o/1HcWLxTGl4IekiQsDjqSL+HlX6aZRqFmS/IpDN/6VNmIO
-         SY/Ii8JR+et8xSuejnB7/ysCLArdTkjewHsUhDHLw3vokwNEeXG0FObp81mj/+wpRxpM
-         7n1A==
-X-Gm-Message-State: AOAM531OCxK/1gK3WlUAoe7oP8Q4l9iayvZAdjQAVY3l1ZemKa2gRQMG
-        5rTwWed5nge9jvcycaepDzeZZ08Qhsjt1A==
-X-Google-Smtp-Source: ABdhPJwHJOXNxCRxaiJNn5wSMEycirv4bY2+aWCTu05ryyJoj5mcg7Rh8aN85bWBwHXTFU/RExwEkQ==
-X-Received: by 2002:a17:90a:9312:: with SMTP id p18mr12986286pjo.171.1618634305772;
-        Fri, 16 Apr 2021 21:38:25 -0700 (PDT)
+        bh=j8wWJIpwyMTu3hxIlWXzmIud8VzdA+zaDtz12NM5n5U=;
+        b=SB0N3wvuw6hlPhwzHJeZ6oAQTGOyNHYb65NKACji+RnLcp6FHr9zrO1F7s+lo+ek1g
+         twDeAlpsKZvVO5vJLeMAansQSL/dvsN0MFnPqfAYjsMT/jEV3/l5U/ionaE9uXFyfYrW
+         q85ruqGtGRELlqz7jG4oDvuCUdJB9WNetOIlCYWZbLkf0hcJiwfKiJc1sD+B54Y6m/GX
+         RZUdGGH2EYjTZZpQYEmyTp4zQiN9r8TrapSeOb5HocldK9lZsAerA8gyxV+5MieviBWQ
+         iMqu5A70mTViixOMLGN19WcH5GYr6jjXiGlZDiYG+SsMXHT6WLNyHaOEDeOowu6JEM6C
+         1vqw==
+X-Gm-Message-State: AOAM531AlFiJ2d/nO8egHPKNOFH+xwQ+oBNyfmolQQzxu+oqbscNFYSD
+        uHyLys5Xz3CYQfUbeLVUGlLVtEiUBGheKQ==
+X-Google-Smtp-Source: ABdhPJyjWUSSWRy9zIYjqf2tg/9AOXpV4Sq7NMnXrLiBovzHs2ttyWQ1tvrW4y8CSIsagtmxFg5dTQ==
+X-Received: by 2002:a17:902:501:b029:eb:7a1b:c96c with SMTP id 1-20020a1709020501b02900eb7a1bc96cmr11483702plf.76.1618634311277;
+        Fri, 16 Apr 2021 21:38:31 -0700 (PDT)
 Received: from localhost.bytedance.net ([139.177.225.228])
-        by smtp.gmail.com with ESMTPSA id w21sm7064775pjy.21.2021.04.16.21.38.20
+        by smtp.gmail.com with ESMTPSA id w21sm7064775pjy.21.2021.04.16.21.38.26
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 16 Apr 2021 21:38:25 -0700 (PDT)
+        Fri, 16 Apr 2021 21:38:31 -0700 (PDT)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     guro@fb.com, hannes@cmpxchg.org, mhocko@kernel.org,
         akpm@linux-foundation.org, shakeelb@google.com,
         vdavydov.dev@gmail.com
 Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        duanxiongchun@bytedance.com,
-        Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@suse.com>
-Subject: [PATCH v3 5/8] mm: memcontrol: rename lruvec_holds_page_lru_lock to page_matches_lruvec
-Date:   Sat, 17 Apr 2021 12:35:35 +0800
-Message-Id: <20210417043538.9793-6-songmuchun@bytedance.com>
+        duanxiongchun@bytedance.com, Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v3 6/8] mm: memcontrol: simplify the logic of objcg pinning memcg
+Date:   Sat, 17 Apr 2021 12:35:36 +0800
+Message-Id: <20210417043538.9793-7-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 In-Reply-To: <20210417043538.9793-1-songmuchun@bytedance.com>
 References: <20210417043538.9793-1-songmuchun@bytedance.com>
@@ -68,65 +66,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-lruvec_holds_page_lru_lock() doesn't check anything about locking and is
-used to check whether the page belongs to the lruvec. So rename it to
-page_matches_lruvec().
+The obj_cgroup_release() and memcg_reparent_objcgs() are serialized by
+the css_set_lock. We do not need to care about objcg->memcg being
+released in the process of obj_cgroup_release(). So there is no need
+to pin memcg before releasing objcg. Remove those pinning logic to
+simplfy the code.
+
+There are only two places that modifies the objcg->memcg. One is the
+initialization to objcg->memcg in the memcg_online_kmem(), another
+is objcgs reparenting in the memcg_reparent_objcgs(). It is also
+impossible for the two to run in parallel. So xchg() is unnecessary
+and it is enough to use WRITE_ONCE().
 
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: Roman Gushchin <guro@fb.com>
 ---
- include/linux/memcontrol.h | 8 ++++----
- mm/vmscan.c                | 2 +-
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ mm/memcontrol.c | 20 ++++++--------------
+ 1 file changed, 6 insertions(+), 14 deletions(-)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 2fc728492c9b..0ce97eff79e2 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1492,8 +1492,8 @@ static inline void unlock_page_lruvec_irqrestore(struct lruvec *lruvec,
- 	spin_unlock_irqrestore(&lruvec->lru_lock, flags);
- }
- 
--static inline bool lruvec_holds_page_lru_lock(struct page *page,
--					      struct lruvec *lruvec)
-+/* Test requires a stable page->memcg binding, see page_memcg() */
-+static inline bool page_matches_lruvec(struct page *page, struct lruvec *lruvec)
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index caf193088beb..c4eebe2a2914 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -261,7 +261,6 @@ static void obj_cgroup_uncharge_pages(struct obj_cgroup *objcg,
+ static void obj_cgroup_release(struct percpu_ref *ref)
  {
- 	return lruvec_pgdat(lruvec) == page_pgdat(page) &&
- 	       lruvec_memcg(lruvec) == page_memcg(page);
-@@ -1504,7 +1504,7 @@ static inline struct lruvec *relock_page_lruvec_irq(struct page *page,
- 		struct lruvec *locked_lruvec)
- {
- 	if (locked_lruvec) {
--		if (lruvec_holds_page_lru_lock(page, locked_lruvec))
-+		if (page_matches_lruvec(page, locked_lruvec))
- 			return locked_lruvec;
+ 	struct obj_cgroup *objcg = container_of(ref, struct obj_cgroup, refcnt);
+-	struct mem_cgroup *memcg;
+ 	unsigned int nr_bytes;
+ 	unsigned int nr_pages;
+ 	unsigned long flags;
+@@ -291,11 +290,9 @@ static void obj_cgroup_release(struct percpu_ref *ref)
+ 	nr_pages = nr_bytes >> PAGE_SHIFT;
  
- 		unlock_page_lruvec_irq(locked_lruvec);
-@@ -1518,7 +1518,7 @@ static inline struct lruvec *relock_page_lruvec_irqsave(struct page *page,
- 		struct lruvec *locked_lruvec, unsigned long *flags)
- {
- 	if (locked_lruvec) {
--		if (lruvec_holds_page_lru_lock(page, locked_lruvec))
-+		if (page_matches_lruvec(page, locked_lruvec))
- 			return locked_lruvec;
+ 	spin_lock_irqsave(&css_set_lock, flags);
+-	memcg = obj_cgroup_memcg(objcg);
+ 	if (nr_pages)
+ 		obj_cgroup_uncharge_pages(objcg, nr_pages);
+ 	list_del(&objcg->list);
+-	mem_cgroup_put(memcg);
+ 	spin_unlock_irqrestore(&css_set_lock, flags);
  
- 		unlock_page_lruvec_irqrestore(locked_lruvec, *flags);
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index bb8321026c0c..2bc5cf409958 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2062,7 +2062,7 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
- 		 * All pages were isolated from the same lruvec (and isolation
- 		 * inhibits memcg migration).
- 		 */
--		VM_BUG_ON_PAGE(!lruvec_holds_page_lru_lock(page, lruvec), page);
-+		VM_BUG_ON_PAGE(!page_matches_lruvec(page, lruvec), page);
- 		add_page_to_lru_list(page, lruvec);
- 		nr_pages = thp_nr_pages(page);
- 		nr_moved += nr_pages;
+ 	percpu_ref_exit(ref);
+@@ -330,17 +327,12 @@ static void memcg_reparent_objcgs(struct mem_cgroup *memcg,
+ 
+ 	spin_lock_irq(&css_set_lock);
+ 
+-	/* Move active objcg to the parent's list */
+-	xchg(&objcg->memcg, parent);
+-	css_get(&parent->css);
+-	list_add(&objcg->list, &parent->objcg_list);
+-
+-	/* Move already reparented objcgs to the parent's list */
+-	list_for_each_entry(iter, &memcg->objcg_list, list) {
+-		css_get(&parent->css);
+-		xchg(&iter->memcg, parent);
+-		css_put(&memcg->css);
+-	}
++	/* 1) Ready to reparent active objcg. */
++	list_add(&objcg->list, &memcg->objcg_list);
++	/* 2) Reparent active objcg and already reparented objcgs to parent. */
++	list_for_each_entry(iter, &memcg->objcg_list, list)
++		WRITE_ONCE(iter->memcg, parent);
++	/* 3) Move already reparented objcgs to the parent's list */
+ 	list_splice(&memcg->objcg_list, &parent->objcg_list);
+ 
+ 	spin_unlock_irq(&css_set_lock);
 -- 
 2.11.0
 
