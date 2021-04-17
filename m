@@ -2,104 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1E736320C
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 21:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EBB7363212
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 21:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237048AbhDQTq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 15:46:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
+        id S236994AbhDQTwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 15:52:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236779AbhDQTq6 (ORCPT
+        with ESMTP id S236718AbhDQTwH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 15:46:58 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03255C061574;
-        Sat, 17 Apr 2021 12:46:30 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id i3so10465398edt.1;
-        Sat, 17 Apr 2021 12:46:29 -0700 (PDT)
+        Sat, 17 Apr 2021 15:52:07 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B96C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 12:51:39 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id y4so9772525lfl.10
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 12:51:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=eSOJMwvIJkQU2JYaT7cb2vTqKYf6iPw1ySzK9GIZ1mE=;
-        b=sfo1ZL4IgQFU2a/GIYfPYPNoASv/hTC8EXtSdm5D8WaqKRLhRkrGTSIlZ26izkLwi7
-         w8x8K1vXttMQP13GzODDnpCdBVZuLTzQShERLxCHX6TLEXSIpAd3rAL3lbQ0PADABVsH
-         YA5oOOEDjpHvzT/dP4RT/ZiRiEy034kX0JZxZk4o0Y5UBO6syzwfb+agbs+R2SEAW/+k
-         +OjJ/dxGqwRhv1jXxskU7kAj61la0qlDD05y6GXTjp+TAgYASdkoyH5u01sTyuaRKWoj
-         tEEDftgbbEIZuZs1B9ITJFiDDo60JnR6r8JW3YxgECy43nvTm9y7MT2PKG5r1+fyzNsl
-         yBOg==
+        bh=V9GAEUssANBfKD15rSozAJHNG7J93nIDtHCydhPvEyg=;
+        b=Bg7f0TZ9VMkODVodUxo6nOYaLPNAtK3zo+8R5f4drYQz4zXcV5xMh95M/iaSrGrgUl
+         ZQoW0aZRgSG/dI0D896jjYc5BzE9mebQvnUfvzEIIjN66tZ7KMqZeyvGYfU/aoSkEzHj
+         Kw2aAnXTdbTXACWkyPkvRbmvBcrIzVsjGat5g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eSOJMwvIJkQU2JYaT7cb2vTqKYf6iPw1ySzK9GIZ1mE=;
-        b=S3rc71BOQgEA2eFV3JQrfibVYUGyS2EW8a9/HgceCBbIaGMBJDs0A/XiD9cOLnYxMg
-         GTyHCEtuMoKsO7fIDDXTdmB9c/HaGADjyuqOTy4NCLd/v5dCt998Iy6UpuhVK/cOlxqV
-         LrpSSAFjfNTYTFrAEytyc5IqdCBjcC6a+RP2GNzvyhj4JJJ6sjMiAvMusTPZzMkYcN+e
-         KPKIVDJJwXbz23iXn7WSdBrJ966arLu1tPuYg3pCV21egQRfIEHqoFAxPRqVn737DikJ
-         ZDAZwPQ/xN0TglXxRxDkz6cNjP60JYJNv9R+pDxn/kXfHntIpSY8c17Hc8xXzyvk7fko
-         yu1g==
-X-Gm-Message-State: AOAM531WZhtpFqbrdf8GdJLmTW1/RI7+cZ3QDtqp0d7x9b53aeMSqQzg
-        p8kzRsJaOdWFMc5F7L9qIxO2bL6IwhSlxYKGbSw=
-X-Google-Smtp-Source: ABdhPJwupn1AHPWkgNX5S4iHwJNtNuew20GI+CF5/KvqzL8rItIj/uzGeoXQIWZUulBDltLD4HWNwDeHrrCts+tPxAQ=
-X-Received: by 2002:a05:6402:4415:: with SMTP id y21mr16888070eda.70.1618688788715;
- Sat, 17 Apr 2021 12:46:28 -0700 (PDT)
+        bh=V9GAEUssANBfKD15rSozAJHNG7J93nIDtHCydhPvEyg=;
+        b=a18MOlWvdKwS4PNeMOoRXx1qG4/+E+iTaGOeC1YjeQo5jBvzzZ1W7QZVQS43yo3Xv1
+         Ph3TwLcXg8z1W2BzC0tW0c3xjlkC2yOrcJVacLSUqdEeTDvhWTR8wy/DTzHBS+rVZr0+
+         B3oflNi+suf+I3EV1PM08rX7gNE7H7VlAZ9q2xuAl4vmuApR5+xTexkwbEmp6HFw3p7u
+         joh5jS5LpvnLlsX2/j2G47fDdnXXaBJFrzTjg0FIya5YFBP1p0scCvpVgXRaisNiWu0b
+         dYQ5zz1o5bNsYTymH2p+vq0Dwkdp0xUi+zAPPlJzt3nyEWrQyq4Mrk1Q7ce9qyHCdjTY
+         jMGw==
+X-Gm-Message-State: AOAM532C83GcLz/XkQd6PH9WGbyxOP/gW+VFi0ZrCpF5rSdgUEvKPoQy
+        njgHmydsgYSIWaaMvjLA0xJOHNMfP87+ls99
+X-Google-Smtp-Source: ABdhPJxlnDQsGdwxwqRpDJKVMUjn/P43Y9JTH6WFEJkaY8WDTL8p4gWoHBbcfYicrxP1MtLeoLC4BQ==
+X-Received: by 2002:a19:e20a:: with SMTP id z10mr6974192lfg.391.1618689097573;
+        Sat, 17 Apr 2021 12:51:37 -0700 (PDT)
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
+        by smtp.gmail.com with ESMTPSA id c2sm1358588lfi.143.2021.04.17.12.51.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Apr 2021 12:51:37 -0700 (PDT)
+Received: by mail-lj1-f181.google.com with SMTP id l22so27477508ljc.9
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 12:51:37 -0700 (PDT)
+X-Received: by 2002:a05:651c:3c1:: with SMTP id f1mr6240560ljp.507.1618689096862;
+ Sat, 17 Apr 2021 12:51:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210326205135.6098-1-info@alexander-lochmann.de>
- <CA+fCnZcTi=QLGC_LCdhs+fMrxkqX66kXEuM5ewOmjVjifKzUrw@mail.gmail.com> <CACT4Y+Y_PfAhjV26xYf8wcEv0MYygC14c_92hBN8gqOACK7Oow@mail.gmail.com>
-In-Reply-To: <CACT4Y+Y_PfAhjV26xYf8wcEv0MYygC14c_92hBN8gqOACK7Oow@mail.gmail.com>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Sat, 17 Apr 2021 21:46:18 +0200
-Message-ID: <CA+fCnZczmfDROOLbQ-7w7a+-YXM-D4z+Jo-_7FZF+3G0yKYc4A@mail.gmail.com>
-Subject: Re: [PATCHv3] Introduced new tracing mode KCOV_MODE_UNIQUE.
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Lochmann <info@alexander-lochmann.de>
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Maciej Grochowski <maciej.grochowski@pm.me>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210416192413.1514419-1-eric.dumazet@gmail.com>
+ <CAHk-=wjbvzCAhAtvG0d81W5o0-KT5PPTHhfJ5ieDFq+bGtgOYg@mail.gmail.com> <CANn89iK0Win0m5ggB-EjFvVwmpkyg_nG9FW9uzREmrpoeTF_aw@mail.gmail.com>
+In-Reply-To: <CANn89iK0Win0m5ggB-EjFvVwmpkyg_nG9FW9uzREmrpoeTF_aw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 17 Apr 2021 12:51:21 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wijrfU0BN7L5Go1PDZ1NQRgDGnW57EeMXw_qqowMGJZAA@mail.gmail.com>
+Message-ID: <CAHk-=wijrfU0BN7L5Go1PDZ1NQRgDGnW57EeMXw_qqowMGJZAA@mail.gmail.com>
+Subject: Re: [PATCH] x86/uaccess: small optimization in unsafe_copy_to_user()
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 10:42 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+On Sat, Apr 17, 2021 at 12:44 PM Eric Dumazet <edumazet@google.com> wrote:
 >
-> On Sat, Mar 27, 2021 at 3:56 PM Andrey Konovalov <andreyknvl@gmail.com> wrote:
-> >
-> > On Fri, Mar 26, 2021 at 9:52 PM Alexander Lochmann
-> > <info@alexander-lochmann.de> wrote:
-> > >
-> >
-> > Hi Alexander,
-> >
-> > > It simply stores the executed PCs.
-> > > The execution order is discarded.
-> > > Each bit in the shared buffer represents every fourth
-> > > byte of the text segment.
-> > > Since a call instruction on every supported
-> > > architecture is at least four bytes, it is safe
-> > > to just store every fourth byte of the text segment.
-> >
-> > What about jumps?
->
-> KCOV adds call __sanitizer_cov_trace_pc per coverage point. So besides
-> the instructions in the original code, we also always have this call.
+> I thought put_cmsg() callers were from the kernel, with no possibility
+> for user to abuse this interface trying to push GB of data.
 
-Ah, I see. This should be explained in the changelog.
+My point is that "I thought" is not good enough for the unsafe interfaces.
 
-This means that a KCOV user will need the kernel binary to recover the
-actual PCs that were covered, as the information about the lower two
-bits is lost, right? This needs to be explained as well.
+It needs to be "I can see that the arguments are properly verified".
 
-Thanks!
+That is literally why they are called "unsafe". You need to make the
+uses obviously safe. Because the functions themselves don't do that.
+
+            Linus
