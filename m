@@ -2,233 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF549362D5D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 05:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9926F362D60
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 05:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235753AbhDQDpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 23:45:06 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3946 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234999AbhDQDpF (ORCPT
+        id S235682AbhDQDqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 23:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235569AbhDQDqX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 23:45:05 -0400
-Received: from dggeml406-hub.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FMf616jVmz5pjD;
-        Sat, 17 Apr 2021 11:42:17 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggeml406-hub.china.huawei.com (10.3.17.50) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Sat, 17 Apr 2021 11:44:36 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Sat, 17 Apr
- 2021 11:44:36 +0800
-Subject: Re: [PATCH net] net: fix use-after-free when UDP GRO with shared
- fraglist
-To:     Dongseok Yi <dseok.yi@samsung.com>,
-        'Willem de Bruijn' <willemdebruijn.kernel@gmail.com>
-CC:     "'David S. Miller'" <davem@davemloft.net>,
-        'Jakub Kicinski' <kuba@kernel.org>,
-        'Miaohe Lin' <linmiaohe@huawei.com>,
-        'Willem de Bruijn' <willemb@google.com>,
-        'Paolo Abeni' <pabeni@redhat.com>,
-        'Florian Westphal' <fw@strlen.de>,
-        'Al Viro' <viro@zeniv.linux.org.uk>,
-        'Guillaume Nault' <gnault@redhat.com>,
-        'Steffen Klassert' <steffen.klassert@secunet.com>,
-        "'Yadu Kishore'" <kyk.segfault@gmail.com>,
-        'Marco Elver' <elver@google.com>,
-        "'Network Development'" <netdev@vger.kernel.org>,
-        'LKML' <linux-kernel@vger.kernel.org>, <namkyu78.kim@samsung.com>
-References: <CGME20210104085750epcas2p1a5b22559d87df61ef3c8215ae0b470b5@epcas2p1.samsung.com>
- <1609750005-115609-1-git-send-email-dseok.yi@samsung.com>
- <CAF=yD-+bDdYg7X+WpP14w3fbv+JewySpdCbjdwWXB-syCwQ9uQ@mail.gmail.com>
- <017f01d6e3cb$698246a0$3c86d3e0$@samsung.com>
- <CAF=yD-Lg92JdpCU8CEQnutzi4VyS67_VNfAniRU=RxDvfYMruw@mail.gmail.com>
- <019b01d6e3dc$9a940330$cfbc0990$@samsung.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <18999f48-7dc8-e859-8629-3b5cab764faa@huawei.com>
-Date:   Sat, 17 Apr 2021 11:44:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
-MIME-Version: 1.0
-In-Reply-To: <019b01d6e3dc$9a940330$cfbc0990$@samsung.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme701-chm.china.huawei.com (10.1.199.97) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+        Fri, 16 Apr 2021 23:46:23 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 655E8C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 20:45:57 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id u3-20020a2509430000b02904e7f1a30cffso1049805ybm.8
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 20:45:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=DwfZ6Wi0V5teVjChDKKISP6jFpDU0ASTBwZn9CpapWY=;
+        b=YY9cghOZEU4tRYcLmU/Ul1HlY8NfrG8ZUTScwggfUTK7dFpM0nMTPLaKcavTo769pt
+         yyLJpEYJ7Pb7PYNfCqZFaqUemCzDpvY+Js40EHuGJ5DB4cSRCsJIL65xeuzEb8JiAzd4
+         qij0gag9alXE9MIHBZzBSo2oEb0ulyJ4t6pBHAbhx1beedGLuZ9VsuBRFoFUHwFx4kww
+         anm+XdoduyejZSWnrUWT+/OV6yMiFKf37EilqHuLzFfoR2tYM8iaizA4fA0vpDEJHRX7
+         RAN+LbUdoa78Oht962NNMr5KaEoNZ7kNBPJvw6tvqGOMaoA99iaINzUVolykxnYqDLSw
+         usPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=DwfZ6Wi0V5teVjChDKKISP6jFpDU0ASTBwZn9CpapWY=;
+        b=MMU281lIAFywXAf0BGjhZl7fZJZM4T28FwxhGA3Arjh/w+qWbJuR4bqxG/d81s/P86
+         6TCyiGHfGkkd62Eg/d+pIDWidu9+6+oycK02t2b7jCjCi36CA6loEb5+fPRWCZP7agy3
+         854BekHchfCeck9Z9KClvZa2YJMMNrzRNmL+wTt2HS8v1K/RZCWH+NDyrGZe+RJAjnHt
+         qG5GHhOKTgzBWD23gmsbi2suQhxcf31QHnVZ/fWcVQWuT7pBurCd79MZtjjpEAMSHGCF
+         JeuE37FQym+iIevND87spEa2ZF+tW+lrw4zxeW/l3XxmkdsaZiIcWE479Kiiv0tODNRi
+         f/lA==
+X-Gm-Message-State: AOAM533YKWsuBFId915Sz12Irhphu4VeUUto7aeM1CeRi4jb0y+AlQ6t
+        UXMVb9XaGY+ZRkzZ/MLuKp8ZEzBCq/sqeA==
+X-Google-Smtp-Source: ABdhPJwZQrchzW9ElVi2IAqNHV0OFnElQ2XAIX74JNaYPR7mT2w4ryIWjLPeYWLKwxOLYvZGCpgUGg0VdFQ5/w==
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:fff4:37a8:7152:cd1f])
+ (user=davidgow job=sendgmr) by 2002:a25:e04b:: with SMTP id
+ x72mr3279598ybg.337.1618631156641; Fri, 16 Apr 2021 20:45:56 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 20:45:53 -0700
+Message-Id: <20210417034553.1048895-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
+Subject: [PATCH v2] Documentation: kunit: Update kunit_tool page
+From:   David Gow <davidgow@google.com>
+To:     Daniel Latypov <dlatypov@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>
+Cc:     David Gow <davidgow@google.com>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        linux-kselftest@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/6 11:32, Dongseok Yi wrote:
-> On 2021-01-06 12:07, Willem de Bruijn wrote:
->>
->> On Tue, Jan 5, 2021 at 8:29 PM Dongseok Yi <dseok.yi@samsung.com> wrote:
->>>
->>> On 2021-01-05 06:03, Willem de Bruijn wrote:
->>>>
->>>> On Mon, Jan 4, 2021 at 4:00 AM Dongseok Yi <dseok.yi@samsung.com> wrote:
->>>>>
->>>>> skbs in frag_list could be shared by pskb_expand_head() from BPF.
->>>>
->>>> Can you elaborate on the BPF connection?
->>>
->>> With the following registered ptypes,
->>>
->>> /proc/net # cat ptype
->>> Type Device      Function
->>> ALL           tpacket_rcv
->>> 0800          ip_rcv.cfi_jt
->>> 0011          llc_rcv.cfi_jt
->>> 0004          llc_rcv.cfi_jt
->>> 0806          arp_rcv
->>> 86dd          ipv6_rcv.cfi_jt
->>>
->>> BPF checks skb_ensure_writable between tpacket_rcv and ip_rcv
->>> (or ipv6_rcv). And it calls pskb_expand_head.
->>>
->>> [  132.051228] pskb_expand_head+0x360/0x378
->>> [  132.051237] skb_ensure_writable+0xa0/0xc4
->>> [  132.051249] bpf_skb_pull_data+0x28/0x60
->>> [  132.051262] bpf_prog_331d69c77ea5e964_schedcls_ingres+0x5f4/0x1000
->>> [  132.051273] cls_bpf_classify+0x254/0x348
->>> [  132.051284] tcf_classify+0xa4/0x180
->>
->> Ah, you have a BPF program loaded at TC. That was not entirely obvious.
->>
->> This program gets called after packet sockets with ptype_all, before
->> those with a specific protocol.
->>
->> Tcpdump will have inserted a program with ptype_all, which cloned the
->> skb. This triggers skb_ensure_writable -> pskb_expand_head ->
->> skb_clone_fraglist -> skb_get.
->>
->>> [  132.051294] __netif_receive_skb_core+0x590/0xd28
->>> [  132.051303] __netif_receive_skb+0x50/0x17c
->>> [  132.051312] process_backlog+0x15c/0x1b8
->>>
->>>>
->>>>> While tcpdump, sk_receive_queue of PF_PACKET has the original frag_list.
->>>>> But the same frag_list is queued to PF_INET (or PF_INET6) as the fraglist
->>>>> chain made by skb_segment_list().
->>>>>
->>>>> If the new skb (not frag_list) is queued to one of the sk_receive_queue,
->>>>> multiple ptypes can see this. The skb could be released by ptypes and
->>>>> it causes use-after-free.
->>>>
->>>> If I understand correctly, a udp-gro-list skb makes it up the receive
->>>> path with one or more active packet sockets.
->>>>
->>>> The packet socket will call skb_clone after accepting the filter. This
->>>> replaces the head_skb, but shares the skb_shinfo and thus frag_list.
->>>>
->>>> udp_rcv_segment later converts the udp-gro-list skb to a list of
->>>> regular packets to pass these one-by-one to udp_queue_rcv_one_skb.
->>>> Now all the frags are fully fledged packets, with headers pushed
->>>> before the payload. This does not change their refcount anymore than
->>>> the skb_clone in pf_packet did. This should be 1.
->>>>
->>>> Eventually udp_recvmsg will call skb_consume_udp on each packet.
->>>>
->>>> The packet socket eventually also frees its cloned head_skb, which triggers
->>>>
->>>>   kfree_skb_list(shinfo->frag_list)
->>>>     kfree_skb
->>>>       skb_unref
->>>>         refcount_dec_and_test(&skb->users)
->>>
->>> Every your understanding is right, but
->>>
->>>>
->>>>>
->>>>> [ 4443.426215] ------------[ cut here ]------------
->>>>> [ 4443.426222] refcount_t: underflow; use-after-free.
->>>>> [ 4443.426291] WARNING: CPU: 7 PID: 28161 at lib/refcount.c:190
->>>>> refcount_dec_and_test_checked+0xa4/0xc8
->>>>> [ 4443.426726] pstate: 60400005 (nZCv daif +PAN -UAO)
->>>>> [ 4443.426732] pc : refcount_dec_and_test_checked+0xa4/0xc8
->>>>> [ 4443.426737] lr : refcount_dec_and_test_checked+0xa0/0xc8
->>>>> [ 4443.426808] Call trace:
->>>>> [ 4443.426813]  refcount_dec_and_test_checked+0xa4/0xc8
->>>>> [ 4443.426823]  skb_release_data+0x144/0x264
->>>>> [ 4443.426828]  kfree_skb+0x58/0xc4
->>>>> [ 4443.426832]  skb_queue_purge+0x64/0x9c
->>>>> [ 4443.426844]  packet_set_ring+0x5f0/0x820
->>>>> [ 4443.426849]  packet_setsockopt+0x5a4/0xcd0
->>>>> [ 4443.426853]  __sys_setsockopt+0x188/0x278
->>>>> [ 4443.426858]  __arm64_sys_setsockopt+0x28/0x38
->>>>> [ 4443.426869]  el0_svc_common+0xf0/0x1d0
->>>>> [ 4443.426873]  el0_svc_handler+0x74/0x98
->>>>> [ 4443.426880]  el0_svc+0x8/0xc
->>>>>
->>>>> Fixes: 3a1296a38d0c (net: Support GRO/GSO fraglist chaining.)
->>>>> Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
->>>>> ---
->>>>>  net/core/skbuff.c | 20 +++++++++++++++++++-
->>>>>  1 file changed, 19 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
->>>>> index f62cae3..1dcbda8 100644
->>>>> --- a/net/core/skbuff.c
->>>>> +++ b/net/core/skbuff.c
->>>>> @@ -3655,7 +3655,8 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
->>>>>         unsigned int delta_truesize = 0;
->>>>>         unsigned int delta_len = 0;
->>>>>         struct sk_buff *tail = NULL;
->>>>> -       struct sk_buff *nskb;
->>>>> +       struct sk_buff *nskb, *tmp;
->>>>> +       int err;
->>>>>
->>>>>         skb_push(skb, -skb_network_offset(skb) + offset);
->>>>>
->>>>> @@ -3665,11 +3666,28 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
->>>>>                 nskb = list_skb;
->>>>>                 list_skb = list_skb->next;
->>>>>
->>>>> +               err = 0;
->>>>> +               if (skb_shared(nskb)) {
->>>>
->>>> I must be missing something still. This does not square with my
->>>> understanding that the two sockets are operating on clones, with each
->>>> frag_list skb having skb->users == 1.
->>>>
->>>> Unless the packet socket patch previously also triggered an
->>>> skb_unclone/pskb_expand_head, as that call skb_clone_fraglist, which
->>>> calls skb_get on each frag_list skb.
->>>
->>> A cloned skb after tpacket_rcv cannot go through skb_ensure_writable
->>> with the original shinfo. pskb_expand_head reallocates the shinfo of
->>> the skb and call skb_clone_fraglist. skb_release_data in
->>> pskb_expand_head could not reduce skb->users of the each frag_list skb
->>> if skb_shinfo(skb)->dataref == 2.
->>>
->>> After the reallocation, skb_shinfo(skb)->dataref == 1 but each frag_list
->>> skb could have skb->users == 2.
+The kunit_tool documentation page was pretty minimal, and a bit
+outdated. Update it and flesh it out a bit.
 
-Hi, Dongseok
-   I understand there is liner head data shared between the frag_list skb in the
-cloned skb(cloned by pf_packet?) and original skb, which should not be shared
-when skb_segment_list() converts the frag_list skb into regular packet.
+In particular,
+- Mention that .kunitconfig is now in the build directory
+- Describe the use of --kunitconfig to specify a different config
+  framgent
+- Mention the split functionality (i.e., commands other than 'run')
+- Describe --raw_output and kunit.py parse
+- Mention the globbing support
+- Provide a quick overview of other options, including --build_dir and
+  --alltests
 
-   But both skb->users of original and cloned skb is one(skb_shinfo(skb)->dataref
-is one for both skb too), and skb->users of each fraglist skb is two because both
-original and cloned skb is linking to the same fraglist pointer, and there is
-"skb_shinfo(skb)->frag_list = NULL" for original skb in the begin of skb_segment_list(),
-if kfree_skb() is called with original skb, the fraglist skb will not be freed.
-If kfree_skb is called with original skb,cloned skb and each fraglist skb here, the
-reference counter for three of them seem right here, so why is there a refcount_t
-warning in the commit log? am I missing something obvious here?
+Note that this does overlap a little with the new running_tips page. I
+don't think it's a problem having both: this page is supposed to be a
+bit more of a reference, rather than a list of useful tips, so the fact
+that they both describe the same features isn't a problem.
 
-Sorry for bringing up this thread again.
+Signed-off-by: David Gow <davidgow@google.com>
+Reviewed-by: Daniel Latypov <dlatypov@google.com>
+---
 
->>
->> Yes, that makes sense. skb_clone_fraglist just increments the
->> frag_list skb's refcounts.
->>
->> skb_segment_list must create an unshared struct sk_buff before it
->> changes skb data to insert the protocol headers.
->>
+Adopted the changes from Daniel.
+
+Changes since v1:
+https://lore.kernel.org/linux-kselftest/20210416034036.797727-1-davidgow@google.com/
+- Mention that the default build directory is '.kunit' when discussing
+  '.kunitconfig' files.
+- Reword the discussion of 'CONFIG_KUNIT_ALL_TESTS' under '--alltests'
+
+
+
+ Documentation/dev-tools/kunit/kunit-tool.rst | 140 +++++++++++++++++--
+ 1 file changed, 132 insertions(+), 8 deletions(-)
+
+diff --git a/Documentation/dev-tools/kunit/kunit-tool.rst b/Documentation/dev-tools/kunit/kunit-tool.rst
+index 29ae2fee8123..4247b7420e3b 100644
+--- a/Documentation/dev-tools/kunit/kunit-tool.rst
++++ b/Documentation/dev-tools/kunit/kunit-tool.rst
+@@ -22,14 +22,19 @@ not require any virtualization support: it is just a regular program.
+ What is a .kunitconfig?
+ =======================
+ 
+-It's just a defconfig that kunit_tool looks for in the base directory.
+-kunit_tool uses it to generate a .config as you might expect. In addition, it
+-verifies that the generated .config contains the CONFIG options in the
+-.kunitconfig; the reason it does this is so that it is easy to be sure that a
+-CONFIG that enables a test actually ends up in the .config.
++It's just a defconfig that kunit_tool looks for in the build directory
++(``.kunit`` by default).  kunit_tool uses it to generate a .config as you might
++expect. In addition, it verifies that the generated .config contains the CONFIG
++options in the .kunitconfig; the reason it does this is so that it is easy to
++be sure that a CONFIG that enables a test actually ends up in the .config.
+ 
+-How do I use kunit_tool?
+-========================
++It's also possible to pass a separate .kunitconfig fragment to kunit_tool,
++which is useful if you have several different groups of tests you wish
++to run independently, or if you want to use pre-defined test configs for
++certain subsystems.
++
++Getting Started with kunit_tool
++===============================
+ 
+ If a kunitconfig is present at the root directory, all you have to do is:
+ 
+@@ -48,10 +53,129 @@ However, you most likely want to use it with the following options:
+ 
+ .. note::
+ 	This command will work even without a .kunitconfig file: if no
+-        .kunitconfig is present, a default one will be used instead.
++	.kunitconfig is present, a default one will be used instead.
++
++If you wish to use a different .kunitconfig file (such as one provided for
++testing a particular subsystem), you can pass it as an option.
++
++.. code-block:: bash
++
++	./tools/testing/kunit/kunit.py run --kunitconfig=fs/ext4/.kunitconfig
+ 
+ For a list of all the flags supported by kunit_tool, you can run:
+ 
+ .. code-block:: bash
+ 
+ 	./tools/testing/kunit/kunit.py run --help
++
++Configuring, Building, and Running Tests
++========================================
++
++It's also possible to run just parts of the KUnit build process independently,
++which is useful if you want to make manual changes to part of the process.
++
++A .config can be generated from a .kunitconfig by using the ``config`` argument
++when running kunit_tool:
++
++.. code-block:: bash
++
++	./tools/testing/kunit/kunit.py config
++
++Similarly, if you just want to build a KUnit kernel from the current .config,
++you can use the ``build`` argument:
++
++.. code-block:: bash
++
++	./tools/testing/kunit/kunit.py build
++
++And, if you already have a built UML kernel with built-in KUnit tests, you can
++run the kernel and display the test results with the ``exec`` argument:
++
++.. code-block:: bash
++
++	./tools/testing/kunit/kunit.py exec
++
++The ``run`` command which is discussed above is equivalent to running all three
++of these in sequence.
++
++All of these commands accept a number of optional command-line arguments. The
++``--help`` flag will give a complete list of these, or keep reading this page
++for a guide to some of the more useful ones.
++
++Parsing Test Results
++====================
++
++KUnit tests output their results in TAP (Test Anything Protocol) format.
++kunit_tool will, when running tests, parse this output and print a summary
++which is much more pleasant to read. If you wish to look at the raw test
++results in TAP format, you can pass the ``--raw_output`` argument.
++
++.. code-block:: bash
++
++	./tools/testing/kunit/kunit.py run --raw_output
++
++.. note::
++	The raw output from test runs may contain other, non-KUnit kernel log
++	lines.
++
++If you have KUnit results in their raw TAP format, you can parse them and print
++the human-readable summary with the ``parse`` command for kunit_tool. This
++accepts a filename for an argument, or will read from standard input.
++
++.. code-block:: bash
++
++	# Reading from a file
++	./tools/testing/kunit/kunit.py parse /var/log/dmesg
++	# Reading from stdin
++	dmesg | ./tools/testing/kunit/kunit.py parse
++
++This is very useful if you wish to run tests in a configuration not supported
++by kunit_tool (such as on real hardware, or an unsupported architecture).
++
++Filtering Tests
++===============
++
++It's possible to run only a subset of the tests built into a kernel by passing
++a filter to the ``exec`` or ``run`` commands. For example, if you only wanted
++to run KUnit resource tests, you could use:
++
++.. code-block:: bash
++
++	./tools/testing/kunit/kunit.py run 'kunit-resource*'
++
++This uses the standard glob format for wildcards.
++
++Other Useful Options
++====================
++
++kunit_tool has a number of other command-line arguments which can be useful
++when adapting it to fit your environment or needs.
++
++Some of the more useful ones are:
++
++``--help``
++	Lists all of the available options. Note that different commands
++	(``config``, ``build``, ``run``, etc) will have different supported
++	options. Place ``--help`` before the command to list common options,
++	and after the command for options specific to that command.
++
++``--build_dir``
++	Specifies the build directory that kunit_tool will use. This is where
++	the .kunitconfig file is located, as well as where the .config and
++	compiled kernel will be placed. Defaults to ``.kunit``.
++
++``--make_options``
++	Specifies additional options to pass to ``make`` when compiling a
++	kernel (with the ``build`` or ``run`` commands). For example, to enable
++	compiler warnings, you can pass ``--make_options W=1``.
++
++``--alltests``
++        Builds a UML kernel with all config options enabled using ``make
++        allyesconfig``. This allows you to run as many tests as is possible,
++        but is very slow and prone to breakage as new options are added or
++        modified. In most cases, enabling all tests which have satisfied
++        dependencies by adding ``CONFIG_KUNIT_ALL_TESTS=1`` to your
++        .kunitconfig is preferable.
++
++There are several other options (and new ones are often added), so do check
++``--help`` if you're looking for something not mentioned here.
+-- 
+2.31.1.368.gbe11c130af-goog
 
