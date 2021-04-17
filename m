@@ -2,74 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA4E362CB7
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 03:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0A6362CBB
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 03:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235230AbhDQBgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 21:36:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48880 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229719AbhDQBgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 21:36:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8316661152;
-        Sat, 17 Apr 2021 01:36:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618623382;
-        bh=ZGiW7XjMqPnX23vPoAublY1GvetP+oWUwxHm3Gl4bys=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WYWIrAO0aznXudfwyArZZchGzW//lTcOIanP2Dwv4MwsOGn6vnJEiw/4XXM/6/tSP
-         jfom0wQ/Wj/VtkFvJKIzn7/oIXwHz71T2CRQ6XeIxheHO0qw1h+w5WM8Zw3LEvxmTJ
-         e/jf/DdexeAeRRm9CsR8N4jgNSt4Cz2q6YwjsagB8zb8P6/wib1J1KWliDaVv4x4Vr
-         uvvtPDHzqTYHEFgYdV7x7Eg7nOqy22WUbVg/39LBgX2asBS5K2qEy5fgVAJIMnZ/9K
-         r0NgoVxjbVyrFtpCEkPjnoFwM36Wy9C2yW/gN0PGaTaXzvs4efl+7WYR8SXKKqiaPV
-         iP0W0AMhSjGXQ==
-Received: by mail-lf1-f42.google.com with SMTP id j18so47581624lfg.5;
-        Fri, 16 Apr 2021 18:36:22 -0700 (PDT)
-X-Gm-Message-State: AOAM533uOWRTaMelFZguDA3SQ2XuDs+Exq+Dbi4huSOx2aMhDms6rdJK
-        040pGxIKVCdxP+aiuxk5LsZ6P2OIHN01twItW0U=
-X-Google-Smtp-Source: ABdhPJxTCiLOcyZP0px1a402RFobt2UPKd4ESZA4RmjuKj/Df+3QjO9s2AEmxJ7uCDt4RbfEfMedzHX8FW2hLzoHu5c=
-X-Received: by 2002:a19:e34c:: with SMTP id c12mr4894188lfk.555.1618623380992;
- Fri, 16 Apr 2021 18:36:20 -0700 (PDT)
+        id S235204AbhDQB6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 21:58:11 -0400
+Received: from mail-ed1-f54.google.com ([209.85.208.54]:40817 "EHLO
+        mail-ed1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229719AbhDQB6K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 21:58:10 -0400
+Received: by mail-ed1-f54.google.com with SMTP id o20so8081577edc.7;
+        Fri, 16 Apr 2021 18:57:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jo74dkJt7xqUoXDWytSGjWDUiJiuB264VMFRwEGPHI4=;
+        b=UIyudsLmP3Uko+YcvzfgQlwpKyS74oCxOeUVKCp8J+G6WPBf1EcWZiM4zZ57B3FD08
+         K5aj5WeMfmei557pYzF5uMOXFxH74PmblucoHO4D46abnso/vU7T8mrJAcIYAxKZfX7j
+         hqW4gAl+fGLdIf5M9cWkLX3+GZlgX9QjBEic63DZhCOLZnHGDk+2gcpBn2Imf0tlGlPd
+         rGKsn0uifzbC5XOfTwkEdlzCHQV033JobzU5mBzMxneLADJdjYxNpkaD/8O9bRdE7q6J
+         tH5kNRAs5cXRkwN5SBclqUvmLTPYtQDsOPekSEB3I3+yA+E/LkPgnQhIwffYvYHIbrtX
+         LVcQ==
+X-Gm-Message-State: AOAM530ezCiq/LGTLPzFjfnqmZMOlZkvx/IhQwXLg0VSgHMoAOYK7UJh
+        g8WW1KE8ep4SbBSCwXKFw7rY4rzZvMg9Obdz4Ek=
+X-Google-Smtp-Source: ABdhPJyIqg5OuLyLoiKaIg7RcVsHIcICQfAyLflM9kU/vz762xy5bBys6eKAw2sljUMooVjAvTvCb3E92clKD/nOYwA=
+X-Received: by 2002:aa7:c144:: with SMTP id r4mr13488454edp.222.1618624662590;
+ Fri, 16 Apr 2021 18:57:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <1618472362-85193-1-git-send-email-guoren@kernel.org> <YHf+z0AotZmjvaJ/@hirez.programming.kicks-ass.net>
-In-Reply-To: <YHf+z0AotZmjvaJ/@hirez.programming.kicks-ass.net>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Sat, 17 Apr 2021 09:36:09 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQkPauGnLXUfs4sPvDx1MhXvCmb9ouGOAANsuEFU2qz1A@mail.gmail.com>
-Message-ID: <CAJF2gTQkPauGnLXUfs4sPvDx1MhXvCmb9ouGOAANsuEFU2qz1A@mail.gmail.com>
-Subject: Re: [PATCH] riscv: atomic: Using ARCH_ATOMIC in asm/atomic.h
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Anup Patel <Anup.Patel@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anup Patel <anup@brainfault.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
+References: <CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com>
+ <87lf9nk2ku.fsf@oldenburg.str.redhat.com> <CALCETrWxJzf-rm9rqMpdxEtdVe+0OH7XRtWV=UzrgBDiPT=vVQ@mail.gmail.com>
+ <CAJvTdKkAzEeAKrEYMU-gBWXoNGyJ09ZGw1gsU0b3uCuo8vrX0A@mail.gmail.com>
+ <CALCETrVvapzL79BQNEvOupMHHzriR+n97955tRA+TPE6rgRC4Q@mail.gmail.com>
+ <CAJvTdKmDb3TOHbb4w1YNcdYH2Pzr+RsAS_o0q3AFP1Xz55R37g@mail.gmail.com>
+ <CALCETrUe4_DvSdq7CRJsUxZm8DSwfHevagxJEbHv88UjcC1Hkg@mail.gmail.com>
+ <CAJvTdKmppOcyy=akSo3+dn0KN5GmOKLK5cp3eZ_ymujE-=ExwQ@mail.gmail.com>
+ <CALCETrUxc1Y=4XmNthSSCeQfJ_SKNS762Nt3B-CynE-rhRSBGw@mail.gmail.com>
+ <CAJvTdKmDskNka9tm5TMZkkP8tYa-K01sz8hAMccRSaAYKNPz5Q@mail.gmail.com>
+ <CALCETrVbbDm1P21yG4HWPCuipPdBT6-Kdd5sRZpaZjjQr9euDw@mail.gmail.com>
+ <CAJvTdKkSt-O6TkxJmE+Q2VCDqc9AzpovbpafsME2NBUqRpHEJw@mail.gmail.com> <CALCETrV=Q7+D4EZiQDOwqF6O=BfMOxCpLed7=YVUJADayKAJ7Q@mail.gmail.com>
+In-Reply-To: <CALCETrV=Q7+D4EZiQDOwqF6O=BfMOxCpLed7=YVUJADayKAJ7Q@mail.gmail.com>
+From:   Len Brown <lenb@kernel.org>
+Date:   Fri, 16 Apr 2021 21:57:31 -0400
+Message-ID: <CAJvTdKnbe91EzHX-ctB1F-a7mCgzFwjCjRt=b-j2D1Gv8quZOg@mail.gmail.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Willy Tarreau <w@1wt.eu>, Florian Weimer <fweimer@redhat.com>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-abi@vger.kernel.org,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 4:52 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Thu, Apr 15, 2021 at 07:39:22AM +0000, guoren@kernel.org wrote:
-> >  - Add atomic_andnot_* operation
->
-> > @@ -76,6 +59,12 @@ ATOMIC_OPS(sub, add, -i)
-> >  ATOMIC_OPS(and, and,  i)
-> >  ATOMIC_OPS( or,  or,  i)
-> >  ATOMIC_OPS(xor, xor,  i)
-> > +ATOMIC_OPS(andnot, and,  -i)
->
-> ~i, surely.
+On Fri, Apr 16, 2021 at 6:14 PM Andy Lutomirski <luto@kernel.org> wrote:
 
-Thx for correct me. I'll fix it in the next version patch.
+> My point is that every ...
 
--- 
-Best Regards
- Guo Ren
+I encourage you to continue to question everything and trust nobody.
+While it may cost you a lot in counseling, it is certainly valuable,
+at least to me! :-)
 
-ML: https://lore.kernel.org/linux-csky/
+I do request, however, that feedback stay specific, stay technical,
+and stay on-topic.
+We all have plenty of real challenges we can be tackling with our limited time.
+
+> Is there any authoritative guidance at all on what actually happens,
+> performance-wise, when someone does AMX math?
+
+Obviously, I can't speak to the performance of AMX itself pre-production,
+and somebody who does that for a living will release stuff on or
+before release day.
+
+What I've told you about the performance side-effects on the system
+(and lack thereof)
+from running AMX code is an authoritative answer, and is as much as I
+can tell you today.
+If I failed to answer a question about AMX, my apologies, please re-ask it.
+
+And if we learn something new between now and release day that is
+relevant to this discussion,
+I will certainly request to share it.
+
+Our team (Intel Open Source Technology Center) advocated getting the existing
+public AMX documentation published as early as possible.  However, if
+you are really
+nto the details of how AMX works, you may also be interested to know
+that the AMX hardware patent filings are fully public ;-)
+
+cheers,
+Len Brown, Intel Open Source Technology Center
