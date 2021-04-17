@@ -2,116 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0F336307F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5CC363084
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 16:03:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236397AbhDQOAD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 17 Apr 2021 10:00:03 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:20565 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230442AbhDQOAC (ORCPT
+        id S236496AbhDQOCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 10:02:06 -0400
+Received: from angie.orcam.me.uk ([157.25.102.26]:39046 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230442AbhDQOCE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 10:00:02 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-213-vl0FeB5ZN9KlyvtC7G0NGQ-1; Sat, 17 Apr 2021 14:59:33 +0100
-X-MC-Unique: vl0FeB5ZN9KlyvtC7G0NGQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Sat, 17 Apr 2021 14:59:32 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Sat, 17 Apr 2021 14:59:32 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Al Viro' <viro@zeniv.linux.org.uk>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Subject: RE: [PATCH] x86/uaccess: small optimization in unsafe_copy_to_user()
-Thread-Topic: [PATCH] x86/uaccess: small optimization in unsafe_copy_to_user()
-Thread-Index: AQHXMvjk6jXIkdHnG0KLlGcZVxHm0qq4vBHA
-Date:   Sat, 17 Apr 2021 13:59:32 +0000
-Message-ID: <ff0feb86ea63487f96f14fc9f8f9222f@AcuMS.aculab.com>
-References: <20210416192413.1514419-1-eric.dumazet@gmail.com>
- <YHnpBm36PcIINhWi@zeniv-ca.linux.org.uk>
-In-Reply-To: <YHnpBm36PcIINhWi@zeniv-ca.linux.org.uk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 17 Apr 2021 10:02:04 -0400
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 3C0EC92009C; Sat, 17 Apr 2021 16:01:36 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 2EBB492009B;
+        Sat, 17 Apr 2021 16:01:36 +0200 (CEST)
+Date:   Sat, 17 Apr 2021 16:01:36 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     David Laight <David.Laight@ACULAB.COM>
+cc:     Joe Perches <joe@perches.com>, Khalid Aziz <khalid@gonehiking.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH 1/5] scsi: BusLogic: Fix missing `pr_cont' use
+In-Reply-To: <6679310a77984cc0af9f48f5616b840c@AcuMS.aculab.com>
+Message-ID: <alpine.DEB.2.21.2104171559260.44318@angie.orcam.me.uk>
+References: <alpine.DEB.2.21.2104141244520.44318@angie.orcam.me.uk>  <alpine.DEB.2.21.2104141419040.44318@angie.orcam.me.uk> <787aae5540612555a8bf92de2083c8fa74e52ce9.camel@perches.com> <alpine.DEB.2.21.2104161224300.44318@angie.orcam.me.uk>
+ <6679310a77984cc0af9f48f5616b840c@AcuMS.aculab.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@ftp.linux.org.uk> On Behalf Of Al Viro
-> Sent: 16 April 2021 20:44
-> On Fri, Apr 16, 2021 at 12:24:13PM -0700, Eric Dumazet wrote:
-> > From: Eric Dumazet <edumazet@google.com>
-> >
-> > We have to loop only to copy u64 values.
-> > After this first loop, we copy at most one u32, one u16 and one byte.
+On Sat, 17 Apr 2021, David Laight wrote:
+
+> > > In patch 2, vscnprintf should probably be used to make sure it's
+> > > 0 terminated.
+> > 
+> >  Why?  C99 has this[1]:
+> > 
+> > "The vsnprintf function is equivalent to snprintf, with the variable
+> > argument list replaced by arg, which shall have been initialized by the
+> > va_start macro (and possibly subsequent va_arg calls)."
 > 
-> Does it actually yield a better code?
-> 
-> FWIW, this
-> void bar(unsigned);
-> void foo(unsigned n)
-> {
-> 	while (n >= 8) {
-> 		bar(n);
-> 		n -= 8;
-> 	}
-> 	while (n >= 4) {
-> 		bar(n);
-> 		n -= 4;
-> 	}
-> 	while (n >= 2) {
-> 		bar(n);
-> 		n -= 2;
-> 	}
-> 	while (n >= 1) {
-> 		bar(n);
-> 		n -= 1;
-> 	}
-> }
+> vscnprintf() is normally the function you want (not vsnprintf())
+> because the return value is the number of characters actually
+> put into the buffer, not the number that would have been written
+> had the buffer been long enough.
 
-This variant might be better:
+ Good catch, thank you!  I'll respin the series then.  Thank you for the 
+background story too!
 
-void foo(unsigned n)
-{
-	while (n >= 8) {
-		bar(8);
-		n -= 8;
-	}
-	if (likely(!n))
-		return;
-	if (n & 4)
-		bar(4);
-	if (n & 2)
-		bar(2);
-	if (n & 1)
-		bar(1);
-}
-
-I think Al's version might have optimised down to this,
-but Eric's asm contains the n -= 4/2/1;
-
-OTOH gcc can make a real pig's breakfast of code like this!
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+  Maciej
