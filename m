@@ -2,94 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963A53630F5
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 17:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7A13630F9
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 17:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236713AbhDQPjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 11:39:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236481AbhDQPje (ORCPT
+        id S236605AbhDQPmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 11:42:31 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:58299 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S236377AbhDQPm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 11:39:34 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36367C061574;
-        Sat, 17 Apr 2021 08:39:08 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id o10so33526514ybb.10;
-        Sat, 17 Apr 2021 08:39:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=REupEnRN7L+AIB6fZVn/PM0AvwXs9epbdeATajunDF8=;
-        b=N7hAtqIixPrITocgEQklFpqfXSxObVUSuWpjcfnYlWzb4KMba/NJ8qvYxobCiP7UTq
-         xk9XHfVcvEazTk9v8Xinig1AeZobTU/z78bw00pQUVIIySL6bOAyLskC56DtiqXABjM7
-         ruUMIg20cUr67vUWuKZUZBQ8zWZeIESk89FgllbIeFNaflaVVD5eWrk6YypfLt6ogBwc
-         Zc43Vj7vPewU5C9q7phOT0wj32oVYauAISJNJblbz6msPplFs2WNz6UdBCUhq8DkOYiG
-         /R77D7XAo1aYGfkhudGy1evL2bfw0fTCPCThRnv87c4ldPuzIiByKTssBKqQAII8ouQT
-         JkOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=REupEnRN7L+AIB6fZVn/PM0AvwXs9epbdeATajunDF8=;
-        b=GHJ+3SYWddeIR4RBMwyHfGWgeacrrHvniRTT7UfKH2RjvQxVXLcRvdzsvJrIi8gBce
-         yatvyl9iOGiDezmexAN3MvUV9DyBsufwNu886xwLS7FkUy9MlXFbx44JAkznQJOy8xzv
-         MjOJx7eb45/BI+XZfmpUcNVyYNra1FSBiC/A1GZja2xB7sq0zIlt+d/0rMZfhkXUB5GP
-         mrpz0GxIQ+bfDIx8xwfsGBdJHQFyXk8InQGf3s6zQTS5axN9H2gxpZ5mh8wdoFZB+6JZ
-         xPXqqrJhpLEJWQyQpJU+dMoaSdvVH6yZvHlJehUoD1Gv8MQLg4tuqnE3LxU8OsbM9gck
-         0jlw==
-X-Gm-Message-State: AOAM531RUJpwmE7+7xMONQplvs8HH7O6tV+a1T2lrIMWdiGFLH0EXQub
-        oD7Z0CXc+4ocA2lVU3OKuxPSYVRlQz9bbk99jN8=
-X-Google-Smtp-Source: ABdhPJyRCCaZudkXqCxTOjMFhA1wZway4wafI3l5bnaJyjHaAQVXSkUb8Q1pUwX8dLNC5PQ14xJCH6qt89pkQgMp9tc=
-X-Received: by 2002:a25:cfc2:: with SMTP id f185mr6511822ybg.26.1618673947623;
- Sat, 17 Apr 2021 08:39:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <CANiq72=3zZvdEsp-AH2Xj1nuvfGOQQ1WGmav6i4nFTz-3-_c_w@mail.gmail.com>
- <CANiq72=5pMzSS5V7h-QcQvYgyZUwdE=T705KtBWrNYZPjMYK3Q@mail.gmail.com>
- <20210416220416.GA11872@1wt.eu> <CANiq72k3wmuqgPz+WR1=64vr--SFu971P+2Neq+Xe2TUSZFv0g@mail.gmail.com>
- <20210417042405.GA13432@1wt.eu>
-In-Reply-To: <20210417042405.GA13432@1wt.eu>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sat, 17 Apr 2021 17:38:56 +0200
-Message-ID: <CANiq72=G+JdHiLovGv=5Yi_7smyrinWFfEQH31x=KPP4=nKKGQ@mail.gmail.com>
-Subject: Re: [PATCH 04/13] Kbuild: Rust support
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Connor Kuehl <ckuehl@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
+        Sat, 17 Apr 2021 11:42:28 -0400
+Received: (qmail 73905 invoked by uid 1000); 17 Apr 2021 11:42:00 -0400
+Date:   Sat, 17 Apr 2021 11:42:00 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Anirudh Rayabharam <mail@anirudhrb.com>
+Cc:     Felipe Balbi <balbi@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Geoffrey Thomas <geofft@ldpreload.com>,
-        Finn Behrens <me@kloenk.de>,
-        Adam Bratschi-Kaye <ark.email@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Content-Type: text/plain; charset="UTF-8"
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+eb4674092e6cc8d9e0bd@syzkaller.appspotmail.com,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: gadget: dummy_hcd: fix gpf in gadget_setup
+Message-ID: <20210417154200.GB73141@rowland.harvard.edu>
+References: <20210417125212.6274-1-mail@anirudhrb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210417125212.6274-1-mail@anirudhrb.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 6:24 AM Willy Tarreau <w@1wt.eu> wrote:
->
-> My concern was to know what field to look at to reliably detect an error
-> from the C side after a sequence doing C -> Rust -> C when the inner C
-> code uses NULL to mark an error and the upper C code uses NULL as a valid
-> value and needs to look at an error code instead to rebuild a result. But
+On Sat, Apr 17, 2021 at 06:22:09PM +0530, Anirudh Rayabharam wrote:
+> Fix a general protection fault reported by syzbot due to a race between
+> gadget_setup() and gadget_unbind() in raw_gadget.
+> 
+> The gadget core is supposed to guarantee that there won't be any more
+> callbacks to the gadget driver once the driver's unbind routine is
+> called. That guarantee is enforced in usb_gadget_remove_driver as
+> follows:
+> 
+>         usb_gadget_disconnect(udc->gadget);
+>         if (udc->gadget->irq)
+>                 synchronize_irq(udc->gadget->irq);
+>         udc->driver->unbind(udc->gadget);
+>         usb_gadget_udc_stop(udc);
+> 
+> usb_gadget_disconnect turns off the pullup resistor, telling the host
+> that the gadget is no longer connected and preventing the transmission
+> of any more USB packets. Any packets that have already been received
+> are sure to processed by the UDC driver's interrupt handler by the time
+> synchronize_irq returns.
+> 
+> But this doesn't work with dummy_hcd, because dummy_hcd doesn't use
+> interrupts; it uses a timer instead.  It does have code to emulate the
+> effect of synchronize_irq, but that code doesn't get invoked at the
+> right time -- it currently runs in usb_gadget_udc_stop, after the unbind
+> callback instead of before.  Indeed, there's no way for
+> usb_gadget_remove_driver to invoke this code before the unbind
+> callback.
+> 
+> To fix this, move the synchronize_irq() emulation code to dummy_pullup
+> so that it runs before unbind. Also, add a comment explaining why it is
+> necessary to have it there.
+> 
+> Suggested-by: Alan Stern <stern@rowland.harvard.edu>
+> Reported-by: syzbot+eb4674092e6cc8d9e0bd@syzkaller.appspotmail.com
+> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+> ---
+>  drivers/usb/gadget/udc/dummy_hcd.c | 23 +++++++++++++++--------
+>  1 file changed, 15 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/usb/gadget/udc/dummy_hcd.c b/drivers/usb/gadget/udc/dummy_hcd.c
+> index ce24d4f28f2a..d0dae6406612 100644
+> --- a/drivers/usb/gadget/udc/dummy_hcd.c
+> +++ b/drivers/usb/gadget/udc/dummy_hcd.c
+> @@ -903,6 +903,21 @@ static int dummy_pullup(struct usb_gadget *_gadget, int value)
+>  	spin_lock_irqsave(&dum->lock, flags);
+>  	dum->pullup = (value != 0);
+>  	set_link_state(dum_hcd);
+> +	if (value == 0) {
+> +		/*
+> +		 * emulate synchronize_irq(): wait for callbacks to finish
+> +		 * This seems to be the best to place to emulate the call
+> +		 * to synchronize_irq(). Doing it in dummy_udc_stop() would
+> +		 * be too late since it is called after the unbind callback.
+> +		 * Also, there is no way for core:usb_gadget_remove_driver()
+> +		 * to invoke this code before the unbind callback.
+> +		 */
 
-I see, thanks for clarifying. I don't think we want to change anything
-on either of the C sides (at least for the foreseeable future). So the
-Rust code in-between must respect whatever conventions both C sides
-already use, even if they happen to be different on each side.
+This comment could be edited a little better.  It should start with a 
+capital letter, and there should be a period at the end of the first 
+line.  There is an extra "to" before "place to emulate".  The last 
+sentence isn't really needed.
 
-Thus the C side will not know there was a `Result` inside the Rust
-side and so it does not need to worry about which field to look at.
+Also, you could be more specific.  The call to synchronize_irq() which 
+we want to emulate is the one in usb_gadget_remove_driver().  And the 
+reason we want to do it before the unbind callback is because unbind 
+shouldn't be invoked until all the other callbacks are finished.
 
-Cheers,
-Miguel
+Once those changes are made, you can add:
+
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+
+Alan Stern
+
+> +		while (dum->callback_usage > 0) {
+> +			spin_unlock_irqrestore(&dum->lock, flags);
+> +			usleep_range(1000, 2000);
+> +			spin_lock_irqsave(&dum->lock, flags);
+> +		}
+> +	}
+>  	spin_unlock_irqrestore(&dum->lock, flags);
+>  
+>  	usb_hcd_poll_rh_status(dummy_hcd_to_hcd(dum_hcd));
+> @@ -1004,14 +1019,6 @@ static int dummy_udc_stop(struct usb_gadget *g)
+>  	spin_lock_irq(&dum->lock);
+>  	dum->ints_enabled = 0;
+>  	stop_activity(dum);
+> -
+> -	/* emulate synchronize_irq(): wait for callbacks to finish */
+> -	while (dum->callback_usage > 0) {
+> -		spin_unlock_irq(&dum->lock);
+> -		usleep_range(1000, 2000);
+> -		spin_lock_irq(&dum->lock);
+> -	}
+> -
+>  	dum->driver = NULL;
+>  	spin_unlock_irq(&dum->lock);
+>  
+> -- 
+> 2.26.2
+> 
