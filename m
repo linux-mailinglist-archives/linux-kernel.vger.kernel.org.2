@@ -2,86 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F892362C3D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 02:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE7A362C3F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 02:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234761AbhDQAGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 20:06:18 -0400
-Received: from mout.gmx.net ([212.227.17.22]:37635 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229719AbhDQAGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 20:06:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1618617928;
-        bh=KjFgAhHrkpNz9EPaCLaTNNTqXBQS/P/3r7U4JKhYPqI=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=Ql1z4G/QUAp0bQJ60lrDbszRKAfdauHD7jjObsNfAfPwaeSRScQS+XiwnZ5asucfs
-         jJGL16gxGIIyEri8M3w/2Gfuvjh+wKMvPqS2EF1c3gBjAHiYDlpT/BFo82rvVHKD5y
-         5y2ORCbMsmPOQfNngdhBlaaMN+OIebSrVWSZ9fb8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.191.218.101]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mlw3X-1lxmTj0Jox-00iz88; Sat, 17
- Apr 2021 02:05:28 +0200
-Message-ID: <d725b19b4c02273eaab38a10853fa6fb6d5bc76c.camel@gmx.de>
-Subject: Re: [patch] x86/crash: fix crash_setup_memmap_entries()
- out-of-bounds access
-From:   Mike Galbraith <efault@gmx.de>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, DaveYoung <dyoung@redhat.com>,
-        Baoquan He <bhe@redhat.com>, kexec@lists.infradead.org,
-        x86@kernel.org, Andrew Morton <akpm@linux-foundation.org>
-Date:   Sat, 17 Apr 2021 02:05:27 +0200
-In-Reply-To: <87sg3puco5.ffs@nanos.tec.linutronix.de>
-References: <9efaad2ba042b8791cbe8c3e7cad491fe05e06eb.camel@gmx.de>
-         <20210416110701.GA3835@dhcp-128-65.nay.redhat.com>
-         <063a63ddea914ac654cbe9a1d1d6c76986af7882.camel@gmx.de>
-         <20210416114708.GB79779@dhcp-128-65.nay.redhat.com>
-         <725fa3dc1da2737f0f6188a1a9701bead257ea9d.camel@gmx.de>
-         <20210416121636.GA22348@zn.tnic>
-         <a853ea8535151fd8b267d8e68a45b33748978d8a.camel@gmx.de>
-         <20210416144459.GB22348@zn.tnic>
-         <7826c19ecd583700f56d2db33360e8032e812ecf.camel@gmx.de>
-         <87sg3puco5.ffs@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S235036AbhDQAHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 20:07:31 -0400
+Received: from gateway20.websitewelcome.com ([192.185.59.4]:33636 "EHLO
+        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234856AbhDQAHa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 20:07:30 -0400
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+        by gateway20.websitewelcome.com (Postfix) with ESMTP id E1703400C76BA
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 18:56:11 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id XYUGlNCb81cHeXYUGlYPuz; Fri, 16 Apr 2021 19:07:00 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=8/SlxvbyGzFIuckVM50DnSkCrS8UJPZyny+A2QmFDJ4=; b=EvSTyCbSbAJUxGRI/E8hKx9EyC
+        gj3ZGdEoDnKLBr/Re0Z3XX5YrXCisVzXjUdZCKppl6EEjKTbjXx2HNpUg0vDph782pRGNA5/IoByJ
+        WB18S50L5vChhrTetywaMeZQ8HIJRcWlHvKpcPO2jfrOqQIGRrOEtyl3hADc5FHi/QH0im4v3/EYC
+        7gzixI3Yin/HmWpGuVDR8G6y9fPOQdhBATjhgmxZoU5/mxniHfkI5HiAr692A6xEETv7N4CUtynQL
+        MvNpbt0WBzGOt8rsvd8V2oBRIklC053GkS1ldg/4VzfU2CKhPMOpKLRslHTTo3lFp+mum8VFze424
+        PzWKWTKQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:56954 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lXYUC-000HmB-Do; Fri, 16 Apr 2021 19:06:56 -0500
+Subject: Re: [PATCH][next] sctp: Fix out-of-bounds warning in
+ sctp_process_asconf_param()
+To:     patchwork-bot+netdevbpf@kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        David Miller <davem@davemloft.net>
+Cc:     vyasevich@gmail.com, nhorman@tuxdriver.com,
+        marcelo.leitner@gmail.com, kuba@kernel.org,
+        linux-sctp@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210416191236.GA589296@embeddedor>
+ <161861761155.26880.11889736067176146088.git-patchwork-notify@kernel.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <8f37be96-04dd-f948-4913-54da6c4ae9b2@embeddedor.com>
+Date:   Fri, 16 Apr 2021 19:07:05 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:sBg6Es7fLrlg9PB225h4Bij43J9yGqJTutgGTFbK1oHimitSIms
- kqGJNFI5Xizlrs5Xw/veeWOQusUlhLejKVQ3rasDMJYyYkDUi2GNpA1ajaYqdR0R4dbA4rU
- JOUqQZ9EC+9ECXpqg0AxuDaKAeQulEjLeJ7kPhQH3ENh5YXT0deedSfGwifFtTiGtwbJZ+K
- 0Pfq4QXiW8wYH9FcdVu3w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:bevRDzDpV+s=:8YKDRaa9+WHmHpFjWv6bU+
- GwgwW3qowiu0ds258hRIF6wWP/1fsaUArHxBSzr6G2uxpUQGQTWUYDlvg4nxlxi6UEQrTBVD2
- x5BWLJpd5xJfo4C52HVBzoBpWOquMhjcWjmP1E5LwEB5t1S3Lox/cAgqEK+nrVdry+qiayOcX
- /HhWyLLbVuqAqQqDRH+hF6/0xDpmAwEWPf/WXmnktcbAH1LOm1wFYua0VKm/AhiNvfzDU9iDe
- 7L5wHkPnTvM53kN79k0SGeJFGpxcUs5gJByk/vf4OW3U3h5pbCebGBOTRjmDK8qtlK3W2+OdT
- rW31KMc+602u93wuBIVv/K0x8dDrBiSrkdAD8qk9HjmU5AWV2a6TRpH4S9NzOieADRcZaYOQc
- Yxj/Lr6qcXAZg93S3E6h7M1GBgFxI5Mrt2pVV/Q8kH3KNfLyE8GTGQOAU/f7H2qvsOcvJLazu
- +bp4IXEuiXVYq3mx/uyAJ7yq/o4YeLyAfRySytMhFZKjpnjtZ0uP+ip0PuAzqvnoMJMvqaFW/
- PsfsVeFTErdR41FcfLbnV33rBNb25ahuY6XSTl8vD1J2KLLiMGuvm8e+HtJsZoeijM5olPNHq
- aVnCKxgrRY6ea8GFXo1icw2M5N5KknDSBRZiVZVcVi5j3cPlt5SVy3kdzsSSXu1Qo4sTecpXC
- GDU1+OyGexd1t6EgV8RPEqJUvHBx4nQkz8kHnXnSySulP5uG8Va1UnwAYlHdKK2Wgd+ty1AOb
- 1K7T3M4S3rR/YKESDULIPFYv1d/2Vk5hZeAhUTYZ7s7qfT1gfAHLwv5OCiSCwaOLWA6HRsFJs
- WcDQmKA4X95adZBA2XucyOGtimgKxS+0g2kTH6njM5weRtAX6MwfemcxlQUXnY6yRbBtMWaTs
- VYkrEnfo5C6IndmBBi9tqdXbnggfkZ3yAbhxjE3k/Y1kSMajb5AMfLiMQnmlfz7dL60u7MGVa
- yVeurRp9Pa9hrHjCe2jfK1U93igQ09tT3c3VnY8VtxL4msg8L4kFyrM09dCGCBA/p3gh6aaOs
- GQhlzTTru+VMLLAKsah+JLeFW6kHr67jhEu1d4I+2aZvWC3WQodOeP3GfPWOYCcWzQC60KEzc
- KUdCYvbq6aO1jVSedb6WBFUEVfFm3C/S8UCRSUiYuJARRGwDe0xaZ2Vb/iPN29FHLShkaUHA2
- KGTuYaC7f95gi2AjzLyrQVUbmzBpKFRrYr8BJcPoFpdmJAu4sHuTAOIxulZ8tbRsCoFt4=
+In-Reply-To: <161861761155.26880.11889736067176146088.git-patchwork-notify@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lXYUC-000HmB-Do
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:56954
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 10
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-04-16 at 23:44 +0200, Thomas Gleixner wrote:
->
-> Can all of you involved stop this sandpit fight and do something useful
-> to fix that obvious bug already?
+Dave,
 
-?? We're not fighting afaik.  Boris hated my changelog enough to offer
-to write a better one, and I'm fine with that.  It's a seven year old
-*latent* buglet of microscopic proportions, hardly a pressing issue.
+On 4/16/21 19:00, patchwork-bot+netdevbpf@kernel.org wrote:
+> Hello:
+> 
+> This patch was applied to netdev/net-next.git (refs/heads/master):
+> 
+> On Fri, 16 Apr 2021 14:12:36 -0500 you wrote:
+>> Fix the following out-of-bounds warning:
+>>
+>> net/sctp/sm_make_chunk.c:3150:4: warning: 'memcpy' offset [17, 28] from the object at 'addr' is out of the bounds of referenced subobject 'v4' with type 'struct sockaddr_in' at offset 0 [-Warray-bounds]
+>>
+>> This helps with the ongoing efforts to globally enable -Warray-bounds
+>> and get us closer to being able to tighten the FORTIFY_SOURCE routines
+>> on memcpy().
+>>
+>> [...]
+> 
+> Here is the summary with links:
+>   - [next] sctp: Fix out-of-bounds warning in sctp_process_asconf_param()
+>     https://git.kernel.org/netdev/net-next/c/e5272ad4aab3
 
-	-Mike
+Thanks for this. Can you take these other two, as well, please?
 
+https://lore.kernel.org/linux-hardening/20210416201540.GA593906@embeddedor/
+https://lore.kernel.org/linux-hardening/20210416193151.GA591935@embeddedor/
+
+Thanks!
+--
+Gustavo
