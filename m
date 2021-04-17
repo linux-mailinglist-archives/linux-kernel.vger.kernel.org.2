@@ -2,113 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BEC8363161
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 19:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2ECE363164
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 19:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236762AbhDQRYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 13:24:09 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:41019 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236620AbhDQRYH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 13:24:07 -0400
-X-Originating-IP: 2.7.49.219
-Received: from [192.168.1.12] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id C6153E0003;
-        Sat, 17 Apr 2021 17:23:33 +0000 (UTC)
-Subject: Re: [PATCH v4 1/3] riscv: Move kernel mapping outside of linear
- mapping
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, linux-doc@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20210409061500.14673-1-alex@ghiti.fr>
- <20210409061500.14673-2-alex@ghiti.fr> <20210416185139.GA42339@roeck-us.net>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <8c23ed42-d8c7-70be-71d8-0eb74ace8e67@ghiti.fr>
-Date:   Sat, 17 Apr 2021 13:23:33 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S236670AbhDQRYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 13:24:54 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:38134 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236620AbhDQRYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 13:24:50 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618680264; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=1tfWMulYA+1iJVKuBHoeOHcKhvEi/SWMkXLaNEN2q/8=;
+ b=lDIkiFUpdkwHYh307Zy4kGkW8ym8dOAVXe7p4oWN1j2bok1Xel8xuwvIOYdlihJ/HO6gaC5f
+ 3VX70VjjNCNeV1LC/l1WTsrID6+UWtPMOeovaVnQkk0hOggo84msqv9ibw8F5NFNtV5SMvvI
+ AiNlo2f5VajCFZOQcW5Pb7rmrDA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 607b19c0febcffa80f26501f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 17 Apr 2021 17:24:16
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 29509C433D3; Sat, 17 Apr 2021 17:24:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A59ACC433D3;
+        Sat, 17 Apr 2021 17:24:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A59ACC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210416185139.GA42339@roeck-us.net>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] qtnfmac: Fix possible buffer overflow in
+ qtnf_event_handle_external_auth
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210317121706.389058-1-leegib@gmail.com>
+References: <20210317121706.389058-1-leegib@gmail.com>
+To:     Lee Gibson <leegib@gmail.com>
+Cc:     imitsyanko@quantenna.com, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lee Gibson <leegib@gmail.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210417172416.29509C433D3@smtp.codeaurora.org>
+Date:   Sat, 17 Apr 2021 17:24:16 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
+Lee Gibson <leegib@gmail.com> wrote:
 
-Le 4/16/21 à 2:51 PM, Guenter Roeck a écrit :
-> On Fri, Apr 09, 2021 at 02:14:58AM -0400, Alexandre Ghiti wrote:
->> This is a preparatory patch for relocatable kernel and sv48 support.
->>
->> The kernel used to be linked at PAGE_OFFSET address therefore we could use
->> the linear mapping for the kernel mapping. But the relocated kernel base
->> address will be different from PAGE_OFFSET and since in the linear mapping,
->> two different virtual addresses cannot point to the same physical address,
->> the kernel mapping needs to lie outside the linear mapping so that we don't
->> have to copy it at the same physical offset.
->>
->> The kernel mapping is moved to the last 2GB of the address space, BPF
->> is now always after the kernel and modules use the 2GB memory range right
->> before the kernel, so BPF and modules regions do not overlap. KASLR
->> implementation will simply have to move the kernel in the last 2GB range
->> and just take care of leaving enough space for BPF.
->>
->> In addition, by moving the kernel to the end of the address space, both
->> sv39 and sv48 kernels will be exactly the same without needing to be
->> relocated at runtime.
->>
->> Suggested-by: Arnd Bergmann <arnd@arndb.de>
->> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+> Function qtnf_event_handle_external_auth calls memcpy without
+> checking the length.
+> A user could control that length and trigger a buffer overflow.
+> Fix by checking the length is within the maximum allowed size.
 > 
-> In next-20210416, when booting a riscv32 image in qemu, this patch results in:
-> 
-> [    0.000000] Linux version 5.12.0-rc7-next-20210416 (groeck@desktop) (riscv32-linux-gcc (GCC) 10.3.0, GNU ld (GNU Binutils) 2.36.1) #1 SMP Fri Apr 16 10:38:09 PDT 2021
-> [    0.000000] OF: fdt: Ignoring memory block 0x80000000 - 0xa0000000
-> [    0.000000] Machine model: riscv-virtio,qemu
-> [    0.000000] earlycon: uart8250 at MMIO 0x10000000 (options '115200')
-> [    0.000000] printk: bootconsole [uart8250] enabled
-> [    0.000000] efi: UEFI not found.
-> [    0.000000] Kernel panic - not syncing: init_resources: Failed to allocate 160 bytes
-> [    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 5.12.0-rc7-next-20210416 #1
-> [    0.000000] Hardware name: riscv-virtio,qemu (DT)
-> [    0.000000] Call Trace:
-> [    0.000000] [<80005292>] walk_stackframe+0x0/0xce
-> [    0.000000] [<809f4db8>] dump_backtrace+0x38/0x46
-> [    0.000000] [<809f4dd4>] show_stack+0xe/0x16
-> [    0.000000] [<809ff1d0>] dump_stack+0x92/0xc6
-> [    0.000000] [<809f4fee>] panic+0x10a/0x2d8
-> [    0.000000] [<80c02b24>] setup_arch+0x2a0/0x4ea
-> [    0.000000] [<80c006b0>] start_kernel+0x90/0x628
-> [    0.000000] ---[ end Kernel panic - not syncing: init_resources: Failed to allocate 160 bytes ]---
-> 
-> Reverting it fixes the problem. I understand that the version in -next is
-> different to this version of the patch, but I also tried v4 and it still
-> crashes with the same error message.
-> 
+> Signed-off-by: Lee Gibson <leegib@gmail.com>
 
-I completely neglected 32b kernel in this series, I fixed that here:
+Please use clamp_val() instead, that's preferred over min_t().
 
-Thank you for testing and reporting,
+Patch set to Changes Requested.
 
-Alex
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210317121706.389058-1-leegib@gmail.com/
 
-> Guenter
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
