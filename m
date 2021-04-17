@@ -2,76 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21465363235
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 22:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AFDC36323B
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 22:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237046AbhDQUX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 16:23:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38720 "EHLO
+        id S237060AbhDQUbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 16:31:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236491AbhDQUXZ (ORCPT
+        with ESMTP id S236755AbhDQUbU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 16:23:25 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1CCBC061574;
-        Sat, 17 Apr 2021 13:22:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=BnSKcc0JSuohlN33+Pj8bhxKsI7DT+Owp2PFJxUm9vg=; b=OEMC9XOgR/fKU/0oPNUu/P7cCL
-        FT4t01GafWZlc1vjwl9KSjRt1IY8zFxgga7gHLRR+WCKupSKq6t9mxOaZIZufePDNN7mCVh1kH9jR
-        F0u0g7a9CwiXrlGEHglrLCjcUmY6riPVWU0Qfcwq6bjvHqJmgaIV9kM3woRxgGCelw9NDnFMhLDTu
-        ddS052/dNjJg/5EC844nFoPlje4sglQZ/dDMtCOaSHxgsq/MS3GcQFiMjlzkT3lk3nRsLRtoZo+VR
-        X2xbTp+70dqUigqbpfzkNLRorcOijpiu4WZdd3t8LIzJQrj1saQRlw3+7gG/AlVzE/uFz4w1OL3ap
-        wbKEi5/Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lXrSi-00Belm-JF; Sat, 17 Apr 2021 20:22:44 +0000
-Date:   Sat, 17 Apr 2021 21:22:40 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     brouer@redhat.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        mcroce@linux.microsoft.com, grygorii.strashko@ti.com,
-        arnd@kernel.org, hch@lst.de, linux-snps-arc@lists.infradead.org,
-        mhocko@kernel.org, mgorman@suse.de
-Subject: Re: [PATCH 1/2] mm: Fix struct page layout on 32-bit systems
-Message-ID: <20210417202240.GS2531743@casper.infradead.org>
-References: <20210416230724.2519198-1-willy@infradead.org>
- <20210416230724.2519198-2-willy@infradead.org>
- <20210417024522.GP2531743@casper.infradead.org>
- <YHspptFx+T588KcG@apalos.home>
+        Sat, 17 Apr 2021 16:31:20 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F68EC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 13:30:54 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lXraU-0068dY-GZ; Sat, 17 Apr 2021 20:30:42 +0000
+Date:   Sat, 17 Apr 2021 20:30:42 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Theodore Ts'o <tytso@mit.edu>
+Subject: Re: [PATCH] x86/uaccess: small optimization in unsafe_copy_to_user()
+Message-ID: <YHtFciNvBWYJ0ku2@zeniv-ca.linux.org.uk>
+References: <20210416192413.1514419-1-eric.dumazet@gmail.com>
+ <CAHk-=wjbvzCAhAtvG0d81W5o0-KT5PPTHhfJ5ieDFq+bGtgOYg@mail.gmail.com>
+ <CAHk-=wgdyusj4Sz6zVOGvD8pNiYmPik3t4-o0TXB9cTUgz_0uw@mail.gmail.com>
+ <CAHk-=wjYVZZpqDGH2Q=kMOyOqBhpbt8t8JdEWZHDGrPiV=_ifA@mail.gmail.com>
+ <YHskaCSFOE1AYyoP@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YHspptFx+T588KcG@apalos.home>
+In-Reply-To: <YHskaCSFOE1AYyoP@zeniv-ca.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 09:32:06PM +0300, Ilias Apalodimas wrote:
-> > +static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
-> > +{
-> > +	page->dma_addr[0] = addr;
-> > +	if (sizeof(dma_addr_t) > sizeof(unsigned long))
-> > +		page->dma_addr[1] = addr >> 16 >> 16;
+[tytso Cc'd]
+
+On Sat, Apr 17, 2021 at 06:09:44PM +0000, Al Viro wrote:
+
+> > Al - fairly trivial patch applied, comments?
 > 
-> The 'error' that was reported will never trigger right?
-> I assume this was compiled with dma_addr_t as 32bits (so it triggered the
-> compilation error), but the if check will never allow this codepath to run.
-> If so can we add a comment explaining this, since none of us will remember why
-> in 6 months from now?
+> Should be fine...  FWIW, I've a patch in the same area, making those suckers
+> return bool.  Seeing that they are only ever called via dir_emit(), dir_emit_dot()
+> and dir_emit_dotdot() and all of those return ->actor(...) == 0...
+> 
+> Anyway, that'd be trivial to rebase on top of yours.
 
-That's right.  I compiled it all three ways -- 32-bit, 64-bit dma, 32-bit long
-and 64-bit.  The 32/64 bit case turn into:
+Actually... looking through that patch now I've noticed something fishy:
+in 1f60fbe72749 ("ext4: allow readdir()'s of large empty directories to
+be interrupted" we had
+@@ -169,6 +169,8 @@ static int filldir(struct dir_context *ctx, const char *name, int namlen,
+        }
+        dirent = buf->previous;
+        if (dirent) {
++               if (signal_pending(current))
++                       return -EINTR;
 
-	if (0)
-		page->dma_addr[1] = addr >> 16 >> 16;
+and that thing is still there.  However, it does *NOT* do what it might
+appear to be doing; it ends up with getdents() returning -EINVAL instead.
+What we need is
+			buf->error = -EINTR;
+in addition to that return (in all 3 such places).  Do you have any problems with
+the following delta?
 
-which gets elided.  So the only case that has to work is 64-bit dma and
-32-bit long.
-
-I can replace this with upper_32_bits().
-
+diff --git a/fs/readdir.c b/fs/readdir.c
+index 19434b3c982c..c742db935847 100644
+--- a/fs/readdir.c
++++ b/fs/readdir.c
+@@ -239,8 +239,10 @@ static int filldir(struct dir_context *ctx, const char *name, int namlen,
+ 		return -EOVERFLOW;
+ 	}
+ 	prev_reclen = buf->prev_reclen;
+-	if (prev_reclen && signal_pending(current))
++	if (prev_reclen && signal_pending(current)) {
++		buf->error = -EINTR;
+ 		return -EINTR;
++	}
+ 	dirent = buf->current_dir;
+ 	prev = (void __user *) dirent - prev_reclen;
+ 	if (!user_write_access_begin(prev, reclen + prev_reclen))
+@@ -321,8 +323,10 @@ static int filldir64(struct dir_context *ctx, const char *name, int namlen,
+ 	if (reclen > buf->count)
+ 		return -EINVAL;
+ 	prev_reclen = buf->prev_reclen;
+-	if (prev_reclen && signal_pending(current))
++	if (prev_reclen && signal_pending(current)) {
++		buf->error = -EINTR;
+ 		return -EINTR;
++	}
+ 	dirent = buf->current_dir;
+ 	prev = (void __user *)dirent - prev_reclen;
+ 	if (!user_write_access_begin(prev, reclen + prev_reclen))
+@@ -488,8 +492,10 @@ static int compat_filldir(struct dir_context *ctx, const char *name, int namlen,
+ 		return -EOVERFLOW;
+ 	}
+ 	prev_reclen = buf->prev_reclen;
+-	if (prev_reclen && signal_pending(current))
++	if (prev_reclen && signal_pending(current)) {
++		buf->error = -EINTR;
+ 		return -EINTR;
++	}
+ 	dirent = buf->current_dir;
+ 	prev = (void __user *) dirent - prev_reclen;
+ 	if (!user_write_access_begin(prev, reclen + prev_reclen))
