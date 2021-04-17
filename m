@@ -2,155 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0EC362DD1
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 06:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5661E362DD6
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 07:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235613AbhDQE7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 00:59:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhDQE7b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 00:59:31 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CB10C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 21:59:05 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id 65so32455313ybc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 21:59:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=C6bbmprffd+fOzugJa7DHVeiVO8dMs/4piGp2pCGG3I=;
-        b=IqaZA97LfflsvYGxD6F809CgBq3nGPHXQBnUcjEMrv5r1X+TRrhwG15Gipt9hmmasq
-         ibHiMqzZNrKWkxYh4CrFs7/zNCNTNFQkGy2BW4KRwJ456VXM/T9Wh7KU2U0kqxmYE+Ur
-         agzXdjNr9arEK54P3weMhFnChKCnmZ/jTaHDNLymnv4yzCruhMCcYE/yJwTCqetHlDgP
-         PwmeeDA8t8SuV91p0rbe50MJA74kAz9zp40jlgKWNBGoXGbbgkwRbpnf/nE/fuC6rCWw
-         bvsng2YQDTCnDBRTfb9bU+BtLoSkrhRjAfcsvxXHNn2UX6TpP6PPxAQ/ScGUW+bBPNeI
-         RbvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=C6bbmprffd+fOzugJa7DHVeiVO8dMs/4piGp2pCGG3I=;
-        b=tHWuQZWxZbZ6QrGyOugbQ8yfER6bSy7t5mUnDrJsRH1371eR8Em4CzcXODsCGVzvKp
-         j7GrLFuYhN0IB1q6X0Hmk6ypsLznC30EbczX30cA8VeAPk5M2WHeKLbdE0CNB6x86NE3
-         L3wEeSQ8MmPRyS7OXT+/rEmECYLgUoi18DP2HG5O9umZDBHGgjKh+Ht7gIgUBA7T37yh
-         7YkhR47aR0Xrp29Xh0rg4X1om80h8TNdeRI1Kyu9h1bZX47JChLWt4eRI46Lz85Haz6B
-         EY5g2vEUpU+TZOa1yQ5xEEj6M8FvSlqcrm3p1sOVGv4Uose2FPjErTxhQ4ElyQi9E0Gk
-         PA4A==
-X-Gm-Message-State: AOAM531KfJrb2MoPxcc3I1kRi8vYp92K7MRsFgAu8bNMjE1XQ9dSjEJT
-        d5MYGMm7V4MeISciTEvzu3fh3ryZ/59H5v03/8A5ow==
-X-Google-Smtp-Source: ABdhPJykMguzo/vuiaUHmI12y4yI/iO1SaJXOQH1FQ15EXpkdE1qqCHjfHEglksBwOtGJL89slj9qL1sP+rA+nKc5QE=
-X-Received: by 2002:a25:4244:: with SMTP id p65mr3485713yba.452.1618635544425;
- Fri, 16 Apr 2021 21:59:04 -0700 (PDT)
+        id S230205AbhDQFHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 01:07:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55174 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229547AbhDQFHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 01:07:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FA966100B;
+        Sat, 17 Apr 2021 05:07:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618636024;
+        bh=qSBjz0b2IBA7Dnh5gZ6sz585Th5xe5X5U4mdt53y1Pg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=B9WN3GqjBLjMCN5iqiez6keeaQmD6eZDnOoZyDa5aYQLGFKuUk8X+8Q8LnvGb/cAa
+         98kvxG/In22gxsyEr4+fjM9sjIa5FfGUGeI8cbCK9hIESoJcT2XyJQtx7nP/2/4vyI
+         Bvg4q+J+gNASaW9Lbm7tjWy1tgC9uanN+YLoxic01wQLAKH/GYusMDK5Px8o+g8KMR
+         PWQP7t/WldkQHfqFwQC+tZK1Jl2oBNbqM0tTuUxwPrGlPzjWoOfLt6EC/+efWv0sil
+         R4fwV5Jc1UCkLApBiAUDcCaE/wQ4/FA4RNkxSCZWcC9CXhpQekdUeCmXAb7JvwkLT4
+         yp65OVDdNy7Ew==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Networking for 5.12-rc8
+Date:   Fri, 16 Apr 2021 22:07:03 -0700
+Message-Id: <20210417050703.610514-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210416105142.38149-1-zhaoya.gaius@bytedance.com>
- <CANn89iJ5-4u98sGXt6oH5ZbWGFcYCy3T-B+qktvm3-cMkFQXKA@mail.gmail.com> <CAPXF5UVG+c0STZORvdaz6Mk8fwxE7DTBtTp=uF51xMrFL0R02w@mail.gmail.com>
-In-Reply-To: <CAPXF5UVG+c0STZORvdaz6Mk8fwxE7DTBtTp=uF51xMrFL0R02w@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Sat, 17 Apr 2021 06:58:53 +0200
-Message-ID: <CANn89i+rPwy=_T1aaCGTkUoEHaAXeHe6Ep3wLKhW1VRpTL4EfA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] tcp: fix silent loss when syncookie is trigered
-To:     =?UTF-8?B?6LW15Lqa?= <zhaoya.gaius@bytedance.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Florian Westphal <fw@strlen.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 12:45 AM =E8=B5=B5=E4=BA=9A <zhaoya.gaius@bytedance=
-.com> wrote:
->
-> On Fri, Apr 16, 2021 at 7:52 PM Eric Dumazet <edumazet@google.com> wrote:
-> >
-> > On Fri, Apr 16, 2021 at 12:52 PM zhaoya <zhaoya.gaius@bytedance.com> wr=
-ote:
-> > >
-> > > When syncookie is triggered, since $MSSID is spliced into cookie and
-> > > the legal index of msstab  is 0,1,2,3, this gives client 3 bytes
-> > > of freedom, resulting in at most 3 bytes of silent loss.
-> > >
-> > > C ------------seq=3D12345-------------> S
-> > > C <------seq=3Dcookie/ack=3D12346-------- S S generated the cookie
-> > >                                         [RFC4987 Appendix A]
-> > > C ---seq=3D123456/ack=3Dcookie+1-->X      S The first byte was loss.
-> > > C -----seq=3D123457/ack=3Dcookie+1------> S The second byte was recei=
-ved and
-> > >                                         cookie-check was still okay a=
-nd
-> > >                                         handshake was finished.
-> > > C <--------seq=3D.../ack=3D12348--------- S acknowledge the second by=
-te.
-> >
-> >
-> > I think this has been discussed in the past :
-> > https://kognitio.com/blog/syn-cookies-ate-my-dog-breaking-tcp-on-linux/
-> >
-> > If I remember well, this can not be fixed "easily"
-> >
-> > I suspect you are trading one minor issue with another (which is
-> > considered more practical these days)
-> > Have you tried what happens if the server receives an out-of-order
-> > packet after the SYN & SYN-ACK ?
-> > The answer is : RST packet is sent, killing the session.
-> >
-> > That is the reason why sseq is not part of the hash key.
->
-> Yes, I've tested this scenario. More sessions do get reset.
->
-> If a client got an RST, it knew the session failed, which was clear. Howe=
-ver,
-> if the client send a character and it was acknowledged, but the server di=
-d not
-> receive it, this could cause confusion.
-> >
-> > In practice, secure connexions are using a setup phase where more than
-> > 3 bytes are sent in the first packet.
-> > We recommend using secure protocols over TCP. (prefer HTTPS over HTTP,
-> > SSL over plaintext)
->
-> Yes, i agree with you. But the basis of practice is principle.
-> Syncookie breaks the
-> semantics of TCP.
-> >
-> > Your change would severely impair servers under DDOS ability to really
-> > establish flows.
->
-> Would you tell me more details.
-> >
-> > Now, if your patch is protected by a sysctl so that admins can choose
-> > the preferred behavior, then why not...
->
-> The sysctl in the POC is just for triggering problems easily.
->
-> So the question is, when syncookie is triggered, which is more important,
-> the practice or the principle?
+The following changes since commit 4e04e7513b0fa2fe8966a1c83fb473f1667e2810:
 
-SYNCOOKIES have lots of known limitations.
+  Merge tag 'net-5.12-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2021-04-09 15:26:51 -0700)
 
-You can disable them if you need.
+are available in the Git repository at:
 
-Or you can add a sysctl or socket options so that each listener can
-decide what they want.
+  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.12-rc8
 
-I gave feedback of why your initial patch was _not_ good.
+for you to fetch changes up to f2764bd4f6a8dffaec3e220728385d9756b3c2cb:
 
-I think it can render a server under DDOS absolutely unusable.
-Exactly the same situation than _without_ syncookies being used.
-We do not want to go back to the situation wed had before SYNCOOKIES
-were invented.
+  netlink: don't call ->netlink_bind with table lock held (2021-04-16 17:01:04 -0700)
 
-I think you should have put a big warning in the changelog to explain
-that you fully understood
-the risks.
+----------------------------------------------------------------
+Networking fixes for 5.12-rc8, including fixes from netfilter,
+and bpf. BPF verifier changes stand out, otherwise things have
+slowed down.
 
-We prefer having servers that can still be useful, especially ones
-serving 100% HTTPS traffic.
+Current release - regressions:
 
-Thank you.
+ - gro: ensure frag0 meets IP header alignment
+
+ - Revert "net: stmmac: re-init rx buffers when mac resume back"
+
+ - ethernet: macb: fix the restore of cmp registers
+
+Previous releases - regressions:
+
+ - ixgbe: Fix NULL pointer dereference in ethtool loopback test
+
+ - ixgbe: fix unbalanced device enable/disable in suspend/resume
+
+ - phy: marvell: fix detection of PHY on Topaz switches
+
+ - make tcp_allowed_congestion_control readonly in non-init netns
+
+ - xen-netback: Check for hotplug-status existence before watching
+
+Previous releases - always broken:
+
+ - bpf: mitigate a speculative oob read of up to map value size by
+        tightening the masking window
+
+ - sctp: fix race condition in sctp_destroy_sock
+
+ - sit, ip6_tunnel: Unregister catch-all devices
+
+ - netfilter: nftables: clone set element expression template
+
+ - netfilter: flowtable: fix NAT IPv6 offload mangling
+
+ - net: geneve: check skb is large enough for IPv4/IPv6 header
+
+ - netlink: don't call ->netlink_bind with table lock held
+
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+
+----------------------------------------------------------------
+Alexander Duyck (1):
+      ixgbe: Fix NULL pointer dereference in ethtool loopback test
+
+Aya Levin (2):
+      net/mlx5: Fix setting of devlink traps in switchdev mode
+      net/mlx5e: Fix setting of RS FEC mode
+
+Christophe JAILLET (1):
+      net: davicom: Fix regulator not turned off on failed probe
+
+Ciara Loftus (1):
+      libbpf: Fix potential NULL pointer dereference
+
+Claudiu Beznea (1):
+      net: macb: fix the restore of cmp registers
+
+Colin Ian King (1):
+      ice: Fix potential infinite loop when using u8 loop counter
+
+Daniel Borkmann (9):
+      bpf: Use correct permission flag for mixed signed bounds arithmetic
+      bpf: Move off_reg into sanitize_ptr_alu
+      bpf: Ensure off_reg has no mixed signed bounds for all types
+      bpf: Rework ptr_limit into alu_limit and add common error path
+      bpf: Improve verifier error messages for users
+      bpf: Refactor and streamline bounds check into helper
+      bpf: Move sanitize_val_alu out of op switch
+      bpf: Tighten speculative pointer arithmetic mask
+      bpf: Update selftests to reflect new error states
+
+David S. Miller (7):
+      Merge git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf
+      Merge branch 'catch-all-devices'
+      Merge branch 'ibmvnic-napi-fixes'
+      Merge branch '10GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue
+      Merge tag 'mlx5-fixes-2021-04-14' of git://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux
+      Merge branch 'ch_tlss-fixes'
+      Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf
+
+Eric Dumazet (2):
+      netfilter: nft_limit: avoid possible divide error in nft_limit_init
+      gro: ensure frag0 meets IP header alignment
+
+Florian Westphal (4):
+      netfilter: bridge: add pre_exit hooks for ebtable unregistration
+      netfilter: arp_tables: add pre_exit hook for table unregister
+      netfilter: x_tables: fix compat match/target pad out-of-bound write
+      netlink: don't call ->netlink_bind with table lock held
+
+Heiner Kallweit (1):
+      r8169: don't advertise pause in jumbo mode
+
+Hristo Venev (2):
+      net: sit: Unregister catch-all devices
+      net: ip6_tunnel: Unregister catch-all devices
+
+Jakub Kicinski (2):
+      ethtool: fix kdoc attr name
+      ethtool: pause: make sure we init driver stats
+
+Jason Xing (1):
+      i40e: fix the panic when running bpf in xdpdrv mode
+
+Joakim Zhang (1):
+      MAINTAINERS: update maintainer entry for freescale fec driver
+
+Jonathon Reinhart (1):
+      net: Make tcp_allowed_congestion_control readonly in non-init netns
+
+Lijun Pan (5):
+      ibmvnic: correctly use dev_consume/free_skb_irq
+      ibmvnic: avoid calling napi_disable() twice
+      ibmvnic: remove duplicate napi_schedule call in do_reset function
+      ibmvnic: remove duplicate napi_schedule call in open function
+      MAINTAINERS: update my email
+
+Michael Brown (1):
+      xen-netback: Check for hotplug-status existence before watching
+
+Nicolas Dichtel (2):
+      doc: move seg6_flowlabel to seg6-sysctl.rst
+      vrf: fix a comment about loopback device
+
+Or Cohen (1):
+      net/sctp: fix race condition in sctp_destroy_sock
+
+Pablo Neira Ayuso (3):
+      netfilter: flowtable: fix NAT IPv6 offload mangling
+      netfilter: conntrack: do not print icmpv6 as unknown via /proc
+      netfilter: nftables: clone set element expression template
+
+Pali Rohár (1):
+      net: phy: marvell: fix detection of PHY on Topaz switches
+
+Phillip Potter (1):
+      net: geneve: check skb is large enough for IPv4/IPv6 header
+
+Thierry Reding (1):
+      Revert "net: stmmac: re-init rx buffers when mac resume back"
+
+Vinay Kumar Yadav (4):
+      ch_ktls: Fix kernel panic
+      ch_ktls: fix device connection close
+      ch_ktls: tcb close causes tls connection failure
+      ch_ktls: do not send snd_una update to TCB in middle
+
+Wan Jiabing (1):
+      cavium/liquidio: Fix duplicate argument
+
+Yongxin Liu (1):
+      ixgbe: fix unbalanced device enable/disable in suspend/resume
+
+wenxu (1):
+      net/mlx5e: fix ingress_ifindex check in mlx5e_flower_parse_meta
+
+ Documentation/networking/ip-sysctl.rst             |  15 --
+ Documentation/networking/seg6-sysctl.rst           |  13 ++
+ MAINTAINERS                                        |   4 +-
+ drivers/net/dsa/mv88e6xxx/chip.c                   |  30 ++-
+ drivers/net/ethernet/cadence/macb_main.c           |   2 +-
+ drivers/net/ethernet/cavium/liquidio/cn66xx_regs.h |   2 +-
+ .../chelsio/inline_crypto/ch_ktls/chcr_ktls.c      | 102 +--------
+ drivers/net/ethernet/davicom/dm9000.c              |   6 +-
+ drivers/net/ethernet/ibm/ibmvnic.c                 |  25 +--
+ drivers/net/ethernet/intel/i40e/i40e_main.c        |   6 +
+ drivers/net/ethernet/intel/ice/ice_dcb.c           |   4 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      |  14 +-
+ drivers/net/ethernet/mellanox/mlx5/core/devlink.c  |   5 +
+ drivers/net/ethernet/mellanox/mlx5/core/en/port.c  |  23 +--
+ drivers/net/ethernet/mellanox/mlx5/core/en_tc.c    |   3 +
+ drivers/net/ethernet/realtek/r8169_main.c          |   9 +-
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |  84 +-------
+ drivers/net/geneve.c                               |   6 +
+ drivers/net/phy/marvell.c                          |  32 ++-
+ drivers/net/vrf.c                                  |  10 +-
+ drivers/net/xen-netback/xenbus.c                   |  12 +-
+ include/linux/marvell_phy.h                        |   5 +-
+ include/linux/netfilter_arp/arp_tables.h           |   5 +-
+ include/linux/netfilter_bridge/ebtables.h          |   5 +-
+ kernel/bpf/verifier.c                              | 230 ++++++++++++++-------
+ net/bridge/netfilter/ebtable_broute.c              |   8 +-
+ net/bridge/netfilter/ebtable_filter.c              |   8 +-
+ net/bridge/netfilter/ebtable_nat.c                 |   8 +-
+ net/bridge/netfilter/ebtables.c                    |  30 ++-
+ net/core/dev.c                                     |   3 +-
+ net/ethtool/netlink.h                              |   6 +-
+ net/ethtool/pause.c                                |   8 +-
+ net/ipv4/netfilter/arp_tables.c                    |  11 +-
+ net/ipv4/netfilter/arptable_filter.c               |  10 +-
+ net/ipv4/netfilter/ip_tables.c                     |   2 +
+ net/ipv4/sysctl_net_ipv4.c                         |  16 +-
+ net/ipv6/ip6_tunnel.c                              |  10 +
+ net/ipv6/netfilter/ip6_tables.c                    |   2 +
+ net/ipv6/sit.c                                     |   4 +-
+ net/netfilter/nf_conntrack_standalone.c            |   1 +
+ net/netfilter/nf_flow_table_offload.c              |   6 +-
+ net/netfilter/nf_tables_api.c                      |  46 +++--
+ net/netfilter/nft_limit.c                          |   4 +-
+ net/netfilter/x_tables.c                           |  10 +-
+ net/netlink/af_netlink.c                           |   4 +-
+ net/sctp/socket.c                                  |  13 +-
+ tools/lib/bpf/xsk.c                                |   5 +-
+ tools/testing/selftests/bpf/verifier/bounds.c      |   5 -
+ .../selftests/bpf/verifier/bounds_deduction.c      |  21 +-
+ .../bpf/verifier/bounds_mix_sign_unsign.c          |  13 --
+ tools/testing/selftests/bpf/verifier/map_ptr.c     |   4 +-
+ tools/testing/selftests/bpf/verifier/unpriv.c      |   2 +-
+ .../selftests/bpf/verifier/value_ptr_arith.c       |   6 +-
+ 53 files changed, 479 insertions(+), 439 deletions(-)
