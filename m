@@ -2,115 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8203A36300B
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B10836300D
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236427AbhDQMvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 08:51:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232844AbhDQMvB (ORCPT
+        id S236457AbhDQMvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 08:51:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22035 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236432AbhDQMvK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 08:51:01 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A095FC061574;
-        Sat, 17 Apr 2021 05:50:33 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso17851477pji.3;
-        Sat, 17 Apr 2021 05:50:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dC5OiihKMgrfza4TGRNLOPug/spoci6zSb6GTHJlcLU=;
-        b=J1IA8epO3GJTk766eaG1mMs1CXup2YSrJChiOZe1ip6Bv+zRVTxLbsvTO9G+Kf2xx4
-         FbfZTpjR2fQrf+fSpcmag6wmqMukH95GGXvqzIrek5j5H8B2L9CXEWiBiBGvy8dNxvIj
-         IRvwjPcjJT14nabrdrVbkAIChWQdbsWTfUrZFsRjAKQHdEGAWT30DlbXLBtDzhVTcO0D
-         9WTP81u/qY9yw33TdbzkqqKQkMAX2n5eOM3YceftIZtuB9n97Z8fYbjuDtxaS746PbLx
-         pGgygVQNLycUhagH4hURFDPLXiSS+pob+79ZqVZ+pIQf2SpvLfPl45yYcEh5zdWiqWkW
-         VPZA==
+        Sat, 17 Apr 2021 08:51:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618663843;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZaTcXtyBPdVI0SxVxqAEtYLRW7IktHO5BV2EA4cxMMo=;
+        b=Bcqvam9hlgHPTppmncGY7y4QsgDV0C2LENLVdl+Guc5XAw7A2qaUg9e6TaTZk4DW31tkBR
+        JEavMRFiP3lB+pPwgLJy38GDLJk4jMR9EMDtOK8pSDOsRLWmK/Rppd3fRnXEmYTRGg91R9
+        BcH0AGzWc37n2CqfyoGBjIloduS/Hqk=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-2-2wBepw0jPlS2kDFycCEwLQ-1; Sat, 17 Apr 2021 08:50:41 -0400
+X-MC-Unique: 2wBepw0jPlS2kDFycCEwLQ-1
+Received: by mail-ed1-f72.google.com with SMTP id c15-20020a056402100fb029038518e5afc5so1025479edu.18
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 05:50:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dC5OiihKMgrfza4TGRNLOPug/spoci6zSb6GTHJlcLU=;
-        b=kguhd+a1DXTN/YesRkfWAFzuExL6+OrQMZZ0XmXpntMbsiuQKMTt7vZuO+ESJsAnGH
-         PoUvRbenaN23pTbXkZkgWYYHLFkCkcfpIJbBYBup2ZFdwZy6MQkVyzKs2W66JGeec08Z
-         LAvgCRE7ilRN1XVK6PKlhwVbGi5Yjze0b1yokX6po7XaYNIY8/P/7MfvGNWB9hrGlkU5
-         IVNKeF9Mar/QziotQuwUTSmM6OWwzKAjNKTrpKPY9uoOkfhIg64InukwIQrPbz1v4wJ2
-         CC7VJx10hWuAyeSKNkKmKERX2nmkevV+HNf6RQUfC7T9oknd4681WtaDUVQyzl0bYLnb
-         Xfdg==
-X-Gm-Message-State: AOAM530FUsOdV7SQ56JrvehiOnFGlBfW7PJ/NYAqZD2F+lxvRhAFIfLt
-        HB3EmVmSUI/46xfVZhaASoE8XYNO0DvLfb5bfY0=
-X-Google-Smtp-Source: ABdhPJzZa1GQ2+K3AtNS9szk8w6Of3Z2NehE7ghbt4IKB2Ujf5D6USW0eOylX8wDZd3igCsQ7J0ixBXCkEeHQzdfB0Y=
-X-Received: by 2002:a17:902:a406:b029:e6:78c4:71c8 with SMTP id
- p6-20020a170902a406b02900e678c471c8mr13980053plq.17.1618663832771; Sat, 17
- Apr 2021 05:50:32 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZaTcXtyBPdVI0SxVxqAEtYLRW7IktHO5BV2EA4cxMMo=;
+        b=c4k9nOec3dAvtR1fEp5s3GN8O7Pz4p+m9fpaU8qN/lgZ1sBonj2wC1EqWxwTb1Q+T9
+         5sCzbte+oayVkWn8uZaIvDER29u9E7R5CP5PNDz3QH2ffHYcwUKc0fOYqQ+/+7kT1J88
+         IM5QoxunjF7pR2Y3pVCYqRmEgkP1EO31Fjs5c+cUcojbS0jV1Z+RcTXQu6yTiUeNNORD
+         2V1i0aCo39VKE3tiX636vMHnZz2IODDpfXqEL8hKRKGS67BbEqs/JZakfy7lBAGim0pr
+         WTEpAqSz4v6yMfOm9U3Q5nOqVDfckVlfiQFT070g8hqAPn08ZjRUUQdMZqJT/1XF4psO
+         aWEQ==
+X-Gm-Message-State: AOAM530kXjR9sRUmUVz/AH3/LxSVeBRjhQjNso9pV3+HW9uMQi/j0Kq3
+        LLFJQ5cSty9/I0xZOI0Eb/HAOBUgbCedahO9gticQdhQtL7rFxLVFboBS9IHD7L/g3oVAuzfnNt
+        nkpkQaWGELsAcb7e8DtDx3ieK
+X-Received: by 2002:a17:906:c29a:: with SMTP id r26mr12667254ejz.259.1618663840298;
+        Sat, 17 Apr 2021 05:50:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxIf7mi5DtpN2IQG233RbYf3mpawFrXCI+aHZoFvdgJevu/Q4WnkMS+P//lsbO1vapOn52cTg==
+X-Received: by 2002:a17:906:c29a:: with SMTP id r26mr12667244ejz.259.1618663840159;
+        Sat, 17 Apr 2021 05:50:40 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id f20sm3141726ejw.36.2021.04.17.05.50.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Apr 2021 05:50:39 -0700 (PDT)
+Subject: Re: [PATCH] KVM: x86: Remove unused function declaration
+To:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     wanghaibin.wang@huawei.com, jiangkunkun@huawei.com
+References: <20210406063504.17552-1-zhukeqian1@huawei.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <8ceed9a2-fa5a-0b47-d4c2-8b16c1ef100a@redhat.com>
+Date:   Sat, 17 Apr 2021 14:50:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210416174902.9036-1-joe.g.sandom@gmail.com>
-In-Reply-To: <20210416174902.9036-1-joe.g.sandom@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 17 Apr 2021 15:50:16 +0300
-Message-ID: <CAHp75VeSNDdY_jUsgy06mLpLVXnuyw3NjvxJBN6D-cxV5-VvUg@mail.gmail.com>
-Subject: Re: [PATCH v8 1/2] Added AMS tsl2591 driver implementation
-To:     Joe Sandom <joe.g.sandom@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210406063504.17552-1-zhukeqian1@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 8:49 PM Joe Sandom <joe.g.sandom@gmail.com> wrote:
->
-> Driver implementation for AMS/TAOS tsl2591 ambient light sensor.
->
-> This driver supports configuration via device tree and sysfs.
-> Supported channels for raw infrared light intensity,
-> raw combined light intensity and illuminance in lux.
-> The driver additionally supports iio events on lower and
-> upper thresholds.
->
-> This is a very-high sensitivity light-to-digital converter that
-> transforms light intensity into a digital signal.
+On 06/04/21 08:35, Keqian Zhu wrote:
+> kvm_mmu_slot_largepage_remove_write_access() is decared but not used,
+> just remove it.
+> 
+> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+> ---
+>   arch/x86/include/asm/kvm_host.h | 2 --
+>   1 file changed, 2 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 3768819693e5..9c0af0971c9f 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1440,8 +1440,6 @@ void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
+>   				   const struct kvm_memory_slot *memslot);
+>   void kvm_mmu_slot_leaf_clear_dirty(struct kvm *kvm,
+>   				   struct kvm_memory_slot *memslot);
+> -void kvm_mmu_slot_largepage_remove_write_access(struct kvm *kvm,
+> -					struct kvm_memory_slot *memslot);
+>   void kvm_mmu_zap_all(struct kvm *kvm);
+>   void kvm_mmu_invalidate_mmio_sptes(struct kvm *kvm, u64 gen);
+>   unsigned long kvm_mmu_calculate_default_mmu_pages(struct kvm *kvm);
+> 
 
-Hmm... It's v8 and the subject line is wrongly formatted.
-Please add the corresponding prefix "iio: light: ..."
+Queued, thanks.
 
-Otherwise it's in very good shape.
+Paolo
 
-...
-
-> +/* TSL2591 enable register definitions */
-> +#define TSL2591_PWR_ON              0x01
-> +#define TSL2591_PWR_OFF             0x00
-
-> +#define TSL2591_ENABLE_ALS          0x02
-> +#define TSL2591_ENABLE_ALS_INT      0x10
-> +#define TSL2591_ENABLE_SLEEP_INT    0x40
-> +#define TSL2591_ENABLE_NP_INT       0x80
-
-Is it a bitfield?
-
-...
-
-> +       als_lower_l = als_lower_threshold;
-
->> 0, but it's up to you.
-
-> +       als_lower_h = als_lower_threshold >> 8;
-
-...
-
-> +       als_upper_l = als_upper_threshold;
-> +       als_upper_h = als_upper_threshold >> 8;
-
-Ditto.
-
--- 
-With Best Regards,
-Andy Shevchenko
