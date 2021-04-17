@@ -2,137 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8139836316F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 19:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04DD0363175
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 19:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236833AbhDQR1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 13:27:08 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:55863 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236820AbhDQR1H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 13:27:07 -0400
-X-Originating-IP: 2.7.49.219
-Received: from [192.168.1.12] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 39881E0003;
-        Sat, 17 Apr 2021 17:26:37 +0000 (UTC)
-Subject: Re: [PATCH] riscv: Protect kernel linear mapping only if
- CONFIG_STRICT_KERNEL_RWX is set
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     anup@brainfault.org, corbet@lwn.net,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, Arnd Bergmann <arnd@arndb.de>,
-        aryabinin@virtuozzo.com, glider@google.com, dvyukov@google.com,
-        linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org
-References: <mhng-9ab3280b-4523-4892-9f9a-338f55df8108@palmerdabbelt-glaptop>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <72130961-0419-9b1f-e88e-aa1e933f2942@ghiti.fr>
-Date:   Sat, 17 Apr 2021 13:26:36 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S236848AbhDQR2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 13:28:31 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:38154 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236846AbhDQR2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 13:28:25 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618680479; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=SyeI61oZ24scnndAVY7UeZAx6lkAez7VCTFBmV1gZmk=;
+ b=WBeVdJe/NIXmWrPa7fW3j3lcajG8XJoQM4oCCAKigaf/g3U7mrrm34/q71iR64dRxpWwmK+K
+ ZD/zIqR6UPTzzKvXivhYvUnpsRiCbv9dtQXPk1gmsGkY8A7gRrn4C9MDXwZBJ20e5Gvplksm
+ hg9Kg6V8AMPxXJjLwg4hUqt1h/M=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 607b1a9cfebcffa80f27d556 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 17 Apr 2021 17:27:56
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 67486C4338A; Sat, 17 Apr 2021 17:27:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A498BC433D3;
+        Sat, 17 Apr 2021 17:27:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A498BC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <mhng-9ab3280b-4523-4892-9f9a-338f55df8108@palmerdabbelt-glaptop>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] qtnfmac: remove meaningless labels
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210223065754.34392-1-samirweng1979@163.com>
+References: <20210223065754.34392-1-samirweng1979@163.com>
+To:     samirweng1979 <samirweng1979@163.com>
+Cc:     imitsyanko@quantenna.com, geomatsi@gmail.com, kuba@kernel.org,
+        ohannes.berg@intel.com, dlebed@quantenna.com,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210417172756.67486C4338A@smtp.codeaurora.org>
+Date:   Sat, 17 Apr 2021 17:27:56 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 4/16/21 à 12:33 PM, Palmer Dabbelt a écrit :
-> On Fri, 16 Apr 2021 03:47:19 PDT (-0700), alex@ghiti.fr wrote:
->> Hi Anup,
->>
->> Le 4/16/21 à 6:41 AM, Anup Patel a écrit :
->>> On Thu, Apr 15, 2021 at 4:34 PM Alexandre Ghiti <alex@ghiti.fr> wrote:
->>>>
->>>> If CONFIG_STRICT_KERNEL_RWX is not set, we cannot set different 
->>>> permissions
->>>> to the kernel data and text sections, so make sure it is defined before
->>>> trying to protect the kernel linear mapping.
->>>>
->>>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
->>>
->>> Maybe you should add "Fixes:" tag in commit tag ?
->>
->> Yes you're right I should have done that. Maybe Palmer will squash it as
->> it just entered for-next?
-> 
-> Ya, I'll do it.  My testing box was just tied up last night for the rc8 
-> PR, so I threw this on for-next to get the buildbots to take a look. 
-> It's a bit too late to take something for this week, as I try to be 
-> pretty conservative this late in the cycle.  There's another kprobes fix 
-> on the list so if we end up with an rc8 I might send this along with 
-> that, otherwise this'll just go onto for-next before the linear map 
-> changes that exercise the bug.
-> 
-> You're more than welcome to just dig up the fixes tag and reply, my 
-> scripts pull all tags from replies (just like Revieweb-by).  Otherwise 
-> I'll do it myself, most people don't really post Fixes tags that 
-> accurately so I go through it for pretty much everything anyway.
+samirweng1979 <samirweng1979@163.com> wrote:
 
-Here it is:
-
-Fixes: 4b67f48da707 ("riscv: Move kernel mapping outside of linear mapping")
-
-Thanks,
-
+> From: wengjianfeng <wengjianfeng@yulong.com>
 > 
-> Thanks for sorting this out so quickly!
+> some function's label meaningless, the return statement follows
+> the goto statement, so just remove it.
 > 
->>
->>>
->>> Otherwise it looks good.
->>>
->>> Reviewed-by: Anup Patel <anup@brainfault.org>
->>
->> Thank you!
->>
->> Alex
->>
->>>
->>> Regards,
->>> Anup
->>>
->>>> ---
->>>>   arch/riscv/kernel/setup.c | 8 ++++----
->>>>   1 file changed, 4 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
->>>> index 626003bb5fca..ab394d173cd4 100644
->>>> --- a/arch/riscv/kernel/setup.c
->>>> +++ b/arch/riscv/kernel/setup.c
->>>> @@ -264,12 +264,12 @@ void __init setup_arch(char **cmdline_p)
->>>>
->>>>          sbi_init();
->>>>
->>>> -       if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX))
->>>> +       if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX)) {
->>>>                  protect_kernel_text_data();
->>>> -
->>>> -#if defined(CONFIG_64BIT) && defined(CONFIG_MMU)
->>>> -       protect_kernel_linear_mapping_text_rodata();
->>>> +#ifdef CONFIG_64BIT
->>>> +               protect_kernel_linear_mapping_text_rodata();
->>>>   #endif
->>>> +       }
->>>>
->>>>   #ifdef CONFIG_SWIOTLB
->>>>          swiotlb_init(1);
->>>> -- 
->>>> 2.20.1
->>>>
->>>
->>> _______________________________________________
->>> linux-riscv mailing list
->>> linux-riscv@lists.infradead.org
->>> http://lists.infradead.org/mailman/listinfo/linux-riscv
->>>
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+> Reviewed-by: Sergey Matyukevich <geomatsi@gmail.com>
+
+Patch applied to wireless-drivers-next.git, thanks.
+
+a221d0afbf39 qtnfmac: remove meaningless labels
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210223065754.34392-1-samirweng1979@163.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
