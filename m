@@ -2,82 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EBB7363212
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 21:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0BB363215
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 21:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236994AbhDQTwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 15:52:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60224 "EHLO
+        id S237034AbhDQTw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 15:52:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236718AbhDQTwH (ORCPT
+        with ESMTP id S236718AbhDQTw0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 15:52:07 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B96C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 12:51:39 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id y4so9772525lfl.10
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 12:51:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V9GAEUssANBfKD15rSozAJHNG7J93nIDtHCydhPvEyg=;
-        b=Bg7f0TZ9VMkODVodUxo6nOYaLPNAtK3zo+8R5f4drYQz4zXcV5xMh95M/iaSrGrgUl
-         ZQoW0aZRgSG/dI0D896jjYc5BzE9mebQvnUfvzEIIjN66tZ7KMqZeyvGYfU/aoSkEzHj
-         Kw2aAnXTdbTXACWkyPkvRbmvBcrIzVsjGat5g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V9GAEUssANBfKD15rSozAJHNG7J93nIDtHCydhPvEyg=;
-        b=a18MOlWvdKwS4PNeMOoRXx1qG4/+E+iTaGOeC1YjeQo5jBvzzZ1W7QZVQS43yo3Xv1
-         Ph3TwLcXg8z1W2BzC0tW0c3xjlkC2yOrcJVacLSUqdEeTDvhWTR8wy/DTzHBS+rVZr0+
-         B3oflNi+suf+I3EV1PM08rX7gNE7H7VlAZ9q2xuAl4vmuApR5+xTexkwbEmp6HFw3p7u
-         joh5jS5LpvnLlsX2/j2G47fDdnXXaBJFrzTjg0FIya5YFBP1p0scCvpVgXRaisNiWu0b
-         dYQ5zz1o5bNsYTymH2p+vq0Dwkdp0xUi+zAPPlJzt3nyEWrQyq4Mrk1Q7ce9qyHCdjTY
-         jMGw==
-X-Gm-Message-State: AOAM532C83GcLz/XkQd6PH9WGbyxOP/gW+VFi0ZrCpF5rSdgUEvKPoQy
-        njgHmydsgYSIWaaMvjLA0xJOHNMfP87+ls99
-X-Google-Smtp-Source: ABdhPJxlnDQsGdwxwqRpDJKVMUjn/P43Y9JTH6WFEJkaY8WDTL8p4gWoHBbcfYicrxP1MtLeoLC4BQ==
-X-Received: by 2002:a19:e20a:: with SMTP id z10mr6974192lfg.391.1618689097573;
-        Sat, 17 Apr 2021 12:51:37 -0700 (PDT)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id c2sm1358588lfi.143.2021.04.17.12.51.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Apr 2021 12:51:37 -0700 (PDT)
-Received: by mail-lj1-f181.google.com with SMTP id l22so27477508ljc.9
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 12:51:37 -0700 (PDT)
-X-Received: by 2002:a05:651c:3c1:: with SMTP id f1mr6240560ljp.507.1618689096862;
- Sat, 17 Apr 2021 12:51:36 -0700 (PDT)
+        Sat, 17 Apr 2021 15:52:26 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739F5C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 12:51:59 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lXqyv-0006zB-Tz; Sat, 17 Apr 2021 21:51:53 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lXqyv-0003Mx-8X; Sat, 17 Apr 2021 21:51:53 +0200
+Date:   Sat, 17 Apr 2021 21:51:50 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 1/8] pwm: pca9685: Switch to atomic API
+Message-ID: <20210417195150.5fdcpxfbasp4y264@pengutronix.de>
+References: <20210415121455.39536-1-clemens.gruber@pqgruber.com>
 MIME-Version: 1.0
-References: <20210416192413.1514419-1-eric.dumazet@gmail.com>
- <CAHk-=wjbvzCAhAtvG0d81W5o0-KT5PPTHhfJ5ieDFq+bGtgOYg@mail.gmail.com> <CANn89iK0Win0m5ggB-EjFvVwmpkyg_nG9FW9uzREmrpoeTF_aw@mail.gmail.com>
-In-Reply-To: <CANn89iK0Win0m5ggB-EjFvVwmpkyg_nG9FW9uzREmrpoeTF_aw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 17 Apr 2021 12:51:21 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wijrfU0BN7L5Go1PDZ1NQRgDGnW57EeMXw_qqowMGJZAA@mail.gmail.com>
-Message-ID: <CAHk-=wijrfU0BN7L5Go1PDZ1NQRgDGnW57EeMXw_qqowMGJZAA@mail.gmail.com>
-Subject: Re: [PATCH] x86/uaccess: small optimization in unsafe_copy_to_user()
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ff2fxzbhzbuvas53"
+Content-Disposition: inline
+In-Reply-To: <20210415121455.39536-1-clemens.gruber@pqgruber.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 12:44 PM Eric Dumazet <edumazet@google.com> wrote:
->
-> I thought put_cmsg() callers were from the kernel, with no possibility
-> for user to abuse this interface trying to push GB of data.
 
-My point is that "I thought" is not good enough for the unsafe interfaces.
+--ff2fxzbhzbuvas53
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It needs to be "I can see that the arguments are properly verified".
+On Thu, Apr 15, 2021 at 02:14:48PM +0200, Clemens Gruber wrote:
+> The switch to the atomic API goes hand in hand with a few fixes to
+> previously experienced issues:
+> - The duty cycle is no longer lost after disable/enable (previously the
+>   OFF registers were cleared in disable and the user was required to
+>   call config to restore the duty cycle settings)
+> - If one sets a period resulting in the same prescale register value,
+>   the sleep and write to the register is now skipped
+> - Previously, only the full ON bit was toggled in GPIO mode (and full
+>   OFF cleared if set to high), which could result in both full OFF and
+>   full ON not being set and on=3D0, off=3D0, which is not allowed accordi=
+ng
+>   to the datasheet
+> - The OFF registers were reset to 0 in probe, which could lead to the
+>   forbidden on=3D0, off=3D0. Fixed by resetting to POR default (full OFF)
+>=20
+> Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
 
-That is literally why they are called "unsafe". You need to make the
-uses obviously safe. Because the functions themselves don't do that.
+(I sent my ack to v8 before, but indeed this was the version I intended
+to ack)
 
-            Linus
+Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--ff2fxzbhzbuvas53
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmB7PFMACgkQwfwUeK3K
+7AkQFAf7Bf/gV7qahl2vQAfHsWkDcCGR5BJfoJKbbHbYDThTeEVojA/x8LgbaH9g
+QThc4OEKrQvwaikwerXHKTbDXWZkGY3rGuf6aAzOg9Ue3BplgNSovkdePziavycG
+E16uyTFhuupd3AEJ0lkBcsDG6TFJ4jyD0LEJP3EJNpHcXpZCV1fzBqVNa8kH14Gj
+DyUkQqfvJUc0bhuGV1PSn7WjFJyOIDFRFfTamq/Qn/cVBV9Pljz+kR6r1+OJS/Gu
+qvZPBSoQ/6Vv+nZiLb9FNPvfAd4P1e9ip6+mA1BZ6J3DQVEkkX2JLZh2LVMPSPnY
+c0plbd/hg15dojJWZglR/afI/DjrwA==
+=k/RB
+-----END PGP SIGNATURE-----
+
+--ff2fxzbhzbuvas53--
