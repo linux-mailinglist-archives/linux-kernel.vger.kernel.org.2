@@ -2,94 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EFE1362D5B
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 05:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF549362D5D
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 05:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235675AbhDQDnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 23:43:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234999AbhDQDnX (ORCPT
+        id S235753AbhDQDpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 23:45:06 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3946 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234999AbhDQDpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 23:43:23 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A314AC061574;
-        Fri, 16 Apr 2021 20:42:57 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id y32so20448488pga.11;
-        Fri, 16 Apr 2021 20:42:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=KEgAGlMIMGSD4Y3PLpFSkmFQK4X2O5FS+oaEvb1q+lY=;
-        b=K0b5nLAizD7TGQDjgaOycW3pVacY3L7Ep+L1M4RObdMN2U6homi3AL+6ANBGRcLLyP
-         wk2KHAqRuihRNK6M8acRbWXEB0Yl5BTqeVmylR0C3oBJkWqwK/TMaIKX9RziEPXg30as
-         njFyJGypqwQaTqgu51A9+FAsuVyKn9MV7JecT/nWsdZrWboOJ9fWObm2t0QhjdsHZUaJ
-         nNQceK0PgPxSCKW8hCWNwXpGqh0yWzx/fhIG7ta341FjY68/Gbaz4qLCPTvlRk4JyIwX
-         R9r/KuAf3Fa3rKTMMiOOp7VTE/aytP8eME68cR+Kq4UukzCmlj+h07YXZOeBOhnirMgu
-         WcQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=KEgAGlMIMGSD4Y3PLpFSkmFQK4X2O5FS+oaEvb1q+lY=;
-        b=bj6tPsx2uB8SDwuEDf34IX/oDr2wxO+STpeaDky3im2I7IqkDx88V6K7mFX2uNoDEL
-         UJiG9mo9bV0dW3SUNtbJKU7gzPe5C24AnEENTch3LeBtkFU5SrOOsKTZqKUqzVx/9DKl
-         tOOzWG20ogFEMftCApk8Cwq4fBG4Qns8/vB9lmQMLchbu6Y2SicpwjEY6EZfVgjK2MRu
-         iTpHnmhbDxcMHHwa5fUHPAZG72ssnPhzoaSTqLsSq6zPVRNLv3wQF6oSu/R+N2633fcL
-         kPQ2R5aHsE3L+YNgKlD2DX6JBE8wWb6U4kK1JTxa5+TPsHdJcphlRNg1nmQ7d4flmiLk
-         w+Pg==
-X-Gm-Message-State: AOAM531fae2M2zv/xuzdRsJHElNIDioiNkdsWg/m8hj2XNo+Iem+azeE
-        vGrNOU5JbHiSMSLXhcrWPpAeVRUd7hynNagNqnQ=
-X-Google-Smtp-Source: ABdhPJz8p4ON3M1hNgneJYgt8P2lIK0ojWFajm7V/CS2x1h65e9dsl/vMa9ItbnRupxHrr2DLFfO/g==
-X-Received: by 2002:a63:c14c:: with SMTP id p12mr1872172pgi.417.1618630977196;
-        Fri, 16 Apr 2021 20:42:57 -0700 (PDT)
-Received: from taoren-ubuntu-R90MNF91.thefacebook.com (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
-        by smtp.gmail.com with ESMTPSA id f18sm4434821pfk.144.2021.04.16.20.42.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Apr 2021 20:42:56 -0700 (PDT)
-From:   rentao.bupt@gmail.com
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org, Tao Ren <taoren@fb.com>,
-        Amithash Prasad <amithash@fb.com>
-Cc:     Tao Ren <rentao.bupt@gmail.com>
-Subject: [PATCH] watchdog: aspeed: fix hardware timeout calculation
-Date:   Fri, 16 Apr 2021 20:42:49 -0700
-Message-Id: <20210417034249.5978-1-rentao.bupt@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 16 Apr 2021 23:45:05 -0400
+Received: from dggeml406-hub.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FMf616jVmz5pjD;
+        Sat, 17 Apr 2021 11:42:17 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggeml406-hub.china.huawei.com (10.3.17.50) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Sat, 17 Apr 2021 11:44:36 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Sat, 17 Apr
+ 2021 11:44:36 +0800
+Subject: Re: [PATCH net] net: fix use-after-free when UDP GRO with shared
+ fraglist
+To:     Dongseok Yi <dseok.yi@samsung.com>,
+        'Willem de Bruijn' <willemdebruijn.kernel@gmail.com>
+CC:     "'David S. Miller'" <davem@davemloft.net>,
+        'Jakub Kicinski' <kuba@kernel.org>,
+        'Miaohe Lin' <linmiaohe@huawei.com>,
+        'Willem de Bruijn' <willemb@google.com>,
+        'Paolo Abeni' <pabeni@redhat.com>,
+        'Florian Westphal' <fw@strlen.de>,
+        'Al Viro' <viro@zeniv.linux.org.uk>,
+        'Guillaume Nault' <gnault@redhat.com>,
+        'Steffen Klassert' <steffen.klassert@secunet.com>,
+        "'Yadu Kishore'" <kyk.segfault@gmail.com>,
+        'Marco Elver' <elver@google.com>,
+        "'Network Development'" <netdev@vger.kernel.org>,
+        'LKML' <linux-kernel@vger.kernel.org>, <namkyu78.kim@samsung.com>
+References: <CGME20210104085750epcas2p1a5b22559d87df61ef3c8215ae0b470b5@epcas2p1.samsung.com>
+ <1609750005-115609-1-git-send-email-dseok.yi@samsung.com>
+ <CAF=yD-+bDdYg7X+WpP14w3fbv+JewySpdCbjdwWXB-syCwQ9uQ@mail.gmail.com>
+ <017f01d6e3cb$698246a0$3c86d3e0$@samsung.com>
+ <CAF=yD-Lg92JdpCU8CEQnutzi4VyS67_VNfAniRU=RxDvfYMruw@mail.gmail.com>
+ <019b01d6e3dc$9a940330$cfbc0990$@samsung.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <18999f48-7dc8-e859-8629-3b5cab764faa@huawei.com>
+Date:   Sat, 17 Apr 2021 11:44:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
+MIME-Version: 1.0
+In-Reply-To: <019b01d6e3dc$9a940330$cfbc0990$@samsung.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme701-chm.china.huawei.com (10.1.199.97) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tao Ren <rentao.bupt@gmail.com>
+On 2021/1/6 11:32, Dongseok Yi wrote:
+> On 2021-01-06 12:07, Willem de Bruijn wrote:
+>>
+>> On Tue, Jan 5, 2021 at 8:29 PM Dongseok Yi <dseok.yi@samsung.com> wrote:
+>>>
+>>> On 2021-01-05 06:03, Willem de Bruijn wrote:
+>>>>
+>>>> On Mon, Jan 4, 2021 at 4:00 AM Dongseok Yi <dseok.yi@samsung.com> wrote:
+>>>>>
+>>>>> skbs in frag_list could be shared by pskb_expand_head() from BPF.
+>>>>
+>>>> Can you elaborate on the BPF connection?
+>>>
+>>> With the following registered ptypes,
+>>>
+>>> /proc/net # cat ptype
+>>> Type Device      Function
+>>> ALL           tpacket_rcv
+>>> 0800          ip_rcv.cfi_jt
+>>> 0011          llc_rcv.cfi_jt
+>>> 0004          llc_rcv.cfi_jt
+>>> 0806          arp_rcv
+>>> 86dd          ipv6_rcv.cfi_jt
+>>>
+>>> BPF checks skb_ensure_writable between tpacket_rcv and ip_rcv
+>>> (or ipv6_rcv). And it calls pskb_expand_head.
+>>>
+>>> [  132.051228] pskb_expand_head+0x360/0x378
+>>> [  132.051237] skb_ensure_writable+0xa0/0xc4
+>>> [  132.051249] bpf_skb_pull_data+0x28/0x60
+>>> [  132.051262] bpf_prog_331d69c77ea5e964_schedcls_ingres+0x5f4/0x1000
+>>> [  132.051273] cls_bpf_classify+0x254/0x348
+>>> [  132.051284] tcf_classify+0xa4/0x180
+>>
+>> Ah, you have a BPF program loaded at TC. That was not entirely obvious.
+>>
+>> This program gets called after packet sockets with ptype_all, before
+>> those with a specific protocol.
+>>
+>> Tcpdump will have inserted a program with ptype_all, which cloned the
+>> skb. This triggers skb_ensure_writable -> pskb_expand_head ->
+>> skb_clone_fraglist -> skb_get.
+>>
+>>> [  132.051294] __netif_receive_skb_core+0x590/0xd28
+>>> [  132.051303] __netif_receive_skb+0x50/0x17c
+>>> [  132.051312] process_backlog+0x15c/0x1b8
+>>>
+>>>>
+>>>>> While tcpdump, sk_receive_queue of PF_PACKET has the original frag_list.
+>>>>> But the same frag_list is queued to PF_INET (or PF_INET6) as the fraglist
+>>>>> chain made by skb_segment_list().
+>>>>>
+>>>>> If the new skb (not frag_list) is queued to one of the sk_receive_queue,
+>>>>> multiple ptypes can see this. The skb could be released by ptypes and
+>>>>> it causes use-after-free.
+>>>>
+>>>> If I understand correctly, a udp-gro-list skb makes it up the receive
+>>>> path with one or more active packet sockets.
+>>>>
+>>>> The packet socket will call skb_clone after accepting the filter. This
+>>>> replaces the head_skb, but shares the skb_shinfo and thus frag_list.
+>>>>
+>>>> udp_rcv_segment later converts the udp-gro-list skb to a list of
+>>>> regular packets to pass these one-by-one to udp_queue_rcv_one_skb.
+>>>> Now all the frags are fully fledged packets, with headers pushed
+>>>> before the payload. This does not change their refcount anymore than
+>>>> the skb_clone in pf_packet did. This should be 1.
+>>>>
+>>>> Eventually udp_recvmsg will call skb_consume_udp on each packet.
+>>>>
+>>>> The packet socket eventually also frees its cloned head_skb, which triggers
+>>>>
+>>>>   kfree_skb_list(shinfo->frag_list)
+>>>>     kfree_skb
+>>>>       skb_unref
+>>>>         refcount_dec_and_test(&skb->users)
+>>>
+>>> Every your understanding is right, but
+>>>
+>>>>
+>>>>>
+>>>>> [ 4443.426215] ------------[ cut here ]------------
+>>>>> [ 4443.426222] refcount_t: underflow; use-after-free.
+>>>>> [ 4443.426291] WARNING: CPU: 7 PID: 28161 at lib/refcount.c:190
+>>>>> refcount_dec_and_test_checked+0xa4/0xc8
+>>>>> [ 4443.426726] pstate: 60400005 (nZCv daif +PAN -UAO)
+>>>>> [ 4443.426732] pc : refcount_dec_and_test_checked+0xa4/0xc8
+>>>>> [ 4443.426737] lr : refcount_dec_and_test_checked+0xa0/0xc8
+>>>>> [ 4443.426808] Call trace:
+>>>>> [ 4443.426813]  refcount_dec_and_test_checked+0xa4/0xc8
+>>>>> [ 4443.426823]  skb_release_data+0x144/0x264
+>>>>> [ 4443.426828]  kfree_skb+0x58/0xc4
+>>>>> [ 4443.426832]  skb_queue_purge+0x64/0x9c
+>>>>> [ 4443.426844]  packet_set_ring+0x5f0/0x820
+>>>>> [ 4443.426849]  packet_setsockopt+0x5a4/0xcd0
+>>>>> [ 4443.426853]  __sys_setsockopt+0x188/0x278
+>>>>> [ 4443.426858]  __arm64_sys_setsockopt+0x28/0x38
+>>>>> [ 4443.426869]  el0_svc_common+0xf0/0x1d0
+>>>>> [ 4443.426873]  el0_svc_handler+0x74/0x98
+>>>>> [ 4443.426880]  el0_svc+0x8/0xc
+>>>>>
+>>>>> Fixes: 3a1296a38d0c (net: Support GRO/GSO fraglist chaining.)
+>>>>> Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
+>>>>> ---
+>>>>>  net/core/skbuff.c | 20 +++++++++++++++++++-
+>>>>>  1 file changed, 19 insertions(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+>>>>> index f62cae3..1dcbda8 100644
+>>>>> --- a/net/core/skbuff.c
+>>>>> +++ b/net/core/skbuff.c
+>>>>> @@ -3655,7 +3655,8 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
+>>>>>         unsigned int delta_truesize = 0;
+>>>>>         unsigned int delta_len = 0;
+>>>>>         struct sk_buff *tail = NULL;
+>>>>> -       struct sk_buff *nskb;
+>>>>> +       struct sk_buff *nskb, *tmp;
+>>>>> +       int err;
+>>>>>
+>>>>>         skb_push(skb, -skb_network_offset(skb) + offset);
+>>>>>
+>>>>> @@ -3665,11 +3666,28 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
+>>>>>                 nskb = list_skb;
+>>>>>                 list_skb = list_skb->next;
+>>>>>
+>>>>> +               err = 0;
+>>>>> +               if (skb_shared(nskb)) {
+>>>>
+>>>> I must be missing something still. This does not square with my
+>>>> understanding that the two sockets are operating on clones, with each
+>>>> frag_list skb having skb->users == 1.
+>>>>
+>>>> Unless the packet socket patch previously also triggered an
+>>>> skb_unclone/pskb_expand_head, as that call skb_clone_fraglist, which
+>>>> calls skb_get on each frag_list skb.
+>>>
+>>> A cloned skb after tpacket_rcv cannot go through skb_ensure_writable
+>>> with the original shinfo. pskb_expand_head reallocates the shinfo of
+>>> the skb and call skb_clone_fraglist. skb_release_data in
+>>> pskb_expand_head could not reduce skb->users of the each frag_list skb
+>>> if skb_shinfo(skb)->dataref == 2.
+>>>
+>>> After the reallocation, skb_shinfo(skb)->dataref == 1 but each frag_list
+>>> skb could have skb->users == 2.
 
-Fix hardware timeout calculation in aspeed_wdt_set_timeout function to
-ensure the reload value does not exceed the hardware limit.
+Hi, Dongseok
+   I understand there is liner head data shared between the frag_list skb in the
+cloned skb(cloned by pf_packet?) and original skb, which should not be shared
+when skb_segment_list() converts the frag_list skb into regular packet.
 
-Fixes: efa859f7d786 ("watchdog: Add Aspeed watchdog driver")
-Reported-by: Amithash Prasad <amithash@fb.com>
-Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
----
- drivers/watchdog/aspeed_wdt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+   But both skb->users of original and cloned skb is one(skb_shinfo(skb)->dataref
+is one for both skb too), and skb->users of each fraglist skb is two because both
+original and cloned skb is linking to the same fraglist pointer, and there is
+"skb_shinfo(skb)->frag_list = NULL" for original skb in the begin of skb_segment_list(),
+if kfree_skb() is called with original skb, the fraglist skb will not be freed.
+If kfree_skb is called with original skb,cloned skb and each fraglist skb here, the
+reference counter for three of them seem right here, so why is there a refcount_t
+warning in the commit log? am I missing something obvious here?
 
-diff --git a/drivers/watchdog/aspeed_wdt.c b/drivers/watchdog/aspeed_wdt.c
-index 7e00960651fa..507fd815d767 100644
---- a/drivers/watchdog/aspeed_wdt.c
-+++ b/drivers/watchdog/aspeed_wdt.c
-@@ -147,7 +147,7 @@ static int aspeed_wdt_set_timeout(struct watchdog_device *wdd,
- 
- 	wdd->timeout = timeout;
- 
--	actual = min(timeout, wdd->max_hw_heartbeat_ms * 1000);
-+	actual = min(timeout, wdd->max_hw_heartbeat_ms / 1000);
- 
- 	writel(actual * WDT_RATE_1MHZ, wdt->base + WDT_RELOAD_VALUE);
- 	writel(WDT_RESTART_MAGIC, wdt->base + WDT_RESTART);
--- 
-2.17.1
+Sorry for bringing up this thread again.
+
+>>
+>> Yes, that makes sense. skb_clone_fraglist just increments the
+>> frag_list skb's refcounts.
+>>
+>> skb_segment_list must create an unshared struct sk_buff before it
+>> changes skb data to insert the protocol headers.
+>>
 
