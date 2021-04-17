@@ -2,68 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B67D93632A0
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 01:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A556D3632A4
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 01:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231261AbhDQXP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 19:15:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbhDQXP4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 19:15:56 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C510C06174A
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 16:15:28 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618701326;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YruGhFn9UsfND0XA1k4cwaAjILGWeCrz1gmEI3OkqaQ=;
-        b=p7t7Ky+n099Um8xHGTHtSv7EvzVYqzPanahideb3bYXcK6Lcc5GGsQmlQDamLyyfOciSOe
-        TbmMDr5OON6UvMQlocuBlH/WYEtvAXQyuI/I94CZtio4ND081Vxzy25oBDXw4w9WOxMFyN
-        WqDkEcBe2pCTxLDusiWldznaWEcUKlKv2HTpgNC9A8RIksw6VUgqoXpDnSZ0Gff6Kaa2Ey
-        B0PIFcb1NEsnr3tpoAw3TLrkj1At1z7BjzJsnUMxBzItm0yDxkQVOueib+GRm/al40K0I2
-        04f7d5/5v5QM3PEJ5PM3O5Yd/Y1wkqLTcEp6H0NWPZJszV3vHcqHgE12WjMxVg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618701326;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YruGhFn9UsfND0XA1k4cwaAjILGWeCrz1gmEI3OkqaQ=;
-        b=/eHwQx7OjnXhl5tHDleAdOTGerpUyIeHgrIsSXQ0vgLDF4wD6FRxyn2SEvpKseDAqZYlBB
-        WAoSURAzPcHc7IBA==
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
-        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
-        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
-        ak@linux.intel.com, Chris Mason <clm@fb.com>
-Subject: Re: [PATCH v8 clocksource 2/5] clocksource: Retry clock read if long delays detected
-In-Reply-To: <20210417225409.GA5006@paulmck-ThinkPad-P17-Gen-1>
-References: <20210414043435.GA2812539@paulmck-ThinkPad-P17-Gen-1> <20210414043602.2812981-2-paulmck@kernel.org> <87y2dhrte0.ffs@nanos.tec.linutronix.de> <20210417225409.GA5006@paulmck-ThinkPad-P17-Gen-1>
-Date:   Sun, 18 Apr 2021 01:15:26 +0200
-Message-ID: <87eef8sdtd.ffs@nanos.tec.linutronix.de>
+        id S229888AbhDQXT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 19:19:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229870AbhDQXTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 19:19:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3429461248
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 23:19:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618701567;
+        bh=wbpeHFstXghdORuec36q9wY79cgW73LxBcnaZ3Ao/bY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GFpv32NXVTGVK0XzUJMjF/SYKO6+t4+HJpPTPtcEJLW9ggxU7MJhsRPLkGGkNsS12
+         NGzgrzMcFCgMVYO9XuldqrLPw9iVZVwiSVHTMAoB6mDdI1z6GeH724nrD3vc1UxalD
+         +osBHCpePmTZJAGJOac+2vSK1rGt7r8I8oI/rUt0v2+wSyWCrTfEF2sf0GvkMDiqgg
+         p5wi/aCKsDjXJrKhUj4a6Ap8gztneY2+5C3Qa2ouQ8R+7cDLel/SZvxjvY9Sc3TfxH
+         d2YRouKRUr1PeVZXxy1zeBfbc0wjN4XxoZWPrKX0DtOfPhl4MCAXDuyZk4uuH/alxX
+         c7XLhFPOUW1jQ==
+Received: by mail-ej1-f46.google.com with SMTP id mh2so25811215ejb.8
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 16:19:27 -0700 (PDT)
+X-Gm-Message-State: AOAM530mJNm8rgNkTs6xB33FxOg+gpU+vpoF+eHRdjftdrSqJkmZVTY/
+        w4K+C2K0XlU+d4vCZo8rFjh5EJzhVqV6cx6Am0DBUw==
+X-Google-Smtp-Source: ABdhPJyCju/ENHhOLYbSm0xjxP6udpuBOmnjQOCOs6DiiJMHKJS+NWtRkWIPl+6dgPgbfHxVS0ro+PT58YwRMGfaiZQ=
+X-Received: by 2002:a17:906:7104:: with SMTP id x4mr14824074ejj.101.1618701565496;
+ Sat, 17 Apr 2021 16:19:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210416203844.3803177-1-samitolvanen@google.com>
+ <20210416203844.3803177-6-samitolvanen@google.com> <20210416211855.GD22348@zn.tnic>
+ <CABCJKud8TvzhcjHCpsrtCJ4B50ZUfaL48F42EhZ2zWKLteAc0Q@mail.gmail.com>
+ <20210416220251.GE22348@zn.tnic> <CALCETrVTtKqD6fonUmT_qr0HJ0X9TWzLGq-wpm+A7XKyjn3W5g@mail.gmail.com>
+ <202104161519.1D37B6D26@keescook> <CALCETrV6WYx7dt56aCuUYsrrFya==zYR+p-YZnaATptnaO7w2A@mail.gmail.com>
+ <202104161601.CFB2CCF84F@keescook>
+In-Reply-To: <202104161601.CFB2CCF84F@keescook>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Sat, 17 Apr 2021 16:19:14 -0700
+X-Gmail-Original-Message-ID: <CALCETrWUS52tzLNiWL5sAVVB5-ko1EW73-TEiO=eZ5jF_QyGPQ@mail.gmail.com>
+Message-ID: <CALCETrWUS52tzLNiWL5sAVVB5-ko1EW73-TEiO=eZ5jF_QyGPQ@mail.gmail.com>
+Subject: Re: [PATCH 05/15] x86: Implement function_nocfi
+To:     Kees Cook <keescook@chromium.org>,
+        David Laight <David.Laight@aculab.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17 2021 at 15:54, Paul E. McKenney wrote:
-> On Sat, Apr 17, 2021 at 02:24:23PM +0200, Thomas Gleixner wrote:
->> I so wish we could just delete all of this horror instead of making it
->> more horrible.
+On Fri, Apr 16, 2021 at 4:40 PM Kees Cook <keescook@chromium.org> wrote:
 >
-> Revisit deleting it in five years if there are no issues, whatever
-> "issue" might mean in this context?  Five years should give time for
-> this to propagate to the enterprise distros.
 
-That does not help with the fact that the broken hardware will still be
-around in 5 years from now. Which is what prevents me from deleting the
-whole watchdog muck ...
+> > 1. I defined a function in asm.  I want to tell clang that this
+> > function is defined in asm, and for clang to behave accordingly:
+> >
+> > .globl func
+> > func:
+> >  ; do stuff
+> >
+> > later:
+> >
+> > extern void func(void) [something here];
+> >
+> > There really should be a way to write this correctly such that it
+> > works regardless of the setting of
+> > -fsanitize-cfi-canonical-jump-tables.  This should not bypass CFI.  It
+> > should *work*, with CFI enforced.  If I read all the various things
+> > you linked correctly, this would be something like __cfi_noncanonical,
+> > and I reserve the right to think that this is a horrible name.
+>
+> Yes, I find the name confusing too. Without noncanonical, we'd need
+> C call wrappers for every single .S function that had its address
+> taken. This is very common in crypto, for example. That level of extra
+> code seemed like a total non-starter. Instead, we just get a few places
+> we have to mark.
 
-Thanks,
+The patch you linked doesn't have a noncanonical attribute, though.
+So I'm not sure how to reliably call into asm from C.
 
-        tglx
+(The more I think about it, the less I like "canonical".  What is
+"canonical"?  The symbol?  The function body?  Something else?)
+
+>
+> > 2. I need a raw function pointer, thank you very much.  I would like
+> > to be honest about it, and I don't really want to bypass CFI, but I
+> > need the actual bits in the actual symbol.
+> >
+> > translation unit 1 defines func.  Maybe it's C with
+> > -fsanitize-cfi-canonical-jump-tables, maybe it's C with
+> > -fno-sanitize-cfi-canonical-jump-tables or however it's spelled, and
+> > maybe it's plain asm.  Now translation unit 2 does:
+> >
+> > 2a. Uses a literal symbol, because it's going to modify function text
+> > or poke an MSR or whatever:
+> >
+> > wrmsrl(MSR_WHATEVER, func);
+> >
+> > clang needs to give us *some* way to have a correct declaration of
+> > func such that we can, without resorting to inline asm kludges, get
+> > the actual bit pattern of the actual symbol.
+>
+> We don't want version of a global symbol alias of func that points to
+> the function body, though; it's only very specific cases where this
+> should be stripped (MSR, ftrace, etc).
+>
+> So, if there were some Clang-specific syntax for this, it would still be
+> used on a case-by-case basis. It would still be something like:
+>
+> wrmsrl(MSR_WAT, __builtin_gimme_body_p(func));
+>
+
+> Okay, you're saying you want __builtin_gimme_body_p() to be a constant
+> expression for the compiler, not inline asm?
+
+Yes.
+
+I admit that, in the trivial case where the asm code is *not* a
+C-ABI-compliant function, giving a type that doesn't fool the compiler
+into thinking that it might be is probably the best fix.  Maybe we
+should standardize something, e.g.:
+
+struct raw_symbol;  /* not defined anywhere */
+#define DECLARE_RAW_SYMBOL(x) struct raw_symbol x[]
+
+and then we write this:
+
+DECLARE_RAW_SYMBOL(entry_SYSCALL_64);
+
+wrmsrl(..., (unsigned long)entry_SYSCALL_64);
+
+It would be a bit nifty if we didn't need a forward declaration, but
+I'm not immediately seeing a way to do this without hacks that we'll
+probably regret;
+
+But this doesn't help the case in which the symbol is an actual
+C-callable function and we want to be able to call it, too.
