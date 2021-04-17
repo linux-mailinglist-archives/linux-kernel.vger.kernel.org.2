@@ -2,115 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE48D362FE9
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E9A362FED
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236303AbhDQMlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 08:41:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38617 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235901AbhDQMlK (ORCPT
+        id S236330AbhDQMld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 08:41:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235901AbhDQMlc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 08:41:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618663244;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TqrvZ1Dkru+/UoYpNG8zNQQVDXUCtyWvIhM6uMe/QYE=;
-        b=i2d2Tdbk/uZ3Dym2Qx5IoP4KgxN2FcbOBEaPtHkDlKx/LGeao5LKf+N2LkB51nihd72sW5
-        FT8BxwiHOlX6TNJaw6z2H+DZ3P+OokfIPArQ/KuA4zzeStiVfyK5q/QJnGqFpIDSXmmgsv
-        tp478FhmNsQeMhX3UacWyAnCod1yBP8=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-230-ht8L8zeWOj2Yx4Ur6-2EHQ-1; Sat, 17 Apr 2021 08:40:42 -0400
-X-MC-Unique: ht8L8zeWOj2Yx4Ur6-2EHQ-1
-Received: by mail-ed1-f72.google.com with SMTP id s4-20020a0564021644b0290384e9a246a7so4987597edx.7
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 05:40:42 -0700 (PDT)
+        Sat, 17 Apr 2021 08:41:32 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 684A1C061574;
+        Sat, 17 Apr 2021 05:41:06 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id n10so4210805plc.0;
+        Sat, 17 Apr 2021 05:41:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ibIdkXZgsWIeMzNWNtun5B8Bs1xvkosUdmWqeEywi3Y=;
+        b=Jh6AN/Ps8MRSXOQVpwtSUTNASkXmkaTOfgyvRxJw99sBFTV1Yx67D0Yh6uulRcOSnB
+         AqW7JRSwWV3rblNeyoGR80lz0NgxWIPKgKyGPxJEDnaRRtRzCpW9E0k1vEhZqBw1lMdN
+         wsWqvjoqwCf/rc66l5H+VDv3ojjGMTUmdUYFYdSRkItpmqnxMOaeOKaFBwibHVUfaGXl
+         LHMrH7m64x/BMAYPxwrTSXlqcII9nhPMUGYFgh4z7ipGdq/Drjf/x1FFjGYGEzJ2hkHU
+         tCfoMcaOFQBA9SzVKG8s7bTRam15//ZfB24ARVtPh+6lSwM1J8RvE8MXTOmhv8cvZcH6
+         mpHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TqrvZ1Dkru+/UoYpNG8zNQQVDXUCtyWvIhM6uMe/QYE=;
-        b=aPYVqmVNDzklu17uR9iQqAG9qNjQOBqcOjpqHQsy/EIvIvR4Ny1oMeFuyJT9NGaK+k
-         0/9mvTXDu5xTplxGhwzNOA8JpAx/QaV2yi+nnTvVa+44j9nUGa6qVjh9OqcTH9BEEiMh
-         EAT2dbXGSOwFcUFSG2MUPhpugGVeML0hLqeVpBMwqSWErNL3F94+4BGEL1aWsrBuXUJK
-         n8aKJ0cHG8FDVBBv3UHS3igrDidNmE9wSwv+OvL5Un5NwIKL4PWBSQgxoKfV2BTTm8m6
-         8XyECn/g0Ot8AcpfmVwHoXBQFwyb/ME98RRIUXFiOEtmilVImr5xqgpeYTCF0IueLHwz
-         DWSQ==
-X-Gm-Message-State: AOAM532+U6LSJPVe+v1Hj7ETkYk8LY38vz3kMRDAdZNFH9VogM4qoeOp
-        MPsO8u4x5pLLVtsMrI2MffqGo5LTdLIulnwQiUYVVKcpcJ0/ZoFCONGUKHk6q78vpaBB10BHko7
-        yDV3HKZdSPvO+zYJQU/Dft1df
-X-Received: by 2002:a05:6402:274d:: with SMTP id z13mr15616282edd.344.1618663241198;
-        Sat, 17 Apr 2021 05:40:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzzuVNotS7UuM5iC6y6t+d4QVfhpv2hpnGhQ/F7RgY/qBafN2qn+UanZL80GrJJH3CQjgbNfA==
-X-Received: by 2002:a05:6402:274d:: with SMTP id z13mr15616277edd.344.1618663241058;
-        Sat, 17 Apr 2021 05:40:41 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id p4sm7982027edr.43.2021.04.17.05.40.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Apr 2021 05:40:40 -0700 (PDT)
-Subject: Re: [PATCH v2 5/8] crypto: ccp: Use the stack for small SEV command
- buffers
-To:     Sean Christopherson <seanjc@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        John Allen <john.allen@amd.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-References: <20210406224952.4177376-1-seanjc@google.com>
- <20210406224952.4177376-6-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <587677cf-2db1-1bed-18fc-dbbc1c1dffed@redhat.com>
-Date:   Sat, 17 Apr 2021 14:40:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ibIdkXZgsWIeMzNWNtun5B8Bs1xvkosUdmWqeEywi3Y=;
+        b=TqxxJEEQc9kl4fdvF+p+iTrEVC9LVxDMyz1gvYrnkMn5BBd5obXZAnejsQ9+bkM41q
+         y8Eny6E4L4EQae5w38Hzl+0wXdhcx8gQXP6+Pqgo1qnvLzmqO+Cfti4zuiilJYi1VF7z
+         nHXQCGGo54533+wHZw5s7XBqeiNHPoJuJD/krBl4FRX8cy2urPKKdT3N4IlyWM9RUL1P
+         hkEpsSxBL9v2r+HXcl52Cq0AjQmjewpUPTeUuzI17H41S/+wdCmLAaqPWLyRIGiS7XxT
+         /SkKk1/zdvfi2QmNW1PLJInciYuEDF0whDofBC/GiZNtF3Tntf9scq8bFAxAaj0V4dB/
+         mDBg==
+X-Gm-Message-State: AOAM532l2kKQV6TfE6tA7R7bXpmP/XqxapcolUtQ0cXmLuWN3dRYhvzp
+        Qgbq5w60M5d6Wp2n/asP3SLAQa6v90RdhKRMOD77kVtacz8=
+X-Google-Smtp-Source: ABdhPJzVnbNe19wUJ3SlX6vHojkbozR8JThr+Wz2rVyzSVVd2IiFXA5VVfhSYO7XZ29L8GXpT9Pr2clj6VA8ZThOJsg=
+X-Received: by 2002:a17:90b:1184:: with SMTP id gk4mr9228799pjb.129.1618663266011;
+ Sat, 17 Apr 2021 05:41:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210406224952.4177376-6-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210416174902.9036-1-joe.g.sandom@gmail.com> <20210416174902.9036-2-joe.g.sandom@gmail.com>
+In-Reply-To: <20210416174902.9036-2-joe.g.sandom@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 17 Apr 2021 15:40:49 +0300
+Message-ID: <CAHp75VdNmuv_+1FvnENsp4yK8_v_pK+2Tp3=jLWM2BiFmyPWEQ@mail.gmail.com>
+Subject: Re: [PATCH v8 2/2] Added AMS tsl2591 device tree binding
+To:     Joe Sandom <joe.g.sandom@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/04/21 00:49, Sean Christopherson wrote:
-> For commands with small input/output buffers, use the local stack to
-> "allocate" the structures used to communicate with the PSP.   Now that
-> __sev_do_cmd_locked() gracefully handles vmalloc'd buffers, there's no
-> reason to avoid using the stack, e.g. CONFIG_VMAP_STACK=y will just work.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+On Fri, Apr 16, 2021 at 8:49 PM Joe Sandom <joe.g.sandom@gmail.com> wrote:
+>
+> Device tree binding for AMS/TAOS tsl2591 ambient light sensor.
+>
+> This driver supports configuration via device tree and sysfs.
+> Supported channels for raw infrared light intensity,
+> raw combined light intensity and illuminance in lux.
+> The driver additionally supports iio events on lower and
+> upper thresholds.
+>
+> This is a very-high sensitivity light-to-digital converter that
+> transforms light intensity into a digital signal.
 
-Squashing this in (inspired by Christophe's review, though not quite
-matching his suggestion).
-
-diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-index 0f5644a3b138..246b281b6376 100644
---- a/drivers/crypto/ccp/sev-dev.c
-+++ b/drivers/crypto/ccp/sev-dev.c
-@@ -408,12 +408,11 @@ static int sev_ioctl_do_pek_csr(struct sev_issue_cmd *argp, bool writable)
-  	if (copy_from_user(&input, (void __user *)argp->data, sizeof(input)))
-  		return -EFAULT;
-  
-+	memset(&data, 0, sizeof(data));
-+
-  	/* userspace wants to query CSR length */
--	if (!input.address || !input.length) {
--		data.address = 0;
--		data.len = 0;
-+	if (!input.address || !input.length)
-  		goto cmd;
--	}
-  
-  	/* allocate a physically contiguous buffer to store the CSR blob */
-  	input_address = (void __user *)input.address;
+Subject should be something like dt-bindings: iio: ...
 
 
+-- 
+With Best Regards,
+Andy Shevchenko
