@@ -2,176 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4AC363031
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8E8363030
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236344AbhDQNK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 09:10:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58202 "EHLO
+        id S236269AbhDQNKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 09:10:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236305AbhDQNI5 (ORCPT
+        with ESMTP id S236312AbhDQNI7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 09:08:57 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFD3C06175F
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 06:08:29 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id f6-20020a17090a6546b029015088cf4a1eso218385pjs.2
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 06:08:29 -0700 (PDT)
+        Sat, 17 Apr 2021 09:08:59 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C80AC061760;
+        Sat, 17 Apr 2021 06:08:32 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id d2so25367175ilm.10;
+        Sat, 17 Apr 2021 06:08:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Ycx1hdJpKp75Jqh1zODIx7B8QWF+7Q+i8IS+TiHaRno=;
-        b=gU9m+YXrGMu9goxT7Cn1aTspyvZfC9PsROZJ53n9eByTMU43+WMHzchlCIa75FACI9
-         Xl4MEdj1JqzCHq+e6tW7gZ+gzdWYOkTFRx6c5oisSWrQDsufkNHPfOoeyo/TVCnQnXiU
-         v96ISYixeTGBgIF/2nJSY7IKG38oBFD3pKGpDyvHwilo5/rU7bYRI6vJOBHJwjAk8W3n
-         jEWc9OeLwSOJmjiKn667JCq3Ere0TA26p9OQZye2Xztd/HuYgmNILGukxr3i9+7q5xsl
-         9Va/4YgpvYNLFF/szz5LlbnjgzOTf5PV0N3cZlZJvhTcTgQy59nESk1lJe7rpTKEMr5W
-         YKEQ==
+        bh=ulpGsJT6Bh0rpZeIediYCiOUyp80TRAFcGdkV8FE+eU=;
+        b=iul605DudWrQIJEbm4Ba4B7WANizA4nPg0u0UlChQIQdrnPvfgy4ojszsuj3RiY5gk
+         FmnvSVbAoqD9SPHXt3ZfBkd8sHJJoBk3Di1An+J/Xf9nEBSir5Ej5mkt5XwVB/2Q+9TM
+         qaS33q+vNH9YQITVH2gkRVwErtgwdzBBOmbfUBFfyz4OwNUfeiJe7HB39UstffL1aO6j
+         ofvlmzh798Lf8rGAaT6I+PHaHNnqwJXyg//pZvl256Mbc8GIm+pqEDekwQRGFCJIfzMf
+         R9vdq2EPgEebMGy3BkrWJni+B544XLVWEPy8QhxFK9bXvrF0is/qdpeApS5P4sR/6vCD
+         mqoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Ycx1hdJpKp75Jqh1zODIx7B8QWF+7Q+i8IS+TiHaRno=;
-        b=Skx1aVJwqITWAVRgkSwsa8Bepo+iCQ896JfpPRmyFWQa9jSItq6JxkFjE80yuN2iHF
-         Z917tO5evENPJjtP5XPmb4nbs37rvo8hON1+YDNDM0spX9Nc0jtHSC8rLbrPIRIvONAe
-         pGpKB0XtmsRxToe3NQdj1e/xgRWj+Dziz0KLeiBm4EMLBXWKgqD9y3HkcNYTd2Hi5QlX
-         EE40G7tHjEqLtGCrLenbUVXrlVfr7G1mZgRmrI3inZnrJXrHfFjgyJ/ZV6gMjZafKH7J
-         +SjfZ8aRaNY2X7/HBx4nom1d6UdGZa43X2Wg992v3xzxj74k/O6r5rWhTe/fy4L2Qbef
-         NzDg==
-X-Gm-Message-State: AOAM533ZMkIXhMOBd/YINEkWDSfHGyzB+YopLu9VRjTAJFPyT9qJzLBc
-        jpQ8SpuzhTGbA+o/65ZICe+16Pb/mguJigt9cXYGBlBuhMRFog==
-X-Google-Smtp-Source: ABdhPJwzbhZfJuUQqx9lyTf7c3oWGtxEow4Szero3dyusNLccQFzd4Kkx/KIrD6BXzqq2jQP6WQqJb4QiRWm6Y8NSSw=
-X-Received: by 2002:a17:902:d482:b029:ec:9091:d099 with SMTP id
- c2-20020a170902d482b02900ec9091d099mr1847117plg.34.1618664908762; Sat, 17 Apr
- 2021 06:08:28 -0700 (PDT)
+        bh=ulpGsJT6Bh0rpZeIediYCiOUyp80TRAFcGdkV8FE+eU=;
+        b=RfUoYYzIscrwXnjKQl5IJVKEbhrwl711XBZUJbYKaFPDY8aObimZxTyQxxM3lmwQNR
+         cpDtEJU6bJOxM+s21s4k4+CAWo1mCpMu8bVrsT9shW5tZY0cJOkhpz0LQw5JK6VbH8r1
+         9m80OlgJYcQ7Clc7XFvOjpsIpg6k8LG4LGWAaEFHDrMdT4pr4VvjkU9aftGHiBOaT3uF
+         h9o8ouS/dIFZ+VaSIHyc8Omhp7JUu8NGnrqE1XrjtvRQwvLCLWYBxT6jPpemhNGiuTwL
+         sSg0p+KWrqmuFzieLaxPTaKTnMi8V2KdPHX484tpkCUiEfR8f6nw81+B+w5mLy5cECbG
+         7oYw==
+X-Gm-Message-State: AOAM532HyfIsE8BWxcxxD2wU1WzRsHyPgURh+X2WvQ/6DtCAsY2iIatv
+        tZ3mJRPRPjlq88BdYvgKWb2dmmQj3yvrrdd/Jtc=
+X-Google-Smtp-Source: ABdhPJzBCzAGi+Bz9p6VrUcood7f8uNgoXYxI8+ywBoimK1v/w3NieaJuwI5HbFjkAXeOjiqYsjWZHYsDYxHcMzBI5c=
+X-Received: by 2002:a05:6e02:e0a:: with SMTP id a10mr10537215ilk.271.1618664911976;
+ Sat, 17 Apr 2021 06:08:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210417104032.5521-1-peter.enderborg@sony.com>
-In-Reply-To: <20210417104032.5521-1-peter.enderborg@sony.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sat, 17 Apr 2021 21:07:52 +0800
-Message-ID: <CAMZfGtWZwXemox5peP738v2awsHxABcpYeqccPunLCZzRXynBQ@mail.gmail.com>
-Subject: Re: [External] [PATCH v4] dma-buf: Add DmaBufTotal counter in meminfo
-To:     Peter Enderborg <peter.enderborg@sony.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>, NeilBrown <neilb@suse.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mike Rapoport <rppt@kernel.org>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        Matthew Wilcox <willy@infradead.org>
+References: <1618567841-18546-1-git-send-email-dillon.minfei@gmail.com> <YHma7H3RoLyeH650@hovoldconsulting.com>
+In-Reply-To: <YHma7H3RoLyeH650@hovoldconsulting.com>
+From:   dillon min <dillon.minfei@gmail.com>
+Date:   Sat, 17 Apr 2021 21:07:55 +0800
+Message-ID: <CAL9mu0Kxny5JOGDk67ByMCVAJFOCF44rEOjbt68VxHz_2gZHrg@mail.gmail.com>
+Subject: Re: [PATCH v3] serial: stm32: optimize spin lock usage
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+        kernel test robot <lkp@intel.com>,
+        Gerald Baeza <gerald.baeza@foss.st.com>,
+        Erwan LE-RAY - foss <erwan.leray@foss.st.com>,
+        linux-serial@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 6:41 PM Peter Enderborg
-<peter.enderborg@sony.com> wrote:
->
-> This adds a total used dma-buf memory. Details
-> can be found in debugfs, however it is not for everyone
-> and not always available. dma-buf are indirect allocated by
-> userspace. So with this value we can monitor and detect
-> userspace applications that have problems.
->
-> Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
-> ---
->  drivers/dma-buf/dma-buf.c | 13 +++++++++++++
->  fs/proc/meminfo.c         |  5 ++++-
->  include/linux/dma-buf.h   |  1 +
->  3 files changed, 18 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-> index f264b70c383e..197e5c45dd26 100644
-> --- a/drivers/dma-buf/dma-buf.c
-> +++ b/drivers/dma-buf/dma-buf.c
-> @@ -37,6 +37,7 @@ struct dma_buf_list {
->  };
->
->  static struct dma_buf_list db_list;
-> +static atomic_long_t dma_buf_global_allocated;
->
->  static char *dmabuffs_dname(struct dentry *dentry, char *buffer, int buflen)
->  {
-> @@ -79,6 +80,7 @@ static void dma_buf_release(struct dentry *dentry)
->         if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
->                 dma_resv_fini(dmabuf->resv);
->
-> +       atomic_long_sub(dmabuf->size, &dma_buf_global_allocated);
->         module_put(dmabuf->owner);
->         kfree(dmabuf->name);
->         kfree(dmabuf);
-> @@ -586,6 +588,7 @@ struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info)
->         mutex_lock(&db_list.lock);
->         list_add(&dmabuf->list_node, &db_list.head);
->         mutex_unlock(&db_list.lock);
-> +       atomic_long_add(dmabuf->size, &dma_buf_global_allocated);
->
->         return dmabuf;
->
-> @@ -1346,6 +1349,16 @@ void dma_buf_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map)
->  }
->  EXPORT_SYMBOL_GPL(dma_buf_vunmap);
->
-> +/**
-> + * dma_buf_allocated_pages - Return the used nr of pages
-> + * allocated for dma-buf
-> + */
-> +long dma_buf_allocated_pages(void)
-> +{
-> +       return atomic_long_read(&dma_buf_global_allocated) >> PAGE_SHIFT;
-> +}
-> +EXPORT_SYMBOL_GPL(dma_buf_allocated_pages);
+Hi Johan,
 
-dma_buf_allocated_pages is only called from fs/proc/meminfo.c.
-I am confused why it should be exported. If it won't be called
-from the driver module, we should not export it.
+On Fri, Apr 16, 2021 at 10:10 PM Johan Hovold <johan@kernel.org> wrote:
+>
+> On Fri, Apr 16, 2021 at 06:10:41PM +0800, dillon.minfei@gmail.com wrote:
+> > From: dillon min <dillon.minfei@gmail.com>
+> >
+> > This patch aims to fix two potential bug:
+> > - no lock to protect uart register in this case
+> >
+> >   stm32_usart_threaded_interrupt()
+> >      spin_lock(&port->lock);
+> >      ...
+> >      stm32_usart_receive_chars()
+> >        uart_handle_sysrq_char();
+> >        sysrq_function();
+> >        printk();
+> >          stm32_usart_console_write();
+> >            locked = 0; //since port->sysrq is not zero,
+> >                          no lock to protect forward register
+> >                          access.
+> >
+> > - if add spin_trylock_irqsave() to protect uart register for sysrq = 1 case,
+> >   that might got recursive locking under UP.
+> >   So, use uart_prepare_sysrq_char(), uart_unlock_and_check_sysrq()
+> >   move sysrq handler position to irq/thread_d handler, just record
+> >   sysrq_ch in stm32_usart_receive_chars() by uart_prepare_sysrq_char()
+> >   delay the sysrq process to next interrupt handler.
+> >
+> >   new flow:
+> >
+> >   stm32_usart_threaded_interrupt()/stm32_usart_interrupt()
+> >   spin_lock_irqsave(&port->lock);
+> >   ...
+> >   uart_unlock_and_check_sysrq();
+> >      spin_unlock_irqrestore();
+> >      handle_sysrq(sysrq_ch);
+> >   stm32_usart_threaded_interrupt()//stm32_usart_interrupt() return
+> >
+> > Cc: Johan Hovold <johan@kernel.org>
+> > Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+> > Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+> > Cc: Gerald Baeza <gerald.baeza@foss.st.com>
+> > Cc: Erwan Le Ray <erwan.leray@foss.st.com>
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> > ---
+> > v3: add uart_prepare_sysrq_char(), uart_unlock_and_check_sysrq() to move
+> >     sysrq handler inside interrupt routinei to avoid recursive locking,
+> >     according to Johan Hovold suggestion, thanks.
+> >
+> >  drivers/tty/serial/stm32-usart.c | 24 +++++++++++-------------
+> >  1 file changed, 11 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+> > index b3675cf25a69..981f50ec784e 100644
+> > --- a/drivers/tty/serial/stm32-usart.c
+> > +++ b/drivers/tty/serial/stm32-usart.c
+> > @@ -271,7 +271,7 @@ static void stm32_usart_receive_chars(struct uart_port *port, bool threaded)
+> >                       }
+> >               }
+> >
+> > -             if (uart_handle_sysrq_char(port, c))
+> > +             if (uart_prepare_sysrq_char(port, c))
+> >                       continue;
+> >               uart_insert_char(port, sr, USART_SR_ORE, c, flag);
+> >       }
+> > @@ -457,9 +457,10 @@ static irqreturn_t stm32_usart_interrupt(int irq, void *ptr)
+> >       struct uart_port *port = ptr;
+> >       struct stm32_port *stm32_port = to_stm32_port(port);
+> >       const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
+> > +     unsigned long flags;
+> >       u32 sr;
+> >
+> > -     spin_lock(&port->lock);
+> > +     spin_lock_irqsave(&port->lock, flags);
+> >
+> >       sr = readl_relaxed(port->membase + ofs->isr);
+> >
+> > @@ -477,7 +478,7 @@ static irqreturn_t stm32_usart_interrupt(int irq, void *ptr)
+> >       if ((sr & USART_SR_TXE) && !(stm32_port->tx_ch))
+> >               stm32_usart_transmit_chars(port);
+> >
+> > -     spin_unlock(&port->lock);
+> > +     uart_unlock_and_check_sysrq(port, flags);
+> >
+> >       if (stm32_port->rx_ch)
+> >               return IRQ_WAKE_THREAD;
+> > @@ -489,13 +490,14 @@ static irqreturn_t stm32_usart_threaded_interrupt(int irq, void *ptr)
+> >  {
+> >       struct uart_port *port = ptr;
+> >       struct stm32_port *stm32_port = to_stm32_port(port);
+> > +     unsigned long flags;
+> >
+> > -     spin_lock(&port->lock);
+> > +     spin_lock_irqsave(&port->lock, flags);
+>
+> This essentially turns the threaded handler into a non-threaded one,
+> which is a bad idea.
+This change is only to adapt for uart_unlock_and_check_sysrq() need flags.
+Found your patch has removed this parameter from
+uart_unlock_and_check_sysrq(), so this changes should be removed.
 
-Thanks.
-
-> +
->  #ifdef CONFIG_DEBUG_FS
->  static int dma_buf_debug_show(struct seq_file *s, void *unused)
->  {
-> diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-> index 6fa761c9cc78..ccc7c40c8db7 100644
-> --- a/fs/proc/meminfo.c
-> +++ b/fs/proc/meminfo.c
-> @@ -16,6 +16,7 @@
->  #ifdef CONFIG_CMA
->  #include <linux/cma.h>
->  #endif
-> +#include <linux/dma-buf.h>
->  #include <asm/page.h>
->  #include "internal.h"
 >
-> @@ -145,7 +146,9 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
->         show_val_kb(m, "CmaFree:        ",
->                     global_zone_page_state(NR_FREE_CMA_PAGES));
->  #endif
-> -
-> +#ifdef CONFIG_DMA_SHARED_BUFFER
-> +       show_val_kb(m, "DmaBufTotal:    ", dma_buf_allocated_pages());
-> +#endif
->         hugetlb_report_meminfo(m);
+> >       if (stm32_port->rx_ch)
+> >               stm32_usart_receive_chars(port, true);
+> >
+> > -     spin_unlock(&port->lock);
+> > +     uart_unlock_and_check_sysrq(port, flags);
+> >
+> >       return IRQ_HANDLED;
+> >  }
 >
->         arch_report_meminfo(m);
-> diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-> index efdc56b9d95f..5b05816bd2cd 100644
-> --- a/include/linux/dma-buf.h
-> +++ b/include/linux/dma-buf.h
-> @@ -507,4 +507,5 @@ int dma_buf_mmap(struct dma_buf *, struct vm_area_struct *,
->                  unsigned long);
->  int dma_buf_vmap(struct dma_buf *dmabuf, struct dma_buf_map *map);
->  void dma_buf_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map);
-> +long dma_buf_allocated_pages(void);
->  #endif /* __DMA_BUF_H__ */
-> --
-> 2.17.1
+> You also didn't base this patch on tty-next, which has a number of
+> updates to this driver. Before noting that myself, I had fixed a couple
+> of deadlocks in this driver which turned out to have been incidentally
+> fixed by an unrelated path in -next.
+Yes, my submission is based on linux-5.12. based on the component's
+next branch is a good idea , to avoid conflict. thanks.
 >
+> I'll be posting a series that should fix up all of this.
+Thanks
+>
+> Johan
