@@ -2,68 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14650362E44
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 09:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89055362E47
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 09:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbhDQHRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 03:17:20 -0400
-Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:31684 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229972AbhDQHRS (ORCPT
+        id S230484AbhDQHTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 03:19:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229888AbhDQHTN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 03:17:18 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d34 with ME
-        id tjGm2400E21Fzsu03jGmVo; Sat, 17 Apr 2021 09:16:50 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 17 Apr 2021 09:16:50 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] net/mlx5: Use kasprintf instead of hand-writing it
-Date:   Sat, 17 Apr 2021 09:16:44 +0200
-Message-Id: <46235ec010551d2788483ce636686a61345e40ba.1618643703.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
+        Sat, 17 Apr 2021 03:19:13 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F4CC061574;
+        Sat, 17 Apr 2021 00:18:46 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id p6so22013282wrn.9;
+        Sat, 17 Apr 2021 00:18:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lzDESpnJwy8q2no0zZGoouoLNqh3tnmLEUrJ5GDonRs=;
+        b=rzn2XdwumhMz3IMq2hTIY1ZtnZGekwQClLm2fRy8IPnOaGOBMFLf4aYOib1aCfHeqm
+         1pAj2Gfd3TtRiRPgcWseBXWQVukxHfViduJLDUY2KjqKPNO/kTcjm589PqNe36Q7J3Wx
+         wSdcPBGkmAPLMio+IZIFMTlN+eMTwScTkIboPUhj4Z7t07X1Hzk2UVN9Rxyjre7SW4lS
+         aCsKzSysJz25T1yjzeAhtWKSHeLXUPb3ZSpi8RmzXKnbs56wmKjcw4LwoRe2GuQveYGH
+         gte54cDVCR1OMW80mGjUnXdun3ldjiWz/whg8sNaNsGA60mp5GWKKLbfpUqmsd3DxaDT
+         J0Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lzDESpnJwy8q2no0zZGoouoLNqh3tnmLEUrJ5GDonRs=;
+        b=WABdsBapF1rDoWqVnFxksnKs2ikYwHqD6coDyF+2fVxJRl8b75/N6l3jVldlfSOoNV
+         085R+A9r2ROQBIB2tfFmkzL28uqCO5t61GmFGsjXdjScGYqL4GEg4FlHXyRDELsTeB3h
+         yn/2zYjmuvcKP4Wa/g3IoRHGPuc9P2jWCrpjeYVGQwom0t0Zx5UkRdf2VvnVLmFeYYP5
+         GtKuRW0X1ROdYzdAP+WVJ+oSY7PqDU+LpyDW/tIjqRNi+Rnv9zTx6J5MLTgqXeu2RuD5
+         JscliVz4BDUazR/0pHQ/KR8h6HvC6GfvtCkVB7lbMlukuIB7Fb2gQ5g78ZM7p3+j9vcP
+         47Rw==
+X-Gm-Message-State: AOAM533Cwg/64lVMU2pySx+AHgAG+DwluId5dPAcjxgVBQsq+gSyY7C0
+        ZMtq55tfbdzFdeHih+HlbI4=
+X-Google-Smtp-Source: ABdhPJz0+l+y4ld0p2Udvtz/O3KNkgh30U2n0VS6z7cZMwrLx+P+RCwDkaRBydqu+x37EBy5qZLJgw==
+X-Received: by 2002:adf:e108:: with SMTP id t8mr2836394wrz.371.1618643924864;
+        Sat, 17 Apr 2021 00:18:44 -0700 (PDT)
+Received: from agape.jhs ([5.171.80.7])
+        by smtp.gmail.com with ESMTPSA id a2sm6954216wmn.48.2021.04.17.00.18.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Apr 2021 00:18:44 -0700 (PDT)
+Date:   Sat, 17 Apr 2021 09:18:41 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v2 1/4] fbtft: Replace custom ->reset() with generic one
+Message-ID: <20210417071838.GA1401@agape.jhs>
+References: <20210416142044.17766-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416142044.17766-1-andriy.shevchenko@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'kasprintf()' can replace a kmalloc/strcpy/strcat sequence.
-It is less verbose and avoid the use of a magic number (64).
+Hi,
 
-Anyway, the underlying 'alloc_workqueue()' would only keep the 24 first
-chars (i.e. sizeof(struct workqueue_struct->name) = WQ_NAME_LEN).
+'staging:' in mail subject is missing...
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/net/ethernet/mellanox/mlx5/core/health.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+On Fri, Apr 16, 2021 at 05:20:41PM +0300, Andy Shevchenko wrote:
+> The custom ->reset() repeats the generic one, replace it.
+> 
+> Note, in newer kernels the context of the function is a sleeping one,
+> it's fine to switch over to the sleeping functions. Keeping the reset
+> line asserted longer than 20 microseconds is also okay, it's an idling
+> state of the hardware.
+> 
+> Fixes: b2ebd4be6fa1 ("staging: fbtft: add fb_agm1264k-fl driver")
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+> v2: new patch split from the bigger fix (Greg)
+>  drivers/staging/fbtft/fb_agm1264k-fl.c | 14 --------------
+>  1 file changed, 14 deletions(-)
+> 
+> diff --git a/drivers/staging/fbtft/fb_agm1264k-fl.c b/drivers/staging/fbtft/fb_agm1264k-fl.c
+> index eeeeec97ad27..4dfc22d05a40 100644
+> --- a/drivers/staging/fbtft/fb_agm1264k-fl.c
+> +++ b/drivers/staging/fbtft/fb_agm1264k-fl.c
+> @@ -77,19 +77,6 @@ static int init_display(struct fbtft_par *par)
+>  	return 0;
+>  }
+>  
+> -static void reset(struct fbtft_par *par)
+> -{
+> -	if (!par->gpio.reset)
+> -		return;
+> -
+> -	dev_dbg(par->info->device, "%s()\n", __func__);
+> -
+> -	gpiod_set_value(par->gpio.reset, 0);
+> -	udelay(20);
+> -	gpiod_set_value(par->gpio.reset, 1);
+> -	mdelay(120);
+> -}
+> -
+>  /* Check if all necessary GPIOS defined */
+>  static int verify_gpios(struct fbtft_par *par)
+>  {
+> @@ -439,7 +426,6 @@ static struct fbtft_display display = {
+>  		.set_addr_win = set_addr_win,
+>  		.verify_gpios = verify_gpios,
+>  		.request_gpios_match = request_gpios_match,
+> -		.reset = reset,
+>  		.write = write,
+>  		.write_register = write_reg8_bus8,
+>  		.write_vmem = write_vmem,
+> -- 
+> 2.30.2
+> 
+> 
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-index 9ff163c5bcde..a5383e701b4b 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-@@ -802,12 +802,10 @@ int mlx5_health_init(struct mlx5_core_dev *dev)
- 	mlx5_fw_reporters_create(dev);
- 
- 	health = &dev->priv.health;
--	name = kmalloc(64, GFP_KERNEL);
-+	name = kasprintf(GFP_KERNEL, "mlx5_health%s", dev_name(dev->device));
- 	if (!name)
- 		goto out_err;
- 
--	strcpy(name, "mlx5_health");
--	strcat(name, dev_name(dev->device));
- 	health->wq = create_singlethread_workqueue(name);
- 	kfree(name);
- 	if (!health->wq)
--- 
-2.27.0
+thank you,
 
+fabio
