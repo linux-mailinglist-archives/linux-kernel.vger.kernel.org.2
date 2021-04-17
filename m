@@ -2,104 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F33036305D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF80D363060
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:31:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236313AbhDQN3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 09:29:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34606 "EHLO
+        id S236333AbhDQNbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 09:31:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234904AbhDQN3t (ORCPT
+        with ESMTP id S231772AbhDQNb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 09:29:49 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA3FC061756
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 06:29:21 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id y124-20020a1c32820000b029010c93864955so17950970wmy.5
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 06:29:21 -0700 (PDT)
+        Sat, 17 Apr 2021 09:31:28 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602DBC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 06:31:02 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id s5so22931918qkj.5
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 06:31:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ISBdoGIET+ZYznAio2FskDixMUDkKh8PC4/Pd4Loq2k=;
-        b=d/Pja+DmXSa+DmZhRpIEt3/37I45Rs75tBubp/JfNW0JByklVj/oO1Mnpl+LGw4Miw
-         s8mlIsXzOhdvN08Cwvzaknh9HE7sNEJwbpiFeunxRCkJ/1FRnctFHC8f+rWH2oM3eYFK
-         MTXxU5dZXVeXwZYbTn0xfbnSLi5NFB3UxiiRg0juj/B+SUlMgWl0ZwombT8SJriD+iQc
-         RDzmYTa2a0GkMdzoPk5pWWcCPGK7RMzCc1JYoUPe05/+cVNl+EpRizRV7UZfHMH+ylgW
-         TyOQHeJrz/vlVZ93tboITgeFuJCSXE/A40E0JF7U+x1cZJJW5kc0u6Y73ZruuCx1HBmO
-         OihQ==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lLmvbjMjGtSVWdhlqL3SvgYtLpaWEFGhNafW6/W3ZVc=;
+        b=H7gInR0NHdp5tbim9KFaYP+8HZin0ceZRD/CA+m0WfjBbpAbZTLS/r/SqE0iJXqX/V
+         atpAefVsHqBc9FbG8Sk+gO1uSgX+6wuGH+5NH3EejZpZhClT+szYBlQM/Krr2ytV1iha
+         ps/jJSerEWGf6+/bWiGjy65y9y9tejvmt8fxK+NnLSAGI+HL2BnQdtsmSAI5KEqM02V3
+         PGJBs6t/wODHYu5FNHSGDsHXNrbfddqiL8VmYb4+N2a1uAg4xXholfNzFTy0Jd1z5BAg
+         I5zAfvd6T0x1vDVrnbS4bPQ9CX78fDHEJakK5k8CjXEa+ftnR0rkw+N8j3kdM7O6UYEX
+         DrEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ISBdoGIET+ZYznAio2FskDixMUDkKh8PC4/Pd4Loq2k=;
-        b=houO8V2Zh6FMXLkU0LhMFE9lotOu+cKP+7iGUpTWvhIm35U7EsUEFiBnSLVPCzrGbu
-         x+CBEX8R0+PwQ8EiY8ipXKQWeQuHTjFKK9w66HUui2HO1qkJ0Yia+zCx0JcsZ1Tphbcy
-         OINhEnBOOyYBFcRDDlYzOec8pogTPUVuZM5hSKdLqNTjBLMraiijvSm/m0kVAKbEd9Ng
-         My2lVOWc+zELeZ+ceUrJVEtaerud0gcK7jeilJyqmIJQl+PInGeaS66I7Npb0bc6WVrZ
-         AuBPJy2M48gteSVngGAzI3oh2mSHah3U+x+COuVum0mY/xJpNryadMKu4uUW7+YiThta
-         z/nQ==
-X-Gm-Message-State: AOAM530EY1a40CKmaZ7/r4A5kYYdtpuanpvDKeazS2wQIoa3Neqz2W+k
-        rnTrSBMG7KIxd94iXWugkBYT
-X-Google-Smtp-Source: ABdhPJxHkMpcgFrhLR2HMnbWKLQatCZYeC3c/Fjg2tVXB+3E0vMDLf0rtIbABL9RYc1DU5ZHylo/cw==
-X-Received: by 2002:a05:600c:4fc8:: with SMTP id o8mr12727799wmq.87.1618666160177;
-        Sat, 17 Apr 2021 06:29:20 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:209:3c1c:8462:b77e:21a4])
-        by smtp.gmail.com with ESMTPSA id l8sm12570438wme.18.2021.04.17.06.29.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Apr 2021 06:29:19 -0700 (PDT)
-Date:   Sat, 17 Apr 2021 14:29:15 +0100
-From:   Wedson Almeida Filho <wedsonaf@google.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, ojeda@kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-Message-ID: <YHriqwf5XR0xWCi1@google.com>
-References: <20210414184604.23473-1-ojeda@kernel.org>
- <YHlz54rd1YQHsOA/@hirez.programming.kicks-ass.net>
- <YHmMJWmzz2vZ3qQH@google.com>
- <20210416150307.GJ2531743@casper.infradead.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lLmvbjMjGtSVWdhlqL3SvgYtLpaWEFGhNafW6/W3ZVc=;
+        b=XRYNcctaKxCoWTVf/OLlfSlCEu0z5jKz3LMRVWved1fkY9QQr+EJG1+oLFe+GSspMQ
+         sNwkFKbYZykzAtBPgiOwAjqoxQ8L5XBWb3usGaLpv2YVdvHvOW8OUjm+oSYYNTwZ6Kh8
+         I+6ihlKGcELFWK64X51uCaPg/gEV6/ltXMaOnQy8iEqVauNEAEH3i2LwiYYorVhbHANw
+         kxp8XVNs/dlF8g69ZtDlr5tyK4uzf42a+qSafrelah80QrnfcVA+0sLmSOiH2z0OgIPU
+         gXYdaSi/7Gml/pcHDLc/93fuluVHUQyNV1GtCqIGRGyYnWS01p3Xk2b1IxP8SJ+nTTzY
+         aFTw==
+X-Gm-Message-State: AOAM532A2+3Qy8D4m144LlLi2H7OzwQgZ64YLApVajzLcBFWDnnmSUPj
+        KKWAGkD31ziXz9FEhUL8cyZ1SgufIOGnVg==
+X-Google-Smtp-Source: ABdhPJyMDMOY4H673xU4aLshCe3ybBDll5pw/WeMc/kqTjva4oQUlA3H3J62DlXhQ9CHELCH4lLmiA==
+X-Received: by 2002:ae9:e70c:: with SMTP id m12mr4079865qka.390.1618666261160;
+        Sat, 17 Apr 2021 06:31:01 -0700 (PDT)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id k26sm6264019qkg.120.2021.04.17.06.31.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Apr 2021 06:31:00 -0700 (PDT)
+Subject: Re: [PATCH 6/7] crypto: qce: common: Add support for AEAD algorithms
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210225182716.1402449-1-thara.gopinath@linaro.org>
+ <20210225182716.1402449-7-thara.gopinath@linaro.org>
+ <20210405221848.GA904837@yoga>
+ <cab25283-1ad6-2107-8a5e-230a3a7358b5@linaro.org>
+ <20210413222014.GS1538589@yoga>
+ <4c4a9df6-7ad5-85ab-bfcd-2c123bd86ca0@linaro.org>
+ <20210413230930.GU1538589@yoga>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <beab39e4-560b-b897-fa0e-c95a5f04a018@linaro.org>
+Date:   Sat, 17 Apr 2021 09:31:00 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416150307.GJ2531743@casper.infradead.org>
+In-Reply-To: <20210413230930.GU1538589@yoga>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 04:03:07PM +0100, Matthew Wilcox wrote:
-> Well, we could do that in C too.
-> 
-> struct unlocked_inode {
-> 	spinlock_t i_lock;
-> };
-> 
-> struct locked_inode {
-> 	spinlock_t i_lock;
-> 	unsigned short i_bytes;
-> 	blkcnt_t i_blocks;
-> };
-> 
-> struct locked_inode *lock_inode(struct unlocked_inode *inode)
-> {
-> 	spin_lock(&inode->i_lock);
-> 	return (struct locked_inode *)inode;
-> }
 
-Indeed you can do this kind of thing in C, but as I said before (apologies if
-I'm too repetitive on this) Rust forces you to do it the right way, whereas the
-lack of enforcement in C leaves room for mistakes.
 
-If you do add extensions to C to add some of these restrictions (and I encourage
-you to pursue such extensions as we all benefit from better C), it is likely not
-sufficient to reach the level of compile-time guarantee that Rust offers because
-you need a whole slew of restrictions/enforcements.
+On 4/13/21 7:09 PM, Bjorn Andersson wrote:
+> On Tue 13 Apr 17:44 CDT 2021, Thara Gopinath wrote:
 
-I also note that academics have a formalisation of [a subset of] Rust that show
-the soundness of these guarantees and the requirements on unsafe to compose
-safely. So we're not talking about guesswork, there are formal machine-checked
-proofs published about this (see for example
-https://people.mpi-sws.org/~dreyer/papers/safe-sysprog-rust/paper.pdf).
+[..]
+
+> 
+> Yes, given that you just typecast things as you do it should just work
+> to move the typecast to the qce_cpu_to_be32p_array().
+> 
+> But as I said, this would indicate that what is cpu_to_be32() should
+> have been be32_to_cpu() (both performs the same swap, it's just a matter
+> of what type goes in and what type goes out).
+> 
+> Looking at the other uses of qce_cpu_to_be32p_array() I suspect that
+> it's the same situation there, so perhaps introduce a new function
+> qce_be32_to_cpu() in this patchset (that returns number of words
+> converted) and then look into the existing users after that?
+
+Hi!
+
+I have sent out the v2 with the new function. To me, it does look 
+cleaner. So thanks!
+
+> 
+> [..]
+>>>>>> +	if (IS_SHA_HMAC(rctx->flags)) {
+>>>>>> +		/* Write default authentication iv */
+>>>>>> +		if (IS_SHA1_HMAC(rctx->flags)) {
+>>>>>> +			auth_ivsize = SHA1_DIGEST_SIZE;
+>>>>>> +			memcpy(authiv, std_iv_sha1, auth_ivsize);
+>>>>>> +		} else if (IS_SHA256_HMAC(rctx->flags)) {
+>>>>>> +			auth_ivsize = SHA256_DIGEST_SIZE;
+>>>>>> +			memcpy(authiv, std_iv_sha256, auth_ivsize);
+>>>>>> +		}
+>>>>>> +		authiv_words = auth_ivsize / sizeof(u32);
+>>>>>> +		qce_write_array(qce, REG_AUTH_IV0, (u32 *)authiv, authiv_words);
+>>>>>
+>>>>> AUTH_IV0 is affected by the little endian configuration, does this imply
+>>>>> that IS_SHA_HMAC() and IS_CCM() are exclusive bits of rctx->flags? If so
+>>>>> I think it would be nice if you grouped the conditionals in a way that
+>>>>> made that obvious when reading the function.
+>>>>
+>>>> So yes IS_SHA_HMAC() and IS_CCM() are exclusive bits of rctx->flags.
+>>>> AUTH_IVn is 0 for ccm and has initial value for HMAC algorithms. I don't
+>>>> understand the confusion here.
+>>>>
+>>>
+>>> I'm just saying that writing is as below would have made it obvious to
+>>> me that IS_SHA_HMAC() and IS_CCM() are exclusive:
+>>
+>> So regardless of the mode, it is a good idea  to clear the IV  registers
+>> which happens above in
+>>
+>> 	qce_clear_array(qce, REG_AUTH_IV0, 16);
+>>
+>>
+>> This is important becasue the size of IV varies between HMAC(SHA1) and
+>> HMAC(SHA256) and we don't want any previous bits sticking around.
+>> For CCM after the above step we don't do anything with AUTH_IV where as for
+>> SHA_HMAC we have to go and program the registers. I can split it into
+>> if (IS_SHA_HMAC(flags)) {
+>> 	...
+>> } else {
+>> 	...
+>> }
+>>
+>> but both snippets will have the above line code clearing the IV register and
+>> the if part will have more stuff actually programming these registers.. Is
+>> that what you are looking for ?
+> 
+> I didn't find an answer quickly to the question if the two where
+> mutually exclusive and couldn't determine from the code flow either. But
+> my comment seems to stem from my misunderstanding that the little endian
+> bit was dependent on IS_CCM().
+> 
+> That said, if the logic really is "do this for IS_SHA_HMAC(), otherwise
+> do that", then if else makes sense.
+
+So, the logic is really. do "clearing of IV" in all cases. Do setting of 
+initial IV only for HMAC. I tried the if..else like you said. It did not 
+look correct to duplicate the code clearing the IV. So I have added 
+comments around this section hopefully making it clearer. Do take a look 
+and let me know. I can rework it further if you think so.
+
+> 
+> Regards,
+> Bjorn
+> 
+
+-- 
+Warm Regards
+Thara
