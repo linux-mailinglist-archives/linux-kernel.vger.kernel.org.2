@@ -2,227 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6738362EA2
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 10:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFDD362EAA
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 10:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235895AbhDQIuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 04:50:08 -0400
-Received: from mail-lj1-f171.google.com ([209.85.208.171]:46723 "EHLO
-        mail-lj1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235859AbhDQIuH (ORCPT
+        id S232896AbhDQIxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 04:53:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52046 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229631AbhDQIxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 04:50:07 -0400
-Received: by mail-lj1-f171.google.com with SMTP id u20so33592211lja.13;
-        Sat, 17 Apr 2021 01:49:39 -0700 (PDT)
+        Sat, 17 Apr 2021 04:53:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618649569;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nPsi63kn4XR+OnMi+pQNAtLM9r4YAOOOEg9vVdyVJPU=;
+        b=GXkgRjy8D3YnZ43XH1c9GY9lYN7BonrBi6H9HdwyY8rgpql65gryfYhixulq7wLlHgx0uH
+        sYky+ViRZjgDZXLcDFfHZ8CLEnt1Hnhuuh35RUAA6B4f7WNC8On3HAgfSk4RHWiUHxHdUk
+        jz9p8NAHy2dktyKPSeL11gMLH5m2LaA=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-138-mgT6tybPO42Fi_a6GCr2wA-1; Sat, 17 Apr 2021 04:52:47 -0400
+X-MC-Unique: mgT6tybPO42Fi_a6GCr2wA-1
+Received: by mail-ed1-f70.google.com with SMTP id z3-20020a05640240c3b029037fb0c2bd3bso8442121edb.23
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 01:52:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
-         :in-reply-to:references:mime-version:date:user-agent
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=9Q8i358kUoVCgVrcMHeBfy2VnHJ+AKT+L+dEpF7HrO0=;
-        b=LE+Do5dr5+IwHWkfDjY5TdL/bYDeuYaC2ie3WJiyaFhdIFod/WLgUcicr25mDxCaim
-         XixpjrtYhp3uU1yzELV/YFMIP6Qw/FooXWNGb3sXT3uRSl1pljKKOFkHRMtgDW46nXgd
-         qSniydgG3Vt4YGxe/sy6NT3mZ3o2dggiF2f17Z+3ds0lNNE2Nig4Q42KQ5ltiZ5YJe8c
-         hk30LPCFdxpPfs+9XylEGSztDJeYghVCXDBiwNdTFH/pisdeRc38m5jZxHoudeopya3P
-         /X1tO2zDSSlk225tEhc0wz9HN6HZNxwt1Z/RiHZApLBw5gBOhUmGicArPnSy0GSujRoN
-         roxw==
-X-Gm-Message-State: AOAM53046QNl4ugNX6fs0P6Iw8fHUZ5lqT0GhkHA8oKw7qaRxfYYONqX
-        BARzZpU1nMzYu7tseBcO5EQO1JCktIav1Q==
-X-Google-Smtp-Source: ABdhPJxwyxi+pbhWVb+mB84S0MDuc/MbX60vLFRp3xgZ5N8SXQ8hv5/O6s1Z66VXMYZ6Y4JMpcdJjA==
-X-Received: by 2002:a05:651c:612:: with SMTP id k18mr1478809lje.445.1618649378453;
-        Sat, 17 Apr 2021 01:49:38 -0700 (PDT)
-Received: from dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::6])
-        by smtp.gmail.com with ESMTPSA id l18sm1171756ljj.55.2021.04.17.01.49.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Apr 2021 01:49:37 -0700 (PDT)
-Message-ID: <1aac32e16906c4e7def072698d9d3b32d8e32ca5.camel@fi.rohmeurope.com>
-Subject: Re: [PATCH v7 2/9] reboot: thermal: Export hardware protection
- shutdown
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reply-To: matti.vaittinen@fi.rohmeurope.com
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Mark Brown <broonie@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "agross@kernel.org" <agross@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        linux-pm@vger.kernel.org
-In-Reply-To: <ce0918d9-bedb-e48f-5779-c0ef47c6909d@linaro.org>
-References: <cover.1618377272.git.matti.vaittinen@fi.rohmeurope.com>
-         <adf417797006c996605a03c8bacfb4961e8f0b42.1618377272.git.matti.vaittinen@fi.rohmeurope.com>
-         <ce0918d9-bedb-e48f-5779-c0ef47c6909d@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+        bh=nPsi63kn4XR+OnMi+pQNAtLM9r4YAOOOEg9vVdyVJPU=;
+        b=T+jOkUeGlZJP/1OYaNup8YPsJpzzN4iY7zO/ArEtPCbDXFdQyGPIJvXdLdRVGm8p0y
+         6eZNXfAsZN8COVf4bKhZAD1mZ5wW3pLKDbTan7MpL+1av6UMI9+XO30Q+v0Ba4y1Hqp4
+         IaOtO85eyohDfu1s4DBlKsTrtigyaDdut4dZzh3lUy/KtBCzpzyOh3z/vlzgTFOEuHFr
+         vJYIIqf0P3+xt1Bdr+2b64QxwJpH2tOQTHZL7/SXzemaul5TnmxokH4eQMmcKcj/yQQO
+         q0lRI9aVU/P87VKuWpUOOPx9JOfOR8JPjj4oWnyIPXTBkOr//Itzl9DxDxnQpc0ZtaUA
+         p6QQ==
+X-Gm-Message-State: AOAM531zf6tkggo9LDOJhf2fEttfijdkLjZD8BZWItDny7zDZ3NknOCc
+        8iZkoo7Km1rY692N0XXKJCcMQW3qjyMHL8VRkEDL6iryl3WqnI+uaziBdUjzlCXCARMts1RTXmy
+        HmePcTbj/LtCbKrmGOiJwg2CWCssO9Ag8B5BgTJiM13SntrCWmIS+fZTKtoiJT0e/GwbAzHTgKC
+        83
+X-Received: by 2002:a17:906:1ed1:: with SMTP id m17mr2323606ejj.208.1618649566116;
+        Sat, 17 Apr 2021 01:52:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxlgHMIE1JdPYYoCLXs6cnTNQi7ZuGmcb0nsvC9/7mpCwvtBg5JNaeyENIzvZjMkb/uWQerEA==
+X-Received: by 2002:a17:906:1ed1:: with SMTP id m17mr2323588ejj.208.1618649565852;
+        Sat, 17 Apr 2021 01:52:45 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id f10sm7562715edd.29.2021.04.17.01.52.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Apr 2021 01:52:45 -0700 (PDT)
+Subject: Re: [PATCH V2 5/9] platform/x86: intel_pmc_core: Get LPM requirements
+ for Tiger Lake
+To:     "David E. Box" <david.e.box@linux.intel.com>,
+        irenic.rajneesh@gmail.com, mgross@linux.intel.com,
+        gayatri.kammela@intel.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210417031252.3020837-1-david.e.box@linux.intel.com>
+ <20210417031252.3020837-6-david.e.box@linux.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <a2c2cca5-3984-6554-040a-3ffe74c0ca0c@redhat.com>
+Date:   Sat, 17 Apr 2021 10:52:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Date:   Sat, 17 Apr 2021 11:49:32 +0300
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+In-Reply-To: <20210417031252.3020837-6-david.e.box@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Hi David,
 
-Thank you for the review. Much appreciated!
+On 4/17/21 5:12 AM, David E. Box wrote:
+> From: Gayatri Kammela <gayatri.kammela@intel.com>
+> 
+> Platforms that support low power modes (LPM) such as Tiger Lake maintain
+> requirements for each sub-state that a readable in the PMC. However, unlike
+> LPM status registers, requirement registers are not memory mapped but are
+> available from an ACPI _DSM. Collect the requirements for Tiger Lake using
+> the _DSM method and store in a buffer.
+> 
+> Signed-off-by: Gayatri Kammela <gayatri.kammela@intel.com>
+> Co-developed-by: David E. Box <david.e.box@linux.intel.com>
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-On Sat, 2021-04-17 at 07:32 +0200, Daniel Lezcano wrote:
-> On 14/04/2021 07:52, Matti Vaittinen wrote:
-> > Thermal core contains a logic for safety shutdown. System is
-> > attempted to
-> > be powered off if temperature exceeds safety limits.
-> > 
-> > Currently this can be also utilized by regulator subsystem as a
-> > final
-> > protection measure if PMICs report dangerous over-voltage, over-
-> > current or
-> > over-temperature and if per regulator counter measures fail or do
-> > not
-> > exist.
-> > 
-> > Move this logic to kernel/reboot.c and export the functionality for
-> > other
-> > subsystems to use. Also replace the mutex with a spinlock to allow
-> > using
-> > the function from any context.
-> > 
-> > Also the EMIF bus code has implemented a safety shut-down. EMIF
-> > does not
-> > attempt orderly_poweroff at all. Thus the EMIF code is not
-> > converted to use
-> > this new function.
-> > 
-> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> > ---
-> > Changelog
-> >  v7:
-> >   - new patch
-> > 
-> > Please note - this patch has received only a minimal amount of
-> > testing.
-> > (The new API call was tested to shut-down my system at driver probe
-> > but
-> > no odd corner-cases have been tested).
-> > 
-> > Any testing for thermal shutdown is appreciated.
-> > ---
-> >  drivers/thermal/thermal_core.c | 63 ++-----------------------
-> >  include/linux/reboot.h         |  1 +
-> >  kernel/reboot.c                | 86
-> > ++++++++++++++++++++++++++++++++++
-> 
-> Please send a patch implementing the reboot/shutdown and then another
-> one replacing the thermal shutdown code by a call to the new API.
+Erm, I did not give my "Reviewed-by: Hans de Goede <hdegoede@redhat.com>"
+for this patch, because it still needed some work.
 
-I guess your suggestion makes sense. That way if the change causes any
-problems in thermal-core it can be reverted without impacting other
-potential users of this API. My original thinking was that this was
-more of an move of functionality than adding an API. Having the move as
-one patch makes sense as it shows where the code came from.
+Next time please only add my Reviewed-by to patches where I
+explicitly replied with a Reviewed-by.
 
-> 
-> >  3 files changed, 91 insertions(+), 59 deletions(-)
-> > 
-> > diff --git a/drivers/thermal/thermal_core.c
-> > b/drivers/thermal/thermal_core.c
-> > index 996c038f83a4..b1444845af38 100644
-> > --- a/drivers/thermal/thermal_core.c
-> > +++ b/drivers/thermal/thermal_core.c
-> > @@ -36,10 +36,8 @@ static LIST_HEAD(thermal_governor_list);
-> >  
-> > 
+The same goes for patch 7/9
 
-...
+Regards,
 
-> > +static bool prot_power_off_triggered;
-> > +static DEFINE_SPINLOCK(poweroff_lock);
-> > +
-> > +/**
-> > + * hw_protection_shutdown - Trigger an emergency system poweroff
-> > + *
-> > + * @reason:		Reason of emergency shutdown to be
-> > printed.
-> > + * @ms_until_forced:	Time to wait for orderly shutdown
-> > before tiggering a
-> > + *			forced shudown. Negative value disables the
-> > forced
-> > + *			shutdown.
-> > + *
-> > + * Initiate an emergency system shutdown in order to protect
-> > hardware from
-> > + * further damage. Usage examples include a thermal protection or
-> > a voltage or
-> > + * current regulator failures.
-> > + * NOTE: The request is ignored if protection shutdown is already
-> > pending even
-> > + * if the previous request has given a large timeout for forced
-> > shutdown.
-> > + * Can be called from any context.
-> > + */
-> > +void hw_protection_shutdown(const char *reason, int
-> > ms_until_forced)
-> > +{
-> > +	unsigned long flags;
-> > +
-> > +	pr_emerg("HARDWARE PROTECTION shutdown (%s)\n", reason);
-> > +
-> > +	spin_lock_irqsave(&poweroff_lock, flags);
-> > +	if (prot_power_off_triggered) {
-> > +		spin_unlock(&poweroff_lock);
-> 
-> Why not spin_unlock_irqrestore() ?
-> 
-
-Well spotted It for sure must be spin_unlock_irqrestore. My bad.
-
-> > +		return;
-> > +	}
-> > +	prot_power_off_triggered = true;
-> > +	spin_unlock_irqrestore(&poweroff_lock, flags);
-> 
-> Why not take the spin_lock definitively for all the procedure ?
-> 
-> eg.
-> 
-> {
-> 	...
-> 
-> 	pr_emerg( ... );
-> 
-> 	if (spin_trylock(&lock))
-> 		return;
-> 
-> 	hw_failure_emergency_poweroff(ms_until_forced);
-> 
-> 	orderly_poweroff(true);
-> }
-> 
-> No need of prot_power_off_triggered and the spin_lock can be declared
-> static inside the function.
-
-I think this makes perfect sense. My thinking just jammed to replacing
-the mutex thermal-core used with a spin-lock using similar logic. I
-guess this could even be just an atomic cmpxchg (or equivalent, I don't
-remember what atomic abstractions we have) just to return if function
-has been previously executed. Well, the spin_trylock() should work just
-fine as far as I can say. So - thanks.
+Hans
 
 
-Best Regards
-	Matti Vaittinen
+
+> ---
+> 
+> V2:	- Move buffer allocation so that it does not need to be freed
+> 	  (which was missing anyway) when an error is encountered.
+> 	- Use label to free out_obj after errors
+> 	- Use memcpy instead of memcpy_fromio for ACPI memory
+> 
+>  drivers/platform/x86/intel_pmc_core.c | 56 +++++++++++++++++++++++++++
+>  drivers/platform/x86/intel_pmc_core.h |  2 +
+>  2 files changed, 58 insertions(+)
+> 
+> diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
+> index 0e59a84b51bf..97efe9a6bd01 100644
+> --- a/drivers/platform/x86/intel_pmc_core.c
+> +++ b/drivers/platform/x86/intel_pmc_core.c
+> @@ -23,7 +23,9 @@
+>  #include <linux/slab.h>
+>  #include <linux/suspend.h>
+>  #include <linux/uaccess.h>
+> +#include <linux/uuid.h>
+>  
+> +#include <acpi/acpi_bus.h>
+>  #include <asm/cpu_device_id.h>
+>  #include <asm/intel-family.h>
+>  #include <asm/msr.h>
+> @@ -31,6 +33,9 @@
+>  
+>  #include "intel_pmc_core.h"
+>  
+> +#define ACPI_S0IX_DSM_UUID		"57a6512e-3979-4e9d-9708-ff13b2508972"
+> +#define ACPI_GET_LOW_MODE_REGISTERS	1
+> +
+>  /* PKGC MSRs are common across Intel Core SoCs */
+>  static const struct pmc_bit_map msr_map[] = {
+>  	{"Package C2",                  MSR_PKG_C2_RESIDENCY},
+> @@ -590,6 +595,53 @@ static const struct pmc_reg_map tgl_reg_map = {
+>  	.etr3_offset = ETR3_OFFSET,
+>  };
+>  
+> +static void pmc_core_get_tgl_lpm_reqs(struct platform_device *pdev)
+> +{
+> +	struct pmc_dev *pmcdev = platform_get_drvdata(pdev);
+> +	const int num_maps = pmcdev->map->lpm_num_maps;
+> +	size_t lpm_size = LPM_MAX_NUM_MODES * num_maps * 4;
+> +	union acpi_object *out_obj;
+> +	struct acpi_device *adev;
+> +	guid_t s0ix_dsm_guid;
+> +	u32 *lpm_req_regs, *addr;
+> +
+> +	adev = ACPI_COMPANION(&pdev->dev);
+> +	if (!adev)
+> +		return;
+> +
+> +	guid_parse(ACPI_S0IX_DSM_UUID, &s0ix_dsm_guid);
+> +
+> +	out_obj = acpi_evaluate_dsm(adev->handle, &s0ix_dsm_guid, 0,
+> +				    ACPI_GET_LOW_MODE_REGISTERS, NULL);
+> +	if (out_obj && out_obj->type == ACPI_TYPE_BUFFER) {
+> +		int size = out_obj->buffer.length;
+> +
+> +		if (size != lpm_size) {
+> +			acpi_handle_debug(adev->handle,
+> +				"_DSM returned unexpected buffer size,"
+> +				" have %d, expect %ld\n", size, lpm_size);
+> +			goto free_acpi_obj;
+> +		}
+> +	} else {
+> +		acpi_handle_debug(adev->handle,
+> +				  "_DSM function 0 evaluation failed\n");
+> +		goto free_acpi_obj;
+> +	}
+> +
+> +	addr = (u32 *)out_obj->buffer.pointer;
+> +
+> +	lpm_req_regs = devm_kzalloc(&pdev->dev, lpm_size * sizeof(u32),
+> +				     GFP_KERNEL);
+> +	if (!lpm_req_regs)
+> +		goto free_acpi_obj;
+> +
+> +	memcpy(lpm_req_regs, addr, lpm_size);
+> +	pmcdev->lpm_req_regs = lpm_req_regs;
+> +
+> +free_acpi_obj:
+> +	ACPI_FREE(out_obj);
+> +}
+> +
+>  static inline u32 pmc_core_reg_read(struct pmc_dev *pmcdev, int reg_offset)
+>  {
+>  	return readl(pmcdev->regbase + reg_offset);
+> @@ -1424,10 +1476,14 @@ static int pmc_core_probe(struct platform_device *pdev)
+>  		return -ENOMEM;
+>  
+>  	mutex_init(&pmcdev->lock);
+> +
+>  	pmcdev->pmc_xram_read_bit = pmc_core_check_read_lock_bit(pmcdev);
+>  	pmc_core_get_low_power_modes(pmcdev);
+>  	pmc_core_do_dmi_quirks(pmcdev);
+>  
+> +	if (pmcdev->map == &tgl_reg_map)
+> +		pmc_core_get_tgl_lpm_reqs(pdev);
+> +
+>  	/*
+>  	 * On TGL, due to a hardware limitation, the GBE LTR blocks PC10 when
+>  	 * a cable is attached. Tell the PMC to ignore it.
+> diff --git a/drivers/platform/x86/intel_pmc_core.h b/drivers/platform/x86/intel_pmc_core.h
+> index aa44fd5399cc..64fb368f40f6 100644
+> --- a/drivers/platform/x86/intel_pmc_core.h
+> +++ b/drivers/platform/x86/intel_pmc_core.h
+> @@ -294,6 +294,7 @@ struct pmc_reg_map {
+>   * @s0ix_counter:	S0ix residency (step adjusted)
+>   * @num_lpm_modes:	Count of enabled modes
+>   * @lpm_en_modes:	Array of enabled modes from lowest to highest priority
+> + * @lpm_req_regs:	List of substate requirements
+>   *
+>   * pmc_dev contains info about power management controller device.
+>   */
+> @@ -310,6 +311,7 @@ struct pmc_dev {
+>  	u64 s0ix_counter;
+>  	int num_lpm_modes;
+>  	int lpm_en_modes[LPM_MAX_NUM_MODES];
+> +	u32 *lpm_req_regs;
+>  };
+>  
+>  #define pmc_for_each_mode(i, mode, pmcdev)		\
+> 
 
