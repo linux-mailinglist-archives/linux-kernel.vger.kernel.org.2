@@ -2,117 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B55363072
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00730363076
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236396AbhDQNxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 09:53:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39750 "EHLO
+        id S236463AbhDQNzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 09:55:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230442AbhDQNxm (ORCPT
+        with ESMTP id S230442AbhDQNzS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 09:53:42 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D30C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 06:53:16 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id i21-20020a05600c3555b029012eae2af5d4so6025968wmq.4
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 06:53:16 -0700 (PDT)
+        Sat, 17 Apr 2021 09:55:18 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52606C061574;
+        Sat, 17 Apr 2021 06:54:52 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id i3so9824754edt.1;
+        Sat, 17 Apr 2021 06:54:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AewrO9ydZMH8IFjVd/qYNAdik/pmPwbpo6Np+kmyKYg=;
-        b=LprgzkCTYyqpRBvY/OpJ5/Lw+b1fQGdy7g/Enp9yXjYrwuK0MXw3kDYO+jTVo4AM2O
-         da349ZM4/Nio1LQFnTQBh8PdKz12IvSipdyhHL8DjTeljE3RceRtXTG/6CczWnLsmf3B
-         ulKaALHU8CRPxtrVb9hD3ogh+kuadPguT2Ej7vHO79q8vj8IOE3N9Ix0l2G6jHCvVRmi
-         qnArsiiziY8R4KMLfWqUBkgsIndGyrf4FG4PZbXEsgR2WKzgc4LOanTwtwky7jXdIQXd
-         71PMY9eC/OdM8bASwiHbP/tuvDUDapptPBkCHRt0ppck0eI0xkrbnLshbeckXqg1n5LS
-         d/xw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kwbXOEfw/hpTzD4hhTkstPphtWsfZTra37TCCCrtY84=;
+        b=sPI3XPceh+wzpsQW6flE9OtViinFEbi/tneD3luRPZoawpv9l7XAmkkdUG2ChVygdE
+         whv2VOrrWLneqFlT4ejHnVmHfHjPzCfbkT58gjCuI4CuimVgu9Sr4UXddlUCghDxO5IU
+         mTr50e8nUf1LEDJXyXT/GrEfuqIK77XI4vaRAVwR0SCii5bpGE3p+xto+o/7R/hPmHYr
+         cwAOwPYQOeadpxLa91ZVNBOtJ+H8SQ8leIzF+Ya6Do5RTNpLe0ZseUUS0rswfTH/FyRm
+         cNn8binRD3E7KCpTB1ncWGW6hRilDUbADBzG4fI5eNl5g+jz0okT8tgNZ7a12zUeCGKF
+         nelg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AewrO9ydZMH8IFjVd/qYNAdik/pmPwbpo6Np+kmyKYg=;
-        b=jmx2+5vVy+0e4UDBQGcVnNQM1mYhqiXZYP77I4SUJ/8aZ6T2sH8+u0aM6hyLJcN9sW
-         85+PCwpleakSikrMXlFSB3B1soGt4oxf/1oPFTjltk5T4hiksooN6XZXPXk2AwxX8dEi
-         bNVCOKgMXPwEfX434CU7zkJc++wGEK3/ARYq6Twlklz03myHDuV1AHhKXaP0phM2HMTa
-         HC8MIMALR5VeVRY7TJp1d92UW2iJbheY/VuwC0+d4iz8e36ANN6p0tAdWvd01EOj5nSF
-         G8UeMERkdmfgCbYbDixnjFyf8jhswXfYI8lnHR8SYCyTAbFxHtxra+qWc9FR1tX0eO7r
-         TpkQ==
-X-Gm-Message-State: AOAM533i9tBXSZtGRxh3ho0uwANxJntdWVrtPYp0wLejh+5wOVVUiEBv
-        Jq9N+qyRO5Hdnxo5xdIUM+Eu
-X-Google-Smtp-Source: ABdhPJx6T84mDYcYChTDx6mFZZd5JbkVIL1vfaM8A6FMAjA3GZ43YPjDBzJtaAVdVRIuMA0uMvFRtQ==
-X-Received: by 2002:a05:600c:3594:: with SMTP id p20mr12286134wmq.173.1618667594637;
-        Sat, 17 Apr 2021 06:53:14 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:209:3c1c:8462:b77e:21a4])
-        by smtp.gmail.com with ESMTPSA id o5sm12394021wmc.44.2021.04.17.06.53.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Apr 2021 06:53:14 -0700 (PDT)
-Date:   Sat, 17 Apr 2021 14:53:10 +0100
-From:   Wedson Almeida Filho <wedsonaf@google.com>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Peter Zijlstra <peterz@infradead.org>, ojeda@kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-Message-ID: <YHroRuI7lYDABWJR@google.com>
-References: <20210414184604.23473-1-ojeda@kernel.org>
- <YHlz54rd1YQHsOA/@hirez.programming.kicks-ass.net>
- <YHmMJWmzz2vZ3qQH@google.com>
- <YHmc2+bKQJ/XAATF@hirez.programming.kicks-ass.net>
- <YHmuX1NA5RF7C7XS@google.com>
- <20210416161444.GA10484@1wt.eu>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kwbXOEfw/hpTzD4hhTkstPphtWsfZTra37TCCCrtY84=;
+        b=MZ0eajFAv2hVaB9Y4Rw0IptJbGahUo1LgPUjONr9jLL4er0wzN3G8ElMpl9CZs14bp
+         1RPkaRiUGmKnvYgqXtJZOCzp9L17QTQnnLFiljW1xuE/AJQgy1zhFzyGeRtF6C++PeuU
+         Vc0A7MDztAH6KvM7M4Nts6O6wr6LthK+DviJTYD8nzYu+JisryCt/S87/79dQbgZEBKG
+         mBffsIA58HmioJq5cWrVm2qxRHcuMOCK0aZ0GdqArUt0Yxz5Xmqhse+26E+1MIvz3Fsa
+         47TU6aKFXbWZexobTk7wTzGpnUCZgwcbTkRG9lGIyDFpSqMpJVD4pucDNv08/hnx3+VN
+         uOjg==
+X-Gm-Message-State: AOAM531KntlBVju4QB3LFH74uHhK/S3+WQLQlwTCtjVRT1GGSAujZSpy
+        7zOAocnrSkK2Mu+csncxzKvtGaT2Edl+oedkG2k=
+X-Google-Smtp-Source: ABdhPJwphSsgjfmY6bf7Zp5OmyrMvNCEsUL9E55kZxOq+KCz976opRnejwfP8hrs6KBMVnkjvAEm4KIvo1nhTS50/gM=
+X-Received: by 2002:a05:6402:382:: with SMTP id o2mr9326951edv.370.1618667690889;
+ Sat, 17 Apr 2021 06:54:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416161444.GA10484@1wt.eu>
+References: <20210224115146.9131-1-aford173@gmail.com> <20210224115146.9131-5-aford173@gmail.com>
+ <CAMuHMdW3SO7LemssHrGKkV0TUVNuT4oq1EfmJ-Js79=QBvNhqQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdW3SO7LemssHrGKkV0TUVNuT4oq1EfmJ-Js79=QBvNhqQ@mail.gmail.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Sat, 17 Apr 2021 08:54:39 -0500
+Message-ID: <CAHCN7xJrmQgC=skC7UJuzshUnf06D4nHrv1grrW8QV-+07dgKA@mail.gmail.com>
+Subject: Re: [PATCH V3 5/5] arm64: dts: renesas: beacon kits: Setup AVB refclk
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     netdev <netdev@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 06:14:44PM +0200, Willy Tarreau wrote:
+On Thu, Mar 4, 2021 at 2:04 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> On Wed, Feb 24, 2021 at 12:52 PM Adam Ford <aford173@gmail.com> wrote:
+> > The AVB refererence clock assumes an external clock that runs
+>
+> reference
+>
+> > automatically.  Because the Versaclock is wired to provide the
+> > AVB refclock, the device tree needs to reference it in order for the
+> > driver to start the clock.
+> >
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> i.e. will queue in renesas-devel (with the typo fixed) once the DT
+> bindings have been accepted.
 
-> But will this remain syntactically readable/writable by mere humans ?
+Geert,
 
-I would certainly hope so.
+Since the refclk update and corresponding dt-bindings are in net-next,
+are you OK applying the rest of the DT changes so they can get into
+5.13?
 
-> > Note that this is
-> > another area where Rust offers advantages: read-only guards (in C, if you take a
-> > read lock, nothing prevents you from making changes to fields you should only be
-> > allowed to read);
-> 
-> But I'm happily doing that when I know what I'm doing. What you call a
-> read lock usually is in fact a shared lock as opposed to an exclusive
-> lock (generally used for writes). For me it's perfectly valid to perform
-> atomic writes under a read lock instead of forcing everyone to wait by
-> taking a write lock. You may for example take a read lock on a structure
-> to make sure that a field you're accessing in it points to stable memory
-> that is only modified under the write lock, but the pointer itself is
-> atomically accessed and swapped under the read lock.
-
-Yes, this is a great example. Also easily expressible in Rust: they have this
-concept of interior mutability where certain types allow their contents to be
-modified even when shared immutably. Atomics offer such interior mutability, so
-the scenario you describe is fine.
-
-Rust in fact has an extra enforcement here that C doesn't: it requires interior
-mutability for this scenario to be allowed, so you can't do it with a plain
-naked type (say u64) -- you'd need to use something like an atomic64_t, where
-you're required to specify memory ordering when accessing them.
-
-In C we of course have atomics but the compiler never alerts us for when we need
-them.
-
-> > In fact, this is also an advantage of Rust. It would *force* developers to
-> > lock/unlock the RCU lock before they can access the protected data.
-> 
-> I'm really afraid by languages which force developers to do this or that.
-
-When I say that Rust forces developers to do certain things, it's to provide the
-compile-time safety guarantees. Some of these requirements are imposed by our
-own abstractions -- we can always revisit and try to improve them. In cases when
-the abstractions cannot be further refined, developers always have the escape
-hatch of unsafety, where they're allowed to do pretty much everything as in C,
-but then they also give up the compile-time guarantees for those parts.
+adam
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
