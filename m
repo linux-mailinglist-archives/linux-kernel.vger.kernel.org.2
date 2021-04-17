@@ -2,79 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62D636322D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 22:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9EB363232
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 22:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237010AbhDQUJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 16:09:53 -0400
-Received: from sauhun.de ([88.99.104.3]:38836 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236491AbhDQUJw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 16:09:52 -0400
-Received: from localhost (p5486c83a.dip0.t-ipconnect.de [84.134.200.58])
-        by pokefinder.org (Postfix) with ESMTPSA id 5CAB62C04D8;
-        Sat, 17 Apr 2021 22:09:24 +0200 (CEST)
-Date:   Sat, 17 Apr 2021 22:09:23 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Qii Wang <qii.wang@mediatek.com>
-Cc:     matthias.bgg@gmail.com, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        leilk.liu@mediatek.com
-Subject: Re: [PATCH 3/3] i2c: mediatek: Use scl_int_delay_ns to compensate
- clock-stretching
-Message-ID: <20210417200923.GD9996@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
-        Qii Wang <qii.wang@mediatek.com>, matthias.bgg@gmail.com,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        srv_heupstream@mediatek.com, leilk.liu@mediatek.com
-References: <1618642012-10444-1-git-send-email-qii.wang@mediatek.com>
- <1618642012-10444-4-git-send-email-qii.wang@mediatek.com>
+        id S236877AbhDQUSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 16:18:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236491AbhDQUSe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 16:18:34 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BC30C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 13:18:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=8Uc7dhzIc/p5Iji54e1aRZ450Xs9Pb7y+6pkjxagzLA=; b=GZSLEoK2gynTCSRjWeTnq3bQeh
+        Yh9OLJ4OibIw5oCLBjvsehNiN+S80FKnpFxPhpvu6I12wCe/TM8nob8DjN4oRtEcyQNbBO6hPH7u6
+        tO2w/FdELtV770/4v7wwXZES+VALvUOfS4rtbGQ2evjkviQQVgkwWX5tCydtVazMZvRuxfeYvBzkM
+        lT/vQjJYKxuBB4L8QEJMdnxsVSScogvk0g2tTny+Zxhp8Y59osuxdDtXnTacrKdSje1zmq8OQ8WSu
+        zH72KWE5G4gVLxC4aZQ/XPyOTQTLzt6+CscuugQD39URHof95HKR1iXmFaBrERiSboZ+Y0MeCU5+3
+        Y0QAjbYQ==;
+Received: from [2601:1c0:6280:3f0::df68]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lXrOG-006AUO-5D; Sat, 17 Apr 2021 20:18:04 +0000
+To:     PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        LKML <linux-kernel@vger.kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: PPC_FPU, ALTIVEC: enable_kernel_fp, put_vr, get_vr
+Message-ID: <7107fcae-5c7a-ac94-8d89-326f2cd4cd33@infradead.org>
+Date:   Sat, 17 Apr 2021 13:17:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9UV9rz0O2dU/yYYn"
-Content-Disposition: inline
-In-Reply-To: <1618642012-10444-4-git-send-email-qii.wang@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---9UV9rz0O2dU/yYYn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+kernel test robot reports:
 
-On Sat, Apr 17, 2021 at 02:46:52PM +0800, Qii Wang wrote:
-> The parameters of tSU,STA/tHD,STA/tSU,STOP maybe out of spec due
-> to device clock-stretch or circuit loss, we could get a suitable
-> scl_int_delay_ns from i2c_timings to compensate these parameters
-> to meet the spec via EXT_CONF register.
->=20
-> Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+>> drivers/cpufreq/pmac32-cpufreq.c:262:2: error: implicit declaration of function 'enable_kernel_fp' [-Werror,-Wimplicit-function-declaration]
+           enable_kernel_fp();
+           ^
 
-Applied to for-next, thanks!
+when
+# CONFIG_PPC_FPU is not set
+CONFIG_ALTIVEC=y
+
+I see at least one other place that does not handle that
+combination well, here:
+
+../arch/powerpc/lib/sstep.c: In function 'do_vec_load':
+../arch/powerpc/lib/sstep.c:637:3: error: implicit declaration of function 'put_vr' [-Werror=implicit-function-declaration]
+  637 |   put_vr(rn, &u.v);
+      |   ^~~~~~
+../arch/powerpc/lib/sstep.c: In function 'do_vec_store':
+../arch/powerpc/lib/sstep.c:660:3: error: implicit declaration of function 'get_vr'; did you mean 'get_oc'? [-Werror=implicit-function-declaration]
+  660 |   get_vr(rn, &u.v);
+      |   ^~~~~~
 
 
---9UV9rz0O2dU/yYYn
-Content-Type: application/pgp-signature; name="signature.asc"
+Should the code + Kconfigs/Makefiles handle that kind of
+kernel config or should ALTIVEC always mean PPC_FPU as well?
 
------BEGIN PGP SIGNATURE-----
+I have patches to fix the build errors with the config as
+reported but I don't know if that's the right thing to do...
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmB7QHMACgkQFA3kzBSg
-Kba+NBAAn6JF4qXFNrDhGxvLXRTjPqXUMD6/NwnxMpuk8enYQIOz18Y+jbXlbNNb
-3lLX/OuSDB4Veclu/q5/EW5DH/066q7DAp3WkVkxXEOqsP5KgfsjxKy0RH166WtX
-7Xo1bUecsTdlqFxO8SObPsid2FDabhoEAKCuQ3bhkr1vjuW7dLra0ZgzK/CE4tnP
-8HlqKkzY9VYeXKjVi/GnjadVLsfcX8Q47DwlTJ4f+G2zBAWwoXGio48FJkZsZagW
-STxoSdOE17gvIk3O+0MzfuCbam8XtJmgfo68CmouIPKNaJcB4i6WAkJYr05U1lQ6
-LYhnJyDZ0ytDGpDlRnTyfJbSdQaeecuCXoIxDgYOOXoed3rjqQ10ZmaTC7nygj1v
-FDOV3OMEEzbjSysFb1/V6QMdlRxELSDxXNS2HtEpqspCAkIl3PMM1Xvfz8gW/WG+
-wyuEpgtDYPhtv7SxOrOFJxb8aRJcVCEbjyV4T1IoMzQYzvAmZxmNdRwRuTC7429G
-Ou8qgEa2QsblpDzUoFhmFjwJp10qBt7I27L2EH9xVRPmeQa+wqCg2+AHVbSlQWOu
-/QhPt8MG4bZSM887RT5tVfof6eyXeJ6OmA8GkMz5UnmD+ReUEiAmoGeWvaBh5b9J
-WHCXZgcvNMgTBG8WuU0MuFjQclhQ9bfujZcMaABjmiZVBR8ssyQ=
-=z08x
------END PGP SIGNATURE-----
+thanks.
+-- 
+~Randy
 
---9UV9rz0O2dU/yYYn--
