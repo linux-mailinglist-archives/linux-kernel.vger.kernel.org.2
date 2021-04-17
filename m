@@ -2,92 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F2E13630E6
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 17:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 025BB3630EF
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 17:39:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236599AbhDQPhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 11:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33742 "EHLO
+        id S236634AbhDQPiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 11:38:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236287AbhDQPg7 (ORCPT
+        with ESMTP id S236287AbhDQPiD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 11:36:59 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84515C061574;
-        Sat, 17 Apr 2021 08:36:33 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id w8so16833722pfn.9;
-        Sat, 17 Apr 2021 08:36:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=D/05szO78c8EJq1ym9W+r9Xm4IHEEvxwkXiJ2BgsUcI=;
-        b=ok7VrOdFliNRvZPADXhbRfkawBFnWi8hF+qbhcL408j1O1CsdLTqdkaT2NunMt45B8
-         N+VoBizCnqx6dc6VhWoytC/kZwga6xA3m8vr3M9ECWTT8/fTM/C8dSNMJ4h7Daf8HPV5
-         E+FNBQY0vP9qd/Gb1PUaR/Iv4smpfs/UkZZOJKM5Z4Hko3l2LBNxyZEozolcC13994kO
-         eNPYC7AT7zRvE4ejlzXzeNnegh2cBpiBFLgAE3YeXsayRKu7UYe6HqPPmRFRz5lSL8GU
-         SwJY1wyqBcJrcE7JpEyzrhHpvSixPsKk1U2Eyq1TeRDX81u9pUvxWJVv7UM9vixbMMTn
-         XHTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=D/05szO78c8EJq1ym9W+r9Xm4IHEEvxwkXiJ2BgsUcI=;
-        b=a/7nj62UO9/TCC4Y98dWEwiOqKVKgCiZBklvAXae9orM/iG5IVoQWvkU+hRIHc83TT
-         CateWqgs0VUDv73HIzsQ2nJWwY16ysDGlj9YkLOsRHbgeg1jXHeKjtC7m3AReMj3FbZu
-         Raua5GXEF5AvzNtITmh9cBAojDt3pACSqZZD0YOkABLpt0biTORfbh9uUDYJ9YRTcf/I
-         mh8CPIj9RAkPGvydb6rS0oN0G00qOxGztQbQXgU+LnS6nOSbNSKTAIQbyWoR6IQP3fs0
-         dz7T9RA2FUETcH5UTtfubqq8iAJW9fX3FlE1PpLPSaZMoq7ygugEdbrzzR0je5TZHpVP
-         t9Zw==
-X-Gm-Message-State: AOAM5323beLl3WTqaJa92nR3riomIHbI1eW4/zKSg+WnEmyBEfczjCMR
-        4uSoVd4tZxDU7W8kvnPWmcA=
-X-Google-Smtp-Source: ABdhPJxJJG0G9xu6o6xj+ER8AwUrznNbFdJJuUqM3mxFkioSLr8Wb31xP1m18arBGjy0mJ7c5cQe1w==
-X-Received: by 2002:a63:c10a:: with SMTP id w10mr3815406pgf.353.1618673792733;
-        Sat, 17 Apr 2021 08:36:32 -0700 (PDT)
-Received: from ashish-NUC8i5BEH ([122.177.44.217])
-        by smtp.gmail.com with ESMTPSA id e4sm8347297pgu.89.2021.04.17.08.36.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Apr 2021 08:36:32 -0700 (PDT)
-Date:   Sat, 17 Apr 2021 21:06:27 +0530
-From:   Ashish Kalra <eashishkalra@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ashish Kalra <eashishkalra@gmail.com>,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Cc:     eashishkalra@gmail.com
-Subject: [PATCH] media: atomisp: silence "dubious: !x | !y" warning
-Message-ID: <20210417153627.GA50228@ashish-NUC8i5BEH>
+        Sat, 17 Apr 2021 11:38:03 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31BAC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 08:37:36 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lXn0k-0002O5-3p; Sat, 17 Apr 2021 17:37:30 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lXn0i-00061s-I3; Sat, 17 Apr 2021 17:37:28 +0200
+Date:   Sat, 17 Apr 2021 17:37:28 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 1/8] pwm: pca9685: Switch to atomic API
+Message-ID: <20210417153728.eohhphmtm6qf26y4@pengutronix.de>
+References: <20210412132745.76609-1-clemens.gruber@pqgruber.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="54aqtxtziy54ce7u"
 Content-Disposition: inline
+In-Reply-To: <20210412132745.76609-1-clemens.gruber@pqgruber.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Upon running sparse, "warning: dubious: !x | !y" is brought to notice
-for this file.  Logical and bitwise OR are basically the same in this
-context so it doesn't cause a runtime bug.  But let's change it to
-logical OR to make it cleaner and silence the Sparse warning.
 
-Signed-off-by: Ashish Kalra <eashishkalra@gmail.com>
----
- .../media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c    | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--54aqtxtziy54ce7u
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/staging/media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c b/drivers/staging/media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c
-index 358cb7d2cd4c..3b850bb2d39d 100644
---- a/drivers/staging/media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c
-+++ b/drivers/staging/media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c
-@@ -58,7 +58,7 @@ sh_css_vf_downscale_log2(
- 	unsigned int ds_log2 = 0;
- 	unsigned int out_width;
- 
--	if ((!out_info) | (!vf_info))
-+	if ((!out_info) || (!vf_info))
- 		return -EINVAL;
- 
- 	out_width = out_info->res.width;
--- 
-2.25.1
+On Mon, Apr 12, 2021 at 03:27:38PM +0200, Clemens Gruber wrote:
+> The switch to the atomic API goes hand in hand with a few fixes to
+> previously experienced issues:
+> - The duty cycle is no longer lost after disable/enable (previously the
+>   OFF registers were cleared in disable and the user was required to
+>   call config to restore the duty cycle settings)
+> - If one sets a period resulting in the same prescale register value,
+>   the sleep and write to the register is now skipped
+> - Previously, only the full ON bit was toggled in GPIO mode (and full
+>   OFF cleared if set to high), which could result in both full OFF and
+>   full ON not being set and on=3D0, off=3D0, which is not allowed accordi=
+ng
+>   to the datasheet
+> - The OFF registers were reset to 0 in probe, which could lead to the
+>   forbidden on=3D0, off=3D0. Fixed by resetting to POR default (full OFF)
 
+I didn't recheck all details, but the patch is definitively an
+improvement, so:
+
+Acked-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--54aqtxtziy54ce7u
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmB7ALUACgkQwfwUeK3K
+7AlVdggAoS7BHRyKl6WFJouJ75w3XjMgnOTjufwOF5iYwFx58DiepBgqt1jJKVrD
+YXf0on8BN0vflcK9RkpUwZhRHz/FB9gOCv+9spRNreutxXl5v2QI3u+inQF5cnhb
+xaR9owxjEso4FaVvWdeKzK9I6wM2b149CxYZ2hwOxD4dk+1LNGqZ1CRPcGSUc7TE
+T/R2TDBa3UYEgzRmNawWj2wGp+VTHWdydwd1JpKG2q1tU/SasGvQkXucIhhXgxb6
+eH47hHjhQaDhaVR+NHApJ08srwd2oZIU9y2wXS3ypshq2i6mu+9VcCkpHpqj2oYP
+3loztBlWhwujp8bKZheuxAnoDf9Kwg==
+=v9h2
+-----END PGP SIGNATURE-----
+
+--54aqtxtziy54ce7u--
