@@ -2,100 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B10836300D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60360363010
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236457AbhDQMvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 08:51:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22035 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236432AbhDQMvK (ORCPT
+        id S236310AbhDQMwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 08:52:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230442AbhDQMwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 08:51:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618663843;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZaTcXtyBPdVI0SxVxqAEtYLRW7IktHO5BV2EA4cxMMo=;
-        b=Bcqvam9hlgHPTppmncGY7y4QsgDV0C2LENLVdl+Guc5XAw7A2qaUg9e6TaTZk4DW31tkBR
-        JEavMRFiP3lB+pPwgLJy38GDLJk4jMR9EMDtOK8pSDOsRLWmK/Rppd3fRnXEmYTRGg91R9
-        BcH0AGzWc37n2CqfyoGBjIloduS/Hqk=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-2-2wBepw0jPlS2kDFycCEwLQ-1; Sat, 17 Apr 2021 08:50:41 -0400
-X-MC-Unique: 2wBepw0jPlS2kDFycCEwLQ-1
-Received: by mail-ed1-f72.google.com with SMTP id c15-20020a056402100fb029038518e5afc5so1025479edu.18
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 05:50:41 -0700 (PDT)
+        Sat, 17 Apr 2021 08:52:05 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70740C061574;
+        Sat, 17 Apr 2021 05:51:39 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id j7so11596318pgi.3;
+        Sat, 17 Apr 2021 05:51:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CK9W0sv6eRHdyCB5RWUgu3S7S7hJ78bLj/lTgSuLMhU=;
+        b=YEKvlLpxuA4qNW5N1A3VDiigeTuCGS9cKk174L9rxmXIobdMp0C7YWpk5yoDt9X2sT
+         gSS+4b/VwsW+PdGgUnCHq6JHcVgHXA5MrwfN5X5J6Sp3g7xxLGrG1AnK5KEVZxIj7aTA
+         V/am8e5y8NUfoE/md1jvr0CBPGpOmIU2aX3tKum/9FEYW/S7O7WCsmxS0tgAhjRYN9R1
+         KAHrYRBINWhNmZz8mjrEvtYl4qnzw0ZvoBEW57uAfkHOerOhl3UWiTtg2UOk8RfdDacC
+         ea7xcV3T+OtVWJUru2i52pgTgNsGKTbVezg4nxNXyl879Ipp/Vxe5Pz2JJm+mVpmZig8
+         2Pig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZaTcXtyBPdVI0SxVxqAEtYLRW7IktHO5BV2EA4cxMMo=;
-        b=c4k9nOec3dAvtR1fEp5s3GN8O7Pz4p+m9fpaU8qN/lgZ1sBonj2wC1EqWxwTb1Q+T9
-         5sCzbte+oayVkWn8uZaIvDER29u9E7R5CP5PNDz3QH2ffHYcwUKc0fOYqQ+/+7kT1J88
-         IM5QoxunjF7pR2Y3pVCYqRmEgkP1EO31Fjs5c+cUcojbS0jV1Z+RcTXQu6yTiUeNNORD
-         2V1i0aCo39VKE3tiX636vMHnZz2IODDpfXqEL8hKRKGS67BbEqs/JZakfy7lBAGim0pr
-         WTEpAqSz4v6yMfOm9U3Q5nOqVDfckVlfiQFT070g8hqAPn08ZjRUUQdMZqJT/1XF4psO
-         aWEQ==
-X-Gm-Message-State: AOAM530kXjR9sRUmUVz/AH3/LxSVeBRjhQjNso9pV3+HW9uMQi/j0Kq3
-        LLFJQ5cSty9/I0xZOI0Eb/HAOBUgbCedahO9gticQdhQtL7rFxLVFboBS9IHD7L/g3oVAuzfnNt
-        nkpkQaWGELsAcb7e8DtDx3ieK
-X-Received: by 2002:a17:906:c29a:: with SMTP id r26mr12667254ejz.259.1618663840298;
-        Sat, 17 Apr 2021 05:50:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxIf7mi5DtpN2IQG233RbYf3mpawFrXCI+aHZoFvdgJevu/Q4WnkMS+P//lsbO1vapOn52cTg==
-X-Received: by 2002:a17:906:c29a:: with SMTP id r26mr12667244ejz.259.1618663840159;
-        Sat, 17 Apr 2021 05:50:40 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id f20sm3141726ejw.36.2021.04.17.05.50.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Apr 2021 05:50:39 -0700 (PDT)
-Subject: Re: [PATCH] KVM: x86: Remove unused function declaration
-To:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     wanghaibin.wang@huawei.com, jiangkunkun@huawei.com
-References: <20210406063504.17552-1-zhukeqian1@huawei.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <8ceed9a2-fa5a-0b47-d4c2-8b16c1ef100a@redhat.com>
-Date:   Sat, 17 Apr 2021 14:50:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CK9W0sv6eRHdyCB5RWUgu3S7S7hJ78bLj/lTgSuLMhU=;
+        b=spAoOgYmTp3gOto+DBEsm2hpAtJjE28XBfVgTCJ/Z2k9dLWQ1HQG23b6hpIZ/hcVfA
+         ++HGlb7JHWhelN9uyjZhUZIBNN/MCqiCOUNnEIXQ691t0jg/EvfKSu8iIE9kbsrcoRzF
+         vPnGqrkMoTSt94fAR1ztcz2B5w9t2t6ujkihPWx2PN8UBvRekcVLAyGbRBAXpNSl3WJc
+         m6Bmc9/QEslx7ay115zWanA0p/vKxmA/fH7cYSwS2nI9y7UwXjUNOc9PHykjunJbhM2a
+         8qVAyv1M6qaToio+moEUe9AtmCnVTNxWJAXydhRBiHb7qDR+eucNnSQ4EqV8XttFpUcb
+         2OOw==
+X-Gm-Message-State: AOAM533s0VR++MoIbsSk46MxCbcgIMiLSblwHm/JopM01h53H+rL/Sqo
+        f2aaErRy0F5phZ2x4my9uAwkw9ogMhqZdsPShaU=
+X-Google-Smtp-Source: ABdhPJxFHrHOcaWMtBTuY6BBbacMdvwL1IWqXrKMpxOU4xUMo/q+cRsXMxUNBu76aAXBLwIkZj84WH+ulygofKf479Q=
+X-Received: by 2002:a63:cb44:: with SMTP id m4mr3432862pgi.4.1618663898587;
+ Sat, 17 Apr 2021 05:51:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210406063504.17552-1-zhukeqian1@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210416174902.9036-1-joe.g.sandom@gmail.com> <20210416174902.9036-2-joe.g.sandom@gmail.com>
+In-Reply-To: <20210416174902.9036-2-joe.g.sandom@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 17 Apr 2021 15:51:22 +0300
+Message-ID: <CAHp75Ve6qFizMF2-vWv+o2fKX3P8nH=tWNum6PTvtDjFh94MPA@mail.gmail.com>
+Subject: Re: [PATCH v8 2/2] Added AMS tsl2591 device tree binding
+To:     Joe Sandom <joe.g.sandom@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/04/21 08:35, Keqian Zhu wrote:
-> kvm_mmu_slot_largepage_remove_write_access() is decared but not used,
-> just remove it.
-> 
-> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+On Fri, Apr 16, 2021 at 8:49 PM Joe Sandom <joe.g.sandom@gmail.com> wrote:
+>
+> Device tree binding for AMS/TAOS tsl2591 ambient light sensor.
+>
+> This driver supports configuration via device tree and sysfs.
+> Supported channels for raw infrared light intensity,
+> raw combined light intensity and illuminance in lux.
+> The driver additionally supports iio events on lower and
+> upper thresholds.
+>
+> This is a very-high sensitivity light-to-digital converter that
+> transforms light intensity into a digital signal.
+
+With subject line fixed (other comments up to you)
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+> Signed-off-by: Joe Sandom <joe.g.sandom@gmail.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 > ---
->   arch/x86/include/asm/kvm_host.h | 2 --
->   1 file changed, 2 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 3768819693e5..9c0af0971c9f 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1440,8 +1440,6 @@ void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
->   				   const struct kvm_memory_slot *memslot);
->   void kvm_mmu_slot_leaf_clear_dirty(struct kvm *kvm,
->   				   struct kvm_memory_slot *memslot);
-> -void kvm_mmu_slot_largepage_remove_write_access(struct kvm *kvm,
-> -					struct kvm_memory_slot *memslot);
->   void kvm_mmu_zap_all(struct kvm *kvm);
->   void kvm_mmu_invalidate_mmio_sptes(struct kvm *kvm, u64 gen);
->   unsigned long kvm_mmu_calculate_default_mmu_pages(struct kvm *kvm);
-> 
+> Changes in v8:
+> - No changes
+>
+> Notes:
+> - Re-submitted to align the version with part 1 of the patch series
+>
+>  .../bindings/iio/light/amstaos,tsl2591.yaml   | 50 +++++++++++++++++++
+>  1 file changed, 50 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/light/amstaos,tsl2591.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/iio/light/amstaos,tsl2591.yaml b/Documentation/devicetree/bindings/iio/light/amstaos,tsl2591.yaml
+> new file mode 100644
+> index 000000000000..596a3bc770f4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/light/amstaos,tsl2591.yaml
+> @@ -0,0 +1,50 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/light/amstaos,tsl2591.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: AMS/TAOS TSL2591 Ambient Light Sensor (ALS)
+> +
+> +maintainers:
+> +  - Joe Sandom <joe.g.sandom@gmail.com>
+> +
+> +description: |
+> +  AMS/TAOS TSL2591 is a very-high sensitivity
+> +  light-to-digital converter that transforms light intensity into a digital
+> +  signal.
+> +
+> +properties:
+> +  compatible:
+> +    const: amstaos,tsl2591
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +    description:
+> +      Interrupt (INT:Pin 2) Active low. Should be set to IRQ_TYPE_EDGE_FALLING.
+> +      interrupt is used to detect if the light intensity has fallen below
+> +      or reached above the configured threshold values.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        tsl2591@29 {
+> +            compatible = "amstaos,tsl2591";
+> +            reg = <0x29>;
+> +            interrupts = <20 IRQ_TYPE_EDGE_FALLING>;
+> +       };
+> +    };
+> +...
+> --
+> 2.17.1
+>
 
-Queued, thanks.
 
-Paolo
-
+-- 
+With Best Regards,
+Andy Shevchenko
