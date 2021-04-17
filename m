@@ -2,172 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33B7362E6C
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 09:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A28362E6F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 10:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235995AbhDQHzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 03:55:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235965AbhDQHzK (ORCPT
+        id S236003AbhDQH76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 03:59:58 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16473 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235980AbhDQH75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 03:55:10 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B236EC061760
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 00:54:44 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id lt13so6360037pjb.1
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 00:54:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=kyDOfNlO5v5BNocRUhW3soIeQiOs29dwPp3e5LBPghA=;
-        b=ZpSz0nHBHKx6SCNZijL6Y+WXj9cWQ4MoEeV3tf+u0cLeL3es/YPptsX/GJzjPfEdwJ
-         zOtUqAXSKu4afgcZx79N08Iw0CxTQmubHheJdCzYUhBhTN3u/Ol1F03/0CznvmbfS+hM
-         rPSdfIMM+/HrizcMi9p7aI6+1Lo/K4u0vTENzexJOtyt8JgE0B5Wz1ipZp1r2NaYnqIv
-         iViO1gBP1AWenpyRCC6jTJYj7qyHLQjfxKpfWf83YKOlPloY4/SLWLyEwkkduXH68u2K
-         SSJtIqCtkhiqq3jT3Q9v0fQACscFnP4VAiMTF+nh9WX5a3LvtqV/htu6vmTeH94LxeDu
-         Qgcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=kyDOfNlO5v5BNocRUhW3soIeQiOs29dwPp3e5LBPghA=;
-        b=emOu0KAIyzZFe0TpnnFs/HEx3SY1ieuVSu7BaIkNlpMsrUFDTGSLNuycEGX1VcDuXb
-         An/ho7Al0vWochmIM5VH7jZZ2Mpe8I7DmE0bH45c5yLOw+jA8DaCrU8AtjXEcuEmy9oQ
-         mY5Dj/KDOo5TUdmo9REBxgwh5LhykOGfInFFprthGdHaNherpb0yTDaqhMG5uhkL2uS5
-         mhij0Gk/5A2j7jdffQ/6BoIJNzy2ABEdNrUPAw/A06BNx9W99SHJXy4Hg7QHd7N7crQV
-         FOsenuiphwjAWh7mR7fHIwNMXHOw6VFGpuiO3viJSLRMH0lzZxR072+DPIDGd7ZGnO/a
-         hQmA==
-X-Gm-Message-State: AOAM5310vEPEDUZ5NgRAuhJb6buHcGw5V3Q7RFgDXKLLv/rN4lSD6lAj
-        ZpebFUxhYkPphom03zUt7x4Fcg==
-X-Google-Smtp-Source: ABdhPJzUjKIBSGFaO3HxivB8L2xHV1ZXaT7Q/92d2bWn57qZ+nOrC+gStN/ipU/dzn0BTCIRGFS9Zw==
-X-Received: by 2002:a17:90a:6385:: with SMTP id f5mr13821314pjj.212.1618646084083;
-        Sat, 17 Apr 2021 00:54:44 -0700 (PDT)
-Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id w75sm7087179pfc.135.2021.04.17.00.54.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Apr 2021 00:54:43 -0700 (PDT)
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCH v3] brcmfmac: support parse country code map from DT
-Date:   Sat, 17 Apr 2021 15:54:28 +0800
-Message-Id: <20210417075428.2671-1-shawn.guo@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        Sat, 17 Apr 2021 03:59:57 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FMlm51db4zyNvN;
+        Sat, 17 Apr 2021 15:57:09 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 17 Apr 2021 15:59:20 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH] mm: Move HOLES_IN_ZONE into mm
+Date:   Sat, 17 Apr 2021 15:59:46 +0800
+Message-ID: <20210417075946.181402-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With any regulatory domain requests coming from either user space or
-802.11 IE (Information Element), the country is coded in ISO3166
-standard.  It needs to be translated to firmware country code and
-revision with the mapping info in settings->country_codes table.
-Support populate country_codes table by parsing the mapping from DT.
+commit a55749639dc1 ("ia64: drop marked broken DISCONTIGMEM and VIRTUAL_MEM_MAP")
+drop VIRTUAL_MEM_MAP, so there is no need HOLES_IN_ZONE on ia64.
 
-The BRCMF_BUSTYPE_SDIO bus_type check gets separated from general DT
-validation, so that country code can be handled as general part rather
-than SDIO bus specific one.
+Also move HOLES_IN_ZONE into mm/Kconfig, select it if architecture needs
+this feature.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Reviewed-by: Arend van Spriel <arend.vanspriel@broadcom.com>
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
-Changes for v3:
- - Add missing terminating '\n' in brcmf_dbg(INFO, ...) format string.
+ arch/arm64/Kconfig | 4 +---
+ arch/ia64/Kconfig  | 3 ---
+ arch/mips/Kconfig  | 3 ---
+ mm/Kconfig         | 3 +++
+ 4 files changed, 4 insertions(+), 9 deletions(-)
 
- .../wireless/broadcom/brcm80211/brcmfmac/of.c | 57 ++++++++++++++++++-
- 1 file changed, 55 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
-index a7554265f95f..2f7bc3a70c65 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
-@@ -12,12 +12,59 @@
- #include "common.h"
- #include "of.h"
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index f0b17d758912..3c5a53e0db91 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -202,6 +202,7 @@ config ARM64
+ 	select HAVE_KPROBES
+ 	select HAVE_KRETPROBES
+ 	select HAVE_GENERIC_VDSO
++	select HOLES_IN_ZONE
+ 	select IOMMU_DMA if IOMMU_SUPPORT
+ 	select IRQ_DOMAIN
+ 	select IRQ_FORCED_THREADING
+@@ -1053,9 +1054,6 @@ config NEED_PER_CPU_EMBED_FIRST_CHUNK
+ 	def_bool y
+ 	depends on NUMA
  
-+static int brcmf_of_get_country_codes(struct device *dev,
-+				      struct brcmf_mp_device *settings)
-+{
-+	struct device_node *np = dev->of_node;
-+	struct brcmfmac_pd_cc_entry *cce;
-+	struct brcmfmac_pd_cc *cc;
-+	int count;
-+	int i;
-+
-+	count = of_property_count_strings(np, "brcm,ccode-map");
-+	if (count < 0) {
-+		/* The property is optional, so return success if it doesn't
-+		 * exist. Otherwise propagate the error code.
-+		 */
-+		return (count == -EINVAL) ? 0 : count;
-+	}
-+
-+	cc = devm_kzalloc(dev, sizeof(*cc) + count * sizeof(*cce), GFP_KERNEL);
-+	if (!cc)
-+		return -ENOMEM;
-+
-+	cc->table_size = count;
-+
-+	for (i = 0; i < count; i++) {
-+		const char *map;
-+
-+		cce = &cc->table[i];
-+
-+		if (of_property_read_string_index(np, "brcm,ccode-map",
-+						  i, &map))
-+			continue;
-+
-+		/* String format e.g. US-Q2-86 */
-+		if (sscanf(map, "%2c-%2c-%d", cce->iso3166, cce->cc,
-+			   &cce->rev) != 3)
-+			brcmf_err("failed to read country map %s\n", map);
-+		else
-+			brcmf_dbg(INFO, "%s-%s-%d\n", cce->iso3166, cce->cc,
-+				  cce->rev);
-+	}
-+
-+	settings->country_codes = cc;
-+
-+	return 0;
-+}
-+
- void brcmf_of_probe(struct device *dev, enum brcmf_bus_type bus_type,
- 		    struct brcmf_mp_device *settings)
- {
- 	struct brcmfmac_sdio_pd *sdio = &settings->bus.sdio;
- 	struct device_node *root, *np = dev->of_node;
- 	int irq;
-+	int err;
- 	u32 irqf;
- 	u32 val;
+-config HOLES_IN_ZONE
+-	def_bool y
+-
+ source "kernel/Kconfig.hz"
  
-@@ -43,8 +90,14 @@ void brcmf_of_probe(struct device *dev, enum brcmf_bus_type bus_type,
- 		of_node_put(root);
- 	}
+ config ARCH_SPARSEMEM_ENABLE
+diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
+index 279252e3e0f7..36499e99102d 100644
+--- a/arch/ia64/Kconfig
++++ b/arch/ia64/Kconfig
+@@ -308,9 +308,6 @@ config NODES_SHIFT
+ 	  MAX_NUMNODES will be 2^(This value).
+ 	  If in doubt, use the default.
  
--	if (!np || bus_type != BRCMF_BUSTYPE_SDIO ||
--	    !of_device_is_compatible(np, "brcm,bcm4329-fmac"))
-+	if (!np || !of_device_is_compatible(np, "brcm,bcm4329-fmac"))
-+		return;
-+
-+	err = brcmf_of_get_country_codes(dev, settings);
-+	if (err)
-+		brcmf_err("failed to get OF country code map (err=%d)\n", err);
-+
-+	if (bus_type != BRCMF_BUSTYPE_SDIO)
- 		return;
+-config HOLES_IN_ZONE
+-	bool
+-
+ config HAVE_ARCH_NODEDATA_EXTENSION
+ 	def_bool y
+ 	depends on NUMA
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 7a174ea61ca5..c6d522fbd67d 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -1233,9 +1233,6 @@ config HAVE_PLAT_MEMCPY
+ config ISA_DMA_API
+ 	bool
  
- 	if (of_property_read_u32(np, "brcm,drive-strength", &val) == 0)
+-config HOLES_IN_ZONE
+-	bool
+-
+ config SYS_SUPPORTS_RELOCATABLE
+ 	bool
+ 	help
+diff --git a/mm/Kconfig b/mm/Kconfig
+index a8a367c30053..afc57cbf1cea 100644
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -128,6 +128,9 @@ config HAVE_FAST_GUP
+ 	depends on MMU
+ 	bool
+ 
++config HOLES_IN_ZONE
++	bool
++
+ # Don't discard allocated memory used to track "memory" and "reserved" memblocks
+ # after early boot, so it can still be used to test for validity of memory.
+ # Also, memblocks are updated with memory hot(un)plug.
 -- 
-2.17.1
+2.26.2
 
