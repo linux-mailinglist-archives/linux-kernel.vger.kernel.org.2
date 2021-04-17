@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F4603630A1
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 16:25:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BBC43630A7
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 16:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236501AbhDQOZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 10:25:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233008AbhDQOZh (ORCPT
+        id S236511AbhDQOge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 10:36:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57723 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236305AbhDQOgd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 10:25:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F09DC061574;
-        Sat, 17 Apr 2021 07:25:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3+RD4PGfvp8A2z71LoP4t3wAnw9CDL/WbCBC7uAAteM=; b=q0Jpc44KVVFF5wX6/JAAU5kxZu
-        yXVOh6sJ8baO4d1QLkuxerJe9tpswK0Z+Gmcbrs+jb8pA3hKS0hhOeBsegcbAk4VoXCL5drcj7Kzq
-        y/NCWE5azoAkvlidNr2BhmNOd0di39Im9F3BqyZNv1HjmRXa3cbnaqE9sheo0Lqx0IamYsWUm0LBM
-        XXhaxK8O9juCcU3bnori7s0KqqqJt8XS2YzhF4CV0vseBNW5STTmv+eSycrdFEm1aKzpUpUTYhnwC
-        bG4lrQYqqHWJfck/eQrGAsFPANzPq5OOKGeAz4nmhwpOxOc7mheTqnT73JaSik1FjXdX4jWJ9Y9i7
-        QkjtlTLw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lXlsK-00BLUw-PW; Sat, 17 Apr 2021 14:24:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8901E30015A;
-        Sat, 17 Apr 2021 16:24:43 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6829523CC6F09; Sat, 17 Apr 2021 16:24:43 +0200 (CEST)
-Date:   Sat, 17 Apr 2021 16:24:43 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-Message-ID: <YHrvq6/d4iw8SLAc@hirez.programming.kicks-ass.net>
-References: <YHlz54rd1YQHsOA/@hirez.programming.kicks-ass.net>
- <YHmMJWmzz2vZ3qQH@google.com>
- <YHmc2+bKQJ/XAATF@hirez.programming.kicks-ass.net>
- <YHmuX1NA5RF7C7XS@google.com>
- <20210416161444.GA10484@1wt.eu>
- <CANiq72nbkJFPmiJXX=L8PmkouKgKG1k-CxhZYpL1hcncYwa8JA@mail.gmail.com>
- <YHnG+GRwiMqgHGs5@hirez.programming.kicks-ass.net>
- <20210416180829.GO2531743@casper.infradead.org>
- <YHrDwdQwEk2mSQWa@hirez.programming.kicks-ass.net>
- <20210417114623.GA15120@1wt.eu>
+        Sat, 17 Apr 2021 10:36:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618670166;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=uonscLDjjSQatsblqLj37tpJBFSD05Khz4gELao+w6I=;
+        b=M6faNwAuzck/F1LJYYZXmgjjRKXEO/yXYUkBig430nRxRg+SHM6qrPkZkr1EgmhVYJC8qe
+        8ZOH3Ybv6fyqBT3QP3dJgitaBMxna6ZywG/uGqf8VSbalojw3iGYms6Bf9kacqyoN8VIiP
+        oQ9yPxg3sEktHj5oegQDaPPOGFXKfHY=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-40-Nr_a7i7eMSGmppfeYiI6XQ-1; Sat, 17 Apr 2021 10:36:05 -0400
+X-MC-Unique: Nr_a7i7eMSGmppfeYiI6XQ-1
+Received: by mail-qk1-f199.google.com with SMTP id r129-20020a375d870000b029029db870f0easo1140290qkb.4
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 07:36:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uonscLDjjSQatsblqLj37tpJBFSD05Khz4gELao+w6I=;
+        b=PbtbYuZSnyhvURFfjeOQAbp3gQAzl/IfosLEUqkWT+ZcN1GYN/ZwBmcb8XN1u4XVj3
+         YtIB7zdU41yDzudvubu6BT/qqUhWwqmr3FdFZ/3nBHlhA2FZ7g5/rZXRuqoiXfrHdVIA
+         RTT2MjbgkRMDVWNCqCD07efttegg+bLOnhvYRu2/SUf2JKbEq313cfNSMKVYSdgK89mf
+         ZQlodLSvX5QwxRgJ8I3ZJZ/xazXH9YSVeUYsBB/QRiO2BwTfNdDzuKHV9D4MF5Z9LNTx
+         jNVDrhCVdKVbmKpMemgYAtt7SDY8ZFO7WtGq2hX0GBA3Fb0XMFgnhzrBqsqczhKmlbhM
+         rfhg==
+X-Gm-Message-State: AOAM533EIwQd2EbM2qmltFGtfEgHVx932MamkEH8bPbrbT99Tdkv90n+
+        MW7fX/3ZlYlJ9mTT3XXUYOJ8s8/o31rTjKa6jzsIlMv9kp5v4PN9m08HTRvseAfUtQB+lcJc3xi
+        I8/HKrdM6vtqx8udIwqYb4Ln68R50g3ciGrH8HL+22JNMvzZ1O2g6nFBIsovaOn1Jr0oF8vv0sw
+        ==
+X-Received: by 2002:a05:620a:40ce:: with SMTP id g14mr4165042qko.190.1618670164348;
+        Sat, 17 Apr 2021 07:36:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxVO94n1NTk52uvMDVYt17h3ZZy04karbCuTj3Aylmb/lvHJlagc8HMuTdgRH/vXwhlSWmlgQ==
+X-Received: by 2002:a05:620a:40ce:: with SMTP id g14mr4165019qko.190.1618670164007;
+        Sat, 17 Apr 2021 07:36:04 -0700 (PDT)
+Received: from xz-x1.redhat.com (bras-base-toroon474qw-grc-88-174-93-75-154.dsl.bell.ca. [174.93.75.154])
+        by smtp.gmail.com with ESMTPSA id l12sm378159qtq.34.2021.04.17.07.36.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Apr 2021 07:36:03 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Andrew Jones <drjones@redhat.com>, peterx@redhat.com,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: [PATCH v3 0/2] KVM: selftests: fix races in dirty log test
+Date:   Sat, 17 Apr 2021 10:36:00 -0400
+Message-Id: <20210417143602.215059-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.26.2
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210417114623.GA15120@1wt.eu>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 01:46:23PM +0200, Willy Tarreau wrote:
-> For me the old trick of casting one side as long long still works:
-> 
->   unsigned long long mul3264(unsigned int a, unsigned int b)
->   {
->         return (unsigned long long)a * b;
->   }
-> 
-> i386:
->   00000000 <mul3264>:
->      0: 8b 44 24 08           mov    0x8(%esp),%eax
->      4: f7 64 24 04           mull   0x4(%esp)
->      8: c3                    ret    
-> 
-> x86_64:
->   0000000000000000 <mul3264>:
->      0: 89 f8                 mov    %edi,%eax
->      2: 89 f7                 mov    %esi,%edi
->      4: 48 0f af c7           imul   %rdi,%rax
->      8: c3                    retq   
-> 
-> Or maybe you had something else in mind ?
+Please consider overtake the previous v2 [1] of this patch which is a singl=
+e=0D
+patch, also please find more information in the commit message of each patc=
+h.=0D
+=0D
+I kept the versioning since it solves the same problem, but mostly rewritte=
+n.=0D
+=0D
+I've run a few hours of below workloads in parallel to test this patch:=0D
+=0D
+  (1) while :; do taskset -c 1 ./dirty_log_test; done=0D
+  (2) taskset -c 1 bash -c "while :; do :; done"=0D
+=0D
+Review comments are greatly welcomed.=0D
+=0D
+Thanks,=0D
+=0D
+[1] https://lore.kernel.org/lkml/20210413213641.23742-1-peterx@redhat.com/=
+=0D
+=0D
+Peter Xu (2):=0D
+  KVM: selftests: Sync data verify of dirty logging with guest sync=0D
+  KVM: selftests: Wait for vcpu thread before signal setup=0D
+=0D
+ tools/testing/selftests/kvm/dirty_log_test.c | 68 +++++++++++++++++---=0D
+ 1 file changed, 58 insertions(+), 10 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
-Last time I tried it, the thing refused :/ which is how we ended up with
-mul_u32_u32() in asm.
