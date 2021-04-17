@@ -2,124 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 321D036312B
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 18:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 592C8363138
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 18:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236669AbhDQQ2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 12:28:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236659AbhDQQ2H (ORCPT
+        id S236659AbhDQQk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 12:40:59 -0400
+Received: from jptosegrel01.sonyericsson.com ([124.215.201.71]:11575 "EHLO
+        JPTOSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236836AbhDQQjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 12:28:07 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABBD3C06175F
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 09:27:39 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id x20so19158641lfu.6
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 09:27:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=8z6k0nvfMeU4+kk1Rlj4CMcpU7JmVD+ziX5/+jJBhDQ=;
-        b=vAElt+sPFwrOhtoJNtxeRaeANyYUC6X6IGW1ahDm55jX7txp0a6HdNd/wYLScMuy6Y
-         liHssROsMqFUjfRu3F2ygQEsK59aS0Flby1PsSs6XhGCEaNJnIB/OgYd1KgNJJ5PvMhA
-         R9ZA5fmOh7CcCun9EfWrLi9UWllDEaYy8kkPxR/oDGJXLGu+irZK6XIoeXLV+ed95Cr5
-         V/3bBvJ5BtIsZG2gZWvRWFQzedkTJEnPb8Sufj5u2Vl0b7an+H04JZp67lNi5KhlY4tu
-         L/Lm9dHxe6dZl5ggBnhIJSb3Aa3CiljHUup+idwzkrjjhgY64U2qlliS9M8eWqbm8Q/A
-         Ireg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
-         :from:date:message-id:subject:to:content-transfer-encoding;
-        bh=8z6k0nvfMeU4+kk1Rlj4CMcpU7JmVD+ziX5/+jJBhDQ=;
-        b=aOWKV8g14FKKTZ/NXRoAQloDW920DVnm0bUO9wVu3NW4ZQ32AOXgS/x7zekuWRdrId
-         esi/7YyB9y/V5LNT/cJmca1CJc0BnjSLn2KPncpXawQw8AbZ+06HQbXH6u4IxhdXapF9
-         wNXvpOg4zc0DXu6np6FGAkFH1Ym/DSj+4AJmJqtV3LfvNaWCUjgHynEgund+3ov2ywjL
-         kgo36z3kF82xfbFQ74f4mJi5cWSXp/KhynzX1qQ2lcAoja7pGbWUARfn+Tm86mWBnI8H
-         2ko9j8q8jdVDm63WoDL7E6Q1i8wKf5U15o60LYUbfDzH5K/oj4kr4MJ/Qc1rrgc+D513
-         It1Q==
-X-Gm-Message-State: AOAM5333UOki3ia2UGVUyQnLvO1jAG+k8qVB/3qiqgPYa2NEnUyUngT+
-        8iMSDSd2+4sbFI+Y21GXUXRoJ8IoTaG1Hg5wfw==
-X-Google-Smtp-Source: ABdhPJwXD7us6GrwPF85nM5wDfZ8VPiJxesnCrEJ1KZPYw4Q4KQDokylH7r/C4xSbhIvh0IMRIOTNewWsJQ3RaXU9n0=
-X-Received: by 2002:a05:6512:969:: with SMTP id v9mr6634614lft.466.1618676858156;
- Sat, 17 Apr 2021 09:27:38 -0700 (PDT)
+        Sat, 17 Apr 2021 12:39:14 -0400
+From:   Peter Enderborg <peter.enderborg@sony.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@suse.com>, NeilBrown <neilb@suse.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Mike Rapoport <rppt@kernel.org>, <linux-media@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>,
+        <linaro-mm-sig@lists.linaro.org>,
+        Matthew Wilcox <willy@infradead.org>
+CC:     Peter Enderborg <peter.enderborg@sony.com>
+Subject: [PATCH v5] dma-buf: Add DmaBufTotal counter in meminfo
+Date:   Sat, 17 Apr 2021 18:38:35 +0200
+Message-ID: <20210417163835.25064-1-peter.enderborg@sony.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Received: by 2002:ab3:1211:0:0:0:0:0 with HTTP; Sat, 17 Apr 2021 09:27:37
- -0700 (PDT)
-Reply-To: moneygramdepromo@gmail.com
-In-Reply-To: <CAP2Ytb=kECmNhwhwPxqWQi+6vaOHCe2ZqYFjRSsdpFP1Nq+tbA@mail.gmail.com>
-References: <CAP2Ytb=bdyZG1-Gev7Hmd0Ax_cxRnBdxLtkHLQ_xzkRweVherQ@mail.gmail.com>
- <CAP2YtbnJNHYDDUbnnirr=riHhr5x93gmWLa5HOyDSnjHhYoDXQ@mail.gmail.com>
- <CAP2YtbnxTamMdG+P3xYaN69+DVCEWcsLKLTQBn-tWgjCxAUd=Q@mail.gmail.com>
- <CAP2Ytbm_vLn9oYwQ-+bxyQQC_SiPceG9=grTKKtzMNQ-E+Cacw@mail.gmail.com>
- <CAP2Ytb=vTim3NY1Ce1AHWTPgrE9rdwUfpPrn2RACjeiKRVkDDg@mail.gmail.com>
- <CAP2Ytbk1yYBxO-vq5hYFbrOJGYon+yFQoLqyuq1O5YwA2Qgodw@mail.gmail.com>
- <CAP2YtbmAf1T6ZwvWiLJHkXDYuNLsDd8pbZ3YxyeKHzWKXseCyg@mail.gmail.com>
- <CAP2Ytb=fRYKAwrbsYVaO1j0scBieALu8WF_FQfmvk4cPeNTszQ@mail.gmail.com>
- <CAP2Ytb=syLK=0ttNTfbczBHYvEcwc-yqEJMxOjAWBVnX8ajKyw@mail.gmail.com>
- <CAP2YtbmZtQQbiBN3E_Kg1G-ehqQ8F=WpVekVUg2qfSRjAPFL4g@mail.gmail.com>
- <CAP2YtbmF_-cj4PFYDJYVRy6TE3B5sSDsnMXjNXqdo4VHGwGPWg@mail.gmail.com>
- <CAP2Ytbk8uR7JSjSDvukB0f0HEYh4jxfEW99G_4=s_hk5gHYO9g@mail.gmail.com>
- <CAP2YtbnS4PUVGygMsnvm=ayn=rbe8eMcJjooVaf3t5c3RPUUwA@mail.gmail.com>
- <CAP2Ytbkj+1C1wmwX9g7uGESKCMz7HpGr3bDjZj_7DUF=mTawAQ@mail.gmail.com>
- <CAP2YtbmWrpLF+SYDDtXbhXHTJw7SYaVde_8pHWNV6riqOneQpw@mail.gmail.com>
- <CAP2Ytb=x1FegAGrRqJCM5+OauxxgiGpKnY7xT8PoKyPwMwLTjA@mail.gmail.com>
- <CAP2Ytbm9=KOG5bL9g_md9QhDb_2gDD3t3bVtXdhW-zoPnKvfQg@mail.gmail.com>
- <CAP2Ytbnr+tnRnP0Z3KqwRWsu=tpT3OWLPPiW_383u_RqCOC4dg@mail.gmail.com>
- <CAP2Ytbkhpy99Q4Nb-0fwR7WN3k84UcMTZHoWa7JT86k6oLYqXA@mail.gmail.com>
- <CAP2Ytb=gpo3DvabcF3h_fmM+8qn5NcQ2cBt6PbwnRCM50NRyvg@mail.gmail.com>
- <CAP2YtbkXBBQNfZE_nAMand+Ko1HmefmMaxJAqebtrhNMR-SDow@mail.gmail.com>
- <CAP2YtbkiGgFAi2c8C0g7GNLNmaGhPVspwOs5XQP9HB2Py2kGPw@mail.gmail.com>
- <CAP2Ytbnkz38GeMdW700=fvijm58s8L8bS8U8SSUq8GWf7_vZ=Q@mail.gmail.com>
- <CAP2Ytbn_bmX+YJXyQPw+AHyEso2-AF08--3JWumxfnTZ=yB0fA@mail.gmail.com>
- <CAP2YtbktUtdHa8R6ch9LNx-+76osO9QX=1T8jj6Nym2wOLyOpw@mail.gmail.com>
- <CAP2YtbmuFqWYHaeY8PtDr=B13Em6Ko3EuZtsd3UdjOw=XS_J=Q@mail.gmail.com>
- <CAP2Ytb=zmXvw-QK8sBd0TQaLLbJ6ih3V4Hag1d++O4jKAr1FAw@mail.gmail.com>
- <CAP2Ytbkd=8f8KTOYzsF0562KSwsXZJhFWnQPSCNJkR5OGL6QDg@mail.gmail.com>
- <CAP2Ytb=ia1+wTBnGL9VO+szodcQF2OdgcbmszT19jt+P-wkoTA@mail.gmail.com> <CAP2Ytb=kECmNhwhwPxqWQi+6vaOHCe2ZqYFjRSsdpFP1Nq+tbA@mail.gmail.com>
-From:   Alexander Holmes <chineduomor6@gmail.com>
-Date:   Sat, 17 Apr 2021 16:27:37 +0000
-Message-ID: <CAP2YtbkyPJqGcQR7j=pLdu0aOe3jFXC6Cn4MmVVcQqvHMUXrog@mail.gmail.com>
-Subject: GOOD
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=crzlbGwi c=1 sm=1 tr=0 a=fZcToFWbXLKijqHhjJ02CA==:117 a=3YhXtTcJ-WEA:10 a=z6gsHLkEAAAA:8 a=USQXLDy_ZNVIum19Oj8A:9 a=d-OLMTCWyvARjPbQ-enb:22 a=pHzHmUro8NiASowvMSCR:22 a=Ew2E2A-JSTLzCXPT_086:22
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-How are you today?
+This adds a total used dma-buf memory. Details
+can be found in debugfs, however it is not for everyone
+and not always available. dma-buf are indirect allocated by
+userspace. So with this value we can monitor and detect
+userspace applications that have problems.
 
-This is MoneyGram International Inc. we are contacting you concerning
-your winning fund $1.500, 000.00 USD; your e-mail won $1.500, 000.00
-dollars through Internet contest, and lottery bonus under MoneyGram
-International Inc. Worldwide. The lottery bonus is contesting once in
-a year, and we are doing it to promote this company MoneyGram
-International Inc. The last contest was made through the internet by
-people=E2=80=99s email worldwide, for example. USA, CANADA, RUSSIA, EUROPE,
-ASIA, AFRICA, UNITED KINGDOM, GERMANY, TOGO, SOUTH AFRICA, UAE,
-ETC...........................
+Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
+---
+ drivers/dma-buf/dma-buf.c | 12 ++++++++++++
+ fs/proc/meminfo.c         |  5 ++++-
+ include/linux/dma-buf.h   |  1 +
+ 3 files changed, 17 insertions(+), 1 deletion(-)
 
-We are contacting you because you are among the winning people and
-your winning code is [XHMG02639]. We have programmed your daily
-transfer payment at the minimum of =E2=82=AC4,500 Euros daily. Therefore yo=
-u
-are advised to contact branch office Togo, with your complete info,
-such as below.
+diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+index f264b70c383e..4dc37cd4293b 100644
+--- a/drivers/dma-buf/dma-buf.c
++++ b/drivers/dma-buf/dma-buf.c
+@@ -37,6 +37,7 @@ struct dma_buf_list {
+ };
+ 
+ static struct dma_buf_list db_list;
++static atomic_long_t dma_buf_global_allocated;
+ 
+ static char *dmabuffs_dname(struct dentry *dentry, char *buffer, int buflen)
+ {
+@@ -79,6 +80,7 @@ static void dma_buf_release(struct dentry *dentry)
+ 	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
+ 		dma_resv_fini(dmabuf->resv);
+ 
++	atomic_long_sub(dmabuf->size, &dma_buf_global_allocated);
+ 	module_put(dmabuf->owner);
+ 	kfree(dmabuf->name);
+ 	kfree(dmabuf);
+@@ -586,6 +588,7 @@ struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info)
+ 	mutex_lock(&db_list.lock);
+ 	list_add(&dmabuf->list_node, &db_list.head);
+ 	mutex_unlock(&db_list.lock);
++	atomic_long_add(dmabuf->size, &dma_buf_global_allocated);
+ 
+ 	return dmabuf;
+ 
+@@ -1346,6 +1349,15 @@ void dma_buf_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map)
+ }
+ EXPORT_SYMBOL_GPL(dma_buf_vunmap);
+ 
++/**
++ * dma_buf_allocated_pages - Return the used nr of pages
++ * allocated for dma-buf
++ */
++long dma_buf_allocated_pages(void)
++{
++	return atomic_long_read(&dma_buf_global_allocated) >> PAGE_SHIFT;
++}
++
+ #ifdef CONFIG_DEBUG_FS
+ static int dma_buf_debug_show(struct seq_file *s, void *unused)
+ {
+diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
+index 6fa761c9cc78..ccc7c40c8db7 100644
+--- a/fs/proc/meminfo.c
++++ b/fs/proc/meminfo.c
+@@ -16,6 +16,7 @@
+ #ifdef CONFIG_CMA
+ #include <linux/cma.h>
+ #endif
++#include <linux/dma-buf.h>
+ #include <asm/page.h>
+ #include "internal.h"
+ 
+@@ -145,7 +146,9 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+ 	show_val_kb(m, "CmaFree:        ",
+ 		    global_zone_page_state(NR_FREE_CMA_PAGES));
+ #endif
+-
++#ifdef CONFIG_DMA_SHARED_BUFFER
++	show_val_kb(m, "DmaBufTotal:    ", dma_buf_allocated_pages());
++#endif
+ 	hugetlb_report_meminfo(m);
+ 
+ 	arch_report_meminfo(m);
+diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+index efdc56b9d95f..5b05816bd2cd 100644
+--- a/include/linux/dma-buf.h
++++ b/include/linux/dma-buf.h
+@@ -507,4 +507,5 @@ int dma_buf_mmap(struct dma_buf *, struct vm_area_struct *,
+ 		 unsigned long);
+ int dma_buf_vmap(struct dma_buf *dmabuf, struct dma_buf_map *map);
+ void dma_buf_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map);
++long dma_buf_allocated_pages(void);
+ #endif /* __DMA_BUF_H__ */
+-- 
+2.17.1
 
-Your surname......................
-Your middle name..................
-Your name........................
-Your home address...............
-Your country........................
-Your phone number.................
-Your occupation/ your work...................
-Your passport or Identity Card copy.......................
-
-Kindly contact the MoneyGram Agent Mr. DENIS KODJO, Phone: +228
-79541985, via this email ( moneygramdepromo@gmail.com ) to release
-your first payment pick up information.
-
-Regards
-CEO: W. Alexander Holmes
