@@ -2,278 +2,500 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C75A7362FE3
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DB6362FE6
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236172AbhDQMem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 08:34:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58525 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236058AbhDQMek (ORCPT
+        id S236253AbhDQMj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 08:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235901AbhDQMj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 08:34:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618662854;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aJrQheBC58wapcZPpGnAbCScf3qwzXRcA9ee7XXRb9s=;
-        b=V+u9GRuuT6BwYGQAHF1CTalNxYPTNIarpNfYGaqGzzKQqqYJYQrYhmQ+o34u+q5NNO3L7m
-        Gad7oOpVAb5kDizapG4Sxl/2ycyZAJCr6HiKO3Vv2mPK+E3gfz0F6Ox7aXYFxgf873rfKX
-        difiQmtrA8lGq+X4UsvWkE9R4kMqtwc=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-211-CzSxh4pSOUCaRV2J_D_pfQ-1; Sat, 17 Apr 2021 08:34:13 -0400
-X-MC-Unique: CzSxh4pSOUCaRV2J_D_pfQ-1
-Received: by mail-ed1-f70.google.com with SMTP id w14-20020aa7da4e0000b02903834aeed684so6823744eds.13
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 05:34:12 -0700 (PDT)
+        Sat, 17 Apr 2021 08:39:56 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE5E7C061574;
+        Sat, 17 Apr 2021 05:39:29 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id m11so20123289pfc.11;
+        Sat, 17 Apr 2021 05:39:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c5m6WYXywGC9cMTV3SNlpEDdkZLjEaEUcWZAutELYj4=;
+        b=jIXbNKTXn1LyNTxZ0uZVgbnnFE7Eg4nYCxPfEEOZZNMyIjowJYs5woGM2txkdCz3Vb
+         ik6fH82oBHHOg/7cy0rxZMEM+n4nuR9OM7+hbTap6GFEIRoKt2Du9kgvZ9SrYd0cWt/M
+         Ijh7O8r7/P/67vvG3XUh5OjlAo83DmncXQicxQpLLQpNIJIfBTDHMwCsIuwUfV56Gdn/
+         vWz4Sprvljk2wV2a40O1q6CvbL8KEBnOqoaFUuG/WfQjQBdYTMxDrk2sgowkxPprLOVk
+         fRxt+ZdzPHDuiK30sgfqDU2ntmjXsW4aRywtCIacSvmo49Wzz3wmUE2RY5+KFIkpMY9S
+         3pqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aJrQheBC58wapcZPpGnAbCScf3qwzXRcA9ee7XXRb9s=;
-        b=FvABvAuyt+lLswh5cPv5om0y6bcMo1J6LaQTPzr7dkXnOaw0VoILb/+jbS5rOdRC7A
-         +f58SFO0b4jKO8I3iEdTahj5F4r3O4jHGNNNMMwvUEheP15xkpmxSbLckSuG8Na11rcf
-         1A5DgFuUzFcc0rnRVFn8xXz9GTVpDzJ3Q/0qyLTMJw7vKOttBAc0mfDZ4TAhiapkWSQV
-         PmDYcvQlNoIkXBhsrYc9KHfJz+LmfAymf0/UpvYynShHXSt8mJbRdOa7D0zJSwfcMf2g
-         jOXEjcizZI7FCMpG/T+hkwKEt/ft77UF556x9FqICx/sIBOUtowhuupiVwVvLWSTF6GU
-         TUCA==
-X-Gm-Message-State: AOAM532GSr7NAKoFdtCwEHcHqGbNrvtXVCQa2RP69v7wv123PoxvZa5V
-        s1iaJ87H/vcozVpJoL1hsvxcEy3WM6yE3eG3sxeEbSB54MmXdaV0fssANfh+g5A5Sjy1/pRv2QS
-        LKNx+zlOux1rr1tC6CMMmlFUu
-X-Received: by 2002:a17:907:9691:: with SMTP id hd17mr13089837ejc.205.1618662851555;
-        Sat, 17 Apr 2021 05:34:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxbR2plk+3GLfeWSx/VBv8yLBEXfSEW3y4lcp0aZA4pM2Sg/4om8YCrhBKLBddZ5TFZC/sMEQ==
-X-Received: by 2002:a17:907:9691:: with SMTP id hd17mr13089820ejc.205.1618662851344;
-        Sat, 17 Apr 2021 05:34:11 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id j5sm8020490edt.56.2021.04.17.05.34.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Apr 2021 05:34:10 -0700 (PDT)
-Subject: Re: [PATCH v2 1/3] x86/kvm: Don't bother __pv_cpu_mask when
- !CONFIG_SMP
-To:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <1617941911-5338-1-git-send-email-wanpengli@tencent.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <2faaf564-ab1c-0a21-4b41-48ed657e4ee6@redhat.com>
-Date:   Sat, 17 Apr 2021 14:34:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c5m6WYXywGC9cMTV3SNlpEDdkZLjEaEUcWZAutELYj4=;
+        b=j/iSqcjNKGerHqaRI1kiYuQ36qJxnIlJzJ3eGPFNqwCenBgZqPTxvOje8ExhUpFoXE
+         YYeDUQu2uXYKrJNTZCAJ9AXPgJ2TTkL94Ace6FqPnHf3tJ+B6DvIJqiZAQ/MoQVCzass
+         qdA9xO2bAyr/z4VaokFMFIjr4Ar1IL1K2BIHcck9yshNmsIPFzL0oJriSJyv2tBhejK9
+         NVTQXOjBelJl+OlFzlnO6Y+EtiibPbhLDi4ZajbPC0D8Y3n0hVymWLMBKpFoBndheers
+         cgJ4gkIYw4zEdwMe6DMt+xYxG6EsLXy8m75z0wF+OYL4sMYZhLapJqYSMttto7Y0jQ8O
+         vFqg==
+X-Gm-Message-State: AOAM53011+EY5o5XlTg+keacL6ObDDPsXXxG/H5kML/zM+xfnrxKqra9
+        TpYwDo4OLtSf+qxShYOtq4UadSLmKcw62USxaEycmL65suA=
+X-Google-Smtp-Source: ABdhPJyeY9oULnb0q+ZGcw4IO2w4e8xof+88zdhpnuJjg9b8qRWpt5nGq/9FeJx1Xc0VyD+nnMv1erx4Xd6f+634Q8s=
+X-Received: by 2002:a63:c48:: with SMTP id 8mr3329069pgm.74.1618663169164;
+ Sat, 17 Apr 2021 05:39:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1617941911-5338-1-git-send-email-wanpengli@tencent.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210416134546.38475-1-tomas.melin@vaisala.com> <20210416134546.38475-3-tomas.melin@vaisala.com>
+In-Reply-To: <20210416134546.38475-3-tomas.melin@vaisala.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 17 Apr 2021 15:39:12 +0300
+Message-ID: <CAHp75VcibWup79np=xeQpO2z+OGCFXPhL6vWL6aWRZ+G8+djwQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] iio: accel: Add driver for Murata SCA3300 accelerometer
+To:     Tomas Melin <tomas.melin@vaisala.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/04/21 06:18, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
-> 
-> Enable PV TLB shootdown when !CONFIG_SMP doesn't make sense. Let's
-> move it inside CONFIG_SMP. In addition, we can avoid define and
-> alloc __pv_cpu_mask when !CONFIG_SMP and get rid of 'alloc' variable
-> in kvm_alloc_cpumask.
-> 
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> ---
-> v1 -> v2:
->   * shuffle things around a bit more
-> 
->   arch/x86/kernel/kvm.c | 118 +++++++++++++++++++++++---------------------------
->   1 file changed, 55 insertions(+), 63 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-> index 5e78e01..224a7a1 100644
-> --- a/arch/x86/kernel/kvm.c
-> +++ b/arch/x86/kernel/kvm.c
-> @@ -451,6 +451,10 @@ static void __init sev_map_percpu_data(void)
->   	}
->   }
->   
-> +#ifdef CONFIG_SMP
-> +
-> +static DEFINE_PER_CPU(cpumask_var_t, __pv_cpu_mask);
-> +
->   static bool pv_tlb_flush_supported(void)
->   {
->   	return (kvm_para_has_feature(KVM_FEATURE_PV_TLB_FLUSH) &&
-> @@ -458,10 +462,6 @@ static bool pv_tlb_flush_supported(void)
->   		kvm_para_has_feature(KVM_FEATURE_STEAL_TIME));
->   }
->   
-> -static DEFINE_PER_CPU(cpumask_var_t, __pv_cpu_mask);
-> -
-> -#ifdef CONFIG_SMP
-> -
->   static bool pv_ipi_supported(void)
->   {
->   	return kvm_para_has_feature(KVM_FEATURE_PV_SEND_IPI);
-> @@ -574,6 +574,49 @@ static void kvm_smp_send_call_func_ipi(const struct cpumask *mask)
->   	}
->   }
->   
-> +static void kvm_flush_tlb_others(const struct cpumask *cpumask,
-> +			const struct flush_tlb_info *info)
+On Fri, Apr 16, 2021 at 5:21 PM Tomas Melin <tomas.melin@vaisala.com> wrote:
+>
+> Add initial support for Murata SCA3300 3-axis industrial
+> accelerometer with digital SPI interface. This device also
+> provides a temperature measurement.
+>
+> Device product page including datasheet can be found at:
+> https://www.murata.com/en-global/products/sensor/accel/sca3300
+
+Can you create a tag out of it, i.e.
+
+Datasheet: <URL>
+
+?
+
+> Signed-off-by: Tomas Melin <tomas.melin@vaisala.com>
+
+...
+
+>  obj-$(CONFIG_SCA3000)          += sca3000.o
+> +obj-$(CONFIG_SCA3300)          += sca3300.o
+
+How much difference between them?
+
+...
+
+> +/*
+> + * Copyright (c) 2021 Vaisala Oyj. All rights reserved.
+> + */
+
+One line
+
+> +#include <asm/unaligned.h>
+
+Usually asm/* goes after linux/*
+
+> +#include <linux/bitops.h>
+> +#include <linux/crc8.h>
+> +#include <linux/delay.h>
+
+> +#include <linux/iio/buffer.h>
+> +#include <linux/iio/iio.h>
+> +#include <linux/iio/sysfs.h>
+> +#include <linux/iio/trigger_consumer.h>
+> +#include <linux/iio/triggered_buffer.h>
+
+Can you move this below...
+
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/spi/spi.h>
+
+...here.
+
+So, you will have something like this at the end:
+
+linux/*
+
+asm/*
+
+linux/iio*
+
+...
+
+> +#define SCA3300_REG_STATUS 0x6
+> +#define SCA3300_REG_MODE 0xd
+> +#define SCA3300_REG_WHOAMI 0x10
+
+> +#define SCA3300_VALUE_SW_RESET 0x20
+> +#define SCA3300_CRC8_POLYNOMIAL 0x1d
+> +#define SCA3300_DEVICE_ID 0x51
+> +#define SCA3300_RS_ERROR 0x3
+
+> +#define SCA3300_SELBANK 0x1f
+
+Is it mask or value or offset?
+
+> +#define SCA3300_STATUS_MASK 0x1ff
+
+GENMASK()
+
+TAB indentation to all?
+
+This all like an unordered pile of something. I can't guess the value
+for which register and so on. Can you put an order here?
+
+...
+
+> +#define SCA3300_ACCEL_CHANNEL(index, reg, axis) {                      \
+
+
+> +                       }
+
+Something wrong with indentation here.
+
+...
+
+> +static const int sca3300_accel_scale[][2] = {{0, 370}, {0, 741}, {0, 185},
+> +                                           {0, 185}};
+
+Put it all on one line.
+
+...
+
+> +static const unsigned long sca3300_scan_masks[] = {
+> +       BIT(SCA3300_ACC_X) | BIT(SCA3300_ACC_Y) | BIT(SCA3300_ACC_Z) |
+> +       BIT(SCA3300_TEMP),
+
+> +       0};
+
+Something wrong with indentation, i.e. }; should be on the following line.
+
+...
+
+> +static int sca3300_transfer(struct sca3300_data *sca_data, int *val)
 > +{
-> +	u8 state;
-> +	int cpu;
-> +	struct kvm_steal_time *src;
-> +	struct cpumask *flushmask = this_cpu_cpumask_var_ptr(__pv_cpu_mask);
+> +       struct spi_delay delay = {.value = 10, .unit = SPI_DELAY_UNIT_USECS};
+> +       int32_t ret;
+> +       int rs;
+> +       u8 crc;
+> +       struct spi_transfer xfers[2] = {
+> +               {
+> +                       .tx_buf = sca_data->txbuf,
+> +                       .rx_buf = NULL,
+> +                       .len = ARRAY_SIZE(sca_data->txbuf),
+> +                       .delay = delay,
+> +                       .cs_change = 1,
+> +               },
+> +               {
+> +                       .tx_buf = NULL,
+> +                       .rx_buf = sca_data->rxbuf,
+> +                       .len = ARRAY_SIZE(sca_data->rxbuf),
+> +                       .delay = delay,
+> +                       .cs_change = 0,
+> +               }
+> +       };
 > +
-> +	cpumask_copy(flushmask, cpumask);
-> +	/*
-> +	 * We have to call flush only on online vCPUs. And
-> +	 * queue flush_on_enter for pre-empted vCPUs
-> +	 */
-> +	for_each_cpu(cpu, flushmask) {
-> +		src = &per_cpu(steal_time, cpu);
-> +		state = READ_ONCE(src->preempted);
-> +		if ((state & KVM_VCPU_PREEMPTED)) {
-> +			if (try_cmpxchg(&src->preempted, &state,
-> +					state | KVM_VCPU_FLUSH_TLB))
-> +				__cpumask_clear_cpu(cpu, flushmask);
-> +		}
-> +	}
+> +       /* inverted crc value as described in device data sheet */
+> +       crc = ~crc8(sca3300_crc_table, &sca_data->txbuf[0], 3, CRC8_INIT_VALUE);
+> +       sca_data->txbuf[3] = crc;
 > +
-> +	native_flush_tlb_others(flushmask, info);
+> +       ret = spi_sync_transfer(sca_data->spi, xfers, ARRAY_SIZE(xfers));
+> +       if (ret < 0) {
+> +               dev_err(&sca_data->spi->dev,
+> +                       "transfer error, error: %d\n", ret);
+
+> +               return -EIO;
+
+Why shadowing error code?
+
+> +       }
+> +
+> +       crc = ~crc8(sca3300_crc_table, &sca_data->rxbuf[0], 3, CRC8_INIT_VALUE);
+> +       if (sca_data->rxbuf[3] != crc) {
+> +               dev_err(&sca_data->spi->dev, "CRC checksum mismatch");
+> +               return -EIO;
+> +       }
+> +
+> +       /* get return status */
+
+> +       rs = sca_data->rxbuf[0] & 0x03;
+
+What's 0x3? Shouldn't it be defined with a descriptive name?
+
+> +       if (rs == SCA3300_RS_ERROR)
+> +               ret = -EINVAL;
+> +
+> +       *val = sign_extend32(get_unaligned_be16(&sca_data->rxbuf[1]), 15);
+> +
+> +       return ret;
+> +}
+
+...
+
+> +static int sca3300_error_handler(struct sca3300_data *sca_data)
+> +{
+> +       int ret;
+> +       int val;
+> +
+> +       mutex_lock(&sca_data->lock);
+> +       sca_data->txbuf[0] = 0x0 | (SCA3300_REG_STATUS << 2);
+> +       ret = sca3300_transfer(sca_data, &val);
+> +       mutex_unlock(&sca_data->lock);
+> +       /* return status is cleared after reading status register */
+
+> +       if (ret != -EINVAL) {
+
+Why this? Comment above is confusing, see also the comments below.
+
+> +               dev_err(&sca_data->spi->dev,
+> +                       "error reading device status: %d\n", ret);
+> +               return ret;
+> +       }
+
+> +       dev_err(&sca_data->spi->dev, "device status: 0x%x\n",
+> +               (u16)(val & SCA3300_STATUS_MASK));
+
+Why casting here?!
+
+> +       return 0;
+> +}
+
+...
+
+> +static int sca3300_read_reg(struct sca3300_data *sca_data, u8 reg, int *val)
+> +{
+> +       int ret;
+> +
+> +       mutex_lock(&sca_data->lock);
+
+> +       sca_data->txbuf[0] = 0x0 | (reg << 2);
+
+What is the meaning of the 0x0? Comment, please.
+
+> +       ret = sca3300_transfer(sca_data, val);
+> +       mutex_unlock(&sca_data->lock);
+
+> +       if (ret == -EINVAL)
+
+This needs a good comment.
+
+> +               ret  = sca3300_error_handler(sca_data);
+> +
+> +       return ret;
+
+if (ret != -EINVAL)
+  return ret;
+
+return _error_handler(...);
+
 > +}
 > +
-> +static __init int kvm_alloc_cpumask(void)
+> +static int sca3300_write_reg(struct sca3300_data *sca_data, u8 reg, int val)
 > +{
-> +	int cpu;
+> +       int reg_val = 0;
+> +       int ret;
 > +
-> +	if (!kvm_para_available() || nopv)
-> +		return 0;
+> +       mutex_lock(&sca_data->lock);
+> +       sca_data->txbuf[0] = BIT(7) | (reg << 2);
+> +       put_unaligned_be16(val, &sca_data->txbuf[1]);
+> +       ret = sca3300_transfer(sca_data, &reg_val);
+> +       mutex_unlock(&sca_data->lock);
+> +       if (ret == -EINVAL)
+> +               ret  = sca3300_error_handler(sca_data);
 > +
-> +	if (pv_tlb_flush_supported() || pv_ipi_supported())
-> +		for_each_possible_cpu(cpu) {
-> +			zalloc_cpumask_var_node(per_cpu_ptr(&__pv_cpu_mask, cpu),
-> +				GFP_KERNEL, cpu_to_node(cpu));
-> +		}
-> +
-> +	return 0;
+> +       return ret;
 > +}
-> +arch_initcall(kvm_alloc_cpumask);
+
+As per above.
+
+...
+
+> +               for (i = 0; i < ARRAY_SIZE(sca3300_accel_scale); i++) {
+> +                       if (val2 == sca3300_accel_scale[i][1]) {
+
+> +                               idx = i;
+
+Redundant variable. Refactor w/o using it. It's easy.
+
+> +                               break;
+> +                       }
+> +               }
+> +               if (idx == -1)
+> +                       return -EINVAL;
+
+...
+
+> +               /* freq. change is possible only for mode 3 and 4 */
+> +               if (reg_val == 2 && val == sca3300_lp_freq[3])
+> +                       return sca3300_write_reg(data, SCA3300_REG_MODE, 3);
+> +               else if (reg_val == 3 && val == sca3300_lp_freq[2])
+> +                       return sca3300_write_reg(data, SCA3300_REG_MODE, 2);
+> +               else
+> +                       return -EINVAL;
+
+Two times redundant 'else'
+
+...
+
+> +static irqreturn_t sca3300_trigger_handler(int irq, void *p)
+> +{
+> +       struct iio_poll_func *pf = p;
+> +       struct iio_dev *indio_dev = pf->indio_dev;
+> +       struct sca3300_data *data = iio_priv(indio_dev);
+> +       int bit, ret, val, i = 0;
 > +
->   static void __init kvm_smp_prepare_boot_cpu(void)
->   {
->   	/*
-> @@ -611,33 +654,8 @@ static int kvm_cpu_down_prepare(unsigned int cpu)
->   	local_irq_enable();
->   	return 0;
->   }
-> -#endif
-> -
-> -static void kvm_flush_tlb_others(const struct cpumask *cpumask,
-> -			const struct flush_tlb_info *info)
-> -{
-> -	u8 state;
-> -	int cpu;
-> -	struct kvm_steal_time *src;
-> -	struct cpumask *flushmask = this_cpu_cpumask_var_ptr(__pv_cpu_mask);
-> -
-> -	cpumask_copy(flushmask, cpumask);
-> -	/*
-> -	 * We have to call flush only on online vCPUs. And
-> -	 * queue flush_on_enter for pre-empted vCPUs
-> -	 */
-> -	for_each_cpu(cpu, flushmask) {
-> -		src = &per_cpu(steal_time, cpu);
-> -		state = READ_ONCE(src->preempted);
-> -		if ((state & KVM_VCPU_PREEMPTED)) {
-> -			if (try_cmpxchg(&src->preempted, &state,
-> -					state | KVM_VCPU_FLUSH_TLB))
-> -				__cpumask_clear_cpu(cpu, flushmask);
-> -		}
-> -	}
->   
-> -	native_flush_tlb_others(flushmask, info);
-> -}
-> +#endif
->   
->   static void __init kvm_guest_init(void)
->   {
-> @@ -653,12 +671,6 @@ static void __init kvm_guest_init(void)
->   		pv_ops.time.steal_clock = kvm_steal_clock;
->   	}
->   
-> -	if (pv_tlb_flush_supported()) {
-> -		pv_ops.mmu.flush_tlb_others = kvm_flush_tlb_others;
-> -		pv_ops.mmu.tlb_remove_table = tlb_remove_table;
-> -		pr_info("KVM setup pv remote TLB flush\n");
-> -	}
-> -
->   	if (kvm_para_has_feature(KVM_FEATURE_PV_EOI))
->   		apic_set_eoi_write(kvm_guest_apic_eoi_write);
->   
-> @@ -668,6 +680,12 @@ static void __init kvm_guest_init(void)
->   	}
->   
->   #ifdef CONFIG_SMP
-> +	if (pv_tlb_flush_supported()) {
-> +		pv_ops.mmu.flush_tlb_others = kvm_flush_tlb_others;
-> +		pv_ops.mmu.tlb_remove_table = tlb_remove_table;
-> +		pr_info("KVM setup pv remote TLB flush\n");
-> +	}
+> +       for_each_set_bit(bit, indio_dev->active_scan_mask,
+> +                        indio_dev->masklength) {
+> +               ret = sca3300_read_reg(data, sca3300_channels[bit].address,
+> +                                      &val);
+> +               if (ret < 0) {
+> +                       dev_err(&data->spi->dev,
+> +                               "failed to read register, error: %d\n", ret);
+> +                       goto out;
+> +               }
+> +               ((s16 *)data->scan.channels)[i++] = val;
+> +       }
 > +
->   	smp_ops.smp_prepare_boot_cpu = kvm_smp_prepare_boot_cpu;
->   	if (pv_sched_yield_supported()) {
->   		smp_ops.send_call_func_ipi = kvm_smp_send_call_func_ipi;
-> @@ -734,7 +752,7 @@ static uint32_t __init kvm_detect(void)
->   
->   static void __init kvm_apic_init(void)
->   {
-> -#if defined(CONFIG_SMP)
-> +#ifdef CONFIG_SMP
->   	if (pv_ipi_supported())
->   		kvm_setup_pv_ipi();
->   #endif
-> @@ -794,32 +812,6 @@ static __init int activate_jump_labels(void)
->   }
->   arch_initcall(activate_jump_labels);
->   
-> -static __init int kvm_alloc_cpumask(void)
-> -{
-> -	int cpu;
-> -	bool alloc = false;
-> -
-> -	if (!kvm_para_available() || nopv)
-> -		return 0;
-> -
-> -	if (pv_tlb_flush_supported())
-> -		alloc = true;
-> -
-> -#if defined(CONFIG_SMP)
-> -	if (pv_ipi_supported())
-> -		alloc = true;
-> -#endif
-> -
-> -	if (alloc)
-> -		for_each_possible_cpu(cpu) {
-> -			zalloc_cpumask_var_node(per_cpu_ptr(&__pv_cpu_mask, cpu),
-> -				GFP_KERNEL, cpu_to_node(cpu));
-> -		}
-> -
-> -	return 0;
-> -}
-> -arch_initcall(kvm_alloc_cpumask);
-> -
->   #ifdef CONFIG_PARAVIRT_SPINLOCKS
->   
->   /* Kick a cpu by its apicid. Used to wake up a halted vcpu */
-> 
+> +       iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
+> +                                          iio_get_time_ns(indio_dev));
+> +out:
+> +       iio_trigger_notify_done(indio_dev->trig);
+> +
+> +       return IRQ_HANDLED;
+> +}
+> +
 
-Queued all three, thanks.
+...
 
-Paolo
+> +       ret = sca3300_write_reg(sca_data, SCA3300_REG_MODE,
+> +                               SCA3300_VALUE_SW_RESET);
+> +       if (ret != 0)
 
+if (ret)
+
+Everywhere in the code.
+
+> +               return ret;
+
++ blank line
+
+> +       /* wait at least 1ms after SW-reset command */
+> +       usleep_range(1e3, 10e3);
+
+This doesn't make any difference. You may simply drop it and unify the comments.
+
+> +       /* wait 15ms for settling of signal paths */
+> +       usleep_range(15e3, 50e3);
+
+...
+
+> +       if (value != SCA3300_DEVICE_ID) {
+> +               dev_err(&sca_data->spi->dev,
+> +                       "device id not expected value, %d != %u\n",
+> +                       value, SCA3300_DEVICE_ID);
+
+> +               return -EIO;
+
+-ENODEV ?
+
+> +       }
+
+...
+
+> +static int sca3300_debugfs_reg_access(struct iio_dev *indio_dev,
+> +                                     unsigned int reg, unsigned int writeval,
+> +                                     unsigned int *readval)
+> +{
+> +       struct sca3300_data *data = iio_priv(indio_dev);
+> +       int value;
+> +       int ret;
+> +
+> +       if (reg > SCA3300_SELBANK)
+> +               return -EINVAL;
+> +
+> +       if (!readval)
+> +               return sca3300_write_reg(data, reg, writeval);
+
+> +       ret = sca3300_read_reg(data, reg, &value);
+> +       if (ret < 0)
+> +               return ret;
+
+> +       *readval = (unsigned int)value;
+
+While casting?
+
+> +       return 0;
+> +}
+
+If you switch to use regmap, the read part will be a bonus automatically.
+
+...
+
+> +       indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*sca_data));
+> +       if (!indio_dev) {
+
+> +               dev_err(&spi->dev,
+> +                       "failed to allocate memory for iio device\n");
+
+Noice. You will get the same from user space.
+
+> +               return -ENOMEM;
+> +       }
+
+...
+
+> +       indio_dev->dev.parent = &spi->dev;
+
+This is done by IIO core.
+
+...
+
+> +       ret = devm_iio_device_register(&spi->dev, indio_dev);
+> +       if (ret < 0) {
+> +               dev_err(&spi->dev, "iio device register failed, error: %d\n",
+> +                       ret);
+
+> +               return ret;
+> +       }
+> +
+> +       return 0;
+
+return ret;
+
+> +}
+
+...
+
+> +static const struct of_device_id sca3300_dt_ids[] = {
+> +       { .compatible = "murata,sca3300"},
+> +       {},
+
+Drop comma. No need for a terminator line.
+
+> +};
+
+...
+
+> +static struct spi_driver sca3300_driver = {
+> +       .driver = {
+> +               .name           = SCA3300_ALIAS,
+
+> +               .owner          = THIS_MODULE,
+
+Redundant.
+
+> +               .of_match_table = of_match_ptr(sca3300_dt_ids),
+
+Drop of_match_ptr(). In 99% its use is wrong.
+
+> +       },
+> +
+> +       .probe  = sca3300_probe,
+> +};
+
+-- 
+With Best Regards,
+Andy Shevchenko
