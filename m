@@ -2,141 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A7A13630F9
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 17:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5C23630FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 17:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236605AbhDQPmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 11:42:31 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:58299 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S236377AbhDQPm2 (ORCPT
+        id S236642AbhDQPor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 11:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236481AbhDQPor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 11:42:28 -0400
-Received: (qmail 73905 invoked by uid 1000); 17 Apr 2021 11:42:00 -0400
-Date:   Sat, 17 Apr 2021 11:42:00 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Anirudh Rayabharam <mail@anirudhrb.com>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+eb4674092e6cc8d9e0bd@syzkaller.appspotmail.com,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: gadget: dummy_hcd: fix gpf in gadget_setup
-Message-ID: <20210417154200.GB73141@rowland.harvard.edu>
-References: <20210417125212.6274-1-mail@anirudhrb.com>
+        Sat, 17 Apr 2021 11:44:47 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A566BC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 08:44:20 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lXn7F-0002qG-SU; Sat, 17 Apr 2021 17:44:13 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lXn7F-0006BO-FJ; Sat, 17 Apr 2021 17:44:13 +0200
+Date:   Sat, 17 Apr 2021 17:44:13 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-pwm@vger.kernel.org,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 4/8] dt-bindings: pwm: Support new PWM_USAGE_POWER flag
+Message-ID: <20210417154413.dk2ayjx4y3vo7mnd@pengutronix.de>
+References: <20210412132745.76609-1-clemens.gruber@pqgruber.com>
+ <20210412132745.76609-4-clemens.gruber@pqgruber.com>
+ <YHmXPyf+XjgJs3C8@orome.fritz.box>
+ <YHmzNaxMjPJMcPmK@workstation.tuxnet>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pnu6i5tqpbwo77xn"
 Content-Disposition: inline
-In-Reply-To: <20210417125212.6274-1-mail@anirudhrb.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YHmzNaxMjPJMcPmK@workstation.tuxnet>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 06:22:09PM +0530, Anirudh Rayabharam wrote:
-> Fix a general protection fault reported by syzbot due to a race between
-> gadget_setup() and gadget_unbind() in raw_gadget.
-> 
-> The gadget core is supposed to guarantee that there won't be any more
-> callbacks to the gadget driver once the driver's unbind routine is
-> called. That guarantee is enforced in usb_gadget_remove_driver as
-> follows:
-> 
->         usb_gadget_disconnect(udc->gadget);
->         if (udc->gadget->irq)
->                 synchronize_irq(udc->gadget->irq);
->         udc->driver->unbind(udc->gadget);
->         usb_gadget_udc_stop(udc);
-> 
-> usb_gadget_disconnect turns off the pullup resistor, telling the host
-> that the gadget is no longer connected and preventing the transmission
-> of any more USB packets. Any packets that have already been received
-> are sure to processed by the UDC driver's interrupt handler by the time
-> synchronize_irq returns.
-> 
-> But this doesn't work with dummy_hcd, because dummy_hcd doesn't use
-> interrupts; it uses a timer instead.  It does have code to emulate the
-> effect of synchronize_irq, but that code doesn't get invoked at the
-> right time -- it currently runs in usb_gadget_udc_stop, after the unbind
-> callback instead of before.  Indeed, there's no way for
-> usb_gadget_remove_driver to invoke this code before the unbind
-> callback.
-> 
-> To fix this, move the synchronize_irq() emulation code to dummy_pullup
-> so that it runs before unbind. Also, add a comment explaining why it is
-> necessary to have it there.
-> 
-> Suggested-by: Alan Stern <stern@rowland.harvard.edu>
-> Reported-by: syzbot+eb4674092e6cc8d9e0bd@syzkaller.appspotmail.com
-> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-> ---
->  drivers/usb/gadget/udc/dummy_hcd.c | 23 +++++++++++++++--------
->  1 file changed, 15 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/usb/gadget/udc/dummy_hcd.c b/drivers/usb/gadget/udc/dummy_hcd.c
-> index ce24d4f28f2a..d0dae6406612 100644
-> --- a/drivers/usb/gadget/udc/dummy_hcd.c
-> +++ b/drivers/usb/gadget/udc/dummy_hcd.c
-> @@ -903,6 +903,21 @@ static int dummy_pullup(struct usb_gadget *_gadget, int value)
->  	spin_lock_irqsave(&dum->lock, flags);
->  	dum->pullup = (value != 0);
->  	set_link_state(dum_hcd);
-> +	if (value == 0) {
-> +		/*
-> +		 * emulate synchronize_irq(): wait for callbacks to finish
-> +		 * This seems to be the best to place to emulate the call
-> +		 * to synchronize_irq(). Doing it in dummy_udc_stop() would
-> +		 * be too late since it is called after the unbind callback.
-> +		 * Also, there is no way for core:usb_gadget_remove_driver()
-> +		 * to invoke this code before the unbind callback.
-> +		 */
 
-This comment could be edited a little better.  It should start with a 
-capital letter, and there should be a period at the end of the first 
-line.  There is an extra "to" before "place to emulate".  The last 
-sentence isn't really needed.
+--pnu6i5tqpbwo77xn
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Also, you could be more specific.  The call to synchronize_irq() which 
-we want to emulate is the one in usb_gadget_remove_driver().  And the 
-reason we want to do it before the unbind callback is because unbind 
-shouldn't be invoked until all the other callbacks are finished.
+On Fri, Apr 16, 2021 at 05:54:29PM +0200, Clemens Gruber wrote:
+> On Fri, Apr 16, 2021 at 03:55:11PM +0200, Thierry Reding wrote:
+> > On Mon, Apr 12, 2021 at 03:27:41PM +0200, Clemens Gruber wrote:
+> > > Add the flag and corresponding documentation for PWM_USAGE_POWER.
+> > >=20
+> > > Cc: Rob Herring <robh+dt@kernel.org>
+> > > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> > > ---
+> > >  Documentation/devicetree/bindings/pwm/pwm.txt | 3 +++
+> > >  include/dt-bindings/pwm/pwm.h                 | 1 +
+> > >  2 files changed, 4 insertions(+)
+> >=20
+> > Rob, what are your thoughts on this? I've been thinking about this some
+> > more and I'm having second thoughts about putting this into device tree
+> > because it doesn't actually describe a property of the PWM hardware but
+> > rather a use-case specific hint. It's a bit of a gray area because this
+> > is just part of the PWM specifier which already has use-case specific
+> > "configuration", such as the period and the polarity.
 
-Once those changes are made, you can add:
+This is something I'd prefer over making it part of the device tree API.
+I still don't think it's a good idea but when we keep it in-kernel we
+can at least easier modify it in the future.
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
+> > Perhaps a better place for this is within the PWM API? We could add the
+> > same information into struct pwm_state and then consumers that don't
+> > care about specifics of the signal (such as pwm-backlight) can set that
+> > flag when they request a state to be applied.
+>=20
+> I just want to note that in my opinion, this is not a flag that is
+> changed often, so is it really a good idea to require setting this
+> wherever PWM state is applied? Also, this can't be read-out in
+> .get_state.
 
-Alan Stern
+Not being able to read it out isn't a problem in my eyes.
 
-> +		while (dum->callback_usage > 0) {
-> +			spin_unlock_irqrestore(&dum->lock, flags);
-> +			usleep_range(1000, 2000);
-> +			spin_lock_irqsave(&dum->lock, flags);
-> +		}
-> +	}
->  	spin_unlock_irqrestore(&dum->lock, flags);
->  
->  	usb_hcd_poll_rh_status(dummy_hcd_to_hcd(dum_hcd));
-> @@ -1004,14 +1019,6 @@ static int dummy_udc_stop(struct usb_gadget *g)
->  	spin_lock_irq(&dum->lock);
->  	dum->ints_enabled = 0;
->  	stop_activity(dum);
-> -
-> -	/* emulate synchronize_irq(): wait for callbacks to finish */
-> -	while (dum->callback_usage > 0) {
-> -		spin_unlock_irq(&dum->lock);
-> -		usleep_range(1000, 2000);
-> -		spin_lock_irq(&dum->lock);
-> -	}
-> -
->  	dum->driver = NULL;
->  	spin_unlock_irq(&dum->lock);
->  
-> -- 
-> 2.26.2
-> 
+> Thierry: If this discussion carries on and a v10 is required: Could you
+> maybe merge the uncontroversial patches 1 to 3 of v9 separately and
+> maybe get those in 5.12 ? Patches 4 to 8 can probably wait for 5.13 and
+> have some time in linux-next.
+
+I'm ok in getting those into next now and than into the upcoming merge
+window. That won't make them part of 5.12 however, but 5.13-rc1. IMHO
+patches 7 and 8 can go in, too.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--pnu6i5tqpbwo77xn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmB7AkoACgkQwfwUeK3K
+7AlHjwgAkM6agKrKkVI46Cb6cL1zJJ/NmFQvWDmwGF0c2zE7ODULf+RXWBWsbG6v
+cd7mYxS1yikwcyemX2OgLp4y7NHM6PWfgrJkIAn8BeH3BSDP5S70KYKscVyLenfr
++pZvuYKDYD0hsrD2QcL60uhQwbL5B3cHxFtzFT3mNhEpw0u1hbvFp9rQAwQSiro6
+MBMy7CMmieTA0r83drbHhXwBNVD4pLj1Glq8FUdyy2GIjVkY3O2qDlUI8L5eNn6u
+2JMvDzuLIZ5xZ3tloA3tynWQge98u9yWF0x4s5+997IrR4+NSZ8INpuas+R0LaXl
+0PNu0UD9AJIw6dkZyYalGKSLqgAJSw==
+=rkie
+-----END PGP SIGNATURE-----
+
+--pnu6i5tqpbwo77xn--
