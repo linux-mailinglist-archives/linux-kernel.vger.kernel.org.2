@@ -2,208 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B5F363153
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 19:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46BB7363157
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 19:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236716AbhDQRQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 13:16:37 -0400
-Received: from mga05.intel.com ([192.55.52.43]:16181 "EHLO mga05.intel.com"
+        id S236747AbhDQRS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 13:18:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236568AbhDQRQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 13:16:35 -0400
-IronPort-SDR: isE0bWRr7Gh+zUliJrbt8zWS57oe0kAH3faKeUL4g4nSnaQyg6B3b9AZpA/aow22ycXeB0JxO9
- Tl97W0gjEhmg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9957"; a="280497669"
-X-IronPort-AV: E=Sophos;i="5.82,230,1613462400"; 
-   d="scan'208";a="280497669"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2021 10:16:08 -0700
-IronPort-SDR: JtS5v31T4thn2RlZ6H19Xc3wT6k5gnWj4b+40x15YA01m/JFO3CH6evIRRUoFn9yFkA3O2Kkxc
- n/ZYuGiiKmcw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,230,1613462400"; 
-   d="scan'208";a="453737939"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 17 Apr 2021 10:16:06 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lXoY9-0000xI-WA; Sat, 17 Apr 2021 17:16:05 +0000
-Date:   Sun, 18 Apr 2021 01:15:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/warray-bounds] BUILD SUCCESS WITH
- WARNING 5730745615064f614a7bb0d15b5915c785fcb3c5
-Message-ID: <607b17cd.58vBQpU6Bp6XClug%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S236595AbhDQRSt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 13:18:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA5946109F;
+        Sat, 17 Apr 2021 17:18:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618679902;
+        bh=tUjr+wYEDYEirs0FaCMyY4V7y5/vSgKdEpgImqlsWck=;
+        h=Date:From:To:Cc:Subject:From;
+        b=OE+huC054Q3wjgUhwGMJRbC+gatDqXHydoxEU5hO1YfKJHB53A5WSWUSqj0WXIb2x
+         u93yJJh5k/VB+b8As2xx72rxS/HJNfp6d8+tj2fj/BTs/lSJfy1G8USG3RkcbNjR9i
+         qkn7yMyt9Uz0CwAwCAoEs4cwocoV42bwrCJUvsnT3lolk5wDcYfrFNBWG2cG7euSDk
+         q99Ybvmx87ncRsIMd268Agh7z5IAwuiDiBop8Vo2Wr5bHDSMThSVtSQzuyYo2g826U
+         sqbSeKFESi0DMjoKftKy4PaEJi5p/tmdw9g8f39mJXU5d+8fkI2HhaiThsf9wJa5+6
+         kn0d9EMb4VwPg==
+Date:   Sat, 17 Apr 2021 19:18:16 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [PULL REQUEST] i2c for 5.12
+Message-ID: <20210417171816.GA2369@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="HcAYCG3uE/tztfnV"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/warray-bounds
-branch HEAD: 5730745615064f614a7bb0d15b5915c785fcb3c5  hostap: Fix out-of-bounds warning in prism2_tx_80211()
 
-Warning reports:
+--HcAYCG3uE/tztfnV
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-https://lore.kernel.org/lkml/202104160817.a5FOA0xa-lkp@intel.com
+Linus,
 
-Warning in current branch:
+here is one more driver bugfix for I2C.
 
-arch/alpha/include/asm/string.h:22:16: warning: '__builtin_memcpy' offset [12, 16] from the object at 'com' is out of the bounds of referenced subobject 'config' with type 'unsigned char' at offset 10 [-Warray-bounds]
-arch/alpha/include/asm/string.h:22:16: warning: '__builtin_memcpy' offset [17, 24] from the object at 'alloc' is out of the bounds of referenced subobject 'key' with type 'struct bkey' at offset 0 [-Warray-bounds]
-arch/alpha/include/asm/string.h:22:16: warning: '__builtin_memcpy' offset [3, 7] from the object at 'cmd' is out of the bounds of referenced subobject 'feature' with type 'unsigned char' at offset 1 [-Warray-bounds]
+Please pull.
 
-possible Warning in current branch:
+Thanks,
 
-arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [12, 16] from the object at 'com' is out of the bounds of referenced subobject 'config' with type 'unsigned char' at offset 10 [-Warray-bounds]
-arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [17, 38] from the object at 'txdesc' is out of the bounds of referenced subobject 'frame_control' with type 'short unsigned int' at offset 14 [-Warray-bounds]
-arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [27, 42] from the object at 'buf' is out of the bounds of referenced subobject 'key' with type 'u8[16]' {aka 'unsigned char[16]'} at offset 10 [-Warray-bounds]
-drivers/media/pci/ngene/ngene-core.c:388:2: warning: 'memcpy' offset [12, 16] from the object at 'com' is out of the bounds of referenced subobject 'config' with type 'unsigned char' at offset 10 [-Warray-bounds]
-include/linux/bitmap.h:249:2: warning: 'memcpy' offset [17, 24] from the object at 'settings' is out of the bounds of referenced subobject 'advertising' with type 'long long unsigned int' at offset 8 [-Warray-bounds]
-include/linux/bitmap.h:249:2: warning: 'memcpy' offset [9, 16] from the object at 'settings' is out of the bounds of referenced subobject 'supported' with type 'long long unsigned int' at offset 0 [-Warray-bounds]
+   Wolfram
 
-Warning ids grouped by kconfigs:
 
-gcc_recent_errors
-|-- alpha-allmodconfig
-|   |-- arch-alpha-include-asm-string.h:warning:__builtin_memcpy-offset-from-the-object-at-alloc-is-out-of-the-bounds-of-referenced-subobject-key-with-type-struct-bkey-at-offset
-|   |-- arch-alpha-include-asm-string.h:warning:__builtin_memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
-|   `-- arch-alpha-include-asm-string.h:warning:__builtin_memcpy-offset-from-the-object-at-com-is-out-of-the-bounds-of-referenced-subobject-config-with-type-unsigned-char-at-offset
-|-- alpha-allyesconfig
-|   |-- arch-alpha-include-asm-string.h:warning:__builtin_memcpy-offset-from-the-object-at-alloc-is-out-of-the-bounds-of-referenced-subobject-key-with-type-struct-bkey-at-offset
-|   |-- arch-alpha-include-asm-string.h:warning:__builtin_memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
-|   `-- arch-alpha-include-asm-string.h:warning:__builtin_memcpy-offset-from-the-object-at-com-is-out-of-the-bounds-of-referenced-subobject-config-with-type-unsigned-char-at-offset
-|-- alpha-defconfig
-|   `-- arch-alpha-include-asm-string.h:warning:__builtin_memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
-|-- alpha-randconfig-s031-20210416
-|   |-- arch-alpha-include-asm-string.h:warning:__builtin_memcpy-offset-from-the-object-at-alloc-is-out-of-the-bounds-of-referenced-subobject-key-with-type-struct-bkey-at-offset
-|   `-- arch-alpha-include-asm-string.h:warning:__builtin_memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
-|-- i386-randconfig-a002-20210416
-|   `-- arch-x86-include-asm-string_32.h:warning:__builtin_memcpy-offset-from-the-object-at-com-is-out-of-the-bounds-of-referenced-subobject-config-with-type-unsigned-char-at-offset
-|-- i386-randconfig-a003-20210416
-|   `-- arch-x86-include-asm-string_32.h:warning:__builtin_memcpy-offset-from-the-object-at-com-is-out-of-the-bounds-of-referenced-subobject-config-with-type-unsigned-char-at-offset
-|-- i386-randconfig-a016-20210416
-|   `-- arch-x86-include-asm-string_32.h:warning:__builtin_memcpy-offset-from-the-object-at-txdesc-is-out-of-the-bounds-of-referenced-subobject-frame_control-with-type-short-unsigned-int-at-offset
-|-- i386-randconfig-c021-20210417
-|   |-- arch-x86-include-asm-string_32.h:warning:__builtin_memcpy-offset-from-the-object-at-buf-is-out-of-the-bounds-of-referenced-subobject-key-with-type-u8-aka-unsigned-char-at-offset
-|   `-- arch-x86-include-asm-string_32.h:warning:__builtin_memcpy-offset-from-the-object-at-txdesc-is-out-of-the-bounds-of-referenced-subobject-frame_control-with-type-short-unsigned-int-at-offset
-|-- ia64-allmodconfig
-|   `-- drivers-media-pci-ngene-ngene-core.c:warning:memcpy-offset-from-the-object-at-com-is-out-of-the-bounds-of-referenced-subobject-config-with-type-unsigned-char-at-offset
-|-- x86_64-randconfig-a011-20210416
-|   |-- drivers-media-pci-ngene-ngene-core.c:warning:memcpy-offset-from-the-object-at-com-is-out-of-the-bounds-of-referenced-subobject-config-with-type-unsigned-char-at-offset
-|   |-- include-linux-bitmap.h:warning:memcpy-offset-from-the-object-at-settings-is-out-of-the-bounds-of-referenced-subobject-advertising-with-type-long-long-unsigned-int-at-offset
-|   `-- include-linux-bitmap.h:warning:memcpy-offset-from-the-object-at-settings-is-out-of-the-bounds-of-referenced-subobject-supported-with-type-long-long-unsigned-int-at-offset
-`-- x86_64-randconfig-a016-20210416
-    `-- drivers-media-pci-ngene-ngene-core.c:warning:memcpy-offset-from-the-object-at-com-is-out-of-the-bounds-of-referenced-subobject-config-with-type-unsigned-char-at-offset
+The following changes since commit d434405aaab7d0ebc516b68a8fc4100922d7f5ef:
 
-elapsed time: 721m
+  Linux 5.12-rc7 (2021-04-11 15:16:13 -0700)
 
-configs tested: 96
-configs skipped: 2
+are available in the Git repository at:
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-arm                     davinci_all_defconfig
-um                               allmodconfig
-powerpc                 mpc832x_rdb_defconfig
-sh                          sdk7786_defconfig
-m68k                         amcore_defconfig
-m68k                       bvme6000_defconfig
-powerpc                   motionpro_defconfig
-powerpc                     powernv_defconfig
-sh                             espt_defconfig
-m68k                        mvme147_defconfig
-sh                           se7780_defconfig
-sh                          lboxre2_defconfig
-arm                       imx_v4_v5_defconfig
-arm                         socfpga_defconfig
-sh                ecovec24-romimage_defconfig
-powerpc                          allmodconfig
-powerpc                    ge_imp3a_defconfig
-powerpc                     taishan_defconfig
-arm                          iop32x_defconfig
-powerpc                        cell_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210416
-i386                 randconfig-a006-20210416
-i386                 randconfig-a001-20210416
-i386                 randconfig-a005-20210416
-i386                 randconfig-a004-20210416
-i386                 randconfig-a002-20210416
-x86_64               randconfig-a014-20210416
-x86_64               randconfig-a015-20210416
-x86_64               randconfig-a011-20210416
-x86_64               randconfig-a013-20210416
-x86_64               randconfig-a012-20210416
-x86_64               randconfig-a016-20210416
-i386                 randconfig-a015-20210416
-i386                 randconfig-a014-20210416
-i386                 randconfig-a013-20210416
-i386                 randconfig-a012-20210416
-i386                 randconfig-a016-20210416
-i386                 randconfig-a011-20210416
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-curre=
+nt
 
-clang tested configs:
-x86_64               randconfig-a003-20210416
-x86_64               randconfig-a002-20210416
-x86_64               randconfig-a005-20210416
-x86_64               randconfig-a001-20210416
-x86_64               randconfig-a006-20210416
-x86_64               randconfig-a004-20210416
+for you to fetch changes up to 39930213e7779b9c4257499972b8afb8858f1a2d:
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+  i2c: mv64xxx: Fix random system lock caused by runtime PM (2021-04-15 22:=
+13:19 +0200)
+
+----------------------------------------------------------------
+Marek Beh=C3=BAn (1):
+      i2c: mv64xxx: Fix random system lock caused by runtime PM
+
+
+with much appreciated quality assurance from
+----------------------------------------------------------------
+Samuel Holland (1):
+      (Rev.) i2c: mv64xxx: Fix random system lock caused by runtime PM
+
+ drivers/i2c/busses/i2c-mv64xxx.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+--HcAYCG3uE/tztfnV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmB7GFQACgkQFA3kzBSg
+KbYRShAAo5WyglJcxPLFTWJBuOecptUEv0d5QJWt2lLW0wV4d2Sr7Xq+P20TTBz5
+3p+zJemHohXzPA1eZz6XtOZj5RsptiSCVFzH/Vqvj48MbOZoOF5XtcAMIix218Il
+gAcXhke9SAtiBwVpmul3BJorti/+5ciQe/f5vaLRrBcXhpRg+9HqG8SUdjNiU9KH
+rHAu8N2ViZjwknjQv8rbcShJMkTzPQ0AJFYWZnMKVIK7z/GNmPO6e9PKLAk7JkUg
+/04oW0lAaoD+ccTPUP1F4anK6+mdXqiMcbN8gNT5cMhNdudQtoOfGyyQPCQaFblc
+P3+uTlFHg2ed2Umwn+pVgPAcMDrPGcyZeTr48bV75OtIWLlbdTOh6tnDISAwKPLB
+rRgT/aa1oO1NIhFlxgcnLho4nDHwffCvo7zmWnODs6c8DaYr7xGX6MCNegWs9puF
+Ur/L9CZADPXmn0KUZEQWO8iD73+qO96gY5swDYMu3afkzGfHMo2SoKt1Wej3baoF
+wdJAZxPYTAEgE6UkIkqTbUpYu8yhK1/Ke9CUMkYukn+1eZ+ns2O+EUuLXRIY7am/
+O6XeZK/gp/STlYEIUmiGEtd5ZS/d1oWMHmzx51RgEJEi6WZhYSEi5tkelkhWWNhB
+CU1NaYhgfuatYwm4jT0Dw5PcUsUtqpgPgHNytLRQ9Y+dRkIm/PA=
+=3wOJ
+-----END PGP SIGNATURE-----
+
+--HcAYCG3uE/tztfnV--
