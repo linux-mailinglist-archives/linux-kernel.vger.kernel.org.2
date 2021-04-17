@@ -2,143 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E367362FAF
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 13:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 927EF362FB3
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 13:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236207AbhDQLtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 07:49:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
+        id S236213AbhDQLvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 07:51:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236009AbhDQLtc (ORCPT
+        with ESMTP id S235901AbhDQLvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 07:49:32 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB905C061574;
-        Sat, 17 Apr 2021 04:49:06 -0700 (PDT)
-Date:   Sat, 17 Apr 2021 11:49:03 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618660144;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=rFC/rWkjSJET2j48jfBQ2jr1THdQBw4FW0cnT1t61Gk=;
-        b=iTwbxXJ4h0lbd5FXMG8qKPv5+dyVxKStcEjZVgTQ5sLGkuWw5UtSG+v+zVjGwlu4y3tIY2
-        kW3mqW1epJekTVgIKDcjFNNs+7RgSIwyp/bGxPOxcxOz8jNXgkam14An8nHYhbR85BpK7E
-        +sBg8TVXbq0zgCuGZz7ZovF4ZnOtO+RJjB9DEZvwmQ43ZAG/sBAA4D679Y+8yb5OqVF3zT
-        IYO0mGzdo00WjduDtKPrT6x/de9HLXv9jAkc0g+nzAc0D7j9+wOSZezBR9j1eGG0rDbe14
-        o77+AHW6WTYPqPPTDsUYmwWvaNLLpdiQzrCMQzcUKZLKL4Ab08zbQ+udpifdfw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618660144;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=rFC/rWkjSJET2j48jfBQ2jr1THdQBw4FW0cnT1t61Gk=;
-        b=zEf8ELqoLreGZjsMKSXdcbE0KvsEPK8NrJmG/1jo5qBDmArZV5bp0VR7cbKJ7ItZZDdkWd
-        xl/p7G1KzrFXOCCw==
-From:   "tip-bot2 for Ali Saidi" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] locking/qrwlock: Fix ordering in
- queued_write_lock_slowpath()
-Cc:     Ali Saidi <alisaidi@amazon.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Steve Capper <steve.capper@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        Sat, 17 Apr 2021 07:51:01 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C44FC061574;
+        Sat, 17 Apr 2021 04:50:33 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id r7so17144565wrm.1;
+        Sat, 17 Apr 2021 04:50:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=hWQTtezj5e7iWCHlJMc/HElbpfX2XhqmE3A4fxS1/zs=;
+        b=TOJN98Y5AJgvwqWBXb3oN1sktUtOgOjayiLIailIKN8OfZ01K1WDZ5IGsZHu3ewnbD
+         Kv0usVyqiCN/c+rwornOm/CUkJ9/W7k6XKYKD+8PabWrZn1Pjr/VePU1tzD+aTXe9HHJ
+         OSqyA55TTs44hD2HqL4h9bCpe/I0Aki80XxisRJWtBOSys/UDGa8vA+DVtn9Xv1reIrg
+         dEIBVuPoo/ZV0nLbIgb57QuOtfeR6x0SEheM8944eYb+ipKKwlPDTUxLh4EQV09KFGu7
+         GKdaXUHjmLtoFgSLHX83A9mcRO0oH/V7odhveorl38U9L5JqGfZXNucM0SGFhKpUKk0+
+         mnTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hWQTtezj5e7iWCHlJMc/HElbpfX2XhqmE3A4fxS1/zs=;
+        b=a/OtErxW+ICY7KYnHmYrmttsNs771kf/GHHTciOAdgc/nNpw2ATXYb8JSgUv+Y9A4l
+         kDiZW/xc/Z1PXuFAviFoZoK2Bofk2j7vOKz3f4sp1o+q5UQSKAkjArw68qykom1Q8qAt
+         bD2Ovz8r4YVU/8xK8+gERg9AglF4vkxKjBT9jeuDBkqQlApKopoIb76OjncKqkDlT/9O
+         4aeZZOTQYzTW5V3Sd6aD1BiGRn7Z3zy4irHKd2U+e8twewPZv7v/mXHGLiKuw9HUXRnJ
+         ayUxkRfjLHok96GCnE00JVostGQZrTPJeZpi5SbrLzhmUfUulRjgvpbMwGhzggXCwE22
+         fRaQ==
+X-Gm-Message-State: AOAM530emJVYk6zf8IK1tKl0uQNcvkJ8sUBOD4N8IrD63OjDQeWtjzio
+        moEKYwIK8ifpDD81VV3OcfQ=
+X-Google-Smtp-Source: ABdhPJwiI2uq4gmoZdg/8UpZ9CopW+Q7D2WGRFhJRA9IyInoGGc9jonEe7oBzmSJJrYZaHt55uxEcA==
+X-Received: by 2002:a5d:65d2:: with SMTP id e18mr4059418wrw.31.1618660232167;
+        Sat, 17 Apr 2021 04:50:32 -0700 (PDT)
+Received: from ard0534 ([41.62.188.221])
+        by smtp.gmail.com with ESMTPSA id u4sm13790693wml.0.2021.04.17.04.50.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 17 Apr 2021 04:50:31 -0700 (PDT)
+Date:   Sat, 17 Apr 2021 12:50:28 +0100
+From:   Khaled Romdhani <khaledromdhani216@gmail.com>
+To:     David Sterba <dsterba@suse.cz>, clm@fb.com, josef@toxicpanda.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, khaledromdhani216@gmail.com
+Subject: Re: [PATCH-next] fs/btrfs: Fix uninitialized variable
+Message-ID: <20210417115028.GA21778@ard0534>
+References: <20210413130604.11487-1-khaledromdhani216@gmail.com>
+ <20210416173203.GE7604@twin.jikos.cz>
 MIME-Version: 1.0
-Message-ID: <161866014365.29796.9238636476613418213.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416173203.GE7604@twin.jikos.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/urgent branch of tip:
+On Fri, Apr 16, 2021 at 07:32:03PM +0200, David Sterba wrote:
+> On Tue, Apr 13, 2021 at 02:06:04PM +0100, Khaled ROMDHANI wrote:
+> > The variable zone is not initialized. It
+> > may causes a failed assertion.
+> 
+> Failed assertion means the 2nd one checking that the result still fits
+> to 32bit type. That would mean that none of the cases were hit, but all
+> callers pass valid values.
+> 
+> It would be better to add a default: case to catch that explicitly,
+> though hitting that is considered 'will not happen'.
 
-Commit-ID:     84a24bf8c52e66b7ac89ada5e3cfbe72d65c1896
-Gitweb:        https://git.kernel.org/tip/84a24bf8c52e66b7ac89ada5e3cfbe72d65=
-c1896
-Author:        Ali Saidi <alisaidi@amazon.com>
-AuthorDate:    Thu, 15 Apr 2021 17:27:11=20
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Sat, 17 Apr 2021 13:40:50 +02:00
-
-locking/qrwlock: Fix ordering in queued_write_lock_slowpath()
-
-While this code is executed with the wait_lock held, a reader can
-acquire the lock without holding wait_lock.  The writer side loops
-checking the value with the atomic_cond_read_acquire(), but only truly
-acquires the lock when the compare-and-exchange is completed
-successfully which isn=E2=80=99t ordered. This exposes the window between the
-acquire and the cmpxchg to an A-B-A problem which allows reads
-following the lock acquisition to observe values speculatively before
-the write lock is truly acquired.
-
-We've seen a problem in epoll where the reader does a xchg while
-holding the read lock, but the writer can see a value change out from
-under it.
-
-  Writer                                | Reader
-  ---------------------------------------------------------------------------=
------
-  ep_scan_ready_list()                  |
-  |- write_lock_irq()                   |
-      |- queued_write_lock_slowpath()   |
-	|- atomic_cond_read_acquire()   |
-				        | read_lock_irqsave(&ep->lock, flags);
-     --> (observes value before unlock) |  chain_epi_lockless()
-     |                                  |    epi->next =3D xchg(&ep->ovflist,=
- epi);
-     |                                  | read_unlock_irqrestore(&ep->lock, f=
-lags);
-     |                                  |
-     |     atomic_cmpxchg_relaxed()     |
-     |-- READ_ONCE(ep->ovflist);        |
-
-A core can order the read of the ovflist ahead of the
-atomic_cmpxchg_relaxed(). Switching the cmpxchg to use acquire
-semantics addresses this issue at which point the atomic_cond_read can
-be switched to use relaxed semantics.
-
-Fixes: b519b56e378ee ("locking/qrwlock: Use atomic_cond_read_acquire() when s=
-pinning in qrwlock")
-Signed-off-by: Ali Saidi <alisaidi@amazon.com>
-[peterz: use try_cmpxchg()]
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Steve Capper <steve.capper@arm.com>
-Acked-by: Will Deacon <will@kernel.org>
-Acked-by: Waiman Long <longman@redhat.com>
-Tested-by: Steve Capper <steve.capper@arm.com>
----
- kernel/locking/qrwlock.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/locking/qrwlock.c b/kernel/locking/qrwlock.c
-index 4786dd2..b94f383 100644
---- a/kernel/locking/qrwlock.c
-+++ b/kernel/locking/qrwlock.c
-@@ -60,6 +60,8 @@ EXPORT_SYMBOL(queued_read_lock_slowpath);
-  */
- void queued_write_lock_slowpath(struct qrwlock *lock)
- {
-+	int cnts;
-+
- 	/* Put the writer into the wait queue */
- 	arch_spin_lock(&lock->wait_lock);
-=20
-@@ -73,9 +75,8 @@ void queued_write_lock_slowpath(struct qrwlock *lock)
-=20
- 	/* When no more readers or writers, set the locked flag */
- 	do {
--		atomic_cond_read_acquire(&lock->cnts, VAL =3D=3D _QW_WAITING);
--	} while (atomic_cmpxchg_relaxed(&lock->cnts, _QW_WAITING,
--					_QW_LOCKED) !=3D _QW_WAITING);
-+		cnts =3D atomic_cond_read_relaxed(&lock->cnts, VAL =3D=3D _QW_WAITING);
-+	} while (!atomic_try_cmpxchg_acquire(&lock->cnts, &cnts, _QW_LOCKED));
- unlock:
- 	arch_spin_unlock(&lock->wait_lock);
- }
+Yes. I will send a V2.
