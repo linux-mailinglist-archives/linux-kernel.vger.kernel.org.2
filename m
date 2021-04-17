@@ -2,104 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD31136301E
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A2D363020
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236478AbhDQM6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 08:58:21 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35160 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232844AbhDQM6S (ORCPT
+        id S236582AbhDQNAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 09:00:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37876 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236437AbhDQNAT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 08:58:18 -0400
-Date:   Sat, 17 Apr 2021 12:57:49 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618664270;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Sat, 17 Apr 2021 09:00:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618664392;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=m1X6+iqVb6LhkUi6QZrdTfAvny6WJ8s4Ht4CSC/bzHQ=;
-        b=32mA8G1dRNTE6o7+44+8iajT6lCR0KHgzWQmKufcAurG9OGlpuSVH5HsPSOSwfcEhZ70ZI
-        4Se5u8z72rzjDHlGiQBxrcqsRNv5Zzh9bjwaNEKz0i9OEpPAbENRaXb/Cd95fvSALCWsOI
-        YlK0uU4NJJh0ZWo7nzmXLqMmaAF8plw/MwG6YDVclZhit20P4rZqQ5YlrBKxSvqpiEZ78G
-        NmJm/l9S61eg91Wg37DfYB+u7FAL7do9MQaiJyiy0clLiYuR4aZswLQ9r5G0F09hR4lDfW
-        HzpAa7K42ggWWwbcPEqOneG+sM+SKbtomL3JEjtNfmRfkzWNaQyOvqMtWdAZuw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618664270;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=m1X6+iqVb6LhkUi6QZrdTfAvny6WJ8s4Ht4CSC/bzHQ=;
-        b=UtVtTp30I4WXcXtiAQxcZx6hwcTLBrNhOhxOB1pa64LeJ+ci2J6n3y6qBzcatGvDN815Xv
-        WTDfzjbp1DTKryAw==
-From:   "tip-bot2 for Chen Jun" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] posix-timers: Preserve return value in clock_adjtime32()
-Cc:     Chen Jun <chenjun102@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Richard Cochran <richardcochran@gmail.com>,
-        stable@vger.kernel.org, x86@kernel.org,
+        bh=DWecu6SQYs8uhFs35a7UYYtKfFOnP5nbm6nErBWz6m0=;
+        b=W9u0a6E5nKrh5tjuxAVitWgMNeuqeyfZjsn36dvWGn9LIburHfhvr+0qNtfevb4zfy/5m0
+        tpYeAzx16l/VZDFZhNmSH8U0lZkroNZg0+7lpkC+SaDx5YtCnSwvWpsh4Jd6CVaBDdlQyO
+        8QQbBtHN/nOX1yqKa2suk2b1CJlAddE=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-448-63Dl1yi7N-CBazIIGmGuGA-1; Sat, 17 Apr 2021 08:59:50 -0400
+X-MC-Unique: 63Dl1yi7N-CBazIIGmGuGA-1
+Received: by mail-ed1-f70.google.com with SMTP id l7-20020aa7c3070000b029038502ffe9f2so2858841edq.16
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 05:59:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DWecu6SQYs8uhFs35a7UYYtKfFOnP5nbm6nErBWz6m0=;
+        b=MjmbT+EazJaW9tSBbU+FSkPiVNAqVIB2yuCkHp0FjygIKtqtwedZfwF3aVjJsVogGD
+         7COuqvfwhjQehlZJiDXrtH6LSE1IEssXbUHXQp9iD5oMiYH0wPww92sWXkdgLq9VoyYB
+         UBspiqhwMeK6hGU8sg6IQs8GLEprBEpdGfX13iVpwXIOa/MVPbEylGf/UG0WwPEjdn/e
+         RgIjVaku+LjpafO1Y3KxITPyGMPi/sfPjj7aJOyoj2lqd74Xf8Pfo+ItXhg3xfl1sw3E
+         ZDplOumS5Cb1bKaA4RQbAxZTSb9rENbadPIpIQ4Z4K1u+p5r+UByb8GNQKHfGzx6DyBY
+         9HwA==
+X-Gm-Message-State: AOAM533CGX9oSQgsXZvWiUEvRsrHLNtNtKHb0Ebo0LAkqIu1o5q3nL49
+        EHxQlP4q9MhZGT3uztFrMVktqE1xlG76Yi+/uyhkZlSB7bfQYJjNRhobIxZHgUogGMitLUEVIEl
+        4LCXU6i4cm8KhcUWlJkFlVwis
+X-Received: by 2002:a05:6402:8:: with SMTP id d8mr15182658edu.368.1618664389798;
+        Sat, 17 Apr 2021 05:59:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxrZVptaxnk5HQjF08VjV788QyYwVXW9cClbLU20UdnwK7Oy+o3Do4arDm4F4eZhNef8G8c/w==
+X-Received: by 2002:a05:6402:8:: with SMTP id d8mr15182646edu.368.1618664389665;
+        Sat, 17 Apr 2021 05:59:49 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id o17sm3517851edt.92.2021.04.17.05.59.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Apr 2021 05:59:49 -0700 (PDT)
+To:     Peter Xu <peterx@redhat.com>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210414030449.90692-1-chenjun102@huawei.com>
-References: <20210414030449.90692-1-chenjun102@huawei.com>
+Cc:     Andrew Jones <drjones@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+References: <20210413213641.23742-1-peterx@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v2] kvm/selftests: Fix race condition with dirty_log_test
+Message-ID: <f5f5f2c8-6edd-129d-b570-47d8eaca94c0@redhat.com>
+Date:   Sat, 17 Apr 2021 14:59:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Message-ID: <161866426986.29796.2792867256051825310.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210413213641.23742-1-peterx@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+On 13/04/21 23:36, Peter Xu wrote:
+> This patch closes this race by allowing the main thread to give the vcpu thread
+> chance to do a VMENTER to complete that write operation.  It's done by adding a
+> vcpu loop counter (must be defined as volatile as main thread will do read
+> loop), then the main thread can guarantee the vcpu got at least another VMENTER
+> by making sure the guest_vcpu_loops increases by 2.
+> 
+> Dirty ring does not need this since dirty_ring_last_page would already help
+> avoid this specific race condition.
 
-Commit-ID:     2d036dfa5f10df9782f5278fc591d79d283c1fad
-Gitweb:        https://git.kernel.org/tip/2d036dfa5f10df9782f5278fc591d79d283c1fad
-Author:        Chen Jun <chenjun102@huawei.com>
-AuthorDate:    Wed, 14 Apr 2021 03:04:49 
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sat, 17 Apr 2021 14:55:06 +02:00
+Just a nit, the comment and commit message should mention KVM_RUN rather 
+than vmentry; it's possible to be preempted many times in 
+vcpu_enter_guest without making progress, but those wouldn't return to 
+userspace and thus would not update guest_vcpu_loops.
 
-posix-timers: Preserve return value in clock_adjtime32()
+Also, volatile is considered harmful even in userspace/test code[1]. 
+Technically rather than volatile one should use an atomic load (even a 
+relaxed one), but in practice it's okay to use volatile too *for this 
+specific use* (READ_ONCE/WRITE_ONCE are volatile reads and writes as 
+well).  If the selftests gained 32-bit support, one should not use 
+volatile because neither reads or writes to uint64_t variables would be 
+guaranteed to be atomic.
 
-The return value on success (>= 0) is overwritten by the return value of
-put_old_timex32(). That works correct in the fault case, but is wrong for
-the success case where put_old_timex32() returns 0.
+Queued, thanks.
 
-Just check the return value of put_old_timex32() and return -EFAULT in case
-it is not zero.
+Paolo
 
-[ tglx: Massage changelog ]
+[1] Documentation/process/volatile-considered-harmful.rst
 
-Fixes: 3a4d44b61625 ("ntp: Move adjtimex related compat syscalls to native counterparts")
-Signed-off-by: Chen Jun <chenjun102@huawei.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Richard Cochran <richardcochran@gmail.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210414030449.90692-1-chenjun102@huawei.com
----
- kernel/time/posix-timers.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/time/posix-timers.c b/kernel/time/posix-timers.c
-index bf540f5..dd5697d 100644
---- a/kernel/time/posix-timers.c
-+++ b/kernel/time/posix-timers.c
-@@ -1191,8 +1191,8 @@ SYSCALL_DEFINE2(clock_adjtime32, clockid_t, which_clock,
- 
- 	err = do_clock_adjtime(which_clock, &ktx);
- 
--	if (err >= 0)
--		err = put_old_timex32(utp, &ktx);
-+	if (err >= 0 && put_old_timex32(utp, &ktx))
-+		return -EFAULT;
- 
- 	return err;
- }
