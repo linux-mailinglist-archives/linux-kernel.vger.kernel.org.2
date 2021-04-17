@@ -2,113 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5102362F9F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 13:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0DA0362FA4
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 13:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236151AbhDQLiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 07:38:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231387AbhDQLiB (ORCPT
+        id S236190AbhDQLkA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 17 Apr 2021 07:40:00 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:44938 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231387AbhDQLj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 07:38:01 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD15C061574;
-        Sat, 17 Apr 2021 04:37:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=La4K9Hxv90PEzdP4s04b75vImRFep6ZDy8BSpr4Z3TU=; b=CqzfOhgP0hN9dlahV60EMckVBX
-        XYB8SJZUJ+Jjjx7wvCIyJvU66An/eIJy+4L3gsg0bSh8H17LQ11f6zLxd8mISkOEhL7PBTTbJ4eMn
-        SGLkvymcS9NLU9u3ysgR/0cCjN2XVFKnfoh7K6cAaorUM/6waIRURtzhzoA8heavyPnPswGVEJ6Er
-        N+oqwCwnNxNYoRGiLAsGCw9lRu4JV8JWbT+fxm1vRs6TRKGUaLuHkGg/yvKRhev31UV5mnPOJ2b2O
-        vlusG1fIQIIHG+AIuePpAl358FHVGgf1g16n+OhmpDQr+BBI3w7SiIcyPwzi0WdeC1xbNdZIGVROU
-        9CVkyr8g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lXjGO-005BXG-D2; Sat, 17 Apr 2021 11:37:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CA636300212;
-        Sat, 17 Apr 2021 13:37:23 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A53742D2112CE; Sat, 17 Apr 2021 13:37:23 +0200 (CEST)
-Date:   Sat, 17 Apr 2021 13:37:23 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     x86@kernel.org, Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 09/15] x86/alternatives: Use C int3 selftest but disable
- KASAN
-Message-ID: <YHrIc0L5AQukw525@hirez.programming.kicks-ass.net>
-References: <20210416203844.3803177-1-samitolvanen@google.com>
- <20210416203844.3803177-10-samitolvanen@google.com>
+        Sat, 17 Apr 2021 07:39:58 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-286-5uilHBoVOxeAFJZU7Wda9w-1; Sat, 17 Apr 2021 12:39:29 +0100
+X-MC-Unique: 5uilHBoVOxeAFJZU7Wda9w-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Sat, 17 Apr 2021 12:39:29 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Sat, 17 Apr 2021 12:39:29 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'Maciej W. Rozycki'" <macro@orcam.me.uk>,
+        Joe Perches <joe@perches.com>
+CC:     Khalid Aziz <khalid@gonehiking.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH 1/5] scsi: BusLogic: Fix missing `pr_cont' use
+Thread-Topic: [PATCH 1/5] scsi: BusLogic: Fix missing `pr_cont' use
+Thread-Index: AQHXMq4Y+WsIhBBiNEu36L38d+a4baq4klBA
+Date:   Sat, 17 Apr 2021 11:39:28 +0000
+Message-ID: <6679310a77984cc0af9f48f5616b840c@AcuMS.aculab.com>
+References: <alpine.DEB.2.21.2104141244520.44318@angie.orcam.me.uk>
+  <alpine.DEB.2.21.2104141419040.44318@angie.orcam.me.uk>
+ <787aae5540612555a8bf92de2083c8fa74e52ce9.camel@perches.com>
+ <alpine.DEB.2.21.2104161224300.44318@angie.orcam.me.uk>
+In-Reply-To: <alpine.DEB.2.21.2104161224300.44318@angie.orcam.me.uk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416203844.3803177-10-samitolvanen@google.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 01:38:38PM -0700, Sami Tolvanen wrote:
-> From: Kees Cook <keescook@chromium.org>
+From: Maciej W. Rozycki
+> Sent: 16 April 2021 11:49
 > 
-> Instead of using inline asm for the int3 selftest (which confuses the
-> Clang's ThinLTO pass), this restores the C function but disables KASAN
-> (and tracing for good measure) to keep the things simple and avoid
-> unexpected side-effects. This attempts to keep the fix from commit
-> ecc606103837 ("x86/alternatives: Fix int3_emulate_call() selftest stack
-> corruption") without using inline asm.
+> On Thu, 15 Apr 2021, Joe Perches wrote:
 > 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> ---
->  arch/x86/kernel/alternative.c | 21 ++++-----------------
->  1 file changed, 4 insertions(+), 17 deletions(-)
+> > In patch 2, vscnprintf should probably be used to make sure it's
+> > 0 terminated.
 > 
-> diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-> index 6974b5174495..669a23454c09 100644
-> --- a/arch/x86/kernel/alternative.c
-> +++ b/arch/x86/kernel/alternative.c
-> @@ -496,23 +496,10 @@ extern struct paravirt_patch_site __start_parainstructions[],
->   *
->   * See entry_{32,64}.S for more details.
->   */
-> -
-> -/*
-> - * We define the int3_magic() function in assembly to control the calling
-> - * convention such that we can 'call' it from assembly.
-> - */
-> -
-> -extern void int3_magic(unsigned int *ptr); /* defined in asm */
-> -
-> -asm (
-> -"	.pushsection	.init.text, \"ax\", @progbits\n"
-> -"	.type		int3_magic, @function\n"
-> -"int3_magic:\n"
-> -"	movl	$1, (%" _ASM_ARG1 ")\n"
-> -"	ret\n"
-> -"	.size		int3_magic, .-int3_magic\n"
-> -"	.popsection\n"
-> -);
-> +static void __init __no_sanitize_address notrace int3_magic(unsigned int *ptr)
-> +{
-> +	*ptr = 1;
-> +}
+>  Why?  C99 has this[1]:
+> 
+> "The vsnprintf function is equivalent to snprintf, with the variable
+> argument list replaced by arg, which shall have been initialized by the
+> va_start macro (and possibly subsequent va_arg calls)."
 
-I really don't like this. the compiler is free to mess this up in all
-sorts of ways.
+vscnprintf() is normally the function you want (not vsnprintf())
+because the return value is the number of characters actually
+put into the buffer, not the number that would have been written
+had the buffer been long enough.
+Return values larger than the buffer size are almost never
+allowed for - and are probably a set of 'buffer overflow' bugs.
 
-The problem is that the call-site does not respect the regular calling
-convention, so calling a regular C function is just asking for trouble,
-which is why it ended up being asm, then we fully control the calling
-convention.
+While probably justified by saying that it lets you malloc()
+a big enough buffer and try again, the return value is almost
+certainly just historic.
+
+The original sprintf() libc code allocated a FILE structure on
+stack set to fully-buffered with the current buffer pointer set
+to the caller's buffer and a buffer length of MAXINT.
+It then just called vprintf() to do the work.
+
+snprintf() was done the same way, except the buffer length was
+set and the 'write character' (or 'flush buffer') function
+intercepted to avoid writes beyond the buffer end.
+(Possibly by re-routing the writes to a global buffer.)
+The return value from vprintf() gets returned to the user.
+
+The Unix versions have always '\0' terminated the buffer.
+Only Microsoft has ever released an snprintf() that doesn't
+'\0' terminate the output - another source of bugs.
+
+Personally I think bounded string functions should
+return the buffer size on overflow.
+This means sequences of:
+	offset += xxx(buf + offset, sizeof buf - offset, ...);
+are safe and the overflow can be detected right at the end.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
