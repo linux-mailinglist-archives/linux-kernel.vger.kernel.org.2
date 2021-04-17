@@ -2,129 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 992EB362D10
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 05:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A2B362D12
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 05:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235482AbhDQDKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 23:10:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233847AbhDQDKr (ORCPT
+        id S235593AbhDQDLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 23:11:38 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16133 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233847AbhDQDLh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 23:10:47 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE70C061756
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 20:10:21 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id z1so34475787edb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 20:10:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=85gK/G/W5iMoBK0GkeseBpRLSu6iilna997G3wOYzKA=;
-        b=HZTGTUKH8dKDQI2cGgMS1199JU9pwVvYvJfVz2X/jLUwSNcdlBWa0RFaUmv1m7HrbG
-         z64NOSpbvXOlflEQYZ6uGqMlG1AwvqN+gQumUEt8f1ZQk1Dm2HO6ZhyoJf+M/FC18UmC
-         OwiJXRZnahH0CfG5nXtLVX75mf4BrOIupIPP6WYUKKYhqFixVzS7fe1CfrDOk0ZLl4i+
-         JE+Z2KBJj+tu+BP72yw3A4pLlfv8F5SWEgWFGHwjAEHJiKRVXwnyCFKwRqR5SxIHRxmp
-         NAlb9m3KZZCQxrMWTIGqNEuawCL32Zt0VZQB7mKOOKgbIjuzFpDpgAqLW0mdgjQLAgda
-         58Iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=85gK/G/W5iMoBK0GkeseBpRLSu6iilna997G3wOYzKA=;
-        b=ICl+D4CbxtdQ16KnzRtDhUu41XQvFKCBBUTdIEUoevld2K7mMc7Hd19UE7oQnbYZAq
-         f3TtP/9SrkIv1w/PFNekT03tR6MCCin2cZyagHDuMRaItbQ3t6Ne3WngQKF4iwHehGut
-         CxDIvYyiWZwiwxfIc14wdpRUMXW8w6X2b179htwa3FB21Izzdhjx2KDsxKxcspgGEkNg
-         eSVQe/4q9YEj2ZUMF6QsYPl1Wi+WZwa51wiKTtatGS4wTZpEnQfVHQ4eBxLQ6mmFmDk0
-         guxMcTT4MPiyctZbHnoIW6Dq1EGEzk4b8NWRyT0ylA34GN7UkkkJoMzyf764nELMQ7/6
-         Ns/w==
-X-Gm-Message-State: AOAM533jjGOZPKBGXdyTNBraj0s4MqE8oFldhkdMCPx0ti68a29JNkni
-        GTcv18XhqZR5TPf62fV3E3NQwA1rLCwwA45JFyoBOvSkcSGpyg==
-X-Google-Smtp-Source: ABdhPJxibDvYnm5jZXB9xL9ugC35IBQa+u4EFVMOU0vRSWJYShmZ2JivPrMhNxQMTyH10JMPgfRru09bLKGrLW14XRc=
-X-Received: by 2002:a50:e607:: with SMTP id y7mr13698021edm.18.1618629020103;
- Fri, 16 Apr 2021 20:10:20 -0700 (PDT)
+        Fri, 16 Apr 2021 23:11:37 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FMdLk2DlkzpYTh;
+        Sat, 17 Apr 2021 11:08:14 +0800 (CST)
+Received: from [10.67.102.118] (10.67.102.118) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 17 Apr 2021 11:11:01 +0800
+Subject: Re: [RFC PATCH] USB:XHCI:skip hub registration
+To:     Alan Stern <stern@rowland.harvard.edu>
+CC:     <gregkh@linuxfoundation.org>, <mathias.nyman@intel.com>,
+        <liudongdong3@huawei.com>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kong.kongxinwei@hisilicon.com>,
+        <yisen.zhuang@huawei.com>
+References: <1618489358-42283-1-git-send-email-liulongfang@huawei.com>
+ <20210415144323.GC1530055@rowland.harvard.edu>
+ <3dad6f4f-6386-427c-c36c-7d26b9a76fa4@huawei.com>
+ <20210416152021.GA42403@rowland.harvard.edu>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <1abf8a09-4209-e000-f608-8664a4964670@huawei.com>
+Date:   Sat, 17 Apr 2021 11:11:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 16 Apr 2021 20:10:09 -0700
-Message-ID: <CAPcyv4imrTM21eU+3ippyLcmHAo5V8_MtmyL49Z01-L1pg6HQQ@mail.gmail.com>
-Subject: [GIT PULL] cxl fixes for v5.12-rc8 / final
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-cxl@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210416152021.GA42403@rowland.harvard.edu>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.118]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus, please pull from:
+On 2021/4/16 23:20, Alan Stern wrote:
+> On Fri, Apr 16, 2021 at 10:03:21AM +0800, liulongfang wrote:
+>> On 2021/4/15 22:43, Alan Stern wrote:
+>>> On Thu, Apr 15, 2021 at 08:22:38PM +0800, Longfang Liu wrote:
+>>>> When the number of ports on the USB hub is 0, skip the registration
+>>>> operation of the USB hub.
+>>>>
+>>>> The current Kunpeng930's XHCI hardware controller is defective. The number
+>>>> of ports on its USB3.0 bus controller is 0, and the number of ports on
+>>>> the USB2.0 bus controller is 1.
+>>>>
+>>>> In order to solve this problem that the USB3.0 controller does not have
+>>>> a port which causes the registration of the hub to fail, this patch passes
+>>>> the defect information by adding flags in the quirks of xhci and usb_hcd,
+>>>> and finally skips the registration process of the hub directly according
+>>>> to the results of these flags when the hub is initialized.
+>>>>
+>>>> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+>>>
+>>> The objections that Greg raised are all good ones.
+>>>
+>>> But even aside from them, this patch doesn't actually do what the 
+>>> description says.  The patch doesn't remove the call to usb_add_hcd 
+>>> for the USB-3 bus.  If you simply skipped that call (and the 
+>>> corresponding call to usb_remove_hcd) when there are no 
+>>> ports on the root hub, none of the stuff in this patch would be needed.
+>>>
+>>> Alan Stern
+>>>
+>>
+>> "[RFC PATCH] USB:XHCI:Adjust the log level of hub"
+> 
+> I don't understand.  What patch is that?  Do you have a URL for it?
+> 
+URL: https://patchwork.kernel.org/project/linux-usb/patch/1616666652-37920-1-git-send-email-liulongfang@huawei.com/
+Thanks
+Longfang.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/cxl/cxl
-tags/cxl-fixes-for-5.12-rc8
-
-...to receive a collection of fixes for the CXL memory class driver
-introduced in v5.12-rc1.
-
-The driver was primarily developed on a work-in-progress QEMU
-emulation of the interface and we have since found a couple places
-where it hid spec compat bugs in the driver, or had a spec
-implementation bug itself. The biggest change here is replacing a
-percpu_ref with an rwsem to cleanup a couple bugs in the error unwind
-path during ioctl device init. Lastly there were some minor cleanups
-to not export the power-management sysfs-ABI for the ioctl device, use
-the proper sysfs helper for emitting values, and prevent subtle bugs
-as new administration commands are added to the supported list.
-
-The bulk of it has appeared in -next save for the top commit which was
-found today and validated on a fixed-up QEMU model.
-
----
-
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
-
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/cxl/cxl
-tags/cxl-fixes-for-5.12-rc8
-
-for you to fetch changes up to fae8817ae804a682c6823ad1672438f39fc46c28:
-
-  cxl/mem: Fix memory device capacity probing (2021-04-16 18:21:56 -0700)
-
-----------------------------------------------------------------
-cxl for 5.12-rc8
-
-- Fix support for CXL memory devices with registers offset from the BAR
-  base.
-
-- Fix the reporting of device capacity.
-
-- Fix the driver commands list definition to be disconnected from the
-  UAPI command list.
-
-- Replace percpu_ref with rwsem to fix initialization error path.
-
-- Fix leaks in the driver initialization error path.
-
-- Drop the power/ directory from CXL device sysfs.
-
-- Use the recommended sysfs helper for attribute 'show' implementations.
-
-----------------------------------------------------------------
-Ben Widawsky (1):
-      cxl/mem: Fix register block offset calculation
-
-Dan Williams (5):
-      cxl/mem: Use sysfs_emit() for attribute show routines
-      cxl/mem: Fix synchronization mechanism for device removal vs
-ioctl operations
-      cxl/mem: Do not rely on device_add() side effects for
-dev_set_name() failures
-      cxl/mem: Disable cxl device power management
-      cxl/mem: Fix memory device capacity probing
-
-Robert Richter (1):
-      cxl/mem: Force array size of mem_commands[] to CXL_MEM_COMMAND_ID_MAX
-
- drivers/cxl/mem.c | 152 ++++++++++++++++++++++++++++++++----------------------
- 1 file changed, 89 insertions(+), 63 deletions(-)
+>> The current method is an improved method of the above patch.
+>> This patch just make it skip registering USB-3 root hub if that hub has no ports,
+> 
+> No, that isn't what this patch does.
+> 
+> If the root hub wasn't registered, hub_probe wouldn't get called.  But 
+> with your patch, the system tries to register the root hub, and it does 
+> call hub_probe, and then that function fails with a warning message.
+> 
+> The way to _really_ akip registering the root hub is to change the 
+> xhci-hcd code.  Make it skip calling usb_add_hcd.
+> 
+>> after skipping registering, no port will not report error log,the goal of this
+>> patch is reached without error log output.
+> 
+> Why do you want to get rid of the error log output?  There really _is_ 
+> an error, because the USB-3 hardware on your controller is defective.  
+> Since the hardware is buggy, we _should_ print an error message in the 
+> kernel log.
+> 
+> Alan Stern
+> .
+> 
