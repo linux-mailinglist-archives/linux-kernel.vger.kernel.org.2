@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F7E36319A
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 19:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FFF63631A4
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 19:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236773AbhDQRr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 13:47:57 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:44034 "EHLO m43-7.mailgun.net"
+        id S236858AbhDQRwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 13:52:33 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:17756 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236643AbhDQRry (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 13:47:54 -0400
+        id S236643AbhDQRw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 13:52:28 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618681648; h=Date: Message-Id: Cc: To: References:
+ s=smtp; t=1618681921; h=Date: Message-Id: Cc: To: References:
  In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=fV6Mz6u/Lhxzac+O0UMKpYTg7k95TOBdOR7pWne3wrA=;
- b=VknSZOeQEQrcKGm5h1GlNh6k7PqXrxEx+DI4FjI2yDtJR++ZWO12nW3TANAhlatFMZsmlvYy
- l4RAHgrSGddAP6hwrbm/hdADfU8px9YU+9VzfAHFs0fjgKiAiP83xdjxxRvC7hRDq+KEJ6Gf
- gddC9PmFxjxO93dXXnYNR/SnBOk=
+ Content-Type: Sender; bh=Ta9UOrBNX6nF/ayPWAdJWmH7jGA1eFoW7NL2pCPKvxc=;
+ b=AGhiJt8q0Sq6nhO2pB5HEVJhLuH7OTGU2ykCOPwtDJZR6o03pXpuOH87W23GwELcALRp4BjW
+ NmuGuLS0Hp458VZ+w9f6GbtXT0S51LtRIi8wfRjmboS2Cj1RwkHK1DsW6qlVqLMH+1KVdMQg
+ QKcwBtM2wYfkRu3oOq7qNSJYUQM=
 X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 607b1f1ba817abd39a262754 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 17 Apr 2021 17:47:07
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 607b2041febcffa80f340daa (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 17 Apr 2021 17:52:01
  GMT
 Sender: kvalo=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DF190C43217; Sat, 17 Apr 2021 17:47:06 +0000 (UTC)
+        id 4D865C4338A; Sat, 17 Apr 2021 17:52:01 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
 Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
         (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 43413C433D3;
-        Sat, 17 Apr 2021 17:47:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 43413C433D3
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B1A1DC433D3;
+        Sat, 17 Apr 2021 17:51:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B1A1DC433D3
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] mwifiex: don't print SSID to logs
+Subject: Re: [PATCH RESEND][next] rtl8xxxu: Fix fall-through warnings for
+ Clang
 From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210225024454.4106485-1-briannorris@chromium.org>
-References: <20210225024454.4106485-1-briannorris@chromium.org>
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     linux-wireless@vger.kernel.org, <linux-kernel@vger.kernel.org>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Brian Norris <briannorris@chromium.org>
+In-Reply-To: <20210305094850.GA141221@embeddedor>
+References: <20210305094850.GA141221@embeddedor>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Jes Sorensen <Jes.Sorensen@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
 User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210417174706.DF190C43217@smtp.codeaurora.org>
-Date:   Sat, 17 Apr 2021 17:47:06 +0000 (UTC)
+Message-Id: <20210417175201.4D865C4338A@smtp.codeaurora.org>
+Date:   Sat, 17 Apr 2021 17:52:01 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Brian Norris <briannorris@chromium.org> wrote:
+"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
 
-> There are a few reasons not to dump SSIDs as-is in kernel logs:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix
+> multiple warnings by replacing /* fall through */ comments with
+> the new pseudo-keyword macro fallthrough; instead of letting the
+> code fall through to the next case.
 > 
-> 1) they're not guaranteed to be any particular text encoding (UTF-8,
->    ASCII, ...) in general
-> 2) it's somewhat redundant; the BSSID should be enough to uniquely
->    identify the AP/STA to which we're connecting
-> 3) BSSIDs have an easily-recognized format, whereas SSIDs do not (they
->    are free-form)
-> 4) other common drivers (e.g., everything based on mac80211) get along
->    just fine by only including BSSIDs when logging state transitions
+> Notice that Clang doesn't recognize /* fall through */ comments as
+> implicit fall-through markings.
 > 
-> Additional notes on reason #3: this is important for the
-> privacy-conscious, especially when providing tools that convey
-> kernel logs on behalf of a user -- e.g., when reporting bugs. So for
-> example, it's easy to automatically filter logs for MAC addresses, but
-> it's much harder to filter SSIDs out of unstructured text.
-> 
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
+> Link: https://github.com/KSPP/linux/issues/115
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
 Patch applied to wireless-drivers-next.git, thanks.
 
-d23a96220353 mwifiex: don't print SSID to logs
+bf3365a856a1 rtl8xxxu: Fix fall-through warnings for Clang
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210225024454.4106485-1-briannorris@chromium.org/
+https://patchwork.kernel.org/project/linux-wireless/patch/20210305094850.GA141221@embeddedor/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
