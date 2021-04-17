@@ -2,72 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 662093631B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 20:02:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD49A3631BB
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 20:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236946AbhDQSBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 14:01:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236718AbhDQSBl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 14:01:41 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9798FC061574;
-        Sat, 17 Apr 2021 11:01:14 -0700 (PDT)
-Received: from ipservice-092-217-095-235.092.217.pools.vodafone-ip.de ([92.217.95.235] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1lXpFm-0002pi-FE; Sat, 17 Apr 2021 20:01:10 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH 4/4] staging: rtl8188eu: remove unused function parameters
-Date:   Sat, 17 Apr 2021 20:00:37 +0200
-Message-Id: <20210417180037.17806-4-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210417180037.17806-1-martin@kaiser.cx>
-References: <20210417180037.17806-1-martin@kaiser.cx>
+        id S236962AbhDQSCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 14:02:15 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:43282 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236891AbhDQSCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 14:02:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618682505; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=oGRlOSXczuP0DJCaBHzbDqORGAinXBLa+Yc9c3vGhJg=;
+ b=FRAEoB15KbbLgVaRgmZU2/iu6XdvF/cGI7C35+7GpJ9vzeMZ1N/Zx+5LVal03yoyRYoaxo/I
+ NGx8guKclNbe3LCXKvCQqy93OgIc12b64t/u8YdB2nVhQwppDzepCuGGP9Kl0Ht6O+VQt+Os
+ fig96A9LOHmSTy1esQC2JwiiKZY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 607b2285c39407c327a875d1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 17 Apr 2021 18:01:41
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F29E0C43460; Sat, 17 Apr 2021 18:01:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BA67CC433F1;
+        Sat, 17 Apr 2021 18:01:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BA67CC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH net-next 4/5] libertas: avoid -Wempty-body warning
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210322104343.948660-4-arnd@kernel.org>
+References: <20210322104343.948660-4-arnd@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Jason Yan <yanaijie@huawei.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210417180140.F29E0C43460@smtp.codeaurora.org>
+Date:   Sat, 17 Apr 2021 18:01:40 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Enable and Linked parameters of _BeaconFunctionEnable are not used.
-Remove them.
+Arnd Bergmann <arnd@kernel.org> wrote:
 
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
----
- drivers/staging/rtl8188eu/hal/usb_halinit.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Building without mesh supports shows a couple of warnings with
+> 'make W=1':
+> 
+> drivers/net/wireless/marvell/libertas/main.c: In function 'lbs_start_card':
+> drivers/net/wireless/marvell/libertas/main.c:1068:37: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+>  1068 |                 lbs_start_mesh(priv);
+> 
+> Change the macros to use the usual "do { } while (0)" instead to shut up
+> the warnings and make the code a litte more robust.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-diff --git a/drivers/staging/rtl8188eu/hal/usb_halinit.c b/drivers/staging/rtl8188eu/hal/usb_halinit.c
-index abe58cf2de16..80cdcf6f7879 100644
---- a/drivers/staging/rtl8188eu/hal/usb_halinit.c
-+++ b/drivers/staging/rtl8188eu/hal/usb_halinit.c
-@@ -574,8 +574,7 @@ static void _InitBeaconParameters(struct adapter *Adapter)
- 	haldata->RegCR_1 = usb_read8(Adapter, REG_CR + 1);
- }
- 
--static void _BeaconFunctionEnable(struct adapter *Adapter,
--				  bool Enable, bool Linked)
-+static void _BeaconFunctionEnable(struct adapter *Adapter)
- {
- 	usb_write8(Adapter, REG_BCN_CTRL, (BIT(4) | BIT(3) | BIT(1)));
- 
-@@ -1961,7 +1960,7 @@ void beacon_timing_control(struct adapter *adapt)
- 	usb_write8(adapt,  REG_RXTSF_OFFSET_CCK, 0x50);
- 	usb_write8(adapt, REG_RXTSF_OFFSET_OFDM, 0x50);
- 
--	_BeaconFunctionEnable(adapt, true, true);
-+	_BeaconFunctionEnable(adapt);
- 
- 	ResumeTxBeacon(adapt);
- 
+Patch applied to wireless-drivers-next.git, thanks.
+
+01414f8882f9 libertas: avoid -Wempty-body warning
+
 -- 
-2.20.1
+https://patchwork.kernel.org/project/linux-wireless/patch/20210322104343.948660-4-arnd@kernel.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
