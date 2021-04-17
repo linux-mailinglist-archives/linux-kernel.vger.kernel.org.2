@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB3E363148
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 19:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B1C36314A
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 19:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236691AbhDQRCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 13:02:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56582 "EHLO mail.kernel.org"
+        id S236744AbhDQRCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 13:02:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236670AbhDQRCd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 13:02:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 820176120F;
-        Sat, 17 Apr 2021 17:02:06 +0000 (UTC)
+        id S236698AbhDQRCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 13:02:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id B41A7610C7;
+        Sat, 17 Apr 2021 17:02:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618678926;
-        bh=gRCZhPw34VPReowmJecTqwoA9iSAjlZuG4AcKbByCmI=;
+        s=k20201202; t=1618678928;
+        bh=VsXF+WPcT3GnWYIQViGsNqb95iXQ7PnB7fyjW02U3DU=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=LzSp59DdaOYYjvaWK8M53Gv8hyO5YmyUx3e9fcoVqLhg1sdfzuO0fYdFx8wCJM/tJ
-         IpsgbSgVWbK49g/4oueSvetnDBArkL9sc65tAzQXqwels8J3DyXaspfWivE6BUmO7M
-         oxFycm/s/LuGuurodrhWVku93ksgOr7vIPt2VjE/DG2V9LZPDqREUC4oS7j1KmoSEt
-         srWEbj2f8j6YD/CcJPlswfoPfgidG0culobWV2/Jv9og8r1UnS5yxQW5z40rZpQlc/
-         rUISSRBPmhUi+qvzx6AA3AmAnVR61fdxHRrJAAzyJaZ+hM4Mud9dM+c3NTHWOhUvcY
-         +kwcTDuy8F43A==
+        b=ow47Pp1bp2dbb2aP9cTgWoIBvlyha5GRiJpBuk27+xDvHGg+uA54zm2JAmdSDniYR
+         6VWHnHBCUvHJu8t+5PeDb5TlyxPPreOJDh6ZooxJXqj6s20AO42rveGRilVFrJ2oMw
+         ZaFJoIM0fper4qpVb24TuRjpylkILL7ZhMPuaYAaoMZFpSGhvsCfhcf1EW30r5KQqC
+         1gyFKlfrmWSyPhRfuDLhmq0h3pjMj2zAh3f5yN9UF6M/QFqvZRgwq4GUV2jkWPky50
+         0rLY7BKaSIcmvy5omQPjVsjDkKGWVOI/cuFakBAtM7A8ZNNFy3w0jTqfzx+bj/Ortm
+         AYq9BK71+9LGw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7CA4D60986;
-        Sat, 17 Apr 2021 17:02:06 +0000 (UTC)
-Subject: Re: [GIT PULL] libnvdimm fixes for v5.12-rc8 / final
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AEC2D60A15;
+        Sat, 17 Apr 2021 17:02:08 +0000 (UTC)
+Subject: Re: [GIT PULL] Networking for 5.12-rc8
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAPcyv4iUPPY7XpwwY1zK3VGUY72p+zZckSCwgWuvJa183Y_QBA@mail.gmail.com>
-References: <CAPcyv4iUPPY7XpwwY1zK3VGUY72p+zZckSCwgWuvJa183Y_QBA@mail.gmail.com>
-X-PR-Tracked-List-Id: "Linux-nvdimm developer list." <linux-nvdimm.lists.01.org>
-X-PR-Tracked-Message-Id: <CAPcyv4iUPPY7XpwwY1zK3VGUY72p+zZckSCwgWuvJa183Y_QBA@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm tags/libnvdimm-fixes-for-5.12-rc8
-X-PR-Tracked-Commit-Id: 11d2498f1568a0f923dc8ef7621de15a9e89267f
+In-Reply-To: <20210417050703.610514-1-kuba@kernel.org>
+References: <20210417050703.610514-1-kuba@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210417050703.610514-1-kuba@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.12-rc8
+X-PR-Tracked-Commit-Id: f2764bd4f6a8dffaec3e220728385d9756b3c2cb
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: bdfd99e6d6bd690b47bd1d45dad218bf08be1dde
-Message-Id: <161867892650.3103.1470679395812363097.pr-tracker-bot@kernel.org>
-Date:   Sat, 17 Apr 2021 17:02:06 +0000
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+X-PR-Merge-Commit-Id: 88a5af943985fb43b4c9472b5abd9c0b9705533d
+Message-Id: <161867892870.3103.14627731957843212134.pr-tracker-bot@kernel.org>
+Date:   Sat, 17 Apr 2021 17:02:08 +0000
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     torvalds@linux-foundation.org, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 16 Apr 2021 20:25:28 -0700:
+The pull request you sent on Fri, 16 Apr 2021 22:07:03 -0700:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm tags/libnvdimm-fixes-for-5.12-rc8
+> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.12-rc8
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/bdfd99e6d6bd690b47bd1d45dad218bf08be1dde
+https://git.kernel.org/torvalds/c/88a5af943985fb43b4c9472b5abd9c0b9705533d
 
 Thank you!
 
