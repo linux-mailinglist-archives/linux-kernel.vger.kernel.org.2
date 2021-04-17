@@ -2,60 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B179B362C34
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 02:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31CA8362C35
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 02:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235084AbhDQADC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 20:03:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229719AbhDQACz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 20:02:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34ED16115B;
-        Sat, 17 Apr 2021 00:02:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618617750;
-        bh=DtcwCnU2bWW7YUiEpToRNpS8Pj+rL/i63TmoUofqz/U=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=U5R7ieKowAxOZ1uBJMN29kk5OedkpQK9mq7fVSM5HWqUCC77yYbQDfBOek+czQoBZ
-         4yTd9KUG7O64FLXx/A1iJTZIHYjM2LLXrWzp7ezL6WvNWMQzngBekYCyap3PbVcfAp
-         p/e73gnauEPsq/frvYBAvpYyFVEu49YCBeck+Rl9eE1dpSWvYb0FEprPJuC9fvvai/
-         F3B8XYg3ZDPjgoLKxxbrubOI2xQDoqsoxbTPmpBJqFVj0vXzJsaRfOmM2fYigYnjFY
-         ihRSK9tLYr0Qh1N0VDf9rdq5CDxoU5LGJzbUnlSyXcuu7BmimRosNuSDezD+SkGonr
-         7phRPdxu7cD7g==
-Content-Type: text/plain; charset="utf-8"
+        id S235169AbhDQADG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 20:03:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235056AbhDQADD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 16 Apr 2021 20:03:03 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D003C06175F;
+        Fri, 16 Apr 2021 17:02:34 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618617752;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xAJKO8dWaz92ciG9zIlL+Ikr/RFMxTd4id9MFoOL6bc=;
+        b=BQXVF4t3ExWyQ3Vf3r8aYeZLNQy1SwgLH0Qp0MjoSfMVfT5+SpmyUjHZjdVpQS8uZtF5RJ
+        PofMRXYf+QoSfDvGPhJl1lBkA0hJuJeh4X2lGN1kg3+0nqRzmgKfwDB0t5yJE2lpHEwx8k
+        JK8XKGlUR/FwioDmCGTl1CUEsxt6q0cO91otV03ZSsL8kl24X8+cEfk+trbSRoYhCsKJPo
+        VZp9sDn5I6xhCoRHsYEKDtenfpWF8F1+fFEJ7OwVIH06CF3USV1kd4j65CdKzKMfT7Nnzu
+        J3H8w1vaWLadlqoHETk2/q74+1r9st7F6FuvYG91kX+xy3R5Wikgl3RQXLE91Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618617752;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xAJKO8dWaz92ciG9zIlL+Ikr/RFMxTd4id9MFoOL6bc=;
+        b=IRiiJJW6d+3NSThZL1todwLecniMG+DONP2KvG/Z9I42DlVB97mhnAyx4zeCk7jQHWtZLK
+        +Rzih2iiyKn2vQBw==
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>, x86@kernel.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH 06/15] x86: Avoid CFI jump tables in IDT and entry points
+In-Reply-To: <202104161642.B72BD68@keescook>
+References: <20210416203844.3803177-1-samitolvanen@google.com> <20210416203844.3803177-7-samitolvanen@google.com> <87im4luaq7.ffs@nanos.tec.linutronix.de> <202104161642.B72BD68@keescook>
+Date:   Sat, 17 Apr 2021 02:02:31 +0200
+Message-ID: <87czutu6aw.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1618465960-3013-2-git-send-email-flora.fu@mediatek.com>
-References: <1618465960-3013-1-git-send-email-flora.fu@mediatek.com> <1618465960-3013-2-git-send-email-flora.fu@mediatek.com>
-Subject: Re: [PATCH v2 1/7] dt-bindings: clock: Add MT8192 APU clock bindings
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Flora Fu <flora.fu@mediatek.com>,
-        Pi-Cheng Chen <pi-cheng.chen@mediatek.com>,
-        Chiawen Lee <chiawen.lee@mediatek.com>,
-        Chun-Jie Chen <chun-jie.chen@mediatek.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
-        srv_heupstream@mediatek.com
-To:     Flora Fu <flora.fu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 16 Apr 2021 17:02:29 -0700
-Message-ID: <161861774904.46595.8483541757848028552@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Flora Fu (2021-04-14 22:52:34)
-> Add clock bindings for APU on MT8192.
->=20
-> Signed-off-by: Flora Fu <flora.fu@mediatek.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-> ---
+On Fri, Apr 16 2021 at 16:56, Kees Cook wrote:
+> On Sat, Apr 17, 2021 at 12:26:56AM +0200, Thomas Gleixner wrote:
+>> Where is the analysis why excluding 
+>> 
+>> > +CFLAGS_REMOVE_idt.o		:= $(CC_FLAGS_CFI)
+>> > +CFLAGS_REMOVE_paravirt.o	:= $(CC_FLAGS_CFI)
+>> 
+>> all of idt.c and paravirt.c is correct and how that is going to be
+>> correct in the future?
+>> 
+>> These files are excluded from CFI, so I can add whatever I want to them
+>> and circumvent the purpose of CFI, right?
+>> 
+>> Brilliant plan that. But I know, sekurity ...
+>
+> *sigh* we're on the same side. :P I will choose to understand your
+> comments here as:
+>
+> "How will enforcement of CFI policy be correctly maintained here if
+> the justification for disabling it for whole compilation units is not
+> clearly understandable by other developers not familiar with the nuances
+> of its application?"
 
-Acked-by: Stephen Boyd <sboyd@kernel.org>
+Plus, if there is a justification for disabling it for a whole
+compilation unit:
+
+ Where is the tooling which makes sure that this compilation unit is not
+ later on filled with code which should be subject to CFI?
+
+Thanks,
+
+        tglx
+
+
