@@ -2,158 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60360363010
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B269363013
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236310AbhDQMwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 08:52:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230442AbhDQMwF (ORCPT
+        id S236440AbhDQMwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 08:52:10 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:33132 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230442AbhDQMwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 08:52:05 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70740C061574;
-        Sat, 17 Apr 2021 05:51:39 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id j7so11596318pgi.3;
-        Sat, 17 Apr 2021 05:51:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CK9W0sv6eRHdyCB5RWUgu3S7S7hJ78bLj/lTgSuLMhU=;
-        b=YEKvlLpxuA4qNW5N1A3VDiigeTuCGS9cKk174L9rxmXIobdMp0C7YWpk5yoDt9X2sT
-         gSS+4b/VwsW+PdGgUnCHq6JHcVgHXA5MrwfN5X5J6Sp3g7xxLGrG1AnK5KEVZxIj7aTA
-         V/am8e5y8NUfoE/md1jvr0CBPGpOmIU2aX3tKum/9FEYW/S7O7WCsmxS0tgAhjRYN9R1
-         KAHrYRBINWhNmZz8mjrEvtYl4qnzw0ZvoBEW57uAfkHOerOhl3UWiTtg2UOk8RfdDacC
-         ea7xcV3T+OtVWJUru2i52pgTgNsGKTbVezg4nxNXyl879Ipp/Vxe5Pz2JJm+mVpmZig8
-         2Pig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CK9W0sv6eRHdyCB5RWUgu3S7S7hJ78bLj/lTgSuLMhU=;
-        b=spAoOgYmTp3gOto+DBEsm2hpAtJjE28XBfVgTCJ/Z2k9dLWQ1HQG23b6hpIZ/hcVfA
-         ++HGlb7JHWhelN9uyjZhUZIBNN/MCqiCOUNnEIXQ691t0jg/EvfKSu8iIE9kbsrcoRzF
-         vPnGqrkMoTSt94fAR1ztcz2B5w9t2t6ujkihPWx2PN8UBvRekcVLAyGbRBAXpNSl3WJc
-         m6Bmc9/QEslx7ay115zWanA0p/vKxmA/fH7cYSwS2nI9y7UwXjUNOc9PHykjunJbhM2a
-         8qVAyv1M6qaToio+moEUe9AtmCnVTNxWJAXydhRBiHb7qDR+eucNnSQ4EqV8XttFpUcb
-         2OOw==
-X-Gm-Message-State: AOAM533s0VR++MoIbsSk46MxCbcgIMiLSblwHm/JopM01h53H+rL/Sqo
-        f2aaErRy0F5phZ2x4my9uAwkw9ogMhqZdsPShaU=
-X-Google-Smtp-Source: ABdhPJxFHrHOcaWMtBTuY6BBbacMdvwL1IWqXrKMpxOU4xUMo/q+cRsXMxUNBu76aAXBLwIkZj84WH+ulygofKf479Q=
-X-Received: by 2002:a63:cb44:: with SMTP id m4mr3432862pgi.4.1618663898587;
- Sat, 17 Apr 2021 05:51:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210416174902.9036-1-joe.g.sandom@gmail.com> <20210416174902.9036-2-joe.g.sandom@gmail.com>
-In-Reply-To: <20210416174902.9036-2-joe.g.sandom@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 17 Apr 2021 15:51:22 +0300
-Message-ID: <CAHp75Ve6qFizMF2-vWv+o2fKX3P8nH=tWNum6PTvtDjFh94MPA@mail.gmail.com>
-Subject: Re: [PATCH v8 2/2] Added AMS tsl2591 device tree binding
-To:     Joe Sandom <joe.g.sandom@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Sat, 17 Apr 2021 08:52:08 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13HCpSoT004245;
+        Sat, 17 Apr 2021 07:51:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1618663888;
+        bh=rPXmuMzpEkCL6BgxZC9XuLSBLEjAY7E3u9qrT0/yQqc=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=kAx7E1taPPjvq1bWp4ngK6qZvJmDfictdiLPahQmUKHBB7csyL3OakYz8Picpcv3F
+         2f7zcIvSyMlk43qJ4TnW8CmgstcyeCQYqXCbqwkxLopA8c1/9e73RY6mEMTbYfoJGM
+         xvhOJpiEqsLTRfSWZI7yyJ8tQRg/jiQpy8cSy+3Y=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13HCpSWQ023901
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 17 Apr 2021 07:51:28 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 17
+ Apr 2021 07:51:27 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Sat, 17 Apr 2021 07:51:27 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13HCpRJL053600;
+        Sat, 17 Apr 2021 07:51:27 -0500
+Date:   Sat, 17 Apr 2021 07:51:27 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Stephen Boyd <sboyd@kernel.org>
+CC:     Michael Turquette <mturquette@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         Rob Herring <robh+dt@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Tero Kristo <kristo@kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 2/4] dt-bindings: clock: Convert ti,sci-clk to json schema
+Message-ID: <20210417125127.vigq23mdoodje6b5@velcro>
+References: <20210416063721.20538-1-nm@ti.com>
+ <20210416063721.20538-3-nm@ti.com>
+ <161861731160.46595.786611690053722257@swboyd.mtv.corp.google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <161861731160.46595.786611690053722257@swboyd.mtv.corp.google.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 8:49 PM Joe Sandom <joe.g.sandom@gmail.com> wrote:
->
-> Device tree binding for AMS/TAOS tsl2591 ambient light sensor.
->
-> This driver supports configuration via device tree and sysfs.
-> Supported channels for raw infrared light intensity,
-> raw combined light intensity and illuminance in lux.
-> The driver additionally supports iio events on lower and
-> upper thresholds.
->
-> This is a very-high sensitivity light-to-digital converter that
-> transforms light intensity into a digital signal.
+On 16:55-20210416, Stephen Boyd wrote:
+> Quoting Nishanth Menon (2021-04-15 23:37:19)
+> > diff --git a/Documentation/devicetree/bindings/clock/ti,sci-clk.yaml b/Documentation/devicetree/bindings/clock/ti,sci-clk.yaml
+> > new file mode 100644
+> > index 000000000000..72633651f0c7
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/clock/ti,sci-clk.yaml
+> > @@ -0,0 +1,52 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/clock/ti,sci-clk.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: TI-SCI clock controller node bindings
+> > +
+> > +maintainers:
+> > +  - Nishanth Menon <nm@ti.com>
+> > +
+> > +allOf:
+> > +  - $ref: /schemas/clock/clock.yaml#
+> 
+> Is this needed?
 
-With subject line fixed (other comments up to you)
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+https://github.com/devicetree-org/dt-schema/blob/master/schemas/clock/clock.yaml
+This standardizes provider properties like '#clock-cells' etc, allowing
+you to add more stricter checks or controls in the future if necessary.
 
-> Signed-off-by: Joe Sandom <joe.g.sandom@gmail.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
-> Changes in v8:
-> - No changes
->
-> Notes:
-> - Re-submitted to align the version with part 1 of the patch series
->
->  .../bindings/iio/light/amstaos,tsl2591.yaml   | 50 +++++++++++++++++++
->  1 file changed, 50 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/light/amstaos,tsl2591.yaml
->
-> diff --git a/Documentation/devicetree/bindings/iio/light/amstaos,tsl2591.yaml b/Documentation/devicetree/bindings/iio/light/amstaos,tsl2591.yaml
-> new file mode 100644
-> index 000000000000..596a3bc770f4
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/light/amstaos,tsl2591.yaml
-> @@ -0,0 +1,50 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/light/amstaos,tsl2591.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: AMS/TAOS TSL2591 Ambient Light Sensor (ALS)
-> +
-> +maintainers:
-> +  - Joe Sandom <joe.g.sandom@gmail.com>
-> +
-> +description: |
-> +  AMS/TAOS TSL2591 is a very-high sensitivity
-> +  light-to-digital converter that transforms light intensity into a digital
-> +  signal.
-> +
-> +properties:
-> +  compatible:
-> +    const: amstaos,tsl2591
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +    description:
-> +      Interrupt (INT:Pin 2) Active low. Should be set to IRQ_TYPE_EDGE_FALLING.
-> +      interrupt is used to detect if the light intensity has fallen below
-> +      or reached above the configured threshold values.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        tsl2591@29 {
-> +            compatible = "amstaos,tsl2591";
-> +            reg = <0x29>;
-> +            interrupts = <20 IRQ_TYPE_EDGE_FALLING>;
-> +       };
-> +    };
-> +...
-> --
-> 2.17.1
->
+while:
 
+https://github.com/devicetree-org/dt-schema/blob/master/meta-schemas/clocks.yaml
+is more a consumer node description.
+
+Should I have picked a different yaml as base for a standard clock-controller
+base?
+
+> 
+> > +
+> > +description: |
+> > +  Some TI SoCs contain a system controller (like the Power Management Micro
+> > +  Controller (PMMC) on Keystone 66AK2G SoC) that are responsible for controlling
+> > +  the state of the various hardware modules present on the SoC. Communication
+> > +  between the host processor running an OS and the system controller happens
+> > +  through a protocol called TI System Control Interface (TI-SCI protocol).
+> > +
+> > +  This clock controller node uses the TI SCI protocol to perform various clock
+> > +  management of various hardware modules (devices) present on the SoC. This
+> > +  node must be a child node of the associated TI-SCI system controller node.
+> > +
+> > +properties:
+> > +  $nodename:
+> > +    pattern: "^clock-controller$"
+> 
+> Is this nodename pattern check required?
+
+I'd like the definition on rails and not subject to interpretation, and
+restrict the kind of subnodes under TISCI controller node.
+
+> 
+> > +
+> > +  compatible:
+> > +    const: ti,k2g-sci-clk
+> 
+> I thought most things keyed off the compatible string.
+
+Yes, they are. I am not sure I understand your question here. Did you
+mean to indicate that having $nodename and compatible both are
+redundant?
+
+Redundancy was'nt the intent of this schema definition, rather, I'd like
+to make sure that it is not upto interpretation or debate as to what the
+node name should be: I believe clock-controller is the correct nodename
+(without @0x... since this does'nt use reg property) instead of using
+clocks, tisci-clock as the node names.
+
+
+Do you suggest something  different?
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
