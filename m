@@ -2,134 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 592C8363138
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 18:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0F836313D
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 18:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236659AbhDQQk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 12:40:59 -0400
-Received: from jptosegrel01.sonyericsson.com ([124.215.201.71]:11575 "EHLO
-        JPTOSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236836AbhDQQjO (ORCPT
+        id S236683AbhDQQlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 12:41:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236665AbhDQQlK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 12:39:14 -0400
-From:   Peter Enderborg <peter.enderborg@sony.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>, NeilBrown <neilb@suse.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mike Rapoport <rppt@kernel.org>, <linux-media@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>,
-        <linaro-mm-sig@lists.linaro.org>,
-        Matthew Wilcox <willy@infradead.org>
-CC:     Peter Enderborg <peter.enderborg@sony.com>
-Subject: [PATCH v5] dma-buf: Add DmaBufTotal counter in meminfo
-Date:   Sat, 17 Apr 2021 18:38:35 +0200
-Message-ID: <20210417163835.25064-1-peter.enderborg@sony.com>
-X-Mailer: git-send-email 2.17.1
+        Sat, 17 Apr 2021 12:41:10 -0400
+Received: from mail.pqgruber.com (mail.pqgruber.com [IPv6:2a05:d014:575:f70b:4f2c:8f1d:40c4:b13e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56DC0C061574;
+        Sat, 17 Apr 2021 09:40:43 -0700 (PDT)
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id 9F41CC725D8;
+        Sat, 17 Apr 2021 18:40:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1618677641;
+        bh=RmhXOMCFFCbce605ZIbZPj9mHR2sZMVr+GIMZbzQjv8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IPxU1qS2JQXMzTWtfWiwsM7n21Ahu6UzIOMp2QGzj9UAPQwRduji1PDlM2rNt6nOj
+         ms8PbzKUgjXC2Xz8zKDfVN4KKxG+7ESy73YaG/4r3PPmOvldfZIw+OD5GDuhJXXnD1
+         21oosYNzdL/xumg3nPoCbxYYw58F7iokMJUP6jiw=
+Date:   Sat, 17 Apr 2021 18:40:40 +0200
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 1/8] pwm: pca9685: Switch to atomic API
+Message-ID: <YHsPiNAjr919VGIe@workstation.tuxnet>
+References: <20210412132745.76609-1-clemens.gruber@pqgruber.com>
+ <20210417153728.eohhphmtm6qf26y4@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=crzlbGwi c=1 sm=1 tr=0 a=fZcToFWbXLKijqHhjJ02CA==:117 a=3YhXtTcJ-WEA:10 a=z6gsHLkEAAAA:8 a=USQXLDy_ZNVIum19Oj8A:9 a=d-OLMTCWyvARjPbQ-enb:22 a=pHzHmUro8NiASowvMSCR:22 a=Ew2E2A-JSTLzCXPT_086:22
-X-SEG-SpamProfiler-Score: 0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210417153728.eohhphmtm6qf26y4@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds a total used dma-buf memory. Details
-can be found in debugfs, however it is not for everyone
-and not always available. dma-buf are indirect allocated by
-userspace. So with this value we can monitor and detect
-userspace applications that have problems.
+Hi,
 
-Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
----
- drivers/dma-buf/dma-buf.c | 12 ++++++++++++
- fs/proc/meminfo.c         |  5 ++++-
- include/linux/dma-buf.h   |  1 +
- 3 files changed, 17 insertions(+), 1 deletion(-)
+On Sat, Apr 17, 2021 at 05:37:28PM +0200, Uwe Kleine-König wrote:
+> On Mon, Apr 12, 2021 at 03:27:38PM +0200, Clemens Gruber wrote:
+> > The switch to the atomic API goes hand in hand with a few fixes to
+> > previously experienced issues:
+> > - The duty cycle is no longer lost after disable/enable (previously the
+> >   OFF registers were cleared in disable and the user was required to
+> >   call config to restore the duty cycle settings)
+> > - If one sets a period resulting in the same prescale register value,
+> >   the sleep and write to the register is now skipped
+> > - Previously, only the full ON bit was toggled in GPIO mode (and full
+> >   OFF cleared if set to high), which could result in both full OFF and
+> >   full ON not being set and on=0, off=0, which is not allowed according
+> >   to the datasheet
+> > - The OFF registers were reset to 0 in probe, which could lead to the
+> >   forbidden on=0, off=0. Fixed by resetting to POR default (full OFF)
+> 
+> I didn't recheck all details, but the patch is definitively an
+> improvement, so:
+> 
+> Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-index f264b70c383e..4dc37cd4293b 100644
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -37,6 +37,7 @@ struct dma_buf_list {
- };
- 
- static struct dma_buf_list db_list;
-+static atomic_long_t dma_buf_global_allocated;
- 
- static char *dmabuffs_dname(struct dentry *dentry, char *buffer, int buflen)
- {
-@@ -79,6 +80,7 @@ static void dma_buf_release(struct dentry *dentry)
- 	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
- 		dma_resv_fini(dmabuf->resv);
- 
-+	atomic_long_sub(dmabuf->size, &dma_buf_global_allocated);
- 	module_put(dmabuf->owner);
- 	kfree(dmabuf->name);
- 	kfree(dmabuf);
-@@ -586,6 +588,7 @@ struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info)
- 	mutex_lock(&db_list.lock);
- 	list_add(&dmabuf->list_node, &db_list.head);
- 	mutex_unlock(&db_list.lock);
-+	atomic_long_add(dmabuf->size, &dma_buf_global_allocated);
- 
- 	return dmabuf;
- 
-@@ -1346,6 +1349,15 @@ void dma_buf_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map)
- }
- EXPORT_SYMBOL_GPL(dma_buf_vunmap);
- 
-+/**
-+ * dma_buf_allocated_pages - Return the used nr of pages
-+ * allocated for dma-buf
-+ */
-+long dma_buf_allocated_pages(void)
-+{
-+	return atomic_long_read(&dma_buf_global_allocated) >> PAGE_SHIFT;
-+}
-+
- #ifdef CONFIG_DEBUG_FS
- static int dma_buf_debug_show(struct seq_file *s, void *unused)
- {
-diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-index 6fa761c9cc78..ccc7c40c8db7 100644
---- a/fs/proc/meminfo.c
-+++ b/fs/proc/meminfo.c
-@@ -16,6 +16,7 @@
- #ifdef CONFIG_CMA
- #include <linux/cma.h>
- #endif
-+#include <linux/dma-buf.h>
- #include <asm/page.h>
- #include "internal.h"
- 
-@@ -145,7 +146,9 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
- 	show_val_kb(m, "CmaFree:        ",
- 		    global_zone_page_state(NR_FREE_CMA_PAGES));
- #endif
--
-+#ifdef CONFIG_DMA_SHARED_BUFFER
-+	show_val_kb(m, "DmaBufTotal:    ", dma_buf_allocated_pages());
-+#endif
- 	hugetlb_report_meminfo(m);
- 
- 	arch_report_meminfo(m);
-diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-index efdc56b9d95f..5b05816bd2cd 100644
---- a/include/linux/dma-buf.h
-+++ b/include/linux/dma-buf.h
-@@ -507,4 +507,5 @@ int dma_buf_mmap(struct dma_buf *, struct vm_area_struct *,
- 		 unsigned long);
- int dma_buf_vmap(struct dma_buf *dmabuf, struct dma_buf_map *map);
- void dma_buf_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map);
-+long dma_buf_allocated_pages(void);
- #endif /* __DMA_BUF_H__ */
--- 
-2.17.1
+Thanks, but there is a newer version v9, I assume your acks are meant
+for the newer one?
 
+Clemens
