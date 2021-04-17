@@ -2,114 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55B283632B0
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 01:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE263632B2
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 01:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235839AbhDQXth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 19:49:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229865AbhDQXtg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 19:49:36 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA32C06174A
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 16:49:09 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id r9so47416673ejj.3
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 16:49:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=UwrwiMr5+8D/40Mctvun36r5UE8676az6W/LOijCYUM=;
-        b=OAoaPs/8g2B8juzXkGkt6eBfzJvdVhQUUGG05AlgQMh1Fm3I7hUoDK9+TbLGuHtnZU
-         r914KfIS07oxLzqeNtnELxfwIUcv4+eIZhw3RqdPGYSV2+j6fPVsH+QM5tg322wXBBJc
-         PIe3Q20kG/wjhRsf+SjygjRccodes7VMYrS17c5MSANC4AzVMMm2pjwWSep0rSluiV21
-         F0u1+C7TUP/gkXYQ9DX75cOD16LgqU7Wg/2lYQ7Rk0pacCbIPAGn2tTdcj54DX9rd4ek
-         NUe1GMFkmbK9f0Vd5w88mjs707Z1DqZmn2Yankexu7oJcF82QzTpASHEljthjlBstahb
-         H/uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=UwrwiMr5+8D/40Mctvun36r5UE8676az6W/LOijCYUM=;
-        b=t9hF1ixkphMZ5krPxmHa7DOGszH7if2ptxk0z3qfYmgrH2pZ/Cf/IH76FlYcDRibgZ
-         KH39C1C/MMpCsDzkFXbgfElgSwjWW8tr/BrOcgg6VWK1R2oDSvxOIqdLle0XlK1DZ5I7
-         6g1fVDxoPrB+pmGdhkfUsebp4WJkjyrMipjWqMFNKqYpYfX1cvxUFUFVziwcDYwbWqhT
-         QGU1dsDUbGLRzYPKRrb6FasCSI8nDaNt/qatT6oSi39ta8uRPsSHPc51h3t5l9o+0dE8
-         HpmZV/zPumEAgcX3GsdR3uJ6Y79PsYq3ROPyGYRY2Tl/++xfcAYQQrpNou7aMue9zjCA
-         74qA==
-X-Gm-Message-State: AOAM532hBHIKMFkHAT2GReyuqTjre4BYvWoNr96NdYMN3ov8hjXCMlzL
-        xKubaUBuubYMqvzWRnhLoLeGjqSR5lNpd4nm3o8=
-X-Google-Smtp-Source: ABdhPJzTCQOGftpcIbepBG1p5eawXb3hy4kNmZO9pwxkvWHyrSXEYZEJ7U2jdt0w4edzyZRmzMv/XwwPE8IjhQ7833o=
-X-Received: by 2002:a17:906:7104:: with SMTP id x4mr14912323ejj.101.1618703347716;
- Sat, 17 Apr 2021 16:49:07 -0700 (PDT)
+        id S235700AbhDQXwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 19:52:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58402 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229865AbhDQXwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 19:52:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A154361003;
+        Sat, 17 Apr 2021 23:51:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618703496;
+        bh=LXopkOhhl+hg905PlppDQu3gHCzhO/sgoiNygitt54s=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=fkYFZcRQ4dctdR5dMM8m3W3E9l3kVGWr27TPwosHOY8cYTOuB19NWKLAMUS17ARwk
+         biMMCntr8XKraskP7io3Falq9McgHaXZx2kjJSeqZE6cHOwNmm+p05N6t1Auwy1Mb+
+         FbGZT/f0VGl3dG/7mWNsd9x1xwcFhDCl3c3qrvGCCODx0GPkJ6wxxDVctHH9/KbAWi
+         F4mxr8MC3Y+4Uyd7/4i17lziKgegfJ/DTx72ZUb1aorwAW11D6E39ZdLAyXV6BS4XM
+         25Eze1FxcNvOm8cWMzF21wkouzbjY/0Vs8zUTyK9Z2a1sz07BSAhaEm+SkJm1UGwUt
+         emDYi/vYKvgpQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 6E82F5C051E; Sat, 17 Apr 2021 16:51:36 -0700 (PDT)
+Date:   Sat, 17 Apr 2021 16:51:36 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
+        ak@linux.intel.com, Chris Mason <clm@fb.com>
+Subject: Re: [PATCH v8 clocksource 3/5] clocksource: Check per-CPU clock
+ synchronization when marked unstable
+Message-ID: <20210417235136.GD5006@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210414043435.GA2812539@paulmck-ThinkPad-P17-Gen-1>
+ <20210414043602.2812981-3-paulmck@kernel.org>
+ <87sg3prsbt.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Sun, 18 Apr 2021 09:48:56 +1000
-Message-ID: <CAPM=9tzVDp7PB0Rv8+Lmi4Ervp8QRio6phvRy_H-oFUHe3phSA@mail.gmail.com>
-Subject: [git pull] drm/vmwgfx fixes for 5.12-rc8
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Zack Rusin <zackr@vmware.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87sg3prsbt.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Sat, Apr 17, 2021 at 02:47:18PM +0200, Thomas Gleixner wrote:
+> On Tue, Apr 13 2021 at 21:36, Paul E. McKenney wrote:
+> 
+> Bah, hit send too quick.
+> 
+> > +	cpumask_clear(&cpus_ahead);
+> > +	cpumask_clear(&cpus_behind);
+> > +	preempt_disable();
+> 
+> Daft. 
 
-Back from holidays and this was in the cracks (Zack forgot to cc
-Daniel/lists), I've just piled it onto drm fixes.
+Would migrate_disable() be better?
 
-It contains two regression fixes for vmwgfx, one due to a refactor
-which meant locks were being used before initialisation, and the other
-in fixing up some warnings from the core when destroying pinned
-buffers.
+Yes, I know, in virtual environments, the hypervisor can migrate anyway,
+but this does limit the potential damage to one out of the two schedulers.
 
-Dave.
+> > +	testcpu = smp_processor_id();
+> > +	pr_warn("Checking clocksource %s synchronization from CPU %d.\n", cs->name, testcpu);
+> > +	for_each_online_cpu(cpu) {
+> > +		if (cpu == testcpu)
+> > +			continue;
+> > +		csnow_begin = cs->read(cs);
+> > +		smp_call_function_single(cpu, clocksource_verify_one_cpu, cs, 1);
+> > +		csnow_end = cs->read(cs);
+> 
+> As this must run with interrupts enabled, that's a pretty rough
+> approximation like measuring wind speed with a wet thumb.
+> 
+> Wouldn't it be smarter to let the remote CPU do the watchdog dance and
+> take that result? i.e. split out more of the watchdog code so that you
+> can get the nanoseconds delta on that remote CPU to the watchdog.
 
-drm-fixes-2021-04-18:
-drm/vmwgfx fixes for 5.12-rc7
+First, an interrupt, NMI, SMI, vCPU preemption, or whatever could
+not cause a false positive.  A false negative, perhaps, but no
+false positives.  Second, in normal operation, these are rare, so that
+hitting the (eventual) default of eight CPUs is very likely to result in
+tight bounds on the delay-based error for most of those CPUs.  Third,
+we really need to compare the TSC on one CPU to the TSC on the other
+in order to have a very clear indication of a problem, should a real
+TSC-synchronization issue arise.  In contrast, comparisons against the
+watchdog timer will be more complicated and any errors detected will be
+quite hard to prove to be due to TSC issues.
 
-vmwgfx:
-- fixed unpinning before destruction
-- lockdep init reordering
-The following changes since commit 4d2e1288372ccc5ac60290bc10cace49c9bfa6d0:
+Or am I once again missing something?
 
-  Merge tag 'drm-intel-fixes-2021-04-15' of
-git://anongit.freedesktop.org/drm/drm-intel into drm-fixes (2021-04-15
-15:24:17 +0200)
+> > +		delta = (s64)((csnow_mid - csnow_begin) & cs->mask);
+> > +		if (delta < 0)
+> > +			cpumask_set_cpu(cpu, &cpus_behind);
+> > +		delta = (csnow_end - csnow_mid) & cs->mask;
+> > +		if (delta < 0)
+> > +			cpumask_set_cpu(cpu, &cpus_ahead);
+> > +		delta = clocksource_delta(csnow_end, csnow_begin, cs->mask);
+> > +		cs_nsec = clocksource_cyc2ns(delta, cs->mult, cs->shift);
+> 
+> > +		if (firsttime || cs_nsec > cs_nsec_max)
+> > +			cs_nsec_max = cs_nsec;
+> > +		if (firsttime || cs_nsec < cs_nsec_min)
+> > +			cs_nsec_min = cs_nsec;
+> > +		firsttime = 0;
+> 
+>   int64_t cs_nsec_max = 0, cs_nsec_min = LLONG_MAX;
+> 
+> and then the firsttime muck is not needed at all.
 
-are available in the Git repository at:
+Good point, will fix!
 
-  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-04-18
+And again, thank you for looking all of this over.
 
-for you to fetch changes up to 796b556cbfdbe0d65b9793e63653ad24f9fa033c:
-
-  Merge tag 'vmwgfx-fixes-2021-04-14' of
-gitlab.freedesktop.org:zack/vmwgfx into drm-fixes (2021-04-18 09:27:00
-+1000)
-
-----------------------------------------------------------------
-drm/vmwgfx fixes for 5.12-rc7
-
-vmwgfx:
-- fixed unpinning before destruction
-- lockdep init reordering
-
-----------------------------------------------------------------
-Dave Airlie (1):
-      Merge tag 'vmwgfx-fixes-2021-04-14' of
-gitlab.freedesktop.org:zack/vmwgfx into drm-fixes
-
-Zack Rusin (3):
-      drm/vmwgfx: Make sure we unpin no longer needed buffers
-      drm/vmwgfx: Fix the lockdep breakage
-      drm/vmwgfx: Make sure bo's are unpinned before putting them back
-
- drivers/gpu/drm/vmwgfx/vmwgfx_cotable.c |  4 ++++
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.c     | 17 ++++++++---------
- drivers/gpu/drm/vmwgfx/vmwgfx_drv.h     |  5 +----
- drivers/gpu/drm/vmwgfx/vmwgfx_mob.c     | 14 ++++++++++++++
- 4 files changed, 27 insertions(+), 13 deletions(-)
+							Thanx, Paul
