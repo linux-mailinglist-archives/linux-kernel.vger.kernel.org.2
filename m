@@ -2,62 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D10FB3630E1
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 17:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D8B3630E9
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 17:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236581AbhDQPbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 11:31:33 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:59497 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S236287AbhDQPbc (ORCPT
+        id S236617AbhDQPhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 11:37:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236287AbhDQPhE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 11:31:32 -0400
-Received: (qmail 73758 invoked by uid 1000); 17 Apr 2021 11:31:04 -0400
-Date:   Sat, 17 Apr 2021 11:31:04 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     liulongfang <liulongfang@huawei.com>
-Cc:     gregkh@linuxfoundation.org, mathias.nyman@intel.com,
-        liudongdong3@huawei.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kong.kongxinwei@hisilicon.com,
-        yisen.zhuang@huawei.com
-Subject: Re: [RFC PATCH] USB:XHCI:skip hub registration
-Message-ID: <20210417153104.GA73141@rowland.harvard.edu>
-References: <1618489358-42283-1-git-send-email-liulongfang@huawei.com>
- <20210415144323.GC1530055@rowland.harvard.edu>
- <3dad6f4f-6386-427c-c36c-7d26b9a76fa4@huawei.com>
- <20210416152021.GA42403@rowland.harvard.edu>
- <547e07d6-ae62-1225-7483-754bf57ed1d2@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <547e07d6-ae62-1225-7483-754bf57ed1d2@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Sat, 17 Apr 2021 11:37:04 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3838AC061574;
+        Sat, 17 Apr 2021 08:36:38 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id e5so842350wrg.7;
+        Sat, 17 Apr 2021 08:36:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=c+F4d/dEml33345nfDC4G3PoJm5Qmt0bDGgusF3hVAA=;
+        b=pg3G1wezwp+QSAiQWTByKGg8AxHR1ktpMxQFkRs8iKwJ8Y86bRwAnhU0dHuiTjAEpQ
+         TyDYn+vxSWyq/HQIU5CfpRHGoWQIZgAbLt3lVI+6zNCCiNJsb1d1wowfC9dcz2PY1XnT
+         5vutlOnMLEMS1Xuh06PY3Y/XMjIlvlJyGq1+komGHJII8ZyNNI2HSkLZZ49pBcjUUx5j
+         G3kLNVPGvLduOUeYY/00R+yb9XBmO5yKbzgvvcE79xH+UTooUK4BRnPYmXmAqlamiuR9
+         DIphQNl7Q0/vgHpqmFMWUWscqhNwFNxArnmFdEsdB0Py89Ju2wR6yY0A75x7o+XDBg4Y
+         Znvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=c+F4d/dEml33345nfDC4G3PoJm5Qmt0bDGgusF3hVAA=;
+        b=pjkuZAq7I25ado+3XuqAm54pqK4OFjFUIlyOUY592BwjsuXJ5Hrdq4thrVJ95m1B3S
+         Yn845VysOmV74QPr5emXbbXSqLGG8gK+bxBCR62Sfb+if7iPdq/RHNdWG3Tq0yz+Om5m
+         QQePkw1ok1NEfgGV9ZS8jvpK4llBAC8EdDaRlRPYNjBYOYzWRBxRVnwPqnDA//yMZVeV
+         +uMotZ8Ungt/9MhaQdpSDGXCmUECMgtnaMuCRLBAJ7WhgZBoZXdS7BUsHvhIaRwIgtGh
+         4SuABiP1HbnXHVa4ChqhhN0cDnUccMmpi0B3vJZMEW5ybdmB+lmRzpQZ1WEhOsNOXRIZ
+         ElMw==
+X-Gm-Message-State: AOAM531+eGZruhe+M6QDhdak2QycK576Ku0mAwZR64oKXndJOZ0Hb2H9
+        2lOiic3Lqo/BBOkQe94GNmY=
+X-Google-Smtp-Source: ABdhPJwj+dRgPK3Xpn2TLtvCocLIWT4HlgdYcvvZlC2n/PDqXhJK10s2yzmiUISQcxzyUPIf4bwJBA==
+X-Received: by 2002:adf:e650:: with SMTP id b16mr4760567wrn.273.1618673796958;
+        Sat, 17 Apr 2021 08:36:36 -0700 (PDT)
+Received: from localhost.localdomain ([41.62.188.221])
+        by smtp.gmail.com with ESMTPSA id a15sm14773926wrr.53.2021.04.17.08.36.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Apr 2021 08:36:36 -0700 (PDT)
+From:   Khaled ROMDHANI <khaledromdhani216@gmail.com>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     Khaled ROMDHANI <khaledromdhani216@gmail.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH v2] fs/btrfs: Fix uninitialized variable
+Date:   Sat, 17 Apr 2021 16:36:16 +0100
+Message-Id: <20210417153616.25056-1-khaledromdhani216@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 02:48:22PM +0800, liulongfang wrote:
-> On 2021/4/16 23:20, Alan Stern wrote:
-> > On Fri, Apr 16, 2021 at 10:03:21AM +0800, liulongfang wrote:
-> >> The current method is an improved method of the above patch.
-> >> This patch just make it skip registering USB-3 root hub if that hub has no ports,
-> > 
-> > No, that isn't what this patch does.
-> > 
-> > If the root hub wasn't registered, hub_probe wouldn't get called.  But 
-> > with your patch, the system tries to register the root hub, and it does 
-> > call hub_probe, and then that function fails with a warning message.
-> > 
-> > The way to _really_ akip registering the root hub is to change the 
-> > xhci-hcd code.  Make it skip calling usb_add_hcd.
-> > 
-> 
-> If you do not register in the root hub, this will return an error code,
+As reported by the Coverity static analysis.
+The variable zone is not initialized which
+may causes a failed assertion.
 
-What will return an error code?  Are you talking about xhci_pci_probe()?  
-You oight to be able to figure out how to make it work.
+Addresses-Coverity: ("Uninitialized variables")
+Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
+---
+v2: add a default case as proposed by David Sterba
+---
+ fs/btrfs/zoned.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> which will make all the XHCI drivers unregister, causing the USB2.0 controllers
-> on the xhci to be unavailable.
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index eeb3ebe11d7a..82527308d165 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -143,6 +143,9 @@ static inline u32 sb_zone_number(int shift, int mirror)
+ 	case 0: zone = 0; break;
+ 	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
+ 	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
++	default:
++		zone = 0;
++	break;
+ 	}
+ 
+ 	ASSERT(zone <= U32_MAX);
+-- 
+2.17.1
 
-Alan Stern
