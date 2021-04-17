@@ -2,99 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2047A363005
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917BC363008
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 15:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236408AbhDQMry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 08:47:54 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35110 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236226AbhDQMrr (ORCPT
+        id S236393AbhDQMul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 08:50:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29050 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232844AbhDQMuk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 08:47:47 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618663639;
+        Sat, 17 Apr 2021 08:50:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618663813;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=OqBR/fku0Axww/pBD/ch8Tbclrbt2bUFLFKkPOrAh0I=;
-        b=cYXD6FJIICuo7btR3VOTUHgLjLD5HU0vPvDHw2pODLWDR5YU7EY4GuSEllvMsO6Ys9Vynh
-        dbKqddo+mZOYXc/FNIQ90o9ShJeqqLKRK8svW/DzoON2U65xFqBIlvgaeUMC/CFZylbXYi
-        iBppXe1Hq8Cj1hIAYyN7IKrSkDnnl6Vl2dEtj8tRcGKnfQmGnTsmM9lYO1ktHrqzqMF7N3
-        AHd07eo/mFUi1G0UAodsR4YQwvBsb7aRvri9FuoPMpnZnqUQeEvDOP74AXI64ONI1hAdXi
-        QVMJ0E+f0gBvsShPmRadN7lzWoVicdTvQS5r9PSJhKipURoBUtKZkrBDf+XskA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618663639;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OqBR/fku0Axww/pBD/ch8Tbclrbt2bUFLFKkPOrAh0I=;
-        b=BQVEzOHrQXsmxCKqNfBimZOlGglWizsnabl4TVWwpKTQexviCuL1aGHiLAvtzM8HDQ2Jnj
-        nXtp61R0xMHEnODQ==
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
-        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
-        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
-        ak@linux.intel.com, "Paul E. McKenney" <paulmck@kernel.org>,
-        Chris Mason <clm@fb.com>
-Subject: Re: [PATCH v8 clocksource 3/5] clocksource: Check per-CPU clock synchronization when marked unstable
-In-Reply-To: <20210414043602.2812981-3-paulmck@kernel.org>
-References: <20210414043435.GA2812539@paulmck-ThinkPad-P17-Gen-1> <20210414043602.2812981-3-paulmck@kernel.org>
-Date:   Sat, 17 Apr 2021 14:47:18 +0200
-Message-ID: <87sg3prsbt.ffs@nanos.tec.linutronix.de>
+        bh=imq7uItrr0YxU0EZEqml8s/Gsv0G1i9Sjy/8OWB/B8c=;
+        b=bjqHRMUXCN/+jLQ/3b3NStxGIqz5vfG8G0A9R0m0pS5kdxz8Rp7E9lv23MRXfib30zXCfq
+        jJdBb26XsNC9NnHQqmRBKMEOzHcAx0tViufVIORt3Fb2X7210bM5UF+DUGkmTejD+5q8aw
+        9wlhttnkhy7Dls2kpUBfe0rFOunjdg0=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-550-Q2pazd0wN4mpgVMjvMyhHw-1; Sat, 17 Apr 2021 08:50:11 -0400
+X-MC-Unique: Q2pazd0wN4mpgVMjvMyhHw-1
+Received: by mail-ed1-f70.google.com with SMTP id i25-20020a50fc190000b0290384fe0dab00so3040099edr.6
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 05:50:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=imq7uItrr0YxU0EZEqml8s/Gsv0G1i9Sjy/8OWB/B8c=;
+        b=ckav68ENXIgbmp2dtgb0+2FcI72lDzBZMIzoV53Y6eU9kyCShI9ppwZDaaA0oZeA0I
+         qu1I4N+rF+VbpXpZz9BTNEIyzsoghFnibL/KWgkyBClP35OT1KB5sFTvXpo28X1MeelO
+         8M0LxgcR20vd34wpDiJ4alzpF6Fm+oNx8Ef6XrPtBEax5TodTYhYQiP+GiOf1knXTEyR
+         vwYNHs5CtqT5bPUnE6BY9IWDKNeW4GMGQfOqFnKC5OBlylRNGdomJ4KtCgxOcLIc+S4U
+         i3ohW/RhPwZ1A2fVGikO2Ibeo+Bk7L+x1qSeFi/D9PcQi0PCpVImcyktTnV6Z8cPpeZl
+         9dTg==
+X-Gm-Message-State: AOAM533sLs9tM1Exc64pIzgSq/3xG4hXo2vV9MUg/R6RQWYwovQjnLUI
+        du8CVRX20nDojSvHrzJcXmZqnddl3pnXjai45sIUQ+4mg+ZCGuimo2c4vtHj0fyNpKhytCZDMe2
+        uLxvGgNoCI0p7nRlgZssVu4wH
+X-Received: by 2002:aa7:d9ce:: with SMTP id v14mr4720233eds.110.1618663810609;
+        Sat, 17 Apr 2021 05:50:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJySzvWasWJZOfOzLQumKdE/3y1yRtBrfqEec5ONJbUnF72oqb9NqEXYW3z6X8nsclSvPgFefw==
+X-Received: by 2002:aa7:d9ce:: with SMTP id v14mr4720227eds.110.1618663810468;
+        Sat, 17 Apr 2021 05:50:10 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id n13sm6246042ejx.27.2021.04.17.05.50.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Apr 2021 05:50:09 -0700 (PDT)
+Subject: Re: [PATCH 0/4] KVM: SVM: A fix and cleanups for vmcb tracking
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Cathy Avery <cavery@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+References: <20210406171811.4043363-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <0444df02-48de-6ff8-5e54-7dfb841ef153@redhat.com>
+Date:   Sat, 17 Apr 2021 14:50:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210406171811.4043363-1-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13 2021 at 21:36, Paul E. McKenney wrote:
+On 06/04/21 19:18, Sean Christopherson wrote:
+> Belated code review for the vmcb changes that are queued for 5.13.
+> 
+> Sean Christopherson (4):
+>    KVM: SVM: Don't set current_vmcb->cpu when switching vmcb
+>    KVM: SVM: Drop vcpu_svm.vmcb_pa
+>    KVM: SVM: Add a comment to clarify what vcpu_svm.vmcb points at
+>    KVM: SVM: Enhance and clean up the vmcb tracking comment in
+>      pre_svm_run()
+> 
+>   arch/x86/kvm/svm/svm.c | 29 +++++++++++++----------------
+>   arch/x86/kvm/svm/svm.h |  2 +-
+>   2 files changed, 14 insertions(+), 17 deletions(-)
+> 
 
-Bah, hit send too quick.
+Queued, thanks -- especially for the bug in patch 1, which avoided review.
 
-> +	cpumask_clear(&cpus_ahead);
-> +	cpumask_clear(&cpus_behind);
-> +	preempt_disable();
-
-Daft. 
-
-> +	testcpu = smp_processor_id();
-> +	pr_warn("Checking clocksource %s synchronization from CPU %d.\n", cs->name, testcpu);
-> +	for_each_online_cpu(cpu) {
-> +		if (cpu == testcpu)
-> +			continue;
-> +		csnow_begin = cs->read(cs);
-> +		smp_call_function_single(cpu, clocksource_verify_one_cpu, cs, 1);
-> +		csnow_end = cs->read(cs);
-
-As this must run with interrupts enabled, that's a pretty rough
-approximation like measuring wind speed with a wet thumb.
-
-Wouldn't it be smarter to let the remote CPU do the watchdog dance and
-take that result? i.e. split out more of the watchdog code so that you
-can get the nanoseconds delta on that remote CPU to the watchdog.
-
-> +		delta = (s64)((csnow_mid - csnow_begin) & cs->mask);
-> +		if (delta < 0)
-> +			cpumask_set_cpu(cpu, &cpus_behind);
-> +		delta = (csnow_end - csnow_mid) & cs->mask;
-> +		if (delta < 0)
-> +			cpumask_set_cpu(cpu, &cpus_ahead);
-> +		delta = clocksource_delta(csnow_end, csnow_begin, cs->mask);
-> +		cs_nsec = clocksource_cyc2ns(delta, cs->mult, cs->shift);
-
-> +		if (firsttime || cs_nsec > cs_nsec_max)
-> +			cs_nsec_max = cs_nsec;
-> +		if (firsttime || cs_nsec < cs_nsec_min)
-> +			cs_nsec_min = cs_nsec;
-> +		firsttime = 0;
-
-  int64_t cs_nsec_max = 0, cs_nsec_min = LLONG_MAX;
-
-and then the firsttime muck is not needed at all.
-
-Thanks,
-
-        tglx
+Paolo
 
