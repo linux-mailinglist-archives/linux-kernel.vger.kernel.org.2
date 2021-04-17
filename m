@@ -2,126 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0BC362C6F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 02:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 167BF362C74
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Apr 2021 02:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235117AbhDQAcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 16 Apr 2021 20:32:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35660 "EHLO
+        id S235217AbhDQAfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 16 Apr 2021 20:35:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbhDQAcH (ORCPT
+        with ESMTP id S234965AbhDQAfN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 16 Apr 2021 20:32:07 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E1FC061574;
-        Fri, 16 Apr 2021 17:31:41 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id n140so29588521oig.9;
-        Fri, 16 Apr 2021 17:31:41 -0700 (PDT)
+        Fri, 16 Apr 2021 20:35:13 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E68A0C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 17:34:47 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id d15so17723137qkc.9
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Apr 2021 17:34:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VR3tcAp12whRBeJfwrOFnSVzrr3wsAblS3SVMAqZZtA=;
-        b=h2XhWyNjac/+3AX0AhwaYIHnw7NmpR4+5Rxz9+t8TlX6al4aSfFEalHta02YSNjf5E
-         UkFQL6YD7SueUO8Xy5OZIIDyaXSgT2dhZf3dlJzKWAly4CmcfSoelvKCyJW6ABs8fIO+
-         1EOQjwUhgkTu93uc3CzS0PKw3yoIxcbI1ib5OrNLN8eCrQXiJaIH4dFihzl4eIQNoQfk
-         PY7bD6l8cvt6M08en6t0YUpBxPHRZzNeGYVFaTgflefT0YwE8rsxqz7VDWnXtFZ/6uPn
-         6gXnEOhk5ZiQjvUUGggOIGTwQHLNUbJSv2MRsa9sIWR9c8UOyxSaCoe+n9bXdOoVsZzh
-         PHKw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=uIksWak7SFr1E70pBah+NSYxowBoEqEgg2o79SFp6/s=;
+        b=eeco8Eo1b6XKreVLdrIzFapBg3OD6V7CQTsi7hbrcAVdqLjwYSdqYzWpWwUFD+rf5s
+         907v7V2n0Y2Frm9zSEuym+yCSLuojvf+R4W8RGdQ3WiqWpvxJbqAWDA9l2CLozizDWTX
+         dXpuVwyDIl2xqjAwMLfBMuGjoMpMirWVZrJrFfAAaxZvXOi2K1+gMybaX5O6nq5PqEF9
+         /+H8xMC7/ryI44kPHMTVuQpcJiVoqejoCjiqrY0puDIde83w5Tmk3UHgQN+HrAPfR3m0
+         32FgeEIUK9kJBKHv6bJD16ImvNCDJno4x/CPtx+I9BMrtBhlToqV8tE+m0KlXUeopisC
+         3IQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VR3tcAp12whRBeJfwrOFnSVzrr3wsAblS3SVMAqZZtA=;
-        b=qKJElWt7hQVGJSD8FghieGltbr6BnMDMI1RYRrAkr/7+JA3q9XFWK18Dnyon9oHvTO
-         cPeg27naonWP8ljKkSUeb+8eNPEzbhUiTrAZUNCFFkCA4NYeftrbRfaqOFt04/6+P64Z
-         +tyfoB6F21FBmKVi9dQgtWkN9RFQK9MR7uX00FurhG5jHizyyKNeZelavHSPaBzUEGuE
-         3tV6hjaPRkTYmGLcptUgAhr04ethE0M7QnSht2XgNDmHSyBKpA+AOG0xk/dSQbByaE2K
-         TOJFVLOk8f5eVxbK/DtFYAvkJknJ/5kYIsly2Tt5XlwDQwIaU6N+LkilIH9dkmEzeSgk
-         uEQQ==
-X-Gm-Message-State: AOAM530psLs1Psv423BkEwPpaP94x1Lnz/6mtzsIK1SwBpjV6ScVtbYx
-        qIGumQk60q4Xr7Mh4wmhfug=
-X-Google-Smtp-Source: ABdhPJziqLSucJxQxgq7rZyUjNkQWZLeBiuarEiQlB6qzvMg2DNK6MnpuBP5W/KODQ0byTnBz/N3YQ==
-X-Received: by 2002:aca:47ce:: with SMTP id u197mr8180544oia.81.1618619500965;
-        Fri, 16 Apr 2021 17:31:40 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.45.41.12])
-        by smtp.googlemail.com with ESMTPSA id l5sm1104397otr.72.2021.04.16.17.31.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Apr 2021 17:31:40 -0700 (PDT)
-Subject: Re: PROBLEM: DoS Attack on Fragment Cache
-To:     Keyu Man <kman001@ucr.edu>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
-        "dsahern@kernel.org" <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Zhiyun Qian <zhiyunq@cs.ucr.edu>
-References: <02917697-4CE2-4BBE-BF47-31F58BC89025@hxcore.ol>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <52098fa9-2feb-08ae-c24f-1e696076c3b9@gmail.com>
-Date:   Fri, 16 Apr 2021 17:31:38 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.1
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=uIksWak7SFr1E70pBah+NSYxowBoEqEgg2o79SFp6/s=;
+        b=qr8CdTHSMBcf9yoet+P/nv5w3zybUHB3Ay94XiIwhV/3U/l6ARpaywRInvZagcbhNn
+         XjIWAUOrVKa/TQ/cN/7yMcEOTL0isSzSGdd4OeseuAty3vmM/GE+t9uFaS0uR2rd5Iiz
+         7aX7Yvffbf2qIzV0muJirfXmbazsvNA3cdiq9K52E1pAUiSvqfv492ahkh71CCvbFord
+         5y/4LLpIyqkDWuePoTUK6kUU8j+EvqTQGgIrPuxPPjfS1QCmTt1oA2dNDfBvSgmpEW5Y
+         fZWgHM6pkImHC5GPFdV1kJXOhOEg4n2N/61jlsNWmO94P50mSn1F3aj6w7qM7NAKKKeu
+         SO7w==
+X-Gm-Message-State: AOAM533TONgMRuDRxcu5FmsHYApdtkocuiKSZHeSt4G47q5undT0yPMK
+        INhr6YYJIty0z3WhgMDKMRmQKQ==
+X-Google-Smtp-Source: ABdhPJwQvWlo+O7u3+a2Gbcer/skxTUf4GsCZM4vSy5IgREWFXBEG2O7MzXmmDPXtLm1eJ1JvjNOWw==
+X-Received: by 2002:ae9:e8c6:: with SMTP id a189mr1887846qkg.463.1618619686707;
+        Fri, 16 Apr 2021 17:34:46 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id m10sm4443515qtp.43.2021.04.16.17.34.44
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Fri, 16 Apr 2021 17:34:46 -0700 (PDT)
+Date:   Fri, 16 Apr 2021 17:34:43 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Axel Rasmussen <axelrasmussen@google.com>
+cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        Brian Geffon <bgeffon@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH v2 9/9] userfaultfd/shmem: modify shmem_mcopy_atomic_pte
+ to use install_ptes
+In-Reply-To: <20210413051721.2896915-10-axelrasmussen@google.com>
+Message-ID: <alpine.LSU.2.11.2104161648020.25373@eggly.anvils>
+References: <20210413051721.2896915-1-axelrasmussen@google.com> <20210413051721.2896915-10-axelrasmussen@google.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-In-Reply-To: <02917697-4CE2-4BBE-BF47-31F58BC89025@hxcore.ol>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ cc author of 648700f76b03b7e8149d13cc2bdb3355035258a9 ]
+On Mon, 12 Apr 2021, Axel Rasmussen wrote:
 
-On 4/16/21 3:58 PM, Keyu Man wrote:
-> Hi,
+> In a previous commit, we added the mcopy_atomic_install_ptes() helper.
+> This helper does the job of setting up PTEs for an existing page, to map
+> it into a given VMA. It deals with both the anon and shmem cases, as
+> well as the shared and private cases.
 > 
->  
+> In other words, shmem_mcopy_atomic_pte() duplicates a case it already
+> handles. So, expose it, and let shmem_mcopy_atomic_pte() use it
+> directly, to reduce code duplication.
 > 
->     My name is Keyu Man. We are a group of researchers from University
-> of California, Riverside. Zhiyun Qian is my advisor. We found the code
-> in processing IPv4/IPv6 fragments will potentially lead to DoS Attacks.
-> Specifically, after the latest kernel receives an IPv4 fragment, it will
-> try to fit it into a queue by calling function
+> This requires that we refactor shmem_mcopy_atomic-pte() a bit:
 > 
->  
+> Instead of doing accounting (shmem_recalc_inode() et al) part-way
+> through the PTE setup, do it beforehand. This frees up
+> mcopy_atomic_install_ptes() from having to care about this accounting,
+> but it does mean we need to clean it up if we get a failure afterwards
+> (shmem_uncharge()).
 > 
->     struct inet_frag_queue *inet_frag_find(struct fqdir *fqdir, void
-> *key) in net/ipv4/inet_fragment.c.
+> We can *almost* use shmem_charge() to do this, reducing code
+> duplication. But, it does `inode->i_mapping->nrpages++`, which would
+> double-count since shmem_add_to_page_cache() also does this.
 > 
->  
-> 
->     However, this function will first check if the existing fragment
-> memory exceeds the fqdir->high_thresh. If it exceeds, then drop the
-> fragment regardless whether it belongs to a new queue or an existing queue.
-> 
->     Chances are that an attacker can fill the cache with fragments that
-> will never be assembled (i.e., only sends the first fragment with new
-> IPIDs every time) to exceed the threshold so that all future incoming
-> fragmented IPv4 traffic would be blocked and dropped. Since there is no
-> GC mechanism, the victim host has to wait for 30s when the fragments are
-> expired to continue receive incoming fragments normally.
-> 
->     In practice, given the 4MB fragment cache, the attacker only needs
-> to send 1766 fragments to exhaust the cache and DoS the victim for 30s,
-> whose cost is pretty low. Besides, IPv6 would also be affected since the
-> issue resides in inet part.
-> 
-> This issue is introduced in commit
-> 648700f76b03b7e8149d13cc2bdb3355035258a9 (inet: frags: use rhashtables
-> for reassembly units) which removes fqdir->low_thresh, and GC worker as
-> well. We would gently request to bring GC worker back to the kernel to
-> prevent the DoS attacks.
-> 
-> Looking forward to hear from you
-> 
->  
-> 
->     Thanks,
-> 
-> Keyu Man
-> 
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> ---
+>  include/linux/userfaultfd_k.h |  5 ++++
+>  mm/shmem.c                    | 52 +++++++----------------------------
+>  mm/userfaultfd.c              | 25 ++++++++---------
+>  3 files changed, 27 insertions(+), 55 deletions(-)
 
+Very nice, and it gets better.
+
+> 
+> diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultfd_k.h
+> index 794d1538b8ba..3e20bfa9ef80 100644
+> --- a/include/linux/userfaultfd_k.h
+> +++ b/include/linux/userfaultfd_k.h
+> @@ -53,6 +53,11 @@ enum mcopy_atomic_mode {
+>  	MCOPY_ATOMIC_CONTINUE,
+>  };
+>  
+> +extern int mcopy_atomic_install_ptes(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+
+mcopy_atomic_install_pte throughout as before.
+
+> +				     struct vm_area_struct *dst_vma,
+> +				     unsigned long dst_addr, struct page *page,
+> +				     bool newly_allocated, bool wp_copy);
+> +
+>  extern ssize_t mcopy_atomic(struct mm_struct *dst_mm, unsigned long dst_start,
+>  			    unsigned long src_start, unsigned long len,
+>  			    bool *mmap_changing, __u64 mode);
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 3f48cb5e8404..9b12298405a4 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -2376,10 +2376,8 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm,
+>  	struct address_space *mapping = inode->i_mapping;
+>  	gfp_t gfp = mapping_gfp_mask(mapping);
+>  	pgoff_t pgoff = linear_page_index(dst_vma, dst_addr);
+> -	spinlock_t *ptl;
+>  	void *page_kaddr;
+>  	struct page *page;
+> -	pte_t _dst_pte, *dst_pte;
+>  	int ret;
+>  	pgoff_t max_off;
+>  
+> @@ -2389,8 +2387,10 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm,
+>  
+>  	if (!*pagep) {
+>  		page = shmem_alloc_page(gfp, info, pgoff);
+> -		if (!page)
+> -			goto out_unacct_blocks;
+> +		if (!page) {
+> +			shmem_inode_unacct_blocks(inode, 1);
+> +			goto out;
+> +		}
+>  
+>  		if (!zeropage) {	/* COPY */
+>  			page_kaddr = kmap_atomic(page);
+> @@ -2430,59 +2430,27 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm,
+>  	if (ret)
+>  		goto out_release;
+>  
+> -	_dst_pte = mk_pte(page, dst_vma->vm_page_prot);
+> -	if (dst_vma->vm_flags & VM_WRITE)
+> -		_dst_pte = pte_mkwrite(pte_mkdirty(_dst_pte));
+> -	else {
+> -		/*
+> -		 * We don't set the pte dirty if the vma has no
+> -		 * VM_WRITE permission, so mark the page dirty or it
+> -		 * could be freed from under us. We could do it
+> -		 * unconditionally before unlock_page(), but doing it
+> -		 * only if VM_WRITE is not set is faster.
+> -		 */
+> -		set_page_dirty(page);
+> -	}
+> -
+> -	dst_pte = pte_offset_map_lock(dst_mm, dst_pmd, dst_addr, &ptl);
+> -
+> -	ret = -EFAULT;
+> -	max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
+> -	if (unlikely(pgoff >= max_off))
+> -		goto out_release_unlock;
+> -
+> -	ret = -EEXIST;
+> -	if (!pte_none(*dst_pte))
+> -		goto out_release_unlock;
+> -
+> -	lru_cache_add(page);
+> -
+>  	spin_lock_irq(&info->lock);
+>  	info->alloced++;
+>  	inode->i_blocks += BLOCKS_PER_PAGE;
+>  	shmem_recalc_inode(inode);
+>  	spin_unlock_irq(&info->lock);
+>  
+> -	inc_mm_counter(dst_mm, mm_counter_file(page));
+> -	page_add_file_rmap(page, false);
+> -	set_pte_at(dst_mm, dst_addr, dst_pte, _dst_pte);
+> +	ret = mcopy_atomic_install_ptes(dst_mm, dst_pmd, dst_vma, dst_addr,
+> +					page, true, false);
+> +	if (ret)
+> +		goto out_release_uncharge;
+>  
+> -	/* No need to invalidate - it was non-present before */
+> -	update_mmu_cache(dst_vma, dst_addr, dst_pte);
+> -	pte_unmap_unlock(dst_pte, ptl);
+
+In reviewing 4/9, I said to take out mcopy_atomic_install_pte()'s
+set_page_dirty().  Just call it here instead, before the unlock_page().
+You have an array of choices for how to write it:
+
+	if (!(dst_vma->vm_flags & VM_WRITE))
+		set_page_dirty(page);
+or
+	if (!(dst_vma->vm_flags & VM_WRITE))
+		SetPageDirty(page);
+or
+	set_page_dirty(page);
+or
+	SetPageDirty(page);
+
+Personally, I'd go for the last: this function has just modified the
+page, so it ought to mark it dirty: without second-guessing what
+mcopy_atomic_install_pte() might do to make that redundant in the
+VM_WRITE case. set_page_dirty() or SetPageDirty()? Some years ago
+I tended to favour the former for its preparatory PageDirty check;
+nowadays (on shmem) I favour the latter, to avoid the function call
+indirection which became more expensive with spectre+retpoline.
+
+>  	unlock_page(page);
+>  	ret = 0;
+>  out:
+>  	return ret;
+> -out_release_unlock:
+> -	pte_unmap_unlock(dst_pte, ptl);
+> -	ClearPageDirty(page);
+> +out_release_uncharge:
+
+Given how 4/9 was, this did still need the ClearPageDirty()
+before delete_from_page_cache(), to prevent a warning.
+But not needed here if SPD is done just before unlock_page().
+
+>  	delete_from_page_cache(page);
+> +	shmem_uncharge(inode, 1);
+>  out_release:
+>  	unlock_page(page);
+>  	put_page(page);
+> -out_unacct_blocks:
+> -	shmem_inode_unacct_blocks(inode, 1);
+>  	goto out;
+>  }
+>  #endif /* CONFIG_USERFAULTFD */
+> diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+> index 8df0438f5d6a..3f73ba0b99f0 100644
+> --- a/mm/userfaultfd.c
+> +++ b/mm/userfaultfd.c
+> @@ -51,18 +51,13 @@ struct vm_area_struct *find_dst_vma(struct mm_struct *dst_mm,
+>  /*
+>   * Install PTEs, to map dst_addr (within dst_vma) to page.
+>   *
+> - * This function handles MCOPY_ATOMIC_CONTINUE (which is always file-backed),
+> - * whether or not dst_vma is VM_SHARED. It also handles the more general
+> - * MCOPY_ATOMIC_NORMAL case, when dst_vma is *not* VM_SHARED (it may be file
+> - * backed, or not).
+> - *
+> - * Note that MCOPY_ATOMIC_NORMAL for a VM_SHARED dst_vma is handled by
+> - * shmem_mcopy_atomic_pte instead.
+> + * This function handles both MCOPY_ATOMIC_NORMAL and _CONTINUE for both shmem
+> + * and anon, and for both shared and private VMAs.
+>   */
+> -static int mcopy_atomic_install_ptes(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+> -				     struct vm_area_struct *dst_vma,
+> -				     unsigned long dst_addr, struct page *page,
+> -				     bool newly_allocated, bool wp_copy)
+> +int mcopy_atomic_install_ptes(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+> +			      struct vm_area_struct *dst_vma,
+> +			      unsigned long dst_addr, struct page *page,
+> +			      bool newly_allocated, bool wp_copy)
+>  {
+>  	int ret;
+>  	pte_t _dst_pte, *dst_pte;
+> @@ -116,8 +111,12 @@ static int mcopy_atomic_install_ptes(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+>  	else
+>  		page_add_new_anon_rmap(page, dst_vma, dst_addr, false);
+>  
+> -	if (newly_allocated)
+> -		lru_cache_add_inactive_or_unevictable(page, dst_vma);
+> +	if (newly_allocated) {
+> +		if (vma_is_shmem(dst_vma) && vm_shared)
+> +			lru_cache_add(page);
+> +		else
+> +			lru_cache_add_inactive_or_unevictable(page, dst_vma);
+> +	}
+
+This change is not required, you'll be glad to hear. Take a look at
+lru_cache_add_inactive_or_unevictable() in mm/swap.c: it's a wrapper
+to set PageMlocked and do associated accounting (if appropriate) before
+doing the lru_cache_add(page).  And, strictly speaking, should have been
+used in shmem_mcopy_atomic_pte() all along.
+
+I say "strictly speaking" because it would be exceptional to find a page
+needing Mlock there, and not an error to delay that Mlock until sometime
+later, before reclaim.  Worth a sentence in the commit message,
+but not worth a "Fixes:" tag.
+
+>  
+>  	set_pte_at(dst_mm, dst_addr, dst_pte, _dst_pte);
+>  
+> -- 
+> 2.31.1.295.g9ea45b61b8-goog
