@@ -2,187 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949E8363474
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 11:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6167E363476
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 11:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbhDRJcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 05:32:02 -0400
-Received: from smtp-35-i2.italiaonline.it ([213.209.12.35]:41788 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229807AbhDRJcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 05:32:01 -0400
-Received: from oxapps-34-156.iol.local ([10.101.8.202])
-        by smtp-35.iol.local with ESMTPA
-        id Y3m7lAWttpK9wY3m7lZ5dx; Sun, 18 Apr 2021 11:31:31 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1618738291; bh=o8yqXRHuluvBc2SmHwuYLwAaPpaXIqrMxgmgFQVq0n4=;
-        h=From;
-        b=wdAF2Rs0QCby/Efu0qhk3y4bNtKeXskHNvp1djq+co4FDx/9OiXCRKe6h9AA0Exjt
-         ZTzlk2BK9hm5y2Wh7LLAF6Z+eBGMVP6wq+q+8zYq8LCwWDbSfig28CMEOw/U9kDG0Q
-         aHwkI+1m7ixpigoepGkQ9ejP2zShniGsaesUb81laKllAzUa9f14NyGZbHV5l1j+DZ
-         OEpA3PahKExN2aU3XQIhrxFagUYg2KjszxXt76xfg3DSW4TZ7YZmNRr/Ya7urujHK0
-         9dMcfMRv+Qz7UaNA3lwe06KCFV3LrSmHV6vLHGfmiT2KDJBJoH0p2zIMgJad+2IAec
-         Hh7EidkoU6GaA==
-X-CNFS-Analysis: v=2.4 cv=A9ipg4aG c=1 sm=1 tr=0 ts=607bfc73 cx=a_exe
- a=8VG+hfycQzUmEcMvOp8bLQ==:117 a=VYA5D5F8Gk0A:10 a=IkcTkHD0fZMA:10
- a=4ehuGOvBq5EA:10 a=ag1SF4gXAAAA:8 a=UU8tFbIpmuTfaOltoo8A:9 a=QEXdDO2ut3YA:10
- a=Yupwre4RP9_Eg_Bd0iYG:22
-Date:   Sun, 18 Apr 2021 11:31:31 +0200 (CEST)
-From:   Dario Binacchi <dariobin@libero.it>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Dimitris Lampridis <dlampridis@logikonlabs.com>,
-        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
-Message-ID: <715522501.805673.1618738291599@mail1.libero.it>
-In-Reply-To: <YHkyqGExO6Ri8UkJ@kroah.com>
-References: <20210415210252.25399-1-dariobin@libero.it>
- <YHkyqGExO6Ri8UkJ@kroah.com>
-Subject: Re: [PATCH v3] serial: omap: fix rs485 half-duplex filtering
+        id S230420AbhDRJfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 05:35:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229807AbhDRJfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 05:35:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72B8A600CD;
+        Sun, 18 Apr 2021 09:35:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618738518;
+        bh=qv8wADW+muFr8WpYAfX+6bIu6e6NMZO1CVAeLWGp2J8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uioPKfg8WrHZs19RNadLHdYiJVqzZFlm7kZIEotkqOfR54BYo7KC/CsWkmtLM4oi4
+         5liTWPkf/i/gtWfIElEL7t31Q3LvhV/kFaTda/EFL7nRuSA+v7wF1qqtx/vOxKkI2N
+         86wrvz8Pc7UTb0tJyrtC1IvCs38fl3uhVEBAyzCCKKSLgSdkUWDgFAosRRhYCo4vpy
+         g87eGvn7J4E2RG5P1hiV7+ooLCcELPvRCH8qZdQpPSx/6+FnuMwcnIF1/m0z5vwX/i
+         iGyfF1n9YrGgzMTQ21WonMlFtpQGqrtcgx/l6GZkVOCBAVYRAfblK46hFb5zXAEEC5
+         /z/8p8kzfc1eQ==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: [RFT PATCH] MIPS: Octeon: drop dependency on CONFIG_HOLES_IN_ZONE
+Date:   Sun, 18 Apr 2021 12:35:12 +0300
+Message-Id: <20210418093512.668-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.3-Rev34
-X-Originating-IP: 95.244.94.151
-X-Originating-Client: open-xchange-appsuite
-x-libjamsun: D/d3R4EJWZZa7mi9XhbI9cv03HsquVXZ
-x-libjamv: Jk0+OtJX/XQ=
-X-CMAE-Envelope: MS4xfL3xB93Yv72JZ5r3J2EC8QcfjIhvbsdk/8DQ7Qxl+mBpdjJnjRUmnMKhIrI8zYB/x9mxqv07ceOHQhuCc64CZSVSr0LyPU/9D5sdPotXdhtno/tE7cKz
- AoutDgap31hSEK+R8fplVly2Blln/JnRDyvuaM93Rs4orjCxWBZCf72RXQF34eW9InK41Wp8KxI1fH2iE5fUNEcW/9mmEFJqKwRyu9uGLdV5Rdjs/nPcDpBJ
- +FpehKnUbyqVW7nn8O88JKkhfOg14Y5rFpcqbCJoz1hlEaMgXh2fcirdGZHM7phFfD0ER1l9iMjD5n3vl9eymYtf65kugSDIu2cmpd4XOG7/9mHAVwvZi5tc
- ro4Sza1I
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-> Il 16/04/2021 08:46 Greg Kroah-Hartman <gregkh@linuxfoundation.org> ha scritto:
-> 
->  
-> On Thu, Apr 15, 2021 at 11:02:52PM +0200, Dario Binacchi wrote:
-> > Data received during half-duplex transmission must be filtered.
-> > If the target device responds quickly, emptying the FIFO at the end of
-> > the transmission can erase not only the echo characters but also part of
-> > the response message.
-> > By keeping the receive interrupt enabled even during transmission, it
-> > allows you to filter each echo character and only in a number equal to
-> > those transmitted.
-> > The issue was generated by a target device that started responding
-> > 240us later having received a request in communication at 115200bps.
-> > Sometimes, some messages received by the target were missing some of the
-> > first bytes.
-> > 
-> > Fixes: 3a13884abea0 ("tty/serial: omap: empty the RX FIFO at the end of half-duplex TX")
-> > Signed-off-by: Dario Binacchi <dariobin@libero.it>
-> > 
-> > 
-> > ---
-> > 
-> > Changes in v3:
-> > - Add 'Fixes' tag
-> > 
-> > Changes in v2:
-> > - Fix compiling error
-> > 
-> >  drivers/tty/serial/omap-serial.c | 39 ++++++++++++++++++++------------
-> >  1 file changed, 24 insertions(+), 15 deletions(-)
-> > 
-> > diff --git a/drivers/tty/serial/omap-serial.c b/drivers/tty/serial/omap-serial.c
-> > index 76b94d0ff586..c0df22b7ea5e 100644
-> > --- a/drivers/tty/serial/omap-serial.c
-> > +++ b/drivers/tty/serial/omap-serial.c
-> > @@ -159,6 +159,8 @@ struct uart_omap_port {
-> >  	u32			calc_latency;
-> >  	struct work_struct	qos_work;
-> >  	bool			is_suspending;
-> > +
-> > +	atomic_t		rs485_tx_filter_count;
-> 
-> Why are you using an atomic variable?  What do you think this is
-> "protected from"?
+CAVIUM_OCTEON_SOC configuration selects HOLES_IN_ZONE option to cope with
+memory crashes that were happening in 2011.
 
-You are right. They are already protected. All the functions affected by the patch 
-are already protected by a lock, even going up in the serial_core for the 
-serial_omap_start_tx().
+This option effectively aliases pfn_valid_within() to pfn_valid() when
+enabled and hardwires it to 1 when disabled. The check for
+pfn_valid_within() is only relevant in case the memory map may have holes
+or undefined struct page instances inside MAX_ORDER chunks.
 
-Thanks and regards,
-Dario
+Since 2011 memory management initialization in general and memory map
+initialization particularly became much more robust so the check for
+pfn_valid_within() is not required on Octeon even despite its, hmm, unusual
+memory setup.
 
-> 
-> >  };
-> >  
-> >  #define to_uart_omap_port(p) ((container_of((p), struct uart_omap_port, port)))
-> > @@ -328,19 +330,6 @@ static void serial_omap_stop_tx(struct uart_port *port)
-> >  		serial_out(up, UART_IER, up->ier);
-> >  	}
-> >  
-> > -	if ((port->rs485.flags & SER_RS485_ENABLED) &&
-> > -	    !(port->rs485.flags & SER_RS485_RX_DURING_TX)) {
-> > -		/*
-> > -		 * Empty the RX FIFO, we are not interested in anything
-> > -		 * received during the half-duplex transmission.
-> > -		 */
-> > -		serial_out(up, UART_FCR, up->fcr | UART_FCR_CLEAR_RCVR);
-> > -		/* Re-enable RX interrupts */
-> > -		up->ier |= UART_IER_RLSI | UART_IER_RDI;
-> > -		up->port.read_status_mask |= UART_LSR_DR;
-> > -		serial_out(up, UART_IER, up->ier);
-> > -	}
-> > -
-> >  	pm_runtime_mark_last_busy(up->dev);
-> >  	pm_runtime_put_autosuspend(up->dev);
-> >  }
-> > @@ -366,6 +355,10 @@ static void transmit_chars(struct uart_omap_port *up, unsigned int lsr)
-> >  		serial_out(up, UART_TX, up->port.x_char);
-> >  		up->port.icount.tx++;
-> >  		up->port.x_char = 0;
-> > +		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
-> > +		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX))
-> > +			atomic_inc(&up->rs485_tx_filter_count);
-> > +
-> >  		return;
-> >  	}
-> >  	if (uart_circ_empty(xmit) || uart_tx_stopped(&up->port)) {
-> > @@ -377,6 +370,10 @@ static void transmit_chars(struct uart_omap_port *up, unsigned int lsr)
-> >  		serial_out(up, UART_TX, xmit->buf[xmit->tail]);
-> >  		xmit->tail = (xmit->tail + 1) & (UART_XMIT_SIZE - 1);
-> >  		up->port.icount.tx++;
-> > +		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
-> > +		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX))
-> > +			atomic_inc(&up->rs485_tx_filter_count);
-> > +
-> >  		if (uart_circ_empty(xmit))
-> >  			break;
-> >  	} while (--count > 0);
-> > @@ -420,7 +417,7 @@ static void serial_omap_start_tx(struct uart_port *port)
-> >  
-> >  	if ((port->rs485.flags & SER_RS485_ENABLED) &&
-> >  	    !(port->rs485.flags & SER_RS485_RX_DURING_TX))
-> > -		serial_omap_stop_rx(port);
-> > +		atomic_set(&up->rs485_tx_filter_count, 0);
-> >  
-> >  	serial_omap_enable_ier_thri(up);
-> >  	pm_runtime_mark_last_busy(up->dev);
-> > @@ -491,8 +488,13 @@ static void serial_omap_rlsi(struct uart_omap_port *up, unsigned int lsr)
-> >  	 * Read one data character out to avoid stalling the receiver according
-> >  	 * to the table 23-246 of the omap4 TRM.
-> >  	 */
-> > -	if (likely(lsr & UART_LSR_DR))
-> > +	if (likely(lsr & UART_LSR_DR)) {
-> >  		serial_in(up, UART_RX);
-> > +		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
-> > +		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX) &&
-> > +		    atomic_read(&up->rs485_tx_filter_count))
-> > +			atomic_dec(&up->rs485_tx_filter_count);
-> 
-> You can not read and then decrement right afterward and expect this to
-> actually do what you think it is doing.
-> 
-> Just use a real lock if you need to protect access for this value, as it
-> is, this patch is totally wrong.
-> 
-> thanks,
-> 
-> greg k-h
+Remove the selection of HOLES_IN_ZONE by CAVIUM_OCTEON_SOC and drop the
+HOLES_IN_ZONE configuration option entirely as Octeon was the only MIPS
+platform to use it.
+
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+---
+
+Hi,
+
+I've tried to find why Octeon needed CONFIG_HOLES_IN_ZONE in the first
+place, but there is nothing except the changelog in commit 465aaed0030b
+("MIPS: Octeon: Select CONFIG_HOLES_IN_ZONE"):
+
+  Current Octeon systems do in fact have holes in their memory zones.
+  We need to select HOLES_IN_ZONE. If we do not, some memory configurations
+  will result in crashes at boot time
+
+Since then there were too many changes around memory management
+initialization both in the generic mm and on the MIPS side to track what
+exactly could case the crashes.
+
+I'm pretty confident that HOLES_IN_ZONE is not required for Octeon systems
+anymore and can be removed.
+
+I'd really appreciate if somebody with access to an Octeon system could
+test this patch.
+
+ arch/mips/Kconfig | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index d89efba3d8a4..96b08cd3b442 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -990,7 +990,6 @@ config CAVIUM_OCTEON_SOC
+ 	select HAVE_PLAT_FW_INIT_CMDLINE
+ 	select HAVE_PLAT_MEMCPY
+ 	select ZONE_DMA32
+-	select HOLES_IN_ZONE
+ 	select GPIOLIB
+ 	select USE_OF
+ 	select ARCH_SPARSEMEM_ENABLE
+@@ -1226,9 +1225,6 @@ config HAVE_PLAT_MEMCPY
+ config ISA_DMA_API
+ 	bool
+ 
+-config HOLES_IN_ZONE
+-	bool
+-
+ config SYS_SUPPORTS_RELOCATABLE
+ 	bool
+ 	help
+-- 
+2.28.0
+
