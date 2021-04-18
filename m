@@ -2,98 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C0E3363332
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 04:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE57C363335
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 04:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237143AbhDRC1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 22:27:01 -0400
-Received: from mail.as397444.net ([69.59.18.99]:55974 "EHLO mail.as397444.net"
+        id S237172AbhDRCiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 22:38:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229870AbhDRC07 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 22:26:59 -0400
-X-Greylist: delayed 3381 seconds by postgrey-1.27 at vger.kernel.org; Sat, 17 Apr 2021 22:26:59 EDT
-Received: by mail.as397444.net (Postfix) with UTF8SMTPSA id C0AC853AFB6;
-        Sun, 18 Apr 2021 02:26:30 +0000 (UTC)
-X-DKIM-Note: Keys used to sign are likely public at https://as397444.net/dkim/
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mattcorallo.com;
-        s=1618711264; t=1618712790;
-        bh=LiyJFwIT2KhGaEmbM/SHTeC/VohaZDVunDtvveghw5Y=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Nzqv9Ftghba6IC1H0bG0ckc2Dj/6DSSNa8Sf0hUiUf9aL6V4kbZv8pCWfcwkGiqam
-         +nv00CfNdO5b+O/9pMsa2FlyvTPgkl/OZG7BxoJOIx87x0T0rW/oxhYdvxP/negWki
-         5Scc4Bzam7OddowLcRQpDmG7M0tlKt/8kKNW4ZL9KBDCp/U73bTJU8L2/WTCSTpKT6
-         OargfOcMwNGrTHi7SKjTHl7OLPqxbi+pw7fn73/Ras0v/gANEYRCJK2Xrkn6rdaheB
-         H86Fs57ZX0Gx9qRtf9NvwhvKISxVL1kL5uneH2ogDcsS3InH9O/Ob0n+DBPv1KISSV
-         HH48qxkjl9Sag==
-Message-ID: <78d776a9-4299-ff4e-8ca2-096ec5c02d05@bluematt.me>
-Date:   Sat, 17 Apr 2021 22:26:30 -0400
+        id S229870AbhDRCiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 22:38:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 518AA61029;
+        Sun, 18 Apr 2021 02:38:22 +0000 (UTC)
+Subject: Re: [PATCH v4 1/2] binfmt_flat: allow not offsetting data start
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>,
+        "uclinux-dev@uclinux.org" <uclinux-dev@uclinux.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Anup Patel <Anup.Patel@wdc.com>, Christoph Hellwig <hch@lst.de>
+References: <20210417011009.54569-1-damien.lemoal@wdc.com>
+ <20210417011009.54569-2-damien.lemoal@wdc.com>
+ <5227b984-f415-98b5-dae8-0cf84a71bb46@linux-m68k.org>
+ <BL0PR04MB651453DC7A8BE4E050B11893E74B9@BL0PR04MB6514.namprd04.prod.outlook.com>
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Message-ID: <b83b023e-abab-35d2-22c7-5d259af2ac97@linux-m68k.org>
+Date:   Sun, 18 Apr 2021 12:38:19 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Subject: Re: PROBLEM: DoS Attack on Fragment Cache
+In-Reply-To: <BL0PR04MB651453DC7A8BE4E050B11893E74B9@BL0PR04MB6514.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Keyu Man <kman001@ucr.edu>
-Cc:     Willy Tarreau <w@1wt.eu>, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Florian Westphal <fw@strlen.de>, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zhiyun Qian <zhiyunq@cs.ucr.edu>
-References: <02917697-4CE2-4BBE-BF47-31F58BC89025@hxcore.ol>
- <52098fa9-2feb-08ae-c24f-1e696076c3b9@gmail.com>
- <CANn89iL_V0WbeA-Zr29cLSp9pCsthkX9ze4W46gx=8-UeK2qMg@mail.gmail.com>
- <20210417072744.GB14109@1wt.eu>
- <CAMqUL6bkp2Dy3AMFZeNLjE1f-sAwnuBWpXH_FSYTSh8=Ac3RKg@mail.gmail.com>
- <20210417075030.GA14265@1wt.eu>
- <c6467c1c-54f5-8681-6e7d-aa1d9fc2ff32@bluematt.me>
- <CAMqUL6bAVE9p=XEnH4HdBmBfThaY3FDosqyr8yrQo6N_9+Jf3w@mail.gmail.com>
-From:   Matt Corallo <netdev-list@mattcorallo.com>
-In-Reply-To: <CAMqUL6bAVE9p=XEnH4HdBmBfThaY3FDosqyr8yrQo6N_9+Jf3w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sure, there are better ways to handle the reassembly cache overflowing, but that is pretty unrelated to the fact that 
-waiting 30 full seconds for a fragment to come in doesn't really make sense in today's networks (the 30 second delay 
-that is used today appears to even be higher than RFC 791 suggested in 1981!). You get a lot more bang for your buck if 
-you don't wait around so long (or we could restructure things to kick out the oldest fragments, but that is a lot more 
-work, and probably extra indexes that just aren't worth it).
 
-Matt
 
-On 4/17/21 21:38, Keyu Man wrote:
-> Willy's words make sense to me and I agree that the existing fragments
-> should be evicted when the new one comes in and the cache is full.
-> Though the attacker can still leverage this to flush the victim's
-> cache, as mentioned previously, since fragments are likely to be
-> assembled in a very short time, it would be hard to launch the
-> attack(evicting the legit fragment before it's assembled requires a
-> large packet sending rate). And this seems better than the existing
-> solution (drop all incoming fragments when full).
+On 17/4/21 2:54 pm, Damien Le Moal wrote:
+> On 2021/04/17 13:52, Greg Ungerer wrote:
+>>
+>> On 17/4/21 11:10 am, Damien Le Moal wrote:
+>>> Commit 2217b9826246 ("binfmt_flat: revert "binfmt_flat: don't offset
+>>> the data start"") restored offsetting the start of the data section by
+>>> a number of words defined by MAX_SHARED_LIBS. As a result, since
+>>> MAX_SHARED_LIBS is never 0, a gap between the text and data sections
+>>> always exists. For architectures which cannot support a such gap
+>>> between the text and data sections (e.g. riscv nommu), flat binary
+>>> programs cannot be executed.
+>>>
+>>> To allow an architecture to request no data start offset to allow for
+>>> contiguous text and data sections for binaries flagged with
+>>> FLAT_FLAG_RAM, introduce the new config option
+>>> CONFIG_BINFMT_FLAT_NO_DATA_START_OFFSET. Using this new option, the
+>>> macro DATA_START_OFFSET_WORDS is conditionally defined in binfmt_flat.c
+>>> to MAX_SHARED_LIBS for architectures tolerating or needing the data
+>>> start offset (CONFIG_BINFMT_FLAT_NO_DATA_START_OFFSET disabled case)
+>>> and to 0 when CONFIG_BINFMT_FLAT_NO_DATA_START_OFFSET is enabled.
+>>> DATA_START_OFFSET_WORDS is used in load_flat_file() to calculate the
+>>> data section length and start position.
+>>>
+>>> Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
+>>> ---
+>>>    fs/Kconfig.binfmt |  3 +++
+>>>    fs/binfmt_flat.c  | 19 ++++++++++++++-----
+>>>    2 files changed, 17 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/fs/Kconfig.binfmt b/fs/Kconfig.binfmt
+>>> index c6f1c8c1934e..06fb7a93a1bd 100644
+>>> --- a/fs/Kconfig.binfmt
+>>> +++ b/fs/Kconfig.binfmt
+>>> @@ -112,6 +112,9 @@ config BINFMT_FLAT_ARGVP_ENVP_ON_STACK
+>>>    config BINFMT_FLAT_OLD_ALWAYS_RAM
+>>>    	bool
+>>>    
+>>> +config BINFMT_FLAT_NO_DATA_START_OFFSET
+>>> +	bool
+>>> +
+>>>    config BINFMT_FLAT_OLD
+>>>    	bool "Enable support for very old legacy flat binaries"
+>>>    	depends on BINFMT_FLAT
+>>> diff --git a/fs/binfmt_flat.c b/fs/binfmt_flat.c
+>>> index b9c658e0548e..1dc68dfba3e0 100644
+>>> --- a/fs/binfmt_flat.c
+>>> +++ b/fs/binfmt_flat.c
+>>> @@ -74,6 +74,12 @@
+>>>    #define	MAX_SHARED_LIBS			(1)
+>>>    #endif
+>>>    
+>>> +#ifdef CONFIG_BINFMT_FLAT_NO_DATA_START_OFFSET
+>>> +#define DATA_START_OFFSET_WORDS		(0)
+>>> +#else
+>>> +#define DATA_START_OFFSET_WORDS		(MAX_SHARED_LIBS)
+>>> +#endif
+>>> +
+>>>    struct lib_info {
+>>>    	struct {
+>>>    		unsigned long start_code;		/* Start of text segment */
+>>> @@ -560,6 +566,7 @@ static int load_flat_file(struct linux_binprm *bprm,
+>>>    	 * it all together.
+>>>    	 */
+>>>    	if (!IS_ENABLED(CONFIG_MMU) && !(flags & (FLAT_FLAG_RAM|FLAT_FLAG_GZIP))) {
+>>> +
+>>
+>> Random white space change...
+>> Don't worry about re-spinning though, I will just edit this chunk out.
 > 
-> Keyu
+> Oops. Sorry about that. I should have better checked :)
 > 
-> On Sat, Apr 17, 2021 at 6:30 PM Matt Corallo
-> <netdev-list@mattcorallo.com> wrote:
 >>
->> See-also "[PATCH] Reduce IP_FRAG_TIME fragment-reassembly timeout to 1s, from 30s" (and the two resends of it) - given
->> the size of the default cache (4MB) and the time that it takes before we flush the cache (30 seconds) you only need
->> about 1Mbps of fragments to hit this issue. While DoS attacks are concerning, its also incredibly practical (and I do)
->> hit this issue in normal non-adversarial conditions.
 >>
->> Matt
+>>>    		/*
+>>>    		 * this should give us a ROM ptr,  but if it doesn't we don't
+>>>    		 * really care
+>>> @@ -576,7 +583,8 @@ static int load_flat_file(struct linux_binprm *bprm,
+>>>    			goto err;
+>>>    		}
+>>>    
+>>> -		len = data_len + extra + MAX_SHARED_LIBS * sizeof(unsigned long);
+>>> +		len = data_len + extra +
+>>> +			DATA_START_OFFSET_WORDS * sizeof(unsigned long);
+>>>    		len = PAGE_ALIGN(len);
+>>>    		realdatastart = vm_mmap(NULL, 0, len,
+>>>    			PROT_READ|PROT_WRITE|PROT_EXEC, MAP_PRIVATE, 0);
+>>> @@ -591,7 +599,7 @@ static int load_flat_file(struct linux_binprm *bprm,
+>>>    			goto err;
+>>>    		}
+>>>    		datapos = ALIGN(realdatastart +
+>>> -				MAX_SHARED_LIBS * sizeof(unsigned long),
+>>> +				DATA_START_OFFSET_WORDS * sizeof(unsigned long),
+>>>    				FLAT_DATA_ALIGN);
+>>>    
+>>>    		pr_debug("Allocated data+bss+stack (%u bytes): %lx\n",
+>>> @@ -622,7 +630,8 @@ static int load_flat_file(struct linux_binprm *bprm,
+>>>    		memp_size = len;
+>>>    	} else {
+>>>    
+>>> -		len = text_len + data_len + extra + MAX_SHARED_LIBS * sizeof(u32);
+>>> +		len = text_len + data_len + extra +
+>>> +			DATA_START_OFFSET_WORDS * sizeof(u32);
+>>>    		len = PAGE_ALIGN(len);
+>>>    		textpos = vm_mmap(NULL, 0, len,
+>>>    			PROT_READ | PROT_EXEC | PROT_WRITE, MAP_PRIVATE, 0);
+>>> @@ -638,7 +647,7 @@ static int load_flat_file(struct linux_binprm *bprm,
+>>>    
+>>>    		realdatastart = textpos + ntohl(hdr->data_start);
+>>>    		datapos = ALIGN(realdatastart +
+>>> -				MAX_SHARED_LIBS * sizeof(u32),
+>>> +				DATA_START_OFFSET_WORDS * sizeof(u32),
+>>>    				FLAT_DATA_ALIGN);
+>>>    
+>>>    		reloc = (__be32 __user *)
+>>> @@ -714,7 +723,7 @@ static int load_flat_file(struct linux_binprm *bprm,
+>>>    			ret = result;
+>>>    			pr_err("Unable to read code+data+bss, errno %d\n", ret);
+>>>    			vm_munmap(textpos, text_len + data_len + extra +
+>>> -				MAX_SHARED_LIBS * sizeof(u32));
+>>> +				  DATA_START_OFFSET_WORDS * sizeof(u32));
+>>>    			goto err;
+>>>    		}
+>>>    	}
+>>>
 >>
->> On 4/17/21 03:50, Willy Tarreau wrote:
->>> On Sat, Apr 17, 2021 at 12:42:39AM -0700, Keyu Man wrote:
->>>> How about at least allow the existing queue to finish? Currently a tiny new
->>>> fragment would potentially invalid all previous fragments by letting them
->>>> timeout without allowing the fragments to come in to finish the assembly.
->>>
->>> Because this is exactly the principle of how attacks are built: reserve
->>> resources claiming that you'll send everything so that others can't make
->>> use of the resources that are reserved to you. The best solution precisely
->>> is *not* to wait for anyone to finish, hence *not* to reserve valuable
->>> resources that are unusuable by others.
->>>
->>> Willy
->>>
+>> Thanks, otherwise looks good.
+>>
+>> Acked-by: Greg Ungerer <gerg@linux-m68k.org>
+>>
+>> I will push this into my m68knommu tree, for-next branch.
+>> I just carry the flat format changes in that tree now to make my life easier.
+> 
+> Great. Thanks !
+> Are you taking both patches or should Plamer take the riscv Kconfig change
+> through his tree ?
+
+I am happy to take both.
+Palmer?
+
+Regards
+Greg
+
