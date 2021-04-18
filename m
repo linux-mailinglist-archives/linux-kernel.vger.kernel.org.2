@@ -2,77 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EAB63634D7
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 13:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 268803634DB
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 13:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231504AbhDRL0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 07:26:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230431AbhDRL0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 07:26:34 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C5B561207;
-        Sun, 18 Apr 2021 11:26:03 +0000 (UTC)
-Date:   Sun, 18 Apr 2021 12:26:35 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Tomas Melin <tomas.melin@vaisala.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] iio: accel: Add driver for Murata SCA3300
- accelerometer
-Message-ID: <20210418122635.64938200@jic23-huawei>
-In-Reply-To: <CAHp75VcibWup79np=xeQpO2z+OGCFXPhL6vWL6aWRZ+G8+djwQ@mail.gmail.com>
-References: <20210416134546.38475-1-tomas.melin@vaisala.com>
-        <20210416134546.38475-3-tomas.melin@vaisala.com>
-        <CAHp75VcibWup79np=xeQpO2z+OGCFXPhL6vWL6aWRZ+G8+djwQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230431AbhDRL3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 07:29:31 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:57065 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230193AbhDRL3a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 07:29:30 -0400
+X-Originating-IP: 2.7.49.219
+Received: from debian.home (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 782E0240002;
+        Sun, 18 Apr 2021 11:28:57 +0000 (UTC)
+From:   Alexandre Ghiti <alex@ghiti.fr>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, linux-doc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     Alexandre Ghiti <alex@ghiti.fr>
+Subject: [PATCH] riscv: Remove 32b kernel mapping from page table dump
+Date:   Sun, 18 Apr 2021 07:28:56 -0400
+Message-Id: <20210418112856.15078-1-alex@ghiti.fr>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 17 Apr 2021 15:39:12 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+The 32b kernel mapping lies in the linear mapping, there is no point in
+printing its address in page table dump, so remove this leftover that
+comes from moving the kernel mapping outside the linear mapping for 64b
+kernel.
 
-> On Fri, Apr 16, 2021 at 5:21 PM Tomas Melin <tomas.melin@vaisala.com> wrote:
-> >
-> > Add initial support for Murata SCA3300 3-axis industrial
-> > accelerometer with digital SPI interface. This device also
-> > provides a temperature measurement.
-> >
-> > Device product page including datasheet can be found at:
-> > https://www.murata.com/en-global/products/sensor/accel/sca3300  
-> 
-> Can you create a tag out of it, i.e.
-> 
-> Datasheet: <URL>
-> 
-> ?
-> 
-> > Signed-off-by: Tomas Melin <tomas.melin@vaisala.com>  
-> 
-> ...
-> 
-> >  obj-$(CONFIG_SCA3000)          += sca3000.o
-> > +obj-$(CONFIG_SCA3300)          += sca3300.o  
-> 
-> How much difference between them?
+Fixes: e9efb21fe352 ("riscv: Prepare ptdump for vm layout dynamic addresses")
+Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+---
+ arch/riscv/mm/ptdump.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Enormous :)  The sca3000 series were much more exciting parts with fifos
-and other fun a long time before anyone else had them.  That part drove
-a lot of the weirder corners of IIO in the early days and had features
-that didn't show up anywhere else for quite a few years.
-
-The sca3100 onwards were much simpler (from software point of view) - I guess
-Murata have a different focus than VTI did.
-
-Jonathan
-
+diff --git a/arch/riscv/mm/ptdump.c b/arch/riscv/mm/ptdump.c
+index 0aba4421115c..a4ed4bdbbfde 100644
+--- a/arch/riscv/mm/ptdump.c
++++ b/arch/riscv/mm/ptdump.c
+@@ -76,8 +76,8 @@ enum address_markers_idx {
+ 	PAGE_OFFSET_NR,
+ #ifdef CONFIG_64BIT
+ 	MODULES_MAPPING_NR,
+-#endif
+ 	KERNEL_MAPPING_NR,
++#endif
+ 	END_OF_SPACE_NR
+ };
+ 
+@@ -99,8 +99,8 @@ static struct addr_marker address_markers[] = {
+ 	{0, "Linear mapping"},
+ #ifdef CONFIG_64BIT
+ 	{0, "Modules mapping"},
+-#endif
+ 	{0, "Kernel mapping (kernel, BPF)"},
++#endif
+ 	{-1, NULL},
+ };
+ 
+@@ -379,8 +379,8 @@ static int ptdump_init(void)
+ 	address_markers[PAGE_OFFSET_NR].start_address = PAGE_OFFSET;
+ #ifdef CONFIG_64BIT
+ 	address_markers[MODULES_MAPPING_NR].start_address = MODULES_VADDR;
+-#endif
+ 	address_markers[KERNEL_MAPPING_NR].start_address = kernel_virt_addr;
++#endif
+ 
+ 	kernel_ptd_info.base_addr = KERN_VIRT_START;
+ 
+-- 
+2.20.1
 
