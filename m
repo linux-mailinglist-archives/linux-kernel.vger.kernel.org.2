@@ -2,101 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 043E9363695
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 18:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A86736369C
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 18:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbhDRQZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 12:25:02 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:13553 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229783AbhDRQZB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 12:25:01 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FNZyz5sfkz9tynS;
-        Sun, 18 Apr 2021 18:24:27 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 6vOFJhRsGw-R; Sun, 18 Apr 2021 18:24:27 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FNZyz4n1kz9tynR;
-        Sun, 18 Apr 2021 18:24:27 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2D9BB8B79C;
-        Sun, 18 Apr 2021 18:24:31 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id w_yOQKn4wsA3; Sun, 18 Apr 2021 18:24:31 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D1FDA8B79B;
-        Sun, 18 Apr 2021 18:24:30 +0200 (CEST)
-Subject: Re: PPC_FPU, ALTIVEC: enable_kernel_fp, put_vr, get_vr
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-References: <7107fcae-5c7a-ac94-8d89-326f2cd4cd33@infradead.org>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <8b1cb0a2-ed3a-7da0-a73a-febbda528703@csgroup.eu>
-Date:   Sun, 18 Apr 2021 18:24:29 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
-MIME-Version: 1.0
-In-Reply-To: <7107fcae-5c7a-ac94-8d89-326f2cd4cd33@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+        id S231659AbhDRQa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 12:30:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229986AbhDRQa2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 12:30:28 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3585AC06174A;
+        Sun, 18 Apr 2021 09:30:00 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id lr7so416846pjb.2;
+        Sun, 18 Apr 2021 09:30:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=plYJzTMB4IF8o2Kb1fTizM5x9MX/++4z6Vb+EGhKM7k=;
+        b=u5Nl6WGisgzkSfSXdEyX/z1/JV/ZI2TZHmarj5QrnYgwtHv/wLVu0p4E60Z5r68Y8J
+         IizTuR3wz6SnjY3p0Dq8oVwhumO/+yw1j1YGIOSpEZzroLaRbIPqwdaUTbyjre/i8PGH
+         HAKj0iIO8gCj5J4uLeRNZewgk+/2fGXdHdDecfiJeAl6Y9bWr8ROGUE7RwJnei4yyRQU
+         QUf4DI6RGELxrpnBi0AXN1SwR9IWmHBZgi971jOU1iBIXTdDHAxfH1mMcAooMQuJz/FS
+         10VyLaCXS59/Gy3CMGHQFyFIoKl/E1AsCog7qJ7lD3f3BDWrpJrynVMyz/jPcR5JGZix
+         MTBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=plYJzTMB4IF8o2Kb1fTizM5x9MX/++4z6Vb+EGhKM7k=;
+        b=RIiapqiYfIxEpXawwP60VW6kmKQQSmS0w3pCdyZJR9KtahrpSoMCUbiyjhJhs0SLlA
+         Z3x8O9CGt6fs76e6F0/iTM0Wk0jiRGr3bTiwdH/+TD2fXRu/bSDTuKjP12HDIofJhSRx
+         yx3/Vr5Hztw4yd7Pppg71kbf8BGsy8a/G+orsu3atNeZU9BA8mu/1XDi98flJcN7MnvY
+         gEnon4CFkcm460ZlzQUdupAKlgpB/PbICWg9tR6vgFMXwKQVajx27/lLbqd22L/tzmp8
+         9C+j9AzlKSIBIzW4UQnOH1P8HpfQpFSkUcFZ/eDxAYoN1IgwuZp3imwg7+taUt1nQt69
+         /u/w==
+X-Gm-Message-State: AOAM531S3gykvtkbOcjQigu+2w4pfpIT6ymkRCwg6J5RnC0SBUzw8edE
+        IHhL5yr+nWOhAxCLmbRE3RgrEKq0RTY8FMBeLTQakEC0
+X-Google-Smtp-Source: ABdhPJw1i3nbu6NUC290ON9ySjibhbPkCNjsFcFfquSfj1kq/ebowiG+AclwHKjsoUEuLLbZKEF07w==
+X-Received: by 2002:a17:90a:c203:: with SMTP id e3mr20059164pjt.173.1618763399819;
+        Sun, 18 Apr 2021 09:29:59 -0700 (PDT)
+Received: from localhost.localdomain.local ([43.128.12.3])
+        by smtp.gmail.com with ESMTPSA id i131sm3550292pgc.20.2021.04.18.09.29.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 18 Apr 2021 09:29:59 -0700 (PDT)
+From:   Liang Zhou <lullaby2005@gmail.com>
+X-Google-Original-From: Liang Zhou <zhoul110@chinatelecom.cn>
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, corbet@lwn.net
+Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        zhoul110@chinatelecom.cn
+Subject: [PATCH] docs: fix the invalid vt-d spec location
+Date:   Sun, 18 Apr 2021 09:29:46 -0700
+Message-Id: <1618763386-29562-1-git-send-email-zhoul110@chinatelecom.cn>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch fixes the invalid vt-d spec location.
 
+Signed-off-by: Liang Zhou <zhoul110@chinatelecom.cn>
+---
+ Documentation/x86/intel-iommu.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Le 17/04/2021 à 22:17, Randy Dunlap a écrit :
-> Hi,
-> 
-> kernel test robot reports:
-> 
->>> drivers/cpufreq/pmac32-cpufreq.c:262:2: error: implicit declaration of function 'enable_kernel_fp' [-Werror,-Wimplicit-function-declaration]
->             enable_kernel_fp();
->             ^
-> 
-> when
-> # CONFIG_PPC_FPU is not set
-> CONFIG_ALTIVEC=y
-> 
-> I see at least one other place that does not handle that
-> combination well, here:
-> 
-> ../arch/powerpc/lib/sstep.c: In function 'do_vec_load':
-> ../arch/powerpc/lib/sstep.c:637:3: error: implicit declaration of function 'put_vr' [-Werror=implicit-function-declaration]
->    637 |   put_vr(rn, &u.v);
->        |   ^~~~~~
-> ../arch/powerpc/lib/sstep.c: In function 'do_vec_store':
-> ../arch/powerpc/lib/sstep.c:660:3: error: implicit declaration of function 'get_vr'; did you mean 'get_oc'? [-Werror=implicit-function-declaration]
->    660 |   get_vr(rn, &u.v);
->        |   ^~~~~~
-> 
-> 
-> Should the code + Kconfigs/Makefiles handle that kind of
-> kernel config or should ALTIVEC always mean PPC_FPU as well?
+diff --git a/Documentation/x86/intel-iommu.rst b/Documentation/x86/intel-iommu.rst
+index 099f13d..e95ee34 100644
+--- a/Documentation/x86/intel-iommu.rst
++++ b/Documentation/x86/intel-iommu.rst
+@@ -4,7 +4,7 @@ Linux IOMMU Support
+ 
+ The architecture spec can be obtained from the below location.
+ 
+-http://www.intel.com/content/dam/www/public/us/en/documents/product-specifications/vt-directed-io-spec.pdf
++https://software.intel.com/content/dam/develop/external/us/en/documents-tps/vt-directed-io-spec.pdf
+ 
+ This guide gives a quick cheat sheet for some basic understanding.
+ 
+-- 
+1.8.3.1
 
-As far as I understand, Altivec is completely independant of FPU in Theory. So it should be possible 
-to use Altivec without using FPU.
-
-However, until recently, it was not possible to de-activate FPU support on book3s/32. I made it 
-possible in order to reduce unneccessary processing on processors like the 832x that has no FPU.
-As far as I can see in cputable.h/.c, 832x is the only book3s/32 without FPU, and it doesn't have 
-ALTIVEC either.
-
-So we can in the future ensure that Altivec can be used without FPU support, but for the time being 
-I think it is OK to force selection of FPU when selecting ALTIVEC in order to avoid build failures.
-
-> 
-> I have patches to fix the build errors with the config as
-> reported but I don't know if that's the right thing to do...
-> 
-
-Lets see them.
-
-Christophe
