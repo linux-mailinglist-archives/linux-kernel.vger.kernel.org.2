@@ -2,83 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F873634FB
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 14:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE373634FE
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 14:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234677AbhDRMEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 08:04:43 -0400
-Received: from mout.gmx.net ([212.227.17.21]:53899 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230273AbhDRMEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 08:04:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1618747428;
-        bh=UJsT5aV+MxRbho8JhRzNBpNeMbZUN3ULqGnvmwYqqo8=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=gtWAMLhVANHc5fa/MEW9QtadcRt6E3XfLkUMwhO75vFNJ9hSiCIcdBXyh19j4Glvx
-         xlP1dPLK+L+gfju2A+suqWIgK1cDu7nk/k+Hk8vya2JdjeXOowr3KojS5rMCxKfH0l
-         k494tuyFNJv4jIqxdj0i2T9ANWf8U/auoWtHGEaE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [80.245.75.88] ([80.245.75.88]) by web-mail.gmx.net
- (3c-app-gmx-bap31.server.lan [172.19.172.101]) (via HTTP); Sun, 18 Apr 2021
- 14:03:48 +0200
+        id S230225AbhDRMF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 08:05:28 -0400
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:31033 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230193AbhDRMF1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 08:05:27 -0400
+Date:   Sun, 18 Apr 2021 12:04:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1618747497; bh=S6+7IL9psNB52Dh+xGxHAd9iOltPMkvweODEzTOF5hQ=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=KG3PBF05MIU1gCXucaCnQQGVhDVLH3fhBBNTUS1oMKAn+2aDmw/ho2Qx5Dr7wbMWh
+         N2NfBSQ9negZLZs2iVHq0T3h23lulHBS47TotCeQ3oEY3iQAF1SR4bd3fExWyb7lxk
+         +2xNWOQiwpXHIvFkKtMo11ZMlAl+KHaGRhn0CSHXJ0zHe1nOmrDVNjpSThrcMDv/iZ
+         EinJCF2a6+5qXHn8P8fhC12T3EXUtFuGGXeZB7dLzyVcB9zpN/cfYXJwsxJyat/yD0
+         Q1lSNI2YYrC5xNyRyAwtV3iR5RUDxSEn8eMSkCLudBTN8UmhAciW/EIp1HQRQ00DVG
+         Mz6WnsyEKZPOg==
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH v2 bpf-next 0/2] xsk: introduce generic almost-zerocopy xmit
+Message-ID: <20210418120431.6945-1-alobakin@pm.me>
+In-Reply-To: <CAJ8uoz27wTWU0HhfVWkcHESfAtMXT6dj=p+JW87zm-ownDF7Ww@mail.gmail.com>
+References: <CAJ8uoz2jym_AmCyMt_B32YBAEsjTNpaQF-WAJUavUe3P5_at3w@mail.gmail.com> <1618278328.0085247-1-xuanzhuo@linux.alibaba.com> <CAJ8uoz27wTWU0HhfVWkcHESfAtMXT6dj=p+JW87zm-ownDF7Ww@mail.gmail.com>
 MIME-Version: 1.0
-Message-ID: <trinity-93ab11dc-32c6-4e6b-8617-6bfff1a1b42d-1618747428085@3c-app-gmx-bap31>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Frank Wunderlich <linux@fw-web.de>
-Cc:     linux-mediatek@lists.infradead.org,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Aw: [PATCH] thermal: mediatek: add sensors-support
-Content-Type: text/plain; charset=UTF-8
-Date:   Sun, 18 Apr 2021 14:03:48 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <20210320080646.49615-1-linux@fw-web.de>
-References: <20210320080646.49615-1-linux@fw-web.de>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:NpJG2XS0uVpmsDDBMEbodtzzfxpTnTBa8p1RkMykjqag/W3Gxr2tax05+zGq5AUWfZw8Y
- UR2I0pxvM9MHe0r8VhdDWkgQGBL1SI+8mAdYtMqgypfgy6RLOSe0qt1nK7c6agDFY5PfxSqpyO4Z
- wuBrnzufOyhYmZnoAymsyPyAXn2DXmF91+zeC+t21fCSauEkUxk78mx99SIl3IWAzCGwm7sT9tOV
- qAI+rAIGkZY8+FqJkyyuAffLkkKWZ7AsT6wur+yubLVNmz8hfao5kD5mi04EgQYx2wDkuWpwzz5T
- Is=
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:I5KzL9OLaQU=:3OPO7RKu+UrbJhyuN6QKpU
- 4BFYTNIp75gm+rV0iVvIjAnrZ4rj3UrvsoLuay+pCtGrHP3kS1gyMDoKaExubD2BtRxmnDcFP
- EXKFerqtjTB04wqUrO88LfpaXR73l0pGklAIgozu0o1JwZcj0Umk3S/bG6qd2vhka6gZH3jKh
- qRu0q85YFDxkMoCR6UUPpVEPnVYXeqHPNTdFN37xLgMWQ6okybKiy8tUUE+bUyeT2ZSVPD1yk
- 2at67rwVhXuVNRDnpguJsZvuCBq9MJa5fWUHc/BZ4u54VHhg5HH6Qir6G8J48GSr6ZgzVdfWF
- p1FA/423VEpjXaXcAtA3tBTHaZAk59UAaiEn8hsDVE+UUwrb60yU3LAmxv8g0UrhJfDmYHsrh
- Gl4F4Cn9dkJEs266ePIsPs5U8XZ8yIBRtVlm/DYT+Ge3FHzqx90mSDbru7P8Cb72TdhZb4stC
- zb+HotaIeKhlrhZ7IbA57k62MuPtnAjeyawwjbZqzPnkb42UGomNLhwhjTnDyEFNvjezFFpfD
- y5rD4nGv3MbX/iTa+hRpzw5YKZVeCdbli2KhM3KWeQ8GEP5WQaBF9Eruhdvw1L3CE2jyPSMCz
- 7K8Icw0Cf8kRzGRPxjMNukY07zv3tUyfUnBba8wMSmmdn8CcArkicuPi0i8/5ZZu5jVyN6+K1
- X+qLouCPOYByILOHs2fiFZVxcieOhdrk4fND/9bOBTRStLouXPo0aYprAGKXFpg2Yw7ZvHxDZ
- xFsPCVLNJE6nY/vdcN3WQViWdSHZK4iqsfTkN1eZUHW0WF2ORC5TDQOELbuapp321t3PbRyYK
- Bw3XYc3GqeMj2QKSR1+0lg4XQnhRLrXuuWUmN0DTw18tK/eZV4tCyn4MnqM9rUWjA178rfI81
- oX9ZfsAH+dh6HQ+BoZgsyLstw8Wrc5NgE3NKpQkJv+j1dSkcAiZcwjlHyVnblA5CKZ7/vcTyt
- VDaQZgQnZ+Q==
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Tue, 13 Apr 2021 09:14:02 +0200
 
-any opinion (except typo)?
+Hi!
 
-thermanl =3D> thermal
+I've finally done with a kinda comfy setup after moving to another
+country and can finally continue working on patches and stuff.
 
-regards Frank
+> On Tue, Apr 13, 2021 at 3:49 AM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wr=
+ote:
+> >
+> > On Mon, 12 Apr 2021 16:13:12 +0200, Magnus Karlsson <magnus.karlsson@gm=
+ail.com> wrote:
+> > > On Wed, Mar 31, 2021 at 2:27 PM Alexander Lobakin <alobakin@pm.me> wr=
+ote:
+> > > >
+> > > > This series is based on the exceptional generic zerocopy xmit logic=
+s
+> > > > initially introduced by Xuan Zhuo. It extends it the way that it
+> > > > could cover all the sane drivers, not only the ones that are capabl=
+e
+> > > > of xmitting skbs with no linear space.
+> > > >
+> > > > The first patch is a random while-we-are-here improvement over
+> > > > full-copy path, and the second is the main course. See the individu=
+al
+> > > > commit messages for the details.
+> > > >
+> > > > The original (full-zerocopy) path is still here and still generally
+> > > > faster, but for now it seems like virtio_net will remain the only
+> > > > user of it, at least for a considerable period of time.
+> > > >
+> > > > From v1 [0]:
+> > > >  - don't add a whole SMP_CACHE_BYTES because of only two bytes
+> > > >    (NET_IP_ALIGN);
+> > > >  - switch to zerocopy if the frame is 129 bytes or longer, not 128.
+> > > >    128 still fit to kmalloc-512, while a zerocopy skb is always
+> > > >    kmalloc-1024 -> can potentially be slower on this frame size.
+> > > >
+> > > > [0] https://lore.kernel.org/netdev/20210330231528.546284-1-alobakin=
+@pm.me
+> > > >
+> > > > Alexander Lobakin (2):
+> > > >   xsk: speed-up generic full-copy xmit
+> > >
+> > > I took both your patches for a spin on my machine and for the first
+> > > one I do see a small but consistent drop in performance. I thought it
+> > > would go the other way, but it does not so let us put this one on the
+> > > shelf for now.
 
+This is kinda strange as the solution is pretty straightforward.
+But sure, if the performance dropped after this one, it should not
+be considered for taking.
+I might have a look at it later.
 
-> Gesendet: Samstag, 20=2E M=C3=A4rz 2021 um 10:06 Uhr
-> Von: "Frank Wunderlich" <linux@fw-web=2Ede>
-> add HWMON-support to mediateks thermanl driver to allow lm-sensors
-> userspace tools read soc temperature
+> > > >   xsk: introduce generic almost-zerocopy xmit
+> > >
+> > > This one wreaked havoc on my machine ;-). The performance dropped wit=
+h
+> > > 75% for packets larger than 128 bytes when the new scheme kicks in.
+> > > Checking with perf top, it seems that we spend much more time
+> > > executing the sendmsg syscall. Analyzing some more:
+> > >
+> > > $ sudo bpftrace -e 'kprobe:__sys_sendto { @calls =3D @calls + 1; }
+> > > interval:s:1 {printf("calls/sec: %d\n", @calls); @calls =3D 0;}'
+> > > Attaching 2 probes...
+> > > calls/sec: 1539509 with your patch compared to
+> > >
+> > > calls/sec: 105796 without your patch
+> > >
+> > > The application spends a lot of more time trying to get the kernel to
+> > > send new packets, but the kernel replies with "have not completed the
+> > > outstanding ones, so come back later" =3D EAGAIN. Seems like the
+> > > transmission takes longer when the skbs have fragments, but I have no=
+t
+> > > examined this any further. Did you get a speed-up?
+> >
+> > Regarding this solution, I actually tested it on my mlx5 network card, =
+but the
+> > performance was severely degraded, so I did not continue this solution =
+later. I
+> > guess it might have something to do with the physical network card. We =
+can try
+> > other network cards.
+>
+> I tried it on a third card and got a 40% degradation, so let us scrap
+> this idea. It should stay optional as it is today as the (software)
+> drivers that benefit from this can turn it on explicitly.
+
+Thank you guys a lot for the testing!
+
+I think the main reason is the DMA mapping of one additional frag
+(14 bytes of MAC header, which is excessive). It can take a lot of
+CPU cycles, especially when the device is behind an IOMMU, and seems
+like memcpying is faster here.
+
+Moreover, if Xuan tested it as one of the steps towards his
+full-zerocopy and found it to be a bad idea, this should not
+go further.
+So I'm burying this.
+
+> > links: https://www.spinics.net/lists/netdev/msg710918.html
+> >
+> > Thanks.
+> >
+> > >
+> > > >  net/xdp/xsk.c | 32 ++++++++++++++++++++++----------
+> > > >  1 file changed, 22 insertions(+), 10 deletions(-)
+> > > >
+> > > > --
+> > > > Well, this is untested. I currently don't have an access to my setu=
+p
+> > > > and is bound by moving to another country, but as I don't know for
+> > > > sure at the moment when I'll get back to work on the kernel next ti=
+me,
+> > > > I found it worthy to publish this now -- if any further changes wil=
+l
+> > > > be required when I already will be out-of-sight, maybe someone coul=
+d
+> > > > carry on to make a another revision and so on (I'm still here for a=
+ny
+> > > > questions, comments, reviews and improvements till the end of this
+> > > > week).
+> > > > But this *should* work with all the sane drivers. If a particular
+> > > > one won't handle this, it's likely ill. Any tests are highly
+> > > > appreciated. Thanks!
+> > > > --
+> > > > 2.31.1
+
+Thanks,
+Al
 
