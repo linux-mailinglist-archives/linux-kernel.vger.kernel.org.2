@@ -2,138 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72FCF3632C3
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 02:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E105F3632C4
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 02:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235774AbhDRACp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 20:02:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbhDRACo (ORCPT
+        id S236227AbhDRAJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 20:09:41 -0400
+Received: from smtprelay0218.hostedemail.com ([216.40.44.218]:54102 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230339AbhDRAJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 20:02:44 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E0FC06174A
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 17:02:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=jan+rayNZyuIvP7QAc319+FzdNIqlXIptjr7wP5+bDc=; b=JTEG1RVXhAIPzHRdppONmKOM1M
-        6Hu0T6cJeOc0qfV/x6M8grdlevWQ6/tP0GcxkCUppgLkFEJexK79Smh0+008xgc0iPtt1aIajFhgS
-        Kl14LifAW9efM5E+wMxYmoA93W/YCEhNoYR8V85SRmuJH3bcROwh/SJQ09lIm0+7nYg3yqB9QBzpm
-        f6v8GoANNp4IxXZNMZ+gyLtfYKhpHF6pGoROGtk9IQ52lJr56eDgeIkTJmc2pG9mh8lOh/5gGRaIh
-        mZkeyANN4CaGTdV8JNM8NIut/FG/7CsuYlq4ClnpHApHoS3ycxaRJFtlNxKKFY5pNMRHxsa5ftVZm
-        MmAM6dgQ==;
-Received: from [2601:1c0:6280:3f0::df68]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lXut5-006dnd-Jb; Sun, 18 Apr 2021 00:02:08 +0000
-Subject: Re: mmu.c:undefined reference to `patch__hash_page_A0'
-To:     kernel test robot <lkp@intel.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-References: <202102271820.WlZCxtzY-lkp@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <06227600-c5c5-3da7-a495-ae0b0849b62d@infradead.org>
-Date:   Sat, 17 Apr 2021 17:02:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Sat, 17 Apr 2021 20:09:40 -0400
+Received: from omf02.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id A877318011AD6;
+        Sun, 18 Apr 2021 00:09:12 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf02.hostedemail.com (Postfix) with ESMTPA id 426A21D42F4;
+        Sun, 18 Apr 2021 00:09:11 +0000 (UTC)
+Message-ID: <e256ba8bf66ec4baa5267b4a2f64b2a215817d16.camel@perches.com>
+Subject: Re: [PATCH RESEND][next] rtl8xxxu: Fix fall-through warnings for
+ Clang
+From:   Joe Perches <joe@perches.com>
+To:     Jes Sorensen <jes.sorensen@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Date:   Sat, 17 Apr 2021 17:09:09 -0700
+In-Reply-To: <6bcce753-ceca-8731-ec66-6f467a3199fd@gmail.com>
+References: <20210305094850.GA141221@embeddedor>
+         <20210417175201.2D5A7C433F1@smtp.codeaurora.org>
+         <6bcce753-ceca-8731-ec66-6f467a3199fd@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <202102271820.WlZCxtzY-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 426A21D42F4
+X-Spam-Status: No, score=1.60
+X-Stat-Signature: hgnmhy4119fdik7mx4bit7j8p7jbgjp3
+X-Rspamd-Server: rspamout01
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/LdIaJsZonw8iNo1xt8+C1+emAnnvBTaA=
+X-HE-Tag: 1618704551-717195
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI--
-
-I no longer see this build error.
-However:
-
-On 2/27/21 2:24 AM, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   3fb6d0e00efc958d01c2f109c8453033a2d96796
-> commit: 259149cf7c3c6195e6199e045ca988c31d081cab powerpc/32s: Only build hash code when CONFIG_PPC_BOOK3S_604 is selected
-> date:   4 weeks ago
-> config: powerpc64-randconfig-r013-20210227 (attached as .config)
-
-ktr/lkp, this is a PPC32 .config file that is attached, not PPC64.
-
-Also:
-
-> compiler: powerpc-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=259149cf7c3c6195e6199e045ca988c31d081cab
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 259149cf7c3c6195e6199e045ca988c31d081cab
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=powerpc64 
+On Sat, 2021-04-17 at 14:30 -0400, Jes Sorensen wrote:
+> On 4/17/21 1:52 PM, Kalle Valo wrote:
+> > "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+> > 
+> > > In preparation to enable -Wimplicit-fallthrough for Clang, fix
+> > > multiple warnings by replacing /* fall through */ comments with
+> > > the new pseudo-keyword macro fallthrough; instead of letting the
+> > > code fall through to the next case.
+> > > 
+> > > Notice that Clang doesn't recognize /* fall through */ comments as
+> > > implicit fall-through markings.
+> > > 
+> > > Link: https://github.com/KSPP/linux/issues/115
+> > > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> > 
+> > Patch applied to wireless-drivers-next.git, thanks.
+> > 
+> > bf3365a856a1 rtl8xxxu: Fix fall-through warnings for Clang
+> > 
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    powerpc-linux-ld: arch/powerpc/mm/book3s32/mmu.o: in function `MMU_init_hw_patch':
->>> mmu.c:(.init.text+0x75e): undefined reference to `patch__hash_page_A0'
->>> powerpc-linux-ld: mmu.c:(.init.text+0x76a): undefined reference to `patch__hash_page_A0'
->>> powerpc-linux-ld: mmu.c:(.init.text+0x776): undefined reference to `patch__hash_page_A1'
->    powerpc-linux-ld: mmu.c:(.init.text+0x782): undefined reference to `patch__hash_page_A1'
->>> powerpc-linux-ld: mmu.c:(.init.text+0x78e): undefined reference to `patch__hash_page_A2'
->    powerpc-linux-ld: mmu.c:(.init.text+0x79a): undefined reference to `patch__hash_page_A2'
->>> powerpc-linux-ld: mmu.c:(.init.text+0x7aa): undefined reference to `patch__hash_page_B'
->    powerpc-linux-ld: mmu.c:(.init.text+0x7b6): undefined reference to `patch__hash_page_B'
->>> powerpc-linux-ld: mmu.c:(.init.text+0x7c2): undefined reference to `patch__hash_page_C'
->    powerpc-linux-ld: mmu.c:(.init.text+0x7ce): undefined reference to `patch__hash_page_C'
->>> powerpc-linux-ld: mmu.c:(.init.text+0x7da): undefined reference to `patch__flush_hash_A0'
->    powerpc-linux-ld: mmu.c:(.init.text+0x7e6): undefined reference to `patch__flush_hash_A0'
->>> powerpc-linux-ld: mmu.c:(.init.text+0x7f2): undefined reference to `patch__flush_hash_A1'
->    powerpc-linux-ld: mmu.c:(.init.text+0x7fe): undefined reference to `patch__flush_hash_A1'
->>> powerpc-linux-ld: mmu.c:(.init.text+0x80a): undefined reference to `patch__flush_hash_A2'
->    powerpc-linux-ld: mmu.c:(.init.text+0x816): undefined reference to `patch__flush_hash_A2'
->>> powerpc-linux-ld: mmu.c:(.init.text+0x83e): undefined reference to `patch__flush_hash_B'
->    powerpc-linux-ld: mmu.c:(.init.text+0x84e): undefined reference to `patch__flush_hash_B'
->    powerpc-linux-ld: arch/powerpc/mm/book3s32/mmu.o: in function `update_mmu_cache':
->>> mmu.c:(.text.update_mmu_cache+0xa0): undefined reference to `add_hash_page'
+> Sorry this junk patch should not have been applied.
 
-I do see this build error:
+I don't believe it's a junk patch.
+I believe your characterization of it as such is flawed.
 
-powerpc-linux-ld: arch/powerpc/boot/wrapper.a(decompress.o): in function `partial_decompress':
-decompress.c:(.text+0x1f0): undefined reference to `__decompress'
+You don't like the style, that's fine, but:
 
-when either
-CONFIG_KERNEL_LZO=y
-or
-CONFIG_KERNEL_LZMA=y
+Any code in the kernel should not be a unique style of your own choosing
+when it could cause various compilers to emit unnecessary warnings.
 
-but the build succeeds when either
-CONFIG_KERNEL_GZIP=y
-or
-CONFIG_KERNEL_XZ=y
+Please remember the kernel code base is a formed by a community with a
+nominally generally accepted style.  There is a real desire in that
+community to both enable compiler warnings that might show defects and
+simultaneously avoid unnecessary compiler warnings.
 
-I guess that is due to arch/powerpc/boot/decompress.c doing this:
-
-#ifdef CONFIG_KERNEL_GZIP
-#	include "decompress_inflate.c"
-#endif
-
-#ifdef CONFIG_KERNEL_XZ
-#	include "xz_config.h"
-#	include "../../../lib/decompress_unxz.c"
-#endif
-
-
-It would be nice to require one of KERNEL_GZIP or KERNEL_XZ
-to be set/enabled (maybe unless a uImage is being built?).
-
-ta.
--- 
-~Randy
+This particular change just avoids a possible compiler warning.
 
