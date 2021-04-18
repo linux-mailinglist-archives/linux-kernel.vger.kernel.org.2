@@ -2,126 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE5F1363666
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 17:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF19836366F
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 17:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231691AbhDRPkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 11:40:24 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:60715 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbhDRPkW (ORCPT
+        id S231409AbhDRPwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 11:52:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229986AbhDRPwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 11:40:22 -0400
-Received: from mail-ed1-f69.google.com ([209.85.208.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lY9Wb-0004a3-4d
-        for linux-kernel@vger.kernel.org; Sun, 18 Apr 2021 15:39:53 +0000
-Received: by mail-ed1-f69.google.com with SMTP id w15-20020a056402268fb02903828f878ec5so9725807edd.5
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 08:39:53 -0700 (PDT)
+        Sun, 18 Apr 2021 11:52:04 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0FEC061760
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 08:51:36 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id t14-20020a05600c198eb029012eeb3edfaeso6813196wmq.2
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 08:51:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OtKw10qEvbW4vVJ7LgDYq6Lw3KkFyEL4NmBJkuZOV+o=;
+        b=wI9ZYZdipjoG+WBfdtD11eqltuXuPkKeZePxTrK9r0jW3SdtouH8LNr/gS3aR6hZ/W
+         vJULJ27nh78HN6MqOBeYYf1R2m7CgNWF1PirBl7FpzcmFBpFjMDs4L55JeFMHITFXVn/
+         ztlV8Up0gMBG7mNZcGy/cms2aMgZD/tYaCpuQJuBFGK8PYc0TlanBX8FCjWUp959Vs5c
+         NNkRTyzNt9wsn6+DH6KQvzSyH+7NIB8KPBorzwQUpWVVALfJwi8fYl7K48ceFbLO63ut
+         /193s5Rkr2cYSWlDg48jjKb3zjodyB+zYGNu0B9YXUWRWnNd7dvI2eQbC8NycfF8y1WV
+         tg3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=y9JyrHCcIAgU62n209ZEUzZ15xktsnDu9faqnaWqMak=;
-        b=ilPqyE2IzPh1ynXE5TNvU5TuTOSVz1f1QGjPgc8mQz+LtNNC5ayhw1A68RDc5npnOb
-         W/Em1sLT9lQygoQHc5z+EyQcCNQ6nEVnFPgvTAzx8ftii3cEojtaE+1mEhW8h/24nYid
-         gZcfYYMNku2eRz5R/qcH9rZW8LXoxtHPU8JRjwrBG8ZHzxmiRF2eNs3srlVhKXC7xnVF
-         OqUpUuvD5TycW0VnlVGAV1XL6CBRkjBd+CghavxMh0KUn0ZbcZUz9I0IOmyR6GmLqbUL
-         cl30djwc25mOUdnwNqGVmi1rACkwssIVMRQPI0xgk0uxrK6o+Q969LvfaUEcCOpawhzf
-         Bu8w==
-X-Gm-Message-State: AOAM53049DuMtdY0ZrFZR4q+CfcOS4MwBhLRgocQTSOb9velZocfYAJV
-        XR7elqp8bcPgPQGv/n6PRVgTzImnY4PFpzoBNJSRKhyUWUfkIluI9bk35o8wBF3RQbS96Mj2Hbd
-        LyGzp3sQE+gfPGyfcCy/rmF4shp++OqiTPnTznOJaBA==
-X-Received: by 2002:a05:6402:2708:: with SMTP id y8mr21045641edd.265.1618760392471;
-        Sun, 18 Apr 2021 08:39:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwCgFtOHi7GuyeFXeAZGt5/M2fMsUw71W0Ns5LRVTvYdHDn2UadbxmhKPnb05SUTxBpJXA7Vw==
-X-Received: by 2002:a05:6402:2708:: with SMTP id y8mr21045629edd.265.1618760392336;
-        Sun, 18 Apr 2021 08:39:52 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
-        by smtp.gmail.com with ESMTPSA id mj3sm8376987ejb.3.2021.04.18.08.39.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Apr 2021 08:39:51 -0700 (PDT)
-Subject: Re: [PATCH] extcon: maxim: Fix missing IRQF_ONESHOT as only threaded
- handler
-To:     Guangqing Zhu <zhuguangqing83@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>
-Cc:     linux-kernel@vger.kernel.org
-References: <20210415113648.21660-1-zhuguangqing83@gmail.com>
- <28b4db83-1381-f3aa-614b-08c065d4d409@canonical.com>
- <4479c7f8-6a80-8d30-0602-b8cc10dd901e@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <005ae6c3-2cd0-4c1e-b820-2674cb758de9@canonical.com>
-Date:   Sun, 18 Apr 2021 17:39:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OtKw10qEvbW4vVJ7LgDYq6Lw3KkFyEL4NmBJkuZOV+o=;
+        b=OgdLVkmW+WcOHOgkZHhqzyccxlVAilgBL+HG4H9ZF5uCTM4wYBHGXCi5JWUS7vjZ6o
+         sZoU+XIvsnA67eypNzOWAyCNx5X2AFJaCKgtPeddK7VzKz8D6DqhAM8OQzG0jPuYO5pK
+         Annqs/Da5jOsyJlljME3YTyAnglZ4UExKkfkLn8UAMgpQ8ZAwM86hqoItG7gJEsjEPGD
+         IYOZbo9EinMuVGUrtH6KDM0/Petl58nIQ8L9Uq2bnzaKWzKYDHpc8q3AeNy/QCgejPuC
+         hUmQWl8S4HCTZZDHjIKKgrQOYClWGKjkUo9iHR19Kaq+LVfmVgvwse+QdhI2dbJJ9mKX
+         bBUg==
+X-Gm-Message-State: AOAM53207ewIEnHOGva4gTIVkK3PEzgw1D3aMIcwAt0ARBTQxIpUJkwS
+        SswyBU4bCGboV5daWKqJD8Yw
+X-Google-Smtp-Source: ABdhPJyrkMnxGIkLrosVJLsRh5oNdjvpEKR9/be+0/gpccSgpInNrF8k8+QX7jRgxsO2uET3pdoziw==
+X-Received: by 2002:a05:600c:3548:: with SMTP id i8mr14715981wmq.110.1618761089071;
+        Sun, 18 Apr 2021 08:51:29 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:209:b40b:f0d6:b292:d186])
+        by smtp.gmail.com with ESMTPSA id v4sm20768292wrf.36.2021.04.18.08.51.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Apr 2021 08:51:28 -0700 (PDT)
+Date:   Sun, 18 Apr 2021 16:51:24 +0100
+From:   Wedson Almeida Filho <wedsonaf@google.com>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Peter Zijlstra <peterz@infradead.org>, ojeda@kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+Message-ID: <YHxVfOS9vU7riv+Y@google.com>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <YHlz54rd1YQHsOA/@hirez.programming.kicks-ass.net>
+ <YHmMJWmzz2vZ3qQH@google.com>
+ <YHmc2+bKQJ/XAATF@hirez.programming.kicks-ass.net>
+ <YHmuX1NA5RF7C7XS@google.com>
+ <20210416161444.GA10484@1wt.eu>
+ <YHroRuI7lYDABWJR@google.com>
+ <20210417142126.GA15678@1wt.eu>
 MIME-Version: 1.0
-In-Reply-To: <4479c7f8-6a80-8d30-0602-b8cc10dd901e@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210417142126.GA15678@1wt.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/04/2021 16:41, Guangqing Zhu wrote:
-> 
-> 
-> On 16/04/2021 16:43, Krzysztof Kozlowski wrote:
->> On 15/04/2021 13:36, zhuguangqing83@gmail.com wrote:
->>> From: Guangqing Zhu <zhuguangqing83@gmail.com>
->>>
->>> Coccinelle noticed:
->>>    1. drivers/extcon/extcon-max14577.c:699:8-33: ERROR: Threaded IRQ with
->>> no primary handler requested without IRQF_ONESHOT
->>>    2. drivers/extcon/extcon-max77693.c:1143:8-33: ERROR: Threaded IRQ with
->>> no primary handler requested without IRQF_ONESHOT
->>>    3. drivers/extcon/extcon-max77843.c:907:8-33: ERROR: Threaded IRQ with
->>> no primary handler requested without IRQF_ONESHOT
->>>    4. drivers/extcon/extcon-max8997.c:665:8-28: ERROR: Threaded IRQ with
->>> no primary handler requested without IRQF_ONESHOT
->>>
->>> Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
->>> ---
->>>   drivers/extcon/extcon-max14577.c | 2 +-
->>>   drivers/extcon/extcon-max77693.c | 2 +-
->>>   drivers/extcon/extcon-max77843.c | 3 ++-
->>>   drivers/extcon/extcon-max8997.c  | 2 +-
->>>   4 files changed, 5 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/extcon/extcon-max14577.c b/drivers/extcon/extcon-max14577.c
->>> index ace523924e58..af15a9e00ee9 100644
->>> --- a/drivers/extcon/extcon-max14577.c
->>> +++ b/drivers/extcon/extcon-max14577.c
->>> @@ -698,7 +698,7 @@ static int max14577_muic_probe(struct platform_device *pdev)
->>>   
->>>   		ret = devm_request_threaded_irq(&pdev->dev, virq, NULL,
->>>   				max14577_muic_irq_handler,
->>> -				IRQF_NO_SUSPEND,
->>> +				IRQF_NO_SUSPEND | IRQF_ONESHOT,
->>
->> The same with all other patches for IRQF_ONESHOT which are send recently:
->> 1. On what board did you test it?
-> 
-> I didn't test it.
-> 
->> 2. Is this just blind patch from Coccinelle without investigation
->> whether it is needed (hint: it's not needed here, it does not use
->> default primary handler).
-> 
-> I found the error notice from Coccinelle and I saw the code. Maybe
-> I'm mistaken, I think it's needed here. Because handler == NULL and
-> thread_fn != NULL, it use irq_default_primary_handler() in
-> request_threaded_irq().
+On Sat, Apr 17, 2021 at 04:21:27PM +0200, Willy Tarreau wrote:
+> Well, I can't express how much I hate abstractions because I constantly
+> need to know what it's doing under the hood, and I spend my time reading
+> the output asm code because I always want to confirm my assumptions about
+> the compiler not cheating on me (and not hitting one of its bugs),
+> especially after C compilers have become so smart that they completely
+> replace your code with what they think is better for you, (including
+> nothing),
 
-No, the primary handler is nested, not default one. Otherwise it would
-have absolutely never worked. Therefore you are not fixing anything,
-except Coccinelle report.
+I understand the feeling. One thing I can say about the abstractions we've been
+talking about is that they're zero-cost. So you'd still have the ability to
+inspect generated code and relate that to source, although it would still be
+subject to optimisations like C (or perhaps more optimisations as the compiler
+knows more about the code).
 
+> so I guess all of this is really not for someone like me.
 
-Best regards,
-Krzysztof
+This may indeed be the case. But I'd invite you to try it out for yourself
+anyway before discounting it. I used to hate destructors in C++ because they
+were called implicitly: C was king because I had full control. Now I find myself
+publicly backing Rust. I feel the advantages outweigh the cost.
+
+> However while I'm pretty sure that based on our respective experiences
+> we'd probably disagree forever on a wide number of approaches when it
+> comes to deciding whether the developer or the compiler should have the
+> last say, I sincerely appreciate that you take the time to calmly explain
+> your differing views and the rationale behind, so many thanks for this!
+
+Thank you. I also appreciate your willingness to engage with us.
+
+Cheers,
+-Wedson
