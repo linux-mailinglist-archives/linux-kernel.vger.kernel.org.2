@@ -2,86 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E105F3632C4
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 02:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E36FD3632C7
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 02:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236227AbhDRAJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 20:09:41 -0400
-Received: from smtprelay0218.hostedemail.com ([216.40.44.218]:54102 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230339AbhDRAJk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 20:09:40 -0400
-Received: from omf02.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id A877318011AD6;
-        Sun, 18 Apr 2021 00:09:12 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf02.hostedemail.com (Postfix) with ESMTPA id 426A21D42F4;
-        Sun, 18 Apr 2021 00:09:11 +0000 (UTC)
-Message-ID: <e256ba8bf66ec4baa5267b4a2f64b2a215817d16.camel@perches.com>
-Subject: Re: [PATCH RESEND][next] rtl8xxxu: Fix fall-through warnings for
- Clang
-From:   Joe Perches <joe@perches.com>
-To:     Jes Sorensen <jes.sorensen@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Date:   Sat, 17 Apr 2021 17:09:09 -0700
-In-Reply-To: <6bcce753-ceca-8731-ec66-6f467a3199fd@gmail.com>
-References: <20210305094850.GA141221@embeddedor>
-         <20210417175201.2D5A7C433F1@smtp.codeaurora.org>
-         <6bcce753-ceca-8731-ec66-6f467a3199fd@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S236234AbhDRAMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 20:12:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32984 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230339AbhDRAMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 20:12:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6A67613C0
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 00:11:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618704705;
+        bh=gNEhzWecmTp3XWY/WnFaq/aNAPJ0JX4o9jqiGRm7HEQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HC84tZLfZsGQUNlT74di2sUtDPYzZilQBaeOeCEgWFVznzKWa15BqaRkPIWUCd/o3
+         X++I+jKEOpKhJbbwo64T5Xqb/vBWxHfEu7L5g8aVHQZL88fyDCXTZW+gri+yOXRtqp
+         sL4xBHQUMuT3noBbO0B8tf01XXWGAqiPNpiF5xfAm+aDACE5KSMyRs4Yi9Ytxe6Lab
+         GZtNynC0DY4iWZSmz7v09XW3/o27FBsFvP31H6JI5UFCUc3+BjCtRSiElHdWTQpRyD
+         9gV116OHZc1j8vZfZC+DEqbGJ0AUTJkfKyFT9BP+mgmRFnhto1/wxaTHUnfgIyIv7t
+         igLH18G3fvCag==
+Received: by mail-ej1-f49.google.com with SMTP id r12so47487066ejr.5
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 17:11:45 -0700 (PDT)
+X-Gm-Message-State: AOAM532LoYxuUjzE21IcTMLXpdQjGopCi2DG3eDBPrZVBZ2BqNCnBVcp
+        66iENLmTi9KW2CbphvAO0pY8pX4duEcTx2pfvFhPgQ==
+X-Google-Smtp-Source: ABdhPJxGbdPGKMfMseiubzobKdUyGieCMD5xYH9dWjIbtwOC+7MkuJJeuA2rTLQQvUxpJoWoI64KK1jmSgKTIVPVCZ4=
+X-Received: by 2002:a17:906:b353:: with SMTP id cd19mr15049555ejb.253.1618704704291;
+ Sat, 17 Apr 2021 17:11:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 426A21D42F4
-X-Spam-Status: No, score=1.60
-X-Stat-Signature: hgnmhy4119fdik7mx4bit7j8p7jbgjp3
-X-Rspamd-Server: rspamout01
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/LdIaJsZonw8iNo1xt8+C1+emAnnvBTaA=
-X-HE-Tag: 1618704551-717195
+References: <20210416203844.3803177-1-samitolvanen@google.com>
+ <20210416203844.3803177-6-samitolvanen@google.com> <20210416211855.GD22348@zn.tnic>
+ <CABCJKud8TvzhcjHCpsrtCJ4B50ZUfaL48F42EhZ2zWKLteAc0Q@mail.gmail.com>
+ <20210416220251.GE22348@zn.tnic> <CALCETrVTtKqD6fonUmT_qr0HJ0X9TWzLGq-wpm+A7XKyjn3W5g@mail.gmail.com>
+ <202104161519.1D37B6D26@keescook> <CALCETrV6WYx7dt56aCuUYsrrFya==zYR+p-YZnaATptnaO7w2A@mail.gmail.com>
+ <202104161601.CFB2CCF84F@keescook> <CALCETrWUS52tzLNiWL5sAVVB5-ko1EW73-TEiO=eZ5jF_QyGPQ@mail.gmail.com>
+ <877dl0sc2m.ffs@nanos.tec.linutronix.de>
+In-Reply-To: <877dl0sc2m.ffs@nanos.tec.linutronix.de>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Sat, 17 Apr 2021 17:11:32 -0700
+X-Gmail-Original-Message-ID: <CALCETrVEhL9N_DEM8=rbAzp8Nb2pDitRCZGRAVcE288MBrJ4ug@mail.gmail.com>
+Message-ID: <CALCETrVEhL9N_DEM8=rbAzp8Nb2pDitRCZGRAVcE288MBrJ4ug@mail.gmail.com>
+Subject: Re: [PATCH 05/15] x86: Implement function_nocfi
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        David Laight <David.Laight@aculab.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-hardening@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-04-17 at 14:30 -0400, Jes Sorensen wrote:
-> On 4/17/21 1:52 PM, Kalle Valo wrote:
-> > "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
-> > 
-> > > In preparation to enable -Wimplicit-fallthrough for Clang, fix
-> > > multiple warnings by replacing /* fall through */ comments with
-> > > the new pseudo-keyword macro fallthrough; instead of letting the
-> > > code fall through to the next case.
-> > > 
-> > > Notice that Clang doesn't recognize /* fall through */ comments as
-> > > implicit fall-through markings.
-> > > 
-> > > Link: https://github.com/KSPP/linux/issues/115
-> > > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> > 
-> > Patch applied to wireless-drivers-next.git, thanks.
-> > 
-> > bf3365a856a1 rtl8xxxu: Fix fall-through warnings for Clang
-> > 
-> 
-> Sorry this junk patch should not have been applied.
+On Sat, Apr 17, 2021 at 4:53 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> On Sat, Apr 17 2021 at 16:19, Andy Lutomirski wrote:
+> > On Fri, Apr 16, 2021 at 4:40 PM Kees Cook <keescook@chromium.org> wrote:
+> >> Okay, you're saying you want __builtin_gimme_body_p() to be a constant
+> >> expression for the compiler, not inline asm?
+> >
+> > Yes.
+> >
+> > I admit that, in the trivial case where the asm code is *not* a
+> > C-ABI-compliant function, giving a type that doesn't fool the compiler
+> > into thinking that it might be is probably the best fix.  Maybe we
+> > should standardize something, e.g.:
+> >
+> > struct raw_symbol;  /* not defined anywhere */
+> > #define DECLARE_RAW_SYMBOL(x) struct raw_symbol x[]
+> >
+> > and then we write this:
+> >
+> > DECLARE_RAW_SYMBOL(entry_SYSCALL_64);
+> >
+> > wrmsrl(..., (unsigned long)entry_SYSCALL_64);
+> >
+> > It would be a bit nifty if we didn't need a forward declaration, but
+> > I'm not immediately seeing a way to do this without hacks that we'll
+> > probably regret;
+> >
+> > But this doesn't help the case in which the symbol is an actual
+> > C-callable function and we want to be able to call it, too.
+>
+> The right way to solve this is that the compiler provides a builtin
+>
+>  function_nocfi() +/- the naming bikeshed
+>
+> which works for
+>
+>       foo = function_nocfi(bar);
 
-I don't believe it's a junk patch.
-I believe your characterization of it as such is flawed.
+I agree in general.  But right now, we have, in asm/proto.h:
 
-You don't like the style, that's fine, but:
+void entry_SYSCALL_64(void);
 
-Any code in the kernel should not be a unique style of your own choosing
-when it could cause various compilers to emit unnecessary warnings.
+and that's pure nonsense.  Depending on your point of view,
+entry_SYSCALL_64 is a symbol that resolves to an integer or it's an
+array of bytes containing instructions, but it is most definitely not
+a function void (void).  So, regardless of any CFI stuff, I propose
+that we standardize our handling of prototypes of symbols that are
+opaque to the C compiler.  Here are a couple of choices:
 
-Please remember the kernel code base is a formed by a community with a
-nominally generally accepted style.  There is a real desire in that
-community to both enable compiler warnings that might show defects and
-simultaneously avoid unnecessary compiler warnings.
+Easy one:
 
-This particular change just avoids a possible compiler warning.
+extern u8 entry_SYSCALL_64[];
 
+Slightly more complicated:
+
+struct opaque_symbol;
+extern struct opaque_symbol entry_SYSCALL_64;
+
+The opaque_symbol variant avoids any possible confusion over the weird
+status of arrays in C, and it's hard to misuse, since struct
+opaque_symbol is an incomplete type.
+
+--Andy
