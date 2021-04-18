@@ -2,83 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18349363794
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 22:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B0D3637BE
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 23:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232255AbhDRUhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 16:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhDRUhA (ORCPT
+        id S231924AbhDRVJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 17:09:26 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52696 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229470AbhDRVJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 16:37:00 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA58C06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 13:36:31 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id z13so35735727lfd.9
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 13:36:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+njT44QYZ3Qq5BMIpyAraB9HjcJytfPjL+0P2G7goO4=;
-        b=H5jpOUO2avviyFm4AO16gHz1ThurZ5Sr2spjH3XfrubjfbM+bL3kDD3IFgWVQjuLZ8
-         dL1xkh5BT25R0YBpi3tOiYULQ92WKPw8x9uHKG1XtjRnhClzw1FUzf8p7co5UTzmWip4
-         8crxUP1Jigs0m9lW0LddAxJBZNmxofFj4Br6I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+njT44QYZ3Qq5BMIpyAraB9HjcJytfPjL+0P2G7goO4=;
-        b=IG5fbuLCTCIPfmFrUuG60GTl49fB/VhcYozER6vK1Xfn+RwFIvUB9kihxG1xBnwpdb
-         ggyR4LUo681q7HwI1LU9WQwMX97euUfERZg06QNUmS5DgeZo/xdpQ7hOVLOOKcQ2IxkL
-         beodWIGJPGoYUw7Ng9OxJJFKe4CjmKW/bsbPE6mlzH0mYtF8N23qDdPfGpVvvJBNG58o
-         pJkgIQFBy/BSw/J7PgGT3BrEZTPil3M4uO+AYDVBu8hsyFwfBM3EJoqvxwlkxDs5KLeT
-         2lGCl2Ezk1LkB3a+SlB++21L+TR8ZBpPMJNZBM29s+7azsaJ366q9IWq0hR2kLDDY5Pi
-         i3/Q==
-X-Gm-Message-State: AOAM530uyvFohbZaSpRofht70LTIoAl9gX/IZeVBq/ic37RAPPLBUIfX
-        Jj4fG2OsUAuv7fwQhwZVu009sybTh+z6tKto
-X-Google-Smtp-Source: ABdhPJzpFdLmJTTeNPMWhC3jeAscyN+drlTQrQkIV2s9qcsSWV8RIt+XY/3e/zhbu/cejSfF15UK/Q==
-X-Received: by 2002:a19:6906:: with SMTP id e6mr3454233lfc.514.1618778189550;
-        Sun, 18 Apr 2021 13:36:29 -0700 (PDT)
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
-        by smtp.gmail.com with ESMTPSA id z2sm935775ljz.116.2021.04.18.13.36.28
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Apr 2021 13:36:29 -0700 (PDT)
-Received: by mail-lf1-f43.google.com with SMTP id 12so52593399lfq.13
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 13:36:28 -0700 (PDT)
-X-Received: by 2002:a19:ca0d:: with SMTP id a13mr1019571lfg.253.1618778188783;
- Sun, 18 Apr 2021 13:36:28 -0700 (PDT)
+        Sun, 18 Apr 2021 17:09:25 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13IL4EN8140026;
+        Sun, 18 Apr 2021 17:08:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=GlpfFybMxhX3l/tszkEhB1wun0R3HDvFs5Opdi6MidI=;
+ b=nulhOh7+FwMip4woMgONOjsRlUKMV0pY9QO9QMAxKCsZ7hKHNdVfm6+utRRZp4s5DWU1
+ JrTXMHMIStlv3KfK+VGnrOZGhUUl0zzyGvt2jooed7NWi9+ZnhBYZLcscOrNhnRfjc2L
+ p6qZBZC02ha2n9wuV/gOufnn+paH86e2tZ1afs0x9+yEGJ+tnpYYKiW635pPbj/EoYEm
+ aStsTVXJ6Avt+aGeFMfC14KYRNNm64pJ65DR+98gajM+t2k9LsMxaThQoDtSfGiwZ8+d
+ rZvUTzHwhI0GU97Wva67QdQFNewfQgEBgaUuKMIY4OEGzljRq1j/nZy7iuSbCDQ5em20 fQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 380d6u4wbb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 18 Apr 2021 17:08:45 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13IL8WUq151285;
+        Sun, 18 Apr 2021 17:08:44 -0400
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 380d6u4way-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 18 Apr 2021 17:08:44 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13IL6MsT016479;
+        Sun, 18 Apr 2021 21:08:43 GMT
+Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
+        by ppma04wdc.us.ibm.com with ESMTP id 37yqa94vpb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 18 Apr 2021 21:08:43 +0000
+Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
+        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13IL8gXw31654160
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 18 Apr 2021 21:08:42 GMT
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 33FAA6E04C;
+        Sun, 18 Apr 2021 21:08:42 +0000 (GMT)
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F09FE6E052;
+        Sun, 18 Apr 2021 21:08:40 +0000 (GMT)
+Received: from li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com (unknown [9.80.215.120])
+        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Sun, 18 Apr 2021 21:08:40 +0000 (GMT)
+Date:   Sun, 18 Apr 2021 16:08:38 -0500
+From:   "Paul A. Clarke" <pc@us.ibm.com>
+To:     Kajol Jain <kjain@linux.ibm.com>
+Cc:     acme@kernel.org, maddy@linux.vnet.ibm.com,
+        atrajeev@linux.vnet.ibm.com, linux-kernel@vger.kernel.org,
+        jolsa@redhat.com, mpe@ellerman.id.au, ravi.bangoria@linux.ibm.com,
+        linux-perf-users@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] perf vendor events: Initial json/events list for power10
+ platform
+Message-ID: <20210418210838.GA1845018@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+References: <20210417091850.596023-1-kjain@linux.ibm.com>
 MIME-Version: 1.0
-References: <CAK8P3a3h0QDvv-0yTVOMjx-8vUUcAFTQ6di71b2DwCELHNpPLw@mail.gmail.com>
- <CAK8P3a3oQm7P=Mj2xU=8v=g82mN-OXk7yrPmFMcK0XpMpwRctg@mail.gmail.com>
-In-Reply-To: <CAK8P3a3oQm7P=Mj2xU=8v=g82mN-OXk7yrPmFMcK0XpMpwRctg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 18 Apr 2021 13:36:13 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgNrFFVxF-9g1bjRZaG2OL4Big1_aKTMFyGagrhVNx2Kw@mail.gmail.com>
-Message-ID: <CAHk-=wgNrFFVxF-9g1bjRZaG2OL4Big1_aKTMFyGagrhVNx2Kw@mail.gmail.com>
-Subject: Re: [GIT PULL] Re: ARM SoC fixes for v5.12, part 2
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     SoC Team <soc@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210417091850.596023-1-kjain@linux.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: iTPRTMvvFGLqYmLdim0CnCBl82P3s02-
+X-Proofpoint-ORIG-GUID: L5DE-voB-aJlTPQ_WJmS-rh889xGRRmB
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-18_14:2021-04-16,2021-04-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ mlxlogscore=999 spamscore=0 impostorscore=0 malwarescore=0 bulkscore=0
+ clxscore=1011 phishscore=0 mlxscore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104180151
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 18, 2021 at 12:24 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> I forgot to add the '[GIT PULL]' in the subject line, replying to myself
-> here to ensure it hits the right email folder.
+On Sat, Apr 17, 2021 at 02:48:50PM +0530, Kajol Jain wrote:
+> Patch adds initial json/events for POWER10.
 
-Well, the reply hit _my_ search criterion, but the pr-tracker-bot is a
-bit more picky.
+I was able to apply, build, and run perf with these changes,
+and every new event at least ran successfully with
+`perf stat`.
 
-As a result, I don't think you'll get any automated reply from the bot.
+Pedantically, there is a lot of inconsistency as to whether
+the `BriefDescription` ends with a period or not, and whether
+there is an extra space at the end.
 
-So here's the manual one,
+Regardless, LGTM.
 
-               Linus
+Tested-by: Paul A. Clarke <pc@us.ibm.com>
+Reviewed-by: Paul A. Clarke <pc@us.ibm.com>
+
+PC
