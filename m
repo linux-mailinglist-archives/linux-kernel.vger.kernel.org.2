@@ -2,70 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A483635E2
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 16:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE603635E8
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 16:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230416AbhDROcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 10:32:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbhDROcF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 10:32:05 -0400
-Received: from mail.as397444.net (mail.as397444.net [IPv6:2620:6e:a000:dead:beef:15:bad:f00d])
-        by lindbergh.monkeyblade.net (Postfix) with UTF8SMTPS id 6DA02C06174A;
-        Sun, 18 Apr 2021 07:31:37 -0700 (PDT)
-Received: by mail.as397444.net (Postfix) with UTF8SMTPSA id A246253E64D;
-        Sun, 18 Apr 2021 14:31:35 +0000 (UTC)
-X-DKIM-Note: Keys used to sign are likely public at https://as397444.net/dkim/
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mattcorallo.com;
-        s=1618754464; t=1618756295;
-        bh=978cxHn0Q+rZRoDQDYvCuquIb8hcItxZKjj5bKl0f4c=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=yAVcyKOuU84jqexTakohpzoax5WxSllgOTwyeO7Bb7qnxGyTZ+20FLyJIaW8+FFT8
-         eJoYBdAAM/2J/W33uyGYWfeXJAUzV9HJ1azLyT4qM5Osvz9RXLo20KtEqeEVSTmSGe
-         hikLIEnh/qyvOkm7qhpVcNKsC8+OmgbZ4OPRtuzWSkmXnzgLMQ62EK9gqflYqaaku5
-         HsrKaPGANI9WnMgS3yxkgzDWon/j/DfkUP8Q6xSARuFSS9VlrXI+FRmaXUzG7ZM5Z8
-         Yj6G/QdfyY0C/YIBknaUuM5tpCy8SCXvACmVJO89Ty5TJb42WsocodsoUXXd8kH/4e
-         PCdonkLHF/mVw==
-Message-ID: <9e2966be-d210-edf9-4f3c-5681f0d07c5f@bluematt.me>
-Date:   Sun, 18 Apr 2021 10:31:33 -0400
+        id S231219AbhDROkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 10:40:24 -0400
+Received: from mta.189.cn ([121.14.53.140]:2984 "EHLO 189.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229446AbhDROkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 10:40:24 -0400
+X-Greylist: delayed 331 seconds by postgrey-1.27 at vger.kernel.org; Sun, 18 Apr 2021 10:40:23 EDT
+HMM_SOURCE_IP: 10.64.8.43:62133.785399503
+HMM_ATTACHE_NUM: 0000
+HMM_SOURCE_TYPE: SMTP
+Received: from clientip-14.215.91.3 (unknown [10.64.8.43])
+        by 189.cn (HERMES) with SMTP id 56EE1BEE6F;
+        Sun, 18 Apr 2021 22:33:52 +0800 (CST)
+Received: from  ([172.27.8.53])
+        by gateway-151646-dep-84df4bfd9c-f7wst with ESMTP id a77c5bff261d4c33a3c6760c7ca68f8f for john.garry@huawei.com;
+        Sun Apr 18 22:33:54 2021
+X-Transaction-ID: a77c5bff261d4c33a3c6760c7ca68f8f
+X-filter-score: 
+X-Real-From: chensong_2000@189.cn
+X-Receive-IP: 172.27.8.53
+X-MEDUSA-Status: 0
+Sender: chensong_2000@189.cn
+Subject: Re: [PATCH] kernel:irq:manage: request threaded irq with a specified
+ priority
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-rt-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rostedt@goodmis.org, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, keescook@chromium.org,
+        gregkh@linuxfoundation.org, maz@kernel.org, joe@perches.com,
+        romain.perier@gmail.com, john.garry@huawei.com
+References: <1618294774-24370-1-git-send-email-chensong_2000@189.cn>
+ <875z0qzigk.ffs@nanos.tec.linutronix.de>
+ <4a355b66-3803-586b-56c7-ce715b5e59cc@189.cn>
+ <87fszqvbnu.ffs@nanos.tec.linutronix.de>
+From:   chensong <chensong_2000@189.cn>
+Message-ID: <ead00ef1-40f6-2c22-efea-63ab4752228f@189.cn>
+Date:   Sun, 18 Apr 2021 22:33:52 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Subject: Re: PROBLEM: DoS Attack on Fragment Cache
+In-Reply-To: <87fszqvbnu.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Keyu Man <kman001@ucr.edu>, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Florian Westphal <fw@strlen.de>, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zhiyun Qian <zhiyunq@cs.ucr.edu>
-References: <02917697-4CE2-4BBE-BF47-31F58BC89025@hxcore.ol>
- <52098fa9-2feb-08ae-c24f-1e696076c3b9@gmail.com>
- <CANn89iL_V0WbeA-Zr29cLSp9pCsthkX9ze4W46gx=8-UeK2qMg@mail.gmail.com>
- <20210417072744.GB14109@1wt.eu>
- <CAMqUL6bkp2Dy3AMFZeNLjE1f-sAwnuBWpXH_FSYTSh8=Ac3RKg@mail.gmail.com>
- <20210417075030.GA14265@1wt.eu>
- <c6467c1c-54f5-8681-6e7d-aa1d9fc2ff32@bluematt.me>
- <CAMqUL6bAVE9p=XEnH4HdBmBfThaY3FDosqyr8yrQo6N_9+Jf3w@mail.gmail.com>
- <78d776a9-4299-ff4e-8ca2-096ec5c02d05@bluematt.me>
- <20210418043933.GB18896@1wt.eu>
-From:   Matt Corallo <netdev-list@mattcorallo.com>
-In-Reply-To: <20210418043933.GB18896@1wt.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Should the default, though, be so low? If someone is still using a old modem they can crank up the sysctl, it does seem 
-like such things are pretty rare these days :). Its rather trivial to, without any kind of attack, hit 1Mbps of lost 
-fragments in today's networks, at which point all fragments are dropped. After all, I submitted the patch to "scratch my 
-own itch" :).
+Daniel & tglx,
 
-Matt
+Points taken and thanks a lot for such detailed explanations.
 
-On 4/18/21 00:39, Willy Tarreau wrote:
-> I do agree that we shouldn't keep them that long nowadays, we can't go
-> too low without risking to break some slow transmission stacks (SLIP/PPP
-> over modems for example).
+BR
+
+Song
+
+On 2021/4/16 下午5:09, Thomas Gleixner wrote:
+> On Fri, Apr 16 2021 at 12:57, chensong wrote:
+>> On 2021/4/13 下午4:39, Thomas Gleixner wrote:
+>>> It breaks because the system designer failed to assign proper priorities
+>>> to the irq threads int_a, int_b and to the user space process task_a.
+>>
+>> yes, it's designers' responsibility to assign proper priorities, but
+>> kernel is also obliged to provide interfaces for those designers.
+> 
+> The interface exists. sched_setscheduler(2)
+> 
+>> chrt can help designers in this case, however, the truth is lot of
+>> customers are not familiar with it.
+> 
+> The truth is that real-time systems need to be carefully designed and
+> parametrized. And that's only possible when _all_ of the system
+> components and their constraints are known. Trying to solve it at the
+> device driver level of a single device is impossible and a guarantee for
+> fail.
+> 
+> If the customer does not know how to do it, then I really have to ask
+> why he's trying to use a real-time system at all. There is no real-time
+> system which magically tunes itself by pulling the overall system
+> constraints out of thin air.
+>   
+>> what's more, chrt can also apply to userspace rt task, but userspace
+>> also has sched_setscheduler to assgin proper priority inside code like
+>> cyclictest, why can't driver writers have another choice?
+> 
+> There is a very simple reason: The driver writer cannot know about the
+> requirements of the complete system which is composed of kernel, drivers
+> and user space applications, unless the driver writer is fully aware of
+> the overall system design and constraints.
+> 
+> How is that supposed to work on a general purpose kernel which is
+> utilized for a gazillion of different use cases which all have different
+> expectations?
+> 
+> It simply cannot work because default A will only work for usecase A and
+> be completely wrong for all others.
+> 
+>> Further, what if irq handlear thread has to run on the expected priority
+>> at the very beginning? This patch helps.
+> 
+> There is no such thing as the expected priority of an interrupt thread
+> which can be applied upfront.
+> 
+> There are ~5400 instances of request*irq() in the kernel source and
+> there is no way to make priority decisions for them which work for every
+> RT system out there.
+> 
+> The kernel sets a default and the system designer, admin, user has to
+> take care of tuning it to match the expectations and constraints of his
+> particular application scenario.
+> 
+> The kernel provides an userspace interface to do that. That interface
+> might be a bit awkward to use, but there are tools out there which help
+> with that, and if at all we can think about providing a better and
+> easier to use interface for this.
+> 
+> Trying to solve that at the kernel level is putting the cart before the
+> horse.
+> 
+> Thanks,
+> 
+>          tglx
+> 
