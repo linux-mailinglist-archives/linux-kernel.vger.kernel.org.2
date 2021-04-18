@@ -2,197 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528E13636FA
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 19:19:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 896E63636FB
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 19:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232179AbhDRRTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 13:19:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbhDRRTd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 13:19:33 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63993C061760
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 10:19:05 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id k18so28323295oik.1
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 10:19:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tyhicks-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IfPbDvRpVXNZkCjTosV0fhdI0kbeai9mwZx1gjVjW1U=;
-        b=FKl+BqFpmAqmj7h5CPtRIEvh2HqvT9DYZBGdm2aGQZVNzcSfNMhSjqjSF4HwD6zX+o
-         IPDqOZCtGI4xdNXLy4TojHs5jmy7Pgu0AqEqnefZscWt+xlm+AhCukyFhHo5v9gkIO0T
-         sLz6fPazM+hBh5ECchUYkg4MAQ8nq/NaoBhj2VdaBgfNjNh65ydY4qbF1F1VAvVYeAi+
-         lf7poejPh73bxMbbdgYj3wwpmTXVbJt0l+FS4KDIhpTG+M8Me5ePgR0TZJCd+Zjq6Sp4
-         Wi2+9UG49Fpg5CG3hKF4EnkAP6DyRugHPnziOYVfrIJbbYgbz3tPcUgyWYnv5BG2oJ+7
-         90+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IfPbDvRpVXNZkCjTosV0fhdI0kbeai9mwZx1gjVjW1U=;
-        b=R0TPfmwXFl5BVOhy1vY4Iha8l2bP39PGbzd3daqKhXMXeDL3q/tZdtUV3Y75l9FrIR
-         qZ5xWTa1SHFlWqLbkAbw2VajkuILCbCy7bt6bUBS5f+WEa7AG0huJJkJcCgG98jk2y7T
-         CRie6V8hzC8gukP2hY3p1NVwJSlnyhBspmav727zo+qMP89NvtTu3hAk8kF5q7E9YTx8
-         SJJMNV4eRzTWYMiI5EypmdPnjMWbyiHySqn3jiBmfcawXDmYVSJ7YNstoQ0+/ODGVil/
-         awHQHousPrrhaqhOzcHVlZM+PYRXDF0LdhmmpwM7IyC00jmQNs8EEFtpCWv7OHikOkZG
-         ViwQ==
-X-Gm-Message-State: AOAM530LVONvXcOn8awEtuz3qma077/OIACBrFaHjcGcm3XN0vSo3R3G
-        FcfzQzFGTqzm+OXNLpcBpnG8JA==
-X-Google-Smtp-Source: ABdhPJzXltmxS/8vQG3tak+SQj8mmQrawVmzSpxkZbGIphOp0WP5uGFv9htd+oAWaAIAqw/zOD/+UQ==
-X-Received: by 2002:a54:488f:: with SMTP id r15mr10484104oic.132.1618766344270;
-        Sun, 18 Apr 2021 10:19:04 -0700 (PDT)
-Received: from elm (162-237-133-238.lightspeed.rcsntx.sbcglobal.net. [162.237.133.238])
-        by smtp.gmail.com with ESMTPSA id b14sm2659729oic.30.2021.04.18.10.19.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Apr 2021 10:19:03 -0700 (PDT)
-Date:   Sun, 18 Apr 2021 12:19:02 -0500
-From:   Tyler Hicks <code@tyhicks.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        James Morris <jamorris@linux.microsoft.com>,
-        "Michael A. Halcrow" <mahalcro@us.ibm.com>,
-        "Michael C. Thompson" <mcthomps@us.ibm.com>,
-        ecryptfs@vger.kernel.org
-Subject: Re: [PATCH 26/31] fs: ecryptfs: main: Demote a bunch of
- non-conformant kernel-doc headers
-Message-ID: <20210418171902.GB398325@elm>
-References: <20210330164458.1625478-1-lee.jones@linaro.org>
- <20210330164458.1625478-27-lee.jones@linaro.org>
+        id S231953AbhDRRWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 13:22:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57604 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229783AbhDRRVx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 13:21:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE01861001;
+        Sun, 18 Apr 2021 17:21:22 +0000 (UTC)
+Date:   Sun, 18 Apr 2021 19:21:17 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Andrew G. Morgan" <morgan@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        security@kernel.org, Tycho Andersen <tycho@tycho.ws>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCH] capabilities: require CAP_SETFCAP to map uid 0 (v3.2)
+Message-ID: <20210418172117.mjjaahgnd2hoxhf5@wittgenstein>
+References: <20210416045851.GA13811@mail.hallyn.com>
+ <20210416150501.zam55gschpn2w56i@wittgenstein>
+ <20210416213453.GA29094@mail.hallyn.com>
+ <20210417021945.GA687@mail.hallyn.com>
+ <20210417200434.GA17430@mail.hallyn.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210330164458.1625478-27-lee.jones@linaro.org>
+In-Reply-To: <20210417200434.GA17430@mail.hallyn.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-30 17:44:53, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+On Sat, Apr 17, 2021 at 03:04:34PM -0500, Serge Hallyn wrote:
+> A process running as uid 0 but without cap_setfcap currently can simply
+> unshare a new user namespace with uid 0 mapped to 0.  While this task
+> will not have new capabilities against the parent namespace, there is
+> a loophole due to the way namespaced file capabilities work.  File
+> capabilities valid in userns 1 are distinguised from file capabilities
+> valid in userns 2 by the kuid which underlies uid 0.  Therefore
+> the restricted root process can unshare a new self-mapping namespace,
+> add a namespaced file capability onto a file, then use that file
+> capability in the parent namespace.
 > 
->  fs/ecryptfs/main.c:28: warning: Incorrect use of kernel-doc format:  * Module parameter that defines the ecryptfs_verbosity level.
->  fs/ecryptfs/main.c:30: warning: cannot understand function prototype: 'int ecryptfs_verbosity = 0; '
->  fs/ecryptfs/main.c:40: warning: cannot understand function prototype: 'unsigned int ecryptfs_message_buf_len = ECRYPTFS_DEFAULT_MSG_CTX_ELEMS; '
->  fs/ecryptfs/main.c:52: warning: cannot understand function prototype: 'signed long ecryptfs_message_wait_timeout = ECRYPTFS_MAX_MSG_CTX_TTL / HZ; '
->  fs/ecryptfs/main.c:65: warning: cannot understand function prototype: 'unsigned int ecryptfs_number_of_users = ECRYPTFS_DEFAULT_NUM_USERS; '
->  fs/ecryptfs/main.c:106: warning: Function parameter or member 'dentry' not described in 'ecryptfs_init_lower_file'
->  fs/ecryptfs/main.c:106: warning: Function parameter or member 'lower_file' not described in 'ecryptfs_init_lower_file'
->  fs/ecryptfs/main.c:106: warning: Excess function parameter 'ecryptfs_dentry' description in 'ecryptfs_init_lower_file'
->  fs/ecryptfs/main.c:244: warning: Function parameter or member 'sbi' not described in 'ecryptfs_parse_options'
->  fs/ecryptfs/main.c:244: warning: Excess function parameter 'sb' description in 'ecryptfs_parse_options'
->  fs/ecryptfs/main.c:478: warning: Function parameter or member 'fs_type' not described in 'ecryptfs_mount'
->  fs/ecryptfs/main.c:478: warning: Function parameter or member 'flags' not described in 'ecryptfs_mount'
->  fs/ecryptfs/main.c:478: warning: expecting prototype for ecryptfs_get_sb(). Prototype was for ecryptfs_mount() instead
->  fs/ecryptfs/main.c:645: warning: Function parameter or member 'vptr' not described in 'inode_info_init_once'
+> To prevent that, do not allow mapping uid 0 if the process which
+> opened the uid_map file does not have CAP_SETFCAP, which is the capability
+> for setting file capabilities.
 > 
-> Cc: Tyler Hicks <code@tyhicks.com>
-> Cc: Christian Brauner <christian.brauner@ubuntu.com>
-> Cc: James Morris <jamorris@linux.microsoft.com>
-> Cc: "Michael A. Halcrow" <mahalcro@us.ibm.com>
-> Cc: "Michael C. Thompson" <mcthomps@us.ibm.com>
-> Cc: ecryptfs@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> A further wrinkle:  a task can unshare its user namespace, then
+> open its uid_map file itself, and map (only) its own uid.  In this
+> case we do not have the credential from before unshare,  which was
+> potentially more restricted.  So, when creating a user namespace, we
+> record whether the creator had CAP_SETFCAP.  Then we can use that
+> during map_write().
+> 
+> With this patch:
+> 
+> 1. unprivileged user can still unshare -Ur
+> 
+> ubuntu@caps:~$ unshare -Ur
+> root@caps:~# logout
+> 
+> 2. root user can still unshare -Ur
+> 
+> ubuntu@caps:~$ sudo bash
+> root@caps:/home/ubuntu# unshare -Ur
+> root@caps:/home/ubuntu# logout
+> 
+> 3. root user without CAP_SETFCAP cannot unshare -Ur:
+> 
+> root@caps:/home/ubuntu# /sbin/capsh --drop=cap_setfcap --
+> root@caps:/home/ubuntu# /sbin/setcap cap_setfcap=p /sbin/setcap
+> unable to set CAP_SETFCAP effective capability: Operation not permitted
+> root@caps:/home/ubuntu# unshare -Ur
+> unshare: write failed /proc/self/uid_map: Operation not permitted
+> 
+> Signed-off-by: Serge Hallyn <serge@hallyn.com>
+> 
+> Changelog:
+>    * fix logic in the case of writing to another task's uid_map
+>    * rename 'ns' to 'map_ns', and make a file_ns local variable
+>    * use /* comments */
+>    * update the CAP_SETFCAP comment in capability.h
+>    * rename parent_unpriv to parent_can_setfcap (and reverse the
+>      logic)
+>    * remove printks
+>    * clarify (i hope) the code comments
+>    * update capability.h comment
+>    * renamed parent_can_setfcap to parent_could_setfcap
+>    * made the check its own disallowed_0_mapping() fn
+>    * moved the check into new_idmap_permitted
+>    * rename disallowed_0_mapping to verify_root_mapping
+>    * change verify_root_mapping to Christian's suggested flow
 > ---
->  fs/ecryptfs/main.c | 20 +++++++++-----------
->  1 file changed, 9 insertions(+), 11 deletions(-)
-> 
-> diff --git a/fs/ecryptfs/main.c b/fs/ecryptfs/main.c
-> index cdf40a54a35d8..0a6ef2472f205 100644
-> --- a/fs/ecryptfs/main.c
-> +++ b/fs/ecryptfs/main.c
-> @@ -1,5 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0-or-later
-> -/**
-> +/*
->   * eCryptfs: Linux filesystem encryption layer
->   *
->   * Copyright (C) 1997-2003 Erez Zadok
-> @@ -24,7 +24,7 @@
->  #include <linux/magic.h>
->  #include "ecryptfs_kernel.h"
->  
-> -/**
-> +/*
->   * Module parameter that defines the ecryptfs_verbosity level.
->   */
->  int ecryptfs_verbosity = 0;
-> @@ -34,7 +34,7 @@ MODULE_PARM_DESC(ecryptfs_verbosity,
->  		 "Initial verbosity level (0 or 1; defaults to "
->  		 "0, which is Quiet)");
->  
-> -/**
-> +/*
->   * Module parameter that defines the number of message buffer elements
->   */
->  unsigned int ecryptfs_message_buf_len = ECRYPTFS_DEFAULT_MSG_CTX_ELEMS;
-> @@ -43,7 +43,7 @@ module_param(ecryptfs_message_buf_len, uint, 0);
->  MODULE_PARM_DESC(ecryptfs_message_buf_len,
->  		 "Number of message buffer elements");
->  
-> -/**
-> +/*
->   * Module parameter that defines the maximum guaranteed amount of time to wait
->   * for a response from ecryptfsd.  The actual sleep time will be, more than
->   * likely, a small amount greater than this specified value, but only less if
-> @@ -57,7 +57,7 @@ MODULE_PARM_DESC(ecryptfs_message_wait_timeout,
->  		 "sleep while waiting for a message response from "
->  		 "userspace");
->  
-> -/**
-> +/*
->   * Module parameter that is an estimate of the maximum number of users
->   * that will be concurrently using eCryptfs. Set this to the right
->   * value to balance performance and memory use.
-> @@ -80,7 +80,7 @@ void __ecryptfs_printk(const char *fmt, ...)
->  	va_end(args);
->  }
->  
-> -/**
-> +/*
->   * ecryptfs_init_lower_file
->   * @ecryptfs_dentry: Fully initialized eCryptfs dentry object, with
->   *                   the lower dentry and the lower mount set
-> @@ -221,7 +221,7 @@ static void ecryptfs_init_mount_crypt_stat(
->  
->  /**
->   * ecryptfs_parse_options
-> - * @sb: The ecryptfs super block
-> + * @sbi: The ecryptfs super block
->   * @options: The options passed to the kernel
->   * @check_ruid: set to 1 if device uid should be checked against the ruid
->   *
-> @@ -466,10 +466,8 @@ static int ecryptfs_parse_options(struct ecryptfs_sb_info *sbi, char *options,
->  struct kmem_cache *ecryptfs_sb_info_cache;
->  static struct file_system_type ecryptfs_fs_type;
->  
-> -/**
-> +/*
->   * ecryptfs_get_sb
-> - * @fs_type
-> - * @flags
 
-This wasn't quite the right change. This function documentation block
-was for ecryptfs_mount(). It was probably ecryptfs_get_sb() in the past
-and the docs weren't updated. I've adjusted the function doc header and
-added descriptions for @fs_type and @flags.
+Thank you. This looks good. I tested this with:
 
-Tyler
+- fstests
+- LXD testsuite
+- Podman testsuite
+- libcap testsuite
 
->   * @dev_name: The path to mount over
->   * @raw_data: The options passed into the kernel
->   */
-> @@ -635,7 +633,7 @@ static struct file_system_type ecryptfs_fs_type = {
->  };
->  MODULE_ALIAS_FS("ecryptfs");
->  
-> -/**
-> +/*
->   * inode_info_init_once
->   *
->   * Initializes the ecryptfs_inode_info_cache when it is created
-> -- 
-> 2.27.0
-> 
+Tested-by: Christian Brauner <christian.brauner@ubuntu.com>
+Reviewed-by: Christian Brauner <christian.brauner@ubuntu.com>
