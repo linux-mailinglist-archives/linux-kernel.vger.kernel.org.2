@@ -2,143 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC7C3632F7
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 03:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39AA13632F9
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 03:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236784AbhDRBj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 21:39:29 -0400
-Received: from mx5.ucr.edu ([138.23.62.67]:60631 "EHLO mx5.ucr.edu"
+        id S236454AbhDRBoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 21:44:20 -0400
+Received: from mga11.intel.com ([192.55.52.93]:1668 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230339AbhDRBj2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 21:39:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=ucr.edu; i=@ucr.edu; q=dns/txt; s=selector3;
-  t=1618709941; x=1650245941;
-  h=mime-version:references:in-reply-to:from:date:message-id:
-   subject:to:cc;
-  bh=6CEFV76gW6g3N8oapt+HAqwgsAOXSLMXTf8g5Tcasak=;
-  b=DmXBvYZrHfkypWIWQxPcn+UwBSCu/J4BQ2ZMdUJCt4fjJl28F1+47yq4
-   Att5JgoldD6ZUs/cN17GBzIb1KpVg2V66ZZl7XjkUM/AFAH9fOxvZNVvm
-   R6RXQM4ARzATItGiUtDC/ZqFk3P6JbXpg5ZehbizzvGDEZALgM4LQgJP4
-   +dyO2NCMwKKQbUEuSdBgc9ZCAZQt7TY2cS3XJis3fFh50/ekO5FvMC6xG
-   XBbukzbGdRXt16e8JGSNUjmtI025soqEQaTYZUqo3P7PZ9wuS77mB4In1
-   IZ1ipNw/ELFYp5Xo+NVjKfkOQaJ+nWeoEjQsWQkuPZ4qOI4XsQLtM23nt
-   A==;
-IronPort-SDR: jHkvmK5CLxXFe4fQVdQKrW9FZOSp51iYC0wnTthtuPt3NZnp4OSIn99VPBCNLvtI/mJOYi4APf
- 5KSLpc0cMd43Fxo/3Bh0WP4drLawli1qjoJoz67H4giEm8xiP3A6vftBz2S+nbCUSrZpboWskz
- Se95+JzoQWuAzDXgPokVG/UcOjKA5gqSCyrEPjCuiLrMWavhJKLsmFgAEby4rn7uAQkGXKsCW1
- P93x3fHHh8qb4TeIrQdBQar/8IhtjmUs5bfCioG3yvLOQirBFeh0eJcAnru7u9EpZ4jubZcKZC
- JFc=
-X-IPAS-Result: =?us-ascii?q?A2ECAABZjXtgf0WmVdFaGQEBAQEBAQEBAQEBAQEBAQEBA?=
- =?us-ascii?q?RIBAQEBAQEBAQEBAQFAgT4EAQEBAQELAYN3a4RDiCSJTwOaa4F8AgkBAQEPN?=
- =?us-ascii?q?AQBAYRQAoF0AiU0CQ4CAwEBAQMCAwEBAQEBBgEBAQEBAQUEAQECEAEBboUXR?=
- =?us-ascii?q?oI4KQGDbAEBAQMSEVYQCwsDCgICJgICIhIBBQEcBhMbB4VXBZ1igQQ9izGBM?=
- =?us-ascii?q?oEBiBsBCQ2BRBJ+KgGHAoQogiongieBSYFsgQA+h1mCYQSBZX2BNgmBJEAtA?=
- =?us-ascii?q?YEYAQEBknUBimKcLAEGAoJ1GZ0MI6UCuHEQI4ExghQzGiVOMQZngUtQGQ5Wn?=
- =?us-ascii?q?DYkLzgCBgoBAQMJjQ8BAQ?=
-IronPort-PHdr: A9a23:scn7LBF0wl+Uxr/JfidyVJ1GfzFMhN3EVjU92t8ck7tLN56b1NHcB
- iT32/xhgRfzUJnB7Loc0qyK6vGmAD1fqs/Z+Fk5M7V0HycfjssXmwFySOWkMmbcaMDQUiohA
- c5ZX0Vk9XzoeWJcGcL5ekGA6ibqtW1aFRrwLxd6KfroEYDOkcu3y/qy+5rOaAlUmTaxe7x/I
- AiyoAnLq8UbhYlvJqksxhfVv3BFZ/lYyWR0KFyJgh3y/N2w/Jlt8yRRv/Iu6ctNWrjkcqo7U
- LJVEi0oP3g668P3uxbDSxCP5mYHXWUNjhVIGQnF4wrkUZr3ryD3q/By2CiePc3xULA0RTGv5
- LplRRP0lCsKMSMy/XrJgcJskq1UvBOhpwR+w4HKZoGVKOF+db7Zcd8DWGZNQtpdWylHD4ihb
- YUAEvABMP5XoInzpVQArRWwCwqxCu3x1jBFnWP20bEg3ug9DQ3KwA4tEtQTu3rUttX1M6ISX
- PiwwqbWzTTDcu5d1zDn54jObxsspvKMXbdqfsrX1UUjCx7Jg06NqYP5JTOZzPoCvHWG7+d5U
- ++klmEopR1rrDe12scslpfGhpgTyl3c6Ch03YU4KcOmREJnfdKqHphduiKVOodrQs0vX25lt
- ignx7EYp5O2cygHxIkkyhPQd/CKcpaE7Bz/WOqPPzt1gHRoc6+8iRaq6UWs1PHwW82u3FtJr
- idJiMTAu3EM2hDJ68WKTv1w9Vq71zmVzQDc8ORELFgxlarcNpEu3KY9loEWsUTfBi/2n1j2j
- LOOekUk5Oeo7+Pnb63jppCGNo90jhjyMqUpmsCiGOg4PAkDUmyB9eSz073j+kL5QLFUgfEsj
- qbZt5XaKdwapq6/HQBVzp4u5wijAzqiytgVnnkKIEhYdB+GjoXlIVDDLfTgAfe6mVuskTNrx
- /7cPr3mB5XANnvDkLL7crZ790JQ1Bc/wMtC551IELENOuz8VVLstNDAFB82LxS0w/r7CNV6z
- o4eXWOPAqmEMKLdqFOI5fwgI/OKZIALvDbwMOYl5/Hwgn8jg1Mdfrem3YERaH+mGvRqOUKZY
- WDjgoRJLWBfmwMiUKTBj0eLVTpULyK0Ur4w6y9+DIO9Ea/GT5yxi7ub1SO/GdtdYWUQWX6WF
- nK9VIiVRr8pYSTadsxkmzpcDeGJVoQ7kxyiqVmpmPJcMuPI93hA5trY399v6riWzElqnQE=
-IronPort-HdrOrdr: A9a23:G3L3TaHHeWouq1/spLqETMeALOonbusQ8zAX/mp6ICYlC/Cwvc
- aogfgdyFvImC8cMUtQ4eyoFaGcTRrnhPtIyKYLO7PKZniFhEKJK8VY4ZLm03ncHUTFh41g/I
- NBV4Q7N9HqF1h9iq/BgTWQN9o72tGI/OSJqI7lvhNQZDpnYa1h8At1YzzzeiZLbTJLCpYjGJ
- 2X6tAvnVqdUE4KZce2DGRtZZmlm/T3kvvdEHg7Li9ixg3LqT+z8rb1H1yjwx8CX1p0rIsKwC
- zqlQr246nmntOa7lvn12HV54lLg9eJ8LF+Lf3JpM4SJDDhzjyteZ0kYbufpzo4ydvB1H8a1O
- LBqRshIMh/gkm8EF2InQ==
-X-IronPort-Anti-Spam-Filtered: true
+        id S229870AbhDRBoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 21:44:19 -0400
+IronPort-SDR: XDcX4RfvB7H14otMHwiJXrsDhGDQo2TTjxVcs73WvU6VDrPpeipRXe0k+UoPYeTRMBufux3w/B
+ fi9Q1qKgrlPw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9957"; a="192005351"
 X-IronPort-AV: E=Sophos;i="5.82,230,1613462400"; 
-   d="scan'208";a="206742990"
-Received: from mail-io1-f69.google.com ([209.85.166.69])
-  by smtpmx5.ucr.edu with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 17 Apr 2021 18:39:00 -0700
-Received: by mail-io1-f69.google.com with SMTP id y15-20020a5d9b0f0000b02903e840cb5f09so7040597ion.12
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 18:39:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6CEFV76gW6g3N8oapt+HAqwgsAOXSLMXTf8g5Tcasak=;
-        b=PWSGz2fUhnPcV8JrSYE3LtWs5jXElkGtQ9wY9y9rfslGtDmRPONljsDCOnSfn2EjGI
-         2FHIo53IGF3hXaj+/+K1e+Lm7MwItE1C/jjuRzz5y0ANBLaG5u+WnXuy8HhO4G26t6a2
-         pkFj6y+VJqFyAVlDDa+HacDO65prnXBl4HdHBEAAqIq4MOb49Pro60nfIEviufPEnRHI
-         /izSYjYb6M5d5Da2+iEvaYVBd0kRmAZkhQQn6VXe6PogI2cWBdEbDj9eeMOSEu7oJ/UJ
-         +i3TmbCMcnmCCkkF7XdzEbah1SqJKOamTkhxFoIVzHqXrIPKTVhbdweaeHCCEQE3KtXi
-         bXgQ==
-X-Gm-Message-State: AOAM532yat/sLm6sJpYPgkY8qNsGGQ9BlMr9+DwKbXq9yMfgLNRZy+1G
-        +5EjmtJYFPCmBIKsCuXrW3Zg1R4nTo/ynkAVfBQDUo/fxLVitP0W5ttrVVnmNQV1aKWG+xW58Ns
-        sObYdc3Sng4pP6+Pzrnhrf3ZyvGWtxU1zHtMpk0pqSw==
-X-Received: by 2002:a05:6e02:4d0:: with SMTP id f16mr12628134ils.80.1618709939437;
-        Sat, 17 Apr 2021 18:38:59 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzOhw3R6ftLLuz7G0wN5MrRyWOm92ed5tQMKUHJNJFIY2JII8+iXinEexXpHW/qP0iUtsWV5ytSuzxmYX2D/xM=
-X-Received: by 2002:a05:6e02:4d0:: with SMTP id f16mr12628118ils.80.1618709939197;
- Sat, 17 Apr 2021 18:38:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <02917697-4CE2-4BBE-BF47-31F58BC89025@hxcore.ol>
- <52098fa9-2feb-08ae-c24f-1e696076c3b9@gmail.com> <CANn89iL_V0WbeA-Zr29cLSp9pCsthkX9ze4W46gx=8-UeK2qMg@mail.gmail.com>
- <20210417072744.GB14109@1wt.eu> <CAMqUL6bkp2Dy3AMFZeNLjE1f-sAwnuBWpXH_FSYTSh8=Ac3RKg@mail.gmail.com>
- <20210417075030.GA14265@1wt.eu> <c6467c1c-54f5-8681-6e7d-aa1d9fc2ff32@bluematt.me>
-In-Reply-To: <c6467c1c-54f5-8681-6e7d-aa1d9fc2ff32@bluematt.me>
-From:   Keyu Man <kman001@ucr.edu>
-Date:   Sat, 17 Apr 2021 18:38:48 -0700
-Message-ID: <CAMqUL6bAVE9p=XEnH4HdBmBfThaY3FDosqyr8yrQo6N_9+Jf3w@mail.gmail.com>
-Subject: Re: PROBLEM: DoS Attack on Fragment Cache
-To:     Matt Corallo <netdev-list@mattcorallo.com>
-Cc:     Willy Tarreau <w@1wt.eu>, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Florian Westphal <fw@strlen.de>, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zhiyun Qian <zhiyunq@cs.ucr.edu>
+   d="scan'208";a="192005351"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2021 18:43:51 -0700
+IronPort-SDR: S9CHhZOoOZeY8fNo4ZM5k/yi6Zk5TlKy5xj1q1NTZO/Mdj0JkXbTRN4909LrJS9NgqKS2zlFrF
+ 9eLQwl3/Dieg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,230,1613462400"; 
+   d="scan'208";a="400268800"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga002.jf.intel.com with ESMTP; 17 Apr 2021 18:43:51 -0700
+Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.174])
+        by linux.intel.com (Postfix) with ESMTP id 3B65B5808AE;
+        Sat, 17 Apr 2021 18:43:51 -0700 (PDT)
+Message-ID: <7dfdf70d8d98dde9698f544c054847c141044688.camel@linux.intel.com>
+Subject: Re: [PATCH V2 5/9] platform/x86: intel_pmc_core: Get LPM
+ requirements for Tiger Lake
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Hans de Goede <hdegoede@redhat.com>, irenic.rajneesh@gmail.com,
+        mgross@linux.intel.com, gayatri.kammela@intel.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Sat, 17 Apr 2021 18:43:51 -0700
+In-Reply-To: <6dd84b65-44b4-ae12-fe84-c61d8efd43f3@redhat.com>
+References: <20210417031252.3020837-1-david.e.box@linux.intel.com>
+         <20210417031252.3020837-6-david.e.box@linux.intel.com>
+         <6dd84b65-44b4-ae12-fe84-c61d8efd43f3@redhat.com>
+Organization: David E. Box
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Willy's words make sense to me and I agree that the existing fragments
-should be evicted when the new one comes in and the cache is full.
-Though the attacker can still leverage this to flush the victim's
-cache, as mentioned previously, since fragments are likely to be
-assembled in a very short time, it would be hard to launch the
-attack(evicting the legit fragment before it's assembled requires a
-large packet sending rate). And this seems better than the existing
-solution (drop all incoming fragments when full).
+On Sat, 2021-04-17 at 11:00 +0200, Hans de Goede wrote:
+> Hi,
+> 
+> On 4/17/21 5:12 AM, David E. Box wrote:
+> > From: Gayatri Kammela <gayatri.kammela@intel.com>
+> > 
+> > Platforms that support low power modes (LPM) such as Tiger Lake
+> > maintain
+> > requirements for each sub-state that a readable in the PMC.
+> > However, unlike
+> > LPM status registers, requirement registers are not memory mapped
+> > but are
+> > available from an ACPI _DSM. Collect the requirements for Tiger
+> > Lake using
+> > the _DSM method and store in a buffer.
+> > 
+> > Signed-off-by: Gayatri Kammela <gayatri.kammela@intel.com>
+> > Co-developed-by: David E. Box <david.e.box@linux.intel.com>
+> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> > Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+> > ---
+> > 
+> > V2:     - Move buffer allocation so that it does not need to be
+> > freed
+> >           (which was missing anyway) when an error is encountered.
+> >         - Use label to free out_obj after errors
+> >         - Use memcpy instead of memcpy_fromio for ACPI memory
+> > 
+> >  drivers/platform/x86/intel_pmc_core.c | 56
+> > +++++++++++++++++++++++++++
+> >  drivers/platform/x86/intel_pmc_core.h |  2 +
+> >  2 files changed, 58 insertions(+)
+> > 
+> > diff --git a/drivers/platform/x86/intel_pmc_core.c
+> > b/drivers/platform/x86/intel_pmc_core.c
+> > index 0e59a84b51bf..97efe9a6bd01 100644
+> > --- a/drivers/platform/x86/intel_pmc_core.c
+> > +++ b/drivers/platform/x86/intel_pmc_core.c
+> > @@ -23,7 +23,9 @@
+> >  #include <linux/slab.h>
+> >  #include <linux/suspend.h>
+> >  #include <linux/uaccess.h>
+> > +#include <linux/uuid.h>
+> >  
+> > +#include <acpi/acpi_bus.h>
+> >  #include <asm/cpu_device_id.h>
+> >  #include <asm/intel-family.h>
+> >  #include <asm/msr.h>
+> > @@ -31,6 +33,9 @@
+> >  
+> >  #include "intel_pmc_core.h"
+> >  
+> > +#define ACPI_S0IX_DSM_UUID             "57a6512e-3979-4e9d-9708-
+> > ff13b2508972"
+> > +#define ACPI_GET_LOW_MODE_REGISTERS    1
+> > +
+> >  /* PKGC MSRs are common across Intel Core SoCs */
+> >  static const struct pmc_bit_map msr_map[] = {
+> >         {"Package C2",                  MSR_PKG_C2_RESIDENCY},
+> > @@ -590,6 +595,53 @@ static const struct pmc_reg_map tgl_reg_map =
+> > {
+> >         .etr3_offset = ETR3_OFFSET,
+> >  };
+> >  
+> > +static void pmc_core_get_tgl_lpm_reqs(struct platform_device
+> > *pdev)
+> > +{
+> > +       struct pmc_dev *pmcdev = platform_get_drvdata(pdev);
+> > +       const int num_maps = pmcdev->map->lpm_num_maps;
+> > +       size_t lpm_size = LPM_MAX_NUM_MODES * num_maps * 4;
+> 
+> The type of lpm_size should be an u32, so that it matches
+> the type of out_obj->buffer.length.
+> 
+> > +       union acpi_object *out_obj;
+> > +       struct acpi_device *adev;
+> > +       guid_t s0ix_dsm_guid;
+> > +       u32 *lpm_req_regs, *addr;
+> > +
+> > +       adev = ACPI_COMPANION(&pdev->dev);
+> > +       if (!adev)
+> > +               return;
+> > +
+> > +       guid_parse(ACPI_S0IX_DSM_UUID, &s0ix_dsm_guid);
+> > +
+> > +       out_obj = acpi_evaluate_dsm(adev->handle, &s0ix_dsm_guid,
+> > 0,
+> > +                                   ACPI_GET_LOW_MODE_REGISTERS,
+> > NULL);
+> > +       if (out_obj && out_obj->type == ACPI_TYPE_BUFFER) {
+> > +               int size = out_obj->buffer.length;
+> 
+> out_obj->buffer.length is an u32, please make this an u32 too.
+> 
+> > +
+> > +               if (size != lpm_size) {
+> > +                       acpi_handle_debug(adev->handle,
+> > +                               "_DSM returned unexpected buffer
+> > size,"
+> > +                               " have %d, expect %ld\n", size,
+> > lpm_size);
+> 
+> And use %u here (twice), this should also fix the warnings reported
+> by the kernel test robot.
+> 
+> If there are no objections against the suggested changes, then I can
+> fix this up while merging this.
+> 
+> Please let me know if the suggested changes are ok with you.
 
-Keyu
+Changes are good with me. Thanks for the fixup.
 
-On Sat, Apr 17, 2021 at 6:30 PM Matt Corallo
-<netdev-list@mattcorallo.com> wrote:
->
-> See-also "[PATCH] Reduce IP_FRAG_TIME fragment-reassembly timeout to 1s, from 30s" (and the two resends of it) - given
-> the size of the default cache (4MB) and the time that it takes before we flush the cache (30 seconds) you only need
-> about 1Mbps of fragments to hit this issue. While DoS attacks are concerning, its also incredibly practical (and I do)
-> hit this issue in normal non-adversarial conditions.
->
-> Matt
->
-> On 4/17/21 03:50, Willy Tarreau wrote:
-> > On Sat, Apr 17, 2021 at 12:42:39AM -0700, Keyu Man wrote:
-> >> How about at least allow the existing queue to finish? Currently a tiny new
-> >> fragment would potentially invalid all previous fragments by letting them
-> >> timeout without allowing the fragments to come in to finish the assembly.
-> >
-> > Because this is exactly the principle of how attacks are built: reserve
-> > resources claiming that you'll send everything so that others can't make
-> > use of the resources that are reserved to you. The best solution precisely
-> > is *not* to wait for anyone to finish, hence *not* to reserve valuable
-> > resources that are unusuable by others.
-> >
-> > Willy
-> >
+David
+
+> 
+> Regards,
+> 
+> Hans
+> 
+> 
+> > +                       goto free_acpi_obj;
+> > +               }
+> > +       } else {
+> > +               acpi_handle_debug(adev->handle,
+> > +                                 "_DSM function 0 evaluation
+> > failed\n");
+> > +               goto free_acpi_obj;
+> > +       }
+> > +
+> > +       addr = (u32 *)out_obj->buffer.pointer;
+> > +
+> > +       lpm_req_regs = devm_kzalloc(&pdev->dev, lpm_size *
+> > sizeof(u32),
+> > +                                    GFP_KERNEL);
+> > +       if (!lpm_req_regs)
+> > +               goto free_acpi_obj;
+> > +
+> > +       memcpy(lpm_req_regs, addr, lpm_size);
+> > +       pmcdev->lpm_req_regs = lpm_req_regs;
+> > +
+> > +free_acpi_obj:
+> > +       ACPI_FREE(out_obj);
+> > +}
+> > +
+> >  static inline u32 pmc_core_reg_read(struct pmc_dev *pmcdev, int
+> > reg_offset)
+> >  {
+> >         return readl(pmcdev->regbase + reg_offset);
+> > @@ -1424,10 +1476,14 @@ static int pmc_core_probe(struct
+> > platform_device *pdev)
+> >                 return -ENOMEM;
+> >  
+> >         mutex_init(&pmcdev->lock);
+> > +
+> >         pmcdev->pmc_xram_read_bit =
+> > pmc_core_check_read_lock_bit(pmcdev);
+> >         pmc_core_get_low_power_modes(pmcdev);
+> >         pmc_core_do_dmi_quirks(pmcdev);
+> >  
+> > +       if (pmcdev->map == &tgl_reg_map)
+> > +               pmc_core_get_tgl_lpm_reqs(pdev);
+> > +
+> >         /*
+> >          * On TGL, due to a hardware limitation, the GBE LTR blocks
+> > PC10 when
+> >          * a cable is attached. Tell the PMC to ignore it.
+> > diff --git a/drivers/platform/x86/intel_pmc_core.h
+> > b/drivers/platform/x86/intel_pmc_core.h
+> > index aa44fd5399cc..64fb368f40f6 100644
+> > --- a/drivers/platform/x86/intel_pmc_core.h
+> > +++ b/drivers/platform/x86/intel_pmc_core.h
+> > @@ -294,6 +294,7 @@ struct pmc_reg_map {
+> >   * @s0ix_counter:      S0ix residency (step adjusted)
+> >   * @num_lpm_modes:     Count of enabled modes
+> >   * @lpm_en_modes:      Array of enabled modes from lowest to
+> > highest priority
+> > + * @lpm_req_regs:      List of substate requirements
+> >   *
+> >   * pmc_dev contains info about power management controller device.
+> >   */
+> > @@ -310,6 +311,7 @@ struct pmc_dev {
+> >         u64 s0ix_counter;
+> >         int num_lpm_modes;
+> >         int lpm_en_modes[LPM_MAX_NUM_MODES];
+> > +       u32 *lpm_req_regs;
+> >  };
+> >  
+> >  #define pmc_for_each_mode(i, mode, pmcdev)             \
+> > 
+> 
+
+
