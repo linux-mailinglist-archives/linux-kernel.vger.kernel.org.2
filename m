@@ -2,127 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7D03635CB
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 15:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A483635E2
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 16:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231628AbhDRN7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 09:59:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38204 "EHLO
+        id S230416AbhDROcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 10:32:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbhDRN7s (ORCPT
+        with ESMTP id S229446AbhDROcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 09:59:48 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5070C06174A;
-        Sun, 18 Apr 2021 06:59:18 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id f29so22410867pgm.8;
-        Sun, 18 Apr 2021 06:59:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1aigIR0BvhKNpJH8HZM077zbfnE53M8nOpQFLBIhB7g=;
-        b=po3mbtrmF99BkK13bJXnZv8TaplADbv3EClddd5JPVrfX8fgyUbQyzFpsu87psUfd5
-         BVd8q8uq4lqo8azSA73rlyW7J0MfQWn1PxvUSYiGcnNRg7WXl4wednbFtVXLJ7i2cZFU
-         PCsy4pbdz3PPl5jJFaz8Aclws6al+32fnBe7VWb9r8gUdJKpZ2A+fnx4/rQbTeOT088x
-         gZRB4vfnH87Qs7eh0UbcvIBE0f20Q2vgYKQSp+mN8RRS0Muz05DsE5o06d82EH5LXGVg
-         zi/ZkW3ewIiFpLwbsvBSWpXtNctAqwpN2n7bLcMcwuHZ0qEMfSfZwOojsElbX+sBXXGs
-         RQsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1aigIR0BvhKNpJH8HZM077zbfnE53M8nOpQFLBIhB7g=;
-        b=EKPLG5BM9cby+lsUVeXh7Ubr2XHr8IGiCkOkM0zEAT8hrZ4LtZIyCnuTfZ/OnoXU2e
-         lE59RqleprlXrS5OXijbb7NUJc4/bk5lGJmgZb9nRZlGGnNjpYwnfYY+432mU3XIryOZ
-         slB08dpYNXGfjOH5glInAIHBeBovA59qGUhPrISZj2d28h3muWYA4FJNuXH4/yGE7wnn
-         1Dfmm+acAwIbZoR1T5KxAwGYe43dB81imk5dZCq37oJcHXj/zoXQlJ4Pb4oq77gE/V4K
-         PYhuZSkwhSS/B9S7TbmAhJ+6GJReO5qo+jahGigurz7Ap/XDWh1T7mImxlvfKVSQnBK2
-         SSRg==
-X-Gm-Message-State: AOAM531nRRTuJYHX0vx9APlBW+VfbXxvKIHUxCnh97z3YfyS0BSWgH8U
-        u7vIp888S7z+I6mHllzvIgv6ju7unr1WyI3wFBQ=
-X-Google-Smtp-Source: ABdhPJxNHtSkjTf/uc4V6OunEUsxnheX9vie/SzKpDvK2SiACBWp0QmBU2dNbFKwWpa5Y2sc7habDBL/EytZpNtfN/4=
-X-Received: by 2002:a62:5c6:0:b029:24d:e97f:1b1d with SMTP id
- 189-20020a6205c60000b029024de97f1b1dmr15917880pff.40.1618754358350; Sun, 18
- Apr 2021 06:59:18 -0700 (PDT)
+        Sun, 18 Apr 2021 10:32:05 -0400
+Received: from mail.as397444.net (mail.as397444.net [IPv6:2620:6e:a000:dead:beef:15:bad:f00d])
+        by lindbergh.monkeyblade.net (Postfix) with UTF8SMTPS id 6DA02C06174A;
+        Sun, 18 Apr 2021 07:31:37 -0700 (PDT)
+Received: by mail.as397444.net (Postfix) with UTF8SMTPSA id A246253E64D;
+        Sun, 18 Apr 2021 14:31:35 +0000 (UTC)
+X-DKIM-Note: Keys used to sign are likely public at https://as397444.net/dkim/
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mattcorallo.com;
+        s=1618754464; t=1618756295;
+        bh=978cxHn0Q+rZRoDQDYvCuquIb8hcItxZKjj5bKl0f4c=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=yAVcyKOuU84jqexTakohpzoax5WxSllgOTwyeO7Bb7qnxGyTZ+20FLyJIaW8+FFT8
+         eJoYBdAAM/2J/W33uyGYWfeXJAUzV9HJ1azLyT4qM5Osvz9RXLo20KtEqeEVSTmSGe
+         hikLIEnh/qyvOkm7qhpVcNKsC8+OmgbZ4OPRtuzWSkmXnzgLMQ62EK9gqflYqaaku5
+         HsrKaPGANI9WnMgS3yxkgzDWon/j/DfkUP8Q6xSARuFSS9VlrXI+FRmaXUzG7ZM5Z8
+         Yj6G/QdfyY0C/YIBknaUuM5tpCy8SCXvACmVJO89Ty5TJb42WsocodsoUXXd8kH/4e
+         PCdonkLHF/mVw==
+Message-ID: <9e2966be-d210-edf9-4f3c-5681f0d07c5f@bluematt.me>
+Date:   Sun, 18 Apr 2021 10:31:33 -0400
 MIME-Version: 1.0
-References: <20210414195454.84183-1-andriy.shevchenko@linux.intel.com>
- <20210414195454.84183-6-andriy.shevchenko@linux.intel.com>
- <20210418120655.3b2501fc@jic23-huawei> <CAHp75Vcrf02cVaeDevN-cEFFTPoxq6kyO3gGQYTcs-U4yHOFaQ@mail.gmail.com>
-In-Reply-To: <CAHp75Vcrf02cVaeDevN-cEFFTPoxq6kyO3gGQYTcs-U4yHOFaQ@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 18 Apr 2021 16:59:02 +0300
-Message-ID: <CAHp75VeRgGcat18p+dN+pbHEYqm+YLGB_06kFEjFsahB2EW9Fw@mail.gmail.com>
-Subject: Re: [PATCH v1 6/7] iio: st_sensors: Add lsm9ds0 IMU support
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        =?UTF-8?B?R2HDq3RhbiBBbmRyw6k=?= <rvlander@gaetanandre.eu>,
-        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
-        Denis Ciocca <denis.ciocca@st.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matija Podravec <matija_podravec@fastmail.fm>,
-        Sergey Borishchenko <borischenko.sergey@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: PROBLEM: DoS Attack on Fragment Cache
+Content-Language: en-US
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Keyu Man <kman001@ucr.edu>, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Florian Westphal <fw@strlen.de>, davem@davemloft.net,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zhiyun Qian <zhiyunq@cs.ucr.edu>
+References: <02917697-4CE2-4BBE-BF47-31F58BC89025@hxcore.ol>
+ <52098fa9-2feb-08ae-c24f-1e696076c3b9@gmail.com>
+ <CANn89iL_V0WbeA-Zr29cLSp9pCsthkX9ze4W46gx=8-UeK2qMg@mail.gmail.com>
+ <20210417072744.GB14109@1wt.eu>
+ <CAMqUL6bkp2Dy3AMFZeNLjE1f-sAwnuBWpXH_FSYTSh8=Ac3RKg@mail.gmail.com>
+ <20210417075030.GA14265@1wt.eu>
+ <c6467c1c-54f5-8681-6e7d-aa1d9fc2ff32@bluematt.me>
+ <CAMqUL6bAVE9p=XEnH4HdBmBfThaY3FDosqyr8yrQo6N_9+Jf3w@mail.gmail.com>
+ <78d776a9-4299-ff4e-8ca2-096ec5c02d05@bluematt.me>
+ <20210418043933.GB18896@1wt.eu>
+From:   Matt Corallo <netdev-list@mattcorallo.com>
+In-Reply-To: <20210418043933.GB18896@1wt.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 18, 2021 at 4:49 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Sun, Apr 18, 2021 at 2:07 PM Jonathan Cameron <jic23@kernel.org> wrote:
->
-> Thanks for review, my answers below.
->
-> > On Wed, 14 Apr 2021 22:54:53 +0300
-> > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > > We can utilize separate drivers for accelerometer and magnetometer,
-> > > so here is the glue driver to enable LSM9DS0 IMU support.
-> > >
-> > > The idea was suggested by Crestez Dan Leonard in [1]. The proposed change
-> > > was sent as RFC due to race condition concerns, which are indeed possible.
-> >
-> > If you are going to mention races, good to give some flavour in here!
->
-> I meant that the initial idea is racy due to different devices
-> communicating to the same i2c address.
-> So, any sequence of transfers are not serialized and you may end up with
->
-> drv1 -> i2c
-> drv2 -> i2c
-> drv1 <- i2c # garbage
->
-> > This driver makes me very nervous indeed.
->
-> Why?! This one is race free as far as I can see. Or maybe I interpret
-> this wrongly and you are talking about initial RFC?
->
-> >  I haven't 'found' any places
-> > where the fact we'll write the same registers from each of the drivers
-> > causes problems (e.g. int pin setup etc) but perhaps I'm missing something.
-> >
-> > Shall we say that makes me rather keener to get eyes (and thought) on this
-> > patch than normal :)
->
-> How should I amend the commit message to state:
-> 1. First idea (RFC by the link) *is* racy AFAIU
-> 2. This one *is not* racy.
+Should the default, though, be so low? If someone is still using a old modem they can crank up the sysctl, it does seem 
+like such things are pretty rare these days :). Its rather trivial to, without any kind of attack, hit 1Mbps of lost 
+fragments in today's networks, at which point all fragments are dropped. After all, I submitted the patch to "scratch my 
+own itch" :).
 
-I re-read this and now understand better what you meant.
-So, it may be that the initial proposal may work without any
-amendment, but since I haven't investigated much, I should rather use
-the phrase "potentially racy". In my variant it's using one regmap for
-both drivers (not two), which makes the register state consistent. Am
-I wrong?
-Do we have some places where we may write to the same register concurrently?
+Matt
 
--- 
-With Best Regards,
-Andy Shevchenko
+On 4/18/21 00:39, Willy Tarreau wrote:
+> I do agree that we shouldn't keep them that long nowadays, we can't go
+> too low without risking to break some slow transmission stacks (SLIP/PPP
+> over modems for example).
