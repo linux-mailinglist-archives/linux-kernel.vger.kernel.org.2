@@ -2,80 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E735F363710
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 19:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B6736370C
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 19:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232424AbhDRRui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 13:50:38 -0400
-Received: from gate.crashing.org ([63.228.1.57]:50864 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232148AbhDRRug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 13:50:36 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 13IHknVD022627;
-        Sun, 18 Apr 2021 12:46:49 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 13IHkmbE022624;
-        Sun, 18 Apr 2021 12:46:48 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Sun, 18 Apr 2021 12:46:48 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: PPC_FPU, ALTIVEC: enable_kernel_fp, put_vr, get_vr
-Message-ID: <20210418174648.GN26583@gate.crashing.org>
-References: <7107fcae-5c7a-ac94-8d89-326f2cd4cd33@infradead.org> <8b1cb0a2-ed3a-7da0-a73a-febbda528703@csgroup.eu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+        id S232244AbhDRRr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 13:47:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232321AbhDRRr5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 13:47:57 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A23C06174A;
+        Sun, 18 Apr 2021 10:47:28 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id t22so22679941pgu.0;
+        Sun, 18 Apr 2021 10:47:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=kgmX5S/cb+60O8Jbhs1MGl8kBtzRSfl9xkwj3Xa3Gs0=;
+        b=J3/Vut00S0kgqBJ9WCOumvr8O9zbWwW29oA3oHwDN69Pm6h9mxMHPsYeWTqbF87Ewl
+         AEdiSkqiGLgyC9Se5YbUIaQ8CYvkZ+avj1tvfOwwJZj6ykm0uSiFlTgqIHiCvXYo8eEP
+         s/5AWmB9jPKBA4+VKHQaxdZUOOw+8ULwd/x5jeF13mVWgbmau55YqXX0uYrWIKVBddto
+         c0O1flLS94UPMvJtAuJD7e683VtJG5fzE8hSfNLG13UpmejrFTlG9FAuNYjVp8D5UIaj
+         VK9G0RL5Lus+Z2Jt2eJPWqlK8fvu95pfm079l+fgq79kGZKVN3jUsrxuBdJthb9XTnp/
+         vi+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=kgmX5S/cb+60O8Jbhs1MGl8kBtzRSfl9xkwj3Xa3Gs0=;
+        b=Ospmea3ZpTvGVZk3Ts5rEFKW6dbNtRfatqM0Hx9kaA6BYFywLDUPHRDhR6vHkUKQhE
+         FQEbcWe56nLbL/eUj14xZM40jJ13uWXEFWZfD3u4arni7PAZgs9IZVdUC2toUxmoK9KW
+         0O9lYQVzoH8UAIcTYvo5HAjrkoAarB3E/I+DzjiQd678NZ74+3yniwSTJ6F8vc//BKPD
+         Ps+5XiGCkcxfndDyTQYwUvhE0Bwsbgzkp3vRul8NRm286/YDkiQbQZ7SRdSe+gzPalwR
+         LdaZRDqLIqlb3ycBvk7rO7mCP3mbRX/r4sz71xl9HrIgBVDZJ+g5HQdkqswumMl1q8ow
+         SSbA==
+X-Gm-Message-State: AOAM530NrJLBVVlMgiF6ug4p6hxreryU2EfZmjmafCgjRBcMoVtbtANQ
+        5xqn+Rzk5lqNlaCC+2rWT7QGo5AS32T7mg==
+X-Google-Smtp-Source: ABdhPJxkh5Wi6xYdwlb2kTtCIXBgcZU9oVoKwVpWbVK/W8rWlRxUQApY6xvT36vzYJw+JLQrEFjk6g==
+X-Received: by 2002:a63:f506:: with SMTP id w6mr8006408pgh.367.1618768047467;
+        Sun, 18 Apr 2021 10:47:27 -0700 (PDT)
+Received: from user ([2001:4490:4409:d07c:b4ac:39e7:e05c:f39b])
+        by smtp.gmail.com with ESMTPSA id x2sm10189889pfx.41.2021.04.18.10.47.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Apr 2021 10:47:27 -0700 (PDT)
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+X-Google-Original-From: Saurav Girepunje <saurav.girepunje@google.com>
+Date:   Sun, 18 Apr 2021 23:17:20 +0530
+To:     b-liu@ti.com, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] usb: musb: musb_core: Add space after that  ','
+Message-ID: <20210418174720.GA59520@user>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8b1cb0a2-ed3a-7da0-a73a-febbda528703@csgroup.eu>
-User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 18, 2021 at 06:24:29PM +0200, Christophe Leroy wrote:
-> Le 17/04/2021 à 22:17, Randy Dunlap a écrit :
-> >Should the code + Kconfigs/Makefiles handle that kind of
-> >kernel config or should ALTIVEC always mean PPC_FPU as well?
-> 
-> As far as I understand, Altivec is completely independant of FPU in Theory. 
+Fix Error reported by checkpatch.pl
 
-And, as far as the hardware is concerned, in practice as well.
+ERROR: space required after that ',' (ctx:VxV)
++#define	can_bulk_split(musb,type) \
+        	                   ^
 
-> So it should be possible to use Altivec without using FPU.
+ERROR: space required after that ',' (ctx:VxV)
++#define	can_bulk_combine(musb,type) \
+        	                     ^
 
-Yup.
+Signed-off-by: Saurav Girepunje <saurav.girepunje@google.com>
+---
+ drivers/usb/musb/musb_core.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> However, until recently, it was not possible to de-activate FPU support on 
-> book3s/32. I made it possible in order to reduce unneccessary processing on 
-> processors like the 832x that has no FPU.
+diff --git a/drivers/usb/musb/musb_core.h b/drivers/usb/musb/musb_core.h
+index dbe5623db1e0..a8a65effe68b 100644
+--- a/drivers/usb/musb/musb_core.h
++++ b/drivers/usb/musb/musb_core.h
+@@ -375,11 +375,11 @@ struct musb {
+ 	unsigned		dyn_fifo:1;	/* dynamic FIFO supported? */
+ 
+ 	unsigned		bulk_split:1;
+-#define	can_bulk_split(musb,type) \
++#define	can_bulk_split(musb, type) \
+ 	(((type) == USB_ENDPOINT_XFER_BULK) && (musb)->bulk_split)
+ 
+ 	unsigned		bulk_combine:1;
+-#define	can_bulk_combine(musb,type) \
++#define	can_bulk_combine(musb, type) \
+ 	(((type) == USB_ENDPOINT_XFER_BULK) && (musb)->bulk_combine)
+ 
+ 	/* is_suspended means USB B_PERIPHERAL suspend */
+-- 
+2.25.1
 
-The processor has to implement FP to be compliant to any version of
-PowerPC, as far as I know?  So that is all done by emulation, including
-all the registers?  Wow painful.
-
-> As far as I can see in cputable.h/.c, 832x is the only book3s/32 without 
-> FPU, and it doesn't have ALTIVEC either.
-
-602 doesn't have double-precision hardware, also no 64-bit FP registers.
-But that CPU was never any widely used :-)
-
-> So we can in the future ensure that Altivec can be used without FPU 
-> support, but for the time being I think it is OK to force selection of FPU 
-> when selecting ALTIVEC in order to avoid build failures.
-
-It is useful to allow MSR[VEC,FP]=1,0 but yeah there are no CPUs that
-have VMX (aka AltiVec) but that do not have FP.  I don't see how making
-that artificial dependency buys anything, but maybe it does?
-
-> >I have patches to fix the build errors with the config as
-> >reported but I don't know if that's the right thing to do...
-
-Neither do we, we cannot see those patches :-)
-
-
-Segher
