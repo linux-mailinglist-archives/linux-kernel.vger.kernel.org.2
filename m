@@ -2,204 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079F236374B
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 21:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57EF1363754
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 21:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232378AbhDRTRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 15:17:00 -0400
-Received: from mail-oln040092072020.outbound.protection.outlook.com ([40.92.72.20]:54964
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229488AbhDRTQ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 15:16:59 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TaiGVYjMs5cUe92TPavtMQ873SbZtoiGG82f6+Ww4rRy0VHMTF7nPmbZx/rKGXit0JTCGUHWY9NNdMAwGXWiOEdMzCwSzy7sd4l3l4nKGGpI6ZAm38uMdMrW8QGxHfQ8onIR3d+COR1TbkQ9mlWfvyovoZqEpIxPyBLkK0KmyhVz6Cdgevb9bUmVet0tbGhb0UJ/ooVD6e3jgb8tSXv7xNP2V5WM1LgUvzQ3HK2j01Q45TSs1rN4VD0Ov/Wf9px0D5lbKraetDXZb64+Yjq5713oQQxO/22IhfTmjqU/IgPUl6uJHP7hMQRIXwC0Na9dlQJ2wvwMhpuyYdLNqb6mNw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8Cfn04uCu+FCjrnkbKb5ROGOBCUHKUtOLmPJ/87Wj/A=;
- b=dL12xlIewcVcXFKqv5uu7lKPtp2xXfSIN2uBKRfXJdBOskbK0cJMo5ymh3YlctkJu2H/8l+4V3A1M0A2IYqeQsevheRG2DuBp9TVqAtAzLUt3/JSrN6Iy+Ph4OxTcU2whz3NI9QPSJgOVJxYKmvCL7NdLExXuMkKK5vhtzhuQnUeA0a9ofHIR55/lBejTATHNJeE1idJ9i8f9kBdbaNdg/19oLxdIlnyTx0qg/K7k82gF0an5Zz8gPBDmmUrOkJKmHU3q2RqnmboWmrZCyDeG6JfrUcftekWEC0YA6uBQtVaiujx1OHlLoVMsNsRKD0mfdSVHBFY/8AJ/MXK1myAgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from VE1EUR03FT005.eop-EUR03.prod.protection.outlook.com
- (2a01:111:e400:7e09::51) by
- VE1EUR03HT191.eop-EUR03.prod.protection.outlook.com (2a01:111:e400:7e09::377)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Sun, 18 Apr
- 2021 19:16:29 +0000
-Received: from VI1PR09MB2638.eurprd09.prod.outlook.com
- (2a01:111:e400:7e09::4f) by VE1EUR03FT005.mail.protection.outlook.com
- (2a01:111:e400:7e09::172) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend
- Transport; Sun, 18 Apr 2021 19:16:29 +0000
-X-IncomingTopHeaderMarker: OriginalChecksum:A1ED976C8DD8FC7A3096F651AA6581424025CBA0B1C8B7EBEED8FA8507A47127;UpperCasedChecksum:A3E5392CD0DF0F30E56786324ECCFA638BD0BE3B27014B27E0E9E6EE11353C74;SizeAsReceived:9318;Count:48
-Received: from VI1PR09MB2638.eurprd09.prod.outlook.com
- ([fe80::948b:987c:566b:198e]) by VI1PR09MB2638.eurprd09.prod.outlook.com
- ([fe80::948b:987c:566b:198e%5]) with mapi id 15.20.4042.024; Sun, 18 Apr 2021
- 19:16:29 +0000
-Subject: Re: [PATCH 2/2] iommu/amd: Remove performance counter
- pre-initialization test
-To:     "Suthikulpanit, Suravee" <suravee.suthikulpanit@amd.com>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-Cc:     joro@8bytes.org, will@kernel.org, jsnitsel@redhat.com,
-        pmenzel@molgen.mpg.de, Jon.Grimm@amd.com,
-        Tj <ml.linux@elloe.vision>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Alexander Monakov <amonakov@ispras.ru>,
-        Alex Hung <1917203@bugs.launchpad.net>
-References: <20210409085848.3908-1-suravee.suthikulpanit@amd.com>
- <20210409085848.3908-3-suravee.suthikulpanit@amd.com>
- <VI1PR09MB26380EED406F2F08ACB6B5BBC7729@VI1PR09MB2638.eurprd09.prod.outlook.com>
- <add9d575-191e-d7a6-e3e1-dfc7ea7f35c8@amd.com>
- <VI1PR09MB2638289727E1854B5CE7A3AAC74E9@VI1PR09MB2638.eurprd09.prod.outlook.com>
- <df6c8363-baac-5d97-5b06-4bcd3163f83d@amd.com>
-From:   David Coe <david.coe@live.co.uk>
-Message-ID: <VI1PR09MB263838403F08887094285F8DC74A9@VI1PR09MB2638.eurprd09.prod.outlook.com>
-Date:   Sun, 18 Apr 2021 20:16:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-In-Reply-To: <df6c8363-baac-5d97-5b06-4bcd3163f83d@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-TMN:  [dWROUlZXdO/XMqDl5vi6BZoFfTq1kjWz]
-X-ClientProxiedBy: LO2P265CA0413.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:a0::17) To VI1PR09MB2638.eurprd09.prod.outlook.com
- (2603:10a6:803:7b::27)
-X-Microsoft-Original-Message-ID: <ae6fa6a2-88ab-2e0e-c01b-e81ce4d0c826@live.co.uk>
+        id S232321AbhDRTaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 15:30:46 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:37793 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230028AbhDRTal (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 15:30:41 -0400
+Received: by mail-io1-f71.google.com with SMTP id g15-20020a056602072fb02903eeab28e3aeso637868iox.4
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 12:30:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=o4KQiklVcBx9Xsuj2l4QvFT11+qMXN3OVLiwWc6tv00=;
+        b=WrkpGU3nv5MS0uo4rKVApeTaMKCIPRCSOLwEf1X9Bl6nQo1MCPEW2YjpQxEpgAHWzU
+         Xz6uV9eWjQts8Ss1MheIqft95YckZlokWynpBTu5/Mf3joxeDiccASOSIBgtUK2m5hss
+         pAmawNIGRoCP4Oxtfs4cTWsSVLgKJBag/lavPmKRTkB3Cmv8A41IEYNZLcJ3cHJgjTwl
+         ZRdn3p/qYh4atQhXV4RuHxg6HO/xTik1gyEbJlUCRRo3w7hBVRwK/A7nY+p9pt8Q/KHa
+         OMB1b8ZyL6hxBaz26BWZiqOI9ETnkomZQ8KSMc9f4kU6dN6TBLR7RgiQyaCQFMPnLuA1
+         Rx1w==
+X-Gm-Message-State: AOAM531yBe9CIXD3tfY9QzlmMmitAwjRtEH1rod164jbET+Sc1YFvy6w
+        j66sD5JqNmLsQ5LzOV2DajuqcL1Xgov3ZR3Fix64zDvn+WtC
+X-Google-Smtp-Source: ABdhPJwMzHZdP4U+GhKlzG5cfrk3jeLXo4gFMq/u/1fZUy1oRz6DVYk499bN0SZZFZxp9u+/WG3tBkgJkBjGF67jt+g/n9KfqhP0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.181] (90.246.218.100) by LO2P265CA0413.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:a0::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.19 via Frontend Transport; Sun, 18 Apr 2021 19:16:27 +0000
-X-MS-PublicTrafficType: Email
-X-IncomingHeaderCount: 48
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-Correlation-Id: 033c58c0-b24a-42c6-77b2-08d9029e77d3
-X-MS-TrafficTypeDiagnostic: VE1EUR03HT191:
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mrsX/T0Ur070IulO9KWDZWeXEWQBbECaho+sKkbv0E1gQBIbZkKzF2x6vrarYgJtMEu6/T5WkDgq3syrdOa20E9brW2enOnOeqMtFxligsK23eKI1Hma4JvexVie2QN1XI0AOXKX5uvsgYkygXJUzOD9EYe8WzYHiqa9XGcDfDwweiPdVZHVZffKuDaoYa+l7yI2ZtiLfr7lHcaAnZ4MqkW9uf3SFAexR4ldxZxKbFzZn+mNSPz3YSvDobhMQKyNPFiJuqoBWj/GOw4irds1pYgt6PsLwWDoFDXGLzmvAUAJA3ZMYt4co7kiLBdgVZVygL3QR9byAhILAzXCpeJglLT5gphkOD1oL8xlegn1qzWMG+xV5L5SnryyLm13Ah2IGFuol5nW+DCHd6D8Ywr9pw==
-X-MS-Exchange-AntiSpam-MessageData: cQh92S/Iq2spVx8M1/6AX9jOLkGNzQ8ZUFDjoVQp3hRtFxnjM0BIR0wVjbL4uJgc7OYa4crRrL4y1iBRRWU0OUTcYFknomS1FM0YZ75Ph4loqJqCI5gurdAS/GIr1m2r/j/60FIXNNuQs6FaLw9yrw==
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 033c58c0-b24a-42c6-77b2-08d9029e77d3
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Apr 2021 19:16:29.2738
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-AuthSource: VE1EUR03FT005.eop-EUR03.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1EUR03HT191
+X-Received: by 2002:a6b:5819:: with SMTP id m25mr11499054iob.99.1618774212883;
+ Sun, 18 Apr 2021 12:30:12 -0700 (PDT)
+Date:   Sun, 18 Apr 2021 12:30:12 -0700
+In-Reply-To: <0000000000006e9e0705bd91f762@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ee3bbf05c0443da6@google.com>
+Subject: Re: [syzbot] WARNING in __percpu_ref_exit (2)
+From:   syzbot <syzbot+d6218cb2fae0b2411e9d@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, hdanton@sina.com,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suravee!
+syzbot has found a reproducer for the following issue on:
 
-Results for Ryzen 2400G on Ubuntu 20.10, kernel 5.8.0-50 with patch 2/2 
-alone. Events batched 3 x 8 to avoid counter-multiplexing (?) artefacts.
+HEAD commit:    c98ff1d0 Merge tag 'scsi-fixes' of git://git.kernel.org/pu..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=163d7229d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1c70e618af4c2e92
+dashboard link: https://syzkaller.appspot.com/bug?extid=d6218cb2fae0b2411e9d
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=145cb2b6d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=157b72b1d00000
 
-On 15/04/2021 10:28, Suthikulpanit, Suravee wrote:
-> David,
-> 
-> For the Ryzen 2400G, could you please try with:
-> - 1 event at a time
-> - Not more than 8 events (On your system, it has 2 banks x 4 counters/bank.
-> I am trying to see if this issue might be related to the counters 
-> multiplexing).
-> 
-$ sudo dmesg | grep IOMMU
-[sudo] password for info:
-[    0.543768] pci 0000:00:00.2: AMD-Vi: IOMMU performance counters 
-supported
-[    0.547696] pci 0000:00:00.2: AMD-Vi: Found IOMMU cap 0x40
-[    0.549196] perf/amd_iommu: Detected AMD IOMMU #0 (2 banks, 4 
-counters/bank).
-[    0.811538] AMD-Vi: AMD IOMMUv2 driver by Joerg Roedel <jroedel@suse.de>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d6218cb2fae0b2411e9d@syzkaller.appspotmail.com
 
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 169 at lib/percpu-refcount.c:113 __percpu_ref_exit+0x98/0x100 lib/percpu-refcount.c:113
+Modules linked in:
+CPU: 1 PID: 169 Comm: kworker/u4:3 Not tainted 5.12.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events_unbound io_ring_exit_work
+RIP: 0010:__percpu_ref_exit+0x98/0x100 lib/percpu-refcount.c:113
+Code: fd 49 8d 7c 24 10 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 61 49 83 7c 24 10 00 74 07 e8 a8 4a ab fd <0f> 0b e8 a1 4a ab fd 48 89 ef e8 69 f0 d9 fd 48 89 da 48 b8 00 00
+RSP: 0018:ffffc90001077b48 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88802d5ca000 RCX: 0000000000000000
+RDX: ffff88801217a1c0 RSI: ffffffff83c7db28 RDI: ffff88801d58f010
+RBP: 0000607f4607bcb8 R08: 0000000000000000 R09: ffffffff8fa9f977
+R10: ffffffff83c7dac8 R11: 0000000000000009 R12: ffff88801d58f000
+R13: 000000010002865e R14: ffff88801d58f000 R15: ffff88802d5ca8b0
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000044 CR3: 0000000015c02000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ percpu_ref_exit+0x3b/0x140 lib/percpu-refcount.c:134
+ io_ring_ctx_free fs/io_uring.c:8483 [inline]
+ io_ring_exit_work+0xa64/0x12d0 fs/io_uring.c:8620
+ process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
-$ declare -a EventList=("amd_iommu_0/cmd_processed/, 
-amd_iommu_0/cmd_processed_inv/, amd_iommu_0/ign_rd_wr_mmio_1ff8h/, 
-amd_iommu_0/int_dte_hit/, amd_iommu_0/int_dte_mis/, 
-amd_iommu_0/mem_dte_hit/, amd_iommu_0/mem_dte_mis/, 
-amd_iommu_0/mem_iommu_tlb_pde_hit/" "amd_iommu_0/mem_iommu_tlb_pde_mis/, 
-amd_iommu_0/mem_iommu_tlb_pte_hit/, amd_iommu_0/mem_iommu_tlb_pte_mis/, 
-amd_iommu_0/mem_pass_excl/, amd_iommu_0/mem_pass_pretrans/, 
-amd_iommu_0/mem_pass_untrans/, amd_iommu_0/mem_target_abort/, 
-amd_iommu_0/mem_trans_total/" "amd_iommu_0/page_tbl_read_gst/, 
-amd_iommu_0/page_tbl_read_nst/, amd_iommu_0/page_tbl_read_tot/, 
-amd_iommu_0/smi_blk/, amd_iommu_0/smi_recv/, amd_iommu_0/tlb_inv/, 
-amd_iommu_0/vapic_int_guest/, amd_iommu_0/vapic_int_non_guest/")
-
-
-$ for event in "${EventList[@]}"; do sudo perf stat -e "$event" sleep 10 
-; done
-
-  Performance counter stats for 'system wide':
-
-                 18       amd_iommu_0/cmd_processed/ 
-
-                  9       amd_iommu_0/cmd_processed_inv/ 
-
-                  0       amd_iommu_0/ign_rd_wr_mmio_1ff8h/ 
-
-                399       amd_iommu_0/int_dte_hit/ 
-
-                 19       amd_iommu_0/int_dte_mis/ 
-
-              1,177       amd_iommu_0/mem_dte_hit/ 
-
-              5,521       amd_iommu_0/mem_dte_mis/ 
-
-                 70       amd_iommu_0/mem_iommu_tlb_pde_hit/ 
-
-
-       10.001490092 seconds time elapsed
-
-
-  Performance counter stats for 'system wide':
-
-                394       amd_iommu_0/mem_iommu_tlb_pde_mis/ 
-
-                602       amd_iommu_0/mem_iommu_tlb_pte_hit/ 
-
-              6,612       amd_iommu_0/mem_iommu_tlb_pte_mis/ 
-
-                  0       amd_iommu_0/mem_pass_excl/ 
-
-                  0       amd_iommu_0/mem_pass_pretrans/ 
-
-              6,590       amd_iommu_0/mem_pass_untrans/ 
-
-                  0       amd_iommu_0/mem_target_abort/ 
-
-                616       amd_iommu_0/mem_trans_total/ 
-
-
-       10.001237585 seconds time elapsed
-
-
-  Performance counter stats for 'system wide':
-
-                  0       amd_iommu_0/page_tbl_read_gst/ 
-
-                 78       amd_iommu_0/page_tbl_read_nst/ 
-
-                 78       amd_iommu_0/page_tbl_read_tot/ 
-
-                  0       amd_iommu_0/smi_blk/ 
-
-                  0       amd_iommu_0/smi_recv/ 
-
-                  0       amd_iommu_0/tlb_inv/ 
-
-                  0       amd_iommu_0/vapic_int_guest/ 
-
-                637       amd_iommu_0/vapic_int_non_guest/ 
-
-
-       10.001186031 seconds time elapsed
-
-Best regards,
-
--- 
-David
