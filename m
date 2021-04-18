@@ -2,128 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA300363729
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 20:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF4CB36372C
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 20:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232606AbhDRSgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 14:36:09 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:3673 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229783AbhDRSgI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 14:36:08 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FNdtG6y9sz9twvm;
-        Sun, 18 Apr 2021 20:35:34 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id DxofNuagOesa; Sun, 18 Apr 2021 20:35:34 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FNdtG1mqtz9twvl;
-        Sun, 18 Apr 2021 20:35:34 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C3B298B79B;
-        Sun, 18 Apr 2021 20:35:37 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Qh9Hr9gyU_oQ; Sun, 18 Apr 2021 20:35:37 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 506898B797;
-        Sun, 18 Apr 2021 20:35:37 +0200 (CEST)
-Subject: Re: mmu.c:undefined reference to `patch__hash_page_A0'
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-References: <202102271820.WlZCxtzY-lkp@intel.com>
- <06227600-c5c5-3da7-a495-ae0b0849b62d@infradead.org>
- <ab9d4f9e-add6-900b-9fa7-83d5f7d1108b@csgroup.eu>
- <0a301d17-136c-df65-17cc-3c9ddbe06de8@infradead.org>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <2eff6845-2695-b82c-9e37-43685abc5cd6@csgroup.eu>
-Date:   Sun, 18 Apr 2021 20:35:29 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S232702AbhDRSgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 14:36:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229783AbhDRSgy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 14:36:54 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7155C06174A;
+        Sun, 18 Apr 2021 11:36:25 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id cu16so14650427pjb.4;
+        Sun, 18 Apr 2021 11:36:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=GpyINhSpeyIcXLnHy2tgBVAm+7ut7FEtyoPnAa4TZbU=;
+        b=BR/YR7ooVaUdKnTCydUQt763M0UzsxoMIdAdqdBXgS5Fj2t0gILuXA9q9JwU+C92CW
+         0t7//rc0jHyhehED7mIMu2zExvb70qELc0w+ItOCUJFOhUV4hQ/v+VaLUuMwSnvEUbij
+         5PJzgnLhnudrC4tz3ln7LLy4EdYaKJYFsMm2PL3fCcZ7Y1QDbrQXyxhkEKSqrykkwtRD
+         L6ae0KsAdDQbLL9VzFQRGT1mB6f6ijUNsIJk1IDuMP1Qc6l+D4M3ZoWEOv1qH/xqe0ht
+         3Y8S52fXcqz18rpmdOJYhC2gOWyQruHST4dcYtIWReL+m8IBOzL/u11edFiSKl5mCdqe
+         /wfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=GpyINhSpeyIcXLnHy2tgBVAm+7ut7FEtyoPnAa4TZbU=;
+        b=KXA2lANXeOjGvNdbxSxNMfNnXBBOGRkPPpn8DNpeKic8yB7XdWEv8k3swA9GsHWZAS
+         JoYMXlGbEVioyRpUThjRqpcIBiPNAOVoxMrZALLEXG3SGBREavBxrNNVaBZToPJU9IaL
+         2ABiJl5obHkPFUXxYIuvz00Xk11dk+VNC+eycg2T8ze9CfArQpc+dhy6BZGMgc0QUXnW
+         zjBcaKIERM+puVPgNdpe675cbTluHBI9MYHqk0yJuQ/ik5MsxjZrhdic/6ZC54CsF6q7
+         A5cqag0DB+MTmxPwyDRZ1e4IHmdMfrFbX9SpcPwEtwVUTBh6LC5aL7xgifPnKAk8IVa8
+         aB8A==
+X-Gm-Message-State: AOAM532ywO4Ph3scBB/J4OF6omlSvuUFIYIyLAWvnK1/fmMc0oLg8Anm
+        MPJua/IFAkNRUwi6DCPEY3A=
+X-Google-Smtp-Source: ABdhPJybwGrr31UijAYZ1m8YeAmKTALVRFaV6iv7eAHWoguf0U+dclERGli5YINxk13bLC4JQKbP/g==
+X-Received: by 2002:a17:902:59d4:b029:ea:bbc5:c775 with SMTP id d20-20020a17090259d4b02900eabbc5c775mr19513893plj.11.1618770985383;
+        Sun, 18 Apr 2021 11:36:25 -0700 (PDT)
+Received: from user ([2001:4490:4409:d07c:b4ac:39e7:e05c:f39b])
+        by smtp.gmail.com with ESMTPSA id u20sm11658135pgl.27.2021.04.18.11.36.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Apr 2021 11:36:25 -0700 (PDT)
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+X-Google-Original-From: Saurav Girepunje <saurav.girepunje@google.com>
+Date:   Mon, 19 Apr 2021 00:06:18 +0530
+To:     b-liu@ti.com, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] usb: musb: davinci: change the variable type
+Message-ID: <20210418183618.GA69452@user>
 MIME-Version: 1.0
-In-Reply-To: <0a301d17-136c-df65-17cc-3c9ddbe06de8@infradead.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+vbus_state is define as bool but on davinci.c assigning a value
+'-1' to the bool variable.
 
+Fix the following coccicheck error:
 
-Le 18/04/2021 à 19:15, Randy Dunlap a écrit :
-> On 4/18/21 3:43 AM, Christophe Leroy wrote:
->>
->>
->> Le 18/04/2021 à 02:02, Randy Dunlap a écrit :
->>> HI--
->>>
->>> I no longer see this build error.
->>
->> Fixed by https://github.com/torvalds/linux/commit/acdad8fb4a1574323db88f98a38b630691574e16
->>
->>> However:
->>>
->>> On 2/27/21 2:24 AM, kernel test robot wrote:
->>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->>>> head:   3fb6d0e00efc958d01c2f109c8453033a2d96796
->>>> commit: 259149cf7c3c6195e6199e045ca988c31d081cab powerpc/32s: Only build hash code when CONFIG_PPC_BOOK3S_604 is selected
->>>> date:   4 weeks ago
->>>> config: powerpc64-randconfig-r013-20210227 (attached as .config)
->>>
->>> ktr/lkp, this is a PPC32 .config file that is attached, not PPC64.
->>>
->>> Also:
->>>
->>>> compiler: powerpc-linux-gcc (GCC) 9.3.0
->>
->> ...
->>
->>>
->>> I do see this build error:
->>>
->>> powerpc-linux-ld: arch/powerpc/boot/wrapper.a(decompress.o): in function `partial_decompress':
->>> decompress.c:(.text+0x1f0): undefined reference to `__decompress'
->>>
->>> when either
->>> CONFIG_KERNEL_LZO=y
->>> or
->>> CONFIG_KERNEL_LZMA=y
->>>
->>> but the build succeeds when either
->>> CONFIG_KERNEL_GZIP=y
->>> or
->>> CONFIG_KERNEL_XZ=y
->>>
->>> I guess that is due to arch/powerpc/boot/decompress.c doing this:
->>>
->>> #ifdef CONFIG_KERNEL_GZIP
->>> #    include "decompress_inflate.c"
->>> #endif
->>>
->>> #ifdef CONFIG_KERNEL_XZ
->>> #    include "xz_config.h"
->>> #    include "../../../lib/decompress_unxz.c"
->>> #endif
->>>
->>>
->>> It would be nice to require one of KERNEL_GZIP or KERNEL_XZ
->>> to be set/enabled (maybe unless a uImage is being built?).
->>
->>
->> Can you test by https://patchwork.ozlabs.org/project/linuxppc-dev/patch/a74fce4dfc9fa32da6ce3470bbedcecf795de1ec.1591189069.git.christophe.leroy@csgroup.eu/ ?
-> 
-> Hi Christophe,
-> 
-> I get build errors for both LZO and LZMA:
+drivers/usb/musb//davinci.c:532:2-18:
+ERROR: Assignment of non-0/1 constant to bool variable
 
-Ok, the patch is almost 1 year old, I guess there has been changes that break it. Will see if I can 
-find some time to look at it.
+By changing the variable type to int.
+As vbus_state need more three values/states more required by
+vbus_state variable.
 
-Christophe
+ /* 0/1 vs "-1 == unknown/init" */
+
+Signed-off-by: Saurav Girepunje <saurav.girepunje@google.com>
+---
+ drivers/usb/musb/davinci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/usb/musb/davinci.c b/drivers/usb/musb/davinci.c
+index 704435526394..e3435621a9d9 100644
+--- a/drivers/usb/musb/davinci.c
++++ b/drivers/usb/musb/davinci.c
+@@ -36,7 +36,7 @@ struct davinci_glue {
+ 	struct device		*dev;
+ 	struct platform_device	*musb;
+ 	struct clk		*clk;
+-	bool			vbus_state;
++	int			vbus_state;
+ 	struct gpio_desc	*vbus;
+ 	struct work_struct	vbus_work;
+ };
+-- 
+2.25.1
+
