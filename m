@@ -2,96 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC843635EE
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 16:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D353635F8
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 16:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231683AbhDROoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 10:44:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbhDROoB (ORCPT
+        id S231932AbhDROpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 10:45:15 -0400
+Received: from out28-52.mail.aliyun.com ([115.124.28.52]:51078 "EHLO
+        out28-52.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229446AbhDROpN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 10:44:01 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E754EC06174A;
-        Sun, 18 Apr 2021 07:43:31 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id j21-20020a17090ae615b02901505b998b45so3595918pjy.0;
-        Sun, 18 Apr 2021 07:43:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=8gZJU83R+0zpO/uK+jvzr7GcvwjV1r6DfaVYHOO6r/k=;
-        b=V0PZ3ziM40TqnfkHywTsYlHAB2lP6vByhxyRPMxyPb0PEF8pmn7/IfkAAKO7aGC6uV
-         jUK2MXSYQiEFvfj9ntoavjaIuBE9qUNBMHX44kXRJVZHCUqBynfzFDGYtOy6IoGsSpud
-         HDFB33egb+KorMWtTdyw8On5nOIH52J3GfujMrZj61ZEDJtZHRq1ZS5rZkG6sP97qkBz
-         mjwGiluiSASKscyjNj+yHTgU8D65XHzneaXDKXsQeKpjn8e9p6WxO3mwhHnlrv3yoFN7
-         zvkGkeXv6bIZGAcI10M0dkcR2FBLeDz70CL6Cy4+CQmT1HX1ZBTh6dy1BqBN5F0n/TSS
-         cZHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=8gZJU83R+0zpO/uK+jvzr7GcvwjV1r6DfaVYHOO6r/k=;
-        b=hUXkfE149jhjBLaOy8VWxOX6nt2jNByBT0RqAtQkiNK+XQwDT/PLKDCGMBY8Kv2s1J
-         sS5nXUte7huy+kLySkwb/L8JLc8W6a9/3HbHpQf+Xk6sF6upOGdUp4NCvrrVI+O2eeMY
-         akwhOlhDfn5rFcx3rPYzLYSvT/PksI2HRf6LfoU/pBnWv6rC861FPCZutg7iNcZnvX6B
-         2cX9mevypdvX3I7+dUP3WxmjECEkIREChFUrJpqR/CTgmT3qOF7PyUxerUULSKXMw7nH
-         HI8UhpvaS+HhnblljlHf4MexRf54DfKy4vVRP9gWrqSzF7oGwH/kmEVd0N9MzKkA5+3C
-         s4gA==
-X-Gm-Message-State: AOAM533rdiRaVH0ACoHCJ8fIUaCz3QTCtjugAuhtnzDgJRDgheInwWLx
-        sTUvf3LAYSHYWTIvUCJ+DS4=
-X-Google-Smtp-Source: ABdhPJwcRiX6atPSTp6oK46nmHcq6XLahpMm3uwJNEtpm6saTPPsKxtzNEF4T4Ki7ZZsbE8G863OVw==
-X-Received: by 2002:a17:90a:fe11:: with SMTP id ck17mr19996518pjb.49.1618757011349;
-        Sun, 18 Apr 2021 07:43:31 -0700 (PDT)
-Received: from user ([2001:4490:4409:d07c:b4ac:39e7:e05c:f39b])
-        by smtp.gmail.com with ESMTPSA id t19sm10495667pfg.38.2021.04.18.07.43.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Apr 2021 07:43:30 -0700 (PDT)
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-X-Google-Original-From: Saurav Girepunje <saurav.girepunje@google.com>
-Date:   Sun, 18 Apr 2021 20:13:23 +0530
-To:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
-        gregkh@linuxfoundation.org, saurav.girepunje@google.com,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH] media: atomisp: pci: remove unneeded variable 'err'
-Message-ID: <20210418144323.GA54920@user>
+        Sun, 18 Apr 2021 10:45:13 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08555614|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00607168-7.29418e-05-0.993855;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047205;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=14;RT=14;SR=0;TI=SMTPD_---.K.sSkG._1618757074;
+Received: from zhouyanjie-virtual-machine.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.K.sSkG._1618757074)
+          by smtp.aliyun-inc.com(10.147.40.233);
+          Sun, 18 Apr 2021 22:44:41 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     linus.walleij@linaro.org, robh+dt@kernel.org, paul@crapouillou.net
+Cc:     linux-gpio@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        hns@goldelico.com, paul@boddie.org.uk, andy.shevchenko@gmail.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sernia.zhou@foxmail.com
+Subject: [PATCH v6 00/12] Fix bugs and add support for new Ingenic SoCs.
+Date:   Sun, 18 Apr 2021 22:44:21 +0800
+Message-Id: <1618757073-1724-1-git-send-email-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
+v1->v2:
+1.Split [1/3] in v1 to [1/6] [2/6] [3/6] [4/6] in v2.
+2.Fix the uninitialized warning.
 
-drivers/staging/media/atomisp/pci/sh_css_mipi.c:39:5-8:
-Unneeded variable: "err". Return "0" on line 44
+v2->v3:
+Split [6/6] in v2 to [6/10] [7/10] [8/10] [9/10] [10/10] in v3.
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@google.com>
----
- drivers/staging/media/atomisp/pci/sh_css_mipi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+v3->v4:
+1.Modify the format of comment.
+2.Split lcd pins into several groups.
+3.Drop "lcd-no-pins" which is pointless.
+4.Improve the structure of some functions.
+5.Adjust function names to avoid confusion.
+6.Use "lcd-special" and "lcd-generic" instead "lcd-xxbit-tft".
+7.Replace "lcd-rgb-xxx" with "lcd-tft-xxx" to avoid confusion.
 
-diff --git a/drivers/staging/media/atomisp/pci/sh_css_mipi.c b/drivers/staging/media/atomisp/pci/sh_css_mipi.c
-index d5ae7f0b5864..708903a31b08 100644
---- a/drivers/staging/media/atomisp/pci/sh_css_mipi.c
-+++ b/drivers/staging/media/atomisp/pci/sh_css_mipi.c
-@@ -36,12 +36,11 @@ ref_count_mipi_allocation[N_CSI_PORTS]; /* Initialized in mipi_init */
- int
- ia_css_mipi_frame_specify(const unsigned int size_mem_words,
- 			  const bool contiguous) {
--	int err = 0;
- 
- 	my_css.size_mem_words = size_mem_words;
- 	(void)contiguous;
- 
--	return err;
-+	return 0;
- }
- 
- /*
+v4->v5:
+Add support for schmitt and slew.
+
+v5->v6:
+1.Add the missing lcd-24bit group.
+2.Add DMIC pins support for Ingenic SoCs.
+3.Adjust and simplify the code.
+
+周琰杰 (Zhou Yanjie) (12):
+  pinctrl: Ingenic: Add missing pins to the JZ4770 MAC MII group.
+  pinctrl: Ingenic: Add support for read the pin configuration of X1830.
+  pinctrl: Ingenic: Adjust the sequence of X1830 SSI pin groups.
+  pinctrl: Ingenic: Improve LCD pins related code.
+  pinctrl: Ingenic: Add DMIC pins support for Ingenic SoCs.
+  pinctrl: Ingenic: Reformat the code.
+  dt-bindings: pinctrl: Add bindings for new Ingenic SoCs.
+  pinctrl: Ingenic: Add pinctrl driver for JZ4730.
+  pinctrl: Ingenic: Add pinctrl driver for JZ4750.
+  pinctrl: Ingenic: Add pinctrl driver for JZ4755.
+  pinctrl: Ingenic: Add pinctrl driver for JZ4775.
+  pinctrl: Ingenic: Add pinctrl driver for X2000.
+
+ .../bindings/pinctrl/ingenic,pinctrl.yaml          |   23 +-
+ drivers/pinctrl/pinctrl-ingenic.c                  | 1645 ++++++++++++++++++--
+ 2 files changed, 1533 insertions(+), 135 deletions(-)
+
 -- 
-2.25.1
+2.7.4
 
