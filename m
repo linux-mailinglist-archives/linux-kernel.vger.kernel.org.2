@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBCB33633E8
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 07:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BAB3633EA
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 07:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236919AbhDRF4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 01:56:55 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:54757 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236806AbhDRF4v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 01:56:51 -0400
+        id S236963AbhDRF5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 01:57:52 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:35053 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229993AbhDRF5u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 01:57:50 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618725384; h=Date: Message-Id: Cc: To: References:
+ s=smtp; t=1618725442; h=Date: Message-Id: Cc: To: References:
  In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=n1O9903wCMJIihMlxk/UFUq2nl3J4IniVovtVagGMAA=;
- b=dMoCMsIKCq0Yb8F+Kgio+Ucrja9HgaVHCzAqreCgEQ6sWNDSKrllXXm5npK2KTXEwc5IY645
- 1CAFPs/AVNdfxr20UeHQ51R02qPIZeu8EhcPr2/V6VFtkhQBTDf/Zlnk7JeP9m9fvbP+QNvL
- BssCWHO4fB/MZ3K2TYupxmgJq7E=
-X-Mailgun-Sending-Ip: 198.61.254.9
+ Content-Type: Sender; bh=vNAqgDa7X0EcUsfQLVk3fPMT8JupPO1Lvnt2QflVHQA=;
+ b=wpqdUefZLGc/DneewTTni/n75ZntkQoMKnub9znIA7pwQRAYVg+DRG0IlmRRr4hQL6Afqgaf
+ huuuOt4fJ2f9FGMgCFWPF+EbxP/lcltBvIoyKl6WYXVmbtrzb/tFU0wzqQG3Ly6rBKL2ML3Q
+ uuzv8B5TaTzAZMerrrJbe6MVmpI=
+X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 607bca072cc44d3aeacbe21b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 18 Apr 2021 05:56:23
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 607bca3ca817abd39abdc1e4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 18 Apr 2021 05:57:16
  GMT
 Sender: kvalo=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 60CCDC433D3; Sun, 18 Apr 2021 05:56:23 +0000 (UTC)
+        id 2BF12C433F1; Sun, 18 Apr 2021 05:57:16 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -40,45 +39,62 @@ Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
         (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8C480C433D3;
-        Sun, 18 Apr 2021 05:56:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8C480C433D3
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7DD80C433D3;
+        Sun, 18 Apr 2021 05:57:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7DD80C433D3
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] rsi: fix error return code of rsi_load_9116_firmware()
+Subject: Re: [PATCH] rtl8xxxu: Fix device info for RTL8192EU devices
 From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210307083445.21322-1-baijiaju1990@gmail.com>
-References: <20210307083445.21322-1-baijiaju1990@gmail.com>
-To:     Jia-Ju Bai <baijiaju1990@gmail.com>
-Cc:     amitkarwar@gmail.com, siva8118@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jia-Ju Bai <baijiaju1990@gmail.com>
+In-Reply-To: <20210323193617.3748164-1-pterjan@google.com>
+References: <20210323193617.3748164-1-pterjan@google.com>
+To:     Pascal Terjan <pterjan@google.com>
+Cc:     Jes Sorensen <Jes.Sorensen@gmail.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pascal Terjan <pterjan@google.com>
 User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210418055623.60CCDC433D3@smtp.codeaurora.org>
-Date:   Sun, 18 Apr 2021 05:56:23 +0000 (UTC)
+Message-Id: <20210418055716.2BF12C433F1@smtp.codeaurora.org>
+Date:   Sun, 18 Apr 2021 05:57:16 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jia-Ju Bai <baijiaju1990@gmail.com> wrote:
+Pascal Terjan <pterjan@google.com> wrote:
 
-> When kmemdup() returns NULL to ta_firmware, no error return code of
-> rsi_load_9116_firmware() is assigned.
-> To fix this bug, status is assigned with -ENOMEM in this case.
+> Based on 2001:3319 and 2357:0109 which I used to test the fix and
+> 0bda:818b and 2357:0108 for which I found efuse dumps online.
 > 
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+> == 2357:0109 ==
+> === Before ===
+> Vendor: Realtek
+> Product: \x03802.11n NI
+> Serial:
+> === After ===
+> Vendor: Realtek
+> Product: 802.11n NIC
+> Serial not available.
+> 
+> == 2001:3319 ==
+> === Before ===
+> Vendor: Realtek
+> Product: Wireless N
+> Serial: no USB Adap
+> === After ===
+> Vendor: Realtek
+> Product: Wireless N Nano USB Adapter
+> Serial not available.
+> 
+> Signed-off-by: Pascal Terjan <pterjan@google.com>
 
-Someone needs to review this.
+Can someone review this, please?
 
-Patch set to Changes Requested.
+Patch set to Deferred.
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210307083445.21322-1-baijiaju1990@gmail.com/
+https://patchwork.kernel.org/project/linux-wireless/patch/20210323193617.3748164-1-pterjan@google.com/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
