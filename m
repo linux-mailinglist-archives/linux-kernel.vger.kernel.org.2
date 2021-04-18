@@ -2,121 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD44363472
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 11:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 949E8363474
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 11:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230374AbhDRJ2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 05:28:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhDRJ2D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 05:28:03 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 469AAC06174A;
-        Sun, 18 Apr 2021 02:27:34 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id j7so253792eds.8;
-        Sun, 18 Apr 2021 02:27:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=v/1M/L499hZyI5mn763mhocGrkehyzJ4CL0gqtMtDDM=;
-        b=uT1F1EgjLkeQQbIEx9YANIteIS7ppt5WXtaUy+UwfYnJK4YLxRo3a4qCJ98WIUSviK
-         O827UdpPE+1p8kZG23t0fZ61gNLMD6lJluDR56Fk860fl8sAwQitVenM+T0EGPfcligE
-         /jOficIOYSPeJj2B02msKciWADzdJJdve6aCZAE7Y968cPpbZWEjmM6qndN4aS32WSz9
-         pCtQJCW+HbCMnRT5XxlIitYc31w6hP9Lcv+E1zOEWftiU5vq+AXwcGpB031LEkei7yhJ
-         cxIuv05ETQev6gvNYf2xmwv93GP4rRv3vxxMvBHK3DelmfigCqzn3eKM0wC7LczeCkBz
-         0RBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=v/1M/L499hZyI5mn763mhocGrkehyzJ4CL0gqtMtDDM=;
-        b=Wgw4+47dzbQOMfRH9ceBTjRpNCNR1hlzUe2dO1atBnKEPL5H94yWvtJJjGMFQ3go0U
-         q5ty65FneVfTU4p087ZI/XpJWWfRlGh19F9WEx8/JQQIRQlfYIDchEE6IZ/0CPjMa758
-         9gaiVte2sJpt3IdWRQehm569t0Jel/BP8//kNipjPYgdT7TyriEnxd8voGOjNz/Ctjqh
-         LliFjxwSv7zpimt6kKj9olUp0udLlV8U5fdoZ25dzdszHUqRAp9ngia93o6ovbzGl0Lc
-         RM3VjAE1lL+tgVnepw1pZntrIqZQJ97jm5aSHRjTIabWjPnllwzp99kGnh6in6G7Id2P
-         CxEw==
-X-Gm-Message-State: AOAM5328k8GBP3k/rOt7bD+lOtuxvWw5FweP1Jk5n/90m1hg2p/Lwm0M
-        UxEHLgQZn/PVYQLfRP22Uio=
-X-Google-Smtp-Source: ABdhPJwqvWC4bfaorNhUzhlOa4VttbWivaZEbQjpBpQDhVq19wkotkNYZy3dKw+DDyRRTwehEDX2sg==
-X-Received: by 2002:a05:6402:1685:: with SMTP id a5mr19523633edv.185.1618738052983;
-        Sun, 18 Apr 2021 02:27:32 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id n12sm3476887edw.95.2021.04.18.02.27.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Apr 2021 02:27:32 -0700 (PDT)
-Date:   Sun, 18 Apr 2021 12:27:31 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Yangbo Lu <yangbo.lu@nxp.com>
-Cc:     netdev@vger.kernel.org, Richard Cochran <richardcochran@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net-next 2/3] net: mscc: ocelot: convert to
- ocelot_port_txtstamp_request()
-Message-ID: <20210418092731.jmuio2terv2spa3h@skbuf>
-References: <20210416123655.42783-1-yangbo.lu@nxp.com>
- <20210416123655.42783-3-yangbo.lu@nxp.com>
+        id S230418AbhDRJcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 05:32:02 -0400
+Received: from smtp-35-i2.italiaonline.it ([213.209.12.35]:41788 "EHLO
+        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229807AbhDRJcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 05:32:01 -0400
+Received: from oxapps-34-156.iol.local ([10.101.8.202])
+        by smtp-35.iol.local with ESMTPA
+        id Y3m7lAWttpK9wY3m7lZ5dx; Sun, 18 Apr 2021 11:31:31 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1618738291; bh=o8yqXRHuluvBc2SmHwuYLwAaPpaXIqrMxgmgFQVq0n4=;
+        h=From;
+        b=wdAF2Rs0QCby/Efu0qhk3y4bNtKeXskHNvp1djq+co4FDx/9OiXCRKe6h9AA0Exjt
+         ZTzlk2BK9hm5y2Wh7LLAF6Z+eBGMVP6wq+q+8zYq8LCwWDbSfig28CMEOw/U9kDG0Q
+         aHwkI+1m7ixpigoepGkQ9ejP2zShniGsaesUb81laKllAzUa9f14NyGZbHV5l1j+DZ
+         OEpA3PahKExN2aU3XQIhrxFagUYg2KjszxXt76xfg3DSW4TZ7YZmNRr/Ya7urujHK0
+         9dMcfMRv+Qz7UaNA3lwe06KCFV3LrSmHV6vLHGfmiT2KDJBJoH0p2zIMgJad+2IAec
+         Hh7EidkoU6GaA==
+X-CNFS-Analysis: v=2.4 cv=A9ipg4aG c=1 sm=1 tr=0 ts=607bfc73 cx=a_exe
+ a=8VG+hfycQzUmEcMvOp8bLQ==:117 a=VYA5D5F8Gk0A:10 a=IkcTkHD0fZMA:10
+ a=4ehuGOvBq5EA:10 a=ag1SF4gXAAAA:8 a=UU8tFbIpmuTfaOltoo8A:9 a=QEXdDO2ut3YA:10
+ a=Yupwre4RP9_Eg_Bd0iYG:22
+Date:   Sun, 18 Apr 2021 11:31:31 +0200 (CEST)
+From:   Dario Binacchi <dariobin@libero.it>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Dimitris Lampridis <dlampridis@logikonlabs.com>,
+        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
+Message-ID: <715522501.805673.1618738291599@mail1.libero.it>
+In-Reply-To: <YHkyqGExO6Ri8UkJ@kroah.com>
+References: <20210415210252.25399-1-dariobin@libero.it>
+ <YHkyqGExO6Ri8UkJ@kroah.com>
+Subject: Re: [PATCH v3] serial: omap: fix rs485 half-duplex filtering
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416123655.42783-3-yangbo.lu@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.3-Rev34
+X-Originating-IP: 95.244.94.151
+X-Originating-Client: open-xchange-appsuite
+x-libjamsun: D/d3R4EJWZZa7mi9XhbI9cv03HsquVXZ
+x-libjamv: Jk0+OtJX/XQ=
+X-CMAE-Envelope: MS4xfL3xB93Yv72JZ5r3J2EC8QcfjIhvbsdk/8DQ7Qxl+mBpdjJnjRUmnMKhIrI8zYB/x9mxqv07ceOHQhuCc64CZSVSr0LyPU/9D5sdPotXdhtno/tE7cKz
+ AoutDgap31hSEK+R8fplVly2Blln/JnRDyvuaM93Rs4orjCxWBZCf72RXQF34eW9InK41Wp8KxI1fH2iE5fUNEcW/9mmEFJqKwRyu9uGLdV5Rdjs/nPcDpBJ
+ +FpehKnUbyqVW7nn8O88JKkhfOg14Y5rFpcqbCJoz1hlEaMgXh2fcirdGZHM7phFfD0ER1l9iMjD5n3vl9eymYtf65kugSDIu2cmpd4XOG7/9mHAVwvZi5tc
+ ro4Sza1I
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 08:36:54PM +0800, Yangbo Lu wrote:
-> Convert to a common ocelot_port_txtstamp_request() for TX timestamp
-> request handling.
-> 
-> Signed-off-by: Yangbo Lu <yangbo.lu@nxp.com>
-> ---
->  drivers/net/dsa/ocelot/felix.c         | 14 +++++---------
->  drivers/net/ethernet/mscc/ocelot.c     | 24 +++++++++++++++++++++---
->  drivers/net/ethernet/mscc/ocelot_net.c | 18 +++++++-----------
->  include/soc/mscc/ocelot.h              |  5 +++--
->  4 files changed, 36 insertions(+), 25 deletions(-)
-> 
-> diff --git a/drivers/net/dsa/ocelot/felix.c b/drivers/net/dsa/ocelot/felix.c
-> index cdec2f5e271c..5f2cf0f31253 100644
-> --- a/drivers/net/dsa/ocelot/felix.c
-> +++ b/drivers/net/dsa/ocelot/felix.c
-> @@ -1399,18 +1399,14 @@ static bool felix_txtstamp(struct dsa_switch *ds, int port,
->  			   struct sk_buff *skb, struct sk_buff **clone)
->  {
->  	struct ocelot *ocelot = ds->priv;
-> -	struct ocelot_port *ocelot_port = ocelot->ports[port];
->  
-> -	if (ocelot->ptp && ocelot_port->ptp_cmd == IFH_REW_OP_TWO_STEP_PTP) {
-> -		*clone = skb_clone_sk(skb);
-> -		if (!(*clone))
-> -			return false;
-> +	if (!ocelot->ptp)
-> +		return false;
->  
-> -		ocelot_port_add_txtstamp_skb(ocelot, port, *clone);
-> -		return true;
-> -	}
-> +	if (ocelot_port_txtstamp_request(ocelot, port, skb, clone))
-> +		return false;
->  
-> -	return false;
-> +	return true;
 
-Considering the changes you'll have to make to patch 1 (changing the
-return value and populating DSA_SKB_CB(skb)->clone at the end of this
-function:
+> Il 16/04/2021 08:46 Greg Kroah-Hartman <gregkh@linuxfoundation.org> ha scritto:
+> 
+>  
+> On Thu, Apr 15, 2021 at 11:02:52PM +0200, Dario Binacchi wrote:
+> > Data received during half-duplex transmission must be filtered.
+> > If the target device responds quickly, emptying the FIFO at the end of
+> > the transmission can erase not only the echo characters but also part of
+> > the response message.
+> > By keeping the receive interrupt enabled even during transmission, it
+> > allows you to filter each echo character and only in a number equal to
+> > those transmitted.
+> > The issue was generated by a target device that started responding
+> > 240us later having received a request in communication at 115200bps.
+> > Sometimes, some messages received by the target were missing some of the
+> > first bytes.
+> > 
+> > Fixes: 3a13884abea0 ("tty/serial: omap: empty the RX FIFO at the end of half-duplex TX")
+> > Signed-off-by: Dario Binacchi <dariobin@libero.it>
+> > 
+> > 
+> > ---
+> > 
+> > Changes in v3:
+> > - Add 'Fixes' tag
+> > 
+> > Changes in v2:
+> > - Fix compiling error
+> > 
+> >  drivers/tty/serial/omap-serial.c | 39 ++++++++++++++++++++------------
+> >  1 file changed, 24 insertions(+), 15 deletions(-)
+> > 
+> > diff --git a/drivers/tty/serial/omap-serial.c b/drivers/tty/serial/omap-serial.c
+> > index 76b94d0ff586..c0df22b7ea5e 100644
+> > --- a/drivers/tty/serial/omap-serial.c
+> > +++ b/drivers/tty/serial/omap-serial.c
+> > @@ -159,6 +159,8 @@ struct uart_omap_port {
+> >  	u32			calc_latency;
+> >  	struct work_struct	qos_work;
+> >  	bool			is_suspending;
+> > +
+> > +	atomic_t		rs485_tx_filter_count;
+> 
+> Why are you using an atomic variable?  What do you think this is
+> "protected from"?
 
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+You are right. They are already protected. All the functions affected by the patch 
+are already protected by a lock, even going up in the serial_core for the 
+serial_omap_start_tx().
+
+Thanks and regards,
+Dario
+
+> 
+> >  };
+> >  
+> >  #define to_uart_omap_port(p) ((container_of((p), struct uart_omap_port, port)))
+> > @@ -328,19 +330,6 @@ static void serial_omap_stop_tx(struct uart_port *port)
+> >  		serial_out(up, UART_IER, up->ier);
+> >  	}
+> >  
+> > -	if ((port->rs485.flags & SER_RS485_ENABLED) &&
+> > -	    !(port->rs485.flags & SER_RS485_RX_DURING_TX)) {
+> > -		/*
+> > -		 * Empty the RX FIFO, we are not interested in anything
+> > -		 * received during the half-duplex transmission.
+> > -		 */
+> > -		serial_out(up, UART_FCR, up->fcr | UART_FCR_CLEAR_RCVR);
+> > -		/* Re-enable RX interrupts */
+> > -		up->ier |= UART_IER_RLSI | UART_IER_RDI;
+> > -		up->port.read_status_mask |= UART_LSR_DR;
+> > -		serial_out(up, UART_IER, up->ier);
+> > -	}
+> > -
+> >  	pm_runtime_mark_last_busy(up->dev);
+> >  	pm_runtime_put_autosuspend(up->dev);
+> >  }
+> > @@ -366,6 +355,10 @@ static void transmit_chars(struct uart_omap_port *up, unsigned int lsr)
+> >  		serial_out(up, UART_TX, up->port.x_char);
+> >  		up->port.icount.tx++;
+> >  		up->port.x_char = 0;
+> > +		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
+> > +		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX))
+> > +			atomic_inc(&up->rs485_tx_filter_count);
+> > +
+> >  		return;
+> >  	}
+> >  	if (uart_circ_empty(xmit) || uart_tx_stopped(&up->port)) {
+> > @@ -377,6 +370,10 @@ static void transmit_chars(struct uart_omap_port *up, unsigned int lsr)
+> >  		serial_out(up, UART_TX, xmit->buf[xmit->tail]);
+> >  		xmit->tail = (xmit->tail + 1) & (UART_XMIT_SIZE - 1);
+> >  		up->port.icount.tx++;
+> > +		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
+> > +		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX))
+> > +			atomic_inc(&up->rs485_tx_filter_count);
+> > +
+> >  		if (uart_circ_empty(xmit))
+> >  			break;
+> >  	} while (--count > 0);
+> > @@ -420,7 +417,7 @@ static void serial_omap_start_tx(struct uart_port *port)
+> >  
+> >  	if ((port->rs485.flags & SER_RS485_ENABLED) &&
+> >  	    !(port->rs485.flags & SER_RS485_RX_DURING_TX))
+> > -		serial_omap_stop_rx(port);
+> > +		atomic_set(&up->rs485_tx_filter_count, 0);
+> >  
+> >  	serial_omap_enable_ier_thri(up);
+> >  	pm_runtime_mark_last_busy(up->dev);
+> > @@ -491,8 +488,13 @@ static void serial_omap_rlsi(struct uart_omap_port *up, unsigned int lsr)
+> >  	 * Read one data character out to avoid stalling the receiver according
+> >  	 * to the table 23-246 of the omap4 TRM.
+> >  	 */
+> > -	if (likely(lsr & UART_LSR_DR))
+> > +	if (likely(lsr & UART_LSR_DR)) {
+> >  		serial_in(up, UART_RX);
+> > +		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
+> > +		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX) &&
+> > +		    atomic_read(&up->rs485_tx_filter_count))
+> > +			atomic_dec(&up->rs485_tx_filter_count);
+> 
+> You can not read and then decrement right afterward and expect this to
+> actually do what you think it is doing.
+> 
+> Just use a real lock if you need to protect access for this value, as it
+> is, this patch is totally wrong.
+> 
+> thanks,
+> 
+> greg k-h
