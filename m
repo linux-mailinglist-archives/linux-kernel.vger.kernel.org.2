@@ -2,193 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D854A3636A3
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 18:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B603636A1
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 18:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231822AbhDRQfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 12:35:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43172 "EHLO
+        id S231684AbhDRQeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 12:34:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231760AbhDRQfF (ORCPT
+        with ESMTP id S229783AbhDRQes (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 12:35:05 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E1310C06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 09:34:35 -0700 (PDT)
+        Sun, 18 Apr 2021 12:34:48 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 401A1C06174A;
+        Sun, 18 Apr 2021 09:34:17 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id g8so52277747lfv.12;
+        Sun, 18 Apr 2021 09:34:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=g0n2LQAUoImpmAm99p3TPUXAM9WD1a7ioxiHN336N+0=; b=bHbLHTDZ6BXM6
-        nwE57QXkmiY6OAnHyVQ+5MhjEafZQm1Cj2dRK3rm5lYSuhRe1gcDLOpi75QBX72v
-        67aMRZjDp1M+32obi4sC5MVPsUfzL59kXG0uOX73ASQWBR/8/UrzmVp0uscTj0yG
-        KLTt6IezJB0P/xTI9wsZuzeI4pFbZc=
-Received: from xhacker (unknown [101.86.20.15])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygD3r1SUX3xgAXAFAA--.8301S2;
-        Mon, 19 Apr 2021 00:34:28 +0800 (CST)
-Date:   Mon, 19 Apr 2021 00:29:19 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] riscv: kprobes: Remove redundant kprobe_step_ctx
-Message-ID: <20210419002919.1a0a539d@xhacker>
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=R+GRmRiyxozuqUSuRsmcn7yz3og3tcEpGFS7AC6KJUY=;
+        b=vfHcIXBcB2091YsmbuiyyG/KbaYLt3Q1VpxF29sSZ7PKHf1YhsMEtl0t9lO0IH5nlg
+         sC1Wp+tlh+1rhUJHJzMSl/53hzwlPtCj3VuI8Qn5BsPz54tk+2OZRJ+mVEIeUBo5zJHR
+         12HGmO96hlTnnSCIEsT41eqp6qQk0gmugOdmAhTEAVLxRSaSj7lEqsarp1KSkmVG8Ojp
+         oHxgJWVdbhCZEo+vpDo/4RSh9TjIx9ZjnY4ToNWEho8D/tsSU+en3o5uY/VFzxnHkTYG
+         mLJY2+KBIa5up8XwEm0CCGlQYEvWsiMNvMP49uVCu8kJd1rF6TTBOj8L7StcvzvMnPBc
+         o/Kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=R+GRmRiyxozuqUSuRsmcn7yz3og3tcEpGFS7AC6KJUY=;
+        b=qlYJ7PD7xKttCwfNGbfpGUiFdoz1ozITwAkzBssS3y+rfhN2nLDBQds8o2YZ4YIN1v
+         NSraWhi5K66USI8rZYkZzlcSY/NuKgsx+jWkYkjx7wKMJ2T+Bdir0ztE+e+VihWzK7u7
+         zcNp88DoxPAR5MNtXFEj+/fM+0bXX3RAtPWxyXW4JrJOmngbHvDqgVeaoWPtS8DC1t8k
+         Gh8H52dilHM6/mQJ8OSaQcoutELXfYVxO9HBj7e4TqMSrmuuVKBd0cRc+StZkq7EtkzT
+         E06PsSktBWKZl3khlhZ5kEVrGmTcPnXrVY7oxcO2UFFj2UVcPdx02rwSDQjxgUqlY6FK
+         kf2A==
+X-Gm-Message-State: AOAM533tkVFqbeYGx3qQStdD0ofDM7ckvn9Eq9QdiCEu9+xHIuNsMs56
+        Sw/gVKXVQqlRxFAw/mZgieUQva2bMO5asMzueUZotLr7W6E=
+X-Google-Smtp-Source: ABdhPJyo3F1O1wOwHslBcJQ3Hm8sh1ma4yEUKl8Hfm0ZNxLKGK6LDQSZA5FND7QPk8I3yWeSkxp9nlNc0OVXTmrxkp4=
+X-Received: by 2002:a05:6512:3a83:: with SMTP id q3mr9641654lfu.460.1618763655782;
+ Sun, 18 Apr 2021 09:34:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygD3r1SUX3xgAXAFAA--.8301S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxuryxXF45KrW5Cr1xZryDGFg_yoWrZw1fpF
-        ZIkw13JrZ5Ja95uFyxAw4UZr1Syr48ArW7KrWUC34ftw1ayr13XF1xW3yjyr98Gr9Ygw13
-        ZryUtrW8J34xAFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyIb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCFx2Iq
-        xVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r
-        106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AK
-        xVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7
-        xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWU
-        JVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcVWlDUUUU
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+References: <20210222132822.7830-1-kevin3.tang@gmail.com> <20210222132822.7830-6-kevin3.tang@gmail.com>
+ <20210324111316.ggo5deacaoecu27q@gilmour> <CAFPSGXah3gKKHXhukRAPT=RjQZTnvDznG+619+8tah-hfFrUzA@mail.gmail.com>
+ <20210407104653.l4xwfl3qshaimat3@gilmour> <CAFPSGXaQKeKMKC7MGXhxQErB_yh_eE8khk1hOrjHnuOH20Gg4Q@mail.gmail.com>
+ <20210415084230.moqxuy3caym3kupk@gilmour>
+In-Reply-To: <20210415084230.moqxuy3caym3kupk@gilmour>
+From:   Kevin Tang <kevin3.tang@gmail.com>
+Date:   Mon, 19 Apr 2021 00:33:42 +0800
+Message-ID: <CAFPSGXYujpe=C64f=MJAUmqGwoP6t=NE+nNqezmKUTcyrxt+=g@mail.gmail.com>
+Subject: Re: [PATCH v4 5/6] dt-bindings: display: add Unisoc's mipi dsi
+ controller bindings
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <jszhang@kernel.org>
+Maxime Ripard <maxime@cerno.tech> =E4=BA=8E2021=E5=B9=B44=E6=9C=8815=E6=97=
+=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=884:42=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Fri, Apr 09, 2021 at 08:23:19AM +0800, Kevin Tang wrote:
+> > Maxime Ripard <maxime@cerno.tech> =E4=BA=8E2021=E5=B9=B44=E6=9C=887=E6=
+=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=886:46=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > > On Wed, Mar 31, 2021 at 09:49:14AM +0800, Kevin Tang wrote:
+> > > > Hi Maxime,
+> > > >
+> > > > Maxime Ripard <maxime@cerno.tech> =E4=BA=8E2021=E5=B9=B43=E6=9C=882=
+4=E6=97=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=887:13=E5=86=99=E9=81=93=EF=BC=
+=9A
+> > > >
+> > > > > On Mon, Feb 22, 2021 at 09:28:21PM +0800, Kevin Tang wrote:
+> > > > > > From: Kevin Tang <kevin.tang@unisoc.com>
+> > > > > >
+> > > > > > Adds MIPI DSI Controller
+> > > > > > support for Unisoc's display subsystem.
+> > > > > >
+> > > > > > Cc: Orson Zhai <orsonzhai@gmail.com>
+> > > > > > Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+> > > > > > Signed-off-by: Kevin Tang <kevin.tang@unisoc.com>
+> > > > > > Reviewed-by: Rob Herring <robh@kernel.org>
+> > > > > > ---
+> > > > > >  .../display/sprd/sprd,sharkl3-dsi-host.yaml   | 102
+> > > ++++++++++++++++++
+> > > > > >  1 file changed, 102 insertions(+)
+> > > > > >  create mode 100644
+> > > > >
+> > > Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dsi-host.=
+yaml
+> > > > > >
+> > > > > > diff --git
+> > > > >
+> > > a/Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dsi-hos=
+t.yaml
+> > > > >
+> > > b/Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dsi-hos=
+t.yaml
+> > > > > > new file mode 100644
+> > > > > > index 000000000..d439f688f
+> > > > > > --- /dev/null
+> > > > > > +++
+> > > > >
+> > > b/Documentation/devicetree/bindings/display/sprd/sprd,sharkl3-dsi-hos=
+t.yaml
+> > > > > > @@ -0,0 +1,102 @@
+> > > > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > > > +%YAML 1.2
+> > > > > > +---
+> > > > > > +$id:
+> > > > > http://devicetree.org/schemas/display/sprd/sprd,sharkl3-dsi-host.=
+yaml#
+> > > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > > > +
+> > > > > > +title: Unisoc MIPI DSI Controller
+> > > > > > +
+> > > > > > +maintainers:
+> > > > > > +  - Kevin Tang <kevin.tang@unisoc.com>
+> > > > > > +
+> > > > > > +properties:
+> > > > > > +  compatible:
+> > > > > > +    const: sprd,sharkl3-dsi-host
+> > > > > > +
+> > > > > > +  reg:
+> > > > > > +    maxItems: 1
+> > > > > > +
+> > > > > > +  interrupts:
+> > > > > > +    maxItems: 2
+> > > > > > +
+> > > > > > +  clocks:
+> > > > > > +    minItems: 1
+> > > > > > +
+> > > > > > +  clock-names:
+> > > > > > +    items:
+> > > > > > +      - const: clk_src_96m
+> > > > > > +
+> > > > > > +  power-domains:
+> > > > > > +    maxItems: 1
+> > > > > > +
+> > > > > > +  ports:
+> > > > > > +    type: object
+> > > > > > +
+> > > > > > +    properties:
+> > > > > > +      "#address-cells":
+> > > > > > +        const: 1
+> > > > > > +
+> > > > > > +      "#size-cells":
+> > > > > > +        const: 0
+> > > > > > +
+> > > > > > +      port@0:
+> > > > > > +        type: object
+> > > > > > +        description:
+> > > > > > +          A port node with endpoint definitions as defined in
+> > > > > > +
+> > > Documentation/devicetree/bindings/media/video-interfaces.txt.
+> > > > > > +          That port should be the input endpoint, usually comi=
+ng
+> > > from
+> > > > > > +          the associated DPU.
+> > > > > > +      port@1:
+> > > > > > +        type: object
+> > > > > > +        description:
+> > > > > > +          A port node with endpoint definitions as defined in
+> > > > > > +
+> > > Documentation/devicetree/bindings/media/video-interfaces.txt.
+> > > > > > +          That port should be the output endpoint, usually out=
+put to
+> > > > > > +          the associated panel.
+> > > > >
+> > > > > The DSI generic binding asks that peripherals that are controlled
+> > > > > through a DCS be a subnode of the MIPI-DSI bus, not through a por=
+t
+> > > > > endpoint.
+> > > > >
+> > > >  Our DSI controller don't support DCS now...
+> > >
+> > > I'm not sure I follow you, you mentionned in the patch 4 that you wer=
+e
+> > > testing for a device to be in command mode, how would that work witho=
+ut
+> > > DCS support?
+> > >
+> > Sorry, I see DCS as DSC, pls ignore my previous comments.
+> >
+> > dsi input node is display controller and dsi output node is panel,
+> > I still don't understand what it has to do with dcs? and it seems that
+> > other vendors also like this.
+> >
+> > can you help provide some cases?
+>
+> So the device tree is a tree organized through which bus controls which
+> device: Your DSI controller is accessed through a memory-mapped region
+> and is thus a child node of the main bus (I guess?) and then, since the
+> DSI panel is going to be controlled through the DSI controller and
+> MIPI-DCS, it needs to be a child of the display controller.
+Yeah, access DSI controller registers is through AHB bus.
 
-Inspired by commit ba090f9cafd5 ("arm64: kprobes: Remove redundant
-kprobe_step_ctx"), the ss_pending and match_addr of kprobe_step_ctx
-are redundant because those can be replaced by KPROBE_HIT_SS and
-&cur_kprobe->ainsn.api.insn[0] + GET_INSN_LENGTH(cur->opcode)
-respectively.
+I'm a little confused, DSI panel node should be a child of the display
+controller?
+I found a lot of cases are organized like this, we also do like it.
+https://elixir.bootlin.com/linux/v5.11.15/source/arch/arm/boot/dts/tegra114=
+-dalmore.dts#L48
 
-Remove the kprobe_step_ctx to simplify the code.
+>
+> This is exactly what is being described here:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/D=
+ocumentation/devicetree/bindings/display/mipi-dsi-bus.txt#n42
+>
+> The second port is thus not needed at all
+Yeah, dsi_out port is no need, should be detele.
+Besides, I also have a question, if out dsi-phy is separate driver(eg,
+dphy have it's own bus)
+dsi_out port should be "dphy_in"?
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- arch/riscv/include/asm/kprobes.h   |  7 ------
- arch/riscv/kernel/probes/kprobes.c | 40 +++++++-----------------------
- 2 files changed, 9 insertions(+), 38 deletions(-)
-
-diff --git a/arch/riscv/include/asm/kprobes.h b/arch/riscv/include/asm/kprobes.h
-index 4647d38018f6..9ea9b5ec3113 100644
---- a/arch/riscv/include/asm/kprobes.h
-+++ b/arch/riscv/include/asm/kprobes.h
-@@ -29,18 +29,11 @@ struct prev_kprobe {
- 	unsigned int status;
- };
- 
--/* Single step context for kprobe */
--struct kprobe_step_ctx {
--	unsigned long ss_pending;
--	unsigned long match_addr;
--};
--
- /* per-cpu kprobe control block */
- struct kprobe_ctlblk {
- 	unsigned int kprobe_status;
- 	unsigned long saved_status;
- 	struct prev_kprobe prev_kprobe;
--	struct kprobe_step_ctx ss_ctx;
- };
- 
- void arch_remove_kprobe(struct kprobe *p);
-diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probes/kprobes.c
-index 8c1f7a30aeed..4c1ad5536748 100644
---- a/arch/riscv/kernel/probes/kprobes.c
-+++ b/arch/riscv/kernel/probes/kprobes.c
-@@ -17,7 +17,7 @@ DEFINE_PER_CPU(struct kprobe *, current_kprobe) = NULL;
- DEFINE_PER_CPU(struct kprobe_ctlblk, kprobe_ctlblk);
- 
- static void __kprobes
--post_kprobe_handler(struct kprobe_ctlblk *, struct pt_regs *);
-+post_kprobe_handler(struct kprobe *, struct kprobe_ctlblk *, struct pt_regs *);
- 
- static void __kprobes arch_prepare_ss_slot(struct kprobe *p)
- {
-@@ -43,7 +43,7 @@ static void __kprobes arch_simulate_insn(struct kprobe *p, struct pt_regs *regs)
- 		p->ainsn.api.handler((u32)p->opcode,
- 					(unsigned long)p->addr, regs);
- 
--	post_kprobe_handler(kcb, regs);
-+	post_kprobe_handler(p, kcb, regs);
- }
- 
- int __kprobes arch_prepare_kprobe(struct kprobe *p)
-@@ -149,21 +149,6 @@ static void __kprobes kprobes_restore_local_irqflag(struct kprobe_ctlblk *kcb,
- 	regs->status = kcb->saved_status;
- }
- 
--static void __kprobes
--set_ss_context(struct kprobe_ctlblk *kcb, unsigned long addr, struct kprobe *p)
--{
--	unsigned long offset = GET_INSN_LENGTH(p->opcode);
--
--	kcb->ss_ctx.ss_pending = true;
--	kcb->ss_ctx.match_addr = addr + offset;
--}
--
--static void __kprobes clear_ss_context(struct kprobe_ctlblk *kcb)
--{
--	kcb->ss_ctx.ss_pending = false;
--	kcb->ss_ctx.match_addr = 0;
--}
--
- static void __kprobes setup_singlestep(struct kprobe *p,
- 				       struct pt_regs *regs,
- 				       struct kprobe_ctlblk *kcb, int reenter)
-@@ -182,8 +167,6 @@ static void __kprobes setup_singlestep(struct kprobe *p,
- 		/* prepare for single stepping */
- 		slot = (unsigned long)p->ainsn.api.insn;
- 
--		set_ss_context(kcb, slot, p);	/* mark pending ss */
--
- 		/* IRQs and single stepping do not mix well. */
- 		kprobes_save_local_irqflag(kcb, regs);
- 
-@@ -219,13 +202,8 @@ static int __kprobes reenter_kprobe(struct kprobe *p,
- }
- 
- static void __kprobes
--post_kprobe_handler(struct kprobe_ctlblk *kcb, struct pt_regs *regs)
-+post_kprobe_handler(struct kprobe *cur, struct kprobe_ctlblk *kcb, struct pt_regs *regs)
- {
--	struct kprobe *cur = kprobe_running();
--
--	if (!cur)
--		return;
--
- 	/* return addr restore if non-branching insn */
- 	if (cur->ainsn.api.restore != 0)
- 		regs->epc = cur->ainsn.api.restore;
-@@ -355,16 +333,16 @@ bool __kprobes
- kprobe_single_step_handler(struct pt_regs *regs)
- {
- 	struct kprobe_ctlblk *kcb = get_kprobe_ctlblk();
-+	unsigned long addr = instruction_pointer(regs);
-+	struct kprobe *cur = kprobe_running();
- 
--	if ((kcb->ss_ctx.ss_pending)
--	    && (kcb->ss_ctx.match_addr == instruction_pointer(regs))) {
--		clear_ss_context(kcb);	/* clear pending ss */
--
-+	if (cur && (kcb->kprobe_status & (KPROBE_HIT_SS | KPROBE_REENTER)) &&
-+	    ((unsigned long)&cur->ainsn.api.insn[0] + GET_INSN_LENGTH(cur->opcode) == addr)) {
- 		kprobes_restore_local_irqflag(kcb, regs);
--
--		post_kprobe_handler(kcb, regs);
-+		post_kprobe_handler(cur, kcb, regs);
- 		return true;
- 	}
-+	/* not ours, kprobes should ignore it */
- 	return false;
- }
- 
--- 
-2.31.0
-
-
+>
+> Maxime
