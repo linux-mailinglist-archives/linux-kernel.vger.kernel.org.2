@@ -2,99 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21BAB3633EA
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 07:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B99A53633EE
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 08:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236963AbhDRF5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 01:57:52 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:35053 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229993AbhDRF5u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 01:57:50 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618725442; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=vNAqgDa7X0EcUsfQLVk3fPMT8JupPO1Lvnt2QflVHQA=;
- b=wpqdUefZLGc/DneewTTni/n75ZntkQoMKnub9znIA7pwQRAYVg+DRG0IlmRRr4hQL6Afqgaf
- huuuOt4fJ2f9FGMgCFWPF+EbxP/lcltBvIoyKl6WYXVmbtrzb/tFU0wzqQG3Ly6rBKL2ML3Q
- uuzv8B5TaTzAZMerrrJbe6MVmpI=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 607bca3ca817abd39abdc1e4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 18 Apr 2021 05:57:16
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2BF12C433F1; Sun, 18 Apr 2021 05:57:16 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7DD80C433D3;
-        Sun, 18 Apr 2021 05:57:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7DD80C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S230186AbhDRGAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 02:00:44 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:45200 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229935AbhDRGAn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 02:00:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1618725632; x=1650261632;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=nU6S7B5lK8WSZMSaIf7imhanpSisxP9GOuPk61T7k6Q=;
+  b=Vt4XnxyBRTg9ifeViEDprBz0ywGJMwt6UkxL6KWUHq4+AhNXtLf+Ynvy
+   iQFy5/zX0ucaiqIOX7dpDUrlAHhkd/uRcSnQp7r8Jat7EoJrrfUda5mHs
+   lHZHm20B0zVTEB3QjBiCN1cCebCcUrgF43DWqq5guVZx5/RvIsoMVpvXw
+   xYmxxctEdk8Aqr6J0CeQF9SM6NihUbeSq8NDozsw7k1wHnJyK1W7iZguw
+   y3q7XSt03DmyI2uT4Jb1jqsvV/Jma0R4kyxuwt0ViqMP/7JZSzXi4qipw
+   qYi3xdKFVmkq2etXY4EkPmYXl/Si+zfGubsNNsFi6QoveCFLOnyUq5nWJ
+   A==;
+IronPort-SDR: j8PJXMbCaVuX/bZeAIsGIIbcd2K/Vu40IWpnLwa4Qnz3ZIauFCaTy3QHXlUD/dhDOK5LttunrY
+ 3vViGir9qpnGu+gLKTHF8up19aoP+L9thWJcuvK1MM+KWnBiQu1jN7amKkkq2O28QTcZz64/tn
+ i93NEj9x53m2vZNxFeipw6jpuTiZTRajayy4EcGDeNAL9ICRkw2y1lD6bHrj7s3dkqKJ9fL0RR
+ qvmPMdJWRBUHs91C5DtVL9i4q7DCEOTdSkJs51Kkc8O6FNrffRXQwptxMuBZNACegoMlrFrm9X
+ +bo=
+X-IronPort-AV: E=Sophos;i="5.82,231,1613404800"; 
+   d="scan'208";a="269256773"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 18 Apr 2021 14:00:29 +0800
+IronPort-SDR: tOMb+GqDhk4qAO4nRXsFtxDDQzhrLeeJIVd9ri/UDwL8oxsyF2EXmoLgvJfSbnrnIQVbBCGvVJ
+ f9uOktIwqBDUTphIGNKKYvFENb0X6EHMOhapTHFtsKkF6F98pIFRup0p5mfCbR8kXS4uQZKwE1
+ VqdJ87Zgn+Dg80JbSI92KIvf923JaCFyakMqAWohvszVXmrLC6xSxb952e7OQiMkxrdV47IVv6
+ ZVdI7oJyg1C2pzh1/2cWsdn+4hR4xkKGi3jkdi2vf2MALcLbLFHtYFfHvPTwJ5rQSabFJPpwjs
+ b9qIG/4T3lKzCR7F5Gos6y8C
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2021 22:41:00 -0700
+IronPort-SDR: HhzCEtSnfREDOPwZtFhIBHDhFZGX71isTnP7ckz9wI1TrNNVjp3vRRgN1JJx3JSeuwxvf4gmTo
+ Ag89GyD8EBUXXgXo4g56ct9su/jjk0xvoFOkrSRMOwHAaajQ4eajKUwcswPrkWq/gQIT3o5tMg
+ Y1L0iSYcukh1jEicLI5XyrxHDAO6WCO15SXh2XUgR1E63qFCktKRtvRvumrg0h8/KA6yFDsykW
+ nCoGuGbjWcorgXwMnSObCVSrqAw6fFQjO4X6sDisnjNiN6pRSgqN2QEBGxxJ8vcaA/m1zh9dBU
+ NSk=
+WDCIronportException: Internal
+Received: from bxygm33.sdcorp.global.sandisk.com ([10.0.231.247])
+  by uls-op-cesaip02.wdc.com with ESMTP; 17 Apr 2021 23:00:13 -0700
+From:   Avri Altman <avri.altman@wdc.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     linux-kernel@vger.kernel.org, Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH v2 0/2] Do not flush cache when it is disabled
+Date:   Sun, 18 Apr 2021 08:59:51 +0300
+Message-Id: <20210418055953.26959-1-avri.altman@wdc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] rtl8xxxu: Fix device info for RTL8192EU devices
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210323193617.3748164-1-pterjan@google.com>
-References: <20210323193617.3748164-1-pterjan@google.com>
-To:     Pascal Terjan <pterjan@google.com>
-Cc:     Jes Sorensen <Jes.Sorensen@gmail.com>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pascal Terjan <pterjan@google.com>
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210418055716.2BF12C433F1@smtp.codeaurora.org>
-Date:   Sun, 18 Apr 2021 05:57:16 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pascal Terjan <pterjan@google.com> wrote:
+v1 -> v2:
+ - Attend Adrian's comments
 
-> Based on 2001:3319 and 2357:0109 which I used to test the fix and
-> 0bda:818b and 2357:0108 for which I found efuse dumps online.
-> 
-> == 2357:0109 ==
-> === Before ===
-> Vendor: Realtek
-> Product: \x03802.11n NI
-> Serial:
-> === After ===
-> Vendor: Realtek
-> Product: 802.11n NIC
-> Serial not available.
-> 
-> == 2001:3319 ==
-> === Before ===
-> Vendor: Realtek
-> Product: Wireless N
-> Serial: no USB Adap
-> === After ===
-> Vendor: Realtek
-> Product: Wireless N Nano USB Adapter
-> Serial not available.
-> 
-> Signed-off-by: Pascal Terjan <pterjan@google.com>
+Cache is a temporary storage space in an eMMC device. Volatile by
+nature, the cache should in typical case reduce the access time compared
+to an access to the main nonvolatile storage.
 
-Can someone review this, please?
+The cache function can be turned ON and OFF. Once OFF, the host is not
+expected to issue a flush-cache command to the device.
 
-Patch set to Deferred.
+Avri Altman (2):
+  mmc: block: Issue flush only if allowed
+  mmc: block: Update ext_csd.cache_ctrl if it was written
+
+ drivers/mmc/core/block.c   | 19 +++++++++++++++++++
+ drivers/mmc/core/mmc_ops.c |  4 +---
+ drivers/mmc/core/mmc_ops.h |  5 +++++
+ 3 files changed, 25 insertions(+), 3 deletions(-)
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210323193617.3748164-1-pterjan@google.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.25.1
 
