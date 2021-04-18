@@ -2,155 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6CAA3634CB
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 13:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0B83634D4
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 13:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229910AbhDRLRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 07:17:25 -0400
-Received: from smtp-good-out-4.t-2.net ([93.103.246.70]:51348 "EHLO
-        smtp-good-out-4.t-2.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhDRLRY (ORCPT
+        id S231380AbhDRLV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 07:21:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231220AbhDRLVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 07:17:24 -0400
-Received: from smtp-1.t-2.net (smtp-1.t-2.net [IPv6:2a01:260:1:4::1e])
-        by smtp-good-out-4.t-2.net (Postfix) with ESMTP id 4FNS834nxfz2s1h;
-        Sun, 18 Apr 2021 13:16:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-2.net;
-        s=smtp-out-2; t=1618744611;
-        bh=8+uJWmrlHmdzJqi8Isn89UVn+5VWltIhJSwmEYjRvL0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=uk0ag2jlIaBShplKaftgx6qGFK/K9w/gp+SrQT6dAuF/ROmgiwJg7nJnugqrzDA5C
-         HuP5/VwrkL28q4hlenKXSTgqaM8uHvZFEeawWybG3QwBxNINvRJTH0Ix3o7uZqolMO
-         SSmUfB3bjaGaY+uDj3QlqCAiFRwaDYJmTOfTTNao=
-Received: from localhost (localhost [127.0.0.1])
-        by smtp-1.t-2.net (Postfix) with ESMTP id 4FNS834cVXzTqTbT;
-        Sun, 18 Apr 2021 13:16:51 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at t-2.net
-Received: from smtp-1.t-2.net ([127.0.0.1])
-        by localhost (smtp-1.t-2.net [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id wpmGWOwji7pL; Sun, 18 Apr 2021 13:16:50 +0200 (CEST)
-Received: from hp450g3 (89-212-91-172.static.t-2.net [89.212.91.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp-1.t-2.net (Postfix) with ESMTPS;
-        Sun, 18 Apr 2021 13:16:06 +0200 (CEST)
-Message-ID: <8043d41d48a0f4f13bd891b4c3e9ad28c76b430e.camel@t-2.net>
-Subject: Re: [PATCH] ttyprintk: Add TTY hangup callback.
-From:   Samo =?UTF-8?Q?Poga=C4=8Dnik?= <samo_pogacnik@t-2.net>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Date:   Sun, 18 Apr 2021 13:16:05 +0200
-In-Reply-To: <17e0652d-89b7-c8c0-fb53-e7566ac9add4@i-love.sakura.ne.jp>
-References: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
-         <YGx59PEq2Y015YdK@alley>
-         <3c15d32f-c568-7f6f-fa7e-af4deb9b49f9@i-love.sakura.ne.jp>
-         <d78ae8da-16e9-38d9-e274-048c54e24360@i-love.sakura.ne.jp>
-         <YG24F9Kx+tjxhh8G@kroah.com>
-         <051b550c-1cdd-6503-d2b7-0877bf0578fc@i-love.sakura.ne.jp>
-         <cd213843-45fe-2eac-4943-0906ab8d272b@i-love.sakura.ne.jp>
-         <YHQkeZVs3pmyie9e@kroah.com>
-         <32e75be6-6e9f-b33f-d585-13db220519da@i-love.sakura.ne.jp>
-         <YHQ3Zy9gRdZsu77w@kroah.com>
-         <ffcc8099-614c-f4b1-10c1-f1d4c7f72e65@i-love.sakura.ne.jp>
-         <095d5393-b212-c4d8-5d6d-666bd505cc3d@i-love.sakura.ne.jp>
-         <31a4dec3d36ed131402244693cae180816ebd4d7.camel@t-2.net>
-         <17e0652d-89b7-c8c0-fb53-e7566ac9add4@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sun, 18 Apr 2021 07:21:55 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 854DDC06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 04:21:26 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id x7so31018540wrw.10
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 04:21:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yHuFjlT5rtKQaeRAFhvfUQECvltMrb+hYlCuEQGxGSA=;
+        b=n705a9a7qdxMFuWE1zX7H+Gwn7R1Ph/HxlJsBZM2OwmgI8on3YCAfTIJ9VILLpPGVN
+         U6Ei9bgVBs4WU0tgRYPLY73PulXN7X8T9DnS/lfiOp0hi2PY7rBteW4MAz4+5uRDWIzC
+         tVQA+Ijyf20lSUQ31OC6X057HKNOPi+pz6Nzkf8RmSCB7uub+bAFeTOPAvt2BEhTUPA9
+         e95vVEysgGXjcAyKsinTriFeM9DFcYVac9rU5mO+CY2n1SfMhFTrdb724lZinw5eig/R
+         DWL2UVgqLZFgwGhAmloMkMPTn1qsrnfB8ZvGBiW/SI8QnW3O/4TL6LEClDzNGo9C+X4Y
+         G8Ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yHuFjlT5rtKQaeRAFhvfUQECvltMrb+hYlCuEQGxGSA=;
+        b=tQns+U2Kd3picretz6V74u6Oa9dCossKHouGgWXWQW1tXr2+y6G3MqT/6KB9E6MUpf
+         iTbMCUmBaOhpMrG6KymFW0Ws8AfSH1zaVOqA1fe71BgSvDdhakV5J2Q9vNclYsdPr47g
+         Y0pPxoQnE5MpjKLehgHSlDJFJJOhIuMGUy2RcKRa7oFk7W26i9RUeY2cMxATPCPTfvMW
+         NamDB/Ka5iBBtAhCwB+1qhYf2CBtoSaFf1xcRzGgXtyTRJSiRHVO8wtAhGVunlnH7QNR
+         tHGTuERTj5RyFqiMJNEmQ8FaVVYv3hRPR1QLIGteaf0Iywh135BsU70fy+jmeC7gEyrl
+         KWIQ==
+X-Gm-Message-State: AOAM532oE7K2ymqaUqXZB1TEgUF6Z/qg579ksmu2Zvk6IOon0BTcCWyi
+        w8MUWRHVnz2+fAawBBBCgTZAkQ==
+X-Google-Smtp-Source: ABdhPJy/WC+K/XtmqLOKo5IrEBVbL+R26kxzPf1pRpKWFGvT15zr5cY0imTHGxHtMkaaPLJEz/z5Qw==
+X-Received: by 2002:a5d:5146:: with SMTP id u6mr8768015wrt.408.1618744885216;
+        Sun, 18 Apr 2021 04:21:25 -0700 (PDT)
+Received: from apalos.home (ppp-94-65-92-88.home.otenet.gr. [94.65.92.88])
+        by smtp.gmail.com with ESMTPSA id i12sm17113748wrm.77.2021.04.18.04.21.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Apr 2021 04:21:24 -0700 (PDT)
+Date:   Sun, 18 Apr 2021 14:21:21 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     brouer@redhat.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        mcroce@linux.microsoft.com, grygorii.strashko@ti.com,
+        arnd@kernel.org, hch@lst.de, linux-snps-arc@lists.infradead.org,
+        mhocko@kernel.org, mgorman@suse.de
+Subject: Re: [PATCH 1/2] mm: Fix struct page layout on 32-bit systems
+Message-ID: <YHwWMfgqiRaKS2y6@apalos.home>
+References: <20210416230724.2519198-1-willy@infradead.org>
+ <20210416230724.2519198-2-willy@infradead.org>
+ <20210417024522.GP2531743@casper.infradead.org>
+ <YHspptFx+T588KcG@apalos.home>
+ <20210417202240.GS2531743@casper.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210417202240.GS2531743@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 15.04.2021 (čet) ob 09:22 +0900 je Tetsuo Handa napisal(a):
-> syzbot is reporting hung task due to flood of
+On Sat, Apr 17, 2021 at 09:22:40PM +0100, Matthew Wilcox wrote:
+> On Sat, Apr 17, 2021 at 09:32:06PM +0300, Ilias Apalodimas wrote:
+> > > +static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
+> > > +{
+> > > +	page->dma_addr[0] = addr;
+> > > +	if (sizeof(dma_addr_t) > sizeof(unsigned long))
+> > > +		page->dma_addr[1] = addr >> 16 >> 16;
+> > 
+> > The 'error' that was reported will never trigger right?
+> > I assume this was compiled with dma_addr_t as 32bits (so it triggered the
+> > compilation error), but the if check will never allow this codepath to run.
+> > If so can we add a comment explaining this, since none of us will remember why
+> > in 6 months from now?
 > 
->   tty_warn(tty, "%s: tty->count = 1 port count = %d\n", __func__,
->            port->count);
+> That's right.  I compiled it all three ways -- 32-bit, 64-bit dma, 32-bit long
+> and 64-bit.  The 32/64 bit case turn into:
 > 
-> message [1], for ioctl(TIOCVHANGUP) prevents tty_port_close() from
-> decrementing port->count due to tty_hung_up_p() == true.
+> 	if (0)
+> 		page->dma_addr[1] = addr >> 16 >> 16;
 > 
-> ----------
-> #include <sys/types.h>
-> #include <sys/stat.h>
-> #include <fcntl.h>
-> #include <sys/ioctl.h>
-> #include <unistd.h>
+> which gets elided.  So the only case that has to work is 64-bit dma and
+> 32-bit long.
 > 
-> int main(int argc, char *argv[])
-> {
-> 	int i;
-> 	int fd[10];
+> I can replace this with upper_32_bits().
 > 
-> 	for (i = 0; i < 10; i++)
-> 		fd[i] = open("/dev/ttyprintk", O_WRONLY);
-> 	ioctl(fd[0], TIOCVHANGUP);
-> 	for (i = 0; i < 10; i++)
-> 		close(fd[i]);
-> 	close(open("/dev/ttyprintk", O_WRONLY));
-> 	return 0;
-> }
-> ----------
-> 
-> When TTY hangup happens, port->count needs to be reset via
-> "struct tty_operations"->hangup callback.
-> 
-> [1] 
-> https://syzkaller.appspot.com/bug?id=39ea6caa479af471183997376dc7e90bc7d64a6a
-> 
-> Reported-by: syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>
-> Reported-by: syzbot <syzbot+3ed715090790806d8b18@syzkaller.appspotmail.com>
-> Tested-by: syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>
-> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> Fixes: 24b4b67d17c308aa ("add ttyprintk driver")
-> ---
->  drivers/char/ttyprintk.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/drivers/char/ttyprintk.c b/drivers/char/ttyprintk.c
-> index 6a0059e508e3..93f5d11c830b 100644
-> --- a/drivers/char/ttyprintk.c
-> +++ b/drivers/char/ttyprintk.c
-> @@ -158,12 +158,23 @@ static int tpk_ioctl(struct tty_struct *tty,
->  	return 0;
->  }
->  
-> +/*
-> + * TTY operations hangup function.
-> + */
-> +static void tpk_hangup(struct tty_struct *tty)
-> +{
-> +	struct ttyprintk_port *tpkp = tty->driver_data;
-> +
-> +	tty_port_hangup(&tpkp->port);
-> +}
-> +
->  static const struct tty_operations ttyprintk_ops = {
->  	.open = tpk_open,
->  	.close = tpk_close,
->  	.write = tpk_write,
->  	.write_room = tpk_write_room,
->  	.ioctl = tpk_ioctl,
-> +	.hangup = tpk_hangup,
->  };
->  
->  static const struct tty_port_operations null_ops = { };
 
-Using the supplied test code, i've tested the patch on my desktop running the
-5.4 kernel. After applying the patch, the kernel warnings like "ttyprintk:
-tty_port_close_start: tty->count = 1 port count = 11" do not appear any more,
-when the test code is run.
-I think the patch is ok.
+Ok up to you, I don't mind either way and thanks for solving this!
 
-best regards, Samo
-
-
+Acked-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
