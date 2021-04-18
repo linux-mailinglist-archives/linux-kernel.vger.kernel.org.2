@@ -2,117 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB6A363665
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 17:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5F1363666
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 17:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232024AbhDRPfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 11:35:46 -0400
-Received: from mail-wm1-f46.google.com ([209.85.128.46]:42704 "EHLO
-        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbhDRPfp (ORCPT
+        id S231691AbhDRPkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 11:40:24 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:60715 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229986AbhDRPkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 11:35:45 -0400
-Received: by mail-wm1-f46.google.com with SMTP id y5-20020a05600c3645b0290132b13aaa3bso4980304wmq.1;
-        Sun, 18 Apr 2021 08:35:17 -0700 (PDT)
+        Sun, 18 Apr 2021 11:40:22 -0400
+Received: from mail-ed1-f69.google.com ([209.85.208.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lY9Wb-0004a3-4d
+        for linux-kernel@vger.kernel.org; Sun, 18 Apr 2021 15:39:53 +0000
+Received: by mail-ed1-f69.google.com with SMTP id w15-20020a056402268fb02903828f878ec5so9725807edd.5
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 08:39:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OwBBLy1oDm16tPPpep8TDYqrx2ASx8N2yBCY3Dbf4IM=;
-        b=YbR6XnmA02Fkciy4jPgTcy62tLE/xksltAMSq4q2+cadDqCG8KQJBL+2eLq+aGE7Ig
-         jkAhgVjP3SDkfE9hwLesgPkS3HaUftF8hPrdwCGomqnNvrwvtRXhuwxoIaiwtwKEVtyF
-         iu8MDHR2+Gd0SgFWFPs4ZmgDSw4WzgEwXIl8rCfBaaeS/Wu69EA+1PSPhIfsWVkvm38s
-         TwPw/8IQf+vRLtxFB1y6WHOARzUlla3+zTBd5sVBnBkw2K3JnrT3Q7GwRPK512U7yXfw
-         x0LMRF55gSOc0HeO+qZFh45eBn3ixlTaHasYvA9wA1wQGsip0GuRv+QNpGbwmqyqlxxv
-         Datw==
-X-Gm-Message-State: AOAM533bhDyLwJcrRZUHqREt4IVapHygqkgW8Uck/cVkfNLxLUEhZANN
-        /Uu0ncFNfhalvSPujxs6bD8Hahy0RbI=
-X-Google-Smtp-Source: ABdhPJy8//XSFwN2oZM/770La9QYsmV7qKDKtUDfRme+Xg+3qL7q3UVJ2Wq1uIkTtoc6uG9VhczpzA==
-X-Received: by 2002:a05:600c:35cc:: with SMTP id r12mr1406390wmq.147.1618760116790;
-        Sun, 18 Apr 2021 08:35:16 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id z14sm18267124wrs.96.2021.04.18.08.35.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Apr 2021 08:35:16 -0700 (PDT)
-Date:   Sun, 18 Apr 2021 15:35:15 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Joseph Salisbury <Joseph.Salisbury@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] x86/hyperv: Move hv_do_rep_hypercall to asm-generic
-Message-ID: <20210418153515.tdhbcmwbquv7hbdp@liuwe-devbox-debian-v2>
-References: <1618620183-9967-1-git-send-email-joseph.salisbury@linux.microsoft.com>
- <20210418130903.5r66yzm6qxizfrop@liuwe-devbox-debian-v2>
- <CY4PR21MB15863413859BBF15CADD214CD74A9@CY4PR21MB1586.namprd21.prod.outlook.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=y9JyrHCcIAgU62n209ZEUzZ15xktsnDu9faqnaWqMak=;
+        b=ilPqyE2IzPh1ynXE5TNvU5TuTOSVz1f1QGjPgc8mQz+LtNNC5ayhw1A68RDc5npnOb
+         W/Em1sLT9lQygoQHc5z+EyQcCNQ6nEVnFPgvTAzx8ftii3cEojtaE+1mEhW8h/24nYid
+         gZcfYYMNku2eRz5R/qcH9rZW8LXoxtHPU8JRjwrBG8ZHzxmiRF2eNs3srlVhKXC7xnVF
+         OqUpUuvD5TycW0VnlVGAV1XL6CBRkjBd+CghavxMh0KUn0ZbcZUz9I0IOmyR6GmLqbUL
+         cl30djwc25mOUdnwNqGVmi1rACkwssIVMRQPI0xgk0uxrK6o+Q969LvfaUEcCOpawhzf
+         Bu8w==
+X-Gm-Message-State: AOAM53049DuMtdY0ZrFZR4q+CfcOS4MwBhLRgocQTSOb9velZocfYAJV
+        XR7elqp8bcPgPQGv/n6PRVgTzImnY4PFpzoBNJSRKhyUWUfkIluI9bk35o8wBF3RQbS96Mj2Hbd
+        LyGzp3sQE+gfPGyfcCy/rmF4shp++OqiTPnTznOJaBA==
+X-Received: by 2002:a05:6402:2708:: with SMTP id y8mr21045641edd.265.1618760392471;
+        Sun, 18 Apr 2021 08:39:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwCgFtOHi7GuyeFXeAZGt5/M2fMsUw71W0Ns5LRVTvYdHDn2UadbxmhKPnb05SUTxBpJXA7Vw==
+X-Received: by 2002:a05:6402:2708:: with SMTP id y8mr21045629edd.265.1618760392336;
+        Sun, 18 Apr 2021 08:39:52 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
+        by smtp.gmail.com with ESMTPSA id mj3sm8376987ejb.3.2021.04.18.08.39.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 18 Apr 2021 08:39:51 -0700 (PDT)
+Subject: Re: [PATCH] extcon: maxim: Fix missing IRQF_ONESHOT as only threaded
+ handler
+To:     Guangqing Zhu <zhuguangqing83@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>
+Cc:     linux-kernel@vger.kernel.org
+References: <20210415113648.21660-1-zhuguangqing83@gmail.com>
+ <28b4db83-1381-f3aa-614b-08c065d4d409@canonical.com>
+ <4479c7f8-6a80-8d30-0602-b8cc10dd901e@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <005ae6c3-2cd0-4c1e-b820-2674cb758de9@canonical.com>
+Date:   Sun, 18 Apr 2021 17:39:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CY4PR21MB15863413859BBF15CADD214CD74A9@CY4PR21MB1586.namprd21.prod.outlook.com>
+In-Reply-To: <4479c7f8-6a80-8d30-0602-b8cc10dd901e@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 18, 2021 at 02:42:55PM +0000, Michael Kelley wrote:
-> From: Wei Liu <wei.liu@kernel.org> Sent: Sunday, April 18, 2021 6:09 AM
-> > On Fri, Apr 16, 2021 at 05:43:02PM -0700, Joseph Salisbury wrote:
-> > > From: Joseph Salisbury <joseph.salisbury@microsoft.com>
-> > >
-> > > This patch makes no functional changes.  It simply moves hv_do_rep_hypercall()
-> > > out of arch/x86/include/asm/mshyperv.h and into asm-generic/mshyperv.h
-> > >
-> > > hv_do_rep_hypercall() is architecture independent, so it makes sense that it
-> > > should be in the architecture independent mshyperv.h, not in the x86-specific
-> > > mshyperv.h.
-> > >
-> > > This is done in preperation for a follow up patch which creates a consistent
-> > > pattern for checking Hyper-V hypercall status.
-> > >
-> > > Signed-off-by: Joseph Salisbury <joseph.salisbury@microsoft.com>
-> > > ---
-> > [...]
-> > > +static inline u64 hv_do_rep_hypercall(u16 code, u16 rep_count, u16 varhead_size,
-> > > +				      void *input, void *output)
-> > > +{
-> > > +	u64 control = code;
-> > > +	u64 status;
-> > > +	u16 rep_comp;
-> > > +
-> > > +	control |= (u64)varhead_size << HV_HYPERCALL_VARHEAD_OFFSET;
-> > > +	control |= (u64)rep_count << HV_HYPERCALL_REP_COMP_OFFSET;
-> > > +
-> > > +	do {
-> > > +		status = hv_do_hypercall(control, input, output);
-> > > +		if ((status & HV_HYPERCALL_RESULT_MASK) != HV_STATUS_SUCCESS)
-> > > +			return status;
-> > > +
-> > > +		/* Bits 32-43 of status have 'Reps completed' data. */
-> > > +		rep_comp = (status & HV_HYPERCALL_REP_COMP_MASK) >>
-> > > +			HV_HYPERCALL_REP_COMP_OFFSET;
-> > > +
-> > > +		control &= ~HV_HYPERCALL_REP_START_MASK;
-> > > +		control |= (u64)rep_comp << HV_HYPERCALL_REP_START_OFFSET;
-> > > +
-> > > +		touch_nmi_watchdog();
-> > 
-> > This seems to be missing in Arm. Does it compile?
-> > 
-> > Wei.
+On 18/04/2021 16:41, Guangqing Zhu wrote:
 > 
-> touch_nmi_watchdog() is defined as "static inline" in include/linux/nmi.h.  So
-> it should be present in all architectures.  It calls arch_touch_nmi_watchdog,
-> which is an empty function if CONFIG_HAVE_NMI_WATCHDOG is not defined,
-> as is the case on ARM64.
+> 
+> On 16/04/2021 16:43, Krzysztof Kozlowski wrote:
+>> On 15/04/2021 13:36, zhuguangqing83@gmail.com wrote:
+>>> From: Guangqing Zhu <zhuguangqing83@gmail.com>
+>>>
+>>> Coccinelle noticed:
+>>>    1. drivers/extcon/extcon-max14577.c:699:8-33: ERROR: Threaded IRQ with
+>>> no primary handler requested without IRQF_ONESHOT
+>>>    2. drivers/extcon/extcon-max77693.c:1143:8-33: ERROR: Threaded IRQ with
+>>> no primary handler requested without IRQF_ONESHOT
+>>>    3. drivers/extcon/extcon-max77843.c:907:8-33: ERROR: Threaded IRQ with
+>>> no primary handler requested without IRQF_ONESHOT
+>>>    4. drivers/extcon/extcon-max8997.c:665:8-28: ERROR: Threaded IRQ with
+>>> no primary handler requested without IRQF_ONESHOT
+>>>
+>>> Signed-off-by: Guangqing Zhu <zhuguangqing83@gmail.com>
+>>> ---
+>>>   drivers/extcon/extcon-max14577.c | 2 +-
+>>>   drivers/extcon/extcon-max77693.c | 2 +-
+>>>   drivers/extcon/extcon-max77843.c | 3 ++-
+>>>   drivers/extcon/extcon-max8997.c  | 2 +-
+>>>   4 files changed, 5 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/extcon/extcon-max14577.c b/drivers/extcon/extcon-max14577.c
+>>> index ace523924e58..af15a9e00ee9 100644
+>>> --- a/drivers/extcon/extcon-max14577.c
+>>> +++ b/drivers/extcon/extcon-max14577.c
+>>> @@ -698,7 +698,7 @@ static int max14577_muic_probe(struct platform_device *pdev)
+>>>   
+>>>   		ret = devm_request_threaded_irq(&pdev->dev, virq, NULL,
+>>>   				max14577_muic_irq_handler,
+>>> -				IRQF_NO_SUSPEND,
+>>> +				IRQF_NO_SUSPEND | IRQF_ONESHOT,
+>>
+>> The same with all other patches for IRQF_ONESHOT which are send recently:
+>> 1. On what board did you test it?
+> 
+> I didn't test it.
+> 
+>> 2. Is this just blind patch from Coccinelle without investigation
+>> whether it is needed (hint: it's not needed here, it does not use
+>> default primary handler).
+> 
+> I found the error notice from Coccinelle and I saw the code. Maybe
+> I'm mistaken, I think it's needed here. Because handler == NULL and
+> thread_fn != NULL, it use irq_default_primary_handler() in
+> request_threaded_irq().
 
-I see. I couldn't find arch_touch_nmi_watchdog on Arm but missed the
-stub function. Thanks for the information.
+No, the primary handler is nested, not default one. Otherwise it would
+have absolutely never worked. Therefore you are not fixing anything,
+except Coccinelle report.
 
-Wei.
+
+Best regards,
+Krzysztof
