@@ -2,243 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39AA13632F9
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 03:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B82463632FB
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 03:47:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236454AbhDRBoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 21:44:20 -0400
-Received: from mga11.intel.com ([192.55.52.93]:1668 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229870AbhDRBoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 21:44:19 -0400
-IronPort-SDR: XDcX4RfvB7H14otMHwiJXrsDhGDQo2TTjxVcs73WvU6VDrPpeipRXe0k+UoPYeTRMBufux3w/B
- fi9Q1qKgrlPw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9957"; a="192005351"
-X-IronPort-AV: E=Sophos;i="5.82,230,1613462400"; 
-   d="scan'208";a="192005351"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2021 18:43:51 -0700
-IronPort-SDR: S9CHhZOoOZeY8fNo4ZM5k/yi6Zk5TlKy5xj1q1NTZO/Mdj0JkXbTRN4909LrJS9NgqKS2zlFrF
- 9eLQwl3/Dieg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,230,1613462400"; 
-   d="scan'208";a="400268800"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga002.jf.intel.com with ESMTP; 17 Apr 2021 18:43:51 -0700
-Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.54.75.174])
-        by linux.intel.com (Postfix) with ESMTP id 3B65B5808AE;
-        Sat, 17 Apr 2021 18:43:51 -0700 (PDT)
-Message-ID: <7dfdf70d8d98dde9698f544c054847c141044688.camel@linux.intel.com>
-Subject: Re: [PATCH V2 5/9] platform/x86: intel_pmc_core: Get LPM
- requirements for Tiger Lake
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Hans de Goede <hdegoede@redhat.com>, irenic.rajneesh@gmail.com,
-        mgross@linux.intel.com, gayatri.kammela@intel.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Sat, 17 Apr 2021 18:43:51 -0700
-In-Reply-To: <6dd84b65-44b4-ae12-fe84-c61d8efd43f3@redhat.com>
-References: <20210417031252.3020837-1-david.e.box@linux.intel.com>
-         <20210417031252.3020837-6-david.e.box@linux.intel.com>
-         <6dd84b65-44b4-ae12-fe84-c61d8efd43f3@redhat.com>
-Organization: David E. Box
+        id S236498AbhDRBrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 21:47:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229870AbhDRBrM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 21:47:12 -0400
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE55C06174A;
+        Sat, 17 Apr 2021 18:46:45 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 8954312805BB;
+        Sat, 17 Apr 2021 18:46:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1618710404;
+        bh=0Pro5mnYrUVbAfrYh4RETsh7mnMr2vN2yc7AS9Uv2p0=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=lwfmrHjczQ39fFJR5qJU0PR04acvvXzleGfqXRwmyAsePRHBCbAZLB4k4fv1Im+tz
+         M2KB+AU334hzF8lJmEvpGUx5/E+aeBFxYc1uQIZawzIXEnQNtXPte7CioVQEGQtlig
+         tvwqD8NKR2e+P794skaIBik60JK7KLKnLnqqHkUo=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id hu8Mlw2kk8r0; Sat, 17 Apr 2021 18:46:44 -0700 (PDT)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 1BB5F12805B8;
+        Sat, 17 Apr 2021 18:46:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1618710404;
+        bh=0Pro5mnYrUVbAfrYh4RETsh7mnMr2vN2yc7AS9Uv2p0=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=lwfmrHjczQ39fFJR5qJU0PR04acvvXzleGfqXRwmyAsePRHBCbAZLB4k4fv1Im+tz
+         M2KB+AU334hzF8lJmEvpGUx5/E+aeBFxYc1uQIZawzIXEnQNtXPte7CioVQEGQtlig
+         tvwqD8NKR2e+P794skaIBik60JK7KLKnLnqqHkUo=
+Message-ID: <57deba188660d1a81c658f30befe8538dd7a625e.camel@HansenPartnership.com>
+Subject: [GIT PULL] SCSI fixes for 5.12-rc6
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Sat, 17 Apr 2021 18:46:43 -0700
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-04-17 at 11:00 +0200, Hans de Goede wrote:
-> Hi,
-> 
-> On 4/17/21 5:12 AM, David E. Box wrote:
-> > From: Gayatri Kammela <gayatri.kammela@intel.com>
-> > 
-> > Platforms that support low power modes (LPM) such as Tiger Lake
-> > maintain
-> > requirements for each sub-state that a readable in the PMC.
-> > However, unlike
-> > LPM status registers, requirement registers are not memory mapped
-> > but are
-> > available from an ACPI _DSM. Collect the requirements for Tiger
-> > Lake using
-> > the _DSM method and store in a buffer.
-> > 
-> > Signed-off-by: Gayatri Kammela <gayatri.kammela@intel.com>
-> > Co-developed-by: David E. Box <david.e.box@linux.intel.com>
-> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-> > ---
-> > 
-> > V2:     - Move buffer allocation so that it does not need to be
-> > freed
-> >           (which was missing anyway) when an error is encountered.
-> >         - Use label to free out_obj after errors
-> >         - Use memcpy instead of memcpy_fromio for ACPI memory
-> > 
-> >  drivers/platform/x86/intel_pmc_core.c | 56
-> > +++++++++++++++++++++++++++
-> >  drivers/platform/x86/intel_pmc_core.h |  2 +
-> >  2 files changed, 58 insertions(+)
-> > 
-> > diff --git a/drivers/platform/x86/intel_pmc_core.c
-> > b/drivers/platform/x86/intel_pmc_core.c
-> > index 0e59a84b51bf..97efe9a6bd01 100644
-> > --- a/drivers/platform/x86/intel_pmc_core.c
-> > +++ b/drivers/platform/x86/intel_pmc_core.c
-> > @@ -23,7 +23,9 @@
-> >  #include <linux/slab.h>
-> >  #include <linux/suspend.h>
-> >  #include <linux/uaccess.h>
-> > +#include <linux/uuid.h>
-> >  
-> > +#include <acpi/acpi_bus.h>
-> >  #include <asm/cpu_device_id.h>
-> >  #include <asm/intel-family.h>
-> >  #include <asm/msr.h>
-> > @@ -31,6 +33,9 @@
-> >  
-> >  #include "intel_pmc_core.h"
-> >  
-> > +#define ACPI_S0IX_DSM_UUID             "57a6512e-3979-4e9d-9708-
-> > ff13b2508972"
-> > +#define ACPI_GET_LOW_MODE_REGISTERS    1
-> > +
-> >  /* PKGC MSRs are common across Intel Core SoCs */
-> >  static const struct pmc_bit_map msr_map[] = {
-> >         {"Package C2",                  MSR_PKG_C2_RESIDENCY},
-> > @@ -590,6 +595,53 @@ static const struct pmc_reg_map tgl_reg_map =
-> > {
-> >         .etr3_offset = ETR3_OFFSET,
-> >  };
-> >  
-> > +static void pmc_core_get_tgl_lpm_reqs(struct platform_device
-> > *pdev)
-> > +{
-> > +       struct pmc_dev *pmcdev = platform_get_drvdata(pdev);
-> > +       const int num_maps = pmcdev->map->lpm_num_maps;
-> > +       size_t lpm_size = LPM_MAX_NUM_MODES * num_maps * 4;
-> 
-> The type of lpm_size should be an u32, so that it matches
-> the type of out_obj->buffer.length.
-> 
-> > +       union acpi_object *out_obj;
-> > +       struct acpi_device *adev;
-> > +       guid_t s0ix_dsm_guid;
-> > +       u32 *lpm_req_regs, *addr;
-> > +
-> > +       adev = ACPI_COMPANION(&pdev->dev);
-> > +       if (!adev)
-> > +               return;
-> > +
-> > +       guid_parse(ACPI_S0IX_DSM_UUID, &s0ix_dsm_guid);
-> > +
-> > +       out_obj = acpi_evaluate_dsm(adev->handle, &s0ix_dsm_guid,
-> > 0,
-> > +                                   ACPI_GET_LOW_MODE_REGISTERS,
-> > NULL);
-> > +       if (out_obj && out_obj->type == ACPI_TYPE_BUFFER) {
-> > +               int size = out_obj->buffer.length;
-> 
-> out_obj->buffer.length is an u32, please make this an u32 too.
-> 
-> > +
-> > +               if (size != lpm_size) {
-> > +                       acpi_handle_debug(adev->handle,
-> > +                               "_DSM returned unexpected buffer
-> > size,"
-> > +                               " have %d, expect %ld\n", size,
-> > lpm_size);
-> 
-> And use %u here (twice), this should also fix the warnings reported
-> by the kernel test robot.
-> 
-> If there are no objections against the suggested changes, then I can
-> fix this up while merging this.
-> 
-> Please let me know if the suggested changes are ok with you.
+This libsas fix is for a problem that occurs when trying to change the
+cache type of an ATA device and the libiscsi one is a regression fix
+from this merge window.
 
-Changes are good with me. Thanks for the fixup.
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
-David
+The short changelog is:
 
-> 
-> Regards,
-> 
-> Hans
-> 
-> 
-> > +                       goto free_acpi_obj;
-> > +               }
-> > +       } else {
-> > +               acpi_handle_debug(adev->handle,
-> > +                                 "_DSM function 0 evaluation
-> > failed\n");
-> > +               goto free_acpi_obj;
-> > +       }
-> > +
-> > +       addr = (u32 *)out_obj->buffer.pointer;
-> > +
-> > +       lpm_req_regs = devm_kzalloc(&pdev->dev, lpm_size *
-> > sizeof(u32),
-> > +                                    GFP_KERNEL);
-> > +       if (!lpm_req_regs)
-> > +               goto free_acpi_obj;
-> > +
-> > +       memcpy(lpm_req_regs, addr, lpm_size);
-> > +       pmcdev->lpm_req_regs = lpm_req_regs;
-> > +
-> > +free_acpi_obj:
-> > +       ACPI_FREE(out_obj);
-> > +}
-> > +
-> >  static inline u32 pmc_core_reg_read(struct pmc_dev *pmcdev, int
-> > reg_offset)
-> >  {
-> >         return readl(pmcdev->regbase + reg_offset);
-> > @@ -1424,10 +1476,14 @@ static int pmc_core_probe(struct
-> > platform_device *pdev)
-> >                 return -ENOMEM;
-> >  
-> >         mutex_init(&pmcdev->lock);
-> > +
-> >         pmcdev->pmc_xram_read_bit =
-> > pmc_core_check_read_lock_bit(pmcdev);
-> >         pmc_core_get_low_power_modes(pmcdev);
-> >         pmc_core_do_dmi_quirks(pmcdev);
-> >  
-> > +       if (pmcdev->map == &tgl_reg_map)
-> > +               pmc_core_get_tgl_lpm_reqs(pdev);
-> > +
-> >         /*
-> >          * On TGL, due to a hardware limitation, the GBE LTR blocks
-> > PC10 when
-> >          * a cable is attached. Tell the PMC to ignore it.
-> > diff --git a/drivers/platform/x86/intel_pmc_core.h
-> > b/drivers/platform/x86/intel_pmc_core.h
-> > index aa44fd5399cc..64fb368f40f6 100644
-> > --- a/drivers/platform/x86/intel_pmc_core.h
-> > +++ b/drivers/platform/x86/intel_pmc_core.h
-> > @@ -294,6 +294,7 @@ struct pmc_reg_map {
-> >   * @s0ix_counter:      S0ix residency (step adjusted)
-> >   * @num_lpm_modes:     Count of enabled modes
-> >   * @lpm_en_modes:      Array of enabled modes from lowest to
-> > highest priority
-> > + * @lpm_req_regs:      List of substate requirements
-> >   *
-> >   * pmc_dev contains info about power management controller device.
-> >   */
-> > @@ -310,6 +311,7 @@ struct pmc_dev {
-> >         u64 s0ix_counter;
-> >         int num_lpm_modes;
-> >         int lpm_en_modes[LPM_MAX_NUM_MODES];
-> > +       u32 *lpm_req_regs;
-> >  };
-> >  
-> >  #define pmc_for_each_mode(i, mode, pmcdev)             \
-> > 
-> 
+Jolly Shah (1):
+      scsi: libsas: Reset num_scatter if libata marks qc as NODATA
 
+Mike Christie (1):
+      scsi: iscsi: Fix iSCSI cls conn state
+
+And the diffstat:
+
+ drivers/scsi/libiscsi.c             | 26 +++-----------------------
+ drivers/scsi/libsas/sas_ata.c       |  9 ++++-----
+ drivers/scsi/scsi_transport_iscsi.c | 18 +++++++++++++++---
+ 3 files changed, 22 insertions(+), 31 deletions(-)
+
+With full diff below.
+
+James
+
+---
+
+diff --git a/drivers/scsi/libiscsi.c b/drivers/scsi/libiscsi.c
+index 7ad11e42306d..bfd2aaa9b66b 100644
+--- a/drivers/scsi/libiscsi.c
++++ b/drivers/scsi/libiscsi.c
+@@ -3179,9 +3179,10 @@ fail_mgmt_tasks(struct iscsi_session *session, struct iscsi_conn *conn)
+ 	}
+ }
+ 
+-static void iscsi_start_session_recovery(struct iscsi_session *session,
+-					 struct iscsi_conn *conn, int flag)
++void iscsi_conn_stop(struct iscsi_cls_conn *cls_conn, int flag)
+ {
++	struct iscsi_conn *conn = cls_conn->dd_data;
++	struct iscsi_session *session = conn->session;
+ 	int old_stop_stage;
+ 
+ 	mutex_lock(&session->eh_mutex);
+@@ -3239,27 +3240,6 @@ static void iscsi_start_session_recovery(struct iscsi_session *session,
+ 	spin_unlock_bh(&session->frwd_lock);
+ 	mutex_unlock(&session->eh_mutex);
+ }
+-
+-void iscsi_conn_stop(struct iscsi_cls_conn *cls_conn, int flag)
+-{
+-	struct iscsi_conn *conn = cls_conn->dd_data;
+-	struct iscsi_session *session = conn->session;
+-
+-	switch (flag) {
+-	case STOP_CONN_RECOVER:
+-		cls_conn->state = ISCSI_CONN_FAILED;
+-		break;
+-	case STOP_CONN_TERM:
+-		cls_conn->state = ISCSI_CONN_DOWN;
+-		break;
+-	default:
+-		iscsi_conn_printk(KERN_ERR, conn,
+-				  "invalid stop flag %d\n", flag);
+-		return;
+-	}
+-
+-	iscsi_start_session_recovery(session, conn, flag);
+-}
+ EXPORT_SYMBOL_GPL(iscsi_conn_stop);
+ 
+ int iscsi_conn_bind(struct iscsi_cls_session *cls_session,
+diff --git a/drivers/scsi/libsas/sas_ata.c b/drivers/scsi/libsas/sas_ata.c
+index 024e5a550759..8b9a39077dba 100644
+--- a/drivers/scsi/libsas/sas_ata.c
++++ b/drivers/scsi/libsas/sas_ata.c
+@@ -201,18 +201,17 @@ static unsigned int sas_ata_qc_issue(struct ata_queued_cmd *qc)
+ 		memcpy(task->ata_task.atapi_packet, qc->cdb, qc->dev->cdb_len);
+ 		task->total_xfer_len = qc->nbytes;
+ 		task->num_scatter = qc->n_elem;
++		task->data_dir = qc->dma_dir;
++	} else if (qc->tf.protocol == ATA_PROT_NODATA) {
++		task->data_dir = DMA_NONE;
+ 	} else {
+ 		for_each_sg(qc->sg, sg, qc->n_elem, si)
+ 			xfer += sg_dma_len(sg);
+ 
+ 		task->total_xfer_len = xfer;
+ 		task->num_scatter = si;
+-	}
+-
+-	if (qc->tf.protocol == ATA_PROT_NODATA)
+-		task->data_dir = DMA_NONE;
+-	else
+ 		task->data_dir = qc->dma_dir;
++	}
+ 	task->scatter = qc->sg;
+ 	task->ata_task.retry_count = 1;
+ 	task->task_state_flags = SAS_TASK_STATE_PENDING;
+diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
+index bebfb355abdf..21a2d997a72e 100644
+--- a/drivers/scsi/scsi_transport_iscsi.c
++++ b/drivers/scsi/scsi_transport_iscsi.c
+@@ -2470,10 +2470,22 @@ static void iscsi_if_stop_conn(struct iscsi_cls_conn *conn, int flag)
+ 	 * it works.
+ 	 */
+ 	mutex_lock(&conn_mutex);
++	switch (flag) {
++	case STOP_CONN_RECOVER:
++		conn->state = ISCSI_CONN_FAILED;
++		break;
++	case STOP_CONN_TERM:
++		conn->state = ISCSI_CONN_DOWN;
++		break;
++	default:
++		iscsi_cls_conn_printk(KERN_ERR, conn,
++				      "invalid stop flag %d\n", flag);
++		goto unlock;
++	}
++
+ 	conn->transport->stop_conn(conn, flag);
+-	conn->state = ISCSI_CONN_DOWN;
++unlock:
+ 	mutex_unlock(&conn_mutex);
+-
+ }
+ 
+ static void stop_conn_work_fn(struct work_struct *work)
+@@ -2961,7 +2973,7 @@ static int iscsi_if_ep_disconnect(struct iscsi_transport *transport,
+ 		mutex_lock(&conn->ep_mutex);
+ 		conn->ep = NULL;
+ 		mutex_unlock(&conn->ep_mutex);
+-		conn->state = ISCSI_CONN_DOWN;
++		conn->state = ISCSI_CONN_FAILED;
+ 	}
+ 
+ 	transport->ep_disconnect(ep);
 
