@@ -2,108 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6167E363476
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 11:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F8C36347A
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 11:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230420AbhDRJfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 05:35:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41724 "EHLO mail.kernel.org"
+        id S229866AbhDRJn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 05:43:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229807AbhDRJfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 05:35:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72B8A600CD;
-        Sun, 18 Apr 2021 09:35:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618738518;
-        bh=qv8wADW+muFr8WpYAfX+6bIu6e6NMZO1CVAeLWGp2J8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=uioPKfg8WrHZs19RNadLHdYiJVqzZFlm7kZIEotkqOfR54BYo7KC/CsWkmtLM4oi4
-         5liTWPkf/i/gtWfIElEL7t31Q3LvhV/kFaTda/EFL7nRuSA+v7wF1qqtx/vOxKkI2N
-         86wrvz8Pc7UTb0tJyrtC1IvCs38fl3uhVEBAyzCCKKSLgSdkUWDgFAosRRhYCo4vpy
-         g87eGvn7J4E2RG5P1hiV7+ooLCcELPvRCH8qZdQpPSx/6+FnuMwcnIF1/m0z5vwX/i
-         iGyfF1n9YrGgzMTQ21WonMlFtpQGqrtcgx/l6GZkVOCBAVYRAfblK46hFb5zXAEEC5
-         /z/8p8kzfc1eQ==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: [RFT PATCH] MIPS: Octeon: drop dependency on CONFIG_HOLES_IN_ZONE
-Date:   Sun, 18 Apr 2021 12:35:12 +0300
-Message-Id: <20210418093512.668-1-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        id S229544AbhDRJnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 05:43:55 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1231B61029;
+        Sun, 18 Apr 2021 09:43:24 +0000 (UTC)
+Date:   Sun, 18 Apr 2021 10:43:53 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Kangjie Lu <kjlu@umn.edu>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH] iio: light: gp2ap002: Fix rumtime PM imbalance on error
+Message-ID: <20210418104353.5a6e498f@jic23-huawei>
+In-Reply-To: <CACRpkdY9sDbVSjBULg3tV-Zpr_Tizd4HKeTG-NjCjUru=94QYQ@mail.gmail.com>
+References: <20210407034927.16882-1-dinghao.liu@zju.edu.cn>
+        <20210411160720.037c405c@jic23-huawei>
+        <CACRpkdYrRi3pa6Gw4_Q+P=WYbv-a27FHmOupKVv5s=yU53RFWA@mail.gmail.com>
+        <20210412111506.0000653c@Huawei.com>
+        <CACRpkdY9sDbVSjBULg3tV-Zpr_Tizd4HKeTG-NjCjUru=94QYQ@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+On Mon, 12 Apr 2021 13:47:58 +0200
+Linus Walleij <linus.walleij@linaro.org> wrote:
 
-CAVIUM_OCTEON_SOC configuration selects HOLES_IN_ZONE option to cope with
-memory crashes that were happening in 2011.
+> On Mon, Apr 12, 2021 at 12:16 PM Jonathan Cameron
+> <Jonathan.Cameron@huawei.com> wrote:
+> 
+> > An example would be the bmc150_magn driver which does exactly the
+> > same call sequence as this one, but without the reference count increment
+> > and decrement.  Basically I want to know if there is a problem in
+> > those other drivers that is being protected against here!  
+> 
+> The bmc150_magn driver does not look like I would have done it.
+> 
+> That said, I think it works, because the only thing it is calling is
+> bmc150_magn_set_power_mode() and that seems stateless,
+> just poking some regmap bits. The state is tracked by the driver
+> AFAICT and we don't need pm_runtime_get_noresume() because
+> it doesn't really matter if the pm_runtime_suspend() callback
+> gets called immediately or randomly out of sync with what we are
+> doing from this point.
+> 
+> I would anyways patch it like the gp2ap002 driver because it
+> is easier to follow the code. Including using only runtime PM
+> att setting SET_SYSTEM_SLEEP_PM_OPS() to the
+> pm_runtime_force_suspend and pm_runtime_force_resume
+> functions, everything just get so much easier when you use
+> only one type of PM and not two orthogonal ones.
+> 
+> drivers/iio/light/bh1780.c
+> should be a good example of how to do it idiomatically
+> because it was reviewed by Ulf Hansson who knows this
+> runtime PM stuff better than me.
+> 
+> A sequence like this:
+> 
+>    pm_runtime_get_noresume(&client->dev);
+>    pm_runtime_set_active(&client->dev);
+>    pm_runtime_enable(&client->dev);
+>    pm_runtime_set_autosuspend_delay(&client->dev, 5000);
+>    pm_runtime_use_autosuspend(&client->dev);
+>    pm_runtime_put(&client->dev);
+> 
+> is very nice because you can clearly see that it will not race
+> and after the last put() unless something happens the
+> runtime suspend will kick in after 5000 ms.
+> 
+> Likewise when disabling:
+> 
+>     pm_runtime_get_sync(&client->dev);
+>     pm_runtime_put_noidle(&client->dev);
+>     pm_runtime_disable(&client->dev);
+> 
+> same thing: crystal clear there are no races, the device is
+> definately runtime resumed and we can proceed to
+> shut down resources explicitly after this point.
+> 
+> If you then add:
+> 
+> SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
+>                                 pm_runtime_force_resume)
+> 
+> Now you have ordinary sleep PM for free. It will just
+> force the same suspend/resume callbacks and they are
+> guaranteed to be race free.
+> 
+> This doesn't work for everyone but surprisingly often this is
+> what you want.
 
-This option effectively aliases pfn_valid_within() to pfn_valid() when
-enabled and hardwires it to 1 when disabled. The check for
-pfn_valid_within() is only relevant in case the memory map may have holes
-or undefined struct page instances inside MAX_ORDER chunks.
+I'm still far from completely convinced that it is 'necessary'
+to take the reference whilst going through this sequence because
+there is nothing to kick off the suspend until we tell it to use
+autosuspend.  However, I appreciate (much like taking locks in
+general in probe) that it makes it easy to see there is no race.
 
-Since 2011 memory management initialization in general and memory map
-initialization particularly became much more robust so the check for
-pfn_valid_within() is not required on Octeon even despite its, hmm, unusual
-memory setup.
+Anyhow, fix is still valid either way so applied to the fixes
+togreg branch of iio.git with a fixes tag added to the initial
+introduction of the driver (which I think is where this came in).
 
-Remove the selection of HOLES_IN_ZONE by CAVIUM_OCTEON_SOC and drop the
-HOLES_IN_ZONE configuration option entirely as Octeon was the only MIPS
-platform to use it.
+Thanks,
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
+Jonathan
 
-Hi,
-
-I've tried to find why Octeon needed CONFIG_HOLES_IN_ZONE in the first
-place, but there is nothing except the changelog in commit 465aaed0030b
-("MIPS: Octeon: Select CONFIG_HOLES_IN_ZONE"):
-
-  Current Octeon systems do in fact have holes in their memory zones.
-  We need to select HOLES_IN_ZONE. If we do not, some memory configurations
-  will result in crashes at boot time
-
-Since then there were too many changes around memory management
-initialization both in the generic mm and on the MIPS side to track what
-exactly could case the crashes.
-
-I'm pretty confident that HOLES_IN_ZONE is not required for Octeon systems
-anymore and can be removed.
-
-I'd really appreciate if somebody with access to an Octeon system could
-test this patch.
-
- arch/mips/Kconfig | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index d89efba3d8a4..96b08cd3b442 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -990,7 +990,6 @@ config CAVIUM_OCTEON_SOC
- 	select HAVE_PLAT_FW_INIT_CMDLINE
- 	select HAVE_PLAT_MEMCPY
- 	select ZONE_DMA32
--	select HOLES_IN_ZONE
- 	select GPIOLIB
- 	select USE_OF
- 	select ARCH_SPARSEMEM_ENABLE
-@@ -1226,9 +1225,6 @@ config HAVE_PLAT_MEMCPY
- config ISA_DMA_API
- 	bool
- 
--config HOLES_IN_ZONE
--	bool
--
- config SYS_SUPPORTS_RELOCATABLE
- 	bool
- 	help
--- 
-2.28.0
+> 
+> Yours,
+> Linus Walleij
 
