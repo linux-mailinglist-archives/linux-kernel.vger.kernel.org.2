@@ -2,119 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E7D3634E5
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 13:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F873634FB
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 14:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230515AbhDRLne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 07:43:34 -0400
-Received: from mail1.protonmail.ch ([185.70.40.18]:52070 "EHLO
-        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhDRLnb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 07:43:31 -0400
-Date:   Sun, 18 Apr 2021 11:42:54 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1618746181; bh=uFGkfd6SSEGyPUyf0IwGBqQSMt0EHtgOF4jDCcrsprA=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=OCDgkUQxPBc75HEKHfPWHcuo79aNHy6390QgJujnEubklCI857H1O2zOn1BXBYAud
-         xh3SYKREtiBNzTlQwGaS1+p3pfyWSoIEa34INqo05sRCj/QPwxk249SMHpPWY2ClVC
-         E2jKvtYiYDGeLM+uNfXiKivd0Cpl5LFaa40kh4SVZTsUD2gESceyXX5+Zz4QgRsFfm
-         gCBir0x/0t9zRWDOqj+xdzHa1l4l4h0Cq31KpkbLLIxtPW0Ng8ATsRB8VvFyNmBrkz
-         J+ePLL354nJR0HFLfGvTOZjxmQslqppFPtdT7wjSVC8DD1QTp/gVxIz0zyCt85tBG7
-         nqF4hhIve8CWA==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Wang <weiwan@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH net] gro: fix napi_gro_frags() Fast GRO breakage due to IP alignment check
-Message-ID: <20210418114200.5839-1-alobakin@pm.me>
+        id S234677AbhDRMEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 08:04:43 -0400
+Received: from mout.gmx.net ([212.227.17.21]:53899 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230273AbhDRMEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 08:04:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1618747428;
+        bh=UJsT5aV+MxRbho8JhRzNBpNeMbZUN3ULqGnvmwYqqo8=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=gtWAMLhVANHc5fa/MEW9QtadcRt6E3XfLkUMwhO75vFNJ9hSiCIcdBXyh19j4Glvx
+         xlP1dPLK+L+gfju2A+suqWIgK1cDu7nk/k+Hk8vya2JdjeXOowr3KojS5rMCxKfH0l
+         k494tuyFNJv4jIqxdj0i2T9ANWf8U/auoWtHGEaE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [80.245.75.88] ([80.245.75.88]) by web-mail.gmx.net
+ (3c-app-gmx-bap31.server.lan [172.19.172.101]) (via HTTP); Sun, 18 Apr 2021
+ 14:03:48 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Message-ID: <trinity-93ab11dc-32c6-4e6b-8617-6bfff1a1b42d-1618747428085@3c-app-gmx-bap31>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Frank Wunderlich <linux@fw-web.de>
+Cc:     linux-mediatek@lists.infradead.org,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Aw: [PATCH] thermal: mediatek: add sensors-support
+Content-Type: text/plain; charset=UTF-8
+Date:   Sun, 18 Apr 2021 14:03:48 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <20210320080646.49615-1-linux@fw-web.de>
+References: <20210320080646.49615-1-linux@fw-web.de>
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:NpJG2XS0uVpmsDDBMEbodtzzfxpTnTBa8p1RkMykjqag/W3Gxr2tax05+zGq5AUWfZw8Y
+ UR2I0pxvM9MHe0r8VhdDWkgQGBL1SI+8mAdYtMqgypfgy6RLOSe0qt1nK7c6agDFY5PfxSqpyO4Z
+ wuBrnzufOyhYmZnoAymsyPyAXn2DXmF91+zeC+t21fCSauEkUxk78mx99SIl3IWAzCGwm7sT9tOV
+ qAI+rAIGkZY8+FqJkyyuAffLkkKWZ7AsT6wur+yubLVNmz8hfao5kD5mi04EgQYx2wDkuWpwzz5T
+ Is=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:I5KzL9OLaQU=:3OPO7RKu+UrbJhyuN6QKpU
+ 4BFYTNIp75gm+rV0iVvIjAnrZ4rj3UrvsoLuay+pCtGrHP3kS1gyMDoKaExubD2BtRxmnDcFP
+ EXKFerqtjTB04wqUrO88LfpaXR73l0pGklAIgozu0o1JwZcj0Umk3S/bG6qd2vhka6gZH3jKh
+ qRu0q85YFDxkMoCR6UUPpVEPnVYXeqHPNTdFN37xLgMWQ6okybKiy8tUUE+bUyeT2ZSVPD1yk
+ 2at67rwVhXuVNRDnpguJsZvuCBq9MJa5fWUHc/BZ4u54VHhg5HH6Qir6G8J48GSr6ZgzVdfWF
+ p1FA/423VEpjXaXcAtA3tBTHaZAk59UAaiEn8hsDVE+UUwrb60yU3LAmxv8g0UrhJfDmYHsrh
+ Gl4F4Cn9dkJEs266ePIsPs5U8XZ8yIBRtVlm/DYT+Ge3FHzqx90mSDbru7P8Cb72TdhZb4stC
+ zb+HotaIeKhlrhZ7IbA57k62MuPtnAjeyawwjbZqzPnkb42UGomNLhwhjTnDyEFNvjezFFpfD
+ y5rD4nGv3MbX/iTa+hRpzw5YKZVeCdbli2KhM3KWeQ8GEP5WQaBF9Eruhdvw1L3CE2jyPSMCz
+ 7K8Icw0Cf8kRzGRPxjMNukY07zv3tUyfUnBba8wMSmmdn8CcArkicuPi0i8/5ZZu5jVyN6+K1
+ X+qLouCPOYByILOHs2fiFZVxcieOhdrk4fND/9bOBTRStLouXPo0aYprAGKXFpg2Yw7ZvHxDZ
+ xFsPCVLNJE6nY/vdcN3WQViWdSHZK4iqsfTkN1eZUHW0WF2ORC5TDQOELbuapp321t3PbRyYK
+ Bw3XYc3GqeMj2QKSR1+0lg4XQnhRLrXuuWUmN0DTw18tK/eZV4tCyn4MnqM9rUWjA178rfI81
+ oX9ZfsAH+dh6HQ+BoZgsyLstw8Wrc5NgE3NKpQkJv+j1dSkcAiZcwjlHyVnblA5CKZ7/vcTyt
+ VDaQZgQnZ+Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 38ec4944b593 ("gro: ensure frag0 meets IP header alignment")
-did the right thing, but missed the fact that napi_gro_frags() logics
-calls for skb_gro_reset_offset() *before* pulling Ethernet header
-to the skb linear space.
-That said, the introduced check for frag0 address being aligned to 4
-always fails for it as Ethernet header is obviously 14 bytes long,
-and in case with NET_IP_ALIGN its start is not aligned to 4.
+Hi,
 
-Fix this by adding @nhoff argument to skb_gro_reset_offset() which
-tells if an IP header is placed right at the start of frag0 or not.
-This restores Fast GRO for napi_gro_frags() that became very slow
-after the mentioned commit, and preserves the introduced check to
-avoid silent unaligned accesses.
+any opinion (except typo)?
 
-Fixes: 38ec4944b593 ("gro: ensure frag0 meets IP header alignment")
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- net/core/dev.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+thermanl =3D> thermal
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 1f79b9aa9a3f..965d5f9b6fee 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -5914,7 +5914,7 @@ static struct list_head *gro_list_prepare(struct napi=
-_struct *napi,
- =09return head;
- }
+regards Frank
 
--static void skb_gro_reset_offset(struct sk_buff *skb)
-+static void skb_gro_reset_offset(struct sk_buff *skb, u32 nhoff)
- {
- =09const struct skb_shared_info *pinfo =3D skb_shinfo(skb);
- =09const skb_frag_t *frag0 =3D &pinfo->frags[0];
-@@ -5925,7 +5925,7 @@ static void skb_gro_reset_offset(struct sk_buff *skb)
 
- =09if (!skb_headlen(skb) && pinfo->nr_frags &&
- =09    !PageHighMem(skb_frag_page(frag0)) &&
--=09    (!NET_IP_ALIGN || !(skb_frag_off(frag0) & 3))) {
-+=09    (!NET_IP_ALIGN || !((skb_frag_off(frag0) + nhoff) & 3))) {
- =09=09NAPI_GRO_CB(skb)->frag0 =3D skb_frag_address(frag0);
- =09=09NAPI_GRO_CB(skb)->frag0_len =3D min_t(unsigned int,
- =09=09=09=09=09=09    skb_frag_size(frag0),
-@@ -6143,7 +6143,7 @@ gro_result_t napi_gro_receive(struct napi_struct *nap=
-i, struct sk_buff *skb)
- =09skb_mark_napi_id(skb, napi);
- =09trace_napi_gro_receive_entry(skb);
-
--=09skb_gro_reset_offset(skb);
-+=09skb_gro_reset_offset(skb, 0);
-
- =09ret =3D napi_skb_finish(napi, skb, dev_gro_receive(napi, skb));
- =09trace_napi_gro_receive_exit(ret);
-@@ -6232,7 +6232,7 @@ static struct sk_buff *napi_frags_skb(struct napi_str=
-uct *napi)
- =09napi->skb =3D NULL;
-
- =09skb_reset_mac_header(skb);
--=09skb_gro_reset_offset(skb);
-+=09skb_gro_reset_offset(skb, hlen);
-
- =09if (unlikely(skb_gro_header_hard(skb, hlen))) {
- =09=09eth =3D skb_gro_header_slow(skb, hlen, 0);
---
-2.31.1
-
+> Gesendet: Samstag, 20=2E M=C3=A4rz 2021 um 10:06 Uhr
+> Von: "Frank Wunderlich" <linux@fw-web=2Ede>
+> add HWMON-support to mediateks thermanl driver to allow lm-sensors
+> userspace tools read soc temperature
 
