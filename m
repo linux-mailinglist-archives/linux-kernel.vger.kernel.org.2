@@ -2,161 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5433635A3
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 15:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B07B73635B3
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 15:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231305AbhDRNpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 09:45:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35040 "EHLO
+        id S231383AbhDRNuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 09:50:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230029AbhDRNpE (ORCPT
+        with ESMTP id S229986AbhDRNt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 09:45:04 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32DB5C061760
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 06:44:36 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lY7im-0005Yg-G0; Sun, 18 Apr 2021 15:44:20 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lY7ig-0006c9-BO; Sun, 18 Apr 2021 15:44:14 +0200
-Date:   Sun, 18 Apr 2021 15:44:11 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
-        linux-pwm@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
-        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] pwm: visconti: Add Toshiba Visconti SoC PWM
- support
-Message-ID: <20210418134411.vfltokielrwuygqa@pengutronix.de>
-References: <20210418110904.1942806-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20210418110904.1942806-3-nobuhiro1.iwamatsu@toshiba.co.jp>
+        Sun, 18 Apr 2021 09:49:59 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9807C06174A;
+        Sun, 18 Apr 2021 06:49:26 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id h15so3753869pfv.2;
+        Sun, 18 Apr 2021 06:49:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cbKScacbPnCVDko0r+AsXA3VAj92Swv+RtqzbxHYEQQ=;
+        b=rV6v1JzJHRqixRuUv6qmV6vMTuLaBxbL6yfdlCQfxpMvWLG2wDI8QRIRTi7AaVUm88
+         fOfiHccxft89ZX8AHGUDlkVCEGjhCQnAIdExjuQ49WQN9e26mmowHthHCN/adqS1AvMm
+         iWuHVAwLIF8LQrPM3/WGVuMr1H5M2xNPZERR/r5WfO8KxkNULJCQJWX+np5J+ZljFBme
+         HgHaPSRrkindJW01PL4nsuDB+r8kgiuCzQuEhZHLI8/bFxOK3q9+NTMFBpyUsdTeeWCV
+         h19Cif7iPDYdQaE+OuOITrwgJLABJiI5ezn5LWwa+VgZEStjcSsyCcH7Y6gPgm7Ux/Yp
+         jooQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cbKScacbPnCVDko0r+AsXA3VAj92Swv+RtqzbxHYEQQ=;
+        b=sjwo8IWsSDQ8pfpXuUmPhrgJn5UAsiCN+Bfk6/iOQeiPR4fp3WEKwWv9oIwELtXnO7
+         jWl6lSB/uConBa4ojh02DVps7pmdlNntrkc6GzsFpjhmuEs9TP9l/w4rWfFfhZznBS/M
+         Ggt3LMSOMdH1ZDWhyNfRNHJRjCLeHKfsq3YdPcTh0GZcLxACXYkH3kVmFvqrky5tyrEX
+         hwcnEcxJvThQrvEHqPX3ktVJ2vsrFOvVKbV3aa2o6uiGrb870BnMYAmxapBexo+UNw67
+         y0I+0uBlyF7N6OxAlatLQxkbeIpA1ieDsgAV7ZR0Xiw2lcf5YqN3O4Q2GF3QNhbWEiTf
+         pA0A==
+X-Gm-Message-State: AOAM532dblzdbybAo/805lpPa+HQhAI7HRJQhuvIQIsqgKme6+oXQj11
+        75Tb1pqcZt9Kvr20n6mag9tGP5L4GdqzjCKwCj8=
+X-Google-Smtp-Source: ABdhPJyFGJD1cXvIF3FDJ7M2UiPRrn4WTWmkgt3uTyegd+zkAfKnvTXlsHbI6QtcbwlXypXZYpK486VW2AIfSSSzYbo=
+X-Received: by 2002:a62:5c6:0:b029:24d:e97f:1b1d with SMTP id
+ 189-20020a6205c60000b029024de97f1b1dmr15893645pff.40.1618753765614; Sun, 18
+ Apr 2021 06:49:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bgb6vkbm2v3bjabj"
-Content-Disposition: inline
-In-Reply-To: <20210418110904.1942806-3-nobuhiro1.iwamatsu@toshiba.co.jp>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210414195454.84183-1-andriy.shevchenko@linux.intel.com>
+ <20210414195454.84183-6-andriy.shevchenko@linux.intel.com> <20210418120655.3b2501fc@jic23-huawei>
+In-Reply-To: <20210418120655.3b2501fc@jic23-huawei>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 18 Apr 2021 16:49:09 +0300
+Message-ID: <CAHp75Vcrf02cVaeDevN-cEFFTPoxq6kyO3gGQYTcs-U4yHOFaQ@mail.gmail.com>
+Subject: Re: [PATCH v1 6/7] iio: st_sensors: Add lsm9ds0 IMU support
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        =?UTF-8?B?R2HDq3RhbiBBbmRyw6k=?= <rvlander@gaetanandre.eu>,
+        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
+        Denis Ciocca <denis.ciocca@st.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Crestez Dan Leonard <leonard.crestez@intel.com>,
+        mr.lahorde@laposte.net,
+        Matija Podravec <matija_podravec@fastmail.fm>,
+        Sergey Borishchenko <borischenko.sergey@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Apr 18, 2021 at 2:07 PM Jonathan Cameron <jic23@kernel.org> wrote:
 
---bgb6vkbm2v3bjabj
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for review, my answers below.
 
-Hello,
+> On Wed, 14 Apr 2021 22:54:53 +0300
+> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+>
+> > We can utilize separate drivers for accelerometer and magnetometer,
+> > so here is the glue driver to enable LSM9DS0 IMU support.
+> >
+> > The idea was suggested by Crestez Dan Leonard in [1]. The proposed change
+> > was sent as RFC due to race condition concerns, which are indeed possible.
+>
+> If you are going to mention races, good to give some flavour in here!
 
-just a few smaller issues left to fix.
+I meant that the initial idea is racy due to different devices
+communicating to the same i2c address.
+So, any sequence of transfers are not serialized and you may end up with
 
-On Sun, Apr 18, 2021 at 08:09:04PM +0900, Nobuhiro Iwamatsu wrote:
-> diff --git a/drivers/pwm/pwm-visconti.c b/drivers/pwm/pwm-visconti.c
-> new file mode 100644
-> index 000000000000..166b18ac1a3a
-> --- /dev/null
-> +++ b/drivers/pwm/pwm-visconti.c
-> @@ -0,0 +1,188 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Toshiba Visconti pulse-width-modulation controller driver
-> + *
-> + * Copyright (c) 2020 TOSHIBA CORPORATION
-> + * Copyright (c) 2020 Toshiba Electronic Devices & Storage Corporation
+drv1 -> i2c
+drv2 -> i2c
+drv1 <- i2c # garbage
 
-We're in 2021, so you might want to adapt the year in the copy right
-notice.
+> This driver makes me very nervous indeed.
 
-> + *
-> + * Authors: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-> + *
-> + * Limitations:
-> + * - PIPGM_PWMC is a 2-bit divider (00: 1, 01: 2, 10: 4, 11: 8).
+Why?! This one is race free as far as I can see. Or maybe I interpret
+this wrongly and you are talking about initial RFC?
 
-This is too detailed for the purpose of this section. Please either drop
-it or make this:
+>  I haven't 'found' any places
+> where the fact we'll write the same registers from each of the drivers
+> causes problems (e.g. int pin setup etc) but perhaps I'm missing something.
+>
+> Shall we say that makes me rather keener to get eyes (and thought) on this
+> patch than normal :)
 
- - The fixed input clock is running at 1 MHz and is divided by either 1,
-   2, 4 or 8.
+How should I amend the commit message to state:
+1. First idea (RFC by the link) *is* racy AFAIU
+2. This one *is not* racy.
 
-> + * - Fixed input clock running at 1 MHz.
-> + * - When the settings of the PWM are modified, the new values are shado=
-wed
-> + *   in hardware until the PIPGM_PCSR register is written and the curren=
-tly
-> + *   running period is completed. This way the hardware switches atomica=
-lly
-> + *   from the old setting to the new.
-> + * - Disabling the hardware completes the currently running period and k=
-eeps
-> + *   the output at low level at all times.
-> + */
-> +
-> [...]
-> +	/*
-> +	 * PWMC controls a divider that divides the input clk by a
-> +	 * power of two between 1 and 8. As a smaller divider yields
-> +	 * higher precision, pick the smallest possible one.
-> +	 */
-> +	if (period > 0xffff) {
-> +		pwmc0 =3D ilog2(period >> 16);
-> +		BUG_ON(pwmc0 > 3);
-> +	} else
-> +		pwmc0 =3D 0;
+> > In order to amend the initial change,
 
-The linux coding style mandates that you should use braces for both
-branches. (i.e.
+You see, *in order to amend*, so here is the *amended* version.
 
-+	if (period > 0xffff) {
-+		pwmc0 =3D ilog2(period >> 16);
-+		BUG_ON(pwmc0 > 3);
-+	} else {
-+		pwmc0 =3D 0;
-+	}
-)
+> I went further by providing a specific
+> > multi-instantiate probe driver that reuses existing accelerometer and
+> > magnetometer.
+> >
+> > [1]: https://lore.kernel.org/patchwork/patch/670353/
+> >
+> > Suggested-by: Crestez Dan Leonard <leonard.crestez@intel.com>
+> > Cc: mr.lahorde@laposte.net
+> > Cc: Matija Podravec <matija_podravec@fastmail.fm>
+> > Cc: Sergey Borishchenko <borischenko.sergey@gmail.com>
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>
+> A few comments in here, though mostly about stuff related to the origin code
+> you are copying so perhaps not tidying them up is preferable because it would
+> complicate comparison of the two cases.
 
-> +	period >>=3D pwmc0;
-> +	duty_cycle >>=3D pwmc0;
-> +
-> +	if (state->polarity =3D=3D PWM_POLARITY_INVERSED)
-> +		pwmc0 |=3D PIPGM_PWMC_PWMACT;
-> +	writel(pwmc0, priv->base + PIPGM_PWMC(pwm->hwpwm));
-> +	writel(duty_cycle, priv->base + PIPGM_PDUT(pwm->hwpwm));
-> +	writel(period, priv->base + PIPGM_PCSR(pwm->hwpwm));
-> +
-> +	return 0;
-> +}
+...
 
-Best regards
-Uwe
+> > +     {
+> > +             .wai = 0x49,
+> > +             .wai_addr = ST_SENSORS_DEFAULT_WAI_ADDRESS,
+> > +             .sensors_supported = {
+> > +                     [0] = LSM9DS0_IMU_DEV_NAME,
+>
+> What does the name attribute report for these?
+>
+> Previously we've had the _accel etc postfix to differentiate the devices. I don't
+> suppose it matters to much though as easy enough to identify the accelerometer
+> etc from what channels are present.
+>
+> Of course driver may get name from somewhere different anyway, I haven't checked,
+> just noticed this was different and wondered what the affect might be.
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Yes, it has a postfix, that's why I leave it like this.
 
---bgb6vkbm2v3bjabj
-Content-Type: application/pgp-signature; name="signature.asc"
+...
 
------BEGIN PGP SIGNATURE-----
+> > +static int st_lsm9ds0_power_enable(struct device *dev, struct st_lsm9ds0 *lsm9ds0)
+> > +{
+> > +     int ret;
+> > +
+> > +     /* Regulators not mandatory, but if requested we should enable them. */
+>
+> That's a bit of a missleading comment though cut and paste from the other driver
+> code.  Key is that they will be handled by stub regulators if we don't provide
+> the which is not really what that comment implies.
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmB8N6gACgkQwfwUeK3K
-7Anj2Af/WqUKM5BqP7zkeYG608r86aZH7diBe5BWPMf80rLImrviWBmFt6uw5otH
-qog680Qlj2ODFIfAvFBjiW+tRakmjrqrJrcgYV5/SPS+95Eo/7Ym8Ri34eCIobWS
-9lFQk1uRq8i02WymB7oQ/BEOerzCk2BiCJ7BmZu1AYVjRgydr+7QG/fLFqez3Mox
-IgRRqBRTCHAnYCorF6YcG17Q5vi6iEHKb1yUymxWkK3IUDrfkOI3iOYlkcR1ZLKR
-wZAngejexWOhcv+POJ28bq9PywjfmGLFxVD4AfS616FHSSCuZo54okDaSjH4dckP
-mEdq5uZ48A2JhhYKG+abRo0BADLAZg==
-=fos0
------END PGP SIGNATURE-----
+I see. I will remove it.
 
---bgb6vkbm2v3bjabj--
+> > +     lsm9ds0->vdd = devm_regulator_get(dev, "vdd");
+> > +     if (IS_ERR(lsm9ds0->vdd)) {
+> > +             dev_err(dev, "unable to get Vdd supply\n");
+> > +             return PTR_ERR(lsm9ds0->vdd);
+> > +     }
+> > +     ret = regulator_enable(lsm9ds0->vdd);
+> > +     if (ret) {
+> > +             dev_warn(dev, "Failed to enable specified Vdd supply\n");
+>
+> Given we fail to probe if this is true, dev_warn seems a bit soft.
+
+Right.  I'll move to dev_err().
+
+> > +             return ret;
+> > +     }
+> > +
+> > +     lsm9ds0->vdd_io = devm_regulator_get(dev, "vddio");
+> > +     if (IS_ERR(lsm9ds0->vdd_io)) {
+> > +             dev_err(dev, "unable to get Vdd_IO supply\n");
+> > +             regulator_disable(lsm9ds0->vdd);
+> > +             return PTR_ERR(lsm9ds0->vdd_io);
+> > +     }
+> > +     ret = regulator_enable(lsm9ds0->vdd_io);
+> > +     if (ret) {
+> > +             dev_warn(dev, "Failed to enable specified Vdd_IO supply\n");
+
+Ditto.
+
+> > +             regulator_disable(lsm9ds0->vdd);
+> > +             return ret;
+> > +     }
+> > +
+> > +     return 0;
+> > +}
+
+-- 
+With Best Regards,
+Andy Shevchenko
