@@ -2,103 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB07336355E
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 15:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3C3363562
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 15:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbhDRNBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 09:01:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230029AbhDRNBT (ORCPT
+        id S231352AbhDRNFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 09:05:10 -0400
+Received: from mail-wm1-f41.google.com ([209.85.128.41]:38476 "EHLO
+        mail-wm1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229702AbhDRNFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 09:01:19 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1859C061763
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 06:00:49 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id n2so48771065ejy.7
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 06:00:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=snejp.pl; s=gmail;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6Ow1NlEM7DKtr4mIJK66YbpuR1k+LjlGbnW7/7eKM+w=;
-        b=ZAzrDKi0WrNy99E2xve9lRvUjc4y9pEfsTbOA8rOglKFYPdhSZpk9sn41KFyifW207
-         mNCMthaZUyAG4M3JuWBar9NVWdsjzL8m6XImXPr5eW79YHfWu11l37h66T1/G1dzr+4p
-         d2LnXEOzeQ4rwxCrOgBXAvCu2lJjfeIRBt8zhBIs+8MPUDoi/lwSlqcxVGTwyul8YqM/
-         ZtxAgrmNjcvb17Du8X6TWI0UUYuvwnE6oF9Cd6Z76pqffWCMifOe1iJHdTBRNiReagJo
-         GjODWwgQ7qZsBHXytLHXYNnEKuk2KUoWU6hxmj79hoOqCJaisYCe05el6SB6U9nd1Mcs
-         gU5A==
+        Sun, 18 Apr 2021 09:05:09 -0400
+Received: by mail-wm1-f41.google.com with SMTP id d200-20020a1c1dd10000b02901384767d4a5so524089wmd.3;
+        Sun, 18 Apr 2021 06:04:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=6Ow1NlEM7DKtr4mIJK66YbpuR1k+LjlGbnW7/7eKM+w=;
-        b=JQsnW3JYsA9nnXhP2LsQlHnoI5d9Et2iCF5TchA/i4k9ygttaGMad/Vo3ToN+5JExT
-         kzkUykrlI5EygcopzVwSWe/TCs9KP+oKL/7nOQXCp2PwhwzC+I2o2npwehxnGOm/vM3l
-         bx/tWvJSZgoLCYMyxsl3KfjAaTp/IzVylc8B3LqfjHANGR/XIfJXbGUlXs9T/j1cjYMe
-         c+ntERA0Y2GYwhzK/aLLyQ2JJu2Tbqj6vBYJWmujS1Q+BxV+92P0uXhjhvNu1UfQntrS
-         vTdQybdH87k4+CB0imT7abGd2rxhw5ZfAQ12p6KtbXDd8IeCmGKzhSajN1pi8XfMFmVJ
-         EFzg==
-X-Gm-Message-State: AOAM531Z7JKRdDY2ybMnXl3cKdm2J/ViAEXZT7jSyxmIq3DAJeERtpBa
-        gM2GgmtNYqyfuXhUirY+5JVNCw==
-X-Google-Smtp-Source: ABdhPJynk440pimUYGjeiYWc8ykH5SQkOAlqUmul4ohk1LNdpMwCBfj4JfqjQMI6VpxBPwNUI4EKaw==
-X-Received: by 2002:a17:907:76a7:: with SMTP id jw7mr17228065ejc.322.1618750847955;
-        Sun, 18 Apr 2021 06:00:47 -0700 (PDT)
-Received: from PackardBell (87-49-44-144-mobile.dk.customer.tdc.net. [87.49.44.144])
-        by smtp.googlemail.com with ESMTPSA id r10sm8436629ejd.112.2021.04.18.06.00.46
+        bh=D1LrlAqtiFgtoKglNGwZGQnK56yMv94tK8QFQsoakxk=;
+        b=SqHRBMk/vV9CW6DD+2rWeztBs804aMOBZ3SUvxGHGgSQwsTTCuUH91vq/XZZ59uH0L
+         ufz7rYi3G9eJhS4ElNPAOhgs9fMcg+AhmBMWV+xQBmGjG68+I3A1a/U9rzH/BTSUbSu5
+         TAvfVogSaWO7puUVRBJgkImn6epFHkw7kr1g0aH4dcJr6k/V96qIRUhL9ySh8rEZDhIF
+         2IITEH9bGboKQpX5Tri9/YsDfN2hTVgfXGCP3KhACAaGo7+kQ5iIM+KwUudTnNrMC0Jh
+         iPB+IJDU1oWhM/UKY4AGdY2Wn+4czJVpUU6VmlYuJj77u+2WKh7EhNozpaX4GcTEUCsJ
+         KlOw==
+X-Gm-Message-State: AOAM5324IaeJpf0ag6FHmIRAcgHVhe132rBGxsXFYSioOQ4fkTF+h+X5
+        cO26SFohvnZRDlGQhhXn/As=
+X-Google-Smtp-Source: ABdhPJxHmLlltTJgWMnh3nSxBbbPhVc1xXMiRilxIjPHRyOF7zwQU1l4RwZ1KRbQQT8OQ9MGixnwbA==
+X-Received: by 2002:a05:600c:2d56:: with SMTP id a22mr17039179wmg.175.1618751078854;
+        Sun, 18 Apr 2021 06:04:38 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id t63sm16409115wma.20.2021.04.18.06.04.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Apr 2021 06:00:47 -0700 (PDT)
-Received: from localhost (PackardBell [local])
-        by PackardBell (OpenSMTPD) with ESMTPA id 03f6b92d;
-        Sun, 18 Apr 2021 13:00:45 +0000 (UTC)
-Date:   Sun, 18 Apr 2021 15:00:45 +0200
-From:   Bartosz Dudziak <bartosz.dudziak@snejp.pl>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 0/5] Samsung Galaxy S III Neo Initial DTS
-Message-ID: <20210418130045.GA73531@PackardBell>
-References: <20210326145816.9758-1-bartosz.dudziak@snejp.pl>
+        Sun, 18 Apr 2021 06:04:38 -0700 (PDT)
+Date:   Sun, 18 Apr 2021 13:04:36 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        linux-hyperv@vger.kernel.org, mikelley@microsoft.com
+Subject: Re: [PATCH v3 0/3] Drivers: hv: vmbus: Introduce
+ CHANNELMSG_MODIFYCHANNEL_RESPONSE
+Message-ID: <20210418130436.pfubar442swyxqoe@liuwe-devbox-debian-v2>
+References: <20210416143449.16185-1-parri.andrea@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210326145816.9758-1-bartosz.dudziak@snejp.pl>
+In-Reply-To: <20210416143449.16185-1-parri.andrea@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 03:58:11PM +0100, Bartosz Dudziak wrote:
-> This series of patches enables to boot MSM8226 SoC in Samsung Galaxy S III Neo
-> mobile phone. Implemented clocks are on top of MSM8974 GCC driver because there
-> is really little difference between them. UART serial communication is working.
-> I have working patches for the regulators, EMMC, multithreading and Wifi for
-> this device but they are not clean and ready to submit.
+On Fri, Apr 16, 2021 at 04:34:46PM +0200, Andrea Parri (Microsoft) wrote:
+> Changes since v2[1]:
+>   - fix VMbus protocol version name
+>   - add Reviewed-by: tag
+>   - refactor/simplyfy changes in hv_synic_cleanup()
 > 
-> Bartosz Dudziak (5):
->   dt-bindings: clock: qcom: Add MSM8226 GCC clock bindings
->   clk: qcom: gcc: Add support for Global Clock controller found on
->     MSM8226
->   arm: dts: qcom: Add support for MSM8226 SoC
->   dt-bindings: arm: qcom: Document MSM8226 SoC binding
->   arm: dts: qcom: Add initial DTS file for Samsung Galaxy S III Neo
->     phone
+> Changes since v1[2]:
+>   - rebase on hyperv-next
+>   - split changes into three patches
+>   - fix&simplify error handling in send_modifychannel_with_ack()
+>   - remove rescind checks in send_modifychannel_with_ack()
+>   - remove unneeded test in hv_synic_event_pending()
+>   - add/amend inline comments
+>   - style changes
 > 
->  .../devicetree/bindings/arm/qcom.yaml         |   6 +
->  .../devicetree/bindings/clock/qcom,gcc.yaml   |  13 +-
->  arch/arm/boot/dts/Makefile                    |   1 +
->  .../boot/dts/qcom-msm8226-samsung-s3ve3g.dts  |  25 +++
->  arch/arm/boot/dts/qcom-msm8226.dtsi           | 152 ++++++++++++++
->  drivers/clk/qcom/gcc-msm8974.c                | 185 ++++++++++++++++--
->  6 files changed, 364 insertions(+), 18 deletions(-)
->  create mode 100644 arch/arm/boot/dts/qcom-msm8226-samsung-s3ve3g.dts
->  create mode 100644 arch/arm/boot/dts/qcom-msm8226.dtsi
+> [1] https://lkml.kernel.org/r/20210414150118.2843-1-parri.andrea@gmail.com
+> [2] https://lkml.kernel.org/r/20201126191210.13115-1-parri.andrea@gmail.com
 > 
-> -- 
-> 2.25.1
-> 
+> Andrea Parri (Microsoft) (3):
+>   Drivers: hv: vmbus: Introduce and negotiate VMBus protocol version 5.3
+>   Drivers: hv: vmbus: Drivers: hv: vmbus: Introduce
+>     CHANNELMSG_MODIFYCHANNEL_RESPONSE
+>   Drivers: hv: vmbus: Check for pending channel interrupts before taking
+>     a CPU offline
 
-I have sent version V2 of the patches
+Applied to hyperv-next. Thanks.
+
+Wei.
