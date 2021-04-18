@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1AB83637DD
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 23:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7903637F6
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 23:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232814AbhDRV2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 17:28:48 -0400
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:54987 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231942AbhDRV2q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 17:28:46 -0400
-Received: from [192.168.1.18] ([86.243.172.93])
-        by mwinf5d25 with ME
-        id uMUG2400321Fzsu03MUGK5; Sun, 18 Apr 2021 23:28:16 +0200
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 18 Apr 2021 23:28:16 +0200
-X-ME-IP: 86.243.172.93
-Subject: Re: [PATCH] net/mlx5: Use kasprintf instead of hand-writing it
-To:     Bart Van Assche <bvanassche@acm.org>, saeedm@nvidia.com,
-        leon@kernel.org, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <46235ec010551d2788483ce636686a61345e40ba.1618643703.git.christophe.jaillet@wanadoo.fr>
- <131988e1-2327-99f8-95e1-778d653c36ec@acm.org>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <8513235a-eed2-7007-a873-6464df8cb3c9@wanadoo.fr>
-Date:   Sun, 18 Apr 2021 23:28:16 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S232355AbhDRV7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 17:59:32 -0400
+Received: from mail5.windriver.com ([192.103.53.11]:53728 "EHLO mail5.wrs.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230258AbhDRV7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 17:59:30 -0400
+X-Greylist: delayed 1477 seconds by postgrey-1.27 at vger.kernel.org; Sun, 18 Apr 2021 17:59:30 EDT
+Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.corp.ad.wrs.com [147.11.82.252])
+        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 13ILYLgF003225
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL)
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 14:34:21 -0700
+Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Sun, 18 Apr 2021 14:34:21 -0700
+Received: from yow-cube1.wrs.com (128.224.56.98) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
+ 15.1.2242.4 via Frontend Transport; Sun, 18 Apr 2021 14:34:20 -0700
+From:   Paul Gortmaker <paul.gortmaker@windriver.com>
+To:     <linux-kernel@vger.kernel.org>
+Subject: [PATCH] sched/isolation: don't do unbounded chomp on bootarg string
+Date:   Sun, 18 Apr 2021 17:34:20 -0400
+Message-ID: <20210418213420.1086500-1-paul.gortmaker@windriver.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <131988e1-2327-99f8-95e1-778d653c36ec@acm.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 18/04/2021 à 22:03, Bart Van Assche a écrit :
-> On 4/17/21 12:16 AM, Christophe JAILLET wrote:
->> 'kasprintf()' can replace a kmalloc/strcpy/strcat sequence.
->> It is less verbose and avoid the use of a magic number (64).
->>
->> Anyway, the underlying 'alloc_workqueue()' would only keep the 24 first
->> chars (i.e. sizeof(struct workqueue_struct->name) = WQ_NAME_LEN).
->>
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->>   drivers/net/ethernet/mellanox/mlx5/core/health.c | 4 +---
->>   1 file changed, 1 insertion(+), 3 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers/net/ethernet/mellanox/mlx5/core/health.c
->> index 9ff163c5bcde..a5383e701b4b 100644
->> --- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
->> +++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
->> @@ -802,12 +802,10 @@ int mlx5_health_init(struct mlx5_core_dev *dev)
->>   	mlx5_fw_reporters_create(dev);
->>   
->>   	health = &dev->priv.health;
->> -	name = kmalloc(64, GFP_KERNEL);
->> +	name = kasprintf(GFP_KERNEL, "mlx5_health%s", dev_name(dev->device));
->>   	if (!name)
->>   		goto out_err;
->>   
->> -	strcpy(name, "mlx5_health");
->> -	strcat(name, dev_name(dev->device));
->>   	health->wq = create_singlethread_workqueue(name);
->>   	kfree(name);
->>   	if (!health->wq)
-> 
-> Instead of modifying the mlx5 driver, please change the definition of
-> the create_singlethread_workqueue() such that it accept a format
-> specifier and a variable number of arguments.
-> 
+After commit 3662daf023500dc084fa3b96f68a6f46179ddc73
+("sched/isolation: Allow "isolcpus=" to skip unknown sub-parameters")
+the isolcpus= string is walked to skip over what might be future flag
+comma separated additions.
 
-Agreed. I've sent another patch serie which is more elegant.
-Thanks for the feedback.
+However, there is a logic error, and so as can clearly be seen below, it
+will ignore its own arg len and search to the end of the bootarg string.
 
-CJ
+ $ dmesg|grep isol
+ Command line: BOOT_IMAGE=/boot/bzImage isolcpus=xyz pleasedontparseme=1 root=/dev/sda1 ro
+ Kernel command line: BOOT_IMAGE=/boot/bzImage isolcpus=xyz pleasedontparseme=1 root=/dev/sda1 ro
+ isolcpus: Skipped unknown flag xyz
+ isolcpus: Invalid flag pleasedontparseme=1 root=/dev/sda1 ro
 
-> Thanks,
-> 
-> Bart.
-> 
-> 
-> 
+This happens because the flag "skip" code does an unconditional
+increment, which skips over the '\0' check the loop body looks for. If
+the isolcpus= happens to be the last bootarg, then you'd never notice?
+
+So we only increment if the skipped flag is followed by a comma, as per
+what the existing "continue" flag matching code does.
+
+Note that isolcpus= was declared deprecated as of v4.15 (b0d40d2b22fe),
+so we might want to revisit that if we are trying to future-proof it
+as recently as a year ago for as yet unseen new flags.
+
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Peter Xu <peterx@redhat.com>
+Fixes: 3662daf02350 ("sched/isolation: Allow "isolcpus=" to skip unknown sub-parameters")
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+
+diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+index 5a6ea03f9882..9652dba7e938 100644
+--- a/kernel/sched/isolation.c
++++ b/kernel/sched/isolation.c
+@@ -188,7 +188,8 @@ static int __init housekeeping_isolcpus_setup(char *str)
+ 		}
+ 
+ 		pr_info("isolcpus: Skipped unknown flag %.*s\n", len, par);
+-		str++;
++		if (str[1] == ',')	/* above continue; match on "flag," */
++			str++;
+ 	}
+ 
+ 	/* Default behaviour for isolcpus without flags */
+-- 
+2.25.1
 
