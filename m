@@ -2,63 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9875D363341
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 05:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C25363344
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 05:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237204AbhDRD3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 23:29:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237179AbhDRD3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 23:29:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 481B86120A;
-        Sun, 18 Apr 2021 03:29:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618716548;
-        bh=JDCSjvKTH30D9ejYBlLFWVDWZtSqvItw+rte0XJ0jS0=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=rrOaI/E8Fcik1SYC+oMVpdg+m7SOUxb0u9Mkt6sb1H2LUvW3Vomm+miO81mw7w6j0
-         tJII/6NKi3J0T4v54P92FggoaWfF9r8H3ZhqVI9ZTYLhihjNXxfShfV2r16vGQ/nJo
-         NaWomWrv+m1v0qKlrbtm+zwhODKZ8k8qLnmY9Y3cQ3WZb4tWKmo8hvHNJWI+vlkD+c
-         F3/Of0Lw7UE8ERJG4O7cA1RFKtczfTtNeC/lAjpn6+OTHv0xEy0CdoxqsZFacoxMCX
-         9B52dpRSjmhT3QnBs+2JUrD/+QpKK89hByPoooAJDLErMWypHw7WZgElJoJgWBic+B
-         R1juoOda/guEQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4167060CD6;
-        Sun, 18 Apr 2021 03:29:08 +0000 (UTC)
-Subject: Re: [git pull] drm/vmwgfx fixes for 5.12-rc8
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAPM=9tzVDp7PB0Rv8+Lmi4Ervp8QRio6phvRy_H-oFUHe3phSA@mail.gmail.com>
-References: <CAPM=9tzVDp7PB0Rv8+Lmi4Ervp8QRio6phvRy_H-oFUHe3phSA@mail.gmail.com>
-X-PR-Tracked-List-Id: Direct Rendering Infrastructure - Development
- <dri-devel.lists.freedesktop.org>
-X-PR-Tracked-Message-Id: <CAPM=9tzVDp7PB0Rv8+Lmi4Ervp8QRio6phvRy_H-oFUHe3phSA@mail.gmail.com>
-X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-04-18
-X-PR-Tracked-Commit-Id: 796b556cbfdbe0d65b9793e63653ad24f9fa033c
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: aba5970c4da0059ed8052188a341a85ac8845d6f
-Message-Id: <161871654826.19812.18251212107299642091.pr-tracker-bot@kernel.org>
-Date:   Sun, 18 Apr 2021 03:29:08 +0000
-To:     Dave Airlie <airlied@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Zack Rusin <zackr@vmware.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
+        id S237230AbhDRDbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 23:31:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237212AbhDRDbK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 17 Apr 2021 23:31:10 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65629C06174A;
+        Sat, 17 Apr 2021 20:30:43 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id r13so12270597pjf.2;
+        Sat, 17 Apr 2021 20:30:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=b8hpyDKfB8kYMTlAMk33KCFRc04U8eD4yoRmXwd6/1k=;
+        b=QD9CvGDnpgRbWHneXST4f0L73kDAKrhp4XF44qas6zt/UnZrKPbSzqonZ8FAnE//RE
+         h3NtPhR2ozMriSrwaz8NzPEw52O0CSH2zQMETAV2Na7scbXV2z1+W2nnvfQL7Y+iimev
+         Zj7HnYlGYEQneF0qmxYiKrEaEtIUfcR41XhxcZt1g9LakIUuE4A8UKDvy47qWbMJ5l1q
+         TCHiofw7fJuy/Vxj6/hd8ZeIhSUczGAYrRn6X2DR4W0Wb4vflMHu+e/ouXO5Vtw0200L
+         69L942WvYdPzXzKSOX+0R48uFimIsCBFRGqR1ya3b25A5zKMZSb2DhQWr+tN1MBPv7+S
+         Zw8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=b8hpyDKfB8kYMTlAMk33KCFRc04U8eD4yoRmXwd6/1k=;
+        b=Z0piDkGHSfIHxGfbGW6+lRjq/0LglB1TYArHCzfGqCZlvtyJJUlnQSCyd2wwVisptD
+         ELpY14v/H7ixT1k9LAi+rNO60nlTS/7189VxPSCwVGrf0GUav7AO6BGUVjB7rxHXZ1Jv
+         XlSU7zg6nVni6/Kjd8relTiUhlIseUA5TNQKqYViUYcHbO+sVzF9sRDcbp6Y+pH9ql60
+         8ZZVJwHIwKeyXfuczC/rMNzl9Y/dGALqibew2nlLr+BLl2nV7pQzLOH6Knr/rN60nzUu
+         +yVDnhf+FXEnDTSV6SiuycinmQFnLsrHyMINJq6mAoKgtLeaC81HUYYMVb0uedr6y6Vw
+         1Ijw==
+X-Gm-Message-State: AOAM53186FCqrQFHRAExawIIslSRB6rOFKei+zP8kSE+8li/ekPa+OWT
+        OW6oMSXCCUXA7n9VrOpOe1bCBRrlnPFlGt6ANz0=
+X-Google-Smtp-Source: ABdhPJxVwmX7HDYx/7rgGE7WvOdjl595q58oeRIUlN4t0gD4eCaKlyLuuhwsjLOnNPEVKMVjCI2qTQ==
+X-Received: by 2002:a17:90b:302:: with SMTP id ay2mr17772293pjb.84.1618716643019;
+        Sat, 17 Apr 2021 20:30:43 -0700 (PDT)
+Received: from MacBook-Pro.local ([154.48.252.71])
+        by smtp.gmail.com with ESMTPSA id a26sm8803126pff.149.2021.04.17.20.30.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Apr 2021 20:30:42 -0700 (PDT)
+From:   =?UTF-8?B?5b6Q56aP5rW3?= <xufuhai1992@gmail.com>
+Subject: [PATCH v3 2/2] cpupower: Fix amd cpu (family >= 0x17) active state
+ issue
+To:     shuah@kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
+        Thomas Renninger <trenn@suse.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lishujin@kuaishou.com, xufuhai <xufuhai@kuaishou.com>
+Message-ID: <6e35df20-753a-6c9c-8786-3fc87cdd17ba@gmail.com>
+Date:   Sun, 18 Apr 2021 11:30:38 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 18 Apr 2021 09:48:56 +1000:
+From: xufuhai <xufuhai@kuaishou.com>
 
-> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-04-18
+If the read_msr function is executed by a non-root user, the function returns 
+-1, which means that there is no permission to access /dev/cpu/%d/msr, but 
+cpufreq_has_boost_support should also return -1 immediately, and should not
+follow the original logic to return 0, which will cause amd The cpupower tool
+returns the boost active state as 0.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/aba5970c4da0059ed8052188a341a85ac8845d6f
+Reproduce procedure:
+        cpupower frequency-info
 
-Thank you!
+Reported-by: yangrui <yangrui@kuaishou.com>
+Signed-off-by: xufuhai <xufuhai@kuaishou.com>
+Signed-off-by: chenguanqiao <chenguanqiao@kuaishou.com>
+Signed-off-by: lishujin <lishujin@kuaishou.com>
+Reviewed-by: Thomas Renninger <trenn@suse.com>
+---
+ tools/power/cpupower/utils/helpers/misc.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+diff --git a/tools/power/cpupower/utils/helpers/misc.c b/tools/power/cpupower/utils/helpers/misc.c
+index fc6e34511721..565f8c414396 100644
+--- a/tools/power/cpupower/utils/helpers/misc.c
++++ b/tools/power/cpupower/utils/helpers/misc.c
+@@ -16,7 +16,7 @@
+ int cpufreq_has_boost_support(unsigned int cpu, int *support, int *active,
+                        int *states)
+ {
+-       int ret;
++       int ret = 0;
+        unsigned long long val;
+
+        *support = *active = *states = 0;
+@@ -30,18 +30,21 @@ int cpufreq_has_boost_support(unsigned int cpu, int *support, int *active,
+                 */
+
+                if (cpupower_cpu_info.caps & CPUPOWER_CAP_AMD_CPB_MSR) {
+-                       if (!read_msr(cpu, MSR_AMD_HWCR, &val)) {
++                       /*
++                        * no permission to access /dev/cpu/%d/msr, return -1 immediately,
++                        * and should not follow the original logic to return 0
++                        */
++                       ret = read_msr(cpu, MSR_AMD_HWCR, &val);
++                       if (!ret) {
+                                if (!(val & CPUPOWER_AMD_CPBDIS))
+                                        *active = 1;
+                        }
+                } else {
+                        ret = amd_pci_get_num_boost_states(active, states);
+-                       if (ret)
+-                               return ret;
+                }
+        } else if (cpupower_cpu_info.caps & CPUPOWER_CAP_INTEL_IDA)
+                *support = *active = 1;
+-       return 0;
++       return ret;
+ }
+
+ int cpupower_intel_get_perf_bias(unsigned int cpu)
+--
+2.24.3 (Apple Git-128)
+
