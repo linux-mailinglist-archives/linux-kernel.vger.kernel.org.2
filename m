@@ -2,157 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC193632F1
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 03:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD0A3632F4
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 03:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237111AbhDRB1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 17 Apr 2021 21:27:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46936 "EHLO
+        id S236080AbhDRBdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 17 Apr 2021 21:33:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234904AbhDRB1V (ORCPT
+        with ESMTP id S229870AbhDRBdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 17 Apr 2021 21:27:21 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E42C06174A;
-        Sat, 17 Apr 2021 18:26:54 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id u15so7347328plf.10;
-        Sat, 17 Apr 2021 18:26:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LdLHlKsKEFT/fVDlILkUUrriYCxDyTZYAd5HOZ1HRDg=;
-        b=Y0gFQuR+R5X/OWidUG3xXW1k5G4ht/w3sArhSwgYPfIXmWFZZpOUuRA6+ndA7zDpah
-         UcDGBb9DdAcgl2Flx2FbkIZKyLlnABL6x0vPedND0opA+TyTO8tt7GJihjyBXu4QLDis
-         5PSVWoXJH5lSLmNcjSrxR44s+T2JqlEAWkuDUQfxGgQOSloFbtZI0n8KujZoRq3c1+Gr
-         v+xiS9bT5X0JDMFdOL77Z27z4dBPlr/HllGPzWxnQKi9RSLccMY4c4GIxxNeNt8fdmkM
-         YxkG4oj9lkbvHYOxr3R0gxcqoQx9F+7dTaenu9YoCr2ds0/BvJOON6hAf9yt13PvnzsN
-         Ipuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LdLHlKsKEFT/fVDlILkUUrriYCxDyTZYAd5HOZ1HRDg=;
-        b=VnC8CXpDCRZQulI42o4bNthF+/4+z0j8CBRvY7ziNmnYoQUfHwg+8QnymT3khNLsGc
-         olIC4nREz8BFAZTAk6MZkTKWCWsw/Qh/p19WPc8T+/d9lghGEO7DjriwOwkF21vMA/VN
-         fwTSZUps3z9xgVs3gMAi6zQVCIUgTfMXpiXvzhOdx2YzEdgZuQ1ls9JLCykoRWQfQk/2
-         MUKkcnjuH3WpA3mYocoYzgX8kcbnLeyrk0OntD9ckW3r4h/GAcQpAyDI+EnDs+2rkpYt
-         SsYdP/gItX4RdRtizR567vPj0ylzrLs0JIszp+bab55icEvno2uPYD1GbkFpYWOfCXO3
-         MqrQ==
-X-Gm-Message-State: AOAM532hpKJyy7bY6bGstV3pWZRdBco3Ww8rPqSxoaZxZgaxbR0LTZ34
-        NnyJvdrVnw6ygy8W9LK3D0o=
-X-Google-Smtp-Source: ABdhPJxen3CTLTnRJO3l85gPTk589xOv1MyaXv++LG9X73e6GTpGQ1RSUPafJMwC5mRQmOy6BqDzgg==
-X-Received: by 2002:a17:90b:285:: with SMTP id az5mr17055801pjb.0.1618709214008;
-        Sat, 17 Apr 2021 18:26:54 -0700 (PDT)
-Received: from ashish-NUC8i5BEH ([122.177.44.217])
-        by smtp.gmail.com with ESMTPSA id i11sm9059473pfa.108.2021.04.17.18.26.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Apr 2021 18:26:53 -0700 (PDT)
-From:   Ashish Kalra <eashishkalra@gmail.com>
-X-Google-Original-From: Ashish Kalra <ashish@ashish-NUC8i5BEH>
-Date:   Sun, 18 Apr 2021 06:56:48 +0530
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Ashish Kalra <eashishkalra@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: atomisp: silence "dubious: !x | !y" warning
-Message-ID: <20210418012648.GA4821@ashish-NUC8i5BEH>
-References: <20210417153627.GA50228@ashish-NUC8i5BEH>
- <20210417205613.5c1aac74@coco.lan>
+        Sat, 17 Apr 2021 21:33:14 -0400
+X-Greylist: delayed 157 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 17 Apr 2021 18:32:47 PDT
+Received: from mail.as397444.net (mail.as397444.net [IPv6:2620:6e:a000:dead:beef:15:bad:f00d])
+        by lindbergh.monkeyblade.net (Postfix) with UTF8SMTPS id 2252FC06174A
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Apr 2021 18:32:46 -0700 (PDT)
+Received: by mail.as397444.net (Postfix) with UTF8SMTPSA id 3292553ABC8;
+        Sun, 18 Apr 2021 01:30:08 +0000 (UTC)
+X-DKIM-Note: Keys used to sign are likely public at https://as397444.net/dkim/
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mattcorallo.com;
+        s=1618707664; t=1618709408;
+        bh=4D5WE+eE9FbeVia3luUOtEHxnrTqtVLyrhRu1uVzJZE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=0GiQ51MMMkw4y+qRa8ihfZJ2muDdmu/C6OKqEOf22XlPkSNp9LCf7DeNctctg6YgU
+         L0TJhVyxVCKWFRI1kMJ+oQV2JQHySImXjCSQ/h2w32iM7PscCb6qgxPfRvv7DcYgYy
+         5WfHApdA7HkeRAWtHZAjAnDdi+CWKNUVX4rxV+sAkQbtWspMM2MU6Ulle2XuwpZ6O2
+         o+6h4ucCQXAA+EYt0+VEQyKt4wxzxy/IrYq9l6owB3xFxMxpVaklmNTAL7y7GWOnzl
+         9mmbil97fR5/YbIf+C31aVvADls6BuPAYOnW2THTk9GJROjjMJoJmNKtSrsiGK+/j3
+         BwSMmYeTVnv7Q==
+Message-ID: <c6467c1c-54f5-8681-6e7d-aa1d9fc2ff32@bluematt.me>
+Date:   Sat, 17 Apr 2021 21:30:07 -0400
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="XsQoSWH+UP9D9v3l"
-Content-Disposition: inline
-In-Reply-To: <20210417205613.5c1aac74@coco.lan>
+Subject: Re: PROBLEM: DoS Attack on Fragment Cache
+Content-Language: en-US
+To:     Willy Tarreau <w@1wt.eu>, Keyu Man <kman001@ucr.edu>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Florian Westphal <fw@strlen.de>, davem@davemloft.net,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zhiyun Qian <zhiyunq@cs.ucr.edu>
+References: <02917697-4CE2-4BBE-BF47-31F58BC89025@hxcore.ol>
+ <52098fa9-2feb-08ae-c24f-1e696076c3b9@gmail.com>
+ <CANn89iL_V0WbeA-Zr29cLSp9pCsthkX9ze4W46gx=8-UeK2qMg@mail.gmail.com>
+ <20210417072744.GB14109@1wt.eu>
+ <CAMqUL6bkp2Dy3AMFZeNLjE1f-sAwnuBWpXH_FSYTSh8=Ac3RKg@mail.gmail.com>
+ <20210417075030.GA14265@1wt.eu>
+From:   Matt Corallo <netdev-list@mattcorallo.com>
+In-Reply-To: <20210417075030.GA14265@1wt.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+See-also "[PATCH] Reduce IP_FRAG_TIME fragment-reassembly timeout to 1s, from 30s" (and the two resends of it) - given 
+the size of the default cache (4MB) and the time that it takes before we flush the cache (30 seconds) you only need 
+about 1Mbps of fragments to hit this issue. While DoS attacks are concerning, its also incredibly practical (and I do) 
+hit this issue in normal non-adversarial conditions.
 
---XsQoSWH+UP9D9v3l
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Matt
 
-On Sat, Apr 17, 2021 at 08:56:13PM +0200, Mauro Carvalho Chehab wrote:
-> Em Sat, 17 Apr 2021 21:06:27 +0530
-> Ashish Kalra <eashishkalra@gmail.com> escreveu:
+On 4/17/21 03:50, Willy Tarreau wrote:
+> On Sat, Apr 17, 2021 at 12:42:39AM -0700, Keyu Man wrote:
+>> How about at least allow the existing queue to finish? Currently a tiny new
+>> fragment would potentially invalid all previous fragments by letting them
+>> timeout without allowing the fragments to come in to finish the assembly.
 > 
-> > Upon running sparse, "warning: dubious: !x | !y" is brought to notice
-> > for this file.  Logical and bitwise OR are basically the same in this
-> > context so it doesn't cause a runtime bug.  But let's change it to
-> > logical OR to make it cleaner and silence the Sparse warning.
-> > 
-> > Signed-off-by: Ashish Kalra <eashishkalra@gmail.com>
-> > ---
-> >  .../media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c    | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/staging/media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c b/drivers/staging/media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c
-> > index 358cb7d2cd4c..3b850bb2d39d 100644
-> > --- a/drivers/staging/media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c
-> > +++ b/drivers/staging/media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c
-> > @@ -58,7 +58,7 @@ sh_css_vf_downscale_log2(
-> >  	unsigned int ds_log2 = 0;
-> >  	unsigned int out_width;
-> >  
-> > -	if ((!out_info) | (!vf_info))
-> > +	if ((!out_info) || (!vf_info))
+> Because this is exactly the principle of how attacks are built: reserve
+> resources claiming that you'll send everything so that others can't make
+> use of the resources that are reserved to you. The best solution precisely
+> is *not* to wait for anyone to finish, hence *not* to reserve valuable
+> resources that are unusuable by others.
 > 
+> Willy
 > 
-> While here, please get rid of the unneeded parenthesis:
-> 
-> 	if (!out_info || !vf_info)
-> 
-> 
-> >  		return -EINVAL;
-> >  
-> >  	out_width = out_info->res.width;
-> 
-> 
-> 
-> Thanks,
-> Mauro
-Updated Patch as per your feedback
-
-Thanks
-Ashish
-
---XsQoSWH+UP9D9v3l
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment;
-	filename="0001-media-atomisp-silence-dubious-x-y-warning.patch"
-
-From 770317157c3a7abf2fda1d71b0bd651c33bf0bfa Mon Sep 17 00:00:00 2001
-From: Ashish Kalra <eashishkalra@gmail.com>
-Date: Sun, 18 Apr 2021 06:52:03 +0530
-Subject: [PATCH] media: atomisp: silence "dubious: !x | !y" warning
-
-Upon running sparse, "warning: dubious: !x | !y" is brought to notice
-for this file.  Logical and bitwise OR are basically the same in this
-context so it doesn't cause a runtime bug.  But let's change it to
-logical OR to make it cleaner and silence the Sparse warning.
-
-Signed-off-by: Ashish Kalra <eashishkalra@gmail.com>
----
- .../media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c    | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c b/drivers/staging/media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c
-index 358cb7d2cd4c..71c3e7dac052 100644
---- a/drivers/staging/media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c
-+++ b/drivers/staging/media/atomisp/pci/isp/kernels/vf/vf_1.0/ia_css_vf.host.c
-@@ -58,7 +58,7 @@ sh_css_vf_downscale_log2(
- 	unsigned int ds_log2 = 0;
- 	unsigned int out_width;
- 
--	if ((!out_info) | (!vf_info))
-+	if (!out_info || !vf_info)
- 		return -EINVAL;
- 
- 	out_width = out_info->res.width;
--- 
-2.25.1
-
-
---XsQoSWH+UP9D9v3l--
