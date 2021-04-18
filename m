@@ -2,102 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 001483634D0
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 13:19:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6CAA3634CB
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 13:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbhDRLUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 07:20:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbhDRLUE (ORCPT
+        id S229910AbhDRLRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 07:17:25 -0400
+Received: from smtp-good-out-4.t-2.net ([93.103.246.70]:51348 "EHLO
+        smtp-good-out-4.t-2.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229574AbhDRLRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 07:20:04 -0400
-X-Greylist: delayed 251 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 18 Apr 2021 04:19:36 PDT
-Received: from haggis.mythic-beasts.com (haggis.mythic-beasts.com [IPv6:2a00:1098:0:86:1000:0:2:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A9E6C06174A;
-        Sun, 18 Apr 2021 04:19:36 -0700 (PDT)
-Received: from [81.101.6.87] (port=47136 helo=jic23-huawei)
-        by haggis.mythic-beasts.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <jic23@jic23.retrosnub.co.uk>)
-        id 1lY5OW-0003OH-Ei; Sun, 18 Apr 2021 12:15:17 +0100
-Date:   Sun, 18 Apr 2021 12:15:43 +0100
-From:   Jonathan <jic23@jic23.retrosnub.co.uk>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com,
-        jiapeng.chong@linux.alibaba.com, linux-input@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] HID: hid-sensor-hub: Return error for
- hid_set_field() failure
-Message-ID: <20210418121519.69588c2b@jic23-huawei>
-In-Reply-To: <20210418121244.7e26914b@jic23-huawei>
-References: <20210415185232.2617398-1-srinivas.pandruvada@linux.intel.com>
-        <20210418121244.7e26914b@jic23-huawei>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-BlackCat-Spam-Score: 4
-X-Spam-Status: No, score=0.4
+        Sun, 18 Apr 2021 07:17:24 -0400
+Received: from smtp-1.t-2.net (smtp-1.t-2.net [IPv6:2a01:260:1:4::1e])
+        by smtp-good-out-4.t-2.net (Postfix) with ESMTP id 4FNS834nxfz2s1h;
+        Sun, 18 Apr 2021 13:16:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-2.net;
+        s=smtp-out-2; t=1618744611;
+        bh=8+uJWmrlHmdzJqi8Isn89UVn+5VWltIhJSwmEYjRvL0=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=uk0ag2jlIaBShplKaftgx6qGFK/K9w/gp+SrQT6dAuF/ROmgiwJg7nJnugqrzDA5C
+         HuP5/VwrkL28q4hlenKXSTgqaM8uHvZFEeawWybG3QwBxNINvRJTH0Ix3o7uZqolMO
+         SSmUfB3bjaGaY+uDj3QlqCAiFRwaDYJmTOfTTNao=
+Received: from localhost (localhost [127.0.0.1])
+        by smtp-1.t-2.net (Postfix) with ESMTP id 4FNS834cVXzTqTbT;
+        Sun, 18 Apr 2021 13:16:51 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at t-2.net
+Received: from smtp-1.t-2.net ([127.0.0.1])
+        by localhost (smtp-1.t-2.net [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id wpmGWOwji7pL; Sun, 18 Apr 2021 13:16:50 +0200 (CEST)
+Received: from hp450g3 (89-212-91-172.static.t-2.net [89.212.91.172])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp-1.t-2.net (Postfix) with ESMTPS;
+        Sun, 18 Apr 2021 13:16:06 +0200 (CEST)
+Message-ID: <8043d41d48a0f4f13bd891b4c3e9ad28c76b430e.camel@t-2.net>
+Subject: Re: [PATCH] ttyprintk: Add TTY hangup callback.
+From:   Samo =?UTF-8?Q?Poga=C4=8Dnik?= <samo_pogacnik@t-2.net>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Date:   Sun, 18 Apr 2021 13:16:05 +0200
+In-Reply-To: <17e0652d-89b7-c8c0-fb53-e7566ac9add4@i-love.sakura.ne.jp>
+References: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
+         <YGx59PEq2Y015YdK@alley>
+         <3c15d32f-c568-7f6f-fa7e-af4deb9b49f9@i-love.sakura.ne.jp>
+         <d78ae8da-16e9-38d9-e274-048c54e24360@i-love.sakura.ne.jp>
+         <YG24F9Kx+tjxhh8G@kroah.com>
+         <051b550c-1cdd-6503-d2b7-0877bf0578fc@i-love.sakura.ne.jp>
+         <cd213843-45fe-2eac-4943-0906ab8d272b@i-love.sakura.ne.jp>
+         <YHQkeZVs3pmyie9e@kroah.com>
+         <32e75be6-6e9f-b33f-d585-13db220519da@i-love.sakura.ne.jp>
+         <YHQ3Zy9gRdZsu77w@kroah.com>
+         <ffcc8099-614c-f4b1-10c1-f1d4c7f72e65@i-love.sakura.ne.jp>
+         <095d5393-b212-c4d8-5d6d-666bd505cc3d@i-love.sakura.ne.jp>
+         <31a4dec3d36ed131402244693cae180816ebd4d7.camel@t-2.net>
+         <17e0652d-89b7-c8c0-fb53-e7566ac9add4@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 18 Apr 2021 12:12:44 +0100
-Jonathan Cameron <jic23@kernel.org> wrote:
+Dne 15.04.2021 (čet) ob 09:22 +0900 je Tetsuo Handa napisal(a):
+> syzbot is reporting hung task due to flood of
+> 
+>   tty_warn(tty, "%s: tty->count = 1 port count = %d\n", __func__,
+>            port->count);
+> 
+> message [1], for ioctl(TIOCVHANGUP) prevents tty_port_close() from
+> decrementing port->count due to tty_hung_up_p() == true.
+> 
+> ----------
+> #include <sys/types.h>
+> #include <sys/stat.h>
+> #include <fcntl.h>
+> #include <sys/ioctl.h>
+> #include <unistd.h>
+> 
+> int main(int argc, char *argv[])
+> {
+> 	int i;
+> 	int fd[10];
+> 
+> 	for (i = 0; i < 10; i++)
+> 		fd[i] = open("/dev/ttyprintk", O_WRONLY);
+> 	ioctl(fd[0], TIOCVHANGUP);
+> 	for (i = 0; i < 10; i++)
+> 		close(fd[i]);
+> 	close(open("/dev/ttyprintk", O_WRONLY));
+> 	return 0;
+> }
+> ----------
+> 
+> When TTY hangup happens, port->count needs to be reset via
+> "struct tty_operations"->hangup callback.
+> 
+> [1] 
+> https://syzkaller.appspot.com/bug?id=39ea6caa479af471183997376dc7e90bc7d64a6a
+> 
+> Reported-by: syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>
+> Reported-by: syzbot <syzbot+3ed715090790806d8b18@syzkaller.appspotmail.com>
+> Tested-by: syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> Fixes: 24b4b67d17c308aa ("add ttyprintk driver")
+> ---
+>  drivers/char/ttyprintk.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/drivers/char/ttyprintk.c b/drivers/char/ttyprintk.c
+> index 6a0059e508e3..93f5d11c830b 100644
+> --- a/drivers/char/ttyprintk.c
+> +++ b/drivers/char/ttyprintk.c
+> @@ -158,12 +158,23 @@ static int tpk_ioctl(struct tty_struct *tty,
+>  	return 0;
+>  }
+>  
+> +/*
+> + * TTY operations hangup function.
+> + */
+> +static void tpk_hangup(struct tty_struct *tty)
+> +{
+> +	struct ttyprintk_port *tpkp = tty->driver_data;
+> +
+> +	tty_port_hangup(&tpkp->port);
+> +}
+> +
+>  static const struct tty_operations ttyprintk_ops = {
+>  	.open = tpk_open,
+>  	.close = tpk_close,
+>  	.write = tpk_write,
+>  	.write_room = tpk_write_room,
+>  	.ioctl = tpk_ioctl,
+> +	.hangup = tpk_hangup,
+>  };
+>  
+>  static const struct tty_port_operations null_ops = { };
 
-> On Thu, 15 Apr 2021 11:52:31 -0700
-> Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com> wrote:
-> 
-> > In the function sensor_hub_set_feature(), return error when hid_set_field()
-> > fails.
-> > 
-> > Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>  
-> Series applied to the to greg branch of iio.git.  Note these won't make the
-> coming merge window, so will turn up in next sometime after rc1.
-And dropped again. Not enough caffeine today. Not in IIO obviously so instead:
+Using the supplied test code, i've tested the patch on my desktop running the
+5.4 kernel. After applying the patch, the kernel warnings like "ttyprintk:
+tty_port_close_start: tty->count = 1 port count = 11" do not appear any more,
+when the test code is run.
+I think the patch is ok.
 
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-for both patches.
+best regards, Samo
 
-> 
-> thanks,
-> 
-> Jonathan
-> 
-> > ---
-> >  drivers/hid/hid-sensor-hub.c | 13 +++++++++----
-> >  1 file changed, 9 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/hid/hid-sensor-hub.c b/drivers/hid/hid-sensor-hub.c
-> > index 3dd7d3246737..f9983145d4e7 100644
-> > --- a/drivers/hid/hid-sensor-hub.c
-> > +++ b/drivers/hid/hid-sensor-hub.c
-> > @@ -210,16 +210,21 @@ int sensor_hub_set_feature(struct hid_sensor_hub_device *hsdev, u32 report_id,
-> >  	buffer_size = buffer_size / sizeof(__s32);
-> >  	if (buffer_size) {
-> >  		for (i = 0; i < buffer_size; ++i) {
-> > -			hid_set_field(report->field[field_index], i,
-> > -				      (__force __s32)cpu_to_le32(*buf32));
-> > +			ret = hid_set_field(report->field[field_index], i,
-> > +					    (__force __s32)cpu_to_le32(*buf32));
-> > +			if (ret)
-> > +				goto done_proc;
-> > +
-> >  			++buf32;
-> >  		}
-> >  	}
-> >  	if (remaining_bytes) {
-> >  		value = 0;
-> >  		memcpy(&value, (u8 *)buf32, remaining_bytes);
-> > -		hid_set_field(report->field[field_index], i,
-> > -			      (__force __s32)cpu_to_le32(value));
-> > +		ret = hid_set_field(report->field[field_index], i,
-> > +				    (__force __s32)cpu_to_le32(value));
-> > +		if (ret)
-> > +			goto done_proc;
-> >  	}
-> >  	hid_hw_request(hsdev->hdev, report, HID_REQ_SET_REPORT);
-> >  	hid_hw_wait(hsdev->hdev);  
-> 
 
