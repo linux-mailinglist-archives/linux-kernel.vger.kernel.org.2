@@ -2,88 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 668263636E7
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 19:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13DD33636EF
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 19:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231807AbhDRRA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 13:00:28 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:53672 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229446AbhDRRA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 13:00:26 -0400
-Received: from zn.tnic (p200300ec2f25f6004f6759a73f3b605d.dip0.t-ipconnect.de [IPv6:2003:ec:2f25:f600:4f67:59a7:3f3b:605d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 937281EC026D;
-        Sun, 18 Apr 2021 18:59:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1618765196;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=NpQYZXvjLRkeD9aRobuDgVQB/agTppYn2tW+8c/M7ms=;
-        b=eAsOKh/blZgL0HJry/c7mcPJMKz/mDezp2WY0nH+xDbI3DefrxzIOMF/c0NBNGV0Q1DEBo
-        Ho3j/LVvi50M8g1qcVyzGjpi1zO3COMvgDj2JwoL3J0FVqAHjCnePhJ5/QEzURdVK2oxDD
-        nxPBSREfGszsa//6L5TY0egUAq9G+QA=
-Date:   Sun, 18 Apr 2021 18:59:53 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Liang Zhou <lullaby2005@gmail.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        hpa@zytor.com, corbet@lwn.net, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, zhoul110@chinatelecom.cn
-Subject: Re: [PATCH] docs: fix the invalid vt-d spec location
-Message-ID: <20210418165953.GA1206@zn.tnic>
-References: <1618763386-29562-1-git-send-email-zhoul110@chinatelecom.cn>
+        id S232057AbhDRRHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 13:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230028AbhDRRHO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 13:07:14 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9397C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 10:06:46 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id d6so10183840vsm.8
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 10:06:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=MzgADEAaLqCZCtsDLm4ffnQ0XJMngefK8MXJLmFTvck=;
+        b=kilZpQ8H0NZGM9LNnYmUfI6XKP9lMS/KSOyX0TcaEJyTPXwkk3z40MJbBqO/kidEsk
+         Hgy64xcs5rGMk7+FpHG1xU8y8108KFTgEnW3/O0Olb4gWaq0OLwwNil9gelIZD6H9SY/
+         dI5AQmS8gelJAnmXHFlZgyUdrO6HJEFG5xlzxx7pruocgYX21Ni1kC4I969sc5QlhN0W
+         H6YD/xb0lPdr5vb156HB2HBGyFFofq0fkjwmZUEWdLx2DCNi/eIp0+Gm0N3uzzYYOJq9
+         oKM2HHMgYy1dX4OLfm7jzsk00/lPBK9EaH0XUvC85HrSEKDvkahHr1oVHW5cdXSkbBUN
+         9pxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=MzgADEAaLqCZCtsDLm4ffnQ0XJMngefK8MXJLmFTvck=;
+        b=Y0VErpSdP+Qv7DwnMSP45eqt0+0gP3G7PHtqzkNwVoDMD1uEQJIwM2sblZshafUVnn
+         legESobZjtBuvOBPYYxqXHTUczgd9V2jmLe8qwpel7czL1Qhwg6q3Cp9rw0joEcnrz4s
+         4578sHmkYoquHlu2OwdWFihTkqZfcVhNVUQp/Nn8VTrbUMIKPuKtYe4MwjBN1zL7G/rd
+         sGgZSXyq4puFe6I+nu/y1ZTu0Cmokizx6fcIONb7VaiMBdF3+ByBDUO5dEBWTiamj8Zk
+         f/jvEczHfU5q3mIROFxZZ44MQIZ8EWz4YeCKA1vzkeL8HyLyIG2K9gNIE04wlN6hgnVI
+         ks6w==
+X-Gm-Message-State: AOAM533f6AxVOrVs1mWkP3HT4HcTQxXww98WYG6PygHBszezS/oUhwbx
+        ntNGg820ZVKWguJbCbU87oRQQCbGx3Q8+0gT6cg=
+X-Google-Smtp-Source: ABdhPJz+xyg8UrdQtvNy/0psxA+hzMZD8fkniqddeNYf1Jy5p9JgPB+Vr4cuD65eHUxsfx76KvdAR/BuAbS0pCYiZLA=
+X-Received: by 2002:a05:6102:e95:: with SMTP id l21mr12065722vst.53.1618765605248;
+ Sun, 18 Apr 2021 10:06:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1618763386-29562-1-git-send-email-zhoul110@chinatelecom.cn>
+Received: by 2002:a9f:2b05:0:0:0:0:0 with HTTP; Sun, 18 Apr 2021 10:06:44
+ -0700 (PDT)
+Reply-To: cephasagbeh1@gmail.com
+From:   Cephas Agbeh <mredwinmorris986@gmail.com>
+Date:   Sun, 18 Apr 2021 19:06:44 +0200
+Message-ID: <CAM7JAvnqEZiM=NoAKGhX5a4BqBHmykRv=0961KvapEwdw+Tf+Q@mail.gmail.com>
+Subject: Important Notification
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 18, 2021 at 09:29:46AM -0700, Liang Zhou wrote:
-> This patch fixes the invalid vt-d spec location.
+I am bringing this notice to your attention in respect of the death of
+a deceased client of mine that has the same surname with you and his
+fund valued at $19.9M to be paid to you.contact me at
+cephasagbeh1@gmail.com for more details.
 
-Avoid having "This patch" or "This commit" in the commit message. It is
-tautologically useless.
-
-Also, do
-
-$ git grep 'This patch' Documentation/process
-
-for more details.
-
-> Signed-off-by: Liang Zhou <zhoul110@chinatelecom.cn>
-> ---
->  Documentation/x86/intel-iommu.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/x86/intel-iommu.rst b/Documentation/x86/intel-iommu.rst
-> index 099f13d..e95ee34 100644
-> --- a/Documentation/x86/intel-iommu.rst
-> +++ b/Documentation/x86/intel-iommu.rst
-> @@ -4,7 +4,7 @@ Linux IOMMU Support
->  
->  The architecture spec can be obtained from the below location.
->  
-> -http://www.intel.com/content/dam/www/public/us/en/documents/product-specifications/vt-directed-io-spec.pdf
-> +https://software.intel.com/content/dam/develop/external/us/en/documents-tps/vt-directed-io-spec.pdf
-
-Those links are never stable.
-
-Please open a bugzilla at bugzilla.kernel.org, upload that document
-there, like this, for example:
-
-https://bugzilla.kernel.org/show_bug.cgi?id=206537
-
-and then add the *bugzilla* link to intel-iommu.rst so that it doesn't
-get invalid again.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Yours Sincerely,
+Cephas Agbeh,
+Attorney At Law.
