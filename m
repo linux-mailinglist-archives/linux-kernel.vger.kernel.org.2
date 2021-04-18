@@ -2,73 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B27ED3633DC
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 07:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 443F33633DF
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 07:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbhDRFxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 01:53:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230146AbhDRFxW (ORCPT
+        id S236446AbhDRFzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 01:55:00 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:40739 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231397AbhDRFy6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 01:53:22 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E030C06174A;
-        Sat, 17 Apr 2021 22:52:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=/rCL1SYcH1QoHtrqqF4WkXopfevtsa/urBlN4iQBDWw=; b=Aby8ZKgVQPY5JBenOCUicNdTbO
-        jRAjdORthOqnDIn7JJP4N48itiH3fDi74K6ioiwPj3ppt1z2nEnJD4JFz+F/z4mpcOrU5LdNgHGMw
-        VOsnGg+h1dHyODaMcWDGper5V9viK08YZMOoiAEpbuYasSr+c8XSHIxT1mWDAl3gwOJ+wOqezcROo
-        ncBCeJyQO5MbC2i1vzEXA0SuW1ekUhJQ/Y0XbCU57lTYuOMmfxOs9L1LmPCtQlI8yedWzFFbH/Opy
-        Mp8+wmYMD3OF1f4j2u9I6tO1B6XI9WeC++2Jqv0Y6ltf8MlbmydawWQ5XAPWY961hvuA1xXu/9hUQ
-        V8Nlrsyg==;
-Received: from [2601:1c0:6280:3f0::df68] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lY0LR-00C6rN-LM; Sun, 18 Apr 2021 05:51:50 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Subject: [PATCH 2/2] kconfig: highlight xconfig 'comment' lines with '***'
-Date:   Sat, 17 Apr 2021 22:51:23 -0700
-Message-Id: <20210418055123.14085-2-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210418055123.14085-1-rdunlap@infradead.org>
-References: <20210418055123.14085-1-rdunlap@infradead.org>
+        Sun, 18 Apr 2021 01:54:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618725271; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=GUuUGywy2mH+60y9PKNoI/P0xG2sd/9arcB7KOwkpPg=;
+ b=PO+taF7L7cCf5Zz19SoPOk4FdQpR7iV0IzxqWQjEeKzpjGNXLP4sX68G1zrnRT1GnqMFHHDF
+ t+nOlHqNPj3VOAcvNu2Rbjgd1UmgaGJtuVBWVpERsh+v2hhNGGbUqbVkn5HsIt/sOp3q23Rq
+ 2M4G3/zEO2C/L0Z6qWapxk5JUVg=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 607bc9962cbba88980ac24b1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 18 Apr 2021 05:54:30
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D5B49C4323A; Sun, 18 Apr 2021 05:54:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 571D6C433D3;
+        Sun, 18 Apr 2021 05:54:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 571D6C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] marvell: libertas_tf: fix error return code of
+ if_usb_prog_firmware()
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210305033115.6015-1-baijiaju1990@gmail.com>
+References: <20210305033115.6015-1-baijiaju1990@gmail.com>
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, lee.jones@linaro.org,
+        colin.king@canonical.com, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jia-Ju Bai <baijiaju1990@gmail.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210418055429.D5B49C4323A@smtp.codeaurora.org>
+Date:   Sun, 18 Apr 2021 05:54:29 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark Kconfig "comment" lines with "*** <commentstring> ***"
-so that it is clear that these lines are comments and not some
-kconfig item that cannot be modified.
+Jia-Ju Bai <baijiaju1990@gmail.com> wrote:
 
-This is helpful in some menus to be able to provide a menu
-"sub-heading" for groups of similar config items.
+> When check_fwfile_format() fails, no error return code of
+> if_usb_prog_firmware() is assigned.
+> To fix this bug, ret is assigned with -EINVAL as error return code.
+> 
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 
-This also makes the comments be presented in a way that is
-similar to menuconfig and nconfig.
+Someone needs to review this.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org
----
- scripts/kconfig/qconf.cc |    1 +
- 1 file changed, 1 insertion(+)
+Patch set to Changes Requested.
 
---- linux-next-20210416.orig/scripts/kconfig/qconf.cc
-+++ linux-next-20210416/scripts/kconfig/qconf.cc
-@@ -122,6 +122,7 @@ void ConfigItem::updateMenu(void)
- 		goto set_prompt;
- 	case P_COMMENT:
- 		setIcon(promptColIdx, QIcon());
-+		prompt = "*** " + prompt + " ***";
- 		goto set_prompt;
- 	default:
- 		;
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210305033115.6015-1-baijiaju1990@gmail.com/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
