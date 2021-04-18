@@ -2,99 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF6D3636D2
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 18:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 668263636E7
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 19:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231916AbhDRQsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 12:48:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbhDRQsv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 12:48:51 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67820C06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 09:48:22 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 31so7122465pgn.13
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 09:48:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=jAaKUfUcTBzN1eaNKA5kBWKVSugP5XYulKpJt/IIaLw=;
-        b=a4VUMesj+ViRkIufmRfiVXZJ1iH/1y5wMI8p2r0h3dGgMtlbMlo7//DMGEqc8EdfjM
-         zlgD0wxQ1MsskRWXAuUlfPHcT/DXf0qbOgbalqPE28IGHbH9+bgiRse6FiW2ZUyvsRDX
-         5deZqtnrAZVQQXuzCfTPvQZcdkufY8kw/ATngw5v9404GEsf91qC2JL5jORmVfsRHmJK
-         k7H62jdm/+uZtheuLkE8gJRqaPiRq1P6/eS0ZO7H/8I4DZ0C+61lDppbP1VMwLSqN3l4
-         JqeMs2CWtBjtQIZ9cgULOJfRI5i/SWNQKQRFPjqAE6LS9iK5wRP3ZLuUwPoR6TwW44zz
-         tDlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=jAaKUfUcTBzN1eaNKA5kBWKVSugP5XYulKpJt/IIaLw=;
-        b=AFSNdr9pLbPQeJ87hUGV1b9N10vARoMlq0kVWnYSuQRg92GfNUl5sEcHJ/DPWF4BmS
-         GhP82YRDYEgIuz7FH0QLxuvbRpLzYw91uA/KUHxG0gAW3HaEsCLD/DYWNh3NxHAUVQQU
-         FP4/5HDEOJECfeyXHRcpKhN6//w50jfUy3zoFedX1PPfLdwbfy50oYm0bANrL9GsMMZR
-         GwNfYkNOkUWAkZsN3/RmcESmb7bGfwzqzbo8jYWF+r8elNAu4UPfDTWRHxpjLMZNmhEu
-         tEts8HBBU2FcAvb0MYaaL1+hfi1qU+NpAM7+bKC/W0UUyF9TlH5A5JWW9KQg8f4p5gXX
-         hvyA==
-X-Gm-Message-State: AOAM5306GLTVrQ6rkmC7YXoiozYaXtKespekM/gNW/d2trduUcwCbhZR
-        nc878yXtCo4ctRzTEy4GqnY=
-X-Google-Smtp-Source: ABdhPJwT6b8Z5YM57KwecCttty/jNOlzjGmIpvYV4XVZuoyF/ASzfgfDLDFf3OYx+ylAFz0UryylnQ==
-X-Received: by 2002:a62:3892:0:b029:250:4fac:7e30 with SMTP id f140-20020a6238920000b02902504fac7e30mr16436281pfa.81.1618764501691;
-        Sun, 18 Apr 2021 09:48:21 -0700 (PDT)
-Received: from user ([2001:4490:4409:d07c:b4ac:39e7:e05c:f39b])
-        by smtp.gmail.com with ESMTPSA id n52sm10354260pfv.13.2021.04.18.09.48.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Apr 2021 09:48:21 -0700 (PDT)
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-X-Google-Original-From: Saurav Girepunje <saurav.girepunje@google.com>
-Date:   Sun, 18 Apr 2021 22:18:13 +0530
-To:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
-        john.oldman@polehill.co.uk, ross.schm.dev@gmail.com,
-        marcocesati@gmail.com, insafonov@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH] staging: rtl8723bs: os_dep: remove unneeded variable ret
-Message-ID: <20210418164813.GA57451@user>
+        id S231807AbhDRRA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 13:00:28 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:53672 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229446AbhDRRA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 13:00:26 -0400
+Received: from zn.tnic (p200300ec2f25f6004f6759a73f3b605d.dip0.t-ipconnect.de [IPv6:2003:ec:2f25:f600:4f67:59a7:3f3b:605d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 937281EC026D;
+        Sun, 18 Apr 2021 18:59:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1618765196;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=NpQYZXvjLRkeD9aRobuDgVQB/agTppYn2tW+8c/M7ms=;
+        b=eAsOKh/blZgL0HJry/c7mcPJMKz/mDezp2WY0nH+xDbI3DefrxzIOMF/c0NBNGV0Q1DEBo
+        Ho3j/LVvi50M8g1qcVyzGjpi1zO3COMvgDj2JwoL3J0FVqAHjCnePhJ5/QEzURdVK2oxDD
+        nxPBSREfGszsa//6L5TY0egUAq9G+QA=
+Date:   Sun, 18 Apr 2021 18:59:53 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Liang Zhou <lullaby2005@gmail.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        hpa@zytor.com, corbet@lwn.net, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, zhoul110@chinatelecom.cn
+Subject: Re: [PATCH] docs: fix the invalid vt-d spec location
+Message-ID: <20210418165953.GA1206@zn.tnic>
+References: <1618763386-29562-1-git-send-email-zhoul110@chinatelecom.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+In-Reply-To: <1618763386-29562-1-git-send-email-zhoul110@chinatelecom.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
+On Sun, Apr 18, 2021 at 09:29:46AM -0700, Liang Zhou wrote:
+> This patch fixes the invalid vt-d spec location.
 
-drivers/staging/rtl8723bs/os_dep/os_intfs.c:1156:5-8:
-Unneeded variable: "ret". Return "0" on line 1199
+Avoid having "This patch" or "This commit" in the commit message. It is
+tautologically useless.
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@google.com>
----
- drivers/staging/rtl8723bs/os_dep/os_intfs.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Also, do
 
-diff --git a/drivers/staging/rtl8723bs/os_dep/os_intfs.c b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-index 1f34cb2e367c..920ec25c9a4f 100644
---- a/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-+++ b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-@@ -1153,7 +1153,6 @@ int rtw_suspend_common(struct adapter *padapter)
- 	struct pwrctrl_priv *pwrpriv = dvobj_to_pwrctl(psdpriv);
- 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 
--	int ret = 0;
- 	unsigned long start_time = jiffies;
- 
- 	DBG_871X_LEVEL(_drv_always_, " suspend start\n");
-@@ -1196,7 +1195,7 @@ int rtw_suspend_common(struct adapter *padapter)
- 
- exit:
- 
--	return ret;
-+	return 0;
- }
- 
- static int rtw_resume_process_normal(struct adapter *padapter)
+$ git grep 'This patch' Documentation/process
+
+for more details.
+
+> Signed-off-by: Liang Zhou <zhoul110@chinatelecom.cn>
+> ---
+>  Documentation/x86/intel-iommu.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/x86/intel-iommu.rst b/Documentation/x86/intel-iommu.rst
+> index 099f13d..e95ee34 100644
+> --- a/Documentation/x86/intel-iommu.rst
+> +++ b/Documentation/x86/intel-iommu.rst
+> @@ -4,7 +4,7 @@ Linux IOMMU Support
+>  
+>  The architecture spec can be obtained from the below location.
+>  
+> -http://www.intel.com/content/dam/www/public/us/en/documents/product-specifications/vt-directed-io-spec.pdf
+> +https://software.intel.com/content/dam/develop/external/us/en/documents-tps/vt-directed-io-spec.pdf
+
+Those links are never stable.
+
+Please open a bugzilla at bugzilla.kernel.org, upload that document
+there, like this, for example:
+
+https://bugzilla.kernel.org/show_bug.cgi?id=206537
+
+and then add the *bugzilla* link to intel-iommu.rst so that it doesn't
+get invalid again.
+
+Thx.
+
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
