@@ -2,88 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57EF1363754
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 21:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8D836375C
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 21:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232321AbhDRTaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 15:30:46 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:37793 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230028AbhDRTal (ORCPT
+        id S232645AbhDRTki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 15:40:38 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47632 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230028AbhDRTkg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 15:30:41 -0400
-Received: by mail-io1-f71.google.com with SMTP id g15-20020a056602072fb02903eeab28e3aeso637868iox.4
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 12:30:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=o4KQiklVcBx9Xsuj2l4QvFT11+qMXN3OVLiwWc6tv00=;
-        b=WrkpGU3nv5MS0uo4rKVApeTaMKCIPRCSOLwEf1X9Bl6nQo1MCPEW2YjpQxEpgAHWzU
-         Xz6uV9eWjQts8Ss1MheIqft95YckZlokWynpBTu5/Mf3joxeDiccASOSIBgtUK2m5hss
-         pAmawNIGRoCP4Oxtfs4cTWsSVLgKJBag/lavPmKRTkB3Cmv8A41IEYNZLcJ3cHJgjTwl
-         ZRdn3p/qYh4atQhXV4RuHxg6HO/xTik1gyEbJlUCRRo3w7hBVRwK/A7nY+p9pt8Q/KHa
-         OMB1b8ZyL6hxBaz26BWZiqOI9ETnkomZQ8KSMc9f4kU6dN6TBLR7RgiQyaCQFMPnLuA1
-         Rx1w==
-X-Gm-Message-State: AOAM531yBe9CIXD3tfY9QzlmMmitAwjRtEH1rod164jbET+Sc1YFvy6w
-        j66sD5JqNmLsQ5LzOV2DajuqcL1Xgov3ZR3Fix64zDvn+WtC
-X-Google-Smtp-Source: ABdhPJwMzHZdP4U+GhKlzG5cfrk3jeLXo4gFMq/u/1fZUy1oRz6DVYk499bN0SZZFZxp9u+/WG3tBkgJkBjGF67jt+g/n9KfqhP0
+        Sun, 18 Apr 2021 15:40:36 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 13IJdeHc013456
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 18 Apr 2021 15:39:40 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id D9D5D15C3B0D; Sun, 18 Apr 2021 15:39:39 -0400 (EDT)
+Date:   Sun, 18 Apr 2021 15:39:39 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Nico Pache <npache@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, brendanhiggins@google.com,
+        gregkh@linuxfoundation.org, linux-ext4@vger.kernel.org,
+        netdev@vger.kernel.org, rafael@kernel.org,
+        linux-m68k@vger.kernel.org, geert@linux-m68k.org,
+        mathew.j.martineau@linux.intel.com, davem@davemloft.net,
+        broonie@kernel.org, davidgow@google.com, skhan@linuxfoundation.org,
+        mptcp@lists.linux.dev
+Subject: Re: [PATCH v2 0/6] kunit: Fix formatting of KUNIT tests to meet the
+ standard
+Message-ID: <YHyK+5xJEMcDDhVy@mit.edu>
+References: <cover.1618388989.git.npache@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:5819:: with SMTP id m25mr11499054iob.99.1618774212883;
- Sun, 18 Apr 2021 12:30:12 -0700 (PDT)
-Date:   Sun, 18 Apr 2021 12:30:12 -0700
-In-Reply-To: <0000000000006e9e0705bd91f762@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ee3bbf05c0443da6@google.com>
-Subject: Re: [syzbot] WARNING in __percpu_ref_exit (2)
-From:   syzbot <syzbot+d6218cb2fae0b2411e9d@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, hdanton@sina.com,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ming.lei@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1618388989.git.npache@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Wed, Apr 14, 2021 at 04:58:03AM -0400, Nico Pache wrote:
+> There are few instances of KUNIT tests that are not properly defined.
+> This commit focuses on correcting these issues to match the standard
+> defined in the Documentation.
 
-HEAD commit:    c98ff1d0 Merge tag 'scsi-fixes' of git://git.kernel.org/pu..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=163d7229d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1c70e618af4c2e92
-dashboard link: https://syzkaller.appspot.com/bug?extid=d6218cb2fae0b2411e9d
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=145cb2b6d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=157b72b1d00000
+The word "standard" seems to be over-stating things.  The
+documentation currently states, "they _usually_ have config options
+ending in ``_KUNIT_TEST'' (emphasis mine).  I can imagine that there
+might be some useful things we can do from a tooling perspective if we
+do standardize things, but if you really want to make it a "standard",
+we should first update the manpage to say so, and explain why (e.g.,
+so that we can easily extract out all of the kunit test modules, and
+perhaps paint a vision of what tools might be able to do with such a
+standard).
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d6218cb2fae0b2411e9d@syzkaller.appspotmail.com
+Alternatively, the word "standard" could perhaps be changed to
+"convention", which I think more accurately defines how things work at
+the moment.
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 169 at lib/percpu-refcount.c:113 __percpu_ref_exit+0x98/0x100 lib/percpu-refcount.c:113
-Modules linked in:
-CPU: 1 PID: 169 Comm: kworker/u4:3 Not tainted 5.12.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events_unbound io_ring_exit_work
-RIP: 0010:__percpu_ref_exit+0x98/0x100 lib/percpu-refcount.c:113
-Code: fd 49 8d 7c 24 10 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 61 49 83 7c 24 10 00 74 07 e8 a8 4a ab fd <0f> 0b e8 a1 4a ab fd 48 89 ef e8 69 f0 d9 fd 48 89 da 48 b8 00 00
-RSP: 0018:ffffc90001077b48 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88802d5ca000 RCX: 0000000000000000
-RDX: ffff88801217a1c0 RSI: ffffffff83c7db28 RDI: ffff88801d58f010
-RBP: 0000607f4607bcb8 R08: 0000000000000000 R09: ffffffff8fa9f977
-R10: ffffffff83c7dac8 R11: 0000000000000009 R12: ffff88801d58f000
-R13: 000000010002865e R14: ffff88801d58f000 R15: ffff88802d5ca8b0
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000044 CR3: 0000000015c02000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- percpu_ref_exit+0x3b/0x140 lib/percpu-refcount.c:134
- io_ring_ctx_free fs/io_uring.c:8483 [inline]
- io_ring_exit_work+0xa64/0x12d0 fs/io_uring.c:8620
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> Nico Pache (6):
+>   kunit: ASoC: topology: adhear to KUNIT formatting standard
+>   kunit: software node: adhear to KUNIT formatting standard
+>   kunit: ext4: adhear to KUNIT formatting standard
+>   kunit: lib: adhear to KUNIT formatting standard
+>   kunit: mptcp: adhear to KUNIT formatting standard
+>   m68k: update configs to match the proper KUNIT syntax
 
+Also, "adhear" is not the correct spelling; the correct spelling is
+"adhere" (from the Latin verb "adhaerere", "to stick", as in "to hold
+fast or stick by as if by gluing", which then became "to bind oneself
+to the observance of a set of rules or standards or practices").
+
+       		       	      	       		 - Ted
