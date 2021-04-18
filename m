@@ -2,66 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13DD33636EF
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 19:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 343373636F4
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 19:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232057AbhDRRHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 13:07:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50052 "EHLO
+        id S231728AbhDRRPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 13:15:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230028AbhDRRHO (ORCPT
+        with ESMTP id S229783AbhDRRPq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 13:07:14 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9397C06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 10:06:46 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id d6so10183840vsm.8
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 10:06:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=MzgADEAaLqCZCtsDLm4ffnQ0XJMngefK8MXJLmFTvck=;
-        b=kilZpQ8H0NZGM9LNnYmUfI6XKP9lMS/KSOyX0TcaEJyTPXwkk3z40MJbBqO/kidEsk
-         Hgy64xcs5rGMk7+FpHG1xU8y8108KFTgEnW3/O0Olb4gWaq0OLwwNil9gelIZD6H9SY/
-         dI5AQmS8gelJAnmXHFlZgyUdrO6HJEFG5xlzxx7pruocgYX21Ni1kC4I969sc5QlhN0W
-         H6YD/xb0lPdr5vb156HB2HBGyFFofq0fkjwmZUEWdLx2DCNi/eIp0+Gm0N3uzzYYOJq9
-         oKM2HHMgYy1dX4OLfm7jzsk00/lPBK9EaH0XUvC85HrSEKDvkahHr1oVHW5cdXSkbBUN
-         9pxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=MzgADEAaLqCZCtsDLm4ffnQ0XJMngefK8MXJLmFTvck=;
-        b=Y0VErpSdP+Qv7DwnMSP45eqt0+0gP3G7PHtqzkNwVoDMD1uEQJIwM2sblZshafUVnn
-         legESobZjtBuvOBPYYxqXHTUczgd9V2jmLe8qwpel7czL1Qhwg6q3Cp9rw0joEcnrz4s
-         4578sHmkYoquHlu2OwdWFihTkqZfcVhNVUQp/Nn8VTrbUMIKPuKtYe4MwjBN1zL7G/rd
-         sGgZSXyq4puFe6I+nu/y1ZTu0Cmokizx6fcIONb7VaiMBdF3+ByBDUO5dEBWTiamj8Zk
-         f/jvEczHfU5q3mIROFxZZ44MQIZ8EWz4YeCKA1vzkeL8HyLyIG2K9gNIE04wlN6hgnVI
-         ks6w==
-X-Gm-Message-State: AOAM533f6AxVOrVs1mWkP3HT4HcTQxXww98WYG6PygHBszezS/oUhwbx
-        ntNGg820ZVKWguJbCbU87oRQQCbGx3Q8+0gT6cg=
-X-Google-Smtp-Source: ABdhPJz+xyg8UrdQtvNy/0psxA+hzMZD8fkniqddeNYf1Jy5p9JgPB+Vr4cuD65eHUxsfx76KvdAR/BuAbS0pCYiZLA=
-X-Received: by 2002:a05:6102:e95:: with SMTP id l21mr12065722vst.53.1618765605248;
- Sun, 18 Apr 2021 10:06:45 -0700 (PDT)
+        Sun, 18 Apr 2021 13:15:46 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526A3C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 10:15:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=aY80PP37B2z3w6kpNc6Y6xNgTVaXV4qginCwMz3VuA8=; b=X46WcepCJJWF/04qCy4h16rwMj
+        ZLmwlrSMUCZmYmj4T4VyiMGRKSn7FJv7iHYd16u+f1u6AywRyDzvlnz3esrcZNMJrFApRQu4V6iyD
+        P4x8UDxPQjxDv3PGZwLXgiyTRXhfJYZgyVvHO57S3bKQ4DwyjlrArFHu8agA9e0Oo+5yfnqTrKlXM
+        LmlHbNeGxlTQm30VTt6HbPjnM8bRQBJjG+PwzeWzIPWc2aXVhS76YYO0+kKZ6Aw7xKsIBwb2Z7EFz
+        luDatl0OaFuZCsU7K4PToVDY18q9+7///lSHb0jQLlXRA+Zkw++pAJNk3MwGCxWL9w2BhGrr3nP8B
+        luuEQEIA==;
+Received: from [2601:1c0:6280:3f0::df68]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lYB0m-008Lfg-D2; Sun, 18 Apr 2021 17:15:08 +0000
+Subject: Re: mmu.c:undefined reference to `patch__hash_page_A0'
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+References: <202102271820.WlZCxtzY-lkp@intel.com>
+ <06227600-c5c5-3da7-a495-ae0b0849b62d@infradead.org>
+ <ab9d4f9e-add6-900b-9fa7-83d5f7d1108b@csgroup.eu>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <0a301d17-136c-df65-17cc-3c9ddbe06de8@infradead.org>
+Date:   Sun, 18 Apr 2021 10:15:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Received: by 2002:a9f:2b05:0:0:0:0:0 with HTTP; Sun, 18 Apr 2021 10:06:44
- -0700 (PDT)
-Reply-To: cephasagbeh1@gmail.com
-From:   Cephas Agbeh <mredwinmorris986@gmail.com>
-Date:   Sun, 18 Apr 2021 19:06:44 +0200
-Message-ID: <CAM7JAvnqEZiM=NoAKGhX5a4BqBHmykRv=0961KvapEwdw+Tf+Q@mail.gmail.com>
-Subject: Important Notification
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <ab9d4f9e-add6-900b-9fa7-83d5f7d1108b@csgroup.eu>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am bringing this notice to your attention in respect of the death of
-a deceased client of mine that has the same surname with you and his
-fund valued at $19.9M to be paid to you.contact me at
-cephasagbeh1@gmail.com for more details.
+On 4/18/21 3:43 AM, Christophe Leroy wrote:
+> 
+> 
+> Le 18/04/2021 à 02:02, Randy Dunlap a écrit :
+>> HI--
+>>
+>> I no longer see this build error.
+> 
+> Fixed by https://github.com/torvalds/linux/commit/acdad8fb4a1574323db88f98a38b630691574e16
+> 
+>> However:
+>>
+>> On 2/27/21 2:24 AM, kernel test robot wrote:
+>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>>> head:   3fb6d0e00efc958d01c2f109c8453033a2d96796
+>>> commit: 259149cf7c3c6195e6199e045ca988c31d081cab powerpc/32s: Only build hash code when CONFIG_PPC_BOOK3S_604 is selected
+>>> date:   4 weeks ago
+>>> config: powerpc64-randconfig-r013-20210227 (attached as .config)
+>>
+>> ktr/lkp, this is a PPC32 .config file that is attached, not PPC64.
+>>
+>> Also:
+>>
+>>> compiler: powerpc-linux-gcc (GCC) 9.3.0
+> 
+> ...
+> 
+>>
+>> I do see this build error:
+>>
+>> powerpc-linux-ld: arch/powerpc/boot/wrapper.a(decompress.o): in function `partial_decompress':
+>> decompress.c:(.text+0x1f0): undefined reference to `__decompress'
+>>
+>> when either
+>> CONFIG_KERNEL_LZO=y
+>> or
+>> CONFIG_KERNEL_LZMA=y
+>>
+>> but the build succeeds when either
+>> CONFIG_KERNEL_GZIP=y
+>> or
+>> CONFIG_KERNEL_XZ=y
+>>
+>> I guess that is due to arch/powerpc/boot/decompress.c doing this:
+>>
+>> #ifdef CONFIG_KERNEL_GZIP
+>> #    include "decompress_inflate.c"
+>> #endif
+>>
+>> #ifdef CONFIG_KERNEL_XZ
+>> #    include "xz_config.h"
+>> #    include "../../../lib/decompress_unxz.c"
+>> #endif
+>>
+>>
+>> It would be nice to require one of KERNEL_GZIP or KERNEL_XZ
+>> to be set/enabled (maybe unless a uImage is being built?).
+> 
+> 
+> Can you test by https://patchwork.ozlabs.org/project/linuxppc-dev/patch/a74fce4dfc9fa32da6ce3470bbedcecf795de1ec.1591189069.git.christophe.leroy@csgroup.eu/ ?
 
-Yours Sincerely,
-Cephas Agbeh,
-Attorney At Law.
+Hi Christophe,
+
+I get build errors for both LZO and LZMA:
+
+for CONFIG_KERNEL_LZO=y:
+
+In file included from ../lib/decompress_unlzo.c:26:
+../include/linux/lzo.h:24:48: error: unknown type name 'size_t'
+   24 | int lzo1x_1_compress(const unsigned char *src, size_t src_len,
+      |                                                ^~~~~~
+../include/linux/lzo.h:1:1: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
+  +++ |+#include <stddef.h>
+    1 | /* SPDX-License-Identifier: GPL-2.0 */
+../include/linux/lzo.h:25:28: error: unknown type name 'size_t'
+   25 |        unsigned char *dst, size_t *dst_len, void *wrkmem);
+      |                            ^~~~~~
+../include/linux/lzo.h:25:28: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
+../include/linux/lzo.h:28:51: error: unknown type name 'size_t'
+   28 | int lzorle1x_1_compress(const unsigned char *src, size_t src_len,
+      |                                                   ^~~~~~
+../include/linux/lzo.h:28:51: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
+../include/linux/lzo.h:29:28: error: unknown type name 'size_t'
+   29 |        unsigned char *dst, size_t *dst_len, void *wrkmem);
+      |                            ^~~~~~
+../include/linux/lzo.h:29:28: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
+../include/linux/lzo.h:32:53: error: unknown type name 'size_t'
+   32 | int lzo1x_decompress_safe(const unsigned char *src, size_t src_len,
+      |                                                     ^~~~~~
+../include/linux/lzo.h:32:53: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
+../include/linux/lzo.h:33:26: error: unknown type name 'size_t'
+   33 |      unsigned char *dst, size_t *dst_len);
+      |                          ^~~~~~
+../include/linux/lzo.h:33:26: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
+  CC      drivers/char/tpm/tpm2-space.o
+  CC [M]  drivers/regulator/da9121-regulator.o
+  AR      drivers/iommu/built-in.a
+../lib/decompress_unlzo.c: In function 'unlzo':
+../lib/decompress_unlzo.c:237:8: error: implicit declaration of function 'lzo1x_decompress_safe' [-Werror=implicit-function-declaration]
+  237 |    r = lzo1x_decompress_safe((u8 *) in_buf, src_len,
+      |        ^~~~~~~~~~~~~~~~~~~~~
+
+In file included from ../arch/powerpc/boot/ops.h:15,
+                 from ../arch/powerpc/boot/decompress.c:12:
+../arch/powerpc/boot/types.h:50:15: error: expected identifier before numeric constant
+   50 | #define false 0
+      |               ^
+../include/linux/stddef.h:11:2: note: in expansion of macro 'false'
+   11 |  false = 0,
+      |  ^~~~~
+In file included from ../include/linux/kasan-checks.h:5,
+                 from ../include/asm-generic/rwonce.h:26,
+                 from ./arch/powerpc/include/generated/asm/rwonce.h:1,
+                 from ../include/linux/compiler.h:248,
+                 from ../arch/powerpc/boot/../../../lib/decompress_unlzo.c:32,
+                 from ../arch/powerpc/boot/decompress.c:43:
+../include/linux/types.h:30:17: error: conflicting types for 'bool'
+   30 | typedef _Bool   bool;
+      |                 ^~~~
+In file included from ../arch/powerpc/boot/ops.h:15,
+                 from ../arch/powerpc/boot/decompress.c:12:
+../arch/powerpc/boot/types.h:43:13: note: previous declaration of 'bool' was here
+   43 | typedef int bool;
+      |             ^~~~
+In file included from ./arch/powerpc/include/generated/asm/rwonce.h:1,
+                 from ../include/linux/compiler.h:248,
+                 from ../arch/powerpc/boot/../../../lib/decompress_unlzo.c:32,
+                 from ../arch/powerpc/boot/decompress.c:43:
+../include/asm-generic/rwonce.h:64:31: error: expected ';' before 'unsigned'
+   64 | static __no_sanitize_or_inline
+      |                               ^
+      |                               ;
+   65 | unsigned long __read_once_word_nocheck(const void *addr)
+      | ~~~~~~~~                       
+../include/asm-generic/rwonce.h:82:28: error: expected ';' before 'unsigned'
+   82 | static __no_kasan_or_inline
+      |                            ^
+      |                            ;
+   83 | unsigned long read_word_at_a_time(const void *addr)
+      | ~~~~~~~~                    
+In file included from ../arch/powerpc/boot/decompress.c:43:
+../arch/powerpc/boot/../../../lib/decompress_unlzo.c: In function 'parse_header':
+../arch/powerpc/boot/../../../lib/decompress_unlzo.c:48:5: warning: variable 'level' set but not used [-Wunused-but-set-variable]
+   48 |  u8 level = 0;
+      |     ^~~~~
+
+
+and for CONFIG_KERNEL_LZMA=y:
+(this looks odd to me since it says "unlzo", but I repeated it
+after a 'make clean' and got the same errors.)
+
+In file included from ../lib/decompress_unlzo.c:26:
+../include/linux/lzo.h:24:48: error: unknown type name 'size_t'
+   24 | int lzo1x_1_compress(const unsigned char *src, size_t src_len,
+      |                                                ^~~~~~
+../include/linux/lzo.h:1:1: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
+  +++ |+#include <stddef.h>
+    1 | /* SPDX-License-Identifier: GPL-2.0 */
+../include/linux/lzo.h:25:28: error: unknown type name 'size_t'
+   25 |        unsigned char *dst, size_t *dst_len, void *wrkmem);
+      |                            ^~~~~~
+../include/linux/lzo.h:25:28: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
+../include/linux/lzo.h:28:51: error: unknown type name 'size_t'
+   28 | int lzorle1x_1_compress(const unsigned char *src, size_t src_len,
+      |                                                   ^~~~~~
+../include/linux/lzo.h:28:51: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
+../include/linux/lzo.h:29:28: error: unknown type name 'size_t'
+   29 |        unsigned char *dst, size_t *dst_len, void *wrkmem);
+      |                            ^~~~~~
+../include/linux/lzo.h:29:28: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
+../include/linux/lzo.h:32:53: error: unknown type name 'size_t'
+   32 | int lzo1x_decompress_safe(const unsigned char *src, size_t src_len,
+      |                                                     ^~~~~~
+../include/linux/lzo.h:32:53: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
+../include/linux/lzo.h:33:26: error: unknown type name 'size_t'
+   33 |      unsigned char *dst, size_t *dst_len);
+      |                          ^~~~~~
+../include/linux/lzo.h:33:26: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
+../lib/decompress_unlzo.c: In function 'unlzo':
+../lib/decompress_unlzo.c:237:8: error: implicit declaration of function 'lzo1x_decompress_safe' [-Werror=implicit-function-declaration]
+  237 |    r = lzo1x_decompress_safe((u8 *) in_buf, src_len,
+      |        ^~~~~~~~~~~~~~~~~~~~~
+
+
+-- 
+~Randy
+
