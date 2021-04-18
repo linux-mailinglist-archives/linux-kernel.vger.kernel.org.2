@@ -2,92 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD844363691
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 18:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C97363694
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 18:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231935AbhDRQRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 12:17:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231368AbhDRQRh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 12:17:37 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8FC0C06174A;
-        Sun, 18 Apr 2021 09:17:09 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618762627;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ei/Yss7OFKyCWpzQUujDkbmPdYqeOzmRTpmtbyzHOFs=;
-        b=rjgvKYr9h78j1MuB5D/+W6idRHFi77UwZew2dozCKWJV2YAydjXGvLWoCYijq05UxWD19D
-        q8xszVkvx1JZAE6F1EAvVkoBkq8m6aMft64Mu/4gG2lVCi/dsNKINs20W/RnFgPs+g+YxP
-        e7tImWSrNQfXo4BNdY6fH5q8J5/CzbyhmfcAJOckU+can1rXgB4gGKKsRutqAiAzFwC52l
-        wLXeIvKZa475luTNjDoAyD7RQj4+b4J51A3rCvGpd8MSA/jOCvhRFjqz8V3Q2u7j1GjLI8
-        zzb3ReAs3zoCfBgnKZA5g+mZtKRwFKGZvvMRY3Fxp4CO4NCEM3u/E+eajoM2YA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618762627;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ei/Yss7OFKyCWpzQUujDkbmPdYqeOzmRTpmtbyzHOFs=;
-        b=ZHc1LZMdaSerWD1GG9gYwNALAQtKzJ47jKGIhNNW3iT/6ExK7HuXCCLi5M4MDn6MukLt7w
-        K4QBzPu1Ykvgy0Dg==
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        David Laight <David.Laight@aculab.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH 05/15] x86: Implement function_nocfi
-In-Reply-To: <CALCETrVEhL9N_DEM8=rbAzp8Nb2pDitRCZGRAVcE288MBrJ4ug@mail.gmail.com>
-References: <20210416203844.3803177-1-samitolvanen@google.com> <20210416203844.3803177-6-samitolvanen@google.com> <20210416211855.GD22348@zn.tnic> <CABCJKud8TvzhcjHCpsrtCJ4B50ZUfaL48F42EhZ2zWKLteAc0Q@mail.gmail.com> <20210416220251.GE22348@zn.tnic> <CALCETrVTtKqD6fonUmT_qr0HJ0X9TWzLGq-wpm+A7XKyjn3W5g@mail.gmail.com> <202104161519.1D37B6D26@keescook> <CALCETrV6WYx7dt56aCuUYsrrFya==zYR+p-YZnaATptnaO7w2A@mail.gmail.com> <202104161601.CFB2CCF84F@keescook> <CALCETrWUS52tzLNiWL5sAVVB5-ko1EW73-TEiO=eZ5jF_QyGPQ@mail.gmail.com> <877dl0sc2m.ffs@nanos.tec.linutronix.de> <CALCETrVEhL9N_DEM8=rbAzp8Nb2pDitRCZGRAVcE288MBrJ4ug@mail.gmail.com>
-Date:   Sun, 18 Apr 2021 18:17:06 +0200
-Message-ID: <871rb7sh31.ffs@nanos.tec.linutronix.de>
+        id S231623AbhDRQVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 12:21:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229986AbhDRQVS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 12:21:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B911610EA;
+        Sun, 18 Apr 2021 16:20:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618762850;
+        bh=COixeEboG3W0lGeK1dfVFzDjBPPWWXmTg8ljA/mofJI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=hMd4O5DOq0LBjJHi2PPJ/sayfrZgNG+oEuEzd5HRGFZE8yoJNXs/J93PKSKRDCIEx
+         m2+lcuFC7XuqGN8HmcwOxhva2V52EVWYtUlQdoanoHMUPMh1gwJn9XuK2fTCuHx1xv
+         qs8wz2pUckmflf5+WHM1Aw+MmrrvO8Jv3Vf/2S7yPUEyEPr60hK6byJvNMk6rp2uc3
+         4zjiaISRfLTmd3QRQJdpneKyX5kNpnH/MpspzA0crYP5Nkhs1wjY24jsq2+QyS8KB3
+         9AZh5sYQWVXKRsG6ZlSYYt9aBjUN0agNQvmlA9YWm0lEdxbm0jv6H6B7ov8lHQX07n
+         X/Ja2AH5HwR+w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 23C6F5C00F8; Sun, 18 Apr 2021 09:20:50 -0700 (PDT)
+Date:   Sun, 18 Apr 2021 09:20:50 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
+        ak@linux.intel.com, Chris Mason <clm@fb.com>
+Subject: Re: [PATCH v8 clocksource 3/5] clocksource: Check per-CPU clock
+ synchronization when marked unstable
+Message-ID: <20210418162050.GA2206685@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210414043435.GA2812539@paulmck-ThinkPad-P17-Gen-1>
+ <20210414043602.2812981-3-paulmck@kernel.org>
+ <87sg3prsbt.ffs@nanos.tec.linutronix.de>
+ <20210417235136.GD5006@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210417235136.GD5006@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17 2021 at 17:11, Andy Lutomirski wrote:
-> On Sat, Apr 17, 2021 at 4:53 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->> which works for
->>
->>       foo = function_nocfi(bar);
->
-> I agree in general.  But right now, we have, in asm/proto.h:
->
-> void entry_SYSCALL_64(void);
->
-> and that's pure nonsense.  Depending on your point of view,
-> entry_SYSCALL_64 is a symbol that resolves to an integer or it's an
-> array of bytes containing instructions, but it is most definitely not
-> a function void (void).  So, regardless of any CFI stuff, I propose
-> that we standardize our handling of prototypes of symbols that are
-> opaque to the C compiler.  Here are a couple of choices:
->
-> Easy one:
->
-> extern u8 entry_SYSCALL_64[];
->
-> Slightly more complicated:
->
-> struct opaque_symbol;
-> extern struct opaque_symbol entry_SYSCALL_64;
->
-> The opaque_symbol variant avoids any possible confusion over the weird
-> status of arrays in C, and it's hard to misuse, since struct
-> opaque_symbol is an incomplete type.
+On Sat, Apr 17, 2021 at 04:51:36PM -0700, Paul E. McKenney wrote:
+> On Sat, Apr 17, 2021 at 02:47:18PM +0200, Thomas Gleixner wrote:
 
-Makes sense.
+[ . . . ]
+
+> > > +		delta = (s64)((csnow_mid - csnow_begin) & cs->mask);
+> > > +		if (delta < 0)
+> > > +			cpumask_set_cpu(cpu, &cpus_behind);
+> > > +		delta = (csnow_end - csnow_mid) & cs->mask;
+> > > +		if (delta < 0)
+> > > +			cpumask_set_cpu(cpu, &cpus_ahead);
+> > > +		delta = clocksource_delta(csnow_end, csnow_begin, cs->mask);
+> > > +		cs_nsec = clocksource_cyc2ns(delta, cs->mult, cs->shift);
+> > 
+> > > +		if (firsttime || cs_nsec > cs_nsec_max)
+> > > +			cs_nsec_max = cs_nsec;
+> > > +		if (firsttime || cs_nsec < cs_nsec_min)
+> > > +			cs_nsec_min = cs_nsec;
+> > > +		firsttime = 0;
+> > 
+> >   int64_t cs_nsec_max = 0, cs_nsec_min = LLONG_MAX;
+> > 
+> > and then the firsttime muck is not needed at all.
+> 
+> Good point, will fix!
+> 
+> And again, thank you for looking all of this over.
+
+And overnight testing with a 50-microsecond WATCHDOG_MAX_SKEW was
+uneventful.  However, I managed to miss printing when a retry was
+necessary, so all that says is that no more than three retries were
+ever required.  So I added test code to print a message whenever two
+or more retries are required and restarted the tests.  Shorter run,
+but more systems, so hopefully similar coverage.
+
+If that works OK, I will resend the series this evening, Pacific Time.
+
+							Thanx, Paul
