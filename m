@@ -2,118 +2,583 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9253634AA
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 12:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4CFD3634AE
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 12:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbhDRKou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 06:44:50 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:53883 "EHLO pegase1.c-s.fr"
+        id S231274AbhDRKyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 06:54:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229564AbhDRKod (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 06:44:33 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FNRQ86t5cz9vBmS;
-        Sun, 18 Apr 2021 12:44:00 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id d54YPj4tRfSP; Sun, 18 Apr 2021 12:44:00 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FNRQ85vyTz9vBmQ;
-        Sun, 18 Apr 2021 12:44:00 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id DB7918B79B;
-        Sun, 18 Apr 2021 12:44:03 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Dh9WCAivhXwx; Sun, 18 Apr 2021 12:44:03 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7A5CC8B799;
-        Sun, 18 Apr 2021 12:44:03 +0200 (CEST)
-Subject: Re: mmu.c:undefined reference to `patch__hash_page_A0'
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-References: <202102271820.WlZCxtzY-lkp@intel.com>
- <06227600-c5c5-3da7-a495-ae0b0849b62d@infradead.org>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <ab9d4f9e-add6-900b-9fa7-83d5f7d1108b@csgroup.eu>
-Date:   Sun, 18 Apr 2021 12:43:54 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S230482AbhDRKyC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 06:54:02 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C4D96100A;
+        Sun, 18 Apr 2021 10:53:31 +0000 (UTC)
+Date:   Sun, 18 Apr 2021 11:54:03 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        =?UTF-8?B?R2HDq3RhbiBB?= =?UTF-8?B?bmRyw6k=?= 
+        <rvlander@gaetanandre.eu>,
+        Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
+        Denis Ciocca <denis.ciocca@st.com>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v1 4/7] iio: st_sensors: Call st_sensors_power_enable()
+ from bus drivers
+Message-ID: <20210418115403.059f94cd@jic23-huawei>
+In-Reply-To: <20210414195454.84183-4-andriy.shevchenko@linux.intel.com>
+References: <20210414195454.84183-1-andriy.shevchenko@linux.intel.com>
+        <20210414195454.84183-4-andriy.shevchenko@linux.intel.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <06227600-c5c5-3da7-a495-ae0b0849b62d@infradead.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 14 Apr 2021 22:54:51 +0300
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+
+> In case we would initialize two IIO devices from one physical device,
+> we shouldn't have a clash on regulators. That's why move
+> st_sensors_power_enable() call from core to bus drivers.
+
+Why is this a problem?  The two instances would double up and both get +
+enable + disable the regulators.  However, that shouldn't matter as
+they are reference counted anyway.
+
+Perhaps an example?  Even in patch 6 I can only see that it is wasteful
+to do it twice, rather than wrong as such.
+
+Jonathan
 
 
-Le 18/04/2021 à 02:02, Randy Dunlap a écrit :
-> HI--
 > 
-> I no longer see this build error.
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/iio/accel/st_accel_core.c       | 21 +++++----------------
+>  drivers/iio/accel/st_accel_i2c.c        | 17 +++++++++++++++--
+>  drivers/iio/accel/st_accel_spi.c        | 17 +++++++++++++++--
+>  drivers/iio/gyro/st_gyro_core.c         | 15 +++------------
+>  drivers/iio/gyro/st_gyro_i2c.c          | 17 +++++++++++++++--
+>  drivers/iio/gyro/st_gyro_spi.c          | 17 +++++++++++++++--
+>  drivers/iio/magnetometer/st_magn_core.c | 15 +++------------
+>  drivers/iio/magnetometer/st_magn_i2c.c  | 14 +++++++++++++-
+>  drivers/iio/magnetometer/st_magn_spi.c  | 14 +++++++++++++-
+>  drivers/iio/pressure/st_pressure_core.c | 15 +++------------
+>  drivers/iio/pressure/st_pressure_i2c.c  | 17 +++++++++++++++--
+>  drivers/iio/pressure/st_pressure_spi.c  | 17 +++++++++++++++--
+>  12 files changed, 130 insertions(+), 66 deletions(-)
+> 
+> diff --git a/drivers/iio/accel/st_accel_core.c b/drivers/iio/accel/st_accel_core.c
+> index a1bd7e3b912e..5c258c1ca62d 100644
+> --- a/drivers/iio/accel/st_accel_core.c
+> +++ b/drivers/iio/accel/st_accel_core.c
+> @@ -1260,13 +1260,9 @@ int st_accel_common_probe(struct iio_dev *indio_dev)
+>  	indio_dev->modes = INDIO_DIRECT_MODE;
+>  	indio_dev->info = &accel_info;
+>  
+> -	err = st_sensors_power_enable(indio_dev);
+> -	if (err)
+> -		return err;
+> -
+>  	err = st_sensors_verify_id(indio_dev);
+>  	if (err < 0)
+> -		goto st_accel_power_off;
+> +		return err;
+>  
+>  	adata->num_data_channels = ST_ACCEL_NUMBER_DATA_CHANNELS;
+>  	indio_dev->num_channels = ST_SENSORS_NUMBER_ALL_CHANNELS;
+> @@ -1275,10 +1271,8 @@ int st_accel_common_probe(struct iio_dev *indio_dev)
+>  	channels = devm_kmemdup(&indio_dev->dev,
+>  				adata->sensor_settings->ch,
+>  				channels_size, GFP_KERNEL);
+> -	if (!channels) {
+> -		err = -ENOMEM;
+> -		goto st_accel_power_off;
+> -	}
+> +	if (!channels)
+> +		return -ENOMEM;
+>  
+>  	if (apply_acpi_orientation(indio_dev, channels))
+>  		dev_warn(&indio_dev->dev,
+> @@ -1293,11 +1287,11 @@ int st_accel_common_probe(struct iio_dev *indio_dev)
+>  
+>  	err = st_sensors_init_sensor(indio_dev, pdata);
+>  	if (err < 0)
+> -		goto st_accel_power_off;
+> +		return err;
+>  
+>  	err = st_accel_allocate_ring(indio_dev);
+>  	if (err < 0)
+> -		goto st_accel_power_off;
+> +		return err;
+>  
+>  	if (adata->irq > 0) {
+>  		err = st_sensors_allocate_trigger(indio_dev,
+> @@ -1320,9 +1314,6 @@ int st_accel_common_probe(struct iio_dev *indio_dev)
+>  		st_sensors_deallocate_trigger(indio_dev);
+>  st_accel_probe_trigger_error:
+>  	st_accel_deallocate_ring(indio_dev);
+> -st_accel_power_off:
+> -	st_sensors_power_disable(indio_dev);
+> -
+>  	return err;
+>  }
+>  EXPORT_SYMBOL(st_accel_common_probe);
+> @@ -1331,8 +1322,6 @@ void st_accel_common_remove(struct iio_dev *indio_dev)
+>  {
+>  	struct st_sensor_data *adata = iio_priv(indio_dev);
+>  
+> -	st_sensors_power_disable(indio_dev);
+> -
+>  	iio_device_unregister(indio_dev);
+>  	if (adata->irq > 0)
+>  		st_sensors_deallocate_trigger(indio_dev);
+> diff --git a/drivers/iio/accel/st_accel_i2c.c b/drivers/iio/accel/st_accel_i2c.c
+> index 360e16f2cadb..95e305b88d5e 100644
+> --- a/drivers/iio/accel/st_accel_i2c.c
+> +++ b/drivers/iio/accel/st_accel_i2c.c
+> @@ -174,16 +174,29 @@ static int st_accel_i2c_probe(struct i2c_client *client)
+>  	if (ret < 0)
+>  		return ret;
+>  
+> +	ret = st_sensors_power_enable(indio_dev);
+> +	if (ret)
+> +		return ret;
+> +
+>  	ret = st_accel_common_probe(indio_dev);
+>  	if (ret < 0)
+> -		return ret;
+> +		goto st_accel_power_off;
+>  
+>  	return 0;
+> +
+> +st_accel_power_off:
+> +	st_sensors_power_disable(indio_dev);
+> +
+> +	return ret;
+>  }
+>  
+>  static int st_accel_i2c_remove(struct i2c_client *client)
+>  {
+> -	st_accel_common_remove(i2c_get_clientdata(client));
+> +	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+> +
+> +	st_sensors_power_disable(indio_dev);
+> +
+> +	st_accel_common_remove(indio_dev);
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/iio/accel/st_accel_spi.c b/drivers/iio/accel/st_accel_spi.c
+> index 568ff1bae0ee..83d3308ce5cc 100644
+> --- a/drivers/iio/accel/st_accel_spi.c
+> +++ b/drivers/iio/accel/st_accel_spi.c
+> @@ -123,16 +123,29 @@ static int st_accel_spi_probe(struct spi_device *spi)
+>  	if (err < 0)
+>  		return err;
+>  
+> +	err = st_sensors_power_enable(indio_dev);
+> +	if (err)
+> +		return err;
+> +
+>  	err = st_accel_common_probe(indio_dev);
+>  	if (err < 0)
+> -		return err;
+> +		goto st_accel_power_off;
+>  
+>  	return 0;
+> +
+> +st_accel_power_off:
+> +	st_sensors_power_disable(indio_dev);
+> +
+> +	return err;
+>  }
+>  
+>  static int st_accel_spi_remove(struct spi_device *spi)
+>  {
+> -	st_accel_common_remove(spi_get_drvdata(spi));
+> +	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+> +
+> +	st_sensors_power_disable(indio_dev);
+> +
+> +	st_accel_common_remove(indio_dev);
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/iio/gyro/st_gyro_core.c b/drivers/iio/gyro/st_gyro_core.c
+> index e000504e1df4..ee3f0ea96ac5 100644
+> --- a/drivers/iio/gyro/st_gyro_core.c
+> +++ b/drivers/iio/gyro/st_gyro_core.c
+> @@ -471,13 +471,9 @@ int st_gyro_common_probe(struct iio_dev *indio_dev)
+>  	indio_dev->modes = INDIO_DIRECT_MODE;
+>  	indio_dev->info = &gyro_info;
+>  
+> -	err = st_sensors_power_enable(indio_dev);
+> -	if (err)
+> -		return err;
+> -
+>  	err = st_sensors_verify_id(indio_dev);
+>  	if (err < 0)
+> -		goto st_gyro_power_off;
+> +		return err;
+>  
+>  	gdata->num_data_channels = ST_GYRO_NUMBER_DATA_CHANNELS;
+>  	indio_dev->channels = gdata->sensor_settings->ch;
+> @@ -490,11 +486,11 @@ int st_gyro_common_probe(struct iio_dev *indio_dev)
+>  
+>  	err = st_sensors_init_sensor(indio_dev, pdata);
+>  	if (err < 0)
+> -		goto st_gyro_power_off;
+> +		return err;
+>  
+>  	err = st_gyro_allocate_ring(indio_dev);
+>  	if (err < 0)
+> -		goto st_gyro_power_off;
+> +		return err;
+>  
+>  	if (gdata->irq > 0) {
+>  		err = st_sensors_allocate_trigger(indio_dev,
+> @@ -517,9 +513,6 @@ int st_gyro_common_probe(struct iio_dev *indio_dev)
+>  		st_sensors_deallocate_trigger(indio_dev);
+>  st_gyro_probe_trigger_error:
+>  	st_gyro_deallocate_ring(indio_dev);
+> -st_gyro_power_off:
+> -	st_sensors_power_disable(indio_dev);
+> -
+>  	return err;
+>  }
+>  EXPORT_SYMBOL(st_gyro_common_probe);
+> @@ -528,8 +521,6 @@ void st_gyro_common_remove(struct iio_dev *indio_dev)
+>  {
+>  	struct st_sensor_data *gdata = iio_priv(indio_dev);
+>  
+> -	st_sensors_power_disable(indio_dev);
+> -
+>  	iio_device_unregister(indio_dev);
+>  	if (gdata->irq > 0)
+>  		st_sensors_deallocate_trigger(indio_dev);
+> diff --git a/drivers/iio/gyro/st_gyro_i2c.c b/drivers/iio/gyro/st_gyro_i2c.c
+> index 8190966e6ff0..a25cc0379e16 100644
+> --- a/drivers/iio/gyro/st_gyro_i2c.c
+> +++ b/drivers/iio/gyro/st_gyro_i2c.c
+> @@ -86,16 +86,29 @@ static int st_gyro_i2c_probe(struct i2c_client *client,
+>  	if (err < 0)
+>  		return err;
+>  
+> +	err = st_sensors_power_enable(indio_dev);
+> +	if (err)
+> +		return err;
+> +
+>  	err = st_gyro_common_probe(indio_dev);
+>  	if (err < 0)
+> -		return err;
+> +		goto st_gyro_power_off;
+>  
+>  	return 0;
+> +
+> +st_gyro_power_off:
+> +	st_sensors_power_disable(indio_dev);
+> +
+> +	return err;
+>  }
+>  
+>  static int st_gyro_i2c_remove(struct i2c_client *client)
+>  {
+> -	st_gyro_common_remove(i2c_get_clientdata(client));
+> +	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+> +
+> +	st_sensors_power_disable(indio_dev);
+> +
+> +	st_gyro_common_remove(indio_dev);
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/iio/gyro/st_gyro_spi.c b/drivers/iio/gyro/st_gyro_spi.c
+> index efb862763ca3..18d6a2aeda45 100644
+> --- a/drivers/iio/gyro/st_gyro_spi.c
+> +++ b/drivers/iio/gyro/st_gyro_spi.c
+> @@ -90,16 +90,29 @@ static int st_gyro_spi_probe(struct spi_device *spi)
+>  	if (err < 0)
+>  		return err;
+>  
+> +	err = st_sensors_power_enable(indio_dev);
+> +	if (err)
+> +		return err;
+> +
+>  	err = st_gyro_common_probe(indio_dev);
+>  	if (err < 0)
+> -		return err;
+> +		goto st_gyro_power_off;
+>  
+>  	return 0;
+> +
+> +st_gyro_power_off:
+> +	st_sensors_power_disable(indio_dev);
+> +
+> +	return err;
+>  }
+>  
+>  static int st_gyro_spi_remove(struct spi_device *spi)
+>  {
+> -	st_gyro_common_remove(spi_get_drvdata(spi));
+> +	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+> +
+> +	st_sensors_power_disable(indio_dev);
+> +
+> +	st_gyro_common_remove(indio_dev);
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/iio/magnetometer/st_magn_core.c b/drivers/iio/magnetometer/st_magn_core.c
+> index cf3722e42419..018b2523edfe 100644
+> --- a/drivers/iio/magnetometer/st_magn_core.c
+> +++ b/drivers/iio/magnetometer/st_magn_core.c
+> @@ -500,13 +500,9 @@ int st_magn_common_probe(struct iio_dev *indio_dev)
+>  	indio_dev->modes = INDIO_DIRECT_MODE;
+>  	indio_dev->info = &magn_info;
+>  
+> -	err = st_sensors_power_enable(indio_dev);
+> -	if (err)
+> -		return err;
+> -
+>  	err = st_sensors_verify_id(indio_dev);
+>  	if (err < 0)
+> -		goto st_magn_power_off;
+> +		return err;
+>  
+>  	mdata->num_data_channels = ST_MAGN_NUMBER_DATA_CHANNELS;
+>  	indio_dev->channels = mdata->sensor_settings->ch;
+> @@ -520,11 +516,11 @@ int st_magn_common_probe(struct iio_dev *indio_dev)
+>  
+>  	err = st_sensors_init_sensor(indio_dev, pdata);
+>  	if (err < 0)
+> -		goto st_magn_power_off;
+> +		return err;
+>  
+>  	err = st_magn_allocate_ring(indio_dev);
+>  	if (err < 0)
+> -		goto st_magn_power_off;
+> +		return err;
+>  
+>  	if (mdata->irq > 0) {
+>  		err = st_sensors_allocate_trigger(indio_dev,
+> @@ -547,9 +543,6 @@ int st_magn_common_probe(struct iio_dev *indio_dev)
+>  		st_sensors_deallocate_trigger(indio_dev);
+>  st_magn_probe_trigger_error:
+>  	st_magn_deallocate_ring(indio_dev);
+> -st_magn_power_off:
+> -	st_sensors_power_disable(indio_dev);
+> -
+>  	return err;
+>  }
+>  EXPORT_SYMBOL(st_magn_common_probe);
+> @@ -558,8 +551,6 @@ void st_magn_common_remove(struct iio_dev *indio_dev)
+>  {
+>  	struct st_sensor_data *mdata = iio_priv(indio_dev);
+>  
+> -	st_sensors_power_disable(indio_dev);
+> -
+>  	iio_device_unregister(indio_dev);
+>  	if (mdata->irq > 0)
+>  		st_sensors_deallocate_trigger(indio_dev);
+> diff --git a/drivers/iio/magnetometer/st_magn_i2c.c b/drivers/iio/magnetometer/st_magn_i2c.c
+> index c6bb4ce77594..7a7ab27379fc 100644
+> --- a/drivers/iio/magnetometer/st_magn_i2c.c
+> +++ b/drivers/iio/magnetometer/st_magn_i2c.c
+> @@ -78,16 +78,28 @@ static int st_magn_i2c_probe(struct i2c_client *client,
+>  	if (err < 0)
+>  		return err;
+>  
+> +	err = st_sensors_power_enable(indio_dev);
+> +	if (err)
+> +		return err;
+> +
+>  	err = st_magn_common_probe(indio_dev);
+>  	if (err < 0)
+> -		return err;
+> +		goto st_magn_power_off;
+>  
+>  	return 0;
+> +
+> +st_magn_power_off:
+> +	st_sensors_power_disable(indio_dev);
+> +
+> +	return err;
+>  }
+>  
+>  static int st_magn_i2c_remove(struct i2c_client *client)
+>  {
+>  	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+> +
+> +	st_sensors_power_disable(indio_dev);
+> +
+>  	st_magn_common_remove(indio_dev);
+>  
+>  	return 0;
+> diff --git a/drivers/iio/magnetometer/st_magn_spi.c b/drivers/iio/magnetometer/st_magn_spi.c
+> index 3d08d74c367d..ee352f083c02 100644
+> --- a/drivers/iio/magnetometer/st_magn_spi.c
+> +++ b/drivers/iio/magnetometer/st_magn_spi.c
+> @@ -72,16 +72,28 @@ static int st_magn_spi_probe(struct spi_device *spi)
+>  	if (err < 0)
+>  		return err;
+>  
+> +	err = st_sensors_power_enable(indio_dev);
+> +	if (err)
+> +		return err;
+> +
+>  	err = st_magn_common_probe(indio_dev);
+>  	if (err < 0)
+> -		return err;
+> +		goto st_magn_power_off;
+>  
+>  	return 0;
+> +
+> +st_magn_power_off:
+> +	st_sensors_power_disable(indio_dev);
+> +
+> +	return err;
+>  }
+>  
+>  static int st_magn_spi_remove(struct spi_device *spi)
+>  {
+>  	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+> +
+> +	st_sensors_power_disable(indio_dev);
+> +
+>  	st_magn_common_remove(indio_dev);
+>  
+>  	return 0;
+> diff --git a/drivers/iio/pressure/st_pressure_core.c b/drivers/iio/pressure/st_pressure_core.c
+> index 789a2928504a..7912b5a68395 100644
+> --- a/drivers/iio/pressure/st_pressure_core.c
+> +++ b/drivers/iio/pressure/st_pressure_core.c
+> @@ -689,13 +689,9 @@ int st_press_common_probe(struct iio_dev *indio_dev)
+>  	indio_dev->modes = INDIO_DIRECT_MODE;
+>  	indio_dev->info = &press_info;
+>  
+> -	err = st_sensors_power_enable(indio_dev);
+> -	if (err)
+> -		return err;
+> -
+>  	err = st_sensors_verify_id(indio_dev);
+>  	if (err < 0)
+> -		goto st_press_power_off;
+> +		return err;
+>  
+>  	/*
+>  	 * Skip timestamping channel while declaring available channels to
+> @@ -718,11 +714,11 @@ int st_press_common_probe(struct iio_dev *indio_dev)
+>  
+>  	err = st_sensors_init_sensor(indio_dev, pdata);
+>  	if (err < 0)
+> -		goto st_press_power_off;
+> +		return err;
+>  
+>  	err = st_press_allocate_ring(indio_dev);
+>  	if (err < 0)
+> -		goto st_press_power_off;
+> +		return err;
+>  
+>  	if (press_data->irq > 0) {
+>  		err = st_sensors_allocate_trigger(indio_dev,
+> @@ -745,9 +741,6 @@ int st_press_common_probe(struct iio_dev *indio_dev)
+>  		st_sensors_deallocate_trigger(indio_dev);
+>  st_press_probe_trigger_error:
+>  	st_press_deallocate_ring(indio_dev);
+> -st_press_power_off:
+> -	st_sensors_power_disable(indio_dev);
+> -
+>  	return err;
+>  }
+>  EXPORT_SYMBOL(st_press_common_probe);
+> @@ -756,8 +749,6 @@ void st_press_common_remove(struct iio_dev *indio_dev)
+>  {
+>  	struct st_sensor_data *press_data = iio_priv(indio_dev);
+>  
+> -	st_sensors_power_disable(indio_dev);
+> -
+>  	iio_device_unregister(indio_dev);
+>  	if (press_data->irq > 0)
+>  		st_sensors_deallocate_trigger(indio_dev);
+> diff --git a/drivers/iio/pressure/st_pressure_i2c.c b/drivers/iio/pressure/st_pressure_i2c.c
+> index 09c6903f99b8..f0a5af314ceb 100644
+> --- a/drivers/iio/pressure/st_pressure_i2c.c
+> +++ b/drivers/iio/pressure/st_pressure_i2c.c
+> @@ -98,16 +98,29 @@ static int st_press_i2c_probe(struct i2c_client *client,
+>  	if (ret < 0)
+>  		return ret;
+>  
+> +	ret = st_sensors_power_enable(indio_dev);
+> +	if (ret)
+> +		return ret;
+> +
+>  	ret = st_press_common_probe(indio_dev);
+>  	if (ret < 0)
+> -		return ret;
+> +		goto st_press_power_off;
+>  
+>  	return 0;
+> +
+> +st_press_power_off:
+> +	st_sensors_power_disable(indio_dev);
+> +
+> +	return ret;
+>  }
+>  
+>  static int st_press_i2c_remove(struct i2c_client *client)
+>  {
+> -	st_press_common_remove(i2c_get_clientdata(client));
+> +	struct iio_dev *indio_dev = i2c_get_clientdata(client);
+> +
+> +	st_sensors_power_disable(indio_dev);
+> +
+> +	st_press_common_remove(indio_dev);
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/iio/pressure/st_pressure_spi.c b/drivers/iio/pressure/st_pressure_spi.c
+> index b5ee3ec2764f..b48cf7d01cd7 100644
+> --- a/drivers/iio/pressure/st_pressure_spi.c
+> +++ b/drivers/iio/pressure/st_pressure_spi.c
+> @@ -82,16 +82,29 @@ static int st_press_spi_probe(struct spi_device *spi)
+>  	if (err < 0)
+>  		return err;
+>  
+> +	err = st_sensors_power_enable(indio_dev);
+> +	if (err)
+> +		return err;
+> +
+>  	err = st_press_common_probe(indio_dev);
+>  	if (err < 0)
+> -		return err;
+> +		goto st_press_power_off;
+>  
+>  	return 0;
+> +
+> +st_press_power_off:
+> +	st_sensors_power_disable(indio_dev);
+> +
+> +	return err;
+>  }
+>  
+>  static int st_press_spi_remove(struct spi_device *spi)
+>  {
+> -	st_press_common_remove(spi_get_drvdata(spi));
+> +	struct iio_dev *indio_dev = spi_get_drvdata(spi);
+> +
+> +	st_sensors_power_disable(indio_dev);
+> +
+> +	st_press_common_remove(indio_dev);
+>  
+>  	return 0;
+>  }
 
-Fixed by https://github.com/torvalds/linux/commit/acdad8fb4a1574323db88f98a38b630691574e16
-
-> However:
-> 
-> On 2/27/21 2:24 AM, kernel test robot wrote:
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   3fb6d0e00efc958d01c2f109c8453033a2d96796
->> commit: 259149cf7c3c6195e6199e045ca988c31d081cab powerpc/32s: Only build hash code when CONFIG_PPC_BOOK3S_604 is selected
->> date:   4 weeks ago
->> config: powerpc64-randconfig-r013-20210227 (attached as .config)
-> 
-> ktr/lkp, this is a PPC32 .config file that is attached, not PPC64.
-> 
-> Also:
-> 
->> compiler: powerpc-linux-gcc (GCC) 9.3.0
-
-...
-
-> 
-> I do see this build error:
-> 
-> powerpc-linux-ld: arch/powerpc/boot/wrapper.a(decompress.o): in function `partial_decompress':
-> decompress.c:(.text+0x1f0): undefined reference to `__decompress'
-> 
-> when either
-> CONFIG_KERNEL_LZO=y
-> or
-> CONFIG_KERNEL_LZMA=y
-> 
-> but the build succeeds when either
-> CONFIG_KERNEL_GZIP=y
-> or
-> CONFIG_KERNEL_XZ=y
-> 
-> I guess that is due to arch/powerpc/boot/decompress.c doing this:
-> 
-> #ifdef CONFIG_KERNEL_GZIP
-> #	include "decompress_inflate.c"
-> #endif
-> 
-> #ifdef CONFIG_KERNEL_XZ
-> #	include "xz_config.h"
-> #	include "../../../lib/decompress_unxz.c"
-> #endif
-> 
-> 
-> It would be nice to require one of KERNEL_GZIP or KERNEL_XZ
-> to be set/enabled (maybe unless a uImage is being built?).
-
-
-Can you test by 
-https://patchwork.ozlabs.org/project/linuxppc-dev/patch/a74fce4dfc9fa32da6ce3470bbedcecf795de1ec.1591189069.git.christophe.leroy@csgroup.eu/ 
-?
-
-Thanks
-Christophe
