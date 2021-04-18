@@ -2,92 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD0D363712
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 19:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 940B6363715
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 19:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232582AbhDRRv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 13:51:58 -0400
-Received: from mga02.intel.com ([134.134.136.20]:27417 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229783AbhDRRvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 13:51:55 -0400
-IronPort-SDR: ZlSbyQ6zrqlLlTiCLvcB+NK7wS/zxv1B6AkgtkEHRlMYw5++3ywuJcsSfemVrOCxsCquOlATIm
- 7pYX/SVhPfRg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9958"; a="182365273"
-X-IronPort-AV: E=Sophos;i="5.82,232,1613462400"; 
-   d="scan'208";a="182365273"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2021 10:51:25 -0700
-IronPort-SDR: zSd+fLIuQFKo/U1wfd8IDTq8CI+947dtrdK8O0hi9ecBrpM2effepD/3f2kBAGExIPvQLkqDqv
- iGYb5DvUwBpQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,232,1613462400"; 
-   d="scan'208";a="419737749"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by fmsmga008.fm.intel.com with ESMTP; 18 Apr 2021 10:51:22 -0700
-Subject: Re: [PATCH] scsi: ufs: Check for bkops in runtime suspend
-To:     Avri Altman <avri.altman@wdc.com>,
-        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Alex Lemberg <alex.lemberg@wdc.com>
-References: <20210418072150.3288-1-avri.altman@wdc.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <2b66db28-2caa-8121-342d-c95c23412876@intel.com>
-Date:   Sun, 18 Apr 2021 20:51:38 +0300
+        id S232212AbhDRSAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 14:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230028AbhDRSAQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 14:00:16 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286D1C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 10:59:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=DixjZSGhchXGN78hxITF/gn2KSp43gRdNvHSUXdK2NY=; b=rZV+/HtvZfmgPQShevnkqzBc8O
+        D5eEh9JGECyRqRzkRU9Sr4ZKJ0MbSj+TjIh/uWEGwoAPJFbgF6QS8G7k2l52pdvu4VPOUsGsmhsMA
+        gUpuiXunDeP+TaW6jHndoLsmDvwJfIwu9mWOMXtFQNxGgBLXy1GvuhearB8cQIdultR6rGEQ5bUMd
+        ZyrQqUpzxsqvo9jDf03lVv+XCvME+m55fyKYMIaqlnM57cvwynM9dX4XsnKKUwTLT1x0dEtiby0d5
+        y092q32zZLNueeDwlUCkO5Tqcp8fDpXTJjMc7MPutYs3W4m2xm73qDZTyLTK0O4WPgtPu34Dy6Jxg
+        zU5sJmog==;
+Received: from [2601:1c0:6280:3f0::df68]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lYBhx-008O4U-46; Sun, 18 Apr 2021 17:59:45 +0000
+Subject: Re: PPC_FPU, ALTIVEC: enable_kernel_fp, put_vr, get_vr
+To:     Segher Boessenkool <segher@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <7107fcae-5c7a-ac94-8d89-326f2cd4cd33@infradead.org>
+ <8b1cb0a2-ed3a-7da0-a73a-febbda528703@csgroup.eu>
+ <20210418174648.GN26583@gate.crashing.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <bf119bfe-7db1-e7f3-d837-f910635eeebb@infradead.org>
+Date:   Sun, 18 Apr 2021 10:59:42 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210418072150.3288-1-avri.altman@wdc.com>
+In-Reply-To: <20210418174648.GN26583@gate.crashing.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/04/21 10:21 am, Avri Altman wrote:
-> The UFS driver allowed BKOPS and WB Flush operations to be completed on
-> Runtime suspend. Adding the DeepSleep support, this is no longer true:
-> the driver will ignore BKOPS and WB Flush states, and force a link state
-> transition to UIC_LINK_OFF_STATE.
+On 4/18/21 10:46 AM, Segher Boessenkool wrote:
+> On Sun, Apr 18, 2021 at 06:24:29PM +0200, Christophe Leroy wrote:
+>> Le 17/04/2021 à 22:17, Randy Dunlap a écrit :
+>>> Should the code + Kconfigs/Makefiles handle that kind of
+>>> kernel config or should ALTIVEC always mean PPC_FPU as well?
+>>
+>> As far as I understand, Altivec is completely independant of FPU in Theory. 
 > 
-> Do not ignore BKOPS and WB Flush on runtme suspend flow.
+> And, as far as the hardware is concerned, in practice as well.
 > 
-> fixes: fe1d4c2ebcae (scsi: ufs: Add DeepSleep feature)
+>> So it should be possible to use Altivec without using FPU.
 > 
-> Suggested-by: Alex Lemberg <alex.lemberg@wdc.com>
-> Signed-off-by: Avri Altman <avri.altman@wdc.com>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> Yup.
 > 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 58d7f264c664..1a0cac670aba 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -8755,7 +8755,8 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
->  	 * In the case of DeepSleep, the device is expected to remain powered
->  	 * with the link off, so do not check for bkops.
->  	 */
-> -	check_for_bkops = !ufshcd_is_ufs_dev_deepsleep(hba);
-> +	check_for_bkops = !ufshcd_is_ufs_dev_deepsleep(hba) ||
-> +			  hba->dev_info.b_rpm_dev_flush_capable;
+>> However, until recently, it was not possible to de-activate FPU support on 
+>> book3s/32. I made it possible in order to reduce unneccessary processing on 
+>> processors like the 832x that has no FPU.
+> 
+> The processor has to implement FP to be compliant to any version of
+> PowerPC, as far as I know?  So that is all done by emulation, including
+> all the registers?  Wow painful.
+> 
+>> As far as I can see in cputable.h/.c, 832x is the only book3s/32 without 
+>> FPU, and it doesn't have ALTIVEC either.
+> 
+> 602 doesn't have double-precision hardware, also no 64-bit FP registers.
+> But that CPU was never any widely used :-)
+> 
+>> So we can in the future ensure that Altivec can be used without FPU 
+>> support, but for the time being I think it is OK to force selection of FPU 
+>> when selecting ALTIVEC in order to avoid build failures.
+> 
+> It is useful to allow MSR[VEC,FP]=1,0 but yeah there are no CPUs that
+> have VMX (aka AltiVec) but that do not have FP.  I don't see how making
+> that artificial dependency buys anything, but maybe it does?
+> 
+>>> I have patches to fix the build errors with the config as
+>>> reported but I don't know if that's the right thing to do...
+> 
+> Neither do we, we cannot see those patches :-)
 
-Can you explain this some more? If hba->dev_info.b_rpm_dev_flush_capable
-is true, then ufshcd_set_dev_pwr_mode() was not called, so
-ufshcd_is_ufs_dev_deepsleep() is false i.e. the same result for the
-condition above.
+Sure.  I'll post them later today.
+They keep FPU and ALTIVEC as independent (build) features.
 
-However, it is assumed DeepSleep has the link off so that a full reset
-and restore is done upon resume, which is necessary to exit DeepSleep.
-So if you wanted to have DeepSleep with the link on, then the resume
-logic would also need changes.
-
->  	ret = ufshcd_link_state_transition(hba, req_link_state, check_for_bkops);
->  	if (ret)
->  		goto set_dev_active;
-> 
+-- 
+~Randy
 
