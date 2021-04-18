@@ -2,75 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968AB363391
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 06:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38EF2363393
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 06:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237390AbhDREkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 00:40:31 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:51849 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229671AbhDREka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 00:40:30 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 13I4dXL6019049;
-        Sun, 18 Apr 2021 06:39:33 +0200
-Date:   Sun, 18 Apr 2021 06:39:33 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Matt Corallo <netdev-list@mattcorallo.com>
-Cc:     Keyu Man <kman001@ucr.edu>, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Florian Westphal <fw@strlen.de>, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zhiyun Qian <zhiyunq@cs.ucr.edu>
-Subject: Re: PROBLEM: DoS Attack on Fragment Cache
-Message-ID: <20210418043933.GB18896@1wt.eu>
-References: <02917697-4CE2-4BBE-BF47-31F58BC89025@hxcore.ol>
- <52098fa9-2feb-08ae-c24f-1e696076c3b9@gmail.com>
- <CANn89iL_V0WbeA-Zr29cLSp9pCsthkX9ze4W46gx=8-UeK2qMg@mail.gmail.com>
- <20210417072744.GB14109@1wt.eu>
- <CAMqUL6bkp2Dy3AMFZeNLjE1f-sAwnuBWpXH_FSYTSh8=Ac3RKg@mail.gmail.com>
- <20210417075030.GA14265@1wt.eu>
- <c6467c1c-54f5-8681-6e7d-aa1d9fc2ff32@bluematt.me>
- <CAMqUL6bAVE9p=XEnH4HdBmBfThaY3FDosqyr8yrQo6N_9+Jf3w@mail.gmail.com>
- <78d776a9-4299-ff4e-8ca2-096ec5c02d05@bluematt.me>
+        id S237401AbhDREmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 00:42:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229671AbhDREmB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 00:42:01 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A7ADC06174A;
+        Sat, 17 Apr 2021 21:41:34 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id 30so15384606qva.9;
+        Sat, 17 Apr 2021 21:41:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pUKitwCUbGa+VeZmvp2HCZHQ5Wi454pmfSTHoR/nqTI=;
+        b=UjwdpIJA0UPg3JYBq2uliXNIfyG314sMQ2SQTXl+SPWVudS60OVeySCbfprn3tuIkk
+         HaqBD/c0ipIwsPEiR2N55x6J49+ZzCQfqAuPFfOC13RnXS6s+t5Sagbq7gsnbWiBH/P6
+         Vzki8IzQSa4rbQQJe31ir3XK4aRNDocMKgXVpm9cnA3pPoBMwQpPi0fzevRrnW5eus9P
+         KAEftNVtsYZGuBOHl9yl7YkX/jO1DdG4cgp9N1BdHvg7lxr3I39Zuqi/Hd12QBjIBRKh
+         f7Jea/m2BjnrHw0DbDPXXrY2QL8EuzKHVl+MCHgkoM6I934/qECM979bW8SA+j9Aw/Ti
+         a8kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pUKitwCUbGa+VeZmvp2HCZHQ5Wi454pmfSTHoR/nqTI=;
+        b=X1Z7Gm6rOBBzjH63Av8jjX82X/tgdb/OoGwtvndHMzTFRhOBqNpaPD2kQb01modjFg
+         0KgqCSi1Bho9Oa9oIdU/T1hCsR0qPLICiqaXyqzUfGWL/3SYI04DIWekDNB8zhR/+eOv
+         vNLJJkCERJIwA5xHv7VGr4OgOIQmeXHtC6GuZ5Z3cD87eBAEP0ez54vCuYIKkAnDgouX
+         SGQ5oGOAiWWv1YEqHEuWpFArpDT2Y0yJL/uEliFb9OvR8NZJ08ZhIjUS+9F2Zs63tP5t
+         SBm15WTP8gh8eMbE0wY/vJCoDTo/38o327SW/SOYSfmt1uu+8cjCuC6CnBVycYw5Hu/B
+         8C+Q==
+X-Gm-Message-State: AOAM533lGXslo7AIWtJjx2YX4zf+saNct7qw2o8kZrKARKmCZSGXIgh0
+        f18t9wXB8kiqIgn348mtxRR5BgFdRCyYaA==
+X-Google-Smtp-Source: ABdhPJx8FOWi/GLdgj58lXtC4kOezy1s4Tp0tqrbCDwcXgtmdzEv/xo21VmwN7eXszCTqGgBKAlMCg==
+X-Received: by 2002:ad4:5543:: with SMTP id v3mr15710965qvy.32.1618720893643;
+        Sat, 17 Apr 2021 21:41:33 -0700 (PDT)
+Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:94de:a0f8:7217:23b2])
+        by smtp.gmail.com with ESMTPSA id o23sm7133634qtp.55.2021.04.17.21.41.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Apr 2021 21:41:33 -0700 (PDT)
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     linux-block@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Fam Zheng <fam.zheng@bytedance.com>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>
+Subject: [Patch] blk-wbt: fix a divide-by-zero error in rwb_arm_timer()
+Date:   Sat, 17 Apr 2021 21:41:01 -0700
+Message-Id: <20210418044101.26730-1-xiyou.wangcong@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <78d776a9-4299-ff4e-8ca2-096ec5c02d05@bluematt.me>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 10:26:30PM -0400, Matt Corallo wrote:
-> Sure, there are better ways to handle the reassembly cache overflowing, but
-> that is pretty unrelated to the fact that waiting 30 full seconds for a
-> fragment to come in doesn't really make sense in today's networks (the 30
-> second delay that is used today appears to even be higher than RFC 791
-> suggested in 1981!).
+From: Cong Wang <cong.wang@bytedance.com>
 
-Not exactly actually, because you forget the TTL here. With most hosts
-sending an initial TTL around 64, after crossing 10-15 hops it's still
-around 50 so that would result in ~50 seconds by default, even according
-to the 40 years old RFC791. The 15s there was the absolute minimum. While
-I do agree that we shouldn't keep them that long nowadays, we can't go
-too low without risking to break some slow transmission stacks (SLIP/PPP
-over modems for example). In addition even cutting that in 3 will remain
-trivially DoSable.
+We hit a divide error in rwb_arm_timer() and crash dump shows
+rqd->scale_step is 16777215 (0xffffff in hex), so the expression
+"(rqd->scale_step + 1) << 8)" is 0x100000000, which is just beyond
+32-bit integer range, hence it is truncated to 0 and int_sqrt(0)
+returns 0 too, so we end up passing 0 as a divisor to div_u64().
 
-> You get a lot more bang for your buck if you don't wait
-> around so long (or we could restructure things to kick out the oldest
-> fragments, but that is a lot more work, and probably extra indexes that just
-> aren't worth it).
+Looking at the assembly code generated:
 
-Kicking out oldest ones is a bad approach in a system made only of
-independent elements, because it tends to result in a lot of damage once
-all of them behave similarly. I.e. if you need to kick out an old entry
-in valid traffic, it's because you do need to wait that long, and if all
-datagrams need to wait that long, then new datagrams systematically
-prevent the oldest one from being reassembled, and none gest reassembled.
-With a random approach at least your success ratio converges towards 1/e
-(i.e. 36%) which is better.
+    add    $0x1,%edi
+    shl    $0x8,%edi
+    movslq %edi,%rdi
+    mov    0x10(%rbx),%rdi
+    xor    %edx,%edx
+    mov    %eax,%ecx
+    shl    $0x4,%rdi
+    mov    %rdi,%rax
+    div    %rcx
 
-Willy
+we notice that the left shift is still using 32 bit register %edi,
+because the type of rqd->scale_step is 'int'. But actually int_sqrt()
+takes 'long' as a parameter, so the temporary result should fit well
+at least on x86_64. Fix this by explicitly casting the expression to
+u64 and call int_sqrt64() to avoid any ambiguity on 32 bit.
+
+After this patch, the assembly code looks correct:
+
+    add    $0x1,%edi
+    movslq %edi,%rdi
+    shl    $0x8,%rdi
+    mov    0x10(%rbx),%rdi
+    xor    %edx,%edx
+    mov    %eax,%ecx
+    shl    $0x4,%rdi
+    mov    %rdi,%rax
+    div    %rcx
+
+Fixes: e34cbd307477 ("blk-wbt: add general throttling mechanism")
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Fam Zheng <fam.zheng@bytedance.com>
+Cc: Xiongchun Duan <duanxiongchun@bytedance.com>
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+---
+ block/blk-wbt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/block/blk-wbt.c b/block/blk-wbt.c
+index 42aed0160f86..5157ca86574f 100644
+--- a/block/blk-wbt.c
++++ b/block/blk-wbt.c
+@@ -337,7 +337,7 @@ static void rwb_arm_timer(struct rq_wb *rwb)
+ 		 * though.
+ 		 */
+ 		rwb->cur_win_nsec = div_u64(rwb->win_nsec << 4,
+-					int_sqrt((rqd->scale_step + 1) << 8));
++					int_sqrt64((u64)(rqd->scale_step + 1) << 8));
+ 	} else {
+ 		/*
+ 		 * For step < 0, we don't want to increase/decrease the
+-- 
+2.25.1
+
