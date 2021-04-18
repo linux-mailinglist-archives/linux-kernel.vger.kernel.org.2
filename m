@@ -2,97 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0EB363708
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 19:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E735F363710
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 19:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231735AbhDRRi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 13:38:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbhDRRiw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 13:38:52 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC192C06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 10:38:21 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id i16-20020a9d68d00000b0290286edfdfe9eso19837510oto.3
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 10:38:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tyhicks-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4Uxy/H46ztQJA5yFK5/pTHWRVi7fZP2Q+MrW5rsMwqY=;
-        b=Gva1qvx4iFfSYu3tVAAa/nf0Gygn2Z/8jvJycdnWsP853BjMLCiqZbYk193OnUPt7a
-         S1Brb3IGQ/eznu5B+yANi72um/2cpBe/KLXGVXV2MPRmygjBNq486GBXhayHE7o9PCMd
-         JshnV5VAWeiDC1mO1UDSNAUdJQn0RD8lhwD/IsZ+4durD12wasQazXTHEZgm3X6BR5Ki
-         46UInMYZSP9tR2tI2P5Qmk7TcHLUrExeMBJx2/rr/4pvkGSGnzRgKyD13nbzFpwbzrZW
-         55FwlzzGhyT8r6L8nx1RTyyVIR6SXSqyhSeN6XN15/LWeQLcZdxkZwE6ekVcL7wp739D
-         Z7zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4Uxy/H46ztQJA5yFK5/pTHWRVi7fZP2Q+MrW5rsMwqY=;
-        b=aCC55k0lf/G1cPixdP4jY0Sc9dNfQLGMmJ2UggeImQvjF/cM674tNsw0hyF2Hnge6B
-         udc1q/ZIeUH0dQr9dRkW0y0LwXH8w0RGFMleq8EdlqSh5xNhHABnoTv+ZPUv8ngY1isb
-         gZyhlfn/zaQKcistcehug7EeRtMlW9zBDqdLCjiNFb+JNPIDgFaawxEynR1SNKK9pTR5
-         14YF5AVScagwxmRstUoD8hm2uP2d6KLahtazlOHTrAbJGQYwswMMfVoBCtWvLm5x4xkB
-         2hMGKgZpxDWdkWb3B+UC/Wv2Xo1jwhaYW7ayRoeZIqEJfcw/7ldZsrpYX/cB1kS6+m1Q
-         NTCA==
-X-Gm-Message-State: AOAM533OQdmBHMrOCIpiSpzsmd9JgdrHP6TnGOXbhMCa20YpwsrTJ3Ng
-        XheCBh9KRq7kGcY3/aKC7nDT5w==
-X-Google-Smtp-Source: ABdhPJyUlglvgYT5lkSeMHQ7k65T4T9H4d6kPTiZnBydiNyBWmK3DZY+EBeemqwHrg9qf44ksrKyeg==
-X-Received: by 2002:a05:6830:4111:: with SMTP id w17mr12028953ott.99.1618767501020;
-        Sun, 18 Apr 2021 10:38:21 -0700 (PDT)
-Received: from elm (162-237-133-238.lightspeed.rcsntx.sbcglobal.net. [162.237.133.238])
-        by smtp.gmail.com with ESMTPSA id n104sm2920071ota.27.2021.04.18.10.38.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Apr 2021 10:38:20 -0700 (PDT)
-Date:   Sun, 18 Apr 2021 12:38:19 -0500
-From:   Tyler Hicks <code@tyhicks.com>
-To:     Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     ecryptfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ecryptfs: Fix typo in message
-Message-ID: <20210418173819.GE398325@elm>
-References: <20210224113059.28445-1-s.hauer@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S232424AbhDRRui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 13:50:38 -0400
+Received: from gate.crashing.org ([63.228.1.57]:50864 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232148AbhDRRug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 13:50:36 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 13IHknVD022627;
+        Sun, 18 Apr 2021 12:46:49 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 13IHkmbE022624;
+        Sun, 18 Apr 2021 12:46:48 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Sun, 18 Apr 2021 12:46:48 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: PPC_FPU, ALTIVEC: enable_kernel_fp, put_vr, get_vr
+Message-ID: <20210418174648.GN26583@gate.crashing.org>
+References: <7107fcae-5c7a-ac94-8d89-326f2cd4cd33@infradead.org> <8b1cb0a2-ed3a-7da0-a73a-febbda528703@csgroup.eu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210224113059.28445-1-s.hauer@pengutronix.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8b1cb0a2-ed3a-7da0-a73a-febbda528703@csgroup.eu>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-24 12:30:59, Sascha Hauer wrote:
-> ecryptfs_decrypt_page() issues a warning "Error encrypting extent". This
-> should be "Error decrypting extent" instead.
+On Sun, Apr 18, 2021 at 06:24:29PM +0200, Christophe Leroy wrote:
+> Le 17/04/2021 à 22:17, Randy Dunlap a écrit :
+> >Should the code + Kconfigs/Makefiles handle that kind of
+> >kernel config or should ALTIVEC always mean PPC_FPU as well?
 > 
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> As far as I understand, Altivec is completely independant of FPU in Theory. 
 
-Thanks! This looks good. I'll add the following fixes line while
-applying:
+And, as far as the hardware is concerned, in practice as well.
 
-Fixes: 0216f7f79217 ("eCryptfs: replace encrypt, decrypt, and inode size write")
+> So it should be possible to use Altivec without using FPU.
 
-Tyler
+Yup.
 
-> ---
->  fs/ecryptfs/crypto.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ecryptfs/crypto.c b/fs/ecryptfs/crypto.c
-> index a48116aae02c..0fed4ff02f69 100644
-> --- a/fs/ecryptfs/crypto.c
-> +++ b/fs/ecryptfs/crypto.c
-> @@ -535,7 +535,7 @@ int ecryptfs_decrypt_page(struct page *page)
->  		rc = crypt_extent(crypt_stat, page, page,
->  				  extent_offset, DECRYPT);
->  		if (rc) {
-> -			printk(KERN_ERR "%s: Error encrypting extent; "
-> +			printk(KERN_ERR "%s: Error decrypting extent; "
->  			       "rc = [%d]\n", __func__, rc);
->  			goto out;
->  		}
-> -- 
-> 2.29.2
-> 
+> However, until recently, it was not possible to de-activate FPU support on 
+> book3s/32. I made it possible in order to reduce unneccessary processing on 
+> processors like the 832x that has no FPU.
+
+The processor has to implement FP to be compliant to any version of
+PowerPC, as far as I know?  So that is all done by emulation, including
+all the registers?  Wow painful.
+
+> As far as I can see in cputable.h/.c, 832x is the only book3s/32 without 
+> FPU, and it doesn't have ALTIVEC either.
+
+602 doesn't have double-precision hardware, also no 64-bit FP registers.
+But that CPU was never any widely used :-)
+
+> So we can in the future ensure that Altivec can be used without FPU 
+> support, but for the time being I think it is OK to force selection of FPU 
+> when selecting ALTIVEC in order to avoid build failures.
+
+It is useful to allow MSR[VEC,FP]=1,0 but yeah there are no CPUs that
+have VMX (aka AltiVec) but that do not have FP.  I don't see how making
+that artificial dependency buys anything, but maybe it does?
+
+> >I have patches to fix the build errors with the config as
+> >reported but I don't know if that's the right thing to do...
+
+Neither do we, we cannot see those patches :-)
+
+
+Segher
