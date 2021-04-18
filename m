@@ -2,239 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343373636F4
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 19:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C13C3636F7
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 19:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231728AbhDRRPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 13:15:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51876 "EHLO
+        id S232095AbhDRRRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 13:17:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229783AbhDRRPq (ORCPT
+        with ESMTP id S229783AbhDRRRh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 13:15:46 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526A3C06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 10:15:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=aY80PP37B2z3w6kpNc6Y6xNgTVaXV4qginCwMz3VuA8=; b=X46WcepCJJWF/04qCy4h16rwMj
-        ZLmwlrSMUCZmYmj4T4VyiMGRKSn7FJv7iHYd16u+f1u6AywRyDzvlnz3esrcZNMJrFApRQu4V6iyD
-        P4x8UDxPQjxDv3PGZwLXgiyTRXhfJYZgyVvHO57S3bKQ4DwyjlrArFHu8agA9e0Oo+5yfnqTrKlXM
-        LmlHbNeGxlTQm30VTt6HbPjnM8bRQBJjG+PwzeWzIPWc2aXVhS76YYO0+kKZ6Aw7xKsIBwb2Z7EFz
-        luDatl0OaFuZCsU7K4PToVDY18q9+7///lSHb0jQLlXRA+Zkw++pAJNk3MwGCxWL9w2BhGrr3nP8B
-        luuEQEIA==;
-Received: from [2601:1c0:6280:3f0::df68]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYB0m-008Lfg-D2; Sun, 18 Apr 2021 17:15:08 +0000
-Subject: Re: mmu.c:undefined reference to `patch__hash_page_A0'
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-References: <202102271820.WlZCxtzY-lkp@intel.com>
- <06227600-c5c5-3da7-a495-ae0b0849b62d@infradead.org>
- <ab9d4f9e-add6-900b-9fa7-83d5f7d1108b@csgroup.eu>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <0a301d17-136c-df65-17cc-3c9ddbe06de8@infradead.org>
-Date:   Sun, 18 Apr 2021 10:15:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Sun, 18 Apr 2021 13:17:37 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA58C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 10:17:09 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id a2-20020a0568300082b029028d8118b91fso11936629oto.2
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 10:17:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tyhicks-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=e5GgiM22pWP1aZFXv8DlTMTJWkPxYONKNPyw29JTa8c=;
+        b=sx/0/GpEEQnF3d1Y2TiqNlAkGIfHSJobRKzgvg0geuratkSOutC46rWJai44mLLiOG
+         2WWPeSCUVHYdCAC65Uqvpi4fjvR+NuD2IvE4tZ2gnEdxf0FKVU8ffO/lGEjWeuVQe/nr
+         Au6BKp047FWVKLwy0ojt6rRdugNHtJBa8+TiWdsTRuS5OXqc2LckEa+Vj7sdYNyVwu/T
+         IZx0dueQqyBYxVmdaXfTYpX/diTJNou8bZMK448bstO7hr8IDN/pzPaxSfzuTRhVBLO7
+         tVaQNpW95PzGVyXydtAT+YqW8cF483x6+ddqrxodRxFvjfpZERr2VvE/P5+PHlRna2Yc
+         nXww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=e5GgiM22pWP1aZFXv8DlTMTJWkPxYONKNPyw29JTa8c=;
+        b=ta0+FdGtjIHpXdojSqOX0j5RGpf3YE6E7ztldbvSsuzyO3+MOEyvw2K7ndL9rfRrdS
+         zMwQ0h7awt3QBhoUgz3Z4cAt4TI6+LWTK37kt/wHdbXNXuPSX3/mGNYYdBZ1M2UCa2nq
+         JGPIJsVSdsISCv2NsENX0ALRBS4mH2hVzoBQniXqGCMuaTfv3ludZBcebZ/h/KYqt1JH
+         eTygSmAw7oClcUpUoT0+ywPCVBbUOyodSgJaH0n9zZF/9en7u+pfUzl2aeCfjr9bDbKm
+         /7aMyulul8QN8Yq1rvcDPSej/Dwq2O+DTitNqaKDv9y9IjQFIqKBKkuZkRPtyuftj2aS
+         6NdQ==
+X-Gm-Message-State: AOAM531qKULcjFUbZd+q2W5aQa0k4PkSEnXR1fwEeNL73AjIjoTUUiOG
+        9sXtINvxwsGJtCttvhiYn7nbZg==
+X-Google-Smtp-Source: ABdhPJy8kBG2Vk09CXpw35klZjk1rhjZN5AwiykTU1Uu3CiQedfXQ061SQkqc1TyJdDwpTYie1W7SQ==
+X-Received: by 2002:a05:6830:1f02:: with SMTP id u2mr11630748otg.308.1618766228489;
+        Sun, 18 Apr 2021 10:17:08 -0700 (PDT)
+Received: from elm (162-237-133-238.lightspeed.rcsntx.sbcglobal.net. [162.237.133.238])
+        by smtp.gmail.com with ESMTPSA id g5sm2686461oiy.24.2021.04.18.10.17.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Apr 2021 10:17:08 -0700 (PDT)
+Date:   Sun, 18 Apr 2021 12:17:00 -0500
+From:   Tyler Hicks <code@tyhicks.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
+        "Michael A. Halcrow" <mahalcro@us.ibm.com>,
+        "Michael C. Thompson" <mcthomps@us.ibm.com>,
+        ecryptfs@vger.kernel.org
+Subject: Re: [PATCH 28/31] fs: ecryptfs: crypto: Supply some missing param
+ descriptions and demote abuses
+Message-ID: <20210418171700.GA398325@elm>
+References: <20210330164458.1625478-1-lee.jones@linaro.org>
+ <20210330164458.1625478-29-lee.jones@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <ab9d4f9e-add6-900b-9fa7-83d5f7d1108b@csgroup.eu>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210330164458.1625478-29-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/18/21 3:43 AM, Christophe Leroy wrote:
+On 2021-03-30 17:44:55, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
 > 
+>  fs/ecryptfs/crypto.c:29: warning: expecting prototype for eCryptfs(). Prototype was for DECRYPT() instead
+>  fs/ecryptfs/crypto.c:360: warning: Function parameter or member 'crypt_stat' not described in 'lower_offset_for_page'
+>  fs/ecryptfs/crypto.c:360: warning: Function parameter or member 'page' not described in 'lower_offset_for_page'
+>  fs/ecryptfs/crypto.c:637: warning: Function parameter or member 'crypt_stat' not described in 'ecryptfs_compute_root_iv'
+>  fs/ecryptfs/crypto.c:1386: warning: Function parameter or member 'ecryptfs_dentry' not described in 'ecryptfs_read_metadata'
+>  fs/ecryptfs/crypto.c:1463: warning: Function parameter or member 'filename' not described in 'ecryptfs_encrypt_filename'
+>  fs/ecryptfs/crypto.c:1463: warning: Function parameter or member 'mount_crypt_stat' not described in 'ecryptfs_encrypt_filename'
+>  fs/ecryptfs/crypto.c:1897: warning: Function parameter or member 'encoded_name_size' not described in 'ecryptfs_encrypt_and_encode_filename'
+>  fs/ecryptfs/crypto.c:1897: warning: Function parameter or member 'mount_crypt_stat' not described in 'ecryptfs_encrypt_and_encode_filename'
+>  fs/ecryptfs/crypto.c:1897: warning: Function parameter or member 'name_size' not described in 'ecryptfs_encrypt_and_encode_filename'
+>  fs/ecryptfs/crypto.c:1897: warning: Excess function parameter 'crypt_stat' description in 'ecryptfs_encrypt_and_encode_filename'
+>  fs/ecryptfs/crypto.c:1897: warning: Excess function parameter 'length' description in 'ecryptfs_encrypt_and_encode_filename'
+>  fs/ecryptfs/crypto.c:2006: warning: Function parameter or member 'sb' not described in 'ecryptfs_decode_and_decrypt_filename'
+>  fs/ecryptfs/crypto.c:2006: warning: Excess function parameter 'ecryptfs_dir_dentry' description in 'ecryptfs_decode_and_decrypt_filename'
 > 
-> Le 18/04/2021 à 02:02, Randy Dunlap a écrit :
->> HI--
->>
->> I no longer see this build error.
+> Cc: Tyler Hicks <code@tyhicks.com>
+> Cc: Eric Biggers <ebiggers@google.com>
+> Cc: "Michael A. Halcrow" <mahalcro@us.ibm.com>
+> Cc: "Michael C. Thompson" <mcthomps@us.ibm.com>
+> Cc: ecryptfs@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  fs/ecryptfs/crypto.c | 20 ++++++++++----------
+>  1 file changed, 10 insertions(+), 10 deletions(-)
 > 
-> Fixed by https://github.com/torvalds/linux/commit/acdad8fb4a1574323db88f98a38b630691574e16
+> diff --git a/fs/ecryptfs/crypto.c b/fs/ecryptfs/crypto.c
+> index 7671412b8f0b4..cdcbcf7b5b6c7 100644
+> --- a/fs/ecryptfs/crypto.c
+> +++ b/fs/ecryptfs/crypto.c
+> @@ -1,5 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0-or-later
+> -/**
+> +/*
+>   * eCryptfs: Linux filesystem encryption layer
+>   *
+>   * Copyright (C) 1997-2004 Erez Zadok
+> @@ -350,7 +350,7 @@ static int crypt_scatterlist(struct ecryptfs_crypt_stat *crypt_stat,
+>  	return rc;
+>  }
+>  
+> -/**
+> +/*
+>   * lower_offset_for_page
+>   *
+>   * Convert an eCryptfs page index into a lower byte offset
+> @@ -627,9 +627,8 @@ void ecryptfs_set_default_sizes(struct ecryptfs_crypt_stat *crypt_stat)
+>  	}
+>  }
+>  
+> -/**
+> +/*
+>   * ecryptfs_compute_root_iv
+> - * @crypt_stats
+>   *
+>   * On error, sets the root IV to all 0's.
+>   */
+> @@ -1370,7 +1369,7 @@ int ecryptfs_read_and_validate_xattr_region(struct dentry *dentry,
+>  	return rc;
+>  }
+>  
+> -/**
+> +/*
+>   * ecryptfs_read_metadata
+>   *
+>   * Common entry point for reading file metadata. From here, we could
+> @@ -1448,7 +1447,7 @@ int ecryptfs_read_metadata(struct dentry *ecryptfs_dentry)
+>  	return rc;
+>  }
+>  
+> -/**
+> +/*
+>   * ecryptfs_encrypt_filename - encrypt filename
+>   *
+>   * CBC-encrypts the filename. We do not want to encrypt the same
+> @@ -1876,10 +1875,11 @@ ecryptfs_decode_from_filename(unsigned char *dst, size_t *dst_size,
+>  
+>  /**
+>   * ecryptfs_encrypt_and_encode_filename - converts a plaintext file name to cipher text
+> - * @crypt_stat: The crypt_stat struct associated with the file anem to encode
+> + * @encoded_name: The encrypted name
+> + * @encoded_name_size: Length of the encrypted name
+> + * @mount_crypt_stat: The crypt_stat struct associated with the file anem to encode
+
+s/anem/name/
+
+I'll fix this up when applying.
+
+Tyler
+
+>   * @name: The plaintext name
+> - * @length: The length of the plaintext
+> - * @encoded_name: The encypted name
+> + * @name_size: The length of the plaintext name
+>   *
+>   * Encrypts and encodes a filename into something that constitutes a
+>   * valid filename for a filesystem, with printable characters.
+> @@ -1991,7 +1991,7 @@ static bool is_dot_dotdot(const char *name, size_t name_size)
+>   * ecryptfs_decode_and_decrypt_filename - converts the encoded cipher text name to decoded plaintext
+>   * @plaintext_name: The plaintext name
+>   * @plaintext_name_size: The plaintext name size
+> - * @ecryptfs_dir_dentry: eCryptfs directory dentry
+> + * @sb: Ecryptfs's super_block
+>   * @name: The filename in cipher text
+>   * @name_size: The cipher text name size
+>   *
+> -- 
+> 2.27.0
 > 
->> However:
->>
->> On 2/27/21 2:24 AM, kernel test robot wrote:
->>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->>> head:   3fb6d0e00efc958d01c2f109c8453033a2d96796
->>> commit: 259149cf7c3c6195e6199e045ca988c31d081cab powerpc/32s: Only build hash code when CONFIG_PPC_BOOK3S_604 is selected
->>> date:   4 weeks ago
->>> config: powerpc64-randconfig-r013-20210227 (attached as .config)
->>
->> ktr/lkp, this is a PPC32 .config file that is attached, not PPC64.
->>
->> Also:
->>
->>> compiler: powerpc-linux-gcc (GCC) 9.3.0
-> 
-> ...
-> 
->>
->> I do see this build error:
->>
->> powerpc-linux-ld: arch/powerpc/boot/wrapper.a(decompress.o): in function `partial_decompress':
->> decompress.c:(.text+0x1f0): undefined reference to `__decompress'
->>
->> when either
->> CONFIG_KERNEL_LZO=y
->> or
->> CONFIG_KERNEL_LZMA=y
->>
->> but the build succeeds when either
->> CONFIG_KERNEL_GZIP=y
->> or
->> CONFIG_KERNEL_XZ=y
->>
->> I guess that is due to arch/powerpc/boot/decompress.c doing this:
->>
->> #ifdef CONFIG_KERNEL_GZIP
->> #    include "decompress_inflate.c"
->> #endif
->>
->> #ifdef CONFIG_KERNEL_XZ
->> #    include "xz_config.h"
->> #    include "../../../lib/decompress_unxz.c"
->> #endif
->>
->>
->> It would be nice to require one of KERNEL_GZIP or KERNEL_XZ
->> to be set/enabled (maybe unless a uImage is being built?).
-> 
-> 
-> Can you test by https://patchwork.ozlabs.org/project/linuxppc-dev/patch/a74fce4dfc9fa32da6ce3470bbedcecf795de1ec.1591189069.git.christophe.leroy@csgroup.eu/ ?
-
-Hi Christophe,
-
-I get build errors for both LZO and LZMA:
-
-for CONFIG_KERNEL_LZO=y:
-
-In file included from ../lib/decompress_unlzo.c:26:
-../include/linux/lzo.h:24:48: error: unknown type name 'size_t'
-   24 | int lzo1x_1_compress(const unsigned char *src, size_t src_len,
-      |                                                ^~~~~~
-../include/linux/lzo.h:1:1: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
-  +++ |+#include <stddef.h>
-    1 | /* SPDX-License-Identifier: GPL-2.0 */
-../include/linux/lzo.h:25:28: error: unknown type name 'size_t'
-   25 |        unsigned char *dst, size_t *dst_len, void *wrkmem);
-      |                            ^~~~~~
-../include/linux/lzo.h:25:28: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
-../include/linux/lzo.h:28:51: error: unknown type name 'size_t'
-   28 | int lzorle1x_1_compress(const unsigned char *src, size_t src_len,
-      |                                                   ^~~~~~
-../include/linux/lzo.h:28:51: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
-../include/linux/lzo.h:29:28: error: unknown type name 'size_t'
-   29 |        unsigned char *dst, size_t *dst_len, void *wrkmem);
-      |                            ^~~~~~
-../include/linux/lzo.h:29:28: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
-../include/linux/lzo.h:32:53: error: unknown type name 'size_t'
-   32 | int lzo1x_decompress_safe(const unsigned char *src, size_t src_len,
-      |                                                     ^~~~~~
-../include/linux/lzo.h:32:53: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
-../include/linux/lzo.h:33:26: error: unknown type name 'size_t'
-   33 |      unsigned char *dst, size_t *dst_len);
-      |                          ^~~~~~
-../include/linux/lzo.h:33:26: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
-  CC      drivers/char/tpm/tpm2-space.o
-  CC [M]  drivers/regulator/da9121-regulator.o
-  AR      drivers/iommu/built-in.a
-../lib/decompress_unlzo.c: In function 'unlzo':
-../lib/decompress_unlzo.c:237:8: error: implicit declaration of function 'lzo1x_decompress_safe' [-Werror=implicit-function-declaration]
-  237 |    r = lzo1x_decompress_safe((u8 *) in_buf, src_len,
-      |        ^~~~~~~~~~~~~~~~~~~~~
-
-In file included from ../arch/powerpc/boot/ops.h:15,
-                 from ../arch/powerpc/boot/decompress.c:12:
-../arch/powerpc/boot/types.h:50:15: error: expected identifier before numeric constant
-   50 | #define false 0
-      |               ^
-../include/linux/stddef.h:11:2: note: in expansion of macro 'false'
-   11 |  false = 0,
-      |  ^~~~~
-In file included from ../include/linux/kasan-checks.h:5,
-                 from ../include/asm-generic/rwonce.h:26,
-                 from ./arch/powerpc/include/generated/asm/rwonce.h:1,
-                 from ../include/linux/compiler.h:248,
-                 from ../arch/powerpc/boot/../../../lib/decompress_unlzo.c:32,
-                 from ../arch/powerpc/boot/decompress.c:43:
-../include/linux/types.h:30:17: error: conflicting types for 'bool'
-   30 | typedef _Bool   bool;
-      |                 ^~~~
-In file included from ../arch/powerpc/boot/ops.h:15,
-                 from ../arch/powerpc/boot/decompress.c:12:
-../arch/powerpc/boot/types.h:43:13: note: previous declaration of 'bool' was here
-   43 | typedef int bool;
-      |             ^~~~
-In file included from ./arch/powerpc/include/generated/asm/rwonce.h:1,
-                 from ../include/linux/compiler.h:248,
-                 from ../arch/powerpc/boot/../../../lib/decompress_unlzo.c:32,
-                 from ../arch/powerpc/boot/decompress.c:43:
-../include/asm-generic/rwonce.h:64:31: error: expected ';' before 'unsigned'
-   64 | static __no_sanitize_or_inline
-      |                               ^
-      |                               ;
-   65 | unsigned long __read_once_word_nocheck(const void *addr)
-      | ~~~~~~~~                       
-../include/asm-generic/rwonce.h:82:28: error: expected ';' before 'unsigned'
-   82 | static __no_kasan_or_inline
-      |                            ^
-      |                            ;
-   83 | unsigned long read_word_at_a_time(const void *addr)
-      | ~~~~~~~~                    
-In file included from ../arch/powerpc/boot/decompress.c:43:
-../arch/powerpc/boot/../../../lib/decompress_unlzo.c: In function 'parse_header':
-../arch/powerpc/boot/../../../lib/decompress_unlzo.c:48:5: warning: variable 'level' set but not used [-Wunused-but-set-variable]
-   48 |  u8 level = 0;
-      |     ^~~~~
-
-
-and for CONFIG_KERNEL_LZMA=y:
-(this looks odd to me since it says "unlzo", but I repeated it
-after a 'make clean' and got the same errors.)
-
-In file included from ../lib/decompress_unlzo.c:26:
-../include/linux/lzo.h:24:48: error: unknown type name 'size_t'
-   24 | int lzo1x_1_compress(const unsigned char *src, size_t src_len,
-      |                                                ^~~~~~
-../include/linux/lzo.h:1:1: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
-  +++ |+#include <stddef.h>
-    1 | /* SPDX-License-Identifier: GPL-2.0 */
-../include/linux/lzo.h:25:28: error: unknown type name 'size_t'
-   25 |        unsigned char *dst, size_t *dst_len, void *wrkmem);
-      |                            ^~~~~~
-../include/linux/lzo.h:25:28: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
-../include/linux/lzo.h:28:51: error: unknown type name 'size_t'
-   28 | int lzorle1x_1_compress(const unsigned char *src, size_t src_len,
-      |                                                   ^~~~~~
-../include/linux/lzo.h:28:51: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
-../include/linux/lzo.h:29:28: error: unknown type name 'size_t'
-   29 |        unsigned char *dst, size_t *dst_len, void *wrkmem);
-      |                            ^~~~~~
-../include/linux/lzo.h:29:28: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
-../include/linux/lzo.h:32:53: error: unknown type name 'size_t'
-   32 | int lzo1x_decompress_safe(const unsigned char *src, size_t src_len,
-      |                                                     ^~~~~~
-../include/linux/lzo.h:32:53: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
-../include/linux/lzo.h:33:26: error: unknown type name 'size_t'
-   33 |      unsigned char *dst, size_t *dst_len);
-      |                          ^~~~~~
-../include/linux/lzo.h:33:26: note: 'size_t' is defined in header '<stddef.h>'; did you forget to '#include <stddef.h>'?
-../lib/decompress_unlzo.c: In function 'unlzo':
-../lib/decompress_unlzo.c:237:8: error: implicit declaration of function 'lzo1x_decompress_safe' [-Werror=implicit-function-declaration]
-  237 |    r = lzo1x_decompress_safe((u8 *) in_buf, src_len,
-      |        ^~~~~~~~~~~~~~~~~~~~~
-
-
--- 
-~Randy
-
