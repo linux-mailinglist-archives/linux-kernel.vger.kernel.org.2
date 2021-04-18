@@ -2,174 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC2E363481
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 11:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 932CA363484
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Apr 2021 11:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231185AbhDRJrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 05:47:42 -0400
-Received: from smtp-35.italiaonline.it ([213.209.10.35]:45926 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229544AbhDRJrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 05:47:41 -0400
-Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
- ([95.244.94.151])
-        by smtp-35.iol.local with ESMTPA
-        id Y41ClAcrIpK9wY41HlZ94m; Sun, 18 Apr 2021 11:47:12 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1618739232; bh=FdbYlXhVuQEKZrfvlD50hIEZK6SUIqLOeYeJss0nRPA=;
-        h=From;
-        b=W/KBl1UdKQOXa7Vf9kz/MNck841XJqPW05FBTKPipOItitfLIF1q6W8BC5oI5Nx62
-         1N3aTG29oRDME/r5Op8olxE8jqKG1zj08IqLHogwoCeis7rwWc47IOYPm6zVSW3RRK
-         UwD0sqP2ghqFHRhx9UKaj+1is56Z3QIIT86IB5VNo0itEYsjq1zY0y4b8OpPGQ3NHr
-         5vxKwNdSNd99D9vqBLucECUkzTxrp8Ow6EnfOWjU+iiAxs9LcsortqhLcQIctjvqd4
-         +aIhq3MH17vB6szioeg1Qz/NqQH9XVVX57UAReLTXoTRz4Zh/U1QOo9lOP59cy8lM+
-         EH4hW4RXuL32w==
-X-CNFS-Analysis: v=2.4 cv=A9ipg4aG c=1 sm=1 tr=0 ts=607c0020 cx=a_exe
- a=ugxisoNCKEotYwafST++Mw==:117 a=ugxisoNCKEotYwafST++Mw==:17
- a=RNOFN41U3FZ75c9ZyJUA:9
-From:   Dario Binacchi <dariobin@libero.it>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dario Binacchi <dariobin@libero.it>,
-        Dimitris Lampridis <dlampridis@logikonlabs.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
-Subject: [PATCH v4] serial: omap: fix rs485 half-duplex filtering
-Date:   Sun, 18 Apr 2021 11:47:05 +0200
-Message-Id: <20210418094705.27014-1-dariobin@libero.it>
-X-Mailer: git-send-email 2.17.1
-X-CMAE-Envelope: MS4xfJJUDC1EHnfgAYrCbcZSgBaVQevW0CJJkRWSfJVHAGCC5m/3BZV/WvHlyYgzHClLiA27tmHj+gdnvichinwUcxHq5bwTpMh4OsfnF39cE5QZkWoXVlbO
- I8sAbi8wA5f5xBDPtuVrIWgK06ObZNmz4qYoNiiyvZsTOzLB4oNngJTrBN71JF/AmGMIKg+ef//15SMN8OgK+WHv6Ird+8lKGym0SlzrMgaFmJtLCj6KWqyF
- Yl+EUh5zPvkaRRwnIU8kqOfYSqi5JAMlHSuG/hnmJoSEjZOQQp3sxK3DMnAtPL14DAkkNPV5DeDuECqSNnMNo9ggxGLgg9knbVMeDonVlXdRmysqWWb2dqnO
- xzUPDf7ujo9AmWN/l0jJ0PmKa4xRyZX6QsNhXLJr7bLDBSVzIfmYoS7Sq1KcfPlAazYZBOYc
+        id S234535AbhDRJsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 05:48:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46634 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229544AbhDRJsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 05:48:35 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D248261245;
+        Sun, 18 Apr 2021 09:48:04 +0000 (UTC)
+Date:   Sun, 18 Apr 2021 10:48:35 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Puranjay Mohan <puranjay12@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v4 2/2] iio: temperature: add driver support for ti
+ tmp117
+Message-ID: <20210418104835.3ac0e311@jic23-huawei>
+In-Reply-To: <CAHp75VfN5J747w6o=A2eng+9SV_2L-NH28O=sGRuxGz_oxPh-Q@mail.gmail.com>
+References: <20210407182147.77221-1-puranjay12@gmail.com>
+        <20210407182147.77221-3-puranjay12@gmail.com>
+        <20210411155420.318e866e@jic23-huawei>
+        <CAHp75VcQYLRJ-p4CWJyk3h0=nL=TqwEFAxkO+z1Nbg8=3Fchyg@mail.gmail.com>
+        <CAHp75VfN5J747w6o=A2eng+9SV_2L-NH28O=sGRuxGz_oxPh-Q@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Data received during half-duplex transmission must be filtered.
-If the target device responds quickly, emptying the FIFO at the end of
-the transmission can erase not only the echo characters but also part of
-the response message.
-By keeping the receive interrupt enabled even during transmission, it
-allows you to filter each echo character and only in a number equal to
-those transmitted.
-The issue was generated by a target device that started responding
-240us later having received a request in communication at 115200bps.
-Sometimes, some messages received by the target were missing some of the
-first bytes.
+On Sun, 11 Apr 2021 21:08:29 +0300
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
 
-Fixes: 3a13884abea0 ("tty/serial: omap: empty the RX FIFO at the end of half-duplex TX")
-Signed-off-by: Dario Binacchi <dariobin@libero.it>
+> On Sun, Apr 11, 2021 at 9:07 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Sun, Apr 11, 2021 at 5:53 PM Jonathan Cameron <jic23@kernel.org> wrote:  
+> > > On Wed,  7 Apr 2021 23:51:47 +0530
+> > > Puranjay Mohan <puranjay12@gmail.com> wrote:  
+> 
+> > Good point, but better is to use clamp_t(s16, ...) rather than explicit casting.  
+> 
+> Sorry, I meant clamp_t(int, ...) of course, otherwise it will give wrong values.
+I've switched it over to this which is indeed nicer.
 
+Jonathan
 
----
-
-Changes in v4:
-- Change the type of the rs485_tx_filter_count variable from atomic_t
-  to unsigned int and related read / write accesses.
-
-Changes in v3:
-- Add 'Fixes' tag
-
-Changes in v2:
-- Fix compiling error
-
- drivers/tty/serial/omap-serial.c | 39 ++++++++++++++++++++------------
- 1 file changed, 24 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/tty/serial/omap-serial.c b/drivers/tty/serial/omap-serial.c
-index 76b94d0ff586..f8fafceb5803 100644
---- a/drivers/tty/serial/omap-serial.c
-+++ b/drivers/tty/serial/omap-serial.c
-@@ -159,6 +159,8 @@ struct uart_omap_port {
- 	u32			calc_latency;
- 	struct work_struct	qos_work;
- 	bool			is_suspending;
-+
-+	unsigned int		rs485_tx_filter_count;
- };
- 
- #define to_uart_omap_port(p) ((container_of((p), struct uart_omap_port, port)))
-@@ -328,19 +330,6 @@ static void serial_omap_stop_tx(struct uart_port *port)
- 		serial_out(up, UART_IER, up->ier);
- 	}
- 
--	if ((port->rs485.flags & SER_RS485_ENABLED) &&
--	    !(port->rs485.flags & SER_RS485_RX_DURING_TX)) {
--		/*
--		 * Empty the RX FIFO, we are not interested in anything
--		 * received during the half-duplex transmission.
--		 */
--		serial_out(up, UART_FCR, up->fcr | UART_FCR_CLEAR_RCVR);
--		/* Re-enable RX interrupts */
--		up->ier |= UART_IER_RLSI | UART_IER_RDI;
--		up->port.read_status_mask |= UART_LSR_DR;
--		serial_out(up, UART_IER, up->ier);
--	}
--
- 	pm_runtime_mark_last_busy(up->dev);
- 	pm_runtime_put_autosuspend(up->dev);
- }
-@@ -366,6 +355,10 @@ static void transmit_chars(struct uart_omap_port *up, unsigned int lsr)
- 		serial_out(up, UART_TX, up->port.x_char);
- 		up->port.icount.tx++;
- 		up->port.x_char = 0;
-+		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
-+		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX))
-+			up->rs485_tx_filter_count++;
-+
- 		return;
- 	}
- 	if (uart_circ_empty(xmit) || uart_tx_stopped(&up->port)) {
-@@ -377,6 +370,10 @@ static void transmit_chars(struct uart_omap_port *up, unsigned int lsr)
- 		serial_out(up, UART_TX, xmit->buf[xmit->tail]);
- 		xmit->tail = (xmit->tail + 1) & (UART_XMIT_SIZE - 1);
- 		up->port.icount.tx++;
-+		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
-+		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX))
-+			up->rs485_tx_filter_count++;
-+
- 		if (uart_circ_empty(xmit))
- 			break;
- 	} while (--count > 0);
-@@ -420,7 +417,7 @@ static void serial_omap_start_tx(struct uart_port *port)
- 
- 	if ((port->rs485.flags & SER_RS485_ENABLED) &&
- 	    !(port->rs485.flags & SER_RS485_RX_DURING_TX))
--		serial_omap_stop_rx(port);
-+		up->rs485_tx_filter_count = 0;
- 
- 	serial_omap_enable_ier_thri(up);
- 	pm_runtime_mark_last_busy(up->dev);
-@@ -491,8 +488,13 @@ static void serial_omap_rlsi(struct uart_omap_port *up, unsigned int lsr)
- 	 * Read one data character out to avoid stalling the receiver according
- 	 * to the table 23-246 of the omap4 TRM.
- 	 */
--	if (likely(lsr & UART_LSR_DR))
-+	if (likely(lsr & UART_LSR_DR)) {
- 		serial_in(up, UART_RX);
-+		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
-+		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX) &&
-+		    up->rs485_tx_filter_count)
-+			up->rs485_tx_filter_count--;
-+	}
- 
- 	up->port.icount.rx++;
- 	flag = TTY_NORMAL;
-@@ -543,6 +545,13 @@ static void serial_omap_rdi(struct uart_omap_port *up, unsigned int lsr)
- 		return;
- 
- 	ch = serial_in(up, UART_RX);
-+	if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
-+	    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX) &&
-+	    up->rs485_tx_filter_count) {
-+		up->rs485_tx_filter_count--;
-+		return;
-+	}
-+
- 	flag = TTY_NORMAL;
- 	up->port.icount.rx++;
- 
--- 
-2.17.1
+> 
+> > I always consider explicit casting in C (and esp. in Linux kernel) is
+> > a red flag. Should be really rarely needed.  
+> 
+> 
+> 
 
