@@ -2,136 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3182363E98
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5822363E90
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238579AbhDSJeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 05:34:46 -0400
-Received: from gw.atmark-techno.com ([13.115.124.170]:37258 "EHLO
-        gw.atmark-techno.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237860AbhDSJej (ORCPT
+        id S238540AbhDSJei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 05:34:38 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:3340 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237860AbhDSJeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 05:34:39 -0400
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-        by gw.atmark-techno.com (Postfix) with ESMTPS id 8EF1580490
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 18:34:08 +0900 (JST)
-Received: by mail-il1-f197.google.com with SMTP id i27-20020a056e021d1bb02901699edaa0aaso10873849ila.12
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 02:34:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=f9v+Sm8mKFEbQyXi/sN2tJHr2LOa9v0CsJoz/H5l6cU=;
-        b=DiVQ7koP22ctz4HHQKAKfB5+ZmsQ1OtLX1vcKNImeLTB2RrmnuXjHRI5ls9hjgRTEv
-         Yri+BW56jZqMFZ6kYOQ0DvwhwL5THZNmO9ejTP5xXf0wUhB2M777kEvcb5962tPto7D7
-         M2cir+8x3JHVFLTilRkw7wyPWthmidr3TsjT6nuI2lze2TYKn9tlKwV6Wtvhn3JQMoWF
-         gQqs/EwZfu7rpqOTZ9nlZk8FK7L0KCWYmK8AL76fyMZBZTnYCX06tt6okYZeW806J68A
-         JlZDEH0SdkAk0jdtRJiaP6VTQ0RQDTWm6GF+dhC9T21mUS+qEAHHuDjExaIzOWhXEMJ1
-         UE4A==
-X-Gm-Message-State: AOAM532MdpWwYi5aEsDI9W0P/wfBX3sFAxpFvB6qBN6HrlCAK/f78a7r
-        BYvYkgZGkAit2LehCwdE6ez6rUiEGD98N7gnO/SuCeVrydvm/YtHa2l4zYcP8/7ft2F9Ft5Du9M
-        6mEGU265DnQqJnohlWcYJnZiWe+z+
-X-Received: by 2002:a63:1665:: with SMTP id 37mr11208897pgw.31.1618824837072;
-        Mon, 19 Apr 2021 02:33:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw3BVfHB/Iu3InVzb+YLUkuY7/BfcYMlC0sOGsbJiks+G4SQp5aPsproxuobb7vRE8Qif9k+g==
-X-Received: by 2002:a63:1665:: with SMTP id 37mr11208853pgw.31.1618824836841;
-        Mon, 19 Apr 2021 02:33:56 -0700 (PDT)
-Received: from pc-0115 (103.131.189.35.bc.googleusercontent.com. [35.189.131.103])
-        by smtp.gmail.com with ESMTPSA id x18sm10982637pjn.51.2021.04.19.02.33.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 19 Apr 2021 02:33:56 -0700 (PDT)
-Received: from martinet by pc-0115 with local (Exim 4.94)
-        (envelope-from <martinet@pc-0115>)
-        id 1lYQHy-002k7D-3h; Mon, 19 Apr 2021 18:33:54 +0900
-Date:   Mon, 19 Apr 2021 18:33:44 +0900
-From:   Dominique MARTINET <dominique.martinet@atmark-techno.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Alice Guo (OSS)" <alice.guo@oss.nxp.com>,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        horia.geanta@nxp.com, aymen.sghaier@nxp.com,
-        herbert@gondor.apana.org.au, davem@davemloft.net, tony@atomide.com,
-        geert+renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
-        vkoul@kernel.org, peter.ujfalusi@gmail.com, a.hajda@samsung.com,
-        narmstrong@baylibre.com, robert.foss@linaro.org, airlied@linux.ie,
-        daniel@ffwll.ch, khilman@baylibre.com, tomba@kernel.org,
-        jyri.sarha@iki.fi, joro@8bytes.org, will@kernel.org,
-        mchehab@kernel.org, ulf.hansson@linaro.org,
-        adrian.hunter@intel.com, kishon@ti.com, kuba@kernel.org,
-        linus.walleij@linaro.org, Roy.Pledge@nxp.com, leoyang.li@nxp.com,
-        ssantosh@kernel.org, matthias.bgg@gmail.com, edubezval@gmail.com,
-        j-keerthy@ti.com, balbi@kernel.org, linux@prisktech.co.nz,
-        stern@rowland.harvard.edu, wim@linux-watchdog.org,
-        linux@roeck-us.net, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-media@vger.kernel.org,
-        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
-        linux-phy@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-staging@lists.linux.dev,
-        linux-mediatek@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [RFC v1 PATCH 3/3] driver: update all the code that use
- soc_device_match
-Message-ID: <YH1OeFy+SepIYYG0@atmark-techno.com>
-References: <20210419042722.27554-1-alice.guo@oss.nxp.com>
- <20210419042722.27554-4-alice.guo@oss.nxp.com>
- <YH0O907dfGY9jQRZ@atmark-techno.com>
- <CAMuHMdVY1SLZ0K30T2pimyrR6Mm=VoSTO=L-xxCy2Bj7_kostw@mail.gmail.com>
+        Mon, 19 Apr 2021 05:34:36 -0400
+Received: from DGGEML403-HUB.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FP1kg29bRz14J9b;
+        Mon, 19 Apr 2021 17:30:19 +0800 (CST)
+Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
+ DGGEML403-HUB.china.huawei.com (10.3.17.33) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Mon, 19 Apr 2021 17:33:59 +0800
+Received: from [10.174.187.128] (10.174.187.128) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 19 Apr 2021 17:33:58 +0800
+Subject: Re: [PATCH v6 03/10] KVM: selftests: Use flag CLOCK_MONOTONIC_RAW for
+ timing
+To:     David Laight <David.Laight@ACULAB.COM>,
+        Paolo Bonzini <pbonzini@redhat.com>
+CC:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Ben Gardon <bgardon@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        "wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>,
+        "yuzenghui@huawei.com" <yuzenghui@huawei.com>,
+        kvm <kvm@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210330080856.14940-1-wangyanan55@huawei.com>
+ <20210330080856.14940-4-wangyanan55@huawei.com>
+ <1f892f30-1a72-1bcb-462f-b3d6f2bababb@redhat.com>
+ <82def592-e36c-25c3-c8c5-84c9be83e926@huawei.com>
+ <8f36c1973c8147858000dd2a28d046ce@AcuMS.aculab.com>
+From:   "wangyanan (Y)" <wangyanan55@huawei.com>
+Message-ID: <4ab0ec23-51c7-0258-4776-3268120f0c9e@huawei.com>
+Date:   Mon, 19 Apr 2021 17:33:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdVY1SLZ0K30T2pimyrR6Mm=VoSTO=L-xxCy2Bj7_kostw@mail.gmail.com>
+In-Reply-To: <8f36c1973c8147858000dd2a28d046ce@AcuMS.aculab.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.187.128]
+X-ClientProxiedBy: dggeme711-chm.china.huawei.com (10.1.199.107) To
+ dggpemm500023.china.huawei.com (7.185.36.83)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Geert Uytterhoeven wrote on Mon, Apr 19, 2021 at 11:03:24AM +0200:
-> > This is going to need quite some more work to be acceptable, in my
-> > opinion, but I think it should be possible.
-> 
-> In general, this is very hard to do, IMHO. Some drivers may be used on
-> multiple platforms, some of them registering an SoC device, some of
-> them not registering an SoC device.  So there is no way to know the
-> difference between "SoC device not registered, intentionally", and
-> "SoC device not yet registered".
+On 2021/4/19 16:22, David Laight wrote:
+> From: wangyanan (Y)
+>> Sent: 19 April 2021 07:40
+>>
+>> Hi Paolo,
+>>
+>> On 2021/4/17 21:23, Paolo Bonzini wrote:
+>>> On 30/03/21 10:08, Yanan Wang wrote:
+>>>> In addition to function of CLOCK_MONOTONIC, flag CLOCK_MONOTONIC_RAW can
+>>>> also shield possiable impact of NTP, which can provide more robustness.
+>>>>
+>>>> Suggested-by: Vitaly Kuznetsov<vkuznets@redhat.com>
+>>>> Signed-off-by: Yanan Wang<wangyanan55@huawei.com>
+>>>> Reviewed-by: Ben Gardon<bgardon@google.com>
+>>>> Reviewed-by: Andrew Jones<drjones@redhat.com>
+>>> I'm not sure about this one, is the effect visible?
+>>>
+>> In practice, difference between results got with CLOCK_MONOTONIC and
+>> CLOCK_MONOTONIC_RAW
+>> actually is too little to be visible. But if just in theory,
+>> CLOCK_MONOTONIC_RAW can ensure time results
+>> of the compared tests are based on the same local oscillator frequency,
+>> which is not subject to possible
+>> NTP frequency adjustment. Change in this patch seems like a bit of
+>> optimization.
+> The real annoyance is when NTP is realigning the local clock.
+> This typically happens after boot - but can take quite a few
+> minutes (don't think it can quite get to an hour).
+> (I think something similar is caused by leap seconds.)
+>
+> During this period CLOCK_MONOTONIC can run at a significantly
+> different rate from 'real time'.
+> This may not matter for timing self tests, but is significant
+> for RTP audio.
+>
+> The problem there is that you want the NTP corrected time
+> during 'normal running' because the small correction (for
+> crystal error) is useful.
+>
+> But the kernel HR timers are only defined for CLOCK_MONOTONIC
+> and the userspace requests for CLOCK_MONOTONIC_RAW are likely
+> to be real system calls.
+>
+> What you really want is a clock whose frequency is adjusted
+> by NTP but doesn't have the NTP offset adjuctments.
+> In reality this ought to be CLOCK_MONOTONIC.
+Hi David,
 
-Hm, good point, I was probably a bit too optimistic if there are devices
-which don't register any soc yet have drivers which want one; I don't
-see how to make the difference indeed... And that does mean we can't
-just defer all the time.
-
-> soc_device_match() should only be used as a last resort, to identify
-> systems that cannot be identified otherwise.  Typically this is used for
-> quirks, which should only be enabled on a very specific subset of
-> systems.  IMHO such systems should make sure soc_device_match()
-> is available early, by registering their SoC device early.
-
-I definitely agree there, my suggestion to defer was only because I know
-of no other way to influence the ordering of drivers loading reliably
-and gave up on soc being init'd early.
-
-In this particular case the problem is that since 7d981405d0fd ("soc:
-imx8m: change to use platform driver") the soc probe tries to use the
-nvmem driver for ocotp fuses for imx8m devices, which isn't ready yet.
-So soc loading gets pushed back to the end of the list because it gets
-defered and other drivers relying on soc_device_match get confused
-because they wrongly think a device doesn't match a quirk when it
-actually does.
-
-If there is a way to ensure the nvmem driver gets loaded before the soc,
-that would also solve the problem nicely, and avoid the need to mess
-with all the ~50 drivers which use it.
-
-
-Is there a way to control in what order drivers get loaded? Something in
-the dtb perhaps?
-
+I see now, much thanks for the above explanation. :)
+Still have a lot to learn about this part.
 
 Thanks,
--- 
-Dominique
+Yanan
+>
+> 	David
+>
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
