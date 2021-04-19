@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8FF3644BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6726E364520
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241206AbhDSNc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:32:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34378 "EHLO mail.kernel.org"
+        id S243208AbhDSNkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:40:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241640AbhDSNXc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:23:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23B886140C;
-        Mon, 19 Apr 2021 13:18:49 +0000 (UTC)
+        id S240560AbhDSNZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:25:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54ADD613DB;
+        Mon, 19 Apr 2021 13:20:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618838330;
-        bh=w6NUU2zwGaJSfyi1+pqBF72a5+HR4v5RTHUFzX3Sbu4=;
+        s=korg; t=1618838458;
+        bh=M8fbSehNGqt/LQzch9K75dWLf5XKFDbFtPsW/hYP+gg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cUKt3Kv8qNJUZRRZf+M8+6/wBszgsNlv6t1E5Y+AbBy9JORmv474uRzZNIs/AC1MH
-         gpXalUSGYiq4ybeeGuszAXwq390pFQ2jOtsjF5rif6OOKtJ7wN2wiya5njuWfrBQYq
-         DqVmUHtykmNefUJ/dOXQ30VPKbuVCfhhtQ5vMLjM=
+        b=B7eYc5y98V5KG/XLdtXYiDMi5CRri0zUELOSeZnEfZYVgJYxxjF/qq8LAmO3GYDJE
+         OEesR3Gy2Oyusi67Y3drAvE4lQqiGDE7dvJUVA0UlEbO6sSyNo1jKQ66spbGCykar2
+         TZDCDUJv6aLHbPStg6GvMr81SZOr0zlRjXYcufAM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
+        stable@vger.kernel.org, Alexander Shiyan <shc_work@mail.ru>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 21/73] drm/msm: Fix a5xx/a6xx timestamps
-Date:   Mon, 19 Apr 2021 15:06:12 +0200
-Message-Id: <20210419130524.512482513@linuxfoundation.org>
+Subject: [PATCH 5.4 22/73] ASoC: fsl_esai: Fix TDM slot setup for I2S mode
+Date:   Mon, 19 Apr 2021 15:06:13 +0200
+Message-Id: <20210419130524.544689679@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210419130523.802169214@linuxfoundation.org>
 References: <20210419130523.802169214@linuxfoundation.org>
@@ -40,53 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+From: Alexander Shiyan <shc_work@mail.ru>
 
-[ Upstream commit 9fbd3088351b92e8c2cef6e37a39decb12a8d5bb ]
+[ Upstream commit e7a48c710defa0e0fef54d42b7d9e4ab596e2761 ]
 
-They were reading a counter that was configured to ALWAYS_COUNT (ie.
-cycles that the GPU is doing something) rather than ALWAYS_ON.  This
-isn't the thing that userspace is looking for.
+When using the driver in I2S TDM mode, the fsl_esai_startup()
+function rewrites the number of slots previously set by the
+fsl_esai_set_dai_tdm_slot() function to 2.
+To fix this, let's use the saved slot count value or, if TDM
+is not used and the number of slots is not set, the driver will use
+the default value (2), which is set by fsl_esai_probe().
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
-Acked-by: Jordan Crouse <jordan@cosmicpenguin.net>
-Message-Id: <20210325012358.1759770-2-robdclark@gmail.com>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Link: https://lore.kernel.org/r/20210402081405.9892-1-shc_work@mail.ru
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 4 ++--
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/fsl/fsl_esai.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-index f84049119f1c..e3579e5ffa14 100644
---- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
-@@ -1131,8 +1131,8 @@ static int a5xx_pm_suspend(struct msm_gpu *gpu)
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index 84290be778f0..33ade79fa032 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -494,11 +494,13 @@ static int fsl_esai_startup(struct snd_pcm_substream *substream,
+ 				   ESAI_SAICR_SYNC, esai_priv->synchronous ?
+ 				   ESAI_SAICR_SYNC : 0);
  
- static int a5xx_get_timestamp(struct msm_gpu *gpu, uint64_t *value)
- {
--	*value = gpu_read64(gpu, REG_A5XX_RBBM_PERFCTR_CP_0_LO,
--		REG_A5XX_RBBM_PERFCTR_CP_0_HI);
-+	*value = gpu_read64(gpu, REG_A5XX_RBBM_ALWAYSON_COUNTER_LO,
-+		REG_A5XX_RBBM_ALWAYSON_COUNTER_HI);
+-		/* Set a default slot number -- 2 */
++		/* Set slots count */
+ 		regmap_update_bits(esai_priv->regmap, REG_ESAI_TCCR,
+-				   ESAI_xCCR_xDC_MASK, ESAI_xCCR_xDC(2));
++				   ESAI_xCCR_xDC_MASK,
++				   ESAI_xCCR_xDC(esai_priv->slots));
+ 		regmap_update_bits(esai_priv->regmap, REG_ESAI_RCCR,
+-				   ESAI_xCCR_xDC_MASK, ESAI_xCCR_xDC(2));
++				   ESAI_xCCR_xDC_MASK,
++				   ESAI_xCCR_xDC(esai_priv->slots));
+ 	}
  
- 	return 0;
- }
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index ab75f0309d4b..df2656e57991 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -773,8 +773,8 @@ static int a6xx_get_timestamp(struct msm_gpu *gpu, uint64_t *value)
- 	/* Force the GPU power on so we can read this register */
- 	a6xx_gmu_set_oob(&a6xx_gpu->gmu, GMU_OOB_GPU_SET);
- 
--	*value = gpu_read64(gpu, REG_A6XX_RBBM_PERFCTR_CP_0_LO,
--		REG_A6XX_RBBM_PERFCTR_CP_0_HI);
-+	*value = gpu_read64(gpu, REG_A6XX_CP_ALWAYS_ON_COUNTER_LO,
-+		REG_A6XX_CP_ALWAYS_ON_COUNTER_HI);
- 
- 	a6xx_gmu_clear_oob(&a6xx_gpu->gmu, GMU_OOB_GPU_SET);
  	return 0;
 -- 
 2.30.2
