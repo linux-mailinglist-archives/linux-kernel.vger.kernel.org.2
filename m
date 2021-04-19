@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B1CD3644CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F6E3644CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241420AbhDSNd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:33:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34792 "EHLO mail.kernel.org"
+        id S241364AbhDSNdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:33:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241768AbhDSNYp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:24:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D2CE613DE;
-        Mon, 19 Apr 2021 13:19:22 +0000 (UTC)
+        id S241773AbhDSNYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:24:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F140E613AC;
+        Mon, 19 Apr 2021 13:19:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618838363;
-        bh=/f/PHSBRgCGzymPAsyK/1t5mj3jZqFjzZ2yPINPfIT8=;
+        s=korg; t=1618838366;
+        bh=vexq6biuKCrPhpSSvklXRx2AKHq6uV5xEqsuRSIWA50=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MtFGhMwVsQQOACpM75ou4I7Y8fKVVyTunlFn2t1kTTDRz3OL6+Kmez/JG4uU/60o/
-         qKAub3xAIjLq8G9ank28ZOeWuvlOyOmqxPwRg3h2n16X2UnxVtDcz0jE/P6NeQj6Ln
-         HYefhj5q3qm2BQMGHBx+mExzxgXEs71RJJKXdjUc=
+        b=Tm5y5vHT2csIaUV4NxXB3WffYdjah7vhn5TN0Yxr/ZhmHz7m8aaxPmRT/pc0Sn2oo
+         KxxyuOtGVg1NtvWND9YXOq9jlWYXhSzBgk+sxl/V6oyqlQxrzEzPTpcH1F4r5qTfPH
+         7OhT7waVakkBLpBMIkZ15dZ3xfBZUHC7PkSTHsMQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 34/73] net: ieee802154: forbid monitor for add llsec seclevel
-Date:   Mon, 19 Apr 2021 15:06:25 +0200
-Message-Id: <20210419130524.940604169@linuxfoundation.org>
+Subject: [PATCH 5.4 35/73] pcnet32: Use pci_resource_len to validate PCI resource
+Date:   Mon, 19 Apr 2021 15:06:26 +0200
+Message-Id: <20210419130524.973053832@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210419130523.802169214@linuxfoundation.org>
 References: <20210419130523.802169214@linuxfoundation.org>
@@ -40,36 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Aring <aahringo@redhat.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit 9ec87e322428d4734ac647d1a8e507434086993d ]
+[ Upstream commit 66c3f05ddc538ee796321210c906b6ae6fc0792a ]
 
-This patch forbids to add llsec seclevel for monitor interfaces which we
-don't support yet. Otherwise we will access llsec mib which isn't
-initialized for monitors.
+pci_resource_start() is not a good indicator to determine if a PCI
+resource exists or not, since the resource may start at address 0.
+This is seen when trying to instantiate the driver in qemu for riscv32
+or riscv64.
 
-Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Link: https://lore.kernel.org/r/20210405003054.256017-14-aahringo@redhat.com
-Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
+pci 0000:00:01.0: reg 0x10: [io  0x0000-0x001f]
+pci 0000:00:01.0: reg 0x14: [mem 0x00000000-0x0000001f]
+...
+pcnet32: card has no PCI IO resources, aborting
+
+Use pci_resouce_len() instead.
+
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ieee802154/nl802154.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/ethernet/amd/pcnet32.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/net/ieee802154/nl802154.c b/net/ieee802154/nl802154.c
-index 4dd936c7db8b..328bb9f5342e 100644
---- a/net/ieee802154/nl802154.c
-+++ b/net/ieee802154/nl802154.c
-@@ -2136,6 +2136,9 @@ static int nl802154_add_llsec_seclevel(struct sk_buff *skb,
- 	struct wpan_dev *wpan_dev = dev->ieee802154_ptr;
- 	struct ieee802154_llsec_seclevel sl;
+diff --git a/drivers/net/ethernet/amd/pcnet32.c b/drivers/net/ethernet/amd/pcnet32.c
+index f5ad12c10934..da84660ceae1 100644
+--- a/drivers/net/ethernet/amd/pcnet32.c
++++ b/drivers/net/ethernet/amd/pcnet32.c
+@@ -1548,8 +1548,7 @@ pcnet32_probe_pci(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	}
+ 	pci_set_master(pdev);
  
-+	if (wpan_dev->iftype == NL802154_IFTYPE_MONITOR)
-+		return -EOPNOTSUPP;
+-	ioaddr = pci_resource_start(pdev, 0);
+-	if (!ioaddr) {
++	if (!pci_resource_len(pdev, 0)) {
+ 		if (pcnet32_debug & NETIF_MSG_PROBE)
+ 			pr_err("card has no PCI IO resources, aborting\n");
+ 		err = -ENODEV;
+@@ -1562,6 +1561,8 @@ pcnet32_probe_pci(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 			pr_err("architecture does not support 32bit PCI busmaster DMA\n");
+ 		goto err_disable_dev;
+ 	}
 +
- 	if (llsec_parse_seclevel(info->attrs[NL802154_ATTR_SEC_LEVEL],
- 				 &sl) < 0)
- 		return -EINVAL;
++	ioaddr = pci_resource_start(pdev, 0);
+ 	if (!request_region(ioaddr, PCNET32_TOTAL_SIZE, "pcnet32_probe_pci")) {
+ 		if (pcnet32_debug & NETIF_MSG_PROBE)
+ 			pr_err("io address range already allocated\n");
 -- 
 2.30.2
 
