@@ -2,135 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2901A3648DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 19:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5100B3648DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 19:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239868AbhDSROC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Apr 2021 13:14:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:46950 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239824AbhDSRNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 13:13:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8349014BF;
-        Mon, 19 Apr 2021 10:13:25 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 155833F7D7;
-        Mon, 19 Apr 2021 10:13:23 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Pavan Kondeti <pkondeti@codeaurora.org>,
-        Rik van Riel <riel@surriel.com>,
-        Lingutla Chandrasekhar <clingutla@codeaurora.org>
-Subject: Re: [PATCH 2/2] sched/fair: Relax task_hot() for misfit tasks
-In-Reply-To: <20210416135113.GA16445@vingu-book>
-References: <20210415175846.494385-1-valentin.schneider@arm.com> <20210415175846.494385-3-valentin.schneider@arm.com> <20210416135113.GA16445@vingu-book>
-Date:   Mon, 19 Apr 2021 18:13:21 +0100
-Message-ID: <87blaakxji.mognet@arm.com>
+        id S239968AbhDSROQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 13:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234056AbhDSROO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 13:14:14 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA284C061761
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 10:13:44 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id x11so36474539qkp.11
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 10:13:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Pte6gDNJh8xhmbfylrLlVHUNlTRi/dJM7p92ChkQdLw=;
+        b=MwMmN19pYgiiPxO22E5Bn0qD6lq60MgWWDGEz0TubxyILZCMzhCPfXDVCVEDSTtYDg
+         1nfmtoD4j9390fHkbbIVqjJxO8le3005eLFTk4YOGXlpwcUu8NeucgF56hni/Z4/4H96
+         hjZPsaC4TB/U1cY+mFAGTYw9VUOfWgIzXBlndKEF1cuIJIKuz+BNR3QbWRJj+VR1vjrQ
+         LBm94K2doToMiYJK/LvFAcquSUTPiiWtGJno+re8gnauJslto4r/DCHPKPLMt9DNYGfy
+         kOK08NDrLO1kA3L9zeTWIADkRO9VM9Vr32AIuNWKbeIvtecS9RTcBNSfmIcMR3ngEUAx
+         F19w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Pte6gDNJh8xhmbfylrLlVHUNlTRi/dJM7p92ChkQdLw=;
+        b=karFZJIE6UPm/gNMpsoEA9s0b6rGjvg8XkmuJya2JXIoELNWHahEFaoGQ6kTGS9QQQ
+         d2b+TsIVEn9qlABOFlip6BhTyxjxC0HMpef0yCkkAKVMy2vXcIKVzCP1Y9QsPF+T85o3
+         ltpZ1CURrM7uuxce75iATpcL4CykJ90gtnljJMOVov/jT3hdWNdK5qthF7VHQG2+UARu
+         +e86gDWYeOejrOpxYLKoD1716NEHxnzo1W0Z0vlZIvXo3JOuN6Dy9NsU2z8VpqgPoLwz
+         C+jHilHCxOgnAwcJ5eoOX9mxX1pAHGmRZHVg7y65CG0uSlbS/6cCz7sInog+nwtDxctR
+         WMXg==
+X-Gm-Message-State: AOAM533RTSD3pS/1JbPvbWT3bEGbcTnOebITSxldCLAazu5Jkbwrixgy
+        yMBLIqESV2u09dNVTJrpolgSdg==
+X-Google-Smtp-Source: ABdhPJyi49qEE45YgaeZaLpdT1WgxROrFQlIUehK6VBcvbjRvvvoLxQcgvF0XZzvYnmoC9RRKaw1mQ==
+X-Received: by 2002:a37:8bc5:: with SMTP id n188mr12448087qkd.441.1618852423846;
+        Mon, 19 Apr 2021 10:13:43 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id i23sm123882qtp.61.2021.04.19.10.13.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 10:13:43 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 13:13:42 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Waiman Long <llong@redhat.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v4 1/5] mm/memcg: Move mod_objcg_state() to memcontrol.c
+Message-ID: <YH26RrMBOxLaMg4l@cmpxchg.org>
+References: <20210419000032.5432-1-longman@redhat.com>
+ <20210419000032.5432-2-longman@redhat.com>
+ <YH2eT+JCII48hX80@cmpxchg.org>
+ <ffb5705e-8629-808d-9d09-0c9c7f509326@redhat.com>
+ <140444ea-14e7-b305-910f-f23fafe45488@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <140444ea-14e7-b305-910f-f23fafe45488@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/04/21 15:51, Vincent Guittot wrote:
-> Le jeudi 15 avril 2021 Ã¯Â¿Â½ 18:58:46 (+0100), Valentin Schneider a Ã¯Â¿Â½crit :
->> +
->> +/*
->> + * What does migrating this task do to our capacity-aware scheduling criterion?
->> + *
->> + * Returns 1, if the task needs more capacity than the dst CPU can provide.
->> + * Returns 0, if the task needs the extra capacity provided by the dst CPU
->> + * Returns -1, if the task isn't impacted by the migration wrt capacity.
->> + */
->> +static int migrate_degrades_capacity(struct task_struct *p, struct lb_env *env)
->> +{
->> +	if (!(env->sd->flags & SD_ASYM_CPUCAPACITY))
->> +		return -1;
->> +
->> +	if (!task_fits_capacity(p, capacity_of(env->src_cpu))) {
->> +		if (cpu_capacity_greater(env->dst_cpu, env->src_cpu))
->> +			return 0;
->> +		else if (cpu_capacity_greater(env->src_cpu, env->dst_cpu))
->> +			return 1;
->> +		else
->> +			return -1;
->> +	}
->
-> Being there means that task fits src_cpu capacity so why testing p against dst_cpu ?
->
+On Mon, Apr 19, 2021 at 12:18:29PM -0400, Waiman Long wrote:
+> On 4/19/21 11:21 AM, Waiman Long wrote:
+> > On 4/19/21 11:14 AM, Johannes Weiner wrote:
+> > > On Sun, Apr 18, 2021 at 08:00:28PM -0400, Waiman Long wrote:
+> > > > The mod_objcg_state() function is moved from mm/slab.h to
+> > > > mm/memcontrol.c
+> > > > so that further optimization can be done to it in later patches without
+> > > > exposing unnecessary details to other mm components.
+> > > > 
+> > > > Signed-off-by: Waiman Long <longman@redhat.com>
+> > > > ---
+> > > >   mm/memcontrol.c | 13 +++++++++++++
+> > > >   mm/slab.h       | 16 ++--------------
+> > > >   2 files changed, 15 insertions(+), 14 deletions(-)
+> > > > 
+> > > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > > index e064ac0d850a..dc9032f28f2e 100644
+> > > > --- a/mm/memcontrol.c
+> > > > +++ b/mm/memcontrol.c
+> > > > @@ -3150,6 +3150,19 @@ void __memcg_kmem_uncharge_page(struct
+> > > > page *page, int order)
+> > > >       css_put(&memcg->css);
+> > > >   }
+> > > >   +void mod_objcg_state(struct obj_cgroup *objcg, struct
+> > > > pglist_data *pgdat,
+> > > > +             enum node_stat_item idx, int nr)
+> > > > +{
+> > > > +    struct mem_cgroup *memcg;
+> > > > +    struct lruvec *lruvec = NULL;
+> > > > +
+> > > > +    rcu_read_lock();
+> > > > +    memcg = obj_cgroup_memcg(objcg);
+> > > > +    lruvec = mem_cgroup_lruvec(memcg, pgdat);
+> > > > +    mod_memcg_lruvec_state(lruvec, idx, nr);
+> > > > +    rcu_read_unlock();
+> > > > +}
+> > > It would be more naturally placed next to the others, e.g. below
+> > > __mod_lruvec_kmem_state().
+> > > 
+> > > But no deal breaker if there isn't another revision.
+> > > 
+> > > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> > > 
+> > Yes, there will be another revision by rebasing patch series on the
+> > linux-next. I will move the function then.
+> 
+> OK, it turns out that mod_objcg_state() is only defined if
+> CONFIG_MEMCG_KMEM. That was why I put it in the CONFIG_MEMCG_KMEM block with
+> the other obj_stock functions. I think I will keep it there.
 
-Because if p fits on src_cpu, we don't want to move it to a dst_cpu on
-which it *doesn't* fit.
+The CONFIG_MEMCG_KMEM has become sort of useless now. It used to be
+configurable, but now it just means CONFIG_MEMCG && !CONFIG_SLOB. And
+even that doesn't make sense because while slob doesn't support slab
+object tracking, we can still do all the other stuff we do under
+KMEM. I have a patch in the works to remove the symbol and ifdefs.
 
->> +
->> +	return task_fits_capacity(p, capacity_of(env->dst_cpu)) ? -1 : 1;
->> +}
->
-> I prefer the below which easier to read because the same var is use everywhere and you can remove cpu_capacity_greater.
->
-> static int migrate_degrades_capacity(struct task_struct *p, struct lb_env *env)
-> {
->     unsigned long src_capacity, dst_capacity;
->
->     if (!(env->sd->flags & SD_ASYM_CPUCAPACITY))
->         return -1;
->
->     src_capacity = capacity_of(env->src_cpu);
->     dst_capacity = capacity_of(env->dst_cpu);
->
->     if (!task_fits_capacity(p, src_capacity)) {
->         if (capacity_greater(dst_capacity, src_capacity))
->             return 0;
->         else if (capacity_greater(src_capacity, dst_capacity))
->             return 1;
->         else
->             return -1;
->     }
->
->     return task_fits_capacity(p, dst_capacity) ? -1 : 1;
-> }
->
-
-I'll take it, thanks!
-
->
->> +
->>  #ifdef CONFIG_NUMA_BALANCING
->>  /*
->>   * Returns 1, if task migration degrades locality
->> @@ -7672,6 +7698,15 @@ int can_migrate_task(struct task_struct *p, struct lb_env *env)
->>      if (tsk_cache_hot == -1)
->>              tsk_cache_hot = task_hot(p, env);
->>
->> +	/*
->> +	 * On a (sane) asymmetric CPU capacity system, the increase in compute
->> +	 * capacity should offset any potential performance hit caused by a
->> +	 * migration.
->> +	 */
->> +	if ((env->dst_grp_type == group_has_spare) &&
->
-> Shouldn't it be env->src_grp_type == group_misfit_task to only care of misfit task case as
-> stated in $subject
->
-
-Previously this was env->idle != CPU_NOT_IDLE, but I figured dst_grp_type
-could give us a better picture. Staring at this some more, this isn't so
-true when the group size goes up - there's no guarantees the dst_cpu is the
-one that has spare cycles, and the other CPUs might not be able to grant
-the capacity uplift dst_cpu can.
-
-As for not using src_grp_type == group_misfit_task, this is pretty much the
-same as [1]. CPU-bound (misfit) task + some other task on the same rq
-implies group_overloaded classification when balancing at MC level (no SMT,
-so one group per CPU).
-
-[1]: http://lore.kernel.org/r/jhjblcuv2mo.mognet@arm.com
+With that in mind, it's better to group the functions based on what
+they do rather than based on CONFIG_MEMCG_KMEM. It's easier to just
+remove another ifdef later than it is to reorder the functions.
