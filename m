@@ -2,264 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C2D1364EC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA1A364ED8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbhDSXmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 19:42:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54991 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229695AbhDSXmm (ORCPT
+        id S232883AbhDSXoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 19:44:01 -0400
+Received: from gw.atmark-techno.com ([13.115.124.170]:42782 "EHLO
+        gw.atmark-techno.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232656AbhDSXnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 19:42:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618875732;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x2fbpuknZ4GBkIrJZ+q/s36SJDLlw3O5/8yiMZIDB2k=;
-        b=GnAI3uplwwEtQaxYKWV3BshepSSwTbas5xE8Bv1PLIrtNt87pYKw11qsZr5/LfUH+gR5uS
-        Swq8xgb6yV9jIZwMKQ4sqJnA9TgsnUrh3cygGu9XIG2ay45LLUapTDLxPDIej5eGrEh3EO
-        Jk5xdUUAek9hwPPKlSRjLw4FHx1qTjU=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-361-G7RdDejcPr2isXW-ycuwpQ-1; Mon, 19 Apr 2021 19:42:10 -0400
-X-MC-Unique: G7RdDejcPr2isXW-ycuwpQ-1
-Received: by mail-qv1-f71.google.com with SMTP id l61-20020a0c84430000b02901a9a7e363edso2033506qva.16
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 16:42:10 -0700 (PDT)
+        Mon, 19 Apr 2021 19:43:52 -0400
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com [209.85.161.71])
+        by gw.atmark-techno.com (Postfix) with ESMTPS id 8AEA9804C4
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 08:43:09 +0900 (JST)
+Received: by mail-oo1-f71.google.com with SMTP id h6-20020a4ac4460000b02901e5f0bd5de0so6577630ooq.15
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 16:43:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=x2fbpuknZ4GBkIrJZ+q/s36SJDLlw3O5/8yiMZIDB2k=;
-        b=d+oc6UMpoU0gyfd/Eak5gWmZJXJuMtxPYiOVVMbfV25+bHIPQORbmCHaRiV33TrmMK
-         nlqz/Qf85Pon/pC1BxW0E6gksdLiHTAv1/l8K8j5UkO/hrj0ykxwvMlbA15hDE18kQjk
-         amifN39Xp4P0CB+Zq5zMo+iSngrNvpnUTqU8PKTvuFdhTmCar6GqvIafKyeLydPc3P+s
-         kWp3y2kq3niXsZecwhyp2Ru/hQymHNbHTwE97NuD8zMRBWuW6fmyE2mmByngT07kjjkm
-         S8eMpo/ljzhyAc06xWDH7c2sxP11KqEACYj15z3K+MEUdBaJh8H4WanT0uMM9orKMePA
-         gPUQ==
-X-Gm-Message-State: AOAM533IJEFlnvsif9hvXnc3Bn4HIBOF3CIB5+ulecPXgY9d0nTebhYD
-        WPgxe3VaUiTzkobEjPGWrPcGKXNJ01le2N7lhxYOiDnxQ93f14QAvmXcedJLMvs5V62C1ShPeUi
-        OJmeyV25CfXBG229YjoTGhPo5
-X-Received: by 2002:a05:620a:44ce:: with SMTP id y14mr14496778qkp.171.1618875729765;
-        Mon, 19 Apr 2021 16:42:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw9fC71GXWYH36qmAJMjWJoLcPTXWY88zaRU+br2/4wzu/F8zydzIcPi0q1wOkOFH+5QU+zCQ==
-X-Received: by 2002:a05:620a:44ce:: with SMTP id y14mr14496759qkp.171.1618875729551;
-        Mon, 19 Apr 2021 16:42:09 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id n6sm10102518qtx.22.2021.04.19.16.42.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Apr 2021 16:42:09 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v4 2/5] mm/memcg: Cache vmstat data in percpu
- memcg_stock_pcp
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20210419000032.5432-1-longman@redhat.com>
- <20210419000032.5432-3-longman@redhat.com> <YH2yA1oZoyQoMhAH@cmpxchg.org>
-Message-ID: <09ea1749-8978-091b-7727-d86f8e6c49cc@redhat.com>
-Date:   Mon, 19 Apr 2021 19:42:07 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YfTDNxUjME1kzwn4ONpBlmaWp5uEs0PGjlewRbiJ8O0=;
+        b=OmzfkK8b5ePi5Oz4BILFkmPW8eJ3iRQx0XCjlL6/7xLhzwwlTomDl3ZARxP9q/Mgyu
+         6tiyeqQB8i+Eq+3q19sYkoDgQBmPWOWVoqd/KHVEt+NnunxHZukKTpVG9BWKgEI177n2
+         Wafp7SL+Xun2CQdEQRChv6WppLRjns3Mt7Gj9uQhbnsvGTis2j2CbMZZk8ykRYO4LQz7
+         o5Bd4SLtC1T8UhROU3qsEoS+YeRSrz1CjP7Gaxs77gafK3yWnBOcus3auYqMouh3IDiy
+         Fzzy2QTlNPI7GgElUGnWWw56sjc1dhcWMUdCzLuzxsT0uutu2c/5Gu0NMgzViwE5lxRC
+         0TWg==
+X-Gm-Message-State: AOAM532zdOpbkDv0qtCltIdflSTAzbLcv6YmKg+GEl1ze10kDwUQRoEC
+        KI5WWMJrQ1bGAutTt2nno8F3t+aOtjjT1TvjRiH1bg7tG8lZj8mZOXILWlywLDZyJJ5L4FrZfRS
+        Db7hm8/XYFkEx8KGfGwVAXQ+mf9a2
+X-Received: by 2002:a17:90a:1c1:: with SMTP id 1mr1708170pjd.190.1618875776929;
+        Mon, 19 Apr 2021 16:42:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzRGNIqy2AO5m9iOwuC4N09BxordE8LmUXYTIIeyniOtbCQKfA0MKaQl391n1ZLV3YIJOra8w==
+X-Received: by 2002:a17:90a:1c1:: with SMTP id 1mr1708139pjd.190.1618875776711;
+        Mon, 19 Apr 2021 16:42:56 -0700 (PDT)
+Received: from pc-0115 (76.125.194.35.bc.googleusercontent.com. [35.194.125.76])
+        by smtp.gmail.com with ESMTPSA id r3sm8384971pgn.82.2021.04.19.16.42.55
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 19 Apr 2021 16:42:55 -0700 (PDT)
+Received: from martinet by pc-0115 with local (Exim 4.94)
+        (envelope-from <martinet@pc-0115>)
+        id 1lYdXa-002mPj-58; Tue, 20 Apr 2021 08:42:54 +0900
+Date:   Tue, 20 Apr 2021 08:42:44 +0900
+From:   Dominique MARTINET <dominique.martinet@atmark-techno.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Alice Guo (OSS)" <alice.guo@oss.nxp.com>,
+        gregkh <gregkh@linuxfoundation.org>,
+        Rafael Wysocki <rafael@kernel.org>,
+        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+        aymen.sghaier@nxp.com, Herbert Xu <herbert@gondor.apana.org.au>,
+        David Miller <davem@davemloft.net>,
+        Tony Lindgren <tony@atomide.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        peter.ujfalusi@gmail.com, Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kevin Hilman <khilman@baylibre.com>, tomba@kernel.org,
+        jyri.sarha@iki.fi, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kishon <kishon@ti.com>, Jakub Kicinski <kuba@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Roy Pledge <Roy.Pledge@nxp.com>, Leo Li <leoyang.li@nxp.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Keerthy <j-keerthy@ti.com>, Felipe Balbi <balbi@kernel.org>,
+        Tony Prisk <linux@prisktech.co.nz>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>, dmaengine@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:ARM/Amlogic Meson SoC support" 
+        <linux-amlogic@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        linux-phy@lists.infradead.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-staging@lists.linux.dev,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>
+Subject: Re: [RFC v1 PATCH 3/3] driver: update all the code that use
+ soc_device_match
+Message-ID: <YH4VdPNO9cdzc5MD@atmark-techno.com>
+References: <20210419042722.27554-1-alice.guo@oss.nxp.com>
+ <20210419042722.27554-4-alice.guo@oss.nxp.com>
+ <YH0O907dfGY9jQRZ@atmark-techno.com>
+ <CAMuHMdVY1SLZ0K30T2pimyrR6Mm=VoSTO=L-xxCy2Bj7_kostw@mail.gmail.com>
+ <YH1OeFy+SepIYYG0@atmark-techno.com>
+ <CAK8P3a1Mu2F0irDDCL-50HiHth29iYFL5b7WHZ=UX6W7zzoxAg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YH2yA1oZoyQoMhAH@cmpxchg.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a1Mu2F0irDDCL-50HiHth29iYFL5b7WHZ=UX6W7zzoxAg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/19/21 12:38 PM, Johannes Weiner wrote:
-> On Sun, Apr 18, 2021 at 08:00:29PM -0400, Waiman Long wrote:
->> Before the new slab memory controller with per object byte charging,
->> charging and vmstat data update happen only when new slab pages are
->> allocated or freed. Now they are done with every kmem_cache_alloc()
->> and kmem_cache_free(). This causes additional overhead for workloads
->> that generate a lot of alloc and free calls.
->>
->> The memcg_stock_pcp is used to cache byte charge for a specific
->> obj_cgroup to reduce that overhead. To further reducing it, this patch
->> makes the vmstat data cached in the memcg_stock_pcp structure as well
->> until it accumulates a page size worth of update or when other cached
->> data change. Caching the vmstat data in the per-cpu stock eliminates two
->> writes to non-hot cachelines for memcg specific as well as memcg-lruvecs
->> specific vmstat data by a write to a hot local stock cacheline.
->>
->> On a 2-socket Cascade Lake server with instrumentation enabled and this
->> patch applied, it was found that about 20% (634400 out of 3243830)
->> of the time when mod_objcg_state() is called leads to an actual call
->> to __mod_objcg_state() after initial boot. When doing parallel kernel
->> build, the figure was about 17% (24329265 out of 142512465). So caching
->> the vmstat data reduces the number of calls to __mod_objcg_state()
->> by more than 80%.
->>
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> Reviewed-by: Shakeel Butt <shakeelb@google.com>
->> ---
->>   mm/memcontrol.c | 64 ++++++++++++++++++++++++++++++++++++++++++++++---
->>   1 file changed, 61 insertions(+), 3 deletions(-)
->>
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index dc9032f28f2e..693453f95d99 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -2213,7 +2213,10 @@ struct memcg_stock_pcp {
->>   
->>   #ifdef CONFIG_MEMCG_KMEM
->>   	struct obj_cgroup *cached_objcg;
->> +	struct pglist_data *cached_pgdat;
->>   	unsigned int nr_bytes;
->> +	int vmstat_idx;
->> +	int vmstat_bytes;
->>   #endif
->>   
->>   	struct work_struct work;
->> @@ -3150,8 +3153,9 @@ void __memcg_kmem_uncharge_page(struct page *page, int order)
->>   	css_put(&memcg->css);
->>   }
->>   
->> -void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
->> -		     enum node_stat_item idx, int nr)
->> +static inline void __mod_objcg_state(struct obj_cgroup *objcg,
->> +				     struct pglist_data *pgdat,
->> +				     enum node_stat_item idx, int nr)
-> This naming is dangerous, as the __mod_foo naming scheme we use
-> everywhere else suggests it's the same function as mod_foo() just with
-> preemption/irqs disabled.
->
-I will change its name to, say, mod_objcg_mlstate() to indicate that it 
-is something different. Actually, it is hard to come up with a good name 
-which is not too long.
+Arnd Bergmann wrote on Mon, Apr 19, 2021 at 02:16:36PM +0200:
+> In some cases, you can use the device_link infrastructure to deal
+> with dependencies between devices. Not sure if this would help
+> in your case, but have a look at device_link_add() etc in drivers/base/core.c
+
+I'll need to actually try to convince myself but if creating the link
+forces driver registration then it should be workable.
+
+> > In this particular case the problem is that since 7d981405d0fd ("soc:
+> > imx8m: change to use platform driver") the soc probe tries to use the
+> > nvmem driver for ocotp fuses for imx8m devices, which isn't ready yet.
+> > So soc loading gets pushed back to the end of the list because it gets
+> > defered and other drivers relying on soc_device_match get confused
+> > because they wrongly think a device doesn't match a quirk when it
+> > actually does.
+> >
+> > If there is a way to ensure the nvmem driver gets loaded before the soc,
+> > that would also solve the problem nicely, and avoid the need to mess
+> > with all the ~50 drivers which use it.
+> >
+> > Is there a way to control in what order drivers get loaded? Something in
+> > the dtb perhaps?
+> 
+> For built-in drivers, load order depends on the initcall level and
+> link order (how things are lined listed in the Makefile hierarchy).
+> 
+> For loadable modules, this is up to user space in the end.
+> 
+> Which of the drivers in this scenario are loadable modules?
+
+All the drivers involved in my case are built-in (nvmem, soc and final
+soc_device_match consumer e.g. caam_jr that crashes the kernel if soc is
+not identified properly).
+
+I frankly don't like the idea of moving nvmem/ above soc/ in
+drivers/Makefile as a "solution" to this (especially as there is one
+that seems to care about what soc they run on...), so I'll have a look
+at links first, hopefully that will work out.
 
 
->> @@ -3159,10 +3163,53 @@ void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
->>   	rcu_read_lock();
->>   	memcg = obj_cgroup_memcg(objcg);
->>   	lruvec = mem_cgroup_lruvec(memcg, pgdat);
->> -	mod_memcg_lruvec_state(lruvec, idx, nr);
->> +	__mod_memcg_lruvec_state(lruvec, idx, nr);
->>   	rcu_read_unlock();
->>   }
->>   
->> +void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
->> +		     enum node_stat_item idx, int nr)
->> +{
->> +	struct memcg_stock_pcp *stock;
->> +	unsigned long flags;
->> +
->> +	local_irq_save(flags);
->> +	stock = this_cpu_ptr(&memcg_stock);
->> +
->> +	/*
->> +	 * Save vmstat data in stock and skip vmstat array update unless
->> +	 * accumulating over a page of vmstat data or when pgdat or idx
->> +	 * changes.
->> +	 */
->> +	if (stock->cached_objcg != objcg) {
->> +		/* Output the current data as is */
-> When you get here with the wrong objcg and hit the cold path, it's
-> usually immediately followed by an uncharge -> refill_obj_stock() that
-> will then flush and reset cached_objcg.
->
-> Instead of doing two cold paths, why not flush the old objcg right
-> away and set the new so that refill_obj_stock() can use the fast path?
-
-That is a good idea. Will do that.
-
-
->
->> +	} else if (!stock->vmstat_bytes) {
->> +		/* Save the current data */
->> +		stock->vmstat_bytes = nr;
->> +		stock->vmstat_idx = idx;
->> +		stock->cached_pgdat = pgdat;
->> +		nr = 0;
->> +	} else if ((stock->cached_pgdat != pgdat) ||
->> +		   (stock->vmstat_idx != idx)) {
->> +		/* Output the cached data & save the current data */
->> +		swap(nr, stock->vmstat_bytes);
->> +		swap(idx, stock->vmstat_idx);
->> +		swap(pgdat, stock->cached_pgdat);
-> Is this optimization worth doing?
->
-> You later split vmstat_bytes and idx doesn't change anymore.
-
-I am going to merge patch 2 and patch 4 to avoid the confusion.
-
-
->
-> How often does the pgdat change? This is a per-cpu cache after all,
-> and the numa node a given cpu allocates from tends to not change that
-> often. Even with interleaving mode, which I think is pretty rare, the
-> interleaving happens at the slab/page level, not the object level, and
-> the cache isn't bigger than a page anyway.
-
-The testing done on a 2-socket system indicated that pgdat changes 
-roughly 10-20% of time. So it does happen, especially on the kfree() 
-path, I think. I have tried to cached vmstat update for those on the 
-local node only, but I got more misses with that. So I am just going to 
-change pgdat and flush out existing data for now.
-
-
->
->> +	} else {
->> +		stock->vmstat_bytes += nr;
->> +		if (abs(stock->vmstat_bytes) > PAGE_SIZE) {
->> +			nr = stock->vmstat_bytes;
->> +			stock->vmstat_bytes = 0;
->> +		} else {
->> +			nr = 0;
->> +		}
-> ..and this is the regular overflow handling done by the objcg and
-> memcg charge stock as well.
->
-> How about this?
->
-> 	if (stock->cached_objcg != objcg ||
-> 	    stock->cached_pgdat != pgdat ||
-> 	    stock->vmstat_idx != idx) {
-> 		drain_obj_stock(stock);
-> 		obj_cgroup_get(objcg);
-> 		stock->cached_objcg = objcg;
-> 		stock->nr_bytes = atomic_xchg(&objcg->nr_charged_bytes, 0);
-> 		stock->vmstat_idx = idx;
-> 	}
-> 	stock->vmstat_bytes += nr_bytes;
->
-> 	if (abs(stock->vmstat_bytes > PAGE_SIZE))
-> 		drain_obj_stock(stock);
->
-> (Maybe we could be clever, here since the charge and stat caches are
-> the same size: don't flush an oversized charge cache from
-> refill_obj_stock in the charge path, but leave it to the
-> mod_objcg_state() that follows; likewise don't flush an undersized
-> vmstat stock from mod_objcg_state() in the uncharge path, but leave it
-> to the refill_obj_stock() that follows. Could get a bit complicated...)
-
-If you look at patch 5, I am trying to avoid doing drain_obj_stock() 
-unless the objcg change. I am going to do the same here.
-
-Cheers,
-Longman
-
+Thanks,
+-- 
+Dominique
