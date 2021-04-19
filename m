@@ -2,98 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32604364EB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19992364EC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232027AbhDSXgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 19:36:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbhDSXgp (ORCPT
+        id S232608AbhDSXk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 19:40:57 -0400
+Received: from mo-csw1116.securemx.jp ([210.130.202.158]:36098 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232484AbhDSXk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 19:36:45 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B38C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 16:36:15 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id c3so5469881pfo.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 16:36:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+AXERFClYZYQUr1IqN7bGc0QBx+E2BeAvwA2SBiAo5U=;
-        b=YmK13dmW5qtJCyvdmMQvQkEeNCJafx0yaLZuG+qt1h0kHyE16ZlbvlaKIXMdJuos0q
-         oXaLUgrsIoOMW/QfJSmDcXcR6EX6TN/9FfVu/z3XvPw31FD3n4vWRmqF1KhC3Fyl4bE9
-         eEG4MsQbmbgtdohUERLAUr/uXceQgL/DsllmU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+AXERFClYZYQUr1IqN7bGc0QBx+E2BeAvwA2SBiAo5U=;
-        b=RGMihg0aNeolYL+Dc4Kyy4HhPp+321SsNSWgwKNICYrncV6QtsOV3ax2Gn+BgCT8pT
-         qEMAR88a2Vwr5EG0GsuC1t2EGdw/Grj/DsYXlR0m+ttX07/6FoLcSVNyuaP7O9bAp3KP
-         p+sfcEhRYe5bkQ6Rz0OaY9j5DCQrODGLTQj52onP+4HM3mJzzgcz2vfN1bFeEEeyVaPj
-         rrsy9iD20zjXfDreoXhCzx1FzyW+0KC3kCKrZ6kXeCgYrqEg11iLUQyZNbuBa77gP3ac
-         hRMqhBQHR9rKUYCISCGI4y8yp8x1d1qquB1OLnKl50W6UBw/wHgNU01wmpLtRUAGv1wa
-         Kp2Q==
-X-Gm-Message-State: AOAM530uMS+BbklmMirkU4UCXpD77A4xBoS9J/fZL3fcgpABHWyUTvuc
-        zuRZIxLC81S5vHHzgUjHuFHowauV48NbUg==
-X-Google-Smtp-Source: ABdhPJzERC0jwguaNsJ+wSeg55qiPue3mqoTqTb9eYfqXtUH3uNdF0tKTOJIlM21AuWzWAGco92F6A==
-X-Received: by 2002:a62:ce42:0:b029:261:ab24:f65f with SMTP id y63-20020a62ce420000b0290261ab24f65fmr4572278pfg.18.1618875374515;
-        Mon, 19 Apr 2021 16:36:14 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id o9sm14586976pfh.217.2021.04.19.16.36.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 16:36:13 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 16:36:12 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, x86@kernel.org,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, chris@chris-wilson.co.uk,
-        intel-gfx@lists.freedesktop.org, linux-mm@kvack.org, hch@lst.de
-Subject: Re: [PATCH 4/7] mm: Introduce verify_page_range()
-Message-ID: <202104191630.F00A6AAF@keescook>
-References: <20210412080012.357146277@infradead.org>
- <20210412080611.769864829@infradead.org>
- <202104121302.57D7EF8@keescook>
- <YHVADhpkETMQGD5X@hirez.programming.kicks-ass.net>
+        Mon, 19 Apr 2021 19:40:56 -0400
+Received: by mo-csw.securemx.jp (mx-mo-csw1116) id 13JNdlVM005625; Tue, 20 Apr 2021 08:39:47 +0900
+X-Iguazu-Qid: 2wHHhVLfD68WbBSrrf
+X-Iguazu-QSIG: v=2; s=0; t=1618875586; q=2wHHhVLfD68WbBSrrf; m=OpTumAytCPng2rPIF8zru+UG0PLMCzlcfWIBcmKYL68=
+Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
+        by relay.securemx.jp (mx-mr1110) id 13JNdivT005802
+        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 20 Apr 2021 08:39:44 +0900
+Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id 1E4FB1000B0;
+        Tue, 20 Apr 2021 08:39:44 +0900 (JST)
+Received: from hop001.toshiba.co.jp ([133.199.164.63])
+        by enc01.toshiba.co.jp  with ESMTP id 13JNdhoP024180;
+        Tue, 20 Apr 2021 08:39:43 +0900
+Date:   Tue, 20 Apr 2021 08:39:07 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Yu Chen <chenyu56@huawei.com>,
+        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Joe Perches <joe@perches.com>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] MAINTAINERS: rectify entry for HIKEY960 ONBOARD USB
+ GPIO HUB DRIVER
+X-TSB-HOP: ON
+Message-ID: <20210419233907.qaxgwlggm35fyklz@toshiba.co.jp>
+References: <20210419092609.3692-1-lukas.bulwahn@gmail.com>
+ <20210419092609.3692-3-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YHVADhpkETMQGD5X@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210419092609.3692-3-lukas.bulwahn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 08:54:06AM +0200, Peter Zijlstra wrote:
-> On Mon, Apr 12, 2021 at 01:05:09PM -0700, Kees Cook wrote:
-> > On Mon, Apr 12, 2021 at 10:00:16AM +0200, Peter Zijlstra wrote:
-> > > +struct vpr_data {
-> > > +	int (*fn)(pte_t pte, unsigned long addr, void *data);
-> > > +	void *data;
-> > > +};
-> > 
-> > Eeerg. This is likely to become an attack target itself. Stored function
-> > pointer with stored (3rd) argument.
+Hi,
+
+On Mon, Apr 19, 2021 at 11:26:08AM +0200, Lukas Bulwahn wrote:
+> Commit 7a6ff4c4cbc3 ("misc: hisi_hikey_usb: Driver to support onboard USB
+> gpio hub on Hikey960") refers to the non-existing file
+> ./Documentation/devicetree/bindings/misc/hisilicon-hikey-usb.yaml, but this
+> commit's patch series does not add any related devicetree binding in misc.
 > 
-> You got some further reading on that? How exactly are those exploited?
+> So, just drop this file reference in HIKEY960 ONBOARD USB GPIO HUB DRIVER.
+> 
 
-Sure, see "Executing code" in
-https://googleprojectzero.blogspot.com/2017/05/exploiting-linux-kernel-via-packet.html
+Could you add Fixes: tag ?
+Please also add this to patch: "MAINTAINERS: rectify entry for INTEL KEEM BAY
+DRM DRIVER".
 
-I killed the entire primitive (for timer_list)
-https://outflux.net/blog/archives/2018/02/05/security-things-in-linux-v4-15/#v4.15-timer_list
-but that was a lot of work, so I'm trying to avoid seeing more things
-like it appear. :) (And I'm trying to get rid of similar APIs, like
-tasklet.)
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+>  MAINTAINERS | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index d31c8058b17f..4f152717365c 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8239,7 +8239,6 @@ M:	John Stultz <john.stultz@linaro.org>
+>  L:	linux-kernel@vger.kernel.org
+>  S:	Maintained
+>  F:	drivers/misc/hisi_hikey_usb.c
+> -F:	Documentation/devicetree/bindings/misc/hisilicon-hikey-usb.yaml
+>  
+>  HISILICON PMU DRIVER
+>  M:	Shaokun Zhang <zhangshaokun@hisilicon.com>
+> -- 
+> 2.17.1
+> 
+> 
 
-This new code is unlikely to ever be used as widely as timer_list,
-but I just cringe when I see the code pattern. I'll understand if there
-isn't a solution that doesn't require major refactoring, but I can
-dream. :)
-
--- 
-Kees Cook
+Best regards,
+  Nobuhiro
