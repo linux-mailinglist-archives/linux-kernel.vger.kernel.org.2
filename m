@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C044E3644E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33CC13644AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241053AbhDSNgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:36:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34122 "EHLO mail.kernel.org"
+        id S240954AbhDSNbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:31:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241833AbhDSNYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:24:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 140C6613EC;
-        Mon, 19 Apr 2021 13:19:39 +0000 (UTC)
+        id S241181AbhDSNVq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:21:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11C7B61400;
+        Mon, 19 Apr 2021 13:17:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618838380;
-        bh=+aeO+f+Y2ffOCXajMAx0E9n74vMRNP/r8MCf0cTWVPg=;
+        s=korg; t=1618838280;
+        bh=/Z6OCQUFL7u5EhYaxMUNJuVhH7l50zWkWy04jj07uMI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q0Tq+1ldBLvW2lVtkNtAHIt49+HpsyzjoduNZ6gLUQ4vU2RqrY6oCVOMW6ZNDyhk6
-         Kl31xUiauEAwuADNrfaItC5w7kvleEUsh7IP9aKHgIzOkb8WPufwPeSoPL0M632yks
-         OZfi0Yp2bVRs3BKHIUhiBhptw+VZBXC6f4F+nWBM=
+        b=r7L2aIsCk0EaIZMWkmhKhWl8udihSSydYOxXj0w4viZDylpVjnym56Vfu1F0ENMD7
+         VzCDizJBq66LuAxY2HtNla+UolVRxIo2zfbXWtCJ8W/PdKp10nyJP5Ojpu1fdZ4k9T
+         YHrEngD0hvR1C1ZGlS9btXzTSmeC70k4EeDsi/EM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Caleb Connolly <caleb@connolly.tech>,
-        Andi Shyti <andi@etezian.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 5.4 40/73] Input: s6sy761 - fix coordinate read bit shift
-Date:   Mon, 19 Apr 2021 15:06:31 +0200
-Message-Id: <20210419130525.129092433@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 081/103] ch_ktls: Fix kernel panic
+Date:   Mon, 19 Apr 2021 15:06:32 +0200
+Message-Id: <20210419130530.582556602@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210419130523.802169214@linuxfoundation.org>
-References: <20210419130523.802169214@linuxfoundation.org>
+In-Reply-To: <20210419130527.791982064@linuxfoundation.org>
+References: <20210419130527.791982064@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +41,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Caleb Connolly <caleb@connolly.tech>
+From: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
 
-commit 30b3f68715595dee7fe4d9bd91a2252c3becdf0a upstream.
+commit 1a73e427b824133940c2dd95ebe26b6dce1cbf10 upstream.
 
-The touch coordinate register contains the following:
+Taking page refcount is not ideal and causes kernel panic
+sometimes. It's better to take tx_ctx lock for the complete
+skb transmit, to avoid page cleanup if ACK received in middle.
 
-        byte 3             byte 2             byte 1
-+--------+--------+ +-----------------+ +-----------------+
-|        |        | |                 | |                 |
-| X[3:0] | Y[3:0] | |     Y[11:4]     | |     X[11:4]     |
-|        |        | |                 | |                 |
-+--------+--------+ +-----------------+ +-----------------+
-
-Bytes 2 and 1 need to be shifted left by 4 bits, the least significant
-nibble of each is stored in byte 3. Currently they are only
-being shifted by 3 causing the reported coordinates to be incorrect.
-
-This matches downstream examples, and has been confirmed on my
-device (OnePlus 7 Pro).
-
-Fixes: 0145a7141e59 ("Input: add support for the Samsung S6SY761 touchscreen")
-Signed-off-by: Caleb Connolly <caleb@connolly.tech>
-Reviewed-by: Andi Shyti <andi@etezian.org>
-Link: https://lore.kernel.org/r/20210305185710.225168-1-caleb@connolly.tech
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: 5a4b9fe7fece ("cxgb4/chcr: complete record tx handling")
+Signed-off-by: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+Signed-off-by: Rohit Maheshwari <rohitm@chelsio.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/input/touchscreen/s6sy761.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c |   24 ++--------
+ 1 file changed, 5 insertions(+), 19 deletions(-)
 
---- a/drivers/input/touchscreen/s6sy761.c
-+++ b/drivers/input/touchscreen/s6sy761.c
-@@ -145,8 +145,8 @@ static void s6sy761_report_coordinates(s
- 	u8 major = event[4];
- 	u8 minor = event[5];
- 	u8 z = event[6] & S6SY761_MASK_Z;
--	u16 x = (event[1] << 3) | ((event[3] & S6SY761_MASK_X) >> 4);
--	u16 y = (event[2] << 3) | (event[3] & S6SY761_MASK_Y);
-+	u16 x = (event[1] << 4) | ((event[3] & S6SY761_MASK_X) >> 4);
-+	u16 y = (event[2] << 4) | (event[3] & S6SY761_MASK_Y);
+--- a/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c
++++ b/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c
+@@ -2015,12 +2015,11 @@ static int chcr_ktls_xmit(struct sk_buff
+ 	 * we will send the complete record again.
+ 	 */
  
- 	input_mt_slot(sdata->input, tid);
++	spin_lock_irqsave(&tx_ctx->base.lock, flags);
++
+ 	do {
+-		int i;
+ 
+ 		cxgb4_reclaim_completed_tx(adap, &q->q, true);
+-		/* lock taken */
+-		spin_lock_irqsave(&tx_ctx->base.lock, flags);
+ 		/* fetch the tls record */
+ 		record = tls_get_record(&tx_ctx->base, tcp_seq,
+ 					&tx_info->record_no);
+@@ -2079,11 +2078,11 @@ static int chcr_ktls_xmit(struct sk_buff
+ 						    tls_end_offset, skb_offset,
+ 						    0);
+ 
+-			spin_unlock_irqrestore(&tx_ctx->base.lock, flags);
+ 			if (ret) {
+ 				/* free the refcount taken earlier */
+ 				if (tls_end_offset < data_len)
+ 					dev_kfree_skb_any(skb);
++				spin_unlock_irqrestore(&tx_ctx->base.lock, flags);
+ 				goto out;
+ 			}
+ 
+@@ -2093,16 +2092,6 @@ static int chcr_ktls_xmit(struct sk_buff
+ 			continue;
+ 		}
+ 
+-		/* increase page reference count of the record, so that there
+-		 * won't be any chance of page free in middle if in case stack
+-		 * receives ACK and try to delete the record.
+-		 */
+-		for (i = 0; i < record->num_frags; i++)
+-			__skb_frag_ref(&record->frags[i]);
+-		/* lock cleared */
+-		spin_unlock_irqrestore(&tx_ctx->base.lock, flags);
+-
+-
+ 		/* if a tls record is finishing in this SKB */
+ 		if (tls_end_offset <= data_len) {
+ 			ret = chcr_end_part_handler(tx_info, skb, record,
+@@ -2127,13 +2116,9 @@ static int chcr_ktls_xmit(struct sk_buff
+ 			data_len = 0;
+ 		}
+ 
+-		/* clear the frag ref count which increased locally before */
+-		for (i = 0; i < record->num_frags; i++) {
+-			/* clear the frag ref count */
+-			__skb_frag_unref(&record->frags[i]);
+-		}
+ 		/* if any failure, come out from the loop. */
+ 		if (ret) {
++			spin_unlock_irqrestore(&tx_ctx->base.lock, flags);
+ 			if (th->fin)
+ 				dev_kfree_skb_any(skb);
+ 
+@@ -2148,6 +2133,7 @@ static int chcr_ktls_xmit(struct sk_buff
+ 
+ 	} while (data_len > 0);
+ 
++	spin_unlock_irqrestore(&tx_ctx->base.lock, flags);
+ 	atomic64_inc(&port_stats->ktls_tx_encrypted_packets);
+ 	atomic64_add(skb_data_len, &port_stats->ktls_tx_encrypted_bytes);
  
 
 
