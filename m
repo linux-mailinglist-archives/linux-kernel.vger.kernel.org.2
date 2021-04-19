@@ -2,158 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02938363964
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 04:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A9C363968
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 04:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237248AbhDSC3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 22:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57368 "EHLO
+        id S237274AbhDSCdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 22:33:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232038AbhDSC3i (ORCPT
+        with ESMTP id S233146AbhDSCdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 22:29:38 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6445C06174A;
-        Sun, 18 Apr 2021 19:29:06 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id u15so8351380plf.10;
-        Sun, 18 Apr 2021 19:29:06 -0700 (PDT)
+        Sun, 18 Apr 2021 22:33:43 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC1FC06174A;
+        Sun, 18 Apr 2021 19:33:13 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id f17so46515597lfu.7;
+        Sun, 18 Apr 2021 19:33:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bZBVykDy+CbPTq5GPknPQk24ko2Dt8qX06614cxzmoI=;
-        b=pmOjuCDaegOlVXpSgl1lzwSoy//PLBynAvQROra5Oj+O22sUO/1R5ycoyKKiF0V3C9
-         3cG7pYApIKJpVSz66o01Dn1nKPSDprDCEp1rjmpistU0lbm7sSEExqWEnHXAXvDr5GQB
-         vpPNBJzOPtBcZM/ga3gOacb4x4P2q0KEDP2Cl0kUPzBLMowa1ezLGXx9ZQGFZeAWbJb5
-         T47V266bPzWsj8bXT91/13X/9XnzhLUosgMO9pwKbyNvRiEFZdwQYKkB2M2BeGoOHLER
-         IbdI2SOE0/MFcN2o5kzd/gkBdNTrATab1XEXYF1JxC1cOk7rkH4ofTKM7RJlCNEui6Tu
-         +v/w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9QEpzdjP4dphABYnhH7gyCbErJK9GWvUa5xb2cIfPbw=;
+        b=fQbvjGw8VFQ8QHd4ioKUeh1wiw0z+lal35xuB8hLmq6pbO1S5cGM0jYicoDaKDTw0E
+         iG+hbr+tk4Vg57Yu2Q7I1uHnVkgyaF6r3m1uHljTWfRah0xnVQpiXgKVKHeTwt4j0+3v
+         EyqRGi8eJVbyAeP9dU+RSIQM8nTjctiyXghWaKZOMUmC+a8BkRN+enHz7eqa8L947Ne3
+         qraOchfqEoJgUcBWFu++3OqQzabl8dH8khxQqcD7jVv30Hzx5ELXp7mtNfHOZSWMZtzG
+         Hb2zoXuvTYGAJeemt0F6ASNXtaleYxyppdAndjmt1wAHBisH6hA1fGLkrrtzLvql2PqX
+         BABA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bZBVykDy+CbPTq5GPknPQk24ko2Dt8qX06614cxzmoI=;
-        b=ge8tnq5sUSfPY/ZZKDO8HYEogHwIT9+mpmDJoOUuVI0TDukqIrbMQzxiDZls2FuUqq
-         Aekp0L+JaPQPKDrHeEFgb1MoQnu7zK2c8kIe/pEpj1/56GWvB0PmHqHdr8in517X0CeT
-         RciL3bl6I+c8hMpsB/izRaYgn6KlhQoksC0+yp7T5q1rEtzqqxZrEYDCTcZ32ddTwoSS
-         qiWUD30tfrEzO5VCFMu7SemnKDbaoaVcdmhkqtw7eFNZN7KjUUt1z2SUedjoJXxzYtgm
-         0NAojdHE7VP5sNCA42yUKnLQ6o8RBR7yPMBPLNEGzKiCdHNUZ6/0rcZ+JWlPmMcahARz
-         LK0Q==
-X-Gm-Message-State: AOAM530CvkGXFfXEHwp35nUQ0nkrFWFPy4VYmCv77EFGSfkiThFaCzwz
-        +94XrUjM89nnq83JBOtsSNA=
-X-Google-Smtp-Source: ABdhPJxlsKaMBLmPaeHgo0HcfC9O6q6+X+K7YIJbHuEuoB4Sq7ROCH555R+TPqR2Yu736JeDVAtZnw==
-X-Received: by 2002:a17:90a:a389:: with SMTP id x9mr21888444pjp.232.1618799346177;
-        Sun, 18 Apr 2021 19:29:06 -0700 (PDT)
-Received: from localhost.localdomain (220-130-175-235.HINET-IP.hinet.net. [220.130.175.235])
-        by smtp.gmail.com with ESMTPSA id lt11sm12577277pjb.23.2021.04.18.19.29.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Apr 2021 19:29:05 -0700 (PDT)
-From:   Chung-Chiang Cheng <shepjeng@gmail.com>
-X-Google-Original-From: Chung-Chiang Cheng <cccheng@synology.com>
-To:     gustavoars@kernel.org, christian.brauner@ubuntu.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     cccheng@synology.com
-Subject: [PATCH v2] hfsplus: prevent negative dentries when casefolded
-Date:   Mon, 19 Apr 2021 10:29:01 +0800
-Message-Id: <20210419022901.193750-1-cccheng@synology.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9QEpzdjP4dphABYnhH7gyCbErJK9GWvUa5xb2cIfPbw=;
+        b=VmXutwHGl33QHMHvAR3HBDXN9a/9F+WdoZQa3V6Xz/7MlkmKOQh9grxJFRB7TTPGl8
+         Xh7KgFy8gx21I5UzZ5ekm2XHvMYFc01qbbHZs23//xc/9z0ay/kRgoOPtW2NVOGH9t/l
+         NrNjZDaf6SEildNUwy9gsE6ENRUFB+twE3iGJ8anAgxjmJMUeNjtHZj4VR58Gfwsw5lW
+         taNXDnDkavTofv8Kkkm2WxehrLpQNIEfiU9Mckcue0uj9Sfm2B/q0szLh1xNRo4MG8xl
+         OQMu2Iy9zrZGWCG8G6zMvc+D9LnYWh+8Pr0y/YISiR1iaJjTsMJ3l4FQUANaMvMam28d
+         fdWg==
+X-Gm-Message-State: AOAM533qpbawc27uxe5aZDPqXtbjaNP+pPqkpazQzJQG8QYxaBve34mF
+        zVgCe/g/qRbw6CZFzzoCeAN4Yplh9gLcF0MyMjRPckkVD0/RLw==
+X-Google-Smtp-Source: ABdhPJyS8sHvEvUtqYrKCrrKl7/7zFP4Js/oTDdprUXoYh2KnPWDm0KitzHk/S+q9BhiKXRy5RZpuysN7DDMEI4hwQw=
+X-Received: by 2002:a19:818d:: with SMTP id c135mr10430713lfd.349.1618799591584;
+ Sun, 18 Apr 2021 19:33:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210316054727.25655-1-foxhlchen@gmail.com> <20210316054727.25655-2-foxhlchen@gmail.com>
+ <20210419021730.GV2531743@casper.infradead.org>
+In-Reply-To: <20210419021730.GV2531743@casper.infradead.org>
+From:   Fox Chen <foxhlchen@gmail.com>
+Date:   Mon, 19 Apr 2021 10:33:00 +0800
+Message-ID: <CAC2o3D+kq+U9vSp_9DNM3UGA=UGhS84Y+mwm=9S6eMPpf2-ogQ@mail.gmail.com>
+Subject: Re: [PATCH v2 01/12] docs: path-lookup: update follow_managed() part
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Neil Brown <neilb@suse.de>, Jonathan Corbet <corbet@lwn.net>,
+        vegard.nossum@oracle.com, Al Viro <viro@zeniv.linux.org.uk>,
+        rdunlap@infradead.org, grandmaster@al2klimov.de,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hfsplus uses the case-insensitive filenames by default, but VFS negative
-dentries are incompatible with case-insensitive. For example, the
-following instructions will get a cached filename 'aaa' which isn't
-expected. There is no such problem in macOS.
+On Mon, Apr 19, 2021 at 10:17 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Tue, Mar 16, 2021 at 01:47:16PM +0800, Fox Chen wrote:
+> > -In the absence of symbolic links, ``walk_component()`` creates a new
+> > +As the last step of ``walk_component()``, ``step_into()`` will be called either
+>
+> You can drop ``..`` from around function named which are followed with
+> ().  d74b0d31ddde ("Docs: An initial automarkup extension for sphinx")
+> marks them up automatically.
+>
 
-  touch aaa
-  rm aaa
-  touch AAA
+Got it, thanks for letting me know. But I will still use them in this
+patch series to keep consistency with the remaining parts of the
+document.
 
-This patch takes the same approach to drop negative dentires as vfat does.
-The dentry is revalidated without blocking and storing to the dentry,
-and should be safe in rcu-walk.
 
-Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
----
- fs/hfsplus/hfsplus_fs.h |  1 +
- fs/hfsplus/inode.c      |  1 +
- fs/hfsplus/unicode.c    | 32 ++++++++++++++++++++++++++++++++
- 3 files changed, 34 insertions(+)
-
-diff --git a/fs/hfsplus/hfsplus_fs.h b/fs/hfsplus/hfsplus_fs.h
-index 12b20479ed2b..e4f0cdfdac96 100644
---- a/fs/hfsplus/hfsplus_fs.h
-+++ b/fs/hfsplus/hfsplus_fs.h
-@@ -528,6 +528,7 @@ int hfsplus_asc2uni(struct super_block *sb, struct hfsplus_unistr *ustr,
- int hfsplus_hash_dentry(const struct dentry *dentry, struct qstr *str);
- int hfsplus_compare_dentry(const struct dentry *dentry, unsigned int len,
- 			   const char *str, const struct qstr *name);
-+int hfsplus_revalidate_dentry(struct dentry *dentry, unsigned int flags);
- 
- /* wrapper.c */
- int hfsplus_submit_bio(struct super_block *sb, sector_t sector, void *buf,
-diff --git a/fs/hfsplus/inode.c b/fs/hfsplus/inode.c
-index 078c5c8a5156..772cad371371 100644
---- a/fs/hfsplus/inode.c
-+++ b/fs/hfsplus/inode.c
-@@ -176,6 +176,7 @@ const struct address_space_operations hfsplus_aops = {
- const struct dentry_operations hfsplus_dentry_operations = {
- 	.d_hash       = hfsplus_hash_dentry,
- 	.d_compare    = hfsplus_compare_dentry,
-+	.d_revalidate = hfsplus_revalidate_dentry,
- };
- 
- static void hfsplus_get_perms(struct inode *inode,
-diff --git a/fs/hfsplus/unicode.c b/fs/hfsplus/unicode.c
-index 73342c925a4b..e336631334eb 100644
---- a/fs/hfsplus/unicode.c
-+++ b/fs/hfsplus/unicode.c
-@@ -10,6 +10,7 @@
-  */
- 
- #include <linux/types.h>
-+#include <linux/namei.h>
- #include <linux/nls.h>
- #include "hfsplus_fs.h"
- #include "hfsplus_raw.h"
-@@ -518,3 +519,34 @@ int hfsplus_compare_dentry(const struct dentry *dentry,
- 		return 1;
- 	return 0;
- }
-+
-+int hfsplus_revalidate_dentry(struct dentry *dentry, unsigned int flags)
-+{
-+	/*
-+	 * dentries are always valid when disabling casefold.
-+	 */
-+	if (!test_bit(HFSPLUS_SB_CASEFOLD, &HFSPLUS_SB(dentry->d_sb)->flags))
-+		return 1;
-+
-+	/*
-+	 * Positive dentries are valid when enabling casefold.
-+	 *
-+	 * Note, rename() to existing directory entry will have ->d_inode, and
-+	 * will use existing name which isn't specified name by user.
-+	 *
-+	 * We may be able to drop this positive dentry here. But dropping
-+	 * positive dentry isn't good idea. So it's unsupported like
-+	 * rename("filename", "FILENAME") for now.
-+	 */
-+	if (d_really_is_positive(dentry))
-+		return 1;
-+
-+	/*
-+	 * Drop the negative dentry, in order to make sure to use the case
-+	 * sensitive name which is specified by user if this is for creation.
-+	 */
-+	if (flags & (LOOKUP_CREATE | LOOKUP_RENAME_TARGET))
-+		return 0;
-+
-+	return 1;
-+}
--- 
-2.25.1
-
+thanks,
+fox
