@@ -2,432 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E2C364873
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 18:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D2E364843
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 18:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232690AbhDSQnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 12:43:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231888AbhDSQnO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 12:43:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B89706100B;
-        Mon, 19 Apr 2021 16:42:44 +0000 (UTC)
-From:   Clark Williams <williams@redhat.com>
-Subject: [ANNOUNCE] 4.19.188-rt77
-Date:   Fri, 16 Apr 2021 21:37:25 -0000
-Message-ID: <161860904503.10661.16497825100264445224@puck.lan>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Pavel Machek <pavel@denx.de>
+        id S238875AbhDSQdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 12:33:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230127AbhDSQdG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 12:33:06 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B675C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 09:32:35 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id i190so23541992pfc.12
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 09:32:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Po8ZTryCmaCYRlNesK4Qbi+P2wBo0R9mSd8SxApaYsM=;
+        b=SfS42w7lxwkVwfe7+1MBgZbbdaiD2/CEChHSlMTy6xm00biq+FUePeNbxqitTZejfZ
+         zg2Bm4si/5sbMMXI6BBO9C8fxBbg874fzn3j6FZhg7pmT6lDa5K+dftGdg/hzDSCq3Vg
+         EPVc83ZRpdqnuhfm6dI5yjcuzx4R0T/6UryU16YqNRsrk4ghAd1681K62n+qAfBaSJjL
+         Q+nMiAYOVpMXYr8h/fj1NgIo5jdMcicWPdntv/p7d8otOyghfPE60mWaFVuAFyCMpLDy
+         YOUbMn7aL2Hr+yOXV+cHYhl4au399YnzhAKFIl1mMlJ3mC6KdvNIkClpE3IqJhycRtRi
+         TV4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Po8ZTryCmaCYRlNesK4Qbi+P2wBo0R9mSd8SxApaYsM=;
+        b=uIYwxr8tRs71xwHirLwW+kAo0tOmL5cUHRVbvX2+LxH4jNL0vugMdLpKQhuHz2VKnJ
+         9d1ByIug2s+7J3SHsq6WZTHGzGFfANa3VnaOlDIFo2dtEnddplTOykylRA2dA1KzgtKd
+         D3unOXRxlYtTXZyZhwqxXd3HTcDfwSl2bKG6H84uXNzyMlMcqdZ4kJFJyn1RM/xiJmR3
+         Ko5rTBVK32L8Ua72S5XH2OO3P48T3dIQj0qn9jP2DNroN+B71iLkDDL9p5XKyQoXLU/M
+         pC0/HQNvlvesJPSiSETMj3jupALRYcieunKYVy9zua7EOTbqW+O1DVZ9qqCaxbODK81a
+         SXKQ==
+X-Gm-Message-State: AOAM531mkCr5DfPKTeM4Rfex/GmfiPhU4YcaaDGIGVGYgJz3pPDPZ7MC
+        pA1VFoLFgjGVnJ7mbnmz5ONIdcAoncijbg==
+X-Google-Smtp-Source: ABdhPJx3mBR4cgaLIzX+QZKSR72lGy+y/cIQaVq8jSoFaRpYpBsv8/ojiGloYCR8LYSGJjAizg7yNQ==
+X-Received: by 2002:a63:1d18:: with SMTP id d24mr13065142pgd.402.1618849954664;
+        Mon, 19 Apr 2021 09:32:34 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id gt22sm12209pjb.7.2021.04.19.09.32.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 09:32:34 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 16:32:30 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wanpeng Li <kernellwp@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH] KVM: Boost vCPU candidiate in user mode which is
+ delivering interrupt
+Message-ID: <YH2wnl05UBqVhcHr@google.com>
+References: <1618542490-14756-1-git-send-email-wanpengli@tencent.com>
+ <9c49c6ff-d896-e6a5-c051-b6707f6ec58a@redhat.com>
+ <CANRm+Cy-xmDRQoUfOYm+GGvWiS+qC_sBjyZmcLykbKqTF2YDxQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANRm+Cy-xmDRQoUfOYm+GGvWiS+qC_sBjyZmcLykbKqTF2YDxQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
-
-I'm pleased to announce the 4.19.188-rt77 stable release.
-
-Note that this is a merge of the v4.19.188 stable release and the backport
-of two RT commits:
-
-87bd0bf324f4    mm: slub: Don't resize the location tracking cache on PREEMPT_RT
-3c7e3c2cc78d    locking/rwsem-rt: Add __down_read_interruptible()
-
-
-You can get this release via the git tree at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v4.19-rt
-  Head SHA1: bf5c33f2602503faeab40ce2bc95d3c460189522
-
-Or to build 4.19.188-rt77 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.19.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.19.188.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/patch-4.19.188-rt77.patch.xz
-
-
-You can also build from 4.19.185-rt76 by applying the incremental patch:
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/incr/patch-4.19.185-rt76-rt77.patch.xz
-
-Enjoy!
-Clark
-
-Changes from v4.19.185-rt76:
----
-
-Ahmed S. Darwish (1):
-      net: xfrm: Localize sequence counter per network namespace
-
-Alban Bedel (1):
-      platform/x86: intel-hid: Support Lenovo ThinkPad X1 Tablet Gen 2
-
-Alexander Aring (8):
-      net: ieee802154: nl-mac: fix check on panid
-      net: ieee802154: fix nl802154 del llsec key
-      net: ieee802154: fix nl802154 del llsec dev
-      net: ieee802154: fix nl802154 add llsec key
-      net: ieee802154: fix nl802154 del llsec devkey
-      net: ieee802154: forbid monitor for set llsec params
-      net: ieee802154: forbid monitor for del llsec seclevel
-      net: ieee802154: stop dump llsec params for monitors
-
-Alexander Gordeev (1):
-      s390/cpcmd: fix inline assembly register clobbering
-
-Anirudh Rayabharam (1):
-      net: hso: fix null-ptr-deref during tty device unregistration
-
-Arnaldo Carvalho de Melo (1):
-      perf map: Tighten snprintf() string precision to pass gcc check on some 32-bit arches
-
-Arnd Bergmann (3):
-      x86/build: Turn off -fcf-protection for realmode targets
-      soc/fsl: qbman: fix conflicting alignment attributes
-      drm/imx: imx-ldb: fix out of bounds array access warning
-
-Aya Levin (1):
-      net/mlx5: Fix PBMC register mapping
-
-Bastian Germann (1):
-      ASoC: sunxi: sun4i-codec: fill ASoC card owner
-
-Bob Peterson (1):
-      gfs2: report "already frozen/thawed" errors
-
-Clark Williams (2):
-      Merge tag 'v4.19.188' into v4.19-rt
-      Linux 4.19.188-rt77
-
-Claudiu Manoil (1):
-      gianfar: Handle error code at MAC address change
-
-Dmitry Osipenko (1):
-      drm/tegra: dc: Don't set PLL clock to 0Hz
-
-Du Cheng (1):
-      cfg80211: remove WARN_ON() in cfg80211_sme_connect
-
-Eric Dumazet (2):
-      net: ensure mac header is set in virtio_net_hdr_to_skb()
-      sch_red: fix off-by-one checks in red_check_params()
-
-Eryk Rybak (1):
-      i40e: Fix kernel oops when i40e driver removes VF's
-
-Esteve Varela Colominas (1):
-      platform/x86: thinkpad_acpi: Allow the FnLock LED to change state
-
-Eyal Birger (1):
-      xfrm: interface: fix ipv4 pmtu check to honor ip header df
-
-Fabio Pricoco (1):
-      ice: Increase control queue timeout
-
-Florian Fainelli (1):
-      net: phy: broadcom: Only advertise EEE for supported modes
-
-Florian Westphal (1):
-      netfilter: x_tables: fix compat match/target pad out-of-bound write
-
-Gao Xiang (1):
-      parisc: avoid a warning on u8 cast for cmpxchg on u8 pointers
-
-Geert Uytterhoeven (1):
-      regulator: bd9571mwv: Fix AVS and DVFS voltage range
-
-Greg Kroah-Hartman (5):
-      Linux 4.19.186
-      Revert "cifs: Set CIFS_MOUNT_USE_PREFIX_PATH flag on setting cifs_sb->prepath."
-      Linux 4.19.187
-      staging: m57621-mmc: delete driver from the tree.
-      Linux 4.19.188
-
-Hans de Goede (1):
-      ASoC: intel: atom: Stop advertising non working S24LE support
-
-Heiko Carstens (1):
-      init/Kconfig: make COMPILE_TEST depend on !S390
-
-Helge Deller (1):
-      parisc: parisc-agp requires SBA IOMMU driver
-
-Jack Qiu (1):
-      fs: direct-io: fix missing sdio->boundary
-
-Jonas Holmberg (1):
-      ALSA: aloop: Fix initialization of controls
-
-Juergen Gross (1):
-      xen/events: fix setting irq affinity
-
-Karthikeyan Kathirvel (1):
-      mac80211: choose first enabled channel for monitor
-
-Krzysztof Kozlowski (1):
-      clk: socfpga: fix iomem pointer cast on 64-bit
-
-Kumar Kartikeya Dwivedi (1):
-      net: sched: bump refcount for new action in ACT replace mode
-
-Luca Fancellu (1):
-      xen/evtchn: Change irq_info lock to raw_spinlock_t
-
-Lukasz Bartosik (2):
-      clk: fix invalid usage of list cursor in register
-      clk: fix invalid usage of list cursor in unregister
-
-Lv Yunlong (1):
-      net:tipc: Fix a double free in tipc_sk_mcast_rcv
-
-Maciej Żenczykowski (1):
-      net-ipv6: bugfix - raw & sctp - switch to ipv6_can_nonlocal_bind()
-
-Mans Rullgard (1):
-      ARM: dts: am33xx: add aliases for mmc interfaces
-
-Marek Behún (1):
-      ARM: dts: turris-omnia: configure LED[2]/INTn pin as interrupt pin
-
-Martin Wilck (1):
-      scsi: target: pscsi: Clean up after failure in pscsi_map_sg()
-
-Masahiro Yamada (1):
-      init/Kconfig: make COMPILE_TEST depend on HAS_IOMEM
-
-Mateusz Palczewski (1):
-      i40e: Added Asym_Pause to supported link modes
-
-Mike Rapoport (1):
-      nds32: flush_dcache_page: use page_mapping_file to avoid races with swapoff
-
-Milton Miller (1):
-      net/ncsi: Avoid channel_monitor hrtimer deadlock
-
-Muhammad Usama Anjum (1):
-      net: ipv6: check for validity before dereferencing cfg->fc_nlinfo.nlh
-
-Pavel Andrianov (1):
-      net: pxa168_eth: Fix a potential data race in pxa168_eth_remove
-
-Pavel Skripkin (3):
-      drivers: net: fix memory leak in atusb_probe
-      drivers: net: fix memory leak in peak_usb_create_dev
-      net: mac802154: Fix general protection fault
-
-Pavel Tikhomirov (1):
-      net: sched: sch_teql: fix null-pointer dereference
-
-Phillip Potter (1):
-      net: tun: set tun->dev->addr_len during TUNSETLINK processing
-
-Piotr Krysiuk (2):
-      bpf, x86: Validate computation of branch displacements for x86-64
-      bpf, x86: Validate computation of branch displacements for x86-32
-
-Potnuri Bharat Teja (1):
-      RDMA/cxgb4: check for ipv6 address properly while destroying listener
-
-Raed Salem (1):
-      net/mlx5: Fix placement of log_max_flow_counter
-
-Rahul Lakkireddy (1):
-      cxgb4: avoid collecting SGE_QBASE regs during traffic
-
-Rob Clark (1):
-      drm/msm: Ratelimit invalid-fence message
-
-Ronnie Sahlberg (1):
-      cifs: revalidate mapping when we open files for SMB1 POSIX
-
-Saravana Kannan (1):
-      driver core: Fix locking bug in deferred_probe_timeout_work_func()
-
-Sebastian Andrzej Siewior (2):
-      mm: slub: Don't resize the location tracking cache on PREEMPT_RT
-      locking/rwsem_rt: Add __down_read_interruptible()
-
-Sergei Trofimovich (3):
-      ia64: mca: allocate early mca with GFP_ATOMIC
-      ia64: fix format strings for err_inject
-      ia64: fix user_stack_pointer() for ptrace()
-
-Shengjiu Wang (1):
-      ASoC: wm8960: Fix wrong bclk and lrclk with pll enabled for some chips
-
-Shuah Khan (4):
-      usbip: add sysfs_lock to synchronize sysfs code paths
-      usbip: stub-dev synchronize sysfs code paths
-      usbip: vudc synchronize sysfs code paths
-      usbip: synchronize event handler with sysfs code paths
-
-Shyam Sundar S K (1):
-      amd-xgbe: Update DMA coherency values
-
-Stefan Riedmueller (1):
-      ARM: dts: imx6: pbab01: Set vmmc supply for both SD interfaces
-
-Suzuki K Poulose (2):
-      KVM: arm64: Hide system instruction access to Trace registers
-      KVM: arm64: Disable guest access to trace filter controls
-
-Tetsuo Handa (1):
-      batman-adv: initialize "struct batadv_tvlv_tt_vlan_data"->reserved field
-
-Tong Zhang (1):
-      mISDN: fix crash in fritzpci
-
-Tony Lindgren (1):
-      bus: ti-sysc: Fix warning on unbind if reset is not deasserted
-
-Vincent Whitchurch (1):
-      cifs: Silently ignore unknown oplock break handle
-
-Wengang Wang (1):
-      ocfs2: fix deadlock between setattr and dio_end_io_write
-
-Wolfram Sang (1):
-      i2c: turn recovery error on init to debug
-
-Xiaoming Ni (4):
-      nfc: fix refcount leak in llcp_sock_bind()
-      nfc: fix refcount leak in llcp_sock_connect()
-      nfc: fix memory leak in llcp_sock_connect()
-      nfc: Avoid endless loops caused by repeated llcp_sock_connect()
-
-Yufen Yu (1):
-      block: only update parent bi_status when bio fail
-
-Yuya Kusakabe (1):
-      virtio_net: Add XDP meta data support
-
-Zihao Yu (1):
-      riscv,entry: fix misaligned base for excp_vect_table
-
-Zqiang (1):
-      workqueue: Move the position of debug_work_activate() in __queue_work()
----
-Makefile                                           |    2 +-
- arch/arm/boot/dts/am33xx.dtsi                      |    3 +
- arch/arm/boot/dts/armada-385-turris-omnia.dts      |    1 +
- arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi       |    2 +
- arch/arm64/include/asm/kvm_arm.h                   |    1 +
- arch/arm64/kernel/cpufeature.c                     |    1 -
- arch/arm64/kvm/debug.c                             |    2 +
- arch/ia64/include/asm/ptrace.h                     |    8 +-
- arch/ia64/kernel/err_inject.c                      |   22 +-
- arch/ia64/kernel/mca.c                             |    2 +-
- arch/nds32/mm/cacheflush.c                         |    2 +-
- arch/parisc/include/asm/cmpxchg.h                  |    2 +-
- arch/riscv/kernel/entry.S                          |    1 +
- arch/s390/kernel/cpcmd.c                           |    6 +-
- arch/x86/Makefile                                  |    2 +-
- arch/x86/net/bpf_jit_comp.c                        |   11 +-
- arch/x86/net/bpf_jit_comp32.c                      |   11 +-
- block/bio.c                                        |    2 +-
- drivers/base/dd.c                                  |    8 +-
- drivers/bus/ti-sysc.c                              |    4 +-
- drivers/char/agp/Kconfig                           |    2 +-
- drivers/clk/clk.c                                  |   47 +-
- drivers/clk/socfpga/clk-gate.c                     |    2 +-
- drivers/gpu/drm/imx/imx-ldb.c                      |   10 +
- drivers/gpu/drm/msm/msm_fence.c                    |    2 +-
- drivers/gpu/drm/tegra/dc.c                         |   10 +-
- drivers/i2c/i2c-core-base.c                        |    7 +-
- drivers/infiniband/hw/cxgb4/cm.c                   |    3 +-
- drivers/isdn/hardware/mISDN/mISDNipac.c            |    2 +-
- drivers/net/can/usb/peak_usb/pcan_usb_core.c       |    6 +-
- drivers/net/ethernet/amd/xgbe/xgbe.h               |    6 +-
- drivers/net/ethernet/chelsio/cxgb4/cudbg_lib.c     |   23 +-
- drivers/net/ethernet/chelsio/cxgb4/t4_hw.c         |    3 +-
- drivers/net/ethernet/freescale/gianfar.c           |    6 +-
- drivers/net/ethernet/intel/i40e/i40e.h             |    1 +
- drivers/net/ethernet/intel/i40e/i40e_ethtool.c     |    1 +
- drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c |    9 +
- drivers/net/ethernet/intel/ice/ice_controlq.h      |    4 +-
- drivers/net/ethernet/marvell/pxa168_eth.c          |    2 +-
- drivers/net/ieee802154/atusb.c                     |    1 +
- drivers/net/phy/bcm-phy-lib.c                      |   11 +-
- drivers/net/tun.c                                  |   48 +
- drivers/net/usb/hso.c                              |   33 +-
- drivers/net/virtio_net.c                           |   52 +-
- drivers/platform/x86/intel-hid.c                   |    7 +
- drivers/platform/x86/thinkpad_acpi.c               |    8 +-
- drivers/regulator/bd9571mwv-regulator.c            |    4 +-
- drivers/soc/fsl/qbman/qman.c                       |    2 +-
- drivers/staging/Kconfig                            |    2 -
- drivers/staging/Makefile                           |    1 -
- drivers/staging/mt7621-mmc/Kconfig                 |   16 -
- drivers/staging/mt7621-mmc/Makefile                |   42 -
- drivers/staging/mt7621-mmc/TODO                    |    8 -
- drivers/staging/mt7621-mmc/board.h                 |   63 -
- drivers/staging/mt7621-mmc/dbg.c                   |  307 ---
- drivers/staging/mt7621-mmc/dbg.h                   |  149 --
- drivers/staging/mt7621-mmc/mt6575_sd.h             |  488 ----
- drivers/staging/mt7621-mmc/sd.c                    | 2392 --------------------
- drivers/target/target_core_pscsi.c                 |    8 +
- drivers/usb/usbip/stub_dev.c                       |   11 +-
- drivers/usb/usbip/usbip_common.h                   |    3 +
- drivers/usb/usbip/usbip_event.c                    |    2 +
- drivers/usb/usbip/vhci_hcd.c                       |    1 +
- drivers/usb/usbip/vhci_sysfs.c                     |   30 +-
- drivers/usb/usbip/vudc_dev.c                       |    1 +
- drivers/usb/usbip/vudc_sysfs.c                     |    5 +
- drivers/xen/events/events_base.c                   |   14 +-
- drivers/xen/events/events_internal.h               |    2 +-
- fs/cifs/connect.c                                  |    1 -
- fs/cifs/file.c                                     |    1 +
- fs/cifs/smb2misc.c                                 |    4 +-
- fs/direct-io.c                                     |    5 +-
- fs/gfs2/super.c                                    |   10 +-
- fs/ocfs2/aops.c                                    |   11 +-
- fs/ocfs2/file.c                                    |    8 +-
- include/linux/mlx5/mlx5_ifc.h                      |    8 +-
- include/linux/rwsem_rt.h                           |    1 +
- include/linux/virtio_net.h                         |    2 +
- include/net/netns/xfrm.h                           |    4 +-
- include/net/red.h                                  |    4 +-
- init/Kconfig                                       |    3 +-
- kernel/locking/rwsem-rt.c                          |   11 +
- kernel/workqueue.c                                 |    2 +-
- localversion-rt                                    |    2 +-
- mm/slub.c                                          |    3 +
- net/batman-adv/translation-table.c                 |    2 +
- net/ieee802154/nl-mac.c                            |    7 +-
- net/ieee802154/nl802154.c                          |   23 +-
- net/ipv4/netfilter/arp_tables.c                    |    2 +
- net/ipv4/netfilter/ip_tables.c                     |    2 +
- net/ipv6/netfilter/ip6_tables.c                    |    2 +
- net/ipv6/raw.c                                     |    2 +-
- net/ipv6/route.c                                   |    8 +-
- net/mac80211/main.c                                |   13 +-
- net/mac802154/llsec.c                              |    2 +-
- net/ncsi/ncsi-manage.c                             |   20 +-
- net/netfilter/x_tables.c                           |   10 +-
- net/nfc/llcp_sock.c                                |   10 +
- net/sched/act_api.c                                |    3 +
- net/sched/sch_teql.c                               |    3 +
- net/sctp/ipv6.c                                    |    7 +-
- net/tipc/socket.c                                  |    2 +-
- net/wireless/sme.c                                 |    2 +-
- net/xfrm/xfrm_interface.c                          |    3 +
- net/xfrm/xfrm_state.c                              |   10 +-
- sound/drivers/aloop.c                              |   11 +-
- sound/soc/codecs/wm8960.c                          |    8 +-
- sound/soc/intel/atom/sst-mfld-platform-pcm.c       |    6 +-
- sound/soc/sunxi/sun4i-codec.c                      |    5 +
- tools/perf/util/map.c                              |    7 +-
- 110 files changed, 502 insertions(+), 3698 deletions(-)
+On Mon, Apr 19, 2021, Wanpeng Li wrote:
+> On Sat, 17 Apr 2021 at 21:09, Paolo Bonzini <pbonzini@redhat.com> wrote:
+> >
+> > On 16/04/21 05:08, Wanpeng Li wrote:
+> > > From: Wanpeng Li <wanpengli@tencent.com>
+> > >
+> > > Both lock holder vCPU and IPI receiver that has halted are condidate for
+> > > boost. However, the PLE handler was originally designed to deal with the
+> > > lock holder preemption problem. The Intel PLE occurs when the spinlock
+> > > waiter is in kernel mode. This assumption doesn't hold for IPI receiver,
+> > > they can be in either kernel or user mode. the vCPU candidate in user mode
+> > > will not be boosted even if they should respond to IPIs. Some benchmarks
+> > > like pbzip2, swaptions etc do the TLB shootdown in kernel mode and most
+> > > of the time they are running in user mode. It can lead to a large number
+> > > of continuous PLE events because the IPI sender causes PLE events
+> > > repeatedly until the receiver is scheduled while the receiver is not
+> > > candidate for a boost.
+> > >
+> > > This patch boosts the vCPU candidiate in user mode which is delivery
+> > > interrupt. We can observe the speed of pbzip2 improves 10% in 96 vCPUs
+> > > VM in over-subscribe scenario (The host machine is 2 socket, 48 cores,
+> > > 96 HTs Intel CLX box). There is no performance regression for other
+> > > benchmarks like Unixbench spawn (most of the time contend read/write
+> > > lock in kernel mode), ebizzy (most of the time contend read/write sem
+> > > and TLB shoodtdown in kernel mode).
+> > >
+> > > +bool kvm_arch_interrupt_delivery(struct kvm_vcpu *vcpu)
+> > > +{
+> > > +     if (vcpu->arch.apicv_active && static_call(kvm_x86_dy_apicv_has_pending_interrupt)(vcpu))
+> > > +             return true;
+> > > +
+> > > +     return false;
+> > > +}
+> >
+> > Can you reuse vcpu_dy_runnable instead of this new function?
+> 
+> I have some concerns. For x86 arch, vcpu_dy_runnable() will add extra
+> vCPU candidates by KVM_REQ_EVENT
+
+Is bringing in KVM_REQ_EVENT a bad thing though?  I don't see how using apicv is
+special in this case.  apicv is more precise and so there will be fewer false
+positives, but it's still just a guess on KVM's part since the interrupt could
+be for something completely unrelated.
+
+If false positives are a big concern, what about adding another pass to the loop
+and only yielding to usermode vCPUs with interrupts in the second full pass?
+I.e. give vCPUs that are already in kernel mode priority, and only yield to
+handle an interrupt if there are no vCPUs in kernel mode.
+
+kvm_arch_dy_runnable() pulls in pv_unhalted, which seems like a good thing.
+
+> and async pf(which has already opportunistically made the guest do other stuff).
+
+Any reason not to use kvm_arch_dy_runnable() directly?
+
+> For other arches, kvm_arch_dy_runnale() is equal to kvm_arch_vcpu_runnable()
+> except powerpc which has too many events and is not conservative. In general,
+> vcpu_dy_runnable() will loose the conditions and add more vCPU candidates.
+> 
+>     Wanpeng
