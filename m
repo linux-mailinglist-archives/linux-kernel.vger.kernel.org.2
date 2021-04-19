@@ -2,277 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A98363ABF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 06:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D8E363AE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 07:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232585AbhDSE7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 00:59:41 -0400
-Received: from mail-bn8nam12on2064.outbound.protection.outlook.com ([40.107.237.64]:32262
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229980AbhDSE7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 00:59:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jadg48ybTkItxBsaWp8zW5mMmzhD8EvP4F9btbKZprWa7Z2Y8JK7P2CeWAUtgt6Os5duS6Nh3gpJG6yOBRtdjdWTeASpwf4bakvKXppWpWOWe6tRHgJVRmqwiMslPVu7QlwN881zpP1CAWSt3WeyDVVAiH0dBlU7FARdNruxJTuD7vHIHIIjOIX1uz0jY0HvzvpledJ31UZ62E2BlYImF2zLl+4vtp5feIDFngisuAFxenOf4+DGhrPZQ7zgsKAs3i6PrFloYXj45hAhMe2m0x/ZNeY2CquZi3oF/eArSNMJywLXXs29p7p+Pm/nkQRURBdYIlNFEE3abDKqWzxlAA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UUf6r/x/HFx+A30PlLOJ1FnAtgvUW3i3C5bjtYMxCwk=;
- b=M0cuu3NS0kIuLD9PqAnJ6hUJD921Q8yjNGkaUtI20wBQL/UNh/tjTlCc5hOzDod2k44fIdgFlDLCAN8JSPAAwNV0Bi6wKV0dDyK2siekWuEGdzaPuyfQFWmZJrOsvQ7iM2YHhtOKnOvNlkYEa9p3HpPgys/6ABAfaEQSeGvHd60UFnUfTs5u+KiNy0sfiHvK64/P9cAOfkamPtzvm8fkIIIjj9sk53n1/UNglnk5jJRTCrjn6G996IauYJQGM0nEC4PiEDZ+i/n9uC51xemQGNOABPFJi1gfwXq1LaFnR0RgKJX2ghguc9D4ec3QRG0Y37dkJuZ0zeRS28qC1trDBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UUf6r/x/HFx+A30PlLOJ1FnAtgvUW3i3C5bjtYMxCwk=;
- b=JqXZaGg5LSGQDFWrKr+dAQdJ9QS8V00GuWe9qFuDOx+VW4lCWrNauFbijDKGwC4kXZSUlsnO+K/YnKx3uC/EcgSmkL3g5V2j4u1pbpWyOcZihzxelqZnsaMNYfvh92ao4UKp/5E18/+BAd+JH4+ktde9h07jWocwcRjjIwXDjo0=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
- by BYAPR11MB3254.namprd11.prod.outlook.com (2603:10b6:a03:7c::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.19; Mon, 19 Apr
- 2021 04:59:07 +0000
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::551b:e310:2ae4:3011]) by BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::551b:e310:2ae4:3011%6]) with mapi id 15.20.4042.024; Mon, 19 Apr 2021
- 04:59:07 +0000
-Subject: Re: [Qestion] Is preempt_disable/enable needed in non-preemption code
- path
-To:     paulmck@kernel.org
-Cc:     rcu@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-References: <b068d707-0ac7-4840-a297-112731972d8a@windriver.com>
- <20210415154326.GF4510@paulmck-ThinkPad-P17-Gen-1>
- <adae433f-f886-32e7-2ebd-192a624d7586@windriver.com>
- <20210415170748.GA4212@paulmck-ThinkPad-P17-Gen-1>
- <3ef49985-68c9-277d-648c-53447ff602f4@windriver.com>
- <20210416172629.GH4212@paulmck-ThinkPad-P17-Gen-1>
-From:   "Xu, Yanfei" <yanfei.xu@windriver.com>
-Message-ID: <b5c91db4-c1b6-3849-d5a9-89ca07d2d020@windriver.com>
-Date:   Mon, 19 Apr 2021 12:58:58 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20210416172629.GH4212@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK2P15301CA0002.APCP153.PROD.OUTLOOK.COM
- (2603:1096:202:1::12) To BY5PR11MB4241.namprd11.prod.outlook.com
- (2603:10b6:a03:1ca::13)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.160] (60.247.85.82) by HK2P15301CA0002.APCP153.PROD.OUTLOOK.COM (2603:1096:202:1::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.5 via Frontend Transport; Mon, 19 Apr 2021 04:59:05 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9f716c6c-e203-4e59-33b0-08d902efdc93
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3254:
-X-Microsoft-Antispam-PRVS: <BYAPR11MB32548BBC5DD3AC8065560A2BE4499@BYAPR11MB3254.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xPkNFsL6ymFsE4XWq7Q5agkI/vObyKBsroDOGoS42HOEA9sPF14tIoKRFF23FH3fKdtkOG9aqIJ2BA0EgOkJuu7EMlKOIPAB310kuO0pA8L9jL9hwNCbs+cLDtaK5827/xfHDcrMfpXxsztkuvHaAh6+Z0QsZHf9aka3KR0vwAROw8v9HMhRcO5GxlWVe2O3Pp6twgHgmvLKxu1rDfadGacFgVggPFSouapy6bcn7jlrEGOSEOIYN8MshEuyPuZ9ADiJxuA9ukBvL1WYqsSbKX49SanY68/O5iJ5Mwzr9qXMtQEKZIhjOnDdHSlxQifInk/POLAU+5JXYc8pXzROq+3wtu8SBYVciul5IqLICFFYmHzmYwPCwFmF9uvNAY55Pw/xmQMqzndF0/wqeE/lW+u/d5IYj4FJMQuA6jynaU5WWzkyPUEbf4x2wGyEHI0ZwCd/4NcVe2r6FCyxd6JJDaYLTwYulkmoRBRVCGvkA6Ikv8gqwmY+/Nyij9v2Rm4zQZIAyz5QPtAIHlDZ4o1jgvJfcwSXeFCUpVMiVBxrheW4bM01lBbps/zrfZ12PBB10bgubZppmkyl9E+LpqVt3EGQMhctf2zB18+kq3Ajd3u5sSMg2VVwVzWh+h4JCJ9l8bO2tx4bZEXXdFlMHy3h7rTouPflqYVxZIBQo/RJzpvHARKNPg6fIFHnXPh+rWcHxcD9QSBqhWejeTnO39FNjbA9H4Ijvp6vpyptn3QzinJfk0xnAyNSit8zT7Xuctpkn712mUY4u8U4L1TRs03HjrwHe5Bnx2NuHhIEAL7oSnB1nx5s0AcJjuTKjhMQpfqb
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(346002)(39840400004)(396003)(8936002)(6916009)(83380400001)(6706004)(52116002)(53546011)(66556008)(8676002)(956004)(66476007)(38350700002)(38100700002)(6486002)(2616005)(2906002)(16526019)(66946007)(6666004)(26005)(186003)(86362001)(31686004)(4326008)(478600001)(966005)(36756003)(5660300002)(316002)(31696002)(16576012)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?R2VnQ0o4eWlzNnhLY21aVTZ0bWVralAvdUp6OUlSWFVGQzRqM0ZJR0p6a1F1?=
- =?utf-8?B?R2FmS1ZMSnpmMEJvOHQrL1ZwVUFGaS9JUGgweHdpcklJNDZoZFhQS2pXU05i?=
- =?utf-8?B?dnV0TVhDMjVYMGVlS3dMbmJvVWRxTS9Bajl5OG1GdW40alBjaDNWaHhWY1o5?=
- =?utf-8?B?NElnQWs3OHRoUU1JYWtNZWRHZHg3cllMaUU2SjJZcnd2OGc0YkJCTmdhMVlk?=
- =?utf-8?B?WTE2dHJ2eW95c01QSjNCcmljWWQrTHcwRkZPVFZ2aUVCOTFwaENobVpCZ001?=
- =?utf-8?B?SjBkcmFURTdBa3l1S3d1ZFk3UHcvZzFEbFdIZ2Y3SHp0eVRNOFFVVGJwRFRC?=
- =?utf-8?B?Vy95THVVMmpsdlRXdWFvWVBOL1RFOEl5K1ZzNCtQbEd1TzZmRlZIVlRWTGQ1?=
- =?utf-8?B?cnM0cGlVSmFVRkp0NlFiZXVUNHpXbnpmQmVhTU9KQW5RNEo5cHNPcjVuWHNN?=
- =?utf-8?B?MWd4V09HUmJ6NzZzMXZNKzV1OHdMU21QSUZOd1ppamdhNnZ4bjJBME15QzNx?=
- =?utf-8?B?eDgvaWY4RjBIeUZCMGhDWVM4MDFUL3dPYnhwcjFrVG1TRlZPd2FjcFFUYW12?=
- =?utf-8?B?RXkvV1BTLzAvTGNWdktoTFZxWEdjM3diQjJsV01URXZTMUZwNHZCNCtQYzVo?=
- =?utf-8?B?TzNySzNTMUppa282MnZqZXFsQy9XS1hhVjJHMWdlKy92MTFrUml4VEh2S1d4?=
- =?utf-8?B?WjNyM0pGM1kwZC92ZnhTVkRXcVd1UVJlaFJRdllnaGVURFQvaEpUSS9sbHpX?=
- =?utf-8?B?elBrQ3I5K1pXU0lTRFcvc2hyd0d5Nko4WTRnUzBxTEovZ1g0ZG5XbURwd09E?=
- =?utf-8?B?VkdXZDRwYXNuUThpYStHcXhyQjc1d2lwVmtFOHNRR0V6L2o2MEcxenhXVzVp?=
- =?utf-8?B?d2lqVTRuVGpRTjBqTUNDZk9Ga2MrTUNGb2VGTzZteGVvMFdJZnF4eHExb29y?=
- =?utf-8?B?VTVxSVRKUzdvbGdqNVVORUdMYWRoaTkyMHNkREl2RjNtRXR6VTlkSTE2R2cw?=
- =?utf-8?B?WHRJWFZQQng5RURTbEUzNE9qYUZyYitIRHU2NTVpZXpRalY5S3pKUWtLNndB?=
- =?utf-8?B?Z1YxZ2VmVFdOeWZPTEQwSUNBRDU4SkV0NHdTYjA3dWVTTnlRc0U2UklUZUtu?=
- =?utf-8?B?djE1ZFZzTDI3VGFpWjNLRjFTaTFmbnNPcHBld1p3RFJRV3k5MUhDWHp3OUdD?=
- =?utf-8?B?T2lLZVVleXJ4VDNvdzhteUgyRUl2S3ppMDV4TGRrZlphMWZaVjVJQkN6anRs?=
- =?utf-8?B?eUVOaWlVU3dPbDVLYWc0WFZRelRaYmEvOVAzNEhnSWR4N0xEQmd3Rmp4eVZZ?=
- =?utf-8?B?dmRISkVDNUFBdXZlVVBtdWR2Mzg0OUJ2c21pTFAzYU1icW1zQkpLUmorZ291?=
- =?utf-8?B?VjJ4bTI4WEs3dlkzSzJQL1dlaGhwUEFiaTdRdS9hQ24wVzJIWmtwOFM3NzlQ?=
- =?utf-8?B?SGtIYXZJdzlpOXIrMzhmUXhrL2FsSUlrdWlVRDFYUFQwY1hoVnZLdWRnKytY?=
- =?utf-8?B?Ni9GbWVrK3pUMUJBU2xCVlo3VldkaFhBaTRIaXF5Nm1WZjlTdERaSFZVbURE?=
- =?utf-8?B?MU51bmJjTXc4aDNmZ2MrTWxtUy9JM0RQTzBDZTE0d1BsaGhFUHkxR2phTU12?=
- =?utf-8?B?YmN0Nk53cnBBdk9NbENPOW5Ycklmd09qUEM1N21BdStiM3czN2NybGkwRmJ6?=
- =?utf-8?B?WjNpelBxVFExNjlROGdOV09hL1dQVDRNa0JaZHB0ejFldUtOTi9UVjNxWlEy?=
- =?utf-8?Q?BXWW0/WrOflnAIX0pTGHNoe3UPW8Vc8arUt+aHQ?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f716c6c-e203-4e59-33b0-08d902efdc93
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4241.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2021 04:59:07.2548
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zR8wvasFnssHJAOMRDlPectyhWEMAqrU7Eu2/sJpp3DfUdE/4ExL4gosrAHG3sbBJ2Jcm0pjdA5WwgYE65q0AQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3254
+        id S233230AbhDSFEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 01:04:39 -0400
+Received: from mga03.intel.com ([134.134.136.65]:36641 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230038AbhDSFEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 01:04:38 -0400
+IronPort-SDR: bUQ2g8KgpMkfIcrTzo48bk6R1OhtmC/LjYcU1iGxCSOCsyqxHmjz9dexhp34GA1hsbncET2f4S
+ 0Rahd9Li1xpQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9958"; a="195296083"
+X-IronPort-AV: E=Sophos;i="5.82,233,1613462400"; 
+   d="scan'208";a="195296083"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2021 22:04:09 -0700
+IronPort-SDR: rkZj+7hpAC8/mdIwqVQn6To9VCOggQ+nIpMBxtXDzNt0u6AIaYQ1nRC+efjUqWKyjFqLK045kP
+ CZMBbEOccwNw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,233,1613462400"; 
+   d="scan'208";a="426366037"
+Received: from ipu5-build.bj.intel.com ([10.238.232.202])
+  by orsmga008.jf.intel.com with ESMTP; 18 Apr 2021 22:04:04 -0700
+From:   Bingbu Cao <bingbu.cao@intel.com>
+To:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        iommu@lists.linux-foundation.org
+Cc:     dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
+        will@kernel.org, bhelgaas@google.com, rajatja@google.com,
+        grundler@chromium.org, tfiga@chromium.org,
+        senozhatsky@chromium.org, sakari.ailus@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, bingbu.cao@intel.com,
+        bingbu.cao@linux.intel.com
+Subject: [PATCH] iommu: Use passthrough mode for the Intel IPUs
+Date:   Mon, 19 Apr 2021 12:57:05 +0800
+Message-Id: <1618808225-10108-1-git-send-email-bingbu.cao@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Intel IPU(Image Processing Unit) has its own (IO)MMU hardware,
+The IPU driver allocates its own page table that is not mapped
+via the DMA, and thus the Intel IOMMU driver blocks access giving
+this error:
 
+DMAR: DRHD: handling fault status reg 3
+DMAR: [DMA Read] Request device [00:05.0] PASID ffffffff
+      fault addr 76406000 [fault reason 06] PTE Read access is not set
 
-On 4/17/21 1:26 AM, Paul E. McKenney wrote:
-> [Please note: This e-mail is from an EXTERNAL e-mail address]
-> 
-> On Fri, Apr 16, 2021 at 06:51:10PM +0800, Xu, Yanfei wrote:
->>
->>
->> On 4/16/21 1:07 AM, Paul E. McKenney wrote:
->>> [Please note: This e-mail is from an EXTERNAL e-mail address]
->>>
->>> On Fri, Apr 16, 2021 at 12:18:42AM +0800, Xu, Yanfei wrote:
->>>>
->>>>
->>>> On 4/15/21 11:43 PM, Paul E. McKenney wrote:
->>>>> [Please note: This e-mail is from an EXTERNAL e-mail address]
->>>>>
->>>>> On Thu, Apr 15, 2021 at 11:04:05PM +0800, Xu, Yanfei wrote:
->>>>>> Hi experts,
->>>>>>
->>>>>> I am learning rcu mechanism and its codes. When looking at the
->>>>>> rcu_blocking_is_gp(), I found there is a pair preemption disable/enable
->>>>>> operation in non-preemption code path. And it has been a long time. I can't
->>>>>> understand why we need it? Is there some thing I missed? If not, can we
->>>>>> remove the unnecessary operation like blow?
->>>>>
->>>>> Good point, you are right that preemption is disabled anyway in that block
->>>>> of code.  However, preempt_disable() and preempt_enable() also prevent the
->>>>> compiler from moving that READ_ONCE() around.  So my question to you is
->>>>> whether it is safe to remove those statements entirely or whether they
->>>>> should instead be replaced by barrier() or similar.
->>>>
->>>> Thanks for your reply! :)
->>>>
->>>> Yes, preempt_disable() and preempt_enable() defined in !preemption are
->>>> barrier(). barrier can prevent from reordering that READ_ONCE(), but base on
->>>> my current understanding, volatile in READ_ONCE can also tell the compiler
->>>> not to reorder it. So, I think it's safe?
->>>
->>> Maybe.
->>>
->>> Please keep in mind that although the compiler is prohibited from
->>> reordering volatile accesses with each other, there is nothing stopping
->>> it from reordering volatile accesses with non-volatile accesses.
->>
->> Thanks for your patient explanation!
->>
->> I am trying to absorb what you said. Blow are my understanding:
->> 1. "the compiler is prohibited from reordering volatile accesses with each
->> other" means these situations:
->> int a;
->> foo()
->> {
->>      for(;;)
->>          READ_ONCE(a);
->> }
->>
->> or
->>
->> int a,b;
->> foo()
->> {
->>      int c,d;
->>      c = READ_ONCE(a);
->>      d = READ_ONCE(b);
->> }
-> 
-> Yes, in both cases the load instructions emitted for the READ_ONCE()
-> macros must be emitted in order.  The underlying hardware is free
-> to reorder.
+As IPU is not an external facing device which is not risky, so use
+IOMMU passthrough mode for Intel IPUs.
 
-Got it.
-> 
->> 2. "volatile accesses with non-volatile accesses" means d=b may happen
->> before c=READ_ONCE(a) :
->> int a;
->> foo()
->> {
->>      int b = 2
->>      int c,d;
->>      c = READ_ONCE(a);
->>      d = b;
->> }
->> if we want to keep the ordering of volatile access "c=READ_ONCE(a)" and
->> non-volatile access "d=b", we should use stronger barrier like barrier().
-> 
-> Or an additional READ_ONCE() for b or a WRITE_ONCE() for d.  But again,
-> this would constrain only the compiler, not the hardware.
-> 
-> But this wouldn't matter in most cases, because both b and d are local
-> variables whose addresses were never taken.  So someone would need to
-> be using something crazy to poke into others' stacks for this to matter.
+Signed-off-by: Bingbu Cao <bingbu.cao@intel.com>
+---
+ drivers/iommu/intel/iommu.c       | 35 +++++++++++++++++++++++++++++++++++
+ drivers/staging/media/ipu3/ipu3.c |  2 +-
+ include/linux/pci_ids.h           |  5 +++++
+ 3 files changed, 41 insertions(+), 1 deletion(-)
 
-Agree.
-> 
->> Hope I didn't misunderstand.
-> 
-> It looks like you have most of it.
-> 
->> Back to rcu_blocking_is_gp(), I find this link today
->> https://www.spinics.net/lists/rcu/msg03985.html
->> With the content in this link, I still haven't got the meaning of these two
->> barrier(). I think I should learn knowledge about cpu-hotplug and things
->> which talked in the link first to make sure if I am missing something, and
->> then consult you. :)
-> 
-> That sounds like a very good approach!
-> 
-> Keep in mind that I am worried not just about the current state of
-> the code and compilers, but also their possible future states.
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index ee0932307d64..59222d2fe73f 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -55,6 +55,12 @@
+ #define IS_GFX_DEVICE(pdev) ((pdev->class >> 16) == PCI_BASE_CLASS_DISPLAY)
+ #define IS_USB_DEVICE(pdev) ((pdev->class >> 8) == PCI_CLASS_SERIAL_USB)
+ #define IS_ISA_DEVICE(pdev) ((pdev->class >> 8) == PCI_CLASS_BRIDGE_ISA)
++#define IS_IPU_DEVICE(pdev) ((pdev)->vendor == PCI_VENDOR_ID_INTEL &&		\
++			     ((pdev)->device == PCI_DEVICE_ID_INTEL_IPU3 ||	\
++			     (pdev)->device == PCI_DEVICE_ID_INTEL_IPU6 ||	\
++			     (pdev)->device == PCI_DEVICE_ID_INTEL_IPU6SE ||	\
++			     (pdev)->device == PCI_DEVICE_ID_INTEL_IPU6SE_P ||	\
++			     (pdev)->device == PCI_DEVICE_ID_INTEL_IPU6EP))
+ #define IS_AZALIA(pdev) ((pdev)->vendor == 0x8086 && (pdev)->device == 0x3a3e)
+ 
+ #define IOAPIC_RANGE_START	(0xfee00000)
+@@ -360,6 +366,7 @@ int intel_iommu_enabled = 0;
+ EXPORT_SYMBOL_GPL(intel_iommu_enabled);
+ 
+ static int dmar_map_gfx = 1;
++static int dmar_map_ipu = 1;
+ static int dmar_forcedac;
+ static int intel_iommu_strict;
+ static int intel_iommu_superpage = 1;
+@@ -368,6 +375,7 @@ static int iommu_skip_te_disable;
+ 
+ #define IDENTMAP_GFX		2
+ #define IDENTMAP_AZALIA		4
++#define IDENTMAP_IPU		8
+ 
+ int intel_iommu_gfx_mapped;
+ EXPORT_SYMBOL_GPL(intel_iommu_gfx_mapped);
+@@ -2839,6 +2847,9 @@ static int device_def_domain_type(struct device *dev)
+ 
+ 		if ((iommu_identity_mapping & IDENTMAP_GFX) && IS_GFX_DEVICE(pdev))
+ 			return IOMMU_DOMAIN_IDENTITY;
++
++		if ((iommu_identity_mapping & IDENTMAP_IPU) && IS_IPU_DEVICE(pdev))
++			return IOMMU_DOMAIN_IDENTITY;
+ 	}
+ 
+ 	return 0;
+@@ -3278,6 +3289,9 @@ static int __init init_dmars(void)
+ 	if (!dmar_map_gfx)
+ 		iommu_identity_mapping |= IDENTMAP_GFX;
+ 
++	if (!dmar_map_ipu)
++		iommu_identity_mapping |= IDENTMAP_IPU;
++
+ 	check_tylersburg_isoch();
+ 
+ 	ret = si_domain_init(hw_pass_through);
+@@ -5622,6 +5636,15 @@ static void quirk_iommu_igfx(struct pci_dev *dev)
+ 	dmar_map_gfx = 0;
+ }
+ 
++static void quirk_iommu_ipu(struct pci_dev *dev)
++{
++	if (risky_device(dev))
++		return;
++
++	pci_info(dev, "Passthrough IOMMU for integrated Intel IPU\n");
++	dmar_map_ipu = 0;
++}
++
+ /* G4x/GM45 integrated gfx dmar support is totally busted. */
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x2a40, quirk_iommu_igfx);
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x2e00, quirk_iommu_igfx);
+@@ -5657,6 +5680,18 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x1632, quirk_iommu_igfx);
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x163A, quirk_iommu_igfx);
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x163D, quirk_iommu_igfx);
+ 
++/* disable IPU dmar support */
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_IPU3,
++			 quirk_iommu_ipu);
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_IPU6EP,
++			 quirk_iommu_ipu);
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_IPU6SE_P,
++			 quirk_iommu_ipu);
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_IPU6,
++			 quirk_iommu_ipu);
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_IPU6SE,
++			 quirk_iommu_ipu);
++
+ static void quirk_iommu_rwbf(struct pci_dev *dev)
+ {
+ 	if (risky_device(dev))
+diff --git a/drivers/staging/media/ipu3/ipu3.c b/drivers/staging/media/ipu3/ipu3.c
+index ee1bba6bdcac..aee1130ac042 100644
+--- a/drivers/staging/media/ipu3/ipu3.c
++++ b/drivers/staging/media/ipu3/ipu3.c
+@@ -16,7 +16,7 @@
+ #include "ipu3-dmamap.h"
+ #include "ipu3-mmu.h"
+ 
+-#define IMGU_PCI_ID			0x1919
++#define IMGU_PCI_ID			PCI_DEVICE_ID_INTEL_IPU3
+ #define IMGU_PCI_BAR			0
+ #define IMGU_DMA_MASK			DMA_BIT_MASK(39)
+ #define IMGU_MAX_QUEUE_DEPTH		(2 + 2)
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index a76ccb697bef..951315892608 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -2716,6 +2716,7 @@
+ #define PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_2C_BRIDGE  0x1576
+ #define PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_4C_NHI     0x1577
+ #define PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_4C_BRIDGE  0x1578
++#define PCI_DEVICE_ID_INTEL_IPU3	0x1919
+ #define PCI_DEVICE_ID_INTEL_80960_RP	0x1960
+ #define PCI_DEVICE_ID_INTEL_QAT_C3XXX	0x19e2
+ #define PCI_DEVICE_ID_INTEL_QAT_C3XXX_VF	0x19e3
+@@ -2982,6 +2983,8 @@
+ #define PCI_DEVICE_ID_INTEL_SBRIDGE_BR		0x3cf5	/* 13.6 */
+ #define PCI_DEVICE_ID_INTEL_SBRIDGE_SAD1	0x3cf6	/* 12.7 */
+ #define PCI_DEVICE_ID_INTEL_IOAT_SNB	0x402f
++#define PCI_DEVICE_ID_INTEL_IPU6EP	0x465d
++#define PCI_DEVICE_ID_INTEL_IPU6SE_P	0x4e19
+ #define PCI_DEVICE_ID_INTEL_5100_16	0x65f0
+ #define PCI_DEVICE_ID_INTEL_5100_19	0x65f3
+ #define PCI_DEVICE_ID_INTEL_5100_21	0x65f5
+@@ -3032,6 +3035,8 @@
+ #define PCI_DEVICE_ID_INTEL_IXP4XX	0x8500
+ #define PCI_DEVICE_ID_INTEL_IXP2800	0x9004
+ #define PCI_DEVICE_ID_INTEL_VMD_9A0B	0x9a0b
++#define PCI_DEVICE_ID_INTEL_IPU6	0x9a19
++#define PCI_DEVICE_ID_INTEL_IPU6SE	0x9a39
+ #define PCI_DEVICE_ID_INTEL_S21152BB	0xb152
+ 
+ #define PCI_VENDOR_ID_SCALEMP		0x8686
+-- 
+2.7.4
 
-I see.
-
-Thanks again.
-
-Best regards,
-Yanfei
-> 
->                                                          Thanx, Paul
-> 
->> Best regards,
->> Yanfei
->>
->>>
->>>                                                           Thanx, Paul
->>>
->>>> Best regards,
->>>> Yanfei
->>>>
->>>>>
->>>>>                                                            Thanx, Paul
->>>>>
->>>>>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->>>>>> index da6f5213fb74..c6d95a00715e 100644
->>>>>> --- a/kernel/rcu/tree.c
->>>>>> +++ b/kernel/rcu/tree.c
->>>>>> @@ -3703,7 +3703,6 @@ static int rcu_blocking_is_gp(void)
->>>>>>            if (IS_ENABLED(CONFIG_PREEMPTION))
->>>>>>                    return rcu_scheduler_active == RCU_SCHEDULER_INACTIVE;
->>>>>>            might_sleep();  /* Check for RCU read-side critical section. */
->>>>>> -       preempt_disable();
->>>>>>            /*
->>>>>>             * If the rcu_state.n_online_cpus counter is equal to one,
->>>>>>             * there is only one CPU, and that CPU sees all prior accesses
->>>>>> @@ -3718,7 +3717,6 @@ static int rcu_blocking_is_gp(void)
->>>>>>             * Those memory barriers are provided by CPU-hotplug code.
->>>>>>             */
->>>>>>            ret = READ_ONCE(rcu_state.n_online_cpus) <= 1;
->>>>>> -       preempt_enable();
->>>>>>            return ret;
->>>>>>     }
->>>>>>
->>>>>>
->>>>>>
->>>>>> Best regards,
->>>>>> Yanfei
