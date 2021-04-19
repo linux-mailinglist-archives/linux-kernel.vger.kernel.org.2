@@ -2,182 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F373649F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 20:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66788364A06
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 20:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238636AbhDSSlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 14:41:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45786 "EHLO
+        id S239280AbhDSSpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 14:45:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234608AbhDSSlk (ORCPT
+        with ESMTP id S233736AbhDSSpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 14:41:40 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C34BC061763
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 11:41:10 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id x12so33716576ejc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 11:41:10 -0700 (PDT)
+        Mon, 19 Apr 2021 14:45:35 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D73C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 11:45:03 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id u7-20020a259b470000b02904dca50820c2so8685611ybo.11
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 11:45:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3TXXauaxjaFJkryZmKe4pKXsqt2c2W4efv7xXXt6kDg=;
-        b=K9U3Wsn/ZMp1qcVYmH8K49eGtKmxmMFJSG/7TwpdB++O51Bvwx+tGQzCMd2HWtCCCj
-         XkCNqHebmllrUDYH703DvaCBFIWgSQv6LE4Cbcf2HP99jSESzpqew5uPUVaK2069tqYj
-         tZYbGjtxJ2VsQp+eM/Xqdg32vwrRUqYHp41rtvTo2tv49YUNJF97ZV4gpkqaEDa1JKZL
-         Z6YVtkJSH7bYpmUle6fdm8FVq4JLc6chNiBFVgFpOGNZ+D9JgQikxIFy4njTKnuu92mH
-         pS/DzlQqFeg0jYG6YLidrAmH1WKQgCm7dvMcSnuxGhhjUn59EuYG3vW+H+LmrqEFQqyA
-         83cA==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=txGtE5OBaRSKSRhG0f4/f/o7EAA2cx8QOFvutq3JGho=;
+        b=j2DPyy9wRqNdfA95LndINjcw54n+gtWnysw1meWxruqCEkeJeJ4wYspRZFuTWPy9g3
+         WgSn3CaDvOPfiFX+5HYmBslU4gaMykva52ezF50xT9XLs5F3RJF6km8dBJSoBUqiyaWK
+         cYCMDlVH+PNGX2Btve9tCLGYc+Us78sNxwED15no/FhRd92sBaKLFvo2aMO364hnNCHw
+         btfLmxh0TFWn8hlXGU7jP1Z0ugO6aG4pSDdxPM5OWgb+yjTcUSIjHQjlPZfPwoAsulgU
+         5Eaj0Y33nlLpBJhuwhvXnD9db+KXHptWZZ5zXqtQlVqd+d3gS0Q1s7Dyw/QYuYH4lN95
+         lJaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3TXXauaxjaFJkryZmKe4pKXsqt2c2W4efv7xXXt6kDg=;
-        b=EjsLS6M/l9aeFzS8huB96LFh6Kz+iBfD8oBNFwf5dT2WJhrPUpNEv7Qk/NmPmtUf5j
-         bJORFV/vX+Vumd9P9xYVpxmJQY4OFx4YDTDhTAdG4vWrvEE7KZYOS6Axja6fmxH0bpmR
-         nEq33sux0mT+OnVnhZCp666KI7JW/O2HGNpDWnaLAw2nhFpp1rGXirY2rvbJD9UyP2/X
-         pVszKtx+ngyH7jaLlPUBU0nUoOtEzsxIkYJROC2+cK1EW348o161sWweK5aRljOGBwtk
-         Qait3EVObPHv1EFbawM2VJNKEcEt05j6kvgeMMxfdi5uxdzwboWu3RoeB8lg8p07+c2F
-         F6CQ==
-X-Gm-Message-State: AOAM531MGB2RisRR9Bs0U4ZlqeutUD8EGpl8rXu4/Fo726aTAKeiIjRC
-        FiyJuRug91Js5+xV3gF5KUyD3w==
-X-Google-Smtp-Source: ABdhPJycOdUR+CwuNkAlnUJFFot68MXH4HjBcF7ZhZklGQLGYR6WexKascVTMUkGkR7LHMZEQK+/Ig==
-X-Received: by 2002:a17:906:6896:: with SMTP id n22mr23676314ejr.316.1618857669049;
-        Mon, 19 Apr 2021 11:41:09 -0700 (PDT)
-Received: from apalos.home (ppp-94-65-92-88.home.otenet.gr. [94.65.92.88])
-        by smtp.gmail.com with ESMTPSA id l6sm5233811ejc.92.2021.04.19.11.41.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 11:41:08 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 21:41:02 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-Message-ID: <YH3OvqpYQ0WeFpxy@apalos.home>
-References: <20210410154824.GZ2531743@casper.infradead.org>
- <YHHPbQm2pn2ysth0@enceladus>
- <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
- <YHHuE7g73mZNrMV4@enceladus>
- <20210414214132.74f721dd@carbon>
- <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
- <YH0RMV7+56gVOzJe@apalos.home>
- <CALvZod7oa4q6pMUyDi4FMW4WKY7AjOZ7P2=02GoxjpwrQpA-OQ@mail.gmail.com>
- <YH2lFYbj3d8nC+hF@apalos.home>
- <CALvZod7oZ+7CNwSjqHs5XaLH9o_6+YYwEUeii5ETqeUwUTG6+Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod7oZ+7CNwSjqHs5XaLH9o_6+YYwEUeii5ETqeUwUTG6+Q@mail.gmail.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=txGtE5OBaRSKSRhG0f4/f/o7EAA2cx8QOFvutq3JGho=;
+        b=AH5LihHZ+9hjVajbTeJD7TdzgG9MPclZuQE7ynbQVVC2gR7bdHEPMAIiR+oIF5gtLK
+         uJQ7aycAPUw6dutNEyblYt/3u7VI+fRa3DPj1UBJ+XDsQ6XX1KEKL2+iguUNsKKPtI+8
+         /eFKI/USf7B14At0cR1oS9s8r0z9kULgq/QbV2VR3K5gO6phuCX6KonkMsNWgY/cLCSS
+         ePPhzL6nQPPFSZc7PuXYIMgSs5yyz+gz2HtPLnNosah49m1ngc1dWbtFkSNlX7iOXFqs
+         pAuccI4/juswaxlujQ9CwI/L6cjjMoCiENZgdb+4MVaqOyZQ43xfti2YZQSgxzbzuk3Y
+         /BQA==
+X-Gm-Message-State: AOAM532rDQMRfUWWvEoi6s9L7TGYRXTa7HAUbxGH9LhC/s/3VKqfR3uz
+        ZWxh05sdHXHLLnt/BXNxcaHza3Gpfowub0edjXXiRrryDjsk05Yym0PEQ9uOtd17LV4m+lSf41j
+        R3vaPWbxrX/zub1YfW5m0aKa6A3/mZKLEK6k4itSwrVmbtij2KhERCuDKNxY9f4/LzxAL0A==
+X-Google-Smtp-Source: ABdhPJxkmR7MzzLQ3I8PwlOyvn6JgcygQcvhKcJG1CdmwhG2F1KI/PbXzFdCZpB8CvDOuc9A4Ha0yDzhwQI=
+X-Received: from lrizzo2.svl.corp.google.com ([2620:15c:2c4:201:a5f6:b401:34b8:d28e])
+ (user=lrizzo job=sendgmr) by 2002:a25:4508:: with SMTP id s8mr19430308yba.473.1618857902719;
+ Mon, 19 Apr 2021 11:45:02 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 11:44:55 -0700
+Message-Id: <20210419184455.2987243-1-lrizzo@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
+Subject: [PATCH] smp: add a best_effort version of smp_call_function_many()
+From:   Luigi Rizzo <lrizzo@google.com>
+To:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        axboe@kernel.dk, paulmck@kernel.org
+Cc:     Luigi Rizzo <lrizzo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 09:21:55AM -0700, Shakeel Butt wrote:
-> On Mon, Apr 19, 2021 at 8:43 AM Ilias Apalodimas
-> <ilias.apalodimas@linaro.org> wrote:
-> >
-> [...]
-> > > Pages mapped into the userspace have their refcnt elevated, so the
-> > > page_ref_count() check by the drivers indicates to not reuse such
-> > > pages.
-> > >
-> >
-> > When tcp_zerocopy_receive() is invoked it will call tcp_zerocopy_vm_insert_batch()
-> > which will end up doing a get_page().
-> > What you are saying is that once the zerocopy is done though, skb_release_data()
-> > won't be called, but instead put_page() will be? If that's the case then we are
-> > indeed leaking DMA mappings and memory. That sounds weird though, since the
-> > refcnt will be one in that case (zerocopy will do +1/-1 once it's done), so who
-> > eventually frees the page?
-> > If kfree_skb() (or any wrapper that calls skb_release_data()) is called
-> > eventually, we'll end up properly recycling the page into our pool.
-> >
-> 
-> From what I understand (Eric, please correct me if I'm wrong) for
-> simple cases there are 3 page references taken. One by the driver,
-> second by skb and third by page table.
-> 
-> In tcp_zerocopy_receive(), tcp_zerocopy_vm_insert_batch() gets one
-> page ref through insert_page_into_pte_locked(). However before
-> returning from tcp_zerocopy_receive(), the skb references are dropped
-> through tcp_recv_skb(). So, whenever the user unmaps the page and
-> drops the page ref only then that page can be reused by the driver.
-> 
-> In my understanding, for zerocopy rx the skb_release_data() is called
-> on the pages while they are still mapped into the userspace. So,
-> skb_release_data() might not be the right place to recycle the page
-> for zerocopy. The email chain at [1] has some discussion on how to
-> bundle the recycling of pages with their lifetime.
-> 
-> [1] https://lore.kernel.org/linux-mm/20210316013003.25271-1-arjunroy.kdev@gmail.com/
+Regardless of the 'wait' argument, smp_call_function_many() must spin
+if any of the target CPUs have their csd busy waiting to be processed
+for a previous call. This may cause high tail latencies e.g. when some
+of the target CPUs are running functions that disable interrupts for a
+long time; getrusage() is one possible culprit.
 
-Ah right, you mentioned the same email before and I completely forgot about
-it! In the past we had thoughts of 'stealing' the page on put_page instead of 
-skb_release_data().  We were afraid that this would cause a measurable 
-performance hit, so we tried to limit it within the skb lifecycle.
+Here we introduce a variant, __smp_call_function_many(), that adds
+a third 'best_effort' mode to the two existing ones (nowait, wait).
+In best effort mode, the call will skip CPUs whose csd is busy, and if
+any CPU is skipped it returns -EBUSY and the set of busy in the mask.
+This allows the caller to decide how to proceed, e.g. it might retry at
+a later time, or use a private csd, etc..
 
-However I don't think this will be a problem.  Assuming we are right here and 
-skb_release_data() is called while the userspace holds an extra reference from
-the mapping here's what will happen:
+The new function is a compromise to avoid touching existing callers of
+smp_call_function_many(). If the feature is considered interesting, we
+could even replace the 'wait' argument with a ternary 'mode' in all
+smp_call_function_*() and derived methods.
 
-skb_release_data() -> skb_free_head() -> page_pool_return_skb_page() ->
-set_page_private() -> xdp_return_skb_frame() -> __xdp_return() -> 
-page_pool_put_full_page() -> page_pool_put_page() -> __page_pool_put_page()
+Signed-off-by: Luigi Rizzo <lrizzo@google.com>
+---
+ include/linux/smp.h | 10 ++++++
+ kernel/smp.c        | 75 +++++++++++++++++++++++++++++++++++++--------
+ 2 files changed, 72 insertions(+), 13 deletions(-)
 
-When we call __page_pool_put_page(), the refcnt will be != 1 (because a user
-mapping is still active), so we won't try to recycle it. Instead we'll remove 
-the DMA mappings and decrease the refcnt.
+diff --git a/include/linux/smp.h b/include/linux/smp.h
+index 70c6f6284dcf..5c6c7d3e1f19 100644
+--- a/include/linux/smp.h
++++ b/include/linux/smp.h
+@@ -75,6 +75,11 @@ void on_each_cpu_cond_mask(smp_cond_func_t cond_func, smp_call_func_t func,
+ 
+ int smp_call_function_single_async(int cpu, call_single_data_t *csd);
+ 
++/* Modes for __smp_call_function_many() */
++#define SMP_CFM_NOWAIT		0
++#define SMP_CFM_WAIT		1
++#define SMP_CFM_BEST_EFFORT	2
++
+ #ifdef CONFIG_SMP
+ 
+ #include <linux/preempt.h>
+@@ -120,6 +125,8 @@ extern void smp_cpus_done(unsigned int max_cpus);
+ void smp_call_function(smp_call_func_t func, void *info, int wait);
+ void smp_call_function_many(const struct cpumask *mask,
+ 			    smp_call_func_t func, void *info, bool wait);
++int __smp_call_function_many(struct cpumask *mask, smp_call_func_t func,
++			     void *info, int mode);
+ 
+ int smp_call_function_any(const struct cpumask *mask,
+ 			  smp_call_func_t func, void *info, int wait);
+@@ -170,6 +177,9 @@ static inline void smp_send_reschedule(int cpu) { }
+ #define smp_prepare_boot_cpu()			do {} while (0)
+ #define smp_call_function_many(mask, func, info, wait) \
+ 			(up_smp_call_function(func, info))
++#define ____smp_call_function_many(mask, func, info, mode) \
++		(up_smp_call_function(func, info), 0)
++
+ static inline void call_function_init(void) { }
+ 
+ static inline int
+diff --git a/kernel/smp.c b/kernel/smp.c
+index aeb0adfa0606..75155875fadc 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -242,6 +242,18 @@ static __always_inline void csd_lock(call_single_data_t *csd)
+ 	smp_wmb();
+ }
+ 
++static __always_inline bool csd_trylock(call_single_data_t *csd)
++{
++	unsigned int flags = READ_ONCE(csd->node.u_flags);
++
++	if (flags & CSD_FLAG_LOCK)
++		return false;
++	csd->node.u_flags |= CSD_FLAG_LOCK;
++	/* See csd_trylock() */
++	smp_wmb();
++	return true;
++}
++
+ static __always_inline void csd_unlock(call_single_data_t *csd)
+ {
+ 	WARN_ON(!(csd->node.u_flags & CSD_FLAG_LOCK));
+@@ -608,12 +620,14 @@ int smp_call_function_any(const struct cpumask *mask,
+ }
+ EXPORT_SYMBOL_GPL(smp_call_function_any);
+ 
+-static void smp_call_function_many_cond(const struct cpumask *mask,
+-					smp_call_func_t func, void *info,
+-					bool wait, smp_cond_func_t cond_func)
++static struct cpumask *smp_call_function_many_cond(const struct cpumask *mask,
++						   smp_call_func_t func,
++						   void *info, int mode,
++						   smp_cond_func_t cond_func)
+ {
+ 	struct call_function_data *cfd;
+ 	int cpu, next_cpu, this_cpu = smp_processor_id();
++	bool busy = false, wait = (mode == SMP_CFM_WAIT);
+ 
+ 	/*
+ 	 * Can deadlock when called with interrupts disabled.
+@@ -639,18 +653,18 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
+ 
+ 	/* No online cpus?  We're done. */
+ 	if (cpu >= nr_cpu_ids)
+-		return;
++		return NULL;
+ 
+ 	/* Do we have another CPU which isn't us? */
+ 	next_cpu = cpumask_next_and(cpu, mask, cpu_online_mask);
+ 	if (next_cpu == this_cpu)
+ 		next_cpu = cpumask_next_and(next_cpu, mask, cpu_online_mask);
+ 
+-	/* Fastpath: do that cpu by itself. */
+-	if (next_cpu >= nr_cpu_ids) {
++	/* Fastpath: if not best-effort do that cpu by itself. */
++	if (next_cpu >= nr_cpu_ids && mode != SMP_CFM_BEST_EFFORT) {
+ 		if (!cond_func || cond_func(cpu, info))
+ 			smp_call_function_single(cpu, func, info, wait);
+-		return;
++		return NULL;
+ 	}
+ 
+ 	cfd = this_cpu_ptr(&cfd_data);
+@@ -660,7 +674,7 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
+ 
+ 	/* Some callers race with other cpus changing the passed mask */
+ 	if (unlikely(!cpumask_weight(cfd->cpumask)))
+-		return;
++		return NULL;
+ 
+ 	cpumask_clear(cfd->cpumask_ipi);
+ 	for_each_cpu(cpu, cfd->cpumask) {
+@@ -669,9 +683,17 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
+ 		if (cond_func && !cond_func(cpu, info))
+ 			continue;
+ 
+-		csd_lock(csd);
+-		if (wait)
+-			csd->node.u_flags |= CSD_TYPE_SYNC;
++		if (mode == SMP_CFM_BEST_EFFORT) {
++			if (!csd_trylock(csd)) {
++				cpumask_clear_cpu(cpu, cfd->cpumask);
++				busy = true;
++				continue;
++			}
++		} else {
++			csd_lock(csd);
++			if (wait)
++				csd->node.u_flags |= CSD_TYPE_SYNC;
++		}
+ 		csd->func = func;
+ 		csd->info = info;
+ #ifdef CONFIG_CSD_LOCK_WAIT_DEBUG
+@@ -693,8 +715,32 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
+ 			csd_lock_wait(csd);
+ 		}
+ 	}
++	return busy ? cfd->cpumask : NULL;
+ }
+ 
++/**
++ * Extended version of smp_call_function_many(). Same constraints.
++ * @mode == 0 same as wait = false, returns 0;
++ * @mode == 1 same as wait = true, returns 0;
++ * @mode = SMP_CFM_BEST_EFFORT: skips CPUs with previous pending requests,
++ *     returns 0 and *mask unmodified if no CPUs are skipped,
++ *     -EBUSY if CPUs are skipped, and *mask is the set of skipped CPUs
++ */
++int __smp_call_function_many(struct cpumask *mask, smp_call_func_t func,
++			     void *info, int mode)
++{
++	struct cpumask *ret = smp_call_function_many_cond(mask, func, info,
++							  mode, NULL);
++
++	if (!ret)
++		return 0;
++	cpumask_andnot(mask, mask, ret);
++	cpumask_and(mask, mask, cpu_online_mask);
++	cpumask_clear_cpu(smp_processor_id(), mask);
++	return -EBUSY;
++}
++EXPORT_SYMBOL(__smp_call_function_many);
++
+ /**
+  * smp_call_function_many(): Run a function on a set of other CPUs.
+  * @mask: The set of cpus to run on (only runs on online subset).
+@@ -712,7 +758,9 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
+ void smp_call_function_many(const struct cpumask *mask,
+ 			    smp_call_func_t func, void *info, bool wait)
+ {
+-	smp_call_function_many_cond(mask, func, info, wait, NULL);
++	const int mode = wait ? SMP_CFM_WAIT : SMP_CFM_NOWAIT;
++
++	smp_call_function_many_cond(mask, func, info, mode, NULL);
+ }
+ EXPORT_SYMBOL(smp_call_function_many);
+ 
+@@ -898,9 +946,10 @@ EXPORT_SYMBOL(on_each_cpu_mask);
+ void on_each_cpu_cond_mask(smp_cond_func_t cond_func, smp_call_func_t func,
+ 			   void *info, bool wait, const struct cpumask *mask)
+ {
++	const int mode = wait ? SMP_CFM_WAIT : SMP_CFM_NOWAIT;
+ 	int cpu = get_cpu();
+ 
+-	smp_call_function_many_cond(mask, func, info, wait, cond_func);
++	smp_call_function_many_cond(mask, func, info, mode, cond_func);
+ 	if (cpumask_test_cpu(cpu, mask) && cond_func(cpu, info)) {
+ 		unsigned long flags;
+ 
+-- 
+2.31.1.368.gbe11c130af-goog
 
-So although the recycling won't 'work', nothing bad will happen (famous last
-words).
-
-In any case, I'll double check with the test you pointed out before v4.
-
-Thanks!
-/Ilias
