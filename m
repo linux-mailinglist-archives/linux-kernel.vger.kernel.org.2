@@ -2,127 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3322A36392E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 03:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1745363930
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 03:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237222AbhDSBsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 21:48:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58452 "EHLO mx2.suse.de"
+        id S233188AbhDSByy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 21:54:54 -0400
+Received: from mga14.intel.com ([192.55.52.115]:4805 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232013AbhDSBsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 21:48:10 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id ED7E8AEFF;
-        Mon, 19 Apr 2021 01:47:40 +0000 (UTC)
-From:   NeilBrown <neilb@suse.de>
-To:     Fox Chen <foxhlchen@gmail.com>
-Date:   Mon, 19 Apr 2021 11:47:34 +1000
-Cc:     Fox Chen <foxhlchen@gmail.com>, corbet@lwn.net,
-        vegard.nossum@oracle.com, viro@zeniv.linux.org.uk,
-        rdunlap@infradead.org, grandmaster@al2klimov.de,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH v2 10/12] docs: path-lookup: update WALK_GET, WALK_PUT desc
-In-Reply-To: <20210316054727.25655-11-foxhlchen@gmail.com>
-References: <20210316054727.25655-1-foxhlchen@gmail.com>
- <20210316054727.25655-11-foxhlchen@gmail.com>
-Message-ID: <87sg3n11vt.fsf@notabene.neil.brown.name>
+        id S232013AbhDSByx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 21:54:53 -0400
+IronPort-SDR: UtEFBEKM5+Nikcsr7KevQeY5vNCeq3NGr1Tx6alDi6ITnet9KYbSlqAWfwvYCgilDbvotTd02v
+ KaHvKMxTygkg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9958"; a="194813445"
+X-IronPort-AV: E=Sophos;i="5.82,232,1613462400"; 
+   d="scan'208";a="194813445"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2021 18:54:05 -0700
+IronPort-SDR: hoTCn/vzA05C4boFdlGAPO5290DZ1QWFyaG6qW/vyzCSd8GP1DCE5+YLM5Y+L0DzKJe8WfL/pU
+ rUPd0pVnAF8A==
+X-IronPort-AV: E=Sophos;i="5.82,232,1613462400"; 
+   d="scan'208";a="426326638"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2021 18:53:54 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     <akpm@linux-foundation.org>, <dennis@kernel.org>,
+        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
+        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
+        <alexs@kernel.org>, <david@redhat.com>, <minchan@kernel.org>,
+        <richard.weiyang@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>
+Subject: Re: [PATCH v2 4/5] mm/swap: remove confusing checking for
+ non_swap_entry() in swap_ra_info()
+References: <20210417094039.51711-1-linmiaohe@huawei.com>
+        <20210417094039.51711-5-linmiaohe@huawei.com>
+Date:   Mon, 19 Apr 2021 09:53:42 +0800
+In-Reply-To: <20210417094039.51711-5-linmiaohe@huawei.com> (Miaohe Lin's
+        message of "Sat, 17 Apr 2021 05:40:38 -0400")
+Message-ID: <87v98jkpjt.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Miaohe Lin <linmiaohe@huawei.com> writes:
 
-On Tue, Mar 16 2021, Fox Chen wrote:
+> While we released the pte lock, somebody else might faulted in this pte.
+> So we should check whether it's swap pte first to guard against such race
+> or swp_type would be unexpected. But the swap_entry isn't used in this
+> function and we will have enough checking when we really operate the PTE
+> entries later. So checking for non_swap_entry() is not really needed here
+> and should be removed to avoid confusion.
 
-> WALK_GET is changed to WALK_TRAILING with a different meaning.
-> Here it should be WALK_NOFOLLOW. WALK_PUT dosn't exist, we have
-> WALK_MORE.
->
-> WALK_PUT =3D=3D !WALK_MORE
->
-> And there is not should_follow_link().
->
-> Related commits:
-> commit 8c4efe22e7c4 ("namei: invert the meaning of WALK_FOLLOW")
-> commit 1c4ff1a87e46 ("namei: invert WALK_PUT logics")
->
-> Signed-off-by: Fox Chen <foxhlchen@gmail.com>
+Please rephrase the change log to describe why we have the code and why
+it's unnecessary now.  You can dig the git history via git-blame to find
+out it.
+
+The patch itself looks good to me.
+
+Best Regards,
+Huang, Ying
+
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 > ---
->  Documentation/filesystems/path-lookup.rst | 12 +++++-------
->  1 file changed, 5 insertions(+), 7 deletions(-)
+>  mm/swap_state.c | 6 ------
+>  1 file changed, 6 deletions(-)
 >
-> diff --git a/Documentation/filesystems/path-lookup.rst b/Documentation/fi=
-lesystems/path-lookup.rst
-> index 0d41c61f7e4f..abd0153e2415 100644
-> --- a/Documentation/filesystems/path-lookup.rst
-> +++ b/Documentation/filesystems/path-lookup.rst
-> @@ -1123,13 +1123,11 @@ stack in ``walk_component()`` immediately when th=
-e symlink is found;
->  old symlink as it walks that last component.  So it is quite
->  convenient for ``walk_component()`` to release the old symlink and pop
->  the references just before pushing the reference information for the
-> -new symlink.  It is guided in this by two flags; ``WALK_GET``, which
-> -gives it permission to follow a symlink if it finds one, and
-> -``WALK_PUT``, which tells it to release the current symlink after it has=
- been
-> -followed.  ``WALK_PUT`` is tested first, leading to a call to
-> -``put_link()``.  ``WALK_GET`` is tested subsequently (by
-> -``should_follow_link()``) leading to a call to ``pick_link()`` which sets
-> -up the stack frame.
-> +new symlink.  It is guided in this by two flags; ``WALK_NOFOLLOW``, which
-
-There are 3 flags now.  You haven't documented WALK_TRAIlING.
-
-
-> +suggests whether to follow a symlink if it finds one, and
-
-I don't think it is a suggestion.
-
-.. which forbits it from following a symlink if it finds one, and
-WALK_MORE which indicates that it is yet too early to release the
-current symlink.
-
-> +``WALK_MORE``, which tells whether to release the current symlink after =
-it has
-> +been followed.  ``WALK_MORE`` is tested first, leading to a call to
-> +``put_link()``.
-
-I don't think that "tested first" sentence is relevant any more.
-
-Thanks,
-NeilBrown
-
->=20=20
->  Symlinks with no final component
->  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> --=20
-> 2.30.2
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAmB84TYOHG5laWxiQHN1
-c2UuZGUACgkQOeye3VZigblJwg//XFPq5YDJo4/GIPlHyRw7y6SO7XK2UjDJNeYG
-VE5dYZvQgwJw5p1G/GYvMDwCAv7wVpayYfyfC0pImwhz30MUzdmjG9obioi3L03g
-aCqlxCKG/4Q7Vnh02r/8ehc4uC+eGPlM2nZA/CbxVQWE0hLML6J6Qu/F4kyczxP/
-9fTuBGDtMl4rrqjdnc+erUCwEw9syFY039MCBshkc2rla/7UpevLiyHNcVnaz/tr
-RnuaauFCm6asyPjf8a3iOSmkk96byMHDTFlxZSeNsBpzUHLVducZYng01kG5q0zG
-f4snDhqb2TZzYWO11ykPIZbBDD+HW/6ZfgJSKFiMDO23v5RysZ3v0JNV46gU84Wm
-m+7TnvSTMg3OyOXmswHWJauwbC3LxySF+/ay78iah41PfKk3XQIAAJBafJyJPziV
-VVJKxK4EdIUmbG4BmQFEar7aP20iYhvd1UVY845/km/bJrQkjTx/JllqeAATur/p
-xpzc4ZcX/DgK+Wv6eZN/GNjiPyvei//wgmasuHdKC01tH0TZS0lAdQdCOFe+MdhP
-7AVGsNT6EuSWNVDE4c9BawJvqMf3CETsUtKM9T3We2UtoQYRlaLiywziI84hpQmE
-tJzA20U5cHwGUdYWfF8fLKOpBoAaZaqcldI+u+Ge5XUSJpP801m3BDAlabVIqRKo
-upOEzWw=
-=B3Jb
------END PGP SIGNATURE-----
---=-=-=--
+> diff --git a/mm/swap_state.c b/mm/swap_state.c
+> index 272ea2108c9d..df5405384520 100644
+> --- a/mm/swap_state.c
+> +++ b/mm/swap_state.c
+> @@ -721,7 +721,6 @@ static void swap_ra_info(struct vm_fault *vmf,
+>  {
+>  	struct vm_area_struct *vma = vmf->vma;
+>  	unsigned long ra_val;
+> -	swp_entry_t entry;
+>  	unsigned long faddr, pfn, fpfn;
+>  	unsigned long start, end;
+>  	pte_t *pte, *orig_pte;
+> @@ -739,11 +738,6 @@ static void swap_ra_info(struct vm_fault *vmf,
+>  
+>  	faddr = vmf->address;
+>  	orig_pte = pte = pte_offset_map(vmf->pmd, faddr);
+> -	entry = pte_to_swp_entry(*pte);
+> -	if ((unlikely(non_swap_entry(entry)))) {
+> -		pte_unmap(orig_pte);
+> -		return;
+> -	}
+>  
+>  	fpfn = PFN_DOWN(faddr);
+>  	ra_val = GET_SWAP_RA_VAL(vma);
