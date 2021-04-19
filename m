@@ -2,218 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3275364A73
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 21:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 019E0364A8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 21:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241656AbhDSTVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 15:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239503AbhDSTVg (ORCPT
+        id S241740AbhDST1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 15:27:10 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:49814 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241721AbhDST0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 15:21:36 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7938AC061761
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 12:21:05 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id b9so6270733iod.13
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 12:21:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jXjjoWt46Jw4aYJCJQMswNRgoJcTtm7mXok8hN8cVH4=;
-        b=LBc5ghnUtNA4sLNOF5O3uvKop9WrGL+xQVnrKdZ8+XbH7Xs2yahScji+toDvMDZY+F
-         V0+g2AEeEDt6HgyR6Gk0dtFT+7Z/C5CoKr/+rv0qAo5G2Lzd7AY2S3RdlgWXuAJontG4
-         Ndfupmi9oqSIgFlkJatmLRpZhX0PYrGzQP/IMIg0nOawSCojyPepe2tjJWbm84jneUqb
-         aCVKNB5dfTbUfqlILEhnNHIUyz3fiScJsiTeNHZLK60LBPWb6E10ro4yeaMar9DyyQWS
-         Sp5fLpappMul2poyk5T/G5xEyhMHAcoBv6/UiX6YHgVsPPXy7xwzWgM+90W9k8TfJSVh
-         rB9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jXjjoWt46Jw4aYJCJQMswNRgoJcTtm7mXok8hN8cVH4=;
-        b=Etu3CXyfyEVS4k/F66LU6D/DmEzbPHQSm7+TbjYF5fsGJ5vbl9wnmjCpmOndW8MxN8
-         QK/mYhG4Pi2nfDRH5xXm88PCDZWhXKIqEIgsg08efiYlna1Qms3Jnr3ituiyWJLhrz9/
-         SJCPdXBeorwSQQX/IFQvH9lM98aL2U6a11qfZO1ZJDbq6gO/DGD2hUCtvVvkm0E87epQ
-         BE/RGNbTVMsU3XoebVzmd1QtJIhWPtATDdRGuUHt7eHx3GhgXueOqASJ1/whF6xRPxN1
-         BpkocxBLJ54D25XmjFU2eTC2H5jXsDc+gOGYxvS8NBOP/KslFG8cDKmMS/YyGufrXaRB
-         IMyA==
-X-Gm-Message-State: AOAM532EVizFP/me4hG3oSlX7DC+S7FxHN89maIVj5g4H0EXiKXUkykP
-        nlX2Elf4iBYmUKebL9JglnD6SNiYJ6VafzD2woGSEg==
-X-Google-Smtp-Source: ABdhPJy+m5wNyx2xyn35TIHSejk2E2jy98q8+flIf1+I1QE2+JbjJoAcojKs79C0HMMRo4DcNuPu2rzYOKuLgA08bFs=
-X-Received: by 2002:a5d:81c8:: with SMTP id t8mr15837366iol.19.1618860064760;
- Mon, 19 Apr 2021 12:21:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210416082511.2856-1-zhukeqian1@huawei.com> <20210416082511.2856-3-zhukeqian1@huawei.com>
-In-Reply-To: <20210416082511.2856-3-zhukeqian1@huawei.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Mon, 19 Apr 2021 12:20:53 -0700
-Message-ID: <CANgfPd_WzX6Fm7BiMoBoehuLL8tjh4WEqehUhF8biPyL8vS4XQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 2/2] KVM: x86: Not wr-protect huge page with
- init_all_set dirty log
-To:     Keqian Zhu <zhukeqian1@huawei.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        wanghaibin.wang@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 19 Apr 2021 15:26:53 -0400
+Received: by linux.microsoft.com (Postfix, from userid 1004)
+        id 5810820B8001; Mon, 19 Apr 2021 12:26:23 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5810820B8001
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
+        s=default; t=1618860383;
+        bh=LQd7evFy2Q75ScLwqsnshtRMQ+LhoxeoSp8bTmAS3gY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HNnA4Y67swB3aEt6Y3trSOmZo5XAfnoFS7WtqupFOfzp57FNMq8ikyHMwn/HHN2T/
+         jcvaO34OY4PZXas41kRAFLIWZRAsZGTIr2h9YsYU0FkV3IrWgmxL2FX5PrnDzEo4nT
+         ZHUWrfHOeQ3tlJTHXQZbjUzHWF6GgxQuvj4Kq8os=
+From:   longli@linuxonhyperv.com
+To:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Long Li <longli@microsoft.com>
+Subject: [PATCH] PCI: hv: Fix a race condition when removing the device
+Date:   Mon, 19 Apr 2021 12:20:54 -0700
+Message-Id: <1618860054-928-1-git-send-email-longli@linuxonhyperv.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 1:25 AM Keqian Zhu <zhukeqian1@huawei.com> wrote:
->
-> Currently during start dirty logging, if we're with init-all-set,
-> we write protect huge pages and leave normal pages untouched, for
-> that we can enable dirty logging for these pages lazily.
->
-> Actually enable dirty logging lazily for huge pages is feasible
-> too, which not only reduces the time of start dirty logging, also
-> greatly reduces side-effect on guest when there is high dirty rate.
->
-> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-> ---
->  arch/x86/kvm/mmu/mmu.c | 48 ++++++++++++++++++++++++++++++++++++++----
->  arch/x86/kvm/x86.c     | 37 +++++++++-----------------------
->  2 files changed, 54 insertions(+), 31 deletions(-)
->
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 2ce5bc2ea46d..98fa25172b9a 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -1188,8 +1188,7 @@ static bool __rmap_clear_dirty(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
->   * @gfn_offset: start of the BITS_PER_LONG pages we care about
->   * @mask: indicates which pages we should protect
->   *
-> - * Used when we do not need to care about huge page mappings: e.g. during dirty
-> - * logging we do not have any such mappings.
-> + * Used when we do not need to care about huge page mappings.
->   */
->  static void kvm_mmu_write_protect_pt_masked(struct kvm *kvm,
->                                      struct kvm_memory_slot *slot,
-> @@ -1246,13 +1245,54 @@ static void kvm_mmu_clear_dirty_pt_masked(struct kvm *kvm,
->   * It calls kvm_mmu_write_protect_pt_masked to write protect selected pages to
->   * enable dirty logging for them.
->   *
-> - * Used when we do not need to care about huge page mappings: e.g. during dirty
-> - * logging we do not have any such mappings.
-> + * We need to care about huge page mappings: e.g. during dirty logging we may
-> + * have any such mappings.
->   */
->  void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
->                                 struct kvm_memory_slot *slot,
->                                 gfn_t gfn_offset, unsigned long mask)
->  {
-> +       gfn_t start, end;
-> +
-> +       /*
-> +        * Huge pages are NOT write protected when we start dirty log with
-> +        * init-all-set, so we must write protect them at here.
-> +        *
-> +        * The gfn_offset is guaranteed to be aligned to 64, but the base_gfn
-> +        * of memslot has no such restriction, so the range can cross two large
-> +        * pages.
-> +        */
-> +       if (kvm_dirty_log_manual_protect_and_init_set(kvm)) {
-> +               start = slot->base_gfn + gfn_offset + __ffs(mask);
-> +               end = slot->base_gfn + gfn_offset + __fls(mask);
-> +               kvm_mmu_slot_gfn_write_protect(kvm, slot, start, PG_LEVEL_2M);
-> +
-> +               /* Cross two large pages? */
-> +               if (ALIGN(start << PAGE_SHIFT, PMD_SIZE) !=
-> +                   ALIGN(end << PAGE_SHIFT, PMD_SIZE))
-> +                       kvm_mmu_slot_gfn_write_protect(kvm, slot, end,
-> +                                                      PG_LEVEL_2M);
-> +       }
-> +
-> +       /*
-> +        * RFC:
-> +        *
-> +        * 1. I don't return early when kvm_mmu_slot_gfn_write_protect() returns
-> +        * true, because I am not very clear about the relationship between
-> +        * legacy mmu and tdp mmu. AFAICS, the code logic is NOT an if/else
-> +        * manner.
-> +        *
-> +        * The kvm_mmu_slot_gfn_write_protect() returns true when we hit a
-> +        * writable large page mapping in legacy mmu mapping or tdp mmu mapping.
-> +        * Do we still have normal mapping in that case? (e.g. We have large
-> +        * mapping in legacy mmu and normal mapping in tdp mmu).
+From: Long Li <longli@microsoft.com>
 
-Right, we can't return early because the two MMUs could map the page
-in different ways, but each MMU could also map the page in multiple
-ways independently.
-For example, if the legacy MMU was being used and we were running a
-nested VM, a page could be mapped 2M in EPT01 and 4K in EPT02, so we'd
-still need kvm_mmu_slot_gfn_write_protect  calls for both levels.
-I don't think there's a case where we can return early here with the
-information that the first calls to kvm_mmu_slot_gfn_write_protect
-access.
+On removing the device, any work item (hv_pci_devices_present() or
+hv_pci_eject_device()) scheduled on workqueue hbus->wq may still be running
+and race with hv_pci_remove().
 
-> +        *
-> +        * 2. kvm_mmu_slot_gfn_write_protect() doesn't tell us whether the large
-> +        * page mapping exist. If it exists but is clean, we can return early.
-> +        * However, we have to do invasive change.
+This can happen because the host may send PCI_EJECT or PCI_BUS_RELATIONS(2)
+and decide to rescind the channel immediately after that.
 
-What do you mean by invasive change?
+Fix this by flushing/stopping the workqueue of hbus before doing hbus remove.
 
-> +        */
-> +
-> +       /* Then we can handle the PT level pages */
->         if (kvm_x86_ops.cpu_dirty_log_size)
->                 kvm_mmu_clear_dirty_pt_masked(kvm, slot, gfn_offset, mask);
->         else
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index eca63625aee4..dfd676ffa7da 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10888,36 +10888,19 @@ static void kvm_mmu_slot_apply_flags(struct kvm *kvm,
->                  */
->                 kvm_mmu_zap_collapsible_sptes(kvm, new);
->         } else {
-> -               /* By default, write-protect everything to log writes. */
-> -               int level = PG_LEVEL_4K;
-> +               /*
-> +                * If we're with initial-all-set, we don't need to write protect
-> +                * any page because they're reported as dirty already.
-> +                */
-> +               if (kvm_dirty_log_manual_protect_and_init_set(kvm))
-> +                       return;
->
->                 if (kvm_x86_ops.cpu_dirty_log_size) {
-> -                       /*
-> -                        * Clear all dirty bits, unless pages are treated as
-> -                        * dirty from the get-go.
-> -                        */
-> -                       if (!kvm_dirty_log_manual_protect_and_init_set(kvm))
-> -                               kvm_mmu_slot_leaf_clear_dirty(kvm, new);
-> -
-> -                       /*
-> -                        * Write-protect large pages on write so that dirty
-> -                        * logging happens at 4k granularity.  No need to
-> -                        * write-protect small SPTEs since write accesses are
-> -                        * logged by the CPU via dirty bits.
-> -                        */
-> -                       level = PG_LEVEL_2M;
-> -               } else if (kvm_dirty_log_manual_protect_and_init_set(kvm)) {
-> -                       /*
-> -                        * If we're with initial-all-set, we don't need
-> -                        * to write protect any small page because
-> -                        * they're reported as dirty already.  However
-> -                        * we still need to write-protect huge pages
-> -                        * so that the page split can happen lazily on
-> -                        * the first write to the huge page.
-> -                        */
-> -                       level = PG_LEVEL_2M;
-> +                       kvm_mmu_slot_leaf_clear_dirty(kvm, new);
-> +                       kvm_mmu_slot_remove_write_access(kvm, new, PG_LEVEL_2M);
-> +               } else {
-> +                       kvm_mmu_slot_remove_write_access(kvm, new, PG_LEVEL_4K);
->                 }
-> -               kvm_mmu_slot_remove_write_access(kvm, new, level);
->         }
->  }
->
-> --
-> 2.23.0
->
+Signed-off-by: Long Li <longli@microsoft.com>
+---
+ drivers/pci/controller/pci-hyperv.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+index 27a17a1e4a7c..116815404313 100644
+--- a/drivers/pci/controller/pci-hyperv.c
++++ b/drivers/pci/controller/pci-hyperv.c
+@@ -3305,6 +3305,17 @@ static int hv_pci_remove(struct hv_device *hdev)
+ 
+ 	hbus = hv_get_drvdata(hdev);
+ 	if (hbus->state == hv_pcibus_installed) {
++		tasklet_disable(&hdev->channel->callback_event);
++		hbus->state = hv_pcibus_removing;
++		tasklet_enable(&hdev->channel->callback_event);
++
++		flush_workqueue(hbus->wq);
++		/*
++		 * At this point, no work is running or can be scheduled
++		 * on hbus-wq. We can't race with hv_pci_devices_present()
++		 * or hv_pci_eject_device(), it's safe to proceed.
++		 */
++
+ 		/* Remove the bus from PCI's point of view. */
+ 		pci_lock_rescan_remove();
+ 		pci_stop_root_bus(hbus->pci_bus);
+-- 
+2.27.0
+
