@@ -2,194 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50D3364EC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2D1364EC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232478AbhDSXm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 19:42:57 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:33254 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232147AbhDSXmy (ORCPT
+        id S231624AbhDSXmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 19:42:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54991 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229695AbhDSXmm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 19:42:54 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13JNeNmS076184;
-        Mon, 19 Apr 2021 23:41:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=1TN5aw5eLK44CIuRHTMnucu76EYBChGUTd5TFLyz8x4=;
- b=Xmbt2gPZoey4vwNvAzU2HdE8H10u8jL6Kgu2JhCmWyGXekjm+ZxtviAx9T0pFJeMtXvX
- K2KrFH2uPVKVptcL5yisehx3SXdzmeWj0JJ+bfMTRIyJufM+irdy70arhSWDXcQbeiIQ
- qnCmvfbBQiOSLDu/a4UgT5f9mF1K06juPIWTX9+TVpVqPTEAtlAdJXMqDqEMwSiivswi
- GggwS+6DbSxixXd67UeNzfgfFDGn5yxYmm1X4ecvN1v1R6byIZuaEkZ37eoOjjbjwO/z
- NnGkA1utpo6WjJhO7v81OseP31M+kbail4xcOosZaTuAaR9GgaD7AfkP37bIJO1mn80D ww== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 37yn6c5fys-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 19 Apr 2021 23:41:32 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13JNe4eu122301;
-        Mon, 19 Apr 2021 23:41:32 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2109.outbound.protection.outlook.com [104.47.55.109])
-        by aserp3020.oracle.com with ESMTP id 3809jygst7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 19 Apr 2021 23:41:31 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ejQkeRoCOWOqL+57ckTq4Lcbnvo/oo5B3q2ZWkV7wbgwvpP4MHBTkNZYwOiSJgRDuEAxRLbRVk49iAZfJPmQpWgiaQwSZbCvDt9BY4fElGFe99OcGNAH8c1DDstNcmBuDyoRiUeyCIA5PB5mpQM1aVI2Hor/9IeG8MVouybxMywvs1SnOd9peYgM1h729phN2wqiQuWfpL8KB1dSimWFkwMj2hPhSFpvZCL3vs549oANL77lP4frBV+eSR5R7/4LZDl13IqOxl9H3/AXgiKBi3MEIKrtpiuHtjtT06kAkygQKr0lMnOLFXZ62uK/TxLOCXdvVv8tw8gLXSkeEgiBPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1TN5aw5eLK44CIuRHTMnucu76EYBChGUTd5TFLyz8x4=;
- b=UNFzk60nfz877ocGNQzKBmQxkq8gnpr3R1swRiIo0r59TTwvfpc3RldB4jFaxK3ZouskZLlGLR8pOiCZyW04Wolg3YkUs7lyEcwzbkdOC5s4AG0ttHURs3bxWG9dLg5LvkyFJPMz85Rza9yH4MOaxVyLF71/SSDvVY+KiwrBtgfW5N5kC5FejzbkEkLzJTuTIIWLsDkyNYhANyeZR1hjRw21xxAEdZxNMhgsMkzG76y96l08k/Y+Owu9/u8TIPOmaD4pnIEPS6AoxTAPgmR5O5U1QFqKzVQ7qXK1aUUnGzFDHZJzm63DfT1gQRYvdVFkH4cbqrkBqSYHoxbTcxuaNw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1TN5aw5eLK44CIuRHTMnucu76EYBChGUTd5TFLyz8x4=;
- b=w7aTqXy2k8wG0Tv1Fecd4sGwPhX0B64TqnHT4rbAM0Rb10Z4VFcCyPCbFYDuF6zMLxmC3zprDpb6HX40mJyTph8hZsFoho40n5hMLhEQTUXkzz07N8c6d1Jzh5B3xuDXKmh8r4kz/g1ShZUXB7jUDVKcLLQsI36GXG3IG0p1000=
-Authentication-Results: amazon.com; dkim=none (message not signed)
- header.d=none;amazon.com; dmarc=none action=none header.from=oracle.com;
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by BYAPR10MB2856.namprd10.prod.outlook.com (2603:10b6:a03:89::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Mon, 19 Apr
- 2021 23:41:28 +0000
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::980e:61ba:57d2:47ee]) by BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::980e:61ba:57d2:47ee%7]) with mapi id 15.20.4042.024; Mon, 19 Apr 2021
- 23:41:28 +0000
-Subject: Re: [PATCH v20 7/9] mm: hugetlb: add a kernel parameter
- hugetlb_free_vmemmap
-To:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, paulmck@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com,
-        david@redhat.com, naoya.horiguchi@nec.com,
-        joao.m.martins@oracle.com
-Cc:     duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Chen Huang <chenhuang5@huawei.com>,
-        Bodeddula Balasubramaniam <bodeddub@amazon.com>
-References: <20210415084005.25049-1-songmuchun@bytedance.com>
- <20210415084005.25049-8-songmuchun@bytedance.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <c1a3e914-e7f0-c92f-efd0-bdded6a412d8@oracle.com>
-Date:   Mon, 19 Apr 2021 16:41:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-In-Reply-To: <20210415084005.25049-8-songmuchun@bytedance.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [50.38.35.18]
-X-ClientProxiedBy: CO1PR15CA0067.namprd15.prod.outlook.com
- (2603:10b6:101:20::11) To BY5PR10MB4196.namprd10.prod.outlook.com
- (2603:10b6:a03:20d::23)
+        Mon, 19 Apr 2021 19:42:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618875732;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x2fbpuknZ4GBkIrJZ+q/s36SJDLlw3O5/8yiMZIDB2k=;
+        b=GnAI3uplwwEtQaxYKWV3BshepSSwTbas5xE8Bv1PLIrtNt87pYKw11qsZr5/LfUH+gR5uS
+        Swq8xgb6yV9jIZwMKQ4sqJnA9TgsnUrh3cygGu9XIG2ay45LLUapTDLxPDIej5eGrEh3EO
+        Jk5xdUUAek9hwPPKlSRjLw4FHx1qTjU=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-G7RdDejcPr2isXW-ycuwpQ-1; Mon, 19 Apr 2021 19:42:10 -0400
+X-MC-Unique: G7RdDejcPr2isXW-ycuwpQ-1
+Received: by mail-qv1-f71.google.com with SMTP id l61-20020a0c84430000b02901a9a7e363edso2033506qva.16
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 16:42:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=x2fbpuknZ4GBkIrJZ+q/s36SJDLlw3O5/8yiMZIDB2k=;
+        b=d+oc6UMpoU0gyfd/Eak5gWmZJXJuMtxPYiOVVMbfV25+bHIPQORbmCHaRiV33TrmMK
+         nlqz/Qf85Pon/pC1BxW0E6gksdLiHTAv1/l8K8j5UkO/hrj0ykxwvMlbA15hDE18kQjk
+         amifN39Xp4P0CB+Zq5zMo+iSngrNvpnUTqU8PKTvuFdhTmCar6GqvIafKyeLydPc3P+s
+         kWp3y2kq3niXsZecwhyp2Ru/hQymHNbHTwE97NuD8zMRBWuW6fmyE2mmByngT07kjjkm
+         S8eMpo/ljzhyAc06xWDH7c2sxP11KqEACYj15z3K+MEUdBaJh8H4WanT0uMM9orKMePA
+         gPUQ==
+X-Gm-Message-State: AOAM533IJEFlnvsif9hvXnc3Bn4HIBOF3CIB5+ulecPXgY9d0nTebhYD
+        WPgxe3VaUiTzkobEjPGWrPcGKXNJ01le2N7lhxYOiDnxQ93f14QAvmXcedJLMvs5V62C1ShPeUi
+        OJmeyV25CfXBG229YjoTGhPo5
+X-Received: by 2002:a05:620a:44ce:: with SMTP id y14mr14496778qkp.171.1618875729765;
+        Mon, 19 Apr 2021 16:42:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw9fC71GXWYH36qmAJMjWJoLcPTXWY88zaRU+br2/4wzu/F8zydzIcPi0q1wOkOFH+5QU+zCQ==
+X-Received: by 2002:a05:620a:44ce:: with SMTP id y14mr14496759qkp.171.1618875729551;
+        Mon, 19 Apr 2021 16:42:09 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id n6sm10102518qtx.22.2021.04.19.16.42.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Apr 2021 16:42:09 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v4 2/5] mm/memcg: Cache vmstat data in percpu
+ memcg_stock_pcp
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>
+References: <20210419000032.5432-1-longman@redhat.com>
+ <20210419000032.5432-3-longman@redhat.com> <YH2yA1oZoyQoMhAH@cmpxchg.org>
+Message-ID: <09ea1749-8978-091b-7727-d86f8e6c49cc@redhat.com>
+Date:   Mon, 19 Apr 2021 19:42:07 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.2.112] (50.38.35.18) by CO1PR15CA0067.namprd15.prod.outlook.com (2603:10b6:101:20::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Mon, 19 Apr 2021 23:41:25 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 482e4142-2b40-4752-d424-08d9038ca6b1
-X-MS-TrafficTypeDiagnostic: BYAPR10MB2856:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR10MB28567E8597F12D650AC2EE70E2499@BYAPR10MB2856.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HzRDqxS2eXaRAncH+D2PJueko77d5P031kem7ksOkjhmIicRfURB7PRqfqjC8DkqUqjDQZMqO7gVvnoXVRNuVytVWwv7UxeUJKFiKxilDTBP+ut3SHcYQ26zY4aOe/opdihlq7U+cT+Sr9cK7XQQ776gcKjaoAQxGDzdq3oCjNR9d114rFFHvrOiGpiO3M9vzn+YqSN0ZfE4hXycb1BcXT4Y2qFn4jkODcoCpzGXviGcGK4me1E7y+SbgVGFSSVtwDYCf9HYYDKMvHAmcVqatMqXTKtFc0ziav141EcE2AZpznV3NFt8fjN0AnfiDenYq/ZWsf38qZ3mf5FrJek358ZkSOTHf2bJHq8KttbYfvLVt0TYjH6A2tfLKU4G4HjqkjP4yaWd67M0T4FKD8cGSyqVReskzWsPV3wcfthS1XXc6rtEyo/7Md9q3EkCUSPvE1AL4+3o+oRH2X1CsjD7ZJQ2CJQ8RDwgGr3vf73ie65F4TlavAeBe8FpshTX7vf4SGnSezS9BK6Umee68vVYFUohW/DHRvjBePXZ91hq4dJOwxzkYCn1bpzkS+E0npRE34/t1eQfKovkmPkBj3SnAK94CaTIuWGN7PQRNFKSgHKofk7QyZnBTynPSqEchRKDe7i+5etLlgPqvmmJtzeMPZBLzFfppXzgpftjpo7rAqjNNKnV7TI+V6CxjxYG5y6wcToCtK1jGGgHWvP+3iNSEgPQFd/uPNJE6eIVoqgu/hA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(39860400002)(396003)(136003)(376002)(26005)(478600001)(921005)(956004)(186003)(31686004)(7416002)(86362001)(54906003)(66556008)(8936002)(53546011)(8676002)(2616005)(16576012)(66946007)(2906002)(44832011)(4326008)(7406005)(316002)(5660300002)(36756003)(52116002)(6486002)(31696002)(16526019)(38350700002)(6636002)(66476007)(83380400001)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UTRiYndDa0gxdURiVGhXMFFyQWFCcEszei9YQVl3YjYzTXpkUnl4VUszNGJl?=
- =?utf-8?B?aDFPbUFKUmEzOUpZT2hRV1lVdG1MK1E4RXFWT2pJMzB1UGlHdHR5OUM4SmR2?=
- =?utf-8?B?ak1BZWxkYndobm9XaVRhQnEyMUEyTlVJZFRqQzYrM1h3bnNzeGsxaVo1RDRB?=
- =?utf-8?B?OW1lb215V2ozV2JlZWdzei8xU3h6NGxUa1MzTUdGNjVScjlENTk5QzlweEo2?=
- =?utf-8?B?YWdEYm1lclAwbW1oNmVwU3hZVFRrYnpncUsxYkpRMm9ra2ZDZ1g0N3I0di9N?=
- =?utf-8?B?RXNYRnRlVmRnV0hWVlpHOWVNQk0vYi9QdElDUm04RFhyb3Vld3BoSi9tbE5J?=
- =?utf-8?B?b2N5T1RyWmZGWkV3QlpQZ2UwRVJLY3NiVzRpam1LVzN1QkVTRVhWWVBybXA4?=
- =?utf-8?B?cE0zRW5CZUxjNnZUNXdmeTE5WC9ybHErTVNwSzdtTGNRai9lTVVsTGI0cUhz?=
- =?utf-8?B?MSt4VmFzajdZN1FRUWNOL1Q3c0J4bU5hK0hCaDBOY25VWlcxOEZHZVlkUGxa?=
- =?utf-8?B?TXVqVlUzV0JhTUl4djhpdW1jbUl3eDFOWFMyRk1hR2lvcTRIY04xdFRNSExP?=
- =?utf-8?B?djB3UU5pMGdKRzQrOElidi82djg5cmwwVzdZYW55aHk2YXc5ZEdVeXlGOWIy?=
- =?utf-8?B?VUFDNWV2OStjcGwvaVVqckY2Nk45KytjT3g1N2xTTGhJc1lvWFJ0TExjdDh6?=
- =?utf-8?B?K1pCOHZJN1A5aWxsYVlYZ0FnQVVab0ROVk9nSUpFV3J0UmNHaVU1ZVkvWmtO?=
- =?utf-8?B?Nm1RbElDTmtISlRjNjBDYkdTc2xqaXNkNjVQTWZYOVZiTGJCTUo5blRQS0w2?=
- =?utf-8?B?TFNndzlONHlobGNqVTJ4TFMxWHpraGoyUHRoTU91TjV3UmRKYjlnTUlnbkxT?=
- =?utf-8?B?YVhMQ3p3VnFYTWF3S0JpV3p2cmN5R1p2Ung0M21qWld5aWlhckNzM0pNdFhL?=
- =?utf-8?B?bmhhVG8xeVJhMUZhV0FsWlBkZnp1T3laSjNodnZCdEpjdVA3L1UxaXdYT21F?=
- =?utf-8?B?UUxKSE00ZmFnTkJtZHpicTVIMVRlU3pjNXcwYTlpS3ZQMEhFK255RTNZOEc3?=
- =?utf-8?B?TGpTK2p2SVJwWkhoZVE5cTNTZ0hrQ2ZKSmdzN3Y4amg2OEpSLzZDV082VnV6?=
- =?utf-8?B?V25CYjNGTzFqRG4yMmV2Yno4SkdFUzlyZ1UyM3pYeFRzMlo2OW1FdXZKTnJX?=
- =?utf-8?B?dFhUdTE2bFY2MHNSM0I5YXpNL3pmRzFWY0dwOEVHV053U2d6YWlld3ZFd0pI?=
- =?utf-8?B?enVPYkJXTXU0aXNNSDRVOE52RnF2cWdNMWg4L3drRnZ1Ti9sKy93Y0JCMlVw?=
- =?utf-8?B?cExwUmxCZVhWY2MxSklVSlNGRWRKcXZ0SStjZ290OE16LzliQkN1SWNycGcw?=
- =?utf-8?B?cWZEVGxkUmFEK0g3Rm1pYitCNis0SER2VCsyMjkyY204VXQ0cTB5eVIwWEVt?=
- =?utf-8?B?Mkp5OFhHK1pqNWMrdW9RekVnQit5cHhlVWwrT1hWTmgrcC9xb1kyL0dRc3Fj?=
- =?utf-8?B?MjdRVERFTkZuZUtxN0FyVmp2T2VzOEpXclZCVDJiQzl3akdLMUZXQUJVUWdF?=
- =?utf-8?B?aTFBMFBJMzU4dWgyZERpMjB0cW41UVhuWmthRWphYlp5ZzEyZU9WeWQrdUdS?=
- =?utf-8?B?ZkFxY3o1YmhhdngvSWt6aCtWWWo2ZjZKR3p5emIrVmxsTldvZ2xPRXlwUldL?=
- =?utf-8?B?bWk3c3B0RlBZc1FkODF1Y0Y1UVJRcU9scmxlRFU0T2dNSiswU1BIbi9QbERT?=
- =?utf-8?Q?liDvtcF8Vwjw2gb6ruY0Aoo/M7gm9NXS99GYOiD?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 482e4142-2b40-4752-d424-08d9038ca6b1
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2021 23:41:27.9450
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4+7aR2cIxoy2gYPTms+dHL2SEzGkrv32nWyvC5uVOSeFk5eWOlq+kEMXgWt1xXzqSVoGZIqc+x16TKgpWSRgmw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2856
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9959 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 malwarescore=0
- suspectscore=0 phishscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104190163
-X-Proofpoint-GUID: L6xYBkcP2-UJTY3yeYHEsvXw0wO63IEK
-X-Proofpoint-ORIG-GUID: L6xYBkcP2-UJTY3yeYHEsvXw0wO63IEK
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9959 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 priorityscore=1501
- bulkscore=0 suspectscore=0 impostorscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1015 spamscore=0 mlxlogscore=999 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104190163
+In-Reply-To: <YH2yA1oZoyQoMhAH@cmpxchg.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/15/21 1:40 AM, Muchun Song wrote:
-> Add a kernel parameter hugetlb_free_vmemmap to enable the feature of
-> freeing unused vmemmap pages associated with each hugetlb page on boot.
-> 
-> We disables PMD mapping of vmemmap pages for x86-64 arch when this
-> feature is enabled. Because vmemmap_remap_free() depends on vmemmap
-> being base page mapped.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
-> Reviewed-by: Barry Song <song.bao.hua@hisilicon.com>
-> Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
-> Tested-by: Chen Huang <chenhuang5@huawei.com>
-> Tested-by: Bodeddula Balasubramaniam <bodeddub@amazon.com>
-> ---
->  Documentation/admin-guide/kernel-parameters.txt | 17 +++++++++++++++++
->  Documentation/admin-guide/mm/hugetlbpage.rst    |  3 +++
->  arch/x86/mm/init_64.c                           |  8 ++++++--
->  include/linux/hugetlb.h                         | 19 +++++++++++++++++++
->  mm/hugetlb_vmemmap.c                            | 24 ++++++++++++++++++++++++
->  5 files changed, 69 insertions(+), 2 deletions(-)
+On 4/19/21 12:38 PM, Johannes Weiner wrote:
+> On Sun, Apr 18, 2021 at 08:00:29PM -0400, Waiman Long wrote:
+>> Before the new slab memory controller with per object byte charging,
+>> charging and vmstat data update happen only when new slab pages are
+>> allocated or freed. Now they are done with every kmem_cache_alloc()
+>> and kmem_cache_free(). This causes additional overhead for workloads
+>> that generate a lot of alloc and free calls.
+>>
+>> The memcg_stock_pcp is used to cache byte charge for a specific
+>> obj_cgroup to reduce that overhead. To further reducing it, this patch
+>> makes the vmstat data cached in the memcg_stock_pcp structure as well
+>> until it accumulates a page size worth of update or when other cached
+>> data change. Caching the vmstat data in the per-cpu stock eliminates two
+>> writes to non-hot cachelines for memcg specific as well as memcg-lruvecs
+>> specific vmstat data by a write to a hot local stock cacheline.
+>>
+>> On a 2-socket Cascade Lake server with instrumentation enabled and this
+>> patch applied, it was found that about 20% (634400 out of 3243830)
+>> of the time when mod_objcg_state() is called leads to an actual call
+>> to __mod_objcg_state() after initial boot. When doing parallel kernel
+>> build, the figure was about 17% (24329265 out of 142512465). So caching
+>> the vmstat data reduces the number of calls to __mod_objcg_state()
+>> by more than 80%.
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+>> ---
+>>   mm/memcontrol.c | 64 ++++++++++++++++++++++++++++++++++++++++++++++---
+>>   1 file changed, 61 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index dc9032f28f2e..693453f95d99 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -2213,7 +2213,10 @@ struct memcg_stock_pcp {
+>>   
+>>   #ifdef CONFIG_MEMCG_KMEM
+>>   	struct obj_cgroup *cached_objcg;
+>> +	struct pglist_data *cached_pgdat;
+>>   	unsigned int nr_bytes;
+>> +	int vmstat_idx;
+>> +	int vmstat_bytes;
+>>   #endif
+>>   
+>>   	struct work_struct work;
+>> @@ -3150,8 +3153,9 @@ void __memcg_kmem_uncharge_page(struct page *page, int order)
+>>   	css_put(&memcg->css);
+>>   }
+>>   
+>> -void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+>> -		     enum node_stat_item idx, int nr)
+>> +static inline void __mod_objcg_state(struct obj_cgroup *objcg,
+>> +				     struct pglist_data *pgdat,
+>> +				     enum node_stat_item idx, int nr)
+> This naming is dangerous, as the __mod_foo naming scheme we use
+> everywhere else suggests it's the same function as mod_foo() just with
+> preemption/irqs disabled.
+>
+I will change its name to, say, mod_objcg_mlstate() to indicate that it 
+is something different. Actually, it is hard to come up with a good name 
+which is not too long.
 
-Thanks,
 
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
--- 
-Mike Kravetz
+>> @@ -3159,10 +3163,53 @@ void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+>>   	rcu_read_lock();
+>>   	memcg = obj_cgroup_memcg(objcg);
+>>   	lruvec = mem_cgroup_lruvec(memcg, pgdat);
+>> -	mod_memcg_lruvec_state(lruvec, idx, nr);
+>> +	__mod_memcg_lruvec_state(lruvec, idx, nr);
+>>   	rcu_read_unlock();
+>>   }
+>>   
+>> +void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
+>> +		     enum node_stat_item idx, int nr)
+>> +{
+>> +	struct memcg_stock_pcp *stock;
+>> +	unsigned long flags;
+>> +
+>> +	local_irq_save(flags);
+>> +	stock = this_cpu_ptr(&memcg_stock);
+>> +
+>> +	/*
+>> +	 * Save vmstat data in stock and skip vmstat array update unless
+>> +	 * accumulating over a page of vmstat data or when pgdat or idx
+>> +	 * changes.
+>> +	 */
+>> +	if (stock->cached_objcg != objcg) {
+>> +		/* Output the current data as is */
+> When you get here with the wrong objcg and hit the cold path, it's
+> usually immediately followed by an uncharge -> refill_obj_stock() that
+> will then flush and reset cached_objcg.
+>
+> Instead of doing two cold paths, why not flush the old objcg right
+> away and set the new so that refill_obj_stock() can use the fast path?
+
+That is a good idea. Will do that.
+
+
+>
+>> +	} else if (!stock->vmstat_bytes) {
+>> +		/* Save the current data */
+>> +		stock->vmstat_bytes = nr;
+>> +		stock->vmstat_idx = idx;
+>> +		stock->cached_pgdat = pgdat;
+>> +		nr = 0;
+>> +	} else if ((stock->cached_pgdat != pgdat) ||
+>> +		   (stock->vmstat_idx != idx)) {
+>> +		/* Output the cached data & save the current data */
+>> +		swap(nr, stock->vmstat_bytes);
+>> +		swap(idx, stock->vmstat_idx);
+>> +		swap(pgdat, stock->cached_pgdat);
+> Is this optimization worth doing?
+>
+> You later split vmstat_bytes and idx doesn't change anymore.
+
+I am going to merge patch 2 and patch 4 to avoid the confusion.
+
+
+>
+> How often does the pgdat change? This is a per-cpu cache after all,
+> and the numa node a given cpu allocates from tends to not change that
+> often. Even with interleaving mode, which I think is pretty rare, the
+> interleaving happens at the slab/page level, not the object level, and
+> the cache isn't bigger than a page anyway.
+
+The testing done on a 2-socket system indicated that pgdat changes 
+roughly 10-20% of time. So it does happen, especially on the kfree() 
+path, I think. I have tried to cached vmstat update for those on the 
+local node only, but I got more misses with that. So I am just going to 
+change pgdat and flush out existing data for now.
+
+
+>
+>> +	} else {
+>> +		stock->vmstat_bytes += nr;
+>> +		if (abs(stock->vmstat_bytes) > PAGE_SIZE) {
+>> +			nr = stock->vmstat_bytes;
+>> +			stock->vmstat_bytes = 0;
+>> +		} else {
+>> +			nr = 0;
+>> +		}
+> ..and this is the regular overflow handling done by the objcg and
+> memcg charge stock as well.
+>
+> How about this?
+>
+> 	if (stock->cached_objcg != objcg ||
+> 	    stock->cached_pgdat != pgdat ||
+> 	    stock->vmstat_idx != idx) {
+> 		drain_obj_stock(stock);
+> 		obj_cgroup_get(objcg);
+> 		stock->cached_objcg = objcg;
+> 		stock->nr_bytes = atomic_xchg(&objcg->nr_charged_bytes, 0);
+> 		stock->vmstat_idx = idx;
+> 	}
+> 	stock->vmstat_bytes += nr_bytes;
+>
+> 	if (abs(stock->vmstat_bytes > PAGE_SIZE))
+> 		drain_obj_stock(stock);
+>
+> (Maybe we could be clever, here since the charge and stat caches are
+> the same size: don't flush an oversized charge cache from
+> refill_obj_stock in the charge path, but leave it to the
+> mod_objcg_state() that follows; likewise don't flush an undersized
+> vmstat stock from mod_objcg_state() in the uncharge path, but leave it
+> to the refill_obj_stock() that follows. Could get a bit complicated...)
+
+If you look at patch 5, I am trying to avoid doing drain_obj_stock() 
+unless the objcg change. I am going to do the same here.
+
+Cheers,
+Longman
+
