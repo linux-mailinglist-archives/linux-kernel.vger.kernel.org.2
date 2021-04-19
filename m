@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE7B3644EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE503644AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241632AbhDSNgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:36:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34378 "EHLO mail.kernel.org"
+        id S241238AbhDSNbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:31:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241937AbhDSNYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:24:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDDDD613DC;
-        Mon, 19 Apr 2021 13:19:42 +0000 (UTC)
+        id S240529AbhDSNVx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:21:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11C5F6128C;
+        Mon, 19 Apr 2021 13:18:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618838383;
-        bh=0DKbLwpRtrE8G4XtVlLlfF7mDlBZ8+CTdiglRTavET0=;
+        s=korg; t=1618838283;
+        bh=xyS2wI06VzGPR+Aw78dfF5hpx6vN0vfMR0ox2HqmImI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JQ/KcgWrZXzc22OTMsFkadcYuKi2JY9mFpzpi9IJzXJpz8+QJaiovCNjOULdQDIny
-         wKVaYmc+wUcg92k4WMbH7SzIaIxWh+c+MhDdDl4iXyJb6avAVNOw1F2cO4i730DaSv
-         3WR3uV/uiVxy6SAFyKRWimQ8334ZHxvzxH617uEU=
+        b=SxaS8Q+RoQZYi5K4BMydmWKdw8F+NV73DmgtZuIspMtpnVg7HEDUBeEmDQ0njXpVz
+         6twIOLzTpt0+G6aw2sUP799VSWvfnqkJj45NPVA4mGoGdMaiiw8W6bcc3HuQdQK0KY
+         ArdfOwkkpbnA/sOScjFGZsOhne0iqYb4Wu5t9OJQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Marcos Paulo de Souza <mpdesouza@suse.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 5.4 41/73] Input: i8042 - fix Pegatron C15B ID entry
-Date:   Mon, 19 Apr 2021 15:06:32 +0200
-Message-Id: <20210419130525.159014041@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 082/103] ch_ktls: fix device connection close
+Date:   Mon, 19 Apr 2021 15:06:33 +0200
+Message-Id: <20210419130530.618914240@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210419130523.802169214@linuxfoundation.org>
-References: <20210419130523.802169214@linuxfoundation.org>
+In-Reply-To: <20210419130527.791982064@linuxfoundation.org>
+References: <20210419130527.791982064@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
 
-commit daa58c8eec0a65ac8e2e77ff3ea8a233d8eec954 upstream.
+commit bc16efd2430652f894ae34b1de5eccc3bf0d2810 upstream.
 
-The Zenbook Flip entry that was added overwrites a previous one
-because of a typo:
+When sge queue is full and chcr_ktls_xmit_wr_complete()
+returns failure, skb is not freed if it is not the last tls record in
+this skb, causes refcount never gets freed and tls_dev_del()
+never gets called on this connection.
 
-In file included from drivers/input/serio/i8042.h:23,
-                 from drivers/input/serio/i8042.c:131:
-drivers/input/serio/i8042-x86ia64io.h:591:28: error: initialized field overwritten [-Werror=override-init]
-  591 |                 .matches = {
-      |                            ^
-drivers/input/serio/i8042-x86ia64io.h:591:28: note: (near initialization for 'i8042_dmi_noselftest_table[0].matches')
-
-Add the missing separator between the two.
-
-Fixes: b5d6e7ab7fe7 ("Input: i8042 - add ASUS Zenbook Flip to noselftest list")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-Link: https://lore.kernel.org/r/20210323130623.2302402-1-arnd@kernel.org
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: 5a4b9fe7fece ("cxgb4/chcr: complete record tx handling")
+Signed-off-by: Vinay Kumar Yadav <vinay.yadav@chelsio.com>
+Signed-off-by: Rohit Maheshwari <rohitm@chelsio.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/input/serio/i8042-x86ia64io.h |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -588,6 +588,7 @@ static const struct dmi_system_id i8042_
- 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 			DMI_MATCH(DMI_CHASSIS_TYPE, "10"), /* Notebook */
- 		},
-+	}, {
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 			DMI_MATCH(DMI_CHASSIS_TYPE, "31"), /* Convertible Notebook */
+--- a/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c
++++ b/drivers/net/ethernet/chelsio/inline_crypto/ch_ktls/chcr_ktls.c
+@@ -1740,7 +1740,9 @@ static int chcr_end_part_handler(struct
+ 				 struct sge_eth_txq *q, u32 skb_offset,
+ 				 u32 tls_end_offset, bool last_wr)
+ {
++	bool free_skb_if_tx_fails = false;
+ 	struct sk_buff *nskb = NULL;
++
+ 	/* check if it is a complete record */
+ 	if (tls_end_offset == record->len) {
+ 		nskb = skb;
+@@ -1763,6 +1765,8 @@ static int chcr_end_part_handler(struct
+ 
+ 		if (last_wr)
+ 			dev_kfree_skb_any(skb);
++		else
++			free_skb_if_tx_fails = true;
+ 
+ 		last_wr = true;
+ 
+@@ -1774,6 +1778,8 @@ static int chcr_end_part_handler(struct
+ 				       record->num_frags,
+ 				       (last_wr && tcp_push_no_fin),
+ 				       mss)) {
++		if (free_skb_if_tx_fails)
++			dev_kfree_skb_any(skb);
+ 		goto out;
+ 	}
+ 	tx_info->prev_seq = record->end_seq;
 
 
