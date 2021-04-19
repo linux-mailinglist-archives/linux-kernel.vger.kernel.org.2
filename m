@@ -2,87 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7C4364851
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 18:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7E8364858
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 18:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239316AbhDSQeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 12:34:21 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:38544 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238974AbhDSQeP (ORCPT
+        id S233329AbhDSQhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 12:37:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230063AbhDSQhh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 12:34:15 -0400
-Received: from mail-ej1-f71.google.com ([209.85.218.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lYWqH-00029C-8v
-        for linux-kernel@vger.kernel.org; Mon, 19 Apr 2021 16:33:45 +0000
-Received: by mail-ej1-f71.google.com with SMTP id ne22-20020a1709077b96b02903803a047edeso2538631ejc.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 09:33:45 -0700 (PDT)
+        Mon, 19 Apr 2021 12:37:37 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA67C06174A;
+        Mon, 19 Apr 2021 09:37:06 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id y3so5235266eds.5;
+        Mon, 19 Apr 2021 09:37:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RKVgXAX0mREX8Z0MCpmywkdwIZCixUAvYUJ20KmIUmM=;
+        b=HQe4hHu3jDM3VMM9bgAAJO7LJ1nuzE2Zlm+7CJbv/ZQT+d3t5c8GKY1wiK0P/d8sER
+         a3YCO30m7N+/NsNvJzeRpjp0sdsPecqrjP0KqkOsxjX2tdc+g14KTOmn5H7oI6l8TWyv
+         dby33R1hSpDmVfW2JNU/Im6NwYKXLANxpwarInv//7qs4r5cSz69DvJ3SF2grgW0RE5r
+         LXSAhroeOwlMllkLcfxytfjHUV38DdEsd6EJo7nb/rnkjgE7MEwm6oZkgX/dtAtnabf5
+         KaH8SR5JV2vOehwvD8JS9jtDjCMtaciFE+cMZqFSSRbiqoWoQQQkkkCP9cmggTld2IqI
+         oibQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=tffa8FxLRD95q68BP7WAuHuH/QuQK9CLj68muj3l3Us=;
-        b=cosJc+uLxsC6doV8rktWFMwuwmcpZiohEYnn/qJNx2Mr99Qx2QE06LpHO0xEBkYQHq
-         FqvWIg0p2E92pRSkYSc9kBVip/Bs0t3WOUWvNCxnRVKKLI0jp45se+1+PLLj16tK6Z0n
-         ga2KLyZIwCkBYoRdmA+++Ogb7a41fmu9c15Fv/rGqIDPJBvL1f28D+KYJic+95jSiw1V
-         NBqI+1f7T7TVX2wB4S3cohzhxay0P7KYrO242hoWMb2AjBwkZIoVTyHOvjPP3pf9bCSY
-         bRrqflGb2YBFPHgGq9ynDpS+RftsEOwVY7erSt38L2EX7stjMce76WCwYlachR8KSqaC
-         lKzA==
-X-Gm-Message-State: AOAM532pSIJqINjbmzso1mlryMSsXMn4jEIWOJnTxrlSGmFv8tNP4P/w
-        di0aEBrX3nfA/ogN6itynN4T+XK0d8U4AQzsVRXOXyqWIASOIpwQBH2reijJgZAUB/BUa9RePbC
-        hVIWRvxCgswRbDvei4BZjjsrDm5GoNqLnHLv4G2baxQ==
-X-Received: by 2002:a17:906:8407:: with SMTP id n7mr22280295ejx.264.1618850025027;
-        Mon, 19 Apr 2021 09:33:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwIPWR8ANiEgnuHcBPUQLALdaXMV0Sh7rj34LKbSDdNWxalGwJMT5vUSg1W9Vn8ufz87Al0uQ==
-X-Received: by 2002:a17:906:8407:: with SMTP id n7mr22280287ejx.264.1618850024906;
-        Mon, 19 Apr 2021 09:33:44 -0700 (PDT)
-Received: from localhost.localdomain (xdsl-188-155-180-75.adslplus.ch. [188.155.180.75])
-        by smtp.gmail.com with ESMTPSA id d10sm10884257ejw.125.2021.04.19.09.33.44
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RKVgXAX0mREX8Z0MCpmywkdwIZCixUAvYUJ20KmIUmM=;
+        b=pj8yvU3YrArr/nAQ21nuvClngXEH5CqhMoKvlOKClc60fUnNCPjkybbo59SU2UsuxM
+         Ak2VW6CUVM7kkckuLkvPoD4RTHtEC/461tu6OW53u9WP6hk3c8X7DT5L5yC80LCkoD3P
+         Y/WRyBJFiB4UZRrX6zHkVsYWzGIfb+XPWn8+UIqG/epGpCD3WQfCtYxUYChfyV6BWssw
+         9erVNKlCC8kC1COdnqX81zZbXG6QR/boKREdUtjtYhXBfGWtD0sxtdnRHpwaTb4vAdrf
+         AhlxNlxXcNGF4k9U+q3ePTiu7meocCgZup60vRPkACM818aZqd2QJk/w2knBXeTQ6Kgl
+         c73Q==
+X-Gm-Message-State: AOAM533VgjplroIgJGn5rDxaToX9qz9fl7OsE2aKl6L+gAo/JrIsYvxh
+        mBiO+6M2mCsziafoSNwh4tI=
+X-Google-Smtp-Source: ABdhPJxlHE+uN0letZMKdjr+iTxf5YPKEy4uushblsmHr3m3aO5AO/Mjig0xXV/5WRJKl1OWM2qRQQ==
+X-Received: by 2002:a05:6402:cbb:: with SMTP id cn27mr12958654edb.222.1618850225382;
+        Mon, 19 Apr 2021 09:37:05 -0700 (PDT)
+Received: from localhost.localdomain ([185.58.55.85])
+        by smtp.gmail.com with ESMTPSA id c19sm13196792edu.20.2021.04.19.09.36.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 09:33:44 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] power: supply: bq256xx: add kerneldoc for structure members
-Date:   Mon, 19 Apr 2021 18:33:36 +0200
-Message-Id: <20210419163336.64075-5-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210419163336.64075-1-krzysztof.kozlowski@canonical.com>
-References: <20210419163336.64075-1-krzysztof.kozlowski@canonical.com>
+        Mon, 19 Apr 2021 09:37:04 -0700 (PDT)
+From:   Kurt Manucredo <fuzzybritches0@gmail.com>
+To:     trond.myklebust@hammerspace.com, anna.schumaker@netapp.com,
+        bfields@fieldses.org, chuck.lever@oracle.com, davem@davemloft.net,
+        kuba@kernel.org, skhan@linuxfoundation.org
+Cc:     Kurt Manucredo <fuzzybritches0@gmail.com>,
+        linux-nfs@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+ba2e91df8f74809417fa@syzkaller.appspotmail.com,
+        gregkh@linuxfoundation.org
+Subject: [PATCH] net: sunrpc: xprt.c: fix shift-out-of-bounds in xprt_calc_majortimeo
+Date:   Mon, 19 Apr 2021 16:36:03 +0000
+Message-Id: <20210419163603.7-1-fuzzybritches0@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document members of structure to fix W=1 warnings like:
+Fix shift-out-of-bounds in xprt_calc_majortimeo().
 
-  drivers/power/supply/bq256xx_charger.c:240: warning:
-    Function parameter or member 'charger' not described in 'bq256xx_device'
+UBSAN: shift-out-of-bounds in net/sunrpc/xprt.c:658:14
+shift exponent 536871232 is too large for 64-bit type 'long u
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Reported-by: syzbot+ba2e91df8f74809417fa@syzkaller.appspotmail.com
+Signed-off-by: Kurt Manucredo <fuzzybritches0@gmail.com>
 ---
- drivers/power/supply/bq256xx_charger.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/sunrpc/xprt.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/power/supply/bq256xx_charger.c b/drivers/power/supply/bq256xx_charger.c
-index 2ab5ba4af92b..f501ecd49202 100644
---- a/drivers/power/supply/bq256xx_charger.c
-+++ b/drivers/power/supply/bq256xx_charger.c
-@@ -202,6 +202,8 @@ enum bq256xx_id {
-  * @client: i2c client structure
-  * @regmap: register map structure
-  * @dev: device structure
-+ * @charger: power supply registered for the charger
-+ * @battery: power supply registered for the battery
-  * @lock: mutex lock structure
-  *
-  * @usb2_phy: usb_phy identifier
+diff --git a/net/sunrpc/xprt.c b/net/sunrpc/xprt.c
+index 691ccf8049a4..07128ac3d51d 100644
+--- a/net/sunrpc/xprt.c
++++ b/net/sunrpc/xprt.c
+@@ -655,7 +655,10 @@ static unsigned long xprt_calc_majortimeo(struct rpc_rqst *req)
+ 	unsigned long majortimeo = req->rq_timeout;
+ 
+ 	if (to->to_exponential)
+-		majortimeo <<= to->to_retries;
++		if (to->to_retries >= sizeof(majortimeo) * 8)
++			majortimeo = to->to_maxval;
++		else
++			majortimeo <<= to->to_retries;
+ 	else
+ 		majortimeo += to->to_increment * to->to_retries;
+ 	if (majortimeo > to->to_maxval || majortimeo == 0)
 -- 
-2.25.1
+2.30.2
 
