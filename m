@@ -2,187 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E63A36462A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA8636462E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239947AbhDSOdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 10:33:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47148 "EHLO
+        id S240101AbhDSOdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 10:33:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232302AbhDSOc6 (ORCPT
+        with ESMTP id S232302AbhDSOdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 10:32:58 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55EF1C061763
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 07:32:29 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id u80so2036524oia.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 07:32:29 -0700 (PDT)
+        Mon, 19 Apr 2021 10:33:33 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A808C06174A;
+        Mon, 19 Apr 2021 07:33:03 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id a1so39636232ljp.2;
+        Mon, 19 Apr 2021 07:33:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4nWRWEmvjlM65gvpUkZGPybpr9Usfroi21CGmSCGgnQ=;
-        b=dKL+8Di3Vh6QSg4UqSIU/ueXxsqOGsn3aeAhCMqzWv41AGVzSLAx1Ybl794pFYHlfG
-         3TUX1OT/sBVmuDWRZOG8OqLuCv0p08RsLlCGp5JmsYmuOLPShTe2tXYNpIVo1mXY4nPg
-         8W94VxamJxc4H91RpnHe8FbFMEXdkhnkEbNv5G3SHB+Pl7IZDP8DwwLKVe0VITYW7Z6O
-         hVIKKJzfjEB0Zxd0+uM9b/b76cwX63K/kOrrVNR++7bhgj90+LQIuCzqmjUhKKf0IQiO
-         fuCn9ZmD3+G8qXxepR7uHqrVcdxpjY8KisVw5KC7qdNTn9x8SioiKjV/nTVbgTFw1TGR
-         C7OQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=7tmme4pRYd93LTaqtaN5mHl4x1cZSgoWzQ2PDBJdLng=;
+        b=JR3Wf17T/Ilg5kJ8ARhsGu1audbYrS6bCxmzxtDcShkkYahcf9HJWm7lH++28bzIXj
+         StObiFHebdhHmXQ0KIwLa3mJ9Pvw4xuWh+r231y5bG2VXGwLh6euxZjYPHdKFiTq4/zd
+         LzpiHUqvf83Zbpqz+OtH/2OB062g+FVgfh/k2KYVnIFAnfF90+HoEXZNGgUYTTLauFDS
+         LnJjD0gCSkelxAOd5EmeFiz1+12xZr+Mdi7dCGTQlQiXIDEZA0uhRt+pBs0GjxUSlZHM
+         lLdAVWPUGpxN4rPrpttB6pKwtT2KXGHtYR8rcJZKrWqN2FQANdr+G0hLDNVr+7VnbqHW
+         A47w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4nWRWEmvjlM65gvpUkZGPybpr9Usfroi21CGmSCGgnQ=;
-        b=cgRtu7n5qfXzxkKf+S1Vy/eqPzmmL2RFRrv4SnJJJ7RWeMTVO5vJOIN8/uUlW+H0YF
-         bsqOFarcXugCSg/Wzv5tKUAgPJkpNn/CodD2h6UsKFldXjN5sPbxXQkXQLFj51SnrKno
-         4XFti+gp/ygOpOwUGj/X5w7/EUeYxrBJTR9FReYNHJDi/S60YzwlnMTjtwpRzNmDyXvq
-         UrkC0+UwF2oo7zmTEdry3vJSgRglRetpVT2mbJW2JHpXIuC3WgYSFr7gwey/VY3QNNOx
-         viVVqUAB8Gi8j5E6RCzLIaJgBijgwlLImRKrXmEx15CUUhoGOu4OzWJsdwLJCXkn3BES
-         fvlA==
-X-Gm-Message-State: AOAM530jmkkspvbNmyLVluIxbcZnCxPg6ZzIFH5HfIDBuwOQLrOyLuXk
-        2sg4hS4NQ2Yz8Ma5aEJpzonW6g==
-X-Google-Smtp-Source: ABdhPJy3ipgPHZ4m9cveqEO3UoOQ3lZDcUGjgRZW0c3MiRNf9Yn6lUjxnt5tD4qel7g8ZRGUhgynJA==
-X-Received: by 2002:aca:408b:: with SMTP id n133mr13137273oia.13.1618842748685;
-        Mon, 19 Apr 2021 07:32:28 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id g26sm3567915otr.73.2021.04.19.07.32.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 07:32:28 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 09:32:25 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     schowdhu@codeaurora.org
-Cc:     Felipe Balbi <balbi@kernel.org>, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org
-Subject: Re: [PATCH V3 2/4] soc: qcom: dcc:Add driver support for Data
- Capture and Compare unit(DCC)
-Message-ID: <20210419143225.GO1538589@yoga>
-References: <cover.1618387606.git.schowdhu@codeaurora.org>
- <59b2e83d5d0f435112f6ae266612ff91c85b120f.1618387606.git.schowdhu@codeaurora.org>
- <87k0p4njni.fsf@kernel.org>
- <ffc2076e7145af0099bab8ef37611556@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7tmme4pRYd93LTaqtaN5mHl4x1cZSgoWzQ2PDBJdLng=;
+        b=c2fUNabEqLMuOgr06pWa6q3rF6/OTTxX6FmTZNTbKEwZj01V5YBjNBHcsd440uNou1
+         l7/+XvaT7VCv6M0znupoeoZGmYJcWPrOSpg/toHgcpHzu1Hz2cRkOqRbPDgWaXGCTT9g
+         ITEA4QbWDpapXdcfC0okdF4DI2Hok0Qk2rxA3rKxVKepsUK+/oZjFrgWynzS07wsV/t1
+         SnMPWWotb5xHAzECK0ZrSIPoEX5Gbh3xoynSlLcOpFbz4SCE6nkSVOcukWt6soH0P00C
+         E22QNJxFt0KOLGyyO/1ETq8h6JEMk8R7l4+xpY8d8BK93uUX21yPtk0LtOiQ+hc+0Hr+
+         pATA==
+X-Gm-Message-State: AOAM532hQ/p9DNl4wsmtpf48iVWSHbOWmTtzelkPRPuCEmB4g2mOn0rn
+        FZVOxYHvPLkkh5lgLegnG6l0QIzS+rxCCZBg/+o=
+X-Google-Smtp-Source: ABdhPJztWDw4LdolZiG/tiEjxcLEoFBoUW7An7FriKYh+HvW59mBOYueLsP4J32lQjC8xxT5uBdFtuzFxB2SxKg9wkw=
+X-Received: by 2002:a2e:8356:: with SMTP id l22mr1609707ljh.204.1618842782059;
+ Mon, 19 Apr 2021 07:33:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ffc2076e7145af0099bab8ef37611556@codeaurora.org>
+References: <20210418200249.174835-1-pctammela@mojatatu.com>
+ <CAADnVQLJDsnQ1YO9a_pQ-1aTJ1hNKYJXcSHypfzCare-c4HO1A@mail.gmail.com> <CAKY_9u0Ye9pt7igtxT8UR=Ro7=yNwUz2zQZDKH20NK92_LvgxA@mail.gmail.com>
+In-Reply-To: <CAKY_9u0Ye9pt7igtxT8UR=Ro7=yNwUz2zQZDKH20NK92_LvgxA@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 19 Apr 2021 07:32:50 -0700
+Message-ID: <CAADnVQ+KhDOZGn9jAhfWbOOTTFZB0JL1i046y5XEuMzcuQQ8oA@mail.gmail.com>
+Subject: Re: [PATCH] bpf: fix errno code for unsupported batch ops
+To:     Pedro Tammela <pctammela@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Pedro Tammela <pctammela@mojatatu.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 19 Apr 05:32 CDT 2021, schowdhu@codeaurora.org wrote:
+On Mon, Apr 19, 2021 at 6:52 AM Pedro Tammela <pctammela@gmail.com> wrote:
+>
+> Em dom., 18 de abr. de 2021 =C3=A0s 19:56, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> escreveu:
+> >
+> > On Sun, Apr 18, 2021 at 1:03 PM Pedro Tammela <pctammela@gmail.com> wro=
+te:
+> > >
+> > > ENOTSUPP is not a valid userland errno[1], which is annoying for
+> > > userland applications that implement a fallback to iterative, report
+> > > errors via 'strerror()' or both.
+> > >
+> > > The batched ops return this errno whenever an operation
+> > > is not implemented for kernels that implement batched ops.
+> > >
+> > > In older kernels, pre batched ops, it returns EINVAL as the arguments
+> > > are not supported in the syscall.
+> > >
+> > > [1] https://lore.kernel.org/netdev/20200511165319.2251678-1-kuba@kern=
+el.org/
+> > >
+> > > Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+> > > ---
+> > >  kernel/bpf/syscall.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > > index fd495190115e..88fe19c0aeb1 100644
+> > > --- a/kernel/bpf/syscall.c
+> > > +++ b/kernel/bpf/syscall.c
+> > > @@ -3961,7 +3961,7 @@ static int bpf_task_fd_query(const union bpf_at=
+tr *attr,
+> > >  #define BPF_DO_BATCH(fn)                       \
+> > >         do {                                    \
+> > >                 if (!fn) {                      \
+> > > -                       err =3D -ENOTSUPP;        \
+> > > +                       err =3D -EOPNOTSUPP;      \
+> >
+> > $ git grep EOPNOTSUPP kernel/bpf/|wc -l
+> > 11
+> > $ git grep ENOTSUPP kernel/bpf/|wc -l
+> > 51
+> >
+> > For new code EOPNOTSUPP is better, but I don't think changing all 51 ca=
+se
+> > is a good idea. Something might depend on it already.
+>
+> OK, makes sense.
+>
+> Perhaps, handle this errno in 'libbpf_strerror()'?
 
-> On 2021-04-15 12:01, Felipe Balbi wrote:
-> > Hi,
-> > 
-> > Souradeep Chowdhury <schowdhu@codeaurora.org> writes:
-> > > diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
-> > > index ad675a6..e7f0ccb 100644
-> > > --- a/drivers/soc/qcom/Makefile
-> > > +++ b/drivers/soc/qcom/Makefile
-> > > @@ -1,19 +1,22 @@
-> > >  # SPDX-License-Identifier: GPL-2.0
-> > >  CFLAGS_rpmh-rsc.o := -I$(src)
-> > >  obj-$(CONFIG_QCOM_AOSS_QMP) +=	qcom_aoss.o
-> > > -obj-$(CONFIG_QCOM_GENI_SE) +=	qcom-geni-se.o
-> > > +obj-$(CONFIG_QCOM_APR) += apr.o
-> > >  obj-$(CONFIG_QCOM_COMMAND_DB) += cmd-db.o
-> > >  obj-$(CONFIG_QCOM_CPR)		+= cpr.o
-> > > +obj-$(CONFIG_QCOM_DCC) += dcc.o
-> > > +obj-$(CONFIG_QCOM_GENI_SE) +=   qcom-geni-se.o
-> > >  obj-$(CONFIG_QCOM_GSBI)	+=	qcom_gsbi.o
-> > > +obj-$(CONFIG_QCOM_KRYO_L2_ACCESSORS) += kryo-l2-accessors.o
-> > > +obj-$(CONFIG_QCOM_LLCC) += llcc-qcom.o
-> > >  obj-$(CONFIG_QCOM_MDT_LOADER)	+= mdt_loader.o
-> > >  obj-$(CONFIG_QCOM_OCMEM)	+= ocmem.o
-> > >  obj-$(CONFIG_QCOM_PDR_HELPERS)	+= pdr_interface.o
-> > >  obj-$(CONFIG_QCOM_QMI_HELPERS)	+= qmi_helpers.o
-> > > -qmi_helpers-y	+= qmi_encdec.o qmi_interface.o
-> > >  obj-$(CONFIG_QCOM_RMTFS_MEM)	+= rmtfs_mem.o
-> > >  obj-$(CONFIG_QCOM_RPMH)		+= qcom_rpmh.o
-> > > -qcom_rpmh-y			+= rpmh-rsc.o
-> > > -qcom_rpmh-y			+= rpmh.o
-> > > +obj-$(CONFIG_QCOM_RPMHPD) += rpmhpd.o
-> > > +obj-$(CONFIG_QCOM_RPMPD) += rpmpd.o
-> > >  obj-$(CONFIG_QCOM_SMD_RPM)	+= smd-rpm.o
-> > >  obj-$(CONFIG_QCOM_SMEM) +=	smem.o
-> > >  obj-$(CONFIG_QCOM_SMEM_STATE) += smem_state.o
-> > > @@ -21,8 +24,6 @@ obj-$(CONFIG_QCOM_SMP2P)	+= smp2p.o
-> > >  obj-$(CONFIG_QCOM_SMSM)	+= smsm.o
-> > >  obj-$(CONFIG_QCOM_SOCINFO)	+= socinfo.o
-> > >  obj-$(CONFIG_QCOM_WCNSS_CTRL) += wcnss_ctrl.o
-> > > -obj-$(CONFIG_QCOM_APR) += apr.o
-> > > -obj-$(CONFIG_QCOM_LLCC) += llcc-qcom.o
-> > > -obj-$(CONFIG_QCOM_RPMHPD) += rpmhpd.o
-> > > -obj-$(CONFIG_QCOM_RPMPD) += rpmpd.o
-> > > -obj-$(CONFIG_QCOM_KRYO_L2_ACCESSORS) +=	kryo-l2-accessors.o
-> > > +qmi_helpers-y   += qmi_encdec.o qmi_interface.o
-> > > +qcom_rpmh-y                     += rpmh-rsc.o
-> > > +qcom_rpmh-y                     += rpmh.o
-> > 
-> > why so many changes?
-> 
-> This has been accidentally sorted based on the config names. Will be fixing
-> this in next version of the patch.
-> 
-> > 
-> > > diff --git a/drivers/soc/qcom/dcc.c b/drivers/soc/qcom/dcc.c
-> > > new file mode 100644
-> > > index 0000000..fcd5580
-> > > --- /dev/null
-> > > +++ b/drivers/soc/qcom/dcc.c
-> > > @@ -0,0 +1,1539 @@
-> > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > +/*
-> > > + * Copyright (c) 2015-2021, The Linux Foundation. All rights
-> > > reserved.
-> > > + */
-> > > +
-> > > +#include <linux/bitfield.h>
-> > > +#include <linux/bitops.h>
-> > > +#include <linux/cdev.h>
-> > > +#include <linux/delay.h>
-> > > +#include <linux/fs.h>
-> > > +#include <linux/io.h>
-> > > +#include <linux/iopoll.h>
-> > > +#include <linux/module.h>
-> > > +#include <linux/of.h>
-> > > +#include <linux/of_device.h>
-> > > +#include <linux/platform_device.h>
-> > > +#include <linux/slab.h>
-> > > +#include <linux/uaccess.h>
-> > > +
-> > > +
-> > 
-> > one blank line is enough
-> 
-> Ack
-> 
-> > 
-> > > +#define TIMEOUT_US		100
-> > > +
-> > > +#define dcc_writel(drvdata, val, off)					\
-> > > +	writel((val), drvdata->base + dcc_offset_conv(drvdata, off))
-> > > +#define dcc_readl(drvdata, off)						\
-> > > +	readl(drvdata->base + dcc_offset_conv(drvdata, off))
-> > > +
-> > > +#define dcc_sram_readl(drvdata, off)					\
-> > > +	readl(drvdata->ram_base + off)
-> > 
-> > this would be probably be better as static inlines.
-> 
-> These are simple read and write operations used in the driver
-> which just calls the generic writel and readl function.
-> That's why macros have been used here to lesson the overhead
-> of an extra function call.
+That's a good idea.
 
-The compiler will realize that your static dcc_sram_readl() is cheaper
-to inline than call and do so for you. So you can expect that there's no
-difference in the output from the compiler, and if there is then the
-compiler knows something that you're overlooking.
+> So language
+> bindings don't get lost when dealing with this errno.
 
-Regards,
-Bjorn
+I'm not sure what you mean by "language bindings".
+In general, strerror is not that useful. The kernel aliases
+multiple conditions into the same error code. The error string
+is too generic in practice to be useful.
