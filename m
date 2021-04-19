@@ -2,102 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115EA3645C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC853645C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241141AbhDSOPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 10:15:30 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:53770 "EHLO mail.skyhub.de"
+        id S233486AbhDSOPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 10:15:46 -0400
+Received: from mx.cjr.nz ([51.158.111.142]:17772 "EHLO mx.cjr.nz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237765AbhDSOP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 10:15:29 -0400
-Received: from zn.tnic (p200300ec2f078100afa224062884c679.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:8100:afa2:2406:2884:c679])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S233990AbhDSOPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 10:15:44 -0400
+Received: from authenticated-user (mx.cjr.nz [51.158.111.142])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 908A91EC03A0;
-        Mon, 19 Apr 2021 16:14:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1618841698;
+        (Authenticated sender: pc)
+        by mx.cjr.nz (Postfix) with ESMTPSA id 707257FC03;
+        Mon, 19 Apr 2021 14:15:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjr.nz; s=dkim;
+        t=1618841713;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=xYer5YJmlFMgyX1gFaAIU9JdbMZm0L97+s4VR7XbJfA=;
-        b=C1Qht14qU6fl4YF08sxDKkyN12IL2huAGrGrdEwzWJ3MokzicBoijBRQgqYtQw36Qckuqd
-        Nz+JV3yiF6celQeYJfOk+EbbOT7sqYBLa3CyBDv7V3E7wk7rSnVQUyELLWRjZNeDyYsOrM
-        O7xg+U3yeltDHb/s2XhkH4yTneYxqOQ=
-Date:   Mon, 19 Apr 2021 16:14:54 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Len Brown <lenb@kernel.org>
-Cc:     Willy Tarreau <w@1wt.eu>, Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-abi@vger.kernel.org,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
- features
-Message-ID: <20210419141454.GE9093@zn.tnic>
-References: <CALCETrWxJzf-rm9rqMpdxEtdVe+0OH7XRtWV=UzrgBDiPT=vVQ@mail.gmail.com>
- <CAJvTdKkAzEeAKrEYMU-gBWXoNGyJ09ZGw1gsU0b3uCuo8vrX0A@mail.gmail.com>
- <20210413034346.GA22861@1wt.eu>
- <CAJvTdKmLth==ZPv7ygLs0jFX7JRPVhVT82ZDoT4xcQRABEVTvQ@mail.gmail.com>
- <20210414095804.GB10709@zn.tnic>
- <CAJvTdKn_y8qAjDy189zEf8cnaWrvW3baca=z9FgGxV9AvQEADg@mail.gmail.com>
- <20210415044258.GA6318@zn.tnic>
- <20210415052938.GA2325@1wt.eu>
- <20210415054713.GB6318@zn.tnic>
- <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
+         in-reply-to:in-reply-to:references:references;
+        bh=PHvsKY71Twx7y7UKiMO8xtu/3Zh3WQE49bco6gIlXEw=;
+        b=TpYwamFB2LDHR2sa46jTRPZAYf0xMJB0ujuaSTgKUMrjOT34Sne7uJlpKFaosEahilXyNd
+        PGby9LOqv7u4piN/rOakxIwlLW8AUgUP0nPY/KOvKmMLIpME7K97ZOgMpfQ3kztR/aq0qw
+        RmLGSmzCRRDe76ARUjRv9LqOOPsF4P9Aso39tL82Trp99bEvN9zm6TvnAwh/v3csmGqPiV
+        083Tg2kRkJFr56iiyHScEgA/l7AfqRtxNOzaR+3JhuvkO6dzemE4ajm3N3yfStQAQNSwB7
+        yOOTeWkVG71EJeEtzM3CXyNcyDjWDwP5FlkRNeqyzy+HsDCPaBaioT0SYVrqqQ==
+From:   Paulo Alcantara <pc@cjr.nz>
+To:     Salvatore Bonaccorso <carnil@debian.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Shyam Prasad <Shyam.Prasad@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Aurelien Aptel <aaptel@suse.com>,
+        Steven French <Steven.French@microsoft.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [EXTERNAL] Re: [PATCH 4.19 013/247] cifs: Set
+ CIFS_MOUNT_USE_PREFIX_PATH flag on setting cifs_sb->prepath.
+In-Reply-To: <YHwo5prs4MbXEzER@eldamar.lan>
+References: <20210301161031.684018251@linuxfoundation.org>
+ <20210301161032.337414143@linuxfoundation.org>
+ <YGxIMCsclG4E1/ck@eldamar.lan> <YGxlJXv/+IPaErUr@kroah.com>
+ <PSAP153MB04220682838AC9D025414B6094769@PSAP153MB0422.APCP153.PROD.OUTLOOK.COM>
+ <YGx3u01Wa/DDnjlV@eldamar.lan> <YG7r0UaivWZL762N@eldamar.lan>
+ <YHP+XbVWfGv21EL1@kroah.com> <YHwo5prs4MbXEzER@eldamar.lan>
+Date:   Mon, 19 Apr 2021 11:15:15 -0300
+Message-ID: <878s5e9x8s.fsf@cjr.nz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 06:05:10PM -0400, Len Brown wrote:
-> I'm not aware of any intent to transparently use AMX for bcopy, like
-> what happened
-> with AVX-512.  (didn't they undo that mistake?)
+Salvatore Bonaccorso <carnil@debian.org> writes:
 
-No clue, did they?
+> Thanks Greg! Shyam, Steven, now the commit was reverted for the older
+> brnaches. But did you got a chance to find why it breaks for the older
+> series?
 
-> Tasks are created without an 8KB AMX buffer.
-> Tasks have to actually touch the AMX TILE registers for us to allocate
-> one for them.
+That commit has revealed another bug in cifs_mount() where we failed to
+update the super's prefix path after chasing DFS referrals.
 
-When tasks do that it doesn't matter too much - for the library it does!
-
-If the library does that by default and the processes which comprise
-of that pipe I mentioned earlier, get all 8K buffers because the
-underlying library decided so and swinging those buffers around when
-saving/restoring contexts turns out to be a performance penalty, then we
-have lost.
-
-Lost because if that thing goes upstream in this way of use of AMX is
-allowed implicitly, there ain't fixing it anymore once it becomes an
-ABI.
-
-So, that library should ask the kernel whether it supports AMX and only
-use it if has gotten a positive answer. And by default that answer
-should be "no" because the majority of processes - that same pipe I keep
-mentioning - don't need it.
-
-I have no good idea yet how granulary that should be - per process, per
-thread, whatever, but there should be a way for the kernel to control
-whether the library uses AMX, AVX512 or whatever fat state is out there
-available.
-
-Then, if a process wants the library to use AMX on its behalf, then it
-can say so and the library can do that but only after having asked for
-explicitly.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Newer kernel versions do not have it because the code & logic in
+cifs_mount() changed entirely.
