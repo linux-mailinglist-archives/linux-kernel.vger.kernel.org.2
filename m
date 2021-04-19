@@ -2,103 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58BC1363E1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF9F363E1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238243AbhDSJBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 05:01:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57926 "EHLO
+        id S238364AbhDSJCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 05:02:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230002AbhDSJBh (ORCPT
+        with ESMTP id S230002AbhDSJCJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 05:01:37 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B48EC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 02:01:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oNPztqcdqyx6JFOIavwAKe8o2/Cul+TUzAXD8xOCmWY=; b=LRMLz1VL+by3ZtCLEfq0npNriT
-        jLm/ICpYz6N5vlbrI/cN9sT4wS5kectcvGFtfT0QCn84N6joG/iyYmJEActhFdd71WGtI+YN0IcHn
-        aeceDFsJ+028KAV0Rvyc0xOa52d9/fRRCArvveSmam0IDOo7E4Z/zq72TVl9k+YnMlJwM4iJldU0o
-        c9m8eDkU6XrCds+MkNwGhQspRkWo7dU2Xv9fwFyp3EVNniyMh7P7FCeu8+BzQj6eya8B2gk8nuzEE
-        XT3/R/I/PvrN2ICOirlBWDmKt0lc5x+kBbihLAR9ot+p8X7oAsfbH6vdoWbQwFW7c5PQWbE5M6OkJ
-        UmWYkd2Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYPm6-009VsE-IT; Mon, 19 Apr 2021 09:00:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4CE6830020C;
-        Mon, 19 Apr 2021 11:00:57 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 07F5D2C14C5BD; Mon, 19 Apr 2021 11:00:57 +0200 (CEST)
-Date:   Mon, 19 Apr 2021 11:00:56 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Tejun Heo <tj@kernel.org>, Hao Luo <haoluo@google.com>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Josh Don <joshdon@google.com>, Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Glexiner <tglx@linutronix.de>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Zefan Li <lizefan.x@bytedance.com>
-Subject: Re: [PATCH 0/9] sched: Core scheduling interfaces
-Message-ID: <YH1GyFA96tioW4kZ@hirez.programming.kicks-ass.net>
-References: <20210401131012.395311786@infradead.org>
- <YGpOF6f0YcMkWy1u@mtj.duckdns.org>
- <CAEXW_YSS0ex8xK7t2R7c1jiE4eNbwxdwP2uyGPDK78YAaYQr5A@mail.gmail.com>
- <YGxtLOxCb4LO8kN0@slm.duckdns.org>
- <YHuMy0o7gRd+kIVN@google.com>
+        Mon, 19 Apr 2021 05:02:09 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE448C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 02:01:39 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id e7so24160972wrs.11
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 02:01:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TPqPD/BdKbOmQoY/69ahqiLeLy4W5bUr61Qz2mAbQO8=;
+        b=ZDkUmAfiNr7vTw1GLZge+A/3lbdsF/wNvgIGrY/66IjAeb7JkxqkJ0G/3heyKx1bpy
+         ay9fjir4M6WU7e+kYVMvUrsqazj1q+JJWXuwS7rAWPWy/6fiD2YD6c9S5M6mBDH+QAPM
+         5CXAQlIZx9XlaC2nvi9RbwwSyXIyUUKyvOOMiwChIzAAmagIFrLtJTjalX0x+tmZEGXW
+         1sn5VFCVXt5RVUfiUM+8virAYqShpxLwyVnqBlqIWHV0i2dp14zdWT53ZatA1FpK3zOg
+         Y6Bt18WS4izwrTSxGNzo8Ijpk9pSeVB98ss4KuzYKF3AnhDVBij0OAR2VXMa6HwLR84p
+         pW5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TPqPD/BdKbOmQoY/69ahqiLeLy4W5bUr61Qz2mAbQO8=;
+        b=jPhY9Ft41FsDT3/TPTxhhRxy3UQgtlCYRXDnMBtnTcbyAtuqW/8h261PErUQvoBhgH
+         6jCFjLZ56I397U6VMTBSmC/02Gs3RTwHKWbjFmkaMLKdXtiF7xIJw+iZrDsbi0Izhko3
+         ulAiI6hs0S1IN2z4wycoXe3TYS3wSpSI53cGKOI+d5cFZlfee/VMLcHbtYMcCbPlwCWM
+         3WKQK0ur1ACzHxsy1iNvl7sBFsK6/YrQ/ODA2aD8qvtiSuuNQKYRgooSpnehgRd+Dff5
+         EyuzlxiEsxRv4hKG4tL9Mo/YvSdaZbXtmguQc6gdYzssvsw9kVjd01/mOOHOZV2Qvws7
+         Bpbw==
+X-Gm-Message-State: AOAM530TFg3N78ip/DT9Mgob83F5BDJ5gJkAVswrRLW5k+1QZuvQQBVT
+        b/72JgPs0M4vJMZJLFyn9ZuQ1Q==
+X-Google-Smtp-Source: ABdhPJys4VsgOUWkYQqpx+Qn/FCs2zadombmpxdeBA++SkKxsdC+yJFpD3mOYG/M8XmtvFWemf0B5w==
+X-Received: by 2002:a5d:5912:: with SMTP id v18mr13582443wrd.14.1618822898682;
+        Mon, 19 Apr 2021 02:01:38 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:2454:3e3:5f00:4e60:4ba6:c549:25f6])
+        by smtp.gmail.com with ESMTPSA id m14sm21477080wrh.28.2021.04.19.02.01.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 02:01:38 -0700 (PDT)
+From:   Robert Foss <robert.foss@linaro.org>
+To:     a.hajda@samsung.com, narmstrong@baylibre.com,
+        robert.foss@linaro.org, Laurent.pinchart@ideasonboard.com,
+        jonas@kwiboo.se, jernej.skrabec@siol.net, airlied@linux.ie,
+        daniel@ffwll.ch, cw00.choi@samsung.com, m.purski@samsung.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     kernel test robot <lkp@intel.com>
+Subject: [PATCH v3] drm/bridge/sii8620: fix dependency on extcon
+Date:   Mon, 19 Apr 2021 11:01:24 +0200
+Message-Id: <20210419090124.153560-1-robert.foss@linaro.org>
+X-Mailer: git-send-email 2.31.0.30.g398dba342d.dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHuMy0o7gRd+kIVN@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 09:35:07PM -0400, Joel Fernandes wrote:
-> On Tue, Apr 06, 2021 at 10:16:12AM -0400, Tejun Heo wrote:
-> > Hello,
-> > 
-> > On Mon, Apr 05, 2021 at 02:46:09PM -0400, Joel Fernandes wrote:
-> > > Yeah, its at http://lore.kernel.org/r/20200822030155.GA414063@google.com
-> > > as mentioned above, let me know if you need any more details about
-> > > usecase.
-> > 
-> > Except for the unspecified reason in usecase 4, I don't see why cgroup is in
-> > the picture at all. This doesn't really have much to do with hierarchical
-> > resource distribution. Besides, yes, you can use cgroup for logical
-> > structuring and identificaiton purposes but in those cases the interactions
-> > and interface should be with the original subsystem while using cgroup IDs
-> > or paths as parameters - see tracing and bpf for examples.
-> 
-> Personally for ChromeOS, we need only the per-task interface. Considering
-> that the second argument of this prctl is a command, I don't see why we
-> cannot add a new command PR_SCHED_CORE_CGROUP_SHARE to do what Tejun is
-> saying (in the future).
-> 
-> In order to not block ChromeOS and other "per-task interface" usecases, I
-> suggest we keep the CGroup interface for a later time (whether that's
-> through prctl or the CGroups FS way which Tejun dislikes) and move forward
-> with per-task interface only initially.
+The DRM_SIL_SII8620 kconfig has a weak `imply` dependency
+on EXTCON, which causes issues when sii8620 is built
+as a builtin and EXTCON is built as a module.
 
-Josh, you being on the other Google team, the one that actually uses the
-cgroup interface AFAIU, can you fight the good fight with TJ on this?
+The symptoms are 'undefined reference' errors caused
+by the symbols in EXTCON not being available
+to the sii8620 driver.
 
-> Peter, any thoughts on this?
+Fixes: 688838442147 ("drm/bridge/sii8620: use micro-USB cable detection logic to detect MHL")
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
+Reported-by: kernel test robot <lkp@intel.com>
+---
 
-Adding CGROUP_SHARE is not sufficient to close the hole against CLEAR.
-So we either then have to 'tweak' the meaning of CLEAR or replace it
-entirely, neither seem attractive.
+LKP reported issue:
+https://lore.kernel.org/lkml/202104040604.SSTe2Cxf-lkp@intel.com/
 
 
-I'd love to make some progress on all this.
+Changes since v1:
+ - Fix typo on comment
+
+Changes since v2:
+ - Randy: Changed from `depends` to `select` 
+
+
+ drivers/gpu/drm/bridge/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+index 22a467abd3e9..70402da5cc70 100644
+--- a/drivers/gpu/drm/bridge/Kconfig
++++ b/drivers/gpu/drm/bridge/Kconfig
+@@ -169,7 +169,7 @@ config DRM_SIL_SII8620
+ 	tristate "Silicon Image SII8620 HDMI/MHL bridge"
+ 	depends on OF
+ 	select DRM_KMS_HELPER
+-	imply EXTCON
++	select EXTCON
+ 	depends on RC_CORE || !RC_CORE
+ 	help
+ 	  Silicon Image SII8620 HDMI/MHL bridge chip driver.
+-- 
+2.31.0.30.g398dba342d.dirty
+
