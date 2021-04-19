@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8552E3644FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E953644FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241685AbhDSNh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:37:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34806 "EHLO mail.kernel.org"
+        id S241181AbhDSNhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:37:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242038AbhDSNZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:25:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8B3B61362;
-        Mon, 19 Apr 2021 13:20:21 +0000 (UTC)
+        id S242064AbhDSNZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:25:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5624C613C2;
+        Mon, 19 Apr 2021 13:20:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618838422;
-        bh=1OarIeLCVES0OTSjS05sKAClCAnu8OAY2sXZi8tGmio=;
+        s=korg; t=1618838424;
+        bh=a5wCfOGJQWW5KdkqJShWnNNebQHSGOal7vr47/aMm/8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wyBWPOTSLiqB+njb4eDpzIyeHCS4Pw9JOONQ/djPRLGzZ7PsqkroqJFq0rOzpLBts
-         mmjYK0Z+gd51n1TMCW+5IRejmDBrydxr4ZW6T9mCS23zXduEGHJ7zkfifXpheFzga9
-         fMPdv6PUMtmgbB8feyTjkYPA0/IARvHbnAdVEkGQ=
+        b=Sa31m7vuKekbmTr0brXtKBfGzyQOUJI7irp3wsKheFx38HBpmFCwLMGLdMQIacMqu
+         Ej1KmOCzSP06sUtCLdTwqgWrDnQhXq5LmSoTl1slCXeHJjBHnT1aIzlz+hVBKtAZLM
+         XooWTMEiECukh3P3t8MrytGA/Lqov0ZRrASDmQPE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 5.4 53/73] netfilter: arp_tables: add pre_exit hook for table unregister
-Date:   Mon, 19 Apr 2021 15:06:44 +0200
-Message-Id: <20210419130525.541101201@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 54/73] net: macb: fix the restore of cmp registers
+Date:   Mon, 19 Apr 2021 15:06:45 +0200
+Message-Id: <20210419130525.570992940@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210419130523.802169214@linuxfoundation.org>
 References: <20210419130523.802169214@linuxfoundation.org>
@@ -39,92 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-commit d163a925ebbc6eb5b562b0f1d72c7e817aa75c40 upstream.
+commit a714e27ea8bdee2b238748029d31472d0a65b611 upstream.
 
-Same problem that also existed in iptables/ip(6)tables, when
-arptable_filter is removed there is no longer a wait period before the
-table/ruleset is free'd.
+Commit a14d273ba159 ("net: macb: restore cmp registers on resume path")
+introduces the restore of CMP registers on resume path. In case the IP
+doesn't support type 2 screeners (zero on DCFG8 register) the
+struct macb::rx_fs_list::list is not initialized and thus the
+list_for_each_entry(item, &bp->rx_fs_list.list, list) loop introduced in
+commit a14d273ba159 ("net: macb: restore cmp registers on resume path")
+will access an uninitialized list leading to crash. Thus, initialize
+the struct macb::rx_fs_list::list without taking into account if the
+IP supports type 2 screeners or not.
 
-Unregister the hook in pre_exit, then remove the table in the exit
-function.
-This used to work correctly because the old nf_hook_unregister API
-did unconditional synchronize_net.
-
-The per-net hook unregister function uses call_rcu instead.
-
-Fixes: b9e69e127397 ("netfilter: xtables: don't hook tables by default")
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: a14d273ba159 ("net: macb: restore cmp registers on resume path")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/netfilter_arp/arp_tables.h |    5 +++--
- net/ipv4/netfilter/arp_tables.c          |    9 +++++++--
- net/ipv4/netfilter/arptable_filter.c     |   10 +++++++++-
- 3 files changed, 19 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/cadence/macb_main.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/include/linux/netfilter_arp/arp_tables.h
-+++ b/include/linux/netfilter_arp/arp_tables.h
-@@ -52,8 +52,9 @@ extern void *arpt_alloc_initial_table(co
- int arpt_register_table(struct net *net, const struct xt_table *table,
- 			const struct arpt_replace *repl,
- 			const struct nf_hook_ops *ops, struct xt_table **res);
--void arpt_unregister_table(struct net *net, struct xt_table *table,
--			   const struct nf_hook_ops *ops);
-+void arpt_unregister_table(struct net *net, struct xt_table *table);
-+void arpt_unregister_table_pre_exit(struct net *net, struct xt_table *table,
-+				    const struct nf_hook_ops *ops);
- extern unsigned int arpt_do_table(struct sk_buff *skb,
- 				  const struct nf_hook_state *state,
- 				  struct xt_table *table);
---- a/net/ipv4/netfilter/arp_tables.c
-+++ b/net/ipv4/netfilter/arp_tables.c
-@@ -1580,10 +1580,15 @@ out_free:
- 	return ret;
- }
- 
--void arpt_unregister_table(struct net *net, struct xt_table *table,
--			   const struct nf_hook_ops *ops)
-+void arpt_unregister_table_pre_exit(struct net *net, struct xt_table *table,
-+				    const struct nf_hook_ops *ops)
- {
- 	nf_unregister_net_hooks(net, ops, hweight32(table->valid_hooks));
-+}
-+EXPORT_SYMBOL(arpt_unregister_table_pre_exit);
-+
-+void arpt_unregister_table(struct net *net, struct xt_table *table)
-+{
- 	__arpt_unregister_table(net, table);
- }
- 
---- a/net/ipv4/netfilter/arptable_filter.c
-+++ b/net/ipv4/netfilter/arptable_filter.c
-@@ -56,16 +56,24 @@ static int __net_init arptable_filter_ta
- 	return err;
- }
- 
-+static void __net_exit arptable_filter_net_pre_exit(struct net *net)
-+{
-+	if (net->ipv4.arptable_filter)
-+		arpt_unregister_table_pre_exit(net, net->ipv4.arptable_filter,
-+					       arpfilter_ops);
-+}
-+
- static void __net_exit arptable_filter_net_exit(struct net *net)
- {
- 	if (!net->ipv4.arptable_filter)
- 		return;
--	arpt_unregister_table(net, net->ipv4.arptable_filter, arpfilter_ops);
-+	arpt_unregister_table(net, net->ipv4.arptable_filter);
- 	net->ipv4.arptable_filter = NULL;
- }
- 
- static struct pernet_operations arptable_filter_net_ops = {
- 	.exit = arptable_filter_net_exit,
-+	.pre_exit = arptable_filter_net_pre_exit,
- };
- 
- static int __init arptable_filter_init(void)
+--- a/drivers/net/ethernet/cadence/macb_main.c
++++ b/drivers/net/ethernet/cadence/macb_main.c
+@@ -3590,6 +3590,7 @@ static int macb_init(struct platform_dev
+ 	reg = gem_readl(bp, DCFG8);
+ 	bp->max_tuples = min((GEM_BFEXT(SCR2CMP, reg) / 3),
+ 			GEM_BFEXT(T2SCR, reg));
++	INIT_LIST_HEAD(&bp->rx_fs_list.list);
+ 	if (bp->max_tuples > 0) {
+ 		/* also needs one ethtype match to check IPv4 */
+ 		if (GEM_BFEXT(SCR2ETH, reg) > 0) {
+@@ -3600,7 +3601,6 @@ static int macb_init(struct platform_dev
+ 			/* Filtering is supported in hw but don't enable it in kernel now */
+ 			dev->hw_features |= NETIF_F_NTUPLE;
+ 			/* init Rx flow definitions */
+-			INIT_LIST_HEAD(&bp->rx_fs_list.list);
+ 			bp->rx_fs_list.count = 0;
+ 			spin_lock_init(&bp->rx_fs_lock);
+ 		} else
 
 
