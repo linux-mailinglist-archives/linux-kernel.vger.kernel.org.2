@@ -2,194 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAEB5363B50
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 08:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D480363B53
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 08:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237354AbhDSGNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 02:13:48 -0400
-Received: from lucky1.263xmail.com ([211.157.147.130]:40264 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbhDSGNk (ORCPT
+        id S237370AbhDSGPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 02:15:31 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20106 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229840AbhDSGPa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 02:13:40 -0400
-Received: from localhost (unknown [192.168.167.16])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 8FAA9D1682;
-        Mon, 19 Apr 2021 14:13:08 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED: 0
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [124.126.19.250])
-        by smtp.263.net (postfix) whith ESMTP id P31921T139684376160000S1618812788714406_;
-        Mon, 19 Apr 2021 14:13:09 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <84122d38d400c439bdc987e3e8f738b2>
-X-RL-SENDER: zhaoxiao@uniontech.com
-X-SENDER: zhaoxiao@uniontech.com
-X-LOGIN-NAME: zhaoxiao@uniontech.com
-X-FST-TO: tglx@linutronix.de
-X-RCPT-COUNT: 16
-X-SENDER-IP: 124.126.19.250
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   zhaoxiao <zhaoxiao@uniontech.com>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, nivedita@alum.mit.edu, clin@suse.com,
-        andriy.shevchenko@linux.intel.com, ndesaulniers@google.com,
-        dan.j.williams@intel.com, masahiroy@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     jroedel@suse.de, peterz@infradead.org, jpoimboe@redhat.com,
-        zhaoxiao <zhaoxiao@uniontech.com>
-Subject: [PATCH v3] X86: Makefile: Replace -pg with CC_FLAGS_FTRACE
-Date:   Mon, 19 Apr 2021 14:13:07 +0800
-Message-Id: <20210419061307.29583-1-zhaoxiao@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 19 Apr 2021 02:15:30 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13J62fQp106653;
+        Mon, 19 Apr 2021 02:14:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=xkMdzWE54EfwUtKVXS/TXmVllMjccCELL3fNxFxcf8g=;
+ b=o9pKviH808TkXJ17qpHlug/vxLpp2Fbw7172mJhdK0lED0TUNF5O2JEv+uqhXIVQhas1
+ mEWLBr2rkHpO+PXVyNz+23oOzKWO3t2PXlE5iK2R162T+3lB1TfQHR/MvxzvFV8EuEfr
+ Fs2e86Jp7UCzmoYFnRFtu3+YDW3OxnE9xkHqAF3/ePaozZ/gg+/0tw5drOxdZL3Owqy/
+ fOetAYh9DOutNk0q3NacYWDbGFs0s2kR9gwU/lWu38kricER4lqGNPwj+jZEZlFQdMlN
+ C1kNdAej/Ug5Q0kwDDJjCsh97kMVHi0kOsQB0edMikEEShZiH7B4cMBbWZpdf46D+IOj KQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 380cnxwvvv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Apr 2021 02:14:42 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13J637WF108408;
+        Mon, 19 Apr 2021 02:14:42 -0400
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 380cnxwvvb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Apr 2021 02:14:41 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13J692q4009923;
+        Mon, 19 Apr 2021 06:14:40 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma01wdc.us.ibm.com with ESMTP id 37yqa8fswf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Apr 2021 06:14:40 +0000
+Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13J6EdAt37421406
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 19 Apr 2021 06:14:39 GMT
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B02B76E04C;
+        Mon, 19 Apr 2021 06:14:39 +0000 (GMT)
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8AE3C6E050;
+        Mon, 19 Apr 2021 06:14:38 +0000 (GMT)
+Received: from sofia.ibm.com (unknown [9.77.203.69])
+        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 19 Apr 2021 06:14:38 +0000 (GMT)
+Received: by sofia.ibm.com (Postfix, from userid 1000)
+        id 01BF12E2EAB; Mon, 19 Apr 2021 11:44:28 +0530 (IST)
+Date:   Mon, 19 Apr 2021 11:44:28 +0530
+From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Neuling <mikey@neuling.org>,
+        Rik van Riel <riel@surriel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Parth Shah <parth@linux.ibm.com>,
+        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [RFC/PATCH] powerpc/smp: Add SD_SHARE_PKG_RESOURCES flag to MC
+ sched-domain
+Message-ID: <20210419061428.GA24456@in.ibm.com>
+Reply-To: ego@linux.vnet.ibm.com
+References: <1617341874-1205-1-git-send-email-ego@linux.vnet.ibm.com>
+ <20210412062436.GB2633526@linux.vnet.ibm.com>
+ <20210412093722.GS3697@techsingularity.net>
+ <871rbfom04.mognet@arm.com>
+ <20210412104819.GT3697@techsingularity.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210412104819.GT3697@techsingularity.net>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: AlW94Q4h-J0CO_TPTLG9dqDlm62lEXVJ
+X-Proofpoint-ORIG-GUID: Z5iYiWVV2IYnHQw6B5pz0_4JEqpBuppn
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-19_02:2021-04-16,2021-04-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
+ priorityscore=1501 mlxscore=0 phishscore=0 mlxlogscore=726 spamscore=0
+ impostorscore=0 clxscore=1015 bulkscore=0 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104190041
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for x86 supporting ftrace built on other compiler
-options, let's have the x86 Makefiles remove the $(CC_FLAGS_FTRACE)
-flags, whatever these may be, rather than assuming '-pg'.
+Hello Mel,
 
-Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
----
-v3:add the same change in the arch/x86/um/vdso/Makefile.
- arch/x86/entry/vdso/Makefile |  8 ++++----
- arch/x86/kernel/Makefile     | 16 ++++++++--------
- arch/x86/kernel/cpu/Makefile |  4 ++--
- arch/x86/lib/Makefile        |  2 +-
- arch/x86/mm/Makefile         |  4 ++--
- arch/x86/um/vdso/Makefile    |  4 ++--
- arch/x86/xen/Makefile        |  6 +++---
- 7 files changed, 22 insertions(+), 22 deletions(-)
+On Mon, Apr 12, 2021 at 11:48:19AM +0100, Mel Gorman wrote:
+> On Mon, Apr 12, 2021 at 11:06:19AM +0100, Valentin Schneider wrote:
+> > On 12/04/21 10:37, Mel Gorman wrote:
+> > > On Mon, Apr 12, 2021 at 11:54:36AM +0530, Srikar Dronamraju wrote:
+> > >> * Gautham R. Shenoy <ego@linux.vnet.ibm.com> [2021-04-02 11:07:54]:
+> > >>
+> > >> >
+> > >> > To remedy this, this patch proposes that the LLC be moved to the MC
+> > >> > level which is a group of cores in one half of the chip.
+> > >> >
+> > >> >       SMT (SMT4) --> MC (Hemisphere)[LLC] --> DIE
+> > >> >
+> > >>
+> > >> I think marking Hemisphere as a LLC in a P10 scenario is a good idea.
+> > >>
+> > >> > While there is no cache being shared at this level, this is still the
+> > >> > level where some amount of cache-snooping takes place and it is
+> > >> > relatively faster to access the data from the caches of the cores
+> > >> > within this domain. With this change, we no longer see regressions on
+> > >> > P10 for applications which require single threaded performance.
+> > >>
+> > >> Peter, Valentin, Vincent, Mel, etal
+> > >>
+> > >> On architectures where we have multiple levels of cache access latencies
+> > >> within a DIE, (For example: one within the current LLC or SMT core and the
+> > >> other at MC or Hemisphere, and finally across hemispheres), do you have any
+> > >> suggestions on how we could handle the same in the core scheduler?
+> > >>
+> > >
+> > > Minimally I think it would be worth detecting when there are multiple
+> > > LLCs per node and detecting that in generic code as a static branch. In
+> > > select_idle_cpu, consider taking two passes -- first on the LLC domain
+> > > and if no idle CPU is found then taking a second pass if the search depth
+> > > allows within the node with the LLC CPUs masked out.
+> > 
+> > I think that's actually a decent approach. Tying SD_SHARE_PKG_RESOURCES to
+> > something other than pure cache topology in a generic manner is tough (as
+> > it relies on murky, ill-defined hardware fabric properties).
+> > 
+> 
+> Agreed. The LLC->node scan idea has been on my TODO list to try for
+> a while.
 
-diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
-index 05c4abc2fdfd..c5bd91bf9f93 100644
---- a/arch/x86/entry/vdso/Makefile
-+++ b/arch/x86/entry/vdso/Makefile
-@@ -96,10 +96,10 @@ $(vobjs): KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_LTO) $(GCC_PLUGINS_CFLAGS) $(
- #
- # vDSO code runs in userspace and -pg doesn't help with profiling anyway.
- #
--CFLAGS_REMOVE_vclock_gettime.o = -pg
--CFLAGS_REMOVE_vdso32/vclock_gettime.o = -pg
--CFLAGS_REMOVE_vgetcpu.o = -pg
--CFLAGS_REMOVE_vsgx.o = -pg
-+CFLAGS_REMOVE_vclock_gettime.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_vdso32/vclock_gettime.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_vgetcpu.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_vsgx.o = $(CC_FLAGS_FTRACE)
- 
- #
- # X32 processes use x32 vDSO to access 64bit kernel data.
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index 2ddf08351f0b..2811fc6a17ba 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -13,14 +13,14 @@ CPPFLAGS_vmlinux.lds += -U$(UTS_MACHINE)
- 
- ifdef CONFIG_FUNCTION_TRACER
- # Do not profile debug and lowlevel utilities
--CFLAGS_REMOVE_tsc.o = -pg
--CFLAGS_REMOVE_paravirt-spinlocks.o = -pg
--CFLAGS_REMOVE_pvclock.o = -pg
--CFLAGS_REMOVE_kvmclock.o = -pg
--CFLAGS_REMOVE_ftrace.o = -pg
--CFLAGS_REMOVE_early_printk.o = -pg
--CFLAGS_REMOVE_head64.o = -pg
--CFLAGS_REMOVE_sev-es.o = -pg
-+CFLAGS_REMOVE_tsc.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_paravirt-spinlocks.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_pvclock.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_kvmclock.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_ftrace.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_early_printk.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_head64.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_sev-es.o = $(CC_FLAGS_FTRACE)
- endif
- 
- KASAN_SANITIZE_head$(BITS).o				:= n
-diff --git a/arch/x86/kernel/cpu/Makefile b/arch/x86/kernel/cpu/Makefile
-index 637b499450d1..4435c6de9145 100644
---- a/arch/x86/kernel/cpu/Makefile
-+++ b/arch/x86/kernel/cpu/Makefile
-@@ -5,8 +5,8 @@
- 
- # Don't trace early stages of a secondary CPU boot
- ifdef CONFIG_FUNCTION_TRACER
--CFLAGS_REMOVE_common.o = -pg
--CFLAGS_REMOVE_perf_event.o = -pg
-+CFLAGS_REMOVE_common.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_perf_event.o = $(CC_FLAGS_FTRACE)
- endif
- 
- # If these files are instrumented, boot hangs during the first second.
-diff --git a/arch/x86/lib/Makefile b/arch/x86/lib/Makefile
-index bad4dee4f0e4..0aa71b8a5bc1 100644
---- a/arch/x86/lib/Makefile
-+++ b/arch/x86/lib/Makefile
-@@ -21,7 +21,7 @@ KASAN_SANITIZE_cmdline.o  := n
- KCSAN_SANITIZE_cmdline.o  := n
- 
- ifdef CONFIG_FUNCTION_TRACER
--CFLAGS_REMOVE_cmdline.o = -pg
-+CFLAGS_REMOVE_cmdline.o = $(CC_FLAGS_FTRACE)
- endif
- 
- CFLAGS_cmdline.o := -fno-stack-protector -fno-jump-tables
-diff --git a/arch/x86/mm/Makefile b/arch/x86/mm/Makefile
-index 5864219221ca..91883d5a0293 100644
---- a/arch/x86/mm/Makefile
-+++ b/arch/x86/mm/Makefile
-@@ -12,8 +12,8 @@ KASAN_SANITIZE_mem_encrypt_identity.o	:= n
- KCSAN_SANITIZE := n
- 
- ifdef CONFIG_FUNCTION_TRACER
--CFLAGS_REMOVE_mem_encrypt.o		= -pg
--CFLAGS_REMOVE_mem_encrypt_identity.o	= -pg
-+CFLAGS_REMOVE_mem_encrypt.o		= $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_mem_encrypt_identity.o	= $(CC_FLAGS_FTRACE)
- endif
- 
- obj-y				:=  init.o init_$(BITS).o fault.o ioremap.o extable.o mmap.o \
-diff --git a/arch/x86/um/vdso/Makefile b/arch/x86/um/vdso/Makefile
-index 5943387e3f35..f4ddec8aa1ca 100644
---- a/arch/x86/um/vdso/Makefile
-+++ b/arch/x86/um/vdso/Makefile
-@@ -50,8 +50,8 @@ $(vobjs): KBUILD_CFLAGS += $(CFL)
- #
- # vDSO code runs in userspace and -pg doesn't help with profiling anyway.
- #
--CFLAGS_REMOVE_vdso-note.o = -pg -fprofile-arcs -ftest-coverage
--CFLAGS_REMOVE_um_vdso.o = -pg -fprofile-arcs -ftest-coverage
-+CFLAGS_REMOVE_vdso-note.o = $(CC_FLAGS_FTRACE) -fprofile-arcs -ftest-coverage
-+CFLAGS_REMOVE_um_vdso.o = $(CC_FLAGS_FTRACE)  -fprofile-arcs -ftest-coverage
- 
- #
- # The DSO images are built using a special linker script.
-diff --git a/arch/x86/xen/Makefile b/arch/x86/xen/Makefile
-index 40b5779fce21..179dfc124c94 100644
---- a/arch/x86/xen/Makefile
-+++ b/arch/x86/xen/Makefile
-@@ -2,9 +2,9 @@
- 
- ifdef CONFIG_FUNCTION_TRACER
- # Do not profile debug and lowlevel utilities
--CFLAGS_REMOVE_spinlock.o = -pg
--CFLAGS_REMOVE_time.o = -pg
--CFLAGS_REMOVE_irq.o = -pg
-+CFLAGS_REMOVE_spinlock.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_time.o = $(CC_FLAGS_FTRACE)
-+CFLAGS_REMOVE_irq.o = $(CC_FLAGS_FTRACE)
- endif
- 
- # Make sure early boot has no stackprotector
--- 
-2.20.1
+If you have any patches for these, I will be happy to test them on
+POWER10. Though, on POWER10, there will be an additional sd between
+the LLC and the DIE domain. 
 
 
 
+
+> 
+> > Last I tried thinking about that, I stopped at having a core-to-core
+> > latency matrix, building domains off of that, and having some knob
+> > specifying the highest distance value below which we'd set
+> > SD_SHARE_PKG_RESOURCES. There's a few things I 'hate' about that; for one
+> > it makes cpus_share_cache() somewhat questionable.
+> > 
+> 
+> And I thought about something like this too but worried it might get
+> complex, particularly on chiplets where we do not necessarily have
+> hardware info on latency depending on how it's wired up. It also might
+> lead to excessive cpumask manipulation in a fast path if we have to
+> traverse multiple distances with search cost exceeding gains from latency
+> reduction. Hence -- keeping it simple with two level only, LLC then node
+> within the allowed search depth and see what that gets us. It might be
+> "good enough" in most cases and would be a basis for comparison against
+> complex approaches.
+
+
+> 
+> At minimum, I expect IBM can evaluate the POWER10 aspect and I can run
+> an evaluation on Zen generations.
+
+
+> 
+> -- 
+> Mel Gorman
+> SUSE Labs
