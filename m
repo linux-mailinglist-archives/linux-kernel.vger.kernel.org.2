@@ -2,81 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 070B43648AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 18:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 629D83648B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 18:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239507AbhDSQ7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 12:59:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbhDSQ7G (ORCPT
+        id S239551AbhDSQ7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 12:59:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43373 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232528AbhDSQ7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 12:59:06 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B73C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 09:58:36 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id v6so8290119oiv.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 09:58:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FgaZOWwxCgbBr8FV3M4A5B8r9XqZOZTqmUgzyfoA1fs=;
-        b=JKYpV6aVoUfBcP0DtNgR2LMxzzmo7snB0v00NENmC1ubAJ+5bcPkWEIehJUCf3V/Uu
-         qmdzhEgWKcBPFn61R6fuUhEWeBC43sIqXzKK6RBgggcwxu6T6os8V3Gk7PUVItEU0phj
-         7xu0K43EEohZ93TnJy7pDldmj/xRvjEJHiJWMCxaXnbNPwJ0hllbnsRBbxN0NSGR/yDv
-         s42MdZiel7TJm2BTepOkWKOJavnMQaS7q9/+oTbO5vq9b408zHcCAyZJs0un1sCXQAZs
-         NqgcIMprf2fj3sdtyAZ7bIKX68KA9QvWJoHaPfcb8KGBkfVeU0rsL6GmMPIZWcULrv4E
-         l3PA==
+        Mon, 19 Apr 2021 12:59:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618851558;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p2yCOAsF2W6pdJQCZiN/BRe+VSsYLOg75hHhxWgADKE=;
+        b=ePjpX/PSMNeP6PGla92WIXacnpI4A26dnhB5Mbu/sx42ftNQWHxCqHDvPmueoPq1Ubn+NN
+        zSkf2gGc4j/UPH5z8RHl7mGvIs0fAfeWCb6VWDID+sHTdImOTwBLbvDOTWLfwdWTuJoxSH
+        Zi7n2VGu2HHHMNdVNDRkRG8TfSdilvM=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-465-ucPL4DFtPyGqS_oSu1bGFw-1; Mon, 19 Apr 2021 12:59:16 -0400
+X-MC-Unique: ucPL4DFtPyGqS_oSu1bGFw-1
+Received: by mail-ed1-f70.google.com with SMTP id h13-20020a05640250cdb02903790a9c55acso11513878edb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 09:59:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FgaZOWwxCgbBr8FV3M4A5B8r9XqZOZTqmUgzyfoA1fs=;
-        b=NodSygeiQ93O5sx3RiaPsq6pZYqsH3TNLLz0Mhe3r+0I5WuRaMO4tPyx3y3kOCh/Qn
-         IxUbvWnZNLbXuqQ8x3lg8RVXkRp+2uGKPNZKmb20CdQIPLwAzmyHttlJssaaMy/eUdHP
-         l4ZeLDPtXXFYXmXtcUWPTXlie0P8FofJ75PIEKDRsPXnHNtcXbEmQLGuT9oqeuN0Znjr
-         OAvPW3qDIe4O9cUiETe+ZF0CIEKaHaQyQ0aIC/oU+0fNncklQD0Q0PdvfjSLx6uo5UXi
-         YZ+8xVtXfOnvms7qXVaOxTv88aTfQAjg9G9v0mjkd4Oen4tML/wm9suqqwhwQc1dYczQ
-         Z6Mg==
-X-Gm-Message-State: AOAM533hAjZVfNHL8IRyjTj+uamU5hQy1NGyeZQ6vJM+IdxiOsWS+3U/
-        7OZTreulrrgX0pqVfQDRu/C1HM4sWvoJ0l+QPKuaHA==
-X-Google-Smtp-Source: ABdhPJwbP4UlnjeTZRe1BOf4jiW5ncoxnVFIFgqdWoXRNBXNPgn0G6P55obzgyUNPOR2YRre1j0cEFH1dJPxoNEH/og=
-X-Received: by 2002:a54:4482:: with SMTP id v2mr13818oiv.75.1618851516169;
- Mon, 19 Apr 2021 09:58:36 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=p2yCOAsF2W6pdJQCZiN/BRe+VSsYLOg75hHhxWgADKE=;
+        b=CY5GihruIQuNQxq8WWbwdieOpQ6Sr65oGOutv6NpKgtM35YffnEvZ2ZuzEBKMGpY2A
+         UREWlsgLJ6SyeHp2On3zgydFM5jcgmAFR65T37kmV+1nTQLharzlX36fn2Q9uJrLj6LX
+         sLzxvPaO0YT/73/0O5t3KUjNWiQ7oWAm/+oJavs0xMEOo8PcnfIZpRnDxtEyPtzj8s20
+         hifgW/wOLmRddAEB/NC9MKmOpelgNXc9MVGjTEg6cQE/Pb53FnMl9j2xclhLr5GfjNbW
+         MzB+GMwxumpPDXwZogAf/bJFhb4pHcrSGa42hR/ckhxwup34i+wHHSfEl3I8dpT/wi13
+         8FcQ==
+X-Gm-Message-State: AOAM530ks2WYMd68T6SpXA3cTs67H7bPuRDEmvgyG8Cd4tOjBCCjg9VV
+        /6NO+ZN8QsXmnRWOKmkcEnoZjn/Tmeg6U5uPjUtI8gUfByA+p7JJQq3x8weEzl8qMKMwLfX/khp
+        C5Ea2k2szI//zxQuBm0Qs+5r2
+X-Received: by 2002:aa7:d284:: with SMTP id w4mr19343356edq.40.1618851555826;
+        Mon, 19 Apr 2021 09:59:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzyFchJESgw+7UFFi7gMjT2GXURWU1V3gPdrMAkm5hmsQSjuAtxEZt7cFqUHIrt8QbpCDwW0g==
+X-Received: by 2002:aa7:d284:: with SMTP id w4mr19343332edq.40.1618851555663;
+        Mon, 19 Apr 2021 09:59:15 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id n15sm4006185eje.118.2021.04.19.09.59.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Apr 2021 09:59:15 -0700 (PDT)
+Subject: Re: [PATCH] KVM: Boost vCPU candidiate in user mode which is
+ delivering interrupt
+To:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <kernellwp@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <1618542490-14756-1-git-send-email-wanpengli@tencent.com>
+ <9c49c6ff-d896-e6a5-c051-b6707f6ec58a@redhat.com>
+ <CANRm+Cy-xmDRQoUfOYm+GGvWiS+qC_sBjyZmcLykbKqTF2YDxQ@mail.gmail.com>
+ <YH2wnl05UBqVhcHr@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c1909fa3-61f3-de6b-1aa1-8bc36285e1e4@redhat.com>
+Date:   Mon, 19 Apr 2021 18:59:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210415130356.15885-1-andriy.shevchenko@linux.intel.com> <CAHp75VcVBELiTk3C79jHUtxG5xBDoa-wpFYPPXiTUfV-J0PqRQ@mail.gmail.com>
-In-Reply-To: <CAHp75VcVBELiTk3C79jHUtxG5xBDoa-wpFYPPXiTUfV-J0PqRQ@mail.gmail.com>
-From:   Drew Fustini <drew@beagleboard.org>
-Date:   Mon, 19 Apr 2021 09:58:25 -0700
-Message-ID: <CAPgEAj5yc_RKt5t=Wt5nBzXFSN0ztPbC=6HXXivmxcH1QMi66w@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] pinctrl: core: Show pin numbers for the
- controllers with base = 0
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YH2wnl05UBqVhcHr@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 3:04 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Thu, Apr 15, 2021 at 4:07 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > The commit f1b206cf7c57 ("pinctrl: core: print gpio in pins debugfs file")
-> > enabled GPIO pin number and label in debugfs for pin controller. However,
-> > it limited that feature to the chips where the base is a positive number. This,
-> > in particular, excluded chips where base is 0 for the historical or backward
-> > compatibility reasons. Refactor the code to include the latter as well.
->
-> Linus, since we got one more week, can you consider applying this one
-> and the other one against kernel doc for the final release?
+On 19/04/21 18:32, Sean Christopherson wrote:
+> If false positives are a big concern, what about adding another pass to the loop
+> and only yielding to usermode vCPUs with interrupts in the second full pass?
+> I.e. give vCPUs that are already in kernel mode priority, and only yield to
+> handle an interrupt if there are no vCPUs in kernel mode.
+> 
+> kvm_arch_dy_runnable() pulls in pv_unhalted, which seems like a good thing.
 
-Thank you for the reminder.  I will test today.
+pv_unhalted won't help if you're waiting for a kernel spinlock though, 
+would it?  Doing two passes (or looking for a "best" candidate that 
+prefers kernel mode vCPUs to user mode vCPUs waiting for an interrupt) 
+seems like the best choice overall.
 
--Drew
+Paolo
+
