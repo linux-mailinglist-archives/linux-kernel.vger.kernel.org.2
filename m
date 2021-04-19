@@ -2,170 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C26436397F
+	by mail.lfdr.de (Postfix) with ESMTP id 88234363980
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 04:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237299AbhDSCt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S237317AbhDSCt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 22:49:28 -0400
+Received: from mga01.intel.com ([192.55.52.88]:3579 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233117AbhDSCt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 18 Apr 2021 22:49:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232775AbhDSCtY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 22:49:24 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F65C061760
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 19:48:55 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id y12so25114673qtx.11
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 19:48:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1+InEJa8trFjlh0fgWtqwArdK90oYVaffuyevhKeECE=;
-        b=fWQlWCrm2bA74uGpCK5bxlz0zGKImRXjZefHJGzxYfm6iA1SJzU1peK8vEaiaIUwlB
-         qBwVKhCV+lMR4orioOEpcNAkzTajN6UVHySohvgahA54gzhLN8UPvZh69rnckoXSZ3cu
-         c6qdoDGSmbvA6dJtfILS2PMvlB8mP+AIbR5JjsG0zemSkt+ynOaPeYykGVQ8MU+VYpw+
-         Jy7twsozJBUFvxNc6H1uJ9EsJoStoYabocjrq90Mxb9YCgWql9bRPPmQ11CSLFJavNLJ
-         H6XaUqJsvU5ze1nTPQLCrxmqO9+XgnWuVId9KjYL5uBbUDmHeGr2QCQTbybesqZwhpoJ
-         jsjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1+InEJa8trFjlh0fgWtqwArdK90oYVaffuyevhKeECE=;
-        b=VNdcO3Z7wpPocan/aoHYvlZxydMpREGo8qdCEzGppbvpdEJPm+3yyWhxkuMM1vwHx9
-         mGxuCevQZF+6ulVsgE3fVSZi3SutoIiQba3bhRakXJrT+B/IH5aj9JmJbPMfnsMyu28S
-         Pc9/SSNIamHMSwAFCvXpWGXjsSDLFlKyTjjB91VXCJioHzUtipNlwppPBzy2mpSVITzZ
-         S/CZb06tNpsMB99RC+2BnExnHd6lJf7kQcEBmoE5oZOyDM5xt75hHWdbZnSQZcw9WCeh
-         I/KvYqQ8CADIZcjQdm+5smSrlKLa+Q3rg0cEnpnlx9h2w0lU7JvhOUEMusgTeTVtLvMi
-         +okg==
-X-Gm-Message-State: AOAM532ry1DoKqKZpbjF7LdLTAV8QIYKkMpw7/xp2W7Yi62y9pxSFPNw
-        irOH0cXlVpYoMzZgyT10yZpA+A/40nQLsdfTecj83g==
-X-Google-Smtp-Source: ABdhPJzGEibilDMHxGsNSHnrJv/U9tmYHNcWLOOGaqjAruZQp45J4ZXBCcB5S9cpxTanedNJgBmA6wy87f9KIAK0kJI=
-X-Received: by 2002:a05:622a:14c:: with SMTP id v12mr9670014qtw.46.1618800534655;
- Sun, 18 Apr 2021 19:48:54 -0700 (PDT)
+IronPort-SDR: WaeUFKsaVvB/ZlJFr466mLQJuCdvGEotdSJtFvVDLua4T1ApJ+h6KpCB+MfsAmTl8VDXP6T6Bd
+ p3BuZbvyY1nw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9958"; a="215835621"
+X-IronPort-AV: E=Sophos;i="5.82,233,1613462400"; 
+   d="scan'208";a="215835621"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2021 19:48:57 -0700
+IronPort-SDR: W2sWlM4mursE27JiUnPo31H7itctvqNXGGJpYdix2nRklfigoroApjFupaCIo/qYpqTnIGDZih
+ lkr49vI1XinA==
+X-IronPort-AV: E=Sophos;i="5.82,232,1613462400"; 
+   d="scan'208";a="419830628"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2021 19:48:53 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     <akpm@linux-foundation.org>, <dennis@kernel.org>,
+        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
+        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
+        <alexs@kernel.org>, <david@redhat.com>, <minchan@kernel.org>,
+        <richard.weiyang@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>
+Subject: Re: [PATCH v2 1/5] mm/swapfile: add percpu_ref support for swap
+References: <20210417094039.51711-1-linmiaohe@huawei.com>
+        <20210417094039.51711-2-linmiaohe@huawei.com>
+Date:   Mon, 19 Apr 2021 10:48:51 +0800
+In-Reply-To: <20210417094039.51711-2-linmiaohe@huawei.com> (Miaohe Lin's
+        message of "Sat, 17 Apr 2021 05:40:35 -0400")
+Message-ID: <87eef7kmzw.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-References: <17994571deaf703e65ece7e44c742f82c988cf39.1615954046.git.greentime.hu@sifive.com>
- <mhng-30f397a9-b7af-4247-baa0-d8e1d30c6b97@palmerdabbelt-glaptop> <CAHCEehL+3ZxKv_nxSR6s0vWEFtNHSYOX_dHrpfGq1hM8xwhHRQ@mail.gmail.com>
-In-Reply-To: <CAHCEehL+3ZxKv_nxSR6s0vWEFtNHSYOX_dHrpfGq1hM8xwhHRQ@mail.gmail.com>
-From:   Greentime Hu <greentime.hu@sifive.com>
-Date:   Mon, 19 Apr 2021 10:48:46 +0800
-Message-ID: <CAHCEehLG-FmQiBJpNExO8wa_8LYWmw-1R7KfyEEMyz=Y3srcUw@mail.gmail.com>
-Subject: Re: [PATCH v2 6/6] riscv: dts: Add PCIe support for the SiFive
- FU740-C000 SoC
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>, hes@sifive.com,
-        Erik Danie <erik.danie@sifive.com>,
-        Zong Li <zong.li@sifive.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, robh+dt@kernel.org,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>, alex.dewar90@gmail.com,
-        khilman@baylibre.com, hayashi.kunihiko@socionext.com,
-        vidyas@nvidia.com, jh80.chung@samsung.com,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greentime Hu <greentime.hu@sifive.com> =E6=96=BC 2021=E5=B9=B44=E6=9C=8819=
-=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8A=E5=8D=8810:43=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> Palmer Dabbelt <palmer@dabbelt.com> =E6=96=BC 2021=E5=B9=B43=E6=9C=8831=
-=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=888:24=E5=AF=AB=E9=81=93=EF=BC=
-=9A
-> >
-> > On Wed, 17 Mar 2021 23:08:13 PDT (-0700), greentime.hu@sifive.com wrote=
-:
-> > > Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-> > > ---
-> > >  arch/riscv/boot/dts/sifive/fu740-c000.dtsi | 34 ++++++++++++++++++++=
-++
-> > >  1 file changed, 34 insertions(+)
-> > >
-> > > diff --git a/arch/riscv/boot/dts/sifive/fu740-c000.dtsi b/arch/riscv/=
-boot/dts/sifive/fu740-c000.dtsi
-> > > index d1bb22b11920..d0839739b425 100644
-> > > --- a/arch/riscv/boot/dts/sifive/fu740-c000.dtsi
-> > > +++ b/arch/riscv/boot/dts/sifive/fu740-c000.dtsi
-> > > @@ -158,6 +158,7 @@ prci: clock-controller@10000000 {
-> > >                       reg =3D <0x0 0x10000000 0x0 0x1000>;
-> > >                       clocks =3D <&hfclk>, <&rtcclk>;
-> > >                       #clock-cells =3D <1>;
-> > > +                     #reset-cells =3D <1>;
-> > >               };
-> > >               uart0: serial@10010000 {
-> > >                       compatible =3D "sifive,fu740-c000-uart", "sifiv=
-e,uart0";
-> > > @@ -288,5 +289,38 @@ gpio: gpio@10060000 {
-> > >                       clocks =3D <&prci PRCI_CLK_PCLK>;
-> > >                       status =3D "disabled";
-> > >               };
-> > > +             pcie@e00000000 {
-> > > +                     #address-cells =3D <3>;
-> > > +                     #interrupt-cells =3D <1>;
-> > > +                     #num-lanes =3D <8>;
-> > > +                     #size-cells =3D <2>;
-> > > +                     compatible =3D "sifive,fu740-pcie";
-> > > +                     reg =3D <0xe 0x00000000 0x1 0x0
-> > > +                            0xd 0xf0000000 0x0 0x10000000
-> > > +                            0x0 0x100d0000 0x0 0x1000>;
-> > > +                     reg-names =3D "dbi", "config", "mgmt";
-> > > +                     device_type =3D "pci";
-> > > +                     dma-coherent;
-> > > +                     bus-range =3D <0x0 0xff>;
-> > > +                     ranges =3D <0x81000000  0x0 0x60080000  0x0 0x6=
-0080000 0x0 0x10000        /* I/O */
-> > > +                               0x82000000  0x0 0x60090000  0x0 0x600=
-90000 0x0 0xff70000      /* mem */
-> > > +                               0x82000000  0x0 0x70000000  0x0 0x700=
-00000 0x0 0x1000000      /* mem */
-> > > +                               0xc3000000 0x20 0x00000000 0x20 0x000=
-00000 0x20 0x00000000>;  /* mem prefetchable */
-> > > +                     num-lanes =3D <0x8>;
-> > > +                     interrupts =3D <56 57 58 59 60 61 62 63 64>;
-> > > +                     interrupt-names =3D "msi", "inta", "intb", "int=
-c", "intd";
-> > > +                     interrupt-parent =3D <&plic0>;
-> > > +                     interrupt-map-mask =3D <0x0 0x0 0x0 0x7>;
-> > > +                     interrupt-map =3D <0x0 0x0 0x0 0x1 &plic0 57>,
-> > > +                                     <0x0 0x0 0x0 0x2 &plic0 58>,
-> > > +                                     <0x0 0x0 0x0 0x3 &plic0 59>,
-> > > +                                     <0x0 0x0 0x0 0x4 &plic0 60>;
-> > > +                     clock-names =3D "pcie_aux";
-> > > +                     clocks =3D <&prci PRCI_CLK_PCIE_AUX>;
-> > > +                     pwren-gpios =3D <&gpio 5 0>;
-> > > +                     perstn-gpios =3D <&gpio 8 0>;
-> > > +                     resets =3D <&prci 4>;
-> > > +                     status =3D "okay";
-> > > +             };
-> > >       };
-> > >  };
-> >
-> > Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> >
-> > I'm happy to take these all through the RISC-V tree if that helps, but
-> > as usual I'd like reviews or acks from the subsystem maintainers.  It
-> > looks like there are some issues so I'm going to drop this from my
-> > inbox.
->
-> Hi Palmer,
->
-> Since the subsystem maintainer has pick the first 5 patches to his
-> branch, would you please help to pick the 6th patch of version 6?
+Miaohe Lin <linmiaohe@huawei.com> writes:
 
-Sorry there is no version 6, I mean version 5. :p
-
-> Thank you. :)
+> We will use percpu-refcount to serialize against concurrent swapoff. This
+> patch adds the percpu_ref support for swap.
 >
-> https://www.spinics.net/lists/linux-clk/msg57213.html
-> https://patchwork.kernel.org/project/linux-riscv/patch/20210406092634.504=
-65-7-greentime.hu@sifive.com/
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>  include/linux/swap.h |  3 +++
+>  mm/swapfile.c        | 33 +++++++++++++++++++++++++++++----
+>  2 files changed, 32 insertions(+), 4 deletions(-)
+>
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index 144727041e78..8be36eb58b7a 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -240,6 +240,7 @@ struct swap_cluster_list {
+>   * The in-memory structure used to track swap areas.
+>   */
+>  struct swap_info_struct {
+> +	struct percpu_ref users;	/* serialization against concurrent swapoff */
+
+The comments aren't general enough.  We use this to check whether the
+swap device has been fully initialized, etc. May be something as below?
+
+/* indicate and keep swap device valid */
+
+>  	unsigned long	flags;		/* SWP_USED etc: see above */
+>  	signed short	prio;		/* swap priority of this type */
+>  	struct plist_node list;		/* entry in swap_active_head */
+> @@ -260,6 +261,8 @@ struct swap_info_struct {
+>  	struct block_device *bdev;	/* swap device or bdev of swap file */
+>  	struct file *swap_file;		/* seldom referenced */
+>  	unsigned int old_block_size;	/* seldom referenced */
+> +	bool ref_initialized;		/* seldom referenced */
+> +	struct completion comp;		/* seldom referenced */
+>  #ifdef CONFIG_FRONTSWAP
+>  	unsigned long *frontswap_map;	/* frontswap in-use, one bit per page */
+>  	atomic_t frontswap_pages;	/* frontswap pages in-use counter */
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 149e77454e3c..66515a3a2824 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -39,6 +39,7 @@
+>  #include <linux/export.h>
+>  #include <linux/swap_slots.h>
+>  #include <linux/sort.h>
+> +#include <linux/completion.h>
+>  
+>  #include <asm/tlbflush.h>
+>  #include <linux/swapops.h>
+> @@ -511,6 +512,14 @@ static void swap_discard_work(struct work_struct *work)
+>  	spin_unlock(&si->lock);
+>  }
+>  
+> +static void swap_users_ref_free(struct percpu_ref *ref)
+> +{
+> +	struct swap_info_struct *si;
+> +
+> +	si = container_of(ref, struct swap_info_struct, users);
+> +	complete(&si->comp);
+> +}
+> +
+>  static void alloc_cluster(struct swap_info_struct *si, unsigned long idx)
+>  {
+>  	struct swap_cluster_info *ci = si->cluster_info;
+> @@ -2500,7 +2509,7 @@ static void enable_swap_info(struct swap_info_struct *p, int prio,
+>  	 * Guarantee swap_map, cluster_info, etc. fields are valid
+>  	 * between get/put_swap_device() if SWP_VALID bit is set
+>  	 */
+> -	synchronize_rcu();
+
+You cannot remove this without changing get/put_swap_device().  It's
+better to squash at least PATCH 1-2.
+
+> +	percpu_ref_resurrect(&p->users);
+>  	spin_lock(&swap_lock);
+>  	spin_lock(&p->lock);
+>  	_enable_swap_info(p);
+> @@ -2621,11 +2630,18 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
+>  	p->flags &= ~SWP_VALID;		/* mark swap device as invalid */
+>  	spin_unlock(&p->lock);
+>  	spin_unlock(&swap_lock);
+> +
+> +	percpu_ref_kill(&p->users);
+>  	/*
+> -	 * wait for swap operations protected by get/put_swap_device()
+> -	 * to complete
+> +	 * We need synchronize_rcu() here to protect the accessing
+> +	 * to the swap cache data structure.
+>  	 */
+>  	synchronize_rcu();
+> +	/*
+> +	 * Wait for swap operations protected by get/put_swap_device()
+> +	 * to complete.
+> +	 */
+
+I think the comments (after some revision) can be moved before
+percpu_ref_kill().  The synchronize_rcu() comments can be merged.
+
+> +	wait_for_completion(&p->comp);
+>  
+>  	flush_work(&p->discard_work);
+>  
+> @@ -3132,7 +3148,7 @@ static bool swap_discardable(struct swap_info_struct *si)
+>  SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+>  {
+>  	struct swap_info_struct *p;
+> -	struct filename *name;
+> +	struct filename *name = NULL;
+>  	struct file *swap_file = NULL;
+>  	struct address_space *mapping;
+>  	int prio;
+> @@ -3163,6 +3179,15 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+>  
+>  	INIT_WORK(&p->discard_work, swap_discard_work);
+>  
+> +	if (!p->ref_initialized) {
+
+I don't think it's necessary to add another flag p->ref_initialized.  We
+can distinguish newly allocated and reused swap_info_struct in alloc_swap_info().
+
+Best Regards,
+Huang, Ying
+
+> +		error = percpu_ref_init(&p->users, swap_users_ref_free,
+> +					PERCPU_REF_INIT_DEAD, GFP_KERNEL);
+> +		if (unlikely(error))
+> +			goto bad_swap;
+> +		init_completion(&p->comp);
+> +		p->ref_initialized = true;
+> +	}
+> +
+>  	name = getname(specialfile);
+>  	if (IS_ERR(name)) {
+>  		error = PTR_ERR(name);
