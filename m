@@ -2,129 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075693639CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 05:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3CA23639CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 05:45:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237374AbhDSDop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 23:44:45 -0400
-Received: from mail.kingsoft.com ([114.255.44.146]:1064 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232753AbhDSDoo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 23:44:44 -0400
-X-AuditID: 0a580155-2a3ff70000061b1d-0e-607cfc7ad776
-Received: from mail.kingsoft.com (localhost [10.88.1.79])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id BD.FF.06941.A7CFC706; Mon, 19 Apr 2021 11:43:54 +0800 (HKT)
-Received: from alex-virtual-machine (10.88.1.103) by KSBJMAIL4.kingsoft.cn
- (10.88.1.79) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 19 Apr
- 2021 11:43:54 +0800
-Date:   Mon, 19 Apr 2021 11:43:53 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     Naoya Horiguchi <nao.horiguchi@gmail.com>
-CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Oscar Salvador" <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "HORIGUCHI =?UTF-8?B?TkFPWUE=?=(=?UTF-8?B?5aCA5Y+j44CA55u05Lmf?=)" 
-        <naoya.horiguchi@nec.com>, <yaoaili@kingsoft.com>
-Subject: Re: [PATCH v2 3/3] mm,hwpoison: add kill_accessing_process() to
- find error virtual address
-Message-ID: <20210419114353.3fdeb3ba@alex-virtual-machine>
-In-Reply-To: <20210419023658.GA1962954@u2004>
-References: <20210412224320.1747638-1-nao.horiguchi@gmail.com>
-        <20210417134751.0bee9e73@alex-virtual-machine>
-        <20210419010955.GA17180@hori.linux.bs1.fc.nec.co.jp>
-        <20210419023658.GA1962954@u2004>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S237375AbhDSDqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 23:46:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:34318 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232753AbhDSDp4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 23:45:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 97FD931B;
+        Sun, 18 Apr 2021 20:45:01 -0700 (PDT)
+Received: from [10.163.74.113] (unknown [10.163.74.113])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1C1883F800;
+        Sun, 18 Apr 2021 20:44:57 -0700 (PDT)
+Subject: Re: [PATCH V2] mm/page_alloc: Ensure that HUGETLB_PAGE_ORDER is less
+ than MAX_ORDER
+To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
+        akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        "linuxppc-dev @ lists . ozlabs . org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Christoph Lameter <cl@linux.com>
+References: <1618199302-29335-1-git-send-email-anshuman.khandual@arm.com>
+ <09284b9a-cfe1-fc49-e1f6-3cf0c1b74c76@arm.com>
+ <162877dd-e6ba-d465-d301-2956bb034429@redhat.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <ce4f9838-da4b-1423-4123-23c0941a2198@arm.com>
+Date:   Mon, 19 Apr 2021 09:15:49 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.88.1.103]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL4.kingsoft.cn
- (10.88.1.79)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupgkeLIzCtJLcpLzFFi42LhimD01636U5NgcOuftsWc9WvYLD5v+Mdm
-        8XX9L2aLy7vmsFncW/Of1eL8rrWsFqvm3WG2uNh4gNHizLQiizcX7rE4cHl8b+1j8dg56y67
-        x+I9L5k8Nq3qZPPY9GkSu8eJGb9ZPF5c3cji8X7fVTaPzaerPT5vkgvgiuKySUnNySxLLdK3
-        S+DK2LX9CHPBPoGKg6u3szYw/uTpYuTkkBAwkdjas42li5GLQ0hgOpPEks+H2SCc54wSG67t
-        ZQapYhFQlXh4egcbiM0GZO+6N4sVxBYR0JWYsK2XEaSBWeAks0TTt8dMIAlhgVSJrR8msncx
-        cnDwClhJNE9SAAlzAtVv6/3PDrHgJKPEjg/XwBbwC4hJ9F75zwRSLyFgL/F4vSJImFdAUOLk
-        zCcsIDazgI7EiVXHmCFseYntb+eA2UICihKHl/xih/hGXuLu7+mMEHasRNOBW2wTGIVnIRk1
-        C8moWUhGLWBkXsXIUpybbrSJERJZoTsYZzR91DvEyMTBeIhRgoNZSYT3fm1NghBvSmJlVWpR
-        fnxRaU5q8SFGaQ4WJXHea6ZAKYH0xJLU7NTUgtQimCwTB6dUA1OIySqzd8KpDE/jDNLub2ha
-        v0tpKdfx65YsIusF1Bw7xFpSrv6Py828fLDw5fa+vK7pL4vez9h6uOEW77SpSa6vvq2drLiu
-        xy5y4ndx75azqrsmpRkb1/6wur9w6XcVvQbWA83TPOvmvBK5tne+5JGzeXu1TxfHNMT7JN0+
-        +tjpldYER52qqopT2p9eqtu5/po567R2+rM8xmyl7ZKT2pcsZL65eaLRVcfOlzdO35NYNmlB
-        lPLsVV4cV3nvHJDysEkOSmn6vcV8pf6nxbp8u5O+3J88t3/5lVmy0/YrZ9U9DvsuGPxgY6uC
-        xtwsvZbc4pyLrVa186cs2CrbGicv717MtemVsPPm+dLNRxeaaM1VYinOSDTUYi4qTgQAyV2e
-        LxsDAAA=
+In-Reply-To: <162877dd-e6ba-d465-d301-2956bb034429@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Apr 2021 11:36:58 +0900
-Naoya Horiguchi <nao.horiguchi@gmail.com> wrote:
 
-> > > 2. In the function hwpoison_pte_range():
-> > > if (pfn <= hwp->pfn && hwp->pfn < pfn + PMD_SIZE) this check seem we should use PMD_SIZE/PAGE_SIZE or some macro like this?  
-> > 
-> > Thanks, that's right.  HPAGE_PMD_NR seems to fit here.
-> > We also need "#ifdef CONFIG_TRANSPARENT_HUGEPAGE" to use it.  
+On 4/12/21 2:17 PM, David Hildenbrand wrote:
+> On 12.04.21 10:06, Anshuman Khandual wrote:
+>> + linuxppc-dev@lists.ozlabs.org
+>> + linux-ia64@vger.kernel.org
+>>
+>> On 4/12/21 9:18 AM, Anshuman Khandual wrote:
+>>> pageblock_order must always be less than MAX_ORDER, otherwise it might lead
+>>> to an warning during boot. A similar problem got fixed on arm64 platform
+>>> with the commit 79cc2ed5a716 ("arm64/mm: Drop THP conditionality from
+>>> FORCE_MAX_ZONEORDER"). Assert the above condition before HUGETLB_PAGE_ORDER
+>>> gets assigned as pageblock_order. This will help detect the problem earlier
+>>> on platforms where HUGETLB_PAGE_SIZE_VARIABLE is enabled.
+>>>
+>>> Cc: David Hildenbrand <david@redhat.com>
+>>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>>> Cc: linux-mm@kvack.org
+>>> Cc: linux-kernel@vger.kernel.org
+>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>> ---
+>>> Changes in V2:
+>>>
+>>> - Changed WARN_ON() to BUILD_BUG_ON() per David
+>>>
+>>> Changes in V1:
+>>>
+>>> https://patchwork.kernel.org/project/linux-mm/patch/1617947717-2424-1-git-send-email-anshuman.khandual@arm.com/
+>>>
+>>>   mm/page_alloc.c | 11 +++++++++--
+>>>   1 file changed, 9 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>>> index cfc72873961d..19283bff4bec 100644
+>>> --- a/mm/page_alloc.c
+>>> +++ b/mm/page_alloc.c
+>>> @@ -6875,10 +6875,17 @@ void __init set_pageblock_order(void)
+>>>       if (pageblock_order)
+>>>           return;
+>>>   -    if (HPAGE_SHIFT > PAGE_SHIFT)
+>>> +    if (HPAGE_SHIFT > PAGE_SHIFT) {
+>>> +        /*
+>>> +         * pageblock_order must always be less than
+>>> +         * MAX_ORDER. So does HUGETLB_PAGE_ORDER if
+>>> +         * that is being assigned here.
+>>> +         */
+>>> +        BUILD_BUG_ON(HUGETLB_PAGE_ORDER >= MAX_ORDER);
+>>
+>> Unfortunately the build test fails on both the platforms (powerpc and ia64)
+>> which subscribe HUGETLB_PAGE_SIZE_VARIABLE and where this check would make
+>> sense. I some how overlooked the cross compile build failure that actually
+>> detected this problem.
+>>
+>> But wondering why this assert is not holding true ? and how these platforms
+>> do not see the warning during boot (or do they ?) at mm/vmscan.c:1092 like
+>> arm64 did.
+>>
+>> static int __fragmentation_index(unsigned int order, struct contig_page_info *info)
+>> {
+>>          unsigned long requested = 1UL << order;
+>>
+>>          if (WARN_ON_ONCE(order >= MAX_ORDER))
+>>                  return 0;
+>> ....
+>>
+>> Can pageblock_order really exceed MAX_ORDER - 1 ?
 > 
-> I found that the #ifdef is not necessary because the whole
-> "if (ptl)" is compiled out.  So I don't add #ifdef.
+> Ehm, for now I was under the impression that such configurations wouldn't exist.
 > 
-> Here's the v2 of 3/3.
-> 
-> Aili, could you test with it?
-> 
-> Thanks,
-> Naoya Horiguchi
-> 
+> And originally, HUGETLB_PAGE_SIZE_VARIABLE was introduced to handle hugepage sizes that all *smaller* than MAX_ORDER - 1: See d9c234005227 ("Do not depend on MAX_ORDER when grouping pages by mobility")
 
-I tested this v2 version, In my test, this patches worked as expected and the previous
-issues didn't happen again.
+Right.
 
-Test-by: Aili Yao <yaoaili@kingsoft.com>
-
-Thanks,
-Aili Yao
-
-> -----
-> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> Date: Tue, 13 Apr 2021 07:26:25 +0900
-> Subject: [PATCH v2 3/3] mm,hwpoison: add kill_accessing_process() to find error
->  virtual address
 > 
-> The previous patch solves the infinite MCE loop issue when multiple
-> MCE events races.  The remaining issue is to make sure that all threads
-> processing Action Required MCEs send to the current processes the
-> SIGBUS with the proper virtual address and the error size.
 > 
-> This patch suggests to do page table walk to find the error virtual
-> address.  If we find multiple virtual addresses in walking, we now can't
-> determine which one is correct, so we fall back to sending SIGBUS in
-> kill_me_maybe() without error info as we do now.  This corner case needs
-> to be solved in the future.
+> However, looking into init_cma_reserved_pageblock():
 > 
-> Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> ---
-> change log v1 -> v2:
-> - initialize local variables in check_hwpoisoned_entry() and
->   hwpoison_pte_range()
-> - fix and improve logic to calculate error address offset.
-> ---
->  arch/x86/kernel/cpu/mce/core.c |  13 ++-
->  include/linux/swapops.h        |   5 ++
->  mm/memory-failure.c            | 147 ++++++++++++++++++++++++++++++++-
->  3 files changed, 161 insertions(+), 4 deletions(-)
+>     if (pageblock_order >= MAX_ORDER) {
+>         i = pageblock_nr_pages;
+>         ...
+>     }
 > 
+> 
+> But it's kind of weird, isn't it? Let's assume we have MAX_ORDER - 1 correspond to 4 MiB and pageblock_order correspond to 8 MiB.
+> 
+> Sure, we'd be grouping pages in 8 MiB chunks, however, we cannot even allocate 8 MiB chunks via the buddy. So only alloc_contig_range() could really grab them (IOW: gigantic pages).
 
+Right.
 
+> 
+> Further, we have code like deferred_free_range(), where we end up calling __free_pages_core()->...->__free_one_page() with pageblock_order. Wouldn't we end up setting the buddy order to something > MAX_ORDER -1 on that path?
+
+Agreed.
+
+> 
+> Having pageblock_order > MAX_ORDER feels wrong and looks shaky.
+> 
+Agreed, definitely does not look right. Lets see what other folks
+might have to say on this.
+
++ Christoph Lameter <cl@linux.com>
