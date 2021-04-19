@@ -2,108 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41B6364228
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B3E364225
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239279AbhDSNAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:00:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233225AbhDSNAx (ORCPT
+        id S239267AbhDSNAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:00:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36703 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233225AbhDSNAh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:00:53 -0400
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB6DFC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 06:00:23 -0700 (PDT)
-Received: by mail-ua1-x935.google.com with SMTP id a12so7117077uak.6
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 06:00:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BNMcn4oglu2NGwzmq9WcTEHn8YHQehABTWuPmJET8B4=;
-        b=yndd6T37Aw2eLhE+JRuDr5ab72qnJVSgo9GhZkoptwXoz9S85Hw7A4Nbjrw+DhvLVa
-         j5v8psvt9yNWE+yWB8I5Icf/q3ezqDfo35XtPYG3EgCaM5HvZF27sRd7qQsI6oXZvXA7
-         dEMwIo84dMSrs8/4UbAQXC/acqXqo/vUvPZQxj3C84OIs2OkP4w/2Nt5kGMN1NY9XI4i
-         aebovg1gxswYtHIRzHbH4cJqex29vham5WVGSNyXQWwBsfKuDmmM397vGhOGoWuIh7hW
-         vBz+vgWlUEfaUfVB9Q1CF8snTafMMppiRNwpSSyeypv+IzH8r0cufTqSltFeVBwiLxJr
-         wAjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BNMcn4oglu2NGwzmq9WcTEHn8YHQehABTWuPmJET8B4=;
-        b=DIefCs8hgQPmZVVhKWcrflybeLVgO9QCTW2fIuswK8tIvQLFeDo1cmC22j5ya43R3d
-         C7uolrWZmBpliGv41EzsEhZE1hGJH9reGOXjQSs5waR6SpiqF42nFHEpVEP2FnjiNSxl
-         ocpYQnoke8RFP2P7Si6yD+lyKr2Zmfkp+FjJ1/hfz19XSDfJX7uuoruDIdi4qohCx5Xz
-         nXpb7+To8KTslEDKWLkQPNFMw20ZFxRU6MduS8Ebpnf4uT6GFVR04+WyiQLG2ipFWILj
-         NAvvMdf9dNy7kchhYWIhm36civ2Vz4QbsELWl0U8eRAsfXlTg+5dJxIkO4xZOVdAtG8m
-         8d3A==
-X-Gm-Message-State: AOAM532LPvLyv9eTKV8fSl0wKdrewAp6aXaWVlPo2ScDBrdiqbT0CTUx
-        k7pUluwYNO38kAb84VfBott/IazYM7c/+1oNve+3FQ==
-X-Google-Smtp-Source: ABdhPJwJvm4R5NxbjLn2MQj05V10FldWtWWpurPZb2rGihrkJUsFuWlmgNAc1rZuP45HV0CTYbYQXmAENNYFQN7x70I=
-X-Received: by 2002:ab0:12a:: with SMTP id 39mr6601930uak.19.1618837222948;
- Mon, 19 Apr 2021 06:00:22 -0700 (PDT)
+        Mon, 19 Apr 2021 09:00:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618837207;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=95Hzbf8uMd7pYDHNFE/rwOVcsd+fNEKytR41sNl7E+w=;
+        b=ZYasIruZxbLdJMzVKZwcceeov7mFds5012EMr7OvFMZhXMlvQdUUe87YJ5maCV8OgrQveQ
+        UZDS3opcEIHSZpLdm+gouVjZp3139HCLJJRWODO1L3cHSGLpzcCegKvNsgb9yp+zweksz0
+        +nIRo+Wl6C83MaD04jOnEduoWYdcQII=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-278-Qk-DAkusNIeAtndZWjna1w-1; Mon, 19 Apr 2021 09:00:02 -0400
+X-MC-Unique: Qk-DAkusNIeAtndZWjna1w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E1D798C4580;
+        Mon, 19 Apr 2021 13:00:00 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (unknown [10.22.8.218])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D0A2E10190AA;
+        Mon, 19 Apr 2021 12:59:59 +0000 (UTC)
+Date:   Mon, 19 Apr 2021 08:59:58 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Rik van Riel <riel@surriel.com>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Lingutla Chandrasekhar <clingutla@codeaurora.org>
+Subject: Re: [PATCH 2/2] sched/fair: Relax task_hot() for misfit tasks
+Message-ID: <YH1+zpzUdJeTk0Z3@lorien.usersys.redhat.com>
+References: <20210415175846.494385-1-valentin.schneider@arm.com>
+ <20210415175846.494385-3-valentin.schneider@arm.com>
+ <a5abd06c61e4152b483043f8b180ba041f0464d1.camel@surriel.com>
+ <87tuo6lg39.mognet@arm.com>
 MIME-Version: 1.0
-References: <20210419112459.25241-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210419112459.25241-1-andriy.shevchenko@linux.intel.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 19 Apr 2021 14:59:45 +0200
-Message-ID: <CAPDyKFoizAhKxfzMzTBdQe6J5rYPLTbBTbn5nM4WAB1QGn9VUw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/6] mmc: core: Correct descriptions in mmc_of_parse()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Haibo Chen <haibo.chen@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Yangbo Lu <yangbo.lu@nxp.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-spi@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87tuo6lg39.mognet@arm.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Apr 2021 at 13:24, Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> Since it has been converted to use device property API, the function
-> and field descriptions become outdated. Correct them.
->
-> Fixes: 73a47a9bb3e2 ("mmc: core: Use device_property_read instead of of_property_read")
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Fri, Apr 16, 2021 at 10:43:38AM +0100 Valentin Schneider wrote:
+> On 15/04/21 16:39, Rik van Riel wrote:
+> > On Thu, 2021-04-15 at 18:58 +0100, Valentin Schneider wrote:
+> >> Consider the following topology:
+> >>
+> >> Long story short, preempted misfit tasks are affected by task_hot(),
+> >> while
+> >> currently running misfit tasks are intentionally preempted by the
+> >> stopper
+> >> task to migrate them over to a higher-capacity CPU.
+> >>
+> >> Align detach_tasks() with the active-balance logic and let it pick a
+> >> cache-hot misfit task when the destination CPU can provide a capacity
+> >> uplift.
+> >>
+> >> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+> >
+> > Reviewed-by: Rik van Riel <riel@surriel.com>
+> >
+> 
+> Thanks!
+> 
+> >
+> > This patch looks good, but...
+> >
+> >> @@ -7672,6 +7698,15 @@ int can_migrate_task(struct task_struct *p,
+> >> struct lb_env *env)
+> >>      if (tsk_cache_hot == -1)
+> >>              tsk_cache_hot = task_hot(p, env);
+> >>
+> >> +	/*
+> >> +	 * On a (sane) asymmetric CPU capacity system, the increase in
+> >> compute
+> >> +	 * capacity should offset any potential performance hit caused
+> >> by a
+> >> +	 * migration.
+> >> +	 */
+> >> +	if ((env->dst_grp_type == group_has_spare) &&
+> >> +	    !migrate_degrades_capacity(p, env))
+> >> +		tsk_cache_hot = 0;
+> >
+> > ... I'm starting to wonder if we should not rename the
+> > tsk_cache_hot variable to something else to make this
+> > code more readable. Probably in another patch :)
+> >
+> 
+> I'd tend to agree, but naming is hard. "migration_harmful" ?
 
-Series applied for next, thanks!
+I thought Rik meant tsk_cache_hot, for which I'd suggest at least
+buying a vowel and putting an 'a' in there :) 
 
-Kind regards
-Uffe
 
-> ---
->  drivers/mmc/core/host.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
-> index 9b89a91b6b47..ce030c5aa53c 100644
-> --- a/drivers/mmc/core/host.c
-> +++ b/drivers/mmc/core/host.c
-> @@ -209,8 +209,8 @@ mmc_of_parse_clk_phase(struct mmc_host *host, struct mmc_clk_phase_map *map)
->  EXPORT_SYMBOL(mmc_of_parse_clk_phase);
->
->  /**
-> - *     mmc_of_parse() - parse host's device-tree node
-> - *     @host: host whose node should be parsed.
-> + * mmc_of_parse() - parse host's device properties
-> + * @host: host whose properties should be parsed.
->   *
->   * To keep the rest of the MMC subsystem unaware of whether DT has been
->   * used to to instantiate and configure this host instance or not, we
-> --
-> 2.30.2
->
+Cheers,
+Phil
+
+> 
+> > --
+> > All Rights Reversed.
+> 
+
+-- 
+
