@@ -2,82 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A064E36414E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 14:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14657364158
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 14:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239027AbhDSMQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 08:16:07 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:58198 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233668AbhDSMQE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 08:16:04 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lYSo4-00HWif-T8; Mon, 19 Apr 2021 14:15:12 +0200
-Date:   Mon, 19 Apr 2021 14:15:12 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Felix Fietkau <nbd@nbd.name>,
-        John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        =?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>
-Subject: Re: [PATCH net-next 2/2] net: ethernet: mediatek: support custom
- GMAC label
-Message-ID: <YH10UNuJZ5s7dfLh@lunn.ch>
-References: <20210419040352.2452-1-ilya.lipnitskiy@gmail.com>
- <20210419040352.2452-3-ilya.lipnitskiy@gmail.com>
+        id S233668AbhDSMQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 08:16:39 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:1354 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239028AbhDSMQ3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 08:16:29 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13JCFEHJ009811;
+        Mon, 19 Apr 2021 14:15:43 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=zKHnDC/t1gVZr01XZJKPAzPKhFgNwrDSSFbSp/Msn3c=;
+ b=gODYIx5bRMwti3ZpTHRBbyWwr1OpnzJgr6iCiwwpX+L9r/NPOqOceNA3CObWoZQUiY/e
+ eaz/j6Isvt2xBkwU7ycLBKHde7tK/0XeTuQNwMOsSBT8kMtBnqPU8URwRstpwT6Dec4b
+ /QkUzLK9wPCfgptkQbqpSgD9Kldayba4GMUcJfTezI/5yZh8EMACtcpwGfba4znji707
+ +oUqyZy2+EGur7jcL47p6acbebKSO8Ugcq2H+tjUymW7etrelRyS9BkZi2fmEXiELXXt
+ Urus13k+Klt4DpT7kkblaW77MsnD9IK2yIbRdOuLL84MteBpSul+vdfi2znCqAZZAD3m Rw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 380rdgc933-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Apr 2021 14:15:43 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1900E10002A;
+        Mon, 19 Apr 2021 14:15:43 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 054F82139BC;
+        Mon, 19 Apr 2021 14:15:43 +0200 (CEST)
+Received: from localhost (10.75.127.46) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 19 Apr 2021 14:15:42
+ +0200
+From:   <patrice.chotard@foss.st.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     <linux-spi@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>,
+        <patrice.chotard@foss.st.com>
+Subject: [PATCH 0/3]  spi: stm32-qspi: Fix and update
+Date:   Mon, 19 Apr 2021 14:15:38 +0200
+Message-ID: <20210419121541.11617-1-patrice.chotard@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210419040352.2452-3-ilya.lipnitskiy@gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-19_10:2021-04-16,2021-04-19 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 18, 2021 at 09:03:52PM -0700, Ilya Lipnitskiy wrote:
-> The MAC device name can now be set within DTS file instead of always
-> being "ethX". This is helpful for DSA to clearly label the DSA master
-> device and distinguish it from DSA slave ports.
-> 
-> For example, some devices, such as the Ubiquiti EdgeRouter X, may have
-> ports labeled ethX. Labeling the master GMAC with a different prefix
-> than DSA ports helps with clarity.
-> 
-> Suggested-by: René van Dorst <opensource@vdorst.com>
-> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-> ---
->  drivers/net/ethernet/mediatek/mtk_eth_soc.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-> index 6b00c12c6c43..4c0ce4fb7735 100644
-> --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-> +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-> @@ -2845,6 +2845,7 @@ static const struct net_device_ops mtk_netdev_ops = {
->  
->  static int mtk_add_mac(struct mtk_eth *eth, struct device_node *np)
->  {
-> +	const char *label = of_get_property(np, "label", NULL);
->  	const __be32 *_id = of_get_property(np, "reg", NULL);
->  	phy_interface_t phy_mode;
->  	struct phylink *phylink;
-> @@ -2940,6 +2941,9 @@ static int mtk_add_mac(struct mtk_eth *eth, struct device_node *np)
->  	else
->  		eth->netdev[id]->max_mtu = MTK_MAX_RX_LENGTH_2K - MTK_RX_ETH_HLEN;
->  
-> +	if (label)
-> +		strscpy(eth->netdev[id]->name, label, IFNAMSIZ);
+From: Patrice Chotard <patrice.chotard@foss.st.com>
 
-It is better to use alloc_netdev_mqs() so you get validation the name
-is unique.
+Christophe Kerello (1):
+  spi: stm32-qspi: fix pm_runtime usage_count counter
 
-   Andrew
+Patrice Chotard (2):
+  spi: stm32-qspi: Trigger DMA only if more than 4 bytes to transfer
+  spi: stm32-qspi: Add dirmap support
+
+ drivers/spi/spi-stm32-qspi.c | 106 +++++++++++++++++++++++++++--------
+ 1 file changed, 84 insertions(+), 22 deletions(-)
+
+-- 
+2.17.1
+
