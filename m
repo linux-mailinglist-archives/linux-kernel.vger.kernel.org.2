@@ -2,108 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 185C8363B22
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 07:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A420363B25
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 07:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbhDSFwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 01:52:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbhDSFwU (ORCPT
+        id S231580AbhDSFwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 01:52:38 -0400
+Received: from lucky1.263xmail.com ([211.157.147.134]:39966 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231203AbhDSFwe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 01:52:20 -0400
-Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E3CC06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 22:51:50 -0700 (PDT)
-Received: by mail-oo1-xc30.google.com with SMTP id p12-20020a4a2f0c0000b02901ecdbb16887so581856oop.5
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 22:51:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tyhicks-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iME+CNXDVjC/1XM/JXZLtDKa94anQMGHeai+8ArpCt4=;
-        b=AJTC1g5RND1AsB1iCE8i1cAUBi/A6KUYo/fK9hXq3pAEpiZ2F4OHIZmmtSw0OaWBW+
-         Sq3FutVSYu7kRnE+s9pZ5KLYDFpzHFqEmnr6aU4hY3Kd+LIci+fY9+0VZRcku5xBt3u9
-         ItsVCpzzvLl0TtrsvhXTJ5i3bU46tQmpvHO4Lk5hKwNWczkZGIDwgzJNMG0AaWQk031b
-         qevKi/wGcTIyHOscrCJ6ZnnaqaN+sHXv8oZGTPn6ps9Cdv2mk6+kbM2M9+CrwYqcuBWn
-         7U7PRUNVYFyWsdVnB/kj+VqrQATNppUl5y/8QCu/qQHfdaDRPhLlGhNRk8yut8VGojQb
-         8H0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iME+CNXDVjC/1XM/JXZLtDKa94anQMGHeai+8ArpCt4=;
-        b=QjORGcCd6vyoZYSMqSw5kKoCi7fQG+vb1g/S9vPTBLRwthGoahpujooisiVM6bkDKX
-         PEbjaKkGZwpTE/jCuiPGBY62HgizWP4T4MMhZzT5JI1bHlAlGZPh2NvrusGbmRNEzsXp
-         v/4CbCqtm9QR0TYD6N4MDqTeivysx6dde0ic23xxHzvHlb+jMlakDICqcnq/oHT8IpbS
-         kE/EKg0jvywShq0LJGHNM8bwR/vnHetf/cLi4oDCLTGNAcjrPZ/KSq+AQAReLVoTWTCt
-         02D2daOheiEHYXOwSOM8x2HvJvtYF+Nl+fxxYfN2upa2IQUUol6vrqsbX9+EY44H1JI7
-         6K2w==
-X-Gm-Message-State: AOAM532Gm8r31EldWC1TRFZNPPG1pUT3UWktVVfxBUyQk+YU4KHpXhea
-        e5SDJRnfKRgk+nwlwoJSefOr02b68slrDqAHT4M=
-X-Google-Smtp-Source: ABdhPJy2LN6e5eOSXgUO222TUeEJmlTHt0vN3uiNm6hxT+swuoMA3rzcYkHdBiqsmpTeDdKjD/A8Ew==
-X-Received: by 2002:a4a:e749:: with SMTP id n9mr12305497oov.89.1618811510422;
-        Sun, 18 Apr 2021 22:51:50 -0700 (PDT)
-Received: from elm (162-237-133-238.lightspeed.rcsntx.sbcglobal.net. [162.237.133.238])
-        by smtp.gmail.com with ESMTPSA id 77sm3246764otg.55.2021.04.18.22.51.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Apr 2021 22:51:50 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 00:51:48 -0500
-From:   Tyler Hicks <code@tyhicks.com>
-To:     Jeffrey Mitchell <jeffrey.mitchell@starlab.io>
-Cc:     ecryptfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ecryptfs: fix kernel panic with null dev_name
-Message-ID: <20210419055148.GC405651@elm>
-References: <20210226210023.77597-1-jeffrey.mitchell@starlab.io>
+        Mon, 19 Apr 2021 01:52:34 -0400
+Received: from localhost (unknown [192.168.167.69])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 5D0AEC81A0;
+        Mon, 19 Apr 2021 13:51:59 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED: 0
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [124.126.19.250])
+        by smtp.263.net (postfix) whith ESMTP id P19994T140047279048448S1618811517751852_;
+        Mon, 19 Apr 2021 13:51:59 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <a84b687c562d53533b533d431d57a1fd>
+X-RL-SENDER: zhaoxiao@uniontech.com
+X-SENDER: zhaoxiao@uniontech.com
+X-LOGIN-NAME: zhaoxiao@uniontech.com
+X-FST-TO: tsbogend@alpha.franken.de
+X-RCPT-COUNT: 17
+X-SENDER-IP: 124.126.19.250
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   zhaoxiao <zhaoxiao@uniontech.com>
+To:     tsbogend@alpha.franken.de, jiaxun.yang@flygoat.com,
+        chenhuacai@kernel.org, viro@zeniv.linux.org.uk, morbo@google.com
+Cc:     paul@crapouillou.net, alobakin@pm.me, suxingxing@loongson.cn,
+        tangyouling@loongson.cn, yangtiezhu@loongson.cn,
+        ralf@linux-mips.org, nathan@kernel.org, masahiroy@kernel.org,
+        keescook@chromium.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zhaoxiao <zhaoxiao@uniontech.com>
+Subject: [PATCH v2] MIPS: Makefile: Replace -pg with CC_FLAGS_FTRACE
+Date:   Mon, 19 Apr 2021 13:51:56 +0800
+Message-Id: <20210419055156.22195-1-zhaoxiao@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210226210023.77597-1-jeffrey.mitchell@starlab.io>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-26 15:00:23, Jeffrey Mitchell wrote:
-> When mounting eCryptfs, a null "dev_name" argument to ecryptfs_mount()
-> causes a kernel panic if the parsed options are valid. The easiest way to
-> reproduce this is to call mount() from userspace with an existing
-> eCryptfs mount's options and a "source" argument of 0.
-> 
-> Error out if "dev_name" is null in ecryptfs_mount()
-> 
-> Signed-off-by: Jeffrey Mitchell <jeffrey.mitchell@starlab.io>
+In preparation for mips supporting ftrace built on other compiler
+options, let's have the mips Makefiles remove the $(CC_FLAGS_FTRACE)
+flags, whatever these may be, rather than assuming '-pg'.
 
-Thanks for the fix! I reproduced this on a 4.15 and, while I didn't try
-anything older than that, I think it affects the first kernel release
-with eCryptfs. I've added the following Fixes tag:
+Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+---
+v2:add this same change be appropriate to all of the below Makefile. 
+ arch/mips/boot/compressed/Makefile | 2 +-
+ arch/mips/kernel/Makefile          | 8 ++++----
+ arch/mips/vdso/Makefile            | 4 ++--
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
- Fixes: 237fead61998 ("[PATCH] ecryptfs: fs/Makefile and fs/Kconfig")
+diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
+index f93f72bcba97..e4b7839293e1 100644
+--- a/arch/mips/boot/compressed/Makefile
++++ b/arch/mips/boot/compressed/Makefile
+@@ -18,7 +18,7 @@ include $(srctree)/arch/mips/Kbuild.platforms
+ BOOT_HEAP_SIZE := 0x400000
+ 
+ # Disable Function Tracer
+-KBUILD_CFLAGS := $(filter-out -pg, $(KBUILD_CFLAGS))
++KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_FTRACE), $(KBUILD_CFLAGS))
+ 
+ KBUILD_CFLAGS := $(filter-out -fstack-protector, $(KBUILD_CFLAGS))
+ 
+diff --git a/arch/mips/kernel/Makefile b/arch/mips/kernel/Makefile
+index b4a57f1de772..814b3da30501 100644
+--- a/arch/mips/kernel/Makefile
++++ b/arch/mips/kernel/Makefile
+@@ -17,10 +17,10 @@ obj-y		+= cpu-probe.o
+ endif
+ 
+ ifdef CONFIG_FUNCTION_TRACER
+-CFLAGS_REMOVE_ftrace.o = -pg
+-CFLAGS_REMOVE_early_printk.o = -pg
+-CFLAGS_REMOVE_perf_event.o = -pg
+-CFLAGS_REMOVE_perf_event_mipsxx.o = -pg
++CFLAGS_REMOVE_ftrace.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_early_printk.o =  $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_perf_event.o = $(CC_FLAGS_FTRACE)
++CFLAGS_REMOVE_perf_event_mipsxx.o = $(CC_FLAGS_FTRACE)
+ endif
+ 
+ obj-$(CONFIG_CEVT_BCM1480)	+= cevt-bcm1480.o
+diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
+index 2131d3fd7333..1b2ea34c3d3b 100644
+--- a/arch/mips/vdso/Makefile
++++ b/arch/mips/vdso/Makefile
+@@ -46,7 +46,7 @@ CFLAGS_vgettimeofday-o32.o = -include $(srctree)/$(src)/config-n32-o32-env.c -in
+ CFLAGS_vgettimeofday-n32.o = -include $(srctree)/$(src)/config-n32-o32-env.c -include $(c-gettimeofday-y)
+ endif
+ 
+-CFLAGS_REMOVE_vgettimeofday.o = -pg
++CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE)
+ 
+ ifdef CONFIG_MIPS_DISABLE_VDSO
+   ifndef CONFIG_MIPS_LD_CAN_LINK_VDSO
+@@ -60,7 +60,7 @@ ldflags-y := -Bsymbolic --no-undefined -soname=linux-vdso.so.1 \
+ 	$(filter -E%,$(KBUILD_CFLAGS)) -nostdlib -shared \
+ 	-G 0 --eh-frame-hdr --hash-style=sysv --build-id=sha1 -T
+ 
+-CFLAGS_REMOVE_vdso.o = -pg
++CFLAGS_REMOVE_vdso.o = $(CC_FLAGS_FTRACE)
+ 
+ GCOV_PROFILE := n
+ UBSAN_SANITIZE := n
+-- 
+2.20.1
 
-I've pushed it to the next branch of tyhicks/ecryptfs.git.
 
-Tyler
 
-> ---
->  fs/ecryptfs/main.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/fs/ecryptfs/main.c b/fs/ecryptfs/main.c
-> index e63259fdef28..b2f6a1937d23 100644
-> --- a/fs/ecryptfs/main.c
-> +++ b/fs/ecryptfs/main.c
-> @@ -492,6 +492,12 @@ static struct dentry *ecryptfs_mount(struct file_system_type *fs_type, int flags
->  		goto out;
->  	}
->  
-> +	if (!dev_name) {
-> +		rc = -EINVAL;
-> +		err = "Device name cannot be null";
-> +		goto out;
-> +	}
-> +
->  	rc = ecryptfs_parse_options(sbi, raw_data, &check_ruid);
->  	if (rc) {
->  		err = "Error parsing options";
-> -- 
-> 2.25.1
-> 
