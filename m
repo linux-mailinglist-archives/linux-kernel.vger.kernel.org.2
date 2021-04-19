@@ -2,67 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC853645C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F84D3645CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233486AbhDSOPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 10:15:46 -0400
-Received: from mx.cjr.nz ([51.158.111.142]:17772 "EHLO mx.cjr.nz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233990AbhDSOPo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 10:15:44 -0400
-Received: from authenticated-user (mx.cjr.nz [51.158.111.142])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pc)
-        by mx.cjr.nz (Postfix) with ESMTPSA id 707257FC03;
-        Mon, 19 Apr 2021 14:15:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cjr.nz; s=dkim;
-        t=1618841713;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PHvsKY71Twx7y7UKiMO8xtu/3Zh3WQE49bco6gIlXEw=;
-        b=TpYwamFB2LDHR2sa46jTRPZAYf0xMJB0ujuaSTgKUMrjOT34Sne7uJlpKFaosEahilXyNd
-        PGby9LOqv7u4piN/rOakxIwlLW8AUgUP0nPY/KOvKmMLIpME7K97ZOgMpfQ3kztR/aq0qw
-        RmLGSmzCRRDe76ARUjRv9LqOOPsF4P9Aso39tL82Trp99bEvN9zm6TvnAwh/v3csmGqPiV
-        083Tg2kRkJFr56iiyHScEgA/l7AfqRtxNOzaR+3JhuvkO6dzemE4ajm3N3yfStQAQNSwB7
-        yOOTeWkVG71EJeEtzM3CXyNcyDjWDwP5FlkRNeqyzy+HsDCPaBaioT0SYVrqqQ==
-From:   Paulo Alcantara <pc@cjr.nz>
-To:     Salvatore Bonaccorso <carnil@debian.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Shyam Prasad <Shyam.Prasad@microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Aurelien Aptel <aaptel@suse.com>,
-        Steven French <Steven.French@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [EXTERNAL] Re: [PATCH 4.19 013/247] cifs: Set
- CIFS_MOUNT_USE_PREFIX_PATH flag on setting cifs_sb->prepath.
-In-Reply-To: <YHwo5prs4MbXEzER@eldamar.lan>
-References: <20210301161031.684018251@linuxfoundation.org>
- <20210301161032.337414143@linuxfoundation.org>
- <YGxIMCsclG4E1/ck@eldamar.lan> <YGxlJXv/+IPaErUr@kroah.com>
- <PSAP153MB04220682838AC9D025414B6094769@PSAP153MB0422.APCP153.PROD.OUTLOOK.COM>
- <YGx3u01Wa/DDnjlV@eldamar.lan> <YG7r0UaivWZL762N@eldamar.lan>
- <YHP+XbVWfGv21EL1@kroah.com> <YHwo5prs4MbXEzER@eldamar.lan>
-Date:   Mon, 19 Apr 2021 11:15:15 -0300
-Message-ID: <878s5e9x8s.fsf@cjr.nz>
+        id S237903AbhDSOQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 10:16:22 -0400
+Received: from mail-vk1-f176.google.com ([209.85.221.176]:42970 "EHLO
+        mail-vk1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238920AbhDSOQS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 10:16:18 -0400
+Received: by mail-vk1-f176.google.com with SMTP id k128so4073069vke.9;
+        Mon, 19 Apr 2021 07:15:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4XD1Wb8dpQwS+PQagRswL/AWeEvkF0Vvl4DeCDMx5XI=;
+        b=sEGIPm/Ik/FnMzDdieye25ginwtCLv+MAaQLoboPnm0ipRxuy9FscwMZ84AxAMuuYb
+         uuUhtSZFy3cpjcMxLEfFyV00gjzO2LSrv5c7eRKEUOSvanHknnrEi+67wmrXDGHVzWDn
+         GgaxLA+TgjEV/zG+Xpje4wOAmZbvHBgFREBz841MzglY5AqeWS22MFozGfTA8S9Pqfka
+         4bZEAJw+u1aKbuWGo2MDBQJrN2EP3g7cmUtkqoo6iHYgMPspfd5JOd6RA6Bn+OLRfuTD
+         NXKBaye1U+RnawhphHTgQBVqTfTJRnvymfgxbNL2ds8L5FfBZgYXMaqNXNkrIXJouSY7
+         qd6Q==
+X-Gm-Message-State: AOAM530vNyXWB6v6deyQr6meizNS8mS1KFCqF63mG+oNpQsR7ABAU0lk
+        Gwy8xTeXPpYbk6nLxhf8VUpHLOhB/lmbutyNVEliO7va5jP1Ng==
+X-Google-Smtp-Source: ABdhPJylXxYZJhX8T8J4/m+2EJWscrXceKyzIOBqISvpun0wKo2rXOgi8FHjDP4pEoiG7MFShISPtJ9kUHOR7VdN/RM=
+X-Received: by 2002:a1f:23d0:: with SMTP id j199mr765194vkj.1.1618841747956;
+ Mon, 19 Apr 2021 07:15:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <26db9291095c1dfd81c73b0f5f1434f9b399b1f5.1618316565.git.geert+renesas@glider.be>
+ <bd8db435-24e1-5ab3-6b35-1d4d8a292a7e@hisilicon.com> <CAMuHMdVouD+e4GpN_Dur8HSop4B8HVosGSYw7vfTpBEi_inMbw@mail.gmail.com>
+ <YHcx+QPbkTA0bv9V@smile.fi.intel.com> <CAMuHMdUkDcdZk5YYnkMH+VD4JXFq4khR2dn8wBdSXs1GCT9UMQ@mail.gmail.com>
+ <YHc+/MOWA6rO+1Wy@smile.fi.intel.com> <CAMuHMdWZz6QNQbN53Whjfi122PWesM4_+K0_m=np8L=E+=io6g@mail.gmail.com>
+ <CAHp75VcFjRBO+0578jWam3+sc24KvKArTtQV+nRCCbV1E++Nsg@mail.gmail.com>
+ <CAMuHMdVu4VRgJzfM=P8OBi55rsCMFB1vmSepTvSyv1DLjw9Vcw@mail.gmail.com>
+ <CAHp75Vcye9HPSoAkqiqnzgQ+8_SZ-W9gURWmWXd5s-y_fji5Ug@mail.gmail.com>
+ <CAMuHMdU5AVdq5fubt69u6cOBJR8gwi=LcmePf46yi9_1srtsGA@mail.gmail.com> <CAHp75VdbYSD=unX4bbiWFXYPJJbW5b_j0kUO7S-HbO2btDvipw@mail.gmail.com>
+In-Reply-To: <CAHp75VdbYSD=unX4bbiWFXYPJJbW5b_j0kUO7S-HbO2btDvipw@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 19 Apr 2021 16:15:36 +0200
+Message-ID: <CAMuHMdX1D+2iLPEDzG9BiR8bu-dEBmE-=w0nFMhF8ojD7rCfzg@mail.gmail.com>
+Subject: Re: [PATCH] i2c: I2C_HISI should depend on ARCH_HISI && ACPI
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Salvatore Bonaccorso <carnil@debian.org> writes:
+Hi Andy,
 
-> Thanks Greg! Shyam, Steven, now the commit was reverted for the older
-> brnaches. But did you got a chance to find why it breaks for the older
-> series?
+On Mon, Apr 19, 2021 at 3:58 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Mon, Apr 19, 2021 at 4:54 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Mon, Apr 19, 2021 at 3:35 PM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+> > > On Mon, Apr 19, 2021 at 4:02 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > On Thu, Apr 15, 2021 at 10:50 AM Andy Shevchenko
+> > > > <andy.shevchenko@gmail.com> wrote:
+> > > > > On Thu, Apr 15, 2021 at 3:43 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > > > On Wed, Apr 14, 2021 at 9:14 PM Andy Shevchenko
+> > > > > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > > > > On Wed, Apr 14, 2021 at 08:55:21PM +0200, Geert Uytterhoeven wrote:
+> > > > > > > > On Wed, Apr 14, 2021 at 8:18 PM Andy Shevchenko
+> > > > > > > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > > > > > > On Wed, Apr 14, 2021 at 08:06:18PM +0200, Geert Uytterhoeven wrote:
+> > > > > > > > > > On Wed, Apr 14, 2021 at 11:24 AM Yicong Yang <yangyicong@hisilicon.com> wrote:
+> > >
+> > > ...
+> > >
+> > > > > > > > > > I guess it's still fine to add a dependency on ACPI?
+> > > > > > > > >
+> > > > > > > > > But why?
+> > > > > > > >
+> > > > > > > > Please tell me how/when the driver is used when CONFIG_ACPI=n.
+> > > > > > >
+> > > > > > > I'm not using it at all. Ask the author :-)
+> > > > > > >
+> > > > > > > But if we follow your logic, then we need to mark all the _platform_ drivers
+> > > > > > > for x86 world as ACPI dependent? This sounds ugly.
+> > > > > >
+> > > > > > Do all other x86 platform drivers have (1) an .acpi_match_table[] and
+> > > > > > (2) no other way of instantiating their devices?
+> > > > > > The first driver from the top of my memory I looked at is rtc-cmos:
+> > > > > > it has no .acpi_match_table[], and the rtc-cmos device is instantiated
+> > > > > > from arch/x86/kernel/rtc.c.
+> > > > > >
+> > > > > > For drivers with only an .of_match_table(), and no legacy users
+> > > > > > instantiating platform devices, we do have dependencies on OF.
+> > > > >
+> > > > > This is not true. Entire IIO subsystem is an example.
+> > > >
+> > > > Do you care to elaborate?
+> > > > Three quarters of the IIO drivers are I2C and SPI drivers, and thus not
+> > > > subject to the above.
+> > >
+> > > It seems I missed that you are talking about platform device drivers.
+> >
+> > OK.
+> >
+> > > In any case it's not true. We have the platform drivers w/o legacy
+> > > users that are not dependent on OF.
+> >
+> > Example? ;-)
+>
+> i2c-owl.c
 
-That commit has revealed another bug in cifs_mount() where we failed to
-update the super's prefix path after chasing DFS referrals.
+I2C_OWL depends on ARCH_ACTIONS || COMPILE_TEST
 
-Newer kernel versions do not have it because the code & logic in
-cifs_mount() changed entirely.
+(arm32) ARCH_ACTIONS depends on ARCH_MULTI_V7
+                     depends on ARCH_MULTIPLATFORM
+                     ARCH_MULTIPLATFORM selects USE_OF
+                     USE_OF selects OF
+ARCH_MULTI_V7 selects ARCH_MULTI_V6_V7
+
+(arm64) ARM64 selects OF
+
+so we do have a dependency on OF, unless we're compile-testing.
+
+> > > They may _indirectly_ be dependent, but this is fine as I stated above
+> > > when suggested to move ACPI dependency on ARCH_xxx level.
+> >
+> > As per the response from the driver maintainer
+> > https://lore.kernel.org/linux-arm-kernel/bd8db435-24e1-5ab3-6b35-1d4d8a292a7e@hisilicon.com/,
+> > there is no dependency on ARCH_HISI, so moving the ACPI dependency
+> > up won't help.
+>
+> So, an ACPI dependency is simply not applicable here as it's a compile
+> dependency as well, which is not a limitation for this driver. Again,
+> talk to Masahiro how to handle this, but I don't see any good
+> justification to have ACPI (compile time) dependency here. So, again
+> NAK!
+
+Please tell me how this driver will be probed when CONFIG_ACPI
+is disabled (it cannot, as nothing instantiates platform devices of the
+right type, so there is no reason to bother the user with a question about
+this driver when configuring his kernel).
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
