@@ -2,110 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E318364E5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 00:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6BA364E61
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230488AbhDSW7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 18:59:21 -0400
-Received: from gateway32.websitewelcome.com ([192.185.145.101]:24689 "EHLO
-        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233313AbhDSW7E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 18:59:04 -0400
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
-        by gateway32.websitewelcome.com (Postfix) with ESMTP id 443C313095
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 17:58:33 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id YcqflHeEb1cHeYcqflQWqp; Mon, 19 Apr 2021 17:58:33 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=HSwcUpoOJnXwy9FUWCUDqISxnv3zkq1DVf8wvqzFEr0=; b=BvljQjnbdpu8RmeO4AFnQNsFrG
-        NidTTAVI57LZ/J2KDjmbAu7FNej4A6OqWy0McVvbePr1On80nZDp5d6dSdFLLtoXvfqalwR/mtox5
-        vfu7kaWx0KLLVyZ/PosuE8v8JjIOtytLvU7MbVb5zSrPu91Ph1caCNssqaZp9zcJJQj2y/er+2PFS
-        hX+Y47e2dakcdxmAf8/3vpInY9DiLqH+HVOPB5utF++XyeO8IPnAuFGdjfvZAxGS8gP2O8LTQzmc1
-        kr6oXcd1YuK5Wf82wKLg29FuGD2Y5sVty7f79O2n+sZseztgxiE2hoN7uym6RNvrUTRrccEHd11ge
-        jChUgS+g==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:48156 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lYcqb-0044Xd-ON; Mon, 19 Apr 2021 17:58:29 -0500
-Subject: Re: [PATCH RESEND][next] rtl8xxxu: Fix fall-through warnings for
- Clang
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Jes Sorensen <Jes.Sorensen@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>
-References: <20210305094850.GA141221@embeddedor>
- <20210417175201.280F9C4338A@smtp.codeaurora.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <0b096033-7daf-fae7-9ea9-37038b979616@embeddedor.com>
-Date:   Mon, 19 Apr 2021 17:58:42 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230284AbhDSXD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 19:03:57 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:43725 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229681AbhDSXD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 19:03:56 -0400
+Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 13JN30Co2438940
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Mon, 19 Apr 2021 16:03:07 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 13JN30Co2438940
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021032801; t=1618873389;
+        bh=NnLdbkEkLhPb2GJPM4rf3JLk2l7sUTHe+P6yzCSFAgE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=p1I73+6yhoiQTcLpkFzJQnC3bN39PGDvwWoF7AzeSS8yr8eBRHShtKHEoU740hT3T
+         tz8rHXlT8co07rJS4eEDPRoi6Ug7wtYpxMu677aR1M9vA4mLUMKLg8gvcacmJlrlLA
+         OC2S7O2aV6c0HR3qAdMWYwMuYK+nMirmyThIeNlJhWIlbzsZC4JpArC8Hj5okpDb7B
+         51CnRwZDQgfbnXvXYuc1hEYjuDMyUCajiQAejCBCTFxf0TbqRSvVuAxDbyciinM+B9
+         CFs8hEVCh5eHx4CRHeWD1sw7oGSPs0gxMQD7v+52sLr4mDXQdHgDxjrf2mxPCjzCHO
+         +A7Sps1y78Zmw==
+From:   "H. Peter Anvin" <hpa@zytor.com>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kbuild Mailing List <linux-kbuild@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH 0/3] x86 disk image and modules initramfs generation
+Date:   Mon, 19 Apr 2021 16:02:49 -0700
+Message-Id: <20210419230252.1583169-1-hpa@zytor.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210417175201.280F9C4338A@smtp.codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lYcqb-0044Xd-ON
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:48156
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 20
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: "H. Peter Anvin" (Intel) <hpa@zytor.com>
 
+When compiling on a different machine than the runtime target,
+including but not limited to simulators, it is rather handy to be able
+to produce a bootable image. The scripts for that in x86 are
+relatively old, and assume a BIOS system.
 
-On 4/17/21 12:52, Kalle Valo wrote:
-> "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
-> 
->> In preparation to enable -Wimplicit-fallthrough for Clang, fix
->> multiple warnings by replacing /* fall through */ comments with
->> the new pseudo-keyword macro fallthrough; instead of letting the
->> code fall through to the next case.
->>
->> Notice that Clang doesn't recognize /* fall through */ comments as
->> implicit fall-through markings.
->>
->> Link: https://github.com/KSPP/linux/issues/115
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> 
-> Patch applied to wireless-drivers-next.git, thanks.
-> 
-> bf3365a856a1 rtl8xxxu: Fix fall-through warnings for Clang
+This adds a build target to generate a hdimage which can be booted
+either from BIOS or EFI, and modernizes the genimage.sh script
+including adding the ability to add an arbitrary number of initramfs
+files (limited only by the length of the command line.)
 
-Thanks for this, Kalle.
+Possibly more controversial, at least from a Kbuild design perspective
+(as usual I'm the guy who wants to do something with Kbuild which it
+seems it was never really designed to do), is add the ability to
+create an initramfs image which includes all the built modules. Some
+distributions cannot be easily booted without modules in initramfs,
+and this creates an image which can be added to initramfs to provide
+the kernel modules, as finalized by "make modules_install".
 
-Could you take this series too, please?
+The final patch put these two together, and allows the modules
+initramfs to be included in the x86 boot image.
 
-https://lore.kernel.org/lkml/cover.1618442265.git.gustavoars@kernel.org/
+---
 
-Thanks
---
-Gustavo
+Fixes in v2:
 
+1/3: correct command line generation for multiple initrds
+2/3: no change
+3/3: append, don't overwrite FDINITRD when adding modules.img
+
+ Makefile                     |  17 ++-
+ arch/x86/Makefile            |   8 +-
+ arch/x86/boot/.gitignore     |   1 +
+ arch/x86/boot/Makefile       |  62 +++++----
+ arch/x86/boot/genimage.sh    | 294 +++++++++++++++++++++++++++++++------------
+ arch/x86/boot/mtools.conf.in |   3 +
+ usr/.gitignore               |   3 +
+ usr/Kconfig                  |  31 ++---
+ usr/Makefile                 |  39 +++++-
+ 9 files changed, 331 insertions(+), 127 deletions(-)
