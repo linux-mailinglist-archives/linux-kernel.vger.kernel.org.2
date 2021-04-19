@@ -2,131 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CE4836407E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 935BF36405A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238571AbhDSLZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 07:25:57 -0400
-Received: from mga02.intel.com ([134.134.136.20]:42345 "EHLO mga02.intel.com"
+        id S238082AbhDSLVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 07:21:44 -0400
+Received: from mga03.intel.com ([134.134.136.65]:61008 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238543AbhDSLZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 07:25:37 -0400
-IronPort-SDR: zbbmBSk3Vh8WrJLBdvEle6br+/zAqWcwhaHGiqOXwu0eWTZ29WT6FFWoAzX49AJ1R78SIH8dEb
- N0hw1QwMD22w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9958"; a="182440445"
+        id S237765AbhDSLVn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 07:21:43 -0400
+IronPort-SDR: KqJDVvEPYAFDtkd7dGJ+o8X4NzwjvUqrZtsGbfgv6D4UKrirR5fswb8cT/KzRX9Ft+V3k6s/Mu
+ /H4fL6sHteNQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9958"; a="195336831"
 X-IronPort-AV: E=Sophos;i="5.82,234,1613462400"; 
-   d="scan'208";a="182440445"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 04:25:06 -0700
-IronPort-SDR: EmRQL1vW1CXPQXX7Ep5JqVxyjxNTf+NHB5aERjWSoOjAFGTYYnA8wVJBSzlK7ZZZK60cL4u5kf
- 1qLryOMjfKdw==
+   d="scan'208";a="195336831"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 04:20:56 -0700
+IronPort-SDR: gG9C6LbgTpQvO1pgi3EUWUtteiHAWMr3es6AOL9cOIY9BL44ntzJSGacgAPQMcVOriHIa6Wfu3
+ F5yC971w9myg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,234,1613462400"; 
-   d="scan'208";a="422657726"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP; 19 Apr 2021 04:25:02 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 1E7BC2B8; Mon, 19 Apr 2021 14:25:20 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Yangbo Lu <yangbo.lu@nxp.com>, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH v1 6/6] mmc: mmc_spi: Make of_mmc_spi.c resource provider agnostic
-Date:   Mon, 19 Apr 2021 14:24:59 +0300
-Message-Id: <20210419112459.25241-6-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210419112459.25241-1-andriy.shevchenko@linux.intel.com>
-References: <20210419112459.25241-1-andriy.shevchenko@linux.intel.com>
+   d="scan'208";a="390630159"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga007.fm.intel.com with ESMTP; 19 Apr 2021 04:20:55 -0700
+Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.59])
+        by linux.intel.com (Postfix) with ESMTP id 669915808CA;
+        Mon, 19 Apr 2021 04:20:53 -0700 (PDT)
+From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     Ong Boon Leong <boon.leong.ong@intel.com>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 1/1] net: stmmac: fix memory leak during driver probe
+Date:   Mon, 19 Apr 2021 19:25:30 +0800
+Message-Id: <20210419112530.20395-1-vee.khee.wong@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to use the same driver on non-OF platforms, make
-of_mmc_spi.c resource provider agnostic.
+On driver probe, kmemleak reported the following memory leak which was
+due to allocated bitmap that was not being freed in stmmac_dvr_probe().
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+unreferenced object 0xffff9276014b13c0 (size 8):
+  comm "systemd-udevd", pid 2143, jiffies 4294681112 (age 116.720s)
+  hex dump (first 8 bytes):
+    00 00 00 00 00 00 00 00                          ........
+  backtrace:
+    [<00000000c51e34b2>] stmmac_dvr_probe+0x1c0/0x440 [stmmac]
+    [<00000000b530eb41>] intel_eth_pci_probe.cold+0x2b/0x14e [dwmac_intel]
+    [<00000000b10f8929>] pci_device_probe+0xd2/0x150
+    [<00000000fb254c74>] really_probe+0xf8/0x410
+    [<0000000034128a59>] driver_probe_device+0x5d/0x150
+    [<00000000016104d5>] device_driver_attach+0x53/0x60
+    [<00000000cb18cd07>] __driver_attach+0x96/0x140
+    [<00000000da9ffd5c>] bus_for_each_dev+0x7a/0xc0
+    [<00000000af061a88>] bus_add_driver+0x184/0x1f0
+    [<000000008be5c1c5>] driver_register+0x6c/0xc0
+    [<0000000052b18a9e>] do_one_initcall+0x4d/0x210
+    [<00000000154d4f07>] do_init_module+0x5c/0x230
+    [<000000009b648d09>] load_module+0x2a5a/0x2d40
+    [<000000000d86b76d>] __do_sys_finit_module+0xb5/0x120
+    [<000000002b0cef95>] do_syscall_64+0x33/0x40
+    [<0000000067b45bbb>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Fixes: bba2556efad6 ("net: stmmac: Enable RX via AF_XDP zero-copy")
+Cc: Ong Boon Leong <boon.leong.ong@intel.com>
+Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
 ---
- drivers/mmc/host/Makefile     | 2 --
- drivers/mmc/host/of_mmc_spi.c | 6 ++----
- include/linux/spi/mmc_spi.h   | 9 ---------
- 3 files changed, 2 insertions(+), 15 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/mmc/host/Makefile b/drivers/mmc/host/Makefile
-index 6df5c4774260..14004cc09aaa 100644
---- a/drivers/mmc/host/Makefile
-+++ b/drivers/mmc/host/Makefile
-@@ -34,9 +34,7 @@ obj-$(CONFIG_MMC_TIFM_SD)	+= tifm_sd.o
- obj-$(CONFIG_MMC_MVSDIO)	+= mvsdio.o
- obj-$(CONFIG_MMC_DAVINCI)       += davinci_mmc.o
- obj-$(CONFIG_MMC_SPI)		+= mmc_spi.o
--ifeq ($(CONFIG_OF),y)
- obj-$(CONFIG_MMC_SPI)		+= of_mmc_spi.o
--endif
- obj-$(CONFIG_MMC_S3C)   	+= s3cmci.o
- obj-$(CONFIG_MMC_SDRICOH_CS)	+= sdricoh_cs.o
- obj-$(CONFIG_MMC_TMIO)		+= tmio_mmc.o
-diff --git a/drivers/mmc/host/of_mmc_spi.c b/drivers/mmc/host/of_mmc_spi.c
-index 009c3885f6ba..9d480a05f655 100644
---- a/drivers/mmc/host/of_mmc_spi.c
-+++ b/drivers/mmc/host/of_mmc_spi.c
-@@ -51,10 +51,9 @@ struct mmc_spi_platform_data *mmc_spi_get_pdata(struct spi_device *spi)
- {
- 	struct mmc_host *mmc = dev_get_drvdata(&spi->dev);
- 	struct device *dev = &spi->dev;
--	struct device_node *np = dev->of_node;
- 	struct of_mmc_spi *oms;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 9f396648d76f..d1ca07c846e6 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -7035,6 +7035,7 @@ int stmmac_dvr_probe(struct device *device,
+ error_hw_init:
+ 	destroy_workqueue(priv->wq);
+ 	stmmac_bus_clks_config(priv, false);
++	bitmap_free(priv->af_xdp_zc_qps);
  
--	if (dev->platform_data || !np)
-+	if (dev->platform_data || !dev_fwnode(dev))
- 		return dev->platform_data;
+ 	return ret;
+ }
+@@ -7077,6 +7078,7 @@ int stmmac_dvr_remove(struct device *dev)
+ 		stmmac_mdio_unregister(ndev);
+ 	destroy_workqueue(priv->wq);
+ 	mutex_destroy(&priv->lock);
++	bitmap_free(priv->af_xdp_zc_qps);
  
- 	oms = kzalloc(sizeof(*oms), GFP_KERNEL);
-@@ -83,10 +82,9 @@ EXPORT_SYMBOL(mmc_spi_get_pdata);
- void mmc_spi_put_pdata(struct spi_device *spi)
- {
- 	struct device *dev = &spi->dev;
--	struct device_node *np = dev->of_node;
- 	struct of_mmc_spi *oms = to_of_mmc_spi(dev);
- 
--	if (!dev->platform_data || !np)
-+	if (!dev->platform_data || !dev_fwnode(dev))
- 		return;
- 
- 	kfree(oms);
-diff --git a/include/linux/spi/mmc_spi.h b/include/linux/spi/mmc_spi.h
-index 778ae8eb1f3e..9ad9a06e488d 100644
---- a/include/linux/spi/mmc_spi.h
-+++ b/include/linux/spi/mmc_spi.h
-@@ -35,16 +35,7 @@ struct mmc_spi_platform_data {
- 	void (*setpower)(struct device *, unsigned int maskval);
- };
- 
--#ifdef CONFIG_OF
- extern struct mmc_spi_platform_data *mmc_spi_get_pdata(struct spi_device *spi);
- extern void mmc_spi_put_pdata(struct spi_device *spi);
--#else
--static inline struct mmc_spi_platform_data *
--mmc_spi_get_pdata(struct spi_device *spi)
--{
--	return spi->dev.platform_data;
--}
--static inline void mmc_spi_put_pdata(struct spi_device *spi) {}
--#endif /* CONFIG_OF */
- 
- #endif /* __LINUX_SPI_MMC_SPI_H */
+ 	return 0;
+ }
 -- 
-2.30.2
+2.25.1
 
