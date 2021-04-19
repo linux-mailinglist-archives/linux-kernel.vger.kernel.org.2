@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4702F364457
+	by mail.lfdr.de (Postfix) with ESMTP id 92FD9364458
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242133AbhDSN0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:26:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55300 "EHLO mail.kernel.org"
+        id S240653AbhDSN0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:26:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241235AbhDSNUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:20:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2637361362;
-        Mon, 19 Apr 2021 13:15:59 +0000 (UTC)
+        id S241234AbhDSNUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:20:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7211613AF;
+        Mon, 19 Apr 2021 13:16:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618838160;
-        bh=Mq7fuCr0nMoWUMns4BMxrLrNiDFrk4Do4+ZxHGbZ7nU=;
+        s=korg; t=1618838163;
+        bh=85UwOZleb5MMezLJRbqBXJSUIHvG7ohGjfuE76Je+bo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ywBLKmVcc8k6Ra7J2lhMlUjaqGnITQvqKJlwwBsWzN4W40lYnZsk+6m3mtlVqdIc6
-         YxzjmFcdXFtZrB2PbwC1gIui41IYCF6A+HKyGrtx7P6Gak2lKGE+EAMfY6cKF5hc8+
-         5deYDvpEbJFY45kaWnLG71rruf/m3PixLkUrBuH4=
+        b=kITpcCRaPtJNaxlZv0uDf511igz4+GkpYHfrSojfyyMpCA+L0Ig4G6lPClRoV+RKm
+         ww1zo9WnrRY4LYkY6jokS53ckGpQwiBD/UfcV7cv1xds8mtLVm+m+63XsRWC6DYZjd
+         SQovu11ZAHEAJ/JV8OUO36jzQy79GVQGlY3mhVF8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ciara Loftus <ciara.loftus@intel.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH 5.10 064/103] libbpf: Fix potential NULL pointer dereference
-Date:   Mon, 19 Apr 2021 15:06:15 +0200
-Message-Id: <20210419130530.005868646@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 065/103] net: macb: fix the restore of cmp registers
+Date:   Mon, 19 Apr 2021 15:06:16 +0200
+Message-Id: <20210419130530.045815390@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210419130527.791982064@linuxfoundation.org>
 References: <20210419130527.791982064@linuxfoundation.org>
@@ -39,44 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ciara Loftus <ciara.loftus@intel.com>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-commit afd0be7299533bb2e2b09104399d8a467ecbd2c5 upstream.
+commit a714e27ea8bdee2b238748029d31472d0a65b611 upstream.
 
-Wait until after the UMEM is checked for null to dereference it.
+Commit a14d273ba159 ("net: macb: restore cmp registers on resume path")
+introduces the restore of CMP registers on resume path. In case the IP
+doesn't support type 2 screeners (zero on DCFG8 register) the
+struct macb::rx_fs_list::list is not initialized and thus the
+list_for_each_entry(item, &bp->rx_fs_list.list, list) loop introduced in
+commit a14d273ba159 ("net: macb: restore cmp registers on resume path")
+will access an uninitialized list leading to crash. Thus, initialize
+the struct macb::rx_fs_list::list without taking into account if the
+IP supports type 2 screeners or not.
 
-Fixes: 43f1bc1efff1 ("libbpf: Restore umem state after socket create failure")
-Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20210408052009.7844-1-ciara.loftus@intel.com
+Fixes: a14d273ba159 ("net: macb: restore cmp registers on resume path")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/lib/bpf/xsk.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/cadence/macb_main.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/tools/lib/bpf/xsk.c
-+++ b/tools/lib/bpf/xsk.c
-@@ -703,18 +703,19 @@ int xsk_socket__create_shared(struct xsk
- 			      struct xsk_ring_cons *comp,
- 			      const struct xsk_socket_config *usr_config)
- {
-+	bool unmap, rx_setup_done = false, tx_setup_done = false;
- 	void *rx_map = NULL, *tx_map = NULL;
- 	struct sockaddr_xdp sxdp = {};
- 	struct xdp_mmap_offsets off;
- 	struct xsk_socket *xsk;
- 	struct xsk_ctx *ctx;
- 	int err, ifindex;
--	bool unmap = umem->fill_save != fill;
--	bool rx_setup_done = false, tx_setup_done = false;
- 
- 	if (!umem || !xsk_ptr || !(rx || tx))
- 		return -EFAULT;
- 
-+	unmap = umem->fill_save != fill;
-+
- 	xsk = calloc(1, sizeof(*xsk));
- 	if (!xsk)
- 		return -ENOMEM;
+--- a/drivers/net/ethernet/cadence/macb_main.c
++++ b/drivers/net/ethernet/cadence/macb_main.c
+@@ -3777,6 +3777,7 @@ static int macb_init(struct platform_dev
+ 	reg = gem_readl(bp, DCFG8);
+ 	bp->max_tuples = min((GEM_BFEXT(SCR2CMP, reg) / 3),
+ 			GEM_BFEXT(T2SCR, reg));
++	INIT_LIST_HEAD(&bp->rx_fs_list.list);
+ 	if (bp->max_tuples > 0) {
+ 		/* also needs one ethtype match to check IPv4 */
+ 		if (GEM_BFEXT(SCR2ETH, reg) > 0) {
+@@ -3787,7 +3788,6 @@ static int macb_init(struct platform_dev
+ 			/* Filtering is supported in hw but don't enable it in kernel now */
+ 			dev->hw_features |= NETIF_F_NTUPLE;
+ 			/* init Rx flow definitions */
+-			INIT_LIST_HEAD(&bp->rx_fs_list.list);
+ 			bp->rx_fs_list.count = 0;
+ 			spin_lock_init(&bp->rx_fs_lock);
+ 		} else
 
 
