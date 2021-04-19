@@ -2,120 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F5C364A3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 21:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B069364A3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 21:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240418AbhDSTH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 15:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51400 "EHLO
+        id S240475AbhDSTMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 15:12:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234508AbhDSTHY (ORCPT
+        with ESMTP id S234508AbhDSTMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 15:07:24 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 407C6C061761
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 12:06:53 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id o13-20020a9d404d0000b029028e0a0ae6b4so14555931oti.10
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 12:06:53 -0700 (PDT)
+        Mon, 19 Apr 2021 15:12:12 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC84C06174A;
+        Mon, 19 Apr 2021 12:11:41 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id g16so1434538plq.3;
+        Mon, 19 Apr 2021 12:11:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nS6lVdjAQFuFmi8OcV/NWRT3J31GQHJ6x1DbiIVFs9c=;
-        b=BPS3XGyjmuDU202kT6j+i4GUG7bH0/UX6id7ANkMV4j6krFsStfFOmpSp1GowHtFqs
-         e+bUAwvY3QxQO1YyLyH69dbyH3NyOXU3oJ+GMp6XG8jvwXdEkmOnrCXZ5jMU9TVDhovZ
-         aE1yuktnSwTYK06qRFKjU5MQ6mLf0UO420Q7FASQEjvUNPtQ/uHChVwio8CoM+EolYX7
-         fkkhhel/1cjHRpx8+jDLmsU0+5YNsad5K05glfAL9ZQisVQF9qiJSFMW8nv1F1mUohLT
-         nc9nsFQjMdgDVRHNURGoBPaMlmkTRKiVAv8rz8heuq/d6zwIDVHb/DDTl/ZfCER06ZJV
-         X2ag==
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=CTXereTPjdkRipc48f7/rpT9ICCorkjoYsEaZmc/YWo=;
+        b=PuxKS67Jgt4dLTmaGLZFBWGRneYt6PAXt9WjvQufCq4iwTMpHStxltduB/qFXXKpgU
+         Mkz/k4mlFqtHSbpeheU0PGm9vMsjeJ0EmC8+wE8E2rT6eg5npCs00wToWrEVAjj7nC5E
+         0CLKmFNAEiNb3UclTfSLq89QrgWK4QVuW9Cl2RbW0CQHilUzBq5JPNpXLl6nkqXjRb4e
+         /PEgdwR5yBSeDUi4Uwe2lChyhnUWkx+KDIyiJ2d08Ng58GLfUrSUsIugEBii8rHJg1r6
+         bWvCF1OQ6yxDuU1r4p08S98hGsboiqMZk2lx3F/8/t1aGXLsaEWNkYIxZynHQKDURw/h
+         /RtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nS6lVdjAQFuFmi8OcV/NWRT3J31GQHJ6x1DbiIVFs9c=;
-        b=nqTOqn504QBbmQWfyv3fgtOJf8GlwXW7jnMtFOfgSjEAefUmxWzM+mXJ1771MaMqgZ
-         BRgkcNmaHhc+oZnWcMYsPsRBwXxLndLWFM00llAJD3hLX69sLVm2BIMES2pMuz6CMI8q
-         M3Bk7pUWEZtGP2sT4kc+2UBasdrAGbvxq1XnjcEGbMOHX8i7XO/qDcHVLraHgnUL4nJD
-         aPdbYIxsYfsnA8mA0eBpKHKxN2DIKexNMRbZ6sQU1zut7RXg4L06BX61SwBZXk+C77O7
-         YACTi3F3WOVjRrHfdWlgOnOhvAkk25YtpJPyWPKFex8VZfNzLYPai/aBo7RiLnpOJvRf
-         bckQ==
-X-Gm-Message-State: AOAM530HZPVjvhQ+BKHmLsxbIadt1QBgjHNqyGT1fDF8NNb95VOVAlrj
-        jPXbF1ljmkDCYzxDrRN/CF5eJg==
-X-Google-Smtp-Source: ABdhPJxLe1/3CzYqXXwB0vxZ7+8+NQMslhHXoPfV20wEMFYc4HCiSCuaa98SjiWVXIrgij/eVTVZZg==
-X-Received: by 2002:a9d:4808:: with SMTP id c8mr15759494otf.115.1618859212509;
-        Mon, 19 Apr 2021 12:06:52 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id h81sm1642638oif.53.2021.04.19.12.06.51
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=CTXereTPjdkRipc48f7/rpT9ICCorkjoYsEaZmc/YWo=;
+        b=aNqsJbj4wVhWztpLqKBg7/SEaVVzC+m5ttYwaZ4iII8LM9wAyJ5yd5mJfwOgMhfqfs
+         XW87U+OmP9m6WjHfPrmAKGQaCfW++h4HDKN92BxGgZRn7wgQLjshmtI8UVbw6vFX7sIR
+         9ao2AcM1HGccO+uzlbjKeQsaiGJIBosAdYb2T6XcULR/wvgPSL7VggXKALm/ufgj+rNr
+         G0dh9fZ/Tv5uOm4/1ith37qJLEYTm/CPfmOBWS1FH8Nf0pH5LqrVyL2/cggzTbaD2W9U
+         u/R3+Elc+MDUXEFH1BeZvzSNH3ic5xbs9lJcXKRhUhJaOCfXvMdqKxOvWf41IoW18s5e
+         LC7w==
+X-Gm-Message-State: AOAM531jW7Sg5i5Gwo0dL2/G4mfcJcCAQP6ekqxvimVkSpahmwUrnGpM
+        ZT34W60FGOwVmC1u48dcous=
+X-Google-Smtp-Source: ABdhPJysmNCph4NGs8hiLvMKqpWbw6kORIH4d73DltLJ3gzd/ahVmjVGwSyTHBPU2TlJGHIWeC+CCQ==
+X-Received: by 2002:a17:902:e74f:b029:ec:b399:83b1 with SMTP id p15-20020a170902e74fb02900ecb39983b1mr1328025plf.1.1618859500818;
+        Mon, 19 Apr 2021 12:11:40 -0700 (PDT)
+Received: from localhost ([103.241.225.98])
+        by smtp.gmail.com with ESMTPSA id w140sm2515634pfc.176.2021.04.19.12.11.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 12:06:51 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 14:06:49 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Taniya Das <tdas@codeaurora.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>, agross@kernel.org,
-        rjw@rjwysocki.net, devicetree@vger.kernel.org, robh+dt@kernel.org,
-        amit.kucheria@linaro.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, jeffrey.l.hugo@gmail.com
-Subject: Re: [PATCH v4 5/7] cpufreq: qcom-hw: Implement CPRh aware OSM
- programming
-Message-ID: <20210419190649.GR1538589@yoga>
-References: <20210119174557.227318-1-angelogioacchino.delregno@somainline.org>
- <20210119174557.227318-6-angelogioacchino.delregno@somainline.org>
- <c35bfd76-0d7e-d7bc-79ab-041b1074c1af@codeaurora.org>
- <YAh+9/IgRhI8M3ov@builder.lan>
- <92e465e4-a0d9-43eb-84f7-69fa355097a9@codeaurora.org>
- <20210413034940.o6uzjtnh2ylvikbf@vireshk-i7>
- <150e19b9-9ecf-7cac-8aa3-c7c4d7a11468@codeaurora.org>
+        Mon, 19 Apr 2021 12:11:40 -0700 (PDT)
+From:   Deepak R Varma <mh12gx2825@gmail.com>
+X-Google-Original-From: Deepak R Varma <drv@mailo.com>
+Date:   Tue, 20 Apr 2021 00:41:35 +0530
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     mh12gx2825@gmail.com
+Subject: [PATCH 0/6] staging: media: atomisp: code cleanup fixes
+Message-ID: <cover.1618859059.git.drv@mailo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <150e19b9-9ecf-7cac-8aa3-c7c4d7a11468@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 14 Apr 20:31 CDT 2021, Taniya Das wrote:
+This patch set addresses different kinds of checkpatch WARNING and
+CHECK complaints. 
 
-> 
-> On 4/13/2021 9:19 AM, Viresh Kumar wrote:
-> > On 12-04-21, 15:01, Taniya Das wrote:
-> > > Technically the HW we are trying to program here differs in terms of
-> > > clocking, the LUT definitions and many more. It will definitely make
-> > > debugging much more troublesome if we try to accommodate multiple versions of
-> > > CPUFREQ-HW in the same code.
-> > > 
-> > > Thus to keep it simple, easy to read, debug, the suggestion is to keep it
-> > > with "v1" tag as the OSM version we are trying to put here is from OSM1.0.
-> > 
-> > That is a valid point and is always a case with so many drivers. What
-> > I am concerned about is how much code is common across versions, if it
-> > is 5-70%, or more, then we should definitely share, arrange to have
-> > callbacks or ops per version and call them in a generic fashion instead
-> > of writing a new driver. This is what's done across
-> > drivers/frameworks, etc.
-> > 
-> 
-> The code sharing here between versions should be very minimal as most
-> portion of the code here in V1 would focus on programming to prepare the LUT
-> to be further read by the driver, the programming in itself is huge for v1.
-> I am okay if you move the v1 in a different file and invoke based on
-> version.
-> 
+Note: The patches should be applied in the ascending order.
 
-The initialization of the hardware certainly is a large chunk of code,
-but once initialized it's the same driver. Your argument that this new
-code makes it harder to debug things doesn't seem relevant, as the old
-support doesn't seem to affect the code paths used on the modern
-version.
+Deepak R Varma (6):
+  staging: media: atomisp: improve function argument alignment
+  staging: media: atomisp: balance braces around if...else block
+  staging: media: atomisp: use __func__ over function names
+  staging: media: atomisp: reformat code comment blocks
+  staging: media: atomisp: fix CamelCase variable naming
+  staging: media: atomisp: use printk with KERN facility level
 
-Creating a new driver and picking it by compatible is certainly possible
-to do, but looking at Angelo's patch it seems like it would contain 100%
-of what's in qcom-cpufreq-hw today.
+ .../media/atomisp/i2c/atomisp-gc0310.c        | 12 +--
+ .../media/atomisp/i2c/atomisp-gc2235.c        | 18 ++--
+ .../atomisp/i2c/atomisp-libmsrlisthelper.c    |  3 +-
+ .../media/atomisp/i2c/atomisp-lm3554.c        |  2 +-
+ .../media/atomisp/i2c/atomisp-mt9m114.c       | 82 ++++++++++---------
+ .../media/atomisp/i2c/atomisp-ov2680.c        | 26 +++---
+ .../media/atomisp/i2c/atomisp-ov2722.c        | 10 +--
+ 7 files changed, 80 insertions(+), 73 deletions(-)
 
-As such, I like the approach suggested in this series.
+-- 
+2.25.1
 
-Regards,
-Bjorn
