@@ -2,111 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 338E43645DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00DC23645D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232816AbhDSOTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 10:19:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32514 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232452AbhDSOTM (ORCPT
+        id S230211AbhDSOTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 10:19:14 -0400
+Received: from mail-vs1-f53.google.com ([209.85.217.53]:42943 "EHLO
+        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229666AbhDSOTJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 10:19:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618841922;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=o3UPUs10GkMYgieyL1I900CWEZM98DXwIwU3+JzhSRs=;
-        b=PjFo8cNCofBk4nyVLDXH2++RscfcagyBPWEWx8MinSChdj1OfARI6n1lBW8BrAWy9gGUMp
-        qfdRNyrLsLsOF+2EWPLiYO6xPtuH8Twf5KGCfhgS/bpBE8SOYKX794dWOFSuyK/DqsabGO
-        /pSie2dnXsTxKKxe0t0nw0ZF88aihmk=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-498-AZQ6I1K-PHWlDhrD0hW9uQ-1; Mon, 19 Apr 2021 10:18:40 -0400
-X-MC-Unique: AZQ6I1K-PHWlDhrD0hW9uQ-1
-Received: by mail-wr1-f72.google.com with SMTP id h60-20020adf90420000b029010418c4cd0cso8273130wrh.12
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 07:18:40 -0700 (PDT)
+        Mon, 19 Apr 2021 10:19:09 -0400
+Received: by mail-vs1-f53.google.com with SMTP id 66so17639721vsk.9;
+        Mon, 19 Apr 2021 07:18:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=o3UPUs10GkMYgieyL1I900CWEZM98DXwIwU3+JzhSRs=;
-        b=N+97J99K0P+YgC6x2KqO0I0JNAVQ5Ok5t1PpGLsd8DuRcS2LRAeyXATDTytEtk+JVJ
-         5i1qzyQF9IWkBDqN2CI3m6OooPufeMOzJps57p3kzZN3xjQLUdgXYLwDxryv2Xzw6uYw
-         xwc1G4Wf/PZD2fKNwdaeLGqIk3/Hz6vVEWhpplnQtw+RLkOk0YvPQ5Zib5pKzWF9st8h
-         nR7DexxCA9oX1C92CXBIDTZFojPrC5gjjXh6gCxEHs9HVcxal+sWYs+GG9uruu+bGmyM
-         f5S5x7066HrOtgOzxW3xV45ypV/C4dQOQ6raJRwTtQi7bHqaZgL7EcGsc3VPZMNNFjmF
-         +YXQ==
-X-Gm-Message-State: AOAM532Hy8GdYTYFcypRWj+v+TaFOq6TOD63NobaX6JsIbW1vr/ipb/7
-        /cu3pjzeUyMgkjcG+/ENuEwjDboxr4rjstT6O7AwWAe/v9wEkcLeWtEYyU5b3y1+xSmAEdr4JUZ
-        9ozbEgS82y/22KKWGb7lbSATV
-X-Received: by 2002:adf:d1cc:: with SMTP id b12mr15069243wrd.131.1618841919155;
-        Mon, 19 Apr 2021 07:18:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzP2SU3QIp/T87kn+Ro2PJ3N/yPo/rwVzL8ua9LA2gCUdGPt11NDG+C7Ere3+8ExxzUAEt74A==
-X-Received: by 2002:adf:d1cc:: with SMTP id b12mr15069226wrd.131.1618841918984;
-        Mon, 19 Apr 2021 07:18:38 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c69b8.dip0.t-ipconnect.de. [91.12.105.184])
-        by smtp.gmail.com with ESMTPSA id x2sm25513946wrg.31.2021.04.19.07.18.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Apr 2021 07:18:38 -0700 (PDT)
-Subject: Re: [PATCH v5 1/3] kernel/resource: Allow region_intersects users to
- hold resource_lock
-To:     Alistair Popple <apopple@nvidia.com>, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        daniel.vetter@ffwll.ch, dan.j.williams@intel.com,
-        gregkh@linuxfoundation.org, jhubbard@nvidia.com,
-        jglisse@redhat.com, bsingharora@gmail.com, smuchun@gmail.com
-References: <20210419070109.4780-1-apopple@nvidia.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <d41d8dc4-3fe7-dba3-1765-4e24652582b9@redhat.com>
-Date:   Mon, 19 Apr 2021 16:18:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k26scZ2ZxzyMMbBVPJSGGaSA9s7p9mhsW9mmH6gzCOg=;
+        b=Rv7mm7GA6BwOKphKM2IwX0XdhzV/uVF+RUv3LZea5ScZGLEwRsEhe6pxATNn25Zed1
+         cDCisYbFuLOmkDRIXOebVmsbga+pq/IAxHTCrNqZq5nsmKkyVqAYN3GT19a8O+h3AMTr
+         5ApMLQmi+lwj+ExMFy4fF3KECY483ui5Y9TPj2MOCK94qNlmVcuJ7RCPmZw6210banUm
+         MkA8++FJuJ3yG4gtj1Kt708xTKYCEf6ooCN2q+F2Y+LCL59Ypb/YYoWR3I79sRaUwrvf
+         6MtqWZYnGrNiXRR1HG2H8Xrl30UA/WasNL0v9RjFpOazNA0DXCKDg2ExhC6wNxcS6Bj6
+         okwA==
+X-Gm-Message-State: AOAM532pTiSB8eoSiblUPC7snm+HNk6kcQkQYS73WDBLxMVqRIdlp/Th
+        hAOyCbhz1uDva6m8QrN6qMHMSm1yQIesFdXcXs8=
+X-Google-Smtp-Source: ABdhPJygm9EPdyyaxvFoHxSJ7IKNDdXyt30FMolGCUK0JYhE35gT1CUdLM283xzc0aQIh6sp5YiHd8qfC93bpFyNAj4=
+X-Received: by 2002:a05:6102:814:: with SMTP id g20mr1588701vsb.42.1618841919211;
+ Mon, 19 Apr 2021 07:18:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210419070109.4780-1-apopple@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <26db9291095c1dfd81c73b0f5f1434f9b399b1f5.1618316565.git.geert+renesas@glider.be>
+ <bd8db435-24e1-5ab3-6b35-1d4d8a292a7e@hisilicon.com> <CAMuHMdVouD+e4GpN_Dur8HSop4B8HVosGSYw7vfTpBEi_inMbw@mail.gmail.com>
+ <YHcx+QPbkTA0bv9V@smile.fi.intel.com> <CAMuHMdUkDcdZk5YYnkMH+VD4JXFq4khR2dn8wBdSXs1GCT9UMQ@mail.gmail.com>
+ <YHc+/MOWA6rO+1Wy@smile.fi.intel.com> <CAMuHMdWZz6QNQbN53Whjfi122PWesM4_+K0_m=np8L=E+=io6g@mail.gmail.com>
+ <CAHp75VcFjRBO+0578jWam3+sc24KvKArTtQV+nRCCbV1E++Nsg@mail.gmail.com>
+ <CAMuHMdVu4VRgJzfM=P8OBi55rsCMFB1vmSepTvSyv1DLjw9Vcw@mail.gmail.com>
+ <CAHp75Vcye9HPSoAkqiqnzgQ+8_SZ-W9gURWmWXd5s-y_fji5Ug@mail.gmail.com>
+ <CAMuHMdU5AVdq5fubt69u6cOBJR8gwi=LcmePf46yi9_1srtsGA@mail.gmail.com>
+ <CAHp75VdbYSD=unX4bbiWFXYPJJbW5b_j0kUO7S-HbO2btDvipw@mail.gmail.com> <CAHp75VdjnNywLF7rt_Q9tw+sJwtm8S-BMU57ve21WGVoADFtuA@mail.gmail.com>
+In-Reply-To: <CAHp75VdjnNywLF7rt_Q9tw+sJwtm8S-BMU57ve21WGVoADFtuA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 19 Apr 2021 16:18:28 +0200
+Message-ID: <CAMuHMdVwWLpS-N2fvihLcJ9RsAppzRMd5ZQhra-sz6EFavhy2g@mail.gmail.com>
+Subject: Re: [PATCH] i2c: I2C_HISI should depend on ARCH_HISI && ACPI
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.04.21 09:01, Alistair Popple wrote:
-> Introduce a version of region_intersects() that can be called with the
-> resource_lock already held. This is used in a future fix to
-> __request_free_mem_region().
-> 
-> Signed-off-by: Alistair Popple <apopple@nvidia.com>
-> ---
->   kernel/resource.c | 52 ++++++++++++++++++++++++++++-------------------
->   1 file changed, 31 insertions(+), 21 deletions(-)
-> 
-> diff --git a/kernel/resource.c b/kernel/resource.c
-> index 627e61b0c124..736768587d2d 100644
-> --- a/kernel/resource.c
-> +++ b/kernel/resource.c
-> @@ -523,6 +523,34 @@ int __weak page_is_ram(unsigned long pfn)
->   }
->   EXPORT_SYMBOL_GPL(page_is_ram);
->   
-> +int __region_intersects(resource_size_t start, size_t size, unsigned long flags,
-> +			unsigned long desc)
-> +{
-> +	struct resource res;
+Hi Andy,
 
-I'd do
+On Mon, Apr 19, 2021 at 4:14 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Mon, Apr 19, 2021 at 4:58 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Mon, Apr 19, 2021 at 4:54 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> > > > In any case it's not true. We have the platform drivers w/o legacy
+> > > > users that are not dependent on OF.
+> > >
+> > > Example? ;-)
+> >
+> > i2c-owl.c
+>
+> In case you want more
+> sound/sparc/amd7930.c
 
-struct resource res, *p;
+SND_SUN_AMD7930 depends on SND_SPARC && SBUS
+SND_SPARC depends on SPARC
+SPARC selects OF
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Hence, SND_SUN_AMD7930 depends on OF.
 
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Thanks,
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-David / dhildenb
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
