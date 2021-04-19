@@ -2,113 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE46836409E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0953640A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238662AbhDSLgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 07:36:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhDSLgc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 07:36:32 -0400
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A7ABC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 04:36:03 -0700 (PDT)
-Received: by mail-oo1-xc31.google.com with SMTP id h2-20020a4ad7420000b02901e5901169a5so7442173oot.8
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 04:36:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y37dxPGDqWrMMwaZQsfzvIV4iLtksHzvvTYTmv8VKZQ=;
-        b=YF/P9rRc8el07+omSgXOAdGcMZ1ae5KTxFlp7NYn8/U9dpcPQKruQTML+xY/JIP7j9
-         qdXQC+FT5G+tn4V1N290znESicoSu0YqC4XQ8zhqLvj8lNzLY2/BTA0F99915blACrk5
-         I1Pu+AtFL4RQ0dCX0YTDLtislK2/fPPhr6HNMaVaHpl5+YhT4jZGCfl12JLJ3XRst+74
-         lWUASJ+UvLqZ3atWGOvVe6v7c4I5o8vkyyFLVUcyIY+K/nELSd+y2SCnldfPG+oKLg7H
-         B49qsuqy56oKeWtczVXtV+xspboRkd94GdV7VAdUrFF7w4E0gNskoGY/lcYP+RoJa8Pv
-         JJbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y37dxPGDqWrMMwaZQsfzvIV4iLtksHzvvTYTmv8VKZQ=;
-        b=pzSSMQCzUJ8O/idx5eb0CwwYL1wWUyxONl+6jogFeVqii71MD+dGoIdg71KOoN9mU9
-         xDtieZ+ylov0ahtHYSJkiozBl0hH2P5+o1oy9NC1xnEK/Ud0AlgRNkJOXMA3HMoX0jJH
-         /XxKV6HoL+/sksxbgDy+NSfAasOzLKfqSfVZRVCwCS0KHPWL09s1CYMze5dq/+vc5Ldx
-         BLF4LxJ25COJDEFmoIu+Eep3Z1YqsthqjIpZ1cGL5Lr2kJpyCzaL7sEvLC8N8gVZifJZ
-         kimBe/g2bfTR12RDlMW41dZUXDJvAtjXlK8rLRNT7vZfDmup743seol5z6UJIfvMjAJq
-         55fA==
-X-Gm-Message-State: AOAM531Bjvh6HfXTuPoht3N4anbwaA8mg9EPUkqntWroOEb79mABKSn3
-        G1EbPam8rjfE4iEQqt8y/o2WoeS9LcuFtXQrYNWu8H6C+Y7wQw==
-X-Google-Smtp-Source: ABdhPJyaoR3yYJ2U4U7X8136f3RVj/q6suxRB0C53uxYhOOcQVO/Iz4EUuasRbsE+ygsh1Yk5eUZ6PM5JMh3k7ZMha0=
-X-Received: by 2002:a05:6820:34b:: with SMTP id m11mr13070957ooe.49.1618832162340;
- Mon, 19 Apr 2021 04:36:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210415145857.34183-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210415145857.34183-1-andriy.shevchenko@linux.intel.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Mon, 19 Apr 2021 13:35:51 +0200
-Message-ID: <CAHUa44FWJiL1yzHR0jwL2VJG_4t_O6An48v47gORitcaahwmYw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] tee: optee: Provide special parameter field for
- UUID values
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        id S238709AbhDSLg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 07:36:56 -0400
+Received: from mail-eopbgr80048.outbound.protection.outlook.com ([40.107.8.48]:8974
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230272AbhDSLgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 07:36:52 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NPRhuof0jSAybjYrIcuxGATDEuPgVo0BHjQDJUBJTrxj79Y5n6/skFrfsQWA7CbIfCvp8egWJgAqnBxwuhnaI/E965CDGk34PCtoJ0dYEwDE+GNYjMoRttxXIiwZ4ZFKr54z+OW9jt/JsQkl3O1ch/lImE8Arhkoi1MHcLkNbXWJ+9MdWvjSeHmQOjQjooXzQRxyBjP1o06TZ8GsUdqLZtSyPjqudmZN6+vHi4TropNyqfcsQKwSDEYC/DpV4H7goqVwAS9G/kYPeqFs/Wd3spnHunkkvwvhdFTat7DIE/dTbgWBngoYWaejG8LUUgvg6Fqh1DtZl4QIjR6jNgKonw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YRDmjSFC9jIkxreywrXsCy27zmSZPCm3sCv+cYVDTcc=;
+ b=FJivhnFsk3J4EVliE5R7HpFkYm9xgClCZwEQBLmg19Zpnz4eVvyljvrXls3WPm4WiU5mRBkDoQa3z0dy3HFDMwwZeDV1JLwqAr8VdTugKMF7OGB4jAQtkH6TJGVXDtP9Za1CNEswdYYrqLt9KlDtovEVEYLT0D7leUx+4yvVNoWiSw/MKMfrkEx9aXiL5l2PWALbJtvO7Y4gtESDIC0HTYtetCe7AoBn3NLOtsmRgZocHV7Ly7NUasJZdBd2n1Ttw6Mx580IGiwGwWAXFxhIL83lozpC+2j7oJ+nr03KwWCbm/fBWjQNf/azorGAxm/a4sRntp5ahY5y1+142AC3Kw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vaisala.com; dmarc=pass action=none header.from=vaisala.com;
+ dkim=pass header.d=vaisala.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vaisala.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YRDmjSFC9jIkxreywrXsCy27zmSZPCm3sCv+cYVDTcc=;
+ b=pGGcckxxu4ypbgyrbJDi4XaxAvzFk/OOvS7Q6TQHVM4/SsLp3igXciycLAuTQnFlOzhP7IhWF3mHpXqCCD2RDukYNW08BkyoHt6/maYFDvodOvFfAPhGOVUyEhcJqtFnC7/pEcOCfHJs2Srm+ji02kyBiptQtT5fLbv5qFxGT6loCMCjuMwalbjRS+xQBUMAFOdcHz4hDqXrdKy85seXDt+rtd3x755dJRqUa3Ym2A9rjC3df8Y18fZv8uyoWKJmih3Xm9K0o9OsB17alUc3oIIvNwPUM6pjgAbfk0i/XMi7njAey+E1RbWOMl+A0xpygRBcNhQy7ECoofVS3qiWng==
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=vaisala.com;
+Received: from VI1PR0602MB3568.eurprd06.prod.outlook.com
+ (2603:10a6:803:10::31) by VI1PR06MB5421.eurprd06.prod.outlook.com
+ (2603:10a6:803:b9::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Mon, 19 Apr
+ 2021 11:36:18 +0000
+Received: from VI1PR0602MB3568.eurprd06.prod.outlook.com
+ ([fe80::c471:1848:5f45:95a4]) by VI1PR0602MB3568.eurprd06.prod.outlook.com
+ ([fe80::c471:1848:5f45:95a4%7]) with mapi id 15.20.4042.024; Mon, 19 Apr 2021
+ 11:36:18 +0000
+Subject: Re: [PATCH v2 2/2] iio: accel: Add driver for Murata SCA3300
+ accelerometer
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <20210416134546.38475-1-tomas.melin@vaisala.com>
+ <20210416134546.38475-3-tomas.melin@vaisala.com>
+ <CAHp75VcibWup79np=xeQpO2z+OGCFXPhL6vWL6aWRZ+G8+djwQ@mail.gmail.com>
+ <91ea3aba-854e-30f1-1236-733debfcf5dc@vaisala.com>
+ <CAHp75VcWu96EAjzYYwt_gqscvJp3s9Y+ZnaK2NQa_=L+S+r5zQ@mail.gmail.com>
+From:   Tomas Melin <tomas.melin@vaisala.com>
+Message-ID: <9d6e9205-6fcd-1112-46da-2062e12311e1@vaisala.com>
+Date:   Mon, 19 Apr 2021 14:36:15 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+In-Reply-To: <CAHp75VcWu96EAjzYYwt_gqscvJp3s9Y+ZnaK2NQa_=L+S+r5zQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [85.156.166.106]
+X-ClientProxiedBy: HE1PR08CA0057.eurprd08.prod.outlook.com
+ (2603:10a6:7:2a::28) To VI1PR0602MB3568.eurprd06.prod.outlook.com
+ (2603:10a6:803:10::31)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.242.132] (85.156.166.106) by HE1PR08CA0057.eurprd08.prod.outlook.com (2603:10a6:7:2a::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Mon, 19 Apr 2021 11:36:17 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bd2be332-d677-42fb-686e-08d9032758ed
+X-MS-TrafficTypeDiagnostic: VI1PR06MB5421:
+X-Microsoft-Antispam-PRVS: <VI1PR06MB542157555E881BEF4268CFCFFD499@VI1PR06MB5421.eurprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Os72LZ90OQwRZhZ/P6hJGrVwP6P0jw3+mzIIXmSlGTdKL9SGm+pcQjeT4m6SPG/NfeTgJCcs72auHPOMyHQBAxKlBwiFa4Dt1FhNK2My7/tsHOXbtgsPlRfgdLo8C7CMQGOSAdRMjPvA8fMsP0JAyAU1JZQK8PPuPhjAsXRVCAE5BIKFD3miX89MIH5cBoZRsrYrgt8dAkGZLSj3+p04rtYE7qbh0Y2tScdY3Lahp9oTq+vEyZdlENPyUOGvrtuKRnFyaP+whmPW3FyoFCCr/AgfNHwa8UtLoSZGrv6fROWZBBz5LydWzJMEIMoXrdEDIpgs/ssflKVQvM26kd4v3l8rAUHy6yAWbxJGiP4AWB4AFkwq7IJG9440eBAcLB2nWy7gH6Myu/tCnn6nS2WuKJL6PITkclwy39GmKcn7nPQ5N+jygoEE/41wKmV1+XHVH8iCgTudqMkSN31grNrJ9xOeJHRWxjRFjTS/odF2t1zGj3joNxj8iE+QNTsFgccihqMtCR4FC9JdJAukv5fgnTH6sMEoic67gZhcI/4A8VhX60ymJkVVyckj6tPkVbz/xYslUoCg+Y0sBMmN7fZCZEK5Z/MtqyXbQiy8wvf5r4HTLzMo+hDFxOFwtKHQMco4MmzIZxJ+y4YLHR8GxQ9Bz4sCz4Xzg1N6ZcfGSen7rSNyu0vQQm6VG8qtTQ8DUWJne7PJ2aaiZ8EMn+6vZOZcU+mt9rDEYA+043PxvRlfHcM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0602MB3568.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(346002)(376002)(396003)(366004)(136003)(31696002)(83380400001)(66556008)(16526019)(8936002)(38350700002)(956004)(66476007)(38100700002)(53546011)(54906003)(52116002)(66946007)(31686004)(186003)(2906002)(478600001)(36756003)(6486002)(8676002)(26005)(5660300002)(4326008)(16576012)(44832011)(86362001)(6916009)(316002)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?T0c5K1Y1LzRjYjlEdkZ5dTNTTUQxWFlVNTBKUVM5UU9kazhtbDVOS3hsOENW?=
+ =?utf-8?B?TkNWRmhTaCtTeWV3bVIwWlQ1Sjc2MlJZd1IrM1g5YTBCRmwveldQZ3Bld3A0?=
+ =?utf-8?B?Tnp6WEw3RWdUY1labUUzVVJYUGd1NXR5UkpBYzUydWJ5RnBiTkd0R2xKZHli?=
+ =?utf-8?B?WmRSYUdwbFh3SnZvL01sSVdJamZVa08xdmlYUkFxd2Z6OU9sdjBETGNGUWwr?=
+ =?utf-8?B?UmswTEZKcGVUNnBKcU1vNExwSTkrdE8wejRBOXVudVFJVXNJNDdPY05qZFFV?=
+ =?utf-8?B?a3YxV3FsUVljTGh1NDlyODRuOWpDc1dZOHhmU3QxbXgyTDdrV2VGNjNEeUlp?=
+ =?utf-8?B?NjRUbVk1QXZTeFFid0p0Rms5TDgxVTJQVVZhMi9ZSjlYS20xYnR3U0t4Y2ZL?=
+ =?utf-8?B?MkxpdWNyRUR1QitBb1ByS2RrR0xSTUNISHRtcGVRVGZ4NW8wbm5rMlk0WkpW?=
+ =?utf-8?B?MzNvWmFTWnF6cWplWnY3UVdXTUV3NURtUWFsaDB5R3RVdnNxVGRvK0U2K2hs?=
+ =?utf-8?B?azNDaHc1Y3RuZzJtTGJxMnJWaUdlbmtvUzNZRk9JQzBrMHZOV3ExSVRBQ2pS?=
+ =?utf-8?B?ZFc2L3EwUEdIRGxpUmNWYlpHL2NsUTdESkRxeU9FTFFLdlZUMFFzM2NsWG9l?=
+ =?utf-8?B?amRsMTA5c0UrcDFpRU1kME1jdlNyL3dNY3hwSFdFeUhtcmFOTlNxNjd3V0s0?=
+ =?utf-8?B?VkJid1F2YXluZ1NuVGlBdGd6ekgvaXFQai8xU3pPQ2hpNTBXdW9JZThFa0Rj?=
+ =?utf-8?B?VExHYTQzNW00NHhRUnRyUTdDc0dEdE5MMFFBNzdoRm5zOG1QWHdsSXl2N2Vj?=
+ =?utf-8?B?RWtWN2pNcjRUUE13KzFFMWdWc3cweWYrL1FQdTVKdWFQdDZIVGVmN0E5SWhy?=
+ =?utf-8?B?TFRCZ1FFZ2ExUmtaQ3dQUnN0SlVUME9Jc0Vkcm5GeE1RaXE1K3JlKzdpY2Vq?=
+ =?utf-8?B?SkNJZVQvdGdqL201Q3JyK3V2VFNpc3UreE9wek9vWFUwNURZbXp3azdNUXds?=
+ =?utf-8?B?aFZKTCtwWWlweThoV3FvaVpxYmRueEZ4STZoY2M4bjczenpCcVVLck52NG5o?=
+ =?utf-8?B?SFJadjU3cVZIci9DUVRZSE5LTUZOUHVTZXVwOTJzaWp1bEJFbUZVam1aRCt4?=
+ =?utf-8?B?SlorMmgreWdKMytXYWYzTXlYN2ZEVFJFcnJvRkVheWZ1ZjFhNDB1dklUVWc5?=
+ =?utf-8?B?QldUOUtjWCthZEE0Q0RUcjFlYXBLVDNaK29oKzhMN2NnWS82aThtek9Fc1Iz?=
+ =?utf-8?B?VGtLR1dyeUlQRXMxSWNiSWNYT2RIcWc5Vm45eDl4UFBXcHBheFpoWE1mYjgz?=
+ =?utf-8?B?WUlqUlU4eExlYVFyU1pWSGFhUVlkRW1SajNyalVlM1p0VFpJOUQ5V3JFazN5?=
+ =?utf-8?B?TDV2TENwU29UZmQweXgzejVXblJTbFYrOSt2U0M1alAzZUpmZjJzS3dicmIr?=
+ =?utf-8?B?YXJYckpqc0tJV3pmcVR6dVVzT2UzZFQrcXE5TWdIT0J5a3k2aVlScVdPVFRZ?=
+ =?utf-8?B?SUtDQjE4NEdmdm1hbGhScFEvS3htNFRobFJtWjVWRHpPYTlZdlVmVjg4Z2R0?=
+ =?utf-8?B?djVmMXdLYllEbGZXUkU1TmhnSHhPdTY2STFQcys1NkpYNXpscnQvUlVFNEpV?=
+ =?utf-8?B?bzlBd05WRk9WMTN1bzRBOGpvT0dBRUk4MUlyS0tRTm9zQ21idVJNb2hCUDBh?=
+ =?utf-8?B?UVF5MXN1eVVZb1VOSmdEeXhCZWEwRVFwRkRVTWdwNmhRQ25hN1Q2Y0doU3Iy?=
+ =?utf-8?Q?qrlvggEXzylMQoNSF3IY9aeyZ8ZghFA7skwKvR0?=
+X-OriginatorOrg: vaisala.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bd2be332-d677-42fb-686e-08d9032758ed
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0602MB3568.eurprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2021 11:36:18.1386
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 6d7393e0-41f5-4c2e-9b12-4c2be5da5c57
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FPPajQaL3iR6Xn2N7UVhPjBidUCpUlCZ89QcRea6n8fQ09o/fbS3a9ZHMIE5FWOAdq7w8llzcCFaKlOxHjIZpA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR06MB5421
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+Hi,
 
-On Thu, Apr 15, 2021 at 4:58 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On 4/19/21 2:14 PM, Andy Shevchenko wrote:
+> On Mon, Apr 19, 2021 at 1:29 PM Tomas Melin <tomas.melin@vaisala.com> wrote:
+>> On 4/17/21 3:39 PM, Andy Shevchenko wrote:
+>>> On Fri, Apr 16, 2021 at 5:21 PM Tomas Melin <tomas.melin@vaisala.com> wrote:
+>>>> Add initial support for Murata SCA3300 3-axis industrial
+>>>> accelerometer with digital SPI interface. This device also
+>>>> provides a temperature measurement.
+> ...
 >
-> Dereferencing something to uuid_t value is not good idea strictly speaking.
-> Provide a special parameter field for UUID values and drop ugly casting.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/tee/optee/call.c      | 2 +-
->  drivers/tee/optee/optee_msg.h | 2 ++
->  2 files changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-> index 1f0a68381656..d50cff7a9406 100644
-> --- a/drivers/tee/optee/call.c
-> +++ b/drivers/tee/optee/call.c
-> @@ -241,7 +241,7 @@ int optee_open_session(struct tee_context *ctx,
->         memcpy(&msg_arg->params[0].u.value, arg->uuid, sizeof(arg->uuid));
->         msg_arg->params[1].u.value.c = arg->clnt_login;
->
-> -       rc = tee_session_calc_client_uuid((uuid_t *)&msg_arg->params[1].u.value,
-> +       rc = tee_session_calc_client_uuid(&msg_arg->params[1].u.uuid,
->                                           arg->clnt_login, arg->clnt_uuid);
->         if (rc)
->                 goto out;
-> diff --git a/drivers/tee/optee/optee_msg.h b/drivers/tee/optee/optee_msg.h
-> index 81ff593ac4ec..df095a974f3f 100644
-> --- a/drivers/tee/optee/optee_msg.h
-> +++ b/drivers/tee/optee/optee_msg.h
-> @@ -144,6 +144,7 @@ struct optee_msg_param_value {
->   * @tmem:      parameter by temporary memory reference
->   * @rmem:      parameter by registered memory reference
->   * @value:     parameter by opaque value
-> + * @uuid:      parameter by UUID
->   *
->   * @attr & OPTEE_MSG_ATTR_TYPE_MASK indicates if tmem, rmem or value is used in
->   * the union. OPTEE_MSG_ATTR_TYPE_VALUE_* indicates value,
-> @@ -157,6 +158,7 @@ struct optee_msg_param {
->                 struct optee_msg_param_tmem tmem;
->                 struct optee_msg_param_rmem rmem;
->                 struct optee_msg_param_value value;
-> +               uuid_t uuid;
+>>>> +       ret = spi_sync_transfer(sca_data->spi, xfers, ARRAY_SIZE(xfers));
+>>>> +       if (ret < 0) {
+>>>> +               dev_err(&sca_data->spi->dev,
+>>>> +                       "transfer error, error: %d\n", ret);
+>>>> +               return -EIO;
+>>> Why shadowing error code?
+>> Returning EIO here to have full control over the return value from this
+>> function. As return value of this is used for testing
+> Care to show what kind of testing requires this?
+> Also why can't it be refactored to accept all error codes?
 
-It's nice to get rid of the cast above, but I'm not that keen on the
-change in this struct. This file defines the ABI towards Secure world
-and adding dependencies on external complex types is a larger problem
-than the cast above in my opinion.
+I was referring to this:
 
-Cheers,
-Jens
++static int sca3300_read_reg(struct sca3300_data *sca_data, u8 reg, int *val)
++{
++	int ret;
++
++	mutex_lock(&sca_data->lock);
++	sca_data->txbuf[0] = 0x0 | (reg << 2);
++	ret = sca3300_transfer(sca_data, val);
++	mutex_unlock(&sca_data->lock);
++	if (ret == -EINVAL)
++		ret  = sca3300_error_handler(sca_data);
++
++	return ret;
++}
++
++static int sca3300_write_reg(struct sca3300_data *sca_data, u8 reg, int val)
++{
++	int reg_val = 0;
++	int ret;
++
++	mutex_lock(&sca_data->lock);
++	sca_data->txbuf[0] = BIT(7) | (reg << 2);
++	put_unaligned_be16(val, &sca_data->txbuf[1]);
++	ret = sca3300_transfer(sca_data, &reg_val);
++	mutex_unlock(&sca_data->lock);
++	if (ret == -EINVAL)
++		ret  = sca3300_error_handler(sca_data);
++
++	return ret;
++}
+
+So this goes into error handling only when transfer indicates EINVAL 
+(which happens when
+
+transfer otherwise is good, but device return status has error flags set 
+i message).
+
+Thanks,
+
+Tomas
+
+
+>
+>> for possible status error (EINVAL), feels more confident to have it like
+>> this to avoid any confusion. And atleast spi_sync_transfer() return value
+>>
+>> would be visible in error message.
+>>>> +       }
+>
+>
