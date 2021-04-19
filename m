@@ -2,175 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B49364AC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 21:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8301364ADC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 21:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241251AbhDSTtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 15:49:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239346AbhDSTtk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 15:49:40 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCAC9C061763
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 12:49:09 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id u21so54792289ejo.13
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 12:49:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0pRdHORbMnYGgpAEqFhWtNH9/sxU/zrFmn1etVSS8ec=;
-        b=pbgttAEz2va7NMNY0DPCjAIrN3cvwgh1vLPTHCTYGogu5LS30biP0lrPVzo2ndKVug
-         c910hP3lyskv2p9CsZZmtyPWoONAJwqaunWQvnjFhjIX0Q5yZ5SChmgdBzPdhSyUJoj1
-         N3Sg+EygRrSverxWz+odjeJVoGWYQmzDyrbb4Xso5/JC8GcrmocAQUAI9cAzpzoQutzT
-         2xRp+1GLcu4i3ZpQVcRvSUUEnMYkP6bhFS1FBvK2WyY2dmofMG+PRGN1HZzKDoVhs+od
-         o9kzI7900pFwR78M2AFerahttXmuiaLedpc5P76RshFxO1Y3+hRfMsGLOUEcZgyZvF35
-         hCSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0pRdHORbMnYGgpAEqFhWtNH9/sxU/zrFmn1etVSS8ec=;
-        b=Bn8HUO4uQY5AIbFXviRS/IcH5Rv9SRmZWwSX5S1cgKRFPNEme/4lqWLOvBimWaZss/
-         MluvCm7QY7ns4xjDhv1WBP9jyR7AI/xTdG4kw9WlzU7H/CgOQfdiYeIdM/L5Jta+dCzD
-         n52m6kB0sxzbc2RWMDDMM3KokW2Jo2c7OBQJwuwCrtSiJaq7sCrztZ+4oqr18NdpKNkV
-         LA7nRNGZHd4R1bw1oyAQLSSJCbEgeJAG9ebF09XvueziBx+bhD1/fXFpyjz5GzyufRQS
-         VjetuqjQxpYmOIy4TMkBuzUabloeajRWtX6JIBgJOr5OZH5YR8sut+Jy1oTDwANvE8Fy
-         +RdQ==
-X-Gm-Message-State: AOAM531X69t6q9TOCGiHxIQYEMVnogh8BM7nEmy2zjFvoTJt37ySjOwl
-        AZoOnHGUNJfElbxxL5YtFyaYalG7WTB9xrnfT/Nslg==
-X-Google-Smtp-Source: ABdhPJw0kWSefwOb928/NEJy0zoj/ddLUSgM8SbRvl82iPLTA2/huvDl9OCcxhXSBS6EtSGZbyr13FXYLv8LlMcG2WM=
-X-Received: by 2002:a17:907:7631:: with SMTP id jy17mr23809461ejc.418.1618861748396;
- Mon, 19 Apr 2021 12:49:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210419184516.GC1472665@redhat.com>
-In-Reply-To: <20210419184516.GC1472665@redhat.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 19 Apr 2021 12:48:58 -0700
-Message-ID: <CAPcyv4jR5d+-99wVMm9SHxNBOsp0FUi7wzDNsefkZ1oqUZ7joQ@mail.gmail.com>
-Subject: Re: [PATCH][v2] dax: Fix missed wakeup during dax entry invalidation
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Linux fsdevel mailing list <linux-fsdevel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux kernel mailing list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S241914AbhDST6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 15:58:14 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:53286 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235788AbhDST6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 15:58:13 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618862263; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=AvrEgEbjYaBKxlur+JILsbveSoz50Kp16VLzJNNL5+I=; b=W0a/mf/NC8S62QJpQRhzhhtWtJjVc2MHC8vz9tJhatjFCEnNgT+/TgQ88BPzHRk5GPWmnoTf
+ /qWLdvL5vX/NQrWJ95bZn5HZ9z+pPcaVS4XFPVeLby1Jt7cgNxPBdMxcV6N+ZmssfW3IaHTz
+ jCNFRMK2vnt3tNS79CMb7cz5GVs=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 607de0a5853c0a2c46058af6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 19 Apr 2021 19:57:25
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 860F1C433F1; Mon, 19 Apr 2021 19:57:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 77B6BC433D3;
+        Mon, 19 Apr 2021 19:57:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 77B6BC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jackp@codeaurora.org, Hemant Kumar <hemantk@codeaurora.org>,
+        Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH] usb: gadget: Fix double free of device descriptor pointers
+Date:   Mon, 19 Apr 2021 12:57:20 -0700
+Message-Id: <1618862240-5965-1-git-send-email-wcheng@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 11:45 AM Vivek Goyal <vgoyal@redhat.com> wrote:
->
-> This is V2 of the patch. Posted V1 here.
->
-> https://lore.kernel.org/linux-fsdevel/20210416173524.GA1379987@redhat.com/
->
-> Based on feedback from Dan and Jan, modified the patch to wake up
-> all waiters when dax entry is invalidated. This solves the issues
-> of missed wakeups.
+From: Hemant Kumar <hemantk@codeaurora.org>
 
-Care to send a formal patch with this commentary moved below the --- line?
+Upon driver unbind usb_free_all_descriptors() function frees all
+speed descriptor pointers without setting them to NULL. In case
+gadget speed changes (i.e from super speed plus to super speed)
+after driver unbind only upto super speed descriptor pointers get
+populated. Super speed plus desc still holds the stale (already
+freed) pointer. Fix this issue by setting all descriptor pointers
+to NULL after freeing them in usb_free_all_descriptors().
 
-One style fixup below...
+Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+---
+ drivers/usb/gadget/config.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
->
-> I am seeing missed wakeups which ultimately lead to a deadlock when I am
-> using virtiofs with DAX enabled and running "make -j". I had to mount
-> virtiofs as rootfs and also reduce to dax window size to 256M to reproduce
-> the problem consistently.
->
-> So here is the problem. put_unlocked_entry() wakes up waiters only
-> if entry is not null as well as !dax_is_conflict(entry). But if I
-> call multiple instances of invalidate_inode_pages2() in parallel,
-> then I can run into a situation where there are waiters on
-> this index but nobody will wait these.
->
-> invalidate_inode_pages2()
->   invalidate_inode_pages2_range()
->     invalidate_exceptional_entry2()
->       dax_invalidate_mapping_entry_sync()
->         __dax_invalidate_entry() {
->                 xas_lock_irq(&xas);
->                 entry = get_unlocked_entry(&xas, 0);
->                 ...
->                 ...
->                 dax_disassociate_entry(entry, mapping, trunc);
->                 xas_store(&xas, NULL);
->                 ...
->                 ...
->                 put_unlocked_entry(&xas, entry);
->                 xas_unlock_irq(&xas);
->         }
->
-> Say a fault in in progress and it has locked entry at offset say "0x1c".
-> Now say three instances of invalidate_inode_pages2() are in progress
-> (A, B, C) and they all try to invalidate entry at offset "0x1c". Given
-> dax entry is locked, all tree instances A, B, C will wait in wait queue.
->
-> When dax fault finishes, say A is woken up. It will store NULL entry
-> at index "0x1c" and wake up B. When B comes along it will find "entry=0"
-> at page offset 0x1c and it will call put_unlocked_entry(&xas, 0). And
-> this means put_unlocked_entry() will not wake up next waiter, given
-> the current code. And that means C continues to wait and is not woken
-> up.
->
-> This patch fixes the issue by waking up all waiters when a dax entry
-> has been invalidated. This seems to fix the deadlock I am facing
-> and I can make forward progress.
->
-> Reported-by: Sergio Lopez <slp@redhat.com>
-> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-> ---
->  fs/dax.c |   12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
->
-> Index: redhat-linux/fs/dax.c
-> ===================================================================
-> --- redhat-linux.orig/fs/dax.c  2021-04-16 14:16:44.332140543 -0400
-> +++ redhat-linux/fs/dax.c       2021-04-19 11:24:11.465213474 -0400
-> @@ -264,11 +264,11 @@ static void wait_entry_unlocked(struct x
->         finish_wait(wq, &ewait.wait);
->  }
->
-> -static void put_unlocked_entry(struct xa_state *xas, void *entry)
-> +static void put_unlocked_entry(struct xa_state *xas, void *entry, bool wake_all)
->  {
->         /* If we were the only waiter woken, wake the next one */
->         if (entry && !dax_is_conflict(entry))
-> -               dax_wake_entry(xas, entry, false);
-> +               dax_wake_entry(xas, entry, wake_all);
->  }
->
->  /*
-> @@ -622,7 +622,7 @@ struct page *dax_layout_busy_page_range(
->                         entry = get_unlocked_entry(&xas, 0);
->                 if (entry)
->                         page = dax_busy_page(entry);
-> -               put_unlocked_entry(&xas, entry);
-> +               put_unlocked_entry(&xas, entry, false);
+diff --git a/drivers/usb/gadget/config.c b/drivers/usb/gadget/config.c
+index 2d11535..8bb2577 100644
+--- a/drivers/usb/gadget/config.c
++++ b/drivers/usb/gadget/config.c
+@@ -194,9 +194,13 @@ EXPORT_SYMBOL_GPL(usb_assign_descriptors);
+ void usb_free_all_descriptors(struct usb_function *f)
+ {
+ 	usb_free_descriptors(f->fs_descriptors);
++	f->fs_descriptors = NULL;
+ 	usb_free_descriptors(f->hs_descriptors);
++	f->hs_descriptors = NULL;
+ 	usb_free_descriptors(f->ss_descriptors);
++	f->ss_descriptors = NULL;
+ 	usb_free_descriptors(f->ssp_descriptors);
++	f->ssp_descriptors = NULL;
+ }
+ EXPORT_SYMBOL_GPL(usb_free_all_descriptors);
+ 
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-I'm not a fan of raw true/false arguments because if you read this
-line in isolation you need to go read put_unlocked_entry() to recall
-what that argument means. So lets add something like:
-
-/**
- * enum dax_entry_wake_mode: waitqueue wakeup toggle
- * @WAKE_NEXT: entry was not mutated
- * @WAKE_ALL: entry was invalidated, or resized
- */
-enum dax_entry_wake_mode {
-        WAKE_NEXT,
-        WAKE_ALL,
-}
-
-...and use that as the arg for dax_wake_entry(). So I'd expect this to
-be a 3 patch series, introduce dax_entry_wake_mode for
-dax_wake_entry(), introduce the argument for put_unlocked_entry()
-without changing the logic, and finally this bug fix. Feel free to add
-'Fixes: ac401cc78242 ("dax: New fault locking")' in case you feel this
-needs to be backported.
