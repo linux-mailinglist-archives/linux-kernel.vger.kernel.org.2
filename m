@@ -2,98 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3296D363F0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59C45363F10
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237733AbhDSJoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 05:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39036 "EHLO
+        id S238262AbhDSJoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 05:44:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231940AbhDSJn6 (ORCPT
+        with ESMTP id S232004AbhDSJow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 05:43:58 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692B6C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 02:43:27 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id v72so17275216ybe.11
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 02:43:27 -0700 (PDT)
+        Mon, 19 Apr 2021 05:44:52 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC9AC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 02:44:21 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id c84-20020a4a4f570000b02901e9af00ac1bso1392244oob.10
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 02:44:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=5hEAKW4iWFa+USstysB5tOBW8HzTKZWfxo7ADRmj7wg=;
-        b=owVh6mDaIHLJm+OB/qUJsaVBKrp4P2SnV1talcOgO7MAXS27Nj/QhBD0+MLd11xMlZ
-         upZEMWu4Ycj7YgTwk7dEPegp7la99Ka155uH0n72eB3aU/pWEAnlE+aX7Ky17PeNRMm7
-         IeyVcT+TBRlnzqMuKS0YuiurLomF4s98dB7Y42CdNDEDU82igJ91e8pHiU9jwNwtVk8m
-         2z7XTMGrXhBK8XhjGt4E2EB/UbYtc/Kmti6JjHd+PlEAre0AkJPK4qxh9imam1X8ecmT
-         G4Q39znlzTdi0RX/gxz1Wikke9/+aJTj6ICLea2HKvB5aVcMTmvW8SWk34QG/+RJGDtl
-         CSTg==
+        bh=C4SsjBBBWAk9PglcpWZrcZB88JEvecexvFUi0GD5O9o=;
+        b=Fnpl5H0etWSmKyfe2GsN2TRAI0qkylTHELE4LbYuKhWUKxlgbRGl90BJWvQjsnKB9t
+         mqZ0xwCiCM/AibNY+58YgNmT+qEUb+m1c5yewpfpqUgjfjFt1fTU0C3R/5+29DXsmwqc
+         TFLptvpbNkHFundGMJ79T9oLlGHKqcPMlRbcn6YeDWRNrFAgT4aTLWbNnGQKUIC/hIkU
+         VSXQGBjkzXnmlnH3ysi6cYg1bur/hiPeIne1gG4frKdGqF6M9D14VlmFFn4oBdHiBwmh
+         yiqeXIiIaYT8AITTAgrbXL4tFVEnT8cxMqj3fXUTjq0DMO89rfwKvoh6+k4V0iJLYdTe
+         7+Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5hEAKW4iWFa+USstysB5tOBW8HzTKZWfxo7ADRmj7wg=;
-        b=GjJ+tjmwXo89buv/yILD64jQedQNAJmfTGuXC+LtR3yw/+dDKZ0FYolqFDU91Ia1Lw
-         MuvxL2RCvCb241HF/CPWy/PoYcpqEk9jCV2Y0xBWuOBe/EtYw1kp+3NQ4QgyFtBTGHy1
-         4rNRfmkfNHMCPu2vTUZZ3zm0huQ/ntbV2PxV5E9WC/goqVSQcE+AoYy1IBOKTbuU5MAF
-         PHmxXww1EO5DIPTQk347ZmufARQB6vjn7wxx5Y9ECQifYjzQi8YpZlIuEXR9+E62J1Gw
-         lnUcHNDW/y6nVetBk0o8+3SoycBDyz5P/KGMzprRtMpo6fh32eQ4I4AvEDDieQXTwzoR
-         /xaA==
-X-Gm-Message-State: AOAM530vaGIN9/HOYQGPW8wcn2sPIKcbl6eQiQ7txOR/nKmuWqv4dmuR
-        TLxdciiVQSLvGr4HHfP4b6KojplkH+9CGbdeTvCr2w==
-X-Google-Smtp-Source: ABdhPJz7LXGS9oOrvhq94orBUWWqsP7hCGGspsQja+soG35GAYBflk24+LxvgXnR2xp0uNF68WRbP6VNCFD2Q/Pilh8=
-X-Received: by 2002:a25:4244:: with SMTP id p65mr15973709yba.452.1618825406298;
- Mon, 19 Apr 2021 02:43:26 -0700 (PDT)
+        bh=C4SsjBBBWAk9PglcpWZrcZB88JEvecexvFUi0GD5O9o=;
+        b=WcLl9BH7XqIZ35OokCuldEUo6k5VxM1JOxOxZ1CA42WiA27eErx50PjGocsuRtbGhz
+         m0QQK5oG2BBUwGk09nAmrnTVCddFSVFPwyyMJj6Ltvreei4pcIbmULjreyK7n/PIDC1g
+         AYgbFv3ziSTKZN2TM21eFVOQmHA6W6Px9QoibGzgRbGWdAW0D7+Oq+wptmFxa/swrP9E
+         s/qq4Ag0iXAFJW0ypkzi8oGB+vn0VCnRoDLa+xON+Hl1jl9boTtmaPfiF3ozHuWLVsf3
+         LEtJy07m+FskHhuKH5Tkq/DWw0y7stHHMdScORAxjBCrI9I4Ug4Rw0R/fz9mvqAokygs
+         v03w==
+X-Gm-Message-State: AOAM530ar2YlcQpcgXSUB44DsclxneLqMh6vofMwLmSKCX8wWy3dBNPq
+        4LpRiB07s6B60As39LoXUi7mrpwAqy8qgs7RNNeeQg==
+X-Google-Smtp-Source: ABdhPJx8V+fYrfsN3nTvs02sCEhF15TCAcIp6fVMcPZIvT+JjyJGqWTZfvLiVmqBDOCw+wunTkoXSQRfjng2FBECoR4=
+X-Received: by 2002:a4a:d29c:: with SMTP id h28mr12940962oos.14.1618825460590;
+ Mon, 19 Apr 2021 02:44:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <02917697-4CE2-4BBE-BF47-31F58BC89025@hxcore.ol>
- <52098fa9-2feb-08ae-c24f-1e696076c3b9@gmail.com> <CANn89iL_V0WbeA-Zr29cLSp9pCsthkX9ze4W46gx=8-UeK2qMg@mail.gmail.com>
- <20210417072744.GB14109@1wt.eu> <CAMqUL6bkp2Dy3AMFZeNLjE1f-sAwnuBWpXH_FSYTSh8=Ac3RKg@mail.gmail.com>
- <20210417075030.GA14265@1wt.eu> <c6467c1c-54f5-8681-6e7d-aa1d9fc2ff32@bluematt.me>
- <CAMqUL6bAVE9p=XEnH4HdBmBfThaY3FDosqyr8yrQo6N_9+Jf3w@mail.gmail.com>
- <78d776a9-4299-ff4e-8ca2-096ec5c02d05@bluematt.me> <20210418043933.GB18896@1wt.eu>
- <9e2966be-d210-edf9-4f3c-5681f0d07c5f@bluematt.me>
-In-Reply-To: <9e2966be-d210-edf9-4f3c-5681f0d07c5f@bluematt.me>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 19 Apr 2021 11:43:15 +0200
-Message-ID: <CANn89iKXYutm20oi-rCwch0eL1Oo9rq1W=ex6+NzvPitq_jX0Q@mail.gmail.com>
-Subject: Re: PROBLEM: DoS Attack on Fragment Cache
-To:     Matt Corallo <netdev-list@mattcorallo.com>
-Cc:     Willy Tarreau <w@1wt.eu>, Keyu Man <kman001@ucr.edu>,
-        David Ahern <dsahern@gmail.com>,
-        Florian Westphal <fw@strlen.de>,
-        David Miller <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
+References: <20210419085027.761150-1-elver@google.com> <20210419085027.761150-2-elver@google.com>
+ <20210419094044.311-1-hdanton@sina.com>
+In-Reply-To: <20210419094044.311-1-hdanton@sina.com>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 19 Apr 2021 11:44:09 +0200
+Message-ID: <CANpmjNMR-DPj=0mQMevyEQ7k3RJh0eq_nkt9M6kLvwC-abr_SQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] kfence: await for allocation using wait_event
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Zhiyun Qian <zhiyunq@cs.ucr.edu>
+        Linux Memory Management List <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 18, 2021 at 4:31 PM Matt Corallo
-<netdev-list@mattcorallo.com> wrote:
+On Mon, 19 Apr 2021 at 11:41, Hillf Danton <hdanton@sina.com> wrote:
 >
-> Should the default, though, be so low? If someone is still using a old modem they can crank up the sysctl, it does seem
-> like such things are pretty rare these days :). Its rather trivial to, without any kind of attack, hit 1Mbps of lost
-> fragments in today's networks, at which point all fragments are dropped. After all, I submitted the patch to "scratch my
-> own itch" :).
-
-Again, even if you increase the values by 1000x, it is trivial for an
-attacker to use all the memory you allowed.
-
-And allowing a significant portion of memory to be eaten like that
-might cause OOM on hosts where jobs are consuming all physical memory.
-
-It is a sysctl, I changed things so that one could really reserve/use
-16GB of memory if she/he is desperate about frags.
-
+> On Mon, 19 Apr 2021 10:50:25 Marco Elver wrote:
+> > +
+> > +     WRITE_ONCE(kfence_timer_waiting, true);
+> > +     smp_mb(); /* See comment in __kfence_alloc(). */
 >
-> Matt
->
-> On 4/18/21 00:39, Willy Tarreau wrote:
-> > I do agree that we shouldn't keep them that long nowadays, we can't go
-> > too low without risking to break some slow transmission stacks (SLIP/PPP
-> > over modems for example).
+> This is not needed given task state change in wait_event().
+
+Yes it is. We want to avoid the unconditional irq_work in
+__kfence_alloc(). When the system is under load doing frequent
+allocations, at least in my tests this avoids the irq_work almost
+always. Without the irq_work you'd be correct of course.
+
+> > +     wait_event_timeout(allocation_wait, atomic_read(&kfence_allocation_gate), HZ);
+> > +     smp_store_release(&kfence_timer_waiting, false); /* Order after wait_event(). */
+> > +
