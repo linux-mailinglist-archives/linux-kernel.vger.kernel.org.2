@@ -2,128 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55EEC3640E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A36B3640E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238741AbhDSLti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 07:49:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20158 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234081AbhDSLte (ORCPT
+        id S238853AbhDSLtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 07:49:43 -0400
+Received: from mail-lj1-f169.google.com ([209.85.208.169]:41968 "EHLO
+        mail-lj1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238730AbhDSLti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 07:49:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618832944;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X8/WB5h/DCpqWz25sPbtK613PP91ho7sThr7U3NsdLI=;
-        b=OEtl5oYZ0J24OGiW5ijqjxbuWwts0PrdNg4U7v0JVJfqSRLgU3vRSLTYnVczKd4vxsOrxB
-        YhbdCU3661vXSvGgXqwjROjg41pLL4VOKZROu5SV+Bx+CIYK2SPwZ05xxYkZIKxrPxLAju
-        EsncctTIf4A0U80NBZ4ASwMFzZDx8ag=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-470-Fh0QZauRN2StP-3MSqTJTQ-1; Mon, 19 Apr 2021 07:49:02 -0400
-X-MC-Unique: Fh0QZauRN2StP-3MSqTJTQ-1
-Received: by mail-wr1-f71.google.com with SMTP id l18-20020a0560000232b02901026f4b8548so8941428wrz.10
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 04:49:02 -0700 (PDT)
+        Mon, 19 Apr 2021 07:49:38 -0400
+Received: by mail-lj1-f169.google.com with SMTP id a36so28140549ljq.8;
+        Mon, 19 Apr 2021 04:49:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=X8/WB5h/DCpqWz25sPbtK613PP91ho7sThr7U3NsdLI=;
-        b=L5nCwI/w2uA9dReEJX0rkuu5HUCYZm3qy+fxug/EDkvbfvHNla2qPSdsdiMn60Q93N
-         Q1mQpV6H4KlmMSvIEeYTmJ1rgIcP5o02tSZkbzvvjoMizkmg1tM+0MZwX1ItgPFCPUnh
-         Y+O4dNpp1eo+J2OGd01Pmak64zpsLKbuJ2KGvsjZydj8Ar529TUbNBnTrZBsQgd0ItOR
-         +aqCy5VkVyQERqyutZOlJWQcSFE/5mQQgWREUrhtbG8I+fduT9Y9jCAPoArdgx1Mjr5t
-         tVbaBNfNafV/C30JVe8bfxA+DpqC4j/DL5Y8p+rm8z2GZ8JA8a6lXQeOQkMeyTC0JD8v
-         U0QQ==
-X-Gm-Message-State: AOAM530Pbh0RdAYFsTZVFMWFGYIYq5ks41IcyZDQl+haQ7PfzEgruvn4
-        5fGLKjT9Oz63j8hOWjzgL3PnDLayBr862EBi+sY8T4tZAKHPq5N2pLrg+fCNMSjvJbfACoTCs2R
-        QYlXbLCIGTYDP20Gp7A/0PJtEGhGQgV/57EvPxpIO
-X-Received: by 2002:a05:600c:3796:: with SMTP id o22mr21036159wmr.139.1618832941559;
-        Mon, 19 Apr 2021 04:49:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwqeEo6baFAOSCC5EED8Adjw7elmBbplC1HwyVdu+epP3qNnST1SJ2pLkLV0oLFm79ijqBFSPkWTkiLHj2i6Lo=
-X-Received: by 2002:a05:600c:3796:: with SMTP id o22mr21036144wmr.139.1618832941419;
- Mon, 19 Apr 2021 04:49:01 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1y568k09qtcL9FbHc6AZ/jNHO50SGhDLwYirPpmIwsU=;
+        b=Y2TjJZ8UYyNPiyt5o+0GgNjastLMavb+BRq9xFQVVQgThsjpVIDCufnY8BFwiP7SOk
+         DGF5tIUM6PMh5UP4l2sVh15Ej6uxSubQVDa9Qru4CocSEwv1VkDqvfytxETrAQvtU4O8
+         LthlYBMza+kg9DTzCtYg/88uK2xYaXNBWKKue/wQhC858Kp/YqnVe/TOV6XdpNIeE9CN
+         v7vk81VMX4es+NV5vFMtxGt8KCD1XljC9mcXLFilwotiyLlsd63QZ7kMHTTxjhIbGwaA
+         UPS/zplZcY6eDXvaZcBLcJwLmqHjEXwipw2PrhcNCMXB6aaFzTjFhzVEJb/GMZPgdsvB
+         WcfQ==
+X-Gm-Message-State: AOAM531RWmBuavJFk2frsAvn42UgVO5Btjscj2FAM+QYv8Ixi4ImKU4T
+        3o3xe2wmEsLOyE3cU9roxyc=
+X-Google-Smtp-Source: ABdhPJz0+6sYh/9WvqRk29PhyZlnlhB58yYK7gD7vOFVu1WxhJxDyYTfQ5h62FTofyAoeJH2J2o+Dw==
+X-Received: by 2002:a2e:3209:: with SMTP id y9mr11421161ljy.146.1618832946239;
+        Mon, 19 Apr 2021 04:49:06 -0700 (PDT)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::6])
+        by smtp.gmail.com with ESMTPSA id a9sm1815963lfo.186.2021.04.19.04.49.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 04:49:05 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 14:48:57 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "agross@kernel.org" <agross@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Matteo Croce <mcroce@microsoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        linux-pm@vger.kernel.org
+Subject: [PATCH v8 02/10] reboot: Add hardware protection power-off
+Message-ID: <aae403d309b4f37be580f536d1ecd7d83b5a9523.1618832466.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1618832466.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-References: <20210416143725.2769053-1-lee.jones@linaro.org> <20210416143725.2769053-16-lee.jones@linaro.org>
-In-Reply-To: <20210416143725.2769053-16-lee.jones@linaro.org>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Mon, 19 Apr 2021 13:48:50 +0200
-Message-ID: <CACO55tvbVFPfjzTxmoKMbxVv1bR9xguX+QCLZawtg2SdSN9qzQ@mail.gmail.com>
-Subject: Re: [Nouveau] [PATCH 15/40] drm/nouveau/nouveau_svm: Remove unused
- variable 'ret' from void function
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1618832466.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 4:38 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/nouveau/nouveau_svm.c: In function =E2=80=98nouveau_pfns=
-_map=E2=80=99:
->  drivers/gpu/drm/nouveau/nouveau_svm.c:810:6: warning: variable =E2=80=98=
-ret=E2=80=99 set but not used [-Wunused-but-set-variable]
->
-> Cc: Ben Skeggs <bskeggs@redhat.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: nouveau@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/gpu/drm/nouveau/nouveau_svm.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_svm.c b/drivers/gpu/drm/nouv=
-eau/nouveau_svm.c
-> index 1c3f890377d2c..26af6ee915368 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_svm.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_svm.c
-> @@ -811,7 +811,6 @@ nouveau_pfns_map(struct nouveau_svmm *svmm, struct mm=
-_struct *mm,
->                  unsigned long addr, u64 *pfns, unsigned long npages)
->  {
->         struct nouveau_pfnmap_args *args =3D nouveau_pfns_to_args(pfns);
-> -       int ret;
->
->         args->p.addr =3D addr;
->         args->p.size =3D npages << PAGE_SHIFT;
-> @@ -819,8 +818,8 @@ nouveau_pfns_map(struct nouveau_svmm *svmm, struct mm=
-_struct *mm,
->         mutex_lock(&svmm->mutex);
->
->         svmm->vmm->vmm.object.client->super =3D true;
-> -       ret =3D nvif_object_ioctl(&svmm->vmm->vmm.object, args, sizeof(*a=
-rgs) +
-> -                               npages * sizeof(args->p.phys[0]), NULL);
-> +       nvif_object_ioctl(&svmm->vmm->vmm.object, args, sizeof(*args) +
-> +                         npages * sizeof(args->p.phys[0]), NULL);
+There can be few cases when we need to shut-down the system in order to
+protect the hardware. Currently this is done at east by the thermal core
+when temperature raises over certain limit.
 
-yeah mhh.. I think this one is actually fine, but it might make sense
-to still report something back, although in userspace we still don't
-care as the CL API doesn't return any error.
+Some PMICs can also generate interrupts for example for over-current or
+over-voltage, voltage drops, short-circuit, ... etc. On some systems
+these are a sign of hardware failure and only thing to do is try to
+protect the rest of the hardware by shutting down the system.
 
->         svmm->vmm->vmm.object.client->super =3D false;
->
->         mutex_unlock(&svmm->mutex);
-> --
-> 2.27.0
->
-> _______________________________________________
-> Nouveau mailing list
-> Nouveau@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/nouveau
+Add shut-down logic which can be used by all subsystems instead of
+implementing the shutdown in each subsystem. The logic is stolen from
+thermal_core with difference of using atomic_t instead of a mutex in
+order to allow calls directly from IRQ context.
 
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+
+---
+
+Changelog:
+v8: (changes suggested by Daniel Lezcano)
+ - replace a protection implemented by a flag + spin_lock_irqsave() with
+   simple atomic_dec_and_test().
+ - Split thermal-core changes and adding the new API to separate patches
+v7:
+ - New patch
+---
+ include/linux/reboot.h |  1 +
+ kernel/reboot.c        | 80 ++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 81 insertions(+)
+
+diff --git a/include/linux/reboot.h b/include/linux/reboot.h
+index 3734cd8f38a8..af907a3d68d1 100644
+--- a/include/linux/reboot.h
++++ b/include/linux/reboot.h
+@@ -79,6 +79,7 @@ extern char poweroff_cmd[POWEROFF_CMD_PATH_LEN];
+ 
+ extern void orderly_poweroff(bool force);
+ extern void orderly_reboot(void);
++void hw_protection_shutdown(const char *reason, int ms_until_forced);
+ 
+ /*
+  * Emergency restart, callable from an interrupt handler.
+diff --git a/kernel/reboot.c b/kernel/reboot.c
+index a6ad5eb2fa73..5da8c80a2647 100644
+--- a/kernel/reboot.c
++++ b/kernel/reboot.c
+@@ -7,6 +7,7 @@
+ 
+ #define pr_fmt(fmt)	"reboot: " fmt
+ 
++#include <linux/atomic.h>
+ #include <linux/ctype.h>
+ #include <linux/export.h>
+ #include <linux/kexec.h>
+@@ -518,6 +519,85 @@ void orderly_reboot(void)
+ }
+ EXPORT_SYMBOL_GPL(orderly_reboot);
+ 
++/**
++ * hw_failure_emergency_poweroff_func - emergency poweroff work after a known delay
++ * @work: work_struct associated with the emergency poweroff function
++ *
++ * This function is called in very critical situations to force
++ * a kernel poweroff after a configurable timeout value.
++ */
++static void hw_failure_emergency_poweroff_func(struct work_struct *work)
++{
++	/*
++	 * We have reached here after the emergency shutdown waiting period has
++	 * expired. This means orderly_poweroff has not been able to shut off
++	 * the system for some reason.
++	 *
++	 * Try to shut down the system immediately using kernel_power_off
++	 * if populated
++	 */
++	WARN(1, "Hardware protection timed-out. Trying forced poweroff\n");
++	kernel_power_off();
++
++	/*
++	 * Worst of the worst case trigger emergency restart
++	 */
++	WARN(1,
++	     "Hardware protection shutdown failed. Trying emergency restart\n");
++	emergency_restart();
++}
++
++static DECLARE_DELAYED_WORK(hw_failure_emergency_poweroff_work,
++			    hw_failure_emergency_poweroff_func);
++
++/**
++ * hw_failure_emergency_poweroff - Trigger an emergency system poweroff
++ *
++ * This may be called from any critical situation to trigger a system shutdown
++ * after a given period of time. If time is negative this is not scheduled.
++ */
++static void hw_failure_emergency_poweroff(int poweroff_delay_ms)
++{
++	if (poweroff_delay_ms <= 0)
++		return;
++	schedule_delayed_work(&hw_failure_emergency_poweroff_work,
++			      msecs_to_jiffies(poweroff_delay_ms));
++}
++
++/**
++ * hw_protection_shutdown - Trigger an emergency system poweroff
++ *
++ * @reason:		Reason of emergency shutdown to be printed.
++ * @ms_until_forced:	Time to wait for orderly shutdown before tiggering a
++ *			forced shudown. Negative value disables the forced
++ *			shutdown.
++ *
++ * Initiate an emergency system shutdown in order to protect hardware from
++ * further damage. Usage examples include a thermal protection or a voltage or
++ * current regulator failures.
++ * NOTE: The request is ignored if protection shutdown is already pending even
++ * if the previous request has given a large timeout for forced shutdown.
++ * Can be called from any context.
++ */
++void hw_protection_shutdown(const char *reason, int ms_until_forced)
++{
++	static atomic_t allow_proceed = ATOMIC_INIT(1);
++
++	pr_emerg("HARDWARE PROTECTION shutdown (%s)\n", reason);
++
++	/* Shutdown should be initiated only once. */
++	if (!atomic_dec_and_test(&allow_proceed))
++		return;
++
++	/*
++	 * Queue a backup emergency shutdown in the event of
++	 * orderly_poweroff failure
++	 */
++	hw_failure_emergency_poweroff(ms_until_forced);
++	orderly_poweroff(true);
++}
++EXPORT_SYMBOL_GPL(hw_protection_shutdown);
++
+ static int __init reboot_setup(char *str)
+ {
+ 	for (;;) {
+-- 
+2.25.4
+
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
