@@ -2,69 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21163364938
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 19:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1070E364942
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 19:55:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240196AbhDSRvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 13:51:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34678 "EHLO
+        id S240220AbhDSRzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 13:55:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240167AbhDSRvi (ORCPT
+        with ESMTP id S232904AbhDSRzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 13:51:38 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18CF9C061763
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 10:51:07 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id p8so14362383iol.11
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 10:51:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=mBPy/kuTJuUrZLkWwHS3lWj/u450VV6pB+rdfegfvjY=;
-        b=wGFGo25NU3QUJ9xq/yU8mQlt12iDfbifCsx6oQ3o0IMQe0mbQnhKW477azrdYqkJsx
-         0EkErXshYLbgkVSllkG+4V6fDmt/4hD2+9E4tHzD9awbKzFq6NYBTkBjSlTRNJ5urTqe
-         srEelnboOvSRbMWiGSE6McaZo5YZc369NeQzT1nmwm2m4PTFV8yxLfiTt4TAUy0Yyyug
-         1QHeofzDafyqQjiKuTWSph/S94CjkqeJVBeNLWLuKhnoBavQkNRRSD32pwq7rQWgNmTy
-         zX0TcefxLnpIvcS2CcMbzqn0Z+fCTGTitmYaETMl+1EDhJNAWvvnTaTPb55Q9YDbEVic
-         zT1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mBPy/kuTJuUrZLkWwHS3lWj/u450VV6pB+rdfegfvjY=;
-        b=oQlUf+/P+OJKYGFnCwTqZLbCF+i0CVz2ZkitWpqnRafTCk1H3/2656x+Sta7nJ1QRD
-         54LZxMHaVjeDFsMlKl2dvnouxqjCe4vvKJN2od9ZPCjGxXR3iapQlSmz65M2k1JhxokA
-         UNs1XCDurpIUM5RTaxB1jIRwn/edxXAqP+i4CqJGo5RG6Mx793DKMdDaEpqNNNvmCH7i
-         WnfICl39xKRcT3ISBEuRX06hgdSDvB4psljll3ozKbbjVuvxubURq4K2Gu27I89/Y+bU
-         dCKho8IThyzIj4lUohVw1Nzw7/Ija8Gp3R0Kr4Hyx4lMeeEjNC0Q+QiHSJTfmhne5925
-         2EUA==
-X-Gm-Message-State: AOAM533V2UBYBCZQ4LuOxZJazWDJqNXTEAfcsLe/8mWMs0S+JjMXzNqj
-        UWnHQNhGI1CPk7AgNaJnL4ZopA==
-X-Google-Smtp-Source: ABdhPJzU0RP1DjE6xL0Yu1H6Ul3Mx/9UxO3jL5+rkP0peg9JfXJpharVKCTfxx+P/2slMQi+ROXrsQ==
-X-Received: by 2002:a05:6602:342a:: with SMTP id n42mr15511410ioz.88.1618854666497;
-        Mon, 19 Apr 2021 10:51:06 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id b9sm7301940ioz.49.2021.04.19.10.51.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Apr 2021 10:51:06 -0700 (PDT)
-Subject: Re: [syzbot] KASAN: use-after-free Read in
- __cpuhp_state_remove_instance
-To:     syzbot <syzbot+38769495e847cea2dcca@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, ducheng2@gmail.com, dvyukov@google.com,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mpe@ellerman.id.au, paulmck@kernel.org, peterz@infradead.org,
-        qais.yousef@arm.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de
-References: <0000000000000c120805c05452c0@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <c46f1e7f-17a5-7739-5290-185226f31c14@kernel.dk>
-Date:   Mon, 19 Apr 2021 11:51:05 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 19 Apr 2021 13:55:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5AE1C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 10:55:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=Gpg37cvlNUMgLhfhroZl1NiOwZjHB+4OxYlq13ZJrJg=; b=QX7pEvmkb1sjPZOTLUFK+4Wc+y
+        2ebvKMHggZF8U18gdY0LB4pUiveA9irbibMC0nU5zyWDPe0jQwgEShicv1UBgKN/uCl5LJCWQjZ/z
+        19ikclN4b7Z+dqcDyMXsXw5Le9AaxzSs7r71YKyfadDt4qvZDuSF+31mczbUnH2a+ojonjb0lyoZd
+        9JQlyjIdkW/0QT5vqGVv/lUEGWyHxaKOQPaNG1biKNQyi/5hRWwZurt8zgEOHZViTK1A8sCyqdD+9
+        ecpBIvD0Pj1XpjuLdUNFs+7On834xSrTSvTksEN34y9bfL2HsdgmmTi7f1f5D0uHNteIABXHtBXBu
+        HQ53Y81w==;
+Received: from [2601:1c0:6280:3f0::df68]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lYY6Y-00E5iM-Fi; Mon, 19 Apr 2021 17:54:43 +0000
+Subject: Re: [PATCH v3] drm/bridge/sii8620: fix dependency on extcon
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     Robert Foss <robert.foss@linaro.org>, a.hajda@samsung.com,
+        narmstrong@baylibre.com, Laurent.pinchart@ideasonboard.com,
+        jonas@kwiboo.se, jernej.skrabec@siol.net, airlied@linux.ie,
+        daniel@ffwll.ch, cw00.choi@samsung.com, m.purski@samsung.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>
+References: <20210419090124.153560-1-robert.foss@linaro.org>
+ <1627725d-1c7e-109f-f995-e761bb022ccc@infradead.org>
+Message-ID: <d295f001-575d-f14c-b0c1-1444dd29a03e@infradead.org>
+Date:   Mon, 19 Apr 2021 10:54:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <0000000000000c120805c05452c0@google.com>
+In-Reply-To: <1627725d-1c7e-109f-f995-e761bb022ccc@infradead.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -72,27 +52,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/19/21 8:41 AM, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
+On 4/19/21 10:10 AM, Randy Dunlap wrote:
+> On 4/19/21 2:01 AM, Robert Foss wrote:
+>> The DRM_SIL_SII8620 kconfig has a weak `imply` dependency
+>> on EXTCON, which causes issues when sii8620 is built
+>> as a builtin and EXTCON is built as a module.
+>>
+>> The symptoms are 'undefined reference' errors caused
+>> by the symbols in EXTCON not being available
+>> to the sii8620 driver.
+>>
+>> Fixes: 688838442147 ("drm/bridge/sii8620: use micro-USB cable detection logic to detect MHL")
+>> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> ---
+>>
+>> LKP reported issue:
+>> https://lore.kernel.org/lkml/202104040604.SSTe2Cxf-lkp@intel.com/
+>>
+>>
+>> Changes since v1:
+>>  - Fix typo on comment
+>>
+>> Changes since v2:
+>>  - Randy: Changed from `depends` to `select` 
 > 
-> commit 470ec4ed8c91b4db398ad607c700e9ce88365202
-> Author: Jens Axboe <axboe@kernel.dk>
-> Date:   Fri Feb 26 17:20:34 2021 +0000
+> I don't know why my name is on that. I didn't
+> suggest any change -- I just reported that v2
+> had a problem.
 > 
->     io-wq: fix double put of 'wq' in error path
 > 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11e89cc5d00000
-> start commit:   cee407c5 Merge tag 'for-linus' of git://git.kernel.org/pub..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=8f67201de02a572b
-> dashboard link: https://syzkaller.appspot.com/bug?extid=38769495e847cea2dcca
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=154e360ad00000
+>>
+>>
+>>  drivers/gpu/drm/bridge/Kconfig | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+>> index 22a467abd3e9..70402da5cc70 100644
+>> --- a/drivers/gpu/drm/bridge/Kconfig
+>> +++ b/drivers/gpu/drm/bridge/Kconfig
+>> @@ -169,7 +169,7 @@ config DRM_SIL_SII8620
+>>  	tristate "Silicon Image SII8620 HDMI/MHL bridge"
+>>  	depends on OF
+>>  	select DRM_KMS_HELPER
+>> -	imply EXTCON
+>> +	select EXTCON
+>>  	depends on RC_CORE || !RC_CORE
+>>  	help
+>>  	  Silicon Image SII8620 HDMI/MHL bridge chip driver.
 > 
-> If the result looks correct, please mark the issue as fixed by replying with:
+> 
+> Thanks. Works For Me.
+> 
+> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-#syz fix: io-wq: fix double put of 'wq' in error path
+Actually I can upgrade that to:
+
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
 
+ta.
 -- 
-Jens Axboe
+~Randy
 
