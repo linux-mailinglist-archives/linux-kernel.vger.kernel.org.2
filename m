@@ -2,198 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50EE7364E5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 00:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E318364E5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 00:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233050AbhDSW67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 18:58:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232221AbhDSW63 (ORCPT
+        id S230488AbhDSW7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 18:59:21 -0400
+Received: from gateway32.websitewelcome.com ([192.185.145.101]:24689 "EHLO
+        gateway32.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233313AbhDSW7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 18:58:29 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6969CC06138B
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 15:57:58 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 12so58344593lfq.13
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 15:57:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HQJiSq5gQpYM2NV6elfqwANOqTUiSWOPSA/1L0jGErQ=;
-        b=Y5/43Y+Kw5fgiJwOTdWXv2swOI+fI+/U7o7oTMg677UwTq0hx0Aur4nKS3kwzthchf
-         uOjPETfIyFzokHZF951u0cmKSbDImPJOsUUsgEFSDgJG7Ke0ltxUxYR/5aPUDcm/8vnk
-         DKlMu/5tvRSmBd99rk6EkAhay5BAair/4HfZce5BA+JXIn3fWz6JL87ZFXZWw3UPjCpL
-         XqWuqEfm9xB+IiGhTSHpINZmpB3aRobIBHznPpr+lOeujR0THu0yU4uHrxxkxzI8HJSl
-         n7Ic+qYzeSPpIUQYfihi6MVrxbPvdob4BCP9SR38EvsyE/7fprRP5CSze1BnIvWvRyZ5
-         ba/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HQJiSq5gQpYM2NV6elfqwANOqTUiSWOPSA/1L0jGErQ=;
-        b=Pw1BzCkoOnaPO6ETt8+7yl6l320vgI8oAsOkBICalq7RMoPwJfxMJ+XagvSfifqPzg
-         hy76wT3InVAUc7yZyQCHZGrLarRIndmkOxcjDQxiiW5JnQ65RoLAtWnIUbK8nVzQUAEP
-         xZoiwst/7c2CtJl9dvtSnfF3nglfzCt7MmEuPVonQUz+5pGPQzszk5jCuxln8bNsc2OB
-         8c9N8gSZuy8L2hbRqNIrgk8W6K68hTBwofEAmYyCEtigl3u9lvxXrGpvUX5x/lJHn0jM
-         ZZYG7dISfKIWJMjY/0j9I6WeDkrI+XyYCjF79tISHv6PnEfQUGGb2FPdu6pKUXG+xykA
-         PnDw==
-X-Gm-Message-State: AOAM53385Ad16RhIQ/L6aS78XJeoiShMZvyKMxgT2czruieQuEqgwuhH
-        xIDgiii9z5fYNhsJQVv1DU9YBw==
-X-Google-Smtp-Source: ABdhPJzoZNOZ0t2EKALbcciOjjIYuhq/fAibShB1K6ejYUTS58/jpemU5gIufFql1g/r5iia9VdyRQ==
-X-Received: by 2002:ac2:58c6:: with SMTP id u6mr13437813lfo.419.1618873076874;
-        Mon, 19 Apr 2021 15:57:56 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id b24sm1958685lff.207.2021.04.19.15.57.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 15:57:56 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 8598A10256D; Tue, 20 Apr 2021 01:57:55 +0300 (+03)
-Date:   Tue, 20 Apr 2021 01:57:55 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jim Mattson <jmattson@google.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Peter Gonda <pgonda@google.com>,
-        David Hildenbrand <david@redhat.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFCv2 13/13] KVM: unmap guest memory using poisoned pages
-Message-ID: <20210419225755.nsrtjfvfcqscyb6m@box.shutemov.name>
-References: <20210416154106.23721-1-kirill.shutemov@linux.intel.com>
- <20210416154106.23721-14-kirill.shutemov@linux.intel.com>
- <YHnJtvXdrZE+AfM3@google.com>
- <20210419142602.khjbzktk5tk5l6lk@box.shutemov.name>
- <YH2pam5b837wFM3z@google.com>
- <20210419164027.dqiptkebhdt5cfmy@box.shutemov.name>
- <YH3HWeOXFiCTZN4y@google.com>
- <20210419185354.v3rgandtrel7bzjj@box>
- <YH3jaf5ThzLZdY4K@google.com>
+        Mon, 19 Apr 2021 18:59:04 -0400
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+        by gateway32.websitewelcome.com (Postfix) with ESMTP id 443C313095
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 17:58:33 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id YcqflHeEb1cHeYcqflQWqp; Mon, 19 Apr 2021 17:58:33 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=HSwcUpoOJnXwy9FUWCUDqISxnv3zkq1DVf8wvqzFEr0=; b=BvljQjnbdpu8RmeO4AFnQNsFrG
+        NidTTAVI57LZ/J2KDjmbAu7FNej4A6OqWy0McVvbePr1On80nZDp5d6dSdFLLtoXvfqalwR/mtox5
+        vfu7kaWx0KLLVyZ/PosuE8v8JjIOtytLvU7MbVb5zSrPu91Ph1caCNssqaZp9zcJJQj2y/er+2PFS
+        hX+Y47e2dakcdxmAf8/3vpInY9DiLqH+HVOPB5utF++XyeO8IPnAuFGdjfvZAxGS8gP2O8LTQzmc1
+        kr6oXcd1YuK5Wf82wKLg29FuGD2Y5sVty7f79O2n+sZseztgxiE2hoN7uym6RNvrUTRrccEHd11ge
+        jChUgS+g==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:48156 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lYcqb-0044Xd-ON; Mon, 19 Apr 2021 17:58:29 -0500
+Subject: Re: [PATCH RESEND][next] rtl8xxxu: Fix fall-through warnings for
+ Clang
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Jes Sorensen <Jes.Sorensen@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>
+References: <20210305094850.GA141221@embeddedor>
+ <20210417175201.280F9C4338A@smtp.codeaurora.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <0b096033-7daf-fae7-9ea9-37038b979616@embeddedor.com>
+Date:   Mon, 19 Apr 2021 17:58:42 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YH3jaf5ThzLZdY4K@google.com>
+In-Reply-To: <20210417175201.280F9C4338A@smtp.codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lYcqb-0044Xd-ON
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:48156
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 20
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 08:09:13PM +0000, Sean Christopherson wrote:
-> On Mon, Apr 19, 2021, Kirill A. Shutemov wrote:
-> > On Mon, Apr 19, 2021 at 06:09:29PM +0000, Sean Christopherson wrote:
-> > > On Mon, Apr 19, 2021, Kirill A. Shutemov wrote:
-> > > > On Mon, Apr 19, 2021 at 04:01:46PM +0000, Sean Christopherson wrote:
-> > > > > But fundamentally the private pages, are well, private.  They can't be shared
-> > > > > across processes, so I think we could (should?) require the VMA to always be
-> > > > > MAP_PRIVATE.  Does that buy us enough to rely on the VMA alone?  I.e. is that
-> > > > > enough to prevent userspace and unaware kernel code from acquiring a reference
-> > > > > to the underlying page?
-> > > > 
-> > > > Shared pages should be fine too (you folks wanted tmpfs support).
-> > > 
-> > > Is that a conflict though?  If the private->shared conversion request is kicked
-> > > out to userspace, then userspace can re-mmap() the files as MAP_SHARED, no?
-> > > 
-> > > Allowing MAP_SHARED for guest private memory feels wrong.  The data can't be
-> > > shared, and dirty data can't be written back to the file.
-> > 
-> > It can be remapped, but faulting in the page would produce hwpoison entry.
-> 
-> It sounds like you're thinking the whole tmpfs file is poisoned.
 
-No. File is not poisoned. Pages got poisoned when they are faulted into
-flagged VMA. Different VM can use the same file as long as offsets do not
-overlap.
 
-> My thought is that userspace would need to do something like for guest
-> private memory:
+On 4/17/21 12:52, Kalle Valo wrote:
+> "Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
 > 
-> 	mmap(NULL, guest_size, PROT_READ|PROT_WRITE, MAP_PRIVATE | MAP_GUEST_ONLY, fd, 0);
+>> In preparation to enable -Wimplicit-fallthrough for Clang, fix
+>> multiple warnings by replacing /* fall through */ comments with
+>> the new pseudo-keyword macro fallthrough; instead of letting the
+>> code fall through to the next case.
+>>
+>> Notice that Clang doesn't recognize /* fall through */ comments as
+>> implicit fall-through markings.
+>>
+>> Link: https://github.com/KSPP/linux/issues/115
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 > 
-> The MAP_GUEST_ONLY would be used by the kernel to ensure the resulting VMA can
-> only point at private/poisoned memory, e.g. on fault, the associated PFN would
-> be tagged with PG_hwpoison or whtaever.  @fd in this case could point at tmpfs,
-> but I don't think it's a hard requirement.
+> Patch applied to wireless-drivers-next.git, thanks.
 > 
-> On conversion to shared, userspace could then do:
-> 
-> 	munmap(<addr>, <size>)
-> 	mmap(<addr>, <size>, PROT_READ|PROT_WRITE, MAP_SHARED | MAP_FIXED_NOREPLACE, fd, <offset>);
-> 
-> or
-> 
-> 	mmap(<addr>, <size>, PROT_READ|PROT_WRITE, MAP_SHARED | MAP_FIXED, fd, <offset>);
-> 
+> bf3365a856a1 rtl8xxxu: Fix fall-through warnings for Clang
 
-I played with this variant before, but initiated from kernel. Should work
-fine.
+Thanks for this, Kalle.
 
-> or
-> 
-> 	ioctl(kvm, KVM_SET_USER_MEMORY_REGION, <delete private range>);
-> 	mmap(NULL, <size>, PROT_READ|PROT_WRITE, MAP_SHARED, fd, <offset>);
-> 	ioctl(kvm, KVM_SET_USER_MEMORY_REGION, <add shared range>);
-> 
-> Combinations would also work, e.g. unmap the private range and move the memslot.
-> The private and shared memory regions could also be backed differently, e.g.
-> tmpfs for shared memory, anonymous for private memory.
+Could you take this series too, please?
 
-Right. Kernel has to be flexible enough to provide any of the schemes.
+https://lore.kernel.org/lkml/cover.1618442265.git.gustavoars@kernel.org/
 
-> 
-> > I don't see other way to make Google's use-case with tmpfs-backed guest
-> > memory work.
-> 
-> The underlying use-case is to be able to access guest memory from more than one
-> process, e.g. so that communication with the guest isn't limited to the VMM
-> process associated with the KVM instances.  By definition, guest private memory
-> can't be accessed by the host; I don't see how anyone, Google included, can have
-> any real requirements about
-> 
-> > > > The poisoned pages must be useless outside of the process with the blessed
-> > > > struct kvm. See kvm_pfn_map in the patch.
-> > > 
-> > > The big requirement for kernel TDX support is that the pages are useless in the
-> > > host.  Regarding the guest, for TDX, the TDX Module guarantees that at most a
-> > > single KVM guest can have access to a page at any given time.  I believe the RMP
-> > > provides the same guarantees for SEV-SNP.
-> > > 
-> > > SEV/SEV-ES could still end up with corruption if multiple guests map the same
-> > > private page, but that's obviously not the end of the world since it's the status
-> > > quo today.  Living with that shortcoming might be a worthy tradeoff if punting
-> > > mutual exclusion between guests to firmware/hardware allows us to simplify the
-> > > kernel implementation.
-> > 
-> > The critical question is whether we ever need to translate hva->pfn after
-> > the page is added to the guest private memory. I believe we do, but I
-> > never checked. And that's the reason we need to keep hwpoison entries
-> > around, which encode pfn.
-> 
-> As proposed in the TDX RFC, KVM would "need" the hva->pfn translation if the
-> guest private EPT entry was zapped, e.g. by NUMA balancing (which will fail on
-> the backend).  But in that case, KVM still has the original PFN, the "new"
-> translation becomes a sanity check to make sure that the zapped translation
-> wasn't moved unexpectedly.
-> 
-> Regardless, I don't see what that has to do with kvm_pfn_map.  At some point,
-> gup() has to fault in the page or look at the host PTE value.  For the latter,
-> at least on x86, we can throw info into the PTE itself to tag it as guest-only.
-> No matter what implementation we settle on, I think we've failed if we end up in
-> a situation where the primary MMU has pages it doesn't know are guest-only.
+Thanks
+--
+Gustavo
 
-I try to understand if it's a problem if KVM sees a guest-only PTE, but
-it's for other VM. Like two VM's try to use the same tmpfs file as guest
-memory. We cannot insert the pfn into two TD/SEV guest at once, but can it
-cause other problems? I'm not sure.
-
--- 
- Kirill A. Shutemov
