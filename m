@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F95636443E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA89364477
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241285AbhDSNZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:25:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54232 "EHLO mail.kernel.org"
+        id S241781AbhDSN1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:27:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241109AbhDSNTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:19:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3431061370;
-        Mon, 19 Apr 2021 13:15:32 +0000 (UTC)
+        id S241120AbhDSNTz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:19:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 130BB613DB;
+        Mon, 19 Apr 2021 13:15:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618838132;
-        bh=Y+ka2bUeBle1qpXNz2V67nvvsqksHq+gKQ1GPurhRqk=;
+        s=korg; t=1618838135;
+        bh=zbjn5UPooVYKlFNSLt2xYhyOKP05ZtgEEC6Y+7Iul5s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s60pMqsYlxyHchre/T4t0bF0VVaH9M/FKy0GwybwqYF3nJtZGeMCw7cXh8nCL+sff
-         zICCcRetm0hzm1T3dcqOig+yUc12DxOrVbQ4Cm2GX77VQfYNo84k0Ypz9isRO8oZXd
-         bBjnB1AIwiMoedaTWA1fvplOu2Lhoyk3SV/o8Lvw=
+        b=zKTADCS4ydvSmNWvAI1gQTqH8WnP5aKoTg+QKoNwbFHHw0Uyobj8syTgGFwSqB1z9
+         XxNubZxZQqaOpypK9p4Qya1F5mOjQuxRlDxQrg46LC06KmPHMwirxLcZB17E6yelzn
+         IOfJQKkB9mZ5Lmdp9yhKjbNkPYZpaQ/sZ8IK9kB8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: [PATCH 5.10 055/103] riscv: Fix spelling mistake "SPARSEMEM" to "SPARSMEM"
-Date:   Mon, 19 Apr 2021 15:06:06 +0200
-Message-Id: <20210419130529.699940719@linuxfoundation.org>
+        stable@vger.kernel.org, Luo Jiaxing <luojiaxing@huawei.com>,
+        John Garry <john.garry@huawei.com>,
+        Jolly Shah <jollys@google.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.10 056/103] scsi: libsas: Reset num_scatter if libata marks qc as NODATA
+Date:   Mon, 19 Apr 2021 15:06:07 +0200
+Message-Id: <20210419130529.739757604@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210419130527.791982064@linuxfoundation.org>
 References: <20210419130527.791982064@linuxfoundation.org>
@@ -39,31 +41,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
+From: Jolly Shah <jollys@google.com>
 
-commit 199fc6b8dee7d6d50467a57e0dc7e3e1b7d59966 upstream.
+commit 176ddd89171ddcf661862d90c5d257877f7326d6 upstream.
 
-There is a spelling mistake when SPARSEMEM Kconfig copy.
+When the cache_type for the SCSI device is changed, the SCSI layer issues a
+MODE_SELECT command. The caching mode details are communicated via a
+request buffer associated with the SCSI command with data direction set as
+DMA_TO_DEVICE (scsi_mode_select()). When this command reaches the libata
+layer, as a part of generic initial setup, libata layer sets up the
+scatterlist for the command using the SCSI command (ata_scsi_qc_new()).
+This command is then translated by the libata layer into
+ATA_CMD_SET_FEATURES (ata_scsi_mode_select_xlat()). The libata layer treats
+this as a non-data command (ata_mselect_caching()), since it only needs an
+ATA taskfile to pass the caching on/off information to the device. It does
+not need the scatterlist that has been setup, so it does not perform
+dma_map_sg() on the scatterlist (ata_qc_issue()). Unfortunately, when this
+command reaches the libsas layer (sas_ata_qc_issue()), libsas layer sees it
+as a non-data command with a scatterlist. It cannot extract the correct DMA
+length since the scatterlist has not been mapped with dma_map_sg() for a
+DMA operation. When this partially constructed SAS task reaches pm80xx
+LLDD, it results in the following warning:
 
-Fixes: a5406a7ff56e ("riscv: Correct SPARSEMEM configuration")
-Cc: stable@vger.kernel.org
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+"pm80xx_chip_sata_req 6058: The sg list address
+start_addr=0x0000000000000000 data_len=0x0end_addr_high=0xffffffff
+end_addr_low=0xffffffff has crossed 4G boundary"
+
+Update libsas to handle ATA non-data commands separately so num_scatter and
+total_xfer_len remain 0.
+
+Link: https://lore.kernel.org/r/20210318225632.2481291-1-jollys@google.com
+Fixes: 53de092f47ff ("scsi: libsas: Set data_dir as DMA_NONE if libata marks qc as NODATA")
+Tested-by: Luo Jiaxing <luojiaxing@huawei.com>
+Reviewed-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Jolly Shah <jollys@google.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/riscv/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/libsas/sas_ata.c |    9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -144,7 +144,7 @@ config ARCH_FLATMEM_ENABLE
- config ARCH_SPARSEMEM_ENABLE
- 	def_bool y
- 	depends on MMU
--	select SPARSEMEM_STATIC if 32BIT && SPARSMEM
-+	select SPARSEMEM_STATIC if 32BIT && SPARSEMEM
- 	select SPARSEMEM_VMEMMAP_ENABLE if 64BIT
+--- a/drivers/scsi/libsas/sas_ata.c
++++ b/drivers/scsi/libsas/sas_ata.c
+@@ -201,18 +201,17 @@ static unsigned int sas_ata_qc_issue(str
+ 		memcpy(task->ata_task.atapi_packet, qc->cdb, qc->dev->cdb_len);
+ 		task->total_xfer_len = qc->nbytes;
+ 		task->num_scatter = qc->n_elem;
++		task->data_dir = qc->dma_dir;
++	} else if (qc->tf.protocol == ATA_PROT_NODATA) {
++		task->data_dir = DMA_NONE;
+ 	} else {
+ 		for_each_sg(qc->sg, sg, qc->n_elem, si)
+ 			xfer += sg_dma_len(sg);
  
- config ARCH_SELECT_MEMORY_MODEL
+ 		task->total_xfer_len = xfer;
+ 		task->num_scatter = si;
+-	}
+-
+-	if (qc->tf.protocol == ATA_PROT_NODATA)
+-		task->data_dir = DMA_NONE;
+-	else
+ 		task->data_dir = qc->dma_dir;
++	}
+ 	task->scatter = qc->sg;
+ 	task->ata_task.retry_count = 1;
+ 	task->task_state_flags = SAS_TASK_STATE_PENDING;
 
 
