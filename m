@@ -2,108 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9020136424A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 614C3364252
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236079AbhDSND0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:03:26 -0400
-Received: from mail-ua1-f46.google.com ([209.85.222.46]:40559 "EHLO
-        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbhDSNDS (ORCPT
+        id S236201AbhDSNEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:04:53 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:17361 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238300AbhDSND5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:03:18 -0400
-Received: by mail-ua1-f46.google.com with SMTP id 33so10885690uaa.7;
-        Mon, 19 Apr 2021 06:02:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dlYTi69m/lucb/NhBgsBMz9vGz1CoOt1FLG0EfInMDA=;
-        b=Rt8Ev9ZeqpvLQ9rxlNJrkjpOid0d0n08NFDtadvS/T7qjGVm/0JfDcrH/zntjXF71B
-         NnZdnZlvyuxamZ+w91TLWanBRMoKB1zA9vRsF4FaXrJpJxrudlOiwHvUe1hHbLmY7CEv
-         GH0HeIMc91Mdja7u9frsh7O9QbLUbRB9X9HT6NnCyMvZUR5q1851FODlzVYaK1HIvuaj
-         +xEaRttgGGJrfns3djX2tUCcdOcaBIgYvwbeFDPwlZ1Sn2oG6eDeR7merKBpxc7s3ooo
-         Qi21gUNzM7dqh1l0z9JncPfQqowdqQSPWRwi+agiWQx96NdJy4birkGorEJgrGtLx6GP
-         SKEg==
-X-Gm-Message-State: AOAM531TYvBm/5+P2ByNv5xS2m1HSSvszc+4olQngqisQsYLw5WsbZEw
-        GOt/VCqv7ihytyHMUVcQh3rCVIGodRDaqTcJE8M=
-X-Google-Smtp-Source: ABdhPJz9Kxz4+ejzvydG/k+ZmWgbyoBOzyfzx61YEoFRlVktAwHjkfxBSE3792S3lKv1vU3pJtwyMTxmyHMxCOnnf4o=
-X-Received: by 2002:ab0:6306:: with SMTP id a6mr6678856uap.2.1618837367038;
- Mon, 19 Apr 2021 06:02:47 -0700 (PDT)
+        Mon, 19 Apr 2021 09:03:57 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FP6Pq1J0Sz7vwK;
+        Mon, 19 Apr 2021 21:01:03 +0800 (CST)
+Received: from [127.0.0.1] (10.69.38.196) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.498.0; Mon, 19 Apr 2021
+ 21:03:18 +0800
+Subject: Re: [PATCH RESEND 0/4] Add support for HiSilicon PCIe Tune and Trace
+ device
+To:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <coresight@lists.linaro.org>, <linux-pci@vger.kernel.org>
+CC:     <helgaas@kernel.org>, <gregkh@linuxfoundation.org>,
+        <lorenzo.pieralisi@arm.com>, <will@kernel.org>,
+        <mark.rutland@arm.com>, <mathieu.poirier@linaro.org>,
+        <suzuki.poulose@arm.com>, <mike.leach@linaro.org>,
+        <leo.yan@linaro.org>, <jonathan.cameron@huawei.com>,
+        <song.bao.hua@hisilicon.com>, <john.garry@huawei.com>,
+        <prime.zeng@huawei.com>, <liuqi115@huawei.com>,
+        <zhangshaokun@hisilicon.com>, <linuxarm@huawei.com>
+References: <1618654631-42454-1-git-send-email-yangyicong@hisilicon.com>
+ <8735vpf20c.fsf@ashishki-desk.ger.corp.intel.com>
+From:   Yicong Yang <yangyicong@hisilicon.com>
+Message-ID: <628f2f4a-03ce-a646-bf27-d6836baca425@hisilicon.com>
+Date:   Mon, 19 Apr 2021 21:03:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <26db9291095c1dfd81c73b0f5f1434f9b399b1f5.1618316565.git.geert+renesas@glider.be>
- <bd8db435-24e1-5ab3-6b35-1d4d8a292a7e@hisilicon.com> <CAMuHMdVouD+e4GpN_Dur8HSop4B8HVosGSYw7vfTpBEi_inMbw@mail.gmail.com>
- <YHcx+QPbkTA0bv9V@smile.fi.intel.com> <CAMuHMdUkDcdZk5YYnkMH+VD4JXFq4khR2dn8wBdSXs1GCT9UMQ@mail.gmail.com>
- <YHc+/MOWA6rO+1Wy@smile.fi.intel.com> <CAMuHMdWZz6QNQbN53Whjfi122PWesM4_+K0_m=np8L=E+=io6g@mail.gmail.com>
- <CAHp75VcFjRBO+0578jWam3+sc24KvKArTtQV+nRCCbV1E++Nsg@mail.gmail.com>
-In-Reply-To: <CAHp75VcFjRBO+0578jWam3+sc24KvKArTtQV+nRCCbV1E++Nsg@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 19 Apr 2021 15:02:35 +0200
-Message-ID: <CAMuHMdVu4VRgJzfM=P8OBi55rsCMFB1vmSepTvSyv1DLjw9Vcw@mail.gmail.com>
-Subject: Re: [PATCH] i2c: I2C_HISI should depend on ARCH_HISI && ACPI
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <8735vpf20c.fsf@ashishki-desk.ger.corp.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.38.196]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On 2021/4/17 21:56, Alexander Shishkin wrote:
+> Yicong Yang <yangyicong@hisilicon.com> writes:
+> 
+>> The reason for not using perf is because there is no current support
+>> for uncore tracing in the perf facilities.
+> 
+> Not unless you count
+> 
+> $ perf list|grep -ic uncore
+> 77
+> 
 
-On Thu, Apr 15, 2021 at 10:50 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Thu, Apr 15, 2021 at 3:43 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Wed, Apr 14, 2021 at 9:14 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Wed, Apr 14, 2021 at 08:55:21PM +0200, Geert Uytterhoeven wrote:
-> > > > On Wed, Apr 14, 2021 at 8:18 PM Andy Shevchenko
-> > > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > > On Wed, Apr 14, 2021 at 08:06:18PM +0200, Geert Uytterhoeven wrote:
-> > > > > > On Wed, Apr 14, 2021 at 11:24 AM Yicong Yang <yangyicong@hisilicon.com> wrote:
->
-> ...
->
-> > > > > > I guess it's still fine to add a dependency on ACPI?
-> > > > >
-> > > > > But why?
-> > > >
-> > > > Please tell me how/when the driver is used when CONFIG_ACPI=n.
-> > >
-> > > I'm not using it at all. Ask the author :-)
-> > >
-> > > But if we follow your logic, then we need to mark all the _platform_ drivers
-> > > for x86 world as ACPI dependent? This sounds ugly.
-> >
-> > Do all other x86 platform drivers have (1) an .acpi_match_table[] and
-> > (2) no other way of instantiating their devices?
-> > The first driver from the top of my memory I looked at is rtc-cmos:
-> > it has no .acpi_match_table[], and the rtc-cmos device is instantiated
-> > from arch/x86/kernel/rtc.c.
-> >
-> > For drivers with only an .of_match_table(), and no legacy users
-> > instantiating platform devices, we do have dependencies on OF.
->
-> This is not true. Entire IIO subsystem is an example.
+these are uncore events probably do not support sampling.
 
-Do you care to elaborate?
-Three quarters of the IIO drivers are I2C and SPI drivers, and thus not
-subject to the above.
+I tried on x86:
 
-Gr{oetje,eeting}s,
+# ./perf record -e uncore_imc_0/cas_count_read/
+Error:
+The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (uncore_imc_0/cas_count_read/).
+/bin/dmesg | grep -i perf may provide additional information.
 
-                        Geert
+For HiSilicon uncore PMUs, we don't support uncore sampling:
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+'The current driver does not support sampling. So "perf record" is unsupported. ' [1]
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+and also in another PMU:
+
+'PMU doesn't support process specific events and cannot be used in sampling mode.' [2]
+
+[1] Documentation/admin-guide/perf/hisi-pmu.rst
+[2] Documentation/admin-guide/perf/arm_dsu_pmu.rst
+
+>> We have our own format
+>> of data and don't need perf doing the parsing.
+> 
+> Perf has AUX buffers, which are used for all kinds of own formats.
+> 
+
+ok. we thought perf will break the data format but AUX buffers seems won't.
+do we need to add full support for tracing as well as parsing or it's ok for
+not parsing it through perf?
+
+>> A similar approach for implementing this function is ETM, which use
+>> sysfs for configuring and a character device for dumping data.
+> 
+> And also perf. One reason ETM has a sysfs interface is because the
+> driver predates perf's AUX buffers. Can't say if it's the only
+> reason. I'm assuming you're talking about Coresight ETM.
+> 
+
+got it. thanks.
+
+>> Greg has some comments on our implementation and doesn't advocate
+>> to build driver on debugfs [1]. So I resend this series to
+>> collect more feedbacks on the implementation of this driver.
+>>
+>> Hi perf and ETM related experts, is it suggested to adapt this driver
+>> to perf? Or is the debugfs approach acceptable? Otherwise use
+> 
+> Aside from the above, I don't think the use of debugfs for kernel ABIs
+> is ever encouraged.
+> 
+
+ok. thanks for the suggestions.
+
+Regards,
+Yicong
+
+> Regards,
+> --
+> Ale
+> 
+> .
+> 
+
