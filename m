@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD94236448B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B55C3644F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242434AbhDSN3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:29:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55300 "EHLO mail.kernel.org"
+        id S241940AbhDSNhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:37:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241471AbhDSNUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:20:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5C0A613FA;
-        Mon, 19 Apr 2021 13:17:00 +0000 (UTC)
+        id S242012AbhDSNZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:25:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 119CF61360;
+        Mon, 19 Apr 2021 13:20:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618838221;
-        bh=iZf7ClmEIC7bmKfIrlNMIND01K7HbcjvZy41yZ6C9n0=;
+        s=korg; t=1618838405;
+        bh=C/VYN5RIlURjwTeCntiP7S3o0MmPWCTiJ6aemB2IPo4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R4qNn94y0iOKg0beg69IgetAnKMyZ0jwsJbL2jl/jYweDg7aWFceThNqyVEXL0SEB
-         IWJMkPhnC05u8IoqbNqDFHDRGRje59nYlGIHp2KLU7vkJN7tX2H+/pws0Z9vDb+Uwz
-         4mBNxmSJKaENgHZIKjvjgRGrqbTWvPqeU5xy4lUU=
+        b=gqBTSzkSQGfoU/3blUpxXHVGDtGiUBJzfAjeKCxg38gkdM9ZngRuFYIRp3PDV1jDP
+         eh7X65WGQSaI1tGGpSiHC9j44d7kd+i+xPBDAtnftwcVFarRKlLQtzhh3Wbnlq7QTl
+         2BaPwNuI1Cr4QnWzxoAfiKp1eqJSO05GOjahgXeI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Murzin <vladimir.murzin@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 087/103] ARM: 9069/1: NOMMU: Fix conversion for_each_membock() to for_each_mem_range()
-Date:   Mon, 19 Apr 2021 15:06:38 +0200
-Message-Id: <20210419130530.790986558@linuxfoundation.org>
+        stable@vger.kernel.org, Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: [PATCH 5.4 48/73] riscv: Fix spelling mistake "SPARSEMEM" to "SPARSMEM"
+Date:   Mon, 19 Apr 2021 15:06:39 +0200
+Message-Id: <20210419130525.382778372@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210419130527.791982064@linuxfoundation.org>
-References: <20210419130527.791982064@linuxfoundation.org>
+In-Reply-To: <20210419130523.802169214@linuxfoundation.org>
+References: <20210419130523.802169214@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,83 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Murzin <vladimir.murzin@arm.com>
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
 
-[ Upstream commit 45c2f70cba3a7eff34574103b2e2b901a5f771aa ]
+commit 199fc6b8dee7d6d50467a57e0dc7e3e1b7d59966 upstream.
 
-for_each_mem_range() uses a loop variable, yet looking into code it is
-not just iteration counter but more complex entity which encodes
-information about memblock. Thus condition i == 0 looks fragile.
-Indeed, it broke boot of R-class platforms since it never took i == 0
-path (due to i was set to 1). Fix that with restoring original flag
-check.
+There is a spelling mistake when SPARSEMEM Kconfig copy.
 
-Fixes: b10d6bca8720 ("arch, drivers: replace for_each_membock() with for_each_mem_range()")
-Signed-off-by: Vladimir Murzin <vladimir.murzin@arm.com>
-Acked-by: Mike Rapoport <rppt@linux.ibm.com>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: a5406a7ff56e ("riscv: Correct SPARSEMEM configuration")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/mm/pmsa-v7.c | 4 +++-
- arch/arm/mm/pmsa-v8.c | 4 +++-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ arch/riscv/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/mm/pmsa-v7.c b/arch/arm/mm/pmsa-v7.c
-index 88950e41a3a9..59d916ccdf25 100644
---- a/arch/arm/mm/pmsa-v7.c
-+++ b/arch/arm/mm/pmsa-v7.c
-@@ -235,6 +235,7 @@ void __init pmsav7_adjust_lowmem_bounds(void)
- 	phys_addr_t mem_end;
- 	phys_addr_t reg_start, reg_end;
- 	unsigned int mem_max_regions;
-+	bool first = true;
- 	int num;
- 	u64 i;
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -101,7 +101,7 @@ config ARCH_FLATMEM_ENABLE
+ config ARCH_SPARSEMEM_ENABLE
+ 	def_bool y
+ 	depends on MMU
+-	select SPARSEMEM_STATIC if 32BIT && SPARSMEM
++	select SPARSEMEM_STATIC if 32BIT && SPARSEMEM
+ 	select SPARSEMEM_VMEMMAP_ENABLE if 64BIT
  
-@@ -263,7 +264,7 @@ void __init pmsav7_adjust_lowmem_bounds(void)
- #endif
- 
- 	for_each_mem_range(i, &reg_start, &reg_end) {
--		if (i == 0) {
-+		if (first) {
- 			phys_addr_t phys_offset = PHYS_OFFSET;
- 
- 			/*
-@@ -275,6 +276,7 @@ void __init pmsav7_adjust_lowmem_bounds(void)
- 			mem_start = reg_start;
- 			mem_end = reg_end;
- 			specified_mem_size = mem_end - mem_start;
-+			first = false;
- 		} else {
- 			/*
- 			 * memblock auto merges contiguous blocks, remove
-diff --git a/arch/arm/mm/pmsa-v8.c b/arch/arm/mm/pmsa-v8.c
-index 2de019f7503e..8359748a19a1 100644
---- a/arch/arm/mm/pmsa-v8.c
-+++ b/arch/arm/mm/pmsa-v8.c
-@@ -95,10 +95,11 @@ void __init pmsav8_adjust_lowmem_bounds(void)
- {
- 	phys_addr_t mem_end;
- 	phys_addr_t reg_start, reg_end;
-+	bool first = true;
- 	u64 i;
- 
- 	for_each_mem_range(i, &reg_start, &reg_end) {
--		if (i == 0) {
-+		if (first) {
- 			phys_addr_t phys_offset = PHYS_OFFSET;
- 
- 			/*
-@@ -107,6 +108,7 @@ void __init pmsav8_adjust_lowmem_bounds(void)
- 			if (reg_start != phys_offset)
- 				panic("First memory bank must be contiguous from PHYS_OFFSET");
- 			mem_end = reg_end;
-+			first = false;
- 		} else {
- 			/*
- 			 * memblock auto merges contiguous blocks, remove
--- 
-2.30.2
-
+ config ARCH_SELECT_MEMORY_MODEL
 
 
