@@ -2,67 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C676363FC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 12:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E4B363FD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 12:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233945AbhDSKpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 06:45:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:40068 "EHLO foss.arm.com"
+        id S238317AbhDSKsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 06:48:02 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:26731 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229537AbhDSKpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 06:45:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BB1581FB;
-        Mon, 19 Apr 2021 03:44:43 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 37ACA3F85F;
-        Mon, 19 Apr 2021 03:44:41 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 11:44:32 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Jianjun Wang <jianjun.wang@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, youlin.pei@mediatek.com,
-        chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com,
-        sin_jieyang@mediatek.com, drinkcat@chromium.org,
-        Rex-BC.Chen@mediatek.com, anson.chuang@mediatek.com,
-        Krzysztof Wilczyski <kw@linux.com>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Subject: Re: [v9,0/7] PCI: mediatek: Add new generation controller support
-Message-ID: <20210419104432.GA2427@lpieralisi>
-References: <20210324030510.29177-1-jianjun.wang@mediatek.com>
- <20210416192100.GA2745484@bjorn-Precision-5520>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416192100.GA2745484@bjorn-Precision-5520>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S232539AbhDSKr5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 06:47:57 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FP3RX3d3FzB09b1;
+        Mon, 19 Apr 2021 12:47:20 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id PNvDtWqSfhJq; Mon, 19 Apr 2021 12:47:20 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FP3RX2Dw7zB09Zy;
+        Mon, 19 Apr 2021 12:47:20 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2023B8B7BB;
+        Mon, 19 Apr 2021 12:47:25 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id vL0j2I5OqooE; Mon, 19 Apr 2021 12:47:25 +0200 (CEST)
+Received: from po16121vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D2F1A8B7B4;
+        Mon, 19 Apr 2021 12:47:24 +0200 (CEST)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id B2CDC679FC; Mon, 19 Apr 2021 10:47:24 +0000 (UTC)
+Message-Id: <cover.1618828806.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v2 0/4] Convert powerpc to GENERIC_PTDUMP
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Steven Price <steven.price@arm.com>, akpm@linux-foundation.org,
+        dja@axtens.net
+Cc:     Oliver O'Halloran <oohall@gmail.com>, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Date:   Mon, 19 Apr 2021 10:47:24 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 02:21:00PM -0500, Bjorn Helgaas wrote:
-> On Wed, Mar 24, 2021 at 11:05:03AM +0800, Jianjun Wang wrote:
-> > These series patches add pcie-mediatek-gen3.c and dt-bindings file to
-> > support new generation PCIe controller.
-> 
-> Incidental: b4 doesn't work on this thread, I suspect because the
-> usual subject line format is:
-> 
->   [PATCH v9 9/7]
-> 
-> instead of:
-> 
->   [v9,0/7]
-> 
-> For b4 info, see https://git.kernel.org/pub/scm/utils/b4/b4.git/tree/README.rst
+This series converts powerpc to generic PTDUMP.
 
-Jianjun will update the series accordingly (and please add to v10 the
-review tags you received.
+For that, we first need to add missing hugepd support
+to pagewalk and ptdump.
 
-Lorenzo
+v2:
+- Reworked the pagewalk modification to add locking and check ops->pte_entry
+- Modified powerpc early IO mapping to have gaps between mappings
+- Removed the logic that checked for contiguous physical memory
+- Removed the articial level calculation in ptdump_pte_entry(), level 4 is ok for all.
+- Removed page_size argument to note_page()
+
+Christophe Leroy (4):
+  mm: pagewalk: Fix walk for hugepage tables
+  powerpc/mm: Leave a gap between early allocated IO areas
+  powerpc/mm: Properly coalesce pages in ptdump
+  powerpc/mm: Convert powerpc to GENERIC_PTDUMP
+
+ arch/powerpc/Kconfig              |   2 +
+ arch/powerpc/Kconfig.debug        |  30 -----
+ arch/powerpc/mm/Makefile          |   2 +-
+ arch/powerpc/mm/ioremap_32.c      |   4 +-
+ arch/powerpc/mm/ioremap_64.c      |   2 +-
+ arch/powerpc/mm/mmu_decl.h        |   2 +-
+ arch/powerpc/mm/ptdump/8xx.c      |   6 +-
+ arch/powerpc/mm/ptdump/Makefile   |   9 +-
+ arch/powerpc/mm/ptdump/book3s64.c |   6 +-
+ arch/powerpc/mm/ptdump/ptdump.c   | 187 ++++++++----------------------
+ arch/powerpc/mm/ptdump/shared.c   |   6 +-
+ mm/pagewalk.c                     |  58 ++++++++-
+ 12 files changed, 127 insertions(+), 187 deletions(-)
+
+-- 
+2.25.0
+
