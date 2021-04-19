@@ -2,109 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 569FD363EB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D078363EBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238692AbhDSJjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 05:39:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhDSJjI (ORCPT
+        id S238704AbhDSJjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 05:39:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34286 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238663AbhDSJjP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 05:39:08 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A0AC06174A;
-        Mon, 19 Apr 2021 02:38:37 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id z13so37875116lfd.9;
-        Mon, 19 Apr 2021 02:38:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qeqfISbVM2w7Pu7fUrVjLsN6tyhOhIQnaxOgyYh0Dxc=;
-        b=dP/uPUa/GvE53vERq7s0HWSJILahAfZgv7PzzcRU+ZXNB5zH8K9FDS/huhv7UJh2zv
-         E8TlO5tj2mkyfkggBLM2lygtO8y12DjjvOouY1IfJw+aeL/o6JqgSw/OD8SedN5UTZkQ
-         Ld6Zu8IEWO+iI2TBW+R2ywbxz9gwjW6gqfq/IxZMf1u8Pl50yLy49BIu20l4BSDrGetO
-         uHIuXQgEmFnPBD2GS4FoiHiqhEMFMeMygiRPgBpFKXlr3BdySTT18dkhFRjHHFVrbWXP
-         5W/Mm1VaipOzOChHuhDIvCKZWQAtvHbn9QaWBA5W5kiULcnkZRFmk+w3LPwVeEpVIL8X
-         oMrA==
+        Mon, 19 Apr 2021 05:39:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618825125;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=W9MP8cjbzcrX9DzJPJwd3PFnkP3wW8EZhTQvmYtyhYA=;
+        b=aSUDHsDRby2E8EtiMp9TFt9+e2RJwj6hKsww3mBHOCtlhOGbyaosvAouc3JrEs1DNbJWON
+        EF/Qap1ZmSbO6QBUcDDxI2vV+f6MqXq2u4l8A7R/M8tb0jNHhliMJ6NgP9zLiPJZ3HtpsF
+        MH1zxYFTJqBDAoRV5oNkXijPSq6BdfY=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-176-3DfXG2aUP4a2dnQE8rzBfg-1; Mon, 19 Apr 2021 05:38:44 -0400
+X-MC-Unique: 3DfXG2aUP4a2dnQE8rzBfg-1
+Received: by mail-ed1-f71.google.com with SMTP id y10-20020a50f1ca0000b0290382d654f75eso10860830edl.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 02:38:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:organization
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=qeqfISbVM2w7Pu7fUrVjLsN6tyhOhIQnaxOgyYh0Dxc=;
-        b=DxHex1MRPE2aAV2fo8a1HbPKQIuFHkr3Q1xHL3XIF/qd3T7HnRojzIlYbDXIUBpVqC
-         DPY3HwLgEBC274gKJ1+GEAYhYDA3ZlSobygXFYX0HiOFz/wQSaIJuOxLBU8ePHX3uJqH
-         9dp0l6zu4ZO2NTmkqCGbQAa3sX3jDH7deuHAmaoYLwPsfrH4vdd8HaYTFCxE97eN/N20
-         Id2/Ng3QutBgCVX53r/SUiVXwE1N/QlHwMSnPn8rkxJ65L0tk5grwVv/cCKkT1tvkBht
-         LSL+2cpXN9WyeOgy7DWUmqhbhuijp6uCoavLeifSuUmRqzrOZHsWtTK85MEFvgkDqJVo
-         SB1w==
-X-Gm-Message-State: AOAM5331A1lMxzh8RIsngP9OGUsjbKZdeU1bXInCjT68Bc7odMk7SnG7
-        kHlBaoMgwo51cQRZsf1cUgvf9ET4CqYtJg==
-X-Google-Smtp-Source: ABdhPJxVkWCmKvfU8TczGps6ZFnUYIUNU9kVduyFVnFuC0e4G12HzQ+w7UyAG9JCeMW5zVOjyFqmcA==
-X-Received: by 2002:a19:850b:: with SMTP id h11mr12321534lfd.342.1618825116410;
-        Mon, 19 Apr 2021 02:38:36 -0700 (PDT)
-Received: from [192.168.1.100] ([178.176.74.223])
-        by smtp.gmail.com with ESMTPSA id y8sm1827017ljk.9.2021.04.19.02.38.35
+        bh=W9MP8cjbzcrX9DzJPJwd3PFnkP3wW8EZhTQvmYtyhYA=;
+        b=DDZImqZe4Eo+/h1GJRnaXk38VCVlbpR396b6/dlrclldkjBLZHthOiQ1QoUhq517Rl
+         UPDcBPdXlYQ0/u7iqwqW4HYO3YUH1zwf6sUV7koYMLshsn+u0ZKxNpp6neF1udw+cbC0
+         uGjktsme0+Qdik8yeCx57utE9p3xPMVmtMQIULqT/XXvUJtsHmu3G36IrSe7UuSOakHp
+         wELL2Avy4e5ME4kTj5TQTbs3TE9cd8ey3oSfCjPuD1IRRS15TL75HY7ySEt+92h/Aw49
+         P66JNNWZ0q/SLzrXNM8TKInYhqThZgjvsanZmiJ824Weakzj9A/tAqlhq/4BRmEJOLJO
+         NMhA==
+X-Gm-Message-State: AOAM533JO2I+SRzfIcvcJrwAz8hPolPs/uprB6XADqSiAQKou/EEa3Yp
+        4cl3lUKWCF1vPUbVptbk9PtG7foApcS/CUamGBqtvSoynpLnT9yX4aV4xA7QQFTCYnV2dPietYl
+        ZRNH+NF1VsQUkoIf/vmxh7eOl
+X-Received: by 2002:a17:906:98d6:: with SMTP id zd22mr16697354ejb.17.1618825122870;
+        Mon, 19 Apr 2021 02:38:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyGQ30kMI3cddajeZS/U8PQuAuuPoix56tOatD7f6VV3+y8LgKZjvgSrEGol9OdxIgtH/QwWg==
+X-Received: by 2002:a17:906:98d6:: with SMTP id zd22mr16697331ejb.17.1618825122657;
+        Mon, 19 Apr 2021 02:38:42 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c69b8.dip0.t-ipconnect.de. [91.12.105.184])
+        by smtp.gmail.com with ESMTPSA id x7sm11903755eds.67.2021.04.19.02.38.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Apr 2021 02:38:36 -0700 (PDT)
-Subject: Re: [PATCH] net: ethernet: ravb: Fix release of refclk
-To:     Adam Ford <aford173@gmail.com>, netdev@vger.kernel.org
-Cc:     aford@beaconembedded.com, geert@linux-m68k.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210417132329.6886-1-aford173@gmail.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <ae2f6201-3646-4896-0246-8ae849df3a4f@gmail.com>
-Date:   Mon, 19 Apr 2021 12:38:33 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        Mon, 19 Apr 2021 02:38:42 -0700 (PDT)
+Subject: Re: [PATCH] secretmem: optimize page_is_secretmem()
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, kernel test robot <oliver.sang@intel.com>
+References: <20210419084218.7466-1-rppt@kernel.org>
+ <3b30ac54-8a92-5f54-28f0-f110a40700c7@redhat.com>
+ <YH1PE4oWeicpJT9g@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <f4d0c4bf-423b-e227-444b-f1ea722dc43f@redhat.com>
+Date:   Mon, 19 Apr 2021 11:38:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210417132329.6886-1-aford173@gmail.com>
+In-Reply-To: <YH1PE4oWeicpJT9g@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On 17.04.2021 16:23, Adam Ford wrote:
-
-> The call to clk_disable_unprepare() can happen before priv is
-> initialized.
-
-    Mhm, how's that? :-/
-
-> This means moving clk_disable_unprepare out of
-> out_release into a new label.
+On 19.04.21 11:36, Mike Rapoport wrote:
+> On Mon, Apr 19, 2021 at 11:15:02AM +0200, David Hildenbrand wrote:
+>> On 19.04.21 10:42, Mike Rapoport wrote:
+>>> From: Mike Rapoport <rppt@linux.ibm.com>
+>>>
+>>> Kernel test robot reported -4.2% regression of will-it-scale.per_thread_ops
+>>> due to commit "mm: introduce memfd_secret system call to create "secret"
+>>> memory areas".
+>>>
+>>> The perf profile of the test indicated that the regression is caused by
+>>> page_is_secretmem() called from gup_pte_range() (inlined by gup_pgd_range):
+>>>
+>>>    27.76  +2.5  30.23       perf-profile.children.cycles-pp.gup_pgd_range
+>>>     0.00  +3.2   3.19 ± 2%  perf-profile.children.cycles-pp.page_mapping
+>>>     0.00  +3.7   3.66 ± 2%  perf-profile.children.cycles-pp.page_is_secretmem
+>>>
+>>> Further analysis showed that the slow down happens because neither
+>>> page_is_secretmem() nor page_mapping() are not inline and moreover,
+>>> multiple page flags checks in page_mapping() involve calling
+>>> compound_head() several times for the same page.
+>>>
+>>> Make page_is_secretmem() inline and replace page_mapping() with page flag
+>>> checks that do not imply page-to-head conversion.
+>>>
+>>> Reported-by: kernel test robot <oliver.sang@intel.com>
+>>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+>>> ---
+>>>
+>>> @Andrew,
+>>> The patch is vs v5.12-rc7-mmots-2021-04-15-16-28, I'd appreciate if it would
+>>> be added as a fixup to the memfd_secret series.
+>>>
+>>>    include/linux/secretmem.h | 26 +++++++++++++++++++++++++-
+>>>    mm/secretmem.c            | 12 +-----------
+>>>    2 files changed, 26 insertions(+), 12 deletions(-)
+>>>
+>>> diff --git a/include/linux/secretmem.h b/include/linux/secretmem.h
+>>> index 907a6734059c..b842b38cbeb1 100644
+>>> --- a/include/linux/secretmem.h
+>>> +++ b/include/linux/secretmem.h
+>>> @@ -4,8 +4,32 @@
+>>>    #ifdef CONFIG_SECRETMEM
+>>> +extern const struct address_space_operations secretmem_aops;
+>>> +
+>>> +static inline bool page_is_secretmem(struct page *page)
+>>> +{
+>>> +	struct address_space *mapping;
+>>> +
+>>> +	/*
+>>> +	 * Using page_mapping() is quite slow because of the actual call
+>>> +	 * instruction and repeated compound_head(page) inside the
+>>> +	 * page_mapping() function.
+>>> +	 * We know that secretmem pages are not compound and LRU so we can
+>>> +	 * save a couple of cycles here.
+>>> +	 */
+>>> +	if (PageCompound(page) || !PageLRU(page))
+>>> +		return false;
+>>
+>> I'd assume secretmem pages are rare in basically every setup out there. So
+>> maybe throwing in a couple of likely()/unlikely() might make sense.
 > 
-> Fixes: 8ef7adc6beb2("net: ethernet: ravb: Enable optional refclk")
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-> 
-> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-> index 8c84c40ab9a0..64a545c98ff2 100644
-> --- a/drivers/net/ethernet/renesas/ravb_main.c
-> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-[...]
-> @@ -2252,8 +2252,9 @@ static int ravb_probe(struct platform_device *pdev)
->   	/* Stop PTP Clock driver */
->   	if (chip_id != RCAR_GEN2)
->   		ravb_ptp_stop(ndev);
-> -out_release:
-> +out_unprepare_refclk:
-
-    I'd really prefer out_disable_refclk.
-
->   	clk_disable_unprepare(priv->refclk);
-> +out_release:
->   	free_netdev(ndev);
+> I'd say we could do unlikely(page_is_secretmem()) at call sites. Here I can
+> hardly estimate which pages are going to be checked.
 >   
->   	pm_runtime_put(&pdev->dev);
+>>> +
+>>> +	mapping = (struct address_space *)
+>>> +		((unsigned long)page->mapping & ~PAGE_MAPPING_FLAGS);
+>>> +
+>>
+>> Not sure if open-coding page_mapping is really a good idea here -- or even
+>> necessary after the fast path above is in place. Anyhow, just my 2 cents.
+> 
+> Well, most if the -4.2% of the performance regression kbuild reported were
+> due to repeated compount_head(page) in page_mapping(). So the whole point
+> of this patch is to avoid calling page_mapping().
 
-MBR, Sergei
+I would have thought the fast path "(PageCompound(page) || 
+!PageLRU(page))" would already avoid calling page_mapping() in many cases.
+
+
+-- 
+Thanks,
+
+David / dhildenb
+
