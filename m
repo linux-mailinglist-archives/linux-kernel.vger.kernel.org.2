@@ -2,113 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 585DD3640D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F243640AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238755AbhDSLsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 07:48:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232184AbhDSLsI (ORCPT
+        id S238748AbhDSLoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 07:44:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20873 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232530AbhDSLoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 07:48:08 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3B3CC06174A;
-        Mon, 19 Apr 2021 04:47:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bwPuhmLV9iDdbBtA80aP2NeOoPck37vPl2v0l8S8dJw=; b=ZKgd+wiWxB4OjJM0AIDMQSKXxR
-        mK2R/z3oqKh1PUQkJXhvcIcCeNtKgp8OXUyGgAszjnbvM4jRpHJ8CjWbc7hBN1U6HbdDGK+UorYOc
-        MFcMKMdSOPfBZbD7GWLjHFe+LP+3z+b1cJWnPckDm478VhnIuObWzbqtK9sHaZ8jwmo1+eWrdBGQa
-        v1kBE40Vi4xvSvLhZ0bnDkcLGvuPRT/cK5/47tFYec+ZGcwN2cVCQO61pGGxpuB3lYinJPup2TnB4
-        GZ/ajfYkgk2Tj5Ry8+D2ggrOGM4MLh5XgrDlBR0M9Vx/aMmMy+8h8RgjgqInD8p/8jeX+er7cc13j
-        MOHIVxrw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYSJB-00Dg11-HM; Mon, 19 Apr 2021 11:43:29 +0000
-Date:   Mon, 19 Apr 2021 12:43:17 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH] secretmem: optimize page_is_secretmem()
-Message-ID: <20210419114317.GY2531743@casper.infradead.org>
-References: <20210419084218.7466-1-rppt@kernel.org>
- <3b30ac54-8a92-5f54-28f0-f110a40700c7@redhat.com>
- <YH1PE4oWeicpJT9g@kernel.org>
+        Mon, 19 Apr 2021 07:44:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618832617;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=328beX0Y8euNQ3/bq0gYCGzKWoHwLr1bHGXl0+OSrSs=;
+        b=PLvhTVm/eK9A+JWM3mcVo8Qq25PXkmrebG46dGkMLLfNTE7k5Nm7IofeHCUWcBve3gF5HO
+        QenlP8dwJ7e1x09ogEueUStrsYH+uBW/fowsek4ZVFz943PvFRcQu35DhembAyKRBl8D1b
+        7JXJmKeVa3Glr0/FYd3+Z1jX/CSlw5o=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-591-7tAxeCr8MRGYmKMyzQJ3Pw-1; Mon, 19 Apr 2021 07:43:35 -0400
+X-MC-Unique: 7tAxeCr8MRGYmKMyzQJ3Pw-1
+Received: by mail-wr1-f72.google.com with SMTP id 65-20020adf94c70000b0290106f90d4e1bso4642596wrr.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 04:43:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=328beX0Y8euNQ3/bq0gYCGzKWoHwLr1bHGXl0+OSrSs=;
+        b=bwgFXUqByl9FTvG2OsrC8akfT/2DzlnrzdD0J/LyOOMJsYt2llcwLdipZN2yatBKXH
+         XESCkoRJsJXWgm/xJobow/HYruRVKgevEy4MTILoWw0BgePWYhPcWDhMfPWd/OoA5gZO
+         CltOxkXoo7Za3ab2xc5bCXASdSogGSVHNdX3Ss/NEQpHSz8ZK8awxqGmw13nTOUvaz1F
+         ADSxZ9dHLg//Pw9ef2Pzla625C4SWGiS/IsM1atAOBTS7HWoyMbbBWmCRwdCRh0Kgpqh
+         krOOBd4funb27wYtkFxIFlLbwlsW+VUoNlPJU/+qWYcDjd4W+ub/CEo+f4xkT4DA5tKa
+         7/qA==
+X-Gm-Message-State: AOAM5320Jj4/SzbBuMZni9yji/ITy4pQDOGL+c1eiQdzvL5Q76SSYWeD
+        MELu6Q7NFHpNfk1vDTRpcaS1pN3ucyVBVZM3CSOSjrtBhpe7/aiul5zha7NqVdKkToDstj9dCyP
+        pCmUjzDlCm2Q0MkFztXEywv5ZgYLELaApYVeCxk3v
+X-Received: by 2002:a5d:524d:: with SMTP id k13mr14473074wrc.113.1618832614885;
+        Mon, 19 Apr 2021 04:43:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwOgVCGSvDVcpbecEJkN3C9WOb/HAPuFV3M1eNh/o4kfj3wD4qQBo8QFWYdgxFRz7QrP15fBD3eaP9svuQ95yc=
+X-Received: by 2002:a5d:524d:: with SMTP id k13mr14473060wrc.113.1618832614773;
+ Mon, 19 Apr 2021 04:43:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YH1PE4oWeicpJT9g@kernel.org>
+References: <20210416143725.2769053-1-lee.jones@linaro.org> <20210416143725.2769053-7-lee.jones@linaro.org>
+In-Reply-To: <20210416143725.2769053-7-lee.jones@linaro.org>
+From:   Karol Herbst <kherbst@redhat.com>
+Date:   Mon, 19 Apr 2021 13:43:24 +0200
+Message-ID: <CACO55ttdMHPf3UrGAsY+vNxaq66QKi7FdbeyfLiFx6Hnst0tJA@mail.gmail.com>
+Subject: Re: [Nouveau] [PATCH 06/40] drm/nouveau/nvkm/engine/gr/gf100: Demote
+ non-conformant kernel-doc header
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        nouveau <nouveau@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 12:36:19PM +0300, Mike Rapoport wrote:
-> Well, most if the -4.2% of the performance regression kbuild reported were
-> due to repeated compount_head(page) in page_mapping(). So the whole point
-> of this patch is to avoid calling page_mapping().
+Reviewed-by: Karol Herbst <kherbst@redhat.com>
 
-It's quite ludicrous how many times we call compound_head() in
-page_mapping() today:
+On Fri, Apr 16, 2021 at 4:37 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=1 kernel build warning(s):
+>
+>  drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c:992: warning: Function parameter or member 'gr' not described in 'gf100_gr_wait_idle'
+>
+> Cc: Ben Skeggs <bskeggs@redhat.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: nouveau@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c b/drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c
+> index 397ff4fe9df89..69e6008f99196 100644
+> --- a/drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c
+> +++ b/drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c
+> @@ -982,7 +982,7 @@ gf100_gr_zbc_init(struct gf100_gr *gr)
+>         }
+>  }
+>
+> -/**
+> +/*
+>   * Wait until GR goes idle. GR is considered idle if it is disabled by the
+>   * MC (0x200) register, or GR is not busy and a context switch is not in
+>   * progress.
+> --
+> 2.27.0
+>
+> _______________________________________________
+> Nouveau mailing list
+> Nouveau@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/nouveau
+>
 
- page = compound_head(page);
- if (__builtin_expect(!!(PageSlab(page)), 0))
- if (__builtin_expect(!!(PageSwapCache(page)), 0)) {
-
-TESTPAGEFLAG(Slab, slab, PF_NO_TAIL) expands to:
-
-static __always_inline int PageSlab(struct page *page)
-{
-	PF_POISONED_CHECK(compound_head(page));
-	return test_bit(PG_slab, &compound_head(page));
-}
-
-static __always_inline int PageSwapCache(struct page *page)
-{
-        page = compound_head(page);
-        return PageSwapBacked(page) && test_bit(PG_swapcache, &page->flags);
-}
-
-but then!
-
-TESTPAGEFLAG(SwapBacked, swapbacked, PF_NO_TAIL) also expands like Slab does.
-
-So that's six calls to compound_head(), depending what Kconfig options
-you have enabled.
-
-And folio_mapping() is one of the functions I add in the first batch of
-patches, so review, etc will be helpful.
