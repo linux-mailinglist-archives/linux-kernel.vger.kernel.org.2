@@ -2,102 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0A3364D0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 23:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC79364D0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 23:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232519AbhDSV2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 17:28:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:50916 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229714AbhDSV2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 17:28:23 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 40E051435;
-        Mon, 19 Apr 2021 14:27:53 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5CD143F792;
-        Mon, 19 Apr 2021 14:27:51 -0700 (PDT)
-Subject: Re: [PATCH v2 0/1] arm: topology: parse the topology from the dt
-To:     Ruifeng Zhang <ruifeng.zhang0110@gmail.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux@armlinux.org.uk, sudeep.holla@arm.com,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, a.p.zijlstra@chello.nl,
-        mingo@kernel.org, ruifeng.zhang1@unisoc.com, nianfu.bai@unisoc.com,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210414122326.5255-1-ruifeng.zhang0110@gmail.com>
- <8735vrmnc7.mognet@arm.com> <b7a76995-f6c3-67c5-b14e-d40587495d7e@arm.com>
- <CAG7+-3Nv=m0pd8t0eQEUv5zSeg86hfkKcs_VLzsbzWFabYbTTQ@mail.gmail.com>
- <87wnt2lglo.mognet@arm.com> <44ab835f-3456-6bd9-97e9-5936cf5372da@arm.com>
- <CAG7+-3OgN4Kx3Md1tOmqHDLs94DSv2puh=kA0oFMw+aZGnb3iw@mail.gmail.com>
- <2a4efeea-cc70-ca0a-81fd-84d8b54586c0@arm.com>
- <CAG7+-3MX8Ntzh-fiTFZq-d9EO4GNpY2b3AuAOZPxVmxA=jNtNg@mail.gmail.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <31faf969-c8fe-1acf-e78f-793a37b8d0b2@arm.com>
-Date:   Mon, 19 Apr 2021 23:27:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S232441AbhDSV3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 17:29:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229714AbhDSV3K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 17:29:10 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A142C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 14:28:40 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id k19so5283211vsg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 14:28:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=cleXv1yhEvw46D0B1rWUk84bkqfi6fu+rLFkY44zfmA=;
+        b=nFxMjeD7AmL56ZhtH0sR2t2h7TfuthJSJf+NdlIHx+BF+rvuPuW+9ovFUuKyRUugmU
+         5ixLO8gPKjq6UVc5V5pfdCx6dNJrgjM3CFYkFzydSknQDAIC1J6js1PAojit5MKN22VA
+         ZxkLNb1VytJc7oPeiLqe2FjWVjqzn7xN1Xns1m3EqZLCYGnu0H3JJfR1rgsONcrK3z37
+         jqOfT+SxLbwPp+xXEFnlV0Im1dE5ZybrdHuMBIWBnzFd5bvZzsGUMncwJSt7veOL1cQ4
+         tY7+dDnz/af2xD6z9juc1lPZPwulI6IyB4ofLszl5N0QSyNOw6pDf2IT+/iLbjiUVhwm
+         fa8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=cleXv1yhEvw46D0B1rWUk84bkqfi6fu+rLFkY44zfmA=;
+        b=FzfWR4kGQADN4Ywv+z7Wi7KpZDMho1ViGiRMV5EeUOe84HIq9IcqEQjTJLQB/uxFUp
+         no3J7zXoUzblM7FgVvttehhvLDzKNwE3eKp5KWJkRiGv/52Dep/MOg/Umi4u3zy/LJVj
+         i9BbkP8rK+zxfXU2WlsXp06t9eJqC7qioYBQvZbxWhZMUz9ujVR9diyw3g0thpz53bVu
+         546TFSyOq9Soh/6INVeIXYO70weAYiEp6LY9QZNF4bl14Zn8sn3BdhFU00DuXvt4LJZZ
+         9wjAZDcGUn/+INsSM0yem0q4BclS/MCtxeipfCoPJAc37crMtNzCPJGtRl8Vdl0bmT/Y
+         0f1A==
+X-Gm-Message-State: AOAM533fz19NLmHEdzp74mRFvuKBDTnXMymAu3Rhq6tRZ4VNnYWSVfcW
+        V3mnwOd+EiR27Hs1GFE7oqkXtvPhRSMSEzJsBz+pN5dJG6CQRA==
+X-Google-Smtp-Source: ABdhPJxNiGs2dJnnST4zN1cMW6O+xsLEhgR0c+AVVrpW9tSV5gP3SQbLZdVI0yl9kXQ7k/wrb/xo4kT2tgRD4dGCV8A=
+X-Received: by 2002:a67:7d42:: with SMTP id y63mr17685526vsc.5.1618867719441;
+ Mon, 19 Apr 2021 14:28:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAG7+-3MX8Ntzh-fiTFZq-d9EO4GNpY2b3AuAOZPxVmxA=jNtNg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+From:   Jue Wang <juew@google.com>
+Date:   Mon, 19 Apr 2021 14:28:28 -0700
+Message-ID: <CAPcxDJ6SgSagJrF7u576WUb6p7Hg7+beYVoCpJ86Ocsb-mCHmQ@mail.gmail.com>
+Subject: Re: [PATCH 4/4] x86/mce: Avoid infinite loop for copy from user recovery
+To:     tony.luck@intel.com
+Cc:     bp@alien8.de, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        luto@kernel.org, naoya.horiguchi@nec.com, x86@kernel.org,
+        yaoaili@kingsoft.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/04/2021 04:55, Ruifeng Zhang wrote:
-> Dietmar Eggemann <dietmar.eggemann@arm.com> 于2021年4月17日周六 上午1:00写道：
->>
->> On 16/04/2021 13:04, Ruifeng Zhang wrote:
->>> Dietmar Eggemann <dietmar.eggemann@arm.com> 于2021年4月16日周五 下午6:39写道：
->>>>
->>>> On 16/04/2021 11:32, Valentin Schneider wrote:
->>>>> On 16/04/21 15:47, Ruifeng Zhang wrote:
+On Thu, 25 Mar 2021 17:02:35 -0700, Tony Luck wrote:
+...
 
-[...]
+> But there are places in the kernel where the code assumes that this
+> EFAULT return was simply because of a page fault. The code takes some
+> action to fix that, and then retries the access. This results in a second
+> machine check.
 
->> I'm afraid that this is now a much weaker case to get this into
->> mainline.
-> 
-> But it's still a problem and it's not break the original logic ( parse
-> topology from MPIDR or parse capacity ), only add the support for
-> parse topology from DT.
-> I think it should still be merged into the mainline. If don't, the
-> DynamIQ SoC has some issue in sched and cpufreq.
+What about return EHWPOISON instead of EFAULT and update the callers
+to handle EHWPOISON explicitly: i.e., not retry but give up on the page?
 
-IMHO, not necessarily. Your DynamIQ SoC is one cluster with 8 CPUs. It's
-subdivided into 2 Frequency Domains (FDs).
+My main concern is that the strong assumptions that the kernel can't hit more
+than a fixed number of poisoned cache lines before turning to user space
+may simply not be true.
 
-CFS Energy-Aware-Scheduling (EAS, find_energy_efficient_cpu()) and
-Capacity-Aware-Scheduling (CAS, select_idle_sibling() ->
-select_idle_capacity()) work correctly even in case you only have an MC
-sched domain (sd).
-No matter which sd (MC, DIE) the sd_asym_cpucapacity is, we always
-iterate over all CPUs. Per Performance Domains (i.e. FDs) in EAS and
-over sched_domain_span(sd) in CAS.
-
-CFS load-balancing (in case your system is `over-utilized`) might work
-slightly different due to the missing DIE sd but not inevitably worse.
-
-Do you have benchmarks or testcases in mind which convince you that
-Phantom Domains is something you would need? BTW, they are called
-Phantom since they let you use uarch and/or max CPU frequency domain to
-fake real topology (like LLC) boundaries.
-
-[...]
-
-> Why do you keep the logic of topology_parse_cpu_capacity in arm
-> get_coretype_capacity function? The capacity-dmips-mhz will be parsed
-> by drivers/base/arch_topology.c as following:
-> parse_dt_topology
->     parse_cluster
->         parse_core
->             get_cpu_for_node
->                 topology_parse_cpu_capacity
-
-I think we still need it for systems out there w/o cpu-map in dt, like
-my arm32 TC2 with mainline vexpress-v2p-ca15_a7.dts.
-
-It's called twice on each CPU in case I add the cpu-map dt entry though.
+When DIMM goes bad, it can easily affect an entire bank or entire ram device
+chip. Even with memory interleaving, it's possible that a kernel control path
+touches lots of poisoned cache lines in the buffer it is working through.
