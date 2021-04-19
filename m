@@ -2,92 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D933364670
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF2A36467E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240615AbhDSOur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 10:50:47 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:47574 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240570AbhDSOuo (ORCPT
+        id S238937AbhDSO5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 10:57:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232318AbhDSO5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 10:50:44 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13JEo6Zb015049;
-        Mon, 19 Apr 2021 09:50:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1618843806;
-        bh=ADQ0RSQetq2WAGPxcXPK7Ft1yLeNW7b6Jvk0MZ/3yjM=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=DAY3f+S0fgHzwx5/e3eR+7ecG7JmTz8Xjv7aZXKAwyV4uTJyued+9VBeivNMoQU/f
-         HnuHDmsuX/FwTxWsCPUAmkotRh6SQlMmkwIC1eBukUZc97y5fMoAIm3QUH0vGzqfIx
-         Ak6+78KvIsL/rTFJ6JgJVb6Dmeafo1mNP4hPRCd0=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13JEo6TN076519
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 19 Apr 2021 09:50:06 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 19
- Apr 2021 09:50:06 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 19 Apr 2021 09:50:06 -0500
-Received: from [10.250.33.21] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13JEo6T5034030;
-        Mon, 19 Apr 2021 09:50:06 -0500
-Subject: Re: [PATCH] ARM: dts: keystone-k2g: Rename message-manager node
-To:     Nishanth Menon <nm@ti.com>, Santosh Shilimkar <ssantosh@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210414001926.20002-1-nm@ti.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <e52fe654-a9b7-ca49-d501-1dd01159c787@ti.com>
-Date:   Mon, 19 Apr 2021 09:50:01 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 19 Apr 2021 10:57:46 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00000C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 07:57:16 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id n8so56536593lfh.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 07:57:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bOY9m1eIVASQIMnSbwflGhIUTyPWYD03S/dD7MA55Qc=;
+        b=rgKpT44z5gZPH7IcDqEdCS5YbgmApA+chMspbQ+JZGvC+YpgKwQzzX5A4jzxNEjvmG
+         MLlDYm4e7iCaE5IHqjOyN/ifzjPweOwwRpEg2SJB0fXvLMt8562VpY9TMa7hc7yb2lA1
+         2PVEZpoklcaU3AfYgP9KRx34WMyKtu4e/QsEtsbYZgOl6h8Xq+0WvD0oBFTfJC4iVd4L
+         6j0H/BV7sKihqk2a+lubMh5VtlxaVk/jrOh+titVm4bmXsc3XMgR5O5X+2oCsdriqvyU
+         BMBRSMvjklWjnZ9g9t6FGjScAawV2e+WWEzp+KcGRgjhYZ/E3Qe13rckj3cpUlBiF3sb
+         St4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bOY9m1eIVASQIMnSbwflGhIUTyPWYD03S/dD7MA55Qc=;
+        b=IIYyh7w/pd9i5gwocs/qBVwIZn2s+mm91Pct5HrYPD7A4f+Z4UdQwRy59tBjZvH1MZ
+         5IzAz0Ykb/aXmnZ0oJE0RkWyYVIGsxh2cAH/rYg5rS1/u93T1H18qLloW3AiTxp6vIxj
+         8xdxSmHySK4lcowVusCTOwRDwC42sG5FCUqgbqBCD6p1rPVWTtqxIWqmfSF1GMes8pmF
+         cYoQ73VS97C4fFFAFlUcDDwsy3xPdoANqqeebEG1oHHA74r/rRJZaC+Qv3Rs6bJmy+0W
+         eLB/pgzfekpZTedVz/SWqrcYbWmjCOO9TLCa1qyeQKcIeoAEko4DFbFpHVL8Hj/NFOQD
+         0joA==
+X-Gm-Message-State: AOAM533tDPzuH8L85csHbQY/G/xr+IIuEhk07M9xGI8k8zLjlLZKD9CS
+        l6tSmWwDtncXPGvPEkPrJPnDbSlmwVXkXnAg1Vkgmg==
+X-Google-Smtp-Source: ABdhPJzVe3naebLuz81mJv7oonUIqkV5Z3LAXE1HEtaRfd+15ET0ZRont6UfxMYDrQHny8LYwtQzYeplG9JZRH79Gdo=
+X-Received: by 2002:a05:6512:92e:: with SMTP id f14mr6712386lft.347.1618844235220;
+ Mon, 19 Apr 2021 07:57:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210414001926.20002-1-nm@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <20210409223801.104657-3-mcroce@linux.microsoft.com> <20210410154824.GZ2531743@casper.infradead.org>
+ <YHHPbQm2pn2ysth0@enceladus> <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
+ <YHHuE7g73mZNrMV4@enceladus> <20210414214132.74f721dd@carbon>
+ <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com> <YH0RMV7+56gVOzJe@apalos.home>
+In-Reply-To: <YH0RMV7+56gVOzJe@apalos.home>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 19 Apr 2021 07:57:03 -0700
+Message-ID: <CALvZod7oa4q6pMUyDi4FMW4WKY7AjOZ7P2=02GoxjpwrQpA-OQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/13/21 7:19 PM, Nishanth Menon wrote:
-> Rename message-manager instance node name to be better aligned with
-> current style of device tree nodes for mailboxes.
-> 
-> Signed-off-by: Nishanth Menon <nm@ti.com>
+On Sun, Apr 18, 2021 at 10:12 PM Ilias Apalodimas
+<ilias.apalodimas@linaro.org> wrote:
+>
+> On Wed, Apr 14, 2021 at 01:09:47PM -0700, Shakeel Butt wrote:
+> > On Wed, Apr 14, 2021 at 12:42 PM Jesper Dangaard Brouer
+> > <brouer@redhat.com> wrote:
+> > >
+> > [...]
+> > > > >
+> > > > > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
+> > > > > can not be used.
+> > > >
+> > > > Yes it can, since it's going to be used as your default allocator for
+> > > > payloads, which might end up on an SKB.
+> > >
+> > > I'm not sure we want or should "allow" page_pool be used for TCP RX
+> > > zerocopy.
+> > > For several reasons.
+> > >
+> > > (1) This implies mapping these pages page to userspace, which AFAIK
+> > > means using page->mapping and page->index members (right?).
+> > >
+> >
+> > No, only page->_mapcount is used.
+> >
+>
+> I am not sure I like leaving out TCP RX zerocopy. Since we want driver to
+> adopt the recycling mechanism we should try preserving the current
+> functionality of the network stack.
+>
+> The question is how does it work with the current drivers that already have an
+> internal page recycling mechanism.
+>
 
-Acked-by: Suman Anna <s-anna@ti.com>
+I think the current drivers check page_ref_count(page) to decide to
+reuse (or not) the already allocated pages.
 
-> ---
-> 
-> Santosh:
-> - This is'nt critical to queue up for 5.13-rc1 window, but just getting
->   it out of the way. I noticed it as I was converting the binding to
->   yaml. (patch for yaml conversion for the node follows)
-> 
->  arch/arm/boot/dts/keystone-k2g.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/boot/dts/keystone-k2g.dtsi b/arch/arm/boot/dts/keystone-k2g.dtsi
-> index 05a75019275e..e5c813b5556d 100644
-> --- a/arch/arm/boot/dts/keystone-k2g.dtsi
-> +++ b/arch/arm/boot/dts/keystone-k2g.dtsi
-> @@ -242,7 +242,7 @@ dsp0: dsp@10800000 {
->  			status = "disabled";
->  		};
->  
-> -		msgmgr: msgmgr@2a00000 {
-> +		msgmgr: mailbox@2a00000 {
->  			compatible = "ti,k2g-message-manager";
->  			#mbox-cells = <2>;
->  			reg-names = "queue_proxy_region",
-> 
+Some examples from the drivers:
+drivers/net/ethernet/intel/ixgbe/ixgbe_main.c:ixgbe_can_reuse_rx_page()
+drivers/net/ethernet/intel/igb/igb_main.c:igb_can_reuse_rx_page()
+drivers/net/ethernet/mellanox/mlx5/core/en_rx.c:mlx5e_rx_cache_get()
 
+> > > (2) It feels wrong (security wise) to keep the DMA-mapping (for the
+> > > device) and also map this page into userspace.
+> > >
+> >
+> > I think this is already the case i.e pages still DMA-mapped and also
+> > mapped into userspace.
+> >
+> > > (3) The page_pool is optimized for refcnt==1 case, and AFAIK TCP-RX
+> > > zerocopy will bump the refcnt, which means the page_pool will not
+> > > recycle the page when it see the elevated refcnt (it will instead
+> > > release its DMA-mapping).
+> >
+> > Yes this is right but the userspace might have already consumed and
+> > unmapped the page before the driver considers to recycle the page.
+>
+> Same question here. I'll have a closer look in a few days and make sure we are
+> not breaking anything wrt zerocopy.
+>
+
+Pages mapped into the userspace have their refcnt elevated, so the
+page_ref_count() check by the drivers indicates to not reuse such
+pages.
+
+> >
+> > >
+> > > (4) I remember vaguely that this code path for (TCP RX zerocopy) uses
+> > > page->private for tricks.  And our patch [3/5] use page->private for
+> > > storing xdp_mem_info.
+> > >
+> > > IMHO when the SKB travel into this TCP RX zerocopy code path, we should
+> > > call page_pool_release_page() to release its DMA-mapping.
+> > >
+> >
+> > I will let TCP RX zerocopy experts respond to this but from my high
+> > level code inspection, I didn't see page->private usage.
+>
+> Shakeel are you aware of any 'easy' way I can have rx zerocopy running?
+>
+
+I would recommend tools/testing/selftests/net/tcp_mmap.c.
