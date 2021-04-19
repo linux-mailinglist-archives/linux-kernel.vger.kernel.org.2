@@ -2,95 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37BF363F40
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC83363F43
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237367AbhDSJ6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 05:58:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42148 "EHLO
+        id S237973AbhDSKA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 06:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232560AbhDSJ6Q (ORCPT
+        with ESMTP id S232560AbhDSKA1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 05:58:16 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCC9AC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 02:57:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FlVO0HsxJfPGYtBK9wYBR/ACrk9EWw2KvWlRpjKbsTo=; b=lXi+4oz8+J9lEErNx6vqxgfW0m
-        rb9nEdqMEnYT60Y6KSZnAb20UBjKStkKxR89eTZ8Yy81buVd+rnQrbDvKcAvBM1qYSByPzi8XOhgw
-        xCc9QVT2mn4KB0edM0VmEDMqKnyDXLZU5pnWxOR/6j58+M8CK1U6vZ6ZkuBTvyCmcuy6GqG0VIHVk
-        EGcxURhHqk96b173ZtBppb9luCnJV75CG461xF9UQi+bdS1+qymkc6gTBmE2rzq8bDyoI1lkRaK1x
-        5tenBgkzKKKdwdnptytbP54ORObCPTAeTGvtA6FzW6h9peS1gEmcyPLi+bNkQ8RHWgt3i+JIoPc7y
-        Kzx957xg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYQe2-00DYx5-RZ; Mon, 19 Apr 2021 09:56:55 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8EA2C30021C;
-        Mon, 19 Apr 2021 11:56:41 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 55750201946E6; Mon, 19 Apr 2021 11:56:41 +0200 (CEST)
-Date:   Mon, 19 Apr 2021 11:56:41 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Yuan ZhaoXiong <yuanzhaoxiong@baidu.com>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched: Optimize housekeeping_cpumask in for_each_cpu_and
-Message-ID: <YH1T2f96IWlR7aOi@hirez.programming.kicks-ass.net>
-References: <1618671697-26098-1-git-send-email-yuanzhaoxiong@baidu.com>
+        Mon, 19 Apr 2021 06:00:27 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E2B5C06174A;
+        Mon, 19 Apr 2021 02:59:56 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id i10so19102030lfe.11;
+        Mon, 19 Apr 2021 02:59:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FDGOhqaPmu3im/JE4IpXZ09jQoRV39s/gRjkoNBVyKY=;
+        b=EZHTNLZouZoMLyLTmgLvuz8FG1YMM1x2h1vcFtvYUFM9I3x+VTT/guKRngXHMdilqU
+         UenNks47/087slpJVH6kkd3EK9GJysXYoWvpIbywOE0HRwkQO0BxiGA34+D9VeYUK6/4
+         xi+kt4YZSX7SOuZq+lgSFo+7t33ZKpTEmCZA2A4kG+mc6FoSzCG1MrJkDIiBOYKeKYdw
+         L91N1iRzsCLxjc5sAgMzSQdo7aICHWO+vbZsrVQs5Uw7f/PNL2DrIY6HMABRMNple8ic
+         daQpbfCSZcOI5xj+H0/o1L6bBnaCk7Xq95WyWkAKm9uVGWGY40M0YzWa1P6rTob6BrSv
+         Fg3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FDGOhqaPmu3im/JE4IpXZ09jQoRV39s/gRjkoNBVyKY=;
+        b=jpHCf9Ww1UYbjDoC80rNHNAiTm0Uk9G6YNHt3FihtgmgwH+dAGQAFcUsKn4Zx3fECT
+         d/3OBOmYl+MgPcEe3RETe6v6Rx/eQAwiEA/9ywZOZorHkcYUr2k6CNYenqvHNw8DHuVQ
+         3+cNc/V0kUI/VDiNduPqlAoBDhr03LzG4H7XxEA2Uulv1lHo+losqeMBmUGLPJH54OLo
+         4LfjLG/oaytFE2xwgy4wIPCJcTFvxe4Ke87gL5EVgqgxF8288Mi0/5L01CkL6bTdnw9y
+         i2hc8KsQiOvVsx44ltWa6z6CSpURGDfBppSIgSuZOqVfpr7R66bEkN73Eb4P6iNt2e6t
+         vRpA==
+X-Gm-Message-State: AOAM533sG3hDGLS0LxrV3Iy/YG87oygSQyns3d/01a8uAGuy6lktPOIw
+        bG5vawnjcNzgKjkk76e8z+qvlX/hiGHIqnG0XaJkTjFqxkARyQ==
+X-Google-Smtp-Source: ABdhPJwQnGpTascKyiJ1cToLttIEuyb6KjHxOCs6RhEKgClnJH+QO6ghlbyQBC2V5G3V6PWC8LHym4Qbkl9gA+t/ghQ=
+X-Received: by 2002:a19:58a:: with SMTP id 132mr11989778lff.520.1618826394783;
+ Mon, 19 Apr 2021 02:59:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1618671697-26098-1-git-send-email-yuanzhaoxiong@baidu.com>
+References: <20210419191425.281dc58a@canb.auug.org.au>
+In-Reply-To: <20210419191425.281dc58a@canb.auug.org.au>
+From:   Xiongwei Song <sxwjean@gmail.com>
+Date:   Mon, 19 Apr 2021 17:59:28 +0800
+Message-ID: <CAEVVKH905HJoJ_WVVZadXiy3LG5y+XDpMBVVtUNOwF2MtYTv8Q@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the powerpc tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 11:01:37PM +0800, Yuan ZhaoXiong wrote:
-> On a 128 cores AMD machine, there are 8 cores in nohz_full mode, and
-> the others are used for housekeeping. When many housekeeping cpus are
-> in idle state, we can observe huge time burn in the loop for searching
-> nearest busy housekeeper cpu by ftrace.
-> 
->    9)               |              get_nohz_timer_target() {
->    9)               |                housekeeping_test_cpu() {
->    9)   0.390 us    |                  housekeeping_get_mask.part.1();
->    9)   0.561 us    |                }
->    9)   0.090 us    |                __rcu_read_lock();
->    9)   0.090 us    |                housekeeping_cpumask();
->    9)   0.521 us    |                housekeeping_cpumask();
->    9)   0.140 us    |                housekeeping_cpumask();
-> 
->    ...
-> 
->    9)   0.500 us    |                housekeeping_cpumask();
->    9)               |                housekeeping_any_cpu() {
->    9)   0.090 us    |                  housekeeping_get_mask.part.1();
->    9)   0.100 us    |                  sched_numa_find_closest();
->    9)   0.491 us    |                }
->    9)   0.100 us    |                __rcu_read_unlock();
->    9) + 76.163 us   |              }
-> 
-> for_each_cpu_and() is a micro function, so in get_nohz_timer_target()
-> function the
->         for_each_cpu_and(i, sched_domain_span(sd),
->                 housekeeping_cpumask(HK_FLAG_TIMER))
-> equals to below:
->         for (i = -1; i = cpumask_next_and(i, sched_domain_span(sd),
->                 housekeeping_cpumask(HK_FLAG_TIMER)), i < nr_cpu_ids;)
-> That will cause that housekeeping_cpumask() will be invoked many times.
-> The housekeeping_cpumask() function returns a const value, so it is
-> unnecessary to invoke it every time. This patch can minimize the worst
-> searching time from ~76us to ~16us in my testing.
-> 
-> Similarly, the find_new_ilb() function has the same problem.
+Thank you so much Stephen. Sorry for my negligence.
 
-Would it not make sense to mark housekeeping_cpumask() __pure instead?
+Should I fix this myself on powerpc tree?
+
+Regards,
+Xiongwei
+
+On Mon, Apr 19, 2021 at 5:14 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the powerpc tree, today's linux-next build (powerpc
+> allyesconfig) failed like this:
+>
+> arch/powerpc/kernel/fadump.c: In function 'crash_fadump':
+> arch/powerpc/kernel/fadump.c:731:28: error: 'INTERRUPT_SYSTEM_RESET' undeclared (first use in this function)
+>   731 |  if (TRAP(&(fdh->regs)) == INTERRUPT_SYSTEM_RESET) {
+>       |                            ^~~~~~~~~~~~~~~~~~~~~~
+> arch/powerpc/kernel/fadump.c:731:28: note: each undeclared identifier is reported only once for each function it appears in
+>
+> Caused by commit
+>
+>   7153d4bf0b37 ("powerpc/traps: Enhance readability for trap types")
+>
+> I have applied the following patch for today.
+>
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Mon, 19 Apr 2021 19:05:05 +1000
+> Subject: [PATCH] fix up for "powerpc/traps: Enhance readability for trap types"
+>
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  arch/powerpc/kernel/fadump.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/powerpc/kernel/fadump.c b/arch/powerpc/kernel/fadump.c
+> index b55b4c23f3b6..000e3b7f3fca 100644
+> --- a/arch/powerpc/kernel/fadump.c
+> +++ b/arch/powerpc/kernel/fadump.c
+> @@ -31,6 +31,7 @@
+>  #include <asm/fadump.h>
+>  #include <asm/fadump-internal.h>
+>  #include <asm/setup.h>
+> +#include <asm/interrupt.h>
+>
+>  /*
+>   * The CPU who acquired the lock to trigger the fadump crash should
+> --
+> 2.30.2
+>
+> --
+> Cheers,
+> Stephen Rothwell
