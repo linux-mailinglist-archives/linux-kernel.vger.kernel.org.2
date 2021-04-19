@@ -2,147 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BED3A3640B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 493B13640BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238762AbhDSLpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 07:45:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21526 "EHLO
+        id S238772AbhDSLqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 07:46:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36253 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232530AbhDSLo6 (ORCPT
+        by vger.kernel.org with ESMTP id S232530AbhDSLqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 07:44:58 -0400
+        Mon, 19 Apr 2021 07:46:07 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618832669;
+        s=mimecast20190719; t=1618832737;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=y644e2+cDS7jfFg2KG/GSDehn2zis7rBbTsBszQ7ZZc=;
-        b=Xj5OgMP/8bzzrFhUyS6yRk73FcuDZWnm4R4azR7g7cRZsUoup72yF0uL+nBNgWSUcnvljC
-        9Jnwk7RTlwpKEximC68UZ4YTbqHo/NhiEviHdYFWCWGDT9HEwvmW30ouEqbrKGc/8+8FZL
-        AAbW24dktgdDiB08UGgsLwr74NS3g4A=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-395-0eYavrhIOrSp1Rqsc4heUQ-1; Mon, 19 Apr 2021 07:44:27 -0400
-X-MC-Unique: 0eYavrhIOrSp1Rqsc4heUQ-1
-Received: by mail-wm1-f72.google.com with SMTP id n11-20020a1c400b0000b02901339d16b8d7so1401683wma.7
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 04:44:27 -0700 (PDT)
+        bh=koc049HugtBARt6EjAzw6mtyEEpABQogvtRQVut/VZw=;
+        b=GEur+LenmPvp9lKyUHZChpvuWmoyxxQC9YnqfBDrS/aWEFy5egNbqlDUXL/3tDQ5wKanGY
+        L6j8cdNM9cdQsXxddr6ECbxgXU5zuQGqbTA8VCCCsicHGkXjzgkkaXVfsOvmVNcUFGgEn+
+        bxoc1nsRvS2wNzXSfww5fRAmkM3EEto=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-343-1hoqbY_sMMmP5_glJDUobA-1; Mon, 19 Apr 2021 07:45:34 -0400
+X-MC-Unique: 1hoqbY_sMMmP5_glJDUobA-1
+Received: by mail-wr1-f69.google.com with SMTP id d15-20020a5d538f0000b02901027c18c581so8852460wrv.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 04:45:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=y644e2+cDS7jfFg2KG/GSDehn2zis7rBbTsBszQ7ZZc=;
-        b=MqwxszCBLCrNMbnu0n1z1K84n8VcG9uWTOUlQiBPgqlhamI+9CnCBh+K+PWQ/jjEMZ
-         oTAOWpfo5IiD9s+ta8kLhxeK/SMDThNVNxqfeC9PqxrUUCYYBYOMEpupqwZp3fEDPDK/
-         T21j9XJZs3NAYuKN8AvUivnz1x1Xpf5TpbwiHs0rpCCbadm8RuL+lnwQyo+GlOEUzfT/
-         D9zmYIz4SBHF7P2gkWKqsB7wp5TX+XXfC0TldClHncEWH4ysWPj/Sn+n7fflain8DXad
-         5yxyBda78OdP0GKGKIr0E8mxg+0yDgaE2G7a+3h53M+vvo/OL7S1+HAL4xsBqLR+gCqw
-         mcLw==
-X-Gm-Message-State: AOAM531v4fAefECv7LI+B643uZnpouU57me8TAAIu79YMnzBd9rK6WL2
-        pqMIuoIWPjQvE4OGts6SlHrTwP/ISHy5bB1m3DY5EomWfOGrkIOmsakmjInRA35xa8X6UbCQAs+
-        Q5mRy0GekcVQJwJrrW6UKfjIcFJUsthklHWoJC7K6
-X-Received: by 2002:a5d:58fa:: with SMTP id f26mr13544850wrd.177.1618832666331;
-        Mon, 19 Apr 2021 04:44:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwjlugWDWLZH+5rQly0tRCQFzwosoMjd14Y9bJuAnMN5V/27+yHQMkQQGZjse8w/vAsAyaiT8Vc7UJvMHq5TOE=
-X-Received: by 2002:a5d:58fa:: with SMTP id f26mr13544835wrd.177.1618832666229;
- Mon, 19 Apr 2021 04:44:26 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=koc049HugtBARt6EjAzw6mtyEEpABQogvtRQVut/VZw=;
+        b=Eat5Ki/Mz0INS0fEg3P6XdoKXPWvK3yLXk5lwhucKHSmiuux4esKXhEVsPxFY1TOEz
+         MZ0XNVe38FWjJ1gOfQGjAmcssmT1EP8zQTc1tmEpOQclTZSqdzKwrZSZt1qZNUh9z1mn
+         3VcL0exJNWzsYsH0YP9nLm/pQ2pz4Yq71/ER9mmWyHc67ZnKi8qgEKUzDgHK60jOCR3z
+         6fn4pbCmljKUNhq8hZ19hyIooXYOghux22adioaZSGH29EE8V47C/cat4xDp3NuFehdl
+         EpWkLziQozw43R3xkQ070XRWPhKBvAjJP8hbJLZmSzfZTDw6D8EeI88F96g2tB1s5kry
+         8gHQ==
+X-Gm-Message-State: AOAM530QzbkUakLxomRsKyyieHAKpmGWxs8zpM7JGsYYdE3C+ORvl2lU
+        6+QxOStoyXJcJ7DkI0newUzfkp7ZQsqWDpQkN27Vqvghmy7woUS4qk9+1n9Uc3NGd+4KB7ohNBX
+        mwv3OSem7T1VwGznDS6D3VIm6LVTbwn29eIQ3/YI5
+X-Received: by 2002:a5d:6983:: with SMTP id g3mr13595814wru.415.1618832733324;
+        Mon, 19 Apr 2021 04:45:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwMWuQi4zxk85zmf73Pwt63xQbdTQuszlMMCk8bIRtx2iSyg8ZGa26+dC0kfmhUNyg8Km1sHUnjbaHgtAhKXgI=
+X-Received: by 2002:a5d:6983:: with SMTP id g3mr13595801wru.415.1618832733209;
+ Mon, 19 Apr 2021 04:45:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210416143725.2769053-1-lee.jones@linaro.org> <20210416143725.2769053-8-lee.jones@linaro.org>
-In-Reply-To: <20210416143725.2769053-8-lee.jones@linaro.org>
+References: <20210416143725.2769053-1-lee.jones@linaro.org> <20210416143725.2769053-10-lee.jones@linaro.org>
+In-Reply-To: <20210416143725.2769053-10-lee.jones@linaro.org>
 From:   Karol Herbst <kherbst@redhat.com>
-Date:   Mon, 19 Apr 2021 13:44:15 +0200
-Message-ID: <CACO55tvQ=dvDbwzWmwn7ZOwqyStEXn3=8zab6rQSiau3OkKktQ@mail.gmail.com>
-Subject: Re: [Nouveau] [PATCH 07/40] drm/nouveau/nouveau_bo: Remove unused
- variables 'dev'
+Date:   Mon, 19 Apr 2021 13:45:22 +0200
+Message-ID: <CACO55tvWgRUnLsLY+d1-j3tjFQbOgzZzWszfNPjx0d1K+Smw5A@mail.gmail.com>
+Subject: Re: [PATCH 09/40] drm/nouveau/dispnv04/crtc: Demote non-conforming
+ kernel-doc headers
 To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Jeremy Kolb <jkolb@brandeis.edu>, David Airlie <airlied@linux.ie>,
+Cc:     David Airlie <airlied@linux.ie>,
         nouveau <nouveau@lists.freedesktop.org>,
         LKML <linux-kernel@vger.kernel.org>,
         dri-devel <dri-devel@lists.freedesktop.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linaro-mm-sig@lists.linaro.org, Ben Skeggs <bskeggs@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>
+        Ben Skeggs <bskeggs@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Reviewed-by: Karol Herbst <kherbst@redhat.com>
 
-On Fri, Apr 16, 2021 at 4:37 PM Lee Jones <lee.jones@linaro.org> wrote:
+On Fri, Apr 16, 2021 at 4:38 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> Fixes the following W=3D1 kernel build warning(s):
+> Fixes the following W=1 kernel build warning(s):
 >
->  drivers/gpu/drm/nouveau/nouveau_bo.c: In function =E2=80=98nouveau_ttm_t=
-t_populate=E2=80=99:
->  drivers/gpu/drm/nouveau/nouveau_bo.c:1228:17: warning: variable =E2=80=
-=98dev=E2=80=99 set but not used [-Wunused-but-set-variable]
->  drivers/gpu/drm/nouveau/nouveau_bo.c: In function =E2=80=98nouveau_ttm_t=
-t_unpopulate=E2=80=99:
->  drivers/gpu/drm/nouveau/nouveau_bo.c:1252:17: warning: variable =E2=80=
-=98dev=E2=80=99 set but not used [-Wunused-but-set-variable]
+>  drivers/gpu/drm/nouveau/dispnv04/crtc.c:462: warning: Function parameter or member 'crtc' not described in 'nv_crtc_mode_set_regs'
+>  drivers/gpu/drm/nouveau/dispnv04/crtc.c:462: warning: Function parameter or member 'mode' not described in 'nv_crtc_mode_set_regs'
+>  drivers/gpu/drm/nouveau/dispnv04/crtc.c:640: warning: Function parameter or member 'crtc' not described in 'nv_crtc_mode_set'
+>  drivers/gpu/drm/nouveau/dispnv04/crtc.c:640: warning: Function parameter or member 'mode' not described in 'nv_crtc_mode_set'
+>  drivers/gpu/drm/nouveau/dispnv04/crtc.c:640: warning: Function parameter or member 'adjusted_mode' not described in 'nv_crtc_mode_set'
+>  drivers/gpu/drm/nouveau/dispnv04/crtc.c:640: warning: Function parameter or member 'x' not described in 'nv_crtc_mode_set'
+>  drivers/gpu/drm/nouveau/dispnv04/crtc.c:640: warning: Function parameter or member 'y' not described in 'nv_crtc_mode_set'
+>  drivers/gpu/drm/nouveau/dispnv04/crtc.c:640: warning: Function parameter or member 'old_fb' not described in 'nv_crtc_mode_set'
 >
 > Cc: Ben Skeggs <bskeggs@redhat.com>
 > Cc: David Airlie <airlied@linux.ie>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: Jeremy Kolb <jkolb@brandeis.edu>
 > Cc: dri-devel@lists.freedesktop.org
 > Cc: nouveau@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
->  drivers/gpu/drm/nouveau/nouveau_bo.c | 4 ----
->  1 file changed, 4 deletions(-)
+>  drivers/gpu/drm/nouveau/dispnv04/crtc.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_bo.c b/drivers/gpu/drm/nouve=
-au/nouveau_bo.c
-> index 3e09df0472ce4..37b3d2c10f5c5 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_bo.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_bo.c
-> @@ -1255,7 +1255,6 @@ nouveau_ttm_tt_populate(struct ttm_device *bdev,
->  {
->         struct ttm_tt *ttm_dma =3D (void *)ttm;
->         struct nouveau_drm *drm;
-> -       struct device *dev;
->         bool slave =3D !!(ttm->page_flags & TTM_PAGE_FLAG_SG);
->
->         if (ttm_tt_is_populated(ttm))
-> @@ -1268,7 +1267,6 @@ nouveau_ttm_tt_populate(struct ttm_device *bdev,
->         }
->
->         drm =3D nouveau_bdev(bdev);
-> -       dev =3D drm->dev->dev;
->
->         return ttm_pool_alloc(&drm->ttm.bdev.pool, ttm, ctx);
+> diff --git a/drivers/gpu/drm/nouveau/dispnv04/crtc.c b/drivers/gpu/drm/nouveau/dispnv04/crtc.c
+> index f9e962fd94d0d..f9a276ea5a9e0 100644
+> --- a/drivers/gpu/drm/nouveau/dispnv04/crtc.c
+> +++ b/drivers/gpu/drm/nouveau/dispnv04/crtc.c
+> @@ -449,7 +449,7 @@ nv_crtc_mode_set_vga(struct drm_crtc *crtc, struct drm_display_mode *mode)
+>         regp->Attribute[NV_CIO_AR_CSEL_INDEX] = 0x00;
 >  }
-> @@ -1278,14 +1276,12 @@ nouveau_ttm_tt_unpopulate(struct ttm_device *bdev=
-,
->                           struct ttm_tt *ttm)
->  {
->         struct nouveau_drm *drm;
-> -       struct device *dev;
->         bool slave =3D !!(ttm->page_flags & TTM_PAGE_FLAG_SG);
 >
->         if (slave)
->                 return;
->
->         drm =3D nouveau_bdev(bdev);
-> -       dev =3D drm->dev->dev;
->
->         return ttm_pool_free(&drm->ttm.bdev.pool, ttm);
+> -/**
+> +/*
+>   * Sets up registers for the given mode/adjusted_mode pair.
+>   *
+>   * The clocks, CRTCs and outputs attached to this CRTC must be off.
+> @@ -625,7 +625,7 @@ nv_crtc_swap_fbs(struct drm_crtc *crtc, struct drm_framebuffer *old_fb)
+>         return ret;
 >  }
+>
+> -/**
+> +/*
+>   * Sets up registers for the given mode/adjusted_mode pair.
+>   *
+>   * The clocks, CRTCs and outputs attached to this CRTC must be off.
 > --
 > 2.27.0
 >
 > _______________________________________________
-> Nouveau mailing list
-> Nouveau@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/nouveau
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>
 
