@@ -2,122 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 493B13640BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 268E43640C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238772AbhDSLqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 07:46:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36253 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232530AbhDSLqH (ORCPT
+        id S238229AbhDSLqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 07:46:34 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:37137 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238744AbhDSLq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 07:46:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618832737;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=koc049HugtBARt6EjAzw6mtyEEpABQogvtRQVut/VZw=;
-        b=GEur+LenmPvp9lKyUHZChpvuWmoyxxQC9YnqfBDrS/aWEFy5egNbqlDUXL/3tDQ5wKanGY
-        L6j8cdNM9cdQsXxddr6ECbxgXU5zuQGqbTA8VCCCsicHGkXjzgkkaXVfsOvmVNcUFGgEn+
-        bxoc1nsRvS2wNzXSfww5fRAmkM3EEto=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-343-1hoqbY_sMMmP5_glJDUobA-1; Mon, 19 Apr 2021 07:45:34 -0400
-X-MC-Unique: 1hoqbY_sMMmP5_glJDUobA-1
-Received: by mail-wr1-f69.google.com with SMTP id d15-20020a5d538f0000b02901027c18c581so8852460wrv.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 04:45:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=koc049HugtBARt6EjAzw6mtyEEpABQogvtRQVut/VZw=;
-        b=Eat5Ki/Mz0INS0fEg3P6XdoKXPWvK3yLXk5lwhucKHSmiuux4esKXhEVsPxFY1TOEz
-         MZ0XNVe38FWjJ1gOfQGjAmcssmT1EP8zQTc1tmEpOQclTZSqdzKwrZSZt1qZNUh9z1mn
-         3VcL0exJNWzsYsH0YP9nLm/pQ2pz4Yq71/ER9mmWyHc67ZnKi8qgEKUzDgHK60jOCR3z
-         6fn4pbCmljKUNhq8hZ19hyIooXYOghux22adioaZSGH29EE8V47C/cat4xDp3NuFehdl
-         EpWkLziQozw43R3xkQ070XRWPhKBvAjJP8hbJLZmSzfZTDw6D8EeI88F96g2tB1s5kry
-         8gHQ==
-X-Gm-Message-State: AOAM530QzbkUakLxomRsKyyieHAKpmGWxs8zpM7JGsYYdE3C+ORvl2lU
-        6+QxOStoyXJcJ7DkI0newUzfkp7ZQsqWDpQkN27Vqvghmy7woUS4qk9+1n9Uc3NGd+4KB7ohNBX
-        mwv3OSem7T1VwGznDS6D3VIm6LVTbwn29eIQ3/YI5
-X-Received: by 2002:a5d:6983:: with SMTP id g3mr13595814wru.415.1618832733324;
-        Mon, 19 Apr 2021 04:45:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwMWuQi4zxk85zmf73Pwt63xQbdTQuszlMMCk8bIRtx2iSyg8ZGa26+dC0kfmhUNyg8Km1sHUnjbaHgtAhKXgI=
-X-Received: by 2002:a5d:6983:: with SMTP id g3mr13595801wru.415.1618832733209;
- Mon, 19 Apr 2021 04:45:33 -0700 (PDT)
+        Mon, 19 Apr 2021 07:46:26 -0400
+Received: from mail-wr1-f49.google.com ([209.85.221.49]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MOQyE-1l9e4F06Pu-00Prg5; Mon, 19 Apr 2021 13:45:53 +0200
+Received: by mail-wr1-f49.google.com with SMTP id j5so32720883wrn.4;
+        Mon, 19 Apr 2021 04:45:52 -0700 (PDT)
+X-Gm-Message-State: AOAM530QKBOUUSndPbMfEemTC1qgG6pY9ZIATFppttSdjjs3iLfa7qq8
+        mrnsztQMMJnegneShc7YtiTpKp+nE+LRRLpYS/E=
+X-Google-Smtp-Source: ABdhPJwEqpvEXhMjLLqp97csmcwNcY1rK/VijtLf0UEkkA3KI3NlkzigrzsU6Qsva0ZTIp6OfFYbsu+GilDGIMNVtJQ=
+X-Received: by 2002:adf:db4f:: with SMTP id f15mr14108786wrj.99.1618832752710;
+ Mon, 19 Apr 2021 04:45:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210416143725.2769053-1-lee.jones@linaro.org> <20210416143725.2769053-10-lee.jones@linaro.org>
-In-Reply-To: <20210416143725.2769053-10-lee.jones@linaro.org>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Mon, 19 Apr 2021 13:45:22 +0200
-Message-ID: <CACO55tvWgRUnLsLY+d1-j3tjFQbOgzZzWszfNPjx0d1K+Smw5A@mail.gmail.com>
-Subject: Re: [PATCH 09/40] drm/nouveau/dispnv04/crtc: Demote non-conforming
- kernel-doc headers
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>
+References: <1618634729-88821-1-git-send-email-guoren@kernel.org> <1618634729-88821-2-git-send-email-guoren@kernel.org>
+In-Reply-To: <1618634729-88821-2-git-send-email-guoren@kernel.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 19 Apr 2021 13:45:36 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1ygwS7jTXqYXCfppEEonCASqG_5GM9O_AtE9YgdgNqVQ@mail.gmail.com>
+Message-ID: <CAK8P3a1ygwS7jTXqYXCfppEEonCASqG_5GM9O_AtE9YgdgNqVQ@mail.gmail.com>
+Subject: Re: [PATCH v2 (RESEND) 2/2] riscv: atomic: Using ARCH_ATOMIC in asm/atomic.h
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Anup Patel <anup@brainfault.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:/v+Ntzuu+oEx7mXJs+9U83ipuch3R+HU1Mc5V4Vwtb3/cDrBTM5
+ MVydlzM2hUQ0SLrNEW0zWMNtxHILFpROn6evPse6X3VSR2wuvlnDWjjEPJwMouh6P4VbiQ0
+ sUltmWKc8GhWWBG4XXIUwffYcsGPMKyj6kBbGfhzqxegwbRvYVHHRijB0BD3ohmKNUkQGGM
+ /oJ/772ZMfAZD2At0kygQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:r+QeLt5zhcY=:vxainJgUAu4xe+666gbgYF
+ a+Bs/fCihEyKI8xCSBB6K7EAyGbZUr21GmmoxLAtjpfyOUdZHsQJJB4CogRTlEPzcV543z9L7
+ gX8q29c84D70h5AK+nPfaTCXlCG+OntQWvh6Vv7D0cRyiuno6HzEczpEkcY7rjG2GW/trz+8h
+ kA2l3tUsBk7mPOlW3+MYx8bM33PcktiCXvpTWsqMdLjmtucqVRaRZ8ro7VDTFJcA1irDj4io7
+ gevh1CZXRf49ZKc1+ZuQB7Kas3rKmydJErysVP6V3uJzh0U1vAEbStrFyCeXJtGgpVuBc/wfV
+ x+jh/PxxgFwOS9l8Wdx53bHKlAJ/MujhFWlY+6ZXhZt9sa0TrE0e7QcLUw71loXlTTZnkomaT
+ /ZDzFztDO0BbIcRq59fw28hm7+EMghyAhRPRfVLL1kHcEk9W50eRC4vK9OObpWo7UqrNljXFk
+ EbntW6FAF6QcDRuCOsEIKxQKwKL+M0Qvf4QIX/jAOCfIzd4b8zzbb5DEHqKgLwB9gbveKLTLs
+ dYBwG2CFEjXAYjspmVkf6I=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Karol Herbst <kherbst@redhat.com>
+On Sat, Apr 17, 2021 at 6:45 AM <guoren@kernel.org> wrote:
+> +#define arch_atomic_read(v)                    __READ_ONCE((v)->counter)
+> +#define arch_atomic_set(v, i)                  __WRITE_ONCE(((v)->counter), (i))
 
-On Fri, Apr 16, 2021 at 4:38 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=1 kernel build warning(s):
->
->  drivers/gpu/drm/nouveau/dispnv04/crtc.c:462: warning: Function parameter or member 'crtc' not described in 'nv_crtc_mode_set_regs'
->  drivers/gpu/drm/nouveau/dispnv04/crtc.c:462: warning: Function parameter or member 'mode' not described in 'nv_crtc_mode_set_regs'
->  drivers/gpu/drm/nouveau/dispnv04/crtc.c:640: warning: Function parameter or member 'crtc' not described in 'nv_crtc_mode_set'
->  drivers/gpu/drm/nouveau/dispnv04/crtc.c:640: warning: Function parameter or member 'mode' not described in 'nv_crtc_mode_set'
->  drivers/gpu/drm/nouveau/dispnv04/crtc.c:640: warning: Function parameter or member 'adjusted_mode' not described in 'nv_crtc_mode_set'
->  drivers/gpu/drm/nouveau/dispnv04/crtc.c:640: warning: Function parameter or member 'x' not described in 'nv_crtc_mode_set'
->  drivers/gpu/drm/nouveau/dispnv04/crtc.c:640: warning: Function parameter or member 'y' not described in 'nv_crtc_mode_set'
->  drivers/gpu/drm/nouveau/dispnv04/crtc.c:640: warning: Function parameter or member 'old_fb' not described in 'nv_crtc_mode_set'
->
-> Cc: Ben Skeggs <bskeggs@redhat.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: nouveau@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/gpu/drm/nouveau/dispnv04/crtc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/nouveau/dispnv04/crtc.c b/drivers/gpu/drm/nouveau/dispnv04/crtc.c
-> index f9e962fd94d0d..f9a276ea5a9e0 100644
-> --- a/drivers/gpu/drm/nouveau/dispnv04/crtc.c
-> +++ b/drivers/gpu/drm/nouveau/dispnv04/crtc.c
-> @@ -449,7 +449,7 @@ nv_crtc_mode_set_vga(struct drm_crtc *crtc, struct drm_display_mode *mode)
->         regp->Attribute[NV_CIO_AR_CSEL_INDEX] = 0x00;
->  }
->
-> -/**
-> +/*
->   * Sets up registers for the given mode/adjusted_mode pair.
->   *
->   * The clocks, CRTCs and outputs attached to this CRTC must be off.
-> @@ -625,7 +625,7 @@ nv_crtc_swap_fbs(struct drm_crtc *crtc, struct drm_framebuffer *old_fb)
->         return ret;
->  }
->
-> -/**
-> +/*
->   * Sets up registers for the given mode/adjusted_mode pair.
->   *
->   * The clocks, CRTCs and outputs attached to this CRTC must be off.
-> --
-> 2.27.0
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
->
+> +#define ATOMIC64_INIT                          ATOMIC_INIT
+> +#define arch_atomic64_read                     arch_atomic_read
+> +#define arch_atomic64_set                      arch_atomic_set
+>  #endif
 
+I think it's a bit confusing to define arch_atomic64_read() etc in terms
+of arch_atomic_read(), given that they operate on different types.
+
+IMHO the clearest would be to define both in terms of the open-coded
+version you have for the 32-bit atomics.
+
+Also, given that all three architectures (x86, arm64, riscv) use the same
+definitions for the six macros above, maybe those can just get moved
+into a common file with a possible override?
+
+x86 uses an inline function here instead of the macro. This would also
+be my preference, but it may add complexity to avoid circular header
+dependencies.
+
+The rest of this patch looks good to me.
+
+        Arnd
