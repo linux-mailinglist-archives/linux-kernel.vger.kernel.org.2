@@ -2,95 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D229E363F28
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB99363F32
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235023AbhDSJts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 05:49:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhDSJtr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 05:49:47 -0400
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83677C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 02:49:16 -0700 (PDT)
-Received: by mail-oo1-xc34.google.com with SMTP id m25-20020a4abc990000b02901ed4500e31dso631172oop.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 02:49:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nitggrP0xRKevJNitjMdZZF9gGxfx3q/C1mur/zTDM4=;
-        b=SnrQH8znT2PnsSAqn0jXpHSmCspkH0VVBOSQegOGOyXENQDZaw59x840LwuilNQe+L
-         TKgVMlImiglbkLDoP6FzmSzTMU7We1xNNNR4lwb6yd7RP5gE9T6UEdJZS1x6byCQyiuK
-         oivTvlDGePHJgoizjxX+ip7vSAxMBfmumdb0NB0Mbqz0R7x0whQ3bAib84SZTSY5cbsa
-         j0bxgF91OhwJUDBta4spTK92YGdQiOrEsiGwLnWtj/r2+sP1VFXUN0gAOEUa3vHbhEi5
-         c6cz8AalBDd4qvdOiCjiEhd1xaETwZaPyKBuZg2GdikqsiyhXlSWwH34sFvKEpZrUN6k
-         wgLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nitggrP0xRKevJNitjMdZZF9gGxfx3q/C1mur/zTDM4=;
-        b=p1cTxVOyqxJ0xmVHN1OCTMAaiJjxZlbRZTQtvdjnjIVCOfN7bK8JzfwulH4TyQ4xY+
-         ZiMUXkxqUUV1naNxSibEqowYWJyZ8amg2JmRJIpPfmlnTNGRW7jivatzoiMXGukGP2P9
-         PHuVE1kXJ8a70Rs5Bink2LwfU+AttMEyRryNRfciPPNJr52TPRYX2lZJ+ehdAtEUKroX
-         imhJPXUXSHQI3LZTLQzogNf294h6cqhkK8PULUIlW7ndG34lgGycZahArRhUJ5Qd1m9F
-         p/G2kVwUn97BuvN8VgOhXSnMWvFlGbLB/3CEuR2hN1e+fBmbTL71TmTIeJdfptKHR9lN
-         q0mg==
-X-Gm-Message-State: AOAM531O+c8qXAqEMvYgswP1afGaxr9JjsmM7lgadQDaARz2xT8HKsnp
-        oj2gnR9tQSjVk2KF+by4xpXhPzLlFaF9UIKblF007A==
-X-Google-Smtp-Source: ABdhPJyK0p5DKT8g7HVkLdNNo5TjSC69kgdPjyM/tw685tNXp7o0tBnV2rd+RRqciPsuO8a/EdxlE8c1zvZKS2jKS5Y=
-X-Received: by 2002:a4a:eb02:: with SMTP id f2mr12729819ooj.36.1618825755725;
- Mon, 19 Apr 2021 02:49:15 -0700 (PDT)
+        id S231892AbhDSJyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 05:54:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44250 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231888AbhDSJyK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 05:54:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A8CA6108B;
+        Mon, 19 Apr 2021 09:53:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618826020;
+        bh=wH18bCtjkakJqzEPxyRBfaKqoZez+Yygk/rpozbagcY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GJftszcuM/3zhlgFO9ehzxouWBeXH8gy6JcJXMu8RDx1Lp8OXpf00FELhPFJovaio
+         jhZ+B6sTm3nAYfJx2LaGBoI/WxPI/iG+Z1OESXSTrMJkJb8CXmH/vj33dc97F8JFvs
+         C0MyXTAoJTbxPJ9YR38lG7vcORi/il7l1tTOzY/Q=
+Date:   Mon, 19 Apr 2021 11:53:37 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Chris Down <chris@chrisdown.name>,
+        linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+Subject: Re: [PATCH v5] printk: Userspace format enumeration support
+Message-ID: <YH1TIebAQyiMPuvI@kroah.com>
+References: <YEgvR6Wc1xt0qupy@chrisdown.name>
+ <02c3b2f3-ff8e-ceb9-b30b-e533959c0491@rasmusvillemoes.dk>
+ <YFDAfPCnS204jiD5@chrisdown.name>
+ <YFHAdUB4lu4mJ9Ar@alley>
+ <5ea3b634-5467-35cf-dd08-1001f878b569@rasmusvillemoes.dk>
+ <YFMvfawY+0CncS8G@alley>
+ <YHmXi303WxVZzVwI@chrisdown.name>
+ <e9f74575-1ba0-0c06-b370-59d151c72ed6@rasmusvillemoes.dk>
+ <YH1Kex8NOr89BJXq@alley>
 MIME-Version: 1.0
-References: <20210419085027.761150-1-elver@google.com> <20210419085027.761150-2-elver@google.com>
- <20210419094044.311-1-hdanton@sina.com> <CANpmjNMR-DPj=0mQMevyEQ7k3RJh0eq_nkt9M6kLvwC-abr_SQ@mail.gmail.com>
-In-Reply-To: <CANpmjNMR-DPj=0mQMevyEQ7k3RJh0eq_nkt9M6kLvwC-abr_SQ@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 19 Apr 2021 11:49:04 +0200
-Message-ID: <CANpmjNNO3AgK3Fr07KXQhGpqt6-z7xNJFP=UoODg-Ft=u9cGfA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] kfence: await for allocation using wait_event
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Jann Horn <jannh@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YH1Kex8NOr89BJXq@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Apr 2021 at 11:44, Marco Elver <elver@google.com> wrote:
->
-> On Mon, 19 Apr 2021 at 11:41, Hillf Danton <hdanton@sina.com> wrote:
-> >
-> > On Mon, 19 Apr 2021 10:50:25 Marco Elver wrote:
-> > > +
-> > > +     WRITE_ONCE(kfence_timer_waiting, true);
-> > > +     smp_mb(); /* See comment in __kfence_alloc(). */
-> >
-> > This is not needed given task state change in wait_event().
->
-> Yes it is. We want to avoid the unconditional irq_work in
-> __kfence_alloc(). When the system is under load doing frequent
-> allocations, at least in my tests this avoids the irq_work almost
-> always. Without the irq_work you'd be correct of course.
+On Mon, Apr 19, 2021 at 11:16:43AM +0200, Petr Mladek wrote:
+> On Mon 2021-04-19 09:27:43, Rasmus Villemoes wrote:
+> > On 16/04/2021 15.56, Chris Down wrote:
+> > > Hey Petr, Rasmus,
+> > 
+> > >> This is great point! There are many other subsystem specific wrappers,
+> > >> e,g, ata_dev_printk(), netdev_printk(), snd_printk(), dprintk().
+> > >> We should make it easy to index them as well.
+> > > 
+> > > These would be nice to have, but we should agree about how we store
+> > > things internally.
+> > > 
+> > > For example, in printk we typically store the level inline as part of
+> > > the format string at compile time. However, for `dev_printk`, it's
+> > > passed entirely separately from the format string after preprocessing is
+> > > already concluded (or at least, not in a way we can easily parse it the
+> > > same way we do for printk()):
+> > > 
+> > >     void dev_printk(const char *level, const struct device *dev, const
+> > > char *fmt, ...)
+> > 
+> > Hm, yeah, for "naked" dev_printk() calls there's no easy way to grab the
+> > level, for dev_err and friends it's somewhat easier as you could just
+> > hook into the definition of the dev_err macro. I'm not saying you need
+> > to handle everything at once, but doing dev_err and netdev_err would get
+> > you a very long way
+> 
+> It is true that there are many messages printed using
+> dev_printk(). For example, these rough numbers:
+> 
+> $> git grep pr_err | wc -l
+> 19885
+> $> git grep dev_err | wc -l
+> 58153
 
-And in case this is about the smp_mb() here, yes it definitely is
-required. We *must* order the write of kfence_timer_waiting *before*
-the check of kfence_allocation_gate, which wait_event() does before
-anything else (including changing the state). Otherwise the write may
-be reordered after the read, and we could potentially never wake up
-because __kfence_alloc() not waking us.
+You need "-w" :)
 
-This is documented in __kfence_alloc().
+And I bet most of those pr_err() should be turned into dev_err(), if
+they live in drivers/.
 
-> > > +     wait_event_timeout(allocation_wait, atomic_read(&kfence_allocation_gate), HZ);
-> > > +     smp_store_release(&kfence_timer_waiting, false); /* Order after wait_event(). */
-> > > +
+Hm, 12734 of the pr_err() calls do live in drivers/, so most of those
+should be dev_err().  Might be something good to throw at interns...
+
+thanks,
+
+greg k-h
