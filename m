@@ -2,112 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0220363916
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 03:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C20636391D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 03:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236909AbhDSB2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 21:28:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55420 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232133AbhDSB2u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 21:28:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 904FDAEFF;
-        Mon, 19 Apr 2021 01:28:20 +0000 (UTC)
-From:   NeilBrown <neilb@suse.de>
-To:     Fox Chen <foxhlchen@gmail.com>
-Date:   Mon, 19 Apr 2021 11:28:14 +1000
-Cc:     Fox Chen <foxhlchen@gmail.com>, corbet@lwn.net,
-        vegard.nossum@oracle.com, viro@zeniv.linux.org.uk,
-        rdunlap@infradead.org, grandmaster@al2klimov.de,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH v2 07/12] docs: path-lookup: i_op->follow_link replaced
- with i_op->get_link
-In-Reply-To: <20210316054727.25655-8-foxhlchen@gmail.com>
-References: <20210316054727.25655-1-foxhlchen@gmail.com>
- <20210316054727.25655-8-foxhlchen@gmail.com>
-Message-ID: <871rb72hch.fsf@notabene.neil.brown.name>
+        id S237179AbhDSBa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 21:30:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232133AbhDSBaZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 21:30:25 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC53C06174A;
+        Sun, 18 Apr 2021 18:29:49 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id mh2so28801936ejb.8;
+        Sun, 18 Apr 2021 18:29:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vWDsiHjf+/A9AetBxgcblwtERScRVbbT/XAQkG0jnaI=;
+        b=BSqEGVrVWE5WRx2Qt4BNZyM9T157nDr2Hdsp+OwNLP3sqq+MaBjofQEsrXtyx+x6z7
+         bV+nGR7JC5DK13zj0LJ5wL5U0mn5wzbL4YSqHUrAfKvz+5dZNxmFOgYY/myl3YEO0WD/
+         CTTMCPzuzIY61RxtmdHAvrPdGgiG0w6mAfVJD0hjlLZMWUKxbbY4Hpl2BPWzXbhv3de6
+         rJ1P8AjG8vWK+UhU4GGGqoIbkuhs9IOSexx0tNvDA5AClqlgfGX2fNCQFZeQU2I8hHUi
+         QN/ZmcWIJTONUqwvi8EfBpgpSciQVxZXn8h8H2ycVoQEp6vzJS6AYm5xgwfADnBuhfZ/
+         h7CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vWDsiHjf+/A9AetBxgcblwtERScRVbbT/XAQkG0jnaI=;
+        b=Y9lMaARIZgWuBeBhARG3mKYM2xvwyXBV4Na5/7whTT/JSXg1K6DWOME+b2M1S/VUUH
+         cQ3lMz53vqDKCq7245kpcpc8hfrLqXRtW4Sj48b+CsxPRSpbegVNkZ6l1tBzCdGmc+ey
+         caP7WFtJOsxztBZrJ9SZy3BCNDD4OTMl49lo1OWqT5l9gkb5kTSPPzAFYfpte8QhgTJo
+         dGIvWm3idqedylHi3Y3yb+a82Ys6UQkBXaPG0MJcQw1Ztxa2PtEA5gqYg6OIZX9Y+NR/
+         FFuQxobd+fpuNavMH/a82LZjVSLV3wj9rw8oYZucdQ0gcKOiNk/lEE28SgBwN4HKzcYn
+         0qtA==
+X-Gm-Message-State: AOAM5308gNJVweUOelvxm82+xD2msi2L1odwE0XrD7rWTc+yrd2jbQmx
+        JciEQHCICgu3vOPupAbUhf48faufyD9F0w==
+X-Google-Smtp-Source: ABdhPJz6pki9l6EsU/sEor1DgG33Aa+K5XaasHVCuV6bnDsHWcno0+evodKoHT3WQdImdh/wxzBWSA==
+X-Received: by 2002:a17:906:3952:: with SMTP id g18mr19437001eje.104.1618795788617;
+        Sun, 18 Apr 2021 18:29:48 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
+        by smtp.googlemail.com with ESMTPSA id mj3sm9083579ejb.3.2021.04.18.18.29.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Apr 2021 18:29:48 -0700 (PDT)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [thermal-next PATCH 1/2] thermal: qcom: tsens: init debugfs only with successful probe
+Date:   Mon, 19 Apr 2021 03:29:29 +0200
+Message-Id: <20210419012930.7727-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+calibrate and tsens_register can fail or PROBE_DEFER. This will cause a
+double or a wrong init of the debugfs information. Init debugfs only
+with successful probe fixing warning about directory already present.
 
-On Tue, Mar 16 2021, Fox Chen wrote:
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+---
+ drivers/thermal/qcom/tsens.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-> follow_link has been replaced by get_link() which can be
-> called in RCU mode.
->
-> see commit: commit 6b2553918d8b ("replace ->follow_link() with
-> new method that could stay in RCU mode")
->
-> Signed-off-by: Fox Chen <foxhlchen@gmail.com>
+diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+index 4c7ebd1d3..f9d50a67e 100644
+--- a/drivers/thermal/qcom/tsens.c
++++ b/drivers/thermal/qcom/tsens.c
+@@ -918,8 +918,6 @@ int __init init_common(struct tsens_priv *priv)
+ 	if (tsens_version(priv) >= VER_0_1)
+ 		tsens_enable_irq(priv);
+ 
+-	tsens_debug_init(op);
+-
+ err_put_device:
+ 	put_device(&op->dev);
+ 	return ret;
+@@ -1158,7 +1156,12 @@ static int tsens_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	return tsens_register(priv);
++	ret = tsens_register(priv);
++
++	if (!ret)
++		tsens_debug_init(pdev);
++
++	return ret;
+ }
+ 
+ static int tsens_remove(struct platform_device *pdev)
+-- 
+2.30.2
 
-Reviewed-By: NeilBrown <neilb@suse.de>
-
-Thanks,
-NeilBrown
-
-
-> ---
->  Documentation/filesystems/path-lookup.rst | 12 +++++-------
->  1 file changed, 5 insertions(+), 7 deletions(-)
->
-> diff --git a/Documentation/filesystems/path-lookup.rst b/Documentation/fi=
-lesystems/path-lookup.rst
-> index af5c20fecfef..e6b6c43ff0f6 100644
-> --- a/Documentation/filesystems/path-lookup.rst
-> +++ b/Documentation/filesystems/path-lookup.rst
-> @@ -1060,13 +1060,11 @@ filesystem cannot successfully get a reference in=
- RCU-walk mode, it
->  must return ``-ECHILD`` and ``unlazy_walk()`` will be called to return to
->  REF-walk mode in which the filesystem is allowed to sleep.
->=20=20
-> -The place for all this to happen is the ``i_op->follow_link()`` inode
-> -method.  In the present mainline code this is never actually called in
-> -RCU-walk mode as the rewrite is not quite complete.  It is likely that
-> -in a future release this method will be passed an ``inode`` pointer when
-> -called in RCU-walk mode so it both (1) knows to be careful, and (2) has =
-the
-> -validated pointer.  Much like the ``i_op->permission()`` method we
-> -looked at previously, ``->follow_link()`` would need to be careful that
-> +The place for all this to happen is the ``i_op->get_link()`` inode
-> +method. This is called both in RCU-walk and REF-walk. In RCU-walk the
-> +``dentry*`` argument is NULL, ``->get_link()`` can return -ECHILD to dro=
-p out of
-> +RCU-walk.  Much like the ``i_op->permission()`` method we
-> +looked at previously, ``->get_link()`` would need to be careful that
->  all the data structures it references are safe to be accessed while
->  holding no counted reference, only the RCU lock.  Though getting a
->  reference with ``->follow_link()`` is not yet done in RCU-walk mode, the
-> --=20
-> 2.30.2
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAmB83K4OHG5laWxiQHN1
-c2UuZGUACgkQOeye3VZigbksiQ//XnE5L+ary/pEvObxJRRgjdGapcR/B9d+4A6U
-GQOrZ+ZGWVlSA3w1bopmuJyN1SFhoXNzTEo5nL2LaDisyymiVU9tfebfzdCAnuee
-IQa1GxW80h95c44BoAbdVaIdhf2Q9/XPnUNUIRxmOXB/NXSr+NRIo+0B2TTWtxdR
-He4bD4VoU6a0VO0OR0ZBpmrhX21KTo3m0sRiA3mjUZ4MR6qxEnrim9+YP7WH5p5W
-LsoHsQ+F5LAMA6cI6sXazCIhviVR6ebSmP9p6A+Ra1r05g+2fRtZafWnN1pZf8ok
-13dSoI+Sd0Ayv0eqeZ0Fg/OhEOb1z22TJaNYxD7z+m/5IW4TBhKnXGLv2pItuJZF
-sKyCrkuec3wuSXCm67qUheU30SCekvHSge/bY4FZKUAes5Z7+OiADJvvREm/J9as
-ykY+NDob/GOJWZryfwzHM88nc6du/J1U/b3HaItOJHvt6hoIqo0H5O+2MS8RaMM9
-xmmoquiyJ87uiiBZJKkAldrjPW9rgPPz+5rDhNFwvTPXA/TJqj/ntGQ0ZY1J2JdU
-LgmBLZRYOfD6zdBA9xot1Epua3qBC2gCpUJsmMjyvyVGZ9nLl3xqdDLAtphCvYE5
-xREZngB8qFS1NScGh0fyFhnRq+1kGXoxYWRZF14jDpHOVJULxnIPid6Aq4Dtd6BW
-RRscibg=
-=IY0x
------END PGP SIGNATURE-----
---=-=-=--
