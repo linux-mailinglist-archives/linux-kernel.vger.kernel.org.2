@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0275364472
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 826703644C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242323AbhDSN13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:27:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53186 "EHLO mail.kernel.org"
+        id S241692AbhDSNd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:33:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240919AbhDSNTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:19:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27F17613E7;
-        Mon, 19 Apr 2021 13:15:12 +0000 (UTC)
+        id S241718AbhDSNYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:24:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5417613E1;
+        Mon, 19 Apr 2021 13:19:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618838113;
-        bh=0DKbLwpRtrE8G4XtVlLlfF7mDlBZ8+CTdiglRTavET0=;
+        s=korg; t=1618838350;
+        bh=IN0EFf2m775M3XjzxNGlzGrlNQYkUlD2RPY+mVkdEYQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mL1Sewb4Muz6hwkrMBVvonvlDSmm+xE6gKC86XLsN9oWuNfnqMzVz/x3CwVUQ+4Hs
-         r1TeiqrxQ+I6GMOjDECOJwWNdIOUiTb2Q6r5Af3Y9PFt2sksCEaw9Mx2csMorEi5k7
-         kmodviY14WOfQ5GOdiGq8/Gs8QubN1nxHucaWrtg=
+        b=tsBYqxpY+vEQssD0iLTOUdmdskh5/lgW1QQfKS2wvsj63ptqrrBfnNh3q6/gBvxfK
+         dQLmWsiBWKHEa0m61f+mvoTe/QEBXF/iYRZSAoormzB2kWqR1/USBKaFlcxMkLOtnt
+         T0au7oehhtRXa7OVNOIqph/Zy7r43j0lN981/XLE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Marcos Paulo de Souza <mpdesouza@suse.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 5.10 048/103] Input: i8042 - fix Pegatron C15B ID entry
-Date:   Mon, 19 Apr 2021 15:05:59 +0200
-Message-Id: <20210419130529.470187442@linuxfoundation.org>
+        stable@vger.kernel.org, Or Cohen <orcohen@paloaltonetworks.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 09/73] net/sctp: fix race condition in sctp_destroy_sock
+Date:   Mon, 19 Apr 2021 15:06:00 +0200
+Message-Id: <20210419130524.113403513@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210419130527.791982064@linuxfoundation.org>
-References: <20210419130527.791982064@linuxfoundation.org>
+In-Reply-To: <20210419130523.802169214@linuxfoundation.org>
+References: <20210419130523.802169214@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +41,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Or Cohen <orcohen@paloaltonetworks.com>
 
-commit daa58c8eec0a65ac8e2e77ff3ea8a233d8eec954 upstream.
+commit b166a20b07382b8bc1dcee2a448715c9c2c81b5b upstream.
 
-The Zenbook Flip entry that was added overwrites a previous one
-because of a typo:
+If sctp_destroy_sock is called without sock_net(sk)->sctp.addr_wq_lock
+held and sp->do_auto_asconf is true, then an element is removed
+from the auto_asconf_splist without any proper locking.
 
-In file included from drivers/input/serio/i8042.h:23,
-                 from drivers/input/serio/i8042.c:131:
-drivers/input/serio/i8042-x86ia64io.h:591:28: error: initialized field overwritten [-Werror=override-init]
-  591 |                 .matches = {
-      |                            ^
-drivers/input/serio/i8042-x86ia64io.h:591:28: note: (near initialization for 'i8042_dmi_noselftest_table[0].matches')
+This can happen in the following functions:
+1. In sctp_accept, if sctp_sock_migrate fails.
+2. In inet_create or inet6_create, if there is a bpf program
+   attached to BPF_CGROUP_INET_SOCK_CREATE which denies
+   creation of the sctp socket.
 
-Add the missing separator between the two.
+The bug is fixed by acquiring addr_wq_lock in sctp_destroy_sock
+instead of sctp_close.
 
-Fixes: b5d6e7ab7fe7 ("Input: i8042 - add ASUS Zenbook Flip to noselftest list")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-Link: https://lore.kernel.org/r/20210323130623.2302402-1-arnd@kernel.org
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+This addresses CVE-2021-23133.
+
+Reported-by: Or Cohen <orcohen@paloaltonetworks.com>
+Reviewed-by: Xin Long <lucien.xin@gmail.com>
+Fixes: 610236587600 ("bpf: Add new cgroup attach type to enable sock modifications")
+Signed-off-by: Or Cohen <orcohen@paloaltonetworks.com>
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/input/serio/i8042-x86ia64io.h |    1 +
- 1 file changed, 1 insertion(+)
+ net/sctp/socket.c |   13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -588,6 +588,7 @@ static const struct dmi_system_id i8042_
- 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 			DMI_MATCH(DMI_CHASSIS_TYPE, "10"), /* Notebook */
- 		},
-+	}, {
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 			DMI_MATCH(DMI_CHASSIS_TYPE, "31"), /* Convertible Notebook */
+--- a/net/sctp/socket.c
++++ b/net/sctp/socket.c
+@@ -1539,11 +1539,9 @@ static void sctp_close(struct sock *sk,
+ 
+ 	/* Supposedly, no process has access to the socket, but
+ 	 * the net layers still may.
+-	 * Also, sctp_destroy_sock() needs to be called with addr_wq_lock
+-	 * held and that should be grabbed before socket lock.
+ 	 */
+-	spin_lock_bh(&net->sctp.addr_wq_lock);
+-	bh_lock_sock_nested(sk);
++	local_bh_disable();
++	bh_lock_sock(sk);
+ 
+ 	/* Hold the sock, since sk_common_release() will put sock_put()
+ 	 * and we have just a little more cleanup.
+@@ -1552,7 +1550,7 @@ static void sctp_close(struct sock *sk,
+ 	sk_common_release(sk);
+ 
+ 	bh_unlock_sock(sk);
+-	spin_unlock_bh(&net->sctp.addr_wq_lock);
++	local_bh_enable();
+ 
+ 	sock_put(sk);
+ 
+@@ -5115,9 +5113,6 @@ static int sctp_init_sock(struct sock *s
+ 	sk_sockets_allocated_inc(sk);
+ 	sock_prot_inuse_add(net, sk->sk_prot, 1);
+ 
+-	/* Nothing can fail after this block, otherwise
+-	 * sctp_destroy_sock() will be called without addr_wq_lock held
+-	 */
+ 	if (net->sctp.default_auto_asconf) {
+ 		spin_lock(&sock_net(sk)->sctp.addr_wq_lock);
+ 		list_add_tail(&sp->auto_asconf_list,
+@@ -5152,7 +5147,9 @@ static void sctp_destroy_sock(struct soc
+ 
+ 	if (sp->do_auto_asconf) {
+ 		sp->do_auto_asconf = 0;
++		spin_lock_bh(&sock_net(sk)->sctp.addr_wq_lock);
+ 		list_del(&sp->auto_asconf_list);
++		spin_unlock_bh(&sock_net(sk)->sctp.addr_wq_lock);
+ 	}
+ 	sctp_endpoint_free(sp->ep);
+ 	local_bh_disable();
 
 
