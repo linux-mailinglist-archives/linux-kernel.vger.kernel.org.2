@@ -2,79 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099A8364010
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D72736401A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237658AbhDSLB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 07:01:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33664 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234214AbhDSLB4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 07:01:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E53861246;
-        Mon, 19 Apr 2021 11:01:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618830086;
-        bh=qsDArnwJVzibESZVccOE2Q7ffEL8x4mAoZLAUkykqig=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JVIuru1c4j0f7F7o8TqoAhubCUl9A6l+IBPhqIWRTrfF1LVIkiIPu49+7WZUzUov5
-         7CfyPLjgnIESJVZ4rDX0xcLLYmx3IQ4qcwS4kA7WnltYEat6qvBjiCCwwJ02Ma1i7W
-         u9pRIHojz6b0ckAGO2EWzvoqcYvL/mV6N2yTfP26k7lBwxn7LolxP9r/1OHVRBJhhO
-         zzlpzMADappAqTjjaOXuDm+fpAOgxRAP0LW/211c3dtOUBreI6LkBnzV2sPl1qs8Ep
-         pXZtub2VcL1F1oc97N/nJf7uEPjD38dccdg+aJq2eHst7p9katVucoHW4uZHOToDBU
-         0uaGPD/EL8NqA==
-Date:   Mon, 19 Apr 2021 12:01:21 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Wedson Almeida Filho <wedsonaf@google.com>, ojeda@kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-Message-ID: <20210419110120.GA29869@willie-the-truck>
-References: <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
- <YHj02M3jMSweoP4l@google.com>
- <YHk4DZE1ZWTiBB1f@hirez.programming.kicks-ass.net>
- <aa6e44ab-e223-73aa-279e-8103732460ac@redhat.com>
- <YH0yCTgL0raKrmYg@hirez.programming.kicks-ass.net>
- <7287eac3-f492-bab1-9ea8-b89ceceed560@redhat.com>
- <YH0+0VQ1XC8+rv20@hirez.programming.kicks-ass.net>
- <3a874b15-5c21-9ed9-e5c3-995f915cba79@redhat.com>
- <YH1PGfC1qSjKB6Ho@hirez.programming.kicks-ass.net>
- <a6297428-c4c6-f03b-49c7-6026c3d16d30@redhat.com>
+        id S238299AbhDSLCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 07:02:49 -0400
+Received: from smtprelay0118.hostedemail.com ([216.40.44.118]:35932 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S237833AbhDSLCm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 07:02:42 -0400
+Received: from omf11.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 17BD018020DA3;
+        Mon, 19 Apr 2021 11:02:12 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf11.hostedemail.com (Postfix) with ESMTPA id 2016120A295;
+        Mon, 19 Apr 2021 11:02:10 +0000 (UTC)
+Message-ID: <8cddfac598fb0ef3c10d583fc70a5ebf1c8aeddc.camel@perches.com>
+Subject: Re: [PATCH v5] printk: Userspace format enumeration support
+From:   Joe Perches <joe@perches.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Petr Mladek <pmladek@suse.com>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Chris Down <chris@chrisdown.name>,
+        linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+Date:   Mon, 19 Apr 2021 04:02:08 -0700
+In-Reply-To: <YH1TIebAQyiMPuvI@kroah.com>
+References: <YEgvR6Wc1xt0qupy@chrisdown.name>
+         <02c3b2f3-ff8e-ceb9-b30b-e533959c0491@rasmusvillemoes.dk>
+         <YFDAfPCnS204jiD5@chrisdown.name> <YFHAdUB4lu4mJ9Ar@alley>
+         <5ea3b634-5467-35cf-dd08-1001f878b569@rasmusvillemoes.dk>
+         <YFMvfawY+0CncS8G@alley> <YHmXi303WxVZzVwI@chrisdown.name>
+         <e9f74575-1ba0-0c06-b370-59d151c72ed6@rasmusvillemoes.dk>
+         <YH1Kex8NOr89BJXq@alley> <YH1TIebAQyiMPuvI@kroah.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a6297428-c4c6-f03b-49c7-6026c3d16d30@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.60
+X-Rspamd-Server: rspamout02
+X-Stat-Signature: f8tx41ti33ixk61gc7rgse56fbagbfns
+X-Rspamd-Queue-Id: 2016120A295
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+ecAu86kQ+6gE4zOHZP4JWVjjxPmJUBcc=
+X-HE-Tag: 1618830130-112912
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 11:40:54AM +0200, Paolo Bonzini wrote:
-> On 19/04/21 11:36, Peter Zijlstra wrote:
-> > On Mon, Apr 19, 2021 at 11:02:12AM +0200, Paolo Bonzini wrote:
-> > > > void writer(void)
-> > > > {
-> > > >       atomic_store_explicit(&seq, seq+1, memory_order_relaxed);
-> > > >       atomic_thread_fence(memory_order_acquire);
-> > > 
-> > > This needs to be memory_order_release.  The only change in the resulting
-> > > assembly is that "dmb ishld" becomes "dmb ish", which is not as good as the
-> > > "dmb ishst" you get from smp_wmb() but not buggy either.
-> > 
-> > Yuck! And that is what requires the insides to be
-> > atomic_store_explicit(), otherwise this fence doesn't have to affect
-> > them.
-> 
-> Not just that, even the write needs to be atomic_store_explicit in order to
-> avoid a data race.atomic_store_explicit
+On Mon, 2021-04-19 at 11:53 +0200, Greg Kroah-Hartman wrote:
+> Hm, 12734 of the pr_err() calls do live in drivers/, so most of those
+> should be dev_err().  Might be something good to throw at interns...
 
-https://wg21.link/P0690
+That depends on how much churn you want to have in old drivers that
+generally don't have any users because the hardware is ancient or
+no longer manufactured.
 
-was an attempt to address this, but I don't know if any of the ideas got
-adopted in the end.
+I suggest not changing those.
 
-Will
+But I believe a coccinelle script was written quite awhile ago
+to convert pr_<level> to dev_<level> when a struct device * is
+available.
+
+http://btrlinux.inria.fr/staging-media-replace-pr_-with-dev_/
+
+
