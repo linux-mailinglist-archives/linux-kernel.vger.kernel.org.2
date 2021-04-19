@@ -2,93 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFCA3364A90
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 21:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F25D364AB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 21:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241698AbhDST1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 15:27:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238544AbhDST1c (ORCPT
+        id S240635AbhDSTkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 15:40:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39429 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234946AbhDSTkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 15:27:32 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CA8C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 12:27:01 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id 8so3250840qkv.8
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 12:27:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KS1Cjb+5IzYaeizmFEnxlkXXC1aDE7oEixJIHEs6ylA=;
-        b=QZyi5Dji5AdE+5SQ4n5JeA0XoUR5PxmbDUHrQlM5UM35yIi+V9Axd/qupj8VClmRG/
-         H/ATUNdBmPGCBvSW3iPG5RqNJDyB9Enl5iGmjbti97I9NhmfqPe2Mk3lC6Icu1ljq+3x
-         1Dh3GcwFbeQh3R09pc2S70kyLZLPl3lj9+nzCRQavmynOE2Zjk1VRxxRHu2SN8cjTZpF
-         uNloS75jdZd4e2G6RRGflr2Cs6Mq/BXpnfTOUt3GslrfBB0hxvQIpZqsqvHa1zjFwRGy
-         vDRQEBWgrLh0oqvDeznsMOKa/QtPnANTR3cQ2dzkAC177TRnTuldyhCiK/F5wKfZEwgX
-         cbcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KS1Cjb+5IzYaeizmFEnxlkXXC1aDE7oEixJIHEs6ylA=;
-        b=M6awh5Ph8bybW4ChuxhgmpX020kDXnd4vEs2Ovv5citQzQSrLL2lzNM8e4efuDtmAd
-         PAzZS+HELxYubOiuA9qQltZTbw3awRC1DbGRWEsHGp7B+jXzBEmkfrnnEOArXNq0xap0
-         y0k2vwBmaOvtouqvyqLVXeir3ByjkzLTMTQ9WvmGT0MRgSfOTcmNUHfRfzdyTX+hPsGB
-         KclNmd+sXHpOn/BZz2alqVLy6zai3k5JssSk1UqDWhxPvB09fgHQBQMNh8EkXHS8s5lz
-         w8s8vsZdZeLl72cZ+JEFNDFkitOYipmZhdKw0pjnLh4bpa+rH/A8aR4czJjRGmHyrHEl
-         EnCg==
-X-Gm-Message-State: AOAM531ittZM9OZz3lWOyLeZT/f3DEoLZBOcFuCFgeDC9z4FtLd4zy4o
-        RIh4CUfgMVrjZmbGW5eN8zEK2wgs4eGJdgYWF1k2Mg==
-X-Google-Smtp-Source: ABdhPJz6J9DwdEtBiJaAUR5+atIHfVrTiOYv1hJdpb++RbLiw+J3imF4ECYNCO1gx/CONDh314Cdpaw8wb2C/OcNGHU=
-X-Received: by 2002:a37:a788:: with SMTP id q130mr12712225qke.276.1618860420267;
- Mon, 19 Apr 2021 12:27:00 -0700 (PDT)
+        Mon, 19 Apr 2021 15:40:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618861200;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1st1jqhHcK/7H4Up3pplf3W/o3Gcni0SMPqKRXa5GK8=;
+        b=Pls0TZCkgMTqvh/19z4Piu+Y/and38wrBANucB3P+SpxDRSBKh1/3/KF5tuHBmginRg14w
+        ESi8+zrZ1EWOlg11XHvZbxPtIq2SYzDl3M9qHkcbRSSV73Ym7euRGhq3LVcEhUmmRyDBgt
+        rVj2Rpk27VtRB1tDapmB/Ad6M4zshgw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-273-Ltjg0D73OUyjFgd4c5Va1w-1; Mon, 19 Apr 2021 15:39:57 -0400
+X-MC-Unique: Ltjg0D73OUyjFgd4c5Va1w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B71D083DD40;
+        Mon, 19 Apr 2021 19:39:55 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-6.gru2.redhat.com [10.97.112.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B104D610F4;
+        Mon, 19 Apr 2021 19:39:25 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 8B6D4416D899; Mon, 19 Apr 2021 15:56:19 -0300 (-03)
+Date:   Mon, 19 Apr 2021 15:56:19 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Peter Xu <peterx@redhat.com>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Alex Belits <abelits@marvell.com>
+Subject: Re: [PATCH v5] hrtimer: avoid retrigger_next_event IPI
+Message-ID: <20210419185619.GA57245@fuller.cnet>
+References: <20210409165146.GA40118@fuller.cnet>
+ <87lf9q4lue.ffs@nanos.tec.linutronix.de>
+ <20210413170431.GA16190@fuller.cnet>
+ <20210415153935.GA69750@fuller.cnet>
+ <87im4nv0fh.ffs@nanos.tec.linutronix.de>
+ <20210415204017.GA111847@fuller.cnet>
+ <20210416160023.GA6187@fuller.cnet>
+ <20210416171321.GU4440@xz-x1>
+ <87pmysswtj.ffs@nanos.tec.linutronix.de>
+ <87mttwsvlv.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210412101421.609526370@infradead.org> <20210412102001.287610138@infradead.org>
- <YHhp0THHD2ofUdZD@hirez.programming.kicks-ass.net>
-In-Reply-To: <YHhp0THHD2ofUdZD@hirez.programming.kicks-ass.net>
-From:   Josh Don <joshdon@google.com>
-Date:   Mon, 19 Apr 2021 12:26:49 -0700
-Message-ID: <CABk29NtFEcKxicJ-zG338Z-gUd5-6rwiB=58K4+ZqkJ+S3v2Og@mail.gmail.com>
-Subject: Re: [PATCH] sched/debug: Rename the sched_debug parameter to sched_debug_verbose
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, Mel Gorman <mgorman@suse.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>, greg@kroah.com,
-        linux@rasmusvillemoes.dk,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87mttwsvlv.ffs@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On Sat, Apr 17, 2021 at 06:51:08PM +0200, Thomas Gleixner wrote:
+> On Sat, Apr 17 2021 at 18:24, Thomas Gleixner wrote:
+> > On Fri, Apr 16 2021 at 13:13, Peter Xu wrote:
+> >> On Fri, Apr 16, 2021 at 01:00:23PM -0300, Marcelo Tosatti wrote:
+> >>>  
+> >>> +#define CLOCK_SET_BASES ((1U << HRTIMER_BASE_REALTIME) |	\
+> >>> +			 (1U << HRTIMER_BASE_REALTIME_SOFT) |	\
+> >>> +			 (1U << HRTIMER_BASE_TAI) |		\
+> >>> +			 (1U << HRTIMER_BASE_TAI_SOFT))
+> >>> +
+> >>> +static bool need_reprogram_timer(struct hrtimer_cpu_base *cpu_base)
+> >>> +{
+> >>> +	if (cpu_base->softirq_activated)
+> >>> +		return true;
+> >>
+> >> A pure question on whether this check is needed...
+> >>
+> >> Here even if softirq_activated==1 (as softirq is going to happen), as long as
+> >> (cpu_base->active_bases & CLOCK_SET_BASES)==0, shouldn't it already mean that
+> >> "yes indeed clock was set, but no need to kick this cpu as no relevant timer"?
+> >> As that question seems to be orthogonal to whether a softirq is going to
+> >> trigger on that cpu.
+> >
+> > That's correct and it's not any different from firing the IPI because in
+> > both cases the update happens with the base lock of the CPU in question
+> > held. And if there are no active timers in any of the affected bases,
+> > then there is no need to reevaluate the next expiry because the offset
+> > update does not affect any armed timers. It just makes sure that the
+> > next enqueu of a timer on such a base will see the the correct offset.
+> >
+> > I'll just zap it.
+> 
+> But the whole thing is still wrong in two aspects:
+> 
+>     1) BOOTTIME can be one of the affected clocks when sleep time
+>        (suspended time) is injected because that uses the same mechanism.
+> 
+>        Sorry for missing that earlier when I asked to remove it, but
+>        that's trivial to fix by adding the BOOTTIME base back.
+> 
+>     2) What's worse is that on resume this might break because that
+>        mechanism is also used to enforce the reprogramming of the clock
+>        event devices and there we cannot be selective on clock bases.
+> 
+>        I need to dig deeper into that because suspend/resume has changed
+>        a lot over time, so this might be just a historical leftover. But
+>        without proper analysis we might end up with subtle and hard to
+>        debug wreckage.
+> 
+> Thanks,
+> 
+>         tglx
 
-Looks reasonable to me.
+Thomas,
 
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -4756,7 +4756,8 @@
->
->         sbni=           [NET] Granch SBNI12 leased line adapter
->
-> -       sched_debug     [KNL] Enables verbose scheduler debug messages.
-> +       sched_debug_verbose
-> +                       [KNL] Enables verbose scheduler debug messages.
+There is no gain in avoiding the IPIs for the suspend/resume case 
+(since suspending is a large interruption anyway). To avoid 
+the potential complexity (and associated bugs), one option would 
+be to NOT skip IPIs for the resume case.
 
-boot param is not renamed from sched_debug below.
+Sending -v6 with that (and other suggestions/fixes).
 
-> @@ -22,7 +22,7 @@ early_param("sched_debug", sched_debug_s
->
->  static inline bool sched_debug(void)
-
-nit: consider renaming. Or, we can even get rid of this function
-entirely, since in the !CONFIG_SCHED_DEBUG case we have
-sched_debug_verbose defined to 0.
