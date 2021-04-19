@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F81D363EEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33446363EF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238799AbhDSJkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 05:40:24 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:54484 "EHLO
+        id S238820AbhDSJkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 05:40:31 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:54462 "EHLO
         mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238180AbhDSJj6 (ORCPT
+        by vger.kernel.org with ESMTP id S238726AbhDSJj5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 05:39:58 -0400
+        Mon, 19 Apr 2021 05:39:57 -0400
 Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13J9RHL2024710;
-        Mon, 19 Apr 2021 11:39:07 +0200
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13J9RI4T024744;
+        Mon, 19 Apr 2021 11:39:08 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=selector1;
- bh=mt7WvfN2Btmo/ZaNnjB5VDrsbrquImJLFtGfvSfZYp0=;
- b=lS31HPXhLpo8iotp73Yg5X8/8okPFqdbtEy9/q+cKQsMhvx00KUeK/ZyxJUDvP7FYBOp
- Wn4H8NbSTctZXg314t5CAWiytxaX0DsR6V9Bc7FEFrF+CWh3Jm2O+aqRDhwanPwVKSsQ
- hIZiRHTQOV0+KHB2NkW0ZO/KoAU9JxnsxpuYLMppOy4M1H5zXsXbBzql05uwBNZj1hrj
- iSJD2/ApPCytRzwP3YaV/J7SOmzrzpvfKEOd4Tn0Ze6EH0lvoUPQr4AWPdxhjCwGWXG9
- XKAI7sKmW74HGc1N9SUdATNKrD/tgxS4rOo7IkgzYjfBWQedB8LHN1cY88st08WqgMeS jQ== 
+ bh=MQFahwvfutC3FxBs/hqCSrvMqO46K/tUe+kmA3pJK74=;
+ b=vwIj+U8U1cWy6Ucrc5jZU9t2cI3OC2E7zjZh/6wFCRVll7VM14ygWMsTJZMqW7I2mcVa
+ Qv6cfUv3erOxerFlKayN0hPaU1p4yr2s7XdJCe0FUH7P5+mRG0LKn8+LbgeDbuZoguk9
+ Uidykvc+qhdkC20Nf6/2Le55U2uzntgseRcKyz86AxTA9OTAWqnKW0gSdnaQMUgJ/gi4
+ vtdKrvxW5Ck4Zlnl+nCbcZyovFjk9Q4l0EJBwsiMwzK87V68zYEmr5oNeAOJO3jIKxhL
+ NrUO4hIkA4o2j+gixV/PrfqfPD5/+ozvZXeXKqs8XB/rK4MYyFsZN+iOfooYr6BUoieT Fg== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 380wj62rty-1
+        by mx07-00178001.pphosted.com with ESMTP id 380wj62ru2-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Apr 2021 11:39:07 +0200
+        Mon, 19 Apr 2021 11:39:08 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DA27D100034;
-        Mon, 19 Apr 2021 11:39:06 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8F38010002A;
+        Mon, 19 Apr 2021 11:39:07 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C0E6220A07F;
-        Mon, 19 Apr 2021 11:39:06 +0200 (CEST)
-Received: from localhost (10.75.127.50) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 19 Apr 2021 11:39:06
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7D87720A07F;
+        Mon, 19 Apr 2021 11:39:07 +0200 (CEST)
+Received: from localhost (10.75.127.49) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 19 Apr 2021 11:39:07
  +0200
 From:   <gabriel.fernandez@foss.st.com>
 To:     Michael Turquette <mturquette@baylibre.com>,
@@ -51,16 +51,16 @@ CC:     <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 01/11] clk: stm32mp1: merge 'clk-hsi-div' and 'ck_hsi' into one clock
-Date:   Mon, 19 Apr 2021 11:38:42 +0200
-Message-ID: <20210419093852.14978-2-gabriel.fernandez@foss.st.com>
+Subject: [PATCH v3 02/11] clk: stm32mp1: merge 'ck_hse_rtc' and 'ck_rtc' into one clock
+Date:   Mon, 19 Apr 2021 11:38:43 +0200
+Message-ID: <20210419093852.14978-3-gabriel.fernandez@foss.st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210419093852.14978-1-gabriel.fernandez@foss.st.com>
 References: <20210419093852.14978-1-gabriel.fernandez@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
  (10.75.127.6)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-04-19_05:2021-04-16,2021-04-19 signatures=0
@@ -70,41 +70,104 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
 
-This patch is to prepare STM32MP1 clocks in trusted mode.
+'ck_rtc' has multiple clocks as input (ck_hsi, ck_lsi, and ck_hse).
+A divider is available only on the specific rtc input for ck_hse.
 This Merge will facilitate to have a more coherent clock tree
 in no trusted / trusted world.
 
 Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
 ---
- drivers/clk/clk-stm32mp1.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/clk/clk-stm32mp1.c | 54 +++++++++++++++++++++++++++++++++-----
+ 1 file changed, 48 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/clk/clk-stm32mp1.c b/drivers/clk/clk-stm32mp1.c
-index a875649df8b8..35d5aee8f9b0 100644
+index 35d5aee8f9b0..a7c244fd0b03 100644
 --- a/drivers/clk/clk-stm32mp1.c
 +++ b/drivers/clk/clk-stm32mp1.c
-@@ -1657,16 +1657,16 @@ static const struct stm32_mux_cfg ker_mux_cfg[M_LAST] = {
+@@ -245,7 +245,7 @@ static const char * const dsi_src[] = {
  };
  
- static const struct clock_config stm32mp1_clock_cfg[] = {
--	/* Oscillator divider */
--	DIV(NO_ID, "clk-hsi-div", "clk-hsi", CLK_DIVIDER_POWER_OF_TWO,
--	    RCC_HSICFGR, 0, 2, CLK_DIVIDER_READ_ONLY),
--
- 	/*  External / Internal Oscillators */
- 	GATE_MP1(CK_HSE, "ck_hse", "clk-hse", 0, RCC_OCENSETR, 8, 0),
- 	/* ck_csi is used by IO compensation and should be critical */
- 	GATE_MP1(CK_CSI, "ck_csi", "clk-csi", CLK_IS_CRITICAL,
- 		 RCC_OCENSETR, 4, 0),
--	GATE_MP1(CK_HSI, "ck_hsi", "clk-hsi-div", 0, RCC_OCENSETR, 0, 0),
-+	COMPOSITE(CK_HSI, "ck_hsi", PARENT("clk-hsi"), 0,
-+		  _GATE_MP1(RCC_OCENSETR, 0, 0),
-+		  _NO_MUX,
-+		  _DIV(RCC_HSICFGR, 0, 2, CLK_DIVIDER_POWER_OF_TWO |
-+		       CLK_DIVIDER_READ_ONLY, NULL)),
- 	GATE(CK_LSI, "ck_lsi", "clk-lsi", 0, RCC_RDLSICR, 0, 0),
- 	GATE(CK_LSE, "ck_lse", "clk-lse", 0, RCC_BDCR, 0, 0),
+ static const char * const rtc_src[] = {
+-	"off", "ck_lse", "ck_lsi", "ck_hse_rtc"
++	"off", "ck_lse", "ck_lsi", "ck_hse"
+ };
  
+ static const char * const mco1_src[] = {
+@@ -1031,6 +1031,47 @@ static struct clk_hw *clk_register_cktim(struct device *dev, const char *name,
+ 	return hw;
+ }
+ 
++/* The divider of RTC clock concerns only ck_hse clock */
++#define HSE_RTC 3
++
++static unsigned long clk_divider_rtc_recalc_rate(struct clk_hw *hw,
++						 unsigned long parent_rate)
++{
++	if (clk_hw_get_parent(hw) == clk_hw_get_parent_by_index(hw, HSE_RTC))
++		return clk_divider_ops.recalc_rate(hw, parent_rate);
++
++	return parent_rate;
++}
++
++static int clk_divider_rtc_set_rate(struct clk_hw *hw, unsigned long rate,
++				    unsigned long parent_rate)
++{
++	if (clk_hw_get_parent(hw) == clk_hw_get_parent_by_index(hw, HSE_RTC))
++		return clk_divider_ops.set_rate(hw, rate, parent_rate);
++
++	return parent_rate;
++}
++
++static int clk_divider_rtc_determine_rate(struct clk_hw *hw, struct clk_rate_request *req)
++{
++	unsigned long best_parent_rate = req->best_parent_rate;
++
++	if (req->best_parent_hw == clk_hw_get_parent_by_index(hw, HSE_RTC)) {
++		req->rate = clk_divider_ops.round_rate(hw, req->rate, &best_parent_rate);
++		req->best_parent_rate = best_parent_rate;
++	} else {
++		req->rate = best_parent_rate;
++	}
++
++	return 0;
++}
++
++static const struct clk_ops rtc_div_clk_ops = {
++	.recalc_rate	= clk_divider_rtc_recalc_rate,
++	.set_rate	= clk_divider_rtc_set_rate,
++	.determine_rate = clk_divider_rtc_determine_rate
++};
++
+ struct stm32_pll_cfg {
+ 	u32 offset;
+ };
+@@ -1243,6 +1284,10 @@ _clk_stm32_register_composite(struct device *dev,
+ 	_STM32_DIV(_div_offset, _div_shift, _div_width,\
+ 		   _div_flags, _div_table, NULL)\
+ 
++#define _DIV_RTC(_div_offset, _div_shift, _div_width, _div_flags, _div_table)\
++	_STM32_DIV(_div_offset, _div_shift, _div_width,\
++		   _div_flags, _div_table, &rtc_div_clk_ops)
++
+ #define _STM32_MUX(_offset, _shift, _width, _mux_flags, _mmux, _ops)\
+ 	.mux = &(struct stm32_mux_cfg) {\
+ 		&(struct mux_cfg) {\
+@@ -1965,13 +2010,10 @@ static const struct clock_config stm32mp1_clock_cfg[] = {
+ 		  _DIV(RCC_ETHCKSELR, 4, 4, 0, NULL)),
+ 
+ 	/* RTC clock */
+-	DIV(NO_ID, "ck_hse_rtc", "ck_hse", 0, RCC_RTCDIVR, 0, 6, 0),
+-
+-	COMPOSITE(RTC, "ck_rtc", rtc_src, CLK_OPS_PARENT_ENABLE |
+-		   CLK_SET_RATE_PARENT,
++	COMPOSITE(RTC, "ck_rtc", rtc_src, CLK_OPS_PARENT_ENABLE,
+ 		  _GATE(RCC_BDCR, 20, 0),
+ 		  _MUX(RCC_BDCR, 16, 2, 0),
+-		  _NO_DIV),
++		  _DIV_RTC(RCC_RTCDIVR, 0, 6, 0, NULL)),
+ 
+ 	/* MCO clocks */
+ 	COMPOSITE(CK_MCO1, "ck_mco1", mco1_src, CLK_OPS_PARENT_ENABLE |
 -- 
 2.17.1
 
