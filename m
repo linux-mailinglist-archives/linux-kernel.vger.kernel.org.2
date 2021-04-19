@@ -2,104 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E81363E0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF647363E16
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbhDSIzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 04:55:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:38622 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229671AbhDSIzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 04:55:36 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2BDA51FB;
-        Mon, 19 Apr 2021 01:55:07 -0700 (PDT)
-Received: from slackpad.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0C81B3F85F;
-        Mon, 19 Apr 2021 01:55:05 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 09:54:43 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Chen-Yu Tsai <wens@csie.org>
-Cc:     Samuel Holland <samuel@sholland.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-sunxi@lists.linux.dev,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/2] sunxi: Enforce consistent MMC numbering
-Message-ID: <20210419095443.1548432e@slackpad.fritz.box>
-In-Reply-To: <CAGb2v642Z3iH7fUWa31Rb5j+nWdZ=sXn2BYw3_dyE9P6iuL0Cg@mail.gmail.com>
-References: <20210419025246.21722-1-samuel@sholland.org>
-        <CAGb2v642Z3iH7fUWa31Rb5j+nWdZ=sXn2BYw3_dyE9P6iuL0Cg@mail.gmail.com>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
+        id S238188AbhDSJAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 05:00:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232801AbhDSJAT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 05:00:19 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F553C061760
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 01:59:49 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id f195-20020a1c1fcc0000b029012eb88126d7so7645412wmf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 01:59:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=imdYfxadLvf66UqJrLdP+jNRWPDriPV49gKMKRgDf9U=;
+        b=MhWOZlAaGQbgumc0RLcBI7Eo6tUscm2hdCcY72xvUiKO6T5U7wVeKkh+1VrFaG66Pu
+         XmIMRiH8YDXvTwJ7cqv6scfSJxAP1+EycEKK6U2FgJK8C7ALnWzIhxFLZ31ZJEEtUauL
+         gHldm3ykUlafuzkHXAvxV2Z4+78hwLKhnpRmjL79+goWXLKedkVsTDcglmA2muBUl5Xe
+         +iRC1LUJXhe/2sXhuGTJhmjvmzaEcdW08XppkbCcY4foF1o6HPMLpM8b+IQdXkofjnUV
+         8JCqEWNmLCB3PeN+XsjQSc+iagQxE46gMFLBse2cQOj57d39VmZ9xVkCDzi6j74Mwsyb
+         +5Uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=imdYfxadLvf66UqJrLdP+jNRWPDriPV49gKMKRgDf9U=;
+        b=glGJA46JfcwN8XwmjZQk36NmScXAk4T7m15Lz7FokP75TyocUYIk1dodHkXjSEEZDy
+         6eoHKOjlifJ6qcDXHctmUErRnjpztCJM41EOIX8JzHm+ocHqEO3gB3SYuHlIUv6cktKF
+         JGQar43kR/TcgvaqqV6uESY4JMxPup3F+0DH7Vz9SlC2+hyfEqMvhXmQ5m1xFzQeo94v
+         sPekuw/XclzNyKADmAi1tViZWe00RhgdMRQR6TFVyafHoE5hqzYPiOhgK05GcyOZ6xtL
+         MXbTkTPIRFzHG97YV8/8YnWVblKx555coWOmKhkYOS6Ght7+Awt0EyYY7LozXEyKa2g5
+         vvbg==
+X-Gm-Message-State: AOAM532989DfAe+eYUeuHv3xQ/yZ+dxllgezk0yZB7c4lv6IzlDkPfBP
+        gbVdXqa5eZvlhRyDJhQHFEKZfg==
+X-Google-Smtp-Source: ABdhPJyttmIhyOWwAZzKx3fqzhhoCfyRE7e8EHnxzE2txBcfL2G/wBuyLWNkAiW9JdSzXZ9BeBSyDA==
+X-Received: by 2002:a05:600c:247:: with SMTP id 7mr18551745wmj.111.1618822788077;
+        Mon, 19 Apr 2021 01:59:48 -0700 (PDT)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id o1sm22902869wrw.95.2021.04.19.01.59.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 01:59:47 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 10:59:30 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-tip-commits@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?utf-8?B?SsO2cmcgUsO2ZGVs?= <joro@8bytes.org>
+Subject: Re: [tip: x86/urgent] x86/dma: Tear down DMA ops on driver unbind
+Message-ID: <YH1GctvMa2filsNg@myrica>
+References: <20210414082633.877461-1-jean-philippe@linaro.org>
+ <161847725788.29796.15623166781765421094.tip-bot2@tip-bot2>
+ <20210417120644.GA5235@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210417120644.GA5235@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Apr 2021 11:17:19 +0800
-Chen-Yu Tsai <wens@csie.org> wrote:
-
-Hi,
-
-> On Mon, Apr 19, 2021 at 10:52 AM Samuel Holland <samuel@sholland.org> wrote:
-> >
-> > Dealing with the inconsistent numbering has been a major pain, and
-> > there is a solution with (as far as I can tell) no tangible downsides.
-> > So let's use it.
-
-Thanks Samuel for sending this!
-
-> > Yes, I know the kernel supports UUIDs for root=. But UUIDs do not help
-> > when referencing the whole, unpartitioned device, like is needed for
-> > updating the bootloader and firmware. So for the use case of "write a
-> > bootloader to the SD card, regardless of where the board is currently
-> > booted from", I know of two options:
-> >   - Dig around in sysfs to find the mmc number from the MMIO address,
-> >     which means I have to know the MMIO addresses for every SoC, or
-> >   - Apply patches like these.
-> >
-> > Samuel Holland (2):
-> >   ARM: dts: sunxi: h3/h5: Enforce consistent MMC numbering
-> >   arm64: dts: allwinner: Enforce consistent MMC numbering
-> >
-> >  arch/arm/boot/dts/sunxi-h3-h5.dtsi            | 6 ++++++
-> >  arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 6 ++++++
-> >  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  | 6 ++++++  
+On Sat, Apr 17, 2021 at 02:06:44PM +0200, Borislav Petkov wrote:
+> Nope, sorry, no joy. Zapping it from tip.
 > 
-> At least with Rockchip this is now done at the board level. IIRC it was
-> a request from other people to not do it at the SoC level. I don't recall
-> exactly who though.
+> With that patch, it fails booting on my test box with messages like
+> (typing up from video I took):
+> 
+> ...
+> ata: softreset failed (1st FIS failed)
+> ahci 0000:03:00:1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=...]
+> ahci 0000:03:00:1: AMD-Vi: Event logged [IO_PAGE_FAULT domain=...]
 
-FWIW, I am very much in favour of these patches, at a SoC level:
-The *SoC* BootROM imposes an order, by probing the first (by MMIO
-address order) MMC controller first for boot devices. IIRC that's a
-different story for Rockchip?
-And if people really don't care about the order, then having a certain
-order doesn't hurt, so we could as well use the "natural" order, as it
-was before.
+Sorry about that, I only tested under QEMU. I'll try to reproduce this on
+an AMD laptop.
 
-Also UUIDs only help if you boot with an initramfs to resolve them,
-which proves to be extra pain if you don't compile kernels on the
-device, or not inside a distribution environment.
-
-
-One thing I was wondering about though is that U-Boot currently defines
-"mmc1 = &mmc2;", so that the eMMC is always MMC device 1. This is also
-the BootROM probe order (MMC1 is never touched). I wonder if we should
-mimic this here, since MMC2 is clearly the device for eMMC (due to
-8-bit bus width support)? So from a block device perspective we would
-have always have mmcblk0 and mmcblk1.
-Otherwise it would conflict with U-Boot's current fixup[1], so
-U-Boot's DT would either need to deviate or create boot script breakages
-there.
-
-Cheers,
-Andre
-
-[1]
-https://source.denx.de/u-boot/u-boot/-/blob/master/arch/arm/dts/sunxi-u-boot.dtsi#L14-16
+Thanks,
+Jean
