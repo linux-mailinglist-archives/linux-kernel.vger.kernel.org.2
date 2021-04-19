@@ -2,99 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4072364046
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:15:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C444936404C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233862AbhDSLPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 07:15:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbhDSLPm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 07:15:42 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9FD0C06174A;
-        Mon, 19 Apr 2021 04:15:12 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id cu16so15728885pjb.4;
-        Mon, 19 Apr 2021 04:15:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fyLO68cYQAdbeG7I5stptSDRdNhYWf3KZX5hVoH8RUc=;
-        b=tVD+Frbk3fpsSGakZ6vAUeXjiXHk6aLxIzoWOJ79QCPRe5sg+qOssPKCBuFpZ5ExOh
-         cYbxMV4raTskb/a7ddC9H5i2BKwdEq7spfQHIlf2jVAkHJxBU0Ei6GsXCcCdL2QMpnuE
-         NuGaQ74p+iU9G4sazo85cs6eV/ZPi5LU+H8jafL3qNVRBzyNmgrPMsxyXExPo+DHuwFv
-         tdPpf/Vv0zAL3K2sebt2+RdE1DKO/JaqaSETVgIsu5ibHTsU6O17m3ulHZtfSBA3otBu
-         36NS3LLD+mlC9bWFvFn98OLWOwUKvIpKeoMzxT9rPLm0PMCFOiMv5yHZ7jV44lhX0FUs
-         RgGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fyLO68cYQAdbeG7I5stptSDRdNhYWf3KZX5hVoH8RUc=;
-        b=mioWvyt+fHfRk88zYgm96AIrBvJoaQlcCMhkEQZjow9BrW4Y4NXqRIPY5HMyQRJQZk
-         pK9c6F8eTDxhI0AaO/TSbDbOY+Mk1wY/unOAN/ksIvFen5ZKktNTMkeukiAzkX1NOyLP
-         RY+OW9zc8qvhHZg7jMXe4nebJ3dV8inoKQ86CV7C9Uu3WJnfEmHe9rV3+My9sBln7wIT
-         AIgO5kGQaU7IhEm7i0G0oSNJUW4fVAxG3rvzeSjQb0i52R1L6V9WCYwnLELWlv00DM1I
-         VHk/IEhJII5yHE0iPYOQU564gSp2k3sX8rN2my8l3W1LLk6rZCsW/Vi4SPU4dbMHYT7F
-         yJfQ==
-X-Gm-Message-State: AOAM53144tzNkvaI3rzKuKugd1VjBMQo2OIK7pa8BSvxvcvZW/eizFZk
-        KkZk5V395zG0nsnKMiMxEeDD7iKULBywJgpjojU=
-X-Google-Smtp-Source: ABdhPJz+wzghLLCvx06cKOPWLeBhgarcoxi0Xt2i3Juf+K3Pdv7kq6+jr+XQ6egZQWF1rL5+Yj/RWsbr5jNrL4ku0SM=
-X-Received: by 2002:a17:902:a406:b029:e6:78c4:71c8 with SMTP id
- p6-20020a170902a406b02900e678c471c8mr22295456plq.17.1618830911997; Mon, 19
- Apr 2021 04:15:11 -0700 (PDT)
+        id S234391AbhDSLSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 07:18:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:40792 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233486AbhDSLSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 07:18:16 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 431B031B;
+        Mon, 19 Apr 2021 04:17:46 -0700 (PDT)
+Received: from [10.57.66.181] (unknown [10.57.66.181])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3C2623F792;
+        Mon, 19 Apr 2021 04:17:43 -0700 (PDT)
+Subject: Re: [PATCH RESEND 0/4] Add support for HiSilicon PCIe Tune and Trace
+ device
+To:     Yicong Yang <yangyicong@hisilicon.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        coresight@lists.linaro.org, linux-pci@vger.kernel.org
+Cc:     alexander.shishkin@linux.intel.com, helgaas@kernel.org,
+        gregkh@linuxfoundation.org, lorenzo.pieralisi@arm.com,
+        will@kernel.org, mark.rutland@arm.com, mathieu.poirier@linaro.org,
+        mike.leach@linaro.org, leo.yan@linaro.org,
+        jonathan.cameron@huawei.com, song.bao.hua@hisilicon.com,
+        john.garry@huawei.com, prime.zeng@huawei.com, liuqi115@huawei.com,
+        zhangshaokun@hisilicon.com, linuxarm@huawei.com
+References: <1618654631-42454-1-git-send-email-yangyicong@hisilicon.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <529defac-cd67-3a7b-91d3-76eb0bb9dc6c@arm.com>
+Date:   Mon, 19 Apr 2021 12:17:41 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.1
 MIME-Version: 1.0
-References: <20210416134546.38475-1-tomas.melin@vaisala.com>
- <20210416134546.38475-3-tomas.melin@vaisala.com> <CAHp75VcibWup79np=xeQpO2z+OGCFXPhL6vWL6aWRZ+G8+djwQ@mail.gmail.com>
- <91ea3aba-854e-30f1-1236-733debfcf5dc@vaisala.com>
-In-Reply-To: <91ea3aba-854e-30f1-1236-733debfcf5dc@vaisala.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 19 Apr 2021 14:14:55 +0300
-Message-ID: <CAHp75VcWu96EAjzYYwt_gqscvJp3s9Y+ZnaK2NQa_=L+S+r5zQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] iio: accel: Add driver for Murata SCA3300 accelerometer
-To:     Tomas Melin <tomas.melin@vaisala.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1618654631-42454-1-git-send-email-yangyicong@hisilicon.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 1:29 PM Tomas Melin <tomas.melin@vaisala.com> wrote:
-> On 4/17/21 3:39 PM, Andy Shevchenko wrote:
-> > On Fri, Apr 16, 2021 at 5:21 PM Tomas Melin <tomas.melin@vaisala.com> wrote:
-> >> Add initial support for Murata SCA3300 3-axis industrial
-> >> accelerometer with digital SPI interface. This device also
-> >> provides a temperature measurement.
+On 17/04/2021 11:17, Yicong Yang wrote:
+> [RESEND with perf and coresight folks Cc'ed]
+> 
+> HiSilicon PCIe tune and trace device (PTT) is a PCIe Root Complex
+> integrated Endpoint (RCiEP) device, providing the capability
+> to dynamically monitor and tune the PCIe traffic (tune),
+> and trace the TLP headers (trace).
+> 
+> PTT tune is designed for monitoring and adjusting PCIe link parameters.
+> We provide several parameters of the PCIe link. Through the driver,
+> user can adjust the value of certain parameter to affect the PCIe link
+> for the purpose of enhancing the performance in certian situation.
 
 ...
 
-> >> +       ret = spi_sync_transfer(sca_data->spi, xfers, ARRAY_SIZE(xfers));
-> >> +       if (ret < 0) {
-> >> +               dev_err(&sca_data->spi->dev,
-> >> +                       "transfer error, error: %d\n", ret);
-> >> +               return -EIO;
-> > Why shadowing error code?
->
-> Returning EIO here to have full control over the return value from this
-> function. As return value of this is used for testing
+> 
+> The reason for not using perf is because there is no current support
+> for uncore tracing in the perf facilities. We have our own format
+> of data and don't need perf doing the parsing. The setting through
+> perf tools doesn't seem to be friendly as well. For example,
+> we cannot count on perf to decode the usual format BDF number like
+> <domain>:<bus>:<dev>.<fn>, which user can use to filter the TLP
+> headers through the PTT device.
+> 
+> A similar approach for implementing this function is ETM, which use
+> sysfs for configuring and a character device for dumping data.
+> 
+> Greg has some comments on our implementation and doesn't advocate
+> to build driver on debugfs [1]. So I resend this series to
+> collect more feedbacks on the implementation of this driver.
+> 
+> Hi perf and ETM related experts, is it suggested to adapt this driver
+> to perf? Or is the debugfs approach acceptable? Otherwise use
+> sysfs + character device like ETM and use perf tools for decoding it?
+> Any comments is welcomed.
 
-Care to show what kind of testing requires this?
-Also why can't it be refactored to accept all error codes?
+Please use perf. Debugfs / sysfs is not the right place for these things.
 
-> for possible status error (EINVAL), feels more confident to have it like
-> this to avoid any confusion. And atleast spi_sync_transfer() return value
->
-> would be visible in error message.
+Also, please move your driver to drivers/perf/
 
-> >> +       }
+As Alex mentioned, the ETM drivers were initially developed when the AUX
+buffer was not available. The sysfs interface is there only for the 
+backward compatibility and for bring up ( due to the nature of the
+connections between the CoreSight components and sometimes the missing 
+engineering spec).
 
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+Suzuki
