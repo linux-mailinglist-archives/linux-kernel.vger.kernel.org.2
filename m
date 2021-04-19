@@ -2,170 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAFEF364250
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9020136424A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239393AbhDSNEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:04:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232800AbhDSNEV (ORCPT
+        id S236079AbhDSND0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:03:26 -0400
+Received: from mail-ua1-f46.google.com ([209.85.222.46]:40559 "EHLO
+        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229666AbhDSNDS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:04:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E76FC061760;
-        Mon, 19 Apr 2021 06:03:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8Y0pwAVt5liDDolwhxFKvBOLg1az19k+Kyl8s6P7Mkw=; b=qh+osCLCYoBzdKk4OeJfdc7J9J
-        shl+bJI6rxfcBQSyUHfvACIIxpBednLK2EubX+7seel0bFOvQcQK+jZoQeITc+v2PI2mb2vCfurG4
-        Iz1Jx+evxKF0mxbN3hGOTdmKkw/Big46+gSRFjS7Bcm1zy1oyWgzxp5sakrTLJBWnvbYovFe8a2Tj
-        6drEwpV5y+w6FDXtd5amPm+3usP0JSTm7fxq2CdQjbgRmW6fOEF7HDFoUma/fp6LsDiBYcgbUg3lU
-        xOWtgX+S7Y2kwtviMj2NHv0xDQhr/xFfW5udlCZV7yiQvRTBIOJ4bdLWiNP47NQMfxvezra9yhVN1
-        F7lE216g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYTXA-00DlIj-GW; Mon, 19 Apr 2021 13:02:10 +0000
-Date:   Mon, 19 Apr 2021 14:01:48 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-Message-ID: <20210419130148.GA2531743@casper.infradead.org>
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <20210409223801.104657-3-mcroce@linux.microsoft.com>
- <20210410154824.GZ2531743@casper.infradead.org>
- <YHHPbQm2pn2ysth0@enceladus>
- <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
- <YHHuE7g73mZNrMV4@enceladus>
- <20210414214132.74f721dd@carbon>
- <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
- <20210419132204.1e07d5b9@carbon>
+        Mon, 19 Apr 2021 09:03:18 -0400
+Received: by mail-ua1-f46.google.com with SMTP id 33so10885690uaa.7;
+        Mon, 19 Apr 2021 06:02:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dlYTi69m/lucb/NhBgsBMz9vGz1CoOt1FLG0EfInMDA=;
+        b=Rt8Ev9ZeqpvLQ9rxlNJrkjpOid0d0n08NFDtadvS/T7qjGVm/0JfDcrH/zntjXF71B
+         NnZdnZlvyuxamZ+w91TLWanBRMoKB1zA9vRsF4FaXrJpJxrudlOiwHvUe1hHbLmY7CEv
+         GH0HeIMc91Mdja7u9frsh7O9QbLUbRB9X9HT6NnCyMvZUR5q1851FODlzVYaK1HIvuaj
+         +xEaRttgGGJrfns3djX2tUCcdOcaBIgYvwbeFDPwlZ1Sn2oG6eDeR7merKBpxc7s3ooo
+         Qi21gUNzM7dqh1l0z9JncPfQqowdqQSPWRwi+agiWQx96NdJy4birkGorEJgrGtLx6GP
+         SKEg==
+X-Gm-Message-State: AOAM531TYvBm/5+P2ByNv5xS2m1HSSvszc+4olQngqisQsYLw5WsbZEw
+        GOt/VCqv7ihytyHMUVcQh3rCVIGodRDaqTcJE8M=
+X-Google-Smtp-Source: ABdhPJz9Kxz4+ejzvydG/k+ZmWgbyoBOzyfzx61YEoFRlVktAwHjkfxBSE3792S3lKv1vU3pJtwyMTxmyHMxCOnnf4o=
+X-Received: by 2002:ab0:6306:: with SMTP id a6mr6678856uap.2.1618837367038;
+ Mon, 19 Apr 2021 06:02:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210419132204.1e07d5b9@carbon>
+References: <26db9291095c1dfd81c73b0f5f1434f9b399b1f5.1618316565.git.geert+renesas@glider.be>
+ <bd8db435-24e1-5ab3-6b35-1d4d8a292a7e@hisilicon.com> <CAMuHMdVouD+e4GpN_Dur8HSop4B8HVosGSYw7vfTpBEi_inMbw@mail.gmail.com>
+ <YHcx+QPbkTA0bv9V@smile.fi.intel.com> <CAMuHMdUkDcdZk5YYnkMH+VD4JXFq4khR2dn8wBdSXs1GCT9UMQ@mail.gmail.com>
+ <YHc+/MOWA6rO+1Wy@smile.fi.intel.com> <CAMuHMdWZz6QNQbN53Whjfi122PWesM4_+K0_m=np8L=E+=io6g@mail.gmail.com>
+ <CAHp75VcFjRBO+0578jWam3+sc24KvKArTtQV+nRCCbV1E++Nsg@mail.gmail.com>
+In-Reply-To: <CAHp75VcFjRBO+0578jWam3+sc24KvKArTtQV+nRCCbV1E++Nsg@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 19 Apr 2021 15:02:35 +0200
+Message-ID: <CAMuHMdVu4VRgJzfM=P8OBi55rsCMFB1vmSepTvSyv1DLjw9Vcw@mail.gmail.com>
+Subject: Re: [PATCH] i2c: I2C_HISI should depend on ARCH_HISI && ACPI
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 01:22:04PM +0200, Jesper Dangaard Brouer wrote:
-> On Wed, 14 Apr 2021 13:09:47 -0700
-> Shakeel Butt <shakeelb@google.com> wrote:
-> 
-> > On Wed, Apr 14, 2021 at 12:42 PM Jesper Dangaard Brouer
-> > <brouer@redhat.com> wrote:
-> > >  
-> > [...]
+Hi Andy,
+
+On Thu, Apr 15, 2021 at 10:50 AM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Thu, Apr 15, 2021 at 3:43 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Wed, Apr 14, 2021 at 9:14 PM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > > On Wed, Apr 14, 2021 at 08:55:21PM +0200, Geert Uytterhoeven wrote:
+> > > > On Wed, Apr 14, 2021 at 8:18 PM Andy Shevchenko
+> > > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > > On Wed, Apr 14, 2021 at 08:06:18PM +0200, Geert Uytterhoeven wrote:
+> > > > > > On Wed, Apr 14, 2021 at 11:24 AM Yicong Yang <yangyicong@hisilicon.com> wrote:
+>
+> ...
+>
+> > > > > > I guess it's still fine to add a dependency on ACPI?
 > > > > >
-> > > > > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
-> > > > > can not be used.  
+> > > > > But why?
 > > > >
-> > > > Yes it can, since it's going to be used as your default allocator for
-> > > > payloads, which might end up on an SKB.  
+> > > > Please tell me how/when the driver is used when CONFIG_ACPI=n.
 > > >
-> > > I'm not sure we want or should "allow" page_pool be used for TCP RX
-> > > zerocopy.
-> > > For several reasons.
+> > > I'm not using it at all. Ask the author :-)
 > > >
-> > > (1) This implies mapping these pages page to userspace, which AFAIK
-> > > means using page->mapping and page->index members (right?).
-> > >  
-> > 
-> > No, only page->_mapcount is used.
-> 
-> Good to know.
-> I will admit that I don't fully understand the usage of page->mapping
-> and page->index members.
+> > > But if we follow your logic, then we need to mark all the _platform_ drivers
+> > > for x86 world as ACPI dependent? This sounds ugly.
+> >
+> > Do all other x86 platform drivers have (1) an .acpi_match_table[] and
+> > (2) no other way of instantiating their devices?
+> > The first driver from the top of my memory I looked at is rtc-cmos:
+> > it has no .acpi_match_table[], and the rtc-cmos device is instantiated
+> > from arch/x86/kernel/rtc.c.
+> >
+> > For drivers with only an .of_match_table(), and no legacy users
+> > instantiating platform devices, we do have dependencies on OF.
+>
+> This is not true. Entire IIO subsystem is an example.
 
-That's fair.  It's not well-documented, and it's complicated.
+Do you care to elaborate?
+Three quarters of the IIO drivers are I2C and SPI drivers, and thus not
+subject to the above.
 
-For a page mapped into userspace, page->mapping is one of:
- - NULL
- - A pointer to a file's address_space
- - A pointer to an anonymous page's anon_vma
-If a page isn't mapped into userspace, you can use the space in page->mapping
-for anything you like (eg slab uses it)
+Gr{oetje,eeting}s,
 
-page->index is only used for indicating pfmemalloc today (and I want to
-move that indicator).  I think it can also be used to merge VMAs (if
-some other conditions are also true), but failing to merge VMAs isn't
-a big deal for this kind of situation.
+                        Geert
 
-> > > (2) It feels wrong (security wise) to keep the DMA-mapping (for the
-> > > device) and also map this page into userspace.
-> > 
-> > I think this is already the case i.e pages still DMA-mapped and also
-> > mapped into userspace.
-> 
-> True, other drivers are doing the same.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-And the contents of this page already came from that device ... if it
-wanted to write bad data, it could already have done so.
-
-> > > (3) The page_pool is optimized for refcnt==1 case, and AFAIK TCP-RX
-> > > zerocopy will bump the refcnt, which means the page_pool will not
-> > > recycle the page when it see the elevated refcnt (it will instead
-> > > release its DMA-mapping).  
-> > 
-> > Yes this is right but the userspace might have already consumed and
-> > unmapped the page before the driver considers to recycle the page.
-> 
-> That is a good point.  So, there is a race window where it is possible
-> to gain recycling.
-> 
-> It seems my page_pool co-maintainer Ilias is interested in taking up the
-> challenge to get this working with TCP RX zerocopy.  So, lets see how
-> this is doable.
-
-You could also check page_ref_count() - page_mapcount() instead of
-just checking page_ref_count().  Assuming mapping/unmapping can't
-race with recycling?
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
