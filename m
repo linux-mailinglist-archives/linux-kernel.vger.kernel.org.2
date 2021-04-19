@@ -2,128 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1662B3649ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 20:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1E43649F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 20:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241056AbhDSSjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 14:39:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36180 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233942AbhDSSjL (ORCPT
+        id S241152AbhDSSkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 14:40:02 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:27302 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238267AbhDSSkB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 14:39:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618857520;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PmMpoqajN3kYFits3mKGuMX/Gpaj/8aNNG+P1JlM6wc=;
-        b=eyCBe+4OeOGBIAbrcA34EBvprX+XnJgQ2E909+gcehr/XoLoji2gT4iPQg/hW2rBRXAS1a
-        Vv9mZgeqMRNhMe5avczMMsQrPz7pRyQOr53BNOKhvP8swLl7oeo2+BRHYUJ6Zf7PLmPsb6
-        DMIZ421/zb+zkm7dQp9/XNKLBKEzQ0g=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-97-4sS_jVRnPXqj5M4aufbMsQ-1; Mon, 19 Apr 2021 14:38:39 -0400
-X-MC-Unique: 4sS_jVRnPXqj5M4aufbMsQ-1
-Received: by mail-ej1-f70.google.com with SMTP id z6-20020a17090665c6b02903700252d1ccso3964745ejn.10
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 11:38:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PmMpoqajN3kYFits3mKGuMX/Gpaj/8aNNG+P1JlM6wc=;
-        b=e1ia8ThyZld+qSDW9eGnBQAfZio/3StgrTR0jx6y4gf8IL++DFWmvxjcBrxT/Pma40
-         KjkWZpYzbeFytNRjTRR42wxlI82o+4XFEjfWuDWV3ZXNv1vSVUnZlaptjjo8BjHB/Qc4
-         xC7xeg9oqCZx56YvEJMD1OEVrCEWv4A2ie11gqf53a6PMPHStDF/LVu9Y8A2IUQ//ifx
-         vAPwiy1q/a2//k2mJ5cjQP4tJVrW9PKhVC+StwxEpA4DjbuRm+DzXze1g/a568rftZOP
-         4Y4TEVC8s7NiJEyIVau0sBRIoD8RwzPmglI6ao0NGs7hFWIF8fX+wsrRpeQAx13+vQ3x
-         u3nQ==
-X-Gm-Message-State: AOAM532OElkkwsY+9a2t1ITe+9S/x0daCuYI4zgX4SjvuSLP2khekCXN
-        h4YqdMNKnoFfvR4hgkF0SRjbAnk1Qd5lrgIlYOrRcE2iFePjlbjzuDj10GdAnY4jg7eBueSsdbD
-        Lr/J8POY1jnKQE2YuS3zsI7vh
-X-Received: by 2002:aa7:db87:: with SMTP id u7mr26555993edt.16.1618857517782;
-        Mon, 19 Apr 2021 11:38:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzSoLXrPSs39zJEB+7+9uQJX6oXOARN/G69LiGquMuawAqQDZEfWVnHA83Lq8KX68XzCPInWg==
-X-Received: by 2002:aa7:db87:: with SMTP id u7mr26555985edt.16.1618857517581;
-        Mon, 19 Apr 2021 11:38:37 -0700 (PDT)
-Received: from [192.168.10.118] ([93.56.169.140])
-        by smtp.gmail.com with ESMTPSA id kx3sm10981044ejc.44.2021.04.19.11.38.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Apr 2021 11:38:36 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Wedson Almeida Filho <wedsonaf@google.com>, ojeda@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>
-References: <20210414184604.23473-1-ojeda@kernel.org>
- <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
- <YHj02M3jMSweoP4l@google.com>
- <YHk4DZE1ZWTiBB1f@hirez.programming.kicks-ass.net>
- <aa6e44ab-e223-73aa-279e-8103732460ac@redhat.com>
- <YH0yCTgL0raKrmYg@hirez.programming.kicks-ass.net>
- <7287eac3-f492-bab1-9ea8-b89ceceed560@redhat.com>
- <YH0+0VQ1XC8+rv20@hirez.programming.kicks-ass.net>
- <3a874b15-5c21-9ed9-e5c3-995f915cba79@redhat.com>
- <YH1PGfC1qSjKB6Ho@hirez.programming.kicks-ass.net>
- <CAHk-=wjSrOcA0567rpn1PbYkGEgnw_sOmZ13JX87isrMq1dL-Q@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-Message-ID: <ae079b78-1c26-ddb9-fb8f-83d27ba0c5a9@redhat.com>
-Date:   Mon, 19 Apr 2021 20:38:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 19 Apr 2021 14:40:01 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618857571; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=U8pdmgPGHa+iJKzFbNlIcK8n7KR3QFfb/tZEk5F61lw=; b=YGlGITV/tp8hmuFUPsKcSfkGZDBq1bmKbgdAHQIE+NL9KJOM/kN/kKb8FJw2SkMzE/oKl9H+
+ NLR33M0MsyEhldr8c6MtGvif8EpSO5axweV7uK0seiDiOQBPLxPMo+NFnmglNzt4iyEJHSRi
+ y4/ynG5eShs1V+HldZuOE9nBYVU=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 607dce61febcffa80f705bf5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 19 Apr 2021 18:39:29
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9E6D2C433D3; Mon, 19 Apr 2021 18:39:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.110.119.120] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 34A28C433F1;
+        Mon, 19 Apr 2021 18:39:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 34A28C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH] usb: dwc3: gadget: Avoid canceling current request for
+ queuing error
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jackp@codeaurora.org" <jackp@codeaurora.org>
+References: <1618439388-20427-1-git-send-email-wcheng@codeaurora.org>
+ <87mtu0njvj.fsf@kernel.org>
+ <677afbd3-6c72-29c0-ca25-88dd1bff335a@codeaurora.org>
+ <2e956314-b3e1-5c0e-104a-7416cf81f3ba@synopsys.com>
+ <4c2c6d76-e4d5-67f5-d91c-7e402b0828f7@synopsys.com>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <ab660f3f-9275-8f82-7c37-cb2a41eb7c3f@codeaurora.org>
+Date:   Mon, 19 Apr 2021 11:39:26 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wjSrOcA0567rpn1PbYkGEgnw_sOmZ13JX87isrMq1dL-Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <4c2c6d76-e4d5-67f5-d91c-7e402b0828f7@synopsys.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/04/21 19:14, Linus Torvalds wrote:
-> On Mon, Apr 19, 2021 at 2:36 AM Peter Zijlstra <peterz@infradead.org> wrote:
+
+
+On 4/15/2021 12:28 PM, Thinh Nguyen wrote:
+> Thinh Nguyen wrote:
+>> Wesley Cheng wrote:
+>>>
+>>>
+>>> On 4/14/2021 11:26 PM, Felipe Balbi wrote:
+>>>> Wesley Cheng <wcheng@codeaurora.org> writes:
+>>>>
+>>>>> If an error is received when issuing a start or update transfer
+>>>>> command, the error handler will stop all active requests (including
+>>>>> the current USB request), and call dwc3_gadget_giveback() to notify
+>>>>> function drivers of the requests which have been stopped.  Avoid
+>>>>> having to cancel the current request which is trying to be queued, as
+>>>>> the function driver will handle the EP queue error accordingly.
+>>>>> Simply unmap the request as it was done before, and allow previously
+>>>>> started transfers to be cleaned up.
+>>>>>
+>>>>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+>>>>> ---
+>>>>>  drivers/usb/dwc3/gadget.c | 5 +++++
+>>>>>  1 file changed, 5 insertions(+)
+>>>>>
+>>>>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+>>>>> index e1b04c97..4200775 100644
+>>>>> --- a/drivers/usb/dwc3/gadget.c
+>>>>> +++ b/drivers/usb/dwc3/gadget.c
+>>>>> @@ -1399,6 +1399,11 @@ static int __dwc3_gadget_kick_transfer(struct dwc3_ep *dep)
+>>>>>  		if (ret == -EAGAIN)
+>>>>>  			return ret;
+>>>>>  
+>>>>> +		/* Avoid canceling current request, as it has not been started */
+>>>>> +		if (req->trb)
+>>>>> +			memset(req->trb, 0, sizeof(struct dwc3_trb));
+>>>>
+>>>> we don't need a full memset. I think ensuring HWO bit is zero is enough.
+>>>>
+>>> Hi Felipe,
+>>>
+>>> Thanks for the input/review, will make this change to just clear the HWO.
+>>>
 >>
->> I also don't see how this is better than seq_cst.
+>> Make sure to increment the dequeue pointer also. I think you can use
+>> dwc3_gadget_ep_skip_trbs().
 >>
->> But yes, not broken, but also very much not optimal.
 > 
-> I continue to feel like kernel people should just entirely ignore the
-> C++ memory ordering standard.
+> Nevermind. There maybe a problem with using dwc3_gadget_ep_skip_trbs().
 > 
-> It's inferior to what we already have, and simply not helpful. It
-> doesn't actually solve any problems as far as the kernel is concerned,
-> and it generates its own set of issues (ie assuming that the compiler
-> supports it, and assuming the compiler gets it right).
+> Thinh
 > 
-> The really subtle cases that it could have been helpful for (eg RCU,
-> or the load-store control dependencies) were _too_ subtle for the
-> standard.
-> 
-> And I do not believe Rust changes _any_ of that.
+Hi Thinh,
 
-It changes it for the worse, in that access to fields that are shared 
-across threads *must* either use atomic types (which boil down to the 
-same compiler intrinsics as the C/C++ memory model) or synchronization 
-primitives.  LKMM operates in the grey area between the C standard and 
-what gcc/clang actually implement, but there's no such grey area in Rust 
-unless somebody wants to rewrite arch/*/asm atomic access primitives and 
-memory barriers in Rust.
+Thank you for your input.  In this case (if kick transfer fails w/ an
+error), would we still need to mess with the enqueue/dequeue pointers?
+Not sure if my assumption is correct, but the TRB wouldn't have been
+started, so we can use the same (failed) TRB for future requests, right?
 
-Of course it's possible to say Rust code just uses the C/C++/Rust model 
-and C code follows the LKMM, but that really only delays the inevitable 
-until a driver is written part in C part in Rust, and needs to perform 
-accesses outside synchronization primitives.
+I think one thing I will need to update is to loop through num_trbs and
+clear all HWO bits if the above is not needed.
 
-Paolo
+Thanks
+Wesley Cheng
 
-> Any kernel Rust code will simply have to follow the LKMM rules, and
-> use the kernel model for the interfaces. Things like the C++ memory
-> model is simply not _relevant_ to the kernel.
-
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
