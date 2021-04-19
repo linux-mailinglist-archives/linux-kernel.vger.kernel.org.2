@@ -2,177 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9EFC364132
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 14:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21FA5364139
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 14:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238990AbhDSMDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 08:03:03 -0400
-Received: from mx20.baidu.com ([111.202.115.85]:43962 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232272AbhDSMC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 08:02:58 -0400
-Received: from BC-Mail-Ex18.internal.baidu.com (unknown [172.31.51.12])
-        by Forcepoint Email with ESMTPS id EBB28B0E1770E200875E;
-        Mon, 19 Apr 2021 20:02:14 +0800 (CST)
-Received: from BC-Mail-Ex20.internal.baidu.com (172.31.51.14) by
- BC-Mail-Ex18.internal.baidu.com (172.31.51.12) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.4; Mon, 19 Apr 2021 20:02:14 +0800
-Received: from BC-Mail-Ex20.internal.baidu.com ([172.31.51.14]) by
- BC-Mail-Ex20.internal.baidu.com ([172.31.51.14]) with mapi id 15.01.2242.008;
- Mon, 19 Apr 2021 20:02:14 +0800
-From:   "Chu,Kaiping" <chukaiping@baidu.com>
-To:     David Rientjes <rientjes@google.com>
-CC:     "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "yzaikin@google.com" <yzaikin@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIIHYyXSBtbS9jb21wYWN0aW9uOmxldCBwcm9hY3RpdmUg?=
- =?gb2312?Q?compaction_order_configurable?=
-Thread-Topic: [PATCH v2] mm/compaction:let proactive compaction order
- configurable
-Thread-Index: AQHXMwffk00b/qiy7kmhddGH667K8aq7uEqQ
-Date:   Mon, 19 Apr 2021 12:02:14 +0000
-Message-ID: <1e686e75fe71471aa94705e76bec76a5@baidu.com>
-References: <1618593751-32148-1-git-send-email-chukaiping@baidu.com>
- <7efa316c-d39b-59a5-bc52-62325127a917@google.com>
-In-Reply-To: <7efa316c-d39b-59a5-bc52-62325127a917@google.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.194.26]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S239030AbhDSMFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 08:05:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238882AbhDSMFN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 08:05:13 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A752C06174A;
+        Mon, 19 Apr 2021 05:04:42 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 12:04:39 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618833881;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vAsHv+kFEP05Q70rujNWIfj6DnEc9X02Qcf8rAYrwO0=;
+        b=cDSr59HazjEWaSHoo/U+mXI/VO8ErhBQrTRSyYPTYwrQOmKc2RbQGdB8wvtbUZQBFYBI7u
+        e/tQhAuBeio0VmAAmbDk0zJM52yB5TvqeWZyvslhwKquZ6D3ff4/cye2tMZDVACnxa6Ama
+        o13LQq3R6lP+E0R/KrDoQ83aR7tbt2LLVed96EzTr+WmP40Qo+VA1M7oPJhzKMwZ8HokDi
+        pQpwzaQGBcEcCLz2KqwjMzHZDgLrTz0X5amePQ7VQIiZ2r2NlCgXUXvmRXGSZQN4KEZ5Oy
+        LA8cc/hU0Pd5EHnjnbbYJnTbXRyddtq3P41SSa/odOqiaLS+tTiqwlUZPDgGrg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618833881;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vAsHv+kFEP05Q70rujNWIfj6DnEc9X02Qcf8rAYrwO0=;
+        b=x+fOTpDEowqUkEkn7XHutr7ZRIRF7gJdzSFh+HPRvK2d8hXuaLPi+Lw50Uf6Rj7PobnPC2
+        NCLjciqfv0FtACBg==
+From:   "tip-bot2 for Maciej W. Rozycki" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/build] x86/build: Disable HIGHMEM64G selection for M486SX
+Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Borislav Petkov <bp@suse.de>, stable@vger.kernel.org,
+        #@tip-bot2.tec.linutronix.de, v5.5+@tip-bot2.tec.linutronix.de,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <alpine.DEB.2.21.2104141221340.44318@angie.orcam.me.uk>
+References: <alpine.DEB.2.21.2104141221340.44318@angie.orcam.me.uk>
 MIME-Version: 1.0
+Message-ID: <161883388012.29796.15651608262748993332.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgUmllbnRqZXOjrA0KV2UgdHVybiBvZmYgdGhlIHRyYW5zcGFyZW50IGh1Z2UgcGFnZSBpbiBv
-dXIgbWFjaGluZXMsIHNvIHdlIGRvbid0IGNhcmUgYWJvdXQgdGhlIG9yZGVyIDkuDQpUaGVyZSBh
-cmUgbWFueSB1c2VyIHNwYWNlIGFwcGxpY2F0aW9ucywgZGlmZmVyZW50IGFwcGxpY2F0aW9uIG1h
-eWJlIGFsbG9jYXRlIGRpZmZlcmVudCBvcmRlciBvZiBtZW1vcnksIHdlIGNhbid0IGtub3cgdGhl
-ICJrbm93biBvcmRlciBvZiBpbnRlcmVzdCIgaW4gYWR2YW5jZS4gT3VyIHB1cnBvc2UgaXMgdG8g
-a2VlcCB0aGUgb3ZlcmFsbCBmcmFnbWVudCBpbmRleCBhcyBsb3cgYXMgcG9zc2libGUsIG5vdCBj
-YXJlIGFib3V0IHRoZSBzcGVjaWZpYyBvcmRlci4gDQpBbHRob3VnaCBjdXJyZW50IHByb2FjdGl2
-ZSBjb21wYWN0aW9uIG1lY2hhbmlzbSBvbmx5IGNoZWNrIHRoZSBmcmFnbWVudCBpbmRleCBvZiBz
-cGVjaWZpYyBvcmRlciwgYnV0IGl0IGNhbiBkbyBtZW1vcnkgY29tcGFjdGlvbiBmb3IgYWxsIG9y
-ZGVyKC5vcmRlciA9IC0xIGluIHByb2FjdGl2ZV9jb21wYWN0X25vZGUpLCBzbyBpdCdzIHN0aWxs
-IHVzZWZ1bCBmb3IgdXMuIA0KV2Ugc2V0IHRoZSBjb21wYWN0aW9uX29yZGVyIGFjY29yZGluZyB0
-byB0aGUgYXZlcmFnZSBmcmFnbWVudCBpbmRleCBvZiBhbGwgb3VyIG1hY2hpbmVzLCBpdCdzIGFu
-IGV4cGVyaWVuY2UgdmFsdWUsIGl0J3MgYSBjb21wcm9taXNlIG9mIGtlZXAgbWVtb3J5IGZyYWdt
-ZW50IGluZGV4IGxvdyBhbmQgbm90IHRyaWdnZXIgYmFja2dyb3VuZCBjb21wYWN0aW9uIHRvbyBt
-dWNoLCB0aGlzIHZhbHVlIGNhbiBiZSBjaGFuZ2VkIGluIGZ1dHVyZS4NCldlIGRpZCBwZXJpb2Rp
-Y2FsbHkgbWVtb3J5IGNvbXBhY3Rpb24gYnkgY29tbWFuZCAiZWNobyAxID4gL3Byb2Mvc3lzL3Zt
-L2NvbXBhY3RfbWVtb3J5ICIgcHJldmlvdXNseSwgYnV0IGl0J3Mgbm90IGdvb2QgZW5vdWdoLCBp
-dCdzIHdpbGwgY29tcGFjdCBhbGwgbWVtb3J5IGZvcmNpYmx5LCBpdCBtYXkgbGVhZCB0byBsb3Rz
-IG9mIG1lbW9yeSBtb3ZlIGluIHNob3J0IHRpbWUsIGFuZCBhZmZlY3QgdGhlIHBlcmZvcm1hbmNl
-IG9mIGFwcGxpY2F0aW9uLg0KDQpCUiwNCkNodSBLYWlwaW5nDQoNCi0tLS0t08q8/tStvP4tLS0t
-LQ0Kt6K8/sjLOiBEYXZpZCBSaWVudGplcyA8cmllbnRqZXNAZ29vZ2xlLmNvbT4gDQq3osvNyrG8
-5DogMjAyMcTqNNTCMTfI1SA1OjMxDQrK1bz+yMs6IENodSxLYWlwaW5nIDxjaHVrYWlwaW5nQGJh
-aWR1LmNvbT4NCrOty806IG1jZ3JvZkBrZXJuZWwub3JnOyBrZWVzY29va0BjaHJvbWl1bS5vcmc7
-IHl6YWlraW5AZ29vZ2xlLmNvbTsgYWtwbUBsaW51eC1mb3VuZGF0aW9uLm9yZzsgbGludXgta2Vy
-bmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgtZnNkZXZlbEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4
-LW1tQGt2YWNrLm9yZw0K1vfM4jogUmU6IFtQQVRDSCB2Ml0gbW0vY29tcGFjdGlvbjpsZXQgcHJv
-YWN0aXZlIGNvbXBhY3Rpb24gb3JkZXIgY29uZmlndXJhYmxlDQoNCk9uIFNhdCwgMTcgQXByIDIw
-MjEsIGNodWthaXBpbmcgd3JvdGU6DQoNCj4gQ3VycmVudGx5IHRoZSBwcm9hY3RpdmUgY29tcGFj
-dGlvbiBvcmRlciBpcyBmaXhlZCB0byANCj4gQ09NUEFDVElPTl9IUEFHRV9PUkRFUig5KSwgaXQn
-cyBPSyBpbiBtb3N0IG1hY2hpbmVzIHdpdGggbG90cyBvZiANCj4gbm9ybWFsIDRLQiBtZW1vcnks
-IGJ1dCBpdCdzIHRvbyBoaWdoIGZvciB0aGUgbWFjaGluZXMgd2l0aCBzbWFsbCANCj4gbm9ybWFs
-IG1lbW9yeSwgZm9yIGV4YW1wbGUgdGhlIG1hY2hpbmVzIHdpdGggbW9zdCBtZW1vcnkgY29uZmln
-dXJlZCBhcyANCj4gMUdCIGh1Z2V0bGJmcyBodWdlIHBhZ2VzLiBJbiB0aGVzZSBtYWNoaW5lcyB0
-aGUgbWF4IG9yZGVyIG9mIGZyZWUgDQo+IHBhZ2VzIGlzIG9mdGVuIGJlbG93IDksIGFuZCBpdCdz
-IGFsd2F5cyBiZWxvdyA5IGV2ZW4gd2l0aCBoYXJkIA0KPiBjb21wYWN0aW9uLiBUaGlzIHdpbGwg
-bGVhZCB0byBwcm9hY3RpdmUgY29tcGFjdGlvbiBiZSB0cmlnZ2VyZWQgdmVyeSANCj4gZnJlcXVl
-bnRseS4gSW4gdGhlc2UgbWFjaGluZXMgd2Ugb25seSBjYXJlIGFib3V0IG9yZGVyIG9mIDMgb3Ig
-NC4NCj4gVGhpcyBwYXRjaCBleHBvcnQgdGhlIG9kZXIgdG8gcHJvYyBhbmQgbGV0IGl0IGNvbmZp
-Z3VyYWJsZSBieSB1c2VyLCANCj4gYW5kIHRoZSBkZWZhdWx0IHZhbHVlIGlzIHN0aWxsIENPTVBB
-Q1RJT05fSFBBR0VfT1JERVIuDQo+IA0KDQpTdGlsbCBub3QgZW50aXJlbHkgY2xlYXIgb24gdGhl
-IHVzZSBjYXNlIGJleW9uZCBodWdlcGFnZXMuICBJbiB5b3VyIHJlc3BvbnNlIGZyb20gdjEsIHlv
-dSBpbmRpY2F0ZWQgeW91IHdlcmUgbm90IGNvbmNlcm5lZCB3aXRoIGFsbG9jYXRpb24gbGF0ZW5j
-eSBvZiBodWdlcGFnZXMgYnV0IHJhdGhlciBoYWQgYSB0aHVuZGVyaW5nIGhlcmQgcHJvYmxlbSB3
-aGVyZSBvbmNlIGZyYWdtZW50YXRpb24gZ290IGJhZCwgbWFueSB0aHJlYWRzIHN0YXJ0ZWQgY29t
-cGFjdGluZyBhbGwgYXQgb25jZS4NCg0KSSdtIG5vdCBzdXJlIHRoYXQgdHVuaW5nIHRoZSBwcm9h
-Y3RpdmUgY29tcGFjdGlvbiBvcmRlciBpcyB0aGUgcmlnaHQgc29sdXRpb24uICBJIHRoaW5rIHRo
-ZSBwcm9hY3RpdmUgY29tcGFjdGlvbiBvcmRlciBpcyBtb3JlIGFib3V0IHN0YXJ0aW5nIGNvbXBh
-Y3Rpb24gd2hlbiBhIGtub3duIG9yZGVyIG9mIGludGVyZXN0IChsaWtlIGEgaHVnZXBhZ2UpIGlz
-IGZ1bGx5IGRlcGxldGVkIGFuZCB3ZSB3YW50IGEgcGFnZSBvZiB0aGF0IG9yZGVyIHNvIHRoZSBp
-ZGVhIGlzIHRvIHN0YXJ0IHJlY292ZXJpbmcgZnJvbSB0aGF0IHNpdHVhdGlvbi4NCg0KSXMgdGhp
-cyBub3QgYSB1c2Vyc3BhY2UgcG9saWN5IGRlY2lzaW9uPyAgSSdtIHdvbmRlcmluZyBpZiBpdCB3
-b3VsZCBzaW1wbHkgYmUgYmV0dGVyIHRvIG1hbnVhbGx5IGludm9rZSBjb21wYWN0aW9uIHBlcmlv
-ZGljYWxseSBvciB3aGVuIHRoZSBmcmFnbWVudGF0aW9uIHJhdGlvIGhhcyByZWFjaGVkIGEgY2Vy
-dGFpbiBsZXZlbC4gIFlvdSBjYW4gbWFudWFsbHkgaW52b2tlIGNvbXBhY3Rpb24geW91cnNlbGYg
-dGhyb3VnaCBzeXNmcyBmb3IgZWFjaCBub2RlIG9uIHRoZSBzeXN0ZW0uDQoNCj4gU2lnbmVkLW9m
-Zi1ieTogY2h1a2FpcGluZyA8Y2h1a2FpcGluZ0BiYWlkdS5jb20+DQo+IFJlcG9ydGVkLWJ5OiBr
-ZXJuZWwgdGVzdCByb2JvdCA8bGtwQGludGVsLmNvbT4NCj4gLS0tDQo+IA0KPiBDaGFuZ2VzIGlu
-IHYyOg0KPiAgICAgLSBmaXggdGhlIGNvbXBpbGUgZXJyb3IgaW4gaWE2NCBhbmQgcG93ZXJwYw0K
-PiAgICAgLSBjaGFuZ2UgdGhlIGhhcmQgY29kZWQgbWF4IG9yZGVyIG51bWJlciBmcm9tIDEwIHRv
-IE1BWF9PUkRFUiAtIDENCj4gDQo+ICBpbmNsdWRlL2xpbnV4L2NvbXBhY3Rpb24uaCB8ICAgIDEg
-Kw0KPiAga2VybmVsL3N5c2N0bC5jICAgICAgICAgICAgfCAgIDExICsrKysrKysrKysrDQo+ICBt
-bS9jb21wYWN0aW9uLmMgICAgICAgICAgICB8ICAgMTQgKysrKysrKysrKystLS0NCj4gIDMgZmls
-ZXMgY2hhbmdlZCwgMjMgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYg
-LS1naXQgYS9pbmNsdWRlL2xpbnV4L2NvbXBhY3Rpb24uaCBiL2luY2x1ZGUvbGludXgvY29tcGFj
-dGlvbi5oIA0KPiBpbmRleCBlZDQwNzBlLi4xNTFjY2QxIDEwMDY0NA0KPiAtLS0gYS9pbmNsdWRl
-L2xpbnV4L2NvbXBhY3Rpb24uaA0KPiArKysgYi9pbmNsdWRlL2xpbnV4L2NvbXBhY3Rpb24uaA0K
-PiBAQCAtODMsNiArODMsNyBAQCBzdGF0aWMgaW5saW5lIHVuc2lnbmVkIGxvbmcgY29tcGFjdF9n
-YXAodW5zaWduZWQgaW50IA0KPiBvcmRlcikgICNpZmRlZiBDT05GSUdfQ09NUEFDVElPTiAgZXh0
-ZXJuIGludCBzeXNjdGxfY29tcGFjdF9tZW1vcnk7ICANCj4gZXh0ZXJuIHVuc2lnbmVkIGludCBz
-eXNjdGxfY29tcGFjdGlvbl9wcm9hY3RpdmVuZXNzOw0KPiArZXh0ZXJuIHVuc2lnbmVkIGludCBz
-eXNjdGxfY29tcGFjdGlvbl9vcmRlcjsNCj4gIGV4dGVybiBpbnQgc3lzY3RsX2NvbXBhY3Rpb25f
-aGFuZGxlcihzdHJ1Y3QgY3RsX3RhYmxlICp0YWJsZSwgaW50IHdyaXRlLA0KPiAgCQkJdm9pZCAq
-YnVmZmVyLCBzaXplX3QgKmxlbmd0aCwgbG9mZl90ICpwcG9zKTsgIGV4dGVybiBpbnQgDQo+IHN5
-c2N0bF9leHRmcmFnX3RocmVzaG9sZDsgZGlmZiAtLWdpdCBhL2tlcm5lbC9zeXNjdGwuYyANCj4g
-Yi9rZXJuZWwvc3lzY3RsLmMgaW5kZXggNjJmYmQwOS4uYTYwN2Q0ZCAxMDA2NDQNCj4gLS0tIGEv
-a2VybmVsL3N5c2N0bC5jDQo+ICsrKyBiL2tlcm5lbC9zeXNjdGwuYw0KPiBAQCAtMTk1LDYgKzE5
-NSw4IEBAIGVudW0gc3lzY3RsX3dyaXRlc19tb2RlIHsgICNlbmRpZiAvKiBDT05GSUdfU01QICov
-ICANCj4gI2VuZGlmIC8qIENPTkZJR19TQ0hFRF9ERUJVRyAqLw0KPiAgDQo+ICtzdGF0aWMgaW50
-IG1heF9idWRkeV96b25lID0gTUFYX09SREVSIC0gMTsNCj4gKw0KPiAgI2lmZGVmIENPTkZJR19D
-T01QQUNUSU9ODQo+ICBzdGF0aWMgaW50IG1pbl9leHRmcmFnX3RocmVzaG9sZDsNCj4gIHN0YXRp
-YyBpbnQgbWF4X2V4dGZyYWdfdGhyZXNob2xkID0gMTAwMDsgQEAgLTI4NzEsNiArMjg3MywxNSBA
-QCBpbnQgDQo+IHByb2NfZG9fc3RhdGljX2tleShzdHJ1Y3QgY3RsX3RhYmxlICp0YWJsZSwgaW50
-IHdyaXRlLA0KPiAgCQkuZXh0cmEyCQk9ICZvbmVfaHVuZHJlZCwNCj4gIAl9LA0KPiAgCXsNCj4g
-KwkJLnByb2NuYW1lICAgICAgID0gImNvbXBhY3Rpb25fb3JkZXIiLA0KPiArCQkuZGF0YSAgICAg
-ICAgICAgPSAmc3lzY3RsX2NvbXBhY3Rpb25fb3JkZXIsDQo+ICsJCS5tYXhsZW4gICAgICAgICA9
-IHNpemVvZihzeXNjdGxfY29tcGFjdGlvbl9vcmRlciksDQo+ICsJCS5tb2RlICAgICAgICAgICA9
-IDA2NDQsDQo+ICsJCS5wcm9jX2hhbmRsZXIgICA9IHByb2NfZG9pbnR2ZWNfbWlubWF4LA0KPiAr
-CQkuZXh0cmExICAgICAgICAgPSBTWVNDVExfWkVSTywNCj4gKwkJLmV4dHJhMiAgICAgICAgID0g
-Jm1heF9idWRkeV96b25lLA0KPiArCX0sDQo+ICsJew0KPiAgCQkucHJvY25hbWUJPSAiZXh0ZnJh
-Z190aHJlc2hvbGQiLA0KPiAgCQkuZGF0YQkJPSAmc3lzY3RsX2V4dGZyYWdfdGhyZXNob2xkLA0K
-PiAgCQkubWF4bGVuCQk9IHNpemVvZihpbnQpLA0KPiBkaWZmIC0tZ2l0IGEvbW0vY29tcGFjdGlv
-bi5jIGIvbW0vY29tcGFjdGlvbi5jIGluZGV4IGUwNGY0NDcuLmJmZDFkNWUgDQo+IDEwMDY0NA0K
-PiAtLS0gYS9tbS9jb21wYWN0aW9uLmMNCj4gKysrIGIvbW0vY29tcGFjdGlvbi5jDQo+IEBAIC0x
-OTI1LDE2ICsxOTI1LDE2IEBAIHN0YXRpYyBib29sIGtzd2FwZF9pc19ydW5uaW5nKHBnX2RhdGFf
-dCANCj4gKnBnZGF0KQ0KPiAgDQo+ICAvKg0KPiAgICogQSB6b25lJ3MgZnJhZ21lbnRhdGlvbiBz
-Y29yZSBpcyB0aGUgZXh0ZXJuYWwgZnJhZ21lbnRhdGlvbiB3cnQgdG8gDQo+IHRoZQ0KPiAtICog
-Q09NUEFDVElPTl9IUEFHRV9PUkRFUi4gSXQgcmV0dXJucyBhIHZhbHVlIGluIHRoZSByYW5nZSBb
-MCwgMTAwXS4NCj4gKyAqIHN5c2N0bF9jb21wYWN0aW9uX29yZGVyLiBJdCByZXR1cm5zIGEgdmFs
-dWUgaW4gdGhlIHJhbmdlIFswLCAxMDBdLg0KPiAgICovDQo+ICBzdGF0aWMgdW5zaWduZWQgaW50
-IGZyYWdtZW50YXRpb25fc2NvcmVfem9uZShzdHJ1Y3Qgem9uZSAqem9uZSkgIHsNCj4gLQlyZXR1
-cm4gZXh0ZnJhZ19mb3Jfb3JkZXIoem9uZSwgQ09NUEFDVElPTl9IUEFHRV9PUkRFUik7DQo+ICsJ
-cmV0dXJuIGV4dGZyYWdfZm9yX29yZGVyKHpvbmUsIHN5c2N0bF9jb21wYWN0aW9uX29yZGVyKTsN
-Cj4gIH0NCj4gIA0KPiAgLyoNCj4gICAqIEEgd2VpZ2h0ZWQgem9uZSdzIGZyYWdtZW50YXRpb24g
-c2NvcmUgaXMgdGhlIGV4dGVybmFsIA0KPiBmcmFnbWVudGF0aW9uDQo+IC0gKiB3cnQgdG8gdGhl
-IENPTVBBQ1RJT05fSFBBR0VfT1JERVIgc2NhbGVkIGJ5IHRoZSB6b25lJ3Mgc2l6ZS4gSXQNCj4g
-KyAqIHdydCB0byB0aGUgc3lzY3RsX2NvbXBhY3Rpb25fb3JkZXIgc2NhbGVkIGJ5IHRoZSB6b25l
-J3Mgc2l6ZS4gSXQNCj4gICAqIHJldHVybnMgYSB2YWx1ZSBpbiB0aGUgcmFuZ2UgWzAsIDEwMF0u
-DQo+ICAgKg0KPiAgICogVGhlIHNjYWxpbmcgZmFjdG9yIGVuc3VyZXMgdGhhdCBwcm9hY3RpdmUg
-Y29tcGFjdGlvbiBmb2N1c2VzIG9uIA0KPiBsYXJnZXIgQEAgLTI2NjYsNiArMjY2Niw3IEBAIHN0
-YXRpYyB2b2lkIGNvbXBhY3Rfbm9kZXModm9pZCkNCj4gICAqIGJhY2tncm91bmQuIEl0IHRha2Vz
-IHZhbHVlcyBpbiB0aGUgcmFuZ2UgWzAsIDEwMF0uDQo+ICAgKi8NCj4gIHVuc2lnbmVkIGludCBf
-X3JlYWRfbW9zdGx5IHN5c2N0bF9jb21wYWN0aW9uX3Byb2FjdGl2ZW5lc3MgPSAyMDsNCj4gK3Vu
-c2lnbmVkIGludCBfX3JlYWRfbW9zdGx5IHN5c2N0bF9jb21wYWN0aW9uX29yZGVyOw0KPiAgDQo+
-ICAvKg0KPiAgICogVGhpcyBpcyB0aGUgZW50cnkgcG9pbnQgZm9yIGNvbXBhY3RpbmcgYWxsIG5v
-ZGVzIHZpYSBAQCAtMjk1OCw2IA0KPiArMjk1OSwxMyBAQCBzdGF0aWMgaW50IF9faW5pdCBrY29t
-cGFjdGRfaW5pdCh2b2lkKQ0KPiAgCWludCBuaWQ7DQo+ICAJaW50IHJldDsNCj4gIA0KPiArCS8q
-DQo+ICsJICogbW92ZSB0aGUgaW5pdGlhbGl6YXRpb24gb2Ygc3lzY3RsX2NvbXBhY3Rpb25fb3Jk
-ZXIgdG8gaGVyZSB0bw0KPiArCSAqIGVsaW1pbmF0ZSBjb21waWxlIGVycm9yIGluIGlhNjQgYW5k
-IHBvd2VycGMgYXJjaGl0ZWN0dXJlIGJlY2F1c2UNCj4gKwkgKiBDT01QQUNUSU9OX0hQQUdFX09S
-REVSIGlzIGEgdmFyaWFibGUgaW4gdGhpcyBhcmNoaXRlY3R1cmUNCj4gKwkgKi8NCj4gKwlzeXNj
-dGxfY29tcGFjdGlvbl9vcmRlciA9IENPTVBBQ1RJT05fSFBBR0VfT1JERVI7DQo+ICsNCj4gIAly
-ZXQgPSBjcHVocF9zZXR1cF9zdGF0ZV9ub2NhbGxzKENQVUhQX0FQX09OTElORV9EWU4sDQo+ICAJ
-CQkJCSJtbS9jb21wYWN0aW9uOm9ubGluZSIsDQo+ICAJCQkJCWtjb21wYWN0ZF9jcHVfb25saW5l
-LCBOVUxMKTsNCj4gLS0NCj4gMS43LjENCj4gDQo+IA0KPiANCg==
+The following commit has been merged into the x86/build branch of tip:
+
+Commit-ID:     0ef3439cd80ba7770723edb0470d15815914bb62
+Gitweb:        https://git.kernel.org/tip/0ef3439cd80ba7770723edb0470d15815914bb62
+Author:        Maciej W. Rozycki <macro@orcam.me.uk>
+AuthorDate:    Wed, 14 Apr 2021 12:38:28 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 19 Apr 2021 14:02:12 +02:00
+
+x86/build: Disable HIGHMEM64G selection for M486SX
+
+Fix a regression caused by making the 486SX separately selectable in
+Kconfig, for which the HIGHMEM64G setting has not been updated and
+therefore has become exposed as a user-selectable option for the M486SX
+configuration setting unlike with original M486 and all the other
+settings that choose non-PAE-enabled processors:
+
+  High Memory Support
+  > 1. off (NOHIGHMEM)
+    2. 4GB (HIGHMEM4G)
+    3. 64GB (HIGHMEM64G)
+  choice[1-3?]:
+
+With the fix in place the setting is now correctly removed:
+
+  High Memory Support
+  > 1. off (NOHIGHMEM)
+    2. 4GB (HIGHMEM4G)
+  choice[1-2?]:
+
+ [ bp: Massage commit message. ]
+
+Fixes: 87d6021b8143 ("x86/math-emu: Limit MATH_EMULATION to 486SX compatibles")
+Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: stable@vger.kernel.org # v5.5+
+Link: https://lkml.kernel.org/r/alpine.DEB.2.21.2104141221340.44318@angie.orcam.me.uk
+---
+ arch/x86/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 2792879..268b7d5 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1406,7 +1406,7 @@ config HIGHMEM4G
+ 
+ config HIGHMEM64G
+ 	bool "64GB"
+-	depends on !M486 && !M586 && !M586TSC && !M586MMX && !MGEODE_LX && !MGEODEGX1 && !MCYRIXIII && !MELAN && !MWINCHIPC6 && !WINCHIP3D && !MK6
++	depends on !M486SX && !M486 && !M586 && !M586TSC && !M586MMX && !MGEODE_LX && !MGEODEGX1 && !MCYRIXIII && !MELAN && !MWINCHIPC6 && !WINCHIP3D && !MK6
+ 	select X86_PAE
+ 	help
+ 	  Select this if you have a 32-bit processor and more than 4
