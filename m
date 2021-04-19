@@ -2,136 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 010E9363DF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B0D363D7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238362AbhDSIsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 04:48:52 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:57779 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238324AbhDSIst (ORCPT
+        id S237838AbhDSIca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 04:32:30 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:17014 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231193AbhDSIc2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 04:48:49 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id C36EA58108F;
-        Mon, 19 Apr 2021 04:48:19 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 19 Apr 2021 04:48:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=x1lvtnCvqnur4
-        ESKPxZ8yfTy9HL79mbmCtNhz9bHNYA=; b=o3EJD316+0eqA2bfZkcWY0tV1TQoM
-        BNPb6B17cvgaYMEksh3OKNLPwUuerF7ox/txIcZn+zfY0Gd8Z6sOZ0n9YQpeH649
-        XsJWryZwAj6bK3apEbi9RZBQYYKYXEKKbSdbEDjPEd3PesH5OoN+eUDMozbKKoI+
-        lg3sJideu6uwaA0HMNsDDJwsin1wnCvmx8LMKXmA1jLkuhjZf7EJN7LYNsA6588f
-        aDBEqqaNnscKjlgvjhrLNHqy1frMGR8kLO573qPV1RKFtSIBffgvNbR1qWqcLUv2
-        A2MMgW+j5a1pXCzkOteOQ9cw5VbGLKhZZGrV4yRcPqT5oYjfi4ZwQDDLA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=x1lvtnCvqnur4ESKPxZ8yfTy9HL79mbmCtNhz9bHNYA=; b=KkZBDDnh
-        j2qLa76zp6k+e7Ih/+DtOOCX24YsK0X3q9Fc5Pa91KTclfi+O32LxR0zXFilu3a2
-        av+YFk6RJ3YxdaxsA7QCbYCxMgGmzrh/oCYejK5cIGaytp1z7oyMN5zjBXljMxF+
-        tV1U0lw4xcBQXD5XatvV0lq8W6j/qaDF8fii81iyLSnnsLPlbWuhQDIUOcw6lFHj
-        0Ok7Njp+WDXuX/I2rT/R72hG5ni6FbYX8Yx/qtG47G/6aYlddygmS29DYID35jGz
-        7lw5ZopLfEuB3ZB9lhiWG0aN2zm601phupBTekYuyEAOPLNqWms7JUE9LpPllA9g
-        DcmO2gPezrHsuQ==
-X-ME-Sender: <xms:0UN9YAYnIdupBLHOK-7gBsq9nYG65KHguTktG3JEwbMhKqeV-lf3MQ>
-    <xme:0UN9YLYdq4sK-SVkCSK0B0yx3bOMPUd60v5ZqyK0_axQe-HrVDs5Hjf78LEjmEnNs
-    CSxQpCi7y2h8S2iGBA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddtgedgtdekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
-    dtredttdenucfhrhhomheptehlihhsthgrihhrucfhrhgrnhgtihhsuceorghlihhsthgr
-    ihhrsegrlhhishhtrghirhdvfedrmhgvqeenucggtffrrghtthgvrhhnpeevjeelleejfe
-    dvheeuieetfeejfefhhffffefffefhveetffeuudegudduhedtueenucffohhmrghinhep
-    vghinhhkrdgtohhmnecukfhppeekledrgeegrddutddruddvfeenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrlhhishhtrghirhesrghlihhs
-    thgrihhrvdefrdhmvg
-X-ME-Proxy: <xmx:0UN9YK-CtWN5PIGBGZQCLLAsUc_-YejsK1kqetzVaPdtMlTmxOlICw>
-    <xmx:0UN9YKpK6QdEpVooG414pwkCyNql3XBsW_5VrrTnrps_Cg9pdSmgAg>
-    <xmx:0UN9YLpKZXQFRkkJhj60gZ8-rr8HnO-QS8D9P5iV_bs2uAvk81GQ6w>
-    <xmx:00N9YJjZHdFTvolqufRqbeEy3StaYt-fKFWWkrAugFjazIMWSnzarQ>
-Received: from ThinkpadX1Yoga3.localdomain (unknown [89.44.10.123])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 1691324005D;
-        Mon, 19 Apr 2021 04:48:11 -0400 (EDT)
-From:   Alistair Francis <alistair@alistair23.me>
-To:     robh+dt@kernel.org, thierry.reding@gmail.com, sam@ravnborg.org,
-        krzk@kernel.org, shawnguo@kernel.org, daniel@0x0f.com,
-        linux@rempel-privat.de, kuninori.morimoto.gx@renesas.com,
-        Max.Merchel@tq-group.com, geert+renesas@glider.be,
-        airlied@linux.ie, daniel@ffwll.ch
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Alistair Francis <alistair@alistair23.me>
-Subject: [PATCH 2/2] drm/panel: Add support for E Ink VB3300-KCA
-Date:   Mon, 19 Apr 2021 07:09:56 +1000
-Message-Id: <20210418210956.3024-2-alistair@alistair23.me>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210418210956.3024-1-alistair@alistair23.me>
-References: <20210418210956.3024-1-alistair@alistair23.me>
+        Mon, 19 Apr 2021 04:32:28 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FP0Mt6xclzPqyj;
+        Mon, 19 Apr 2021 16:28:58 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Mon, 19 Apr 2021
+ 16:31:47 +0800
+From:   Shijie Luo <luoshijie1@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>, <luoshijie1@huawei.com>
+Subject: [PATCH RESEND] mm: fix some typos and code style problems
+Date:   Mon, 19 Apr 2021 04:30:57 -0400
+Message-ID: <20210419083057.64820-1-luoshijie1@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the 10.3" E Ink panel described at:
-https://www.eink.com/product.html?type=productdetail&id=7
+fix some typos and code style problems in mm.
 
-Signed-off-by: Alistair Francis <alistair@alistair23.me>
+gfp.h: s/MAXNODES/MAX_NUMNODES
+mmzone.h: s/then/than
+rmap.c: s/__vma_split()/__vma_adjust()
+swap.c: s/__mod_zone_page_stat/__mod_zone_page_state, s/is is/is
+swap_state.c: s/whoes/whose
+z3fold.c: code style problem fix in z3fold_unregister_migration
+zsmalloc.c: s/of/or, s/give/given
+
+Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 ---
- drivers/gpu/drm/panel/panel-simple.c | 29 ++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ include/linux/gfp.h    | 2 +-
+ include/linux/mmzone.h | 2 +-
+ mm/rmap.c              | 2 +-
+ mm/swap.c              | 4 ++--
+ mm/swap_state.c        | 2 +-
+ mm/z3fold.c            | 2 +-
+ mm/zsmalloc.c          | 4 ++--
+ 7 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 4e2dad314c79..f1f6fd2517f6 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -1964,6 +1964,32 @@ static const struct panel_desc edt_etm0700g0bdh6 = {
- 	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE,
- };
+diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+index 8572a1474e16..5f597df8da98 100644
+--- a/include/linux/gfp.h
++++ b/include/linux/gfp.h
+@@ -490,7 +490,7 @@ static inline int gfp_zonelist(gfp_t flags)
  
-+static const struct display_timing eink_vb3300_kca_timing = {
-+	.pixelclock = { 40000000, 40000000, 40000000 },
-+	.hactive = { 334, 334, 334 },
-+	.hfront_porch = { 1, 1, 1 },
-+	.hback_porch = { 1, 1, 1 },
-+	.hsync_len = { 1, 1, 1 },
-+	.vactive = { 1405, 1405, 1405 },
-+	.vfront_porch = { 1, 1, 1 },
-+	.vback_porch = { 1, 1, 1 },
-+	.vsync_len = { 1, 1, 1 },
-+	.flags = DISPLAY_FLAGS_HSYNC_LOW | DISPLAY_FLAGS_VSYNC_LOW |
-+		 DISPLAY_FLAGS_DE_HIGH | DISPLAY_FLAGS_PIXDATA_POSEDGE,
-+};
-+
-+static const struct panel_desc eink_vb3300_kca = {
-+	.modes = &edt_etm0700g0dh6_mode,
-+	.num_modes = 1,
-+	.bpc = 6,
-+	.size = {
-+		.width = 157,
-+		.height = 209,
-+	},
-+	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
-+	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE,
-+};
-+
- static const struct display_timing evervision_vgg804821_timing = {
- 	.pixelclock = { 27600000, 33300000, 50000000 },
- 	.hactive = { 800, 800, 800 },
-@@ -4232,6 +4258,9 @@ static const struct of_device_id platform_of_match[] = {
- 	}, {
- 		.compatible = "edt,etm0700g0dh6",
- 		.data = &edt_etm0700g0dh6,
-+	}, {
-+		.compatible = "eink,vb3300-kca",
-+		.data = &eink_vb3300_kca,
- 	}, {
- 		.compatible = "edt,etm0700g0bdh6",
- 		.data = &edt_etm0700g0bdh6,
+ /*
+  * We get the zone list from the current node and the gfp_mask.
+- * This zone list contains a maximum of MAXNODES*MAX_NR_ZONES zones.
++ * This zone list contains a maximum of MAX_NUMNODES*MAX_NR_ZONES zones.
+  * There are two zonelists per node, one for all zones with memory and
+  * one containing just zones from the node the zonelist belongs to.
+  *
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 47946cec7584..5fd14fd85d4c 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -55,7 +55,7 @@ enum migratetype {
+ 	 * pageblocks to MIGRATE_CMA which can be done by
+ 	 * __free_pageblock_cma() function.  What is important though
+ 	 * is that a range of pageblocks must be aligned to
+-	 * MAX_ORDER_NR_PAGES should biggest page be bigger then
++	 * MAX_ORDER_NR_PAGES should biggest page be bigger than
+ 	 * a single pageblock.
+ 	 */
+ 	MIGRATE_CMA,
+diff --git a/mm/rmap.c b/mm/rmap.c
+index b0fc27e77d6d..693a610e181d 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -257,7 +257,7 @@ static inline void unlock_anon_vma_root(struct anon_vma *root)
+  * Attach the anon_vmas from src to dst.
+  * Returns 0 on success, -ENOMEM on failure.
+  *
+- * anon_vma_clone() is called by __vma_split(), __split_vma(), copy_vma() and
++ * anon_vma_clone() is called by __vma_adjust(), __split_vma(), copy_vma() and
+  * anon_vma_fork(). The first three want an exact copy of src, while the last
+  * one, anon_vma_fork(), may try to reuse an existing anon_vma to prevent
+  * endless growth of anon_vma. Since dst->anon_vma is set to NULL before call,
+diff --git a/mm/swap.c b/mm/swap.c
+index 31b844d4ed94..9e0028b01b97 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -483,7 +483,7 @@ void lru_cache_add_inactive_or_unevictable(struct page *page,
+ 	if (unlikely(unevictable) && !TestSetPageMlocked(page)) {
+ 		int nr_pages = thp_nr_pages(page);
+ 		/*
+-		 * We use the irq-unsafe __mod_zone_page_stat because this
++		 * We use the irq-unsafe __mod_zone_page_state because this
+ 		 * counter is not modified from interrupt context, and the pte
+ 		 * lock is held(spinlock), which implies preemption disabled.
+ 		 */
+@@ -794,7 +794,7 @@ void lru_add_drain_all(void)
+ 	 * below which drains the page vectors.
+ 	 *
+ 	 * Let x, y, and z represent some system CPU numbers, where x < y < z.
+-	 * Assume CPU #z is is in the middle of the for_each_online_cpu loop
++	 * Assume CPU #z is in the middle of the for_each_online_cpu loop
+ 	 * below and has already reached CPU #y's per-cpu data. CPU #x comes
+ 	 * along, adds some pages to its per-cpu vectors, then calls
+ 	 * lru_add_drain_all().
+diff --git a/mm/swap_state.c b/mm/swap_state.c
+index 3cdee7b11da9..5d1fafffee4e 100644
+--- a/mm/swap_state.c
++++ b/mm/swap_state.c
+@@ -797,7 +797,7 @@ static void swap_ra_info(struct vm_fault *vmf,
+  *
+  * Returns the struct page for entry and addr, after queueing swapin.
+  *
+- * Primitive swap readahead code. We simply read in a few pages whoes
++ * Primitive swap readahead code. We simply read in a few pages whose
+  * virtual addresses are around the fault address in the same vma.
+  *
+  * Caller must hold read mmap_lock if vmf->vma is not NULL.
+diff --git a/mm/z3fold.c b/mm/z3fold.c
+index 9d889ad2bb86..7fe7adaaad01 100644
+--- a/mm/z3fold.c
++++ b/mm/z3fold.c
+@@ -391,7 +391,7 @@ static void z3fold_unregister_migration(struct z3fold_pool *pool)
+ {
+ 	if (pool->inode)
+ 		iput(pool->inode);
+- }
++}
+ 
+ /* Initializes the z3fold header of a newly allocated z3fold page */
+ static struct z3fold_header *init_z3fold_page(struct page *page, bool headless,
+diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
+index 30c358b72025..412e0f95e2c1 100644
+--- a/mm/zsmalloc.c
++++ b/mm/zsmalloc.c
+@@ -61,7 +61,7 @@
+ #define ZSPAGE_MAGIC	0x58
+ 
+ /*
+- * This must be power of 2 and greater than of equal to sizeof(link_free).
++ * This must be power of 2 and greater than or equal to sizeof(link_free).
+  * These two conditions ensure that any 'struct link_free' itself doesn't
+  * span more than 1 page which avoids complex case of mapping 2 pages simply
+  * to restore link_free pointer values.
+@@ -530,7 +530,7 @@ static void set_zspage_mapping(struct zspage *zspage,
+  * class maintains a list of zspages where each zspage is divided
+  * into equal sized chunks. Each allocation falls into one of these
+  * classes depending on its size. This function returns index of the
+- * size class which has chunk size big enough to hold the give size.
++ * size class which has chunk size big enough to hold the given size.
+  */
+ static int get_size_class_index(int size)
+ {
 -- 
-2.31.1
+2.19.1
 
