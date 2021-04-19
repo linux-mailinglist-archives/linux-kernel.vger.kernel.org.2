@@ -2,125 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE4B363932
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 03:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE73D363936
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 03:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237128AbhDSBzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 21:55:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59770 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232013AbhDSBzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 21:55:32 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C1C45ABC7;
-        Mon, 19 Apr 2021 01:55:01 +0000 (UTC)
-From:   NeilBrown <neilb@suse.de>
-To:     Fox Chen <foxhlchen@gmail.com>
-Date:   Mon, 19 Apr 2021 11:54:54 +1000
-Cc:     Fox Chen <foxhlchen@gmail.com>, corbet@lwn.net,
-        vegard.nossum@oracle.com, viro@zeniv.linux.org.uk,
-        rdunlap@infradead.org, grandmaster@al2klimov.de,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH v2 11/12] docs: path-lookup: update get_link()
- ->follow_link description
-In-Reply-To: <20210316054727.25655-12-foxhlchen@gmail.com>
-References: <20210316054727.25655-1-foxhlchen@gmail.com>
- <20210316054727.25655-12-foxhlchen@gmail.com>
-Message-ID: <87pmyr11jl.fsf@notabene.neil.brown.name>
+        id S237186AbhDSB6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 21:58:48 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:38297 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232013AbhDSB6q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 21:58:46 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 842062071;
+        Sun, 18 Apr 2021 21:58:17 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Sun, 18 Apr 2021 21:58:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=phlNdH6L/nbEsbR+68MJn/qwBE
+        EXdmTeMPuDyjBiqu8=; b=n/MLmgQanqv1QIChbd7SxXqvyaHToTdItZv6KzTiWZ
+        tfpwWHeRiA00EJgdr+wlEKLwBDPbBEtlj3Akw/8/SGb6tELr63g5UUVYxv22pMEP
+        9+9dcjNWUoldBauZNzKD78kLvxSlY4VEn5/DugArn4iW4H2qojyKttISZDlRDZLW
+        cRA2YRXqZbstKgc5awM/OpSMRC6Eo2kT+YzvHvTfcaHKSH+vRkIjFBibYggU/5Gu
+        SlaXZi+7gBGZnIHSfrDMIxrxYwuSFL9MLUN8/rk81AfthUxGHz8oeaCxJWqr+aY2
+        fwxTbJhlpuZYxpQbAOfEV2QSEf3jiNtT5nOgM39CF/Lg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=phlNdH6L/nbEsbR+6
+        8MJn/qwBEEXdmTeMPuDyjBiqu8=; b=KH1US8wxMBCILLZ6ty3BaJ2tV/2O9oRsi
+        08QD/dfXXfm3fC/uJd17Pv1GGfVKOXEnhp4AFjgx5Xov2ABnk9jbAXC6kCJh9jwj
+        hrvo5DDyN3LvA7HZnBNu7fSxbiYQ+K08fSzoC6G0uSqctI2aGfeA50taMA8DYoAI
+        6BF8d3W9ZMNsfCaf6WmMzJlFzrLMhckRU93HefIhFcKcayCnDIMJtBoHrATybMNN
+        4I7XvoLe3w+xWnNe/Sug5kajNiQgxQgHFTSTYVjsJDxBPWKUXO9f48Ygk81B33hz
+        8zdISoje0lFK2tgUhXhHxXTOdhmu3e0O2TJWfE6b2PJgBmwETkyGg==
+X-ME-Sender: <xms:uON8YAWgK5i7rQlNEtmio4Lelx8D9w9Wv5yrzX-6YCvppeqGrZSzmA>
+    <xme:uON8YEm86R4wsse4rcVNqiR03KYzWjuJQPQ6PVdxS5_JZ1PrfD2WDzKq8G1GKAkGb
+    yRjACLsgEtrXqY9eg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddtvddgkeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
+    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtffrrg
+    htthgvrhhnpeeiteekhfehuddugfeltddufeejjeefgeevheekueffhffhjeekheeiffdt
+    vedtveenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdr
+    ohhrgh
+X-ME-Proxy: <xmx:uON8YEYZWwHiQXYs3D6rKM1eDnh69UhvlozdI_SybkpYss8Nz-wwtQ>
+    <xmx:uON8YPUS6rEaKayToLsV2xKtdUWsj5UmxXVGHaLddBblMbaQSg5wNg>
+    <xmx:uON8YKn00Tnwc7E6OvHALdBPReQe3sChut364cafuQrdL7dstwYG2Q>
+    <xmx:ueN8YBsiZPR6Eqp40vTpp0EidfGjP64XoPkggXEydqy2-_FyyQ5N9g>
+Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id C806624005B;
+        Sun, 18 Apr 2021 21:58:15 -0400 (EDT)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>
+Subject: [PATCH] nvmem: sunxi_sid: Set type to OTP
+Date:   Sun, 18 Apr 2021 20:58:15 -0500
+Message-Id: <20210419015815.38910-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+This device currently reports an "Unknown" type in sysfs.
+Since it is an eFuse hardware device, set its type to OTP.
 
-On Tue, Mar 16 2021, Fox Chen wrote:
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+---
+ drivers/nvmem/sunxi_sid.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> get_link() is merged into pick_link(). i_op->follow_link is
-> replaced with i_op->get_link(). get_link() can return ERR_PTR(0)
-> which equals NULL.
->
-> Signed-off-by: Fox Chen <foxhlchen@gmail.com>
-> ---
->  Documentation/filesystems/path-lookup.rst | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
->
-> diff --git a/Documentation/filesystems/path-lookup.rst b/Documentation/fi=
-lesystems/path-lookup.rst
-> index abd0153e2415..eef6e9f68fba 100644
-> --- a/Documentation/filesystems/path-lookup.rst
-> +++ b/Documentation/filesystems/path-lookup.rst
-> @@ -1134,10 +1134,10 @@ Symlinks with no final component
->=20=20
->  A pair of special-case symlinks deserve a little further explanation.
->  Both result in a new ``struct path`` (with mount and dentry) being set
-> -up in the ``nameidata``, and result in ``get_link()`` returning ``NULL``.
-> +up in the ``nameidata``, and result in ``pick_link()`` returning ``NULL`=
-`.
->=20=20
->  The more obvious case is a symlink to "``/``".  All symlinks starting
-> -with "``/``" are detected in ``get_link()`` which resets the ``nameidata=
-``
-> +with "``/``" are detected in ``pick_link()`` which resets the ``nameidat=
-a``
->  to point to the effective filesystem root.  If the symlink only
->  contains "``/``" then there is nothing more to do, no components at all,
->  so ``NULL`` is returned to indicate that the symlink can be released and
-> @@ -1154,12 +1154,11 @@ something that looks like a symlink.  It is reall=
-y a reference to the
->  target file, not just the name of it.  When you ``readlink`` these
->  objects you get a name that might refer to the same file - unless it
->  has been unlinked or mounted over.  When ``walk_component()`` follows
-> -one of these, the ``->follow_link()`` method in "procfs" doesn't return
-> +one of these, the ``->get_link()`` method in "procfs" doesn't return
->  a string name, but instead calls ``nd_jump_link()`` which updates the
-> -``nameidata`` in place to point to that target.  ``->follow_link()`` then
-> -returns ``NULL``.  Again there is no final component and ``get_link()``
-> -reports this by leaving the ``last_type`` field of ``nameidata`` as
-> -``LAST_BIND``.
-> +``nameidata`` in place to point to that target.  ``->get_link()`` then
-> +returns ``0``.  Again there is no final component and ``pick_link()``
+diff --git a/drivers/nvmem/sunxi_sid.c b/drivers/nvmem/sunxi_sid.c
+index e26ef1bbf198..275b9155e473 100644
+--- a/drivers/nvmem/sunxi_sid.c
++++ b/drivers/nvmem/sunxi_sid.c
+@@ -142,6 +142,7 @@ static int sunxi_sid_probe(struct platform_device *pdev)
+ 
+ 	nvmem_cfg->dev = dev;
+ 	nvmem_cfg->name = "sunxi-sid";
++	nvmem_cfg->type = NVMEM_TYPE_OTP;
+ 	nvmem_cfg->read_only = true;
+ 	nvmem_cfg->size = cfg->size;
+ 	nvmem_cfg->word_size = 1;
+-- 
+2.26.3
 
-Why did you change NULL to 0?  ->get_link returns a pointer.
-
-Without that change:
-  Reviewed-by: NeilBrown <neilb@suse.de>
-
-Thanks,
-NeilBrown
-
-
-> +returns NULL.
->=20=20
->  Following the symlink in the final component
->  --------------------------------------------
-> --=20
-> 2.30.2
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAmB84u4OHG5laWxiQHN1
-c2UuZGUACgkQOeye3VZigblHCA/+PoT2sALptZxtCi1d15m/VDPm1FhIuHLSla46
-IM4UO8sAgZww+wy/1CnyQ03jBjDvCvd46JHMWUQ8M1qfoKKhMpAPkF/Cfnidm2Dt
-RsvxfoEfjuu+nP2kCTltpihO0QsyVDOF5hvAMRnOufBH86ldwWndxILRD2SQU8+f
-4mKUVmE5jQX3JoD6Vx2HLzHil/oZOAh3vk8ohv5uvScEaGqkLkvbUa7ufs7n0UHI
-ICeA3Uoo6kT79hwhDI7ujVD4sBSX86IUGJEYafxyRM5VlHMGJ4/1/9i6lvThNPEP
-OdI0kE40VFXmNCFQTmrbLFkucMz+zL9mHMVCjKZEVZPgkxSP2FRwTP7p5xFo31Tf
-2GcJFOMGRf6H7phA6hyAJaynETHtWiBnd6TSFRQN1W4DKH0duPsbOvDX0rpe5uES
-PEy2ykGr97KMayE8Bm38JHvBHZGLwA1FdRfDS+YPgoEQlxQzDyVd1Qm97J8XZt6q
-qVSmnkFuQAiu/BTHde5erzWwMe0oewpWA3IYf8QBWW2a8aI0ZfK1zPZkglNa76nX
-aBixEu1VWRORCjEaJeUcaXLtXDE50ed7Mrs0DRZ3IwJOj9DlCd21VKg4REOkdY7C
-YxsLPXNUMGn0H5U7qgDNVkz19vOJ4UQO/iy2XXZxqBaF20lMu+Hl9o/+1DN3cc1y
-KW3R6eA=
-=2ZTZ
------END PGP SIGNATURE-----
---=-=-=--
