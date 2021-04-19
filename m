@@ -2,114 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28CA2363F55
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 12:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B27B8363F58
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 12:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238293AbhDSKLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 06:11:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238204AbhDSKLR (ORCPT
+        id S238334AbhDSKLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 06:11:38 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:27853 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238300AbhDSKLe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 06:11:17 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA0FC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 03:10:45 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id f41so31670670lfv.8
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 03:10:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zu9j1wjDjVkPmp9+MDbUYSq/opn21hdEYi2SoFE0G38=;
-        b=2LjTTSlb/HS0t4OCyCPR5n54BZUrC67zqEW9gNRUxmv8X0KzjAkpqXGsW5TKWl7fRW
-         V+zzwiuaQqljXyBZTDlWxrL3VpESCGckDvZEprHjil56QDYLKqoufkWOB+Z7w8LRjNt5
-         v3Zgwt639jnsOrP9EUIrG40W6F2wNMYoWiRP6JbYiasJGduQklPnbLecz8d8HhwwIXuE
-         btcog1szy30k0xb7odbF4ehAkhrNSUgnTgdacZ/UiCbFCvRAp5s9O7t9lK5J7LtTGBN2
-         NsFIBJVO09qYDVLg2WB0VwNzWyklYM17JZHxmwAIj3DciLZFIaj7VPL4tO7FQh1wcQNg
-         sKVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zu9j1wjDjVkPmp9+MDbUYSq/opn21hdEYi2SoFE0G38=;
-        b=nifXChjdQsqb4UJqy3RtlegmXvScBaMjwS6ic9o7CGT1cElQgMU7JdgOn93cGzqWDw
-         9B63HmPNDmxlOTviFo5pkW922cpnjWm4CRH6Ri+ooSj5AQEZDHBkiqUHt4ioS+h/tTDp
-         eMWgfrjTxVUi4RMJLpNbcZ2T0L/N1ty8Nyz1eQTTimRhXhiz5/J9npt9H0e6zp09gvJv
-         5ouLSWFs1s3pJK3Y7QcnmbKSA1cjFUQVKpClYb1g96jyMHB+G2vIU7//zSMwdlE9N/mN
-         iLDHdnvbj0sOOxpVSTsXIH0v5ryucxqA/UFra9QYOmZUhpALXS4GTR96pmLe3vh8i7Dp
-         QKyQ==
-X-Gm-Message-State: AOAM532QESke04oNHYJQNWnX0896r7vrBLpdrkxQunHBZeykhLZIPqKZ
-        axK4Vkr10uXJ+/KScHKDX1uW46CMIyFv1w==
-X-Google-Smtp-Source: ABdhPJyUF3dNClX1XwBoeI6qAE9kwKRdTk+Rcod7QjPwhM1cLAn5iDwDJp3HXyxxIfQzSrHVEDuGWw==
-X-Received: by 2002:a05:6512:1288:: with SMTP id u8mr11575728lfs.319.1618827044344;
-        Mon, 19 Apr 2021 03:10:44 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id k2sm1777953lfg.107.2021.04.19.03.10.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 03:10:43 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id D293C102567; Mon, 19 Apr 2021 13:10:42 +0300 (+03)
-Date:   Mon, 19 Apr 2021 13:10:42 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Peter Gonda <pgonda@google.com>,
-        David Hildenbrand <david@redhat.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFCv2 02/13] x86/kvm: Introduce KVM memory protection feature
-Message-ID: <20210419101042.txf6pj3kr6z5bkh5@box.shutemov.name>
-References: <20210416154106.23721-1-kirill.shutemov@linux.intel.com>
- <20210416154106.23721-3-kirill.shutemov@linux.intel.com>
- <20210416161030.GC22348@zn.tnic>
+        Mon, 19 Apr 2021 06:11:34 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618827065; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=6Aptr+/L0+w9rf4i+SajziWUdZ5O4veMlgS9jJhzw+c=;
+ b=BoLMZTAFgmBUJcWKNK6SaWEgY504hhycuV2Z/xeLWq9oDIhJUahaBxBhzJPDQ6zqcoqmwEIe
+ +vNZ9gTlZcrjrUtUFnNuZ2ILbnN89YLfTLmUpVTcry7FZkuAXkDhRbzGyymaAt6djmH84u0t
+ 12G91QlBeA1aLoWSf+fG7PHdfjI=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 607d5731a817abd39a4600f3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 19 Apr 2021 10:10:57
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 04801C4323A; Mon, 19 Apr 2021 10:10:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 25721C433D3;
+        Mon, 19 Apr 2021 10:10:56 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416161030.GC22348@zn.tnic>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 19 Apr 2021 15:40:56 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        p.zabel@pengutronix.de, robh+dt@kernel.org, agross@kernel.org,
+        mani@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/6] arm64: dts: qcom: sc7280: Add nodes to boot WPSS
+In-Reply-To: <14476306c74356a747473e820d4067a6@codeaurora.org>
+References: <1615269111-25559-1-git-send-email-sibis@codeaurora.org>
+ <1615269111-25559-7-git-send-email-sibis@codeaurora.org>
+ <161567197220.1478170.12600358804299446135@swboyd.mtv.corp.google.com>
+ <YE2OJz1pI81Uj8DA@builder.lan>
+ <161653719350.3012082.12055201782488576903@swboyd.mtv.corp.google.com>
+ <14476306c74356a747473e820d4067a6@codeaurora.org>
+Message-ID: <92f87f0b2a080077f426b7d704314e35@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 06:10:30PM +0200, Borislav Petkov wrote:
-> On Fri, Apr 16, 2021 at 06:40:55PM +0300, Kirill A. Shutemov wrote:
-> > Provide basic helpers, KVM_FEATURE, CPUID flag and a hypercall.
-> > 
-> > Host side doesn't provide the feature yet, so it is a dead code for now.
-> > 
-> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > ---
-> >  arch/x86/include/asm/cpufeatures.h   |  1 +
-> >  arch/x86/include/asm/kvm_para.h      |  5 +++++
-> >  arch/x86/include/uapi/asm/kvm_para.h |  3 ++-
-> >  arch/x86/kernel/kvm.c                | 17 +++++++++++++++++
-> >  include/uapi/linux/kvm_para.h        |  3 ++-
-> >  5 files changed, 27 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> > index 84b887825f12..d8f3d2619913 100644
-> > --- a/arch/x86/include/asm/cpufeatures.h
-> > +++ b/arch/x86/include/asm/cpufeatures.h
-> > @@ -238,6 +238,7 @@
-> >  #define X86_FEATURE_VMW_VMMCALL		( 8*32+19) /* "" VMware prefers VMMCALL hypercall instruction */
-> >  #define X86_FEATURE_SEV_ES		( 8*32+20) /* AMD Secure Encrypted Virtualization - Encrypted State */
-> >  #define X86_FEATURE_VM_PAGE_FLUSH	( 8*32+21) /* "" VM Page Flush MSR is supported */
-> > +#define X86_FEATURE_KVM_MEM_PROTECTED	( 8*32+22) /* "" KVM memory protection extension */
+On 2021-03-24 12:19, Sibi Sankar wrote:
+> On 2021-03-24 03:36, Stephen Boyd wrote:
+>> Quoting Bjorn Andersson (2021-03-13 20:16:39)
+>>> On Sat 13 Mar 15:46 CST 2021, Stephen Boyd wrote:
+>>> 
+>>> > Quoting Sibi Sankar (2021-03-08 21:51:51)
+>>> > > Add miscellaneous nodes to boot the Wireless Processor Subsystem on
+>>> >
+>>> > Maybe add (WPSS) after the name so we know they're related.
+>>> >
+>>> > > SC7280 SoCs.
+>>> > >
+>>> > > Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+>>> > > ---
+>>> > >
+>>> > > https://patchwork.kernel.org/project/linux-arm-msm/list/?series=438217
+>>> > > Depends on ipcc dt node enablement from ^^
+>>> > >
+>>> > >  arch/arm64/boot/dts/qcom/sc7280.dtsi | 143 +++++++++++++++++++++++++++++++++++
+>>> > >  1 file changed, 143 insertions(+)
+>>> > >
+>>> > > diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> > > index 18637c369c1d..4f03c468df51 100644
+>>> > > --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> > > +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> > > @@ -244,12 +251,131 @@
+>>> > >                 reg = <0 0x80000000 0 0>;
+>>> > >         };
+>>> > >
+>>> > > +       tcsr_mutex: hwlock {
+>>> > > +               compatible = "qcom,tcsr-mutex";
+>>> > > +               syscon = <&tcsr_mutex_regs 0 0x1000>;
+>>> > > +               #hwlock-cells = <1>;
+>>> > > +       };
+>>> >
+>>> > Is this node in the right place? I think the node above it is 'memory'?
+>>> > In which case 'hwlock' comes before 'memory' alphabetically.
+>>> >
+>>> 
+>>> Thanks for spotting this, as it's no longer acceptable to have a
+>>> standalone "syscon" node I was asked to rewrite the binding for this 
+>>> a
+>>> few months ago. So the tcsr_mutex should now be represented with a 
+>>> reg
+>>> under /soc.
+>> 
+>> Oh nice, I wasn't aware.
+>> 
+>>> > > +                       #interrupt-cells = <2>;
+>>> > > +               };
+>>> > > +       };
+>>> > > +
+>>> > > +       smp2p-mpss {
+>>> > > +               compatible = "qcom,smp2p";
+>>> > > +               qcom,smem = <435>, <428>;
+>>> > > +               interrupts-extended = <&ipcc IPCC_CLIENT_MPSS
+>>> > > +                                            IPCC_MPROC_SIGNAL_SMP2P
+>>> > > +                                            IRQ_TYPE_EDGE_RISING>;
+>>> > > +               mboxes = <&ipcc IPCC_CLIENT_MPSS
+>>> > > +                               IPCC_MPROC_SIGNAL_SMP2P>;
+>>> > > +
+>>> > > +               qcom,local-pid = <0>;
+>>> > > +               qcom,remote-pid = <1>;
+>>> > > +
+>>> > > +               modem_smp2p_out: master-kernel {
+>>> > > +                       qcom,entry-name = "master-kernel";
+>>> > > +                       #qcom,smem-state-cells = <1>;
+>>> > > +               };
+>>> > > +
+>>> > > +               modem_smp2p_in: slave-kernel {
+>>> > > +                       qcom,entry-name = "slave-kernel";
+>>> >
+>>> > Do these names need to have 'master' and 'slave' in them? We're trying
+>>> > to avoid these terms. See Documentation/process/coding-style.rst Section
+>>> > 4 naming.
+>>> >
+>>> 
+>>> They need to match the naming in the firmware, but I would welcome a
+>>> future change to something in line with the coding style and simply 
+>>> more
+>>> descriptive.
+>>> 
+>> 
+>> Sibi can this be done? I think it's still pretty early days for the
+>> firmware so hopefully the terms can be replaced with something
+>> different.
 > 
-> That feature bit is still unused.
+> I'll discuss the ask with the modem fw team and
+> get back.
 
-Sorry. Will drop it.
+Sorry for the delayed response. Looks
+like it's something Qualcomm wouldn't
+want to do mid-project since a number
+of the fw images are re-used across
+platforms. But this is something that
+will be taken up on newer SoCs.
 
 -- 
- Kirill A. Shutemov
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
