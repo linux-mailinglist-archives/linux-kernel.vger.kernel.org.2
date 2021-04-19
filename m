@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7B5364781
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 17:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F165B364787
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 17:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241088AbhDSPya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 11:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37006 "EHLO
+        id S241329AbhDSPzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 11:55:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239629AbhDSPy3 (ORCPT
+        with ESMTP id S233071AbhDSPzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 11:54:29 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC12C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 08:53:59 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id w6so8929599pfc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 08:53:59 -0700 (PDT)
+        Mon, 19 Apr 2021 11:55:11 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F29C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 08:54:41 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id e2so13641973plh.8
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 08:54:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=cgBc8DK/uiwWd9qSl4rojF6ng4YEQX2bdE7yvqzTNqE=;
-        b=u/oVPFKGt9zHYgML5cUAw/Efd89FKRDWGw/I98AIsuX396f+7JRPeCnIUHAHru1YT2
-         alg0X3wpoibmMgW+2MNttK/aM4Yl0f6ZYHI83pH39evE9PkcaLic9Fl6xyDZ1RiztV5D
-         cb4hY/XzhuJsBWMqFuBXSTkNEEtW0pM9mhrSFYVQ7iKgpmUQAIb/jV9RoQmwn+I2SCaD
-         XJylUweHVGOHHg5kiBEaLn2cNFptE/QUjaZuGr3UOFslqFjPbhtXVQ1kj8KbjbRR6hwB
-         38JVZeVYq3g9co/SPSJGM5/9scP6o6h0q29gecdtZ+eUupOg8yqaxzt7Dw2/BW06JFYw
-         qKaQ==
+        bh=duJja9qFhlLlL4LoMtIl+yX5xYury+ylhpHbGAhwQ0E=;
+        b=G8/9mwR4HBm33TlMKNDcLg7l0iEfmhU/hK6X1LNe9e9REFm/Qi9PKIrp9oGFy9l7ux
+         vauYRNGylEbGUJ1XaZSgyEsT3T6ODaksjQ2kvcPCHZHByqbIU4mX3wU1elNBY5+JT+CZ
+         q21r1UMZZCLZ0hsT+lY1AargK9RsqF+31a6laA/tHSN9+jisRN1qEjiBAqZ9XAuF4bKD
+         Q8hBU3qppYwQ2EXRfPg0Ek8PYyijqUkploPPwtsxVY8/R7d+1uFH3yO7E4Rq6UbF1pCt
+         HFHrSpHsKgn0kZ6tEJePImDdZr/TQg+2XTgxsgpWxhmYxoVH/GUJlp2TgrwiUBxD1+o/
+         jZRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cgBc8DK/uiwWd9qSl4rojF6ng4YEQX2bdE7yvqzTNqE=;
-        b=SG9v+43cpmnBib8pHL2D7XQQo3DQ+KZVSzUFSJU/0mhA878MFQdU+xBWfuKSUF8uHh
-         j5EBZ+GHMOSeQRY1LE4wihEx6Jy4lJqNYaUNyObisEAqTwNQQ184n6xyhxFpSnlzRdXV
-         BjI0h6AsZ/wfOKsP7jt7SfvLajnKLVzsp2+7DmaBUbeIKZWma0rwnx4rhYIpWUbW/Oop
-         dThsMb1566uL+ilvphKF156y41by/mYGIvMwtMmltnCG0ZJSYORCl9Ow0AtBdqigxfBw
-         kRNQEsCgwdDP6wc6L6QSbdPaqFzoOs0syu+aCKZnJrgeH75rXxrkUgf7yGnllXqSWt4b
-         My2w==
-X-Gm-Message-State: AOAM531CispXe4jzLq08QvnCpkzqCML7aL8YunyzMRX2vRZvjRjjNNvl
-        jG/rGH1NLw+ARyP/JsFuqTWk6A==
-X-Google-Smtp-Source: ABdhPJxxPK27y5npo1SqwJ7a8gTGdvn/PllAqMSn62dXKMIn47wfM5wDjZYvXwAXdTmnsdwC5cinmg==
-X-Received: by 2002:a63:145a:: with SMTP id 26mr12295651pgu.300.1618847637567;
-        Mon, 19 Apr 2021 08:53:57 -0700 (PDT)
+        bh=duJja9qFhlLlL4LoMtIl+yX5xYury+ylhpHbGAhwQ0E=;
+        b=RSXs8FiOj+wzhpmIaHJtGSi5fyvtt3QUkWL1ruJj+Vpp8zL6Osw+bm01VKyfRSFfOd
+         1A7+fDHRyBF68ueFywGQ82c6wkh+4+VZt4gBf8u5t+6qE0Y/70YtQmXHaRpoBhHd4N5T
+         a+z2llhyg9K4K8S9qovOy4HyeAK+KQbE8iZp4S2fEioqIbZZLQS39cGI6R7g6MSs8Cb/
+         gpYqW5s7Aqb1zBW1d1Y0CMLWq2Od6895LbtFfeBDUL5ZnJVQrHxl28rIS6gNCxvw3P0R
+         q9SPq/CASKpWwS5So8GUMUnlqA+WOieuyL+EUqCNU1KxGtL6rX839ESIpuRAHqrgBDLu
+         6+gw==
+X-Gm-Message-State: AOAM533OBRyy2cvqT2e3S7FARrHFN/1hEpf4Uw7HC8eN1ggiGRuA7PKi
+        GBh6FQy8wG5BUD7vO1dQ2vliWA==
+X-Google-Smtp-Source: ABdhPJxavXAzGEe58BWYzw5ZEc+NmTGqB0zbhnZu7c0BbJ44Vw9Wn3xtMJZMf5MruH2tejQDyUlvhA==
+X-Received: by 2002:a17:902:e8d5:b029:e6:cabb:d07 with SMTP id v21-20020a170902e8d5b02900e6cabb0d07mr23765754plg.3.1618847680830;
+        Mon, 19 Apr 2021 08:54:40 -0700 (PDT)
 Received: from hermes.local (76-14-218-44.or.wavecable.com. [76.14.218.44])
-        by smtp.gmail.com with ESMTPSA id m7sm1704803pfc.218.2021.04.19.08.53.56
+        by smtp.gmail.com with ESMTPSA id l22sm15346572pjc.13.2021.04.19.08.54.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 08:53:57 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 08:53:48 -0700
+        Mon, 19 Apr 2021 08:54:40 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 08:54:37 -0700
 From:   Stephen Hemminger <stephen@networkplumber.org>
 To:     Dexuan Cui <decui@microsoft.com>
 Cc:     davem@davemloft.net, kuba@kernel.org, kys@microsoft.com,
@@ -57,12 +57,12 @@ Cc:     davem@davemloft.net, kuba@kernel.org, kys@microsoft.com,
         andrew@lunn.ch, bernd@petrovitsch.priv.at, rdunlap@infradead.org,
         shacharr@microsoft.com, linux-kernel@vger.kernel.org,
         linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH v8 net-next 1/2] hv_netvsc: Make netvsc/VF binding check
- both MAC and serial number
-Message-ID: <20210419085348.6f5afd0b@hermes.local>
-In-Reply-To: <20210416201159.25807-2-decui@microsoft.com>
+Subject: Re: [PATCH v8 net-next 2/2] net: mana: Add a driver for Microsoft
+ Azure Network Adapter (MANA)
+Message-ID: <20210419085437.081fcffb@hermes.local>
+In-Reply-To: <20210416201159.25807-3-decui@microsoft.com>
 References: <20210416201159.25807-1-decui@microsoft.com>
-        <20210416201159.25807-2-decui@microsoft.com>
+        <20210416201159.25807-3-decui@microsoft.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -70,20 +70,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Apr 2021 13:11:58 -0700
+On Fri, 16 Apr 2021 13:11:59 -0700
 Dexuan Cui <decui@microsoft.com> wrote:
 
-> Currently the netvsc/VF binding logic only checks the PCI serial number.
-> 
-> The upcoming Microsoft Azure Network Adapter (MANA) supports multiple
-> net_device interfaces (each such interface is called a "vPort", and has
-> its unique MAC address) which are backed by the same VF PCI device, so
-> the binding logic should check both the MAC address and the PCI serial
-> number.
-> 
-> The change should not break any other existing VF drivers, because
-> Hyper-V NIC SR-IOV implementation requires the netvsc network
-> interface and the VF network interface have the same MAC address.
+> Add a VF driver for Microsoft Azure Network Adapter (MANA) that will be
+> available in the future.
 > 
 > Co-developed-by: Haiyang Zhang <haiyangz@microsoft.com>
 > Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
@@ -91,4 +82,4 @@ Dexuan Cui <decui@microsoft.com> wrote:
 > Signed-off-by: Shachar Raindel <shacharr@microsoft.com>
 > Signed-off-by: Dexuan Cui <decui@microsoft.com>
 
-Acked-by: Stephen Hemminger <stephen@networkplumber.org>
+Reviewed-by: Stephen Hemminger <stephen@networkplumber.org>
