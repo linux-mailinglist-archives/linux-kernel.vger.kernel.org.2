@@ -2,186 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6F8364B32
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 22:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE367364B35
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 22:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242118AbhDSUgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 16:36:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234546AbhDSUgm (ORCPT
+        id S242136AbhDSUh2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Apr 2021 16:37:28 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:44246 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234546AbhDSUh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 16:36:42 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F81C06138A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 13:36:11 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id l22so33579345ljc.9
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 13:36:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EwQlx/49KXwj+9MHny3x/v1N+rlK09AXDYpt2hWs1ys=;
-        b=M6Rv83Wqxe7+zYaaVRPyzbYEby5JMD1vNERCXl3UyJGm+vbs33CGHyUTZb3aP00kzp
-         U2fC6yirvslhroPLciAS6WwpSXmBaOSxypIINOAz7L042uh9cR4c9AZZgqeTrKczr9C7
-         Pv/O5Yzc+UCPzpheYm5hOUg+930cY8ytyXvCw89YKWECVc2DGPctZDGixjXZ00+AU9ym
-         JS31bfbQ8XlO/S6cWDWQdbsEhMhiIT4NKQo9PeqDJA/HiY4sAN1UBLdpcHuuDdYPz0Y0
-         B7+No7u9JOyip91vsVIP9egPULZ8xdxuwltSWbeH1gu/tEnM4HzwRO8BqW1a5Ob2c263
-         BG5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EwQlx/49KXwj+9MHny3x/v1N+rlK09AXDYpt2hWs1ys=;
-        b=VqiBiKxBsX1X7YHiOAfVn20+EjhgbDGqOv/Bx4g3yPmdhpvPrY1fr/D8DSOjTvcsgg
-         cQia/8WrF67JLIEBc9vq9SMwCAFEeBdeEiq33EjDdp5LQjMYBLWlRlC5rp5fwE6wBetP
-         kVZ+G2c4fidlxefT5cX71yd7SW+nycqFQL9o0YuAvpe0+f9v/1/VKIIFZnvpVl4pyMYc
-         vzP+fRaP6lUVRb+y9dhiwpTWpxASJVReso5ifzjP+F7w08Vkz1yxY1ZFPDMEP5PNNFLB
-         QRcyG1M3+i/Bjo8v65Uppe/BwxeKW3KhSIexcsUM5J9Ry5h4VLHww0u2yFLYcSa4Tcj9
-         SjZA==
-X-Gm-Message-State: AOAM532iYTSEfrIDqDxAY4GIUHCxA834YE3h93Mw/X0G2cYji5NT1Rmj
-        y1E/JJAURprpcmzYmyb+QwNq+A1ssG5HRA5yNCDV1Q==
-X-Google-Smtp-Source: ABdhPJyAEiWJGtkhAVdtYKj8XOpSgEzaCwcaJs0vHHrVfNGC+G3QGRYmflzgFLdAC2eb/iYE0CMxweklM3MWy/9C2J8=
-X-Received: by 2002:a2e:988a:: with SMTP id b10mr12774742ljj.341.1618864569703;
- Mon, 19 Apr 2021 13:36:09 -0700 (PDT)
+        Mon, 19 Apr 2021 16:37:28 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13JKXZ3d022044
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 13:36:58 -0700
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 381fdfrhq1-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 13:36:58 -0700
+Received: from intmgw001.05.ash7.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 19 Apr 2021 13:36:57 -0700
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id C34F062E1A1C; Mon, 19 Apr 2021 13:36:55 -0700 (PDT)
+From:   Song Liu <song@kernel.org>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <kernel-team@fb.com>, <acme@kernel.org>, <acme@redhat.com>,
+        <namhyung@kernel.org>, <jolsa@kernel.org>, <songliubraving@fb.com>,
+        Song Liu <song@kernel.org>
+Subject: [PATCH v4 0/4] perf util: bpf perf improvements
+Date:   Mon, 19 Apr 2021 13:36:45 -0700
+Message-ID: <20210419203649.164121-1-song@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210414184604.23473-1-ojeda@kernel.org> <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
- <YHkSO3TUktyPs4Nz@boqun-archlinux> <CAKwvOdnRx+8LhOAnH24CeZz2a2-MwF03oB7Um_pKBq8WAoLNxw@mail.gmail.com>
- <20210416184713.GI4212@paulmck-ThinkPad-P17-Gen-1>
-In-Reply-To: <20210416184713.GI4212@paulmck-ThinkPad-P17-Gen-1>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 19 Apr 2021 13:35:56 -0700
-Message-ID: <CAKwvOdkpOZk-FXJ0iOLvhyQr7wVcWwzgc0gk_8KTtOfF_Q8Q3g@mail.gmail.com>
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-To:     paulmck@kernel.org, ojeda@kernel.org
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: WOpH4Uv3eYnLaLzS4ML9I8ysjr7hkWKd
+X-Proofpoint-ORIG-GUID: WOpH4Uv3eYnLaLzS4ML9I8ysjr7hkWKd
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-19_11:2021-04-19,2021-04-19 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 spamscore=0
+ priorityscore=1501 adultscore=0 malwarescore=0 suspectscore=0 bulkscore=0
+ clxscore=1015 mlxlogscore=999 phishscore=0 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104190141
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 11:47 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> On Thu, Apr 15, 2021 at 11:04:37PM -0700, Nick Desaulniers wrote:
-> > On Thu, Apr 15, 2021 at 9:27 PM Boqun Feng <boqun.feng@gmail.com> wrote:
-> > >
-> > > But I think the Rust Community still wants to have a good memory model,
-> > > and they are open to any kind of suggestion and input. I think we (LKMM
-> > > people) should really get involved, because the recent discussion on
-> > > RISC-V's atomics shows that if we didn't people might get a "broken"
-> > > design because they thought C11 memory model is good enough:
-> > >
-> > >         https://lore.kernel.org/lkml/YGyZPCxJYGOvqYZQ@boqun-archlinux/
-> > >
-> > > And the benefits are mutual: a) Linux Kernel Memory Model (LKMM) is
-> > > defined by combining the requirements of developers and the behavior of
-> > > hardwares, it's pratical and can be a very good input for memory model
-> > > designing in Rust; b) Once Rust has a better memory model, the compiler
-> > > technologies whatever Rust compilers use to suppor the memory model can
-> > > be adopted to C compilers and we can get that part for free.
-> >
-> > Yes, I agree; I think that's a very good approach.  Avoiding the ISO
-> > WG14 is interesting; at least the merits could be debated in the
-> > public and not behind closed doors.
->
-> WG14 (C) and WG21 (C++) are at least somewhat open.  Here are some of
-> the proposals a few of us have in flight:
+This patches set improves bpf_perf (perf-stat --bpf-counter) by
+ 1) exposing key definitions to a libperf header;
+ 2) adding compatibility check for perf_attr_map;
+ 3) introducing config stat.bpf-counter-events.
+ 4) introducing 'b' modify to event parser.
 
-Wow, the working groups have been busy.  Thank you Paul and Boqun (and
-anyone else on thread) for authoring many of the proposals listed
-below.  Looks like I have a lot of reading to do to catch up.
+Changes v3 => v4:
+1. Improve the logic that decides when to skip read_affinity_counters().
+   (Jiri)
+2. Clean up a condition in bpf_counters.c:read_counters(). (Jiri)
 
-Have any of those been accepted yet, or led to amendments to either
-language's specs?  Where's the best place to track that?
+Changes v2 => v3:
+1. Add 'b' modifier. (Jiri)
+2. Allow configuring stat.bpf-counter-events with any event name (instead
+  of limiting to hardware events). (Jiri)
 
-My point has more to do with _participation_.  Rust's RFC process is
-well documented (https://rust-lang.github.io/rfcs/introduction.html)
-and is done via github pull requests[0].
+Changes v1 => v2:
+1. Separte 2/3 from 1/3. (Jiri)
+2. Rename bperf.h to bpf_perf.h. (Jiri)
+3. Other small fixes/optimizations. (Jiri)
 
-This is a much different process than drafts thrown over the wall.
-What hope do any kernel contributors have to participate in the ISO
-WGs, other than hoping their contributions to a draft foresee/address
-any concerns members of the committee might have?  How do members of
-the ISO WG communicate with folks interested in the outcomes of their
-decisions?
+Song Liu (4):
+  perf util: move bpf_perf definitions to a libperf header
+  perf bpf: check perf_attr_map is compatible with the perf binary
+  perf-stat: introduce config stat.bpf-counter-events
+  perf-stat: introduce ':b' modifier
 
-The two processes are quite different; one doesn't require "joining a
-national body" (which I assume involves some monetary transaction, if
-not for the individual participant, for their employer) for instance.
-(http://www.open-std.org/jtc1/sc22/wg14/www/contributing which links
-to https://www.iso.org/members.html; I wonder if we have kernel
-contributors in those grayed out countries?)
+ tools/lib/perf/include/perf/bpf_perf.h | 31 ++++++++++++++++
+ tools/perf/Documentation/perf-stat.txt |  2 ++
+ tools/perf/builtin-stat.c              | 40 ++++++++++++---------
+ tools/perf/util/bpf_counter.c          | 49 +++++++++++++-------------
+ tools/perf/util/config.c               |  4 +++
+ tools/perf/util/evsel.c                | 22 ++++++++++++
+ tools/perf/util/evsel.h                |  9 +++++
+ tools/perf/util/parse-events.c         |  8 ++++-
+ tools/perf/util/parse-events.l         |  2 +-
+ tools/perf/util/target.h               |  5 ---
+ 10 files changed, 123 insertions(+), 49 deletions(-)
+ create mode 100644 tools/lib/perf/include/perf/bpf_perf.h
 
-It was always very ironic to me that the most important body of free
-software was subject to decisions made by ISO, for better or for
-worse.  I would think Rust's RFC process would be more accessible to
-kernel developers, modulo the anti-github crowd, but with the Rust's
-community's values in inclusion I'm sure they'd be happy to accomodate
-folks for the RFC process without requiring github.  I'm not sure ISO
-can be as flexible for non-members.
-
-Either way, I think Rust's RFC process is something worth adding to
-the list of benefits under the heading "Why Rust?" in this proposed
-RFC.
-
->
-> P2055R0 A Relaxed Guide to memory_order_relaxed
->         http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p2055r0.pdf
-> P0124R7 Linux-Kernel Memory Model (vs. that of C/C++)
->         http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p0124r7.html
-> P1726R4 Pointer lifetime-end zap
->         http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/p1726r4.pdf
->         https://docs.google.com/document/d/1MfagxTa6H0rTxtq9Oxyh4X53NzKqOt7y3hZBVzO_LMk/edit?usp=sharing
-> P1121R2 Hazard Pointers: Proposed Interface and Wording for Concurrency TS 2
->         http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p1121r2.pdf
-> P1382R1 volatile_load<T> and volatile_store<T>
->         http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p1382r1.pdf
-> P1122R2 Proposed Wording for Concurrent Data Structures: Read-Copy-Update (RCU)
->         http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1122r2.pdf
->         https://docs.google.com/document/d/1MfagxTa6H0rTxtq9Oxyh4X53NzKqOt7y3hZBVzO_LMk/edit?usp=sharing
-> P0190R4 Proposal for New memory order consume Definition
->         http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2017/p0190r4.pdf
-> P0750R1 Consume
->         http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0750r1.html
-
-Does wg14 not participate in these discussions? (Or, is there a lot of
-overlap between participants in both?)
-http://93.90.116.65/JTC1/SC22/WG14/www/docs/ seems like a list of
-proposals and meeting minutes, but all of the above links look like
-WG21.  The model of decisions being made for C++ then trickling down
-to C is definitely curious.  Though perhaps for the topics of memory
-orderings there's enough overlap between the two languages for it not
-to matter.
-
->
-> P1726R4 is of particular concern, along with consume.
-
-
-[0] You can see all of the existing ones here:
-https://github.com/rust-lang/rfcs/tree/master/text, with links to
-discussions for each on github.  (Here's one that has not been
-accepted yet: https://github.com/rust-lang/rfcs/blob/master/text/1937-ques-in-main.md,
-see the link to the issue in the rust issue tracker has lots of
-comments _from the community_:
-https://github.com/rust-lang/rust/issues/43301).  I guess the
-equivalents for the ISO WGs would be the meeting minutes?
 --
-Thanks,
-~Nick Desaulniers
+2.30.2
