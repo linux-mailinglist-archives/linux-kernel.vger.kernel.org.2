@@ -2,104 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E220363D4D
+	by mail.lfdr.de (Postfix) with ESMTP id 8F02F363D4E
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232734AbhDSISo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 04:18:44 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50486 "EHLO
+        id S238186AbhDSISq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 04:18:46 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:50487 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbhDSISm (ORCPT
+        with ESMTP id S232867AbhDSISo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 04:18:42 -0400
-Received: from mail-ej1-f71.google.com ([209.85.218.71])
+        Mon, 19 Apr 2021 04:18:44 -0400
+Received: from mail-ej1-f72.google.com ([209.85.218.72])
         by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lYP6i-0007yv-Pu
-        for linux-kernel@vger.kernel.org; Mon, 19 Apr 2021 08:18:12 +0000
-Received: by mail-ej1-f71.google.com with SMTP id bx15-20020a170906a1cfb029037415131f28so3380383ejb.18
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 01:18:12 -0700 (PDT)
+        id 1lYP6k-0007z5-91
+        for linux-kernel@vger.kernel.org; Mon, 19 Apr 2021 08:18:14 +0000
+Received: by mail-ej1-f72.google.com with SMTP id jl27-20020a17090775dbb029037ccdce96e6so3340952ejc.21
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 01:18:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tZdoK9AnFm+X6XIXiCrNrIs4gAmD/r+wn1T8dtom1To=;
-        b=cV6Q/qLsOyTTFSfVUEna58zsQ3Z51Yz+nXZZe1zwxg0R/a6odiiOncXwlAd9eO0kOp
-         Zu3FbHzyllQ1iuds36ciHFBQVqbol+/qCajAjFy/HwZadM9zshgAW1aT43r8wejVliit
-         h6AtVNgw5BHE1yIl6TZudSF53ezLydk1iCxbpR4U/zOFmAK3k6MOrLkG33+C+89l97Hy
-         E4ipdTTGZt8hIsSW/IGdkLHQ/F5ZboIVJ5mivCQi7FGCr3YU61bBVCf9q/u3Awql6+0G
-         fUwMkZewiPDtjAOjbJsnCNe7FBQvjlvIdlrWTpMCsZFxAoI2k8KMDVwDInOrYhi7OSxC
-         fUOA==
-X-Gm-Message-State: AOAM532vjkvMERwEt30wRsVaOL24p79H+9wcmZNLH/JzHS7jzU0p/KqO
-        lMpQ9pCnbpbaovYzzkclHd1b5zkjiqsVF5fuldd5JQvCFcgpv/bsokBnZmPGULmg9mTpnX2AEoq
-        cYZDXbqZ74MvXb8uk0SXzJIlGXvlYkE2L0MNFbWj/hA==
-X-Received: by 2002:a05:6402:19a:: with SMTP id r26mr23996823edv.44.1618820292208;
-        Mon, 19 Apr 2021 01:18:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxKM9EgTFnfB1iGFoLTEYoEK90BtoYW0DSj8m9Xd9XtAHIt9z9ELEjhNtx3pNycDFhIF7NUYA==
-X-Received: by 2002:a05:6402:19a:: with SMTP id r26mr23996809edv.44.1618820292058;
-        Mon, 19 Apr 2021 01:18:12 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=pZDneaovJpVfH9OrjUAPe/h6WG3DKbu6qNqsKILVDmw=;
+        b=hZufC6eD/msuyc25YklK3pFNIC3LKzRYdrmUoq69w6Fgq86om6UxGCMiarosEpBCRz
+         nf/OgrSfQpqzpQQpAyRpxMeO3VV5aX8gHLue27G80GaFV8uSA6IyvIAdnjqpGRv6lcks
+         nrEl6eqjFuhGyHtTiJhpG1qWTcoXForMQBdMXrYYcj/mI7yg4z94wu5ChXC5lvYq17La
+         f2KNkdXh6lj1dQ4yE55faOUu3RYPldDu2Xdpiv1r88DLEJKHzikXyXnTPvj2YloiMPjZ
+         WC3E1MnjoXOB3g7PVI820WTy25NM9V97BfhdC1mJU873XyrkzKxxM8VyO+WF00c6DyQa
+         Tu5w==
+X-Gm-Message-State: AOAM530BMFaSTx+ui91Oy5FyNCxAhz04KGDB27/Dcpsh+VluBClNub7Z
+        qLUaR18K/5HHc7RGTl4CXLrR+aTY/beq7jo40yosQEmzIj8g77bXe8SY1BeeXJw2hheiP0RWMlt
+        bZWrJRQ6pwqTN9wpVwCOUODI+YXfMDwzYtrBC2b1gNg==
+X-Received: by 2002:a17:907:7b98:: with SMTP id ne24mr17965281ejc.304.1618820293748;
+        Mon, 19 Apr 2021 01:18:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwVOkUQrDkpbC9/rr/kn2dqwuK7KzA0hik5Peg6nOv1+wwGTCu3rE5nbdIF1jQ14TsTKfJnUQ==
+X-Received: by 2002:a17:907:7b98:: with SMTP id ne24mr17965273ejc.304.1618820293599;
+        Mon, 19 Apr 2021 01:18:13 -0700 (PDT)
 Received: from localhost.localdomain (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
-        by smtp.gmail.com with ESMTPSA id u1sm12093563edv.90.2021.04.19.01.18.10
+        by smtp.gmail.com with ESMTPSA id u1sm12093563edv.90.2021.04.19.01.18.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 01:18:11 -0700 (PDT)
+        Mon, 19 Apr 2021 01:18:13 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH 1/2] drm/gma500: correct kerneldoc
-Date:   Mon, 19 Apr 2021 10:18:06 +0200
-Message-Id: <20210419081807.68000-1-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 2/2] drm/gma500: remove trailing whitespaces
+Date:   Mon, 19 Apr 2021 10:18:07 +0200
+Message-Id: <20210419081807.68000-2-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210419081807.68000-1-krzysztof.kozlowski@canonical.com>
+References: <20210419081807.68000-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correct kerneldoc (remove wrong /** marker and adjust function name) to
-fix W=1 warnings:
-
-  drivers/gpu/drm/gma500/cdv_intel_lvds.c:27: warning:
-    expecting prototype for LVDS I2C backlight control macros(). Prototype was for BRIGHTNESS_MAX_LEVEL() instead
-
-  drivers/gpu/drm/gma500/intel_gmbus.c:386: warning:
-    expecting prototype for intel_gmbus_setup(). Prototype was for gma_intel_setup_gmbus() instead
+Remove trailing whitespaces.  No functional change.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/gpu/drm/gma500/cdv_intel_lvds.c | 2 +-
- drivers/gpu/drm/gma500/intel_gmbus.c    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/gma500/backlight.c    |  4 +--
+ drivers/gpu/drm/gma500/cdv_intel_dp.c | 50 +++++++++++++--------------
+ 2 files changed, 26 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/gpu/drm/gma500/cdv_intel_lvds.c b/drivers/gpu/drm/gma500/cdv_intel_lvds.c
-index 5bff7d9e3aa6..8a2219fcf9b4 100644
---- a/drivers/gpu/drm/gma500/cdv_intel_lvds.c
-+++ b/drivers/gpu/drm/gma500/cdv_intel_lvds.c
-@@ -21,7 +21,7 @@
- #include "psb_intel_drv.h"
- #include "psb_intel_reg.h"
+diff --git a/drivers/gpu/drm/gma500/backlight.c b/drivers/gpu/drm/gma500/backlight.c
+index 35600d070cb5..9e90258541a4 100644
+--- a/drivers/gpu/drm/gma500/backlight.c
++++ b/drivers/gpu/drm/gma500/backlight.c
+@@ -42,7 +42,7 @@ void gma_backlight_disable(struct drm_device *dev)
+ 		dev_priv->backlight_device->props.brightness = 0;
+ 		do_gma_backlight_set(dev);
+ 	}
+-#endif	
++#endif
+ }
  
--/**
-+/*
-  * LVDS I2C backlight control macros
-  */
- #define BRIGHTNESS_MAX_LEVEL 100
-diff --git a/drivers/gpu/drm/gma500/intel_gmbus.c b/drivers/gpu/drm/gma500/intel_gmbus.c
-index eb0924473a21..c17cbafa468a 100644
---- a/drivers/gpu/drm/gma500/intel_gmbus.c
-+++ b/drivers/gpu/drm/gma500/intel_gmbus.c
-@@ -379,7 +379,7 @@ static const struct i2c_algorithm gmbus_algorithm = {
- };
+ void gma_backlight_set(struct drm_device *dev, int v)
+@@ -54,7 +54,7 @@ void gma_backlight_set(struct drm_device *dev, int v)
+ 		dev_priv->backlight_device->props.brightness = v;
+ 		do_gma_backlight_set(dev);
+ 	}
+-#endif	
++#endif
+ }
  
- /**
-- * intel_gmbus_setup - instantiate all Intel i2c GMBuses
-+ * gma_intel_setup_gmbus() - instantiate all Intel i2c GMBuses
-  * @dev: DRM device
-  */
- int gma_intel_setup_gmbus(struct drm_device *dev)
+ int gma_backlight_init(struct drm_device *dev)
+diff --git a/drivers/gpu/drm/gma500/cdv_intel_dp.c b/drivers/gpu/drm/gma500/cdv_intel_dp.c
+index 6d3ada39ff86..595b765ecc71 100644
+--- a/drivers/gpu/drm/gma500/cdv_intel_dp.c
++++ b/drivers/gpu/drm/gma500/cdv_intel_dp.c
+@@ -245,7 +245,7 @@ i2c_dp_aux_add_bus(struct i2c_adapter *adapter)
+                 if (W && !in_dbg_master()) msleep(W);                   \
+         }                                                               \
+         ret__;                                                          \
+-})      
++})
+ 
+ #define wait_for(COND, MS) _wait_for(COND, MS, 1)
+ 
+@@ -386,7 +386,7 @@ static void cdv_intel_edp_panel_vdd_on(struct gma_encoder *intel_encoder)
+ 	if (intel_dp->panel_on) {
+ 		DRM_DEBUG_KMS("Skip VDD on because of panel on\n");
+ 		return;
+-	}	
++	}
+ 	DRM_DEBUG_KMS("\n");
+ 
+ 	pp = REG_READ(PP_CONTROL);
+@@ -433,7 +433,7 @@ static bool cdv_intel_edp_panel_on(struct gma_encoder *intel_encoder)
+ 		DRM_DEBUG_KMS("Error in Powering up eDP panel, status %x\n", REG_READ(PP_STATUS));
+ 		intel_dp->panel_on = false;
+ 	} else
+-		intel_dp->panel_on = true;	
++		intel_dp->panel_on = true;
+ 	msleep(intel_dp->panel_power_up_delay);
+ 
+ 	return false;
+@@ -449,7 +449,7 @@ static void cdv_intel_edp_panel_off (struct gma_encoder *intel_encoder)
+ 
+ 	pp = REG_READ(PP_CONTROL);
+ 
+-	if ((pp & POWER_TARGET_ON) == 0) 
++	if ((pp & POWER_TARGET_ON) == 0)
+ 		return;
+ 
+ 	intel_dp->panel_on = false;
+@@ -464,7 +464,7 @@ static void cdv_intel_edp_panel_off (struct gma_encoder *intel_encoder)
+ 	DRM_DEBUG_KMS("PP_STATUS %x\n", REG_READ(PP_STATUS));
+ 
+ 	if (wait_for((REG_READ(PP_STATUS) & idle_off_mask) == 0, 1000)) {
+-		DRM_DEBUG_KMS("Error in turning off Panel\n");	
++		DRM_DEBUG_KMS("Error in turning off Panel\n");
+ 	}
+ 
+ 	msleep(intel_dp->panel_power_cycle_delay);
+@@ -535,7 +535,7 @@ cdv_intel_dp_mode_valid(struct drm_connector *connector,
+ 	    if (cdv_intel_dp_link_required(mode->clock, 24)
+ 	     	> cdv_intel_dp_max_data_rate(max_link_clock, max_lanes))
+ 		return MODE_CLOCK_HIGH;
+-		
++
+ 	}
+ 	if (mode->clock < 10000)
+ 		return MODE_CLOCK_LOW;
+@@ -606,7 +606,7 @@ cdv_intel_dp_aux_ch(struct gma_encoder *encoder,
+ 		for (i = 0; i < send_bytes; i += 4)
+ 			REG_WRITE(ch_data + i,
+ 				   pack_aux(send + i, send_bytes - i));
+-	
++
+ 		/* Send the command and wait for it to complete */
+ 		REG_WRITE(ch_ctl,
+ 			   DP_AUX_CH_CTL_SEND_BUSY |
+@@ -623,7 +623,7 @@ cdv_intel_dp_aux_ch(struct gma_encoder *encoder,
+ 				break;
+ 			udelay(100);
+ 		}
+-	
++
+ 		/* Clear done status and any errors */
+ 		REG_WRITE(ch_ctl,
+ 			   status |
+@@ -659,7 +659,7 @@ cdv_intel_dp_aux_ch(struct gma_encoder *encoder,
+ 		      DP_AUX_CH_CTL_MESSAGE_SIZE_SHIFT);
+ 	if (recv_bytes > recv_size)
+ 		recv_bytes = recv_size;
+-	
++
+ 	for (i = 0; i < recv_bytes; i += 4)
+ 		unpack_aux(REG_READ(ch_data + i),
+ 			   recv + i, recv_bytes - i);
+@@ -870,7 +870,7 @@ cdv_intel_dp_i2c_init(struct gma_connector *connector,
+ 	ret = i2c_dp_aux_add_bus(&intel_dp->adapter);
+ 	if (is_edp(encoder))
+ 		cdv_intel_edp_panel_vdd_off(encoder);
+-	
++
+ 	return ret;
+ }
+ 
+@@ -1291,13 +1291,13 @@ cdv_intel_get_adjust_train(struct gma_encoder *encoder)
+ 		if (this_p > p)
+ 			p = this_p;
+ 	}
+-	
++
+ 	if (v >= CDV_DP_VOLTAGE_MAX)
+ 		v = CDV_DP_VOLTAGE_MAX | DP_TRAIN_MAX_SWING_REACHED;
+ 
+ 	if (p == DP_TRAIN_PRE_EMPHASIS_MASK)
+ 		p |= DP_TRAIN_MAX_PRE_EMPHASIS_REACHED;
+-		
++
+ 	for (lane = 0; lane < 4; lane++)
+ 		intel_dp->train_set[lane] = v | p;
+ }
+@@ -1358,7 +1358,6 @@ cdv_intel_dp_set_link_train(struct gma_encoder *encoder,
+ 			uint32_t dp_reg_value,
+ 			uint8_t dp_train_pat)
+ {
+-	
+ 	struct drm_device *dev = encoder->base.dev;
+ 	int ret;
+ 	struct cdv_intel_dp *intel_dp = encoder->dev_priv;
+@@ -1384,7 +1383,6 @@ static bool
+ cdv_intel_dplink_set_level(struct gma_encoder *encoder,
+ 			uint8_t dp_train_pat)
+ {
+-	
+ 	int ret;
+ 	struct cdv_intel_dp *intel_dp = encoder->dev_priv;
+ 
+@@ -1462,7 +1460,7 @@ cdv_intel_dp_set_vswing_premph(struct gma_encoder *encoder, uint8_t signal_level
+ 	/* ;gfx_dpio_set_reg(0x8124, 0x00004000) */
+ 	index = 2 * premph + 1;
+ 	cdv_sb_write(dev, ddi_reg->PreEmph2, dp_vswing_premph_table[index]);
+-	return;	
++	return;
+ }
+ 
+ 
+@@ -1481,8 +1479,8 @@ cdv_intel_dp_start_link_train(struct gma_encoder *encoder)
+ 
+ 	DP |= DP_PORT_EN;
+ 	DP &= ~DP_LINK_TRAIN_MASK;
+-		
+-	reg = DP;	
++
++	reg = DP;
+ 	reg |= DP_LINK_TRAIN_PAT_1;
+ 	/* Enable output, wait for it to become active */
+ 	REG_WRITE(intel_dp->output_reg, reg);
+@@ -1556,7 +1554,7 @@ cdv_intel_dp_start_link_train(struct gma_encoder *encoder)
+ 	if (!clock_recovery) {
+ 		DRM_DEBUG_KMS("failure in DP patter 1 training, train set %x\n", intel_dp->train_set[0]);
+ 	}
+-	
++
+ 	intel_dp->DP = DP;
+ }
+ 
+@@ -1747,7 +1745,7 @@ static int cdv_intel_dp_get_modes(struct drm_connector *connector)
+ 	if (is_edp(intel_encoder)) {
+ 		struct drm_device *dev = connector->dev;
+ 		struct drm_psb_private *dev_priv = dev->dev_private;
+-		
++
+ 		cdv_intel_edp_panel_vdd_off(intel_encoder);
+ 		if (ret) {
+ 			if (edp && !intel_dp->panel_fixed_mode) {
+@@ -1942,11 +1940,11 @@ static void cdv_disable_intel_clock_gating(struct drm_device *dev)
+ 			DPCUNIT_CLOCK_GATE_DISABLE |
+ 			DPLSUNIT_CLOCK_GATE_DISABLE |
+ 			DPOUNIT_CLOCK_GATE_DISABLE |
+-		 	DPIOUNIT_CLOCK_GATE_DISABLE);	
++			DPIOUNIT_CLOCK_GATE_DISABLE);
+ 
+ 	REG_WRITE(DSPCLK_GATE_D, reg_value);
+ 
+-	udelay(500);		
++	udelay(500);
+ }
+ 
+ void
+@@ -1990,7 +1988,7 @@ cdv_intel_dp_init(struct drm_device *dev, struct psb_intel_mode_device *mode_dev
+ 	gma_encoder->dev_priv=intel_dp;
+ 	intel_dp->encoder = gma_encoder;
+ 	intel_dp->output_reg = output_reg;
+-	
++
+ 	drm_encoder_helper_add(encoder, &cdv_intel_dp_helper_funcs);
+ 	drm_connector_helper_add(connector, &cdv_intel_dp_connector_helper_funcs);
+ 
+@@ -2027,7 +2025,7 @@ cdv_intel_dp_init(struct drm_device *dev, struct psb_intel_mode_device *mode_dev
+ 		pp_on = REG_READ(PP_CONTROL);
+ 		pp_on &= ~PANEL_UNLOCK_MASK;
+ 	        pp_on |= PANEL_UNLOCK_REGS;
+-		
++
+ 		REG_WRITE(PP_CONTROL, pp_on);
+ 
+ 		pwm_ctrl = REG_READ(BLC_PWM_CTL2);
+@@ -2037,7 +2035,7 @@ cdv_intel_dp_init(struct drm_device *dev, struct psb_intel_mode_device *mode_dev
+                 pp_on = REG_READ(PP_ON_DELAYS);
+                 pp_off = REG_READ(PP_OFF_DELAYS);
+                 pp_div = REG_READ(PP_DIVISOR);
+-	
++
+ 		/* Pull timing values out of registers */
+                 cur.t1_t3 = (pp_on & PANEL_POWER_UP_DELAY_MASK) >>
+                         PANEL_POWER_UP_DELAY_SHIFT;
+@@ -2085,9 +2083,9 @@ cdv_intel_dp_init(struct drm_device *dev, struct psb_intel_mode_device *mode_dev
+ 			goto err_connector;
+ 		} else {
+         		DRM_DEBUG_KMS("DPCD: Rev=%x LN_Rate=%x LN_CNT=%x LN_DOWNSP=%x\n",
+-				intel_dp->dpcd[0], intel_dp->dpcd[1], 
++				intel_dp->dpcd[0], intel_dp->dpcd[1],
+ 				intel_dp->dpcd[2], intel_dp->dpcd[3]);
+-			
++
+ 		}
+ 		/* The CDV reference driver moves pnale backlight setup into the displays that
+ 		   have a backlight: this is a good idea and one we should probably adopt, however
 -- 
 2.25.1
 
