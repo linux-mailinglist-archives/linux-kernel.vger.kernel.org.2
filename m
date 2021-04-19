@@ -2,56 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5B2363A14
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 06:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 598353639DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 06:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237622AbhDSEHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 00:07:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49808 "EHLO
+        id S233139AbhDSEEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 00:04:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237494AbhDSEFc (ORCPT
+        with ESMTP id S229473AbhDSEEf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 00:05:32 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 144B5C061760;
-        Sun, 18 Apr 2021 21:05:00 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4FNtVr5w9cz9vH8; Mon, 19 Apr 2021 14:04:36 +1000 (AEST)
-From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Tony Ambardar <tony.ambardar@gmail.com>
-Cc:     Paul Mackerras <paulus@samba.org>, linuxppc-dev@lists.ozlabs.org,
-        linux-arch@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tony Ambardar <Tony.Ambardar@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Stable <stable@vger.kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Rosen Penev <rosenp@gmail.com>
-In-Reply-To: <20200917135437.1238787-1-Tony.Ambardar@gmail.com>
-References: <20200917000757.1232850-1-Tony.Ambardar@gmail.com> <20200917135437.1238787-1-Tony.Ambardar@gmail.com>
-Subject: Re: [PATCH v3] powerpc: fix EDEADLOCK redefinition error in uapi/asm/errno.h
-Message-Id: <161880480720.1398509.14927712402293166726.b4-ty@ellerman.id.au>
-Date:   Mon, 19 Apr 2021 14:00:07 +1000
+        Mon, 19 Apr 2021 00:04:35 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F1A6C06174A;
+        Sun, 18 Apr 2021 21:04:06 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id nk8so3976379pjb.3;
+        Sun, 18 Apr 2021 21:04:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hOsZ6ZAWuon3dm2MZrd8FkaSau84thpl7XFQwU5olAc=;
+        b=FRj2Oc2qKXjJ0+HRBeXKiZNcvm09E0wR+zi4pf4hYThpFVjDmoirdE9srkAX23K690
+         h5SgoI2Q9EtS72FDV4ipvZvWtfv/GUgNBfVJXenX/jt4ILBLY3h5UpBG2zmX3G0XhGhY
+         2B80K8gWjkqK11sry1/PAjH9ZckonsgQBCNdSlOg+NyIQr85926xkyRHJZICg8RQyJFE
+         j+MtbJkaxdq71+82qyKN7DSmv5wta7bkLxA8qQ57BzI8dBS7lefmasAnQwZLSRqFN7T+
+         udc9CAZJ2i+038e463+wn85ZvR1F4jbZN8eNPOn5R9QjC1kd7m58N8N85MgNgoRoCaIL
+         u7DQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hOsZ6ZAWuon3dm2MZrd8FkaSau84thpl7XFQwU5olAc=;
+        b=m69wF1TPmy9Sflo/W9HSZTeyUf6nPBWaf3jw8AThLIaJv8Jpuk9xPD40FJP8sqWIJC
+         3N4CxDJDGtySxvgPHAVCb+NoDA3rrtGHS5pSFeq2unvmNZbFNh3JUI3Z/1AIYJ2erL1w
+         mN7vPoOxogI1G6YcOpfNaFi4fcho06jdUrJ/OZy2aRbuNvaI2tcZDyFMuETqeffrTVNT
+         RbPBvgX90/JiOToBfADsTk6TM0tGdwePxtlpH6lWGhnrbVe8ua45CG1dYomhKvrOmMsQ
+         HAixxa0ZDITIrM5EHSjQbCyaIekdMDSQ7zIQBNrMm+UhTKtIZ4Fnd6bJfrSUL2MeeZeu
+         dfzQ==
+X-Gm-Message-State: AOAM530c+EmiZozAva5bdD77NduXhjXoc5wTUxBJqBaSrsEJe7LG4fis
+        PiHBVwb+20pyMI7+2vVWtZY=
+X-Google-Smtp-Source: ABdhPJxcKeTMm7Gcj5hsB5BDdKOpKVQoZ5Z1KI2psRngBPctBvPcf7fWZupUj0ZXMHy0StJVBT+jyg==
+X-Received: by 2002:a17:90b:3646:: with SMTP id nh6mr22581469pjb.119.1618805045663;
+        Sun, 18 Apr 2021 21:04:05 -0700 (PDT)
+Received: from z640-arch.lan ([2602:61:7344:f100::678])
+        by smtp.gmail.com with ESMTPSA id 25sm12169423pgx.72.2021.04.18.21.04.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Apr 2021 21:04:05 -0700 (PDT)
+From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Felix Fietkau <nbd@nbd.name>,
+        John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Subject: [PATCH net-next 0/2] net: ethernet: mediatek: support custom GMAC label
+Date:   Sun, 18 Apr 2021 21:03:50 -0700
+Message-Id: <20210419040352.2452-1-ilya.lipnitskiy@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Sep 2020 06:54:37 -0700, Tony Ambardar wrote:
-> A few archs like powerpc have different errno.h values for macros
-> EDEADLOCK and EDEADLK. In code including both libc and linux versions of
-> errno.h, this can result in multiple definitions of EDEADLOCK in the
-> include chain. Definitions to the same value (e.g. seen with mips) do
-> not raise warnings, but on powerpc there are redefinitions changing the
-> value, which raise warnings and errors (if using "-Werror").
-> 
-> [...]
+Add support for specifying GMAC label via DTS. Useful when it is desired
+to use a master DSA interface name that is different from the "eth%d"
+pattern.
 
-Applied to powerpc/next.
+Ilya Lipnitskiy (2):
+  dt-bindings: net: mediatek: add optional GMAC labels
+  net: ethernet: mediatek: support custom GMAC label
 
-[1/1] powerpc: fix EDEADLOCK redefinition error in uapi/asm/errno.h
-      https://git.kernel.org/powerpc/c/7de21e679e6a789f3729e8402bc440b623a28eae
+ Documentation/devicetree/bindings/net/mediatek-net.txt | 6 ++++++
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c            | 4 ++++
+ 2 files changed, 10 insertions(+)
 
-cheers
+-- 
+2.31.1
+
