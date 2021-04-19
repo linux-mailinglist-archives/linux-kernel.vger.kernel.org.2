@@ -2,228 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CDE9364183
+	by mail.lfdr.de (Postfix) with ESMTP id 7D830364184
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 14:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239198AbhDSMTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 08:19:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239175AbhDSMTL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 08:19:11 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF542C06174A;
-        Mon, 19 Apr 2021 05:18:37 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id p12so24125327pgj.10;
-        Mon, 19 Apr 2021 05:18:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=523lx1zruoa/L3sPQjk8cCBknzg8JrQTDqhjRSnM/8o=;
-        b=RkjJKb2cVIQnU+oZcUJA1EtWRFb1NdFq/aT8bC6XDLOBVajw0RYu1LXRnmHRMKMTAw
-         PaydQzKQR8JXEFBm53iATXlSY7APhiCBh1LVkULl4GbgXXlF5T0mGwKSKM7iRDqzE4CC
-         FZshiNtv6r+1+HQyNR2ZOMqbnXjzJgQvz9mSEalUU3U8nArvciMTzW4/qx8Lhb4thCUN
-         SD7ujnCbpdT7dYH471schJE974xmFMesnM6mFyVuxdPPAu7uilfpoTnE7PeGz/gyMmsQ
-         I6Zcs8+/DsfJnd+MZ1gIjFOBCD/HZxZxrRIBwCFrOUVe2198gsWq/rO2AnaeuGt+KwK+
-         nFrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=523lx1zruoa/L3sPQjk8cCBknzg8JrQTDqhjRSnM/8o=;
-        b=CG1o3uk8SyFSrNeYiCF3pKHNfgAD5d0b/WkehM7ED0QkZbO2kTEW/np4Qdbm24UVFY
-         QMiOuRXhMzmUutVVtkTbOWRshF4jx7sqLkdMd1dz4GXO/hCZYQVSQP+CTDuTzmIMsHNy
-         zCAbtIlF7OAlmYpKNx6e244gjVz4aF3qcwlcV7CJtwdkFQ43JFsBq3ozaMKBS1Ht8nIf
-         EMKHzd2PEUV/eWNt8tuvkhyhrHvv/k6QejbmQCrKnKfyhwUWNc4LnL36ezcicWbEhUNG
-         Ju9m5WV7A/ZwbUF/Y1ZamnDFUGYYF4TmLCaBwnEdHlTwDJNrQgSZhBs/fn2fwt1o6X07
-         G01A==
-X-Gm-Message-State: AOAM530fXD+0CcZrIRxK9ZhCp6/ydumA/I8huimVDZLZrYw3lA7GQh9B
-        aEB8X3Q6GiCgn3dn5dVMTU+gUcYDXPhYtQ==
-X-Google-Smtp-Source: ABdhPJyGmvnirYv8KEt+qk7jMIRiNk0Uqvtp7W8brp7JtSKIrUJ0bkWljRpoa+UcAGksqJvqo54whg==
-X-Received: by 2002:a63:4415:: with SMTP id r21mr11614309pga.222.1618834717106;
-        Mon, 19 Apr 2021 05:18:37 -0700 (PDT)
-Received: from localhost ([112.79.253.181])
-        by smtp.gmail.com with ESMTPSA id g24sm14205466pgn.18.2021.04.19.05.18.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 05:18:36 -0700 (PDT)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH bpf-next v2 4/4] libbpf: add selftests for TC-BPF API
-Date:   Mon, 19 Apr 2021 17:48:11 +0530
-Message-Id: <20210419121811.117400-5-memxor@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210419121811.117400-1-memxor@gmail.com>
-References: <20210419121811.117400-1-memxor@gmail.com>
+        id S233351AbhDSMUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 08:20:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58072 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239064AbhDSMUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 08:20:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC4566135F;
+        Mon, 19 Apr 2021 12:19:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618834779;
+        bh=vID4nWjxHrnKngR2T3VE7SWDRX/nxRGLtI0Y09J0vYY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VRrboZUaTSD01xxGFANUrz7+k1Kp0UPdLHtH2Y5s5qZL3iLLLWr0JoGZiQ8YOhAGQ
+         DFNLIj5xm61RzSliRlk6EaWuIEccp4yePh5lvRLAxNuHI2T92pTspozEu1517b96iv
+         nQCbCSn8gAN1rZZ+o64WceHXXtQ4KYsPXkFXsB/APDw02kpjFOYKCnl0rielIQ2RRZ
+         sSwsnrFNFOhNhzxhm41L3A5uGzRcHWXJFT1fkVJyO+0iy6e9dJEQoHyDxhnk12eXtn
+         MhSEiTcJAxxO1DBmfyXWsOfB2tV++LY1sRDUTruYckKV/T+PvBXOzIRsawj+ud2ui7
+         F3iOaaPdx4kvA==
+Date:   Mon, 19 Apr 2021 13:19:33 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        He Zhe <zhe.he@windriver.com>, oleg@redhat.com,
+        linux-arm-kernel@lists.infradead.org, paul@paul-moore.com,
+        eparis@redhat.com, linux-audit@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] arm64: ptrace: Add is_syscall_success to handle
+ compat
+Message-ID: <20210419121932.GA30004@willie-the-truck>
+References: <20210416075533.7720-1-zhe.he@windriver.com>
+ <20210416123322.GA23184@arm.com>
+ <20210416133431.GA2303@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416133431.GA2303@C02TD0UTHF1T.local>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds some basic tests for the low level bpf_tc_cls_* API.
+On Fri, Apr 16, 2021 at 02:34:41PM +0100, Mark Rutland wrote:
+> On Fri, Apr 16, 2021 at 01:33:22PM +0100, Catalin Marinas wrote:
+> > On Fri, Apr 16, 2021 at 03:55:31PM +0800, He Zhe wrote:
+> > > The general version of is_syscall_success does not handle 32-bit
+> > > compatible case, which would cause 32-bit negative return code to be
+> > > recoganized as a positive number later and seen as a "success".
+> > > 
+> > > Since is_compat_thread is defined in compat.h, implementing
+> > > is_syscall_success in ptrace.h would introduce build failure due to
+> > > recursive inclusion of some basic headers like mutex.h. We put the
+> > > implementation to ptrace.c
+> > > 
+> > > Signed-off-by: He Zhe <zhe.he@windriver.com>
+> > > ---
+> > >  arch/arm64/include/asm/ptrace.h |  3 +++
+> > >  arch/arm64/kernel/ptrace.c      | 10 ++++++++++
+> > >  2 files changed, 13 insertions(+)
+> > > 
+> > > diff --git a/arch/arm64/include/asm/ptrace.h b/arch/arm64/include/asm/ptrace.h
+> > > index e58bca832dff..3c415e9e5d85 100644
+> > > --- a/arch/arm64/include/asm/ptrace.h
+> > > +++ b/arch/arm64/include/asm/ptrace.h
+> > > @@ -328,6 +328,9 @@ static inline void regs_set_return_value(struct pt_regs *regs, unsigned long rc)
+> > >  	regs->regs[0] = rc;
+> > >  }
+> > >  
+> > > +extern inline int is_syscall_success(struct pt_regs *regs);
+> > > +#define is_syscall_success(regs) is_syscall_success(regs)
+> > > +
+> > >  /**
+> > >   * regs_get_kernel_argument() - get Nth function argument in kernel
+> > >   * @regs:	pt_regs of that context
+> > > diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
+> > > index 170f42fd6101..3266201f8c60 100644
+> > > --- a/arch/arm64/kernel/ptrace.c
+> > > +++ b/arch/arm64/kernel/ptrace.c
+> > > @@ -1909,3 +1909,13 @@ int valid_user_regs(struct user_pt_regs *regs, struct task_struct *task)
+> > >  	else
+> > >  		return valid_native_regs(regs);
+> > >  }
+> > > +
+> > > +inline int is_syscall_success(struct pt_regs *regs)
+> > > +{
+> > > +	unsigned long val = regs->regs[0];
+> > > +
+> > > +	if (is_compat_thread(task_thread_info(current)))
+> > > +		val = sign_extend64(val, 31);
+> > > +
+> > > +	return !IS_ERR_VALUE(val);
+> > > +}
+> > 
+> > It's better to use compat_user_mode(regs) here instead of
+> > is_compat_thread(). It saves us from worrying whether regs are for the
+> > current context.
+> > 
+> > I think we should change regs_return_value() instead. This function
+> > seems to be called from several other places and it has the same
+> > potential problems if called on compat pt_regs.
+> 
+> I think this is a problem we created for ourselves back in commit:
+> 
+>   15956689a0e60aa0 ("arm64: compat: Ensure upper 32 bits of x0 are zero on syscall return)
+> 
+> AFAICT, the perf regs samples are the only place this matters, since for
+> ptrace the compat regs are implicitly truncated to compat_ulong_t, and
+> audit expects the non-truncated return value. Other architectures don't
+> truncate here, so I think we're setting ourselves up for a game of
+> whack-a-mole to truncate and extend wherever we need to.
+> 
+> Given that, I suspect it'd be better to do something like the below.
+> 
+> Will, thoughts?
 
-Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- .../selftests/bpf/prog_tests/test_tc_bpf.c    | 112 ++++++++++++++++++
- .../selftests/bpf/progs/test_tc_bpf_kern.c    |  12 ++
- 2 files changed, 124 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_tc_bpf.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_tc_bpf_kern.c
+I think perf is one example, but this is also visible to userspace via the
+native ptrace interface and I distinctly remember needing this for some
+versions of arm64 strace to work correctly when tracing compat tasks.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_tc_bpf.c b/tools/testing/selftests/bpf/prog_tests/test_tc_bpf.c
-new file mode 100644
-index 000000000000..945f3a1a72f8
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_tc_bpf.c
-@@ -0,0 +1,112 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <linux/err.h>
-+#include <linux/limits.h>
-+#include <bpf/libbpf.h>
-+#include <errno.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <test_progs.h>
-+#include <linux/if_ether.h>
-+
-+#define LO_IFINDEX 1
-+
-+static int test_tc_cls_internal(int fd, __u32 parent_id)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_tc_cls_opts, opts, .handle = 1, .priority = 10,
-+			    .class_id = TC_H_MAKE(1UL << 16, 1),
-+			    .chain_index = 5);
-+	struct bpf_tc_cls_attach_id id = {};
-+	struct bpf_tc_cls_info info = {};
-+	int ret;
-+
-+	ret = bpf_tc_cls_attach(fd, LO_IFINDEX, parent_id, &opts, &id);
-+	if (CHECK_FAIL(ret < 0))
-+		return ret;
-+
-+	ret = bpf_tc_cls_get_info(fd, LO_IFINDEX, parent_id, NULL, &info);
-+	if (CHECK_FAIL(ret < 0))
-+		goto end;
-+
-+	ret = -1;
-+
-+	if (CHECK_FAIL(info.id.handle != id.handle) ||
-+	    CHECK_FAIL(info.id.chain_index != id.chain_index) ||
-+	    CHECK_FAIL(info.id.priority != id.priority) ||
-+	    CHECK_FAIL(info.id.handle != 1) ||
-+	    CHECK_FAIL(info.id.priority != 10) ||
-+	    CHECK_FAIL(info.class_id != TC_H_MAKE(1UL << 16, 1)) ||
-+	    CHECK_FAIL(info.id.chain_index != 5))
-+		goto end;
-+
-+	ret = bpf_tc_cls_replace(fd, LO_IFINDEX, parent_id, &opts, &id);
-+	if (CHECK_FAIL(ret < 0))
-+		return ret;
-+
-+	if (CHECK_FAIL(info.id.handle != 1) ||
-+	    CHECK_FAIL(info.id.priority != 10) ||
-+	    CHECK_FAIL(info.class_id != TC_H_MAKE(1UL << 16, 1)))
-+		goto end;
-+
-+	/* Demonstrate changing attributes */
-+	opts.class_id = TC_H_MAKE(1UL << 16, 2);
-+
-+	ret = bpf_tc_cls_change(fd, LO_IFINDEX, parent_id, &opts, &info.id);
-+	if (CHECK_FAIL(ret < 0))
-+		goto end;
-+
-+	ret = bpf_tc_cls_get_info(fd, LO_IFINDEX, parent_id, NULL, &info);
-+	if (CHECK_FAIL(ret < 0))
-+		goto end;
-+
-+	if (CHECK_FAIL(info.class_id != TC_H_MAKE(1UL << 16, 2)))
-+		goto end;
-+	if (CHECK_FAIL((info.bpf_flags & TCA_BPF_FLAG_ACT_DIRECT) != 1))
-+		goto end;
-+
-+end:
-+	ret = bpf_tc_cls_detach(LO_IFINDEX, parent_id, &id);
-+	CHECK_FAIL(ret < 0);
-+	return ret;
-+}
-+
-+void test_test_tc_bpf(void)
-+{
-+	const char *file = "./test_tc_bpf_kern.o";
-+	struct bpf_program *clsp;
-+	struct bpf_object *obj;
-+	int cls_fd, ret;
-+
-+	obj = bpf_object__open(file);
-+	if (CHECK_FAIL(IS_ERR_OR_NULL(obj)))
-+		return;
-+
-+	clsp = bpf_object__find_program_by_title(obj, "classifier");
-+	if (CHECK_FAIL(IS_ERR_OR_NULL(clsp)))
-+		goto end;
-+
-+	ret = bpf_object__load(obj);
-+	if (CHECK_FAIL(ret < 0))
-+		goto end;
-+
-+	cls_fd = bpf_program__fd(clsp);
-+
-+	system("tc qdisc del dev lo clsact");
-+
-+	ret = test_tc_cls_internal(cls_fd, BPF_TC_CLSACT_INGRESS);
-+	if (CHECK_FAIL(ret < 0))
-+		goto end;
-+
-+	if (CHECK_FAIL(system("tc qdisc del dev lo clsact")))
-+		goto end;
-+
-+	ret = test_tc_cls_internal(cls_fd, BPF_TC_CLSACT_EGRESS);
-+	if (CHECK_FAIL(ret < 0))
-+		goto end;
-+
-+	CHECK_FAIL(system("tc qdisc del dev lo clsact"));
-+
-+end:
-+	bpf_object__close(obj);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_tc_bpf_kern.c b/tools/testing/selftests/bpf/progs/test_tc_bpf_kern.c
-new file mode 100644
-index 000000000000..3dd40e21af8e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_tc_bpf_kern.c
-@@ -0,0 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+// Dummy prog to test TC-BPF API
-+
-+SEC("classifier")
-+int cls(struct __sk_buff *skb)
-+{
-+	return 0;
-+}
--- 
-2.30.2
+So I do think that clearing the upper bits on the return path is the right
+approach, but it sounds like we need some more work to handle syscall(-1)
+and audit (what exactly is the problem here after these patches have been
+applied?)
 
+Will
