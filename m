@@ -2,88 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A33363F71
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 12:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC468363F88
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 12:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232245AbhDSKVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 06:21:32 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:35950 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238459AbhDSKVB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 06:21:01 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 2B2A01A16AC;
-        Mon, 19 Apr 2021 12:19:24 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id DAFC21A1308;
-        Mon, 19 Apr 2021 12:19:14 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 0D9BB40291;
-        Mon, 19 Apr 2021 12:19:02 +0200 (CEST)
-From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-To:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     xiaoliang.yang_1@nxp.com, Arvid.Brodin@xdin.com,
-        m-karicheri2@ti.com, vinicius.gomes@intel.com,
-        michael.chan@broadcom.com, vishal@chelsio.com, saeedm@mellanox.com,
-        jiri@mellanox.com, idosch@mellanox.com,
-        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
-        ivan.khoronzhuk@linaro.org, andre.guedes@linux.intel.com,
-        yuehaibing@huawei.com, allan.nielsen@microchip.com,
-        joergen.andreasen@microchip.com, colin.king@canonical.com,
-        po.liu@nxp.com, mingkai.hu@nxp.com, claudiu.manoil@nxp.com,
-        vladimir.oltean@nxp.com, leoyang.li@nxp.com
-Subject: [net-next] net: dsa: felix: disable always guard band bit for TAS config
-Date:   Mon, 19 Apr 2021 18:25:30 +0800
-Message-Id: <20210419102530.20361-1-xiaoliang.yang_1@nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S232989AbhDSK0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 06:26:39 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2756 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230272AbhDSK0h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 06:26:37 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13JA5WE3128267;
+        Mon, 19 Apr 2021 06:26:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=/Q/z9CmIU0bc14oP77ckvkImt3QVaQuoxewGw0EqTWM=;
+ b=Ci3v8RAv3cTeQ71JjVZv7fCXmw6dVqRtCJRtiBS0YuFZWgSCJ05UHnk0hpll/5Jj2aaB
+ 5YpQhzn31HOt95rG08JKcKXff3+Ym4yQ/GdJ6qEc3xgsQUC20B4tOHc3g6yJ0mO/d/lj
+ e+LNryu+ZS/umTfzD2JBtrVXI8k1OeGiCnvb0r5SP4+OcSvmIYHu7t66meZLixfhgkUl
+ A6cqxwSBjYmTHEfNVCTOMsBY1XHdIF74D5F9z/6bHSQYvC2iLhevUsQ2ALhSgr34aD/O
+ S1Hd0YJl3djiee3wM9esp2gnRXHtFhsy4VhAyn3MX36T+880/ljcDzURuOtf3t9sOq0M dw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 380cramc05-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Apr 2021 06:26:00 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13JA5XFG128312;
+        Mon, 19 Apr 2021 06:25:59 -0400
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 380crambyt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Apr 2021 06:25:59 -0400
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13JAM6U7000940;
+        Mon, 19 Apr 2021 10:25:58 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma01wdc.us.ibm.com with ESMTP id 37yqa8h4u5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Apr 2021 10:25:58 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13JAPwA627394500
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 19 Apr 2021 10:25:58 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2B2ACAE05C;
+        Mon, 19 Apr 2021 10:25:58 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 12F1EAE05F;
+        Mon, 19 Apr 2021 10:25:55 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.38.52])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon, 19 Apr 2021 10:25:54 +0000 (GMT)
+Subject: Re: [PATCH] perf vendor events: Initial json/events list for power10
+ platform
+To:     "Paul A. Clarke" <pc@us.ibm.com>
+Cc:     acme@kernel.org, maddy@linux.vnet.ibm.com,
+        atrajeev@linux.vnet.ibm.com, linux-kernel@vger.kernel.org,
+        jolsa@redhat.com, mpe@ellerman.id.au, ravi.bangoria@linux.ibm.com,
+        linux-perf-users@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <20210417091850.596023-1-kjain@linux.ibm.com>
+ <20210418210838.GA1845018@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <130f4181-a5ba-a24a-5d1f-7694999c324a@linux.ibm.com>
+Date:   Mon, 19 Apr 2021 15:55:53 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <20210418210838.GA1845018@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: jRQIvlOWSQIoGOZd15OC992mM78ZyOeH
+X-Proofpoint-GUID: otI7imAesBe4e_OgYg6xLLBfZi7Eco3r
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-19_07:2021-04-16,2021-04-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ priorityscore=1501 bulkscore=0 clxscore=1015 malwarescore=0 mlxscore=0
+ mlxlogscore=999 spamscore=0 adultscore=0 suspectscore=0 impostorscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104190069
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ALWAYS_GUARD_BAND_SCH_Q bit in TAS config register is descripted as
-this:
-	0: Guard band is implemented for nonschedule queues to schedule
-	   queues transition.
-	1: Guard band is implemented for any queue to schedule queue
-	   transition.
 
-The driver set guard band be implemented for any queue to schedule queue
-transition before, which will make each GCL time slot reserve a guard
-band time that can pass the max SDU frame. Because guard band time could
-not be set in tc-taprio now, it will use about 12000ns to pass 1500B max
-SDU. This limits each GCL time interval to be more than 12000ns.
 
-This patch change the guard band to be only implemented for nonschedule
-queues to schedule queues transition, so that there is no need to reserve
-guard band on each GCL. Users can manually add guard band time for each
-schedule queues in their configuration if they want.
+On 4/19/21 2:38 AM, Paul A. Clarke wrote:
+> On Sat, Apr 17, 2021 at 02:48:50PM +0530, Kajol Jain wrote:
+>> Patch adds initial json/events for POWER10.
+> 
+> I was able to apply, build, and run perf with these changes,
+> and every new event at least ran successfully with
+> `perf stat`.
+> 
+> Pedantically, there is a lot of inconsistency as to whether
+> the `BriefDescription` ends with a period or not, and whether
+> there is an extra space at the end.
 
-Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
----
- drivers/net/dsa/ocelot/felix_vsc9959.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Hi Paul,
+Thanks for reviewing the patch. Sure I will remove this inconsistency
+and send v2 patch for the same, with your Tested-by and Reviewed-by tag.
 
-diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/ocelot/felix_vsc9959.c
-index 789fe08cae50..2473bebe48e6 100644
---- a/drivers/net/dsa/ocelot/felix_vsc9959.c
-+++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
-@@ -1227,8 +1227,12 @@ static int vsc9959_qos_port_tas_set(struct ocelot *ocelot, int port,
- 	if (taprio->num_entries > VSC9959_TAS_GCL_ENTRY_MAX)
- 		return -ERANGE;
- 
--	ocelot_rmw(ocelot, QSYS_TAS_PARAM_CFG_CTRL_PORT_NUM(port) |
--		   QSYS_TAS_PARAM_CFG_CTRL_ALWAYS_GUARD_BAND_SCH_Q,
-+	/* Set port num and disable ALWAYS_GUARD_BAND_SCH_Q, which means set
-+	 * guard band to be implemented for nonschedule queues to schedule
-+	 * queues transition.
-+	 */
-+	ocelot_rmw(ocelot,
-+		   QSYS_TAS_PARAM_CFG_CTRL_PORT_NUM(port),
- 		   QSYS_TAS_PARAM_CFG_CTRL_PORT_NUM_M |
- 		   QSYS_TAS_PARAM_CFG_CTRL_ALWAYS_GUARD_BAND_SCH_Q,
- 		   QSYS_TAS_PARAM_CFG_CTRL);
--- 
-2.17.1
+Thanks,
+Kajol Jain
 
+> 
+> Regardless, LGTM.
+> 
+> Tested-by: Paul A. Clarke <pc@us.ibm.com>
+> Reviewed-by: Paul A. Clarke <pc@us.ibm.com>
+> 
+> PC
+> 
