@@ -2,163 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA1A364ED8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8093A364EE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232883AbhDSXoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 19:44:01 -0400
-Received: from gw.atmark-techno.com ([13.115.124.170]:42782 "EHLO
-        gw.atmark-techno.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232656AbhDSXnw (ORCPT
+        id S232801AbhDSX6Q convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Apr 2021 19:58:16 -0400
+Received: from zimbra.cs.ucla.edu ([131.179.128.68]:34768 "EHLO
+        zimbra.cs.ucla.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232656AbhDSX6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 19:43:52 -0400
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com [209.85.161.71])
-        by gw.atmark-techno.com (Postfix) with ESMTPS id 8AEA9804C4
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 08:43:09 +0900 (JST)
-Received: by mail-oo1-f71.google.com with SMTP id h6-20020a4ac4460000b02901e5f0bd5de0so6577630ooq.15
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 16:43:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YfTDNxUjME1kzwn4ONpBlmaWp5uEs0PGjlewRbiJ8O0=;
-        b=OmzfkK8b5ePi5Oz4BILFkmPW8eJ3iRQx0XCjlL6/7xLhzwwlTomDl3ZARxP9q/Mgyu
-         6tiyeqQB8i+Eq+3q19sYkoDgQBmPWOWVoqd/KHVEt+NnunxHZukKTpVG9BWKgEI177n2
-         Wafp7SL+Xun2CQdEQRChv6WppLRjns3Mt7Gj9uQhbnsvGTis2j2CbMZZk8ykRYO4LQz7
-         o5Bd4SLtC1T8UhROU3qsEoS+YeRSrz1CjP7Gaxs77gafK3yWnBOcus3auYqMouh3IDiy
-         Fzzy2QTlNPI7GgElUGnWWw56sjc1dhcWMUdCzLuzxsT0uutu2c/5Gu0NMgzViwE5lxRC
-         0TWg==
-X-Gm-Message-State: AOAM532zdOpbkDv0qtCltIdflSTAzbLcv6YmKg+GEl1ze10kDwUQRoEC
-        KI5WWMJrQ1bGAutTt2nno8F3t+aOtjjT1TvjRiH1bg7tG8lZj8mZOXILWlywLDZyJJ5L4FrZfRS
-        Db7hm8/XYFkEx8KGfGwVAXQ+mf9a2
-X-Received: by 2002:a17:90a:1c1:: with SMTP id 1mr1708170pjd.190.1618875776929;
-        Mon, 19 Apr 2021 16:42:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzRGNIqy2AO5m9iOwuC4N09BxordE8LmUXYTIIeyniOtbCQKfA0MKaQl391n1ZLV3YIJOra8w==
-X-Received: by 2002:a17:90a:1c1:: with SMTP id 1mr1708139pjd.190.1618875776711;
-        Mon, 19 Apr 2021 16:42:56 -0700 (PDT)
-Received: from pc-0115 (76.125.194.35.bc.googleusercontent.com. [35.194.125.76])
-        by smtp.gmail.com with ESMTPSA id r3sm8384971pgn.82.2021.04.19.16.42.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 19 Apr 2021 16:42:55 -0700 (PDT)
-Received: from martinet by pc-0115 with local (Exim 4.94)
-        (envelope-from <martinet@pc-0115>)
-        id 1lYdXa-002mPj-58; Tue, 20 Apr 2021 08:42:54 +0900
-Date:   Tue, 20 Apr 2021 08:42:44 +0900
-From:   Dominique MARTINET <dominique.martinet@atmark-techno.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Alice Guo (OSS)" <alice.guo@oss.nxp.com>,
-        gregkh <gregkh@linuxfoundation.org>,
-        Rafael Wysocki <rafael@kernel.org>,
-        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
-        aymen.sghaier@nxp.com, Herbert Xu <herbert@gondor.apana.org.au>,
-        David Miller <davem@davemloft.net>,
-        Tony Lindgren <tony@atomide.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        peter.ujfalusi@gmail.com, Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kevin Hilman <khilman@baylibre.com>, tomba@kernel.org,
-        jyri.sarha@iki.fi, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kishon <kishon@ti.com>, Jakub Kicinski <kuba@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Roy Pledge <Roy.Pledge@nxp.com>, Leo Li <leoyang.li@nxp.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Keerthy <j-keerthy@ti.com>, Felipe Balbi <balbi@kernel.org>,
-        Tony Prisk <linux@prisktech.co.nz>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>, dmaengine@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:ARM/Amlogic Meson SoC support" 
-        <linux-amlogic@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        linux-phy@lists.infradead.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-staging@lists.linux.dev,
-        "moderated list:ARM/Mediatek SoC..." 
-        <linux-mediatek@lists.infradead.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>
-Subject: Re: [RFC v1 PATCH 3/3] driver: update all the code that use
- soc_device_match
-Message-ID: <YH4VdPNO9cdzc5MD@atmark-techno.com>
-References: <20210419042722.27554-1-alice.guo@oss.nxp.com>
- <20210419042722.27554-4-alice.guo@oss.nxp.com>
- <YH0O907dfGY9jQRZ@atmark-techno.com>
- <CAMuHMdVY1SLZ0K30T2pimyrR6Mm=VoSTO=L-xxCy2Bj7_kostw@mail.gmail.com>
- <YH1OeFy+SepIYYG0@atmark-techno.com>
- <CAK8P3a1Mu2F0irDDCL-50HiHth29iYFL5b7WHZ=UX6W7zzoxAg@mail.gmail.com>
+        Mon, 19 Apr 2021 19:58:15 -0400
+X-Greylist: delayed 333 seconds by postgrey-1.27 at vger.kernel.org; Mon, 19 Apr 2021 19:58:15 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra.cs.ucla.edu (Postfix) with ESMTP id C282916005F;
+        Mon, 19 Apr 2021 16:52:11 -0700 (PDT)
+Received: from zimbra.cs.ucla.edu ([127.0.0.1])
+        by localhost (zimbra.cs.ucla.edu [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id R4ycixmGNAYj; Mon, 19 Apr 2021 16:52:10 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by zimbra.cs.ucla.edu (Postfix) with ESMTP id D2E1416013B;
+        Mon, 19 Apr 2021 16:52:10 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at zimbra.cs.ucla.edu
+Received: from zimbra.cs.ucla.edu ([127.0.0.1])
+        by localhost (zimbra.cs.ucla.edu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id ghCC6ODsdtTb; Mon, 19 Apr 2021 16:52:10 -0700 (PDT)
+Received: from [192.168.1.9] (cpe-172-91-119-151.socal.res.rr.com [172.91.119.151])
+        by zimbra.cs.ucla.edu (Postfix) with ESMTPSA id 6DC4D16005F;
+        Mon, 19 Apr 2021 16:52:10 -0700 (PDT)
+To:     Len Brown <lenb@kernel.org>
+Cc:     Florian Weimer <fweimer@redhat.com>, linux-abi@vger.kernel.org,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kyle Huey <me@kylehuey.com>, Rich Felker <dalias@libc.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Willy Tarreau <w@1wt.eu>, Borislav Petkov <bp@alien8.de>
+References: <20210413034346.GA22861@1wt.eu>
+ <CAJvTdKmLth==ZPv7ygLs0jFX7JRPVhVT82ZDoT4xcQRABEVTvQ@mail.gmail.com>
+ <20210414095804.GB10709@zn.tnic>
+ <CAJvTdKn_y8qAjDy189zEf8cnaWrvW3baca=z9FgGxV9AvQEADg@mail.gmail.com>
+ <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu>
+ <20210415054713.GB6318@zn.tnic>
+ <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
+ <20210419141454.GE9093@zn.tnic>
+ <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com>
+ <20210419191539.GH9093@zn.tnic>
+ <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
+From:   Paul Eggert <eggert@cs.ucla.edu>
+Organization: UCLA Computer Science Department
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
+ features
+Message-ID: <1af4c589-f79b-6766-329e-74c735c17376@cs.ucla.edu>
+Date:   Mon, 19 Apr 2021 16:52:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a1Mu2F0irDDCL-50HiHth29iYFL5b7WHZ=UX6W7zzoxAg@mail.gmail.com>
+In-Reply-To: <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann wrote on Mon, Apr 19, 2021 at 02:16:36PM +0200:
-> In some cases, you can use the device_link infrastructure to deal
-> with dependencies between devices. Not sure if this would help
-> in your case, but have a look at device_link_add() etc in drivers/base/core.c
+On 4/19/21 2:33 PM, Len Brown via Libc-alpha wrote:
+> the AI guys are super excited about matrix multiplication,
+> but I have a hard time imagining why grep(1) would find a use for it.
 
-I'll need to actually try to convince myself but if creating the link
-forces driver registration then it should be workable.
+I don't. Matrix multiplication is used in modern string-searching 
+algorithms that could be useful in running 'grep' on CPUs that have 
+relevant hardware support. See, for example:
 
-> > In this particular case the problem is that since 7d981405d0fd ("soc:
-> > imx8m: change to use platform driver") the soc probe tries to use the
-> > nvmem driver for ocotp fuses for imx8m devices, which isn't ready yet.
-> > So soc loading gets pushed back to the end of the list because it gets
-> > defered and other drivers relying on soc_device_match get confused
-> > because they wrongly think a device doesn't match a quirk when it
-> > actually does.
-> >
-> > If there is a way to ensure the nvmem driver gets loaded before the soc,
-> > that would also solve the problem nicely, and avoid the need to mess
-> > with all the ~50 drivers which use it.
-> >
-> > Is there a way to control in what order drivers get loaded? Something in
-> > the dtb perhaps?
-> 
-> For built-in drivers, load order depends on the initcall level and
-> link order (how things are lined listed in the Makefile hierarchy).
-> 
-> For loadable modules, this is up to user space in the end.
-> 
-> Which of the drivers in this scenario are loadable modules?
+Susanina Y, Yaveyn A, Grigorev S. Modification of Valiant’s Parsing 
+Algorithm for the String-Searching Problem. CIBB 2019. 
+https://doi.org/10.1007/978-3-030-63061-4_17
 
-All the drivers involved in my case are built-in (nvmem, soc and final
-soc_device_match consumer e.g. caam_jr that crashes the kernel if soc is
-not identified properly).
+Although nowadays this technology is typically proposed for 
+bioinformatics (DNA pattern matching, etc.), it's not that much of a 
+stretch to imagine a future 'grep' or 'diff' that does matrix 
+multiplication. After all, GNU 'diff' currently uses an algorithm 
+designed by a DNA expert.
 
-I frankly don't like the idea of moving nvmem/ above soc/ in
-drivers/Makefile as a "solution" to this (especially as there is one
-that seems to care about what soc they run on...), so I'll have a look
-at links first, hopefully that will work out.
-
-
-Thanks,
--- 
-Dominique
+(We now return you to the regular AMX debates. :-)
