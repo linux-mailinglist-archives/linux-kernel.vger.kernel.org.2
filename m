@@ -2,95 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904F5364256
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC4F364352
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234812AbhDSNHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:07:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233360AbhDSNHH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:07:07 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB57EC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 06:06:37 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id h8so457187edb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 06:06:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=devtank-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1zgCFjor3XnFUiqS8luN2jabhXdNkHgx+yBFmbZRtKE=;
-        b=rS/GHKCu3RCmJE+NAGg6FoCU7E/J7DkCYs8yay6X6LojOoL4tQC80/DcOQyxadagkU
-         BQpWzFHdew0DfnVKy3L2qs6c8t+Wctc6fTWaXHW8/Z0rrRBZWbKVK2oyaf9VPlTx1+Kp
-         DBzu0bWfDvYaKoNdXZQ0BeE5zIpxY9sgfyu8TlTVI5FNc/uFvpd7JWYgzTR0aD7+82sG
-         WzJzB0xAmBrdVxtrYSPsn8dhc+QKN+KsK/rYwtn42BSiXajnu1Slbs2eybFkO4Ia8FXw
-         W9mUoNig1C/bSRHoqEvcd46anIETzC5XGMNffDIRMnSmo6FSTZlNMD2mSH+qK68kUQP2
-         t8jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1zgCFjor3XnFUiqS8luN2jabhXdNkHgx+yBFmbZRtKE=;
-        b=lO5QKiWZkDn6akWNVH14YD0lSrgXgyeeCftgZ6IF4rIrw1bQg7slJbnBNEST4Rkvf1
-         hu+VIS0xgu6zjFL27pRLNpi/NQUH4EgJ2/x0wh8vkEJJ2qqAXHwGXpYHezQuO70jr+wc
-         QahfNjGPLHlrj0PW2RhEeY/Vivh3bsoiPVXDtSohaKwzIZ+d6PGOUHhvXY1HEIH/ZdPl
-         2fVwxIfbtgPJ/lLd2btmhSKlNV/q2C8W/qr2IUJM6G1pHK5SmRPPWm4DQgrVyelWoPyt
-         BglhanSSpe9bVE1XDjb72jrR6IDw8UuZRmmmgBLQymhwOkl1C0RyXB+RM/26/gPnU+bf
-         ymxg==
-X-Gm-Message-State: AOAM533eFBWbCQaPVkAQstyf38Z5bhL5IGmplgcYKwp5pa2RaH4bUaHc
-        r6eSNCDV8LQR0vBXqB9/6cVdMA==
-X-Google-Smtp-Source: ABdhPJzYojtclLmQoIIsAvWeGdEI7bB9mMxO6N7G/Aok58dOaXdiehW2yc7inVlG5iobG5J0rGL9EQ==
-X-Received: by 2002:a05:6402:1ad9:: with SMTP id ba25mr25583421edb.264.1618837596569;
-        Mon, 19 Apr 2021 06:06:36 -0700 (PDT)
-Received: from jabjoe-desktop.lan ([2a02:8010:673b:0:27d5:da8f:c244:7b8a])
-        by smtp.googlemail.com with ESMTPSA id g20sm13277249edu.91.2021.04.19.06.06.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 06:06:36 -0700 (PDT)
-From:   Joe Burmeister <joe.burmeister@devtank.co.uk>
-To:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     joe.burmeister@devtank.co.uk
-Subject: [PATCH] spi: Handle SPI device setup callback failure.
-Date:   Mon, 19 Apr 2021 14:06:31 +0100
-Message-Id: <20210419130631.4586-1-joe.burmeister@devtank.co.uk>
-X-Mailer: git-send-email 2.30.2
+        id S240723AbhDSNRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:17:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240005AbhDSNN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:13:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7F7D613C5;
+        Mon, 19 Apr 2021 13:12:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618837948;
+        bh=56budua+6takyPNt7djZvnt25kiRnmy34gmsgwEXX/E=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=wQW/bkwggCXFVi4iLopFDA9UbCaEpWZLUgU+OIni8hkLaQSe9wV4mX5Id0zdPDoMs
+         rhYtjrLL0AU9+ZqP+ekuoelqOc1/kTsHHJwd0m6ABQy4wAItXicC3Wpgg7TwMf5kbL
+         HRl07HVJalUzIEEfQBzrLHbW6wmF78i+hB0Ekj9s=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Reiji Watanabe <reijiw@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 112/122] KVM: VMX: Dont use vcpu->run->internal.ndata as an array index
+Date:   Mon, 19 Apr 2021 15:06:32 +0200
+Message-Id: <20210419130533.974872558@linuxfoundation.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210419130530.166331793@linuxfoundation.org>
+References: <20210419130530.166331793@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the setup callback failed, but the controller has auto_runtime_pm
-and set_cs, the setup failure could be missed.
+From: Reiji Watanabe <reijiw@google.com>
 
-Signed-off-by: Joe Burmeister <joe.burmeister@devtank.co.uk>
+[ Upstream commit 04c4f2ee3f68c9a4bf1653d15f1a9a435ae33f7a ]
+
+__vmx_handle_exit() uses vcpu->run->internal.ndata as an index for
+an array access.  Since vcpu->run is (can be) mapped to a user address
+space with a writer permission, the 'ndata' could be updated by the
+user process at anytime (the user process can set it to outside the
+bounds of the array).
+So, it is not safe that __vmx_handle_exit() uses the 'ndata' that way.
+
+Fixes: 1aa561b1a4c0 ("kvm: x86: Add "last CPU" to some KVM_EXIT information")
+Signed-off-by: Reiji Watanabe <reijiw@google.com>
+Reviewed-by: Jim Mattson <jmattson@google.com>
+Message-Id: <20210413154739.490299-1-reijiw@google.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ arch/x86/kvm/vmx/vmx.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 8b283b2c1668..0c39178f4401 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -3388,8 +3388,15 @@ int spi_setup(struct spi_device *spi)
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 880a2617820c..95f836fbceb2 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -5986,19 +5986,19 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
+ 	     exit_reason.basic != EXIT_REASON_PML_FULL &&
+ 	     exit_reason.basic != EXIT_REASON_APIC_ACCESS &&
+ 	     exit_reason.basic != EXIT_REASON_TASK_SWITCH)) {
++		int ndata = 3;
++
+ 		vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
+ 		vcpu->run->internal.suberror = KVM_INTERNAL_ERROR_DELIVERY_EV;
+-		vcpu->run->internal.ndata = 3;
+ 		vcpu->run->internal.data[0] = vectoring_info;
+ 		vcpu->run->internal.data[1] = exit_reason.full;
+ 		vcpu->run->internal.data[2] = vcpu->arch.exit_qualification;
+ 		if (exit_reason.basic == EXIT_REASON_EPT_MISCONFIG) {
+-			vcpu->run->internal.ndata++;
+-			vcpu->run->internal.data[3] =
++			vcpu->run->internal.data[ndata++] =
+ 				vmcs_read64(GUEST_PHYSICAL_ADDRESS);
+ 		}
+-		vcpu->run->internal.data[vcpu->run->internal.ndata++] =
+-			vcpu->arch.last_vmentry_cpu;
++		vcpu->run->internal.data[ndata++] = vcpu->arch.last_vmentry_cpu;
++		vcpu->run->internal.ndata = ndata;
+ 		return 0;
+ 	}
  
- 	mutex_lock(&spi->controller->io_mutex);
- 
--	if (spi->controller->setup)
-+	if (spi->controller->setup) {
- 		status = spi->controller->setup(spi);
-+		if (status) {
-+			mutex_unlock(&spi->controller->io_mutex);
-+			dev_err(&spi->controller->dev, "Failed to setup device: %d\n",
-+				status);
-+			return status;
-+		}
-+	}
- 
- 	if (spi->controller->auto_runtime_pm && spi->controller->set_cs) {
- 		status = pm_runtime_get_sync(spi->controller->dev.parent);
 -- 
 2.30.2
+
+
 
