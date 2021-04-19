@@ -2,146 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB81364585
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 392DB364589
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238879AbhDSN7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:59:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbhDSN7T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:59:19 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EDCDC06174A;
-        Mon, 19 Apr 2021 06:58:48 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id ot17-20020a17090b3b51b0290109c9ac3c34so20420824pjb.4;
-        Mon, 19 Apr 2021 06:58:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hrErBjqIhLR1NMARNSCXaCw7wVsezhRfPZ7NPUo9T44=;
-        b=QTcdW+RdjhiuiNSrZicZQ1PD6s8mFBsVa6lfDiCBbecmijJWWda3TeR6o8lZHTO12X
-         4o9jxe5SA6liV9FpL/eUoWA6sSTvJsUyUfuhUlQf2WqffnOudJ92JPmsSno/Wiw25f8W
-         ZcmpeyBnn4bCHHjr6dLqoc5kRmcOJ9mCDBkiBviiYf8+gKz7zqS2kIOOii7Ww42HXf1n
-         JCXoRhDM7PGyTu4gio4Emz613wGiu2u5q3s1aJge1bkGZmrMF68ILcppGvYluAGXYN3S
-         pk0XusQ83cqm85QdnPcesjiARxsNvkR11zv8tvdiswI3FGvcKjLpjThG2nziAaOz7ixC
-         3L1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hrErBjqIhLR1NMARNSCXaCw7wVsezhRfPZ7NPUo9T44=;
-        b=cJtMZGRvztEf4N1/1DwzLFAeMYvojE3wMajR+C3YUnez+5EtxtRKoi7AOHNWa+tIXy
-         bV41vF98pJLMCmKYNor68BxkGFlgOgOzl/BbI/DdsTegAhJlXv6tc+BOCHm3aRofnVHK
-         VM6mozUtAXheIbYEnHfBVK7iRSWSfRt17wTlJKbhp4U5zZ7IfLNABkFz7L9rssMbxcMq
-         pZKTZc6Lw3abdZIfBmc2aQ0nsIzQY08fbZZjSR6hn9ScBC0W5R4rAMQt3LE6rBjSZt8p
-         RR3+SHbsP7eh0rxkNHMGed0jE+l3q1UMAbaSiPK8OKthCSEzX2wHvTNLECIbVSzQ6D4z
-         fh1Q==
-X-Gm-Message-State: AOAM532VSMhtjakbEZ3P1pfd6SBHztHSrmLyHaSAdaJ8ziP+aOqkBzJ5
-        cJrx6cZoihd5O6rtthUV5h/JN+8PdnN0M/yDPEk=
-X-Google-Smtp-Source: ABdhPJxVqgyffgGJgwmb7cjchTEMqtO+tcKar/5cM71i6OYS6lGRbyirtGZXP3efsqixMTlnCrNmBsaWjQGt6CJrGn0=
-X-Received: by 2002:a17:902:264:b029:eb:3d3a:a09c with SMTP id
- 91-20020a1709020264b02900eb3d3aa09cmr23402070plc.0.1618840727994; Mon, 19 Apr
- 2021 06:58:47 -0700 (PDT)
+        id S239071AbhDSOAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 10:00:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:43492 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230021AbhDSOAs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 10:00:48 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0FCD231B;
+        Mon, 19 Apr 2021 07:00:18 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3FBAA3F7D7;
+        Mon, 19 Apr 2021 07:00:16 -0700 (PDT)
+Subject: Re: [PATCH v1 3/5] mm: ptdump: Provide page size to notepage()
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        akpm@linux-foundation.org
+Cc:     linux-arch@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org, linux-mm@kvack.org
+References: <cover.1618506910.git.christophe.leroy@csgroup.eu>
+ <1ef6b954fb7b0f4dfc78820f1e612d2166c13227.1618506910.git.christophe.leroy@csgroup.eu>
+ <41819925-3ee5-4771-e98b-0073e8f095cf@arm.com>
+ <da53d2f2-b472-0c38-bdd5-99c5a098675d@csgroup.eu>
+ <1102cda1-b00f-b6ef-6bf3-22068cc11510@arm.com>
+ <627ee414-2f78-94e3-b77b-1013f52e77e3@csgroup.eu>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <4a76fbda-aa9d-867b-e2eb-a1951780aeec@arm.com>
+Date:   Mon, 19 Apr 2021 15:00:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <26db9291095c1dfd81c73b0f5f1434f9b399b1f5.1618316565.git.geert+renesas@glider.be>
- <bd8db435-24e1-5ab3-6b35-1d4d8a292a7e@hisilicon.com> <CAMuHMdVouD+e4GpN_Dur8HSop4B8HVosGSYw7vfTpBEi_inMbw@mail.gmail.com>
- <YHcx+QPbkTA0bv9V@smile.fi.intel.com> <CAMuHMdUkDcdZk5YYnkMH+VD4JXFq4khR2dn8wBdSXs1GCT9UMQ@mail.gmail.com>
- <YHc+/MOWA6rO+1Wy@smile.fi.intel.com> <CAMuHMdWZz6QNQbN53Whjfi122PWesM4_+K0_m=np8L=E+=io6g@mail.gmail.com>
- <CAHp75VcFjRBO+0578jWam3+sc24KvKArTtQV+nRCCbV1E++Nsg@mail.gmail.com>
- <CAMuHMdVu4VRgJzfM=P8OBi55rsCMFB1vmSepTvSyv1DLjw9Vcw@mail.gmail.com>
- <CAHp75Vcye9HPSoAkqiqnzgQ+8_SZ-W9gURWmWXd5s-y_fji5Ug@mail.gmail.com> <CAMuHMdU5AVdq5fubt69u6cOBJR8gwi=LcmePf46yi9_1srtsGA@mail.gmail.com>
-In-Reply-To: <CAMuHMdU5AVdq5fubt69u6cOBJR8gwi=LcmePf46yi9_1srtsGA@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 19 Apr 2021 16:58:32 +0300
-Message-ID: <CAHp75VdbYSD=unX4bbiWFXYPJJbW5b_j0kUO7S-HbO2btDvipw@mail.gmail.com>
-Subject: Re: [PATCH] i2c: I2C_HISI should depend on ARCH_HISI && ACPI
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <627ee414-2f78-94e3-b77b-1013f52e77e3@csgroup.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 4:54 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Mon, Apr 19, 2021 at 3:35 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> > On Mon, Apr 19, 2021 at 4:02 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > On Thu, Apr 15, 2021 at 10:50 AM Andy Shevchenko
-> > > <andy.shevchenko@gmail.com> wrote:
-> > > > On Thu, Apr 15, 2021 at 3:43 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > > On Wed, Apr 14, 2021 at 9:14 PM Andy Shevchenko
-> > > > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > > > On Wed, Apr 14, 2021 at 08:55:21PM +0200, Geert Uytterhoeven wrote:
-> > > > > > > On Wed, Apr 14, 2021 at 8:18 PM Andy Shevchenko
-> > > > > > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > > > > > On Wed, Apr 14, 2021 at 08:06:18PM +0200, Geert Uytterhoeven wrote:
-> > > > > > > > > On Wed, Apr 14, 2021 at 11:24 AM Yicong Yang <yangyicong@hisilicon.com> wrote:
-> >
-> > ...
-> >
-> > > > > > > > > I guess it's still fine to add a dependency on ACPI?
-> > > > > > > >
-> > > > > > > > But why?
-> > > > > > >
-> > > > > > > Please tell me how/when the driver is used when CONFIG_ACPI=n.
-> > > > > >
-> > > > > > I'm not using it at all. Ask the author :-)
-> > > > > >
-> > > > > > But if we follow your logic, then we need to mark all the _platform_ drivers
-> > > > > > for x86 world as ACPI dependent? This sounds ugly.
-> > > > >
-> > > > > Do all other x86 platform drivers have (1) an .acpi_match_table[] and
-> > > > > (2) no other way of instantiating their devices?
-> > > > > The first driver from the top of my memory I looked at is rtc-cmos:
-> > > > > it has no .acpi_match_table[], and the rtc-cmos device is instantiated
-> > > > > from arch/x86/kernel/rtc.c.
-> > > > >
-> > > > > For drivers with only an .of_match_table(), and no legacy users
-> > > > > instantiating platform devices, we do have dependencies on OF.
-> > > >
-> > > > This is not true. Entire IIO subsystem is an example.
-> > >
-> > > Do you care to elaborate?
-> > > Three quarters of the IIO drivers are I2C and SPI drivers, and thus not
-> > > subject to the above.
-> >
-> > It seems I missed that you are talking about platform device drivers.
->
-> OK.
->
-> > In any case it's not true. We have the platform drivers w/o legacy
-> > users that are not dependent on OF.
->
-> Example? ;-)
+On 19/04/2021 14:14, Christophe Leroy wrote:
+> 
+> 
+> Le 16/04/2021 à 12:51, Steven Price a écrit :
+>> On 16/04/2021 11:38, Christophe Leroy wrote:
+>>>
+>>>
+>>> Le 16/04/2021 à 11:28, Steven Price a écrit :
+>>>> On 15/04/2021 18:18, Christophe Leroy wrote:
+>>>>
+>>>> To be honest I don't fully understand why powerpc requires the 
+>>>> page_size - it appears to be using it purely to find "holes" in the 
+>>>> calls to note_page(), but I haven't worked out why such holes would 
+>>>> occur.
+>>>
+>>> I was indeed introduced for KASAN. We have a first commit 
+>>> https://github.com/torvalds/linux/commit/cabe8138 which uses page 
+>>> size to detect whether it is a KASAN like stuff.
+>>>
+>>> Then came https://github.com/torvalds/linux/commit/b00ff6d8c as a 
+>>> fix. I can't remember what the problem was exactly, something around 
+>>> the use of hugepages for kernel memory, came as part of the series 
+>>> https://patchwork.ozlabs.org/project/linuxppc-dev/cover/cover.1589866984.git.christophe.leroy@csgroup.eu/ 
+>>
+>>
+>>
+>> Ah, that's useful context. So it looks like powerpc took a different 
+>> route to reducing the KASAN output to x86.
+>>
+>> Given the generic ptdump code has handling for KASAN already it should 
+>> be possible to drop that from the powerpc arch code, which I think 
+>> means we don't actually need to provide page size to notepage(). 
+>> Hopefully that means more code to delete ;)
+>>
+> 
+> Looking at how the generic ptdump code handles KASAN, I'm a bit sceptic.
+> 
+> IIUC, it is checking that kasan_early_shadow_pte is in the same page as 
+> the pgtable referred by the PMD entry. But what happens if that PMD 
+> entry is referring another pgtable which is inside the same page as 
+> kasan_early_shadow_pte ?
+> 
+> Shouldn't the test be
+> 
+>      if (pmd_page_vaddr(val) == lm_alias(kasan_early_shadow_pte))
+>          return note_kasan_page_table(walk, addr);
 
-i2c-owl.c
+Now I come to look at this code again, I think you're right. On arm64 
+this doesn't cause a problem - page tables are page sized and page 
+aligned, so there couldn't be any non-KASAN pgtables sharing the page. 
+Obviously that's not necessarily true of other architectures.
 
-> > They may _indirectly_ be dependent, but this is fine as I stated above
-> > when suggested to move ACPI dependency on ARCH_xxx level.
->
-> As per the response from the driver maintainer
-> https://lore.kernel.org/linux-arm-kernel/bd8db435-24e1-5ab3-6b35-1d4d8a292a7e@hisilicon.com/,
-> there is no dependency on ARCH_HISI, so moving the ACPI dependency
-> up won't help.
+Feel free to add a patch to your series ;)
 
-So, an ACPI dependency is simply not applicable here as it's a compile
-dependency as well, which is not a limitation for this driver. Again,
-talk to Masahiro how to handle this, but I don't see any good
-justification to have ACPI (compile time) dependency here. So, again
-NAK!
-
--- 
-With Best Regards,
-Andy Shevchenko
+Steve
