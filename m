@@ -2,29 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61023363A0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 06:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6083639FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 06:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237602AbhDSEFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 00:05:45 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:54461 "EHLO ozlabs.org"
+        id S237478AbhDSEFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 00:05:06 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:42679 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237471AbhDSEFF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 00:05:05 -0400
+        id S233922AbhDSEEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 00:04:45 -0400
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4FNtVl5gQ4z9tl3; Mon, 19 Apr 2021 14:04:31 +1000 (AEST)
+        id 4FNtVR03sGz9vGs; Mon, 19 Apr 2021 14:04:14 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     npiggin@gmail.com, benh@kernel.crashing.org, mpe@ellerman.id.au,
-        alistair@popple.id.au, maddy@linux.ibm.com,
-        christophe.leroy@csgroup.eu, ravi.bangoria@linux.ibm.com,
-        rppt@kernel.org, paulus@samba.org, john.ogness@linutronix.de,
-        jniethe5@gmail.com, pmladek@suse.com, Pu Lehui <pulehui@huawei.com>
-Cc:     yangjihong1@huawei.com, zhangjinhao2@huawei.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210409070151.163424-1-pulehui@huawei.com>
-References: <20210409070151.163424-1-pulehui@huawei.com>
-Subject: Re: [PATCH -next] powerpc/xmon: Make symbol 'spu_inst_dump' static
-Message-Id: <161880479868.1398509.405544111450941367.b4-ty@ellerman.id.au>
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Bixuan Cui <cuibixuan@huawei.com>
+Cc:     kernel-janitors@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210409063855.57347-1-cuibixuan@huawei.com>
+References: <20210409063855.57347-1-cuibixuan@huawei.com>
+Subject: Re: [PATCH -next] powerpc/powernv: make symbol 'mpipl_kobj' static
+Message-Id: <161880479893.1398509.5196822029182381609.b4-ty@ellerman.id.au>
 Date:   Mon, 19 Apr 2021 13:59:58 +1000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -33,17 +32,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Apr 2021 15:01:51 +0800, Pu Lehui wrote:
-> Fix sparse warning:
+On Fri, 9 Apr 2021 14:38:55 +0800, Bixuan Cui wrote:
+> The sparse tool complains as follows:
 > 
-> arch/powerpc/xmon/xmon.c:4216:1: warning:
->  symbol 'spu_inst_dump' was not declared. Should it be static?
+> arch/powerpc/platforms/powernv/opal-core.c:74:16: warning:
+>  symbol 'mpipl_kobj' was not declared.
 > 
-> This symbol is not used outside of xmon.c, so make it static.
+> This symbol is not used outside of opal-core.c, so marks it static.
 
 Applied to powerpc/next.
 
-[1/1] powerpc/xmon: Make symbol 'spu_inst_dump' static
-      https://git.kernel.org/powerpc/c/f234ad405a35262ed2d8dd2d29fc633908dce955
+[1/1] powerpc/powernv: make symbol 'mpipl_kobj' static
+      https://git.kernel.org/powerpc/c/ff0b4155ae9903539d1299a9a4c8717fb7eb6009
 
 cheers
