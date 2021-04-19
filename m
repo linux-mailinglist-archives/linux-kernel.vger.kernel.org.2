@@ -2,254 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28183649E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 20:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 767943649E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 20:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241072AbhDSShu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 14:37:50 -0400
-Received: from mga05.intel.com ([192.55.52.43]:8975 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233002AbhDSSht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 14:37:49 -0400
-IronPort-SDR: 4W4bPLyASgMg3ho1a6daVwzrhtAe7RcSbWsHn/KGiKfyO81M2EQ6ifOhDlMWGG1yfvfq86qC0I
- GqbO8QCIR6qg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="280702532"
-X-IronPort-AV: E=Sophos;i="5.82,234,1613462400"; 
-   d="scan'208";a="280702532"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 11:37:18 -0700
-IronPort-SDR: mVnC+7o/ux30dgipxuCPMQsRxirpqDL70m7B/udEKgj4RQEgeyqfuV8cNyuXo9lVBQPOv0TWk1
- HU6sC2AH2gvQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,234,1613462400"; 
-   d="scan'208";a="420108005"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by fmsmga008.fm.intel.com with ESMTP; 19 Apr 2021 11:37:12 -0700
-Subject: Re: [PATCH v20 1/2] scsi: ufs: Enable power management for wlun
-To:     Asutosh Das <asutoshd@codeaurora.org>, cang@codeaurora.org,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
-Cc:     linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Bean Huo <beanhuo@micron.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Yue Hu <huyue2@yulong.com>,
-        Bart van Assche <bvanassche@acm.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-mediatek@lists.infradead.org>
-References: <cover.1618600985.git.asutoshd@codeaurora.org>
- <d660b8d4e1fb192810abd09a8ff0ef4d9f6b96cd.1618600985.git.asutoshd@codeaurora.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <fdadd467-b613-d800-18c5-be064396fd10@intel.com>
-Date:   Mon, 19 Apr 2021 21:37:27 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <d660b8d4e1fb192810abd09a8ff0ef4d9f6b96cd.1618600985.git.asutoshd@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S241128AbhDSSiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 14:38:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232800AbhDSSiR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 14:38:17 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA748C061761
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 11:37:47 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id v7-20020a05620a0a87b02902e02f31812fso5368644qkg.6
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 11:37:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=+WY+blaIG7SHWZsjIU6gf30zUSW6OFhHYfMLmJiOTIs=;
+        b=lsaPWWp1HFN4HCc1Ki750iUCiKMu3i+HX2sMUuf2qrhjuP56qdk34JuXrUNZ1jpTF+
+         R+++3NN7WPymLlKHgr4F1arFPTZnetmeKoOZ5vv/d9K6C+C6rKcy7Mikrxu7chMS1cwg
+         6SN7itDpaPomRZlF7UAGC6GOUQMCdddKiFpppxnJDfZsclcUtzdwfNOlTljqxFj+LRYE
+         21Xil4UhrubR1HKWmGwBArPHPaNmssgE280bDJzSmzvhFvHzljjfkHCLUocc2r0emMbf
+         ZZmYp0gJLLBO8Ww13k9UigPUDzQPSQyVQu6QDTj7tdP8GRlSWDsNk7VRoYON7c1NZQ02
+         qrsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=+WY+blaIG7SHWZsjIU6gf30zUSW6OFhHYfMLmJiOTIs=;
+        b=McMX3UBORXpXon6b34waiaKs5xogkEo4PrsbYP/uUMfePxJ2fNEQsAIOu/FEHditM/
+         wPIAzutn1PoDLSojMqMqYLwrl6GdRoL7YBPzWwQOkufioakE8ABmn8+f0wVnRNM9yrbI
+         7WCefCs55gE1TMKmddQW/eNOiRbJX2pO8ylgxcgzloC5zF3lF1db+sLJaKLEVcaNVY7q
+         U+KofucvMu8pZneB9tSxlrTrD3GEeUlKpNqxu3+6McfMqWTcaPCruc9PJGZgzX3oi3MJ
+         nHk4HDMbTpxH56rbJVvY/cJuH+wU6oNN3Mtf3rDPT9nKL9MH32qqhcLGJaRcxdTnbTpZ
+         n6hw==
+X-Gm-Message-State: AOAM532S1P6o1mj/BAmp5hlpq7sJpaXvD5hYU50RS84YlA1uG4da9gTc
+        83gZGGWWIq3kSRZcdRRNySIft2HHtQarvsSHljcStWDNVXlVHzmIC/BVmIrKroQaxfdWqB8W/mK
+        ssq8q3ttNw7lesC3+A+++sJtqBZMjchM2gfeiqt9OKKLMBuRumR8a4JMZiSKDGS+9Ohz6LuDt
+X-Google-Smtp-Source: ABdhPJyRmGq41hMP+eyXKSvMD7OtpBBDqs4Owh6WeIPOsPRLBMsNDfXvDtbkUXPv9fHrBPu5VU85136eSOYG
+X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:8c52:76ef:67d7:24b1])
+ (user=bgardon job=sendgmr) by 2002:a0c:f744:: with SMTP id
+ e4mr23222467qvo.5.1618857466814; Mon, 19 Apr 2021 11:37:46 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 11:37:41 -0700
+Message-Id: <20210419183742.901647-1-bgardon@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
+Subject: [PATCH 1/2] KVM: x86/mmu: Wrap kvm_mmu_zap_all_fast TDP MMU code in ifdefs
+From:   Ben Gardon <bgardon@google.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Robert Hu <robert.hu@intel.com>,
+        Farrah Chen <farrah.chen@intel.com>,
+        Danmei Wei <danmei.wei@intel.com>,
+        Ben Gardon <bgardon@google.com>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/04/21 10:49 pm, Asutosh Das wrote:
-> During runtime-suspend of ufs host, the scsi devices are
-> already suspended and so are the queues associated with them.
-> But the ufs host sends SSU (START_STOP_UNIT) to wlun
-> during its runtime-suspend.
-> During the process blk_queue_enter checks if the queue is not in
-> suspended state. If so, it waits for the queue to resume, and never
-> comes out of it.
-> The commit
-> (d55d15a33: scsi: block: Do not accept any requests while suspended)
-> adds the check if the queue is in suspended state in blk_queue_enter().
-> 
-> Call trace:
->  __switch_to+0x174/0x2c4
->  __schedule+0x478/0x764
->  schedule+0x9c/0xe0
->  blk_queue_enter+0x158/0x228
->  blk_mq_alloc_request+0x40/0xa4
->  blk_get_request+0x2c/0x70
->  __scsi_execute+0x60/0x1c4
->  ufshcd_set_dev_pwr_mode+0x124/0x1e4
->  ufshcd_suspend+0x208/0x83c
->  ufshcd_runtime_suspend+0x40/0x154
->  ufshcd_pltfrm_runtime_suspend+0x14/0x20
->  pm_generic_runtime_suspend+0x28/0x3c
->  __rpm_callback+0x80/0x2a4
->  rpm_suspend+0x308/0x614
->  rpm_idle+0x158/0x228
->  pm_runtime_work+0x84/0xac
->  process_one_work+0x1f0/0x470
->  worker_thread+0x26c/0x4c8
->  kthread+0x13c/0x320
->  ret_from_fork+0x10/0x18
-> 
-> Fix this by registering ufs device wlun as a scsi driver and
-> registering it for block runtime-pm. Also make this as a
-> supplier for all other luns. That way, this device wlun
-> suspends after all the consumers and resumes after
-> hba resumes. This also registers a new scsi driver for rpmb wlun.
-> This new driver is mostly used to clear rpmb uac.
-> 
-> Fixed smatch warnings:
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> 
-> Co-developed-by: Can Guo <cang@codeaurora.org>
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
-> ---
+The TDP MMU code in kvm_mmu_zap_all_fast is only needed with
+CONFIG_X86_64 and creates a build error without that setting. Since the
+TDP MMU can only be enabled with CONFIG_X86_64, wrap those code blocks
+in ifdefs.
 
-I came across 3 issues while testing.  See comments below.
+Fixes: 1336c692abad ("KVM: x86/mmu: Fast invalidation for TDP MMU")
 
-<SNIP>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Ben Gardon <bgardon@google.com>
+---
+ arch/x86/kvm/mmu/mmu.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-> @@ -5753,12 +5797,13 @@ static void ufshcd_clk_scaling_suspend(struct ufs_hba *hba, bool suspend)
->  
->  static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
->  {
-> -	pm_runtime_get_sync(hba->dev);
-> -	if (pm_runtime_status_suspended(hba->dev) || hba->is_sys_suspended) {
-> +	ufshcd_rpm_get_sync(hba);
-
-hba->sdev_ufs_device could be NULL.
-Need to add a check for that in ufshcd_err_handling_should_stop()
-
-> +	if (pm_runtime_status_suspended(&hba->sdev_ufs_device->sdev_gendev) ||
-> +	    hba->is_sys_suspended) {
->  		enum ufs_pm_op pm_op;
->  
->  		/*
-> -		 * Don't assume anything of pm_runtime_get_sync(), if
-> +		 * Don't assume anything of resume, if
->  		 * resume fails, irq and clocks can be OFF, and powers
->  		 * can be OFF or in LPM.
->  		 */
-> @@ -5794,7 +5839,7 @@ static void ufshcd_err_handling_unprepare(struct ufs_hba *hba)
->  	if (ufshcd_is_clkscaling_supported(hba))
->  		ufshcd_clk_scaling_suspend(hba, false);
->  	ufshcd_clear_ua_wluns(hba);
-
-ufshcd_clear_ua_wluns() deadlocks trying to clear UFS_UPIU_RPMB_WLUN
-if sdev_rpmb is suspended and sdev_ufs_device is suspending.
-e.g. ufshcd_wl_suspend() is waiting on host_sem while ufshcd_err_handler()
-is running, at which point sdev_rpmb has already suspended.
-
-> -	pm_runtime_put(hba->dev);
-> +	ufshcd_rpm_put(hba);
->  }
-
-<SNIP>
-
-> +void ufshcd_resume_complete(struct device *dev)
-> +{
-> +	struct ufs_hba *hba = dev_get_drvdata(dev);
-> +
-> +	ufshcd_rpm_put(hba);
-> +}
-> +EXPORT_SYMBOL_GPL(ufshcd_resume_complete);
-> +
-> +int ufshcd_suspend_prepare(struct device *dev)
-> +{
-> +	struct ufs_hba *hba = dev_get_drvdata(dev);
-> +	struct device *ufs_dev = &hba->sdev_ufs_device->sdev_gendev;
-> +	enum ufs_dev_pwr_mode spm_pwr_mode;
-> +	enum uic_link_state spm_link_state;
-> +	unsigned long flags;
-> +	bool rpm_state_ok;
-> +
-> +	/*
-> +	 * SCSI assumes that runtime-pm and system-pm for scsi drivers
-> +	 * are same. And it doesn't wake up the device for system-suspend
-> +	 * if it's runtime suspended. But ufs doesn't follow that.
-> +	 * The rpm-lvl and spm-lvl can be different in ufs.
-> +	 * However, if the current_{pwr_mode, link_state} is same as the
-> +	 * desired_{pwr_mode, link_state}, there's no need to rpm resume
-> +	 * the device.
-> +	 * Refer ufshcd_resume_complete()
-> +	 */
-> +	pm_runtime_get_noresume(ufs_dev);
-> +
-> +	spin_lock_irqsave(&ufs_dev->power.lock, flags);
-> +
-> +	spm_pwr_mode = ufs_get_pm_lvl_to_dev_pwr_mode(hba->spm_lvl);
-> +	spm_link_state = ufs_get_pm_lvl_to_link_pwr_state(hba->spm_lvl);
-> +
-> +	rpm_state_ok = pm_runtime_suspended(ufs_dev) &&
-> +		hba->curr_dev_pwr_mode == spm_pwr_mode &&
-> +		hba->uic_link_state == spm_link_state &&
-> +		!hba->dev_info.b_rpm_dev_flush_capable;
-> +
-> +	spin_unlock_irqrestore(&ufs_dev->power.lock, flags);
-> +
-> +	if (!rpm_state_ok) {
-> +		int ret = pm_runtime_resume(ufs_dev);
-> +
-> +		if (ret < 0 && ret != -EACCES) {
-> +			pm_runtime_put(ufs_dev);
-> +			return ret;
-> +		}
-> +	}
-> +	return 0;
-> +}
-
-Unfortunately this does not work because SCSI PM forcibly sets
-the sdevs to runtime active after system resume.  Really we should
-change SCSI PM to call the driver's .prepare / .complete then we could
-use direct complete, but let's leave that for now and go back to
-before, but allowing for errors and !hba->sdev_ufs_device. e.g.
-
-void ufshcd_resume_complete(struct device *dev)
-{
-	struct ufs_hba *hba = dev_get_drvdata(dev);
-
-	if (hba->complete_put) {
-		hba->complete_put = false;
-		ufshcd_rpm_put(hba);
-	}
-}
-EXPORT_SYMBOL_GPL(ufshcd_resume_complete);
-
-int ufshcd_suspend_prepare(struct device *dev)
-{
-	struct ufs_hba *hba = dev_get_drvdata(dev);
-	int ret;
-
-	if (!hba->sdev_ufs_device)
-		return 0;
-
-	ret = ufshcd_rpm_get_sync(hba);
-	if (ret < 0 && ret != -EACCES) {
-		ufshcd_rpm_put(hba);
-		return ret;
-	}
-	hba->complete_put = true;
-	return 0;
-}
-EXPORT_SYMBOL_GPL(ufshcd_suspend_prepare);
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 0f311c9bf9c6..3ae59c8e129b 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -5407,7 +5407,9 @@ static void kvm_zap_obsolete_pages(struct kvm *kvm)
+  */
+ static void kvm_mmu_zap_all_fast(struct kvm *kvm)
+ {
++#ifdef CONFIG_X86_64
+ 	struct kvm_mmu_page *root;
++#endif /* CONFIG_X86_64 */
+ 
+ 	lockdep_assert_held(&kvm->slots_lock);
+ 
+@@ -5424,6 +5426,7 @@ static void kvm_mmu_zap_all_fast(struct kvm *kvm)
+ 	kvm->arch.mmu_valid_gen = kvm->arch.mmu_valid_gen ? 0 : 1;
+ 
+ 
++#ifdef CONFIG_X86_64
+ 	if (is_tdp_mmu_enabled(kvm)) {
+ 		/*
+ 		 * Mark each TDP MMU root as invalid so that other threads
+@@ -5456,6 +5459,7 @@ static void kvm_mmu_zap_all_fast(struct kvm *kvm)
+ 			if (refcount_inc_not_zero(&root->tdp_mmu_root_count))
+ 				root->role.invalid = true;
+ 	}
++#endif /* CONFIG_X86_64 */
+ 
+ 	/*
+ 	 * Notify all vcpus to reload its shadow page table and flush TLB.
+@@ -5471,11 +5475,13 @@ static void kvm_mmu_zap_all_fast(struct kvm *kvm)
+ 
+ 	write_unlock(&kvm->mmu_lock);
+ 
++#ifdef CONFIG_X86_64
+ 	if (is_tdp_mmu_enabled(kvm)) {
+ 		read_lock(&kvm->mmu_lock);
+ 		kvm_tdp_mmu_zap_invalidated_roots(kvm);
+ 		read_unlock(&kvm->mmu_lock);
+ 	}
++#endif /* CONFIG_X86_64 */
+ }
+ 
+ static bool kvm_has_zapped_obsolete_pages(struct kvm *kvm)
+-- 
+2.31.1.368.gbe11c130af-goog
 
