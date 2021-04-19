@@ -2,143 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11009364EA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32604364EB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232023AbhDSXdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 19:33:53 -0400
-Received: from mail-dm6nam10on2133.outbound.protection.outlook.com ([40.107.93.133]:27661
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229842AbhDSXdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 19:33:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NG8zL8/VWUnvrbXrII2mAqMUDcUJ6v2WAPbBzTLeCPjNc+4GUJoSLttyhKz8j72qllZrIZi64x0Ga0WVhlm6qUju8NXRfnvA6Qgp7QS8/7rLvn5/APACWm48/16IsQB185eiMibFmXvqyjqONZfLtgwi/DfIY9tbkHGWVi1pv4o1Cf1qT+fPi83KhmgUnRbyLdGjxWFpmGCa/d1jI0Th+lO8GCjOWV7ezi6mOGcgonTsL8Xr9+x21TUvXS9UTOpe2iq3Xc6BZ8IgZKrhx9R9n1GBdV30B45ZmgqhD5JqxzNyi8GMX3F1opqMylmfPFGrIaVLaF2oLyFF9S4G9Vo6xQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pZnmgKgsUPF1TW5fBYw01D0Ln0dTFiC8e/DIYXuNWDg=;
- b=H+SDQYjGxsEz7VjolJX4FLcoIq1WeLpja1wpQQ6xyK8a1yPpzz2hlX+9KSJaf8LxCTriV+/CefnstDn5RXtxRifnrSjAD/CjDPI77EDr3glmIgI+NIway2fD37eNvtvnOMzo1vfO0OJh6SebJIhh9pwCqe7SGghuWBREtkfbTclikyCD4yYNwlk2Eysk5/3m4m+ajC5tKKyHIz7eFIdL+hWIuRjvU/lV9Tq+8gmGS6xIVmSv4M/fq/ylBSEvUCepVK1qu6qjKOWaC/Mi8Gt13Q3Ga+VJgChI5N/xVIGbG9Aec3XyVXmmBMibpupcKzDV3FY0wtvu3/0jQ6SQ6rjYcQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pZnmgKgsUPF1TW5fBYw01D0Ln0dTFiC8e/DIYXuNWDg=;
- b=bHvQwUWH2lxfyAnjpHiR8CPib11b4VsPBHkptl7OhMIklArC6wWBOWj9V2060QFkK275oW2YCuxwG9GaqHx0nhb7ZJ2JZIjfzalVmRz3CkRM4jPHBgQZOJGGSZDZ/l06QnaM2LSW7MNg8RVK55BodfXVeh1/g4ZcJVzbUtAgimw=
-Received: from MW2PR2101MB0892.namprd21.prod.outlook.com
- (2603:10b6:302:10::24) by MWHPR21MB0509.namprd21.prod.outlook.com
- (2603:10b6:300:df::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.3; Mon, 19 Apr
- 2021 23:33:20 +0000
-Received: from MW2PR2101MB0892.namprd21.prod.outlook.com
- ([fe80::5548:cbd8:43cd:aa3d]) by MW2PR2101MB0892.namprd21.prod.outlook.com
- ([fe80::5548:cbd8:43cd:aa3d%6]) with mapi id 15.20.4065.008; Mon, 19 Apr 2021
- 23:33:20 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Chris von Recklinghausen <crecklin@redhat.com>,
-        "ebiggers@kernel.org" <ebiggers@kernel.org>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "simo@redhat.com" <simo@redhat.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/1 v9] use crc32 instead of md5 for hibernation e820
- integrity check
-Thread-Topic: [PATCH 1/1 v9] use crc32 instead of md5 for hibernation e820
- integrity check
-Thread-Index: AQHXMsLQEFNBplk1gUCriYRgK68igaq8gdKQ
-Date:   Mon, 19 Apr 2021 23:33:20 +0000
-Message-ID: <MW2PR2101MB08921161444D6D2683660853BF499@MW2PR2101MB0892.namprd21.prod.outlook.com>
-References: <20210416131655.22112-1-crecklin@redhat.com>
-In-Reply-To: <20210416131655.22112-1-crecklin@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=5f89ab86-89f9-4b34-a297-d2ab36fe37e3;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-04-19T23:28:15Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [2601:600:8b00:6b90:95e3:c5e8:10c:f48f]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 849bec70-243b-4039-062c-08d9038b842e
-x-ms-traffictypediagnostic: MWHPR21MB0509:
-x-microsoft-antispam-prvs: <MWHPR21MB05099FC9601C6C1645C3E9CABF499@MWHPR21MB0509.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: R5vpvj+dH8bVaVYRM9jY2qqOYA5A8sKPOSNp73XnlJmb7YtgKUbNZDD0tcsgRe+omOU+DCG2OSSED8n7Enz5iyZiAVb4BeuU32duqzSn/SNY0xFSKzimWZq6mstXbhby1OgA44twnIXNxaaF+G6O4ompneR8frKLP5zrpKZGWlxUNnfQsX3aM93HPA0bqoqg7qGjxd2xn8UWE6EJTqBNoG4QC9VdjQOF7OQldF3DH+8AlIikY6k/btYsysrXjsfUSzhAGR36kN2+cMYUuv+qqaEmJJ4y+SvKEdYmVtKEU/jkihsOKHWL5Ukh6+g+DCTpTHfDvy6IUHeb+PWrbx3ulYbctvVpOWoWIJR59mYKrqI6/yiUwNQJ7IZ9J0WO5TaSGLryR6kr4+ZyvoYKa2lx2aQx4HblKYBTy396hs+y8B7D+BYM3WcTIYsM7uT+WjsrQR7H3yyXQ7T+8aXtK4Z0lSdApCg6QhaGbmvxrhgaosyQXUbiWpgbdYN1UP1mZeJB8zd8s4spWHP+m9HUJUXW0XlJZCqFbtAQMfwUZq9cryos9QI8DdhXIn2uZK3KaDHlRQ3+UHUhRhK89Qtmv5ECeE3Q0gSDBX1u1yKc4EBewPk=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB0892.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2906002)(8676002)(55016002)(76116006)(316002)(64756008)(9686003)(478600001)(86362001)(66946007)(5660300002)(66446008)(52536014)(10290500003)(83380400001)(122000001)(110136005)(66476007)(66556008)(38100700002)(82960400001)(33656002)(82950400001)(8936002)(71200400001)(7696005)(8990500004)(6506007)(4744005)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?sQ3K97TBSnPBUnz4WqZN6wf+6NVq5QzewUhj7pWrTUXNl41B3kFFH4Aqnz23?=
- =?us-ascii?Q?HYM0kvOFA04WR/TgdEYOWdQ488BRMPS0kx2z9JQdvpaBrRr6DzW92xnxoIRl?=
- =?us-ascii?Q?JWZO9Nt/OY+EnXDKJleStNHYrmSsuZ9axClG7vvlu6SyOKlqHotYig+F9TLb?=
- =?us-ascii?Q?rSn5fZ9ai/WPhmW8IRL8cy5A+cIDe4eZvb2DX14NenxYsSVS2YKz0Qso0rSn?=
- =?us-ascii?Q?aGgTK8wbTZoXZ/CsnuZr3L8rJL3XmTuN5rxk7Dl+Wn+jdEEYoG+gxXjgFt1G?=
- =?us-ascii?Q?w9tDekqvWTxybtnNNDwo9HSlQLMPlzK5H8oNhSfrzEDFKERwFIjZl/HJpSIC?=
- =?us-ascii?Q?P1PaRXy0ItbB69LZmGIoRX04WFKkAftnm7lJzyKQQjTbpCgYr4PxIDNHBcd6?=
- =?us-ascii?Q?WMtUPrbpqKqY+dvnIp1KnUaGHWKx+eJ1FZn7RAZhsQyzPnJL4dRd7S0RcXt1?=
- =?us-ascii?Q?Lk88mB34hBXmehNL+r5x8Cdb8WgpSxIUSHHdTHuzAVv9SrWHfS4yKExukfhB?=
- =?us-ascii?Q?jrEcyT4KU3qpNRnyz+1BOAxrJhRlnB29UTZ2UnopMwK5DL49rZQ8AHP9z47N?=
- =?us-ascii?Q?zMrJQQv4xcS9cvr3Y/6N9wdlbk/bnfeJuU0pD2UMdGdgrpPuv6K9d3VWmBAA?=
- =?us-ascii?Q?H7A7xOF9VovNe2SFDiiwosb/AFBhkSHpbCy1lOTAChlSVC6/SKGWvT9ZQu/q?=
- =?us-ascii?Q?L6fAVeh9ied5Pu+2dNMXZBkbt+pOnHUFGALfJYXM1o9EQJPFlz1GCMdFnt+M?=
- =?us-ascii?Q?FTfuTLNvAKPtC4ex204kg6+qKJYgJBHc6XoskS0wmTpjNjgRdaA6+vmqXYHj?=
- =?us-ascii?Q?qvXI9KhUjTTTlSmqddKELSFH5r2zCzmHv9xUfdPNQRKj88DARTpOjRPjEdeN?=
- =?us-ascii?Q?W14vz+mEc2aKBHGXo19nPqgRavcXYXOsQ1/eVOrDNJJ0FoGO1fc4vwNmTyKm?=
- =?us-ascii?Q?2uJcfwG12jw1BMgp+QoLfv1oUs5NRqAO2uLXQtdr+xzsxYaraUC2xEy/MpM2?=
- =?us-ascii?Q?KMgBkppp1OcVNMQ1Ca+ywnHDcReAgA2N3wnOQkZCOzn3HV2BczzEBzhOaOZ2?=
- =?us-ascii?Q?UV6Vd4gHL5a+oARqGDQkjcPRkDmiAaG5K2LuUzxAIedCAp+V4T1grD3lAfL0?=
- =?us-ascii?Q?Wt7PIWC5WB95iLElR//nmo83Fwo4+x1Hnv3siMVJEG9rY+I19o9XBVDyPEDs?=
- =?us-ascii?Q?oMGqRqitCbgzgg/DgrNEwddo1mEICzTU4WWmYk1MHGvToyGlT9Xs4Gzhqkpm?=
- =?us-ascii?Q?7nu+jR1pKqeMJjBdwVaHYihjj1vgQ+NA4D+S6L1H5q31nswkudxTfYs8Brmr?=
- =?us-ascii?Q?/JDO0J7Kr9mIrjNfvFXbGT+G7tFIBs5ebVo9GT862qVUke/YwPHNPB39tHWt?=
- =?us-ascii?Q?3TVrtxyKBma9171stRT4d5FL8d5e?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232027AbhDSXgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 19:36:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229842AbhDSXgp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 19:36:45 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B38C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 16:36:15 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id c3so5469881pfo.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 16:36:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+AXERFClYZYQUr1IqN7bGc0QBx+E2BeAvwA2SBiAo5U=;
+        b=YmK13dmW5qtJCyvdmMQvQkEeNCJafx0yaLZuG+qt1h0kHyE16ZlbvlaKIXMdJuos0q
+         oXaLUgrsIoOMW/QfJSmDcXcR6EX6TN/9FfVu/z3XvPw31FD3n4vWRmqF1KhC3Fyl4bE9
+         eEG4MsQbmbgtdohUERLAUr/uXceQgL/DsllmU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+AXERFClYZYQUr1IqN7bGc0QBx+E2BeAvwA2SBiAo5U=;
+        b=RGMihg0aNeolYL+Dc4Kyy4HhPp+321SsNSWgwKNICYrncV6QtsOV3ax2Gn+BgCT8pT
+         qEMAR88a2Vwr5EG0GsuC1t2EGdw/Grj/DsYXlR0m+ttX07/6FoLcSVNyuaP7O9bAp3KP
+         p+sfcEhRYe5bkQ6Rz0OaY9j5DCQrODGLTQj52onP+4HM3mJzzgcz2vfN1bFeEEeyVaPj
+         rrsy9iD20zjXfDreoXhCzx1FzyW+0KC3kCKrZ6kXeCgYrqEg11iLUQyZNbuBa77gP3ac
+         hRMqhBQHR9rKUYCISCGI4y8yp8x1d1qquB1OLnKl50W6UBw/wHgNU01wmpLtRUAGv1wa
+         Kp2Q==
+X-Gm-Message-State: AOAM530uMS+BbklmMirkU4UCXpD77A4xBoS9J/fZL3fcgpABHWyUTvuc
+        zuRZIxLC81S5vHHzgUjHuFHowauV48NbUg==
+X-Google-Smtp-Source: ABdhPJzERC0jwguaNsJ+wSeg55qiPue3mqoTqTb9eYfqXtUH3uNdF0tKTOJIlM21AuWzWAGco92F6A==
+X-Received: by 2002:a62:ce42:0:b029:261:ab24:f65f with SMTP id y63-20020a62ce420000b0290261ab24f65fmr4572278pfg.18.1618875374515;
+        Mon, 19 Apr 2021 16:36:14 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id o9sm14586976pfh.217.2021.04.19.16.36.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 16:36:13 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 16:36:12 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org, x86@kernel.org,
+        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, chris@chris-wilson.co.uk,
+        intel-gfx@lists.freedesktop.org, linux-mm@kvack.org, hch@lst.de
+Subject: Re: [PATCH 4/7] mm: Introduce verify_page_range()
+Message-ID: <202104191630.F00A6AAF@keescook>
+References: <20210412080012.357146277@infradead.org>
+ <20210412080611.769864829@infradead.org>
+ <202104121302.57D7EF8@keescook>
+ <YHVADhpkETMQGD5X@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB0892.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 849bec70-243b-4039-062c-08d9038b842e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Apr 2021 23:33:20.1202
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bldAepIy+5iBMp7dBNK0w113CD4mcDMqpQgUrCOmdrsLE42/6mWxPTeeepw60m7OmHLnDdyQfB+O0LepV4yUFQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0509
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHVADhpkETMQGD5X@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Chris von Recklinghausen <crecklin@redhat.com>
-> Sent: Friday, April 16, 2021 6:17 AM
->  ...
-> Hibernation fails on a system in fips mode because md5 is used for the e8=
-20
-> integrity check and is not available. Use crc32 instead.
->=20
-> The check is intended to detect whether the E820 memory map provided
-> by the firmware after cold boot unexpectedly differs from the one that
-> was in use when the hibernation image was created. In this case, the
-> hibernation image cannot be restored, as it may cover memory regions
-> that are no longer available to the OS.
->=20
-> A non-cryptographic checksum such as CRC-32 is sufficient to detect such
-> inadvertent deviations.
->=20
-> Fixes: 62a03defeabd ("PM / hibernate: Verify the consistent of e820 memor=
-y
-> map
->        by md5 digest")
->=20
-> Signed-off-by: Chris von Recklinghausen <crecklin@redhat.com>
-> ---
+On Tue, Apr 13, 2021 at 08:54:06AM +0200, Peter Zijlstra wrote:
+> On Mon, Apr 12, 2021 at 01:05:09PM -0700, Kees Cook wrote:
+> > On Mon, Apr 12, 2021 at 10:00:16AM +0200, Peter Zijlstra wrote:
+> > > +struct vpr_data {
+> > > +	int (*fn)(pte_t pte, unsigned long addr, void *data);
+> > > +	void *data;
+> > > +};
+> > 
+> > Eeerg. This is likely to become an attack target itself. Stored function
+> > pointer with stored (3rd) argument.
+> 
+> You got some further reading on that? How exactly are those exploited?
 
-Tested-by: Dexuan Cui <decui@microsoft.com>
-Reviewed-by: Dexuan Cui <decui@microsoft.com>
+Sure, see "Executing code" in
+https://googleprojectzero.blogspot.com/2017/05/exploiting-linux-kernel-via-packet.html
 
-Thanks Chris and all for the patch!
+I killed the entire primitive (for timer_list)
+https://outflux.net/blog/archives/2018/02/05/security-things-in-linux-v4-15/#v4.15-timer_list
+but that was a lot of work, so I'm trying to avoid seeing more things
+like it appear. :) (And I'm trying to get rid of similar APIs, like
+tasklet.)
+
+This new code is unlikely to ever be used as widely as timer_list,
+but I just cringe when I see the code pattern. I'll understand if there
+isn't a solution that doesn't require major refactoring, but I can
+dream. :)
+
+-- 
+Kees Cook
