@@ -2,124 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A47A23646AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 17:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F623646B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 17:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240713AbhDSPFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 11:05:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231496AbhDSPEy (ORCPT
+        id S239675AbhDSPGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 11:06:52 -0400
+Received: from mailout.easymail.ca ([64.68.200.34]:53830 "EHLO
+        mailout.easymail.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238693AbhDSPGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 11:04:54 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F5FDC06174A;
-        Mon, 19 Apr 2021 08:04:24 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id x16so35222715iob.1;
-        Mon, 19 Apr 2021 08:04:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sK9kJH32/DEKrA6KoYri3PZGBlZT1dWah2hqamZZ9Cc=;
-        b=s7wVo0vApXU/OM1jt4+gMA9B0M0TVD8p1XDGpgxiXAxuyzaHz2Gj1uaR28sDh9Meyq
-         M+ZPjuGWqIFb91kh+t5jJbJhqs8vxijOqlUhQ4V3TEo8yK7ZobGdz5Hr1JHP3AjtAn59
-         Re249SBEmo/8oNw//lAyJDppVQ0CHLS5EtwgWyNYZNNCIRMuCnfCXdAvTdD4zSc/vpbc
-         vTMTAbEzFLOBOQTWIt4/WlgQzt3Iahmlb6W8ItRJAayJiQUHk2q6qO7zju/SgZJ6EGFn
-         YBYjVlEXIUwLGeNoNGzxjQ0CwwpVAeSLagMmZf0XzsRv0HX/+FQoSJGxYUlm4OUkYYnA
-         TiBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sK9kJH32/DEKrA6KoYri3PZGBlZT1dWah2hqamZZ9Cc=;
-        b=L2/BomEruN9lYVixdEFEhq0ZQGQA2sLIisIUrfphUTndu2xlRGi2jDHEQkMt62pWZm
-         cyWHCVdhhtCYCWC4BRxodLuWUgy2gsGwNQEHcK/nK/2NrGsYUCPOklvcrdNfnKqW1v5w
-         /kXiuQswFAaVYZvf0Anzelf7s+HOZSb7bWd/VKp7YyaWwoMgW+sVtmrLYn9eoBC5EanF
-         0hGlS/O0F4CI4KbdvMU3IPtxJiRLBB8DNu0O2oiY212/2NbGvdEVy14D5LzDI2wmAH9V
-         mASv5sRidOOTX2DycB2YzOGBiDa5l3tUWx/F+n/UeNTzd6R7GBBF9bRRV0t0BV2ILgYh
-         lPrA==
-X-Gm-Message-State: AOAM530spKkFxu5Cca/rbuXtOvSKZ7DyN2TJTLw6AI49O+nVeSDsblHZ
-        rrDW/yZTp4yxIwQZnRQ/1zvAdrVS3DUF70B2nes=
-X-Google-Smtp-Source: ABdhPJzEZQjUJvUvF+QDBgYHgewS1rUZVS39JXLXF5zSRaqhTgFexQhrwFdP/SIkUu/RjU+JN91KzcVrPuuY0GRWz/U=
-X-Received: by 2002:a02:a487:: with SMTP id d7mr2653012jam.84.1618844661634;
- Mon, 19 Apr 2021 08:04:21 -0700 (PDT)
+        Mon, 19 Apr 2021 11:06:50 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mailout.easymail.ca (Postfix) with ESMTP id C75B4C2899;
+        Mon, 19 Apr 2021 15:06:19 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at emo04-pco.easydns.vpn
+Received: from mailout.easymail.ca ([127.0.0.1])
+        by localhost (emo04-pco.easydns.vpn [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id gFNAWWdJVtxJ; Mon, 19 Apr 2021 15:06:19 +0000 (UTC)
+Received: from mail.gonehiking.org (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
+        by mailout.easymail.ca (Postfix) with ESMTPA id 4C499C2968;
+        Mon, 19 Apr 2021 15:06:10 +0000 (UTC)
+Received: from [192.168.1.4] (internal [192.168.1.4])
+        by mail.gonehiking.org (Postfix) with ESMTP id 80A183EF41;
+        Mon, 19 Apr 2021 09:06:09 -0600 (MDT)
+Subject: Re: [PATCH 0/5] Bring the BusLogic host bus adapter driver up to
+ Y2021
+To:     Ondrej Zary <linux@zary.sk>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <alpine.DEB.2.21.2104141244520.44318@angie.orcam.me.uk>
+ <a099f7f8-9601-fd1c-03a4-93587e7276e6@gonehiking.org>
+ <alpine.DEB.2.21.2104162157360.44318@angie.orcam.me.uk>
+ <202104182221.21533.linux@zary.sk>
+From:   Khalid Aziz <khalid@gonehiking.org>
+Message-ID: <e3fe98a2-c480-e9bf-67b3-7f51b87975bd@gonehiking.org>
+Date:   Mon, 19 Apr 2021 09:06:09 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210419040352.2452-1-ilya.lipnitskiy@gmail.com>
- <20210419040352.2452-3-ilya.lipnitskiy@gmail.com> <YH10UNuJZ5s7dfLh@lunn.ch>
-In-Reply-To: <YH10UNuJZ5s7dfLh@lunn.ch>
-From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Date:   Mon, 19 Apr 2021 08:04:10 -0700
-Message-ID: <CALCv0x2SSGjiqKOBhK1GT2ksjc9J--Qm3Uq-0xc3sgHvDju5-A@mail.gmail.com>
-Subject: Re: [PATCH net-next 2/2] net: ethernet: mediatek: support custom GMAC label
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Felix Fietkau <nbd@nbd.name>,
-        John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <202104182221.21533.linux@zary.sk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 5:15 AM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> On Sun, Apr 18, 2021 at 09:03:52PM -0700, Ilya Lipnitskiy wrote:
-> > The MAC device name can now be set within DTS file instead of always
-> > being "ethX". This is helpful for DSA to clearly label the DSA master
-> > device and distinguish it from DSA slave ports.
-> >
-> > For example, some devices, such as the Ubiquiti EdgeRouter X, may have
-> > ports labeled ethX. Labeling the master GMAC with a different prefix
-> > than DSA ports helps with clarity.
-> >
-> > Suggested-by: Ren=C3=A9 van Dorst <opensource@vdorst.com>
-> > Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-> > ---
-> >  drivers/net/ethernet/mediatek/mtk_eth_soc.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/=
-ethernet/mediatek/mtk_eth_soc.c
-> > index 6b00c12c6c43..4c0ce4fb7735 100644
-> > --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-> > +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-> > @@ -2845,6 +2845,7 @@ static const struct net_device_ops mtk_netdev_ops=
- =3D {
-> >
-> >  static int mtk_add_mac(struct mtk_eth *eth, struct device_node *np)
-> >  {
-> > +     const char *label =3D of_get_property(np, "label", NULL);
-> >       const __be32 *_id =3D of_get_property(np, "reg", NULL);
-> >       phy_interface_t phy_mode;
-> >       struct phylink *phylink;
-> > @@ -2940,6 +2941,9 @@ static int mtk_add_mac(struct mtk_eth *eth, struc=
-t device_node *np)
-> >       else
-> >               eth->netdev[id]->max_mtu =3D MTK_MAX_RX_LENGTH_2K - MTK_R=
-X_ETH_HLEN;
-> >
-> > +     if (label)
-> > +             strscpy(eth->netdev[id]->name, label, IFNAMSIZ);
->
-> It is better to use alloc_netdev_mqs() so you get validation the name
-> is unique.
-It doesn't look like the name validation happens until the netdev is
-registered, and it does not get registered at alloc, right?
+On 4/18/21 2:21 PM, Ondrej Zary wrote:
+> On Friday 16 April 2021 23:25:18 Maciej W. Rozycki wrote:
+>> On Fri, 16 Apr 2021, Khalid Aziz wrote:
+>>
+>>>>  Sadly I didn't get to these resources while they were still there, and 
+>>>> neither did archive.org, and now they not appear available from anywhere 
+>>>> online.  I'm sure Leonard had this all, but, alas, he is long gone too.
+>>>
+>>> These documents were all gone by the time I started working on this
+>>> driver in 2013.
+>>
+>>  According to my e-mail archives I got my BT-958 directly from Mylex brand 
+>> new as KT-958 back in early 1998 (the rest of the system is a bit older).  
+>> It wasn't up until 2003 when I was caught by the issue with the LOG SENSE 
+>> command that I got interested in the programming details of the adapter.  
+>>
+>>  At that time Mylex was in flux already, having been bought by LSI shortly 
+>> before.  Support advised me what was there at Leonard's www.dandelion.com 
+>> site was all that was available (I have a personal copy of the site) and 
+>> they would suggest to switch to their current products.  So it was too 
+>> late already ten years before you got at the driver.
+>>
+>>  I'll yet double-check the contents of the KT-958 kit which I have kept, 
+>> but if there was any technical documentation supplied there on a CD (which 
+>> I doubt), I would have surely discovered it earlier.  It's away along with 
+>> the server, remotely managed, ~160km/100mi from here, so it'll be some 
+>> time before I get at it though.
+>>
+>>  Still, maybe one of the SCSI old-timers has that stuff stashed somewhere.  
+>> I have plenty of technical documentation going back to early to mid 1990s 
+>> (some in the hard copy form), not necessarily readily available nowadays. 
+>> Sadly lots of such stuff goes offline or is completely lost to the mist of 
+>> time.
+>>
+>>   Maciej
+>>
+> 
+> Found the 3000763 document here:
+> https://doc.lagout.org/science/0_Computer Science/0_Computer History/old-hardware/buslogic/3000763_PCI_EISA_Wide_SCSI_Tech_Ref_Dec94.pdf
+> 
+> There's also 3002593 there:
+> https://doc.lagout.org/science/0_Computer Science/0_Computer History/old-hardware/buslogic/
+> 
 
-I do agree that it's better to use the correct name in the first place
-instead of renaming, regardless, so using alloc_netdev_mqs() seems
-like a better solution - I'll make the change.
+Thanks!!!
 
-Ilya
+--
+Khalid
