@@ -2,219 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF1E363BF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 08:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2578363BD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 08:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233290AbhDSGxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 02:53:15 -0400
-Received: from mga03.intel.com ([134.134.136.65]:43187 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229473AbhDSGxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 02:53:14 -0400
-IronPort-SDR: HP2F24VtV99b+QMLVmSRacEV9TemO4Lr40yL8GAOPHv6p2wgqjJKtwG5JB5ttgnVc3GcxAwTp9
- 3res4wTNs4CA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9958"; a="195305837"
-X-IronPort-AV: E=Sophos;i="5.82,233,1613462400"; 
-   d="scan'208";a="195305837"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2021 23:52:44 -0700
-IronPort-SDR: K5+NZeaUBODV40juQU+7QX90W40CSY783OpLgTu8t/xu1J9gMzQe3vJVTVeZwndq7Pc1U56RdH
- XloH+nEEmHjw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,233,1613462400"; 
-   d="scan'208";a="426393275"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
-  by orsmga008.jf.intel.com with ESMTP; 18 Apr 2021 23:52:36 -0700
-Cc:     baolu.lu@linux.intel.com, dwmw2@infradead.org, joro@8bytes.org,
-        will@kernel.org, bhelgaas@google.com, rajatja@google.com,
-        grundler@chromium.org, tfiga@chromium.org,
-        senozhatsky@chromium.org, sakari.ailus@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, bingbu.cao@linux.intel.com
-Subject: Re: [PATCH] iommu: Use passthrough mode for the Intel IPUs
-To:     Bingbu Cao <bingbu.cao@intel.com>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, iommu@lists.linux-foundation.org
-References: <1618808225-10108-1-git-send-email-bingbu.cao@intel.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <66ab470d-33e0-5998-a405-a0d446208334@linux.intel.com>
-Date:   Mon, 19 Apr 2021 14:42:55 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S232738AbhDSGqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 02:46:45 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16135 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233256AbhDSGqo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 02:46:44 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FNy1s6qHrzpYBl;
+        Mon, 19 Apr 2021 14:43:13 +0800 (CST)
+Received: from [10.174.178.5] (10.174.178.5) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Mon, 19 Apr 2021
+ 14:46:08 +0800
+Subject: Re: [PATCH v2 1/5] mm/swapfile: add percpu_ref support for swap
+To:     "Huang, Ying" <ying.huang@intel.com>
+CC:     <akpm@linux-foundation.org>, <dennis@kernel.org>,
+        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
+        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
+        <alexs@kernel.org>, <david@redhat.com>, <minchan@kernel.org>,
+        <richard.weiyang@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>
+References: <20210417094039.51711-1-linmiaohe@huawei.com>
+ <20210417094039.51711-2-linmiaohe@huawei.com>
+ <87eef7kmzw.fsf@yhuang6-desk1.ccr.corp.intel.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <753f414f-34a1-b16a-f826-7deb2dcd4af6@huawei.com>
+Date:   Mon, 19 Apr 2021 14:46:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <1618808225-10108-1-git-send-email-bingbu.cao@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <87eef7kmzw.fsf@yhuang6-desk1.ccr.corp.intel.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.5]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bingbu,
-
-On 4/19/21 12:57 PM, Bingbu Cao wrote:
-> Intel IPU(Image Processing Unit) has its own (IO)MMU hardware,
-> The IPU driver allocates its own page table that is not mapped
-> via the DMA, and thus the Intel IOMMU driver blocks access giving
-> this error:
+On 2021/4/19 10:48, Huang, Ying wrote:
+> Miaohe Lin <linmiaohe@huawei.com> writes:
 > 
-> DMAR: DRHD: handling fault status reg 3
-> DMAR: [DMA Read] Request device [00:05.0] PASID ffffffff
->        fault addr 76406000 [fault reason 06] PTE Read access is not set
+>> We will use percpu-refcount to serialize against concurrent swapoff. This
+>> patch adds the percpu_ref support for swap.
+>>
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> ---
+>>  include/linux/swap.h |  3 +++
+>>  mm/swapfile.c        | 33 +++++++++++++++++++++++++++++----
+>>  2 files changed, 32 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>> index 144727041e78..8be36eb58b7a 100644
+>> --- a/include/linux/swap.h
+>> +++ b/include/linux/swap.h
+>> @@ -240,6 +240,7 @@ struct swap_cluster_list {
+>>   * The in-memory structure used to track swap areas.
+>>   */
+>>  struct swap_info_struct {
+>> +	struct percpu_ref users;	/* serialization against concurrent swapoff */
 > 
-> As IPU is not an external facing device which is not risky, so use
-> IOMMU passthrough mode for Intel IPUs.
+> The comments aren't general enough.  We use this to check whether the
+> swap device has been fully initialized, etc. May be something as below?
+> 
+> /* indicate and keep swap device valid */
 
-As a quirk, does it need to be back-ported to stable kernels? If so, add
-Fixes tag and cc stable, please.
+Looks good.
 
 > 
-> Signed-off-by: Bingbu Cao <bingbu.cao@intel.com>
-> ---
->   drivers/iommu/intel/iommu.c       | 35 +++++++++++++++++++++++++++++++++++
->   drivers/staging/media/ipu3/ipu3.c |  2 +-
->   include/linux/pci_ids.h           |  5 +++++
->   3 files changed, 41 insertions(+), 1 deletion(-)
+>>  	unsigned long	flags;		/* SWP_USED etc: see above */
+>>  	signed short	prio;		/* swap priority of this type */
+>>  	struct plist_node list;		/* entry in swap_active_head */
+>> @@ -260,6 +261,8 @@ struct swap_info_struct {
+>>  	struct block_device *bdev;	/* swap device or bdev of swap file */
+>>  	struct file *swap_file;		/* seldom referenced */
+>>  	unsigned int old_block_size;	/* seldom referenced */
+>> +	bool ref_initialized;		/* seldom referenced */
+>> +	struct completion comp;		/* seldom referenced */
+>>  #ifdef CONFIG_FRONTSWAP
+>>  	unsigned long *frontswap_map;	/* frontswap in-use, one bit per page */
+>>  	atomic_t frontswap_pages;	/* frontswap pages in-use counter */
+>> diff --git a/mm/swapfile.c b/mm/swapfile.c
+>> index 149e77454e3c..66515a3a2824 100644
+>> --- a/mm/swapfile.c
+>> +++ b/mm/swapfile.c
+>> @@ -39,6 +39,7 @@
+>>  #include <linux/export.h>
+>>  #include <linux/swap_slots.h>
+>>  #include <linux/sort.h>
+>> +#include <linux/completion.h>
+>>  
+>>  #include <asm/tlbflush.h>
+>>  #include <linux/swapops.h>
+>> @@ -511,6 +512,14 @@ static void swap_discard_work(struct work_struct *work)
+>>  	spin_unlock(&si->lock);
+>>  }
+>>  
+>> +static void swap_users_ref_free(struct percpu_ref *ref)
+>> +{
+>> +	struct swap_info_struct *si;
+>> +
+>> +	si = container_of(ref, struct swap_info_struct, users);
+>> +	complete(&si->comp);
+>> +}
+>> +
+>>  static void alloc_cluster(struct swap_info_struct *si, unsigned long idx)
+>>  {
+>>  	struct swap_cluster_info *ci = si->cluster_info;
+>> @@ -2500,7 +2509,7 @@ static void enable_swap_info(struct swap_info_struct *p, int prio,
+>>  	 * Guarantee swap_map, cluster_info, etc. fields are valid
+>>  	 * between get/put_swap_device() if SWP_VALID bit is set
+>>  	 */
+>> -	synchronize_rcu();
 > 
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index ee0932307d64..59222d2fe73f 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -55,6 +55,12 @@
->   #define IS_GFX_DEVICE(pdev) ((pdev->class >> 16) == PCI_BASE_CLASS_DISPLAY)
->   #define IS_USB_DEVICE(pdev) ((pdev->class >> 8) == PCI_CLASS_SERIAL_USB)
->   #define IS_ISA_DEVICE(pdev) ((pdev->class >> 8) == PCI_CLASS_BRIDGE_ISA)
-> +#define IS_IPU_DEVICE(pdev) ((pdev)->vendor == PCI_VENDOR_ID_INTEL &&		\
-> +			     ((pdev)->device == PCI_DEVICE_ID_INTEL_IPU3 ||	\
-> +			     (pdev)->device == PCI_DEVICE_ID_INTEL_IPU6 ||	\
-> +			     (pdev)->device == PCI_DEVICE_ID_INTEL_IPU6SE ||	\
-> +			     (pdev)->device == PCI_DEVICE_ID_INTEL_IPU6SE_P ||	\
-> +			     (pdev)->device == PCI_DEVICE_ID_INTEL_IPU6EP))
->   #define IS_AZALIA(pdev) ((pdev)->vendor == 0x8086 && (pdev)->device == 0x3a3e)
->   
->   #define IOAPIC_RANGE_START	(0xfee00000)
-> @@ -360,6 +366,7 @@ int intel_iommu_enabled = 0;
->   EXPORT_SYMBOL_GPL(intel_iommu_enabled);
->   
->   static int dmar_map_gfx = 1;
-> +static int dmar_map_ipu = 1;
->   static int dmar_forcedac;
->   static int intel_iommu_strict;
->   static int intel_iommu_superpage = 1;
-> @@ -368,6 +375,7 @@ static int iommu_skip_te_disable;
->   
->   #define IDENTMAP_GFX		2
->   #define IDENTMAP_AZALIA		4
-> +#define IDENTMAP_IPU		8
->   
->   int intel_iommu_gfx_mapped;
->   EXPORT_SYMBOL_GPL(intel_iommu_gfx_mapped);
-> @@ -2839,6 +2847,9 @@ static int device_def_domain_type(struct device *dev)
->   
->   		if ((iommu_identity_mapping & IDENTMAP_GFX) && IS_GFX_DEVICE(pdev))
->   			return IOMMU_DOMAIN_IDENTITY;
-> +
-> +		if ((iommu_identity_mapping & IDENTMAP_IPU) && IS_IPU_DEVICE(pdev))
-> +			return IOMMU_DOMAIN_IDENTITY;
->   	}
->   
->   	return 0;
-> @@ -3278,6 +3289,9 @@ static int __init init_dmars(void)
->   	if (!dmar_map_gfx)
->   		iommu_identity_mapping |= IDENTMAP_GFX;
->   
-> +	if (!dmar_map_ipu)
-> +		iommu_identity_mapping |= IDENTMAP_IPU;
-> +
->   	check_tylersburg_isoch();
->   
->   	ret = si_domain_init(hw_pass_through);
-> @@ -5622,6 +5636,15 @@ static void quirk_iommu_igfx(struct pci_dev *dev)
->   	dmar_map_gfx = 0;
->   }
->   
-> +static void quirk_iommu_ipu(struct pci_dev *dev)
-> +{
-> +	if (risky_device(dev))
-> +		return;
-> +
-> +	pci_info(dev, "Passthrough IOMMU for integrated Intel IPU\n");
-> +	dmar_map_ipu = 0;
-> +}
-> +
->   /* G4x/GM45 integrated gfx dmar support is totally busted. */
->   DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x2a40, quirk_iommu_igfx);
->   DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x2e00, quirk_iommu_igfx);
-> @@ -5657,6 +5680,18 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x1632, quirk_iommu_igfx);
->   DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x163A, quirk_iommu_igfx);
->   DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x163D, quirk_iommu_igfx);
->   
-> +/* disable IPU dmar support */
-> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_IPU3,
-> +			 quirk_iommu_ipu);
-> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_IPU6EP,
-> +			 quirk_iommu_ipu);
-> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_IPU6SE_P,
-> +			 quirk_iommu_ipu);
-> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_IPU6,
-> +			 quirk_iommu_ipu);
-> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_IPU6SE,
-> +			 quirk_iommu_ipu);
+> You cannot remove this without changing get/put_swap_device().  It's
+> better to squash at least PATCH 1-2.
 
-This is duplicate with above IS_IPU_DEVICE(). Please keep a single
-device list.
+Will squash PATCH 1-2. Thanks.
 
-> +
->   static void quirk_iommu_rwbf(struct pci_dev *dev)
->   {
->   	if (risky_device(dev))
-> diff --git a/drivers/staging/media/ipu3/ipu3.c b/drivers/staging/media/ipu3/ipu3.c
-> index ee1bba6bdcac..aee1130ac042 100644
-> --- a/drivers/staging/media/ipu3/ipu3.c
-> +++ b/drivers/staging/media/ipu3/ipu3.c
-> @@ -16,7 +16,7 @@
->   #include "ipu3-dmamap.h"
->   #include "ipu3-mmu.h"
->   
-> -#define IMGU_PCI_ID			0x1919
-> +#define IMGU_PCI_ID			PCI_DEVICE_ID_INTEL_IPU3
->   #define IMGU_PCI_BAR			0
->   #define IMGU_DMA_MASK			DMA_BIT_MASK(39)
->   #define IMGU_MAX_QUEUE_DEPTH		(2 + 2)
-
-Put above changes in a separated patch, please.
-
-> diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-> index a76ccb697bef..951315892608 100644
-> --- a/include/linux/pci_ids.h
-> +++ b/include/linux/pci_ids.h
-> @@ -2716,6 +2716,7 @@
->   #define PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_2C_BRIDGE  0x1576
->   #define PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_4C_NHI     0x1577
->   #define PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_4C_BRIDGE  0x1578
-> +#define PCI_DEVICE_ID_INTEL_IPU3	0x1919
->   #define PCI_DEVICE_ID_INTEL_80960_RP	0x1960
->   #define PCI_DEVICE_ID_INTEL_QAT_C3XXX	0x19e2
->   #define PCI_DEVICE_ID_INTEL_QAT_C3XXX_VF	0x19e3
-> @@ -2982,6 +2983,8 @@
->   #define PCI_DEVICE_ID_INTEL_SBRIDGE_BR		0x3cf5	/* 13.6 */
->   #define PCI_DEVICE_ID_INTEL_SBRIDGE_SAD1	0x3cf6	/* 12.7 */
->   #define PCI_DEVICE_ID_INTEL_IOAT_SNB	0x402f
-> +#define PCI_DEVICE_ID_INTEL_IPU6EP	0x465d
-> +#define PCI_DEVICE_ID_INTEL_IPU6SE_P	0x4e19
->   #define PCI_DEVICE_ID_INTEL_5100_16	0x65f0
->   #define PCI_DEVICE_ID_INTEL_5100_19	0x65f3
->   #define PCI_DEVICE_ID_INTEL_5100_21	0x65f5
-> @@ -3032,6 +3035,8 @@
->   #define PCI_DEVICE_ID_INTEL_IXP4XX	0x8500
->   #define PCI_DEVICE_ID_INTEL_IXP2800	0x9004
->   #define PCI_DEVICE_ID_INTEL_VMD_9A0B	0x9a0b
-> +#define PCI_DEVICE_ID_INTEL_IPU6	0x9a19
-> +#define PCI_DEVICE_ID_INTEL_IPU6SE	0x9a39
->   #define PCI_DEVICE_ID_INTEL_S21152BB	0xb152
->   
->   #define PCI_VENDOR_ID_SCALEMP		0x8686
+> 
+>> +	percpu_ref_resurrect(&p->users);
+>>  	spin_lock(&swap_lock);
+>>  	spin_lock(&p->lock);
+>>  	_enable_swap_info(p);
+>> @@ -2621,11 +2630,18 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
+>>  	p->flags &= ~SWP_VALID;		/* mark swap device as invalid */
+>>  	spin_unlock(&p->lock);
+>>  	spin_unlock(&swap_lock);
+>> +
+>> +	percpu_ref_kill(&p->users);
+>>  	/*
+>> -	 * wait for swap operations protected by get/put_swap_device()
+>> -	 * to complete
+>> +	 * We need synchronize_rcu() here to protect the accessing
+>> +	 * to the swap cache data structure.
+>>  	 */
+>>  	synchronize_rcu();
+>> +	/*
+>> +	 * Wait for swap operations protected by get/put_swap_device()
+>> +	 * to complete.
+>> +	 */
+> 
+> I think the comments (after some revision) can be moved before
+> percpu_ref_kill().  The synchronize_rcu() comments can be merged.
 > 
 
-Ditto.
+Ok.
 
-Best regards,
-baolu
+>> +	wait_for_completion(&p->comp);
+>>  
+>>  	flush_work(&p->discard_work);
+>>  
+>> @@ -3132,7 +3148,7 @@ static bool swap_discardable(struct swap_info_struct *si)
+>>  SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+>>  {
+>>  	struct swap_info_struct *p;
+>> -	struct filename *name;
+>> +	struct filename *name = NULL;
+>>  	struct file *swap_file = NULL;
+>>  	struct address_space *mapping;
+>>  	int prio;
+>> @@ -3163,6 +3179,15 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+>>  
+>>  	INIT_WORK(&p->discard_work, swap_discard_work);
+>>  
+>> +	if (!p->ref_initialized) {
+> 
+> I don't think it's necessary to add another flag p->ref_initialized.  We
+> can distinguish newly allocated and reused swap_info_struct in alloc_swap_info().
+> 
+
+If newly allocated swap_info_struct failed to init percpu_ref, it will be considered as
+a reused one in alloc_swap_info() _but_ the field users of swap_info_struct is actually
+uninitialized. Does this make sense for you?
+
+Many Thanks for quick review.
+
+> Best Regards,
+> Huang, Ying
+> 
+>> +		error = percpu_ref_init(&p->users, swap_users_ref_free,
+>> +					PERCPU_REF_INIT_DEAD, GFP_KERNEL);
+>> +		if (unlikely(error))
+>> +			goto bad_swap;
+>> +		init_completion(&p->comp);
+>> +		p->ref_initialized = true;
+>> +	}
+>> +
+>>  	name = getname(specialfile);
+>>  	if (IS_ERR(name)) {
+>>  		error = PTR_ERR(name);
+> .
+> 
+
