@@ -2,100 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9B63641EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 14:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E39413641F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 14:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239139AbhDSMpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 08:45:23 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:39940 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230211AbhDSMpX (ORCPT
+        id S239203AbhDSMrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 08:47:03 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:17612 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232709AbhDSMrA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 08:45:23 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13JCimsG086768;
-        Mon, 19 Apr 2021 07:44:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1618836288;
-        bh=nYwebb1IXwFKgtnm2vFcxeDvsqvpQZ8aSr5dxVbRK1k=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=QlgOC6WW/t4XQdAXkDTjpQjup6FSId6Y38BAvyZJCyvwUTT2qw3g4HyTn96ttxd5L
-         U0ACVlCi3qT3uDYksovaMQdkZn6fLjTY6Tdmh4tx2SuLV5G16ci9BjU/9dpCq9c5Cy
-         Z+4e2xV4T0Vfs2alFvvwwInSR/HqHZb9NCy8i+dM=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13JCilTn056813
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 19 Apr 2021 07:44:47 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 19
- Apr 2021 07:44:47 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 19 Apr 2021 07:44:47 -0500
-Received: from [10.250.234.34] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13JCiiSG050079;
-        Mon, 19 Apr 2021 07:44:45 -0500
-Subject: Re: [PATCH v4] PCI: Add quirk for preventing bus reset on TI C667X
-To:     =?UTF-8?Q?Antti_J=c3=a4rvinen?= <antti.jarvinen@gmail.com>,
-        <helgaas@kernel.org>
-CC:     <alex.williamson@redhat.com>, <bhelgaas@google.com>,
-        <kw@linux.com>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>
-References: <20210312210917.GA2290948@bjorn-Precision-5520>
- <20210315102606.17153-1-antti.jarvinen@gmail.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <d7753802-4f7f-7470-1add-de44817eff5c@ti.com>
-Date:   Mon, 19 Apr 2021 18:14:44 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210315102606.17153-1-antti.jarvinen@gmail.com>
-Content-Type: text/plain; charset="utf-8"
+        Mon, 19 Apr 2021 08:47:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1618836410; x=1650372410;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=E5v4fYfZDJ2W73UpgFgKR7hPu3xCAXx4qEKgBz5CGqs=;
+  b=roS1R+1Fg0MszyHToVGlD7M/r0h/Q4XGDxi6r92s0aWm6Wne+8wcuDEv
+   e4TDZtrJqRwabMt2FFVslEdaxDeDnsJsrmyKuIAQrIpBBypJFL2kr8v2I
+   9Mu1mG8Age6OxsdSARKjFtuTFIt2Ply3ruhHCyVmYmFnnsJ921lecaCzj
+   FIBa3kdb/XAiAcvYncyPnMoL1LHELsjWpzf3ry521q1a0TE372R+qw9J8
+   oI1gKXDZb8HHyqEEIRf+d/f5YbhakYISd206je5bnNLZeheZvRZeHbzfd
+   k6NfBrF2cFSu2M6rUdnsNtFSiR7CeBKNsTItg5guBCZc1bQqWa1Xwnsaj
+   A==;
+IronPort-SDR: 5Eya6vv+lUNoREQ7DQ97o9lQxWaozEGqvEEGIcr7r080SdXGrx/Pg/0i/yxNOlMOeRxnBrppz6
+ pbgR7BZREKBxuaU3XLWC7gCUvOtr72w+F2FV+SLnbvBGqoJVRjeQDeaHUpKRpl+kSpOm0CYE6/
+ LnherVIKWRkURq0pzKIfu7CVoWPA5V0X7Q7t3QYx1QrGtoQJ+mwHqRam8yyEmZ6e4I8a/cU63j
+ ZonfRlfpCWsHzh+YmmSsmhcGXMAYMeYKER1t1bbd7GR0M49eyykNVLB3LsAZ36vkGKTMrsuJRv
+ zd0=
+X-IronPort-AV: E=Sophos;i="5.82,234,1613404800"; 
+   d="scan'208";a="269363963"
+Received: from mail-bn8nam12lp2171.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.171])
+  by ob1.hgst.iphmx.com with ESMTP; 19 Apr 2021 20:46:46 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VxQQ7GgzohkC6I5WnHZR50Jk06Zubw7S2A2fYIEtO4kcGI6Yk9GOHAAZHutkC6Cbwsr/B4ZgzOMz48EqxVeXagRgRc7/IH1GcevDjyj5SRxjpiwWOagGNRLS4nULSUOTD2O/WqL8kRXIsterzbEjymHMmjsK0TNSwicPxRvcLpVA84/yrmxbSJmbsm2mkMzylYXLzxmumQdbpC03BId3D9hsTzkRPb7wkb73K0BK/5nLHyZSr4NJUPhfijnUOa6fmz1+eI9dIr6w5oPE5Hdn4AiLNY8PB/G6eumUwZJS8EtB2WdHFjUuj16XKYz7cGBorBQE0ssvPye4DAofzgWwEQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E5v4fYfZDJ2W73UpgFgKR7hPu3xCAXx4qEKgBz5CGqs=;
+ b=iZ3Aqpct5y8teL0j1Cp4dsmDvesbmmjabwTrdEondWuFeVs2ZagxduMlu/kTjLZbxD2egLLfTXXuht1vPeON06Tnz+Qt7V11TmWnwmk33wuXAkAeypoOfW8+C4R5cOeE3CI4eWoo1tCvDCihvwM3QUnlhV0AXZmEqZWjTbyHM0lyzpex1HMUfWMcWdZYIvOX3NOLd668wjLLeJz+P9Uqtb8tqSafOUoF/rVxD7qUIh0meIZQsIkzhHFY0GAyjTtSgGSrL/CcnpEuBvrFSZCUIgL2tELIYtDxN6mj2e4ZkTc4z5qkVhojuyZa89MnKT6rlPYtZv3E/GfOzQwzjlD3kw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E5v4fYfZDJ2W73UpgFgKR7hPu3xCAXx4qEKgBz5CGqs=;
+ b=MSCDUZhciOoyWUVFkbAPm7VvxNvDZ5yMagtiGVL1IqK9KFbBdSUgbDpeotNOKtpHAnMJWlTBvcmopW/2bN8VaGOVCZyv7T3sH91bOkcdShtw848x1h6qfNQyRGvoUR1FZiaJIpQGKf7APRpL6pLn1un1ag2VI6QLqYcFUz3FE5I=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM6PR04MB5084.namprd04.prod.outlook.com (2603:10b6:5:16::30) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4042.16; Mon, 19 Apr 2021 12:46:27 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::ed2d:4ccc:f42b:9966]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::ed2d:4ccc:f42b:9966%6]) with mapi id 15.20.4042.024; Mon, 19 Apr 2021
+ 12:46:27 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+CC:     Adrian Hunter <adrian.hunter@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] mmc: core: Move eMMC cache flushing to a new bus_ops
+ callback
+Thread-Topic: [PATCH] mmc: core: Move eMMC cache flushing to a new bus_ops
+ callback
+Thread-Index: AQHXNRe01xLgAUuS+EqswYYPpuMV96q7yaSw
+Date:   Mon, 19 Apr 2021 12:46:27 +0000
+Message-ID: <DM6PR04MB65755248E394D37512288DACFC499@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20210419122943.68234-1-ulf.hansson@linaro.org>
+In-Reply-To: <20210419122943.68234-1-ulf.hansson@linaro.org>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [212.25.79.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 74edc1f3-a980-409f-7c5f-08d903312606
+x-ms-traffictypediagnostic: DM6PR04MB5084:
+x-microsoft-antispam-prvs: <DM6PR04MB5084339F7053E084B1162977FC499@DM6PR04MB5084.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: aMSQzKnKAyuNNBStetEtyLqEtaLulZhc27StL+r/pcrJWlRu8xRln2vwbom0nO7EWa4PSm5ocvGxMM9zO0IgdyxFAKDWrtLq5xex3YmF34AwwuxBIwjt9pS0p8Ytq6lVh5d0pkOGbN6gPQ/Nd9RWfwC5kxVpPSN4av+I5aVviQ6w4/JQu2wXDyJNpn+JRWpgjYLJKwDqHlr8k6eXFt7ojHnKdYSjlM1GMxEfrh/rYRzmHRFDdK6wwcrDxlUsaKOPpzTjX4RWF/w5bUbFXBJugpiQU5yYF0iyt8uT4X2s7oyB54LtH4UdswIbsnmFjLjwMlwa6bQdNE7PNR6Yr9zxxEc8xBEKSoEclwqhhPdXmk3x08Y1wb4ZE4d1O1fXp80ByUyZxsNjR+t3hgaCE4h20Xv4wtX3s//AwH+xiaP8+WlvO/hR2dzI1RK9mSWUxCbQVTgRAWqK8iehnxKsb5Bqanf35qXZF3utjNqhU9lVLLT/f/vZcviOvownH5qrJA8L98IiWgnFXSzhTxVt1XoTaoKOhG1yYpjR3aHAHQj5DS0E95Fo1vAvQauTeDAzRBmtEOhobPxum/9YkWPBCb+4fIo/e3I4xzj8LPJ0fIZoWdM=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(366004)(346002)(136003)(39860400002)(26005)(2906002)(8936002)(4744005)(33656002)(38100700002)(71200400001)(316002)(122000001)(186003)(66446008)(52536014)(478600001)(66476007)(55016002)(76116006)(110136005)(54906003)(7696005)(8676002)(9686003)(86362001)(66556008)(5660300002)(66946007)(6506007)(64756008)(4326008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?PmWtUtZxp3gfpanXav50rKTBCyIR56x5xK1QnX34zNZ3zNiEVGIKaqI7GH3Z?=
+ =?us-ascii?Q?rv8drkNO8Xn0ugoU9fBArWaYy384EWr4CdNCC5OeQ+zhDwDjOktRwu9GRk+S?=
+ =?us-ascii?Q?scove2bwJGXJjlKe/26mBeK9Aiw1FPzqFl1KoJsgKM2ip1oMRYS1IuuvnGXN?=
+ =?us-ascii?Q?DFthnwn3kCG+cqhKwp9n0MvwIEWEUjJTk04iqNpF+Nxqb9OCRHQDc2Ig1VnY?=
+ =?us-ascii?Q?A5ir26fSqy9N5OsHgR8m0vkJpLowUcCY763u7jqX0Sfn5W8JMZep2nJVN8nU?=
+ =?us-ascii?Q?UZXA5jHvwS4aYfpHgOY09PQQwulwaxCk9lCKu6hg4I5tvkCvnReypJ+2wds3?=
+ =?us-ascii?Q?Ux8Xpmf/X3Oa2NHHKE6FuDMLfmoOPyEq6MmmU7iMoWY3bEk90Il7r327+jSm?=
+ =?us-ascii?Q?Mjua7z7B7+VNJkwBAjtm27/9+PSYdjPrjT02H3rrCaG+un932igY8ey8N0eZ?=
+ =?us-ascii?Q?Nnkbozl130yl7xfuMKkWmN0sIg6TOBhLWXZ30DwKH30M8DVdp9P+U+M+Wv/+?=
+ =?us-ascii?Q?v3Gzijk7E2xtZOrUni1mYaAA8Lyy2AV596xvDtXoOw6zQnw6gDtJczwkrOrv?=
+ =?us-ascii?Q?y4h5q1ggs4m2T3a42EerMT96givMyJk6cAdfgvjmTFLJw4OnWRe1WeBhzz6z?=
+ =?us-ascii?Q?buHyA8EbCnQ7/3hoZF7qcuVIC9XqsPhkTNh1UdTJNUhRe1LMxR86tZaHm4yc?=
+ =?us-ascii?Q?nC86bKHAzjCzJw04JwAXw1tDs9IeFpLghgxvUedjI03TwKDKyt4MQ0MGG7zN?=
+ =?us-ascii?Q?LFPodntk7kQphdDallZCB5Me3WLyrLnN4bz2pX+LH0MwRGpZVTm1w7YzzWTW?=
+ =?us-ascii?Q?Yjm3w56tU9irdphcjhIuCq/ac7sNTUonqK3sbrjSMPP3cv82JTsn7BLJ+kKE?=
+ =?us-ascii?Q?zr/jkX74HNnyhN1uykEeKcaQu9O5DbhO/ygGRBkvfoaujbIdebUxTijBy7DI?=
+ =?us-ascii?Q?YC/V7YeucWQ/jG/OEetcIPOWlSREDZVTKY3zZePyjk38gmAKTG+D2guk5JSt?=
+ =?us-ascii?Q?jnPMYsO0QuEHMLKawsL+SdZK/kvByUOaBr6Sirn32tSndp/JrHWhOQbyDcuS?=
+ =?us-ascii?Q?k1nFwkKLNuaHPqxxxKAaXNZtwb7oddQzMgC+wT8RMCRr8K2f/mP7UTufD2sr?=
+ =?us-ascii?Q?WtmlTexyZfwCoUOoJnFivyg/P6Li+8pF8ABuEXLQ+QSUSBVeEWwQFINRqHZ5?=
+ =?us-ascii?Q?BdlP2EmWF/cTg/rQ1s+x6bk4l9ozH/IPG3nmFq620VxWPIbXnWMEACcmfv6/?=
+ =?us-ascii?Q?QtSzojGXFG9p6puUg9udPXhWiMqGGyP1trR9E1WeezO+EPjIb9RzJP9yK+4G?=
+ =?us-ascii?Q?PJb58egCwTb2d2KciHgm3QGX?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 74edc1f3-a980-409f-7c5f-08d903312606
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Apr 2021 12:46:27.4492
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: L++G54NvmDclZZXQEb2kngsOTBCtDVDRAICoFccfB405V5/2MFYJaD9JvISxRjJX1yzU5p9bZ7G1HGSTMwu/Jw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB5084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 15/03/21 3:56 pm, Antti Järvinen wrote:
-> Some TI KeyStone C667X devices do not support bus/hot reset. Its PCIESS
-> automatically disables LTSSM when secondary bus reset is received and
-> device stops working. Prevent bus reset by adding quirk_no_bus_reset to
-> the device. With this change device can be assigned to VMs with VFIO,
-> but it will leak state between VMs.
-> 
-> Reference: https://e2e.ti.com/support/processors/f/791/t/954382
-> Signed-off-by: Antti Järvinen <antti.jarvinen@gmail.com>
-
-Reviewed-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  drivers/pci/quirks.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index 653660e3ba9e..d9201ad1ca39 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -3578,6 +3578,16 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0034, quirk_no_bus_reset);
->   */
->  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_CAVIUM, 0xa100, quirk_no_bus_reset);
->  
-> +/*
-> + * Some TI keystone C667X devices do no support bus/hot reset.
-> + * Its PCIESS automatically disables LTSSM when secondary bus reset is
-> + * received and device stops working. Prevent bus reset by adding
-> + * quirk_no_bus_reset to the device. With this change device can be
-> + * assigned to VMs with VFIO, but it will leak state between VMs.
-> + * Reference https://e2e.ti.com/support/processors/f/791/t/954382
-> + */
-> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_TI, 0xb005, quirk_no_bus_reset);
-> +
->  static void quirk_no_pm_reset(struct pci_dev *dev)
->  {
->  	/*
-> 
+=20
+> To prepare to add internal cache management for SD cards, let's start by
+> moving the eMMC specific code into a new ->flush_cache() bus_ops callback=
+.
+>=20
+> In this way, it becomes more straight-forward to add the SD specific part=
+s,
+> as subsequent changes are about to show.
+>=20
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
