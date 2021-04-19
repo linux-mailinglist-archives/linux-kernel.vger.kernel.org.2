@@ -2,88 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5EB363951
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 04:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E4436393C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 04:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237244AbhDSCJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 22:09:54 -0400
-Received: from mga05.intel.com ([192.55.52.43]:49128 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233224AbhDSCJw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 22:09:52 -0400
-IronPort-SDR: qmvQ/PI0pLD+OrUGkkw5b9sEaa8F7FhAkGMGoQKVGD/GufvZdBFNqBaVz0igcozFt2BFi1HnaZ
- aPuB4nLRlyBQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9958"; a="280580173"
-X-IronPort-AV: E=Sophos;i="5.82,232,1613462400"; 
-   d="scan'208";a="280580173"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2021 19:09:21 -0700
-IronPort-SDR: zxuHjgLbcM9BtCHqQCZ13ZYmO7rMenKxwRxWp6ygS8GE0+VyAbOHSkgSEuqzA05JJwQLR+P5AF
- LRu1uAXt3CzA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,232,1613462400"; 
-   d="scan'208";a="426330304"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
-  by orsmga008.jf.intel.com with ESMTP; 18 Apr 2021 19:09:17 -0700
-Cc:     baolu.lu@linux.intel.com,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com,
-        yuzenghui@huawei.com, lushenming@huawei.com
-Subject: Re: [PATCH v3 01/12] iommu: Introduce dirty log tracking framework
-To:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
+        id S237084AbhDSCDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 22:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232288AbhDSCDi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 22:03:38 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA6EC06174A;
+        Sun, 18 Apr 2021 19:03:09 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id u15so8327270plf.10;
+        Sun, 18 Apr 2021 19:03:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BPSD3xSDTnWh+Nz3+j4qm9HcpmcWDhRQcIMOD/a1Rz4=;
+        b=g9nR0Kbn42QWboT8F+6HxD6U3d0etIiPNbzLS/QlrD4hcH3iJ7r2KuKR8wqfYk1cYx
+         gvggLBh2tmd/kffs8WPwAZImhvYs3tMOulBU217tAPhFwZDktxbLk4qL1zSSpIHJKRyI
+         EWUjhp1OeyzR5NyRODiA/rXgilfjzroi9Uuo7Rcbcr7N4+neFh3WuMNt+d/lNWtLHQfi
+         /UoZKxYxh/R03LJ+Wyc4ANAolRCDzKN/pCRbfSbL5asjPQlvWzPtH90EYQ6halOqKIQG
+         pYYckbYvEuFrSgpGT+uw1xcI6ahBFH/2SD8OWAU06pN4xXPh8uGLhs/YlxT25ibL+2rV
+         OcOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BPSD3xSDTnWh+Nz3+j4qm9HcpmcWDhRQcIMOD/a1Rz4=;
+        b=CNNYTfGNWFxJEQ4df/s8IYeTFssHhgG6Wq4gEzzxvuScKgyiz60ZP/IfXEBK+hnyVq
+         WshSReuJmeIeHRax0h4RsMrh6dbYxPUoT9iJU9Z3Pna9tUHp+3HYERTxdyqwXNCzVhFH
+         N8EK0+wx6V6fbLnivj4b6K0cLt1UHqmmrEW0k4nqAljpVQu6kxz9Nz1Wxli9+j+tGTPk
+         GlVW2EZ+MNpdoWf+C1826zR1ZLbzIRoO8jJT8kGjTLFT1bFafivD4XStx93ipMSRz6qP
+         yX9EBJGAw0PiVa0xORVH5pgDxS9HliYqY7N/wqrzWF0XupdLJDoq9aJKrG8w+98GjxDF
+         WiEw==
+X-Gm-Message-State: AOAM530ndfIn2VtSg172hgbzXbTNTuvTg+vQXZi0NSPx97ffxScPULHB
+        Rgz6WgmoPjl5EfIGDEGs+Q4TH3ZyCfqZH2Hm
+X-Google-Smtp-Source: ABdhPJwUK8c2110qQsGdlilhEVH6RNovspU3KzWKZqoF2+bgUFBln1/xQm3+prddHRsNE4KE+2EMDA==
+X-Received: by 2002:a17:90a:ff02:: with SMTP id ce2mr22236666pjb.217.1618797788273;
+        Sun, 18 Apr 2021 19:03:08 -0700 (PDT)
+Received: from glados.. ([2601:647:6000:3e5b::a27])
+        by smtp.gmail.com with ESMTPSA id kk9sm61753pjb.23.2021.04.18.19.03.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Apr 2021 19:03:07 -0700 (PDT)
+From:   Thomas Hebb <tommyhebb@gmail.com>
+To:     linux-kernel@vger.kernel.org, Heiko Stuebner <heiko@sntech.de>
+Cc:     Thomas Hebb <tommyhebb@gmail.com>, stable@vger.kernel.org,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Sandy Huang <hjc@rock-chips.com>,
+        dri-devel@lists.freedesktop.org,
         linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Yi Sun <yi.y.sun@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Tian Kevin <kevin.tian@intel.com>
-References: <20210413085457.25400-1-zhukeqian1@huawei.com>
- <20210413085457.25400-2-zhukeqian1@huawei.com>
- <fe337950-f8d0-3d21-a7b1-98b385d71f3e@linux.intel.com>
- <e42373e3-10d5-5a34-8f33-8bb82d64fb19@huawei.com>
- <56b001fa-b4fe-c595-dc5e-f362d2f07a19@linux.intel.com>
- <88cba608-2f22-eb83-f22e-50cb547b6ee8@huawei.com>
- <2c01425f-813c-4278-ba06-26d651496a5c@linux.intel.com>
- <64c87f67-3687-61bd-1587-724cc2f9cc97@huawei.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <4e7ae083-08f5-b273-f873-21a2960ea68a@linux.intel.com>
-Date:   Mon, 19 Apr 2021 09:59:36 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        linux-rockchip@lists.infradead.org
+Subject: [RESEND PATCH] drm/rockchip: dsi: remove extra component_del() call
+Date:   Sun, 18 Apr 2021 19:03:04 -0700
+Message-Id: <201385acb0eeb5dfb037afdc6a94bfbcdab97f99.1618797778.git.tommyhebb@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <64c87f67-3687-61bd-1587-724cc2f9cc97@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Keqian,
+commit cf6d100dd238 ("drm/rockchip: dsi: add dual mipi support") added
+this devcnt field and call to component_del(). However, these both
+appear to be erroneous changes left over from an earlier version of the
+patch. In the version merged, nothing ever modifies devcnt, meaning
+component_del() runs unconditionally and in addition to the
+component_del() calls in dw_mipi_dsi_rockchip_host_detach(). The second
+call fails to delete anything and produces a warning in dmesg.
 
-On 4/16/21 5:07 PM, Keqian Zhu wrote:
->> I am worrying about having two sets of APIs for single purpose. From
->> vendor iommu driver's point of view, this feature is per device. Hence,
->> it still needs to do the same thing.
-> Yes, we can unify the granule of feature reporting and status management.
-> 
-> The basic granule of dirty tracking is iommu_domain, I think it's very reasonable. We need an
-> interface to report the feature of iommu_domain, then the logic is much more clear.
-> 
-> Every time we add new device or remove device from the domain, we should update the feature (e.g.,
-> maintain a counter of unsupported devices).
+If we look at the previous version of the patch[1], however, we see that
+it had logic to calculate devcnt and call component_add() in certain
+situations. This was removed in v6, and the fact that the deletion code
+was not appears to have been an oversight.
 
-Yes. This looks cleaner.
+[1] https://patchwork.kernel.org/project/dri-devel/patch/20180821140515.22246-8-heiko@sntech.de/
 
-> 
-> What do you think about this idea?
-> 
-> Thanks,
-> Keqian
+Fixes: cf6d100dd238 ("drm/rockchip: dsi: add dual mipi support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
+---
 
-Best regards,
-baolu
+ drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
+index 24a71091759c..8cc81d5b82f0 100644
+--- a/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
++++ b/drivers/gpu/drm/rockchip/dw-mipi-dsi-rockchip.c
+@@ -243,7 +243,6 @@ struct dw_mipi_dsi_rockchip {
+ 	struct dw_mipi_dsi *dmd;
+ 	const struct rockchip_dw_dsi_chip_data *cdata;
+ 	struct dw_mipi_dsi_plat_data pdata;
+-	int devcnt;
+ };
+ 
+ struct dphy_pll_parameter_map {
+@@ -1121,9 +1120,6 @@ static int dw_mipi_dsi_rockchip_remove(struct platform_device *pdev)
+ {
+ 	struct dw_mipi_dsi_rockchip *dsi = platform_get_drvdata(pdev);
+ 
+-	if (dsi->devcnt == 0)
+-		component_del(dsi->dev, &dw_mipi_dsi_rockchip_ops);
+-
+ 	dw_mipi_dsi_remove(dsi->dmd);
+ 
+ 	return 0;
+-- 
+2.30.0
+
