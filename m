@@ -2,91 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19992364EC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B607A364EBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232608AbhDSXk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 19:40:57 -0400
-Received: from mo-csw1116.securemx.jp ([210.130.202.158]:36098 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232484AbhDSXk4 (ORCPT
+        id S232267AbhDSXkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 19:40:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229842AbhDSXkO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 19:40:56 -0400
-Received: by mo-csw.securemx.jp (mx-mo-csw1116) id 13JNdlVM005625; Tue, 20 Apr 2021 08:39:47 +0900
-X-Iguazu-Qid: 2wHHhVLfD68WbBSrrf
-X-Iguazu-QSIG: v=2; s=0; t=1618875586; q=2wHHhVLfD68WbBSrrf; m=OpTumAytCPng2rPIF8zru+UG0PLMCzlcfWIBcmKYL68=
-Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
-        by relay.securemx.jp (mx-mr1110) id 13JNdivT005802
-        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 20 Apr 2021 08:39:44 +0900
-Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id 1E4FB1000B0;
-        Tue, 20 Apr 2021 08:39:44 +0900 (JST)
-Received: from hop001.toshiba.co.jp ([133.199.164.63])
-        by enc01.toshiba.co.jp  with ESMTP id 13JNdhoP024180;
-        Tue, 20 Apr 2021 08:39:43 +0900
-Date:   Tue, 20 Apr 2021 08:39:07 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Yu Chen <chenyu56@huawei.com>,
-        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] MAINTAINERS: rectify entry for HIKEY960 ONBOARD USB
- GPIO HUB DRIVER
-X-TSB-HOP: ON
-Message-ID: <20210419233907.qaxgwlggm35fyklz@toshiba.co.jp>
-References: <20210419092609.3692-1-lukas.bulwahn@gmail.com>
- <20210419092609.3692-3-lukas.bulwahn@gmail.com>
+        Mon, 19 Apr 2021 19:40:14 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99CF3C06174A;
+        Mon, 19 Apr 2021 16:39:42 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id z8so41355969ljm.12;
+        Mon, 19 Apr 2021 16:39:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=LfEpz0iSjiNDbPXawTwLPZzoSRuzzKGOxdOGebsOX3c=;
+        b=OZJ2dq2qJ5uj4GxBGsnYxJZ0yMig951/JM5Yx8zlFk5Ker01MAUc003nNQt+po7kRO
+         debCIwjD1HJqCkzEIVAWep2IarzX+nzs/P8lhCNblHpS5gnfmFx6G1GZgGC68AZ81gdf
+         9WKGDRkeQXEGZnmOA3EUTeCV/W2o5LqtaA0VCuUjQe+eKn8//52l2mBqHM/v1H5uIDCj
+         7egCMZbOs2OL9Kqt/H/cugtDgZKITs57StunHsMH5/LGyWUYQX1M35bAQQOMceldKpQT
+         HAkSumSoVHkp5sTZxIcGoUEXjFcjll1DqkSnrOFdG5QOCabCcWZI1QvFpd0xuZXa6YiT
+         u1Ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LfEpz0iSjiNDbPXawTwLPZzoSRuzzKGOxdOGebsOX3c=;
+        b=EdQGrfy8zKahsJxlRQR1zlc7HMuWNZwIDEZVmXsoOk0XZSS5UjbJdULDK4cZk/SpTn
+         0stAWa/JNgDEIyLZ8RWm9nf5M173iDrsxj4hxABeW/gV/KBP5wJ8YMoXZWqo09jz8UhS
+         40bLdryrGe7Oe/7FDbaaG6sPUxJsPC20p/kbtj7rROzSKDmG9gPsZjDRR/rZy0LMdSC6
+         zQ/L2EAjIejdYuceOcDS0QcQB5XbBlHD4G7rr3Sf9TikfLnQLSqksOWUTR9McZGenY4y
+         sJRxIQA491Se0vxYJTtER/DP7kH/C5iO12OseCuNy5Nzv2dCmpzzzRICyUCxxPymlYeY
+         M7dw==
+X-Gm-Message-State: AOAM532KB7BVEEcKVduULUKVeLoDBi+o+GYbh+0lWh02Ys5ZAI9y8I0d
+        RYyTmLl2BLAi/ttdC96DzaWZmcxHNpto42iny04=
+X-Google-Smtp-Source: ABdhPJwBuUhwU7MDlAnuogmGpFmJLlcos+VhDPWVAgQqC+uDhcnnkQThfnFQxkMCz8S1PFN/Uc33qunbbsOd4idJ5vE=
+X-Received: by 2002:a2e:b8d2:: with SMTP id s18mr12849213ljp.148.1618875577658;
+ Mon, 19 Apr 2021 16:39:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210419092609.3692-3-lukas.bulwahn@gmail.com>
+References: <20210415152409.GA2286719@LEGION> <8735vp18su.fsf@suse.com>
+In-Reply-To: <8735vp18su.fsf@suse.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Mon, 19 Apr 2021 18:39:26 -0500
+Message-ID: <CAH2r5mtwMep4J1yu1jUUEp3+CmwhFuv2mJKqN1ViBkSxi-jGTg@mail.gmail.com>
+Subject: Re: [PATCH v2] cifs: remove unnecessary copies of tcon->crfid.fid
+To:     =?UTF-8?Q?Aur=C3=A9lien_Aptel?= <aaptel@suse.com>
+Cc:     Muhammad Usama Anjum <musamaanjum@gmail.com>,
+        Steve French <sfrench@samba.org>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        "open list:COMMON INTERNET FILE SYSTEM CLIENT (CIFS)" 
+        <linux-cifs@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Colin King <colin.king@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+I changed the comment to
 
-On Mon, Apr 19, 2021 at 11:26:08AM +0200, Lukas Bulwahn wrote:
-> Commit 7a6ff4c4cbc3 ("misc: hisi_hikey_usb: Driver to support onboard USB
-> gpio hub on Hikey960") refers to the non-existing file
-> ./Documentation/devicetree/bindings/misc/hisilicon-hikey-usb.yaml, but this
-> commit's patch series does not add any related devicetree binding in misc.
-> 
-> So, just drop this file reference in HIKEY960 ONBOARD USB GPIO HUB DRIVER.
-> 
++               /*
++                * See commit 2f94a3125b87. Increment the refcount when we
++                * get a lease for root, release it if lease break occurs
++                */
 
-Could you add Fixes: tag ?
-Please also add this to patch: "MAINTAINERS: rectify entry for INTEL KEEM BAY
-DRM DRIVER".
+and added Aurelien's Reviewed-by.  Let me know if you see any
+additional problems.
 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
->  MAINTAINERS | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index d31c8058b17f..4f152717365c 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8239,7 +8239,6 @@ M:	John Stultz <john.stultz@linaro.org>
->  L:	linux-kernel@vger.kernel.org
->  S:	Maintained
->  F:	drivers/misc/hisi_hikey_usb.c
-> -F:	Documentation/devicetree/bindings/misc/hisilicon-hikey-usb.yaml
->  
->  HISILICON PMU DRIVER
->  M:	Shaokun Zhang <zhangshaokun@hisilicon.com>
-> -- 
-> 2.17.1
-> 
-> 
+On Sat, Apr 17, 2021 at 5:54 AM Aur=C3=A9lien Aptel <aaptel@suse.com> wrote=
+:
+>
+> Hi,
+>
+> This is better I think.
+>
+> Muhammad Usama Anjum <musamaanjum@gmail.com> writes:
+> > @@ -894,6 +891,10 @@ int open_cached_dir(unsigned int xid, struct cifs_=
+tcon *tcon,
+> >
+> >       /* BB TBD check to see if oplock level check can be removed below=
+ */
+> >       if (o_rsp->OplockLevel =3D=3D SMB2_OPLOCK_LEVEL_LEASE) {
+> > +             /*
+> > +              * caller expects this func to set the fid in crfid to va=
+lid
+> > +              * cached root, so increment the refcount.
+> > +              */
+>
+> This comment is misleading. crfid variable doesn't exist anymore, and
+> the kref_get() here is because of this commit:
+>
+>     commit 2f94a3125b87
+>     Author: Ronnie Sahlberg <lsahlber@redhat.com>
+>     Date:   Thu Mar 28 11:20:02 2019 +1000
+>
+>         cifs: fix kref underflow in close_shroot()
+>
+>         [...]
+> -->     This extra get() is only used to hold the structure until we get =
+a lease
+> -->     break from the server at which point we will kref_put() it during=
+ lease
+> -->     processing.
+>         [...]
+>
+>
+>
+> When we queue a lease break, we usually get() the cifsFileInfo, but if
+> that cifsFileInfo is backed by a cached_fid, the cached_fid isn't
+> bumped. That commit was probably a work around for that.
+>
+> @Ronnie :
+>
+> struct cached_fid is starting to look very much like struct
+> cifsFileInfo. I wonder why we couldn't use it, along with
+> find_writable_file()/find_readable_file() to handle the caching.
+>
+> Alternatively, make cifsFileInfo use cached_fid (perhaps renaming it in
+> the process, I don't know)
+>
+> Because I suspect a lot more issues will come up regarding cached_fid
+> refcount and cifsFileInfo refcount going out of sync otherwise.
+>
+> Cheers,
+> --
+> Aur=C3=A9lien Aptel / SUSE Labs Samba Team
+> GPG: 1839 CB5F 9F5B FB9B AA97  8C99 03C8 A49B 521B D5D3
+> SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 N=C3=BCrnberg,=
+ DE
+> GF: Felix Imend=C3=B6rffer, Mary Higgins, Sri Rasiah HRB 247165 (AG M=C3=
+=BCnchen)
+>
 
-Best regards,
-  Nobuhiro
+
+--=20
+Thanks,
+
+Steve
