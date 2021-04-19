@@ -2,82 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15042364036
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6FF5364039
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233011AbhDSLF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 07:05:29 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:56187 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231307AbhDSLFZ (ORCPT
+        id S233818AbhDSLGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 07:06:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233862AbhDSLF7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 07:05:25 -0400
-Received: from mail-ej1-f71.google.com ([209.85.218.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lYRi3-0002gI-HJ
-        for linux-kernel@vger.kernel.org; Mon, 19 Apr 2021 11:04:55 +0000
-Received: by mail-ej1-f71.google.com with SMTP id n10-20020a1709061d0ab029037caa96b8c5so3528634ejh.23
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 04:04:55 -0700 (PDT)
+        Mon, 19 Apr 2021 07:05:59 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68712C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 04:05:28 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id v3so35872284ybi.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 04:05:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5LqvcoPM7aAQAIxRhAZ6fd0FECC20Osn+I0reTRncUE=;
+        b=ZO9NymKa3LAaawzpOVdexZjSPKp7U4zlElcQBLoqnCDOfmv6CHMcl+Ky0yOyC/AKTc
+         pMtDB4EK2xiMgC3dP5Wtc+dcMGECpkOkSVC3VJ3XonC1vCIbxXjyAYCigsdcNV99x+FN
+         0NQpXD3+LMz8vsuC1Azj2wVtf2eF68H93ZnL4GB367BO3bDo9cpMc03nGXRK7hwAMxHp
+         mDp8LqQbyc9N+kerBezoq7+coFvdzx/D59UvMJbZv1j+9+RgCSSkbaAuZplSXd2OjG0X
+         evW7lTD7gilOR8VAB5y2M50wCmx+1ws658G/WCiyegX2LnsQGtnKBAApl08QNHL2wHq9
+         lFJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rmmgqTm+14dah62/nL48FwNXg3AN08p9OkUED0cAEDo=;
-        b=KmJox4byMSaWqrknfMPX5oTkE+/3hsqVTUu6VgYbPOPU4W+v/eVmxmMiVH8NEClL5K
-         HXZnLqX8CL3/7GiXIDnaLEdXAYVnFxY6ciXyxPJHtwKOmdYmsQnsWl8Nw9M1T5RTCNwS
-         64+5pfD+lI92MjzKY7cOI+MSSqMLBPXRP6bClEaj8nonSwsFBjAibsknYod8aDwdiSww
-         gVTMiaTF1WfhdHHbsf3wqGNZa3m+r7TmDSFQUUpC37MtO+OodKxE/pzz1MtrJHN5flcy
-         4XhNMAIFgRANRQQKFZuUiGwzC6VTCuqUQHz87xGAoMIeUM2drLdA57L+fiaOvqML1sn3
-         j4HQ==
-X-Gm-Message-State: AOAM530RggRKSjNXPI6jC4DqZozO8uB5rVd7BL8rfWI/8xHWvzJCCOdR
-        aG3Vdr5b8q3Z+0PILJrQV7k2QvciXy2zMQ4d1/S0zad0wULIGZPL6pCqiT2/jKwZ0N2xqxZaVu5
-        2L0yEMwQmK6QeU++B/GK9Fv4F8AGw2PJPLPwCLdfbwQ==
-X-Received: by 2002:a50:ee17:: with SMTP id g23mr25157232eds.45.1618830295307;
-        Mon, 19 Apr 2021 04:04:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzLhshrkmIn+obTvsmXNoesducAwfvWh+CLyV7FaE2SkNPnhgqKAWXBmJSAf7QOw6eaSyUr+A==
-X-Received: by 2002:a50:ee17:: with SMTP id g23mr25157215eds.45.1618830295145;
-        Mon, 19 Apr 2021 04:04:55 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
-        by smtp.gmail.com with ESMTPSA id b22sm9881378edr.52.2021.04.19.04.04.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Apr 2021 04:04:54 -0700 (PDT)
-Subject: Re: [PATCH 4/7] mfd: da9052: Simplify getting of_device_id match data
-To:     Support Opensource <support.opensource@diasemi.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
-        patches@opensource.cirrus.com
-References: <20210419081726.67867-1-krzysztof.kozlowski@canonical.com>
- <20210419081726.67867-4-krzysztof.kozlowski@canonical.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <152ee5cc-878a-310d-b1c9-76a983ee25e8@canonical.com>
-Date:   Mon, 19 Apr 2021 13:04:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5LqvcoPM7aAQAIxRhAZ6fd0FECC20Osn+I0reTRncUE=;
+        b=MwA2bidpkCj7wXtPSOd27WHNAmLljP1ZEO5RleQdQIVQpgxhr8s1MyKZfsoME+9WMJ
+         hga+jBTplNJ2KAc6pHiWMgjLkhMXqFaPeu1UJqyZCEVA6VIkfjZD9S5/Rhn4OtKlkwXE
+         L7IbsMHoyVZDs4Q8d+4tTs0pa3z64Akoajv258Gjj93I4tefbp+wvRC0BTAAJLvGc66q
+         S442wi9lOuHJuM8edP7A6+eQxhgpALTm5yhJyFHWJ0MpM5D0v3Z+N+8gx8ZczpD1JzxY
+         Qxe3I9waBUVKvaLoqtmmhlhYiyqkWqslA683e4zd7ESfXibE1O6f4PyOhOfjvEjMB4Hq
+         3MGg==
+X-Gm-Message-State: AOAM531NVeSOBaGvvsL0NhCLc5wd/+B/e4dgv3h1gfa9RlkCBxj1024o
+        zrjHFZJVkGr9oCR+r4Av4tpOPjt/TVgejUi72Uj5Kw==
+X-Google-Smtp-Source: ABdhPJx2OjyQuMkimOyMB6R/FRIN3pN/2b1ww6PAx/yBwzmlS+Ps69LISVBLhfiYdhbvwdZIX0m4wGTOQRgp5e8rvtA=
+X-Received: by 2002:a25:850b:: with SMTP id w11mr16207623ybk.518.1618830327412;
+ Mon, 19 Apr 2021 04:05:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210419081726.67867-4-krzysztof.kozlowski@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210418114200.5839-1-alobakin@pm.me>
+In-Reply-To: <20210418114200.5839-1-alobakin@pm.me>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Mon, 19 Apr 2021 13:05:16 +0200
+Message-ID: <CANn89iJQebFaJKsj3BC0tY27f1ttDpbpMOXjOFtgrFNVN_B9wA@mail.gmail.com>
+Subject: Re: [PATCH net] gro: fix napi_gro_frags() Fast GRO breakage due to IP
+ alignment check
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Wei Wang <weiwan@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/04/2021 10:17, Krzysztof Kozlowski wrote:
-> Use of_device_get_match_data() to make the code slightly smaller.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+On Sun, Apr 18, 2021 at 1:43 PM Alexander Lobakin <alobakin@pm.me> wrote:
+>
+> Commit 38ec4944b593 ("gro: ensure frag0 meets IP header alignment")
+> did the right thing, but missed the fact that napi_gro_frags() logics
+> calls for skb_gro_reset_offset() *before* pulling Ethernet header
+> to the skb linear space.
+> That said, the introduced check for frag0 address being aligned to 4
+> always fails for it as Ethernet header is obviously 14 bytes long,
+> and in case with NET_IP_ALIGN its start is not aligned to 4.
+>
+> Fix this by adding @nhoff argument to skb_gro_reset_offset() which
+> tells if an IP header is placed right at the start of frag0 or not.
+> This restores Fast GRO for napi_gro_frags() that became very slow
+> after the mentioned commit, and preserves the introduced check to
+> avoid silent unaligned accesses.
+>
+> Fixes: 38ec4944b593 ("gro: ensure frag0 meets IP header alignment")
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 > ---
->  drivers/mfd/da9062-core.c | 13 ++++---------
->  1 file changed, 4 insertions(+), 9 deletions(-)
+>  net/core/dev.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 1f79b9aa9a3f..965d5f9b6fee 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -5914,7 +5914,7 @@ static struct list_head *gro_list_prepare(struct napi_struct *napi,
+>         return head;
+>  }
+>
+> -static void skb_gro_reset_offset(struct sk_buff *skb)
+> +static void skb_gro_reset_offset(struct sk_buff *skb, u32 nhoff)
+>  {
+>         const struct skb_shared_info *pinfo = skb_shinfo(skb);
+>         const skb_frag_t *frag0 = &pinfo->frags[0];
+> @@ -5925,7 +5925,7 @@ static void skb_gro_reset_offset(struct sk_buff *skb)
+>
+>         if (!skb_headlen(skb) && pinfo->nr_frags &&
+>             !PageHighMem(skb_frag_page(frag0)) &&
+> -           (!NET_IP_ALIGN || !(skb_frag_off(frag0) & 3))) {
+> +           (!NET_IP_ALIGN || !((skb_frag_off(frag0) + nhoff) & 3))) {
+>                 NAPI_GRO_CB(skb)->frag0 = skb_frag_address(frag0);
+>                 NAPI_GRO_CB(skb)->frag0_len = min_t(unsigned int,
+>                                                     skb_frag_size(frag0),
+> @@ -6143,7 +6143,7 @@ gro_result_t napi_gro_receive(struct napi_struct *napi, struct sk_buff *skb)
+>         skb_mark_napi_id(skb, napi);
+>         trace_napi_gro_receive_entry(skb);
+>
+> -       skb_gro_reset_offset(skb);
+> +       skb_gro_reset_offset(skb, 0);
+>
+>         ret = napi_skb_finish(napi, skb, dev_gro_receive(napi, skb));
+>         trace_napi_gro_receive_exit(ret);
+> @@ -6232,7 +6232,7 @@ static struct sk_buff *napi_frags_skb(struct napi_struct *napi)
+>         napi->skb = NULL;
+>
+>         skb_reset_mac_header(skb);
+> -       skb_gro_reset_offset(skb);
+> +       skb_gro_reset_offset(skb, hlen);
+>
+>         if (unlikely(skb_gro_header_hard(skb, hlen))) {
+>                 eth = skb_gro_header_slow(skb, hlen, 0);
+> --
+> 2.31.1
+>
+>
 
-Copy-paste error in the subject - the prefix should be:
-mfd: da9062:
+Good catch, thanks.
 
+This has the unfortunate effect of increasing code length on x86,
+maybe we should have an exception to
+normal rules so that skb_gro_reset_offset() is inlined.
 
-Best regards,
-Krzysztof
+Reviewed-by: Eric Dumazet <edumazet@google.com>
