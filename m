@@ -2,109 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F128363CA1
+	by mail.lfdr.de (Postfix) with ESMTP id EA878363CA2
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 09:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237880AbhDSHfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 03:35:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237670AbhDSHfd (ORCPT
+        id S237911AbhDSHf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 03:35:57 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:17375 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237819AbhDSHfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 03:35:33 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602E4C06174A;
-        Mon, 19 Apr 2021 00:35:03 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id i16-20020a9d68d00000b0290286edfdfe9eso21113245oto.3;
-        Mon, 19 Apr 2021 00:35:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=n9kAD+An3yHMDHmSNL3zi3TsigAV5UlobdscCMtr7J4=;
-        b=LzJLKOgsGPV/ZfICAzX/t5HEIjdhvhY2mRLcII5OwXFNSpUkoJmrhiReAU/wYMN+S6
-         AzRRKcyNQje20Fig56y0AF60oCp1ebCHn+7I0lxHp0jZhXRdphiNtfUNJPB9FqTtL6cH
-         9QaRKe8IUtR0Lmu9ylezZlhcuIWtPAFYo5kYOfhMTHqGEiL+UTpJqbD6/N0uu8B8ViQh
-         vbYFb1gVMzAKY2kKHNh7Kh0t3KutK/EtQ35bf5ZIrcblK2xveaLlFxov7VUrI2eu+6qe
-         D7Hc4CbecJQJKCcwrDBOJh4j0ST147nILYtaFuxbLWNm4lacUL+kOTw974ElZvSA3QQC
-         8igg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n9kAD+An3yHMDHmSNL3zi3TsigAV5UlobdscCMtr7J4=;
-        b=OPUU5OIxv/kEcRtfr54wp03iM5ossgEAntLDgZ2K2ky06QzB3tAqbZZ3V1PnivdXhQ
-         vMX4ECFhEo+6D9GAtuW+rckk0ConQZAC/wf9Nrk/wkOnloW/x/vbo116sLqbOHUAmZ0Z
-         evIIdg4MyqnT0+AdL6/krJ34IBKCKuTrZLWY+Eo7ERlE34e0iE586d3MI/fgfqZtcrgW
-         zRSurufisjXT5p4M5EHBGaEsWVHhJxra5MKsvSTIraCJi7+JZBWvDQF6OXzfYS7zCkfU
-         GH24GKA+0gQP4BXmggb1EIl5pS7UxMQb4YMv/s5P4t57/+k2u6Xl/BdrzGYMj3ijHy3t
-         u5kA==
-X-Gm-Message-State: AOAM533YY1yh/Cf/pYTbcoSlkOZsLxpq9zSJyrBdiQ3zqm1mkacLitJL
-        4vt8/chU0HA95DTd9deig5qsExIaDn+y+zvQ09sRTaEfa1k=
-X-Google-Smtp-Source: ABdhPJzCFZnyv/Dk96lgn4f8UJjt/XXEK3GkjiKQny5+JtiGq8AeDJZ2pWhd7jifMpSi0QH6DSXQXZ0I2P7s1xErAaU=
-X-Received: by 2002:a9d:6b13:: with SMTP id g19mr13803978otp.185.1618817702886;
- Mon, 19 Apr 2021 00:35:02 -0700 (PDT)
+        Mon, 19 Apr 2021 03:35:43 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FNz7b5lZCzlZ0P;
+        Mon, 19 Apr 2021 15:33:15 +0800 (CST)
+Received: from [10.174.178.5] (10.174.178.5) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Mon, 19 Apr 2021
+ 15:35:09 +0800
+Subject: Re: [PATCH v2 1/5] mm/swapfile: add percpu_ref support for swap
+To:     "Huang, Ying" <ying.huang@intel.com>
+CC:     <akpm@linux-foundation.org>, <dennis@kernel.org>,
+        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
+        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
+        <alexs@kernel.org>, <david@redhat.com>, <minchan@kernel.org>,
+        <richard.weiyang@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>
+References: <20210417094039.51711-1-linmiaohe@huawei.com>
+ <20210417094039.51711-2-linmiaohe@huawei.com>
+ <87eef7kmzw.fsf@yhuang6-desk1.ccr.corp.intel.com>
+ <753f414f-34a1-b16a-f826-7deb2dcd4af6@huawei.com>
+ <87czuq4uo2.fsf@yhuang6-desk1.ccr.corp.intel.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <dfbb8f36-e172-b682-fbfa-168a1ac2d456@huawei.com>
+Date:   Mon, 19 Apr 2021 15:35:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <1618542490-14756-1-git-send-email-wanpengli@tencent.com> <9c49c6ff-d896-e6a5-c051-b6707f6ec58a@redhat.com>
-In-Reply-To: <9c49c6ff-d896-e6a5-c051-b6707f6ec58a@redhat.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Mon, 19 Apr 2021 15:34:53 +0800
-Message-ID: <CANRm+Cy-xmDRQoUfOYm+GGvWiS+qC_sBjyZmcLykbKqTF2YDxQ@mail.gmail.com>
-Subject: Re: [PATCH] KVM: Boost vCPU candidiate in user mode which is
- delivering interrupt
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87czuq4uo2.fsf@yhuang6-desk1.ccr.corp.intel.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.5]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 17 Apr 2021 at 21:09, Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 16/04/21 05:08, Wanpeng Li wrote:
-> > From: Wanpeng Li <wanpengli@tencent.com>
-> >
-> > Both lock holder vCPU and IPI receiver that has halted are condidate for
-> > boost. However, the PLE handler was originally designed to deal with the
-> > lock holder preemption problem. The Intel PLE occurs when the spinlock
-> > waiter is in kernel mode. This assumption doesn't hold for IPI receiver,
-> > they can be in either kernel or user mode. the vCPU candidate in user mode
-> > will not be boosted even if they should respond to IPIs. Some benchmarks
-> > like pbzip2, swaptions etc do the TLB shootdown in kernel mode and most
-> > of the time they are running in user mode. It can lead to a large number
-> > of continuous PLE events because the IPI sender causes PLE events
-> > repeatedly until the receiver is scheduled while the receiver is not
-> > candidate for a boost.
-> >
-> > This patch boosts the vCPU candidiate in user mode which is delivery
-> > interrupt. We can observe the speed of pbzip2 improves 10% in 96 vCPUs
-> > VM in over-subscribe scenario (The host machine is 2 socket, 48 cores,
-> > 96 HTs Intel CLX box). There is no performance regression for other
-> > benchmarks like Unixbench spawn (most of the time contend read/write
-> > lock in kernel mode), ebizzy (most of the time contend read/write sem
-> > and TLB shoodtdown in kernel mode).
-> >
-> > +bool kvm_arch_interrupt_delivery(struct kvm_vcpu *vcpu)
-> > +{
-> > +     if (vcpu->arch.apicv_active && static_call(kvm_x86_dy_apicv_has_pending_interrupt)(vcpu))
-> > +             return true;
-> > +
-> > +     return false;
-> > +}
->
-> Can you reuse vcpu_dy_runnable instead of this new function?
+On 2021/4/19 15:09, Huang, Ying wrote:
+> Miaohe Lin <linmiaohe@huawei.com> writes:
+> 
+>> On 2021/4/19 10:48, Huang, Ying wrote:
+>>> Miaohe Lin <linmiaohe@huawei.com> writes:
+>>>
+>>>> We will use percpu-refcount to serialize against concurrent swapoff. This
+>>>> patch adds the percpu_ref support for swap.
+>>>>
+>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>> ---
+>>>>  include/linux/swap.h |  3 +++
+>>>>  mm/swapfile.c        | 33 +++++++++++++++++++++++++++++----
+>>>>  2 files changed, 32 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>>>> index 144727041e78..8be36eb58b7a 100644
+>>>> --- a/include/linux/swap.h
+>>>> +++ b/include/linux/swap.h
+>>>> @@ -240,6 +240,7 @@ struct swap_cluster_list {
+>>>>   * The in-memory structure used to track swap areas.
+>>>>   */
+>>>>  struct swap_info_struct {
+>>>> +	struct percpu_ref users;	/* serialization against concurrent swapoff */
+>>>
+>>> The comments aren't general enough.  We use this to check whether the
+>>> swap device has been fully initialized, etc. May be something as below?
+>>>
+>>> /* indicate and keep swap device valid */
+>>
+>> Looks good.
+>>
+>>>
+>>>>  	unsigned long	flags;		/* SWP_USED etc: see above */
+>>>>  	signed short	prio;		/* swap priority of this type */
+>>>>  	struct plist_node list;		/* entry in swap_active_head */
+>>>> @@ -260,6 +261,8 @@ struct swap_info_struct {
+>>>>  	struct block_device *bdev;	/* swap device or bdev of swap file */
+>>>>  	struct file *swap_file;		/* seldom referenced */
+>>>>  	unsigned int old_block_size;	/* seldom referenced */
+>>>> +	bool ref_initialized;		/* seldom referenced */
+>>>> +	struct completion comp;		/* seldom referenced */
+>>>>  #ifdef CONFIG_FRONTSWAP
+>>>>  	unsigned long *frontswap_map;	/* frontswap in-use, one bit per page */
+>>>>  	atomic_t frontswap_pages;	/* frontswap pages in-use counter */
+>>>> diff --git a/mm/swapfile.c b/mm/swapfile.c
+>>>> index 149e77454e3c..66515a3a2824 100644
+>>>> --- a/mm/swapfile.c
+>>>> +++ b/mm/swapfile.c
+>>>> @@ -39,6 +39,7 @@
+>>>>  #include <linux/export.h>
+>>>>  #include <linux/swap_slots.h>
+>>>>  #include <linux/sort.h>
+>>>> +#include <linux/completion.h>
+>>>>  
+>>>>  #include <asm/tlbflush.h>
+>>>>  #include <linux/swapops.h>
+>>>> @@ -511,6 +512,14 @@ static void swap_discard_work(struct work_struct *work)
+>>>>  	spin_unlock(&si->lock);
+>>>>  }
+>>>>  
+>>>> +static void swap_users_ref_free(struct percpu_ref *ref)
+>>>> +{
+>>>> +	struct swap_info_struct *si;
+>>>> +
+>>>> +	si = container_of(ref, struct swap_info_struct, users);
+>>>> +	complete(&si->comp);
+>>>> +}
+>>>> +
+>>>>  static void alloc_cluster(struct swap_info_struct *si, unsigned long idx)
+>>>>  {
+>>>>  	struct swap_cluster_info *ci = si->cluster_info;
+>>>> @@ -2500,7 +2509,7 @@ static void enable_swap_info(struct swap_info_struct *p, int prio,
+>>>>  	 * Guarantee swap_map, cluster_info, etc. fields are valid
+>>>>  	 * between get/put_swap_device() if SWP_VALID bit is set
+>>>>  	 */
+>>>> -	synchronize_rcu();
+>>>
+>>> You cannot remove this without changing get/put_swap_device().  It's
+>>> better to squash at least PATCH 1-2.
+>>
+>> Will squash PATCH 1-2. Thanks.
+>>
+>>>
+>>>> +	percpu_ref_resurrect(&p->users);
+>>>>  	spin_lock(&swap_lock);
+>>>>  	spin_lock(&p->lock);
+>>>>  	_enable_swap_info(p);
+>>>> @@ -2621,11 +2630,18 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
+>>>>  	p->flags &= ~SWP_VALID;		/* mark swap device as invalid */
+>>>>  	spin_unlock(&p->lock);
+>>>>  	spin_unlock(&swap_lock);
+>>>> +
+>>>> +	percpu_ref_kill(&p->users);
+>>>>  	/*
+>>>> -	 * wait for swap operations protected by get/put_swap_device()
+>>>> -	 * to complete
+>>>> +	 * We need synchronize_rcu() here to protect the accessing
+>>>> +	 * to the swap cache data structure.
+>>>>  	 */
+>>>>  	synchronize_rcu();
+>>>> +	/*
+>>>> +	 * Wait for swap operations protected by get/put_swap_device()
+>>>> +	 * to complete.
+>>>> +	 */
+>>>
+>>> I think the comments (after some revision) can be moved before
+>>> percpu_ref_kill().  The synchronize_rcu() comments can be merged.
+>>>
+>>
+>> Ok.
+>>
+>>>> +	wait_for_completion(&p->comp);
+>>>>  
+>>>>  	flush_work(&p->discard_work);
+>>>>  
+>>>> @@ -3132,7 +3148,7 @@ static bool swap_discardable(struct swap_info_struct *si)
+>>>>  SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+>>>>  {
+>>>>  	struct swap_info_struct *p;
+>>>> -	struct filename *name;
+>>>> +	struct filename *name = NULL;
+>>>>  	struct file *swap_file = NULL;
+>>>>  	struct address_space *mapping;
+>>>>  	int prio;
+>>>> @@ -3163,6 +3179,15 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+>>>>  
+>>>>  	INIT_WORK(&p->discard_work, swap_discard_work);
+>>>>  
+>>>> +	if (!p->ref_initialized) {
+>>>
+>>> I don't think it's necessary to add another flag p->ref_initialized.  We
+>>> can distinguish newly allocated and reused swap_info_struct in alloc_swap_info().
+>>>
+>>
+>> If newly allocated swap_info_struct failed to init percpu_ref, it will be considered as
+>> a reused one in alloc_swap_info() _but_ the field users of swap_info_struct is actually
+>> uninitialized. Does this make sense for you?
+> 
+> We can call percpu_ref_init() just after kvzalloc() in alloc_swap_info().
+> 
 
-I have some concerns. For x86 arch, vcpu_dy_runnable() will add extra
-vCPU candidates by KVM_REQ_EVENT and async pf(which has already
-opportunistically made the guest do other stuff). For other arches,
-kvm_arch_dy_runnale() is equal to kvm_arch_vcpu_runnable() except
-powerpc which has too many events and is not conservative. In general,
- vcpu_dy_runnable() will loose the conditions and add more vCPU
-candidates.
+Yes, we can do it this way. But using ref_initialized might make the code more straightforward
+and simple?
 
-    Wanpeng
+> Best Regards,
+> Huang, Ying
+> 
+>> Many Thanks for quick review.
+>>
+>>> Best Regards,
+>>> Huang, Ying
+>>>
+>>>> +		error = percpu_ref_init(&p->users, swap_users_ref_free,
+>>>> +					PERCPU_REF_INIT_DEAD, GFP_KERNEL);
+>>>> +		if (unlikely(error))
+>>>> +			goto bad_swap;
+>>>> +		init_completion(&p->comp);
+>>>> +		p->ref_initialized = true;
+>>>> +	}
+>>>> +
+>>>>  	name = getname(specialfile);
+>>>>  	if (IS_ERR(name)) {
+>>>>  		error = PTR_ERR(name);
+>>> .
+>>>
+> .
+> 
+
