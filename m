@@ -2,120 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A3D6364668
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D933364670
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240546AbhDSOty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 10:49:54 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:50156 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240158AbhDSOtx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 10:49:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1618843764;
-  x=1650379764;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=F30/4eiH7brWbI8t9xr+MZ7JMcUC/A1wIc2/IxYEU2A=;
-  b=IcZ17gHmk9+8Vu4VYsTWMrNUINf6g7WBwhSqpu4VZB/d83ccJYCfjF9R
-   r7l0FjLdWNtsOaNlT7SAzUsUSZt81Ez7W1uVkjGRb7UCa/3i7wlNO5Zn+
-   qfpjF9D+jhZNS5oe/NCwe636XGlzv/kEgEIhFsNxUyjCmLeTk9lTqXv7H
-   tOBTVjVqRsqDweHiGDVrYZnc0/ts3e5s1un4nf7m3B9KjOACHLIInxrwr
-   LfqBg4ejxohwV3UU4fK2D7pXlTYThu25oB4WpoCxvP1fZAZCAoIz3xH/l
-   yi3oRxyNyw1UaM8FmpY69q429jr/KCAVfWxXeA2pEfK/QFTnBYSOGqbtt
-   A==;
-From:   Niklas Carlsson <Niklas.Carlsson@axis.com>
-To:     Lars-Peter Clausen <lars@metafoo.de>,
-        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     <kernel@axis.com>, Niklas Carlsson <niklasc@axis.com>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ASoC: sigmadsp: Disable cache mechanism for readbacks
-Date:   Mon, 19 Apr 2021 16:49:01 +0200
-Message-ID: <20210419144901.9441-1-Niklas.Carlsson@axis.com>
-X-Mailer: git-send-email 2.20.1
+        id S240615AbhDSOur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 10:50:47 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:47574 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240570AbhDSOuo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 10:50:44 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13JEo6Zb015049;
+        Mon, 19 Apr 2021 09:50:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1618843806;
+        bh=ADQ0RSQetq2WAGPxcXPK7Ft1yLeNW7b6Jvk0MZ/3yjM=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=DAY3f+S0fgHzwx5/e3eR+7ecG7JmTz8Xjv7aZXKAwyV4uTJyued+9VBeivNMoQU/f
+         HnuHDmsuX/FwTxWsCPUAmkotRh6SQlMmkwIC1eBukUZc97y5fMoAIm3QUH0vGzqfIx
+         Ak6+78KvIsL/rTFJ6JgJVb6Dmeafo1mNP4hPRCd0=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13JEo6TN076519
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 19 Apr 2021 09:50:06 -0500
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 19
+ Apr 2021 09:50:06 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 19 Apr 2021 09:50:06 -0500
+Received: from [10.250.33.21] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13JEo6T5034030;
+        Mon, 19 Apr 2021 09:50:06 -0500
+Subject: Re: [PATCH] ARM: dts: keystone-k2g: Rename message-manager node
+To:     Nishanth Menon <nm@ti.com>, Santosh Shilimkar <ssantosh@kernel.org>
+CC:     Rob Herring <robh+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210414001926.20002-1-nm@ti.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <e52fe654-a9b7-ca49-d501-1dd01159c787@ti.com>
+Date:   Mon, 19 Apr 2021 09:50:01 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <20210414001926.20002-1-nm@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Niklas Carlsson <niklasc@axis.com>
+On 4/13/21 7:19 PM, Nishanth Menon wrote:
+> Rename message-manager instance node name to be better aligned with
+> current style of device tree nodes for mailboxes.
+> 
+> Signed-off-by: Nishanth Menon <nm@ti.com>
 
-The ALSA control readback functionality only works for non-volatile
-controls, i.e. control values that does not change on their own without
-driver interaction.
+Acked-by: Suman Anna <s-anna@ti.com>
 
-This doesn't work for readbacks since the DSP firmware updates the
-control value. Disable the cache mechanism in the driver if the control
-name matches the prefix used for readbacks to ensure that the control
-value is valid.
-
-Signed-off-by: Niklas Carlsson <niklasc@axis.com>
----
- sound/soc/codecs/sigmadsp.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/sigmadsp.c b/sound/soc/codecs/sigmadsp.c
-index 76c77dc8ecf7..b992216aee55 100644
---- a/sound/soc/codecs/sigmadsp.c
-+++ b/sound/soc/codecs/sigmadsp.c
-@@ -24,6 +24,8 @@
- #define SIGMA_FW_CHUNK_TYPE_CONTROL 1
- #define SIGMA_FW_CHUNK_TYPE_SAMPLERATES 2
- 
-+#define READBACK_CTRL_NAME "ReadBack"
-+
- struct sigmadsp_control {
- 	struct list_head head;
- 	uint32_t samplerates;
-@@ -31,6 +33,7 @@ struct sigmadsp_control {
- 	unsigned int num_bytes;
- 	const char *name;
- 	struct snd_kcontrol *kcontrol;
-+	bool is_readback;
- 	bool cached;
- 	uint8_t cache[];
- };
-@@ -141,7 +144,8 @@ static int sigmadsp_ctrl_put(struct snd_kcontrol *kcontrol,
- 
- 	if (ret == 0) {
- 		memcpy(ctrl->cache, data, ctrl->num_bytes);
--		ctrl->cached = true;
-+		if (!ctrl->is_readback)
-+			ctrl->cached = true;
- 	}
- 
- 	mutex_unlock(&sigmadsp->lock);
-@@ -164,7 +168,8 @@ static int sigmadsp_ctrl_get(struct snd_kcontrol *kcontrol,
- 	}
- 
- 	if (ret == 0) {
--		ctrl->cached = true;
-+		if (!ctrl->is_readback)
-+			ctrl->cached = true;
- 		memcpy(ucontrol->value.bytes.data, ctrl->cache,
- 			ctrl->num_bytes);
- 	}
-@@ -231,6 +236,15 @@ static int sigma_fw_load_control(struct sigmadsp *sigmadsp,
- 	name[name_len] = '\0';
- 	ctrl->name = name;
- 
-+	/*
-+	 * Readbacks doesn't work with non-volatile controls, since the
-+	 * firmware updates the control value without driver interaction. Mark
-+	 * the readbacks to ensure that the values are not cached.
-+	 */
-+	if (ctrl->name && strncmp(ctrl->name, READBACK_CTRL_NAME,
-+				  (sizeof(READBACK_CTRL_NAME) - 1)) == 0)
-+		ctrl->is_readback = true;
-+
- 	ctrl->addr = le16_to_cpu(ctrl_chunk->addr);
- 	ctrl->num_bytes = num_bytes;
- 	ctrl->samplerates = le32_to_cpu(chunk->samplerates);
--- 
-2.20.1
+> ---
+> 
+> Santosh:
+> - This is'nt critical to queue up for 5.13-rc1 window, but just getting
+>   it out of the way. I noticed it as I was converting the binding to
+>   yaml. (patch for yaml conversion for the node follows)
+> 
+>  arch/arm/boot/dts/keystone-k2g.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/boot/dts/keystone-k2g.dtsi b/arch/arm/boot/dts/keystone-k2g.dtsi
+> index 05a75019275e..e5c813b5556d 100644
+> --- a/arch/arm/boot/dts/keystone-k2g.dtsi
+> +++ b/arch/arm/boot/dts/keystone-k2g.dtsi
+> @@ -242,7 +242,7 @@ dsp0: dsp@10800000 {
+>  			status = "disabled";
+>  		};
+>  
+> -		msgmgr: msgmgr@2a00000 {
+> +		msgmgr: mailbox@2a00000 {
+>  			compatible = "ti,k2g-message-manager";
+>  			#mbox-cells = <2>;
+>  			reg-names = "queue_proxy_region",
+> 
 
