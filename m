@@ -2,136 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29D71364D33
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 23:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A25364D3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 23:41:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241008AbhDSVk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 17:40:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbhDSVk1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 17:40:27 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61656C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 14:39:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=E/xf1ymngxrR9B9vXqBprFs35Mu6lZQnfAEYqkVQYPc=; b=FirAgyY6nuc4InDydB9E9sc58r
-        op6kCcejmQYjEO2jMO7A7HEHM9UaD1jqKnL5lUi3j1iBDOc4GfYNTW2+CR31/zRrAiMSEFjIBkJRp
-        vhVp0FQ0gygcWaNu6cQSVc0DtzZo0krKQusU8JjgA1tbZxHPGKCjrR35w5SRkIUQkYck9yFA+q4PT
-        /Kj7bfoNiw3Yj8XRjkbzno9sTq0tP0POrp+F5qXfis3jDl5VBOnqX93cPrwn/h53BXye+1VQiDtdx
-        IXHeGcJQZVj1CfeeX1kA4o3q2ZxO/UyOoWAisE/jLl3KrCjb3eswVSCtgLkLklUshPCCbmiifQFwl
-        Jw7B4bag==;
-Received: from [2601:1c0:6280:3f0::df68]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYbcB-00EJua-P4; Mon, 19 Apr 2021 21:39:42 +0000
-Subject: Re: PPC_FPU, ALTIVEC: enable_kernel_fp, put_vr, get_vr
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <7107fcae-5c7a-ac94-8d89-326f2cd4cd33@infradead.org>
- <8b1cb0a2-ed3a-7da0-a73a-febbda528703@csgroup.eu>
- <20210418174648.GN26583@gate.crashing.org>
- <bf119bfe-7db1-e7f3-d837-f910635eeebb@infradead.org>
- <87sg3mct3x.fsf@mpe.ellerman.id.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <bd83b06d-ed36-e600-e988-c1e0014fb9cf@infradead.org>
-Date:   Mon, 19 Apr 2021 14:39:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <87sg3mct3x.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8
+        id S239959AbhDSVmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 17:42:08 -0400
+Received: from mga09.intel.com ([134.134.136.24]:56056 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229730AbhDSVmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 17:42:07 -0400
+IronPort-SDR: zTCKSNs6jnDwEOexzO975KZ30GGrbF+OQzflbNtC5tFpkpQ2fc4ECLmtKN96zDWEby3EiPapDp
+ XarMYa4EDFSw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="195517144"
+X-IronPort-AV: E=Sophos;i="5.82,235,1613462400"; 
+   d="scan'208";a="195517144"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 14:41:36 -0700
+IronPort-SDR: 2OaWIEUTmIJ3M608awv7e3D6e1gst7R6pksFyVlL4qqweW8Y1OCkGrw8ATD4OMHBwlC52A7tRv
+ rrgPYaIlslEg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,235,1613462400"; 
+   d="scan'208";a="454483187"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by fmsmga002.fm.intel.com with ESMTP; 19 Apr 2021 14:41:35 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 19 Apr 2021 14:41:34 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 19 Apr 2021 14:41:34 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
+ Mon, 19 Apr 2021 14:41:34 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Jue Wang <juew@google.com>
+CC:     "bp@alien8.de" <bp@alien8.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "naoya.horiguchi@nec.com" <naoya.horiguchi@nec.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "yaoaili@kingsoft.com" <yaoaili@kingsoft.com>
+Subject: RE: [PATCH 4/4] x86/mce: Avoid infinite loop for copy from user
+ recovery
+Thread-Topic: [PATCH 4/4] x86/mce: Avoid infinite loop for copy from user
+ recovery
+Thread-Index: AQHXNWL5puxasW7m1UqRuKa2ceHC8qq8XBRA
+Date:   Mon, 19 Apr 2021 21:41:33 +0000
+Message-ID: <c2241025107a4f168070348b21d7bb78@intel.com>
+References: <CAPcxDJ6SgSagJrF7u576WUb6p7Hg7+beYVoCpJ86Ocsb-mCHmQ@mail.gmail.com>
+In-Reply-To: <CAPcxDJ6SgSagJrF7u576WUb6p7Hg7+beYVoCpJ86Ocsb-mCHmQ@mail.gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/19/21 6:16 AM, Michael Ellerman wrote:
-> Randy Dunlap <rdunlap@infradead.org> writes:
-
->> Sure.  I'll post them later today.
->> They keep FPU and ALTIVEC as independent (build) features.
-> 
-> Those patches look OK.
-> 
-> But I don't think it makes sense to support that configuration, FPU=n
-> ALTVEC=y. No one is ever going to make a CPU like that. We have enough
-> testing surface due to configuration options, without adding artificial
-> combinations that no one is ever going to use.
-> 
-> IMHO :)
-> 
-> So I'd rather we just make ALTIVEC depend on FPU.
-
-That's rather simple. See below.
-I'm doing a bunch of randconfig builds with it now.
-
----
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] powerpc: make ALTIVEC depend PPC_FPU
-
-On a kernel config with ALTIVEC=y and PPC_FPU not set/enabled,
-there are build errors:
-
-drivers/cpufreq/pmac32-cpufreq.c:262:2: error: implicit declaration of function 'enable_kernel_fp' [-Werror,-Wimplicit-function-declaration]
-           enable_kernel_fp();
-../arch/powerpc/lib/sstep.c: In function 'do_vec_load':
-../arch/powerpc/lib/sstep.c:637:3: error: implicit declaration of function 'put_vr' [-Werror=implicit-function-declaration]
-  637 |   put_vr(rn, &u.v);
-      |   ^~~~~~
-../arch/powerpc/lib/sstep.c: In function 'do_vec_store':
-../arch/powerpc/lib/sstep.c:660:3: error: implicit declaration of function 'get_vr'; did you mean 'get_oc'? [-Werror=implicit-function-declaration]
-  660 |   get_vr(rn, &u.v);
-      |   ^~~~~~
-
-In theory ALTIVEC is independent of PPC_FPU but in practice nobody
-is going to build such a machine, so make ALTIVEC require PPC_FPU
-by depending on PPC_FPU.
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Segher Boessenkool <segher@kernel.crashing.org>
-Cc: lkp@intel.com
----
- arch/powerpc/platforms/86xx/Kconfig    |    1 +
- arch/powerpc/platforms/Kconfig.cputype |    2 ++
- 2 files changed, 3 insertions(+)
-
---- linux-next-20210416.orig/arch/powerpc/platforms/86xx/Kconfig
-+++ linux-next-20210416/arch/powerpc/platforms/86xx/Kconfig
-@@ -4,6 +4,7 @@ menuconfig PPC_86xx
- 	bool "86xx-based boards"
- 	depends on PPC_BOOK3S_32
- 	select FSL_SOC
-+	select PPC_FPU
- 	select ALTIVEC
- 	help
- 	  The Freescale E600 SoCs have 74xx cores.
---- linux-next-20210416.orig/arch/powerpc/platforms/Kconfig.cputype
-+++ linux-next-20210416/arch/powerpc/platforms/Kconfig.cputype
-@@ -186,6 +186,7 @@ config E300C3_CPU
- config G4_CPU
- 	bool "G4 (74xx)"
- 	depends on PPC_BOOK3S_32
-+	select PPC_FPU
- 	select ALTIVEC
- 
- endchoice
-@@ -309,6 +310,7 @@ config PHYS_64BIT
- 
- config ALTIVEC
- 	bool "AltiVec Support"
-+	depends on PPC_FPU
- 	depends on PPC_BOOK3S_32 || PPC_BOOK3S_64 || (PPC_E500MC && PPC64)
- 	help
- 	  This option enables kernel support for the Altivec extensions to the
+Pj4gQnV0IHRoZXJlIGFyZSBwbGFjZXMgaW4gdGhlIGtlcm5lbCB3aGVyZSB0aGUgY29kZSBhc3N1
+bWVzIHRoYXQgdGhpcw0KPj4gRUZBVUxUIHJldHVybiB3YXMgc2ltcGx5IGJlY2F1c2Ugb2YgYSBw
+YWdlIGZhdWx0LiBUaGUgY29kZSB0YWtlcyBzb21lDQo+PiBhY3Rpb24gdG8gZml4IHRoYXQsIGFu
+ZCB0aGVuIHJldHJpZXMgdGhlIGFjY2Vzcy4gVGhpcyByZXN1bHRzIGluIGEgc2Vjb25kDQo+PiBt
+YWNoaW5lIGNoZWNrLg0KPg0KPiBXaGF0IGFib3V0IHJldHVybiBFSFdQT0lTT04gaW5zdGVhZCBv
+ZiBFRkFVTFQgYW5kIHVwZGF0ZSB0aGUgY2FsbGVycw0KPiB0byBoYW5kbGUgRUhXUE9JU09OIGV4
+cGxpY2l0bHk6IGkuZS4sIG5vdCByZXRyeSBidXQgZ2l2ZSB1cCBvbiB0aGUgcGFnZT8NCg0KVGhh
+dCBzZWVtcyBsaWtlIGEgZ29vZCBpZGVhIHRvIG1lLiBCdXQgSSBnb3Qgc29tZSBwdXNoYmFjayB3
+aGVuIEkgc3RhcnRlZA0Kb24gdGhpcyBwYXRoIGVhcmxpZXIgd2l0aCBzb21lIHBhdGNoZXMgdG8g
+dGhlIGZ1dGV4IGNvZGUuICBCdXQgYmFjayB0aGVuIEkNCndhc24ndCB1c2luZyBlcnJvciByZXR1
+cm4gb2YgRUhXUE9JU09OIC4uLiBwb3NzaWJseSB0aGUgY29kZSB3b3VsZCBsb29rDQpsZXNzIGhh
+Y2t5IHdpdGggdGhhdCBleHBsaWNpdGx5IGNhbGxlZCBvdXQuDQoNClRoZSBmdXRleCBjYXNlIHdh
+cyBzcGVjaWZpY2FsbHkgZm9yIGNvZGUgdXNpbmcgcGFnZWZhdWx0X2Rpc2FibGUoKS4gTGlrZWx5
+DQphbGwgdGhlIG90aGVyIGNhbGxlcnMgd291bGQgbmVlZCB0byBiZSBhdWRpdGVkIChidXQgdGhl
+cmUgYXJlIG9ubHkgYSBmZXcgZG96ZW4NCnBsYWNlcywgc28gbm90IHRvbyBiaWcgb2YgYSBkZWFs
+KS4NCg0KPiBNeSBtYWluIGNvbmNlcm4gaXMgdGhhdCB0aGUgc3Ryb25nIGFzc3VtcHRpb25zIHRo
+YXQgdGhlIGtlcm5lbCBjYW4ndCBoaXQgbW9yZQ0KPiB0aGFuIGEgZml4ZWQgbnVtYmVyIG9mIHBv
+aXNvbmVkIGNhY2hlIGxpbmVzIGJlZm9yZSB0dXJuaW5nIHRvIHVzZXIgc3BhY2UNCj4gbWF5IHNp
+bXBseSBub3QgYmUgdHJ1ZS4NCg0KQWdyZWVkLg0KDQo+IFdoZW4gRElNTSBnb2VzIGJhZCwgaXQg
+Y2FuIGVhc2lseSBhZmZlY3QgYW4gZW50aXJlIGJhbmsgb3IgZW50aXJlIHJhbSBkZXZpY2UNCj4g
+Y2hpcC4gRXZlbiB3aXRoIG1lbW9yeSBpbnRlcmxlYXZpbmcsIGl0J3MgcG9zc2libGUgdGhhdCBh
+IGtlcm5lbCBjb250cm9sIHBhdGgNCj4gdG91Y2hlcyBsb3RzIG9mIHBvaXNvbmVkIGNhY2hlIGxp
+bmVzIGluIHRoZSBidWZmZXIgaXQgaXMgd29ya2luZyB0aHJvdWdoLg0KDQpUaGVzZSBsYXJnZXIg
+ZmFpbHVyZXMgaGF2ZSBvdGhlciBwcm9ibGVtcyAuLi4gZG96ZW5zIG9mIHVucmVsYXRlZCBwYWdl
+cw0KbWF5IGJlIGFmZmVjdGVkLiBJbiBhIHBlcmZlY3Qgd29ybGQgTGludXggd291bGQgYmUgdG9s
+ZCBvbiB0aGUgZmlyc3QgZXJyb3INCnRoYXQgdGhpcyBpcyBqdXN0IG9uZSBvZiBtYW55IGVycm9y
+cyAuLi4gYW5kIGJlIGdpdmVuIGEgbGlzdC4gQnV0IGluIHRoZSByZWFsDQp3b3JsZCB0aGF0IGlz
+bid0IGxpa2VseSB0byBoYXBwZW4gOi0oDQoNCi1Ub255DQo=
