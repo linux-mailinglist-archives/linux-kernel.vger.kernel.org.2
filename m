@@ -2,82 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 026CD363EA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D856363EAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238599AbhDSJhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 05:37:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhDSJhA (ORCPT
+        id S238612AbhDSJiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 05:38:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46307 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229635AbhDSJiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 05:37:00 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6174EC06174A;
-        Mon, 19 Apr 2021 02:36:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Zoaz+arrG2VoAZjnSLaqhvfG02ozKoF1dTuBza5it3M=; b=W4oysXhUdmJlxpQdkFI2LUz+wM
-        8LokRUVSAv+dEETIHyKSaa6m0HVnUZbebSF23/G65TXk1zPxRuW4lOLHj2p1bmx8Mgjl0RIWhtlN5
-        LvRCoRNcoQfhZksJGhKmajbV27npBzi7xOVMEMZ6OVLBUHIeTeuXXMt2Ctc81SWhCVTqM9D7wP3pM
-        GmgpI64jyAMnsgL3JI84E1C9vvZElMrQSV8s1cZpKbS2cl/FHYmFarkc+pLTAhi/otwFWmxhR3/VT
-        1ZnhAhY4vwyiqyDNDE9O78PwLX/h4eKlL6rsznTl1o/1Zw9DXQdBBzDeRfhzgmrVHkuB4qORDjM/s
-        7IpOoiCg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYQKQ-009ZJU-N7; Mon, 19 Apr 2021 09:36:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DD1C130021C;
-        Mon, 19 Apr 2021 11:36:25 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C0E762015BC7C; Mon, 19 Apr 2021 11:36:25 +0200 (CEST)
-Date:   Mon, 19 Apr 2021 11:36:25 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Wedson Almeida Filho <wedsonaf@google.com>, ojeda@kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-Message-ID: <YH1PGfC1qSjKB6Ho@hirez.programming.kicks-ass.net>
-References: <20210414184604.23473-1-ojeda@kernel.org>
- <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
- <YHj02M3jMSweoP4l@google.com>
- <YHk4DZE1ZWTiBB1f@hirez.programming.kicks-ass.net>
- <aa6e44ab-e223-73aa-279e-8103732460ac@redhat.com>
- <YH0yCTgL0raKrmYg@hirez.programming.kicks-ass.net>
- <7287eac3-f492-bab1-9ea8-b89ceceed560@redhat.com>
- <YH0+0VQ1XC8+rv20@hirez.programming.kicks-ass.net>
- <3a874b15-5c21-9ed9-e5c3-995f915cba79@redhat.com>
+        Mon, 19 Apr 2021 05:38:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618825064;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Pr6Kj+KN23H2x/H8q/2CCYxabxT7Vqp+jcXC0FHsmgo=;
+        b=VBMYSEGWpSuW2E9uUWK2a+Q1DQzIE3J3hpCfIDeQBdFFAVuqisDXLkb1AuqT1ctxNZ3YT1
+        8V9F7MCIA4glo4g9uq4s7lSqHyRwWVSgNgS9TPCUfENemeEX8PeEOOhTrEymJaMSTbxdRZ
+        D0zEAUT0kBg98PO5P2+bapCubX0Dzpo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-377-WdU_-XUNOvWF7UjLXXBvwg-1; Mon, 19 Apr 2021 05:37:42 -0400
+X-MC-Unique: WdU_-XUNOvWF7UjLXXBvwg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6D8A8801814;
+        Mon, 19 Apr 2021 09:37:40 +0000 (UTC)
+Received: from dhcp-128-65.nay.redhat.com (ovpn-13-172.pek2.redhat.com [10.72.13.172])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 06F64107D5C6;
+        Mon, 19 Apr 2021 09:37:36 +0000 (UTC)
+Date:   Mon, 19 Apr 2021 17:37:32 +0800
+From:   DaveYoung <dyoung@redhat.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Mike Galbraith <efault@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
+        kexec@lists.infradead.org, x86@kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [patch] x86/crash: fix crash_setup_memmap_entries()
+ out-of-bounds access
+Message-ID: <20210419093732.GB8618@dhcp-128-65.nay.redhat.com>
+References: <063a63ddea914ac654cbe9a1d1d6c76986af7882.camel@gmx.de>
+ <20210416114708.GB79779@dhcp-128-65.nay.redhat.com>
+ <725fa3dc1da2737f0f6188a1a9701bead257ea9d.camel@gmx.de>
+ <20210416121636.GA22348@zn.tnic>
+ <a853ea8535151fd8b267d8e68a45b33748978d8a.camel@gmx.de>
+ <20210416144459.GB22348@zn.tnic>
+ <7826c19ecd583700f56d2db33360e8032e812ecf.camel@gmx.de>
+ <87sg3puco5.ffs@nanos.tec.linutronix.de>
+ <d725b19b4c02273eaab38a10853fa6fb6d5bc76c.camel@gmx.de>
+ <20210419085202.GB9093@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3a874b15-5c21-9ed9-e5c3-995f915cba79@redhat.com>
+In-Reply-To: <20210419085202.GB9093@zn.tnic>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 11:02:12AM +0200, Paolo Bonzini wrote:
-> > void writer(void)
-> > {
-> >      atomic_store_explicit(&seq, seq+1, memory_order_relaxed);
-> >      atomic_thread_fence(memory_order_acquire);
+On 04/19/21 at 10:52am, Borislav Petkov wrote:
+> Here's an attempt to explain what this fixes:
 > 
-> This needs to be memory_order_release.  The only change in the resulting
-> assembly is that "dmb ishld" becomes "dmb ish", which is not as good as the
-> "dmb ishst" you get from smp_wmb() but not buggy either.
+> ---
+> From: Mike Galbraith <efault@gmx.de>
+> Date: Fri, 16 Apr 2021 14:02:07 +0200
+> Subject: [PATCH] x86/crash: Fix crash_setup_memmap_entries() out-of-bounds
+>  access
+> 
+> Commit in Fixes: added support for kexec-ing a kernel on panic using a
+> new system call. As part of it, it does prepare a memory map for the new
+> kernel.
+> 
+> However, while doing so, it wrongly accesses memory it has not
+> allocated: it accesses the first element of the cmem->ranges[] array in
+> memmap_exclude_ranges() but it has not allocated the memory for it in
+> crash_setup_memmap_entries(). As KASAN reports:
+> 
+>   BUG: KASAN: vmalloc-out-of-bounds in crash_setup_memmap_entries+0x17e/0x3a0
+>   Write of size 8 at addr ffffc90000426008 by task kexec/1187
+> 
+>   (gdb) list *crash_setup_memmap_entries+0x17e
+>   0xffffffff8107cafe is in crash_setup_memmap_entries (arch/x86/kernel/crash.c:322).
+>   317                                      unsigned long long mend)
+>   318     {
+>   319             unsigned long start, end;
+>   320
+>   321             cmem->ranges[0].start = mstart;
+>   322             cmem->ranges[0].end = mend;
+>   323             cmem->nr_ranges = 1;
+>   324
+>   325             /* Exclude elf header region */
+>   326             start = image->arch.elf_load_addr;
+>   (gdb)
+> 
+> Make sure the ranges array becomes a single element allocated.
+> 
+>  [ bp: Write a proper commit message. ]
 
-Yuck! And that is what requires the insides to be
-atomic_store_explicit(), otherwise this fence doesn't have to affect
-them.
+Reviewed-by: Dave Young <dyoung@redhat.com>
 
-I also don't see how this is better than seq_cst.
+> 
+> Fixes: dd5f726076cc ("kexec: support for kexec on panic using new system call")
+> Signed-off-by: Mike Galbraith <efault@gmx.de>
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> Link: https://lkml.kernel.org/r/725fa3dc1da2737f0f6188a1a9701bead257ea9d.camel@gmx.de
+> ---
+>  arch/x86/kernel/crash.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
+> index a8f3af257e26..b1deacbeb266 100644
+> --- a/arch/x86/kernel/crash.c
+> +++ b/arch/x86/kernel/crash.c
+> @@ -337,7 +337,7 @@ int crash_setup_memmap_entries(struct kimage *image, struct boot_params *params)
+>  	struct crash_memmap_data cmd;
+>  	struct crash_mem *cmem;
+>  
+> -	cmem = vzalloc(sizeof(struct crash_mem));
+> +	cmem = vzalloc(struct_size(cmem, ranges, 1));
+>  	if (!cmem)
+>  		return -ENOMEM;
+>  
+> -- 
+> 2.29.2
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+> 
 
-But yes, not broken, but also very much not optimal.
+Thanks
+Dave
+
