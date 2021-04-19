@@ -2,92 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8AD364A22
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 20:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7CC7364A25
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 20:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240340AbhDSSxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 14:53:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48380 "EHLO
+        id S239325AbhDSSy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 14:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233654AbhDSSxc (ORCPT
+        with ESMTP id S233350AbhDSSy1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 14:53:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 215E8C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 11:53:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=N9TETHBPbbSqb/VoLAM4Ni8pA63gJ95JiyjztuQdV+o=; b=bJiDKamkTgPf86ocXig+w7FedJ
-        ha3RGCnDi68uGQgcsCteQ4pBbO164qtIjgh7MIEGK4sWGOJZ6YjWH65f8e/7ZJs9FdAb21Cy/3l7S
-        kc8+jO7BFfHTRAozw9gPdWpzt0nVo1H8xzW7P2tdIoz1kehlp9kqC6781Fg2mNcZloJKfxEi+Ua0x
-        kEShzVRbz13W4OouSDDd819pLx5/ApFN2rPwLobpeW/GA2eX5JMFrb5jfELATWmyD/IOvX5TIW9FX
-        ibIBj0HjvdjUqyY06oeJ1op3acilUHyTWhFGfueNg+CcvNf+8qGnLSKsVQl72EYg6pdnn0C5iR04h
-        JNtnc3iQ==;
-Received: from [2601:1c0:6280:3f0::df68]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYZ0d-00E9nw-Vf; Mon, 19 Apr 2021 18:52:41 +0000
-Subject: Re: [PATCH] smp: add a best_effort version of
- smp_call_function_many()
-To:     Luigi Rizzo <lrizzo@google.com>, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, axboe@kernel.dk, paulmck@kernel.org
-References: <20210419184455.2987243-1-lrizzo@google.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <d7371d20-e2d8-c5d1-b59b-850d86bf7a83@infradead.org>
-Date:   Mon, 19 Apr 2021 11:52:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 19 Apr 2021 14:54:27 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5F6C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 11:53:56 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id o5so7538083ljc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 11:53:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+X4D2n9RFMWw8zjzh3E9FVsIFGWzECSAEPhHZI5vCug=;
+        b=PKRW/7grIxILIqQsK8h20q83oHtONy15VxwtEa46HHMPKMLvgfSwOc/ocz5gMW5UF1
+         JXZ3sixgGt7FqkeYJNqj8cCgCtgKNz+s5k6ZSXhHuN1T29+4JyAD5zNHptCnSK5C+Vtb
+         OThPJPzlqvud0YZHViZXPUIRp4FU6bh+H5+aefuZTo3WY6LChygih0ftfFO1q12z1c3N
+         Sjv+D/H0MaDHSaZ5mYVlOuB6xZgQ6z3kwlBS0hLPB0HfMm4uXkLTyDuO9DkdumtI+cWF
+         J6DAtW1wzC+iYCpgmdedDOtCTSaugPuBJ3qUgRh9QKt8ytE6JiBmjAwFG2EHExWpsFEW
+         9ctQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+X4D2n9RFMWw8zjzh3E9FVsIFGWzECSAEPhHZI5vCug=;
+        b=Nw4WiMzbHwHnSAN5XqDhrwGGBWP5dWTR0TmLDO5+HLBRdFULNnqYJCKxtxJF1o3UPA
+         Ssn7wLUBk66O4EHyeKGXQiz6U7QvxkctiiDSWfNZg0fuVHspagKKzqvmL2yQ8EcWLfa0
+         QU5dkTmU7ztxO+M4HZGkfNiTqjbSRyKzoTLe5hvhoPpxOzg+gxHK3WXxR9hSZuLX6COr
+         KyxSH0froWRMccDRMduuFEA46+R7J+so/3thHdL1gnuQlLhpv+NyX3zktxREH18KbVL0
+         OWZe7QoXg00TT4htbYqT52r2RmScelH19TWQ9PRUtWRG+6PGIKCmbBdALaTWDFz6TiI/
+         C0zA==
+X-Gm-Message-State: AOAM533EQ+Pz1aplZ0Iqk4l50JINlOd42Kfie/qgJSPb6QsA+iLonO2z
+        8c8ieX3o7VJCLQ02pnkOJEfRzw==
+X-Google-Smtp-Source: ABdhPJxD9mbt35DuFIVbuQCWztN4w/y9QKN+wH06/RwHSBIJ/Q8BxsA9a5YbLE87w6jRvlmzB7eXkQ==
+X-Received: by 2002:a2e:964e:: with SMTP id z14mr12543091ljh.150.1618858435261;
+        Mon, 19 Apr 2021 11:53:55 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id s21sm1914950lfs.261.2021.04.19.11.53.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 11:53:54 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 28FB8102567; Mon, 19 Apr 2021 21:53:54 +0300 (+03)
+Date:   Mon, 19 Apr 2021 21:53:54 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jim Mattson <jmattson@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Steve Rutherford <srutherford@google.com>,
+        Peter Gonda <pgonda@google.com>,
+        David Hildenbrand <david@redhat.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFCv2 13/13] KVM: unmap guest memory using poisoned pages
+Message-ID: <20210419185354.v3rgandtrel7bzjj@box>
+References: <20210416154106.23721-1-kirill.shutemov@linux.intel.com>
+ <20210416154106.23721-14-kirill.shutemov@linux.intel.com>
+ <YHnJtvXdrZE+AfM3@google.com>
+ <20210419142602.khjbzktk5tk5l6lk@box.shutemov.name>
+ <YH2pam5b837wFM3z@google.com>
+ <20210419164027.dqiptkebhdt5cfmy@box.shutemov.name>
+ <YH3HWeOXFiCTZN4y@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210419184455.2987243-1-lrizzo@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YH3HWeOXFiCTZN4y@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
-
-On 4/19/21 11:44 AM, Luigi Rizzo wrote:
-
+On Mon, Apr 19, 2021 at 06:09:29PM +0000, Sean Christopherson wrote:
+> On Mon, Apr 19, 2021, Kirill A. Shutemov wrote:
+> > On Mon, Apr 19, 2021 at 04:01:46PM +0000, Sean Christopherson wrote:
+> > > But fundamentally the private pages, are well, private.  They can't be shared
+> > > across processes, so I think we could (should?) require the VMA to always be
+> > > MAP_PRIVATE.  Does that buy us enough to rely on the VMA alone?  I.e. is that
+> > > enough to prevent userspace and unaware kernel code from acquiring a reference
+> > > to the underlying page?
+> > 
+> > Shared pages should be fine too (you folks wanted tmpfs support).
 > 
-> Signed-off-by: Luigi Rizzo <lrizzo@google.com>
-> ---
->  include/linux/smp.h | 10 ++++++
->  kernel/smp.c        | 75 +++++++++++++++++++++++++++++++++++++--------
->  2 files changed, 72 insertions(+), 13 deletions(-)
+> Is that a conflict though?  If the private->shared conversion request is kicked
+> out to userspace, then userspace can re-mmap() the files as MAP_SHARED, no?
 > 
+> Allowing MAP_SHARED for guest private memory feels wrong.  The data can't be
+> shared, and dirty data can't be written back to the file.
 
-> diff --git a/kernel/smp.c b/kernel/smp.c
-> index aeb0adfa0606..75155875fadc 100644
-> --- a/kernel/smp.c
-> +++ b/kernel/smp.c
+It can be remapped, but faulting in the page would produce hwpoison entry.
+I don't see other way to make Google's use-case with tmpfs-backed guest
+memory work.
 
-> @@ -693,8 +715,32 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
->  			csd_lock_wait(csd);
->  		}
->  	}
-> +	return busy ? cfd->cpumask : NULL;
->  }
->  
-> +/**
-> + * Extended version of smp_call_function_many(). Same constraints.
-> + * @mode == 0 same as wait = false, returns 0;
-> + * @mode == 1 same as wait = true, returns 0;
-> + * @mode = SMP_CFM_BEST_EFFORT: skips CPUs with previous pending requests,
-> + *     returns 0 and *mask unmodified if no CPUs are skipped,
-> + *     -EBUSY if CPUs are skipped, and *mask is the set of skipped CPUs
+> > The poisoned pages must be useless outside of the process with the blessed
+> > struct kvm. See kvm_pfn_map in the patch.
+> 
+> The big requirement for kernel TDX support is that the pages are useless in the
+> host.  Regarding the guest, for TDX, the TDX Module guarantees that at most a
+> single KVM guest can have access to a page at any given time.  I believe the RMP
+> provides the same guarantees for SEV-SNP.
+> 
+> SEV/SEV-ES could still end up with corruption if multiple guests map the same
+> private page, but that's obviously not the end of the world since it's the status
+> quo today.  Living with that shortcoming might be a worthy tradeoff if punting
+> mutual exclusion between guests to firmware/hardware allows us to simplify the
+> kernel implementation.
 
-Please convert those comments to real kernel-doc format.
-(Documentation/doc-guide/kernel-doc.rst)
+The critical question is whether we ever need to translate hva->pfn after
+the page is added to the guest private memory. I believe we do, but I
+never checked. And that's the reason we need to keep hwpoison entries
+around, which encode pfn.
 
-> + */
-> +int __smp_call_function_many(struct cpumask *mask, smp_call_func_t func,
-> +			     void *info, int mode)
-> +{
+If we don't, it would simplify the solution: kvm_pfn_map is not needed.
+Single bit-per page would be enough.
 
-thanks.
+> > > >  - Add a new GUP flag to retrive such pages from the userspace mapping.
+> > > >    Used only for private mapping population.
+> > > 
+> > > >  - Shared gfn ranges managed by userspace, based on hypercalls from the
+> > > >    guest.
+> > > > 
+> > > >  - Shared mappings get populated via normal VMA. Any poisoned pages here
+> > > >    would lead to SIGBUS.
+> > > > 
+> > > > So far it looks pretty straight-forward.
+> > > > 
+> > > > The only thing that I don't understand is at way point the page gets tied
+> > > > to the KVM instance. Currently we do it just before populating shadow
+> > > > entries, but it would not work with the new scheme: as we poison pages
+> > > > on fault it they may never get inserted into shadow entries. That's not
+> > > > good as we rely on the info to unpoison page on free.
+> > > 
+> > > Can you elaborate on what you mean by "unpoison"?  If the page is never actually
+> > > mapped into the guest, then its poisoned status is nothing more than a software
+> > > flag, i.e. nothing extra needs to be done on free.
+> > 
+> > Normally, poisoned flag preserved for freed pages as it usually indicate
+> > hardware issue. In this case we need return page to the normal circulation.
+> > So we need a way to differentiate two kinds of page poison. Current patch
+> > does this by adding page's pfn to kvm_pfn_map. But this will not work if
+> > we uncouple poisoning and adding to shadow PTE.
+> 
+> Why use PG_hwpoison then?
+
+Page flags are scarce. I don't want to take occupy a new one until I'm
+sure I must.
+
+And we can re-use existing infrastructure to SIGBUS on access to such
+pages.
+
 -- 
-~Randy
-
+ Kirill A. Shutemov
