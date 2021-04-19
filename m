@@ -2,56 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6D136419D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 14:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1FD3641A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 14:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239041AbhDSMYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 08:24:42 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:52005 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239071AbhDSMYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 08:24:37 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FP5b973w3z9vDc;
-        Mon, 19 Apr 2021 22:24:05 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1618835046;
-        bh=zZp3+Qorw8JfU+RWCL9IvATK734P2yLMhkBuOspAZko=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=N3IAifGbYvjmxWVnc+5jTzFCtLjePsZZsa2jU/3dphqyToVZZHRVt/9cb85BA0tyv
-         vCTMMiCZ+yM3sIJeh8zTfQ+xoxngupIRQGbMkWrqHSCVxD4lj1XfSddVpM9OV3FmDZ
-         BFnN6tS/34V+ZJ8uYgWEUnJSk1vNtxgRceEnFhGrPFOf6Mphu5w5hT7NK/MJVAzy0T
-         XvZL2M2eehoxjGyWcN6t0QshjxY8QluZlQF7Zf9AuRLUrfDDTYCH4DYW0QH5LRvF4g
-         noTOhcg4SsKYZrJWB3nRmWe0zwLVXjfClTMm1x5EuHgf4iogJumNZqBNpSocWCu8r1
-         +81UwWbXXj1Tw==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Xiongwei Song <sxwjean@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the powerpc tree
-In-Reply-To: <CAEVVKH905HJoJ_WVVZadXiy3LG5y+XDpMBVVtUNOwF2MtYTv8Q@mail.gmail.com>
-References: <20210419191425.281dc58a@canb.auug.org.au>
- <CAEVVKH905HJoJ_WVVZadXiy3LG5y+XDpMBVVtUNOwF2MtYTv8Q@mail.gmail.com>
-Date:   Mon, 19 Apr 2021 22:24:05 +1000
-Message-ID: <874kg2ea3e.fsf@mpe.ellerman.id.au>
+        id S239108AbhDSMZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 08:25:18 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16602 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229790AbhDSMZQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 08:25:16 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FP5YD4sSjz1BGPw;
+        Mon, 19 Apr 2021 20:22:24 +0800 (CST)
+Received: from [10.67.102.118] (10.67.102.118) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 19 Apr 2021 20:24:40 +0800
+Subject: Re: [RFC PATCH 2/3] vfio/hisilicon: register the driver to vfio
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     <alex.williamson@redhat.com>, <cohuck@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
+References: <1618284983-55581-1-git-send-email-liulongfang@huawei.com>
+ <1618284983-55581-3-git-send-email-liulongfang@huawei.com>
+ <20210415220137.GA1672608@nvidia.com>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <10d53c5d-e6d5-a165-84b2-eaf8a3b7dcce@huawei.com>
+Date:   Mon, 19 Apr 2021 20:24:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210415220137.GA1672608@nvidia.com>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.118]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xiongwei Song <sxwjean@gmail.com> writes:
-> Thank you so much Stephen. Sorry for my negligence.
+On 2021/4/16 6:01, Jason Gunthorpe wrote:
+> On Tue, Apr 13, 2021 at 11:36:22AM +0800, Longfang Liu wrote:
+>> Register the live migration driver of the accelerator module to vfio
+>>
+>> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+>>  drivers/vfio/pci/vfio_pci.c         | 11 +++++++++++
+>>  drivers/vfio/pci/vfio_pci_private.h |  9 +++++++++
+>>  2 files changed, 20 insertions(+)
+>>
+>> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+>> index 65e7e6b..e1b0e37 100644
+>> +++ b/drivers/vfio/pci/vfio_pci.c
+>> @@ -407,6 +407,17 @@ static int vfio_pci_enable(struct vfio_pci_device *vdev)
+>>  		}
+>>  	}
+>>  
+>> +	if (pdev->vendor == PCI_VENDOR_ID_HUAWEI &&
+>> +	    IS_ENABLED(CONFIG_VFIO_PCI_HISI_MIGRATION)) {
+>> +		ret = vfio_pci_hisilicon_acc_init(vdev);
+> 
+> This is exactly what we want to avoid with the work we are doing on
+> the vfio-pci modularity.
+> 
+> It is a complete mess to just keep adding more stuff here, and as
+> we've discussed to death really ugly to have such a ridiculously wide
+> ID match.
+> 
+> You should be working with us on that project and base your work on
+> top of Max's series.. Alex given the interest here I think we should
+> find some way forward while we work on completed version of the mlx5
+> pci vfio driver..
+> 
+> I'm also confused how this works securely at all, as a general rule a
+> VFIO PCI driver cannot access the MMIO memory of the function it is
+> planning to assign to the guest. There is a lot of danger that the
+> guest could access that MMIO space one way or another.
+> 
+VF's MMIO memory is divided into two parts, one is the guest part,
+and the other is the live migration part. They do not affect each other,
+so there is no security problem.
 
-My fault. I forgot to run allyesconfig.
+> Here I see the driver obtaining a devm_ioremap() of the same pdev it
+> is going to assign (and I really wonder why pci_release_mem_regions()
+> exists at all..)
+> 
+The driver here obtains the VF's MMIO memory address through devm_ioremap(),
+and adding pci_release_mem_regions() is to get the MMIO memory address
+in the guest after the driver here obtains the MMIO memory address.
 
-> Should I fix this myself on powerpc tree?
+If pci_release_mem_regions() is not added here,
+The guests using pci_request_mem_regions() will return an error.
+Then, the guest will not be able to obtain the MMIO address of the VF.
 
-I'll fix it up.
+> This is why the mlx5 RFC was showing how to juggle two PCI devices via
+> the aux device connector.
+> 
+I also noticed the mlx5 RFC, but it will take some time to analyze it. If the analysis
+process goes well. I will import the mlx5 RFC into our driver and use this solution
+to test and verify our live migration function.
 
-cheers
+If we use the mlx5 RFC, what should we pay attention to?
+
+> Jason
+> .
+> 
+Thanks.
+Longfang.
