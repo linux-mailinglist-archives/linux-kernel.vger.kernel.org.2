@@ -2,288 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C896B3638AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 02:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E583638A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 02:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236809AbhDSABg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 20:01:36 -0400
-Received: from mo-csw1514.securemx.jp ([210.130.202.153]:45576 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235958AbhDSABc (ORCPT
+        id S235990AbhDSAB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 20:01:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43369 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232588AbhDSAB0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 20:01:32 -0400
-Received: by mo-csw.securemx.jp (mx-mo-csw1514) id 13J00cXl020088; Mon, 19 Apr 2021 09:00:38 +0900
-X-Iguazu-Qid: 34trpShQIDnEy5DNkY
-X-Iguazu-QSIG: v=2; s=0; t=1618790438; q=34trpShQIDnEy5DNkY; m=Pr2WMIqfcw/OAJCy4G+OYx2i3UymVoEcqBoiNbuEe3M=
-Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
-        by relay.securemx.jp (mx-mr1511) id 13J00bPx015903
-        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 19 Apr 2021 09:00:37 +0900
-Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Sun, 18 Apr 2021 20:01:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618790456;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
+        bh=pIzly3xuH0PWUBWjBoEugIWAN5rcOKgjj+f+nKIsmUw=;
+        b=MTpbOsdVe0XIrD3eBT23Re1tP9VWKtaFYvilO/gNCVBRyJh1Ghs5VrRWLNZO1MpCsk4I/+
+        VUBX8sBRYQpG//HjHR6O4fnBbBUbU8PkQjZjbV3Nxlyao8ZrjTypKRpvgdM2ycbo4wqd9y
+        zKsvDtS4Y/6DWxLcVRmhpz/o+MxyXWE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-428-dpTpdBMuMd-VridQre62gg-1; Sun, 18 Apr 2021 20:00:53 -0400
+X-MC-Unique: dpTpdBMuMd-VridQre62gg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id 58A5A1000B0;
-        Mon, 19 Apr 2021 09:00:37 +0900 (JST)
-Received: from hop001.toshiba.co.jp ([133.199.164.63])
-        by enc01.toshiba.co.jp  with ESMTP id 13J00aOx025013;
-        Mon, 19 Apr 2021 09:00:36 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>
-Cc:     devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH v6 2/2] pwm: visconti: Add Toshiba Visconti SoC PWM support
-Date:   Mon, 19 Apr 2021 09:00:07 +0900
-X-TSB-HOP: ON
-Message-Id: <20210419000007.1944301-3-nobuhiro1.iwamatsu@toshiba.co.jp>
-X-Mailer: git-send-email 2.30.0.rc2
-In-Reply-To: <20210419000007.1944301-1-nobuhiro1.iwamatsu@toshiba.co.jp>
-References: <20210419000007.1944301-1-nobuhiro1.iwamatsu@toshiba.co.jp>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 779BF501F9;
+        Mon, 19 Apr 2021 00:00:50 +0000 (UTC)
+Received: from llong.com (ovpn-112-235.rdu2.redhat.com [10.10.112.235])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 874B25D741;
+        Mon, 19 Apr 2021 00:00:47 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v4 1/5] mm/memcg: Move mod_objcg_state() to memcontrol.c
+Date:   Sun, 18 Apr 2021 20:00:28 -0400
+Message-Id: <20210419000032.5432-2-longman@redhat.com>
+In-Reply-To: <20210419000032.5432-1-longman@redhat.com>
+References: <20210419000032.5432-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add driver for the PWM controller on Toshiba Visconti ARM SoC.
+The mod_objcg_state() function is moved from mm/slab.h to mm/memcontrol.c
+so that further optimization can be done to it in later patches without
+exposing unnecessary details to other mm components.
 
-Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- drivers/pwm/Kconfig        |   9 ++
- drivers/pwm/Makefile       |   1 +
- drivers/pwm/pwm-visconti.c | 189 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 199 insertions(+)
- create mode 100644 drivers/pwm/pwm-visconti.c
+ mm/memcontrol.c | 13 +++++++++++++
+ mm/slab.h       | 16 ++--------------
+ 2 files changed, 15 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-index 9a4f66ae8070..8ae68d6203fb 100644
---- a/drivers/pwm/Kconfig
-+++ b/drivers/pwm/Kconfig
-@@ -601,6 +601,15 @@ config PWM_TWL_LED
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called pwm-twl-led.
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index e064ac0d850a..dc9032f28f2e 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3150,6 +3150,19 @@ void __memcg_kmem_uncharge_page(struct page *page, int order)
+ 	css_put(&memcg->css);
+ }
  
-+config PWM_VISCONTI
-+	tristate "Toshiba Visconti PWM support"
-+	depends on ARCH_VISCONTI || COMPILE_TEST
-+	help
-+	  PWM Subsystem driver support for Toshiba Visconti SoCs.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called pwm-visconti.
-+
- config PWM_VT8500
- 	tristate "vt8500 PWM support"
- 	depends on ARCH_VT8500 || COMPILE_TEST
-diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-index 6374d3b1d6f3..d43b1e17e8e1 100644
---- a/drivers/pwm/Makefile
-+++ b/drivers/pwm/Makefile
-@@ -56,4 +56,5 @@ obj-$(CONFIG_PWM_TIECAP)	+= pwm-tiecap.o
- obj-$(CONFIG_PWM_TIEHRPWM)	+= pwm-tiehrpwm.o
- obj-$(CONFIG_PWM_TWL)		+= pwm-twl.o
- obj-$(CONFIG_PWM_TWL_LED)	+= pwm-twl-led.o
-+obj-$(CONFIG_PWM_VISCONTI)	+= pwm-visconti.o
- obj-$(CONFIG_PWM_VT8500)	+= pwm-vt8500.o
-diff --git a/drivers/pwm/pwm-visconti.c b/drivers/pwm/pwm-visconti.c
-new file mode 100644
-index 000000000000..beecadda566a
---- /dev/null
-+++ b/drivers/pwm/pwm-visconti.c
-@@ -0,0 +1,189 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Toshiba Visconti pulse-width-modulation controller driver
-+ *
-+ * Copyright (c) 2020 - 2021 TOSHIBA CORPORATION
-+ * Copyright (c) 2020 - 2021 Toshiba Electronic Devices & Storage Corporation
-+ *
-+ * Authors: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-+ *
-+ * Limitations:
-+ * - The fixed input clock is running at 1 MHz and is divided by either 1,
-+ *   2, 4 or 8.
-+ * - When the settings of the PWM are modified, the new values are shadowed
-+ *   in hardware until the PIPGM_PCSR register is written and the currently
-+ *   running period is completed. This way the hardware switches atomically
-+ *   from the old setting to the new.
-+ * - Disabling the hardware completes the currently running period and keeps
-+ *   the output at low level at all times.
-+ */
-+
-+#include <linux/err.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include <linux/pwm.h>
-+
-+#define PIPGM_PCSR(ch) (0x400 + 4 * (ch))
-+#define PIPGM_PDUT(ch) (0x420 + 4 * (ch))
-+#define PIPGM_PWMC(ch) (0x440 + 4 * (ch))
-+
-+#define PIPGM_PWMC_PWMACT		BIT(5)
-+#define PIPGM_PWMC_CLK_MASK		GENMASK(1, 0)
-+#define PIPGM_PWMC_POLARITY_MASK	GENMASK(5, 5)
-+
-+struct visconti_pwm_chip {
-+	struct pwm_chip chip;
-+	void __iomem *base;
-+};
-+
-+static inline struct visconti_pwm_chip *visconti_pwm_from_chip(struct pwm_chip *chip)
++void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
++		     enum node_stat_item idx, int nr)
 +{
-+	return container_of(chip, struct visconti_pwm_chip, chip);
++	struct mem_cgroup *memcg;
++	struct lruvec *lruvec = NULL;
++
++	rcu_read_lock();
++	memcg = obj_cgroup_memcg(objcg);
++	lruvec = mem_cgroup_lruvec(memcg, pgdat);
++	mod_memcg_lruvec_state(lruvec, idx, nr);
++	rcu_read_unlock();
 +}
 +
-+static int visconti_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-+			      const struct pwm_state *state)
-+{
-+	struct visconti_pwm_chip *priv = visconti_pwm_from_chip(chip);
-+	u32 period, duty_cycle, pwmc0;
-+
-+	if (!state->enabled) {
-+		writel(0, priv->base + PIPGM_PCSR(pwm->hwpwm));
-+		return 0;
-+	}
-+
-+	/*
-+	 * The biggest period the hardware can provide is
-+	 *	(0xffff << 3) * 1000 ns
-+	 * This value fits easily in an u32, so simplify the maths by
-+	 * capping the values to 32 bit integers.
-+	 */
-+	if (state->period > (0xffff << 3) * 1000)
-+		period = (0xffff << 3) * 1000;
-+	else
-+		period = state->period;
-+
-+	if (state->duty_cycle > period)
-+		duty_cycle = period;
-+	else
-+		duty_cycle = state->duty_cycle;
-+
-+	/*
-+	 * The input clock runs fixed at 1 MHz, so we have only
-+	 * microsecond resolution and so can divide by
-+	 * NSEC_PER_SEC / CLKFREQ = 1000 without loosing precision.
-+	 */
-+	period /= 1000;
-+	duty_cycle /= 1000;
-+
-+	if (!period)
-+		return -ERANGE;
-+
-+	/*
-+	 * PWMC controls a divider that divides the input clk by a
-+	 * power of two between 1 and 8. As a smaller divider yields
-+	 * higher precision, pick the smallest possible one.
-+	 */
-+	if (period > 0xffff) {
-+		pwmc0 = ilog2(period >> 16);
-+		BUG_ON(pwmc0 > 3);
-+	} else {
-+		pwmc0 = 0;
-+	}
-+
-+	period >>= pwmc0;
-+	duty_cycle >>= pwmc0;
-+
-+	if (state->polarity == PWM_POLARITY_INVERSED)
-+		pwmc0 |= PIPGM_PWMC_PWMACT;
-+	writel(pwmc0, priv->base + PIPGM_PWMC(pwm->hwpwm));
-+	writel(duty_cycle, priv->base + PIPGM_PDUT(pwm->hwpwm));
-+	writel(period, priv->base + PIPGM_PCSR(pwm->hwpwm));
-+
-+	return 0;
-+}
-+
-+static void visconti_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
-+				   struct pwm_state *state)
-+{
-+	struct visconti_pwm_chip *priv = visconti_pwm_from_chip(chip);
-+	u32 period, duty, pwmc0, pwmc0_clk;
-+
-+	period = readl(priv->base + PIPGM_PCSR(pwm->hwpwm));
-+	duty = readl(priv->base + PIPGM_PDUT(pwm->hwpwm));
-+	pwmc0 = readl(priv->base + PIPGM_PWMC(pwm->hwpwm));
-+	pwmc0_clk = pwmc0 & PIPGM_PWMC_CLK_MASK;
-+
-+	state->period = (period << pwmc0_clk) * NSEC_PER_USEC;
-+	state->duty_cycle = (duty << pwmc0_clk) * NSEC_PER_USEC;
-+	if (pwmc0 & PIPGM_PWMC_POLARITY_MASK)
-+		state->polarity = PWM_POLARITY_INVERSED;
-+	else
-+		state->polarity = PWM_POLARITY_NORMAL;
-+
-+	state->enabled = true;
-+}
-+
-+static const struct pwm_ops visconti_pwm_ops = {
-+	.apply = visconti_pwm_apply,
-+	.get_state = visconti_pwm_get_state,
-+	.owner = THIS_MODULE,
-+};
-+
-+static int visconti_pwm_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct visconti_pwm_chip *priv;
-+	int ret;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(priv->base))
-+		return PTR_ERR(priv->base);
-+
-+	platform_set_drvdata(pdev, priv);
-+
-+	priv->chip.dev = dev;
-+	priv->chip.ops = &visconti_pwm_ops;
-+	priv->chip.npwm = 4;
-+
-+	ret = pwmchip_add(&priv->chip);
-+	if (ret < 0)
-+		return dev_err_probe(&pdev->dev, ret, "Cannot register visconti PWM\n");
-+
-+	return 0;
-+}
-+
-+static int visconti_pwm_remove(struct platform_device *pdev)
-+{
-+	struct visconti_pwm_chip *priv = platform_get_drvdata(pdev);
-+
-+	pwmchip_remove(&priv->chip);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id visconti_pwm_of_match[] = {
-+	{ .compatible = "toshiba,visconti-pwm", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, visconti_pwm_of_match);
-+
-+static struct platform_driver visconti_pwm_driver = {
-+	.driver = {
-+		.name = "pwm-visconti",
-+		.of_match_table = visconti_pwm_of_match,
-+	},
-+	.probe = visconti_pwm_probe,
-+	.remove = visconti_pwm_remove,
-+};
-+module_platform_driver(visconti_pwm_driver);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>");
-+MODULE_ALIAS("platform:pwm-visconti");
+ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+ {
+ 	struct memcg_stock_pcp *stock;
+diff --git a/mm/slab.h b/mm/slab.h
+index 076582f58f68..ae8b85875426 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -239,6 +239,8 @@ static inline bool kmem_cache_debug_flags(struct kmem_cache *s, slab_flags_t fla
+ #ifdef CONFIG_MEMCG_KMEM
+ int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
+ 				 gfp_t gfp, bool new_page);
++void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
++		     enum node_stat_item idx, int nr);
+ 
+ static inline void memcg_free_page_obj_cgroups(struct page *page)
+ {
+@@ -283,20 +285,6 @@ static inline bool memcg_slab_pre_alloc_hook(struct kmem_cache *s,
+ 	return true;
+ }
+ 
+-static inline void mod_objcg_state(struct obj_cgroup *objcg,
+-				   struct pglist_data *pgdat,
+-				   enum node_stat_item idx, int nr)
+-{
+-	struct mem_cgroup *memcg;
+-	struct lruvec *lruvec;
+-
+-	rcu_read_lock();
+-	memcg = obj_cgroup_memcg(objcg);
+-	lruvec = mem_cgroup_lruvec(memcg, pgdat);
+-	mod_memcg_lruvec_state(lruvec, idx, nr);
+-	rcu_read_unlock();
+-}
+-
+ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+ 					      struct obj_cgroup *objcg,
+ 					      gfp_t flags, size_t size,
 -- 
-2.30.0.rc2
+2.18.1
 
