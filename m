@@ -2,134 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 425CA364A8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 21:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFCA3364A90
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 21:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241715AbhDST0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 15:26:32 -0400
-Received: from vps-vb.mhejs.net ([37.28.154.113]:48636 "EHLO vps-vb.mhejs.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230126AbhDST0b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 15:26:31 -0400
-Received: from MUA
-        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.93.0.4)
-        (envelope-from <mail@maciej.szmigiero.name>)
-        id 1lYZWp-0001It-Nq; Mon, 19 Apr 2021 21:25:51 +0200
-To:     Pkshih <pkshih@realtek.com>
-Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "johannes@sipsolutions.net" <johannes@sipsolutions.net>,
-        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>
-References: <e2924d81-0e30-2dd0-292b-428fea199484@maciej.szmigiero.name>
- <846f6166-c570-01fc-6bbc-3e3b44e51327@maciej.szmigiero.name>
- <87r1jnohq6.fsf@codeaurora.org>
- <8e0434eb-d15f-065d-2ba7-b50c67877112@maciej.szmigiero.name>
- <a2003668-5108-27b9-95cd-9e1d5d1aa94d@lwfinger.net>
- <1617763692.9857.7.camel@realtek.com>
- <1dc7e487-b97b-8584-47f7-37f3385c7bf9@lwfinger.net>
- <15737dcf-95ac-1ce6-a681-94ff5db968e4@maciej.szmigiero.name>
- <c5556a207c5c40ac849c6a0e1919baca@realtek.com>
- <220c4fe4-c9e1-347a-8cef-cd91d31c56df@maciej.szmigiero.name>
- <cfcc2988-3f20-3588-2f76-f04d09043811@maciej.szmigiero.name>
- <35249c6028f645a79c4186c9689ba8aa@realtek.com>
- <52f89f4f-568e-f04e-5c3e-e31f4a9e0910@lwfinger.net>
- <56d52ee8681a43aaa20924c5fa047bf0@realtek.com>
-From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: rtlwifi/rtl8192cu AP mode broken with PS STA
-Message-ID: <584036ac-f3d7-f6a1-3f4a-136c7af10b5a@maciej.szmigiero.name>
-Date:   Mon, 19 Apr 2021 21:25:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S241698AbhDST1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 15:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238544AbhDST1c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 15:27:32 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CA8C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 12:27:01 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id 8so3250840qkv.8
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 12:27:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KS1Cjb+5IzYaeizmFEnxlkXXC1aDE7oEixJIHEs6ylA=;
+        b=QZyi5Dji5AdE+5SQ4n5JeA0XoUR5PxmbDUHrQlM5UM35yIi+V9Axd/qupj8VClmRG/
+         H/ATUNdBmPGCBvSW3iPG5RqNJDyB9Enl5iGmjbti97I9NhmfqPe2Mk3lC6Icu1ljq+3x
+         1Dh3GcwFbeQh3R09pc2S70kyLZLPl3lj9+nzCRQavmynOE2Zjk1VRxxRHu2SN8cjTZpF
+         uNloS75jdZd4e2G6RRGflr2Cs6Mq/BXpnfTOUt3GslrfBB0hxvQIpZqsqvHa1zjFwRGy
+         vDRQEBWgrLh0oqvDeznsMOKa/QtPnANTR3cQ2dzkAC177TRnTuldyhCiK/F5wKfZEwgX
+         cbcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KS1Cjb+5IzYaeizmFEnxlkXXC1aDE7oEixJIHEs6ylA=;
+        b=M6awh5Ph8bybW4ChuxhgmpX020kDXnd4vEs2Ovv5citQzQSrLL2lzNM8e4efuDtmAd
+         PAzZS+HELxYubOiuA9qQltZTbw3awRC1DbGRWEsHGp7B+jXzBEmkfrnnEOArXNq0xap0
+         y0k2vwBmaOvtouqvyqLVXeir3ByjkzLTMTQ9WvmGT0MRgSfOTcmNUHfRfzdyTX+hPsGB
+         KclNmd+sXHpOn/BZz2alqVLy6zai3k5JssSk1UqDWhxPvB09fgHQBQMNh8EkXHS8s5lz
+         w8s8vsZdZeLl72cZ+JEFNDFkitOYipmZhdKw0pjnLh4bpa+rH/A8aR4czJjRGmHyrHEl
+         EnCg==
+X-Gm-Message-State: AOAM531ittZM9OZz3lWOyLeZT/f3DEoLZBOcFuCFgeDC9z4FtLd4zy4o
+        RIh4CUfgMVrjZmbGW5eN8zEK2wgs4eGJdgYWF1k2Mg==
+X-Google-Smtp-Source: ABdhPJz6J9DwdEtBiJaAUR5+atIHfVrTiOYv1hJdpb++RbLiw+J3imF4ECYNCO1gx/CONDh314Cdpaw8wb2C/OcNGHU=
+X-Received: by 2002:a37:a788:: with SMTP id q130mr12712225qke.276.1618860420267;
+ Mon, 19 Apr 2021 12:27:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <56d52ee8681a43aaa20924c5fa047bf0@realtek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210412101421.609526370@infradead.org> <20210412102001.287610138@infradead.org>
+ <YHhp0THHD2ofUdZD@hirez.programming.kicks-ass.net>
+In-Reply-To: <YHhp0THHD2ofUdZD@hirez.programming.kicks-ass.net>
+From:   Josh Don <joshdon@google.com>
+Date:   Mon, 19 Apr 2021 12:26:49 -0700
+Message-ID: <CABk29NtFEcKxicJ-zG338Z-gUd5-6rwiB=58K4+ZqkJ+S3v2Og@mail.gmail.com>
+Subject: Re: [PATCH] sched/debug: Rename the sched_debug parameter to sched_debug_verbose
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, Mel Gorman <mgorman@suse.de>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>, greg@kroah.com,
+        linux@rasmusvillemoes.dk,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.04.2021 09:04, Pkshih wrote:
-> 
->> -----Original Message-----
->> From: Larry Finger [mailto:larry.finger@gmail.com] On Behalf Of Larry Finger
->> Sent: Monday, April 19, 2021 9:23 AM
->> To: Pkshih; Maciej S. Szmigiero
->> Cc: linux-wireless@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
->> johannes@sipsolutions.net; kvalo@codeaurora.org
->> Subject: Re: rtlwifi/rtl8192cu AP mode broken with PS STA
->>
->> On 4/18/21 7:32 PM, Pkshih wrote:
->>>
->>>> -----Original Message-----
->>>> From: Maciej S. Szmigiero [mailto:mail@maciej.szmigiero.name]
->>>> Sent: Sunday, April 18, 2021 2:08 AM
->>>> To: Pkshih
->>>> Cc: linux-wireless@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
->>>> johannes@sipsolutions.net; kvalo@codeaurora.org; Larry Finger
->>>> Subject: Re: rtlwifi/rtl8192cu AP mode broken with PS STA
->>>>
->>>> On 08.04.2021 21:04, Maciej S. Szmigiero wrote:
->>>>> On 08.04.2021 06:42, Pkshih wrote:
->>>>>>> -----Original Message-----
->>>>>>> From: Maciej S. Szmigiero [mailto:mail@maciej.szmigiero.name]
->>>>>>> Sent: Thursday, April 08, 2021 4:53 AM
->>>>>>> To: Larry Finger; Pkshih
->>>>>>> Cc: linux-wireless@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
->>>>>>> johannes@sipsolutions.net; kvalo@codeaurora.org
->>>>>>> Subject: Re: rtlwifi/rtl8192cu AP mode broken with PS STA
->>>>>>>
->>>>> (...)
->>>>>>>> Maceij,
->>>>>>>>
->>>>>>>> Does this patch fix the problem?
->>>>>>>
->>>>>>> The beacon seems to be updating now and STAs no longer get stuck in PS
->>>>>>> mode.
->>>>>>> Although sometimes (every 2-3 minutes with continuous 1s interval pings)
->>>>>>> there is around 5s delay in updating the transmitted beacon - don't know
->>>>>>> why, maybe the NIC hardware still has the old version in queue?
->>>>>>
->>>>>> Since USB device doesn't update every beacon, dtim_count isn't updated neither.
->>>>>> It leads STA doesn't awake properly. Please try to fix dtim_period=1 in
->>>>>> hostapd.conf, which tells STA awakes every beacon interval.
->>>>>
->>>>> The situation is the same with dtim_period=1.
->>>>>
->>>> (...)
->>>>
->>>> Ping-Ke,
->>>> are you going to submit your set_tim() patch so at least the AP mode is
->>>> usable with PS STAs or are you waiting for a solution to the delayed
->>>> beacon update issue?
->>>>
->>>
->>> I'm still trying to get a 8192cu, and then I can reproduce the symptom you
->>> met. However, I'm busy now; maybe I have free time two weeks later.
->>>
->>> Do you think I submit the set_tim() patch with your Reported-by and Tested-by first?
->>
->> PK,
->>
->> I would say yes. Get the fix in as soon as possible.
->>
-> 
-> I have sent a patch that only 8192cu, which is the only one USB device supported by rtlwifi,
-> schedules a work to update beacon content to wifi card.
-> 
-> https://lore.kernel.org/linux-wireless/20210419065956.6085-1-pkshih@realtek.com/T/#u
+Hi Peter,
 
-Thanks, I have tested the patch and it seems to work as good as the previous one.
-It definitely improves things.
+Looks reasonable to me.
 
-However, it would be great to eventually fix the update delay issue, too.
-It looks to me like possibly just a missing beacon queue flush.
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -4756,7 +4756,8 @@
+>
+>         sbni=           [NET] Granch SBNI12 leased line adapter
+>
+> -       sched_debug     [KNL] Enables verbose scheduler debug messages.
+> +       sched_debug_verbose
+> +                       [KNL] Enables verbose scheduler debug messages.
 
-> --
-> Ping-Ke
-> 
+boot param is not renamed from sched_debug below.
 
-Maciej
+> @@ -22,7 +22,7 @@ early_param("sched_debug", sched_debug_s
+>
+>  static inline bool sched_debug(void)
+
+nit: consider renaming. Or, we can even get rid of this function
+entirely, since in the !CONFIG_SCHED_DEBUG case we have
+sched_debug_verbose defined to 0.
