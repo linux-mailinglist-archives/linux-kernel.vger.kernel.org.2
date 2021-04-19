@@ -2,69 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A64B9364E88
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8318D364E8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231998AbhDSXUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 19:20:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60680 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229723AbhDSXUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 19:20:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B8FEF61029;
-        Mon, 19 Apr 2021 23:20:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618874408;
-        bh=Mka3d0H9tODgbsi3UC/E+x954bjUDtO9sLOf7RbSIks=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=XPgzf2L32co6dbaNqMrqDZI0Z5cODPedz9Z5ks85YeIfE5wplsj6pABCPkbpkSg3M
-         nfzdY170gLZS4JnY2pizcJSx8L63XURDusnN9fuQJ4l1jVI8WBxKBEBlAq0Jm1NfY7
-         Cryme9m5uqiAtSPcU08FzkVNpIBksfCBsZv4eGTiginxBwu4nPWe8z28USQvmzlq4C
-         WrpNI8CZztO0/jdaKfjrzsXlhYmdqIWS41VsSXMKYNwuUQY6qKJ08M6NDYbr4bvT3z
-         sZFZTFvji+A9eMrQtWrjXn1ZyotH/Hkgrd7WxNrZ1sk5S28+b0gJLpeYOLSd/7iNon
-         Z90kWsP7xA0rg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A966260A0B;
-        Mon, 19 Apr 2021 23:20:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S232234AbhDSXWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 19:22:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229842AbhDSXW1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 19:22:27 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42728C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 16:21:56 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id a12so24247207pfc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 16:21:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lTXVzOlOEiCu/x5YV8po+6uFDpU/Gnvba9Ryw/CBpDM=;
+        b=ZJyb1R+5bJFnqwF3bQmGCPzsnXZi3BRzYioz/NexC7553PawPQ4hN81uwcxrl5jYwh
+         44KnRZxy5l3BtVmRR0fKQ1HSNamXhaz0j3rRjCXElrfWqpARK+BlLxuqng04RnupdHCV
+         ouqKIYNxXJZCz7vgyumEtJwA5s3ihMYTulQ3fXYvqyuF+r6Ie1MYI1PJ+OCqoUWHAbd6
+         ugeaIZlRwyE5yE81dug1aMAHGyJAODJ/C9FE3cnATcft6jMTij84CRLgxVNPYOEibWQw
+         lQCsnRDNMaS2I1shMJNXZ1aq1enDKn2Rw4t96KTiGTChE000tJ7+kcEXAnsrWtw4L5n9
+         CLgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lTXVzOlOEiCu/x5YV8po+6uFDpU/Gnvba9Ryw/CBpDM=;
+        b=WO1iZZu5rwdNMoHjjdvRHtGiUga16XziY6pCuatec7MYWJZi09AxwJWKcAN2xNjnUm
+         wNcVgpVVSbXH66dv+bqFW/jP35EoAnPHXDBrY+yw9pdc+KD9Pe16UeKaIw3AtPCnu/jJ
+         Pu6RVEMVc+KNUdU2bma4hZEKoR43pi+0X6UzaWeNrYIwVK0ldvQ4QYtGeZ3bnBORFAP3
+         hu7fLmygNAFnPN7LSKB8a9W46wSQqsCYG6n69Yree/GmUhqWdhaCL4vjccN9Be/bIyry
+         WIWXaeP6v6jIYhCYFLtcpCmTPeSqGFty9z4Eq9yZHoCLkzHwuwHIy+Wzyfdpzoz2bGuU
+         cLhA==
+X-Gm-Message-State: AOAM5309OBE8bHtEBpNMmxOOms1SgjfJ3CPVZMIb7FOOLJSQ24vbw322
+        5jvMsIRIA9RmFUR39WMM+Lm6NHzBn0ypDoimRu5wazgUl/7pyA==
+X-Google-Smtp-Source: ABdhPJzsPHdZ6m2OrgGWPr4K75bxd1by1RdKGIUuNZzqLN0SBU3Lr+re4qvr2NPbNXKYNUG76KA+mrxWCCSIV0F3xDM=
+X-Received: by 2002:a63:b515:: with SMTP id y21mr5324980pge.253.1618874515638;
+ Mon, 19 Apr 2021 16:21:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH RESEND net-next] net: marvell: prestera: add support for AC3X
- 98DX3265 device
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161887440868.5975.9264539900149145693.git-patchwork-notify@kernel.org>
-Date:   Mon, 19 Apr 2021 23:20:08 +0000
-References: <20210416231751.17652-1-vadym.kochan@plvision.eu>
-In-Reply-To: <20210416231751.17652-1-vadym.kochan@plvision.eu>
-To:     Vadym Kochan <vadym.kochan@plvision.eu>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mickeyr@marvell.com,
-        vkochan@marvell.com
+References: <20210407185039.621248-1-varmam@google.com> <20210407185039.621248-2-varmam@google.com>
+ <20210409183415.GA3919775@robh.at.kernel.org>
+In-Reply-To: <20210409183415.GA3919775@robh.at.kernel.org>
+From:   Manish Varma <varmam@google.com>
+Date:   Mon, 19 Apr 2021 16:21:44 -0700
+Message-ID: <CAMyCerLy2bA_D=8j9C+pAUe7fDHh9DYJwXQWGgKGnD-dadnewg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] dt-bindings: i2c: add "dev-name" property to
+ assign specific device name
+To:     Rob Herring <robh@kernel.org>
+Cc:     Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi Rob,
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Thanks for the inputs.
 
-On Sat, 17 Apr 2021 02:17:51 +0300 you wrote:
-> From: Vadym Kochan <vkochan@marvell.com>
-> 
-> Add PCI match for AC3X 98DX3265 device which is supported by the current
-> driver and firmware.
-> 
-> Signed-off-by: Vadym Kochan <vkochan@marvell.com>
-> 
-> [...]
+On Fri, Apr 9, 2021 at 11:34 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Wed, Apr 07, 2021 at 11:50:38AM -0700, Manish Varma wrote:
+> > I2C devices currently are named dynamically using
+> > <adapter_id>-<device_address> convention, unless they are instantiated
+> > through ACPI.
+> >
+> > This means the device name may vary for the same device across different
+> > systems, infact even on the same system if the I2C bus enumeration order
+> > changes, i.e. because of device tree modifications.
+> >
+> > By adding an optional "dev-name" property, it provides a mechanism to
+> > set consistent and easy to recognize names for I2C devices.
+>
+> So? Why do you need 'easy to recognize names'?
+>
 
-Here is the summary with links:
-  - [RESEND,net-next] net: marvell: prestera: add support for AC3X 98DX3265 device
-    https://git.kernel.org/netdev/net-next/c/ced97eea3974
+From the cover letter:
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+"Currently I2C device names are assigned dynamically unless they are
+instantiated through ACPI, this names are based on adapter_id and
+device_address. While device_address will remain constant for a given
+device, the adapter_id may vary across different systems and hence,
+overall, the device name won't be unique for the same I2C device."
 
+Basically, the motivation here is to provide a mechanism to allow overriding
+those names to easy to recognize names (e.g. <vendor_name_dev_name>
+or <device part number> which leaves more information compared to just
+device name in the form of numbers such as "2-001f").
 
+These (device) names are further used by different module e.g. system
+wakeup events framework, and hence this presents difficulties debug/identify
+issues at various levels in the software stack.
+
+So, the idea was to address it at the lowest level possible.
+
+> Why is I2C special? If we wanted this in DT, it wouldn't be I2C specific
+> and we probably would have added it long ago.
+>
+
+"Unlike PCI or USB devices, I2C devices are not enumerated at the hardware
+level. Instead, the software must know which devices are connected on each
+I2C bus segment, and what address these devices are using. For this
+reason, the kernel code must instantiate I2C devices explicitly."
+
+Reference: https://www.kernel.org/doc/Documentation/i2c/instantiating-devices
+
+There are various ways to instantiate I2C devices e.g. through board_info
+interface, ACPI and device tree etc.
+
+While board_info and ACPI both allow specifying device name, I find no such
+provision to assign device names for the I2C devices instantiated through
+device tree interface.
+
+> > Signed-off-by: Manish Varma <varmam@google.com>
+> > ---
+> >  Documentation/devicetree/bindings/i2c/i2c.txt | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/i2c/i2c.txt b/Documentation/devicetree/bindings/i2c/i2c.txt
+> > index df41f72afc87..6fb03f464b81 100644
+> > --- a/Documentation/devicetree/bindings/i2c/i2c.txt
+> > +++ b/Documentation/devicetree/bindings/i2c/i2c.txt
+> > @@ -130,6 +130,11 @@ wants to support one of the below features, it should adapt these bindings.
+> >  - wakeup-source
+> >       device can be used as a wakeup source.
+> >
+> > +- dev-name
+> > +     Name of the device.
+> > +     Overrides the default device name which is in the form of
+> > +     <busnr>-<addr>.
+>
+> What's 'busnr'? No such thing in DT.
+>
+
+Right! dev-name introduced to hold the string value for overriding
+device names assigned by the kernel. Currently, kernel assigns the device
+name in the form of <busnr>-<addr>.
+
+Reference:
+https://www.kernel.org/doc/html/latest/driver-api/i2c.html?highlight=i2c_board_info#c.i2c_board_info
+
+> > +
+> >  Binding may contain optional "interrupts" property, describing interrupts
+> >  used by the device. I2C core will assign "irq" interrupt (or the very first
+> >  interrupt if not using interrupt names) as primary interrupt for the slave.
+> > --
+> > 2.31.1.295.g9ea45b61b8-goog
+> >
+
+Hope the explanation provided above answers your questions.
+
+Thanks,
+Manish
