@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4A43640CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D93DA3640D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238839AbhDSLrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 07:47:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50877 "EHLO
+        id S238891AbhDSLru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 07:47:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20628 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238751AbhDSLrD (ORCPT
+        by vger.kernel.org with ESMTP id S238740AbhDSLri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 07:47:03 -0400
+        Mon, 19 Apr 2021 07:47:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618832793;
+        s=mimecast20190719; t=1618832828;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4KNIBhiX96SBAEns+eZY4MeATI7Fr3o+QWf55kiN81w=;
-        b=XaTePvUbXK36QhJwvnZ1uP25q9CCbBv25m+s139x18KUdEpCBdTOt5j6pWoRACfBzO6jSz
-        sFfdpBg+U/8gL0fBRn8XeTOOIVplwM7kWY8ABOzYU8Q+CuR/Wqsb5BSLgGPiL7JWCFaoyA
-        muPu2VH8aRf2YaCMJFrK+sNnvCJIZ5o=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-240-RT1EFSAwOxiowCLQYNLIng-1; Mon, 19 Apr 2021 07:46:32 -0400
-X-MC-Unique: RT1EFSAwOxiowCLQYNLIng-1
-Received: by mail-wr1-f69.google.com with SMTP id s9-20020a5d51090000b02901028ea30da6so8891183wrt.7
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 04:46:31 -0700 (PDT)
+        bh=lodamhupIClPRvQVAJcc8N1PrnJrjvEQCs2vDJeC4is=;
+        b=MnF/lBntby0OCF9A9DjfAjH79Hw0IA8qcnqsftDGGpJf1UUuCq/rPbDWmsM7+kdP4EPwd/
+        K9HJ06f4quAT376NM4WHbff5ewTAMRB+ebF4jeVAbUWv6y9Dm4nww3NemVA672ESNlX6Th
+        AQdyHeun7nMpm1RRMLM7cqjX+PYPkaI=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-514-cKyXoN8KNN293jkhDInGYg-1; Mon, 19 Apr 2021 07:47:06 -0400
+X-MC-Unique: cKyXoN8KNN293jkhDInGYg-1
+Received: by mail-wr1-f71.google.com with SMTP id y13-20020adfdf0d0000b02901029a3bf796so8935849wrl.15
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 04:47:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4KNIBhiX96SBAEns+eZY4MeATI7Fr3o+QWf55kiN81w=;
-        b=cWLEmYw6oZoUn4cQYsouhQVoxlE0AsHFKbbYcb4Khtb9Ykkoo/gIWTbqNqk04Go4GC
-         YBWSA6QHB/4DJr83ox9PCzxfWxMykNCUXyVbLbgh42cJEcv9R7aIbx12HjTKFxPB+FQo
-         YYqBzl4M1MVQsVDx0exmVNmcLa7EezuGSyzguDk97gzUccPopImvqm/26k8AzruVq/Z2
-         /8V8CITWqW9LNkVanZ/kM1svuk3w9iRIoJlDsNFPqewuE1YRYLNSnepP0oeZ1XxlSnv9
-         jSrfv/0Dy3tr2iF1qBTvJLyf95suhup9rzbpb3RKRduGqEbDgnjrl3P1bGDFUDl0/Upr
-         yLYg==
-X-Gm-Message-State: AOAM531W79y5IBcUSTOjVLhwmuE06wsIq9dMbu6CstvfxRs5w84s43s3
-        LNMtfU8na5M5nw2AoAfbmifg6NDXEYL6R3EQWvLe8j3+EH2g27HQzdZ4m7/OAzwdXR/MTkygbUl
-        bqsBguw4G9zPK9u2Y8dFefQKZHcV+FQu/KO2skD5Q
-X-Received: by 2002:a7b:cc86:: with SMTP id p6mr21147828wma.164.1618832790916;
-        Mon, 19 Apr 2021 04:46:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzowTJOaUjO7V9rrnhDskD/pazvcM/Gbrdk15YuD9A3xkWwis/lEV+VVmSDcLCwGuQu5ct6FvqXa0KU8VEG1q0=
-X-Received: by 2002:a7b:cc86:: with SMTP id p6mr21147815wma.164.1618832790809;
- Mon, 19 Apr 2021 04:46:30 -0700 (PDT)
+        bh=lodamhupIClPRvQVAJcc8N1PrnJrjvEQCs2vDJeC4is=;
+        b=rtwOHyxNJrTpkPzmgKtXHs6qXiajur8flkC23x6yFCoNuMpQrNeK4UC8y1PaQxftKx
+         jG4vCv4zqCHXarftFPbtOPFvxpLHZl1QgxSpcqcDDAtHMsfI5/lvmQxDR4aeibAe+PWS
+         4VmPC6DOOIEgS/B7Nx8JShpIQToQg3wQuLcWL+E9r0uzGcXgaZvAKVtDoP0lls9BVTxq
+         h42FzLeukUZMGrTqnRoUOVOwXiUrzmZzbzzg2BhxzQVe3hRrEmZZzgUP/sIuj/Da+L/t
+         4DWKK9gCZiQgqRDw0NLaUyoAN+tKisjfgrTd+1HatUDLh8EZocbvui34xEb4QHdkWv/H
+         NHAA==
+X-Gm-Message-State: AOAM531fhMfYnAVUmkPHOZNPaw3/CiXtadxtFqoOo813S1jGPWNWksVF
+        9muxgFZak+mDNE3B0LWc62b7HgsWGB9K1FKLS57SYZ/BzmTrYyC7U3E12wNHKw3gV778kdRorh4
+        vpQit+mFMUFOAjbApMJwe5enmHr41Nzb3jttpYmuC
+X-Received: by 2002:a7b:cc86:: with SMTP id p6mr21149949wma.164.1618832825754;
+        Mon, 19 Apr 2021 04:47:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwz2DBi+eaf78G0k67QC0inXD2fGPAwhGBsJQeP4aS5Z+prjC2fisj6mCReZm8TlIb6JLrYH8C0u6hrguIqBF8=
+X-Received: by 2002:a7b:cc86:: with SMTP id p6mr21149933wma.164.1618832825581;
+ Mon, 19 Apr 2021 04:47:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210416143725.2769053-1-lee.jones@linaro.org> <20210416143725.2769053-12-lee.jones@linaro.org>
-In-Reply-To: <20210416143725.2769053-12-lee.jones@linaro.org>
+References: <20210416143725.2769053-1-lee.jones@linaro.org> <20210416143725.2769053-13-lee.jones@linaro.org>
+In-Reply-To: <20210416143725.2769053-13-lee.jones@linaro.org>
 From:   Karol Herbst <kherbst@redhat.com>
-Date:   Mon, 19 Apr 2021 13:46:20 +0200
-Message-ID: <CACO55tu3ZiNYKQgXEYtnt9VMa+FdSXKRfK1atWzY+mfUsr=jAQ@mail.gmail.com>
-Subject: Re: [Nouveau] [PATCH 11/40] drm/nouveau/dispnv50/headc57d: Make local
- function 'headc57d_olut' static
+Date:   Mon, 19 Apr 2021 13:46:54 +0200
+Message-ID: <CACO55ts=J1XGubumoTJMAj0w6F2KBJFUV601oq-2uVD08FrWuA@mail.gmail.com>
+Subject: Re: [Nouveau] [PATCH 12/40] drm/nouveau/nv50_display: Remove
+ superfluous prototype for local static functions
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     David Airlie <airlied@linux.ie>,
         nouveau <nouveau@lists.freedesktop.org>,
@@ -72,38 +72,45 @@ Reviewed-by: Karol Herbst <kherbst@redhat.com>
 
 On Fri, Apr 16, 2021 at 4:38 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> Fixes the following W=3D1 kernel build warning(s):
+> Fixes the following build error:
 >
->  drivers/gpu/drm/nouveau/dispnv50/headc57d.c:173:1: warning: no previous =
-prototype for =E2=80=98headc57d_olut=E2=80=99 [-Wmissing-prototypes]
+>  drivers/gpu/drm/nouveau/dispnv50/disp.c:2530:1: error: conflicting types=
+ for =E2=80=98nv50_display_fini=E2=80=99
+>  In file included from drivers/gpu/drm/nouveau/dispnv50/disp.c:71:
+>  drivers/gpu/drm/nouveau/nv50_display.h:36:6: note: previous declaration =
+of =E2=80=98nv50_display_fini=E2=80=99 was her
+>  In file included from drivers/gpu/drm/nouveau/dispnv50/disp.c:71:
+>  drivers/gpu/drm/nouveau/nv50_display.h:35:6: note: previous declaration =
+of =E2=80=98nv50_display_init=E2=80=99 was here
+>  drivers/gpu/drm/nouveau/dispnv50/disp.c:2581:1: error: static declaratio=
+n of =E2=80=98nv50_display_destroy=E2=80=99 follows non-static declaration
+>  In file included from drivers/gpu/drm/nouveau/dispnv50/disp.c:71:
+>  drivers/gpu/drm/nouveau/nv50_display.h:34:6: note: previous declaration =
+of =E2=80=98nv50_display_destroy=E2=80=99 was here
 >
 > Cc: Ben Skeggs <bskeggs@redhat.com>
 > Cc: David Airlie <airlied@linux.ie>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Lyude Paul <lyude@redhat.com>
 > Cc: dri-devel@lists.freedesktop.org
 > Cc: nouveau@lists.freedesktop.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
->  drivers/gpu/drm/nouveau/dispnv50/headc57d.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/gpu/drm/nouveau/nv50_display.h | 3 ---
+>  1 file changed, 3 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/nouveau/dispnv50/headc57d.c b/drivers/gpu/dr=
-m/nouveau/dispnv50/headc57d.c
-> index fd51527b56b83..bdcfd240d61c8 100644
-> --- a/drivers/gpu/drm/nouveau/dispnv50/headc57d.c
-> +++ b/drivers/gpu/drm/nouveau/dispnv50/headc57d.c
-> @@ -169,7 +169,7 @@ headc57d_olut_load(struct drm_color_lut *in, int size=
-, void __iomem *mem)
->         writew(readw(mem - 4), mem + 4);
->  }
+> diff --git a/drivers/gpu/drm/nouveau/nv50_display.h b/drivers/gpu/drm/nou=
+veau/nv50_display.h
+> index fbd3b15583bc8..2421401d12636 100644
+> --- a/drivers/gpu/drm/nouveau/nv50_display.h
+> +++ b/drivers/gpu/drm/nouveau/nv50_display.h
+> @@ -31,7 +31,4 @@
+>  #include "nouveau_reg.h"
 >
-> -bool
-> +static bool
->  headc57d_olut(struct nv50_head *head, struct nv50_head_atom *asyh, int s=
-ize)
->  {
->         if (size !=3D 0 && size !=3D 256 && size !=3D 1024)
+>  int  nv50_display_create(struct drm_device *);
+> -void nv50_display_destroy(struct drm_device *);
+> -int  nv50_display_init(struct drm_device *);
+> -void nv50_display_fini(struct drm_device *);
+>  #endif /* __NV50_DISPLAY_H__ */
 > --
 > 2.27.0
 >
