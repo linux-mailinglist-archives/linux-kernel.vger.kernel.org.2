@@ -2,178 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F90364646
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F71236464A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240350AbhDSOhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 10:37:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48250 "EHLO
+        id S240116AbhDSOih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 10:38:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239480AbhDSOhm (ORCPT
+        with ESMTP id S237650AbhDSOif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 10:37:42 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15237C061761
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 07:37:13 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id g16so10017394pfq.5
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 07:37:13 -0700 (PDT)
+        Mon, 19 Apr 2021 10:38:35 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB8DC061761
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 07:38:05 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id 101-20020a9d0d6e0000b02902816815ff62so26843226oti.9
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 07:38:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:in-reply-to
-         :references;
-        bh=kAefkyFaBIXLmjTEJSLAmCovAj/sOKipvNUJKWBPzMo=;
-        b=sXPC0bki/h8OXmhIMllb/gFHXCwGt0/ujMMP06AO5/NLRCas0Zvih2xI3Mwu4zWIvP
-         YrOO2snNp6sGObZpNqm6/UrBoA17bzK2/kIUHOi6Ws3qqzKCnaWANbr/TYxnFEAlS+3E
-         8k/4nn3kDTMyUopy82vtsCnpqnpCOPXbNlH1y3obHG5TXMXhOlWzdzDRwidD99Yh1bvJ
-         Kx4Jr/scI/AaBvZfsoIjM92CDKB5PgRlumTYLYzWDOjNvriNPRCmLD21hgABsleargnr
-         x0RmHbSdjSKWoXTh0M4RlXYTMBBjyp9ILFcWmwS15DKAg6gQAdzS2AusR2WZgNiKhROy
-         JYBA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KA74mLe8fkXTNtvVxnUD/R9BP6DUvXU6GqQ2V7QKU48=;
+        b=bAzz2nqBdmNDb3rFxnWCQS/xFq26jaqJ1ftmMT9fjQKqUQ+ZIT37hcoSvqn+IRFGgT
+         GVip74BqDG4qz9eauJZKuBdu13AU7teUbvwlKaK3avT3/JwXHS9clecYMVF191V3lHDo
+         WHV9gLkUcYKpeWr80FofB30gMK7aXB8XKdNtneDOVHCgCvl1toUTYefb4j6F7kqLJcwh
+         MeFOwJVtLxF9QJ/GfBpeR5f44kwz0iau8kJLvMGhx/7i9NlAN1ebmLP/LpN6jMdqgCQY
+         yCdCkYlGQ5AAj1PJ4BgaljpuB1UBYg63Bg/rI++eUqe28RWzzx0uV2P9BUf4v1pRNXZ1
+         vuTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:in-reply-to:references;
-        bh=kAefkyFaBIXLmjTEJSLAmCovAj/sOKipvNUJKWBPzMo=;
-        b=WVBscWe6LLQ64eMVNQUSXANOH8+ZC+qNfAi4vGIw91fN1cpLM9kX7WeLSBSfAVj7Qj
-         96k/6/p4P2QZsyx2PG1dDtZv6Ri5khpx43rp0Kz7pYmWoC9naijVLSBMQukkUmRKHmV7
-         uwoPV9Y7/FZL5Vn8UWH9l1SkptYx0p8qqFOJJUpFLaYZBav/DOF2VR8dvLC0w/Zs42y7
-         iFq1jPBaom+bNH/QaZ2ytIzkSPSy30Vk8LdMsgsv0ofxSahemfKRrfICchoZAtkter2U
-         Xmm8aN9uWl5D0Ofu2GUktdAQ8YX3goy7YmclDEHksLBupkZbqxX3L0hVu8lY1OuBMK6s
-         AQXw==
-X-Gm-Message-State: AOAM532Izl1IJYXtUJzeJrDXQtuob5EFqIXhEipqoeHua7bj+k9NF8ET
-        prH/bgxOgAM6e6UvTfA8Ttw=
-X-Google-Smtp-Source: ABdhPJwH1WdUmLq/+JAXDVNRvAyUQ6jQhJCH8kfnz8oM53cQZtb/z5vitkqPEa03+EdgcCGuahroZA==
-X-Received: by 2002:a63:b00b:: with SMTP id h11mr11933818pgf.204.1618843032680;
-        Mon, 19 Apr 2021 07:37:12 -0700 (PDT)
-Received: from VM-0-3-centos.localdomain ([101.32.213.191])
-        by smtp.gmail.com with ESMTPSA id k21sm9403134pff.214.2021.04.19.07.37.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 19 Apr 2021 07:37:12 -0700 (PDT)
-From:   brookxu <brookxu.cn@gmail.com>
-To:     adobriyan@gmail.com, bsingharora@gmail.com,
-        akpm@linux-foundation.org, ebiederm@xmission.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] delayacct: add a proc file to dump the delay info
-Date:   Mon, 19 Apr 2021 22:37:07 +0800
-Message-Id: <3da76d1d565c423c6cbf92b02cbae9f86cd5accd.1618841970.git.brookxu@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <8ac9f35074326cb36e3cdbf0ad70b36dc3412e86.1618841970.git.brookxu@tencent.com>
-References: <8ac9f35074326cb36e3cdbf0ad70b36dc3412e86.1618841970.git.brookxu@tencent.com>
-In-Reply-To: <8ac9f35074326cb36e3cdbf0ad70b36dc3412e86.1618841970.git.brookxu@tencent.com>
-References: <8ac9f35074326cb36e3cdbf0ad70b36dc3412e86.1618841970.git.brookxu@tencent.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KA74mLe8fkXTNtvVxnUD/R9BP6DUvXU6GqQ2V7QKU48=;
+        b=PdbbrWgOJRqRbnatzSl2LD2wVFxzvFhkQ5iqChnWl6n8JttsMeRg9k0dvuBnhw1rW7
+         Fnj/C5Jf1zoNoT7qqiqRvNEdn3VkW9gVOedNfh1gyG3K0xV2DYixxTr8SPSSayqxzC/3
+         mQGr9/pVYuNa8MyiF0kxrSCrDfmHx9cB3SO+tGUFbZ50R+6cmC6OBaAV+ePqfKTarW8M
+         d43594fgjjKdyfuGda1XygbDMX1K5SuZPWEs4ZElMhyVezrnc+34KmGIJsCDhGqiwgxo
+         dHNy5Tot+ZujFbBSkktrOVlEDwlK6TbIcLuzofBwgQooU8BtscPTi6W8YYoESFSoV1Rj
+         sLng==
+X-Gm-Message-State: AOAM532tssAIDnPXJtLasaR9znF32OXfseo+nC3l2AsMPWeCdz/Vp0dG
+        X4o6eY5v+Uq8CBq8AiGl5rXa2Q==
+X-Google-Smtp-Source: ABdhPJwpnzs8sEJmdIC3gggfdBnNIayOKuztT5Ad2mhWhCKzjzRYS/+RcMa4CWJUYLuJ6RVpczhslQ==
+X-Received: by 2002:a05:6830:1601:: with SMTP id g1mr4499748otr.0.1618843085133;
+        Mon, 19 Apr 2021 07:38:05 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id q130sm3161649oif.40.2021.04.19.07.38.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 07:38:04 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 09:38:02 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCHv2 2/2] iommu/arm-smmu-qcom: Move the adreno smmu specific
+ impl earlier
+Message-ID: <20210419143802.GP1538589@yoga>
+References: <cover.1614332994.git.saiprakash.ranjan@codeaurora.org>
+ <c607d71eb0fe507c8b83cc0ea9b393777f22149a.1614332994.git.saiprakash.ranjan@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c607d71eb0fe507c8b83cc0ea9b393777f22149a.1614332994.git.saiprakash.ranjan@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunguang Xu <brookxu@tencent.com>
+On Fri 26 Feb 03:55 CST 2021, Sai Prakash Ranjan wrote:
 
-Many distributions do not install the getdelay tool by
-default, similar to task_io_accounting, adding a proc
-file to make access easier.
+> Adreno(GPU) SMMU and APSS(Application Processor SubSystem) SMMU
+> both implement "arm,mmu-500" in some QTI SoCs and to run through
+> adreno smmu specific implementation such as enabling split pagetables
+> support, we need to match the "qcom,adreno-smmu" compatible first
+> before apss smmu or else we will be running apps smmu implementation
+> for adreno smmu and the additional features for adreno smmu is never
+> set. For ex: we have "qcom,sc7280-smmu-500" compatible for both apps
+> and adreno smmu implementing "arm,mmu-500", so the adreno smmu
+> implementation is never reached because the current sequence checks
+> for apps smmu compatible(qcom,sc7280-smmu-500) first and runs that
+> specific impl and we never reach adreno smmu specific implementation.
+> 
+> Suggested-by: Akhil P Oommen <akhilpo@codeaurora.org>
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 
-v2: Fix some errors prompted by the kernel test robot.
+Sorry for taking my time thinking about this.
 
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
-Reported-by: kernel test robot <lkp@intel.com>
----
- fs/proc/base.c     |  7 +++++++
- kernel/delayacct.c | 41 +++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 48 insertions(+)
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index b3422cd..4de261a 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -96,6 +96,7 @@
- #include <linux/posix-timers.h>
- #include <linux/time_namespace.h>
- #include <linux/resctrl.h>
-+#include <linux/delayacct.h>
- #include <trace/events/oom.h>
- #include "internal.h"
- #include "fd.h"
-@@ -3244,6 +3245,9 @@ static int proc_stack_depth(struct seq_file *m, struct pid_namespace *ns,
- #ifdef CONFIG_TASK_IO_ACCOUNTING
- 	ONE("io",	S_IRUSR, proc_tgid_io_accounting),
- #endif
-+#ifdef CONFIG_TASK_DELAY_ACCT
-+	ONE("delays",	S_IRUSR, proc_delayacct_show),
-+#endif
- #ifdef CONFIG_USER_NS
- 	REG("uid_map",    S_IRUGO|S_IWUSR, proc_uid_map_operations),
- 	REG("gid_map",    S_IRUGO|S_IWUSR, proc_gid_map_operations),
-@@ -3583,6 +3587,9 @@ static int proc_tid_comm_permission(struct inode *inode, int mask)
- #ifdef CONFIG_TASK_IO_ACCOUNTING
- 	ONE("io",	S_IRUSR, proc_tid_io_accounting),
- #endif
-+#ifdef CONFIG_TASK_DELAY_ACCT
-+	ONE("delays",	S_IRUSR, proc_delayacct_show),
-+#endif
- #ifdef CONFIG_USER_NS
- 	REG("uid_map",    S_IRUGO|S_IWUSR, proc_uid_map_operations),
- 	REG("gid_map",    S_IRUGO|S_IWUSR, proc_gid_map_operations),
-diff --git a/kernel/delayacct.c b/kernel/delayacct.c
-index ec580cb..87d091a 100644
---- a/kernel/delayacct.c
-+++ b/kernel/delayacct.c
-@@ -14,6 +14,7 @@
- #include <linux/sysctl.h>
- #include <linux/delayacct.h>
- #include <linux/module.h>
-+#include <linux/seq_file.h>
- 
- int delayacct_on __read_mostly = 1;	/* Delay accounting turned on/off */
- EXPORT_SYMBOL_GPL(delayacct_on);
-@@ -26,6 +27,18 @@ static int __init delayacct_setup_disable(char *str)
- }
- __setup("nodelayacct", delayacct_setup_disable);
- 
-+struct delayacct_stat {
-+	const char *name;
-+	unsigned int idx;
-+};
-+
-+static struct delayacct_stat delayacct_stats[] = {
-+	{"blkio", DELAYACCT_BLKIO},
-+	{"swapin", DELAYACCT_SWAPIN},
-+	{"pagecache_thrashing", DELAYACCT_THRASHING},
-+	{"mem_reclaim", DELAYACCT_FREEPAGES}
-+};
-+
- void delayacct_init(void)
- {
- 	delayacct_cache = KMEM_CACHE(task_delay_info, SLAB_PANIC|SLAB_ACCOUNT);
-@@ -126,3 +139,31 @@ u64 __delayacct_blkio_ticks(struct task_struct *tsk)
- 	return ret;
- }
- 
-+#define K(x) ({ u64 _tmp = x; do_div(_tmp, 1000); _tmp; })
-+
-+int proc_delayacct_show(struct seq_file *m, struct pid_namespace *ns,
-+		       struct pid *pid, struct task_struct *task)
-+{
-+	struct delayacct_count *delays;
-+	int idx;
-+
-+	if (!task->delays)
-+		return 0;
-+
-+	delays = task->delays->delays;
-+	for (idx = 0; idx < ARRAY_SIZE(delayacct_stats); idx++) {
-+		u32 item = delayacct_stats[idx].idx;
-+		u64 mean = delays[item].delay;
-+
-+		if (delays[item].count)
-+			do_div(mean, delays[item].count);
-+
-+		seq_printf(m, "%s %llu %llu %u %llu\n",
-+			   delayacct_stats[idx].name,
-+			   K(mean),
-+			   K(delays[item].max),
-+			   delays[item].count,
-+			   K(delays[item].delay));
-+	}
-+	return 0;
-+}
--- 
-1.8.3.1
+Regards,
+Bjorn
 
+> ---
+>  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> index bea3ee0dabc2..03f048aebb80 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> @@ -345,11 +345,17 @@ struct arm_smmu_device *qcom_smmu_impl_init(struct arm_smmu_device *smmu)
+>  {
+>  	const struct device_node *np = smmu->dev->of_node;
+>  
+> -	if (of_match_node(qcom_smmu_impl_of_match, np))
+> -		return qcom_smmu_create(smmu, &qcom_smmu_impl);
+> -
+> +	/*
+> +	 * Do not change this order of implementation, i.e., first adreno
+> +	 * smmu impl and then apss smmu since we can have both implementing
+> +	 * arm,mmu-500 in which case we will miss setting adreno smmu specific
+> +	 * features if the order is changed.
+> +	 */
+>  	if (of_device_is_compatible(np, "qcom,adreno-smmu"))
+>  		return qcom_smmu_create(smmu, &qcom_adreno_smmu_impl);
+>  
+> +	if (of_match_node(qcom_smmu_impl_of_match, np))
+> +		return qcom_smmu_create(smmu, &qcom_smmu_impl);
+> +
+>  	return smmu;
+>  }
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
