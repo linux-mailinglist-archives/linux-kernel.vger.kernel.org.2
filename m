@@ -2,157 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9DF5364D76
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 00:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87710364D79
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 00:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240362AbhDSWEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 18:04:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbhDSWEf (ORCPT
+        id S241175AbhDSWFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 18:05:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44578 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231738AbhDSWFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 18:04:35 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A463C06174A;
-        Mon, 19 Apr 2021 15:04:05 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id z1so40590400ybf.6;
-        Mon, 19 Apr 2021 15:04:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lAsDnsyzYN4x8dN8mbR7x0mBnkheSZKpDi2Mjbobv/w=;
-        b=JHTXGtXOWhUCpWAsPO3Qzz9691Wh+U57BXKUJYTH2tnwdgHc7JF1jVKrsrgyG+xAlU
-         KMZ8V0zcrp714P+CzjRmmSAD1jueMBF3MsLRssB8YkeRnBq0jKH7VwJAfaZhBfSYmhoF
-         XCz7/6pHABQHEJIo9qiIkuJSyfJlSC86U6khgnavGy/AcqiYMzhG1ll5ENnUpSJdGcBq
-         fkgHwwvJnv1WaRnb333FpdU9zROF65VlMg65Fh7WhAhwYqrHVhyN3ggqG7cTbmWuotUJ
-         8+bc3Hs2OMNb68u95MXJ86mAVaBldFNUVeU6l6W6pTcO6TgM1xT8rnZe+ejsHI23HtXH
-         cGTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lAsDnsyzYN4x8dN8mbR7x0mBnkheSZKpDi2Mjbobv/w=;
-        b=M2zN1tXLfEKDLwyVbaKxHSm1xEDPgANhs1uZQb+Nh7DlwOGYsKfzWNrxFkXnGjvePK
-         UuxHSEaWWbkHR9QLm9lxu5P5qwescl+wsFcbf+ecwdQNjJle1ehfuo8Jdqr4H0KkFBKI
-         hNNkrhoDvEMO8e0zAFklA8UupPypwzyZhxJ55aUeoTMOo7cBalQAhQtzFmO6I7WsQxbu
-         XuoycSG5yX964kZCLwY4k9UFpu7PCWyXf6u8iseDLOaUSOZoq2Js11ojdyblE6MRigVy
-         RwMEN8QInA0PJWqrh9akxdeoNHMV6u3NG306Jos8mpttXm3gqYSFjC3SY30w79MViLYC
-         5eWQ==
-X-Gm-Message-State: AOAM532h7A1ntWJ8H+70NlQf4TIlrt6TVstOT2i8by/G38sTj2R6b+x+
-        smdgG1MtRL8z0q/r+Os/TRBSBgjDxG+8ISuYbBM=
-X-Google-Smtp-Source: ABdhPJyYnpH7oC2HKKNP0R/ypH05z1EhKrhnAeCoxnukfQ6sw8/KYKYRo46D/fkETEIokm+1oj0fZCpJ4sUfcperIX4=
-X-Received: by 2002:a25:818f:: with SMTP id p15mr18066266ybk.135.1618869844259;
- Mon, 19 Apr 2021 15:04:04 -0700 (PDT)
+        Mon, 19 Apr 2021 18:05:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618869887;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=V9TpAWTBookZJPskzjveTp1z8A/eSlwxzMp8BsONQuM=;
+        b=YUMeyJzotH61wDzJR6dhKsd7tW38vuH6ibXAnT1GKKLdQyocktye62ElHm3qi1+EW+NBux
+        UuGAtE6Txc8LYDGEgctqhbef9KRjRxlySxGiS/dECN1zfpp3mWeDiybI0qNHbkelIg8c5P
+        IHJIsYeXVcIpktBRSYmaw2VlZOTCylk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-153-NHFpKugXOCePt0TeBuQHBA-1; Mon, 19 Apr 2021 18:04:45 -0400
+X-MC-Unique: NHFpKugXOCePt0TeBuQHBA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 94C5C1006C98;
+        Mon, 19 Apr 2021 22:04:44 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3FFDA60C5C;
+        Mon, 19 Apr 2021 22:04:44 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     bgardon@google.com
+Subject: [PATCH fixed] KVM: x86/mmu: Fast invalidation for TDP MMU
+Date:   Mon, 19 Apr 2021 18:04:43 -0400
+Message-Id: <20210419220443.673911-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-References: <20210414184604.23473-1-ojeda@kernel.org> <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
- <YHkSO3TUktyPs4Nz@boqun-archlinux> <CAKwvOdnRx+8LhOAnH24CeZz2a2-MwF03oB7Um_pKBq8WAoLNxw@mail.gmail.com>
- <20210416184713.GI4212@paulmck-ThinkPad-P17-Gen-1> <CAKwvOdkpOZk-FXJ0iOLvhyQr7wVcWwzgc0gk_8KTtOfF_Q8Q3g@mail.gmail.com>
-In-Reply-To: <CAKwvOdkpOZk-FXJ0iOLvhyQr7wVcWwzgc0gk_8KTtOfF_Q8Q3g@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Tue, 20 Apr 2021 00:03:52 +0200
-Message-ID: <CANiq72kTynUAJdFa60p1BEZCAJmb5tANZNzTwFdzcdeNAzMiiw@mail.gmail.com>
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Wedson Almeida Filho <wedsonaf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nick,
+From: Ben Gardon <bgardon@google.com>
 
-On Mon, Apr 19, 2021 at 10:36 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> This is a much different process than drafts thrown over the wall.
-> What hope do any kernel contributors have to participate in the ISO
-> WGs, other than hoping their contributions to a draft foresee/address
-> any concerns members of the committee might have?  How do members of
-> the ISO WG communicate with folks interested in the outcomes of their
-> decisions?
+Provide a real mechanism for fast invalidation by marking roots as
+invalid so that their reference count will quickly fall to zero
+and they will be torn down.
 
-For WG21, several folks write trip reports of each meeting, and you
-can check the status of papers in GitHub at
-https://github.com/cplusplus/papers/issues.
+One negative side affect of this approach is that a vCPU thread will
+likely drop the last reference to a root and be saddled with the work of
+tearing down an entire paging structure. This issue will be resolved in
+a later commit.
 
-For WG14, there are way less papers going on. It is more or  less easy
-to follow by reading the list of latest additions in the first pages
-of the draft, as well as the Editor's Report.
+Signed-off-by: Ben Gardon <bgardon@google.com>
+Message-Id: <20210401233736.638171-13-bgardon@google.com>
+[Move the loop to tdp_mmu.c, otherwise compilation fails on 32-bit. - Paolo]
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/mmu/mmu.c     | 12 +++++++++---
+ arch/x86/kvm/mmu/tdp_mmu.c | 17 +++++++++++++++++
+ arch/x86/kvm/mmu/tdp_mmu.h |  5 +++++
+ 3 files changed, 31 insertions(+), 3 deletions(-)
 
-> The two processes are quite different; one doesn't require "joining a
-> national body" (which I assume involves some monetary transaction, if
-> not for the individual participant, for their employer) for instance.
-> (http://www.open-std.org/jtc1/sc22/wg14/www/contributing which links
-> to https://www.iso.org/members.html; I wonder if we have kernel
-> contributors in those grayed out countries?)
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 61c0d1091fc5..3323ab281f34 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -5421,6 +5421,15 @@ static void kvm_mmu_zap_all_fast(struct kvm *kvm)
+ 	 */
+ 	kvm->arch.mmu_valid_gen = kvm->arch.mmu_valid_gen ? 0 : 1;
+ 
++	/* In order to ensure all threads see this change when
++	 * handling the MMU reload signal, this must happen in the
++	 * same critical section as kvm_reload_remote_mmus, and
++	 * before kvm_zap_obsolete_pages as kvm_zap_obsolete_pages
++	 * could drop the MMU lock and yield.
++	 */
++	if (is_tdp_mmu_enabled(kvm))
++		kvm_tdp_mmu_invalidate_all_roots(kvm);
++
+ 	/*
+ 	 * Notify all vcpus to reload its shadow page table and flush TLB.
+ 	 * Then all vcpus will switch to new shadow page table with the new
+@@ -5433,9 +5442,6 @@ static void kvm_mmu_zap_all_fast(struct kvm *kvm)
+ 
+ 	kvm_zap_obsolete_pages(kvm);
+ 
+-	if (is_tdp_mmu_enabled(kvm))
+-		kvm_tdp_mmu_zap_all(kvm);
+-
+ 	write_unlock(&kvm->mmu_lock);
+ }
+ 
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 335c126d9860..bc9308a104b1 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -797,6 +797,23 @@ void kvm_tdp_mmu_zap_all(struct kvm *kvm)
+ 		kvm_flush_remote_tlbs(kvm);
+ }
+ 
++/*
++ * Mark each TDP MMU root as invalid so that other threads
++ * will drop their references and allow the root count to
++ * go to 0.
++ *
++ * This has essentially the same effect for the TDP MMU
++ * as updating mmu_valid_gen does for the shadow MMU.
++ */
++void kvm_tdp_mmu_invalidate_all_roots(struct kvm *kvm)
++{
++	struct kvm_mmu_page *root;
++
++	lockdep_assert_held_write(&kvm->mmu_lock);
++	list_for_each_entry(root, &kvm->arch.tdp_mmu_roots, link)
++		root->role.invalid = true;
++}
++
+ /*
+  * Installs a last-level SPTE to handle a TDP page fault.
+  * (NPT/EPT violation/misconfiguration)
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
+index 2e1913bbc0ba..25ec0173700e 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.h
++++ b/arch/x86/kvm/mmu/tdp_mmu.h
+@@ -10,6 +10,9 @@ hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu);
+ __must_check static inline bool kvm_tdp_mmu_get_root(struct kvm *kvm,
+ 						     struct kvm_mmu_page *root)
+ {
++	if (root->role.invalid)
++		return false;
++
+ 	return refcount_inc_not_zero(&root->tdp_mmu_root_count);
+ }
+ 
+@@ -43,7 +46,9 @@ static inline bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
+ 	return __kvm_tdp_mmu_zap_gfn_range(kvm, kvm_mmu_page_as_id(sp),
+ 					   sp->gfn, end, false, false, false);
+ }
++
+ void kvm_tdp_mmu_zap_all(struct kvm *kvm);
++void kvm_tdp_mmu_invalidate_all_roots(struct kvm *kvm);
+ 
+ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+ 		    int map_writable, int max_level, kvm_pfn_t pfn,
+-- 
+2.26.2
 
-They are indeed very different processes. Being an ISO standard has
-advantages and disadvantages.
-
-In any case, I should note that not everyone that goes to the meetings
-pays, e.g. some go as guests, some are funded by their country (or the
-EU or other organizations), etc.
-
-In fact, the bigger costs, in my experience, are the time commitment
-(a week several times a year) and the costs of traveling (before the
-pandemic, that is).
-
-Furthermore, contributing proposals does not actually require
-attending the meetings nor joining the committee -- some people
-contribute to the standards via proxy, i.e. somebody else presents
-their proposals in the committee.
-
-> It was always very ironic to me that the most important body of free
-> software was subject to decisions made by ISO, for better or for
-> worse.  I would think Rust's RFC process would be more accessible to
-> kernel developers, modulo the anti-github crowd, but with the Rust's
-> community's values in inclusion I'm sure they'd be happy to accomodate
-> folks for the RFC process without requiring github.  I'm not sure ISO
-> can be as flexible for non-members.
-
-Well, the kernel already ignores the C standard here and there. ;-) In
-the end, it is "just" a standard -- the kernel and compilers can do
-something else when they need.
-
-> Either way, I think Rust's RFC process is something worth adding to
-> the list of benefits under the heading "Why Rust?" in this proposed
-> RFC.
-
-The Rust RFC process has indeed upsides. It is very dynamic and easy
-to participate, and allows for anybody to easily comment on proposals,
-even anonymously. But, for better or worse, does not lead to an ISO
-standard (which some people & companies really value, e.g. as
-requirements in contracts etc.).
-
-In the end, writing an RFC is similar to writing a paper for ISO. The
-bigger differences, as mentioned above, are on the requirements if you
-actually want to go there and present the paper yourself and/or if you
-want to have voting rights etc.
-
-Personally, I think some ISO policies could be improved for some types
-of standards (or at least let WGs relax them to some degree), but...
-
-Cheers,
-Miguel
