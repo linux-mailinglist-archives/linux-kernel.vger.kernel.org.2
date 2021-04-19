@@ -2,104 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E93F363DAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C521363DC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238261AbhDSIgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 04:36:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52212 "EHLO
+        id S238304AbhDSIlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 04:41:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238262AbhDSIf4 (ORCPT
+        with ESMTP id S238284AbhDSIlH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 04:35:56 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE328C06174A;
-        Mon, 19 Apr 2021 01:35:26 -0700 (PDT)
+        Mon, 19 Apr 2021 04:41:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3CDAC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 01:40:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MzstDp0klphgOp7a2sZHFPQlmjiV2TLi0ke2ptY9o0k=; b=aC9S2N9D2XUKcx2oukFZkmx0Ws
-        lK/9B4aUWUI64d7CzgHYvB0yRX7gHRrEoLHHOn6e65yVn4zoVytrteYeC+VGzGI/0yGxGRrXxfoTg
-        X2qCNDlHXGMseBgBLSVPWvet3Dh37edBEQitwC/oqx5HY3gicvhS+rseDsNNIGfaPk0VEWhtGvqge
-        HTKvkpDbsF6bbzOW5aryOFMCkvK5qtBSzcXN34IZmn6/XYrjf2rcjZMHnwvsLMusMdnswnY2mxbIg
-        n+M3NF+hg08LeUnFpJQuMSK8bpIb5qPM232YJ5v4boP+vqK5aSWzEyLO0OJs89m/zAgIznzizvIW9
-        rrreqJaw==;
+        bh=VzeWP4zJA6xj/Smu+oaSjYCS709eKSRqbaWP/R0qRCg=; b=uqfA8iLMJTaNVhRw7uhIniWw3a
+        8CoHZ1ITZJ4cv0SuY9xvtxOFt9Nvsr4fwnFuP27NDNFtQL7pi3+OHUVsjodT5xR121Ricgxhghm8n
+        QNeZabGvQgTJizoM6xl4PkHy46pNGxUUl4Av3n7AUkXdtVAePuBDUNnsbUImajXVwUjUa/GnxYrgf
+        PlCnVkfhfEWBWodgprx6qF5b/tgR3UrR46qKe09cONkmYs3DBuCxqX3Ky6+zM9WYh8WJ5KleFLPSC
+        dxX01MWXXXsKdjzXlLOMLkE/e9+Oj3wojPilqraS2N1P/8RsdUueNuKSuUVn6Q2bkfaxsYGFDv+Jz
+        7gBO6zHQ==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYPNJ-009RUB-Vt; Mon, 19 Apr 2021 08:35:22 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lYPRG-00DTFv-9V; Mon, 19 Apr 2021 08:39:30 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3AC7630020C;
-        Mon, 19 Apr 2021 10:35:21 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 623F130020C;
+        Mon, 19 Apr 2021 10:39:25 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 28F972C14C5BA; Mon, 19 Apr 2021 10:35:21 +0200 (CEST)
-Date:   Mon, 19 Apr 2021 10:35:21 +0200
+        id 4F87F2C14C5BD; Mon, 19 Apr 2021 10:39:25 +0200 (CEST)
+Date:   Mon, 19 Apr 2021 10:39:25 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Wedson Almeida Filho <wedsonaf@google.com>, ojeda@kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-Message-ID: <YH1Ayc6UncJ32uQZ@hirez.programming.kicks-ass.net>
-References: <20210414184604.23473-1-ojeda@kernel.org>
- <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
- <YHj02M3jMSweoP4l@google.com>
- <YHk4DZE1ZWTiBB1f@hirez.programming.kicks-ass.net>
- <aa6e44ab-e223-73aa-279e-8103732460ac@redhat.com>
- <YH0yCTgL0raKrmYg@hirez.programming.kicks-ass.net>
- <7287eac3-f492-bab1-9ea8-b89ceceed560@redhat.com>
- <YH0+0VQ1XC8+rv20@hirez.programming.kicks-ass.net>
+To:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Cc:     tglx@linutronix.de, luto@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] preempt/dynamic: fix typo in macro conditional statement
+Message-ID: <YH1BvajpwWei60Gp@hirez.programming.kicks-ass.net>
+References: <20210410073523.5493-1-zhouzhouyi@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YH0+0VQ1XC8+rv20@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210410073523.5493-1-zhouzhouyi@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 10:26:57AM +0200, Peter Zijlstra wrote:
+On Sat, Apr 10, 2021 at 03:35:23PM +0800, Zhouyi Zhou wrote:
+> commit 40607ee97e4e ("preempt/dynamic: Provide irqentry_exit_cond_resched()
+>  static call") tried to provide irqentry_exit_cond_resched() static call
+> in irqentry_exit, but has a typo in macro conditional statement.
+> 
+> This patch fix this typo.
+> 
+> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
 
-> https://godbolt.org/z/85xoPxeE5
+Fixes: 40607ee97e4e ("preempt/dynamic: Provide irqentry_exit_cond_resched() static call")
 
-That wants _Atomic on the seq definition for clang.
-
-> void writer(void)
-> {
->     atomic_store_explicit(&seq, seq+1, memory_order_relaxed);
->     atomic_thread_fence(memory_order_acquire);
-> 
->     X = 1;
->     Y = 2;
-> 
->     atomic_store_explicit(&seq, seq+1, memory_order_release);
-> }
-> 
-> gives:
-> 
-> writer:
->         adrp    x1, .LANCHOR0
->         add     x0, x1, :lo12:.LANCHOR0
->         ldr     w2, [x1, #:lo12:.LANCHOR0]
->         add     w2, w2, 1
->         str     w2, [x0]
->         dmb     ishld
->         ldr     w1, [x1, #:lo12:.LANCHOR0]
->         mov     w3, 1
->         mov     w2, 2
->         stp     w3, w2, [x0, 4]
->         add     w1, w1, w3
->         stlr    w1, [x0]
->         ret
-> 
-> Which, afaict, is completely buggered. What it seems to be doing is
-> turning the seq load into a load-acquire, but what we really need is to
-> make sure the seq store (increment) is ordered before the other stores.
-
-Put differently, what you seem to want is store-acquire, but there ain't
-no such thing.
+Thanks!
