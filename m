@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 815F43639C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 05:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CC83639CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 05:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232714AbhDSDlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 23:41:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44686 "EHLO
+        id S237366AbhDSDn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 23:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232317AbhDSDls (ORCPT
+        with ESMTP id S232317AbhDSDnY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 23:41:48 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF9F2C06174A;
-        Sun, 18 Apr 2021 20:41:18 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FNszv0V9jz9vFN;
-        Mon, 19 Apr 2021 13:41:15 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1618803675;
-        bh=cAVLM2BXqsAmR3+ki1xqKH9yvBe+hvjmgZlGfsQXMsk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=cv2Q6u0MAAQzTRttrCYQqpU56hZlFjihbh4UFMmzei4ixQBNCZuww5wmI6XYUSgiy
-         V4LQ546KXymkhLHNulXXutAgg6Qvnc3w7j15C06YCCaqmMwNt8Ul0Oqaoc/WVe7Dvu
-         LQZriEp9lDt/z2WN/UxLK49ASuQ84txox0RFegHDiM/OGFkLHrvdNJFC3Hntxi1RpV
-         RXIJ1atOoH1PKSyHYr4jlhdgUXdOaO4NV5xeiKaug2NiR5EHjW1+vpjajqxwqIP+DC
-         +9cPuC89mBITKkDJzuiYZEQDlej8Zy9zSotBsyOXg5BIJmmX9pkZtYmXvw3/LUtQd9
-         DpSsHDqCX0E2w==
-Date:   Mon, 19 Apr 2021 13:41:13 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Thierry Reding <treding@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the sound-asoc tree
-Message-ID: <20210419134113.710e79a0@canb.auug.org.au>
+        Sun, 18 Apr 2021 23:43:24 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E14C06174A;
+        Sun, 18 Apr 2021 20:42:55 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id z16so23291927pga.1;
+        Sun, 18 Apr 2021 20:42:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FjmLOq8AscliWv+GjWQBYtgkGTnMApgANFmdxbvdJ2Q=;
+        b=WbPn5dbLh4aFvVmT5ar1EU2Ik4b66KqeuOQsi+yxhJiYauhJZ8VGl79NcwLlm2NDiQ
+         kQNrVyLAgO+U1VDGF1LaKeIPWAXfCcSrunA4AHxW/CMbv98j4Dma9W1w63F4SoTz7KX4
+         NOSyJQxVFIADh85rlrWRwuK1R2GQnieSVYYwPsicjWpxIIP/dJ4X1p4hiZMBQvNIzjDh
+         wyf/tj0eZggxroVzT+yjNG/yUfj+G2f7027fhR9Y9bfvdw2qHt+EiFHbia3GMI4zxARq
+         wBhwoS7NG/lH8Hdnul/CUREzQ1+zKZwjuFmcao2IDLazNAlj8RECgmrdUKqORIwlZoa4
+         ZtmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FjmLOq8AscliWv+GjWQBYtgkGTnMApgANFmdxbvdJ2Q=;
+        b=IYRTrJTyM6x27Y0Nv/JHRn19t/sGrPpYzju4fBjJay5T0Bjgrz3W3rNdKtYDyNKdXO
+         R8SIGgPTN6qNOoSL1T+9WsmDeN4qYcjOzEmbByRXVhP998+xGtBAAaeBVepwLrYqEl9O
+         if2+ADH5wXRkZ4PjWT3YDzzL35eXfyy4w9mDR5INfMCdv204NWRBH5VRDJVjYkCtwLSX
+         K0miC/cG9gyGLAtXCk2GkoY9zcS4LOltn18jBD/jdBuTEgy9QEZGTZxBLL+pfGLm6/WU
+         tYWYujWlFJy2c+AdOaHolIIc6k57qINgNF9h9EjT/nkntMpPUXUE30HLcOlWICGO7XK0
+         MaWQ==
+X-Gm-Message-State: AOAM532DbYdbI7KGmvR0JqbJH17JynsYEfPC7FT7UTDtbRhn7kRYbZrZ
+        7SbDnPOHagFdHQqCHWdzdl8=
+X-Google-Smtp-Source: ABdhPJyoeOP0a/t5AWeTecXUJVWmB3q/yKl6pz4SiOFjNc/pWuDErwkkhtu6tb0rZWDuVNO5McblIw==
+X-Received: by 2002:a62:be16:0:b029:25a:e1b4:5deb with SMTP id l22-20020a62be160000b029025ae1b45debmr10911501pff.66.1618803775470;
+        Sun, 18 Apr 2021 20:42:55 -0700 (PDT)
+Received: from z640-arch.lan ([2602:61:7344:f100::678])
+        by smtp.gmail.com with ESMTPSA id g24sm12477681pgn.18.2021.04.18.20.42.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Apr 2021 20:42:55 -0700 (PDT)
+From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Greg Ungerer <gerg@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Subject: [PATCH] dt-bindings: net: mediatek: support MT7621 SoC
+Date:   Sun, 18 Apr 2021 20:42:53 -0700
+Message-Id: <20210419034253.21322-1-ilya.lipnitskiy@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/kw3/=F0jD=1y2Tu=wP=sPZY";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/kw3/=F0jD=1y2Tu=wP=sPZY
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Add missing binding documentation for SoC support that has been in place
+since v5.1
 
-Hi all,
+Fixes: 889bcbdeee57 ("net: ethernet: mediatek: support MT7621 SoC ethernet hardware")
+Cc: Bjørn Mork <bjorn@mork.no>
+Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+---
+ Documentation/devicetree/bindings/net/mediatek-net.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-After merging the sound-asoc tree, today's linux-next build (arm
-multi_v7_defconfig) produced this warning:
+diff --git a/Documentation/devicetree/bindings/net/mediatek-net.txt b/Documentation/devicetree/bindings/net/mediatek-net.txt
+index 72d03e07cf7c..950ef6af20b1 100644
+--- a/Documentation/devicetree/bindings/net/mediatek-net.txt
++++ b/Documentation/devicetree/bindings/net/mediatek-net.txt
+@@ -10,6 +10,7 @@ Required properties:
+ - compatible: Should be
+ 		"mediatek,mt2701-eth": for MT2701 SoC
+ 		"mediatek,mt7623-eth", "mediatek,mt2701-eth": for MT7623 SoC
++		"mediatek,mt7621-eth": for MT7621 SoC
+ 		"mediatek,mt7622-eth": for MT7622 SoC
+ 		"mediatek,mt7629-eth": for MT7629 SoC
+ 		"ralink,rt5350-eth": for Ralink Rt5350F and MT7628/88 SoC
+-- 
+2.31.1
 
-sound/soc/generic/simple-card.c: In function 'simple_parse_of':
-sound/soc/generic/simple-card.c:478:1: warning: the frame size of 1552 byte=
-s is larger than 1024 bytes [-Wframe-larger-than=3D]
-  478 | }
-      | ^
-sound/soc/generic/simple-card.c: In function 'asoc_simple_probe':
-sound/soc/generic/simple-card.c:706:1: warning: the frame size of 1552 byte=
-s is larger than 1024 bytes [-Wframe-larger-than=3D]
-  706 | }
-      | ^
-sound/soc/generic/audio-graph-card.c: In function 'audio_graph_parse_of':
-sound/soc/generic/audio-graph-card.c:612:1: warning: the frame size of 1552=
- bytes is larger than 1024 bytes [-Wframe-larger-than=3D]
-  612 | }
-      | ^
-
-Presumably introduced by commit
-
-  343e55e71877 ("ASoC: simple-card-utils: Increase maximum number of links =
-to 128")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/kw3/=F0jD=1y2Tu=wP=sPZY
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB8+9kACgkQAVBC80lX
-0GxhHQf/Y/SIhweMQB8GDqQhoGvxry5etFz/G6vpCb8aL6PA7UCLyzUWdP/rfIVO
-mw67MoOGsqKhLdzSWETSY3uUkFRsvwzDRCZYopSxcBQaXq6t4HI9dOuDZrAbNKar
-U+i1VqEsC29E37+bN2rAJogLiijUPu1J4/ZCiJ8w3fU1oEyYE30I82JnmXpEeB3J
-zbIREM8OUuwpaslYi2ytRzGiRgVt8ORiBZkyD26hB+1PDfdVeddKH0i3KR7R7cmz
-v1lo3yF6ybiII7FAc1WBlXUZ5IekcurkKVJcxuf68LFmRpjxG3RaOMnKShgfLrEP
-LvmLGlJIBl/r1q6bb8yyG66/oJyTfg==
-=72Qy
------END PGP SIGNATURE-----
-
---Sig_/kw3/=F0jD=1y2Tu=wP=sPZY--
