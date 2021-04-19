@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426A5363D48
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB38363D49
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238109AbhDSISP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 04:18:15 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50445 "EHLO
+        id S238133AbhDSISU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 04:18:20 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:50453 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234720AbhDSISG (ORCPT
+        with ESMTP id S235494AbhDSISH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 04:18:06 -0400
-Received: from mail-ej1-f69.google.com ([209.85.218.69])
+        Mon, 19 Apr 2021 04:18:07 -0400
+Received: from mail-ej1-f71.google.com ([209.85.218.71])
         by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lYP67-0007v1-Qh
-        for linux-kernel@vger.kernel.org; Mon, 19 Apr 2021 08:17:35 +0000
-Received: by mail-ej1-f69.google.com with SMTP id jl27-20020a17090775dbb029037ccdce96e6so3340351ejc.21
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 01:17:35 -0700 (PDT)
+        id 1lYP68-0007ve-PU
+        for linux-kernel@vger.kernel.org; Mon, 19 Apr 2021 08:17:36 +0000
+Received: by mail-ej1-f71.google.com with SMTP id j25-20020a1709060519b029037cb8ca241aso3347835eja.19
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 01:17:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tc7UDOgzQIAykIaB+pmrJMasrN1QkIFHd3HQXapxUk8=;
-        b=c6AHss70NXxf485C8P2DatuHGQga9DijiYG8kYl7uyQNzGv6cSnJovdjr08pzZLpqa
-         c/ud7bZK3grEJYiSLmS07FQOCUMQIt5y5I0AFy9I0oqZzK0WcEv8YxCCxxmaDga6CI27
-         vMrYX/KesrPK4Nhsu+lEuUpd0xlY2ur5atkXlzjp4Lm4yOOAiqxV9dKPfOH51LxuU53a
-         avYl+/wFq395Rvo2hwA78KYHcNk3CGCDAaHPA9sylTSBoz6fG4PPxV6doDEs78A5DFdh
-         RkhnGwJvvGyRvU3UajBXUgLMjLL4VxQJGiwjgLL9BbuNtuGO3nx5mHiPRYUgelXbY9ud
-         dEDg==
-X-Gm-Message-State: AOAM533rSlMj5WGaNIS1aiewAZ9UrGxxK22l71QKagBM52eeogXswi0A
-        ppoy+qA6fiGzlL5NDghTBP0lFLQ9LMvBtKHrDIXFQ3UdhcZoIJ1TxVDS+p8Ef5LsxQE7CiQ/CRA
-        SJq67owEeqedlVCln0lk5kOAPG7hcAY1/AmjvwJbFwQ==
-X-Received: by 2002:a17:906:b355:: with SMTP id cd21mr20275788ejb.504.1618820255599;
-        Mon, 19 Apr 2021 01:17:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzuNTd9ZhGvDTg10FMK/NZMBEOBVAcdqe+s6V+fPsy8k7y7PvbXCS1lhxfXbnNILmmvl5bcsA==
-X-Received: by 2002:a17:906:b355:: with SMTP id cd21mr20275768ejb.504.1618820255421;
-        Mon, 19 Apr 2021 01:17:35 -0700 (PDT)
+        bh=UpAJNzbD9MKVQi14LfzEiS6XF3kyB2Fc0GZ6ydruDWw=;
+        b=nlH1yoq9F3w6YQaO4FZbckZjrdf77mHamY0R8pbLrZzHL7zJoaReE3VArA3yxZ8xrS
+         NJmqCkabVud+VEvXyQ+PJLJReCxQVqlPEt1huyoC6uInKag73gfJWXxu8a1cHfd0nico
+         5TNLDqwAdTsTvUzk7uz6sQN0bw4g3ail+k+yJD7nzv4Tp4js4bju5NP490r5uQG+Lug8
+         mRh6AvDPEBmGW0UdwoOUDRzM1BVxB7HeJS+ncSipGhjJF32wGtOUtENGYrN4Y6x/DiEh
+         utZocUJY5CaByut1eof0CVzCmBE0ZzbEhwG4rta/hqABwOWjPUzu0xA+hPSv2ix2AZUj
+         4QKg==
+X-Gm-Message-State: AOAM530YgpAryCt1xgBv1QXlTjQtS8O92RfIdJVWSUTe8zUn3h/mP91G
+        DA0tvaHdYmeOMuvxqnISxn2JYQXVuRF6YPVB3r/aZ8HRfdT5B7j+Pz6x+vqDUIvtnPZynCBAqlj
+        ejXu8r9jkGW34HkpgQDSiWDHufH1DdCaNGuQe/xfsQA==
+X-Received: by 2002:aa7:cd83:: with SMTP id x3mr23871129edv.373.1618820256546;
+        Mon, 19 Apr 2021 01:17:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwrRRvmlGCkxx4tXzhKQpNcCtZtp5i5u5JPY0gywyHuqwKmdgiNtXRNYyjndMc/zdrzzTv4fQ==
+X-Received: by 2002:aa7:cd83:: with SMTP id x3mr23871118edv.373.1618820256448;
+        Mon, 19 Apr 2021 01:17:36 -0700 (PDT)
 Received: from localhost.localdomain (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
-        by smtp.gmail.com with ESMTPSA id da13sm12384781edb.6.2021.04.19.01.17.34
+        by smtp.gmail.com with ESMTPSA id da13sm12384781edb.6.2021.04.19.01.17.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 01:17:35 -0700 (PDT)
+        Mon, 19 Apr 2021 01:17:36 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 To:     Support Opensource <support.opensource@diasemi.com>,
         Lee Jones <lee.jones@linaro.org>,
@@ -51,9 +51,9 @@ To:     Support Opensource <support.opensource@diasemi.com>,
         Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org,
         linux-samsung-soc@vger.kernel.org, linux-omap@vger.kernel.org,
         patches@opensource.cirrus.com
-Subject: [PATCH 5/7] mfd: sec: Simplify getting of_device_id match data
-Date:   Mon, 19 Apr 2021 10:17:24 +0200
-Message-Id: <20210419081726.67867-5-krzysztof.kozlowski@canonical.com>
+Subject: [PATCH 6/7] mfd: wm831x: Correct kerneldoc
+Date:   Mon, 19 Apr 2021 10:17:25 +0200
+Message-Id: <20210419081726.67867-6-krzysztof.kozlowski@canonical.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210419081726.67867-1-krzysztof.kozlowski@canonical.com>
 References: <20210419081726.67867-1-krzysztof.kozlowski@canonical.com>
@@ -63,40 +63,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use of_device_get_match_data() to make the code slightly smaller.
+Correct kerneldoc function name to fix W=1 warning:
+
+  drivers/mfd/wm831x-core.c:121: warning:
+    expecting prototype for wm831x_reg_unlock(). Prototype was for wm831x_reg_lock() instead
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/mfd/sec-core.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/mfd/wm831x-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/sec-core.c b/drivers/mfd/sec-core.c
-index 8d55992da19e..3126c39f3203 100644
---- a/drivers/mfd/sec-core.c
-+++ b/drivers/mfd/sec-core.c
-@@ -10,6 +10,7 @@
- #include <linux/slab.h>
- #include <linux/i2c.h>
- #include <linux/of.h>
-+#include <linux/of_device.h>
- #include <linux/of_irq.h>
- #include <linux/interrupt.h>
- #include <linux/pm_runtime.h>
-@@ -324,12 +325,8 @@ static inline unsigned long sec_i2c_get_driver_data(struct i2c_client *i2c,
- 						const struct i2c_device_id *id)
- {
- #ifdef CONFIG_OF
--	if (i2c->dev.of_node) {
--		const struct of_device_id *match;
--
--		match = of_match_node(sec_dt_match, i2c->dev.of_node);
--		return (unsigned long)match->data;
--	}
-+	if (i2c->dev.of_node)
-+		return (unsigned long)of_device_get_match_data(&i2c->dev);
- #endif
- 	return id->driver_data;
+diff --git a/drivers/mfd/wm831x-core.c b/drivers/mfd/wm831x-core.c
+index bcef08f58fb3..c31809b17547 100644
+--- a/drivers/mfd/wm831x-core.c
++++ b/drivers/mfd/wm831x-core.c
+@@ -109,7 +109,7 @@ static int wm831x_reg_locked(struct wm831x *wm831x, unsigned short reg)
  }
+ 
+ /**
+- * wm831x_reg_unlock: Unlock user keyed registers
++ * wm831x_reg_lock: Unlock user keyed registers
+  *
+  * The WM831x has a user key preventing writes to particularly
+  * critical registers.  This function locks those registers,
 -- 
 2.25.1
 
