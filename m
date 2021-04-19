@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B62363906
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 03:17:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8525636390A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 03:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236897AbhDSBRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 21:17:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51710 "EHLO mx2.suse.de"
+        id S236876AbhDSBVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 21:21:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52628 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233117AbhDSBRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 21:17:47 -0400
+        id S233117AbhDSBVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 21:21:24 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 18E11AC87;
-        Mon, 19 Apr 2021 01:17:17 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id E8FDAAC87;
+        Mon, 19 Apr 2021 01:20:54 +0000 (UTC)
 From:   NeilBrown <neilb@suse.de>
 To:     Fox Chen <foxhlchen@gmail.com>
-Date:   Mon, 19 Apr 2021 11:17:10 +1000
+Date:   Mon, 19 Apr 2021 11:20:48 +1000
 Cc:     Fox Chen <foxhlchen@gmail.com>, corbet@lwn.net,
         vegard.nossum@oracle.com, viro@zeniv.linux.org.uk,
         rdunlap@infradead.org, grandmaster@al2klimov.de,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         gregkh@linuxfoundation.org
-Subject: Re: [PATCH v2 04/12] docs: path-lookup: update do_last() part
-In-Reply-To: <20210316054727.25655-5-foxhlchen@gmail.com>
+Subject: Re: [PATCH v2 05/12] docs: path-lookup: remove filename_mountpoint
+In-Reply-To: <20210316054727.25655-6-foxhlchen@gmail.com>
 References: <20210316054727.25655-1-foxhlchen@gmail.com>
- <20210316054727.25655-5-foxhlchen@gmail.com>
-Message-ID: <87blab2hux.fsf@notabene.neil.brown.name>
+ <20210316054727.25655-6-foxhlchen@gmail.com>
+Message-ID: <878s5f2hov.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
 Content-Type: multipart/signed; boundary="=-=-=";
         micalg=pgp-sha256; protocol="application/pgp-signature"
@@ -41,115 +41,45 @@ Content-Transfer-Encoding: quoted-printable
 
 On Tue, Mar 16 2021, Fox Chen wrote:
 
-> traling_symlink() was merged into lookup_last, do_last().
+> No filename_mountpoint any more
+> see commit: commit 161aff1d93ab ("LOOKUP_MOUNTPOINT:
+> fold path_mountpointat() into path_lookupat()")
 >
-> do_last() has later been split into open_last_lookups()
-> and do_open().
+> Without filename_mountpoint and path_mountpoint(), the
+> numbers should be four & three:
 >
-> see related commit: commit c5971b8c6354 ("take post-lookup
-> part of do_last() out of loop")
+> "These four correspond roughly to the three path_*() functions"
 >
 > Signed-off-by: Fox Chen <foxhlchen@gmail.com>
-> ---
->  Documentation/filesystems/path-lookup.rst | 35 ++++++++++++-----------
->  1 file changed, 18 insertions(+), 17 deletions(-)
->
-> diff --git a/Documentation/filesystems/path-lookup.rst b/Documentation/fi=
-lesystems/path-lookup.rst
-> index b6a301b78121..a65cb477d524 100644
-> --- a/Documentation/filesystems/path-lookup.rst
-> +++ b/Documentation/filesystems/path-lookup.rst
-> @@ -495,11 +495,11 @@ This is important when unmounting a filesystem that=
- is inaccessible, such as
->  one provided by a dead NFS server.
->=20=20
->  Finally ``path_openat()`` is used for the ``open()`` system call; it
-> -contains, in support functions starting with "``do_last()``", all the
-> +contains, in support functions starting with "``open_last_lookups()``", =
-all the
->  complexity needed to handle the different subtleties of O_CREAT (with
->  or without O_EXCL), final "``/``" characters, and trailing symbolic
->  links.  We will revisit this in the final part of this series, which
-> -focuses on those symbolic links.  "``do_last()``" will sometimes, but
-> +focuses on those symbolic links.  "``open_last_lookups()``" will sometim=
-es, but
->  not always, take ``i_rwsem``, depending on what it finds.
->=20=20
->  Each of these, or the functions which call them, need to be alert to
-> @@ -1199,26 +1199,27 @@ symlink.
->  This case is handled by the relevant caller of ``link_path_walk()``, suc=
-h as
->  ``path_lookupat()`` using a loop that calls ``link_path_walk()``, and th=
-en
->  handles the final component.  If the final component is a symlink
-> -that needs to be followed, then ``trailing_symlink()`` is called to set
-> -things up properly and the loop repeats, calling ``link_path_walk()``
-> -again.  This could loop as many as 40 times if the last component of
-> -each symlink is another symlink.
-> +that needs to be followed, then ``open_last_lookups()`` is
-> +called to set things up properly and the loop repeats, calling
-> +``link_path_walk()`` again.  This could loop as many as 40 times if the =
-last
-> +component of each symlink is another symlink.
->=20=20
->  The various functions that examine the final component and possibly
-> -report that it is a symlink are ``lookup_last()``, ``mountpoint_last()``
-> -and ``do_last()``, each of which use the same convention as
-> -``walk_component()`` of returning ``1`` if a symlink was found that needs
-> -to be followed.
-> +report that it is a symlink are ``lookup_last()``, ``open_last_lookups()=
-``
-> +, each of which use the same convention as
-> +``walk_component()`` of returning ``char *name`` if a symlink was found =
-that
-> +needs to be followed.
 
-This para no longer makes sense.
-There is only one function that examines the final compoenent:
-step_into()
-It is called from open_last_lookups() directly and indirectly from
-lookup_last() through walk_component().
-But saying that here might be duplicating earlier text.
-
-I think the key point in the para is that convention of returning a
-'char *name' if a symlink was found.  The rest might now be redundant.
-
-I think this needs a larger revision.
+Reviewed-by: NeilBrown <neilb@suse.de>
 
 Thanks,
 NeilBrown
 
 
+> ---
+>  Documentation/filesystems/path-lookup.rst | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/Documentation/filesystems/path-lookup.rst b/Documentation/fi=
+lesystems/path-lookup.rst
+> index a65cb477d524..66697db74955 100644
+> --- a/Documentation/filesystems/path-lookup.rst
+> +++ b/Documentation/filesystems/path-lookup.rst
+> @@ -652,9 +652,9 @@ restarts from the top with REF-walk.
 >=20=20
-> -Of these, ``do_last()`` is the most interesting as it is used for
-> -opening a file.  Part of ``do_last()`` runs with ``i_rwsem`` held and th=
-is
-> -part is in a separate function: ``lookup_open()``.
-> +Of these, ``open_last_lookups()`` is the most interesting as it works in=
- tandem
-> +with ``do_open()`` for opening a file.  Part of ``open_last_lookups()`` =
-runs
-> +with ``i_rwsem`` held and this part is in a separate function: ``lookup_=
-open()``.
->=20=20
-> -Explaining ``do_last()`` completely is beyond the scope of this article,
-> -but a few highlights should help those interested in exploring the
-> -code.
-> +Explaining ``open_last_lookups()`` and ``do_open()`` completely is beyon=
-d the scope
-> +of this article, but a few highlights should help those interested in ex=
-ploring
-> +the code.
->=20=20
-> -1. Rather than just finding the target file, ``do_last()`` needs to open
-> +1. Rather than just finding the target file, ``do_open()`` is used after
-> +   ``open_last_lookup()`` to open
->     it.  If the file was found in the dcache, then ``vfs_open()`` is used=
- for
->     this.  If not, then ``lookup_open()`` will either call ``atomic_open(=
-)`` (if
->     the filesystem provides it) to combine the final lookup with the open=
-, or
+>  This pattern of "try RCU-walk, if that fails try REF-walk" can be
+>  clearly seen in functions like ``filename_lookup()``,
+> -``filename_parentat()``, ``filename_mountpoint()``,
+> -``do_filp_open()``, and ``do_file_open_root()``.  These five
+> -correspond roughly to the four ``path_*()`` functions we met earlier,
+> +``filename_parentat()``,
+> +``do_filp_open()``, and ``do_file_open_root()``.  These four
+> +correspond roughly to the three ``path_*()`` functions we met earlier,
+>  each of which calls ``link_path_walk()``.  The ``path_*()`` functions are
+>  called using different mode flags until a mode is found which works.
+>  They are first called with ``LOOKUP_RCU`` set to request "RCU-walk".  If
 > --=20
 > 2.30.2
 
@@ -158,19 +88,19 @@ Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAmB82hYOHG5laWxiQHN1
-c2UuZGUACgkQOeye3VZigbnefQ//YpFTysJ/eH0mWTEZaewsQUR/EfipMA2dQkcM
-//kemQdc2T+gVthX02J6nnXedSOH6A2ARFb3AKyQsLsQf9RR8ABPkQfaxkYkwvG3
-Igp2nCFRbjyvKc9oRwZduxb90GvZ57TBZfFP4dRoWPGGEtI/naFe0wjERqBqPOM6
-t/Ei17nuZnHfNcOohHv9d+Xc+UvumIsvmIlEDVv7qzbslCA6YClauwixsdMAibt/
-UoFtpmANxdqlA08WuxRQN5kc65uqnPL6qVMfOcc8OqKkQuy1l1MmAh0GwbnAKJm/
-XEeRl9lf+W2nP5PtZpD1KPOgLUvB6aBF2f3j/KFUD+ey5MOkQzJhbJrUGuMu+ofn
-Ph2d1GLa6LD5LReHgsda0HjWZdcetUa/xyFo7xXegSQZyEKopRM30qVF8g+VHbSV
-0Arp0oO5cjrAG8BXbfmrDFj799DNEqP2cNivP7KMp9hdYmBBEHU5pWCpzlzqGHQs
-6xcUX0ghZHfzsNX8E2QYENnFIBvVFnlb2DNWkwTEKFnbpbCT9RYQIErWQ02jyTDS
-UPGSdQagJS7VFQb/aOEFU1szDxJiBuEibpBD3sgRyeQo1fCpiJGuzU4GP5R1XX3G
-EBgrFVFhBNckKC+l1s8WgU9dIFgdlpGBu7t2qaWzSV0+EhuhqaQ2RMuE0ozmM0Xr
-5Qc2BBg=
-=RAyQ
+iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAmB82vAOHG5laWxiQHN1
+c2UuZGUACgkQOeye3VZigbm5bw//cQM0d2KnUsWnwghd3sBsi/kR4I9uB+PHaldh
+Cwd4VQUGFXf4aRDVNdHAG007u5uzsPlmBfj3wNmbkDNFyjJx0ZR+O2ynuIbSpbw8
+60ekBPdRPkxYIua8gyiE3yIe46efYeBwvmd5OAnMOYLnjHjopA6DB5TkDu8FUYh7
+Yy8cLArlKwnMANebpGI7zsH4mbwCHdT+LhkPaH5HdsL+j4YKjRfcrtnI5keX0aJV
+RpHqFFLFbS3NZF+X2mudN23SEqnk+k0qotF7gUj+pJVsy6Hucuf96XCperY2fsS5
+ibgKCGCflusJRTGpGJpYaoqZAngfihH+E35Xtz/qRQG18gXX4yjkv0q4Q1fNn+Mi
+fRIe1zP8GWTmiCjyO0gqH3hi4Hh5Am+uniA40+Mi8Nusw39LtTtrJi+i7D+GLNxt
+vT7fXFTF+lHkmmR7GH6/acbSfQn6ikuE6mdFOQc6V9rEneOfrI/gkhjdn5OZkZQQ
+AxZas+iNB6x+J0zcCpfAgwfLVh4c4T1HzLbf2NZwN2MCz1D6pY+AF7q1Qqdzqm9u
+ca2N8fAfabd/TgO9D1q6yGVGmnVqYTyB8+/MOkY5zMZVNfrvxgEsoD2Al2dPKpHF
+XcNrwRR3EIQCY6PeqZxDjAGRiXxyysPLFLR+tLRzULg1lsMaiRysWd+l8d7xYs5D
+DGYg5ks=
+=Qh7g
 -----END PGP SIGNATURE-----
 --=-=-=--
