@@ -2,77 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE9E363B38
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 08:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 385A8363B3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 08:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233206AbhDSGBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 02:01:54 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:26271 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbhDSGBr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 02:01:47 -0400
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 13J614fR006538;
-        Mon, 19 Apr 2021 15:01:04 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 13J614fR006538
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1618812064;
-        bh=LjMjQplpEZKJQ2+adiMzT+2ffkJUxksC9SdRLj29amQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=M1vlZdMRAhNuL1wLw0z3bFue338JiinXUxj2Ck1FHTmZ0WX4rxzWA9R/X1fzHhP+r
-         Y/Jb6j4Rtrsz1WfgTW4oAntkUytqW35kqDu3neEdyMWZq7oSea3WU80pReTO8tT6B/
-         kCca9aoUEcP8J8uXid7+HOHgW+bpSkzsHzZCyDPkwYQg8ZjdFBMZwfvCBE7NZy5iZq
-         /CI0MjLnvM6aWdz68+ErR5j9/NnZnoa/ZjuWohYsv6fGSoIyT2QpMcmMz/ibpIQ02E
-         wBPtCGvVkfh+6WhHfZM1LipaAGhjUWQT28IfsbCWBiY5db5IW2bBUxwQUiUEdPRG3r
-         vScnen/m6vwcg==
-X-Nifty-SrcIP: [209.85.216.47]
-Received: by mail-pj1-f47.google.com with SMTP id u11so13613096pjr.0;
-        Sun, 18 Apr 2021 23:01:04 -0700 (PDT)
-X-Gm-Message-State: AOAM531MmFYGUB8JIEnx3MjDfc3tbtKhl1Lqj/WsJFyoeJxdE6CFfNWU
-        gXKA7atUdOa012mtPtL0J3PHEJIP4QOghSBv0zQ=
-X-Google-Smtp-Source: ABdhPJwjYnINgjNogQsvFM/RIaLu0R3cHoylWXMrTKr3zAX447xpBYJPM37YIRS25P8fsvNyiAaMhjewZ8aiIDXnfwU=
-X-Received: by 2002:a17:902:8bcb:b029:ec:a192:21cf with SMTP id
- r11-20020a1709028bcbb02900eca19221cfmr4781309plo.71.1618812063849; Sun, 18
- Apr 2021 23:01:03 -0700 (PDT)
+        id S233479AbhDSGDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 02:03:10 -0400
+Received: from mout02.posteo.de ([185.67.36.66]:38995 "EHLO mout02.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229652AbhDSGDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 02:03:08 -0400
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id D6761240100
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 08:02:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1618812157; bh=3IN80IYONT6oAz2dlhNOkGlr8EfsfOZFECs2S2AKsJg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rPwC4RDcNqCuiOofcG/79NlQKGoDDBtfC+lGAIFqi9rsXZYOgAfZcdmq8nNfYGYfH
+         Ilao7AHbMankLe0IrQbOu6cX6WP7vlandH2cEbOXq035gnJ+/QOAx34s8Gd0QXOrFC
+         MSl3g+9QJFQgTWrA7r8sBJnlhS6FZnoAOZZdnyqTeZF92m8r9PgWt+PhAoAEs43gh9
+         wpoOUXqn2XcnWAD/PorqZeVWVu+waFG/TksfyzXmKJ2USu51/m/UIvaPeu2q0sa/Rj
+         DrUIUXWbOJpvCByFstlrj52XoFHRUuJW3TsUgvRH9Vs9z3DkaUB8whMq0IWkU0LmIm
+         nEZ7HfQKyjl5Q==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4FNx703jlqz9rxG;
+        Mon, 19 Apr 2021 08:02:36 +0200 (CEST)
+From:   Sebastian Fricke <sebastian.fricke@posteo.net>
+To:     linux-media@vger.kernel.org
+Cc:     Sebastian Fricke <sebastian.fricke@posteo.net>,
+        Helen Koike <helen.koike@collabora.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: rkisp1: rkisp1-params.c: Fix typos
+Date:   Mon, 19 Apr 2021 06:02:25 +0000
+Message-Id: <20210419060224.44353-1-sebastian.fricke@posteo.net>
 MIME-Version: 1.0
-References: <20210418055123.14085-1-rdunlap@infradead.org>
-In-Reply-To: <20210418055123.14085-1-rdunlap@infradead.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 19 Apr 2021 15:00:27 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQsXh5XRh9MdasczTu=gbKz+6nfw+_596PU-A1+VYdCRg@mail.gmail.com>
-Message-ID: <CAK7LNAQsXh5XRh9MdasczTu=gbKz+6nfw+_596PU-A1+VYdCRg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kconfig: highlight gconfig 'comment' lines with '***'
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 18, 2021 at 2:51 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> Mark Kconfig "comment" lines with "*** <commentstring> ***"
-> so that it is clear that these lines are comments and not some
-> kconfig item that cannot be modified.
->
-> This is helpful in some menus to be able to provide a menu
-> "sub-heading" for groups of similar config items.
->
-> This also makes the comments be presented in a way that is
-> similar to menuconfig and nconfig.
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> Cc: linux-kbuild@vger.kernel.org
-> ---
+s/when the camera active/when the camera is active/
+s/thus not isr protection/thus no ISR protection/
 
-Both applied to linux-kbuild. Thanks.
+Signed-off-by: Sebastian Fricke <sebastian.fricke@posteo.net>
+---
+ drivers/media/platform/rockchip/rkisp1/rkisp1-params.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-
-
+diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-params.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-params.c
+index b6beddd988d0..ead948a2d01e 100644
+--- a/drivers/media/platform/rockchip/rkisp1/rkisp1-params.c
++++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-params.c
+@@ -1258,7 +1258,7 @@ void rkisp1_params_configure(struct rkisp1_params *params,
+ 	rkisp1_params_config_parameter(params);
+ }
+ 
+-/* Not called when the camera active, thus not isr protection. */
++/* Not called when the camera is active, thus no ISR protection. */
+ void rkisp1_params_disable(struct rkisp1_params *params)
+ {
+ 	rkisp1_param_clear_bits(params, RKISP1_CIF_ISP_DPCC_MODE,
 -- 
-Best Regards
-Masahiro Yamada
+2.25.1
+
