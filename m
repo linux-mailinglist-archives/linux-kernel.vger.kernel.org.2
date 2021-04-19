@@ -2,82 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DAAD36395C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 04:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9B6B36395F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 04:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237286AbhDSCWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 22:22:44 -0400
-Received: from mail-177142.yeah.net ([123.58.177.142]:52581 "EHLO
-        mail-177142.yeah.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233117AbhDSCWl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 22:22:41 -0400
-Received: from vivo.com (localhost [127.0.0.1])
-        by mail-177142.yeah.net (Hmail) with ESMTP id C979C64410A;
-        Mon, 19 Apr 2021 10:22:07 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AHgAiADIDmen--evL59Deart.3.1618798927815.Hmail.zhouchuangao@vivo.com>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0ga2VybmVsL2h1bmdfdGFzazogQWRkIGEgd2hpdGVsaXN0IGFuZCBibGFja2xpc3QgbWVjaGFuaXNtLg==?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 36.152.145.182
-In-Reply-To: <2d990915-0e1e-1c10-1736-7061d753f912@i-love.sakura.ne.jp>
+        id S237228AbhDSCYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 22:24:35 -0400
+Received: from mga06.intel.com ([134.134.136.31]:40297 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232186AbhDSCYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 22:24:34 -0400
+IronPort-SDR: ZoL0MoyYK3RUgheuV/CIF8wHbg76gVZSXmiEwapoztTgdjJ/QluZgrWwho3JaqX6DjBK7Fb8Xl
+ GokNy12hzxZw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9958"; a="256568650"
+X-IronPort-AV: E=Sophos;i="5.82,232,1613462400"; 
+   d="scan'208";a="256568650"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2021 19:24:05 -0700
+IronPort-SDR: E2tx3KbQIVp4eQDaF/1C81uzKqFwF3rgmB5bbYuJmKs739v2n5aEFQ0H3Et2HtNjIiYUmSZXeJ
+ Ld9oLPG5XsmA==
+X-IronPort-AV: E=Sophos;i="5.82,232,1613462400"; 
+   d="scan'208";a="400480351"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2021 19:24:01 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     <akpm@linux-foundation.org>, <dennis@kernel.org>,
+        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
+        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
+        <alexs@kernel.org>, <david@redhat.com>, <minchan@kernel.org>,
+        <richard.weiyang@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>
+Subject: Re: [PATCH v2 3/5] swap: fix do_swap_page() race with swapoff
+References: <20210417094039.51711-1-linmiaohe@huawei.com>
+        <20210417094039.51711-4-linmiaohe@huawei.com>
+Date:   Mon, 19 Apr 2021 10:23:59 +0800
+In-Reply-To: <20210417094039.51711-4-linmiaohe@huawei.com> (Miaohe Lin's
+        message of "Sat, 17 Apr 2021 05:40:37 -0400")
+Message-ID: <87k0ozko5c.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Received: from zhouchuangao@vivo.com( [36.152.145.182) ] by ajax-webmail ( [127.0.0.1] ) ; Mon, 19 Apr 2021 10:22:07 +0800 (GMT+08:00)
-From:   =?UTF-8?B?5ZGo5Lyg6auY?= <zhouchuangao@vivo.com>
-Date:   Mon, 19 Apr 2021 10:22:07 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQ0pDH1ZIHUhNHRgfHxkaSxpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hOSFVLWQY+
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU1JQkpPTEpCSE5MN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6Mxw6Ejo*Mj8WHhVWVh4NN05CPx4aCQ9VSFVKTUpDTEJDQkhLTUNNVTMWGhIXVQETFA4YEw4a
-        FRwaFDsNEg0UVRgUFkVZV1kSC1lBWUhNVUpOSVVKT05VSkNJWVdZCAFZQU5LS0w3Bg++
-X-HM-Tid: 0a78e7ef5fd86473kursc979c64410a
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cj5PbiAyMDIxLzA0LzE3IDIzOjEzLCB6aG91Y2h1YW5nYW8gd3JvdGU6Cj4+IFRoZSBtYWluIHB1
-cnBvc2Ugb2YgdGhpcyBwYXRjaCBpcyB0byBhZGQgYSB3aGl0ZWxpc3QgYW5kIGJsYWNrbGlzdAo+
-PiBtZWNoYW5pc20gdG8gdGhlIGh1bmcgdGFzayB0aHJlYWQuCj4KPldlIHN0b3BwZWQgdXNpbmcg
-dGhlIHRlcm0gJ3doaXRlbGlzdCcvJ2JsYWNrbGlzdCcgZm9yIG5ldyBjb2RlIGluIExpbnV4IGtl
-cm5lbCwKPmFuZCB3aGF0IHlvdSBhcmUgcHJvcG9zaW5nIGlzIHNvbWV0aGluZyBsaWtlICdpZ25v
-cmVsaXN0Jy8nZmF0YWxsaXN0Jy4KPgo+SSB0aGluayB0aGF0IG1hdGNoaW5nIGJhc2VkIG9uIGNv
-bW0gbmFtZSBpcyBwb29yLCBmb3IgY29tbSBuYW1lIGlzIHN1YmplY3RlZCB0bwo+aW1wZXJzb25h
-dGlvbiBieSBtYWxpY2lvdXMgdXNlciBwcm9jZXNzZXMuCj4KPk1vcmVvdmVyLCBzcGVhayBvZiBz
-eXprYWxsZXIgdGVzdGluZywgbW9zdCBvZiBoYW5nIHRhc2sgcmVwb3J0cyBhcmUgcmVhY3Rpb24g
-dG8KPnNvbWVib2R5IGVsc2UgY29uc3VtaW5nIHRvbyBtdWNoIENQVSByZXNvdXJjZXMgKGUuZy4g
-cHJpbnRrKCkgZmxvb2RpbmcsIHRvbyBtYW55Cj5wZW5kaW5nIHdvcmtxdWV1ZSByZXF1ZXN0cyku
-IEV2ZW4gaWYgc29tZSBwcm9jZXNzIGlzIGluICdpZ25vcmVsaXN0JywgaXQgaXMKPnBvc3NpYmxl
-IHRoYXQgc29tZSBwcm9ibGVtIHRoYXQgc2hvdWxkIGJlIHJlcG9ydGVkIGlzIGFscmVhZHkgaGFw
-cGVuaW5nLiBFdmVuIGlmCj5zb21lIHByb2Nlc3MgaXMgaW4gJ2ZhdGFsbGlzdCcsIGl0IGlzIHBv
-c3NpYmxlIHRoYXQgdGhlIGNhdXNlIG9mIGhhbmcgaXMgc2ltcGx5Cj5zb21lYm9keSBlbHNlIGlz
-IGNvbnN1bWluZyB0b28gbXVjaCBDUFUuCj4KPkJ5IHRoZSB3YXksIEkgd2lzaCB0aGF0IGtodW5n
-dGFza2QgY2FuIHJlcG9ydCByZWNlbnQgdG9wIENQVSBjb25zdW1lcnMsIGZvciBpdCBpcwo+cmFy
-ZSB0aGF0IHRoZSBjYXVzZSBvZiBodW5nIGlzIGxvY2tpbmcgZGVwZW5kZW5jeSBwcm9ibGVtcyAv
-IGhhcmR3YXJlIHByb2JsZW1zLgo+CgpUaGFuayB5b3UgZm9yIHlvdXIgc3VnZ2VzdGlvbnMsCgpT
-b21lIFNPQyB2ZW5kb3JzJyBkcml2ZXJzIG9yIHVzZXItbW9kZSBwcm9jZXNzZXMgbWF5IGJlIGlu
-IEQgc3RhdGUgZm9yIGEgbG9uZyB0aW1lLAphbmQgbm9ybWFsbHkgdGhleSBkbyBub3QgY29uZmln
-dXJlIEhVTkcgVEFTSywgc28gd2UgbmVlZCB0byBpZ25vcmUgdGhlc2UgdGFza3MgaWYKd2UgdXNl
-IEhVTkcgVEFTSy4gCgpCeSBkZWZhdWx0LCBpZ25vcmVsaXN0IGFuZCBmYXRhbGxpc3QgYXJlIGVt
-cHR5IGFuZCBjYW4gYmUgY29uZmlndXJlZCBieSB0aGUgdXNlcgooYXNzdW1pbmcgdGhlIHVzZXIg
-a25vd3Mgd2hhdCB0aGV5IGFyZSBkb2luZykuCgpJIHdpbGwgdHJ5IHRvIGltcGxlbWVudCB0aGUg
-ZnVuY3Rpb24gb2Yga2h1bmd0YXNrZCB0byByZXBvcnQgdG9wIENQVSBjb25zdW1lcnMuCgpUaGFu
-a3MsCnpob3VjaGF1bmdhbw0KDQo=
+Miaohe Lin <linmiaohe@huawei.com> writes:
+
+> When I was investigating the swap code, I found the below possible race
+> window:
+>
+> CPU 1                                   	CPU 2
+> -----                                   	-----
+> do_swap_page
+
+This is OK for swap cache cases.  So
+
+  if (data_race(si->flags & SWP_SYNCHRONOUS_IO))
+
+should be shown here.
+
+>   swap_readpage(skip swap cache case)
+>     if (data_race(sis->flags & SWP_FS_OPS)) {
+>                                         	swapoff
+> 					  	  p->flags = &= ~SWP_VALID;
+> 					  	  ..
+> 					  	  synchronize_rcu();
+> 					  	  ..
+> 					  	  p->swap_file = NULL;
+>     struct file *swap_file = sis->swap_file;
+>     struct address_space *mapping = swap_file->f_mapping;[oops!]
+>
+> Note that for the pages that are swapped in through swap cache, this isn't
+> an issue. Because the page is locked, and the swap entry will be marked
+> with SWAP_HAS_CACHE, so swapoff() can not proceed until the page has been
+> unlocked.
+>
+> Using current get/put_swap_device() to guard against concurrent swapoff for
+> swap_readpage() looks terrible because swap_readpage() may take really long
+> time. And this race may not be really pernicious because swapoff is usually
+> done when system shutdown only. To reduce the performance overhead on the
+> hot-path as much as possible, it appears we can use the percpu_ref to close
+> this race window(as suggested by Huang, Ying).
+
+I still suggest to squash PATCH 1-3, at least PATCH 1-2.  That will
+change the relevant code together and make it easier to review.
+
+Best Regards,
+Huang, Ying
+
+> Fixes: 0bcac06f27d7 ("mm,swap: skip swapcache for swapin of synchronous device")
+> Reported-by: kernel test robot <lkp@intel.com> (auto build test ERROR)
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>  include/linux/swap.h | 9 +++++++++
+>  mm/memory.c          | 9 +++++++++
+>  2 files changed, 18 insertions(+)
+>
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index 993693b38109..523c2411a135 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -528,6 +528,15 @@ static inline struct swap_info_struct *swp_swap_info(swp_entry_t entry)
+>  	return NULL;
+>  }
+>  
+> +static inline struct swap_info_struct *get_swap_device(swp_entry_t entry)
+> +{
+> +	return NULL;
+> +}
+> +
+> +static inline void put_swap_device(struct swap_info_struct *si)
+> +{
+> +}
+> +
+>  #define swap_address_space(entry)		(NULL)
+>  #define get_nr_swap_pages()			0L
+>  #define total_swap_pages			0L
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 27014c3bde9f..7a2fe12cf641 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -3311,6 +3311,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>  {
+>  	struct vm_area_struct *vma = vmf->vma;
+>  	struct page *page = NULL, *swapcache;
+> +	struct swap_info_struct *si = NULL;
+>  	swp_entry_t entry;
+>  	pte_t pte;
+>  	int locked;
+> @@ -3338,6 +3339,10 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>  		goto out;
+>  	}
+>  
+> +	/* Prevent swapoff from happening to us. */
+> +	si = get_swap_device(entry);
+> +	if (unlikely(!si))
+> +		goto out;
+>  
+>  	delayacct_set_flag(current, DELAYACCT_PF_SWAPIN);
+>  	page = lookup_swap_cache(entry, vma, vmf->address);
+> @@ -3514,6 +3519,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>  unlock:
+>  	pte_unmap_unlock(vmf->pte, vmf->ptl);
+>  out:
+> +	if (si)
+> +		put_swap_device(si);
+>  	return ret;
+>  out_nomap:
+>  	pte_unmap_unlock(vmf->pte, vmf->ptl);
+> @@ -3525,6 +3532,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>  		unlock_page(swapcache);
+>  		put_page(swapcache);
+>  	}
+> +	if (si)
+> +		put_swap_device(si);
+>  	return ret;
+>  }
