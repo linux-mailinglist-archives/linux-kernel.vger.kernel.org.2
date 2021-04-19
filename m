@@ -2,108 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED8A364DE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 00:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81E5364DF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 00:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230427AbhDSWyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 18:54:47 -0400
-Received: from mail-io1-f50.google.com ([209.85.166.50]:33289 "EHLO
-        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbhDSWyo (ORCPT
+        id S230213AbhDSW4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 18:56:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40619 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229714AbhDSW4Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 18:54:44 -0400
-Received: by mail-io1-f50.google.com with SMTP id a11so34456609ioo.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 15:54:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2xNe1AI+zAlQJlHonsRA7VbAthmGAmqlvMIkGNsV22k=;
-        b=O09TIma8F+pRNckWT49pRMJZ6WRlJWw0aqUF6B9qDj6I0JyOEyZ4EYQKZ51vsbjzWL
-         +ljejwelNhfWfLXmfgGq3MyalVPaMWExJkB6X+mXqBAOPdyiIVE7sLERuA7wj1yDy+Gd
-         2UEZ/1Gi8Fobn8OEXLmIkHsluLzvCbjH/qtc7tQEA7lLivDF4a5padkAtvAC0tvJuI+I
-         SkK1dR1mL0U2fVwyhVV1xOLjDbHYe5wZDJRAizWWQRpDcKzYgD9CoFEJ/kc+2s/FKxX6
-         xEnkEaWTXERIC0aWebZk65/6KGo+nlvhi3tcOr7lWU7W4tdadNCJm9S4Yz2OvoLEVmGQ
-         kUGA==
-X-Gm-Message-State: AOAM530KvzHfzsZ/Cjet3MmgyvPofX8EXY7HAeq1H7N1hlDC51C2Zt2l
-        l+OYotJyJhdrSDDoinRrXXMcxO/BFIc=
-X-Google-Smtp-Source: ABdhPJxt5t6ZO16155uYGSei0G9muX0BqwWOt5nj2Dvznm46xkm1D5FXFelC0mcW7xv+XUHpwOdggA==
-X-Received: by 2002:a05:6602:1689:: with SMTP id s9mr16042508iow.171.1618872854077;
-        Mon, 19 Apr 2021 15:54:14 -0700 (PDT)
-Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id k1sm3841824ils.54.2021.04.19.15.54.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 15:54:13 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 22:54:12 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Roman Gushchin <guro@fb.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/4] percpu: partial chunk depopulation
-Message-ID: <YH4KFOY/kP0vnPWZ@google.com>
-References: <20210419225047.3415425-1-dennis@kernel.org>
+        Mon, 19 Apr 2021 18:56:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618872946;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g21KQMO+x+0HfA9S5cU+LPpk/DDwp+NmKrjA0l+Lckg=;
+        b=BsOCS455s/h/jtarwd80r32PmqIPJt8FfHLNZNAmrmmr7MucP/VB20F3X3PbwfsMHDwa23
+        sIduQH7cHlvWQUuH0RmylZFFLwGcypwufSpv/uYO0Cp9ZP5Cf5fr/8ZElQq8DNBgHLBUVa
+        rCFZoVur64kDfzq43rStE32xHIwNiGM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-489-KZMwLGAWO2uQyxwrI7ZOGw-1; Mon, 19 Apr 2021 18:55:42 -0400
+X-MC-Unique: KZMwLGAWO2uQyxwrI7ZOGw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8F11E501F0;
+        Mon, 19 Apr 2021 22:55:38 +0000 (UTC)
+Received: from Ruby.lyude.net (ovpn-119-153.rdu2.redhat.com [10.10.119.153])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 01BD25C1C4;
+        Mon, 19 Apr 2021 22:55:34 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Eryk Brol <eryk.brol@amd.com>,
+        Stylon Wang <stylon.wang@amd.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
+        Nikola Cornij <nikola.cornij@amd.com>,
+        Mikita Lipski <mikita.lipski@amd.com>,
+        Wayne Lin <Wayne.Lin@amd.com>, Chris Park <Chris.Park@amd.com>,
+        Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v3 01/20] drm/amdgpu: Add error handling to amdgpu_dm_initialize_dp_connector()
+Date:   Mon, 19 Apr 2021 18:55:03 -0400
+Message-Id: <20210419225523.184856-2-lyude@redhat.com>
+In-Reply-To: <20210419225523.184856-1-lyude@redhat.com>
+References: <20210419225523.184856-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210419225047.3415425-1-dennis@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 10:50:43PM +0000, Dennis Zhou wrote:
-> Hello,
-> 
-> This series is a continuation of Roman's series in [1]. It aims to solve
-> chunks holding onto free pages by adding a reclaim process to the percpu
-> balance work item.
-> 
+While working on moving i2c device registration into drm_dp_aux_init() - I
+realized that in order to do so we need to make sure that drivers calling
+drm_dp_aux_init() handle any errors it could possibly return. In the
+process of doing that, I noticed that the majority of AMD's code for DP
+connector creation doesn't attempt to do any real error handling.
 
-And I forgot to link [1]...
-[1] https://lore.kernel.org/lkml/20210408035736.883861-1-guro@fb.com/
+So, let's fix this and also cleanup amdgpu_dm_initialize_dp_connector()
+while we're at it. This way we can handle the error codes from
+drm_dp_aux_init().
 
-> The main difference is that the nr_empty_pop_pages is now managed at
-> time of isolation instead of intermixed. This helps with deciding which
-> chunks to free instead of having to interleave returning chunks to
-> active duty.
-> 
-> The allocation priority is as follows:
->   1) appropriate chunk slot increasing until fit
->   2) sidelined chunks
->   3) full free chunks
-> 
-> The last slot for to_depopulate is never used for allocations.
-> 
-> A big thanks to Roman for initiating the work and being available for
-> iterating on these ideas.
-> 
-> This patchset contains the following 4 patches:
->   0001-percpu-factor-out-pcpu_check_block_hint.patch
->   0002-percpu-use-pcpu_free_slot-instead-of-pcpu_nr_slots-1.patch
->   0003-percpu-implement-partial-chunk-depopulation.patch
->   0004-percpu-use-reclaim-threshold-instead-of-running-for-.patch
-> 
-> 0001 and 0002 are clean ups. 0003 implement partial chunk depopulation
-> initially from Roman. 0004 adds a reclaim threshold so we do not need to
-> schedule for every page freed.
-> 
-> This series is on top of percpu$for-5.14 67c2669d69fb.
-> 
-> diffstats below:
-> 
-> Dennis Zhou (2):
->   percpu: use pcpu_free_slot instead of pcpu_nr_slots - 1
->   percpu: use reclaim threshold instead of running for every page
-> 
-> Roman Gushchin (2):
->   percpu: factor out pcpu_check_block_hint()
->   percpu: implement partial chunk depopulation
-> 
->  mm/percpu-internal.h |   5 +
->  mm/percpu-km.c       |   5 +
->  mm/percpu-stats.c    |  20 ++--
->  mm/percpu-vm.c       |  30 ++++++
->  mm/percpu.c          | 252 ++++++++++++++++++++++++++++++++++++++-----
->  5 files changed, 278 insertions(+), 34 deletions(-)
-> 
-> Thanks,
-> Dennis
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+---
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 29 +++++++-----
+ .../display/amdgpu_dm/amdgpu_dm_mst_types.c   | 44 +++++++++++--------
+ .../display/amdgpu_dm/amdgpu_dm_mst_types.h   |  6 +--
+ 3 files changed, 45 insertions(+), 34 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index a0c8c41e4e57..fc5d315bbb05 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -7608,10 +7608,9 @@ static int amdgpu_dm_connector_init(struct amdgpu_display_manager *dm,
+ 
+ 	aconnector->i2c = i2c;
+ 	res = i2c_add_adapter(&i2c->base);
+-
+ 	if (res) {
+ 		DRM_ERROR("Failed to register hw i2c %d\n", link->link_index);
+-		goto out_free;
++		goto fail_free;
+ 	}
+ 
+ 	connector_type = to_drm_connector_type(link->connector_signal);
+@@ -7625,8 +7624,7 @@ static int amdgpu_dm_connector_init(struct amdgpu_display_manager *dm,
+ 
+ 	if (res) {
+ 		DRM_ERROR("connector_init failed\n");
+-		aconnector->connector_id = -1;
+-		goto out_free;
++		goto fail_id;
+ 	}
+ 
+ 	drm_connector_helper_add(
+@@ -7643,15 +7641,22 @@ static int amdgpu_dm_connector_init(struct amdgpu_display_manager *dm,
+ 	drm_connector_attach_encoder(
+ 		&aconnector->base, &aencoder->base);
+ 
+-	if (connector_type == DRM_MODE_CONNECTOR_DisplayPort
+-		|| connector_type == DRM_MODE_CONNECTOR_eDP)
+-		amdgpu_dm_initialize_dp_connector(dm, aconnector, link->link_index);
+-
+-out_free:
+-	if (res) {
+-		kfree(i2c);
+-		aconnector->i2c = NULL;
++	if (connector_type == DRM_MODE_CONNECTOR_DisplayPort ||
++	    connector_type == DRM_MODE_CONNECTOR_eDP) {
++		res = amdgpu_dm_initialize_dp_connector(dm, aconnector, link->link_index);
++		if (res)
++			goto fail_cleanup;
+ 	}
++
++	return 0;
++fail_cleanup:
++	drm_connector_cleanup(&aconnector->base);
++fail_id:
++	aconnector->connector_id = -1;
++fail_free:
++	kfree(i2c);
++	aconnector->i2c = NULL;
++
+ 	return res;
+ }
+ 
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+index 73cdb9fe981a..3dee9cce9c9e 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+@@ -425,33 +425,39 @@ static const struct drm_dp_mst_topology_cbs dm_mst_cbs = {
+ 	.add_connector = dm_dp_add_mst_connector,
+ };
+ 
+-void amdgpu_dm_initialize_dp_connector(struct amdgpu_display_manager *dm,
+-				       struct amdgpu_dm_connector *aconnector,
+-				       int link_index)
++int amdgpu_dm_initialize_dp_connector(struct amdgpu_display_manager *dm,
++				      struct amdgpu_dm_connector *aconnector,
++				      int link_index)
+ {
+-	aconnector->dm_dp_aux.aux.name =
+-		kasprintf(GFP_KERNEL, "AMDGPU DM aux hw bus %d",
+-			  link_index);
+-	aconnector->dm_dp_aux.aux.transfer = dm_dp_aux_transfer;
+-	aconnector->dm_dp_aux.ddc_service = aconnector->dc_link->ddc;
++	struct amdgpu_dm_dp_aux *dm_aux = &aconnector->dm_dp_aux;
++	int ret;
+ 
+-	drm_dp_aux_init(&aconnector->dm_dp_aux.aux);
+-	drm_dp_cec_register_connector(&aconnector->dm_dp_aux.aux,
+-				      &aconnector->base);
++	dm_aux->aux.name = kasprintf(GFP_KERNEL, "AMDGPU DM aux hw bus %d", link_index);
++	if (!dm_aux->aux.name)
++		return -ENOMEM;
++
++	dm_aux->aux.transfer = dm_dp_aux_transfer;
++	dm_aux->ddc_service = aconnector->dc_link->ddc;
++
++	drm_dp_aux_init(&dm_aux->aux);
++	drm_dp_cec_register_connector(&dm_aux->aux, &aconnector->base);
+ 
+ 	if (aconnector->base.connector_type == DRM_MODE_CONNECTOR_eDP)
+-		return;
++		return 0;
+ 
+ 	aconnector->mst_mgr.cbs = &dm_mst_cbs;
+-	drm_dp_mst_topology_mgr_init(
+-		&aconnector->mst_mgr,
+-		adev_to_drm(dm->adev),
+-		&aconnector->dm_dp_aux.aux,
+-		16,
+-		4,
+-		aconnector->connector_id);
++	ret = drm_dp_mst_topology_mgr_init(&aconnector->mst_mgr, adev_to_drm(dm->adev),
++					   &dm_aux->aux, 16, 4, aconnector->connector_id);
++	if (ret)
++		goto unreg_cec;
+ 
+ 	drm_connector_attach_dp_subconnector_property(&aconnector->base);
++
++	return 0;
++unreg_cec:
++	drm_dp_cec_unregister_connector(&dm_aux->aux);
++	kfree(dm_aux->aux.name);
++	return ret;
+ }
+ 
+ int dm_mst_get_pbn_divider(struct dc_link *link)
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.h
+index b38bd68121ce..cf771ff58bb3 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.h
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.h
+@@ -31,9 +31,9 @@ struct amdgpu_dm_connector;
+ 
+ int dm_mst_get_pbn_divider(struct dc_link *link);
+ 
+-void amdgpu_dm_initialize_dp_connector(struct amdgpu_display_manager *dm,
+-				       struct amdgpu_dm_connector *aconnector,
+-				       int link_index);
++int amdgpu_dm_initialize_dp_connector(struct amdgpu_display_manager *dm,
++				      struct amdgpu_dm_connector *aconnector,
++				      int link_index);
+ 
+ void
+ dm_dp_create_fake_mst_encoders(struct amdgpu_device *adev);
+-- 
+2.30.2
+
