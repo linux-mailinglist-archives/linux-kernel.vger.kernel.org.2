@@ -2,88 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A3F363FE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 12:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347EA363FEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 12:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232934AbhDSKud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 06:50:33 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:17359 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231387AbhDSKua (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 06:50:30 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FP3Rs3wJ0zBrRp;
-        Mon, 19 Apr 2021 18:47:37 +0800 (CST)
-Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 19 Apr 2021 18:49:50 +0800
-From:   Yanan Wang <wangyanan55@huawei.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-CC:     <kvm@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <wanghaibin.wang@huawei.com>,
-        <yuzenghui@huawei.com>, Yanan Wang <wangyanan55@huawei.com>
-Subject: [PATCH] KVM: selftests: Tweak time measurement flag in kvm_page_table_test
-Date:   Mon, 19 Apr 2021 18:49:47 +0800
-Message-ID: <20210419104947.38544-1-wangyanan55@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
+        id S233605AbhDSKvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 06:51:42 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:60926 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230013AbhDSKvl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 06:51:41 -0400
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx7+6CYH1gAlwKAA--.1828S2;
+        Mon, 19 Apr 2021 18:50:42 +0800 (CST)
+From:   Youling Tang <tangyouling@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jinyang He <hejinyang@loongson.cn>
+Subject: [PATCH] MIPS: Fix cmdline "mem=" parameter parsing
+Date:   Mon, 19 Apr 2021 18:50:25 +0800
+Message-Id: <1618829425-11873-1-git-send-email-tangyouling@loongson.cn>
+X-Mailer: git-send-email 2.1.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.187.128]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Dx7+6CYH1gAlwKAA--.1828S2
+X-Coremail-Antispam: 1UD129KBjvJXoWruw47uw45KFyUCFWDWw43GFg_yoW8Jr1rpw
+        47C3sYkr4Dury7uw4rA395uw45Xas3XFW7XFW2vws5Aan0qFy8Ar4FqF1YvFyjvrWkt3Wj
+        qF1qvr4UuanrCFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8twCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JU-6pPUUUUU=
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Also use CLOCK_MONOTONIC flag to get time in kvm_page_table_test.c,
-since that's what all the kvm/selftests do currently. And this will
-be consistent with function timespec_elapsed() in test_util.c.
+This problem may only occur on NUMA platforms. When machine start with the
+"mem=" parameter on Loongson64, it cannot boot. When parsing the "mem="
+parameter, first remove all RAM, and then add memory through memblock_add(),
+which causes the newly added memory to be located on MAX_NUMNODES.
 
-Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+The solution is to add the current "mem=" parameter range to the memory area
+of the corresponding node, instead of adding all of it to the MAX_NUMNODES
+node area. Get the node number corresponding to the "mem=" parameter range
+through pa_to_nid(), and then add it to the corresponding node through
+memblock_add_node().
+
+Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+Signed-off-by: Youling Tang <tangyouling@loongson.cn>
 ---
- tools/testing/selftests/kvm/kvm_page_table_test.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/mips/kernel/setup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/kvm/kvm_page_table_test.c b/tools/testing/selftests/kvm/kvm_page_table_test.c
-index 1c4753fff19e..d7847fba47a8 100644
---- a/tools/testing/selftests/kvm/kvm_page_table_test.c
-+++ b/tools/testing/selftests/kvm/kvm_page_table_test.c
-@@ -212,7 +212,7 @@ static void *vcpu_worker(void *data)
- 		if (READ_ONCE(host_quit))
- 			return NULL;
+diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+index 279be01..b86e241 100644
+--- a/arch/mips/kernel/setup.c
++++ b/arch/mips/kernel/setup.c
+@@ -359,7 +359,7 @@ static int __init early_parse_mem(char *p)
+ 	if (*p == '@')
+ 		start = memparse(p + 1, &p);
  
--		clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-+		clock_gettime(CLOCK_MONOTONIC, &start);
- 		ret = _vcpu_run(vm, vcpu_id);
- 		ts_diff = timespec_elapsed(start);
+-	memblock_add(start, size);
++	memblock_add_node(start, size, pa_to_nid(start));
  
-@@ -390,7 +390,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 	/* Test the stage of KVM creating mappings */
- 	*current_stage = KVM_CREATE_MAPPINGS;
- 
--	clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-+	clock_gettime(CLOCK_MONOTONIC, &start);
- 	vcpus_complete_new_stage(*current_stage);
- 	ts_diff = timespec_elapsed(start);
- 
-@@ -403,7 +403,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 
- 	*current_stage = KVM_UPDATE_MAPPINGS;
- 
--	clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-+	clock_gettime(CLOCK_MONOTONIC, &start);
- 	vcpus_complete_new_stage(*current_stage);
- 	ts_diff = timespec_elapsed(start);
- 
-@@ -415,7 +415,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 
- 	*current_stage = KVM_ADJUST_MAPPINGS;
- 
--	clock_gettime(CLOCK_MONOTONIC_RAW, &start);
-+	clock_gettime(CLOCK_MONOTONIC, &start);
- 	vcpus_complete_new_stage(*current_stage);
- 	ts_diff = timespec_elapsed(start);
- 
+ 	return 0;
+ }
 -- 
-2.23.0
+2.1.0
 
