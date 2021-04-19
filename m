@@ -2,138 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF55363AE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 07:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 419A5363AEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 07:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232357AbhDSFMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 01:12:22 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:46829 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhDSFMV (ORCPT
+        id S232663AbhDSFNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 01:13:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230111AbhDSFMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 01:12:21 -0400
-Received: from mail-oo1-f70.google.com ([209.85.161.70])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <chris.chiu@canonical.com>)
-        id 1lYMCM-0005D1-Sp
-        for linux-kernel@vger.kernel.org; Mon, 19 Apr 2021 05:11:51 +0000
-Received: by mail-oo1-f70.google.com with SMTP id s17-20020a4a3b110000b02901ed1f7f795dso864337oos.2
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 22:11:50 -0700 (PDT)
+        Mon, 19 Apr 2021 01:12:55 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E708CC061760
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 22:12:24 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id sd23so42216826ejb.12
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 22:12:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8ofWC35j+mTbhSxNhXaJK905wQN1NLDPBGPqQMOa3eQ=;
+        b=IrctopW6n++Uebb9it23T0FZjRjZrOUlcZCKLPSu29QZNIiTLFO6vbTVHcjm67FoxX
+         +XryZ6v1nnko8Qadw0FIa9a8U7bNDBNxOgjNi7XSRhViae4kcZDZhYqcDWBmd7Zf2t8I
+         w+rz1dqBOXDSUqJCOi2L1S5u0gQFYtt3XFmat8ud+6GGdDXPJaPHYE2FE8KpFg4Tzba/
+         Y0rkksO8F/XkcMzyoqV2nJc2yT8dMRprLgJTK2weOql8Fwr+RM0WbsvbNi/LtbE8coA5
+         MgeifV8B/ubDmAKV2xxhqdCCVOfYkDQVe+cicPvl4Z5zW+Nq/51LGZ79wC4JwaAI+WP3
+         cLVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tyd+1dQ+ErVKx1JdIk658NVw080X5wV+ShvBB/puUzQ=;
-        b=AlwxgPeOiVksBB5ekoMFwFVjAZnGUQth39J1o6INDzI9AOkvS3/44s7Tns8DWBXKYR
-         548h+r5DFIWH6bGA/nXMSPkFDxN/rZ0ckv7/BXCjbPr2q1qdeUKLno8K9BfnovTcEBGG
-         cZG/iFD9fl8rSzX6Ow+MSVeYjyzL49K5RCEwbjBznrfBnQL/f5p9QAIy1NtD+Atfq0Ci
-         BZylxhsPzd7dCCaoeFgJAuPda1XW30g94bXLaCaYD0md986QFEttrMvHTctsVlC/aTL9
-         3P6VSL6UU4gRm8/vYr8S248PWFQPirtdv8RzOiV67gl4tz1i97y++5Gvf5g6DEt/Y0bC
-         eGCQ==
-X-Gm-Message-State: AOAM532RiUXSclf0J8Qs3GTQydsPMJloE5Vw1LUqDVkyeOAHI1cJezLf
-        gfVfInVYV5pLPDQpplOvUWNyXptx8v4m9ZBnmRXD56w3+w6vaEEL5bc9H6KFD4BL34w0oimw5a5
-        VrAnOKsOfbklwH40Nc5tpYD7O/rJIw+fn5+4rb2bnxoV+AkLZwkis09V56g==
-X-Received: by 2002:aca:4a97:: with SMTP id x145mr5301612oia.177.1618809109752;
-        Sun, 18 Apr 2021 22:11:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwpJa6ylhblmCS1U6HZP/ShZUCaOgayMXlZjsfRHo8e1chf9R7/IjhN3RhkaSFPWBbv0l5kmU3+dLlUBWDpMMQ=
-X-Received: by 2002:aca:4a97:: with SMTP id x145mr5301604oia.177.1618809109571;
- Sun, 18 Apr 2021 22:11:49 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8ofWC35j+mTbhSxNhXaJK905wQN1NLDPBGPqQMOa3eQ=;
+        b=RUwgKFx4dzIRlnwJkjlQnpZDg4h3PjQFjJFuaNg2vNM66EFpjyXzhGnZQnsTxJ1Lh+
+         HDcVOGtCc+Cx0ANXkVVT8qlvNSTZzxkUaIn2gIyUhjLfmiVXdcMYow7DO0UYoppZMv1e
+         y22M7bCj4GMJEeQ7UF7VrWvoYjd3W0u0zMwb45I22DOKpQCBWgMxn02laakkrLmLs5sD
+         /6XbmZYKM2lntUFpwiPJ1tE+BXChIf/vB1wZhxg7o3NZKyJpbS/Qml9+1Zh2Vfpfhrod
+         Lk2x0dD8pC+F3FIbwuSTKHYyhXiz7LLkOLyYuBZQ9PzGJ19TfHoPclt4KwOD9Jg9p8Wt
+         MKhg==
+X-Gm-Message-State: AOAM533EyrBD3aMGCbWR57d8hqzx48m6ncPfdvT5Tlgd+yolEMhOwX9K
+        NzIyGPHo4Re37IJ4ckESFtDYbNq3mlK2JqlN
+X-Google-Smtp-Source: ABdhPJw+oqRM110gHJFTVOQMCmNMJ31CDRgfffttfgzjSIimvIlDuXQkKo0zADVumPLs30SmZ9O6bQ==
+X-Received: by 2002:a17:906:cb11:: with SMTP id lk17mr20356893ejb.517.1618809143641;
+        Sun, 18 Apr 2021 22:12:23 -0700 (PDT)
+Received: from apalos.home (ppp-94-65-92-88.home.otenet.gr. [94.65.92.88])
+        by smtp.gmail.com with ESMTPSA id s5sm9541238ejq.52.2021.04.18.22.12.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Apr 2021 22:12:23 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 08:12:17 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
+Message-ID: <YH0RMV7+56gVOzJe@apalos.home>
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <20210409223801.104657-3-mcroce@linux.microsoft.com>
+ <20210410154824.GZ2531743@casper.infradead.org>
+ <YHHPbQm2pn2ysth0@enceladus>
+ <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
+ <YHHuE7g73mZNrMV4@enceladus>
+ <20210414214132.74f721dd@carbon>
+ <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210415114856.4555-1-chris.chiu@canonical.com>
- <YHgyP8tGNM1Wi5dJ@kroah.com> <CABTNMG0MuaSkWZhiTwtWjPTg5WZ-Vdt9Ju9-RzBke9JjCBJo8Q@mail.gmail.com>
- <20210415184637.GA15445@rowland.harvard.edu> <CABTNMG3aweq43eQcONif2_M4JF3ARmBgOKE18v7vzHvaJnjrtA@mail.gmail.com>
- <20210416153932.GD42403@rowland.harvard.edu>
-In-Reply-To: <20210416153932.GD42403@rowland.harvard.edu>
-From:   Chris Chiu <chris.chiu@canonical.com>
-Date:   Mon, 19 Apr 2021 01:11:38 -0400
-Message-ID: <CABTNMG25qPvVu7+EsvEgaUsU_v6jKkSKCaU5VR8CiX3oLQ4VFg@mail.gmail.com>
-Subject: Re: [PATCH v3] USB: Don't set USB_PORT_FEAT_SUSPEND on WD19's Realtek Hub
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, m.v.b@runbox.com,
-        hadess@hadess.net, linux-usb@vger.kernel.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 11:39 AM Alan Stern <stern@rowland.harvard.edu> wrote:
->
-> On Fri, Apr 16, 2021 at 09:24:30AM +0800, Chris Chiu wrote:
-> > On Fri, Apr 16, 2021 at 2:46 AM Alan Stern <stern@rowland.harvard.edu> wrote:
-> > >
-> > > On Fri, Apr 16, 2021 at 12:13:43AM +0800, Chris Chiu wrote:
-> > > > One thing worth mentioning here, I never hit the hub_ext_port_status -71
-> > > > problem if I resume by waking up from the keyboard connected to the hub.
-> > >
-> > > I thought you said earlier that the port got into trouble while it was
-> > > suspending, not while it was resuming.  You wrote:
-> > >
-> > > > [ 2789.679812] usb 3-4-port3: can't suspend, status -110
-> > >
-> > > So if the problem occurs during suspend, how can it be possible to avoid
-> > > the problem by taking some particular action later while resuming?
-> > >
+On Wed, Apr 14, 2021 at 01:09:47PM -0700, Shakeel Butt wrote:
+> On Wed, Apr 14, 2021 at 12:42 PM Jesper Dangaard Brouer
+> <brouer@redhat.com> wrote:
 > >
-> > The ETIMEDOUT is still there, but the port can resume w/o problems and I
-> > don't really know what the hub did. I can only reset_resume the hub to bring it
-> > back if I'm not waking up from the connected keyboard.
->
-> What if two devices are plugged into the hub, only one of them is
-> runtime suspended, and you need to runtime resume that device?  Then you
-> can't do a reset-resume of the hub, because the hub isn't suspended.
->
-> > > > But the usbcore kernel log shows me wPortStatus: 0503 wPortChane: 0004
-> > > > of that port while resuming. In normal cases, they are 0507:0000.
+> [...]
+> > > >
+> > > > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
+> > > > can not be used.
 > > >
-> > > The 0004 bit of wPortChange means that the suspend status has changed;
-> > > the port is no longer suspended because the device attached to that port
-> > > (your keyboard) issued a wakeup request.
-> > >
-> > > >  I don't know how to SetPortFeature() with setting the status change bit only.
-> > >
-> > > You can't.  Only the hub itself can set the wPortChange bits.
-> > >
-> > > > Or maybe it's just some kind of timing issue of the
-> > > > idle/suspend/resume signaling.
-> > >
-> > > Not timing.  It's because you woke the system up from the attached
-> > > keyboard.
-> > >
-> > > Alan Stern
+> > > Yes it can, since it's going to be used as your default allocator for
+> > > payloads, which might end up on an SKB.
 > >
-> > Got it. I'm just confused by the USB 2.0 spec 11.24.2.7.2 that
-> > "Hubs may allow setting of the status change bits with a SetPortFeature()
-> >  request for diagnostic purposes."
->
-> Yeah, I don't think very many hubs actually do that.
->
-> > So for this case, I think USB_QUIRK_RESET_RESUME would be a
-> > better option to at least bring back the port. Any suggestion about what
-> > kind of test I can do on this hub? Thanks
->
-> I'm not sure what you're proposing.
->
-> If (as mentioned above) the hub doesn't handle the
-> Set-Port-Feature(suspend) request properly, then we should avoid issuing
-> that request.  Which means runtime suspend attempts should not be
-> allowed, as in your most recent patch.
->
-> Alan Stern
+> > I'm not sure we want or should "allow" page_pool be used for TCP RX
+> > zerocopy.
+> > For several reasons.
+> >
+> > (1) This implies mapping these pages page to userspace, which AFAIK
+> > means using page->mapping and page->index members (right?).
+> >
+> 
+> No, only page->_mapcount is used.
+> 
 
-Sorry that I didn't make myself clear. I found that if I applied RESET_RESUME
-quirk on the problematic hub, the Set-Port-Feature(suspend) timeout error
-disappeared. SInce the timeout is not happening for each suspend by default,
-I suspect maybe reset-resume take everything back to clean state for the hub
-and the Set-Port-Feature(suspend) can be taken care of w/o problems.
+I am not sure I like leaving out TCP RX zerocopy. Since we want driver to
+adopt the recycling mechanism we should try preserving the current
+functionality of the network stack.
 
-I didn't like RESET_RESUME because runtime PM would not work on the quirked
-device. But if the Set-Port-Feature(suspend) can't be handled and
-skipped, I can't
-expect the runtime PM to work for all devices connected to the hub either.
-Is that right? If what I proposed in the patch can not get better
-result than existing
-quirk, I think using the RESET_RESUME would be a better option. Any suggestions?
+The question is how does it work with the current drivers that already have an
+internal page recycling mechanism.
 
-Chris
+> > (2) It feels wrong (security wise) to keep the DMA-mapping (for the
+> > device) and also map this page into userspace.
+> >
+> 
+> I think this is already the case i.e pages still DMA-mapped and also
+> mapped into userspace.
+> 
+> > (3) The page_pool is optimized for refcnt==1 case, and AFAIK TCP-RX
+> > zerocopy will bump the refcnt, which means the page_pool will not
+> > recycle the page when it see the elevated refcnt (it will instead
+> > release its DMA-mapping).
+> 
+> Yes this is right but the userspace might have already consumed and
+> unmapped the page before the driver considers to recycle the page.
+
+Same question here. I'll have a closer look in a few days and make sure we are
+not breaking anything wrt zerocopy.
+
+> 
+> >
+> > (4) I remember vaguely that this code path for (TCP RX zerocopy) uses
+> > page->private for tricks.  And our patch [3/5] use page->private for
+> > storing xdp_mem_info.
+> >
+> > IMHO when the SKB travel into this TCP RX zerocopy code path, we should
+> > call page_pool_release_page() to release its DMA-mapping.
+> >
+> 
+> I will let TCP RX zerocopy experts respond to this but from my high
+> level code inspection, I didn't see page->private usage.
+
+Shakeel are you aware of any 'easy' way I can have rx zerocopy running?
+
+
+Thanks!
+/Ilias
