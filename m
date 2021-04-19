@@ -2,95 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 629D83648B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 18:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE9E3648B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 19:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239551AbhDSQ7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 12:59:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43373 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232528AbhDSQ7s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 12:59:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618851558;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=p2yCOAsF2W6pdJQCZiN/BRe+VSsYLOg75hHhxWgADKE=;
-        b=ePjpX/PSMNeP6PGla92WIXacnpI4A26dnhB5Mbu/sx42ftNQWHxCqHDvPmueoPq1Ubn+NN
-        zSkf2gGc4j/UPH5z8RHl7mGvIs0fAfeWCb6VWDID+sHTdImOTwBLbvDOTWLfwdWTuJoxSH
-        Zi7n2VGu2HHHMNdVNDRkRG8TfSdilvM=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-465-ucPL4DFtPyGqS_oSu1bGFw-1; Mon, 19 Apr 2021 12:59:16 -0400
-X-MC-Unique: ucPL4DFtPyGqS_oSu1bGFw-1
-Received: by mail-ed1-f70.google.com with SMTP id h13-20020a05640250cdb02903790a9c55acso11513878edb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 09:59:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=p2yCOAsF2W6pdJQCZiN/BRe+VSsYLOg75hHhxWgADKE=;
-        b=CY5GihruIQuNQxq8WWbwdieOpQ6Sr65oGOutv6NpKgtM35YffnEvZ2ZuzEBKMGpY2A
-         UREWlsgLJ6SyeHp2On3zgydFM5jcgmAFR65T37kmV+1nTQLharzlX36fn2Q9uJrLj6LX
-         sLzxvPaO0YT/73/0O5t3KUjNWiQ7oWAm/+oJavs0xMEOo8PcnfIZpRnDxtEyPtzj8s20
-         hifgW/wOLmRddAEB/NC9MKmOpelgNXc9MVGjTEg6cQE/Pb53FnMl9j2xclhLr5GfjNbW
-         MzB+GMwxumpPDXwZogAf/bJFhb4pHcrSGa42hR/ckhxwup34i+wHHSfEl3I8dpT/wi13
-         8FcQ==
-X-Gm-Message-State: AOAM530ks2WYMd68T6SpXA3cTs67H7bPuRDEmvgyG8Cd4tOjBCCjg9VV
-        /6NO+ZN8QsXmnRWOKmkcEnoZjn/Tmeg6U5uPjUtI8gUfByA+p7JJQq3x8weEzl8qMKMwLfX/khp
-        C5Ea2k2szI//zxQuBm0Qs+5r2
-X-Received: by 2002:aa7:d284:: with SMTP id w4mr19343356edq.40.1618851555826;
-        Mon, 19 Apr 2021 09:59:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzyFchJESgw+7UFFi7gMjT2GXURWU1V3gPdrMAkm5hmsQSjuAtxEZt7cFqUHIrt8QbpCDwW0g==
-X-Received: by 2002:aa7:d284:: with SMTP id w4mr19343332edq.40.1618851555663;
-        Mon, 19 Apr 2021 09:59:15 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id n15sm4006185eje.118.2021.04.19.09.59.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Apr 2021 09:59:15 -0700 (PDT)
-Subject: Re: [PATCH] KVM: Boost vCPU candidiate in user mode which is
- delivering interrupt
-To:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <kernellwp@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <1618542490-14756-1-git-send-email-wanpengli@tencent.com>
- <9c49c6ff-d896-e6a5-c051-b6707f6ec58a@redhat.com>
- <CANRm+Cy-xmDRQoUfOYm+GGvWiS+qC_sBjyZmcLykbKqTF2YDxQ@mail.gmail.com>
- <YH2wnl05UBqVhcHr@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <c1909fa3-61f3-de6b-1aa1-8bc36285e1e4@redhat.com>
-Date:   Mon, 19 Apr 2021 18:59:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S239424AbhDSRBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 13:01:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232217AbhDSRBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 13:01:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62A8161166;
+        Mon, 19 Apr 2021 17:00:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618851632;
+        bh=2l2EQFlLHfGvWsRAulraJGol2gXGNz0VePpPLXfokTc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=rc8jyjU3cJW3gkUwM2BUJR7KGhLZmb/tYdMABKz02yPItKI9wsrhlc/cWJZQZOwfV
+         EU79doz/bwhPU+3kPOJnlCJNAgit5SfvtucDTkgo1RuFy/6PTi3UD2FNgo2JgLmSk/
+         EvvryvTB5nKhUXxLpwREDVpiYWphv2TAVr0AgEON09IgfmppeGkAKy7TUY+BHFlYQ5
+         sSzCetlRx5jhEBkma7mU2vamNPGe/qFRjFUINQFTakYJUVjD7b4sI6fZY5dXfq5ctF
+         /gNItvuXCcm4ZjMQOcSYkjPvJl8yX7kU8YuAIgNyXWW2i3WYqY7jFEpSUqbtSt2mmk
+         Ff6U3KnjqXtKw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 293805C0127; Mon, 19 Apr 2021 10:00:32 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 10:00:32 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 1/2] srcu: Fix broken node geometry after early ssp init
+Message-ID: <20210419170032.GB975577@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210414132413.98062-1-frederic@kernel.org>
+ <20210414132413.98062-2-frederic@kernel.org>
+ <20210414155538.GO4510@paulmck-ThinkPad-P17-Gen-1>
+ <20210417131649.GA146778@lothringen>
+ <20210418044616.GE5006@paulmck-ThinkPad-P17-Gen-1>
+ <20210419002345.GA161053@lothringen>
 MIME-Version: 1.0
-In-Reply-To: <YH2wnl05UBqVhcHr@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210419002345.GA161053@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/04/21 18:32, Sean Christopherson wrote:
-> If false positives are a big concern, what about adding another pass to the loop
-> and only yielding to usermode vCPUs with interrupts in the second full pass?
-> I.e. give vCPUs that are already in kernel mode priority, and only yield to
-> handle an interrupt if there are no vCPUs in kernel mode.
+On Mon, Apr 19, 2021 at 02:23:45AM +0200, Frederic Weisbecker wrote:
+> On Sat, Apr 17, 2021 at 09:46:16PM -0700, Paul E. McKenney wrote:
+> > On Sat, Apr 17, 2021 at 03:16:49PM +0200, Frederic Weisbecker wrote:
+> > > On Wed, Apr 14, 2021 at 08:55:38AM -0700, Paul E. McKenney wrote:
+> > > > > diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+> > > > > index 75ed367d5b60..24db97cbf76b 100644
+> > > > > --- a/kernel/rcu/rcu.h
+> > > > > +++ b/kernel/rcu/rcu.h
+> > > > > @@ -278,6 +278,7 @@ extern void resched_cpu(int cpu);
+> > > > >  extern int rcu_num_lvls;
+> > > > >  extern int num_rcu_lvl[];
+> > > > >  extern int rcu_num_nodes;
+> > > > > +extern bool rcu_geometry_initialized;
+> > > > 
+> > > > Can this be a static local variable inside rcu_init_geometry()?
+> > > > 
+> > > > After all, init_srcu_struct() isn't called all that often, and its overhead
+> > > > is such that an extra function call and check is going to hurt it.  This
+> > > > of course requires removing __init from rcu_init_geometry(), but it is not
+> > > > all that large, so why not just remove the __init?
+> > > > 
+> > > > But if we really are worried about reclaiming rcu_init_geometry()'s
+> > > > instructions (maybe we are?), then rcu_init_geometry() can be split
+> > > > into a function that just does the check (which is not __init) and the
+> > > > remainder of the function, which could remain __init.
+> > > 
+> > > There you go:
+> > 
+> > Queued, thank you!
 > 
-> kvm_arch_dy_runnable() pulls in pv_unhalted, which seems like a good thing.
+> Thanks!
+> 
+> And please also consider "[PATCH 2/2] srcu: Early test SRCU polling start"
+> if you want to expand testing coverage to polling.
 
-pv_unhalted won't help if you're waiting for a kernel spinlock though, 
-would it?  Doing two passes (or looking for a "best" candidate that 
-prefers kernel mode vCPUs to user mode vCPUs waiting for an interrupt) 
-seems like the best choice overall.
+Ah, thank you for the reminder!  Queued and pushed.
 
-Paolo
-
+							Thanx, Paul
