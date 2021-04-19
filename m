@@ -2,198 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 120A4363EFF
+	by mail.lfdr.de (Postfix) with ESMTP id 83DBD363F00
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237994AbhDSJll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 05:41:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30082 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236079AbhDSJlc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 05:41:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618825262;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GeFgKAw6h+mPcXVcc4bWq1BMFLAt/JiFop1ZWmN9P3g=;
-        b=blr3qaMcaPKptqAW2dsrPdu12MDl7piaeHIkesm5NN/Lq2z/+17F5ftkGJZYyfylE91JNa
-        1E/9oK3IXvjT4146yDwp5+LMYz7N05gtn/OBk3GgQGZRCvVCUhWYMxZ/bAv1TojmNdmZNJ
-        dtW6BdIZiSxr+3Sw7pvfvuwiDOHbqn0=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-580-oF6KFyN0MiC0ZR3736Tbaw-1; Mon, 19 Apr 2021 05:41:01 -0400
-X-MC-Unique: oF6KFyN0MiC0ZR3736Tbaw-1
-Received: by mail-ed1-f69.google.com with SMTP id i18-20020aa7c7120000b02903853032ef71so1931131edq.22
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 02:40:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=GeFgKAw6h+mPcXVcc4bWq1BMFLAt/JiFop1ZWmN9P3g=;
-        b=oQhUpDYho0eyvCy7v2WbQLcvYyqXkAfKdNHxfpke29mXxCqxo/6EgSsAOJKZMnIjPX
-         9tZMOFUA/T6BvqoGvqTjqQB0vmXYGAEqcLUALl2Jwu7T3g1xW3wqlNUKVy2ZF/WAloY3
-         4zyU34Gf9cTeL5hqpjluCeSSB2QXBCvyfhW3hMDEjBbIKZBwtOAUB2ep3X2IDmvhs4Go
-         FrHVlF5fW8St9/rzPDmRx0yHRcXfH/eDjgckjXn9q32ipvYGfvJPW98n26VpmVqnoP17
-         7My1tr0swfHwIU00buBvyYVw0oN/kekUFUbKzOQlV9rH8wGT0m7baZsJjO6pxhtgPfyi
-         5G4A==
-X-Gm-Message-State: AOAM531/aYF9fePxZr9azPQPisXJy9B3/ip9Wbw1GUXvQ2UEg9vBMsDz
-        gW0mTbTkX/PKm/X+CCokH3W61BoX3a4tREg4sTQIXqHEAoo/aQ00ikJfpHlARUDUdkLGe1XSvny
-        H7XysoF47vesGm27snxKW4FK/
-X-Received: by 2002:aa7:dcd3:: with SMTP id w19mr404788edu.157.1618825258842;
-        Mon, 19 Apr 2021 02:40:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwUep/F2sYsfc/GbdpC874xEruErysvjZiJSGRDsYz4g5yz9xbr6J9pJm9MKGKGsnTSZWCpUQ==
-X-Received: by 2002:aa7:dcd3:: with SMTP id w19mr404773edu.157.1618825258627;
-        Mon, 19 Apr 2021 02:40:58 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c69b8.dip0.t-ipconnect.de. [91.12.105.184])
-        by smtp.gmail.com with ESMTPSA id b6sm1276048edd.18.2021.04.19.02.40.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Apr 2021 02:40:58 -0700 (PDT)
-Subject: Re: [PATCH] secretmem: optimize page_is_secretmem()
-From:   David Hildenbrand <david@redhat.com>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, kernel test robot <oliver.sang@intel.com>
-References: <20210419084218.7466-1-rppt@kernel.org>
- <3b30ac54-8a92-5f54-28f0-f110a40700c7@redhat.com>
- <YH1PE4oWeicpJT9g@kernel.org>
- <f4d0c4bf-423b-e227-444b-f1ea722dc43f@redhat.com>
-Organization: Red Hat
-Message-ID: <56d8b80c-ce2c-ed86-0eda-253768d8d463@redhat.com>
-Date:   Mon, 19 Apr 2021 11:40:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S235578AbhDSJma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 05:42:30 -0400
+Received: from mga12.intel.com ([192.55.52.136]:60390 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234613AbhDSJmV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 05:42:21 -0400
+IronPort-SDR: MJr6zbsY/p/QvaL809o/Uky6REWZRgNo/gV82hYh2wlBGWygvHsaXhD1b/rbbOAtQzgvEkfT72
+ pJcucC2t6uQA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9958"; a="174787664"
+X-IronPort-AV: E=Sophos;i="5.82,233,1613462400"; 
+   d="scan'208";a="174787664"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 02:41:50 -0700
+IronPort-SDR: HeXTOre01gj4BmDFBQZeZiuGLg66FymHh+p06AWkpv4XjBIE3NuQJCOd77V9+V+T+BJ64e4ssP
+ zCALq93mVeCQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,233,1613462400"; 
+   d="scan'208";a="452089658"
+Received: from nntpdsd52-165.inn.intel.com ([10.125.52.165])
+  by FMSMGA003.fm.intel.com with ESMTP; 19 Apr 2021 02:41:48 -0700
+From:   alexander.antonov@linux.intel.com
+To:     acme@kernel.org
+Cc:     linux-kernel@vger.kernel.org, jolsa@redhat.com, ak@linux.intel.com,
+        alexander.shishkin@linux.intel.com, mark.rutland@arm.com,
+        namhyung@kernel.org, irogers@google.com, mingo@redhat.com,
+        peterz@infradead.org, alexander.antonov@linux.intel.com,
+        alexey.v.bayduraev@linux.intel.com
+Subject: [RESEND PATCH v5 0/4] perf stat: Introduce iostat mode to provide I/O performance metrics
+Date:   Mon, 19 Apr 2021 12:41:43 +0300
+Message-Id: <20210419094147.15909-1-alexander.antonov@linux.intel.com>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-In-Reply-To: <f4d0c4bf-423b-e227-444b-f1ea722dc43f@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.04.21 11:38, David Hildenbrand wrote:
-> On 19.04.21 11:36, Mike Rapoport wrote:
->> On Mon, Apr 19, 2021 at 11:15:02AM +0200, David Hildenbrand wrote:
->>> On 19.04.21 10:42, Mike Rapoport wrote:
->>>> From: Mike Rapoport <rppt@linux.ibm.com>
->>>>
->>>> Kernel test robot reported -4.2% regression of will-it-scale.per_thread_ops
->>>> due to commit "mm: introduce memfd_secret system call to create "secret"
->>>> memory areas".
->>>>
->>>> The perf profile of the test indicated that the regression is caused by
->>>> page_is_secretmem() called from gup_pte_range() (inlined by gup_pgd_range):
->>>>
->>>>     27.76  +2.5  30.23       perf-profile.children.cycles-pp.gup_pgd_range
->>>>      0.00  +3.2   3.19 ± 2%  perf-profile.children.cycles-pp.page_mapping
->>>>      0.00  +3.7   3.66 ± 2%  perf-profile.children.cycles-pp.page_is_secretmem
->>>>
->>>> Further analysis showed that the slow down happens because neither
->>>> page_is_secretmem() nor page_mapping() are not inline and moreover,
->>>> multiple page flags checks in page_mapping() involve calling
->>>> compound_head() several times for the same page.
->>>>
->>>> Make page_is_secretmem() inline and replace page_mapping() with page flag
->>>> checks that do not imply page-to-head conversion.
->>>>
->>>> Reported-by: kernel test robot <oliver.sang@intel.com>
->>>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
->>>> ---
->>>>
->>>> @Andrew,
->>>> The patch is vs v5.12-rc7-mmots-2021-04-15-16-28, I'd appreciate if it would
->>>> be added as a fixup to the memfd_secret series.
->>>>
->>>>     include/linux/secretmem.h | 26 +++++++++++++++++++++++++-
->>>>     mm/secretmem.c            | 12 +-----------
->>>>     2 files changed, 26 insertions(+), 12 deletions(-)
->>>>
->>>> diff --git a/include/linux/secretmem.h b/include/linux/secretmem.h
->>>> index 907a6734059c..b842b38cbeb1 100644
->>>> --- a/include/linux/secretmem.h
->>>> +++ b/include/linux/secretmem.h
->>>> @@ -4,8 +4,32 @@
->>>>     #ifdef CONFIG_SECRETMEM
->>>> +extern const struct address_space_operations secretmem_aops;
->>>> +
->>>> +static inline bool page_is_secretmem(struct page *page)
->>>> +{
->>>> +	struct address_space *mapping;
->>>> +
->>>> +	/*
->>>> +	 * Using page_mapping() is quite slow because of the actual call
->>>> +	 * instruction and repeated compound_head(page) inside the
->>>> +	 * page_mapping() function.
->>>> +	 * We know that secretmem pages are not compound and LRU so we can
->>>> +	 * save a couple of cycles here.
->>>> +	 */
->>>> +	if (PageCompound(page) || !PageLRU(page))
->>>> +		return false;
->>>
->>> I'd assume secretmem pages are rare in basically every setup out there. So
->>> maybe throwing in a couple of likely()/unlikely() might make sense.
->>
->> I'd say we could do unlikely(page_is_secretmem()) at call sites. Here I can
->> hardly estimate which pages are going to be checked.
->>    
->>>> +
->>>> +	mapping = (struct address_space *)
->>>> +		((unsigned long)page->mapping & ~PAGE_MAPPING_FLAGS);
->>>> +
->>>
->>> Not sure if open-coding page_mapping is really a good idea here -- or even
->>> necessary after the fast path above is in place. Anyhow, just my 2 cents.
->>
->> Well, most if the -4.2% of the performance regression kbuild reported were
->> due to repeated compount_head(page) in page_mapping(). So the whole point
->> of this patch is to avoid calling page_mapping().
-> 
-> I would have thought the fast path "(PageCompound(page) ||
-> !PageLRU(page))" would already avoid calling page_mapping() in many cases.
+From: Alexander Antonov <alexander.antonov@linux.intel.com>
 
-(and I do wonder if a generic page_mapping() optimization would make 
-sense instead)
+Resending V5 with added Acked-by: Namhyung Kim <namhyung@kernel.org> tag.
 
-Willy can most probably give the best advise here :)
-
--- 
 Thanks,
+Alexander
 
-David / dhildenb
+The previous version can be found at:
+v4: https://lkml.kernel.org/r/20210203135830.38568-1-alexander.antonov@linux.intel.com/
+Changes in this revision are:
+v4 -> v5:
+- Addressed comments from Namhyung Kim:
+  1. Removed AGGR_PCIE_PORT aggregation mode
+  2. Added iostat_prepare() function
+  3. Moved implementation specific fprintf() calls to separate x86-related function
+  4. Fixed code-related issues
+- Moved __weak iostat's functions to separate util/iostat.c file
+
+The previous version can be found at:
+v3: https://lkml.kernel.org/r/20210126080619.30275-1-alexander.antonov@linux.intel.com/
+Changes in this revision are:
+v3 -> v4:
+- Addressed comment from Namhyung Kim:
+  1. Removed NULL-termination of root ports list
+
+The previous version can be found at:
+v2: https://lkml.kernel.org/r/20201223130320.3930-1-alexander.antonov@linux.intel.com
+
+Changes in this revision are:
+v2 -> v3:
+- Addressed comments from Namhyung Kim:
+  1. Removed perf_device pointer from evsel structure. Use priv field instead
+  2. Renamed 'iiostat' to 'iostat'
+  3. Renamed 'show' mode to 'list' mode
+  4. Renamed iiostat_delete_root_ports() to iiostat_release() and
+     iostat_show_root_ports() to iostat_list()
+
+The previous version can be found at:
+v1: https://lkml.kernel.org/r/20201210090340.14358-1-alexander.antonov@linux.intel.com
+
+Changes in this revision are:
+v1 -> v2:
+- Addressed comment from Arnaldo Carvalho de Melo:
+  1. Using 'perf iiostat' subcommand instead of 'perf stat --iiostat':
+    - Added perf-iiostat.sh script to use short command
+    - Updated manual pages to get help for 'perf iiostat'
+    - Added 'perf-iiostat' to perf's gitignore file
+
+Mode is intended to provide four I/O performance metrics in MB per each
+root port:
+ - Inbound Read:   I/O devices below root port read from the host memory
+ - Inbound Write:  I/O devices below root port write to the host memory
+ - Outbound Read:  CPU reads from I/O devices below root port
+ - Outbound Write: CPU writes to I/O devices below root port
+
+Each metric requiries only one uncore event which increments at every 4B
+transfer in corresponding direction. The formulas to compute metrics
+are generic:
+    #EventCount * 4B / (1024 * 1024)
+
+Note: iostat introduces new perf data aggregation mode - per PCIe root port
+hence -e and -M options are not supported.
+
+Usage examples:
+
+1. List all PCIe root ports (example for 2-S platform):
+   $ perf iostat list
+   S0-uncore_iio_0<0000:00>
+   S1-uncore_iio_0<0000:80>
+   S0-uncore_iio_1<0000:17>
+   S1-uncore_iio_1<0000:85>
+   S0-uncore_iio_2<0000:3a>
+   S1-uncore_iio_2<0000:ae>
+   S0-uncore_iio_3<0000:5d>
+   S1-uncore_iio_3<0000:d7>
+
+2. Collect metrics for all PCIe root ports:
+   $ perf iostat -- dd if=/dev/zero of=/dev/nvme0n1 bs=1M oflag=direct
+   357708+0 records in
+   357707+0 records out
+   375083606016 bytes (375 GB, 349 GiB) copied, 215.974 s, 1.7 GB/s
+
+    Performance counter stats for 'system wide':
+
+      port             Inbound Read(MB)    Inbound Write(MB)    Outbound Read(MB)   Outbound Write(MB) 
+   0000:00                    1                    0                    2                    3 
+   0000:80                    0                    0                    0                    0 
+   0000:17               352552                   43                    0                   21 
+   0000:85                    0                    0                    0                    0 
+   0000:3a                    3                    0                    0                    0 
+   0000:ae                    0                    0                    0                    0 
+   0000:5d                    0                    0                    0                    0 
+   0000:d7                    0                    0                    0                    0
+
+3. Collect metrics for comma separated list of PCIe root ports:
+   $ perf iostat 0000:17,0:3a -- dd if=/dev/zero of=/dev/nvme0n1 bs=1M oflag=direct
+   357708+0 records in
+   357707+0 records out
+   375083606016 bytes (375 GB, 349 GiB) copied, 197.08 s, 1.9 GB/s
+
+    Performance counter stats for 'system wide':
+
+      port             Inbound Read(MB)    Inbound Write(MB)    Outbound Read(MB)   Outbound Write(MB) 
+   0000:17               358559                   44                    0                   22 
+   0000:3a                    3                    2                    0                    0 
+
+        197.081983474 seconds time elapsed
+
+Alexander Antonov (4):
+  perf stat: Basic support for iostat in perf
+  perf stat: Helper functions for PCIe root ports list in iostat mode
+  perf stat: Enable iostat mode for x86 platforms
+  perf: Update .gitignore file
+
+ tools/perf/.gitignore                    |   1 +
+ tools/perf/Documentation/perf-iostat.txt |  88 +++++
+ tools/perf/Makefile.perf                 |   5 +-
+ tools/perf/arch/x86/util/Build           |   1 +
+ tools/perf/arch/x86/util/iostat.c        | 470 +++++++++++++++++++++++
+ tools/perf/builtin-stat.c                |  21 +-
+ tools/perf/command-list.txt              |   1 +
+ tools/perf/perf-iostat.sh                |  12 +
+ tools/perf/util/Build                    |   1 +
+ tools/perf/util/iostat.c                 |  53 +++
+ tools/perf/util/iostat.h                 |  47 +++
+ tools/perf/util/stat-display.c           |  40 +-
+ tools/perf/util/stat-shadow.c            |   5 +-
+ tools/perf/util/stat.h                   |   1 +
+ 14 files changed, 733 insertions(+), 13 deletions(-)
+ create mode 100644 tools/perf/Documentation/perf-iostat.txt
+ create mode 100644 tools/perf/arch/x86/util/iostat.c
+ create mode 100644 tools/perf/perf-iostat.sh
+ create mode 100644 tools/perf/util/iostat.c
+ create mode 100644 tools/perf/util/iostat.h
+
+
+base-commit: 4c391ea001cb2e7bd9a691a886c0dcb030c1791c
+-- 
+2.21.3
 
