@@ -2,116 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83287364756
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 17:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0478E36475D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 17:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241586AbhDSPpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 11:45:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33942 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241127AbhDSPpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 11:45:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D9D7611F0;
-        Mon, 19 Apr 2021 15:44:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618847085;
-        bh=1hglvV4GjA2advCM06OW1Eit/4/3I8x0HflbVk4wpuY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WNizhiRqZajO+MiOARISqtKtGpPmaO3wBUEXBYaZcF6e7reYd0/YMFWwxNeUTgfe5
-         N0tLt+LESGZ0BdkDW3AuEDpdlHVeG7V2YZc2pw1QfKfGNHfgkp27nLA+HX2gYT/PlF
-         jjwDuzd486c9+/Ek2R9WiHAh1F83drMgZjVy6M5HwtRkmYgbUgIZFHsKtDfO6a2rfA
-         +4bBRNSkFbnMxtKkhdWLWX/zAHKy0j8hPIOlI2tARuJQBD9r8jCYQv7fwWP70ews22
-         4xF7qVIGlwcnhnZhLcuSOudwPys6pA43cQdtZi4ARk833UdG1HnVntK56j4MBHe2Os
-         Gkj2cUSl0uVVQ==
-Received: by mail-ej1-f52.google.com with SMTP id sd23so44997192ejb.12;
-        Mon, 19 Apr 2021 08:44:44 -0700 (PDT)
-X-Gm-Message-State: AOAM531EDZPieClMq1AR16vC2Kr3e/9IcnBq58qRl2APCcTPrylkvjrY
-        kVa9dZzh7lT60OtCy5yxf8wyW3rueNksBt9ooA==
-X-Google-Smtp-Source: ABdhPJzBXwETiXa9YzZ6qf4GsLL82HMp0uZcY/aPM/9WWzio+BYfi1hv5Mfge2u58qRhymWTxr7qLgFRkOJydeQPCks=
-X-Received: by 2002:a17:906:9ac5:: with SMTP id ah5mr22189976ejc.360.1618847083667;
- Mon, 19 Apr 2021 08:44:43 -0700 (PDT)
+        id S241404AbhDSPri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 11:47:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240008AbhDSPrg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 11:47:36 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A3AC06174A;
+        Mon, 19 Apr 2021 08:47:06 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id e9so958314plj.2;
+        Mon, 19 Apr 2021 08:47:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mHhGKeIctTE9q3TzmUGJDnwdfTOiVckaG8iU9u6BBb8=;
+        b=U90mGE3SCk0hHq6gZdSn7f5crLx4hqsKgL310yjp+KUu94mfLaOvGCsoYmwDB2bYkN
+         fqDRYA/ECwXF/mNHS+TCCzpXxr1lDJNuTilbZEVVj7YCeBjEiDpLJOh3oDr9/zbDqYCo
+         iKGHUzdSjujJIzH/sLJ8K3k+Xyf9u5DlmjpCwlJIVBrnfQHAJjya377j9ZORGjHw0Zqs
+         4OlM3UPZv3egKZwUcFmqWM1RMMpekeIGeIm6NUkpNY5UDzCKofuXpqjlyxau1tAJ3AyE
+         thosZnwjlaHHMTkGGlAK370SddaR0E/10GdgT5Dea5fpb5QKRGRdRQh8/5Gu97JrCCUL
+         3vbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mHhGKeIctTE9q3TzmUGJDnwdfTOiVckaG8iU9u6BBb8=;
+        b=P0rykD3cnQLAdh31BwYwMMgUek/Fq5+uHRCknB9vN/zZh+Au7bl3kmbpW5XoLV96JH
+         QqG7ZkiTgz9ytcufcL93jvUiJUX0lwCIGz5RCQGtUNUixPg9moRrIx/o1ytpuyVkMGnB
+         FrNVTljUIZTF/WO14y8zc+/4kGFyqXuv8FeEU7g6xUX+DXSrUAjNSYB+duA1MyVF+ax0
+         tRyyNubkGMbyzD1ooinSB47Mn9KYE+jToV7EMjuzWV6VwzNDymDrk13I4NNbrlrXEr5Q
+         Nx7LiniOwf9FCfeGT42t/RlBfXzkcMAsubkLvtzKbGkDssz9IlopCl+C+zhzVBPo4t9Q
+         7cIA==
+X-Gm-Message-State: AOAM5308DNTo8qDyKFIKm5krJpjf+J1837OPZrihhLPxYOhhS8xr4EjQ
+        S99CX8qnDVtt6dvunyhG8O8=
+X-Google-Smtp-Source: ABdhPJwEv5qT/XqTbj1q/dpSsZUb3bCHW7/pzynCrX00Sh6PkmdMESDZ61kpeg+wuvILIqa6MO0Ukg==
+X-Received: by 2002:a17:902:da85:b029:eb:8794:7078 with SMTP id j5-20020a170902da85b02900eb87947078mr21536236plx.25.1618847226006;
+        Mon, 19 Apr 2021 08:47:06 -0700 (PDT)
+Received: from z640-arch.lan ([2602:61:7344:f100::678])
+        by smtp.gmail.com with ESMTPSA id u1sm15314139pjj.19.2021.04.19.08.47.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 08:47:05 -0700 (PDT)
+From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Felix Fietkau <nbd@nbd.name>,
+        John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Subject: [PATCH net-next v2 0/2] net: ethernet: mediatek: support custom GMAC label
+Date:   Mon, 19 Apr 2021 08:46:57 -0700
+Message-Id: <20210419154659.44096-1-ilya.lipnitskiy@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210415180050.373791-1-leobras.c@gmail.com> <CAL_Jsq+WwAeziGN4EfPAWfA0fieAjfcxfi29=StOx0GeKjAe_g@mail.gmail.com>
- <7b089cd48b90f2445c7cb80da1ce8638607c46fc.camel@gmail.com>
-In-Reply-To: <7b089cd48b90f2445c7cb80da1ce8638607c46fc.camel@gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 19 Apr 2021 10:44:31 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+m6CkGj_NYGvwxoKwoQ4PkEu6hfGdMTT3i4APoHSkNeg@mail.gmail.com>
-Message-ID: <CAL_Jsq+m6CkGj_NYGvwxoKwoQ4PkEu6hfGdMTT3i4APoHSkNeg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] of/pci: Add IORESOURCE_MEM_64 to resource flags for
- 64-bit memory addresses
-To:     Leonardo Bras <leobras.c@gmail.com>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 3:58 PM Leonardo Bras <leobras.c@gmail.com> wrote:
->
-> Hello Rob, thanks for this feedback!
->
-> On Thu, 2021-04-15 at 13:59 -0500, Rob Herring wrote:
-> > +PPC and PCI lists
-> >
-> > On Thu, Apr 15, 2021 at 1:01 PM Leonardo Bras <leobras.c@gmail.com> wrote:
-> > >
-> > > Many other resource flag parsers already add this flag when the input
-> > > has bits 24 & 25 set, so update this one to do the same.
-> >
-> > Many others? Looks like sparc and powerpc to me.
-> >
->
-> s390 also does that, but it look like it comes from a device-tree.
+Add support for specifying GMAC label via DTS. Useful when it is desired
+to use a master DSA interface name that is different from the "eth%d"
+pattern.
 
-I'm only looking at DT based platforms, and s390 doesn't use DT.
+v2:
+  - Use alloc_netdev instead of alloc_etherdev followed by rename
 
-> > Those would be the
-> > ones I worry about breaking. Sparc doesn't use of/address.c so it's
-> > fine. Powerpc version of the flags code was only fixed in 2019, so I
-> > don't think powerpc will care either.
->
-> In powerpc I reach this function with this stack, while configuring a
-> virtio-net device for a qemu/KVM pseries guest:
->
-> pci_process_bridge_OF_ranges+0xac/0x2d4
-> pSeries_discover_phbs+0xc4/0x158
-> discover_phbs+0x40/0x60
-> do_one_initcall+0x60/0x2d0
-> kernel_init_freeable+0x308/0x3a8
-> kernel_init+0x2c/0x168
-> ret_from_kernel_thread+0x5c/0x70
->
-> For this, both MMIO32 and MMIO64 resources will have flags 0x200.
+Ilya Lipnitskiy (2):
+  dt-bindings: net: mediatek: add optional GMAC labels
+  net: ethernet: mediatek: support custom GMAC label
 
-Oh good, powerpc has 2 possible flags parsing functions. So in the
-above path, do we need to set PCI_BASE_ADDRESS_MEM_TYPE_64?
+ Documentation/devicetree/bindings/net/mediatek-net.txt | 6 ++++++
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c            | 6 ++++--
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
-Does pci_parse_of_flags() get called in your case?
+-- 
+2.31.1
 
-> > I noticed both sparc and powerpc set PCI_BASE_ADDRESS_MEM_TYPE_64 in
-> > the flags. AFAICT, that's not set anywhere outside of arch code. So
-> > never for riscv, arm and arm64 at least. That leads me to
-> > pci_std_update_resource() which is where the PCI code sets BARs and
-> > just copies the flags in PCI_BASE_ADDRESS_MEM_MASK ignoring
-> > IORESOURCE_* flags. So it seems like 64-bit is still not handled and
-> > neither is prefetch.
-> >
->
-> I am not sure if you mean here:
-> a) it's ok to add IORESOURCE_MEM_64 here, because it does not affect
-> anything else, or
-> b) it should be using PCI_BASE_ADDRESS_MEM_TYPE_64
-> (or IORESOURCE_MEM_64 | PCI_BASE_ADDRESS_MEM_TYPE_64) instead, since
-> it's how it's added in powerpc/sparc, and else there is no point.
-
-I'm wondering if a) is incomplete and PCI_BASE_ADDRESS_MEM_TYPE_64
-also needs to be set. The question is ultimately are BARs getting set
-correctly for 64-bit? It looks to me like they aren't.
-
-Rob
