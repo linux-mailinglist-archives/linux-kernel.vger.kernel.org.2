@@ -2,71 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F535363D1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA5E363D23
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:07:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238062AbhDSIDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 04:03:33 -0400
-Received: from mail-vs1-f41.google.com ([209.85.217.41]:44909 "EHLO
-        mail-vs1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229870AbhDSID0 (ORCPT
+        id S238044AbhDSIGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 04:06:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229870AbhDSIFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 04:03:26 -0400
-Received: by mail-vs1-f41.google.com with SMTP id t23so788928vso.11;
-        Mon, 19 Apr 2021 01:02:55 -0700 (PDT)
+        Mon, 19 Apr 2021 04:05:54 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D7AC06174A;
+        Mon, 19 Apr 2021 01:05:23 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id r186so6844777oif.8;
+        Mon, 19 Apr 2021 01:05:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I6ETiJ3wsBXNPuemCnAH/ZRYp/GfduiDc1+bwALCeEc=;
+        b=kqu7z/NER7PJLGEtZYNAg42xhJqhRipSESRvauhdIMq7PauggZbdhrf49OezPtpE/z
+         /g16pzArSzHBqUIPr9PfeASVTZ/UBp4jH50BP7crxra+8KBzIT/vac9lL2si1LsIF+r4
+         +w7LLFwaYQbN7k184Uc0x0PgvziN168nlNNlBBtXHxQIFpS4ZE676lG4AGZejrbhHa03
+         zpENFXtUTqCcHAp52mfLhaclDEhbvXEzTD6KlpodUhH/g1djwyJY1BLMp+IJ+uBw6VQC
+         UPb0y8xWlf3J858mbf9Q5gP3Qqtn7i/XefLbvXSzVNUOW2NIyTmrEoVb8ED7kcMcZEbo
+         4dVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BRE7kUfgnyAkLcXnn28/l9BglZanciveXxOogGBkKYA=;
-        b=gbQqLesm1el/IA5e0SjWJjQW+nJzz0LSVH2i1Jo4EoU3EKjvEAUJbqrWkBaorJMNbj
-         uM9nYaLzds+a9QjapGruGt8+j0yaBfPN9q3h1lxbYaOSnnFDNOAS7yICZwurBCiorxhr
-         STeqJV9o8CsRudc+klsEcb3Z2nOod5QONLbsvv+v7vncAqOyJ5iCNjddNItsZRQgzPm5
-         zTN9Q1/lTyvgG1qWnOVdzhDFXQ4NFhgH4UV3mLXhMbeLiU4ytCY2N/8Oqr8MOOB9T9uh
-         X1SORJVoS7vEN9Lmg1qijjRWq0YCWUIFK/7ILH/21bz60Ejd900J3Q9rRVJ4iBbxVEAa
-         qUYA==
-X-Gm-Message-State: AOAM533dOpzSwITZRKFoFdsVsXMwJW0khWpz8ug43vRiacslFo6Ychf+
-        9JTt4An9JPbtjwTIzJfOxPNvqO7xCNr99AaD4Lk=
-X-Google-Smtp-Source: ABdhPJy7REj0RnwsC0BmC4LayU/iKxq10ifb4FvZKHMY+ozOYrogO74Rl4V4Kli3EDWHBjKXGqJivciBrwVoQCb4shA=
-X-Received: by 2002:a67:f503:: with SMTP id u3mr12324042vsn.3.1618819375153;
- Mon, 19 Apr 2021 01:02:55 -0700 (PDT)
+        bh=I6ETiJ3wsBXNPuemCnAH/ZRYp/GfduiDc1+bwALCeEc=;
+        b=cQljw+H02+sw76LfwTFXPOt8pHmnB2fA4wwDOJ3+YD/yqbywi5L4ySfSj4TN67IspN
+         822yHh/9TRgoP4GUxPUmEeLSws2bioJHwyrW1oj6EwvIf0kzJbqIX9KYUdrvcB4CbjWj
+         jMtTOzGOyT1kjJEyiU9sVNyxokzBos1nxgzOrcHSHh0hvWeL8FGEbbu+Vv6PauoS6NCc
+         Gn486WxsX0kobVhNgcrtB7QPD5o2lvvcM5Zgc7jlF/GN/23qmtiQpRpuGV06xGpKSyv4
+         u7LYuyt4ZBE4yEwvOyqwi05AWwdY1IxbAVvUCM9Kv5S7nP5HIXwEYpx7YZoS3InOJWOC
+         mNMA==
+X-Gm-Message-State: AOAM5332kE7Yl9ph2OngfEtVHgYkhEHVuEEeF2Sda3kmEc4kfcljbhF8
+        83Oh7zi44s3jm13Vg3wAw4mlxkBDgQk+5i5XuEM=
+X-Google-Smtp-Source: ABdhPJzHBoV5bZT5fqKBQyWrPkOvrbOg2DYf7jUkxgoA0aS0Fim5RuV0lEdOi9AYwT5lx4EGOFcgIffC7SHNsF7jdf0=
+X-Received: by 2002:aca:4fc8:: with SMTP id d191mr812798oib.139.1618819522797;
+ Mon, 19 Apr 2021 01:05:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210417132329.6886-1-aford173@gmail.com>
-In-Reply-To: <20210417132329.6886-1-aford173@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 19 Apr 2021 10:02:44 +0200
-Message-ID: <CAMuHMdXPj-p++EAkq=nUKqQB4_FM7whi8BbFm+1OG5EPF98hLg@mail.gmail.com>
-Subject: Re: [PATCH] net: ethernet: ravb: Fix release of refclk
-To:     Adam Ford <aford173@gmail.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1618763386-29562-1-git-send-email-zhoul110@chinatelecom.cn> <20210418165953.GA1206@zn.tnic>
+In-Reply-To: <20210418165953.GA1206@zn.tnic>
+From:   Steven Zhou <lullaby2005@gmail.com>
+Date:   Mon, 19 Apr 2021 16:05:12 +0800
+Message-ID: <CAEtkB+7CsTJYHNTEYotrJ4qEXSBTU4S8OJ+0zc5F0cMy1sk51w@mail.gmail.com>
+Subject: Re: [PATCH] docs: fix the invalid vt-d spec location
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        hpa@zytor.com, corbet@lwn.net, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, Liang Zhou <zhoul110@chinatelecom.cn>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 3:23 PM Adam Ford <aford173@gmail.com> wrote:
-> The call to clk_disable_unprepare() can happen before priv is
-> initialized. This means moving clk_disable_unprepare out of
-> out_release into a new label.
+Hi Boris,
+
+Thank you for your comments.
+
+The vt-d spec PDF is around 11M size and after be zipped it's still
+around 10M size which cannot be uploaded to "bugzilla.kernel.org"
+because this site limits 5M file size to be uploaded.
+Seems currently I cannot use the similar way as what you suggested to
+specify the bugzilla attachment link in intel-iommu.rst .
+
+Do you have any other suggestion about the link location please ?
+
+Thanks.
+
+On Mon, Apr 19, 2021 at 12:59 AM Borislav Petkov <bp@alien8.de> wrote:
 >
-> Fixes: 8ef7adc6beb2("net: ethernet: ravb: Enable optional refclk")
-> Signed-off-by: Adam Ford <aford173@gmail.com>
+> On Sun, Apr 18, 2021 at 09:29:46AM -0700, Liang Zhou wrote:
+> > This patch fixes the invalid vt-d spec location.
+>
+> Avoid having "This patch" or "This commit" in the commit message. It is
+> tautologically useless.
+>
+> Also, do
+>
+> $ git grep 'This patch' Documentation/process
+>
+> for more details.
+>
+> > Signed-off-by: Liang Zhou <zhoul110@chinatelecom.cn>
+> > ---
+> >  Documentation/x86/intel-iommu.rst | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/x86/intel-iommu.rst b/Documentation/x86/intel-iommu.rst
+> > index 099f13d..e95ee34 100644
+> > --- a/Documentation/x86/intel-iommu.rst
+> > +++ b/Documentation/x86/intel-iommu.rst
+> > @@ -4,7 +4,7 @@ Linux IOMMU Support
+> >
+> >  The architecture spec can be obtained from the below location.
+> >
+> > -http://www.intel.com/content/dam/www/public/us/en/documents/product-specifications/vt-directed-io-spec.pdf
+> > +https://software.intel.com/content/dam/develop/external/us/en/documents-tps/vt-directed-io-spec.pdf
+>
+> Those links are never stable.
+>
+> Please open a bugzilla at bugzilla.kernel.org, upload that document
+> there, like this, for example:
+>
+> https://bugzilla.kernel.org/show_bug.cgi?id=206537
+>
+> and then add the *bugzilla* link to intel-iommu.rst so that it doesn't
+> get invalid again.
+>
+> Thx.
+>
+> --
+> Regards/Gruss,
+>     Boris.
+>
+> https://people.kernel.org/tglx/notes-about-netiquette
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Gr{oetje,eeting}s,
-
-                        Geert
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Best Regards.
+Liang
