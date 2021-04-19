@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816DE36448A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8783644E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241073AbhDSN3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:29:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55076 "EHLO mail.kernel.org"
+        id S237874AbhDSNfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:35:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241458AbhDSNUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:20:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14E19613D7;
-        Mon, 19 Apr 2021 13:16:51 +0000 (UTC)
+        id S241814AbhDSNYs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:24:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9690E613D5;
+        Mon, 19 Apr 2021 13:19:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618838212;
-        bh=zo2VGUA4vjyaBsM1mgdZmdaQSOR5md7ENQk7yO5LMLA=;
+        s=korg; t=1618838372;
+        bh=MR7jieoMQbnagCnvLnqtML26glCOsb8/Vcs6olGkTTs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jzwpaFZXN0WUjau/J8Iw2BvrlfusAfoISgqzEWVWf0zVWXE9NXbbbIy04Q8BIXrsj
-         WQXf5oN1AFRTuruMDtqdTwhlBQKzkpwM8AIB1BIDTQ9j5wkg2BV6kUla1Ri5ceXEBz
-         yJVBy0WOKwX4Z9SU9BuxgyCJdUq4m2f6rHy/r9q8=
+        b=voTd8sVC1YormdUqadpmbKShV2Y8T5zSvHI+adUDOjf3hB2NkGpp6mITWnNdUW3Iu
+         ITpmRTijXuluvKVDz4egqh6fsC1HODlB7+ATA8GDe59KBjfRoFwBFJtpZ8vY1knIsu
+         2bmu1lqTv640CwusDgzQOYcyKWe+e0F+kr1ngnEE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 076/103] ia64: remove duplicate entries in generic_defconfig
-Date:   Mon, 19 Apr 2021 15:06:27 +0200
-Message-Id: <20210419130530.422894477@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 37/73] net: tipc: Fix spelling errors in net/tipc module
+Date:   Mon, 19 Apr 2021 15:06:28 +0200
+Message-Id: <20210419130525.036737593@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210419130527.791982064@linuxfoundation.org>
-References: <20210419130527.791982064@linuxfoundation.org>
+In-Reply-To: <20210419130523.802169214@linuxfoundation.org>
+References: <20210419130523.802169214@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,41 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Zheng Yongjun <zhengyongjun3@huawei.com>
 
-commit 19d000d93303e05bd7b1326e3de9df05a41b25b5 upstream.
+[ Upstream commit a79ace4b312953c5835fafb12adc3cb6878b26bd ]
 
-Fix ia64 generic_defconfig duplicate entries, as warned by:
+These patches fix a series of spelling errors in net/tipc module.
 
-  arch/ia64/configs/generic_defconfig: warning: override: reassigning to symbol ATA:  => 58
-  arch/ia64/configs/generic_defconfig: warning: override: reassigning to symbol ATA_PIIX:  => 59
-
-These 2 symbols still have the same value as in the removed lines.
-
-Link: https://lkml.kernel.org/r/20210411020255.18052-1-rdunlap@infradead.org
-Fixes: c331649e6371 ("ia64: Use libata instead of the legacy ide driver in defconfigs")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: Fenghua Yu <fenghua.yu@intel.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/ia64/configs/generic_defconfig |    2 --
- 1 file changed, 2 deletions(-)
+ net/tipc/bearer.h | 6 +++---
+ net/tipc/net.c    | 2 +-
+ net/tipc/node.c   | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
---- a/arch/ia64/configs/generic_defconfig
-+++ b/arch/ia64/configs/generic_defconfig
-@@ -55,8 +55,6 @@ CONFIG_CHR_DEV_SG=m
- CONFIG_SCSI_FC_ATTRS=y
- CONFIG_SCSI_SYM53C8XX_2=y
- CONFIG_SCSI_QLOGIC_1280=y
--CONFIG_ATA=y
--CONFIG_ATA_PIIX=y
- CONFIG_SATA_VITESSE=y
- CONFIG_MD=y
- CONFIG_BLK_DEV_MD=m
+diff --git a/net/tipc/bearer.h b/net/tipc/bearer.h
+index ea0f3c49cbed..a7b4cf66dfc2 100644
+--- a/net/tipc/bearer.h
++++ b/net/tipc/bearer.h
+@@ -149,9 +149,9 @@ struct tipc_media {
+  * care of initializing all other fields.
+  */
+ struct tipc_bearer {
+-	void __rcu *media_ptr;			/* initalized by media */
+-	u32 mtu;				/* initalized by media */
+-	struct tipc_media_addr addr;		/* initalized by media */
++	void __rcu *media_ptr;			/* initialized by media */
++	u32 mtu;				/* initialized by media */
++	struct tipc_media_addr addr;		/* initialized by media */
+ 	char name[TIPC_MAX_BEARER_NAME];
+ 	struct tipc_media *media;
+ 	struct tipc_media_addr bcast_addr;
+diff --git a/net/tipc/net.c b/net/tipc/net.c
+index 2498ce8b83c1..2600be4b0d89 100644
+--- a/net/tipc/net.c
++++ b/net/tipc/net.c
+@@ -89,7 +89,7 @@
+  *     - A spin lock to protect the registry of kernel/driver users (reg.c)
+  *     - A global spin_lock (tipc_port_lock), which only task is to ensure
+  *       consistency where more than one port is involved in an operation,
+- *       i.e., whe a port is part of a linked list of ports.
++ *       i.e., when a port is part of a linked list of ports.
+  *       There are two such lists; 'port_list', which is used for management,
+  *       and 'wait_list', which is used to queue ports during congestion.
+  *
+diff --git a/net/tipc/node.c b/net/tipc/node.c
+index c8f6177dd5a2..47f7c8e856c6 100644
+--- a/net/tipc/node.c
++++ b/net/tipc/node.c
+@@ -1482,7 +1482,7 @@ int tipc_node_xmit(struct net *net, struct sk_buff_head *list,
+ }
+ 
+ /* tipc_node_xmit_skb(): send single buffer to destination
+- * Buffers sent via this functon are generally TIPC_SYSTEM_IMPORTANCE
++ * Buffers sent via this function are generally TIPC_SYSTEM_IMPORTANCE
+  * messages, which will not be rejected
+  * The only exception is datagram messages rerouted after secondary
+  * lookup, which are rare and safe to dispose of anyway.
+-- 
+2.30.2
+
 
 
