@@ -2,98 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645813639B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 05:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6883639B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 05:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237417AbhDSDSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 23:18:03 -0400
-Received: from mail-lj1-f180.google.com ([209.85.208.180]:35371 "EHLO
-        mail-lj1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237406AbhDSDSB (ORCPT
+        id S237434AbhDSDSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 23:18:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34164 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237333AbhDSDSV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 23:18:01 -0400
-Received: by mail-lj1-f180.google.com with SMTP id a1so37678275ljp.2;
-        Sun, 18 Apr 2021 20:17:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=b1Esi1WD3INsXc8Mpz0AJivayvHJYCQXopFXhNta98w=;
-        b=SwP6qdDfULNgiFhCReun5MFiKaUhBiFxL61WvF0I2F3onHcpUglftWCVGcIlTnrA2P
-         ZuyDNJawkATYMnfYearmEjtNtJAcwu03Il1QdSw8zNODvHelC0Z25jvwCZt1CUmPWS8L
-         /QC0IH88XHvW4Qeb7mEgu91vYWTA+bNxzXjI4nyhFNaEQRtqX2RK7Wp9UzpZpt9JfSh3
-         ho5RC6A4gkzWNHA4PMJhkkvqvxLqC3+ODFtW7r5FzJthEboOYGxIkI38uTDrC1NW4Ifm
-         1GNntD/FfLaBKGlNTkDpItr0s63k7c6BiIuxTB7gb8MbFjtUtATwmJSyLFiLFFQTN1R7
-         dT6w==
-X-Gm-Message-State: AOAM532vmh2Q7XZ1tNrvx3ygJpRMFwYi027kOqO+PYO4qsVEp2pAyZtY
-        oOyDVGYcNX1i6Z+x4xebY7GPVk2HgersdQ==
-X-Google-Smtp-Source: ABdhPJw/RqNKojJfu3DeiCIkYZ+LkTRMGTrzf+il+R/vQVf6hnz9t5/JKTZm2Cvutf+Is5ahVNPzug==
-X-Received: by 2002:a2e:804d:: with SMTP id p13mr9994910ljg.267.1618802250357;
-        Sun, 18 Apr 2021 20:17:30 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id a25sm1720590ljm.130.2021.04.18.20.17.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Apr 2021 20:17:30 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id f17so46630103lfu.7;
-        Sun, 18 Apr 2021 20:17:29 -0700 (PDT)
-X-Received: by 2002:a05:6512:3e0a:: with SMTP id i10mr10803227lfv.496.1618802249832;
- Sun, 18 Apr 2021 20:17:29 -0700 (PDT)
+        Sun, 18 Apr 2021 23:18:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618802272;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kqu7b/R1y+iNn3LQCUv3CxvSNt0vkP4D2ZFqD/1uXRc=;
+        b=IxWSyDOMJVwQqOYMVmdEIaPDly0hX/iA3MWk6/udM0uML7QlZvnut2yJFHM1QUSCDTDh1X
+        UEqBqyY0L4qWAjJk+FzHDL6kPxbdn4Ikh6124UdmNAWjm1U8PD/CtzMdPzkdsc2Ap2p0pQ
+        A8r+uqENDA8qnePVRHFDHRo0yJpmzCs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-327-yl9jzV4EMmCooe1ydXK_hg-1; Sun, 18 Apr 2021 23:17:50 -0400
+X-MC-Unique: yl9jzV4EMmCooe1ydXK_hg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 741A5100A605;
+        Mon, 19 Apr 2021 03:17:49 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-12-157.pek2.redhat.com [10.72.12.157])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 13C0519C66;
+        Mon, 19 Apr 2021 03:17:41 +0000 (UTC)
+Subject: Re: [PATCH V3 3/3] vDPA/ifcvf: get_config_size should return dev
+ specific config size
+To:     Zhu Lingshan <lingshan.zhu@intel.com>, mst@redhat.com,
+        lulu@redhat.com, sgarzare@redhat.com
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210416071628.4984-1-lingshan.zhu@intel.com>
+ <20210416071628.4984-4-lingshan.zhu@intel.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <c1afa91f-b0a1-9ea8-8827-a0920a26f16e@redhat.com>
+Date:   Mon, 19 Apr 2021 11:17:40 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.1
 MIME-Version: 1.0
-References: <20210419025246.21722-1-samuel@sholland.org>
-In-Reply-To: <20210419025246.21722-1-samuel@sholland.org>
-Reply-To: wens@csie.org
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Mon, 19 Apr 2021 11:17:19 +0800
-X-Gmail-Original-Message-ID: <CAGb2v642Z3iH7fUWa31Rb5j+nWdZ=sXn2BYw3_dyE9P6iuL0Cg@mail.gmail.com>
-Message-ID: <CAGb2v642Z3iH7fUWa31Rb5j+nWdZ=sXn2BYw3_dyE9P6iuL0Cg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] sunxi: Enforce consistent MMC numbering
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-sunxi@lists.linux.dev,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210416071628.4984-4-lingshan.zhu@intel.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Mon, Apr 19, 2021 at 10:52 AM Samuel Holland <samuel@sholland.org> wrote:
+ÔÚ 2021/4/16 ÏÂÎç3:16, Zhu Lingshan Ð´µÀ:
+> get_config_size() should return the size based on the decected
+> device type.
 >
-> Dealing with the inconsistent numbering has been a major pain, and
-> there is a solution with (as far as I can tell) no tangible downsides.
-> So let's use it.
->
-> Yes, I know the kernel supports UUIDs for root=. But UUIDs do not help
-> when referencing the whole, unpartitioned device, like is needed for
-> updating the bootloader and firmware. So for the use case of "write a
-> bootloader to the SD card, regardless of where the board is currently
-> booted from", I know of two options:
->   - Dig around in sysfs to find the mmc number from the MMIO address,
->     which means I have to know the MMIO addresses for every SoC, or
->   - Apply patches like these.
->
-> Samuel Holland (2):
->   ARM: dts: sunxi: h3/h5: Enforce consistent MMC numbering
->   arm64: dts: allwinner: Enforce consistent MMC numbering
->
->  arch/arm/boot/dts/sunxi-h3-h5.dtsi            | 6 ++++++
->  arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 6 ++++++
->  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  | 6 ++++++
-
-At least with Rockchip this is now done at the board level. IIRC it was
-a request from other people to not do it at the SoC level. I don't recall
-exactly who though.
-
-ChenYu
+> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
 
 
->  3 files changed, 18 insertions(+)
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+
+> ---
+>   drivers/vdpa/ifcvf/ifcvf_main.c | 19 ++++++++++++++++++-
+>   1 file changed, 18 insertions(+), 1 deletion(-)
 >
-> --
-> 2.26.3
->
->
+> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
+> index 376b2014916a..3b6f7862dbb8 100644
+> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
+> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
+> @@ -356,7 +356,24 @@ static u32 ifcvf_vdpa_get_vq_align(struct vdpa_device *vdpa_dev)
+>   
+>   static size_t ifcvf_vdpa_get_config_size(struct vdpa_device *vdpa_dev)
+>   {
+> -	return sizeof(struct virtio_net_config);
+> +	struct ifcvf_adapter *adapter = vdpa_to_adapter(vdpa_dev);
+> +	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
+> +	struct pci_dev *pdev = adapter->pdev;
+> +	size_t size;
+> +
+> +	switch (vf->dev_type) {
+> +	case VIRTIO_ID_NET:
+> +		size = sizeof(struct virtio_net_config);
+> +		break;
+> +	case VIRTIO_ID_BLOCK:
+> +		size = sizeof(struct virtio_blk_config);
+> +		break;
+> +	default:
+> +		size = 0;
+> +		IFCVF_ERR(pdev, "VIRTIO ID %u not supported\n", vf->dev_type);
+> +	}
+> +
+> +	return size;
+>   }
+>   
+>   static void ifcvf_vdpa_get_config(struct vdpa_device *vdpa_dev,
+
