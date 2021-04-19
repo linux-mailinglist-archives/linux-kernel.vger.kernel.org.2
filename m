@@ -2,203 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A667363F16
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D229E363F28
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbhDSJrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 05:47:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39740 "EHLO
+        id S235023AbhDSJts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 05:49:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhDSJrG (ORCPT
+        with ESMTP id S229635AbhDSJtr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 05:47:06 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7845DC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 02:46:36 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1lYQTz-0008Uf-0A; Mon, 19 Apr 2021 11:46:19 +0200
-Message-ID: <97262466d537402ad4032098ef277d6d47734f1f.camel@pengutronix.de>
-Subject: Re: [PATCH] ASoC: fsl: imx-pcm-dma: Don't request dma channel in
- probe
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     Robin Gong <yibin.gong@nxp.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc:     "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
-        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
-        Linux-ALSA <alsa-devel@alsa-project.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "S.j. Wang" <shengjiu.wang@nxp.com>, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "perex@perex.cz" <perex@perex.cz>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
-Date:   Mon, 19 Apr 2021 11:46:15 +0200
-In-Reply-To: <VE1PR04MB6638EE85485768351755557B89499@VE1PR04MB6638.eurprd04.prod.outlook.com>
-References: <1589881301-4143-1-git-send-email-shengjiu.wang@nxp.com>
-         <0866cd8cdb0c22f0b2a6814c4dafa29202aad5f3.camel@pengutronix.de>
-         <CAA+D8APhHvA39wmCayeCsAEKmOJ0n7qOQiT1tZmFHr4+yASgTw@mail.gmail.com>
-         <53258cd99caaf1199036737f8fad6cc097939567.camel@pengutronix.de>
-         <VE1PR04MB66387217EDE5133FD2D8F793894E9@VE1PR04MB6638.eurprd04.prod.outlook.com>
-         <50ef17a2d57b022c48bbca71fd4e074cc3ca9be5.camel@pengutronix.de>
-         <VE1PR04MB6638EE85485768351755557B89499@VE1PR04MB6638.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Mon, 19 Apr 2021 05:49:47 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83677C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 02:49:16 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id m25-20020a4abc990000b02901ed4500e31dso631172oop.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 02:49:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nitggrP0xRKevJNitjMdZZF9gGxfx3q/C1mur/zTDM4=;
+        b=SnrQH8znT2PnsSAqn0jXpHSmCspkH0VVBOSQegOGOyXENQDZaw59x840LwuilNQe+L
+         TKgVMlImiglbkLDoP6FzmSzTMU7We1xNNNR4lwb6yd7RP5gE9T6UEdJZS1x6byCQyiuK
+         oivTvlDGePHJgoizjxX+ip7vSAxMBfmumdb0NB0Mbqz0R7x0whQ3bAib84SZTSY5cbsa
+         j0bxgF91OhwJUDBta4spTK92YGdQiOrEsiGwLnWtj/r2+sP1VFXUN0gAOEUa3vHbhEi5
+         c6cz8AalBDd4qvdOiCjiEhd1xaETwZaPyKBuZg2GdikqsiyhXlSWwH34sFvKEpZrUN6k
+         wgLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nitggrP0xRKevJNitjMdZZF9gGxfx3q/C1mur/zTDM4=;
+        b=p1cTxVOyqxJ0xmVHN1OCTMAaiJjxZlbRZTQtvdjnjIVCOfN7bK8JzfwulH4TyQ4xY+
+         ZiMUXkxqUUV1naNxSibEqowYWJyZ8amg2JmRJIpPfmlnTNGRW7jivatzoiMXGukGP2P9
+         PHuVE1kXJ8a70Rs5Bink2LwfU+AttMEyRryNRfciPPNJr52TPRYX2lZJ+ehdAtEUKroX
+         imhJPXUXSHQI3LZTLQzogNf294h6cqhkK8PULUIlW7ndG34lgGycZahArRhUJ5Qd1m9F
+         p/G2kVwUn97BuvN8VgOhXSnMWvFlGbLB/3CEuR2hN1e+fBmbTL71TmTIeJdfptKHR9lN
+         q0mg==
+X-Gm-Message-State: AOAM531O+c8qXAqEMvYgswP1afGaxr9JjsmM7lgadQDaARz2xT8HKsnp
+        oj2gnR9tQSjVk2KF+by4xpXhPzLlFaF9UIKblF007A==
+X-Google-Smtp-Source: ABdhPJyK0p5DKT8g7HVkLdNNo5TjSC69kgdPjyM/tw685tNXp7o0tBnV2rd+RRqciPsuO8a/EdxlE8c1zvZKS2jKS5Y=
+X-Received: by 2002:a4a:eb02:: with SMTP id f2mr12729819ooj.36.1618825755725;
+ Mon, 19 Apr 2021 02:49:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210419085027.761150-1-elver@google.com> <20210419085027.761150-2-elver@google.com>
+ <20210419094044.311-1-hdanton@sina.com> <CANpmjNMR-DPj=0mQMevyEQ7k3RJh0eq_nkt9M6kLvwC-abr_SQ@mail.gmail.com>
+In-Reply-To: <CANpmjNMR-DPj=0mQMevyEQ7k3RJh0eq_nkt9M6kLvwC-abr_SQ@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 19 Apr 2021 11:49:04 +0200
+Message-ID: <CANpmjNNO3AgK3Fr07KXQhGpqt6-z7xNJFP=UoODg-Ft=u9cGfA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] kfence: await for allocation using wait_event
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jann Horn <jannh@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, dem 19.04.2021 um 07:17 +0000 schrieb Robin Gong:
-> Hi Lucas,
-> 
-> On 2021/04/14 Lucas Stach <l.stach@pengutronix.de> wrote:
-> > Hi Robin,
-> > 
-> > Am Mittwoch, dem 14.04.2021 um 14:33 +0000 schrieb Robin Gong:
-> > > On 2020/05/20 17:43 Lucas Stach <l.stach@pengutronix.de> wrote:
-> > > > Am Mittwoch, den 20.05.2020, 16:20 +0800 schrieb Shengjiu Wang:
-> > > > > Hi
-> > > > > 
-> > > > > On Tue, May 19, 2020 at 6:04 PM Lucas Stach
-> > > > > <l.stach@pengutronix.de>
-> > > > wrote:
-> > > > > > Am Dienstag, den 19.05.2020, 17:41 +0800 schrieb Shengjiu Wang:
-> > > > > > > There are two requirements that we need to move the request of
-> > > > > > > dma channel from probe to open.
-> > > > > > 
-> > > > > > How do you handle -EPROBE_DEFER return code from the channel
-> > > > > > request if you don't do it in probe?
-> > > > > 
-> > > > > I use the dma_request_slave_channel or dma_request_channel instead
-> > > > > of dmaengine_pcm_request_chan_of. so there should be not
-> > > > > -EPROBE_DEFER return code.
-> > > > 
-> > > > This is a pretty weak argument. The dmaengine device might probe
-> > > > after you try to get the channel. Using a function to request the
-> > > > channel that doesn't allow you to handle probe deferral is IMHO a
-> > > > bug and should be fixed, instead of building even more assumptions on top
-> > of it.
-> > > > 
-> > > > > > > - When dma device binds with power-domains, the power will be
-> > > > > > > enabled when we request dma channel. If the request of dma
-> > > > > > > channel happen on probe, then the power-domains will be always
-> > > > > > > enabled after kernel boot up,  which is not good for power
-> > > > > > > saving,  so we need to move the request of dma channel to
-> > > > > > > .open();
-> > > > > > 
-> > > > > > This is certainly something which could be fixed in the
-> > > > > > dmaengine driver.
-> > > > > 
-> > > > > Dma driver always call the pm_runtime_get_sync in
-> > > > > device_alloc_chan_resources, the device_alloc_chan_resources is
-> > > > > called when channel is requested. so power is enabled on channel
-> > request.
-> > > > 
-> > > > So why can't you fix the dmaengine driver to do that RPM call at a
-> > > > later time when the channel is actually going to be used? This will
-> > > > allow further power savings with other slave devices than the audio PCM.
-> > > Hi Lucas,
-> > >   Thanks for your suggestion. I have tried to implement runtime
-> > > autosuspend in fsl-edma driver on i.mx8qm/qxp with delay time (2 sec)
-> > > for this feature as below (or you can refer to
-> > > drivers/dma/qcom/hidma.c), and pm_runtime_get_sync/
-> > > pm_runtime_put_autosuspend in all dmaengine driver interface like
-> > > device_alloc_chan_resources/device_prep_slave_sg/device_prep_dma_cycli
-> > > c/
-> > > device_tx_status...
-> > > 
-> > > 
-> > >                 pm_runtime_use_autosuspend(fsl_chan->dev);
-> > >                 pm_runtime_set_autosuspend_delay(fsl_chan->dev,
-> > 2000);
-> > > 
-> > > That could resolve this audio case since the autosuspend could suspend
-> > > runtime after
-> > > 2 seconds if there is no further dma transfer but only channel
-> > request(device_alloc_chan_resources).
-> > > But unfortunately, it cause another issue. As you know, on our
-> > > i.mx8qm/qxp, power domain done by scfw (drivers/firmware/imx/scu-pd.c)
-> > over mailbox:
-> > >  imx_sc_pd_power()->imx_scu_call_rpc()->
-> > > imx_scu_ipc_write()->mbox_send_message()
-> > > which means have to 'waits for completion', meanwhile, some driver
-> > > like tty will call dmaengine interfaces in non-atomic case as below,
-> > > 
-> > > static int uart_write(struct tty_struct *tty, const unsigned char
-> > > *buf, int count) {
-> > >    .......
-> > > 	    port = uart_port_lock(state, flags);
-> > >    ......
-> > >         __uart_start(tty);  //call start_tx()->dmaengine_prep_slave_sg...
-> > >         uart_port_unlock(port, flags);
-> > >         return ret;
-> > > }
-> > > 
-> > > Thus dma runtime resume may happen in that timing window and cause
-> > kernel alarm.
-> > > I'm not sure whether there are similar limitations on other driver
-> > > subsystem. But for me, It looks like the only way to resolve the
-> > > contradiction between tty and scu-pd (hardware limitation on
-> > > i.mx8qm/qxp) is to give up autosuspend and keep pm_runtime_get_sync
-> > only in device_alloc_chan_resources because request channel is a safe
-> > non-atomic phase.
-> > > Do you have any idea? Thanks in advance.
-> > 
-> > If you look closely at the driver you used as an example (hidma.c) it looks like
-> > there is already something in there, which looks very much like what you need
-> > here:
-> > 
-> > In hidma_issue_pending() the driver tries to get the device to runtime resume.
-> > If this doesn't work, maybe due to the power domain code not being able to
-> > be called in atomic context, the actual work of waking up the dma hardware
-> > and issuing the descriptor is shunted to a tasklet.
-> > 
-> > If I'm reading this right, this is exactly what you need here to be able to call the
-> > dmaengine code from atomic context: try the rpm get and issue immediately
-> > when possible, otherwise shunt the work to a non- atomic context where you
-> > can deal with the requirements of scu-pd.
-> Yes, I can schedule_work to worker to runtime resume edma channel by calling scu-pd.
-> But that means all dmaengine interfaces should be taken care, not only issue_pending()
-> but also dmaengine_terminate_all()/dmaengine_pause()/dmaengine_resume()/
-> dmaengine_tx_status(). Not sure why hidma only take care issue_pending. Maybe
-> their user case is just for memcpy/memset so that no further complicate case as ALSA
-> or TTY.
-> Besides, for autosuspend in cyclic, we have to add pm_runtime_get_sync into interrupt
-> handler as qcom/bam_dma.c. but how could resolve the scu-pd's non-atmoic limitation
-> in interrupt handler?  
+On Mon, 19 Apr 2021 at 11:44, Marco Elver <elver@google.com> wrote:
+>
+> On Mon, 19 Apr 2021 at 11:41, Hillf Danton <hdanton@sina.com> wrote:
+> >
+> > On Mon, 19 Apr 2021 10:50:25 Marco Elver wrote:
+> > > +
+> > > +     WRITE_ONCE(kfence_timer_waiting, true);
+> > > +     smp_mb(); /* See comment in __kfence_alloc(). */
+> >
+> > This is not needed given task state change in wait_event().
+>
+> Yes it is. We want to avoid the unconditional irq_work in
+> __kfence_alloc(). When the system is under load doing frequent
+> allocations, at least in my tests this avoids the irq_work almost
+> always. Without the irq_work you'd be correct of course.
 
-Sure, this all needs some careful analysis on how those functions are
-called and what to do about atomic callers, but it should be doable. I
-don't see any fundamental issues here.
+And in case this is about the smp_mb() here, yes it definitely is
+required. We *must* order the write of kfence_timer_waiting *before*
+the check of kfence_allocation_gate, which wait_event() does before
+anything else (including changing the state). Otherwise the write may
+be reordered after the read, and we could potentially never wake up
+because __kfence_alloc() not waking us.
 
-I don't see why you would ever need to wake the hardware in an
-interrupt handler. Surely the hardware is already awake, as it wouldn't
-signal an interrupt otherwise. And for the issue with scu-pd you only
-care about the state transition of suspended->running. If the hardware
-is already running/awake, the runtime pm state handling is nothing more
-than bumping a refcount, which is atomic safe. Putting the HW in
-suspend is already handled asynchronously in a worker, so this is also
-atomic safe.
+This is documented in __kfence_alloc().
 
-Regards,
-Lucas
-
+> > > +     wait_event_timeout(allocation_wait, atomic_read(&kfence_allocation_gate), HZ);
+> > > +     smp_store_release(&kfence_timer_waiting, false); /* Order after wait_event(). */
+> > > +
