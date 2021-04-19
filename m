@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5BE73642ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8325E36438E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240119AbhDSNMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:12:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46726 "EHLO mail.kernel.org"
+        id S241054AbhDSNTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:19:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239478AbhDSNKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:10:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 457D3613F7;
-        Mon, 19 Apr 2021 13:10:24 +0000 (UTC)
+        id S240473AbhDSNQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:16:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C95CE61285;
+        Mon, 19 Apr 2021 13:13:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618837824;
-        bh=hHIQYb42wdWozvUKH6R1Uzezj7+klWmXY0qSapeadp8=;
+        s=korg; t=1618838035;
+        bh=/l6XAgg8zgygTRzAIB62RivYZBwC+wbTWD//wep9ppE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iOSprCLEbsH7gLjmd1jFsVgPgGYx2TTe4JBfkmnsM3Lft0j8qAAtKzUD1YQ3rQI+H
-         5q9oMbtfNElb5Il3/Vvg2XPW7o17RM5u8nPOfl+PMbTY6QD2kFaMzJJ7vgU1BJkYRX
-         glHVyoy7KMoibKWXdVttffsKJIX5iS87psM9BwEQ=
+        b=spo6k/4s/KVk72Fn1x5+u7A82HxB4hz5mFSWaS8nadQQJiOY4U91XwHiNlqJBiqQ9
+         Z6slF2MN4Dcu2UAUv8HFGbgDLPFmo9FbUXHicd3A076VOLjguyLc6lLNCMM4Rw3DnT
+         c3Id1MOyUvQF04TmWhOEWQ7cn55ZDYtntDu2koU8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Tony Lindgren <tony@atomide.com>,
+        stable@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 032/122] ARM: omap1: fix building with clang IAS
-Date:   Mon, 19 Apr 2021 15:05:12 +0200
-Message-Id: <20210419130531.256164935@linuxfoundation.org>
+Subject: [PATCH 5.10 002/103] mtd: rawnand: mtk: Fix WAITRDY break condition and timeout
+Date:   Mon, 19 Apr 2021 15:05:13 +0200
+Message-Id: <20210419130527.873007971@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210419130530.166331793@linuxfoundation.org>
-References: <20210419130530.166331793@linuxfoundation.org>
+In-Reply-To: <20210419130527.791982064@linuxfoundation.org>
+References: <20210419130527.791982064@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Hauke Mehrtens <hauke@hauke-m.de>
 
-[ Upstream commit 28399a5a6d569c9bdb612345e4933046ca37cde5 ]
+[ Upstream commit 2fb164f0ce95e504e2688b4f984893c29ebd19ab ]
 
-The clang integrated assembler fails to build one file with
-a complex asm instruction:
+This fixes NAND_OP_WAITRDY_INSTR operation in the driver. Without this
+change the driver waits till the system is busy, but we should wait till
+the busy flag is cleared. The readl_poll_timeout() function gets a break
+condition, not a wait condition.
 
-arch/arm/mach-omap1/ams-delta-fiq-handler.S:249:2: error: invalid instruction, any one of the following would fix this:
- mov r10, #(1 << (((NR_IRQS_LEGACY + 12) - NR_IRQS_LEGACY) % 32)) @ set deferred_fiq bit
- ^
-arch/arm/mach-omap1/ams-delta-fiq-handler.S:249:2: note: instruction requires: armv6t2
- mov r10, #(1 << (((NR_IRQS_LEGACY + 12) - NR_IRQS_LEGACY) % 32)) @ set deferred_fiq bit
- ^
-arch/arm/mach-omap1/ams-delta-fiq-handler.S:249:2: note: instruction requires: thumb2
- mov r10, #(1 << (((NR_IRQS_LEGACY + 12) - NR_IRQS_LEGACY) % 32)) @ set deferred_fiq bit
- ^
+In addition fix the timeout. The timeout_ms is given in ms, but the
+readl_poll_timeout() function takes the timeout in us. Multiple the
+given timeout by 1000 to convert it.
 
-The problem is that 'NR_IRQS_LEGACY' is not defined here. Apparently
-gas does not care because we first add and then subtract this number,
-leading to the immediate value to be the same regardless of the
-specific definition of NR_IRQS_LEGACY.
+Without this change, the driver does not work at all, it doesn't even
+identify the NAND chip.
 
-Neither the way that 'gas' just silently builds this file, nor the
-way that clang IAS makes nonsensical suggestions for how to fix it
-is great. Fortunately there is an easy fix, which is to #include
-the header that contains the definition.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Tony Lindgren <tony@atomide.com>
-Link: https://lore.kernel.org/r/20210308153430.2530616-1-arnd@kernel.org'
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: 5197360f9e09 ("mtd: rawnand: mtk: Convert the driver to exec_op()")
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20210309000107.1368404-1-hauke@hauke-m.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mach-omap1/ams-delta-fiq-handler.S | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/raw/mtk_nand.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/mach-omap1/ams-delta-fiq-handler.S b/arch/arm/mach-omap1/ams-delta-fiq-handler.S
-index 14a6c3eb3298..f745a65d3bd7 100644
---- a/arch/arm/mach-omap1/ams-delta-fiq-handler.S
-+++ b/arch/arm/mach-omap1/ams-delta-fiq-handler.S
-@@ -15,6 +15,7 @@
- #include <linux/platform_data/gpio-omap.h>
- 
- #include <asm/assembler.h>
-+#include <asm/irq.h>
- 
- #include "ams-delta-fiq.h"
- #include "board-ams-delta.h"
+diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
+index 57f1f1708994..5c5c92132287 100644
+--- a/drivers/mtd/nand/raw/mtk_nand.c
++++ b/drivers/mtd/nand/raw/mtk_nand.c
+@@ -488,8 +488,8 @@ static int mtk_nfc_exec_instr(struct nand_chip *chip,
+ 		return 0;
+ 	case NAND_OP_WAITRDY_INSTR:
+ 		return readl_poll_timeout(nfc->regs + NFI_STA, status,
+-					  status & STA_BUSY, 20,
+-					  instr->ctx.waitrdy.timeout_ms);
++					  !(status & STA_BUSY), 20,
++					  instr->ctx.waitrdy.timeout_ms * 1000);
+ 	default:
+ 		break;
+ 	}
 -- 
 2.30.2
 
