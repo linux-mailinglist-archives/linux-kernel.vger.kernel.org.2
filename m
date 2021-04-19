@@ -2,312 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F02F363D4E
+	by mail.lfdr.de (Postfix) with ESMTP id DA9C3363D4F
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238186AbhDSISq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 04:18:46 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50487 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232867AbhDSISo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 04:18:44 -0400
-Received: from mail-ej1-f72.google.com ([209.85.218.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lYP6k-0007z5-91
-        for linux-kernel@vger.kernel.org; Mon, 19 Apr 2021 08:18:14 +0000
-Received: by mail-ej1-f72.google.com with SMTP id jl27-20020a17090775dbb029037ccdce96e6so3340952ejc.21
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 01:18:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pZDneaovJpVfH9OrjUAPe/h6WG3DKbu6qNqsKILVDmw=;
-        b=hZufC6eD/msuyc25YklK3pFNIC3LKzRYdrmUoq69w6Fgq86om6UxGCMiarosEpBCRz
-         nf/OgrSfQpqzpQQpAyRpxMeO3VV5aX8gHLue27G80GaFV8uSA6IyvIAdnjqpGRv6lcks
-         nrEl6eqjFuhGyHtTiJhpG1qWTcoXForMQBdMXrYYcj/mI7yg4z94wu5ChXC5lvYq17La
-         f2KNkdXh6lj1dQ4yE55faOUu3RYPldDu2Xdpiv1r88DLEJKHzikXyXnTPvj2YloiMPjZ
-         WC3E1MnjoXOB3g7PVI820WTy25NM9V97BfhdC1mJU873XyrkzKxxM8VyO+WF00c6DyQa
-         Tu5w==
-X-Gm-Message-State: AOAM530BMFaSTx+ui91Oy5FyNCxAhz04KGDB27/Dcpsh+VluBClNub7Z
-        qLUaR18K/5HHc7RGTl4CXLrR+aTY/beq7jo40yosQEmzIj8g77bXe8SY1BeeXJw2hheiP0RWMlt
-        bZWrJRQ6pwqTN9wpVwCOUODI+YXfMDwzYtrBC2b1gNg==
-X-Received: by 2002:a17:907:7b98:: with SMTP id ne24mr17965281ejc.304.1618820293748;
-        Mon, 19 Apr 2021 01:18:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwVOkUQrDkpbC9/rr/kn2dqwuK7KzA0hik5Peg6nOv1+wwGTCu3rE5nbdIF1jQ14TsTKfJnUQ==
-X-Received: by 2002:a17:907:7b98:: with SMTP id ne24mr17965273ejc.304.1618820293599;
-        Mon, 19 Apr 2021 01:18:13 -0700 (PDT)
-Received: from localhost.localdomain (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
-        by smtp.gmail.com with ESMTPSA id u1sm12093563edv.90.2021.04.19.01.18.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 01:18:13 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH 2/2] drm/gma500: remove trailing whitespaces
-Date:   Mon, 19 Apr 2021 10:18:07 +0200
-Message-Id: <20210419081807.68000-2-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210419081807.68000-1-krzysztof.kozlowski@canonical.com>
-References: <20210419081807.68000-1-krzysztof.kozlowski@canonical.com>
+        id S238113AbhDSITE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 04:19:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:37620 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237632AbhDSITC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 04:19:02 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 533D61FB;
+        Mon, 19 Apr 2021 01:18:33 -0700 (PDT)
+Received: from [10.57.57.205] (unknown [10.57.57.205])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E5BEF3F85F;
+        Mon, 19 Apr 2021 01:18:29 -0700 (PDT)
+Subject: Re: [PATCH v2 0/2] perf cs-etm: Set time on synthesised samples to
+ preserve ordering
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     coresight@lists.linaro.org, al.grant@arm.com,
+        branislav.rankov@arm.com, denik@chromium.org,
+        suzuki.poulose@arm.com, Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210416105632.8771-1-james.clark@arm.com>
+ <20210416150709.GA1046932@xps15> <YHmqZKGMFydbsvEy@kernel.org>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <c3a75731-15b4-e052-1840-a881b05862df@arm.com>
+Date:   Mon, 19 Apr 2021 11:18:31 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YHmqZKGMFydbsvEy@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove trailing whitespaces.  No functional change.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- drivers/gpu/drm/gma500/backlight.c    |  4 +--
- drivers/gpu/drm/gma500/cdv_intel_dp.c | 50 +++++++++++++--------------
- 2 files changed, 26 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/gpu/drm/gma500/backlight.c b/drivers/gpu/drm/gma500/backlight.c
-index 35600d070cb5..9e90258541a4 100644
---- a/drivers/gpu/drm/gma500/backlight.c
-+++ b/drivers/gpu/drm/gma500/backlight.c
-@@ -42,7 +42,7 @@ void gma_backlight_disable(struct drm_device *dev)
- 		dev_priv->backlight_device->props.brightness = 0;
- 		do_gma_backlight_set(dev);
- 	}
--#endif	
-+#endif
- }
- 
- void gma_backlight_set(struct drm_device *dev, int v)
-@@ -54,7 +54,7 @@ void gma_backlight_set(struct drm_device *dev, int v)
- 		dev_priv->backlight_device->props.brightness = v;
- 		do_gma_backlight_set(dev);
- 	}
--#endif	
-+#endif
- }
- 
- int gma_backlight_init(struct drm_device *dev)
-diff --git a/drivers/gpu/drm/gma500/cdv_intel_dp.c b/drivers/gpu/drm/gma500/cdv_intel_dp.c
-index 6d3ada39ff86..595b765ecc71 100644
---- a/drivers/gpu/drm/gma500/cdv_intel_dp.c
-+++ b/drivers/gpu/drm/gma500/cdv_intel_dp.c
-@@ -245,7 +245,7 @@ i2c_dp_aux_add_bus(struct i2c_adapter *adapter)
-                 if (W && !in_dbg_master()) msleep(W);                   \
-         }                                                               \
-         ret__;                                                          \
--})      
-+})
- 
- #define wait_for(COND, MS) _wait_for(COND, MS, 1)
- 
-@@ -386,7 +386,7 @@ static void cdv_intel_edp_panel_vdd_on(struct gma_encoder *intel_encoder)
- 	if (intel_dp->panel_on) {
- 		DRM_DEBUG_KMS("Skip VDD on because of panel on\n");
- 		return;
--	}	
-+	}
- 	DRM_DEBUG_KMS("\n");
- 
- 	pp = REG_READ(PP_CONTROL);
-@@ -433,7 +433,7 @@ static bool cdv_intel_edp_panel_on(struct gma_encoder *intel_encoder)
- 		DRM_DEBUG_KMS("Error in Powering up eDP panel, status %x\n", REG_READ(PP_STATUS));
- 		intel_dp->panel_on = false;
- 	} else
--		intel_dp->panel_on = true;	
-+		intel_dp->panel_on = true;
- 	msleep(intel_dp->panel_power_up_delay);
- 
- 	return false;
-@@ -449,7 +449,7 @@ static void cdv_intel_edp_panel_off (struct gma_encoder *intel_encoder)
- 
- 	pp = REG_READ(PP_CONTROL);
- 
--	if ((pp & POWER_TARGET_ON) == 0) 
-+	if ((pp & POWER_TARGET_ON) == 0)
- 		return;
- 
- 	intel_dp->panel_on = false;
-@@ -464,7 +464,7 @@ static void cdv_intel_edp_panel_off (struct gma_encoder *intel_encoder)
- 	DRM_DEBUG_KMS("PP_STATUS %x\n", REG_READ(PP_STATUS));
- 
- 	if (wait_for((REG_READ(PP_STATUS) & idle_off_mask) == 0, 1000)) {
--		DRM_DEBUG_KMS("Error in turning off Panel\n");	
-+		DRM_DEBUG_KMS("Error in turning off Panel\n");
- 	}
- 
- 	msleep(intel_dp->panel_power_cycle_delay);
-@@ -535,7 +535,7 @@ cdv_intel_dp_mode_valid(struct drm_connector *connector,
- 	    if (cdv_intel_dp_link_required(mode->clock, 24)
- 	     	> cdv_intel_dp_max_data_rate(max_link_clock, max_lanes))
- 		return MODE_CLOCK_HIGH;
--		
-+
- 	}
- 	if (mode->clock < 10000)
- 		return MODE_CLOCK_LOW;
-@@ -606,7 +606,7 @@ cdv_intel_dp_aux_ch(struct gma_encoder *encoder,
- 		for (i = 0; i < send_bytes; i += 4)
- 			REG_WRITE(ch_data + i,
- 				   pack_aux(send + i, send_bytes - i));
--	
-+
- 		/* Send the command and wait for it to complete */
- 		REG_WRITE(ch_ctl,
- 			   DP_AUX_CH_CTL_SEND_BUSY |
-@@ -623,7 +623,7 @@ cdv_intel_dp_aux_ch(struct gma_encoder *encoder,
- 				break;
- 			udelay(100);
- 		}
--	
-+
- 		/* Clear done status and any errors */
- 		REG_WRITE(ch_ctl,
- 			   status |
-@@ -659,7 +659,7 @@ cdv_intel_dp_aux_ch(struct gma_encoder *encoder,
- 		      DP_AUX_CH_CTL_MESSAGE_SIZE_SHIFT);
- 	if (recv_bytes > recv_size)
- 		recv_bytes = recv_size;
--	
-+
- 	for (i = 0; i < recv_bytes; i += 4)
- 		unpack_aux(REG_READ(ch_data + i),
- 			   recv + i, recv_bytes - i);
-@@ -870,7 +870,7 @@ cdv_intel_dp_i2c_init(struct gma_connector *connector,
- 	ret = i2c_dp_aux_add_bus(&intel_dp->adapter);
- 	if (is_edp(encoder))
- 		cdv_intel_edp_panel_vdd_off(encoder);
--	
-+
- 	return ret;
- }
- 
-@@ -1291,13 +1291,13 @@ cdv_intel_get_adjust_train(struct gma_encoder *encoder)
- 		if (this_p > p)
- 			p = this_p;
- 	}
--	
-+
- 	if (v >= CDV_DP_VOLTAGE_MAX)
- 		v = CDV_DP_VOLTAGE_MAX | DP_TRAIN_MAX_SWING_REACHED;
- 
- 	if (p == DP_TRAIN_PRE_EMPHASIS_MASK)
- 		p |= DP_TRAIN_MAX_PRE_EMPHASIS_REACHED;
--		
-+
- 	for (lane = 0; lane < 4; lane++)
- 		intel_dp->train_set[lane] = v | p;
- }
-@@ -1358,7 +1358,6 @@ cdv_intel_dp_set_link_train(struct gma_encoder *encoder,
- 			uint32_t dp_reg_value,
- 			uint8_t dp_train_pat)
- {
--	
- 	struct drm_device *dev = encoder->base.dev;
- 	int ret;
- 	struct cdv_intel_dp *intel_dp = encoder->dev_priv;
-@@ -1384,7 +1383,6 @@ static bool
- cdv_intel_dplink_set_level(struct gma_encoder *encoder,
- 			uint8_t dp_train_pat)
- {
--	
- 	int ret;
- 	struct cdv_intel_dp *intel_dp = encoder->dev_priv;
- 
-@@ -1462,7 +1460,7 @@ cdv_intel_dp_set_vswing_premph(struct gma_encoder *encoder, uint8_t signal_level
- 	/* ;gfx_dpio_set_reg(0x8124, 0x00004000) */
- 	index = 2 * premph + 1;
- 	cdv_sb_write(dev, ddi_reg->PreEmph2, dp_vswing_premph_table[index]);
--	return;	
-+	return;
- }
- 
- 
-@@ -1481,8 +1479,8 @@ cdv_intel_dp_start_link_train(struct gma_encoder *encoder)
- 
- 	DP |= DP_PORT_EN;
- 	DP &= ~DP_LINK_TRAIN_MASK;
--		
--	reg = DP;	
-+
-+	reg = DP;
- 	reg |= DP_LINK_TRAIN_PAT_1;
- 	/* Enable output, wait for it to become active */
- 	REG_WRITE(intel_dp->output_reg, reg);
-@@ -1556,7 +1554,7 @@ cdv_intel_dp_start_link_train(struct gma_encoder *encoder)
- 	if (!clock_recovery) {
- 		DRM_DEBUG_KMS("failure in DP patter 1 training, train set %x\n", intel_dp->train_set[0]);
- 	}
--	
-+
- 	intel_dp->DP = DP;
- }
- 
-@@ -1747,7 +1745,7 @@ static int cdv_intel_dp_get_modes(struct drm_connector *connector)
- 	if (is_edp(intel_encoder)) {
- 		struct drm_device *dev = connector->dev;
- 		struct drm_psb_private *dev_priv = dev->dev_private;
--		
-+
- 		cdv_intel_edp_panel_vdd_off(intel_encoder);
- 		if (ret) {
- 			if (edp && !intel_dp->panel_fixed_mode) {
-@@ -1942,11 +1940,11 @@ static void cdv_disable_intel_clock_gating(struct drm_device *dev)
- 			DPCUNIT_CLOCK_GATE_DISABLE |
- 			DPLSUNIT_CLOCK_GATE_DISABLE |
- 			DPOUNIT_CLOCK_GATE_DISABLE |
--		 	DPIOUNIT_CLOCK_GATE_DISABLE);	
-+			DPIOUNIT_CLOCK_GATE_DISABLE);
- 
- 	REG_WRITE(DSPCLK_GATE_D, reg_value);
- 
--	udelay(500);		
-+	udelay(500);
- }
- 
- void
-@@ -1990,7 +1988,7 @@ cdv_intel_dp_init(struct drm_device *dev, struct psb_intel_mode_device *mode_dev
- 	gma_encoder->dev_priv=intel_dp;
- 	intel_dp->encoder = gma_encoder;
- 	intel_dp->output_reg = output_reg;
--	
-+
- 	drm_encoder_helper_add(encoder, &cdv_intel_dp_helper_funcs);
- 	drm_connector_helper_add(connector, &cdv_intel_dp_connector_helper_funcs);
- 
-@@ -2027,7 +2025,7 @@ cdv_intel_dp_init(struct drm_device *dev, struct psb_intel_mode_device *mode_dev
- 		pp_on = REG_READ(PP_CONTROL);
- 		pp_on &= ~PANEL_UNLOCK_MASK;
- 	        pp_on |= PANEL_UNLOCK_REGS;
--		
-+
- 		REG_WRITE(PP_CONTROL, pp_on);
- 
- 		pwm_ctrl = REG_READ(BLC_PWM_CTL2);
-@@ -2037,7 +2035,7 @@ cdv_intel_dp_init(struct drm_device *dev, struct psb_intel_mode_device *mode_dev
-                 pp_on = REG_READ(PP_ON_DELAYS);
-                 pp_off = REG_READ(PP_OFF_DELAYS);
-                 pp_div = REG_READ(PP_DIVISOR);
--	
-+
- 		/* Pull timing values out of registers */
-                 cur.t1_t3 = (pp_on & PANEL_POWER_UP_DELAY_MASK) >>
-                         PANEL_POWER_UP_DELAY_SHIFT;
-@@ -2085,9 +2083,9 @@ cdv_intel_dp_init(struct drm_device *dev, struct psb_intel_mode_device *mode_dev
- 			goto err_connector;
- 		} else {
-         		DRM_DEBUG_KMS("DPCD: Rev=%x LN_Rate=%x LN_CNT=%x LN_DOWNSP=%x\n",
--				intel_dp->dpcd[0], intel_dp->dpcd[1], 
-+				intel_dp->dpcd[0], intel_dp->dpcd[1],
- 				intel_dp->dpcd[2], intel_dp->dpcd[3]);
--			
-+
- 		}
- 		/* The CDV reference driver moves pnale backlight setup into the displays that
- 		   have a backlight: this is a good idea and one we should probably adopt, however
--- 
-2.25.1
+On 16/04/2021 18:16, Arnaldo Carvalho de Melo wrote:
+> Em Fri, Apr 16, 2021 at 09:07:09AM -0600, Mathieu Poirier escreveu:
+>> Hi James,
+>>
+>> On Fri, Apr 16, 2021 at 01:56:30PM +0300, James Clark wrote:
+>>> Changes since v1:
+>>>  * Improved variable name from etm_timestamp -> cs_timestamp
+>>>  * Fixed ordering of Signed-off-by
+>>>
+>>
+>> You forgot to add the RB and AB you received.  Since Arnaldo is responsible for
+>> the perf tools subsystem, please send another revision.
+>  
+> 
+> 
+> Yep, please collect Reported-by and Acked-by as you go sending new
+> versions of a patchset, the last one I don't have a problem collecting
+> myself, but if you have to resend, please collect the feedback tags.
+> 
+> - Arnaldo
+> 
 
+Ok thanks, I will keep that in mind for the future. I wasn't sure if they still
+applied or not as it was a new version.
+
+Thanks
+James
+
+>> Thanks,
+>> Mathieu
+>>
+>>> James Clark (2):
+>>>   perf cs-etm: Refactor timestamp variable names
+>>>   perf cs-etm: Set time on synthesised samples to preserve ordering
+>>>
+>>>  .../perf/util/cs-etm-decoder/cs-etm-decoder.c | 18 +++----
+>>>  tools/perf/util/cs-etm.c                      | 52 ++++++++++---------
+>>>  tools/perf/util/cs-etm.h                      |  4 +-
+>>>  3 files changed, 39 insertions(+), 35 deletions(-)
+>>>
+>>> -- 
+>>> 2.28.0
+>>>
+> 
