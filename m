@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D434364511
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D33364515
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:47:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241032AbhDSNjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:39:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33848 "EHLO mail.kernel.org"
+        id S242695AbhDSNjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:39:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241351AbhDSN0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:26:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CA50613E8;
-        Mon, 19 Apr 2021 13:21:00 +0000 (UTC)
+        id S241555AbhDSN0K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:26:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5110613F8;
+        Mon, 19 Apr 2021 13:21:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618838461;
-        bh=pUuiJVNf0hwaKuFdsGi31/OtV//RFGybw0gpwTtEryE=;
+        s=korg; t=1618838475;
+        bh=Q9PmBSu0qKPwb4l7y24tf65jKLRG+SjuFW7S7c60LWw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hk3Vyy0go5anYzul1tuu9UlX3IXZbhix1lNhrFXo4DzIFgZ7elCpkFPpyulZQiONv
-         O+SeHOClzD1/zvDHN86V6cv+mh0myb913VCY9Ed52se3JEuAAVYfu/vO3tyxFj6f7F
-         mTUWJnddSsSGOpg6+f41IhhJs/UsOT/OTQPpRr4c=
+        b=I6dXAcHyFjdJnDmyyzFuOKZLimFqL/cj/CY50241H+FPwQaTBGYKMt87ELECK9f+9
+         M7qA1LhdHOZ55tH+2pDWRxwgJ0WfRB5z4hMMZcXS/IEhsx0n9RYeL4SJn1S0I2WDtc
+         gpDJWC+jG31G15qrV3liSoEMg5GlNsVz1t7bnys8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Lijun Pan <lijunp213@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 61/73] ibmvnic: remove duplicate napi_schedule call in do_reset function
-Date:   Mon, 19 Apr 2021 15:06:52 +0200
-Message-Id: <20210419130525.802788995@linuxfoundation.org>
+Subject: [PATCH 5.4 62/73] ibmvnic: remove duplicate napi_schedule call in open function
+Date:   Mon, 19 Apr 2021 15:06:53 +0200
+Message-Id: <20210419130525.832654414@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210419130523.802169214@linuxfoundation.org>
 References: <20210419130523.802169214@linuxfoundation.org>
@@ -41,44 +41,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lijun Pan <lijunp213@gmail.com>
 
-commit d3a6abccbd272aea7dc2c6f984bb5a2c11278e44 upstream.
+commit 7c451f3ef676c805a4b77a743a01a5c21a250a73 upstream.
 
-During adapter reset, do_reset/do_hard_reset calls ibmvnic_open(),
-which will calls napi_schedule if previous state is VNIC_CLOSED
-(i.e, the reset case, and "ifconfig down" case). So there is no need
-for do_reset to call napi_schedule again at the end of the function
-though napi_schedule will neglect the request if napi is already
-scheduled.
+Remove the unnecessary napi_schedule() call in __ibmvnic_open() since
+interrupt_rx() calls napi_schedule_prep/__napi_schedule during every
+receive interrupt.
 
 Fixes: ed651a10875f ("ibmvnic: Updated reset handling")
 Signed-off-by: Lijun Pan <lijunp213@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/ibm/ibmvnic.c |    6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/net/ethernet/ibm/ibmvnic.c |    5 -----
+ 1 file changed, 5 deletions(-)
 
 --- a/drivers/net/ethernet/ibm/ibmvnic.c
 +++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -1849,7 +1849,7 @@ static int do_reset(struct ibmvnic_adapt
- 	u64 old_num_rx_queues, old_num_tx_queues;
- 	u64 old_num_rx_slots, old_num_tx_slots;
- 	struct net_device *netdev = adapter->netdev;
--	int i, rc;
-+	int rc;
+@@ -1088,11 +1088,6 @@ static int __ibmvnic_open(struct net_dev
  
- 	netdev_dbg(adapter->netdev, "Re-setting driver (%d)\n",
- 		   rwi->reset_reason);
-@@ -1994,10 +1994,6 @@ static int do_reset(struct ibmvnic_adapt
- 	/* refresh device's multicast list */
- 	ibmvnic_set_multi(netdev);
+ 	netif_tx_start_all_queues(netdev);
  
--	/* kick napi */
--	for (i = 0; i < adapter->req_rx_queues; i++)
--		napi_schedule(&adapter->napi[i]);
+-	if (prev_state == VNIC_CLOSED) {
+-		for (i = 0; i < adapter->req_rx_queues; i++)
+-			napi_schedule(&adapter->napi[i]);
+-	}
 -
- 	if (adapter->reset_reason == VNIC_RESET_FAILOVER ||
- 	    adapter->reset_reason == VNIC_RESET_MOBILITY) {
- 		call_netdevice_notifiers(NETDEV_NOTIFY_PEERS, netdev);
+ 	adapter->state = VNIC_OPEN;
+ 	return rc;
+ }
 
 
