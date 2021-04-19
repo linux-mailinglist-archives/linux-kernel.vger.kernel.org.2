@@ -2,217 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA878363CA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 09:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9763363CA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 09:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237911AbhDSHf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 03:35:57 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:17375 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237819AbhDSHfn (ORCPT
+        id S237823AbhDSHhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 03:37:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233438AbhDSHhL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 03:35:43 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FNz7b5lZCzlZ0P;
-        Mon, 19 Apr 2021 15:33:15 +0800 (CST)
-Received: from [10.174.178.5] (10.174.178.5) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Mon, 19 Apr 2021
- 15:35:09 +0800
-Subject: Re: [PATCH v2 1/5] mm/swapfile: add percpu_ref support for swap
-To:     "Huang, Ying" <ying.huang@intel.com>
-CC:     <akpm@linux-foundation.org>, <dennis@kernel.org>,
-        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
-        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
-        <alexs@kernel.org>, <david@redhat.com>, <minchan@kernel.org>,
-        <richard.weiyang@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>
-References: <20210417094039.51711-1-linmiaohe@huawei.com>
- <20210417094039.51711-2-linmiaohe@huawei.com>
- <87eef7kmzw.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <753f414f-34a1-b16a-f826-7deb2dcd4af6@huawei.com>
- <87czuq4uo2.fsf@yhuang6-desk1.ccr.corp.intel.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <dfbb8f36-e172-b682-fbfa-168a1ac2d456@huawei.com>
-Date:   Mon, 19 Apr 2021 15:35:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 19 Apr 2021 03:37:11 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48CF5C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 00:36:42 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id f195-20020a1c1fcc0000b029012eb88126d7so7507931wmf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 00:36:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0+ERtxBLAKa344j/COpxgJf/tgpBFvh5Bj4l219hncw=;
+        b=qrk6vf1EOZdLHLwAxVz1yLbK4ih6Ze0oyf5aUVfqKSeGfRpRrjHCeWDhSl0aK6r0G4
+         uBLiywKB0tytKu40gqqeJOkf9hpfwC0J6TGEFhZAZsNQt3ldmpVBWKUC4D7WqHH1JMTu
+         C7lp/oFtxQMQ7CyuaDlrdh+auWRZItDHFPiForkAdJsU/ElCedxw98+ajBOPNccur+7d
+         uricePPL9tXoIUHIGDPwnC9COfraCyMam0tUHiEhovXZfQBxRm6r4cWYWFFMLTcQMlAX
+         E3CSk6AfNuqq98koEPfaulkns9/dJcV3OduT/xwJ83x4GL9+CAMRZCOxRsGqDqbPSOQn
+         lMuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=0+ERtxBLAKa344j/COpxgJf/tgpBFvh5Bj4l219hncw=;
+        b=E7/0xcVnGN0x1Ig+tEDs2HIQNLYYc75t6cO1LHxq5oyuEJND5NdQ7WbHjLZWoTxiHX
+         6uu0ggbOvtrRG5/hRJvMxchmgfBVfmXXWbRjHQV7TiMTzNrhcwaMSWCodgz7Gbief6mP
+         RwxlWHhKCyaRWnfkaL1vC9xCNrq52AxB1H3+kkDpMyzf5YE30jeE7kTfmqoy85RyNVIQ
+         wGlr8IE7sRHV2S8NiNpXsFV2e9/erf+9/mLVKViMnacLgpT6CEdbnRjUzNj0RQ5Wn89y
+         j6rHh03lEcC0cs0PHfzVwKsK2FM7fsFo1TxQYhYCXLAeYWg2tE2DxfpQZhETUJ2T8DCq
+         TD9Q==
+X-Gm-Message-State: AOAM531HFL6ns+l5JW/WpuXaTp4DJ/M3/whLgP7SoQ79hOw8eU5da6XO
+        Q6ZzoWr0g9pVGizq7R4K6458Kw==
+X-Google-Smtp-Source: ABdhPJw2g0pS+qOTAkbmbUZIhuDHi3UKmV+q/ol9tb6YWfNBVWi/V+7tn1DJrHP6PL03s7jfw/PZHw==
+X-Received: by 2002:a7b:cb82:: with SMTP id m2mr20362725wmi.105.1618817800987;
+        Mon, 19 Apr 2021 00:36:40 -0700 (PDT)
+Received: from ?IPv6:2a01:e0a:90c:e290:2e82:31e6:67f1:4f33? ([2a01:e0a:90c:e290:2e82:31e6:67f1:4f33])
+        by smtp.gmail.com with ESMTPSA id i12sm18382688wmd.3.2021.04.19.00.36.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Apr 2021 00:36:40 -0700 (PDT)
+Subject: Re: [v2,PATCH 1/3] drm/mediatek: dpi dual edge sample mode support
+To:     Rex-BC Chen <rex-bc.chen@mediatek.com>, chunkuang.hu@kernel.org,
+        matthias.bgg@gmail.com
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Jitao Shi <jitao.shi@mediatek.com>
+References: <1618407316-10042-1-git-send-email-rex-bc.chen@mediatek.com>
+ <1618407316-10042-2-git-send-email-rex-bc.chen@mediatek.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <a1ffcce8-621e-7493-22d4-e28ff09c31a4@baylibre.com>
+Date:   Mon, 19 Apr 2021 09:36:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <87czuq4uo2.fsf@yhuang6-desk1.ccr.corp.intel.com>
-Content-Type: text/plain; charset="windows-1252"
+In-Reply-To: <1618407316-10042-2-git-send-email-rex-bc.chen@mediatek.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.5]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/19 15:09, Huang, Ying wrote:
-> Miaohe Lin <linmiaohe@huawei.com> writes:
+Hi,
+
+On 14/04/2021 15:35, Rex-BC Chen wrote:
+> DPI can sample on falling, rising or both edge.
+> When DPI sample the data both rising and falling edge.
+> It can reduce half data io pins.
 > 
->> On 2021/4/19 10:48, Huang, Ying wrote:
->>> Miaohe Lin <linmiaohe@huawei.com> writes:
->>>
->>>> We will use percpu-refcount to serialize against concurrent swapoff. This
->>>> patch adds the percpu_ref support for swap.
->>>>
->>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>>> ---
->>>>  include/linux/swap.h |  3 +++
->>>>  mm/swapfile.c        | 33 +++++++++++++++++++++++++++++----
->>>>  2 files changed, 32 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
->>>> index 144727041e78..8be36eb58b7a 100644
->>>> --- a/include/linux/swap.h
->>>> +++ b/include/linux/swap.h
->>>> @@ -240,6 +240,7 @@ struct swap_cluster_list {
->>>>   * The in-memory structure used to track swap areas.
->>>>   */
->>>>  struct swap_info_struct {
->>>> +	struct percpu_ref users;	/* serialization against concurrent swapoff */
->>>
->>> The comments aren't general enough.  We use this to check whether the
->>> swap device has been fully initialized, etc. May be something as below?
->>>
->>> /* indicate and keep swap device valid */
->>
->> Looks good.
->>
->>>
->>>>  	unsigned long	flags;		/* SWP_USED etc: see above */
->>>>  	signed short	prio;		/* swap priority of this type */
->>>>  	struct plist_node list;		/* entry in swap_active_head */
->>>> @@ -260,6 +261,8 @@ struct swap_info_struct {
->>>>  	struct block_device *bdev;	/* swap device or bdev of swap file */
->>>>  	struct file *swap_file;		/* seldom referenced */
->>>>  	unsigned int old_block_size;	/* seldom referenced */
->>>> +	bool ref_initialized;		/* seldom referenced */
->>>> +	struct completion comp;		/* seldom referenced */
->>>>  #ifdef CONFIG_FRONTSWAP
->>>>  	unsigned long *frontswap_map;	/* frontswap in-use, one bit per page */
->>>>  	atomic_t frontswap_pages;	/* frontswap pages in-use counter */
->>>> diff --git a/mm/swapfile.c b/mm/swapfile.c
->>>> index 149e77454e3c..66515a3a2824 100644
->>>> --- a/mm/swapfile.c
->>>> +++ b/mm/swapfile.c
->>>> @@ -39,6 +39,7 @@
->>>>  #include <linux/export.h>
->>>>  #include <linux/swap_slots.h>
->>>>  #include <linux/sort.h>
->>>> +#include <linux/completion.h>
->>>>  
->>>>  #include <asm/tlbflush.h>
->>>>  #include <linux/swapops.h>
->>>> @@ -511,6 +512,14 @@ static void swap_discard_work(struct work_struct *work)
->>>>  	spin_unlock(&si->lock);
->>>>  }
->>>>  
->>>> +static void swap_users_ref_free(struct percpu_ref *ref)
->>>> +{
->>>> +	struct swap_info_struct *si;
->>>> +
->>>> +	si = container_of(ref, struct swap_info_struct, users);
->>>> +	complete(&si->comp);
->>>> +}
->>>> +
->>>>  static void alloc_cluster(struct swap_info_struct *si, unsigned long idx)
->>>>  {
->>>>  	struct swap_cluster_info *ci = si->cluster_info;
->>>> @@ -2500,7 +2509,7 @@ static void enable_swap_info(struct swap_info_struct *p, int prio,
->>>>  	 * Guarantee swap_map, cluster_info, etc. fields are valid
->>>>  	 * between get/put_swap_device() if SWP_VALID bit is set
->>>>  	 */
->>>> -	synchronize_rcu();
->>>
->>> You cannot remove this without changing get/put_swap_device().  It's
->>> better to squash at least PATCH 1-2.
->>
->> Will squash PATCH 1-2. Thanks.
->>
->>>
->>>> +	percpu_ref_resurrect(&p->users);
->>>>  	spin_lock(&swap_lock);
->>>>  	spin_lock(&p->lock);
->>>>  	_enable_swap_info(p);
->>>> @@ -2621,11 +2630,18 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
->>>>  	p->flags &= ~SWP_VALID;		/* mark swap device as invalid */
->>>>  	spin_unlock(&p->lock);
->>>>  	spin_unlock(&swap_lock);
->>>> +
->>>> +	percpu_ref_kill(&p->users);
->>>>  	/*
->>>> -	 * wait for swap operations protected by get/put_swap_device()
->>>> -	 * to complete
->>>> +	 * We need synchronize_rcu() here to protect the accessing
->>>> +	 * to the swap cache data structure.
->>>>  	 */
->>>>  	synchronize_rcu();
->>>> +	/*
->>>> +	 * Wait for swap operations protected by get/put_swap_device()
->>>> +	 * to complete.
->>>> +	 */
->>>
->>> I think the comments (after some revision) can be moved before
->>> percpu_ref_kill().  The synchronize_rcu() comments can be merged.
->>>
->>
->> Ok.
->>
->>>> +	wait_for_completion(&p->comp);
->>>>  
->>>>  	flush_work(&p->discard_work);
->>>>  
->>>> @@ -3132,7 +3148,7 @@ static bool swap_discardable(struct swap_info_struct *si)
->>>>  SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
->>>>  {
->>>>  	struct swap_info_struct *p;
->>>> -	struct filename *name;
->>>> +	struct filename *name = NULL;
->>>>  	struct file *swap_file = NULL;
->>>>  	struct address_space *mapping;
->>>>  	int prio;
->>>> @@ -3163,6 +3179,15 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
->>>>  
->>>>  	INIT_WORK(&p->discard_work, swap_discard_work);
->>>>  
->>>> +	if (!p->ref_initialized) {
->>>
->>> I don't think it's necessary to add another flag p->ref_initialized.  We
->>> can distinguish newly allocated and reused swap_info_struct in alloc_swap_info().
->>>
->>
->> If newly allocated swap_info_struct failed to init percpu_ref, it will be considered as
->> a reused one in alloc_swap_info() _but_ the field users of swap_info_struct is actually
->> uninitialized. Does this make sense for you?
+> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+> Signed-off-by: Rex-BC Chen <rex-bc.chen@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_dpi.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
 > 
-> We can call percpu_ref_init() just after kvzalloc() in alloc_swap_info().
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
+> index b05f900d9322..21a3a7b78835 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dpi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
+> @@ -83,6 +83,7 @@ struct mtk_dpi {
+>  	struct pinctrl *pinctrl;
+>  	struct pinctrl_state *pins_gpio;
+>  	struct pinctrl_state *pins_dpi;
+> +	bool ddr_edge_sel;
+>  	int refcount;
+>  };
+>  
+> @@ -121,6 +122,7 @@ struct mtk_dpi_conf {
+>  	unsigned int (*cal_factor)(int clock);
+>  	u32 reg_h_fre_con;
+>  	bool edge_sel_en;
+> +	bool dual_edge;
+>  };
+>  
+>  static void mtk_dpi_mask(struct mtk_dpi *dpi, u32 offset, u32 val, u32 mask)
+> @@ -380,6 +382,15 @@ static void mtk_dpi_config_color_format(struct mtk_dpi *dpi,
+>  	}
+>  }
+>  
+> +static void mtk_dpi_dual_edge(struct mtk_dpi *dpi)
+> +{
+> +	if (dpi->conf->dual_edge) {
+> +		mtk_dpi_mask(dpi, DPI_DDR_SETTING, DDR_EN | DDR_4PHASE,
+> +			     DDR_EN | DDR_4PHASE);
+> +		mtk_dpi_mask(dpi, DPI_OUTPUT_SETTING, dpi->ddr_edge_sel ? EDGE_SEL : 0, EDGE_SEL);
+> +	}
+> +}
+> +
+
+By using the downstream code as reference:
+
+-       clk_set_rate(dpi->pixel_clk, vm.pixelclock);
++       clk_set_rate(dpi->pixel_clk, vm.pixelclock * (dpi->conf->dual_edge ? 2 : 1));
+
+is missing in mtk_dpi_set_display_mode()
+
+>  static void mtk_dpi_power_off(struct mtk_dpi *dpi)
+>  {
+>  	if (WARN_ON(dpi->refcount == 0))
+> @@ -518,6 +529,7 @@ static int mtk_dpi_set_display_mode(struct mtk_dpi *dpi,
+>  	mtk_dpi_config_yc_map(dpi, dpi->yc_map);
+>  	mtk_dpi_config_color_format(dpi, dpi->color_format);
+>  	mtk_dpi_config_2n_h_fre(dpi);
+> +	mtk_dpi_dual_edge(dpi);
+>  	mtk_dpi_config_disable_edge(dpi);
+>  	mtk_dpi_sw_reset(dpi, false);
+>  
 > 
 
-Yes, we can do it this way. But using ref_initialized might make the code more straightforward
-and simple?
-
-> Best Regards,
-> Huang, Ying
-> 
->> Many Thanks for quick review.
->>
->>> Best Regards,
->>> Huang, Ying
->>>
->>>> +		error = percpu_ref_init(&p->users, swap_users_ref_free,
->>>> +					PERCPU_REF_INIT_DEAD, GFP_KERNEL);
->>>> +		if (unlikely(error))
->>>> +			goto bad_swap;
->>>> +		init_completion(&p->comp);
->>>> +		p->ref_initialized = true;
->>>> +	}
->>>> +
->>>>  	name = getname(specialfile);
->>>>  	if (IS_ERR(name)) {
->>>>  		error = PTR_ERR(name);
->>> .
->>>
-> .
-> 
-
+Neil
