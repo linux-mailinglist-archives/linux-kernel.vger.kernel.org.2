@@ -2,143 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DEA2363C4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 09:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4074E363C4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 09:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237536AbhDSHOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 03:14:46 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:17374 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231490AbhDSHOo (ORCPT
+        id S237664AbhDSHQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 03:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237628AbhDSHQe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 03:14:44 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FNygP4Gk3zlYyH;
-        Mon, 19 Apr 2021 15:12:17 +0800 (CST)
-Received: from [10.174.178.5] (10.174.178.5) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Mon, 19 Apr 2021
- 15:14:10 +0800
-Subject: Re: [PATCH v2 5/5] mm/shmem: fix shmem_swapin() race with swapoff
-To:     "Huang, Ying" <ying.huang@intel.com>
-CC:     <akpm@linux-foundation.org>, <dennis@kernel.org>,
-        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
-        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
-        <alexs@kernel.org>, <david@redhat.com>, <minchan@kernel.org>,
-        <richard.weiyang@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>
-References: <20210417094039.51711-1-linmiaohe@huawei.com>
- <20210417094039.51711-6-linmiaohe@huawei.com>
- <87r1j7kok3.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <ed215f73-93c1-d47b-e440-30701a7fca46@huawei.com>
- <87h7k24uxg.fsf@yhuang6-desk1.ccr.corp.intel.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <41a33c84-f878-8dab-a1d0-4aea3a1fc739@huawei.com>
-Date:   Mon, 19 Apr 2021 15:14:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 19 Apr 2021 03:16:34 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3C9C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 00:16:02 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id v6so49969788ejo.6
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 00:16:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NN0SIfMjTxjZbQRx0YAvjqNr/mU2jjCeZfOuWM1TKQg=;
+        b=eey/l+RHXKvQeN6pj97BCplXIBEybQcxN3b7FvQmF61jOBhQh1L3SEeQQ75h/2HdsS
+         lvYIqu8K+q2WjsDlLAeK9Wnb1NF6cyeqhlkGq0FPAm8DlUPS+AQFo/NJsd07cj0Q3ZlL
+         w8WQ5kpSsHEVNjJVZ5gBLqQKoIsyvcX+/cFN8KMQZ3Iv///hFKsd8BwPgREnubNCqPL5
+         Dv9i0qdko+0u1NPVIEUTdH9QkepmL8RujKMziiyLsXYQvB3kYOx688e/XZFtgAngxGsq
+         QiydkHhZuGPAi067UJ3NLgK8UACRsB/vwxJjcJLrUCb9fFPP+3Jmcp+S2QopZl9iPKxG
+         oZVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NN0SIfMjTxjZbQRx0YAvjqNr/mU2jjCeZfOuWM1TKQg=;
+        b=ewVZM0+YkGfCShr1oLPeJujEa80XwZhu8UJL/wuQfFOJJLh6AjoD8bIpAFAK7/iKUX
+         JxX5wS1oP5ID8Uc7aNLyMqeQ+MGaJwd5TR1i1RCcWtvNRXUFSfjWB7a0MUavAux564Gl
+         V+ZHDEHya7abal4oYZsy30I4xncLQflrIR/FQ1d6Hdw3YOEvT7fvnCfURf6T7nEw7F4i
+         /3uZWDroZOnsuErSpNqe3uDKcFIhTR4OZY9O2p+p3BEZZfsIbV9iQ9eohu0tgiz7em2z
+         sSUDjMA+JfeMn+17j3PNMHjWWRxg8hyxt3y2l18/gL4jdVEjjb1CwDQEvXFc06Nv7RpY
+         kZsg==
+X-Gm-Message-State: AOAM533G3kBSanIhM1AIuKvCDm0/mGMUpRq+uioRefCsVF1SbuUzLjCh
+        93FWqugSbfiz/bgakze9d/TSjA==
+X-Google-Smtp-Source: ABdhPJzED7HcLyGFPWdG5U4GtxJ9nU13WoMu/wsaNmOE8Ia2aHE+xQgk+fFtK5iYslBsmLLlnWZE0A==
+X-Received: by 2002:a17:906:d109:: with SMTP id b9mr1894772ejz.548.1618816561662;
+        Mon, 19 Apr 2021 00:16:01 -0700 (PDT)
+Received: from apalos.home (ppp-94-65-92-88.home.otenet.gr. [94.65.92.88])
+        by smtp.gmail.com with ESMTPSA id q10sm8586361eds.26.2021.04.19.00.16.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 00:16:01 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 10:15:58 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        David Laight <David.Laight@aculab.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Arnd Bergmann <arnd@kernel.org>
+Subject: Re: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
+Message-ID: <YH0uLsnzdE9ya6kw@apalos.home>
+References: <20210411103318.GC2531743@casper.infradead.org>
+ <20210412011532.GG2531743@casper.infradead.org>
+ <20210414101044.19da09df@carbon>
+ <20210414115052.GS2531743@casper.infradead.org>
+ <20210414211322.3799afd4@carbon>
+ <20210414213556.GY2531743@casper.infradead.org>
+ <a50c3156fe8943ef964db4345344862f@AcuMS.aculab.com>
+ <20210415200832.32796445@carbon>
+ <20210416152755.GL2531743@casper.infradead.org>
+ <20210419063441.GA18787@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <87h7k24uxg.fsf@yhuang6-desk1.ccr.corp.intel.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.5]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210419063441.GA18787@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/19 15:04, Huang, Ying wrote:
-> Miaohe Lin <linmiaohe@huawei.com> writes:
-> 
->> On 2021/4/19 10:15, Huang, Ying wrote:
->>> Miaohe Lin <linmiaohe@huawei.com> writes:
->>>
->>>> When I was investigating the swap code, I found the below possible race
->>>> window:
->>>>
->>>> CPU 1                                           CPU 2
->>>> -----                                           -----
->>>> shmem_swapin
->>>>   swap_cluster_readahead
->>>>     if (likely(si->flags & (SWP_BLKDEV | SWP_FS_OPS))) {
->>>>                                                 swapoff
->>>>                                                   si->flags &= ~SWP_VALID;
->>>>                                                   ..
->>>>                                                   synchronize_rcu();
->>>>                                                   ..
->>>
->>> You have removed these code in the previous patches of the series.  And
->>> they are not relevant in this patch.
->>
->> Yes, I should change these. Thanks.
->>
->>>
->>>>                                                   si->swap_file = NULL;
->>>>     struct inode *inode = si->swap_file->f_mapping->host;[oops!]
->>>>
->>>> Close this race window by using get/put_swap_device() to guard against
->>>> concurrent swapoff.
->>>>
->>>> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
->>>
->>> No.  This isn't the commit that introduces the race condition.  Please
->>> recheck your git blame result.
->>>
->>
->> I think this is really hard to find exact commit. I used git blame and found
->> this race should be existed when this is introduced. Any suggestion ?
->> Thanks.
-> 
-> I think the commit that introduces the race condition is commit
-> 8fd2e0b505d1 ("mm: swap: check if swap backing device is congested or
-> not")
-> 
+Hi Christoph,
 
-Thanks.
-The commit log only describes one race condition. And for that one, this should be correct
-Fixes tag. But there are still many other race conditions inside swap_cluster_readahead,
-such as swap_readpage() called from swap_cluster_readahead. This tag could not cover the
-all race windows.
-
-> Best Regards,
-> Huang, Ying
+On Mon, Apr 19, 2021 at 08:34:41AM +0200, Christoph Hellwig wrote:
+> On Fri, Apr 16, 2021 at 04:27:55PM +0100, Matthew Wilcox wrote:
+> > On Thu, Apr 15, 2021 at 08:08:32PM +0200, Jesper Dangaard Brouer wrote:
+> > > See below patch.  Where I swap32 the dma address to satisfy
+> > > page->compound having bit zero cleared. (It is the simplest fix I could
+> > > come up with).
+> > 
+> > I think this is slightly simpler, and as a bonus code that assumes the
+> > old layout won't compile.
 > 
->>> Best Regards,
->>> Huang, Ying
->>>
->>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>>> ---
->>>>  mm/shmem.c | 6 ++++++
->>>>  1 file changed, 6 insertions(+)
->>>>
->>>> diff --git a/mm/shmem.c b/mm/shmem.c
->>>> index 26c76b13ad23..936ba5595297 100644
->>>> --- a/mm/shmem.c
->>>> +++ b/mm/shmem.c
->>>> @@ -1492,15 +1492,21 @@ static void shmem_pseudo_vma_destroy(struct vm_area_struct *vma)
->>>>  static struct page *shmem_swapin(swp_entry_t swap, gfp_t gfp,
->>>>  			struct shmem_inode_info *info, pgoff_t index)
->>>>  {
->>>> +	struct swap_info_struct *si;
->>>>  	struct vm_area_struct pvma;
->>>>  	struct page *page;
->>>>  	struct vm_fault vmf = {
->>>>  		.vma = &pvma,
->>>>  	};
->>>>  
->>>> +	/* Prevent swapoff from happening to us. */
->>>> +	si = get_swap_device(swap);
->>>> +	if (unlikely(!si))
->>>> +		return NULL;
->>>>  	shmem_pseudo_vma_init(&pvma, info, index);
->>>>  	page = swap_cluster_readahead(swap, gfp, &vmf);
->>>>  	shmem_pseudo_vma_destroy(&pvma);
->>>> +	put_swap_device(si);
->>>>  
->>>>  	return page;
->>>>  }
->>> .
->>>
-> .
-> 
+> So, why do we even do this crappy overlay of a dma address?  This just
+> all seems like a giant hack.  Random subsystems should not just steal
+> a few struct page fields as that just turns into the desasters like the
+> one we've seen here or probably something worse next time.
 
+The page pool API was using page->private in the past to store these kind of
+info. That caused a problem to begin with, since it would fail  on 32-bit
+systems with 64bit DMA.  We had a similar discussion on the past but decided
+struct page is the right place to store that [1].
+
+Another advantage is that we can now use the information from the networking 
+subsystem and enable recycling of SKBs and SKB fragments, by using the stored 
+metadata of struct page [2].
+
+[1] https://lore.kernel.org/netdev/20190207.132519.1698007650891404763.davem@davemloft.net/
+[2] https://lore.kernel.org/netdev/20210409223801.104657-1-mcroce@linux.microsoft.com/
+
+Cheers
+/Ilias
