@@ -2,96 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9C3363D4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31EF7363D50
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238113AbhDSITE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 04:19:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:37620 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237632AbhDSITC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 04:19:02 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 533D61FB;
-        Mon, 19 Apr 2021 01:18:33 -0700 (PDT)
-Received: from [10.57.57.205] (unknown [10.57.57.205])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E5BEF3F85F;
-        Mon, 19 Apr 2021 01:18:29 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] perf cs-etm: Set time on synthesised samples to
- preserve ordering
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     coresight@lists.linaro.org, al.grant@arm.com,
-        branislav.rankov@arm.com, denik@chromium.org,
-        suzuki.poulose@arm.com, Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210416105632.8771-1-james.clark@arm.com>
- <20210416150709.GA1046932@xps15> <YHmqZKGMFydbsvEy@kernel.org>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <c3a75731-15b4-e052-1840-a881b05862df@arm.com>
-Date:   Mon, 19 Apr 2021 11:18:31 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S237832AbhDSITQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 04:19:16 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16479 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237909AbhDSITK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 04:19:10 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FP05G0WpszqTdv;
+        Mon, 19 Apr 2021 16:16:18 +0800 (CST)
+Received: from [10.174.178.5] (10.174.178.5) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Mon, 19 Apr 2021
+ 16:18:35 +0800
+Subject: Re: [PATCH v2 5/5] mm/shmem: fix shmem_swapin() race with swapoff
+To:     "Huang, Ying" <ying.huang@intel.com>
+CC:     <akpm@linux-foundation.org>, <dennis@kernel.org>,
+        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
+        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
+        <alexs@kernel.org>, <david@redhat.com>, <minchan@kernel.org>,
+        <richard.weiyang@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>
+References: <20210417094039.51711-1-linmiaohe@huawei.com>
+ <20210417094039.51711-6-linmiaohe@huawei.com>
+ <87r1j7kok3.fsf@yhuang6-desk1.ccr.corp.intel.com>
+ <ed215f73-93c1-d47b-e440-30701a7fca46@huawei.com>
+ <87h7k24uxg.fsf@yhuang6-desk1.ccr.corp.intel.com>
+ <41a33c84-f878-8dab-a1d0-4aea3a1fc739@huawei.com>
+ <877dky4t7b.fsf@yhuang6-desk1.ccr.corp.intel.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <f99df991-97bf-5ea3-bc20-ab03fef90b3b@huawei.com>
+Date:   Mon, 19 Apr 2021 16:18:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <YHmqZKGMFydbsvEy@kernel.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <877dky4t7b.fsf@yhuang6-desk1.ccr.corp.intel.com>
+Content-Type: text/plain; charset="windows-1252"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.5]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 16/04/2021 18:16, Arnaldo Carvalho de Melo wrote:
-> Em Fri, Apr 16, 2021 at 09:07:09AM -0600, Mathieu Poirier escreveu:
->> Hi James,
->>
->> On Fri, Apr 16, 2021 at 01:56:30PM +0300, James Clark wrote:
->>> Changes since v1:
->>>  * Improved variable name from etm_timestamp -> cs_timestamp
->>>  * Fixed ordering of Signed-off-by
+On 2021/4/19 15:41, Huang, Ying wrote:
+> Miaohe Lin <linmiaohe@huawei.com> writes:
+> 
+>> On 2021/4/19 15:04, Huang, Ying wrote:
+>>> Miaohe Lin <linmiaohe@huawei.com> writes:
+>>>
+>>>> On 2021/4/19 10:15, Huang, Ying wrote:
+>>>>> Miaohe Lin <linmiaohe@huawei.com> writes:
+>>>>>
+>>>>>> When I was investigating the swap code, I found the below possible race
+>>>>>> window:
+>>>>>>
+>>>>>> CPU 1                                           CPU 2
+>>>>>> -----                                           -----
+>>>>>> shmem_swapin
+>>>>>>   swap_cluster_readahead
+>>>>>>     if (likely(si->flags & (SWP_BLKDEV | SWP_FS_OPS))) {
+>>>>>>                                                 swapoff
+>>>>>>                                                   si->flags &= ~SWP_VALID;
+>>>>>>                                                   ..
+>>>>>>                                                   synchronize_rcu();
+>>>>>>                                                   ..
+>>>>>
+>>>>> You have removed these code in the previous patches of the series.  And
+>>>>> they are not relevant in this patch.
+>>>>
+>>>> Yes, I should change these. Thanks.
+>>>>
+>>>>>
+>>>>>>                                                   si->swap_file = NULL;
+>>>>>>     struct inode *inode = si->swap_file->f_mapping->host;[oops!]
+>>>>>>
+>>>>>> Close this race window by using get/put_swap_device() to guard against
+>>>>>> concurrent swapoff.
+>>>>>>
+>>>>>> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+>>>>>
+>>>>> No.  This isn't the commit that introduces the race condition.  Please
+>>>>> recheck your git blame result.
+>>>>>
+>>>>
+>>>> I think this is really hard to find exact commit. I used git blame and found
+>>>> this race should be existed when this is introduced. Any suggestion ?
+>>>> Thanks.
+>>>
+>>> I think the commit that introduces the race condition is commit
+>>> 8fd2e0b505d1 ("mm: swap: check if swap backing device is congested or
+>>> not")
 >>>
 >>
->> You forgot to add the RB and AB you received.  Since Arnaldo is responsible for
->> the perf tools subsystem, please send another revision.
->  
+>> Thanks.
+>> The commit log only describes one race condition. And for that one, this should be correct
+>> Fixes tag. But there are still many other race conditions inside swap_cluster_readahead,
+>> such as swap_readpage() called from swap_cluster_readahead. This tag could not cover the
+>> all race windows.
 > 
-> 
-> Yep, please collect Reported-by and Acked-by as you go sending new
-> versions of a patchset, the last one I don't have a problem collecting
-> myself, but if you have to resend, please collect the feedback tags.
-> 
-> - Arnaldo
+> No. swap_readpage() in swap_cluster_readahead() is OK.  Because
+> __read_swap_cache_async() is called before that, so the swap entry will
+> be marked with SWAP_HAS_CACHE, and page will be locked.
 > 
 
-Ok thanks, I will keep that in mind for the future. I wasn't sure if they still
-applied or not as it was a new version.
+Oh... I missed this. Many thanks for your remind.
 
-Thanks
-James
-
->> Thanks,
->> Mathieu
->>
->>> James Clark (2):
->>>   perf cs-etm: Refactor timestamp variable names
->>>   perf cs-etm: Set time on synthesised samples to preserve ordering
->>>
->>>  .../perf/util/cs-etm-decoder/cs-etm-decoder.c | 18 +++----
->>>  tools/perf/util/cs-etm.c                      | 52 ++++++++++---------
->>>  tools/perf/util/cs-etm.h                      |  4 +-
->>>  3 files changed, 39 insertions(+), 35 deletions(-)
->>>
->>> -- 
->>> 2.28.0
->>>
+> Best Regards,
+> Huang, Ying
 > 
+>>> Best Regards,
+>>> Huang, Ying
+>>>
+>>>>> Best Regards,
+>>>>> Huang, Ying
+>>>>>
+>>>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>>>> ---
+>>>>>>  mm/shmem.c | 6 ++++++
+>>>>>>  1 file changed, 6 insertions(+)
+>>>>>>
+>>>>>> diff --git a/mm/shmem.c b/mm/shmem.c
+>>>>>> index 26c76b13ad23..936ba5595297 100644
+>>>>>> --- a/mm/shmem.c
+>>>>>> +++ b/mm/shmem.c
+>>>>>> @@ -1492,15 +1492,21 @@ static void shmem_pseudo_vma_destroy(struct vm_area_struct *vma)
+>>>>>>  static struct page *shmem_swapin(swp_entry_t swap, gfp_t gfp,
+>>>>>>  			struct shmem_inode_info *info, pgoff_t index)
+>>>>>>  {
+>>>>>> +	struct swap_info_struct *si;
+>>>>>>  	struct vm_area_struct pvma;
+>>>>>>  	struct page *page;
+>>>>>>  	struct vm_fault vmf = {
+>>>>>>  		.vma = &pvma,
+>>>>>>  	};
+>>>>>>  
+>>>>>> +	/* Prevent swapoff from happening to us. */
+>>>>>> +	si = get_swap_device(swap);
+>>>>>> +	if (unlikely(!si))
+>>>>>> +		return NULL;
+>>>>>>  	shmem_pseudo_vma_init(&pvma, info, index);
+>>>>>>  	page = swap_cluster_readahead(swap, gfp, &vmf);
+>>>>>>  	shmem_pseudo_vma_destroy(&pvma);
+>>>>>> +	put_swap_device(si);
+>>>>>>  
+>>>>>>  	return page;
+>>>>>>  }
+>>>>> .
+>>>>>
+>>> .
+>>>
+> .
+> 
+
