@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0533644B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42CDC3644B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241572AbhDSNcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:32:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56988 "EHLO mail.kernel.org"
+        id S240474AbhDSNcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:32:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240142AbhDSNW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:22:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96B8F613B8;
-        Mon, 19 Apr 2021 13:18:27 +0000 (UTC)
+        id S240623AbhDSNXA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:23:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 386B861403;
+        Mon, 19 Apr 2021 13:18:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618838308;
-        bh=Y4wP7bAL5Qh49YvrIy0xzTrGJgHMQMtsz1KDcLeU7N0=;
+        s=korg; t=1618838310;
+        bh=/2CvmpTGdlmNE/GyxoOZcvGZshJIB1MvtP261I7s01Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KidRq2ZemDnzJWPtMiLCdv6gHjew0HHF03re9yp62lyhYQLF1UT3lLY51xsH4mjm/
-         waVVQ8i3JjZfJoRyGdV8OVjlaqVECim4zJRuO5I5Wz2zVu6VjjAM8idG0/PblYc2Y3
-         RyZHlHwTa9baCfgOMfatDLiqvqu4AKs7C0d5eZYU=
+        b=pqQboO4nIZR2zzpynBiDcnZ8MZaEH6m1PEmcq65lZW8qDh3ysRbYefH515qRmbTEv
+         hDECJTU1Xc5J/7v1v68iGTnontasimSpN2TlU2hMAQlKLoLoDx5IspbI6s9aLMNWY1
+         x+9QZW7uqsz9Q0ssLR97flS/spZK5hXAhvH0maDQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 14/73] ARM: dts: Fix moving mmc devices with aliases for omap4 & 5
-Date:   Mon, 19 Apr 2021 15:06:05 +0200
-Message-Id: <20210419130524.284538189@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 15/73] lockdep: Add a missing initialization hint to the "INFO: Trying to register non-static key" message
+Date:   Mon, 19 Apr 2021 15:06:06 +0200
+Message-Id: <20210419130524.321295463@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210419130523.802169214@linuxfoundation.org>
 References: <20210419130523.802169214@linuxfoundation.org>
@@ -39,53 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
-[ Upstream commit 77335a040178a0456d4eabc8bf17a7ca3ee4a327 ]
+[ Upstream commit 3a85969e9d912d5dd85362ee37b5f81266e00e77 ]
 
-Fix moving mmc devices with dts aliases as discussed on the lists.
-Without this we now have internal eMMC mmc1 show up as mmc2 compared
-to the earlier order of devices.
+Since this message is printed when dynamically allocated spinlocks (e.g.
+kzalloc()) are used without initialization (e.g. spin_lock_init()),
+suggest to developers to check whether initialization functions for objects
+were called, before making developers wonder what annotation is missing.
 
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+[ mingo: Minor tweaks to the message. ]
+
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20210321064913.4619-1-penguin-kernel@I-love.SAKURA.ne.jp
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/omap4.dtsi | 5 +++++
- arch/arm/boot/dts/omap5.dtsi | 5 +++++
- 2 files changed, 10 insertions(+)
+ kernel/locking/lockdep.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/omap4.dtsi b/arch/arm/boot/dts/omap4.dtsi
-index 904852006b9b..0a36b8fe3fa9 100644
---- a/arch/arm/boot/dts/omap4.dtsi
-+++ b/arch/arm/boot/dts/omap4.dtsi
-@@ -22,6 +22,11 @@
- 		i2c1 = &i2c2;
- 		i2c2 = &i2c3;
- 		i2c3 = &i2c4;
-+		mmc0 = &mmc1;
-+		mmc1 = &mmc2;
-+		mmc2 = &mmc3;
-+		mmc3 = &mmc4;
-+		mmc4 = &mmc5;
- 		serial0 = &uart1;
- 		serial1 = &uart2;
- 		serial2 = &uart3;
-diff --git a/arch/arm/boot/dts/omap5.dtsi b/arch/arm/boot/dts/omap5.dtsi
-index 041646fabb2d..3b56e993326d 100644
---- a/arch/arm/boot/dts/omap5.dtsi
-+++ b/arch/arm/boot/dts/omap5.dtsi
-@@ -25,6 +25,11 @@
- 		i2c2 = &i2c3;
- 		i2c3 = &i2c4;
- 		i2c4 = &i2c5;
-+		mmc0 = &mmc1;
-+		mmc1 = &mmc2;
-+		mmc2 = &mmc3;
-+		mmc3 = &mmc4;
-+		mmc4 = &mmc5;
- 		serial0 = &uart1;
- 		serial1 = &uart2;
- 		serial2 = &uart3;
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index bca0f7f71cde..7429f1571755 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -875,7 +875,8 @@ static bool assign_lock_key(struct lockdep_map *lock)
+ 		/* Debug-check: all keys must be persistent! */
+ 		debug_locks_off();
+ 		pr_err("INFO: trying to register non-static key.\n");
+-		pr_err("the code is fine but needs lockdep annotation.\n");
++		pr_err("The code is fine but needs lockdep annotation, or maybe\n");
++		pr_err("you didn't initialize this object before use?\n");
+ 		pr_err("turning off the locking correctness validator.\n");
+ 		dump_stack();
+ 		return false;
 -- 
 2.30.2
 
