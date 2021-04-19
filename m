@@ -2,209 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02DE136415B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 14:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2572C364170
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 14:18:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239088AbhDSMQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 08:16:49 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:40478 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S239056AbhDSMQe (ORCPT
+        id S239130AbhDSMRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 08:17:41 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:49693 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239056AbhDSMRg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 08:16:34 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13JCChb7029242;
-        Mon, 19 Apr 2021 14:15:46 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=7SdEfemEgXpMUy0WM2zaZTJbps/vEuTda/G6kyNczgM=;
- b=GHfC8sWTPB0wZ1CO+gLyK0HD0IXGG+z91vTFaoVW++YydctUq77gmEDZXpTZkBzvqqJP
- lg/UPLwY9FBCOpQAF/yCi1gRX+Te+l88VcxpIHm76pExFs0itzLAENp1nKIbO4eHFHYu
- TRjAwjmsOFdp1K/hYKVq2H8xUl2CGGrQSzrqDtXmNK56OofMX5b3T9q1sVpvblho9kGR
- S/MQvZlswbUvcy296u9LlaHItLF18FU7lDSTH0uZGhhCd/2n8hsAQ65VvC+ci3eBA3G9
- dRGVf1vRDhCdvpi/1O3AhB43UUqzuHEcrZwCILz94UplE2z2kTGYrgcD0maqkFQOKF2+ kA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 380s5344gf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Apr 2021 14:15:46 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8965510002A;
-        Mon, 19 Apr 2021 14:15:45 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7D6392139BC;
-        Mon, 19 Apr 2021 14:15:45 +0200 (CEST)
-Received: from localhost (10.75.127.45) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 19 Apr 2021 14:15:45
- +0200
-From:   <patrice.chotard@foss.st.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-CC:     <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>,
-        <patrice.chotard@foss.st.com>
-Subject: [PATCH 3/3] spi: stm32-qspi: Add dirmap support
-Date:   Mon, 19 Apr 2021 14:15:41 +0200
-Message-ID: <20210419121541.11617-4-patrice.chotard@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210419121541.11617-1-patrice.chotard@foss.st.com>
-References: <20210419121541.11617-1-patrice.chotard@foss.st.com>
+        Mon, 19 Apr 2021 08:17:36 -0400
+Received: from mail-wr1-f45.google.com ([209.85.221.45]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1McIYO-1m4VGN1dSm-00cdhN; Mon, 19 Apr 2021 14:17:03 +0200
+Received: by mail-wr1-f45.google.com with SMTP id a4so33804401wrr.2;
+        Mon, 19 Apr 2021 05:17:03 -0700 (PDT)
+X-Gm-Message-State: AOAM530v/yBC/2XYq7ELiJsOKT38utH8V09hnr+DbReIt0QSUowLKCu9
+        qzJPWUNHn5H0Tj77oevy9M0tidTBIegyWgN+ZY8=
+X-Google-Smtp-Source: ABdhPJw4F20QerTwfst1rAMwc6NWiXDSUWeUkZ8E4j2sezaYrIv6atAni45jIwUzsYws7AyLO9D3pu8QFGIGztgXd7o=
+X-Received: by 2002:a05:6000:1843:: with SMTP id c3mr14679907wri.361.1618834612186;
+ Mon, 19 Apr 2021 05:16:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.45]
-X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-19_10:2021-04-16,2021-04-19 signatures=0
+References: <20210419042722.27554-1-alice.guo@oss.nxp.com> <20210419042722.27554-4-alice.guo@oss.nxp.com>
+ <YH0O907dfGY9jQRZ@atmark-techno.com> <CAMuHMdVY1SLZ0K30T2pimyrR6Mm=VoSTO=L-xxCy2Bj7_kostw@mail.gmail.com>
+ <YH1OeFy+SepIYYG0@atmark-techno.com>
+In-Reply-To: <YH1OeFy+SepIYYG0@atmark-techno.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 19 Apr 2021 14:16:36 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1Mu2F0irDDCL-50HiHth29iYFL5b7WHZ=UX6W7zzoxAg@mail.gmail.com>
+Message-ID: <CAK8P3a1Mu2F0irDDCL-50HiHth29iYFL5b7WHZ=UX6W7zzoxAg@mail.gmail.com>
+Subject: Re: [RFC v1 PATCH 3/3] driver: update all the code that use soc_device_match
+To:     Dominique MARTINET <dominique.martinet@atmark-techno.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Alice Guo (OSS)" <alice.guo@oss.nxp.com>,
+        gregkh <gregkh@linuxfoundation.org>,
+        Rafael Wysocki <rafael@kernel.org>,
+        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
+        aymen.sghaier@nxp.com, Herbert Xu <herbert@gondor.apana.org.au>,
+        David Miller <davem@davemloft.net>,
+        Tony Lindgren <tony@atomide.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        peter.ujfalusi@gmail.com, Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kevin Hilman <khilman@baylibre.com>, tomba@kernel.org,
+        jyri.sarha@iki.fi, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kishon <kishon@ti.com>, Jakub Kicinski <kuba@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Roy Pledge <Roy.Pledge@nxp.com>, Leo Li <leoyang.li@nxp.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Keerthy <j-keerthy@ti.com>, Felipe Balbi <balbi@kernel.org>,
+        Tony Prisk <linux@prisktech.co.nz>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>, dmaengine@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "open list:ARM/Amlogic Meson SoC support" 
+        <linux-amlogic@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        linux-phy@lists.infradead.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-staging@lists.linux.dev,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:P71GUur0c8Et4KTdfK062CelxJMlxDzHdi6foeZVMrh68Tz4kVO
+ xXC4vz+qe3LvNC/lTgY8q6jr08cIcxgzzrqqwLuy4gBjPze3CRaFI6Tn0ivsylYkqTjCGCd
+ UznPeEk90qstnxb0iWNZx7FG5N+vrUigS/VNsT3W/kFEpTHiyw396kNMzzFJBTjXO+naZJ+
+ Cfu35e3pJq/mHwP5LQM/Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Tj0dSv4OACg=:QLuHKXqc+6Lj41NGnufoGl
+ N+UnlZp25078q227oT0o/4kxbd0mQOAoQ/NCUKgnVsoYmGtmK6mEBskoottCNbYunStcV9NF4
+ wE8ToQWQ05B3nZv4Vjj9qNbaiSwQl2/EIEpHx8+6DQaiGM4h6uplPIOIDeaZjltt02tsjjmk7
+ kxpSU+zIeAbNwqmXYSk5Vm3CpYS1xMcDA6Eiv0+uZeBUE0kKjN4jwkU6+BKG/eaq+T9ufKwnD
+ crSJLI+V67wSaKUzbHccJ3EU1Sb6dMM2cPoEC3Av6tRhuAXiX84+lOxtkljO1IFE9iL1JBVn5
+ CjGxqnLONV0vManrkRS3zSk/dqMTqKx9iNczeHNAz+sKCK3kGK1HvvAI82zCriMShj36q2Yiu
+ latEFCHqqv6CzIpzD2Q+F98/Rh3nVZdyFAqvuM6r16X0t/3dzAs72dYw+jzCHok5qetil5Q2V
+ 5rdGScTR8+ZhGbwiKRQyQ6I2CQTnccKZ549zJci96NqNdfUe5jbzVwZOI0walCavZ7GVu0d2F
+ jvOU246bo6oNPkDzH9c2gJBnZtcrzAKb4pwtF9+3cOiLZPnCE0nY+1vjm75YQHDBCyxvLdR64
+ g4tTIuRlUg3P8XaXbJiPp80y/nkM8kt4yG+up76tnDKMDxMpP5a+pkpQ1YQ2I6y3uojN6bE8n
+ CFp8=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patrice Chotard <patrice.chotard@foss.st.com>
+On Mon, Apr 19, 2021 at 11:33 AM Dominique MARTINET
+<dominique.martinet@atmark-techno.com> wrote:
+> Geert Uytterhoeven wrote on Mon, Apr 19, 2021 at 11:03:24AM +0200:
+>
+> > soc_device_match() should only be used as a last resort, to identify
+> > systems that cannot be identified otherwise.  Typically this is used for
+> > quirks, which should only be enabled on a very specific subset of
+> > systems.  IMHO such systems should make sure soc_device_match()
+> > is available early, by registering their SoC device early.
+>
+> I definitely agree there, my suggestion to defer was only because I know
+> of no other way to influence the ordering of drivers loading reliably
+> and gave up on soc being init'd early.
 
-Add stm32_qspi_dirmap_read() and stm32_qspi_dirmap_create()
-to get dirmap support.
+In some cases, you can use the device_link infrastructure to deal
+with dependencies between devices. Not sure if this would help
+in your case, but have a look at device_link_add() etc in drivers/base/core.c
 
-Update the exec_op callback which doens't allow anymore memory map
-access. Memory map access are only available through the dirmap_read
-callback.
+> In this particular case the problem is that since 7d981405d0fd ("soc:
+> imx8m: change to use platform driver") the soc probe tries to use the
+> nvmem driver for ocotp fuses for imx8m devices, which isn't ready yet.
+> So soc loading gets pushed back to the end of the list because it gets
+> defered and other drivers relying on soc_device_match get confused
+> because they wrongly think a device doesn't match a quirk when it
+> actually does.
+>
+> If there is a way to ensure the nvmem driver gets loaded before the soc,
+> that would also solve the problem nicely, and avoid the need to mess
+> with all the ~50 drivers which use it.
+>
+> Is there a way to control in what order drivers get loaded? Something in
+> the dtb perhaps?
 
-Signed-off-by: Patrice Chotard <patrice.chotard@foss.st.com>
----
- drivers/spi/spi-stm32-qspi.c | 83 +++++++++++++++++++++++++++++-------
- 1 file changed, 67 insertions(+), 16 deletions(-)
+For built-in drivers, load order depends on the initcall level and
+link order (how things are lined listed in the Makefile hierarchy).
 
-diff --git a/drivers/spi/spi-stm32-qspi.c b/drivers/spi/spi-stm32-qspi.c
-index 6e74d6bed54c..e2a99f054551 100644
---- a/drivers/spi/spi-stm32-qspi.c
-+++ b/drivers/spi/spi-stm32-qspi.c
-@@ -331,7 +331,7 @@ static int stm32_qspi_send(struct spi_mem *mem, const struct spi_mem_op *op)
- {
- 	struct stm32_qspi *qspi = spi_controller_get_devdata(mem->spi->master);
- 	struct stm32_qspi_flash *flash = &qspi->flash[mem->spi->chip_select];
--	u32 ccr, cr, addr_max;
-+	u32 ccr, cr;
- 	int timeout, err = 0;
- 
- 	dev_dbg(qspi->dev, "cmd:%#x mode:%d.%d.%d.%d addr:%#llx len:%#x\n",
-@@ -343,18 +343,6 @@ static int stm32_qspi_send(struct spi_mem *mem, const struct spi_mem_op *op)
- 	if (err)
- 		goto abort;
- 
--	addr_max = op->addr.val + op->data.nbytes + 1;
--
--	if (op->data.dir == SPI_MEM_DATA_IN) {
--		if (addr_max < qspi->mm_size &&
--		    op->addr.buswidth)
--			qspi->fmode = CCR_FMODE_MM;
--		else
--			qspi->fmode = CCR_FMODE_INDR;
--	} else {
--		qspi->fmode = CCR_FMODE_INDW;
--	}
--
- 	cr = readl_relaxed(qspi->io_base + QSPI_CR);
- 	cr &= ~CR_PRESC_MASK & ~CR_FSEL;
- 	cr |= FIELD_PREP(CR_PRESC_MASK, flash->presc);
-@@ -364,8 +352,6 @@ static int stm32_qspi_send(struct spi_mem *mem, const struct spi_mem_op *op)
- 	if (op->data.nbytes)
- 		writel_relaxed(op->data.nbytes - 1,
- 			       qspi->io_base + QSPI_DLR);
--	else
--		qspi->fmode = CCR_FMODE_INDW;
- 
- 	ccr = qspi->fmode;
- 	ccr |= FIELD_PREP(CCR_INST_MASK, op->cmd.opcode);
-@@ -441,6 +427,11 @@ static int stm32_qspi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- 	}
- 
- 	mutex_lock(&qspi->lock);
-+	if (op->data.dir == SPI_MEM_DATA_IN && op->data.nbytes)
-+		qspi->fmode = CCR_FMODE_INDR;
-+	else
-+		qspi->fmode = CCR_FMODE_INDW;
-+
- 	ret = stm32_qspi_send(mem, op);
- 	mutex_unlock(&qspi->lock);
- 
-@@ -450,6 +441,64 @@ static int stm32_qspi_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- 	return ret;
- }
- 
-+static int stm32_qspi_dirmap_create(struct spi_mem_dirmap_desc *desc)
-+{
-+	struct stm32_qspi *qspi = spi_controller_get_devdata(desc->mem->spi->master);
-+
-+	if (desc->info.op_tmpl.data.dir == SPI_MEM_DATA_OUT)
-+		return -EOPNOTSUPP;
-+
-+	/* should never happen, as mm_base == null is an error probe exit condition */
-+	if (!qspi->mm_base && desc->info.op_tmpl.data.dir == SPI_MEM_DATA_IN)
-+		return -EOPNOTSUPP;
-+
-+	if (!qspi->mm_size)
-+		return -EOPNOTSUPP;
-+
-+	return 0;
-+}
-+
-+static ssize_t stm32_qspi_dirmap_read(struct spi_mem_dirmap_desc *desc,
-+				      u64 offs, size_t len, void *buf)
-+{
-+	struct stm32_qspi *qspi = spi_controller_get_devdata(desc->mem->spi->master);
-+	struct spi_mem_op op;
-+	u32 addr_max;
-+	int ret;
-+
-+	ret = pm_runtime_get_sync(qspi->dev);
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(qspi->dev);
-+		return ret;
-+	}
-+
-+	mutex_lock(&qspi->lock);
-+	/* make a local copy of desc op_tmpl and complete dirmap rdesc
-+	 * spi_mem_op template with offs, len and *buf in  order to get
-+	 * all needed transfer information into struct spi_mem_op
-+	 */
-+	memcpy(&op, &desc->info.op_tmpl, sizeof(struct spi_mem_op));
-+	dev_dbg(qspi->dev, "%s len = 0x%x offs = 0x%llx buf = 0x%p\n", __func__, len, offs, buf);
-+
-+	op.data.nbytes = len;
-+	op.addr.val = desc->info.offset + offs;
-+	op.data.buf.in = buf;
-+
-+	addr_max = op.addr.val + op.data.nbytes + 1;
-+	if (addr_max < qspi->mm_size && op.addr.buswidth)
-+		qspi->fmode = CCR_FMODE_MM;
-+	else
-+		qspi->fmode = CCR_FMODE_INDR;
-+
-+	ret = stm32_qspi_send(desc->mem, &op);
-+	mutex_unlock(&qspi->lock);
-+
-+	pm_runtime_mark_last_busy(qspi->dev);
-+	pm_runtime_put_autosuspend(qspi->dev);
-+
-+	return ret ?: len;
-+}
-+
- static int stm32_qspi_setup(struct spi_device *spi)
- {
- 	struct spi_controller *ctrl = spi->master;
-@@ -555,7 +604,9 @@ static void stm32_qspi_dma_free(struct stm32_qspi *qspi)
-  * to check supported mode.
-  */
- static const struct spi_controller_mem_ops stm32_qspi_mem_ops = {
--	.exec_op = stm32_qspi_exec_op,
-+	.exec_op	= stm32_qspi_exec_op,
-+	.dirmap_create	= stm32_qspi_dirmap_create,
-+	.dirmap_read	= stm32_qspi_dirmap_read,
- };
- 
- static int stm32_qspi_probe(struct platform_device *pdev)
--- 
-2.17.1
+For loadable modules, this is up to user space in the end.
 
+Which of the drivers in this scenario are loadable modules?
+
+        Arnd
