@@ -2,198 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCABD3641B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 14:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB69E3641B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 14:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239133AbhDSMbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 08:31:36 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:59597 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229790AbhDSMbf (ORCPT
+        id S239121AbhDSMaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 08:30:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233780AbhDSMaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 08:31:35 -0400
-X-Greylist: delayed 334 seconds by postgrey-1.27 at vger.kernel.org; Mon, 19 Apr 2021 08:31:35 EDT
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id E36171217;
-        Mon, 19 Apr 2021 08:25:30 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 19 Apr 2021 08:25:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=
-        message-id:subject:from:to:cc:date:in-reply-to:references
-        :content-type:mime-version:content-transfer-encoding; s=fm3; bh=
-        9D4Gtb3vH0W2i2JTXhBukgx70QFcLkleNcILHqPTyU0=; b=f0Sp5vL7g/aEH8B8
-        WmtCd36Q9ygpOgpHJFwQ3Uvq2k7ndzmQ4Mx/i8dima44vNaeiBEJGdoSoaRHctuB
-        bpYVI9XWmEFh+sM6SwiMxrrMB9dzVFpSNAWmosSLa20rphf+msDoTrIhuLCHL/Lc
-        jZFBZhiYkbVsJmcYc4ZfcXArDidaWeIulvU5FYrcComYSF/wJN4p0AV/GBgXv69J
-        Rr27N8zd9RFR2lDPPPPL4mfmEIRuZsjtcOWnEbqqQC/pJgD+2jU9fdoPRqPRpMK2
-        /gZh4F5x0V8V5hOwIt1M7pGTEREMEw/QGa1MqnOwvqLrwGDvzc1gLeZtAARpNnTd
-        TTxInw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=9D4Gtb3vH0W2i2JTXhBukgx70QFcLkleNcILHqPTy
-        U0=; b=FBR6bcj70XStCWxFB6ml5tBYpF0b8vlSwe/EhW6EbUEpewq+mo8SKyDPK
-        f2ruC62592M6EhTFRNow9Gnpqv4CC62/qo1zngiWYQgfDwikZL0U1pRyhdVlKBrG
-        vjtEzP1ZMbgspJP7j2wfwOMcrp4hNPXMTYDfe+NJcM9y9yJ0I3iOimq7Mq/z8LXx
-        RyHM4YjSXdWeVrx3Xc2UmL0LrOAJMGI8uVIZEhq2uBcunoVaO/5BZX7729On2Ohm
-        pHphvRbmuDb9s01HXId5Twfgp9A0I8cLiQO3/R3dCrbEsWRn50hUXB8q53S8OI49
-        X+uCno2Sx7SK8MQMg0NBx5rnPADTA==
-X-ME-Sender: <xms:uXZ9YKEUw4TiNXWfyyFAYxAenk5r56jizoetMpNH-pbnj8B9AfNWlQ>
-    <xme:uXZ9YLWK-rXXHNx98SgY53Phgk0Po2mL95r4ejoDnRN2mg8o5XSyhh4s9cvRkyuoJ
-    s-kbcInwt2R>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddtgedgheefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkffuhffvffgjfhgtfggggfesthejredttderjeenucfhrhhomhepkfgrnhcu
-    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
-    ekkeejieeiieegvedvvdejjeegfeffleekudekgedvudeggeevgfekvdfhvdelfeenucff
-    ohhmrghinhepghhithhhuhgsrdgtohhmnecukfhppedutdeirdeiledrvdehfedrvdefle
-    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghv
-    vghnsehthhgvmhgrfidrnhgvth
-X-ME-Proxy: <xmx:uXZ9YEIFiGD3jPq371dc1ebDjznVTn3WGs1wlTzn9H2ojKIXRnYFPg>
-    <xmx:uXZ9YEH1XqgyS5gDYoSL5WKftv2tQZv5VosrDgDnLtKw0NHha52vEw>
-    <xmx:uXZ9YAWX9rKYvUBFU_xyQL2vWL0ZLK817d_-iC0Ub1V76NvuMvECzg>
-    <xmx:unZ9YDEsINb4HUNmjjbQQCe8f_3N-ltxWKhEm6NuKUfSSYT9S3reyPBd2eY>
-Received: from mickey.themaw.net (106-69-253-239.dyn.iinet.net.au [106.69.253.239])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 2BB131080066;
-        Mon, 19 Apr 2021 08:25:24 -0400 (EDT)
-Message-ID: <29a018c9d7dce71be8321c4f8a129a2880cf3348.camel@themaw.net>
-Subject: Re: [PATCH v3 0/4] kernfs: proposed locking and concurrency
- improvement
-From:   Ian Kent <raven@themaw.net>
-To:     Fox Chen <foxhlchen@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Brice Goglin <brice.goglin@gmail.com>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        David Howells <dhowells@redhat.com>,
-        Eric Sandeen <sandeen@sandeen.net>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Date:   Mon, 19 Apr 2021 20:25:20 +0800
-In-Reply-To: <CAC2o3DKNc=sL2n8291Dpiyb0bRHaX=nd33ogvO_LkJqpBj-YmA@mail.gmail.com>
-References: <161793058309.10062.17056551235139961080.stgit@mickey.themaw.net>
-         <CAC2o3DKNc=sL2n8291Dpiyb0bRHaX=nd33ogvO_LkJqpBj-YmA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Mon, 19 Apr 2021 08:30:22 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA907C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 05:29:51 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id y4so15495240lfl.10
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 05:29:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ceVsjztUkjkjgdJT/9OnFlYTCetL4aB8s6SCxtd3uSM=;
+        b=HEWlImLWkr4Q/N+F5Q1IILtXLfTt/msC7DflWzk05hi4BZoB5jZGHZYcRM7oAfumGG
+         5Dd/KEkfsUhIOyNwsQSqOH9sEgzr1Xpc+qJZwko9eXcZU1jynwhxF2O8iBvLRaY+f/uT
+         SRf9mRbvtijLKzczjDcR8+nm3ba9aVvGyczlVkhqJmHqMsV7sQx76YffdWX9k0Vz4Jh8
+         ar+MX/WsSTDRJrkKob88ud+bf8mwFnnHcRI8HZjkMIDBGmvEm9e+jFZeZV1Xdr2y9G1x
+         mQIhVvg/AIzWdiu3xcHcz8H1siI/K2cYKk1mPORjyilZ+0N6LvOkbLhkWjOLf6N8SUNr
+         Pg1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ceVsjztUkjkjgdJT/9OnFlYTCetL4aB8s6SCxtd3uSM=;
+        b=fHFzEXzIQHoySuskbgsF/deb11AWvbKeSR0z0Y5OmB+IEdcru09TIynl9MV55rAUp9
+         w1yuZr0y4+GJ2QnTtP+sUOUfTdGriE/MaGEpSxHd+K4eb35btriib87dv0n7RaYdECDB
+         m4tbtla00p7teyC7QyeSNH7cIFbVw3il5jKOtifos/JTQXCsVNfNDPBRfyZUBZplbltm
+         Aqhp19oT2bA2d2eSoywQl75uMxtjfSN58iIs0j6+naoYOAOQxBWZl7GCRYzXkFa2NDOj
+         PAFhftpSHQVTc1WEL7YRhQ/HFTki1iZrMZjJhphV2ik2C9q1tJitNxS5IZa/d0Z45/LB
+         bCsA==
+X-Gm-Message-State: AOAM533gMM7UyjYpgURM2HTgNUQR/RwPM+bMr4UE2+WEl7nH+TNtABNI
+        bXx1n11bMNNivNMQ2Gk8SpTfPQ==
+X-Google-Smtp-Source: ABdhPJw+JtarImMdnuQlmAPIbiSUBWZSPasiV4JgqFZPQL/vVWFs1nr58W+SA5rV5M+NtqnEMtbakQ==
+X-Received: by 2002:a05:6512:238e:: with SMTP id c14mr11960357lfv.124.1618835390404;
+        Mon, 19 Apr 2021 05:29:50 -0700 (PDT)
+Received: from localhost.localdomain (h-155-4-129-234.NA.cust.bahnhof.se. [155.4.129.234])
+        by smtp.gmail.com with ESMTPSA id y7sm410988lfl.233.2021.04.19.05.29.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 05:29:49 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Avri Altman <avri.altman@wdc.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] mmc: core: Move eMMC cache flushing to a new bus_ops callback
+Date:   Mon, 19 Apr 2021 14:29:43 +0200
+Message-Id: <20210419122943.68234-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-04-19 at 15:56 +0800, Fox Chen wrote:
-> On Fri, Apr 9, 2021 at 9:14 AM Ian Kent <raven@themaw.net> wrote:
-> > There have been a few instances of contention on the kernfs_mutex
-> > during
-> > path walks, a case on very large IBM systems seen by myself, a
-> > report by
-> > Brice Goglin and followed up by Fox Chen, and I've since seen a
-> > couple
-> > of other reports by CoreOS users.
-> > 
-> > The common thread is a large number of kernfs path walks leading to
-> > slowness of path walks due to kernfs_mutex contention.
-> > 
-> > The problem being that changes to the VFS over some time have
-> > increased
-> > it's concurrency capabilities to an extent that kernfs's use of a
-> > mutex
-> > is no longer appropriate. There's also an issue of walks for non-
-> > existent
-> > paths causing contention if there are quite a few of them which is
-> > a less
-> > common problem.
-> > 
-> > This patch series is relatively straight forward.
-> > 
-> > All it does is add the ability to take advantage of VFS negative
-> > dentry
-> > caching to avoid needless dentry alloc/free cycles for lookups of
-> > paths
-> > that don't exit and change the kernfs_mutex to a read/write
-> > semaphore.
-> > 
-> > The patch that tried to stay in VFS rcu-walk mode during path walks
-> > has
-> > been dropped for two reasons. First, it doesn't actually give very
-> > much
-> > improvement and, second, if there's a place where mistakes could go
-> > unnoticed it would be in that path. This makes the patch series
-> > simpler
-> > to review and reduces the likelihood of problems going unnoticed
-> > and
-> > popping up later.
-> > 
-> > The patch to use a revision to identify if a directory has changed
-> > has
-> > also been dropped. If the directory has changed the dentry revision
-> > needs to be updated to avoid subsequent rb tree searches and after
-> > changing to use a read/write semaphore the update also requires a
-> > lock.
-> > But the d_lock is the only lock available at this point which might
-> > itself be contended.
-> > 
-> > Changes since v2:
-> > - actually fix the inode attribute update locking.
-> > - drop the patch that tried to stay in rcu-walk mode.
-> > - drop the use a revision to identify if a directory has changed
-> > patch.
-> > 
-> > Changes since v1:
-> > - fix locking in .permission() and .getattr() by re-factoring the
-> > attribute
-> >   handling code.
-> > 
-> > ---
-> > 
-> > Ian Kent (4):
-> >       kernfs: move revalidate to be near lookup
-> >       kernfs: use VFS negative dentry caching
-> >       kernfs: switch kernfs to use an rwsem
-> >       kernfs: use i_lock to protect concurrent inode updates
-> > 
-> > 
-> >  fs/kernfs/dir.c             |  240 +++++++++++++++++++++++------
-> > --------------
-> >  fs/kernfs/file.c            |    4 -
-> >  fs/kernfs/inode.c           |   18 ++-
-> >  fs/kernfs/kernfs-internal.h |    5 +
-> >  fs/kernfs/mount.c           |   12 +-
-> >  fs/kernfs/symlink.c         |    4 -
-> >  include/linux/kernfs.h      |    2
-> >  7 files changed, 155 insertions(+), 130 deletions(-)
-> > 
-> > --
-> > 
-> 
-> Hi Ian,
-> 
-> I tested this patchset with my
-> benchmark(https://github.com/foxhlchen/sysfs_benchmark) on a 96 CPUs
-> (aws c5) machine.
-> 
-> The result was promising:
-> Before, one open+read+close cycle took 500us without much variation.
-> With this patch, the fastest one only takes 30us, though the slowest
-> is still around 100us(due to the spinlock). perf report shows no more
-> significant mutex contention.
+To prepare to add internal cache management for SD cards, let's start by
+moving the eMMC specific code into a new ->flush_cache() bus_ops callback.
 
-Thanks for this Fox.
-I'll have a look through the data a bit later.
+In this way, it becomes more straight-forward to add the SD specific parts,
+as subsequent changes are about to show.
 
-For now, I'd like to keep the series as simple as possible.
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+---
+ drivers/mmc/core/core.c    | 11 +++++++++++
+ drivers/mmc/core/core.h    |  2 ++
+ drivers/mmc/core/mmc.c     | 25 +++++++++++++++++++++++--
+ drivers/mmc/core/mmc_ops.c | 23 -----------------------
+ drivers/mmc/core/mmc_ops.h |  1 -
+ 5 files changed, 36 insertions(+), 26 deletions(-)
 
-But there shouldn't be a problem reading and comparing those
-attributes between the kernfs node and the inode without taking
-the additional lock. So a check could be done and the lock only
-taken if an update is needed.
-
-That may well improve that worst case quite a bit, but as I say,
-it would need to be a follow up change.
-
-Ian
+diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
+index f194940c5974..64eb3c8f0d15 100644
+--- a/drivers/mmc/core/core.c
++++ b/drivers/mmc/core/core.c
+@@ -2044,6 +2044,17 @@ int mmc_sw_reset(struct mmc_host *host)
+ }
+ EXPORT_SYMBOL(mmc_sw_reset);
+ 
++int mmc_flush_cache(struct mmc_card *card)
++{
++	const struct mmc_bus_ops *bus_ops = card->host->bus_ops;
++
++	if (bus_ops->flush_cache)
++		return bus_ops->flush_cache(card);
++
++	return 0;
++}
++EXPORT_SYMBOL(mmc_flush_cache);
++
+ static int mmc_rescan_try_freq(struct mmc_host *host, unsigned freq)
+ {
+ 	host->f_init = freq;
+diff --git a/drivers/mmc/core/core.h b/drivers/mmc/core/core.h
+index 8032451abaea..b00012f14671 100644
+--- a/drivers/mmc/core/core.h
++++ b/drivers/mmc/core/core.h
+@@ -20,6 +20,7 @@ struct mmc_request;
+ struct mmc_bus_ops {
+ 	void (*remove)(struct mmc_host *);
+ 	void (*detect)(struct mmc_host *);
++	int (*flush_cache)(struct mmc_card *);
+ 	int (*pre_suspend)(struct mmc_host *);
+ 	int (*suspend)(struct mmc_host *);
+ 	int (*resume)(struct mmc_host *);
+@@ -98,6 +99,7 @@ bool mmc_is_req_done(struct mmc_host *host, struct mmc_request *mrq);
+ 
+ int mmc_start_request(struct mmc_host *host, struct mmc_request *mrq);
+ 
++int mmc_flush_cache(struct mmc_card *card);
+ int mmc_erase(struct mmc_card *card, unsigned int from, unsigned int nr,
+ 		unsigned int arg);
+ int mmc_can_erase(struct mmc_card *card);
+diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+index 8741271d3971..77c9ca024285 100644
+--- a/drivers/mmc/core/mmc.c
++++ b/drivers/mmc/core/mmc.c
+@@ -28,6 +28,7 @@
+ 
+ #define DEFAULT_CMD6_TIMEOUT_MS	500
+ #define MIN_CACHE_EN_TIMEOUT_MS 1600
++#define CACHE_FLUSH_TIMEOUT_MS 30000 /* 30s */
+ 
+ static const unsigned int tran_exp[] = {
+ 	10000,		100000,		1000000,	10000000,
+@@ -2029,6 +2030,25 @@ static void mmc_detect(struct mmc_host *host)
+ 	}
+ }
+ 
++/*
++ * Flush the internal cache of the eMMC to non-volatile storage.
++ */
++static int _mmc_flush_cache(struct mmc_card *card)
++{
++	int err = 0;
++
++	if (card->ext_csd.cache_size > 0 && card->ext_csd.cache_ctrl & 1) {
++		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
++				 EXT_CSD_FLUSH_CACHE, 1,
++				 CACHE_FLUSH_TIMEOUT_MS);
++		if (err)
++			pr_err("%s: cache flush error %d\n",
++					mmc_hostname(card->host), err);
++	}
++
++	return err;
++}
++
+ static int _mmc_suspend(struct mmc_host *host, bool is_suspend)
+ {
+ 	int err = 0;
+@@ -2040,7 +2060,7 @@ static int _mmc_suspend(struct mmc_host *host, bool is_suspend)
+ 	if (mmc_card_suspended(host->card))
+ 		goto out;
+ 
+-	err = mmc_flush_cache(host->card);
++	err = _mmc_flush_cache(host->card);
+ 	if (err)
+ 		goto out;
+ 
+@@ -2181,7 +2201,7 @@ static int _mmc_hw_reset(struct mmc_host *host)
+ 	 * In the case of recovery, we can't expect flushing the cache to work
+ 	 * always, but we have a go and ignore errors.
+ 	 */
+-	mmc_flush_cache(host->card);
++	_mmc_flush_cache(host->card);
+ 
+ 	if ((host->caps & MMC_CAP_HW_RESET) && host->ops->hw_reset &&
+ 	     mmc_can_reset(card)) {
+@@ -2201,6 +2221,7 @@ static int _mmc_hw_reset(struct mmc_host *host)
+ static const struct mmc_bus_ops mmc_ops = {
+ 	.remove = mmc_remove,
+ 	.detect = mmc_detect,
++	.flush_cache = _mmc_flush_cache,
+ 	.suspend = mmc_suspend,
+ 	.resume = mmc_resume,
+ 	.runtime_suspend = mmc_runtime_suspend,
+diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
+index f413474f0f80..b03e3cf5dab4 100644
+--- a/drivers/mmc/core/mmc_ops.c
++++ b/drivers/mmc/core/mmc_ops.c
+@@ -20,7 +20,6 @@
+ #include "mmc_ops.h"
+ 
+ #define MMC_BKOPS_TIMEOUT_MS		(120 * 1000) /* 120s */
+-#define MMC_CACHE_FLUSH_TIMEOUT_MS	(30 * 1000) /* 30s */
+ #define MMC_SANITIZE_TIMEOUT_MS		(240 * 1000) /* 240s */
+ 
+ static const u8 tuning_blk_pattern_4bit[] = {
+@@ -960,28 +959,6 @@ void mmc_run_bkops(struct mmc_card *card)
+ }
+ EXPORT_SYMBOL(mmc_run_bkops);
+ 
+-/*
+- * Flush the cache to the non-volatile storage.
+- */
+-int mmc_flush_cache(struct mmc_card *card)
+-{
+-	int err = 0;
+-
+-	if (mmc_card_mmc(card) &&
+-			(card->ext_csd.cache_size > 0) &&
+-			(card->ext_csd.cache_ctrl & 1)) {
+-		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
+-				 EXT_CSD_FLUSH_CACHE, 1,
+-				 MMC_CACHE_FLUSH_TIMEOUT_MS);
+-		if (err)
+-			pr_err("%s: cache flush error %d\n",
+-					mmc_hostname(card->host), err);
+-	}
+-
+-	return err;
+-}
+-EXPORT_SYMBOL(mmc_flush_cache);
+-
+ static int mmc_cmdq_switch(struct mmc_card *card, bool enable)
+ {
+ 	u8 val = enable ? EXT_CSD_CMDQ_MODE_ENABLED : 0;
+diff --git a/drivers/mmc/core/mmc_ops.h b/drivers/mmc/core/mmc_ops.h
+index 632009260e51..c155ff7b9989 100644
+--- a/drivers/mmc/core/mmc_ops.h
++++ b/drivers/mmc/core/mmc_ops.h
+@@ -43,7 +43,6 @@ int __mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
+ int mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
+ 		unsigned int timeout_ms);
+ void mmc_run_bkops(struct mmc_card *card);
+-int mmc_flush_cache(struct mmc_card *card);
+ int mmc_cmdq_enable(struct mmc_card *card);
+ int mmc_cmdq_disable(struct mmc_card *card);
+ int mmc_sanitize(struct mmc_card *card);
+-- 
+2.25.1
 
