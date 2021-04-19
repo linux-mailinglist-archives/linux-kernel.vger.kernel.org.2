@@ -2,132 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D2E364843
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 18:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4A536484A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 18:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238875AbhDSQdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 12:33:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbhDSQdG (ORCPT
+        id S238885AbhDSQeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 12:34:14 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:38525 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235831AbhDSQeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 12:33:06 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B675C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 09:32:35 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id i190so23541992pfc.12
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 09:32:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Po8ZTryCmaCYRlNesK4Qbi+P2wBo0R9mSd8SxApaYsM=;
-        b=SfS42w7lxwkVwfe7+1MBgZbbdaiD2/CEChHSlMTy6xm00biq+FUePeNbxqitTZejfZ
-         zg2Bm4si/5sbMMXI6BBO9C8fxBbg874fzn3j6FZhg7pmT6lDa5K+dftGdg/hzDSCq3Vg
-         EPVc83ZRpdqnuhfm6dI5yjcuzx4R0T/6UryU16YqNRsrk4ghAd1681K62n+qAfBaSJjL
-         Q+nMiAYOVpMXYr8h/fj1NgIo5jdMcicWPdntv/p7d8otOyghfPE60mWaFVuAFyCMpLDy
-         YOUbMn7aL2Hr+yOXV+cHYhl4au399YnzhAKFIl1mMlJ3mC6KdvNIkClpE3IqJhycRtRi
-         TV4w==
+        Mon, 19 Apr 2021 12:34:12 -0400
+Received: from mail-ej1-f72.google.com ([209.85.218.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lYWqD-00027q-Dt
+        for linux-kernel@vger.kernel.org; Mon, 19 Apr 2021 16:33:41 +0000
+Received: by mail-ej1-f72.google.com with SMTP id d16-20020a1709066410b0290373cd3ce7e6so3848738ejm.14
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 09:33:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Po8ZTryCmaCYRlNesK4Qbi+P2wBo0R9mSd8SxApaYsM=;
-        b=uIYwxr8tRs71xwHirLwW+kAo0tOmL5cUHRVbvX2+LxH4jNL0vugMdLpKQhuHz2VKnJ
-         9d1ByIug2s+7J3SHsq6WZTHGzGFfANa3VnaOlDIFo2dtEnddplTOykylRA2dA1KzgtKd
-         D3unOXRxlYtTXZyZhwqxXd3HTcDfwSl2bKG6H84uXNzyMlMcqdZ4kJFJyn1RM/xiJmR3
-         Ko5rTBVK32L8Ua72S5XH2OO3P48T3dIQj0qn9jP2DNroN+B71iLkDDL9p5XKyQoXLU/M
-         pC0/HQNvlvesJPSiSETMj3jupALRYcieunKYVy9zua7EOTbqW+O1DVZ9qqCaxbODK81a
-         SXKQ==
-X-Gm-Message-State: AOAM531mkCr5DfPKTeM4Rfex/GmfiPhU4YcaaDGIGVGYgJz3pPDPZ7MC
-        pA1VFoLFgjGVnJ7mbnmz5ONIdcAoncijbg==
-X-Google-Smtp-Source: ABdhPJx3mBR4cgaLIzX+QZKSR72lGy+y/cIQaVq8jSoFaRpYpBsv8/ojiGloYCR8LYSGJjAizg7yNQ==
-X-Received: by 2002:a63:1d18:: with SMTP id d24mr13065142pgd.402.1618849954664;
-        Mon, 19 Apr 2021 09:32:34 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id gt22sm12209pjb.7.2021.04.19.09.32.34
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FQxWDozA0tVYdPvSIjWgb2svpfnzLps1lAqPUiFgCgM=;
+        b=gQ7DsjTTpU3I59eB5harGr9bRQhSzpQT8Uu6tLKrc9ZJABE0bSil088nxoIgRFMyYa
+         15cHoArTRKNC5UhPraVXNIDzpTxJGnnTyOt+CFQmG3B/+9WDhDP6ORyQn/N7kJg4Eqzm
+         vQveEgdjak1E0FcxuEv+2IHR8IoiVk+gTAzeqaS93yEnwQnQVq1m8zXKBKsuPYrrdGNY
+         GhZYRaqfO/sqZDl1kpc9m6wYZObSFbOE1ZlseLOoakfc7zMAe4Wws9v2NHhdo2GUvGVx
+         F39S7SU3CnZK84cWpk5nwfTWcfR6Tlz0W0waER5xC92YOy2FHzOXsVcp9W9aL2oEElYW
+         l2yg==
+X-Gm-Message-State: AOAM530nFwMNGznmgZvuCJ6mqlW2hVhKMOg6mk+nQLzMUuahi8Vr6t99
+        gJuhBXaGSbfQmXDzvtl0JVvJm2XRKzPz2VKoqs57qijLei5Q8c5Sr5nDZv4qTtGuu4gcFIbG1ly
+        Qur1ve+Dxlyht84hHTydnOr5jva7xczcJmH+WHVTOyw==
+X-Received: by 2002:a17:906:747:: with SMTP id z7mr23437097ejb.192.1618850020678;
+        Mon, 19 Apr 2021 09:33:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwS/LNiUGt0EvGgoYA868p7AY80Rrv/sN3QJhQcSvtrE8Pou1sjnlbZEZD3aRmOBpMQwnAgzg==
+X-Received: by 2002:a17:906:747:: with SMTP id z7mr23437085ejb.192.1618850020537;
+        Mon, 19 Apr 2021 09:33:40 -0700 (PDT)
+Received: from localhost.localdomain (xdsl-188-155-180-75.adslplus.ch. [188.155.180.75])
+        by smtp.gmail.com with ESMTPSA id d10sm10884257ejw.125.2021.04.19.09.33.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 09:32:34 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 16:32:30 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH] KVM: Boost vCPU candidiate in user mode which is
- delivering interrupt
-Message-ID: <YH2wnl05UBqVhcHr@google.com>
-References: <1618542490-14756-1-git-send-email-wanpengli@tencent.com>
- <9c49c6ff-d896-e6a5-c051-b6707f6ec58a@redhat.com>
- <CANRm+Cy-xmDRQoUfOYm+GGvWiS+qC_sBjyZmcLykbKqTF2YDxQ@mail.gmail.com>
+        Mon, 19 Apr 2021 09:33:40 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/5] power: supply: max14577: remove unneeded variable initialization
+Date:   Mon, 19 Apr 2021 18:33:32 +0200
+Message-Id: <20210419163336.64075-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANRm+Cy-xmDRQoUfOYm+GGvWiS+qC_sBjyZmcLykbKqTF2YDxQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021, Wanpeng Li wrote:
-> On Sat, 17 Apr 2021 at 21:09, Paolo Bonzini <pbonzini@redhat.com> wrote:
-> >
-> > On 16/04/21 05:08, Wanpeng Li wrote:
-> > > From: Wanpeng Li <wanpengli@tencent.com>
-> > >
-> > > Both lock holder vCPU and IPI receiver that has halted are condidate for
-> > > boost. However, the PLE handler was originally designed to deal with the
-> > > lock holder preemption problem. The Intel PLE occurs when the spinlock
-> > > waiter is in kernel mode. This assumption doesn't hold for IPI receiver,
-> > > they can be in either kernel or user mode. the vCPU candidate in user mode
-> > > will not be boosted even if they should respond to IPIs. Some benchmarks
-> > > like pbzip2, swaptions etc do the TLB shootdown in kernel mode and most
-> > > of the time they are running in user mode. It can lead to a large number
-> > > of continuous PLE events because the IPI sender causes PLE events
-> > > repeatedly until the receiver is scheduled while the receiver is not
-> > > candidate for a boost.
-> > >
-> > > This patch boosts the vCPU candidiate in user mode which is delivery
-> > > interrupt. We can observe the speed of pbzip2 improves 10% in 96 vCPUs
-> > > VM in over-subscribe scenario (The host machine is 2 socket, 48 cores,
-> > > 96 HTs Intel CLX box). There is no performance regression for other
-> > > benchmarks like Unixbench spawn (most of the time contend read/write
-> > > lock in kernel mode), ebizzy (most of the time contend read/write sem
-> > > and TLB shoodtdown in kernel mode).
-> > >
-> > > +bool kvm_arch_interrupt_delivery(struct kvm_vcpu *vcpu)
-> > > +{
-> > > +     if (vcpu->arch.apicv_active && static_call(kvm_x86_dy_apicv_has_pending_interrupt)(vcpu))
-> > > +             return true;
-> > > +
-> > > +     return false;
-> > > +}
-> >
-> > Can you reuse vcpu_dy_runnable instead of this new function?
-> 
-> I have some concerns. For x86 arch, vcpu_dy_runnable() will add extra
-> vCPU candidates by KVM_REQ_EVENT
+The local 'current_bits' variable does not have to be initialized
+because all cases in following switch() either return or initialize it.
 
-Is bringing in KVM_REQ_EVENT a bad thing though?  I don't see how using apicv is
-special in this case.  apicv is more precise and so there will be fewer false
-positives, but it's still just a guess on KVM's part since the interrupt could
-be for something completely unrelated.
+Addresses-Coverity: Unused value
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ drivers/power/supply/max14577_charger.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If false positives are a big concern, what about adding another pass to the loop
-and only yielding to usermode vCPUs with interrupts in the second full pass?
-I.e. give vCPUs that are already in kernel mode priority, and only yield to
-handle an interrupt if there are no vCPUs in kernel mode.
+diff --git a/drivers/power/supply/max14577_charger.c b/drivers/power/supply/max14577_charger.c
+index dcedae18d7be..f244cd902eb9 100644
+--- a/drivers/power/supply/max14577_charger.c
++++ b/drivers/power/supply/max14577_charger.c
+@@ -261,7 +261,7 @@ static int max14577_init_constant_voltage(struct max14577_charger *chg,
+ static int max14577_init_eoc(struct max14577_charger *chg,
+ 		unsigned int uamp)
+ {
+-	unsigned int current_bits = 0xf;
++	unsigned int current_bits;
+ 	u8 reg_data;
+ 
+ 	switch (chg->max14577->dev_type) {
+-- 
+2.25.1
 
-kvm_arch_dy_runnable() pulls in pv_unhalted, which seems like a good thing.
-
-> and async pf(which has already opportunistically made the guest do other stuff).
-
-Any reason not to use kvm_arch_dy_runnable() directly?
-
-> For other arches, kvm_arch_dy_runnale() is equal to kvm_arch_vcpu_runnable()
-> except powerpc which has too many events and is not conservative. In general,
-> vcpu_dy_runnable() will loose the conditions and add more vCPU candidates.
-> 
->     Wanpeng
