@@ -2,157 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B21A36392A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 03:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5D636392B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 03:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236987AbhDSBqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 21:46:24 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:50115 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232013AbhDSBqX (ORCPT
+        id S237089AbhDSBq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 21:46:58 -0400
+Received: from mail-177142.yeah.net ([123.58.177.142]:54854 "EHLO
+        mail-177142.yeah.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232013AbhDSBq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 21:46:23 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 183381FC1;
-        Sun, 18 Apr 2021 21:45:54 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Sun, 18 Apr 2021 21:45:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=44Z8MZBw8oX4GuSEIzaWdEz1Gd
-        RB6L8qCHH2tRotiss=; b=l37Xf5O7wSoCNna0+jXpSVdSjSsApRLpUDWP85azvr
-        f0D6MUUku18wBB2X681KydbNyre1ZWA+L5hSHw65FrP0hq4d0TT/Chr7qF9CjXYE
-        AMT3KuCTCerCl9ELKMPWqJ9LMfSG9QaBAMg3dO/YmCm3rqo88mUFb2+ZruT5j47j
-        t8ra4Im7cFMDEKNrntP99BLvmGapnwEfiS8spVRMuTJrVMeqcXsnec5tNFNut6Ah
-        whAO4sIpJRoNcAyF6xmj2UweD0Bpb1ZRY3uA0lnmro5BUklyV8OrXhQi89WgVB5I
-        ybbT5oNLKYSkko9e4h134r6iL+1D6EgExY3n5eut3naw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=44Z8MZBw8oX4GuSEI
-        zaWdEz1GdRB6L8qCHH2tRotiss=; b=JVC+uIlJ9ADTCsozCJCAJTyuUivKUnSb+
-        MvSpZJm6oP//XZ8ScNSiic5Jm45/DvWvnDvC1ShVG2X7a5GjhP8Dj7JIVXSEfTdf
-        lDypsF2npJfuOQYC/mDqA5hpoij+nSIVq0zq/YBfKX2owzbkzSWCVZqX18xY+rq/
-        FWaIqdd/dVr/VQDLU3YptF+LBkMDtJOFpprIpkcIn6gwsVUz1s0L2NtypHl++ZEY
-        EUzgs0p1tr9/Eg8PZrYgG3m414d+is5a+kCUYfvE92XysufNmjcXdrN1Ojz9WvYn
-        iNkwWtbPDj79aiQ7fCnkCEOzmZmXpGOA0KJAA4FWDhmeCQEP+4K5Q==
-X-ME-Sender: <xms:z-B8YMUV7VISxZFLRY0xYrrvtgb42-9cv8deFATGRAO50EhZjAN1XQ>
-    <xme:z-B8YAlfE4CJYhrTuaLGyD0T-EghI_3-saZ3w7Q87F8ozCwNHbwQ-02GT9U65FHc-
-    8UAjljX8WXX3NlB0w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddtvddgkeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
-    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtffrrg
-    htthgvrhhnpeeiteekhfehuddugfeltddufeejjeefgeevheekueffhffhjeekheeiffdt
-    vedtveenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdr
-    ohhrgh
-X-ME-Proxy: <xmx:z-B8YAblTVFrcRlwHkUmH_K4JW_stNwC8MaW5wqNkX1WhZ81JrCUaA>
-    <xmx:z-B8YLVTWTRqPIDQboaTR5PyEGfsH-qCcNGG5rT-iYyOJAElcxFzrA>
-    <xmx:z-B8YGkGXeg2CeD547OhKjqOhF6aBwiPczyhXGgkDz3jHrYCZOlvZw>
-    <xmx:0eB8YIW9Jg71gq2Ood13y6Wsr1BMDWxnPe3OWnKor9Y29SxTmlmaWw>
-Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 96F78240054;
-        Sun, 18 Apr 2021 21:45:50 -0400 (EDT)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Samuel Holland <samuel@sholland.org>
-Subject: [PATCH] rtc: sun6i: Add NVMEM provider
-Date:   Sun, 18 Apr 2021 20:45:49 -0500
-Message-Id: <20210419014549.26900-1-samuel@sholland.org>
-X-Mailer: git-send-email 2.26.3
+        Sun, 18 Apr 2021 21:46:57 -0400
+Received: from vivo.com (localhost [127.0.0.1])
+        by mail-177142.yeah.net (Hmail) with ESMTP id 532B8643FE6;
+        Mon, 19 Apr 2021 09:46:26 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <AIUATwAUDmin4z7rh1*KA4pi.3.1618796786331.Hmail.zhouchuangao@vivo.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Michal Hocko <mhocko@suse.com>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0ga2VybmVsL2h1bmdfdGFzazogQWRkIGEgd2hpdGVsaXN0IGFuZCBibGFja2xpc3QgbWVjaGFuaXNtLg==?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 36.152.145.182
+In-Reply-To: <YHryaegfV9jo6aiL@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from zhouchuangao@vivo.com( [36.152.145.182) ] by ajax-webmail ( [127.0.0.1] ) ; Mon, 19 Apr 2021 09:46:26 +0800 (GMT+08:00)
+From:   =?UTF-8?B?5ZGo5Lyg6auY?= <zhouchuangao@vivo.com>
+Date:   Mon, 19 Apr 2021 09:46:26 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGh4dQ1YfQhhOTh1IS0MZHklVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU1JQkpPTEpDSE5JN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6Mi46Lww6Lj8WEhVPAUwJE0pRMDpPCxJVSFVKTUpDTEJNTENNTEtPVTMWGhIXVQETFA4YEw4a
+        FRwaFDsNEg0UVRgUFkVZV1kSC1lBWUhNVUpOSVVKT05VSkNJWVdZCAFZQU9KSkw3Bg++
+X-HM-Tid: 0a78e7ceb2ac6473kurs532b8643fe6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sun6i RTC provides 32 bytes of general-purpose data registers.
-They can be used to save data in the always-on RTC power domain.
-The registers are writable via 32-bit MMIO accesses only.
-
-Expose the region as a NVMEM provider so it can be used by userspace and
-other drivers.
-
-Signed-off-by: Samuel Holland <samuel@sholland.org>
----
- drivers/rtc/rtc-sun6i.c | 42 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
-
-diff --git a/drivers/rtc/rtc-sun6i.c b/drivers/rtc/rtc-sun6i.c
-index e75020ab8024..f4a5e7465148 100644
---- a/drivers/rtc/rtc-sun6i.c
-+++ b/drivers/rtc/rtc-sun6i.c
-@@ -69,6 +69,10 @@
- #define SUN6I_LOSC_OUT_GATING			0x0060
- #define SUN6I_LOSC_OUT_GATING_EN_OFFSET		0
- 
-+/* General-purpose data */
-+#define SUN6I_GP_DATA				0x0100
-+#define SUN6I_GP_DATA_SIZE			0x20
-+
- /*
-  * Get date values
-  */
-@@ -641,6 +645,39 @@ static const struct rtc_class_ops sun6i_rtc_ops = {
- 	.alarm_irq_enable	= sun6i_rtc_alarm_irq_enable
- };
- 
-+static int sun6i_rtc_nvmem_read(void *priv, unsigned int offset, void *_val, size_t bytes)
-+{
-+	struct sun6i_rtc_dev *chip = priv;
-+	u32 *val = _val;
-+	int i;
-+
-+	for (i = 0; i < bytes / 4; ++i)
-+		val[i] = readl(chip->base + SUN6I_GP_DATA + offset + 4 * i);
-+
-+	return 0;
-+}
-+
-+static int sun6i_rtc_nvmem_write(void *priv, unsigned int offset, void *_val, size_t bytes)
-+{
-+	struct sun6i_rtc_dev *chip = priv;
-+	u32 *val = _val;
-+	int i;
-+
-+	for (i = 0; i < bytes / 4; ++i)
-+		writel(val[i], chip->base + SUN6I_GP_DATA + offset + 4 * i);
-+
-+	return 0;
-+}
-+
-+static struct nvmem_config sun6i_rtc_nvmem_cfg = {
-+	.type		= NVMEM_TYPE_BATTERY_BACKED,
-+	.reg_read	= sun6i_rtc_nvmem_read,
-+	.reg_write	= sun6i_rtc_nvmem_write,
-+	.size		= SUN6I_GP_DATA_SIZE,
-+	.word_size	= 4,
-+	.stride		= 4,
-+};
-+
- /* Enable IRQ wake on suspend, to wake up from RTC. */
- static int sun6i_rtc_suspend(struct device *dev)
- {
-@@ -728,6 +765,11 @@ static int sun6i_rtc_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
-+	sun6i_rtc_nvmem_cfg.priv = chip;
-+	ret = devm_rtc_nvmem_register(chip->rtc, &sun6i_rtc_nvmem_cfg);
-+	if (ret)
-+		return ret;
-+
- 	dev_info(&pdev->dev, "RTC enabled\n");
- 
- 	return 0;
--- 
-2.26.3
-
+Cj5PbiBTYXQsIEFwciAxNywgMjAyMSBhdCAwNzoxMzowMUFNIC0wNzAwLCB6aG91Y2h1YW5nYW8g
+d3JvdGU6Cj4+IGVnOgo+PiBJbiBBbmRyb2lkIHN5c3RlbSwgd2UgdXN1YWxseSBhbmQgc29tZSBw
+cm9jZXNzZXMgdG8gdGhlIHdoaXRlbGlzdC4KPj4gc3RhdGljIHRhc2tfdCB0YXNrX3doaXRlbGlz
+dFtdID0gewo+PiAJeyJtZHJ0X3RocmVhZCIsIEhVTkdfVEFTS19XSElURUxJU1R9LAo+PiAJeyJj
+aHJlX2t0aHJlYWQiLCBIVU5HX1RBU0tfV0hJVEVMSVNUfSwKPj4gCXsic2NwX3Bvd2VyX3Jlc2V0
+IiwgSFVOR19UQVNLX1dISVRFTElTVH0sCj4+IAl7ImNjY2lfZnNtMSIsIEhVTkdfVEFTS19XSElU
+RUxJU1R9LAo+PiAJeyJxb3NfaXBpX3JlY3YiLCBIVU5HX1RBU0tfV0hJVEVMSVNUfSwKPj4gCXtO
+VUxMLCAwfSwKPj4gfTsKPgo+V2hhdCBhcmUgdGhlc2UgdGFza3MgZG9pbmcgdGhhdCB0aGUgaHVu
+Zy10YXNrIGRldGVjdG9yIGZpcmVzIG9uIHRoZW0/Cj5TaG91bGQgeW91IGZpeCB0aGF0IGluc3Rl
+YWQ/CgpUaGVzZSB0YXNrcyBhcmUgaW1wbGVtZW50ZWQgYnkgdGhlIFNvQyB2ZW5kb3IsIGFuZCBu
+b3JtYWxseSB0aGV5IGRvCm5vdCBjb25maWd1cmUgSFVORyBUQVNLLCBzbyB3ZSBuZWVkIHRvIGln
+bm9yZSB0aGVzZSB0YXNrcyBpZiB3ZSB1c2UKSFVORyBUQVNLLiAKSGVyZSBJIHdhbnQgdG8gcHJv
+dmlkZSBhIGlnbm9yZWxpc3QgYW5kIGZhdGFsbGlzdCBtZWNoYW5pc20sIGRpZmZlcmVudAp1c2Vy
+cyBvciB1c2Ugc2NlbmFyaW9zIGNhbiBiZSBtb2RpZmllZCBhY2NvcmRpbmdseS4gClRoZSBkZWZh
+dWx0IGlnbm9yZWxpc3Qgb3IgZmF0YWxsaXN0IGlzIGVtcHR5LgoKVGhhbmtzLAp6aG91Y2h1YW5n
+YW8NCg0K
