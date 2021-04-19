@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD8A3640A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3EC3640AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233981AbhDSLlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 07:41:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38955 "EHLO
+        id S238250AbhDSLnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 07:43:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38468 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238734AbhDSLlR (ORCPT
+        by vger.kernel.org with ESMTP id S232530AbhDSLni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 07:41:17 -0400
+        Mon, 19 Apr 2021 07:43:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618832447;
+        s=mimecast20190719; t=1618832588;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=sPvwJtwZaLYPjsPoSwJfmfBh1sdwRlUdoIJ6d8Q8Yys=;
-        b=ce0xFdHdma3dns97khkdk28N/eDn4XUXWFf4WHuCmLnWeteCPmL58w8uUi1zYBDkdpbSoo
-        Z6MWgzHtbSsSBAtrUTmEGDzNfDJjDXlQJmS+5LTPZlq9422Fcn6yp5d0a8ZMW6rDs9wJmu
-        WZs3cOxxeTjWQoUGgrYq7mYFLfE/9xA=
+        bh=C8Y5CVyN1MP/Z8t2JSwEW5URSTlMomMVuaaYfv0oBM0=;
+        b=dvOaGU3Xjwelx3vXo09K4YYf5HZxBiYt4QCGGFyPQrJmkpgqqpCaDVvALwBUhij3+Mv2PN
+        mrWNCGFejujNXVFjp3fiGkW1JOezJQGzGlFE87l7aMmyz/rZBAQyBukVWHYI0A8mIBHp/8
+        lpFqcLhE0Lu3Mdbu16PxnykNP3RHypI=
 Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
  [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-165-HyIv5vAEMYyV3_n5pDUFSw-1; Mon, 19 Apr 2021 07:40:43 -0400
-X-MC-Unique: HyIv5vAEMYyV3_n5pDUFSw-1
-Received: by mail-wr1-f69.google.com with SMTP id 93-20020adf80e60000b0290106fab45006so4387791wrl.20
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 04:40:43 -0700 (PDT)
+ us-mta-290-63bsHF2fO9SlcUIZJb7FVQ-1; Mon, 19 Apr 2021 07:43:05 -0400
+X-MC-Unique: 63bsHF2fO9SlcUIZJb7FVQ-1
+Received: by mail-wr1-f69.google.com with SMTP id h3-20020adfa4c30000b02901027da44a81so8852820wrb.19
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 04:43:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sPvwJtwZaLYPjsPoSwJfmfBh1sdwRlUdoIJ6d8Q8Yys=;
-        b=dQmZFMQ/xfF9qzDjRNy1dcYCmt1zglj7ptPr9SjBlGwciu0w8XVJWLWxIlc6mtdisT
-         2SaHnkXuX02r4K4KR58C4Ip2dGKhYx4LYzYsu85WQ4eYwr6oqy5XBHnRNeH9+c3CLaWn
-         6QVzF6oPiaiOJfoS6x9cCi3oujTF60xP2q2a+gw4UhPjKfqKi8Ph8RazX9JGPNuNOhHd
-         h/8/5PNqoxQS19w8KDYE/ABhCn5HMTxHELgeA/U3GUwLf+46z2ernvVeUkhVYJrtB9Ru
-         W2eKkq5aGXw6kD9diqBTeFqh9VJxPGifCnxLb8+F3hLBQVIgfn+yh/DM0Cpp0pS3Y/RG
-         u1wg==
-X-Gm-Message-State: AOAM531EsrUEbUzdwDKOuUs9Ky3lGPQGuptf/DPsysKSmdtOOKkJUD+U
-        yA9c9hnyzqYUUfLuT/Au+AJ0kmNDcWwfXT5+XzDGHzRQnzDOsXIXRnP+2uuPCzD0EKF+RHO61Fp
-        4uJv7M1Uf1qzIxQzBc9sCOg2GYqWWZHVrSF56soyw
-X-Received: by 2002:a1c:1f52:: with SMTP id f79mr21559827wmf.171.1618832442352;
-        Mon, 19 Apr 2021 04:40:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxWRLqy7PvBKLFMQzg/qRZkE7f0E7rcJY9UDsLqx6MTnHVi9BSofF6MKEoah8yPAc7dQBktd3kanakZo4NOOmw=
-X-Received: by 2002:a1c:1f52:: with SMTP id f79mr21559818wmf.171.1618832442142;
- Mon, 19 Apr 2021 04:40:42 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=C8Y5CVyN1MP/Z8t2JSwEW5URSTlMomMVuaaYfv0oBM0=;
+        b=hr+i9lb2eB+VazIWwZscivIbEDkj4VScBQSusLGSf5m5wmN41DZ1dgVNjGP1C8ERVg
+         2sqUlViOuFulCwhwvOzex35R3y44khmWLomkflgLbg3kQQXQPNC511wz8F7eUYVTDTNJ
+         jvbxXM21sNJts1hf1RZXS0C1Lva5udA0F34z8I5PSvhcvmYO2uALnZm3X5WozkEKpCwD
+         j022SoXdqCiKAEuDye82K+XlcpkbN/o1irleXWTw+omXIi6RENdHIf1TnrnUQj5o+3Rl
+         sMRjb+OMiDWs//P/lIt6clhnhu7VoTDkq/fiFc99ZXDNp4Ql+jq3NOmFWokevix7u5Br
+         +LHQ==
+X-Gm-Message-State: AOAM5329qWWA7KooywHBS8WOZiwiqarEYOBWdqscqEQr0V0TNGKqScD/
+        nRdPpVUGDAR4V8ABKN3/DcJM8Hw8BdsHxzeh+hvWjAWBX/+0+Krjg2vUkFz2ze47pcLT17L/2gP
+        gagNXGTRA1jUojj0gOG1UF4tbo1RMCBp9UUGeM/kd
+X-Received: by 2002:a5d:58fa:: with SMTP id f26mr13538358wrd.177.1618832584174;
+        Mon, 19 Apr 2021 04:43:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyfQUBy2vieiz4RATYX7I0oL2DB8pFKAjVreQXmtZ/buDJbNPRvIUWMiZeyhXngE0AQn6P4cMUuzFKThM/G5Hg=
+X-Received: by 2002:a5d:58fa:: with SMTP id f26mr13538343wrd.177.1618832584067;
+ Mon, 19 Apr 2021 04:43:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210416143725.2769053-1-lee.jones@linaro.org> <20210416143725.2769053-2-lee.jones@linaro.org>
-In-Reply-To: <20210416143725.2769053-2-lee.jones@linaro.org>
+References: <20210416143725.2769053-1-lee.jones@linaro.org> <20210416143725.2769053-3-lee.jones@linaro.org>
+In-Reply-To: <20210416143725.2769053-3-lee.jones@linaro.org>
 From:   Karol Herbst <kherbst@redhat.com>
-Date:   Mon, 19 Apr 2021 13:40:31 +0200
-Message-ID: <CACO55tvnQw492p7i0DxNq08rZmDyCA7KuRkAw7XAZqoEDvaQ4A@mail.gmail.com>
-Subject: Re: [Nouveau] [PATCH 01/40] drm/nouveau/nvkm/subdev/bios/init: Demote
- obvious abuse of kernel-doc
+Date:   Mon, 19 Apr 2021 13:42:53 +0200
+Message-ID: <CACO55tu_DT++t-0Jpf2ksa=poPmyMZH5gDpOLq7gBj6BR7_AJg@mail.gmail.com>
+Subject: Re: [Nouveau] [PATCH 02/40] drm/nouveau/dispnv50/disp: Remove unused
+ variable 'ret'
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     David Airlie <airlied@linux.ie>,
         nouveau <nouveau@lists.freedesktop.org>,
@@ -62,25 +63,23 @@ Cc:     David Airlie <airlied@linux.ie>,
         Ben Skeggs <bskeggs@redhat.com>,
         Daniel Vetter <daniel@ffwll.ch>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Karol Herbst <kherbst@redhat.com>
-
 On Fri, Apr 16, 2021 at 4:37 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> Fixes the following W=1 kernel build warning(s):
+> Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c:584: warning: Function parameter or member 'init' not described in 'init_reserved'
->  drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c:611: warning: Function parameter or member 'init' not described in 'init_done'
->  drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c:622: warning: Function parameter or member 'init' not described in 'init_io_restrict_prog'
->  drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c:659: warning: Function parameter or member 'init' not described in 'init_repeat'
->  drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c:685: warning: Function parameter or member 'init' not described in 'init_io_restrict_pll'
->  drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c:725: warning: Function parameter or member 'init' not described in 'init_end_repeat'
+>  drivers/gpu/drm/nouveau/dispnv50/disp.c:1381:6: warning: variable =E2=80=
+=98ret=E2=80=99 set but not used [-Wunused-but-set-variable]
 >
-> NB: Trimmed for brevity (lots of these!)
->
+
+not a big fan of just ignoring return codes, I'd rather see it handled
+somehow, unless somebody knowing more about the details here says it's
+okay.
+
 > Cc: Ben Skeggs <bskeggs@redhat.com>
 > Cc: David Airlie <airlied@linux.ie>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
@@ -88,761 +87,28 @@ On Fri, Apr 16, 2021 at 4:37 PM Lee Jones <lee.jones@linaro.org> wrote:
 > Cc: nouveau@lists.freedesktop.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
->  .../gpu/drm/nouveau/nvkm/subdev/bios/init.c   | 204 ++++++------------
->  1 file changed, 68 insertions(+), 136 deletions(-)
->
-> diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c b/drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c
-> index 9de74f41dcd2a..5a91dc4e5c8ec 100644
-> --- a/drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c
-> +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/bios/init.c
-> @@ -575,9 +575,8 @@ init_tmds_reg(struct nvbios_init *init, u8 tmds)
->   * init opcode handlers
->   *****************************************************************************/
->
-> -/**
-> +/*
->   * init_reserved - stub for various unknown/unused single-byte opcodes
-> - *
->   */
->  static void
->  init_reserved(struct nvbios_init *init)
-> @@ -602,9 +601,8 @@ init_reserved(struct nvbios_init *init)
->         init->offset += length;
->  }
->
-> -/**
-> +/*
->   * INIT_DONE - opcode 0x71
-> - *
->   */
->  static void
->  init_done(struct nvbios_init *init)
-> @@ -613,9 +611,8 @@ init_done(struct nvbios_init *init)
->         init->offset = 0x0000;
->  }
->
-> -/**
-> +/*
->   * INIT_IO_RESTRICT_PROG - opcode 0x32
-> - *
->   */
->  static void
->  init_io_restrict_prog(struct nvbios_init *init)
-> @@ -650,9 +647,8 @@ init_io_restrict_prog(struct nvbios_init *init)
->         trace("}]\n");
->  }
->
-> -/**
-> +/*
->   * INIT_REPEAT - opcode 0x33
-> - *
->   */
->  static void
->  init_repeat(struct nvbios_init *init)
-> @@ -676,9 +672,8 @@ init_repeat(struct nvbios_init *init)
->         init->repeat = repeat;
->  }
->
-> -/**
-> +/*
->   * INIT_IO_RESTRICT_PLL - opcode 0x34
-> - *
->   */
->  static void
->  init_io_restrict_pll(struct nvbios_init *init)
-> @@ -716,9 +711,8 @@ init_io_restrict_pll(struct nvbios_init *init)
->         trace("}]\n");
->  }
->
-> -/**
-> +/*
->   * INIT_END_REPEAT - opcode 0x36
-> - *
->   */
->  static void
->  init_end_repeat(struct nvbios_init *init)
-> @@ -732,9 +726,8 @@ init_end_repeat(struct nvbios_init *init)
->         }
->  }
->
-> -/**
-> +/*
->   * INIT_COPY - opcode 0x37
-> - *
->   */
->  static void
->  init_copy(struct nvbios_init *init)
-> @@ -759,9 +752,8 @@ init_copy(struct nvbios_init *init)
->         init_wrvgai(init, port, index, data);
->  }
->
-> -/**
-> +/*
->   * INIT_NOT - opcode 0x38
-> - *
->   */
->  static void
->  init_not(struct nvbios_init *init)
-> @@ -771,9 +763,8 @@ init_not(struct nvbios_init *init)
->         init_exec_inv(init);
->  }
->
-> -/**
-> +/*
->   * INIT_IO_FLAG_CONDITION - opcode 0x39
-> - *
->   */
->  static void
->  init_io_flag_condition(struct nvbios_init *init)
-> @@ -788,9 +779,8 @@ init_io_flag_condition(struct nvbios_init *init)
->                 init_exec_set(init, false);
->  }
->
-> -/**
-> +/*
->   * INIT_GENERIC_CONDITION - opcode 0x3a
-> - *
->   */
->  static void
->  init_generic_condition(struct nvbios_init *init)
-> @@ -840,9 +830,8 @@ init_generic_condition(struct nvbios_init *init)
->         }
->  }
->
-> -/**
-> +/*
->   * INIT_IO_MASK_OR - opcode 0x3b
-> - *
->   */
->  static void
->  init_io_mask_or(struct nvbios_init *init)
-> @@ -859,9 +848,8 @@ init_io_mask_or(struct nvbios_init *init)
->         init_wrvgai(init, 0x03d4, index, data &= ~(1 << or));
->  }
->
-> -/**
-> +/*
->   * INIT_IO_OR - opcode 0x3c
-> - *
->   */
->  static void
->  init_io_or(struct nvbios_init *init)
-> @@ -878,9 +866,8 @@ init_io_or(struct nvbios_init *init)
->         init_wrvgai(init, 0x03d4, index, data | (1 << or));
->  }
->
-> -/**
-> +/*
->   * INIT_ANDN_REG - opcode 0x47
-> - *
->   */
->  static void
->  init_andn_reg(struct nvbios_init *init)
-> @@ -895,9 +882,8 @@ init_andn_reg(struct nvbios_init *init)
->         init_mask(init, reg, mask, 0);
->  }
->
-> -/**
-> +/*
->   * INIT_OR_REG - opcode 0x48
-> - *
->   */
->  static void
->  init_or_reg(struct nvbios_init *init)
-> @@ -912,9 +898,8 @@ init_or_reg(struct nvbios_init *init)
->         init_mask(init, reg, 0, mask);
->  }
->
-> -/**
-> +/*
->   * INIT_INDEX_ADDRESS_LATCHED - opcode 0x49
-> - *
->   */
->  static void
->  init_idx_addr_latched(struct nvbios_init *init)
-> @@ -942,9 +927,8 @@ init_idx_addr_latched(struct nvbios_init *init)
->         }
->  }
->
-> -/**
-> +/*
->   * INIT_IO_RESTRICT_PLL2 - opcode 0x4a
-> - *
->   */
->  static void
->  init_io_restrict_pll2(struct nvbios_init *init)
-> @@ -977,9 +961,8 @@ init_io_restrict_pll2(struct nvbios_init *init)
->         trace("}]\n");
->  }
->
-> -/**
-> +/*
->   * INIT_PLL2 - opcode 0x4b
-> - *
->   */
->  static void
->  init_pll2(struct nvbios_init *init)
-> @@ -994,9 +977,8 @@ init_pll2(struct nvbios_init *init)
->         init_prog_pll(init, reg, freq);
->  }
->
-> -/**
-> +/*
->   * INIT_I2C_BYTE - opcode 0x4c
-> - *
->   */
->  static void
->  init_i2c_byte(struct nvbios_init *init)
-> @@ -1025,9 +1007,8 @@ init_i2c_byte(struct nvbios_init *init)
->         }
->  }
->
-> -/**
-> +/*
->   * INIT_ZM_I2C_BYTE - opcode 0x4d
-> - *
->   */
->  static void
->  init_zm_i2c_byte(struct nvbios_init *init)
-> @@ -1051,9 +1032,8 @@ init_zm_i2c_byte(struct nvbios_init *init)
->         }
->  }
->
-> -/**
-> +/*
->   * INIT_ZM_I2C - opcode 0x4e
-> - *
->   */
->  static void
->  init_zm_i2c(struct nvbios_init *init)
-> @@ -1085,9 +1065,8 @@ init_zm_i2c(struct nvbios_init *init)
->         }
->  }
->
-> -/**
-> +/*
->   * INIT_TMDS - opcode 0x4f
-> - *
->   */
->  static void
->  init_tmds(struct nvbios_init *init)
-> @@ -1111,9 +1090,8 @@ init_tmds(struct nvbios_init *init)
->         init_wr32(init, reg + 0, addr);
->  }
->
-> -/**
-> +/*
->   * INIT_ZM_TMDS_GROUP - opcode 0x50
-> - *
->   */
->  static void
->  init_zm_tmds_group(struct nvbios_init *init)
-> @@ -1138,9 +1116,8 @@ init_zm_tmds_group(struct nvbios_init *init)
->         }
->  }
->
-> -/**
-> +/*
->   * INIT_CR_INDEX_ADDRESS_LATCHED - opcode 0x51
-> - *
->   */
->  static void
->  init_cr_idx_adr_latch(struct nvbios_init *init)
-> @@ -1168,9 +1145,8 @@ init_cr_idx_adr_latch(struct nvbios_init *init)
->         init_wrvgai(init, 0x03d4, addr0, save0);
->  }
->
-> -/**
-> +/*
->   * INIT_CR - opcode 0x52
-> - *
->   */
->  static void
->  init_cr(struct nvbios_init *init)
-> @@ -1188,9 +1164,8 @@ init_cr(struct nvbios_init *init)
->         init_wrvgai(init, 0x03d4, addr, val | data);
->  }
->
-> -/**
-> +/*
->   * INIT_ZM_CR - opcode 0x53
-> - *
->   */
->  static void
->  init_zm_cr(struct nvbios_init *init)
-> @@ -1205,9 +1180,8 @@ init_zm_cr(struct nvbios_init *init)
->         init_wrvgai(init, 0x03d4, addr, data);
->  }
->
-> -/**
-> +/*
->   * INIT_ZM_CR_GROUP - opcode 0x54
-> - *
->   */
->  static void
->  init_zm_cr_group(struct nvbios_init *init)
-> @@ -1229,9 +1203,8 @@ init_zm_cr_group(struct nvbios_init *init)
->         }
->  }
->
-> -/**
-> +/*
->   * INIT_CONDITION_TIME - opcode 0x56
-> - *
->   */
->  static void
->  init_condition_time(struct nvbios_init *init)
-> @@ -1256,9 +1229,8 @@ init_condition_time(struct nvbios_init *init)
->         init_exec_set(init, false);
->  }
->
-> -/**
-> +/*
->   * INIT_LTIME - opcode 0x57
-> - *
->   */
->  static void
->  init_ltime(struct nvbios_init *init)
-> @@ -1273,9 +1245,8 @@ init_ltime(struct nvbios_init *init)
->                 mdelay(msec);
->  }
->
-> -/**
-> +/*
->   * INIT_ZM_REG_SEQUENCE - opcode 0x58
-> - *
->   */
->  static void
->  init_zm_reg_sequence(struct nvbios_init *init)
-> @@ -1298,9 +1269,8 @@ init_zm_reg_sequence(struct nvbios_init *init)
->         }
->  }
->
-> -/**
-> +/*
->   * INIT_PLL_INDIRECT - opcode 0x59
-> - *
->   */
->  static void
->  init_pll_indirect(struct nvbios_init *init)
-> @@ -1317,9 +1287,8 @@ init_pll_indirect(struct nvbios_init *init)
->         init_prog_pll(init, reg, freq);
->  }
->
-> -/**
-> +/*
->   * INIT_ZM_REG_INDIRECT - opcode 0x5a
-> - *
->   */
->  static void
->  init_zm_reg_indirect(struct nvbios_init *init)
-> @@ -1336,9 +1305,8 @@ init_zm_reg_indirect(struct nvbios_init *init)
->         init_wr32(init, addr, data);
->  }
->
-> -/**
-> +/*
->   * INIT_SUB_DIRECT - opcode 0x5b
-> - *
->   */
->  static void
->  init_sub_direct(struct nvbios_init *init)
-> @@ -1362,9 +1330,8 @@ init_sub_direct(struct nvbios_init *init)
->         init->offset += 3;
->  }
->
-> -/**
-> +/*
->   * INIT_JUMP - opcode 0x5c
-> - *
->   */
->  static void
->  init_jump(struct nvbios_init *init)
-> @@ -1380,9 +1347,8 @@ init_jump(struct nvbios_init *init)
->                 init->offset += 3;
->  }
->
-> -/**
-> +/*
->   * INIT_I2C_IF - opcode 0x5e
-> - *
->   */
->  static void
->  init_i2c_if(struct nvbios_init *init)
-> @@ -1407,9 +1373,8 @@ init_i2c_if(struct nvbios_init *init)
->         init_exec_force(init, false);
->  }
->
-> -/**
-> +/*
->   * INIT_COPY_NV_REG - opcode 0x5f
-> - *
->   */
->  static void
->  init_copy_nv_reg(struct nvbios_init *init)
-> @@ -1433,9 +1398,8 @@ init_copy_nv_reg(struct nvbios_init *init)
->         init_mask(init, dreg, ~dmask, (data & smask) ^ sxor);
->  }
->
-> -/**
-> +/*
->   * INIT_ZM_INDEX_IO - opcode 0x62
-> - *
->   */
->  static void
->  init_zm_index_io(struct nvbios_init *init)
-> @@ -1451,9 +1415,8 @@ init_zm_index_io(struct nvbios_init *init)
->         init_wrvgai(init, port, index, data);
->  }
->
-> -/**
-> +/*
->   * INIT_COMPUTE_MEM - opcode 0x63
-> - *
->   */
->  static void
->  init_compute_mem(struct nvbios_init *init)
-> @@ -1469,9 +1432,8 @@ init_compute_mem(struct nvbios_init *init)
->         init_exec_force(init, false);
->  }
->
-> -/**
-> +/*
->   * INIT_RESET - opcode 0x65
-> - *
->   */
->  static void
->  init_reset(struct nvbios_init *init)
-> @@ -1496,9 +1458,8 @@ init_reset(struct nvbios_init *init)
->         init_exec_force(init, false);
->  }
->
-> -/**
-> +/*
->   * INIT_CONFIGURE_MEM - opcode 0x66
-> - *
->   */
->  static u16
->  init_configure_mem_clk(struct nvbios_init *init)
-> @@ -1555,9 +1516,8 @@ init_configure_mem(struct nvbios_init *init)
->         init_exec_force(init, false);
->  }
->
-> -/**
-> +/*
->   * INIT_CONFIGURE_CLK - opcode 0x67
-> - *
->   */
->  static void
->  init_configure_clk(struct nvbios_init *init)
-> @@ -1589,9 +1549,8 @@ init_configure_clk(struct nvbios_init *init)
->         init_exec_force(init, false);
->  }
->
-> -/**
-> +/*
->   * INIT_CONFIGURE_PREINIT - opcode 0x68
-> - *
->   */
->  static void
->  init_configure_preinit(struct nvbios_init *init)
-> @@ -1615,9 +1574,8 @@ init_configure_preinit(struct nvbios_init *init)
->         init_exec_force(init, false);
->  }
->
-> -/**
-> +/*
->   * INIT_IO - opcode 0x69
-> - *
->   */
->  static void
->  init_io(struct nvbios_init *init)
-> @@ -1655,9 +1613,8 @@ init_io(struct nvbios_init *init)
->         init_wrport(init, port, data | value);
->  }
->
-> -/**
-> +/*
->   * INIT_SUB - opcode 0x6b
-> - *
->   */
->  static void
->  init_sub(struct nvbios_init *init)
-> @@ -1682,9 +1639,8 @@ init_sub(struct nvbios_init *init)
->         init->offset += 2;
->  }
->
-> -/**
-> +/*
->   * INIT_RAM_CONDITION - opcode 0x6d
-> - *
->   */
->  static void
->  init_ram_condition(struct nvbios_init *init)
-> @@ -1701,9 +1657,8 @@ init_ram_condition(struct nvbios_init *init)
->                 init_exec_set(init, false);
->  }
->
-> -/**
-> +/*
->   * INIT_NV_REG - opcode 0x6e
-> - *
->   */
->  static void
->  init_nv_reg(struct nvbios_init *init)
-> @@ -1719,9 +1674,8 @@ init_nv_reg(struct nvbios_init *init)
->         init_mask(init, reg, ~mask, data);
->  }
->
-> -/**
-> +/*
->   * INIT_MACRO - opcode 0x6f
-> - *
->   */
->  static void
->  init_macro(struct nvbios_init *init)
-> @@ -1743,9 +1697,8 @@ init_macro(struct nvbios_init *init)
->         init->offset += 2;
->  }
->
-> -/**
-> +/*
->   * INIT_RESUME - opcode 0x72
-> - *
->   */
->  static void
->  init_resume(struct nvbios_init *init)
-> @@ -1755,9 +1708,8 @@ init_resume(struct nvbios_init *init)
->         init_exec_set(init, true);
->  }
->
-> -/**
-> +/*
->   * INIT_STRAP_CONDITION - opcode 0x73
-> - *
->   */
->  static void
->  init_strap_condition(struct nvbios_init *init)
-> @@ -1773,9 +1725,8 @@ init_strap_condition(struct nvbios_init *init)
->                 init_exec_set(init, false);
->  }
->
-> -/**
-> +/*
->   * INIT_TIME - opcode 0x74
-> - *
->   */
->  static void
->  init_time(struct nvbios_init *init)
-> @@ -1794,9 +1745,8 @@ init_time(struct nvbios_init *init)
->         }
->  }
->
-> -/**
-> +/*
->   * INIT_CONDITION - opcode 0x75
-> - *
->   */
->  static void
->  init_condition(struct nvbios_init *init)
-> @@ -1811,9 +1761,8 @@ init_condition(struct nvbios_init *init)
->                 init_exec_set(init, false);
->  }
->
-> -/**
-> +/*
->   * INIT_IO_CONDITION - opcode 0x76
-> - *
->   */
->  static void
->  init_io_condition(struct nvbios_init *init)
-> @@ -1828,9 +1777,8 @@ init_io_condition(struct nvbios_init *init)
->                 init_exec_set(init, false);
->  }
->
-> -/**
-> +/*
->   * INIT_ZM_REG16 - opcode 0x77
-> - *
->   */
->  static void
->  init_zm_reg16(struct nvbios_init *init)
-> @@ -1845,9 +1793,8 @@ init_zm_reg16(struct nvbios_init *init)
->         init_wr32(init, addr, data);
->  }
->
-> -/**
-> +/*
->   * INIT_INDEX_IO - opcode 0x78
-> - *
->   */
->  static void
->  init_index_io(struct nvbios_init *init)
-> @@ -1867,9 +1814,8 @@ init_index_io(struct nvbios_init *init)
->         init_wrvgai(init, port, index, data | value);
->  }
->
-> -/**
-> +/*
->   * INIT_PLL - opcode 0x79
-> - *
->   */
->  static void
->  init_pll(struct nvbios_init *init)
-> @@ -1884,9 +1830,8 @@ init_pll(struct nvbios_init *init)
->         init_prog_pll(init, reg, freq);
->  }
->
-> -/**
-> +/*
->   * INIT_ZM_REG - opcode 0x7a
-> - *
->   */
->  static void
->  init_zm_reg(struct nvbios_init *init)
-> @@ -1904,9 +1849,8 @@ init_zm_reg(struct nvbios_init *init)
->         init_wr32(init, addr, data);
->  }
->
-> -/**
-> +/*
->   * INIT_RAM_RESTRICT_PLL - opcde 0x87
-> - *
->   */
->  static void
->  init_ram_restrict_pll(struct nvbios_init *init)
-> @@ -1934,9 +1878,8 @@ init_ram_restrict_pll(struct nvbios_init *init)
->         }
->  }
->
-> -/**
-> +/*
->   * INIT_RESET_BEGUN - opcode 0x8c
-> - *
->   */
->  static void
->  init_reset_begun(struct nvbios_init *init)
-> @@ -1945,9 +1888,8 @@ init_reset_begun(struct nvbios_init *init)
->         init->offset += 1;
->  }
->
-> -/**
-> +/*
->   * INIT_RESET_END - opcode 0x8d
-> - *
->   */
->  static void
->  init_reset_end(struct nvbios_init *init)
-> @@ -1956,9 +1898,8 @@ init_reset_end(struct nvbios_init *init)
->         init->offset += 1;
->  }
->
-> -/**
-> +/*
->   * INIT_GPIO - opcode 0x8e
-> - *
->   */
->  static void
->  init_gpio(struct nvbios_init *init)
-> @@ -1972,9 +1913,8 @@ init_gpio(struct nvbios_init *init)
->                 nvkm_gpio_reset(gpio, DCB_GPIO_UNUSED);
->  }
->
-> -/**
-> +/*
->   * INIT_RAM_RESTRICT_ZM_GROUP - opcode 0x8f
-> - *
->   */
->  static void
->  init_ram_restrict_zm_reg_group(struct nvbios_init *init)
-> @@ -2010,9 +1950,8 @@ init_ram_restrict_zm_reg_group(struct nvbios_init *init)
->         }
->  }
->
-> -/**
-> +/*
->   * INIT_COPY_ZM_REG - opcode 0x90
-> - *
->   */
->  static void
->  init_copy_zm_reg(struct nvbios_init *init)
-> @@ -2027,9 +1966,8 @@ init_copy_zm_reg(struct nvbios_init *init)
->         init_wr32(init, dreg, init_rd32(init, sreg));
->  }
->
-> -/**
-> +/*
->   * INIT_ZM_REG_GROUP - opcode 0x91
-> - *
->   */
->  static void
->  init_zm_reg_group(struct nvbios_init *init)
-> @@ -2049,9 +1987,8 @@ init_zm_reg_group(struct nvbios_init *init)
->         }
->  }
->
-> -/**
-> +/*
->   * INIT_XLAT - opcode 0x96
-> - *
->   */
->  static void
->  init_xlat(struct nvbios_init *init)
-> @@ -2077,9 +2014,8 @@ init_xlat(struct nvbios_init *init)
->         init_mask(init, daddr, ~dmask, data);
->  }
->
-> -/**
-> +/*
->   * INIT_ZM_MASK_ADD - opcode 0x97
-> - *
->   */
->  static void
->  init_zm_mask_add(struct nvbios_init *init)
-> @@ -2098,9 +2034,8 @@ init_zm_mask_add(struct nvbios_init *init)
->         init_wr32(init, addr, data);
->  }
->
-> -/**
-> +/*
->   * INIT_AUXCH - opcode 0x98
-> - *
->   */
->  static void
->  init_auxch(struct nvbios_init *init)
-> @@ -2122,9 +2057,8 @@ init_auxch(struct nvbios_init *init)
->         }
->  }
->
-> -/**
-> +/*
->   * INIT_AUXCH - opcode 0x99
-> - *
->   */
->  static void
->  init_zm_auxch(struct nvbios_init *init)
-> @@ -2144,9 +2078,8 @@ init_zm_auxch(struct nvbios_init *init)
->         }
->  }
->
-> -/**
-> +/*
->   * INIT_I2C_LONG_IF - opcode 0x9a
-> - *
->   */
->  static void
->  init_i2c_long_if(struct nvbios_init *init)
-> @@ -2183,9 +2116,8 @@ init_i2c_long_if(struct nvbios_init *init)
->         init_exec_set(init, false);
->  }
->
-> -/**
-> +/*
->   * INIT_GPIO_NE - opcode 0xa9
-> - *
->   */
->  static void
->  init_gpio_ne(struct nvbios_init *init)
+>  drivers/gpu/drm/nouveau/dispnv50/disp.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/no=
+uveau/dispnv50/disp.c
+> index 1c9c0cdf85dbc..4801aafd9552b 100644
+> --- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> +++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
+> @@ -1410,10 +1410,9 @@ nv50_mstm_prepare(struct nv50_mstm *mstm)
+>  {
+>         struct nouveau_drm *drm =3D nouveau_drm(mstm->outp->base.base.dev=
+);
+>         struct drm_encoder *encoder;
+> -       int ret;
+>
+>         NV_ATOMIC(drm, "%s: mstm prepare\n", mstm->outp->base.base.name);
+> -       ret =3D drm_dp_update_payload_part1(&mstm->mgr);
+> +       drm_dp_update_payload_part1(&mstm->mgr);
+>
+>         drm_for_each_encoder(encoder, mstm->outp->base.base.dev) {
+>                 if (encoder->encoder_type =3D=3D DRM_MODE_ENCODER_DPMST) =
+{
 > --
 > 2.27.0
 >
@@ -850,5 +116,4 @@ On Fri, Apr 16, 2021 at 4:37 PM Lee Jones <lee.jones@linaro.org> wrote:
 > Nouveau mailing list
 > Nouveau@lists.freedesktop.org
 > https://lists.freedesktop.org/mailman/listinfo/nouveau
->
 
