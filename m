@@ -2,90 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50172364099
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0556C36409A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238573AbhDSLdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 07:33:06 -0400
-Received: from mga12.intel.com ([192.55.52.136]:6102 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230272AbhDSLdF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 07:33:05 -0400
-IronPort-SDR: YbmF5Gd1digfDYP8vxklHNb4ndCUIPlI72zNh9nhnuSzu42Zg9iMf4w1qrWYIha16n5S4D9qFj
- VcJ2L5W/Qq/Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9958"; a="174798621"
-X-IronPort-AV: E=Sophos;i="5.82,234,1613462400"; 
-   d="scan'208";a="174798621"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 04:32:29 -0700
-IronPort-SDR: SxlERyW6wwLteodLNuqR0qSiCcGDyl4OveuD9/VOlwvMWExEwcI3sV5YIZTgUhBeoz7qcmfz03
- SivOd1e5ObmA==
-X-IronPort-AV: E=Sophos;i="5.82,234,1613462400"; 
-   d="scan'208";a="426476438"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.254.213.121]) ([10.254.213.121])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 04:32:25 -0700
-Subject: Re: [RFCv2 13/13] KVM: unmap guest memory using poisoned pages
-To:     Sean Christopherson <seanjc@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jim Mattson <jmattson@google.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Peter Gonda <pgonda@google.com>,
-        David Hildenbrand <david@redhat.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
+        id S238590AbhDSLeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 07:34:31 -0400
+Received: from mail-m17635.qiye.163.com ([59.111.176.35]:58822 "EHLO
+        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230272AbhDSLe1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 07:34:27 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id 4C54240050D;
+        Mon, 19 Apr 2021 19:33:56 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Mattias Nissler <mnissler@chromium.org>,
+        Ross Zwisler <zwisler@google.com>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        Eric Biggers <ebiggers@google.com>,
         linux-kernel@vger.kernel.org
-References: <20210416154106.23721-1-kirill.shutemov@linux.intel.com>
- <20210416154106.23721-14-kirill.shutemov@linux.intel.com>
- <YHnJtvXdrZE+AfM3@google.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <fbbc8a7f-a143-9c6a-907f-19e0280842de@intel.com>
-Date:   Mon, 19 Apr 2021 19:32:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+Cc:     kael_w@yeah.net
+Subject: [PATCH] linux/mount.h: Remove duplicate struct declaration
+Date:   Mon, 19 Apr 2021 19:33:04 +0800
+Message-Id: <20210419113342.42849-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YHnJtvXdrZE+AfM3@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQkNNT1ZJSh5PTxkaH01JGR5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PFE6Mxw5Hj8PQxRCCxMVTDZK
+        OSsKFD9VSlVKTUpDQ0hJS0hMS0hDVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFKQk1ONwY+
+X-HM-Tid: 0a78e9e89294d991kuws4c54240050d
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/17/2021 1:30 AM, Sean Christopherson wrote:
-> On Fri, Apr 16, 2021, Kirill A. Shutemov wrote:
-[...]
->> index fadaccb95a4c..cd2374802702 100644
->> --- a/include/linux/kvm_host.h
->> +++ b/include/linux/kvm_host.h
->> @@ -436,6 +436,8 @@ static inline int kvm_arch_vcpu_memslots_id(struct kvm_vcpu *vcpu)
->>   }
->>   #endif
->>   
->> +#define KVM_NR_SHARED_RANGES 32
->> +
->>   /*
->>    * Note:
->>    * memslots are not sorted by id anymore, please use id_to_memslot()
->> @@ -513,6 +515,10 @@ struct kvm {
->>   	pid_t userspace_pid;
->>   	unsigned int max_halt_poll_ns;
->>   	u32 dirty_ring_size;
->> +	bool mem_protected;
->> +	void *id;
->> +	int nr_shared_ranges;
->> +	struct range shared_ranges[KVM_NR_SHARED_RANGES];
-> 
-> Hard no for me.  IMO, anything that requires KVM to track shared/pinned pages in
-> a separate tree/array is non-starter.  More specific to TDX #MCs, KVM should not
-> be the canonical reference for the state of a page.
-> 
+struct path is declared at 85th line.
+The declaration here is unnecessary. Remove it.
 
-Do you mean something in struct page to track if the page is shared or 
-private?
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ include/linux/mount.h | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/include/linux/mount.h b/include/linux/mount.h
+index 5d92a7e1a742..9ebf8af88bff 100644
+--- a/include/linux/mount.h
++++ b/include/linux/mount.h
+@@ -93,8 +93,6 @@ extern struct vfsmount *mntget(struct vfsmount *mnt);
+ extern struct vfsmount *mnt_clone_internal(const struct path *path);
+ extern bool __mnt_is_readonly(struct vfsmount *mnt);
+ extern bool mnt_may_suid(struct vfsmount *mnt);
+-
+-struct path;
+ extern struct vfsmount *clone_private_mount(const struct path *path);
+ extern int __mnt_want_write(struct vfsmount *);
+ extern void __mnt_drop_write(struct vfsmount *);
+-- 
+2.25.1
+
