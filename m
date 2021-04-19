@@ -2,112 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7CD43640F5
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6763640F4
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238962AbhDSLuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 07:50:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50144 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238943AbhDSLub (ORCPT
+        id S238950AbhDSLuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 07:50:32 -0400
+Received: from mail-lf1-f45.google.com ([209.85.167.45]:44759 "EHLO
+        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238879AbhDSLub (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 19 Apr 2021 07:50:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618833001;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4OeTmn3FpbFUKffAvSBuF9L9RSoOACTtnRhAzQxRMNI=;
-        b=ZlBbfp0klhF4Qd/5iwSm7PtEjR5KcN/fLfNZWhG2D0YZRgwKL8v+GvcxvKdZi6ouer7Gk+
-        3RKnIca/2O748IEX8HabsQ3PBZQF561BVjREY52VQpOhW0aGS2mFdGlJ/BC1cv/GJjYHhx
-        De8wd18PtUhDBIRjwPEBMCc93alb4Qw=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-35-zbF6XZwGOA2jW4Jvzx-hXg-1; Mon, 19 Apr 2021 07:50:00 -0400
-X-MC-Unique: zbF6XZwGOA2jW4Jvzx-hXg-1
-Received: by mail-wm1-f70.google.com with SMTP id v65-20020a1cde440000b029012853a35ee7so3968996wmg.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 04:49:59 -0700 (PDT)
+Received: by mail-lf1-f45.google.com with SMTP id i10so19563839lfe.11;
+        Mon, 19 Apr 2021 04:49:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4OeTmn3FpbFUKffAvSBuF9L9RSoOACTtnRhAzQxRMNI=;
-        b=lXiZ8wWJldABYDrd4wyImkowH8dfXhWb9QL6MxaGyxRjFwZCwH2RvL4LTEZeli7UDc
-         +SkoUsqfvyOvAremP1QbG7sQEkh3S7eAmoGkSi5zfDA4WNPORXWN+rnEP8oXAr6IFAB7
-         KVplHnsf1jqh9fXU6GZD2SHX6hrl0KsyPFQ+7mnZVIgmhjdzE9vqLpOkBIAgzfPSAKra
-         GIAqnw35KFIC1MzecFo9/KuV3SH2g9mV5vy6ghLAiQ1iZlVzq5DuZIoOPeZ0jFb7US/f
-         GrinuULzeFTlIb7tMab+T35KebuKoQfUhxqWjJzxZYFRtT/+sOECcMOp8lcxrFKdpOPp
-         kOwA==
-X-Gm-Message-State: AOAM532MuZDxVjFRHvqO4Ir4IAG6ePm8McPFKCdWqDc1MbXfTolsqJCE
-        KIlX2HvXPCMZFnlt/0oPDBS1ijflHdcLo6TTLiaHo1TlIiZxroE/3ReGEhp314wfWtoo8YUY4nq
-        UCy59QcgPsBLxRKCZWh3NjAhSOFRnhgCpm5fUqLqL
-X-Received: by 2002:adf:ec42:: with SMTP id w2mr14074907wrn.373.1618832998771;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PF17I0NH3tYVAA1Iv/q8DPWO007JsrI/3wrjpR3VDTQ=;
+        b=G3HV/M8M5F+pcvaJRkQvOIRVTPdwGH3F2kM8Xl+KEjzPO2kEa5X0w3Js91y1CmPWS+
+         yEJ77WaaX4JR9TMzJTGDcqF4awkrWgHTbE5uRwAmWwLE55ei6v2f0992nk9pC8w+sR63
+         m8wb/dIp2DaG5MmvS8CsV5TTnBHtpO046hrl1+o8AiQVWEdOAHhPSK0QaItdKYHJ34NE
+         W0keYg1iFszk9YI+yiCyYVW8lNXORJelSaL/KfiO2TdzdXdScLfLIYSN34rv5PvgJUCg
+         k3rBBm0DSKfkxtGIaMHzIzdjckik4OtwK5Kb4Y5h9B39/L9SOCCy3eJagpR23wenNDv7
+         WceQ==
+X-Gm-Message-State: AOAM530og4LLlPnCjfeIjLr7STqiD331sbscyU/JGdfP5xRbRRxsdcUH
+        0sDBXIj4luHCHGLs/AGe4ZY=
+X-Google-Smtp-Source: ABdhPJw2LdZwxyIVT/FHARbZCd64TVLOgAK93f/IhsfWYiRxJskvM21mc2X+ozY/W6Cd0LLOA7F1+A==
+X-Received: by 2002:a19:f241:: with SMTP id d1mr2742579lfk.26.1618832998670;
         Mon, 19 Apr 2021 04:49:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwLwKcD0/QfFrXTpG9Ze8cVc8PUyBjsNLwD4wylL2K1NJkkTxya259K5+FXuzZ/wkYrN2Jsdk/SsSVasMPFFAs=
-X-Received: by 2002:adf:ec42:: with SMTP id w2mr14074891wrn.373.1618832998608;
- Mon, 19 Apr 2021 04:49:58 -0700 (PDT)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::6])
+        by smtp.gmail.com with ESMTPSA id a30sm1803727lfi.47.2021.04.19.04.49.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 04:49:58 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 14:49:52 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "agross@kernel.org" <agross@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+Subject: [PATCH v8 04/10] regulator: add warning flags
+Message-ID: <8085635fc4b6586ae41f7fa4a3cd1d3374bc9e6d.1618832466.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1618832466.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-References: <20210416143725.2769053-1-lee.jones@linaro.org> <20210416143725.2769053-14-lee.jones@linaro.org>
-In-Reply-To: <20210416143725.2769053-14-lee.jones@linaro.org>
-From:   Karol Herbst <kherbst@redhat.com>
-Date:   Mon, 19 Apr 2021 13:49:48 +0200
-Message-ID: <CACO55tu6B5kQM3HKAeMFNQ7TF3vKzsgMVC0J18h+UNeJi-O36Q@mail.gmail.com>
-Subject: Re: [Nouveau] [PATCH 13/40] drm/nouveau/dispnv50/disp: Include header
- containing our prototypes
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1618832466.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Karol Herbst <kherbst@redhat.com>
+Add 'warning' level events and error flags to regulator core.
+Current regulator core notifications are used to inform consumers
+about errors where HW is misbehaving in such way it is assumed to
+be broken/unrecoverable.
 
-On Fri, Apr 16, 2021 at 4:38 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/nouveau/dispnv50/disp.c:2599:1: warning: no previous pro=
-totype for =E2=80=98nv50_display_create=E2=80=99 [-Wmissing-prototypes]
->
-> Cc: Ben Skeggs <bskeggs@redhat.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: nouveau@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/gpu/drm/nouveau/dispnv50/disp.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/gpu/drm/nouveau/dispnv50/disp.c b/drivers/gpu/drm/no=
-uveau/dispnv50/disp.c
-> index 351f954989530..4905ed584ff48 100644
-> --- a/drivers/gpu/drm/nouveau/dispnv50/disp.c
-> +++ b/drivers/gpu/drm/nouveau/dispnv50/disp.c
-> @@ -68,6 +68,8 @@
->
->  #include <subdev/bios/dp.h>
->
-> +#include "nv50_display.h"
-> +
->  /***********************************************************************=
-*******
->   * EVO channel
->   ***********************************************************************=
-******/
-> --
-> 2.27.0
->
-> _______________________________________________
-> Nouveau mailing list
-> Nouveau@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/nouveau
+There are PMICs which are designed for system(s) that may have use
+for regulator indications sent before HW is damaged so that some
+board/consumer specific recovery-event can be performed while
+continuing most of the normal operations.
 
+Add new WARNING level events and notifications to be used for
+that purpose.
+
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+---
+No changes since RFC-v2
+---
+ include/linux/regulator/consumer.h | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/include/linux/regulator/consumer.h b/include/linux/regulator/consumer.h
+index 20e84a84fb77..f72ca73631be 100644
+--- a/include/linux/regulator/consumer.h
++++ b/include/linux/regulator/consumer.h
+@@ -119,6 +119,16 @@ struct regulator_dev;
+ #define REGULATOR_EVENT_PRE_DISABLE		0x400
+ #define REGULATOR_EVENT_ABORT_DISABLE		0x800
+ #define REGULATOR_EVENT_ENABLE			0x1000
++/*
++ * Following notifications should be emitted only if detected condition
++ * is such that the HW is likely to still be working but consumers should
++ * take a recovery action to prevent problems esacalating into errors.
++ */
++#define REGULATOR_EVENT_UNDER_VOLTAGE_WARN	0x2000
++#define REGULATOR_EVENT_OVER_CURRENT_WARN	0x4000
++#define REGULATOR_EVENT_OVER_VOLTAGE_WARN	0x8000
++#define REGULATOR_EVENT_OVER_TEMP_WARN		0x10000
++#define REGULATOR_EVENT_WARN_MASK		0x1E000
+ 
+ /*
+  * Regulator errors that can be queried using regulator_get_error_flags
+@@ -138,6 +148,10 @@ struct regulator_dev;
+ #define REGULATOR_ERROR_FAIL			BIT(4)
+ #define REGULATOR_ERROR_OVER_TEMP		BIT(5)
+ 
++#define REGULATOR_ERROR_UNDER_VOLTAGE_WARN	BIT(6)
++#define REGULATOR_ERROR_OVER_CURRENT_WARN	BIT(7)
++#define REGULATOR_ERROR_OVER_VOLTAGE_WARN	BIT(8)
++#define REGULATOR_ERROR_OVER_TEMP_WARN		BIT(9)
+ 
+ /**
+  * struct pre_voltage_change_data - Data sent with PRE_VOLTAGE_CHANGE event
+-- 
+2.25.4
+
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
