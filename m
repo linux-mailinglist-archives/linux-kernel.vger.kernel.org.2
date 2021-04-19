@@ -2,103 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6883639B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 05:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA563639BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 05:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237434AbhDSDSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 23:18:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34164 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237333AbhDSDSV (ORCPT
+        id S237362AbhDSD1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 23:27:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237377AbhDSD03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 23:18:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618802272;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kqu7b/R1y+iNn3LQCUv3CxvSNt0vkP4D2ZFqD/1uXRc=;
-        b=IxWSyDOMJVwQqOYMVmdEIaPDly0hX/iA3MWk6/udM0uML7QlZvnut2yJFHM1QUSCDTDh1X
-        UEqBqyY0L4qWAjJk+FzHDL6kPxbdn4Ikh6124UdmNAWjm1U8PD/CtzMdPzkdsc2Ap2p0pQ
-        A8r+uqENDA8qnePVRHFDHRo0yJpmzCs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-327-yl9jzV4EMmCooe1ydXK_hg-1; Sun, 18 Apr 2021 23:17:50 -0400
-X-MC-Unique: yl9jzV4EMmCooe1ydXK_hg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 741A5100A605;
-        Mon, 19 Apr 2021 03:17:49 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-12-157.pek2.redhat.com [10.72.12.157])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 13C0519C66;
-        Mon, 19 Apr 2021 03:17:41 +0000 (UTC)
-Subject: Re: [PATCH V3 3/3] vDPA/ifcvf: get_config_size should return dev
- specific config size
-To:     Zhu Lingshan <lingshan.zhu@intel.com>, mst@redhat.com,
-        lulu@redhat.com, sgarzare@redhat.com
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210416071628.4984-1-lingshan.zhu@intel.com>
- <20210416071628.4984-4-lingshan.zhu@intel.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <c1afa91f-b0a1-9ea8-8827-a0920a26f16e@redhat.com>
-Date:   Mon, 19 Apr 2021 11:17:40 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.1
+        Sun, 18 Apr 2021 23:26:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E115DC06174A;
+        Sun, 18 Apr 2021 20:25:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wF5Ti3p6ukxFBbnOErN0GEWkYJORujrGl5v+prvaUz0=; b=dYIGAGcYlNbN2NQppzgNkikKhg
+        PnPCMz45ytddxiSTkgLS7zacFZxpmcMQC3jAp+uN4QTTlXXGK2aUbuvkAgjfWG1ASsMxc/2mnVU7j
+        pUvoft2tkI1gm6TtpVV16Ard9CweevBNvpMYqIleos42dDFi23wYZ8gslx4fyK2oBC9sQOzqgFosX
+        STUB7UudxPMxRJ8yVnRb6yJaSDOhjeoZPr3i/M8tLPIXryTVaj42PgmXRyGB3P5Wk1Ug30gRFuMe9
+        1MrYPpYOb1lEUzD+XC8/sKDgdrYNKFS+ij1sfSfn/uS+u//uHP3U4PSg+SSV05Ek5y6ejifOQXDTI
+        y/SwOkcw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lYKXB-00D9dR-5t; Mon, 19 Apr 2021 03:25:18 +0000
+Date:   Mon, 19 Apr 2021 04:25:13 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Fox Chen <foxhlchen@gmail.com>
+Cc:     Neil Brown <neilb@suse.de>, Jonathan Corbet <corbet@lwn.net>,
+        vegard.nossum@oracle.com, Al Viro <viro@zeniv.linux.org.uk>,
+        rdunlap@infradead.org, grandmaster@al2klimov.de,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v2 01/12] docs: path-lookup: update follow_managed() part
+Message-ID: <20210419032513.GW2531743@casper.infradead.org>
+References: <20210316054727.25655-1-foxhlchen@gmail.com>
+ <20210316054727.25655-2-foxhlchen@gmail.com>
+ <20210419021730.GV2531743@casper.infradead.org>
+ <CAC2o3D+kq+U9vSp_9DNM3UGA=UGhS84Y+mwm=9S6eMPpf2-ogQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210416071628.4984-4-lingshan.zhu@intel.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAC2o3D+kq+U9vSp_9DNM3UGA=UGhS84Y+mwm=9S6eMPpf2-ogQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Apr 19, 2021 at 10:33:00AM +0800, Fox Chen wrote:
+> On Mon, Apr 19, 2021 at 10:17 AM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Tue, Mar 16, 2021 at 01:47:16PM +0800, Fox Chen wrote:
+> > > -In the absence of symbolic links, ``walk_component()`` creates a new
+> > > +As the last step of ``walk_component()``, ``step_into()`` will be called either
+> >
+> > You can drop ``..`` from around function named which are followed with
+> > ().  d74b0d31ddde ("Docs: An initial automarkup extension for sphinx")
+> > marks them up automatically.
+> >
+> 
+> Got it, thanks for letting me know. But I will still use them in this
+> patch series to keep consistency with the remaining parts of the
+> document.
 
-ÔÚ 2021/4/16 ÏÂÎç3:16, Zhu Lingshan Ð´µÀ:
-> get_config_size() should return the size based on the decected
-> device type.
->
-> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
+Well, you weren't.  For example:
 
++As the last step of ``walk_component()``, ``step_into()`` will be called either
++directly from walk_component() or from handle_dots().  It calls
++``handle_mount()``, to check and handle mount points, in which a new
 
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
-> ---
->   drivers/vdpa/ifcvf/ifcvf_main.c | 19 ++++++++++++++++++-
->   1 file changed, 18 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
-> index 376b2014916a..3b6f7862dbb8 100644
-> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
-> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
-> @@ -356,7 +356,24 @@ static u32 ifcvf_vdpa_get_vq_align(struct vdpa_device *vdpa_dev)
->   
->   static size_t ifcvf_vdpa_get_config_size(struct vdpa_device *vdpa_dev)
->   {
-> -	return sizeof(struct virtio_net_config);
-> +	struct ifcvf_adapter *adapter = vdpa_to_adapter(vdpa_dev);
-> +	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
-> +	struct pci_dev *pdev = adapter->pdev;
-> +	size_t size;
-> +
-> +	switch (vf->dev_type) {
-> +	case VIRTIO_ID_NET:
-> +		size = sizeof(struct virtio_net_config);
-> +		break;
-> +	case VIRTIO_ID_BLOCK:
-> +		size = sizeof(struct virtio_blk_config);
-> +		break;
-> +	default:
-> +		size = 0;
-> +		IFCVF_ERR(pdev, "VIRTIO ID %u not supported\n", vf->dev_type);
-> +	}
-> +
-> +	return size;
->   }
->   
->   static void ifcvf_vdpa_get_config(struct vdpa_device *vdpa_dev,
-
+Neither of the functions on the second line were using ``.
