@@ -2,108 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1B136488C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 18:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42FE7364890
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 18:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239300AbhDSQwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 12:52:16 -0400
-Received: from shelob.surriel.com ([96.67.55.147]:32784 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231674AbhDSQwL (ORCPT
+        id S239361AbhDSQwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 12:52:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239244AbhDSQwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 12:52:11 -0400
-Received: from [2603:3005:d05:2b00:6e0b:84ff:fee2:98bb] (helo=imladris.surriel.com)
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1lYX7X-00053n-AQ; Mon, 19 Apr 2021 12:51:35 -0400
-Date:   Mon, 19 Apr 2021 12:51:34 -0400
-From:   Rik van Riel <riel@surriel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Kernel Team <kernel-team@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH v2] sched,fair: skip newidle_balance if a wakeup is pending
-Message-ID: <20210419125134.5cab12ea@imladris.surriel.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Mon, 19 Apr 2021 12:52:43 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1528C06174A;
+        Mon, 19 Apr 2021 09:52:13 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f078100273c47da03104508.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:8100:273c:47da:310:4508])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 035A11EC041D;
+        Mon, 19 Apr 2021 18:52:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1618851132;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=94jXjkCt4HauK1DHA2hJxZxCvyT2mVtOvxDhPFq6mJk=;
+        b=SajxfRz88h7tnP2EE+35J7TXUdbrYgNJky9mCSvetZSZl30JHJ+RqVsFrg8oue6sgESzKK
+        x25uCP4mC7T4Zn+Zed8wWRQzYkC1U/5gylfGFEaB7yJoi4INErOmt/+zCeJdriAv2vHaA8
+        W7qLpJFuGje+uRPF8rWC3MH0HRAEFMY=
+Date:   Mon, 19 Apr 2021 18:52:14 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, ak@linux.intel.com,
+        herbert@gondor.apana.org.au, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [RFC Part2 PATCH 04/30] x86/mm: split the physmap when adding
+ the page in RMP table
+Message-ID: <20210419165214.GF9093@zn.tnic>
+References: <20210324170436.31843-1-brijesh.singh@amd.com>
+ <20210324170436.31843-5-brijesh.singh@amd.com>
+ <20210419123226.GC9093@zn.tnic>
+ <befbe586-1c45-ebf7-709a-00150365e7ec@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Sender: riel@shelob.surriel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <befbe586-1c45-ebf7-709a-00150365e7ec@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The try_to_wake_up function has an optimization where it can queue
-a task for wakeup on its previous CPU, if the task is still in the
-middle of going to sleep inside schedule().
+On Mon, Apr 19, 2021 at 10:25:01AM -0500, Brijesh Singh wrote:
+> To my understanding, we don't group 512 4K entries into a 2M for the
+> kernel address range. We do this for the userspace address through
+> khugepage daemon. If page tables get out of sync then it will cause an
+> RMP violation, the Patch #7 adds support to split the pages on demand.
 
-Once schedule() re-enables IRQs, the task will be woken up with an
-IPI, and placed back on the runqueue.
+Ok. So I haven't reviewed the whole thing but, is it possible to keep
+the RMP table in sync so that you don't have to split the physmap like
+you do in this patch?
 
-If we have such a wakeup pending, there is no need to search other
-CPUs for runnable tasks. Just skip (or bail out early from) newidle
-balancing, and run the just woken up task.
+I.e., if the physmap page is 2M, then you have a corresponding RMP entry
+of 2M so that you don't have to split. And if you have 4K, then the
+corresponding RMP entry is 4K. You get the idea...
 
-For a memcache like workload test, this reduces total CPU use by
-about 2%, proportionally split between user and system time,
-and p99 and p95 application response time by 2-3% on average.
-The schedstats run_delay number shows a similar improvement.
+IOW, when does that happen: "During the page table walk, we may get into
+the situation where one of the pages within the large page is owned by
+the guest (i.e assigned bit is set in RMP)." In which case is a 4K page
+- as part of a 2M physmap mapping - owned by a guest?
 
-Signed-off-by: Rik van Riel <riel@surriel.com>
----
-v2:
- - fix !SMP build error and prev-not-CFS case by moving check into newidle_balance
- - fix formatting of if condition
- - audit newidle_balance return value use to make sure we get that right
- - reset idle_stamp when breaking out of the loop due to ->ttwu_pending
+Thx.
 
- kernel/sched/fair.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 69680158963f..5e26f013e182 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -10594,6 +10594,14 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 	u64 curr_cost = 0;
- 
- 	update_misfit_status(NULL, this_rq);
-+
-+	/*
-+	 * There is a task waiting to run. No need to search for one.
-+	 * Return 0; the task will be enqueued when switching to idle.
-+	 */
-+	if (this_rq->ttwu_pending)
-+		return 0;
-+
- 	/*
- 	 * We must set idle_stamp _before_ calling idle_balance(), such that we
- 	 * measure the duration of idle_balance() as idle time.
-@@ -10661,7 +10669,8 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 		 * Stop searching for tasks to pull if there are
- 		 * now runnable tasks on this rq.
- 		 */
--		if (pulled_task || this_rq->nr_running > 0)
-+		if (pulled_task || this_rq->nr_running > 0 ||
-+		    this_rq->ttwu_pending)
- 			break;
- 	}
- 	rcu_read_unlock();
-@@ -10688,7 +10697,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 	if (this_rq->nr_running != this_rq->cfs.h_nr_running)
- 		pulled_task = -1;
- 
--	if (pulled_task)
-+	if (pulled_task || this_rq->ttwu_pending)
- 		this_rq->idle_stamp = 0;
- 
- 	rq_repin_lock(this_rq, rf);
 -- 
-2.25.4
+Regards/Gruss,
+    Boris.
 
-
+https://people.kernel.org/tglx/notes-about-netiquette
