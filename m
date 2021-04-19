@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3343644B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 756CD3644E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241403AbhDSNbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:31:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56334 "EHLO mail.kernel.org"
+        id S240790AbhDSNfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:35:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241572AbhDSNWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:22:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1D0561406;
-        Mon, 19 Apr 2021 13:18:10 +0000 (UTC)
+        id S241811AbhDSNYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:24:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6DDA613E0;
+        Mon, 19 Apr 2021 13:19:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618838291;
-        bh=pgZ4aU/RyMSL0vPVZs1aMPL8OWO/M/xhCwtE0D5ydmg=;
+        s=korg; t=1618838369;
+        bh=3Zz1KqwH7N0XH8TsspPrkxrJdFWYCC7RQ6USo//FgoQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B/zxwuxgcbAciioyNlv56Kjp156fCpht/eVIezLsNQY7HOLnzzdZoy26si6us0+jA
-         +8SDIF/pbq0U/jXtacUVUyJeCL2J3pxMmvSn2M1h/0EZB0YWrwkAoeD22XqObszlWU
-         cghJdZ3Zbf78ZcTzgwjqKtpKiIGqfOVMiu6s/o1I=
+        b=sjUK0rP6UAtau7DHqBryDjK3u2evdKzfxNHoUOtLDiyLX9HyW9LU/ixrJuw4C5yaJ
+         o1xaqvDc1FE2Jpzq8R2z6+41kf2B9X/XEQBTbi8PsONma+TckGucPoAc/8XtKsHNFJ
+         svekCtMHsxZ64fUoCTmC+Y8hxX2zQ9PiDtsemE1s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 075/103] ethtool: pause: make sure we init driver stats
-Date:   Mon, 19 Apr 2021 15:06:26 +0200
-Message-Id: <20210419130530.386347411@linuxfoundation.org>
+        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 36/73] net/rds: Avoid potential use after free in rds_send_remove_from_sock
+Date:   Mon, 19 Apr 2021 15:06:27 +0200
+Message-Id: <20210419130525.004088820@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210419130527.791982064@linuxfoundation.org>
-References: <20210419130527.791982064@linuxfoundation.org>
+In-Reply-To: <20210419130523.802169214@linuxfoundation.org>
+References: <20210419130523.802169214@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jakub Kicinski <kuba@kernel.org>
+From: Aditya Pakki <pakki001@umn.edu>
 
-commit 16756d3e77ad58cd07e36cbed724aa13ae5a0278 upstream.
+[ Upstream commit 0c85a7e87465f2d4cbc768e245f4f45b2f299b05 ]
 
-The intention was for pause statistics to not be reported
-when driver does not have the relevant callback (only
-report an empty netlink nest). What happens currently
-we report all 0s instead. Make sure statistics are
-initialized to "not set" (which is -1) so the dumping
-code skips them.
+In case of rs failure in rds_send_remove_from_sock(), the 'rm' resource
+is freed and later under spinlock, causing potential use-after-free.
+Set the free pointer to NULL to avoid undefined behavior.
 
-Fixes: 9a27a33027f2 ("ethtool: add standard pause stats")
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Aditya Pakki <pakki001@umn.edu>
+Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ethtool/pause.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ net/rds/message.c | 1 +
+ net/rds/send.c    | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/ethtool/pause.c
-+++ b/net/ethtool/pause.c
-@@ -38,16 +38,16 @@ static int pause_prepare_data(const stru
- 	if (!dev->ethtool_ops->get_pauseparam)
- 		return -EOPNOTSUPP;
+diff --git a/net/rds/message.c b/net/rds/message.c
+index 92b6b22884d4..ed1d2255ce5a 100644
+--- a/net/rds/message.c
++++ b/net/rds/message.c
+@@ -180,6 +180,7 @@ void rds_message_put(struct rds_message *rm)
+ 		rds_message_purge(rm);
  
-+	ethtool_stats_init((u64 *)&data->pausestat,
-+			   sizeof(data->pausestat) / 8);
-+
- 	ret = ethnl_ops_begin(dev);
- 	if (ret < 0)
- 		return ret;
- 	dev->ethtool_ops->get_pauseparam(dev, &data->pauseparam);
- 	if (req_base->flags & ETHTOOL_FLAG_STATS &&
--	    dev->ethtool_ops->get_pause_stats) {
--		ethtool_stats_init((u64 *)&data->pausestat,
--				   sizeof(data->pausestat) / 8);
-+	    dev->ethtool_ops->get_pause_stats)
- 		dev->ethtool_ops->get_pause_stats(dev, &data->pausestat);
--	}
- 	ethnl_ops_complete(dev);
+ 		kfree(rm);
++		rm = NULL;
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(rds_message_put);
+diff --git a/net/rds/send.c b/net/rds/send.c
+index 68e2bdb08fd0..aa3bc081773f 100644
+--- a/net/rds/send.c
++++ b/net/rds/send.c
+@@ -665,7 +665,7 @@ static void rds_send_remove_from_sock(struct list_head *messages, int status)
+ unlock_and_drop:
+ 		spin_unlock_irqrestore(&rm->m_rs_lock, flags);
+ 		rds_message_put(rm);
+-		if (was_on_sock)
++		if (was_on_sock && rm)
+ 			rds_message_put(rm);
+ 	}
  
- 	return 0;
+-- 
+2.30.2
+
 
 
