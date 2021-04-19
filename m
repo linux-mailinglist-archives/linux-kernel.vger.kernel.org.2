@@ -2,95 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 900BC3648BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 19:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 686333648B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 19:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239579AbhDSRGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 13:06:37 -0400
-Received: from conuserg-11.nifty.com ([210.131.2.78]:42560 "EHLO
-        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbhDSRGf (ORCPT
+        id S239563AbhDSRGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 13:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230127AbhDSRGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 13:06:35 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-11.nifty.com with ESMTP id 13JH5ATv011272;
-        Tue, 20 Apr 2021 02:05:10 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 13JH5ATv011272
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1618851910;
-        bh=XXhY11gaoSvzWbW6ID0kHAhI4BbC74X5B25rQcrZHrU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RZ9iFlnHqMlII0RPn5w0OycB9aITRKf7j08eU7E7C+h1f9kDe+bSexuQrBDT0oUXH
-         ltJvPAcKMECFqmpoQF7AZ4Uxoh9vlcNi+51tEG10nSyKQONCr8XMRaAM7WbaT1ySKF
-         gKoFt+UGiyeet6843kqCZCe8jpTAWNNmenNjlMN2NGYRK6/3iz/qgSLjbpmk4i6td1
-         8MsQvy9x3ze5psT01M3ShbYhF4l/OXtPfh3Afh3nZEquPtPKtKHRqj7YXFwKJ4qIio
-         QanO4BGdeL80DKdWAH5iGyDBkEsD/K5I4DpqQCIHkfStGH4ii+ucB5mlc9CzD8S6fW
-         qLrRkLelf92UA==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Riku Voipio <riku.voipio@linaro.org>,
-        Ben Hutchings <ben@decadent.org.uk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Subject: [PATCH v2] kbuild: deb-pkg: change the source package name to linux-upstream
-Date:   Tue, 20 Apr 2021 02:05:05 +0900
-Message-Id: <20210419170505.1578725-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Mon, 19 Apr 2021 13:06:11 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6153C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 10:05:41 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f078100273c47da03104508.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:8100:273c:47da:310:4508])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 43CB91EC0347;
+        Mon, 19 Apr 2021 19:05:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1618851940;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=TWJ6b+wJROTKL7GE+elLAj17ElKzrLVUoC3BxvWRtfw=;
+        b=lN1UlO/CFvknjp15asW0ZjeOuNvhRMptkMK/gweUTMxxNvforBchg1vlWjrYeAe+bXpwVd
+        nxIkuqLwqc/72mjiNg3LtpAWPRPPPD9z+XPythoADeeA+N7pNLTu3Lj+UTDMC5fLRpWcBF
+        QqTSQyHQwRdB4f9UswHxATVUCyPTCw0=
+Date:   Mon, 19 Apr 2021 19:05:38 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Naoya Horiguchi <nao.horiguchi@gmail.com>
+Cc:     linux-mm@kvack.org, Tony Luck <tony.luck@intel.com>,
+        Aili Yao <yaoaili@kingsoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/3] mm/memory-failure: Use a mutex to avoid
+ memory_failure() races
+Message-ID: <20210419170538.GG9093@zn.tnic>
+References: <20210412224320.1747638-1-nao.horiguchi@gmail.com>
+ <20210412224320.1747638-2-nao.horiguchi@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210412224320.1747638-2-nao.horiguchi@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the source package name from 'linux-$(KERNELRELEASE)' to
-'linux-upstream'.
+On Tue, Apr 13, 2021 at 07:43:18AM +0900, Naoya Horiguchi wrote:
+> From: Tony Luck <tony.luck@intel.com>
+> 
+> There can be races when multiple CPUs consume poison from the same
+> page. The first into memory_failure() atomically sets the HWPoison
+> page flag and begins hunting for tasks that map this page. Eventually
+> it invalidates those mappings and may send a SIGBUS to the affected
+> tasks.
+> 
+> But while all that work is going on, other CPUs see a "success"
+> return code from memory_failure() and so they believe the error
+> has been handled and continue executing.
+> 
+> Fix by wrapping most of the internal parts of memory_failure() in
+> a mutex.
+> 
+> Signed-off-by: Tony Luck <tony.luck@intel.com>
+> Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> ---
+>  mm/memory-failure.c | 19 +++++++++++++++++--
+>  1 file changed, 17 insertions(+), 2 deletions(-)
+> 
+> diff --git v5.12-rc5/mm/memory-failure.c v5.12-rc5_patched/mm/memory-failure.c
+> index 24210c9bd843..c1509f4b565e 100644
+> --- v5.12-rc5/mm/memory-failure.c
+> +++ v5.12-rc5_patched/mm/memory-failure.c
+> @@ -1381,6 +1381,8 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
+>  	return rc;
+>  }
+>  
+> +static DEFINE_MUTEX(mf_mutex);
+> +
+>  /**
+>   * memory_failure - Handle memory failure of a page.
+>   * @pfn: Page Number of the corrupted page
+> @@ -1424,12 +1426,18 @@ int memory_failure(unsigned long pfn, int flags)
+>  		return -ENXIO;
+>  	}
 
-Initially, I tried to use 'linux' to be aligned with the Debian
-kernel package, but Ben suggested 'linux-upstream' so that it is
-clearly distinguished from distribution packages. [1]
+So the locking patterns are done in two different ways, which are
+confusing when following this code:
 
-The filenames will be changed as follows:
+> +	mutex_lock(&mf_mutex);
+> +
+>  try_again:
+> -	if (PageHuge(p))
+> -		return memory_failure_hugetlb(pfn, flags);
+> +	if (PageHuge(p)) {
+> +		res = memory_failure_hugetlb(pfn, flags);
+> +		goto out2;
+> +	}
 
-[Before]
-  linux-5.12.0-rc3+_5.12.0-rc3+-1.dsc
-  linux-5.12.0-rc3+_5.12.0-rc3+.orig.tar.gz
-  linux-5.12.0-rc3+_5.12.0-rc3+-1.diff.gz
+You have the goto to a label where you do the unlocking (btw, pls do
+s/out2/out_unlock/g;)...
 
-[After]
-  linux-upstream_5.12.0-rc3+-1.dsc
-  linux-upstream_5.12.0-rc3+.orig.tar.gz
-  linux-upstream_5.12.0-rc3+-1.diff.gz
+> +
+>  	if (TestSetPageHWPoison(p)) {
+>  		pr_err("Memory failure: %#lx: already hardware poisoned\n",
+>  			pfn);
+> +		mutex_unlock(&mf_mutex);
+>  		return 0;
 
-Commit 3716001bcb7f ("deb-pkg: add source package") introduced
-KDEB_SOURCENAME. If you are unhappy with the default name, you can
-override it via KDEB_SOURCENAME.
+... and you have the other case where you unlock before returning.
 
-[1]: https://lore.kernel.org/linux-kbuild/06ffa2a690d57f867b4bc1b42f0026917b1dd3cd.camel@decadent.org.uk/T/#m2c4afa0eca5ced5e57795b002f2dbcb05d7a4a44
+Since you've added the label, I think *all* the unlocking should do
+"goto out_unlock" instead of doing either/or.
 
-Suggested-by: Ben Hutchings <ben@decadent.org.uk>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Thx.
 
-Changes in v2:
-  - Use 'linux-upstream' for the package name
-
- scripts/Makefile.package | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/scripts/Makefile.package b/scripts/Makefile.package
-index f952fb64789d..b74c65284fb2 100644
---- a/scripts/Makefile.package
-+++ b/scripts/Makefile.package
-@@ -25,7 +25,7 @@ include $(srctree)/scripts/Kbuild.include
- 
- # Remove hyphens since they have special meaning in RPM filenames
- KERNELPATH := kernel-$(subst -,_,$(KERNELRELEASE))
--KDEB_SOURCENAME ?= linux-$(KERNELRELEASE)
-+KDEB_SOURCENAME ?= linux-upstream
- KBUILD_PKG_ROOTCMD ?="fakeroot -u"
- export KDEB_SOURCENAME
- # Include only those top-level files that are needed by make, plus the GPL copy
 -- 
-2.27.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
