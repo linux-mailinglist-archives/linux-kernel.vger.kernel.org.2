@@ -2,140 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D856363EAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:37:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40EE5363EB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238612AbhDSJiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 05:38:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46307 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229635AbhDSJiO (ORCPT
+        id S238633AbhDSJir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 05:38:47 -0400
+Received: from mail-ua1-f51.google.com ([209.85.222.51]:42665 "EHLO
+        mail-ua1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229635AbhDSJiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 05:38:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618825064;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pr6Kj+KN23H2x/H8q/2CCYxabxT7Vqp+jcXC0FHsmgo=;
-        b=VBMYSEGWpSuW2E9uUWK2a+Q1DQzIE3J3hpCfIDeQBdFFAVuqisDXLkb1AuqT1ctxNZ3YT1
-        8V9F7MCIA4glo4g9uq4s7lSqHyRwWVSgNgS9TPCUfENemeEX8PeEOOhTrEymJaMSTbxdRZ
-        D0zEAUT0kBg98PO5P2+bapCubX0Dzpo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-377-WdU_-XUNOvWF7UjLXXBvwg-1; Mon, 19 Apr 2021 05:37:42 -0400
-X-MC-Unique: WdU_-XUNOvWF7UjLXXBvwg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6D8A8801814;
-        Mon, 19 Apr 2021 09:37:40 +0000 (UTC)
-Received: from dhcp-128-65.nay.redhat.com (ovpn-13-172.pek2.redhat.com [10.72.13.172])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 06F64107D5C6;
-        Mon, 19 Apr 2021 09:37:36 +0000 (UTC)
-Date:   Mon, 19 Apr 2021 17:37:32 +0800
-From:   DaveYoung <dyoung@redhat.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Mike Galbraith <efault@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
-        kexec@lists.infradead.org, x86@kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [patch] x86/crash: fix crash_setup_memmap_entries()
- out-of-bounds access
-Message-ID: <20210419093732.GB8618@dhcp-128-65.nay.redhat.com>
-References: <063a63ddea914ac654cbe9a1d1d6c76986af7882.camel@gmx.de>
- <20210416114708.GB79779@dhcp-128-65.nay.redhat.com>
- <725fa3dc1da2737f0f6188a1a9701bead257ea9d.camel@gmx.de>
- <20210416121636.GA22348@zn.tnic>
- <a853ea8535151fd8b267d8e68a45b33748978d8a.camel@gmx.de>
- <20210416144459.GB22348@zn.tnic>
- <7826c19ecd583700f56d2db33360e8032e812ecf.camel@gmx.de>
- <87sg3puco5.ffs@nanos.tec.linutronix.de>
- <d725b19b4c02273eaab38a10853fa6fb6d5bc76c.camel@gmx.de>
- <20210419085202.GB9093@zn.tnic>
+        Mon, 19 Apr 2021 05:38:46 -0400
+Received: by mail-ua1-f51.google.com with SMTP id 23so1394399uac.9;
+        Mon, 19 Apr 2021 02:38:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Qz7eHg+GDhB5/+UldzTXRkP4L7o5XFBAhOrV0CebfS8=;
+        b=NpLBTFuoQnYPSKDN3QIGdnckJ9HK9IIVmGIAwvdMSN25C1/MoO3eYmQhhAyEv57ivu
+         P9bH4kIihlc0r5+JWSkjfuj/Ch5SbN2+2bZeiKQRWS9A8gWHNcZR+ekMMiBvTwWd/P7B
+         PCGwkaiQWa9MRjxkeOC4El3gRy781kkYxCnyGNEBJS0aoIJIJbHNCI75XQcl57h2goAk
+         sV51OZa5e0SRSw5RR2QwuxjDofgVZ5uvw0bt10CMBFlZzMM3X8id0Yu8b/Y1ztrr0TjA
+         VOuL6zLN5v0n3ggk6IHsNZq3anl3jFyQVQkjvxbEdUkU5C6HQmYu4cwAnkoPlVvJPbzl
+         bugQ==
+X-Gm-Message-State: AOAM531JuGkvXGb3cNIS1FWYxX4aqVeRb+Fj+0U+GNA/kqAb7hNZ1Nsv
+        oBPJB1Qy+uMbnxFdMcH0lIcwKR001cMJfuat4qw=
+X-Google-Smtp-Source: ABdhPJwd2fxrRVcezspfqpd49brhoi5lLIDhZwfeLnamGRZertBmVP+kBGQLGSvBRrowPHG+qjcTR166Fl0LF3PPrz8=
+X-Received: by 2002:a9f:3852:: with SMTP id q18mr6058483uad.58.1618825096295;
+ Mon, 19 Apr 2021 02:38:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210419085202.GB9093@zn.tnic>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20210224115146.9131-1-aford173@gmail.com> <20210224115146.9131-3-aford173@gmail.com>
+In-Reply-To: <20210224115146.9131-3-aford173@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 19 Apr 2021 11:38:05 +0200
+Message-ID: <CAMuHMdWozQPDTDMPtqqoHJJoshHAUCBCxWkGYEe6eV1q2xL6jw@mail.gmail.com>
+Subject: Re: [PATCH V3 3/5] arm64: dts: renesas: Add fck to etheravb-rcar-gen3
+ clock-names list
+To:     Adam Ford <aford173@gmail.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/19/21 at 10:52am, Borislav Petkov wrote:
-> Here's an attempt to explain what this fixes:
-> 
-> ---
-> From: Mike Galbraith <efault@gmx.de>
-> Date: Fri, 16 Apr 2021 14:02:07 +0200
-> Subject: [PATCH] x86/crash: Fix crash_setup_memmap_entries() out-of-bounds
->  access
-> 
-> Commit in Fixes: added support for kexec-ing a kernel on panic using a
-> new system call. As part of it, it does prepare a memory map for the new
-> kernel.
-> 
-> However, while doing so, it wrongly accesses memory it has not
-> allocated: it accesses the first element of the cmem->ranges[] array in
-> memmap_exclude_ranges() but it has not allocated the memory for it in
-> crash_setup_memmap_entries(). As KASAN reports:
-> 
->   BUG: KASAN: vmalloc-out-of-bounds in crash_setup_memmap_entries+0x17e/0x3a0
->   Write of size 8 at addr ffffc90000426008 by task kexec/1187
-> 
->   (gdb) list *crash_setup_memmap_entries+0x17e
->   0xffffffff8107cafe is in crash_setup_memmap_entries (arch/x86/kernel/crash.c:322).
->   317                                      unsigned long long mend)
->   318     {
->   319             unsigned long start, end;
->   320
->   321             cmem->ranges[0].start = mstart;
->   322             cmem->ranges[0].end = mend;
->   323             cmem->nr_ranges = 1;
->   324
->   325             /* Exclude elf header region */
->   326             start = image->arch.elf_load_addr;
->   (gdb)
-> 
-> Make sure the ranges array becomes a single element allocated.
-> 
->  [ bp: Write a proper commit message. ]
+On Wed, Feb 24, 2021 at 12:52 PM Adam Ford <aford173@gmail.com> wrote:
+> The bindings have been updated to support two clocks, but the
+> original clock now requires the name fck.  Add a clock-names
+> list in the device tree with fck in it.
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Reviewed-by: Dave Young <dyoung@redhat.com>
+queueing in renesas-devel for v5.14, with an additional update for
+the recently added r8a779a0.dtsi.
 
-> 
-> Fixes: dd5f726076cc ("kexec: support for kexec on panic using new system call")
-> Signed-off-by: Mike Galbraith <efault@gmx.de>
-> Signed-off-by: Borislav Petkov <bp@suse.de>
-> Link: https://lkml.kernel.org/r/725fa3dc1da2737f0f6188a1a9701bead257ea9d.camel@gmx.de
-> ---
->  arch/x86/kernel/crash.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
-> index a8f3af257e26..b1deacbeb266 100644
-> --- a/arch/x86/kernel/crash.c
-> +++ b/arch/x86/kernel/crash.c
-> @@ -337,7 +337,7 @@ int crash_setup_memmap_entries(struct kimage *image, struct boot_params *params)
->  	struct crash_memmap_data cmd;
->  	struct crash_mem *cmem;
->  
-> -	cmem = vzalloc(sizeof(struct crash_mem));
-> +	cmem = vzalloc(struct_size(cmem, ranges, 1));
->  	if (!cmem)
->  		return -ENOMEM;
->  
-> -- 
-> 2.29.2
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
-> 
+Gr{oetje,eeting}s,
 
-Thanks
-Dave
+                        Geert
 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
