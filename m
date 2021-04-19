@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA239364DB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 00:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 078C6364DBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 00:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbhDSWfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 18:35:23 -0400
-Received: from foss.arm.com ([217.140.110.172]:51976 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229537AbhDSWfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 18:35:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B99C61435;
-        Mon, 19 Apr 2021 15:34:51 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 823453F792;
-        Mon, 19 Apr 2021 15:34:50 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 23:34:48 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v8 0/3] ARM: Implement MODULE_PLT support in FTRACE
-Message-ID: <20210419223448.vummlz37nyc3a64i@e107158-lin.cambridge.arm.com>
-References: <20210330114035.18575-1-alexander.sverdlin@nokia.com>
- <20210409153309.wbebto3eufui35qs@e107158-lin>
- <be48adb2-c838-1a9b-37bc-da783f3d5dd3@nokia.com>
- <20210412110810.t7pqkwawn5zmqbca@e107158-lin.cambridge.arm.com>
- <b26651f2-a5ca-ff5d-23e4-05b7eb7d9583@gmail.com>
+        id S229863AbhDSWkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 18:40:22 -0400
+Received: from gateway31.websitewelcome.com ([192.185.143.46]:34968 "EHLO
+        gateway31.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229652AbhDSWkN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 18:40:13 -0400
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway31.websitewelcome.com (Postfix) with ESMTP id B168A201B17
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 17:39:33 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id YcYHl1TAbMGeEYcYHlPhpu; Mon, 19 Apr 2021 17:39:33 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=88m1MQb2nNveKjfeKb79bNGZ2voroxXvoMgEm6bgprw=; b=g7pKP/aSBbJKOVhGvPUSDYGt1z
+        x5CIfc9MDd5mpy6v+e0dpvHUQQy0wgjRHci109PAkczmw/ScGX1iMmWZt6ebPRwVh9OizeWTEwPdA
+        RdcHlCxVz1g8/ymsKi9eclXhKgrOxhQweysiGG8vCqW4Io4llgCaHT/MdC2BVCmx4Y70TJICPpAW2
+        KhwnaU4u9dvoeYG3d7MW02Np9yiOYnvDpVXjgFma8531A3oIB72QIXgCpickWBokWYFdqKWw1UKSi
+        vhnjCptciG7OfBf9E1I+DZ/DkVnELinyLaCWWmpCREeaqDYb4WFUhToF/lWeYlFwfWD1hU6AD56Op
+        U/S8MNAQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:46944 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lYcYD-003azP-5Z; Mon, 19 Apr 2021 17:39:29 -0500
+Subject: Re: [PATCH][next] sctp: Fix out-of-bounds warning in
+ sctp_process_asconf_param()
+To:     David Miller <davem@davemloft.net>
+Cc:     patchwork-bot+netdevbpf@kernel.org, gustavoars@kernel.org,
+        vyasevich@gmail.com, nhorman@tuxdriver.com,
+        marcelo.leitner@gmail.com, kuba@kernel.org,
+        linux-sctp@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210416191236.GA589296@embeddedor>
+ <161861761155.26880.11889736067176146088.git-patchwork-notify@kernel.org>
+ <8f37be96-04dd-f948-4913-54da6c4ae9b2@embeddedor.com>
+ <20210419.153405.1531590596849653615.davem@davemloft.net>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <db839548-0715-51b0-f9ba-5405a201567f@embeddedor.com>
+Date:   Mon, 19 Apr 2021 17:39:41 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <20210419.153405.1531590596849653615.davem@davemloft.net>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <b26651f2-a5ca-ff5d-23e4-05b7eb7d9583@gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lYcYD-003azP-5Z
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:46944
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 11
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/19/21 14:54, Florian Fainelli wrote:
-> 
-> 
-> On 4/12/2021 4:08 AM, Qais Yousef wrote:
-> > Hi Alexander
-> > 
-> > Fixing Ard's email as the Linaro one keeps bouncing back. Please fix that in
-> > your future postings.
-> > 
-> > On 04/12/21 08:28, Alexander Sverdlin wrote:
-> >> Hi!
-> >>
-> >> On 09/04/2021 17:33, Qais Yousef wrote:
-> >>> I still think the ifdefery in patch 3 is ugly. Any reason my suggestion didn't
-> >>> work out for you? I struggle to see how this is better and why it was hard to
-> >>> incorporate my suggestion.
-> >>>
-> >>> For example
-> >>>
-> >>> 	-       old = ftrace_call_replace(ip, adjust_address(rec, addr));
-> >>> 	+#ifdef CONFIG_ARM_MODULE_PLTS
-> >>> 	+       /* mod is only supplied during module loading */
-> >>> 	+       if (!mod)
-> >>> 	+               mod = rec->arch.mod;
-> >>> 	+       else
-> >>> 	+               rec->arch.mod = mod;
-> >>> 	+#endif
-> >>> 	+
-> >>> 	+       old = ftrace_call_replace(ip, aaddr,
-> >>> 	+                                 !IS_ENABLED(CONFIG_ARM_MODULE_PLTS) || !mod);
-> >>> 	+#ifdef CONFIG_ARM_MODULE_PLTS
-> >>> 	+       if (!old && mod) {
-> >>> 	+               aaddr = get_module_plt(mod, ip, aaddr);
-> >>> 	+               old = ftrace_call_replace(ip, aaddr, true);
-> >>> 	+       }
-> >>> 	+#endif
-> >>> 	+
-> >>>
-> >>> There's an ifdef, followed by a code that embeds
-> >>> !IS_ENABLED(CONFIG_ARM_MODULE_PLTS) followed by another ifdef :-/
-> >>
-> >> No, it's actually two small ifdefed blocks added before and after an original call,
-> >> which parameters have been modified as well. The issue with arch.mod was explained
-> >> by Steven Rostedt, maybe you've missed his email.
-> > 
-> > If you're referring to arch.mod having to be protected by the ifdef I did
-> > address that. Please look at my patch.
-> > 
-> > My comment here refers to the ugliness of this ifdefery. Introducing 2 simple
-> > wrapper functions would address that as I've demonstrated in my
-> > suggestion/patch.
-> 
-> What is the plan to move forward with this patch series, should v8 be
-> submitted into RMK's patch tracker and improved upon from there, or do
-> you feel like your suggestion needs to be addressed right away?
 
-There's no objection from my side to submitting this and improve later.
 
-Thanks
+On 4/19/21 17:34, David Miller wrote:
+
+>> Thanks for this. Can you take these other two, as well, please?
+>>
+>> https://lore.kernel.org/linux-hardening/20210416201540.GA593906@embeddedor/
+>> https://lore.kernel.org/linux-hardening/20210416193151.GA591935@embeddedor/
+>>
+> 
+> Done.
+
+Thanks, Dave!
 
 --
-Qais Yousef
+Gustavo
