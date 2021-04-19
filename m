@@ -2,252 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F2A364894
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 18:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22B53648A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 18:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239175AbhDSQzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 12:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50614 "EHLO
+        id S239341AbhDSQ5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 12:57:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231674AbhDSQzj (ORCPT
+        with ESMTP id S230127AbhDSQ5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 12:55:39 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D630C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 09:55:09 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id u8so26535974qtq.12
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 09:55:09 -0700 (PDT)
+        Mon, 19 Apr 2021 12:57:35 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 873C3C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 09:57:05 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id y1so2409496plg.11
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 09:57:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Zk/sp40ccYRx2WOjOuziU8/bUWKXs2YHeaI5ZDdPDPI=;
-        b=myzKF9uZT1H+cgfSxn1jOdSsvWzrqzudomITjhtn9FDtGADN3tXQke1hCP4wlgdRf0
-         5HX95g51uPseo0+nFjTTF2PR1JjCHWrLLpUzFZYeFAbo1JoMD8a17o+GGMvHl+PKhat+
-         l/uMpPTaRajd7H8iACtsfOyNCo6Td/JG4FvjTmoEsl+F4rfAT/MD34dsRPHeZjSR7RkP
-         BBRdAhyiLjoi5tHbTD2NQOclMK0esAxezvnR2mMICCqC0BZuZJUkqHLQC084nW96WXF3
-         14EfLu58GyE8MKxe8cNl1fASHtfj5wRcCQk2iiishUDfEIOJ+29yhqunDEzgFo5eH/Zg
-         Lcjw==
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=LFLAtSvytla0zTYcsW46mWeyZlofOCWa3x8xY0lnO7M=;
+        b=H8hCSiqQKIDKul/wf025S/2I8kyN/iAfc/+Te8+ygVBtigfjKvw+qcK3fdE/uG6iQb
+         dbo/uRWNeF3x7j2Ybb0bk6EPtOkJrtvLoJeR3QT7hzwpWPgQw5mP0ZoEyIQB3r0shGzt
+         wKqGYK5TtI0KlBz2LxjgiBdIb49oM5EMtcCBwnLWTW5iJCNyFZI2qomf2/2LUFJNrm5T
+         YhevHK1tVhAF4F7A8tJ0bBoPfCl/taHnQhARBUQngM9VIm7yksjXNhLidnxpuIz4Gg2Z
+         7gbZi5sTtzhRsoSrRraHSqZDOpE0/fXl30rmtV/exhogkg6G5tkLuoGCR9s3g3bhLCyg
+         BuBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Zk/sp40ccYRx2WOjOuziU8/bUWKXs2YHeaI5ZDdPDPI=;
-        b=DNoUNI3EoEfsImj9NeumsBPu8ro7TbZS5Wukq7qKDBfx0fZnu7ESKnMBuHttFVRdj3
-         dbFa6AnVGFZncYbAVGA1aH7qh8A+SUimPSP1TF7bC+wgJMhJbgTIuS+2msF3lMNDj3Ju
-         Uz1qm0XHJ8FNvkpXGDgWtqBKK9zpS8DiNvezaMSVC1bp2rl177aojFnGJYzsu+J2GuOp
-         4si5eWJL2iH5IZf1s8ot/DLbks11+d1KbqTtLz37gDkpqF1WnknbWiTUOidalVLVA2Wd
-         tFkrkfcOVrPG9Ef+Yrurx9zVYNkfjkhtAS8WAcI9Id0OjVvUZMP0q+fbjB142DCKO61Y
-         N0ug==
-X-Gm-Message-State: AOAM531tiix3vTHnduiFoBsib/l01QqGMiHYuYvkFuQ+M69kQTzJUTn7
-        ZTUSzr1JZtKdQZqFb7wGCOX0sQ==
-X-Google-Smtp-Source: ABdhPJwMLT9iU9O4N6XuuLbFFLAZ4EPTrFPens/BuwxO1Qdi21b3x8kVhkldptMeS1eC0qttpa14bA==
-X-Received: by 2002:a05:622a:301:: with SMTP id q1mr12502788qtw.48.1618851308782;
-        Mon, 19 Apr 2021 09:55:08 -0700 (PDT)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id w13sm6004476qts.17.2021.04.19.09.55.07
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=LFLAtSvytla0zTYcsW46mWeyZlofOCWa3x8xY0lnO7M=;
+        b=rUfoUk2yVaXq06drBx9v9QwbGTVp9w+FB8lMJlDwp5fwN370Rmc+fIVP60coIYm1Gj
+         yiCyybfqpnDZqfEN+cC1vKjFPO8GKjQrlbAQ6Y9184lUxKQIaPewWBpcnpUIhOpTLKl4
+         V2adTo0kdm/yL6/ZSBzWF687ksM8grXXJE6cseJunkIoBIcUY2ONr1qeYb9ZR5+Zx2+G
+         e45lQgz3Pfog4J8Z7QS/PG+Tku4DEYM1GwDg2YcmULGtXhd2tq9AZ02SXqPDU7z9Ek/d
+         W6ycKrx0oOUbzEYvqM65BhFunywlGn5K3DuZwQZ29HrNJXuVsYLDZi5j7v1kAwUsZwVH
+         i6QA==
+X-Gm-Message-State: AOAM531dH7XmeDz7bw4HM0I52FkzqCgeteyhEMU854GtDnzLNBBU0QH5
+        nIxe3EcyZGrN1P7sGywUnbc=
+X-Google-Smtp-Source: ABdhPJwOKSCP2ZLHExvU1pSIpwpfsfPxKIPeYhQTx5XgAqjO98qey0O9Czry9a/reFAOjmKswt1tZA==
+X-Received: by 2002:a17:902:b483:b029:e9:eef4:4f16 with SMTP id y3-20020a170902b483b02900e9eef44f16mr24796074plr.38.1618851424942;
+        Mon, 19 Apr 2021 09:57:04 -0700 (PDT)
+Received: from ashish-NUC8i5BEH ([182.77.14.23])
+        by smtp.gmail.com with ESMTPSA id 76sm7498096pfw.25.2021.04.19.09.57.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 09:55:07 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 12:55:07 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v4 4/5] mm/memcg: Save both reclaimable & unreclaimable
- bytes in object stock
-Message-ID: <YH216/wnyEOcxATl@cmpxchg.org>
-References: <20210419000032.5432-1-longman@redhat.com>
- <20210419000032.5432-5-longman@redhat.com>
+        Mon, 19 Apr 2021 09:57:04 -0700 (PDT)
+From:   Ashish Kalra <eashishkalra@gmail.com>
+X-Google-Original-From: Ashish Kalra <ashish@ashish-NUC8i5BEH>
+Date:   Mon, 19 Apr 2021 22:26:59 +0530
+To:     =?iso-8859-1?B?Suly9G1l?= Pouiller <jerome.pouiller@silabs.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Ashish Kalra <eashishkalra@gmail.com>
+Subject: Re: [PATCH] staging: wfx: silence symbol 'wfx_get_ps_timeout' was
+ not declared warning
+Message-ID: <20210419165659.GA2363@ashish-NUC8i5BEH>
+References: <20210419153348.GA22782@ashish-NUC8i5BEH>
+ <3163466.7bx4QQXRp1@pc-42>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210419000032.5432-5-longman@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3163466.7bx4QQXRp1@pc-42>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 18, 2021 at 08:00:31PM -0400, Waiman Long wrote:
-> Currently, the object stock structure caches either reclaimable vmstat
-> bytes or unreclaimable vmstat bytes in its object stock structure. The
-> hit rate can be improved if both types of vmstat data can be cached
-> especially for single-node system.
+On Mon, Apr 19, 2021 at 05:55:34PM +0200, Jérôme Pouiller wrote:
+> On Monday 19 April 2021 17:33:48 CEST Ashish Kalra wrote:
+> > 
+> > Upon running sparse, "warning: symbol 'wfx_get_ps_timeout' was not declared.
+> > Should it be static?" and "warning: symbol 'wfx_update_pm' was not declared.
+> > Should it be static?" is brought to notice for this file.  static keyword
+> > should be added to prevent this warning. let's add it to make it cleaner and
+> > silence the Sparse warning.
 > 
-> This patch supports the cacheing of both type of vmstat data, though
-> at the expense of a slightly increased complexity in the caching code.
-> For large object (>= PAGE_SIZE), vmstat array is done directly without
-> going through the stock caching step.
+> Hi Ashish,
 > 
-> On a 2-socket Cascade Lake server with instrumentation enabled, the
-> miss rates are shown in the table below.
+> Thank you for your contribution.
 > 
->   Initial bootup:
+> It seems that this issue is already fixed by commit ce59858bbc10 "staging:
+> wfx: make methods 'wfx_get_ps_timeout' and 'wfx_update_pm' static" (merged
+> in master in version 5.8). Can you check you are working on the last tree?
 > 
->   Kernel       __mod_objcg_state    mod_objcg_state    %age
->   ------       -----------------    ---------------    ----
->   Before patch      634400              3243830        19.6%
->   After patch       419810              3182424        13.2%
 > 
->   Parallel kernel build:
+> -- 
+> Jérôme Pouiller
 > 
->   Kernel       __mod_objcg_state    mod_objcg_state    %age
->   ------       -----------------    ---------------    ----
->   Before patch      24329265           142512465       17.1%
->   After patch       24051721           142445825       16.9%
 > 
-> There was a decrease of miss rate after initial system bootup. However,
-> the miss rate for parallel kernel build remained about the same probably
-> because most of the touched kmemcache objects were reclaimable inodes
-> and dentries.
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  mm/memcontrol.c | 79 +++++++++++++++++++++++++++++++------------------
->  1 file changed, 51 insertions(+), 28 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index c13502eab282..a6dd18f6d8a8 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2212,8 +2212,8 @@ struct obj_stock {
->  	struct obj_cgroup *cached_objcg;
->  	struct pglist_data *cached_pgdat;
->  	unsigned int nr_bytes;
-> -	int vmstat_idx;
-> -	int vmstat_bytes;
-> +	int reclaimable_bytes;		/* NR_SLAB_RECLAIMABLE_B */
-> +	int unreclaimable_bytes;	/* NR_SLAB_UNRECLAIMABLE_B */
-
-How about
-
-	int nr_slab_reclaimable_b;
-	int nr_slab_unreclaimable_b;
-
-so you don't need the comments?
-
->  #else
->  	int dummy[0];
->  #endif
-> @@ -3217,40 +3217,56 @@ void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
->  		     enum node_stat_item idx, int nr)
->  {
->  	unsigned long flags;
-> -	struct obj_stock *stock = get_obj_stock(&flags);
-> +	struct obj_stock *stock;
-> +	int *bytes, *alt_bytes, alt_idx;
-> +
-> +	/*
-> +	 * Directly update vmstat array for big object.
-> +	 */
-> +	if (unlikely(abs(nr) >= PAGE_SIZE))
-> +		goto update_vmstat;
-
-This looks like an optimization independent of the vmstat item split?
-
-> +	stock = get_obj_stock(&flags);
-> +	if (idx == NR_SLAB_RECLAIMABLE_B) {
-> +		bytes = &stock->reclaimable_bytes;
-> +		alt_bytes = &stock->unreclaimable_bytes;
-> +		alt_idx = NR_SLAB_UNRECLAIMABLE_B;
-> +	} else {
-> +		bytes = &stock->unreclaimable_bytes;
-> +		alt_bytes = &stock->reclaimable_bytes;
-> +		alt_idx = NR_SLAB_RECLAIMABLE_B;
-> +	}
->  
->  	/*
-> -	 * Save vmstat data in stock and skip vmstat array update unless
-> -	 * accumulating over a page of vmstat data or when pgdat or idx
-> +	 * Try to save vmstat data in stock and skip vmstat array update
-> +	 * unless accumulating over a page of vmstat data or when pgdat
->  	 * changes.
->  	 */
->  	if (stock->cached_objcg != objcg) {
->  		/* Output the current data as is */
-> -	} else if (!stock->vmstat_bytes) {
-> -		/* Save the current data */
-> -		stock->vmstat_bytes = nr;
-> -		stock->vmstat_idx = idx;
-> -		stock->cached_pgdat = pgdat;
-> -		nr = 0;
-> -	} else if ((stock->cached_pgdat != pgdat) ||
-> -		   (stock->vmstat_idx != idx)) {
-> -		/* Output the cached data & save the current data */
-> -		swap(nr, stock->vmstat_bytes);
-> -		swap(idx, stock->vmstat_idx);
-> +	} else if (stock->cached_pgdat != pgdat) {
-> +		/* Save the current data and output cached data, if any */
-> +		swap(nr, *bytes);
->  		swap(pgdat, stock->cached_pgdat);
-> +		if (*alt_bytes) {
-> +			__mod_objcg_state(objcg, pgdat, alt_idx,
-> +					  *alt_bytes);
-> +			*alt_bytes = 0;
-> +		}
-
-As per the other email, I really don't think optimizing the pgdat
-switch (in a percpu cache) is worth this level of complexity.
-
->  	} else {
-> -		stock->vmstat_bytes += nr;
-> -		if (abs(stock->vmstat_bytes) > PAGE_SIZE) {
-> -			nr = stock->vmstat_bytes;
-> -			stock->vmstat_bytes = 0;
-> +		*bytes += nr;
-> +		if (abs(*bytes) > PAGE_SIZE) {
-> +			nr = *bytes;
-> +			*bytes = 0;
->  		} else {
->  			nr = 0;
->  		}
->  	}
-> -	if (nr)
-> -		__mod_objcg_state(objcg, pgdat, idx, nr);
-> -
->  	put_obj_stock(flags);
-> +	if (!nr)
-> +		return;
-> +update_vmstat:
-> +	__mod_objcg_state(objcg, pgdat, idx, nr);
->  }
->  
->  static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
-> @@ -3303,12 +3319,19 @@ static void drain_obj_stock(struct obj_stock *stock)
->  	/*
->  	 * Flush the vmstat data in current stock
->  	 */
-> -	if (stock->vmstat_bytes) {
-> -		__mod_objcg_state(old, stock->cached_pgdat, stock->vmstat_idx,
-> -				  stock->vmstat_bytes);
-> +	if (stock->reclaimable_bytes || stock->unreclaimable_bytes) {
-> +		int bytes;
-> +
-> +		if ((bytes = stock->reclaimable_bytes))
-> +			__mod_objcg_state(old, stock->cached_pgdat,
-> +					  NR_SLAB_RECLAIMABLE_B, bytes);
-> +		if ((bytes = stock->unreclaimable_bytes))
-> +			__mod_objcg_state(old, stock->cached_pgdat,
-> +					  NR_SLAB_UNRECLAIMABLE_B, bytes);
-
-The int bytes indirection isn't necessary. It's easier to read even
-with the extra lines required to repeat the long stock member names,
-because that is quite a common pattern (if (stuff) frob(stuff)).
-
-__mod_objcg_state() also each time does rcu_read_lock() toggling and a
-memcg lookup that could be batched, which I think is further proof
-that it should just be inlined here.
+Thanks Jerome
+It seems some sync issue with my source code.I will update to 
+latest and correct
