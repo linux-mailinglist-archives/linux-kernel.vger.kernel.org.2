@@ -2,79 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1A6363B0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 07:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C26BF363B11
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 07:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234118AbhDSF2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 01:28:03 -0400
-Received: from mga04.intel.com ([192.55.52.120]:44566 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234750AbhDSF16 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 01:27:58 -0400
-IronPort-SDR: qk1ZWkBYVcHvPGnqfy7tr0YkiwpVLUmq9MiXYZ1T8d2eNV6/yXjZ1ckplwkbVtoDDCLAKiQ7Tw
- tOSSLxW0H5QQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9958"; a="193147314"
-X-IronPort-AV: E=Sophos;i="5.82,233,1613462400"; 
-   d="scan'208";a="193147314"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2021 22:27:29 -0700
-IronPort-SDR: ms2BEBhN+Wq8k9uTvtBVF01gFdVNNZU7jFUut+1bGH12lD9AX+AGBgvGW1Y5LqEGAFSJznEJVe
- kbN851T54o6g==
-X-IronPort-AV: E=Sophos;i="5.82,233,1613462400"; 
-   d="scan'208";a="426370617"
-Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2021 22:27:26 -0700
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        bard.liao@intel.com
-Subject: [PATCH 4/4] soundwire: bus: add missing \n in dynamic debug
-Date:   Mon, 19 Apr 2021 13:27:03 +0800
-Message-Id: <20210419052703.2782-5-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210419052703.2782-1-yung-chuan.liao@linux.intel.com>
-References: <20210419052703.2782-1-yung-chuan.liao@linux.intel.com>
+        id S232753AbhDSFiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 01:38:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230022AbhDSFiS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 01:38:18 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706B4C061760
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 22:37:49 -0700 (PDT)
+Received: by ozlabs.org (Postfix, from userid 1007)
+        id 4FNwZM0kF9z9vFb; Mon, 19 Apr 2021 15:37:47 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=gibson.dropbear.id.au; s=201602; t=1618810667;
+        bh=qpUO9S3O66BSu4YX34xr1pdZksoDkZkpJdUGiNd3Tgk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iMkY0EghaS/fiUSnxhrun3sGfCsC24otUo3gRcQMOjRb1uY8+uiqUmqQFdW00LwBE
+         FVkGDc3ixEgX/RPwM1J+Va7DRn8DEJEcOPcUepW22yKdSzn5x/1qVii/6YWHXs9eYc
+         eMDTVvsyQ0xdEFVX9YfQXerfDjl5fdRuHZhqHotY=
+Date:   Mon, 19 Apr 2021 15:34:25 +1000
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     Leonardo Bras <leobras.c@gmail.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] powerpc/mm/hash: Avoid multiple HPT resize-ups on
+ memory hotplug
+Message-ID: <YH0WYaXvGMf9YsWi@yekko.fritz.box>
+References: <20210312072940.598696-1-leobras.c@gmail.com>
+ <20210312072940.598696-3-leobras.c@gmail.com>
+ <YFhNd42RvobCV8tF@yekko.fritz.box>
+ <e5c924479839815c025de29d650d82419b18c0dc.camel@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="QWB28iAYYwWHvKxg"
+Content-Disposition: inline
+In-Reply-To: <e5c924479839815c025de29d650d82419b18c0dc.camel@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-They were missed in previous contributions.
+--QWB28iAYYwWHvKxg
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/bus.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Thu, Apr 08, 2021 at 11:51:36PM -0300, Leonardo Bras wrote:
+> Hello David, thanks for the feedback!
+>=20
+> On Mon, 2021-03-22 at 18:55 +1100, David Gibson wrote:
+> > > +void hash_memory_batch_expand_prepare(unsigned long newsize)
+> > > +{
+> > > +	/*
+> > > +	 * Resizing-up HPT should never fail, but there are some cases syst=
+em starts with higher
+> > > +	 * SHIFT than required, and we go through the funny case of resizin=
+g HPT down while
+> > > +	 * adding memory
+> > > +	 */
+> > > +
+> > > +	while (resize_hpt_for_hotplug(newsize, false) =3D=3D -ENOSPC) {
+> > > +		newsize *=3D 2;
+> > > +		pr_warn("Hash collision while resizing HPT\n");
+> >=20
+> > This unbounded increase in newsize makes me nervous - we should be
+> > bounded by the current size of the HPT at least.  In practice we
+> > should be fine, since the resize should always succeed by the time we
+> > reach our current HPT size, but that's far from obvious from this
+> > point in the code.
+>=20
+> Sure, I will add bounds in v2.
+>=20
+> >=20
+> > And... you're doubling newsize which is a value which might not be a
+> > power of 2.  I'm wondering if there's an edge case where this could
+> > actually cause us to skip the current size and erroneously resize to
+> > one bigger than we have currently.
+>=20
+> I also though that at the start, but it seems quite reliable.
+> Before using this value, htab_shift_for_mem_size() will always round it
+> to next power of 2.=A0
+> Ex.
+> Any value between 0b0101 and 0b1000 will be rounded to 0b1000 for shift
+> calculation. If we multiply it by 2 (same as << 1), we have that
+> anything between 0b01010 and 0b10000 will be rounded to 0b10000.=20
 
-diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 100d904bf700..85bcf60f9697 100644
---- a/drivers/soundwire/bus.c
-+++ b/drivers/soundwire/bus.c
-@@ -886,7 +886,7 @@ static int sdw_bus_wait_for_clk_prep_deprep(struct sdw_bus *bus, u16 dev_num)
- 		}
- 		val &= SDW_SCP_STAT_CLK_STP_NF;
- 		if (!val) {
--			dev_dbg(bus->dev, "clock stop prep/de-prep done slave:%d",
-+			dev_dbg(bus->dev, "clock stop prep/de-prep done slave:%d\n",
- 				dev_num);
- 			return 0;
- 		}
-@@ -895,7 +895,7 @@ static int sdw_bus_wait_for_clk_prep_deprep(struct sdw_bus *bus, u16 dev_num)
- 		retry--;
- 	} while (retry);
- 
--	dev_err(bus->dev, "clock stop prep/de-prep failed slave:%d",
-+	dev_err(bus->dev, "clock stop prep/de-prep failed slave:%d\n",
- 		dev_num);
- 
- 	return -ETIMEDOUT;
--- 
-2.17.1
+Ah, good point.
 
+> This works just fine as long as we are multiplying.=A0
+> Division may have the behavior you expect, as 0b0101 >> 1 would become
+> 0b010 and skip a shift.
+> =09
+> > > +void memory_batch_expand_prepare(unsigned long newsize)
+> >=20
+> > This wrapper doesn't seem useful.
+>=20
+> Yeah, it does little, but I can't just jump into hash_* functions
+> directly from hotplug-memory.c, without even knowing if it's using hash
+> pagetables. (in case the suggestion would be test for disable_radix
+> inside hash_memory_batch*)
+>=20
+> >=20
+> > > +{
+> > > +	if (!radix_enabled())
+> > > +		hash_memory_batch_expand_prepare(newsize);
+> > > +}
+> > > =A0#endif /* CONFIG_MEMORY_HOTPLUG */
+> > > =A0
+> > >=20
+> > > +	memory_batch_expand_prepare(memblock_phys_mem_size() +
+> > > +				     drmem_info->n_lmbs * drmem_lmb_size());
+> >=20
+> > This doesn't look right.  memory_add_by_index() is adding a *single*
+> > LMB, I think using drmem_info->n_lmbs here means you're counting this
+> > as adding again as much memory as you already have hotplugged.
+>=20
+> Yeah, my mistake. This makes sense.
+> I will change it to something like=20
+> memblock_phys_mem_size() + drmem_lmb_size()
+>=20
+> > >=20
+> > > +	memory_batch_expand_prepare(memblock_phys_mem_size() + lmbs_to_add =
+* drmem_lmb_size());
+> > > +
+> > > =A0	for_each_drmem_lmb_in_range(lmb, start_lmb, end_lmb) {
+> > > =A0		if (lmb->flags & DRCONF_MEM_ASSIGNED)
+> > > =A0			continue;
+> >=20
+> > I don't see memory_batch_expand_prepare() suppressing any existing HPT
+> > resizes.  Won't this just resize to the right size for the full add,
+> > then resize several times again as we perform the add?  Or.. I guess
+> > that will be suppressed by patch 1/3.=A0
+>=20
+> Correct.
+>=20
+> >  That's seems kinda fragile, though.
+>=20
+> What do you mean by fragile here?
+> What would you suggest doing different?
+>=20
+> Best regards,
+> Leonardo Bras
+>=20
+
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--QWB28iAYYwWHvKxg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmB9FmEACgkQbDjKyiDZ
+s5LB8w/+IiTNXicnDg25SlIXdFL+zxmS47BOOhuzopddRfEpfdtFSm+NNgX5MmLU
+rSihXUQY56acJTKPlXhK7Zz2Ptf3CbZvlRQUAGFoS7kG1ZkakfwIS9cVFj/GCoE9
+GmEBbfASv1u67sXzmWRDBzhyMKrfjJaKhIVgNKngm53pzBiMsQGNeTeYWRySoH9N
+K3UTWkgRGX5/EHB5ezM/3V5dqZ+ugCm6iV7p6Frt7mcYN/YHlTwtO1oJHkPavaej
+R2HULakqgKIZ0FjdDWq2JI2I4ZQSW4W+COFv53monMB2D0wFq2n9VtQMcCvU0bWN
+RqfvLg3GGFK+3984hD/4/RaZDTC95NJ10o/OLfAG1fi+xfiT+vaOwUP1r+4EH5hC
+BhjuOVYX7bbeCioSTCCGzoetk02A1irJM2ILMu4jMJLe9xTvjF7SeZo0Bv8f+qly
+wO0KDiuCi3gyFG4XqJMIC/+IkvsNe06C/py9R7+8KWaCYcJ61rYCjlSn1calDDKV
+aESXMsIGmNwQQrB/XZgxauYBM+p4u9pWpD0iuepEDervVtZrG4X8nhxZa1h1gHw5
+FroXUmENas3fKNVuldk1J+hcNXI3T/1hPv7iTqm45miiG57f3YRjEl08ZzBhVijF
+rDO/iaWTO6lUeNwgRRM0tFGzr6WItKzNZvGlpFrhiMgnysND2EA=
+=uQtK
+-----END PGP SIGNATURE-----
+
+--QWB28iAYYwWHvKxg--
