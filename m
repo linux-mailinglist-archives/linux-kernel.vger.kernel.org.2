@@ -2,142 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 974D6364B3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 22:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E34A2364B44
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 22:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237827AbhDSUjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 16:39:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55764 "EHLO
+        id S242171AbhDSUkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 16:40:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34455 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232217AbhDSUjb (ORCPT
+        by vger.kernel.org with ESMTP id S232217AbhDSUkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 16:39:31 -0400
+        Mon, 19 Apr 2021 16:40:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618864741;
+        s=mimecast20190719; t=1618864800;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=jFcfADdReYDV23uSItauKX3LP1+td5MJJyNjkvs+t+E=;
-        b=d2jy4XdzOQMsHaN+DVyMWoaGVbu9RAzC3Ru0FISb1VhgL2UQ1sELP1bAvsDWVFyISj4KAa
-        cYAZXZi4RwakQWI5cK3bPiBh/0V+kO/S1snSWiz279ZSD7iKlo79jCGn1zqFxv3l66ZslP
-        5ybuSBmxfToI53iqhYoU5J6vuyQWMSY=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-12-34uGC0NWOyCVNRA477tCUw-1; Mon, 19 Apr 2021 16:38:59 -0400
-X-MC-Unique: 34uGC0NWOyCVNRA477tCUw-1
-Received: by mail-qk1-f197.google.com with SMTP id g184-20020a3784c10000b02902e385de9adaso5159313qkd.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 13:38:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jFcfADdReYDV23uSItauKX3LP1+td5MJJyNjkvs+t+E=;
-        b=a4PB3PlCNDjaD52LLMlCwsUfN9dUrnVCNI/NvDNl0YmLVVlLOElAVvG5KsJvplg2uw
-         rdyeW3BD29dIGd1/GGmj2Mwblsoww/nh74+2D3Ax6NHf+2Ubr/tmXgqK5Os8CFh70Owi
-         qR0+QZnielmhi378qyI0rw1j0ggffNIR0ET7dueqeOPZWOJ5xcFTz59DMQu060bJQCT2
-         u6lbg5T+b48EYNrJJSLWWgRFZ41UN1fY0FxR7BpT+S2K7LIWRwsV9K4q1CaTbmyphEf4
-         WogCZcs7LKKdhteqL5Up+dNpxxAUgJ4X1PaYvHD5mxusSW1XXOFOU3AwtInarHEdycw9
-         hcFw==
-X-Gm-Message-State: AOAM532n3GWfzo6vYwIcNUSrKYpbGMMO9dWo8l1FM8yZ/s3jwK+vTnpP
-        QGqnsjTs1cHvr0RjFJpn1FG4jBGyhB2TXJhQR6jLQBPscpXopetQyzzNLRlPoD0gdwIVuKL6rgS
-        IVDiDF0gH735pOTy+qfq40ajA
-X-Received: by 2002:ac8:109a:: with SMTP id a26mr13180000qtj.156.1618864738303;
-        Mon, 19 Apr 2021 13:38:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxBJ+RukPJ+xxSlK13BEkXFvWbrPpBhhl0uJoo2T7kzfbUf2TmhEGQM/znsYA8ca4LP/ew1VA==
-X-Received: by 2002:ac8:109a:: with SMTP id a26mr13179972qtj.156.1618864738015;
-        Mon, 19 Apr 2021 13:38:58 -0700 (PDT)
-Received: from xz-x1 (bras-base-toroon474qw-grc-88-174-93-75-154.dsl.bell.ca. [174.93.75.154])
-        by smtp.gmail.com with ESMTPSA id m2sm10622082qkc.14.2021.04.19.13.38.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 13:38:57 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 16:38:55 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Paul Gortmaker <paul.gortmaker@windriver.com>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: Re: [PATCH] sched/isolation: don't do unbounded chomp on bootarg
- string
-Message-ID: <20210419203855.GX4440@xz-x1>
-References: <20210418215426.1086941-1-paul.gortmaker@windriver.com>
+        bh=HTvQplBtlnSAuxCl+GaMhVm2KFbeKbpYfjP9TAu31xU=;
+        b=EUgMe8ODWhEQCmF/WDfOUI8XDJxjQK+oLW060tZ5nSiFhSUmHD+phCC+gkNsmcRCBjmfDB
+        /L+t7ITfaj+ySUa9UgPNifs2DQ+28M/0kEFuqOvo65axSwAlvshuaU1kabpSJomWByDTdr
+        vPiwECE6j9XDF7ic5sQgfFBCWC+YW0g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-373-AR-euLuYN9KJREk7kmR0Gw-1; Mon, 19 Apr 2021 16:39:56 -0400
+X-MC-Unique: AR-euLuYN9KJREk7kmR0Gw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8F6048030A0;
+        Mon, 19 Apr 2021 20:39:54 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-116-35.rdu2.redhat.com [10.10.116.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 98D231002EE6;
+        Mon, 19 Apr 2021 20:39:47 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 37EEE22054F; Mon, 19 Apr 2021 16:39:47 -0400 (EDT)
+Date:   Mon, 19 Apr 2021 16:39:47 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Linux fsdevel mailing list <linux-fsdevel@vger.kernel.org>,
+        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        Sergio Lopez <slp@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        linux kernel mailing list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH][v2] dax: Fix missed wakeup during dax entry invalidation
+Message-ID: <20210419203947.GG1472665@redhat.com>
+References: <20210419184516.GC1472665@redhat.com>
+ <CAPcyv4jR5d+-99wVMm9SHxNBOsp0FUi7wzDNsefkZ1oqUZ7joQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210418215426.1086941-1-paul.gortmaker@windriver.com>
+In-Reply-To: <CAPcyv4jR5d+-99wVMm9SHxNBOsp0FUi7wzDNsefkZ1oqUZ7joQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 18, 2021 at 05:54:26PM -0400, Paul Gortmaker wrote:
-> After commit 3662daf02350 ("sched/isolation: Allow "isolcpus=" to skip
-> unknown sub-parameters") the isolcpus= string is walked to skip over what
-> might be any future flag comma separated additions.
+On Mon, Apr 19, 2021 at 12:48:58PM -0700, Dan Williams wrote:
+> On Mon, Apr 19, 2021 at 11:45 AM Vivek Goyal <vgoyal@redhat.com> wrote:
+> >
+> > This is V2 of the patch. Posted V1 here.
+> >
+> > https://lore.kernel.org/linux-fsdevel/20210416173524.GA1379987@redhat.com/
+> >
+> > Based on feedback from Dan and Jan, modified the patch to wake up
+> > all waiters when dax entry is invalidated. This solves the issues
+> > of missed wakeups.
 > 
-> However, there is a logic error, and so as can clearly be seen below, it
-> will ignore its own arg len and search to the end of the bootarg string.
+> Care to send a formal patch with this commentary moved below the --- line?
 > 
->  $ dmesg|grep isol
->  Command line: BOOT_IMAGE=/boot/bzImage isolcpus=xyz pleasedontparseme=1 root=/dev/sda1 ro
->  isolcpus: Skipped unknown flag xyz
->  isolcpus: Invalid flag pleasedontparseme=1 root=/dev/sda1 ro
+> One style fixup below...
 > 
-> This happens because the flag "skip" code does an unconditional
-> increment, which skips over the '\0' check the loop body looks for. If
-> the isolcpus= happens to be the last bootarg, then you'd never notice?
+> >
+> > I am seeing missed wakeups which ultimately lead to a deadlock when I am
+> > using virtiofs with DAX enabled and running "make -j". I had to mount
+> > virtiofs as rootfs and also reduce to dax window size to 256M to reproduce
+> > the problem consistently.
+> >
+> > So here is the problem. put_unlocked_entry() wakes up waiters only
+> > if entry is not null as well as !dax_is_conflict(entry). But if I
+> > call multiple instances of invalidate_inode_pages2() in parallel,
+> > then I can run into a situation where there are waiters on
+> > this index but nobody will wait these.
+> >
+> > invalidate_inode_pages2()
+> >   invalidate_inode_pages2_range()
+> >     invalidate_exceptional_entry2()
+> >       dax_invalidate_mapping_entry_sync()
+> >         __dax_invalidate_entry() {
+> >                 xas_lock_irq(&xas);
+> >                 entry = get_unlocked_entry(&xas, 0);
+> >                 ...
+> >                 ...
+> >                 dax_disassociate_entry(entry, mapping, trunc);
+> >                 xas_store(&xas, NULL);
+> >                 ...
+> >                 ...
+> >                 put_unlocked_entry(&xas, entry);
+> >                 xas_unlock_irq(&xas);
+> >         }
+> >
+> > Say a fault in in progress and it has locked entry at offset say "0x1c".
+> > Now say three instances of invalidate_inode_pages2() are in progress
+> > (A, B, C) and they all try to invalidate entry at offset "0x1c". Given
+> > dax entry is locked, all tree instances A, B, C will wait in wait queue.
+> >
+> > When dax fault finishes, say A is woken up. It will store NULL entry
+> > at index "0x1c" and wake up B. When B comes along it will find "entry=0"
+> > at page offset 0x1c and it will call put_unlocked_entry(&xas, 0). And
+> > this means put_unlocked_entry() will not wake up next waiter, given
+> > the current code. And that means C continues to wait and is not woken
+> > up.
+> >
+> > This patch fixes the issue by waking up all waiters when a dax entry
+> > has been invalidated. This seems to fix the deadlock I am facing
+> > and I can make forward progress.
+> >
+> > Reported-by: Sergio Lopez <slp@redhat.com>
+> > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> > ---
+> >  fs/dax.c |   12 ++++++------
+> >  1 file changed, 6 insertions(+), 6 deletions(-)
+> >
+> > Index: redhat-linux/fs/dax.c
+> > ===================================================================
+> > --- redhat-linux.orig/fs/dax.c  2021-04-16 14:16:44.332140543 -0400
+> > +++ redhat-linux/fs/dax.c       2021-04-19 11:24:11.465213474 -0400
+> > @@ -264,11 +264,11 @@ static void wait_entry_unlocked(struct x
+> >         finish_wait(wq, &ewait.wait);
+> >  }
+> >
+> > -static void put_unlocked_entry(struct xa_state *xas, void *entry)
+> > +static void put_unlocked_entry(struct xa_state *xas, void *entry, bool wake_all)
+> >  {
+> >         /* If we were the only waiter woken, wake the next one */
+> >         if (entry && !dax_is_conflict(entry))
+> > -               dax_wake_entry(xas, entry, false);
+> > +               dax_wake_entry(xas, entry, wake_all);
+> >  }
+> >
+> >  /*
+> > @@ -622,7 +622,7 @@ struct page *dax_layout_busy_page_range(
+> >                         entry = get_unlocked_entry(&xas, 0);
+> >                 if (entry)
+> >                         page = dax_busy_page(entry);
+> > -               put_unlocked_entry(&xas, entry);
+> > +               put_unlocked_entry(&xas, entry, false);
 > 
-> So we only increment if the skipped flag is followed by a comma, as per
-> what the existing "continue" flag matching code does.
+> I'm not a fan of raw true/false arguments because if you read this
+> line in isolation you need to go read put_unlocked_entry() to recall
+> what that argument means. So lets add something like:
 > 
-> Note that isolcpus= was declared deprecated as of v4.15 (b0d40d2b22fe),
-> so we might want to revisit that if we are trying to future-proof it
-> as recently as a year ago for as yet unseen new flags.
-
-Thanks for report the issue.
-
-Is cpuset going to totally replace "isolcpus="?  It seems most hk_flags will be
-handled by nohz_full=, and HK_FLAG_DOMAIN can be done by cpuset.  However it
-seems still the only place to set the new flag HK_FLAG_MANAGED_IRQ.  If one day
-we'll finally obsolete isolcpus= we may need to think about where to put it?
-
-When I looked at it, I also noticed I see no caller to set HK_FLAG_SCHED at
-all.  Is it really used anywhere?
-
-Regarding this patch...
-
+> /**
+>  * enum dax_entry_wake_mode: waitqueue wakeup toggle
+>  * @WAKE_NEXT: entry was not mutated
+>  * @WAKE_ALL: entry was invalidated, or resized
+>  */
+> enum dax_entry_wake_mode {
+>         WAKE_NEXT,
+>         WAKE_ALL,
+> }
 > 
-> Cc: Peter Xu <peterx@redhat.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Fixes: 3662daf02350 ("sched/isolation: Allow "isolcpus=" to skip unknown sub-parameters")
-> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-> 
-> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-> index 5a6ea03f9882..9652dba7e938 100644
-> --- a/kernel/sched/isolation.c
-> +++ b/kernel/sched/isolation.c
-> @@ -188,7 +188,8 @@ static int __init housekeeping_isolcpus_setup(char *str)
->  		}
->  
->  		pr_info("isolcpus: Skipped unknown flag %.*s\n", len, par);
-> -		str++;
-> +		if (str[1] == ',')	/* above continue; match on "flag," */
+> ...and use that as the arg for dax_wake_entry(). So I'd expect this to
+> be a 3 patch series, introduce dax_entry_wake_mode for
+> dax_wake_entry(), introduce the argument for put_unlocked_entry()
+> without changing the logic, and finally this bug fix. Feel free to add
+> 'Fixes: ac401cc78242 ("dax: New fault locking")' in case you feel this
+> needs to be backported.
 
-.. wondering why it is not "str[0] == ','" instead?
+Hi Dan,
 
-Thanks,
+I will make changes as you suggested and post another version.
 
-> +			str++;
->  	}
->  
->  	/* Default behaviour for isolcpus without flags */
-> -- 
-> 2.25.1
-> 
+I am wondering what to do with dax_wake_entry(). It also has a boolean
+parameter wake_all. Should that be converted as well to make use of
+enum dax_entry_wake_mode?
 
--- 
-Peter Xu
+Thanks
+Vivek
 
