@@ -2,154 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6478E364A84
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 21:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 425CA364A8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 21:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241966AbhDSTYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 15:24:07 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:51704 "EHLO mail.ispras.ru"
+        id S241715AbhDST0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 15:26:32 -0400
+Received: from vps-vb.mhejs.net ([37.28.154.113]:48636 "EHLO vps-vb.mhejs.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241686AbhDSTX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 15:23:56 -0400
-Received: from monopod.intra.ispras.ru (unknown [10.10.3.121])
-        by mail.ispras.ru (Postfix) with ESMTPS id 5E0EC4076B4A;
-        Mon, 19 Apr 2021 19:23:23 +0000 (UTC)
-Date:   Mon, 19 Apr 2021 22:23:23 +0300 (MSK)
-From:   Alexander Monakov <amonakov@ispras.ru>
-To:     Joe Perches <joe@perches.com>
-cc:     linux-kernel@vger.kernel.org, Paul Menzel <pmenzel@molgen.mpg.de>,
-        Joerg Roedel <jroedel@suse.de>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        iommu@lists.linux-foundation.org
-Subject: Re: [PATCH v2] iommu/amd: Fix extended features logging
-In-Reply-To: <0362ad3912473d24e5927c0b54ed8fd3648c68a9.camel@perches.com>
-Message-ID: <alpine.LNX.2.20.13.2104192207130.19608@monopod.intra.ispras.ru>
-References: <20210411211330.2252-1-amonakov@ispras.ru> <0362ad3912473d24e5927c0b54ed8fd3648c68a9.camel@perches.com>
-User-Agent: Alpine 2.20.13 (LNX 116 2015-12-14)
+        id S230126AbhDST0b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 15:26:31 -0400
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.93.0.4)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1lYZWp-0001It-Nq; Mon, 19 Apr 2021 21:25:51 +0200
+To:     Pkshih <pkshih@realtek.com>
+Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "johannes@sipsolutions.net" <johannes@sipsolutions.net>,
+        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>
+References: <e2924d81-0e30-2dd0-292b-428fea199484@maciej.szmigiero.name>
+ <846f6166-c570-01fc-6bbc-3e3b44e51327@maciej.szmigiero.name>
+ <87r1jnohq6.fsf@codeaurora.org>
+ <8e0434eb-d15f-065d-2ba7-b50c67877112@maciej.szmigiero.name>
+ <a2003668-5108-27b9-95cd-9e1d5d1aa94d@lwfinger.net>
+ <1617763692.9857.7.camel@realtek.com>
+ <1dc7e487-b97b-8584-47f7-37f3385c7bf9@lwfinger.net>
+ <15737dcf-95ac-1ce6-a681-94ff5db968e4@maciej.szmigiero.name>
+ <c5556a207c5c40ac849c6a0e1919baca@realtek.com>
+ <220c4fe4-c9e1-347a-8cef-cd91d31c56df@maciej.szmigiero.name>
+ <cfcc2988-3f20-3588-2f76-f04d09043811@maciej.szmigiero.name>
+ <35249c6028f645a79c4186c9689ba8aa@realtek.com>
+ <52f89f4f-568e-f04e-5c3e-e31f4a9e0910@lwfinger.net>
+ <56d52ee8681a43aaa20924c5fa047bf0@realtek.com>
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: rtlwifi/rtl8192cu AP mode broken with PS STA
+Message-ID: <584036ac-f3d7-f6a1-3f4a-136c7af10b5a@maciej.szmigiero.name>
+Date:   Mon, 19 Apr 2021 21:25:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="168458499-251955098-1618860203=:19608"
+In-Reply-To: <56d52ee8681a43aaa20924c5fa047bf0@realtek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---168458499-251955098-1618860203=:19608
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
-
-On Sun, 11 Apr 2021, Joe Perches wrote:
-
-> > v2: avoid pr_info(""), change pci_info() to pr_info() for a nicer
-> > solution
-> > 
-> >  drivers/iommu/amd/init.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-> > index 596d0c413473..62913f82a21f 100644
-> > --- a/drivers/iommu/amd/init.c
-> > +++ b/drivers/iommu/amd/init.c
-> > @@ -1929,8 +1929,8 @@ static void print_iommu_info(void)
-> >  		pci_info(pdev, "Found IOMMU cap 0x%hx\n", iommu->cap_ptr);
-> >  
-> > 
-> >  		if (iommu->cap & (1 << IOMMU_CAP_EFR)) {
-> > -			pci_info(pdev, "Extended features (%#llx):",
-> > -				 iommu->features);
-> > +			pr_info("Extended features (%#llx):", iommu->features);
-> > +
-> >  			for (i = 0; i < ARRAY_SIZE(feat_str); ++i) {
-> >  				if (iommu_feature(iommu, (1ULL << i)))
-> >  					pr_cont(" %s", feat_str[i]);
+On 19.04.2021 09:04, Pkshih wrote:
 > 
-> How about avoiding all of this by using a temporary buffer
-> and a single pci_info.
-
-I think it is mostly up to the maintainers, but from my perspective, it's not
-good to conflate such a simple bugfix with the substantial rewrite you are
-proposing (which also increases code complexity).
-
-My two-line patch is a straightforward fix to a bug that people already agreed
-needs to be fixed (just the previous attempt turned out to be insufficient). If
-there's a desire to eliminate pr_cont calls (which I wouldn't support in this
-instance), the rewrite can go in separately from the bugfix.
-
-A major problem with landing a simple bugfix together with a rewrite in a big
-patch is that if a rewrite causes a problem, the whole patch gets reverted and
-we end up without a trivial bugfix.
-
-And, once again: can we please not emit the feature list via pci_info, the line
-is long enough already even without the pci bus location info.
-
-Joerg, are you satisfied with my v2 patch, are you waiting for anything before
-picking it up?
-
-Alexander
-
+>> -----Original Message-----
+>> From: Larry Finger [mailto:larry.finger@gmail.com] On Behalf Of Larry Finger
+>> Sent: Monday, April 19, 2021 9:23 AM
+>> To: Pkshih; Maciej S. Szmigiero
+>> Cc: linux-wireless@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
+>> johannes@sipsolutions.net; kvalo@codeaurora.org
+>> Subject: Re: rtlwifi/rtl8192cu AP mode broken with PS STA
+>>
+>> On 4/18/21 7:32 PM, Pkshih wrote:
+>>>
+>>>> -----Original Message-----
+>>>> From: Maciej S. Szmigiero [mailto:mail@maciej.szmigiero.name]
+>>>> Sent: Sunday, April 18, 2021 2:08 AM
+>>>> To: Pkshih
+>>>> Cc: linux-wireless@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
+>>>> johannes@sipsolutions.net; kvalo@codeaurora.org; Larry Finger
+>>>> Subject: Re: rtlwifi/rtl8192cu AP mode broken with PS STA
+>>>>
+>>>> On 08.04.2021 21:04, Maciej S. Szmigiero wrote:
+>>>>> On 08.04.2021 06:42, Pkshih wrote:
+>>>>>>> -----Original Message-----
+>>>>>>> From: Maciej S. Szmigiero [mailto:mail@maciej.szmigiero.name]
+>>>>>>> Sent: Thursday, April 08, 2021 4:53 AM
+>>>>>>> To: Larry Finger; Pkshih
+>>>>>>> Cc: linux-wireless@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
+>>>>>>> johannes@sipsolutions.net; kvalo@codeaurora.org
+>>>>>>> Subject: Re: rtlwifi/rtl8192cu AP mode broken with PS STA
+>>>>>>>
+>>>>> (...)
+>>>>>>>> Maceij,
+>>>>>>>>
+>>>>>>>> Does this patch fix the problem?
+>>>>>>>
+>>>>>>> The beacon seems to be updating now and STAs no longer get stuck in PS
+>>>>>>> mode.
+>>>>>>> Although sometimes (every 2-3 minutes with continuous 1s interval pings)
+>>>>>>> there is around 5s delay in updating the transmitted beacon - don't know
+>>>>>>> why, maybe the NIC hardware still has the old version in queue?
+>>>>>>
+>>>>>> Since USB device doesn't update every beacon, dtim_count isn't updated neither.
+>>>>>> It leads STA doesn't awake properly. Please try to fix dtim_period=1 in
+>>>>>> hostapd.conf, which tells STA awakes every beacon interval.
+>>>>>
+>>>>> The situation is the same with dtim_period=1.
+>>>>>
+>>>> (...)
+>>>>
+>>>> Ping-Ke,
+>>>> are you going to submit your set_tim() patch so at least the AP mode is
+>>>> usable with PS STAs or are you waiting for a solution to the delayed
+>>>> beacon update issue?
+>>>>
+>>>
+>>> I'm still trying to get a 8192cu, and then I can reproduce the symptom you
+>>> met. However, I'm busy now; maybe I have free time two weeks later.
+>>>
+>>> Do you think I submit the set_tim() patch with your Reported-by and Tested-by first?
+>>
+>> PK,
+>>
+>> I would say yes. Get the fix in as soon as possible.
+>>
 > 
-> Miscellanea:
-> o Move the feat_str and i declarations into the if block for locality
+> I have sent a patch that only 8192cu, which is the only one USB device supported by rtlwifi,
+> schedules a work to update beacon content to wifi card.
 > 
-> ---
->  drivers/iommu/amd/init.c | 29 ++++++++++++++++++-----------
->  1 file changed, 18 insertions(+), 11 deletions(-)
+> https://lore.kernel.org/linux-wireless/20210419065956.6085-1-pkshih@realtek.com/T/#u
+
+Thanks, I have tested the patch and it seems to work as good as the previous one.
+It definitely improves things.
+
+However, it would be great to eventually fix the update delay issue, too.
+It looks to me like possibly just a missing beacon queue flush.
+
+> --
+> Ping-Ke
 > 
-> diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-> index 321f5906e6ed..0d219044726e 100644
-> --- a/drivers/iommu/amd/init.c
-> +++ b/drivers/iommu/amd/init.c
-> @@ -1943,30 +1943,37 @@ static int __init iommu_init_pci(struct amd_iommu *iommu)
->  
->  static void print_iommu_info(void)
->  {
-> -	static const char * const feat_str[] = {
-> -		"PreF", "PPR", "X2APIC", "NX", "GT", "[5]",
-> -		"IA", "GA", "HE", "PC"
-> -	};
->  	struct amd_iommu *iommu;
->  
->  	for_each_iommu(iommu) {
->  		struct pci_dev *pdev = iommu->dev;
-> -		int i;
->  
->  		pci_info(pdev, "Found IOMMU cap 0x%x\n", iommu->cap_ptr);
->  
->  		if (iommu->cap & (1 << IOMMU_CAP_EFR)) {
-> -			pci_info(pdev, "Extended features (%#llx):",
-> -				 iommu->features);
-> +			static const char * const feat_str[] = {
-> +				"PreF", "PPR", "X2APIC", "NX", "GT", "[5]",
-> +				"IA", "GA", "HE", "PC"
-> +			};
-> +			int i;
-> +			char features[128] = "";
-> +			int len = 0;
-> +
->  			for (i = 0; i < ARRAY_SIZE(feat_str); ++i) {
-> -				if (iommu_feature(iommu, (1ULL << i)))
-> -					pr_cont(" %s", feat_str[i]);
-> +				if (!iommu_feature(iommu, BIT_ULL(i)))
-> +					continue;
-> +				len += scnprintf(features + len,
-> +						 sizeof(features) - len,
-> +						 " %s", feat_str[i]);
->  			}
->  
->  			if (iommu->features & FEATURE_GAM_VAPIC)
-> -				pr_cont(" GA_vAPIC");
-> +				len += scnprintf(features + len,
-> +						 sizeof(features) - len,
-> +						 " %s", "GA_vPIC");
->  
-> -			pr_cont("\n");
-> +			pci_info(pdev, "Extended features (%#llx):%s\n",
-> +				 iommu->features, features);
->  		}
->  	}
->  	if (irq_remapping_enabled) {
-> 
-> 
-> 
---168458499-251955098-1618860203=:19608--
+
+Maciej
