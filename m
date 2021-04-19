@@ -2,151 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE264364539
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75C8364542
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240469AbhDSNo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:44:58 -0400
-Received: from mail-eopbgr1310090.outbound.protection.outlook.com ([40.107.131.90]:6334
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S241542AbhDSNoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:44:15 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C861wjvSreBd6Vbt8gtPrkl0pD4vqz/MuToaUrKNYRi2pONP9/9kPR0AglFXWCOdPSAwxSZ1q2GWgbbTz2pg5OobIx8c33UQN5ZpwJ4UIzlOQQnuUF0wovjgh7qNu2m2eX0Y9R2otV5y7qczCccUOYugdh6+OK6SFxVQHOgVqOYD4VBhBpXrKXQwZgB4tIm3TMl0Er158S9YjAswaVUNE9kXo0vscAVnpP3OODbng9QgN6Y7DTcxLk9XzI3V2vNnxlLenJjSstgVGiVRPJrtqJg4K//UyAjdoU8v2Vvex8wFWNDin0awezk7JQhX+rIZnNLpiA0zEswQ1NCzVuFDSQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+8xcmvTKtjW25KjhvyCRyZP/mfag51RufBnt90cn2HA=;
- b=LwoItBRqCvI6tmUgEt1EhsV/uwhGOb9ozbV1y7RNZS/I2ed2vOjjOxufCzYHwm6Di5OlAGSXqp/wbK1IV72EwpTsogAgiae4ftqW7WDPDnOSLwOt7S6jAW4FwFy5PDGseRtS96SI2TwSrr52RIqh/7SNXUd0VyfGbsd/nfg2v7eBxdui7oxGME0PKFqNAgxkI3tHrOqpj5Hs17fViYESVzwVNOarGuPPx7TKqBZzktx20jLexwQEchBggvsjzjZC9LN9DSpKjBbLxfkwW6+xcJbBbruvRGURxBfjBwg1tkANSCsSO/iUX5sFy0ZPCoe6VJxwR+At4KorMpWqkBD/DQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+8xcmvTKtjW25KjhvyCRyZP/mfag51RufBnt90cn2HA=;
- b=h/z246E4hTeBD9mnNtt6utgDcDCuj4Id+aAGk2/vUY/oobcHEkJY5WFLz2WgI2HhzJmnRVVKwxKYxZdC+NPOEvqPgfMIjVNvMTFrrHMz2AwjVRHhCElx0ZL11dzZTDXMqYtXO5OwEpWsaYrKYQHK5w2lAJstm5J95s/LcoJBWyc=
-Received: from PSAP153MB0422.APCP153.PROD.OUTLOOK.COM (2603:1096:301:38::12)
- by PSAP153MB0407.APCP153.PROD.OUTLOOK.COM (2603:1096:301:3f::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.11; Mon, 19 Apr
- 2021 13:43:37 +0000
-Received: from PSAP153MB0422.APCP153.PROD.OUTLOOK.COM
- ([fe80::9921:b743:c0db:6f50]) by PSAP153MB0422.APCP153.PROD.OUTLOOK.COM
- ([fe80::9921:b743:c0db:6f50%7]) with mapi id 15.20.4087.013; Mon, 19 Apr 2021
- 13:43:37 +0000
-From:   Shyam Prasad <Shyam.Prasad@microsoft.com>
-To:     Salvatore Bonaccorso <carnil@debian.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, pc <pc@cjr.nz>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Aurelien Aptel <aaptel@suse.com>,
-        Steven French <Steven.French@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: RE: [EXTERNAL] Re: [PATCH 4.19 013/247] cifs: Set
- CIFS_MOUNT_USE_PREFIX_PATH flag on setting cifs_sb->prepath.
-Thread-Topic: [EXTERNAL] Re: [PATCH 4.19 013/247] cifs: Set
- CIFS_MOUNT_USE_PREFIX_PATH flag on setting cifs_sb->prepath.
-Thread-Index: AQHXKtl3oEpPTTCadkuXKYVCCMdGI6qnf4aAgAACKFCAABQAgIAC7L2AgAYL/YCACbwcAIABHItwgACBRYCAAAUg4A==
-Date:   Mon, 19 Apr 2021 13:43:37 +0000
-Message-ID: <PSAP153MB04225D4C5A61E003B196570994499@PSAP153MB0422.APCP153.PROD.OUTLOOK.COM>
-References: <20210301161031.684018251@linuxfoundation.org>
- <20210301161032.337414143@linuxfoundation.org> <YGxIMCsclG4E1/ck@eldamar.lan>
- <YGxlJXv/+IPaErUr@kroah.com>
- <PSAP153MB04220682838AC9D025414B6094769@PSAP153MB0422.APCP153.PROD.OUTLOOK.COM>
- <YGx3u01Wa/DDnjlV@eldamar.lan> <YG7r0UaivWZL762N@eldamar.lan>
- <YHP+XbVWfGv21EL1@kroah.com> <YHwo5prs4MbXEzER@eldamar.lan>
- <PSAP153MB04224202F4A2BE668533F94794499@PSAP153MB0422.APCP153.PROD.OUTLOOK.COM>
- <YH2EBzOKkg4kGoQn@eldamar.lan>
-In-Reply-To: <YH2EBzOKkg4kGoQn@eldamar.lan>
-Accept-Language: en-IN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=20cfd1ea-0d45-4c94-b5a5-98f19dca236e;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-04-19T13:40:35Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: debian.org; dkim=none (message not signed)
- header.d=none;debian.org; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [2404:f801:8028:1:60f6:ca47:5dfc:b1d0]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ce5039ac-ab5e-4a4a-e6d9-08d903392285
-x-ms-traffictypediagnostic: PSAP153MB0407:
-x-ms-exchange-transport-forked: True
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-microsoft-antispam-prvs: <PSAP153MB0407B4E12FA10312E06F8FBD94499@PSAP153MB0407.APCP153.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: vf5qlAgQjL/q+xj52vVa7z4iQFEXqbezFfa7JMqFKBDdZIahHzag+YAODEKW6hwHlu2cUPM02szdBOhOOSYsyDKvXFGrMmKiY/Dbf9oyWbq0drEMIHFkKeJLlBAWgy0KiL0Fr4Va+ay7+y6PpAPSgtrY86tMlUUVRIq9TUytVljkP+Iys5ozYlRkIocRdEJ6Qn78WiHD8mRf0IYRD/Wn0ey9ZSt/RBfVM+Gbf/xnqNE3NCuMyc6BZtVAIlFjySDBrR0O1esJURDch0uxBt5NP0W2pSgoEXdKqA5vJiFu89ynpRK9R1EaB8oV7MoiAFBDPX6CzbrZZOptsNgbQnn3MvQSrHubaWt0s04c98RXvpioREevc0D9ieeYJsYOECzT4SjBwSjY7fLSpShExk3XG4A8X9OAtLCtOLON/Ycyhgn0QwVTasf4RZrKfCy2XEJCpwsZ5555ilmt8PhV4XZr2gjzT5xNPqotoQVW03oFAe+4CarpC7NImgtSsyvyuhxj03nygRDRha1+eCwEut8vOgXPFlEyXOeXsd+6kldaWbymikjZ7UWDmWtsSllRV19crO8spka2wanhN+0fFuyjo7L4H8Ezbl/7Se3xonb781I=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PSAP153MB0422.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(2906002)(316002)(10290500003)(52536014)(4744005)(8676002)(478600001)(4326008)(55016002)(5660300002)(54906003)(8990500004)(7696005)(82950400001)(9686003)(53546011)(82960400001)(83380400001)(38100700002)(186003)(122000001)(6506007)(71200400001)(6916009)(76116006)(66946007)(64756008)(66446008)(66556008)(66476007)(33656002)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?YZ06ZyR4F+43aRWxnVl/nGdkdSEbHsn8Sw52AH8mbmfCh4vVpOVs78t0JtEf?=
- =?us-ascii?Q?jmL6wkric/iSovvHq44namnwgRbVq+hs+Axae0qEJXXDSs+NF04u0+4Ot/w6?=
- =?us-ascii?Q?sVXrL5p2jgEmuDl99/J/etbW2gNCDVbI738iJPi4y5XNvi8HlX7XxNFEqBfC?=
- =?us-ascii?Q?xsOsSKLy/1bxz4SatZWvlDFP1ngQ5DbVEzBuJprIOPgxDHZuVQQ5JI01Rb2E?=
- =?us-ascii?Q?rc9KzIqrUFIE89aMNfmisZgaIfAfMlIzM26UPnZDzzzINPwWZX4mZB5wz7Zu?=
- =?us-ascii?Q?t6G3omOcmmZJMyTKX8uKugnQZNGnMEnTjomR9Nc5d+7/RgiugIu1zMtylBwf?=
- =?us-ascii?Q?FGzGfofWbD1uawTkillfmT7GiVru1Jzqqku8Qg49OsDPIrtoB4mnAGrMduyg?=
- =?us-ascii?Q?raBRhCrFdrgjPcDdXBCBZZqjNe2XlFuaffOsTFzHabLbERrOZXkoqIT4CU76?=
- =?us-ascii?Q?1PrthyzUbVHppIUotTP6pPRYgIEgz1MxQPCl23G1JYPoBqCoSzCaPN2dAVyS?=
- =?us-ascii?Q?rTMRJ+ebI3K/du5iVX7QGTqe/tmQWsjU5F36I9+1Z90Baq1k1fGa9foA8QfG?=
- =?us-ascii?Q?+y8l7nrvK9n8XfHq8B2ZhRaBRIkb6nVCQxwPOJpY699q4q70yng7wFlh3yQp?=
- =?us-ascii?Q?Co4XV6ubUXRfo+Rq2vo3yjYE1QcGLz2gHNC3lY9uqvwjST0yvw1PIG+E+v1v?=
- =?us-ascii?Q?69tiMCla2fbgUD5dVxwBw+gL0exbE0HeBl9xgbTh3ouG6MQTmVRDAK1Mvs/l?=
- =?us-ascii?Q?CbEeB7LsIBmMqTC4XnTrZzLXlSpNKCIeGtFfYplfaGwMZ/2xwatEefbfvfMC?=
- =?us-ascii?Q?lXQ2d7xpvn5Kyd8dJcoLSwxOwbsIU/udHzNJ4N3bATkwJGmshM6v1IIQA8z0?=
- =?us-ascii?Q?LnStBxsMR201T9yo+0HFcxjvTcG0OhGVIU6k7w+ELdKLbjwo+iHD7HgAT0Wa?=
- =?us-ascii?Q?SWMxJ+f6au/CrsiB6Abjixy/N+vWv7R2wdOnoIu7QHCll5VUufhHzQmFdroz?=
- =?us-ascii?Q?FDkvxMtbwI6Q1qJ8Mn73qFnMvVzUpvXpGKOpXoGEOKEEtevBWZlAW+LzC2Cx?=
- =?us-ascii?Q?qm6tSmVpmaEAmoHKGV0XpYomnkrFgmXlqjd2MPIrKg/sB5u/MgOkzbFhCJHh?=
- =?us-ascii?Q?1YaJDIp9cFdsKCAn3K9HhwHaKwI6+sWURP4b83wAKRAfbazCaQc923vtcV/v?=
- =?us-ascii?Q?fvazl+UiT3M3gxDzNeVgSwb/ivDh7Jrf7FXcq6AOClN26xr6Y2ArGgAou3im?=
- =?us-ascii?Q?7U+3Ks32yuH0+D2DnMkXsRVveccD3imxQLYS7b81EijooaUdQ6pMoywuwy1E?=
- =?us-ascii?Q?gc4mbHKfJuFo8VOL+eY0A5AM2DcjoN5zLmiOF5TlgAXdfBxdwOGkF5y74Co7?=
- =?us-ascii?Q?bUv8QAs=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S239923AbhDSNvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:51:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37879 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232690AbhDSNvA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:51:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618840230;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3mWWrs07VeyhsaVD9xqLJ/6yk16w935A3cPLp1luCFU=;
+        b=KzQZ0fXD7APj9tx5kJUkvLaL0yRU7gbI6A/pz1pX9BZCKgjgaP+eU337cohjgjkjZuL1rb
+        g2kHDTNC96Oq69YfCLHSLxz+NCZCPuUkP2QB9aroQevE9307eXbq+vdrVK0LGy4m908S+E
+        iGXjexfzgnxTX4BdTkhYTBoHtqHDhR4=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-181-WpE4FOjYNHuMhe7rxoZLlw-1; Mon, 19 Apr 2021 09:50:28 -0400
+X-MC-Unique: WpE4FOjYNHuMhe7rxoZLlw-1
+Received: by mail-ed1-f72.google.com with SMTP id c15-20020a056402100fb029038518e5afc5so3674287edu.18
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 06:50:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3mWWrs07VeyhsaVD9xqLJ/6yk16w935A3cPLp1luCFU=;
+        b=fMb4uehpnKt6qrOSjzRqoWul/KjrEt7UldBzNqZvq/pbTplcV2hdkzc+PeaHhGz9xd
+         KqkV0k8wfHoRP/nk5yvSy/cLN6P4CLyhRYu2AGwYZC4GqVJ9/wkDT0CF/89ebr1Av3AU
+         gBvzTwC2TPBS7udQxqcsxSXOHTTm6m7/kO+PZitOIJ8Dc/f292/2nV6evUeDdswvnSmc
+         DT+wrqEgL0ztFDa1L9LT75JwpJFcW9LOe2QYKLF1Pcm8OXdVtI04oeT2Rv1qyVRnWVie
+         IIVbrT0sde2oKmbcNRNDBfEW805f9S098HVTITkpNH+Hgpjv1NbGzA0ASG5ZLIsAsTPd
+         FrMQ==
+X-Gm-Message-State: AOAM532Y/HcWaEl0c+7XiLeBitExDYaKIwp/pdv2Bujkc8uudsGAertW
+        wvwsHFcT5kdaKQaRkjL03+gSXMTDN0Nx2WDm/gvQH+ibfwCOYwpbzVG1W7DpdqvnCh2p2MQESOA
+        yevT+u8hEH15++5PbnYgwOrvK
+X-Received: by 2002:a05:6402:2794:: with SMTP id b20mr8093105ede.48.1618840227375;
+        Mon, 19 Apr 2021 06:50:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxQCaelkV2XL8Vc+Z3L0QFp3k/2BYZeNmoNVKV3upxEGfeYl9ST9RLvoIxzfo1AcRAtj73fWA==
+X-Received: by 2002:a05:6402:2794:: with SMTP id b20mr8093080ede.48.1618840227102;
+        Mon, 19 Apr 2021 06:50:27 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id 16sm10597529ejw.0.2021.04.19.06.50.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Apr 2021 06:50:26 -0700 (PDT)
+To:     Wanpeng Li <kernellwp@gmail.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ben Gardon <bgardon@google.com>
+References: <20210402005658.3024832-1-seanjc@google.com>
+ <20210402005658.3024832-10-seanjc@google.com>
+ <CANRm+Cwt9Xs=13r9E4YWOhcE6oEJXmVrkKrv_wQ5jMUkY8+Stw@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v2 09/10] KVM: Don't take mmu_lock for range invalidation
+ unless necessary
+Message-ID: <2a7670e4-94c0-9f35-74de-a7d5b1504ced@redhat.com>
+Date:   Mon, 19 Apr 2021 15:50:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PSAP153MB0422.APCP153.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: ce5039ac-ab5e-4a4a-e6d9-08d903392285
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Apr 2021 13:43:37.5143
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6+cbPC8kLr+RZnnUI4qGFehhb4OfG1X7JE4e4q5MLJPbe0yciw/NUlCFZcBAGBYPTRm2BOpWvd0HvkelsT979A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PSAP153MB0407
+In-Reply-To: <CANRm+Cwt9Xs=13r9E4YWOhcE6oEJXmVrkKrv_wQ5jMUkY8+Stw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I think so; Paulo can confirm.
+On 19/04/21 10:49, Wanpeng Li wrote:
+> I saw this splatting:
+> 
+>   ======================================================
+>   WARNING: possible circular locking dependency detected
+>   5.12.0-rc3+ #6 Tainted: G           OE
+>   ------------------------------------------------------
+>   qemu-system-x86/3069 is trying to acquire lock:
+>   ffffffff9c775ca0 (mmu_notifier_invalidate_range_start){+.+.}-{0:0},
+> at: __mmu_notifier_invalidate_range_end+0x5/0x190
+> 
+>   but task is already holding lock:
+>   ffffaff7410a9160 (&kvm->mmu_notifier_slots_lock){.+.+}-{3:3}, at:
+> kvm_mmu_notifier_invalidate_range_start+0x36d/0x4f0 [kvm]
 
------Original Message-----
-From: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com> On Behalf Of Sa=
-lvatore Bonaccorso
-Sent: Monday, April 19, 2021 6:52 PM
-To: Shyam Prasad <Shyam.Prasad@microsoft.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>; pc <pc@cjr.nz>; linux-=
-kernel@vger.kernel.org; stable@vger.kernel.org; Aurelien Aptel <aaptel@suse=
-.com>; Steven French <Steven.French@microsoft.com>; Sasha Levin <sashal@ker=
-nel.org>
-Subject: Re: [EXTERNAL] Re: [PATCH 4.19 013/247] cifs: Set CIFS_MOUNT_USE_P=
-REFIX_PATH flag on setting cifs_sb->prepath.
+I guess it is possible to open-code the wait using a readers count and a
+spinlock (see patch after signature).  This allows including the
+rcu_assign_pointer in the same critical section that checks the number
+of readers.  Also on the plus side, the init_rwsem() is replaced by
+slightly nicer code.
 
-Hi Shyam,
+IIUC this could be extended to non-sleeping invalidations too, but I
+am not really sure about that.
 
-On Mon, Apr 19, 2021 at 05:48:24AM +0000, Shyam Prasad wrote:
-> <Including Paulo in this email thread>
->=20
-> Hi Salvatore,
->=20
-> Attached is a proposed fix from Paulo for older kernels.=20
-> Can you please confirm that this works for you too?=20
+There are some issues with the patch though:
 
-So just to be clear, first apply again a738c93fb1c1 and then your additiona=
-l patch on top?
+- I am not sure if this should be a raw spin lock to avoid the same issue
+on PREEMPT_RT kernel.  That said the critical section is so tiny that using
+a raw spin lock may make sense anyway
 
-Regards,
-Salvatore
+- this loses the rwsem fairness.  On the other hand, mm/mmu_notifier.c's
+own interval-tree-based filter is also using a similar mechanism that is
+likewise not fair, so it should be okay.
+
+Any opinions?  For now I placed the change below in kvm/queue, but I'm
+leaning towards delaying this optimization to the next merge window.
+
+Paolo
+
+diff --git a/Documentation/virt/kvm/locking.rst b/Documentation/virt/kvm/locking.rst
+index 8f5d5bcf5689..e628f48dfdda 100644
+--- a/Documentation/virt/kvm/locking.rst
++++ b/Documentation/virt/kvm/locking.rst
+@@ -16,12 +16,11 @@ The acquisition orders for mutexes are as follows:
+  - kvm->slots_lock is taken outside kvm->irq_lock, though acquiring
+    them together is quite rare.
+  
+-- The kvm->mmu_notifier_slots_lock rwsem ensures that pairs of
++- kvm->mn_active_invalidate_count ensures that pairs of
+    invalidate_range_start() and invalidate_range_end() callbacks
+-  use the same memslots array.  kvm->slots_lock is taken outside the
+-  write-side critical section of kvm->mmu_notifier_slots_lock, so
+-  MMU notifiers must not take kvm->slots_lock.  No other write-side
+-  critical sections should be added.
++  use the same memslots array.  kvm->slots_lock is taken on the
++  waiting side in install_new_memslots, so MMU notifiers must not
++  take kvm->slots_lock.
+  
+  On x86:
+  
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 76b340dd6981..44a4a0c5148a 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -472,11 +472,15 @@ struct kvm {
+  #endif /* KVM_HAVE_MMU_RWLOCK */
+  
+  	struct mutex slots_lock;
+-	struct rw_semaphore mmu_notifier_slots_lock;
+  	struct mm_struct *mm; /* userspace tied to this vm */
+  	struct kvm_memslots __rcu *memslots[KVM_ADDRESS_SPACE_NUM];
+  	struct kvm_vcpu *vcpus[KVM_MAX_VCPUS];
+  
++	/* Used to wait for completion of MMU notifiers.  */
++	spinlock_t mn_invalidate_lock;
++	unsigned long mn_active_invalidate_count;
++	struct rcuwait mn_memslots_update_rcuwait;
++
+  	/*
+  	 * created_vcpus is protected by kvm->lock, and is incremented
+  	 * at the beginning of KVM_CREATE_VCPU.  online_vcpus is only
+@@ -662,7 +666,7 @@ static inline struct kvm_memslots *__kvm_memslots(struct kvm *kvm, int as_id)
+  	as_id = array_index_nospec(as_id, KVM_ADDRESS_SPACE_NUM);
+  	return srcu_dereference_check(kvm->memslots[as_id], &kvm->srcu,
+  				      lockdep_is_held(&kvm->slots_lock) ||
+-				      lockdep_is_held(&kvm->mmu_notifier_slots_lock) ||
++				      READ_ONCE(kvm->mn_active_invalidate_count) ||
+  				      !refcount_read(&kvm->users_count));
+  }
+  
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index ff9e95eb6960..cdaa1841e725 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -624,7 +624,7 @@ static void kvm_mmu_notifier_change_pte(struct mmu_notifier *mn,
+  	 * otherwise, mmu_notifier_count is incremented unconditionally.
+  	 */
+  	if (!kvm->mmu_notifier_count) {
+-		lockdep_assert_held(&kvm->mmu_notifier_slots_lock);
++		WARN_ON(!READ_ONCE(kvm->mn_active_invalidate_count));
+  		return;
+  	}
+  
+@@ -689,10 +689,13 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
+  	 * The complexity required to handle conditional locking for this case
+  	 * is not worth the marginal benefits, the VM is likely doomed anyways.
+  	 *
+-	 * Pairs with the up_read in range_end().
++	 * Pairs with the decrement in range_end().
+  	 */
+-	if (blockable)
+-		down_read(&kvm->mmu_notifier_slots_lock);
++	if (blockable) {
++		spin_lock(&kvm->mn_invalidate_lock);
++		kvm->mn_active_invalidate_count++;
++		spin_unlock(&kvm->mn_invalidate_lock);
++	}
+  
+  	__kvm_handle_hva_range(kvm, &hva_range);
+  
+@@ -735,9 +738,20 @@ static void kvm_mmu_notifier_invalidate_range_end(struct mmu_notifier *mn,
+  
+  	__kvm_handle_hva_range(kvm, &hva_range);
+  
+-	/* Pairs with the down_read in range_start(). */
+-	if (blockable)
+-		up_read(&kvm->mmu_notifier_slots_lock);
++	/* Pairs with the increment in range_start(). */
++	if (blockable) {
++		bool wake;
++		spin_lock(&kvm->mn_invalidate_lock);
++		wake = (--kvm->mn_active_invalidate_count == 0);
++		spin_unlock(&kvm->mn_invalidate_lock);
++
++		/*
++		 * There can only be one waiter, since the wait happens under
++		 * slots_lock.
++		 */
++		if (wake)
++			rcuwait_wake_up(&kvm->mn_memslots_update_rcuwait);
++	}
+  
+  	BUG_ON(kvm->mmu_notifier_count < 0);
+  }
+@@ -951,7 +965,9 @@ static struct kvm *kvm_create_vm(unsigned long type)
+  	mutex_init(&kvm->lock);
+  	mutex_init(&kvm->irq_lock);
+  	mutex_init(&kvm->slots_lock);
+-	init_rwsem(&kvm->mmu_notifier_slots_lock);
++	spin_lock_init(&kvm->mn_invalidate_lock);
++	rcuwait_init(&kvm->mn_memslots_update_rcuwait);
++
+  	INIT_LIST_HEAD(&kvm->devices);
+  
+  	BUILD_BUG_ON(KVM_MEM_SLOTS_NUM > SHRT_MAX);
+@@ -1073,15 +1089,17 @@ static void kvm_destroy_vm(struct kvm *kvm)
+  #if defined(CONFIG_MMU_NOTIFIER) && defined(KVM_ARCH_WANT_MMU_NOTIFIER)
+  	mmu_notifier_unregister(&kvm->mmu_notifier, kvm->mm);
+  	/*
+-	 * Reset the lock used to prevent memslot updates between MMU notifier
+-	 * invalidate_range_start() and invalidate_range_end().  At this point,
+-	 * no more MMU notifiers will run and pending calls to ...start() have
+-	 * completed.  But, the lock could still be held if KVM's notifier was
+-	 * removed between ...start() and ...end().  No threads can be waiting
+-	 * on the lock as the last reference on KVM has been dropped.  If the
+-	 * lock is still held, freeing memslots will deadlock.
++	 * At this point, pending calls to invalidate_range_start()
++	 * have completed but no more MMU notifiers will run, so
++	 * mn_active_invalidate_count may remain unbalanced.
++	 * No threads can be waiting in install_new_memslots as the
++	 * last reference on KVM has been dropped, but freeing
++	 * memslots will deadlock without manual intervention.
+  	 */
+-	init_rwsem(&kvm->mmu_notifier_slots_lock);
++	spin_lock(&kvm->mn_invalidate_lock);
++	kvm->mn_active_invalidate_count = 0;
++	WARN_ON(rcuwait_active(&kvm->mn_memslots_update_rcuwait));
++	spin_unlock(&kvm->mn_invalidate_lock);
+  #else
+  	kvm_arch_flush_shadow_all(kvm);
+  #endif
+@@ -1333,9 +1351,22 @@ static struct kvm_memslots *install_new_memslots(struct kvm *kvm,
+  	WARN_ON(gen & KVM_MEMSLOT_GEN_UPDATE_IN_PROGRESS);
+  	slots->generation = gen | KVM_MEMSLOT_GEN_UPDATE_IN_PROGRESS;
+  
+-	down_write(&kvm->mmu_notifier_slots_lock);
++	/*
++	 * This cannot be an rwsem because the MMU notifier must not run
++	 * inside the critical section.  A sleeping rwsem cannot exclude
++	 * that.
++	 */
++	spin_lock(&kvm->mn_invalidate_lock);
++	prepare_to_rcuwait(&kvm->mn_memslots_update_rcuwait);
++	while (kvm->mn_active_invalidate_count) {
++		set_current_state(TASK_UNINTERRUPTIBLE);
++		spin_unlock(&kvm->mn_invalidate_lock);
++		schedule();
++		spin_lock(&kvm->mn_invalidate_lock);
++	}
++	finish_rcuwait(&kvm->mn_memslots_update_rcuwait);
+  	rcu_assign_pointer(kvm->memslots[as_id], slots);
+-	up_write(&kvm->mmu_notifier_slots_lock);
++	spin_unlock(&kvm->mn_invalidate_lock);
+  
+  	synchronize_srcu_expedited(&kvm->srcu);
+  
+
