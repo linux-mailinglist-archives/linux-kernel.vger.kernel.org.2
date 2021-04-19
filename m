@@ -2,86 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71BBA363995
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 05:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B153639A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 05:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237348AbhDSDFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 23:05:04 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:47927 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231921AbhDSDE7 (ORCPT
+        id S237334AbhDSDMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 23:12:03 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:42660 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229845AbhDSDMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 23:04:59 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 403602393;
-        Sun, 18 Apr 2021 23:04:30 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Sun, 18 Apr 2021 23:04:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=PrOcHHFjzXKX2Ja1y
-        caapbHixLxJ7oQd8IfTQ5NlARA=; b=CAePTiRRNxkbokWAAOxtUpQdP5l6h+mav
-        Ofx1reP35MXo22Cfw/X0lLEYVh5QdcIyPmvvQkWCj1aTJ+rXkFsOtkiSCfuF4afm
-        r1mZsGFN8qCbNqf7gFDhCsip8AyTU/UdFjGDJgyH/0+GCzXohDQBw1sLT4SDgXw7
-        iP9uejYCxR2YtaH44iHME20FURg/O5geLFOykb1bvqc+eO7E/uifY8PNS+YCvGKP
-        sHTHVwN+oQdrf1pfXGqUtmC7g75gGb0xD4o1wFUy1yrQ3cDAiQxtbmIfrDUm837R
-        +On0NOKlHXFS/yEKUZXAWu5cni8mC1s+OoPqSaSdNMdoboaas9/Uw==
-X-ME-Sender: <xms:PPN8YNToraQIyQHnFtTVFAmxC6swwMMdVKTQyeCtUr3B6dyjAuqtvA>
-    <xme:PPN8YGy2oCBPoypb1tTY0GoC-X78XLAiUZ2EjrnaFRSX119gsp0SZ0lNaJbHXoQpe
-    OXLi7AwR8gMtqL5bso>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddtvddguddtudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffoggfgsedtkeertd
-    ertddtnecuhfhrohhmpefnuhhkvgcuffculfhonhgvshcuoehluhhkvgeslhhjohhnvghs
-    rdguvghvqeenucggtffrrghtthgvrhhnpeffgffhheehkefgtddtiefhudegteekudeihf
-    dvudejudeigfdtheeijeetvdejvdenucfkphepudduiedrvdehuddrudelfedrudelieen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehluhhkvg
-    eslhhjohhnvghsrdguvghv
-X-ME-Proxy: <xmx:PPN8YC0MQxO51LhyO8a7eZKOwDbJCPWU8njfEJMiMmbGb6bnt7lqEA>
-    <xmx:PPN8YFAJ3PQhVEFcL6Uo9d0aItoKidj0101AFAZCfZUB38kIhG1lLQ>
-    <xmx:PPN8YGibESQL-YQReBlG9Yl5u08u_-hoGA-y8sZluXVJoE46z2uKlw>
-    <xmx:PfN8YBUrd9dTG1M1CICPXPn9yZQGOxFY5b7cUQcTbrNLdfD268LFCg>
-Received: from fedora.. (unknown [116.251.193.196])
-        by mail.messagingengine.com (Postfix) with ESMTPA id AA9AA1080066;
-        Sun, 18 Apr 2021 23:04:24 -0400 (EDT)
-From:   Luke D Jones <luke@ljones.dev>
-To:     tiwai@suse.com
-Cc:     perex@perex.cz, kailang@realtek.com, jhp@endlessos.org,
-        kai.heng.feng@canonical.com, hui.wang@canonical.com,
-        chenhuacai@kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, Luke D Jones <luke@ljones.dev>
-Subject: [PATCH] ALSA: hda/realtek: GA503 use same quirks as GA401
-Date:   Mon, 19 Apr 2021 15:04:11 +1200
-Message-Id: <20210419030411.28304-1-luke@ljones.dev>
-X-Mailer: git-send-email 2.31.1
+        Sun, 18 Apr 2021 23:12:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618801892; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Ym5p8FkKGFp0PUrH5hq1AtaHT8k5PkOb5eh8el/aH/k=;
+ b=sPQSyPYReLUdgTVXr1aMKeiBOc82MI3B943M4usgX6l/S6lcyO8rvDWd25uL52zESFfGzgZn
+ dA+66wM5wJdL6F4CnnPlcq0LMbt42kPeWAHRYTtQ+ZrwEsLEoDNvk9wKQAs9FWDw9rMhjApa
+ f1KuA+rFF/RsVP+RhLXBjYjdQC8=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 607cf4e4a817abd39a1b9547 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 19 Apr 2021 03:11:32
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5EE11C4323A; Mon, 19 Apr 2021 03:11:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 13C79C433D3;
+        Mon, 19 Apr 2021 03:11:29 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 19 Apr 2021 08:41:29 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Will Deacon <will@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     akhilpo@codeaurora.org, iommu@lists.linux-foundation.org,
+        jcrouse@codeaurora.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robdclark@gmail.com, robin.murphy@arm.com,
+        Jordan Crouse <jordan@cosmicpenguin.net>
+Subject: Re: [PATCHv2 2/2] iommu/arm-smmu-qcom: Move the adreno smmu specific
+ impl earlier
+In-Reply-To: <118ced3153cd7fa5e8c16e5f0e2d5d19@codeaurora.org>
+References: <YDlIrjkfv16o4Nu3@builder.lan>
+ <20210227135321.420-1-saiprakash.ranjan@codeaurora.org>
+ <YEqn1SjsGgK0V8K4@builder.lan>
+ <8cfaed1915ad6dd0c34ac7eb2391b410@codeaurora.org>
+ <727fa9fe2e644f88ba35c2877d71788e@codeaurora.org>
+ <20210325150506.GD15172@willie-the-truck>
+ <118ced3153cd7fa5e8c16e5f0e2d5d19@codeaurora.org>
+Message-ID: <daaa67d41f2760945ed3bf6ced11891f@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The GA503 has almost exactly the same default setup as the GA401
-model with the same issues. The GA401 quirks solve all the issues
-so we will use the full quirk chain.
+On 2021-04-05 14:12, Sai Prakash Ranjan wrote:
+> Hi Bjorn,
+> 
+> On 2021-03-25 20:35, Will Deacon wrote:
+>> On Thu, Mar 25, 2021 at 01:10:12PM +0530, Sai Prakash Ranjan wrote:
+> 
+> <snip>...
+> 
+>>> 
+>>> I think there is consensus on this series. I can resend if required 
+>>> but it
+>>> still applies cleanly, let me know if you have any comments?
+>> 
+>> Please resend with the bindings patch, and I'd like Bjorn's Ack as 
+>> well.
+>> 
+> 
+> Can we have your review/ack in case there is nothing pending here?
+> 
 
-Signed-off-by: Luke D Jones <luke@ljones.dev>
----
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+Gentle Ping!
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 290645516313..9a5546df1e6a 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8019,6 +8019,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x1ccd, "ASUS X555UB", ALC256_FIXUP_ASUS_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x1d4e, "ASUS TM420", ALC256_FIXUP_ASUS_HPE),
- 	SND_PCI_QUIRK(0x1043, 0x1e11, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA502),
-+	SND_PCI_QUIRK(0x1043, 0x1e8e, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x1f11, "ASUS Zephyrus G14", ALC289_FIXUP_ASUS_GA401),
- 	SND_PCI_QUIRK(0x1043, 0x1881, "ASUS Zephyrus S/M", ALC294_FIXUP_ASUS_GX502_PINS),
- 	SND_PCI_QUIRK(0x1043, 0x3030, "ASUS ZN270IE", ALC256_FIXUP_ASUS_AIO_GPIO2),
+Thanks,
+Sai
+
 -- 
-2.31.1
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
