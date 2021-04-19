@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC1A363E78
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65381363E81
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238542AbhDSJ25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 05:28:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35180 "EHLO
+        id S236706AbhDSJba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 05:31:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233132AbhDSJ1L (ORCPT
+        with ESMTP id S233520AbhDSJb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 05:27:11 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5967CC061763;
-        Mon, 19 Apr 2021 02:26:26 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id r12so51836645ejr.5;
-        Mon, 19 Apr 2021 02:26:26 -0700 (PDT)
+        Mon, 19 Apr 2021 05:31:27 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A75C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 02:30:57 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id w8so19321819pfn.9
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 02:30:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=HmfVs+hiDRXJZWZEBHBQ3JAhFTKr+C9J2z3911ynMEw=;
-        b=BDha9bfXAT8giuVCew3679cxC64+xg9PxhnDm/+mz8+W47wOpU9/W+8n18jhtEMoMh
-         qY8QDyNfZINfycHz8ENrWkdBPFYkMid6s++vYfllnAPg82YcP5eeu9F2DrlFPIe70Lyx
-         MZEXSVloX+iUWuzuCIniGL3h0MRmD4/U7jGMT130yiHU+MWmhoeYi4qtds9GnfkZUk53
-         aQRwlRrqSTC4nMuu81C1qP7RDNaAihQwFBVlyQDSDbzsN+i1WazkLJfevOl1W7bQzV8R
-         H4TCAij4yj5pLp0SMemIHKCOndc+IlqPu5lQXw3LucTLlqineqbRa/of2Icg24yy2e+i
-         Nlrg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xSJyOBHu78Kak9+awi1Z3ydokklJB3m48+P9VEYpazA=;
+        b=QHd+LiEVf4dJ8dlCyZiExD9pR7dIW1n8qvgMrjrd8LNY4rOVnAZ0hN2L37ggxaLtym
+         XVp+9qkWCOSoh4nlAccmVdoMHuIlcwzH8Mb8z05LW/o050Iekx3+mwMJ55xdZ0GZ6WIu
+         6FDnEp79wRPEiD9KNaccfgx1FSApcjO4m7H4S9ZhQqHhIyNColZ9a3xKHd5L/iiIUmJG
+         5fHDVpMceVTUBuYl76FrdOnYCbaA96An/WOi5t5K/2Tiu/A/FofZwjMw99zyQbbi3deD
+         2W9Q2lsdAK/DfqRGIPb9yyeGeJrDHc1ECFojW75TsL3YYgjfyUlYrEXwcVxvDYFD5r73
+         apzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=HmfVs+hiDRXJZWZEBHBQ3JAhFTKr+C9J2z3911ynMEw=;
-        b=W37ju3dAagNV1q3B0vYwi400J0yyWXhtY6uYVA88dkrDJk7cVvBqEKfiySBiz1h+o/
-         abno1Q5rmMoACm82nyxRNeZtUsWtH2eoSI2kTfXbNBlRT4y3s9GBZckdBNkptuQ8E4HK
-         KTt0pe1NV4Rt5BCd9AUAtfuWmn5EY+2TMgCuYk6FO2edooe8MYH6BPkEHYsObHME22p7
-         UhbFo5W6GI5aiG+n8gMMKrtyVZ7oeQZ1bnJpQroZRDIM1ayqil3gnsYmhsrznIkazDjc
-         MU2EuxlQyJEYsgcmcP+J8owR0YLC4+gSnUl7x6Xy9SItce/gtdUi0xR9fUxS1sAgzRl2
-         VRSg==
-X-Gm-Message-State: AOAM532dfNceiCavCbNedTjaOgIW5siX+4++Ofnvhgte3+OKxPEc0atL
-        3frdFKPapLo/whnjohSCj40=
-X-Google-Smtp-Source: ABdhPJztvNS0sFK4JkfQ4EGlh9BsAWq5TFQ/tSjLqw/fAb309CW7p/9NoVmVOold+Em/ozwXu95KLQ==
-X-Received: by 2002:a17:906:fb92:: with SMTP id lr18mr20590092ejb.511.1618824385070;
-        Mon, 19 Apr 2021 02:26:25 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2dc6:900:a414:a08d:9e82:6738])
-        by smtp.gmail.com with ESMTPSA id bh14sm9943706ejb.104.2021.04.19.02.26.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 02:26:24 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Cc:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        Yu Chen <chenyu56@huawei.com>,
-        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 3/3] MAINTAINERS: rectify entry for INTEL KEEM BAY DRM DRIVER
-Date:   Mon, 19 Apr 2021 11:26:09 +0200
-Message-Id: <20210419092609.3692-4-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210419092609.3692-1-lukas.bulwahn@gmail.com>
-References: <20210419092609.3692-1-lukas.bulwahn@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xSJyOBHu78Kak9+awi1Z3ydokklJB3m48+P9VEYpazA=;
+        b=UgN4d/GyLHUeD1BiW7zEKW/hlha5qTHt56PBzP6PE1GvEsQ/9eSt8Qs3EbjIL8wgAr
+         4F4lM+YZwx986xyzO86nPiA/dKeDr0CqM626kptzADjoSMHGcixvvQDiNBf8g5uxvqnA
+         oOmr9LgGeaq+c9H98tmkC3KfrcrhcEXJjuGhkIYgGOrDgaJqgeh3trD24ntBPz/3iHyS
+         JXYhVJhv+kZdZdYhFpCWdktww8xWj5vknnnYL2NHLGWjP3fO6Ln2l1e3aA/CN2JDhrcF
+         g6g7OK58md7zU6erXLh/Ft/KMGDzeU5aA0R2BgrPyjCjpWJCGTqEe/L8P6scNz1GaBF3
+         NIxw==
+X-Gm-Message-State: AOAM532WHClLIHLrswWZNd9wzRT8+KaR5JDmUQc15jviVjMqLlA/kcUb
+        Vx3/Ih1LvuoymQ5OfBCoy5HOw8btgHk=
+X-Google-Smtp-Source: ABdhPJyOnkx+fq+oW0EbP8UKVxfxiggLsjsL77VIc9yAqUids/nvq9LUi1x8w7rxeZe/4/dRBTrWVw==
+X-Received: by 2002:a63:5214:: with SMTP id g20mr11089898pgb.158.1618824657041;
+        Mon, 19 Apr 2021 02:30:57 -0700 (PDT)
+Received: from [127.0.0.1] ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id 11sm15560833pjm.0.2021.04.19.02.30.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Apr 2021 02:30:56 -0700 (PDT)
+Subject: Re: [RESEND PATCH 1/2] delayacct: refactor the code to simplify the
+ implementation
+To:     Balbir Singh <bsingharora@gmail.com>
+Cc:     adobriyan@gmail.com, akpm@linux-foundation.org,
+        ebiederm@xmission.com, linux-kernel@vger.kernel.org
+References: <1b0063b922ba18e36a55286a6c23fd74d71b21b0.1618275619.git.brookxu@tencent.com>
+ <20210419070106.GC8178@balbir-desktop>
+From:   brookxu <brookxu.cn@gmail.com>
+Message-ID: <eaa0dcbd-999a-eba0-0553-781ffd6be401@gmail.com>
+Date:   Mon, 19 Apr 2021 17:30:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
+MIME-Version: 1.0
+In-Reply-To: <20210419070106.GC8178@balbir-desktop>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit ed794057b052 ("drm/kmb: Build files for KeemBay Display driver")
-refers to the non-existing file intel,kmb_display.yaml in
-./Documentation/devicetree/bindings/display/.
 
-Commit 5a76b1ed73b9 ("dt-bindings: display: Add support for Intel KeemBay
-Display") originating from the same patch series however adds the file
-intel,keembay-display.yaml in that directory instead.
 
-So, refer to intel,keembay-display.yaml in the INTEL KEEM BAY DRM DRIVER
-section instead.
+Balbir Singh wrote on 2021/4/19 15:01:
+> On Tue, Apr 13, 2021 at 09:37:26AM +0800, brookxu wrote:
+>> From: Chunguang Xu <brookxu@tencent.com>
+>>
+>> The existing data structure is not very convenient for
+>> expansion, and part of the code can be saved. Here, try
+>> to optimize, which can make the code more concise and
+>> easy to expand.
+>>
+>> Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+> 
+> The approach seems to make sense, but the test robot has found
+> a few issues, can you correct those as applicable please?
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+OK, i will fix it later, thanks for your reply.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4f152717365c..421e24e43335 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9268,7 +9268,7 @@ INTEL KEEM BAY DRM DRIVER
- M:	Anitha Chrisanthus <anitha.chrisanthus@intel.com>
- M:	Edmund Dea <edmund.j.dea@intel.com>
- S:	Maintained
--F:	Documentation/devicetree/bindings/display/intel,kmb_display.yaml
-+F:	Documentation/devicetree/bindings/display/intel,keembay-display.yaml
- F:	drivers/gpu/drm/kmb/
- 
- INTEL KEEM BAY OCS AES/SM4 CRYPTO DRIVER
--- 
-2.17.1
-
+> Balbir Singh.
+> 
