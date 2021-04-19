@@ -2,182 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88234363980
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 04:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D969363986
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 04:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237317AbhDSCt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 22:49:28 -0400
-Received: from mga01.intel.com ([192.55.52.88]:3579 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233117AbhDSCt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 22:49:26 -0400
-IronPort-SDR: WaeUFKsaVvB/ZlJFr466mLQJuCdvGEotdSJtFvVDLua4T1ApJ+h6KpCB+MfsAmTl8VDXP6T6Bd
- p3BuZbvyY1nw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9958"; a="215835621"
-X-IronPort-AV: E=Sophos;i="5.82,233,1613462400"; 
-   d="scan'208";a="215835621"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2021 19:48:57 -0700
-IronPort-SDR: W2sWlM4mursE27JiUnPo31H7itctvqNXGGJpYdix2nRklfigoroApjFupaCIo/qYpqTnIGDZih
- lkr49vI1XinA==
-X-IronPort-AV: E=Sophos;i="5.82,232,1613462400"; 
-   d="scan'208";a="419830628"
-Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2021 19:48:53 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     <akpm@linux-foundation.org>, <dennis@kernel.org>,
-        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
-        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
-        <alexs@kernel.org>, <david@redhat.com>, <minchan@kernel.org>,
-        <richard.weiyang@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>
-Subject: Re: [PATCH v2 1/5] mm/swapfile: add percpu_ref support for swap
-References: <20210417094039.51711-1-linmiaohe@huawei.com>
-        <20210417094039.51711-2-linmiaohe@huawei.com>
-Date:   Mon, 19 Apr 2021 10:48:51 +0800
-In-Reply-To: <20210417094039.51711-2-linmiaohe@huawei.com> (Miaohe Lin's
-        message of "Sat, 17 Apr 2021 05:40:35 -0400")
-Message-ID: <87eef7kmzw.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S237338AbhDSCx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 22:53:26 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:46837 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233117AbhDSCxT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 22:53:19 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id DAD8122DC;
+        Sun, 18 Apr 2021 22:52:49 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Sun, 18 Apr 2021 22:52:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=ZSwc/xCZvaeAVu3WuRRMOZasHK
+        iHtAPWRkPgguSoPCk=; b=HgeitUikCRe/M+RZedAxU5CwFWoNBH5yty/6dAVhhg
+        7WdZp/VBgtfMH455GCN8oNget7zvyXD5DYNYs2q1YmroOK1C02QaKXKziKaKgwkk
+        y/o2pVNuK0aUAvWqHFOxkycQDVaWc98VrhdjtCycHke2Y2Qmjh6V/fjZLug40aSF
+        gZcOCHiy4tzBdRhodb8p8fLSRUkG5nFIchslI9xVFr8+W/t6XFr++7QH8q1fdNDJ
+        GKvBgE6WVVaneylx0K/OQLXYEgk2p9djFNFTe58CPLTDtrHbYED5yc4FHdoeGaQx
+        R9aNfrGhFPrDMgHNaAPhRuHy78GnhAwlhD9V+cJT4fTw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=ZSwc/xCZvaeAVu3Wu
+        RRMOZasHKiHtAPWRkPgguSoPCk=; b=iJvpTIkXH7xtoHZpjac3yTq1SMoYVQFKy
+        IUtxwGcWiBf21JqLWgQ7UKvoLlTodLFd6umAazZGAlFlSIISLv54sUpdl0ag+fr5
+        6Di+aXxoXNjNW2W6qI5C1wtvPNBr3BTJOvYj6G9dDVFd4uRfUQguvMMLvJ8R9Ph1
+        SXM6kVqkls0sEVFW0AXHud6FGwOdguDa9b5mQUBuBbVnfNPPDR5FqWwiekUgxZcN
+        094FJFjLe0pODu7MexiRs2vAKNUTFuRVnL30F5cOfuURVgClaiTEqJfM3vebGJ8r
+        kEfuWYZfICz1JfoTRrYNIVhiI/1YedvbeQBay2Z88V+jmHtnkZ1kA==
+X-ME-Sender: <xms:f_B8YP5PlJ02rqXuAA-miTncXWFwbebngWs0yolY6evpzxinyizQ8A>
+    <xme:f_B8YE5fIqJjGIjNl-rCe-COpJtEiKtS_XfIuX7yBGhZsfrjFhEGrMZuPpXhgGgtS
+    u2eCCk5HuLOTKI-Ew>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddtvddgleekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
+    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtffrrg
+    htthgvrhhnpeeiteekhfehuddugfeltddufeejjeefgeevheekueffhffhjeekheeiffdt
+    vedtveenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdr
+    ohhrgh
+X-ME-Proxy: <xmx:f_B8YGcAi2GQqv2Z4foI4TbxHw-DLFNzJVTaq24jNnPfsCXz5qnQlA>
+    <xmx:f_B8YAIiY2DefeXJBbYoNo_94HIs1VSblYyKz6xo7zg4oRX96CV3rw>
+    <xmx:f_B8YDIL32yBoaNRxnflAgV6F7fYINV9i4XkqnUf8Dutqzi0QJ3vAA>
+    <xmx:gfB8YJiTotjJH5zNmJ91y5nV8S0JAggMzjildfJXyGh8JxM82X1Dyw>
+Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 52770240054;
+        Sun, 18 Apr 2021 22:52:47 -0400 (EDT)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Samuel Holland <samuel@sholland.org>
+Subject: [PATCH 0/2] sunxi: Enforce consistent MMC numbering
+Date:   Sun, 18 Apr 2021 21:52:44 -0500
+Message-Id: <20210419025246.21722-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Miaohe Lin <linmiaohe@huawei.com> writes:
+Dealing with the inconsistent numbering has been a major pain, and
+there is a solution with (as far as I can tell) no tangible downsides.
+So let's use it.
 
-> We will use percpu-refcount to serialize against concurrent swapoff. This
-> patch adds the percpu_ref support for swap.
->
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->  include/linux/swap.h |  3 +++
->  mm/swapfile.c        | 33 +++++++++++++++++++++++++++++----
->  2 files changed, 32 insertions(+), 4 deletions(-)
->
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index 144727041e78..8be36eb58b7a 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -240,6 +240,7 @@ struct swap_cluster_list {
->   * The in-memory structure used to track swap areas.
->   */
->  struct swap_info_struct {
-> +	struct percpu_ref users;	/* serialization against concurrent swapoff */
+Yes, I know the kernel supports UUIDs for root=. But UUIDs do not help
+when referencing the whole, unpartitioned device, like is needed for
+updating the bootloader and firmware. So for the use case of "write a
+bootloader to the SD card, regardless of where the board is currently
+booted from", I know of two options:
+  - Dig around in sysfs to find the mmc number from the MMIO address,
+    which means I have to know the MMIO addresses for every SoC, or
+  - Apply patches like these.
 
-The comments aren't general enough.  We use this to check whether the
-swap device has been fully initialized, etc. May be something as below?
+Samuel Holland (2):
+  ARM: dts: sunxi: h3/h5: Enforce consistent MMC numbering
+  arm64: dts: allwinner: Enforce consistent MMC numbering
 
-/* indicate and keep swap device valid */
+ arch/arm/boot/dts/sunxi-h3-h5.dtsi            | 6 ++++++
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 6 ++++++
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  | 6 ++++++
+ 3 files changed, 18 insertions(+)
 
->  	unsigned long	flags;		/* SWP_USED etc: see above */
->  	signed short	prio;		/* swap priority of this type */
->  	struct plist_node list;		/* entry in swap_active_head */
-> @@ -260,6 +261,8 @@ struct swap_info_struct {
->  	struct block_device *bdev;	/* swap device or bdev of swap file */
->  	struct file *swap_file;		/* seldom referenced */
->  	unsigned int old_block_size;	/* seldom referenced */
-> +	bool ref_initialized;		/* seldom referenced */
-> +	struct completion comp;		/* seldom referenced */
->  #ifdef CONFIG_FRONTSWAP
->  	unsigned long *frontswap_map;	/* frontswap in-use, one bit per page */
->  	atomic_t frontswap_pages;	/* frontswap pages in-use counter */
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index 149e77454e3c..66515a3a2824 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -39,6 +39,7 @@
->  #include <linux/export.h>
->  #include <linux/swap_slots.h>
->  #include <linux/sort.h>
-> +#include <linux/completion.h>
->  
->  #include <asm/tlbflush.h>
->  #include <linux/swapops.h>
-> @@ -511,6 +512,14 @@ static void swap_discard_work(struct work_struct *work)
->  	spin_unlock(&si->lock);
->  }
->  
-> +static void swap_users_ref_free(struct percpu_ref *ref)
-> +{
-> +	struct swap_info_struct *si;
-> +
-> +	si = container_of(ref, struct swap_info_struct, users);
-> +	complete(&si->comp);
-> +}
-> +
->  static void alloc_cluster(struct swap_info_struct *si, unsigned long idx)
->  {
->  	struct swap_cluster_info *ci = si->cluster_info;
-> @@ -2500,7 +2509,7 @@ static void enable_swap_info(struct swap_info_struct *p, int prio,
->  	 * Guarantee swap_map, cluster_info, etc. fields are valid
->  	 * between get/put_swap_device() if SWP_VALID bit is set
->  	 */
-> -	synchronize_rcu();
+-- 
+2.26.3
 
-You cannot remove this without changing get/put_swap_device().  It's
-better to squash at least PATCH 1-2.
-
-> +	percpu_ref_resurrect(&p->users);
->  	spin_lock(&swap_lock);
->  	spin_lock(&p->lock);
->  	_enable_swap_info(p);
-> @@ -2621,11 +2630,18 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
->  	p->flags &= ~SWP_VALID;		/* mark swap device as invalid */
->  	spin_unlock(&p->lock);
->  	spin_unlock(&swap_lock);
-> +
-> +	percpu_ref_kill(&p->users);
->  	/*
-> -	 * wait for swap operations protected by get/put_swap_device()
-> -	 * to complete
-> +	 * We need synchronize_rcu() here to protect the accessing
-> +	 * to the swap cache data structure.
->  	 */
->  	synchronize_rcu();
-> +	/*
-> +	 * Wait for swap operations protected by get/put_swap_device()
-> +	 * to complete.
-> +	 */
-
-I think the comments (after some revision) can be moved before
-percpu_ref_kill().  The synchronize_rcu() comments can be merged.
-
-> +	wait_for_completion(&p->comp);
->  
->  	flush_work(&p->discard_work);
->  
-> @@ -3132,7 +3148,7 @@ static bool swap_discardable(struct swap_info_struct *si)
->  SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
->  {
->  	struct swap_info_struct *p;
-> -	struct filename *name;
-> +	struct filename *name = NULL;
->  	struct file *swap_file = NULL;
->  	struct address_space *mapping;
->  	int prio;
-> @@ -3163,6 +3179,15 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
->  
->  	INIT_WORK(&p->discard_work, swap_discard_work);
->  
-> +	if (!p->ref_initialized) {
-
-I don't think it's necessary to add another flag p->ref_initialized.  We
-can distinguish newly allocated and reused swap_info_struct in alloc_swap_info().
-
-Best Regards,
-Huang, Ying
-
-> +		error = percpu_ref_init(&p->users, swap_users_ref_free,
-> +					PERCPU_REF_INIT_DEAD, GFP_KERNEL);
-> +		if (unlikely(error))
-> +			goto bad_swap;
-> +		init_completion(&p->comp);
-> +		p->ref_initialized = true;
-> +	}
-> +
->  	name = getname(specialfile);
->  	if (IS_ERR(name)) {
->  		error = PTR_ERR(name);
