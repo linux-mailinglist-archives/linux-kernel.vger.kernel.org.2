@@ -2,108 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1FD3641A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 14:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F36943641A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 14:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239108AbhDSMZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 08:25:18 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16602 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbhDSMZQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 08:25:16 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FP5YD4sSjz1BGPw;
-        Mon, 19 Apr 2021 20:22:24 +0800 (CST)
-Received: from [10.67.102.118] (10.67.102.118) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 19 Apr 2021 20:24:40 +0800
-Subject: Re: [RFC PATCH 2/3] vfio/hisilicon: register the driver to vfio
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     <alex.williamson@redhat.com>, <cohuck@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
-References: <1618284983-55581-1-git-send-email-liulongfang@huawei.com>
- <1618284983-55581-3-git-send-email-liulongfang@huawei.com>
- <20210415220137.GA1672608@nvidia.com>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <10d53c5d-e6d5-a165-84b2-eaf8a3b7dcce@huawei.com>
-Date:   Mon, 19 Apr 2021 20:24:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S239186AbhDSMZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 08:25:47 -0400
+Received: from mail.hallyn.com ([178.63.66.53]:48580 "EHLO mail.hallyn.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239081AbhDSMZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 08:25:45 -0400
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+        id B7751821; Mon, 19 Apr 2021 07:25:14 -0500 (CDT)
+Date:   Mon, 19 Apr 2021 07:25:14 -0500
+From:   "Serge E. Hallyn" <serge@hallyn.com>
+To:     "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Andrew G. Morgan" <morgan@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        security@kernel.org, Tycho Andersen <tycho@tycho.ws>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: [PATCH] capabilities: require CAP_SETFCAP to map uid 0 (v3.3)
+Message-ID: <20210419122514.GA20598@mail.hallyn.com>
+References: <20210416045851.GA13811@mail.hallyn.com>
+ <20210416150501.zam55gschpn2w56i@wittgenstein>
+ <20210416213453.GA29094@mail.hallyn.com>
+ <20210417021945.GA687@mail.hallyn.com>
+ <20210417200434.GA17430@mail.hallyn.com>
 MIME-Version: 1.0
-In-Reply-To: <20210415220137.GA1672608@nvidia.com>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.118]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210417200434.GA17430@mail.hallyn.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/16 6:01, Jason Gunthorpe wrote:
-> On Tue, Apr 13, 2021 at 11:36:22AM +0800, Longfang Liu wrote:
->> Register the live migration driver of the accelerator module to vfio
->>
->> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
->>  drivers/vfio/pci/vfio_pci.c         | 11 +++++++++++
->>  drivers/vfio/pci/vfio_pci_private.h |  9 +++++++++
->>  2 files changed, 20 insertions(+)
->>
->> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
->> index 65e7e6b..e1b0e37 100644
->> +++ b/drivers/vfio/pci/vfio_pci.c
->> @@ -407,6 +407,17 @@ static int vfio_pci_enable(struct vfio_pci_device *vdev)
->>  		}
->>  	}
->>  
->> +	if (pdev->vendor == PCI_VENDOR_ID_HUAWEI &&
->> +	    IS_ENABLED(CONFIG_VFIO_PCI_HISI_MIGRATION)) {
->> +		ret = vfio_pci_hisilicon_acc_init(vdev);
-> 
-> This is exactly what we want to avoid with the work we are doing on
-> the vfio-pci modularity.
-> 
-> It is a complete mess to just keep adding more stuff here, and as
-> we've discussed to death really ugly to have such a ridiculously wide
-> ID match.
-> 
-> You should be working with us on that project and base your work on
-> top of Max's series.. Alex given the interest here I think we should
-> find some way forward while we work on completed version of the mlx5
-> pci vfio driver..
-> 
-> I'm also confused how this works securely at all, as a general rule a
-> VFIO PCI driver cannot access the MMIO memory of the function it is
-> planning to assign to the guest. There is a lot of danger that the
-> guest could access that MMIO space one way or another.
-> 
-VF's MMIO memory is divided into two parts, one is the guest part,
-and the other is the live migration part. They do not affect each other,
-so there is no security problem.
+cap_setfcap is required to create file capabilities.
 
-> Here I see the driver obtaining a devm_ioremap() of the same pdev it
-> is going to assign (and I really wonder why pci_release_mem_regions()
-> exists at all..)
-> 
-The driver here obtains the VF's MMIO memory address through devm_ioremap(),
-and adding pci_release_mem_regions() is to get the MMIO memory address
-in the guest after the driver here obtains the MMIO memory address.
+Since 8db6c34f1dbc ("Introduce v3 namespaced file capabilities"), a
+process running as uid 0 but without cap_setfcap is able to work around
+this as follows: unshare a new user namespace which maps parent uid 0
+into the child namespace.  While this task will not have new
+capabilities against the parent namespace, there is a loophole due to
+the way namespaced file capabilities are represented as xattrs.  File
+capabilities valid in userns 1 are distinguished from file capabilities
+valid in userns 2 by the kuid which underlies uid 0.  Therefore the
+restricted root process can unshare a new self-mapping namespace, add a
+namespaced file capability onto a file, then use that file capability in
+the parent namespace.
 
-If pci_release_mem_regions() is not added here,
-The guests using pci_request_mem_regions() will return an error.
-Then, the guest will not be able to obtain the MMIO address of the VF.
+To prevent that, do not allow mapping parent uid 0 if the process which
+opened the uid_map file does not have CAP_SETFCAP, which is the capability
+for setting file capabilities.
 
-> This is why the mlx5 RFC was showing how to juggle two PCI devices via
-> the aux device connector.
-> 
-I also noticed the mlx5 RFC, but it will take some time to analyze it. If the analysis
-process goes well. I will import the mlx5 RFC into our driver and use this solution
-to test and verify our live migration function.
+As a further wrinkle:  a task can unshare its user namespace, then
+open its uid_map file itself, and map (only) its own uid.  In this
+case we do not have the credential from before unshare,  which was
+potentially more restricted.  So, when creating a user namespace, we
+record whether the creator had CAP_SETFCAP.  Then we can use that
+during map_write().
 
-If we use the mlx5 RFC, what should we pay attention to?
+With this patch:
 
-> Jason
-> .
-> 
-Thanks.
-Longfang.
+1. Unprivileged user can still unshare -Ur
+
+ubuntu@caps:~$ unshare -Ur
+root@caps:~# logout
+
+2. Root user can still unshare -Ur
+
+ubuntu@caps:~$ sudo bash
+root@caps:/home/ubuntu# unshare -Ur
+root@caps:/home/ubuntu# logout
+
+3. Root user without CAP_SETFCAP cannot unshare -Ur:
+
+root@caps:/home/ubuntu# /sbin/capsh --drop=cap_setfcap --
+root@caps:/home/ubuntu# /sbin/setcap cap_setfcap=p /sbin/setcap
+unable to set CAP_SETFCAP effective capability: Operation not permitted
+root@caps:/home/ubuntu# unshare -Ur
+unshare: write failed /proc/self/uid_map: Operation not permitted
+
+Note: an alternative solution would be to allow uid 0 mappings by
+processes without CAP_SETFCAP, but to prevent such a namespace from
+writing any file capabilities.  This approach can be seen here:
+    https://git.kernel.org/pub/scm/linux/kernel/git/sergeh/linux.git/log/?h=2021-04-15/setfcap-nsfscaps-v4
+
+Signed-off-by: Serge Hallyn <serge@hallyn.com>
+Reviewed-by: Andrew G. Morgan <morgan@kernel.org>
+Tested-by: Christian Brauner <christian.brauner@ubuntu.com>
+Reviewed-by: Christian Brauner <christian.brauner@ubuntu.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+
+Changelog:
+   * fix logic in the case of writing to another task's uid_map
+   * rename 'ns' to 'map_ns', and make a file_ns local variable
+   * use /* comments */
+   * update the CAP_SETFCAP comment in capability.h
+   * rename parent_unpriv to parent_can_setfcap (and reverse the
+     logic)
+   * remove printks
+   * clarify (i hope) the code comments
+   * update capability.h comment
+   * renamed parent_can_setfcap to parent_could_setfcap
+   * made the check its own disallowed_0_mapping() fn
+   * moved the check into new_idmap_permitted
+   * rename disallowed_0_mapping to verify_root_mapping
+   * change verify_root_mapping to Christian's suggested flow
+   * correct+clarify comments: parent uid 0 mapping to any
+     child uid is a problem.
+---
+ include/linux/user_namespace.h  |  3 ++
+ include/uapi/linux/capability.h |  3 +-
+ kernel/user_namespace.c         | 67 +++++++++++++++++++++++++++++++--
+ 3 files changed, 69 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/user_namespace.h b/include/linux/user_namespace.h
+index 64cf8ebdc4ec..f6c5f784be5a 100644
+--- a/include/linux/user_namespace.h
++++ b/include/linux/user_namespace.h
+@@ -63,6 +63,9 @@ struct user_namespace {
+ 	kgid_t			group;
+ 	struct ns_common	ns;
+ 	unsigned long		flags;
++	/* parent_could_setfcap: true if the creator if this ns had CAP_SETFCAP
++	 * in its effective capability set at the child ns creation time. */
++	bool			parent_could_setfcap;
+ 
+ #ifdef CONFIG_KEYS
+ 	/* List of joinable keyrings in this namespace.  Modification access of
+diff --git a/include/uapi/linux/capability.h b/include/uapi/linux/capability.h
+index c6ca33034147..2ddb4226cd23 100644
+--- a/include/uapi/linux/capability.h
++++ b/include/uapi/linux/capability.h
+@@ -335,7 +335,8 @@ struct vfs_ns_cap_data {
+ 
+ #define CAP_AUDIT_CONTROL    30
+ 
+-/* Set or remove capabilities on files */
++/* Set or remove capabilities on files.
++   Map uid=0 into a child user namespace. */
+ 
+ #define CAP_SETFCAP	     31
+ 
+diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
+index af612945a4d0..609a729a9879 100644
+--- a/kernel/user_namespace.c
++++ b/kernel/user_namespace.c
+@@ -106,6 +106,7 @@ int create_user_ns(struct cred *new)
+ 	if (!ns)
+ 		goto fail_dec;
+ 
++	ns->parent_could_setfcap = cap_raised(new->cap_effective, CAP_SETFCAP);
+ 	ret = ns_alloc_inum(&ns->ns);
+ 	if (ret)
+ 		goto fail_free;
+@@ -841,6 +842,62 @@ static int sort_idmaps(struct uid_gid_map *map)
+ 	return 0;
+ }
+ 
++/**
++ * verify_root_map() - check the uid 0 mapping
++ * @file: idmapping file
++ * @map_ns: user namespace of the target process
++ * @new_map: requested idmap
++ *
++ * If a process requests mapping parent uid 0 into the new ns, verify that the
++ * process writing the map had the CAP_SETFCAP capability as the target process
++ * will be able to write fscaps that are valid in ancestor user namespaces.
++ *
++ * Return: true if the mapping is allowed, false if not.
++ */
++static bool verify_root_map(const struct file *file,
++			    struct user_namespace *map_ns,
++			    struct uid_gid_map *new_map)
++{
++	int idx;
++	const struct user_namespace *file_ns = file->f_cred->user_ns;
++	struct uid_gid_extent *extent0 = NULL;
++
++	for (idx = 0; idx < new_map->nr_extents; idx++) {
++		u32 lower_first;
++
++		if (new_map->nr_extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
++			extent0 = &new_map->extent[idx];
++		else
++			extent0 = &new_map->forward[idx];
++		if (extent0->lower_first == 0)
++			break;
++
++		extent0 = NULL;
++	}
++
++	if (!extent0)
++		return true;
++
++	if (map_ns == file_ns) {
++		/* The process unshared its ns and is writing to its own
++		 * /proc/self/uid_map.  User already has full capabilites in
++		 * the new namespace.  Verify that the parent had CAP_SETFCAP
++		 * when it unshared.
++		 * */
++		if (!file_ns->parent_could_setfcap)
++			return false;
++	} else {
++		/* Process p1 is writing to uid_map of p2, who is in a child
++		 * user namespace to p1's.  Verify that the opener of the map
++		 * file has CAP_SETFCAP against the parent of the new map
++		 * namespace */
++		if (!file_ns_capable(file, map_ns->parent, CAP_SETFCAP))
++			return false;
++	}
++
++	return true;
++}
++
+ static ssize_t map_write(struct file *file, const char __user *buf,
+ 			 size_t count, loff_t *ppos,
+ 			 int cap_setid,
+@@ -848,7 +905,7 @@ static ssize_t map_write(struct file *file, const char __user *buf,
+ 			 struct uid_gid_map *parent_map)
+ {
+ 	struct seq_file *seq = file->private_data;
+-	struct user_namespace *ns = seq->private;
++	struct user_namespace *map_ns = seq->private;
+ 	struct uid_gid_map new_map;
+ 	unsigned idx;
+ 	struct uid_gid_extent extent;
+@@ -895,7 +952,7 @@ static ssize_t map_write(struct file *file, const char __user *buf,
+ 	/*
+ 	 * Adjusting namespace settings requires capabilities on the target.
+ 	 */
+-	if (cap_valid(cap_setid) && !file_ns_capable(file, ns, CAP_SYS_ADMIN))
++	if (cap_valid(cap_setid) && !file_ns_capable(file, map_ns, CAP_SYS_ADMIN))
+ 		goto out;
+ 
+ 	/* Parse the user data */
+@@ -965,7 +1022,7 @@ static ssize_t map_write(struct file *file, const char __user *buf,
+ 
+ 	ret = -EPERM;
+ 	/* Validate the user is allowed to use user id's mapped to. */
+-	if (!new_idmap_permitted(file, ns, cap_setid, &new_map))
++	if (!new_idmap_permitted(file, map_ns, cap_setid, &new_map))
+ 		goto out;
+ 
+ 	ret = -EPERM;
+@@ -1086,6 +1143,10 @@ static bool new_idmap_permitted(const struct file *file,
+ 				struct uid_gid_map *new_map)
+ {
+ 	const struct cred *cred = file->f_cred;
++
++	if (cap_setid == CAP_SETUID && !verify_root_map(file, ns, new_map))
++		return false;
++
+ 	/* Don't allow mappings that would allow anything that wouldn't
+ 	 * be allowed without the establishment of unprivileged mappings.
+ 	 */
+-- 
+2.25.1
+
