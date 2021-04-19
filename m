@@ -2,110 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4A83639AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 05:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CA73639AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 05:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237369AbhDSDQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 23:16:48 -0400
-Received: from mga12.intel.com ([192.55.52.136]:46293 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233064AbhDSDQq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 23:16:46 -0400
-IronPort-SDR: S6pLdQD5CE/a76RmusxE8spg6QVmogXiIOUV1lspx758mdczYsd20/NUnij4W7jNvHBkrDWc5n
- V11wSl8xTNJw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9958"; a="174750053"
-X-IronPort-AV: E=Sophos;i="5.82,233,1613462400"; 
-   d="scan'208";a="174750053"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2021 20:16:17 -0700
-IronPort-SDR: n7V6jxXMM8ia+dND8vy4OyFhrlPo4ON6ZkXpkCmaoTtSv9p3mdzvQbNRsA4qAhoKWgT0lffH+5
- mdjEfmw/8XDQ==
-X-IronPort-AV: E=Sophos;i="5.82,233,1613462400"; 
-   d="scan'208";a="426344086"
-Received: from bard-ubuntu.sh.intel.com ([10.239.185.57])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2021 20:16:14 -0700
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        bard.liao@intel.com
-Subject: [PATCH] soundwire: cadence_master: always set CMD_ACCEPT
-Date:   Mon, 19 Apr 2021 11:16:06 +0800
-Message-Id: <20210419031606.32715-1-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S237394AbhDSDRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 23:17:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20239 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233064AbhDSDRU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 23:17:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618802211;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ngjLvfqraclHl1dSfqaoWbo+wa4rNwfdo8glbMm71to=;
+        b=IYOtNGHRyLbDvHybmBtmp/B8btZHfSyjSVIEO0Ic8JlHkmRhw020ROzNtzbeb3t0qpg7un
+        GT9jIze/CiuaheJ9bkXschThDD37JcbceWt3F/NuqulLX2T5D+scURuKyIBXWYMOAwVfi3
+        dDO9PaSpfAIcoW2+5WnOpP3x9ghEPU4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-120-x3xdpjwoMEGg9q0LOEIJaA-1; Sun, 18 Apr 2021 23:16:47 -0400
+X-MC-Unique: x3xdpjwoMEGg9q0LOEIJaA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 751CB18B63A8;
+        Mon, 19 Apr 2021 03:16:46 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-12-157.pek2.redhat.com [10.72.12.157])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A51C219809;
+        Mon, 19 Apr 2021 03:16:40 +0000 (UTC)
+Subject: Re: [PATCH V3 2/3] vDPA/ifcvf: enable Intel C5000X-PL virtio-block
+ for vDPA
+To:     Zhu Lingshan <lingshan.zhu@intel.com>, mst@redhat.com,
+        lulu@redhat.com, sgarzare@redhat.com
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210416071628.4984-1-lingshan.zhu@intel.com>
+ <20210416071628.4984-3-lingshan.zhu@intel.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <4cce68b5-9cca-1ccd-f219-fb66c50a4f75@redhat.com>
+Date:   Mon, 19 Apr 2021 11:16:39 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.1
+MIME-Version: 1.0
+In-Reply-To: <20210416071628.4984-3-lingshan.zhu@intel.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-The Cadence IP can be configured in two different ways to deal with
-CMD_IGNORED replies to broadcast commands. The CMD_ACCEPT bitfield
-controls whether the command is discarded or if the IP proceeds with
-the change (typically a bank switch or clock stop command).
+ÔÚ 2021/4/16 ÏÂÎç3:16, Zhu Lingshan Ð´µÀ:
+> This commit enabled Intel FPGA SmartNIC C5000X-PL virtio-block
+> for vDPA.
+>
+> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
 
-The existing code seems to be inconsistent:
-a) For some historical reason, we set this CMD_ACCEPT bitfield during
-the initialization, but we don't during a resume from a clock-stoppped
-state.
-b) In addition, the loop used in the clock-stop sequence is quite
-racy, it's possible that a device has lost sync but it's still tagged
-as ATTACHED.
-c) If somehow a Device loses sync and is unable to ack a broadcast
-command, we do not have an error handling mechanism anyways. The IP
-should go ahead and let the Device regain sync at a later time.
 
-Make sure the CMD_ACCEPT bit is always set.
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/cadence_master.c | 21 ++-------------------
- 1 file changed, 2 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index 192dac10f0c2..25950422b085 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -1428,20 +1428,6 @@ int sdw_cdns_clock_stop(struct sdw_cdns *cdns, bool block_wake)
- 		}
- 	}
- 
--	/*
--	 * This CMD_ACCEPT should be used when there are no devices
--	 * attached on the link when entering clock stop mode. If this is
--	 * not set and there is a broadcast write then the command ignored
--	 * will be treated as a failure
--	 */
--	if (!slave_present)
--		cdns_updatel(cdns, CDNS_MCP_CONTROL,
--			     CDNS_MCP_CONTROL_CMD_ACCEPT,
--			     CDNS_MCP_CONTROL_CMD_ACCEPT);
--	else
--		cdns_updatel(cdns, CDNS_MCP_CONTROL,
--			     CDNS_MCP_CONTROL_CMD_ACCEPT, 0);
--
- 	/* commit changes */
- 	ret = cdns_config_update(cdns);
- 	if (ret < 0) {
-@@ -1508,11 +1494,8 @@ int sdw_cdns_clock_restart(struct sdw_cdns *cdns, bool bus_reset)
- 	cdns_updatel(cdns, CDNS_MCP_CONTROL,
- 		     CDNS_MCP_CONTROL_BLOCK_WAKEUP, 0);
- 
--	/*
--	 * clear CMD_ACCEPT so that the command ignored
--	 * will be treated as a failure during a broadcast write
--	 */
--	cdns_updatel(cdns, CDNS_MCP_CONTROL, CDNS_MCP_CONTROL_CMD_ACCEPT, 0);
-+	cdns_updatel(cdns, CDNS_MCP_CONTROL, CDNS_MCP_CONTROL_CMD_ACCEPT,
-+		     CDNS_MCP_CONTROL_CMD_ACCEPT);
- 
- 	if (!bus_reset) {
- 
--- 
-2.17.1
+> ---
+>   drivers/vdpa/ifcvf/ifcvf_base.h |  8 +++++++-
+>   drivers/vdpa/ifcvf/ifcvf_main.c | 19 ++++++++++++++++++-
+>   2 files changed, 25 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h b/drivers/vdpa/ifcvf/ifcvf_base.h
+> index 1c04cd256fa7..0111bfdeb342 100644
+> --- a/drivers/vdpa/ifcvf/ifcvf_base.h
+> +++ b/drivers/vdpa/ifcvf/ifcvf_base.h
+> @@ -15,6 +15,7 @@
+>   #include <linux/pci_regs.h>
+>   #include <linux/vdpa.h>
+>   #include <uapi/linux/virtio_net.h>
+> +#include <uapi/linux/virtio_blk.h>
+>   #include <uapi/linux/virtio_config.h>
+>   #include <uapi/linux/virtio_pci.h>
+>   
+> @@ -28,7 +29,12 @@
+>   #define C5000X_PL_SUBSYS_VENDOR_ID	0x8086
+>   #define C5000X_PL_SUBSYS_DEVICE_ID	0x0001
+>   
+> -#define IFCVF_SUPPORTED_FEATURES \
+> +#define C5000X_PL_BLK_VENDOR_ID		0x1AF4
+> +#define C5000X_PL_BLK_DEVICE_ID		0x1001
+> +#define C5000X_PL_BLK_SUBSYS_VENDOR_ID	0x8086
+> +#define C5000X_PL_BLK_SUBSYS_DEVICE_ID	0x0002
+> +
+> +#define IFCVF_NET_SUPPORTED_FEATURES \
+>   		((1ULL << VIRTIO_NET_F_MAC)			| \
+>   		 (1ULL << VIRTIO_F_ANY_LAYOUT)			| \
+>   		 (1ULL << VIRTIO_F_VERSION_1)			| \
+> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
+> index 469a9b5737b7..376b2014916a 100644
+> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
+> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
+> @@ -168,10 +168,23 @@ static struct ifcvf_hw *vdpa_to_vf(struct vdpa_device *vdpa_dev)
+>   
+>   static u64 ifcvf_vdpa_get_features(struct vdpa_device *vdpa_dev)
+>   {
+> +	struct ifcvf_adapter *adapter = vdpa_to_adapter(vdpa_dev);
+>   	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
+> +	struct pci_dev *pdev = adapter->pdev;
+> +
+>   	u64 features;
+>   
+> -	features = ifcvf_get_features(vf) & IFCVF_SUPPORTED_FEATURES;
+> +	switch (vf->dev_type) {
+> +	case VIRTIO_ID_NET:
+> +		features = ifcvf_get_features(vf) & IFCVF_NET_SUPPORTED_FEATURES;
+> +		break;
+> +	case VIRTIO_ID_BLOCK:
+> +		features = ifcvf_get_features(vf);
+> +		break;
+> +	default:
+> +		features = 0;
+> +		IFCVF_ERR(pdev, "VIRTIO ID %u not supported\n", vf->dev_type);
+> +	}
+>   
+>   	return features;
+>   }
+> @@ -517,6 +530,10 @@ static struct pci_device_id ifcvf_pci_ids[] = {
+>   			 C5000X_PL_DEVICE_ID,
+>   			 C5000X_PL_SUBSYS_VENDOR_ID,
+>   			 C5000X_PL_SUBSYS_DEVICE_ID) },
+> +	{ PCI_DEVICE_SUB(C5000X_PL_BLK_VENDOR_ID,
+> +			 C5000X_PL_BLK_DEVICE_ID,
+> +			 C5000X_PL_BLK_SUBSYS_VENDOR_ID,
+> +			 C5000X_PL_BLK_SUBSYS_DEVICE_ID) },
+>   
+>   	{ 0 },
+>   };
 
