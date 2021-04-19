@@ -2,97 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 028293648C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 19:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DEED3648C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 19:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238717AbhDSRJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 13:09:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53742 "EHLO
+        id S239588AbhDSRLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 13:11:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbhDSRJu (ORCPT
+        with ESMTP id S230127AbhDSRLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 13:09:50 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2550EC06174A;
-        Mon, 19 Apr 2021 10:09:20 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id v6so52779731ejo.6;
-        Mon, 19 Apr 2021 10:09:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=90zlVLl1e9V47BXJfzWbLa36NO+xMYd8xvZgNoKBdDg=;
-        b=tDld1tfpIleYZm1JrQA0bkid38a7Z4EgPn0GiNKBVSA5NOZxk2ezTnfVjKoMHSxWJY
-         DawBSaY9G2EK4qHADjg2y8mVa/HW3hRSj7n5F4hFnCcqdfoM7xwpu+IYVwg1AVaYAmZV
-         yqNqaUBbz0JK0O2Z7tnCMyz9sfimp1yOyIx15j/QZCuGFL+mBCLbr6b9K097oYooHU1W
-         N6tuyAK48Ic+7khSY65X33DP5RsGu/IZ6zurATrIKCAu9/t3AAF6cFmQTFvvmTyv6ldM
-         3Y2JPzCG0kWeSeD4mjOhyClwpZBu1ZttSKUZgpIwes/jeV2ERQ90aR2YE+MbkqkOBpov
-         kbJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=90zlVLl1e9V47BXJfzWbLa36NO+xMYd8xvZgNoKBdDg=;
-        b=Djkg9iE18a/6i9X1OtnIU80REU0zNxQnozm/ecAV07LOp8iSbu9L366tc0FGo0rJ6K
-         Q0uGVNZNOoZNZ6fwLDSlD4O0MGYqIK+HZ6m5f0NVClWfEvOqLEcJb7NPDamiWYFm/7C3
-         44C3KHFmAb0Z1VztZa+7r/iqW15tsybY+n8EJ/nr/Sf6NOWEFEH311V0P9NxeO9/HcTB
-         6oz/8VrhO21WtXrwO/C7a2H2nhmcfe3M1G5nRkCLnQYNfleA2YyOnukk6wu3BiJNIYXH
-         rkGl/QJxYrwPdL/pe22aOvRKVwuA6MLdZF7UTMkovuWub9MUe0MomXHMhK9BrA5jjn7H
-         eaCA==
-X-Gm-Message-State: AOAM533jIAVyCxDMEFyv3nhwmB50Cjz2i7SBZiFhRNTo7EVAsA7+gncU
-        US7Ep8NPHhLNFWL6paDqpN8=
-X-Google-Smtp-Source: ABdhPJwK2BcO+w77AIQEvbx/NH4axkeHyE/1oUV3KOihUIRIQdkOxB54wRxAy4dJgCacdL3sD9HL1A==
-X-Received: by 2002:a17:906:f210:: with SMTP id gt16mr23028778ejb.22.1618852158879;
-        Mon, 19 Apr 2021 10:09:18 -0700 (PDT)
-Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
-        by smtp.gmail.com with ESMTPSA id bu26sm10761969ejb.30.2021.04.19.10.09.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 10:09:18 -0700 (PDT)
-Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
-Date:   Mon, 19 Apr 2021 19:09:17 +0200
-From:   Salvatore Bonaccorso <carnil@debian.org>
-To:     Shyam Prasad <Shyam.Prasad@microsoft.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, pc <pc@cjr.nz>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Aurelien Aptel <aaptel@suse.com>,
-        Steven French <Steven.French@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [EXTERNAL] Re: [PATCH 4.19 013/247] cifs: Set
- CIFS_MOUNT_USE_PREFIX_PATH flag on setting cifs_sb->prepath.
-Message-ID: <YH25PZn5Eb3qC6JA@eldamar.lan>
-References: <20210301161031.684018251@linuxfoundation.org>
- <20210301161032.337414143@linuxfoundation.org>
- <YGxIMCsclG4E1/ck@eldamar.lan>
- <YGxlJXv/+IPaErUr@kroah.com>
- <PSAP153MB04220682838AC9D025414B6094769@PSAP153MB0422.APCP153.PROD.OUTLOOK.COM>
- <YGx3u01Wa/DDnjlV@eldamar.lan>
- <YG7r0UaivWZL762N@eldamar.lan>
- <YHP+XbVWfGv21EL1@kroah.com>
- <YHwo5prs4MbXEzER@eldamar.lan>
- <PSAP153MB04224202F4A2BE668533F94794499@PSAP153MB0422.APCP153.PROD.OUTLOOK.COM>
+        Mon, 19 Apr 2021 13:11:51 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49758C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 10:11:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:Subject:From:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=mK6d063bv2vvxiceyArPptzreCtNwYA9xqvFbvOrqoE=; b=mZ1bk2a1b+mAs+X6YfBSaVgevZ
+        S5+zpmbCOs9lHnw5hmXMRXtfKaq5xZNUbaaHKnAaAszp1NPjEVd8GmYjyvbNEFqgNu9RI2xPoEgkF
+        VYekKGIPYbwR6C8qxf/0KLSm1JI0HHA7Oa796PjU3/eAnEt4b7KyiV8bkMllSmUWpFi6N9WSjbXuM
+        81FmVu3NB1V5WygNQQ0xHfjYQsgoPF7ZfPMcQHLWUgGF+w6S4vsHbZXR4WVpXsw1J9/DG0nFWbLYo
+        xxXYlg0+hRtR7lWZqDqrrYU1jg4x556mhNaOH6anxAm5uXY0TSAkVzPf0l56ESQBn6q982NBJNvxZ
+        NhzooB9w==;
+Received: from [2601:1c0:6280:3f0::df68]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lYXQB-00E3Cn-2Q; Mon, 19 Apr 2021 17:10:54 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v3] drm/bridge/sii8620: fix dependency on extcon
+To:     Robert Foss <robert.foss@linaro.org>, a.hajda@samsung.com,
+        narmstrong@baylibre.com, Laurent.pinchart@ideasonboard.com,
+        jonas@kwiboo.se, jernej.skrabec@siol.net, airlied@linux.ie,
+        daniel@ffwll.ch, cw00.choi@samsung.com, m.purski@samsung.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>
+References: <20210419090124.153560-1-robert.foss@linaro.org>
+Message-ID: <1627725d-1c7e-109f-f995-e761bb022ccc@infradead.org>
+Date:   Mon, 19 Apr 2021 10:10:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PSAP153MB04224202F4A2BE668533F94794499@PSAP153MB0422.APCP153.PROD.OUTLOOK.COM>
+In-Reply-To: <20210419090124.153560-1-robert.foss@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shyam,
-
-On Mon, Apr 19, 2021 at 05:48:24AM +0000, Shyam Prasad wrote:
-> <Including Paulo in this email thread>
+On 4/19/21 2:01 AM, Robert Foss wrote:
+> The DRM_SIL_SII8620 kconfig has a weak `imply` dependency
+> on EXTCON, which causes issues when sii8620 is built
+> as a builtin and EXTCON is built as a module.
 > 
-> Hi Salvatore,
+> The symptoms are 'undefined reference' errors caused
+> by the symbols in EXTCON not being available
+> to the sii8620 driver.
 > 
-> Attached is a proposed fix from Paulo for older kernels. 
-> Can you please confirm that this works for you too? 
+> Fixes: 688838442147 ("drm/bridge/sii8620: use micro-USB cable detection logic to detect MHL")
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
+> 
+> LKP reported issue:
+> https://lore.kernel.org/lkml/202104040604.SSTe2Cxf-lkp@intel.com/
+> 
+> 
+> Changes since v1:
+>  - Fix typo on comment
+> 
+> Changes since v2:
+>  - Randy: Changed from `depends` to `select` 
 
-I re-applied commit a738c93fb1c1 ("cifs: Set
-CIFS_MOUNT_USE_PREFIX_PATH flag on setting cifs_sb->prepath.") and on
-top of that your provided patch, and this seems to resolve the issue
-for the testcase I have at hand!
+I don't know why my name is on that. I didn't
+suggest any change -- I just reported that v2
+had a problem.
 
-Regards,
-Salvatore
+
+> 
+> 
+>  drivers/gpu/drm/bridge/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+> index 22a467abd3e9..70402da5cc70 100644
+> --- a/drivers/gpu/drm/bridge/Kconfig
+> +++ b/drivers/gpu/drm/bridge/Kconfig
+> @@ -169,7 +169,7 @@ config DRM_SIL_SII8620
+>  	tristate "Silicon Image SII8620 HDMI/MHL bridge"
+>  	depends on OF
+>  	select DRM_KMS_HELPER
+> -	imply EXTCON
+> +	select EXTCON
+>  	depends on RC_CORE || !RC_CORE
+>  	help
+>  	  Silicon Image SII8620 HDMI/MHL bridge chip driver.
+
+
+Thanks. Works For Me.
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+-- 
+~Randy
+
