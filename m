@@ -2,223 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7041B36460C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5CF36460E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239692AbhDSO0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 10:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239296AbhDSO0h (ORCPT
+        id S239740AbhDSO1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 10:27:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53387 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239296AbhDSO1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 10:26:37 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1488C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 07:26:05 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id x20so25957998lfu.6
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 07:26:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9S0Wtbq4es5oYYPpSLSAT/39jDBxRK85obPsvkL2qUw=;
-        b=esWeQJK9FvJxBiDnuuwK9c4Efnqbdt1lBBJgNBak/jqhFCoVL1cuozpyz50hNpbSmd
-         HMgHelsPCYu1ktEGO4GVisbbcAvHpEseTEB3W88F/PG5nGdR0XNjNsVZWF4Swvg77pIz
-         Z0GMahYBXyHfnfjCO2cK2bGVW8vrHbD/+wKTktdf7KN7JbKGPwXbzCfjqLcY3MGUBtsm
-         av/Gl4y/evv+AXR6Yi3ZcfUWdnnOAT5WHNbHIfjHyUx80U9mmboGjMSOMpEMxBL2rCz6
-         G3soJyBYDWYTxf9pqRZVqnJk8z5iNeTMtlKD1PJjR3b2FQUWsLHnJMsmM+IN8S5XY7Dr
-         dryQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9S0Wtbq4es5oYYPpSLSAT/39jDBxRK85obPsvkL2qUw=;
-        b=ghBDWEFLmZJD2xo7mONzJq8iS4wjlkCFYZAJTqUb19jotFe4+gWO18uzVESgAtI33u
-         4kaP+8qVbK86OTq46Ok7yYY3C0IWBZDlEwStHoHlI2ZhU9WqG+KZIpqG5o2atQz9TuXN
-         d4Jt9XSQ8IxWX2dHNLlOicsMo0jk+v4/19GhQ/JyZE+UCj+9iplvoFjtEMQilHMQIS0B
-         58YBz7tx/KXKphi9SgdI03swOEBAdmr6dJaspa4GbTxbQnQg4FbFGho2tWPo3SsAfdia
-         /P4LBeE3OOldowJ7P7uxUV969tFiiKKxgD76VAWODvUl/sNGjRgei1ezFKLwS7/vDbro
-         OgVg==
-X-Gm-Message-State: AOAM5306mXp2mrUxDvuK94U8cOM6fycm/r0tV9V1LLDjyKOxK6GcySYl
-        T2C+ETEoFlJWMdUI4Xe+/36mUA==
-X-Google-Smtp-Source: ABdhPJxhu0nZM6ElfDMRFqixFroO8cvi/vlk9OkMyp0mMAj7EEGNq0e0G/+4JJNcVe7fumUPSfFMYw==
-X-Received: by 2002:a05:6512:110d:: with SMTP id l13mr12523932lfg.612.1618842364357;
-        Mon, 19 Apr 2021 07:26:04 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id a27sm241053lfo.190.2021.04.19.07.26.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 07:26:03 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id A028A102567; Mon, 19 Apr 2021 17:26:02 +0300 (+03)
-Date:   Mon, 19 Apr 2021 17:26:02 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jim Mattson <jmattson@google.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Peter Gonda <pgonda@google.com>,
-        David Hildenbrand <david@redhat.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFCv2 13/13] KVM: unmap guest memory using poisoned pages
-Message-ID: <20210419142602.khjbzktk5tk5l6lk@box.shutemov.name>
-References: <20210416154106.23721-1-kirill.shutemov@linux.intel.com>
- <20210416154106.23721-14-kirill.shutemov@linux.intel.com>
- <YHnJtvXdrZE+AfM3@google.com>
+        Mon, 19 Apr 2021 10:27:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618842402;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HxAG4kbNBg9X46ZjvrZeyxdy/hfYbf4rBJQlMhrU+Ow=;
+        b=SGnM2MCjKjGY/zbxDVgwLFFGNDpAIjYgpGxWtlvYhb4fushvU4M1D99QxiuAQLBbN1Pvzq
+        ljxrFyztltgcQu4QSwn05KUTNprxIjDlZ8ecfiuvvNTcvmfzxcbkeuBIN8gpa3E9+AiaV0
+        D/YK7G/M1WBozKaBM7lPHoG10TgnDzU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-561-tZCMx9clOY2_lcqiovsQLw-1; Mon, 19 Apr 2021 10:26:41 -0400
+X-MC-Unique: tZCMx9clOY2_lcqiovsQLw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 86E3587A826;
+        Mon, 19 Apr 2021 14:26:39 +0000 (UTC)
+Received: from krava (unknown [10.40.195.124])
+        by smtp.corp.redhat.com (Postfix) with SMTP id D723A5D742;
+        Mon, 19 Apr 2021 14:26:37 +0000 (UTC)
+Date:   Mon, 19 Apr 2021 16:26:36 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Song Liu <song@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, acme@kernel.org,
+        acme@redhat.com, namhyung@kernel.org, jolsa@kernel.org,
+        songliubraving@fb.com
+Subject: Re: [PATCH v3 3/4] perf-stat: introduce config
+ stat.bpf-counter-events
+Message-ID: <YH2THG9zES3rjvEs@krava>
+References: <20210416221325.2373497-1-song@kernel.org>
+ <20210416221325.2373497-4-song@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YHnJtvXdrZE+AfM3@google.com>
+In-Reply-To: <20210416221325.2373497-4-song@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 05:30:30PM +0000, Sean Christopherson wrote:
-> On Fri, Apr 16, 2021, Kirill A. Shutemov wrote:
-> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > index 1b404e4d7dd8..f8183386abe7 100644
-> > --- a/arch/x86/kvm/x86.c
-> > +++ b/arch/x86/kvm/x86.c
-> > @@ -8170,6 +8170,12 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
-> >  		kvm_sched_yield(vcpu->kvm, a0);
-> >  		ret = 0;
-> >  		break;
-> > +	case KVM_HC_ENABLE_MEM_PROTECTED:
-> > +		ret = kvm_protect_memory(vcpu->kvm);
-> > +		break;
-> > +	case KVM_HC_MEM_SHARE:
-> > +		ret = kvm_share_memory(vcpu->kvm, a0, a1);
-> 
-> Can you take a look at a proposed hypercall interface for SEV live migration and
-> holler if you (or anyone else) thinks it will have extensibility issues?
-> 
-> https://lkml.kernel.org/r/93d7f2c2888315adc48905722574d89699edde33.1618498113.git.ashish.kalra@amd.com
+On Fri, Apr 16, 2021 at 03:13:24PM -0700, Song Liu wrote:
 
-Will look closer. Thanks.
+SNIP
 
-> > @@ -1868,11 +1874,17 @@ static int hva_to_pfn_slow(unsigned long addr, bool *async, bool write_fault,
-> >  		flags |= FOLL_WRITE;
-> >  	if (async)
-> >  		flags |= FOLL_NOWAIT;
-> > +	if (kvm->mem_protected)
-> > +		flags |= FOLL_ALLOW_POISONED;
-> 
-> This is unsafe, only the flows that are mapping the PFN into the guest should
-> use ALLOW_POISONED, e.g. __kvm_map_gfn() should fail on a poisoned page.
+> +/*
+> + * Returns:
+> + *     0   if all events use BPF;
+> + *     1   if some events do NOT use BPF;
+> + *     < 0 on errors;
+> + */
+>  static int read_bpf_map_counters(void)
+>  {
+> +	bool has_none_bpf_events = false;
+>  	struct evsel *counter;
+>  	int err;
+>  
+>  	evlist__for_each_entry(evsel_list, counter) {
+> +		if (!evsel__is_bpf(counter)) {
+> +			has_none_bpf_events = true;
+> +			continue;
+> +		}
+>  		err = bpf_counter__read(counter);
+>  		if (err)
+>  			return err;
+>  	}
+> -	return 0;
+> +	return has_none_bpf_events ? 1 : 0;
+>  }
+>  
+>  static void read_counters(struct timespec *rs)
+> @@ -442,9 +455,10 @@ static void read_counters(struct timespec *rs)
+>  	int err;
+>  
+>  	if (!stat_config.stop_read_counter) {
+> -		if (target__has_bpf(&target))
+> -			err = read_bpf_map_counters();
+> -		else
+> +		err = read_bpf_map_counters();
+> +		if (err < 0)
+> +			return;
+> +		if (err)
+>  			err = read_affinity_counters(rs);
 
-That's true for TDX. I prototyped with pure KVM with minimal modification
-to the guest. We had to be more permissive for the reason. It will go
-away for TDX.
+this part is confusing for me.. I understand we don't want to enter
+read_affinity_counters when there's no bpf counter, so we don't set
+affinities in vain.. but there must be better way ;-)
 
-> > -static int __kvm_read_guest_page(struct kvm_memory_slot *slot, gfn_t gfn,
-> > -				 void *data, int offset, int len)
-> > +int copy_from_guest(struct kvm *kvm, void *data, unsigned long hva, int len)
-> > +{
-> > +	int offset = offset_in_page(hva);
-> > +	struct page *page;
-> > +	int npages, seg;
-> > +	void *vaddr;
-> > +
-> > +	if (!IS_ENABLED(CONFIG_HAVE_KVM_PROTECTED_MEMORY) ||
-> > +	    !kvm->mem_protected) {
-> > +		return __copy_from_user(data, (void __user *)hva, len);
-> > +	}
-> > +
-> > +	might_fault();
-> > +	kasan_check_write(data, len);
-> > +	check_object_size(data, len, false);
-> > +
-> > +	while ((seg = next_segment(len, offset)) != 0) {
-> > +		npages = get_user_pages_unlocked(hva, 1, &page,
-> > +						 FOLL_ALLOW_POISONED);
-> > +		if (npages != 1)
-> > +			return -EFAULT;
-> > +
-> > +		if (!kvm_page_allowed(kvm, page))
-> > +			return -EFAULT;
-> > +
-> > +		vaddr = kmap_atomic(page);
-> > +		memcpy(data, vaddr + offset, seg);
-> > +		kunmap_atomic(vaddr);
-> 
-> Why is KVM allowed to access a poisoned page?  I would expect shared pages to
-> _not_ be poisoned.  Except for pure software emulation of SEV, KVM can't access
-> guest private memory.
+> diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
+> index 5de991ab46af9..3189b63714371 100644
+> --- a/tools/perf/util/bpf_counter.c
+> +++ b/tools/perf/util/bpf_counter.c
+> @@ -792,6 +792,8 @@ int bpf_counter__load(struct evsel *evsel, struct target *target)
+>  		evsel->bpf_counter_ops = &bpf_program_profiler_ops;
+>  	else if (target->use_bpf)
+>  		evsel->bpf_counter_ops = &bperf_ops;
+> +	else if (evsel__match_bpf_counter_events(evsel->name))
+> +		evsel->bpf_counter_ops = &bperf_ops;
 
-Again, it's not going to be in TDX implementation.
+please put this with the target->use_bpf check,
+it seems like it's another thing
 
+thanks,
+jirka
 
-> I like the idea of using "special" PTE value to denote guest private memory,
-> e.g. in this RFC, HWPOISON.  But I strongly dislike having KVM involved in the
-> manipulation of the special flag/value.
-> 
-> Today, userspace owns the gfn->hva translations and the kernel effectively owns
-> the hva->pfn translations (with input from userspace).  KVM just connects the
-> dots.
-> 
-> Having KVM own the shared/private transitions means KVM is now part owner of the
-> entire gfn->hva->pfn translation, i.e. KVM is effectively now a secondary MMU
-> and a co-owner of the primary MMU.  This creates locking madness, e.g. KVM taking
-> mmap_sem for write, mmu_lock under page lock, etc..., and also takes control away
-> from userspace.  E.g. userspace strategy could be to use a separate backing/pool
-> for shared memory and change the gfn->hva translation (memslots) in reaction to
-> a shared/private conversion.  Automatically swizzling things in KVM takes away
-> that option.
-> 
-> IMO, KVM should be entirely "passive" in this process, e.g. the guest shares or
-> protects memory, userspace calls into the kernel to change state, and the kernel
-> manages the page tables to prevent bad actors.  KVM simply does the plumbing for
-> the guest page tables.
-
-That's a new perspective for me. Very interesting.
-
-Let's see how it can look like:
-
- - KVM only allows poisoned pages (or whatever flag we end up using for
-   protection) in the private mappings. SIGBUS otherwise.
-
- - Poisoned pages must be tied to the KVM instance to be allowed in the
-   private mappings. Like kvm->id in the current prototype. SIGBUS
-   otherwise.
-
- - Pages get poisoned on fault in if the VMA has a new vmflag set.
-
- - Fault in of a poisoned page leads to hwpoison entry. Userspace cannot
-   access such pages.
-
- - Poisoned pages produced this way get unpoisoned on free.
-
- - The new VMA flag set by userspace. mprotect(2)?
-
- - Add a new GUP flag to retrive such pages from the userspace mapping.
-   Used only for private mapping population.
-
- - Shared gfn ranges managed by userspace, based on hypercalls from the
-   guest.
-
- - Shared mappings get populated via normal VMA. Any poisoned pages here
-   would lead to SIGBUS.
-
-So far it looks pretty straight-forward.
-
-The only thing that I don't understand is at way point the page gets tied
-to the KVM instance. Currently we do it just before populating shadow
-entries, but it would not work with the new scheme: as we poison pages
-on fault it they may never get inserted into shadow entries. That's not
-good as we rely on the info to unpoison page on free.
-
-Maybe we should tie VMA to the KVM instance on setting the vmflags?
-I donno.
-
-Any comments?
-
--- 
- Kirill A. Shutemov
