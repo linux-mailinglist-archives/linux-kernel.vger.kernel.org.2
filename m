@@ -2,51 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23BA9364DCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 00:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FD18364DCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 00:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbhDSWqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 18:46:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbhDSWqR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 18:46:17 -0400
-Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A83C06174A;
-        Mon, 19 Apr 2021 15:45:47 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id 512B14F40E343;
-        Mon, 19 Apr 2021 15:45:46 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 15:45:45 -0700 (PDT)
-Message-Id: <20210419.154545.1437529237095871426.davem@davemloft.net>
-To:     aford173@gmail.com
-Cc:     netdev@vger.kernel.org, aford@beaconembedded.com,
-        geert@linux-m68k.org, sergei.shtylyov@gmail.com, kuba@kernel.org,
-        andrew@lunn.ch, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: ethernet: ravb: Fix release of refclk
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20210417132329.6886-1-aford173@gmail.com>
-References: <20210417132329.6886-1-aford173@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+        id S230251AbhDSWsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 18:48:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55010 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229714AbhDSWsE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 18:48:04 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 26F4F6108B;
+        Mon, 19 Apr 2021 22:47:33 +0000 (UTC)
+Date:   Mon, 19 Apr 2021 18:47:31 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <wagi@monom.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+Subject: [ANNOUNCE] 5.10.30-rt37
+Message-ID: <20210419184731.246fa474@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Mon, 19 Apr 2021 15:45:46 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adam Ford <aford173@gmail.com>
-Date: Sat, 17 Apr 2021 08:23:29 -0500
 
-> The call to clk_disable_unprepare() can happen before priv is
-> initialized. This means moving clk_disable_unprepare out of
-> out_release into a new label.
-> 
-> Fixes: 8ef7adc6beb2("net: ethernet: ravb: Enable optional refclk")
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-Thjis does not apply cleanly, please rebbase and resubmit.
+Dear RT Folks,
 
-Please fix the formatting of your Fixes tag while you are at it, thank you.
+I'm pleased to announce the 5.10.30-rt37 stable release.
+
+
+This release is just an update to the new stable 5.10.30 version
+and no RT specific changes have been made.
+
+
+You can get this release via the git tree at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+
+  branch: v5.10-rt
+  Head SHA1: 1df1cfc1a111790bb79975f27a1bda9bc632a940
+
+
+Or to build 5.10.30-rt37 directly, the following patches should be applied:
+
+  http://www.kernel.org/pub/linux/kernel/v5.x/linux-5.10.tar.xz
+
+  http://www.kernel.org/pub/linux/kernel/v5.x/patch-5.10.30.xz
+
+  http://www.kernel.org/pub/linux/kernel/projects/rt/5.10/patch-5.10.30-rt37.patch.xz
+
+
+
+
+Enjoy,
+
+-- Steve
+
