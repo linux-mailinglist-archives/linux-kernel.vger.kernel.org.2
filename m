@@ -2,72 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A169636398C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 04:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67BD2363990
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 05:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237323AbhDSDAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 23:00:04 -0400
-Received: from m12-13.163.com ([220.181.12.13]:59700 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229845AbhDSDAD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 23:00:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=G7QSs
-        /bXDpbqG6hm4GcEzVUO9UnTQnXvFf1cnwQYUfE=; b=lr+8pRTWW4ZBZLJ9ZcoX2
-        7avqByH11JBYHG8czcxHhy174iY6/JvBoRf4GI6Z2M06S7Oy/VSHvLGDghWG6Acj
-        56l82aloWhVGNDTcZARtyCXVASvDzkPCT3DzyGq9mCS0DbY0t6cGGxCDF7QYr+QR
-        O+pYm+H/9+d3CtswN1c6fk=
-Received: from localhost (unknown [183.46.37.234])
-        by smtp9 (Coremail) with SMTP id DcCowACnv0_P8XxgHbtwGg--.562S2;
-        Mon, 19 Apr 2021 10:58:25 +0800 (CST)
-Date:   Mon, 19 Apr 2021 10:58:21 +0800
-From:   Zhongjun Tan <hbut_tan@163.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     casey@schaufler-ca.com, jmorris@namei.org, serge@hallyn.com,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Zhongjun Tan <tanzhongjun@yulong.com>
-Subject: Re: [PATCH] lsm:fix a missing-check bug in smack_sb_eat_lsm_opts()
-Message-ID: <20210419105821.00001082.hbut_tan@163.com>
-In-Reply-To: <YHmSwVpR2oq2yqUG@zeniv-ca.linux.org.uk>
-References: <20210416095303.530-1-hbut_tan@163.com>
-        <YHmSwVpR2oq2yqUG@zeniv-ca.linux.org.uk>
-Organization: Yulong
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-w64-mingw32)
+        id S237332AbhDSDCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 23:02:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229845AbhDSDCn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 23:02:43 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6803EC06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 20:02:14 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 101-20020a9d0d6e0000b02902816815ff62so25377917oti.9
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 20:02:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7wC8QKTZ9xEtfwhjX+LEpEPMChmLBOlIJZB30u0tbsA=;
+        b=Uvdz1wJBOBjBaXaPv6ZIzSTvt21UnnYo9XTaOjEIipgENy1+TkdxAELnu9I11RV3xM
+         ewyJmzytDcNgT0mul+pu7uItN8CdSU0E/OjJl+I1o6I5xYNGRQoBoeBNB83BaTVFo4L9
+         mLIzUbdEVt9YMoHLINVWGKECJeFo0k69soG2KxlBR9CwMULm/A3kbLuWd2+If5kXjRr+
+         t/xurUh2hYvGMqSksLyPOOSJaTNb5C3T1u1z/7L9O8d2Dt8DaWMXmPsucKpdiqutgbKo
+         MhqqRyVCR9Bs2wQ4VdiUebeSUJiRI5x2zoqDKcfc0YLZlL5YwGJ0eVaiTZ0ZBk5n6L2o
+         1wAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7wC8QKTZ9xEtfwhjX+LEpEPMChmLBOlIJZB30u0tbsA=;
+        b=DT6xS7btQ4v2Q7EBRAqt8GCtObyOKGF8Mr8OPrAdknu8v0yECPIcYMcEcLTY9Dzxcu
+         YPYFS9MqY/x9d3VJmzS1azWuRZF5DN6BWaFwGFf50YGyHXWCL+BXZ2dbgAQaV0vYifBi
+         VgVCBSvUHpleBqHw+tbFDnR/OTIuRGxP030JxilP1xMP7BduViiRBX77l/E7avQttBSW
+         T3lI5fP1DUuGxYM8/RODPxErNsmM06KkrVy7IHxunbvBN56aQqsaX206vNGbeutoG392
+         +41JhRBpc1lL57EZFQLeZ8Gg6gOtbhTw9F600Ev+bZ3PpTdPmISUjaw3sQA9MCuOtb/s
+         0pDw==
+X-Gm-Message-State: AOAM530Yzv14Qm2PAjh+IWouWYnuF0gUZeRqvU92LvgCRe90R3b6i5AV
+        X6lDvSv4jwH+NEgJwNQnofrvIw==
+X-Google-Smtp-Source: ABdhPJxVKdpll0qVOlEiXZSl3AiLgR5ik1EzcgMRAExmmeNOHf0qqRZ5lcvvMZI/VPmYGynZ1uHgng==
+X-Received: by 2002:a9d:5541:: with SMTP id h1mr12472367oti.246.1618801333755;
+        Sun, 18 Apr 2021 20:02:13 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id a6sm2863108oiw.44.2021.04.18.20.02.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Apr 2021 20:02:13 -0700 (PDT)
+Date:   Sun, 18 Apr 2021 22:02:11 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [Patch v2 1/7] crypto: qce: common: Add MAC failed error checking
+Message-ID: <20210419030211.GI1538589@yoga>
+References: <20210417132503.1401128-1-thara.gopinath@linaro.org>
+ <20210417132503.1401128-2-thara.gopinath@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=GB18030
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DcCowACnv0_P8XxgHbtwGg--.562S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZrWfWFWfZr48JFy5Wr1UGFg_yoWxCrgEg3
-        97Xa48Xrykuws8G3W8Zr45tr40kF1DWr1q93yDZFy5AF98t3yvvws0yFZIy3W7ZFZrK3Z7
-        Gr9xGwnxX39FvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0jLvtUUUUU==
-X-Originating-IP: [183.46.37.234]
-X-CM-SenderInfo: xkex3sxwdqqiywtou0bp/xtbBqBt5xl75blzTeQAAsz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210417132503.1401128-2-thara.gopinath@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Apr 2021 13:36:01 +0000
-Al Viro <viro@zeniv.linux.org.uk> wrote:
+On Sat 17 Apr 08:24 CDT 2021, Thara Gopinath wrote:
 
-> On Fri, Apr 16, 2021 at 05:53:03PM +0800,  Zhongjun Tan wrote:
+> MAC_FAILED gets set in the status register if authenthication fails
+> for ccm algorithms(during decryption). Add support to catch and flag
+> this error.
 > 
-> > @@ -710,13 +711,14 @@ static int smack_sb_eat_lsm_opts(char
-> > *options, void **mnt_opts) token = match_opt_prefix(from, len,
-> > &arg); if (token != Opt_error) {
-> >  			arg = kmemdup_nul(arg, from + len - arg,
-> > GFP_KERNEL);
-> > +			if (!arg) {
-> > +				rc = -ENOMEM;
-> > +				goto free_mnt_opts;
-> >  			rc = smack_add_opt(token, arg, mnt_opts);  
-> 
-> 			if (arg)
-> 	  			rc = smack_add_opt(token, arg,
-> mnt_opts); else
-> 				rc = -ENOMEM;
-> 
-> and no other changes are needed anywhere...
 
-update patch v3 , just four codes and no other changes are needed. 
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
+Regards,
+Bjorn
+
+> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+> ---
+> 
+> v1->v2:
+> 	- Split the error checking for -ENXIO and -EBADMSG into if-else clause
+> 	  so that the code is more readable as per Bjorn's review comment.
+> 
+>  drivers/crypto/qce/common.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/crypto/qce/common.c b/drivers/crypto/qce/common.c
+> index dceb9579d87a..dd76175d5c62 100644
+> --- a/drivers/crypto/qce/common.c
+> +++ b/drivers/crypto/qce/common.c
+> @@ -419,6 +419,8 @@ int qce_check_status(struct qce_device *qce, u32 *status)
+>  	 */
+>  	if (*status & STATUS_ERRORS || !(*status & BIT(OPERATION_DONE_SHIFT)))
+>  		ret = -ENXIO;
+> +	else if (*status & BIT(MAC_FAILED_SHIFT))
+> +		ret = -EBADMSG;
+>  
+>  	return ret;
+>  }
+> -- 
+> 2.25.1
+> 
