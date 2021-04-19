@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C3B3643E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:32:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F236E364402
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241602AbhDSNXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:23:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56310 "EHLO mail.kernel.org"
+        id S240925AbhDSNYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:24:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239887AbhDSNRw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:17:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 529F2613D5;
-        Mon, 19 Apr 2021 13:14:25 +0000 (UTC)
+        id S240810AbhDSNSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:18:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80A48613EC;
+        Mon, 19 Apr 2021 13:14:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618838065;
-        bh=JoSR1JmAXLHjSDwAvnHt+5pIu1kPY4eYIQXc4w8Eo1c=;
+        s=korg; t=1618838091;
+        bh=I8dRn/9AxOCx/sjYCzLNEaia4bgiL2+/oOCTYbJWbdw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZiXZdWm7YGhhNWKYdl1tXlFsckMjLQ+IGuepxxK/9ib5Stds9nprucpGnGSFKOeUi
-         V3f3GL6Vmb8PUxCXpSFcfqRjBG6MGKkabk/D9AEbq8fzvPrjffXyd/LE/H58nn862z
-         L5upR6tN8xnvlaMV+SaTCD6LquQD/RNeBA07ePnw=
+        b=MTtSlNzlms3st513jK2vEs1uaMRBHJg6aUntO70HKggduE7BJB0WFppuE8agYUkel
+         ny8r93im4QTIa6z25O4stfx9E885p3IABEGoL/jsBQxI4Ivpgd7gH/xkiofaGIYNfA
+         fAKnlYiO/mOopZYw0AbMPsMwKbxZA8ndNiCxbxao=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabian Vogt <fabian@ritter-vogt.de>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 003/103] Input: nspire-keypad - enable interrupts only when opened
-Date:   Mon, 19 Apr 2021 15:05:14 +0200
-Message-Id: <20210419130527.901551223@linuxfoundation.org>
+Subject: [PATCH 5.10 004/103] gpio: sysfs: Obey valid_mask
+Date:   Mon, 19 Apr 2021 15:05:15 +0200
+Message-Id: <20210419130527.933470612@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210419130527.791982064@linuxfoundation.org>
 References: <20210419130527.791982064@linuxfoundation.org>
@@ -40,119 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabian Vogt <fabian@ritter-vogt.de>
+From: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 
-[ Upstream commit 69d5ff3e9e51e23d5d81bf48480aa5671be67a71 ]
+[ Upstream commit 23cf00ddd2e1aacf1873e43f5e0c519c120daf7a ]
 
-The driver registers an interrupt handler in _probe, but didn't configure
-them until later when the _open function is called. In between, the keypad
-can fire an IRQ due to touchpad activity, which the handler ignores. This
-causes the kernel to disable the interrupt, blocking the keypad from
-working.
+Do not allow exporting GPIOs which are set invalid
+by the driver's valid mask.
 
-Fix this by disabling interrupts before registering the handler.
-Additionally, disable them in _close, so that they're only enabled while
-open.
-
-Fixes: fc4f31461892 ("Input: add TI-Nspire keypad support")
-Signed-off-by: Fabian Vogt <fabian@ritter-vogt.de>
-Link: https://lore.kernel.org/r/3383725.iizBOSrK1V@linux-e202.suse.de
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: 726cb3ba4969 ("gpiolib: Support 'gpio-reserved-ranges' property")
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/keyboard/nspire-keypad.c | 56 ++++++++++++++------------
- 1 file changed, 31 insertions(+), 25 deletions(-)
+ drivers/gpio/gpiolib-sysfs.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/input/keyboard/nspire-keypad.c b/drivers/input/keyboard/nspire-keypad.c
-index 63d5e488137d..e9fa1423f136 100644
---- a/drivers/input/keyboard/nspire-keypad.c
-+++ b/drivers/input/keyboard/nspire-keypad.c
-@@ -93,9 +93,15 @@ static irqreturn_t nspire_keypad_irq(int irq, void *dev_id)
- 	return IRQ_HANDLED;
- }
+diff --git a/drivers/gpio/gpiolib-sysfs.c b/drivers/gpio/gpiolib-sysfs.c
+index 728f6c687182..fa5d945b2f28 100644
+--- a/drivers/gpio/gpiolib-sysfs.c
++++ b/drivers/gpio/gpiolib-sysfs.c
+@@ -458,6 +458,8 @@ static ssize_t export_store(struct class *class,
+ 	long			gpio;
+ 	struct gpio_desc	*desc;
+ 	int			status;
++	struct gpio_chip	*gc;
++	int			offset;
  
--static int nspire_keypad_chip_init(struct nspire_keypad *keypad)
-+static int nspire_keypad_open(struct input_dev *input)
- {
-+	struct nspire_keypad *keypad = input_get_drvdata(input);
- 	unsigned long val = 0, cycles_per_us, delay_cycles, row_delay_cycles;
-+	int error;
-+
-+	error = clk_prepare_enable(keypad->clk);
-+	if (error)
-+		return error;
- 
- 	cycles_per_us = (clk_get_rate(keypad->clk) / 1000000);
- 	if (cycles_per_us == 0)
-@@ -121,30 +127,6 @@ static int nspire_keypad_chip_init(struct nspire_keypad *keypad)
- 	keypad->int_mask = 1 << 1;
- 	writel(keypad->int_mask, keypad->reg_base + KEYPAD_INTMSK);
- 
--	/* Disable GPIO interrupts to prevent hanging on touchpad */
--	/* Possibly used to detect touchpad events */
--	writel(0, keypad->reg_base + KEYPAD_UNKNOWN_INT);
--	/* Acknowledge existing interrupts */
--	writel(~0, keypad->reg_base + KEYPAD_UNKNOWN_INT_STS);
--
--	return 0;
--}
--
--static int nspire_keypad_open(struct input_dev *input)
--{
--	struct nspire_keypad *keypad = input_get_drvdata(input);
--	int error;
--
--	error = clk_prepare_enable(keypad->clk);
--	if (error)
--		return error;
--
--	error = nspire_keypad_chip_init(keypad);
--	if (error) {
--		clk_disable_unprepare(keypad->clk);
--		return error;
--	}
--
- 	return 0;
- }
- 
-@@ -152,6 +134,11 @@ static void nspire_keypad_close(struct input_dev *input)
- {
- 	struct nspire_keypad *keypad = input_get_drvdata(input);
- 
-+	/* Disable interrupts */
-+	writel(0, keypad->reg_base + KEYPAD_INTMSK);
-+	/* Acknowledge existing interrupts */
-+	writel(~0, keypad->reg_base + KEYPAD_INT);
-+
- 	clk_disable_unprepare(keypad->clk);
- }
- 
-@@ -210,6 +197,25 @@ static int nspire_keypad_probe(struct platform_device *pdev)
- 		return -ENOMEM;
+ 	status = kstrtol(buf, 0, &gpio);
+ 	if (status < 0)
+@@ -469,6 +471,12 @@ static ssize_t export_store(struct class *class,
+ 		pr_warn("%s: invalid GPIO %ld\n", __func__, gpio);
+ 		return -EINVAL;
  	}
- 
-+	error = clk_prepare_enable(keypad->clk);
-+	if (error) {
-+		dev_err(&pdev->dev, "failed to enable clock\n");
-+		return error;
++	gc = desc->gdev->chip;
++	offset = gpio_chip_hwgpio(desc);
++	if (!gpiochip_line_is_valid(gc, offset)) {
++		pr_warn("%s: GPIO %ld masked\n", __func__, gpio);
++		return -EINVAL;
 +	}
-+
-+	/* Disable interrupts */
-+	writel(0, keypad->reg_base + KEYPAD_INTMSK);
-+	/* Acknowledge existing interrupts */
-+	writel(~0, keypad->reg_base + KEYPAD_INT);
-+
-+	/* Disable GPIO interrupts to prevent hanging on touchpad */
-+	/* Possibly used to detect touchpad events */
-+	writel(0, keypad->reg_base + KEYPAD_UNKNOWN_INT);
-+	/* Acknowledge existing GPIO interrupts */
-+	writel(~0, keypad->reg_base + KEYPAD_UNKNOWN_INT_STS);
-+
-+	clk_disable_unprepare(keypad->clk);
-+
- 	input_set_drvdata(input, keypad);
  
- 	input->id.bustype = BUS_HOST;
+ 	/* No extra locking here; FLAG_SYSFS just signifies that the
+ 	 * request and export were done by on behalf of userspace, so
 -- 
 2.30.2
 
