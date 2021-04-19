@@ -2,66 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7BBA363F7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 12:23:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C9B363F81
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 12:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238581AbhDSKXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 06:23:15 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:46536 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238544AbhDSKW7 (ORCPT
+        id S238624AbhDSKXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 06:23:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238512AbhDSKXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 06:22:59 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=yang.lee@linux.alibaba.com;NM=1;PH=DW;RN=4;SR=0;TI=W4_6173578_DEFAULT_0AC264AF_1618827594862_o7001c175f;
-Received: from WS-web (yang.lee@linux.alibaba.com[W4_6173578_DEFAULT_0AC264AF_1618827594862_o7001c175f]) by e01e01353.eu6 at Mon, 19 Apr 2021 18:21:42 +0800
-Date:   Mon, 19 Apr 2021 18:21:42 +0800
-From:   "Yang.Lee" <yang.lee@linux.alibaba.com>
-To:     "Takashi Iwai" <tiwai@suse.de>
-Cc:     "tiwai" <tiwai@suse.com>,
-        "alsa-devel" <alsa-devel@alsa-project.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>
-Reply-To: "Yang.Lee" <yang.lee@linux.alibaba.com>
-Message-ID: <9f86e311-dd90-4df8-ae37-09d600e76820.yang.lee@linux.alibaba.com>
-Subject: =?UTF-8?B?5Zue5aSN77yaW1BBVENIXSBBTFNBOiBzZXE6IG9zczogRml4IGluY29uc2lzdGVudCBpbmRl?=
-  =?UTF-8?B?bnRpbmc=?=
-X-Mailer: [Alimail-Mailagent][W4_6173578][DEFAULT][Chrome]
+        Mon, 19 Apr 2021 06:23:03 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384D5C06174A;
+        Mon, 19 Apr 2021 03:22:34 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id o5so35224293qkb.0;
+        Mon, 19 Apr 2021 03:22:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=363VWPLcAU951lFrOwLAp4x5JJh1Vw/iAvcAFa7MyZk=;
+        b=R5XQ5iZqatSvkNTU0qHCUsd0p3WT01/W6ntNqMUmTduyEm8YkOXTdWM+oK7ac+tcoA
+         NRmOJX4f9vdm9iTRu91lqQRl70RW/TSL+7MtEm5wLDZfwkOYlSjr9fbNTNh0B39Kkowt
+         Bi5WZpYn1Yk1+IA8xtPcgYX06Hc33xaf5QMYf98EMh39ixuRDZYsdE44bN8c3rKjNycy
+         jnZyz9fV93XN3GZEzzlU5szM0TFi6FCAXCFHq/Ps8ZSC0T1AxjC3mG1EKcJOT97anYWt
+         U3yn+hc4TLXFo1m12iRukb3HKdEu392+NfVNdvyNa/vpzSe/a3swEafL+a3B1hbuQLS1
+         hhHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=363VWPLcAU951lFrOwLAp4x5JJh1Vw/iAvcAFa7MyZk=;
+        b=bIywzl1my8NHAvWAiXi1qnU9dYmoQOVmpzLg9qB3O4YYqSScR/sYxYiU2V7N+xtOQD
+         U6q+Lo5sezkHXKYMoYr6u61lCVpdSjHaLJM8lRZdLyBO/Ocyj34L13whrh3aBzgZsxWB
+         4YfxCp1q7gb0QbmXQvwmvp/J86Q7c9b1ebO2DIYwoxkqbxGXLqOuuj/ozzNgWefEaQ1X
+         dBy5o73gfU2IlAyWwemK8Yvq6fkO0rK3wkSTbkWDXWdcVb0dmqB25v8jCaQLLhiSHN4v
+         JNIW8ElA8SUiQdNZtgHkiJNpP2AqwJBVIqyeLLHO4gysKVUWfnCIjWbI6zIaSyIreIGf
+         aSWg==
+X-Gm-Message-State: AOAM5339/Sk3gMsvN1tkHE6qQYfh/y4IBNOYIuzRIZndJWAI8MlLZCWp
+        xz/lvgvSUdTGrWckWlAu5uj87pf0AsOJPQ==
+X-Google-Smtp-Source: ABdhPJwv0PfWbwbywYMr0ja8rTRSIwkz72j7PM0deJVOZmAzf8SeX58JgPPuNxZ50gh2CISo9QcD3Q==
+X-Received: by 2002:a37:814:: with SMTP id 20mr10509400qki.230.1618827753300;
+        Mon, 19 Apr 2021 03:22:33 -0700 (PDT)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
+        by smtp.gmail.com with ESMTPSA id z17sm8506175qtf.10.2021.04.19.03.22.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 03:22:32 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 19 Apr 2021 06:22:31 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     jiangshanlai@gmail.com, saeedm@nvidia.com, leon@kernel.org,
+        davem@davemloft.net, kuba@kernel.org, bvanassche@acm.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 0/2] workqueue: Have 'alloc_workqueue()' like macros
+ accept a format specifier
+Message-ID: <YH1Z57+iJxBT3S3b@slm.duckdns.org>
+References: <cover.1618780558.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-References: <1618567244-5704-1-git-send-email-yang.lee@linux.alibaba.com>,<s5hlf9iqznu.wl-tiwai@suse.de>
-x-aliyun-mail-creator: W4_6173578_DEFAULT_TCwTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzg5LjAuNDM4OS4xMTQgU2FmYXJpLzUzNy4zNiBFZGcvODkuMC43NzQuNjg=FR
-In-Reply-To: <s5hlf9iqznu.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1618780558.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhhbmsgeW91IGZvciB5b3VyIHN1Z2dlc3Rpb24uIEkgd2lsbCByZXZpc2UgYW5kIHN1Ym1pdCBp
-dCBhY2NvcmRpbmcgdG8gdGhlIGNvbnRleHQgaW4gdGhlIGZ1dHVyZS4KCnlhbmcKLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-CuWPkeS7tuS6uu+8mlRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4K5Y+R6YCB5pe26Ze077ya
-MjAyMeW5tDTmnIgxNuaXpSjmmJ/mnJ/kupQpIDE4OjQxCuaUtuS7tuS6uu+8mllhbmcgTGkgPHlh
-bmcubGVlQGxpbnV4LmFsaWJhYmEuY29tPgrmioTjgIDpgIHvvJpwZXJleCA8cGVyZXhAcGVyZXgu
-Y3o+OyB0aXdhaSA8dGl3YWlAc3VzZS5jb20+OyBhbHNhLWRldmVsIDxhbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmc+OyBsaW51eC1rZXJuZWwgPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+
-CuS4u+OAgOmimO+8mlJlOiBbUEFUQ0hdIEFMU0E6IHNlcTogb3NzOiBGaXggaW5jb25zaXN0ZW50
-IGluZGVudGluZwoKCk9uIEZyaSwgMTYgQXByIDIwMjEgMTI6MDA6NDQgKzAyMDAsCllhbmcgTGkg
-d3JvdGU6Cj4gCj4gS2VybmVsIHRlc3Qgcm9ib3QgdGhyb3dzIGJlbG93IHdhcm5pbmcgLT4KPiAK
-PiBzbWF0Y2ggd2FybmluZ3M6Cj4gc291bmQvY29yZS9zZXEvb3NzL3NlcV9vc3NfZXZlbnQuYzoy
-OTcgbm90ZV9vbl9ldmVudCgpIHdhcm46Cj4gaW5jb25zaXN0ZW50IGluZGVudGluZwo+IAo+IEZp
-eGVkIHRoZSBpbmNvbnNpc3RlbnQgaW5kZW50aW5nLgo+IAo+IFJlcG9ydGVkLWJ5OiBBYmFjaSBS
-b2JvdCA8YWJhY2lAbGludXguYWxpYmFiYS5jb20+Cj4gU2lnbmVkLW9mZi1ieTogWWFuZyBMaSA8
-eWFuZy5sZWVAbGludXguYWxpYmFiYS5jb20+Cj4gLS0tCj4gIHNvdW5kL2NvcmUvc2VxL29zcy9z
-ZXFfb3NzX2V2ZW50LmMgfCAyICstCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwg
-MSBkZWxldGlvbigtKQo+IAo+IGRpZmYgLS1naXQgYS9zb3VuZC9jb3JlL3NlcS9vc3Mvc2VxX29z
-c19ldmVudC5jIGIvc291bmQvY29yZS9zZXEvb3NzL3NlcV9vc3NfZXZlbnQuYwo+IGluZGV4IDdi
-N2M5MjUuLjlhNDI3MTMgMTAwNjQ0Cj4gLS0tIGEvc291bmQvY29yZS9zZXEvb3NzL3NlcV9vc3Nf
-ZXZlbnQuYwo+ICsrKyBiL3NvdW5kL2NvcmUvc2VxL29zcy9zZXFfb3NzX2V2ZW50LmMKPiBAQCAt
-Mjk0LDcgKzI5NCw3IEBACj4gICAgICAvKiBzZXQgdm9sdW1lIHRvIHplcm8gLS0gbm90ZSBvZmYg
-Ki8KPiAgICAgLy8gdHlwZSA9IFNORFJWX1NFUV9FVkVOVF9OT1RFT0ZGOwo+ICAgICAvL2Vsc2UK
-PiAtICAgIGlmIChpbmZvLT5jaFtjaF0udmVsKQo+ICsgICBpZiAoaW5mby0+Y2hbY2hdLnZlbCkK
-PiAgICAgIC8qIHNhbXBsZSBhbHJlYWR5IHN0YXJ0ZWQgLS0gdm9sdW1lIGNoYW5nZSAqLwo+ICAg
-ICAgdHlwZSA9IFNORFJWX1NFUV9FVkVOVF9LRVlQUkVTUzsKClRoZSBsaW5lIHdhcyBhbGlnbmVk
-IHdpdGggdGhlIGNvbW1lbnRlZCBpZiBibG9jay4KSWYgYW55LCB3ZSBzaG91bGQgcmF0aGVyIGNs
-ZWFuIHVwIGFuZCByZS1mb3JtYXQgdGhlIHdob2xlIGJsb2NrLgooQnV0LCBPVE9ILCB5b3Ugc2hv
-dWxkbid0IHJlbW92ZSB0aGUgc3R1ZmYgd2l0aG91dCB1bmRlcnN0YW5kaW5nCnRoZSBjb250ZXh0
-LikKCgp0aGFua3MsCgpUYWthc2hp
+Hello, Christophe.
+
+On Sun, Apr 18, 2021 at 11:25:52PM +0200, Christophe JAILLET wrote:
+> Improve 'create_workqueue', 'create_freezable_workqueue' and
+> 'create_singlethread_workqueue' so that they accept a format
+> specifier and a variable number of arguments.
+> 
+> This will put these macros more in line with 'alloc_ordered_workqueue' and
+> the underlying 'alloc_workqueue()' function.
+
+Those interfaces are deprecated and if you're doing anything with the users,
+the right course of action would be converting them to use one of the
+alloc_workqueue interfaces.
+
+Thanks.
+
+-- 
+tejun
