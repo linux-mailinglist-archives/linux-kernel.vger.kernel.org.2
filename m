@@ -2,120 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A6F3638F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 03:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0543638F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 03:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236862AbhDSBCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 21:02:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233117AbhDSBCu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 21:02:50 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 986AEC06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 18:02:21 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id h13so15710019qka.2
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 18:02:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:mime-version:content-transfer-encoding
-         :date:message-id;
-        bh=RXam8/yrKFBoz2nKLPMW+gAL4t/Dm8FLDbdkvQGBxIs=;
-        b=H6S169QP79gGhsQKKA2kKXR+4q+a+T0r3ZkwWZ/s+14xnmPs5QDOFVz4mD+J+qqpyf
-         /Bgugt+pTV0U1sQghwysF/aGYIzHJf/47HLCo/H5j52pbR+qPQP32lEkc6lblm/PRfkY
-         TrlNUyyzRwv3tjOW6CVfsBqRUWD4PpYySlLnpAASTqhBjiVGWDvw0yuPTRJwnjK86J9w
-         Sxp4D0M8JJQi901u3BMMhyux/Fb+z7ShsIstoFg908XPswgo45+y3tRalrqGznLSaEAd
-         gCwOK7GPWZgsMbpu6KLZojWlysgEpkO+xe/lhkLauO4ZlQ8w6akiF1DBAHPakaaI25RC
-         k/Kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:mime-version
-         :content-transfer-encoding:date:message-id;
-        bh=RXam8/yrKFBoz2nKLPMW+gAL4t/Dm8FLDbdkvQGBxIs=;
-        b=mYQ+5Peozv3/VCVM/6x4lI1N2g8xm8LWeD110T+sD3SmJMu+O4mFxYS6Q0A5vxFKj0
-         G0Z1v2lMdxTckKIfC+2dIeia/kme57Wy0R1CQchSKNkja4BOdgUIL0a/HagnZHLWK8Ex
-         9+dLftx4jsYPoKgghQZwYLr0fFgUTkeltUtursTD8DjsgXaLByLPWS3OlUGZeBTYZgrO
-         sWE46QJSGjZUlGD+olpNNK+1lgc2gqdHW0+k6nvD79XghQY/S6b6sWwQuujoBmlALz8p
-         pwh36ro60zRTxoP+iWeNC4w/EGSfnJv0yYXmtEPjjiNfzXeTq4KMpIyKjEykvDOz/i7z
-         fpbg==
-X-Gm-Message-State: AOAM532noYnc3ew0CA1OGH3RZBrQoDn6ErHo8hTirah7VvQwHg6uz9VU
-        HaJSRIVSKyFka9RWtGzT4yDFRg==
-X-Google-Smtp-Source: ABdhPJy0Kau8aXbq90XTNnBOjhUdqhQzEs89RasWQd28uDmQRXyvdq30ubbRcFkERw/LLHo9M3Q+pg==
-X-Received: by 2002:a37:e30c:: with SMTP id y12mr9437334qki.244.1618794134634;
-        Sun, 18 Apr 2021 18:02:14 -0700 (PDT)
-Received: from turing-police ([2601:5c0:c380:d61::359])
-        by smtp.gmail.com with ESMTPSA id f8sm676599qkh.83.2021.04.18.18.02.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Apr 2021 18:02:14 -0700 (PDT)
-Sender: Valdis Kletnieks <valdis@vt.edu>
-From:   "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     Felix Fietkau <nbd@nbd.name>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Christoph Hellwig <hch@infradead.org>, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: drivers/net/ethernet/mediatek/mtk_ppe_offload.c - suspicious code?
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1618794132_13593P";
-         micalg=pgp-sha1; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
-Date:   Sun, 18 Apr 2021 21:02:12 -0400
-Message-ID: <526789.1618794132@turing-police>
+        id S236966AbhDSBEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 21:04:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48378 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233117AbhDSBE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 21:04:27 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7E2AFABD0;
+        Mon, 19 Apr 2021 01:03:57 +0000 (UTC)
+From:   NeilBrown <neilb@suse.de>
+To:     Fox Chen <foxhlchen@gmail.com>
+Date:   Mon, 19 Apr 2021 11:03:51 +1000
+Cc:     Fox Chen <foxhlchen@gmail.com>, corbet@lwn.net,
+        vegard.nossum@oracle.com, viro@zeniv.linux.org.uk,
+        rdunlap@infradead.org, grandmaster@al2klimov.de,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org
+Subject: Re: [PATCH v2 03/12] docs: path-lookup: update path_mountpoint() part
+In-Reply-To: <20210316054727.25655-4-foxhlchen@gmail.com>
+References: <20210316054727.25655-1-foxhlchen@gmail.com>
+ <20210316054727.25655-4-foxhlchen@gmail.com>
+Message-ID: <87eef72ih4.fsf@notabene.neil.brown.name>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---==_Exmh_1618794132_13593P
-Content-Type: text/plain; charset=us-ascii
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-While doing some code auditing for -Woverride_init, I spotted some questionable code
+On Tue, Mar 16 2021, Fox Chen wrote:
 
-commit 502e84e2382d92654a2ecbc52cdbdb5a11cdcec7
-Author: Felix Fietkau <nbd@nbd.name>
-Date:   Wed Mar 24 02:30:54 2021 +0100
+> path_mountpoint() doesn't exist anymore. Have been folded
+> into path_lookup_at when flag is set with LOOKUP_MOUNTPOINT.
+> Check commit: commit 161aff1d93abf0e ("LOOKUP_MOUNTPOINT: fold
+> path_mountpointat() into path_lookupat()")
+>
+> Signed-off-by: Fox Chen <foxhlchen@gmail.com>
+> ---
+>  Documentation/filesystems/path-lookup.rst | 12 +++++-------
+>  1 file changed, 5 insertions(+), 7 deletions(-)
+>
+> diff --git a/Documentation/filesystems/path-lookup.rst b/Documentation/fi=
+lesystems/path-lookup.rst
+> index a29d714431a3..b6a301b78121 100644
+> --- a/Documentation/filesystems/path-lookup.rst
+> +++ b/Documentation/filesystems/path-lookup.rst
+> @@ -472,7 +472,7 @@ Handling the final component
+>  ``nd->last_type`` to refer to the final component of the path.  It does
+>  not call ``walk_component()`` that last time.  Handling that final
+>  component remains for the caller to sort out. Those callers are
+> -``path_lookupat()``, ``path_parentat()``, ``path_mountpoint()`` and
+> +``path_lookupat()``, ``path_parentat()`` and
+>  ``path_openat()`` each of which handles the differing requirements of
+>  different system calls.
+>=20=20
+> @@ -488,12 +488,10 @@ perform their operation.
+>  object is wanted such as by ``stat()`` or ``chmod()``.  It essentially j=
+ust
+>  calls ``walk_component()`` on the final component through a call to
+>  ``lookup_last()``.  ``path_lookupat()`` returns just the final dentry.
+> -
+> -``path_mountpoint()`` handles the special case of unmounting which must
+> -not try to revalidate the mounted filesystem.  It effectively
+> -contains, through a call to ``mountpoint_last()``, an alternate
+> -implementation of ``lookup_slow()`` which skips that step.  This is
+> -important when unmounting a filesystem that is inaccessible, such as
+> +It is worth noting that when flag ``LOOKUP_MOUNTPOINT`` is set,
+> +``path_lookupat()`` will unset LOOKUP_JUMPED in nameidata so that in the=
+ further
 
-    net: ethernet: mtk_eth_soc: add flow offloading support
+I would say "subsequent" rather than "further".
 
-In drivers/net/ethernet/mediatek/mtk_ppe_offload.c:
+Either way:
+ Reviewed-by: NeilBrown <neilb@suse.de>
 
-+static const struct rhashtable_params mtk_flow_ht_params = {
-+       .head_offset = offsetof(struct mtk_flow_entry, node),
-+       .head_offset = offsetof(struct mtk_flow_entry, cookie),
-+       .key_len = sizeof(unsigned long),
-+       .automatic_shrinking = true,
-+};
-
-What's intended for head_offset here?
-
-Christoph:  This was the only actual questionable code caught by override-init
-across allmodconfig builds of arm, arm64, and x86_64. The other 218 warnings
-not already silenced by Makefile twiddling of CFLAGS are all legitimate. I
-admit not being sure what that means for its use in W=1 builds in general.
+Thanks,
+NeilBrown
 
 
---==_Exmh_1618794132_13593P
-Content-Type: application/pgp-signature
+> +path traversal ``d_weak_revalidate()`` won't be called.
+> +This is important when unmounting a filesystem that is inaccessible, suc=
+h as
+>  one provided by a dead NFS server.
+>=20=20
+>  Finally ``path_openat()`` is used for the ``open()`` system call; it
+> --=20
+> 2.30.2
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
-Comment: Exmh version 2.9.0 11/07/2018
 
-iQIVAwUBYHzWlAdmEQWDXROgAQKBMRAArsoGj4sOoT0DAvTbdQb1ePhTUDMRptuS
-rjlchzSFgPmnVRcZA7uHfMclr06Sv4Z7x3YUi1B9EoVpCJ7636ZVvYH4C1moc6bc
-u6bwTdsS1BfpbDy7UJB3J+81f6TvsajnNMaTVvJKyX83zoCw64gkozaoaKRTlLfo
-bC2WoqTVqSyfSKWx4k3dC22A6U5FnFhmxulr3FAhbd6gg50LqWn4zA8lpILIpAMW
-XIRZMHPDqCQ4HLck6lRj4Toj1KUYKA6c9nWr31zHCd+yBwDGB479jNc578gSHYL9
-OJ4z7Kb/S/fIMilkNrjo36qqmiW5XS/vW55GDSpq0yhLzlSdwrQbhd33x/+y9w11
-GgLRSSSL5W7JDpGaUcOJkV9j5vAVG6AB+3j60RdzR9rDF59L/jnCp++lilrcsW3a
-A9iyYczjbT3s0DwZmwC1NTk3L/Sq0T27wAKgojgacJ1eNGVRZy/njR2tFfwTqord
-j/5MDKBdB7oNzuvmVuJG4+m//ModL/oPC9vx8nZJgZiS4JpfIwHXDlZdPwZlR8lC
-SAl5LHU+5GD4EN4ZjoCn2Ocl0veShZoKYr9TQXXWPg3W5uKCoFioWqO+wIeL0mop
-5nu6OAf1KvGq3KmP/dqBA9GElv3GaUkf75kRoK8gED6rLjP+kqcThndQzGFQOo7E
-GK82Pd1kWTM=
-=YBHY
+iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAmB81vcOHG5laWxiQHN1
+c2UuZGUACgkQOeye3VZigbkiiw/7BTf52crr3ZQthQ+WuVTdElGsxY2ZjpR5AwbO
+D6KmVqx3OMJuWiFwF15ND9d8PqHvib6gwJbSWCckGWrJJLjJ4m6PEpbpEhl16D7W
+mn/YS/p8UzX5GClYslaPLK7UTGl34WZcGXBBnSRrP88MS+p5yeKWU5p+kMMk+b+D
+ZfpbNiNpxrM02ZErgiPsZyb189IVWB4VviMP0RW8s2PF2h2xK9d64jlsa/03F+tQ
+WCzrPJE6AiASA2oJjS29zvHLawOXrrt+dhdEJY8uNEFORclxmc8Y45BCexnig94D
+at+Rj6jx19nIFuurzal504XssHj51qVJSoDi38EjjWG3/PQJ2ZTyTZx0kS8taOvW
+N7fv0zVosSzmDkmERYljjZBnbSNlKWSjcTG2Xu8AGsFT8Q9G4hxRX+zwXrYnQgP/
+gVkQ0GuRolK+bgNxkfTgTTeu66UWCCBa8rPwHi6lozItzpbDyk786CZBTi+kh41T
+YbgTxXysCErrDTujqPtlQBp5PrTWe8HZ7HOTzsdrqiiA8MZU+4tvHZz+c9piwqi/
++YSZbI+CGxkEQbnt8TVkUpAz701+V3zUPp+Rn/agkr69h+ojLMRso594ZUe3k3wM
+KQOaD5svAQDSDkO+X5K5NCFGXWdP3h1cnZfG42ILd4q0O5UfiO4zjZkS8pdKbtz8
+UqJK8LQ=
+=TmPT
 -----END PGP SIGNATURE-----
-
---==_Exmh_1618794132_13593P--
+--=-=-=--
