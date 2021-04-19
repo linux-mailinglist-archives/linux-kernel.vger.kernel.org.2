@@ -2,234 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4FEA363D59
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 230A1363D69
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235633AbhDSIUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 04:20:53 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:17013 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhDSIUv (ORCPT
+        id S236252AbhDSIXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 04:23:04 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:55137 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229790AbhDSIXB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 04:20:51 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FP06V2WH9zPs0N;
-        Mon, 19 Apr 2021 16:17:22 +0800 (CST)
-Received: from [10.174.178.5] (10.174.178.5) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Mon, 19 Apr 2021
- 16:20:15 +0800
-Subject: Re: [PATCH v2 1/5] mm/swapfile: add percpu_ref support for swap
-To:     "Huang, Ying" <ying.huang@intel.com>
-CC:     <akpm@linux-foundation.org>, <dennis@kernel.org>,
-        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
-        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
-        <alexs@kernel.org>, <david@redhat.com>, <minchan@kernel.org>,
-        <richard.weiyang@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>
-References: <20210417094039.51711-1-linmiaohe@huawei.com>
- <20210417094039.51711-2-linmiaohe@huawei.com>
- <87eef7kmzw.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <753f414f-34a1-b16a-f826-7deb2dcd4af6@huawei.com>
- <87czuq4uo2.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <dfbb8f36-e172-b682-fbfa-168a1ac2d456@huawei.com>
- <87zgxu3e4v.fsf@yhuang6-desk1.ccr.corp.intel.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <84daf06a-84b4-0523-b278-123e546a92e2@huawei.com>
-Date:   Mon, 19 Apr 2021 16:20:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 19 Apr 2021 04:23:01 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-173-Jw5v629MP6SNyxusFjbP0g-1; Mon, 19 Apr 2021 09:22:22 +0100
+X-MC-Unique: Jw5v629MP6SNyxusFjbP0g-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Mon, 19 Apr 2021 09:22:21 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Mon, 19 Apr 2021 09:22:21 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'wangyanan (Y)'" <wangyanan55@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+CC:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Ben Gardon <bgardon@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        "wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>,
+        "yuzenghui@huawei.com" <yuzenghui@huawei.com>,
+        kvm <kvm@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v6 03/10] KVM: selftests: Use flag CLOCK_MONOTONIC_RAW for
+ timing
+Thread-Topic: [PATCH v6 03/10] KVM: selftests: Use flag CLOCK_MONOTONIC_RAW
+ for timing
+Thread-Index: AQHXNObaeVOoTXOm4UClXGWfioY7I6q7fhHA
+Date:   Mon, 19 Apr 2021 08:22:21 +0000
+Message-ID: <8f36c1973c8147858000dd2a28d046ce@AcuMS.aculab.com>
+References: <20210330080856.14940-1-wangyanan55@huawei.com>
+ <20210330080856.14940-4-wangyanan55@huawei.com>
+ <1f892f30-1a72-1bcb-462f-b3d6f2bababb@redhat.com>
+ <82def592-e36c-25c3-c8c5-84c9be83e926@huawei.com>
+In-Reply-To: <82def592-e36c-25c3-c8c5-84c9be83e926@huawei.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <87zgxu3e4v.fsf@yhuang6-desk1.ccr.corp.intel.com>
-Content-Type: text/plain; charset="windows-1252"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.5]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/19 15:52, Huang, Ying wrote:
-> Miaohe Lin <linmiaohe@huawei.com> writes:
-> 
->> On 2021/4/19 15:09, Huang, Ying wrote:
->>> Miaohe Lin <linmiaohe@huawei.com> writes:
->>>
->>>> On 2021/4/19 10:48, Huang, Ying wrote:
->>>>> Miaohe Lin <linmiaohe@huawei.com> writes:
->>>>>
->>>>>> We will use percpu-refcount to serialize against concurrent swapoff. This
->>>>>> patch adds the percpu_ref support for swap.
->>>>>>
->>>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>>>>> ---
->>>>>>  include/linux/swap.h |  3 +++
->>>>>>  mm/swapfile.c        | 33 +++++++++++++++++++++++++++++----
->>>>>>  2 files changed, 32 insertions(+), 4 deletions(-)
->>>>>>
->>>>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
->>>>>> index 144727041e78..8be36eb58b7a 100644
->>>>>> --- a/include/linux/swap.h
->>>>>> +++ b/include/linux/swap.h
->>>>>> @@ -240,6 +240,7 @@ struct swap_cluster_list {
->>>>>>   * The in-memory structure used to track swap areas.
->>>>>>   */
->>>>>>  struct swap_info_struct {
->>>>>> +	struct percpu_ref users;	/* serialization against concurrent swapoff */
->>>>>
->>>>> The comments aren't general enough.  We use this to check whether the
->>>>> swap device has been fully initialized, etc. May be something as below?
->>>>>
->>>>> /* indicate and keep swap device valid */
->>>>
->>>> Looks good.
->>>>
->>>>>
->>>>>>  	unsigned long	flags;		/* SWP_USED etc: see above */
->>>>>>  	signed short	prio;		/* swap priority of this type */
->>>>>>  	struct plist_node list;		/* entry in swap_active_head */
->>>>>> @@ -260,6 +261,8 @@ struct swap_info_struct {
->>>>>>  	struct block_device *bdev;	/* swap device or bdev of swap file */
->>>>>>  	struct file *swap_file;		/* seldom referenced */
->>>>>>  	unsigned int old_block_size;	/* seldom referenced */
->>>>>> +	bool ref_initialized;		/* seldom referenced */
->>>>>> +	struct completion comp;		/* seldom referenced */
->>>>>>  #ifdef CONFIG_FRONTSWAP
->>>>>>  	unsigned long *frontswap_map;	/* frontswap in-use, one bit per page */
->>>>>>  	atomic_t frontswap_pages;	/* frontswap pages in-use counter */
->>>>>> diff --git a/mm/swapfile.c b/mm/swapfile.c
->>>>>> index 149e77454e3c..66515a3a2824 100644
->>>>>> --- a/mm/swapfile.c
->>>>>> +++ b/mm/swapfile.c
->>>>>> @@ -39,6 +39,7 @@
->>>>>>  #include <linux/export.h>
->>>>>>  #include <linux/swap_slots.h>
->>>>>>  #include <linux/sort.h>
->>>>>> +#include <linux/completion.h>
->>>>>>  
->>>>>>  #include <asm/tlbflush.h>
->>>>>>  #include <linux/swapops.h>
->>>>>> @@ -511,6 +512,14 @@ static void swap_discard_work(struct work_struct *work)
->>>>>>  	spin_unlock(&si->lock);
->>>>>>  }
->>>>>>  
->>>>>> +static void swap_users_ref_free(struct percpu_ref *ref)
->>>>>> +{
->>>>>> +	struct swap_info_struct *si;
->>>>>> +
->>>>>> +	si = container_of(ref, struct swap_info_struct, users);
->>>>>> +	complete(&si->comp);
->>>>>> +}
->>>>>> +
->>>>>>  static void alloc_cluster(struct swap_info_struct *si, unsigned long idx)
->>>>>>  {
->>>>>>  	struct swap_cluster_info *ci = si->cluster_info;
->>>>>> @@ -2500,7 +2509,7 @@ static void enable_swap_info(struct swap_info_struct *p, int prio,
->>>>>>  	 * Guarantee swap_map, cluster_info, etc. fields are valid
->>>>>>  	 * between get/put_swap_device() if SWP_VALID bit is set
->>>>>>  	 */
->>>>>> -	synchronize_rcu();
->>>>>
->>>>> You cannot remove this without changing get/put_swap_device().  It's
->>>>> better to squash at least PATCH 1-2.
->>>>
->>>> Will squash PATCH 1-2. Thanks.
->>>>
->>>>>
->>>>>> +	percpu_ref_resurrect(&p->users);
->>>>>>  	spin_lock(&swap_lock);
->>>>>>  	spin_lock(&p->lock);
->>>>>>  	_enable_swap_info(p);
->>>>>> @@ -2621,11 +2630,18 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
->>>>>>  	p->flags &= ~SWP_VALID;		/* mark swap device as invalid */
->>>>>>  	spin_unlock(&p->lock);
->>>>>>  	spin_unlock(&swap_lock);
->>>>>> +
->>>>>> +	percpu_ref_kill(&p->users);
->>>>>>  	/*
->>>>>> -	 * wait for swap operations protected by get/put_swap_device()
->>>>>> -	 * to complete
->>>>>> +	 * We need synchronize_rcu() here to protect the accessing
->>>>>> +	 * to the swap cache data structure.
->>>>>>  	 */
->>>>>>  	synchronize_rcu();
->>>>>> +	/*
->>>>>> +	 * Wait for swap operations protected by get/put_swap_device()
->>>>>> +	 * to complete.
->>>>>> +	 */
->>>>>
->>>>> I think the comments (after some revision) can be moved before
->>>>> percpu_ref_kill().  The synchronize_rcu() comments can be merged.
->>>>>
->>>>
->>>> Ok.
->>>>
->>>>>> +	wait_for_completion(&p->comp);
->>>>>>  
->>>>>>  	flush_work(&p->discard_work);
->>>>>>  
->>>>>> @@ -3132,7 +3148,7 @@ static bool swap_discardable(struct swap_info_struct *si)
->>>>>>  SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
->>>>>>  {
->>>>>>  	struct swap_info_struct *p;
->>>>>> -	struct filename *name;
->>>>>> +	struct filename *name = NULL;
->>>>>>  	struct file *swap_file = NULL;
->>>>>>  	struct address_space *mapping;
->>>>>>  	int prio;
->>>>>> @@ -3163,6 +3179,15 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
->>>>>>  
->>>>>>  	INIT_WORK(&p->discard_work, swap_discard_work);
->>>>>>  
->>>>>> +	if (!p->ref_initialized) {
->>>>>
->>>>> I don't think it's necessary to add another flag p->ref_initialized.  We
->>>>> can distinguish newly allocated and reused swap_info_struct in alloc_swap_info().
->>>>>
->>>>
->>>> If newly allocated swap_info_struct failed to init percpu_ref, it will be considered as
->>>> a reused one in alloc_swap_info() _but_ the field users of swap_info_struct is actually
->>>> uninitialized. Does this make sense for you?
->>>
->>> We can call percpu_ref_init() just after kvzalloc() in alloc_swap_info().
->>>
->>
->> Yes, we can do it this way. But using ref_initialized might make the code more straightforward
->> and simple?
-> 
-> I think that it's simpler to call percpu_ref_init() in
-> alloc_swap_info().  We can just call percpu_ref_init() for allocated
-> swap_info_struct blindly, and call percpu_ref_exit() if we reuse.
-> 
-
-Looks good. Will do. Many thanks again.
-
-> Best Regards,
-> Huang, Ying
-> 
->>> Best Regards,
->>> Huang, Ying
->>>
->>>> Many Thanks for quick review.
->>>>
->>>>> Best Regards,
->>>>> Huang, Ying
->>>>>
->>>>>> +		error = percpu_ref_init(&p->users, swap_users_ref_free,
->>>>>> +					PERCPU_REF_INIT_DEAD, GFP_KERNEL);
->>>>>> +		if (unlikely(error))
->>>>>> +			goto bad_swap;
->>>>>> +		init_completion(&p->comp);
->>>>>> +		p->ref_initialized = true;
->>>>>> +	}
->>>>>> +
->>>>>>  	name = getname(specialfile);
->>>>>>  	if (IS_ERR(name)) {
->>>>>>  		error = PTR_ERR(name);
->>>>> .
->>>>>
->>> .
->>>
-> .
-> 
+RnJvbTogd2FuZ3lhbmFuIChZKQ0KPiBTZW50OiAxOSBBcHJpbCAyMDIxIDA3OjQwDQo+IA0KPiBI
+aSBQYW9sbywNCj4gDQo+IE9uIDIwMjEvNC8xNyAyMToyMywgUGFvbG8gQm9uemluaSB3cm90ZToN
+Cj4gPiBPbiAzMC8wMy8yMSAxMDowOCwgWWFuYW4gV2FuZyB3cm90ZToNCj4gPj4gSW4gYWRkaXRp
+b24gdG8gZnVuY3Rpb24gb2YgQ0xPQ0tfTU9OT1RPTklDLCBmbGFnIENMT0NLX01PTk9UT05JQ19S
+QVcgY2FuDQo+ID4+IGFsc28gc2hpZWxkIHBvc3NpYWJsZSBpbXBhY3Qgb2YgTlRQLCB3aGljaCBj
+YW4gcHJvdmlkZSBtb3JlIHJvYnVzdG5lc3MuDQo+ID4+DQo+ID4+IFN1Z2dlc3RlZC1ieTogVml0
+YWx5IEt1em5ldHNvdjx2a3V6bmV0c0ByZWRoYXQuY29tPg0KPiA+PiBTaWduZWQtb2ZmLWJ5OiBZ
+YW5hbiBXYW5nPHdhbmd5YW5hbjU1QGh1YXdlaS5jb20+DQo+ID4+IFJldmlld2VkLWJ5OiBCZW4g
+R2FyZG9uPGJnYXJkb25AZ29vZ2xlLmNvbT4NCj4gPj4gUmV2aWV3ZWQtYnk6IEFuZHJldyBKb25l
+czxkcmpvbmVzQHJlZGhhdC5jb20+DQo+ID4NCj4gPiBJJ20gbm90IHN1cmUgYWJvdXQgdGhpcyBv
+bmUsIGlzIHRoZSBlZmZlY3QgdmlzaWJsZT8NCj4gPg0KPiBJbiBwcmFjdGljZSwgZGlmZmVyZW5j
+ZSBiZXR3ZWVuIHJlc3VsdHMgZ290IHdpdGggQ0xPQ0tfTU9OT1RPTklDIGFuZA0KPiBDTE9DS19N
+T05PVE9OSUNfUkFXDQo+IGFjdHVhbGx5IGlzIHRvbyBsaXR0bGUgdG8gYmUgdmlzaWJsZS4gQnV0
+IGlmIGp1c3QgaW4gdGhlb3J5LA0KPiBDTE9DS19NT05PVE9OSUNfUkFXIGNhbiBlbnN1cmUgdGlt
+ZSByZXN1bHRzDQo+IG9mIHRoZSBjb21wYXJlZCB0ZXN0cyBhcmUgYmFzZWQgb24gdGhlIHNhbWUg
+bG9jYWwgb3NjaWxsYXRvciBmcmVxdWVuY3ksDQo+IHdoaWNoIGlzIG5vdCBzdWJqZWN0IHRvIHBv
+c3NpYmxlDQo+IE5UUCBmcmVxdWVuY3kgYWRqdXN0bWVudC4gQ2hhbmdlIGluIHRoaXMgcGF0Y2gg
+c2VlbXMgbGlrZSBhIGJpdCBvZg0KPiBvcHRpbWl6YXRpb24uDQoNClRoZSByZWFsIGFubm95YW5j
+ZSBpcyB3aGVuIE5UUCBpcyByZWFsaWduaW5nIHRoZSBsb2NhbCBjbG9jay4NClRoaXMgdHlwaWNh
+bGx5IGhhcHBlbnMgYWZ0ZXIgYm9vdCAtIGJ1dCBjYW4gdGFrZSBxdWl0ZSBhIGZldw0KbWludXRl
+cyAoZG9uJ3QgdGhpbmsgaXQgY2FuIHF1aXRlIGdldCB0byBhbiBob3VyKS4NCihJIHRoaW5rIHNv
+bWV0aGluZyBzaW1pbGFyIGlzIGNhdXNlZCBieSBsZWFwIHNlY29uZHMuKQ0KDQpEdXJpbmcgdGhp
+cyBwZXJpb2QgQ0xPQ0tfTU9OT1RPTklDIGNhbiBydW4gYXQgYSBzaWduaWZpY2FudGx5DQpkaWZm
+ZXJlbnQgcmF0ZSBmcm9tICdyZWFsIHRpbWUnLg0KVGhpcyBtYXkgbm90IG1hdHRlciBmb3IgdGlt
+aW5nIHNlbGYgdGVzdHMsIGJ1dCBpcyBzaWduaWZpY2FudA0KZm9yIFJUUCBhdWRpby4NCg0KVGhl
+IHByb2JsZW0gdGhlcmUgaXMgdGhhdCB5b3Ugd2FudCB0aGUgTlRQIGNvcnJlY3RlZCB0aW1lDQpk
+dXJpbmcgJ25vcm1hbCBydW5uaW5nJyBiZWNhdXNlIHRoZSBzbWFsbCBjb3JyZWN0aW9uIChmb3IN
+CmNyeXN0YWwgZXJyb3IpIGlzIHVzZWZ1bC4NCg0KQnV0IHRoZSBrZXJuZWwgSFIgdGltZXJzIGFy
+ZSBvbmx5IGRlZmluZWQgZm9yIENMT0NLX01PTk9UT05JQw0KYW5kIHRoZSB1c2Vyc3BhY2UgcmVx
+dWVzdHMgZm9yIENMT0NLX01PTk9UT05JQ19SQVcgYXJlIGxpa2VseQ0KdG8gYmUgcmVhbCBzeXN0
+ZW0gY2FsbHMuDQoNCldoYXQgeW91IHJlYWxseSB3YW50IGlzIGEgY2xvY2sgd2hvc2UgZnJlcXVl
+bmN5IGlzIGFkanVzdGVkDQpieSBOVFAgYnV0IGRvZXNuJ3QgaGF2ZSB0aGUgTlRQIG9mZnNldCBh
+ZGp1Y3RtZW50cy4NCkluIHJlYWxpdHkgdGhpcyBvdWdodCB0byBiZSBDTE9DS19NT05PVE9OSUMu
+DQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9h
+ZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBO
+bzogMTM5NzM4NiAoV2FsZXMpDQo=
 
