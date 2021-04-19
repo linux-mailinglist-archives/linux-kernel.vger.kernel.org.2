@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21735364309
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB026364325
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240331AbhDSNNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:13:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47510 "EHLO mail.kernel.org"
+        id S240148AbhDSNOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:14:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239740AbhDSNLe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:11:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DBA53613AE;
-        Mon, 19 Apr 2021 13:11:02 +0000 (UTC)
+        id S239273AbhDSNMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:12:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A217C6113C;
+        Mon, 19 Apr 2021 13:11:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618837863;
-        bh=e/YWmjbMjgAaQhEyfU+nUYH5L4j/9kJBl0oTCgCdDr8=;
+        s=korg; t=1618837894;
+        bh=m83Jsjv1frtpyFiCelm+5L0QoMSJo7QdUF1BOkmsDbw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2P/23kS9JZDhEX8nTnQgX32ASzK+JDV13Y7ePxd6ko2DukXgkXvYm4y/3/yP5c4Sl
-         u2xKsaZjqM7Z6NJr+8agsgll/UlY5NMcTbVjZW36JRNl3xg3H7oHLVgxxRvx3/hu++
-         S/H48xiW+r3yRPwPT3f8nc9J9NyW31SdNmdxoZJA=
+        b=mLAVCISeacqYJv5UsDNPey/QLLIEtNBLX4Y1qQYVohIUMqJ1W/bp7a2oOLZtewn6R
+         NN78bGC51tAPehvOC78qslQSHK8qMbAZYJlhFDOUmuKqXUaSLtppbybVCAV8EBtrAD
+         C6iQ7uelFruW0lpbM0XcjuvFVoDyV12T6KzEqy90=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: [PATCH 5.11 064/122] arm64: alternatives: Move length validation in alternative_{insn, endif}
-Date:   Mon, 19 Apr 2021 15:05:44 +0200
-Message-Id: <20210419130532.356543037@linuxfoundation.org>
+        stable@vger.kernel.org, "Christian A. Ehrhardt" <lk@c--e.de>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Subject: [PATCH 5.11 065/122] vfio/pci: Add missing range check in vfio_pci_mmap
+Date:   Mon, 19 Apr 2021 15:05:45 +0200
+Message-Id: <20210419130532.389134520@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210419130530.166331793@linuxfoundation.org>
 References: <20210419130530.166331793@linuxfoundation.org>
@@ -41,74 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Christian A. Ehrhardt <lk@c--e.de>
 
-commit 22315a2296f4c251fa92aec45fbbae37e9301b6c upstream.
+commit 909290786ea335366e21d7f1ed5812b90f2f0a92 upstream.
 
-After commit 2decad92f473 ("arm64: mte: Ensure TIF_MTE_ASYNC_FAULT is
-set atomically"), LLVM's integrated assembler fails to build entry.S:
+When mmaping an extra device region verify that the region index
+derived from the mmap offset is valid.
 
-<instantiation>:5:7: error: expected assembly-time absolute expression
- .org . - (664b-663b) + (662b-661b)
-      ^
-<instantiation>:6:7: error: expected assembly-time absolute expression
- .org . - (662b-661b) + (664b-663b)
-      ^
-
-The root cause is LLVM's assembler has a one-pass design, meaning it
-cannot figure out these instruction lengths when the .org directive is
-outside of the subsection that they are in, which was changed by the
-.arch_extension directive added in the above commit.
-
-Apply the same fix from commit 966a0acce2fc ("arm64/alternatives: move
-length validation inside the subsection") to the alternative_endif
-macro, shuffling the .org directives so that the length validation
-happen will always happen in the same subsections. alternative_insn has
-not shown any issue yet but it appears that it could have the same issue
-in the future so just preemptively change it.
-
-Fixes: f7b93d42945c ("arm64/alternatives: use subsections for replacement sequences")
-Cc: <stable@vger.kernel.org> # 5.8.x
-Link: https://github.com/ClangBuiltLinux/linux/issues/1347
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
-Tested-by: Sami Tolvanen <samitolvanen@google.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-Link: https://lore.kernel.org/r/20210414000803.662534-1-nathan@kernel.org
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Fixes: a15b1883fee1 ("vfio_pci: Allow mapping extra regions")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christian A. Ehrhardt <lk@c--e.de>
+Message-Id: <20210412214124.GA241759@lisa.in-ulm.de>
+Reviewed-by: David Gibson <david@gibson.dropbear.id.au>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/include/asm/alternative-macros.h |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/vfio/pci/vfio_pci.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/arm64/include/asm/alternative-macros.h
-+++ b/arch/arm64/include/asm/alternative-macros.h
-@@ -97,9 +97,9 @@
- 	.popsection
- 	.subsection 1
- 663:	\insn2
--664:	.previous
--	.org	. - (664b-663b) + (662b-661b)
-+664:	.org	. - (664b-663b) + (662b-661b)
- 	.org	. - (662b-661b) + (664b-663b)
-+	.previous
- 	.endif
- .endm
+--- a/drivers/vfio/pci/vfio_pci.c
++++ b/drivers/vfio/pci/vfio_pci.c
+@@ -1658,6 +1658,8 @@ static int vfio_pci_mmap(void *device_da
  
-@@ -169,11 +169,11 @@
-  */
- .macro alternative_endif
- 664:
-+	.org	. - (664b-663b) + (662b-661b)
-+	.org	. - (662b-661b) + (664b-663b)
- 	.if .Lasm_alt_mode==0
- 	.previous
- 	.endif
--	.org	. - (664b-663b) + (662b-661b)
--	.org	. - (662b-661b) + (664b-663b)
- .endm
+ 	index = vma->vm_pgoff >> (VFIO_PCI_OFFSET_SHIFT - PAGE_SHIFT);
  
- /*
++	if (index >= VFIO_PCI_NUM_REGIONS + vdev->num_regions)
++		return -EINVAL;
+ 	if (vma->vm_end < vma->vm_start)
+ 		return -EINVAL;
+ 	if ((vma->vm_flags & VM_SHARED) == 0)
+@@ -1666,7 +1668,7 @@ static int vfio_pci_mmap(void *device_da
+ 		int regnum = index - VFIO_PCI_NUM_REGIONS;
+ 		struct vfio_pci_region *region = vdev->region + regnum;
+ 
+-		if (region && region->ops && region->ops->mmap &&
++		if (region->ops && region->ops->mmap &&
+ 		    (region->flags & VFIO_REGION_INFO_FLAG_MMAP))
+ 			return region->ops->mmap(vdev, region, vma);
+ 		return -EINVAL;
 
 
