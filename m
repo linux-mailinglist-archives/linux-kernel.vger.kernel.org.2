@@ -2,150 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8033638B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 02:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E8C3638BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 02:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237067AbhDSABw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 20:01:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26425 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235947AbhDSABe (ORCPT
+        id S235116AbhDSAIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 20:08:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231489AbhDSAIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 20:01:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618790465;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=udyNofiZcHz7UO2SxlIdvfmO6jGmZBxtXk0/dOlByNE=;
-        b=HIDq92FdhhFnoa+xXXLMgwoij9hRM/roQsOQH31/QqMU7m4QgI4ZL4nT9Mnml2260bVtXy
-        kXa2S0ZWS/Eo1b4HopuBBnNib0uzMSOlOyR4DgkRS13b8kNCAVtyIOB5RbfKmPqkzvfcPG
-        Z6yPeNXG4celCOBjgBPSk+f8+joTqR8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-427-fCyT3D2AOVOHipPLvx_x-g-1; Sun, 18 Apr 2021 20:01:03 -0400
-X-MC-Unique: fCyT3D2AOVOHipPLvx_x-g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 54F961898296;
-        Mon, 19 Apr 2021 00:01:00 +0000 (UTC)
-Received: from llong.com (ovpn-112-235.rdu2.redhat.com [10.10.112.235])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ECA865D741;
-        Mon, 19 Apr 2021 00:00:57 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH v4 5/5] mm/memcg: Improve refill_obj_stock() performance
-Date:   Sun, 18 Apr 2021 20:00:32 -0400
-Message-Id: <20210419000032.5432-6-longman@redhat.com>
-In-Reply-To: <20210419000032.5432-1-longman@redhat.com>
-References: <20210419000032.5432-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        Sun, 18 Apr 2021 20:08:35 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5410C06174A;
+        Sun, 18 Apr 2021 17:08:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=ckUWDp6KdGDf2T4Dj7yPTgziBC5qaZmyaDlZFbkgFC0=; b=sVL3iXUqRXOpjRaZvdqErX3b0q
+        3qK6TOJ+yhXvsPLwjJ1qQas+cLmehHJyd5ZcgKZL5A5mMsOWcWVzS6yqvUCOsX5kS1DPc8DZJHyrh
+        LWYgD4bfggzFMKTp9zbkdH70ZjXF6llQVQQYrbILbismpWlFSgtT/PMDRf0GLnBSF+R6t6iWYJGSo
+        tFvGFQDsV1cqaTiURhQYzTVwhck69KGN2I2tWKW4by2ay+qjyc3QFo5KtYPr0DwvS7TwKYJ62X727
+        L8nkP4/KCTlLE7m9yhbiTFX3eySXm8ED+YPu5ynGecT7jfRSBdKMoyTTAbOECMUd4+Tps1wo8qQaO
+        R0rEgB5g==;
+Received: from [2601:1c0:6280:3f0::df68] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lYHRV-00D04w-1D; Mon, 19 Apr 2021 00:07:26 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-watchdog@vger.kernel.org
+Subject: [PATCH] watchdog: clean up the Kconfig file
+Date:   Sun, 18 Apr 2021 17:07:03 -0700
+Message-Id: <20210419000704.17745-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two issues with the current refill_obj_stock() code. First of
-all, when nr_bytes reaches over PAGE_SIZE, it calls drain_obj_stock() to
-atomically flush out remaining bytes to obj_cgroup, clear cached_objcg
-and do a obj_cgroup_put(). It is likely that the same obj_cgroup will
-be used again which leads to another call to drain_obj_stock() and
-obj_cgroup_get() as well as atomically retrieve the available byte from
-obj_cgroup. That is costly. Instead, we should just uncharge the excess
-pages, reduce the stock bytes and be done with it. The drain_obj_stock()
-function should only be called when obj_cgroup changes.
+Change a non-working ftp: URL to https:.
+Wrap long lines earlier.
+Spell "IP" with capital letters.
+Change "it`s" to "it's". The backtick (grave accent) is not an apostrophe.
 
-Secondly, when charging an object of size not less than a page in
-obj_cgroup_charge(), it is possible that the remaining bytes to be
-refilled to the stock will overflow a page and cause refill_obj_stock()
-to uncharge 1 page. To avoid the additional uncharge in this case,
-a new overfill flag is added to refill_obj_stock() which will be set
-when called from obj_cgroup_charge().
-
-Signed-off-by: Waiman Long <longman@redhat.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-watchdog@vger.kernel.org
 ---
- mm/memcontrol.c | 23 +++++++++++++++++------
- 1 file changed, 17 insertions(+), 6 deletions(-)
+ drivers/watchdog/Kconfig |   53 ++++++++++++++++++++-----------------
+ 1 file changed, 29 insertions(+), 24 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index a6dd18f6d8a8..d13961352eef 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3357,23 +3357,34 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
- 	return false;
- }
+--- linux-next-20210416.orig/drivers/watchdog/Kconfig
++++ linux-next-20210416/drivers/watchdog/Kconfig
+@@ -22,9 +22,9 @@ menuconfig WATCHDOG
  
--static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
-+static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
-+			     bool overfill)
- {
- 	unsigned long flags;
- 	struct obj_stock *stock = get_obj_stock(&flags);
-+	unsigned int nr_pages = 0;
+ 	  The watchdog is usually used together with the watchdog daemon
+ 	  which is available from
+-	  <ftp://ibiblio.org/pub/Linux/system/daemons/watchdog/>. This daemon can
+-	  also monitor NFS connections and can reboot the machine when the process
+-	  table is full.
++	  <https://ibiblio.org/pub/Linux/system/daemons/watchdog/>. This daemon
++	  can also monitor NFS connections and can reboot the machine when the
++	  process table is full.
  
- 	if (stock->cached_objcg != objcg) { /* reset if necessary */
--		drain_obj_stock(stock);
-+		if (stock->cached_objcg)
-+			drain_obj_stock(stock);
- 		obj_cgroup_get(objcg);
- 		stock->cached_objcg = objcg;
- 		stock->nr_bytes = atomic_xchg(&objcg->nr_charged_bytes, 0);
- 	}
- 	stock->nr_bytes += nr_bytes;
+ 	  If unsure, say N.
  
--	if (stock->nr_bytes > PAGE_SIZE)
--		drain_obj_stock(stock);
-+	if (!overfill && (stock->nr_bytes > PAGE_SIZE)) {
-+		nr_pages = stock->nr_bytes >> PAGE_SHIFT;
-+		stock->nr_bytes &= (PAGE_SIZE - 1);
-+	}
+@@ -302,7 +302,7 @@ config XILINX_WATCHDOG
+ 	depends on HAS_IOMEM
+ 	select WATCHDOG_CORE
+ 	help
+-	  Watchdog driver for the xps_timebase_wdt ip core.
++	  Watchdog driver for the xps_timebase_wdt IP core.
  
- 	put_obj_stock(flags);
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called of_xilinx_wdt.
+@@ -404,8 +404,8 @@ config ASM9260_WATCHDOG
+ 	select WATCHDOG_CORE
+ 	select RESET_CONTROLLER
+ 	help
+-	  Watchdog timer embedded into Alphascale asm9260 chips. This will reboot your
+-	  system when the timeout is reached.
++	  Watchdog timer embedded into Alphascale asm9260 chips. This will
++	  reboot your system when the timeout is reached.
+ 
+ config AT91RM9200_WATCHDOG
+ 	tristate "AT91RM9200 watchdog"
+@@ -548,8 +548,9 @@ config OMAP_WATCHDOG
+ 	depends on ARCH_OMAP16XX || ARCH_OMAP2PLUS || COMPILE_TEST
+ 	select WATCHDOG_CORE
+ 	help
+-	  Support for TI OMAP1610/OMAP1710/OMAP2420/OMAP3430/OMAP4430 watchdog.  Say 'Y'
+-	  here to enable the OMAP1610/OMAP1710/OMAP2420/OMAP3430/OMAP4430 watchdog timer.
++	  Support for TI OMAP1610/OMAP1710/OMAP2420/OMAP3430/OMAP4430 watchdog.
++	  Say 'Y' here to enable the
++	  OMAP1610/OMAP1710/OMAP2420/OMAP3430/OMAP4430 watchdog timer.
+ 
+ config PNX4008_WATCHDOG
+ 	tristate "LPC32XX Watchdog"
+@@ -1096,13 +1097,16 @@ config SBC_FITPC2_WATCHDOG
+ 	  This is the driver for the built-in watchdog timer on the fit-PC2,
+ 	  fit-PC2i, CM-iAM single-board computers made by Compulab.
+ 
+-	  It`s possible to enable watchdog timer either from BIOS (F2) or from booted Linux.
+-	  When "Watchdog Timer Value" enabled one can set 31-255 s operational range.
+-
+-	  Entering BIOS setup temporary disables watchdog operation regardless to current state,
+-	  so system will not be restarted while user in BIOS setup.
++	  It's possible to enable the watchdog timer either from BIOS (F2) or
++	  from booted Linux.
++	  When the "Watchdog Timer Value" is enabled one can set 31-255 seconds
++	  operational range.
 +
-+	if (nr_pages) {
-+		rcu_read_lock();
-+		__memcg_kmem_uncharge(obj_cgroup_memcg(objcg), nr_pages);
-+		rcu_read_unlock();
-+	}
- }
++	  Entering BIOS setup temporarily disables watchdog operation regardless
++	  of current state, so system will not be restarted while user is in
++	  BIOS setup.
  
- int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)
-@@ -3410,7 +3421,7 @@ int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)
+-	  Once watchdog was enabled the system will be restarted every
++	  Once the watchdog is enabled the system will be restarted every
+ 	  "Watchdog Timer Value" period, so to prevent it user can restart or
+ 	  disable the watchdog.
  
- 	ret = __memcg_kmem_charge(memcg, gfp, nr_pages);
- 	if (!ret && nr_bytes)
--		refill_obj_stock(objcg, PAGE_SIZE - nr_bytes);
-+		refill_obj_stock(objcg, PAGE_SIZE - nr_bytes, true);
+@@ -1124,11 +1128,12 @@ config IB700_WDT
+ 	depends on X86
+ 	help
+ 	  This is the driver for the hardware watchdog on the IB700 Single
+-	  Board Computer produced by TMC Technology (www.tmc-uk.com). This watchdog
+-	  simply watches your kernel to make sure it doesn't freeze, and if
+-	  it does, it reboots your computer after a certain amount of time.
++	  Board Computer produced by TMC Technology (www.tmc-uk.com). This
++	  watchdog simply watches your kernel to make sure it doesn't freeze,
++	  and if it does, it reboots your computer after a certain amount of time.
  
- 	css_put(&memcg->css);
- 	return ret;
-@@ -3418,7 +3429,7 @@ int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)
+-	  This driver is like the WDT501 driver but for slightly different hardware.
++	  This driver is like the WDT501 driver but for slightly different
++	  hardware.
  
- void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size)
- {
--	refill_obj_stock(objcg, size);
-+	refill_obj_stock(objcg, size, false);
- }
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called ib700wdt.
+@@ -1807,10 +1812,10 @@ config PIC32_DMT
+ 	select WATCHDOG_CORE
+ 	depends on MACH_PIC32 || (MIPS && COMPILE_TEST)
+ 	help
+-	  Watchdog driver for PIC32 instruction fetch counting timer. This specific
+-	  timer is typically be used in misson critical and safety critical
+-	  applications, where any single failure of the software functionality
+-	  and sequencing must be detected.
++	  Watchdog driver for PIC32 instruction fetch counting timer. This
++	  specific timer is typically be used in mission critical and safety
++	  critical applications, where any single failure of the software
++	  functionality and sequencing must be detected.
  
- #endif /* CONFIG_MEMCG_KMEM */
--- 
-2.18.1
-
+ 	  To compile this driver as a loadable module, choose M here.
+ 	  The module will be called pic32-dmt.
+@@ -2013,8 +2018,8 @@ config PCWATCHDOG
+ 	  This card simply watches your kernel to make sure it doesn't freeze,
+ 	  and if it does, it reboots your computer after a certain amount of
+ 	  time. This driver is like the WDT501 driver but for different
+-	  hardware. Please read <file:Documentation/watchdog/pcwd-watchdog.rst>. The PC
+-	  watchdog cards can be ordered from <http://www.berkprod.com/>.
++	  hardware. Please read <file:Documentation/watchdog/pcwd-watchdog.rst>.
++	  The PC watchdog cards can be ordered from <http://www.berkprod.com/>.
+ 
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called pcwd.
