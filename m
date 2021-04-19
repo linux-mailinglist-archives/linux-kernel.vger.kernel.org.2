@@ -2,102 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74AF6364EDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C276D364EDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232184AbhDSXwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 19:52:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57282 "EHLO
+        id S232416AbhDSXyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 19:54:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230333AbhDSXwr (ORCPT
+        with ESMTP id S229471AbhDSXyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 19:52:47 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A79C061763
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 16:52:13 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id a18so3738033qtj.10
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 16:52:13 -0700 (PDT)
+        Mon, 19 Apr 2021 19:54:08 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98E6C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 16:53:36 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id f7-20020a5b0c070000b02904e9a56ee7e7so9500069ybq.9
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 16:53:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kepstin.ca; s=google;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=Tvkr+mPSZ+ps5DppAGK1+r+Pdo4K4oVliDzSpuZeEcw=;
-        b=CtItF8OToAHckxW4i9k8/+6ccOS+08mGOUvPXACScNE6B4Yei80WiWMj5Z50jJFjFF
-         8KY3c1N+x+iIqe9M2Qm0AddKOZwF9SeUUNYdTji6732Wx0cyfspfvtECD5WAxvzhlQeg
-         5gNThYBrSKuVUsxgjVac03LIJuO2eilwxkQE4=
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=eI+2lB2i0zkJaQIbQM7tK6wekgIsPHxRzUo5leb4rj4=;
+        b=iGdhwBvLpWOvkaGIBS8myhQnNZLBWSQrFRI8b3G9Ueq7noHNfiggS5avakde/q9iIj
+         jEtEL0gzVGSLALYIL46/hyn6tqLyMAUH4PzBJCc+u7IY4/VqV/3Bmy+SQlPiN2orQxsp
+         8xSJT2yhKAJ9um/BXV1NfRSbxt8+D8gXPD22yt4vOIHBJRtAkZOtJY43+KKEr5KtdIUh
+         nqNj71V+YzufEOflDJbH/Beasc8KnDQZfw0rM+2dyNsU7/zwn80fYBy9D+HjaNgy7hp3
+         6uUygoUEuu+Qa35cdbc+MgSkqJ1FkpjMXKQK9sEYzD837QmQFsJRcUee6/IsGayJw4rm
+         Rvyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=Tvkr+mPSZ+ps5DppAGK1+r+Pdo4K4oVliDzSpuZeEcw=;
-        b=pxKbTUkJX7k+EutSQrGkfsnT8TZzrITahaQfvAQo8pk6GilpnZK6yVmvihNG9QGGsH
-         lOkyuygCMWnjnUPXhSNvLHVntyDEUPO+yW884C4K9WearFiEFTVzCLiVXVHlTVVSpKKi
-         3cII/Dv1zb2wIrALwh7I9DVrDWU02rcJm92UI6kd9VRboKty3Q53tPWPAukIgy5/6iWu
-         iXjQYktRQDlEm2C+BKI4vYBan+uB+M2/xi+DnnDKHKv5UsiXjUc0kPgpfbzuCcVQolBB
-         zKzLs6D6redJsLovPgMwdZLQQDKe78Z3ky/A2nJc/Qb0BJlWz7x1ASb/+tJwnozBZPqG
-         iCZw==
-X-Gm-Message-State: AOAM5307y2cvuckg/ot+NChiO0ykxnZKA/EAZ+7VX75fToAD2l5YAu1e
-        6RR2FUW4ZQKXxSp57EyZECEFUA==
-X-Google-Smtp-Source: ABdhPJyyL46ChgPArznD6bCb/vCFF4f87AcabvZFleu+fYVN8dlJ33HXrIxgEFx6MEMvMN0ItHP9Vg==
-X-Received: by 2002:a05:622a:6:: with SMTP id x6mr14131824qtw.1.1618876332119;
-        Mon, 19 Apr 2021 16:52:12 -0700 (PDT)
-Received: from [192.168.1.161] (dhcp-108-168-125-232.cable.user.start.ca. [108.168.125.232])
-        by smtp.gmail.com with ESMTPSA id u11sm9934891qta.91.2021.04.19.16.52.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 16:52:11 -0700 (PDT)
-Message-ID: <f2d4ba09466d00c8fe22531307d0057fd7c1860b.camel@kepstin.ca>
-Subject: Re: [PATCH v2] tools/power turbostat: Fix RAPL summary collection
- on AMD processors
-From:   calvin.walton@kepstin.ca
-To:     Terry Bowman <terry.bowman@amd.com>, lenb@kernel.org,
-        yu.c.chen@intel.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bp@suse.de
-Cc:     wei.huang2@amd.com
-Date:   Mon, 19 Apr 2021 19:52:09 -0400
-In-Reply-To: <20210419195812.147710-1-terry.bowman@amd.com>
-References: <20210419195812.147710-1-terry.bowman@amd.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=eI+2lB2i0zkJaQIbQM7tK6wekgIsPHxRzUo5leb4rj4=;
+        b=l+y+Oto3WjMhFAWs3lGYkERchVyQ990DLjvnGFPMl9ZyvulG6kMvyc1miTrt/mjKXm
+         ip99OOs6gqC4/0i9gxlI6YMCORAYJniDX1sFup2e2w4Pw1MwPsZsKRzDqOUDLM02R8Ct
+         8eV8JxthYlh/QhABJi4IDxmY5qUYy4pRpckhiqUv50NkP2uTnuW1VjFvQi5W9ckmb4WJ
+         ka/FAbCmtY2JsZPNksMkD+Upx1He9IsHdYz7FlLuInrBhshSjlNXKngUedJnuar05apq
+         WgjkHOjetqYzxzOw5tngaPT4AzJI5qIJ5W5bbrPrwSQKeYGguV650YRRxR/aWPaZZ+bp
+         6yzA==
+X-Gm-Message-State: AOAM531zGgdklDCLVtx/N11URfYSzxAoJ3S57thCjOzA0WMrqTrC0C79
+        HzrmzzELYZQNbrgNz8r56QhPfmdZpcvE
+X-Google-Smtp-Source: ABdhPJzyQMvShZV2mpRVxeIT+bd4q84WPlLqmiWLMbNsGXJlBE9QHedcRcR6GFBjgErUEyjnVAmHDpsg0VOS
+X-Received: from yudiliu.mtv.corp.google.com ([2620:15c:202:201:ad3b:b707:fe95:d739])
+ (user=yudiliu job=sendgmr) by 2002:a5b:152:: with SMTP id c18mr20397176ybp.4.1618876416181;
+ Mon, 19 Apr 2021 16:53:36 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 16:53:30 -0700
+Message-Id: <20210419165323.v1.1.I9f9e8bcc849d91c1bb588a5181317c3e2ad48461@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
+Subject: [PATCH v1] Bluetooth: Fix the HCI to MGMT status conversion table
+From:   Yu Liu <yudiliu@google.com>
+To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
+        chromeos-bluetooth-upstreaming@chromium.org
+Cc:     Yu Liu <yudiliu@google.com>, Miao-chen Chou <mcchou@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-04-19 at 14:58 -0500, Terry Bowman wrote:
+0x2B, 0x31 and 0x33 are reserved for future use but were not present in
+the HCI to MGMT conversion table, this caused the conversion to be
+incorrect for the HCI status code greater than 0x2A.
 
-@@ -3281,7 +3326,7 @@ static int update_msr_sum(struct thread_data *t, struct core_data *c, struct pkg
-                        continue;
-                ret = get_msr(cpu, offset, &msr_cur);
-                if (ret) {
--                       fprintf(outf, "Can not update msr(0x%x)\n", offset);
-+                       fprintf(outf, "Can not update msr(0x%lx)\n", offset);
+Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+Signed-off-by: Yu Liu <yudiliu@google.com>
+---
 
-This gives a warning when compiled on 32-bit, since turbostat is
-compiled with -D_FILE_OFFSET_BITS=64:
+Changes in v1:
+- Initial change
 
-turbostat.c: In function 'update_msr_sum':
-turbostat.c:3329:42: warning: format '%lx' expects argument of type
-'long unsigned int', but argument 3 has type 'off_t' {aka 'long long
-int'} [-Wformat=]
- 3329 |    fprintf(outf, "Can not update msr(0x%lx)\n", offset);
-      |                                        ~~^      ~~~~~~
-      |                                          |      |
-      |                                          |      off_t {aka long long int}
-      |                                          long unsigned int
-      |                                        %llx
+ net/bluetooth/mgmt.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Easiest fix is probably to cast to (long long int) and use the %llx
-format specifier. That should be valid with i686, x32, and amd64
-userspace.
-
-Everything else looks fine as far as I can tell, so feel free to add a
-
-Reviewed-by: Calvin Walton <calvin.walton@kepstin.ca>
-
-once you've fixed that warning.
-
-
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index 40f75b8e1416..b44e19c69c44 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -252,12 +252,15 @@ static const u8 mgmt_status_table[] = {
+ 	MGMT_STATUS_TIMEOUT,		/* Instant Passed */
+ 	MGMT_STATUS_NOT_SUPPORTED,	/* Pairing Not Supported */
+ 	MGMT_STATUS_FAILED,		/* Transaction Collision */
++	MGMT_STATUS_FAILED,		/* Reserved for future use */
+ 	MGMT_STATUS_INVALID_PARAMS,	/* Unacceptable Parameter */
+ 	MGMT_STATUS_REJECTED,		/* QoS Rejected */
+ 	MGMT_STATUS_NOT_SUPPORTED,	/* Classification Not Supported */
+ 	MGMT_STATUS_REJECTED,		/* Insufficient Security */
+ 	MGMT_STATUS_INVALID_PARAMS,	/* Parameter Out Of Range */
++	MGMT_STATUS_FAILED,		/* Reserved for future use */
+ 	MGMT_STATUS_BUSY,		/* Role Switch Pending */
++	MGMT_STATUS_FAILED,		/* Reserved for future use */
+ 	MGMT_STATUS_FAILED,		/* Slot Violation */
+ 	MGMT_STATUS_FAILED,		/* Role Switch Failed */
+ 	MGMT_STATUS_INVALID_PARAMS,	/* EIR Too Large */
 -- 
- <calvin.walton@kepstin.ca>
+2.31.1.368.gbe11c130af-goog
 
