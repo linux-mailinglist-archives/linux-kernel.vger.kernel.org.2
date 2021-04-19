@@ -2,140 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7843536461E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E63A36462A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239841AbhDSOar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 10:30:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46646 "EHLO
+        id S239947AbhDSOdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 10:33:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232302AbhDSOan (ORCPT
+        with ESMTP id S232302AbhDSOc6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 10:30:43 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBFC6C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 07:30:12 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id v19-20020a0568300913b029028423b78c2dso24097482ott.8
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 07:30:12 -0700 (PDT)
+        Mon, 19 Apr 2021 10:32:58 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55EF1C061763
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 07:32:29 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id u80so2036524oia.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 07:32:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Gj46eHqwGog6MM83EGWyn/d2gDw8gFPwgfxb+P24o6o=;
-        b=lkjySsHHyCKy9V1I4ctG8Ub1AgpYKyAuzEzcSNEdD6DDIejJcaBrdvFQij3q1W6nkh
-         ph3/QcpKP1doY1wwlSUTOL0ycAOL4E/i45ucmDsMszNr+VDpKTZdTAwGkRgdjJ4MFQZt
-         Sy2J6LBcsk0shbd+V9/F055vcs32TuxuRm78E3BVgiFgv7oQ8brYvpy9cQyR3KQw2GKW
-         YIcZuEUq6FO7ZvIWcmLQw/A/7mMFXXUY9s1blDA4b2iE2W4scxuIDudwarlynD8QuCSn
-         /hbFjEeejeoK6D5kjnmwKPWGbXlRpyOFlHAZjdPFaUC5aqNgx07oVpzTUNGwbIkle7f7
-         G+oQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4nWRWEmvjlM65gvpUkZGPybpr9Usfroi21CGmSCGgnQ=;
+        b=dKL+8Di3Vh6QSg4UqSIU/ueXxsqOGsn3aeAhCMqzWv41AGVzSLAx1Ybl794pFYHlfG
+         3TUX1OT/sBVmuDWRZOG8OqLuCv0p08RsLlCGp5JmsYmuOLPShTe2tXYNpIVo1mXY4nPg
+         8W94VxamJxc4H91RpnHe8FbFMEXdkhnkEbNv5G3SHB+Pl7IZDP8DwwLKVe0VITYW7Z6O
+         hVIKKJzfjEB0Zxd0+uM9b/b76cwX63K/kOrrVNR++7bhgj90+LQIuCzqmjUhKKf0IQiO
+         fuCn9ZmD3+G8qXxepR7uHqrVcdxpjY8KisVw5KC7qdNTn9x8SioiKjV/nTVbgTFw1TGR
+         C7OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Gj46eHqwGog6MM83EGWyn/d2gDw8gFPwgfxb+P24o6o=;
-        b=aQeMbqkY2iSmDQM6vuBjSHNkKMB1Fu8jviM4XgWWwUtI1osvUuh2BZgdBOSopVuCHK
-         OlCNBfrpuDZsEvWaXAfEa+9nnt1HvxAQcXFDPjO5ZgA9oASCaAJnT4MKXRUhxMppwAd+
-         h1YD+QWI+7EWYvHhQmCHPfWtdUWS9xkNU5JNxFt1wKRv2a9ooXMGmFSt3XNdJ8eodDe8
-         KORqKn/u65JAhqzpAHbZhQmz9vhOF44xEO4KGTZ9u7Fp9Z5HjTrn8fasJLFrVpdGIVKe
-         dzmZvd4Oh4YGqGDXJL4s6k/ev/rhiC1tbgn2OQAj5n2BeUgNXUhOYFU56qzzTceFKDX+
-         8FIg==
-X-Gm-Message-State: AOAM531JIgRy0P/oXSPMMJAopP5dNQagGQoRtcmy34IxY0WzPYwRANrx
-        WHSbPEeN3rO3m0pw+r4yBjDiii2MTc9/kpepv8vUSw==
-X-Google-Smtp-Source: ABdhPJwSYDy60sZm2oeM8mHFQBmtJjl37bNE4CpyjornHp8itMqA2mkUWPkd6ohCMFSwNCxs5Rt2QtE15JWk5o4IWbw=
-X-Received: by 2002:a9d:5f8c:: with SMTP id g12mr2582275oti.283.1618842611531;
- Mon, 19 Apr 2021 07:30:11 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4nWRWEmvjlM65gvpUkZGPybpr9Usfroi21CGmSCGgnQ=;
+        b=cgRtu7n5qfXzxkKf+S1Vy/eqPzmmL2RFRrv4SnJJJ7RWeMTVO5vJOIN8/uUlW+H0YF
+         bsqOFarcXugCSg/Wzv5tKUAgPJkpNn/CodD2h6UsKFldXjN5sPbxXQkXQLFj51SnrKno
+         4XFti+gp/ygOpOwUGj/X5w7/EUeYxrBJTR9FReYNHJDi/S60YzwlnMTjtwpRzNmDyXvq
+         UrkC0+UwF2oo7zmTEdry3vJSgRglRetpVT2mbJW2JHpXIuC3WgYSFr7gwey/VY3QNNOx
+         viVVqUAB8Gi8j5E6RCzLIaJgBijgwlLImRKrXmEx15CUUhoGOu4OzWJsdwLJCXkn3BES
+         fvlA==
+X-Gm-Message-State: AOAM530jmkkspvbNmyLVluIxbcZnCxPg6ZzIFH5HfIDBuwOQLrOyLuXk
+        2sg4hS4NQ2Yz8Ma5aEJpzonW6g==
+X-Google-Smtp-Source: ABdhPJy3ipgPHZ4m9cveqEO3UoOQ3lZDcUGjgRZW0c3MiRNf9Yn6lUjxnt5tD4qel7g8ZRGUhgynJA==
+X-Received: by 2002:aca:408b:: with SMTP id n133mr13137273oia.13.1618842748685;
+        Mon, 19 Apr 2021 07:32:28 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id g26sm3567915otr.73.2021.04.19.07.32.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 07:32:28 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 09:32:25 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     schowdhu@codeaurora.org
+Cc:     Felipe Balbi <balbi@kernel.org>, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org
+Subject: Re: [PATCH V3 2/4] soc: qcom: dcc:Add driver support for Data
+ Capture and Compare unit(DCC)
+Message-ID: <20210419143225.GO1538589@yoga>
+References: <cover.1618387606.git.schowdhu@codeaurora.org>
+ <59b2e83d5d0f435112f6ae266612ff91c85b120f.1618387606.git.schowdhu@codeaurora.org>
+ <87k0p4njni.fsf@kernel.org>
+ <ffc2076e7145af0099bab8ef37611556@codeaurora.org>
 MIME-Version: 1.0
-References: <20210415145857.34183-1-andriy.shevchenko@linux.intel.com>
- <CAHUa44FWJiL1yzHR0jwL2VJG_4t_O6An48v47gORitcaahwmYw@mail.gmail.com>
- <YH1xHDbFyJ1URYYV@smile.fi.intel.com> <CAHUa44GqTNoLbwfqPrWFVLV3=M2d-2hE1uDY=CHpCcZgzMu5Og@mail.gmail.com>
- <CAHp75VeP9eXyrpuWpb9smuLUCBmocwfzA1p4NXPNyNfP0i3ngw@mail.gmail.com>
-In-Reply-To: <CAHp75VeP9eXyrpuWpb9smuLUCBmocwfzA1p4NXPNyNfP0i3ngw@mail.gmail.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Mon, 19 Apr 2021 16:30:00 +0200
-Message-ID: <CAHUa44GOZL=2Owua2fD79EnBuzVAh-Oh3nZ=cA1TQy0NAgNMaw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] tee: optee: Provide special parameter field for
- UUID values
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ffc2076e7145af0099bab8ef37611556@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 3:40 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Mon, Apr 19, 2021 at 4:30 PM Jens Wiklander
-> <jens.wiklander@linaro.org> wrote:
-> > On Mon, Apr 19, 2021 at 2:01 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > >
-> > > On Mon, Apr 19, 2021 at 01:35:51PM +0200, Jens Wiklander wrote:
-> > > > On Thu, Apr 15, 2021 at 4:58 PM Andy Shevchenko
-> > > > <andriy.shevchenko@linux.intel.com> wrote:
-> > >
-> > > Thanks for review, my answer below.
-> > >
-> > > > >                 struct optee_msg_param_tmem tmem;
-> > > > >                 struct optee_msg_param_rmem rmem;
-> > > > >                 struct optee_msg_param_value value;
-> > > > > +               uuid_t uuid;
-> > > >
-> > > > It's nice to get rid of the cast above, but I'm not that keen on the
-> > > > change in this struct. This file defines the ABI towards Secure world
-> > > > and adding dependencies on external complex types is a larger problem
-> > > > than the cast above in my opinion.
-> > >
-> > > I understand.
-> > >
-> > > So, the cast is simply wrong there. Can you add a comment above that cast to
-> > > explain that and make it is marked as FIXME? Because there is no guarantee that
-> > > internal Linux types can be 1:1 mapped to the ABI of something.
-> >
-> > We might as well fix it directly instead. How about storing the
-> > intermediate result in a proper uuid_t and then export it as:
-> > export_uuid((u8 *)&msg_arg->params[1].u.uuid, &myuuid);
->
-> Still a casting here.
-> With u64 members you have a (potential) endianness issue (consider
-> BE-32 platform). Also you never know that a b c translates properly to
-> byte array.
->
-> I would rather see a custom function
->
-> optee_import_uuid(param, uuid_t *uuid)
-> {
->   u8 uuid_raw[UUID_SIZE];
->
->   put_unaligned_le64(&uuid_raw[0], param.a); // not sure about endianness
->   put_unaligned_le64(&uuid_raw[0], param.b); // ditto
+On Mon 19 Apr 05:32 CDT 2021, schowdhu@codeaurora.org wrote:
 
-I believe it's a memcpy() we want then, since UUIDs are supposed to be
-transmitted using a big endian memory pattern.
-We should perhaps add
-u8 octets[24];
-to that union. Then should the result be well defined using export_uuid().
+> On 2021-04-15 12:01, Felipe Balbi wrote:
+> > Hi,
+> > 
+> > Souradeep Chowdhury <schowdhu@codeaurora.org> writes:
+> > > diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
+> > > index ad675a6..e7f0ccb 100644
+> > > --- a/drivers/soc/qcom/Makefile
+> > > +++ b/drivers/soc/qcom/Makefile
+> > > @@ -1,19 +1,22 @@
+> > >  # SPDX-License-Identifier: GPL-2.0
+> > >  CFLAGS_rpmh-rsc.o := -I$(src)
+> > >  obj-$(CONFIG_QCOM_AOSS_QMP) +=	qcom_aoss.o
+> > > -obj-$(CONFIG_QCOM_GENI_SE) +=	qcom-geni-se.o
+> > > +obj-$(CONFIG_QCOM_APR) += apr.o
+> > >  obj-$(CONFIG_QCOM_COMMAND_DB) += cmd-db.o
+> > >  obj-$(CONFIG_QCOM_CPR)		+= cpr.o
+> > > +obj-$(CONFIG_QCOM_DCC) += dcc.o
+> > > +obj-$(CONFIG_QCOM_GENI_SE) +=   qcom-geni-se.o
+> > >  obj-$(CONFIG_QCOM_GSBI)	+=	qcom_gsbi.o
+> > > +obj-$(CONFIG_QCOM_KRYO_L2_ACCESSORS) += kryo-l2-accessors.o
+> > > +obj-$(CONFIG_QCOM_LLCC) += llcc-qcom.o
+> > >  obj-$(CONFIG_QCOM_MDT_LOADER)	+= mdt_loader.o
+> > >  obj-$(CONFIG_QCOM_OCMEM)	+= ocmem.o
+> > >  obj-$(CONFIG_QCOM_PDR_HELPERS)	+= pdr_interface.o
+> > >  obj-$(CONFIG_QCOM_QMI_HELPERS)	+= qmi_helpers.o
+> > > -qmi_helpers-y	+= qmi_encdec.o qmi_interface.o
+> > >  obj-$(CONFIG_QCOM_RMTFS_MEM)	+= rmtfs_mem.o
+> > >  obj-$(CONFIG_QCOM_RPMH)		+= qcom_rpmh.o
+> > > -qcom_rpmh-y			+= rpmh-rsc.o
+> > > -qcom_rpmh-y			+= rpmh.o
+> > > +obj-$(CONFIG_QCOM_RPMHPD) += rpmhpd.o
+> > > +obj-$(CONFIG_QCOM_RPMPD) += rpmpd.o
+> > >  obj-$(CONFIG_QCOM_SMD_RPM)	+= smd-rpm.o
+> > >  obj-$(CONFIG_QCOM_SMEM) +=	smem.o
+> > >  obj-$(CONFIG_QCOM_SMEM_STATE) += smem_state.o
+> > > @@ -21,8 +24,6 @@ obj-$(CONFIG_QCOM_SMP2P)	+= smp2p.o
+> > >  obj-$(CONFIG_QCOM_SMSM)	+= smsm.o
+> > >  obj-$(CONFIG_QCOM_SOCINFO)	+= socinfo.o
+> > >  obj-$(CONFIG_QCOM_WCNSS_CTRL) += wcnss_ctrl.o
+> > > -obj-$(CONFIG_QCOM_APR) += apr.o
+> > > -obj-$(CONFIG_QCOM_LLCC) += llcc-qcom.o
+> > > -obj-$(CONFIG_QCOM_RPMHPD) += rpmhpd.o
+> > > -obj-$(CONFIG_QCOM_RPMPD) += rpmpd.o
+> > > -obj-$(CONFIG_QCOM_KRYO_L2_ACCESSORS) +=	kryo-l2-accessors.o
+> > > +qmi_helpers-y   += qmi_encdec.o qmi_interface.o
+> > > +qcom_rpmh-y                     += rpmh-rsc.o
+> > > +qcom_rpmh-y                     += rpmh.o
+> > 
+> > why so many changes?
+> 
+> This has been accidentally sorted based on the config names. Will be fixing
+> this in next version of the patch.
+> 
+> > 
+> > > diff --git a/drivers/soc/qcom/dcc.c b/drivers/soc/qcom/dcc.c
+> > > new file mode 100644
+> > > index 0000000..fcd5580
+> > > --- /dev/null
+> > > +++ b/drivers/soc/qcom/dcc.c
+> > > @@ -0,0 +1,1539 @@
+> > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > +/*
+> > > + * Copyright (c) 2015-2021, The Linux Foundation. All rights
+> > > reserved.
+> > > + */
+> > > +
+> > > +#include <linux/bitfield.h>
+> > > +#include <linux/bitops.h>
+> > > +#include <linux/cdev.h>
+> > > +#include <linux/delay.h>
+> > > +#include <linux/fs.h>
+> > > +#include <linux/io.h>
+> > > +#include <linux/iopoll.h>
+> > > +#include <linux/module.h>
+> > > +#include <linux/of.h>
+> > > +#include <linux/of_device.h>
+> > > +#include <linux/platform_device.h>
+> > > +#include <linux/slab.h>
+> > > +#include <linux/uaccess.h>
+> > > +
+> > > +
+> > 
+> > one blank line is enough
+> 
+> Ack
+> 
+> > 
+> > > +#define TIMEOUT_US		100
+> > > +
+> > > +#define dcc_writel(drvdata, val, off)					\
+> > > +	writel((val), drvdata->base + dcc_offset_conv(drvdata, off))
+> > > +#define dcc_readl(drvdata, off)						\
+> > > +	readl(drvdata->base + dcc_offset_conv(drvdata, off))
+> > > +
+> > > +#define dcc_sram_readl(drvdata, off)					\
+> > > +	readl(drvdata->ram_base + off)
+> > 
+> > this would be probably be better as static inlines.
+> 
+> These are simple read and write operations used in the driver
+> which just calls the generic writel and readl function.
+> That's why macros have been used here to lesson the overhead
+> of an extra function call.
 
->
->   import_uuid();
-> }
->
-> > > What you need, perhaps, is a middle layer function that will copy u64 data
-> > > to uuid_t or so. Also, u64 is not an ABI type, why the respective __uXX
-> > > variants are not in use?
-> >
-> > Does it make any difference? The file isn't shared with user space and
-> > I need to sync the file manually anyway since OP-TEE doesn't have the
-> > same include files.
->
-> Yes. It gives a hint that these are ABI (that's why I felt free to add
-> a member to the union. I have no idea that's an ABI). Optionally a
-> comment suggesting that.
+The compiler will realize that your static dcc_sram_readl() is cheaper
+to inline than call and do so for you. So you can expect that there's no
+difference in the output from the compiler, and if there is then the
+compiler knows something that you're overlooking.
 
-It does say that it defines a protocol at the beginning of the file, I
-can add ABI too if you think that helps.
-
-Cheers,
-Jens
+Regards,
+Bjorn
