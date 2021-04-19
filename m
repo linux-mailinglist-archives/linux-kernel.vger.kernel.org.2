@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D5136438C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84400364394
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241005AbhDSNTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:19:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47554 "EHLO mail.kernel.org"
+        id S240051AbhDSNVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:21:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239808AbhDSNQZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:16:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D9E46128C;
-        Mon, 19 Apr 2021 13:13:51 +0000 (UTC)
+        id S240531AbhDSNQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:16:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A801561354;
+        Mon, 19 Apr 2021 13:13:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618838032;
-        bh=LI9j5sJGSRyy67Dz4+2pisjvgfpL1uEl7OCjomsKw/M=;
+        s=korg; t=1618838038;
+        bh=BoVdH6KrJri0ZVRqOkfW+M41yFN1y391Hopf2LtxxdQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lUsJQiKxKe+wA+Iotrkhl9/3ZMgdq+ndmZkI6ht6t5a2ZgvLSV7nyekYdl6YSA3Mf
-         Bi0fbib/dtri60kvnlvG/GRIfbJLLF3zGOM/RXzIiiaC+IJuyeGh4SZP+oNQxkb+QR
-         un7sSW/Zy1Wt8AigirOvOW/1bRqYHunby+GnvLC4=
+        b=O/We9hmS0iwdsBoKifT3xRKHx5m8AuaZgDYEOIXlcjCjkB6t6pdSzGWjh9MEm3i6m
+         m5K/YizFA94DKnpxnPKtUZ91X3ZGTQModQQ7+VA62ZCSHSn31imcA99DafvmdX2240
+         JFo3SHHGGhyzjhhg0suZbQrrWYiTymwmkiQ5LdM0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiumei Mu <xmu@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
+        stable@vger.kernel.org, Ryan Lee <ryans.lee@maximintegrated.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 019/103] xfrm: BEET mode doesnt support fragments for inner packets
-Date:   Mon, 19 Apr 2021 15:05:30 +0200
-Message-Id: <20210419130528.451528720@linuxfoundation.org>
+Subject: [PATCH 5.10 020/103] ASoC: max98373: Changed amp shutdown register as volatile
+Date:   Mon, 19 Apr 2021 15:05:31 +0200
+Message-Id: <20210419130528.486019705@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210419130527.791982064@linuxfoundation.org>
 References: <20210419130527.791982064@linuxfoundation.org>
@@ -41,62 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Ryan Lee <ryans.lee@maximintegrated.com>
 
-[ Upstream commit 68dc022d04eb0fd60a540e242dcb11ec1bee07e2 ]
+[ Upstream commit a23f9099ff1541f15704e96b784d3846d2a4483d ]
 
-BEET mode replaces the IP(6) Headers with new IP(6) Headers when sending
-packets. However, when it's a fragment before the replacement, currently
-kernel keeps the fragment flag and replace the address field then encaps
-it with ESP. It would cause in RX side the fragments to get reassembled
-before decapping with ESP, which is incorrect.
+0x20FF(amp global enable) register was defined as non-volatile,
+but it is not. Overheating, overcurrent can cause amp shutdown
+in hardware.
+'regmap_write' compare register readback value before writing
+to avoid same value writing. 'regmap_read' just read cache
+not actual hardware value for the non-volatile register.
+When amp is internally shutdown by some reason, next 'AMP ON'
+command can be ignored because regmap think amp is already ON.
 
-In Xiumei's testing, these fragments went over an xfrm interface and got
-encapped with ESP in the device driver, and the traffic was broken.
-
-I don't have a good way to fix it, but only to warn this out in dmesg.
-
-Reported-by: Xiumei Mu <xmu@redhat.com>
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
+Link: https://lore.kernel.org/r/20210325033555.29377-1-ryans.lee@maximintegrated.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/xfrm_output.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ sound/soc/codecs/max98373-i2c.c | 1 +
+ sound/soc/codecs/max98373-sdw.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/net/xfrm/xfrm_output.c b/net/xfrm/xfrm_output.c
-index b81ca117dac7..e4cb0ff4dcf4 100644
---- a/net/xfrm/xfrm_output.c
-+++ b/net/xfrm/xfrm_output.c
-@@ -660,6 +660,12 @@ static int xfrm4_extract_output(struct xfrm_state *x, struct sk_buff *skb)
- {
- 	int err;
- 
-+	if (x->outer_mode.encap == XFRM_MODE_BEET &&
-+	    ip_is_fragment(ip_hdr(skb))) {
-+		net_warn_ratelimited("BEET mode doesn't support inner IPv4 fragments\n");
-+		return -EAFNOSUPPORT;
-+	}
-+
- 	err = xfrm4_tunnel_check_size(skb);
- 	if (err)
- 		return err;
-@@ -705,8 +711,15 @@ out:
- static int xfrm6_extract_output(struct xfrm_state *x, struct sk_buff *skb)
- {
- #if IS_ENABLED(CONFIG_IPV6)
-+	unsigned int ptr = 0;
- 	int err;
- 
-+	if (x->outer_mode.encap == XFRM_MODE_BEET &&
-+	    ipv6_find_hdr(skb, &ptr, NEXTHDR_FRAGMENT, NULL, NULL) >= 0) {
-+		net_warn_ratelimited("BEET mode doesn't support inner IPv6 fragments\n");
-+		return -EAFNOSUPPORT;
-+	}
-+
- 	err = xfrm6_tunnel_check_size(skb);
- 	if (err)
- 		return err;
+diff --git a/sound/soc/codecs/max98373-i2c.c b/sound/soc/codecs/max98373-i2c.c
+index 92921e34f948..32b0c1d98365 100644
+--- a/sound/soc/codecs/max98373-i2c.c
++++ b/sound/soc/codecs/max98373-i2c.c
+@@ -440,6 +440,7 @@ static bool max98373_volatile_reg(struct device *dev, unsigned int reg)
+ 	case MAX98373_R2054_MEAS_ADC_PVDD_CH_READBACK:
+ 	case MAX98373_R2055_MEAS_ADC_THERM_CH_READBACK:
+ 	case MAX98373_R20B6_BDE_CUR_STATE_READBACK:
++	case MAX98373_R20FF_GLOBAL_SHDN:
+ 	case MAX98373_R21FF_REV_ID:
+ 		return true;
+ 	default:
+diff --git a/sound/soc/codecs/max98373-sdw.c b/sound/soc/codecs/max98373-sdw.c
+index fa589d834f9a..14fd2f9a0bf3 100644
+--- a/sound/soc/codecs/max98373-sdw.c
++++ b/sound/soc/codecs/max98373-sdw.c
+@@ -214,6 +214,7 @@ static bool max98373_volatile_reg(struct device *dev, unsigned int reg)
+ 	case MAX98373_R2054_MEAS_ADC_PVDD_CH_READBACK:
+ 	case MAX98373_R2055_MEAS_ADC_THERM_CH_READBACK:
+ 	case MAX98373_R20B6_BDE_CUR_STATE_READBACK:
++	case MAX98373_R20FF_GLOBAL_SHDN:
+ 	case MAX98373_R21FF_REV_ID:
+ 	/* SoundWire Control Port Registers */
+ 	case MAX98373_R0040_SCP_INIT_STAT_1 ... MAX98373_R0070_SCP_FRAME_CTLR:
 -- 
 2.30.2
 
