@@ -2,86 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B07363FF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 12:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B3D363FF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 12:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234147AbhDSK5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 06:57:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:40408 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229537AbhDSK5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 06:57:06 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E7F2E31B;
-        Mon, 19 Apr 2021 03:56:36 -0700 (PDT)
-Received: from e120877-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0FC4B3F792;
-        Mon, 19 Apr 2021 03:56:34 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 11:56:30 +0100
-From:   Vincent Donnefort <vincent.donnefort@arm.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
-        mingo@kernel.org, bigeasy@linutronix.de, swood@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, qais.yousef@arm.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] sched: Use cpu_dying() to fix balance_push vs
- hotplug-rollback
-Message-ID: <20210419105541.GA40111@e120877-lin.cambridge.arm.com>
-References: <20210310145258.899619710@infradead.org>
- <20210310150109.259726371@infradead.org>
- <871rclu3jz.mognet@e113632-lin.i-did-not-set--mail-host-address--so-tickle-me>
- <YHQ3Iy7QfL+0UoM0@hirez.programming.kicks-ass.net>
- <87r1jfmn8d.mognet@arm.com>
- <YHU/a9HvGLYpOLKZ@hirez.programming.kicks-ass.net>
- <YHgAYef83VQhKdC2@hirez.programming.kicks-ass.net>
- <87a6pzmxec.mognet@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87a6pzmxec.mognet@arm.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S238028AbhDSK5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 06:57:22 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:33656 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236023AbhDSK5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 06:57:21 -0400
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx7+3xYX1gdFwKAA--.1753S2;
+        Mon, 19 Apr 2021 18:56:49 +0800 (CST)
+From:   Youling Tang <tangyouling@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Huacai Chen <chenhuacai@kernel.org>
+Subject: [PATCH] mips: kdump: Crash kernel should be able to see old memories
+Date:   Mon, 19 Apr 2021 18:56:47 +0800
+Message-Id: <1618829807-12522-1-git-send-email-tangyouling@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx7+3xYX1gdFwKAA--.1753S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZrWfuFy5GrWDCF15KFyUZFb_yoWkCrg_KF
+        12vrWkGr1YyF4v9rZxJ34fWFWYkw47XryFk3Z5G3y5Ja45Ja1kGrZ0yasxXrs8Wr4kurn5
+        C398ZFs09wsFgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb28YjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z2
+        80aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAK
+        zVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx
+        8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8twCF04k20xvY
+        0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
+        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAI
+        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcV
+        CF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+        jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jO_-9UUUUU=
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 03:32:11PM +0100, Valentin Schneider wrote:
-> On 15/04/21 10:59, Peter Zijlstra wrote:
-> > Can't make sense of what I did.. I've removed that hunk. Patch now looks
-> > like this.
-> >
-> 
-> Small nit below, but regardless feel free to apply to the whole lot:
-> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-> 
-> @VincentD, ISTR you had tested the initial version of this with your fancy
-> shmancy hotplug rollback stresser. Feel like doing this
+From: Huacai Chen <chenhc@lemote.com>
 
-I indeed wrote a test to verify all the rollback cases, up and down.
+kexec-tools use mem=X@Y to pass usable memories to crash kernel, but in
+commit a94e4f24ec836c8984f83959 ("MIPS: init: Drop boot_mem_map") all
+BIOS passed memories are removed by early_parse_mem(). I think this is
+reasonable for a normal kernel but not for a crash kernel, because a
+crash kernel should be able to see all old memories, even though it is
+not supposed to use them.
 
-It seems I encounter an intermitent issue while running several iterations of
-that test ... but I need more time to debug and figure-out where it is blocking.
+Fixes: a94e4f24ec836c8984f83959 ("MIPS: init: Drop boot_mem_map")
+Signed-off-by: Huacai Chen <chenhuacai@kernel.org>
+Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+---
+ arch/mips/kernel/setup.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> 
-> > So instead, make sure balance_push is enabled between
-> > sched_cpu_deactivate() and sched_cpu_activate() (eg. when
-> > !cpu_active()), and gate it's utility with cpu_dying().
-> 
-> I'd word that "is enabled below sched_cpu_activate()", since
-> sched_cpu_deactivate() is now out of the picture.
-> 
-> [...]
-> > @@ -7639,6 +7639,9 @@ static DEFINE_PER_CPU(struct cpu_stop_wo
-> >
-> >  /*
-> >   * Ensure we only run per-cpu kthreads once the CPU goes !active.
-> > + *
-> > + * This is active/set between sched_cpu_deactivate() / sched_cpu_activate().
-> 
-> Ditto
-> 
-> > + * But only effective when the hotplug motion is down.
-> >   */
-> >  static void balance_push(struct rq *rq)
-> >  {
+diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+index b86e241..ac90d3b 100644
+--- a/arch/mips/kernel/setup.c
++++ b/arch/mips/kernel/setup.c
+@@ -351,8 +351,10 @@ static int __init early_parse_mem(char *p)
+ 	 */
+ 	if (usermem == 0) {
+ 		usermem = 1;
++#ifndef CONFIG_CRASH_DUMP
+ 		memblock_remove(memblock_start_of_DRAM(),
+ 			memblock_end_of_DRAM() - memblock_start_of_DRAM());
++#endif
+ 	}
+ 	start = 0;
+ 	size = memparse(p, &p);
+-- 
+2.1.0
+
