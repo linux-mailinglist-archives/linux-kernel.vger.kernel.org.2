@@ -2,88 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30AB4363CDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 09:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DADCB363CE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 09:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237995AbhDSHlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 03:41:06 -0400
-Received: from mail-ua1-f46.google.com ([209.85.222.46]:40623 "EHLO
-        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231663AbhDSHk6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 03:40:58 -0400
-Received: by mail-ua1-f46.google.com with SMTP id 33so10637237uaa.7;
-        Mon, 19 Apr 2021 00:40:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2VIr1L+x0KMjslWLfGf5hIF0vYoVyKryX0VbeLPhjXY=;
-        b=LKALPdAQ9SPBJ025H5EYgB2JJmsvxOTF+kHXsHTU34o7eF0cbupVAKx0Pl2Y4ZGxNL
-         DbXozQWlITmwPtqxhmbLU/JdK0k30IPYkrvHx9VLvdHT2h1RspTycjEkBxxGbOsqZuaU
-         NShSEMFidZtLsAHt+55Cn8TGumibx/o2plGAGEMLA0TOouBH20rxKo2WNbNPrk1pDnWU
-         SyecHBqysIu4a9BgeBRxyz1+Wig0maX/QGZoaCPR+nLQPzE2FT2+cJ9FNZ3wVcTvmClM
-         5iXX/Nomp9F0c4ubk10keKK1t5EOah9l69616iJC0/CM8gvpHruTSq8I6ZKwtfjbsgj3
-         3v3A==
-X-Gm-Message-State: AOAM532V+YX/XKccR5yt9//t1CXUJJftMpEgv8PjmxwtAkLiUpglVBE+
-        WMbA3haOmQpPm2XNW1J/ZcMHcd4ccJ4fvGw9+sQ=
-X-Google-Smtp-Source: ABdhPJwwXmXRA54KsUIVTR+3h20psdWGNGLb0sv7M0Wa6xBFjtt5vw5IgsA9I8yZw3/8pDlvTRTO5cNvRqQf/YEF4l8=
-X-Received: by 2002:a9f:3852:: with SMTP id q18mr5818471uad.58.1618818028444;
- Mon, 19 Apr 2021 00:40:28 -0700 (PDT)
+        id S238018AbhDSHmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 03:42:16 -0400
+Received: from mga02.intel.com ([134.134.136.20]:27441 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237925AbhDSHmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 03:42:09 -0400
+IronPort-SDR: KYn74ov1YFcG4C21y0459VgJ7T8o6k2muoXdsFN/FDw9vV8pMXlxjl74O7OyjH+JOts/ztC8Rk
+ /f/kxDe65FHw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9958"; a="182414835"
+X-IronPort-AV: E=Sophos;i="5.82,233,1613462400"; 
+   d="scan'208";a="182414835"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 00:41:39 -0700
+IronPort-SDR: 96eJN9v2jRinOp9bZ8wzjLPORJqeNK6KJsdmHV5mts+h/41o1NDEB0nut17SymCNEiLETlc9lH
+ oqL/zdR6sa8A==
+X-IronPort-AV: E=Sophos;i="5.82,233,1613462400"; 
+   d="scan'208";a="426409354"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 00:41:34 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     <akpm@linux-foundation.org>, <dennis@kernel.org>,
+        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
+        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
+        <alexs@kernel.org>, <david@redhat.com>, <minchan@kernel.org>,
+        <richard.weiyang@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>
+Subject: Re: [PATCH v2 5/5] mm/shmem: fix shmem_swapin() race with swapoff
+References: <20210417094039.51711-1-linmiaohe@huawei.com>
+        <20210417094039.51711-6-linmiaohe@huawei.com>
+        <87r1j7kok3.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <ed215f73-93c1-d47b-e440-30701a7fca46@huawei.com>
+        <87h7k24uxg.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <41a33c84-f878-8dab-a1d0-4aea3a1fc739@huawei.com>
+Date:   Mon, 19 Apr 2021 15:41:28 +0800
+In-Reply-To: <41a33c84-f878-8dab-a1d0-4aea3a1fc739@huawei.com> (Miaohe Lin's
+        message of "Mon, 19 Apr 2021 15:14:10 +0800")
+Message-ID: <877dky4t7b.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-References: <cover.1618388989.git.npache@redhat.com> <0fa191715b236766ad13c5f786d8daf92a9a0cf2.1618388989.git.npache@redhat.com>
- <e26fbcc8-ba3e-573a-523d-9c5d5f84bc46@tessares.net> <CABVgOSm9Lfcu--iiFo=PNLCWCj4vkxqAqO0aZT9B2r3Kw5Fhaw@mail.gmail.com>
- <b57a1cc8-4921-6ed5-adb8-0510d1918d28@tessares.net> <CABVgOS=QDATYk3nn1jLHhVRh7rXoTp1+jQhUE5pZq8P9M0VpUA@mail.gmail.com>
-In-Reply-To: <CABVgOS=QDATYk3nn1jLHhVRh7rXoTp1+jQhUE5pZq8P9M0VpUA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 19 Apr 2021 09:40:17 +0200
-Message-ID: <CAMuHMdWfYHjNOmPSEbPOJeqniQoCG=8PD8KA8xDWXo3WggdQ_w@mail.gmail.com>
-Subject: Re: [PATCH v2 5/6] kunit: mptcp: adhear to KUNIT formatting standard
-To:     David Gow <davidgow@google.com>
-Cc:     Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Nico Pache <npache@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Mark Brown <broonie@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>, mptcp@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+Miaohe Lin <linmiaohe@huawei.com> writes:
 
-On Sat, Apr 17, 2021 at 6:24 AM David Gow <davidgow@google.com> wrote:
-> > Like patch 1/6, I can apply it in MPTCP tree and send it later to
-> > net-next with other patches.
-> > Except if you guys prefer to apply it in KUnit tree and send it to
-> > linux-next?
+> On 2021/4/19 15:04, Huang, Ying wrote:
+>> Miaohe Lin <linmiaohe@huawei.com> writes:
+>> 
+>>> On 2021/4/19 10:15, Huang, Ying wrote:
+>>>> Miaohe Lin <linmiaohe@huawei.com> writes:
+>>>>
+>>>>> When I was investigating the swap code, I found the below possible race
+>>>>> window:
+>>>>>
+>>>>> CPU 1                                           CPU 2
+>>>>> -----                                           -----
+>>>>> shmem_swapin
+>>>>>   swap_cluster_readahead
+>>>>>     if (likely(si->flags & (SWP_BLKDEV | SWP_FS_OPS))) {
+>>>>>                                                 swapoff
+>>>>>                                                   si->flags &= ~SWP_VALID;
+>>>>>                                                   ..
+>>>>>                                                   synchronize_rcu();
+>>>>>                                                   ..
+>>>>
+>>>> You have removed these code in the previous patches of the series.  And
+>>>> they are not relevant in this patch.
+>>>
+>>> Yes, I should change these. Thanks.
+>>>
+>>>>
+>>>>>                                                   si->swap_file = NULL;
+>>>>>     struct inode *inode = si->swap_file->f_mapping->host;[oops!]
+>>>>>
+>>>>> Close this race window by using get/put_swap_device() to guard against
+>>>>> concurrent swapoff.
+>>>>>
+>>>>> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+>>>>
+>>>> No.  This isn't the commit that introduces the race condition.  Please
+>>>> recheck your git blame result.
+>>>>
+>>>
+>>> I think this is really hard to find exact commit. I used git blame and found
+>>> this race should be existed when this is introduced. Any suggestion ?
+>>> Thanks.
+>> 
+>> I think the commit that introduces the race condition is commit
+>> 8fd2e0b505d1 ("mm: swap: check if swap backing device is congested or
+>> not")
+>> 
 >
-> Given 1/6 is going to net-next, it makes sense to send this out that
-> way too, then, IMHO.
-> The only slight concern I have is that the m68k test config patch in
-> the series will get split from the others, but that should resolve
-> itself when they pick up the last patch.
+> Thanks.
+> The commit log only describes one race condition. And for that one, this should be correct
+> Fixes tag. But there are still many other race conditions inside swap_cluster_readahead,
+> such as swap_readpage() called from swap_cluster_readahead. This tag could not cover the
+> all race windows.
 
-I can apply the m68k test config patch when all other parts have
-entered mainline.  Note that I would have made the same changes
-myself anyway, on -rc1 defconfig refresh.
+No. swap_readpage() in swap_cluster_readahead() is OK.  Because
+__read_swap_cache_async() is called before that, so the swap entry will
+be marked with SWAP_HAS_CACHE, and page will be locked.
 
-Gr{oetje,eeting}s,
+Best Regards,
+Huang, Ying
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+>> Best Regards,
+>> Huang, Ying
+>> 
+>>>> Best Regards,
+>>>> Huang, Ying
+>>>>
+>>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>>> ---
+>>>>>  mm/shmem.c | 6 ++++++
+>>>>>  1 file changed, 6 insertions(+)
+>>>>>
+>>>>> diff --git a/mm/shmem.c b/mm/shmem.c
+>>>>> index 26c76b13ad23..936ba5595297 100644
+>>>>> --- a/mm/shmem.c
+>>>>> +++ b/mm/shmem.c
+>>>>> @@ -1492,15 +1492,21 @@ static void shmem_pseudo_vma_destroy(struct vm_area_struct *vma)
+>>>>>  static struct page *shmem_swapin(swp_entry_t swap, gfp_t gfp,
+>>>>>  			struct shmem_inode_info *info, pgoff_t index)
+>>>>>  {
+>>>>> +	struct swap_info_struct *si;
+>>>>>  	struct vm_area_struct pvma;
+>>>>>  	struct page *page;
+>>>>>  	struct vm_fault vmf = {
+>>>>>  		.vma = &pvma,
+>>>>>  	};
+>>>>>  
+>>>>> +	/* Prevent swapoff from happening to us. */
+>>>>> +	si = get_swap_device(swap);
+>>>>> +	if (unlikely(!si))
+>>>>> +		return NULL;
+>>>>>  	shmem_pseudo_vma_init(&pvma, info, index);
+>>>>>  	page = swap_cluster_readahead(swap, gfp, &vmf);
+>>>>>  	shmem_pseudo_vma_destroy(&pvma);
+>>>>> +	put_swap_device(si);
+>>>>>  
+>>>>>  	return page;
+>>>>>  }
+>>>> .
+>>>>
+>> .
+>> 
