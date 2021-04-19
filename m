@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A403642E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF02436433E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240056AbhDSNMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:12:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46262 "EHLO mail.kernel.org"
+        id S240676AbhDSNQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:16:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239777AbhDSNKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:10:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D574361369;
-        Mon, 19 Apr 2021 13:10:10 +0000 (UTC)
+        id S240257AbhDSNN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:13:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4D94613AC;
+        Mon, 19 Apr 2021 13:12:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618837811;
-        bh=07fyHfePTqcu7mwntv5Jqbrm3xdWsZ0mEzRb0oiV66E=;
+        s=korg; t=1618837937;
+        bh=46JedHWo30ypvYrPVxpZd3sFM7/UwPdy0xbk1KlwYCo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZK8rzpo7B2YM/WsYXI8cr7HBL7H7RI5piiIiQ6t5XaOCC/nrviw3Ec+36/d77z0zX
-         6J2oRtkP37GqJq2yemm+I8Ixov6BbqCo5qzq1h10APIqKYDlJ9onrALvO2C86G3ggD
-         l6Y1oFWwJc9jTEKl6Ze+e3Z4J82TbE1zhyELxykg=
+        b=ZX16F3qjeRLqFbK6T7ucYoudafRi0dH98ohGxgua95zztUaDdc+jnZp8KKLXH33oV
+         1bPO0ktWEYAjJM7LJ9VPvTWEUtkevFhqyiFgjJWYLqwg0w2zd4sMdP5yZvReIZ0+q/
+         HV8f3xQassaiZzGLqeBapkSAqkNMvwYeCuSHrUrg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: [PATCH 5.11 061/122] drm/i915: Dont zero out the Y planes watermarks
-Date:   Mon, 19 Apr 2021 15:05:41 +0200
-Message-Id: <20210419130532.250125690@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Collingbourne <pcc@google.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 5.11 062/122] arm64: fix inline asm in load_unaligned_zeropad()
+Date:   Mon, 19 Apr 2021 15:05:42 +0200
+Message-Id: <20210419130532.284720554@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210419130530.166331793@linuxfoundation.org>
 References: <20210419130530.166331793@linuxfoundation.org>
@@ -42,48 +39,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ville Syrjälä <ville.syrjala@linux.intel.com>
+From: Peter Collingbourne <pcc@google.com>
 
-commit bf52dc49ba0101f648b4c3ea26b812061406b0d4 upstream.
+commit 185f2e5f51c2029efd9dd26cceb968a44fe053c6 upstream.
 
-Don't zero out the watermarks for the Y plane since we've already
-computed them when computing the UV plane's watermarks (since the
-UV plane always appears before ethe Y plane when iterating through
-the planes).
+The inline asm's addr operand is marked as input-only, however in
+the case where an exception is taken it may be modified by the BIC
+instruction on the exception path. Fix the problem by using a temporary
+register as the destination register for the BIC instruction.
 
-This leads to allocating no DDB for the Y plane since .min_ddb_alloc
-also gets zeroed. And that of course leads to underruns when scanning
-out planar formats.
-
+Signed-off-by: Peter Collingbourne <pcc@google.com>
 Cc: stable@vger.kernel.org
-Cc: Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>
-Fixes: dbf71381d733 ("drm/i915: Nuke intel_atomic_crtc_state_for_each_plane_state() from skl+ wm code")
-Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210327005945.4929-1-ville.syrjala@linux.intel.com
-Reviewed-by: Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>
-(cherry picked from commit f99b805fb9413ff007ca0b6add871737664117dd)
-Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Link: https://linux-review.googlesource.com/id/I84538c8a2307d567b4f45bb20b715451005f9617
+Link: https://lore.kernel.org/r/20210401165110.3952103-1-pcc@google.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/i915/intel_pm.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/include/asm/word-at-a-time.h |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/drivers/gpu/drm/i915/intel_pm.c
-+++ b/drivers/gpu/drm/i915/intel_pm.c
-@@ -5539,12 +5539,12 @@ static int icl_build_plane_wm(struct int
- 	struct skl_plane_wm *wm = &crtc_state->wm.skl.raw.planes[plane_id];
- 	int ret;
+--- a/arch/arm64/include/asm/word-at-a-time.h
++++ b/arch/arm64/include/asm/word-at-a-time.h
+@@ -53,7 +53,7 @@ static inline unsigned long find_zero(un
+  */
+ static inline unsigned long load_unaligned_zeropad(const void *addr)
+ {
+-	unsigned long ret, offset;
++	unsigned long ret, tmp;
  
--	memset(wm, 0, sizeof(*wm));
--
- 	/* Watermarks calculated in master */
- 	if (plane_state->planar_slave)
- 		return 0;
+ 	/* Load word from unaligned pointer addr */
+ 	asm(
+@@ -61,9 +61,9 @@ static inline unsigned long load_unalign
+ 	"2:\n"
+ 	"	.pushsection .fixup,\"ax\"\n"
+ 	"	.align 2\n"
+-	"3:	and	%1, %2, #0x7\n"
+-	"	bic	%2, %2, #0x7\n"
+-	"	ldr	%0, [%2]\n"
++	"3:	bic	%1, %2, #0x7\n"
++	"	ldr	%0, [%1]\n"
++	"	and	%1, %2, #0x7\n"
+ 	"	lsl	%1, %1, #0x3\n"
+ #ifndef __AARCH64EB__
+ 	"	lsr	%0, %0, %1\n"
+@@ -73,7 +73,7 @@ static inline unsigned long load_unalign
+ 	"	b	2b\n"
+ 	"	.popsection\n"
+ 	_ASM_EXTABLE(1b, 3b)
+-	: "=&r" (ret), "=&r" (offset)
++	: "=&r" (ret), "=&r" (tmp)
+ 	: "r" (addr), "Q" (*(unsigned long *)addr));
  
-+	memset(wm, 0, sizeof(*wm));
-+
- 	if (plane_state->planar_linked_plane) {
- 		const struct drm_framebuffer *fb = plane_state->hw.fb;
- 		enum plane_id y_plane_id = plane_state->planar_linked_plane->id;
+ 	return ret;
 
 
