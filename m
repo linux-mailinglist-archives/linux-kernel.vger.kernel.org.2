@@ -2,157 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F76363F4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 12:07:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB45363F52
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 12:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238063AbhDSKIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 06:08:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36708 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230202AbhDSKIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 06:08:11 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2F3DDADAA;
-        Mon, 19 Apr 2021 10:07:41 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id D12A61F2C6A; Mon, 19 Apr 2021 12:07:40 +0200 (CEST)
-Date:   Mon, 19 Apr 2021 12:07:40 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Linux fsdevel mailing list <linux-fsdevel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux kernel mailing list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] dax: Fix missed wakeup in put_unlocked_entry()
-Message-ID: <20210419100740.GB8706@quack2.suse.cz>
-References: <20210416173524.GA1379987@redhat.com>
- <CAPcyv4h77oTMBQ50wg6eHLpkFMQ16oAHg2+D=d5zshT6iWgAfw@mail.gmail.com>
- <20210416212449.GB1379987@redhat.com>
+        id S238179AbhDSKIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 06:08:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232055AbhDSKIb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 06:08:31 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC38AC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 03:08:00 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id a1so38680171ljp.2
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 03:08:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m4Ge4/OLRJ/QZEOtOI7jH3j6NMP0dgPEYr8cn2cVZdA=;
+        b=Z5QIwT2CkNBKAhSpoqk55bCneVZpjmu4swI4eBVN9EkcGmktWGlFGXKTXiNVvu/WQt
+         uyC9SblpJSM3EYE+9Sjwvta345bGjkLiM3zw/TQQJhbrN63RrhdSJx1+56l+1D2hPdpG
+         USihPdD3gjbiR/z8wBB5vYmmQZZz34ShTa0mlb+QeBdsfskPceVzHWceaPYGjsXyMunm
+         AsnGJDenTzRzGEqiiwStNnp+vXj246DjKxTLG6USZiREgmNqpAznsKJsp5MNhd3Q6bag
+         AG/iZm7T7EalvmBGJHgL3GmMXYir+umXlADYmONnk0XUHNMcpJSsNamzvm8noKDx2n5L
+         vDiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m4Ge4/OLRJ/QZEOtOI7jH3j6NMP0dgPEYr8cn2cVZdA=;
+        b=N9hnbhmtqBcN6IevMJ/+la0D7fCfSSm9T7xQRIfgQQkRX0+W613jspHcuy1Zn2hfrW
+         5j0K5kp5VhL4vHPppUsWe8CeDtcUEfTOjK51mjEDVFTaIWTC5sZAB0EcypFoq1Dr5fKm
+         kCNtDM9VFnsZRiObGtiJvyQr3m7fh8rHIBfCINLlLqrkJ6dfm3M+nhC9/jCfMDLpPUn4
+         6bVt5iKkU5Cqg8N+nmTtRt5vlme4fJgVY/aSUJuiiwE9FN6/N6iVQ05U6UZ2IXhY026h
+         1YJtpr2fphskp2pycuBz+862ZmHmDU573qIIFqPbdb6DrIhcrzF8kGtAh2FRKvhrtYmj
+         1shg==
+X-Gm-Message-State: AOAM532/YUZr97NjdDEQj49v3/YylbrszJoIF2Oi1aztqHIj7LsgVhUu
+        qFFojqSQbBr/K3vYDaBCA+SvHFTMo1g3VeLySPOcaQ==
+X-Google-Smtp-Source: ABdhPJwstFUJyFsJF3O59qzplzSCx37u2qJMHf9wCIFo89KRCfj2WprbxTCJIwQf62k+aJyOaLHd2lz2Mv/JtqVJ3mU=
+X-Received: by 2002:a2e:555:: with SMTP id 82mr10616897ljf.200.1618826879285;
+ Mon, 19 Apr 2021 03:07:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416212449.GB1379987@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <483ac17b-705a-38c3-54ee-7f0089262c03@gmail.com>
+In-Reply-To: <483ac17b-705a-38c3-54ee-7f0089262c03@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 19 Apr 2021 12:07:48 +0200
+Message-ID: <CACRpkdbEue3OLpU0L_SDAsxpLTY7aqRP5sOZ90pF=o-Yb0ot4Q@mail.gmail.com>
+Subject: Re: BUG: iio: mpu3050: Wrong temperature scale
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Nathan Royer <nroyer@invensense.com>,
+        Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 16-04-21 17:24:49, Vivek Goyal wrote:
-> On Fri, Apr 16, 2021 at 12:56:05PM -0700, Dan Williams wrote:
-> > On Fri, Apr 16, 2021 at 10:35 AM Vivek Goyal <vgoyal@redhat.com> wrote:
-> > >
-> > > I am seeing missed wakeups which ultimately lead to a deadlock when I am
-> > > using virtiofs with DAX enabled and running "make -j". I had to mount
-> > > virtiofs as rootfs and also reduce to dax window size to 32M to reproduce
-> > > the problem consistently.
-> > >
-> > > This is not a complete patch. I am just proposing this partial fix to
-> > > highlight the issue and trying to figure out how it should be fixed.
-> > > Should it be fixed in generic dax code or should filesystem (fuse/virtiofs)
-> > > take care of this.
-> > >
-> > > So here is the problem. put_unlocked_entry() wakes up waiters only
-> > > if entry is not null as well as !dax_is_conflict(entry). But if I
-> > > call multiple instances of invalidate_inode_pages2() in parallel,
-> > > then I can run into a situation where there are waiters on
-> > > this index but nobody will wait these.
-> > >
-> > > invalidate_inode_pages2()
-> > >   invalidate_inode_pages2_range()
-> > >     invalidate_exceptional_entry2()
-> > >       dax_invalidate_mapping_entry_sync()
-> > >         __dax_invalidate_entry() {
-> > >                 xas_lock_irq(&xas);
-> > >                 entry = get_unlocked_entry(&xas, 0);
-> > >                 ...
-> > >                 ...
-> > >                 dax_disassociate_entry(entry, mapping, trunc);
-> > >                 xas_store(&xas, NULL);
-> > >                 ...
-> > >                 ...
-> > >                 put_unlocked_entry(&xas, entry);
-> > >                 xas_unlock_irq(&xas);
-> > >         }
-> > >
-> > > Say a fault in in progress and it has locked entry at offset say "0x1c".
-> > > Now say three instances of invalidate_inode_pages2() are in progress
-> > > (A, B, C) and they all try to invalidate entry at offset "0x1c". Given
-> > > dax entry is locked, all tree instances A, B, C will wait in wait queue.
-> > >
-> > > When dax fault finishes, say A is woken up. It will store NULL entry
-> > > at index "0x1c" and wake up B. When B comes along it will find "entry=0"
-> > > at page offset 0x1c and it will call put_unlocked_entry(&xas, 0). And
-> > > this means put_unlocked_entry() will not wake up next waiter, given
-> > > the current code. And that means C continues to wait and is not woken
-> > > up.
-> > >
-> > > In my case I am seeing that dax page fault path itself is waiting
-> > > on grab_mapping_entry() and also invalidate_inode_page2() is
-> > > waiting in get_unlocked_entry() but entry has already been cleaned
-> > > up and nobody woke up these processes. Atleast I think that's what
-> > > is happening.
-> > >
-> > > This patch wakes up a process even if entry=0. And deadlock does not
-> > > happen. I am running into some OOM issues, that will debug.
-> > >
-> > > So my question is that is it a dax issue and should it be fixed in
-> > > dax layer. Or should it be handled in fuse to make sure that
-> > > multiple instances of invalidate_inode_pages2() on same inode
-> > > don't make progress in parallel and introduce enough locking
-> > > around it.
-> > >
-> > > Right now fuse_finish_open() calls invalidate_inode_pages2() without
-> > > any locking. That allows it to make progress in parallel to dax
-> > > fault path as well as allows multiple instances of invalidate_inode_pages2()
-> > > to run in parallel.
-> > >
-> > > Not-yet-signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-> > > ---
-> > >  fs/dax.c |    7 ++++---
-> > >  1 file changed, 4 insertions(+), 3 deletions(-)
-> > >
-> > > Index: redhat-linux/fs/dax.c
-> > > ===================================================================
-> > > --- redhat-linux.orig/fs/dax.c  2021-04-16 12:50:40.141363317 -0400
-> > > +++ redhat-linux/fs/dax.c       2021-04-16 12:51:42.385926390 -0400
-> > > @@ -266,9 +266,10 @@ static void wait_entry_unlocked(struct x
-> > >
-> > >  static void put_unlocked_entry(struct xa_state *xas, void *entry)
-> > >  {
-> > > -       /* If we were the only waiter woken, wake the next one */
-> > > -       if (entry && !dax_is_conflict(entry))
-> > > -               dax_wake_entry(xas, entry, false);
-> > > +       if (dax_is_conflict(entry))
-> > > +               return;
-> > > +
-> > > +       dax_wake_entry(xas, entry, false);
-> > 
-> 
-> Hi Dan,
-> 
-> > How does this work if entry is NULL? dax_entry_waitqueue() will not
-> > know if it needs to adjust the index.
-> 
-> Wake waiters both at current index as well PMD adjusted index. It feels
-> little ugly though.
-> 
-> > I think the fix might be to
-> > specify that put_unlocked_entry() in the invalidate path needs to do a
-> > wake_up_all().
-> 
-> Doing a wake_up_all() when we invalidate an entry, sounds good. I will give
-> it a try.
+On Mon, Apr 19, 2021 at 8:06 AM Dmitry Osipenko <digetx@gmail.com> wrote:
 
-Yeah, that's what I'd suggest as well. After invalidating entry, there's no
-point to let other waiters sleep. Trying to optimize for thundering herd
-problems in face of entry invalidation is really fragile as you noticed.
+> The driver uses
+> (x+23000)/280 formula for the conversion of raw temperature value, which
+> gives 82C for x=0, thus apparently formula is wrong because x=50000
+> should give us ~25C.
+>
+> I tried to search for the datasheet with the formula, but couldn't find it.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+There is no public datasheet. I have never seen a non-public datasheet
+either.
+
+As the initial submission of the driver says:
+
+"This driver is based on information from the rough input driver
+ in drivers/input/misc/mpu3050.c and the scratch misc driver
+ posted by Nathan Royer in 2011. Some years have passed but this
+ is finally a fully-fledged driver for this gyroscope. It was
+ developed and tested on the Qualcomm APQ8060 Dragonboard."
+
+Nathans submission:
+https://lore.kernel.org/lkml/1309486707-1658-1-git-send-email-nroyer@invensense.com/
+(you find the threads at the bottom)
+
+This submission came from inside Invensense so it is the closest
+authoritative source we have.
+
+> Linus, will you be able to check whether the formula used by the driver
+> is correct? Thanks in advance.
+
+Sadly the code is the documentation when it comes to Invensense stuff,
+I am CC:ing Nathans Invensense address in the vain hope he is still
+working there and could help, also CC to Jean-Baptiste who was
+there last year and maybe can help out.
+
+I don't anymore remember exactly how I found this equation,
+but it wasn't from any datasheet. I vaguely remember browsing
+through some Android userspace sensor code.
+
+What I tend to do is dig around in old mobile
+phone Android trees, and there you sometimes find this information
+in different GPL code drops. I bet I got it from browsing some of
+those.
+
+Here is an example (Tegra):
+https://android.googlesource.com/kernel/tegra/+/dba2740d025c8e7e7e3c61d84a4f964d2c1c0ac9/drivers/misc/inv_mpu
+
+Worst case what one *can* do is to calibrate the scale, like put
+the device in a controlled environment of some two reasonably
+far apart temperatures and measure, assuming it is at least
+linear. Some professionals use controlled environment
+chambers for this. But I hope there is a better way.
+
+Yours,
+Linus Walleij
