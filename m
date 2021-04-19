@@ -2,93 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C941C36430B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63327364351
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240346AbhDSNNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:13:52 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:34731 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239885AbhDSNLg (ORCPT
+        id S240185AbhDSNQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:16:59 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16603 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239980AbhDSNNh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:11:36 -0400
-Received: by mail-ot1-f47.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so32487293otn.1;
-        Mon, 19 Apr 2021 06:11:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=bUOnAN9m9JsNWQhRgesz+7tvMCC84BONiT/82qQ3gaw=;
-        b=af8qF+ug8A0Mmr4Z8kQDauTmskpAja/c0xfOpZWkc1mbN6VjI+4kzxFsgnJyi7mbgN
-         2q58lS8JdSc+rfsG1264ihRvtS84IM+H/dag/RPZrdajbrzsqSHWGGE41ZYVEZINpx5W
-         PypnfSVLeit9yjU/G5XbhFiCHClaaKpcuG0YD+Jpe4q3IrDyAviUjrEJ1dLnEXxscxac
-         hc+4u1vNnRN6FgqZVwMISbhnBw1Dh49d1zekIkIyoDAV4mQsY65zF+mbz+XT0ku+/7aP
-         S3LQCKH3AieYk5p3bSffsXzt8uriampx3VNvuXniXjb80VMeqnbUFEvPgSS+FHVH23hq
-         KLNQ==
-X-Gm-Message-State: AOAM530sIz8hqcgmyuej6xYhS5mzTPtA7s5vgDrleJPpC4k1/7XLW98T
-        qrry6yRSfQJTCrgOzFfzQQ==
-X-Google-Smtp-Source: ABdhPJyapjCa0fKnnqCAnOdhUBGTP9VwWD+Dv/EJDnnLHQJ3NH0YdFo0HuJK4aAn0PgiE2ymjj5IXQ==
-X-Received: by 2002:a9d:6056:: with SMTP id v22mr8249688otj.231.1618837866868;
-        Mon, 19 Apr 2021 06:11:06 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u126sm3165595oig.4.2021.04.19.06.11.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 06:11:05 -0700 (PDT)
-Received: (nullmailer pid 1055971 invoked by uid 1000);
-        Mon, 19 Apr 2021 13:11:03 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     kernel@pengutronix.de, robh+dt@kernel.org, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        broonie@kernel.org, lee.jones@linaro.org, lgirdwood@gmail.com,
-        alistair23@gmail.com
-In-Reply-To: <20210418210222.2945-1-alistair@alistair23.me>
-References: <20210418210222.2945-1-alistair@alistair23.me>
-Subject: Re: [PATCH v5 1/5] dt-bindings: mfd: Initial commit of silergy,sy7636a.yaml
-Date:   Mon, 19 Apr 2021 08:11:03 -0500
-Message-Id: <1618837863.719734.1055970.nullmailer@robh.at.kernel.org>
+        Mon, 19 Apr 2021 09:13:37 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FP6d05Hd3z1BGKt;
+        Mon, 19 Apr 2021 21:10:44 +0800 (CST)
+Received: from [127.0.0.1] (10.69.38.196) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Mon, 19 Apr 2021
+ 21:12:57 +0800
+Subject: Re: [PATCH RESEND 3/4] docs: Add HiSilicon PTT device driver
+ documentation
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <coresight@lists.linaro.org>, <linux-pci@vger.kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <helgaas@kernel.org>,
+        <gregkh@linuxfoundation.org>, <lorenzo.pieralisi@arm.com>,
+        <will@kernel.org>, <mark.rutland@arm.com>,
+        <mathieu.poirier@linaro.org>, <suzuki.poulose@arm.com>,
+        <mike.leach@linaro.org>, <leo.yan@linaro.org>,
+        <jonathan.cameron@huawei.com>, <song.bao.hua@hisilicon.com>,
+        <john.garry@huawei.com>, <prime.zeng@huawei.com>,
+        <liuqi115@huawei.com>, <zhangshaokun@hisilicon.com>,
+        <linuxarm@huawei.com>
+References: <1618654631-42454-1-git-send-email-yangyicong@hisilicon.com>
+ <1618654631-42454-4-git-send-email-yangyicong@hisilicon.com>
+ <20210419090750.g6aeyyrki7fiotxl@maple.lan>
+From:   Yicong Yang <yangyicong@hisilicon.com>
+Message-ID: <e884000f-3131-490b-eb0c-bc82ed642a85@hisilicon.com>
+Date:   Mon, 19 Apr 2021 21:12:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
+MIME-Version: 1.0
+In-Reply-To: <20210419090750.g6aeyyrki7fiotxl@maple.lan>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.38.196]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Apr 2021 07:02:18 +1000, Alistair Francis wrote:
-> Initial support for the Silergy SY7636A Power Management chip
-> and regulator.
+On 2021/4/19 17:07, Daniel Thompson wrote:
+> On Sat, Apr 17, 2021 at 06:17:10PM +0800, Yicong Yang wrote:
+>> Document the introduction and usage of HiSilicon PTT device driver.
+>>
+>> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+>> ---
+>>  Documentation/trace/hisi-ptt.rst | 326 +++++++++++++++++++++++++++++++++++++++
+>>  1 file changed, 326 insertions(+)
+>>  create mode 100644 Documentation/trace/hisi-ptt.rst
+>>
+>> diff --git a/Documentation/trace/hisi-ptt.rst b/Documentation/trace/hisi-ptt.rst
+>> new file mode 100644
+>> index 0000000..f093846
+>> --- /dev/null
+>> +++ b/Documentation/trace/hisi-ptt.rst
+>> @@ -0,0 +1,326 @@
+>> [...]
+>> +On Kunpeng 930 SoC, the PCIe Root Complex is composed of several
+>> +PCIe cores. Each PCIe core includes several Root Ports and a PTT
+>> +RCiEP, like below. The PTT device is capable of tuning and
+>> +tracing the link of the PCIe core.
+>> +::
+>> +          +--------------Core 0-------+
+>> +          |       |       [   PTT   ] |
+>> +          |       |       [Root Port]---[Endpoint]
+>> +          |       |       [Root Port]---[Endpoint]
+>> +          |       |       [Root Port]---[Endpoint]
+>> +    Root Complex  |------Core 1-------+
+>> +          |       |       [   PTT   ] |
+>> +          |       |       [Root Port]---[ Switch ]---[Endpoint]
+>> +          |       |       [Root Port]---[Endpoint] `-[Endpoint]
+>> +          |       |       [Root Port]---[Endpoint]
+>> +          +---------------------------+
+>> +
+>> +The PTT device driver cannot be loaded if debugfs is not mounted.
 > 
-> Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> ---
-> v5:
->  - Improve the documentation
-> 
->  .../bindings/mfd/silergy,sy7636a.yaml         | 70 +++++++++++++++++++
->  1 file changed, 70 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
+> This can't be right can it? Obviously debugfs must be enabled but why
+> mounted?
 > 
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+just mention the limit as I'm not sure it's always be mounted.
 
-yamllint warnings/errors:
+> 
+>> +Each PTT device will be presented under /sys/kernel/debugfs/hisi_ptt
+>> +as its root directory, with name of its BDF number.
+>> +::
+>> +
+>> +    /sys/kernel/debug/hisi_ptt/<domain>:<bus>:<device>.<function>
+>> +
+>> +Tune
+>> +====
+>> +
+>> +PTT tune is designed for monitoring and adjusting PCIe link parameters (events).
+>> +Currently we support events in 4 classes. The scope of the events
+>> +covers the PCIe core to which the PTT device belongs.
+>> +
+>> +Each event is presented as a file under $(PTT root dir)/$(BDF)/tune, and
+>> +mostly a simple open/read/write/close cycle will be used to tune
+>> +the event.
+>> +::
+>> +    $ cd /sys/kernel/debug/hisi_ptt/$(BDF)/tune
+>> +    $ ls
+>> +    qos_tx_cpl    qos_tx_np    qos_tx_p
+>> +    tx_path_rx_req_alloc_buf_level
+>> +    tx_path_tx_req_alloc_buf_level
+>> +    $ cat qos_tx_dp
+>> +    1
+>> +    $ echo 2 > qos_tx_dp
+>> +    $ cat qos_tx_dp
+>> +    2
+>> +
+>> +Current value (numerical value) of the event can be simply read
+>> +from the file, and the desired value written to the file to tune.
+> 
+> I saw that this RFC asks about whether debugfs is an appropriate
+> interface for the *tracing* capability of the platform. Have similar
+> questions been raised about the tuning interfaces?
+> 
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml: properties:regulators:properties:$ref: '/schemas/regulator/regulator.yaml#' is not of type 'object', 'boolean'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml: properties:regulators:properties: {'enum': ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'deprecated', 'description', 'else', 'enum', 'if', 'items', 'maxItems', 'maximum', 'minItems', 'minimum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'propertyNames', 'required', 'then', 'unevaluatedProperties']} is not allowed for '$ref'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml: properties:regulators:properties: {'enum': ['$ref', 'additionalItems', 'additionalProperties', 'allOf', 'anyOf', 'const', 'contains', 'default', 'dependencies', 'deprecated', 'description', 'else', 'enum', 'if', 'items', 'maxItems', 'maximum', 'minItems', 'minimum', 'multipleOf', 'not', 'oneOf', 'pattern', 'patternProperties', 'properties', 'propertyNames', 'required', 'then', 'unevaluatedProperties']} is not allowed for 'additionalProperties'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml: ignoring, error in schema: properties: regulators: properties: $ref
-warning: no schema found in file: ./Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
-Documentation/devicetree/bindings/mfd/silergy,sy7636a.example.dt.yaml:0:0: /example-0/i2c/pmic@62: failed to match any schema with compatible: ['silergy,sy7636a']
-Documentation/devicetree/bindings/mfd/silergy,sy7636a.example.dt.yaml:0:0: /example-0/i2c/pmic@62/regulators: failed to match any schema with compatible: ['silergy,sy7636a-regulator']
+yes. as well.
 
-See https://patchwork.ozlabs.org/patch/1467830
+> It looks to me like tuning could be handled entirely using sysfs
+> attributes. I think trying to handle these mostly decoupled feature
+> in the same place is likely to be a mistake.
+> 
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+Tuning and tracing are two separate functions and it does make sense
+to decouple them. Thanks for the advice, we can make tuning using
+sysfs attributes as debugfs is not encouraged.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+Regards,
+Yicong
 
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+> 
+> Daniel.
+> 
+> .
+> 
 
