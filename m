@@ -2,117 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A714363923
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 03:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B21A36392A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 03:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236492AbhDSBlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 21:41:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56946 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232013AbhDSBlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 21:41:36 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 812E8AC87;
-        Mon, 19 Apr 2021 01:41:06 +0000 (UTC)
-From:   NeilBrown <neilb@suse.de>
-To:     Fox Chen <foxhlchen@gmail.com>
-Date:   Mon, 19 Apr 2021 11:41:00 +1000
-Cc:     Fox Chen <foxhlchen@gmail.com>, corbet@lwn.net,
-        vegard.nossum@oracle.com, viro@zeniv.linux.org.uk,
-        rdunlap@infradead.org, grandmaster@al2klimov.de,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH v2 09/12] docs: path-lookup: no get_link()
-In-Reply-To: <20210316054727.25655-10-foxhlchen@gmail.com>
-References: <20210316054727.25655-1-foxhlchen@gmail.com>
- <20210316054727.25655-10-foxhlchen@gmail.com>
-Message-ID: <87v98j126r.fsf@notabene.neil.brown.name>
+        id S236987AbhDSBqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 21:46:24 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:50115 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232013AbhDSBqX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 21:46:23 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 183381FC1;
+        Sun, 18 Apr 2021 21:45:54 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Sun, 18 Apr 2021 21:45:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=44Z8MZBw8oX4GuSEIzaWdEz1Gd
+        RB6L8qCHH2tRotiss=; b=l37Xf5O7wSoCNna0+jXpSVdSjSsApRLpUDWP85azvr
+        f0D6MUUku18wBB2X681KydbNyre1ZWA+L5hSHw65FrP0hq4d0TT/Chr7qF9CjXYE
+        AMT3KuCTCerCl9ELKMPWqJ9LMfSG9QaBAMg3dO/YmCm3rqo88mUFb2+ZruT5j47j
+        t8ra4Im7cFMDEKNrntP99BLvmGapnwEfiS8spVRMuTJrVMeqcXsnec5tNFNut6Ah
+        whAO4sIpJRoNcAyF6xmj2UweD0Bpb1ZRY3uA0lnmro5BUklyV8OrXhQi89WgVB5I
+        ybbT5oNLKYSkko9e4h134r6iL+1D6EgExY3n5eut3naw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=44Z8MZBw8oX4GuSEI
+        zaWdEz1GdRB6L8qCHH2tRotiss=; b=JVC+uIlJ9ADTCsozCJCAJTyuUivKUnSb+
+        MvSpZJm6oP//XZ8ScNSiic5Jm45/DvWvnDvC1ShVG2X7a5GjhP8Dj7JIVXSEfTdf
+        lDypsF2npJfuOQYC/mDqA5hpoij+nSIVq0zq/YBfKX2owzbkzSWCVZqX18xY+rq/
+        FWaIqdd/dVr/VQDLU3YptF+LBkMDtJOFpprIpkcIn6gwsVUz1s0L2NtypHl++ZEY
+        EUzgs0p1tr9/Eg8PZrYgG3m414d+is5a+kCUYfvE92XysufNmjcXdrN1Ojz9WvYn
+        iNkwWtbPDj79aiQ7fCnkCEOzmZmXpGOA0KJAA4FWDhmeCQEP+4K5Q==
+X-ME-Sender: <xms:z-B8YMUV7VISxZFLRY0xYrrvtgb42-9cv8deFATGRAO50EhZjAN1XQ>
+    <xme:z-B8YAlfE4CJYhrTuaLGyD0T-EghI_3-saZ3w7Q87F8ozCwNHbwQ-02GT9U65FHc-
+    8UAjljX8WXX3NlB0w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddtvddgkeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
+    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtffrrg
+    htthgvrhhnpeeiteekhfehuddugfeltddufeejjeefgeevheekueffhffhjeekheeiffdt
+    vedtveenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghnugdr
+    ohhrgh
+X-ME-Proxy: <xmx:z-B8YAblTVFrcRlwHkUmH_K4JW_stNwC8MaW5wqNkX1WhZ81JrCUaA>
+    <xmx:z-B8YLVTWTRqPIDQboaTR5PyEGfsH-qCcNGG5rT-iYyOJAElcxFzrA>
+    <xmx:z-B8YGkGXeg2CeD547OhKjqOhF6aBwiPczyhXGgkDz3jHrYCZOlvZw>
+    <xmx:0eB8YIW9Jg71gq2Ood13y6Wsr1BMDWxnPe3OWnKor9Y29SxTmlmaWw>
+Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 96F78240054;
+        Sun, 18 Apr 2021 21:45:50 -0400 (EDT)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Samuel Holland <samuel@sholland.org>
+Subject: [PATCH] rtc: sun6i: Add NVMEM provider
+Date:   Sun, 18 Apr 2021 20:45:49 -0500
+Message-Id: <20210419014549.26900-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+The sun6i RTC provides 32 bytes of general-purpose data registers.
+They can be used to save data in the always-on RTC power domain.
+The registers are writable via 32-bit MMIO accesses only.
 
-On Tue, Mar 16 2021, Fox Chen wrote:
+Expose the region as a NVMEM provider so it can be used by userspace and
+other drivers.
 
-> no get_link() anymore. we have step_into() and pick_link().
->
-> walk_component() will call step_into(), in turn call pick_link,
-> and return symlink name.
->
-> Signed-off-by: Fox Chen <foxhlchen@gmail.com>
-> ---
->  Documentation/filesystems/path-lookup.rst | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
->
-> diff --git a/Documentation/filesystems/path-lookup.rst b/Documentation/fi=
-lesystems/path-lookup.rst
-> index 8ab95dd9046e..0d41c61f7e4f 100644
-> --- a/Documentation/filesystems/path-lookup.rst
-> +++ b/Documentation/filesystems/path-lookup.rst
-> @@ -1103,12 +1103,10 @@ doesn't need to notice.  Getting this ``name`` va=
-riable on and off the
->  stack is very straightforward; pushing and popping the references is
->  a little more complex.
->=20=20
-> -When a symlink is found, ``walk_component()`` returns the value ``1``
-> -(``0`` is returned for any other sort of success, and a negative number
-> -is, as usual, an error indicator).  This causes ``get_link()`` to be
-> -called; it then gets the link from the filesystem.  Providing that
-> -operation is successful, the old path ``name`` is placed on the stack,
-> -and the new value is used as the ``name`` for a while.  When the end of
-> +When a symlink is found, ``walk_component()`` calls ``pick_link()``,
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+---
+ drivers/rtc/rtc-sun6i.c | 42 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
-walk_component() calls pick_link() via step_into()
-??
+diff --git a/drivers/rtc/rtc-sun6i.c b/drivers/rtc/rtc-sun6i.c
+index e75020ab8024..f4a5e7465148 100644
+--- a/drivers/rtc/rtc-sun6i.c
++++ b/drivers/rtc/rtc-sun6i.c
+@@ -69,6 +69,10 @@
+ #define SUN6I_LOSC_OUT_GATING			0x0060
+ #define SUN6I_LOSC_OUT_GATING_EN_OFFSET		0
+ 
++/* General-purpose data */
++#define SUN6I_GP_DATA				0x0100
++#define SUN6I_GP_DATA_SIZE			0x20
++
+ /*
+  * Get date values
+  */
+@@ -641,6 +645,39 @@ static const struct rtc_class_ops sun6i_rtc_ops = {
+ 	.alarm_irq_enable	= sun6i_rtc_alarm_irq_enable
+ };
+ 
++static int sun6i_rtc_nvmem_read(void *priv, unsigned int offset, void *_val, size_t bytes)
++{
++	struct sun6i_rtc_dev *chip = priv;
++	u32 *val = _val;
++	int i;
++
++	for (i = 0; i < bytes / 4; ++i)
++		val[i] = readl(chip->base + SUN6I_GP_DATA + offset + 4 * i);
++
++	return 0;
++}
++
++static int sun6i_rtc_nvmem_write(void *priv, unsigned int offset, void *_val, size_t bytes)
++{
++	struct sun6i_rtc_dev *chip = priv;
++	u32 *val = _val;
++	int i;
++
++	for (i = 0; i < bytes / 4; ++i)
++		writel(val[i], chip->base + SUN6I_GP_DATA + offset + 4 * i);
++
++	return 0;
++}
++
++static struct nvmem_config sun6i_rtc_nvmem_cfg = {
++	.type		= NVMEM_TYPE_BATTERY_BACKED,
++	.reg_read	= sun6i_rtc_nvmem_read,
++	.reg_write	= sun6i_rtc_nvmem_write,
++	.size		= SUN6I_GP_DATA_SIZE,
++	.word_size	= 4,
++	.stride		= 4,
++};
++
+ /* Enable IRQ wake on suspend, to wake up from RTC. */
+ static int sun6i_rtc_suspend(struct device *dev)
+ {
+@@ -728,6 +765,11 @@ static int sun6i_rtc_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
++	sun6i_rtc_nvmem_cfg.priv = chip;
++	ret = devm_rtc_nvmem_register(chip->rtc, &sun6i_rtc_nvmem_cfg);
++	if (ret)
++		return ret;
++
+ 	dev_info(&pdev->dev, "RTC enabled\n");
+ 
+ 	return 0;
+-- 
+2.26.3
 
-> +it then gets the link from the filesystem returning new path ``name``.
-
-"which returns the link from the filesystem."
-
-With those changes (assuming you agree with them)
-
- Reviewed-by: NeilBrown <neilb@suse.de>
-
-Thanks,
-NeilBrown
-
-
-> +Providing that operation is successful, the old path ``name`` is placed =
-on the
-> +stack, and the new value is used as the ``name`` for a while.  When the =
-end of
->  the path is found (i.e. ``*name`` is ``'\0'``) the old ``name`` is resto=
-red
->  off the stack and path walking continues.
->=20=20
-> --=20
-> 2.30.2
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAmB836wOHG5laWxiQHN1
-c2UuZGUACgkQOeye3VZigbkhlQ/+KEDT1Qg5sJP/HbvSh+uqKcRG74YFfZp64srx
-RGr3aAOIGIxL860sROvxmUl7QvYjNVnYBN6w4tEGIU4WEr7rpRAHGup3OQ11sH6D
-8PolYl8ZtdrOFz9x1KDH09xFHdBYlufOgWY8/7Mh+0v/Kw+yKDmwavXGxyUkmOmD
-nEQBAdfyYHeqKcm6eG0A2J2T+NYoSwcONBXycWk2+1qDSlr1A3iC+fTYPpH/lpWZ
-9zb/d5kMvBFozSXSsCnUEgNX3rxpEiISaLgpDv41e4/k/pk08weFR54i/F7aE6JJ
-JsAiLTjFPcsw9v2Zov0YUJIsH8yJAatZXvM5mxXI0gKas/FIIRyrxqYmBjdpzGKI
-8XadNQfeHwh+GmMqCuyRphd6hDsbYHgZbb+rEtIAslvn4cXGFHzOQt6tuosl52Nz
-UhVe64R1TQFU+nkqLK45W0eNTGn3Bd/SVHN4srmzOxb/RxAjM8UR78WFglI2AsbX
-YpkpRA+1V5yXVEHA7VOYXTz6rZgYhIVyO57mWoSCFIk8Oq9KGgOjUT+cNBr1Ncwa
-d4xSx9Rg223PEz3Jrz4pYGLa+0LQfkd6Xm/2TWgSH9bdJKLzHfk8GPHCg35L1Wg9
-2fMD1zRGRv+W0y+lv/sA8VHIufPne3mw7NV6b9VN9rtijt1sHizvZKY2YT5qZso0
-MRWiNRo=
-=qvPS
------END PGP SIGNATURE-----
---=-=-=--
