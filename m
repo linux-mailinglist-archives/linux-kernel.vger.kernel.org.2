@@ -2,170 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37ECE363D6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F94363D6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232251AbhDSIYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 04:24:13 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:17376 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238158AbhDSIYI (ORCPT
+        id S237770AbhDSI1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 04:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229790AbhDSI1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 04:24:08 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FP0CV1GxLzlWv2;
-        Mon, 19 Apr 2021 16:21:42 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Mon, 19 Apr 2021
- 16:23:27 +0800
-From:   Shijie Luo <luoshijie1@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>, <luoshijie1@huawei.com>
-Subject: [PATCH] mm: fix some typos and code style problems
-Date:   Mon, 19 Apr 2021 04:22:37 -0400
-Message-ID: <20210419082237.61206-1-luoshijie1@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        Mon, 19 Apr 2021 04:27:32 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D63F4C06174A;
+        Mon, 19 Apr 2021 01:27:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DBMoV/cX0cKYwtE9SxJVrR1aR8cR7qkDyUhKQJS3Otk=; b=A0baORrD+G2oufCB44y+zQaf6Z
+        tzVFCPRFc3jisZMvJFjuS0b3X+MdxYOHuDFAhOzwEfmw7on3iIp7vVA9ISvN85wEi7Z9xNukphDER
+        qc83ko727XedAalO3uJ1SRUG6e4yZYxpU+y2vntG8Up8piSMhL1CkvGp1UtJNuGIWlVBVGuD0wx/1
+        e/hZzi8CVnL4sM/dsC9Ec1ZeYMvJWwYaPLzXWN4zsdb1hHegQRzE9yTImLKifb6iq+kFTCje/Rwjw
+        a2TZNV4ThUO8Xu0ilaIBiL9PvmGQikjaa2qBD6j8wsBzu1VsgbJhG6IH4BQS0slHduK/ZmG+w1TnO
+        ed5muYIA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lYPFC-009QQ4-EQ; Mon, 19 Apr 2021 08:26:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 050AC300212;
+        Mon, 19 Apr 2021 10:26:57 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D96F12C14C5BA; Mon, 19 Apr 2021 10:26:57 +0200 (CEST)
+Date:   Mon, 19 Apr 2021 10:26:57 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Wedson Almeida Filho <wedsonaf@google.com>, ojeda@kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+Message-ID: <YH0+0VQ1XC8+rv20@hirez.programming.kicks-ass.net>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
+ <YHj02M3jMSweoP4l@google.com>
+ <YHk4DZE1ZWTiBB1f@hirez.programming.kicks-ass.net>
+ <aa6e44ab-e223-73aa-279e-8103732460ac@redhat.com>
+ <YH0yCTgL0raKrmYg@hirez.programming.kicks-ass.net>
+ <7287eac3-f492-bab1-9ea8-b89ceceed560@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7287eac3-f492-bab1-9ea8-b89ceceed560@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix some typos and code style problems in mm.
+On Mon, Apr 19, 2021 at 09:53:06AM +0200, Paolo Bonzini wrote:
+> On 19/04/21 09:32, Peter Zijlstra wrote:
+> > On Sat, Apr 17, 2021 at 04:51:58PM +0200, Paolo Bonzini wrote:
+> > > On 16/04/21 09:09, Peter Zijlstra wrote:
+> > > > Well, the obvious example would be seqlocks. C11 can't do them
+> > > 
+> > > Sure it can.  C11 requires annotating with (the equivalent of) READ_ONCE all
+> > > reads of seqlock-protected fields, but the memory model supports seqlocks
+> > > just fine.
+> > 
+> > How does that help?
+> > 
+> > IIRC there's two problems, one on each side the lock. On the write side
+> > we have:
+> > 
+> > 	seq++;
+> > 	smp_wmb();
+> > 	X = r;
+> > 	Y = r;
+> > 	smp_wmb();
+> > 	seq++;
+> > 
+> > Which C11 simply cannot do right because it does't have wmb.
+> 
+> It has atomic_thread_fence(memory_order_release), and
+> atomic_thread_fence(memory_order_acquire) on the read side.
 
-gfp.h: s/MAXNODES/MAX_NUMNODES
-mmzone.h: s/then/than
-rmap.c: s/__vma_split()/__vma_adjust()
-swap.c: s/__mod_zone_page_stat/__mod_zone_page_state, s/is is/is
-swap_state.c: s/whoes/whose
-zsfold.c: code style problem fix in z3fold_unregister_migration
-zsmalloc.c: s/of/or, s/give/given
+https://godbolt.org/z/85xoPxeE5
 
-Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- include/linux/gfp.h    | 2 +-
- include/linux/mmzone.h | 2 +-
- mm/rmap.c              | 2 +-
- mm/swap.c              | 4 ++--
- mm/swap_state.c        | 2 +-
- mm/z3fold.c            | 2 +-
- mm/zsmalloc.c          | 4 ++--
- 7 files changed, 9 insertions(+), 9 deletions(-)
+void writer(void)
+{
+    atomic_store_explicit(&seq, seq+1, memory_order_relaxed);
+    atomic_thread_fence(memory_order_acquire);
 
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index 8572a1474e16..5f597df8da98 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -490,7 +490,7 @@ static inline int gfp_zonelist(gfp_t flags)
- 
- /*
-  * We get the zone list from the current node and the gfp_mask.
-- * This zone list contains a maximum of MAXNODES*MAX_NR_ZONES zones.
-+ * This zone list contains a maximum of MAX_NUMNODES*MAX_NR_ZONES zones.
-  * There are two zonelists per node, one for all zones with memory and
-  * one containing just zones from the node the zonelist belongs to.
-  *
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 47946cec7584..5fd14fd85d4c 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -55,7 +55,7 @@ enum migratetype {
- 	 * pageblocks to MIGRATE_CMA which can be done by
- 	 * __free_pageblock_cma() function.  What is important though
- 	 * is that a range of pageblocks must be aligned to
--	 * MAX_ORDER_NR_PAGES should biggest page be bigger then
-+	 * MAX_ORDER_NR_PAGES should biggest page be bigger than
- 	 * a single pageblock.
- 	 */
- 	MIGRATE_CMA,
-diff --git a/mm/rmap.c b/mm/rmap.c
-index b0fc27e77d6d..693a610e181d 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -257,7 +257,7 @@ static inline void unlock_anon_vma_root(struct anon_vma *root)
-  * Attach the anon_vmas from src to dst.
-  * Returns 0 on success, -ENOMEM on failure.
-  *
-- * anon_vma_clone() is called by __vma_split(), __split_vma(), copy_vma() and
-+ * anon_vma_clone() is called by __vma_adjust(), __split_vma(), copy_vma() and
-  * anon_vma_fork(). The first three want an exact copy of src, while the last
-  * one, anon_vma_fork(), may try to reuse an existing anon_vma to prevent
-  * endless growth of anon_vma. Since dst->anon_vma is set to NULL before call,
-diff --git a/mm/swap.c b/mm/swap.c
-index 31b844d4ed94..9e0028b01b97 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -483,7 +483,7 @@ void lru_cache_add_inactive_or_unevictable(struct page *page,
- 	if (unlikely(unevictable) && !TestSetPageMlocked(page)) {
- 		int nr_pages = thp_nr_pages(page);
- 		/*
--		 * We use the irq-unsafe __mod_zone_page_stat because this
-+		 * We use the irq-unsafe __mod_zone_page_state because this
- 		 * counter is not modified from interrupt context, and the pte
- 		 * lock is held(spinlock), which implies preemption disabled.
- 		 */
-@@ -794,7 +794,7 @@ void lru_add_drain_all(void)
- 	 * below which drains the page vectors.
- 	 *
- 	 * Let x, y, and z represent some system CPU numbers, where x < y < z.
--	 * Assume CPU #z is is in the middle of the for_each_online_cpu loop
-+	 * Assume CPU #z is in the middle of the for_each_online_cpu loop
- 	 * below and has already reached CPU #y's per-cpu data. CPU #x comes
- 	 * along, adds some pages to its per-cpu vectors, then calls
- 	 * lru_add_drain_all().
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index 3cdee7b11da9..5d1fafffee4e 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -797,7 +797,7 @@ static void swap_ra_info(struct vm_fault *vmf,
-  *
-  * Returns the struct page for entry and addr, after queueing swapin.
-  *
-- * Primitive swap readahead code. We simply read in a few pages whoes
-+ * Primitive swap readahead code. We simply read in a few pages whose
-  * virtual addresses are around the fault address in the same vma.
-  *
-  * Caller must hold read mmap_lock if vmf->vma is not NULL.
-diff --git a/mm/z3fold.c b/mm/z3fold.c
-index 9d889ad2bb86..7fe7adaaad01 100644
---- a/mm/z3fold.c
-+++ b/mm/z3fold.c
-@@ -391,7 +391,7 @@ static void z3fold_unregister_migration(struct z3fold_pool *pool)
- {
- 	if (pool->inode)
- 		iput(pool->inode);
-- }
-+}
- 
- /* Initializes the z3fold header of a newly allocated z3fold page */
- static struct z3fold_header *init_z3fold_page(struct page *page, bool headless,
-diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
-index 30c358b72025..412e0f95e2c1 100644
---- a/mm/zsmalloc.c
-+++ b/mm/zsmalloc.c
-@@ -61,7 +61,7 @@
- #define ZSPAGE_MAGIC	0x58
- 
- /*
-- * This must be power of 2 and greater than of equal to sizeof(link_free).
-+ * This must be power of 2 and greater than or equal to sizeof(link_free).
-  * These two conditions ensure that any 'struct link_free' itself doesn't
-  * span more than 1 page which avoids complex case of mapping 2 pages simply
-  * to restore link_free pointer values.
-@@ -530,7 +530,7 @@ static void set_zspage_mapping(struct zspage *zspage,
-  * class maintains a list of zspages where each zspage is divided
-  * into equal sized chunks. Each allocation falls into one of these
-  * classes depending on its size. This function returns index of the
-- * size class which has chunk size big enough to hold the give size.
-+ * size class which has chunk size big enough to hold the given size.
-  */
- static int get_size_class_index(int size)
- {
--- 
-2.19.1
+    X = 1;
+    Y = 2;
+
+    atomic_store_explicit(&seq, seq+1, memory_order_release);
+}
+
+gives:
+
+writer:
+        adrp    x1, .LANCHOR0
+        add     x0, x1, :lo12:.LANCHOR0
+        ldr     w2, [x1, #:lo12:.LANCHOR0]
+        add     w2, w2, 1
+        str     w2, [x0]
+        dmb     ishld
+        ldr     w1, [x1, #:lo12:.LANCHOR0]
+        mov     w3, 1
+        mov     w2, 2
+        stp     w3, w2, [x0, 4]
+        add     w1, w1, w3
+        stlr    w1, [x0]
+        ret
+
+Which, afaict, is completely buggered. What it seems to be doing is
+turning the seq load into a load-acquire, but what we really need is to
+make sure the seq store (increment) is ordered before the other stores.
+
 
