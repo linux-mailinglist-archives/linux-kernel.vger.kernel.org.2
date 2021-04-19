@@ -2,78 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B47363F37
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D665363F3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236036AbhDSJzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 05:55:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
+        id S237316AbhDSJzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 05:55:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231888AbhDSJzK (ORCPT
+        with ESMTP id S231888AbhDSJzv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 05:55:10 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC1F4C06174A;
-        Mon, 19 Apr 2021 02:54:39 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id u20so38590060lja.13;
-        Mon, 19 Apr 2021 02:54:39 -0700 (PDT)
+        Mon, 19 Apr 2021 05:55:51 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C0FC06174A;
+        Mon, 19 Apr 2021 02:55:19 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id r22so27934525ljc.5;
+        Mon, 19 Apr 2021 02:55:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PSlXDJl/uFE9GGsWvDZ6f7hycw1cx6e2NNtbcpc1FAw=;
-        b=SNIPOyx5VPBKa6HME69dVlvKxHs134C1Tv/LPj+zrr8ueHCt6zp1ViGgvmPX4BMfcU
-         7P9awRRnwkto65fDpPlbI6TCcx/88VkSOCwCeDkI87jaK7toRXoSH/Sh/wEhFe+LVciI
-         7rSetlBeJzWAay8WzatKuqvrpWP489VFEFeP2KcKZlL//PzC/uDgxiIiXod/GHmliAnb
-         diF0Aiwk0jKoXAKmRgbnrHwPJ4SlmDRqV6a9PCREWdlUpzIWH/5lB1mbEx5LnOs1jDEz
-         02mHA07hSn1H05OdGQAIHVLHKwj7uoUIIIguyG3YS4EG8fka4h4qXaLWktd6zhrw2l3V
-         aKuA==
+         :cc:content-transfer-encoding;
+        bh=ac+/RDFDZwqxQM1YZG+NKhRwGNKn1wPe8k84YxH283M=;
+        b=HKurBa83oYzINv/oZfV8hZ44LSh6xV6T5WewOSna3dYwU6kEDtcHOpYaTFb0LobUpW
+         7fdEQ8hb47KZteiK7MjxXBaBun9KGzzieF5X1DEbp6VvMuGlC5Aoty4wyj4CxDhjfh8m
+         T9ecaygHZGQFOHHRTl21E7LKNCrjCcQb8tzyF1yVOYT7AnsM4spz/yZGg9ejlC/fVpdH
+         VJHyykmZUuZZb5U1GCL03hCV/T27G22vi0vzKmNxO7OIVdG7Ys/LASEYo2db7O73mHMf
+         owXhcQk/sA4dE86jDMiDcwXHJzynp9NkB+sP7Yyk8SK1RuZN88MmwDOl2TbAZ/bwp9Cy
+         WYtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PSlXDJl/uFE9GGsWvDZ6f7hycw1cx6e2NNtbcpc1FAw=;
-        b=kToxDSuRN9G7OUHedGGRygq0aauyptxAjvpNFHNQ1IHESWg7IA/hX8Q69lb6GOBok8
-         yHKkEA6n7hMUt+WlL9sh+n2paaEAEXrB3cmjlzg51G8n8LHyMFRgUk0qhoxamM2cV/WD
-         Oq+Z99RU8pXSgR/uPtuuXSknpayViIqb5V0la/63koUd7BvjG+Q02lsBP6Gao7WXQ1sr
-         7qyR1gnnD1M6Ic/hbu2tUZjiinjDFn0dk9AWqXcD0VSuR3RelBleJPS00ENcVxNCyKVw
-         +F8QumnctUGHATtCNcqxuRov8IFphCEpYAXMM6p2D8nqVwxaOJgjFW3B3Bj0nkb5l0Y2
-         da5A==
-X-Gm-Message-State: AOAM531rvuDwwUQqTtEtbVinceFErWjyhwN+0kkjLIDjwQcbCu6J2uzM
-        ywUSmIe7UEcdt9wTy/mD31z7ukY3pCER2kQ7367rPGr2Eg0=
-X-Google-Smtp-Source: ABdhPJydUVVNiEfXN1M2hrXYbDIqXYVUtCiMvSydUrz+5nOKO5Ulc3VVljLLRGBVG/+9hsNDgOtSRp+47FQs9ImZ/d4=
-X-Received: by 2002:a2e:8346:: with SMTP id l6mr1411074ljh.418.1618826077385;
- Mon, 19 Apr 2021 02:54:37 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ac+/RDFDZwqxQM1YZG+NKhRwGNKn1wPe8k84YxH283M=;
+        b=uEMR+5tXqJsKx5XI9UgHnzJf4ZDoavS+Qz414JFS38fvW3xzw2ygEJgwet2qntqpbJ
+         CeGBdnTW4JJAkirBNX6jiUh4gFgDYE/6TIRaqhazuihnZ7yUsXkoB97DIymb11irBgAr
+         EWVQwp+bySXXqPaWp8sskGhKtSabvgr8Xav43KxK//JL/FloU/wwBos+zg6qoLb1tszA
+         wIyFOXFTiE27FwBeXqSmc0YsaEdkBiQ7h68YwupDZuSm3RxUrZGxZ54/QoyH9y/Rtjok
+         auUYVRa1anZzP8jOG94iwRgNaCCIbZxwg3tWKGzNWkBM0AH5frsd5fipbaWtrFuizCC7
+         isBA==
+X-Gm-Message-State: AOAM532Um6LwjeDtNIlkRta7+m+exs5DIez338nJubBQjvsRabN08dOL
+        YXQ2kKcUF2i/Up1x23QSvgW0mx0fnv4hEpjnAzs=
+X-Google-Smtp-Source: ABdhPJzjbowagID+0Tq/eUdoUjEEqSw6LDCkb3PwLhpzB3fsLwZpjsdyJweOlmDzPmNZviyxLZpu8VQVfiWbl6dgh2Y=
+X-Received: by 2002:a05:651c:1249:: with SMTP id h9mr10822745ljh.141.1618826117706;
+ Mon, 19 Apr 2021 02:55:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210419090800.GA52493@limone.gonsolo.de> <12e0173e43391fa70b9c199c31522b44a42ca03a.camel@sipsolutions.net>
-In-Reply-To: <12e0173e43391fa70b9c199c31522b44a42ca03a.camel@sipsolutions.net>
-From:   Gonsolo <gonsolo@gmail.com>
-Date:   Mon, 19 Apr 2021 11:54:26 +0200
-Message-ID: <CANL0fFTree1UQugYMHtO3S9ktPCP85J_wm-hMqwT3MQBZ-yHKg@mail.gmail.com>
-Subject: Re: iwlwifi: Microcode SW error
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <1616945059-8718-1-git-send-email-u0084500@gmail.com>
+ <CADiBU3-d3_L8RTeYCirnfjJdG=ea6UVenAi8O8GO_LvOaB7OdA@mail.gmail.com>
+ <20210419072229.GA4869@dell> <20210419072317.GB4869@dell> <20210419072403.GC4869@dell>
+In-Reply-To: <20210419072403.GC4869@dell>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Mon, 19 Apr 2021 17:55:06 +0800
+Message-ID: <CADiBU38bMuH00Bcx5hJas2=yAon00ffcGokT4u89vX-LJYuxNA@mail.gmail.com>
+Subject: Re: [PATCH v6 1/4] mfd: rt4831: Adds support for Richtek RT4831
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        jingoohan1@gmail.com, b.zolnierkie@samsung.com,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        ChiYuan Huang <cy_huang@richtek.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Do you use MFP?
-
-I don't think so. I'm running unmodified kernels from Ubuntu PPA and
-don't meddle with WIFI configs.
-How can I find out?
-
-> Could be related to
-> https://patchwork.kernel.org/project/linux-wireless/patch/20210416134702.ef8486a64293.If0a9025b39c71bb91b11dd6ac45547aba682df34@changeid/
-> I saw similar issues internally without that fix.
-
-A quick "git grep" didn't show any of these two patches in the 5.12-rc7 kernel.
-
--- 
-g
+Lee Jones <lee.jones@linaro.org> =E6=96=BC 2021=E5=B9=B44=E6=9C=8819=E6=97=
+=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=883:24=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Mon, 19 Apr 2021, Lee Jones wrote:
+>
+> > On Mon, 19 Apr 2021, Lee Jones wrote:
+> >
+> > > On Mon, 19 Apr 2021, ChiYuan Huang wrote:
+> > >
+> > > > Hi, Linux mfd reviewers:
+> > > >    It's been three weeks not to get any response from you.
+> > > > Is there something wrong about this mfd patch?
+> > > > If yes, please feel free to let me know.
+> > >
+> > > Couple of things:
+> > >
+> > > First, if you think a patch had fallen through the gaps, which does
+> > > happen sometimes, it is generally considered acceptable to submit a
+> > > [RESEND] ~2 weeks after the initial submission.  FYI: This was such a
+> > > patch.  It was not on, or had fallen off of my radar for some reason.
+> > >
+> > > Secondly, we are really late in the release cycle.  -rc8 has just bee=
+n
+> > > released.  Quite a few maintainers slow down at ~-rc6.  Particularly
+> > > for new drivers.
+> > >
+> > > No need to resubmit this driver this time.  It is now on my to-review
+> > > list and I will tend to it shortly.
+> > >
+> > > Thanks for your patience.
+> >
+> > Also you are missing a DT review on patch 4.
+>
+> ... looks like you forgot to Cc them!
+>
+Yap, really. I''ll resend patch 4 and cc them. Thx.
+> --
+> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+> Senior Technical Lead - Developer Services
+> Linaro.org =E2=94=82 Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
