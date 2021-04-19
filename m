@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7E4364B36
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 22:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21847364B38
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 22:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242150AbhDSUhi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Apr 2021 16:37:38 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:11448 "EHLO
+        id S242196AbhDSUhq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Apr 2021 16:37:46 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:25030 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234546AbhDSUhh (ORCPT
+        by vger.kernel.org with ESMTP id S242155AbhDSUhl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 16:37:37 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13JKUZ5e031119
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 13:37:07 -0700
+        Mon, 19 Apr 2021 16:37:41 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13JKUM0O006778
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 13:37:11 -0700
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 380fgxq6nj-6
+        by mx0a-00082601.pphosted.com with ESMTP id 380fbaq70f-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 13:37:06 -0700
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 13:37:11 -0700
 Received: from intmgw001.25.frc3.facebook.com (2620:10d:c085:208::f) by
  mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 19 Apr 2021 13:37:06 -0700
+ 15.1.2176.2; Mon, 19 Apr 2021 13:37:10 -0700
 Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 2AAAA62E1A1C; Mon, 19 Apr 2021 13:37:02 -0700 (PDT)
+        id AA43B62E1A1C; Mon, 19 Apr 2021 13:37:05 -0700 (PDT)
 From:   Song Liu <song@kernel.org>
 To:     <linux-kernel@vger.kernel.org>
 CC:     <kernel-team@fb.com>, <acme@kernel.org>, <acme@redhat.com>,
         <namhyung@kernel.org>, <jolsa@kernel.org>, <songliubraving@fb.com>,
         Song Liu <song@kernel.org>
-Subject: [PATCH v4 1/4] perf util: move bpf_perf definitions to a libperf header
-Date:   Mon, 19 Apr 2021 13:36:46 -0700
-Message-ID: <20210419203649.164121-2-song@kernel.org>
+Subject: [PATCH v4 2/4] perf bpf: check perf_attr_map is compatible with the perf binary
+Date:   Mon, 19 Apr 2021 13:36:47 -0700
+Message-ID: <20210419203649.164121-3-song@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210419203649.164121-1-song@kernel.org>
 References: <20210419203649.164121-1-song@kernel.org>
@@ -40,120 +40,66 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: sMRXrW9nTtBJ8_S1Uk_ycDhVTHJBiGjj
-X-Proofpoint-ORIG-GUID: sMRXrW9nTtBJ8_S1Uk_ycDhVTHJBiGjj
+X-Proofpoint-GUID: kvHToDNGobPh2iY5L3CUyOshuukWnKS6
+X-Proofpoint-ORIG-GUID: kvHToDNGobPh2iY5L3CUyOshuukWnKS6
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-04-19_11:2021-04-19,2021-04-19 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- impostorscore=0 suspectscore=0 adultscore=0 clxscore=1015 malwarescore=0
- phishscore=0 mlxlogscore=999 bulkscore=0 priorityscore=1501 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ spamscore=0 clxscore=1034 phishscore=0 malwarescore=0 bulkscore=0
+ lowpriorityscore=0 priorityscore=1501 impostorscore=0 adultscore=9
+ mlxscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2104060000 definitions=main-2104190141
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By following the same protocol, other tools can share hardware PMCs with
-perf. Move perf_event_attr_map_entry and BPF_PERF_DEFAULT_ATTR_MAP_PATH to
-bpf_perf.h for other tools to use.
+perf_attr_map could be shared among different version of perf binary. Add
+bperf_attr_map_compatible() to check whether the existing attr_map is
+compatible with current perf binary.
 
 Signed-off-by: Song Liu <song@kernel.org>
 ---
- tools/lib/perf/include/perf/bpf_perf.h | 31 ++++++++++++++++++++++++++
- tools/perf/util/bpf_counter.c          | 27 +++-------------------
- 2 files changed, 34 insertions(+), 24 deletions(-)
- create mode 100644 tools/lib/perf/include/perf/bpf_perf.h
+ tools/perf/util/bpf_counter.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/tools/lib/perf/include/perf/bpf_perf.h b/tools/lib/perf/include/perf/bpf_perf.h
-new file mode 100644
-index 0000000000000..e7cf6ba7b674b
---- /dev/null
-+++ b/tools/lib/perf/include/perf/bpf_perf.h
-@@ -0,0 +1,31 @@
-+/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
-+#ifndef __LIBPERF_BPF_PERF_H
-+#define __LIBPERF_BPF_PERF_H
-+
-+#include <linux/types.h>  /* for __u32 */
-+
-+/*
-+ * bpf_perf uses a hashmap, the attr_map, to track all the leader programs.
-+ * The hashmap is pinned in bpffs. flock() on this file is used to ensure
-+ * no concurrent access to the attr_map.  The key of attr_map is struct
-+ * perf_event_attr, and the value is struct perf_event_attr_map_entry.
-+ *
-+ * struct perf_event_attr_map_entry contains two __u32 IDs, bpf_link of the
-+ * leader prog, and the diff_map. Each perf-stat session holds a reference
-+ * to the bpf_link to make sure the leader prog is attached to sched_switch
-+ * tracepoint.
-+ *
-+ * Since the hashmap only contains IDs of the bpf_link and diff_map, it
-+ * does not hold any references to the leader program. Once all perf-stat
-+ * sessions of these events exit, the leader prog, its maps, and the
-+ * perf_events will be freed.
-+ */
-+struct perf_event_attr_map_entry {
-+	__u32 link_id;
-+	__u32 diff_map_id;
-+};
-+
-+/* default attr_map name */
-+#define BPF_PERF_DEFAULT_ATTR_MAP_PATH "perf_attr_map"
-+
-+#endif /* __LIBPERF_BPF_PERF_H */
 diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
-index 81d1df3c4ec0e..be484ddbbd5be 100644
+index be484ddbbd5be..5de991ab46af9 100644
 --- a/tools/perf/util/bpf_counter.c
 +++ b/tools/perf/util/bpf_counter.c
-@@ -14,6 +14,7 @@
- #include <bpf/btf.h>
- #include <bpf/libbpf.h>
- #include <api/fs/fs.h>
-+#include <perf/bpf_perf.h>
+@@ -312,6 +312,20 @@ static __u32 bpf_map_get_id(int fd)
+ 	return map_info.id;
+ }
  
- #include "bpf_counter.h"
- #include "counts.h"
-@@ -29,28 +30,6 @@
- #include "bpf_skel/bperf_leader.skel.h"
- #include "bpf_skel/bperf_follower.skel.h"
- 
--/*
-- * bperf uses a hashmap, the attr_map, to track all the leader programs.
-- * The hashmap is pinned in bpffs. flock() on this file is used to ensure
-- * no concurrent access to the attr_map.  The key of attr_map is struct
-- * perf_event_attr, and the value is struct perf_event_attr_map_entry.
-- *
-- * struct perf_event_attr_map_entry contains two __u32 IDs, bpf_link of the
-- * leader prog, and the diff_map. Each perf-stat session holds a reference
-- * to the bpf_link to make sure the leader prog is attached to sched_switch
-- * tracepoint.
-- *
-- * Since the hashmap only contains IDs of the bpf_link and diff_map, it
-- * does not hold any references to the leader program. Once all perf-stat
-- * sessions of these events exit, the leader prog, its maps, and the
-- * perf_events will be freed.
-- */
--struct perf_event_attr_map_entry {
--	__u32 link_id;
--	__u32 diff_map_id;
--};
--
--#define DEFAULT_ATTR_MAP_PATH "fs/bpf/perf_attr_map"
- #define ATTR_MAP_SIZE 16
- 
- static inline void *u64_to_ptr(__u64 ptr)
-@@ -341,8 +320,8 @@ static int bperf_lock_attr_map(struct target *target)
- 	if (target->attr_map) {
- 		scnprintf(path, PATH_MAX, "%s", target->attr_map);
- 	} else {
--		scnprintf(path, PATH_MAX, "%s/%s", sysfs__mountpoint(),
--			  DEFAULT_ATTR_MAP_PATH);
-+		scnprintf(path, PATH_MAX, "%s/fs/bpf/%s", sysfs__mountpoint(),
-+			  BPF_PERF_DEFAULT_ATTR_MAP_PATH);
++static bool bperf_attr_map_compatible(int attr_map_fd)
++{
++	struct bpf_map_info map_info = {0};
++	__u32 map_info_len = sizeof(map_info);
++	int err;
++
++	err = bpf_obj_get_info_by_fd(attr_map_fd, &map_info, &map_info_len);
++
++	if (err)
++		return false;
++	return (map_info.key_size == sizeof(struct perf_event_attr)) &&
++		(map_info.value_size == sizeof(struct perf_event_attr_map_entry));
++}
++
+ static int bperf_lock_attr_map(struct target *target)
+ {
+ 	char path[PATH_MAX];
+@@ -346,6 +360,11 @@ static int bperf_lock_attr_map(struct target *target)
+ 			return -1;
  	}
  
- 	if (access(path, F_OK)) {
++	if (!bperf_attr_map_compatible(map_fd)) {
++		close(map_fd);
++		return -1;
++
++	}
+ 	err = flock(map_fd, LOCK_EX);
+ 	if (err) {
+ 		close(map_fd);
 -- 
 2.30.2
 
