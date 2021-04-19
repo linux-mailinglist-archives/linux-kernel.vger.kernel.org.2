@@ -2,152 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8CC3638A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 02:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 410CC3638B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 02:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235607AbhDSAB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 20:01:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29704 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232288AbhDSABZ (ORCPT
+        id S237094AbhDSACG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 20:02:06 -0400
+Received: from mo-csw1114.securemx.jp ([210.130.202.156]:38768 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236772AbhDSABl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 20:01:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618790456;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=yKxQATdGznhOXpI/AZM1Ukls2PIZ1+2c4XLkkNdNT6Q=;
-        b=DvQGilwMpHgKY0Hn2ij8KN82HO2JMQmIjCfweIHUZFQyzdIbCBvzZ6X4sQMEijHrZze6NT
-        V0+jxJ/pQX6In1WFJFmCc06G2C24l+t2a761xDWTti36zWHPk4vqgNuzLxOzsuny1Gku/M
-        43RIY89Gj5ZmpPFLpdFSHsWEUJyubkM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-473-wYgGpWivPJWdqZ5E3stNww-1; Sun, 18 Apr 2021 20:00:52 -0400
-X-MC-Unique: wYgGpWivPJWdqZ5E3stNww-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Sun, 18 Apr 2021 20:01:41 -0400
+Received: by mo-csw.securemx.jp (mx-mo-csw1114) id 13J00pQR021687; Mon, 19 Apr 2021 09:00:51 +0900
+X-Iguazu-Qid: 2wHHQAoCK5XYSo4bGK
+X-Iguazu-QSIG: v=2; s=0; t=1618790451; q=2wHHQAoCK5XYSo4bGK; m=og7IFJUKyb7215psUxeUTVV/b9UvbMqd3VDJn/siVEY=
+Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
+        by relay.securemx.jp (mx-mr1113) id 13J00ox4029022
+        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 19 Apr 2021 09:00:50 +0900
+Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 60E2B817469;
-        Mon, 19 Apr 2021 00:00:47 +0000 (UTC)
-Received: from llong.com (ovpn-112-235.rdu2.redhat.com [10.10.112.235])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0EE015D72E;
-        Mon, 19 Apr 2021 00:00:39 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH v4 0/5] mm/memcg: Reduce kmemcache memory accounting overhead
-Date:   Sun, 18 Apr 2021 20:00:27 -0400
-Message-Id: <20210419000032.5432-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id 4A92E100096;
+        Mon, 19 Apr 2021 09:00:50 +0900 (JST)
+Received: from hop001.toshiba.co.jp ([133.199.164.63])
+        by enc01.toshiba.co.jp  with ESMTP id 13J00n4R025236;
+        Mon, 19 Apr 2021 09:00:49 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>
+Cc:     devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
+        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH v6 0/2] pwm: visconti: Add Toshiba Visconti SoC PWM support
+Date:   Mon, 19 Apr 2021 09:00:05 +0900
+X-TSB-HOP: ON
+Message-Id: <20210419000007.1944301-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+X-Mailer: git-send-email 2.30.0.rc2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- v4:
-  - Drop v3 patch 1 as well as modification to mm/percpu.c as the percpu
-    vmstat update isn't frequent enough to worth caching it.
-  - Add a new patch 1 to move Move mod_objcg_state() to memcontrol.c instead.
-  - Combine v3 patches 4 & 5 into a single patch (patch 3).
-  - Add a new patch 4 to cache both reclaimable & unreclaimable vmstat updates.
-  - Add a new patch 5 to improve refill_obj_stock() performance.
+Hi,
 
- v3:
-  - Add missing "inline" qualifier to the alternate mod_obj_stock_state()
-    in patch 3.
-  - Remove redundant current_obj_stock() call in patch 5.
+This series is the PWM driver for Toshiba's ARM SoC, Visconti[0].
+This provides DT binding documentation and device driver.
 
- v2:
-  - Fix bug found by test robot in patch 5.
-  - Update cover letter and commit logs.
+[0]: https://toshiba.semicon-storage.com/ap-en/semiconductor/product/image-recognition-processors-visconti.html
 
-With the recent introduction of the new slab memory controller, we
-eliminate the need for having separate kmemcaches for each memory
-cgroup and reduce overall kernel memory usage. However, we also add
-additional memory accounting overhead to each call of kmem_cache_alloc()
-and kmem_cache_free().
+Updates:
 
-For workloads that require a lot of kmemcache allocations and
-de-allocations, they may experience performance regression as illustrated
-in [1] and [2].
+  dt-bindings: pwm: Add bindings for Toshiba Visconti PWM Controller
+    v5 -> v6:
+      - No update.
+    v4 -> v5:
+      - No update.
+    v3 -> v4:
+      - No update.
+    v2 -> v3:
+      - Change compatible to toshiba,visconti-pwm
+      - Change filename to toshiba,visconti-pwm.yaml.
+      - Add Reviewed-by tag from Rob.
+    v1 -> v2:
+      - Change SPDX-License-Identifier to GPL-2.0-only OR BSD-2-Clause.
+      - Set compatible toshiba,pwm-visconti only.
+      - Drop unnecessary comments.
 
-A simple kernel module that performs repeated loop of 100,000,000
-kmem_cache_alloc() and kmem_cache_free() of either a small 32-byte object
-or a big 4k object at module init time is used for benchmarking. The
-test was run on a CascadeLake server with turbo-boosting disable to
-reduce run-to-run variation.
+  pwm: visconti: Add Toshiba Visconti SoC PWM support
+    v5 -> v6:
+     - Update year in copyright.
+     - Update limitations.
+     - Fix coding style, used braces for both branches.
+    v4 -> v5:
+      - Droped checking PIPGM_PCSR from visconti_pwm_get_state.
+      - Changed from to_visconti_chip to visconti_pwm_from_chip.
+      - Removed pwmchip_remove return value management.
+      - Add limitations of this device.
+      - Add 'state->enabled = true' to visconti_pwm_get_state().
+    v3 -> v4:
+      - Sorted alphabetically include files.
+      - Changed container_of to using static inline functions.
+      - Dropped unnecessary dev_dbg().
+      - Drop Initialization of chip.base.
+      - Drop commnet "period too small".
+      - Rebased for-next. 
+    v2 -> v3:
+      - Change compatible to toshiba,visconti-pwm.
+      - Fix MODULE_ALIAS to platform:pwm-visconti, again.
+      - Align continuation line to the opening parenthesis.
+      - Rewrite the contents of visconti_pwm_apply() based on the contents suggested by Uwe.
+    v1 -> v2:
+      - Change SPDX-License-Identifier to GPL-2.0-only.
+      - Add prefix for the register defines.
+      - Drop struct device from struct visconti_pwm_chip.
+      - Use '>>' instead of '/'.
+      - Drop error message by devm_platform_ioremap_resource().
+      - Use dev_err_probe instead of dev_err.
+      - Change dev_info to dev_dbg.
+      - Remove some empty lines.
+      - Fix MODULE_ALIAS to platform:pwm-visconti.
+      - Add .get_state() function.
+      - Use the author name and email address to MODULE_AUTHOR.
+      - Add more comment to function of the hardware.
+      - Support .get_status() function.
+      - Use NSEC_PER_USEC instead of 1000.
+      - Alphabetically sorted for Makefile and Kconfig.
+      - Added check for set value in visconti_pwm_apply().
 
-With memory accounting disable, the run time was 2.848s with small object
-and 2.890s for the big object. With memory accounting enabled, the run
-times with the application of various patches in the patchset were:
+Nobuhiro Iwamatsu (2):
+  dt-bindings: pwm: Add bindings for Toshiba Visconti PWM Controller
+  pwm: visconti: Add Toshiba Visconti SoC PWM support
 
-  Applied patches   Run time   Accounting overhead   %age 1   %age 2
-  ---------------   --------   -------------------   ------   ------
-
-  Small 32-byte object:
-       None          10.570s         7.722s          100.0%   271.1%
-        1-2           8.560s         5.712s           74.0%   200.6%
-        1-3           6.592s         3.744s           48.5%   131.5%
-        1-4           7.154s         4.306s           55.8%   151.2%
-	1-5           7.192s         4.344s           56.3%   152.5%
-
-  Large 4k object:
-       None          20.612s        17.722s          100.0%   613.2%
-        1-2          20.354s        17.464s           98.5%   604.3%
-        1-3          19.395s        16.505s           93.1%   571.1%
-        1-4          19.094s        16.204s           91.4%   560.7%
-	1-5          13.576s        10.686s           60.3%   369.8%
-
-  N.B. %age 1 = overhead/unpatched overhead
-       %age 2 = overhead/accounting disable time
-
-The small object test exercises mainly the object stock charging and
-vmstat update code paths. The large object test also exercises the
-refill_obj_stock() and  __memcg_kmem_charge()/__memcg_kmem_uncharge()
-code paths.
-
-The vmstat data stock caching helps in the small object test,
-but not so much on the large object test. Similarly, eliminating
-irq_disable/irq_enable helps in the small object test and less so in
-the large object test. Caching both reclaimable and non-reclaimable
-vmstat data actually regresses performance a bit in this particular
-small object test.
-
-The final patch to optimize refill_obj_stock() has negligible impact
-on the small object test as this code path isn't being exercised. The
-large object test, however, sees a pretty good performance improvement
-with this patch.
-
-[1] https://lore.kernel.org/linux-mm/20210408193948.vfktg3azh2wrt56t@gabell/T/#u
-[2] https://lore.kernel.org/lkml/20210114025151.GA22932@xsang-OptiPlex-9020/
-
-Waiman Long (5):
-  mm/memcg: Move mod_objcg_state() to memcontrol.c
-  mm/memcg: Cache vmstat data in percpu memcg_stock_pcp
-  mm/memcg: Optimize user context object stock access
-  mm/memcg: Save both reclaimable & unreclaimable bytes in object stock
-  mm/memcg: Improve refill_obj_stock() performance
-
- mm/memcontrol.c | 199 +++++++++++++++++++++++++++++++++++++++++-------
- mm/slab.h       |  16 +---
- 2 files changed, 175 insertions(+), 40 deletions(-)
+ .../bindings/pwm/toshiba,pwm-visconti.yaml    |  43 ++++
+ drivers/pwm/Kconfig                           |   9 +
+ drivers/pwm/Makefile                          |   1 +
+ drivers/pwm/pwm-visconti.c                    | 189 ++++++++++++++++++
+ 4 files changed, 242 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pwm/toshiba,pwm-visconti.yaml
+ create mode 100644 drivers/pwm/pwm-visconti.c
 
 -- 
-2.18.1
+2.30.0.rc2
 
