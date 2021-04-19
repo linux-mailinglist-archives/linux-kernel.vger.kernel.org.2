@@ -2,138 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BA9363D65
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4FEA363D59
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237731AbhDSIU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 04:20:59 -0400
-Received: from mail-vs1-f51.google.com ([209.85.217.51]:38652 "EHLO
-        mail-vs1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhDSIU4 (ORCPT
+        id S235633AbhDSIUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 04:20:53 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:17013 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229635AbhDSIUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 04:20:56 -0400
-Received: by mail-vs1-f51.google.com with SMTP id s184so6761409vss.5;
-        Mon, 19 Apr 2021 01:20:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ltv54OOOgcKhPoH7oRaigoXMRi+Z2QqH7bQ4dTNkEvU=;
-        b=Ms0SsPF9J+tPj990DTLxJSvXO3Pmul5WCyeOMIDCVJ6fXcWAb6uJsC52eqzmbxUtMJ
-         Ul7GxKCbZ7tvkEEqDB5miyVfuIPIZ6Wf2fLEOnYrnyzAq9BFRVgE5tawuQnZZ1KvmiLL
-         EF/Qi81vkqZN75KRE3I2Ub033NMXNbhyaWlBPnaDUI/smGHJ8UPy9vAoTfFqPZVmpcjG
-         u+1xfNjeAWaCtnBNzLs677wnayVF3agzAGavKRFiZLiJM0DQwfElLwqOkGkNXKPR+lsq
-         TJLnDZHeX994hG8+Gw6qi4xtQrZg2dB0UisZo4zpBSW648ZZkTOPfDD7+avHhtZh59RH
-         iISg==
-X-Gm-Message-State: AOAM531bR0AI7GyosdsIXdtavR8bqUCmY3mDWUO7awITMHICVomqNNgB
-        TnOox77RR3JpNHchfmmIyY7YFvqX5Aujc9OIMxU=
-X-Google-Smtp-Source: ABdhPJw0QI7XOFx1TPnFrXWAlR/QW1v6zaWS/KnYbAtB/CEX2DsVVO2yNBv9r1VAA3kWmuOXuQwF2fQGH/J1go6B4oc=
-X-Received: by 2002:a67:f503:: with SMTP id u3mr12373252vsn.3.1618820424835;
- Mon, 19 Apr 2021 01:20:24 -0700 (PDT)
+        Mon, 19 Apr 2021 04:20:51 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FP06V2WH9zPs0N;
+        Mon, 19 Apr 2021 16:17:22 +0800 (CST)
+Received: from [10.174.178.5] (10.174.178.5) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Mon, 19 Apr 2021
+ 16:20:15 +0800
+Subject: Re: [PATCH v2 1/5] mm/swapfile: add percpu_ref support for swap
+To:     "Huang, Ying" <ying.huang@intel.com>
+CC:     <akpm@linux-foundation.org>, <dennis@kernel.org>,
+        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
+        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
+        <alexs@kernel.org>, <david@redhat.com>, <minchan@kernel.org>,
+        <richard.weiyang@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>
+References: <20210417094039.51711-1-linmiaohe@huawei.com>
+ <20210417094039.51711-2-linmiaohe@huawei.com>
+ <87eef7kmzw.fsf@yhuang6-desk1.ccr.corp.intel.com>
+ <753f414f-34a1-b16a-f826-7deb2dcd4af6@huawei.com>
+ <87czuq4uo2.fsf@yhuang6-desk1.ccr.corp.intel.com>
+ <dfbb8f36-e172-b682-fbfa-168a1ac2d456@huawei.com>
+ <87zgxu3e4v.fsf@yhuang6-desk1.ccr.corp.intel.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <84daf06a-84b4-0523-b278-123e546a92e2@huawei.com>
+Date:   Mon, 19 Apr 2021 16:20:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210419042722.27554-1-alice.guo@oss.nxp.com> <20210419042722.27554-2-alice.guo@oss.nxp.com>
-In-Reply-To: <20210419042722.27554-2-alice.guo@oss.nxp.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 19 Apr 2021 10:20:13 +0200
-Message-ID: <CAMuHMdUbrPxtJ9DCP0_nFrReuuO4vFY2J79LrKY82D7bCOfzRw@mail.gmail.com>
-Subject: Re: [RFC v1 PATCH 1/3] drivers: soc: add support for soc_device_match
- returning -EPROBE_DEFER
-To:     "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
-Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
-        horia.geanta@nxp.com, aymen.sghaier@nxp.com,
-        herbert@gondor.apana.org.au, davem@davemloft.net, tony@atomide.com,
-        geert+renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
-        vkoul@kernel.org, peter.ujfalusi@gmail.com, a.hajda@samsung.com,
-        narmstrong@baylibre.com, robert.foss@linaro.org, airlied@linux.ie,
-        daniel@ffwll.ch, khilman@baylibre.com, tomba@kernel.org,
-        jyri.sarha@iki.fi, joro@8bytes.org, will@kernel.org,
-        mchehab@kernel.org, ulf.hansson@linaro.org,
-        adrian.hunter@intel.com, kishon@ti.com, kuba@kernel.org,
-        linus.walleij@linaro.org, Roy.Pledge@nxp.com, leoyang.li@nxp.com,
-        ssantosh@kernel.org, matthias.bgg@gmail.com, edubezval@gmail.com,
-        j-keerthy@ti.com, balbi@kernel.org, linux@prisktech.co.nz,
-        stern@rowland.harvard.edu, wim@linux-watchdog.org,
-        linux@roeck-us.net, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-media@vger.kernel.org,
-        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
-        linux-phy@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-staging@lists.linux.dev,
-        linux-mediatek@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87zgxu3e4v.fsf@yhuang6-desk1.ccr.corp.intel.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.5]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alice,
+On 2021/4/19 15:52, Huang, Ying wrote:
+> Miaohe Lin <linmiaohe@huawei.com> writes:
+> 
+>> On 2021/4/19 15:09, Huang, Ying wrote:
+>>> Miaohe Lin <linmiaohe@huawei.com> writes:
+>>>
+>>>> On 2021/4/19 10:48, Huang, Ying wrote:
+>>>>> Miaohe Lin <linmiaohe@huawei.com> writes:
+>>>>>
+>>>>>> We will use percpu-refcount to serialize against concurrent swapoff. This
+>>>>>> patch adds the percpu_ref support for swap.
+>>>>>>
+>>>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>>>> ---
+>>>>>>  include/linux/swap.h |  3 +++
+>>>>>>  mm/swapfile.c        | 33 +++++++++++++++++++++++++++++----
+>>>>>>  2 files changed, 32 insertions(+), 4 deletions(-)
+>>>>>>
+>>>>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>>>>>> index 144727041e78..8be36eb58b7a 100644
+>>>>>> --- a/include/linux/swap.h
+>>>>>> +++ b/include/linux/swap.h
+>>>>>> @@ -240,6 +240,7 @@ struct swap_cluster_list {
+>>>>>>   * The in-memory structure used to track swap areas.
+>>>>>>   */
+>>>>>>  struct swap_info_struct {
+>>>>>> +	struct percpu_ref users;	/* serialization against concurrent swapoff */
+>>>>>
+>>>>> The comments aren't general enough.  We use this to check whether the
+>>>>> swap device has been fully initialized, etc. May be something as below?
+>>>>>
+>>>>> /* indicate and keep swap device valid */
+>>>>
+>>>> Looks good.
+>>>>
+>>>>>
+>>>>>>  	unsigned long	flags;		/* SWP_USED etc: see above */
+>>>>>>  	signed short	prio;		/* swap priority of this type */
+>>>>>>  	struct plist_node list;		/* entry in swap_active_head */
+>>>>>> @@ -260,6 +261,8 @@ struct swap_info_struct {
+>>>>>>  	struct block_device *bdev;	/* swap device or bdev of swap file */
+>>>>>>  	struct file *swap_file;		/* seldom referenced */
+>>>>>>  	unsigned int old_block_size;	/* seldom referenced */
+>>>>>> +	bool ref_initialized;		/* seldom referenced */
+>>>>>> +	struct completion comp;		/* seldom referenced */
+>>>>>>  #ifdef CONFIG_FRONTSWAP
+>>>>>>  	unsigned long *frontswap_map;	/* frontswap in-use, one bit per page */
+>>>>>>  	atomic_t frontswap_pages;	/* frontswap pages in-use counter */
+>>>>>> diff --git a/mm/swapfile.c b/mm/swapfile.c
+>>>>>> index 149e77454e3c..66515a3a2824 100644
+>>>>>> --- a/mm/swapfile.c
+>>>>>> +++ b/mm/swapfile.c
+>>>>>> @@ -39,6 +39,7 @@
+>>>>>>  #include <linux/export.h>
+>>>>>>  #include <linux/swap_slots.h>
+>>>>>>  #include <linux/sort.h>
+>>>>>> +#include <linux/completion.h>
+>>>>>>  
+>>>>>>  #include <asm/tlbflush.h>
+>>>>>>  #include <linux/swapops.h>
+>>>>>> @@ -511,6 +512,14 @@ static void swap_discard_work(struct work_struct *work)
+>>>>>>  	spin_unlock(&si->lock);
+>>>>>>  }
+>>>>>>  
+>>>>>> +static void swap_users_ref_free(struct percpu_ref *ref)
+>>>>>> +{
+>>>>>> +	struct swap_info_struct *si;
+>>>>>> +
+>>>>>> +	si = container_of(ref, struct swap_info_struct, users);
+>>>>>> +	complete(&si->comp);
+>>>>>> +}
+>>>>>> +
+>>>>>>  static void alloc_cluster(struct swap_info_struct *si, unsigned long idx)
+>>>>>>  {
+>>>>>>  	struct swap_cluster_info *ci = si->cluster_info;
+>>>>>> @@ -2500,7 +2509,7 @@ static void enable_swap_info(struct swap_info_struct *p, int prio,
+>>>>>>  	 * Guarantee swap_map, cluster_info, etc. fields are valid
+>>>>>>  	 * between get/put_swap_device() if SWP_VALID bit is set
+>>>>>>  	 */
+>>>>>> -	synchronize_rcu();
+>>>>>
+>>>>> You cannot remove this without changing get/put_swap_device().  It's
+>>>>> better to squash at least PATCH 1-2.
+>>>>
+>>>> Will squash PATCH 1-2. Thanks.
+>>>>
+>>>>>
+>>>>>> +	percpu_ref_resurrect(&p->users);
+>>>>>>  	spin_lock(&swap_lock);
+>>>>>>  	spin_lock(&p->lock);
+>>>>>>  	_enable_swap_info(p);
+>>>>>> @@ -2621,11 +2630,18 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
+>>>>>>  	p->flags &= ~SWP_VALID;		/* mark swap device as invalid */
+>>>>>>  	spin_unlock(&p->lock);
+>>>>>>  	spin_unlock(&swap_lock);
+>>>>>> +
+>>>>>> +	percpu_ref_kill(&p->users);
+>>>>>>  	/*
+>>>>>> -	 * wait for swap operations protected by get/put_swap_device()
+>>>>>> -	 * to complete
+>>>>>> +	 * We need synchronize_rcu() here to protect the accessing
+>>>>>> +	 * to the swap cache data structure.
+>>>>>>  	 */
+>>>>>>  	synchronize_rcu();
+>>>>>> +	/*
+>>>>>> +	 * Wait for swap operations protected by get/put_swap_device()
+>>>>>> +	 * to complete.
+>>>>>> +	 */
+>>>>>
+>>>>> I think the comments (after some revision) can be moved before
+>>>>> percpu_ref_kill().  The synchronize_rcu() comments can be merged.
+>>>>>
+>>>>
+>>>> Ok.
+>>>>
+>>>>>> +	wait_for_completion(&p->comp);
+>>>>>>  
+>>>>>>  	flush_work(&p->discard_work);
+>>>>>>  
+>>>>>> @@ -3132,7 +3148,7 @@ static bool swap_discardable(struct swap_info_struct *si)
+>>>>>>  SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+>>>>>>  {
+>>>>>>  	struct swap_info_struct *p;
+>>>>>> -	struct filename *name;
+>>>>>> +	struct filename *name = NULL;
+>>>>>>  	struct file *swap_file = NULL;
+>>>>>>  	struct address_space *mapping;
+>>>>>>  	int prio;
+>>>>>> @@ -3163,6 +3179,15 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+>>>>>>  
+>>>>>>  	INIT_WORK(&p->discard_work, swap_discard_work);
+>>>>>>  
+>>>>>> +	if (!p->ref_initialized) {
+>>>>>
+>>>>> I don't think it's necessary to add another flag p->ref_initialized.  We
+>>>>> can distinguish newly allocated and reused swap_info_struct in alloc_swap_info().
+>>>>>
+>>>>
+>>>> If newly allocated swap_info_struct failed to init percpu_ref, it will be considered as
+>>>> a reused one in alloc_swap_info() _but_ the field users of swap_info_struct is actually
+>>>> uninitialized. Does this make sense for you?
+>>>
+>>> We can call percpu_ref_init() just after kvzalloc() in alloc_swap_info().
+>>>
+>>
+>> Yes, we can do it this way. But using ref_initialized might make the code more straightforward
+>> and simple?
+> 
+> I think that it's simpler to call percpu_ref_init() in
+> alloc_swap_info().  We can just call percpu_ref_init() for allocated
+> swap_info_struct blindly, and call percpu_ref_exit() if we reuse.
+> 
 
-CC Arnd (soc_device_match() author)
+Looks good. Will do. Many thanks again.
 
-On Mon, Apr 19, 2021 at 6:28 AM Alice Guo (OSS) <alice.guo@oss.nxp.com> wrote:
-> From: Alice Guo <alice.guo@nxp.com>
->
-> In i.MX8M boards, the registration of SoC device is later than caam
-> driver which needs it. Caam driver needs soc_device_match to provide
-> -EPROBE_DEFER when no SoC device is registered and no
-> early_soc_dev_attr.
+> Best Regards,
+> Huang, Ying
+> 
+>>> Best Regards,
+>>> Huang, Ying
+>>>
+>>>> Many Thanks for quick review.
+>>>>
+>>>>> Best Regards,
+>>>>> Huang, Ying
+>>>>>
+>>>>>> +		error = percpu_ref_init(&p->users, swap_users_ref_free,
+>>>>>> +					PERCPU_REF_INIT_DEAD, GFP_KERNEL);
+>>>>>> +		if (unlikely(error))
+>>>>>> +			goto bad_swap;
+>>>>>> +		init_completion(&p->comp);
+>>>>>> +		p->ref_initialized = true;
+>>>>>> +	}
+>>>>>> +
+>>>>>>  	name = getname(specialfile);
+>>>>>>  	if (IS_ERR(name)) {
+>>>>>>  		error = PTR_ERR(name);
+>>>>> .
+>>>>>
+>>> .
+>>>
+> .
+> 
 
-I'm wondering if this is really a good idea: soc_device_match() is a
-last-resort low-level check, and IMHO should be made available early on,
-so there is no need for -EPROBE_DEFER.
-
->
-> Signed-off-by: Alice Guo <alice.guo@nxp.com>
-
-Thanks for your patch!
-
-> --- a/drivers/base/soc.c
-> +++ b/drivers/base/soc.c
-> @@ -110,6 +110,7 @@ static void soc_release(struct device *dev)
->  }
->
->  static struct soc_device_attribute *early_soc_dev_attr;
-> +static bool soc_dev_attr_init_done = false;
-
-Do you need this variable?
-
->
->  struct soc_device *soc_device_register(struct soc_device_attribute *soc_dev_attr)
->  {
-> @@ -157,6 +158,7 @@ struct soc_device *soc_device_register(struct soc_device_attribute *soc_dev_attr
->                 return ERR_PTR(ret);
->         }
->
-> +       soc_dev_attr_init_done = true;
->         return soc_dev;
->
->  out3:
-> @@ -246,6 +248,9 @@ const struct soc_device_attribute *soc_device_match(
->         if (!matches)
->                 return NULL;
->
-> +       if (!soc_dev_attr_init_done && !early_soc_dev_attr)
-
-if (!soc_bus_type.p && !early_soc_dev_attr)
-
-> +               return ERR_PTR(-EPROBE_DEFER);
-> +
->         while (!ret) {
->                 if (!(matches->machine || matches->family ||
->                       matches->revision || matches->soc_id))
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
