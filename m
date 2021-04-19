@@ -2,102 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 230A1363D69
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37ECE363D6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236252AbhDSIXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 04:23:04 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:55137 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229790AbhDSIXB (ORCPT
+        id S232251AbhDSIYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 04:24:13 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:17376 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238158AbhDSIYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 04:23:01 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-173-Jw5v629MP6SNyxusFjbP0g-1; Mon, 19 Apr 2021 09:22:22 +0100
-X-MC-Unique: Jw5v629MP6SNyxusFjbP0g-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Mon, 19 Apr 2021 09:22:21 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Mon, 19 Apr 2021 09:22:21 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'wangyanan (Y)'" <wangyanan55@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-CC:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Ben Gardon <bgardon@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        "wanghaibin.wang@huawei.com" <wanghaibin.wang@huawei.com>,
-        "yuzenghui@huawei.com" <yuzenghui@huawei.com>,
-        kvm <kvm@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v6 03/10] KVM: selftests: Use flag CLOCK_MONOTONIC_RAW for
- timing
-Thread-Topic: [PATCH v6 03/10] KVM: selftests: Use flag CLOCK_MONOTONIC_RAW
- for timing
-Thread-Index: AQHXNObaeVOoTXOm4UClXGWfioY7I6q7fhHA
-Date:   Mon, 19 Apr 2021 08:22:21 +0000
-Message-ID: <8f36c1973c8147858000dd2a28d046ce@AcuMS.aculab.com>
-References: <20210330080856.14940-1-wangyanan55@huawei.com>
- <20210330080856.14940-4-wangyanan55@huawei.com>
- <1f892f30-1a72-1bcb-462f-b3d6f2bababb@redhat.com>
- <82def592-e36c-25c3-c8c5-84c9be83e926@huawei.com>
-In-Reply-To: <82def592-e36c-25c3-c8c5-84c9be83e926@huawei.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 19 Apr 2021 04:24:08 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FP0CV1GxLzlWv2;
+        Mon, 19 Apr 2021 16:21:42 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Mon, 19 Apr 2021
+ 16:23:27 +0800
+From:   Shijie Luo <luoshijie1@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>, <luoshijie1@huawei.com>
+Subject: [PATCH] mm: fix some typos and code style problems
+Date:   Mon, 19 Apr 2021 04:22:37 -0400
+Message-ID: <20210419082237.61206-1-luoshijie1@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogd2FuZ3lhbmFuIChZKQ0KPiBTZW50OiAxOSBBcHJpbCAyMDIxIDA3OjQwDQo+IA0KPiBI
-aSBQYW9sbywNCj4gDQo+IE9uIDIwMjEvNC8xNyAyMToyMywgUGFvbG8gQm9uemluaSB3cm90ZToN
-Cj4gPiBPbiAzMC8wMy8yMSAxMDowOCwgWWFuYW4gV2FuZyB3cm90ZToNCj4gPj4gSW4gYWRkaXRp
-b24gdG8gZnVuY3Rpb24gb2YgQ0xPQ0tfTU9OT1RPTklDLCBmbGFnIENMT0NLX01PTk9UT05JQ19S
-QVcgY2FuDQo+ID4+IGFsc28gc2hpZWxkIHBvc3NpYWJsZSBpbXBhY3Qgb2YgTlRQLCB3aGljaCBj
-YW4gcHJvdmlkZSBtb3JlIHJvYnVzdG5lc3MuDQo+ID4+DQo+ID4+IFN1Z2dlc3RlZC1ieTogVml0
-YWx5IEt1em5ldHNvdjx2a3V6bmV0c0ByZWRoYXQuY29tPg0KPiA+PiBTaWduZWQtb2ZmLWJ5OiBZ
-YW5hbiBXYW5nPHdhbmd5YW5hbjU1QGh1YXdlaS5jb20+DQo+ID4+IFJldmlld2VkLWJ5OiBCZW4g
-R2FyZG9uPGJnYXJkb25AZ29vZ2xlLmNvbT4NCj4gPj4gUmV2aWV3ZWQtYnk6IEFuZHJldyBKb25l
-czxkcmpvbmVzQHJlZGhhdC5jb20+DQo+ID4NCj4gPiBJJ20gbm90IHN1cmUgYWJvdXQgdGhpcyBv
-bmUsIGlzIHRoZSBlZmZlY3QgdmlzaWJsZT8NCj4gPg0KPiBJbiBwcmFjdGljZSwgZGlmZmVyZW5j
-ZSBiZXR3ZWVuIHJlc3VsdHMgZ290IHdpdGggQ0xPQ0tfTU9OT1RPTklDIGFuZA0KPiBDTE9DS19N
-T05PVE9OSUNfUkFXDQo+IGFjdHVhbGx5IGlzIHRvbyBsaXR0bGUgdG8gYmUgdmlzaWJsZS4gQnV0
-IGlmIGp1c3QgaW4gdGhlb3J5LA0KPiBDTE9DS19NT05PVE9OSUNfUkFXIGNhbiBlbnN1cmUgdGlt
-ZSByZXN1bHRzDQo+IG9mIHRoZSBjb21wYXJlZCB0ZXN0cyBhcmUgYmFzZWQgb24gdGhlIHNhbWUg
-bG9jYWwgb3NjaWxsYXRvciBmcmVxdWVuY3ksDQo+IHdoaWNoIGlzIG5vdCBzdWJqZWN0IHRvIHBv
-c3NpYmxlDQo+IE5UUCBmcmVxdWVuY3kgYWRqdXN0bWVudC4gQ2hhbmdlIGluIHRoaXMgcGF0Y2gg
-c2VlbXMgbGlrZSBhIGJpdCBvZg0KPiBvcHRpbWl6YXRpb24uDQoNClRoZSByZWFsIGFubm95YW5j
-ZSBpcyB3aGVuIE5UUCBpcyByZWFsaWduaW5nIHRoZSBsb2NhbCBjbG9jay4NClRoaXMgdHlwaWNh
-bGx5IGhhcHBlbnMgYWZ0ZXIgYm9vdCAtIGJ1dCBjYW4gdGFrZSBxdWl0ZSBhIGZldw0KbWludXRl
-cyAoZG9uJ3QgdGhpbmsgaXQgY2FuIHF1aXRlIGdldCB0byBhbiBob3VyKS4NCihJIHRoaW5rIHNv
-bWV0aGluZyBzaW1pbGFyIGlzIGNhdXNlZCBieSBsZWFwIHNlY29uZHMuKQ0KDQpEdXJpbmcgdGhp
-cyBwZXJpb2QgQ0xPQ0tfTU9OT1RPTklDIGNhbiBydW4gYXQgYSBzaWduaWZpY2FudGx5DQpkaWZm
-ZXJlbnQgcmF0ZSBmcm9tICdyZWFsIHRpbWUnLg0KVGhpcyBtYXkgbm90IG1hdHRlciBmb3IgdGlt
-aW5nIHNlbGYgdGVzdHMsIGJ1dCBpcyBzaWduaWZpY2FudA0KZm9yIFJUUCBhdWRpby4NCg0KVGhl
-IHByb2JsZW0gdGhlcmUgaXMgdGhhdCB5b3Ugd2FudCB0aGUgTlRQIGNvcnJlY3RlZCB0aW1lDQpk
-dXJpbmcgJ25vcm1hbCBydW5uaW5nJyBiZWNhdXNlIHRoZSBzbWFsbCBjb3JyZWN0aW9uIChmb3IN
-CmNyeXN0YWwgZXJyb3IpIGlzIHVzZWZ1bC4NCg0KQnV0IHRoZSBrZXJuZWwgSFIgdGltZXJzIGFy
-ZSBvbmx5IGRlZmluZWQgZm9yIENMT0NLX01PTk9UT05JQw0KYW5kIHRoZSB1c2Vyc3BhY2UgcmVx
-dWVzdHMgZm9yIENMT0NLX01PTk9UT05JQ19SQVcgYXJlIGxpa2VseQ0KdG8gYmUgcmVhbCBzeXN0
-ZW0gY2FsbHMuDQoNCldoYXQgeW91IHJlYWxseSB3YW50IGlzIGEgY2xvY2sgd2hvc2UgZnJlcXVl
-bmN5IGlzIGFkanVzdGVkDQpieSBOVFAgYnV0IGRvZXNuJ3QgaGF2ZSB0aGUgTlRQIG9mZnNldCBh
-ZGp1Y3RtZW50cy4NCkluIHJlYWxpdHkgdGhpcyBvdWdodCB0byBiZSBDTE9DS19NT05PVE9OSUMu
-DQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9h
-ZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBO
-bzogMTM5NzM4NiAoV2FsZXMpDQo=
+fix some typos and code style problems in mm.
+
+gfp.h: s/MAXNODES/MAX_NUMNODES
+mmzone.h: s/then/than
+rmap.c: s/__vma_split()/__vma_adjust()
+swap.c: s/__mod_zone_page_stat/__mod_zone_page_state, s/is is/is
+swap_state.c: s/whoes/whose
+zsfold.c: code style problem fix in z3fold_unregister_migration
+zsmalloc.c: s/of/or, s/give/given
+
+Signed-off-by: Shijie Luo <luoshijie1@huawei.com>
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ include/linux/gfp.h    | 2 +-
+ include/linux/mmzone.h | 2 +-
+ mm/rmap.c              | 2 +-
+ mm/swap.c              | 4 ++--
+ mm/swap_state.c        | 2 +-
+ mm/z3fold.c            | 2 +-
+ mm/zsmalloc.c          | 4 ++--
+ 7 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+index 8572a1474e16..5f597df8da98 100644
+--- a/include/linux/gfp.h
++++ b/include/linux/gfp.h
+@@ -490,7 +490,7 @@ static inline int gfp_zonelist(gfp_t flags)
+ 
+ /*
+  * We get the zone list from the current node and the gfp_mask.
+- * This zone list contains a maximum of MAXNODES*MAX_NR_ZONES zones.
++ * This zone list contains a maximum of MAX_NUMNODES*MAX_NR_ZONES zones.
+  * There are two zonelists per node, one for all zones with memory and
+  * one containing just zones from the node the zonelist belongs to.
+  *
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 47946cec7584..5fd14fd85d4c 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -55,7 +55,7 @@ enum migratetype {
+ 	 * pageblocks to MIGRATE_CMA which can be done by
+ 	 * __free_pageblock_cma() function.  What is important though
+ 	 * is that a range of pageblocks must be aligned to
+-	 * MAX_ORDER_NR_PAGES should biggest page be bigger then
++	 * MAX_ORDER_NR_PAGES should biggest page be bigger than
+ 	 * a single pageblock.
+ 	 */
+ 	MIGRATE_CMA,
+diff --git a/mm/rmap.c b/mm/rmap.c
+index b0fc27e77d6d..693a610e181d 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -257,7 +257,7 @@ static inline void unlock_anon_vma_root(struct anon_vma *root)
+  * Attach the anon_vmas from src to dst.
+  * Returns 0 on success, -ENOMEM on failure.
+  *
+- * anon_vma_clone() is called by __vma_split(), __split_vma(), copy_vma() and
++ * anon_vma_clone() is called by __vma_adjust(), __split_vma(), copy_vma() and
+  * anon_vma_fork(). The first three want an exact copy of src, while the last
+  * one, anon_vma_fork(), may try to reuse an existing anon_vma to prevent
+  * endless growth of anon_vma. Since dst->anon_vma is set to NULL before call,
+diff --git a/mm/swap.c b/mm/swap.c
+index 31b844d4ed94..9e0028b01b97 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -483,7 +483,7 @@ void lru_cache_add_inactive_or_unevictable(struct page *page,
+ 	if (unlikely(unevictable) && !TestSetPageMlocked(page)) {
+ 		int nr_pages = thp_nr_pages(page);
+ 		/*
+-		 * We use the irq-unsafe __mod_zone_page_stat because this
++		 * We use the irq-unsafe __mod_zone_page_state because this
+ 		 * counter is not modified from interrupt context, and the pte
+ 		 * lock is held(spinlock), which implies preemption disabled.
+ 		 */
+@@ -794,7 +794,7 @@ void lru_add_drain_all(void)
+ 	 * below which drains the page vectors.
+ 	 *
+ 	 * Let x, y, and z represent some system CPU numbers, where x < y < z.
+-	 * Assume CPU #z is is in the middle of the for_each_online_cpu loop
++	 * Assume CPU #z is in the middle of the for_each_online_cpu loop
+ 	 * below and has already reached CPU #y's per-cpu data. CPU #x comes
+ 	 * along, adds some pages to its per-cpu vectors, then calls
+ 	 * lru_add_drain_all().
+diff --git a/mm/swap_state.c b/mm/swap_state.c
+index 3cdee7b11da9..5d1fafffee4e 100644
+--- a/mm/swap_state.c
++++ b/mm/swap_state.c
+@@ -797,7 +797,7 @@ static void swap_ra_info(struct vm_fault *vmf,
+  *
+  * Returns the struct page for entry and addr, after queueing swapin.
+  *
+- * Primitive swap readahead code. We simply read in a few pages whoes
++ * Primitive swap readahead code. We simply read in a few pages whose
+  * virtual addresses are around the fault address in the same vma.
+  *
+  * Caller must hold read mmap_lock if vmf->vma is not NULL.
+diff --git a/mm/z3fold.c b/mm/z3fold.c
+index 9d889ad2bb86..7fe7adaaad01 100644
+--- a/mm/z3fold.c
++++ b/mm/z3fold.c
+@@ -391,7 +391,7 @@ static void z3fold_unregister_migration(struct z3fold_pool *pool)
+ {
+ 	if (pool->inode)
+ 		iput(pool->inode);
+- }
++}
+ 
+ /* Initializes the z3fold header of a newly allocated z3fold page */
+ static struct z3fold_header *init_z3fold_page(struct page *page, bool headless,
+diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
+index 30c358b72025..412e0f95e2c1 100644
+--- a/mm/zsmalloc.c
++++ b/mm/zsmalloc.c
+@@ -61,7 +61,7 @@
+ #define ZSPAGE_MAGIC	0x58
+ 
+ /*
+- * This must be power of 2 and greater than of equal to sizeof(link_free).
++ * This must be power of 2 and greater than or equal to sizeof(link_free).
+  * These two conditions ensure that any 'struct link_free' itself doesn't
+  * span more than 1 page which avoids complex case of mapping 2 pages simply
+  * to restore link_free pointer values.
+@@ -530,7 +530,7 @@ static void set_zspage_mapping(struct zspage *zspage,
+  * class maintains a list of zspages where each zspage is divided
+  * into equal sized chunks. Each allocation falls into one of these
+  * classes depending on its size. This function returns index of the
+- * size class which has chunk size big enough to hold the give size.
++ * size class which has chunk size big enough to hold the given size.
+  */
+ static int get_size_class_index(int size)
+ {
+-- 
+2.19.1
 
