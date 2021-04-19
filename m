@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93AA33645C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 970F13645C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241121AbhDSOP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 10:15:26 -0400
-Received: from outbound-smtp55.blacknight.com ([46.22.136.239]:36563 "EHLO
-        outbound-smtp55.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241101AbhDSOPY (ORCPT
+        id S240990AbhDSOPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 10:15:36 -0400
+Received: from outbound-smtp02.blacknight.com ([81.17.249.8]:51150 "EHLO
+        outbound-smtp02.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241152AbhDSOPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 10:15:24 -0400
+        Mon, 19 Apr 2021 10:15:34 -0400
 Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp55.blacknight.com (Postfix) with ESMTPS id 9C8B9FAE25
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 15:14:53 +0100 (IST)
-Received: (qmail 13413 invoked from network); 19 Apr 2021 14:14:53 -0000
+        by outbound-smtp02.blacknight.com (Postfix) with ESMTPS id C4398BAD88
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 15:15:03 +0100 (IST)
+Received: (qmail 14520 invoked from network); 19 Apr 2021 14:15:03 -0000
 Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPA; 19 Apr 2021 14:14:53 -0000
+  by 81.17.254.9 with ESMTPA; 19 Apr 2021 14:15:03 -0000
 From:   Mel Gorman <mgorman@techsingularity.net>
 To:     Linux-MM <linux-mm@kvack.org>,
         Linux-RT-Users <linux-rt-users@vger.kernel.org>
@@ -30,9 +30,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Michal Hocko <mhocko@kernel.org>,
         Vlastimil Babka <vbabka@suse.cz>,
         Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 06/10] mm/page_alloc: Reduce duration that IRQs are disabled for VM counters
-Date:   Mon, 19 Apr 2021 15:13:37 +0100
-Message-Id: <20210419141341.26047-7-mgorman@techsingularity.net>
+Subject: [PATCH 07/10] mm/page_alloc: Explicitly acquire the zone lock in __free_pages_ok
+Date:   Mon, 19 Apr 2021 15:13:38 +0100
+Message-Id: <20210419141341.26047-8-mgorman@techsingularity.net>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210419141341.26047-1-mgorman@techsingularity.net>
 References: <20210419141341.26047-1-mgorman@techsingularity.net>
@@ -42,80 +42,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IRQs are left disabled for the zone and node VM event counters. This is
-unnecessary as the affected counters are allowed to race for preemmption
-and IRQs.
+__free_pages_ok() disables IRQs before calling a common helper
+free_one_page() that acquires the zone lock. This is not safe according
+to Documentation/locking/locktypes.rst and in this context, IRQ disabling
+is not protecting a per_cpu_pages structure either or a local_lock would
+be used.
 
-This patch reduces the scope of IRQs being disabled
-via local_[lock|unlock]_irq on !PREEMPT_RT kernels. One
-__mod_zone_freepage_state is still called with IRQs disabled. While this
-could be moved out, it's not free on all architectures as some require
-IRQs to be disabled for mod_zone_page_state on !PREEMPT_RT kernels.
+This patch explicitly acquires the lock with spin_lock_irqsave instead of
+relying on a helper. This removes the last instance of local_irq_save()
+in page_alloc.c.
 
 Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 Acked-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/page_alloc.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ mm/page_alloc.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index cff0f1c98b28..295624fe293b 100644
+index 295624fe293b..c6e8da942905 100644
 --- a/mm/page_alloc.c
 +++ b/mm/page_alloc.c
-@@ -3474,11 +3474,11 @@ static struct page *rmqueue_pcplist(struct zone *preferred_zone,
- 	pcp = this_cpu_ptr(zone->per_cpu_pageset);
- 	list = &pcp->lists[migratetype];
- 	page = __rmqueue_pcplist(zone,  migratetype, alloc_flags, pcp, list);
-+	local_unlock_irqrestore(&pagesets.lock, flags);
- 	if (page) {
- 		__count_zid_vm_events(PGALLOC, page_zonenum(page), 1);
- 		zone_statistics(preferred_zone, zone, 1);
- 	}
--	local_unlock_irqrestore(&pagesets.lock, flags);
- 	return page;
+@@ -1547,21 +1547,21 @@ static void __free_pages_ok(struct page *page, unsigned int order,
+ 	unsigned long flags;
+ 	int migratetype;
+ 	unsigned long pfn = page_to_pfn(page);
++	struct zone *zone = page_zone(page);
+ 
+ 	if (!free_pages_prepare(page, order, true))
+ 		return;
+ 
+ 	migratetype = get_pfnblock_migratetype(page, pfn);
+ 
+-	/*
+-	 * TODO FIX: Disable IRQs before acquiring IRQ-safe zone->lock
+-	 * and protect vmstat updates.
+-	 */
+-	local_irq_save(flags);
++	spin_lock_irqsave(&zone->lock, flags);
+ 	__count_vm_events(PGFREE, 1 << order);
+-	free_one_page(page_zone(page), page, pfn, order, migratetype,
+-		      fpi_flags);
+-	local_irq_restore(flags);
++	if (unlikely(has_isolate_pageblock(zone) ||
++		is_migrate_isolate(migratetype))) {
++		migratetype = get_pfnblock_migratetype(page, pfn);
++	}
++	__free_one_page(page, pfn, zone, order, migratetype, fpi_flags);
++	spin_unlock_irqrestore(&zone->lock, flags);
  }
  
-@@ -3530,15 +3530,15 @@ struct page *rmqueue(struct zone *preferred_zone,
- 		if (!page)
- 			page = __rmqueue(zone, order, migratetype, alloc_flags);
- 	} while (page && check_new_pages(page, order));
--	spin_unlock(&zone->lock);
- 	if (!page)
- 		goto failed;
-+
- 	__mod_zone_freepage_state(zone, -(1 << order),
- 				  get_pcppage_migratetype(page));
-+	spin_unlock_irqrestore(&zone->lock, flags);
- 
- 	__count_zid_vm_events(PGALLOC, page_zonenum(page), 1 << order);
- 	zone_statistics(preferred_zone, zone, 1);
--	local_irq_restore(flags);
- 
- out:
- 	/* Separate test+clear to avoid unnecessary atomics */
-@@ -3551,7 +3551,7 @@ struct page *rmqueue(struct zone *preferred_zone,
- 	return page;
- 
- failed:
--	local_irq_restore(flags);
-+	spin_unlock_irqrestore(&zone->lock, flags);
- 	return NULL;
- }
- 
-@@ -5103,11 +5103,11 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 		nr_populated++;
- 	}
- 
-+	local_unlock_irqrestore(&pagesets.lock, flags);
-+
- 	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
- 	zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
- 
--	local_unlock_irqrestore(&pagesets.lock, flags);
--
- 	return nr_populated;
- 
- failed_irq:
+ void __free_pages_core(struct page *page, unsigned int order)
 -- 
 2.26.2
 
