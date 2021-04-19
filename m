@@ -2,162 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1353645AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 496BC3645B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239321AbhDSOIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 10:08:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:43716 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230021AbhDSOIU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 10:08:20 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1290C31B;
-        Mon, 19 Apr 2021 07:07:50 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8CA2C3F7D7;
-        Mon, 19 Apr 2021 07:07:48 -0700 (PDT)
-Subject: Re: [PATCH v2 1/4] mm: pagewalk: Fix walk for hugepage tables
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        akpm@linux-foundation.org, dja@axtens.net
-Cc:     Oliver O'Halloran <oohall@gmail.com>, linux-arch@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <cover.1618828806.git.christophe.leroy@csgroup.eu>
- <db6981c69f96a8c9c6dcf688b7f485e15993ddef.1618828806.git.christophe.leroy@csgroup.eu>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <1fdb0abe-b4b5-937c-0d9b-859a5cbb5726@arm.com>
-Date:   Mon, 19 Apr 2021 15:07:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S239344AbhDSONv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 10:13:51 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:50201 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233383AbhDSONt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 10:13:49 -0400
+Received: from mail-wm1-f50.google.com ([209.85.128.50]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MRT6b-1lBCSx1Mvt-00NPDM; Mon, 19 Apr 2021 16:13:18 +0200
+Received: by mail-wm1-f50.google.com with SMTP id n4-20020a05600c4f84b029013151278decso6943455wmq.4;
+        Mon, 19 Apr 2021 07:13:18 -0700 (PDT)
+X-Gm-Message-State: AOAM533PkoFJC64mIl9CfSTKZDMtvWMu8jzFsEkLrth2iWR6p00lQRXH
+        Ejj3tvlmnBcX1O+ctQlRP8aKE6Jc0lNklqU451s=
+X-Google-Smtp-Source: ABdhPJxfWYQpgkQ73Nyeh2Cp48WIV5Does1Qg89OpygaNxV8Vc57wC3uOquK/ybb1mHpmU/fFGzqMBDByBQcWWgbLFg=
+X-Received: by 2002:a05:600c:2282:: with SMTP id 2mr22091204wmf.84.1618841597967;
+ Mon, 19 Apr 2021 07:13:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <db6981c69f96a8c9c6dcf688b7f485e15993ddef.1618828806.git.christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210419140152.180361-1-colin.king@canonical.com>
+In-Reply-To: <20210419140152.180361-1-colin.king@canonical.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 19 Apr 2021 16:13:01 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1X-fNo4PxZi8ZWiRrtdvF0kyB4qYEZYOe81uMgsYy2Qg@mail.gmail.com>
+Message-ID: <CAK8P3a1X-fNo4PxZi8ZWiRrtdvF0kyB4qYEZYOe81uMgsYy2Qg@mail.gmail.com>
+Subject: Re: [PATCH][next] wlcore: Fix buffer overrun by snprintf due to
+ incorrect buffer size Content-Type: text/plain; charset="utf-8"
+To:     Colin King <colin.king@canonical.com>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:uSD0cnDzOC2VcjN7ZBcWZ2vvNBUpCz841+gCEkLH5jqq+b3iU+Q
+ tzQBON82eKbamHzODxWbZ1sNmLchNWZtXqsw4L7gcEvzN9seh5npI4GnqcWTnpru1RG0LSy
+ Tqf72g24MJxZoMnKKdQKxTLVdKVe/oynydBsdv5tonKkDNri+hdm/OC6TcL4uUlHdUPr/1J
+ 9qetliShfwSKOwzoUgn9A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:6mHPdsKEpps=:n7IMC8R//h+tZA7CzdQmjX
+ IpSh7Gk1JxEJZLEbTi/9zeJdzEEbZt3NAJMEAQKZK65aW6zWPc9bs0Ed6BcbMEU9Vdoprx++D
+ 94s4NLx5WPHHhvLCtLXWzL49sJtk2LcWHEHedp58P/k9E9Oi6+K73d69qNZnSLMApnYcUtarW
+ YxarviejtZP6lnNjurSvm9i5ThigZfduYrG938IlvsDuCx6IT2F81Qz+P0Qvp/iDOI0q8OYis
+ gKcw5SQ7N/ilG3ZuGmpuM8MSI5MaL0b39ZPwFX2otBIQooa1zudH7KR9OBGPrOj+eKthZM30T
+ unjtTTGmBwZbfX9zjTgOFtyrPClycOkSSkcoVQ9TZktZT/lqyoCzT9FFIB/R1LpD4PO+4MjbC
+ h7HRN1uj6QPPn7ksQX96LHlvygEoIx2JD+ZCDcXjO7+HPymxe1CEUZT2Z8hG/M37mGJVVPMQL
+ 4eQOcX48DRLIIdxVM+wiQH7UFRJW7fijY6Kzrzolb1GmIJt/OnCp7TNAs8hMTrFV2mr5ztBHv
+ 6x2g4fSo9/pIZfIBvss2UXJ+hkJC5UoPS903h+WWaiiHK5dxdPIqWy46ddrjiu5KHlvwYkvo7
+ AErL3mqW4kNMCiNU7hVXMkt4m1vK25R+//eDhb1Ijx9xd8DJJAGak/WqKlpPL+R0PbtCxoU7i
+ iuTQ=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/04/2021 11:47, Christophe Leroy wrote:
-> Pagewalk ignores hugepd entries and walk down the tables
-> as if it was traditionnal entries, leading to crazy result.
-> 
-> Add walk_hugepd_range() and use it to walk hugepage tables.
-> 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+On Mon, Apr 19, 2021 at 4:01 PM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The size of the buffer than can be written to is currently incorrect, it is
+> always the size of the entire buffer even though the snprintf is writing
+> as position pos into the buffer. Fix this by setting the buffer size to be
+> the number of bytes left in the buffer, namely sizeof(buf) - pos.
+>
+> Addresses-Coverity: ("Out-of-bounds access")
+> Fixes: 7b0e2c4f6be3 ("wlcore: fix overlapping snprintf arguments in debugfs")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Looks correct to me, sadly I don't have a suitable system to test it.
-
-Reviewed-by: Steven Price <steven.price@arm.com>
-
-> ---
-> v2:
-> - Add a guard for NULL ops->pte_entry
-> - Take mm->page_table_lock when walking hugepage table, as suggested by follow_huge_pd()
-> ---
->   mm/pagewalk.c | 58 ++++++++++++++++++++++++++++++++++++++++++++++-----
->   1 file changed, 53 insertions(+), 5 deletions(-)
-> 
-> diff --git a/mm/pagewalk.c b/mm/pagewalk.c
-> index e81640d9f177..9b3db11a4d1d 100644
-> --- a/mm/pagewalk.c
-> +++ b/mm/pagewalk.c
-> @@ -58,6 +58,45 @@ static int walk_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
->   	return err;
->   }
->   
-> +#ifdef CONFIG_ARCH_HAS_HUGEPD
-> +static int walk_hugepd_range(hugepd_t *phpd, unsigned long addr,
-> +			     unsigned long end, struct mm_walk *walk, int pdshift)
-> +{
-> +	int err = 0;
-> +	const struct mm_walk_ops *ops = walk->ops;
-> +	int shift = hugepd_shift(*phpd);
-> +	int page_size = 1 << shift;
-> +
-> +	if (!ops->pte_entry)
-> +		return 0;
-> +
-> +	if (addr & (page_size - 1))
-> +		return 0;
-> +
-> +	for (;;) {
-> +		pte_t *pte;
-> +
-> +		spin_lock(&walk->mm->page_table_lock);
-> +		pte = hugepte_offset(*phpd, addr, pdshift);
-> +		err = ops->pte_entry(pte, addr, addr + page_size, walk);
-> +		spin_unlock(&walk->mm->page_table_lock);
-> +
-> +		if (err)
-> +			break;
-> +		if (addr >= end - page_size)
-> +			break;
-> +		addr += page_size;
-> +	}
-> +	return err;
-> +}
-> +#else
-> +static int walk_hugepd_range(hugepd_t *phpd, unsigned long addr,
-> +			     unsigned long end, struct mm_walk *walk, int pdshift)
-> +{
-> +	return 0;
-> +}
-> +#endif
-> +
->   static int walk_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
->   			  struct mm_walk *walk)
->   {
-> @@ -108,7 +147,10 @@ static int walk_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
->   				goto again;
->   		}
->   
-> -		err = walk_pte_range(pmd, addr, next, walk);
-> +		if (is_hugepd(__hugepd(pmd_val(*pmd))))
-> +			err = walk_hugepd_range((hugepd_t *)pmd, addr, next, walk, PMD_SHIFT);
-> +		else
-> +			err = walk_pte_range(pmd, addr, next, walk);
->   		if (err)
->   			break;
->   	} while (pmd++, addr = next, addr != end);
-> @@ -157,7 +199,10 @@ static int walk_pud_range(p4d_t *p4d, unsigned long addr, unsigned long end,
->   		if (pud_none(*pud))
->   			goto again;
->   
-> -		err = walk_pmd_range(pud, addr, next, walk);
-> +		if (is_hugepd(__hugepd(pud_val(*pud))))
-> +			err = walk_hugepd_range((hugepd_t *)pud, addr, next, walk, PUD_SHIFT);
-> +		else
-> +			err = walk_pmd_range(pud, addr, next, walk);
->   		if (err)
->   			break;
->   	} while (pud++, addr = next, addr != end);
-> @@ -189,7 +234,9 @@ static int walk_p4d_range(pgd_t *pgd, unsigned long addr, unsigned long end,
->   			if (err)
->   				break;
->   		}
-> -		if (ops->pud_entry || ops->pmd_entry || ops->pte_entry)
-> +		if (is_hugepd(__hugepd(p4d_val(*p4d))))
-> +			err = walk_hugepd_range((hugepd_t *)p4d, addr, next, walk, P4D_SHIFT);
-> +		else if (ops->pud_entry || ops->pmd_entry || ops->pte_entry)
->   			err = walk_pud_range(p4d, addr, next, walk);
->   		if (err)
->   			break;
-> @@ -224,8 +271,9 @@ static int walk_pgd_range(unsigned long addr, unsigned long end,
->   			if (err)
->   				break;
->   		}
-> -		if (ops->p4d_entry || ops->pud_entry || ops->pmd_entry ||
-> -		    ops->pte_entry)
-> +		if (is_hugepd(__hugepd(pgd_val(*pgd))))
-> +			err = walk_hugepd_range((hugepd_t *)pgd, addr, next, walk, PGDIR_SHIFT);
-> +		else if (ops->p4d_entry || ops->pud_entry || ops->pmd_entry || ops->pte_entry)
->   			err = walk_p4d_range(pgd, addr, next, walk);
->   		if (err)
->   			break;
-> 
-
+Acked-by: Arnd Bergmann <arnd@arndb.de>
