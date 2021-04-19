@@ -2,117 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA18364945
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 19:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D96CC36495F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 19:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240250AbhDSR4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 13:56:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233851AbhDSR4w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 13:56:52 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30C1C061763
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 10:56:21 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id e186so35769532iof.7
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 10:56:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=UaHhG9GjhH16KyT6wD+AMErOXAvHsspPbBTiFIqnuaI=;
-        b=o+t5ZaauRNLZB/NkC22jEe2WM29+J9dvtwmzjqajMX9136E1PLxCAL67mX4z/9zGxa
-         dE7B36ZUxx7hwJ12zc75LQ92fxQ/6BZfJR0fGyARnZ5jJh+edWsDSZH5AzUaH4mtNCkZ
-         62ZvyNp4P8Zarvc1U6inYSc5yBMS6RrREqH0IZlCZidUdCpLkfDFVAXBGU2PM+bwwjZe
-         vvdm21ELaxzmmN1BO3XUR+2coqcgdwX6ge3u+HaR2ikmYeHECxVZL/ZoUD6PTBsXkiRm
-         iHbrF0GAoUBuYZ2kb+wMC6WkuZa52Dc/SekbgDRMzPSbtrVrsTcJbicVQvcLBz6YHlzM
-         3H/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UaHhG9GjhH16KyT6wD+AMErOXAvHsspPbBTiFIqnuaI=;
-        b=fthTTVYVXmQThaU1XFXtfuVrjj2k6HgzAFCTnLyPHki6gnirklMVPxlCjdak7OVlHj
-         voQzhuaPAH9xa22uxssFMewwFduYZv74uxViaU64/YEmitYaiNxlxeV35d5ZGE6cM48l
-         4oYG+3F27sI0a0RSIEy9tBMaPSChLPTMNjs1mDo0yJ45RskMEXTYxjf0HS1HPBt4gqhw
-         gKK7Udmqui9kVlQ+FOS8AWf+tDUk0sh4q8+Bfi8znvFkHwJmtoBb/W0ymcJRHKO+ZQuL
-         KNLwih8PLi4C8zACBLcIZ904KZ1fxMNp+mY1U/yUEWOGp1OKAq82IPyO40nZKpypQN1K
-         xF4A==
-X-Gm-Message-State: AOAM531nL2DW1+Mz8twA1O5GilkaWk0T7JFpSwxrLkKUf4Bt7gM9fd5a
-        0TZsS9hKuXV4tYqkvnAODwYaCyyHoT8dgA==
-X-Google-Smtp-Source: ABdhPJzcUoaPEMhNhyNqr210rk8IlMIG/uYe7qF61kR71/dLorG2qPOtfnA8Ox3lIrcs28uCaaqLTw==
-X-Received: by 2002:a02:cc:: with SMTP id 195mr18099419jaa.73.1618854980993;
-        Mon, 19 Apr 2021 10:56:20 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id 1sm7324479ilz.11.2021.04.19.10.56.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Apr 2021 10:56:20 -0700 (PDT)
-Subject: Re: [PATCH] io_uring: check ctx->sq_data before io_sq_offload_start
-To:     Palash Oswal <hello@oswalpalash.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210419123630.62212-1-hello@oswalpalash.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <857554eb-d020-7e45-edd5-0b15bc2d1945@kernel.dk>
-Date:   Mon, 19 Apr 2021 11:56:20 -0600
+        id S240452AbhDSR7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 13:59:19 -0400
+Received: from mga02.intel.com ([134.134.136.20]:6449 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234356AbhDSR7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 13:59:18 -0400
+IronPort-SDR: OuQ7LYBV0xC64eAX09y0xXdx0BUvGY/Mw2DCS+G9YtyEhoUo66quy7sgZItArS3NkhoUjrNnyd
+ F37X5jANJ4bw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="182505189"
+X-IronPort-AV: E=Sophos;i="5.82,234,1613462400"; 
+   d="scan'208";a="182505189"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 10:58:45 -0700
+IronPort-SDR: l0jP108p7qCcR17xC/12EkzfeQC1X1MzsrGc6LP+iFP0ujaOzkggG2yLucmgfYVR0mP8or3+ML
+ F/69UdHWXHeg==
+X-IronPort-AV: E=Sophos;i="5.82,234,1613462400"; 
+   d="scan'208";a="426600065"
+Received: from jcfarwe-mobl1.amr.corp.intel.com (HELO [10.212.244.217]) ([10.212.244.217])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 10:58:44 -0700
+Subject: Re: [RFC Part2 PATCH 04/30] x86/mm: split the physmap when adding the
+ page in RMP table
+To:     Brijesh Singh <brijesh.singh@amd.com>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, ak@linux.intel.com,
+        herbert@gondor.apana.org.au, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+References: <20210324170436.31843-1-brijesh.singh@amd.com>
+ <20210324170436.31843-5-brijesh.singh@amd.com>
+ <20210419123226.GC9093@zn.tnic>
+ <befbe586-1c45-ebf7-709a-00150365e7ec@amd.com>
+ <20210419165214.GF9093@zn.tnic>
+ <30bff969-e8cf-a991-7660-054ea136855a@amd.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <61596c4c-3849-99d5-b0aa-6ad6b415dff9@intel.com>
+Date:   Mon, 19 Apr 2021 10:58:44 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210419123630.62212-1-hello@oswalpalash.com>
+In-Reply-To: <30bff969-e8cf-a991-7660-054ea136855a@amd.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/19/21 6:36 AM, Palash Oswal wrote:
-> syzkaller identified KASAN: null-ptr-deref Read in io_uring_create
-> bug on the stable 5.11-y tree.
+On 4/19/21 10:46 AM, Brijesh Singh wrote:
+> - guest wants to make gpa 0x1000 as a shared page. To support this, we
+> need to psmash the large RMP entry into 512 4K entries. The psmash
+> instruction breaks the large RMP entry into 512 4K entries without
+> affecting the previous validation. Now the we need to force the host to
+> use the 4K page level instead of the 2MB.
 > 
-> BUG: KASAN: null-ptr-deref in io_sq_offload_start fs/io_uring.c:8254 [inline]
-> BUG: KASAN: null-ptr-deref in io_disable_sqo_submit fs/io_uring.c:8999 [inline]
-> BUG: KASAN: null-ptr-deref in io_uring_create+0x1275/0x22f0 fs/io_uring.c:9824
-> Read of size 8 at addr 0000000000000068 by task syz-executor.0/4350
-> 
-> A simple reproducer for this bug is:
-> 
-> int main(void)
-> {
->   syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 0ul);
->   intptr_t res = 0;
->   pid_t parent = getpid();
->   *(uint32_t*)0x20000084 = 0;
->   *(uint32_t*)0x20000088 = 0x42;
->   *(uint32_t*)0x2000008c = 0;
->   *(uint32_t*)0x20000090 = 0;
->   *(uint32_t*)0x20000098 = -1;
->   *(uint32_t*)0x2000009c = 0;
->   *(uint32_t*)0x200000a0 = 0;
->   *(uint32_t*)0x200000a4 = 0;
->   if (fork() == 0) {
->     kill(parent,SIGKILL);
->     exit(0);
->   }
->   res = syscall(__NR_io_uring_setup, 0x7994, 0x20000080ul);
->   return 0;
-> }
-> 
-> Due to the SIGKILL sent to the process before io_uring_setup
-> completes, ctx->sq_data is NULL. Therefore, io_sq_offload_start
-> does a null pointer dereferenced read. More details on this bug
-> are in [1]. Discussion for this patch happened in [2].
-> 
-> [1] https://oswalpalash.com/exploring-null-ptr-deref-io-uring-submit
-> [2] https://lore.kernel.org/io-uring/a08121be-f481-e9f8-b28d-3eb5d4f
-> a5b76@gmail.com/
+> To my understanding, Linux kernel fault handler does not build the page
+> tables on demand for the kernel addresses. All kernel addresses are
+> pre-mapped on the boot. Currently, I am proactively spitting the physmap
+> to avoid running into situation where x86 page level is greater than the
+> RMP page level.
 
-This should be a backport of the 5.12 fix, not a separate patch.
+In other words, if the host maps guest memory with 2M mappings, the
+guest can induce page faults in the host.  The only way the host can
+avoid this is to map everything with 4k mappings.
 
--- 
-Jens Axboe
-
+If the host does not avoid this, it could end up in the situation where
+it gets page faults on access to kernel data structures.  Imagine if a
+kernel stack page ended up in the same 2M mapping as a guest page.  I
+*think* the next write to the kernel stack would end up double-faulting.
