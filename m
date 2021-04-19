@@ -2,73 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA563639BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 05:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 716E23639BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 05:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237362AbhDSD1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 23:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237377AbhDSD03 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 23:26:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E115DC06174A;
-        Sun, 18 Apr 2021 20:25:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=wF5Ti3p6ukxFBbnOErN0GEWkYJORujrGl5v+prvaUz0=; b=dYIGAGcYlNbN2NQppzgNkikKhg
-        PnPCMz45ytddxiSTkgLS7zacFZxpmcMQC3jAp+uN4QTTlXXGK2aUbuvkAgjfWG1ASsMxc/2mnVU7j
-        pUvoft2tkI1gm6TtpVV16Ard9CweevBNvpMYqIleos42dDFi23wYZ8gslx4fyK2oBC9sQOzqgFosX
-        STUB7UudxPMxRJ8yVnRb6yJaSDOhjeoZPr3i/M8tLPIXryTVaj42PgmXRyGB3P5Wk1Ug30gRFuMe9
-        1MrYPpYOb1lEUzD+XC8/sKDgdrYNKFS+ij1sfSfn/uS+u//uHP3U4PSg+SSV05Ek5y6ejifOQXDTI
-        y/SwOkcw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYKXB-00D9dR-5t; Mon, 19 Apr 2021 03:25:18 +0000
-Date:   Mon, 19 Apr 2021 04:25:13 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Fox Chen <foxhlchen@gmail.com>
-Cc:     Neil Brown <neilb@suse.de>, Jonathan Corbet <corbet@lwn.net>,
-        vegard.nossum@oracle.com, Al Viro <viro@zeniv.linux.org.uk>,
-        rdunlap@infradead.org, grandmaster@al2klimov.de,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v2 01/12] docs: path-lookup: update follow_managed() part
-Message-ID: <20210419032513.GW2531743@casper.infradead.org>
-References: <20210316054727.25655-1-foxhlchen@gmail.com>
- <20210316054727.25655-2-foxhlchen@gmail.com>
- <20210419021730.GV2531743@casper.infradead.org>
- <CAC2o3D+kq+U9vSp_9DNM3UGA=UGhS84Y+mwm=9S6eMPpf2-ogQ@mail.gmail.com>
+        id S237277AbhDSD37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 23:29:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:34110 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232317AbhDSD3v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 18 Apr 2021 23:29:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 65A3431B;
+        Sun, 18 Apr 2021 20:29:22 -0700 (PDT)
+Received: from [10.163.74.113] (unknown [10.163.74.113])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB78D3F800;
+        Sun, 18 Apr 2021 20:29:20 -0700 (PDT)
+Subject: Re: [PATCH -next v2 1/2] mm/debug_vm_pgtable: Move
+ {pmd/pud}_huge_tests out of CONFIG_TRANSPARENT_HUGEPAGE
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     Shixin Liu <liushixin2@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210406044900.2178705-1-liushixin2@huawei.com>
+ <4f290e6e-0e44-8f9a-52e8-1e113695abbb@arm.com>
+Message-ID: <a0962789-9238-9900-c7cb-41c41eb1d916@arm.com>
+Date:   Mon, 19 Apr 2021 09:00:12 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAC2o3D+kq+U9vSp_9DNM3UGA=UGhS84Y+mwm=9S6eMPpf2-ogQ@mail.gmail.com>
+In-Reply-To: <4f290e6e-0e44-8f9a-52e8-1e113695abbb@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 10:33:00AM +0800, Fox Chen wrote:
-> On Mon, Apr 19, 2021 at 10:17 AM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Tue, Mar 16, 2021 at 01:47:16PM +0800, Fox Chen wrote:
-> > > -In the absence of symbolic links, ``walk_component()`` creates a new
-> > > +As the last step of ``walk_component()``, ``step_into()`` will be called either
-> >
-> > You can drop ``..`` from around function named which are followed with
-> > ().  d74b0d31ddde ("Docs: An initial automarkup extension for sphinx")
-> > marks them up automatically.
-> >
+
+
+On 4/9/21 9:35 AM, Anshuman Khandual wrote:
 > 
-> Got it, thanks for letting me know. But I will still use them in this
-> patch series to keep consistency with the remaining parts of the
-> document.
+> On 4/6/21 10:18 AM, Shixin Liu wrote:
+>> v1->v2:
+>> Modified the commit message.
+> 
+> Please avoid change log in the commit message, it should be after '---'
+> below the SOB statement.
+> 
+>>
+>> The functions {pmd/pud}_set_huge and {pmd/pud}_clear_huge ars not dependent on THP.
+> 
+> typo 							   ^^^^^ s/ars/are
+> 
+> Also there is a checkpatch.pl warning.
+> 
+> WARNING: Possible unwrapped commit description (prefer a maximum 75 chars per line)
+> #10: 
+> The functions {pmd/pud}_set_huge and {pmd/pud}_clear_huge ars not dependent on THP.
+> 
+> total: 0 errors, 1 warnings, 121 lines checked
+> 
+> As I had mentioned in the earlier version, the commit message should be some
+> thing like ..
+> 
+> ----
+> The functions {pmd/pud}_set_huge and {pmd/pud}_clear_huge are not dependent
+> on THP. Hence move {pmd/pud}_huge_tests out of CONFIG_TRANSPARENT_HUGEPAGE.
+> ----
+> 
+>>
+>> Signed-off-by: Shixin Liu <liushixin2@huawei.com>
+>> ---
+>>  mm/debug_vm_pgtable.c | 91 +++++++++++++++++++------------------------
+>>  1 file changed, 39 insertions(+), 52 deletions(-)
+>>
+>> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
+>> index 05efe98a9ac2..d3cf178621d9 100644
+>> --- a/mm/debug_vm_pgtable.c
+>> +++ b/mm/debug_vm_pgtable.c
+>> @@ -242,29 +242,6 @@ static void __init pmd_leaf_tests(unsigned long pfn, pgprot_t prot)
+>>  	WARN_ON(!pmd_leaf(pmd));
+>>  }
+>>  
+>> -#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+>> -static void __init pmd_huge_tests(pmd_t *pmdp, unsigned long pfn, pgprot_t prot)
+>> -{
+>> -	pmd_t pmd;
+>> -
+>> -	if (!arch_vmap_pmd_supported(prot))
+>> -		return;
+>> -
+>> -	pr_debug("Validating PMD huge\n");
+>> -	/*
+>> -	 * X86 defined pmd_set_huge() verifies that the given
+>> -	 * PMD is not a populated non-leaf entry.
+>> -	 */
+>> -	WRITE_ONCE(*pmdp, __pmd(0));
+>> -	WARN_ON(!pmd_set_huge(pmdp, __pfn_to_phys(pfn), prot));
+>> -	WARN_ON(!pmd_clear_huge(pmdp));
+>> -	pmd = READ_ONCE(*pmdp);
+>> -	WARN_ON(!pmd_none(pmd));
+>> -}
+>> -#else /* CONFIG_HAVE_ARCH_HUGE_VMAP */
+>> -static void __init pmd_huge_tests(pmd_t *pmdp, unsigned long pfn, pgprot_t prot) { }
+>> -#endif /* CONFIG_HAVE_ARCH_HUGE_VMAP */
+>> -
+>>  static void __init pmd_savedwrite_tests(unsigned long pfn, pgprot_t prot)
+>>  {
+>>  	pmd_t pmd = pfn_pmd(pfn, prot);
+>> @@ -379,30 +356,6 @@ static void __init pud_leaf_tests(unsigned long pfn, pgprot_t prot)
+>>  	pud = pud_mkhuge(pud);
+>>  	WARN_ON(!pud_leaf(pud));
+>>  }
+>> -
+>> -#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+>> -static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
+>> -{
+>> -	pud_t pud;
+>> -
+>> -	if (!arch_vmap_pud_supported(prot))
+>> -		return;
+>> -
+>> -	pr_debug("Validating PUD huge\n");
+>> -	/*
+>> -	 * X86 defined pud_set_huge() verifies that the given
+>> -	 * PUD is not a populated non-leaf entry.
+>> -	 */
+>> -	WRITE_ONCE(*pudp, __pud(0));
+>> -	WARN_ON(!pud_set_huge(pudp, __pfn_to_phys(pfn), prot));
+>> -	WARN_ON(!pud_clear_huge(pudp));
+>> -	pud = READ_ONCE(*pudp);
+>> -	WARN_ON(!pud_none(pud));
+>> -}
+>> -#else /* !CONFIG_HAVE_ARCH_HUGE_VMAP */
+>> -static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot) { }
+>> -#endif /* !CONFIG_HAVE_ARCH_HUGE_VMAP */
+>> -
+>>  #else  /* !CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
+>>  static void __init pud_basic_tests(struct mm_struct *mm, unsigned long pfn, int idx) { }
+>>  static void __init pud_advanced_tests(struct mm_struct *mm,
+>> @@ -412,9 +365,6 @@ static void __init pud_advanced_tests(struct mm_struct *mm,
+>>  {
+>>  }
+>>  static void __init pud_leaf_tests(unsigned long pfn, pgprot_t prot) { }
+>> -static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
+>> -{
+>> -}
+>>  #endif /* CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
+>>  #else  /* !CONFIG_TRANSPARENT_HUGEPAGE */
+>>  static void __init pmd_basic_tests(unsigned long pfn, int idx) { }
+>> @@ -433,14 +383,51 @@ static void __init pud_advanced_tests(struct mm_struct *mm,
+>>  }
+>>  static void __init pmd_leaf_tests(unsigned long pfn, pgprot_t prot) { }
+>>  static void __init pud_leaf_tests(unsigned long pfn, pgprot_t prot) { }
+>> +static void __init pmd_savedwrite_tests(unsigned long pfn, pgprot_t prot) { }
+>> +#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>> +
+>> +#ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+>>  static void __init pmd_huge_tests(pmd_t *pmdp, unsigned long pfn, pgprot_t prot)
+>>  {
+>> +	pmd_t pmd;
+>> +
+>> +	if (!arch_vmap_pmd_supported(prot))
+>> +		return;
+>> +
+>> +	pr_debug("Validating PMD huge\n");
+>> +	/*
+>> +	 * X86 defined pmd_set_huge() verifies that the given
+>> +	 * PMD is not a populated non-leaf entry.
+>> +	 */
+>> +	WRITE_ONCE(*pmdp, __pmd(0));
+>> +	WARN_ON(!pmd_set_huge(pmdp, __pfn_to_phys(pfn), prot));
+>> +	WARN_ON(!pmd_clear_huge(pmdp));
+>> +	pmd = READ_ONCE(*pmdp);
+>> +	WARN_ON(!pmd_none(pmd));
+>>  }
+>> +
+>>  static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot)
+>>  {
+>> +	pud_t pud;
+>> +
+>> +	if (!arch_vmap_pud_supported(prot))
+>> +		return;
+>> +
+>> +	pr_debug("Validating PUD huge\n");
+>> +	/*
+>> +	 * X86 defined pud_set_huge() verifies that the given
+>> +	 * PUD is not a populated non-leaf entry.
+>> +	 */
+>> +	WRITE_ONCE(*pudp, __pud(0));
+>> +	WARN_ON(!pud_set_huge(pudp, __pfn_to_phys(pfn), prot));
+>> +	WARN_ON(!pud_clear_huge(pudp));
+>> +	pud = READ_ONCE(*pudp);
+>> +	WARN_ON(!pud_none(pud));
+>>  }
+>> -static void __init pmd_savedwrite_tests(unsigned long pfn, pgprot_t prot) { }
+>> -#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>> +#else /* !CONFIG_HAVE_ARCH_HUGE_VMAP */
+>> +static void __init pmd_huge_tests(pmd_t *pmdp, unsigned long pfn, pgprot_t prot) { }
+>> +static void __init pud_huge_tests(pud_t *pudp, unsigned long pfn, pgprot_t prot) { }
+>> +#endif /* CONFIG_HAVE_ARCH_HUGE_VMAP */
+>>  
+>>  static void __init p4d_basic_tests(unsigned long pfn, pgprot_t prot)
+>>  {
+>>
+> 
+> With changes to the commit message as suggested earlier.
+> 
+> Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> 
 
-Well, you weren't.  For example:
+Hello Shixin,
 
-+As the last step of ``walk_component()``, ``step_into()`` will be called either
-+directly from walk_component() or from handle_dots().  It calls
-+``handle_mount()``, to check and handle mount points, in which a new
+Wondering if you are planning to respin the series ?
 
-Neither of the functions on the second line were using ``.
+- Anshuman
