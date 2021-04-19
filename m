@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF803643E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC233643EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:32:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241388AbhDSNWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:22:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56252 "EHLO mail.kernel.org"
+        id S241611AbhDSNXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:23:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240623AbhDSNRu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:17:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B78761369;
-        Mon, 19 Apr 2021 13:14:22 +0000 (UTC)
+        id S240209AbhDSNRz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:17:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31B8D613C1;
+        Mon, 19 Apr 2021 13:14:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618838063;
-        bh=OBNez7pe5st2L7+wrpz8FhsHh9EY6cWit9Q/8CozrB0=;
+        s=korg; t=1618838068;
+        bh=uBjCiouy9P3DmNyubrJxBRx3KfFd+SJPhnjwjMShei4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yJcAJUPXeJlK2bLAgggVuIz+WEPrgKQddLTly9RMWAj1cF34EOjuZlnM1ZYBZZUaH
-         pjBUVjRf7Wxw3PjH0yyoem5PTcpz+JZyi0fvp7BupPbJwTJWna4RnXcFJuFzwfHjUb
-         1U5ih8XMgd43mECMSWImSnI7Cb4KTLoD63j0OZW4=
+        b=uijvwE5NshSsNPk5QghsFJ+ncKRJJfESu4F94cex7KibuoOXQYhObnDih2Hyo6Lj5
+         s78vTUodoyBUosyX/uFFgr8hfIPNtO0uc0KlSc7HUp/3jleXKCD8lgQJ3zeRAwSdN8
+         S3xS6NuhqHvHDFeA8QuadNtjwhU9fW5LooBEbiRs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matt Chen <matt.chen@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 029/103] iwlwifi: add support for Qu with AX201 device
-Date:   Mon, 19 Apr 2021 15:05:40 +0200
-Message-Id: <20210419130528.805651584@linuxfoundation.org>
+Subject: [PATCH 5.10 030/103] net: ieee802154: stop dump llsec keys for monitors
+Date:   Mon, 19 Apr 2021 15:05:41 +0200
+Message-Id: <20210419130528.836554643@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210419130527.791982064@linuxfoundation.org>
 References: <20210419130527.791982064@linuxfoundation.org>
@@ -41,34 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matt Chen <matt.chen@intel.com>
+From: Alexander Aring <aahringo@redhat.com>
 
-[ Upstream commit 97195d3cad852063208a1cd4f4d073459547a415 ]
+[ Upstream commit fb3c5cdf88cd504ef11d59e8d656f4bc896c6922 ]
 
-Add this specific Samsung AX201 sku to driver so it can be
-detected and initialized successfully.
+This patch stops dumping llsec keys for monitors which we don't support
+yet. Otherwise we will access llsec mib which isn't initialized for
+monitors.
 
-Signed-off-by: Matt Chen <matt.chen@intel.com>
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/iwlwifi.20210326125611.30b622037714.Id9fd709cf1c8261c097bbfd7453f6476077dcafc@changeid
+Signed-off-by: Alexander Aring <aahringo@redhat.com>
+Link: https://lore.kernel.org/r/20210405003054.256017-4-aahringo@redhat.com
+Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/pcie/drv.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/ieee802154/nl802154.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
-index fa32f9045c0c..500fdb0b6c42 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/drv.c
-@@ -684,6 +684,7 @@ static const struct iwl_dev_info iwl_dev_info_table[] = {
- 	IWL_DEV_INFO(0x4DF0, 0x1652, killer1650i_2ax_cfg_qu_b0_hr_b0, NULL),
- 	IWL_DEV_INFO(0x4DF0, 0x2074, iwl_ax201_cfg_qu_hr, NULL),
- 	IWL_DEV_INFO(0x4DF0, 0x4070, iwl_ax201_cfg_qu_hr, NULL),
-+	IWL_DEV_INFO(0x4DF0, 0x6074, iwl_ax201_cfg_qu_hr, NULL),
+diff --git a/net/ieee802154/nl802154.c b/net/ieee802154/nl802154.c
+index d1b6a9665b17..a7cb28a78c6f 100644
+--- a/net/ieee802154/nl802154.c
++++ b/net/ieee802154/nl802154.c
+@@ -1498,6 +1498,11 @@ nl802154_dump_llsec_key(struct sk_buff *skb, struct netlink_callback *cb)
+ 	if (err)
+ 		return err;
  
- 	_IWL_DEV_INFO(IWL_CFG_ANY, IWL_CFG_ANY,
- 		      IWL_CFG_MAC_TYPE_PU, IWL_CFG_ANY,
++	if (wpan_dev->iftype == NL802154_IFTYPE_MONITOR) {
++		err = skb->len;
++		goto out_err;
++	}
++
+ 	if (!wpan_dev->netdev) {
+ 		err = -EINVAL;
+ 		goto out_err;
 -- 
 2.30.2
 
