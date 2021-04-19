@@ -2,102 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B069363D1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F535363D1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237936AbhDSIBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 04:01:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38679 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229842AbhDSIBJ (ORCPT
+        id S238062AbhDSIDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 04:03:33 -0400
+Received: from mail-vs1-f41.google.com ([209.85.217.41]:44909 "EHLO
+        mail-vs1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229870AbhDSID0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 04:01:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618819239;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e/CsA/+8HH9a7KCUXcVEK/cZvS2NUuqovpCA8jFjYW4=;
-        b=DL6gStI9brrBX77X9tGxFSi4mJOhU/i6n544crO7FaYoMb3tjYJMuuOpojd3DcLuS5Gwls
-        TmAa+5fo/xj/fqmGJ/uTrL72oDqqz8/RZhhXpB7I8o4IFfwdNQrQDBBZJpt+jeYNz89aXf
-        bMeB3Zu3JtxNhqyF3CToaRcNHIdpfkg=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-538-6H66ahvqMp-GnV5fapr3Jw-1; Mon, 19 Apr 2021 04:00:37 -0400
-X-MC-Unique: 6H66ahvqMp-GnV5fapr3Jw-1
-Received: by mail-ed1-f72.google.com with SMTP id d2-20020aa7d6820000b0290384ee872881so6666645edr.10
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 01:00:37 -0700 (PDT)
+        Mon, 19 Apr 2021 04:03:26 -0400
+Received: by mail-vs1-f41.google.com with SMTP id t23so788928vso.11;
+        Mon, 19 Apr 2021 01:02:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=e/CsA/+8HH9a7KCUXcVEK/cZvS2NUuqovpCA8jFjYW4=;
-        b=KT4wau/kf/zjv2wbnUYsKHsdrF/K1hWpocAGyEmYGYuAIZy0uwBJkM+YIJD8m0zbQM
-         2OXAsvYK65vzY/EG0DrvDtk+O/wiWyDGLD0qX24/UwOAW2PRGioaaXq3wnpD8XRaj9YC
-         d9g6Z2QQzdT/MOa4pgF/DzWlyfWdTMyPXYsm3wcCcoyiZd5g+JvU3diuB0JeuVZLFj/2
-         kQ94+fwj5WMWXvPC//rdpsEEkmIXTVWgqGDi1/k/naiyBkPkDroeFGQDDkrL870nkEr4
-         jyrnlD6bhRvQAQWmlt2AaAI9sPkvwwCDXcOD3yZ0OIcH63K4AJzl/W3viUqPclumJul0
-         foTg==
-X-Gm-Message-State: AOAM531ff+4iiFGz9Gf28K/PwY8eIJKXLxmURCOSCpJOOkeFycjH6RQv
-        MPhIL2MmG4pqxeUM1AgpHgHAf6SMo5d148rjzOvDzU567BaMCK1D7TC8YdU1HLN81juwbfCYxE0
-        PPKFZLRj4nIUNMO5XOzxWjgE4+VLs3Ys6pVSb5S/NpkLh0CQWFh4YQOoVN52VLCGjuTqbjHC42U
-        TI
-X-Received: by 2002:a17:906:c35a:: with SMTP id ci26mr21751026ejb.79.1618819236266;
-        Mon, 19 Apr 2021 01:00:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzwDHXTyaW0U8o9dflqoMzqPnHaf94uYCIYvb25tL2sQ6MGRgROe65/tTzUJa61hUgRQqzgBA==
-X-Received: by 2002:a17:906:c35a:: with SMTP id ci26mr21751012ejb.79.1618819236144;
-        Mon, 19 Apr 2021 01:00:36 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id z17sm712608ejc.69.2021.04.19.01.00.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Apr 2021 01:00:35 -0700 (PDT)
-Subject: Re: [PATCH 0/2] Remove GA14/15 quirks to acpi/video_detect
-To:     "Luke D. Jones" <luke@ljones.dev>
-Cc:     corentin.chary@gmail.com, acpi4asus-user@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210419074915.393433-1-luke@ljones.dev>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <c16dcaa8-83a3-2027-6335-52689eee5622@redhat.com>
-Date:   Mon, 19 Apr 2021 10:00:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BRE7kUfgnyAkLcXnn28/l9BglZanciveXxOogGBkKYA=;
+        b=gbQqLesm1el/IA5e0SjWJjQW+nJzz0LSVH2i1Jo4EoU3EKjvEAUJbqrWkBaorJMNbj
+         uM9nYaLzds+a9QjapGruGt8+j0yaBfPN9q3h1lxbYaOSnnFDNOAS7yICZwurBCiorxhr
+         STeqJV9o8CsRudc+klsEcb3Z2nOod5QONLbsvv+v7vncAqOyJ5iCNjddNItsZRQgzPm5
+         zTN9Q1/lTyvgG1qWnOVdzhDFXQ4NFhgH4UV3mLXhMbeLiU4ytCY2N/8Oqr8MOOB9T9uh
+         X1SORJVoS7vEN9Lmg1qijjRWq0YCWUIFK/7ILH/21bz60Ejd900J3Q9rRVJ4iBbxVEAa
+         qUYA==
+X-Gm-Message-State: AOAM533dOpzSwITZRKFoFdsVsXMwJW0khWpz8ug43vRiacslFo6Ychf+
+        9JTt4An9JPbtjwTIzJfOxPNvqO7xCNr99AaD4Lk=
+X-Google-Smtp-Source: ABdhPJy7REj0RnwsC0BmC4LayU/iKxq10ifb4FvZKHMY+ozOYrogO74Rl4V4Kli3EDWHBjKXGqJivciBrwVoQCb4shA=
+X-Received: by 2002:a67:f503:: with SMTP id u3mr12324042vsn.3.1618819375153;
+ Mon, 19 Apr 2021 01:02:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210419074915.393433-1-luke@ljones.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210417132329.6886-1-aford173@gmail.com>
+In-Reply-To: <20210417132329.6886-1-aford173@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 19 Apr 2021 10:02:44 +0200
+Message-ID: <CAMuHMdXPj-p++EAkq=nUKqQB4_FM7whi8BbFm+1OG5EPF98hLg@mail.gmail.com>
+Subject: Re: [PATCH] net: ethernet: ravb: Fix release of refclk
+To:     Adam Ford <aford173@gmail.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luke,
+On Sat, Apr 17, 2021 at 3:23 PM Adam Ford <aford173@gmail.com> wrote:
+> The call to clk_disable_unprepare() can happen before priv is
+> initialized. This means moving clk_disable_unprepare out of
+> out_release into a new label.
+>
+> Fixes: 8ef7adc6beb2("net: ethernet: ravb: Enable optional refclk")
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-On 4/19/21 9:49 AM, Luke D. Jones wrote:
-> Revert two commits to allow a patch to acpi/video_detect to correctly
-> set the backlight control as native.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Thank you for following up on our previous discussion about this.
+Gr{oetje,eeting}s,
 
-I'll merge this as soon as Rafael has accepted to matching
-drivers/acpi/video_detect.c patch.
+                        Geert
 
-Regards,
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Hans
-
-
-> Luke D. Jones (2):
->   Revert "platform/x86: asus-nb-wmi: Drop duplicate DMI quirk
->     structures"
->   Revert "platform/x86: asus-nb-wmi: add support for ASUS ROG Zephyrus
->     G14 and G15"
-> 
->  drivers/platform/x86/asus-nb-wmi.c | 77 ------------------------------
->  1 file changed, 77 deletions(-)
-> 
-> --
-> 2.31.1
-> 
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
