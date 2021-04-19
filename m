@@ -2,117 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1811363E4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3685363E55
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232258AbhDSJNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 05:13:41 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:52013 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231852AbhDSJNj (ORCPT
+        id S233418AbhDSJPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 05:15:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231852AbhDSJO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 05:13:39 -0400
-Received: from mail-lj1-f200.google.com ([209.85.208.200])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lYPxs-0003C9-H1
-        for linux-kernel@vger.kernel.org; Mon, 19 Apr 2021 09:13:08 +0000
-Received: by mail-lj1-f200.google.com with SMTP id b21-20020a2ebc150000b02900bdf5989812so5972506ljf.13
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 02:13:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QHrGaUBBYyCaNzmHKZvwphNNADBKXI78oljxwo2iTJU=;
-        b=YXehmpnE0CUnG0g18UBgnlK+BXrFj6ZQFjRuwWGQR5Vv+eA/nbqtuK9kj6hiTg1h0Z
-         58SDZQEM8oCVEGB376c9tbwCdVWgAGTdlfhmC2ybUQEMeyQFPOYcRCWjQfAfEsDS5JwC
-         B5mS2AliMqMjNqUbAi0NdPag4LvNz6HKdEGxDwPTc1EgrhFkKVsGFBpv89d2QEgqpPEg
-         VrSd/8d/glh18kh+77xjwK7RmAmmqp1n3jjWyPMwJKrj1jUwQXss1TF077FpsN6B3h5i
-         mZW1aHRz9jM/YHB17AnGiZf9OwOPp+LJXdPGTR/9MPOHAdc7qc/FGlsKPKp1i3tPB+vb
-         nv/w==
-X-Gm-Message-State: AOAM532mnAnq5VSQm4DRsmbPwhCs07/ia+oGNik4UhCqmETs2b3GC8zO
-        LC3f8GbU+08lhLoTTXtC3JMY4uyC6vEUtiXQCM+MCdHPck7umkJxcLszxIGXeVZNABTUzkAupEr
-        26F860b5exds5asLASG06mRrEIjmsIaEJj5Y3DELslfA82C41uldqy3i95Q==
-X-Received: by 2002:a2e:88cc:: with SMTP id a12mr10499428ljk.402.1618823587974;
-        Mon, 19 Apr 2021 02:13:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw5p4Cqe2LM2xihhB901ADZVyCoqpBYFwrEVNhlgmv694HLCWYkSrMQLviXTAGoM6hTk/BVK+Ahw4DphBE194o=
-X-Received: by 2002:a2e:88cc:: with SMTP id a12mr10499417ljk.402.1618823587729;
- Mon, 19 Apr 2021 02:13:07 -0700 (PDT)
+        Mon, 19 Apr 2021 05:14:59 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8B5C06174A;
+        Mon, 19 Apr 2021 02:14:29 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FP1NL1sDFz9vDw;
+        Mon, 19 Apr 2021 19:14:26 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618823666;
+        bh=U0cJZcwN5kd0CZDhnPI3sGatSBR5W6x83YHl7PmoKss=;
+        h=Date:From:To:Cc:Subject:From;
+        b=FgU4M1VbkYuuTSBRonfWtFS+tXhH0Kn5Skg9rSxe9eybR7oQcSW/EHjyO5C/hflwm
+         wDGxqCKOwtVS8z9ORZqWnkQX6YIEiLp3iUeTU7JrNgoVHZwW2a+bPS9zzG9QyWlWOc
+         ISw07N9Km1bhboUCjLc90MfZ7o5mcLMAqd8mP+pS6OJRHyQGHqzDVXk9/tmAM5Y9Gq
+         lvGUD094wjxwEHJsd/H6kE/GtGfexZ6u6jX97d3KB9qT8W4DWNfeRLOPZdMSJwG47T
+         I1VBnnHxA7c6qtfkaiE9AHP6FgF7etFWemJOXe5fpSB7QWmVWv0ajTvcNmCKg5B4rs
+         J6gIwVeWuW74A==
+Date:   Mon, 19 Apr 2021 19:14:25 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Xiongwei Song <sxwjean@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the powerpc tree
+Message-ID: <20210419191425.281dc58a@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210329052339.20882-1-kai.heng.feng@canonical.com> <CAAd53p7fBKadTdsWZOe4O8ZuQDS6BCmkuA1ettZC7vxAxNw7Bw@mail.gmail.com>
-In-Reply-To: <CAAd53p7fBKadTdsWZOe4O8ZuQDS6BCmkuA1ettZC7vxAxNw7Bw@mail.gmail.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Mon, 19 Apr 2021 17:12:56 +0800
-Message-ID: <CAAd53p7cVuT6tjS3DQUxVw4--4vhF5Kb0C5yN1_hNLrX=QEnew@mail.gmail.com>
-Subject: Re: [PATCH v2] PCI: Disable D3cold support on Intel XMM7360
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/88=dafUnaphWXTJ0zHB+_3m";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 4:18 PM Kai-Heng Feng
-<kai.heng.feng@canonical.com> wrote:
->
-> On Mon, Mar 29, 2021 at 1:23 PM Kai-Heng Feng
-> <kai.heng.feng@canonical.com> wrote:
-> >
-> > On some platforms, the root port for Intel XMM7360 WWAN supports D3cold.
-> > When the root port is put to D3cold by system suspend or runtime
-> > suspend, attempt to systems resume or runtime resume will freeze the
-> > laptop for a while, then it automatically shuts down.
-> >
-> > The root cause is unclear for now, as the Intel XMM7360 doesn't have a
-> > driver yet.
-> >
-> > So disable D3cold for XMM7360 as a workaround, until proper device
-> > driver is in place.
-> >
-> > Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=212419
-> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
->
-> A gentle ping...
+--Sig_/88=dafUnaphWXTJ0zHB+_3m
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Ok, I think I found the root cause:
-https://lore.kernel.org/lkml/20210419090750.1272562-1-kai.heng.feng@canonical.com/
+Hi all,
 
-So we can ignore this patch.
+After merging the powerpc tree, today's linux-next build (powerpc
+allyesconfig) failed like this:
 
+arch/powerpc/kernel/fadump.c: In function 'crash_fadump': =20
+arch/powerpc/kernel/fadump.c:731:28: error: 'INTERRUPT_SYSTEM_RESET' undecl=
+ared (first use in this function)
+  731 |  if (TRAP(&(fdh->regs)) =3D=3D INTERRUPT_SYSTEM_RESET) {
+      |                            ^~~~~~~~~~~~~~~~~~~~~~
+arch/powerpc/kernel/fadump.c:731:28: note: each undeclared identifier is re=
+ported only once for each function it appears in
 
-Kai-Heng
+Caused by commit
 
->
-> > ---
-> > v2:
-> >  - Add comment.
-> >
-> >  drivers/pci/quirks.c | 13 +++++++++++++
-> >  1 file changed, 13 insertions(+)
-> >
-> > diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> > index 653660e3ba9e..c48b0b4a4164 100644
-> > --- a/drivers/pci/quirks.c
-> > +++ b/drivers/pci/quirks.c
-> > @@ -5612,3 +5612,16 @@ static void apex_pci_fixup_class(struct pci_dev *pdev)
-> >  }
-> >  DECLARE_PCI_FIXUP_CLASS_HEADER(0x1ac1, 0x089a,
-> >                                PCI_CLASS_NOT_DEFINED, 8, apex_pci_fixup_class);
-> > +
-> > +/*
-> > + * Device [8086:7360]
-> > + * When it resumes from D3cold, system freeze and shutdown happens.
-> > + * Currently there's no driver for XMM7360, so add it as a PCI quirk.
-> > + * https://bugzilla.kernel.org/show_bug.cgi?id=212419
-> > + */
-> > +static void pci_fixup_no_d3cold(struct pci_dev *pdev)
-> > +{
-> > +       pci_info(pdev, "disable D3cold\n");
-> > +       pci_d3cold_disable(pdev);
-> > +}
-> > +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x7360, pci_fixup_no_d3cold);
-> > --
-> > 2.30.2
-> >
+  7153d4bf0b37 ("powerpc/traps: Enhance readability for trap types")
+
+I have applied the following patch for today.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Mon, 19 Apr 2021 19:05:05 +1000
+Subject: [PATCH] fix up for "powerpc/traps: Enhance readability for trap ty=
+pes"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ arch/powerpc/kernel/fadump.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/powerpc/kernel/fadump.c b/arch/powerpc/kernel/fadump.c
+index b55b4c23f3b6..000e3b7f3fca 100644
+--- a/arch/powerpc/kernel/fadump.c
++++ b/arch/powerpc/kernel/fadump.c
+@@ -31,6 +31,7 @@
+ #include <asm/fadump.h>
+ #include <asm/fadump-internal.h>
+ #include <asm/setup.h>
++#include <asm/interrupt.h>
+=20
+ /*
+  * The CPU who acquired the lock to trigger the fadump crash should
+--=20
+2.30.2
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/88=dafUnaphWXTJ0zHB+_3m
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB9SfEACgkQAVBC80lX
+0GxDOgf/U8+CxtKOnf6CZSpcm6aRJR+DOz+n6FD69G7bYDEcxlpLlmcH76mfHHPl
+mEUFsU8At5CA7Clz6UiIvITGgA9roVm9AGpk44/9+gY3fRPmGQ+lywO1KvH5pk/z
+LLFeXHzslP0hhzbWGi3xa8Gg160GrlDa9joBIf9mnLbhUsC+bh3US+cyjABG/HOx
++C7aSur6D/GX5ugp2wKlcKdesb9UGQC9LPo/jhSOLWJtOeUNKG0G2EMz5jJ6bW98
+KgLVfPlihv9qlBvM+OzLaY2LPo6BWLZfnRUE+6EA9SU5ZVQEYt4lObT8JW2zDJKz
+QtP05uG1PmiAxer7AjBsB68GVpNowA==
+=MRFq
+-----END PGP SIGNATURE-----
+
+--Sig_/88=dafUnaphWXTJ0zHB+_3m--
