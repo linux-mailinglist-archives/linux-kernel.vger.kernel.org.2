@@ -2,75 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC79364D0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 23:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70BA364D12
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 23:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232441AbhDSV3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 17:29:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbhDSV3K (ORCPT
+        id S240454AbhDSVaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 17:30:03 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:46346 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229714AbhDSVaC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 17:29:10 -0400
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A142C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 14:28:40 -0700 (PDT)
-Received: by mail-vs1-xe34.google.com with SMTP id k19so5283211vsg.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 14:28:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=cleXv1yhEvw46D0B1rWUk84bkqfi6fu+rLFkY44zfmA=;
-        b=nFxMjeD7AmL56ZhtH0sR2t2h7TfuthJSJf+NdlIHx+BF+rvuPuW+9ovFUuKyRUugmU
-         5ixLO8gPKjq6UVc5V5pfdCx6dNJrgjM3CFYkFzydSknQDAIC1J6js1PAojit5MKN22VA
-         ZxkLNb1VytJc7oPeiLqe2FjWVjqzn7xN1Xns1m3EqZLCYGnu0H3JJfR1rgsONcrK3z37
-         jqOfT+SxLbwPp+xXEFnlV0Im1dE5ZybrdHuMBIWBnzFd5bvZzsGUMncwJSt7veOL1cQ4
-         tY7+dDnz/af2xD6z9juc1lPZPwulI6IyB4ofLszl5N0QSyNOw6pDf2IT+/iLbjiUVhwm
-         fa8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=cleXv1yhEvw46D0B1rWUk84bkqfi6fu+rLFkY44zfmA=;
-        b=FzfWR4kGQADN4Ywv+z7Wi7KpZDMho1ViGiRMV5EeUOe84HIq9IcqEQjTJLQB/uxFUp
-         no3J7zXoUzblM7FgVvttehhvLDzKNwE3eKp5KWJkRiGv/52Dep/MOg/Umi4u3zy/LJVj
-         i9BbkP8rK+zxfXU2WlsXp06t9eJqC7qioYBQvZbxWhZMUz9ujVR9diyw3g0thpz53bVu
-         546TFSyOq9Soh/6INVeIXYO70weAYiEp6LY9QZNF4bl14Zn8sn3BdhFU00DuXvt4LJZZ
-         9wjAZDcGUn/+INsSM0yem0q4BclS/MCtxeipfCoPJAc37crMtNzCPJGtRl8Vdl0bmT/Y
-         0f1A==
-X-Gm-Message-State: AOAM533fz19NLmHEdzp74mRFvuKBDTnXMymAu3Rhq6tRZ4VNnYWSVfcW
-        V3mnwOd+EiR27Hs1GFE7oqkXtvPhRSMSEzJsBz+pN5dJG6CQRA==
-X-Google-Smtp-Source: ABdhPJxNiGs2dJnnST4zN1cMW6O+xsLEhgR0c+AVVrpW9tSV5gP3SQbLZdVI0yl9kXQ7k/wrb/xo4kT2tgRD4dGCV8A=
-X-Received: by 2002:a67:7d42:: with SMTP id y63mr17685526vsc.5.1618867719441;
- Mon, 19 Apr 2021 14:28:39 -0700 (PDT)
+        Mon, 19 Apr 2021 17:30:02 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 4CE431C0B7A; Mon, 19 Apr 2021 23:29:31 +0200 (CEST)
+Date:   Mon, 19 Apr 2021 23:29:30 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Aditya Pakki <pakki001@umn.edu>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 042/103] net/rds: Avoid potential use after free in
+ rds_send_remove_from_sock
+Message-ID: <20210419212930.GA6626@amd>
+References: <20210419130527.791982064@linuxfoundation.org>
+ <20210419130529.251281725@linuxfoundation.org>
 MIME-Version: 1.0
-From:   Jue Wang <juew@google.com>
-Date:   Mon, 19 Apr 2021 14:28:28 -0700
-Message-ID: <CAPcxDJ6SgSagJrF7u576WUb6p7Hg7+beYVoCpJ86Ocsb-mCHmQ@mail.gmail.com>
-Subject: Re: [PATCH 4/4] x86/mce: Avoid infinite loop for copy from user recovery
-To:     tony.luck@intel.com
-Cc:     bp@alien8.de, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        luto@kernel.org, naoya.horiguchi@nec.com, x86@kernel.org,
-        yaoaili@kingsoft.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="ReaqsoxgOBHFXBhH"
+Content-Disposition: inline
+In-Reply-To: <20210419130529.251281725@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Mar 2021 17:02:35 -0700, Tony Luck wrote:
-...
 
-> But there are places in the kernel where the code assumes that this
-> EFAULT return was simply because of a page fault. The code takes some
-> action to fix that, and then retries the access. This results in a second
-> machine check.
+--ReaqsoxgOBHFXBhH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-What about return EHWPOISON instead of EFAULT and update the callers
-to handle EHWPOISON explicitly: i.e., not retry but give up on the page?
+Hi!
 
-My main concern is that the strong assumptions that the kernel can't hit more
-than a fixed number of poisoned cache lines before turning to user space
-may simply not be true.
+> [ Upstream commit 0c85a7e87465f2d4cbc768e245f4f45b2f299b05 ]
+>=20
+> In case of rs failure in rds_send_remove_from_sock(), the 'rm' resource
+> is freed and later under spinlock, causing potential use-after-free.
+> Set the free pointer to NULL to avoid undefined behavior.
 
-When DIMM goes bad, it can easily affect an entire bank or entire ram device
-chip. Even with memory interleaving, it's possible that a kernel control path
-touches lots of poisoned cache lines in the buffer it is working through.
+This patch is crazy. Take a look at Message-ID:
+<20210419084953.GA28564@amd>. Or just look at the patch :-).
+
+Best regards,
+								Pavel
+> +++ b/net/rds/message.c
+> @@ -180,6 +180,7 @@ void rds_message_put(struct rds_message *rm)
+>  		rds_message_purge(rm);
+> =20
+>  		kfree(rm);
+> +		rm =3D NULL;
+>  	}
+>  }
+>  EXPORT_SYMBOL_GPL(rds_message_put);
+> diff --git a/net/rds/send.c b/net/rds/send.c
+> index 985d0b7713ac..fe5264b9d4b3 100644
+> --- a/net/rds/send.c
+> +++ b/net/rds/send.c
+> @@ -665,7 +665,7 @@ static void rds_send_remove_from_sock(struct list_hea=
+d *messages, int status)
+>  unlock_and_drop:
+>  		spin_unlock_irqrestore(&rm->m_rs_lock, flags);
+>  		rds_message_put(rm);
+> -		if (was_on_sock)
+> +		if (was_on_sock && rm)
+>  			rds_message_put(rm);
+>  	}
+> =20
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--ReaqsoxgOBHFXBhH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmB99joACgkQMOfwapXb+vIAGQCgnL84YaGH4RnXJ87ZuqGryccv
+qM0AoMJI8M8nrmObS7svKsM+A4zKVp2Q
+=Ms63
+-----END PGP SIGNATURE-----
+
+--ReaqsoxgOBHFXBhH--
