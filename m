@@ -2,78 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E873647EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 18:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBDD3647FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 18:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238369AbhDSQHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 12:07:32 -0400
-Received: from mga06.intel.com ([134.134.136.31]:29355 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238377AbhDSQHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 12:07:18 -0400
-IronPort-SDR: EeRepVeNmIx4ajAMZfdyWqJRLypUE+vOxaFFCzYj2IIRW+428cAQTNZbqlagAtMBPBSaqWOXF1
- sutczh4PLDHg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="256665638"
-X-IronPort-AV: E=Sophos;i="5.82,234,1613462400"; 
-   d="scan'208";a="256665638"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 09:04:12 -0700
-IronPort-SDR: t5DAkXmlvwniORyDpzVffceigCGlOZ133P9EB9TGAXhCmbq9kozvQc4vsSZzXrCgvH9xXACkPm
- WTj4fin83e9Q==
-X-IronPort-AV: E=Sophos;i="5.82,234,1613462400"; 
-   d="scan'208";a="420062661"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 09:04:11 -0700
-Date:   Mon, 19 Apr 2021 09:04:11 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org, kael_w@yeah.net
-Subject: Re: [PATCH] libnvdimm.h: Remove duplicate struct declaration
-Message-ID: <20210419160411.GG1904484@iweiny-DESK2.sc.intel.com>
-References: <20210419112725.42145-1-wanjiabing@vivo.com>
+        id S233338AbhDSQL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 12:11:28 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16481 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232960AbhDSQL1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 12:11:27 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FPBZ900Z1zrdkk;
+        Tue, 20 Apr 2021 00:08:32 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 20 Apr 2021 00:10:43 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kashyap.desai@broadcom.com>, <ming.lei@redhat.com>,
+        <dgilbert@interlog.com>, John Garry <john.garry@huawei.com>
+Subject: [PATCH] scsi: core: Cap initial sdev queue depth at shost.can_queue
+Date:   Tue, 20 Apr 2021 00:06:24 +0800
+Message-ID: <1618848384-204144-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210419112725.42145-1-wanjiabing@vivo.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 07:27:25PM +0800, Wan Jiabing wrote:
-> struct device is declared at 133rd line.
-> The declaration here is unnecessary. Remove it.
-> 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> ---
->  include/linux/libnvdimm.h | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/include/linux/libnvdimm.h b/include/linux/libnvdimm.h
-> index 01f251b6e36c..89b69e645ac7 100644
-> --- a/include/linux/libnvdimm.h
-> +++ b/include/linux/libnvdimm.h
-> @@ -141,7 +141,6 @@ static inline void __iomem *devm_nvdimm_ioremap(struct device *dev,
->  
->  struct nvdimm_bus;
->  struct module;
-> -struct device;
->  struct nd_blk_region;
+Function sdev_store_queue_depth() enforces that the sdev queue depth cannot
+exceed shost.can_queue.
 
-What is the coding style preference for pre-declarations like this?  Should
-they be placed at the top of the file?
+However, the LLDD may still set cmd_per_lun > can_queue, which leads to an
+initial sdev queue depth greater than can_queue.
 
-The patch is reasonable but if the intent is to declare right before use for
-clarity, both devm_nvdimm_memremap() and nd_blk_region_desc() use struct
-device.  So perhaps this duplicate is on purpose?
+Stop this happened by capping initial sdev queue depth at can_queue.
 
-Ira
+Signed-off-by: John Garry <john.garry@huawei.com>
+---
+Topic originally discussed at:
+https://lore.kernel.org/linux-scsi/85dec8eb-8eab-c7d6-b0fb-5622747c5499@interlog.com/T/#m5663d0cac657d843b93d0c9a2374f98fc04384b9
 
->  struct nd_blk_region_desc {
->  	int (*enable)(struct nvdimm_bus *nvdimm_bus, struct device *dev);
-> -- 
-> 2.25.1
-> 
+Last idea there was to error/warn in scsi_add_host() for cmd_per_lun >
+can_queue. However, such a shost driver could still configure the sdev
+queue depth to be sound value at .slave_configure callback, so now thinking
+the orig patch better.
+
+diff --git a/drivers/scsi/scsi_scan.c b/drivers/scsi/scsi_scan.c
+index 9f1b7f3c650a..8de2f830bcdc 100644
+--- a/drivers/scsi/scsi_scan.c
++++ b/drivers/scsi/scsi_scan.c
+@@ -277,7 +277,11 @@ static struct scsi_device *scsi_alloc_sdev(struct scsi_target *starget,
+ 	WARN_ON_ONCE(!blk_get_queue(sdev->request_queue));
+ 	sdev->request_queue->queuedata = sdev;
+ 
+-	depth = sdev->host->cmd_per_lun ?: 1;
++	if (sdev->host->cmd_per_lun)
++		depth = min_t(unsigned int, sdev->host->cmd_per_lun,
++			      sdev->host->can_queue);
++	else
++		depth = 1;
+ 
+ 	/*
+ 	 * Use .can_queue as budget map's depth because we have to
+-- 
+2.26.2
+
