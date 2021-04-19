@@ -2,126 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC5D363CED
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 09:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0779A363CF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 09:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237981AbhDSHrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 03:47:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237850AbhDSHrx (ORCPT
+        id S237996AbhDSHuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 03:50:03 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:32867 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231637AbhDSHuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 03:47:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70437C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 00:47:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DQhX108NsKeV1eOXrzXiXRCX0IiGM56TaA+JcQ0sbkg=; b=FFu6oC8B0O4j8mGugVc0cl7/4J
-        OaabLBkiwfRjKRecGvYIiEsR2HvFUWH0NvM7dX2ajhpGnLBa95tvyCxXXi+q5zLPeUwv3icrPwKWw
-        QAFSdpLwJGe/alM92/huVBPMr6JqWQfDAsbfpqQwBfW9NUufpZFucIL7er87ugphoX401J26NQRjm
-        6okaUtVtpnIcLoLxXvUDWaGOxZenIsO21S584GkXs4TSQnpFUfwkS9Og42BMbdKjGM5qvokDs1wbf
-        NDR1wr9KuoiTzsXZWpkQPGHw5uSd/LfUX8NTHon2vQDvMdm+UFpciyLACG4ma1kA05ySitQGHJfEl
-        e8XXTIUA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYOcP-00DPVs-Ik; Mon, 19 Apr 2021 07:46:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 15103300212;
-        Mon, 19 Apr 2021 09:46:53 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0480A2BFB77FB; Mon, 19 Apr 2021 09:46:53 +0200 (CEST)
-Date:   Mon, 19 Apr 2021 09:46:52 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, mike.leach@linaro.org,
-        leo.yan@linaro.org, anshuman.khandual@arm.com, maz@kernel.org,
-        catalin.marinas@arm.com
-Subject: Re: [PATCH v5 04/19] perf: aux: Add CoreSight PMU buffer formats
-Message-ID: <YH01bIpu5MSwyqPt@hirez.programming.kicks-ass.net>
-References: <20210323120647.454211-1-suzuki.poulose@arm.com>
- <20210323120647.454211-5-suzuki.poulose@arm.com>
- <20210329165625.GC2236953@xps15>
+        Mon, 19 Apr 2021 03:50:02 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.west.internal (Postfix) with ESMTP id CAC6C1D63;
+        Mon, 19 Apr 2021 03:49:32 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Mon, 19 Apr 2021 03:49:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=zXVG49ThYEHPecMdH
+        M29sLSj0lBoAGhaMt02sLXKQLE=; b=D0PPgGM/hzNKtbxALsOrHo6anfWmLsASv
+        6UsOn7VQLsuxGaTrj+xJLtq8sTPtNW/TLbVhpeedKNh+v9agQrh+Q2D18z1aIn4f
+        bC/b59BU4rOEVxu/Oxdqvops+LvwA9FPTc/MFXgOPhsJS5xFoPYa6B9b6VM/qoOK
+        neXRa9PEmufZe2dxYTCKRn/nZY6lyO4suv1xW+XTTiGQVjmanXSeHr+/lF/mcXo0
+        9oJyrolgohBbSnoDVzMBUZPvduNfXbRVQIVDNLnorpaukn6caqVfQFyArHS4XAWj
+        t6lCldjQd5YvoMOMtotLBaVfiD+gJk8oyQfAnYyBb/5w7fgxu2q3A==
+X-ME-Sender: <xms:DDZ9YJDM-ZrwsRCUip-oQ7vZVr91sLl2f_kknmnwV7mHxDQ7s18KCw>
+    <xme:DDZ9YL1kfXxP13vVG3rLvsDM_iTPkJNpW0S1zxZ74F6DrXEtPw8PHnRFfrvydLOUt
+    bD6rKv1DH1gWfTjdxE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddtfedgudelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomhepfdfnuhhkvgcuffdrucflohhnvghsfdcuoehluhhkvgeslhhjohhn
+    vghsrdguvghvqeenucggtffrrghtthgvrhhnpeelffelhfeltdfhtdevuefgveeuueekge
+    etiefgiefhgfejvdetvdeuvedthfdvkeenucfkphepudduiedrvdehuddrudelfedrudel
+    ieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehluh
+    hkvgeslhhjohhnvghsrdguvghv
+X-ME-Proxy: <xmx:DDZ9YDtltkkad_aE695OkIggTTdoZXrt1--aY0ddxloCsvCsOAwSEg>
+    <xmx:DDZ9YL4T0m-OYeq8pVuhF2rRwm-TVy9BqdIGc7DLq-RqCskO_0cvCw>
+    <xmx:DDZ9YEIk1YXt67q5NMLa9xqTl3IbJeMhkiZvsBhjRwlVcSzgeqcrGg>
+    <xmx:DDZ9YOV74ezo3L6yKExwL7yrKenaycvNRA057mgGHMjptOjPbkQjrQ>
+Received: from fedora.. (unknown [116.251.193.196])
+        by mail.messagingengine.com (Postfix) with ESMTPA id B0692240065;
+        Mon, 19 Apr 2021 03:49:28 -0400 (EDT)
+From:   "Luke D. Jones" <luke@ljones.dev>
+To:     hdegoede@redhat.com
+Cc:     corentin.chary@gmail.com, acpi4asus-user@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Luke D. Jones" <luke@ljones.dev>
+Subject: [PATCH 0/2] Remove GA14/15 quirks to acpi/video_detect
+Date:   Mon, 19 Apr 2021 19:49:13 +1200
+Message-Id: <20210419074915.393433-1-luke@ljones.dev>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210329165625.GC2236953@xps15>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 10:56:25AM -0600, Mathieu Poirier wrote:
-> Hi Peter,
-> 
-> On Tue, Mar 23, 2021 at 12:06:32PM +0000, Suzuki K Poulose wrote:
-> > CoreSight PMU supports aux-buffer for the ETM tracing. The trace
-> > generated by the ETM (associated with individual CPUs, like Intel PT)
-> > is captured by a separate IP (CoreSight TMC-ETR/ETF until now).
-> > 
-> > The TMC-ETR applies formatting of the raw ETM trace data, as it
-> > can collect traces from multiple ETMs, with the TraceID to indicate
-> > the source of a given trace packet.
-> > 
-> > Arm Trace Buffer Extension is new "sink" IP, attached to individual
-> > CPUs and thus do not provide additional formatting, like TMC-ETR.
-> > 
-> > Additionally, a system could have both TRBE *and* TMC-ETR for
-> > the trace collection. e.g, TMC-ETR could be used as a single
-> > trace buffer to collect data from multiple ETMs to correlate
-> > the traces from different CPUs. It is possible to have a
-> > perf session where some events end up collecting the trace
-> > in TMC-ETR while the others in TRBE. Thus we need a way
-> > to identify the type of the trace for each AUX record.
-> > 
-> > Define the trace formats exported by the CoreSight PMU.
-> > We don't define the flags following the "ETM" as this
-> > information is available to the user when issuing
-> > the session. What is missing is the additional
-> > formatting applied by the "sink" which is decided
-> > at the runtime and the user may not have a control on.
-> > 
-> > So we define :
-> >  - CORESIGHT format (indicates the Frame format)
-> >  - RAW format (indicates the format of the source)
-> > 
-> > The default value is CORESIGHT format for all the records
-> > (i,e == 0). Add the RAW format for others that use
-> > raw format.
-> > 
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Mike Leach <mike.leach@linaro.org>
-> > Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > Cc: Leo Yan <leo.yan@linaro.org>
-> > Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> > Reviewed-by: Mike Leach <mike.leach@linaro.org>
-> > Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> > ---
-> >  include/uapi/linux/perf_event.h | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-> > index f006eeab6f0e..63971eaef127 100644
-> > --- a/include/uapi/linux/perf_event.h
-> > +++ b/include/uapi/linux/perf_event.h
-> > @@ -1162,6 +1162,10 @@ enum perf_callchain_context {
-> >  #define PERF_AUX_FLAG_COLLISION			0x08	/* sample collided with another */
-> >  #define PERF_AUX_FLAG_PMU_FORMAT_TYPE_MASK	0xff00	/* PMU specific trace format type */
-> >  
-> > +/* CoreSight PMU AUX buffer formats */
-> > +#define PERF_AUX_FLAG_CORESIGHT_FORMAT_CORESIGHT	0x0000 /* Default for backward compatibility */
-> > +#define PERF_AUX_FLAG_CORESIGHT_FORMAT_RAW		0x0100 /* Raw format of the source */
-> > +
-> 
-> Have you had time to review this patch?  Anything you'd like to see modified?
+Revert two commits to allow a patch to acpi/video_detect to correctly
+set the backlight control as native.
 
-Ok I suppose..
+Luke D. Jones (2):
+  Revert "platform/x86: asus-nb-wmi: Drop duplicate DMI quirk
+    structures"
+  Revert "platform/x86: asus-nb-wmi: add support for ASUS ROG Zephyrus
+    G14 and G15"
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+ drivers/platform/x86/asus-nb-wmi.c | 77 ------------------------------
+ 1 file changed, 77 deletions(-)
+
+--
+2.31.1
+
