@@ -2,182 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D480363B53
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 08:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B49E363B55
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 08:16:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237370AbhDSGPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 02:15:31 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20106 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229840AbhDSGPa (ORCPT
+        id S237406AbhDSGQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 02:16:35 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:17372 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229840AbhDSGQb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 02:15:30 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13J62fQp106653;
-        Mon, 19 Apr 2021 02:14:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=xkMdzWE54EfwUtKVXS/TXmVllMjccCELL3fNxFxcf8g=;
- b=o9pKviH808TkXJ17qpHlug/vxLpp2Fbw7172mJhdK0lED0TUNF5O2JEv+uqhXIVQhas1
- mEWLBr2rkHpO+PXVyNz+23oOzKWO3t2PXlE5iK2R162T+3lB1TfQHR/MvxzvFV8EuEfr
- Fs2e86Jp7UCzmoYFnRFtu3+YDW3OxnE9xkHqAF3/ePaozZ/gg+/0tw5drOxdZL3Owqy/
- fOetAYh9DOutNk0q3NacYWDbGFs0s2kR9gwU/lWu38kricER4lqGNPwj+jZEZlFQdMlN
- C1kNdAej/Ug5Q0kwDDJjCsh97kMVHi0kOsQB0edMikEEShZiH7B4cMBbWZpdf46D+IOj KQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 380cnxwvvv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Apr 2021 02:14:42 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13J637WF108408;
-        Mon, 19 Apr 2021 02:14:42 -0400
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 380cnxwvvb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Apr 2021 02:14:41 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13J692q4009923;
-        Mon, 19 Apr 2021 06:14:40 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma01wdc.us.ibm.com with ESMTP id 37yqa8fswf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Apr 2021 06:14:40 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13J6EdAt37421406
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 19 Apr 2021 06:14:39 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B02B76E04C;
-        Mon, 19 Apr 2021 06:14:39 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8AE3C6E050;
-        Mon, 19 Apr 2021 06:14:38 +0000 (GMT)
-Received: from sofia.ibm.com (unknown [9.77.203.69])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 19 Apr 2021 06:14:38 +0000 (GMT)
-Received: by sofia.ibm.com (Postfix, from userid 1000)
-        id 01BF12E2EAB; Mon, 19 Apr 2021 11:44:28 +0530 (IST)
-Date:   Mon, 19 Apr 2021 11:44:28 +0530
-From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        Rik van Riel <riel@surriel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Parth Shah <parth@linux.ibm.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [RFC/PATCH] powerpc/smp: Add SD_SHARE_PKG_RESOURCES flag to MC
- sched-domain
-Message-ID: <20210419061428.GA24456@in.ibm.com>
-Reply-To: ego@linux.vnet.ibm.com
-References: <1617341874-1205-1-git-send-email-ego@linux.vnet.ibm.com>
- <20210412062436.GB2633526@linux.vnet.ibm.com>
- <20210412093722.GS3697@techsingularity.net>
- <871rbfom04.mognet@arm.com>
- <20210412104819.GT3697@techsingularity.net>
+        Mon, 19 Apr 2021 02:16:31 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FNxNF501jzlYvR;
+        Mon, 19 Apr 2021 14:14:05 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server (TLS) id 14.3.498.0; Mon, 19 Apr
+ 2021 14:15:57 +0800
+Subject: Re: [f2fs-dev] [PATCH] fs: f2fs: Remove unnecessary struct
+ declaration
+To:     Wan Jiabing <wanjiabing@vivo.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, "Chao Yu" <chao@kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>
+CC:     <kael_w@yeah.net>
+References: <20210419022003.34172-1-wanjiabing@vivo.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <58457717-a795-d33a-d771-f75fe05b1069@huawei.com>
+Date:   Mon, 19 Apr 2021 14:15:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210412104819.GT3697@techsingularity.net>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: AlW94Q4h-J0CO_TPTLG9dqDlm62lEXVJ
-X-Proofpoint-ORIG-GUID: Z5iYiWVV2IYnHQw6B5pz0_4JEqpBuppn
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-19_02:2021-04-16,2021-04-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- priorityscore=1501 mlxscore=0 phishscore=0 mlxlogscore=726 spamscore=0
- impostorscore=0 clxscore=1015 bulkscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104190041
+In-Reply-To: <20210419022003.34172-1-wanjiabing@vivo.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Mel,
-
-On Mon, Apr 12, 2021 at 11:48:19AM +0100, Mel Gorman wrote:
-> On Mon, Apr 12, 2021 at 11:06:19AM +0100, Valentin Schneider wrote:
-> > On 12/04/21 10:37, Mel Gorman wrote:
-> > > On Mon, Apr 12, 2021 at 11:54:36AM +0530, Srikar Dronamraju wrote:
-> > >> * Gautham R. Shenoy <ego@linux.vnet.ibm.com> [2021-04-02 11:07:54]:
-> > >>
-> > >> >
-> > >> > To remedy this, this patch proposes that the LLC be moved to the MC
-> > >> > level which is a group of cores in one half of the chip.
-> > >> >
-> > >> >       SMT (SMT4) --> MC (Hemisphere)[LLC] --> DIE
-> > >> >
-> > >>
-> > >> I think marking Hemisphere as a LLC in a P10 scenario is a good idea.
-> > >>
-> > >> > While there is no cache being shared at this level, this is still the
-> > >> > level where some amount of cache-snooping takes place and it is
-> > >> > relatively faster to access the data from the caches of the cores
-> > >> > within this domain. With this change, we no longer see regressions on
-> > >> > P10 for applications which require single threaded performance.
-> > >>
-> > >> Peter, Valentin, Vincent, Mel, etal
-> > >>
-> > >> On architectures where we have multiple levels of cache access latencies
-> > >> within a DIE, (For example: one within the current LLC or SMT core and the
-> > >> other at MC or Hemisphere, and finally across hemispheres), do you have any
-> > >> suggestions on how we could handle the same in the core scheduler?
-> > >>
-> > >
-> > > Minimally I think it would be worth detecting when there are multiple
-> > > LLCs per node and detecting that in generic code as a static branch. In
-> > > select_idle_cpu, consider taking two passes -- first on the LLC domain
-> > > and if no idle CPU is found then taking a second pass if the search depth
-> > > allows within the node with the LLC CPUs masked out.
-> > 
-> > I think that's actually a decent approach. Tying SD_SHARE_PKG_RESOURCES to
-> > something other than pure cache topology in a generic manner is tough (as
-> > it relies on murky, ill-defined hardware fabric properties).
-> > 
+On 2021/4/19 10:20, Wan Jiabing wrote:
+> struct dnode_of_data is defined at 897th line.
+> The declaration here is unnecessary. Remove it.
 > 
-> Agreed. The LLC->node scan idea has been on my TODO list to try for
-> a while.
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 
-If you have any patches for these, I will be happy to test them on
-POWER10. Though, on POWER10, there will be an additional sd between
-the LLC and the DIE domain. 
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
 
+Thanks,
 
-
-
-> 
-> > Last I tried thinking about that, I stopped at having a core-to-core
-> > latency matrix, building domains off of that, and having some knob
-> > specifying the highest distance value below which we'd set
-> > SD_SHARE_PKG_RESOURCES. There's a few things I 'hate' about that; for one
-> > it makes cpus_share_cache() somewhat questionable.
-> > 
-> 
-> And I thought about something like this too but worried it might get
-> complex, particularly on chiplets where we do not necessarily have
-> hardware info on latency depending on how it's wired up. It also might
-> lead to excessive cpumask manipulation in a fast path if we have to
-> traverse multiple distances with search cost exceeding gains from latency
-> reduction. Hence -- keeping it simple with two level only, LLC then node
-> within the allowed search depth and see what that gets us. It might be
-> "good enough" in most cases and would be a basis for comparison against
-> complex approaches.
-
-
-> 
-> At minimum, I expect IBM can evaluate the POWER10 aspect and I can run
-> an evaluation on Zen generations.
-
-
-> 
-> -- 
-> Mel Gorman
-> SUSE Labs
