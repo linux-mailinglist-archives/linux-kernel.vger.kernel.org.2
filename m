@@ -2,77 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BBF363B8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 08:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B33BC363B90
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 08:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237539AbhDSGgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 02:36:13 -0400
-Received: from mo-csw1515.securemx.jp ([210.130.202.154]:37136 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhDSGgK (ORCPT
+        id S237569AbhDSGgy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Apr 2021 02:36:54 -0400
+Received: from smtp01.smtpout.orange.fr ([80.12.242.123]:41849 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229682AbhDSGgu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 02:36:10 -0400
-Received: by mo-csw.securemx.jp (mx-mo-csw1515) id 13J6ZIHa030286; Mon, 19 Apr 2021 15:35:18 +0900
-X-Iguazu-Qid: 34tr9jB2dgCsPBSbHj
-X-Iguazu-QSIG: v=2; s=0; t=1618814117; q=34tr9jB2dgCsPBSbHj; m=KAQgw1k5Yh2trgm8JKJC2ZRyPU6Q5anXfHj5orjLd+g=
-Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
-        by relay.securemx.jp (mx-mr1510) id 13J6ZGJZ005389
-        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 19 Apr 2021 15:35:17 +0900
-Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id C50F51000B9;
-        Mon, 19 Apr 2021 15:35:16 +0900 (JST)
-Received: from hop001.toshiba.co.jp ([133.199.164.63])
-        by enc01.toshiba.co.jp  with ESMTP id 13J6ZGjr018183;
-        Mon, 19 Apr 2021 15:35:16 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     linux-pci@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
-        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH v2 3/3] MAINTAINERS: Add entries for Toshiba Visconti PCIe controller
-Date:   Mon, 19 Apr 2021 15:35:13 +0900
-X-TSB-HOP: ON
-Message-Id: <20210419063513.1947003-4-nobuhiro1.iwamatsu@toshiba.co.jp>
-X-Mailer: git-send-email 2.30.0.rc2
-In-Reply-To: <20210419063513.1947003-1-nobuhiro1.iwamatsu@toshiba.co.jp>
-References: <20210419063513.1947003-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+        Mon, 19 Apr 2021 02:36:50 -0400
+Received: from wwinf2229 ([172.22.131.103])
+        by mwinf5d36 with ME
+        id uWcJ2400a2E01B803WcJ16; Mon, 19 Apr 2021 08:36:19 +0200
+X-ME-Helo: wwinf2229
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 19 Apr 2021 08:36:19 +0200
+X-ME-IP: 86.243.172.93
+Date:   Mon, 19 Apr 2021 08:36:18 +0200 (CEST)
+From:   Marion et Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reply-To: Marion et Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Bart Van Assche <bvanassche@acm.org>, tj@kernel.org,
+        jiangshanlai@gmail.com, saeedm@nvidia.com, leon@kernel.org,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Message-ID: <1032428026.331.1618814178946.JavaMail.www@wwinf2229>
+In-Reply-To: <042f5fff-5faf-f3c5-0819-b8c8d766ede6@acm.org>
+References: <cover.1618780558.git.christophe.jaillet@wanadoo.fr>
+ <ae88f6c2c613d17bc1a56692cfa4f960dbc723d2.1618780558.git.christophe.jaillet@wanadoo.fr>
+ <042f5fff-5faf-f3c5-0819-b8c8d766ede6@acm.org>
+Subject: Re: [PATCH 1/2] workqueue: Have 'alloc_workqueue()' like macros
+ accept a format specifier
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [86.243.172.93]
+X-WUM-FROM: |~|
+X-WUM-TO: |~||~||~||~||~||~||~|
+X-WUM-CC: |~||~||~||~|
+X-WUM-REPLYTO: |~|
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add entries for Toshiba Visconti PCIe controller binding and driver.
+ 
 
-Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
----
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
+> Message du 19/04/21 01:03
+> De : "Bart Van Assche" 
+> A : "Christophe JAILLET" , tj@kernel.org, jiangshanlai@gmail.com, saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net, kuba@kernel.org, "Tejun Heo" 
+> Copie à : netdev@vger.kernel.org, linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+> Objet : Re: [PATCH 1/2] workqueue: Have 'alloc_workqueue()' like macros accept a format specifier
+> 
+> On 4/18/21 2:26 PM, Christophe JAILLET wrote:
+> > Improve 'create_workqueue', 'create_freezable_workqueue' and
+> > 'create_singlethread_workqueue' so that they accept a format
+> > specifier and a variable number of arguments.
+> > 
+> > This will put these macros more in line with 'alloc_ordered_workqueue' and
+> > the underlying 'alloc_workqueue()' function.
+> > 
+> > This will also allow further code simplification.
+> 
+> Please Cc Tejun for workqueue changes since he maintains the workqueue code.
+>
+ 
+Hi,
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8a154939ae27..3e5187c5b8d2 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2621,11 +2621,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/iwamatsu/linux-visconti.git
- F:	Documentation/devicetree/bindings/arm/toshiba.yaml
- F:	Documentation/devicetree/bindings/net/toshiba,visconti-dwmac.yaml
- F:	Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
-+F:	Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
- F:	Documentation/devicetree/bindings/pinctrl/toshiba,tmpv7700-pinctrl.yaml
- F:	Documentation/devicetree/bindings/watchdog/toshiba,visconti-wdt.yaml
- F:	arch/arm64/boot/dts/toshiba/
- F:	drivers/net/ethernet/stmicro/stmmac/dwmac-visconti.c
- F:	drivers/gpio/gpio-visconti.c
-+F:	drivers/pci/controller/dwc/pcie-visconti.c
- F:	drivers/pinctrl/visconti/
- F:	drivers/watchdog/visconti_wdt.c
- N:	visconti
--- 
-2.30.0.rc2
+The list in To: is the one given by get_maintainer.pl. Usualy, I only put the ML in Cc:
+I've run the script on the 2 patches of the serie and merged the 2 lists. Everyone is in the To: of the cover letter and of the 2 patches.
 
+If Théo is "Tejun Heo" (  (maintainer:WORKQUEUE) ), he is already in the To: line.
+
+CJ
+
+
+> > diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
+> > index d15a7730ee18..145e756ff315 100644
+> > --- a/include/linux/workqueue.h
+> > +++ b/include/linux/workqueue.h
+> > @@ -425,13 +425,13 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
+> > alloc_workqueue(fmt, WQ_UNBOUND | __WQ_ORDERED | \
+> > __WQ_ORDERED_EXPLICIT | (flags), 1, ##args)
+> > 
+> > -#define create_workqueue(name) \
+> > - alloc_workqueue("%s", __WQ_LEGACY | WQ_MEM_RECLAIM, 1, (name))
+> > -#define create_freezable_workqueue(name) \
+> > - alloc_workqueue("%s", __WQ_LEGACY | WQ_FREEZABLE | WQ_UNBOUND | \
+> > - WQ_MEM_RECLAIM, 1, (name))
+> > -#define create_singlethread_workqueue(name) \
+> > - alloc_ordered_workqueue("%s", __WQ_LEGACY | WQ_MEM_RECLAIM, name)
+> > +#define create_workqueue(fmt, args...) \
+> > + alloc_workqueue(fmt, __WQ_LEGACY | WQ_MEM_RECLAIM, 1, ##args)
+> > +#define create_freezable_workqueue(fmt, args...) \
+> > + alloc_workqueue(fmt, __WQ_LEGACY | WQ_FREEZABLE | WQ_UNBOUND | \
+> > + WQ_MEM_RECLAIM, 1, ##args)
+> > +#define create_singlethread_workqueue(fmt, args...) \
+> > + alloc_ordered_workqueue(fmt, __WQ_LEGACY | WQ_MEM_RECLAIM, ##args)
+> > 
+> > extern void destroy_workqueue(struct workqueue_struct *wq);
+> > 
+> > 
+> 
+>
