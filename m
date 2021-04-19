@@ -2,145 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6FF5364039
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4072364046
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233818AbhDSLGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 07:06:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56920 "EHLO
+        id S233862AbhDSLPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 07:15:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233862AbhDSLF7 (ORCPT
+        with ESMTP id S230070AbhDSLPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 07:05:59 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68712C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 04:05:28 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id v3so35872284ybi.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 04:05:28 -0700 (PDT)
+        Mon, 19 Apr 2021 07:15:42 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9FD0C06174A;
+        Mon, 19 Apr 2021 04:15:12 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id cu16so15728885pjb.4;
+        Mon, 19 Apr 2021 04:15:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=5LqvcoPM7aAQAIxRhAZ6fd0FECC20Osn+I0reTRncUE=;
-        b=ZO9NymKa3LAaawzpOVdexZjSPKp7U4zlElcQBLoqnCDOfmv6CHMcl+Ky0yOyC/AKTc
-         pMtDB4EK2xiMgC3dP5Wtc+dcMGECpkOkSVC3VJ3XonC1vCIbxXjyAYCigsdcNV99x+FN
-         0NQpXD3+LMz8vsuC1Azj2wVtf2eF68H93ZnL4GB367BO3bDo9cpMc03nGXRK7hwAMxHp
-         mDp8LqQbyc9N+kerBezoq7+coFvdzx/D59UvMJbZv1j+9+RgCSSkbaAuZplSXd2OjG0X
-         evW7lTD7gilOR8VAB5y2M50wCmx+1ws658G/WCiyegX2LnsQGtnKBAApl08QNHL2wHq9
-         lFJQ==
+        bh=fyLO68cYQAdbeG7I5stptSDRdNhYWf3KZX5hVoH8RUc=;
+        b=tVD+Frbk3fpsSGakZ6vAUeXjiXHk6aLxIzoWOJ79QCPRe5sg+qOssPKCBuFpZ5ExOh
+         cYbxMV4raTskb/a7ddC9H5i2BKwdEq7spfQHIlf2jVAkHJxBU0Ei6GsXCcCdL2QMpnuE
+         NuGaQ74p+iU9G4sazo85cs6eV/ZPi5LU+H8jafL3qNVRBzyNmgrPMsxyXExPo+DHuwFv
+         tdPpf/Vv0zAL3K2sebt2+RdE1DKO/JaqaSETVgIsu5ibHTsU6O17m3ulHZtfSBA3otBu
+         36NS3LLD+mlC9bWFvFn98OLWOwUKvIpKeoMzxT9rPLm0PMCFOiMv5yHZ7jV44lhX0FUs
+         RgGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5LqvcoPM7aAQAIxRhAZ6fd0FECC20Osn+I0reTRncUE=;
-        b=MwA2bidpkCj7wXtPSOd27WHNAmLljP1ZEO5RleQdQIVQpgxhr8s1MyKZfsoME+9WMJ
-         hga+jBTplNJ2KAc6pHiWMgjLkhMXqFaPeu1UJqyZCEVA6VIkfjZD9S5/Rhn4OtKlkwXE
-         L7IbsMHoyVZDs4Q8d+4tTs0pa3z64Akoajv258Gjj93I4tefbp+wvRC0BTAAJLvGc66q
-         S442wi9lOuHJuM8edP7A6+eQxhgpALTm5yhJyFHWJ0MpM5D0v3Z+N+8gx8ZczpD1JzxY
-         Qxe3I9waBUVKvaLoqtmmhlhYiyqkWqslA683e4zd7ESfXibE1O6f4PyOhOfjvEjMB4Hq
-         3MGg==
-X-Gm-Message-State: AOAM531NVeSOBaGvvsL0NhCLc5wd/+B/e4dgv3h1gfa9RlkCBxj1024o
-        zrjHFZJVkGr9oCR+r4Av4tpOPjt/TVgejUi72Uj5Kw==
-X-Google-Smtp-Source: ABdhPJx2OjyQuMkimOyMB6R/FRIN3pN/2b1ww6PAx/yBwzmlS+Ps69LISVBLhfiYdhbvwdZIX0m4wGTOQRgp5e8rvtA=
-X-Received: by 2002:a25:850b:: with SMTP id w11mr16207623ybk.518.1618830327412;
- Mon, 19 Apr 2021 04:05:27 -0700 (PDT)
+        bh=fyLO68cYQAdbeG7I5stptSDRdNhYWf3KZX5hVoH8RUc=;
+        b=mioWvyt+fHfRk88zYgm96AIrBvJoaQlcCMhkEQZjow9BrW4Y4NXqRIPY5HMyQRJQZk
+         pK9c6F8eTDxhI0AaO/TSbDbOY+Mk1wY/unOAN/ksIvFen5ZKktNTMkeukiAzkX1NOyLP
+         RY+OW9zc8qvhHZg7jMXe4nebJ3dV8inoKQ86CV7C9Uu3WJnfEmHe9rV3+My9sBln7wIT
+         AIgO5kGQaU7IhEm7i0G0oSNJUW4fVAxG3rvzeSjQb0i52R1L6V9WCYwnLELWlv00DM1I
+         VHk/IEhJII5yHE0iPYOQU564gSp2k3sX8rN2my8l3W1LLk6rZCsW/Vi4SPU4dbMHYT7F
+         yJfQ==
+X-Gm-Message-State: AOAM53144tzNkvaI3rzKuKugd1VjBMQo2OIK7pa8BSvxvcvZW/eizFZk
+        KkZk5V395zG0nsnKMiMxEeDD7iKULBywJgpjojU=
+X-Google-Smtp-Source: ABdhPJz+wzghLLCvx06cKOPWLeBhgarcoxi0Xt2i3Juf+K3Pdv7kq6+jr+XQ6egZQWF1rL5+Yj/RWsbr5jNrL4ku0SM=
+X-Received: by 2002:a17:902:a406:b029:e6:78c4:71c8 with SMTP id
+ p6-20020a170902a406b02900e678c471c8mr22295456plq.17.1618830911997; Mon, 19
+ Apr 2021 04:15:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210418114200.5839-1-alobakin@pm.me>
-In-Reply-To: <20210418114200.5839-1-alobakin@pm.me>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 19 Apr 2021 13:05:16 +0200
-Message-ID: <CANn89iJQebFaJKsj3BC0tY27f1ttDpbpMOXjOFtgrFNVN_B9wA@mail.gmail.com>
-Subject: Re: [PATCH net] gro: fix napi_gro_frags() Fast GRO breakage due to IP
- alignment check
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Wei Wang <weiwan@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210416134546.38475-1-tomas.melin@vaisala.com>
+ <20210416134546.38475-3-tomas.melin@vaisala.com> <CAHp75VcibWup79np=xeQpO2z+OGCFXPhL6vWL6aWRZ+G8+djwQ@mail.gmail.com>
+ <91ea3aba-854e-30f1-1236-733debfcf5dc@vaisala.com>
+In-Reply-To: <91ea3aba-854e-30f1-1236-733debfcf5dc@vaisala.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 19 Apr 2021 14:14:55 +0300
+Message-ID: <CAHp75VcWu96EAjzYYwt_gqscvJp3s9Y+ZnaK2NQa_=L+S+r5zQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] iio: accel: Add driver for Murata SCA3300 accelerometer
+To:     Tomas Melin <tomas.melin@vaisala.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 18, 2021 at 1:43 PM Alexander Lobakin <alobakin@pm.me> wrote:
->
-> Commit 38ec4944b593 ("gro: ensure frag0 meets IP header alignment")
-> did the right thing, but missed the fact that napi_gro_frags() logics
-> calls for skb_gro_reset_offset() *before* pulling Ethernet header
-> to the skb linear space.
-> That said, the introduced check for frag0 address being aligned to 4
-> always fails for it as Ethernet header is obviously 14 bytes long,
-> and in case with NET_IP_ALIGN its start is not aligned to 4.
->
-> Fix this by adding @nhoff argument to skb_gro_reset_offset() which
-> tells if an IP header is placed right at the start of frag0 or not.
-> This restores Fast GRO for napi_gro_frags() that became very slow
-> after the mentioned commit, and preserves the introduced check to
-> avoid silent unaligned accesses.
->
-> Fixes: 38ec4944b593 ("gro: ensure frag0 meets IP header alignment")
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-> ---
->  net/core/dev.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 1f79b9aa9a3f..965d5f9b6fee 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -5914,7 +5914,7 @@ static struct list_head *gro_list_prepare(struct napi_struct *napi,
->         return head;
->  }
->
-> -static void skb_gro_reset_offset(struct sk_buff *skb)
-> +static void skb_gro_reset_offset(struct sk_buff *skb, u32 nhoff)
->  {
->         const struct skb_shared_info *pinfo = skb_shinfo(skb);
->         const skb_frag_t *frag0 = &pinfo->frags[0];
-> @@ -5925,7 +5925,7 @@ static void skb_gro_reset_offset(struct sk_buff *skb)
->
->         if (!skb_headlen(skb) && pinfo->nr_frags &&
->             !PageHighMem(skb_frag_page(frag0)) &&
-> -           (!NET_IP_ALIGN || !(skb_frag_off(frag0) & 3))) {
-> +           (!NET_IP_ALIGN || !((skb_frag_off(frag0) + nhoff) & 3))) {
->                 NAPI_GRO_CB(skb)->frag0 = skb_frag_address(frag0);
->                 NAPI_GRO_CB(skb)->frag0_len = min_t(unsigned int,
->                                                     skb_frag_size(frag0),
-> @@ -6143,7 +6143,7 @@ gro_result_t napi_gro_receive(struct napi_struct *napi, struct sk_buff *skb)
->         skb_mark_napi_id(skb, napi);
->         trace_napi_gro_receive_entry(skb);
->
-> -       skb_gro_reset_offset(skb);
-> +       skb_gro_reset_offset(skb, 0);
->
->         ret = napi_skb_finish(napi, skb, dev_gro_receive(napi, skb));
->         trace_napi_gro_receive_exit(ret);
-> @@ -6232,7 +6232,7 @@ static struct sk_buff *napi_frags_skb(struct napi_struct *napi)
->         napi->skb = NULL;
->
->         skb_reset_mac_header(skb);
-> -       skb_gro_reset_offset(skb);
-> +       skb_gro_reset_offset(skb, hlen);
->
->         if (unlikely(skb_gro_header_hard(skb, hlen))) {
->                 eth = skb_gro_header_slow(skb, hlen, 0);
-> --
-> 2.31.1
->
->
+On Mon, Apr 19, 2021 at 1:29 PM Tomas Melin <tomas.melin@vaisala.com> wrote:
+> On 4/17/21 3:39 PM, Andy Shevchenko wrote:
+> > On Fri, Apr 16, 2021 at 5:21 PM Tomas Melin <tomas.melin@vaisala.com> wrote:
+> >> Add initial support for Murata SCA3300 3-axis industrial
+> >> accelerometer with digital SPI interface. This device also
+> >> provides a temperature measurement.
 
-Good catch, thanks.
+...
 
-This has the unfortunate effect of increasing code length on x86,
-maybe we should have an exception to
-normal rules so that skb_gro_reset_offset() is inlined.
+> >> +       ret = spi_sync_transfer(sca_data->spi, xfers, ARRAY_SIZE(xfers));
+> >> +       if (ret < 0) {
+> >> +               dev_err(&sca_data->spi->dev,
+> >> +                       "transfer error, error: %d\n", ret);
+> >> +               return -EIO;
+> > Why shadowing error code?
+>
+> Returning EIO here to have full control over the return value from this
+> function. As return value of this is used for testing
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+Care to show what kind of testing requires this?
+Also why can't it be refactored to accept all error codes?
+
+> for possible status error (EINVAL), feels more confident to have it like
+> this to avoid any confusion. And atleast spi_sync_transfer() return value
+>
+> would be visible in error message.
+
+> >> +       }
+
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
