@@ -2,207 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0541364CA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 22:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E35364CA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 22:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242254AbhDSU4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 16:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241540AbhDSU4C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 16:56:02 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E8CEC061357
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 13:53:16 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id s14so13788926pjl.5
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 13:53:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oULCgofDCr3IKol4CZm7G0o//okmzQkN3R5Hp16/Ue8=;
-        b=PRfRzGaTIZDsL3wTTlVgGI06CnIMFMTv8pN0WiVKjO1yxjUxfUCOOv8RJT6vZ1ryCV
-         +cDK1gLSgpQBwbnd7pfF/YVkIrm4Qk2YjlM3UCErvIhQ52Je132mA+IK6yX0r6hu6QB6
-         ++3j6S0TdChypVnxHhj/REa9w98cc1mO6g0ss=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oULCgofDCr3IKol4CZm7G0o//okmzQkN3R5Hp16/Ue8=;
-        b=IJFgB/WjT74YeuKLjgSJeIZBxKzFtF6Rs7ZAMVF4IxDGYAsmPOZqHuSNAFha/bHHxT
-         TzbiZ2SE9sblJk8siZdBFcjlDx+fgR+u2O4SzC1UiOieWahZAkcCVGHndjHo67ZcNUec
-         vJXcI9RyUQQse9zNXA6W+tHqOBdClS526J0m4URGiOU9j6hNSATCuDH/PoKPKg0vWGMz
-         sCK1VJ1S+7Kt9/rYdPs360p5AXcabY7nCW1zrGQyHoo8NQCtI8RcO1eA0NPHQB3m7rLY
-         rgZyjN3zqgGkdkemoO9BxyOzjHxY7wCKGBjg49nDZ+l9bGAdL13OK+A5KdTQN70ri17P
-         QYVg==
-X-Gm-Message-State: AOAM532jT+30A4Vd5Kvy6yvM4Y2DipWmwrYgpfhPPZvIwD80Pm65PcM/
-        cJ6JzBa+5CZs5W3Daz/eQj/iRg==
-X-Google-Smtp-Source: ABdhPJxJrsfjt/GcLeN3qwtoq2slf1gMFTkTmr11hYO0bkxLzfjols+Aib2YcFe7rCTHsHx4JlOADw==
-X-Received: by 2002:a17:90a:7783:: with SMTP id v3mr1022551pjk.177.1618865595769;
-        Mon, 19 Apr 2021 13:53:15 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:7401:678f:e510:6700])
-        by smtp.gmail.com with UTF8SMTPSA id q6sm680577pfs.33.2021.04.19.13.53.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Apr 2021 13:53:15 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 13:53:14 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Sandeep Maheswaram <sanm@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
-Subject: Re: [PATCH v6 1/5] usb: dwc3: host: Add suspend_quirk for dwc3 host
-Message-ID: <YH3tuppS0Xjxobmj@google.com>
-References: <1618567313-25373-1-git-send-email-sanm@codeaurora.org>
- <1618567313-25373-2-git-send-email-sanm@codeaurora.org>
+        id S241887AbhDSU4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 16:56:32 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:47521 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241688AbhDSU4S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 16:56:18 -0400
+Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 13JKslbT2399793
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Mon, 19 Apr 2021 13:54:55 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 13JKslbT2399793
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021032801; t=1618865697;
+        bh=PSRN5v6fXZoEYzmBfnsY6QxsYgPsedMVL9WdxgLS2qU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=f5zFIsPcOREApY+mB0ii8gwVUTUMKktoUkJE6+w/n/DXJQ4+WojjMKyEXIsI6vWXJ
+         9/D5d7IQ5NxZ/wLrEOJWFcaSRqYkZEP/Dx9wW0ZRA+tfI5eZl3/VEiIZuH16AHmf3T
+         3modexQEAcvHCkTuayE4S15qxDN/gMiglxnJ4KQ1F3i5cQdeDDuMY67/Sa23WHO9BX
+         NrwHQCSsAHMQ3JboGCWFTWzMa6sMtT9utZx87H8fq0R1FD7lOEw5snCrgaafOvNW7R
+         j1CBkBW3e5FKM+x34T/3KMEKfKgugl8DzLdBE5rWHjC+oP1+58/cAVAiLR7RvxPTY7
+         4J6DE7FqmTe+g==
+From:   "H. Peter Anvin" <hpa@zytor.com>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kbuild Mailing List <linux-kbuild@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH 0/3] x86 disk image and modules initramfs generation
+Date:   Mon, 19 Apr 2021 13:54:35 -0700
+Message-Id: <20210419205438.1531413-1-hpa@zytor.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1618567313-25373-2-git-send-email-sanm@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 03:31:49PM +0530, Sandeep Maheswaram wrote:
+From: "H. Peter Anvin" (Intel) <hpa@zytor.com>
 
-> Subject: usb: dwc3: host: Add suspend_quirk for dwc3 host
->
-> Adding suspend quirk function for dwc3 host which will be called
-> during xhci suspend.
-> Setting hs_phy_mode, ss_phy_mode , phy_power_off flags and phy mode
-> during host suspend.
+When compiling on a different machine than the runtime target,
+including but not limited to simulators, it is rather handy to be able
+to produce a bootable image. The scripts for that in x86 are
+relatively old, and assume a BIOS system.
 
-This describes in other words what the code already tells us, but
-doesn't really explain why this change is needed.
+This adds a build target to generate a hdimage which can be booted
+either from BIOS or EFI, and modernizes the genimage.sh script
+including adding the ability to add an arbitrary number of initramfs
+files (limited only by the length of the command line.)
 
-An attempt to be a bit clearer:
+Possibly more controversial, at least from a Kbuild design perspective
+(as usual I'm the guy who wants to do something with Kbuild which it
+seems it was never really designed to do), is add the ability to
+create an initramfs image which includes all the built modules. Some
+distributions cannot be easily booted without modules in initramfs,
+and this creates an image which can be added to initramfs to provide
+the kernel modules, as finalized by "make modules_install".
 
-  Subject: usb: dwc3: host: Set PHY mode during suspend
+The final patch put these two together, and allows the modules
+initramfs to be included in the x86 boot image.
 
-  During suspend read the status of all port and make sure the PHYs
-  are in the correct mode (mka@: why is it necessary to call
-  phy_set_mode(), shouldn't the PHYs already be in the correct mode
-  if they are operational?). Keep track of the mode of the HS PHY to
-  be able to configure wakeup properly.
-
-  Also check during suspend if any wakeup capable devices are
-  connected to the controller (directly or through hubs), if there
-  are none set a flag to indicate that the PHY should be powered
-  down during suspend.
-
-Just a starting point, I'm sure it has room for improvement.
-
-> 
-> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
-> ---
->  drivers/usb/dwc3/core.h |  3 +++
->  drivers/usb/dwc3/host.c | 59 +++++++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 62 insertions(+)
-> 
-> diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-> index 6e9abfb..f409dc1 100644
-> --- a/drivers/usb/dwc3/core.h
-> +++ b/drivers/usb/dwc3/core.h
-> @@ -1111,6 +1111,9 @@ struct dwc3 {
->  
->  	bool			phys_ready;
->  
-> +	unsigned int            hs_phy_mode;
-> +	bool			phy_power_off;
-> +
->  	struct ulpi		*ulpi;
->  	bool			ulpi_ready;
->  
-> diff --git a/drivers/usb/dwc3/host.c b/drivers/usb/dwc3/host.c
-> index f29a264..527f04c 100644
-> --- a/drivers/usb/dwc3/host.c
-> +++ b/drivers/usb/dwc3/host.c
-> @@ -11,6 +11,14 @@
->  #include <linux/platform_device.h>
->  
->  #include "core.h"
-> +#include "../host/xhci.h"
-> +#include "../host/xhci-plat.h"
-> +
-> +static int xhci_dwc3_suspend_quirk(struct usb_hcd *hcd);
-> +
-> +static const struct xhci_plat_priv xhci_plat_dwc3_xhci = {
-> +	.suspend_quirk = xhci_dwc3_suspend_quirk,
-> +};
->  
->  static int dwc3_host_get_irq(struct dwc3 *dwc)
->  {
-> @@ -115,6 +123,13 @@ int dwc3_host_init(struct dwc3 *dwc)
->  		}
->  	}
->  
-> +	ret = platform_device_add_data(xhci, &xhci_plat_dwc3_xhci,
-> +			sizeof(struct xhci_plat_priv));
-> +	if (ret) {
-> +		dev_err(dwc->dev, "failed to add data to xHCI\n");
-> +		goto err;
-> +	}
-> +
->  	ret = platform_device_add(xhci);
->  	if (ret) {
->  		dev_err(dwc->dev, "failed to register xHCI device\n");
-> @@ -127,6 +142,50 @@ int dwc3_host_init(struct dwc3 *dwc)
->  	return ret;
->  }
->  
-> +static void dwc3_set_phy_mode(struct usb_hcd *hcd)
-> +{
-> +
-> +	int i, num_ports;
-> +	u32 reg;
-> +	unsigned int ss_phy_mode = 0;
-> +	struct dwc3 *dwc = dev_get_drvdata(hcd->self.controller->parent);
-> +	struct xhci_hcd	*xhci_hcd = hcd_to_xhci(hcd);
-> +
-> +	dwc->hs_phy_mode = 0;
-> +
-> +	reg = readl(&xhci_hcd->cap_regs->hcs_params1);
-> +	num_ports = HCS_MAX_PORTS(reg);
-> +
-> +	for (i = 0; i < num_ports; i++) {
-> +		reg = readl(&xhci_hcd->op_regs->port_status_base + i * 0x04);
-> +		if (reg & PORT_PE) {
-> +			if (DEV_HIGHSPEED(reg) || DEV_FULLSPEED(reg))
-> +				dwc->hs_phy_mode |= PHY_MODE_USB_HOST_HS;
-> +			else if (DEV_LOWSPEED(reg))
-> +				dwc->hs_phy_mode |= PHY_MODE_USB_HOST_LS;
-> +
-> +			if (DEV_SUPERSPEED(reg))
-> +				ss_phy_mode |= PHY_MODE_USB_HOST_SS;
-> +		}
-> +	}
-> +	phy_set_mode(dwc->usb2_generic_phy, dwc->hs_phy_mode);
-> +	phy_set_mode(dwc->usb3_generic_phy, ss_phy_mode);
-> +}
-> +
-> +int xhci_dwc3_suspend_quirk(struct usb_hcd *hcd)
-> +{
-> +	struct dwc3 *dwc = dev_get_drvdata(hcd->self.controller->parent);
-> +
-> +	dwc3_set_phy_mode(hcd);
-> +
-> +	if (usb_wakeup_enabled_descendants(hcd->self.root_hub))
-> +		dwc->phy_power_off = false;
-> +	else
-> +		dwc->phy_power_off = true;
-> +
-> +	return 0;
-> +}
-> +
->  void dwc3_host_exit(struct dwc3 *dwc)
->  {
->  	platform_device_unregister(dwc->xhci);
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
+ Makefile                     |  17 ++-
+ arch/x86/Makefile            |   8 +-
+ arch/x86/boot/.gitignore     |   1 +
+ arch/x86/boot/Makefile       |  55 +++++----
+ arch/x86/boot/genimage.sh    | 284 +++++++++++++++++++++++++++++++------------
+ arch/x86/boot/mtools.conf.in |   3 +
+ usr/.gitignore               |   3 +
+ usr/Kconfig                  |  31 ++---
+ usr/Makefile                 |  39 +++++-
+ 9 files changed, 318 insertions(+), 123 deletions(-)
