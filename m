@@ -2,130 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A2E364537
+	by mail.lfdr.de (Postfix) with ESMTP id DE264364539
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241153AbhDSNmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:42:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243529AbhDSNlS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:41:18 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066E9C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 06:40:46 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id u15so9163497plf.10
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 06:40:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NEYzb8rRhegA9r1XKxsspQ9rFJwcyg5L2UyEin8OE4c=;
-        b=ItJ0Wr2Brx0XkXV8dYQOcWQxMHetwGHfb/5o+qpiB7SF+7lm2x3vL4V6R4fTMh23yQ
-         62s+l5tK871iHS9uUOwkoi+kQ8qbyNvnd5rTw33FZensKVWia7yCBBsFryePIydDcq4N
-         XwLg/ka9XmJ0h4JZj4AZnlVbT5I6LB5JgLNcAG5xlqIWrPA7Zckg5F6SC/3KzISv7meZ
-         IdGU1aK5kTjU1QQdZcLMXfmwmprKhr8eZvCi8QTRnsCaiYgiLur1Rg0DV+m9WJB0mk1c
-         hHwEVcKl4IgllOv8UxVkL48vKyDopRblpoEjhRwSL5nO4XqqyS+8WqC9YOHnzpqic/JR
-         iwUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NEYzb8rRhegA9r1XKxsspQ9rFJwcyg5L2UyEin8OE4c=;
-        b=DCrd1d6iCSYcmBoUKFZMCFJCdu2btXrL2UcOQjEs5i4FtoEHxdIIrU9ZXfyFeGICms
-         kZtsIKI2RP+aezeo0WKOfSleNEU9ZA2bJdA7BoYMCsybJG2qsOu+xDl9luIiR1IY3f2R
-         o+b+xqQWmV7zxrDATvgOJAeJXUMcO9xyTLjnPaMSwOcoIml7zeKmjVdMFSJxY+KuEkkk
-         hCtBiQKChuj8fNNYG5YrN1uHqhCC0MK8vegcDVAkOxmXXXkczguj3Q9vfCnkbxkHhLpB
-         wTLi2B8xQd+lKi7MVzV7/LC78AYwxK8XAuBVaZjDp4h5fLSh+V9Q3lTdDdprYx5tv+Qh
-         Ck7Q==
-X-Gm-Message-State: AOAM5328Qj0lk/l3QbQC6FLUdJcAFCTxMJqBYO4dflF3gb0Oe+Gphm2F
-        jIASu8/GQYTcJqhsL92NnlN3arMRvUzJcEJNdFD4Z2P5a07AMA==
-X-Google-Smtp-Source: ABdhPJz0DPVCcVLsadbFWTJj28lAVt+mUe3Ff/ZXctWAIE0MJVpgqJliEszlhkteMQ43494J9NQJSM9aXGgFox7Tg6U=
-X-Received: by 2002:a17:902:a406:b029:e6:78c4:71c8 with SMTP id
- p6-20020a170902a406b02900e678c471c8mr22979199plq.17.1618839645839; Mon, 19
- Apr 2021 06:40:45 -0700 (PDT)
+        id S240469AbhDSNo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:44:58 -0400
+Received: from mail-eopbgr1310090.outbound.protection.outlook.com ([40.107.131.90]:6334
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S241542AbhDSNoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:44:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C861wjvSreBd6Vbt8gtPrkl0pD4vqz/MuToaUrKNYRi2pONP9/9kPR0AglFXWCOdPSAwxSZ1q2GWgbbTz2pg5OobIx8c33UQN5ZpwJ4UIzlOQQnuUF0wovjgh7qNu2m2eX0Y9R2otV5y7qczCccUOYugdh6+OK6SFxVQHOgVqOYD4VBhBpXrKXQwZgB4tIm3TMl0Er158S9YjAswaVUNE9kXo0vscAVnpP3OODbng9QgN6Y7DTcxLk9XzI3V2vNnxlLenJjSstgVGiVRPJrtqJg4K//UyAjdoU8v2Vvex8wFWNDin0awezk7JQhX+rIZnNLpiA0zEswQ1NCzVuFDSQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+8xcmvTKtjW25KjhvyCRyZP/mfag51RufBnt90cn2HA=;
+ b=LwoItBRqCvI6tmUgEt1EhsV/uwhGOb9ozbV1y7RNZS/I2ed2vOjjOxufCzYHwm6Di5OlAGSXqp/wbK1IV72EwpTsogAgiae4ftqW7WDPDnOSLwOt7S6jAW4FwFy5PDGseRtS96SI2TwSrr52RIqh/7SNXUd0VyfGbsd/nfg2v7eBxdui7oxGME0PKFqNAgxkI3tHrOqpj5Hs17fViYESVzwVNOarGuPPx7TKqBZzktx20jLexwQEchBggvsjzjZC9LN9DSpKjBbLxfkwW6+xcJbBbruvRGURxBfjBwg1tkANSCsSO/iUX5sFy0ZPCoe6VJxwR+At4KorMpWqkBD/DQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+8xcmvTKtjW25KjhvyCRyZP/mfag51RufBnt90cn2HA=;
+ b=h/z246E4hTeBD9mnNtt6utgDcDCuj4Id+aAGk2/vUY/oobcHEkJY5WFLz2WgI2HhzJmnRVVKwxKYxZdC+NPOEvqPgfMIjVNvMTFrrHMz2AwjVRHhCElx0ZL11dzZTDXMqYtXO5OwEpWsaYrKYQHK5w2lAJstm5J95s/LcoJBWyc=
+Received: from PSAP153MB0422.APCP153.PROD.OUTLOOK.COM (2603:1096:301:38::12)
+ by PSAP153MB0407.APCP153.PROD.OUTLOOK.COM (2603:1096:301:3f::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.11; Mon, 19 Apr
+ 2021 13:43:37 +0000
+Received: from PSAP153MB0422.APCP153.PROD.OUTLOOK.COM
+ ([fe80::9921:b743:c0db:6f50]) by PSAP153MB0422.APCP153.PROD.OUTLOOK.COM
+ ([fe80::9921:b743:c0db:6f50%7]) with mapi id 15.20.4087.013; Mon, 19 Apr 2021
+ 13:43:37 +0000
+From:   Shyam Prasad <Shyam.Prasad@microsoft.com>
+To:     Salvatore Bonaccorso <carnil@debian.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, pc <pc@cjr.nz>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Aurelien Aptel <aaptel@suse.com>,
+        Steven French <Steven.French@microsoft.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: RE: [EXTERNAL] Re: [PATCH 4.19 013/247] cifs: Set
+ CIFS_MOUNT_USE_PREFIX_PATH flag on setting cifs_sb->prepath.
+Thread-Topic: [EXTERNAL] Re: [PATCH 4.19 013/247] cifs: Set
+ CIFS_MOUNT_USE_PREFIX_PATH flag on setting cifs_sb->prepath.
+Thread-Index: AQHXKtl3oEpPTTCadkuXKYVCCMdGI6qnf4aAgAACKFCAABQAgIAC7L2AgAYL/YCACbwcAIABHItwgACBRYCAAAUg4A==
+Date:   Mon, 19 Apr 2021 13:43:37 +0000
+Message-ID: <PSAP153MB04225D4C5A61E003B196570994499@PSAP153MB0422.APCP153.PROD.OUTLOOK.COM>
+References: <20210301161031.684018251@linuxfoundation.org>
+ <20210301161032.337414143@linuxfoundation.org> <YGxIMCsclG4E1/ck@eldamar.lan>
+ <YGxlJXv/+IPaErUr@kroah.com>
+ <PSAP153MB04220682838AC9D025414B6094769@PSAP153MB0422.APCP153.PROD.OUTLOOK.COM>
+ <YGx3u01Wa/DDnjlV@eldamar.lan> <YG7r0UaivWZL762N@eldamar.lan>
+ <YHP+XbVWfGv21EL1@kroah.com> <YHwo5prs4MbXEzER@eldamar.lan>
+ <PSAP153MB04224202F4A2BE668533F94794499@PSAP153MB0422.APCP153.PROD.OUTLOOK.COM>
+ <YH2EBzOKkg4kGoQn@eldamar.lan>
+In-Reply-To: <YH2EBzOKkg4kGoQn@eldamar.lan>
+Accept-Language: en-IN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=20cfd1ea-0d45-4c94-b5a5-98f19dca236e;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-04-19T13:40:35Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: debian.org; dkim=none (message not signed)
+ header.d=none;debian.org; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [2404:f801:8028:1:60f6:ca47:5dfc:b1d0]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ce5039ac-ab5e-4a4a-e6d9-08d903392285
+x-ms-traffictypediagnostic: PSAP153MB0407:
+x-ms-exchange-transport-forked: True
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-microsoft-antispam-prvs: <PSAP153MB0407B4E12FA10312E06F8FBD94499@PSAP153MB0407.APCP153.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vf5qlAgQjL/q+xj52vVa7z4iQFEXqbezFfa7JMqFKBDdZIahHzag+YAODEKW6hwHlu2cUPM02szdBOhOOSYsyDKvXFGrMmKiY/Dbf9oyWbq0drEMIHFkKeJLlBAWgy0KiL0Fr4Va+ay7+y6PpAPSgtrY86tMlUUVRIq9TUytVljkP+Iys5ozYlRkIocRdEJ6Qn78WiHD8mRf0IYRD/Wn0ey9ZSt/RBfVM+Gbf/xnqNE3NCuMyc6BZtVAIlFjySDBrR0O1esJURDch0uxBt5NP0W2pSgoEXdKqA5vJiFu89ynpRK9R1EaB8oV7MoiAFBDPX6CzbrZZOptsNgbQnn3MvQSrHubaWt0s04c98RXvpioREevc0D9ieeYJsYOECzT4SjBwSjY7fLSpShExk3XG4A8X9OAtLCtOLON/Ycyhgn0QwVTasf4RZrKfCy2XEJCpwsZ5555ilmt8PhV4XZr2gjzT5xNPqotoQVW03oFAe+4CarpC7NImgtSsyvyuhxj03nygRDRha1+eCwEut8vOgXPFlEyXOeXsd+6kldaWbymikjZ7UWDmWtsSllRV19crO8spka2wanhN+0fFuyjo7L4H8Ezbl/7Se3xonb781I=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PSAP153MB0422.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(8936002)(2906002)(316002)(10290500003)(52536014)(4744005)(8676002)(478600001)(4326008)(55016002)(5660300002)(54906003)(8990500004)(7696005)(82950400001)(9686003)(53546011)(82960400001)(83380400001)(38100700002)(186003)(122000001)(6506007)(71200400001)(6916009)(76116006)(66946007)(64756008)(66446008)(66556008)(66476007)(33656002)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?YZ06ZyR4F+43aRWxnVl/nGdkdSEbHsn8Sw52AH8mbmfCh4vVpOVs78t0JtEf?=
+ =?us-ascii?Q?jmL6wkric/iSovvHq44namnwgRbVq+hs+Axae0qEJXXDSs+NF04u0+4Ot/w6?=
+ =?us-ascii?Q?sVXrL5p2jgEmuDl99/J/etbW2gNCDVbI738iJPi4y5XNvi8HlX7XxNFEqBfC?=
+ =?us-ascii?Q?xsOsSKLy/1bxz4SatZWvlDFP1ngQ5DbVEzBuJprIOPgxDHZuVQQ5JI01Rb2E?=
+ =?us-ascii?Q?rc9KzIqrUFIE89aMNfmisZgaIfAfMlIzM26UPnZDzzzINPwWZX4mZB5wz7Zu?=
+ =?us-ascii?Q?t6G3omOcmmZJMyTKX8uKugnQZNGnMEnTjomR9Nc5d+7/RgiugIu1zMtylBwf?=
+ =?us-ascii?Q?FGzGfofWbD1uawTkillfmT7GiVru1Jzqqku8Qg49OsDPIrtoB4mnAGrMduyg?=
+ =?us-ascii?Q?raBRhCrFdrgjPcDdXBCBZZqjNe2XlFuaffOsTFzHabLbERrOZXkoqIT4CU76?=
+ =?us-ascii?Q?1PrthyzUbVHppIUotTP6pPRYgIEgz1MxQPCl23G1JYPoBqCoSzCaPN2dAVyS?=
+ =?us-ascii?Q?rTMRJ+ebI3K/du5iVX7QGTqe/tmQWsjU5F36I9+1Z90Baq1k1fGa9foA8QfG?=
+ =?us-ascii?Q?+y8l7nrvK9n8XfHq8B2ZhRaBRIkb6nVCQxwPOJpY699q4q70yng7wFlh3yQp?=
+ =?us-ascii?Q?Co4XV6ubUXRfo+Rq2vo3yjYE1QcGLz2gHNC3lY9uqvwjST0yvw1PIG+E+v1v?=
+ =?us-ascii?Q?69tiMCla2fbgUD5dVxwBw+gL0exbE0HeBl9xgbTh3ouG6MQTmVRDAK1Mvs/l?=
+ =?us-ascii?Q?CbEeB7LsIBmMqTC4XnTrZzLXlSpNKCIeGtFfYplfaGwMZ/2xwatEefbfvfMC?=
+ =?us-ascii?Q?lXQ2d7xpvn5Kyd8dJcoLSwxOwbsIU/udHzNJ4N3bATkwJGmshM6v1IIQA8z0?=
+ =?us-ascii?Q?LnStBxsMR201T9yo+0HFcxjvTcG0OhGVIU6k7w+ELdKLbjwo+iHD7HgAT0Wa?=
+ =?us-ascii?Q?SWMxJ+f6au/CrsiB6Abjixy/N+vWv7R2wdOnoIu7QHCll5VUufhHzQmFdroz?=
+ =?us-ascii?Q?FDkvxMtbwI6Q1qJ8Mn73qFnMvVzUpvXpGKOpXoGEOKEEtevBWZlAW+LzC2Cx?=
+ =?us-ascii?Q?qm6tSmVpmaEAmoHKGV0XpYomnkrFgmXlqjd2MPIrKg/sB5u/MgOkzbFhCJHh?=
+ =?us-ascii?Q?1YaJDIp9cFdsKCAn3K9HhwHaKwI6+sWURP4b83wAKRAfbazCaQc923vtcV/v?=
+ =?us-ascii?Q?fvazl+UiT3M3gxDzNeVgSwb/ivDh7Jrf7FXcq6AOClN26xr6Y2ArGgAou3im?=
+ =?us-ascii?Q?7U+3Ks32yuH0+D2DnMkXsRVveccD3imxQLYS7b81EijooaUdQ6pMoywuwy1E?=
+ =?us-ascii?Q?gc4mbHKfJuFo8VOL+eY0A5AM2DcjoN5zLmiOF5TlgAXdfBxdwOGkF5y74Co7?=
+ =?us-ascii?Q?bUv8QAs=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210415145857.34183-1-andriy.shevchenko@linux.intel.com>
- <CAHUa44FWJiL1yzHR0jwL2VJG_4t_O6An48v47gORitcaahwmYw@mail.gmail.com>
- <YH1xHDbFyJ1URYYV@smile.fi.intel.com> <CAHUa44GqTNoLbwfqPrWFVLV3=M2d-2hE1uDY=CHpCcZgzMu5Og@mail.gmail.com>
-In-Reply-To: <CAHUa44GqTNoLbwfqPrWFVLV3=M2d-2hE1uDY=CHpCcZgzMu5Og@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 19 Apr 2021 16:40:29 +0300
-Message-ID: <CAHp75VeP9eXyrpuWpb9smuLUCBmocwfzA1p4NXPNyNfP0i3ngw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] tee: optee: Provide special parameter field for
- UUID values
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PSAP153MB0422.APCP153.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce5039ac-ab5e-4a4a-e6d9-08d903392285
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Apr 2021 13:43:37.5143
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6+cbPC8kLr+RZnnUI4qGFehhb4OfG1X7JE4e4q5MLJPbe0yciw/NUlCFZcBAGBYPTRm2BOpWvd0HvkelsT979A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PSAP153MB0407
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 4:30 PM Jens Wiklander
-<jens.wiklander@linaro.org> wrote:
-> On Mon, Apr 19, 2021 at 2:01 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > On Mon, Apr 19, 2021 at 01:35:51PM +0200, Jens Wiklander wrote:
-> > > On Thu, Apr 15, 2021 at 4:58 PM Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > Thanks for review, my answer below.
-> >
-> > > >                 struct optee_msg_param_tmem tmem;
-> > > >                 struct optee_msg_param_rmem rmem;
-> > > >                 struct optee_msg_param_value value;
-> > > > +               uuid_t uuid;
-> > >
-> > > It's nice to get rid of the cast above, but I'm not that keen on the
-> > > change in this struct. This file defines the ABI towards Secure world
-> > > and adding dependencies on external complex types is a larger problem
-> > > than the cast above in my opinion.
-> >
-> > I understand.
-> >
-> > So, the cast is simply wrong there. Can you add a comment above that cast to
-> > explain that and make it is marked as FIXME? Because there is no guarantee that
-> > internal Linux types can be 1:1 mapped to the ABI of something.
->
-> We might as well fix it directly instead. How about storing the
-> intermediate result in a proper uuid_t and then export it as:
-> export_uuid((u8 *)&msg_arg->params[1].u.uuid, &myuuid);
+I think so; Paulo can confirm.
 
-Still a casting here.
-With u64 members you have a (potential) endianness issue (consider
-BE-32 platform). Also you never know that a b c translates properly to
-byte array.
+-----Original Message-----
+From: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com> On Behalf Of Sa=
+lvatore Bonaccorso
+Sent: Monday, April 19, 2021 6:52 PM
+To: Shyam Prasad <Shyam.Prasad@microsoft.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>; pc <pc@cjr.nz>; linux-=
+kernel@vger.kernel.org; stable@vger.kernel.org; Aurelien Aptel <aaptel@suse=
+.com>; Steven French <Steven.French@microsoft.com>; Sasha Levin <sashal@ker=
+nel.org>
+Subject: Re: [EXTERNAL] Re: [PATCH 4.19 013/247] cifs: Set CIFS_MOUNT_USE_P=
+REFIX_PATH flag on setting cifs_sb->prepath.
 
-I would rather see a custom function
+Hi Shyam,
 
-optee_import_uuid(param, uuid_t *uuid)
-{
-  u8 uuid_raw[UUID_SIZE];
+On Mon, Apr 19, 2021 at 05:48:24AM +0000, Shyam Prasad wrote:
+> <Including Paulo in this email thread>
+>=20
+> Hi Salvatore,
+>=20
+> Attached is a proposed fix from Paulo for older kernels.=20
+> Can you please confirm that this works for you too?=20
 
-  put_unaligned_le64(&uuid_raw[0], param.a); // not sure about endianness
-  put_unaligned_le64(&uuid_raw[0], param.b); // ditto
+So just to be clear, first apply again a738c93fb1c1 and then your additiona=
+l patch on top?
 
-  import_uuid();
-}
-
-> > What you need, perhaps, is a middle layer function that will copy u64 data
-> > to uuid_t or so. Also, u64 is not an ABI type, why the respective __uXX
-> > variants are not in use?
->
-> Does it make any difference? The file isn't shared with user space and
-> I need to sync the file manually anyway since OP-TEE doesn't have the
-> same include files.
-
-Yes. It gives a hint that these are ABI (that's why I felt free to add
-a member to the union. I have no idea that's an ABI). Optionally a
-comment suggesting that.
-
-Besides the above mentioned issues.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Regards,
+Salvatore
