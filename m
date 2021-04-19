@@ -2,118 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7630D363AA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 06:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86646363AA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 06:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbhDSEuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 00:50:05 -0400
-Received: from gw.atmark-techno.com ([13.115.124.170]:55600 "EHLO
-        gw.atmark-techno.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230114AbhDSEuD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 00:50:03 -0400
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
-        by gw.atmark-techno.com (Postfix) with ESMTPS id 5E97C80539
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 13:49:33 +0900 (JST)
-Received: by mail-oo1-f69.google.com with SMTP id h4-20020a4abb840000b02901e59b65fba8so5485126oop.5
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 21:49:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nwmKkdj5vxFBpFK3bj8w7Gz2YNFOXfPhegLyPurLzW0=;
-        b=retUXiAF04+Bn14zmF6m79+D6VvX4oZUxBGSkcybIgotcN/2fjVnQfBnd4itX3bLmm
-         t71+xfkc4JSApBJIYniUc65AhkWwtMJFhEgAT5YwLBCemUjoJHM3LmwEqWC3TVPVpLYH
-         wcpTTpbeFYyOYTUuE5mm4qLg2M2xzZPxlguaHALEVaaV3fGk0o675gnD+aEzMtXtxUiN
-         PSaNnnkNtJySEckpLBiyZvc0aRgEDOSHo8SRV7vrFbsHfSwVGHnMJh/r6kohnFCrZbQS
-         uY+Nep4Anhvy2a6OKr+o8t2A/r0T2ZZxniNXDJuYP4Faxd+yw9sB8JLxlljk6vIFc7I+
-         OC1A==
-X-Gm-Message-State: AOAM530vn6QIUfOYhtlPee1vzFD4ta5cH3ysvPFdGX7OwUQE9ZQFe1zb
-        LYXomNI7nIh6QeZT84TLryG/qS4JCyG8G4DGshmL+qRsVvMh5/3lcI+44Pmengy0hXmV+13APa8
-        E8cKCAso1NI81LMdswckPtLpDp9km
-X-Received: by 2002:a17:90a:430e:: with SMTP id q14mr10145489pjg.189.1618807761158;
-        Sun, 18 Apr 2021 21:49:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyxUh9TJ2x/K//IB2lTaeXhs2rGXIpLK5cuzzNIi1YdNWpQlLZsRv610IvzYjHsCM08ZYf1MA==
-X-Received: by 2002:a17:90a:430e:: with SMTP id q14mr10145444pjg.189.1618807760853;
-        Sun, 18 Apr 2021 21:49:20 -0700 (PDT)
-Received: from pc-0115 (117.209.187.35.bc.googleusercontent.com. [35.187.209.117])
-        by smtp.gmail.com with ESMTPSA id l22sm13247239pjc.13.2021.04.18.21.49.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 18 Apr 2021 21:49:20 -0700 (PDT)
-Received: from martinet by pc-0115 with local (Exim 4.94)
-        (envelope-from <martinet@pc-0115>)
-        id 1lYLqX-0016Kg-U8; Mon, 19 Apr 2021 13:49:17 +0900
-Date:   Mon, 19 Apr 2021 13:49:07 +0900
-From:   Dominique MARTINET <dominique.martinet@atmark-techno.com>
-To:     "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
-Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
-        horia.geanta@nxp.com, aymen.sghaier@nxp.com,
-        herbert@gondor.apana.org.au, davem@davemloft.net, tony@atomide.com,
-        geert+renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
-        vkoul@kernel.org, peter.ujfalusi@gmail.com, a.hajda@samsung.com,
-        narmstrong@baylibre.com, robert.foss@linaro.org, airlied@linux.ie,
-        daniel@ffwll.ch, khilman@baylibre.com, tomba@kernel.org,
-        jyri.sarha@iki.fi, joro@8bytes.org, will@kernel.org,
-        mchehab@kernel.org, ulf.hansson@linaro.org,
-        adrian.hunter@intel.com, kishon@ti.com, kuba@kernel.org,
-        linus.walleij@linaro.org, Roy.Pledge@nxp.com, leoyang.li@nxp.com,
-        ssantosh@kernel.org, matthias.bgg@gmail.com, edubezval@gmail.com,
-        j-keerthy@ti.com, balbi@kernel.org, linux@prisktech.co.nz,
-        stern@rowland.harvard.edu, wim@linux-watchdog.org,
-        linux@roeck-us.net, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-media@vger.kernel.org,
-        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
-        linux-phy@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-staging@lists.linux.dev,
-        linux-mediatek@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: Re: [RFC v1 PATCH 1/3] drivers: soc: add support for
- soc_device_match returning -EPROBE_DEFER
-Message-ID: <YH0Lwy2AYpXaJIex@atmark-techno.com>
-References: <20210419042722.27554-1-alice.guo@oss.nxp.com>
- <20210419042722.27554-2-alice.guo@oss.nxp.com>
+        id S231168AbhDSEw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 00:52:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49096 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230179AbhDSEwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 00:52:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E80D961078;
+        Mon, 19 Apr 2021 04:51:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618807916;
+        bh=fmIRWNC1qpVwLC7qncFDGW7uX2F2qWBvSljbuHIYyNc=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=b3CDwOfEKG8yRQ8zkfVJVCez4kDSKl/m3WztFyrSF6+136vTwJ+hH9OIp5Bqe7E+x
+         bgARSYlPSgKCdaZcQ4dgx+dDN+UoWOPBmZwqoSb0rBUFn4FCs3p9wDDMKIXhfRX6HB
+         4Weo1HHcX94uVIKv3/EWqC0aGlRnDxvbarv3FrRhZxaYkAKCH07Xi+78N9I7okaI+J
+         w1ZEQIikNpNVyx7P1w/B3QbEiM2CyVt878DdCJSb5dFu+q9ZAMNEg0Mx5cW3MkLxxI
+         Abvo5qnv2+F0Z9zAOaQ9bZulYyr/0fxA0l1u57zen0cv8ZIMhlbo7OvNc9tUj7SeO6
+         Kvs+fHBbVEPNQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id AE8795C00F0; Sun, 18 Apr 2021 21:51:55 -0700 (PDT)
+Date:   Sun, 18 Apr 2021 21:51:55 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
+        ak@linux.intel.com
+Subject: [PATCH v9 clocksource 0/6] Do not mark clocks unstable due to delays
+ for v5.13
+Message-ID: <20210419045155.GA596058@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210419042722.27554-2-alice.guo@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-First comment overall for the whole serie:
-Since it is the solution I had suggested when I reported the problem[1]
-I have no qualm on the approach, comments for individual patches
-follow.
+Hello!
 
-[1] http://lore.kernel.org/r/YGGZJjAxA1IO+/VU@atmark-techno.com
+If there is a sufficient delay between reading the watchdog clock and the
+clock under test, the clock under test will be marked unstable through no
+fault of its own.  This series checks for this, doing limited retries
+to get a good set of clock reads.  If the clock is marked unstable
+and is marked as being per-CPU, cross-CPU synchronization is checked.
+This series also provides delay injection, which may be enabled via
+kernel boot parameters to test the checking for delays.
 
+Note that "sufficient delay" can be provided by SMIs, NMIs, and of course
+vCPU preemption.
 
-Alice Guo (OSS) wrote on Mon, Apr 19, 2021 at 12:27:20PM +0800:
-> From: Alice Guo <alice.guo@nxp.com>
-> 
-> In i.MX8M boards, the registration of SoC device is later than caam
-> driver which needs it. Caam driver needs soc_device_match to provide
-> -EPROBE_DEFER when no SoC device is registered and no
-> early_soc_dev_attr.
+1.	Provide module parameters to inject delays in watchdog.
 
-This patch should be last in the set: you can't have soc_device_match
-return an error before its callers handle it.
+2.	Retry clock read if long delays detected.
 
-> Signed-off-by: Alice Guo <alice.guo@nxp.com>
+3.	Check per-CPU clock synchronization when marked unstable.
 
-As the one who reported the problem I would have been appreciated being
-at least added to Ccs... I only happened to notice you posted this by
-chance.
+4.	Provide a module parameter to fuzz per-CPU clock checking.
 
-There is also not a single Fixes tag -- I believe this commit should
-have Fixes: 7d981405d0fd ("soc: imx8m: change to use platform driver")
-but I'm not sure how such tags should be handled in case of multiple
-patches fixing something.
+5.	Limit number of CPUs checked for clock synchronization.
 
--- 
-Dominique
+6.	Reduce the clock-skew limit to 200us and the maximum permissible
+	clock read delay to 50us.
+
+Changes since v8, based on Thomas Gleixner feedback:
+
+o	Reduced clock-skew threshold to 200us and delay limit to 50us.
+
+o	Split out a cs_watchdog_read() function.
+
+o	Removed the pointless CLOCK_SOURCE_VERIFY_PERCPU from kvm_clock.
+
+o	Initialized cs_nsec_max and cs_nsec_min to avoid firsttime checks.
+
+Changes since v7, based on Thomas Gleixner feedback:
+
+o	Fix embarrassing git-format-patch operator error.
+
+o	Merge pairwise clock-desynchronization checking into the checking
+	of per-CPU clock synchronization when marked unstable.
+
+o	Do selective per-CPU checking rather than blindly checking all
+	CPUs.  Provide a clocksource.verify_n_cpus kernel boot parameter
+	to control this behavior, with the value -1 choosing the old
+	check-all-CPUs behavior.  The default is to randomly check 8 CPUs.
+
+o	Fix the clock-desynchronization checking to avoid a potential
+	use-after-free error for dynamically allocated clocksource
+	structures.
+
+o	Remove redundance "wdagain_nsec < 0" from clocksource_watchdog()
+	clocksource skew checking.
+
+o	Update commit logs and do code-style updates.
+
+Changes since v5:
+
+o	Rebased to v5.12-rc5.
+
+Changes since v4:
+
+o	Rebased to v5.12-rc1.
+
+Changes since v3:
+
+o	Rebased to v5.11.
+
+o	Apply Randy Dunlap feedback.
+
+Changes since v2:
+
+o	Rebased to v5.11-rc6.
+
+o	Updated Cc: list.
+
+Changes since v1:
+
+o	Applied feedback from Rik van Riel.
+
+o	Rebased to v5.11-rc3.
+
+o	Stripped "RFC" from the subject lines.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/admin-guide/kernel-parameters.txt   |   32 +++
+ b/Documentation/admin-guide/kernel-parameters.txt |   16 +
+ b/arch/x86/kernel/tsc.c                           |    3 
+ b/include/linux/clocksource.h                     |    2 
+ b/kernel/time/clocksource.c                       |   23 ++
+ kernel/time/clocksource.c                         |  201 ++++++++++++++++++++--
+ 6 files changed, 263 insertions(+), 14 deletions(-)
