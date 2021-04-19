@@ -2,84 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F165B364787
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 17:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D2D364789
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 17:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241329AbhDSPzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 11:55:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37170 "EHLO
+        id S241344AbhDSPzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 11:55:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233071AbhDSPzL (ORCPT
+        with ESMTP id S240626AbhDSPzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 11:55:11 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F29C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 08:54:41 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id e2so13641973plh.8
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 08:54:41 -0700 (PDT)
+        Mon, 19 Apr 2021 11:55:53 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B36C061761
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 08:55:22 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id lt13so9345350pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 08:55:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=duJja9qFhlLlL4LoMtIl+yX5xYury+ylhpHbGAhwQ0E=;
-        b=G8/9mwR4HBm33TlMKNDcLg7l0iEfmhU/hK6X1LNe9e9REFm/Qi9PKIrp9oGFy9l7ux
-         vauYRNGylEbGUJ1XaZSgyEsT3T6ODaksjQ2kvcPCHZHByqbIU4mX3wU1elNBY5+JT+CZ
-         q21r1UMZZCLZ0hsT+lY1AargK9RsqF+31a6laA/tHSN9+jisRN1qEjiBAqZ9XAuF4bKD
-         Q8hBU3qppYwQ2EXRfPg0Ek8PYyijqUkploPPwtsxVY8/R7d+1uFH3yO7E4Rq6UbF1pCt
-         HFHrSpHsKgn0kZ6tEJePImDdZr/TQg+2XTgxsgpWxhmYxoVH/GUJlp2TgrwiUBxD1+o/
-         jZRg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=72VX1h+QEmBOLraT/ylsWP0LF7nl48k7IxZYtxGUkOw=;
+        b=FwCkhIJ0qob2Eoe2paokYJQBiKrWnWC+w6OWtv+oAkUZR8g6/Rs9zCHwXlM6EVglfk
+         GKrQBzbsMWdzCxstQXKp8pEvvstFb6IQPyvHiQ4+Q5Q0VzL1TM3bgEuxHwfjfy6na3IK
+         lN185osi7KA+y4gQJw86JOPMQ0fQpxbUgGlhWoYaMz4w3W0rPOxim+Q88+0OoHEpIRik
+         mfAKFwT8HeWF/Ig2KMFSKihqy/gdG6r9wS/Haq61+qyXg2U02Of619PWiH4kDoSHWbzU
+         jBKbzwDkJdFx9dB1fnPMOv96DVZIsOTW3UybAaAm03sJhCNNRdJGJkymfjXuN8KI8Inc
+         occw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=duJja9qFhlLlL4LoMtIl+yX5xYury+ylhpHbGAhwQ0E=;
-        b=RSXs8FiOj+wzhpmIaHJtGSi5fyvtt3QUkWL1ruJj+Vpp8zL6Osw+bm01VKyfRSFfOd
-         1A7+fDHRyBF68ueFywGQ82c6wkh+4+VZt4gBf8u5t+6qE0Y/70YtQmXHaRpoBhHd4N5T
-         a+z2llhyg9K4K8S9qovOy4HyeAK+KQbE8iZp4S2fEioqIbZZLQS39cGI6R7g6MSs8Cb/
-         gpYqW5s7Aqb1zBW1d1Y0CMLWq2Od6895LbtFfeBDUL5ZnJVQrHxl28rIS6gNCxvw3P0R
-         q9SPq/CASKpWwS5So8GUMUnlqA+WOieuyL+EUqCNU1KxGtL6rX839ESIpuRAHqrgBDLu
-         6+gw==
-X-Gm-Message-State: AOAM533OBRyy2cvqT2e3S7FARrHFN/1hEpf4Uw7HC8eN1ggiGRuA7PKi
-        GBh6FQy8wG5BUD7vO1dQ2vliWA==
-X-Google-Smtp-Source: ABdhPJxavXAzGEe58BWYzw5ZEc+NmTGqB0zbhnZu7c0BbJ44Vw9Wn3xtMJZMf5MruH2tejQDyUlvhA==
-X-Received: by 2002:a17:902:e8d5:b029:e6:cabb:d07 with SMTP id v21-20020a170902e8d5b02900e6cabb0d07mr23765754plg.3.1618847680830;
-        Mon, 19 Apr 2021 08:54:40 -0700 (PDT)
-Received: from hermes.local (76-14-218-44.or.wavecable.com. [76.14.218.44])
-        by smtp.gmail.com with ESMTPSA id l22sm15346572pjc.13.2021.04.19.08.54.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 08:54:40 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 08:54:37 -0700
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, kys@microsoft.com,
-        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        liuwe@microsoft.com, netdev@vger.kernel.org, leon@kernel.org,
-        andrew@lunn.ch, bernd@petrovitsch.priv.at, rdunlap@infradead.org,
-        shacharr@microsoft.com, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH v8 net-next 2/2] net: mana: Add a driver for Microsoft
- Azure Network Adapter (MANA)
-Message-ID: <20210419085437.081fcffb@hermes.local>
-In-Reply-To: <20210416201159.25807-3-decui@microsoft.com>
-References: <20210416201159.25807-1-decui@microsoft.com>
-        <20210416201159.25807-3-decui@microsoft.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=72VX1h+QEmBOLraT/ylsWP0LF7nl48k7IxZYtxGUkOw=;
+        b=MqNSSf7k67XJmT2Z3nNEJk9pA/kd7XGUBvKhndMdNz+dfDv59cjZxkgXbpVBVgqALl
+         Ry8o0hMcESRLjEuzoP6VdsFx38OinwOjRQ+mCINb3aIdtAvUlPAe/9FBR3iFg7+Rq60X
+         GVX2/V3uKLKBq2+AGX08ZuwhWm+cv1yhWRO3XPzIvg8Y73m4VzFs9xL1AK5HbMWs2x+S
+         NnzAb5rAV8iI/gns9/0Ehd4J7Ofub+hr26F/Zwa1JORa/BpOwvrosfRQOhUyunFiYkF5
+         FxligVXQ5S9Q3WyBFRea8YNro5/dQpZhskyMJhuxXbxYJaNoJr/RAY5gblv78RTntLTi
+         KkOQ==
+X-Gm-Message-State: AOAM5327OLvxk8LVBAk2xRFOFNLIWGEp6cOEi8Dm/HVco+ZPDpXrYkzI
+        YxGYp1yEoCgVCXKQSr11B97DhodE3Flpt+ZFUVQj7UhDfxeIxA==
+X-Google-Smtp-Source: ABdhPJzmeTptVoP68cKZXRAF9F04F/oDNMnUpynJ4aIXeFbEU5DMi8YbekyUkGe2RvPstoofS/JtQ5HlERX7SS1o2x0=
+X-Received: by 2002:a17:90a:c091:: with SMTP id o17mr25161444pjs.185.1618847721881;
+ Mon, 19 Apr 2021 08:55:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210323193617.3748164-1-pterjan@google.com> <a69a3d60-71a0-3153-b248-dacc8b95bea8@gmail.com>
+In-Reply-To: <a69a3d60-71a0-3153-b248-dacc8b95bea8@gmail.com>
+From:   Pascal Terjan <pterjan@google.com>
+Date:   Mon, 19 Apr 2021 16:55:05 +0100
+Message-ID: <CAANdO=Kn+VeC3ucyOZdctdVoVH5Oc3drLAaipzz4ShL24e3ckg@mail.gmail.com>
+Subject: Re: [PATCH] rtl8xxxu: Fix device info for RTL8192EU devices
+To:     Jes Sorensen <jes.sorensen@gmail.com>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Apr 2021 13:11:59 -0700
-Dexuan Cui <decui@microsoft.com> wrote:
+On Mon, 19 Apr 2021 at 12:53, Jes Sorensen <jes.sorensen@gmail.com> wrote:
+>
+> On 3/23/21 3:36 PM, Pascal Terjan wrote:
+> > Based on 2001:3319 and 2357:0109 which I used to test the fix and
+> > 0bda:818b and 2357:0108 for which I found efuse dumps online.
+> >
+> > == 2357:0109 ==
+> > === Before ===
+> > Vendor: Realtek
+> > Product: \x03802.11n NI
+> > Serial:
+> > === After ===
+> > Vendor: Realtek
+> > Product: 802.11n NIC
+> > Serial not available.
+> >
+> > == 2001:3319 ==
+> > === Before ===
+> > Vendor: Realtek
+> > Product: Wireless N
+> > Serial: no USB Adap
+> > === After ===
+> > Vendor: Realtek
+> > Product: Wireless N Nano USB Adapter
+> > Serial not available.
+> >
+> > Signed-off-by: Pascal Terjan <pterjan@google.com>
+> > ---
+> >  .../net/wireless/realtek/rtl8xxxu/rtl8xxxu.h  | 11 ++--
+> >  .../realtek/rtl8xxxu/rtl8xxxu_8192e.c         | 53 ++++++++++++++++---
+> >  2 files changed, 50 insertions(+), 14 deletions(-)
+>
+> This makes sense, you may want to account for the total length of the
+> record though, see below.
+>
+> Some cosmetic nits too.
 
-> Add a VF driver for Microsoft Azure Network Adapter (MANA) that will be
-> available in the future.
-> 
-> Co-developed-by: Haiyang Zhang <haiyangz@microsoft.com>
-> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-> Co-developed-by: Shachar Raindel <shacharr@microsoft.com>
-> Signed-off-by: Shachar Raindel <shacharr@microsoft.com>
-> Signed-off-by: Dexuan Cui <decui@microsoft.com>
+Thanks for the review, I'll send a v2
 
-Reviewed-by: Stephen Hemminger <stephen@networkplumber.org>
+> > diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
+> > index d6d1be4169e5..acb6b0cd3667 100644
+> > --- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
+> > +++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu.h
+> > @@ -853,15 +853,10 @@ struct rtl8192eu_efuse {
+> >       u8 usb_optional_function;
+> >       u8 res9[2];
+> >       u8 mac_addr[ETH_ALEN];          /* 0xd7 */
+> > -     u8 res10[2];
+> > -     u8 vendor_name[7];
+> > -     u8 res11[2];
+> > -     u8 device_name[0x0b];           /* 0xe8 */
+> > -     u8 res12[2];
+> > -     u8 serial[0x0b];                /* 0xf5 */
+> > -     u8 res13[0x30];
+> > +     u8 device_info[80];
+> > +     u8 res11[3];
+> >       u8 unknown[0x0d];               /* 0x130 */
+> > -     u8 res14[0xc3];
+> > +     u8 res12[0xc3];
+> >  };
+> >
+> >  struct rtl8xxxu_reg8val {
+> > diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192e.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192e.c
+> > index cfe2dfdae928..9c5fad49ed2a 100644
+> > --- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192e.c
+> > +++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192e.c
+> > @@ -554,9 +554,39 @@ rtl8192e_set_tx_power(struct rtl8xxxu_priv *priv, int channel, bool ht40)
+> >       }
+> >  }
+> >
+> > +static void rtl8192eu_log_device_info(struct rtl8xxxu_priv *priv,
+> > +                                   char *record_name,
+> > +                                   char **record)
+> > +{
+> > +     /* A record is [ total length | 0x03 | value ] */
+> > +     unsigned char l = (*record)[0];
+>
+> These parenthesis make no sense.
+>
+> > +
+> > +     /* The whole section seems to be 80 characters so a record should not
+> > +      * be able to be that large.
+> > +      */
+>
+> Please respect the comment formatting of the driver, ie
+> /*
+>  * Foo
+>  */
+
+I blame checkpatch telling me "WARNING: networking block comments
+don't use an empty /* line, use /* Comment..." (and myself for not
+checking the driver again when fixing it :) )
+
+> > +     if (l > 80) {
+> > +             dev_warn(&priv->udev->dev,
+> > +                      "invalid record length %d while parsing \"%s\".\n",
+> > +                      l, record_name);
+> > +             return;
+> > +     }
+>
+> The 80 check is only valid for the first entry, consecutive entries are
+> already advanced. Maybe switch it over to use an index to address into
+> the record keep an index and just pass in efuse->device_info instead.
+>
+> > +
+> > +     if (l >= 2) {
+> > +             char value[80];
+> > +
+> > +             memcpy(value, &(*record)[2], l - 2);
+> > +             value[l - 2] = '\0';
+> > +             dev_info(&priv->udev->dev, "%s: %s\n", record_name, value);
+> > +             *record = *record + l;
+> > +     } else {
+> > +             dev_info(&priv->udev->dev, "%s not available.\n", record_name);
+> > +     }
+> > +}
+> > +
+> >  static int rtl8192eu_parse_efuse(struct rtl8xxxu_priv *priv)
+> >  {
+> >       struct rtl8192eu_efuse *efuse = &priv->efuse_wifi.efuse8192eu;
+> > +     char *record = efuse->device_info;
+> >       int i;
+> >
+> >       if (efuse->rtl_id != cpu_to_le16(0x8129))
+> > @@ -604,12 +634,23 @@ static int rtl8192eu_parse_efuse(struct rtl8xxxu_priv *priv)
+> >       priv->has_xtalk = 1;
+> >       priv->xtalk = priv->efuse_wifi.efuse8192eu.xtal_k & 0x3f;
+> >
+> > -     dev_info(&priv->udev->dev, "Vendor: %.7s\n", efuse->vendor_name);
+> > -     dev_info(&priv->udev->dev, "Product: %.11s\n", efuse->device_name);
+> > -     if (memchr_inv(efuse->serial, 0xff, 11))
+> > -             dev_info(&priv->udev->dev, "Serial: %.11s\n", efuse->serial);
+> > -     else
+> > -             dev_info(&priv->udev->dev, "Serial not available.\n");
+> > +     /* device_info section seems to be laid out as records
+> > +      * [ total length | 0x03 | value ] so:
+> > +      * - vendor length + 2
+> > +      * - 0x03
+> > +      * - vendor string (not null terminated)
+> > +      * - product length + 2
+> > +      * - 0x03
+> > +      * - product string (not null terminated)
+> > +      * Then there is one or 2 0x00 on all the 4 devices I own or found
+> > +      * dumped online.
+> > +      * As previous version of the code handled an optional serial
+> > +      * string, I now assume there may be a third record if the
+> > +      * length is not 0.
+> > +      */
+> > +     rtl8192eu_log_device_info(priv, "Vendor", &record);
+> > +     rtl8192eu_log_device_info(priv, "Product", &record);
+> > +     rtl8192eu_log_device_info(priv, "Serial", &record);
+> >
+> >       if (rtl8xxxu_debug & RTL8XXXU_DEBUG_EFUSE) {
+> >               unsigned char *raw = priv->efuse_wifi.raw;
+> >
+>
