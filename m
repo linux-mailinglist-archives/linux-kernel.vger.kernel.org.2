@@ -2,91 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC715364AAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 21:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60516364AAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 21:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241748AbhDSThp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 15:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58110 "EHLO
+        id S241785AbhDSTh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 15:37:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239423AbhDSThl (ORCPT
+        with ESMTP id S240040AbhDSTh5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 15:37:41 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20063C06174A;
-        Mon, 19 Apr 2021 12:37:11 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id h11so6252361pfn.0;
-        Mon, 19 Apr 2021 12:37:11 -0700 (PDT)
+        Mon, 19 Apr 2021 15:37:57 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDAAEC061763
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 12:37:26 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 31so9488574pgn.13
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 12:37:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=51hqgV4ek8AE8oEPkqNrcW2Zw4e1aRqQijeGQq3vHpI=;
-        b=oxA/Cs+c4O4nzOKo6LCl8H9aOXMfO8uu8ncCuJf2NknoKrtoWX/2u68dt7HNkADAnQ
-         pmyuFbBbsqw4JYwQ/hbkwCK46mfRqIaf/aLHWn02kzuxWDlzlKFu7lBNZjumX46q+Qar
-         wMO+IF3G44gcz8CRrdd/0KF4ix5G3S8EYCMNKD8UMUzRM679bqDbNCZde6kM/P5A8jru
-         B0Min6gxdPyhOYIOn1hkXgoNQgvQ9nlgDXWQVbt+Wmsslbb6usEnoXXFAltI64U1tOF3
-         L6vwLhNiPOhTQs6AxVAgDTEJZsoAJWG2t8OkBp2m48l/DakmK6vmpER2rLsXDK8weVUM
-         3clQ==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cRX2PnENKrp+Sre4G8DjBQEvzpPHZjO6ro3yvF7N1w8=;
+        b=FBireDUg9KAmKpls9A6Odw22Pn3dekJN9WQwfIu2Jz4ovycZv5q7bTV6LRdhhNRPWz
+         6kpInnms/P+Y9TpBcM+c8zD9rwK6S5gpI3RAxE9gfr77TpWqtRLKLAFtxdsDBrssKYnx
+         8JZh0NqTqYR3wlfErrGlK4GNier3AV3ggMF9A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=51hqgV4ek8AE8oEPkqNrcW2Zw4e1aRqQijeGQq3vHpI=;
-        b=D0gDiYSInkDXfRwRXR+DcKPlvLV+evZo9XlopFFi4KU6ulGI6KxCGqNkKQ7THVGChK
-         sZwXb72EM3OsC1XMTVJ0ATGrZVDXCxetVltg8Ld9Rpa84n93gT+YSWoYkj/WnqisRy2P
-         8rppLBlPagqJd+hnvc4IdXwj44YSGIXwcAjWs5zYBU2fzWzC0WYNz9AxBara3Fjh6RuE
-         LAI1ZfLeNLA9lW1oEZfOrURmPhHAVnuVl1N5Iz51+xc7OkTP55vfulDI6V9bskXiwQ6L
-         WJrgllbpNKvQfhjfRw18+XawGTly1YSyghoN0A4eCugY5qyjI2J1ll43TNS5rWqP89YN
-         Lh3w==
-X-Gm-Message-State: AOAM532Sp9Woav9//8FE1MLSYHZiNMOpxtXeh32bnBrWm1jWStThNkws
-        2HaXi2DONyV1gAHAWhNBvS/MHJnr12QbYf2/ookxsA==
-X-Google-Smtp-Source: ABdhPJwAgJupOuadIMFqwi1K1jRjDgblRnEa0Eck8mFrKhwSlh1lufp4X661u8aOscGznfNcYCr9Cg==
-X-Received: by 2002:a63:f5e:: with SMTP id 30mr13408291pgp.138.1618861030285;
-        Mon, 19 Apr 2021 12:37:10 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id l35sm13659341pgm.10.2021.04.19.12.37.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 12:37:09 -0700 (PDT)
-Message-ID: <607ddbe5.1c69fb81.88e5d.2cd1@mx.google.com>
-Date:   Mon, 19 Apr 2021 12:37:09 -0700 (PDT)
-X-Google-Original-Date: Mon, 19 Apr 2021 19:37:08 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210419130530.166331793@linuxfoundation.org>
-Subject: RE: [PATCH 5.11 000/122] 5.11.16-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cRX2PnENKrp+Sre4G8DjBQEvzpPHZjO6ro3yvF7N1w8=;
+        b=Iuv8244yD76/oVkInDTzwcVj+2n6CxldVihOM588GPzoDEypQkmCL4QozH/TxFSJH2
+         GGiLyq03s0fPNdKIK4Jr3KFNAzmHwc7Vhx724XT9j4tOukiiKo4d7Nr6o+WiOEfoB4vI
+         W0bluS4Sey9ONcJFp26JhR901VPXbe5GMIH9fGdBEaU49VerU8tPAdZAtNH26gV16DGf
+         FwWR+iCRKEpjv3iRHPod171m2nih7VgAXIWi6Qml9LkI91g3NBHz+gF32+H55UDdCFjy
+         wPbOwTW3cRj4obyDBFv10W9vzQzvzYZD0jqXBnmfiJuL/HIZ09maTeGYdlU1zHd9DomK
+         ZJBQ==
+X-Gm-Message-State: AOAM5307FCuak2E3e4K53RRiJ7RMR5Cqz7AjD8yTjZDYnyEw1nEuFwpc
+        GXstP7d30V/SjUvACnB6Q3Hf7A==
+X-Google-Smtp-Source: ABdhPJz1Cq0t9hO02D3ZpKTW0FoURJAAOaUJ3pOIpMOk3nbB57RoSTKg6VWVjbjLaoyYY77inJAiLA==
+X-Received: by 2002:a63:2ec7:: with SMTP id u190mr13372245pgu.18.1618861046232;
+        Mon, 19 Apr 2021 12:37:26 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:7401:678f:e510:6700])
+        by smtp.gmail.com with UTF8SMTPSA id fw24sm233421pjb.21.2021.04.19.12.37.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Apr 2021 12:37:25 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 12:37:24 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Sandeep Maheswaram <sanm@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
+Subject: Re: [PATCH v6 3/5] usb: dwc3: qcom: Add helper functions to
+ enable,disable wake irqs
+Message-ID: <YH3b9J4Pl+4+wygb@google.com>
+References: <1618567313-25373-1-git-send-email-sanm@codeaurora.org>
+ <1618567313-25373-4-git-send-email-sanm@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1618567313-25373-4-git-send-email-sanm@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Apr 2021 15:04:40 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.11.16 release.
-> There are 122 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Apr 16, 2021 at 03:31:51PM +0530, Sandeep Maheswaram wrote:
+> Adding helper functions to enable,disable wake irqs to make
+> the code simple and readable.
 > 
-> Responses should be made by Wed, 21 Apr 2021 13:05:09 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.16-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
 
-5.11.16-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
-
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
