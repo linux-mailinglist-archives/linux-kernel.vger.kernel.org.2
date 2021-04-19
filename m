@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF56B36438A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB253642B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240948AbhDSNTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:19:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47286 "EHLO mail.kernel.org"
+        id S239836AbhDSNLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:11:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240693AbhDSNQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:16:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81F1E6135F;
-        Mon, 19 Apr 2021 13:13:42 +0000 (UTC)
+        id S238885AbhDSNKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:10:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D57761285;
+        Mon, 19 Apr 2021 13:09:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618838023;
-        bh=qPYLknd+kXYh+eW44LorYfln0nQUTPh5qMdOT3Ei1U8=;
+        s=korg; t=1618837772;
+        bh=h/oMOtZ4b3Lu1QUgWmshCmfFJ+JNBlKbRPav86MrSsw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ql44vmGGqyyLphOQBMEZuFoJEu6MU9eTcLvXSOlB/nUMnk0yB07GxvZSlbtXSyLQq
-         htYp3NGXGMbr/y7E6RpLVK8TMheFIQ45x+jtNg6xEOCLVf/cHtK58pn4h9rd3ub4W/
-         6Om3TvkGpja2oFzzDf3A5DfGqniT+xbCGUS1M6aU=
+        b=ODf2WEUwmi009dncjlHN91yj2Rpy2JH3DZW2ltfXot7IldkIQ1NFNzdrTOV93BHHk
+         Iz43dc5GO5wJuZRTM1MQAlc4MpOXfLGWaPHKqpBhLQpmH52cMvVF+lPFMfWL76tHmj
+         0cJB8zPEMNytP1ILhDU16nKKCKO5t57scohtijA8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 016/103] lockdep: Add a missing initialization hint to the "INFO: Trying to register non-static key" message
-Date:   Mon, 19 Apr 2021 15:05:27 +0200
-Message-Id: <20210419130528.351302346@linuxfoundation.org>
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 048/122] pcnet32: Use pci_resource_len to validate PCI resource
+Date:   Mon, 19 Apr 2021 15:05:28 +0200
+Message-Id: <20210419130531.817934082@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210419130527.791982064@linuxfoundation.org>
-References: <20210419130527.791982064@linuxfoundation.org>
+In-Reply-To: <20210419130530.166331793@linuxfoundation.org>
+References: <20210419130530.166331793@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit 3a85969e9d912d5dd85362ee37b5f81266e00e77 ]
+[ Upstream commit 66c3f05ddc538ee796321210c906b6ae6fc0792a ]
 
-Since this message is printed when dynamically allocated spinlocks (e.g.
-kzalloc()) are used without initialization (e.g. spin_lock_init()),
-suggest to developers to check whether initialization functions for objects
-were called, before making developers wonder what annotation is missing.
+pci_resource_start() is not a good indicator to determine if a PCI
+resource exists or not, since the resource may start at address 0.
+This is seen when trying to instantiate the driver in qemu for riscv32
+or riscv64.
 
-[ mingo: Minor tweaks to the message. ]
+pci 0000:00:01.0: reg 0x10: [io  0x0000-0x001f]
+pci 0000:00:01.0: reg 0x14: [mem 0x00000000-0x0000001f]
+...
+pcnet32: card has no PCI IO resources, aborting
 
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210321064913.4619-1-penguin-kernel@I-love.SAKURA.ne.jp
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Use pci_resouce_len() instead.
+
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/locking/lockdep.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/amd/pcnet32.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index eead7efbe7e5..38d7c03e694c 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -930,7 +930,8 @@ static bool assign_lock_key(struct lockdep_map *lock)
- 		/* Debug-check: all keys must be persistent! */
- 		debug_locks_off();
- 		pr_err("INFO: trying to register non-static key.\n");
--		pr_err("the code is fine but needs lockdep annotation.\n");
-+		pr_err("The code is fine but needs lockdep annotation, or maybe\n");
-+		pr_err("you didn't initialize this object before use?\n");
- 		pr_err("turning off the locking correctness validator.\n");
- 		dump_stack();
- 		return false;
+diff --git a/drivers/net/ethernet/amd/pcnet32.c b/drivers/net/ethernet/amd/pcnet32.c
+index 187b0b9a6e1d..f78daba60b35 100644
+--- a/drivers/net/ethernet/amd/pcnet32.c
++++ b/drivers/net/ethernet/amd/pcnet32.c
+@@ -1534,8 +1534,7 @@ pcnet32_probe_pci(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	}
+ 	pci_set_master(pdev);
+ 
+-	ioaddr = pci_resource_start(pdev, 0);
+-	if (!ioaddr) {
++	if (!pci_resource_len(pdev, 0)) {
+ 		if (pcnet32_debug & NETIF_MSG_PROBE)
+ 			pr_err("card has no PCI IO resources, aborting\n");
+ 		err = -ENODEV;
+@@ -1548,6 +1547,8 @@ pcnet32_probe_pci(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 			pr_err("architecture does not support 32bit PCI busmaster DMA\n");
+ 		goto err_disable_dev;
+ 	}
++
++	ioaddr = pci_resource_start(pdev, 0);
+ 	if (!request_region(ioaddr, PCNET32_TOTAL_SIZE, "pcnet32_probe_pci")) {
+ 		if (pcnet32_debug & NETIF_MSG_PROBE)
+ 			pr_err("io address range already allocated\n");
 -- 
 2.30.2
 
