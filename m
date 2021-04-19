@@ -2,71 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D6023647ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 18:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E873647EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 18:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239256AbhDSQGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 12:06:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54124 "EHLO mx2.suse.de"
+        id S238369AbhDSQHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 12:07:32 -0400
+Received: from mga06.intel.com ([134.134.136.31]:29355 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232161AbhDSQEq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 12:04:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 26BC0AF48;
-        Mon, 19 Apr 2021 16:04:15 +0000 (UTC)
-Subject: Re: [PATCH][next] bcache: Set error return err to -ENOMEM on
- allocation failure
-To:     Colin King <colin.king@canonical.com>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-bcache@vger.kernel.org, Jianpeng Ma <jianpeng.ma@intel.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Kent Overstreet <kent.overstreet@gmail.com>
-References: <20210419125628.177047-1-colin.king@canonical.com>
-From:   Coly Li <colyli@suse.de>
-Message-ID: <85f515b5-05a0-5844-bed7-0287f845f491@suse.de>
-Date:   Tue, 20 Apr 2021 00:04:10 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.1
+        id S238377AbhDSQHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 12:07:18 -0400
+IronPort-SDR: EeRepVeNmIx4ajAMZfdyWqJRLypUE+vOxaFFCzYj2IIRW+428cAQTNZbqlagAtMBPBSaqWOXF1
+ sutczh4PLDHg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="256665638"
+X-IronPort-AV: E=Sophos;i="5.82,234,1613462400"; 
+   d="scan'208";a="256665638"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 09:04:12 -0700
+IronPort-SDR: t5DAkXmlvwniORyDpzVffceigCGlOZ133P9EB9TGAXhCmbq9kozvQc4vsSZzXrCgvH9xXACkPm
+ WTj4fin83e9Q==
+X-IronPort-AV: E=Sophos;i="5.82,234,1613462400"; 
+   d="scan'208";a="420062661"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 09:04:11 -0700
+Date:   Mon, 19 Apr 2021 09:04:11 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org, kael_w@yeah.net
+Subject: Re: [PATCH] libnvdimm.h: Remove duplicate struct declaration
+Message-ID: <20210419160411.GG1904484@iweiny-DESK2.sc.intel.com>
+References: <20210419112725.42145-1-wanjiabing@vivo.com>
 MIME-Version: 1.0
-In-Reply-To: <20210419125628.177047-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210419112725.42145-1-wanjiabing@vivo.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/19/21 8:56 PM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Mon, Apr 19, 2021 at 07:27:25PM +0800, Wan Jiabing wrote:
+> struct device is declared at 133rd line.
+> The declaration here is unnecessary. Remove it.
 > 
-> Currently when ns fails to be allocated the error return path returns
-> an uninitialized return code in variable 'err'. Fix this by setting
-> err to -ENOMEM.
-> 
-> Addresses-Coverity: ("Uninitialized scalar variable")
-> Fixes: 688330711e9a ("bcache: initialize the nvm pages allocator")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 > ---
->  drivers/md/bcache/nvm-pages.c | 1 +
->  1 file changed, 1 insertion(+)
+>  include/linux/libnvdimm.h | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> diff --git a/drivers/md/bcache/nvm-pages.c b/drivers/md/bcache/nvm-pages.c
-> index 08cd45e90481..2e124d546099 100644
-> --- a/drivers/md/bcache/nvm-pages.c
-> +++ b/drivers/md/bcache/nvm-pages.c
-> @@ -584,6 +584,7 @@ struct bch_nvm_namespace *bch_register_namespace(const char *dev_path)
->  		return ERR_PTR(PTR_ERR(bdev));
->  	}
+> diff --git a/include/linux/libnvdimm.h b/include/linux/libnvdimm.h
+> index 01f251b6e36c..89b69e645ac7 100644
+> --- a/include/linux/libnvdimm.h
+> +++ b/include/linux/libnvdimm.h
+> @@ -141,7 +141,6 @@ static inline void __iomem *devm_nvdimm_ioremap(struct device *dev,
 >  
-> +	err = -ENOMEM;
->  	ns = kzalloc(sizeof(struct bch_nvm_namespace), GFP_KERNEL);
->  	if (!ns)
->  		goto bdput;
+>  struct nvdimm_bus;
+>  struct module;
+> -struct device;
+>  struct nd_blk_region;
+
+What is the coding style preference for pre-declarations like this?  Should
+they be placed at the top of the file?
+
+The patch is reasonable but if the intent is to declare right before use for
+clarity, both devm_nvdimm_memremap() and nd_blk_region_desc() use struct
+device.  So perhaps this duplicate is on purpose?
+
+Ira
+
+>  struct nd_blk_region_desc {
+>  	int (*enable)(struct nvdimm_bus *nvdimm_bus, struct device *dev);
+> -- 
+> 2.25.1
 > 
-
-Copied, added into my queue for rc1.
-
-Thanks.
-
-Coly Li
