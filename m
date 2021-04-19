@@ -2,208 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA70C363AB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 06:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A98363ABF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 06:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233180AbhDSE5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 00:57:06 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:42954 "EHLO loongson.cn"
+        id S232585AbhDSE7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 00:59:41 -0400
+Received: from mail-bn8nam12on2064.outbound.protection.outlook.com ([40.107.237.64]:32262
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229473AbhDSE5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 00:57:04 -0400
-Received: from ambrosehua-HP-xw6600-Workstation (unknown [125.69.46.152])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9CxQ+BrDX1gGisKAA--.9026S2;
-        Mon, 19 Apr 2021 12:56:14 +0800 (CST)
-Date:   Mon, 19 Apr 2021 12:56:11 +0800
-From:   Huang Pei <huangpei@loongson.cn>
-To:     Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Cc:     tsbogend@alpha.franken.de, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        paul.burton@mips.com, paul@crapouillou.net, siyanteng@loongson.cn,
-        ira.weiny@intel.com, yangtiezhu@loongson.cn, jun.jiang@ingenic.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, sernia.zhou@foxmail.com
-Subject: Re: [PATCH] Revert "MIPS: make userspace mapping young by default".
-Message-ID: <20210419045610.frhzxskec47s5rmq@ambrosehua-HP-xw6600-Workstation>
-References: <1618562868-91115-1-git-send-email-zhouyanjie@wanyeetech.com>
- <20210416092003.5754967.19768.9603@loongson.cn>
- <ae06522f-eda8-96d1-6f58-072905afa65c@wanyeetech.com>
+        id S229980AbhDSE7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 00:59:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jadg48ybTkItxBsaWp8zW5mMmzhD8EvP4F9btbKZprWa7Z2Y8JK7P2CeWAUtgt6Os5duS6Nh3gpJG6yOBRtdjdWTeASpwf4bakvKXppWpWOWe6tRHgJVRmqwiMslPVu7QlwN881zpP1CAWSt3WeyDVVAiH0dBlU7FARdNruxJTuD7vHIHIIjOIX1uz0jY0HvzvpledJ31UZ62E2BlYImF2zLl+4vtp5feIDFngisuAFxenOf4+DGhrPZQ7zgsKAs3i6PrFloYXj45hAhMe2m0x/ZNeY2CquZi3oF/eArSNMJywLXXs29p7p+Pm/nkQRURBdYIlNFEE3abDKqWzxlAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UUf6r/x/HFx+A30PlLOJ1FnAtgvUW3i3C5bjtYMxCwk=;
+ b=M0cuu3NS0kIuLD9PqAnJ6hUJD921Q8yjNGkaUtI20wBQL/UNh/tjTlCc5hOzDod2k44fIdgFlDLCAN8JSPAAwNV0Bi6wKV0dDyK2siekWuEGdzaPuyfQFWmZJrOsvQ7iM2YHhtOKnOvNlkYEa9p3HpPgys/6ABAfaEQSeGvHd60UFnUfTs5u+KiNy0sfiHvK64/P9cAOfkamPtzvm8fkIIIjj9sk53n1/UNglnk5jJRTCrjn6G996IauYJQGM0nEC4PiEDZ+i/n9uC51xemQGNOABPFJi1gfwXq1LaFnR0RgKJX2ghguc9D4ec3QRG0Y37dkJuZ0zeRS28qC1trDBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UUf6r/x/HFx+A30PlLOJ1FnAtgvUW3i3C5bjtYMxCwk=;
+ b=JqXZaGg5LSGQDFWrKr+dAQdJ9QS8V00GuWe9qFuDOx+VW4lCWrNauFbijDKGwC4kXZSUlsnO+K/YnKx3uC/EcgSmkL3g5V2j4u1pbpWyOcZihzxelqZnsaMNYfvh92ao4UKp/5E18/+BAd+JH4+ktde9h07jWocwcRjjIwXDjo0=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
+ by BYAPR11MB3254.namprd11.prod.outlook.com (2603:10b6:a03:7c::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.19; Mon, 19 Apr
+ 2021 04:59:07 +0000
+Received: from BY5PR11MB4241.namprd11.prod.outlook.com
+ ([fe80::551b:e310:2ae4:3011]) by BY5PR11MB4241.namprd11.prod.outlook.com
+ ([fe80::551b:e310:2ae4:3011%6]) with mapi id 15.20.4042.024; Mon, 19 Apr 2021
+ 04:59:07 +0000
+Subject: Re: [Qestion] Is preempt_disable/enable needed in non-preemption code
+ path
+To:     paulmck@kernel.org
+Cc:     rcu@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+References: <b068d707-0ac7-4840-a297-112731972d8a@windriver.com>
+ <20210415154326.GF4510@paulmck-ThinkPad-P17-Gen-1>
+ <adae433f-f886-32e7-2ebd-192a624d7586@windriver.com>
+ <20210415170748.GA4212@paulmck-ThinkPad-P17-Gen-1>
+ <3ef49985-68c9-277d-648c-53447ff602f4@windriver.com>
+ <20210416172629.GH4212@paulmck-ThinkPad-P17-Gen-1>
+From:   "Xu, Yanfei" <yanfei.xu@windriver.com>
+Message-ID: <b5c91db4-c1b6-3849-d5a9-89ca07d2d020@windriver.com>
+Date:   Mon, 19 Apr 2021 12:58:58 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20210416172629.GH4212@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK2P15301CA0002.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:202:1::12) To BY5PR11MB4241.namprd11.prod.outlook.com
+ (2603:10b6:a03:1ca::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ae06522f-eda8-96d1-6f58-072905afa65c@wanyeetech.com>
-User-Agent: NeoMutt/20171215
-X-CM-TRANSID: AQAAf9CxQ+BrDX1gGisKAA--.9026S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxKw1xZryDtFW5KFyxKrW7Jwb_yoWxuFWrp3
-        s7Ca4xCayIqr17Aa4xAr17A34rAa97Aa48ArnrCF1jvayxZryjqrnxW34DXryDAFZYy347
-        ZF9rXrn0ga48uw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-        c2xKxwCY02Avz4vE14v_Gryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JUfcTPUUUUU=
-X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [128.224.162.160] (60.247.85.82) by HK2P15301CA0002.APCP153.PROD.OUTLOOK.COM (2603:1096:202:1::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.5 via Frontend Transport; Mon, 19 Apr 2021 04:59:05 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9f716c6c-e203-4e59-33b0-08d902efdc93
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3254:
+X-Microsoft-Antispam-PRVS: <BYAPR11MB32548BBC5DD3AC8065560A2BE4499@BYAPR11MB3254.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xPkNFsL6ymFsE4XWq7Q5agkI/vObyKBsroDOGoS42HOEA9sPF14tIoKRFF23FH3fKdtkOG9aqIJ2BA0EgOkJuu7EMlKOIPAB310kuO0pA8L9jL9hwNCbs+cLDtaK5827/xfHDcrMfpXxsztkuvHaAh6+Z0QsZHf9aka3KR0vwAROw8v9HMhRcO5GxlWVe2O3Pp6twgHgmvLKxu1rDfadGacFgVggPFSouapy6bcn7jlrEGOSEOIYN8MshEuyPuZ9ADiJxuA9ukBvL1WYqsSbKX49SanY68/O5iJ5Mwzr9qXMtQEKZIhjOnDdHSlxQifInk/POLAU+5JXYc8pXzROq+3wtu8SBYVciul5IqLICFFYmHzmYwPCwFmF9uvNAY55Pw/xmQMqzndF0/wqeE/lW+u/d5IYj4FJMQuA6jynaU5WWzkyPUEbf4x2wGyEHI0ZwCd/4NcVe2r6FCyxd6JJDaYLTwYulkmoRBRVCGvkA6Ikv8gqwmY+/Nyij9v2Rm4zQZIAyz5QPtAIHlDZ4o1jgvJfcwSXeFCUpVMiVBxrheW4bM01lBbps/zrfZ12PBB10bgubZppmkyl9E+LpqVt3EGQMhctf2zB18+kq3Ajd3u5sSMg2VVwVzWh+h4JCJ9l8bO2tx4bZEXXdFlMHy3h7rTouPflqYVxZIBQo/RJzpvHARKNPg6fIFHnXPh+rWcHxcD9QSBqhWejeTnO39FNjbA9H4Ijvp6vpyptn3QzinJfk0xnAyNSit8zT7Xuctpkn712mUY4u8U4L1TRs03HjrwHe5Bnx2NuHhIEAL7oSnB1nx5s0AcJjuTKjhMQpfqb
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(346002)(39840400004)(396003)(8936002)(6916009)(83380400001)(6706004)(52116002)(53546011)(66556008)(8676002)(956004)(66476007)(38350700002)(38100700002)(6486002)(2616005)(2906002)(16526019)(66946007)(6666004)(26005)(186003)(86362001)(31686004)(4326008)(478600001)(966005)(36756003)(5660300002)(316002)(31696002)(16576012)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?R2VnQ0o4eWlzNnhLY21aVTZ0bWVralAvdUp6OUlSWFVGQzRqM0ZJR0p6a1F1?=
+ =?utf-8?B?R2FmS1ZMSnpmMEJvOHQrL1ZwVUFGaS9JUGgweHdpcklJNDZoZFhQS2pXU05i?=
+ =?utf-8?B?dnV0TVhDMjVYMGVlS3dMbmJvVWRxTS9Bajl5OG1GdW40alBjaDNWaHhWY1o5?=
+ =?utf-8?B?NElnQWs3OHRoUU1JYWtNZWRHZHg3cllMaUU2SjJZcnd2OGc0YkJCTmdhMVlk?=
+ =?utf-8?B?WTE2dHJ2eW95c01QSjNCcmljWWQrTHcwRkZPVFZ2aUVCOTFwaENobVpCZ001?=
+ =?utf-8?B?SjBkcmFURTdBa3l1S3d1ZFk3UHcvZzFEbFdIZ2Y3SHp0eVRNOFFVVGJwRFRC?=
+ =?utf-8?B?Vy95THVVMmpsdlRXdWFvWVBOL1RFOEl5K1ZzNCtQbEd1TzZmRlZIVlRWTGQ1?=
+ =?utf-8?B?cnM0cGlVSmFVRkp0NlFiZXVUNHpXbnpmQmVhTU9KQW5RNEo5cHNPcjVuWHNN?=
+ =?utf-8?B?MWd4V09HUmJ6NzZzMXZNKzV1OHdMU21QSUZOd1ppamdhNnZ4bjJBME15QzNx?=
+ =?utf-8?B?eDgvaWY4RjBIeUZCMGhDWVM4MDFUL3dPYnhwcjFrVG1TRlZPd2FjcFFUYW12?=
+ =?utf-8?B?RXkvV1BTLzAvTGNWdktoTFZxWEdjM3diQjJsV01URXZTMUZwNHZCNCtQYzVo?=
+ =?utf-8?B?TzNySzNTMUppa282MnZqZXFsQy9XS1hhVjJHMWdlKy92MTFrUml4VEh2S1d4?=
+ =?utf-8?B?WjNyM0pGM1kwZC92ZnhTVkRXcVd1UVJlaFJRdllnaGVURFQvaEpUSS9sbHpX?=
+ =?utf-8?B?elBrQ3I5K1pXU0lTRFcvc2hyd0d5Nko4WTRnUzBxTEovZ1g0ZG5XbURwd09E?=
+ =?utf-8?B?VkdXZDRwYXNuUThpYStHcXhyQjc1d2lwVmtFOHNRR0V6L2o2MEcxenhXVzVp?=
+ =?utf-8?B?d2lqVTRuVGpRTjBqTUNDZk9Ga2MrTUNGb2VGTzZteGVvMFdJZnF4eHExb29y?=
+ =?utf-8?B?VTVxSVRKUzdvbGdqNVVORUdMYWRoaTkyMHNkREl2RjNtRXR6VTlkSTE2R2cw?=
+ =?utf-8?B?WHRJWFZQQng5RURTbEUzNE9qYUZyYitIRHU2NTVpZXpRalY5S3pKUWtLNndB?=
+ =?utf-8?B?Z1YxZ2VmVFdOeWZPTEQwSUNBRDU4SkV0NHdTYjA3dWVTTnlRc0U2UklUZUtu?=
+ =?utf-8?B?djE1ZFZzTDI3VGFpWjNLRjFTaTFmbnNPcHBld1p3RFJRV3k5MUhDWHp3OUdD?=
+ =?utf-8?B?T2lLZVVleXJ4VDNvdzhteUgyRUl2S3ppMDV4TGRrZlphMWZaVjVJQkN6anRs?=
+ =?utf-8?B?eUVOaWlVU3dPbDVLYWc0WFZRelRaYmEvOVAzNEhnSWR4N0xEQmd3Rmp4eVZZ?=
+ =?utf-8?B?dmRISkVDNUFBdXZlVVBtdWR2Mzg0OUJ2c21pTFAzYU1icW1zQkpLUmorZ291?=
+ =?utf-8?B?VjJ4bTI4WEs3dlkzSzJQL1dlaGhwUEFiaTdRdS9hQ24wVzJIWmtwOFM3NzlQ?=
+ =?utf-8?B?SGtIYXZJdzlpOXIrMzhmUXhrL2FsSUlrdWlVRDFYUFQwY1hoVnZLdWRnKytY?=
+ =?utf-8?B?Ni9GbWVrK3pUMUJBU2xCVlo3VldkaFhBaTRIaXF5Nm1WZjlTdERaSFZVbURE?=
+ =?utf-8?B?MU51bmJjTXc4aDNmZ2MrTWxtUy9JM0RQTzBDZTE0d1BsaGhFUHkxR2phTU12?=
+ =?utf-8?B?YmN0Nk53cnBBdk9NbENPOW5Ycklmd09qUEM1N21BdStiM3czN2NybGkwRmJ6?=
+ =?utf-8?B?WjNpelBxVFExNjlROGdOV09hL1dQVDRNa0JaZHB0ejFldUtOTi9UVjNxWlEy?=
+ =?utf-8?Q?BXWW0/WrOflnAIX0pTGHNoe3UPW8Vc8arUt+aHQ?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f716c6c-e203-4e59-33b0-08d902efdc93
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4241.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2021 04:59:07.2548
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zR8wvasFnssHJAOMRDlPectyhWEMAqrU7Eu2/sJpp3DfUdE/4ExL4gosrAHG3sbBJ2Jcm0pjdA5WwgYE65q0AQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3254
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 12:45:59AM +0800, Zhou Yanjie wrote:
-> 
-> On 2021/4/16 下午5:20, 黄沛 wrote:
-> > Is there any log about the panic?
-> 
-> 
-> Yes, below is the log:
-> 
-> 
-> [  195.436017] CPU 0 Unable to handle kernel paging request at virtual
-> address 77eb8000, epc == 80117868, ra == 80118208
-> [  195.446709] Oops[#1]:
-> [  195.448977] CPU: 0 PID: 1461 Comm: Xsession Not tainted
-> 5.12.0-rc6-00227-gc8fc6defbd2e-dirty #1
-> [  195.457661] $ 0   : 00000000 00000001 80117864 77eb9000
-> [  195.462888] $ 4   : 77eb8000 82419600 838ea000 82482ba0
-> [  195.468116] $ 8   : 826f8b18 8306f800 000072d5 8306f800
-> [  195.473343] $12   : 00000002 00000a03 00000001 00000402
-> [  195.478568] $16   : 77eb8000 809faf60 00000004 82482ba0
-> [  195.483794] $20   : 77eb8000 82419600 82482ba0 80860000
-> [  195.489021] $24   : 8086121c 80117864
-> [  195.494248] $28   : 838ea000 838ebd70 00000000 80118208
-> [  195.499475] Hi    : 00008c4e
-> [  195.502343] Lo    : 00004627
-> [  195.505212] epc   : 80117868 r4k_blast_dcache_page_dc32+0x4/0x9c
-> [  195.511217] ra    : 80118208 local_r4k_flush_cache_page+0x120/0x1b8
-> [  195.517476] Status: 10001403 KERNEL EXL IE
-> [  195.521657] Cause : 4080800c (ExcCode 03)
-> [  195.525654] BadVA : 77eb8000
-> [  195.528523] PrId  : 00d00100 (Ingenic XBurst)
-> [  195.532866] Modules linked in:
-> [  195.535911] Process Xsession (pid: 1461, threadinfo=00975a3e,
-> task=3724fd66, tls=77ebd690)
-> [  195.544162] Stack : 808a05ec f7edcbfd 8306f800 00000000 80860000 809faf60
-> 80990a3c 80117f90
-> [  195.552524]         809faf60 82419600 8306f800 801fd84c 00000000 801180b4
-> 838ebe80 80110b7c
-> [  195.560887]         80990a3c 82482ba0 82482ba0 77eb8000 00004627 f7edcbfd
-> 838ebe80 801cbc08
-> [  195.569249]         00000001 181b2000 00000000 801fa06c 00000000 83999ae0
-> 80860000 00000004
-> [  195.577610]         80990a3c f7edcbfd 80990a3c 838ebe80 00000004 80990a3c
-> 82482ba0 04627685
-> [  195.585973]         ...
-> [  195.588413] Call Trace:
-> [  195.590849] [<80117868>] r4k_blast_dcache_page_dc32+0x4/0x9c
-> [  195.596501] [<80118208>] local_r4k_flush_cache_page+0x120/0x1b8
-> [  195.602413] [<80117f90>] r4k_on_each_cpu.isra.8+0x24/0x58
-> [  195.607805] [<801180b4>] r4k_flush_cache_page+0x34/0x58
-> [  195.613023] [<801cbc08>] wp_page_copy+0x3a8/0x56c
-> [  195.617723] [<801ce944>] do_swap_page+0x4cc/0x558
-> [  195.622419] [<801cf3f8>] handle_mm_fault+0x790/0x93c
-> [  195.627374] [<8011025c>] do_page_fault+0x19c/0x540
-> [  195.632159] [<801142f0>] tlb_do_page_fault_1+0x10c/0x11c
-> [  195.637465]
-> [  195.638947] Code: 03e00008  00000000  24831000 <bc950000> bc950020 
-> bc950040  bc950060  bc950080  bc9500a0
-> [  195.648706]
-> [  195.650243] ---[ end trace 7cc7d7f611932c42 ]---
-> [  195.654857] Kernel panic - not syncing: Fatal exception
-> [  195.660072] Rebooting in 10 seconds..
-> 
-> 
-> this problem can be triggered stably (by use Microsoft Remote Desktop client
-> to login to debian9 running on CU1830-Neo).
-> 
-Could you print out the PTE value at 0x77eb8000 ?
 
-I really have no idea of how the page_prot setting affecting the swap
-handling.
 
+On 4/17/21 1:26 AM, Paul E. McKenney wrote:
+> [Please note: This e-mail is from an EXTERNAL e-mail address]
 > 
-> Thanks and best regards!
+> On Fri, Apr 16, 2021 at 06:51:10PM +0800, Xu, Yanfei wrote:
+>>
+>>
+>> On 4/16/21 1:07 AM, Paul E. McKenney wrote:
+>>> [Please note: This e-mail is from an EXTERNAL e-mail address]
+>>>
+>>> On Fri, Apr 16, 2021 at 12:18:42AM +0800, Xu, Yanfei wrote:
+>>>>
+>>>>
+>>>> On 4/15/21 11:43 PM, Paul E. McKenney wrote:
+>>>>> [Please note: This e-mail is from an EXTERNAL e-mail address]
+>>>>>
+>>>>> On Thu, Apr 15, 2021 at 11:04:05PM +0800, Xu, Yanfei wrote:
+>>>>>> Hi experts,
+>>>>>>
+>>>>>> I am learning rcu mechanism and its codes. When looking at the
+>>>>>> rcu_blocking_is_gp(), I found there is a pair preemption disable/enable
+>>>>>> operation in non-preemption code path. And it has been a long time. I can't
+>>>>>> understand why we need it? Is there some thing I missed? If not, can we
+>>>>>> remove the unnecessary operation like blow?
+>>>>>
+>>>>> Good point, you are right that preemption is disabled anyway in that block
+>>>>> of code.  However, preempt_disable() and preempt_enable() also prevent the
+>>>>> compiler from moving that READ_ONCE() around.  So my question to you is
+>>>>> whether it is safe to remove those statements entirely or whether they
+>>>>> should instead be replaced by barrier() or similar.
+>>>>
+>>>> Thanks for your reply! :)
+>>>>
+>>>> Yes, preempt_disable() and preempt_enable() defined in !preemption are
+>>>> barrier(). barrier can prevent from reordering that READ_ONCE(), but base on
+>>>> my current understanding, volatile in READ_ONCE can also tell the compiler
+>>>> not to reorder it. So, I think it's safe?
+>>>
+>>> Maybe.
+>>>
+>>> Please keep in mind that although the compiler is prohibited from
+>>> reordering volatile accesses with each other, there is nothing stopping
+>>> it from reordering volatile accesses with non-volatile accesses.
+>>
+>> Thanks for your patient explanation!
+>>
+>> I am trying to absorb what you said. Blow are my understanding:
+>> 1. "the compiler is prohibited from reordering volatile accesses with each
+>> other" means these situations:
+>> int a;
+>> foo()
+>> {
+>>      for(;;)
+>>          READ_ONCE(a);
+>> }
+>>
+>> or
+>>
+>> int a,b;
+>> foo()
+>> {
+>>      int c,d;
+>>      c = READ_ONCE(a);
+>>      d = READ_ONCE(b);
+>> }
 > 
-> 
-> > 
-> >    Original Message
-> > From: 周琰杰 (Zhou Yanjie)
-> > Sent: 2021年4月16日星期五 16:48
-> > To: tsbogend@alpha.franken.de
-> > Cc: linux-mips@vger.kernel.org; linux-kernel@vger.kernel.org; akpm@linux-foundation.org; paul.burton@mips.com; paul@crapouillou.net; siyanteng@loongson.cn; huangpei@loongson.cn; ira.weiny@intel.com; yangtiezhu@loongson.cn; zhouyanjie@wanyeetech.com; jun.jiang@ingenic.com; dongsheng.qiu@ingenic.com; aric.pzqi@ingenic.com; rick.tyliu@ingenic.com; sernia.zhou@foxmail.com
-> > Subject: [PATCH] Revert "MIPS: make userspace mapping young by default".
-> > 
-> > This reverts commit f685a533a7fab35c5d069dcd663f59c8e4171a75.
-> > 
-> > It cause kernel panic on Ingenic X1830, so let's revert it.
-> > 
-> > Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> > ---
-> > arch/mips/mm/cache.c | 31 ++++++++++++++-----------------
-> > 1 file changed, 14 insertions(+), 17 deletions(-)
-> > 
-> > diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
-> > index 7719d63..9cfd432 100644
-> > --- a/arch/mips/mm/cache.c
-> > +++ b/arch/mips/mm/cache.c
-> > @@ -21,7 +21,6 @@
-> > #include <asm/cpu.h>
-> > #include <asm/cpu-features.h>
-> > #include <asm/setup.h>
-> > -#include <asm/pgtable.h>
-> > 
-> > /* Cache operations. */
-> > void (*flush_cache_all)(void);
-> > @@ -157,31 +156,29 @@ unsigned long _page_cachable_default;
-> > EXPORT_SYMBOL(_page_cachable_default);
-> > 
-> > #define PM(p)	__pgprot(_page_cachable_default | (p))
-> > -#define PVA(p)	PM(_PAGE_VALID | _PAGE_ACCESSED | (p))
-> > 
-> > static inline void setup_protection_map(void)
-> > {
-> > protection_map[0] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
-> > -	protection_map[1] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
-> > -	protection_map[2] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
-> > -	protection_map[3] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
-> > -	protection_map[4] = PVA(_PAGE_PRESENT);
-> > -	protection_map[5] = PVA(_PAGE_PRESENT);
-> > -	protection_map[6] = PVA(_PAGE_PRESENT);
-> > -	protection_map[7] = PVA(_PAGE_PRESENT);
-> > +	protection_map[1] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
-> > +	protection_map[2] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
-> > +	protection_map[3] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
-> > +	protection_map[4] = PM(_PAGE_PRESENT);
-> > +	protection_map[5] = PM(_PAGE_PRESENT);
-> > +	protection_map[6] = PM(_PAGE_PRESENT);
-> > +	protection_map[7] = PM(_PAGE_PRESENT);
-> > 
-> > protection_map[8] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
-> > -	protection_map[9] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
-> > -	protection_map[10] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE |
-> > +	protection_map[9] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
-> > +	protection_map[10] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE |
-> > _PAGE_NO_READ);
-> > -	protection_map[11] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
-> > -	protection_map[12] = PVA(_PAGE_PRESENT);
-> > -	protection_map[13] = PVA(_PAGE_PRESENT);
-> > -	protection_map[14] = PVA(_PAGE_PRESENT);
-> > -	protection_map[15] = PVA(_PAGE_PRESENT);
-> > +	protection_map[11] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
-> > +	protection_map[12] = PM(_PAGE_PRESENT);
-> > +	protection_map[13] = PM(_PAGE_PRESENT);
-> > +	protection_map[14] = PM(_PAGE_PRESENT | _PAGE_WRITE);
-> > +	protection_map[15] = PM(_PAGE_PRESENT | _PAGE_WRITE);
-> > }
-> > 
-> > -#undef _PVA
-> > #undef PM
-> > 
-> > void cpu_cache_init(void)
+> Yes, in both cases the load instructions emitted for the READ_ONCE()
+> macros must be emitted in order.  The underlying hardware is free
+> to reorder.
 
+Got it.
+> 
+>> 2. "volatile accesses with non-volatile accesses" means d=b may happen
+>> before c=READ_ONCE(a) :
+>> int a;
+>> foo()
+>> {
+>>      int b = 2
+>>      int c,d;
+>>      c = READ_ONCE(a);
+>>      d = b;
+>> }
+>> if we want to keep the ordering of volatile access "c=READ_ONCE(a)" and
+>> non-volatile access "d=b", we should use stronger barrier like barrier().
+> 
+> Or an additional READ_ONCE() for b or a WRITE_ONCE() for d.  But again,
+> this would constrain only the compiler, not the hardware.
+> 
+> But this wouldn't matter in most cases, because both b and d are local
+> variables whose addresses were never taken.  So someone would need to
+> be using something crazy to poke into others' stacks for this to matter.
+
+Agree.
+> 
+>> Hope I didn't misunderstand.
+> 
+> It looks like you have most of it.
+> 
+>> Back to rcu_blocking_is_gp(), I find this link today
+>> https://www.spinics.net/lists/rcu/msg03985.html
+>> With the content in this link, I still haven't got the meaning of these two
+>> barrier(). I think I should learn knowledge about cpu-hotplug and things
+>> which talked in the link first to make sure if I am missing something, and
+>> then consult you. :)
+> 
+> That sounds like a very good approach!
+> 
+> Keep in mind that I am worried not just about the current state of
+> the code and compilers, but also their possible future states.
+
+I see.
+
+Thanks again.
+
+Best regards,
+Yanfei
+> 
+>                                                          Thanx, Paul
+> 
+>> Best regards,
+>> Yanfei
+>>
+>>>
+>>>                                                           Thanx, Paul
+>>>
+>>>> Best regards,
+>>>> Yanfei
+>>>>
+>>>>>
+>>>>>                                                            Thanx, Paul
+>>>>>
+>>>>>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+>>>>>> index da6f5213fb74..c6d95a00715e 100644
+>>>>>> --- a/kernel/rcu/tree.c
+>>>>>> +++ b/kernel/rcu/tree.c
+>>>>>> @@ -3703,7 +3703,6 @@ static int rcu_blocking_is_gp(void)
+>>>>>>            if (IS_ENABLED(CONFIG_PREEMPTION))
+>>>>>>                    return rcu_scheduler_active == RCU_SCHEDULER_INACTIVE;
+>>>>>>            might_sleep();  /* Check for RCU read-side critical section. */
+>>>>>> -       preempt_disable();
+>>>>>>            /*
+>>>>>>             * If the rcu_state.n_online_cpus counter is equal to one,
+>>>>>>             * there is only one CPU, and that CPU sees all prior accesses
+>>>>>> @@ -3718,7 +3717,6 @@ static int rcu_blocking_is_gp(void)
+>>>>>>             * Those memory barriers are provided by CPU-hotplug code.
+>>>>>>             */
+>>>>>>            ret = READ_ONCE(rcu_state.n_online_cpus) <= 1;
+>>>>>> -       preempt_enable();
+>>>>>>            return ret;
+>>>>>>     }
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> Best regards,
+>>>>>> Yanfei
