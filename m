@@ -2,102 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B45A4363BE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 08:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B76C363BE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 08:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237609AbhDSGrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 02:47:06 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43376 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233256AbhDSGrF (ORCPT
+        id S237612AbhDSGrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 02:47:36 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:17373 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229671AbhDSGre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 02:47:05 -0400
-From:   Kurt Kanzenbach <kurt@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618814794;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qXQLGERhsSNeIwqSxvWOuT357Vy3ZJhmHq0+8ZCeYcc=;
-        b=pPii5bN9MwHpzibsWOaN/JQEYaLDuLXw8jrKabJy4RtMt4LZ2+R3sMCrnEXHp3Ez1BqS06
-        ka7zL9xK5q7REX5n5a5za3A0vt3ovBkgZ8OGLw7BQlQfbJ6CPJWymI5uJvl9q8Z5Zg0LZY
-        qe6c7XFv/1aSf+SDmHGOrOkvkYKAX7Ziv2f9Q7xlSlzUyfp0JqG6Ym6L2wI3ue0EqVYZpI
-        jsMNp/AMuduxYYNRVHvg1zXvN3cizxzpZy36RMfw8gjJSjuOiwo6AebJeYBmyrjVuF+akW
-        CYmCp2+sKqStCtJaBTNO6CSAjO4ItOYwpI0/E62/kLIclIvXPQ8ORe+tEd4Xjw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618814794;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qXQLGERhsSNeIwqSxvWOuT357Vy3ZJhmHq0+8ZCeYcc=;
-        b=arsPGNtl1GtiP4AXseM/lEYzZ9mbyMPldbujH4Mf0NFPFrpyu98yi4CjQDpa8H0FVkK8+R
-        JoC9CcefFtZ8mzCA==
-To:     Yangbo Lu <yangbo.lu@nxp.com>, netdev@vger.kernel.org
-Cc:     Yangbo Lu <yangbo.lu@nxp.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net-next 1/3] net: dsa: optimize tx timestamp request handling
-In-Reply-To: <20210416123655.42783-2-yangbo.lu@nxp.com>
-References: <20210416123655.42783-1-yangbo.lu@nxp.com> <20210416123655.42783-2-yangbo.lu@nxp.com>
-Date:   Mon, 19 Apr 2021 08:46:33 +0200
-Message-ID: <87k0oyzs8m.fsf@kurt>
+        Mon, 19 Apr 2021 02:47:34 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FNy435WwWzlYyF;
+        Mon, 19 Apr 2021 14:45:07 +0800 (CST)
+Received: from [10.174.178.5] (10.174.178.5) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Mon, 19 Apr 2021
+ 14:46:59 +0800
+Subject: Re: [PATCH v2 4/5] mm/swap: remove confusing checking for
+ non_swap_entry() in swap_ra_info()
+To:     "Huang, Ying" <ying.huang@intel.com>
+CC:     <akpm@linux-foundation.org>, <dennis@kernel.org>,
+        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
+        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
+        <alexs@kernel.org>, <david@redhat.com>, <minchan@kernel.org>,
+        <richard.weiyang@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>
+References: <20210417094039.51711-1-linmiaohe@huawei.com>
+ <20210417094039.51711-5-linmiaohe@huawei.com>
+ <87v98jkpjt.fsf@yhuang6-desk1.ccr.corp.intel.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <6ea114e9-02bd-b8df-732d-d0c85ff4407c@huawei.com>
+Date:   Mon, 19 Apr 2021 14:46:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
+In-Reply-To: <87v98jkpjt.fsf@yhuang6-desk1.ccr.corp.intel.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.5]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
+On 2021/4/19 9:53, Huang, Ying wrote:
+> Miaohe Lin <linmiaohe@huawei.com> writes:
+> 
+>> While we released the pte lock, somebody else might faulted in this pte.
+>> So we should check whether it's swap pte first to guard against such race
+>> or swp_type would be unexpected. But the swap_entry isn't used in this
+>> function and we will have enough checking when we really operate the PTE
+>> entries later. So checking for non_swap_entry() is not really needed here
+>> and should be removed to avoid confusion.
+> 
+> Please rephrase the change log to describe why we have the code and why
+> it's unnecessary now.  You can dig the git history via git-blame to find
+> out it.
+> 
 
-On Fri Apr 16 2021, Yangbo Lu wrote:
-> Optimization could be done on dsa_skb_tx_timestamp(), and dsa device
-> drivers should adapt to it.
->
-> - Check SKBTX_HW_TSTAMP request flag at the very beginning, instead of in
->   port_txtstamp, so that most skbs not requiring tx timestamp just return.
->
-> - No longer to identify PTP packets, and limit tx timestamping only for PTP
->   packets. If device driver likes, let device driver do.
->
-> - It is a waste to clone skb directly in dsa_skb_tx_timestamp().
->   For one-step timestamping, a clone is not needed. For any failure of
->   port_txtstamp (this may usually happen), the skb clone has to be freed.
->   So put skb cloning into port_txtstamp where it really needs.
->
-> Signed-off-by: Yangbo Lu <yangbo.lu@nxp.com>
+Will try to do it. Thanks.
 
-PTP still works.
+> The patch itself looks good to me.
+> 
+> Best Regards,
+> Huang, Ying
+> 
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> ---
+>>  mm/swap_state.c | 6 ------
+>>  1 file changed, 6 deletions(-)
+>>
+>> diff --git a/mm/swap_state.c b/mm/swap_state.c
+>> index 272ea2108c9d..df5405384520 100644
+>> --- a/mm/swap_state.c
+>> +++ b/mm/swap_state.c
+>> @@ -721,7 +721,6 @@ static void swap_ra_info(struct vm_fault *vmf,
+>>  {
+>>  	struct vm_area_struct *vma = vmf->vma;
+>>  	unsigned long ra_val;
+>> -	swp_entry_t entry;
+>>  	unsigned long faddr, pfn, fpfn;
+>>  	unsigned long start, end;
+>>  	pte_t *pte, *orig_pte;
+>> @@ -739,11 +738,6 @@ static void swap_ra_info(struct vm_fault *vmf,
+>>  
+>>  	faddr = vmf->address;
+>>  	orig_pte = pte = pte_offset_map(vmf->pmd, faddr);
+>> -	entry = pte_to_swp_entry(*pte);
+>> -	if ((unlikely(non_swap_entry(entry)))) {
+>> -		pte_unmap(orig_pte);
+>> -		return;
+>> -	}
+>>  
+>>  	fpfn = PFN_DOWN(faddr);
+>>  	ra_val = GET_SWAP_RA_VAL(vma);
+> .
+> 
 
-Tested-by: Kurt Kanzenbach <kurt@linutronix.de> # hellcreek
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEooWgvezyxHPhdEojeSpbgcuY8KYFAmB9J0kACgkQeSpbgcuY
-8KZ8txAAnfpbhXSCEuUfR4ACDZwTqdlJxqHz1GE6AIuKLCcK6G1HuTLRN4f/Vjcq
-JKIZAJWN+OMSuAx4OrHqMaE79mlYxsd10gWybHoHbBliTWZt2QCMjpZ3kcqpgYHk
-QCWOAuuFq1DNENqRS+BL47W86OlhaPns37BAW+O8+4j3QxPfHAL2aYOlq9DZgEVP
-5klbziOUS4Dg0Mvxc6k7gtm/ecJMZGG6PdvVnWRv9rllvTBsgJi4TrpXt/maZF7Y
-I1vsc8g755sXe6ds6EpppUsyXALVLv+/5ABGU+q5HvY5lXVTw4x3ohUmtG3+PLaq
-eH7cNBKrFuU5yvQupWOG3Fq5KA5d4WdD7izhBNYWyTxCnXsc6g4oUgsj/+Y/f48+
-BtM3/mWJuYPIW4IL0JJP4OtB/OtTPrIfMyUFlNgwhc1NtQaojOS4KRhlkGLgjNeF
-oOSWt2c/CLAyq13VkubQAsFOP3/ro2fKqCUQ+fdr7w6ovRPywqlvDJKIF0gQ9dSI
-0+XMkN1dhlpwrkyd8AyB4tcEaI8QgIBj7DILZSPNjXXbsIm8wMfnztPXJZEjM/Z0
-ND9ET4vCIB6SxW3ctZdF0sICB8qEjnNNuJzQ1QEeNjK8ZUOizY9ijxLxwsNIFzs8
-+RanrIUm043DUOcz6iPVr1h9myLlvMpI9qnxbiFtv7iKlui9vbs=
-=5c3T
------END PGP SIGNATURE-----
---=-=-=--
