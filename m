@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9133647C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 18:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A41803647D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 18:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242549AbhDSQDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 12:03:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48153 "EHLO
+        id S242344AbhDSQD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 12:03:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50718 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242291AbhDSQCs (ORCPT
+        by vger.kernel.org with ESMTP id S242300AbhDSQCw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 12:02:48 -0400
+        Mon, 19 Apr 2021 12:02:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618848137;
+        s=mimecast20190719; t=1618848139;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EKoc0+zbjfg8zp8aSJc7fJIw1NzTMG44NLJzx5iHO4I=;
-        b=Nzn7ubpswlXAWm7JTpSGKsCxZAjBnI8NYFznmpNzHOfN4mbOH+3R87iuMmN/UQdaT4KSRU
-        DQvthqCAh01cNvMRFmAKF5M67bQ8ovndEPz+t0YXQCanhs42bPfQyQ7fkFuDnv6eRoOUa3
-        iKltMX5pKeHyw0nh+8PGZnaA6/82FDE=
+        bh=d3Uu878QG+BRylaHdVabBjZQ6AZ4n1kHuc65NM1aRBs=;
+        b=MrHgZ8+/DDgJwmpNvzqU19liMR6r2pX31zKpZR8IZQjCaE2jKsmxnzlATFWtrjZIZvUcEm
+        buXa2LLth50mZ8KZmMtA4KMl5o6mb89ye5Fr7PdT0nv+qW3n3dqOexcSwUEPlTQLlwvjcu
+        Q/qdPN9cZjdNcfCWdV7pae/cn3OeMbw=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-139-kb1CZmCiNo-HdxSfDWDvBQ-1; Mon, 19 Apr 2021 12:02:15 -0400
-X-MC-Unique: kb1CZmCiNo-HdxSfDWDvBQ-1
+ us-mta-500--S-k17pRMweUvDrZNxSRlg-1; Mon, 19 Apr 2021 12:02:17 -0400
+X-MC-Unique: -S-k17pRMweUvDrZNxSRlg-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9224B8026AC;
-        Mon, 19 Apr 2021 16:02:14 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CEB958030A0;
+        Mon, 19 Apr 2021 16:02:16 +0000 (UTC)
 Received: from vitty.brq.redhat.com (unknown [10.40.193.113])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9900E60636;
-        Mon, 19 Apr 2021 16:02:12 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EF99F19172;
+        Mon, 19 Apr 2021 16:02:14 +0000 (UTC)
 From:   Vitaly Kuznetsov <vkuznets@redhat.com>
 To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -41,9 +41,9 @@ Cc:     Sean Christopherson <seanjc@google.com>,
         Jim Mattson <jmattson@google.com>,
         Siddharth Chandrasekaran <sidcha@amazon.de>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 18/30] KVM: x86: hyper-v: Inverse the default in hv_check_msr_access()
-Date:   Mon, 19 Apr 2021 18:01:15 +0200
-Message-Id: <20210419160127.192712-19-vkuznets@redhat.com>
+Subject: [PATCH 19/30] KVM: x86: hyper-v: Honor HV_STIMER_DIRECT_MODE_AVAILABLE privilege bit
+Date:   Mon, 19 Apr 2021 18:01:16 +0200
+Message-Id: <20210419160127.192712-20-vkuznets@redhat.com>
 In-Reply-To: <20210419160127.192712-1-vkuznets@redhat.com>
 References: <20210419160127.192712-1-vkuznets@redhat.com>
 MIME-Version: 1.0
@@ -53,30 +53,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Access to all MSRs is now properly checked. To avoid 'forgetting' to
-properly check access to new MSRs in the future change the default
-to 'false' meaning 'no access'.
-
-No functional change intended.
+Synthetic timers can only be configured in 'direct' mode when
+HV_STIMER_DIRECT_MODE_AVAILABLE bit was exposed.
 
 Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 ---
- arch/x86/kvm/hyperv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/hyperv.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index f54385ffcdc0..ec065177531b 100644
+index ec065177531b..12b6803de1b7 100644
 --- a/arch/x86/kvm/hyperv.c
 +++ b/arch/x86/kvm/hyperv.c
-@@ -1265,7 +1265,7 @@ static bool hv_check_msr_access(struct kvm_vcpu_hv *hv_vcpu, u32 msr)
- 		break;
- 	}
+@@ -630,11 +630,17 @@ static int stimer_set_config(struct kvm_vcpu_hv_stimer *stimer, u64 config,
+ 	union hv_stimer_config new_config = {.as_uint64 = config},
+ 		old_config = {.as_uint64 = stimer->config.as_uint64};
+ 	struct kvm_vcpu *vcpu = hv_stimer_to_vcpu(stimer);
++	struct kvm_vcpu_hv *hv_vcpu = to_hv_vcpu(vcpu);
+ 	struct kvm_vcpu_hv_synic *synic = to_hv_synic(vcpu);
  
--	return true;
-+	return false;
- }
+ 	if (!synic->active && !host)
+ 		return 1;
  
- static int kvm_hv_set_msr_pw(struct kvm_vcpu *vcpu, u32 msr, u64 data,
++	if (unlikely(!host && hv_vcpu->enforce_cpuid && new_config.direct_mode &&
++		     !(hv_vcpu->cpuid_cache.features_edx &
++		       HV_STIMER_DIRECT_MODE_AVAILABLE)))
++		return 1;
++
+ 	trace_kvm_hv_stimer_set_config(hv_stimer_to_vcpu(stimer)->vcpu_id,
+ 				       stimer->index, config, host);
+ 
 -- 
 2.30.2
 
