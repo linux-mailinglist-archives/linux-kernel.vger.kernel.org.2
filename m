@@ -2,141 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C4F36390E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 03:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA86F363911
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 03:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237123AbhDSBXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 21:23:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235958AbhDSBXe (ORCPT
+        id S237146AbhDSBYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 21:24:32 -0400
+Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:56366 "EHLO
+        mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233104AbhDSBYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 21:23:34 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52781C06174A;
-        Sun, 18 Apr 2021 18:23:05 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id k25so33967770oic.4;
-        Sun, 18 Apr 2021 18:23:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LC1unaHSXRoqGKgvVKA19fS5y935zmftweCmhzGJtC4=;
-        b=bzQcR5l8T1JQnjP/fCAwd7W7tmzGH+NM7+8YmTPz3W9E7Yt/AuLJQuK4z2nb5x3q+V
-         Nvn/1oFV7gDTw3d2FA7XV+fdepwMVS0Y9Q/sb0ym0PsRjNzygFuCL73XV8co3vOIO291
-         p7MH2l7pfjTtS81A2mjVs9Fm4uH+LP+35frujQiXzdjjbz+4x+fSayQWC9re8b1VqUyg
-         FO+/J5nniPGM8LNY8Bjt2Wlf4LiPctyWgbowfg65cCcCyw5PlI8gAkxOMAcqs4oVQIDS
-         3V0A2BTSvcILCxTS/KW6zHP4E95qSI3NvlHqgE77eg7CCc9mkJUpLwqZl6ZhaN6PBQyI
-         M8UA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LC1unaHSXRoqGKgvVKA19fS5y935zmftweCmhzGJtC4=;
-        b=R9uRTT8Xdwp7tcBg8v5iUKmuoS0rwjjVpQwcIAI0MUoFuADNd68P0C+X/GOBcheLfK
-         1RrZ5TrpajUL4SSAbhmvSanszx1veqDZbnyauJAp+bcwu8iCLjgy4js/J0UVtuo5Efbe
-         K+vTROCNsU0VQwa2kADPM1xxEtEs9Jt3OFfzLxeWPmTjhxkBzjrmsvJewOHt6Uzzj6Jq
-         QX0AlGqT+5pStk83Lo/fmHyuzCbyaTPm55Bgl9bXIrfBsMqvQ601uKOvd22G9jB0g9+V
-         NhFRb6QcFm4XyEo1f/IvrSnICXXnKw4twaVsuefROLGz7sOLCFJIycK4S8yEBSGD/pFo
-         KM2w==
-X-Gm-Message-State: AOAM531DAMHRzF7yhAP2v3uH0/ACRvD96sIGICeeMkN/n2K4W1yLvd5T
-        bUZ6rRlB5FDeDfmXEvxkq0U=
-X-Google-Smtp-Source: ABdhPJyRS7uIZU6aE923TIad+hYN2PcOzAMtl0Qwj/qW1D49aJOR4w3oefkJPzhLgg1pzi01Xa5oGg==
-X-Received: by 2002:aca:c487:: with SMTP id u129mr5867810oif.67.1618795384601;
-        Sun, 18 Apr 2021 18:23:04 -0700 (PDT)
-Received: from localhost.localdomain (cpe-24-31-245-230.kc.res.rr.com. [24.31.245.230])
-        by smtp.gmail.com with ESMTPSA id j8sm3160731otr.28.2021.04.18.18.23.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Apr 2021 18:23:03 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-Subject: Re: rtlwifi/rtl8192cu AP mode broken with PS STA
-To:     Pkshih <pkshih@realtek.com>,
-        "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "johannes@sipsolutions.net" <johannes@sipsolutions.net>,
-        "kvalo@codeaurora.org" <kvalo@codeaurora.org>
-References: <e2924d81-0e30-2dd0-292b-428fea199484@maciej.szmigiero.name>
- <846f6166-c570-01fc-6bbc-3e3b44e51327@maciej.szmigiero.name>
- <87r1jnohq6.fsf@codeaurora.org>
- <8e0434eb-d15f-065d-2ba7-b50c67877112@maciej.szmigiero.name>
- <a2003668-5108-27b9-95cd-9e1d5d1aa94d@lwfinger.net>
- <1617763692.9857.7.camel@realtek.com>
- <1dc7e487-b97b-8584-47f7-37f3385c7bf9@lwfinger.net>
- <15737dcf-95ac-1ce6-a681-94ff5db968e4@maciej.szmigiero.name>
- <c5556a207c5c40ac849c6a0e1919baca@realtek.com>
- <220c4fe4-c9e1-347a-8cef-cd91d31c56df@maciej.szmigiero.name>
- <cfcc2988-3f20-3588-2f76-f04d09043811@maciej.szmigiero.name>
- <35249c6028f645a79c4186c9689ba8aa@realtek.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-Message-ID: <52f89f4f-568e-f04e-5c3e-e31f4a9e0910@lwfinger.net>
-Date:   Sun, 18 Apr 2021 20:23:02 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Sun, 18 Apr 2021 21:24:31 -0400
+Received: from dread.disaster.area (pa49-181-239-12.pa.nsw.optusnet.com.au [49.181.239.12])
+        by mail108.syd.optusnet.com.au (Postfix) with ESMTPS id CF2691AF1B0;
+        Mon, 19 Apr 2021 11:23:58 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1lYIdo-00EcnL-KJ; Mon, 19 Apr 2021 11:23:56 +1000
+Date:   Mon, 19 Apr 2021 11:23:56 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Bharata B Rao <bharata@linux.ibm.com>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        aneesh.kumar@linux.ibm.com
+Subject: Re: High kmalloc-32 slab cache consumption with 10k containers
+Message-ID: <20210419012356.GZ1990290@dread.disaster.area>
+References: <20210405054848.GA1077931@in.ibm.com>
+ <20210406222807.GD1990290@dread.disaster.area>
+ <20210416044439.GB1749436@in.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <35249c6028f645a79c4186c9689ba8aa@realtek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416044439.GB1749436@in.ibm.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=Tu+Yewfh c=1 sm=1 tr=0 cx=a_idp_f
+        a=gO82wUwQTSpaJfP49aMSow==:117 a=gO82wUwQTSpaJfP49aMSow==:17
+        a=kj9zAlcOel0A:10 a=3YhXtTcJ-WEA:10 a=7-415B0cAAAA:8
+        a=ScFYv971vT0PkSOGSnAA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/18/21 7:32 PM, Pkshih wrote:
+On Fri, Apr 16, 2021 at 10:14:39AM +0530, Bharata B Rao wrote:
+> On Wed, Apr 07, 2021 at 08:28:07AM +1000, Dave Chinner wrote:
+> > On Mon, Apr 05, 2021 at 11:18:48AM +0530, Bharata B Rao wrote:
+> > 
+> > > As an alternative approach, I have this below hack that does lazy
+> > > list_lru creation. The memcg-specific list is created and initialized
+> > > only when there is a request to add an element to that particular
+> > > list. Though I am not sure about the full impact of this change
+> > > on the owners of the lists and also the performance impact of this,
+> > > the overall savings look good.
+> > 
+> > Avoiding memory allocation in list_lru_add() was one of the main
+> > reasons for up-front static allocation of memcg lists. We cannot do
+> > memory allocation while callers are holding multiple spinlocks in
+> > core system algorithms (e.g. dentry_kill -> retain_dentry ->
+> > d_lru_add -> list_lru_add), let alone while holding an internal
+> > spinlock.
+> > 
+> > Putting a GFP_ATOMIC allocation inside 3-4 nested spinlocks in a
+> > path we know might have memory demand in the *hundreds of GB* range
+> > gets an NACK from me. It's a great idea, but it's just not a
 > 
->> -----Original Message-----
->> From: Maciej S. Szmigiero [mailto:mail@maciej.szmigiero.name]
->> Sent: Sunday, April 18, 2021 2:08 AM
->> To: Pkshih
->> Cc: linux-wireless@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
->> johannes@sipsolutions.net; kvalo@codeaurora.org; Larry Finger
->> Subject: Re: rtlwifi/rtl8192cu AP mode broken with PS STA
->>
->> On 08.04.2021 21:04, Maciej S. Szmigiero wrote:
->>> On 08.04.2021 06:42, Pkshih wrote:
->>>>> -----Original Message-----
->>>>> From: Maciej S. Szmigiero [mailto:mail@maciej.szmigiero.name]
->>>>> Sent: Thursday, April 08, 2021 4:53 AM
->>>>> To: Larry Finger; Pkshih
->>>>> Cc: linux-wireless@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
->>>>> johannes@sipsolutions.net; kvalo@codeaurora.org
->>>>> Subject: Re: rtlwifi/rtl8192cu AP mode broken with PS STA
->>>>>
->>> (...)
->>>>>> Maceij,
->>>>>>
->>>>>> Does this patch fix the problem?
->>>>>
->>>>> The beacon seems to be updating now and STAs no longer get stuck in PS
->>>>> mode.
->>>>> Although sometimes (every 2-3 minutes with continuous 1s interval pings)
->>>>> there is around 5s delay in updating the transmitted beacon - don't know
->>>>> why, maybe the NIC hardware still has the old version in queue?
->>>>
->>>> Since USB device doesn't update every beacon, dtim_count isn't updated neither.
->>>> It leads STA doesn't awake properly. Please try to fix dtim_period=1 in
->>>> hostapd.conf, which tells STA awakes every beacon interval.
->>>
->>> The situation is the same with dtim_period=1.
->>>
->> (...)
->>
->> Ping-Ke,
->> are you going to submit your set_tim() patch so at least the AP mode is
->> usable with PS STAs or are you waiting for a solution to the delayed
->> beacon update issue?
->>
+> I do understand that GFP_ATOMIC allocations are really not preferrable
+> but want to point out that the allocations in the range of hundreds of
+> GBs get reduced to tens of MBs when we do lazy list_lru head allocations
+> under GFP_ATOMIC.
+
+That does not make GFP_ATOMIC allocations safe or desirable. In
+general, using GFP_ATOMIC outside of interrupt context indicates
+something is being done incorrectly. Especially if it can be
+triggered from userspace, which is likely in this particular case...
+
+
+
+> As shown earlier, this is what I see in my experimental setup with
+> 10k containers:
 > 
-> I'm still trying to get a 8192cu, and then I can reproduce the symptom you
-> met. However, I'm busy now; maybe I have free time two weeks later.
-> 
-> Do you think I submit the set_tim() patch with your Reported-by and Tested-by first?
+> Number of kmalloc-32 allocations
+> 		Before		During		After
+> W/o patch	178176		3442409472	388933632
+> W/  patch	190464		468992		468992
 
-PK,
+SO now we have an additional half million GFP_ATOMIC allocations
+when we currently have none. That's not an improvement, that rings
+loud alarm bells.
 
-I would say yes. Get the fix in as soon as possible.
+> This does really depend and vary on the type of the container and
+> the number of mounts it does, but I suspect we are looking
+> at GFP_ATOMIC allocations in the MB range. Also the number of
+> GFP_ATOMIC slab allocation requests matter I suppose.
 
-Larry
+They are slab allocations, which mean every single one of them
+could require a new slab backing page (pages!) to be allocated.
+Hence the likely memory demand might be a lot higher than the
+optimal case you are considering here...
 
+> There are other users of list_lru, but I was just looking at
+> dentry and inode list_lru usecase. It appears to me that for both
+> dentry and inode, we can tolerate the failure from list_lru_add
+> due to GFP_ATOMIC allocation failure. The failure to add dentry
+> or inode to the lru list means that they won't be retained in
+> the lru list, but would be freed immediately. Is this understanding
+> correct?
+
+No. Both retain_dentry() and iput_final() would currently leak
+objects that fail insertion into the LRU. They don't check for
+insertion success at all.
+
+But, really, this is irrelevant - GFP_ATOMIC usage is the problem,
+and allowing it to fail doesn't avoid the problems that unbound
+GFP_ATOMIC allocation can have on the stability of the rest of the
+system when low on memory. Being able to handle a GFP_ATOMIC memory
+allocation failure doesn't change the fact that you should not be
+doing GFP_ATOMIC allocation in the first place...
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
