@@ -2,158 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0423648F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 19:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 728EA3648F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 19:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239748AbhDSRT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 13:19:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33026 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238710AbhDSRTt (ORCPT
+        id S239924AbhDSRVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 13:21:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230063AbhDSRVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 13:19:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618852759;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x9OldeANN4a6pkdIYcVnUP/Jno87aqlwEagtGa388Cg=;
-        b=IIBHvC9OwnXGApWnBtQpc9SXyHWioxO/s4GCvhRpesCcq724CyowZ3VMGKWW1UZf2AXpGm
-        MQQbeQqjK8UH/peKVftkn7XdkFQ4QGR4AcYJINJOHo/DzN2zZqHh/XFi8tEmPETIhaQmF0
-        DLr7e9hyOOg9RoZfjWKPkQJNRkjMFQ8=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-213-dfN28B_8Ocq53YAbyY9s_A-1; Mon, 19 Apr 2021 13:19:16 -0400
-X-MC-Unique: dfN28B_8Ocq53YAbyY9s_A-1
-Received: by mail-qv1-f71.google.com with SMTP id a3-20020a0ce3830000b02901a32a1f457eso6468521qvl.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 10:19:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=x9OldeANN4a6pkdIYcVnUP/Jno87aqlwEagtGa388Cg=;
-        b=aTuu2KBvfZ3Zkks+H+MUIbNkGs3M34HKwMY2E9Ovx3ERzaxXRfLCVH/feE51UlRz4o
-         sTbAuIwUlHRIjXVMP8L0HhzE1kreSHQku45Llz1C3LQB2GL+L7MDH/UbLt7CcYxQqENi
-         5Z0TMHKDNaFKeJCMHHPGyG6q6LLiypn26mdm31xUA4Q1Nf/j1uRgE5l+fGq8/hePQIy1
-         TuU2Ts1OmgZHqjqLTHy+XAU+GxW/NzIeg0VpOmS4Fr+0lpxHlRpENMrAtl0q6rve0yQV
-         9LiITnJDGII+PwyeCatjHXicUmJjwIp0YdcFmVcE3dbMlfxx2vissIXl5wXrYyKIBcAF
-         lzmg==
-X-Gm-Message-State: AOAM530IcIvwBsIXEfjo74KGyoXaFmUnZgOz6oCaRlQ7KERTyOkviKoU
-        2Rwjmyi/uVIpQWGpBR/E1DW4c9ypA1zWGQsshFONIkFDBLXBqo5El2/lN7ARbaUJM+C76cHhIGN
-        3m/N6UfTLaCro8WN8B0GHgKhW
-X-Received: by 2002:a05:620a:1202:: with SMTP id u2mr11657527qkj.248.1618852755981;
-        Mon, 19 Apr 2021 10:19:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz9b8EgTP3l5q4bSUy95ytyAd5w0lweu9u9pfDmphadF49T09PeZL5Kx54CzS5oQH28K2jBDw==
-X-Received: by 2002:a05:620a:1202:: with SMTP id u2mr11657492qkj.248.1618852755746;
-        Mon, 19 Apr 2021 10:19:15 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id q67sm10199456qkb.89.2021.04.19.10.19.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Apr 2021 10:19:15 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v4 1/5] mm/memcg: Move mod_objcg_state() to memcontrol.c
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Waiman Long <llong@redhat.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20210419000032.5432-1-longman@redhat.com>
- <20210419000032.5432-2-longman@redhat.com> <YH2eT+JCII48hX80@cmpxchg.org>
- <ffb5705e-8629-808d-9d09-0c9c7f509326@redhat.com>
- <140444ea-14e7-b305-910f-f23fafe45488@redhat.com>
- <YH26RrMBOxLaMg4l@cmpxchg.org>
-Message-ID: <b7c8e209-3311-609b-9b61-5602a89a8313@redhat.com>
-Date:   Mon, 19 Apr 2021 13:19:13 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Mon, 19 Apr 2021 13:21:13 -0400
+Received: from mail.as397444.net (mail.as397444.net [IPv6:2620:6e:a000:dead:beef:15:bad:f00d])
+        by lindbergh.monkeyblade.net (Postfix) with UTF8SMTPS id 4F695C06174A;
+        Mon, 19 Apr 2021 10:20:43 -0700 (PDT)
+Received: by mail.as397444.net (Postfix) with UTF8SMTPSA id 9D6CA541F74;
+        Mon, 19 Apr 2021 17:20:40 +0000 (UTC)
+X-DKIM-Note: Keys used to sign are likely public at https://as397444.net/dkim/
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mattcorallo.com;
+        s=1618851664; t=1618852841;
+        bh=FiEKzC7B1dsbH70Gn8HR+nV/qxAaawx52H3Ir599Os0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=RZ27MFuhsSTKFsjjBBKbde/EEN8bjbei5vdIdBWUtyWEBgwknOmq2Y4l2aNRCNa56
+         V3IEu2uWnVlBjEstH3PFfu+fmnvnQzK7iHe+OYF1Lgkk9k9H+Myt79s49fcop6h9ur
+         9SVV6hRc6J5MJxN7RbAABtf4c24mc/kENRw3UV4Nz8IBhRPQTRBJJ60Sb7JkqbQ/cL
+         jSuvbCaZyzAFV9SWlmRXLNa+epoLX8sjo4P8fpBRzZK0fpWOfH1/cpbiwJJVYABL/1
+         ohTY8bRT1VkcX6Q3z6+7sG2yTkXIVhGhp7GqWl9bZnjrC8i6lbYYwlF10H3wOiAeoo
+         LFtw4hlj6B2JQ==
+Message-ID: <5fffbce3-2722-97b9-c025-1ce3da5e5467@bluematt.me>
+Date:   Mon, 19 Apr 2021 13:20:39 -0400
 MIME-Version: 1.0
-In-Reply-To: <YH26RrMBOxLaMg4l@cmpxchg.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Subject: Re: PROBLEM: DoS Attack on Fragment Cache
 Content-Language: en-US
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Willy Tarreau <w@1wt.eu>, Keyu Man <kman001@ucr.edu>,
+        David Ahern <dsahern@gmail.com>,
+        Florian Westphal <fw@strlen.de>,
+        David Miller <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Zhiyun Qian <zhiyunq@cs.ucr.edu>
+References: <02917697-4CE2-4BBE-BF47-31F58BC89025@hxcore.ol>
+ <52098fa9-2feb-08ae-c24f-1e696076c3b9@gmail.com>
+ <CANn89iL_V0WbeA-Zr29cLSp9pCsthkX9ze4W46gx=8-UeK2qMg@mail.gmail.com>
+ <20210417072744.GB14109@1wt.eu>
+ <CAMqUL6bkp2Dy3AMFZeNLjE1f-sAwnuBWpXH_FSYTSh8=Ac3RKg@mail.gmail.com>
+ <20210417075030.GA14265@1wt.eu>
+ <c6467c1c-54f5-8681-6e7d-aa1d9fc2ff32@bluematt.me>
+ <CAMqUL6bAVE9p=XEnH4HdBmBfThaY3FDosqyr8yrQo6N_9+Jf3w@mail.gmail.com>
+ <78d776a9-4299-ff4e-8ca2-096ec5c02d05@bluematt.me>
+ <20210418043933.GB18896@1wt.eu>
+ <9e2966be-d210-edf9-4f3c-5681f0d07c5f@bluematt.me>
+ <CANn89iKXYutm20oi-rCwch0eL1Oo9rq1W=ex6+NzvPitq_jX0Q@mail.gmail.com>
+From:   Matt Corallo <netdev-list@mattcorallo.com>
+In-Reply-To: <CANn89iKXYutm20oi-rCwch0eL1Oo9rq1W=ex6+NzvPitq_jX0Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/19/21 1:13 PM, Johannes Weiner wrote:
-> On Mon, Apr 19, 2021 at 12:18:29PM -0400, Waiman Long wrote:
->> On 4/19/21 11:21 AM, Waiman Long wrote:
->>> On 4/19/21 11:14 AM, Johannes Weiner wrote:
->>>> On Sun, Apr 18, 2021 at 08:00:28PM -0400, Waiman Long wrote:
->>>>> The mod_objcg_state() function is moved from mm/slab.h to
->>>>> mm/memcontrol.c
->>>>> so that further optimization can be done to it in later patches without
->>>>> exposing unnecessary details to other mm components.
->>>>>
->>>>> Signed-off-by: Waiman Long <longman@redhat.com>
->>>>> ---
->>>>>    mm/memcontrol.c | 13 +++++++++++++
->>>>>    mm/slab.h       | 16 ++--------------
->>>>>    2 files changed, 15 insertions(+), 14 deletions(-)
->>>>>
->>>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->>>>> index e064ac0d850a..dc9032f28f2e 100644
->>>>> --- a/mm/memcontrol.c
->>>>> +++ b/mm/memcontrol.c
->>>>> @@ -3150,6 +3150,19 @@ void __memcg_kmem_uncharge_page(struct
->>>>> page *page, int order)
->>>>>        css_put(&memcg->css);
->>>>>    }
->>>>>    +void mod_objcg_state(struct obj_cgroup *objcg, struct
->>>>> pglist_data *pgdat,
->>>>> +             enum node_stat_item idx, int nr)
->>>>> +{
->>>>> +    struct mem_cgroup *memcg;
->>>>> +    struct lruvec *lruvec = NULL;
->>>>> +
->>>>> +    rcu_read_lock();
->>>>> +    memcg = obj_cgroup_memcg(objcg);
->>>>> +    lruvec = mem_cgroup_lruvec(memcg, pgdat);
->>>>> +    mod_memcg_lruvec_state(lruvec, idx, nr);
->>>>> +    rcu_read_unlock();
->>>>> +}
->>>> It would be more naturally placed next to the others, e.g. below
->>>> __mod_lruvec_kmem_state().
->>>>
->>>> But no deal breaker if there isn't another revision.
->>>>
->>>> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
->>>>
->>> Yes, there will be another revision by rebasing patch series on the
->>> linux-next. I will move the function then.
->> OK, it turns out that mod_objcg_state() is only defined if
->> CONFIG_MEMCG_KMEM. That was why I put it in the CONFIG_MEMCG_KMEM block with
->> the other obj_stock functions. I think I will keep it there.
-> The CONFIG_MEMCG_KMEM has become sort of useless now. It used to be
-> configurable, but now it just means CONFIG_MEMCG && !CONFIG_SLOB. And
-> even that doesn't make sense because while slob doesn't support slab
-> object tracking, we can still do all the other stuff we do under
-> KMEM. I have a patch in the works to remove the symbol and ifdefs.
->
-> With that in mind, it's better to group the functions based on what
-> they do rather than based on CONFIG_MEMCG_KMEM. It's easier to just
-> remove another ifdef later than it is to reorder the functions.
->
-OK, I will make the move then. Thanks for the explanation.
+Note that there are two completely separate sysctls here - the timeout on fragments, and the amount of memory available 
+for fragment reassembly. You have to multiply them together to reach the "Mbps of lost or deliberately-lost fragments 
+before we start dropping all future fragments". See the calculation in the description of the patch I mentioned above 
+for exact details, but turning the time down to 1s already gives you 32Mbps, and you can tune the memory usage 
+separately (eg 128MB, really 256 between v4 and v6, would give you 1Gbps of "lost" fragments).
 
-Cheers,
-Longman
+Its true, an attacker can use a lot of memory in that case, but 128MiB isn't actually something that rises to the level 
+of "trivial for an attacker to use all the memory you allowed" or "cause OOM".
 
+I only chimed in on this thread to note that this isn't just a theoretical attack concern, however - this is a 
+real-world non-attack-scenario issue that's pretty trivial to hit. Just losing 1Mbps of traffic on a modern residential 
+internet connection is pretty doable, make that flow mostly frags and suddenly your VPN drops out for 30 seconds at a 
+time just because.
+
+I agree with others here that actually solving the DoS issue isn't trivial, but making it less absurdly trivial to have 
+30 second dropouts of your VPN connection would also be a nice change.
+
+Matt
+
+On 4/19/21 05:43, Eric Dumazet wrote:
+> On Sun, Apr 18, 2021 at 4:31 PM Matt Corallo
+> <netdev-list@mattcorallo.com> wrote:
+>>
+>> Should the default, though, be so low? If someone is still using a old modem they can crank up the sysctl, it does seem
+>> like such things are pretty rare these days :). Its rather trivial to, without any kind of attack, hit 1Mbps of lost
+>> fragments in today's networks, at which point all fragments are dropped. After all, I submitted the patch to "scratch my
+>> own itch" :).
+> 
+> Again, even if you increase the values by 1000x, it is trivial for an
+> attacker to use all the memory you allowed.
+> 
+> And allowing a significant portion of memory to be eaten like that
+> might cause OOM on hosts where jobs are consuming all physical memory.
+> 
+> It is a sysctl, I changed things so that one could really reserve/use
+> 16GB of memory if she/he is desperate about frags.
+> 
+>>
+>> Matt
+>>
+>> On 4/18/21 00:39, Willy Tarreau wrote:
+>>> I do agree that we shouldn't keep them that long nowadays, we can't go
+>>> too low without risking to break some slow transmission stacks (SLIP/PPP
+>>> over modems for example).
