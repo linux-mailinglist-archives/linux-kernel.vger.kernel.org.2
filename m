@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 042093644B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9C5364476
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241491AbhDSNcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:32:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56886 "EHLO mail.kernel.org"
+        id S242341AbhDSN1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:27:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233858AbhDSNW5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:22:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EA8B613AB;
-        Mon, 19 Apr 2021 13:18:19 +0000 (UTC)
+        id S241019AbhDSNTq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:19:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02B85613E9;
+        Mon, 19 Apr 2021 13:15:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618838299;
-        bh=xuEDcflAVxcg4Sc6BZIcLZsTGGyY1kEST9Rau7svftI=;
+        s=korg; t=1618838124;
+        bh=46JedHWo30ypvYrPVxpZd3sFM7/UwPdy0xbk1KlwYCo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1KnGANCaOTKI9w9UqxiVwnuc22u7jfXYID/aV1pzRKufUd8lekdoaolgyIkzIa8DD
-         OaqYW6CNUlrVn4wX7B1fDlWY1Eb6+7a2UquFjhXfUOerE2//MWuvSFj0g3CMd7PQCH
-         PL4G8wAozH4MnXDpN6/M3+XvRJy8H2OMgKETawh0=
+        b=mDpOe4aG+IsftMpWcIHYngKLbvVwh4w8rquv0lzrOq4s5StnnUcC4mqeIhl4SJNMv
+         6ojMDRwqF+MdCfRcRI5wwcMLsXFYxk65ML4qaLbX1wCIeylGo4Nmi6S65ZFfbZggjl
+         PxJ5/gvdr865GZ69ZdAZXTjgQk8+Sm7gJriNeJq0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 11/73] gpio: sysfs: Obey valid_mask
-Date:   Mon, 19 Apr 2021 15:06:02 +0200
-Message-Id: <20210419130524.184955487@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Collingbourne <pcc@google.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 5.10 052/103] arm64: fix inline asm in load_unaligned_zeropad()
+Date:   Mon, 19 Apr 2021 15:06:03 +0200
+Message-Id: <20210419130529.602217419@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210419130523.802169214@linuxfoundation.org>
-References: <20210419130523.802169214@linuxfoundation.org>
+In-Reply-To: <20210419130527.791982064@linuxfoundation.org>
+References: <20210419130527.791982064@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,50 +39,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+From: Peter Collingbourne <pcc@google.com>
 
-[ Upstream commit 23cf00ddd2e1aacf1873e43f5e0c519c120daf7a ]
+commit 185f2e5f51c2029efd9dd26cceb968a44fe053c6 upstream.
 
-Do not allow exporting GPIOs which are set invalid
-by the driver's valid mask.
+The inline asm's addr operand is marked as input-only, however in
+the case where an exception is taken it may be modified by the BIC
+instruction on the exception path. Fix the problem by using a temporary
+register as the destination register for the BIC instruction.
 
-Fixes: 726cb3ba4969 ("gpiolib: Support 'gpio-reserved-ranges' property")
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Peter Collingbourne <pcc@google.com>
+Cc: stable@vger.kernel.org
+Link: https://linux-review.googlesource.com/id/I84538c8a2307d567b4f45bb20b715451005f9617
+Link: https://lore.kernel.org/r/20210401165110.3952103-1-pcc@google.com
+Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpio/gpiolib-sysfs.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/arm64/include/asm/word-at-a-time.h |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpio/gpiolib-sysfs.c b/drivers/gpio/gpiolib-sysfs.c
-index fbf6b1a0a4fa..558cd900d399 100644
---- a/drivers/gpio/gpiolib-sysfs.c
-+++ b/drivers/gpio/gpiolib-sysfs.c
-@@ -457,6 +457,8 @@ static ssize_t export_store(struct class *class,
- 	long			gpio;
- 	struct gpio_desc	*desc;
- 	int			status;
-+	struct gpio_chip	*gc;
-+	int			offset;
+--- a/arch/arm64/include/asm/word-at-a-time.h
++++ b/arch/arm64/include/asm/word-at-a-time.h
+@@ -53,7 +53,7 @@ static inline unsigned long find_zero(un
+  */
+ static inline unsigned long load_unaligned_zeropad(const void *addr)
+ {
+-	unsigned long ret, offset;
++	unsigned long ret, tmp;
  
- 	status = kstrtol(buf, 0, &gpio);
- 	if (status < 0)
-@@ -468,6 +470,12 @@ static ssize_t export_store(struct class *class,
- 		pr_warn("%s: invalid GPIO %ld\n", __func__, gpio);
- 		return -EINVAL;
- 	}
-+	gc = desc->gdev->chip;
-+	offset = gpio_chip_hwgpio(desc);
-+	if (!gpiochip_line_is_valid(gc, offset)) {
-+		pr_warn("%s: GPIO %ld masked\n", __func__, gpio);
-+		return -EINVAL;
-+	}
+ 	/* Load word from unaligned pointer addr */
+ 	asm(
+@@ -61,9 +61,9 @@ static inline unsigned long load_unalign
+ 	"2:\n"
+ 	"	.pushsection .fixup,\"ax\"\n"
+ 	"	.align 2\n"
+-	"3:	and	%1, %2, #0x7\n"
+-	"	bic	%2, %2, #0x7\n"
+-	"	ldr	%0, [%2]\n"
++	"3:	bic	%1, %2, #0x7\n"
++	"	ldr	%0, [%1]\n"
++	"	and	%1, %2, #0x7\n"
+ 	"	lsl	%1, %1, #0x3\n"
+ #ifndef __AARCH64EB__
+ 	"	lsr	%0, %0, %1\n"
+@@ -73,7 +73,7 @@ static inline unsigned long load_unalign
+ 	"	b	2b\n"
+ 	"	.popsection\n"
+ 	_ASM_EXTABLE(1b, 3b)
+-	: "=&r" (ret), "=&r" (offset)
++	: "=&r" (ret), "=&r" (tmp)
+ 	: "r" (addr), "Q" (*(unsigned long *)addr));
  
- 	/* No extra locking here; FLAG_SYSFS just signifies that the
- 	 * request and export were done by on behalf of userspace, so
--- 
-2.30.2
-
+ 	return ret;
 
 
