@@ -2,152 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D95DE3646C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 17:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F153D3646C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 17:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239565AbhDSPJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 11:09:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232081AbhDSPJg (ORCPT
+        id S232546AbhDSPKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 11:10:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51520 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238717AbhDSPKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 11:09:36 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52887C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 08:09:06 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id m11so23380687pfc.11
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 08:09:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hANO9FC/Eqy7x+FqUY+Eg+GK+A5D7OA8qqUpVhz6pBc=;
-        b=kdJeLy959fNOuKxiroQcVOpawxEafqWiFZUUkpHihGfEQxevL2br8jYADTI99Hlkt0
-         pxi48YwShSMIGYOPYh19SRcKw0/qtKjHOQV5NZHG+GX3fdSH9rc/Ouut1LmJAMWfESyZ
-         nSsqU7qb1XMvGLjaeScqMEfymOKRe3oFN5h9wviXivc2hQBA5q2ZPRZBFb9g2WqmQVK1
-         G+Wz9+BBVFhBKwoL+EhblfYM+PcGh0+DJoIKjPWLd5d26fRiyKa1RFPaq72urIp3Mljh
-         Jdv5YUWT0YTiUMer7shX5JYUHOCJczBMI1/0L4KbuH5uuYKPtWl6XvJtdLw4ASYwNnxq
-         i1Pg==
+        Mon, 19 Apr 2021 11:10:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618845016;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hI87sxdqJ16RBIdh2vHXEls0wMx3i8lFsif1UQW1tq0=;
+        b=IEt0eAOK3UTNvDybHTg+83IuRbcWu9/72Ndhfv8/ld2umqPtEV9K/7m40qxWtdiIx7jWiI
+        7+SbnqhzsoVuLhKQDHSGIPSek9d2yEcfJRGcaAjL5v6UmwGZcFzMRqzfunYtj81Zfw8FzJ
+        veNEL+Gymtt+iC7AZRABIh0JD53iPJk=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-252-sQD-Dnt-O6ea-qYNivKJUA-1; Mon, 19 Apr 2021 11:10:15 -0400
+X-MC-Unique: sQD-Dnt-O6ea-qYNivKJUA-1
+Received: by mail-ed1-f71.google.com with SMTP id o4-20020a0564024384b0290378d45ecf57so11458504edc.12
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 08:10:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hANO9FC/Eqy7x+FqUY+Eg+GK+A5D7OA8qqUpVhz6pBc=;
-        b=a5x4cnPrpD/zJoOP0Mv7PQWT4uLHtkAqYzkKHMHCGFCU9UHs09Hh3KGsmRx3uuA2gk
-         +PUNeoI6u+pRa835JzEfCxvW/KmR16kYSt1QvKxUtWJWMeRqI6B0AvnJHul0KwsRF5Ga
-         SoxKvDl9OEi8eVby/rihaafrwWNfGzrOmcrxvWOIGfyiFUwBhILGqbGg0vxiosuhUXDh
-         wR0k6k3NMgCYWYPmLvnbORcxCygM5KERL1x8Lh3R4GJW7dSZI8mBtJc4Gybf6yb4gw4U
-         a3dZDP4kuOnUE5d6rwycRyrQuLreBSRxDSMDn7xGvSKiVs+Ds5vx7781bIkZw7bUz11m
-         j/ng==
-X-Gm-Message-State: AOAM531EbXmY/p1Vi3y5nqWVeApsBIbcdm5XjsxBTMDykMdwEp/07Rb0
-        r28k8o78hddvoarFMCeWVCt/8A==
-X-Google-Smtp-Source: ABdhPJwnF3cebcgAyO34u1tO2FNSwVgIH4GUuQL1co2FTQ++bMbkjJe/dIdeNDuTNanEN/8E7oFanw==
-X-Received: by 2002:a05:6a00:1687:b029:253:f417:4dba with SMTP id k7-20020a056a001687b0290253f4174dbamr20329863pfc.5.1618844945636;
-        Mon, 19 Apr 2021 08:09:05 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id gt22sm14457236pjb.7.2021.04.19.08.09.04
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=hI87sxdqJ16RBIdh2vHXEls0wMx3i8lFsif1UQW1tq0=;
+        b=Db3ijcfPHJI7FH7XIUKCDAsHKhKlLDAwS2U/MbcKSwx8DSWu4NEaTKNEXtZ2sFyL/H
+         yWYMQBFc/DZX3f1qA0vQqaAQxhamayqnwLFvcqEq+ciS4/A9C6kqv1YP5tynyoU7ETzu
+         WOH8hNcoJ6Tr+7TL9PPcmF3x8vs5MrnH6Gulhe/iT0mHPytUy3bSPcXjCFAloJYsBtjh
+         PjNMha3hL9ad/9nnpQdk5CBtvvpFBTEfySnMg0hcs+mo/IIDMc1egkyWMmTCCnxIuCS1
+         B29/yDKkjWhhO6BRWpSRoWPqPF3rlNA7mza4Jp4bxsZ89+uf+ARbOJyjj8imQW1cSDwd
+         Phlg==
+X-Gm-Message-State: AOAM5316DkgTjz7nqDB6pSKCphlZRKJvuzvT2iRnqcDBZcqCWtd88K0f
+        nLcKiOWbumlsIAshoF1qLfM52EPtYRoR7VDgAA6RH74mWq2wx7yAHImaaH4Jiab1wq8oT0hYcw2
+        pCXnd875aYF2tbjwPsllqWBGt
+X-Received: by 2002:a17:906:c08f:: with SMTP id f15mr22774814ejz.318.1618845013552;
+        Mon, 19 Apr 2021 08:10:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyJ1I7YAcUkAcUeW3VvI6Nfwos1rSwmYuqT8hvgJUrALLpnVMjlixToES3p/bGy6wencJmMCA==
+X-Received: by 2002:a17:906:c08f:: with SMTP id f15mr22774799ejz.318.1618845013404;
+        Mon, 19 Apr 2021 08:10:13 -0700 (PDT)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id w6sm10589579eje.107.2021.04.19.08.10.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 08:09:05 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 15:09:01 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Wanpeng Li <kernellwp@gmail.com>, Marc Zyngier <maz@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ben Gardon <bgardon@google.com>
-Subject: Re: [PATCH v2 09/10] KVM: Don't take mmu_lock for range invalidation
- unless necessary
-Message-ID: <YH2dDRBXJcbUcbLi@google.com>
-References: <20210402005658.3024832-1-seanjc@google.com>
- <20210402005658.3024832-10-seanjc@google.com>
- <CANRm+Cwt9Xs=13r9E4YWOhcE6oEJXmVrkKrv_wQ5jMUkY8+Stw@mail.gmail.com>
- <2a7670e4-94c0-9f35-74de-a7d5b1504ced@redhat.com>
+        Mon, 19 Apr 2021 08:10:12 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 17:10:10 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jorgen Hansen <jhansen@vmware.com>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Vishnu Dasa <vdasa@vmware.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH net] vsock/vmci: log once the failed queue pair allocation
+Message-ID: <20210419151010.7r52ckkxptiaa5gr@steredhat>
+References: <20210416104416.88997-1-sgarzare@redhat.com>
+ <5096E853-EB1A-40C0-B0E5-BDF2F8431998@vmware.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-In-Reply-To: <2a7670e4-94c0-9f35-74de-a7d5b1504ced@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5096E853-EB1A-40C0-B0E5-BDF2F8431998@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021, Paolo Bonzini wrote:
-> On 19/04/21 10:49, Wanpeng Li wrote:
-> > I saw this splatting:
-> > 
-> >   ======================================================
-> >   WARNING: possible circular locking dependency detected
-> >   5.12.0-rc3+ #6 Tainted: G           OE
-> >   ------------------------------------------------------
-> >   qemu-system-x86/3069 is trying to acquire lock:
-> >   ffffffff9c775ca0 (mmu_notifier_invalidate_range_start){+.+.}-{0:0},
-> > at: __mmu_notifier_invalidate_range_end+0x5/0x190
-> > 
-> >   but task is already holding lock:
-> >   ffffaff7410a9160 (&kvm->mmu_notifier_slots_lock){.+.+}-{3:3}, at:
-> > kvm_mmu_notifier_invalidate_range_start+0x36d/0x4f0 [kvm]
-> 
-> I guess it is possible to open-code the wait using a readers count and a
-> spinlock (see patch after signature).  This allows including the
-> rcu_assign_pointer in the same critical section that checks the number
-> of readers.  Also on the plus side, the init_rwsem() is replaced by
-> slightly nicer code.
+On Fri, Apr 16, 2021 at 12:06:18PM +0000, Jorgen Hansen wrote:
+>
+>
+>On 16 Apr 2021, at 12:44, Stefano Garzarella <sgarzare@redhat.com<mailto:sgarzare@redhat.com>> wrote:
+>
+>VMCI feature is not supported in conjunction with the vSphere Fault
+>Tolerance (FT) feature.
+>
+>VMware Tools can repeatedly try to create a vsock connection. If FT is
+>enabled the kernel logs is flooded with the following messages:
+>
+>   qp_alloc_hypercall result = -20
+>   Could not attach to queue pair with -20
+>
+>"qp_alloc_hypercall result = -20" was hidden by commit e8266c4c3307
+>("VMCI: Stop log spew when qp allocation isn't possible"), but "Could
+>not attach to queue pair with -20" is still there flooding the log.
+>
+>Since the error message can be useful in some cases, print it only once.
+>
+>Fixes: d021c344051a ("VSOCK: Introduce VM Sockets")
+>Signed-off-by: Stefano Garzarella <sgarzare@redhat.com<mailto:sgarzare@redhat.com>>
+>---
+>net/vmw_vsock/vmci_transport.c | 3 +--
+>1 file changed, 1 insertion(+), 2 deletions(-)
+>
+>diff --git a/net/vmw_vsock/vmci_transport.c b/net/vmw_vsock/vmci_transport.c
+>index 8b65323207db..1c9ecb18b8e6 100644
+>--- a/net/vmw_vsock/vmci_transport.c
+>+++ b/net/vmw_vsock/vmci_transport.c
+>@@ -568,8 +568,7 @@ vmci_transport_queue_pair_alloc(struct vmci_qp **qpair,
+>      peer, flags, VMCI_NO_PRIVILEGE_FLAGS);
+>out:
+>if (err < 0) {
+>- pr_err("Could not attach to queue pair with %d\n",
+>-       err);
+>+ pr_err_once("Could not attach to queue pair with %d\n", err);
+>err = vmci_transport_error_to_vsock_error(err);
+>}
+>
+>—
+>2.30.2
+>
+>
+>Thanks a lot for fixing this.
 
-Ugh, the count approach is nearly identical to Ben's original code.  Using a
-rwsem seemed so clever :-/
+You're welcome!
 
-> IIUC this could be extended to non-sleeping invalidations too, but I
-> am not really sure about that.
+>
+>Reviewed-by: Jorgen Hansen <jhansen@vmware.com<mailto:jhansen@vmware.com>>
+>
 
-Yes, that should be fine.
+Thanks for the review!
+Patchwork didn't like it, I think there was some problem with your email 
+client putting `<mailto:...>` links.
 
-> There are some issues with the patch though:
-> 
-> - I am not sure if this should be a raw spin lock to avoid the same issue
-> on PREEMPT_RT kernel.  That said the critical section is so tiny that using
-> a raw spin lock may make sense anyway
+I think it had to be:
 
-If using spinlock_t is problematic, wouldn't mmu_lock already be an issue?  Or
-am I misunderstanding your concern?
+Reviewed-by: Jorgen Hansen <jhansen@vmware.com>
 
-> - this loses the rwsem fairness.  On the other hand, mm/mmu_notifier.c's
-> own interval-tree-based filter is also using a similar mechanism that is
-> likewise not fair, so it should be okay.
+Thanks,
+Stefano
 
-The one concern I had with an unfair mechanism of this nature is that, in theory,
-the memslot update could be blocked indefinitely.
-
-> Any opinions?  For now I placed the change below in kvm/queue, but I'm
-> leaning towards delaying this optimization to the next merge window.
-
-I think delaying it makes sense.
-
-> @@ -1333,9 +1351,22 @@ static struct kvm_memslots *install_new_memslots(struct kvm *kvm,
->  	WARN_ON(gen & KVM_MEMSLOT_GEN_UPDATE_IN_PROGRESS);
->  	slots->generation = gen | KVM_MEMSLOT_GEN_UPDATE_IN_PROGRESS;
-> -	down_write(&kvm->mmu_notifier_slots_lock);
-> +	/*
-> +	 * This cannot be an rwsem because the MMU notifier must not run
-> +	 * inside the critical section.  A sleeping rwsem cannot exclude
-> +	 * that.
-
-How on earth did you decipher that from the splat?  I stared at it for a good
-five minutes and was completely befuddled.
-
-> +	 */
-> +	spin_lock(&kvm->mn_invalidate_lock);
-> +	prepare_to_rcuwait(&kvm->mn_memslots_update_rcuwait);
-> +	while (kvm->mn_active_invalidate_count) {
-> +		set_current_state(TASK_UNINTERRUPTIBLE);
-> +		spin_unlock(&kvm->mn_invalidate_lock);
-> +		schedule();
-> +		spin_lock(&kvm->mn_invalidate_lock);
-> +	}
-> +	finish_rcuwait(&kvm->mn_memslots_update_rcuwait);
->  	rcu_assign_pointer(kvm->memslots[as_id], slots);
-> -	up_write(&kvm->mmu_notifier_slots_lock);
-> +	spin_unlock(&kvm->mn_invalidate_lock);
->  	synchronize_srcu_expedited(&kvm->srcu);
-> 
