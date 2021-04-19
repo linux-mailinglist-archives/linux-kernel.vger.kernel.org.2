@@ -2,154 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9085363EA6
+	by mail.lfdr.de (Postfix) with ESMTP id 026CD363EA1
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 11:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238611AbhDSJhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 05:37:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39896 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237771AbhDSJhH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 05:37:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE5486101D;
-        Mon, 19 Apr 2021 09:36:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618824997;
-        bh=gKvvGKT7gwRRGsoZvfcNRGcz0Uq+afSf3EpowR/OLNc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P3lkwvjW/R0feyjsaGtC46WUvSA5fINd83XuQt+ZESQgLmLjszsOUu+LDUHEcKzFK
-         sigplCcojQ4mBEu6rER8dXQGEZqUGKDoigx7QfRx9QLVtR+aRgfcwkGniPnNZcwK1Y
-         esYRQZkAPosCP1G+VuLB3y59ckxByt6ogqqNClQC0M2eiZ92c2ENWNcdwDNmkJaobH
-         Q6eesP5D30kBeyc+SuhpDLAJuFI3pxzWfEnJtG1/zLkGk9o8TBN3uAS9cvmcCI24LT
-         EfVn9mOhYvqkGR2hQgso12puyTHP9lzT9F9imFG/PQhcsS3AMAg4DeKSgo5cUC9n88
-         820gRflNkMWuw==
-Date:   Mon, 19 Apr 2021 12:36:19 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH] secretmem: optimize page_is_secretmem()
-Message-ID: <YH1PE4oWeicpJT9g@kernel.org>
-References: <20210419084218.7466-1-rppt@kernel.org>
- <3b30ac54-8a92-5f54-28f0-f110a40700c7@redhat.com>
+        id S238599AbhDSJhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 05:37:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230272AbhDSJhA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 05:37:00 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6174EC06174A;
+        Mon, 19 Apr 2021 02:36:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Zoaz+arrG2VoAZjnSLaqhvfG02ozKoF1dTuBza5it3M=; b=W4oysXhUdmJlxpQdkFI2LUz+wM
+        8LokRUVSAv+dEETIHyKSaa6m0HVnUZbebSF23/G65TXk1zPxRuW4lOLHj2p1bmx8Mgjl0RIWhtlN5
+        LvRCoRNcoQfhZksJGhKmajbV27npBzi7xOVMEMZ6OVLBUHIeTeuXXMt2Ctc81SWhCVTqM9D7wP3pM
+        GmgpI64jyAMnsgL3JI84E1C9vvZElMrQSV8s1cZpKbS2cl/FHYmFarkc+pLTAhi/otwFWmxhR3/VT
+        1ZnhAhY4vwyiqyDNDE9O78PwLX/h4eKlL6rsznTl1o/1Zw9DXQdBBzDeRfhzgmrVHkuB4qORDjM/s
+        7IpOoiCg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lYQKQ-009ZJU-N7; Mon, 19 Apr 2021 09:36:26 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DD1C130021C;
+        Mon, 19 Apr 2021 11:36:25 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C0E762015BC7C; Mon, 19 Apr 2021 11:36:25 +0200 (CEST)
+Date:   Mon, 19 Apr 2021 11:36:25 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Wedson Almeida Filho <wedsonaf@google.com>, ojeda@kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+Message-ID: <YH1PGfC1qSjKB6Ho@hirez.programming.kicks-ass.net>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
+ <YHj02M3jMSweoP4l@google.com>
+ <YHk4DZE1ZWTiBB1f@hirez.programming.kicks-ass.net>
+ <aa6e44ab-e223-73aa-279e-8103732460ac@redhat.com>
+ <YH0yCTgL0raKrmYg@hirez.programming.kicks-ass.net>
+ <7287eac3-f492-bab1-9ea8-b89ceceed560@redhat.com>
+ <YH0+0VQ1XC8+rv20@hirez.programming.kicks-ass.net>
+ <3a874b15-5c21-9ed9-e5c3-995f915cba79@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3b30ac54-8a92-5f54-28f0-f110a40700c7@redhat.com>
+In-Reply-To: <3a874b15-5c21-9ed9-e5c3-995f915cba79@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 11:15:02AM +0200, David Hildenbrand wrote:
-> On 19.04.21 10:42, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > Kernel test robot reported -4.2% regression of will-it-scale.per_thread_ops
-> > due to commit "mm: introduce memfd_secret system call to create "secret"
-> > memory areas".
-> > 
-> > The perf profile of the test indicated that the regression is caused by
-> > page_is_secretmem() called from gup_pte_range() (inlined by gup_pgd_range):
-> > 
-> >   27.76  +2.5  30.23       perf-profile.children.cycles-pp.gup_pgd_range
-> >    0.00  +3.2   3.19 ± 2%  perf-profile.children.cycles-pp.page_mapping
-> >    0.00  +3.7   3.66 ± 2%  perf-profile.children.cycles-pp.page_is_secretmem
-> > 
-> > Further analysis showed that the slow down happens because neither
-> > page_is_secretmem() nor page_mapping() are not inline and moreover,
-> > multiple page flags checks in page_mapping() involve calling
-> > compound_head() several times for the same page.
-> > 
-> > Make page_is_secretmem() inline and replace page_mapping() with page flag
-> > checks that do not imply page-to-head conversion.
-> > 
-> > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > ---
-> > 
-> > @Andrew,
-> > The patch is vs v5.12-rc7-mmots-2021-04-15-16-28, I'd appreciate if it would
-> > be added as a fixup to the memfd_secret series.
-> > 
-> >   include/linux/secretmem.h | 26 +++++++++++++++++++++++++-
-> >   mm/secretmem.c            | 12 +-----------
-> >   2 files changed, 26 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/include/linux/secretmem.h b/include/linux/secretmem.h
-> > index 907a6734059c..b842b38cbeb1 100644
-> > --- a/include/linux/secretmem.h
-> > +++ b/include/linux/secretmem.h
-> > @@ -4,8 +4,32 @@
-> >   #ifdef CONFIG_SECRETMEM
-> > +extern const struct address_space_operations secretmem_aops;
-> > +
-> > +static inline bool page_is_secretmem(struct page *page)
-> > +{
-> > +	struct address_space *mapping;
-> > +
-> > +	/*
-> > +	 * Using page_mapping() is quite slow because of the actual call
-> > +	 * instruction and repeated compound_head(page) inside the
-> > +	 * page_mapping() function.
-> > +	 * We know that secretmem pages are not compound and LRU so we can
-> > +	 * save a couple of cycles here.
-> > +	 */
-> > +	if (PageCompound(page) || !PageLRU(page))
-> > +		return false;
+On Mon, Apr 19, 2021 at 11:02:12AM +0200, Paolo Bonzini wrote:
+> > void writer(void)
+> > {
+> >      atomic_store_explicit(&seq, seq+1, memory_order_relaxed);
+> >      atomic_thread_fence(memory_order_acquire);
 > 
-> I'd assume secretmem pages are rare in basically every setup out there. So
-> maybe throwing in a couple of likely()/unlikely() might make sense.
+> This needs to be memory_order_release.  The only change in the resulting
+> assembly is that "dmb ishld" becomes "dmb ish", which is not as good as the
+> "dmb ishst" you get from smp_wmb() but not buggy either.
 
-I'd say we could do unlikely(page_is_secretmem()) at call sites. Here I can
-hardly estimate which pages are going to be checked.
- 
-> > +
-> > +	mapping = (struct address_space *)
-> > +		((unsigned long)page->mapping & ~PAGE_MAPPING_FLAGS);
-> > +
-> 
-> Not sure if open-coding page_mapping is really a good idea here -- or even
-> necessary after the fast path above is in place. Anyhow, just my 2 cents.
+Yuck! And that is what requires the insides to be
+atomic_store_explicit(), otherwise this fence doesn't have to affect
+them.
 
-Well, most if the -4.2% of the performance regression kbuild reported were
-due to repeated compount_head(page) in page_mapping(). So the whole point
-of this patch is to avoid calling page_mapping().
+I also don't see how this is better than seq_cst.
 
-> The idea of the patch makes sense to me.
-
--- 
-Sincerely yours,
-Mike.
+But yes, not broken, but also very much not optimal.
