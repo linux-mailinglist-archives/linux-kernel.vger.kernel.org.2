@@ -2,225 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1367A363A70
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 06:27:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE80363A74
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 06:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231836AbhDSE2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 00:28:06 -0400
-Received: from mail-bn7nam10on2073.outbound.protection.outlook.com ([40.107.92.73]:32941
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        id S232148AbhDSE2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 00:28:12 -0400
+Received: from mail-eopbgr00061.outbound.protection.outlook.com ([40.107.0.61]:63985
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229627AbhDSE17 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 00:27:59 -0400
+        id S229473AbhDSE2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 00:28:02 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=adWySiZVDsl9jKQSmekdJTIZsL5k61LU/aJKNKi/EleRYS7SQl/uQbaPMKbSK7+jYTytb2UTgyCmbEO7VduH7vFgP2PwYPX9zYyMK7FSCkVLwUcr9b5yd3GuSQA5D6iI9JZU5rfHNDyvUNMh1ejFu0SqfAiBH7KwEWvN0QSSqHu5XH5myAltPMwnU3LNrzDaoOl+jHUmHRc/EQxRCyavyyyE/lEk0JJHR6XBa0rfh5VPjENc8REuOhJQQcq3yoGV4n15LvOQ6nx5Ec8SxOoo0D1LD6GkGeTJLsJ7eeKgxY4oFeiNF6cp/e9Z622PnONKjj0vWGA2P1IMlq5EsPQwqg==
+ b=BIfUylbF1u6g42Ih0vw50xP6D7xRSLWW2I9zIv8xpPfI+8QTA+Yvqs8rcEhgkShhN1F5VCTfikyuN00lU7MYQpLyAi61zSBXde+lBtKtZ91KF4JkDryrkKImQc4jtArTgkvv22rGSlWBi+316rG07ozzVX8yH+lrNaB4Y76q0iQ4zUQW6K3d9JzIJkWsU1QsvjfqMy2v6XzsDlch5VnExSBZi1Fditx7GwrKrLI7E/sfpEmjrnivx/IpLa9EXSocY6lD/yML7X4WAKNF1EY300fyMYpWitucXgZ/XL8CLbbwDx1OQw7Fi2QoTb2TSXTWyC1GIFPgb1qOvwl4cLPWlA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N0erZy9AbAtMDfXhaAalVogem3onfooOOfNnYI6hHLc=;
- b=jDLPa6LGeydoEPkDPSAS3Zs6FCJ0n2NDAXjjQMpou++JVtX3Kx0fcynI5756q5BdD041+tO942gpUs2++5XciVjB45ffDIE30e7gJN9l5mRR6Z0u1J/Pk61252XyWDIiQ+lXvtzSNucqboPtpnL80oFDEG1BwbYp3uYvuQs4S++YRSj4ZriEItIEcMNtU95eCHz8AfeesEzkVl3wd/u8qLEKJ28HqxPxjprC3QuqiEI5Fxq1Ps96lDL6SMHcgGnI4kf/6EUmqY5ZuTZGgkxm8Pp1l9CoyRQX5tFM9gBZEtoZju7dJj4tR/KOGHKR1sJThx3AbOaPnjPix6hxOAdxeA==
+ bh=EGsFEeNS52w1ZRf0E7RmTdDzsa/XGegT9oBy+olcLfY=;
+ b=hGFFrgJo2nl82ALdcCWukVL33RkUM6iFcTbkS0Q6cbKM62pdvYnFsqLLOtlF+2o2VdYauLw4dwP2SOeHtc3aZK7MlLjtddm7LhJTrWTkIj6VkevHMcvevTOm0Iaa1xW8T6J+3i8PR8ODJ/vsRcMpNN5h52SiwRYematUkUoYYgadgMtAVfcWh/leBm2L8Tg51aG1SFFROj7+y2jsXIW81DOM/gOKW31vHMKMqX6qmnynX8F75iYwa4zb9oeycrCf1V0DNBxu5cGiiQ81HZj1l4KbQ6UDlERn6Pd76e3un4zKWXsAtWQNRqdFc0IAvJ55fTvey3xfXI4mXsOkubJDog==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N0erZy9AbAtMDfXhaAalVogem3onfooOOfNnYI6hHLc=;
- b=h9pkK0zSyh8WbhRsDYviJRzS7CbCBULcMb6Lp6lh3nEMcCgYnGSRUkXPH04BZ93JTtDxYeDJUbX9bU6d61xk2cFbTJEoMIqS3E8Y/WSrrR0oa0cYX11C78kCWHGdibic8gJDC7j8h+c1JpMO4oJzPLBsNmJ/ixpAunJbKjtX6r8=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com (2603:10b6:5:2ae::14)
- by DM6PR11MB2761.namprd11.prod.outlook.com (2603:10b6:5:c0::16) with
+ bh=EGsFEeNS52w1ZRf0E7RmTdDzsa/XGegT9oBy+olcLfY=;
+ b=j+dOYrXfIk7Kfa0Fobi8pj2zSP1kRkdYvZPRfIcM8F+/XY2p5O6m146Lg8uw11qr8f1XCxfgzTkNhGiUBKIwzqfro+IOGzrsiOB/EFGQjxCT+tmokcK5gMw090mHbYn4cAawbUShERe9QsYw1J905qk2uPKxj/G1mOjHNwIbMt4=
+Authentication-Results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=oss.nxp.com;
+Received: from AM6PR04MB6053.eurprd04.prod.outlook.com (2603:10a6:20b:b9::10)
+ by AS8PR04MB7912.eurprd04.prod.outlook.com (2603:10a6:20b:2ae::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Mon, 19 Apr
- 2021 04:27:20 +0000
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::3d20:ed37:cfec:4ad3]) by DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::3d20:ed37:cfec:4ad3%6]) with mapi id 15.20.4042.024; Mon, 19 Apr 2021
- 04:27:19 +0000
-From:   Paul Gortmaker <paul.gortmaker@windriver.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH] sched/isolation: reconcile rcu_nocbs= and nohz_full=
-Date:   Mon, 19 Apr 2021 00:26:59 -0400
-Message-Id: <20210419042659.1134916-1-paul.gortmaker@windriver.com>
-X-Mailer: git-send-email 2.25.1
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Mon, 19 Apr
+ 2021 04:27:06 +0000
+Received: from AM6PR04MB6053.eurprd04.prod.outlook.com
+ ([fe80::b034:690:56aa:7b18]) by AM6PR04MB6053.eurprd04.prod.outlook.com
+ ([fe80::b034:690:56aa:7b18%4]) with mapi id 15.20.4042.024; Mon, 19 Apr 2021
+ 04:26:59 +0000
+From:   "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
+To:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        horia.geanta@nxp.com, aymen.sghaier@nxp.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net, tony@atomide.com,
+        geert+renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
+        vkoul@kernel.org, peter.ujfalusi@gmail.com, a.hajda@samsung.com,
+        narmstrong@baylibre.com, robert.foss@linaro.org, airlied@linux.ie,
+        daniel@ffwll.ch, khilman@baylibre.com, tomba@kernel.org,
+        jyri.sarha@iki.fi, joro@8bytes.org, will@kernel.org,
+        mchehab@kernel.org, ulf.hansson@linaro.org,
+        adrian.hunter@intel.com, kishon@ti.com, kuba@kernel.org,
+        linus.walleij@linaro.org, Roy.Pledge@nxp.com, leoyang.li@nxp.com,
+        ssantosh@kernel.org, matthias.bgg@gmail.com, edubezval@gmail.com,
+        j-keerthy@ti.com, balbi@kernel.org, linux@prisktech.co.nz,
+        stern@rowland.harvard.edu, wim@linux-watchdog.org,
+        linux@roeck-us.net
+Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, dmaengine@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, linux-media@vger.kernel.org,
+        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-phy@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-staging@lists.linux.dev,
+        linux-mediatek@lists.infradead.org, linux-pm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org
+Subject: [RFC v1 PATCH 0/3] support soc_device_match to return -EPROBE_DEFER
+Date:   Mon, 19 Apr 2021 12:27:19 +0800
+Message-Id: <20210419042722.27554-1-alice.guo@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [128.224.252.2]
-X-ClientProxiedBy: MN2PR20CA0008.namprd20.prod.outlook.com
- (2603:10b6:208:e8::21) To DM6PR11MB4545.namprd11.prod.outlook.com
- (2603:10b6:5:2ae::14)
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: AM0PR02CA0207.eurprd02.prod.outlook.com
+ (2603:10a6:20b:28f::14) To AM6PR04MB6053.eurprd04.prod.outlook.com
+ (2603:10a6:20b:b9::10)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from yow-cube1.wrs.com (128.224.252.2) by MN2PR20CA0008.namprd20.prod.outlook.com (2603:10b6:208:e8::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Mon, 19 Apr 2021 04:27:19 +0000
+Received: from nxf55104-OptiPlex-7060.ap.freescale.net (119.31.174.71) by AM0PR02CA0207.eurprd02.prod.outlook.com (2603:10a6:20b:28f::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.19 via Frontend Transport; Mon, 19 Apr 2021 04:26:40 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9ccf2ad2-f8eb-4f36-d284-08d902eb6ba4
-X-MS-TrafficTypeDiagnostic: DM6PR11MB2761:
+X-MS-Office365-Filtering-Correlation-Id: 9896ff12-c5b4-421f-f9a1-08d902eb5f30
+X-MS-TrafficTypeDiagnostic: AS8PR04MB7912:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR11MB276115F4209A0934D9E7DBAD83499@DM6PR11MB2761.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Microsoft-Antispam-PRVS: <AS8PR04MB7912513CE4C6A5F1A16187D3A3499@AS8PR04MB7912.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RgNK5ex1++N3zeUxLX/G4yaJPnHLYzRd6v5aJnvw2Zcxrqm+nzAgii840xkUyXd4nyzIf2ad3h4tBtaXPym+Z3uGZfeC2hh01fLOOfxm846oiHFAXatZnSxNL86KL0OMYDhD6mx9ELekHMQwGANifpq98F3oEog/fCMpO5BPwkF0GyNTvUPULUPns5TuCq+L2e7qqBnIH2O0gxLRIrxi+ftoGylDfAv052iikKF4fcmhx2IpUtrMhcHCm4i+Vn/yL+uBfcnn21kUNXyZRU1J7UQ+3jfuxahMerl7z0dcW2qTU5glTnw2kBVZuTR4iM1e6QKpvFikJ0TZEM86eQZsvZVOa1KD/nzuJ0mYuwQRiCZuIcc7c6YoZ/vo+T5jU0we9C3acDJlifkIuiEbmekYk9exUEeGhJ2n+jqFvgJcz/bQ8GKTT9vKxoznsRn8EAgxOoEjLKrPKmZqp/h/ZW1NIJ/dpEwUFWnLGH8Z/4KZeHocvyA+KsUDU3Ve8aTGtRyE4ViDH7K9zB3UVqufEsNc0SGIuVFJT0lQxowl2P1dK+CbpWBrvfGviLLYkvz3ngm2lktno/vebZ92TjTLJg5c7yjccKa50y53bsJmcjQzxmJjPcu8vQWqRSIT4oKYsiTUXLu7w/hprqCyBpiEqzNcNg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4545.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39840400004)(136003)(376002)(366004)(346002)(956004)(2906002)(38100700002)(38350700002)(6506007)(478600001)(6512007)(1076003)(44832011)(66556008)(8676002)(36756003)(26005)(52116002)(6486002)(54906003)(316002)(186003)(66476007)(16526019)(6916009)(66946007)(83380400001)(4326008)(6666004)(8936002)(5660300002)(86362001)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?52pFJERomf02cKaZJwzFHJf+14aIb2/VEDqpk3ehWW/Rhyb+5EPrciFOpaoY?=
- =?us-ascii?Q?6TXsT/0lMJDYMokAtMlPpllmBZj5qTvbloFWhmG4nQqTjCMWIOovijRgyar6?=
- =?us-ascii?Q?DooSTu2TrlgU7GAqBdwVGtfHuyZLabA90QLQq765NDJfQD02Rl2H/IItG72E?=
- =?us-ascii?Q?gn4EOJLOCuLb2Y7npMHaXDpxBdsGd014+num10Iu38+QNmdVN+yp+DGpYLk3?=
- =?us-ascii?Q?+6jpql2NUJF+rIidxXQpIauur3LR5J29VPZPdaDCdeA+7yU+n1rHXDwiegKE?=
- =?us-ascii?Q?sKfOdmhR5dPEIXHfZuj/NgzI63VsWfJAv58L4kB3nxun9scTXxtuGEIYxMnc?=
- =?us-ascii?Q?hejFBPPf7XhLHHps1kzIChyWgqkr8l+V0u3OboSpy+N9GOLsSB7H229fRiJg?=
- =?us-ascii?Q?st/lBsvwbKF879VG55jYzlvfC8UyCpVwSYhnZPCIcM7zD9VUSBahPBDnMZJb?=
- =?us-ascii?Q?Z/Cmg7yt12MsP8MtSNvYXchpl18/Ei6xT4HdVZZ+6hsc3l4MAq6jA5BAZukN?=
- =?us-ascii?Q?jASzbrHOlFrMFOzEVgpAmNVKbdyo3Xu/02hmyXT10+lM/B67YD7iaHs4QkT8?=
- =?us-ascii?Q?hxUhroXH+TfBMKhpO8u2foMXQUF04Dkx6B5RnzqglRcxphyerCdrKxJU4zHX?=
- =?us-ascii?Q?PZH3gdDGdlAsuFIqD+3tj39tm7DLbiTrUQLSRhTb9FtGwKTBLCHq1X5yWMVh?=
- =?us-ascii?Q?Xn+yle8g6o5PpuPpmfZ4rCmzn4w3zIwCmMyTka9BIjewSwZ+yLbqOFwG1f/c?=
- =?us-ascii?Q?p/Y8QIrpZDuoKABimoPhK8Qyrt7fgUmo5ihMOldRHFkVLhP72TQi3Sd1+Aua?=
- =?us-ascii?Q?mo41rvL0HjWMUcrlVSyNLdkHOH5s5lpHgA/LeEI1O1IO+uhS5iMyl1xQB6n7?=
- =?us-ascii?Q?f1FZLiypEAtwGGzsPUGnPhBpcCT5RBgDzD6upIwYbLEtsHShc5BXbjApQHbq?=
- =?us-ascii?Q?qp3ghXfUEeVaZJWslfFPDBf2itcYs56App2Rnrvq4JabNxqcepGiHe0v8oiy?=
- =?us-ascii?Q?YD1bQkPLTZlW/VgsbOPkNjouaS99Cub+PhESNNepzyxL3OdYTdBEaxhtxGor?=
- =?us-ascii?Q?VU5phn0rb8eoyOuvBzKNPi/sC80uD2pykeSS/BSMHB6HGu+3T3S8TeOZFdjO?=
- =?us-ascii?Q?ggb+xwJhg6ZCziqbqXbbc/NBZFNuDe//G+3pHa+cXzpYkg7m51xEzTBd9RPl?=
- =?us-ascii?Q?714JlEK5RrV5E16qU/iDFiwNawGK40ZldmpNtfTgKmLqiwHdgaLCylCcuwZr?=
- =?us-ascii?Q?yGSK8HRHMEYNR8q2oDiApCaoBpy274whrk2t1vLJq1Ud+2CV8gl+CVFQBfKw?=
- =?us-ascii?Q?nYeHGB3/e2yqdkYdp/7/fIJp?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9ccf2ad2-f8eb-4f36-d284-08d902eb6ba4
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4545.namprd11.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: AK1XnEs7EIU/2ApqujL4ENEsdD7cfE1FbgcvAaPgea6Hbv0vJgmkFlrJQc9Zwe0hRvg6ODWJqw7DeYSJRkwBUI6Dg9CvBg76tQsc/zECgFN9N0rU1PraAub2z1SmPXooxUEKWedxX5mry6PHesrXtLa56siBXEvmuwr/ay92Ty2P7nHxHjCjlwvncBhFzscBGAd2Tlz6ly4vsWI7jjwFt5zemq9s1tZzujO+pRaFFN0jLicObMUjXbOCYpNjld7qp3nLx4wkcfdipmjFsCJXiTk+x7LXtjQ3SFz3tJFe1/gciMsGU9oMwC2wF7hUdL1RdpiZLDgJVep6zFnA56/ISZh0nJOUfxYyH5cueA1KZK3QNB6PMI7kZ0ex8+hoQL0dXjtTG6c4tOkauz1CuRnqiQ/2rBiwXb+SekuC44XZa1J4ady1C9t8Mg9honhFO5TtLtkNxiEbL90A14r7TxjM2Q61qy6OxOtFSpF1+lPl2Gkvxu+yivq0TNugxczd2YY6WAE1PONiwqP0D3oJlk28nEJrxZ1QsCEJrWIDpRmBdvt7cHDmn2IGnX0rbRNtHwm5Vj50Bwo2EmrqFvgMs/NwPESfADARD49yW+UCIFJAQxRl681Nbj7s55lka7wcQkZinoUggVYz1CbaryPIzm2Z/V/Nb1WtEpnxWWjL8aF5R7M=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6053.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(396003)(366004)(39860400002)(1076003)(66946007)(7406005)(478600001)(52116002)(66556008)(66476007)(2906002)(7366002)(7416002)(8936002)(921005)(8676002)(4326008)(5660300002)(16526019)(26005)(38100700002)(83380400001)(956004)(2616005)(38350700002)(6486002)(6666004)(6506007)(6512007)(186003)(316002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?aVdtSGVXV002Y2NaaDlsL2RhYzBTbFFsLzI0RnNqcmI3U2hjTTg1LzQvMEFx?=
+ =?utf-8?B?VE0ySXJiSmRSNEVPMG9SZ1p4OUxzb3hSbGkwK1VuZmJzcExSUkVXbmp1dUR1?=
+ =?utf-8?B?WlNoVFVCdmFpdEZ5KzNjV3ZhdkwrUG10L3IzQ3ViMndabVJPMHVjTUlLb210?=
+ =?utf-8?B?OTdnNFhLVUd6TEpwajVpdzdFaFRzVTVaTXUvMWFwa1J3V0RuS3FBalV6bkMw?=
+ =?utf-8?B?REtXbEh0RGR4cGlxMHpxN1ZmNFBmT3dBR285Q2k2QjZUSU9mUDZ4VzgvelpR?=
+ =?utf-8?B?bVhwVGZsT0hITTdha09TVnoyYnZCWVQvdUFhemJibnB4UXp1UTd3Z21xWHNO?=
+ =?utf-8?B?S2VDRm1oandzWHpTVjc0Qks2NFpuYmsxaUpRRlMyTTVhVHNvTXVJN0cvZURD?=
+ =?utf-8?B?c294ODZVaDdHb2ZRaVRNQXV4N1B4dmgxcHM5NXh4UFRVYWlGdTRmeTYwVjRX?=
+ =?utf-8?B?elpNU3VUMzNud2UrNFlxRFpQUytHVmorOFRRb2N6dlVMQ0t4Vmdua2lVQy80?=
+ =?utf-8?B?dWRZMDBJdWNZRjJZRlVRWlZKczdaK1hPSFlxOWJ0cC94aFo0eEk4czhkZDA2?=
+ =?utf-8?B?Q0NCdExiWXFGb1B3U3YyeXFRYjZjdmpTM1RJYTZIaVhiY1JTRDFVcXNobUIr?=
+ =?utf-8?B?Q3dDS2xHTHNZd1A5dy9rS29Jc0MvSVhMeU9LeFU1WllrSi9ZVFNoQWJvcHNw?=
+ =?utf-8?B?NlpKOFZXdnd1Y2YzcEJoOW1JYTVMRFhwcjdJQUlKRUp1S1RPUmd5L0R5cXAz?=
+ =?utf-8?B?WVRSbnRsNmZUM2hTeVRHdFdpdCtIMkJkZ0x2aitSdTJPVjNCTVRaU0w1dzBR?=
+ =?utf-8?B?SnNqZHBVREdVb25lVHVzTlpZSFcxMjRGb2JZNFhvU1hjc0tXWHk3clJMTEt5?=
+ =?utf-8?B?YVdqNEp0NENmT0RTcTNFZ3dWUjc4Z0UwUkdTSGdKeUNXRi94ZEI0RFQrTTdW?=
+ =?utf-8?B?UVVZY1pTSVpyMkg5VEZVM1hMUmdXTWF4WDJ3UTN3dEZzRmpEQUhrMTNtY2tM?=
+ =?utf-8?B?dHVOSitKdWpYWWcybmprNUl1N2Eyclp1T29rUlRsVnNIdzJmeVBSdjloTVhN?=
+ =?utf-8?B?RXk2cXZIR2RsQ2pBMHRreUw1TnBLYUZOWENzSGtTUXlnZlFnSDJUNXR1QzVV?=
+ =?utf-8?B?YVJlbXZFMFVFTXZjOVRtQlJlMkJXTzNad0NPRjlkRGd5UzlXdGRMd2FEdUFk?=
+ =?utf-8?B?bTJSVGVueTk1Q290MmFSN1dkSzlCYWxhVnhqZUdYb3Q1RTQ1eldkbkdVa1N6?=
+ =?utf-8?B?TXovZERmclBxY0xjemkrbUNHVjRNMU1GOW4vMXFjc3pnR0wrd201dmpqSllU?=
+ =?utf-8?B?SVIxV2Y2MlhaU2svdzVvMldRcUdyK2hRVitkUUpPeVd1S2hNNlRxMkpSUDE1?=
+ =?utf-8?B?OUY0UEFoUmNEMWVCdS9aeUFURG56bngrYWVSMUJoTFhSMmVqdjAvM05mblVn?=
+ =?utf-8?B?bVYxYm5LeWNXbWNGeHFZQXdBZlZHd2JXbTFhWVNWR2taTzZnQTZQV2hVOFhJ?=
+ =?utf-8?B?QjMyYXNTcy9ab0x3eHdhS3lUd2pQUkJZWXFocU14Q2tTTGFwY3ZvZWlzYkpk?=
+ =?utf-8?B?ZkFwMXI0VHlxRXZ5SkdtZW1iMW04blZWTlVuWWRtV1MydkdTYUp4UDF0ZkVq?=
+ =?utf-8?B?V3hJSm1UQ0Jqc2xqSkNXZ2ZWT05JdVBKQStUVzI5RWRwU2dvRVcybXh5cWFy?=
+ =?utf-8?B?TllJSDNqVENVSExBZmVSd3g0NzJvenVsUUZVU3dpbGhISjd6WmlmYytnNEpN?=
+ =?utf-8?Q?QGHOnxCgvOAwMkAbgHRHefjr/WYqcT969phCLa9?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9896ff12-c5b4-421f-f9a1-08d902eb5f30
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6053.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2021 04:27:19.7772
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Apr 2021 04:26:59.4616
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qjT9DD/MU4vILizfutmCqkp79ZB3aWk/5n/fhdcWlbHXoKDrGIyP5LsPT1ioaVihu00cyGs7ImLtmId3VTCsdGnk0nx+/QmWqA4jtkxRGdM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB2761
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1IYHRUj96ZFPUGM224m5kKukwj6GivUjSaU/anOesbfoQxqSi1R6BEaAG0+PdVaFc474JX9J+PecEtTuEmLjOw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7912
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have a mismatch between RCU and isolation -- in relation to what is
-considered the maximum valid CPU number.
+From: Alice Guo <alice.guo@nxp.com>
 
-This matters because nohz_full= and rcu_nocbs= are joined at the hip; in
-fact the former will enforce the latter.  So we don't want a CPU mask to
-be valid for one and denied for the other.
+In patch "soc: imx8m: change to use platform driver", change soc-imx8m.c to use
+module platform driver and use NVMEM APIs to ocotp register, the reason is that
+directly reading ocotp egister causes kexec kernel hang because kernel will
+disable unused clks after kernel boots up. This patch makes the SoC driver
+ready. This patch makes the SoC driver ready later than before, and causes device
+depends on soc_device_match() for initialization are affected, resulting in
+kernel boot error.
 
-The difference 1st appeared as of v4.15; further details are below.
+CAAM driver is one of these affected drivers. It uses soc_device_match() to find
+the first matching entry of caam_imx_soc_table, if none of them match, the next
+instruction will be executed without any processing because CAAM driver is used
+not only on i.MX and LS, but also PPC and Vybrid. We hope that
+soc_device_match() could support to return -EPROBE_DEFER(or some other error
+code, e.g. -ENODEV, but not NULL) in case of “no SoC device registered” to SoC
+bus. We tried it and updated all the code that is using soc_device_match()
+throughout the tree.
 
-As it is confusing to anyone who isn't looking at the code regularly, a
-reminder is in order; three values exist here:
+Alice Guo (3):
+  drivers: soc: add support for soc_device_match returning -EPROBE_DEFER
+  caam: add defer probe when the caam driver cannot identify SoC
+  driver: update all the code that use soc_device_match
 
-CONFIG_NR_CPUS	- compiled in maximum cap on number of CPUs supported.
-nr_cpu_ids 	- possible # of CPUs (typically reflects what ACPI says)
-cpus_present	- actual number of present/detected/installed CPUs.
+ drivers/base/soc.c                            |  5 +++++
+ drivers/bus/ti-sysc.c                         |  2 +-
+ drivers/clk/renesas/r8a7795-cpg-mssr.c        |  4 +++-
+ drivers/clk/renesas/rcar-gen2-cpg.c           |  2 +-
+ drivers/clk/renesas/rcar-gen3-cpg.c           |  2 +-
+ drivers/crypto/caam/ctrl.c                    |  3 +++
+ drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c       |  7 ++++++-
+ drivers/dma/ti/k3-psil.c                      |  3 +++
+ drivers/dma/ti/k3-udma.c                      |  2 +-
+ drivers/gpu/drm/bridge/nwl-dsi.c              |  2 +-
+ drivers/gpu/drm/meson/meson_drv.c             |  4 +++-
+ drivers/gpu/drm/omapdrm/dss/dispc.c           |  2 +-
+ drivers/gpu/drm/omapdrm/dss/dpi.c             |  4 +++-
+ drivers/gpu/drm/omapdrm/dss/dsi.c             |  3 +++
+ drivers/gpu/drm/omapdrm/dss/dss.c             |  3 +++
+ drivers/gpu/drm/omapdrm/dss/hdmi4_core.c      |  3 +++
+ drivers/gpu/drm/omapdrm/dss/venc.c            |  4 +++-
+ drivers/gpu/drm/omapdrm/omap_drv.c            |  3 +++
+ drivers/gpu/drm/rcar-du/rcar_du_crtc.c        |  4 +++-
+ drivers/gpu/drm/rcar-du/rcar_lvds.c           |  2 +-
+ drivers/gpu/drm/tidss/tidss_dispc.c           |  4 +++-
+ drivers/iommu/ipmmu-vmsa.c                    |  7 +++++--
+ drivers/media/platform/rcar-vin/rcar-core.c   |  2 +-
+ drivers/media/platform/rcar-vin/rcar-csi2.c   |  2 +-
+ drivers/media/platform/vsp1/vsp1_uif.c        |  4 +++-
+ drivers/mmc/host/renesas_sdhi_core.c          |  2 +-
+ drivers/mmc/host/renesas_sdhi_internal_dmac.c |  2 +-
+ drivers/mmc/host/sdhci-of-esdhc.c             | 21 ++++++++++++++-----
+ drivers/mmc/host/sdhci-omap.c                 |  2 +-
+ drivers/mmc/host/sdhci_am654.c                |  2 +-
+ drivers/net/ethernet/renesas/ravb_main.c      |  4 +++-
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c      |  2 +-
+ drivers/net/ethernet/ti/cpsw.c                |  2 +-
+ drivers/net/ethernet/ti/cpsw_new.c            |  2 +-
+ drivers/phy/ti/phy-omap-usb2.c                |  4 +++-
+ drivers/pinctrl/renesas/core.c                |  2 +-
+ drivers/pinctrl/renesas/pfc-r8a7790.c         |  5 ++++-
+ drivers/pinctrl/renesas/pfc-r8a7794.c         |  5 ++++-
+ drivers/soc/fsl/dpio/dpio-driver.c            | 13 ++++++++----
+ drivers/soc/renesas/r8a774c0-sysc.c           |  5 ++++-
+ drivers/soc/renesas/r8a7795-sysc.c            |  2 +-
+ drivers/soc/renesas/r8a77990-sysc.c           |  5 ++++-
+ drivers/soc/ti/k3-ringacc.c                   |  2 +-
+ drivers/staging/mt7621-pci/pci-mt7621.c       |  2 +-
+ drivers/thermal/rcar_gen3_thermal.c           |  4 +++-
+ drivers/thermal/ti-soc-thermal/ti-bandgap.c   | 10 +++++++--
+ drivers/usb/gadget/udc/renesas_usb3.c         |  2 +-
+ drivers/usb/host/ehci-platform.c              |  4 +++-
+ drivers/usb/host/xhci-rcar.c                  |  2 +-
+ drivers/watchdog/renesas_wdt.c                |  2 +-
+ 50 files changed, 139 insertions(+), 52 deletions(-)
 
-For this example, I'll refer to NR_CPUS=64 from "make defconfig" and
-nr_cpu_ids=6 for ACPI reporting on a board that could run a six core,
-and present=4 for a quad that is physically in the socket.  From dmesg:
-
- smpboot: Allowing 6 CPUs, 2 hotplug CPUs
- setup_percpu: NR_CPUS:64 nr_cpumask_bits:64 nr_cpu_ids:6 nr_node_ids:1
- rcu: 	RCU restricting CPUs from NR_CPUS=64 to nr_cpu_ids=6.
- smp: Brought up 1 node, 4 CPUs
-
-And from userspace, see:
-
-   paul@trash:/sys/devices/system/cpu$ cat present
-   0-3
-   paul@trash:/sys/devices/system/cpu$ cat possible
-   0-5
-   paul@trash:/sys/devices/system/cpu$ cat kernel_max
-   63
-
-Everything is fine if we boot 5x5 for rcu/nohz:
-
-  Command line: BOOT_IMAGE=/boot/bzImage nohz_full=2-5 rcu_nocbs=2-5 root=/dev/sda1 ro
-  NO_HZ: Full dynticks CPUs: 2-5.
-  rcu: 	Offload RCU callbacks from CPUs: 2-5.
-
-..even though there is no CPU 4 or 5.  Both RCU and nohz_full are OK.
-Now we push that > 6 but less than NR_CPU and with 15x15 we get:
-
-  Command line: BOOT_IMAGE=/boot/bzImage rcu_nocbs=2-15 nohz_full=2-15 root=/dev/sda1 ro
-  rcu: 	Note: kernel parameter 'rcu_nocbs=', 'nohz_full', or 'isolcpus=' contains nonexistent CPUs.
-  rcu: 	Offload RCU callbacks from CPUs: 2-5.
-
-These are both functionally equivalent, as we are only changing flags on
-phantom CPUs that don't exist, but note the kernel interpretation changes.
-And worse, it only changes for one of the two - which is the problem.
-
-RCU doesn't care if you want to restrict the flags on phantom CPUs but
-clearly nohz_full does after this change from v4.15 (edb9382175c3):
-
--       if (cpulist_parse(str, non_housekeeping_mask) < 0) {
--               pr_warn("Housekeeping: Incorrect nohz_full cpumask\n");
-+       err = cpulist_parse(str, non_housekeeping_mask);
-+       if (err < 0 || cpumask_last(non_housekeeping_mask) >= nr_cpu_ids) {
-+               pr_warn("Housekeeping: nohz_full= or isolcpus= incorrect CPU range\n");
-
-To be clear, the sanity check on "possible" (nr_cpu_ids) is new here.
-
-The goal was reasonable ; not wanting housekeeping to land on a
-not-possible CPU, but note two things:
-
-1) this is an exclusion list, not an inclusion list; we are tracking
-non_housekeeping CPUs; not ones who are explicitly assigned housekeeping
-
-2) we went one further in 9219565aa890 - ensuring that housekeeping was
-sanity checking against present and not just possible CPUs.
-
-To be clear, this means the check added in v4.15 is doubly redundant.
-And more importantly, overly strict/restrictive.
-
-We care now, because the bitmap boot arg parsing now knows that a value
-of "N" is NR_CPUS; the size of the bitmap, but the bitmap code doesn't
-know anything about the subtleties of our max/possible/present CPU
-specifics as outlined above.
-
-So drop the check added in v4.15 (edb9382175c3) and make RCU and
-nohz_full both in alignment again on NR_CPUS so "N" works for both,
-and then they can fall back to nr_cpu_ids internally just as before.
-
-  Command line: BOOT_IMAGE=/boot/bzImage nohz_full=2-N rcu_nocbs=2-N root=/dev/sda1 ro
-  NO_HZ: Full dynticks CPUs: 2-5.
-  rcu: 	Offload RCU callbacks from CPUs: 2-5.
-
-As shown above, with this change, RCU and nohz_full are in sync, even
-with the use of the "N" placeholder.  Same result is achieved with "15".
-
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-
-diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-index 5a6ea03f9882..7f06eaf12818 100644
---- a/kernel/sched/isolation.c
-+++ b/kernel/sched/isolation.c
-@@ -81,11 +81,9 @@ static int __init housekeeping_setup(char *str, enum hk_flags flags)
- {
- 	cpumask_var_t non_housekeeping_mask;
- 	cpumask_var_t tmp;
--	int err;
- 
- 	alloc_bootmem_cpumask_var(&non_housekeeping_mask);
--	err = cpulist_parse(str, non_housekeeping_mask);
--	if (err < 0 || cpumask_last(non_housekeeping_mask) >= nr_cpu_ids) {
-+	if (cpulist_parse(str, non_housekeeping_mask) < 0) {
- 		pr_warn("Housekeeping: nohz_full= or isolcpus= incorrect CPU range\n");
- 		free_bootmem_cpumask_var(non_housekeeping_mask);
- 		return 0;
 -- 
-2.25.1
+2.17.1
 
