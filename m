@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E78363A0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 06:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C5B2363A14
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 06:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237617AbhDSEFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 00:05:50 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:34587 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237509AbhDSEFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 00:05:19 -0400
+        id S237622AbhDSEHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 00:07:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237494AbhDSEFc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 00:05:32 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 144B5C061760;
+        Sun, 18 Apr 2021 21:05:00 -0700 (PDT)
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4FNtVq4zx6z9vHr; Mon, 19 Apr 2021 14:04:35 +1000 (AEST)
+        id 4FNtVr5w9cz9vH8; Mon, 19 Apr 2021 14:04:36 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     npiggin@gmail.com, mahesh@linux.ibm.com, alistair@popple.id.au,
-        ravi.bangoria@linux.ibm.com, rppt@kernel.org,
-        aneesh.kumar@linux.ibm.com, benh@kernel.crashing.org,
-        christophe.leroy@csgroup.eu, peterz@infradead.org,
-        sourabhjain@linux.ibm.com, haren@linux.ibm.com, mpe@ellerman.id.au,
-        aik@ozlabs.ru, mikey@neuling.org, hbathini@linux.ibm.com,
-        jniethe5@gmail.com, atrajeev@linux.vnet.ibm.com,
-        kjain@linux.ibm.com, maddy@linux.ibm.com, paulus@samba.org,
-        Xiongwei Song <sxwjean@me.com>, kan.liang@linux.intel.com,
-        leobras.c@gmail.com, akpm@linux-foundation.org, nathan@kernel.org,
-        walken@google.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-In-Reply-To: <1618398033-13025-1-git-send-email-sxwjean@me.com>
-References: <1618398033-13025-1-git-send-email-sxwjean@me.com>
-Subject: Re: [PATCH v5] powerpc/traps: Enhance readability for trap types
-Message-Id: <161880480749.1398509.13854338250258784964.b4-ty@ellerman.id.au>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Tony Ambardar <tony.ambardar@gmail.com>
+Cc:     Paul Mackerras <paulus@samba.org>, linuxppc-dev@lists.ozlabs.org,
+        linux-arch@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tony Ambardar <Tony.Ambardar@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Stable <stable@vger.kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Rosen Penev <rosenp@gmail.com>
+In-Reply-To: <20200917135437.1238787-1-Tony.Ambardar@gmail.com>
+References: <20200917000757.1232850-1-Tony.Ambardar@gmail.com> <20200917135437.1238787-1-Tony.Ambardar@gmail.com>
+Subject: Re: [PATCH v3] powerpc: fix EDEADLOCK redefinition error in uapi/asm/errno.h
+Message-Id: <161880480720.1398509.14927712402293166726.b4-ty@ellerman.id.au>
 Date:   Mon, 19 Apr 2021 14:00:07 +1000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -38,19 +39,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Apr 2021 19:00:33 +0800, Xiongwei Song wrote:
-> Define macros to list ppc interrupt types in interttupt.h, replace the
-> reference of the trap hex values with these macros.
-> 
-> Referred the hex numbers in arch/powerpc/kernel/exceptions-64e.S,
-> arch/powerpc/kernel/exceptions-64s.S, arch/powerpc/kernel/head_*.S,
-> arch/powerpc/kernel/head_booke.h and arch/powerpc/include/asm/kvm_asm.h.
+On Thu, 17 Sep 2020 06:54:37 -0700, Tony Ambardar wrote:
+> A few archs like powerpc have different errno.h values for macros
+> EDEADLOCK and EDEADLK. In code including both libc and linux versions of
+> errno.h, this can result in multiple definitions of EDEADLOCK in the
+> include chain. Definitions to the same value (e.g. seen with mips) do
+> not raise warnings, but on powerpc there are redefinitions changing the
+> value, which raise warnings and errors (if using "-Werror").
 > 
 > [...]
 
 Applied to powerpc/next.
 
-[1/1] powerpc/traps: Enhance readability for trap types
-      https://git.kernel.org/powerpc/c/7153d4bf0b373428d0393c001019da4d0483fddb
+[1/1] powerpc: fix EDEADLOCK redefinition error in uapi/asm/errno.h
+      https://git.kernel.org/powerpc/c/7de21e679e6a789f3729e8402bc440b623a28eae
 
 cheers
