@@ -2,98 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBAA9364D4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 23:50:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F3E2364D55
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 23:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240696AbhDSVu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 17:50:58 -0400
-Received: from mga04.intel.com ([192.55.52.120]:61937 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232114AbhDSVum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 17:50:42 -0400
-IronPort-SDR: vLhuW5zSehW0G+R+qX2NFLMEC9jxyb2mbS7naXyUPkbn7Edv/o8tSTjb4BVFlLEqSafbbBJDWN
- s2BO2ypx6ylg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="193279427"
-X-IronPort-AV: E=Sophos;i="5.82,235,1613462400"; 
-   d="scan'208";a="193279427"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 14:50:11 -0700
-IronPort-SDR: p1N1Eok4UyUGZ32X3h254Tzi1RlogcT6hhT3elu16h4b3z57mVzPeArEAbUmYnUHAd6aD5x///
- WbIETsfb1vPw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,235,1613462400"; 
-   d="scan'208";a="534277620"
-Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
-  by orsmga004.jf.intel.com with ESMTP; 19 Apr 2021 14:50:11 -0700
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        "Randy Dunlap" <rdunlap@infradead.org>,
-        "Tony Luck" <tony.luck@intel.com>,
-        "Xiaoyao Li " <xiaoyao.li@intel.com>,
-        "Ravi V Shankar" <ravi.v.shankar@intel.com>
-Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "x86" <x86@kernel.org>, Fenghua Yu <fenghua.yu@intel.com>
-Subject: [PATCH 4/4] Documentation/x86: Add ratelimit in buslock.rst
-Date:   Mon, 19 Apr 2021 21:49:58 +0000
-Message-Id: <20210419214958.4035512-5-fenghua.yu@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210419214958.4035512-1-fenghua.yu@intel.com>
-References: <20210419214958.4035512-1-fenghua.yu@intel.com>
+        id S237833AbhDSVxX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 19 Apr 2021 17:53:23 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:32074 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232468AbhDSVxW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 17:53:22 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-122-5PwNCrjSNRSPg_lGIzvSdg-1; Mon, 19 Apr 2021 22:52:49 +0100
+X-MC-Unique: 5PwNCrjSNRSPg_lGIzvSdg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Mon, 19 Apr 2021 22:52:49 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Mon, 19 Apr 2021 22:52:49 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Rasmus Villemoes' <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@kernel.org>
+CC:     Borislav Petkov <bp@alien8.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        X86 ML <x86@kernel.org>, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: RE: [PATCH 05/15] x86: Implement function_nocfi
+Thread-Topic: [PATCH 05/15] x86: Implement function_nocfi
+Thread-Index: AQHXNPeauSsNstP2FUia6sIzu9nmdKq8X6yA
+Date:   Mon, 19 Apr 2021 21:52:48 +0000
+Message-ID: <a40525ea67144351a1baab99739fef52@AcuMS.aculab.com>
+References: <20210416203844.3803177-1-samitolvanen@google.com>
+ <20210416203844.3803177-6-samitolvanen@google.com>
+ <20210416211855.GD22348@zn.tnic>
+ <CABCJKud8TvzhcjHCpsrtCJ4B50ZUfaL48F42EhZ2zWKLteAc0Q@mail.gmail.com>
+ <20210416220251.GE22348@zn.tnic>
+ <CALCETrVTtKqD6fonUmT_qr0HJ0X9TWzLGq-wpm+A7XKyjn3W5g@mail.gmail.com>
+ <202104161519.1D37B6D26@keescook>
+ <2812c98b-3b5a-7be5-9fd9-2a6260406a45@rasmusvillemoes.dk>
+In-Reply-To: <2812c98b-3b5a-7be5-9fd9-2a6260406a45@rasmusvillemoes.dk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ratelimit is a new option in bus lock handling. Need to add it in
-buslock.rst.
+From: Rasmus Villemoes
+> Sent: 19 April 2021 09:40
+> 
+> On 17/04/2021 00.28, Kees Cook wrote:
+> > On Fri, Apr 16, 2021 at 03:06:17PM -0700, Andy Lutomirski wrote:
+> 
+> >> The
+> >> foo symbol would point to whatever magic is needed.
+> >
+> > No, the symbol points to the jump table entry. Direct calls get minimal
+> > overhead and indirect calls can add the "is this function in the right
+> > table" checking.
+> >
+> >
+> > But note that this shouldn't turn into a discussion of "maybe Clang could
+> > do CFI differently"; this is what Clang has.
+> 
+> Why not? In particular, I'd really like somebody to answer the question
+> "why not just store a cookie before each address-taken or
+> external-linkage function?".
+> 
+> (1) direct calls get _no_ overhead, not just "minimal".
+> (2) address comparison, intra- or inter-module, Just Works, no need to
+> disable one sanity check to get others.
+> (3) The overhead and implementation of the signature check is the same
+> for inter- and intra- module calls.
+> (4) passing (unsigned long)sym into asm code or stashing it in a table
+> Just Works.
+> 
+> How much code would be needed on the clang side to provide a
+> --cfi-mode=inline ?
+> 
+> The only issue, AFAICT, which is also a problem being handled in the
+> current proposal, is indirect calls to asm code from C. They either have
+> to be instrumented to not do any checking (which requires callers to
+> know that the pointer they have might point to an asm-implementation),
+> or the asm code could be taught to emit those cookies as well - which
+> would provide even better coverage. Something like
+> 
+> CFI_COOKIE(foo)
+> foo:
+>   ...
+> 
+> with CFI_COOKIE expanding to nothing when !CONFIG_CFI, and otherwise to
+> (something like) ".quad cfi_cookie__foo" ; with some appropriate Kbuild
+> and compiler magic to generate a table of cfi_cookie__* defines from a
+> header file with the prototypes.
 
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
----
- Documentation/x86/buslock.rst | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+I'm wondering what 'threat models' CFI is trying to protect from.
+Adding code to code doing 'call indirect' can only protect against
+calls to 'inappropriate' functions.
+You may also be worried about whether functions are being called
+from the right place - someone might manage to 'plant' an indirect
+jump somewhere - probably more likely than overwriting an address.
+But a truly malicious caller will be able to subvert most checks.
+And non-malicious errors can be largely eliminated by strengthening
+normal compiler type checking.
 
-diff --git a/Documentation/x86/buslock.rst b/Documentation/x86/buslock.rst
-index 4deaf8b82338..87ee5925cb5c 100644
---- a/Documentation/x86/buslock.rst
-+++ b/Documentation/x86/buslock.rst
-@@ -61,6 +61,11 @@ The kernel #AC and #DB handlers handle bus lock based on kernel parameter
- |		   |When both features are	|			|
- |		   |supported, fatal in #AC	|			|
- +------------------+----------------------------+-----------------------+
-+|ratelimit:N	   |Do nothing			|Limit bus lock rate to	|
-+|(0 < N <= 1000)   |				|N bus locks per second	|
-+|		   |				|system wide and warn on|
-+|		   |				|bus locks.		|
-++------------------+----------------------------+-----------------------+
- 
- Usages
- ======
-@@ -108,3 +113,21 @@ fatal
- In this case, the bus lock is not tolerated and the process is killed.
- 
- It is useful in hard real time system.
-+
-+ratelimit
-+---------
-+
-+A system wide bus lock rate limit N is specified where 0 < N <= 1000.
-+Less bus locks can be generated when N is smaller.
-+
-+This may find usage in throttling malicious processes in cloud. For
-+example, a few malicious users may generate a lot of bus locks to launch
-+Denial of Service (DoS) attack. By setting ratelimit, the system wide
-+bus locks is rate limited by N bus locks per second and the DoS attack
-+will be mitigated. The bus locks are warned so that the system
-+administrator can found the malicious users and processes.
-+
-+Selecting a rate limit of 1000 would allow the bus to be locked for
-+up to about seven million cycles each second (assuming 7000 cycles for
-+each bus lock). On a 2 GHz processor that would be about 0.35% system
-+impact.
--- 
-2.31.1
+A simple run-time check would be adding an extra 'hidden' function
+parameter that is a hash of the prototype.
+Especially if the hash is based on a build-id - so differs
+between kernel builds.
+
+Having the caller scan a list of valid targets seems just broken.
+You might as well replace the function pointer with an index
+into the array of valid targets.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
