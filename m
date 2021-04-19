@@ -2,136 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 339F736419B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 14:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1DBA364177
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 14:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239058AbhDSMYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 08:24:25 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:58259 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233627AbhDSMYW (ORCPT
+        id S239151AbhDSMSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 08:18:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239046AbhDSMSw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 08:24:22 -0400
-Received: from mail-ed1-f69.google.com ([209.85.208.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lYSwS-0007ru-JZ
-        for linux-kernel@vger.kernel.org; Mon, 19 Apr 2021 12:23:52 +0000
-Received: by mail-ed1-f69.google.com with SMTP id n18-20020a0564020612b02903853320059eso2061658edv.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 05:23:52 -0700 (PDT)
+        Mon, 19 Apr 2021 08:18:52 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE8EC06174A;
+        Mon, 19 Apr 2021 05:18:22 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id s22so3021081pgk.6;
+        Mon, 19 Apr 2021 05:18:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FS9eUWQBzPFmXBIhw/M3KyM94oXuT5zWRYZ7FLuaBsw=;
+        b=NN5ZhbKG64vkIPJ97wrmD/nLO78n9wn5ujp5E8YK+cdAjRopD1vhK9vNWn8foA1nsI
+         hPyKhJfaUzxGV7NDnlzELkmMVAc5NK01MTlp6umFOOzwKJ2CvQds2qLOx3cUTXvzbx/b
+         y/C8FZlLJk21jg4yFnBp9WITHXEAfMfCuRf3ctaUquzKmlTBLJjqQkkBpobCTGm15vm7
+         SQENcxFCQ/zwBF/MNjF6ZCK5CZ6WaDT3WY2mouJoHTp3bXfK2UHUiR+1OVZW1EYKnQr5
+         Hv/P5ySDrfKSC2WCPIQ9J3ZuEzhP79LUxDBNpUyw7n41ao4j9qKt+DwCdyWUqgMQ0mQQ
+         7ZoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M9RbFGgUfh9R1pGM9X22W/pCvHlFibz2pAB/20DyBvc=;
-        b=lGd6ucT5kT1+DuOI/yhBVQPwtOeKMuexvn474Dmek42kUTaEcygWE4hnn6SsYiDOac
-         PdNE3bOL55V2FYq0XM1fKqdW84JbyhBDrgNiQPaI4JMrFCu7u/vcgCKzkLxQcMlkiGfN
-         lbHDQOlHdqafcJ8ZZMC2d2KZTV1u1F6CzJUep9122eRhxsfDoQPMezTLAxWJUXkzIrEr
-         fE2a1wPa0mogr+pbskYhE4m4GUE+JHFH9Rb5vyEpkGOfKai92sJA86L44qaS+Cq/Hdcw
-         E7cjzFPGV6a9I2YH8UrjduLFZpXWocC/nSsw4zUBpJoEL+lRWM6JXz593u3jxe2OCIaM
-         Bi+Q==
-X-Gm-Message-State: AOAM530ggRAaQyzxfG42opD+oBRGzJxAELMhV/0lJx7mBM5+PKXfBXZt
-        BvncLunQEnMMIwmHqHDyeTcaBV/YKlK6WRhJqDJa3QKHk/8884UsTNhwlZRiD8d7gnPvPBsuarN
-        AQmo/J2VHSKC+OB509sI9i8TcUcKzP/v7krJK77RM8R5AlFAkj05WomMz7A==
-X-Received: by 2002:ac2:559c:: with SMTP id v28mr12392219lfg.290.1618834651351;
-        Mon, 19 Apr 2021 05:17:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwZVAJt8pj4926EE+AA+D7ohFpNGRoRawnmzYkLavLiDvAptySqRSEF4uEolMuh029IJJSJPBB8U5CMzZJKe2E=
-X-Received: by 2002:ac2:559c:: with SMTP id v28mr12392207lfg.290.1618834651099;
- Mon, 19 Apr 2021 05:17:31 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FS9eUWQBzPFmXBIhw/M3KyM94oXuT5zWRYZ7FLuaBsw=;
+        b=fsN8eF8jmx4088X0/ITAn/KiHoVmM0JNaT4ZA0toPgodjTZOeo9dJzJ7z4/UU7fpjI
+         KE7DrunezS5emFLFAs9Qw2Gvo3hmJINqeuw0JzkRKHdjJzLi7oC0rUxq6ZpdhzSiqFga
+         DmzQVo0pV6+8pHtxa4XnJW9Asszo6/6YxXyOWyq9FasrqQKmXUG/Tmg7LrzsLPrVZcA3
+         22k4qtyTlvy6cBR16M+xyiT644I5hVkqcyAohePuGbw2DdrjQ3PJgtmMnpF7gkmCGuD+
+         w5xMwjDuxgyTTa5jQJ46AfdWKh1jshThUxPy75MbN6dZAw+ybVl+6629Czj+HZYD7g4I
+         Ld1w==
+X-Gm-Message-State: AOAM531UWD+wGO7fFxWmcN1BSZR0RF+sr8uZvZT2MQeuiaZwssulJRNd
+        OrMx2cZCASetreiX7csNsqcO9b7kc78y1A==
+X-Google-Smtp-Source: ABdhPJwZgeMHmOXKaC9e+0OTJsfpFxZm/JVQYrotQH09pstPM+DB6lFrasvDOw9VWyLR6atojEZ5mg==
+X-Received: by 2002:a63:1a5e:: with SMTP id a30mr11692093pgm.156.1618834701808;
+        Mon, 19 Apr 2021 05:18:21 -0700 (PDT)
+Received: from localhost ([112.79.253.181])
+        by smtp.gmail.com with ESMTPSA id 22sm14625765pjl.31.2021.04.19.05.18.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 05:18:21 -0700 (PDT)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH bpf-next v2 0/4] Add TC-BPF API
+Date:   Mon, 19 Apr 2021 17:48:07 +0530
+Message-Id: <20210419121811.117400-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210419090750.1272562-1-kai.heng.feng@canonical.com> <CAJZ5v0imLOF-9VCSJdb-A2HR29SFX-HgU5Kh7Uf7COfuHpZMDg@mail.gmail.com>
-In-Reply-To: <CAJZ5v0imLOF-9VCSJdb-A2HR29SFX-HgU5Kh7Uf7COfuHpZMDg@mail.gmail.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Mon, 19 Apr 2021 20:17:20 +0800
-Message-ID: <CAAd53p7F8oPytk8GTZRULw4m2y7jJ8vPx-drnSbW4e-3vvVz9Q@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: PM: s2idle: Invoke _PTS for s2idle
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "open list:ACPI" <linux-acpi@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 7:35 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Mon, Apr 19, 2021 at 11:08 AM Kai-Heng Feng
-> <kai.heng.feng@canonical.com> wrote:
-> >
-> > HP EliteBook 840 G8 reboots on s2idle resume, and HP EliteBook 845 G8
-> > wakes up immediately on s2idle. Both are caused by the XMM7360 WWAN PCI
-> > card.
-> >
-> > There's a WWAN specific method to really turn off the WWAN via EC:
-> >     Method (_PTS, 1, NotSerialized)  // _PTS: Prepare To Sleep
-> >     {
-> >     ...
-> >         If (CondRefOf (\_SB.PCI0.GP12.PTS))
-> >         {
-> >             \_SB.PCI0.GP12.PTS (Arg0)
-> >         }
-> >     ...
-> >     }
-> >
-> >     Scope (_SB.PCI0.GP12)
-> >     {
-> >     ...
-> >         Method (PTS, 1, Serialized)
-> >         {
-> >             If (^^LPCB.EC0.ECRG)
-> >             {
-> >                 If ((PDID == 0xFFFF))
-> >                 {
-> >                     Return (Zero)
-> >                 }
-> >
-> >                 POFF ()
-> >                 SGIO (WWBR, One)
-> >                 Sleep (0x1E)
-> >                 Acquire (^^LPCB.EC0.ECMX, 0xFFFF)
-> >                 ^^LPCB.EC0.WWP = One
-> >                 Release (^^LPCB.EC0.ECMX)
-> >                 Sleep (0x01F4)
-> >             }
-> >
-> >             Return (Zero)
-> >         }
-> >     ...
-> >     }
-> >
-> > So let's also invok _PTS for s2idle.
-> >
-> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > ---
-> >  drivers/acpi/sleep.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
-> > index 09fd13757b65..7e84b4b09919 100644
-> > --- a/drivers/acpi/sleep.c
-> > +++ b/drivers/acpi/sleep.c
-> > @@ -698,6 +698,7 @@ int acpi_s2idle_prepare(void)
-> >         }
-> >
-> >         acpi_enable_wakeup_devices(ACPI_STATE_S0);
-> > +       acpi_enter_sleep_state_prep(ACPI_STATE_S0);
->
-> The system is in S0 already at this point, so not really.
+This is the second version of the TC-BPF series.
 
-Ok, indeed ACPI spec only states _PTS can be used for S1 to S5.
+It adds a simple API that uses netlink to attach the tc filter and its bpf
+classifier. Currently, a user needs to shell out to the tc command line to be
+able to create filters and attach SCHED_CLS programs as classifiers. With the
+help of this API, it will be possible to use libbpf for doing all parts of bpf
+program setup and attach.
 
-> Please use a quirk to address this.
+Direct action is now the default, and currently no way to disable it has been
+provided. This also means that SCHED_ACT programs are a lot less useful, so
+support for them has been removed for now. In the future, if someone comes up
+with a convincing use case where the direct action mode doesn't serve their
+needs, a simple extension that allows disabling direct action mode and passing
+the list of actions that would be bound to the classifier can be added.
 
-Let me discuss with HP folks. Right now it looks like we need to apply
-this to all HP systems...
+In an effort to keep discussion focused, this series doesn't have the high level
+TC-BPF API. It was clear that there is a need for a bpf_link API in the kernel,
+hence that will be submitted as a separate patchset.
 
-Kai-Heng
+The individual commit messages contain more details, and also a brief summary of
+the API.
 
->
-> >
-> >         /* Change the configuration of GPEs to avoid spurious wakeup. */
-> >         acpi_enable_all_wakeup_gpes();
-> > --
+Changelog:
+----------
+v1 -> v2
+v1: https://lore.kernel.org/bpf/20210325120020.236504-1-memxor@gmail.com
+
+ * netlink helpers have been renamed to object_action style.
+ * attach_id now only contains attributes that are not explicitly set. Only
+   the bare minimum info is kept in it.
+ * protocol is now an optional and defaults to ETH_P_ALL.
+ * direct-action mode is default, and cannot be unset for now.
+ * skip_sw and skip_hw options have also been removed.
+ * bpf_tc_cls_info struct now also returns the bpf program tag and id, as
+   available in the netlink response. This came up as a requirement during
+   discussion with people wanting to use this functionality.
+ * support for attaching SCHED_ACT programs has been dropped, as it isn't
+   useful without any support for binding loaded actions to a classifier.
+ * the distinction between dev and block API has been dropped, there is now
+   a single set of functions and user has to pass the special ifindex value
+   to indicate operation on a shared filter block on their own.
+ * The high level API returning a bpf_link is gone. This was already non-
+   functional for pinning and typical ownership semantics. Instead, a separate
+   patchset will be sent adding a bpf_link API for attaching SCHED_CLS progs to
+   the kernel, and its corresponding libbpf API.
+ * The clsact qdisc is now setup automatically in a best-effort fashion whenever
+   user passes in the clsact ingress or egress parent id. This is done with
+   exclusive mode, such that if an ingress or clsact qdisc is already set up,
+   we skip the setup and move on with filter creation.
+ * Other minor changes that came up during the course of discussion and rework.
+
+Kumar Kartikeya Dwivedi (4):
+  tools: pkt_cls.h: sync with kernel sources
+  libbpf: add helpers for preparing netlink attributes
+  libbpf: add low level TC-BPF API
+  libbpf: add selftests for TC-BPF API
+
+ tools/include/uapi/linux/pkt_cls.h            | 174 +++++++-
+ tools/lib/bpf/Makefile                        |   3 +
+ tools/lib/bpf/libbpf.h                        |  52 +++
+ tools/lib/bpf/libbpf.map                      |   5 +
+ tools/lib/bpf/netlink.c                       | 414 ++++++++++++++++--
+ tools/lib/bpf/nlattr.h                        |  48 ++
+ .../selftests/bpf/prog_tests/test_tc_bpf.c    | 112 +++++
+ .../selftests/bpf/progs/test_tc_bpf_kern.c    |  12 +
+ 8 files changed, 789 insertions(+), 31 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_tc_bpf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_tc_bpf_kern.c
+
+--
+2.30.2
+
