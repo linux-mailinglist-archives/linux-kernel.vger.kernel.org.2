@@ -2,88 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED875364A77
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 21:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6478E364A84
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 21:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241664AbhDSTXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 15:23:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239503AbhDSTXD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 15:23:03 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61454C06174A;
-        Mon, 19 Apr 2021 12:22:33 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 448F19B1;
-        Mon, 19 Apr 2021 19:22:32 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 448F19B1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1618860152; bh=yaDA6z7FVDEXYdGxGBTspjFNCzFzqHlqCi96e7FE6vE=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=BAyfQt58cduIYo8UmnsWtFq9fjlKSTrLj5iGya+fWB3aTmYzUXBXaQ9kdHU80gwGO
-         /zQWX2SU+0LOCesJ+w3/Ts4gPb0dTIofc0njZT1cs7JQLLiSoOXRdnG2edndbEuIje
-         czqVuyy98X0sx+vSkMxJ2dNsmf/AHDeXK/ezTV0sr18RUWqs/8yyPt1T/dEjvq/gju
-         lqHFzhmzBJWkvpF77VzAfR3Iqj0SXJ8p3lONSxnUgqRaZxRd5m0VBJaAdS0kUuieL9
-         lPGjR6QQYdhAWfUEJMtPC1xldo5eapzQch6lHZMXjLpmmLPwo7M/rUTCEPpJxhHTIB
-         P3mAO7DClOkMw==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Fox Chen <foxhlchen@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Neil Brown <neilb@suse.de>, vegard.nossum@oracle.com,
-        Al Viro <viro@zeniv.linux.org.uk>, rdunlap@infradead.org,
-        grandmaster@al2klimov.de, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v2 01/12] docs: path-lookup: update follow_managed() part
-In-Reply-To: <CAC2o3DLJpMJDzQByJixPyLe47ajXXVFPRQBh3MaYPargrqS4tg@mail.gmail.com>
-References: <20210316054727.25655-1-foxhlchen@gmail.com>
- <20210316054727.25655-2-foxhlchen@gmail.com>
- <20210419021730.GV2531743@casper.infradead.org>
- <CAC2o3D+kq+U9vSp_9DNM3UGA=UGhS84Y+mwm=9S6eMPpf2-ogQ@mail.gmail.com>
- <20210419032513.GW2531743@casper.infradead.org>
- <CAC2o3DLJpMJDzQByJixPyLe47ajXXVFPRQBh3MaYPargrqS4tg@mail.gmail.com>
-Date:   Mon, 19 Apr 2021 13:22:31 -0600
-Message-ID: <87fszmaxl4.fsf@meer.lwn.net>
+        id S241966AbhDSTYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 15:24:07 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:51704 "EHLO mail.ispras.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241686AbhDSTX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 15:23:56 -0400
+Received: from monopod.intra.ispras.ru (unknown [10.10.3.121])
+        by mail.ispras.ru (Postfix) with ESMTPS id 5E0EC4076B4A;
+        Mon, 19 Apr 2021 19:23:23 +0000 (UTC)
+Date:   Mon, 19 Apr 2021 22:23:23 +0300 (MSK)
+From:   Alexander Monakov <amonakov@ispras.ru>
+To:     Joe Perches <joe@perches.com>
+cc:     linux-kernel@vger.kernel.org, Paul Menzel <pmenzel@molgen.mpg.de>,
+        Joerg Roedel <jroedel@suse.de>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        iommu@lists.linux-foundation.org
+Subject: Re: [PATCH v2] iommu/amd: Fix extended features logging
+In-Reply-To: <0362ad3912473d24e5927c0b54ed8fd3648c68a9.camel@perches.com>
+Message-ID: <alpine.LNX.2.20.13.2104192207130.19608@monopod.intra.ispras.ru>
+References: <20210411211330.2252-1-amonakov@ispras.ru> <0362ad3912473d24e5927c0b54ed8fd3648c68a9.camel@perches.com>
+User-Agent: Alpine 2.20.13 (LNX 116 2015-12-14)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/mixed; boundary="168458499-251955098-1618860203=:19608"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fox Chen <foxhlchen@gmail.com> writes:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> On Mon, Apr 19, 2021 at 11:25 AM Matthew Wilcox <willy@infradead.org> wrote:
->>
->> On Mon, Apr 19, 2021 at 10:33:00AM +0800, Fox Chen wrote:
->> > On Mon, Apr 19, 2021 at 10:17 AM Matthew Wilcox <willy@infradead.org> wrote:
->> > > You can drop ``..`` from around function named which are followed with
->> > > ().  d74b0d31ddde ("Docs: An initial automarkup extension for sphinx")
->> > > marks them up automatically.
->> > >
->> >
->> > Got it, thanks for letting me know. But I will still use them in this
->> > patch series to keep consistency with the remaining parts of the
->> > document.
->>
->> Well, you weren't.  For example:
->>
->> +As the last step of ``walk_component()``, ``step_into()`` will be called either
->> +directly from walk_component() or from handle_dots().  It calls
->> +``handle_mount()``, to check and handle mount points, in which a new
->>
->> Neither of the functions on the second line were using ``.
->
-> Oh, That was a mistake,  They should've been wrapped with ``.
-> Thanks for pointing it out. I will go through the whole patch set and
-> fix this type of inconsistency in V3.
+--168458499-251955098-1618860203=:19608
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8BIT
 
-Please, if possible, go toward the bare function() form rather than
-using literals...it's easier to read and the docs system will
-automatically create cross references for you.
+On Sun, 11 Apr 2021, Joe Perches wrote:
 
-Thanks,
+> > v2: avoid pr_info(""), change pci_info() to pr_info() for a nicer
+> > solution
+> > 
+> >  drivers/iommu/amd/init.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+> > index 596d0c413473..62913f82a21f 100644
+> > --- a/drivers/iommu/amd/init.c
+> > +++ b/drivers/iommu/amd/init.c
+> > @@ -1929,8 +1929,8 @@ static void print_iommu_info(void)
+> >  		pci_info(pdev, "Found IOMMU cap 0x%hx\n", iommu->cap_ptr);
+> >  
+> > 
+> >  		if (iommu->cap & (1 << IOMMU_CAP_EFR)) {
+> > -			pci_info(pdev, "Extended features (%#llx):",
+> > -				 iommu->features);
+> > +			pr_info("Extended features (%#llx):", iommu->features);
+> > +
+> >  			for (i = 0; i < ARRAY_SIZE(feat_str); ++i) {
+> >  				if (iommu_feature(iommu, (1ULL << i)))
+> >  					pr_cont(" %s", feat_str[i]);
+> 
+> How about avoiding all of this by using a temporary buffer
+> and a single pci_info.
 
-jon
+I think it is mostly up to the maintainers, but from my perspective, it's not
+good to conflate such a simple bugfix with the substantial rewrite you are
+proposing (which also increases code complexity).
+
+My two-line patch is a straightforward fix to a bug that people already agreed
+needs to be fixed (just the previous attempt turned out to be insufficient). If
+there's a desire to eliminate pr_cont calls (which I wouldn't support in this
+instance), the rewrite can go in separately from the bugfix.
+
+A major problem with landing a simple bugfix together with a rewrite in a big
+patch is that if a rewrite causes a problem, the whole patch gets reverted and
+we end up without a trivial bugfix.
+
+And, once again: can we please not emit the feature list via pci_info, the line
+is long enough already even without the pci bus location info.
+
+Joerg, are you satisfied with my v2 patch, are you waiting for anything before
+picking it up?
+
+Alexander
+
+> 
+> Miscellanea:
+> o Move the feat_str and i declarations into the if block for locality
+> 
+> ---
+>  drivers/iommu/amd/init.c | 29 ++++++++++++++++++-----------
+>  1 file changed, 18 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+> index 321f5906e6ed..0d219044726e 100644
+> --- a/drivers/iommu/amd/init.c
+> +++ b/drivers/iommu/amd/init.c
+> @@ -1943,30 +1943,37 @@ static int __init iommu_init_pci(struct amd_iommu *iommu)
+>  
+>  static void print_iommu_info(void)
+>  {
+> -	static const char * const feat_str[] = {
+> -		"PreF", "PPR", "X2APIC", "NX", "GT", "[5]",
+> -		"IA", "GA", "HE", "PC"
+> -	};
+>  	struct amd_iommu *iommu;
+>  
+>  	for_each_iommu(iommu) {
+>  		struct pci_dev *pdev = iommu->dev;
+> -		int i;
+>  
+>  		pci_info(pdev, "Found IOMMU cap 0x%x\n", iommu->cap_ptr);
+>  
+>  		if (iommu->cap & (1 << IOMMU_CAP_EFR)) {
+> -			pci_info(pdev, "Extended features (%#llx):",
+> -				 iommu->features);
+> +			static const char * const feat_str[] = {
+> +				"PreF", "PPR", "X2APIC", "NX", "GT", "[5]",
+> +				"IA", "GA", "HE", "PC"
+> +			};
+> +			int i;
+> +			char features[128] = "";
+> +			int len = 0;
+> +
+>  			for (i = 0; i < ARRAY_SIZE(feat_str); ++i) {
+> -				if (iommu_feature(iommu, (1ULL << i)))
+> -					pr_cont(" %s", feat_str[i]);
+> +				if (!iommu_feature(iommu, BIT_ULL(i)))
+> +					continue;
+> +				len += scnprintf(features + len,
+> +						 sizeof(features) - len,
+> +						 " %s", feat_str[i]);
+>  			}
+>  
+>  			if (iommu->features & FEATURE_GAM_VAPIC)
+> -				pr_cont(" GA_vAPIC");
+> +				len += scnprintf(features + len,
+> +						 sizeof(features) - len,
+> +						 " %s", "GA_vPIC");
+>  
+> -			pr_cont("\n");
+> +			pci_info(pdev, "Extended features (%#llx):%s\n",
+> +				 iommu->features, features);
+>  		}
+>  	}
+>  	if (irq_remapping_enabled) {
+> 
+> 
+> 
+--168458499-251955098-1618860203=:19608--
