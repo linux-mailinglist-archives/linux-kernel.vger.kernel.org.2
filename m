@@ -2,103 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04FE63649BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 20:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 021CA3649BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 20:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240891AbhDSSW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 14:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240833AbhDSSWY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 14:22:24 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A97EFC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 11:21:54 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id u15so9655167plf.10
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 11:21:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=DKBt0bp0TTUgQvWPxoeal8fGy3PXdZiGA8cPBtHBn2U=;
-        b=IDPh+v7Nlj5LhsRlTw3r13uDJHgp7ZoeNXF689zP+Jx/mhY0EMgT6B4RFBPpENQBs1
-         pvFpZ3FT4+m74+Zna3vdjvvi44xLqs9JqR6Ob3blEJOlFXF5luVSq1IwRmGVayZG9hoP
-         H8Wc+TCBmdTru7S/n9qTN0hR2XRUjzvw2zKsyq4jLySVNQXDZDQUXiNdBhw7e8iUKsr0
-         Kx3a9CEqgL68OnwzDa1D6gNK0YEnSW2OK0P7ALk9yxRDITzaB80REEMOfHrgfJa2bNP8
-         gdwKuxEtlxj4xnNYrpIsJvkdFAyYMN/9zBbqQEsFN7pUvIwShRRs3SE/WohQ5GdSNeU6
-         xBew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=DKBt0bp0TTUgQvWPxoeal8fGy3PXdZiGA8cPBtHBn2U=;
-        b=e8e4XekSzmauWCJitw9rhZKMIIcOgOM0yvc0A4EzBwCqOKvHKApiExiqEc/nzvtUrn
-         L4LT/9K/v2yvnLoeiHzuG+UnxxsftMLv9Nw9wf4MOpQrW5RxI5246N271v+q/Uxtn1s4
-         NVm0PKFi5aXp2NrLUbAlYjIbPvBbyrxsFFOkCRTMY8vfT7lgRD+HaHTsslZHchAFbJcr
-         eKTkmTD4uIQHDy7GDIdyIkuSh7nO4k7rP1AxuaHnRQu90909ChvzwINFpNjOztn77bNk
-         nHCZigvIVDTWYozfu+0n5av/DdWSpDzwJg4DYUYifHRqUx1E73fUeX1D3tYigAyg8dRE
-         mvfA==
-X-Gm-Message-State: AOAM533h1NCENEFzIsW1kpc3pumGwkCY+lPQ6EAwbWZlEP6aNVF+1UgP
-        R1dwjq+IQgRxFZrSCTnKlVymHQ==
-X-Google-Smtp-Source: ABdhPJySTiB62+fr1hP716taw9mSevM+JdM2Cz6AlKimXZ/yP3GxW7LcSVLAYU9+u/SZ9eGusKkFTg==
-X-Received: by 2002:a17:90a:bb94:: with SMTP id v20mr419834pjr.144.1618856514155;
-        Mon, 19 Apr 2021 11:21:54 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id b7sm12900585pfi.42.2021.04.19.11.21.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 11:21:53 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>, hverkuil-cisco@xs4all.nl
-Cc:     linux-media@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: Re: [PATCH] media: meson-ge2d: fix rotation parameters
-In-Reply-To: <20210412134833.3467694-1-narmstrong@baylibre.com>
-References: <20210412134833.3467694-1-narmstrong@baylibre.com>
-Date:   Mon, 19 Apr 2021 11:21:53 -0700
-Message-ID: <7hh7k2xhha.fsf@baylibre.com>
+        id S240916AbhDSSXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 14:23:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47574 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240833AbhDSSXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 14:23:01 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CFC0960E0C;
+        Mon, 19 Apr 2021 18:22:30 +0000 (UTC)
+Date:   Mon, 19 Apr 2021 14:22:29 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH v3 1/3] tracing: Show real address for trace event
+ arguments
+Message-ID: <20210419142229.3ff31384@gandalf.local.home>
+In-Reply-To: <9835d9f1-8d3a-3440-c53f-516c2606ad07@nvidia.com>
+References: <160277369795.29307.6792451054602907237.stgit@devnote2>
+        <160277370703.29307.5134475491761971203.stgit@devnote2>
+        <9835d9f1-8d3a-3440-c53f-516c2606ad07@nvidia.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Neil Armstrong <narmstrong@baylibre.com> writes:
+On Mon, 19 Apr 2021 14:08:14 +0100
+Jon Hunter <jonathanh@nvidia.com> wrote:
 
-> With these settings, 90deg and 270deg rotation leads to inverted
-> vertical, fix them to have correct rotation.
->
-> Fixes: 59a635327ca7 ("media: meson: Add M2M driver for the Amlogic GE2D Accelerator Unit")
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> I have encountered the following crash on a couple of our ARM64 Jetson
+> platforms and bisect is pointing to this change. The crash I am seeing
+> is on boot when I am directing the trace prints to the console by adding
+> 'tp_printk trace_event="cpu_frequency,cpu_frequency_limits"' to the
+> kernel command line and enabling CONFIG_BOOTTIME_TRACING. Reverting this
+> change does fix the problem. Let me know if you have any thoughts.
 
-Reviewed-by: Kevin Hilman <khilman@baylibre.com>
+Thanks for the report. I was able to reproduce this on x86 as well.
 
-> ---
->  drivers/media/platform/meson/ge2d/ge2d.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/media/platform/meson/ge2d/ge2d.c b/drivers/media/platform/meson/ge2d/ge2d.c
-> index 153612ca96fc..a1393fefa8ae 100644
-> --- a/drivers/media/platform/meson/ge2d/ge2d.c
-> +++ b/drivers/media/platform/meson/ge2d/ge2d.c
-> @@ -757,7 +757,7 @@ static int ge2d_s_ctrl(struct v4l2_ctrl *ctrl)
->  
->  		if (ctrl->val == 90) {
->  			ctx->hflip = 0;
-> -			ctx->vflip = 0;
-> +			ctx->vflip = 1;
->  			ctx->xy_swap = 1;
->  		} else if (ctrl->val == 180) {
->  			ctx->hflip = 1;
-> @@ -765,7 +765,7 @@ static int ge2d_s_ctrl(struct v4l2_ctrl *ctrl)
->  			ctx->xy_swap = 0;
->  		} else if (ctrl->val == 270) {
->  			ctx->hflip = 1;
-> -			ctx->vflip = 1;
-> +			ctx->vflip = 0;
->  			ctx->xy_swap = 1;
->  		} else {
->  			ctx->hflip = 0;
-> -- 
-> 2.25.1
+It's the tp_printk that's the problem. Does this fix it for you?
+
+-- Steve
+
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 66a4ad93b5e9..f1ce4be7a499 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -3580,7 +3580,11 @@ static char *trace_iter_expand_format(struct trace_iterator *iter)
+ {
+ 	char *tmp;
+ 
+-	if (iter->fmt == static_fmt_buf)
++	/*
++	 * iter->tr is NULL when used with tp_printk, which makes
++	 * this get called where it is not safe to call krealloc().
++	 */
++	if (!iter->tr || iter->fmt == static_fmt_buf)
+ 		return NULL;
+ 
+ 	tmp = krealloc(iter->fmt, iter->fmt_size + STATIC_FMT_BUF_SIZE,
+@@ -3799,7 +3803,7 @@ const char *trace_event_format(struct trace_iterator *iter, const char *fmt)
+ 	if (WARN_ON_ONCE(!fmt))
+ 		return fmt;
+ 
+-	if (iter->tr->trace_flags & TRACE_ITER_HASH_PTR)
++	if (!iter->tr || iter->tr->trace_flags & TRACE_ITER_HASH_PTR)
+ 		return fmt;
+ 
+ 	p = fmt;
+@@ -9931,7 +9935,7 @@ void __init early_trace_init(void)
+ {
+ 	if (tracepoint_printk) {
+ 		tracepoint_print_iter =
+-			kmalloc(sizeof(*tracepoint_print_iter), GFP_KERNEL);
++			kzalloc(sizeof(*tracepoint_print_iter), GFP_KERNEL);
+ 		if (MEM_FAIL(!tracepoint_print_iter,
+ 			     "Failed to allocate trace iterator\n"))
+ 			tracepoint_printk = 0;
