@@ -2,91 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FFC6363956
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 04:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 892BF363959
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 04:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237260AbhDSCSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 18 Apr 2021 22:18:31 -0400
-Received: from shelob.surriel.com ([96.67.55.147]:55336 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233084AbhDSCSa (ORCPT
+        id S237051AbhDSCVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 18 Apr 2021 22:21:04 -0400
+Received: from mail-m17635.qiye.163.com ([59.111.176.35]:53854 "EHLO
+        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232097AbhDSCVD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 18 Apr 2021 22:18:30 -0400
-Received: from [2603:3005:d05:2b00:6e0b:84ff:fee2:98bb] (helo=imladris.surriel.com)
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1lYJU3-0001eJ-PD; Sun, 18 Apr 2021 22:17:55 -0400
-Date:   Sun, 18 Apr 2021 22:17:51 -0400
-From:   Rik van Riel <riel@surriel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kernel-team@fb.com, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Mel Gorman <mgorman@suse.de>
-Subject: [PATCH] sched,fair: skip newidle_balance if a wakeup is pending
-Message-ID: <20210418221751.7edfc03b@imladris.surriel.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Sun, 18 Apr 2021 22:21:03 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id B2ECD400253;
+        Mon, 19 Apr 2021 10:20:32 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] fs: f2fs: Remove unnecessary struct declaration
+Date:   Mon, 19 Apr 2021 10:20:03 +0800
+Message-Id: <20210419022003.34172-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Sender: riel@shelob.surriel.com
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQ05MSFYdSRlCGRlLGBhLSxpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mwg6SRw6Cj8QMBVCFxQBCDgw
+        OApPFDJVSlVKTUpDTEJDQ0hISU5IVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFKT05PNwY+
+X-HM-Tid: 0a78e7edeccad991kuwsb2ecd400253
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The try_to_wake_up function has an optimization where it can queue
-a task for wakeup on its previous CPU, if the task is still in the
-middle of going to sleep inside schedule().
+struct dnode_of_data is defined at 897th line.
+The declaration here is unnecessary. Remove it.
 
-Once schedule() re-enables IRQs, the task will be woken up with an
-IPI, and placed back on the runqueue.
-
-If we have such a wakeup pending, there is no need to search other
-CPUs for runnable tasks. Just skip (or bail out early from) newidle
-balancing, and run the just woken up task.
-
-For a memcache like workload test, this reduces total CPU use by
-about 2%, proportionally split between user and system time,
-and p99 and p95 application response time by 2-3% on average.
-The schedstats run_delay number shows a similar improvement.
-
-Signed-off-by: Rik van Riel <riel@surriel.com>
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 ---
- kernel/sched/fair.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ fs/f2fs/f2fs.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 69680158963f..19a92c48939f 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -7163,6 +7163,14 @@ done: __maybe_unused;
- 	if (!rf)
- 		return NULL;
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index e2d302ae3a46..0757f9e50fd2 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -3299,7 +3299,6 @@ void f2fs_hash_filename(const struct inode *dir, struct f2fs_filename *fname);
+ /*
+  * node.c
+  */
+-struct dnode_of_data;
+ struct node_info;
  
-+	/*
-+	 * We have a woken up task pending here. No need to search for ones
-+	 * elsewhere. This task will be enqueued the moment we unblock irqs
-+	 * upon exiting the scheduler.
-+	 */
-+	if (rq->ttwu_pending)
-+		return NULL;
-+
- 	new_tasks = newidle_balance(rq, rf);
- 
- 	/*
-@@ -10661,7 +10669,8 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
- 		 * Stop searching for tasks to pull if there are
- 		 * now runnable tasks on this rq.
- 		 */
--		if (pulled_task || this_rq->nr_running > 0)
-+		if (pulled_task || this_rq->nr_running > 0 ||
-+						this_rq->ttwu_pending)
- 			break;
- 	}
- 	rcu_read_unlock();
+ int f2fs_check_nid_range(struct f2fs_sb_info *sbi, nid_t nid);
 -- 
-2.25.4
-
+2.25.1
 
