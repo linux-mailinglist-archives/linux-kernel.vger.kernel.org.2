@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 523D3364492
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 156943644FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242661AbhDSN3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:29:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56334 "EHLO mail.kernel.org"
+        id S241501AbhDSNh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:37:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241534AbhDSNUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:20:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51E59613F5;
-        Mon, 19 Apr 2021 13:17:11 +0000 (UTC)
+        id S242035AbhDSNZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:25:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F37F7613C0;
+        Mon, 19 Apr 2021 13:20:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618838231;
-        bh=NBsJ+wVHbhl8jABuRW1CmUiNr4KdoBx5iL1Vsid6tJE=;
+        s=korg; t=1618838419;
+        bh=eLCoQEkiSj/MFiqR7oOJnee3Vfz/By49eeyqWjXcnnk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jcpv3bsntzj/YiTbWRXt8vJILujJNJFTR9vabt5qp7Uq9wGVzBzX1mB69BBjfyDcS
-         xf99fq7c2sXwJ7y7PNZlFhTNfTjzybAvddL6MM7tx68V8InvItlqVD647qPGZUUGng
-         a/a1FVtlevvcXAaKNzzN+vkYuwt325W14g3sp9Y0=
+        b=D75qu6AoTnrUfKf9C5B/KbISwuV8Y0mktoHabSeCpUMxmpZpJg7rx0gtW+eZIKgmf
+         SxQxaLKytTiIL0QbZJCs3NjtJ9Fdun1sTVr6CpLHyu7vHeNv4mm3isw6QF8uLit0ii
+         bg6Ev7TOEpGibkIbRHYopPWE7g5aFsldDwoFLBG8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 091/103] arm64: dts: allwinner: h6: beelink-gs1: Remove ext. 32 kHz osc reference
-Date:   Mon, 19 Apr 2021 15:06:42 +0200
-Message-Id: <20210419130530.923096484@linuxfoundation.org>
+        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 5.4 52/73] netfilter: bridge: add pre_exit hooks for ebtable unregistration
+Date:   Mon, 19 Apr 2021 15:06:43 +0200
+Message-Id: <20210419130525.511359861@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210419130527.791982064@linuxfoundation.org>
-References: <20210419130527.791982064@linuxfoundation.org>
+In-Reply-To: <20210419130523.802169214@linuxfoundation.org>
+References: <20210419130523.802169214@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +39,172 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jernej Skrabec <jernej.skrabec@siol.net>
+From: Florian Westphal <fw@strlen.de>
 
-[ Upstream commit 7a2f6e69e9c1060a7a09c1f8322ccb8d942b3078 ]
+commit 7ee3c61dcd28bf6e290e06ad382f13511dc790e9 upstream.
 
-Although every Beelink GS1 seems to have external 32768 Hz oscillator,
-it works only on one from four tested. There are more reports of RTC
-issues elsewhere, like Armbian forum.
+Just like ip/ip6/arptables, the hooks have to be removed, then
+synchronize_rcu() has to be called to make sure no more packets are being
+processed before the ruleset data is released.
 
-One Beelink GS1 owner read RTC osc status register on Android which
-shipped with the box. Reported value indicated problems with external
-oscillator.
+Place the hook unregistration in the pre_exit hook, then call the new
+ebtables pre_exit function from there.
 
-In order to fix RTC and related issues (HDMI-CEC and suspend/resume with
-Crust) on all boards, switch to internal oscillator.
+Years ago, when first netns support got added for netfilter+ebtables,
+this used an older (now removed) netfilter hook unregister API, that did
+a unconditional synchronize_rcu().
 
-Fixes: 32507b868119 ("arm64: dts: allwinner: h6: Move ext. oscillator to board DTs")
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Tested-by: Clément Péron <peron.clem@gmail.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://lore.kernel.org/r/20210330184218.279738-1-jernej.skrabec@siol.net
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Now that all is done with call_rcu, ebtable_{filter,nat,broute} pernet exit
+handlers may free the ebtable ruleset while packets are still in flight.
+
+This can only happens on module removal, not during netns exit.
+
+The new function expects the table name, not the table struct.
+
+This is because upcoming patch set (targeting -next) will remove all
+net->xt.{nat,filter,broute}_table instances, this makes it necessary
+to avoid external references to those member variables.
+
+The existing APIs will be converted, so follow the upcoming scheme of
+passing name + hook type instead.
+
+Fixes: aee12a0a3727e ("ebtables: remove nf_hook_register usage")
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 4 ----
- 1 file changed, 4 deletions(-)
+ include/linux/netfilter_bridge/ebtables.h |    5 +++--
+ net/bridge/netfilter/ebtable_broute.c     |    8 +++++++-
+ net/bridge/netfilter/ebtable_filter.c     |    8 +++++++-
+ net/bridge/netfilter/ebtable_nat.c        |    8 +++++++-
+ net/bridge/netfilter/ebtables.c           |   30 +++++++++++++++++++++++++++---
+ 5 files changed, 51 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-index 7c9dbde645b5..e8163c572dab 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-@@ -289,10 +289,6 @@
- 	vcc-pm-supply = <&reg_aldo1>;
+--- a/include/linux/netfilter_bridge/ebtables.h
++++ b/include/linux/netfilter_bridge/ebtables.h
+@@ -110,8 +110,9 @@ extern int ebt_register_table(struct net
+ 			      const struct ebt_table *table,
+ 			      const struct nf_hook_ops *ops,
+ 			      struct ebt_table **res);
+-extern void ebt_unregister_table(struct net *net, struct ebt_table *table,
+-				 const struct nf_hook_ops *);
++extern void ebt_unregister_table(struct net *net, struct ebt_table *table);
++void ebt_unregister_table_pre_exit(struct net *net, const char *tablename,
++				   const struct nf_hook_ops *ops);
+ extern unsigned int ebt_do_table(struct sk_buff *skb,
+ 				 const struct nf_hook_state *state,
+ 				 struct ebt_table *table);
+--- a/net/bridge/netfilter/ebtable_broute.c
++++ b/net/bridge/netfilter/ebtable_broute.c
+@@ -105,14 +105,20 @@ static int __net_init broute_net_init(st
+ 				  &net->xt.broute_table);
+ }
+ 
++static void __net_exit broute_net_pre_exit(struct net *net)
++{
++	ebt_unregister_table_pre_exit(net, "broute", &ebt_ops_broute);
++}
++
+ static void __net_exit broute_net_exit(struct net *net)
+ {
+-	ebt_unregister_table(net, net->xt.broute_table, &ebt_ops_broute);
++	ebt_unregister_table(net, net->xt.broute_table);
+ }
+ 
+ static struct pernet_operations broute_net_ops = {
+ 	.init = broute_net_init,
+ 	.exit = broute_net_exit,
++	.pre_exit = broute_net_pre_exit,
  };
  
--&rtc {
--	clocks = <&ext_osc32k>;
--};
--
- &spdif {
- 	status = "okay";
+ static int __init ebtable_broute_init(void)
+--- a/net/bridge/netfilter/ebtable_filter.c
++++ b/net/bridge/netfilter/ebtable_filter.c
+@@ -99,14 +99,20 @@ static int __net_init frame_filter_net_i
+ 				  &net->xt.frame_filter);
+ }
+ 
++static void __net_exit frame_filter_net_pre_exit(struct net *net)
++{
++	ebt_unregister_table_pre_exit(net, "filter", ebt_ops_filter);
++}
++
+ static void __net_exit frame_filter_net_exit(struct net *net)
+ {
+-	ebt_unregister_table(net, net->xt.frame_filter, ebt_ops_filter);
++	ebt_unregister_table(net, net->xt.frame_filter);
+ }
+ 
+ static struct pernet_operations frame_filter_net_ops = {
+ 	.init = frame_filter_net_init,
+ 	.exit = frame_filter_net_exit,
++	.pre_exit = frame_filter_net_pre_exit,
  };
--- 
-2.30.2
-
+ 
+ static int __init ebtable_filter_init(void)
+--- a/net/bridge/netfilter/ebtable_nat.c
++++ b/net/bridge/netfilter/ebtable_nat.c
+@@ -99,14 +99,20 @@ static int __net_init frame_nat_net_init
+ 				  &net->xt.frame_nat);
+ }
+ 
++static void __net_exit frame_nat_net_pre_exit(struct net *net)
++{
++	ebt_unregister_table_pre_exit(net, "nat", ebt_ops_nat);
++}
++
+ static void __net_exit frame_nat_net_exit(struct net *net)
+ {
+-	ebt_unregister_table(net, net->xt.frame_nat, ebt_ops_nat);
++	ebt_unregister_table(net, net->xt.frame_nat);
+ }
+ 
+ static struct pernet_operations frame_nat_net_ops = {
+ 	.init = frame_nat_net_init,
+ 	.exit = frame_nat_net_exit,
++	.pre_exit = frame_nat_net_pre_exit,
+ };
+ 
+ static int __init ebtable_nat_init(void)
+--- a/net/bridge/netfilter/ebtables.c
++++ b/net/bridge/netfilter/ebtables.c
+@@ -1237,10 +1237,34 @@ out:
+ 	return ret;
+ }
+ 
+-void ebt_unregister_table(struct net *net, struct ebt_table *table,
+-			  const struct nf_hook_ops *ops)
++static struct ebt_table *__ebt_find_table(struct net *net, const char *name)
++{
++	struct ebt_table *t;
++
++	mutex_lock(&ebt_mutex);
++
++	list_for_each_entry(t, &net->xt.tables[NFPROTO_BRIDGE], list) {
++		if (strcmp(t->name, name) == 0) {
++			mutex_unlock(&ebt_mutex);
++			return t;
++		}
++	}
++
++	mutex_unlock(&ebt_mutex);
++	return NULL;
++}
++
++void ebt_unregister_table_pre_exit(struct net *net, const char *name, const struct nf_hook_ops *ops)
++{
++	struct ebt_table *table = __ebt_find_table(net, name);
++
++	if (table)
++		nf_unregister_net_hooks(net, ops, hweight32(table->valid_hooks));
++}
++EXPORT_SYMBOL(ebt_unregister_table_pre_exit);
++
++void ebt_unregister_table(struct net *net, struct ebt_table *table)
+ {
+-	nf_unregister_net_hooks(net, ops, hweight32(table->valid_hooks));
+ 	__ebt_unregister_table(net, table);
+ }
+ 
 
 
