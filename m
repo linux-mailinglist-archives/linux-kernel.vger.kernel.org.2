@@ -2,196 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D8E363AE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 07:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 650EC363ACB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 07:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233230AbhDSFEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 01:04:39 -0400
-Received: from mga03.intel.com ([134.134.136.65]:36641 "EHLO mga03.intel.com"
+        id S232511AbhDSFCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 01:02:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230038AbhDSFEi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 01:04:38 -0400
-IronPort-SDR: bUQ2g8KgpMkfIcrTzo48bk6R1OhtmC/LjYcU1iGxCSOCsyqxHmjz9dexhp34GA1hsbncET2f4S
- 0Rahd9Li1xpQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9958"; a="195296083"
-X-IronPort-AV: E=Sophos;i="5.82,233,1613462400"; 
-   d="scan'208";a="195296083"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Apr 2021 22:04:09 -0700
-IronPort-SDR: rkZj+7hpAC8/mdIwqVQn6To9VCOggQ+nIpMBxtXDzNt0u6AIaYQ1nRC+efjUqWKyjFqLK045kP
- CZMBbEOccwNw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,233,1613462400"; 
-   d="scan'208";a="426366037"
-Received: from ipu5-build.bj.intel.com ([10.238.232.202])
-  by orsmga008.jf.intel.com with ESMTP; 18 Apr 2021 22:04:04 -0700
-From:   Bingbu Cao <bingbu.cao@intel.com>
-To:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        iommu@lists.linux-foundation.org
-Cc:     dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
-        will@kernel.org, bhelgaas@google.com, rajatja@google.com,
-        grundler@chromium.org, tfiga@chromium.org,
-        senozhatsky@chromium.org, sakari.ailus@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, bingbu.cao@intel.com,
-        bingbu.cao@linux.intel.com
-Subject: [PATCH] iommu: Use passthrough mode for the Intel IPUs
-Date:   Mon, 19 Apr 2021 12:57:05 +0800
-Message-Id: <1618808225-10108-1-git-send-email-bingbu.cao@intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S229473AbhDSFCs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 01:02:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65BC961078;
+        Mon, 19 Apr 2021 05:02:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618808539;
+        bh=srAR5o/oGq5ioibP/eXNEOXMJgehSJWXVDMJHT8j86M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q2aSyWKadyluHjWWN1SwyxF3iNnBxBRV4eFwfMyHPgeuOCbx3zVu4VA/PQblKt1mX
+         LG/8Qa12wOxexoPdM1AtRUqEwffA6hhUzg5XvoNYf5i8CVaEzIb5aHKsxdmdIZ0VNh
+         EB/GtCUOovxwGQ5QiY5CwzbiGBepA6YRCHaOc9bFp2O+m0lnHel/QMKuqas1XJG+Ml
+         vece3azY0OPvilnrF9TxEM4Y2QEUh42RCB/qgDYU4n+IIRFMdKunRACTXFpDc2oJTx
+         Tw4u0mxUHQNeAMruPlzpJF4CCm1VJVvyur9NU2SbLDowYlZY9RFqgpKroyAxadDiZV
+         1t4tD3zjj0ZKQ==
+Date:   Mon, 19 Apr 2021 08:02:15 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "Alice Guo (OSS)" <alice.guo@oss.nxp.com>
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
+        horia.geanta@nxp.com, aymen.sghaier@nxp.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net, tony@atomide.com,
+        geert+renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
+        vkoul@kernel.org, peter.ujfalusi@gmail.com, a.hajda@samsung.com,
+        narmstrong@baylibre.com, robert.foss@linaro.org, airlied@linux.ie,
+        daniel@ffwll.ch, khilman@baylibre.com, tomba@kernel.org,
+        jyri.sarha@iki.fi, joro@8bytes.org, will@kernel.org,
+        mchehab@kernel.org, ulf.hansson@linaro.org,
+        adrian.hunter@intel.com, kishon@ti.com, kuba@kernel.org,
+        linus.walleij@linaro.org, Roy.Pledge@nxp.com, leoyang.li@nxp.com,
+        ssantosh@kernel.org, matthias.bgg@gmail.com, edubezval@gmail.com,
+        j-keerthy@ti.com, balbi@kernel.org, linux@prisktech.co.nz,
+        stern@rowland.harvard.edu, wim@linux-watchdog.org,
+        linux@roeck-us.net, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, linux-media@vger.kernel.org,
+        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-phy@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-staging@lists.linux.dev,
+        linux-mediatek@lists.infradead.org, linux-pm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org
+Subject: Re: [RFC v1 PATCH 3/3] driver: update all the code that use
+ soc_device_match
+Message-ID: <YH0O1104YEdjY9mb@unreal>
+References: <20210419042722.27554-1-alice.guo@oss.nxp.com>
+ <20210419042722.27554-4-alice.guo@oss.nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210419042722.27554-4-alice.guo@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intel IPU(Image Processing Unit) has its own (IO)MMU hardware,
-The IPU driver allocates its own page table that is not mapped
-via the DMA, and thus the Intel IOMMU driver blocks access giving
-this error:
+On Mon, Apr 19, 2021 at 12:27:22PM +0800, Alice Guo (OSS) wrote:
+> From: Alice Guo <alice.guo@nxp.com>
+> 
+> Update all the code that use soc_device_match because add support for
+> soc_device_match returning -EPROBE_DEFER.
+> 
+> Signed-off-by: Alice Guo <alice.guo@nxp.com>
+> ---
+>  drivers/bus/ti-sysc.c                         |  2 +-
+>  drivers/clk/renesas/r8a7795-cpg-mssr.c        |  4 +++-
+>  drivers/clk/renesas/rcar-gen2-cpg.c           |  2 +-
+>  drivers/clk/renesas/rcar-gen3-cpg.c           |  2 +-
+>  drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c       |  7 ++++++-
+>  drivers/dma/ti/k3-psil.c                      |  3 +++
+>  drivers/dma/ti/k3-udma.c                      |  2 +-
+>  drivers/gpu/drm/bridge/nwl-dsi.c              |  2 +-
+>  drivers/gpu/drm/meson/meson_drv.c             |  4 +++-
+>  drivers/gpu/drm/omapdrm/dss/dispc.c           |  2 +-
+>  drivers/gpu/drm/omapdrm/dss/dpi.c             |  4 +++-
+>  drivers/gpu/drm/omapdrm/dss/dsi.c             |  3 +++
+>  drivers/gpu/drm/omapdrm/dss/dss.c             |  3 +++
+>  drivers/gpu/drm/omapdrm/dss/hdmi4_core.c      |  3 +++
+>  drivers/gpu/drm/omapdrm/dss/venc.c            |  4 +++-
+>  drivers/gpu/drm/omapdrm/omap_drv.c            |  3 +++
+>  drivers/gpu/drm/rcar-du/rcar_du_crtc.c        |  4 +++-
+>  drivers/gpu/drm/rcar-du/rcar_lvds.c           |  2 +-
+>  drivers/gpu/drm/tidss/tidss_dispc.c           |  4 +++-
+>  drivers/iommu/ipmmu-vmsa.c                    |  7 +++++--
+>  drivers/media/platform/rcar-vin/rcar-core.c   |  2 +-
+>  drivers/media/platform/rcar-vin/rcar-csi2.c   |  2 +-
+>  drivers/media/platform/vsp1/vsp1_uif.c        |  4 +++-
+>  drivers/mmc/host/renesas_sdhi_core.c          |  2 +-
+>  drivers/mmc/host/renesas_sdhi_internal_dmac.c |  2 +-
+>  drivers/mmc/host/sdhci-of-esdhc.c             | 21 ++++++++++++++-----
+>  drivers/mmc/host/sdhci-omap.c                 |  2 +-
+>  drivers/mmc/host/sdhci_am654.c                |  2 +-
+>  drivers/net/ethernet/renesas/ravb_main.c      |  4 +++-
+>  drivers/net/ethernet/ti/am65-cpsw-nuss.c      |  2 +-
+>  drivers/net/ethernet/ti/cpsw.c                |  2 +-
+>  drivers/net/ethernet/ti/cpsw_new.c            |  2 +-
+>  drivers/phy/ti/phy-omap-usb2.c                |  4 +++-
+>  drivers/pinctrl/renesas/core.c                |  2 +-
+>  drivers/pinctrl/renesas/pfc-r8a7790.c         |  5 ++++-
+>  drivers/pinctrl/renesas/pfc-r8a7794.c         |  5 ++++-
+>  drivers/soc/fsl/dpio/dpio-driver.c            | 13 ++++++++----
+>  drivers/soc/renesas/r8a774c0-sysc.c           |  5 ++++-
+>  drivers/soc/renesas/r8a7795-sysc.c            |  2 +-
+>  drivers/soc/renesas/r8a77990-sysc.c           |  5 ++++-
+>  drivers/soc/ti/k3-ringacc.c                   |  2 +-
+>  drivers/staging/mt7621-pci/pci-mt7621.c       |  2 +-
+>  drivers/thermal/rcar_gen3_thermal.c           |  4 +++-
+>  drivers/thermal/ti-soc-thermal/ti-bandgap.c   | 10 +++++++--
+>  drivers/usb/gadget/udc/renesas_usb3.c         |  2 +-
+>  drivers/usb/host/ehci-platform.c              |  4 +++-
+>  drivers/usb/host/xhci-rcar.c                  |  2 +-
+>  drivers/watchdog/renesas_wdt.c                |  2 +-
+>  48 files changed, 131 insertions(+), 52 deletions(-)
+> 
+> diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+> index 5fae60f8c135..00c59aa217c1 100644
+> --- a/drivers/bus/ti-sysc.c
+> +++ b/drivers/bus/ti-sysc.c
+> @@ -2909,7 +2909,7 @@ static int sysc_init_soc(struct sysc *ddata)
+>  	}
+>  
+>  	match = soc_device_match(sysc_soc_feat_match);
+> -	if (!match)
+> +	if (!match || IS_ERR(match))
+>  		return 0;
+>  
+>  	if (match->data)
+> diff --git a/drivers/clk/renesas/r8a7795-cpg-mssr.c b/drivers/clk/renesas/r8a7795-cpg-mssr.c
+> index c32d2c678046..90a18336a4c3 100644
+> --- a/drivers/clk/renesas/r8a7795-cpg-mssr.c
+> +++ b/drivers/clk/renesas/r8a7795-cpg-mssr.c
+> @@ -439,6 +439,7 @@ static const unsigned int r8a7795es2_mod_nullify[] __initconst = {
+>  
+>  static int __init r8a7795_cpg_mssr_init(struct device *dev)
+>  {
+> +	const struct soc_device_attribute *match;
+>  	const struct rcar_gen3_cpg_pll_config *cpg_pll_config;
+>  	u32 cpg_mode;
+>  	int error;
+> @@ -453,7 +454,8 @@ static int __init r8a7795_cpg_mssr_init(struct device *dev)
+>  		return -EINVAL;
+>  	}
+>  
+> -	if (soc_device_match(r8a7795es1)) {
+> +	match = soc_device_match(r8a7795es1);
+> +	if (!IS_ERR(match) && match) {
 
-DMAR: DRHD: handling fault status reg 3
-DMAR: [DMA Read] Request device [00:05.0] PASID ffffffff
-      fault addr 76406000 [fault reason 06] PTE Read access is not set
+"if (!IS_ERR_OR_NULL(match))" in all places.
 
-As IPU is not an external facing device which is not risky, so use
-IOMMU passthrough mode for Intel IPUs.
-
-Signed-off-by: Bingbu Cao <bingbu.cao@intel.com>
----
- drivers/iommu/intel/iommu.c       | 35 +++++++++++++++++++++++++++++++++++
- drivers/staging/media/ipu3/ipu3.c |  2 +-
- include/linux/pci_ids.h           |  5 +++++
- 3 files changed, 41 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index ee0932307d64..59222d2fe73f 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -55,6 +55,12 @@
- #define IS_GFX_DEVICE(pdev) ((pdev->class >> 16) == PCI_BASE_CLASS_DISPLAY)
- #define IS_USB_DEVICE(pdev) ((pdev->class >> 8) == PCI_CLASS_SERIAL_USB)
- #define IS_ISA_DEVICE(pdev) ((pdev->class >> 8) == PCI_CLASS_BRIDGE_ISA)
-+#define IS_IPU_DEVICE(pdev) ((pdev)->vendor == PCI_VENDOR_ID_INTEL &&		\
-+			     ((pdev)->device == PCI_DEVICE_ID_INTEL_IPU3 ||	\
-+			     (pdev)->device == PCI_DEVICE_ID_INTEL_IPU6 ||	\
-+			     (pdev)->device == PCI_DEVICE_ID_INTEL_IPU6SE ||	\
-+			     (pdev)->device == PCI_DEVICE_ID_INTEL_IPU6SE_P ||	\
-+			     (pdev)->device == PCI_DEVICE_ID_INTEL_IPU6EP))
- #define IS_AZALIA(pdev) ((pdev)->vendor == 0x8086 && (pdev)->device == 0x3a3e)
- 
- #define IOAPIC_RANGE_START	(0xfee00000)
-@@ -360,6 +366,7 @@ int intel_iommu_enabled = 0;
- EXPORT_SYMBOL_GPL(intel_iommu_enabled);
- 
- static int dmar_map_gfx = 1;
-+static int dmar_map_ipu = 1;
- static int dmar_forcedac;
- static int intel_iommu_strict;
- static int intel_iommu_superpage = 1;
-@@ -368,6 +375,7 @@ static int iommu_skip_te_disable;
- 
- #define IDENTMAP_GFX		2
- #define IDENTMAP_AZALIA		4
-+#define IDENTMAP_IPU		8
- 
- int intel_iommu_gfx_mapped;
- EXPORT_SYMBOL_GPL(intel_iommu_gfx_mapped);
-@@ -2839,6 +2847,9 @@ static int device_def_domain_type(struct device *dev)
- 
- 		if ((iommu_identity_mapping & IDENTMAP_GFX) && IS_GFX_DEVICE(pdev))
- 			return IOMMU_DOMAIN_IDENTITY;
-+
-+		if ((iommu_identity_mapping & IDENTMAP_IPU) && IS_IPU_DEVICE(pdev))
-+			return IOMMU_DOMAIN_IDENTITY;
- 	}
- 
- 	return 0;
-@@ -3278,6 +3289,9 @@ static int __init init_dmars(void)
- 	if (!dmar_map_gfx)
- 		iommu_identity_mapping |= IDENTMAP_GFX;
- 
-+	if (!dmar_map_ipu)
-+		iommu_identity_mapping |= IDENTMAP_IPU;
-+
- 	check_tylersburg_isoch();
- 
- 	ret = si_domain_init(hw_pass_through);
-@@ -5622,6 +5636,15 @@ static void quirk_iommu_igfx(struct pci_dev *dev)
- 	dmar_map_gfx = 0;
- }
- 
-+static void quirk_iommu_ipu(struct pci_dev *dev)
-+{
-+	if (risky_device(dev))
-+		return;
-+
-+	pci_info(dev, "Passthrough IOMMU for integrated Intel IPU\n");
-+	dmar_map_ipu = 0;
-+}
-+
- /* G4x/GM45 integrated gfx dmar support is totally busted. */
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x2a40, quirk_iommu_igfx);
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x2e00, quirk_iommu_igfx);
-@@ -5657,6 +5680,18 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x1632, quirk_iommu_igfx);
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x163A, quirk_iommu_igfx);
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x163D, quirk_iommu_igfx);
- 
-+/* disable IPU dmar support */
-+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_IPU3,
-+			 quirk_iommu_ipu);
-+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_IPU6EP,
-+			 quirk_iommu_ipu);
-+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_IPU6SE_P,
-+			 quirk_iommu_ipu);
-+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_IPU6,
-+			 quirk_iommu_ipu);
-+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_IPU6SE,
-+			 quirk_iommu_ipu);
-+
- static void quirk_iommu_rwbf(struct pci_dev *dev)
- {
- 	if (risky_device(dev))
-diff --git a/drivers/staging/media/ipu3/ipu3.c b/drivers/staging/media/ipu3/ipu3.c
-index ee1bba6bdcac..aee1130ac042 100644
---- a/drivers/staging/media/ipu3/ipu3.c
-+++ b/drivers/staging/media/ipu3/ipu3.c
-@@ -16,7 +16,7 @@
- #include "ipu3-dmamap.h"
- #include "ipu3-mmu.h"
- 
--#define IMGU_PCI_ID			0x1919
-+#define IMGU_PCI_ID			PCI_DEVICE_ID_INTEL_IPU3
- #define IMGU_PCI_BAR			0
- #define IMGU_DMA_MASK			DMA_BIT_MASK(39)
- #define IMGU_MAX_QUEUE_DEPTH		(2 + 2)
-diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index a76ccb697bef..951315892608 100644
---- a/include/linux/pci_ids.h
-+++ b/include/linux/pci_ids.h
-@@ -2716,6 +2716,7 @@
- #define PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_2C_BRIDGE  0x1576
- #define PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_4C_NHI     0x1577
- #define PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_4C_BRIDGE  0x1578
-+#define PCI_DEVICE_ID_INTEL_IPU3	0x1919
- #define PCI_DEVICE_ID_INTEL_80960_RP	0x1960
- #define PCI_DEVICE_ID_INTEL_QAT_C3XXX	0x19e2
- #define PCI_DEVICE_ID_INTEL_QAT_C3XXX_VF	0x19e3
-@@ -2982,6 +2983,8 @@
- #define PCI_DEVICE_ID_INTEL_SBRIDGE_BR		0x3cf5	/* 13.6 */
- #define PCI_DEVICE_ID_INTEL_SBRIDGE_SAD1	0x3cf6	/* 12.7 */
- #define PCI_DEVICE_ID_INTEL_IOAT_SNB	0x402f
-+#define PCI_DEVICE_ID_INTEL_IPU6EP	0x465d
-+#define PCI_DEVICE_ID_INTEL_IPU6SE_P	0x4e19
- #define PCI_DEVICE_ID_INTEL_5100_16	0x65f0
- #define PCI_DEVICE_ID_INTEL_5100_19	0x65f3
- #define PCI_DEVICE_ID_INTEL_5100_21	0x65f5
-@@ -3032,6 +3035,8 @@
- #define PCI_DEVICE_ID_INTEL_IXP4XX	0x8500
- #define PCI_DEVICE_ID_INTEL_IXP2800	0x9004
- #define PCI_DEVICE_ID_INTEL_VMD_9A0B	0x9a0b
-+#define PCI_DEVICE_ID_INTEL_IPU6	0x9a19
-+#define PCI_DEVICE_ID_INTEL_IPU6SE	0x9a39
- #define PCI_DEVICE_ID_INTEL_S21152BB	0xb152
- 
- #define PCI_VENDOR_ID_SCALEMP		0x8686
--- 
-2.7.4
-
+Thanks
