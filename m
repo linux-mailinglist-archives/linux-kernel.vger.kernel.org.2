@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5024364A5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 21:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 280EF364A62
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 21:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241510AbhDSTSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 15:18:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53906 "EHLO
+        id S241528AbhDSTTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 15:19:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237147AbhDSTSm (ORCPT
+        with ESMTP id S239503AbhDSTTb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 15:18:42 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9ABC061761
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 12:18:11 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id b3so21763846oie.5
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 12:18:11 -0700 (PDT)
+        Mon, 19 Apr 2021 15:19:31 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D02C061761
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 12:18:59 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 65-20020a9d03470000b02902808b4aec6dso28882240otv.6
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 12:18:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Ad40NSmfYWc631w5assBYPDgHC0ZIRYbUYajOYP7WiU=;
-        b=SQwZUtMWPLQTwbDdDTCG/PbRwn1zEvOPwXAPZr1PA1r1TzKJZUQ4SZTi0io5JkQnyO
-         mDEFoc1SrHeYaeQnHl69l9ENUr8smTknS1Gj4zseQoR6MCTRJAhw9BQjqHxb5nW500tv
-         A/MdIdLvpPSzDHIu+vfmWgGX10vph/uPEGfP/UxMsoP7wnGBk+Tmnhni12HeMc+qyOm/
-         txDDSFCdE8ilejSsUn+/T2db13cSJbwbhr4lUS6LjCa9qqLgQpB09uvkITBGcOBRfed+
-         3Qt7ew6IIQIwPd3LRl8DSMnBP679ote3DCWHBM+0bc+CP3kMWlQtdRF2S8U5c3l+A5AR
-         oKdQ==
+        bh=rnkHoMyyrqXTtZmadAmUe+XXEr7XS5f+Ds2frEajC4I=;
+        b=xqW8IYtHKXWmi4K+DMTB4ieQZmBejmCNxO1xUxe73JOc/4Tt1r+G/ZGTK4BDA+wgat
+         FVzSMS8xL16y65JWzI+AKsW+tmTaBBWo84TqMaap2drMmDNRSBLUggDnSDeZ4AlggaAn
+         F+QfAJ6iq4nI0EhPkSccIzKiNm31BaFae1pTEdynW2IQCFVoGKey82myrktbmeR/Mwnm
+         vOfQvyCM3Du8s9T+GG+KqRydniGwwjIvL8Vx0q2uhgZHXkJdbWLTV3akww3JyaE5O1zc
+         WJIhhgzgruuKtirL0hxUMYKhhKWsqrve/qER7HaGQFYC+KhmOufq6MF3pS6rs9aUeFha
+         R6/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Ad40NSmfYWc631w5assBYPDgHC0ZIRYbUYajOYP7WiU=;
-        b=XiC3Pv6iIlaioS3XN/MkXlxmO32n3CX61CHyI96AQSJXvKVG1aQ+V6WKj0dSEriU7y
-         ZheoN2p6e+BZx4mw1Z+FfibufdUowFU8ggSy8meV2sTImeTXnhBwe5FzHoyCH/Ppujz8
-         z6c1HZG0ffl1bSZvsKIC0fRo2tjs0AKfqglFQ1WMex4nCDPgejeDL6OQZHySXuMcvPN/
-         4OW58NO0WY6baDQ0h0/Q5yeZ+rWOCBePqzRRJtilO/PzYnkSpi4vsVZ6XN/Uvod/Lzfg
-         SFSWW9b3F3wZ5o3dTXmAYdEHfgMkGEu2+fyfej8+qbs5QV8NepV8FyLJipafmpTyF/wX
-         WvGg==
-X-Gm-Message-State: AOAM530iyN5ap9De48T8m02ch0OPCVJWTUvvg8COd53eXCy9YWnRsfar
-        b9q2GbvCwBzkAvNu6edtpZsypA==
-X-Google-Smtp-Source: ABdhPJw2qgJ5FPF8BeB5Xm2YcvlvVarZk4n5BPIPw6o9S9fpuHFTM73atAOXrpHylMurmgD3wCIFZQ==
-X-Received: by 2002:a05:6808:138a:: with SMTP id c10mr420144oiw.117.1618859890998;
-        Mon, 19 Apr 2021 12:18:10 -0700 (PDT)
+        bh=rnkHoMyyrqXTtZmadAmUe+XXEr7XS5f+Ds2frEajC4I=;
+        b=MCunMlUhd/+xKl4mkZ+LuZshNK+K6USiXgvpXaWPeh6flTQaqYiZjXcdA6CnMcHi09
+         ztts8Dx4RhAfvgDtfoonUNo0GVq69kL2aNz3C2F22TZ9gTparYUFVJsCdTPQWA0vv+E4
+         LHZw1BYqpkMFnfJ8BJ64f1QjNWhIL4WGWNq8VHvIscbhMcJW4lTjs1Y8iPKTZvjQGWRj
+         5Ewf4XpfiF4j+n+3P6EF01t95KiEWTMlzLA7OWCMRl3urz7hJgpR9wBoCWpTgX8gf9Bq
+         YwHo+bW+6bbgPdYBkFyAoF8edkbB+QYFhVt4Uu+Yio1qquAl1vXWiWSy5fH/eaWlsM/j
+         7kpA==
+X-Gm-Message-State: AOAM531MW6EJS7Ao5/A6DrMmyDaleP14Nog/H169ju8yjqw5xeadYFfS
+        ybFydiqGkCgreuLyMk30esmZLA==
+X-Google-Smtp-Source: ABdhPJxYYFJA565Ah2IFbsorqtKthIYSeywb13B1yALFRrr4n+LvjBR6Ofv+FW/1z6RK1YCETQC0MQ==
+X-Received: by 2002:a9d:1b70:: with SMTP id l103mr16249994otl.203.1618859939302;
+        Mon, 19 Apr 2021 12:18:59 -0700 (PDT)
 Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id x2sm2991125ooe.13.2021.04.19.12.18.09
+        by smtp.gmail.com with ESMTPSA id w66sm2916867otb.69.2021.04.19.12.18.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 12:18:10 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 14:18:08 -0500
+        Mon, 19 Apr 2021 12:18:58 -0700 (PDT)
+Date:   Mon, 19 Apr 2021 14:18:56 -0500
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
 To:     AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@somainline.org>
@@ -58,46 +58,48 @@ Cc:     viresh.kumar@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
         linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
         konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
         martin.botka@somainline.org, jeffrey.l.hugo@gmail.com
-Subject: Re: [PATCH v4 1/7] cpufreq: blacklist SDM630/636/660 in
- cpufreq-dt-platdev
-Message-ID: <20210419191808.GT1538589@yoga>
+Subject: Re: [PATCH v4 2/7] cpufreq: blacklist MSM8998 in cpufreq-dt-platdev
+Message-ID: <20210419191856.GU1538589@yoga>
 References: <20210119174557.227318-1-angelogioacchino.delregno@somainline.org>
- <20210119174557.227318-2-angelogioacchino.delregno@somainline.org>
+ <20210119174557.227318-3-angelogioacchino.delregno@somainline.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210119174557.227318-2-angelogioacchino.delregno@somainline.org>
+In-Reply-To: <20210119174557.227318-3-angelogioacchino.delregno@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Tue 19 Jan 11:45 CST 2021, AngeloGioacchino Del Regno wrote:
 
-> Add the SDM630, SDM636 and SDM660 to the blacklist since the CPU
-> scaling is handled out of this.
+> Add the MSM8998 to the blacklist since the CPU scaling is handled
+> out of this.
 > 
 
 Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
+Although I presume this could be squashed with the previous patch...
+
+Regards,
+Bjorn
+
 > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
 > ---
->  drivers/cpufreq/cpufreq-dt-platdev.c | 3 +++
->  1 file changed, 3 insertions(+)
+>  drivers/cpufreq/cpufreq-dt-platdev.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
 > diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
-> index bd2db0188cbb..f82f4ec17ff2 100644
+> index f82f4ec17ff2..061de3031787 100644
 > --- a/drivers/cpufreq/cpufreq-dt-platdev.c
 > +++ b/drivers/cpufreq/cpufreq-dt-platdev.c
-> @@ -135,6 +135,9 @@ static const struct of_device_id blacklist[] __initconst = {
+> @@ -133,6 +133,7 @@ static const struct of_device_id blacklist[] __initconst = {
+>  
+>  	{ .compatible = "qcom,apq8096", },
 >  	{ .compatible = "qcom,msm8996", },
+> +	{ .compatible = "qcom,msm8998", },
 >  	{ .compatible = "qcom,qcs404", },
 >  	{ .compatible = "qcom,sc7180", },
-> +	{ .compatible = "qcom,sdm630", },
-> +	{ .compatible = "qcom,sdm636", },
-> +	{ .compatible = "qcom,sdm660", },
->  	{ .compatible = "qcom,sdm845", },
->  
->  	{ .compatible = "st,stih407", },
+>  	{ .compatible = "qcom,sdm630", },
 > -- 
 > 2.30.0
 > 
