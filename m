@@ -2,95 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF89364E9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA8C364EA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231663AbhDSX3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 19:29:34 -0400
-Received: from mo-csw1515.securemx.jp ([210.130.202.154]:42952 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbhDSX3c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 19:29:32 -0400
-Received: by mo-csw.securemx.jp (mx-mo-csw1515) id 13JNSKma008066; Tue, 20 Apr 2021 08:28:20 +0900
-X-Iguazu-Qid: 34tre4erL1uXq8Lo6m
-X-Iguazu-QSIG: v=2; s=0; t=1618874900; q=34tre4erL1uXq8Lo6m; m=EC0wCzbTh/qdnd5+DAtK9Y6Bek2gq4A5/QgKBXv6o1E=
-Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
-        by relay.securemx.jp (mx-mr1510) id 13JNSIgK023852
-        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 20 Apr 2021 08:28:18 +0900
-Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id 1C0A91000A3;
-        Tue, 20 Apr 2021 08:28:18 +0900 (JST)
-Received: from hop001.toshiba.co.jp ([133.199.164.63])
-        by enc01.toshiba.co.jp  with ESMTP id 13JNSHw1015773;
-        Tue, 20 Apr 2021 08:28:17 +0900
-Date:   Tue, 20 Apr 2021 08:28:00 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Yu Chen <chenyu56@huawei.com>,
-        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] MAINTAINERS: rectify entry for ARM/TOSHIBA VISCONTI
- ARCHITECTURE
-X-TSB-HOP: ON
-Message-ID: <20210419232800.cbcyjlyrqywkrqdt@toshiba.co.jp>
-References: <20210419092609.3692-1-lukas.bulwahn@gmail.com>
- <20210419092609.3692-2-lukas.bulwahn@gmail.com>
+        id S232410AbhDSXar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 19:30:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33850 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232013AbhDSXak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 19:30:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8CEAF60FDA;
+        Mon, 19 Apr 2021 23:30:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618875009;
+        bh=QavP1sTNt+8jY2rd+ZDjU3e9lFiXK6rt88oRb4zt71s=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=epZ0U8dHWuISrPZ0UpW2RjofCpx2l3R1PHgRdQ8eDoCch/iebBbOPv2C3jp8NEzcR
+         EjeZsekDJcW8BkhyWECfIuif6NT0CKiWilyfugbcCwAIvFWApKwa366xMvvBgWEM6O
+         tZeHtvH6obopz8lXxKBUfPckb7E1Da5J1oBD30bsNwUfnD0gzg8tXZyh5UMsJC8bMD
+         wpcU2sgG23qSH4ZthZejWI2aKz9yEDTBvn5uPH7LTkLqqJAeeDyZDKzd4mkvI/D3Lk
+         r3FSjUwFr7gcbtMejZ2AVSRAXhiJee7D89toiloKUrC5x7wcGD2dvzgFXdJ73psnUW
+         RiCglnH0eSYNA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7EC6960A2A;
+        Mon, 19 Apr 2021 23:30:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210419092609.3692-2-lukas.bulwahn@gmail.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3 0/2] TJA1103 driver
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161887500951.9960.509121442275635477.git-patchwork-notify@kernel.org>
+Date:   Mon, 19 Apr 2021 23:30:09 +0000
+References: <20210419161400.260703-1-radu-nicolae.pirea@oss.nxp.com>
+In-Reply-To: <20210419161400.260703-1-radu-nicolae.pirea@oss.nxp.com>
+To:     Radu Pirea (NXP OSS) <radu-nicolae.pirea@oss.nxp.com>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello:
 
-Thanks for your patch.
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-On Mon, Apr 19, 2021 at 11:26:07AM +0200, Lukas Bulwahn wrote:
-> Commit 836863a08c99 ("MAINTAINERS: Add information for Toshiba Visconti ARM
-> SoCs") refers to the non-existing file toshiba,tmpv7700-pinctrl.yaml in
-> ./Documentation/devicetree/bindings/pinctrl/. Commit 1825c1fe0057
-> ("pinctrl: Add DT bindings for Toshiba Visconti TMPV7700 SoC") originating
-> from the same patch series however adds the file
-> toshiba,visconti-pinctrl.yaml in that directory instead.
+On Mon, 19 Apr 2021 19:13:58 +0300 you wrote:
+> Hi,
 > 
-> So, refer to toshiba,visconti-pinctrl.yaml in the ARM/TOSHIBA VISCONTI
-> ARCHITECTURE section instead.
+> This small series adds the TJA1103 PHY driver.
 > 
-
-Could you add  Fixes: tag?
-
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-
-Acked-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-
-> ---
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Changes in v3:
+>  - use phy_read_mmd_poll_timeout instead of spin_until_cond
+>  - changed the phy name from a generic one to something specific
+>  - minor indentation change
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index c54b8e4520d1..d31c8058b17f 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2669,7 +2669,7 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/iwamatsu/linux-visconti.git
->  F:	Documentation/devicetree/bindings/arm/toshiba.yaml
->  F:	Documentation/devicetree/bindings/net/toshiba,visconti-dwmac.yaml
->  F:	Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
-> -F:	Documentation/devicetree/bindings/pinctrl/toshiba,tmpv7700-pinctrl.yaml
-> +F:	Documentation/devicetree/bindings/pinctrl/toshiba,visconti-pinctrl.yaml
->  F:	Documentation/devicetree/bindings/watchdog/toshiba,visconti-wdt.yaml
->  F:	arch/arm64/boot/dts/toshiba/
->  F:	drivers/net/ethernet/stmicro/stmmac/dwmac-visconti.c
-> -- 
-> 2.17.1
-> 
-> 
+> [...]
+
+Here is the summary with links:
+  - [v3,1/2] net: phy: add genphy_c45_pma_suspend/resume
+    https://git.kernel.org/netdev/net-next/c/da702f34e3cc
+  - [v3,2/2] phy: nxp-c45: add driver for tja1103
+    https://git.kernel.org/netdev/net-next/c/b050f2f15e04
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
