@@ -2,67 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0556C36409A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F76D36409D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 13:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238590AbhDSLeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 07:34:31 -0400
-Received: from mail-m17635.qiye.163.com ([59.111.176.35]:58822 "EHLO
-        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhDSLe1 (ORCPT
+        id S238653AbhDSLfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 07:35:40 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:42959 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230272AbhDSLfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 07:34:27 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id 4C54240050D;
-        Mon, 19 Apr 2021 19:33:56 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Mattias Nissler <mnissler@chromium.org>,
-        Ross Zwisler <zwisler@google.com>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Eric Biggers <ebiggers@google.com>,
-        linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-Subject: [PATCH] linux/mount.h: Remove duplicate struct declaration
-Date:   Mon, 19 Apr 2021 19:33:04 +0800
-Message-Id: <20210419113342.42849-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 19 Apr 2021 07:35:38 -0400
+Received: by mail-oi1-f170.google.com with SMTP id n140so35079298oig.9;
+        Mon, 19 Apr 2021 04:35:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7K5odPDOES5CPhUMgYhbew2lZw0WkcvFtDvEI9ulVZg=;
+        b=YLUvRdaiVLDSeBY35KjuRS9H5IQq/MktX32t8XzXP9D3WQhtXdaetEvTyQ0meMfS/W
+         ed+KW7afk7qRjipiKxwN8/YTgFywau19z2VaiJ/DHhfb6uLyRn0HJ9W/0apGIJlKwGYO
+         qVpuEt4G9zczbaHGmxG9dYC8nRn/2oZZTog3PhhV5ZXQt7XaUzFqnEpVbPO3NF8u99gq
+         gs72NWEQFpLwbXXix2dZZ1bYsXOaix1APQ04iDJeubxuE1paO3cdCboi+ikmbICzsVdl
+         pCcxueUEiU10wxMYF12mZDJnzWVITTb2/5DvuoPUUGVgVSvO3tDiPJE0Y0m611xhQVAj
+         GIBw==
+X-Gm-Message-State: AOAM532gAv1g6l6JHg1WF2FlgJFCqPCFFdzrs4Uzgigh/L1b95vgRtxm
+        ODvZIVgoiWxrDy72lJnADNQVBs55LY7L/YdM+gi+9xzc
+X-Google-Smtp-Source: ABdhPJz3p17brhXUQ7rZMATBBQvPGVxjO/I3EzHx4zT8TmUVuAaxzKSCyQ/ZH+jigKdzsnoddz6wlqngdaCz5S6R8Qc=
+X-Received: by 2002:a54:4501:: with SMTP id l1mr15746077oil.157.1618832108958;
+ Mon, 19 Apr 2021 04:35:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQkNNT1ZJSh5PTxkaH01JGR5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PFE6Mxw5Hj8PQxRCCxMVTDZK
-        OSsKFD9VSlVKTUpDQ0hJS0hMS0hDVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKQk1ONwY+
-X-HM-Tid: 0a78e9e89294d991kuws4c54240050d
+References: <20210419090750.1272562-1-kai.heng.feng@canonical.com>
+In-Reply-To: <20210419090750.1272562-1-kai.heng.feng@canonical.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 19 Apr 2021 13:34:52 +0200
+Message-ID: <CAJZ5v0imLOF-9VCSJdb-A2HR29SFX-HgU5Kh7Uf7COfuHpZMDg@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: PM: s2idle: Invoke _PTS for s2idle
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "open list:ACPI" <linux-acpi@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct path is declared at 85th line.
-The declaration here is unnecessary. Remove it.
+On Mon, Apr 19, 2021 at 11:08 AM Kai-Heng Feng
+<kai.heng.feng@canonical.com> wrote:
+>
+> HP EliteBook 840 G8 reboots on s2idle resume, and HP EliteBook 845 G8
+> wakes up immediately on s2idle. Both are caused by the XMM7360 WWAN PCI
+> card.
+>
+> There's a WWAN specific method to really turn off the WWAN via EC:
+>     Method (_PTS, 1, NotSerialized)  // _PTS: Prepare To Sleep
+>     {
+>     ...
+>         If (CondRefOf (\_SB.PCI0.GP12.PTS))
+>         {
+>             \_SB.PCI0.GP12.PTS (Arg0)
+>         }
+>     ...
+>     }
+>
+>     Scope (_SB.PCI0.GP12)
+>     {
+>     ...
+>         Method (PTS, 1, Serialized)
+>         {
+>             If (^^LPCB.EC0.ECRG)
+>             {
+>                 If ((PDID == 0xFFFF))
+>                 {
+>                     Return (Zero)
+>                 }
+>
+>                 POFF ()
+>                 SGIO (WWBR, One)
+>                 Sleep (0x1E)
+>                 Acquire (^^LPCB.EC0.ECMX, 0xFFFF)
+>                 ^^LPCB.EC0.WWP = One
+>                 Release (^^LPCB.EC0.ECMX)
+>                 Sleep (0x01F4)
+>             }
+>
+>             Return (Zero)
+>         }
+>     ...
+>     }
+>
+> So let's also invok _PTS for s2idle.
+>
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+>  drivers/acpi/sleep.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/acpi/sleep.c b/drivers/acpi/sleep.c
+> index 09fd13757b65..7e84b4b09919 100644
+> --- a/drivers/acpi/sleep.c
+> +++ b/drivers/acpi/sleep.c
+> @@ -698,6 +698,7 @@ int acpi_s2idle_prepare(void)
+>         }
+>
+>         acpi_enable_wakeup_devices(ACPI_STATE_S0);
+> +       acpi_enter_sleep_state_prep(ACPI_STATE_S0);
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- include/linux/mount.h | 2 --
- 1 file changed, 2 deletions(-)
+The system is in S0 already at this point, so not really.
 
-diff --git a/include/linux/mount.h b/include/linux/mount.h
-index 5d92a7e1a742..9ebf8af88bff 100644
---- a/include/linux/mount.h
-+++ b/include/linux/mount.h
-@@ -93,8 +93,6 @@ extern struct vfsmount *mntget(struct vfsmount *mnt);
- extern struct vfsmount *mnt_clone_internal(const struct path *path);
- extern bool __mnt_is_readonly(struct vfsmount *mnt);
- extern bool mnt_may_suid(struct vfsmount *mnt);
--
--struct path;
- extern struct vfsmount *clone_private_mount(const struct path *path);
- extern int __mnt_want_write(struct vfsmount *);
- extern void __mnt_drop_write(struct vfsmount *);
--- 
-2.25.1
+Please use a quirk to address this.
 
+>
+>         /* Change the configuration of GPEs to avoid spurious wakeup. */
+>         acpi_enable_all_wakeup_gpes();
+> --
