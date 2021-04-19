@@ -2,111 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12485363F47
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 12:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1706A363F49
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 12:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237989AbhDSKEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 06:04:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43504 "EHLO
+        id S238097AbhDSKFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 06:05:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231990AbhDSKEf (ORCPT
+        with ESMTP id S238063AbhDSKFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 06:04:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC27C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 03:04:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FK9hdoxUBF8nPujcTiXlMmfbOgCpUz5UFCS8Vw7GCMQ=; b=AEAmanYdHkEVqoMlSg3fqsqaGN
-        qw7InlSK5CtUpWRhi8fgOY0+yc4NlTrzZnqRqDkMmFRVfzASv3kUxPFoGupBtCBuKwzpWpxN7z5ze
-        otxAq2JMTV300jz/8XKpSZPu+/xWJz4faX3Aje7PpPuXep15tjbFR7ywdX8IR5hnsSnLaVhlnBPUH
-        6oHeCGIiCe2UMLUISyTSbh1tdjCsGUaQxoIu/lxJ6T1cS44Qtx3Lt7kpNi+WciNiUh+JXo1lzI2gv
-        8//kw1bahb89A/hy58+ccaeanXYg0xyHgme6zaSV1rzmLsQlHqWXj5o6peJ+ncxsAdrgH59UqvedX
-        WoQcntbA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYQk7-00DZK7-Kl; Mon, 19 Apr 2021 10:03:08 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 40E52300212;
-        Mon, 19 Apr 2021 12:02:57 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F090E2C23A969; Mon, 19 Apr 2021 12:02:56 +0200 (CEST)
-Date:   Mon, 19 Apr 2021 12:02:56 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Rik van Riel <riel@surriel.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Mel Gorman <mgorman@suse.de>
-Subject: Re: [PATCH] sched,fair: skip newidle_balance if a wakeup is pending
-Message-ID: <YH1VUETp9swK4Y6T@hirez.programming.kicks-ass.net>
-References: <20210418221751.7edfc03b@imladris.surriel.com>
+        Mon, 19 Apr 2021 06:05:36 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C52C06174A;
+        Mon, 19 Apr 2021 03:04:59 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id m6-20020a17090a8586b02901507e1acf0fso2739737pjn.3;
+        Mon, 19 Apr 2021 03:04:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wdb0pFWhXyCZ395YaB5DDppVlbVhuv2Pveb1p+tzizA=;
+        b=VhehsEGYyGZgtY0s/4ArsGKri1LzEtkMyriO1rJCAQ2jYqb2K+/VllyrYolcpe+f4v
+         k3wENqcusfxzk3aCsW/jrPsci/lXiNJmnJi4MWND025H/4ViwIwDmHCOokdRVEBe1n8I
+         HUDSDHJR64RmZUqpVaJKV1rGJ345mQQgI+Bfq3pg0aX+r3tyvWLRGgYy802o/puq2bvn
+         BToyFVdtFGAJyKJl+lKWuIxkMn++mMygQeXbwSkXRpaiWonDlehRchaEf9uNbw1H6nA4
+         zhCnr8U2foa2pWJh62u0v9GnXrdFuJQBJaPPpCzreDjGC76zWVwCb5GF0JIUKSoFDPwL
+         oTtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wdb0pFWhXyCZ395YaB5DDppVlbVhuv2Pveb1p+tzizA=;
+        b=lJJywAfK45qQYO7yN4nteXQQaaKWqEw/KuhEf4g19NaKCYQvfdDndGT6wnverOnE1W
+         sF/mwwIQ2UpsbOd8wkFqNIpkbjwtPbahyDYYlUIvzaXODO1pqqXuSU9iYvL1ZDGPM28W
+         rdjnaCH6LppWCJ26GrYh+kkUZd5LIxqCVBpQ6lAcQgjf1bXvll7SF3b11R7NzCuvfh6g
+         o2txIjVLUzLddoxF0Hzs2sEHaLAjqJFQPX0kMUV1ivii8mOSX+4tYvPLa/m4QEihDPWw
+         WbOJ0LpWWwMUtIA+1UhcYWRnJGBDyi/mRBXSmhU0jy0DzrWG3SObqQJ0SSjOaFHxogPn
+         +zYg==
+X-Gm-Message-State: AOAM53079uCAgTZeLO/YdgNIapuTiqI0Rba+rE1bC0Ms8qyS4Rjhp/hs
+        q/oUO8T9MDJgkS1nmVBBukxHuB65265PFi3lgoUZIbrFpVI=
+X-Google-Smtp-Source: ABdhPJxj2ht6M6kAEf/G7j4ryPpn7DWevF8WKCK0DqHgcxBYhphiLLG48wEj8QJ5M/FAVskkT7W7Da6RTFyuCrB8xH4=
+X-Received: by 2002:a17:90a:bd13:: with SMTP id y19mr5077717pjr.181.1618826698433;
+ Mon, 19 Apr 2021 03:04:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210418221751.7edfc03b@imladris.surriel.com>
+References: <20210415130356.15885-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210415130356.15885-1-andriy.shevchenko@linux.intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 19 Apr 2021 13:04:42 +0300
+Message-ID: <CAHp75VcVBELiTk3C79jHUtxG5xBDoa-wpFYPPXiTUfV-J0PqRQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] pinctrl: core: Show pin numbers for the
+ controllers with base = 0
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Drew Fustini <drew@beagleboard.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 18, 2021 at 10:17:51PM -0400, Rik van Riel wrote:
-> The try_to_wake_up function has an optimization where it can queue
-> a task for wakeup on its previous CPU, if the task is still in the
-> middle of going to sleep inside schedule().
-> 
-> Once schedule() re-enables IRQs, the task will be woken up with an
-> IPI, and placed back on the runqueue.
-> 
-> If we have such a wakeup pending, there is no need to search other
-> CPUs for runnable tasks. Just skip (or bail out early from) newidle
-> balancing, and run the just woken up task.
-> 
-> For a memcache like workload test, this reduces total CPU use by
-> about 2%, proportionally split between user and system time,
-> and p99 and p95 application response time by 2-3% on average.
-> The schedstats run_delay number shows a similar improvement.
+On Thu, Apr 15, 2021 at 4:07 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> The commit f1b206cf7c57 ("pinctrl: core: print gpio in pins debugfs file")
+> enabled GPIO pin number and label in debugfs for pin controller. However,
+> it limited that feature to the chips where the base is a positive number. This,
+> in particular, excluded chips where base is 0 for the historical or backward
+> compatibility reasons. Refactor the code to include the latter as well.
 
-Nice.
+Linus, since we got one more week, can you consider applying this one
+and the other one against kernel doc for the final release?
 
-> Signed-off-by: Rik van Riel <riel@surriel.com>
-> ---
->  kernel/sched/fair.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 69680158963f..19a92c48939f 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -7163,6 +7163,14 @@ done: __maybe_unused;
->  	if (!rf)
->  		return NULL;
->  
-> +	/*
-> +	 * We have a woken up task pending here. No need to search for ones
-> +	 * elsewhere. This task will be enqueued the moment we unblock irqs
-> +	 * upon exiting the scheduler.
-> +	 */
-> +	if (rq->ttwu_pending)
-> +		return NULL;
-
-As reported by the robot, that needs an CONFIG_SMP guard of sorts,
-#ifdef might work I suppose.
-
->  	new_tasks = newidle_balance(rq, rf);
->  
->  	/*
-> @@ -10661,7 +10669,8 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->  		 * Stop searching for tasks to pull if there are
->  		 * now runnable tasks on this rq.
->  		 */
-> -		if (pulled_task || this_rq->nr_running > 0)
-> +		if (pulled_task || this_rq->nr_running > 0 ||
-> +						this_rq->ttwu_pending)
-
-Either cino=(0:0 or just bust the limit and make it 84 chars.
+-- 
+With Best Regards,
+Andy Shevchenko
