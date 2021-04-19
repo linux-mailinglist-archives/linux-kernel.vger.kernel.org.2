@@ -2,81 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E35364CA8
+	by mail.lfdr.de (Postfix) with ESMTP id F0A29364CAA
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 22:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241887AbhDSU4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 16:56:32 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:47521 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241688AbhDSU4S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 16:56:18 -0400
-Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
-        (authenticated bits=0)
-        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 13JKslbT2399793
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-        Mon, 19 Apr 2021 13:54:55 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 13JKslbT2399793
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2021032801; t=1618865697;
-        bh=PSRN5v6fXZoEYzmBfnsY6QxsYgPsedMVL9WdxgLS2qU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=f5zFIsPcOREApY+mB0ii8gwVUTUMKktoUkJE6+w/n/DXJQ4+WojjMKyEXIsI6vWXJ
-         9/D5d7IQ5NxZ/wLrEOJWFcaSRqYkZEP/Dx9wW0ZRA+tfI5eZl3/VEiIZuH16AHmf3T
-         3modexQEAcvHCkTuayE4S15qxDN/gMiglxnJ4KQ1F3i5cQdeDDuMY67/Sa23WHO9BX
-         NrwHQCSsAHMQ3JboGCWFTWzMa6sMtT9utZx87H8fq0R1FD7lOEw5snCrgaafOvNW7R
-         j1CBkBW3e5FKM+x34T/3KMEKfKgugl8DzLdBE5rWHjC+oP1+58/cAVAiLR7RvxPTY7
-         4J6DE7FqmTe+g==
-From:   "H. Peter Anvin" <hpa@zytor.com>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kbuild Mailing List <linux-kbuild@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH 0/3] x86 disk image and modules initramfs generation
-Date:   Mon, 19 Apr 2021 13:54:35 -0700
-Message-Id: <20210419205438.1531413-1-hpa@zytor.com>
-X-Mailer: git-send-email 2.30.2
+        id S238567AbhDSU4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 16:56:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242467AbhDSU4T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 16:56:19 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF13C06138A;
+        Mon, 19 Apr 2021 13:54:48 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id v3so38066000ybi.1;
+        Mon, 19 Apr 2021 13:54:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=aCM5KvzcuaSH8PgmjA12v/xhf+h1AKtzkBArU6j5MCE=;
+        b=URaTNbaExtEjXJaD8vbbSmBPhI/bVCzNjLHzcekqpOpTrJTd+Wod3riJZLQKZMxtlM
+         8kEcJSMHGoYwZpQ+jv6yWVXKecEfIxKhMxX7gGxqHZHMFSXXyBefGJo+fe8RM4LyidiR
+         j70TBzzKd6V59V3OGVjXgRexckD0FnpqStNJfv+c1+EM8vdhofAAmg34c4U9ZR3uZ5CP
+         ryyv62cHUoSFpeTXz8ocgg6PHslmsAEt/d4aebw2LBMsa6wVy1Trcbh1oKt87ji0bFAg
+         X5QOkFWt+yaeekNVX5g1y57ZMoqhho4yJCij/90EDWzhxQaydFZhymEEwyjJ/0ilvC38
+         dg2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=aCM5KvzcuaSH8PgmjA12v/xhf+h1AKtzkBArU6j5MCE=;
+        b=lBBSqrjek/M5/dxpw//kgFGRH7X11ZV6/JkkfFSGDIQ0+hh0wHcNLj7wthP1JCQlVa
+         DpFuo3+8dNImKfEHRgypa2tNit6fJLmhVfNyyeDLNci6/r3HRf8zxGgWbhsC5MqvFIxk
+         Jo28awEGtgeP6lzrVU/17/ZcqPFQzjfjCZoovDHnZJ9ZSf+ZcwP5tYFfgcUKXZjPNu8n
+         jp7aMMj7RrqR5Swa7Lj5+t59rNElHeZ+EpaorMXI1VAilecb0ksGoSw/ohBn+cXPLWN6
+         WCjTlT0u6+M8KK9fZ18K1HXKgy0v5ewT2tTUinps0iMOffC7Z6GRUks5Y8MNOyp3FQjc
+         PBpg==
+X-Gm-Message-State: AOAM530bz0jSY9KVLSUTdRvjxezdiV2hNQtr9KScU03+nnNtmmdnimjb
+        BLM1z6Z6bzkNVJX9S8J/U+guWbUxUDry0srdX00=
+X-Google-Smtp-Source: ABdhPJyaYIbfc4cW5qvFG9hENkVMCJYUuS82M0OwXiPIYErRHqo1pBo4NFKmv2I3CQp46FMoXxABmwEPNE+xsxALTTU=
+X-Received: by 2002:a5b:912:: with SMTP id a18mr19428673ybq.247.1618865688041;
+ Mon, 19 Apr 2021 13:54:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210414184604.23473-1-ojeda@kernel.org> <20210414184604.23473-5-ojeda@kernel.org>
+ <YHmTWEAS/QjX++w4@hirez.programming.kicks-ass.net> <CANiq72nv8CK8cyY4n3yqpL6GAmqmVP5+Ee-cgzT9Gi+ZRLE_Jw@mail.gmail.com>
+ <20210419195850.GV7604@twin.jikos.cz>
+In-Reply-To: <20210419195850.GV7604@twin.jikos.cz>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Mon, 19 Apr 2021 22:54:36 +0200
+Message-ID: <CANiq72=a-xLF7rUDZ=gwYs2=G6AAa2Gsj1UoZQBdhQBuBgF+qQ@mail.gmail.com>
+Subject: Re: [PATCH 04/13] Kbuild: Rust support
+To:     dsterba@suse.cz, Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux <rust-for-linux@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Finn Behrens <me@kloenk.de>,
+        Adam Bratschi-Kaye <ark.email@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "H. Peter Anvin" (Intel) <hpa@zytor.com>
+Hi David,
 
-When compiling on a different machine than the runtime target,
-including but not limited to simulators, it is rather handy to be able
-to produce a bootable image. The scripts for that in x86 are
-relatively old, and assume a BIOS system.
+On Mon, Apr 19, 2021 at 10:01 PM David Sterba <dsterba@suse.cz> wrote:
+>
+> for simple functions it's barely parseable but the following is hardly
+> readable
+>
+> translates to
+>
+>   <rust_binder[8787f43e282added]::range_alloc::DescriptorState as core[8787f43e282added]::fmt::Debug>::fmt
 
-This adds a build target to generate a hdimage which can be booted
-either from BIOS or EFI, and modernizes the genimage.sh script
-including adding the ability to add an arbitrary number of initramfs
-files (limited only by the length of the command line.)
+Some details can be omitted without much problem, e.g. try the `-i`
+option of `c++filt`:
 
-Possibly more controversial, at least from a Kbuild design perspective
-(as usual I'm the guy who wants to do something with Kbuild which it
-seems it was never really designed to do), is add the ability to
-create an initramfs image which includes all the built modules. Some
-distributions cannot be easily booted without modules in initramfs,
-and this creates an image which can be added to initramfs to provide
-the kernel modules, as finalized by "make modules_install".
+    <rust_binder::range_alloc::DescriptorState as core::fmt::Debug>::fmt
 
-The final patch put these two together, and allows the modules
-initramfs to be included in the x86 boot image.
-
- Makefile                     |  17 ++-
- arch/x86/Makefile            |   8 +-
- arch/x86/boot/.gitignore     |   1 +
- arch/x86/boot/Makefile       |  55 +++++----
- arch/x86/boot/genimage.sh    | 284 +++++++++++++++++++++++++++++++------------
- arch/x86/boot/mtools.conf.in |   3 +
- usr/.gitignore               |   3 +
- usr/Kconfig                  |  31 ++---
- usr/Makefile                 |  39 +++++-
- 9 files changed, 318 insertions(+), 123 deletions(-)
+Cheers,
+Miguel
