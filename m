@@ -2,192 +2,442 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02418364DA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 00:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D79364DA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 00:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231776AbhDSWZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 18:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38128 "EHLO
+        id S229882AbhDSW31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 18:29:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbhDSWY6 (ORCPT
+        with ESMTP id S229537AbhDSW30 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 18:24:58 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04585C06174A;
-        Mon, 19 Apr 2021 15:24:28 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id x7so35563125wrw.10;
-        Mon, 19 Apr 2021 15:24:27 -0700 (PDT)
+        Mon, 19 Apr 2021 18:29:26 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E390C06174A;
+        Mon, 19 Apr 2021 15:28:54 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id i3-20020a4ad3830000b02901ef20f8cae8so783353oos.11;
+        Mon, 19 Apr 2021 15:28:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=l2ObPEMp1F7jegTGQYqFZxY2ku3zLpYxKr6dluP+/e0=;
-        b=PzvkbzNeOJ1YEtougXmtwO+kip8yZI4h+Aw/gSnnQwWnJei/QqWrNdLs6o/9M0IWar
-         isJaDIVZE3+Rba7Co9z2PhDDzUw6IuJWK9k73RPHS4W/CoiUGpkk3AaWFiLU9lbZf+sZ
-         IfvxzTWHpIwHEBA8hIkmH/JLWZIQ4ZuOI2HzF7K3NAK2Rm/XaEkMhh2DsvoDgxjUWSN0
-         n4nxJAMMPpj9hycSdBCEAUb9gBlQmxd1Mpy7Mi4YCSlBvo737uA4sBkIbYJ3Qy0WwZ2f
-         7mBu5ZRIWIfMjUuE2kDjNUmimtusi27gmA1cjY6aN6WW+u6VPdAY9Qx/4mjgoHrSJ60u
-         PRIQ==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=B5rDePvRaj5NS7N94Zu08Mt3EJMdzkxJrQGLwb882Mg=;
+        b=qSd39FxZ7/QvUAMYsUj6L54OoSP8MLbS8n8wvmjWQaYhjWD/jDOU0YkDF5URCcq/nu
+         hGhrUl9A4m9zYps34zvKaVYf7xunx/3eD1BjiflUpOpopRsW8sGTwWAwaVLsPewUlBr+
+         GHbEJO2eAakwL162R5+WRnIsiFpZ+wChGwojrqgwszuBuqNlhe8AT/T3VNOm5mDVAOja
+         9yVpkkNF2aDSSRETdKFsR4KY3z7a/g6uEcM4aGmojegdLgdb1Ed44EHqPpCzRg3XbjnK
+         T9dJJQ88a9IUMe6GKO0X7z4VcdWpjVSmErhRttgKhQjaEyeUAVRF14Mvb7gRZ1iD3KTH
+         mW9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=l2ObPEMp1F7jegTGQYqFZxY2ku3zLpYxKr6dluP+/e0=;
-        b=XMQu8bh+j2MWp9QgYxdyh1JyUeX0bxrdwp9GHczIIIciocvWTn549JyhYjung6lGzi
-         LC7PRF2PGWF7y3Vj5jgY/0MBbvqHxVlP3i5GTOIsUBPuwOk1TRP6SX3WkEGgEQ+kYsxN
-         VPrNTQLz1qYhmm5EVXhM1sUJpuRiv/yh1nyP+ULfUR0DJH29b1KlCVZQwBQoABH2s1bi
-         BvbjsoCn4+hVFHy7/TUigAWfulgI+Dk+ADBbNsIEYuuqaHVM3np7Ci/JcUVyBvXSl0t7
-         zsYgqm4CKhrYisp+5hB5ciGUq1Q1upFLae9jTNN1W9fIALj+u6gWp8kT8wFScPkEGP9P
-         dLqw==
-X-Gm-Message-State: AOAM53153ApvVjwkmsWDqPtKep4Q5CuzwTFXzXXr5z8yma3RpMxIDhWu
-        C/fYCX2Y0p4+Fbx4mXesE8D4uOZxtnUJuw==
-X-Google-Smtp-Source: ABdhPJxDlbxULcYxj+rsZVKrMmOabwIbVtgudbB+qPheJHRYxvLxYzWCOLtC1izWChk7iJJl25g1XQ==
-X-Received: by 2002:a05:6000:186d:: with SMTP id d13mr16933199wri.199.1618871066808;
-        Mon, 19 Apr 2021 15:24:26 -0700 (PDT)
-Received: from [192.168.8.197] ([85.255.232.116])
-        by smtp.gmail.com with ESMTPSA id g13sm28607044wrr.9.2021.04.19.15.24.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Apr 2021 15:24:26 -0700 (PDT)
-Subject: Re: [syzbot] INFO: task hung in __io_uring_cancel
-To:     syzbot <syzbot+47fc00967b06a3019bd2@syzkaller.appspotmail.com>,
-        axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-References: <00000000000029326505c059c220@google.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <02616552-d7c2-a3ea-a03d-a93d15023662@gmail.com>
-Date:   Mon, 19 Apr 2021 23:24:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=B5rDePvRaj5NS7N94Zu08Mt3EJMdzkxJrQGLwb882Mg=;
+        b=j1N4CUpMI0F799QRbyWoh+RGZBz0guS35pKMZcwb5LO4dfxxlGsAesvv1ChU2mFhV8
+         MJ2bkZvBnXwlibPfeOdVeYRpClZZzwVGmokqjGgPx6/rvneDdtDYVkm8fizodq2OOajL
+         RTEXvakccECkyEO9DwYfK+9r0DM0WwxVMJ1gGh+30qQ1Qn2A7+mCfzGvlCVRs+5ANDRa
+         CrdskSSta48DqpznSXqTuKxcIWxyqcRnTKD1q8YAZrjS+mFgR7SPk0YXAxqmBFo54faC
+         CePXKdKI492+NC3gtRAL0Tm1EY+Ji84jBCdWTvTejhis62y8yQHsvsAYAK/GCrwPqLI6
+         vCLw==
+X-Gm-Message-State: AOAM533VgRuA5iPndtuhCNAOyYcjQY5fTKCuWTMgCP/ocokojzb+u9dy
+        53UNB9UVbyVsl9xRToyMcDHpl+ZYHPY=
+X-Google-Smtp-Source: ABdhPJwyJswY+nOjQlxMWz6YdQBoKDRgKJB0VyIQ9dcVQ2Yzf9wuS7NoSlOxir8am2DxE2LUY8gE5g==
+X-Received: by 2002:a4a:9f45:: with SMTP id d5mr11344395ool.91.1618871333487;
+        Mon, 19 Apr 2021 15:28:53 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d2sm3787243otl.48.2021.04.19.15.28.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 19 Apr 2021 15:28:51 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 19 Apr 2021 15:28:49 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Erik Rosen <erik.rosen@metormote.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hwmon: (pmbus/max15301) Add pmbus driver for MAX15301
+Message-ID: <20210419222849.GA229037@roeck-us.net>
+References: <20210419101251.24840-1-erik.rosen@metormote.com>
 MIME-Version: 1.0
-In-Reply-To: <00000000000029326505c059c220@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210419101251.24840-1-erik.rosen@metormote.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/19/21 10:10 PM, syzbot wrote:
-> Hello,
+On Mon, Apr 19, 2021 at 12:12:51PM +0200, Erik Rosen wrote:
+> Add pmbus driver support for Maxim MAX15301 InTune Automatically
+> Compensated Digital PoL Controller with Driver and PMBus Telemetry
 > 
-> syzbot found the following issue on:
+> Even though the specification does not specifically mention it,
+> extensive empirical testing has revealed that auto-detection of
+> limit-registers will fail in a random fashion unless the delay
+> parameter is set to above about 80us. The default delay is set
+> to 100us to include some safety margin.
 > 
-> HEAD commit:    1216f02e Add linux-next specific files for 20210415
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=130bbeded00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3491b04113499f81
-> dashboard link: https://syzkaller.appspot.com/bug?extid=47fc00967b06a3019bd2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14734dc5d00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16dfaf65d00000
+> This patch is tested on a Flex BMR461 converter module.
+> 
+> Signed-off-by: Erik Rosen <erik.rosen@metormote.com>
 
-The repro looks pretty much like sqpoll-exit-hang test and issues
-that were just recently fixed.
+Applied. Note that I added above rationale to the driver header.
 
-#syz test: git://git.kernel.dk/linux-block for-5.13/io_uring
-
-> 
-> The issue was bisected to:
-> 
-> commit d9d05217cb6990b9a56e13b56e7a1b71e2551f6c
-> Author: Pavel Begunkov <asml.silence@gmail.com>
-> Date:   Fri Jan 8 20:57:25 2021 +0000
-> 
->     io_uring: stop SQPOLL submit on creator's death
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11b86f9ad00000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=13b86f9ad00000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15b86f9ad00000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+47fc00967b06a3019bd2@syzkaller.appspotmail.com
-> Fixes: d9d05217cb69 ("io_uring: stop SQPOLL submit on creator's death")
-> 
-> INFO: task iou-sqp-8700:8701 blocked for more than 143 seconds.
->       Not tainted 5.12.0-rc7-next-20210415-syzkaller #0
-> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> task:iou-sqp-8700    state:D stack:28960 pid: 8701 ppid:  8414 flags:0x00004004
-> Call Trace:
->  context_switch kernel/sched/core.c:4329 [inline]
->  __schedule+0x917/0x2170 kernel/sched/core.c:5079
->  schedule+0xcf/0x270 kernel/sched/core.c:5158
->  __io_uring_cancel+0x285/0x420 fs/io_uring.c:8977
->  io_uring_files_cancel include/linux/io_uring.h:16 [inline]
->  do_exit+0x299/0x2a70 kernel/exit.c:780
->  io_sq_thread+0x60a/0x1340 fs/io_uring.c:6873
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> 
-> Showing all locks held in the system:
-> 1 lock held by khungtaskd/1653:
->  #0: ffffffff8bf76560 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6333
-> 1 lock held by in:imklog/8133:
->  #0: ffff888013088370 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:990
-> 
-> =============================================
-> 
-> NMI backtrace for cpu 1
-> CPU: 1 PID: 1653 Comm: khungtaskd Not tainted 5.12.0-rc7-next-20210415-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
->  nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
->  nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
->  trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
->  check_hung_uninterruptible_tasks kernel/hung_task.c:253 [inline]
->  watchdog+0xd3b/0xf50 kernel/hung_task.c:338
->  kthread+0x3b1/0x4a0 kernel/kthread.c:292
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> Sending NMI from CPU 1 to CPUs 0:
-> NMI backtrace for cpu 0
-> CPU: 0 PID: 7 Comm: kworker/0:1 Not tainted 5.12.0-rc7-next-20210415-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Workqueue: events toggle_allocation_gate
-> RIP: 0010:__preempt_count_sub arch/x86/include/asm/preempt.h:85 [inline]
-> RIP: 0010:preempt_count_sub+0x56/0x150 kernel/sched/core.c:4772
-> Code: 85 e4 00 00 00 8b 0d 19 08 e5 0e 85 c9 75 1b 65 8b 05 ae 60 b3 7e 89 c2 81 e2 ff ff ff 7f 39 da 7c 13 81 fb fe 00 00 00 76 63 <f7> db 65 01 1d 91 60 b3 7e 5b c3 e8 4a cd c2 07 85 c0 74 f5 48 c7
-> RSP: 0018:ffffc90000cc79f8 EFLAGS: 00000002
-> RAX: 0000000080000002 RBX: 0000000000000001 RCX: 0000000000000000
-> RDX: 0000000000000002 RSI: ffffffff83e7543f RDI: 0000000000000001
-> RBP: ffff8880b9c34a80 R08: 0000000000000002 R09: 000000000000eb19
-> R10: ffffffff83e7538c R11: 000000000000003f R12: 0000000000000008
-> R13: ffff888140120660 R14: 0000000000000000 R15: 0000000000000000
-> FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007ffa2b511018 CR3: 000000000bc8e000 CR4: 00000000001506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  flush_tlb_mm_range+0x111/0x230 arch/x86/mm/tlb.c:957
->  __text_poke+0x590/0x8c0 arch/x86/kernel/alternative.c:837
->  text_poke_bp_batch+0x3d7/0x560 arch/x86/kernel/alternative.c:1150
->  text_poke_flush arch/x86/kernel/alternative.c:1240 [inline]
->  text_poke_flush arch/x86/kernel/alternative.c:1237 [inline]
->  text_poke_finish+0x16/0x30 arch/x86/kernel/alternative.c:1247
->  arch_jump_label_transform_apply+0x13/0x20 arch/x86/kernel/jump_label.c:122
->  jump_label_update+0x1da/0x400 kernel/jump_label.c:825
->  static_key_enable_cpuslocked+0x1b1/0x260 kernel/jump_label.c:177
->  static_key_enable+0x16/0x20 kernel/jump_label.c:190
->  toggle_allocation_gate mm/kfence/core.c:610 [inline]
->  toggle_allocation_gate+0xbf/0x2e0 mm/kfence/core.c:602
->  process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
->  worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
->  kthread+0x3b1/0x4a0 kernel/kthread.c:292
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> 
-> 
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>  Documentation/hwmon/index.rst    |   1 +
+>  Documentation/hwmon/max15301.rst |  87 +++++++++++++++
+>  MAINTAINERS                      |   7 ++
+>  drivers/hwmon/pmbus/Kconfig      |   9 ++
+>  drivers/hwmon/pmbus/Makefile     |   1 +
+>  drivers/hwmon/pmbus/max15301.c   | 183 +++++++++++++++++++++++++++++++
+>  6 files changed, 288 insertions(+)
+>  create mode 100644 Documentation/hwmon/max15301.rst
+>  create mode 100644 drivers/hwmon/pmbus/max15301.c
 > 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
 > 
-
--- 
-Pavel Begunkov
+> base-commit: 1e28eed17697bcf343c6743f0028cc3b5dd88bf0
+> 
+> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+> index 8d5a2df1ecb6..6583a1ea76cb 100644
+> --- a/Documentation/hwmon/index.rst
+> +++ b/Documentation/hwmon/index.rst
+> @@ -112,6 +112,7 @@ Hardware Monitoring Kernel Drivers
+>     ltc4260
+>     ltc4261
+>     max127
+> +   max15301
+>     max16064
+>     max16065
+>     max1619
+> diff --git a/Documentation/hwmon/max15301.rst b/Documentation/hwmon/max15301.rst
+> new file mode 100644
+> index 000000000000..e3dc22fe1c6d
+> --- /dev/null
+> +++ b/Documentation/hwmon/max15301.rst
+> @@ -0,0 +1,87 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +Kernel driver max15301
+> +======================
+> +
+> +Supported chips:
+> +
+> +  * Maxim MAX15301
+> +
+> +    Prefix: 'max15301', 'bmr461'
+> +
+> +    Addresses scanned: -
+> +
+> +    Datasheet: https://datasheets.maximintegrated.com/en/ds/MAX15301.pdf
+> +
+> +Author: Erik Rosen <erik.rosen@metormote.com>
+> +
+> +
+> +Description
+> +-----------
+> +
+> +This driver supports hardware monitoring for Maxim MAX15301 controller chip and
+> +compatible modules.
+> +
+> +The driver is a client driver to the core PMBus driver. Please see
+> +Documentation/hwmon/pmbus.rst and Documentation.hwmon/pmbus-core for details
+> +on PMBus client drivers.
+> +
+> +
+> +Usage Notes
+> +-----------
+> +
+> +This driver does not auto-detect devices. You will have to instantiate the
+> +devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
+> +details.
+> +
+> +
+> +Platform data support
+> +---------------------
+> +
+> +The driver supports standard PMBus driver platform data.
+> +
+> +
+> +Module parameters
+> +-----------------
+> +
+> +delay
+> +-----
+> +
+> +The controller requires a minimum interval between I2C bus accesses.
+> +The default interval is set to 100 us. For manual override, the driver
+> +provides a writeable module parameter, 'delay', which can be used to
+> +set the interval to a value between 0 and 65,535 microseconds.
+> +
+> +
+> +Sysfs entries
+> +-------------
+> +
+> +The following attributes are supported. Limits are read-write; all other
+> +attributes are read-only.
+> +
+> +======================= ========================================================
+> +in1_label		"vin"
+> +in1_input		Measured input voltage.
+> +in1_lcrit		Critical minimum input voltage.
+> +in1_crit		Critical maximum input voltage.
+> +in1_lcrit_alarm		Input voltage critical low alarm.
+> +in1_crit_alarm		Input voltage critical high alarm.
+> +
+> +in2_label		"vout1"
+> +in2_input		Measured output voltage.
+> +in2_lcrit		Critical minimum output Voltage.
+> +in2_crit		Critical maximum output voltage.
+> +in2_lcrit_alarm		Critical output voltage critical low alarm.
+> +in2_crit_alarm		Critical output voltage critical high alarm.
+> +
+> +curr1_label		"iout1"
+> +curr1_input		Measured output current.
+> +curr1_crit		Critical maximum output current.
+> +curr1_crit_alarm	Output current critical high alarm.
+> +
+> +temp1_input		Measured maximum temperature of all phases.
+> +temp1_max		Maximum temperature limit.
+> +temp1_max_alarm		High temperature alarm.
+> +temp1_crit		Critical maximum temperature limit.
+> +temp1_crit_alarm	Critical maximum temperature alarm.
+> +======================= ========================================================
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index aa84121c5611..de2ad7223055 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -10790,6 +10790,13 @@ S:	Orphan
+>  F:	drivers/video/fbdev/matrox/matroxfb_*
+>  F:	include/uapi/linux/matroxfb.h
+>  
+> +MAX15301 DRIVER
+> +M:	Daniel Nilsson <daniel.nilsson@flex.com>
+> +L:	linux-hwmon@vger.kernel.org
+> +S:	Maintained
+> +F:	Documentation/hwmon/max15301.rst
+> +F:	drivers/hwmon/pmbus/max15301.c
+> +
+>  MAX16065 HARDWARE MONITOR DRIVER
+>  M:	Guenter Roeck <linux@roeck-us.net>
+>  L:	linux-hwmon@vger.kernel.org
+> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
+> index 32d2fc850621..5c9fb1a88cec 100644
+> --- a/drivers/hwmon/pmbus/Kconfig
+> +++ b/drivers/hwmon/pmbus/Kconfig
+> @@ -148,6 +148,15 @@ config SENSORS_LTC3815
+>  	  This driver can also be built as a module. If so, the module will
+>  	  be called ltc3815.
+>  
+> +config SENSORS_MAX15301
+> +	tristate "Maxim MAX15301"
+> +	help
+> +	  If you say yes here you get hardware monitoring support for Maxim
+> +	  MAX15301, as well as for Flex BMR461.
+> +
+> +	  This driver can also be built as a module. If so, the module will
+> +	  be called max15301.
+> +
+>  config SENSORS_MAX16064
+>  	tristate "Maxim MAX16064"
+>  	help
+> diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
+> index 6a4ba0fdc1db..6040bc8718e9 100644
+> --- a/drivers/hwmon/pmbus/Makefile
+> +++ b/drivers/hwmon/pmbus/Makefile
+> @@ -17,6 +17,7 @@ obj-$(CONFIG_SENSORS_ISL68137)	+= isl68137.o
+>  obj-$(CONFIG_SENSORS_LM25066)	+= lm25066.o
+>  obj-$(CONFIG_SENSORS_LTC2978)	+= ltc2978.o
+>  obj-$(CONFIG_SENSORS_LTC3815)	+= ltc3815.o
+> +obj-$(CONFIG_SENSORS_MAX15301)	+= max15301.o
+>  obj-$(CONFIG_SENSORS_MAX16064)	+= max16064.o
+>  obj-$(CONFIG_SENSORS_MAX16601)	+= max16601.o
+>  obj-$(CONFIG_SENSORS_MAX20730)	+= max20730.o
+> diff --git a/drivers/hwmon/pmbus/max15301.c b/drivers/hwmon/pmbus/max15301.c
+> new file mode 100644
+> index 000000000000..eb9b7a5ef052
+> --- /dev/null
+> +++ b/drivers/hwmon/pmbus/max15301.c
+> @@ -0,0 +1,183 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Hardware monitoring driver for Maxim MAX15301
+> + *
+> + * Copyright (c) 2021 Flextronics International Sweden AB
+> + */
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/init.h>
+> +#include <linux/err.h>
+> +#include <linux/slab.h>
+> +#include <linux/i2c.h>
+> +#include <linux/ktime.h>
+> +#include <linux/delay.h>
+> +#include <linux/pmbus.h>
+> +#include "pmbus.h"
+> +
+> +static const struct i2c_device_id max15301_id[] = {
+> +	{"bmr461", 0},
+> +	{"max15301", 0},
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(i2c, max15301_id);
+> +
+> +struct max15301_data {
+> +	int id;
+> +	ktime_t access;		/* Chip access time */
+> +	int delay;		/* Delay between chip accesses in us */
+> +	struct pmbus_driver_info info;
+> +};
+> +
+> +#define to_max15301_data(x)  container_of(x, struct max15301_data, info)
+> +
+> +#define MAX15301_WAIT_TIME		100	/* us	*/
+> +
+> +static ushort delay = MAX15301_WAIT_TIME;
+> +module_param(delay, ushort, 0644);
+> +MODULE_PARM_DESC(delay, "Delay between chip accesses in us");
+> +
+> +static struct max15301_data max15301_data = {
+> +	.info = {
+> +		.pages = 1,
+> +		.func[0] = PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT
+> +			| PMBUS_HAVE_VIN | PMBUS_HAVE_STATUS_INPUT
+> +			| PMBUS_HAVE_TEMP | PMBUS_HAVE_TEMP2
+> +			| PMBUS_HAVE_STATUS_TEMP
+> +			| PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT,
+> +	}
+> +};
+> +
+> +/* This chip needs a delay between accesses */
+> +static inline void max15301_wait(const struct max15301_data *data)
+> +{
+> +	if (data->delay) {
+> +		s64 delta = ktime_us_delta(ktime_get(), data->access);
+> +
+> +		if (delta < data->delay)
+> +			udelay(data->delay - delta);
+> +	}
+> +}
+> +
+> +static int max15301_read_word_data(struct i2c_client *client, int page,
+> +				   int phase, int reg)
+> +{
+> +	const struct pmbus_driver_info *info = pmbus_get_driver_info(client);
+> +	struct max15301_data *data = to_max15301_data(info);
+> +	int ret;
+> +
+> +	if (page > 0)
+> +		return -ENXIO;
+> +
+> +	if (reg >= PMBUS_VIRT_BASE)
+> +		return -ENXIO;
+> +
+> +	max15301_wait(data);
+> +	ret = pmbus_read_word_data(client, page, phase, reg);
+> +	data->access = ktime_get();
+> +
+> +	return ret;
+> +}
+> +
+> +static int max15301_read_byte_data(struct i2c_client *client, int page, int reg)
+> +{
+> +	const struct pmbus_driver_info *info = pmbus_get_driver_info(client);
+> +	struct max15301_data *data = to_max15301_data(info);
+> +	int ret;
+> +
+> +	if (page > 0)
+> +		return -ENXIO;
+> +
+> +	max15301_wait(data);
+> +	ret = pmbus_read_byte_data(client, page, reg);
+> +	data->access = ktime_get();
+> +
+> +	return ret;
+> +}
+> +
+> +static int max15301_write_word_data(struct i2c_client *client, int page, int reg,
+> +				    u16 word)
+> +{
+> +	const struct pmbus_driver_info *info = pmbus_get_driver_info(client);
+> +	struct max15301_data *data = to_max15301_data(info);
+> +	int ret;
+> +
+> +	if (page > 0)
+> +		return -ENXIO;
+> +
+> +	if (reg >= PMBUS_VIRT_BASE)
+> +		return -ENXIO;
+> +
+> +	max15301_wait(data);
+> +	ret = pmbus_write_word_data(client, page, reg, word);
+> +	data->access = ktime_get();
+> +
+> +	return ret;
+> +}
+> +
+> +static int max15301_write_byte(struct i2c_client *client, int page, u8 value)
+> +{
+> +	const struct pmbus_driver_info *info = pmbus_get_driver_info(client);
+> +	struct max15301_data *data = to_max15301_data(info);
+> +	int ret;
+> +
+> +	if (page > 0)
+> +		return -ENXIO;
+> +
+> +	max15301_wait(data);
+> +	ret = pmbus_write_byte(client, page, value);
+> +	data->access = ktime_get();
+> +
+> +	return ret;
+> +}
+> +
+> +static int max15301_probe(struct i2c_client *client)
+> +{
+> +	int status;
+> +	u8 device_id[I2C_SMBUS_BLOCK_MAX + 1];
+> +	const struct i2c_device_id *mid;
+> +	struct pmbus_driver_info *info = &max15301_data.info;
+> +
+> +	if (!i2c_check_functionality(client->adapter,
+> +				     I2C_FUNC_SMBUS_READ_BYTE_DATA
+> +				     | I2C_FUNC_SMBUS_BLOCK_DATA))
+> +		return -ENODEV;
+> +
+> +	status = i2c_smbus_read_block_data(client, PMBUS_IC_DEVICE_ID, device_id);
+> +	if (status < 0) {
+> +		dev_err(&client->dev, "Failed to read Device Id\n");
+> +		return status;
+> +	}
+> +	for (mid = max15301_id; mid->name[0]; mid++) {
+> +		if (!strncasecmp(mid->name, device_id, strlen(mid->name)))
+> +			break;
+> +	}
+> +	if (!mid->name[0]) {
+> +		dev_err(&client->dev, "Unsupported device\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	max15301_data.delay = delay;
+> +
+> +	info->read_byte_data = max15301_read_byte_data;
+> +	info->read_word_data = max15301_read_word_data;
+> +	info->write_byte = max15301_write_byte;
+> +	info->write_word_data = max15301_write_word_data;
+> +
+> +	return pmbus_do_probe(client, info);
+> +}
+> +
+> +static struct i2c_driver max15301_driver = {
+> +	.driver = {
+> +		   .name = "max15301",
+> +		   },
+> +	.probe_new = max15301_probe,
+> +	.id_table = max15301_id,
+> +};
+> +
+> +module_i2c_driver(max15301_driver);
+> +
+> +MODULE_AUTHOR("Erik Rosen <erik.rosen@metormote.com>");
+> +MODULE_DESCRIPTION("PMBus driver for Maxim MAX15301");
+> +MODULE_LICENSE("GPL");
