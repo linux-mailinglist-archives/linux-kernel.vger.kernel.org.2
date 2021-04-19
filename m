@@ -2,111 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69144364203
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 14:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB443641C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 14:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239235AbhDSMtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 08:49:24 -0400
-Received: from us2-ob2-7.mailhostbox.com ([208.91.199.208]:35224 "EHLO
-        us2-ob2-7.mailhostbox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232709AbhDSMtX (ORCPT
+        id S233651AbhDSMiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 08:38:12 -0400
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:59122 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229790AbhDSMiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 08:49:23 -0400
-X-Greylist: delayed 610 seconds by postgrey-1.27 at vger.kernel.org; Mon, 19 Apr 2021 08:49:23 EDT
-Received: from smtp.oswalpalash.com (unknown [49.36.79.38])
-        (Authenticated sender: hello@oswalpalash.com)
-        by us2.outbound.mailhostbox.com (Postfix) with ESMTPA id 95FBC78261C;
-        Mon, 19 Apr 2021 12:38:39 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oswalpalash.com;
-        s=20160715; t=1618835922;
-        bh=kT29ypuv7A855UVCqwpU0b49/ZfU+kqo9AeK/OVIgUE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=EpviTtNh58mftTBiwOb64P4RptPndOhK0W0A6d9nW0z0h8TFf1pMvQawvCXc8Y8zQ
-         rBZuWS8LCZC+u77COSNtdAjOOPrRe7jpgOAYKrB2idOkdxS/o9KWAgQAbjde9AByx7
-         fpQIZ3ZNLNm1EJWt7zsCbWzJosmi2FQpgzf4XQeo=
-From:   Palash Oswal <hello@oswalpalash.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Palash Oswal <hello@oswalpalash.com>
-Subject: [PATCH] io_uring: check ctx->sq_data before io_sq_offload_start
-Date:   Mon, 19 Apr 2021 18:06:31 +0530
-Message-Id: <20210419123630.62212-1-hello@oswalpalash.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: https://lore.kernel.org/io-uring/d346085f-8b9b-d620-1e0c-aa78fee8db13@gmail.com
-References: 
+        Mon, 19 Apr 2021 08:38:10 -0400
+Date:   Mon, 19 Apr 2021 12:37:35 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1618835859; bh=hAip5T1OKUqZJna/3RbmtxAVwcUejPt/uS4wnGoJlVk=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=CBNpDCGdHI2HZN83e6vJIpGeykxkCikGjDAJbWyQLvLYTxM0DzxBFt57PC/jevGEF
+         DOxe5LZbe5VJ1tRBcy+gU/DfPc02maVS+78gu0fb8YtTm0qpcVD6QduFpTZwgsTLzz
+         Zxm1HvEb5Dqx6ORvKyphrviCO/hcirX6fPzR02KTTgXsfI4Ue3aBiPCC41OwyZmuci
+         jjmgKHzPm3/4oYtpUejiCOcGk3QIbl2fY6ZfmKj2QI9049UlpEpncNk50UKfCI3K4Z
+         01Ky7Wc7YMFMleWN7dG9kh/a+S0pu/4p3XECQZ0FSWHakGAXNeICvy1tdGSaNuw13/
+         GB7OAgOyPsE9A==
+To:     Eric Dumazet <edumazet@google.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Wei Wang <weiwan@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH net] gro: fix napi_gro_frags() Fast GRO breakage due to IP alignment check
+Message-ID: <20210419123720.4421-1-alobakin@pm.me>
+In-Reply-To: <CANn89iJQebFaJKsj3BC0tY27f1ttDpbpMOXjOFtgrFNVN_B9wA@mail.gmail.com>
+References: <20210418114200.5839-1-alobakin@pm.me> <CANn89iJQebFaJKsj3BC0tY27f1ttDpbpMOXjOFtgrFNVN_B9wA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=I7wbu+og c=1 sm=1 tr=0
-        a=cdGxx36Ay0PF3zJPwW0H8g==:117 a=cdGxx36Ay0PF3zJPwW0H8g==:17
-        a=1WgTlICyNIAsNvkEdfwA:9
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzkaller identified KASAN: null-ptr-deref Read in io_uring_create
-bug on the stable 5.11-y tree.
+From: Eric Dumazet <edumazet@google.com>
+Date: Mon, 19 Apr 2021 13:05:16 +0200
 
-BUG: KASAN: null-ptr-deref in io_sq_offload_start fs/io_uring.c:8254 [inline]
-BUG: KASAN: null-ptr-deref in io_disable_sqo_submit fs/io_uring.c:8999 [inline]
-BUG: KASAN: null-ptr-deref in io_uring_create+0x1275/0x22f0 fs/io_uring.c:9824
-Read of size 8 at addr 0000000000000068 by task syz-executor.0/4350
+> On Sun, Apr 18, 2021 at 1:43 PM Alexander Lobakin <alobakin@pm.me> wrote:
+> >
+> > Commit 38ec4944b593 ("gro: ensure frag0 meets IP header alignment")
+> > did the right thing, but missed the fact that napi_gro_frags() logics
+> > calls for skb_gro_reset_offset() *before* pulling Ethernet header
+> > to the skb linear space.
+> > That said, the introduced check for frag0 address being aligned to 4
+> > always fails for it as Ethernet header is obviously 14 bytes long,
+> > and in case with NET_IP_ALIGN its start is not aligned to 4.
+> >
+> > Fix this by adding @nhoff argument to skb_gro_reset_offset() which
+> > tells if an IP header is placed right at the start of frag0 or not.
+> > This restores Fast GRO for napi_gro_frags() that became very slow
+> > after the mentioned commit, and preserves the introduced check to
+> > avoid silent unaligned accesses.
+> >
+> > Fixes: 38ec4944b593 ("gro: ensure frag0 meets IP header alignment")
+> > Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> > ---
+> >  net/core/dev.c | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index 1f79b9aa9a3f..965d5f9b6fee 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -5914,7 +5914,7 @@ static struct list_head *gro_list_prepare(struct =
+napi_struct *napi,
+> >         return head;
+> >  }
+> >
+> > -static void skb_gro_reset_offset(struct sk_buff *skb)
+> > +static void skb_gro_reset_offset(struct sk_buff *skb, u32 nhoff)
+> >  {
+> >         const struct skb_shared_info *pinfo =3D skb_shinfo(skb);
+> >         const skb_frag_t *frag0 =3D &pinfo->frags[0];
+> > @@ -5925,7 +5925,7 @@ static void skb_gro_reset_offset(struct sk_buff *=
+skb)
+> >
+> >         if (!skb_headlen(skb) && pinfo->nr_frags &&
+> >             !PageHighMem(skb_frag_page(frag0)) &&
+> > -           (!NET_IP_ALIGN || !(skb_frag_off(frag0) & 3))) {
+> > +           (!NET_IP_ALIGN || !((skb_frag_off(frag0) + nhoff) & 3))) {
+> >                 NAPI_GRO_CB(skb)->frag0 =3D skb_frag_address(frag0);
+> >                 NAPI_GRO_CB(skb)->frag0_len =3D min_t(unsigned int,
+> >                                                     skb_frag_size(frag0=
+),
+> > @@ -6143,7 +6143,7 @@ gro_result_t napi_gro_receive(struct napi_struct =
+*napi, struct sk_buff *skb)
+> >         skb_mark_napi_id(skb, napi);
+> >         trace_napi_gro_receive_entry(skb);
+> >
+> > -       skb_gro_reset_offset(skb);
+> > +       skb_gro_reset_offset(skb, 0);
+> >
+> >         ret =3D napi_skb_finish(napi, skb, dev_gro_receive(napi, skb));
+> >         trace_napi_gro_receive_exit(ret);
+> > @@ -6232,7 +6232,7 @@ static struct sk_buff *napi_frags_skb(struct napi=
+_struct *napi)
+> >         napi->skb =3D NULL;
+> >
+> >         skb_reset_mac_header(skb);
+> > -       skb_gro_reset_offset(skb);
+> > +       skb_gro_reset_offset(skb, hlen);
+> >
+> >         if (unlikely(skb_gro_header_hard(skb, hlen))) {
+> >                 eth =3D skb_gro_header_slow(skb, hlen, 0);
+> > --
+> > 2.31.1
+> >
+> >
+>
+> Good catch, thanks.
+>
+> This has the unfortunate effect of increasing code length on x86,
+> maybe we should have an exception to
+> normal rules so that skb_gro_reset_offset() is inlined.
 
-A simple reproducer for this bug is:
+Agree. To mitigate this codegrowth we either go with NET_IP_ALIGN
+ifdeffery or just inline skb_gro_reset_offset(). The function is
+tiny itself, I don't see a reason to not do this.
+Will drop v2 in a moment.
 
-int main(void)
-{
-  syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 0ul);
-  intptr_t res = 0;
-  pid_t parent = getpid();
-  *(uint32_t*)0x20000084 = 0;
-  *(uint32_t*)0x20000088 = 0x42;
-  *(uint32_t*)0x2000008c = 0;
-  *(uint32_t*)0x20000090 = 0;
-  *(uint32_t*)0x20000098 = -1;
-  *(uint32_t*)0x2000009c = 0;
-  *(uint32_t*)0x200000a0 = 0;
-  *(uint32_t*)0x200000a4 = 0;
-  if (fork() == 0) {
-    kill(parent,SIGKILL);
-    exit(0);
-  }
-  res = syscall(__NR_io_uring_setup, 0x7994, 0x20000080ul);
-  return 0;
-}
+> Reviewed-by: Eric Dumazet <edumazet@google.com>
 
-Due to the SIGKILL sent to the process before io_uring_setup
-completes, ctx->sq_data is NULL. Therefore, io_sq_offload_start
-does a null pointer dereferenced read. More details on this bug
-are in [1]. Discussion for this patch happened in [2].
-
-[1] https://oswalpalash.com/exploring-null-ptr-deref-io-uring-submit
-[2] https://lore.kernel.org/io-uring/a08121be-f481-e9f8-b28d-3eb5d4f
-a5b76@gmail.com/
-
-Signed-off-by: Palash Oswal <hello@oswalpalash.com>
----
- fs/io_uring.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 95b4a89dad4e..82a89ff315a4 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -8995,7 +8995,7 @@ static void io_disable_sqo_submit(struct io_ring_ctx *ctx)
- {
- 	mutex_lock(&ctx->uring_lock);
- 	ctx->sqo_dead = 1;
--	if (ctx->flags & IORING_SETUP_R_DISABLED)
-+	if (ctx->flags & IORING_SETUP_R_DISABLED && ctx->sq_data)
- 		io_sq_offload_start(ctx);
- 	mutex_unlock(&ctx->uring_lock);
- 
-
-base-commit: 2aa8861eab092599ad566c5b20d7452d9ec0ca8e
--- 
-2.27.0
+Thanks,
+Al
 
