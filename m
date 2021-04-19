@@ -2,118 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC468363F88
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 12:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B77D363F8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 12:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232989AbhDSK0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 06:26:39 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2756 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230272AbhDSK0h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 06:26:37 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13JA5WE3128267;
-        Mon, 19 Apr 2021 06:26:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=/Q/z9CmIU0bc14oP77ckvkImt3QVaQuoxewGw0EqTWM=;
- b=Ci3v8RAv3cTeQ71JjVZv7fCXmw6dVqRtCJRtiBS0YuFZWgSCJ05UHnk0hpll/5Jj2aaB
- 5YpQhzn31HOt95rG08JKcKXff3+Ym4yQ/GdJ6qEc3xgsQUC20B4tOHc3g6yJ0mO/d/lj
- e+LNryu+ZS/umTfzD2JBtrVXI8k1OeGiCnvb0r5SP4+OcSvmIYHu7t66meZLixfhgkUl
- A6cqxwSBjYmTHEfNVCTOMsBY1XHdIF74D5F9z/6bHSQYvC2iLhevUsQ2ALhSgr34aD/O
- S1Hd0YJl3djiee3wM9esp2gnRXHtFhsy4VhAyn3MX36T+880/ljcDzURuOtf3t9sOq0M dw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 380cramc05-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Apr 2021 06:26:00 -0400
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13JA5XFG128312;
-        Mon, 19 Apr 2021 06:25:59 -0400
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 380crambyt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Apr 2021 06:25:59 -0400
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13JAM6U7000940;
-        Mon, 19 Apr 2021 10:25:58 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma01wdc.us.ibm.com with ESMTP id 37yqa8h4u5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 19 Apr 2021 10:25:58 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13JAPwA627394500
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 19 Apr 2021 10:25:58 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2B2ACAE05C;
-        Mon, 19 Apr 2021 10:25:58 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 12F1EAE05F;
-        Mon, 19 Apr 2021 10:25:55 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.38.52])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon, 19 Apr 2021 10:25:54 +0000 (GMT)
-Subject: Re: [PATCH] perf vendor events: Initial json/events list for power10
- platform
-To:     "Paul A. Clarke" <pc@us.ibm.com>
-Cc:     acme@kernel.org, maddy@linux.vnet.ibm.com,
-        atrajeev@linux.vnet.ibm.com, linux-kernel@vger.kernel.org,
-        jolsa@redhat.com, mpe@ellerman.id.au, ravi.bangoria@linux.ibm.com,
-        linux-perf-users@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <20210417091850.596023-1-kjain@linux.ibm.com>
- <20210418210838.GA1845018@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <130f4181-a5ba-a24a-5d1f-7694999c324a@linux.ibm.com>
-Date:   Mon, 19 Apr 2021 15:55:53 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S237771AbhDSK1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 06:27:46 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:46970 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230272AbhDSK1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 06:27:42 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618828033; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=QQFoFEB/H5Z0VqewazdntMyz6iKBDZ1NewhM7KmKF/0=;
+ b=kqnMyvwrdsiCRQz57ytJEJjQ0iZ4KdRDHBCH4mXS3YPdncORlG4GvSAQHgRaHtnjyPChV0Ie
+ mHBcvpHa3RL26fAuV3FqNzdnr6sMYYINM42mrlz/Y8dinaMRJk6ns7DnY+C66y8IK3LlDazk
+ IQFvwfBfwoqcR1R2w2IgEuEjfM8=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 607d5afafebcffa80f56c3fd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 19 Apr 2021 10:27:06
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 762F2C4338A; Mon, 19 Apr 2021 10:27:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2A010C433D3;
+        Mon, 19 Apr 2021 10:27:05 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210418210838.GA1845018@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: jRQIvlOWSQIoGOZd15OC992mM78ZyOeH
-X-Proofpoint-GUID: otI7imAesBe4e_OgYg6xLLBfZi7Eco3r
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-19_07:2021-04-16,2021-04-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 malwarescore=0 mlxscore=0
- mlxlogscore=999 spamscore=0 adultscore=0 suspectscore=0 impostorscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104190069
+Date:   Mon, 19 Apr 2021 15:57:05 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     bjorn.andersson@linaro.org, p.zabel@pengutronix.de,
+        robh+dt@kernel.org, agross@kernel.org, mani@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/6] dt-bindings: reset: pdc: Add PDC Global bindings
+In-Reply-To: <161567147973.1478170.8098632597789819554@swboyd.mtv.corp.google.com>
+References: <1615269111-25559-1-git-send-email-sibis@codeaurora.org>
+ <1615269111-25559-5-git-send-email-sibis@codeaurora.org>
+ <161567147973.1478170.8098632597789819554@swboyd.mtv.corp.google.com>
+Message-ID: <ecec676283b4e57d3767addc8e37d46e@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-03-14 03:07, Stephen Boyd wrote:
+> Quoting Sibi Sankar (2021-03-08 21:51:49)
+>> Add PDC Global reset controller bindings for SC7280 SoCs.
+>> 
+>> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+>> ---
+>>  Documentation/devicetree/bindings/reset/qcom,pdc-global.yaml | 4 ++++
+>>  include/dt-bindings/reset/qcom,sdm845-pdc.h                  | 2 ++
+>>  2 files changed, 6 insertions(+)
+>> 
+>> diff --git 
+>> a/Documentation/devicetree/bindings/reset/qcom,pdc-global.yaml 
+>> b/Documentation/devicetree/bindings/reset/qcom,pdc-global.yaml
+>> index d7d8cec9419f..831ea8d5d83f 100644
+>> --- a/Documentation/devicetree/bindings/reset/qcom,pdc-global.yaml
+>> +++ b/Documentation/devicetree/bindings/reset/qcom,pdc-global.yaml
+>> @@ -21,6 +21,10 @@ properties:
+>>            - const: "qcom,sc7180-pdc-global"
+>>            - const: "qcom,sdm845-pdc-global"
+>> 
+>> +      - description: on SC7280 SoCs the following compatibles must be 
+>> specified
+>> +        items:
+>> +          - const: "qcom,sc7280-pdc-global"
+> 
+> Somehow this one can drop sdm845-pdc-global but aoss-cc can't?
 
-
-On 4/19/21 2:38 AM, Paul A. Clarke wrote:
-> On Sat, Apr 17, 2021 at 02:48:50PM +0530, Kajol Jain wrote:
->> Patch adds initial json/events for POWER10.
-> 
-> I was able to apply, build, and run perf with these changes,
-> and every new event at least ran successfully with
-> `perf stat`.
-> 
-> Pedantically, there is a lot of inconsistency as to whether
-> the `BriefDescription` ends with a period or not, and whether
-> there is an extra space at the end.
-
-Hi Paul,
-Thanks for reviewing the patch. Sure I will remove this inconsistency
-and send v2 patch for the same, with your Tested-by and Reviewed-by tag.
-
-Thanks,
-Kajol Jain
+I missed replying to ^^. aoss-cc
+reset is identical to that found
+on SDM845 SoC but the pdc-reset
+differs in the number of resets
+and offset within the pdc register
+space.
 
 > 
-> Regardless, LGTM.
-> 
-> Tested-by: Paul A. Clarke <pc@us.ibm.com>
-> Reviewed-by: Paul A. Clarke <pc@us.ibm.com>
-> 
-> PC
-> 
+>> +
+>>        - description: on SDM845 SoCs the following compatibles must be 
+>> specified
+>>          items:
+>>            - const: "qcom,sdm845-pdc-global"
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
