@@ -2,151 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980A2363CFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 09:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E231363D01
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 09:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237918AbhDSHve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 03:51:34 -0400
-Received: from mail-m121145.qiye.163.com ([115.236.121.145]:50682 "EHLO
-        mail-m121145.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbhDSHvd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 03:51:33 -0400
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.232])
-        by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 5509C8000C5;
-        Mon, 19 Apr 2021 15:51:01 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH V4] watchdog: mtk: support dual mode when the bark irq is available
-Date:   Mon, 19 Apr 2021 15:50:56 +0800
-Message-Id: <1618818656-32410-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQkpKTFZLHUJMGU0YQhlNSB9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PCo6ETo6GD8cDhQQKTgBERMq
-        MU4KCyFVSlVKTUpDQ0pDTU1JSklNVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISVlXWQgBWUFPT0pNNwY+
-X-HM-Tid: 0a78e91c7d15b03akuuu5509c8000c5
+        id S237758AbhDSHxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 03:53:05 -0400
+Received: from mga18.intel.com ([134.134.136.126]:22440 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238016AbhDSHxA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 03:53:00 -0400
+IronPort-SDR: ck7jXRhI7vrWNyAlF8w64sPGasZURYZofA97MxxZga5GRO+tTmwCAUq40t67+IA7/1oCXDBRRq
+ LbQ/XG6Kzj7A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9958"; a="182778598"
+X-IronPort-AV: E=Sophos;i="5.82,233,1613462400"; 
+   d="scan'208";a="182778598"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 00:52:29 -0700
+IronPort-SDR: aV2Z4O9WOrwPjQlCoFowqNOxPzwdQjkwgyafOdD3O8ZxBD9SslfQZz9D8UwpQbAQdHkmKt4fVE
+ Qb/ERvfZtzmg==
+X-IronPort-AV: E=Sophos;i="5.82,233,1613462400"; 
+   d="scan'208";a="426412184"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 00:52:21 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     <akpm@linux-foundation.org>, <dennis@kernel.org>,
+        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
+        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
+        <alexs@kernel.org>, <david@redhat.com>, <minchan@kernel.org>,
+        <richard.weiyang@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>
+Subject: Re: [PATCH v2 1/5] mm/swapfile: add percpu_ref support for swap
+References: <20210417094039.51711-1-linmiaohe@huawei.com>
+        <20210417094039.51711-2-linmiaohe@huawei.com>
+        <87eef7kmzw.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <753f414f-34a1-b16a-f826-7deb2dcd4af6@huawei.com>
+        <87czuq4uo2.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <dfbb8f36-e172-b682-fbfa-168a1ac2d456@huawei.com>
+Date:   Mon, 19 Apr 2021 15:52:16 +0800
+In-Reply-To: <dfbb8f36-e172-b682-fbfa-168a1ac2d456@huawei.com> (Miaohe Lin's
+        message of "Mon, 19 Apr 2021 15:35:09 +0800")
+Message-ID: <87zgxu3e4v.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support using irq handling wdt bark first instead of directly resetting.
+Miaohe Lin <linmiaohe@huawei.com> writes:
 
-When the watchdog timer expires in Dual mode, an interrupt will be
-triggered first, then the timing restarts. The reset signal will be
-initiated when the timer expires, to prevent the system is stuck hard.
+> On 2021/4/19 15:09, Huang, Ying wrote:
+>> Miaohe Lin <linmiaohe@huawei.com> writes:
+>> 
+>>> On 2021/4/19 10:48, Huang, Ying wrote:
+>>>> Miaohe Lin <linmiaohe@huawei.com> writes:
+>>>>
+>>>>> We will use percpu-refcount to serialize against concurrent swapoff. This
+>>>>> patch adds the percpu_ref support for swap.
+>>>>>
+>>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>>> ---
+>>>>>  include/linux/swap.h |  3 +++
+>>>>>  mm/swapfile.c        | 33 +++++++++++++++++++++++++++++----
+>>>>>  2 files changed, 32 insertions(+), 4 deletions(-)
+>>>>>
+>>>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>>>>> index 144727041e78..8be36eb58b7a 100644
+>>>>> --- a/include/linux/swap.h
+>>>>> +++ b/include/linux/swap.h
+>>>>> @@ -240,6 +240,7 @@ struct swap_cluster_list {
+>>>>>   * The in-memory structure used to track swap areas.
+>>>>>   */
+>>>>>  struct swap_info_struct {
+>>>>> +	struct percpu_ref users;	/* serialization against concurrent swapoff */
+>>>>
+>>>> The comments aren't general enough.  We use this to check whether the
+>>>> swap device has been fully initialized, etc. May be something as below?
+>>>>
+>>>> /* indicate and keep swap device valid */
+>>>
+>>> Looks good.
+>>>
+>>>>
+>>>>>  	unsigned long	flags;		/* SWP_USED etc: see above */
+>>>>>  	signed short	prio;		/* swap priority of this type */
+>>>>>  	struct plist_node list;		/* entry in swap_active_head */
+>>>>> @@ -260,6 +261,8 @@ struct swap_info_struct {
+>>>>>  	struct block_device *bdev;	/* swap device or bdev of swap file */
+>>>>>  	struct file *swap_file;		/* seldom referenced */
+>>>>>  	unsigned int old_block_size;	/* seldom referenced */
+>>>>> +	bool ref_initialized;		/* seldom referenced */
+>>>>> +	struct completion comp;		/* seldom referenced */
+>>>>>  #ifdef CONFIG_FRONTSWAP
+>>>>>  	unsigned long *frontswap_map;	/* frontswap in-use, one bit per page */
+>>>>>  	atomic_t frontswap_pages;	/* frontswap pages in-use counter */
+>>>>> diff --git a/mm/swapfile.c b/mm/swapfile.c
+>>>>> index 149e77454e3c..66515a3a2824 100644
+>>>>> --- a/mm/swapfile.c
+>>>>> +++ b/mm/swapfile.c
+>>>>> @@ -39,6 +39,7 @@
+>>>>>  #include <linux/export.h>
+>>>>>  #include <linux/swap_slots.h>
+>>>>>  #include <linux/sort.h>
+>>>>> +#include <linux/completion.h>
+>>>>>  
+>>>>>  #include <asm/tlbflush.h>
+>>>>>  #include <linux/swapops.h>
+>>>>> @@ -511,6 +512,14 @@ static void swap_discard_work(struct work_struct *work)
+>>>>>  	spin_unlock(&si->lock);
+>>>>>  }
+>>>>>  
+>>>>> +static void swap_users_ref_free(struct percpu_ref *ref)
+>>>>> +{
+>>>>> +	struct swap_info_struct *si;
+>>>>> +
+>>>>> +	si = container_of(ref, struct swap_info_struct, users);
+>>>>> +	complete(&si->comp);
+>>>>> +}
+>>>>> +
+>>>>>  static void alloc_cluster(struct swap_info_struct *si, unsigned long idx)
+>>>>>  {
+>>>>>  	struct swap_cluster_info *ci = si->cluster_info;
+>>>>> @@ -2500,7 +2509,7 @@ static void enable_swap_info(struct swap_info_struct *p, int prio,
+>>>>>  	 * Guarantee swap_map, cluster_info, etc. fields are valid
+>>>>>  	 * between get/put_swap_device() if SWP_VALID bit is set
+>>>>>  	 */
+>>>>> -	synchronize_rcu();
+>>>>
+>>>> You cannot remove this without changing get/put_swap_device().  It's
+>>>> better to squash at least PATCH 1-2.
+>>>
+>>> Will squash PATCH 1-2. Thanks.
+>>>
+>>>>
+>>>>> +	percpu_ref_resurrect(&p->users);
+>>>>>  	spin_lock(&swap_lock);
+>>>>>  	spin_lock(&p->lock);
+>>>>>  	_enable_swap_info(p);
+>>>>> @@ -2621,11 +2630,18 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
+>>>>>  	p->flags &= ~SWP_VALID;		/* mark swap device as invalid */
+>>>>>  	spin_unlock(&p->lock);
+>>>>>  	spin_unlock(&swap_lock);
+>>>>> +
+>>>>> +	percpu_ref_kill(&p->users);
+>>>>>  	/*
+>>>>> -	 * wait for swap operations protected by get/put_swap_device()
+>>>>> -	 * to complete
+>>>>> +	 * We need synchronize_rcu() here to protect the accessing
+>>>>> +	 * to the swap cache data structure.
+>>>>>  	 */
+>>>>>  	synchronize_rcu();
+>>>>> +	/*
+>>>>> +	 * Wait for swap operations protected by get/put_swap_device()
+>>>>> +	 * to complete.
+>>>>> +	 */
+>>>>
+>>>> I think the comments (after some revision) can be moved before
+>>>> percpu_ref_kill().  The synchronize_rcu() comments can be merged.
+>>>>
+>>>
+>>> Ok.
+>>>
+>>>>> +	wait_for_completion(&p->comp);
+>>>>>  
+>>>>>  	flush_work(&p->discard_work);
+>>>>>  
+>>>>> @@ -3132,7 +3148,7 @@ static bool swap_discardable(struct swap_info_struct *si)
+>>>>>  SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+>>>>>  {
+>>>>>  	struct swap_info_struct *p;
+>>>>> -	struct filename *name;
+>>>>> +	struct filename *name = NULL;
+>>>>>  	struct file *swap_file = NULL;
+>>>>>  	struct address_space *mapping;
+>>>>>  	int prio;
+>>>>> @@ -3163,6 +3179,15 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+>>>>>  
+>>>>>  	INIT_WORK(&p->discard_work, swap_discard_work);
+>>>>>  
+>>>>> +	if (!p->ref_initialized) {
+>>>>
+>>>> I don't think it's necessary to add another flag p->ref_initialized.  We
+>>>> can distinguish newly allocated and reused swap_info_struct in alloc_swap_info().
+>>>>
+>>>
+>>> If newly allocated swap_info_struct failed to init percpu_ref, it will be considered as
+>>> a reused one in alloc_swap_info() _but_ the field users of swap_info_struct is actually
+>>> uninitialized. Does this make sense for you?
+>> 
+>> We can call percpu_ref_init() just after kvzalloc() in alloc_swap_info().
+>> 
+>
+> Yes, we can do it this way. But using ref_initialized might make the code more straightforward
+> and simple?
 
-The dual mode is disabled by default.
+I think that it's simpler to call percpu_ref_init() in
+alloc_swap_info().  We can just call percpu_ref_init() for allocated
+swap_info_struct blindly, and call percpu_ref_exit() if we reuse.
 
-V2:
-- panic() by default if WATCHDOG_PRETIMEOUT_GOV is not enabled.
+Best Regards,
+Huang, Ying
 
-V3:
-- Modify the pretimeout behavior, manually reset after the pretimeout
-- is processed and wait until timeout.
-
-V4:
-- Remove pretimeout related processing. 
-- Add dual mode control separately.
-
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- drivers/watchdog/mtk_wdt.c | 33 +++++++++++++++++++++++++++++++--
- 1 file changed, 31 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
-index 97ca993..a1f34b5
---- a/drivers/watchdog/mtk_wdt.c
-+++ b/drivers/watchdog/mtk_wdt.c
-@@ -25,6 +25,7 @@
- #include <linux/reset-controller.h>
- #include <linux/types.h>
- #include <linux/watchdog.h>
-+#include <linux/interrupt.h>
- 
- #define WDT_MAX_TIMEOUT		31
- #define WDT_MIN_TIMEOUT		1
-@@ -57,6 +58,7 @@
- 
- static bool nowayout = WATCHDOG_NOWAYOUT;
- static unsigned int timeout;
-+static bool dual_mode;
- 
- struct mtk_wdt_dev {
- 	struct watchdog_device wdt_dev;
-@@ -239,13 +241,23 @@ static int mtk_wdt_start(struct watchdog_device *wdt_dev)
- 		return ret;
- 
- 	reg = ioread32(wdt_base + WDT_MODE);
--	reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
-+	if (dual_mode)
-+		reg |= (WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
-+	else
-+		reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
- 	reg |= (WDT_MODE_EN | WDT_MODE_KEY);
- 	iowrite32(reg, wdt_base + WDT_MODE);
- 
- 	return 0;
- }
- 
-+static irqreturn_t mtk_wdt_isr(int irq, void *arg)
-+{
-+	panic("wdt bark!\n");
-+
-+	return IRQ_HANDLED;
-+}
-+
- static const struct watchdog_info mtk_wdt_info = {
- 	.identity	= DRV_NAME,
- 	.options	= WDIOF_SETTIMEOUT |
-@@ -267,7 +279,7 @@ static int mtk_wdt_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct mtk_wdt_dev *mtk_wdt;
- 	const struct mtk_wdt_data *wdt_data;
--	int err;
-+	int err, irq;
- 
- 	mtk_wdt = devm_kzalloc(dev, sizeof(*mtk_wdt), GFP_KERNEL);
- 	if (!mtk_wdt)
-@@ -279,6 +291,20 @@ static int mtk_wdt_probe(struct platform_device *pdev)
- 	if (IS_ERR(mtk_wdt->wdt_base))
- 		return PTR_ERR(mtk_wdt->wdt_base);
- 
-+	if (dual_mode) {
-+		irq = platform_get_irq(pdev, 0);
-+		if (irq > 0) {
-+			err = devm_request_irq(&pdev->dev, irq, mtk_wdt_isr, 0, "wdt_bark",
-+									&mtk_wdt->wdt_dev);
-+			if (err)
-+				return err;
-+		} else {
-+			dual_mode = 0;
-+			dev_err(&pdev->dev,
-+			"couldn't get wdt irq, set dual_mode = 0\n");
-+		}
-+	}
-+
- 	mtk_wdt->wdt_dev.info = &mtk_wdt_info;
- 	mtk_wdt->wdt_dev.ops = &mtk_wdt_ops;
- 	mtk_wdt->wdt_dev.timeout = WDT_MAX_TIMEOUT;
-@@ -368,6 +394,9 @@ module_param(nowayout, bool, 0);
- MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
- 			__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
- 
-+module_param(dual_mode, bool, 0);
-+MODULE_PARM_DESC(dual_mode, "Watchdog dual mode triggers irq before reset(default=0)");
-+
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Matthias Brugger <matthias.bgg@gmail.com>");
- MODULE_DESCRIPTION("Mediatek WatchDog Timer Driver");
--- 
-2.7.4
-
+>> Best Regards,
+>> Huang, Ying
+>> 
+>>> Many Thanks for quick review.
+>>>
+>>>> Best Regards,
+>>>> Huang, Ying
+>>>>
+>>>>> +		error = percpu_ref_init(&p->users, swap_users_ref_free,
+>>>>> +					PERCPU_REF_INIT_DEAD, GFP_KERNEL);
+>>>>> +		if (unlikely(error))
+>>>>> +			goto bad_swap;
+>>>>> +		init_completion(&p->comp);
+>>>>> +		p->ref_initialized = true;
+>>>>> +	}
+>>>>> +
+>>>>>  	name = getname(specialfile);
+>>>>>  	if (IS_ERR(name)) {
+>>>>>  		error = PTR_ERR(name);
+>>>> .
+>>>>
+>> .
+>> 
