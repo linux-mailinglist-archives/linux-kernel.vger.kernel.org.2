@@ -2,79 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3609936457E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9BA8364575
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234197AbhDSN54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:57:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234081AbhDSN5y (ORCPT
+        id S240932AbhDSN4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:56:35 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59158 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240877AbhDSN4O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:57:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB435C061760;
-        Mon, 19 Apr 2021 06:57:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/tlWzbdi//qKHyK5G0slZklY9aETTkVqjGgc9+iYW1k=; b=bbtd/diWxYwVeUnaIIgSpmK8iy
-        16LuY12oWmKiMbef3weaPI7r/YcBBr4LE27B2jbZhIUFY7fvcUlJw1tEMpYiMQajBZvNPZ9gi3bsq
-        4yTDJRDKxipox9qJH6DY2EAvetdnSJmu9/HoBC9bxse1Bi4EMqBoUN1dMXNTATn4fxOTiw1WX5mf6
-        qufYE9Lu5YJIjlY3mz/nDYRPiCwaxN+ai8iMF/8KxbnA9l+S+l6iuj4W88djq4Qo6KTe2YWGvFH8H
-        h6vbMatkIn3OaTUBNmkXV6AQEKqVQ8yj9Fal1OwcyAsaQZuM6DWkmgxocgcc1NgaA+Fz/WUyOksdC
-        uYwy12QA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYUN6-00DqIB-2k; Mon, 19 Apr 2021 13:56:15 +0000
-Date:   Mon, 19 Apr 2021 14:55:28 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-afs@lists.infradead.org, Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [PATCH v7 09/28] mm: Create FolioFlags
-Message-ID: <20210419135528.GC2531743@casper.infradead.org>
-References: <20210409185105.188284-1-willy@infradead.org>
- <20210409185105.188284-10-willy@infradead.org>
- <YH2E2jNvhEOwCinT@hirez.programming.kicks-ass.net>
+        Mon, 19 Apr 2021 09:56:14 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13JDtcnT120107;
+        Mon, 19 Apr 2021 08:55:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1618840538;
+        bh=XKjbqgEpi2SlcsOaKtWJBqLEYB82iXVpqaPcS59RODQ=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=dm0lkFEkgNYd0EHaTvcsXsQ6o4ARTAsNr0okK5GyyBfog5W7HE1m/lmqgXj14a37T
+         mWIiK+4vOh8UiTcepImFarucJkyb87oZdUhNedHE+HDxd/gOSL0joAZcxjukCWiMlt
+         6+fiuYCmV1ts5Ao38g4p2lMIlpB7PS/+PNXSVk6k=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13JDtceU068477
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 19 Apr 2021 08:55:38 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 19
+ Apr 2021 08:55:37 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 19 Apr 2021 08:55:37 -0500
+Received: from [10.250.33.21] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13JDtb6Q062385;
+        Mon, 19 Apr 2021 08:55:37 -0500
+Subject: Re: [PATCH v2 1/2] dt-bindings: remoteproc: k3-r5f: Update bindings
+ for AM64x SoCs
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>,
+        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210327143117.1840-1-s-anna@ti.com>
+ <20210327143117.1840-2-s-anna@ti.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <8948a30c-1a2f-1fb0-05bb-37be9c02c5d5@ti.com>
+Date:   Mon, 19 Apr 2021 08:55:37 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YH2E2jNvhEOwCinT@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210327143117.1840-2-s-anna@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 03:25:46PM +0200, Peter Zijlstra wrote:
-> On Fri, Apr 09, 2021 at 07:50:46PM +0100, Matthew Wilcox (Oracle) wrote:
-> > These new functions are the folio analogues of the PageFlags functions.
-> > If CONFIG_DEBUG_VM_PGFLAGS is enabled, we check the folio is not a tail
-> > page at every invocation.  Note that this will also catch the PagePoisoned
-> > case as a poisoned page has every bit set, which would include PageTail.
-> > 
-> > This saves 1727 bytes of text with the distro-derived config that
-> > I'm testing due to removing a double call to compound_head() in
-> > PageSwapCache().
+Hi Rob,
+
+On 3/27/21 9:31 AM, Suman Anna wrote:
+> The K3 AM64x SoCs have two dual-core Arm R5F clusters/subsystems, with
+> 2 R5F cores each, both in the MAIN voltage domain.
 > 
-> I vote for dropping the Camels if we're going to rework all this.
+> These clusters are a revised IP version compared to those present on
+> J721E and J7200 SoCs, and supports a new "Single-CPU" mode instead of
+> LockStep mode. Update the K3 R5F remoteproc bindings with the compatible
+> info relevant to these R5F clusters/subsystems on K3 AM64x SoCs.
+> 
+> Signed-off-by: Suman Anna <s-anna@ti.com>
+> ---
+> v2: No changes
+> 
+>  .../bindings/remoteproc/ti,k3-r5f-rproc.yaml  | 31 ++++++++++++++++---
 
-I'm open to that.  It's a bit of rework now, but easier to do it as
-part of this than as a separate series.
+Looks like this patch has fallen through the cracks, can you please review and
+give your ack for this patch so that Bjorn can pick up the series for 5.13?
 
-So, concretely:
+regards
+Suman
 
-PageReferences() becomes folio_referenced()
-SetPageReferenced() becomes folio_set_referenced()
-ClearPageReferenced() becomes folio_clear_referenced()
-__SetFolioReferenced() becomes __folio_set_referenced()
-__ClearFolioReferenced() becomes __folio_clear_referenced()
-TestSetPageReferenced() becomes folio_test_set_referenced()
-TestClearPageReferenced() becomes folio_test_clear_referenced()
-
-We do have some functions already like set_page_writeback(), but I
-think those can become folio_set_writeback() without doing any harm.
-We also have page_is_young(), page_is_pfmemalloc(), page_is_guard(),
-etc.  Should it be folio_referenced()?  or folio_is_referenced()?
+>  1 file changed, 26 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml
+> index d905d614502b..130fbaacc4b1 100644
+> --- a/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml
+> +++ b/Documentation/devicetree/bindings/remoteproc/ti,k3-r5f-rproc.yaml
+> @@ -14,8 +14,12 @@ description: |
+>    processor subsystems/clusters (R5FSS). The dual core cluster can be used
+>    either in a LockStep mode providing safety/fault tolerance features or in a
+>    Split mode providing two individual compute cores for doubling the compute
+> -  capacity. These are used together with other processors present on the SoC
+> -  to achieve various system level goals.
+> +  capacity on most SoCs. These are used together with other processors present
+> +  on the SoC to achieve various system level goals.
+> +
+> +  AM64x SoCs do not support LockStep mode, but rather a new non-safety mode
+> +  called "Single-CPU" mode, where only Core0 is used, but with ability to use
+> +  Core1's TCMs as well.
+>  
+>    Each Dual-Core R5F sub-system is represented as a single DTS node
+>    representing the cluster, with a pair of child DT nodes representing
+> @@ -33,6 +37,7 @@ properties:
+>        - ti,am654-r5fss
+>        - ti,j721e-r5fss
+>        - ti,j7200-r5fss
+> +      - ti,am64-r5fss
+>  
+>    power-domains:
+>      description: |
+> @@ -56,11 +61,12 @@ properties:
+>  
+>    ti,cluster-mode:
+>      $ref: /schemas/types.yaml#/definitions/uint32
+> -    enum: [0, 1]
+>      description: |
+>        Configuration Mode for the Dual R5F cores within the R5F cluster.
+> -      Should be either a value of 1 (LockStep mode) or 0 (Split mode),
+> -      default is LockStep mode if omitted.
+> +      Should be either a value of 1 (LockStep mode) or 0 (Split mode) on
+> +      most SoCs (AM65x, J721E, J7200), default is LockStep mode if omitted;
+> +      and should be either a value of 0 (Split mode) or 2 (Single-CPU mode)
+> +      on AM64x SoCs, default is Split mode if omitted.
+>  
+>  # R5F Processor Child Nodes:
+>  # ==========================
+> @@ -97,6 +103,7 @@ patternProperties:
+>            - ti,am654-r5f
+>            - ti,j721e-r5f
+>            - ti,j7200-r5f
+> +          - ti,am64-r5f
+>  
+>        reg:
+>          items:
+> @@ -198,6 +205,20 @@ patternProperties:
+>  
+>      unevaluatedProperties: false
+>  
+> +if:
+> +  properties:
+> +    compatible:
+> +      enum:
+> +        - ti,am64-r5fss
+> +then:
+> +  properties:
+> +    ti,cluster-mode:
+> +      enum: [0, 2]
+> +else:
+> +  properties:
+> +    ti,cluster-mode:
+> +      enum: [0, 1]
+> +
+>  required:
+>    - compatible
+>    - power-domains
+> 
 
