@@ -2,182 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E34A2364B44
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 22:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A80B364B47
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 22:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242171AbhDSUkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 16:40:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34455 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232217AbhDSUkb (ORCPT
+        id S242200AbhDSUky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 16:40:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234058AbhDSUkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 16:40:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618864800;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HTvQplBtlnSAuxCl+GaMhVm2KFbeKbpYfjP9TAu31xU=;
-        b=EUgMe8ODWhEQCmF/WDfOUI8XDJxjQK+oLW060tZ5nSiFhSUmHD+phCC+gkNsmcRCBjmfDB
-        /L+t7ITfaj+ySUa9UgPNifs2DQ+28M/0kEFuqOvo65axSwAlvshuaU1kabpSJomWByDTdr
-        vPiwECE6j9XDF7ic5sQgfFBCWC+YW0g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-373-AR-euLuYN9KJREk7kmR0Gw-1; Mon, 19 Apr 2021 16:39:56 -0400
-X-MC-Unique: AR-euLuYN9KJREk7kmR0Gw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8F6048030A0;
-        Mon, 19 Apr 2021 20:39:54 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-116-35.rdu2.redhat.com [10.10.116.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 98D231002EE6;
-        Mon, 19 Apr 2021 20:39:47 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 37EEE22054F; Mon, 19 Apr 2021 16:39:47 -0400 (EDT)
-Date:   Mon, 19 Apr 2021 16:39:47 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Linux fsdevel mailing list <linux-fsdevel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        Sergio Lopez <slp@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux kernel mailing list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH][v2] dax: Fix missed wakeup during dax entry invalidation
-Message-ID: <20210419203947.GG1472665@redhat.com>
-References: <20210419184516.GC1472665@redhat.com>
- <CAPcyv4jR5d+-99wVMm9SHxNBOsp0FUi7wzDNsefkZ1oqUZ7joQ@mail.gmail.com>
+        Mon, 19 Apr 2021 16:40:51 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72083C06174A;
+        Mon, 19 Apr 2021 13:40:21 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id r12so54996420ejr.5;
+        Mon, 19 Apr 2021 13:40:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bw5IhZj9aI8jPgCDzrQQ4QwlvPSxNH5FozaD2GGrtoc=;
+        b=EQWjTrDQWErqauELNSlzFJqDxUggWownGF1Zl0SbYFLRZNg18oQDmQgBMaSgK3Znyh
+         N6CU2dZ3okbBgirspmicEVs1v5dZvkFsSgV+RL789MI0nrXz+Qui2sZY3+YbCpiGZJuZ
+         52RmWeitwmK1hPGuYvf/Rjw3vMnvqmoPrUrBuBw2ECcLhhFqZkvgvuRuD34hG9yYP9tg
+         /RYEx2gfvpbukpYSg11CxN6gdJcOHs4pqvW+1HxdjVS/Blapd3IlaDf3MuiDP+2QoFSS
+         uqpk6kA4tA/sx3P9T+4mA9M7Oe9S6Yv4NBroHUkGDiz2HMr56XTxWCTCt/43xLbcxbmN
+         d+BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bw5IhZj9aI8jPgCDzrQQ4QwlvPSxNH5FozaD2GGrtoc=;
+        b=jFUhp6kdnI8eoC0tigjZXRo+gYDZvl8vloycJqEENuWWCEz1Y6l85aF0Okxv+p9T3U
+         8ufNc0JeqarurlejRbSkbMjDRiX6nyQk2t0sE6gOFyY0RwBqROpJDlloFKL2taFNOEes
+         QBWS+W2oc2VeqATRI48UTcDJAwKZymt2roWZoy6xwkGkPdoWjYxAgSSx9/kIz0WNiEgI
+         vEndL77pHz9HOnFd2aY9m3wKo8BxXFzUUibMvv/q/t2r0UsbrH/8dcc5LtqFCkX0iR9C
+         adZZ5HG7AAc1Lgmpemrxmk4XCRVkz/m07W5p2DlMRbdbTIoOPG1aJu6cSvGRmQ+l+V4V
+         gTAw==
+X-Gm-Message-State: AOAM530EFvFvZ9EzVFxufn7oprX7gbGuffLgH893TcHhK61wWbL+yrDC
+        jGAYdOHfeJU/BHdQFUyQq1QeyGT7Q82Dt7+r
+X-Google-Smtp-Source: ABdhPJzDdIhOuuVIdayRFbBhxGTyoEn2sTN+kHETsPJbSv0KGWp6thFGiMfRAlfnQS9P47NL+BlxRA==
+X-Received: by 2002:a17:906:7795:: with SMTP id s21mr23593421ejm.309.1618864820097;
+        Mon, 19 Apr 2021 13:40:20 -0700 (PDT)
+Received: from microndev.lxd (ipbcc00c74.dynamic.kabel-deutschland.de. [188.192.12.116])
+        by smtp.gmail.com with ESMTPSA id u4sm11056706ejf.11.2021.04.19.13.40.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 13:40:19 -0700 (PDT)
+From:   shiva.linuxworks@gmail.com
+X-Google-Original-From: sshivamurthy@micron.com
+To:     broonie@kernel.org, linux-spi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Shivamurthy Shastri <sshivamurthy@micron.com>
+Subject: [PATCH] spidev: Add Micron SPI NOR Authenta device compatible
+Date:   Mon, 19 Apr 2021 20:40:15 +0000
+Message-Id: <20210419204015.1769-1-sshivamurthy@micron.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4jR5d+-99wVMm9SHxNBOsp0FUi7wzDNsefkZ1oqUZ7joQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 12:48:58PM -0700, Dan Williams wrote:
-> On Mon, Apr 19, 2021 at 11:45 AM Vivek Goyal <vgoyal@redhat.com> wrote:
-> >
-> > This is V2 of the patch. Posted V1 here.
-> >
-> > https://lore.kernel.org/linux-fsdevel/20210416173524.GA1379987@redhat.com/
-> >
-> > Based on feedback from Dan and Jan, modified the patch to wake up
-> > all waiters when dax entry is invalidated. This solves the issues
-> > of missed wakeups.
-> 
-> Care to send a formal patch with this commentary moved below the --- line?
-> 
-> One style fixup below...
-> 
-> >
-> > I am seeing missed wakeups which ultimately lead to a deadlock when I am
-> > using virtiofs with DAX enabled and running "make -j". I had to mount
-> > virtiofs as rootfs and also reduce to dax window size to 256M to reproduce
-> > the problem consistently.
-> >
-> > So here is the problem. put_unlocked_entry() wakes up waiters only
-> > if entry is not null as well as !dax_is_conflict(entry). But if I
-> > call multiple instances of invalidate_inode_pages2() in parallel,
-> > then I can run into a situation where there are waiters on
-> > this index but nobody will wait these.
-> >
-> > invalidate_inode_pages2()
-> >   invalidate_inode_pages2_range()
-> >     invalidate_exceptional_entry2()
-> >       dax_invalidate_mapping_entry_sync()
-> >         __dax_invalidate_entry() {
-> >                 xas_lock_irq(&xas);
-> >                 entry = get_unlocked_entry(&xas, 0);
-> >                 ...
-> >                 ...
-> >                 dax_disassociate_entry(entry, mapping, trunc);
-> >                 xas_store(&xas, NULL);
-> >                 ...
-> >                 ...
-> >                 put_unlocked_entry(&xas, entry);
-> >                 xas_unlock_irq(&xas);
-> >         }
-> >
-> > Say a fault in in progress and it has locked entry at offset say "0x1c".
-> > Now say three instances of invalidate_inode_pages2() are in progress
-> > (A, B, C) and they all try to invalidate entry at offset "0x1c". Given
-> > dax entry is locked, all tree instances A, B, C will wait in wait queue.
-> >
-> > When dax fault finishes, say A is woken up. It will store NULL entry
-> > at index "0x1c" and wake up B. When B comes along it will find "entry=0"
-> > at page offset 0x1c and it will call put_unlocked_entry(&xas, 0). And
-> > this means put_unlocked_entry() will not wake up next waiter, given
-> > the current code. And that means C continues to wait and is not woken
-> > up.
-> >
-> > This patch fixes the issue by waking up all waiters when a dax entry
-> > has been invalidated. This seems to fix the deadlock I am facing
-> > and I can make forward progress.
-> >
-> > Reported-by: Sergio Lopez <slp@redhat.com>
-> > Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-> > ---
-> >  fs/dax.c |   12 ++++++------
-> >  1 file changed, 6 insertions(+), 6 deletions(-)
-> >
-> > Index: redhat-linux/fs/dax.c
-> > ===================================================================
-> > --- redhat-linux.orig/fs/dax.c  2021-04-16 14:16:44.332140543 -0400
-> > +++ redhat-linux/fs/dax.c       2021-04-19 11:24:11.465213474 -0400
-> > @@ -264,11 +264,11 @@ static void wait_entry_unlocked(struct x
-> >         finish_wait(wq, &ewait.wait);
-> >  }
-> >
-> > -static void put_unlocked_entry(struct xa_state *xas, void *entry)
-> > +static void put_unlocked_entry(struct xa_state *xas, void *entry, bool wake_all)
-> >  {
-> >         /* If we were the only waiter woken, wake the next one */
-> >         if (entry && !dax_is_conflict(entry))
-> > -               dax_wake_entry(xas, entry, false);
-> > +               dax_wake_entry(xas, entry, wake_all);
-> >  }
-> >
-> >  /*
-> > @@ -622,7 +622,7 @@ struct page *dax_layout_busy_page_range(
-> >                         entry = get_unlocked_entry(&xas, 0);
-> >                 if (entry)
-> >                         page = dax_busy_page(entry);
-> > -               put_unlocked_entry(&xas, entry);
-> > +               put_unlocked_entry(&xas, entry, false);
-> 
-> I'm not a fan of raw true/false arguments because if you read this
-> line in isolation you need to go read put_unlocked_entry() to recall
-> what that argument means. So lets add something like:
-> 
-> /**
->  * enum dax_entry_wake_mode: waitqueue wakeup toggle
->  * @WAKE_NEXT: entry was not mutated
->  * @WAKE_ALL: entry was invalidated, or resized
->  */
-> enum dax_entry_wake_mode {
->         WAKE_NEXT,
->         WAKE_ALL,
-> }
-> 
-> ...and use that as the arg for dax_wake_entry(). So I'd expect this to
-> be a 3 patch series, introduce dax_entry_wake_mode for
-> dax_wake_entry(), introduce the argument for put_unlocked_entry()
-> without changing the logic, and finally this bug fix. Feel free to add
-> 'Fixes: ac401cc78242 ("dax: New fault locking")' in case you feel this
-> needs to be backported.
+From: Shivamurthy Shastri <sshivamurthy@micron.com>
 
-Hi Dan,
+Add compatible string for Micron SPI NOR Authenta device.
 
-I will make changes as you suggested and post another version.
+Signed-off-by: Shivamurthy Shastri <sshivamurthy@micron.com>
+---
+ drivers/spi/spidev.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I am wondering what to do with dax_wake_entry(). It also has a boolean
-parameter wake_all. Should that be converted as well to make use of
-enum dax_entry_wake_mode?
-
-Thanks
-Vivek
+diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
+index 8cb4d923aeaa..f56e0e975a46 100644
+--- a/drivers/spi/spidev.c
++++ b/drivers/spi/spidev.c
+@@ -683,6 +683,7 @@ static const struct of_device_id spidev_dt_ids[] = {
+ 	{ .compatible = "dh,dhcom-board" },
+ 	{ .compatible = "menlo,m53cpld" },
+ 	{ .compatible = "cisco,spi-petra" },
++	{ .compatible = "micron,spi-authenta" },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, spidev_dt_ids);
+-- 
+2.25.1
 
