@@ -2,138 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE7D364B21
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 22:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A94364B23
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 22:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242097AbhDSU0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 16:26:42 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:29014 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232318AbhDSU0j (ORCPT
+        id S242110AbhDSU1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 16:27:52 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:44562 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231779AbhDSU1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 16:26:39 -0400
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 13JKPBub025130;
-        Mon, 19 Apr 2021 13:26:06 -0700
+        Mon, 19 Apr 2021 16:27:49 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13JKO8kl027740;
+        Mon, 19 Apr 2021 13:27:16 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : references : in-reply-to : content-type : content-id
  : content-transfer-encoding : mime-version; s=facebook;
- bh=WwVNcTabvRcHe0vhLgO/UQJVhorKbXwv7hY70YQMJB4=;
- b=LbvaKZwSEy74v0f6Bodah6zB3nn+aOJD+nWwHEaLCHdtZv3dxb7WYpP1IdINN2kW5iBD
- 5SADTAXUvo18a1v1802YOmv9VkP8FhDQ19m+z1qymvfe+qehC0ia5D1t3WKnjecZYmLb
- kS4t2R4Vi1fpXdQRzSAfGZGUwdTLlGOX0N4= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 381deus9fy-1
+ bh=I0xm2Wf3W27CAz8s39mOMim74iinrtjrrbNwjJy0YM4=;
+ b=qA64i8flqTn2we6cx/e6M6BVp4TrvsiEGZ/WQtyQSLAvBDNHQ9BpvYKJFiN1AYXNeutj
+ OFfm3Uc2b24Yoebj0NY1li3Im80FdNU+Z5YTnGWiH1fSyhCieQqQTNkYcck8yIhdabV4
+ M8Eh8P1l9AQ60KYTAHdsNc1DxjO5kBIRtfM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 380fe4f6rj-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 19 Apr 2021 13:26:06 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+        Mon, 19 Apr 2021 13:27:15 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 19 Apr 2021 13:26:04 -0700
+ 15.1.2176.2; Mon, 19 Apr 2021 13:27:14 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BykXEviJar+dztVKJW+X2Oa84o0P73TNcrk1YdvU8lp/tqIW98ntToUVhg/DiGZTl93RiYG6aL05q8UOUQkpb1cOKZwljtyYawuDxHvQbmIb+ug7lmkiFzHg0Hr/ZYEIYNgKBT24UiWtAdVyyR0P5OAyibLoc1A5SGBaU1ExTwe0+J3qS4/lJei2MZJUPi+ENYIKQ6iA2Sjk2j1Ai/NSjTfOI/3KFuGqiP0p7n45jVcY4bhx0GUGze773YpLEHys2U7MNXC9ybXSUPS2srW3V6pYsvCn696DYZ+0vA8ewKjVuVLIdfahlQce8rEIKJPYhbnb6nqNp24v/Epc5sMhTA==
+ b=Lmjwhwp6CHdo3Amczxy9o8kY5D6TKWmJMRR09uYl8tPQFP96pGSBy59ebkj0Ik6WQ8BxtrBUv5rdHlwodUR2orHBz9Y4FX5/X1vx/BhZbAm7dHlzgnMQr0uzku+DOSA/DBG3bztZhXuju6gu/uwH3OCTIfth6FHZuRUm02vK2CFBiOVNFRqco7afsukwi7RUW92Fxvg41erdtY7HeThEMi6yM6NwmC1SrpY/ejGvzz7Vrw3EnSIpn/qLd1Idj1l2Dbo5PwH/uMd3PvWaXFqIa6bXGl93gfvSWDTNVvP/p5sHnAAI8oGQC3WLeSMfzJCPZDSpkDVoyB1qn6VKmVOCfA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WwVNcTabvRcHe0vhLgO/UQJVhorKbXwv7hY70YQMJB4=;
- b=Mvm7T86jAnJ0+iPcC01SgJZ0f2IuwFO2L7Yi+rPHl8cBIYVBLXUCe75+8zxWPJRUgrEJq/FbbxjGP6D34+7ZbkCXrl7yHzV8b8ragLf6XqXlkkWhzHzShX5S7WuslAa+R4jVaDr2w5gpn25LNHOIRnk1cRO7EyiEXZ9gw27amJ7CCYDM8mk4GioxwJKgWa4wE7kWxpAf1Nbl0AmF0Csb1WszfDBM+AWduRsouq5bVF7Zji4lt6mZdCPmHfMyhdDwFwmkEAL8D/u4oRYbdxc4DVuY7DB75bQA0U/134Cam9JS5CDRr0asc0o5q6ZHDmJVwPktxSQBGaXqFz2dZLnCBA==
+ bh=I0xm2Wf3W27CAz8s39mOMim74iinrtjrrbNwjJy0YM4=;
+ b=RBNloit7q4w0gnfa2gunRkriOjh1gVQhkxJ/jLHO53eudC0Ba+CsNsUq3/Jx6sqdB4vzvsniG6B/hUwVnbeDnwYD0D8PgEx+jb9uJGEJ0U9FqMI+sp5wTiScnxex9cIxna6KLSNzkAGicJa2H1w81hRCu/OFIQK0Xkh6SDjOL9xz5dHJgFxnxGsbfUpUN3tYXLr0DSBx7Yib2Dz77Ji0DbPme38efpc+BPMydiZdf4Xb8jE6So5njz7goCKH8KgOaxr77E2L294n32zJXtcH1SAXQtWrzFC1MPQr+BWxlGW1ITn8x5xntmLJmxJuHucq+1HYFWGuh5Pl7fJ7rCDovQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB3366.namprd15.prod.outlook.com (2603:10b6:a03:10d::21) with
+ by BY3PR15MB4978.namprd15.prod.outlook.com (2603:10b6:a03:3c5::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.21; Mon, 19 Apr
- 2021 20:26:03 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Mon, 19 Apr
+ 2021 20:27:14 +0000
 Received: from BYAPR15MB2999.namprd15.prod.outlook.com
  ([fe80::1ce0:8b27:f740:6b60]) by BYAPR15MB2999.namprd15.prod.outlook.com
  ([fe80::1ce0:8b27:f740:6b60%4]) with mapi id 15.20.3933.040; Mon, 19 Apr 2021
- 20:26:03 +0000
+ 20:27:14 +0000
 From:   Song Liu <songliubraving@fb.com>
-To:     Namhyung Kim <namhyung@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
 CC:     Song Liu <song@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Kernel Team <Kernel-team@fb.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>
+        "acme@kernel.org" <acme@kernel.org>,
+        "acme@redhat.com" <acme@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "jolsa@kernel.org" <jolsa@kernel.org>
 Subject: Re: [PATCH v3 3/4] perf-stat: introduce config
  stat.bpf-counter-events
 Thread-Topic: [PATCH v3 3/4] perf-stat: introduce config
  stat.bpf-counter-events
-Thread-Index: AQHXMw3DyOxUaVUpS0ODNNUcJNtKe6q46/0AgANiUwA=
-Date:   Mon, 19 Apr 2021 20:26:02 +0000
-Message-ID: <71CC9E29-ECBD-47DB-AE85-1477BF54C45D@fb.com>
+Thread-Index: AQHXMw3DyOxUaVUpS0ODNNUcJNtKe6q76eYAgABkwYA=
+Date:   Mon, 19 Apr 2021 20:27:14 +0000
+Message-ID: <C55B43CE-0909-4322-89DB-143A300871A6@fb.com>
 References: <20210416221325.2373497-1-song@kernel.org>
- <20210416221325.2373497-4-song@kernel.org>
- <CAM9d7ciVj+d=Bgqmwu+v9mA1CGTbtr8pfXzgNKJs0Nh3BJtt8A@mail.gmail.com>
-In-Reply-To: <CAM9d7ciVj+d=Bgqmwu+v9mA1CGTbtr8pfXzgNKJs0Nh3BJtt8A@mail.gmail.com>
+ <20210416221325.2373497-4-song@kernel.org> <YH2THG9zES3rjvEs@krava>
+In-Reply-To: <YH2THG9zES3rjvEs@krava>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
 x-mailer: Apple Mail (2.3654.60.0.2.21)
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
 x-originating-ip: [2620:10d:c090:400::5:83ef]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b6b79da2-2ec5-4b6d-7a6f-08d903715a50
-x-ms-traffictypediagnostic: BYAPR15MB3366:
+x-ms-office365-filtering-correlation-id: a1e4035f-e799-4c25-cc94-08d9037184b1
+x-ms-traffictypediagnostic: BY3PR15MB4978:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB3366132E0C359E5CDCCE81A5B3499@BYAPR15MB3366.namprd15.prod.outlook.com>
+x-microsoft-antispam-prvs: <BY3PR15MB49782DDD71A3ECE445DDCF5DB3499@BY3PR15MB4978.namprd15.prod.outlook.com>
 x-fb-source: Internal
 x-ms-oob-tlc-oobclassifiers: OLM:8273;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Hnk8yaget5OZvkXyMltvC8yTqjG+yLnBP9TILn3vaaXZ0nTtMo93dFuN2MWvG82v68pn+2tl6G7ckIEbm3GQ3DL1+PIRX14x9Oc6Cq5hO4TySBUnNywInHMLqrHqW4h5CXbjXGnxiLDEP4Zy+YjIZ18tIB65TzkK5oFK8Qe9MAB591O9zQdlaObvuWPh9U8GKPlx9bniiPth68KwafAwixZnIQH5Icp56Wcr9rRowTYxFjEAbhucHunmFy774gmYiOxb/KtWfA4hjmeU4hPXuoaTxVImo1CjNZiE1UITiF4/HzImpZaxPOrVlAh4Cp6ZyKr+OoihP74OyWeBCs7BeFEFSwyLl9BC5Pslw2/NFRQoOLm6tCXEojrxnNEyMGZCAm890ajIp+PxW8b6PRpZYa/z/5zwO9p/vILaRKcveZR8ZTvk06cnyNhPu0t+ayS2Fjpi4fIU6O8tOM2orR21bO0IIffozhrJj4GEQ7uTlCJVx1YMo1brbjw5kjmvjCK+ohLKkfAJE3BXEh6n9wLbpw+Eu4rZzZEWbHv+7QPUfRFjnMVVCeUQM6k+U4dsT+mceu+mla2brKNNjQ9t3D4F/YAGMgBzaJwj3vP1d43I2Gmn6sypPNErHnqHRVCARVC+8N2alP0TTgFt0bdMmUD6TmKjyRI6FaHkWduWRrdoUKo=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(366004)(346002)(39860400002)(136003)(71200400001)(6512007)(38100700002)(122000001)(2906002)(2616005)(6916009)(6486002)(66946007)(33656002)(186003)(6506007)(478600001)(66446008)(66476007)(53546011)(66556008)(64756008)(316002)(36756003)(54906003)(5660300002)(76116006)(8676002)(91956017)(86362001)(8936002)(4326008)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?aXHSfECGo1oha0XsA8oPAY+tIkKHijkbtdkpqrIDLP3cEKY5OxhIXPORO2D6?=
- =?us-ascii?Q?F4pcqjR+FWatjNdwmQtSNk0fh1YxMz2Ze3/bAZcF0mPxGOaiNRDwPeF42zI5?=
- =?us-ascii?Q?JLhZgnIKISOg8+aKqrMhQ+cwWWr4hnTk6JWHmQoivVOTl7YwBzNq6Pf2itmt?=
- =?us-ascii?Q?XEI7WLZid2F6BZNq39aotm7CUw6cQR4+MKNmOmKbunjrmTT5Up2mc49i/26C?=
- =?us-ascii?Q?OKpeQvjYdiv3XNPzMWrA2nkyFKbDJv8MYExE2ZmL/kDqWP9GJPg9Kbypj/6B?=
- =?us-ascii?Q?Itks1iIKck4bajbV0s3kdRfGlNjfkKord95V8NGCBPdbCDuNiRq4RuUDUtdT?=
- =?us-ascii?Q?+/X5uPcS9RpJUktFGzV94fyP2ig1rTtu32xrcP3iccarxV1JvRwAur6Wi/Rg?=
- =?us-ascii?Q?Ph3gII0m6anMxqFE35aRzLXk6kGtJDwIj4dTfX/vOfHYhoyqeJ5BYgM4Zryh?=
- =?us-ascii?Q?ugq3ZXVn5jHmdDZ+bQwBusmiNd7QnYDAqyK9t37WEf0T7i2AMDlV1lUHSMoi?=
- =?us-ascii?Q?ECLgvmQ+sCZWIJB9ZZklX0nkMva0GaXq0RSf1SsoluRhObhK5qkEYho9Icfz?=
- =?us-ascii?Q?AoMiBEfE/4UqtCgoVEApEbm337PiqPX4vnQ+lgqb2n+L3E+mSGIXx8RjJ544?=
- =?us-ascii?Q?QDwYFH2jubQ4varjIo+e0Ny09UJlFpTfpRde+Q3903832+h65gtCTREecZPO?=
- =?us-ascii?Q?yTOVR7Jd8GqJUtKLixsiWFI13gffVE/eTEPxYla6o5nzZv08hpc5hg/ZorpR?=
- =?us-ascii?Q?LdZINH7n70yymjQNAscWL3aR2kqnividVfPpjjxCPgEuivTYh/UTB0hSKi4E?=
- =?us-ascii?Q?DQZJ/eo2jMoJllmfWlANQcLh9cjO9Yq7L1VAc1Qi1SLF0nIX7GSY3CRWC48H?=
- =?us-ascii?Q?Z4JiSmSJ2TwtV9MVc6w5ACCjy5fVbL/Dz3S/dolBdFxeR7teRpI1xT/wYCA2?=
- =?us-ascii?Q?+LCE+wz3dgT/CWpRm1lgmP+kmwWWAkKyJcensDzvkYPsXMrhZ4cLsn5y+dMZ?=
- =?us-ascii?Q?EdH9dVwsbCbRkF/TgCwXTt+l8V4dVfjEVkx3uvnGMeG0m5JVWkiHXv9x0zx2?=
- =?us-ascii?Q?T0E2WG1g2mx5+PlqlLoTkycK+3qvz99LrRwHO/eHrdDEfDr6+jnVcw6eBjcT?=
- =?us-ascii?Q?j5uFdTXJ99Tb9yrL9VtxWBc+LfPZmva/xnhFlguWE7TF+Xx8wPNSdNRLNnBe?=
- =?us-ascii?Q?b/DIs4pNeXmTdGfAJYwJQ35ehaVghQJTg4RTIkzL9pHw6YphRWeoguq6YgQA?=
- =?us-ascii?Q?sxGi83UemDfDGjI5M4tvNELb7nomuJln+Mm8+TUQCBfasDEpm5HPXJ1qRq+6?=
- =?us-ascii?Q?Ru1IURrShbkHnSbDCqjekVxXn3OHWl1lkMxUquSbq/jH8qM+z1VUdZCwjja8?=
- =?us-ascii?Q?WvaxT2o=3D?=
+x-microsoft-antispam-message-info: wUs8UCe4WEszYiY2sSmWlsLuyl3zXlCVRtYI/lu+oWVrdRmMcmWiz91Y43ELULui4E3puAuFnUPoE3578bjz0RfFp93jTGCCZQr7+qA7wJP68ZveCLca+bpdVvhoYvQUV0wy9qBLf+NdKdbjsTefwdL7UZrOsfO0PgtPyYB+5d0AOVr4lbytuYs8vkR+nBZ0n94iXjeu+aBwh7o1ITyVKWB+/cyox7x38XeQgUcI0kQ0UH5+wtm2lgUo2E5G/nthIJ2RdcanTtFqq3iatv/gUiy2JtC+D1sWUzW4O3306To8Y0KO9503dLYNmBAEaNHLrPLzvgOMrAoRqnNEJ0c8yguu3v0CBP6mOtYTjwmQljRc2Tj4I6mgCllA+IdZ1EjWnvSeoqi6K1XzvhQ88OkINhi3XM+iE0NqJfVP6pUQFo/DCqR7XxkRwT1zEIFe04RVOosiL+iRWM9mZhSb+mfThrcvMo8jSNT7zV4CYCTJRv+g1Gs8yCCklKytL1L/9xgiAACzG/h/mRm8K2oUv+iYXiUJAfh8xBIykisOiklMaEdyWZhGBpVLrfaqoHCHOfZcNLyQ2xjPXx1NoNlqT8DCoG//uTYfR7CTLo88BBmbFy5HwCkWCHTm9Rq6lo4eYZ52q4OV1ENPoTrVxUjeU02Dlt9rFfUOyIsoOdilXQvNFcA=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6916009)(71200400001)(8676002)(86362001)(8936002)(76116006)(54906003)(53546011)(5660300002)(38100700002)(6506007)(6486002)(66556008)(66446008)(122000001)(2616005)(64756008)(66946007)(66476007)(4326008)(186003)(2906002)(33656002)(6512007)(498600001)(91956017)(36756003)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?FdmD0tRbj+ErWXGU7DoL3YblOb0l6h1PBleEhi1tKV1WjQDFrhlQxlxlGIC9?=
+ =?us-ascii?Q?BuKyPaGu8lAG6aLrmcRHd2KFPzwRhWcIBTbIr+H/OnpxHtS/o/lPOIRLrK+W?=
+ =?us-ascii?Q?iQ+tKIe7/pr2mvXg0ug4mHMx3C1fdPguC5Gga8sCb/k6h6RhGcUvGUdZc/BO?=
+ =?us-ascii?Q?Nt+mtnpneau7Sov2U3HXuDJ7NJuRqifP/PSR95vvD95xNijtHt05pnwYj94c?=
+ =?us-ascii?Q?xP75TNLsNjHBTkkgIXFe8yM56SAcGwNguap43FJOwaDtyOOwwynoCarEdd1P?=
+ =?us-ascii?Q?cVH9G4nxx3/UtyO6B5eUYuwHx6CIqOTw+4h7qXjPM8AQFF/lmVcIpkEThHb6?=
+ =?us-ascii?Q?FF/qDp/ZFZ3G9W0FZLpRPCYIpo11VKsEC2e9JbH64Wmlz1DZXWheRsxTon2/?=
+ =?us-ascii?Q?+zdf3JtzxI/0z5O6q2Uz8jv2gYkhopvbqv6zbENe/P806yB3gO4FepVIXB3X?=
+ =?us-ascii?Q?4CA3TgUpgxSMbdRf6OjaSLINwMfMswfcw79g6H6SnSQYldfROHRaeQWiXo47?=
+ =?us-ascii?Q?wll7cw7efjepVAUT7D2kpub48i2/jXua/Nn5sxjzv8tVG3hndRgbjabQbYCK?=
+ =?us-ascii?Q?UCJO01DU3SNrWfWR7DOo6nZcwduqteuTcw4EfW9A3V0Lt/ZJJcUhfUQeM2CK?=
+ =?us-ascii?Q?ZLN58RcfUlbeefTP7GVopwwCg/SwZD4cUxm8Q1sNqxOY8WjaNUDwXGtvpTVV?=
+ =?us-ascii?Q?8032H5j0LBC9odlXkjhGuw3SGQzY9VfULr0mSByiD3SakfoaYgrWJOtVWaen?=
+ =?us-ascii?Q?4hB7/ivNmEWf1QRu7cbYYCs12oGPqDxdW2BfId1dpqIKgjNVLuROAuthbvgY?=
+ =?us-ascii?Q?M6oERM3wMFER9IOLMVd3OquXqGvaR6y7kZX9s3RzpYLSU8R/t+nSS8TS5JFq?=
+ =?us-ascii?Q?BfS9sGuHrUAiTmT65fumeauJRBeTIh5Ddlaf4IBGbm7QnbxMNgVbll9u1at7?=
+ =?us-ascii?Q?BnRxdqRc0034p7q0gB7wiSUhm3hD0BRHeTsZsJqVeBtsgRDci7TRTnV+bmCC?=
+ =?us-ascii?Q?C5UErMDSGsFNrZIKGt5W8v58f7t0uuno0zGXrK74Cxygmn+bsG6w+ufK1hTI?=
+ =?us-ascii?Q?qDP8D/mc4xGVTk96FPiwhyriLs0xVUf3SHgQoEYq53Bn+Ah0Ot3VuaC1GM8o?=
+ =?us-ascii?Q?wtFebjshh7vvNOKgZfnmDBdq3zDWRelYdeakZ/QeK9XYsdgTeUPYX5dqec74?=
+ =?us-ascii?Q?xTgb9fG9XlTpUz9mRuwm8d8vQbrgZ7QdyFl8Pp9N8sZ620tHTt9dhvBeWwKo?=
+ =?us-ascii?Q?7I/hcWyTVdxyhpPrcuM3eubbXPfEM5EABx/US+bRqrkIBmaPD2POd93JBwZs?=
+ =?us-ascii?Q?UKTPWppxu3MZUgVrwLuRlKqTdItjub5YZ0axVSi7nc/MOgdVP/+NKOcaoai3?=
+ =?us-ascii?Q?Zeor9AY=3D?=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <BFE31E0CB41C3941910DF3CA72A6FD32@namprd15.prod.outlook.com>
+Content-ID: <BE992C2EA7F66E4693749C48E2866D14@namprd15.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b6b79da2-2ec5-4b6d-7a6f-08d903715a50
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Apr 2021 20:26:02.9997
+X-MS-Exchange-CrossTenant-Network-Message-Id: a1e4035f-e799-4c25-cc94-08d9037184b1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Apr 2021 20:27:14.1738
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fCs1+Lyyc0eu5K2zfD7m6YmEUoWn3TWuKbK/nVN3Q8QVZaOjwAu7hptmeQF9A03mfVD40odZHjqq4SE0a9IEsA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3366
+X-MS-Exchange-CrossTenant-userprincipalname: mh6F1/eAqdMNh1Evyd6icA38nyT5PHeprc6mEPDDJ2/eizwngyMH9ld9cdZqZPmjDkAUorLHz8GWmVJ3rWIDLQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR15MB4978
 X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: Jw-Z5gYRKiTfGlI90VmIQXz748czila3
-X-Proofpoint-ORIG-GUID: Jw-Z5gYRKiTfGlI90VmIQXz748czila3
+X-Proofpoint-ORIG-GUID: c96VY2J4byrgd768LwrO4mo1PCYUz0pO
+X-Proofpoint-GUID: c96VY2J4byrgd768LwrO4mo1PCYUz0pO
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-04-19_11:2021-04-19,2021-04-19 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- priorityscore=1501 mlxscore=0 spamscore=0 adultscore=0 impostorscore=0
- suspectscore=0 lowpriorityscore=0 mlxlogscore=999 clxscore=1015
- bulkscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ lowpriorityscore=0 mlxscore=0 clxscore=1015 impostorscore=0
+ mlxlogscore=999 phishscore=0 adultscore=0 bulkscore=0 priorityscore=1501
+ spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2104060000 definitions=main-2104190140
 X-FB-Internal: deliver
 Precedence: bulk
@@ -142,75 +142,72 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-> On Apr 17, 2021, at 9:45 AM, Namhyung Kim <namhyung@kernel.org> wrote:
+> On Apr 19, 2021, at 7:26 AM, Jiri Olsa <jolsa@redhat.com> wrote:
 >=20
-> Hi Song,
+> On Fri, Apr 16, 2021 at 03:13:24PM -0700, Song Liu wrote:
 >=20
-> On Sat, Apr 17, 2021 at 7:13 AM Song Liu <song@kernel.org> wrote:
->>=20
->> Currently, to use BPF to aggregate perf event counters, the user uses
->> --bpf-counters option. Enable "use bpf by default" events with a config
->> option, stat.bpf-counter-events. Events with name in the option will use
->> BPF.
->>=20
->> This also enables mixed BPF event and regular event in the same sesssion=
-.
->> For example:
->>=20
->>   perf config stat.bpf-counter-events=3Dinstructions
->>   perf stat -e instructions,cs
->>=20
->> The second command will use BPF for "instructions" but not "cs".
->>=20
->> Signed-off-by: Song Liu <song@kernel.org>
->> ---
->> @@ -535,12 +549,13 @@ static int enable_counters(void)
->>        struct evsel *evsel;
->>        int err;
->>=20
->> -       if (target__has_bpf(&target)) {
->> -               evlist__for_each_entry(evsel_list, evsel) {
->> -                       err =3D bpf_counter__enable(evsel);
->> -                       if (err)
->> -                               return err;
->> -               }
->> +       evlist__for_each_entry(evsel_list, evsel) {
->> +               if (!evsel__is_bpf(evsel))
->> +                       continue;
->> +
->> +               err =3D bpf_counter__enable(evsel);
->> +               if (err)
->> +                       return err;
+> SNIP
 >=20
-> I just realized it doesn't have a disable counterpart.
-
-I guess it is not really necessary for perf-stat? It is probably good
-to have it though. How about we do it in a follow up patch?
-
-[...]
-
->> +       if (!evsel__bpf_counter_events)
->> +               return false;
->> +
->> +       ptr =3D strstr(evsel__bpf_counter_events, name);
->> +       name_len =3D strlen(name);
->> +
->> +       /* check name matches a full token in evsel__bpf_counter_events =
-*/
->> +       match =3D (ptr !=3D NULL) &&
->> +               ((ptr =3D=3D evsel__bpf_counter_events) || (*(ptr - 1) =
-=3D=3D ',')) &&
->> +               ((*(ptr + name_len) =3D=3D ',') || (*(ptr + name_len) =
-=3D=3D '\0'));
+>> +/*
+>> + * Returns:
+>> + *     0   if all events use BPF;
+>> + *     1   if some events do NOT use BPF;
+>> + *     < 0 on errors;
+>> + */
+>> static int read_bpf_map_counters(void)
+>> {
+>> +	bool has_none_bpf_events =3D false;
+>> 	struct evsel *counter;
+>> 	int err;
+>>=20
+>> 	evlist__for_each_entry(evsel_list, counter) {
+>> +		if (!evsel__is_bpf(counter)) {
+>> +			has_none_bpf_events =3D true;
+>> +			continue;
+>> +		}
+>> 		err =3D bpf_counter__read(counter);
+>> 		if (err)
+>> 			return err;
+>> 	}
+>> -	return 0;
+>> +	return has_none_bpf_events ? 1 : 0;
+>> }
+>>=20
+>> static void read_counters(struct timespec *rs)
+>> @@ -442,9 +455,10 @@ static void read_counters(struct timespec *rs)
+>> 	int err;
+>>=20
+>> 	if (!stat_config.stop_read_counter) {
+>> -		if (target__has_bpf(&target))
+>> -			err =3D read_bpf_map_counters();
+>> -		else
+>> +		err =3D read_bpf_map_counters();
+>> +		if (err < 0)
+>> +			return;
+>> +		if (err)
+>> 			err =3D read_affinity_counters(rs);
 >=20
-> I'm not sure we have an event name which is a substring of another.
-> Maybe it can retry if it fails to match.
+> this part is confusing for me.. I understand we don't want to enter
+> read_affinity_counters when there's no bpf counter, so we don't set
+> affinities in vain.. but there must be better way ;-)
+>=20
+>> diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter=
+.c
+>> index 5de991ab46af9..3189b63714371 100644
+>> --- a/tools/perf/util/bpf_counter.c
+>> +++ b/tools/perf/util/bpf_counter.c
+>> @@ -792,6 +792,8 @@ int bpf_counter__load(struct evsel *evsel, struct ta=
+rget *target)
+>> 		evsel->bpf_counter_ops =3D &bpf_program_profiler_ops;
+>> 	else if (target->use_bpf)
+>> 		evsel->bpf_counter_ops =3D &bperf_ops;
+>> +	else if (evsel__match_bpf_counter_events(evsel->name))
+>> +		evsel->bpf_counter_ops =3D &bperf_ops;
+>=20
+> please put this with the target->use_bpf check,
+> it seems like it's another thing
 
-We have ref-cycles and cycles. And some raw events may be substring of othe=
-rs?
+Thanks for the review. Fixing these in v4.=20
 
-Thanks,
 Song
-
-[...]
 
