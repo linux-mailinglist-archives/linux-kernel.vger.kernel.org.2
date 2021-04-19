@@ -2,49 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1070E364942
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 19:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA18364945
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 19:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240220AbhDSRzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 13:55:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35568 "EHLO
+        id S240250AbhDSR4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 13:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232904AbhDSRzo (ORCPT
+        with ESMTP id S233851AbhDSR4w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 13:55:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5AE1C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 10:55:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=Gpg37cvlNUMgLhfhroZl1NiOwZjHB+4OxYlq13ZJrJg=; b=QX7pEvmkb1sjPZOTLUFK+4Wc+y
-        2ebvKMHggZF8U18gdY0LB4pUiveA9irbibMC0nU5zyWDPe0jQwgEShicv1UBgKN/uCl5LJCWQjZ/z
-        19ikclN4b7Z+dqcDyMXsXw5Le9AaxzSs7r71YKyfadDt4qvZDuSF+31mczbUnH2a+ojonjb0lyoZd
-        9JQlyjIdkW/0QT5vqGVv/lUEGWyHxaKOQPaNG1biKNQyi/5hRWwZurt8zgEOHZViTK1A8sCyqdD+9
-        ecpBIvD0Pj1XpjuLdUNFs+7On834xSrTSvTksEN34y9bfL2HsdgmmTi7f1f5D0uHNteIABXHtBXBu
-        HQ53Y81w==;
-Received: from [2601:1c0:6280:3f0::df68]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYY6Y-00E5iM-Fi; Mon, 19 Apr 2021 17:54:43 +0000
-Subject: Re: [PATCH v3] drm/bridge/sii8620: fix dependency on extcon
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Robert Foss <robert.foss@linaro.org>, a.hajda@samsung.com,
-        narmstrong@baylibre.com, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@siol.net, airlied@linux.ie,
-        daniel@ffwll.ch, cw00.choi@samsung.com, m.purski@samsung.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     kernel test robot <lkp@intel.com>
-References: <20210419090124.153560-1-robert.foss@linaro.org>
- <1627725d-1c7e-109f-f995-e761bb022ccc@infradead.org>
-Message-ID: <d295f001-575d-f14c-b0c1-1444dd29a03e@infradead.org>
-Date:   Mon, 19 Apr 2021 10:54:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 19 Apr 2021 13:56:52 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30C1C061763
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 10:56:21 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id e186so35769532iof.7
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 10:56:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=UaHhG9GjhH16KyT6wD+AMErOXAvHsspPbBTiFIqnuaI=;
+        b=o+t5ZaauRNLZB/NkC22jEe2WM29+J9dvtwmzjqajMX9136E1PLxCAL67mX4z/9zGxa
+         dE7B36ZUxx7hwJ12zc75LQ92fxQ/6BZfJR0fGyARnZ5jJh+edWsDSZH5AzUaH4mtNCkZ
+         62ZvyNp4P8Zarvc1U6inYSc5yBMS6RrREqH0IZlCZidUdCpLkfDFVAXBGU2PM+bwwjZe
+         vvdm21ELaxzmmN1BO3XUR+2coqcgdwX6ge3u+HaR2ikmYeHECxVZL/ZoUD6PTBsXkiRm
+         iHbrF0GAoUBuYZ2kb+wMC6WkuZa52Dc/SekbgDRMzPSbtrVrsTcJbicVQvcLBz6YHlzM
+         3H/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UaHhG9GjhH16KyT6wD+AMErOXAvHsspPbBTiFIqnuaI=;
+        b=fthTTVYVXmQThaU1XFXtfuVrjj2k6HgzAFCTnLyPHki6gnirklMVPxlCjdak7OVlHj
+         voQzhuaPAH9xa22uxssFMewwFduYZv74uxViaU64/YEmitYaiNxlxeV35d5ZGE6cM48l
+         4oYG+3F27sI0a0RSIEy9tBMaPSChLPTMNjs1mDo0yJ45RskMEXTYxjf0HS1HPBt4gqhw
+         gKK7Udmqui9kVlQ+FOS8AWf+tDUk0sh4q8+Bfi8znvFkHwJmtoBb/W0ymcJRHKO+ZQuL
+         KNLwih8PLi4C8zACBLcIZ904KZ1fxMNp+mY1U/yUEWOGp1OKAq82IPyO40nZKpypQN1K
+         xF4A==
+X-Gm-Message-State: AOAM531nL2DW1+Mz8twA1O5GilkaWk0T7JFpSwxrLkKUf4Bt7gM9fd5a
+        0TZsS9hKuXV4tYqkvnAODwYaCyyHoT8dgA==
+X-Google-Smtp-Source: ABdhPJzcUoaPEMhNhyNqr210rk8IlMIG/uYe7qF61kR71/dLorG2qPOtfnA8Ox3lIrcs28uCaaqLTw==
+X-Received: by 2002:a02:cc:: with SMTP id 195mr18099419jaa.73.1618854980993;
+        Mon, 19 Apr 2021 10:56:20 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id 1sm7324479ilz.11.2021.04.19.10.56.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Apr 2021 10:56:20 -0700 (PDT)
+Subject: Re: [PATCH] io_uring: check ctx->sq_data before io_sq_offload_start
+To:     Palash Oswal <hello@oswalpalash.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210419123630.62212-1-hello@oswalpalash.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <857554eb-d020-7e45-edd5-0b15bc2d1945@kernel.dk>
+Date:   Mon, 19 Apr 2021 11:56:20 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1627725d-1c7e-109f-f995-e761bb022ccc@infradead.org>
+In-Reply-To: <20210419123630.62212-1-hello@oswalpalash.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -52,66 +70,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/19/21 10:10 AM, Randy Dunlap wrote:
-> On 4/19/21 2:01 AM, Robert Foss wrote:
->> The DRM_SIL_SII8620 kconfig has a weak `imply` dependency
->> on EXTCON, which causes issues when sii8620 is built
->> as a builtin and EXTCON is built as a module.
->>
->> The symptoms are 'undefined reference' errors caused
->> by the symbols in EXTCON not being available
->> to the sii8620 driver.
->>
->> Fixes: 688838442147 ("drm/bridge/sii8620: use micro-USB cable detection logic to detect MHL")
->> Signed-off-by: Robert Foss <robert.foss@linaro.org>
->> Reported-by: kernel test robot <lkp@intel.com>
->> ---
->>
->> LKP reported issue:
->> https://lore.kernel.org/lkml/202104040604.SSTe2Cxf-lkp@intel.com/
->>
->>
->> Changes since v1:
->>  - Fix typo on comment
->>
->> Changes since v2:
->>  - Randy: Changed from `depends` to `select` 
+On 4/19/21 6:36 AM, Palash Oswal wrote:
+> syzkaller identified KASAN: null-ptr-deref Read in io_uring_create
+> bug on the stable 5.11-y tree.
 > 
-> I don't know why my name is on that. I didn't
-> suggest any change -- I just reported that v2
-> had a problem.
+> BUG: KASAN: null-ptr-deref in io_sq_offload_start fs/io_uring.c:8254 [inline]
+> BUG: KASAN: null-ptr-deref in io_disable_sqo_submit fs/io_uring.c:8999 [inline]
+> BUG: KASAN: null-ptr-deref in io_uring_create+0x1275/0x22f0 fs/io_uring.c:9824
+> Read of size 8 at addr 0000000000000068 by task syz-executor.0/4350
 > 
+> A simple reproducer for this bug is:
 > 
->>
->>
->>  drivers/gpu/drm/bridge/Kconfig | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
->> index 22a467abd3e9..70402da5cc70 100644
->> --- a/drivers/gpu/drm/bridge/Kconfig
->> +++ b/drivers/gpu/drm/bridge/Kconfig
->> @@ -169,7 +169,7 @@ config DRM_SIL_SII8620
->>  	tristate "Silicon Image SII8620 HDMI/MHL bridge"
->>  	depends on OF
->>  	select DRM_KMS_HELPER
->> -	imply EXTCON
->> +	select EXTCON
->>  	depends on RC_CORE || !RC_CORE
->>  	help
->>  	  Silicon Image SII8620 HDMI/MHL bridge chip driver.
+> int main(void)
+> {
+>   syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 0ul);
+>   intptr_t res = 0;
+>   pid_t parent = getpid();
+>   *(uint32_t*)0x20000084 = 0;
+>   *(uint32_t*)0x20000088 = 0x42;
+>   *(uint32_t*)0x2000008c = 0;
+>   *(uint32_t*)0x20000090 = 0;
+>   *(uint32_t*)0x20000098 = -1;
+>   *(uint32_t*)0x2000009c = 0;
+>   *(uint32_t*)0x200000a0 = 0;
+>   *(uint32_t*)0x200000a4 = 0;
+>   if (fork() == 0) {
+>     kill(parent,SIGKILL);
+>     exit(0);
+>   }
+>   res = syscall(__NR_io_uring_setup, 0x7994, 0x20000080ul);
+>   return 0;
+> }
 > 
+> Due to the SIGKILL sent to the process before io_uring_setup
+> completes, ctx->sq_data is NULL. Therefore, io_sq_offload_start
+> does a null pointer dereferenced read. More details on this bug
+> are in [1]. Discussion for this patch happened in [2].
 > 
-> Thanks. Works For Me.
-> 
-> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+> [1] https://oswalpalash.com/exploring-null-ptr-deref-io-uring-submit
+> [2] https://lore.kernel.org/io-uring/a08121be-f481-e9f8-b28d-3eb5d4f
+> a5b76@gmail.com/
 
-Actually I can upgrade that to:
+This should be a backport of the 5.12 fix, not a separate patch.
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-
-ta.
 -- 
-~Randy
+Jens Axboe
 
