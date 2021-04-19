@@ -2,143 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E419A364817
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 18:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 473A2364822
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 18:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237761AbhDSQTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 12:19:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57405 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233752AbhDSQTM (ORCPT
+        id S238598AbhDSQWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 12:22:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233989AbhDSQWj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 12:19:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618849117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fqJmgeuiMFVLhBvmQoDThETkhKCzy/6fbNKOoBifg+Y=;
-        b=NRcYV6ojY6LySCLGkZmWUkVR5bevhvhwA5qG6grUSUYZf1pmLPP3AS7e5v3pAB+zWwSxel
-        5ySVZBYq0JHg8zPLqF68NL/J3IadS8a1H++6b+fiOa50VU+wcmSYHOI7+JjZw8ptsyv54c
-        9lx27nln9sf6DNxxdqsr5LDLqoBCAGg=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-553-YAeJLw_sMmyzCkYxUjoAnw-1; Mon, 19 Apr 2021 12:18:35 -0400
-X-MC-Unique: YAeJLw_sMmyzCkYxUjoAnw-1
-Received: by mail-qk1-f199.google.com with SMTP id g184-20020a3784c10000b02902e385de9adaso4604016qkd.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 09:18:32 -0700 (PDT)
+        Mon, 19 Apr 2021 12:22:39 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E0BBC061763
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 09:22:09 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id i10so20993680lfe.11
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 09:22:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O961I/6SpeSlE/psbTVuCjUHNPMleqN4PCYNj9U2q7A=;
+        b=QyCXioim+uvs6ZsZ5HXYH8805X6eZVpFOsRXDPDu0FhkLM2j9m+7VBhsbXtQ60iw90
+         VG4CzcSNws5VKEnnaLwaE+Mla8FPUF4Ifo/aduTqVEEsqkEIHDsv7++Nb8PAs+zX9RJs
+         l4FvqPnoAc6U8fzSYX23GNIlLVFESDEdeZw4ASgibwICAnAA31uQArRchuzLd7XpCmqY
+         MplUe6zFqDWDRPswRq04ECp9Kdz+N7Fihf5+eX9D+hxKcWBqFD4iHE/tYp91Yr2laL1W
+         4GCuRoeQb17je7gyDNL69BxZQAhg2z1g3kNu32/o4rF6quRGBe/h8EnLEcbHG1UhK1rf
+         DaiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=fqJmgeuiMFVLhBvmQoDThETkhKCzy/6fbNKOoBifg+Y=;
-        b=oWnARPmZqr+yWOYCBdBChGNK2XOPhGnTVTccbbJeBuc1zfpujeAelpxAwV6bQLsvsm
-         OfsG0c5aD3kM/kBEdziR7unYJDr4rdEeUgi3iEamNOKZoq/R2L9r60Hy91wJcuAeuTCr
-         yq2oUsTlwE9/Gw+r47ySSbwy0Ht1YNo+ur0XhATIFXWQ1oWMOclqmuiyQXTySxTnIoKt
-         l9c4d9uMNED7BKrzruV/MyfRRw5+4n6NghoV59fVMg0cbUf5L5sqFltpm/rhRsqGse3m
-         rEo7eg1TFUm4yENMesiuNlsN19HT9HcpGNhrFpJAVlvWPcwMHKoOR25M9JnYZhhqduVT
-         Axyw==
-X-Gm-Message-State: AOAM532u0MxNRZI3Ou1O+TbI31YuwhIHb1TomDPLGtA2Ui2gaXgXhkdU
-        t5aW3np1GdKlT/lkN1LAU9pr54hI/U6neboCx7vklH8idIQ9wkHFR+6DnGqkiEA9Bja9oJSZYIR
-        jPfJlGM8RCINt75QHMckCR1CC
-X-Received: by 2002:a37:9cb:: with SMTP id 194mr5491932qkj.4.1618849111634;
-        Mon, 19 Apr 2021 09:18:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzJUxsMhOaiewnOvltNqxLcFgDmHVqmxsvQ037G7yq3H/F6qF/yWngPBHq6ZDy4Zx0BKbsUeQ==
-X-Received: by 2002:a37:9cb:: with SMTP id 194mr5491908qkj.4.1618849111409;
-        Mon, 19 Apr 2021 09:18:31 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id f16sm10296757qkl.25.2021.04.19.09.18.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Apr 2021 09:18:30 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v4 1/5] mm/memcg: Move mod_objcg_state() to memcontrol.c
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20210419000032.5432-1-longman@redhat.com>
- <20210419000032.5432-2-longman@redhat.com> <YH2eT+JCII48hX80@cmpxchg.org>
- <ffb5705e-8629-808d-9d09-0c9c7f509326@redhat.com>
-Message-ID: <140444ea-14e7-b305-910f-f23fafe45488@redhat.com>
-Date:   Mon, 19 Apr 2021 12:18:29 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O961I/6SpeSlE/psbTVuCjUHNPMleqN4PCYNj9U2q7A=;
+        b=beeWrOphZ3P3kxDqYssXyS6o/juHh0FPJHF7oNNhynmTrlRB3Cx4lZa2Cr72WxVhR9
+         SXRpuf7wtgOLSS4EktdayVzeji4IfwEPFYiphMK91I3dQZz1gyk+qcXTAD7usomalbFQ
+         6PgRnb202BumC3oHJAYVySRkax4d2n1YzmfDkKPMhRFaKQiOhJBeSxW2WN99E7SCer+X
+         5VJ7eR+dbf69SaSBlq+KlpSEMA7deCT3wKjmfTRisfAAf5gMGaKlEOG3O/UbEzUUUEnY
+         H3zBlUADG4KkS9nya1EV9wdNoGDbFYXELT38iLmGs0ly4iCxHkFetMLfEFtTkRYILq9F
+         oxAg==
+X-Gm-Message-State: AOAM532haaWFWph1o6oKD9p8xPMCpP81lApbkiCG5b+zX2qhSIsCIGr+
+        HRF4R4uSzR0jLtlQa9dcFMcAD99Yh+E1wnain+Pt+g==
+X-Google-Smtp-Source: ABdhPJyPLPorxRBakMjIU9mAt+YhIT0rjnyA4Jhv/b2TF9PoyD81mokL98bTTyiEHaEb8stXptpRF/697s3tntJvUOQ=
+X-Received: by 2002:ac2:58d9:: with SMTP id u25mr3133485lfo.117.1618849327780;
+ Mon, 19 Apr 2021 09:22:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ffb5705e-8629-808d-9d09-0c9c7f509326@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <20210409223801.104657-3-mcroce@linux.microsoft.com> <20210410154824.GZ2531743@casper.infradead.org>
+ <YHHPbQm2pn2ysth0@enceladus> <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
+ <YHHuE7g73mZNrMV4@enceladus> <20210414214132.74f721dd@carbon>
+ <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
+ <YH0RMV7+56gVOzJe@apalos.home> <CALvZod7oa4q6pMUyDi4FMW4WKY7AjOZ7P2=02GoxjpwrQpA-OQ@mail.gmail.com>
+ <YH2lFYbj3d8nC+hF@apalos.home>
+In-Reply-To: <YH2lFYbj3d8nC+hF@apalos.home>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 19 Apr 2021 09:21:55 -0700
+Message-ID: <CALvZod7oZ+7CNwSjqHs5XaLH9o_6+YYwEUeii5ETqeUwUTG6+Q@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/19/21 11:21 AM, Waiman Long wrote:
-> On 4/19/21 11:14 AM, Johannes Weiner wrote:
->> On Sun, Apr 18, 2021 at 08:00:28PM -0400, Waiman Long wrote:
->>> The mod_objcg_state() function is moved from mm/slab.h to 
->>> mm/memcontrol.c
->>> so that further optimization can be done to it in later patches without
->>> exposing unnecessary details to other mm components.
->>>
->>> Signed-off-by: Waiman Long <longman@redhat.com>
->>> ---
->>>   mm/memcontrol.c | 13 +++++++++++++
->>>   mm/slab.h       | 16 ++--------------
->>>   2 files changed, 15 insertions(+), 14 deletions(-)
->>>
->>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->>> index e064ac0d850a..dc9032f28f2e 100644
->>> --- a/mm/memcontrol.c
->>> +++ b/mm/memcontrol.c
->>> @@ -3150,6 +3150,19 @@ void __memcg_kmem_uncharge_page(struct page 
->>> *page, int order)
->>>       css_put(&memcg->css);
->>>   }
->>>   +void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data 
->>> *pgdat,
->>> +             enum node_stat_item idx, int nr)
->>> +{
->>> +    struct mem_cgroup *memcg;
->>> +    struct lruvec *lruvec = NULL;
->>> +
->>> +    rcu_read_lock();
->>> +    memcg = obj_cgroup_memcg(objcg);
->>> +    lruvec = mem_cgroup_lruvec(memcg, pgdat);
->>> +    mod_memcg_lruvec_state(lruvec, idx, nr);
->>> +    rcu_read_unlock();
->>> +}
->> It would be more naturally placed next to the others, e.g. below
->> __mod_lruvec_kmem_state().
->>
->> But no deal breaker if there isn't another revision.
->>
->> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
->>
-> Yes, there will be another revision by rebasing patch series on the 
-> linux-next. I will move the function then. 
+On Mon, Apr 19, 2021 at 8:43 AM Ilias Apalodimas
+<ilias.apalodimas@linaro.org> wrote:
+>
+[...]
+> > Pages mapped into the userspace have their refcnt elevated, so the
+> > page_ref_count() check by the drivers indicates to not reuse such
+> > pages.
+> >
+>
+> When tcp_zerocopy_receive() is invoked it will call tcp_zerocopy_vm_insert_batch()
+> which will end up doing a get_page().
+> What you are saying is that once the zerocopy is done though, skb_release_data()
+> won't be called, but instead put_page() will be? If that's the case then we are
+> indeed leaking DMA mappings and memory. That sounds weird though, since the
+> refcnt will be one in that case (zerocopy will do +1/-1 once it's done), so who
+> eventually frees the page?
+> If kfree_skb() (or any wrapper that calls skb_release_data()) is called
+> eventually, we'll end up properly recycling the page into our pool.
+>
 
-OK, it turns out that mod_objcg_state() is only defined if 
-CONFIG_MEMCG_KMEM. That was why I put it in the CONFIG_MEMCG_KMEM block 
-with the other obj_stock functions. I think I will keep it there.
+From what I understand (Eric, please correct me if I'm wrong) for
+simple cases there are 3 page references taken. One by the driver,
+second by skb and third by page table.
 
-Thanks,
-Longman
+In tcp_zerocopy_receive(), tcp_zerocopy_vm_insert_batch() gets one
+page ref through insert_page_into_pte_locked(). However before
+returning from tcp_zerocopy_receive(), the skb references are dropped
+through tcp_recv_skb(). So, whenever the user unmaps the page and
+drops the page ref only then that page can be reused by the driver.
 
+In my understanding, for zerocopy rx the skb_release_data() is called
+on the pages while they are still mapped into the userspace. So,
+skb_release_data() might not be the right place to recycle the page
+for zerocopy. The email chain at [1] has some discussion on how to
+bundle the recycling of pages with their lifetime.
+
+[1] https://lore.kernel.org/linux-mm/20210316013003.25271-1-arjunroy.kdev@gmail.com/
