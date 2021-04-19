@@ -2,75 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496BC3645B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D29FB3645B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239344AbhDSONv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 10:13:51 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:50201 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233383AbhDSONt (ORCPT
+        id S239898AbhDSOO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 10:14:26 -0400
+Received: from outbound-smtp09.blacknight.com ([46.22.139.14]:48137 "EHLO
+        outbound-smtp09.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233706AbhDSOOX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 10:13:49 -0400
-Received: from mail-wm1-f50.google.com ([209.85.128.50]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MRT6b-1lBCSx1Mvt-00NPDM; Mon, 19 Apr 2021 16:13:18 +0200
-Received: by mail-wm1-f50.google.com with SMTP id n4-20020a05600c4f84b029013151278decso6943455wmq.4;
-        Mon, 19 Apr 2021 07:13:18 -0700 (PDT)
-X-Gm-Message-State: AOAM533PkoFJC64mIl9CfSTKZDMtvWMu8jzFsEkLrth2iWR6p00lQRXH
-        Ejj3tvlmnBcX1O+ctQlRP8aKE6Jc0lNklqU451s=
-X-Google-Smtp-Source: ABdhPJxfWYQpgkQ73Nyeh2Cp48WIV5Does1Qg89OpygaNxV8Vc57wC3uOquK/ybb1mHpmU/fFGzqMBDByBQcWWgbLFg=
-X-Received: by 2002:a05:600c:2282:: with SMTP id 2mr22091204wmf.84.1618841597967;
- Mon, 19 Apr 2021 07:13:17 -0700 (PDT)
+        Mon, 19 Apr 2021 10:14:23 -0400
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp09.blacknight.com (Postfix) with ESMTPS id 7A9831C37B1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 15:13:52 +0100 (IST)
+Received: (qmail 8808 invoked from network); 19 Apr 2021 14:13:52 -0000
+Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPA; 19 Apr 2021 14:13:52 -0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: [PATCH 00/10 v4] Use local_lock for pcp protection and reduce stat overhead
+Date:   Mon, 19 Apr 2021 15:13:31 +0100
+Message-Id: <20210419141341.26047-1-mgorman@techsingularity.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210419140152.180361-1-colin.king@canonical.com>
-In-Reply-To: <20210419140152.180361-1-colin.king@canonical.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 19 Apr 2021 16:13:01 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1X-fNo4PxZi8ZWiRrtdvF0kyB4qYEZYOe81uMgsYy2Qg@mail.gmail.com>
-Message-ID: <CAK8P3a1X-fNo4PxZi8ZWiRrtdvF0kyB4qYEZYOe81uMgsYy2Qg@mail.gmail.com>
-Subject: Re: [PATCH][next] wlcore: Fix buffer overrun by snprintf due to
- incorrect buffer size Content-Type: text/plain; charset="utf-8"
-To:     Colin King <colin.king@canonical.com>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:uSD0cnDzOC2VcjN7ZBcWZ2vvNBUpCz841+gCEkLH5jqq+b3iU+Q
- tzQBON82eKbamHzODxWbZ1sNmLchNWZtXqsw4L7gcEvzN9seh5npI4GnqcWTnpru1RG0LSy
- Tqf72g24MJxZoMnKKdQKxTLVdKVe/oynydBsdv5tonKkDNri+hdm/OC6TcL4uUlHdUPr/1J
- 9qetliShfwSKOwzoUgn9A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6mHPdsKEpps=:n7IMC8R//h+tZA7CzdQmjX
- IpSh7Gk1JxEJZLEbTi/9zeJdzEEbZt3NAJMEAQKZK65aW6zWPc9bs0Ed6BcbMEU9Vdoprx++D
- 94s4NLx5WPHHhvLCtLXWzL49sJtk2LcWHEHedp58P/k9E9Oi6+K73d69qNZnSLMApnYcUtarW
- YxarviejtZP6lnNjurSvm9i5ThigZfduYrG938IlvsDuCx6IT2F81Qz+P0Qvp/iDOI0q8OYis
- gKcw5SQ7N/ilG3ZuGmpuM8MSI5MaL0b39ZPwFX2otBIQooa1zudH7KR9OBGPrOj+eKthZM30T
- unjtTTGmBwZbfX9zjTgOFtyrPClycOkSSkcoVQ9TZktZT/lqyoCzT9FFIB/R1LpD4PO+4MjbC
- h7HRN1uj6QPPn7ksQX96LHlvygEoIx2JD+ZCDcXjO7+HPymxe1CEUZT2Z8hG/M37mGJVVPMQL
- 4eQOcX48DRLIIdxVM+wiQH7UFRJW7fijY6Kzrzolb1GmIJt/OnCp7TNAs8hMTrFV2mr5ztBHv
- 6x2g4fSo9/pIZfIBvss2UXJ+hkJC5UoPS903h+WWaiiHK5dxdPIqWy46ddrjiu5KHlvwYkvo7
- AErL3mqW4kNMCiNU7hVXMkt4m1vK25R+//eDhb1Ijx9xd8DJJAGak/WqKlpPL+R0PbtCxoU7i
- iuTQ=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 4:01 PM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> The size of the buffer than can be written to is currently incorrect, it is
-> always the size of the entire buffer even though the snprintf is writing
-> as position pos into the buffer. Fix this by setting the buffer size to be
-> the number of bytes left in the buffer, namely sizeof(buf) - pos.
->
-> Addresses-Coverity: ("Out-of-bounds access")
-> Fixes: 7b0e2c4f6be3 ("wlcore: fix overlapping snprintf arguments in debugfs")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Some Acks from RT people are still missing that I'd like to have before
+trying to merge this via Andrew's tree and there is an open question is
+whether the last path in this series is worthwhile. It embeds local_lock
+within the per_cpu_pages structure to clarify the scope but it increases
+complexity and storage costs that may not be worthwhile. I don't think
+it is but it was asked whether the lock could be safely embedded or not.
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Changelog since v3
+o Preserve NUMA_* counters after CPU hotplug
+o Drop "mm/page_alloc: Remove duplicate checks if migratetype should be isolated"
+o Add micro-optimisation tracking PFN during free_unref_page_list
+o Add Acks
+
+Changelog since v2
+o Fix zonestats initialisation
+o Merged memory hotplug fix separately
+o Embed local_lock within per_cpu_pages
+
+This series requires patches in Andrew's tree so for convenience, it's
+also available at
+
+git://git.kernel.org/pub/scm/linux/kernel/git/mel/linux.git mm-percpu-local_lock-v4r4
+
+The PCP (per-cpu page allocator in page_alloc.c) shares locking
+requirements with vmstat and the zone lock which is inconvenient and
+causes some issues. For example, the PCP list and vmstat share the
+same per-cpu space meaning that it's possible that vmstat updates dirty
+cache lines holding per-cpu lists across CPUs unless padding is used.
+Second, PREEMPT_RT does not want to disable IRQs for too long in the
+page allocator.
+
+This series splits the locking requirements and uses locks types more
+suitable for PREEMPT_RT, reduces the time when special locking is required
+for stats and reduces the time when IRQs need to be disabled on !PREEMPT_RT
+kernels.
+
+Why local_lock? PREEMPT_RT considers the following sequence to be unsafe
+as documented in Documentation/locking/locktypes.rst
+
+   local_irq_disable();
+   spin_lock(&lock);
+
+The pcp allocator has this sequence for rmqueue_pcplist (local_irq_save)
+-> __rmqueue_pcplist -> rmqueue_bulk (spin_lock). While it's possible to
+separate this out, it generally means there are points where we enable
+IRQs and reenable them again immediately. To prevent a migration and the
+per-cpu pointer going stale, migrate_disable is also needed. That is a
+custom lock that is similar, but worse, than local_lock. Furthermore,
+on PREEMPT_RT, it's undesirable to leave IRQs disabled for too long.
+By converting to local_lock which disables migration on PREEMPT_RT, the
+locking requirements can be separated and start moving the protections
+for PCP, stats and the zone lock to PREEMPT_RT-safe equivalent locking. As
+a bonus, local_lock also means that PROVE_LOCKING does something useful.
+
+After that, it's obvious that zone_statistics incurs too much overhead
+and leaves IRQs disabled for longer than necessary on !PREEMPT_RT
+kernels. zone_statistics uses perfectly accurate counters requiring IRQs
+be disabled for parallel RMW sequences when inaccurate ones like vm_events
+would do. The series makes the NUMA statistics (NUMA_HIT and friends)
+inaccurate counters that then require no special protection on !PREEMPT_RT.
+
+The bulk page allocator can then do stat updates in bulk with IRQs enabled
+which should improve the efficiency.  Technically, this could have been
+done without the local_lock and vmstat conversion work and the order
+simply reflects the timing of when different series were implemented.
+
+Finally, there are places where we conflate IRQs being disabled for the
+PCP with the IRQ-safe zone spinlock. The remainder of the series reduces
+the scope of what is protected by disabled IRQs on !PREEMPT_RT kernels.
+By the end of the series, page_alloc.c does not call local_irq_save so
+the locking scope is a bit clearer. The one exception is that modifying
+NR_FREE_PAGES still happens in places where it's known the IRQs are
+disabled as it's harmless for PREEMPT_RT and would be expensive to split
+the locking there.
+
+No performance data is included because despite the overhead of the stats,
+it's within the noise for most workloads on !PREEMPT_RT. However, Jesper
+Dangaard Brouer ran a page allocation microbenchmark on a E5-1650 v4 @
+3.60GHz CPU on the first version of this series. Focusing on the array
+variant of the bulk page allocator reveals the following.
+
+(CPU: Intel(R) Xeon(R) CPU E5-1650 v4 @ 3.60GHz)
+ARRAY variant: time_bulk_page_alloc_free_array: step=bulk size
+
+         Baseline        Patched
+ 1       56.383          54.225 (+3.83%)
+ 2       40.047          35.492 (+11.38%)
+ 3       37.339          32.643 (+12.58%)
+ 4       35.578          30.992 (+12.89%)
+ 8       33.592          29.606 (+11.87%)
+ 16      32.362          28.532 (+11.85%)
+ 32      31.476          27.728 (+11.91%)
+ 64      30.633          27.252 (+11.04%)
+ 128     30.596          27.090 (+11.46%)
+
+While this is a positive outcome, the series is more likely to be
+interesting to the RT people in terms of getting parts of the PREEMPT_RT
+tree into mainline.
+
+ drivers/base/node.c    |  18 +--
+ include/linux/mmzone.h |  60 +++++++--
+ include/linux/vmstat.h |  65 ++++++----
+ mm/mempolicy.c         |   2 +-
+ mm/page_alloc.c        | 274 +++++++++++++++++++++++++----------------
+ mm/vmstat.c            | 255 +++++++++++++++-----------------------
+ 6 files changed, 369 insertions(+), 305 deletions(-)
+
+-- 
+2.26.2
+
