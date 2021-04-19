@@ -2,67 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F44936451C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E91F364523
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243092AbhDSNj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59774 "EHLO
+        id S241637AbhDSNlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:41:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242101AbhDSN0f (ORCPT
+        with ESMTP id S243074AbhDSNfX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:26:35 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E2EEC06134E;
-        Mon, 19 Apr 2021 06:25:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7/RKG+19pxf8L5NAMnjkraL88KOOFMdlzuOOrjxSYDA=; b=alsWn3P5Lp9G6X9Jyv9ZZfPHEX
-        gO9Zfo4rg77Qbv/qHepxOaro966jbcG8DT3lY+OMN7Pf1FFvmZBUMBNrWQiHP2ZOKdqm+2djYmNOT
-        t1qUlWhyLD4RISUX7IJTyiVhihv9V5ja2Kb4DhyeP4fRt1dDD0Djjp8nvJWk2KzWn4ehtM9ueSfbP
-        LEQkP5WyAdYgNZ9VmkzJuZDd+8KRNgF8HBUTwfNRx6pEk056t7i5wqV8I/LuQbK5CaUJPpPFsWjJZ
-        jOIHUbOd4caFg1xPh4F1TgBN/XcbneWoxMqIrZCKAAK3wRZFyan1gsXbTU6wx91LWAVqFht690B/4
-        LrHMFzpg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYTuN-009y5K-0P; Mon, 19 Apr 2021 13:25:47 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5273C300223;
-        Mon, 19 Apr 2021 15:25:46 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 447932C23A96D; Mon, 19 Apr 2021 15:25:46 +0200 (CEST)
-Date:   Mon, 19 Apr 2021 15:25:46 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-afs@lists.infradead.org, Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: Re: [PATCH v7 09/28] mm: Create FolioFlags
-Message-ID: <YH2E2jNvhEOwCinT@hirez.programming.kicks-ass.net>
-References: <20210409185105.188284-1-willy@infradead.org>
- <20210409185105.188284-10-willy@infradead.org>
+        Mon, 19 Apr 2021 09:35:23 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B544DC06136F;
+        Mon, 19 Apr 2021 06:32:08 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id d10so24255787pgf.12;
+        Mon, 19 Apr 2021 06:32:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0kOR2PfYqY3aE7YZ+9K1diisUOT0cVkWDrwVhNE+eH4=;
+        b=AKksNNefRKsFqjYrEoAhPkPPJuOHS+SiQIap5HcuM74IbS89GX38/Vur9cBbjkaPQt
+         DnUZTjEMyv8f3LcYU+XezP4SrDywa6TM5wUHG7FZqi1T67SxsclYJIg0xBhqI6dW5T60
+         5KJxEBVEAfvEYtkzsYlhJCI+N4tdwX4aDi4DRsFHsHjTe5MBjaWNWlbLqfrRvL4G8N/z
+         9PBJ7t5sb20SoGI51sFCMh2NHxU8LLGOy3kniYjqvm7KWXXPLpr1MGV7yH4JwIM8ypuQ
+         aMmrLrUJQYaiupZffVrwD6+xqFCB3TTLG6LWlmhoaeaS0Na9y1qLtUZCNUnr05dlWRb7
+         04Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0kOR2PfYqY3aE7YZ+9K1diisUOT0cVkWDrwVhNE+eH4=;
+        b=qr/pVtgnBNKe6wdgrR/0U30CMkUkd47KslJe5XsGQj/60sPc6rZp+oOK205g/cN5XO
+         ZknHMQXibJ3UG8Fi5BqhYPIlmvZ7gFLpMMXyDAaV2anZahDCgnpG2V6qpRP6Bz9CcVGq
+         sw2wA5+f+AeUoo9SvuqrVeMVrc4vHojx5LFWGuhOAVbzhXCFzg0KpP31uc/XBCqudf4I
+         T3aIOkCvvEa0okgyOp50lKEXfJctD1QK4brRRtmrhXrvpe8wywI2xARPd0K5CW2iHQXH
+         lds/ZLNinIdojbhvVjm45h191lat76R2BaaEH6ZFWcDJw+sponW1CgmoW+yBNjDhUbmQ
+         lr7w==
+X-Gm-Message-State: AOAM5300xEPq4hm0u5gUgTiQs6tHnTzvLMIREGPZnq/5zLz+6sqEVVaj
+        OYBqj7JJmV69eToQxdNIrZxg7K4d6CmEGvUzTrc=
+X-Google-Smtp-Source: ABdhPJwL0cR9Y7Ln8vvWKJ8/LOaI4peFBdcDR1DBBxi7+E86AUEZsiJcUAERErhkDEmEuRj5H45W/ksTLh466mp9p9o=
+X-Received: by 2002:a63:a847:: with SMTP id i7mr7941013pgp.203.1618839128133;
+ Mon, 19 Apr 2021 06:32:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210409185105.188284-10-willy@infradead.org>
+References: <26db9291095c1dfd81c73b0f5f1434f9b399b1f5.1618316565.git.geert+renesas@glider.be>
+ <bd8db435-24e1-5ab3-6b35-1d4d8a292a7e@hisilicon.com> <CAMuHMdVouD+e4GpN_Dur8HSop4B8HVosGSYw7vfTpBEi_inMbw@mail.gmail.com>
+ <YHcx+QPbkTA0bv9V@smile.fi.intel.com> <CAMuHMdUkDcdZk5YYnkMH+VD4JXFq4khR2dn8wBdSXs1GCT9UMQ@mail.gmail.com>
+ <YHc+/MOWA6rO+1Wy@smile.fi.intel.com> <CAMuHMdWZz6QNQbN53Whjfi122PWesM4_+K0_m=np8L=E+=io6g@mail.gmail.com>
+ <CAHp75VcFjRBO+0578jWam3+sc24KvKArTtQV+nRCCbV1E++Nsg@mail.gmail.com> <CAMuHMdVu4VRgJzfM=P8OBi55rsCMFB1vmSepTvSyv1DLjw9Vcw@mail.gmail.com>
+In-Reply-To: <CAMuHMdVu4VRgJzfM=P8OBi55rsCMFB1vmSepTvSyv1DLjw9Vcw@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 19 Apr 2021 16:31:52 +0300
+Message-ID: <CAHp75Vcye9HPSoAkqiqnzgQ+8_SZ-W9gURWmWXd5s-y_fji5Ug@mail.gmail.com>
+Subject: Re: [PATCH] i2c: I2C_HISI should depend on ARCH_HISI && ACPI
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Linux I2C <linux-i2c@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 07:50:46PM +0100, Matthew Wilcox (Oracle) wrote:
-> These new functions are the folio analogues of the PageFlags functions.
-> If CONFIG_DEBUG_VM_PGFLAGS is enabled, we check the folio is not a tail
-> page at every invocation.  Note that this will also catch the PagePoisoned
-> case as a poisoned page has every bit set, which would include PageTail.
-> 
-> This saves 1727 bytes of text with the distro-derived config that
-> I'm testing due to removing a double call to compound_head() in
-> PageSwapCache().
+On Mon, Apr 19, 2021 at 4:02 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Thu, Apr 15, 2021 at 10:50 AM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > On Thu, Apr 15, 2021 at 3:43 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > On Wed, Apr 14, 2021 at 9:14 PM Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > On Wed, Apr 14, 2021 at 08:55:21PM +0200, Geert Uytterhoeven wrote:
+> > > > > On Wed, Apr 14, 2021 at 8:18 PM Andy Shevchenko
+> > > > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > > > On Wed, Apr 14, 2021 at 08:06:18PM +0200, Geert Uytterhoeven wrote:
+> > > > > > > On Wed, Apr 14, 2021 at 11:24 AM Yicong Yang <yangyicong@hisilicon.com> wrote:
 
-I vote for dropping the Camels if we're going to rework all this.
+...
+
+> > > > > > > I guess it's still fine to add a dependency on ACPI?
+> > > > > >
+> > > > > > But why?
+> > > > >
+> > > > > Please tell me how/when the driver is used when CONFIG_ACPI=n.
+> > > >
+> > > > I'm not using it at all. Ask the author :-)
+> > > >
+> > > > But if we follow your logic, then we need to mark all the _platform_ drivers
+> > > > for x86 world as ACPI dependent? This sounds ugly.
+> > >
+> > > Do all other x86 platform drivers have (1) an .acpi_match_table[] and
+> > > (2) no other way of instantiating their devices?
+> > > The first driver from the top of my memory I looked at is rtc-cmos:
+> > > it has no .acpi_match_table[], and the rtc-cmos device is instantiated
+> > > from arch/x86/kernel/rtc.c.
+> > >
+> > > For drivers with only an .of_match_table(), and no legacy users
+> > > instantiating platform devices, we do have dependencies on OF.
+> >
+> > This is not true. Entire IIO subsystem is an example.
+>
+> Do you care to elaborate?
+> Three quarters of the IIO drivers are I2C and SPI drivers, and thus not
+> subject to the above.
+
+It seems I missed that you are talking about platform device drivers.
+In any case it's not true. We have the platform drivers w/o legacy
+users that are not dependent on OF.
+They may _indirectly_ be dependent, but this is fine as I stated above
+when suggested to move ACPI dependency on ARCH_xxx level.
+
+-- 
+With Best Regards,
+Andy Shevchenko
