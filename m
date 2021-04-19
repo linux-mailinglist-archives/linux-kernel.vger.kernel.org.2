@@ -2,128 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA5E363D23
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BCBC363D25
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 10:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238044AbhDSIGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 04:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229870AbhDSIFy (ORCPT
+        id S238096AbhDSIG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 04:06:58 -0400
+Received: from mail-vs1-f44.google.com ([209.85.217.44]:43683 "EHLO
+        mail-vs1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232055AbhDSIGr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 04:05:54 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D7AC06174A;
-        Mon, 19 Apr 2021 01:05:23 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id r186so6844777oif.8;
-        Mon, 19 Apr 2021 01:05:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I6ETiJ3wsBXNPuemCnAH/ZRYp/GfduiDc1+bwALCeEc=;
-        b=kqu7z/NER7PJLGEtZYNAg42xhJqhRipSESRvauhdIMq7PauggZbdhrf49OezPtpE/z
-         /g16pzArSzHBqUIPr9PfeASVTZ/UBp4jH50BP7crxra+8KBzIT/vac9lL2si1LsIF+r4
-         +w7LLFwaYQbN7k184Uc0x0PgvziN168nlNNlBBtXHxQIFpS4ZE676lG4AGZejrbhHa03
-         zpENFXtUTqCcHAp52mfLhaclDEhbvXEzTD6KlpodUhH/g1djwyJY1BLMp+IJ+uBw6VQC
-         UPb0y8xWlf3J858mbf9Q5gP3Qqtn7i/XefLbvXSzVNUOW2NIyTmrEoVb8ED7kcMcZEbo
-         4dVA==
+        Mon, 19 Apr 2021 04:06:47 -0400
+Received: by mail-vs1-f44.google.com with SMTP id l11so8651162vsr.10;
+        Mon, 19 Apr 2021 01:06:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=I6ETiJ3wsBXNPuemCnAH/ZRYp/GfduiDc1+bwALCeEc=;
-        b=cQljw+H02+sw76LfwTFXPOt8pHmnB2fA4wwDOJ3+YD/yqbywi5L4ySfSj4TN67IspN
-         822yHh/9TRgoP4GUxPUmEeLSws2bioJHwyrW1oj6EwvIf0kzJbqIX9KYUdrvcB4CbjWj
-         jMtTOzGOyT1kjJEyiU9sVNyxokzBos1nxgzOrcHSHh0hvWeL8FGEbbu+Vv6PauoS6NCc
-         Gn486WxsX0kobVhNgcrtB7QPD5o2lvvcM5Zgc7jlF/GN/23qmtiQpRpuGV06xGpKSyv4
-         u7LYuyt4ZBE4yEwvOyqwi05AWwdY1IxbAVvUCM9Kv5S7nP5HIXwEYpx7YZoS3InOJWOC
-         mNMA==
-X-Gm-Message-State: AOAM5332kE7Yl9ph2OngfEtVHgYkhEHVuEEeF2Sda3kmEc4kfcljbhF8
-        83Oh7zi44s3jm13Vg3wAw4mlxkBDgQk+5i5XuEM=
-X-Google-Smtp-Source: ABdhPJzHBoV5bZT5fqKBQyWrPkOvrbOg2DYf7jUkxgoA0aS0Fim5RuV0lEdOi9AYwT5lx4EGOFcgIffC7SHNsF7jdf0=
-X-Received: by 2002:aca:4fc8:: with SMTP id d191mr812798oib.139.1618819522797;
- Mon, 19 Apr 2021 01:05:22 -0700 (PDT)
+        bh=xwvYd/DWaoOJ1HtbW/KpV/JDzyp2vv8uTX1cZfUsEX0=;
+        b=WE6ACUin04eD5KWWLPRBVBGjhNo9gZgxYIloZ16zynsUKpF0wiEoXRIEkAMZ19i6L9
+         C9ZlcJ2fipFD1Z+AxDsOq430l1yUweOAOB6e4AtS2KgQRXGg1O0ifQwMxPWcsfqXLDgF
+         sa8OoBpGpl9CAjsIqt6RdyjCDo2Rm/jdf15Y3MJEhEFMgLVcPq+nhf3Zlz4qVJmFuIJN
+         iO7WrXqsFEX7FeZwvR427WuWfRMxQKC7sYz8GKkeY/cg054+/dZ79J2dYic0TOt6R5kI
+         vkxVe4tBARsubx3KCCT1Net7zkzcpX2RQY2bToUzG4vkrSCO7Xel5pidJMqtPdes69ut
+         0O/w==
+X-Gm-Message-State: AOAM532L3eG1rqDSRBnO1mXgdcLACHM1Qg3zN+53ub9FFFllq45HggVZ
+        +b+/hl6t5wtnLe/zVDYkhhnMZQ0uDq6r8nkF0Co=
+X-Google-Smtp-Source: ABdhPJwwUt9O9+bqGQiINGMpCOolsxRJEQXUZKEY13VJPOONKEyBuZYNCnA4RxtIjZn4JPkquDdN6rbln/JdNExFnKQ=
+X-Received: by 2002:a05:6102:814:: with SMTP id g20mr319846vsb.42.1618819575411;
+ Mon, 19 Apr 2021 01:06:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <1618763386-29562-1-git-send-email-zhoul110@chinatelecom.cn> <20210418165953.GA1206@zn.tnic>
-In-Reply-To: <20210418165953.GA1206@zn.tnic>
-From:   Steven Zhou <lullaby2005@gmail.com>
-Date:   Mon, 19 Apr 2021 16:05:12 +0800
-Message-ID: <CAEtkB+7CsTJYHNTEYotrJ4qEXSBTU4S8OJ+0zc5F0cMy1sk51w@mail.gmail.com>
-Subject: Re: [PATCH] docs: fix the invalid vt-d spec location
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        hpa@zytor.com, corbet@lwn.net, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, Liang Zhou <zhoul110@chinatelecom.cn>
+References: <1618550254-14511-1-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <1618550254-14511-1-git-send-email-anshuman.khandual@arm.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 19 Apr 2021 10:06:04 +0200
+Message-ID: <CAMuHMdXhUV00tdULpJNS5mohfWZx38+kNWv60x_tjiJPz1qR9g@mail.gmail.com>
+Subject: Re: [PATCH V2] mm: Define default value for FIRST_USER_ADDRESS
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jeff Dike <jdike@addtoit.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Chris Zankel <chris@zankel.net>, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Boris,
+On Fri, Apr 16, 2021 at 7:17 AM Anshuman Khandual
+<anshuman.khandual@arm.com> wrote:
+> Currently most platforms define FIRST_USER_ADDRESS as 0UL duplication the
+> same code all over. Instead just define a generic default value (i.e 0UL)
+> for FIRST_USER_ADDRESS and let the platforms override when required. This
+> makes it much cleaner with reduced code.
+>
+> The default FIRST_USER_ADDRESS here would be skipped in <linux/pgtable.h>
+> when the given platform overrides its value via <asm/pgtable.h>.
 
-Thank you for your comments.
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 
-The vt-d spec PDF is around 11M size and after be zipped it's still
-around 10M size which cannot be uploaded to "bugzilla.kernel.org"
-because this site limits 5M file size to be uploaded.
-Seems currently I cannot use the similar way as what you suggested to
-specify the bugzilla attachment link in intel-iommu.rst .
+>  arch/m68k/include/asm/pgtable_mm.h           | 1 -
 
-Do you have any other suggestion about the link location please ?
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Thanks.
+Gr{oetje,eeting}s,
 
-On Mon, Apr 19, 2021 at 12:59 AM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Sun, Apr 18, 2021 at 09:29:46AM -0700, Liang Zhou wrote:
-> > This patch fixes the invalid vt-d spec location.
->
-> Avoid having "This patch" or "This commit" in the commit message. It is
-> tautologically useless.
->
-> Also, do
->
-> $ git grep 'This patch' Documentation/process
->
-> for more details.
->
-> > Signed-off-by: Liang Zhou <zhoul110@chinatelecom.cn>
-> > ---
-> >  Documentation/x86/intel-iommu.rst | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/x86/intel-iommu.rst b/Documentation/x86/intel-iommu.rst
-> > index 099f13d..e95ee34 100644
-> > --- a/Documentation/x86/intel-iommu.rst
-> > +++ b/Documentation/x86/intel-iommu.rst
-> > @@ -4,7 +4,7 @@ Linux IOMMU Support
-> >
-> >  The architecture spec can be obtained from the below location.
-> >
-> > -http://www.intel.com/content/dam/www/public/us/en/documents/product-specifications/vt-directed-io-spec.pdf
-> > +https://software.intel.com/content/dam/develop/external/us/en/documents-tps/vt-directed-io-spec.pdf
->
-> Those links are never stable.
->
-> Please open a bugzilla at bugzilla.kernel.org, upload that document
-> there, like this, for example:
->
-> https://bugzilla.kernel.org/show_bug.cgi?id=206537
->
-> and then add the *bugzilla* link to intel-iommu.rst so that it doesn't
-> get invalid again.
->
-> Thx.
->
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
-
-
+                        Geert
 
 -- 
-Best Regards.
-Liang
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
