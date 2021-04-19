@@ -2,88 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23ACD3648B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 19:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 900BC3648BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 19:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbhDSREL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 13:04:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60430 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230127AbhDSREH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 13:04:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DC94611F0;
-        Mon, 19 Apr 2021 17:03:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618851817;
-        bh=4TN6AWyr8Mp46QNWs/wmku8VNsRtmirE+GdcjIHkR+4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F5iC93qFlmAZ+sfA95daecqActJGO2ozsNHyY3IJbUSE9VUjPcNhZw6InR0xXApNB
-         z/hWndKm0MErsMRDcflV9k8FT2PnEh+NMJhrqEKfKAQLP4qg1VBFSbhUo0TR/QRd0S
-         h5SXsFHKUuRjupDSP07DaAPsKEpHXOP5ldXHvraa4szt99jQ50m62NXw7xJxGr/4En
-         WgzNgAcP2zdzj7Sb+JIWtJM6jnJ2gxkyabJ3xJ2gJ+Xum7RCk9O8d2DrWeVQa1op+J
-         M7BXBL0vpVX13HcbczijCva5/aRG748Xorw+gdOQIgWUdbSXvIfA5iYjpr9eQwAJzE
-         peoNKfRhDiEvg==
-Date:   Mon, 19 Apr 2021 18:03:32 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Lecopzer Chen <lecopzer@gmail.com>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Stephen Boyd <swboyd@chromium.org>, yj.chiang@mediatek.com
-Subject: Re: [PATCH v5] arm64: Enable perf events based hard lockup detector
-Message-ID: <20210419170331.GB31045@willie-the-truck>
-References: <20210330080615.21938-1-lecopzer.chen@mediatek.com>
- <20210330083218.22285-1-lecopzer.chen@mediatek.com>
- <CAFA6WYMqLMEG2s7OdNweQKkP0K2LZ575B1BVw-zfsg7_KBSM5Q@mail.gmail.com>
- <CAFA6WYPXu8biPPim5EoQ1pi+w3APKm65tzfOvH4OSORZdJ6+8Q@mail.gmail.com>
+        id S239579AbhDSRGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 13:06:37 -0400
+Received: from conuserg-11.nifty.com ([210.131.2.78]:42560 "EHLO
+        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230127AbhDSRGf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 13:06:35 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id 13JH5ATv011272;
+        Tue, 20 Apr 2021 02:05:10 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 13JH5ATv011272
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1618851910;
+        bh=XXhY11gaoSvzWbW6ID0kHAhI4BbC74X5B25rQcrZHrU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RZ9iFlnHqMlII0RPn5w0OycB9aITRKf7j08eU7E7C+h1f9kDe+bSexuQrBDT0oUXH
+         ltJvPAcKMECFqmpoQF7AZ4Uxoh9vlcNi+51tEG10nSyKQONCr8XMRaAM7WbaT1ySKF
+         gKoFt+UGiyeet6843kqCZCe8jpTAWNNmenNjlMN2NGYRK6/3iz/qgSLjbpmk4i6td1
+         8MsQvy9x3ze5psT01M3ShbYhF4l/OXtPfh3Afh3nZEquPtPKtKHRqj7YXFwKJ4qIio
+         QanO4BGdeL80DKdWAH5iGyDBkEsD/K5I4DpqQCIHkfStGH4ii+ucB5mlc9CzD8S6fW
+         qLrRkLelf92UA==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Riku Voipio <riku.voipio@linaro.org>,
+        Ben Hutchings <ben@decadent.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Subject: [PATCH v2] kbuild: deb-pkg: change the source package name to linux-upstream
+Date:   Tue, 20 Apr 2021 02:05:05 +0900
+Message-Id: <20210419170505.1578725-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFA6WYPXu8biPPim5EoQ1pi+w3APKm65tzfOvH4OSORZdJ6+8Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 05:31:13PM +0530, Sumit Garg wrote:
-> On Tue, 30 Mar 2021 at 18:00, Sumit Garg <sumit.garg@linaro.org> wrote:
-> > On Tue, 30 Mar 2021 at 14:07, Lecopzer Chen <lecopzer.chen@mediatek.com> wrote:
-> > > > > On Fri, 15 Jan 2021 at 17:32, Sumit Garg <sumit.garg@linaro.org> wrote:
-> > > > > >
-> > > > > > With the recent feature added to enable perf events to use pseudo NMIs
-> > > > > > as interrupts on platforms which support GICv3 or later, its now been
-> > > > > > possible to enable hard lockup detector (or NMI watchdog) on arm64
-> > > > > > platforms. So enable corresponding support.
-> > > > > >
-> > > > > > One thing to note here is that normally lockup detector is initialized
-> > > > > > just after the early initcalls but PMU on arm64 comes up much later as
-> > > > > > device_initcall(). So we need to re-initialize lockup detection once
-> > > > > > PMU has been initialized.
-> > > > > >
-> > > > > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > > > > > ---
-> > > > > >
-> > > > > > Changes in v5:
-> > > > > > - Fix lockup_detector_init() invocation to be rather invoked from CPU
-> > > > > >   binded context as it makes heavy use of per-cpu variables and shouldn't
-> > > > > >   be invoked from preemptible context.
-> > > > > >
-> > > > >
-> > > > > Do you have any further comments on this?
-> > > > >
-> 
-> Since there aren't any further comments, can you re-pick this feature for 5.13?
+Change the source package name from 'linux-$(KERNELRELEASE)' to
+'linux-upstream'.
 
-I'd still like Mark's Ack on this, as the approach you have taken doesn't
-really sit with what he was suggesting.
+Initially, I tried to use 'linux' to be aligned with the Debian
+kernel package, but Ben suggested 'linux-upstream' so that it is
+clearly distinguished from distribution packages. [1]
 
-I also don't understand how all the CPUs get initialised with your patch,
-since the PMU driver will be initialised after SMP is up and running.
+The filenames will be changed as follows:
 
-Will
+[Before]
+  linux-5.12.0-rc3+_5.12.0-rc3+-1.dsc
+  linux-5.12.0-rc3+_5.12.0-rc3+.orig.tar.gz
+  linux-5.12.0-rc3+_5.12.0-rc3+-1.diff.gz
+
+[After]
+  linux-upstream_5.12.0-rc3+-1.dsc
+  linux-upstream_5.12.0-rc3+.orig.tar.gz
+  linux-upstream_5.12.0-rc3+-1.diff.gz
+
+Commit 3716001bcb7f ("deb-pkg: add source package") introduced
+KDEB_SOURCENAME. If you are unhappy with the default name, you can
+override it via KDEB_SOURCENAME.
+
+[1]: https://lore.kernel.org/linux-kbuild/06ffa2a690d57f867b4bc1b42f0026917b1dd3cd.camel@decadent.org.uk/T/#m2c4afa0eca5ced5e57795b002f2dbcb05d7a4a44
+
+Suggested-by: Ben Hutchings <ben@decadent.org.uk>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+Changes in v2:
+  - Use 'linux-upstream' for the package name
+
+ scripts/Makefile.package | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/Makefile.package b/scripts/Makefile.package
+index f952fb64789d..b74c65284fb2 100644
+--- a/scripts/Makefile.package
++++ b/scripts/Makefile.package
+@@ -25,7 +25,7 @@ include $(srctree)/scripts/Kbuild.include
+ 
+ # Remove hyphens since they have special meaning in RPM filenames
+ KERNELPATH := kernel-$(subst -,_,$(KERNELRELEASE))
+-KDEB_SOURCENAME ?= linux-$(KERNELRELEASE)
++KDEB_SOURCENAME ?= linux-upstream
+ KBUILD_PKG_ROOTCMD ?="fakeroot -u"
+ export KDEB_SOURCENAME
+ # Include only those top-level files that are needed by make, plus the GPL copy
+-- 
+2.27.0
+
