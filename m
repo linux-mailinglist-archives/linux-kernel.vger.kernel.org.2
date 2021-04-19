@@ -2,123 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 076E0364D31
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 23:39:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18E7364D1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 23:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241682AbhDSVjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 17:39:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23656 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240972AbhDSVjf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 17:39:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618868344;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NfbugZ0oNy5jWgMv3Gew8zQ7TeTsb6SXyuBWX0drnmc=;
-        b=Eu+vK4d7EDzs+Z0e/Cl4qdnDOtWx+vruR7fCSi21ERSgVWEGA7JT2bcB9B/c7GTrUQxsn9
-        AfqiJjgj+cCf8wmZBRz2aTOql5OYDBTxSP0RlGirCYT1GEoTnvv3jP2RcINDujj11f8+88
-        Z3nJDsvlnQJDIRMmZ96lJoipEijytk4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-589-_wcYZwJwMMiSZF-iceMeoA-1; Mon, 19 Apr 2021 17:39:01 -0400
-X-MC-Unique: _wcYZwJwMMiSZF-iceMeoA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 992B8107ACC7;
-        Mon, 19 Apr 2021 21:38:59 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-116-35.rdu2.redhat.com [10.10.116.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 08DA860BF1;
-        Mon, 19 Apr 2021 21:38:53 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 9F180225FCD; Mon, 19 Apr 2021 17:38:52 -0400 (EDT)
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     linux-fsdevel@vger.kernel.org, dan.j.williams@intel.com,
-        jack@suse.cz, willy@infradead.org
-Cc:     virtio-fs@redhat.com, slp@redhat.com, miklos@szeredi.hu,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
-        vgoyal@redhat.com
-Subject: [PATCH v3 3/3] dax: Wake up all waiters after invalidating dax entry
-Date:   Mon, 19 Apr 2021 17:36:36 -0400
-Message-Id: <20210419213636.1514816-4-vgoyal@redhat.com>
-In-Reply-To: <20210419213636.1514816-1-vgoyal@redhat.com>
-References: <20210419213636.1514816-1-vgoyal@redhat.com>
+        id S241004AbhDSVhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 17:37:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229714AbhDSVhc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 17:37:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70B3F6113C;
+        Mon, 19 Apr 2021 21:37:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618868221;
+        bh=YnVav9b2X8BK437Ycy2zQXeK5R1Vi6ULJV95mmEM4l4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EI1wBfo0xtdY0joSyyKzShYA0Pga5EG2LIV5/8DChIL9W2DIYzIi6029niHZHtnev
+         1qJydGLBDhqzO0dKt3C8s0bBy7bcHS/PAitfln3FrxJ4gWAPpuh/bNv1E6It1lyR3A
+         uFqPAaBEM2ugQIAX8iFdBBolBgnRXtXiqffC7jse9KO8bEiuGwdEdG83mlnGqQlFlK
+         im6hV+uNMfb3IwC8FDsTccbFFq01IsnwHJUwlsi/0z0pfwa1FywH3ixCCWtqSsKpJF
+         jJOG5yXW1QcSEYOePKQa0E9s6yQLRP8MF4Gch+oTLjyfBUkO8sxGrJO0prT0dDPJa6
+         n2tSUH0/vXGAw==
+Date:   Mon, 19 Apr 2021 14:36:57 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, johannes.berg@intel.com,
+        linux-mm@kvack.org, mm-commits@vger.kernel.org,
+        ndesaulniers@google.com, torvalds@linux-foundation.org
+Subject: Re: [patch 11/12] gcov: clang: fix clang-11+ build
+Message-ID: <YH33+R8pwviVysY5@archlinux-ax161>
+References: <20210416154523.3f9794326e8e1db549873cf8@linux-foundation.org>
+ <20210416224623.nZhisHrwM%akpm@linux-foundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210416224623.nZhisHrwM%akpm@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am seeing missed wakeups which ultimately lead to a deadlock when I am
-using virtiofs with DAX enabled and running "make -j". I had to mount
-virtiofs as rootfs and also reduce to dax window size to 256M to reproduce
-the problem consistently.
+On Fri, Apr 16, 2021 at 03:46:23PM -0700, Andrew Morton wrote:
+> From: Johannes Berg <johannes.berg@intel.com>
+> Subject: gcov: clang: fix clang-11+ build
+> 
+> With clang-11+, the code is broken due to my kvmalloc() conversion (which
+> predated the clang-11 support code) leaving one vmalloc() in place.  Fix
+> that.
+> 
+> Link: https://lkml.kernel.org/r/20210412214210.6e1ecca9cdc5.I24459763acf0591d5e6b31c7e3a59890d802f79c@changeid
+> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> ---
+> 
+>  kernel/gcov/clang.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --- a/kernel/gcov/clang.c~gcov-clang-fix-clang-11-build
+> +++ a/kernel/gcov/clang.c
+> @@ -369,7 +369,7 @@ static struct gcov_fn_info *gcov_fn_info
+>  	INIT_LIST_HEAD(&fn_dup->head);
+>  
+>  	cv_size = fn->num_counters * sizeof(fn->counters[0]);
+> -	fn_dup->counters = vmalloc(cv_size);
+> +	fn_dup->counters = kvmalloc(cv_size, GFP_KERNEL);
+>  	if (!fn_dup->counters) {
+>  		kfree(fn_dup);
+>  		return NULL;
+> _
 
-So here is the problem. put_unlocked_entry() wakes up waiters only
-if entry is not null as well as !dax_is_conflict(entry). But if I
-call multiple instances of invalidate_inode_pages2() in parallel,
-then I can run into a situation where there are waiters on
-this index but nobody will wait these.
+This should not have been merged into mainline by itself. It was a fix
+for "gcov: use kvmalloc()", which is still in -mm/-next. Merging it
+alone has now broken the build:
 
-invalidate_inode_pages2()
-  invalidate_inode_pages2_range()
-    invalidate_exceptional_entry2()
-      dax_invalidate_mapping_entry_sync()
-        __dax_invalidate_entry() {
-                xas_lock_irq(&xas);
-                entry = get_unlocked_entry(&xas, 0);
-                ...
-                ...
-                dax_disassociate_entry(entry, mapping, trunc);
-                xas_store(&xas, NULL);
-                ...
-                ...
-                put_unlocked_entry(&xas, entry);
-                xas_unlock_irq(&xas);
-        }
+https://github.com/ClangBuiltLinux/continuous-integration2/runs/2384465683?check_suite_focus=true
 
-Say a fault in in progress and it has locked entry at offset say "0x1c".
-Now say three instances of invalidate_inode_pages2() are in progress
-(A, B, C) and they all try to invalidate entry at offset "0x1c". Given
-dax entry is locked, all tree instances A, B, C will wait in wait queue.
+Could it please be reverted in mainline then added as a fix patch for
+the patch that is still in -mm:
 
-When dax fault finishes, say A is woken up. It will store NULL entry
-at index "0x1c" and wake up B. When B comes along it will find "entry=0"
-at page offset 0x1c and it will call put_unlocked_entry(&xas, 0). And
-this means put_unlocked_entry() will not wake up next waiter, given
-the current code. And that means C continues to wait and is not woken
-up.
+https://www.ozlabs.org/~akpm/mmotm/broken-out/gcov-use-kvmalloc.patch
 
-This patch fixes the issue by waking up all waiters when a dax entry
-has been invalidated. This seems to fix the deadlock I am facing
-and I can make forward progress.
-
-Reported-by: Sergio Lopez <slp@redhat.com>
-Fixes: ac401cc78242 ("dax: New fault locking")
-Suggested-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
----
- fs/dax.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/dax.c b/fs/dax.c
-index f19d76a6a493..cc497519be83 100644
---- a/fs/dax.c
-+++ b/fs/dax.c
-@@ -676,7 +676,7 @@ static int __dax_invalidate_entry(struct address_space *mapping,
- 	mapping->nrexceptional--;
- 	ret = 1;
- out:
--	put_unlocked_entry(&xas, entry, WAKE_NEXT);
-+	put_unlocked_entry(&xas, entry, WAKE_ALL);
- 	xas_unlock_irq(&xas);
- 	return ret;
- }
--- 
-2.25.4
-
+Cheers,
+Nathan
