@@ -2,55 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD95363B83
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 08:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05437363B86
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 08:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237482AbhDSGfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 02:35:15 -0400
-Received: from verein.lst.de ([213.95.11.211]:45258 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229840AbhDSGfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 02:35:14 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id A92C068B05; Mon, 19 Apr 2021 08:34:41 +0200 (CEST)
-Date:   Mon, 19 Apr 2021 08:34:41 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
-        David Laight <David.Laight@aculab.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Arnd Bergmann <arnd@kernel.org>, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
-Message-ID: <20210419063441.GA18787@lst.de>
-References: <20210411114307.5087f958@carbon> <20210411103318.GC2531743@casper.infradead.org> <20210412011532.GG2531743@casper.infradead.org> <20210414101044.19da09df@carbon> <20210414115052.GS2531743@casper.infradead.org> <20210414211322.3799afd4@carbon> <20210414213556.GY2531743@casper.infradead.org> <a50c3156fe8943ef964db4345344862f@AcuMS.aculab.com> <20210415200832.32796445@carbon> <20210416152755.GL2531743@casper.infradead.org>
+        id S237501AbhDSGgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 02:36:06 -0400
+Received: from mo-csw1516.securemx.jp ([210.130.202.155]:58988 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229473AbhDSGgF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 02:36:05 -0400
+Received: by mo-csw.securemx.jp (mx-mo-csw1516) id 13J6ZHID017231; Mon, 19 Apr 2021 15:35:17 +0900
+X-Iguazu-Qid: 34trYlwXUYN69ExCb0
+X-Iguazu-QSIG: v=2; s=0; t=1618814116; q=34trYlwXUYN69ExCb0; m=FPzuwcnwHkWzaOwOeu5PQnRgPud7f0jrBk1uH5w+QMA=
+Received: from imx12-a.toshiba.co.jp (imx12-a.toshiba.co.jp [61.202.160.135])
+        by relay.securemx.jp (mx-mr1511) id 13J6ZF7a006738
+        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 19 Apr 2021 15:35:16 +0900
+Received: from enc02.toshiba.co.jp (enc02.toshiba.co.jp [61.202.160.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by imx12-a.toshiba.co.jp (Postfix) with ESMTPS id CE8C41000AA;
+        Mon, 19 Apr 2021 15:35:15 +0900 (JST)
+Received: from hop101.toshiba.co.jp ([133.199.85.107])
+        by enc02.toshiba.co.jp  with ESMTP id 13J6ZF9C025291;
+        Mon, 19 Apr 2021 15:35:15 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     linux-pci@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
+        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH v2 0/3] PCI: dwc: Visoconti: PCIe RC controller driver
+Date:   Mon, 19 Apr 2021 15:35:10 +0900
+X-TSB-HOP: ON
+Message-Id: <20210419063513.1947003-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+X-Mailer: git-send-email 2.30.0.rc2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416152755.GL2531743@casper.infradead.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 04:27:55PM +0100, Matthew Wilcox wrote:
-> On Thu, Apr 15, 2021 at 08:08:32PM +0200, Jesper Dangaard Brouer wrote:
-> > See below patch.  Where I swap32 the dma address to satisfy
-> > page->compound having bit zero cleared. (It is the simplest fix I could
-> > come up with).
-> 
-> I think this is slightly simpler, and as a bonus code that assumes the
-> old layout won't compile.
+Hi,
 
-So, why do we even do this crappy overlay of a dma address?  This just
-all seems like a giant hack.  Random subsystems should not just steal
-a few struct page fields as that just turns into the desasters like the
-one we've seen here or probably something worse next time.
+This series is the PCIe driver for Toshiba's ARM SoC, Visconti[0].
+This provides DT binding documentation, device driver, MAINTAINER files.
+
+Best regards,
+  Nobuhiro
+
+[0]: https://toshiba.semicon-storage.com/ap-en/semiconductor/product/image-recognition-processors-visconti.html
+
+  dt-bindings: pci: Add DT binding for Toshiba Visconti PCIe controller
+    v1 -> v2:
+      - Remove white space.
+      - Drop num-viewport and bus-range from required.
+      - Drop status line from example.
+      - Drop bus-range from required.
+      - Removed lines defined in pci-bus.yaml from required.
+
+  PCI: dwc: Visconti: PCIe RC controller driver
+    v1 -> v2:
+      - Fix typo in commit message.
+      - Drop "depends on OF && HAS_IOMEM" from Kconfig.
+      - Stop using the pointer of struct dw_pcie.
+      - Use _relaxed variant.
+      - Drop dw_pcie_wait_for_link.
+      - Drop dbi resource processing.
+      - Drop MSI IRQ initialization processing.
+
+  MAINTAINERS: Add entries for Toshiba Visconti PCIe controller
+    v1 -> v2:
+      - No update.
+
+Nobuhiro Iwamatsu (3):
+  dt-bindings: pci: Add DT binding for Toshiba Visconti PCIe controller
+  PCI: dwc: Visconti: PCIe RC controller driver
+  MAINTAINERS: Add entries for Toshiba Visconti PCIe controller
+
+ .../bindings/pci/toshiba,visconti-pcie.yaml   | 110 ++++++
+ MAINTAINERS                                   |   2 +
+ drivers/pci/controller/dwc/Kconfig            |   9 +
+ drivers/pci/controller/dwc/Makefile           |   1 +
+ drivers/pci/controller/dwc/pcie-visconti.c    | 333 ++++++++++++++++++
+ 5 files changed, 455 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pci/toshiba,visconti-pcie.yaml
+ create mode 100644 drivers/pci/controller/dwc/pcie-visconti.c
+
+-- 
+2.30.0.rc2
