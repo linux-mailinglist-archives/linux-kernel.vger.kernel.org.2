@@ -2,82 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A009B364714
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 17:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D10364726
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 17:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240472AbhDSP1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 11:27:12 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:26253 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233733AbhDSP1K (ORCPT
+        id S241357AbhDSP3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 11:29:30 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45120 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233733AbhDSP31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 11:27:10 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-83-1fpuH_pNMbiwBnHi01lYDQ-1; Mon, 19 Apr 2021 16:26:37 +0100
-X-MC-Unique: 1fpuH_pNMbiwBnHi01lYDQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Mon, 19 Apr 2021 16:26:36 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Mon, 19 Apr 2021 16:26:36 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Andy Lutomirski' <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-CC:     Kees Cook <keescook@chromium.org>, Borislav Petkov <bp@alien8.de>,
-        "Sami Tolvanen" <samitolvanen@google.com>, X86 ML <x86@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Nathan Chancellor" <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: RE: [PATCH 05/15] x86: Implement function_nocfi
-Thread-Topic: [PATCH 05/15] x86: Implement function_nocfi
-Thread-Index: AQHXM+diuSsNstP2FUia6sIzu9nmdKq7+HvQ
-Date:   Mon, 19 Apr 2021 15:26:36 +0000
-Message-ID: <c0af9b5811cf4066b7297196bc46456f@AcuMS.aculab.com>
-References: <20210416203844.3803177-1-samitolvanen@google.com>
- <20210416203844.3803177-6-samitolvanen@google.com>
- <20210416211855.GD22348@zn.tnic>
- <CABCJKud8TvzhcjHCpsrtCJ4B50ZUfaL48F42EhZ2zWKLteAc0Q@mail.gmail.com>
- <20210416220251.GE22348@zn.tnic>
- <CALCETrVTtKqD6fonUmT_qr0HJ0X9TWzLGq-wpm+A7XKyjn3W5g@mail.gmail.com>
- <202104161519.1D37B6D26@keescook>
- <CALCETrV6WYx7dt56aCuUYsrrFya==zYR+p-YZnaATptnaO7w2A@mail.gmail.com>
- <202104161601.CFB2CCF84F@keescook>
- <CALCETrWUS52tzLNiWL5sAVVB5-ko1EW73-TEiO=eZ5jF_QyGPQ@mail.gmail.com>
- <877dl0sc2m.ffs@nanos.tec.linutronix.de>
- <CALCETrVEhL9N_DEM8=rbAzp8Nb2pDitRCZGRAVcE288MBrJ4ug@mail.gmail.com>
-In-Reply-To: <CALCETrVEhL9N_DEM8=rbAzp8Nb2pDitRCZGRAVcE288MBrJ4ug@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 19 Apr 2021 11:29:27 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 13JFSplv032708
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 19 Apr 2021 11:28:51 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 3695315C3B0D; Mon, 19 Apr 2021 11:28:51 -0400 (EDT)
+Date:   Mon, 19 Apr 2021 11:28:51 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org
+Subject: Maintainers / Kernel Summit 2021 planning kick-off
+Message-ID: <YH2hs6EsPTpDAqXc@mit.edu>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQW5keSBMdXRvbWlyc2tpDQo+IFNlbnQ6IDE4IEFwcmlsIDIwMjEgMDE6MTINCi4uDQo+
-IFNsaWdodGx5IG1vcmUgY29tcGxpY2F0ZWQ6DQo+IA0KPiBzdHJ1Y3Qgb3BhcXVlX3N5bWJvbDsN
-Cj4gZXh0ZXJuIHN0cnVjdCBvcGFxdWVfc3ltYm9sIGVudHJ5X1NZU0NBTExfNjQ7DQo+IA0KPiBU
-aGUgb3BhcXVlX3N5bWJvbCB2YXJpYW50IGF2b2lkcyBhbnkgcG9zc2libGUgY29uZnVzaW9uIG92
-ZXIgdGhlIHdlaXJkDQo+IHN0YXR1cyBvZiBhcnJheXMgaW4gQywgYW5kIGl0J3MgaGFyZCB0byBt
-aXN1c2UsIHNpbmNlIHN0cnVjdA0KPiBvcGFxdWVfc3ltYm9sIGlzIGFuIGluY29tcGxldGUgdHlw
-ZS4NCg0KTWF5YmU6DQoNCnMvb3BhcXVlX3N5bWJvbC9lbnRyeV9TWVNDQUxMXzY0Lw0KDQoJRGF2
-aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50
-IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTcz
-ODYgKFdhbGVzKQ0K
+[ Feel free to forward this to other Linux kernel mailing lists as
+  appropriate -- Ted ]
 
+This year, the Maintainers and Kernel Summit is currently planned to
+be held in Dublin, Ireland, September 27 -- 29th.  Of course, this is
+subject to change depending on how much progress the world makes
+towards vaccinating the population against the COVID-19 virus, and
+whether employers are approving conference travel.  At this point,
+there's a fairly good chance that we will need to move to a virtual
+conference format, either for one or both of the summits.
+
+As in previous years, the Maintainers Summit is invite-only, where the
+primary focus will be process issues around Linux Kernel Development.
+It will be limited to 30 invitees and a handful of sponsored
+attendees.
+
+The Kernel Summit is organized as a track which is run in parallel
+with the other tracks at the Linux Plumbers Conference (LPC), and is
+open to all registered attendees of LPC.
+
+Linus has generated a core list of people to be invited to the
+Maintainers Summit, and the program committee will be using that list
+a starting point of people to be considered.  People who suggest
+topics that should be discussed at the Maintainers Summit will also be
+added to the list for consideration.  To make topic suggestions for
+the Maintainers Summit, please send e-mail to the
+ksummit@lists.linux.dev with a subject prefix of [MAINTAINERS SUMMIT].
+
+(Note: The older ksummit-discuss@lists.linuxfoundation.org list has
+been migrated to lists.linux.dev, with the subscriber list and
+archives preserved.)
+
+The other job of the program committee will be to organize the program
+for the Kernel Summit.  The goal of the Kernel Summit track will be to
+provide a forum to discuss specific technical issues that would be
+easier to resolve in person than over e-mail.  The program committee
+will also consider "information sharing" topics if they are clearly of
+interest to the wider development community (i.e., advanced training
+in topics that would be useful to kernel developers).
+
+To suggest a topic for the Kernel Summit, please do two things.
+First, please tag your e-mail with [TECH TOPIC].  As before, please
+use a separate e-mail for each topic, and send the topic suggestions
+to the ksummit-discuss list.
+
+Secondly, please create a topic at the Linux Plumbers Conference
+proposal submission site and target it to the Kernel Summit track.
+For your convenience you can use:
+
+	https://bit.ly/lpc21-summit
+
+Please do both steps.  I'll try to notice if someone forgets one or
+the other, but your chances of making sure your proposal gets the
+necessary attention and consideration are maximized by submitting both
+to the mailing list and the web site.
+
+People who submit topic suggestions before June 12th and which are
+accepted, will be given free admission to the Linux Plumbers
+Conference.
+
+We will be reserving roughly half of the Kernel Summit slots for
+last-minute discussions that will be scheduled during the week of
+Plumbers, in an "unconference style".  This allows last-minute ideas
+that come up to be given given slots for discussion.
+
+If you were not subscribed on to the kernel@lists.linux-dev mailing
+list from last year (or if you had removed yourself from the
+ksummit-discuss@lists.linux-foundation.org mailing list after the
+previous year's kernel and maintainers' summit summit), you can
+subscribe sending an e-mail to:
+
+	ksummit+subscribe@lists.linux.dev
+
+The mailing list archive is available at:
+
+	https://lore.kernel.org/ksummit
+
+The program committee this year is composed of the following people:
+
+Jens Axboe
+Arnd Bergmann
+Jon Corbet
+Greg Kroah-Hartman
+Ted Ts'o
