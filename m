@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE9E3648B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 19:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23ACD3648B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 19:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239424AbhDSRBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 13:01:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60182 "EHLO mail.kernel.org"
+        id S231307AbhDSREL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 13:04:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232217AbhDSRBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 13:01:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62A8161166;
-        Mon, 19 Apr 2021 17:00:32 +0000 (UTC)
+        id S230127AbhDSREH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 13:04:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DC94611F0;
+        Mon, 19 Apr 2021 17:03:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618851632;
-        bh=2l2EQFlLHfGvWsRAulraJGol2gXGNz0VePpPLXfokTc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=rc8jyjU3cJW3gkUwM2BUJR7KGhLZmb/tYdMABKz02yPItKI9wsrhlc/cWJZQZOwfV
-         EU79doz/bwhPU+3kPOJnlCJNAgit5SfvtucDTkgo1RuFy/6PTi3UD2FNgo2JgLmSk/
-         EvvryvTB5nKhUXxLpwREDVpiYWphv2TAVr0AgEON09IgfmppeGkAKy7TUY+BHFlYQ5
-         sSzCetlRx5jhEBkma7mU2vamNPGe/qFRjFUINQFTakYJUVjD7b4sI6fZY5dXfq5ctF
-         /gNItvuXCcm4ZjMQOcSYkjPvJl8yX7kU8YuAIgNyXWW2i3WYqY7jFEpSUqbtSt2mmk
-         Ff6U3KnjqXtKw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 293805C0127; Mon, 19 Apr 2021 10:00:32 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 10:00:32 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 1/2] srcu: Fix broken node geometry after early ssp init
-Message-ID: <20210419170032.GB975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210414132413.98062-1-frederic@kernel.org>
- <20210414132413.98062-2-frederic@kernel.org>
- <20210414155538.GO4510@paulmck-ThinkPad-P17-Gen-1>
- <20210417131649.GA146778@lothringen>
- <20210418044616.GE5006@paulmck-ThinkPad-P17-Gen-1>
- <20210419002345.GA161053@lothringen>
+        s=k20201202; t=1618851817;
+        bh=4TN6AWyr8Mp46QNWs/wmku8VNsRtmirE+GdcjIHkR+4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=F5iC93qFlmAZ+sfA95daecqActJGO2ozsNHyY3IJbUSE9VUjPcNhZw6InR0xXApNB
+         z/hWndKm0MErsMRDcflV9k8FT2PnEh+NMJhrqEKfKAQLP4qg1VBFSbhUo0TR/QRd0S
+         h5SXsFHKUuRjupDSP07DaAPsKEpHXOP5ldXHvraa4szt99jQ50m62NXw7xJxGr/4En
+         WgzNgAcP2zdzj7Sb+JIWtJM6jnJ2gxkyabJ3xJ2gJ+Xum7RCk9O8d2DrWeVQa1op+J
+         M7BXBL0vpVX13HcbczijCva5/aRG748Xorw+gdOQIgWUdbSXvIfA5iYjpr9eQwAJzE
+         peoNKfRhDiEvg==
+Date:   Mon, 19 Apr 2021 18:03:32 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Lecopzer Chen <lecopzer@gmail.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Stephen Boyd <swboyd@chromium.org>, yj.chiang@mediatek.com
+Subject: Re: [PATCH v5] arm64: Enable perf events based hard lockup detector
+Message-ID: <20210419170331.GB31045@willie-the-truck>
+References: <20210330080615.21938-1-lecopzer.chen@mediatek.com>
+ <20210330083218.22285-1-lecopzer.chen@mediatek.com>
+ <CAFA6WYMqLMEG2s7OdNweQKkP0K2LZ575B1BVw-zfsg7_KBSM5Q@mail.gmail.com>
+ <CAFA6WYPXu8biPPim5EoQ1pi+w3APKm65tzfOvH4OSORZdJ6+8Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210419002345.GA161053@lothringen>
+In-Reply-To: <CAFA6WYPXu8biPPim5EoQ1pi+w3APKm65tzfOvH4OSORZdJ6+8Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 02:23:45AM +0200, Frederic Weisbecker wrote:
-> On Sat, Apr 17, 2021 at 09:46:16PM -0700, Paul E. McKenney wrote:
-> > On Sat, Apr 17, 2021 at 03:16:49PM +0200, Frederic Weisbecker wrote:
-> > > On Wed, Apr 14, 2021 at 08:55:38AM -0700, Paul E. McKenney wrote:
-> > > > > diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-> > > > > index 75ed367d5b60..24db97cbf76b 100644
-> > > > > --- a/kernel/rcu/rcu.h
-> > > > > +++ b/kernel/rcu/rcu.h
-> > > > > @@ -278,6 +278,7 @@ extern void resched_cpu(int cpu);
-> > > > >  extern int rcu_num_lvls;
-> > > > >  extern int num_rcu_lvl[];
-> > > > >  extern int rcu_num_nodes;
-> > > > > +extern bool rcu_geometry_initialized;
-> > > > 
-> > > > Can this be a static local variable inside rcu_init_geometry()?
-> > > > 
-> > > > After all, init_srcu_struct() isn't called all that often, and its overhead
-> > > > is such that an extra function call and check is going to hurt it.  This
-> > > > of course requires removing __init from rcu_init_geometry(), but it is not
-> > > > all that large, so why not just remove the __init?
-> > > > 
-> > > > But if we really are worried about reclaiming rcu_init_geometry()'s
-> > > > instructions (maybe we are?), then rcu_init_geometry() can be split
-> > > > into a function that just does the check (which is not __init) and the
-> > > > remainder of the function, which could remain __init.
-> > > 
-> > > There you go:
-> > 
-> > Queued, thank you!
+On Mon, Apr 12, 2021 at 05:31:13PM +0530, Sumit Garg wrote:
+> On Tue, 30 Mar 2021 at 18:00, Sumit Garg <sumit.garg@linaro.org> wrote:
+> > On Tue, 30 Mar 2021 at 14:07, Lecopzer Chen <lecopzer.chen@mediatek.com> wrote:
+> > > > > On Fri, 15 Jan 2021 at 17:32, Sumit Garg <sumit.garg@linaro.org> wrote:
+> > > > > >
+> > > > > > With the recent feature added to enable perf events to use pseudo NMIs
+> > > > > > as interrupts on platforms which support GICv3 or later, its now been
+> > > > > > possible to enable hard lockup detector (or NMI watchdog) on arm64
+> > > > > > platforms. So enable corresponding support.
+> > > > > >
+> > > > > > One thing to note here is that normally lockup detector is initialized
+> > > > > > just after the early initcalls but PMU on arm64 comes up much later as
+> > > > > > device_initcall(). So we need to re-initialize lockup detection once
+> > > > > > PMU has been initialized.
+> > > > > >
+> > > > > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > > > > > ---
+> > > > > >
+> > > > > > Changes in v5:
+> > > > > > - Fix lockup_detector_init() invocation to be rather invoked from CPU
+> > > > > >   binded context as it makes heavy use of per-cpu variables and shouldn't
+> > > > > >   be invoked from preemptible context.
+> > > > > >
+> > > > >
+> > > > > Do you have any further comments on this?
+> > > > >
 > 
-> Thanks!
-> 
-> And please also consider "[PATCH 2/2] srcu: Early test SRCU polling start"
-> if you want to expand testing coverage to polling.
+> Since there aren't any further comments, can you re-pick this feature for 5.13?
 
-Ah, thank you for the reminder!  Queued and pushed.
+I'd still like Mark's Ack on this, as the approach you have taken doesn't
+really sit with what he was suggesting.
 
-							Thanx, Paul
+I also don't understand how all the CPUs get initialised with your patch,
+since the PMU driver will be initialised after SMP is up and running.
+
+Will
