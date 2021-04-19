@@ -2,194 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6C4364A52
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 21:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0363364A54
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 21:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241426AbhDSTQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 15:16:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
+        id S241449AbhDSTRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 15:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241391AbhDSTQe (ORCPT
+        with ESMTP id S237147AbhDSTRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 15:16:34 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F6AC06174A;
-        Mon, 19 Apr 2021 12:16:03 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id p67so18910025pfp.10;
-        Mon, 19 Apr 2021 12:16:03 -0700 (PDT)
+        Mon, 19 Apr 2021 15:17:03 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED720C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 12:16:32 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id w186so14297186wmg.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 12:16:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZFA6wRqeAt0LxdRockkfF0e4wQMEeO2UUm6nT8P02lg=;
-        b=BzJtCumoVK6sgOXKGfrnGaKFpEO8Oqc8Q1I22P3ZpZSX/WZQT+UlieNBX50vvKy4J0
-         0zGtPcczF7oV2YdsWM6JqAiws2r47LD+9CiNgu0SB4IKqJ82VldDbBJiqNjs6hkbxu09
-         zF00m9HdczmIsK5Kz+Y4j2IyuISAxD6dH1gXCZL2l59nBd70d/PXlgO4xvEUcw8cgRxp
-         PIKjXTAdh8WuhHDsHGDeeoKKzejFDd8QH3ds1sgIoxcvzKgBbvlP/yAH/JrRspLlhEEv
-         JZTxFgtC/ZIh9P45npMGqMyFQDx9p7vrTPsK9tZHPkY1wTYzwWNFZz9os47VbSKtP/OK
-         ZjJA==
+        d=digitalocean.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WcKlbg8XWr1l7r5RtBQgG+Imcs5h7Ka/u6EAeRHnZV4=;
+        b=Sd473G6kcWgifkDo935PzLg8IQYV+nP3L6DncLgiEXaQIEaureaVJFg5sEBBmoM1dq
+         Q+mgA+TTDMDXgqKt27N9O/ziXg1LfWasiqTgDE29JCdkjUV8B0b9uPuyQr3e93bN510z
+         B/YQ/dHudivfpnC2raWyjLmQLx1HvI1k2dbZA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZFA6wRqeAt0LxdRockkfF0e4wQMEeO2UUm6nT8P02lg=;
-        b=C22YyfxHP/J+aScCrO2EGVEBEB9PY4avRGyFwxwojelMyvKuebBty8lZbQ9uRRoxia
-         E7RdPGnJS8fYJHQj1ITh0LDaJu+NmINvb1/BA74WKD8FmASZLQy5VNymW35ScGqIvVtt
-         Q/ESQXAVRpCywWUufWlRAj+hKOm3PGnj7VUYf/uKfpH7QwcjlHiV/bCTR2fuXfdEorS/
-         08N0EDA6S1eo8VnHMv6ZN8jMYF2I4kXE0gyVYuoVQsNVUi6YJjyNHzNXYf7JajBqICnG
-         0KsxLWNE/k+cfVUTJj8f441bpRKxg1e+XN0veIsOAZamAR7TOu/eOT5ZYcXwgijB7PsB
-         htAg==
-X-Gm-Message-State: AOAM533fN/Zivra809rxEtuugZ5FZOOBwTHFKbLMiuGpNaV19vHfDREB
-        Xsg9HDmdnOKI86Nl9Vsb/jw=
-X-Google-Smtp-Source: ABdhPJw/CU+IGRICQKIl+lGIHHQObm1bLGs8UxWK9ZM7Sbqy0dZWf9b+snVupf6Cd+1VaeKbIVQgfg==
-X-Received: by 2002:a63:4652:: with SMTP id v18mr13437333pgk.386.1618859763464;
-        Mon, 19 Apr 2021 12:16:03 -0700 (PDT)
-Received: from localhost ([103.241.225.98])
-        by smtp.gmail.com with ESMTPSA id b6sm12697700pfa.185.2021.04.19.12.16.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 12:16:03 -0700 (PDT)
-From:   Deepak R Varma <mh12gx2825@gmail.com>
-X-Google-Original-From: Deepak R Varma <drv@mailo.com>
-Date:   Tue, 20 Apr 2021 00:45:57 +0530
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     mh12gx2825@gmail.com
-Subject: [PATCH 5/6] staging: media: atomisp: fix CamelCase variable naming
-Message-ID: <17478627f128cdafed389b64ecf389d319295dd4.1618859059.git.drv@mailo.com>
-References: <cover.1618859059.git.drv@mailo.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WcKlbg8XWr1l7r5RtBQgG+Imcs5h7Ka/u6EAeRHnZV4=;
+        b=Jfm+mb307RYQOD6bVBKC2rAL8Zz00bqs7cDwXJ3jb66ME/cVi/y0PcGcTsCFEEUDjI
+         4CYTxvyxCkXZpFMmyFFPWidMKgppmYcAR5CeZgK6Pa74lB340XmtSpN/2mT8StGxIgEa
+         lwV8cN1uxcTQZe302kXi21bR+dnZEV5Bq1FCGvQKoTAj55RDkIFgVSEKtNAxFuRPEcjH
+         Ko1CNZVLwdvz/Fep8pa3Nt6iDc35t/xVlQGYJDEw99AsTJBwmYtxg2i3sk0YWTw8++/T
+         76qHJG0fKn3cqKItlEEzWcCaezi41O1peOx4PwLLTq0KXnlmBuQeRoU45vnaRUVwjMqa
+         ALcg==
+X-Gm-Message-State: AOAM532p1uDTD1RkJ4XJPaDRTQEaZ8zjXg+6uL/CSrwOTsdanFDWamW4
+        vOgufXXrroevfCljUwei1TZUsaPsCsYD11fBK+FIUw==
+X-Google-Smtp-Source: ABdhPJz1SvJ1laNeSW/6G8pNhZBP23YYaiLff/AU4jKKz5mTBSsxFB9Ze7uTXilN5jfjPSzIXtoEL3DoxQPOaBNB8QQ=
+X-Received: by 2002:a05:600c:2148:: with SMTP id v8mr537789wml.167.1618859791712;
+ Mon, 19 Apr 2021 12:16:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1618859059.git.drv@mailo.com>
+References: <20210419130527.791982064@linuxfoundation.org> <607dbd93.1c69fb81.b1943.240a@mx.google.com>
+In-Reply-To: <607dbd93.1c69fb81.b1943.240a@mx.google.com>
+From:   Patrick Mccormick <pmccormick@digitalocean.com>
+Date:   Mon, 19 Apr 2021 12:16:19 -0700
+Message-ID: <CAAjnzAn9vrQHzVzOX9_VbBHznyanpbmc5uHCDCDVa+Vib7708A@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/103] 5.10.32-rc1 review
+To:     Fox Chen <foxhlchen@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mixed case variable names are discouraged and they result in checkpatch
-script "Avoid CamelCase" warnings. Replace such CamelCase variable names
-by lower case strings according to the coding style guidelines.
+We ran tests on this kernel:
 
-Signed-off-by: Deepak R Varma <drv@mailo.com>
----
- .../media/atomisp/i2c/atomisp-mt9m114.c       | 62 +++++++++----------
- 1 file changed, 31 insertions(+), 31 deletions(-)
+commit 32f5704a0a4f7dcc8aa74a49dbcce359d758f6d5 (HEAD -> rc/linux-5.10.y)
+Author: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date:   Thu Apr 15 16:44:09 2021 +0200
 
-diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-index 160bb58ce708..e63906a69e30 100644
---- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-+++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-@@ -999,10 +999,10 @@ static long mt9m114_s_exposure(struct v4l2_subdev *sd,
- 	struct mt9m114_device *dev = to_mt9m114_sensor(sd);
- 	int ret = 0;
- 	unsigned int coarse_integration = 0;
--	unsigned int FLines = 0;
--	unsigned int FrameLengthLines = 0; /* ExposureTime.FrameLengthLines; */
--	unsigned int AnalogGain, DigitalGain;
--	u32 AnalogGainToWrite = 0;
-+	unsigned int f_lines = 0;
-+	unsigned int frame_len_lines = 0; /* ExposureTime.FrameLengthLines; */
-+	unsigned int analog_gain, digital_gain;
-+	u32 analog_gain_to_write = 0;
- 
- 	dev_dbg(&client->dev, "%s(0x%X 0x%X 0x%X)\n", __func__,
- 		exposure->integration_time[0], exposure->gain[0],
-@@ -1010,27 +1010,27 @@ static long mt9m114_s_exposure(struct v4l2_subdev *sd,
- 
- 	coarse_integration = exposure->integration_time[0];
- 	/* fine_integration = ExposureTime.FineIntegrationTime; */
--	/* FrameLengthLines = ExposureTime.FrameLengthLines; */
--	FLines = mt9m114_res[dev->res].lines_per_frame;
--	AnalogGain = exposure->gain[0];
--	DigitalGain = exposure->gain[1];
-+	/* frame_len_lines = ExposureTime.FrameLengthLines; */
-+	f_lines = mt9m114_res[dev->res].lines_per_frame;
-+	analog_gain = exposure->gain[0];
-+	digital_gain = exposure->gain[1];
- 	if (!dev->streamon) {
- 		/*Save the first exposure values while stream is off*/
- 		dev->first_exp = coarse_integration;
--		dev->first_gain = AnalogGain;
--		dev->first_diggain = DigitalGain;
-+		dev->first_gain = analog_gain;
-+		dev->first_diggain = digital_gain;
- 	}
--	/* DigitalGain = 0x400 * (((u16) DigitalGain) >> 8) +		*/
--	/* ((unsigned int)(0x400 * (((u16) DigitalGain) & 0xFF)) >>8);	*/
-+	/* digital_gain = 0x400 * (((u16) digital_gain) >> 8) +		*/
-+	/* ((unsigned int)(0x400 * (((u16) digital_gain) & 0xFF)) >>8);	*/
- 
- 	/* set frame length */
--	if (FLines < coarse_integration + 6)
--		FLines = coarse_integration + 6;
--	if (FLines < FrameLengthLines)
--		FLines = FrameLengthLines;
--	ret = mt9m114_write_reg(client, MISENSOR_16BIT, 0x300A, FLines);
-+	if (f_lines < coarse_integration + 6)
-+		f_lines = coarse_integration + 6;
-+	if (f_lines < frame_len_lines)
-+		f_lines = frame_len_lines;
-+	ret = mt9m114_write_reg(client, MISENSOR_16BIT, 0x300A, f_lines);
- 	if (ret) {
--		v4l2_err(client, "%s: fail to set FLines\n", __func__);
-+		v4l2_err(client, "%s: fail to set f_lines\n", __func__);
- 		return -EINVAL;
- 	}
- 
-@@ -1047,38 +1047,38 @@ static long mt9m114_s_exposure(struct v4l2_subdev *sd,
- 
- 	/*
- 	 * set analog/digital gain
--	switch(AnalogGain)
-+	switch(analog_gain)
- 	{
- 	case 0:
--	  AnalogGainToWrite = 0x0;
-+	  analog_gain_to_write = 0x0;
- 	  break;
- 	case 1:
--	  AnalogGainToWrite = 0x20;
-+	  analog_gain_to_write = 0x20;
- 	  break;
- 	case 2:
--	  AnalogGainToWrite = 0x60;
-+	  analog_gain_to_write = 0x60;
- 	  break;
- 	case 4:
--	  AnalogGainToWrite = 0xA0;
-+	  analog_gain_to_write = 0xA0;
- 	  break;
- 	case 8:
--	  AnalogGainToWrite = 0xE0;
-+	  analog_gain_to_write = 0xE0;
- 	  break;
- 	default:
--	  AnalogGainToWrite = 0x20;
-+	  analog_gain_to_write = 0x20;
- 	  break;
- 	}
- 	*/
--	if (DigitalGain >= 16 || DigitalGain <= 1)
--		DigitalGain = 1;
-+	if (digital_gain >= 16 || digital_gain <= 1)
-+		digital_gain = 1;
- 
--	/* AnalogGainToWrite = (u16)((DigitalGain << 12) | AnalogGainToWrite);
-+	/* analog_gain_to_write = (u16)((digital_gain << 12) | analog_gain_to_write);
- 	 */
--	AnalogGainToWrite = (u16)((DigitalGain << 12) | (u16)AnalogGain);
-+	analog_gain_to_write = (u16)((digital_gain << 12) | (u16)analog_gain);
- 	ret = mt9m114_write_reg(client, MISENSOR_16BIT,
--				REG_GAIN, AnalogGainToWrite);
-+				REG_GAIN, analog_gain_to_write);
- 	if (ret) {
--		v4l2_err(client, "%s: fail to set AnalogGainToWrite\n",
-+		v4l2_err(client, "%s: fail to set analog_gain_to_write\n",
- 			 __func__);
- 		return -EINVAL;
- 	}
--- 
-2.25.1
+    Linux 5.10.31-rc1
 
+No problems found.
+
+Hardware tested on:
+
+model name : Intel(R) Xeon(R) Gold 6248 CPU @ 2.50GHz
+
+Specific tests ran:
+
+ok 1 ltp.py:LTP.test_nptl
+ok 2 ltp.py:LTP.test_math
+ok 3 ltp.py:LTP.test_dio
+ok 4 ltp.py:LTP.test_io
+ok 5 ltp.py:LTP.test_power_management_tests
+ok 6 ltp.py:LTP.test_can
+ok 7 ltp.py:LTP.test_input
+ok 8 ltp.py:LTP.test_hugetlb
+ok 9 ltp.py:LTP.test_ipc
+ok 10 ltp.py:LTP.test_uevent
+ok 11 ltp.py:LTP.test_smoketest
+ok 12 ltp.py:LTP.test_containers
+ok 13 ltp.py:LTP.test_filecaps
+ok 14 ltp.py:LTP.test_sched
+ok 15 ltp.py:LTP.test_hyperthreading
+ok 16 ltp.py:LTP.test_cap_bounds
+ok 17 kpatch.sh
+ok 18 perf.py:PerfNonPriv.test_perf_help
+ok 19 perf.py:PerfNonPriv.test_perf_version
+ok 20 perf.py:PerfNonPriv.test_perf_list
+ok 21 perf.py:PerfPriv.test_perf_record
+ok 22 perf.py:PerfPriv.test_perf_cmd_kallsyms
+ok 23 perf.py:PerfPriv.test_perf_cmd_annotate
+ok 24 perf.py:PerfPriv.test_perf_cmd_evlist
+ok 25 perf.py:PerfPriv.test_perf_cmd_script
+ok 26 perf.py:PerfPriv.test_perf_stat
+ok 27 perf.py:PerfPriv.test_perf_bench
+ok 28 kselftest.py:kselftest.test_sysctl
+ok 29 kselftest.py:kselftest.test_size
+ok 30 kselftest.py:kselftest.test_sync
+ok 31 kselftest.py:kselftest.test_capabilities
+ok 32 kselftest.py:kselftest.test_x86
+ok 33 kselftest.py:kselftest.test_pidfd
+ok 34 kselftest.py:kselftest.test_membarrier
+ok 35 kselftest.py:kselftest.test_sigaltstack
+ok 36 kselftest.py:kselftest.test_tmpfs
+ok 37 kselftest.py:kselftest.test_user
+ok 38 kselftest.py:kselftest.test_sched
+ok 39 kselftest.py:kselftest.test_timens
+ok 40 kselftest.py:kselftest.test_timers
+
+Tested-By: Patrick McCormick <pmccormick@digitalocean.com>
+
+On Mon, Apr 19, 2021 at 10:27 AM Fox Chen <foxhlchen@gmail.com> wrote:
+>
+> On Mon, 19 Apr 2021 15:05:11 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> > This is the start of the stable review cycle for the 5.10.32 release.
+> > There are 103 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Wed, 21 Apr 2021 13:05:09 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >       https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.32-rc1.gz
+> > or in the git tree and branch at:
+> >       git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+> >
+>
+> 5.10.32-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+>
+> Tested-by: Fox Chen <foxhlchen@gmail.com>
+>
