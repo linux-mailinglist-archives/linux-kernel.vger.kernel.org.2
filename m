@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678D63642B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E8F13642C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 15:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239404AbhDSNLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 09:11:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44836 "EHLO mail.kernel.org"
+        id S239785AbhDSNLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 09:11:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238859AbhDSNKE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 09:10:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3478C61246;
-        Mon, 19 Apr 2021 13:09:34 +0000 (UTC)
+        id S239523AbhDSNKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 09:10:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEF8961288;
+        Mon, 19 Apr 2021 13:09:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618837774;
-        bh=iBSMgnMNLXpFc200GKSv3a5Xx9xTjN3Rr6lO71V20JQ=;
+        s=korg; t=1618837777;
+        bh=oObnfVcrrOuvmowWFddpwKRb/CnoYWfUEUohX8mOOjY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mfb2coJ2bpM6JJWBaLC+rKkE6DN5uDjsiK/XGE6MIfQLUkbxRXMR5AvHsZSS1fEMl
-         k+8jVdO8ykaIqS81F5r78OoewI5lXColr2LVk7zOSdxoJO5gdGiP3vMYBXiIURiLnP
-         2qSqDcdH2uw0bUPfaijQkSSjXrTNCjp4nQPcoU4Y=
+        b=K571faFgfmT8WsF1cY1P2/UkGTYudNyfLyq4ID2av8QBKA+lpXXP6VNeeFr7kMAM3
+         1jXHWRTuqjQp2MnkPJYgwOZvgNxXnmgGXCBs5uh0aZzMfltx3bp5IP+n56x0Zbom6u
+         mm8/VcQ/BqWvWGI52SH0/uue7jjyryThdsPe2SAs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aditya Pakki <pakki001@umn.edu>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 049/122] net/rds: Avoid potential use after free in rds_send_remove_from_sock
-Date:   Mon, 19 Apr 2021 15:05:29 +0200
-Message-Id: <20210419130531.856173642@linuxfoundation.org>
+Subject: [PATCH 5.11 050/122] net: tipc: Fix spelling errors in net/tipc module
+Date:   Mon, 19 Apr 2021 15:05:30 +0200
+Message-Id: <20210419130531.886812663@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210419130530.166331793@linuxfoundation.org>
 References: <20210419130530.166331793@linuxfoundation.org>
@@ -41,48 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aditya Pakki <pakki001@umn.edu>
+From: Zheng Yongjun <zhengyongjun3@huawei.com>
 
-[ Upstream commit 0c85a7e87465f2d4cbc768e245f4f45b2f299b05 ]
+[ Upstream commit a79ace4b312953c5835fafb12adc3cb6878b26bd ]
 
-In case of rs failure in rds_send_remove_from_sock(), the 'rm' resource
-is freed and later under spinlock, causing potential use-after-free.
-Set the free pointer to NULL to avoid undefined behavior.
+These patches fix a series of spelling errors in net/tipc module.
 
-Signed-off-by: Aditya Pakki <pakki001@umn.edu>
-Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/rds/message.c | 1 +
- net/rds/send.c    | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ net/tipc/bearer.h | 6 +++---
+ net/tipc/net.c    | 2 +-
+ net/tipc/node.c   | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/net/rds/message.c b/net/rds/message.c
-index 799034e0f513..4fc66ff0f1ec 100644
---- a/net/rds/message.c
-+++ b/net/rds/message.c
-@@ -180,6 +180,7 @@ void rds_message_put(struct rds_message *rm)
- 		rds_message_purge(rm);
- 
- 		kfree(rm);
-+		rm = NULL;
- 	}
+diff --git a/net/tipc/bearer.h b/net/tipc/bearer.h
+index 6bf4550aa1ac..57c6a1a719e2 100644
+--- a/net/tipc/bearer.h
++++ b/net/tipc/bearer.h
+@@ -154,9 +154,9 @@ struct tipc_media {
+  * care of initializing all other fields.
+  */
+ struct tipc_bearer {
+-	void __rcu *media_ptr;			/* initalized by media */
+-	u32 mtu;				/* initalized by media */
+-	struct tipc_media_addr addr;		/* initalized by media */
++	void __rcu *media_ptr;			/* initialized by media */
++	u32 mtu;				/* initialized by media */
++	struct tipc_media_addr addr;		/* initialized by media */
+ 	char name[TIPC_MAX_BEARER_NAME];
+ 	struct tipc_media *media;
+ 	struct tipc_media_addr bcast_addr;
+diff --git a/net/tipc/net.c b/net/tipc/net.c
+index a129f661bee3..faf6bf554514 100644
+--- a/net/tipc/net.c
++++ b/net/tipc/net.c
+@@ -89,7 +89,7 @@
+  *     - A spin lock to protect the registry of kernel/driver users (reg.c)
+  *     - A global spin_lock (tipc_port_lock), which only task is to ensure
+  *       consistency where more than one port is involved in an operation,
+- *       i.e., whe a port is part of a linked list of ports.
++ *       i.e., when a port is part of a linked list of ports.
+  *       There are two such lists; 'port_list', which is used for management,
+  *       and 'wait_list', which is used to queue ports during congestion.
+  *
+diff --git a/net/tipc/node.c b/net/tipc/node.c
+index 136338b85504..e0ee83263a39 100644
+--- a/net/tipc/node.c
++++ b/net/tipc/node.c
+@@ -1734,7 +1734,7 @@ int tipc_node_xmit(struct net *net, struct sk_buff_head *list,
  }
- EXPORT_SYMBOL_GPL(rds_message_put);
-diff --git a/net/rds/send.c b/net/rds/send.c
-index 985d0b7713ac..fe5264b9d4b3 100644
---- a/net/rds/send.c
-+++ b/net/rds/send.c
-@@ -665,7 +665,7 @@ static void rds_send_remove_from_sock(struct list_head *messages, int status)
- unlock_and_drop:
- 		spin_unlock_irqrestore(&rm->m_rs_lock, flags);
- 		rds_message_put(rm);
--		if (was_on_sock)
-+		if (was_on_sock && rm)
- 			rds_message_put(rm);
- 	}
  
+ /* tipc_node_xmit_skb(): send single buffer to destination
+- * Buffers sent via this functon are generally TIPC_SYSTEM_IMPORTANCE
++ * Buffers sent via this function are generally TIPC_SYSTEM_IMPORTANCE
+  * messages, which will not be rejected
+  * The only exception is datagram messages rerouted after secondary
+  * lookup, which are rare and safe to dispose of anyway.
 -- 
 2.30.2
 
