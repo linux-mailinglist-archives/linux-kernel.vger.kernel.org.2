@@ -2,87 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B36E5364635
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:35:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D046836463F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 16:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240265AbhDSOff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 10:35:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232302AbhDSOfe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 10:35:34 -0400
-Received: from plekste.mt.lv (bute.mt.lv [IPv6:2a02:610:7501:2000::195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10B00C061763;
-        Mon, 19 Apr 2021 07:35:03 -0700 (PDT)
-Received: from [2a02:610:7501:feff:1ccf:41ff:fe50:18b9] (helo=localhost.localdomain)
-        by plekste.mt.lv with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <gatis@mikrotik.com>)
-        id 1lYUzJ-0000xj-5d; Mon, 19 Apr 2021 17:34:57 +0300
-From:   Gatis Peisenieks <gatis@mikrotik.com>
-To:     chris.snook@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        hkallweit1@gmail.com, jesse.brandeburg@intel.com,
-        dchickles@marvell.com, tully@mikrotik.com, eric.dumazet@gmail.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Gatis Peisenieks <gatis@mikrotik.com>
-Subject: [PATCH net-next 4/4] atl1c: enable rx csum offload on Mikrotik 10/25G NIC
-Date:   Mon, 19 Apr 2021 17:34:49 +0300
-Message-Id: <20210419143449.751852-5-gatis@mikrotik.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210419143449.751852-1-gatis@mikrotik.com>
-References: <20210419143449.751852-1-gatis@mikrotik.com>
+        id S240228AbhDSOg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 10:36:26 -0400
+Received: from mout01.posteo.de ([185.67.36.65]:37135 "EHLO mout01.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239842AbhDSOgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 10:36:24 -0400
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id AC653240029
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 16:35:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1618842952; bh=Q4FpEAfTUHaz0QL2Th9Hes8LqYTrL/RKsTEwI7exR10=;
+        h=From:To:Cc:Cc:Subject:Date:From;
+        b=Zulet0XVS9yE24s/RDNr/DTF4oUHAtBiGq1V3xO6h/1sw9nboeZFNRyMvkYhKQwXe
+         Vb2Kb1A6Vw3GXSig+vB2RxpCx1d399FbBBPInDi4IvybHzvZaGqtXn4O7h38aXWRqF
+         5/yyiBIvcKlTavX52bKcIJ6QrnZmUFjnZpGAGmpNV3SHHeoyBjfdTuD+8YhG2fSnUU
+         5YNMaXbkLUB5sTLIXI5qr1epDUm7mvRZcZeuGJfxwIIV3GvIB5C7BDEq9Zmm4e3kcK
+         Z8U3KeIvTSudlD9Mjt2kfxpdvVeQ+z9K1wXc1gRg75D/PuIP7p0k42C/WhKz3wrQ7J
+         cMElHc70BRR9g==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4FP8WC51R4z6tmZ;
+        Mon, 19 Apr 2021 16:35:51 +0200 (CEST)
+From:   Alexander Egorenkov <egorenar@posteo.net>
+To:     Christoph Hellwig <hch@infradead.org>,
+        Alexander Egorenkov <egorenar-dev@posteo.net>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] lib: scatterlist: Fix SGL length in sg_split() if
+ !CONFIG_NEED_SG_DMA_LENGTH
+In-Reply-To: <20210419092325.GA3215674@infradead.org>
+References: <20210418081441.5040-1-egorenar-dev@posteo.net>
+ <20210419092325.GA3215674@infradead.org>
+Date:   Mon, 19 Apr 2021 14:35:50 +0000
+Message-ID: <87y2de4a0p.fsf@posteo.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mikrotik 10/25G NIC supports hw checksum verification on rx for
-IP/IPv6 + TCP/UDP packets. HW checksum offload helps reduce host
-cpu load.
+Christoph Hellwig <hch@infradead.org> writes:
 
-This enables the csum offload specifically for Mikrotik 10/25G NIC
-as other HW supported by the driver is known to have problems with it.
+> On Sun, Apr 18, 2021 at 08:14:41AM +0000, Alexander Egorenkov wrote:
+>> If CONFIG_NEED_SG_DMA_LENGTH is NOT enabled then sg_dma_len() is an alias
+>> for the length field in a SGL. In that case sg_split() wrongly resets
+>> the length of split SGLs to zero after it was set correctly before.
+>
+> Why is this routine messing with sg_dma_address and
+> sg_dma_lensg_dma_lensg_dma_len at all?  This whole sg_spli() routine
+> seems rather dangerous because ownership and state of the DMA mapping is
+> entirely unclear.
 
-TCP iperf3 to Threadripper 3960X with NIC improved 16.5 -> 20.0 Gbps
-with mtu=1500.
+If i understood it correctly, then sg_split_phys() creates a new SGL
+from the given one, so it makes sense to initialize DMA fields of the
+new SGL. sg_split() allows one to split the given SGL into multiple ones
+and the original one doesn't have to be dma-mapped which is indicated by the
+parameter in_mapped_nents > 0.
 
-Signed-off-by: Gatis Peisenieks <gatis@mikrotik.com>
----
- drivers/net/ethernet/atheros/atl1c/atl1c.h      | 2 ++
- drivers/net/ethernet/atheros/atl1c/atl1c_main.c | 5 +++++
- 2 files changed, 7 insertions(+)
-
-diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c.h b/drivers/net/ethernet/atheros/atl1c/atl1c.h
-index 3fda7eb3bd69..9d70cb7544f1 100644
---- a/drivers/net/ethernet/atheros/atl1c/atl1c.h
-+++ b/drivers/net/ethernet/atheros/atl1c/atl1c.h
-@@ -241,6 +241,8 @@ struct atl1c_tpd_ext_desc {
- #define RRS_PACKET_PROT_IS_IPV6_ONLY(word) \
- 	((((word) >> RRS_PROT_ID_SHIFT) & RRS_PROT_ID_MASK) == 6)
- 
-+#define RRS_MT_PROT_ID_TCPUDP	BIT(19)
-+
- struct atl1c_recv_ret_status {
- 	__le32  word0;
- 	__le32	rss_hash;
-diff --git a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-index 920e408ce7b4..9795657d6f58 100644
---- a/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-+++ b/drivers/net/ethernet/atheros/atl1c/atl1c_main.c
-@@ -1670,6 +1670,11 @@ static irqreturn_t atl1c_intr(int irq, void *data)
- static inline void atl1c_rx_checksum(struct atl1c_adapter *adapter,
- 		  struct sk_buff *skb, struct atl1c_recv_ret_status *prrs)
- {
-+	if (adapter->hw.nic_type == athr_mt) {
-+		if (prrs->word3 & RRS_MT_PROT_ID_TCPUDP)
-+			skb->ip_summed = CHECKSUM_UNNECESSARY;
-+		return;
-+	}
- 	/*
- 	 * The pid field in RRS in not correct sometimes, so we
- 	 * cannot figure out if the packet is fragmented or not,
--- 
-2.31.1
-
+Regards
+Alex
