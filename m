@@ -2,100 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45EEB364CCF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 23:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D08364CD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 23:07:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238385AbhDSVHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 17:07:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49628 "EHLO
+        id S239801AbhDSVIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 17:08:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbhDSVHv (ORCPT
+        with ESMTP id S229718AbhDSVIL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 17:07:51 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3588FC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 14:07:21 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id h8so2288130edb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 14:07:21 -0700 (PDT)
+        Mon, 19 Apr 2021 17:08:11 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C6EC06174A;
+        Mon, 19 Apr 2021 14:07:41 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id e8-20020a17090a7288b029014e51f5a6baso14114703pjg.2;
+        Mon, 19 Apr 2021 14:07:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MqWPSSLK1ZAc2II95YLqkgqUWBy+c7lJqMXj3jcV9S0=;
-        b=T3Q7GLrxBf5JAI3wJ57yqVrAKv9Tyw9NnQ6Pj9uHFyMTtITMSYJx7SD5I6jxpacruB
-         1/1qMGUUUISgiLxGjHIC+IjuuGWhBd85mXZfPAS+bcnN+cdo03XjEsBydNwygwyZOBx+
-         FLtB7j/A670+BO2tcPhWG/tuRiaGmChnI8tx4QBXwjhfc8C8h+ooJL2PZcBjInLA+3pZ
-         jLy3h1dvm07FmUWlY82Dtqkmp/xUTBSFSgzJwTmuWiIoIBa7kigXVIUhhb7av2zipHtF
-         zDaAjO9cV3KnQP9ykUue7bGtTud2XCUpXdBNUiwbd6j547d3vHFBwHQh91eK6KHHD3u9
-         nJyg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Y8JIYaQXesJ/FSlE2RZj4qiVby5imoQPp64AtT50fD4=;
+        b=CRk0h/csD26RwKwKeA5HSOJekF+hylcD5yMMtU2NbFWTQvOaKVBvEU6m18uZ/ccdYE
+         Ga44+kWZWt8JOLWV0ach/f89Oe4JH76Q8w/jkYoLdiQM3k9unVhNJoqQJGo7gxXOcDn4
+         tn1oHYOtDLUjLj9O9wZL/HIXU9OJ8A38TA7V+G/3vQkNa/dDJkk3xRY567y1tShYvOiM
+         EzpuzstFVbgPdyQx+mcrOIRb/1IlU6pLhr4l/Zehva2pcD8DEsM9ycigb9/xTJgO0cTt
+         M+DvyPLrpyMk5tGsmO4Sg7j/Ca9T0zRdusnzxRJCybpHVRudU2R5V2n0nT0MsifbihMA
+         5c9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MqWPSSLK1ZAc2II95YLqkgqUWBy+c7lJqMXj3jcV9S0=;
-        b=byb700zTP9h4Qx1O/wovIkkPPTwWXgLvkY9SY4xl+kWPHBqteagkuT5kpyF1czViQo
-         Udb1FVS4wQ7cjv35t8CKO5rGYclcj/bzzom1B9/XoN4dtBVU33XGnCtx6RJyRDGWi4M/
-         N8M0Tgrg1l7HGQVoX8RQLdLLK3yXJ3zIpdDd/0qd79xhJkWcZ8XP1Jpor3y23xceevCg
-         CX1T3HESmw7Z9zINh3jS9vVwT6n/WW9WVSB0s5U4n2ZLAI5wHxG1Nd7tvbRhHY6BhMQl
-         iU2RQ0bqc++F8BwhSf9ZybMxrskc447gI7sUTBPycFCEnCW/+KYaPGY2/UaNcFfBfk6d
-         27Cg==
-X-Gm-Message-State: AOAM532b9pc+JTVrRRRxsPY5q3j6aJ9aun8bn/6X8amPw2W6zomFvbwM
-        LUS9DjnarOK3YQvA9dseA3Y3RshdE6mS9tPRX1w7t9v33tq33A==
-X-Google-Smtp-Source: ABdhPJzxIOhgV/ML+J0N2gtnQmUaGvRP/H4Rj7HWzg7DRfZR6INVWCd21eAAL6//fvQeqohKO8x/0DFQsCYeb3YY11M=
-X-Received: by 2002:aa7:dd0f:: with SMTP id i15mr8570558edv.12.1618866439584;
- Mon, 19 Apr 2021 14:07:19 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Y8JIYaQXesJ/FSlE2RZj4qiVby5imoQPp64AtT50fD4=;
+        b=EADq2mvVgL+TTHgGQjRbMRKcPF7ts8zo5HinfPKGZ2WhdZUf72lo8EEU8z/VRITi2n
+         Ub9N2E0li69ixsRGfK+vj6ue4R0wFQpFfEFzj/Ago/USt8nHnBXEZcz/WK+b9u5ABUFA
+         MTWbfMZ61NQ42JGl/o9VyWM6/E8t7BVH0NG9caxsZiMFZNzOU2MSgm+EMOl6xzFhtlSw
+         BO4SM6r/2p+0hkgkTEn8mTnIrVh7ZDLB6JR8Blp5FlhKbGuVLOjCxCMnyD58keOrRSi6
+         8rBnpdOtHPtiK99TXJ0+fQKZrWAlT8wYsrD0YK3+QCCyk0q7o10RbgQgWs316vZNRAWr
+         qC+A==
+X-Gm-Message-State: AOAM531dsG/5xjj3IbfcdLengLzHDl8MqYXHm4VXvtT6oGrQVP/PfTFK
+        aRaDd9f8j7gFcVCEuyv6NlF+W+zlDHE=
+X-Google-Smtp-Source: ABdhPJxStt5AiMvqBuYNGbjsh8Idvcawv1saDuzFD9NavXzqi8mLWNSIYtMYi2LntvsZk+vlS0aHOw==
+X-Received: by 2002:a17:90a:c984:: with SMTP id w4mr1091371pjt.110.1618866460942;
+        Mon, 19 Apr 2021 14:07:40 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id f135sm13235266pfa.102.2021.04.19.14.07.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Apr 2021 14:07:40 -0700 (PDT)
+Subject: Re: [PATCH 5.10 000/103] 5.10.32-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210419130527.791982064@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <dcf6134c-9a67-cc1d-c8bc-75178557296b@gmail.com>
+Date:   Mon, 19 Apr 2021 14:07:38 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <20210419184455.2987243-1-lrizzo@google.com> <20210419191712.GB26214@worktop.programming.kicks-ass.net>
-In-Reply-To: <20210419191712.GB26214@worktop.programming.kicks-ass.net>
-From:   Luigi Rizzo <lrizzo@google.com>
-Date:   Mon, 19 Apr 2021 23:07:08 +0200
-Message-ID: <CAMOZA0JxwQFfA=acfr255xcR85ztv-URwaQQFHR6RrLk-cPbvg@mail.gmail.com>
-Subject: Re: [PATCH] smp: add a best_effort version of smp_call_function_many()
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, axboe@kernel.dk,
-        paulmck@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210419130527.791982064@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 9:17 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Apr 19, 2021 at 11:44:55AM -0700, Luigi Rizzo wrote:
-> > Regardless of the 'wait' argument, smp_call_function_many() must spin
-> > if any of the target CPUs have their csd busy waiting to be processed
-> > for a previous call. This may cause high tail latencies e.g. when some
-> > of the target CPUs are running functions that disable interrupts for a
-> > long time; getrusage() is one possible culprit.
-> >
-> > Here we introduce a variant, __smp_call_function_many(), that adds
-> > a third 'best_effort' mode to the two existing ones (nowait, wait).
-> > In best effort mode, the call will skip CPUs whose csd is busy, and if
-> > any CPU is skipped it returns -EBUSY and the set of busy in the mask.
-> > This allows the caller to decide how to proceed, e.g. it might retry at
-> > a later time, or use a private csd, etc..
-> >
-> > The new function is a compromise to avoid touching existing callers of
-> > smp_call_function_many(). If the feature is considered interesting, we
-> > could even replace the 'wait' argument with a ternary 'mode' in all
-> > smp_call_function_*() and derived methods.
->
-> I don't see a user of this...
 
-This is actually something for which I was looking for feedback:
 
-my use case is similar to a periodic garbage collect request:
-the caller tells targets that it may be time to do some work,
-but it does not matter if the request is dropped because the
-caller knows who was busy and will reissue pending requests later.
+On 4/19/2021 6:05 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.32 release.
+> There are 103 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 21 Apr 2021 13:05:09 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.32-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-I would expect something like the above could be useful e.g.
-in various kinds of resource manager.
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
 
-However, a grep for on_each_cpu_*() and smp_call_function_*()
-mostly returns synchronous calls (wait=1).
-
-Any possible candidates that people can think of ?
-
-thanks
-luigi
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
