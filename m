@@ -2,133 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47992364E93
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF89364E9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232452AbhDSXX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 19:23:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230121AbhDSXX1 (ORCPT
+        id S231663AbhDSX3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 19:29:34 -0400
+Received: from mo-csw1515.securemx.jp ([210.130.202.154]:42952 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229842AbhDSX3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 19:23:27 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE9BC061763
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 16:22:56 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id v6so9366955oiv.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 16:22:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZL8naNYW6+lQXsNwg4wa0reXC9U90f82sYjKZ1TEVfg=;
-        b=lTYqQB87lrkthc2zaFVsrnngpUwM/bE6ADojNZ8AnZ86bGhfIVaGCf5I+IB7K64wFm
-         bEvBqBGiBa1vz5m5u2RXlWexGoz47jkdj8v6FPsMdx4RHsSMgKsLeOeKN6vC1Wt1Dv2A
-         IT1iGKb/4Z4/1v4/5nOhb8bjOS/kuXGeY0ilKnMHxlIK2s9t6h2B2wYj916oeP3jIO+F
-         RLUiTXq4xd3t1ytVVL1V8HEW66UQMejHOtoI76Al6gKbQB+JZZSpdhhPXRq9Nz4Hj8I/
-         1ugfXXOlvdblQcxp68El6gutRL+DdYztw6ZKVklNT67lCxpUrskn6vK4yR5NQPgy9ufm
-         ryHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZL8naNYW6+lQXsNwg4wa0reXC9U90f82sYjKZ1TEVfg=;
-        b=dXpmqVXp1UUloXgRWmLpNWPeDhJvPtymyz4chAXUANsw7xn7M2TQm5pdr6KNiG9qix
-         aHcQdT2Nh5AsTwxF1Oe9NrvnQ0OE3hxHSRFkPGDtnApBAbS4nxv6F51mUpcZKPeeBiZf
-         4oxSceO6S6bAWeCwPDNUMpbX/oc6i7LCZbxD3MJLxRGH4XgjqfuKJF0AkBw2rMAzfpD1
-         pzr5UJfliEPYWpH9CgjqEB0WQa/STZd+xT9NWqtdw1s6JOOmbC2Plcm/STZORv2/LPrv
-         gjEjIli6vLFd74ZNQY4qWAXY9lWLt55znkaU8q2+M1nrxhfflbu9ON9D4RXrlfa3juv7
-         5Yiw==
-X-Gm-Message-State: AOAM530JF6SWoJl0hO90SLby+wayCTPi6wITPCUCRqnZz4KpYBc6mnk0
-        5d09Rt00uHrAYHlarf+rCg5lxw==
-X-Google-Smtp-Source: ABdhPJzJBZHzx45B2l5HoTJYouZf0YYV2op+G/HwUYciFdnEwwrICxLjS7ofpfvnLtqzJC619tgCYw==
-X-Received: by 2002:aca:ed50:: with SMTP id l77mr1029626oih.13.1618874576101;
-        Mon, 19 Apr 2021 16:22:56 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id c12sm3134418oou.26.2021.04.19.16.22.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 16:22:55 -0700 (PDT)
-Date:   Mon, 19 Apr 2021 18:22:53 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     viresh.kumar@linaro.org, agross@kernel.org, rjw@rjwysocki.net,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        amit.kucheria@linaro.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, jeffrey.l.hugo@gmail.com
-Subject: Re: [PATCH v4 5/7] cpufreq: qcom-hw: Implement CPRh aware OSM
- programming
-Message-ID: <20210419232253.GW1538589@yoga>
-References: <20210119174557.227318-1-angelogioacchino.delregno@somainline.org>
- <20210119174557.227318-6-angelogioacchino.delregno@somainline.org>
- <20210419185203.GQ1538589@yoga>
- <e486d752-b99a-3479-b2ae-b37cdb3edd9a@somainline.org>
+        Mon, 19 Apr 2021 19:29:32 -0400
+Received: by mo-csw.securemx.jp (mx-mo-csw1515) id 13JNSKma008066; Tue, 20 Apr 2021 08:28:20 +0900
+X-Iguazu-Qid: 34tre4erL1uXq8Lo6m
+X-Iguazu-QSIG: v=2; s=0; t=1618874900; q=34tre4erL1uXq8Lo6m; m=EC0wCzbTh/qdnd5+DAtK9Y6Bek2gq4A5/QgKBXv6o1E=
+Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
+        by relay.securemx.jp (mx-mr1510) id 13JNSIgK023852
+        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 20 Apr 2021 08:28:18 +0900
+Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id 1C0A91000A3;
+        Tue, 20 Apr 2021 08:28:18 +0900 (JST)
+Received: from hop001.toshiba.co.jp ([133.199.164.63])
+        by enc01.toshiba.co.jp  with ESMTP id 13JNSHw1015773;
+        Tue, 20 Apr 2021 08:28:17 +0900
+Date:   Tue, 20 Apr 2021 08:28:00 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Yu Chen <chenyu56@huawei.com>,
+        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Joe Perches <joe@perches.com>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] MAINTAINERS: rectify entry for ARM/TOSHIBA VISCONTI
+ ARCHITECTURE
+X-TSB-HOP: ON
+Message-ID: <20210419232800.cbcyjlyrqywkrqdt@toshiba.co.jp>
+References: <20210419092609.3692-1-lukas.bulwahn@gmail.com>
+ <20210419092609.3692-2-lukas.bulwahn@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e486d752-b99a-3479-b2ae-b37cdb3edd9a@somainline.org>
+In-Reply-To: <20210419092609.3692-2-lukas.bulwahn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 19 Apr 15:59 CDT 2021, AngeloGioacchino Del Regno wrote:
+Hi,
 
-> Il 19/04/21 20:52, Bjorn Andersson ha scritto:
-> > On Tue 19 Jan 11:45 CST 2021, AngeloGioacchino Del Regno wrote:
-[..]
-> > > +static int qcom_cpufreq_hw_acd_init(struct device *cpu_dev,
-> > > +				    struct cpufreq_policy *policy,
-> > > +				    int index)
-> > > +{
-[..]
-> > > +	acd_resname = kasprintf(GFP_KERNEL, "osm-acd%d", index);
-> > 
-> > How about just sprintf() into a 10 byte array on the stack?
-> > 
+Thanks for your patch.
+
+On Mon, Apr 19, 2021 at 11:26:07AM +0200, Lukas Bulwahn wrote:
+> Commit 836863a08c99 ("MAINTAINERS: Add information for Toshiba Visconti ARM
+> SoCs") refers to the non-existing file toshiba,tmpv7700-pinctrl.yaml in
+> ./Documentation/devicetree/bindings/pinctrl/. Commit 1825c1fe0057
+> ("pinctrl: Add DT bindings for Toshiba Visconti TMPV7700 SoC") originating
+> from the same patch series however adds the file
+> toshiba,visconti-pinctrl.yaml in that directory instead.
 > 
-> My motto, apart the clearly possible chance to get 1000 clusters in the
-> future (lol), is to free the (very little) memory as soon as I'm done with
-> it.
-> 
-> Was I too much paranoid there again? :)))
+> So, refer to toshiba,visconti-pinctrl.yaml in the ARM/TOSHIBA VISCONTI
+> ARCHITECTURE section instead.
 > 
 
-Feel free to waste a couple of extra bytes in that array then ;)
+Could you add  Fixes: tag?
 
-[..]
-> > >   static int qcom_cpufreq_hw_driver_probe(struct platform_device *pdev)
-[..]
-> > > +		/*
-> > > +		 * If the power domain device is not registered yet, then
-> > > +		 * defer probing this driver until that is available.
-> > > +		 */
-> > > +		pd_dev = of_find_device_by_node(pd_node);
-> > > +		if (!pd_dev || !pd_dev->dev.driver ||
-> > > +		    !device_is_bound(&pd_dev->dev))
-> > > +			return -EPROBE_DEFER;
-> > 
-> > I wonder if there's a more appropriate way to probe defer on resources
-> > described in the CPU nodes...
-> > 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+
+Acked-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+
+> ---
+>  MAINTAINERS | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> I was wondering the same. I had nightmares about this one.
-> If there's any better way... please, let me know!
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index c54b8e4520d1..d31c8058b17f 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2669,7 +2669,7 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/iwamatsu/linux-visconti.git
+>  F:	Documentation/devicetree/bindings/arm/toshiba.yaml
+>  F:	Documentation/devicetree/bindings/net/toshiba,visconti-dwmac.yaml
+>  F:	Documentation/devicetree/bindings/gpio/toshiba,gpio-visconti.yaml
+> -F:	Documentation/devicetree/bindings/pinctrl/toshiba,tmpv7700-pinctrl.yaml
+> +F:	Documentation/devicetree/bindings/pinctrl/toshiba,visconti-pinctrl.yaml
+>  F:	Documentation/devicetree/bindings/watchdog/toshiba,visconti-wdt.yaml
+>  F:	arch/arm64/boot/dts/toshiba/
+>  F:	drivers/net/ethernet/stmicro/stmmac/dwmac-visconti.c
+> -- 
+> 2.17.1
 > 
-
-Let's see if Viresh has any good suggestions, otherwise let's stick with
-this for now.
-
 > 
-> P.S.: There is a v5 of this (and CPR3) set(s) that I had sent immediately
-> after this v4, back in January, addressing the big abuse of the OPP API that
-> is present in the v4 (this) version of the driver.
-> 
-
-May I ask for you to incorporate the changes I pointed out here and post
-a v6 instead of me re-reviewing v5? I'll make sure to prioritize the
-next round.
-
-Thanks,
-Bjorn
