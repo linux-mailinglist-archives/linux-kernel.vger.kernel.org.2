@@ -2,87 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DD68363B6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 08:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8280D363B71
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Apr 2021 08:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237448AbhDSGYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 02:24:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51586 "EHLO
+        id S237468AbhDSGZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 02:25:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbhDSGYt (ORCPT
+        with ESMTP id S229840AbhDSGZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 02:24:49 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C61C06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Apr 2021 23:24:19 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lYNKE-0001CT-97; Mon, 19 Apr 2021 08:24:02 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lYNK8-0006Ew-S7; Mon, 19 Apr 2021 08:23:56 +0200
-Date:   Mon, 19 Apr 2021 08:23:56 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
-        linux-pwm@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
-        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/2] pwm: visconti: Add Toshiba Visconti SoC PWM
- support
-Message-ID: <20210419062356.bfgkcdrceovdwkh5@pengutronix.de>
-References: <20210419000007.1944301-1-nobuhiro1.iwamatsu@toshiba.co.jp>
- <20210419000007.1944301-3-nobuhiro1.iwamatsu@toshiba.co.jp>
+        Mon, 19 Apr 2021 02:25:06 -0400
+Received: from canardo.mork.no (canardo.mork.no [IPv6:2001:4641::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38460C061760;
+        Sun, 18 Apr 2021 23:24:37 -0700 (PDT)
+Received: from miraculix.mork.no (fwa161.mork.no [192.168.9.161])
+        (authenticated bits=0)
+        by canardo.mork.no (8.15.2/8.15.2) with ESMTPSA id 13J6OA33005567
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Mon, 19 Apr 2021 08:24:10 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mork.no; s=b;
+        t=1618813450; bh=E7X1Z/C7m4uTr61eYxZTSepR9nL5wv+XsO96GsmyN1o=;
+        h=From:To:Cc:Subject:References:Date:Message-ID:From;
+        b=Ik288FpI4+tP3NUif79juWd79WI9mF6EwixRHDNl9pM365SLN/2YUjFGhP517DrAq
+         iLKyA9hXRV4N1CNtUMM0qq9onUb9jv5Jpf3XyXpHfg8L0Qpk+MtZXnF0Otd1cyAcmB
+         tak3jj60+xS63bbFXtSk0SkE9+bzRGtYPXIk7s6M=
+Received: from bjorn by miraculix.mork.no with local (Exim 4.94)
+        (envelope-from <bjorn@mork.no>)
+        id 1lYNKL-000bQN-NA; Mon, 19 Apr 2021 08:24:09 +0200
+From:   =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
+To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Greg Ungerer <gerg@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Sean Wang <sean.wang@kernel.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] dt-bindings: net: mediatek: support MT7621 SoC
+Organization: m
+References: <20210419034253.21322-1-ilya.lipnitskiy@gmail.com>
+Date:   Mon, 19 Apr 2021 08:24:09 +0200
+In-Reply-To: <20210419034253.21322-1-ilya.lipnitskiy@gmail.com> (Ilya
+        Lipnitskiy's message of "Sun, 18 Apr 2021 20:42:53 -0700")
+Message-ID: <878s5e94hi.fsf@miraculix.mork.no>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zgu4pc5obhcggw3s"
-Content-Disposition: inline
-In-Reply-To: <20210419000007.1944301-3-nobuhiro1.iwamatsu@toshiba.co.jp>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Virus-Scanned: clamav-milter 0.102.4 at canardo
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com> writes:
 
---zgu4pc5obhcggw3s
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Add missing binding documentation for SoC support that has been in place
+> since v5.1
+>
+> Fixes: 889bcbdeee57 ("net: ethernet: mediatek: support MT7621 SoC etherne=
+t hardware")
+> Cc: Bj=C3=B8rn Mork <bjorn@mork.no>
+> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/net/mediatek-net.txt | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/Documentation/devicetree/bindings/net/mediatek-net.txt b/Doc=
+umentation/devicetree/bindings/net/mediatek-net.txt
+> index 72d03e07cf7c..950ef6af20b1 100644
+> --- a/Documentation/devicetree/bindings/net/mediatek-net.txt
+> +++ b/Documentation/devicetree/bindings/net/mediatek-net.txt
+> @@ -10,6 +10,7 @@ Required properties:
+>  - compatible: Should be
+>  		"mediatek,mt2701-eth": for MT2701 SoC
+>  		"mediatek,mt7623-eth", "mediatek,mt2701-eth": for MT7623 SoC
+> +		"mediatek,mt7621-eth": for MT7621 SoC
+>  		"mediatek,mt7622-eth": for MT7622 SoC
+>  		"mediatek,mt7629-eth": for MT7629 SoC
+>  		"ralink,rt5350-eth": for Ralink Rt5350F and MT7628/88 SoC
 
-On Mon, Apr 19, 2021 at 09:00:07AM +0900, Nobuhiro Iwamatsu wrote:
-> Add driver for the PWM controller on Toshiba Visconti ARM SoC.
->=20
-> Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
 
-Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+Thanks for taking care of this!
 
-Thanks for your endurance to improve the driver
-Uwe
+Note, however, that this compatible value is defined in
+Documentation/devicetree/bindings/net/ralink,rt2880-net.txt
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+I believe that file should go away. These two files are both documenting
+the same compatible property AFAICS.
 
---zgu4pc5obhcggw3s
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmB9IfkACgkQwfwUeK3K
-7AlgHwf+Nx79sbNY1GlGt+gijv/vJoNs1ZFqTScJnkczL704cUw0dg4phGRgFgb9
-f89mQTXKNPKmRFvEs2NbWKWLQ4wuvLb5V8VIf1h/0BxfFzqhOKWNxjBDbkRAZjzp
-02SfpghGEgFzGzOD0h/9CuwYCcb8kox51Vn4fkLYSvQGV1kvlBEVwAzgR3pXqzc9
-6+cMBOgGdkuQqmjPAB9IrlDK0UzJAVbORkC5ATJFzyWIHKp+FI29sk6cPjrBUMmA
-uMFRBW2LgEwCRZ/Vk0VXVdHIQhd2uW7gssU8E1F0ZB7ipnd7NnsdmXm/C60Pi7Yq
-ICOagB8h0YuiptPdst7kTok8nEW5gA==
-=Uaqc
------END PGP SIGNATURE-----
-
---zgu4pc5obhcggw3s--
+Bj=C3=B8rn
