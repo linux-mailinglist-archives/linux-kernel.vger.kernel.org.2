@@ -2,152 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968E1365A55
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA56365A59
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232373AbhDTNjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:39:43 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:41466 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231661AbhDTNjl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:39:41 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FPlCH1bXtz9v0D3;
-        Tue, 20 Apr 2021 15:39:07 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id czzfRPgP9jMC; Tue, 20 Apr 2021 15:39:07 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FPlCH0j68z9v0D2;
-        Tue, 20 Apr 2021 15:39:07 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 62FFF8B807;
-        Tue, 20 Apr 2021 15:39:08 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id y3otevbcdMcC; Tue, 20 Apr 2021 15:39:08 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id DD6C18B7ED;
-        Tue, 20 Apr 2021 15:39:07 +0200 (CEST)
-Subject: Re: [PATCH v2 2/2] powerpc/legacy_serial: Use early_ioremap()
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        chris.packham@alliedtelesis.co.nz
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <0d51620eacf036d683d1a3c41328f69adb601dc0.1618925560.git.christophe.leroy@csgroup.eu>
- <103ed8ee9e5973c958ec1da2d0b0764f69395d01.1618925560.git.christophe.leroy@csgroup.eu>
-Message-ID: <fe1c0be9-68fb-2c2e-f939-40aa2fe5745a@csgroup.eu>
-Date:   Tue, 20 Apr 2021 15:39:06 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S232623AbhDTNkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:40:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232526AbhDTNj5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 09:39:57 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B0C4C06174A;
+        Tue, 20 Apr 2021 06:39:26 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id j5so36689918wrn.4;
+        Tue, 20 Apr 2021 06:39:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Cz/GOpaJvoOGO7WnzoMrMyjou+pDiBvr8VXW+xJYUMQ=;
+        b=mjpOW1aupBAvxnwb3M+g0xZ0S7X3rHPTCLpZYQ06tU4qDYyr4hnCxjdz/lGWmRUGrI
+         1Mx3OmIosZti9cq5AUDrXQWcyyXzF6XD/4paZ6IvUDspMmuN0SoVr7/aTxuLT7HRL0fX
+         SBtInp6BzbRERCBzzSrr1mujnACI1op9RvjOtUN+3b+WfN7DS+l3/F+tJxxhsoUPl6JE
+         AqnMIj44/rqmxFhbV9dbUPqXK+irNLh1cndo1acVFwTMhzqumIlPbVDAMlMApTOU57rX
+         d+geiGMxZJZwdxy+Czdt8iZvhX3uwp2/r+juuGUSPuQ668g27tz27crtTSW8fYMUkjgI
+         TVZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Cz/GOpaJvoOGO7WnzoMrMyjou+pDiBvr8VXW+xJYUMQ=;
+        b=c1WeYj85hHMI0YgLurBEPyekq8qK+O0Dfgv6I2ya4+fBUl94+oeY0wzA5I/kxoHZ1k
+         ooAozXxX/oKGG36T1ptMvYSKOLjsPAUGFoj1JdIep1ycdEQ1W82fMIdLrrTrw3clMc59
+         FjZI/BHAE8s6B9axeAF23Q8ENEg844nawIR1r2k5S7ii8V6lAK8n1mpNSqR/tSxoSSfm
+         xZVEpOqp0N6XTM4GOcv6TrcAAZgnC7SpOxgYTpqi5DbTghZ0aMNbr4JKkyYibIdwhCke
+         0Bg9O3Bsas2d8Vo+2FlBGj/5QFpXAEEnSe09u98uCjYagv5R9nXzLamxj78GbFkoG06v
+         j2tg==
+X-Gm-Message-State: AOAM533LVBAkTeTTFZM5FuWnvbiZ30uO69qGOND+83xaZfPKHKb8IpKa
+        RN1K2E56dDjt6KwtgJ36erY=
+X-Google-Smtp-Source: ABdhPJwCf1u+I/VEWDIP4hJT5ELIXuKYNI34lNH1EbOD+2IFzQuYgCvtzNwH3YdS/1HRpkTGLc6tjg==
+X-Received: by 2002:adf:e2cc:: with SMTP id d12mr15334857wrj.90.1618925964849;
+        Tue, 20 Apr 2021 06:39:24 -0700 (PDT)
+Received: from ard0534 ([197.240.34.190])
+        by smtp.gmail.com with ESMTPSA id q5sm3523570wmj.20.2021.04.20.06.39.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 20 Apr 2021 06:39:24 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 14:39:21 +0100
+From:   Khaled Romdhani <khaledromdhani216@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, khaledromdhani216@gmail.com
+Subject: Re: [PATCH v2] fs/btrfs: Fix uninitialized variable
+Message-ID: <20210420133921.GB3433@ard0534>
+References: <20210417153616.25056-1-khaledromdhani216@gmail.com>
+ <20210420102214.GA1981@kadam>
 MIME-Version: 1.0
-In-Reply-To: <103ed8ee9e5973c958ec1da2d0b0764f69395d01.1618925560.git.christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210420102214.GA1981@kadam>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 20, 2021 at 01:22:14PM +0300, Dan Carpenter wrote:
+> On Sat, Apr 17, 2021 at 04:36:16PM +0100, Khaled ROMDHANI wrote:
+> > As reported by the Coverity static analysis.
+> > The variable zone is not initialized which
+> > may causes a failed assertion.
+> > 
+> > Addresses-Coverity: ("Uninitialized variables")
+> > Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
+> > ---
+> > v2: add a default case as proposed by David Sterba
+> > ---
+> >  fs/btrfs/zoned.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> > index eeb3ebe11d7a..82527308d165 100644
+> > --- a/fs/btrfs/zoned.c
+> > +++ b/fs/btrfs/zoned.c
+> > @@ -143,6 +143,9 @@ static inline u32 sb_zone_number(int shift, int mirror)
+> >  	case 0: zone = 0; break;
+> >  	case 1: zone = 1ULL << (BTRFS_SB_LOG_FIRST_SHIFT - shift); break;
+> >  	case 2: zone = 1ULL << (BTRFS_SB_LOG_SECOND_SHIFT - shift); break;
+> 
+> It took me a while to spot these break statements.
+> 
+> > +	default:
+> > +		zone = 0;
+> > +	break;
+> 
+> This break needs to be indented one more tab.
+> 
+> >  	}
+> >  
+> >  	ASSERT(zone <= U32_MAX);
+> 
+> regards,
+> dan carpenter
 
+Sorry, but I checked the patch using checkpatch.pl
+before sending it. Is that blocks some smatch parsing process?
 
-Le 20/04/2021 à 15:32, Christophe Leroy a écrit :
-> From: Christophe Leroy <christophe.leroy@c-s.fr>
+In any cases, I will send a V3.
 
-Oops, I forgot to reset the Author. Michael if you apply this patch please update the author and 
-remove the old Signed-off-by
-
-Thanks
-
-> 
-> [    0.000000] ioremap() called early from find_legacy_serial_ports+0x3cc/0x474. Use early_ioremap() instead
-> 
-> find_legacy_serial_ports() is called early from setup_arch(), before
-> paging_init(). vmalloc is not available yet, ioremap shouldn't be
-> used that early.
-> 
-> Use early_ioremap() and switch to a regular ioremap() later.
-> 
-> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->   arch/powerpc/kernel/legacy_serial.c | 33 +++++++++++++++++++++++++----
->   1 file changed, 29 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/powerpc/kernel/legacy_serial.c b/arch/powerpc/kernel/legacy_serial.c
-> index f061e06e9f51..8b2c1a8553a0 100644
-> --- a/arch/powerpc/kernel/legacy_serial.c
-> +++ b/arch/powerpc/kernel/legacy_serial.c
-> @@ -15,6 +15,7 @@
->   #include <asm/udbg.h>
->   #include <asm/pci-bridge.h>
->   #include <asm/ppc-pci.h>
-> +#include <asm/early_ioremap.h>
->   
->   #undef DEBUG
->   
-> @@ -34,6 +35,7 @@ static struct legacy_serial_info {
->   	unsigned int			clock;
->   	int				irq_check_parent;
->   	phys_addr_t			taddr;
-> +	void __iomem			*early_addr;
->   } legacy_serial_infos[MAX_LEGACY_SERIAL_PORTS];
->   
->   static const struct of_device_id legacy_serial_parents[] __initconst = {
-> @@ -325,17 +327,16 @@ static void __init setup_legacy_serial_console(int console)
->   {
->   	struct legacy_serial_info *info = &legacy_serial_infos[console];
->   	struct plat_serial8250_port *port = &legacy_serial_ports[console];
-> -	void __iomem *addr;
->   	unsigned int stride;
->   
->   	stride = 1 << port->regshift;
->   
->   	/* Check if a translated MMIO address has been found */
->   	if (info->taddr) {
-> -		addr = ioremap(info->taddr, 0x1000);
-> -		if (addr == NULL)
-> +		info->early_addr = early_ioremap(info->taddr, 0x1000);
-> +		if (info->early_addr == NULL)
->   			return;
-> -		udbg_uart_init_mmio(addr, stride);
-> +		udbg_uart_init_mmio(info->early_addr, stride);
->   	} else {
->   		/* Check if it's PIO and we support untranslated PIO */
->   		if (port->iotype == UPIO_PORT && isa_io_special)
-> @@ -353,6 +354,30 @@ static void __init setup_legacy_serial_console(int console)
->   	udbg_uart_setup(info->speed, info->clock);
->   }
->   
-> +static int __init ioremap_legacy_serial_console(void)
-> +{
-> +	struct legacy_serial_info *info = &legacy_serial_infos[legacy_serial_console];
-> +	struct plat_serial8250_port *port = &legacy_serial_ports[legacy_serial_console];
-> +	void __iomem *vaddr;
-> +
-> +	if (legacy_serial_console < 0)
-> +		return 0;
-> +
-> +	if (!info->early_addr)
-> +		return 0;
-> +
-> +	vaddr = ioremap(info->taddr, 0x1000);
-> +	if (WARN_ON(!vaddr))
-> +		return -ENOMEM;
-> +
-> +	udbg_uart_init_mmio(vaddr, 1 << port->regshift);
-> +	early_iounmap(info->early_addr, 0x1000);
-> +	info->early_addr = NULL;
-> +
-> +	return 0;
-> +}
-> +early_initcall(ioremap_legacy_serial_console);
-> +
->   /*
->    * This is called very early, as part of setup_system() or eventually
->    * setup_arch(), basically before anything else in this file. This function
-> 
+Thanks.
