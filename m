@@ -2,106 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DBAD3659F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC27F3659C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232214AbhDTN0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:26:51 -0400
-Received: from [139.28.40.42] ([139.28.40.42]:53048 "EHLO
-        tarta.nabijaczleweli.xyz" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S230479AbhDTN0r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:26:47 -0400
-X-Greylist: delayed 512 seconds by postgrey-1.27 at vger.kernel.org; Tue, 20 Apr 2021 09:26:46 EDT
-Received: from tarta.nabijaczleweli.xyz (unknown [192.168.1.250])
-        by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 843573610E5;
-        Tue, 20 Apr 2021 15:17:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=nabijaczleweli.xyz;
-        s=202006; t=1618924662;
-        bh=EiOKgZTBodR81vZVJMjOvy13uxSlbill1AD5HwjJA40=;
-        h=Date:From:Cc:Subject:References:In-Reply-To:From;
-        b=JMSw5V3cZPEnh0ibl7hSxYNACatq5siEbFyf3bfylxYQ8bocw+3oUbbpPbg9Tc6JC
-         hLUYQ27+QBhw03AjC+XCLHy818S6g2Yux5CgdcXqNaAWfrepU/fJywVYl30JHe+u22
-         oJS8Xt6eFQq2Vkw9ZDI2gq9HowuQjxjKqmQQbvgjbkyLnHCcvVBBl9g1K8qoE2J7zv
-         DmF8eWISQAOoL8z22ztElhwyfSXhYgKeePAQsQ2V3TiM02D5Mziv22KvGpZES7Ljc9
-         B21gx1fUgyowu/h+haUXu+BQSfivKnf4w5fyuwXOybfRbjDzsIPk7u5Zdi+vZfPqho
-         fwIE/NT2hT5xQ==
-Date:   Tue, 20 Apr 2021 15:17:41 +0200
-From:   =?utf-8?B?0L3QsNCx?= <nabijaczleweli@nabijaczleweli.xyz>
-Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        Jiri Kosina <jikos@kernel.org>, linux-input@vger.kernel.org,
+        id S232192AbhDTNTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:19:09 -0400
+Received: from mga14.intel.com ([192.55.52.115]:49009 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230479AbhDTNTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 09:19:07 -0400
+IronPort-SDR: EcVCUp8m9mfkRnS6Hq9Z0rFRyoJdzbseQocJdR0NNZsXyKltUYaamG+xXbQQutmmIYbvBiDtRM
+ RoUaNGrpaJyw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="195059301"
+X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
+   d="scan'208";a="195059301"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 06:18:36 -0700
+IronPort-SDR: 6enxqoQb8b4+CtRA6VKuHmGSMcfF1QyHYNS0T2lUBM3FiFBzEn0JNYY+2/0s/RJPSESj96yWqz
+ 8ERsgnkb2RRw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
+   d="scan'208";a="534484698"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga004.jf.intel.com with ESMTP; 20 Apr 2021 06:18:33 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 865631A1; Tue, 20 Apr 2021 16:18:50 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] Stylus-on-touchscreen device support
-Message-ID: <20210420131741.kdgxquhwqureih7c@tarta.nabijaczleweli.xyz>
-References: <cover.1615224800.git.nabijaczleweli@nabijaczleweli.xyz>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] spi: Rename enable1 to activate in spi_set_cs()
+Date:   Tue, 20 Apr 2021 16:18:46 +0300
+Message-Id: <20210420131846.75983-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xoiz3s4du4e5aytw"
-Content-Disposition: inline
-In-Reply-To: <cover.1615224800.git.nabijaczleweli@nabijaczleweli.xyz>
-User-Agent: NeoMutt/20210205
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The enable1 is confusing name. Change it to clearly show what is
+the intention behind it. No functional changes.
 
---xoiz3s4du4e5aytw
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: 25093bdeb6bc ("spi: implement SW control for CS times")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/spi/spi.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-On Mon, Mar 08, 2021 at 06:41:49PM +0100, =D0=BD=D0=B0=D0=B1 wrote:
-> This patchset adds support for stylus-on-touchscreen devices as found on
-> the OneMix 3 Pro and Dell Inspiron 15 7000 2-in-1 (7591), among others;
-> with it, they properly behave like a drawing tablet.
->=20
-> Patches 2 and 4 funxionally depend on patch 1.
-> Patch 4 needs patch 3 to apply.
->=20
-> The output of this patchset and the need for a kernel, rather than
-> userspace, patch was previously discussed here:
->   https://gitlab.freedesktop.org/libinput/libinput/-/merge_requests/558#n=
-ote_792834
->=20
-> Changes in v2:
-> Patch 4 now ANDs the secondary button with the tip switch,
-> since it's otherwise borderline useless to the user.
->=20
-> Ahelenia Ziemia=C5=84ska (4):
->   HID: multitouch: require Finger field to mark Win8 reports as MT
->   HID: multitouch: set Stylus suffix for Stylus-application devices, too
->   HID: input: replace outdated HID numbers+comments with macros
->   HID: input: work around Win8 stylus-on-touchscreen reporting
->=20
->  drivers/hid/hid-input.c      | 54 ++++++++++++++++++++++++++++++++++--
->  drivers/hid/hid-multitouch.c | 18 +++++++-----
->  2 files changed, 62 insertions(+), 10 deletions(-)
->=20
-> --=20
-> 2.20.1
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index b08efe88ccd6..74b2b1dd358b 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -797,7 +797,7 @@ int spi_register_board_info(struct spi_board_info const *info, unsigned n)
+ 
+ static void spi_set_cs(struct spi_device *spi, bool enable)
+ {
+-	bool enable1 = enable;
++	bool activate = enable;
+ 
+ 	/*
+ 	 * Avoid calling into the driver (or doing delays) if the chip select
+@@ -812,7 +812,7 @@ static void spi_set_cs(struct spi_device *spi, bool enable)
+ 
+ 	if (spi->cs_gpiod || gpio_is_valid(spi->cs_gpio) ||
+ 	    !spi->controller->set_cs_timing) {
+-		if (enable1)
++		if (activate)
+ 			spi_delay_exec(&spi->controller->cs_setup, NULL);
+ 		else
+ 			spi_delay_exec(&spi->controller->cs_hold, NULL);
+@@ -825,8 +825,7 @@ static void spi_set_cs(struct spi_device *spi, bool enable)
+ 		if (!(spi->mode & SPI_NO_CS)) {
+ 			if (spi->cs_gpiod)
+ 				/* polarity handled by gpiolib */
+-				gpiod_set_value_cansleep(spi->cs_gpiod,
+-							 enable1);
++				gpiod_set_value_cansleep(spi->cs_gpiod, activate);
+ 			else
+ 				/*
+ 				 * invert the enable line, as active low is
+@@ -844,7 +843,7 @@ static void spi_set_cs(struct spi_device *spi, bool enable)
+ 
+ 	if (spi->cs_gpiod || gpio_is_valid(spi->cs_gpio) ||
+ 	    !spi->controller->set_cs_timing) {
+-		if (!enable1)
++		if (!activate)
+ 			spi_delay_exec(&spi->controller->cs_inactive, NULL);
+ 	}
+ }
+-- 
+2.30.2
 
-Bumping this after a monthish =E2=80=92 is it missing something? Am I?
-
---xoiz3s4du4e5aytw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmB+1HIACgkQvP0LAY0m
-WPE8wBAAkC4INzasLoLgrGLkqcPtP7yAQIu/e5PX5u2s2gUsqIFGjcnNE4ZRgRUo
-J7Hzq5HPVdeoaVkB1J0I8MzJFIuIyjy4wU6eRWIpizl0GQ/IGqAW5YFBfiX/JeV4
-7wsteSnCw+GV5d+LvWeED8x0IA/6RMX2Syyex3uS8+hq0iEVtml3my0rTdg971f3
-1AS+1ALJbp5W1QfAv/DxpSLoVbvrcdqKJcbA6Sh5H1SxUIRr36TL+W5uP2OvWYNr
-jtvcvDfaPrCv1VN5WYnY5wlE9dRA+NpEkem9LksiLSmLLEBjvHWSCyrHz9zxOYJp
-A2f5em4m1zx6ji28XhZLyFLnCGlWvqu84xu8NdMsWTwhywFSyul4tKiuJ40pnkRB
-QPvQ7lCLgqI26d4GCe2zpThU0s2ABzChRYwEUM0/KTS5ALE6+VvvXfo0rGxUDUbS
-wa+54cvtamJuEzDLJV247Hs/Q0A+GW/GyUHGBNt+EDRCa+GPuEp3yIQ8Ihij4oHK
-bVccu1eFMnFIkmm85YfQbWws4juj7TsuVtWadOFOtH7GJdRUTtL5AmNdmmw0RRzw
-Xc92Hl3oLuBlpZgbdV6CFSDuAAdyZZgs+axfRZkMH9NgZjOyimqsmNz1DDgzy4C2
-OY90At6C/aODHhaSYP64hTYBfdNCROdHos9BE1pnB2sVFtz0U2U=
-=JcQn
------END PGP SIGNATURE-----
-
---xoiz3s4du4e5aytw--
