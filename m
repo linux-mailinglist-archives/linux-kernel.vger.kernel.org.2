@@ -2,126 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D61923659F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A60DB3659FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232370AbhDTNZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:25:09 -0400
-Received: from mail-bn8nam12on2076.outbound.protection.outlook.com ([40.107.237.76]:50816
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230408AbhDTNZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:25:07 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JDHyRgglcH3DBA2s8BZusIDTUXtMYC0vQqCUs3o41SatZ9QcHPmu/MdhF29IP3CZsGvlm2UswOHZONcL37qSNI/uj4vVDwFiIxDUAUERXzRYPfJGEs5dUCZg6PK/eFuAFxkZr6ePIYKJ9kxNLx62c302WWeIm51qxGdfj1ZgnsvhaXTVtW4v6h+bqp9H9oryJjql6WvmflaJuamejvRyaS47PTZ+/sUR6HRgx0GRDeeMd7PquVYBrlrseew1sw9JJG3/xp5IGdzd6KQjEhQllX2SJrL8GL8kh0WtySabzDEfALz0m0DFeF8PucYdGxdM8NSQQNLtZHsAjhHbvMEGjA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=n+dqvTnjuEQpoFBzT4C8/GxWCKT7tY8+nDneVmp5o44=;
- b=MHaAXRYsa7C3fKRH0zW77YZttXjtMN5GnwuuKlyvy7eqnxbcFvWTKetjE7VqQWjqWwl0iB6p4CiLkTc7HJ776h8XnWm14B/uvb2R1S1dRFDwhloOqOyHZ2ljRG9BskNQCV+1sMg0YYdSMbAzdfGDVAmJE1y4bGZL9NtxYmpzVETvZf5IIIgnkzKQu9CsvPjAQ0nXD5kppiScb2qE2IlJibckR53SWzGSnPlV6XRERJ4sdXTibvYStc+q0+KpO84JYArkwl2cnTVzX1nhCydXUZcuE2R1nF8KGTjcQEzzwTenuo4g5n+XWKfMqWj95e4UuxyI61PF2vW4asoHMNNYJQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.36) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=n+dqvTnjuEQpoFBzT4C8/GxWCKT7tY8+nDneVmp5o44=;
- b=qe6c/3/MFhKft8StWmDWHkQp/zyGiQCxgI+lwfR4cjVJuiMujFdWf9ZHFX/D5JqDkfYb4sOr2VpBnU1QpeF4bvPy7kB+51pZCL+WfyEERBBXbZs1hMR6RyMF02ufeMsYq0xaTqrFaiPWscCg7n9/QdHjKtFqTn8fDBC2motcv2v0KBTak1R501JcQ2pQxjukNhj3+QiDu76mfrKCviSIB1MZUHRbW9wS+2t9JkLBZLYV7vnLDeymcbGrc+SnEGnc/9d5M4o/roR8NXeOdOcI+4uYzlaPDOThnoORmK8f97xN+U85IT1bczE9CZTAk63vPsi8df8y0CJp3PsIiHuveA==
-Received: from BN6PR19CA0119.namprd19.prod.outlook.com (2603:10b6:404:a0::33)
- by DM5PR12MB1402.namprd12.prod.outlook.com (2603:10b6:3:73::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Tue, 20 Apr
- 2021 13:24:33 +0000
-Received: from BN8NAM11FT026.eop-nam11.prod.protection.outlook.com
- (2603:10b6:404:a0:cafe::82) by BN6PR19CA0119.outlook.office365.com
- (2603:10b6:404:a0::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20 via Frontend
- Transport; Tue, 20 Apr 2021 13:24:33 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.36; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.36) by
- BN8NAM11FT026.mail.protection.outlook.com (10.13.177.51) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4042.16 via Frontend Transport; Tue, 20 Apr 2021 13:24:33 +0000
-Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 20 Apr
- 2021 13:24:32 +0000
-Received: from moonraker.home (172.20.145.6) by mail.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 20 Apr 2021 13:24:30 +0000
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Richard Cochran <richardcochran@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, Jianyong Wu <jianyong.wu@arm.com>,
-        "Marc Zyngier" <maz@kernel.org>, Jon Hunter <jonathanh@nvidia.com>
-Subject: [PATCH] ptp: Don't print an error if ptp_kvm is not supported
-Date:   Tue, 20 Apr 2021 14:24:19 +0100
-Message-ID: <20210420132419.1318148-1-jonathanh@nvidia.com>
-X-Mailer: git-send-email 2.25.1
+        id S232489AbhDTN1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:27:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232427AbhDTN1C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 09:27:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F1AC06174A;
+        Tue, 20 Apr 2021 06:26:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VMqaJi7cREgHvXbfYZgCh1yWGauQvsEM/bV4hsp9kpI=; b=oYIjeBNLDU0bKUDPhFNTmvYkZK
+        g53/qZBWtJ4qmFYmHlqWepJ0FmGFsoXKciINNRiOUsXrKlFjZxMU+5w86z4jSxEqdVbPnmwLQJ0I4
+        QblDiYLB0ZwNnoShTB7pzUIEqXQYgkP6X4VfyjOkT4iwAeZJ9TWj8wO0hT8FfHroUCas+dMT2M2kk
+        BJWxhpuqViQNbWdBRh3SdfIw1+tKOj6jQvkPldSdiuK85EtimYx4m7BGUuQKErPN7+RwkxAlIkcl7
+        X9j4UCHiBwcgWOXAuuLZ9tNy0AZfLZtuNUpnfVfa/yHcmS7mmP/2grQ86rdMiimTFItKK9SLzpvDe
+        sL0DA9ZA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lYqMg-00FCb5-Gr; Tue, 20 Apr 2021 13:25:08 +0000
+Date:   Tue, 20 Apr 2021 14:24:30 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2] docs: proc.rst: meminfo: briefly describe gaps in
+ memory accounting
+Message-ID: <20210420132430.GB3596236@casper.infradead.org>
+References: <20210420121354.1160437-1-rppt@kernel.org>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 263aedb3-19c0-4a16-2de1-08d903ffa2ea
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1402:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB1402C8DC73CD0FAC97D2FFC2D9489@DM5PR12MB1402.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 63Nk6g7gVPZYq8bZk3rbYkxI8xLYwagTiq8W6P9AOZByaWOpkxfMi1qGinRbLtKh8yaZPAKpbEXjGiL+JOhAY3dLEO5NDMdG3cSxN8IY9jZm9JW3w/9UcpOVmYcrTlOZwVPZFu329htHeJVppJO0PudV+IrCWkOLE4q2XyvH1R4xh+tG5Y+Ju/lcxCMrkWmEWEVoIEV0aIvdAD/fBz+RJCufv/TyhVA/r6Lt5bUlIDOKlXcBJcQB1f5dgh18aH3YS9PSpjKR0UDQ/62nUqsoRU/XoRDblWYpTkZRC+/Q68hBmbR3ojZw5Da3Bqrtkii6zFL/zUb5dEu2JB48z2CBU8qK77gsBjsu2cOg3x6ElU5N39Q1p7KsoBOv5/5NY0NG5WjZMru0qEJCut6i9z7mvLft8Ez+OldJfTw6XMrSwgiYYgfHulG746rtvRZMhqPixozdPC3ihGNJ6qHOI/9j15EbM+dfoU7ceIW0v/efCtL4PYsJQmYX+B/h2hat8AAq+8B7RHYbiGFXyXyaBmzUBo66pxiVEijgWx0kHje36zZYWXu/uLfnXh38r0/8pEs7bXyendQ66MugG75EFYmB1ncj467yc5wPTbpmB2GBX8TX5aU6dPvzE7ppoavTjTwOuvrXUx6MdmBJ5ckE+I8SAA==
-X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(396003)(376002)(136003)(39860400002)(36840700001)(46966006)(8676002)(107886003)(316002)(8936002)(36906005)(1076003)(82740400003)(82310400003)(86362001)(7636003)(6666004)(2616005)(6916009)(2906002)(5660300002)(47076005)(36756003)(426003)(83380400001)(478600001)(356005)(70206006)(36860700001)(186003)(54906003)(70586007)(336012)(26005)(4326008);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2021 13:24:33.2736
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 263aedb3-19c0-4a16-2de1-08d903ffa2ea
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.36];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT026.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1402
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210420121354.1160437-1-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 300bb1fe7671 ("ptp: arm/arm64: Enable ptp_kvm for arm/arm64")
-enable ptp_kvm support for ARM platforms and for any ARM platform that
-does not support this, the following error message is displayed ...
+On Tue, Apr 20, 2021 at 03:13:54PM +0300, Mike Rapoport wrote:
+> Add a paragraph that explains that it may happen that the counters in
+> /proc/meminfo do not add up to the overall memory usage.
 
- ERR KERN fail to initialize ptp_kvm
+... that is, the sum may be lower because memory is allocated for other
+purposes that is not reported here, right?
 
-For platforms that do not support ptp_kvm this error is a bit misleading
-and so fix this by only printing this message if the error returned by
-kvm_arch_ptp_init() is not -EOPNOTSUPP. Note that -EOPNOTSUPP is only
-returned by ARM platforms today if ptp_kvm is not supported.
+Is it ever possible for it to be higher?  Maybe due to a race when
+sampling the counters?
 
-Fixes: 300bb1fe7671 ("ptp: arm/arm64: Enable ptp_kvm for arm/arm64")
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
----
- drivers/ptp/ptp_kvm_common.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+>  Provides information about distribution and utilization of memory.  This
+> -varies by architecture and compile options.  The following is from a
+> -16GB PIII, which has highmem enabled.  You may not have all of these fields.
+> +varies by architecture and compile options. Please note that it may happen
+> +that the memory accounted here does not add up to the overall memory usage
+> +and the difference for some workloads can be substantial. In many cases there
+> +are other means to find out additional memory using subsystem specific
+> +interfaces, for instance /proc/net/sockstat for TCP memory allocations.
 
-diff --git a/drivers/ptp/ptp_kvm_common.c b/drivers/ptp/ptp_kvm_common.c
-index 721ddcede5e1..fcae32f56f25 100644
---- a/drivers/ptp/ptp_kvm_common.c
-+++ b/drivers/ptp/ptp_kvm_common.c
-@@ -138,7 +138,8 @@ static int __init ptp_kvm_init(void)
- 
- 	ret = kvm_arch_ptp_init();
- 	if (ret) {
--		pr_err("fail to initialize ptp_kvm");
-+		if (ret != -EOPNOTSUPP)
-+			pr_err("fail to initialize ptp_kvm");
- 		return ret;
- 	}
- 
--- 
-2.25.1
+How about just:
 
++varies by architecture and compile options.  The memory reported here
++may not add up to the overall memory usage and the difference for some
++workloads can be substantial. [...]
+
+But I'd like to be a bit more explicit about the reason, hence my question
+above to be sure I understand.
+
+
+It's also not entirely clear which of the fields in meminfo can be
+usefully summed.  VmallocTotal is larger than MemTotal, for example.
+But I know that KernelStack is allocated through vmalloc these days,
+and I don't know whether VmallocUsed includes KernelStack or whether I
+can sum them.  Similarly, is Mlocked a subset of Unevictable?
+
+There is some attempt at explaining how these numbers fit together, but
+it's outdated, and doesn't include Mlocked, Unevictable or KernelStack
