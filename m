@@ -2,109 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9746D3653A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 09:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 132513653AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229713AbhDTH5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 03:57:52 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:53615 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229475AbhDTH5v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 03:57:51 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13K7r9uB030781;
-        Tue, 20 Apr 2021 09:57:02 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=RDsSAFlDSlw3VM/cV6rqcFU4t+Jyj+WBFIWRg8VlAeM=;
- b=MnCYw318dgatw1vaO0vMPdCb5PaHhYH17DARD7vr0xDJmxSCraaJB3PaV5aoCjtpUMRe
- YqJh3yELpGqVgvAQdgnCiPtTTzcEkEuXZOiX2vQ5C6ZmNqLKb4zgN5PCk4IvsfkzKsFT
- mj5L+qgdj1zK0yiZjDc3WVgGp5wWot4FAcCfCoBXI8UBL2+kjR6b7KuCNWZYvxl8FFUU
- PUKCAT26LVfqGdnkppCaxdkO/3v+s+/z/D4y/ih/PaedDxC/3799qXcsEP2N5YkYjhH1
- RkorLuj/e57O/nuNtSnO+Fwzj3VsQN95677NH/Fg7sQvh/TqAyWnV919DORe4UQMNP7B mg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 381nbc9kwb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Apr 2021 09:57:02 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 532DF10002A;
-        Tue, 20 Apr 2021 09:57:00 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id DF1BE22B9C5;
-        Tue, 20 Apr 2021 09:57:00 +0200 (CEST)
-Received: from lmecxl0573.lme.st.com (10.75.127.49) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 20 Apr
- 2021 09:57:00 +0200
-Subject: Re: linux-next: build warning after merge of the spi tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Mark Brown <broonie@kernel.org>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210420134834.57467d47@canb.auug.org.au>
-From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
-Message-ID: <01e58753-1e26-f9f1-0c26-d07f4689c63c@foss.st.com>
-Date:   Tue, 20 Apr 2021 09:56:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210420134834.57467d47@canb.auug.org.au>
-Content-Type: text/plain; charset="utf-8"
+        id S229953AbhDTIAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 04:00:54 -0400
+Received: from mail-eopbgr700073.outbound.protection.outlook.com ([40.107.70.73]:53601
+        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229475AbhDTIAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 04:00:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ss7W9dzoLMZ31OKIgMWxxB8meMXr0OVYFS5aEAQRyXnbaGHIVEBLYyI+WBE982TXknYORaOewH9AjsuueXcGvALIqJWX6EzZnxBnmjVsE+gxlKCYlsFuXsWF1/zhDs5NsIxybqpX55yWelVvu0HNYeKtCzTSDouy/1WkLW2l4vJUwDH+caj0YGY5Z80t8b4bSECuirVY9+gXeROYbA9DcVDVCWwnjaCPWflqDSRsnzjLujXeqaUV0NA7+IS+ovDCnsVWL6LyKRjSkZ2AyRJMN0Ie/a7RGCw305N1NeYozObGwHzZfMKsuBYfoSmEo9OSDJywZopDpQd6OAzMFyvt1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=unetsYrIyBHV0OKTihLJefJBc/6TtEl4DzNzm53Re8g=;
+ b=NBpvjvfOtK45ohx3nT/6b+SW4APcZHmceVfxOjKbMmJyykDW6EuKVcIar0DHH98nj4pnjK+KFAv9mflrc4U5rvDcPG5BsB+7ZrjugYngWUxZogCDtdcHns5WZoiPYw+SabOyQRlO4f0owsWgTjw+jDN0SiCcsgZQG0IBq2eVD4hdljFND7R6qLnOy2+n/WqSbNtlK4RUa9GMFk905zzQwINiYTwopL4+q20JyJo0v4TsxfeyfA90hvWTYWAMPsXvyi9jqTMUG6Y4uIuJuVEW3nOKtuYmTSusDxwUNTL79ADgL+iYrIFK6hmFWdagk5LHoURtZ9OLaT0JqUFuPJ2UpQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=unetsYrIyBHV0OKTihLJefJBc/6TtEl4DzNzm53Re8g=;
+ b=juNy+DpihjBx8l8yzE6KV+/pmpvXptrtS1ZbraXuNj+br9hJJigQyBkh9cWyyBJOjgO2kOcH74FGBPjrhfr+kkvxEK+fsKSXKfrdCRETwDjBfZaGyHYgNzxFV5DR3CX3WPIDwMmkSGzZMprmp/GR44UWlDzJnxEf4l53Grqt0YE=
+Authentication-Results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4360.namprd12.prod.outlook.com (2603:10b6:208:266::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.20; Tue, 20 Apr
+ 2021 08:00:16 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::6d4d:4674:1cf6:8d34]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::6d4d:4674:1cf6:8d34%6]) with mapi id 15.20.4042.024; Tue, 20 Apr 2021
+ 08:00:16 +0000
+Subject: Re: [PATCH v4] dma-buf: Add DmaBufTotal counter in meminfo
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Peter.Enderborg@sony.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, sumit.semwal@linaro.org,
+        adobriyan@gmail.com, akpm@linux-foundation.org,
+        songmuchun@bytedance.com, guro@fb.com, shakeelb@google.com,
+        neilb@suse.de, samitolvanen@google.com, rppt@kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, willy@infradead.org
+References: <20210417104032.5521-1-peter.enderborg@sony.com>
+ <YH10s/7MjxBBsjVL@dhcp22.suse.cz>
+ <c3f0da9c-d127-5edf-dd21-50fd5298acef@sony.com>
+ <YH2a9YfRBlfNnF+u@dhcp22.suse.cz>
+ <23aa041b-0e7c-6f82-5655-836899973d66@sony.com>
+ <d70efba0-c63d-b55a-c234-eb6d82ae813f@amd.com>
+ <YH2ru642wYfqK5ne@dhcp22.suse.cz>
+ <07ed1421-89f8-8845-b254-21730207c185@amd.com>
+ <YH59E15ztpTTUKqS@dhcp22.suse.cz>
+ <b89c84da-65d2-35df-7249-ea8edc0bee9b@amd.com>
+ <YH6GyThr2mPrM6h5@dhcp22.suse.cz>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <2d0e3c44-832b-f297-90da-e2c3280eff32@amd.com>
+Date:   Tue, 20 Apr 2021 10:00:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <YH6GyThr2mPrM6h5@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-20_02:2021-04-19,2021-04-20 signatures=0
+X-Originating-IP: [2a02:908:1252:fb60:3caf:a441:2498:1468]
+X-ClientProxiedBy: FR0P281CA0055.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:49::15) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:3caf:a441:2498:1468] (2a02:908:1252:fb60:3caf:a441:2498:1468) by FR0P281CA0055.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:49::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.6 via Frontend Transport; Tue, 20 Apr 2021 08:00:11 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cc0dbc15-934c-4e94-c52b-08d903d25533
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4360:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4360B74E02FBB3D9E40C509E83489@MN2PR12MB4360.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PM1g+5wpo9TfcUJnpIJqb60aGEpbhXorRPb2yCAl8g67eCcsx0xNzXr5rbl3TTXFccriNEUp5psvdMAvGGrvSZ9O0c5c6xCWWI6picDnER0Fs8d1OUIIdWHW7EW80p8Y9WLTPsKLomAQZethUiyifT6mCm9pCPJ/N6A0bxobBhwMZK72x3G6Cc1cirgdSlDewY4sqh8YeaDTGjOzR0ncKSr21zDbRgypz4ZM5Z7tez+YrOn/B7W5UB9CnxgriWqssEVQ5j3z2g/gn30zfv7RmySOXQ4MhHD8IMXMNGPCNDlylmyGqzpMcM4ZX1Tk6jNSxD2qN38a+t03O7CsgL3Dshyz2wXEJbq1Zt34iR64hvnbErc2S2MUgcFsrGsEYVv89S6W3ycl4qnSEgCSqAkTaPeMuYsUCIVXmxkDCCA5t3E1SypVlt2n4bc+zpRO/AEpmIm8j8ZjGjTcFs4alDmg+9GS5twGXId5Jd40+w63h62dreHZHYqNZupXa+1Py3d0X0+PT/hpuQHFGEYjDU0AJpnrpxZ4sVtpKokyR7kDpjx9T1pXdPlwRJsrEqBx0zfz4sdbGrspUC8D4L1wPZM0z/DTqZFJPbX6xMh7ZgyDLkHdDM0Mxjm/bKWme8+W1tyw4YNCA95GhiNI2retvwJZbxdcEJwTcRH+wWdLUJMERS/hKcVRwy7bkVL33weg0Lol
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(39860400002)(346002)(396003)(136003)(2906002)(6666004)(316002)(186003)(16526019)(2616005)(8936002)(52116002)(8676002)(5660300002)(66476007)(66946007)(38100700002)(4326008)(66556008)(478600001)(6916009)(31686004)(7416002)(31696002)(86362001)(83380400001)(6486002)(66574015)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?OWpzKzlGZitxYXExejZBNGlUT0dqTGt6U2lsNmtIT1N1M1pRTkRVN1dtdG02?=
+ =?utf-8?B?aHhJb2NzeDdMZit1UEVrUndxL1Q3VHI3SWJrUjZBZm9kcmloUS9TNXh5MzVR?=
+ =?utf-8?B?NXA5aytmbnhlV1V6Zi85K1E1Vld1cjRyNGZqcjE2dEJFTmRzb0xjNjhROUlM?=
+ =?utf-8?B?Y2VGRzdEcUxoV0pLSWhqWHFLVWtNc2ZSWmJmdXRpUGlFTFRmYkJVRXM3NXhk?=
+ =?utf-8?B?UmR6R09jdE15QThPTGtGVFJjUCtHYW9Fd0F4UmlaelpiRkkvM3dTYVRpdWZ1?=
+ =?utf-8?B?ZEFhY3lzemVnRTVPNFVNbGJlbUJWSVFLa1JLUkRyUU4rbDhCRjhDS2J1UmVp?=
+ =?utf-8?B?VjdWUTJVbnhxWURwaGYzTHNZYkswaFN5dTdkUU96c3dJNzRpMEJTUGFzV2tH?=
+ =?utf-8?B?L0drQk44bUdiaWFzOENlaDkvZ2xGQzhoYlpYOGVVbFUvbko1UjB0VlJxVU9H?=
+ =?utf-8?B?QjRWeW53TDQzN1BIcHRNUE93ZGx1dnU4bGd1K0VxN3FmSU5CNXNNZWJLVGpr?=
+ =?utf-8?B?MjZrRExqK0JOSWZYcEdrK3YwMGlsZ0N5ZDdaRWhtam5lYldmeTlJblBxbng4?=
+ =?utf-8?B?bHUxUCtiZlRJRHphRU1acUpPNVNEcmZvLzFhZHkzMW1oTU0vZXdxZGpKa2dX?=
+ =?utf-8?B?KzNSZHpWZklsZEwzUHBiSk8xQnFpRWk0SVBGNWJGaWFqaFFiaE9aSFdleGVS?=
+ =?utf-8?B?R2FnZU82RE1xYm1JaDhodGFFckg2Nndpa2I4UWxSNmwxdUpzU3lHd1dKSTBa?=
+ =?utf-8?B?Y0U4Y242MVJCMmE5Tk1vYzJ0aVdmcDZhZTR4YlR0bDJzTjZqZk40K1NzYmx6?=
+ =?utf-8?B?dTZ4L0pwNkhkekc4L3NmVGpLQitwQzBKa21JcVdUVy9BRlJkZVZYQVN0MUls?=
+ =?utf-8?B?Q3QzTlBJc2NBNE9xbVUzdkhZbGZ4N3NSVTljQ29HWGdNcUtBMnU4RURsNUZp?=
+ =?utf-8?B?bWxlT1JteEFQUUhRcmtFRUlYckZmOXlrZUFnek14eVVyNDhzNmNxTVRJQlpJ?=
+ =?utf-8?B?ZXlmaXhlME1RNzJMQmVEaVlscGZxNkhGZ2dPb3pWaHB3cHZRM25KQmYrSmla?=
+ =?utf-8?B?S1R3dDh5bHBodWt0UUsrMjRHNm0vaUlQNlhzNFd1NE5jNldOTGkwM0kxNFhC?=
+ =?utf-8?B?R3FBOHBwZndGR1BybGNIb2lTUkFZUkppQUs2QjJWYVhScHNoQ0NpZUZFVS9t?=
+ =?utf-8?B?d2xBUHFxTmVhSUhWbVh1SU5UQTBXZXRMUTVQY1RndU9XUzJiRWRLa2tDdU9z?=
+ =?utf-8?B?OUZiMUh3OUpvUXJ2RUVkOUZtbHp4ajFrLzMyVmZuRGQydXgyQmFmT2QwUG1m?=
+ =?utf-8?B?eGlhTnAzeHB3RlJXcTdBbXJ0Zk5tRWxIODZEWTkxcmduKzFMbTdBRGtEbUZF?=
+ =?utf-8?B?cUcxVHJ0MFZOT3ljRm5CTTRtc3ZHNGF3bjhlazltaVo5NWtBTHQ2Q2xBbUhY?=
+ =?utf-8?B?N3dmd0hRc3UrTnZuYnlzbWlGZlJtb040QW5rNlJpRlYwMnJycU9aVEVZOEEw?=
+ =?utf-8?B?ZG1KbnVjV0w2U2VEREhTU3UvZ0FHbEJCWjhYK2QyekpBNGZlMHJZMy9tNk14?=
+ =?utf-8?B?ZTB0b1FBby9wY1EyZmVFeFcwRHhWSTIrbnVxbFFHbnJ5T3Z5TTZHbTlyTEtp?=
+ =?utf-8?B?SldRb2NUTHJ0bWMwVVI4WEJYMUg4a1ZYMHBoMkh4T0pBOXo1bmRSNElTTk9x?=
+ =?utf-8?B?QkJQcCt0RTBRcDYyR1h0TVI3Qm1pdWRucnl2ZWx5V3NEZE9KM0ZzYTVlOW1E?=
+ =?utf-8?B?UlRQVEVzMFB3SEY2THNELzYybFZuWmt3SWdxcmRpUjV3di8xaTVYNERiMkxS?=
+ =?utf-8?B?K2huSC9GSnZXcGViV3FWcndWc0F1NnN4TE9lOTkvSWk3TlorUnpZRWdwTyt1?=
+ =?utf-8?Q?H8+6hLbfAcMg/?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cc0dbc15-934c-4e94-c52b-08d903d25533
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2021 08:00:15.9126
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: orxYepxKD6PsS5fJfTqDFCFWa+T8HYSzuFGZgqnKRZ+oc7H7ksk/2POqfseYeCYi
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4360
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark
+Am 20.04.21 um 09:46 schrieb Michal Hocko:
+> On Tue 20-04-21 09:32:14, Christian König wrote:
+>> Am 20.04.21 um 09:04 schrieb Michal Hocko:
+>>> On Mon 19-04-21 18:37:13, Christian König wrote:
+>>>> Am 19.04.21 um 18:11 schrieb Michal Hocko:
+> [...]
+>>> What I am trying to bring up with NUMA side is that the same problem can
+>>> happen on per-node basis. Let's say that some user consumes unexpectedly
+>>> large amount of dma-buf on a certain node. This can lead to observable
+>>> performance impact on anybody on allocating from that node and even
+>>> worse cause an OOM for node bound consumers. How do I find out that it
+>>> was dma-buf that has caused the problem?
+>> Yes, that is the direction my thinking goes as well, but also even further.
+>>
+>> See DMA-buf is also used to share device local memory between processes as
+>> well. In other words VRAM on graphics hardware.
+>>
+>> On my test system here I have 32GB of system memory and 16GB of VRAM. I can
+>> use DMA-buf to allocate that 16GB of VRAM quite easily which then shows up
+>> under /proc/meminfo as used memory.
+> This is something that would be really interesting in the changelog. I
+> mean the expected and extreme memory consumption of this memory. Ideally
+> with some hints on what to do when the number is really high (e.g. mount
+> debugfs and have a look here and there to check whether this is just too
+> many users or an unexpected pattern to be reported).
+>
+>> But that isn't really system memory at all, it's just allocated device
+>> memory.
+> OK, that was not really clear to me. So this is not really accounted to
+> MemTotal?
 
-I will send a patch to fix this warning, sorry for that.
+It depends. In a lot of embedded systems you only have system memory and 
+in this case that value here is indeed really useful.
 
-Patrice.
+> If that is really the case then reporting it into the oom
+> report is completely pointless and I am not even sure /proc/meminfo is
+> the right interface either. It would just add more confusion I am
+> afraid.
 
-On 4/20/21 5:48 AM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the spi tree, today's linux-next build (x86_64 allmodconfig)
-> produced this warning:
-> 
-> In file included from include/linux/printk.h:409,
->                  from include/linux/kernel.h:16,
->                  from include/linux/clk.h:13,
->                  from drivers/spi/spi-stm32-qspi.c:7:
-> drivers/spi/spi-stm32-qspi.c: In function 'stm32_qspi_dirmap_read':
-> drivers/spi/spi-stm32-qspi.c:481:21: warning: format '%x' expects argument of type 'unsigned int', but argument 5 has type 'size_t' {aka 'long unsigned int'} [-Wformat=]
->   481 |  dev_dbg(qspi->dev, "%s len = 0x%x offs = 0x%llx buf = 0x%p\n", __func__, len, offs, buf);
->       |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> include/linux/dynamic_debug.h:129:15: note: in definition of macro '__dynamic_func_call'
->   129 |   func(&id, ##__VA_ARGS__);  \
->       |               ^~~~~~~~~~~
-> include/linux/dynamic_debug.h:161:2: note: in expansion of macro '_dynamic_func_call'
->   161 |  _dynamic_func_call(fmt,__dynamic_dev_dbg,   \
->       |  ^~~~~~~~~~~~~~~~~~
-> include/linux/dev_printk.h:123:2: note: in expansion of macro 'dynamic_dev_dbg'
->   123 |  dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
->       |  ^~~~~~~~~~~~~~~
-> include/linux/dev_printk.h:123:23: note: in expansion of macro 'dev_fmt'
->   123 |  dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
->       |                       ^~~~~~~
-> drivers/spi/spi-stm32-qspi.c:481:2: note: in expansion of macro 'dev_dbg'
->   481 |  dev_dbg(qspi->dev, "%s len = 0x%x offs = 0x%llx buf = 0x%p\n", __func__, len, offs, buf);
->       |  ^~~~~~~
-> drivers/spi/spi-stm32-qspi.c:481:34: note: format string is defined here
->   481 |  dev_dbg(qspi->dev, "%s len = 0x%x offs = 0x%llx buf = 0x%p\n", __func__, len, offs, buf);
->       |                                 ~^
->       |                                  |
->       |                                  unsigned int
->       |                                 %lx
-> 
-> Introduced by commit
-> 
->   18674dee3cd6 ("spi: stm32-qspi: Add dirmap support")
-> 
+I kind of agree. As I said a DMA-buf could be backed by system memory or 
+device memory.
+
+In the case when it is backed by system memory it does make sense to 
+report this in an OOM dump.
+
+But only the exporting driver knows what the DMA-buf handle represents, 
+the framework just provides the common ground for inter driver 
+communication.
+
+>>> See where I am heading?
+>> Yeah, totally. Thanks for pointing this out.
+>>
+>> Suggestions how to handle that?
+> As I've pointed out in previous reply we do have an API to account per
+> node memory but now that you have brought up that this is not something
+> we account as a regular memory then this doesn't really fit into that
+> model. But maybe I am just confused.
+
+Well does that API also has a counter for memory used by device drivers?
+
+If yes then the device driver who exported the DMA-buf should probably 
+use that API. If no we might want to create one.
+
+I mean the author of this patch seems to have an use case where this is 
+needed and I also see that we have some hole in how we account memory.
+
+Christian.
