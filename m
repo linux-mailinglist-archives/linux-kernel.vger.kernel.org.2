@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF5436520C
+	by mail.lfdr.de (Postfix) with ESMTP id 50E5036520B
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 08:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbhDTGGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 02:06:03 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:51290 "EHLO m43-7.mailgun.net"
+        id S229975AbhDTGGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 02:06:02 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:55552 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229831AbhDTGF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 02:05:57 -0400
+        id S229893AbhDTGF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 02:05:58 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618898727; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=Rc+spuxWFt0VeXDrYpNi6jp5Fae5FKeXb3Jt/fw9MNk=; b=WH/7aAEUKYS4Qyud7nWJokDsM2cz9Mx8vAfZD0OCq1ozHBwylpHOLo7yMKNIW9261TKhrG6Z
- BQUwYxRnMf411eWCZiGkhOWED5KkV0ngBXhPEmN7hIhGSNor5Y+4BlIWhzpzsgZythW82+l2
- FQdtB9qpIU7mP7CF019YU2JyN+4=
+ s=smtp; t=1618898726; h=Content-Transfer-Encoding: MIME-Version:
+ References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=9jvq45rVeefpNcJqo9m60DsFE8NjESDnx6EmviihShI=; b=hmN50fB67aLWCuMg7zgm6VVZwPErxt5m2RV5oywctffyOwzCuah8iJ49avIpjCR4VgabniGV
+ Htlrq8T+N9sNcGUo/xYjp44+J1M7fwJlNj2Eaq0KB+oHofVBhN41rpUEVVQitHdgS9uesUQA
+ m9lNtVICkfDtXtZLj7mKyaiTEto=
 X-Mailgun-Sending-Ip: 69.72.43.7
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 607e6f1c215b831afbe9c9ea (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Apr 2021 06:05:16
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 607e6f24a817abd39ad73620 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Apr 2021 06:05:24
  GMT
 Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A3E98C4360C; Tue, 20 Apr 2021 06:05:16 +0000 (UTC)
+        id C6B37C43143; Tue, 20 Apr 2021 06:05:23 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -37,9 +37,9 @@ Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Out
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 77B0DC433F1;
-        Tue, 20 Apr 2021 06:05:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 77B0DC433F1
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 881ACC433D3;
+        Tue, 20 Apr 2021 06:05:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 881ACC433D3
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
 From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
@@ -53,36 +53,46 @@ Cc:     iommu@lists.linux-foundation.org,
         Akhil P Oommen <akhilpo@codeaurora.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCHv3 0/2] iommu/arm-smmu-qcom: Add SC7280 support
-Date:   Tue, 20 Apr 2021 11:34:55 +0530
-Message-Id: <cover.1618898456.git.saiprakash.ranjan@codeaurora.org>
+Subject: [PATCHv3 1/2] iommu/arm-smmu-qcom: Add SC7280 SMMU compatible
+Date:   Tue, 20 Apr 2021 11:34:56 +0530
+Message-Id: <b1ab02b5bcb5e0aab71e2649468ce82bd6d5ca49.1618898456.git.saiprakash.ranjan@codeaurora.org>
 X-Mailer: git-send-email 2.29.0
+In-Reply-To: <cover.1618898456.git.saiprakash.ranjan@codeaurora.org>
+References: <cover.1618898456.git.saiprakash.ranjan@codeaurora.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Patch 1 adds the sc7280 smmu compatible.
-Patch 2 moves the adreno smmu check before apss smmu to enable
-adreno smmu specific implementation.
+Add compatible for SC7280 SMMU to use the Qualcomm Technologies, Inc.
+specific implementation.
 
-Note that dt-binding for sc7280 is already merged.
+Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+---
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Changes in v3:
- * Collect acks and reviews
- * Rebase on top of for-joerg/arm-smmu/updates
-
-Changes in v2:
- * Add a comment to make sure this order is not changed in future (Jordan)
-
-Sai Prakash Ranjan (2):
-  iommu/arm-smmu-qcom: Add SC7280 SMMU compatible
-  iommu/arm-smmu-qcom: Move the adreno smmu specific impl earlier
-
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
-
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+index 98b3a1c2a181..bea3ee0dabc2 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+@@ -166,6 +166,7 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
+ 	{ .compatible = "qcom,mdss" },
+ 	{ .compatible = "qcom,sc7180-mdss" },
+ 	{ .compatible = "qcom,sc7180-mss-pil" },
++	{ .compatible = "qcom,sc7280-mdss" },
+ 	{ .compatible = "qcom,sc8180x-mdss" },
+ 	{ .compatible = "qcom,sdm845-mdss" },
+ 	{ .compatible = "qcom,sdm845-mss-pil" },
+@@ -330,6 +331,7 @@ static struct arm_smmu_device *qcom_smmu_create(struct arm_smmu_device *smmu,
+ static const struct of_device_id __maybe_unused qcom_smmu_impl_of_match[] = {
+ 	{ .compatible = "qcom,msm8998-smmu-v2" },
+ 	{ .compatible = "qcom,sc7180-smmu-500" },
++	{ .compatible = "qcom,sc7280-smmu-500" },
+ 	{ .compatible = "qcom,sc8180x-smmu-500" },
+ 	{ .compatible = "qcom,sdm630-smmu-v2" },
+ 	{ .compatible = "qcom,sdm845-smmu-500" },
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
 of Code Aurora Forum, hosted by The Linux Foundation
