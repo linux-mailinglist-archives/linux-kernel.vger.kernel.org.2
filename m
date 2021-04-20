@@ -2,116 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4646D365C02
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6820365C03
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232887AbhDTPTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 11:19:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232835AbhDTPTH (ORCPT
+        id S232893AbhDTPTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 11:19:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52586 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232450AbhDTPTb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 11:19:07 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72057C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 08:18:35 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id z6so2601044wmg.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 08:18:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Y1sA+aQaPXL3h/YxiPjTBbVYUS1bVeZ4E2z5caxyFkY=;
-        b=SiOBPrzDeT9AymLJHMv9IvbQ7nLqL+nb1TKmYCV7VsfPhLlQOf0Ww3Z7aLhbBJJ2J7
-         OYvZhXQ2PcccyOWO889NYZlaih9v/nwWiBt4R8QDJ9WAUu6PFOx6lXbSn2vhmGZG2Rqz
-         /WQHdpc3pzD6MdrnGs7eCwtXUKYxT3AmLCM/durulne/9yAQRHQT6v7P1snV//B0aYZl
-         yuEmfxLSyWQfFs9S3gZdyRzZbLiSmAyb8hJrEpZsVaWDZ8fzRee3usTVLMSAFMmg143v
-         4NnQjh8JjZg47o7chfVQCx3x4f5SYume8hTOPnxwWj1ehak2ZwymmKRyIlHlEwZWgpc1
-         H4WA==
+        Tue, 20 Apr 2021 11:19:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618931939;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=770vz2JVGNnIzK29NwyJrUqxj03tbV5pp2hzoWbqGVw=;
+        b=B00qNGXaCcKzIddryeMiUCpTXMChX1xz/S+beTUztm9lM7WjotKtUZDF9TsHm9gQQ4/RrA
+        zqah0CjtRywrtxen1xUAedOK4RRyYwBoBXUEdG/UcsiPM9CumXnFAvSe+PSJ8kIeyvmoq6
+        PoL4+Cqbqp6sQ8LcXwfdo0rnxs5UCUo=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-331-4ToiPjmvPcqUpQ_zC-VBRw-1; Tue, 20 Apr 2021 11:18:58 -0400
+X-MC-Unique: 4ToiPjmvPcqUpQ_zC-VBRw-1
+Received: by mail-ed1-f71.google.com with SMTP id c15-20020a056402100fb029038518e5afc5so5765822edu.18
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 08:18:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Y1sA+aQaPXL3h/YxiPjTBbVYUS1bVeZ4E2z5caxyFkY=;
-        b=Pi11xZovVyFNvndmhiuxnWZeJL0GVouhgBjeIpGv3Vb0P4cdQTiz7zeRXkt9ybuLYR
-         gYu3MnG8AqYxrtswS4tf8uoyYU1gL6gl+zZYnrvIqY2+c7sVgEi+CNOz8Dyl7TcVcV4j
-         Ogj8wIMAgh5HsI4ekF6uMdS4iDkBAokjC6/SRR9dDzzztfTBnrmCzSa3Diku8b3/fB+9
-         Gwz4gMOokBsp8b05IL3ShJPM3/O6C9iTOZQzNjOR09PL4Jb86cERi7TPx3sdjpfGbywS
-         L/M/jhqrjk/IvNxB04Xlb2nVhyjutX2+miMh6KYUABEuUtCJaVmFaJjKdtbRvDPBvZks
-         v04w==
-X-Gm-Message-State: AOAM533JTLGe+THljP+GYSM97jxmguurGyzEm2FpKvQ3UnlDLHSwcq5e
-        O2US4dgKPIQ2LjUx7hPQYFXGYalorHjd4wkl
-X-Google-Smtp-Source: ABdhPJzFfivd1nUbTvbvbC/OCYxG9scaAcwLUaIOksi07Sgc8P8VNa66lkMFWne4o74qEbgTCSBKyQ==
-X-Received: by 2002:a7b:c303:: with SMTP id k3mr5130906wmj.100.1618931914021;
-        Tue, 20 Apr 2021 08:18:34 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:a079:f96:da87:2d00? ([2a01:e34:ed2f:f020:a079:f96:da87:2d00])
-        by smtp.googlemail.com with ESMTPSA id m15sm24797766wrx.32.2021.04.20.08.18.32
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=770vz2JVGNnIzK29NwyJrUqxj03tbV5pp2hzoWbqGVw=;
+        b=bTEDxU4C9htRrGeCBUUd+HBIaBHZMdj0ZdlDynvK8sNtnkBDG2WQIzsFku7O5PxcfG
+         RWLOunTY+Dm6fQ36plMP0ygR0geDGxtI5o1d4kU4QPMPRDhm2/8YnhXx15YMRDM/wspw
+         Otr941HL/ouw943Xgzv6494/VP2JsGUvIpoXFTu5BMMi63Vfl3xBA+7Umf+ynp9Cx9oU
+         oeSavFvGkzn70a8plwaZiWBEutpVuMm5kXJ5ddvRnA9YT7U4Vsw6Q4titOxRBvZXkM16
+         ecmt84ipz1+ybjmIwMo5cZHxiQhZ6vpVimedCNiVyqvM5WUjlkLYQM9UgrpnjcfJ/jPD
+         FB2w==
+X-Gm-Message-State: AOAM533nX/lmmkQqB2BDrQr21K0EjqFyFI/ZRprnLm+rZpTOGJ6ZNIvQ
+        kAASQmH3laUi9Ly58PuaYNR7YtmHrL2YtDkw8Oqr5emcMo4mhQfFDF+Xwcs0jrFzELoeeCm13la
+        jU8bbeftN3hNUvJ0D1R+ZAhB0
+X-Received: by 2002:a17:906:6d48:: with SMTP id a8mr28828654ejt.92.1618931936819;
+        Tue, 20 Apr 2021 08:18:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwX0gjV1YOL8zIlogJIXvYhztp20fRFlx1w9hSqe5B3fLMvw1anl4MLNbGH45aEpi3l71uCRQ==
+X-Received: by 2002:a17:906:6d48:: with SMTP id a8mr28828644ejt.92.1618931936653;
+        Tue, 20 Apr 2021 08:18:56 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff2390a.dip0.t-ipconnect.de. [79.242.57.10])
+        by smtp.gmail.com with ESMTPSA id v8sm16154073edc.30.2021.04.20.08.18.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 08:18:33 -0700 (PDT)
-Subject: Re: Aw: Re: [PATCH] thermal: mediatek: add sensors-support
-To:     Frank Wunderlich <frank-w@public-files.de>
-Cc:     Frank Wunderlich <linux@fw-web.de>,
-        linux-mediatek@lists.infradead.org,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20210320080646.49615-1-linux@fw-web.de>
- <f4329b1a-02e0-aad5-55bd-82d30a38fc55@linaro.org>
- <trinity-4a3f024e-c01d-44e4-a884-530135853d33-1618930770250@3c-app-gmx-bs72>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <b38c3539-c864-67b3-95e8-9b652cf6fcbf@linaro.org>
-Date:   Tue, 20 Apr 2021 17:18:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 20 Apr 2021 08:18:56 -0700 (PDT)
+Subject: Re: [PATCH v1 2/4] memblock: update initialization of reserved pages
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20210420090925.7457-1-rppt@kernel.org>
+ <20210420090925.7457-3-rppt@kernel.org>
+ <ed8f10a0-9b68-1d12-0305-90fd378af6b9@redhat.com>
+ <YH7tL77Z9UzTAFca@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <45a7e13d-3e44-3b94-a253-2df72649a83d@redhat.com>
+Date:   Tue, 20 Apr 2021 17:18:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <trinity-4a3f024e-c01d-44e4-a884-530135853d33-1618930770250@3c-app-gmx-bs72>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YH7tL77Z9UzTAFca@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Frank,
-
-On 20/04/2021 16:59, Frank Wunderlich wrote:
-> Hi,
+On 20.04.21 17:03, Mike Rapoport wrote:
+> On Tue, Apr 20, 2021 at 03:56:28PM +0200, David Hildenbrand wrote:
+>> On 20.04.21 11:09, Mike Rapoport wrote:
+>>> From: Mike Rapoport <rppt@linux.ibm.com>
+>>>
+>>> The struct pages representing a reserved memory region are initialized
+>>> using reserve_bootmem_range() function. This function is called for each
+>>> reserved region just before the memory is freed from memblock to the buddy
+>>> page allocator.
+>>>
+>>> The struct pages for MEMBLOCK_NOMAP regions are kept with the default
+>>> values set by the memory map initialization which makes it necessary to
+>>> have a special treatment for such pages in pfn_valid() and
+>>> pfn_valid_within().
+>>
+>> Just a general question while thinking about it:
+>>
+>> Would we right now initialize the memmap of these pages already via
+>> memmap_init_zone()->memmap_init_range()? (IOW, not marking the
+>> PageReserved?)
 > 
->> Gesendet: Dienstag, 20. April 2021 um 14:07 Uhr
->> Von: "Daniel Lezcano" <daniel.lezcano@linaro.org>
+> Yep. These pages are part of memblock.memory so they are initialized in
+> memmap_init_zone()->memmap_init_range() to the default values.
 > 
->> No #ifdef in C file.
-> ...
-> 
->> devm_thermal_add_hwmon_sysfs() ?
-> 
-> based on your comments this should be enough/right?
-> 
-> #if IS_ENABLED(CONFIG_THERMAL_HWMON)
->     tzdev->tzp->no_hwmon = false;>     ret = devm_thermal_add_hwmon_sysfs(tzdev);
->     if (ret)
->         dev_err(&pdev->dev, "error in thermal_add_hwmon_sysfs");
-> #endif
-> 
-> if yes i send out v2, at least it works on my device
 
-just the following lines should work:
-
-	ret = devm_thermal_add_hwmon_sysfs(tzdev);
-	if (ret)
-		dev_err(&pdev->dev, "error in thermal_add_hwmon_sysfs");
-
-
-The no_hwmon usage is a bit fuzzy in the thermal core code.
-
+So instead of fully initializing them again, we mostly would only have 
+to set PageReserved(). Not sure how big that memory usually is -- IOW, 
+if we really care about optimizing the double-init.
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Thanks,
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+David / dhildenb
+
