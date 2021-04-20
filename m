@@ -2,60 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DCB8366128
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 22:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B148A36612B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 22:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233977AbhDTUuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 16:50:24 -0400
-Received: from elvis.franken.de ([193.175.24.41]:33889 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233675AbhDTUuX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 16:50:23 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lYxJe-00067O-00; Tue, 20 Apr 2021 22:49:50 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id B1323C07C1; Tue, 20 Apr 2021 22:49:29 +0200 (CEST)
-Date:   Tue, 20 Apr 2021 22:49:29 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ata: pata_rb532: Add OF support and make COMPILE_TESTable
-Message-ID: <20210420204929.GA16205@alpha.franken.de>
-References: <20210420140422.88253-1-tsbogend@alpha.franken.de>
- <712b5cfa-3c68-3048-41c7-07a65c506ce1@gmail.com>
+        id S233937AbhDTUwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 16:52:53 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:47081 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233675AbhDTUwu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 16:52:50 -0400
+Received: by mail-io1-f69.google.com with SMTP id p8-20020a5d9c880000b02903dc877cd48dso13436350iop.13
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 13:52:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=SSDFdmPQATpQ8OwALoRdrIkkRpUrIYF3fsT+jgsm1KA=;
+        b=AkmL/cHuzouFK6cP3kAVQTIpGoapnEUtuCM4Qr5/UaOTBwYl34x9YXojRH9RHuvmZG
+         uCGQhaQNkTy+mwNFUSAkQYPRqZM4NBjGPJeuq6csS4WU9HID6f77MyHekzcrmB73Zo25
+         HUhjD/386jHBMXY85yYaHDIy/cL575MXEctqR6Xh6UyFYbCoWru+4QdCwSmCV8498lBa
+         EPgAyPpPJXAE8nbSjGrwTMTx5DhVJlgvwqM5mh77WQv24B9P6Lq4XlbZUN8ZPqy2L5X/
+         bDpAUsDioQL9c8hWOyZqFky5OIUVj8G3EjWI8/gdjJqvWYEqhBV65CtDZ0f0VxF4iTbE
+         /98A==
+X-Gm-Message-State: AOAM531zwpx0LokQWcjq8aIKw7kBnjzIhoeADw+oc/RtjGViAQ/KZSxF
+        Po0bVzrZ7ElZdarB/ZFuixdEXWF6zO0xGU5D9XujvWq+SSEv
+X-Google-Smtp-Source: ABdhPJyxthuirBJ25x+AXLCnQ7Xx8TsrCo0cc/ijk5RspqtbIdf7dTLhV1mvG0Ht0vT/jYvgAbPlw6T/VsOhDjSFDa1P9jTbiQoV
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <712b5cfa-3c68-3048-41c7-07a65c506ce1@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Received: by 2002:a5e:8a47:: with SMTP id o7mr3313017iom.57.1618951937369;
+ Tue, 20 Apr 2021 13:52:17 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 13:52:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000022acbf05c06d9f0d@google.com>
+Subject: [syzbot] WARNING in io_poll_double_wake
+From:   syzbot <syzbot+f2aca089e6f77e5acd46@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 07:09:26PM +0300, Sergei Shtylyov wrote:
-> Hello!
-> 
-> On 4/20/21 5:04 PM, Thomas Bogendoerfer wrote:
-> 
-> > Add OF support for switching RB532 do device tree possible.
-> 
->    I couldnb't parse that. :-)
+Hello,
 
-no wonder ;-) I'll rephrase in v2.
+syzbot found the following issue on:
 
-> 
-> > By removing
-> > the not needed asm/mach-rc32434/rb.h include the driver could be
-> > compile tested now.
-> 
->   I think it's a separte issue worth its own patch.
+HEAD commit:    1216f02e Add linux-next specific files for 20210415
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=12a322b1d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3491b04113499f81
+dashboard link: https://syzkaller.appspot.com/bug?extid=f2aca089e6f77e5acd46
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=154654c5d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=102c0319d00000
 
-Jens, do you want this in an extra patch ?
+The issue was bisected to:
 
-Thomas.
+commit b69de288e913030082bed3a324ddc58be6c1e983
+Author: Jens Axboe <axboe@kernel.dk>
+Date:   Wed Mar 17 14:37:41 2021 +0000
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+    io_uring: allow events and user_data update of running poll requests
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12c4b2b6d00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=11c4b2b6d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16c4b2b6d00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f2aca089e6f77e5acd46@syzkaller.appspotmail.com
+Fixes: b69de288e913 ("io_uring: allow events and user_data update of running poll requests")
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 8455 at fs/io_uring.c:1494 req_ref_put fs/io_uring.c:1494 [inline]
+WARNING: CPU: 1 PID: 8455 at fs/io_uring.c:1494 req_ref_put fs/io_uring.c:1492 [inline]
+WARNING: CPU: 1 PID: 8455 at fs/io_uring.c:1494 io_poll_double_wake+0x516/0x770 fs/io_uring.c:4943
+Modules linked in:
+CPU: 1 PID: 8455 Comm: syz-executor676 Not tainted 5.12.0-rc7-next-20210415-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:req_ref_put fs/io_uring.c:1494 [inline]
+RIP: 0010:req_ref_put fs/io_uring.c:1492 [inline]
+RIP: 0010:io_poll_double_wake+0x516/0x770 fs/io_uring.c:4943
+Code: e8 1f 4c dc ff f0 ff 4d 5c 0f 94 c3 31 ff 89 de e8 7f 92 97 ff 84 db b8 01 00 00 00 0f 84 57 fc ff ff 89 04 24 e8 ba 8b 97 ff <0f> 0b 8b 04 24 e9 45 fc ff ff e8 ab 8b 97 ff 49 89 ec e9 83 fb ff
+RSP: 0018:ffffc9000172fad8 EFLAGS: 00010093
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88801adbb900 RSI: ffffffff81dcec86 RDI: 0000000000000003
+RBP: ffff8880125ac8c0 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffffff81dcec71 R11: 0000000000000000 R12: ffff8880125ac91c
+R13: 0000000000000000 R14: ffff8880125ac8f0 R15: ffff888014ed6820
+FS:  00000000015a73c0(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000004af100 CR3: 000000001eb33000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __wake_up_common+0x147/0x650 kernel/sched/wait.c:108
+ __wake_up_common_lock+0xd0/0x130 kernel/sched/wait.c:138
+ tty_ldisc_lock+0x55/0xb0 drivers/tty/tty_ldisc.c:336
+ tty_ldisc_hangup+0x200/0x680 drivers/tty/tty_ldisc.c:752
+ __tty_hangup.part.0+0x40a/0x870 drivers/tty/tty_io.c:639
+ __tty_hangup drivers/tty/tty_io.c:595 [inline]
+ tty_vhangup drivers/tty/tty_io.c:712 [inline]
+ tty_ioctl+0xf6a/0x1600 drivers/tty/tty_io.c:2746
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:1069 [inline]
+ __se_sys_ioctl fs/ioctl.c:1055 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4408a9
+Code: 1b 01 00 85 c0 b8 00 00 00 00 48 0f 44 c3 5b c3 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c4 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffeb1a62488 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000004408a9
+RDX: 0000000000000000 RSI: 0000000000005437 RDI: 0000000000000005
+RBP: 00007ffeb1a624b8 R08: 000000000000000e R09: 00007ffeb1a624e0
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffeb1a624e0
+R13: 0000000000000000 R14: 00000000004af018 R15: 0000000000400488
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
