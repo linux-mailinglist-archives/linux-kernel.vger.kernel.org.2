@@ -2,251 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9410A364F6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 02:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1156C364F6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 02:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232885AbhDTAUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 20:20:13 -0400
-Received: from mga18.intel.com ([134.134.136.126]:31177 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230452AbhDTAUJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 20:20:09 -0400
-IronPort-SDR: xNtq90JtlxbKtfodlTK/jS65U85oeRZrruXZDX6ReI3GEViy0ArcGWlCFc0l8IU6glheeH2UOZ
- V+tcz3l/Gg2w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="182912755"
-X-IronPort-AV: E=Sophos;i="5.82,235,1613462400"; 
-   d="scan'208";a="182912755"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2021 17:19:36 -0700
-IronPort-SDR: b96IndJCjP0+u72J7B4pwckp1h8lzLfti7ypkKxtXyMmoCF2xPWBQX3iID69nvTEfJ5HwHzGq5
- XcO0b5dVjMNg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,235,1613462400"; 
-   d="scan'208";a="400816431"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 19 Apr 2021 17:19:34 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lYe74-0001zT-7p; Tue, 20 Apr 2021 00:19:34 +0000
-Date:   Tue, 20 Apr 2021 08:19:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/build] BUILD SUCCESS
- 0ef3439cd80ba7770723edb0470d15815914bb62
-Message-ID: <607e1dfa.JiiCzRbmxfjz/IL1%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230044AbhDTAZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 20:25:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229880AbhDTAZT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 20:25:19 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2A7C06138A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 17:24:48 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id o16so41481215ljp.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 17:24:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=FOsh3q0zxk4YO7I+1lA0GntuHcG2gh7NQXhaPukL/Mk=;
+        b=CoROqzssO42bQLqB6Rp8HopASoqkxTL5Lm2RfjSKld7xisl+V2Gbk3AO6vM4JzkdRI
+         7/bT4Hc0FhO+oUpZBbI3ETrfoixdNF0YZ2Ot1snmGj41r+v7P4MnbmNNIvDyP4HkXQi4
+         0ezICMAFt//RtS6SAEmMmnHQoRQXDWCi/r0cTvi63f80u8AKKqL38tod6F11ZAUc5Yhh
+         JVvJJkPdu2MX38h5FOqWPpU9SsWgW505gntYganD/ZpNPwZ1DLlGIpTQR2T09x5tK1qN
+         4mHRdzqo+xqGoNrjTwFPYvQ1oAtGPK3kY4952Y24iMMU10cQcZGbEv1upHPEYYoyxz3k
+         T5/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FOsh3q0zxk4YO7I+1lA0GntuHcG2gh7NQXhaPukL/Mk=;
+        b=gbq55C+wKNa6xf/O/6/zbrqThyhD4tiFK9Ty4JqBc5xxGjkfHo6iSQZ0h21qlbjNo4
+         aWzgkTbmRYsnSr2oKmmWWi7+OKcXwLavdOgWHFuTnT04aJ8t36oRhgzBL/JO7QRP2VAi
+         v6084wdbcbsr+sCKC0BZezB0CGrjncZN5QCHrYJS4wW/JhdHrtI0OBzKzOeEHjN1y87n
+         XKnbP0adz45HKpzYQck56JRXYcOEsGndueq/6KAVXAiYOyPOMQ1g9we0NV96fiofZ9jk
+         nBVL18tN+uRJkiBT/JtIN7jdIRxWkhlcT12lefL8JTQ3JWhdTUNcxit8NwDSdhjqa3SD
+         wovg==
+X-Gm-Message-State: AOAM531soi2SOa5FNM1JPvvBsV1VPz/31YyjdDvukKDUpkrwm+gtDxze
+        qL68onKwF6EoNYOQN/oBO/lEykY/6cHvp3oK5DQ2LA==
+X-Google-Smtp-Source: ABdhPJz5Js93YB2ex6G5WNbE1/JafHIcRDNChV3k45O5qMc5EmJ6/0INhkRfhrXeFh9c/TVfqqalk/EfusqMT2bjFbw=
+X-Received: by 2002:a2e:9cc1:: with SMTP id g1mr11473192ljj.0.1618878286604;
+ Mon, 19 Apr 2021 17:24:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210414184604.23473-1-ojeda@kernel.org> <YHlz54rd1YQHsOA/@hirez.programming.kicks-ass.net>
+ <YHmMJWmzz2vZ3qQH@google.com> <YHmc2+bKQJ/XAATF@hirez.programming.kicks-ass.net>
+ <YHmuX1NA5RF7C7XS@google.com> <20210416161444.GA10484@1wt.eu>
+ <CANiq72nbkJFPmiJXX=L8PmkouKgKG1k-CxhZYpL1hcncYwa8JA@mail.gmail.com> <20210416173717.GA10846@1wt.eu>
+In-Reply-To: <20210416173717.GA10846@1wt.eu>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 19 Apr 2021 17:24:33 -0700
+Message-ID: <CAKwvOd=RadTs7Skv6KUBo4qZQtdi0kugTzxvZM+5X_2gstjyaQ@mail.gmail.com>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Wedson Almeida Filho <wedsonaf@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux <rust-for-linux@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/build
-branch HEAD: 0ef3439cd80ba7770723edb0470d15815914bb62  x86/build: Disable HIGHMEM64G selection for M486SX
+On Fri, Apr 16, 2021 at 10:39 AM Willy Tarreau <w@1wt.eu> wrote:
+>
+> resources usage, I'm really not convinced at all it's suited for
+> low-level development. I understand the interest of the experiment
+> to help the language evolve into that direction, but I fear that
+> the kernel will soon be as bloated and insecure as a browser, and
+> that's really not to please me.
 
-elapsed time: 725m
+Dunno, I don't think the introduction of Rust made Firefox _more_ insecure.
+https://wiki.mozilla.org/Oxidation#Within_Firefox
 
-configs tested: 189
-configs skipped: 5
+I pray no executives ever see Dmitry Vyukov's 2019 Linux Plumbers Conf
+talk "Reflections on kernel quality, development process and testing."
+https://www.youtube.com/watch?v=3DiAfrrNdl2f4
+or his 2018 Linux Security Summit talk "Syzbot and the Tale of
+Thousand Kernel Bugs" https://www.youtube.com/watch?v=3DqrBVXxZDVQY
+(and they're just fuzzing the syscall interface and USB devices.
+Imagine once folks can more easily craft malformed bluetooth and wifi
+packets.)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I'd imagine the first term that comes to mind for them might be
+"liability."  They are quite sensitive to these vulnerabilities with
+silly names, logos, and websites.  There are many of us that believe
+an incremental approach of introducing a memory safe language to our
+existing infrastructure at the very least to attempt to improve the
+quality of drivers for those that choose to use such tools is a better
+approach.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-i386                             allyesconfig
-powerpc                      chrp32_defconfig
-arm                        mvebu_v5_defconfig
-powerpc                      ppc6xx_defconfig
-powerpc                     mpc5200_defconfig
-m68k                          atari_defconfig
-arc                    vdk_hs38_smp_defconfig
-powerpc                     kmeter1_defconfig
-openrisc                 simple_smp_defconfig
-m68k                        mvme16x_defconfig
-powerpc                 mpc832x_mds_defconfig
-mips                           xway_defconfig
-sh                             espt_defconfig
-sparc64                          alldefconfig
-arm                        realview_defconfig
-powerpc                     pseries_defconfig
-arm                      pxa255-idp_defconfig
-arm                       versatile_defconfig
-arm                       multi_v4t_defconfig
-powerpc                   motionpro_defconfig
-sh                         ap325rxa_defconfig
-nds32                             allnoconfig
-mips                      pic32mzda_defconfig
-xtensa                           allyesconfig
-sh                          urquell_defconfig
-arc                     haps_hs_smp_defconfig
-sh                      rts7751r2d1_defconfig
-xtensa                         virt_defconfig
-arm                            mmp2_defconfig
-arm                           omap1_defconfig
-arm                        multi_v5_defconfig
-powerpc                     tqm8540_defconfig
-powerpc                 xes_mpc85xx_defconfig
-s390                             alldefconfig
-mips                      pistachio_defconfig
-arm                        spear3xx_defconfig
-h8300                       h8s-sim_defconfig
-arm                     davinci_all_defconfig
-nios2                         3c120_defconfig
-m68k                            q40_defconfig
-s390                             allyesconfig
-sh                ecovec24-romimage_defconfig
-sh                          rsk7203_defconfig
-powerpc                 mpc8272_ads_defconfig
-mips                          rb532_defconfig
-sh                        edosk7705_defconfig
-powerpc                 mpc834x_itx_defconfig
-xtensa                    smp_lx200_defconfig
-arm                        mini2440_defconfig
-arm                        neponset_defconfig
-mips                        bcm63xx_defconfig
-powerpc                 mpc837x_rdb_defconfig
-sh                           se7750_defconfig
-sh                         apsh4a3a_defconfig
-sparc                       sparc32_defconfig
-um                               alldefconfig
-m68k                        m5272c3_defconfig
-m68k                          hp300_defconfig
-m68k                       m5275evb_defconfig
-mips                          ath79_defconfig
-mips                   sb1250_swarm_defconfig
-arm                            zeus_defconfig
-arc                            hsdk_defconfig
-powerpc                     tqm8555_defconfig
-arm                           tegra_defconfig
-powerpc                         ps3_defconfig
-powerpc                 mpc832x_rdb_defconfig
-sparc                       sparc64_defconfig
-riscv             nommu_k210_sdcard_defconfig
-sh                            hp6xx_defconfig
-powerpc                 linkstation_defconfig
-sh                          sdk7786_defconfig
-s390                             allmodconfig
-arm                        vexpress_defconfig
-alpha                            alldefconfig
-arm                            lart_defconfig
-powerpc                          g5_defconfig
-powerpc                      bamboo_defconfig
-mips                        nlm_xlr_defconfig
-nds32                               defconfig
-arm                           h3600_defconfig
-arm                         lubbock_defconfig
-arm                          ep93xx_defconfig
-powerpc                     kilauea_defconfig
-powerpc                     asp8347_defconfig
-sh                   rts7751r2dplus_defconfig
-mips                      fuloong2e_defconfig
-parisc                generic-64bit_defconfig
-mips                        maltaup_defconfig
-arm                           h5000_defconfig
-powerpc                     mpc83xx_defconfig
-powerpc                      ppc64e_defconfig
-powerpc                         wii_defconfig
-mips                            e55_defconfig
-sparc                               defconfig
-arm                         hackkit_defconfig
-powerpc                      ep88xc_defconfig
-powerpc                     ep8248e_defconfig
-xtensa                       common_defconfig
-h8300                               defconfig
-mips                         tb0287_defconfig
-powerpc                     powernv_defconfig
-m68k                        m5407c3_defconfig
-powerpc                       ppc64_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-powerpc                      katmai_defconfig
-sh                         ecovec24_defconfig
-sh                          rsk7201_defconfig
-powerpc                      pcm030_defconfig
-powerpc                    klondike_defconfig
-powerpc                      arches_defconfig
-m68k                         amcore_defconfig
-arc                              alldefconfig
-sh                          landisk_defconfig
-arm                          pcm027_defconfig
-arm                          imote2_defconfig
-arm                          gemini_defconfig
-arm                          exynos_defconfig
-powerpc                 mpc834x_mds_defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20210419
-x86_64               randconfig-a001-20210419
-x86_64               randconfig-a005-20210419
-x86_64               randconfig-a002-20210419
-x86_64               randconfig-a006-20210419
-x86_64               randconfig-a004-20210419
-i386                 randconfig-a003-20210419
-i386                 randconfig-a001-20210419
-i386                 randconfig-a006-20210419
-i386                 randconfig-a005-20210419
-i386                 randconfig-a004-20210419
-i386                 randconfig-a002-20210419
-i386                 randconfig-a015-20210419
-i386                 randconfig-a013-20210419
-i386                 randconfig-a014-20210419
-i386                 randconfig-a016-20210419
-i386                 randconfig-a012-20210419
-i386                 randconfig-a011-20210419
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+I think a lot of the current discussion picking nits in syntax, format
+of docs, ease of installation, or theoretical memory models for which
+no language (not even the one the kernel is implemented in) provides
+all rightly should still be added to a revised RFC under "Why not
+[Rust]?" but perhaps are severely overlooking the benefits.  A
+tradeoff for sure though.
 
-clang tested configs:
-x86_64               randconfig-a014-20210419
-x86_64               randconfig-a015-20210419
-x86_64               randconfig-a013-20210419
-x86_64               randconfig-a011-20210419
-x86_64               randconfig-a012-20210419
-x86_64               randconfig-a016-20210419
+Really, a key point is that a lot of common mistakes in C are compile
+time errors in Rust. I know no "true" kernel dev would make such
+mistakes in C, but is there nothing we can do to help our peers
+writing drivers?  The point is to transfer cost from runtime to
+compile time to avoid costs at runtime; like all of the memory safety
+bugs which are costing our industry.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Curiously recurring statistics:
+https://www.zdnet.com/article/microsoft-70-percent-of-all-security-bugs-are=
+-memory-safety-issues/
+"Microsoft security engineer Matt Miller said that over the last 12
+years, around 70 percent of all Microsoft patches were fixes for
+memory safety bugs."
+
+https://www.chromium.org/Home/chromium-security/memory-safety
+"The Chromium project finds that around 70% of our serious security
+bugs are memory safety problems."
+
+https://security.googleblog.com/2021/01/data-driven-security-hardening-in.h=
+tml
+(59% of Critical and High severity vulnerabilities fixed in Android
+Security Bulletins in 2019 are classified as "Memory," FWIW)
+
+https://hacks.mozilla.org/2019/02/rewriting-a-browser-component-in-rust/
+"If we=E2=80=99d had a time machine and could have written this component i=
+n
+Rust from the start, 51 (73.9%) of these bugs would not have been
+possible."
+--
+Thanks,
+~Nick Desaulniers
