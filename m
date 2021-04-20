@@ -2,157 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED686365ABC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 823EC365ABE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232253AbhDTOEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 10:04:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38682 "EHLO mail.kernel.org"
+        id S232332AbhDTOFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 10:05:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55012 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232304AbhDTOEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 10:04:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F251613B6;
-        Tue, 20 Apr 2021 14:03:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618927408;
-        bh=hCrOPJTY3Fd4qxmAG0UmOelLAoekKGpQd0q0vXVkEWg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L4ZXbHvT9TAnR/8F9ABzSzhPq3pKkSvD1ElRUnbnkC7PPkxsDwYJGak3627J4c0Kn
-         RJwh5uIxQuxcf0BadYm88AHaC3gX6p/QLJ9kpvllm4D3ZywAe7+m93D0u54jkneY/g
-         Sq0qSFn1K5VZqMt2Du2Tb8AUt1WepS2wugw/frkU7OoNepyZu9GShYLG3xZ2ayfp4j
-         e8JkEk8Wu+jE1tMAumHTG6eXZl++VkgUXH+64wAY8b8Kq1PsA/aeVj1rxpPOzkEbEu
-         IbXfoeAIgeqN5X3RMeqLQSiUemRX5l55GjWsAXg6VMo2Eq2KjBSsYljCDAVEyQY2JK
-         itGj94ogWH9Xg==
-Date:   Tue, 20 Apr 2021 16:03:21 +0200
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     keyrings@vger.kernel.org, dhowells@redhat.com, zohar@linux.ibm.com,
-        jarkko@kernel.org, nayna@linux.ibm.com,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] certs: Add support for using elliptic curve keys
- for signing modules
-Message-ID: <YH7fKUjJoynyPkHt@gunter>
-References: <20210408152403.1189121-1-stefanb@linux.ibm.com>
- <20210408152403.1189121-3-stefanb@linux.ibm.com>
+        id S230408AbhDTOE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 10:04:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 10E2BAD8A;
+        Tue, 20 Apr 2021 14:04:26 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Jens Axboe <axboe@kernel.dk>, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ata: pata_rb532: Add OF support and make COMPILE_TESTable
+Date:   Tue, 20 Apr 2021 16:04:21 +0200
+Message-Id: <20210420140422.88253-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210408152403.1189121-3-stefanb@linux.ibm.com>
-X-OS:   Linux gunter 5.11.12-1-default x86_64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Stefan Berger [08/04/21 11:24 -0400]:
->Add support for using elliptic curve keys for signing modules. It uses
->a NIST P384 (secp384r1) key if the user chooses an elliptic curve key
->and will have ECDSA support built into the kernel.
->
->Note: A developer choosing an ECDSA key for signing modules should still
->delete the signing key (rm certs/signing_key.*) when building an older
->version of a kernel that only supports RSA keys. Unless kbuild automati-
->cally detects and generates a new kernel module key, ECDSA-signed kernel
->modules will fail signature verification.
->
->Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
->
->---
->v2:
->  - check for ECDSA key by id-ecPublicKey from output line
->    'Public Key Algorithm: id-ecPublicKey'.
->---
-> certs/Kconfig                         | 25 +++++++++++++++++++++++++
-> certs/Makefile                        |  9 +++++++++
-> crypto/asymmetric_keys/pkcs7_parser.c |  4 ++++
-> 3 files changed, 38 insertions(+)
->
->diff --git a/certs/Kconfig b/certs/Kconfig
->index 48675ad319db..6f8337874ae0 100644
->--- a/certs/Kconfig
->+++ b/certs/Kconfig
->@@ -15,6 +15,31 @@ config MODULE_SIG_KEY
->          then the kernel will automatically generate the private key and
->          certificate as described in Documentation/admin-guide/module-signing.rst
->
->+choice
->+	prompt "Type of module signing key to be generated"
->+	default MODULE_SIG_KEY_TYPE_RSA
->+	help
->+	 The type of module signing key type to generate. This option
->+	 does not apply if a #PKCS11 URI is used.
->+
->+config MODULE_SIG_KEY_TYPE_RSA
->+	bool "RSA"
->+	depends on MODULE_SIG || IMA_APPRAISE_MODSIG
->+	help
->+	 Use an RSA key for module signing.
->+
->+config MODULE_SIG_KEY_TYPE_ECDSA
->+	bool "ECDSA"
->+	select CRYPTO_ECDSA
->+	depends on MODULE_SIG || IMA_APPRAISE_MODSIG
->+	help
->+	 Use an elliptic curve key (NIST P384) for module signing.
->+
->+	 Note: Remove all ECDSA signing keys, e.g. certs/signing_key.pem,
->+	 when falling back to building Linux 5.11 and older kernels.
->+
->+endchoice
->+
-> config SYSTEM_TRUSTED_KEYRING
-> 	bool "Provide system-wide ring of trusted keys"
-> 	depends on KEYS
->diff --git a/certs/Makefile b/certs/Makefile
->index f64bc89ccbf1..c2fabc288550 100644
->--- a/certs/Makefile
->+++ b/certs/Makefile
->@@ -62,7 +62,15 @@ ifeq ($(CONFIG_MODULE_SIG_KEY),"certs/signing_key.pem")
->
-> X509TEXT=$(shell openssl x509 -in $(CONFIG_MODULE_SIG_KEY) -text)
->
->+# Support user changing key type
->+ifdef CONFIG_MODULE_SIG_KEY_TYPE_ECDSA
->+keytype_openssl = -newkey ec -pkeyopt ec_paramgen_curve:secp384r1
->+$(if $(findstring id-ecPublicKey,$(X509TEXT)),,$(shell rm -f $(CONFIG_MODULE_SIG_KEY)))
->+endif
->+
->+ifdef CONFIG_MODULE_SIG_KEY_TYPE_RSA
-> $(if $(findstring rsaEncryption,$(X509TEXT)),,$(shell rm -f $(CONFIG_MODULE_SIG_KEY)))
->+endif
->
-> $(obj)/signing_key.pem: $(obj)/x509.genkey
-> 	@$(kecho) "###"
->@@ -77,6 +85,7 @@ $(obj)/signing_key.pem: $(obj)/x509.genkey
-> 		-batch -x509 -config $(obj)/x509.genkey \
-> 		-outform PEM -out $(obj)/signing_key.pem \
-> 		-keyout $(obj)/signing_key.pem \
->+		$(keytype_openssl) \
-> 		$($(quiet)redirect_openssl)
-> 	@$(kecho) "###"
-> 	@$(kecho) "### Key pair generated."
->diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_keys/pkcs7_parser.c
->index 967329e0a07b..2546ec6a0505 100644
->--- a/crypto/asymmetric_keys/pkcs7_parser.c
->+++ b/crypto/asymmetric_keys/pkcs7_parser.c
->@@ -269,6 +269,10 @@ int pkcs7_sig_note_pkey_algo(void *context, size_t hdrlen,
-> 		ctx->sinfo->sig->pkey_algo = "rsa";
-> 		ctx->sinfo->sig->encoding = "pkcs1";
-> 		break;
->+	case OID_id_ecdsa_with_sha256:
->+		ctx->sinfo->sig->pkey_algo = "ecdsa";
->+		ctx->sinfo->sig->encoding = "x962";
->+		break;
+Add OF support for switching RB532 do device tree possible. By removing
+the not needed asm/mach-rc32434/rb.h include the driver could be
+compile tested now.
 
-Hi Stefan,
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
+ drivers/ata/Kconfig         |  2 +-
+ drivers/ata/pata_rb532_cf.c | 11 +++++++++--
+ 2 files changed, 10 insertions(+), 3 deletions(-)
 
-Does CONFIG_MODULE_SIG_KEY_TYPE_ECDSA have a dependency on MODULE_SIG_SHA256?
-By default, MODULE_SIG_SHA1 is selected when CONFIG_MODULE_SIG is enabled.
-I was doing some quick testing and found that when I enabled
-MODULE_SIG_KEY_TYPE_ECDSA I get a "Unsupported pkey algo: 5" error on
-module load, which goes away after fixing my config and selecting
-MODULE_SIG_SHA256.
+diff --git a/drivers/ata/Kconfig b/drivers/ata/Kconfig
+index 030cb32da980..53f40f92e4eb 100644
+--- a/drivers/ata/Kconfig
++++ b/drivers/ata/Kconfig
+@@ -1139,7 +1139,7 @@ config PATA_QDI
+ 
+ config PATA_RB532
+ 	tristate "RouterBoard 532 PATA CompactFlash support"
+-	depends on MIKROTIK_RB532
++	depends on MIKROTIK_RB532 || COMPILE_TEST
+ 	help
+ 	  This option enables support for the RouterBoard 532
+ 	  PATA CompactFlash controller.
+diff --git a/drivers/ata/pata_rb532_cf.c b/drivers/ata/pata_rb532_cf.c
+index 479c4b29b856..93d839ab9654 100644
+--- a/drivers/ata/pata_rb532_cf.c
++++ b/drivers/ata/pata_rb532_cf.c
+@@ -28,8 +28,6 @@
+ #include <linux/libata.h>
+ #include <scsi/scsi_host.h>
+ 
+-#include <asm/mach-rc32434/rb.h>
+-
+ #define DRV_NAME	"pata-rb532-cf"
+ #define DRV_VERSION	"0.1.0"
+ #define DRV_DESC	"PATA driver for RouterBOARD 532 Compact Flash"
+@@ -164,11 +162,20 @@ static int rb532_pata_driver_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_OF
++static const struct of_device_id pata_rb532_match[] = {
++	{ .compatible = "mikrotik,rb532-pata", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, pata_rb532_match);
++#endif
++
+ static struct platform_driver rb532_pata_platform_driver = {
+ 	.probe		= rb532_pata_driver_probe,
+ 	.remove		= rb532_pata_driver_remove,
+ 	.driver	 = {
+ 		.name   = DRV_NAME,
++		.of_match_table = of_match_ptr(pata_rb532_match),
+ 	},
+ };
+ 
+-- 
+2.29.2
 
-Thanks,
-
-Jessica
