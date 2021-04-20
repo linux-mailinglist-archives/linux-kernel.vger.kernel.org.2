@@ -2,150 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CE4365E65
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35411365E69
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233294AbhDTRUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 13:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232913AbhDTRUV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 13:20:21 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522F0C06174A;
-        Tue, 20 Apr 2021 10:19:49 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id h15so8336994pfv.2;
-        Tue, 20 Apr 2021 10:19:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MWCVnhZVx0e/HXHCYM4X9zm933kcphgizH/ZXwVIjJY=;
-        b=o4rSqFhGbLO5aWgw112v9IVMdBP0QMN4U5o5Ye8d0YmMHQgnqFxepdqdulgACL4Bcz
-         oC2Xtotv6lcnX+H6FPQYFkst3ro+h7ASxcUTzi8kCz48WlT//V984UkhTboO9khC0ALd
-         T2j3EMsE1eUf+3cg2DekArkXONg/F/aamZ9xL65pR8qZOy6IszOMHIgPxWvhd5Py7NLV
-         ierJWhuNIL+05VCTbtFrjag4GYwXWjQCYVjSeOvR2wHMp9XWHMbVq49FuCzHnXsVaZrJ
-         SHGvch8VbTr8JCyT9FKs1Dvd9PGYcRxR4+zDo3CToYcQE+feUNGjZpnmR0JtgMYoDzk4
-         GzMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MWCVnhZVx0e/HXHCYM4X9zm933kcphgizH/ZXwVIjJY=;
-        b=jeuzAyhV0yGML4Eib+bmIXEBoiu+mfmih3VqIdtN4EtKB7XdAqOQVJzDlndgsnpVe8
-         lPp8QLpl32e3awI8iZFMhXyBG0+jxSFUh1GvSR2X4JaJH1c7sYg6qa5yOjDs97DcsF8L
-         iubF1bprt/psH190Ho4PcytEao2TpvkiJzWclWr2rfR9GAluKQdhrjObfe44dG4r1Pvx
-         3HZTXq4loz56EHtQ0POPSP9eGAAzmaY5Ad+MKFbAKhPeIip++E236ymVJjI3BistYPmz
-         0qLnpsHWmdz4PTfSg2pmGvyR20tNDfg7DdmU4OdYc5L5zPlbxSN2BSKI8ANoqetnHdE6
-         gYzg==
-X-Gm-Message-State: AOAM530xAE12vladqZsJ0yH6EHUgPtjymELDIygGzfHvIqYdOsEB3XgY
-        q8hTPqnXtvryXgP4Pq8ACos=
-X-Google-Smtp-Source: ABdhPJyd+fTaLhmffOWYXLPSqTbYPTdHGn1dydQZd/k5VPkLtNx9ZpeiGBj6zTXxgyc6M0S1kL37KQ==
-X-Received: by 2002:a62:b412:0:b029:21f:6b06:7bdd with SMTP id h18-20020a62b4120000b029021f6b067bddmr25767526pfn.51.1618939188862;
-        Tue, 20 Apr 2021 10:19:48 -0700 (PDT)
-Received: from localhost ([103.241.225.98])
-        by smtp.gmail.com with ESMTPSA id n85sm1728924pfd.170.2021.04.20.10.19.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 10:19:48 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 22:49:43 +0530
-From:   Deepak R Varma <mh12gx2825@gmail.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] staging: media: atomisp: improve function argument
- alignment
-Message-ID: <20210420171943.GC193332@localhost>
-References: <cover.1618859059.git.drv@mailo.com>
- <9b517e04d1a9b56dc14494a246d70915d51b1839.1618859059.git.drv@mailo.com>
- <401d7d5a-70b7-3443-8612-eb4812e22af1@xs4all.nl>
+        id S233341AbhDTRVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 13:21:37 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:40316 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233141AbhDTRVf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 13:21:35 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618939263; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=7nGA6TE9zULQazyvaHn6Yh1DQZ8seh4Es18HpsC0kek=;
+ b=fdfWQdyv2MGaYNkt6s2JTv9p1jO9l/IpscQQFv9vPJyhJsGe/q2ocnSgPphS7zjRQu79bzot
+ Sf1zOyEChH7LSOWfZLoAblclv7CHfut/OOURHQwfYpgVfE6+tfpOOTfE8IYVE020M3ofsnas
+ SCmSOXAfhKnz6U7N8d1o+JjguLw=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 607f0d6ba817abd39abdf6a7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Apr 2021 17:20:43
+ GMT
+Sender: sbhanu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F3B93C4360C; Tue, 20 Apr 2021 17:20:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sbhanu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 15CBFC433D3;
+        Tue, 20 Apr 2021 17:20:42 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <401d7d5a-70b7-3443-8612-eb4812e22af1@xs4all.nl>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 20 Apr 2021 22:50:41 +0530
+From:   sbhanu@codeaurora.org
+To:     Doug Anderson <dianders@google.com>
+Cc:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Sahitya Tummala <stummala@codeaurora.org>,
+        Ram Prakash Gupta <rampraka@codeaurora.org>,
+        Sayali Lokhande <sayalil@codeaurora.org>,
+        sartgarg@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>, cang@codeaurora.org,
+        pragalla@codeaurora.org, nitirawa@codeaurora.org,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Evan Green <evgreen@chromium.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>
+Subject: Re: [PATCH V2] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD
+ card
+In-Reply-To: <CAD=FV=XavWbf_b7-=JT6V5_RNA8CjdK4oRu7H719AaPDJ5tsqQ@mail.gmail.com>
+References: <1616264220-25825-1-git-send-email-sbhanu@codeaurora.org>
+ <CAD=FV=WLZCSd6D5VFyD+1KBp5n1qyszER2EVaEMwYjQfPSSDnA@mail.gmail.com>
+ <b77f207b-2d90-3c8b-857f-625bd3867ed1@codeaurora.org>
+ <6fdf704c4716f5873d413229ca8adc57@codeaurora.org>
+ <CAD=FV=Wa4fT5wZgd0==8kLy_tzTLgdZ-HwdfOEAM9pMeMjjFyg@mail.gmail.com>
+ <8126e130e5c0ea1e7ea867414f0510c0@codeaurora.org>
+ <CAD=FV=XavWbf_b7-=JT6V5_RNA8CjdK4oRu7H719AaPDJ5tsqQ@mail.gmail.com>
+Message-ID: <32096a375966e1fcc149016df012c445@codeaurora.org>
+X-Sender: sbhanu@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 03:24:32PM +0200, Hans Verkuil wrote:
-> On 19/04/2021 21:12, Deepak R Varma wrote:
-> > Improve multi-line function argument alignment according to the code style
-> > guidelines. Resolves checkpatch feedback: "Alignment should match
-> > open parenthesis".
-> > 
-> > Signed-off-by: Deepak R Varma <drv@mailo.com>
+On 2021-04-15 01:55, Doug Anderson wrote:
+> Hi,
 > 
-> WARNING: From:/Signed-off-by: email address mismatch: 'From: Deepak R Varma <mh12gx2825@gmail.com>' != 'Signed-off-by: Deepak R Varma
-> <drv@mailo.com>'
+> On Tue, Apr 13, 2021 at 3:59 AM <sbhanu@codeaurora.org> wrote:
+>> 
+>> >> >>> +                                       required-opps =
+>> >> >>> <&rpmhpd_opp_low_svs>;
+>> >> >>> +                                       opp-peak-kBps = <1200000
+>> >> >>> 76000>;
+>> >> >>> +                                       opp-avg-kBps = <1200000
+>> >> >>> 50000>;
+>> >> >> Why are the kBps numbers so vastly different than the ones on sc7180
+>> >> >> for the same OPP point. That implies:
+>> >> >>
+>> >> >> a) sc7180 is wrong.
+>> >> >>
+>> >> >> b) This patch is wrong.
+>> >> >>
+>> >> >> c) The numbers are essentially random and don't really matter.
+>> >> >>
+>> >> >> Can you identify which of a), b), or c) is correct, or propose an
+>> >> >> alternate explanation of the difference?
+>> >> >>
+>> >>
+>> >> We calculated bus votes values for both sc7180 and sc7280 with ICB
+>> >> tool,
+>> >> above mentioned values we got for sc7280.
+>> >
+>> > I don't know what an ICB tool is. Please clarify.
+>> >
+>> > Also: just because a tool spits out numbers that doesn't mean it's
+>> > correct. Presumably the tool could be wrong or incorrectly configured.
+>> > We need to understand why these numbers are different.
+>> >
+>> we checked with ICB tool team on this they conformed as Rennell & 
+>> Kodiak
+>> are different chipsets,
+>> we might see delta in ib/ab values due to delta in scaling factors.
 > 
-> Which email should I use? Ideally you should post from the same email
-> as the Signed-off-by.
+> ...but these numbers are in kbps, aren't they? As I understand it
+> these aren't supposed to be random numbers spit out by a tool but are
+> supposed to be understandable by how much bandwidth an IP block (like
+> MMC) needs from the busses it's connected to. Since the MMC IP block
+> on sc7180 and sc7280 is roughly the same there shouldn't be a big
+> difference in numbers.
+> 
+> Something smells wrong.
+> 
+> Adding a few people who understand interconnects better than I do, 
+> though.
+> 
 
-I am really sorry for this. I was trying to set up mutt to handle both
-my accounts and guess that led to this issue. I will resubmit the patch
-set with the appropriate email match. Will that be okay?
+ICB team has re-checked the Rennell ICB tool and they confirmed that 
+some configs were wrong in Rennell ICB tool and they corrected it.With 
+the new updated Rennell ICB tool below are the values :
 
-Thank you,
-deepak.
 
-> 
-> Regards,
-> 
-> 	Hans
-> 
-> > ---
-> >  drivers/staging/media/atomisp/i2c/atomisp-gc0310.c | 4 ++--
-> >  drivers/staging/media/atomisp/i2c/atomisp-gc2235.c | 4 ++--
-> >  drivers/staging/media/atomisp/i2c/atomisp-ov2722.c | 4 ++--
-> >  3 files changed, 6 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> > index 2b71de722ec3..6be3ee1d93a5 100644
-> > --- a/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> > +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc0310.c
-> > @@ -192,8 +192,8 @@ static int __gc0310_buf_reg_array(struct i2c_client *client,
-> >  }
-> >  
-> >  static int __gc0310_write_reg_is_consecutive(struct i2c_client *client,
-> > -	struct gc0310_write_ctrl *ctrl,
-> > -	const struct gc0310_reg *next)
-> > +					     struct gc0310_write_ctrl *ctrl,
-> > +					     const struct gc0310_reg *next)
-> >  {
-> >  	if (ctrl->index == 0)
-> >  		return 1;
-> > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> > index 78147ffb6099..6ba4a8adff7c 100644
-> > --- a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> > +++ b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-> > @@ -171,8 +171,8 @@ static int __gc2235_buf_reg_array(struct i2c_client *client,
-> >  }
-> >  
-> >  static int __gc2235_write_reg_is_consecutive(struct i2c_client *client,
-> > -	struct gc2235_write_ctrl *ctrl,
-> > -	const struct gc2235_reg *next)
-> > +					     struct gc2235_write_ctrl *ctrl,
-> > +					     const struct gc2235_reg *next)
-> >  {
-> >  	if (ctrl->index == 0)
-> >  		return 1;
-> > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-> > index eecefcd734d0..aec7392fd1de 100644
-> > --- a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-> > +++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-> > @@ -212,8 +212,8 @@ static int __ov2722_buf_reg_array(struct i2c_client *client,
-> >  }
-> >  
-> >  static int __ov2722_write_reg_is_consecutive(struct i2c_client *client,
-> > -	struct ov2722_write_ctrl *ctrl,
-> > -	const struct ov2722_reg *next)
-> > +					     struct ov2722_write_ctrl *ctrl,
-> > +					     const struct ov2722_reg *next)
-> >  {
-> >  	if (ctrl->index == 0)
-> >  		return 1;
-> > 
-> 
+Rennell LC:(Sc7180)
+
+opp-384000000 {
+              opp-hz = /bits/ 64 <384000000>;
+              required-opps = <&rpmhpd_opp_nom>;
+              opp-peak-kBps = <5400000 490000>;
+              opp-avg-kBps = <6600000 300000>;
+};
+
+
+And now, these values are near to Kodaik LC values:
+
+Kodaik LC:(SC7280)
+
+opp-384000000 {
+            opp-hz = /bits/ 64 <384000000>;
+            required-opps = <&rpmhpd_opp_nom>;
+            opp-peak-kBps = <5400000 399000>;
+            opp-avg-kBps = <6000000 300000>;
+};
+
+
+> -Doug
