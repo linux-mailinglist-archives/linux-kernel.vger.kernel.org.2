@@ -2,88 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4715365713
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 13:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C3936573B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 13:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231834AbhDTLEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 07:04:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51272 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231388AbhDTLEh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 07:04:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618916645; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7c1umvuq5ELjSt4WwfRDq7eVQxePycuZSiMlUA0otrY=;
-        b=SsOPZ6h6g5IFGiSCAaRK5XTcbrpymneUn8n9gbjllBnAjMXd92IA+lg34lz88O+McxFKpK
-        1vsfWvClNffMWO2zU72LcnF+5csxyLIdbsqU4Z1MHoElWJXMqyPWY0p7RUTCOSMSH+HSgG
-        kFqffDHVPLarUvYpV16Xg5c1QEVdU1I=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 196FAAF27;
-        Tue, 20 Apr 2021 11:04:05 +0000 (UTC)
-Date:   Tue, 20 Apr 2021 13:04:04 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Peter.Enderborg@sony.com
-Cc:     christian.koenig@amd.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, sumit.semwal@linaro.org,
-        adobriyan@gmail.com, akpm@linux-foundation.org,
-        songmuchun@bytedance.com, guro@fb.com, shakeelb@google.com,
-        neilb@suse.de, samitolvanen@google.com, rppt@kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, willy@infradead.org
-Subject: Re: [PATCH v4] dma-buf: Add DmaBufTotal counter in meminfo
-Message-ID: <YH61JJOlLwBwHqVL@dhcp22.suse.cz>
-References: <23aa041b-0e7c-6f82-5655-836899973d66@sony.com>
- <d70efba0-c63d-b55a-c234-eb6d82ae813f@amd.com>
- <YH2ru642wYfqK5ne@dhcp22.suse.cz>
- <07ed1421-89f8-8845-b254-21730207c185@amd.com>
- <YH59E15ztpTTUKqS@dhcp22.suse.cz>
- <b89c84da-65d2-35df-7249-ea8edc0bee9b@amd.com>
- <YH6GyThr2mPrM6h5@dhcp22.suse.cz>
- <5efa2b11-850b-ad89-b518-b776247748a4@sony.com>
- <YH6bASnaRIV4DGpI@dhcp22.suse.cz>
- <532d6d7e-372c-1524-d015-e15d79fcf11c@sony.com>
+        id S231939AbhDTLMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 07:12:15 -0400
+Received: from perseus.uberspace.de ([95.143.172.134]:57840 "EHLO
+        perseus.uberspace.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231388AbhDTLMK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 07:12:10 -0400
+X-Greylist: delayed 401 seconds by postgrey-1.27 at vger.kernel.org; Tue, 20 Apr 2021 07:12:09 EDT
+Received: (qmail 15708 invoked from network); 20 Apr 2021 11:04:55 -0000
+Received: from localhost (HELO localhost) (127.0.0.1)
+  by perseus.uberspace.de with SMTP; 20 Apr 2021 11:04:55 -0000
+Subject: Re: [PATCH net-next v2] net: phy: at803x: fix probe error if copper
+ page is selected
+To:     Michael Walle <michael@walle.cc>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20210420102929.13505-1-michael@walle.cc>
+From:   David Bauer <mail@david-bauer.net>
+Message-ID: <a0e5c38d-9a60-5b48-48bf-ff4884adebb4@david-bauer.net>
+Date:   Tue, 20 Apr 2021 13:04:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <532d6d7e-372c-1524-d015-e15d79fcf11c@sony.com>
+In-Reply-To: <20210420102929.13505-1-michael@walle.cc>
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 20-04-21 09:25:51, Peter.Enderborg@sony.com wrote:
-> On 4/20/21 11:12 AM, Michal Hocko wrote:
-> > On Tue 20-04-21 09:02:57, Peter.Enderborg@sony.com wrote:
-> >>>> But that isn't really system memory at all, it's just allocated device
-> >>>> memory.
-> >>> OK, that was not really clear to me. So this is not really accounted to
-> >>> MemTotal? If that is really the case then reporting it into the oom
-> >>> report is completely pointless and I am not even sure /proc/meminfo is
-> >>> the right interface either. It would just add more confusion I am
-> >>> afraid.
-> >>>  
-> >> Why is it confusing? Documentation is quite clear:
-> > Because a single counter without a wider context cannot be put into any
-> > reasonable context. There is no notion of the total amount of device
-> > memory usable for dma-buf. As Christian explained some of it can be RAM
-> > based. So a single number is rather pointless on its own in many cases.
-> >
-> > Or let me just ask. What can you tell from dma-bud: $FOO kB in its
-> > current form?
-> 
-> It is better to be blind?
+Hi,
 
-No it is better to have a sensible counter that can be reasoned about.
-So far you are only claiming that having something is better than
-nothing and I would agree with you if that was a debugging one off
-interface. But /proc/meminfo and other proc files have to be maintained
-with future portability in mind. This is not a dumping ground for _some_
-counters that might be interesting at the _current_ moment. E.g. what
-happens if somebody wants to have a per device resp. memory based
-dma-buf data? Are you going to change the semantic or add another
-2 counters?
--- 
-Michal Hocko
-SUSE Labs
+On 4/20/21 12:29 PM, Michael Walle wrote:
+> The commit c329e5afb42f ("net: phy: at803x: select correct page on
+> config init") selects the copper page during probe. This fails if the
+> copper page was already selected. In this case, the value of the copper
+> page (which is 1) is propagated through phy_restore_page() and is
+> finally returned for at803x_probe(). Fix it, by just using the
+> at803x_page_write() directly.
+
+Ouch, i didn't spot that. Thanks for taking care.
+
+> 
+> Also in case of an error, the regulator is not disabled and leads to a
+> WARN_ON() when the probe fails. This couldn't happen before, because
+> at803x_parse_dt() was the last call in at803x_probe(). It is hard to
+> see, that the parse_dt() actually enables the regulator. Thus move the
+> regulator_enable() to the probe function and undo it in case of an
+> error.
+> 
+> Fixes: c329e5afb42f ("net: phy: at803x: select correct page on config init")
+> Signed-off-by: Michael Walle <michael@walle.cc>
+
+Reviewed-by: David Bauer <mail@david-bauer.net>
+
+Best
+David
+
+> ---
+> Changes since v1:
+>  - take the bus lock
+> 
+>  drivers/net/phy/at803x.c | 23 +++++++++++++++++------
+>  1 file changed, 17 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
+> index e0f56850edc5..32af52dd5aed 100644
+> --- a/drivers/net/phy/at803x.c
+> +++ b/drivers/net/phy/at803x.c
+> @@ -554,10 +554,6 @@ static int at803x_parse_dt(struct phy_device *phydev)
+>  			phydev_err(phydev, "failed to get VDDIO regulator\n");
+>  			return PTR_ERR(priv->vddio);
+>  		}
+> -
+> -		ret = regulator_enable(priv->vddio);
+> -		if (ret < 0)
+> -			return ret;
+>  	}
+>  
+>  	return 0;
+> @@ -579,15 +575,30 @@ static int at803x_probe(struct phy_device *phydev)
+>  	if (ret)
+>  		return ret;
+>  
+> +	if (priv->vddio) {
+> +		ret = regulator_enable(priv->vddio);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+>  	/* Some bootloaders leave the fiber page selected.
+>  	 * Switch to the copper page, as otherwise we read
+>  	 * the PHY capabilities from the fiber side.
+>  	 */
+>  	if (at803x_match_phy_id(phydev, ATH8031_PHY_ID)) {
+> -		ret = phy_select_page(phydev, AT803X_PAGE_COPPER);
+> -		ret = phy_restore_page(phydev, AT803X_PAGE_COPPER, ret);
+> +		phy_lock_mdio_bus(phydev);
+> +		ret = at803x_write_page(phydev, AT803X_PAGE_COPPER);
+> +		phy_unlock_mdio_bus(phydev);
+> +		if (ret)
+> +			goto err;
+>  	}
+>  
+> +	return 0;
+> +
+> +err:
+> +	if (priv->vddio)
+> +		regulator_disable(priv->vddio);
+> +
+>  	return ret;
+>  }
+>  
+> 
