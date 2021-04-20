@@ -2,71 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2316365DA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 18:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D04365DAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 18:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233232AbhDTQo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 12:44:56 -0400
-Received: from mga14.intel.com ([192.55.52.115]:3030 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232916AbhDTQoo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 12:44:44 -0400
-IronPort-SDR: LkK24RjWW/QGpmSByTyb66ASZuDCqrhh92aV16xH9hQKy7Fy6CNMKML/ygnLNB1mtVO690J0er
- L0KUEplSYGoA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="195098657"
-X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
-   d="scan'208";a="195098657"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 09:44:12 -0700
-IronPort-SDR: HcaxeBXaOCRlZFWSlqoRGIc79xOi2yvB/OxQoB+GpZUB16je5aAAJ/a238bGskr4zNq0cYrISu
- NC+0XunhHXxQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
-   d="scan'208";a="427063562"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga008.jf.intel.com with ESMTP; 20 Apr 2021 09:44:10 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 7FBAD103; Tue, 20 Apr 2021 19:44:28 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        id S233095AbhDTQrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 12:47:35 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:44974 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232473AbhDTQrb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 12:47:31 -0400
+Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 20 Apr 2021 09:46:59 -0700
+X-QCInternal: smtphost
+Received: from gurus-linux.qualcomm.com (HELO gurus-linux.localdomain) ([10.46.162.81])
+  by ironmsg05-sd.qualcomm.com with ESMTP; 20 Apr 2021 09:46:59 -0700
+Received: by gurus-linux.localdomain (Postfix, from userid 383780)
+        id 6773219D9; Tue, 20 Apr 2021 09:46:59 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 09:46:59 -0700
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 2/2] spi: Avoid undefined behaviour when counting unused native CSs
-Date:   Tue, 20 Apr 2021 19:44:25 +0300
-Message-Id: <20210420164425.40287-2-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210420164425.40287-1-andriy.shevchenko@linux.intel.com>
-References: <20210420164425.40287-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v3 0/3] Add Qualcomm Technologies, Inc. PM8008 MFD driver
+Message-ID: <20210420164659.GA21665@codeaurora.org>
+References: <cover.1618278453.git.gurus@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1618278453.git.gurus@codeaurora.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ffz(), that has been used to count unused native CSs,
-might cause undefined behaviour when called against ~0U.
-To fix that, open code it with ffs(~value) - 1.
+On Mon, Apr 12, 2021 at 07:00:24PM -0700, Guru Das Srinagesh wrote:
+> Changes from v2:
+>   - Collected Rob Herring's Acked-by for the IRQ listing patch
+>   - Addressed Rob's comments for the dt-bindings patch
+> 
+> Changes from v1:
+>   - Removed errant Change-Id from dt-bindings IRQ patch and gathered Bjorn's
+>     Reviewed-by
+>   - Fixed up YAML errors using make dt_binding_check
+> 
+> This driver is dependent on changes that have been made to the regmap-irq
+> framework that have currently been accepted [1][2] in regmap.git upstream by
+> Mark Brown but haven't made it to Linus' tree yet. For this reason, this driver
+> has been based on the tip of regmap.git and not mfd.git.
+> 
+> Those changes, and this driver, are the result of a rewrite effort that was
+> promised a long ago [3]. The framework changes and this driver have been tested
+> and verified end-to-end on an internal platform.
+> 
+> [1] https://lore.kernel.org/lkml/20210318183607.gFxO2hoTO274vl3jUuxWbi19rq9wQELzN-y3B4jvO10@z/
+> [2] https://lore.kernel.org/lkml/161726943419.2413.4844313396830856637.b4-ty@kernel.org/
+> [3] https://lore.kernel.org/lkml/20200519185757.GA13992@codeaurora.org/
 
-Fixes: 7d93aecdb58d ("spi: Add generic support for unused native cs with cs-gpios")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: decoded UB abbreviation (Mark)
- drivers/spi/spi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Lee, mfd reviewers,
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 9c3730a9f7d5..01f95bee2ac8 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -2609,7 +2609,7 @@ static int spi_get_gpio_descs(struct spi_controller *ctlr)
- 		native_cs_mask |= BIT(i);
- 	}
- 
--	ctlr->unused_native_cs = ffz(native_cs_mask);
-+	ctlr->unused_native_cs = ffs(~native_cs_mask) - 1;
- 
- 	if ((ctlr->flags & SPI_MASTER_GPIO_SS) && num_cs_gpios &&
- 	    ctlr->max_native_cs && ctlr->unused_native_cs >= ctlr->max_native_cs) {
--- 
-2.30.2
+This new driver depends on three regmap-irq framework changes that have
+been accepted by Mark (please see above) and hence will land only in the
+next rc-1 release. I just wanted to make sure that this patch series was
+on your radar [1]. The dt-bindings has been Acked by Rob already, and
+I'd be happy to address any review comments while patiently waiting for
+the dependencies to land.
 
+[1] https://lore.kernel.org/lkml/20210419072229.GA4869@dell/
+
+Thank you.
+
+Guru Das.
