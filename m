@@ -2,243 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D4C3653BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 194A23653BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbhDTIKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 04:10:49 -0400
-Received: from mail-mw2nam10on2051.outbound.protection.outlook.com ([40.107.94.51]:26849
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229521AbhDTIKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 04:10:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OzpFLNPras/Pbhgo4sLUmqjJdp63fB+eI5YcPp2aea96pUelCyp470vYVdbinaHThko8dzb8ZIcvokiqtk8iOTZWbC9KpqNI5SWDk6vX2J5X7y2Wt+c2FhO0XaPuTLd+cZCP/r5nxpoesWlq7IQdLRkVHk0RkJjLpEzTJASRgJTG9ReG1SvUPbXe93do0PguS+T1ImG6XInSaFnEdBXnz2DuP6AlOUxIby311hUvj9EttrcvSLFswL80MmQf1dPCoi6rp8uimSoMjzInECFaAaRTepZ1YNJdkNs1mOeg0A10QAH3SfhMyxUFZlbP+OKkrhNPrDFvadsN3pZVXeXNPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bb+YPNi/jLWg3XQ7EIvgsHgV0wC92vCOhyzDfuEiHP0=;
- b=FAfwrjSHnozHrnDpQGJIWGw2LjTBM87gl+AFcxFPgOcqhUWEpoAphTQ8AqvcGm3yCiuZfoWuQH+J9C5Q0FxvaSHW21mdxPNgLOhdjFjtnjIinPCNwodbVKbRdsT0hbvdcQH5k1kOX40r0LawkuEIvooHlL6tJAiQtHKO1NdflsE+G6L1zHLKbjw08xMPbdFY69GPdGEux4to37JBWeIxuzoV8j6hrfF+AcqXE/WGwTRVo1rGF2nFjRzT9D4V1MfAfbxE6IReBpEhB5tG7kUwKRGTWoZz5fca+kQm4rytjko9XipXi69Pz54CCjN8p2HeMVXrBgRn+OgqgRfGRejMag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bb+YPNi/jLWg3XQ7EIvgsHgV0wC92vCOhyzDfuEiHP0=;
- b=YTpk/wijGmj6FNlMcl8CuOfqEgbCoRsO75wjELqNacWwSRyUmDNxxqOPmH8hpmrxBmC8inOmt+hhc7Yks/YMKy1j/NEcxKZmHbZlewquRAKhzZMeNhzykYUMfWpjnAZlLam1/eir1NvJzQBzIN6Y5TamA70pG4qmRBJ06EMOLwQ=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR12MB1248.namprd12.prod.outlook.com (2603:10b6:300:12::21)
- by MWHPR12MB1454.namprd12.prod.outlook.com (2603:10b6:301:11::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.19; Tue, 20 Apr
- 2021 08:10:12 +0000
-Received: from MWHPR12MB1248.namprd12.prod.outlook.com
- ([fe80::5094:3a69:806f:8a28]) by MWHPR12MB1248.namprd12.prod.outlook.com
- ([fe80::5094:3a69:806f:8a28%5]) with mapi id 15.20.4042.024; Tue, 20 Apr 2021
- 08:10:11 +0000
-From:   Huang Rui <ray.huang@amd.com>
-To:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Jason Bagavatsingham <jason.bagavatsingham@gmail.com>,
-        "Pierre-Loup A . Griffais" <pgriffais@valvesoftware.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Nathan Fontenot <nathan.fontenot@amd.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org
-Subject: [PATCH] x86, sched: Fix the AMD CPPC maximum perf on some specific generations
-Date:   Tue, 20 Apr 2021 16:09:43 +0800
-Message-Id: <20210420080943.1045886-1-ray.huang@amd.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [58.247.170.245]
-X-ClientProxiedBy: HK2PR04CA0054.apcprd04.prod.outlook.com
- (2603:1096:202:14::22) To MWHPR12MB1248.namprd12.prod.outlook.com
- (2603:10b6:300:12::21)
+        id S230106AbhDTILJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 04:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229913AbhDTILG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 04:11:06 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ACFCC061763
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:10:33 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id l4so56863287ejc.10
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:10:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FG5E8uWGSrCvajWCjQUTriiKHPgt6q+O5wn0TlE95pQ=;
+        b=zCCqheyR986/BDJiX2v51ephpReLZP0aCw2199pReb60w50j/aQo+xHHfXXUBXXydW
+         1iPjmITiaWa8banzSpUECuDdbVOiI4NKC9wnSLuBbE/YC5846UJY1XwLTipBgGV/fZlh
+         aeu7T47FtiIPMNezvjA8OW4GOsvVFAnqOuyar1inVAZrF4tNsRDporJAlldNike4y7TC
+         ly3OBtz7A1LspIgPb3Egr4a3gGJ9ZTu+aBMUhkcr20HtAmV66EIp8V9kIURR3gtLEGMV
+         /7R5yQCiCUDpNn62ZghQyGjtFrsbOBqiirdidAeJx9UGX/bJtpyuOWB6GZnHLQfoMoL+
+         y10Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FG5E8uWGSrCvajWCjQUTriiKHPgt6q+O5wn0TlE95pQ=;
+        b=V5tANq78jxSQyrUmPbD8jBEtG6xTlVSDqQjtyspWp+u9SbqOEFkDAoy2/WnpleACdH
+         qeTf0hz+y1UV/KhkQa0f0fa7Md55s4vgtFRK5teVxKRgwpSjHQ4ZXE3PQsBRDFZdCjt/
+         43AWEE9OrGtlW3HUmPJmDRrknv6OEpNl4+i89CsSr9dDRLvELK9drfl4Tn3Lj1rB5XWI
+         za5GImSnGEIy2KbPP05/MEti1DJRshbFvDtrrZulmWqIFaLH9/78ltl8pM5E6du4MX4o
+         aUOwLqJo79sfG81K7ywKIXvfL/ffcTqE+v4MFB5c2H0sxk+Y3Dsl/tAqI9kRSHA8GBym
+         9jcg==
+X-Gm-Message-State: AOAM530acokoyqy+TawhuCXDUnAdgkg/r1YmgniSjEY6A0XhWOLLDPob
+        voQ+yoCAijpSCHYvAEXfrCFZBg==
+X-Google-Smtp-Source: ABdhPJzlY+PZZYIcEGbGdwXLxztX7H+aBXujACcm1iNj1AFfW9eP/eWpWxhk451ND+trCv13A9EbkQ==
+X-Received: by 2002:a17:906:c34d:: with SMTP id ci13mr25303488ejb.430.1618906231985;
+        Tue, 20 Apr 2021 01:10:31 -0700 (PDT)
+Received: from apalos.home (ppp-94-65-92-88.home.otenet.gr. [94.65.92.88])
+        by smtp.gmail.com with ESMTPSA id yr16sm11854378ejb.63.2021.04.20.01.10.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 01:10:31 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 11:10:26 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
+Message-ID: <YH6MchNQPgFjfuQ+@apalos.home>
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <20210409223801.104657-3-mcroce@linux.microsoft.com>
+ <20210410154824.GZ2531743@casper.infradead.org>
+ <YHHPbQm2pn2ysth0@enceladus>
+ <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
+ <YHHuE7g73mZNrMV4@enceladus>
+ <20210414214132.74f721dd@carbon>
+ <CALvZod4F8kCQQcK5_3YH=7keqkgY-97g+_OLoDCN7uNJdd61xA@mail.gmail.com>
+ <20210419132204.1e07d5b9@carbon>
+ <20210419130148.GA2531743@casper.infradead.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from hr-amd.amd.com (58.247.170.245) by HK2PR04CA0054.apcprd04.prod.outlook.com (2603:1096:202:14::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16 via Frontend Transport; Tue, 20 Apr 2021 08:10:08 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7a0995a1-df69-4c66-752b-08d903d3b81f
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1454:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR12MB1454B05667667BC9923352B2EC489@MWHPR12MB1454.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xcXhrofAO86CzkV0MSYAH0c2WMcy/Awo+V4H+dR0lx8x2vQbAJaO0I88qCPF3o5qL46By0Ogc4+PA4BBXEK7UYaZi5UuLAQg2Iv/J+WkelZqohwnY3h6MqwIaEhgplDmm3wq6czCGveiLxA65/eBh7Le/JLMCsVaz2MsgJxOEGZgC1KuAGx/E8vUVAdvgqesfngirx2x6yeE/Y8nVNijWkZWdqAW8nPCMmjZlXzlOdnYPjWmQvoOWYgqVxgQgmC2TYbYJPWFNaGzni3fY7j8gw9hIodacj3OHnbix1oqrbRHBMbyM547e0TuDv+8VclGqyf4v0pO5YvbL+2idBy14rO1v3hPkph+tV6Cu2MbfnvCv3knJ5gUxD+rtVFLVRBBVbJwWFyCtwbDD+VMHLIn0+SkUwN0cOIiA0naz85KMP6cRmqBraiLgDAUBN4xeDwJS1ustaQlvORlIUiUzQiGl/HUCndJjrtyyEhr/CYxasmCQN5Easfo45FgclIXE/egYGX9d8gYAHI3RuE+lcan184/DYripzzXGzUyqF9oPJfhB1VtdgrjdgsLGPwXV45a8pMlH9IoPvsJwNCDMkTbBiuQNi81Iv46CfXrzvjMNC14zMYBT5a6wrXaHWGOmDo/1tHy5mjHmfkWpbR4uDcHQ53U8CCcSaQdUKqsaWxVz8g=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR12MB1248.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(136003)(366004)(396003)(376002)(1076003)(8936002)(86362001)(316002)(38100700002)(6666004)(2906002)(54906003)(2616005)(26005)(66556008)(52116002)(956004)(16526019)(4326008)(186003)(38350700002)(6486002)(66476007)(8676002)(5660300002)(66946007)(36756003)(83380400001)(7696005)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?lwIspPblju9RKDquuvtoCoOif+lrgv/Yz2E+OqTFuJk8PpzDkvbzoei9wED/?=
- =?us-ascii?Q?plL22P2u/+D0ZQdlcfQ4KcwVaFCJq3ZbgFmB/i6nNlsXmOkZITzgxzp5iiXn?=
- =?us-ascii?Q?C2XesGKkiZoaqbVIbvamzZ1eqIPhzO+bxoZNnJDVLv11un6hOnVjDQ3vK469?=
- =?us-ascii?Q?d0oEc4Y4geMu2Vx4Q8P0Dcz/IQ0m8YqNHx303n1LSG/CJzbM4RpJroePHEHE?=
- =?us-ascii?Q?hTj0sBFge5wAhX57/pKtcHRVw1aK94Kuv0AvqhfRDlGysq6RTLfogyom2P9+?=
- =?us-ascii?Q?UiOUNx7erfXg6rhZXkdbMCc7w4RojTkNGyVDTvcmvcPf7a/c21c9bp/mG5Hz?=
- =?us-ascii?Q?95Jnq11XYRuubhjwYBLzYbUSYy3eGorsEEHQp/w1+s2p8pO7Jxi3ffeg8uR5?=
- =?us-ascii?Q?KmDOWMo98Fayock3psrXCgorkuahS2xJOyNpgV0Y18gOSn9HhFbO12d3Oh3L?=
- =?us-ascii?Q?vGzGlaa3QYdIGW0BK8cA/pR5eyti1rvmQxxE7F0RqvXjohRosbOVGx04o+S0?=
- =?us-ascii?Q?/x5kTMF8w+jOQ2VimR5IWRKZUbXyNbq+3FZNw3zjMaXxbWjPHEz6RB/At65q?=
- =?us-ascii?Q?PMtMECK9aTsjbLJm/lxOTthidPTXS5GUsPmRBhLW/IIsXz/izQ6SMaY27NhP?=
- =?us-ascii?Q?cgEmuacMaKzVmPQTTtXy9WNpkzigkWhmt7+EtIkkA8+Nh1PqJo8LmLlebjcI?=
- =?us-ascii?Q?rHadL2l8TrCFTpulTvyKkdnJD06NzvasNCJwiHpQrNFXuG7aRqcUUhpXsIeY?=
- =?us-ascii?Q?wk9N+piXHWzQpgQkipeZTFNQ3IqufcuEjmudL1gMGWkj6jokIwNenUJ6lJJw?=
- =?us-ascii?Q?MTYgbuosXRaiocblABCnGzsQIIKEz854CKZkM5LLhdstrYNYpZhOqUbWMWn/?=
- =?us-ascii?Q?ZjLPMLFgDuC7Z9wUbpEPZUAvineFvTX/z1IUKCdhJQk5MlagctTAxleghxOU?=
- =?us-ascii?Q?2L5UiDPSXDjj8k+nHXChAMNFd6EsyIldnOydkaan9sU5zGNpMvh7HFdIp+FL?=
- =?us-ascii?Q?vklQ9462klCcaEqh9qLVza58yfX8ORELD5bbXp+OlaRYcDlyQDU+ejgfyfNr?=
- =?us-ascii?Q?+XZgvpASLDzdT2fLkfndflZ77qtRtbBmkyjmkerZ8Q2KDENS7tf/XJ+gbenI?=
- =?us-ascii?Q?9Jn0l+lnzzwDtlrw8SuWWQ/qit66Gc1uV2r1FWLrjcL8E15DUs6X8udpEZw6?=
- =?us-ascii?Q?Bms66eMQFYRXsOIuq4ubkE9EzSawb3RGlYijDuCnXrdY8NuyAZp9sq8T5sF6?=
- =?us-ascii?Q?zxbQRUWa4Pi+b5Ggm7txsuSY2dscDVZPsGwN02vOTJ8ueV0SqQvLU6QyQQ60?=
- =?us-ascii?Q?FjMOUfJpksOxTp8ODPaUbyEj?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a0995a1-df69-4c66-752b-08d903d3b81f
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR12MB1248.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2021 08:10:11.5366
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zxFN/vJQTbl/AdiCdUc+xWtsDOEHzKn6PHZr0/56nvvcEj/ykVoGENpZSXvQo7NTlY9DtJ3inkMS3EIk6M7ydA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1454
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210419130148.GA2531743@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some AMD Ryzen generations has different calculation method on maximum
-perf. 255 is not for all asics, some specific generations used 166 as
-the maximum perf. This patch is to fix the different maximum perf value
-of AMD CPPC.
+Hi Matthew,
 
-Fixes: 41ea667227ba ("x86, sched: Calculate frequency invariance for AMD systems")
-Fixes: 3c55e94c0ade ("cpufreq: ACPI: Extend frequency tables to cover boost frequencies")
+[...]
+> 
+> And the contents of this page already came from that device ... if it
+> wanted to write bad data, it could already have done so.
+> 
+> > > > (3) The page_pool is optimized for refcnt==1 case, and AFAIK TCP-RX
+> > > > zerocopy will bump the refcnt, which means the page_pool will not
+> > > > recycle the page when it see the elevated refcnt (it will instead
+> > > > release its DMA-mapping).  
+> > > 
+> > > Yes this is right but the userspace might have already consumed and
+> > > unmapped the page before the driver considers to recycle the page.
+> > 
+> > That is a good point.  So, there is a race window where it is possible
+> > to gain recycling.
+> > 
+> > It seems my page_pool co-maintainer Ilias is interested in taking up the
+> > challenge to get this working with TCP RX zerocopy.  So, lets see how
+> > this is doable.
+> 
+> You could also check page_ref_count() - page_mapcount() instead of
+> just checking page_ref_count().  Assuming mapping/unmapping can't
+> race with recycling?
+> 
 
-Reported-by: Jason Bagavatsingham <jason.bagavatsingham@gmail.com>
-Tested-by: Jason Bagavatsingham <jason.bagavatsingham@gmail.com>
-Signed-off-by: Huang Rui <ray.huang@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: Nathan Fontenot <nathan.fontenot@amd.com>
-Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: Borislav Petkov <bp@suse.de>
-Cc: x86@kernel.org
----
- arch/x86/kernel/smpboot.c      | 33 ++++++++++++++++++++++++++-
- drivers/cpufreq/acpi-cpufreq.c | 41 ++++++++++++++++++++++++++++++++++
- 2 files changed, 73 insertions(+), 1 deletion(-)
+That's not a bad idea.  As I explained on my last reply to Shakeel, I don't
+think the current patch will blow up anywhere.  If the page is unmapped prior
+to kfree_skb() it will be recycled.  If it's done in a reverse order, we'll
+just free the page entirely and will have to re-allocate it.
+The only thing I need to test is potential races (assuming those can even
+happen?).
 
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 02813a7f3a7c..705bc5ceb1ea 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -2033,6 +2033,37 @@ static bool intel_set_max_freq_ratio(void)
- }
- 
- #ifdef CONFIG_ACPI_CPPC_LIB
-+static u64 amd_get_highest_perf(void)
-+{
-+	u64 cppc_max_perf;
-+
-+	switch (boot_cpu_data.x86) {
-+	case 0x17:
-+		if ((boot_cpu_data.x86_model >= 0x30 &&
-+		     boot_cpu_data.x86_model < 0x40) ||
-+		    (boot_cpu_data.x86_model >= 0x70 &&
-+		     boot_cpu_data.x86_model < 0x80))
-+			cppc_max_perf = 166;
-+		else
-+			cppc_max_perf = 255;
-+		break;
-+	case 0x19:
-+		if ((boot_cpu_data.x86_model >= 0x20 &&
-+		     boot_cpu_data.x86_model < 0x30) ||
-+		    (boot_cpu_data.x86_model >= 0x40 &&
-+		     boot_cpu_data.x86_model < 0x70))
-+			cppc_max_perf = 166;
-+		else
-+			cppc_max_perf = 255;
-+		break;
-+	default:
-+		cppc_max_perf = 255;
-+		break;
-+	}
-+
-+	return cppc_max_perf;
-+}
-+
- static bool amd_set_max_freq_ratio(void)
- {
- 	struct cppc_perf_caps perf_caps;
-@@ -2046,8 +2077,8 @@ static bool amd_set_max_freq_ratio(void)
- 		return false;
- 	}
- 
--	highest_perf = perf_caps.highest_perf;
- 	nominal_perf = perf_caps.nominal_perf;
-+	highest_perf = amd_get_highest_perf();
- 
- 	if (!highest_perf || !nominal_perf) {
- 		pr_debug("Could not retrieve highest or nominal performance\n");
-diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
-index d1bbc16fba4b..e5c03360db20 100644
---- a/drivers/cpufreq/acpi-cpufreq.c
-+++ b/drivers/cpufreq/acpi-cpufreq.c
-@@ -630,6 +630,44 @@ static int acpi_cpufreq_blacklist(struct cpuinfo_x86 *c)
- #endif
- 
- #ifdef CONFIG_ACPI_CPPC_LIB
-+
-+static u64 get_amd_max_boost_ratio(unsigned int cpu, u64 nominal_perf)
-+{
-+	u64 boost_ratio, cppc_max_perf;
-+
-+	if (!nominal_perf)
-+		return 0;
-+
-+	switch (boot_cpu_data.x86) {
-+	case 0x17:
-+		if ((boot_cpu_data.x86_model >= 0x30 &&
-+		     boot_cpu_data.x86_model < 0x40) ||
-+		    (boot_cpu_data.x86_model >= 0x70 &&
-+		     boot_cpu_data.x86_model < 0x80))
-+			cppc_max_perf = 166;
-+		else
-+			cppc_max_perf = 255;
-+		break;
-+	case 0x19:
-+		if ((boot_cpu_data.x86_model >= 0x20 &&
-+		     boot_cpu_data.x86_model < 0x30) ||
-+		    (boot_cpu_data.x86_model >= 0x40 &&
-+		     boot_cpu_data.x86_model < 0x70))
-+			cppc_max_perf = 166;
-+		else
-+			cppc_max_perf = 255;
-+		break;
-+	default:
-+		cppc_max_perf = 255;
-+		break;
-+	}
-+
-+	boost_ratio = div_u64(cppc_max_perf << SCHED_CAPACITY_SHIFT,
-+			      nominal_perf);
-+
-+	return boost_ratio;
-+}
-+
- static u64 get_max_boost_ratio(unsigned int cpu)
- {
- 	struct cppc_perf_caps perf_caps;
-@@ -646,6 +684,9 @@ static u64 get_max_boost_ratio(unsigned int cpu)
- 		return 0;
- 	}
- 
-+	if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD)
-+		return get_amd_max_boost_ratio(cpu, perf_caps.nominal_perf);
-+
- 	highest_perf = perf_caps.highest_perf;
- 	nominal_perf = perf_caps.nominal_perf;
- 
--- 
-2.25.1
+Trying to recycle the page outside of kfree_skb() means we'd have to 'steal'
+the page, during put_page() (or some function that's outside the networking
+scope).  I think this is going to have a measurable performance penalty though
+not in networking, but in general.
 
+In any case, that should be orthogonal to the current patchset.  So unless
+someone feels strongly about it, I'd prefer keeping the current code and
+trying to enable recycling in the skb zc case, when we have enough users of
+the API.
+
+
+Thanks
+/Ilias
