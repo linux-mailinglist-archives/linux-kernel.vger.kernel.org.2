@@ -2,172 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE24365B97
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1222C365BA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232762AbhDTO6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 10:58:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231758AbhDTO6r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 10:58:47 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28FE8C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 07:58:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4rDP3NIwCgKvJ81KQixmdbRgXZLMqSCXAWe05pIrqdc=; b=TNGV6fsCBFXhWgPKMaZikEODsi
-        dxM2XJk4LBOd3iUYjxX0Bmz7d6Yi6jTG4sTMRmqxqEJHHUB9QciC3D7SpcpyM3jqfXqt5SfXoYSQr
-        Yt6WLaBdNO22Un92BYQny+LIlZVpQBHCfvN2JAkFH/4lF6VpNi6LYPHhJAyoWmd9GwrMsLSYA3b9L
-        7VgVr+lAEagBu1aSwTUW0aCLw/l3ZOWISDE60WyQ4V/Vu8GL3w7WSdjorf+DGD7j1UR9LxbW1LqYI
-        Jk/Q4MMtbwmH/J6QcqLW5NvBdZtwL1CtnNDWF0Yd7/8DAXZhZoAW1cBjMDUs8aZIMkHcSx7VOlZVt
-        kTMRXutA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYrpB-00CP1k-4U; Tue, 20 Apr 2021 14:58:01 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6C86B30018E;
-        Tue, 20 Apr 2021 16:58:00 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2B3C72BCEDE6D; Tue, 20 Apr 2021 16:58:00 +0200 (CEST)
-Date:   Tue, 20 Apr 2021 16:58:00 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vincent Donnefort <vincent.donnefort@arm.com>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        tglx@linutronix.de, mingo@kernel.org, bigeasy@linutronix.de,
-        swood@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, qais.yousef@arm.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] sched: Use cpu_dying() to fix balance_push vs
- hotplug-rollback
-Message-ID: <YH7r+AoQEReSvxBI@hirez.programming.kicks-ass.net>
-References: <871rclu3jz.mognet@e113632-lin.i-did-not-set--mail-host-address--so-tickle-me>
- <YHQ3Iy7QfL+0UoM0@hirez.programming.kicks-ass.net>
- <87r1jfmn8d.mognet@arm.com>
- <YHU/a9HvGLYpOLKZ@hirez.programming.kicks-ass.net>
- <YHgAYef83VQhKdC2@hirez.programming.kicks-ass.net>
- <87a6pzmxec.mognet@arm.com>
- <20210419105541.GA40111@e120877-lin.cambridge.arm.com>
- <20210420094632.GA165360@e120877-lin.cambridge.arm.com>
- <YH7jSPZx0BhyHoLe@hirez.programming.kicks-ass.net>
- <YH7niBZDWjsz+jBa@hirez.programming.kicks-ass.net>
+        id S232907AbhDTPAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 11:00:22 -0400
+Received: from mout.gmx.net ([212.227.15.15]:60619 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232861AbhDTPAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 11:00:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1618930770;
+        bh=xoiOmaCVEtpySRd04IegAG0BxgeoJmW2GOsRSiidCZI=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=dK7Kl+Y/Er9+jMoCpe/4bJETi5ggUrFtuMujRHCt26QWgdKJkMrefZfFZ2P+bWQoT
+         B1W4lTQaoHr8TE5JJguvnodz6rAs+PD3boH1DotHu9w2sCW7DCepdKPQX/FPPRn7KR
+         ZF+e4ftL6dShxTSCXohtrQayLiHKfPjaIoj+cavo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [80.245.77.151] ([80.245.77.151]) by web-mail.gmx.net
+ (3c-app-gmx-bs72.server.lan [172.19.170.208]) (via HTTP); Tue, 20 Apr 2021
+ 16:59:30 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YH7niBZDWjsz+jBa@hirez.programming.kicks-ass.net>
+Message-ID: <trinity-4a3f024e-c01d-44e4-a884-530135853d33-1618930770250@3c-app-gmx-bs72>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Frank Wunderlich <linux@fw-web.de>,
+        linux-mediatek@lists.infradead.org,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Aw: Re: [PATCH] thermal: mediatek: add sensors-support
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 20 Apr 2021 16:59:30 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <f4329b1a-02e0-aad5-55bd-82d30a38fc55@linaro.org>
+References: <20210320080646.49615-1-linux@fw-web.de>
+ <f4329b1a-02e0-aad5-55bd-82d30a38fc55@linaro.org>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:Y9ij6feTokwdz5MXRa5sZkEb2F+ct43zXd+nTvnF05xVHLjbDkTKBK5rPvKncRn/st4KX
+ uMKyPcmYPW/TNB0Ml0XFq5YN8HPKRKCNC7li1V09gwh9Mhg1OIY+Dc5MPxhmbormWNQbO2/CZw+T
+ v6G41ozqEjBwMRzTdscvZXlNZ7DohpQ2Ix2/aG+sP8wMPja2eZZyfmVm4ARhP44lUXU3/ioOburd
+ TgmeiGPrOzFugSUQhTXCXxAndcBzVMEyw9ZWFkIbtgbFJn1e4w8rtVIOiYkL1JniXtl55eNJQNHT
+ mA=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ZbkFrIIWRqI=:KBVzZ2PKpAubc0ZbdBDcgY
+ DL/6Djl5qZ3UUTI3Q4fvCWuUdgkuK3cJT1ooGXUAOMh4jdvxj+wvUfsgcyvUwjBIVqyrRRByc
+ rGDinyWraLq4jhtF8jI8+iIxahtqjlro6X24jsnHRNIRqoJDCVn+cP/QrrtWcJ3k2DtcXUMbI
+ erJDUZ3bI/HK+PgmuSFOhwWiNbcWXFI3/O0mFZmdsyC0KmWpw+5qbYnqNFI7pjuCbPIdYU5HB
+ bBilC+IOGpxN051rY4GzaheC/dGyLbmuaIQHUsxm1O5oFBxcecfDDgmAeYfATTdS5C2xIiVO5
+ ogqynYIBG2RZNtmUowCZERL7fpwLxqpDfqgDziPwTC5od2cvZPGSBc7qxIh725Mqf6clKnizj
+ owyMNLXQ87GCgz0wMHPIHBJa/VLaLFa8yMoHHkZwpEo7vDCwqYws5K5KQ6moN5pwWDpS+iBax
+ +aKRJ8PXxra0KhowiWsxksnyOeuWWJErq0+3A9SGCu9P3PUXVAUhyJ5u3I2/D2iGLsXrA0wTQ
+ dffr8+WHUyRHv9KbU5BaNBiVEqqs2SNsWuG8K9AaQBmZ5icFqxl/3NdDNCKBX9t1JZ2gmsO++
+ EB1FqMOrlq5LhP3u0C9yrgyn3BaICLtdpqyPJ8f78jABpGgUP0+RFpWBdGjH1s6/C+ccBhI6S
+ 822mVlCU8CJgZnC30xL2D3cvcya3oWbLmiDKPl6/fNDoPVWbKmrWsWeuAhZYgqg3g6z7qOWlM
+ q3QZpX3KPpUa281d77g3NjvTFyacQWrXrm4k22FLOViCfXim0gEjIsnY918Os8i/40zeNh8aA
+ TsO6YXtk07Yxo3wgc1u5G0GFMsShr0yQBz8bqRKtHqvHN0lv/+J1vtWVwgmGgh4so/IERQa5l
+ G9ZrrXXHAyj1edbORVpo6fUq5IaR7HNKlE3noaZPmeVgmBCoQjlt8aPDlWCnUUDG00PHTbBdP
+ pcak/jXyFsg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 04:39:04PM +0200, Peter Zijlstra wrote:
-> On Tue, Apr 20, 2021 at 04:20:56PM +0200, Peter Zijlstra wrote:
-> > On Tue, Apr 20, 2021 at 10:46:33AM +0100, Vincent Donnefort wrote:
-> > 
-> > > Found the issue:
-> > > 
-> > > $ cat hotplug/states:
-> > > 219: sched:active
-> > > 220: online
-> > > 
-> > > CPU0: 
-> > > 
-> > > $ echo 219 > hotplug/fail
-> > > $ echo 0 > online
-> > > 
-> > > => cpu_active = 1 cpu_dying = 1
-> > > 
-> > > which means that later on, for another CPU hotunplug, in
-> > > __balance_push_cpu_stop(), the fallback rq for a kthread can select that
-> > > CPU0, but __migrate_task() would fail and we end-up in an infinite loop,
-> > > trying to migrate that task to CPU0.
-> > > 
-> > > The problem is that for a failure in sched:active, as "online" has no callback,
-> > > there will be no call to cpuhp_invoke_callback(). Hence, the cpu_dying bit would
-> > > not be reset.
-> > 
-> > Urgh! Good find.
+Hi,
 
-> I seem to have triggered the BUG() in select_fallback_rq() with your recipie.
-> Have cpu0 fail on sched:active, then offline all other CPUs.
-> 
-> Now lemme add that patch.
+> Gesendet: Dienstag, 20. April 2021 um 14:07 Uhr
+> Von: "Daniel Lezcano" <daniel.lezcano@linaro.org>
 
-(which obviously didn't actually build) seems to fix it.
+> No #ifdef in C file.
+...
 
----
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 838dcf238f92..e538518556f4 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -63,6 +63,7 @@ struct cpuhp_cpu_state {
- 	bool			rollback;
- 	bool			single;
- 	bool			bringup;
-+	int			cpu;
- 	struct hlist_node	*node;
- 	struct hlist_node	*last;
- 	enum cpuhp_state	cb_state;
-@@ -160,9 +161,6 @@ static int cpuhp_invoke_callback(unsigned int cpu, enum cpuhp_state state,
- 	int (*cb)(unsigned int cpu);
- 	int ret, cnt;
- 
--	if (cpu_dying(cpu) != !bringup)
--		set_cpu_dying(cpu, !bringup);
--
- 	if (st->fail == state) {
- 		st->fail = CPUHP_INVALID;
- 		return -EAGAIN;
-@@ -467,13 +465,16 @@ static inline enum cpuhp_state
- cpuhp_set_state(struct cpuhp_cpu_state *st, enum cpuhp_state target)
- {
- 	enum cpuhp_state prev_state = st->state;
-+	bool bringup = st->state < target;
- 
- 	st->rollback = false;
- 	st->last = NULL;
- 
- 	st->target = target;
- 	st->single = false;
--	st->bringup = st->state < target;
-+	st->bringup = bringup;
-+	if (cpu_dying(st->cpu) != !bringup)
-+		set_cpu_dying(st->cpu, !bringup);
- 
- 	return prev_state;
- }
-@@ -481,6 +482,8 @@ cpuhp_set_state(struct cpuhp_cpu_state *st, enum cpuhp_state target)
- static inline void
- cpuhp_reset_state(struct cpuhp_cpu_state *st, enum cpuhp_state prev_state)
- {
-+	bool bringup = !st->bringup;
-+
- 	st->target = prev_state;
- 
- 	/*
-@@ -503,7 +506,9 @@ cpuhp_reset_state(struct cpuhp_cpu_state *st, enum cpuhp_state prev_state)
- 			st->state++;
- 	}
- 
--	st->bringup = !st->bringup;
-+	st->bringup = bringup;
-+	if (cpu_dying(st->cpu) != !bringup)
-+		set_cpu_dying(st->cpu, !bringup);
- }
- 
- /* Regular hotplug invocation of the AP hotplug thread */
-@@ -693,6 +698,7 @@ static void cpuhp_create(unsigned int cpu)
- 
- 	init_completion(&st->done_up);
- 	init_completion(&st->done_down);
-+	st->cpu = cpu;
- }
- 
- static int cpuhp_should_run(unsigned int cpu)
+> devm_thermal_add_hwmon_sysfs() ?
+
+based on your comments this should be enough/right?
+
+#if IS_ENABLED(CONFIG_THERMAL_HWMON)
+    tzdev->tzp->no_hwmon = false;
+    ret = devm_thermal_add_hwmon_sysfs(tzdev);
+    if (ret)
+        dev_err(&pdev->dev, "error in thermal_add_hwmon_sysfs");
+#endif
+
+if yes i send out v2, at least it works on my device
+
+regards Frank
+
+
