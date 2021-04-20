@@ -2,91 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E57365EE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71EBB365EE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 20:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233494AbhDTR7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 13:59:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231549AbhDTR7d (ORCPT
+        id S233476AbhDTSBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 14:01:17 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54324 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231549AbhDTSBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 13:59:33 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3470FC06174A;
-        Tue, 20 Apr 2021 10:59:00 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id v6so58309488ejo.6;
-        Tue, 20 Apr 2021 10:59:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=f5aVc+Rvip+i9wMcJgMkN6n1iKUg3nhAfrxBMVSyMT4=;
-        b=vRUxfANqM5gmEe+JEi/nYpjRog+dg4T69TNipoOZUaYkZAvwQmisFgJAtp0tFTn4bc
-         nt0LT/W1FWHrlivE3I+Bs99iBJFEGeFI/2KwB3hwMI+4cr2ADax+gWvD5E0NjspkqUMY
-         0fF1FhIoP0IIXzUJO/5ppHi/6U68dF9YuzyyA+A70jMPFOAW0loNsYb/ZBGjpYCztITq
-         hH/1Xdqwswh/tTEwoT9iPrKLVvVBRtphbXq/2OjdKbdvTidWEZVprz5evxKQoQWT8koF
-         3HmKDNxTcX6Dszyunwm8hJQmycfKQb1x1JnQXvbiqJbHNg6frX4iYM0D8ppgMRBwb5EC
-         Hpig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=f5aVc+Rvip+i9wMcJgMkN6n1iKUg3nhAfrxBMVSyMT4=;
-        b=T4rSOneaOFkeppqcf/TPQuqfMztHJ+aYcs9XvpfsNFd/Pmx0XJuwyCVVBvwzd3nY/9
-         THr2OJ2FCEHkenZLTXKbqxMenXERKetBfDCBXaQo8IC214T4ZlAAaBEnGuHFVMa/gvYH
-         EyMA2uX4LTNCrm/ElpxzN93p9FGMXcI6HSRljHmYkAif6HOvwbGzOGSAXm/7M/hSfuUx
-         0Oz+noCANzmjeOIs6/jQN+gAI5fVwzQU5PPRNz7nIizcoI7zQKgkbCoEUyZ54IOOzs7g
-         0hHJLzhfZVSFKb4lX7FVOWuCmTDvFizBpOMpL4TFlSfau1D23bPbrUXogpk5/eM9IFAc
-         53AA==
-X-Gm-Message-State: AOAM5304uiyxI8YtB2ogllnjHVKbP3bnc67fEcXsTAwwF+IMoufTA4ZU
-        EGjvDeuXVnJ0TJye3XxWe4o1/6gruQ==
-X-Google-Smtp-Source: ABdhPJzg3UQt5rHaAWRDbjaVURR4h5zvemaUui/0KjMvb56pW5ExH/QtQ/Ip8bFpXf7E2bMmRWcmIg==
-X-Received: by 2002:a17:906:c787:: with SMTP id cw7mr23033729ejb.157.1618941538855;
-        Tue, 20 Apr 2021 10:58:58 -0700 (PDT)
-Received: from localhost.localdomain ([46.53.250.121])
-        by smtp.gmail.com with ESMTPSA id z22sm13269026ejr.60.2021.04.20.10.58.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 10:58:58 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 20:58:56 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v2] docs: proc.rst: meminfo: briefly describe gaps in
- memory accounting
-Message-ID: <YH8WYJU2Jk6S9YIJ@localhost.localdomain>
-References: <20210420121354.1160437-1-rppt@kernel.org>
- <20210420132430.GB3596236@casper.infradead.org>
- <YH7ds1YOAOQt8Mpf@dhcp22.suse.cz>
+        Tue, 20 Apr 2021 14:01:16 -0400
+Date:   Tue, 20 Apr 2021 18:00:42 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618941643;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lB8Nr79VQcJ0XrHrhfDkVzK+uESNxrArLq8LgVXCQZA=;
+        b=RQcZ0rm//xb+p/bl3ShgqGDi3NZOkeOHrzPie4dW/92IewBMuU1/QT04BoT+0NPPx71KoO
+        0VHMTq4Vq3VfnyV/tSEfu2meMhSO1nVghr1TvU3wLNoKc2fER2m3pFkGgSSXrYn/FJJeK6
+        iKSJxvcKyMQA2lXjgboLPEVdg+d35aWjkUnTfsFvfIHSaV5Np0a2+s68/pRNLcLjGAmjZG
+        l9S2zIoUINT58uUwvPyg0BCu/aOEm4c8JMg9JjcwL0KTkaqemELvxAKAIVjlQ5bMAM0Jj5
+        8VJNsixlTKjNzvzG3Yq7so+97FsqXjZOjen8neq8Oa6lT2zgnUKLAiXlbMg7sw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618941643;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lB8Nr79VQcJ0XrHrhfDkVzK+uESNxrArLq8LgVXCQZA=;
+        b=PtRb2w84N4arpBl578nhmM7gr3ka08KQpgrmm3kJEAcrzv57DP82SmaGAgKWHKpOr/sD2u
+        486kia52A4X2HfBw==
+From:   "tip-bot2 for Mike Galbraith" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/crash: Fix crash_setup_memmap_entries()
+ out-of-bounds access
+Cc:     Mike Galbraith <efault@gmx.de>, Borislav Petkov <bp@suse.de>,
+        Dave Young <dyoung@redhat.com>, <stable@vger.kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <725fa3dc1da2737f0f6188a1a9701bead257ea9d.camel@gmx.de>
+References: <725fa3dc1da2737f0f6188a1a9701bead257ea9d.camel@gmx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YH7ds1YOAOQt8Mpf@dhcp22.suse.cz>
+Message-ID: <161894164234.29796.8745971840518585404.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 03:57:07PM +0200, Michal Hocko wrote:
-> On Tue 20-04-21 14:24:30, Matthew Wilcox wrote:
-> > On Tue, Apr 20, 2021 at 03:13:54PM +0300, Mike Rapoport wrote:
-> > > Add a paragraph that explains that it may happen that the counters in
-> > > /proc/meminfo do not add up to the overall memory usage.
-> > 
-> > ... that is, the sum may be lower because memory is allocated for other
-> > purposes that is not reported here, right?
-> 
-> yes. Many direct page allocator users are not accounted in any of the
-> existing counters.
+The following commit has been merged into the x86/urgent branch of tip:
 
-Does virtio_balloon dereserve special mention?
+Commit-ID:     5849cdf8c120e3979c57d34be55b92d90a77a47e
+Gitweb:        https://git.kernel.org/tip/5849cdf8c120e3979c57d34be55b92d90a77a47e
+Author:        Mike Galbraith <efault@gmx.de>
+AuthorDate:    Fri, 16 Apr 2021 14:02:07 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 20 Apr 2021 17:32:46 +02:00
 
-From inside VM memory borrowing looks like one giant memory leak resulting
-in support tickets (not that people who file them read internal kernel
-documentation...)
+x86/crash: Fix crash_setup_memmap_entries() out-of-bounds access
+
+Commit in Fixes: added support for kexec-ing a kernel on panic using a
+new system call. As part of it, it does prepare a memory map for the new
+kernel.
+
+However, while doing so, it wrongly accesses memory it has not
+allocated: it accesses the first element of the cmem->ranges[] array in
+memmap_exclude_ranges() but it has not allocated the memory for it in
+crash_setup_memmap_entries(). As KASAN reports:
+
+  BUG: KASAN: vmalloc-out-of-bounds in crash_setup_memmap_entries+0x17e/0x3a0
+  Write of size 8 at addr ffffc90000426008 by task kexec/1187
+
+  (gdb) list *crash_setup_memmap_entries+0x17e
+  0xffffffff8107cafe is in crash_setup_memmap_entries (arch/x86/kernel/crash.c:322).
+  317                                      unsigned long long mend)
+  318     {
+  319             unsigned long start, end;
+  320
+  321             cmem->ranges[0].start = mstart;
+  322             cmem->ranges[0].end = mend;
+  323             cmem->nr_ranges = 1;
+  324
+  325             /* Exclude elf header region */
+  326             start = image->arch.elf_load_addr;
+  (gdb)
+
+Make sure the ranges array becomes a single element allocated.
+
+ [ bp: Write a proper commit message. ]
+
+Fixes: dd5f726076cc ("kexec: support for kexec on panic using new system call")
+Signed-off-by: Mike Galbraith <efault@gmx.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Dave Young <dyoung@redhat.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/725fa3dc1da2737f0f6188a1a9701bead257ea9d.camel@gmx.de
+---
+ arch/x86/kernel/crash.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
+index a8f3af2..b1deacb 100644
+--- a/arch/x86/kernel/crash.c
++++ b/arch/x86/kernel/crash.c
+@@ -337,7 +337,7 @@ int crash_setup_memmap_entries(struct kimage *image, struct boot_params *params)
+ 	struct crash_memmap_data cmd;
+ 	struct crash_mem *cmem;
+ 
+-	cmem = vzalloc(sizeof(struct crash_mem));
++	cmem = vzalloc(struct_size(cmem, ranges, 1));
+ 	if (!cmem)
+ 		return -ENOMEM;
+ 
