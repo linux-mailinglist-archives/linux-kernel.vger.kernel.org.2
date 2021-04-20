@@ -2,176 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08EC365118
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 05:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAAF936511C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 05:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhDTDs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 23:48:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47230 "EHLO mail.kernel.org"
+        id S230024AbhDTDtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 23:49:02 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:51894 "EHLO 1wt.eu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229579AbhDTDsZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 23:48:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88EAD613B4;
-        Tue, 20 Apr 2021 03:47:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618890474;
-        bh=u5wPhL7Ene2VdmBvCDyRNlC2PWZ8+C9tJOnEa861pDY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=vQF3+NV/L20k4H/VkmU59owGFRZtRE8Frf27nST/aViXOdbrm1oPx7Tz1ZzWW4S1F
-         s3R5xJOvjV781uCDFsM4UDu/IenrDw9TY7pphBUdpexG87VdY2DHm34XzCR2HLqku2
-         P+elRgNGG0IEsnTcofDtHuOZUbMhfAUB7NxQljyZQGDus/IMOi+xPFqZ3wfzZw2ARD
-         iRn/74YDSJt8oM3g1l8+9WhgRwzXDXAafIfkgZzlyEXnbo+E+GQtsGA0J3jUF7Ua7r
-         9dJ4GmHMp8co2Z6lOuDkeK5yVbbWRVrztbrUfRjhoigJdvazX4K1Lv8dFdIGOncnLj
-         1Lkc4YWyjpSVw==
-Received: by mail-ed1-f53.google.com with SMTP id z5so6778709edr.11;
-        Mon, 19 Apr 2021 20:47:54 -0700 (PDT)
-X-Gm-Message-State: AOAM531Rh0hbQUgcAHs0gnDzXQF7w8ZcVK5lZbmjI3y+TKF/JXKqgyXm
-        D3eqtSaMr92CDjkZ+kk4PccorJYUKSCCOE/7GrQ=
-X-Google-Smtp-Source: ABdhPJzbjU7jOrcMXgf5wS+UarAeT2b6g7MZ2uy1tkRai7qsw4N1ya/Nrh3tKlx1ENX8XLkHHcYsR0TBN4a3ho35o5A=
-X-Received: by 2002:aa7:c3d8:: with SMTP id l24mr8049415edr.319.1618890473085;
- Mon, 19 Apr 2021 20:47:53 -0700 (PDT)
+        id S229579AbhDTDtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 23:49:00 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 13K3lniw030310;
+        Tue, 20 Apr 2021 05:47:49 +0200
+Date:   Tue, 20 Apr 2021 05:47:49 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Wedson Almeida Filho <wedsonaf@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux <rust-for-linux@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+Message-ID: <20210420034749.GA28662@1wt.eu>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <YHlz54rd1YQHsOA/@hirez.programming.kicks-ass.net>
+ <YHmMJWmzz2vZ3qQH@google.com>
+ <YHmc2+bKQJ/XAATF@hirez.programming.kicks-ass.net>
+ <YHmuX1NA5RF7C7XS@google.com>
+ <20210416161444.GA10484@1wt.eu>
+ <CANiq72nbkJFPmiJXX=L8PmkouKgKG1k-CxhZYpL1hcncYwa8JA@mail.gmail.com>
+ <20210416173717.GA10846@1wt.eu>
+ <CAKwvOd=RadTs7Skv6KUBo4qZQtdi0kugTzxvZM+5X_2gstjyaQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210413055702.27535-1-zhiyong.tao@mediatek.com> <20210413055702.27535-4-zhiyong.tao@mediatek.com>
-In-Reply-To: <20210413055702.27535-4-zhiyong.tao@mediatek.com>
-From:   Sean Wang <sean.wang@kernel.org>
-Date:   Mon, 19 Apr 2021 20:47:42 -0700
-X-Gmail-Original-Message-ID: <CAGp9Lzr22hShK5F2qcPNH3yXxGZx=DUmoa0r8d6Fn=c-U2=j0g@mail.gmail.com>
-Message-ID: <CAGp9Lzr22hShK5F2qcPNH3yXxGZx=DUmoa0r8d6Fn=c-U2=j0g@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] pinctrl: add drive for I2C related pins on MT8195
-To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        hui.liu@mediatek.com,
-        =?UTF-8?B?RWRkaWUgSHVhbmcgKOm7g+aZuuWCkSk=?= 
-        <eddie.huang@mediatek.com>, jg_poxu@mediatek.com,
-        Biao Huang <biao.huang@mediatek.com>,
-        Hongzhou Yang <hongzhou.yang@mediatek.com>,
-        =?UTF-8?B?U2VhbiBXYW5nICjnjovlv5fkupgp?= <sean.wang@mediatek.com>,
-        seiya.wang@mediatek.com,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOd=RadTs7Skv6KUBo4qZQtdi0kugTzxvZM+5X_2gstjyaQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 10:57 PM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
->
-> This patch provides the advanced drive raw data setting version
-> for I2C used pins on MT8195.
->
-> Signed-off-by: Zhiyong Tao <zhiyong.tao@mediatek.com>
+Hi Nick,
 
-Acked-by: Sean Wang <sean.wang@kernel.org>
+On Mon, Apr 19, 2021 at 05:24:33PM -0700, Nick Desaulniers wrote:
+> I don't think the introduction of Rust made Firefox _more_ insecure.
+> https://wiki.mozilla.org/Oxidation#Within_Firefox
 
-> ---
->  drivers/pinctrl/mediatek/pinctrl-mt8195.c     | 22 +++++++++++++++++++
->  .../pinctrl/mediatek/pinctrl-mtk-common-v2.c  | 14 ++++++++++++
->  .../pinctrl/mediatek/pinctrl-mtk-common-v2.h  |  5 +++++
->  3 files changed, 41 insertions(+)
->
-> diff --git a/drivers/pinctrl/mediatek/pinctrl-mt8195.c b/drivers/pinctrl/mediatek/pinctrl-mt8195.c
-> index 063f164d7c9b..a7500e18bb1d 100644
-> --- a/drivers/pinctrl/mediatek/pinctrl-mt8195.c
-> +++ b/drivers/pinctrl/mediatek/pinctrl-mt8195.c
-> @@ -760,6 +760,25 @@ static const struct mtk_pin_field_calc mt8195_pin_drv_range[] = {
->         PIN_FIELD_BASE(143, 143, 1, 0x020, 0x10, 24, 3),
->  };
->
-> +static const struct mtk_pin_field_calc mt8195_pin_drv_adv_range[] = {
-> +       PIN_FIELD_BASE(8, 8, 4, 0x020, 0x10, 15, 3),
-> +       PIN_FIELD_BASE(9, 9, 4, 0x020, 0x10, 0, 3),
-> +       PIN_FIELD_BASE(10, 10, 4, 0x020, 0x10, 18, 3),
-> +       PIN_FIELD_BASE(11, 11, 4, 0x020, 0x10, 3, 3),
-> +       PIN_FIELD_BASE(12, 12, 4, 0x020, 0x10, 21, 3),
-> +       PIN_FIELD_BASE(13, 13, 4, 0x020, 0x10, 6, 3),
-> +       PIN_FIELD_BASE(14, 14, 4, 0x020, 0x10, 24, 3),
-> +       PIN_FIELD_BASE(15, 15, 4, 0x020, 0x10, 9, 3),
-> +       PIN_FIELD_BASE(16, 16, 4, 0x020, 0x10, 27, 3),
-> +       PIN_FIELD_BASE(17, 17, 4, 0x020, 0x10, 12, 3),
-> +       PIN_FIELD_BASE(29, 29, 2, 0x020, 0x10, 0, 3),
-> +       PIN_FIELD_BASE(30, 30, 2, 0x020, 0x10, 3, 3),
-> +       PIN_FIELD_BASE(34, 34, 1, 0x040, 0x10, 0, 3),
-> +       PIN_FIELD_BASE(35, 35, 1, 0x040, 0x10, 3, 3),
-> +       PIN_FIELD_BASE(44, 44, 1, 0x040, 0x10, 6, 3),
-> +       PIN_FIELD_BASE(45, 45, 1, 0x040, 0x10, 9, 3),
-> +};
-> +
->  static const struct mtk_pin_reg_calc mt8195_reg_cals[PINCTRL_PIN_REG_MAX] = {
->         [PINCTRL_PIN_REG_MODE] = MTK_RANGE(mt8195_pin_mode_range),
->         [PINCTRL_PIN_REG_DIR] = MTK_RANGE(mt8195_pin_dir_range),
-> @@ -773,6 +792,7 @@ static const struct mtk_pin_reg_calc mt8195_reg_cals[PINCTRL_PIN_REG_MAX] = {
->         [PINCTRL_PIN_REG_PUPD] = MTK_RANGE(mt8195_pin_pupd_range),
->         [PINCTRL_PIN_REG_R0] = MTK_RANGE(mt8195_pin_r0_range),
->         [PINCTRL_PIN_REG_R1] = MTK_RANGE(mt8195_pin_r1_range),
-> +       [PINCTRL_PIN_REG_DRV_ADV] = MTK_RANGE(mt8195_pin_drv_adv_range),
->  };
->
->  static const char * const mt8195_pinctrl_register_base_names[] = {
-> @@ -801,6 +821,8 @@ static const struct mtk_pin_soc mt8195_data = {
->         .bias_get_combo = mtk_pinconf_bias_get_combo,
->         .drive_set = mtk_pinconf_drive_set_rev1,
->         .drive_get = mtk_pinconf_drive_get_rev1,
-> +       .adv_drive_get = mtk_pinconf_adv_drive_get_raw,
-> +       .adv_drive_set = mtk_pinconf_adv_drive_set_raw,
->  };
->
->  static const struct of_device_id mt8195_pinctrl_of_match[] = {
-> diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
-> index 72f17f26acd8..2b51f4a9b860 100644
-> --- a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
-> +++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
-> @@ -1027,6 +1027,20 @@ int mtk_pinconf_adv_drive_get(struct mtk_pinctrl *hw,
->  }
->  EXPORT_SYMBOL_GPL(mtk_pinconf_adv_drive_get);
->
-> +int mtk_pinconf_adv_drive_set_raw(struct mtk_pinctrl *hw,
-> +                                 const struct mtk_pin_desc *desc, u32 arg)
-> +{
-> +       return mtk_hw_set_value(hw, desc, PINCTRL_PIN_REG_DRV_ADV, arg);
-> +}
-> +EXPORT_SYMBOL_GPL(mtk_pinconf_adv_drive_set_raw);
-> +
-> +int mtk_pinconf_adv_drive_get_raw(struct mtk_pinctrl *hw,
-> +                                 const struct mtk_pin_desc *desc, u32 *val)
-> +{
-> +       return mtk_hw_get_value(hw, desc, PINCTRL_PIN_REG_DRV_ADV, val);
-> +}
-> +EXPORT_SYMBOL_GPL(mtk_pinconf_adv_drive_get_raw);
-> +
->  MODULE_LICENSE("GPL v2");
->  MODULE_AUTHOR("Sean Wang <sean.wang@mediatek.com>");
->  MODULE_DESCRIPTION("Pin configuration library module for mediatek SoCs");
-> diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h
-> index e2aae285b5fc..fd5ce9c5dcbd 100644
-> --- a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h
-> +++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.h
-> @@ -66,6 +66,7 @@ enum {
->         PINCTRL_PIN_REG_DRV_EN,
->         PINCTRL_PIN_REG_DRV_E0,
->         PINCTRL_PIN_REG_DRV_E1,
-> +       PINCTRL_PIN_REG_DRV_ADV,
->         PINCTRL_PIN_REG_MAX,
->  };
->
-> @@ -314,6 +315,10 @@ int mtk_pinconf_adv_drive_set(struct mtk_pinctrl *hw,
->                               const struct mtk_pin_desc *desc, u32 arg);
->  int mtk_pinconf_adv_drive_get(struct mtk_pinctrl *hw,
->                               const struct mtk_pin_desc *desc, u32 *val);
-> +int mtk_pinconf_adv_drive_set_raw(struct mtk_pinctrl *hw,
-> +                                 const struct mtk_pin_desc *desc, u32 arg);
-> +int mtk_pinconf_adv_drive_get_raw(struct mtk_pinctrl *hw,
-> +                                 const struct mtk_pin_desc *desc, u32 *val);
->
->  bool mtk_is_virt_gpio(struct mtk_pinctrl *hw, unsigned int gpio_n);
->  #endif /* __PINCTRL_MTK_COMMON_V2_H */
-> --
-> 2.18.0
->
+Browsers are human interfaces and do not fundamentally require low
+level access to memory/hardware/whatever. They can be written in
+about any language, only the resource usage and performance will
+make a difference. As such, some were even written in Java or JS
+for example.
+
+Operating systems, and particularly drivers *do* require low-level
+accesses, and stuff that can hardly be abstracted or understood by
+a compiler. You may have to perform two 16-bit reads/writes on a
+32-bit MMIO address to perform an operation and the compiler does
+not have to know it, just to obey.
+
+> Really, a key point is that a lot of common mistakes in C are compile
+> time errors in Rust. I know no "true" kernel dev would make such
+> mistakes in C,
+
+Everyone makes mistakes, the level of attention varies over time and
+the focus often changes when dealing with build errors. How many time
+some of us facing a bug remembered having changed the code very late
+after a build error, and being less careful from this point when the
+goal changed from "let's do it right" to "let's get this to build" ?
+
+> but is there nothing we can do to help our peers
+> writing drivers?  The point is to transfer cost from runtime to
+> compile time to avoid costs at runtime; like all of the memory safety
+> bugs which are costing our industry.
+
+And do we have stats on the number of logical bugs, some of which are
+caused by developers trying to work around compilers' stubbornness ?
+For me, personally speaking, they have *increased* over time, usually
+trying to avoid some annoying modern gcc warnings, resulting in integer
+casts being placed close to string formats, or returns being placed in
+switch/case to avoid the fall-through warning, etc. Thus I'm worried that
+a non-negligible part of the 70% of bugs caused by memory safety issues
+could be replaced with logic bugs to get to the point where the rust
+compiler finally accepts to compile the code. It makes me think about
+researchers trying to reduce the causes of certain deaths and claiming
+to "save lives" while in the end the people they "save" will simply die
+from something else.
+
+And I'm not particularly trying to blindly defend C here. I'm complaining
+every single day about some of its shortcomings like the vast amount of
+UB, stupid type promotion, counter-intuitive operators precedence when
+combining bit-ops with arithmetic, limited size of enums, lack of rotate
+operator, strict aliasing, or the recourse to asm() statements every 10
+lines to do stuff that can hardly be expressed in a way understandable
+by a compiler. I'm just seeing that a lot of the griefs I'm having
+against C come from the compiler trying to be too smart or too stubborn,
+so giving even more of the handle to a compiler doesn't appeal me at all.
+
+In addition, we all know how painful it is to work around compiler bugs
+by writing complex code that carefully avoids certain constructs. I'm
+wondering if we'll still have that luxury with a stricter compiler, or
+if the only response will have to be between "let's disable this driver
+that does not compile" or "please force distros to upgrade their
+compilers".
+
+But we'll see :-/
+
+Regards,
+Willy
