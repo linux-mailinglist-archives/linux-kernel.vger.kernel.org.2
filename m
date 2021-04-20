@@ -2,197 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E64365901
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 14:35:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55958365904
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 14:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231877AbhDTMfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 08:35:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48734 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231758AbhDTMfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 08:35:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D3D9EB2DD;
-        Tue, 20 Apr 2021 12:34:46 +0000 (UTC)
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH] irqchip: Add support for IDT 79rc3243x interrupt controller
-Date:   Tue, 20 Apr 2021 14:34:41 +0200
-Message-Id: <20210420123441.24179-1-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.29.2
+        id S231773AbhDTMf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 08:35:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230408AbhDTMfz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 08:35:55 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399F2C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 05:35:24 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id c4so5329988ilq.9
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 05:35:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P28NEtKGrus7iCaFCDC+6w2lb8tH4ieeIEUK4kLrfXA=;
+        b=QUv3+aqdlb4XRlG2GHw2B7TtkI+RBPjYu48aRrXyeXSOeTB/xIK7PRY6O9vwaf8kjl
+         sfA9jHF6RIE8zwKMnxa4KmwTJEen+6ffB7+wrfJTNy4TdHayPirM7JmsSUeCJEcBX/F5
+         iyu8j/hX+HGCfkBj5k0nW0Zdi7tElpM3qELkE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P28NEtKGrus7iCaFCDC+6w2lb8tH4ieeIEUK4kLrfXA=;
+        b=U3T2XNsgbDEWUPXniqXBD5XoD4oekD0QcOhFNKFk91xMPfeu7/FhNxMv3kHe7p3nOD
+         1hHFeXEVVP1mVDJj1p/ANsXt1Kbv9H1lSrGWZ5T4Ymq9SeNitJCUyJlkoUb1C9DT+SHT
+         zPdvVjuhCLwpxtjFt1k98yEiwogHtUfq3PfU9chlxBddpFCSw7G7u/qt1a7fnAC+1HyQ
+         K6vMASoJqpL7fS2sdXJDfsqKKqogvzUo88O3yVRrtHmkQUyUUv1YzdnjyqoKkX9TcFHl
+         IKFdHE0/9hAlJeVbBcUK61L/fr+/KreoJe4qx/uWWQuThj4o/A2hcaFnwTOTQVbfkkUe
+         OQWg==
+X-Gm-Message-State: AOAM531fjZfAgaSMs+tmb+IvDN1+Q62rETnmukfMdCiTnaJr5Jirzx2L
+        P+hXmJF1vOJf0EVaG/bx1haVFxdgMwNZX9gxmm9vCw==
+X-Google-Smtp-Source: ABdhPJy8y2m9CJbWLpXZPnSWRCgBF77zu21Iz5jz1+Fy6R3Q2JDmfvbxC0YDCG/XMsmCDR3Ms1zsgJc3/ZTA3feuK5I=
+X-Received: by 2002:a05:6e02:5a2:: with SMTP id k2mr22150327ils.177.1618922123638;
+ Tue, 20 Apr 2021 05:35:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210419155243.1632274-1-revest@chromium.org> <20210419155243.1632274-3-revest@chromium.org>
+ <20210419225404.chlkiaku5vaxmmyh@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210419225404.chlkiaku5vaxmmyh@ast-mbp.dhcp.thefacebook.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Tue, 20 Apr 2021 14:35:12 +0200
+Message-ID: <CABRcYmJO5+tFtGuL9pdtFqLnBV7fGugEjaPbNRtJ3iXpbs3kFg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 2/6] bpf: Add a ARG_PTR_TO_CONST_STR argument type
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IDT 79rc3243x SoCs have rather simple interrupt controllers connected
-to the MIPS CPU interrupt lines. Each of them has room for up to
-32 interrupts.
+On Tue, Apr 20, 2021 at 12:54 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Apr 19, 2021 at 05:52:39PM +0200, Florent Revest wrote:
+> > This type provides the guarantee that an argument is going to be a const
+> > pointer to somewhere in a read-only map value. It also checks that this
+> > pointer is followed by a zero character before the end of the map value.
+> >
+> > Signed-off-by: Florent Revest <revest@chromium.org>
+> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >  include/linux/bpf.h   |  1 +
+> >  kernel/bpf/verifier.c | 41 +++++++++++++++++++++++++++++++++++++++++
+> >  2 files changed, 42 insertions(+)
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 77d1d8c65b81..c160526fc8bf 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -309,6 +309,7 @@ enum bpf_arg_type {
+> >       ARG_PTR_TO_PERCPU_BTF_ID,       /* pointer to in-kernel percpu type */
+> >       ARG_PTR_TO_FUNC,        /* pointer to a bpf program function */
+> >       ARG_PTR_TO_STACK_OR_NULL,       /* pointer to stack or NULL */
+> > +     ARG_PTR_TO_CONST_STR,   /* pointer to a null terminated read-only string */
+> >       __BPF_ARG_TYPE_MAX,
+> >  };
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 852541a435ef..5f46dd6f3383 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -4787,6 +4787,7 @@ static const struct bpf_reg_types spin_lock_types = { .types = { PTR_TO_MAP_VALU
+> >  static const struct bpf_reg_types percpu_btf_ptr_types = { .types = { PTR_TO_PERCPU_BTF_ID } };
+> >  static const struct bpf_reg_types func_ptr_types = { .types = { PTR_TO_FUNC } };
+> >  static const struct bpf_reg_types stack_ptr_types = { .types = { PTR_TO_STACK } };
+> > +static const struct bpf_reg_types const_str_ptr_types = { .types = { PTR_TO_MAP_VALUE } };
+> >
+> >  static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
+> >       [ARG_PTR_TO_MAP_KEY]            = &map_key_value_types,
+> > @@ -4817,6 +4818,7 @@ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
+> >       [ARG_PTR_TO_PERCPU_BTF_ID]      = &percpu_btf_ptr_types,
+> >       [ARG_PTR_TO_FUNC]               = &func_ptr_types,
+> >       [ARG_PTR_TO_STACK_OR_NULL]      = &stack_ptr_types,
+> > +     [ARG_PTR_TO_CONST_STR]          = &const_str_ptr_types,
+> >  };
+> >
+> >  static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+> > @@ -5067,6 +5069,45 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+> >               if (err)
+> >                       return err;
+> >               err = check_ptr_alignment(env, reg, 0, size, true);
+> > +     } else if (arg_type == ARG_PTR_TO_CONST_STR) {
+> > +             struct bpf_map *map = reg->map_ptr;
+> > +             int map_off;
+> > +             u64 map_addr;
+> > +             char *str_ptr;
+> > +
+> > +             if (reg->type != PTR_TO_MAP_VALUE || !map ||
+>
+> I think the 'type' check is redundant,
+> since check_reg_type() did it via compatible_reg_types.
+> If so it's probably better to remove it here ?
+>
+> '!map' looks unnecessary. Can it ever happen? If yes, it's a verifier bug.
+> For example in check_mem_access() we just deref reg->map_ptr without checking
+> which, I think, is correct.
 
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
----
- drivers/irqchip/Kconfig        |   5 ++
- drivers/irqchip/Makefile       |   1 +
- drivers/irqchip/irq-idt3243x.c | 124 +++++++++++++++++++++++++++++++++
- 3 files changed, 130 insertions(+)
- create mode 100644 drivers/irqchip/irq-idt3243x.c
+I agree with all of the above. I only thought it's better to be safe
+than sorry but if you'd like I could follow up with a patch that
+removes some checks?
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index e74fa206240a..55562b36bf3c 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -586,4 +586,9 @@ config MST_IRQ
- 	help
- 	  Support MStar Interrupt Controller.
- 
-+config IRQ_IDT3243X
-+	bool
-+	select GENERIC_IRQ_CHIP
-+	select IRQ_DOMAIN
-+
- endmenu
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index c59b95a0532c..341891443eec 100644
---- a/drivers/irqchip/Makefile
-+++ b/drivers/irqchip/Makefile
-@@ -113,3 +113,4 @@ obj-$(CONFIG_LOONGSON_PCH_MSI)		+= irq-loongson-pch-msi.o
- obj-$(CONFIG_MST_IRQ)			+= irq-mst-intc.o
- obj-$(CONFIG_SL28CPLD_INTC)		+= irq-sl28cpld.o
- obj-$(CONFIG_MACH_REALTEK_RTL)		+= irq-realtek-rtl.o
-+obj-$(CONFIG_IRQ_IDT3243X)		+= irq-idt3243x.o
-diff --git a/drivers/irqchip/irq-idt3243x.c b/drivers/irqchip/irq-idt3243x.c
-new file mode 100644
-index 000000000000..61caf21ef46c
---- /dev/null
-+++ b/drivers/irqchip/irq-idt3243x.c
-@@ -0,0 +1,124 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Driver for IDT/Renesas 79RC3243x Interrupt Controller.
-+ */
-+
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/interrupt.h>
-+#include <linux/irq.h>
-+#include <linux/irqchip.h>
-+#include <linux/irqchip/chained_irq.h>
-+#include <linux/irqdomain.h>
-+#include <linux/of_address.h>
-+#include <linux/of_irq.h>
-+
-+#define IDT_PIC_NR_IRQS		32
-+
-+#define IDT_PIC_IRQ_PEND		0x00
-+#define IDT_PIC_IRQ_MASK		0x08
-+
-+struct idt_pic_data {
-+	void __iomem *base;
-+	struct irq_domain *irq_domain;
-+	struct irq_chip_generic *gc;
-+};
-+
-+static void idt_irq_dispatch(struct irq_desc *desc)
-+{
-+	struct idt_pic_data *idtpic = irq_desc_get_handler_data(desc);
-+	struct irq_chip *host_chip = irq_desc_get_chip(desc);
-+	u32 pending, hwirq, virq;
-+
-+	chained_irq_enter(host_chip, desc);
-+
-+	pending = irq_reg_readl(idtpic->gc, IDT_PIC_IRQ_PEND);
-+	pending &= ~idtpic->gc->mask_cache;
-+	while (pending) {
-+		hwirq = __fls(pending);
-+		virq = irq_linear_revmap(idtpic->irq_domain, hwirq);
-+		if (virq)
-+			generic_handle_irq(virq);
-+		pending &= ~(1 << hwirq);
-+	}
-+
-+	chained_irq_exit(host_chip, desc);
-+}
-+
-+static int idt_pic_init(struct device_node *of_node, struct device_node *parent)
-+{
-+	struct irq_domain *domain;
-+	struct idt_pic_data *idtpic;
-+	struct irq_chip_generic *gc;
-+	struct irq_chip_type *ct;
-+	unsigned int parent_irq;
-+	int ret = 0;
-+
-+	idtpic = kzalloc(sizeof(*idtpic), GFP_KERNEL);
-+	if (!idtpic) {
-+		ret = -ENOMEM;
-+		goto out_err;
-+	}
-+
-+	parent_irq = irq_of_parse_and_map(of_node, 0);
-+	if (!parent_irq) {
-+		pr_err("Failed to map parent IRQ!\n");
-+		ret = -EINVAL;
-+		goto out_free;
-+	}
-+
-+	idtpic->base = of_iomap(of_node, 0);
-+	if (!idtpic->base) {
-+		pr_err("Failed to map base address!\n");
-+		ret = -ENOMEM;
-+		goto out_unmap_irq;
-+	}
-+
-+	domain = irq_domain_add_linear(of_node, IDT_PIC_NR_IRQS,
-+				       &irq_generic_chip_ops, NULL);
-+	if (!domain) {
-+		pr_err("Failed to add irqdomain!\n");
-+		ret = -ENOMEM;
-+		goto out_iounmap;
-+	}
-+	idtpic->irq_domain = domain;
-+
-+	ret = irq_alloc_domain_generic_chips(domain, 32, 1, "IDTPIC",
-+					     handle_level_irq, 0,
-+					     IRQ_NOPROBE | IRQ_LEVEL, 0);
-+	if (ret)
-+		goto out_domain_remove;
-+
-+	gc = irq_get_domain_generic_chip(domain, 0);
-+	gc->reg_base = idtpic->base;
-+	gc->private = idtpic;
-+
-+	ct = gc->chip_types;
-+	ct->regs.mask = IDT_PIC_IRQ_MASK;
-+	ct->chip.irq_mask = irq_gc_mask_set_bit;
-+	ct->chip.irq_unmask = irq_gc_mask_clr_bit;
-+	idtpic->gc = gc;
-+
-+	/* Mask interrupts. */
-+	writel(0xffffffff, idtpic->base + IDT_PIC_IRQ_MASK);
-+	gc->mask_cache = 0xffffffff;
-+
-+	irq_set_chained_handler_and_data(parent_irq,
-+					 idt_irq_dispatch, idtpic);
-+
-+	return 0;
-+
-+out_domain_remove:
-+	irq_domain_remove(domain);
-+out_iounmap:
-+	iounmap(idtpic->base);
-+out_unmap_irq:
-+	irq_dispose_mapping(parent_irq);
-+out_free:
-+	kfree(idtpic);
-+out_err:
-+	pr_err("Failed to initialize! (errno = %d)\n", ret);
-+	return ret;
-+}
-+
-+IRQCHIP_DECLARE(idt_pic, "idt,3243x-pic", idt_pic_init);
--- 
-2.29.2
+> > +                 !bpf_map_is_rdonly(map)) {
+>
+> This check is needed, of course.
+>
+> > +                     verbose(env, "R%d does not point to a readonly map'\n", regno);
+> > +                     return -EACCES;
+> > +             }
+> > +
+> > +             if (!tnum_is_const(reg->var_off)) {
+> > +                     verbose(env, "R%d is not a constant address'\n", regno);
+> > +                     return -EACCES;
+> > +             }
+> > +
+> > +             if (!map->ops->map_direct_value_addr) {
+> > +                     verbose(env, "no direct value access support for this map type\n");
+> > +                     return -EACCES;
+> > +             }
+> > +
+> > +             err = check_map_access(env, regno, reg->off,
+> > +                                    map->value_size - reg->off, false);
+> > +             if (err)
+> > +                     return err;
+> > +
+> > +             map_off = reg->off + reg->var_off.value;
+> > +             err = map->ops->map_direct_value_addr(map, &map_addr, map_off);
+> > +             if (err) {
+>
+> since the code checks it here the same check in check_bpf_snprintf_call() should
+> probably do:
+>  if (err) {
+>    verbose("verifier bug\n");
+>    return -EFAULT;
+>  }
+>
+> instead of just "return err;"
+> ?
 
+Sure, does not hurt. I can also follow up with a patch unless if you
+prefer doing it yourself.
+
+> > +                     verbose(env, "direct value access on string failed\n");
+>
+> I think the message doesn't tell users much, but they probably should never
+> see it unless they try to do lookup from readonly array with
+> more than one element.
+> So I guess it's fine to keep this one as-is. Just flagging.
+
+Ack
+
+> Anyway the whole set looks great, so I've applied to bpf-next.
+> Thanks!
+
+Thank you :D
