@@ -2,55 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337A4365C4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C2D365C53
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232875AbhDTPfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 11:35:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232764AbhDTPfc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 11:35:32 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 16FBC613B2;
-        Tue, 20 Apr 2021 15:34:58 +0000 (UTC)
-Date:   Tue, 20 Apr 2021 11:34:56 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        fweisbec <fweisbec@gmail.com>, Jessica Yu <jeyu@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@elte.hu>, chris <chris@chris-wilson.co.uk>,
-        yuanhan liu <yuanhan.liu@linux.intel.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>
-Subject: Re: [PATCH][RFC] tracing: Enable tracepoints via module parameters
-Message-ID: <20210420113456.46755ce7@gandalf.local.home>
-In-Reply-To: <1672102317.2266.1618931710794.JavaMail.zimbra@efficios.com>
-References: <1299622684.20306.77.camel@gandalf.stny.rr.com>
-        <20130814233228.778f25d0@gandalf.local.home>
-        <77a6e40b57df092d1bd8967305906a210f286111.camel@intel.com>
-        <20210419181111.5eb582e8@gandalf.local.home>
-        <CAPcyv4gw7KoL8U66LLx_DVAE+5Jguz7tb3Rax-bdTz4BrpwhvQ@mail.gmail.com>
-        <20210420085532.4062b15e@gandalf.local.home>
-        <1154727029.2004.1618925367044.JavaMail.zimbra@efficios.com>
-        <20210420105511.65490e8d@gandalf.local.home>
-        <1672102317.2266.1618931710794.JavaMail.zimbra@efficios.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S232859AbhDTPkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 11:40:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29974 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232174AbhDTPkF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 11:40:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618933174;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=coXw7bSB92l2OSOi2Pskhossq8vZZCyQYfDdNtE51LI=;
+        b=e3ywpFDdhwINV5145gxaXjH538Dbb58zDQNLQnaOkzxq012j2O9onY62272+LnAUgrGJaJ
+        cXUlQkrA8KqyCdPUeH5ph5A0rotNYXrJQj7wcmEromX971v+Tnc+KTDqoZIoIUUYWVzlmL
+        lwUNGGcBHctQl8jTRDbc55rDTSpup0M=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-462-w3dz9wAwN-uSvGgR0XBl3Q-1; Tue, 20 Apr 2021 11:39:32 -0400
+X-MC-Unique: w3dz9wAwN-uSvGgR0XBl3Q-1
+Received: by mail-qt1-f199.google.com with SMTP id i7-20020ac84f470000b02901b944d49e13so3547804qtw.7
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 08:39:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=coXw7bSB92l2OSOi2Pskhossq8vZZCyQYfDdNtE51LI=;
+        b=Ls+jt1uxCg9HLY4BygYjhxYPTIZaQRafgPt0e4k0aKUMXXd3ns/AESPARQl8jWdSlw
+         jHXG17aAejWHknol1CXWkN9yldiN9VSx5KMEkBJslP7TDkSQBpio9gggycIxBnqz+nGV
+         9GQlSSiJuXZs2GM7gcjTQDY13IKIO4nqFsqi0xaQEwXTJ1z90B/IF47KS1IlHzaqAPLS
+         TITFC8MCQOCOvNsztuOk/982iT48vZALjdyS2tfVWrHvyMDMc0WUBzTCmaQb4DvRUPQV
+         JjkQ4m41RWdLI8lQGcefQ0B+HXKjkZ5zqGqZuikYujemvitmkQL2/4UzwQ5cljTolqGF
+         hWNQ==
+X-Gm-Message-State: AOAM5316Kp4yHjpO2TeIAQ2Q/MX1EYt/F9E8J1QF2AijeJox7AwhssoJ
+        jfL5dNS6TqWaEllcs/1ZiuqvUkAsTv/ExXg3cGGXNK7Zo2U2rRLjlDI72xsOVRhSm0HSyAX9ntD
+        zIu32BAICe2O9clBDLOk3pKrm
+X-Received: by 2002:ac8:4e16:: with SMTP id c22mr10856575qtw.354.1618933171844;
+        Tue, 20 Apr 2021 08:39:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyE/oMaWgtfj/To4K6pA6L6aSzn9oP92etGjIRHkk4pGYIgEbMrwLhaCy0IueXIi8VP6xiH0Q==
+X-Received: by 2002:ac8:4e16:: with SMTP id c22mr10856551qtw.354.1618933171631;
+        Tue, 20 Apr 2021 08:39:31 -0700 (PDT)
+Received: from xz-x1.redhat.com (bras-base-toroon474qw-grc-88-174-93-75-154.dsl.bell.ca. [174.93.75.154])
+        by smtp.gmail.com with ESMTPSA id f12sm11633325qtq.84.2021.04.20.08.39.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 08:39:31 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, peterx@redhat.com,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Jones <drjones@redhat.com>
+Subject: [PATCH v4 0/2] KVM: selftests: fix races in dirty log test
+Date:   Tue, 20 Apr 2021 11:39:27 -0400
+Message-Id: <20210420153929.482810-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.26.2
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Apr 2021 11:15:10 -0400 (EDT)
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+v4:=0D
+- add missing vcpu_handle_sync_stop() call in dirty ring test=0D
+=0D
+The other solution of patch 2 is here [1]=0D
+=0D
+I got another report that there seems to still be a race, but that one seem=
+s=0D
+extremely hard to trigger, even so far we don't know whether that could be=
+=0D
+ARM-only.  Since current fix should make sense already and fix real problem=
+s,=0D
+IMHO we don't need to wait for that.=0D
+=0D
+Paolo, I still kept the 2nd patch just for completeness, but feel free to=0D
+ignore the 2nd patch if you prefer the other version, and I'll follow your=
+=0D
+preference.=0D
+=0D
+Thanks!=0D
+=0D
+[1] https://lore.kernel.org/kvm/20210420081614.684787-1-pbonzini@redhat.com=
+/=0D
+=0D
+Peter Xu (2):=0D
+  KVM: selftests: Sync data verify of dirty logging with guest sync=0D
+  KVM: selftests: Wait for vcpu thread before signal setup=0D
+=0D
+ tools/testing/selftests/kvm/dirty_log_test.c | 70 +++++++++++++++++---=0D
+ 1 file changed, 59 insertions(+), 11 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
-> That sounds fine. So that would be within the "trace_event" (and not tracepoint)
-> namespace for module load parameters as well ?
-
-Right, it would be "trace_event=...." not "tracepoint=..."
-
--- Steve
