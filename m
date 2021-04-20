@@ -2,115 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A472936511E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 05:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E1E365121
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 05:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhDTDtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 23:49:13 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:33105 "EHLO ozlabs.org"
+        id S229701AbhDTDvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 23:51:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230037AbhDTDtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 23:49:09 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FPV5w0KQFz9vDw;
-        Tue, 20 Apr 2021 13:48:36 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1618890516;
-        bh=c13wjuyn1jdn7WOn1rpm2sz80sbvyU3wO/avQ8o6z64=;
-        h=Date:From:To:Cc:Subject:From;
-        b=OmhkWKizozd3g57+AlGpefnn4bPDWQSJfaIM/m3AuhGYFz/w/a6HJXug3RAQe72Jv
-         tbW82jntJdPWYXOkAFbYWZUTds/9WtmYsP9DBkAjZqcrsD2Kq7f4gzhOCKROJSjnAj
-         ZXIAwuiSsw6oIDq0B98j0BrGzTqBJCPoBXku9iBasjQfGIPxKSUx8Qcf72UUYL7cNa
-         vxfOEX9U+P1oUXmLu7DG7oErwtA5B70CchInyGRx6CzsAx5O31yKwiin42Xgog2ZMz
-         jir4HBh6hPrJv09AR55Akp1O7XjQiBvTeI3Wp/c2gFxGwKaAzgRZNT5XHNVCSvlISv
-         d7uSU2eklWj2Q==
-Date:   Tue, 20 Apr 2021 13:48:34 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Patrice Chotard <patrice.chotard@foss.st.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the spi tree
-Message-ID: <20210420134834.57467d47@canb.auug.org.au>
+        id S229467AbhDTDu7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 23:50:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 289DC6100B;
+        Tue, 20 Apr 2021 03:50:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618890628;
+        bh=4VHQO/2Y5QQ2o1qMGFqr4wyOmnZip6mdpmq22Di4o1c=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LldPUIP/tlfnAgepSvDsITxKLbtbs42Z6TtiCBo6fVGRmvFBkc036zw5NoQY8xABm
+         A6CxHTMN2CSKAk1atUzN551OAYKrykA2cMPuDfx2uRLPU2mYOyPQkQZ8tA9702IZlc
+         KeWlbaUXz3P3VFH3qFIYnIlV/zNAS7iUxElzDZkfyJj3Pij2kDn139Mjmx455RVeqE
+         3xMC8bPrc0FHtXYu7eMLhPI1++nRYxc5FR69lfynJNPLVnyVVGnUfjEGvvec4axoaw
+         +gw9ONYY1/Vqlcdbz+v+NK/oCQSpZXihv5jRCRP/4Lfhg72QSKMu8pnXhojc+iFyzv
+         n8d4+VRcnp+Pw==
+Received: by mail-ej1-f54.google.com with SMTP id x12so35349846ejc.1;
+        Mon, 19 Apr 2021 20:50:28 -0700 (PDT)
+X-Gm-Message-State: AOAM5316h72zhOYS4mdk5epbrdbiFSDLwA3OVvuvpotcYUjVyc54yYwA
+        UVBwgebVhrXiHmoTNTPDIKbG59Q2CWG7Q6gXOoA=
+X-Google-Smtp-Source: ABdhPJw4O1TlT/Leyw9rMnpP0rTdXgO2SLoIAzcJZ2GEZJnq8QVTyUazhJiBAF3L9Nu9CLYdwqmNjSgGsgo/F4wmIKo=
+X-Received: by 2002:a17:906:fb81:: with SMTP id lr1mr24077340ejb.62.1618890626699;
+ Mon, 19 Apr 2021 20:50:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_//=fx.T/036XDD7cF/3NPOQP";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210413055702.27535-1-zhiyong.tao@mediatek.com> <20210413055702.27535-5-zhiyong.tao@mediatek.com>
+In-Reply-To: <20210413055702.27535-5-zhiyong.tao@mediatek.com>
+From:   Sean Wang <sean.wang@kernel.org>
+Date:   Mon, 19 Apr 2021 20:50:15 -0700
+X-Gmail-Original-Message-ID: <CAGp9LzoM=9v5mLxtAN9sQm_2f+66xc7G4YqfUF1Mwvr4K_wz5w@mail.gmail.com>
+Message-ID: <CAGp9LzoM=9v5mLxtAN9sQm_2f+66xc7G4YqfUF1Mwvr4K_wz5w@mail.gmail.com>
+Subject: Re: [PATCH v4 4/4] pinctrl: add rsel setting on MT8195
+To:     Zhiyong Tao <zhiyong.tao@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        hui.liu@mediatek.com,
+        =?UTF-8?B?RWRkaWUgSHVhbmcgKOm7g+aZuuWCkSk=?= 
+        <eddie.huang@mediatek.com>, jg_poxu@mediatek.com,
+        Biao Huang <biao.huang@mediatek.com>,
+        Hongzhou Yang <hongzhou.yang@mediatek.com>,
+        =?UTF-8?B?U2VhbiBXYW5nICjnjovlv5fkupgp?= <sean.wang@mediatek.com>,
+        seiya.wang@mediatek.com,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_//=fx.T/036XDD7cF/3NPOQP
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Apr 12, 2021 at 10:57 PM Zhiyong Tao <zhiyong.tao@mediatek.com> wrote:
 
-Hi all,
+<snip>
+> @@ -176,6 +180,12 @@ static int mtk_pinconf_get(struct pinctrl_dev *pctldev,
+>                 else
+>                         err = -ENOTSUPP;
+>                 break;
+> +       case MTK_PIN_CONFIG_RSEL:
+> +               if (hw->soc->rsel_get)
+> +                       err = hw->soc->rsel_get(hw, desc, &ret);
+> +               else
+> +                       err = -EOPNOTSUPP;
 
-After merging the spi tree, today's linux-next build (x86_64 allmodconfig)
-produced this warning:
+I think that should want to be -ENOTSUPP to align other occurrences.
 
-In file included from include/linux/printk.h:409,
-                 from include/linux/kernel.h:16,
-                 from include/linux/clk.h:13,
-                 from drivers/spi/spi-stm32-qspi.c:7:
-drivers/spi/spi-stm32-qspi.c: In function 'stm32_qspi_dirmap_read':
-drivers/spi/spi-stm32-qspi.c:481:21: warning: format '%x' expects argument =
-of type 'unsigned int', but argument 5 has type 'size_t' {aka 'long unsigne=
-d int'} [-Wformat=3D]
-  481 |  dev_dbg(qspi->dev, "%s len =3D 0x%x offs =3D 0x%llx buf =3D 0x%p\n=
-", __func__, len, offs, buf);
-      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-include/linux/dynamic_debug.h:129:15: note: in definition of macro '__dynam=
-ic_func_call'
-  129 |   func(&id, ##__VA_ARGS__);  \
-      |               ^~~~~~~~~~~
-include/linux/dynamic_debug.h:161:2: note: in expansion of macro '_dynamic_=
-func_call'
-  161 |  _dynamic_func_call(fmt,__dynamic_dev_dbg,   \
-      |  ^~~~~~~~~~~~~~~~~~
-include/linux/dev_printk.h:123:2: note: in expansion of macro 'dynamic_dev_=
-dbg'
-  123 |  dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
-      |  ^~~~~~~~~~~~~~~
-include/linux/dev_printk.h:123:23: note: in expansion of macro 'dev_fmt'
-  123 |  dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
-      |                       ^~~~~~~
-drivers/spi/spi-stm32-qspi.c:481:2: note: in expansion of macro 'dev_dbg'
-  481 |  dev_dbg(qspi->dev, "%s len =3D 0x%x offs =3D 0x%llx buf =3D 0x%p\n=
-", __func__, len, offs, buf);
-      |  ^~~~~~~
-drivers/spi/spi-stm32-qspi.c:481:34: note: format string is defined here
-  481 |  dev_dbg(qspi->dev, "%s len =3D 0x%x offs =3D 0x%llx buf =3D 0x%p\n=
-", __func__, len, offs, buf);
-      |                                 ~^
-      |                                  |
-      |                                  unsigned int
-      |                                 %lx
+> +               break;
+>         default:
+>                 err = -ENOTSUPP;
+>         }
+> @@ -295,6 +305,12 @@ static int mtk_pinconf_set(struct pinctrl_dev *pctldev, unsigned int pin,
+>                 else
+>                         err = -ENOTSUPP;
+>                 break;
+> +       case MTK_PIN_CONFIG_RSEL:
+> +               if (hw->soc->rsel_set)
+> +                       err = hw->soc->rsel_set(hw, desc, arg);
+> +               else
+> +                       err = -EOPNOTSUPP;
 
-Introduced by commit
+Ditto
 
-  18674dee3cd6 ("spi: stm32-qspi: Add dirmap support")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_//=fx.T/036XDD7cF/3NPOQP
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB+TxIACgkQAVBC80lX
-0Gz+7Af/RgSlzBNib302c4CXa9omBv5QRFGqaIWmsYcqYHhyVblU7qvm8sUgXakV
-0Xj+BZTQWbipJwE2NFNS/XON8rcSQcM5fKIWxh+mLb4ezKDFQlc0iuorNRza1PgX
-lmOZu0GDuk2UuCaUw9TJWAeOSdTJpuxz/53meoemhLElez3/9S5PPOzwoasfzpwN
-K+wj/f6hFNtQuw11zWgc4sPSxsHgGhv/CPJJX93NbalYMaFEyS2dmPfAisMsIQPe
-aBoMWKZAsPBmCPkcD/9AZWQ72oOjf8HrJEuKPzRgCx/mXGYcjYcCf2CJS28nLh3U
-jENssrx6ObIzFYJDs486OnHlKAUIHA==
-=uvLD
------END PGP SIGNATURE-----
-
---Sig_//=fx.T/036XDD7cF/3NPOQP--
+> +               break;
+>         default:
+>                 err = -ENOTSUPP;
+>         }
+> --
+> 2.18.0
+>
