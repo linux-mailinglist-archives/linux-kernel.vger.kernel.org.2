@@ -2,89 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E62F365526
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:18:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 073C836552A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhDTJTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 05:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbhDTJTE (ORCPT
+        id S231346AbhDTJUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 05:20:35 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:47122 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230090AbhDTJUb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 05:19:04 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF137C06174A;
-        Tue, 20 Apr 2021 02:18:31 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id r12so57205265ejr.5;
-        Tue, 20 Apr 2021 02:18:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:references:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EdCLib9feauaBtsAA4PP+2VZP75jl9er/fzSepd50Jk=;
-        b=skmC3HkDpyGNGfZDYi+M367VKi9jGotM1zjxpDg1ja1yf8Y8Ap9o7tqnsA3kTXERuW
-         wXlJkiTF7JVvuhp9bm7NYoqzNhrfVJXwBwCI+5utOi/U3Y7nCBdnhg3uJVsjOBeC6911
-         kjkRIn03rRCAf7QTfD9RCc9iBEdmfNstpQ2jGBjIA/mv9M2SzDiqxuT2nbTM7B1wPN0A
-         dq4ngAK8O97lUkPc5Fyi3Zvg+MISpkhc0G6WkAQPNIz5PUawyqaurqGjdmAv4TqCcz62
-         NEUkA9RG+orFfxbbOAmn+X1gbbCgo8zaNoLORwsVrLzSUQZtdZlFNFkHlDyj4UA3wVkf
-         bcHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:references:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EdCLib9feauaBtsAA4PP+2VZP75jl9er/fzSepd50Jk=;
-        b=IIhpmtoaMz4pE37vbJaJKyP+zozmPCakAkoLCeOq5kq5X+I1s5I785hy9RXYfD+O5b
-         l1uKI37vnAD/xZ0TGv4x4NlO6c9uA4IsDaAyVu2tW6fyxVUDZUMWLWR4ac3OSQ0f2tbQ
-         Ipkiyy+3T18b09Ek7a/JdJCC3vIh/m4TsOspH/wgCK0EJGiYjebLZ7SgrqaB579etVnp
-         ptDCM4JxuSeHM2U+ztIYxmxZYP8Nk25HAa7C4w96FnF3cA7C8+yuyyA8lyKhRe8LNZYp
-         Cj4iXN2yOHNIqNeDISvCXzgmqH+ue98ydcgZSUStJYgFYQhwdCCZg20QXdRCBxHV4P4E
-         E1ew==
-X-Gm-Message-State: AOAM533pOXHMeiD/CB6BbOlEodixvtzsSMbxf+gR/QUo4/ANCkVjaoYt
-        aLWATlw0rI1RKeYAk8d/T/LWXZxQ/8M=
-X-Google-Smtp-Source: ABdhPJwXDQbzF/vYu1BqYDPfcqXS94tnxjRvqPf99nheyHBI/eVCsp3atzCDFOhOXonjeKxMJl0SlQ==
-X-Received: by 2002:a17:906:11ce:: with SMTP id o14mr26147286eja.113.1618910310484;
-        Tue, 20 Apr 2021 02:18:30 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.googlemail.com with ESMTPSA id ca1sm15419691edb.76.2021.04.20.02.18.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 02:18:30 -0700 (PDT)
-Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        joro@8bytes.org, bp@suse.de, thomas.lendacky@amd.com,
-        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srutherford@google.com, seanjc@google.com,
-        venu.busireddy@oracle.com, brijesh.singh@amd.com
-References: <cover.1618498113.git.ashish.kalra@amd.com>
- <c7400111ed7458eee01007c4d8d57cdf2cbb0fc2.1618498113.git.ashish.kalra@amd.com>
- <8cade407-0141-3757-abd8-4399912741eb@redhat.com>
-Subject: Re: [PATCH v13 04/12] KVM: SVM: Add support for KVM_SEV_RECEIVE_START
- command
-Message-ID: <f43f3608-8250-ab58-3db2-f2f698d3de22@redhat.com>
-Date:   Tue, 20 Apr 2021 11:18:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 20 Apr 2021 05:20:31 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13K9HT4h020058;
+        Tue, 20 Apr 2021 11:19:58 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=N8/gyx3fcfxXoHoOct6sxrHqANEHCxA7tcJ8KBXQD8k=;
+ b=wvJ7kT/s3qIv0eJqqR9jWMgPUHaw0EYOC6wlNz/i8F3PsXEYStW8PTTDaY5jabLUSpuq
+ oDJkEALpeK3/gXZBE1BAf4rIunFCH66DT6ijf3fjDOeT0SOPP4TNLX7+Ig22t7ltW/NE
+ iPvhpOPliKaRjyuarKlcJrpcmALfe4j1hNucpjel7p9s1LVj0r20HMJ3fgGNxGGDzAl3
+ UZRX0DcOyEkI8TwO1U8s3nMPRtIMXt95CuYonKDNiWA+fs/pXiiNnDiBwq1X+tpJCkHZ
+ EFRXCTzAJfdXTrVILAKUThJKh4BE90ccOrK+i8ldxUe4bS1Qi2QFPBiZSkw6ff7nahDJ XQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 381tg20qtw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Apr 2021 11:19:58 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9827510002A;
+        Tue, 20 Apr 2021 11:19:57 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 88DC024186E;
+        Tue, 20 Apr 2021 11:19:57 +0200 (CEST)
+Received: from localhost (10.75.127.50) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 20 Apr 2021 11:19:56
+ +0200
+From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <arnaud.pouliquen@foss.st.com>
+Subject: [PATCH] remoteproc: stm32: fix mbox_send_message call
+Date:   Tue, 20 Apr 2021 11:19:22 +0200
+Message-ID: <20210420091922.29429-1-arnaud.pouliquen@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <8cade407-0141-3757-abd8-4399912741eb@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-20_02:2021-04-19,2021-04-20 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/04/21 10:38, Paolo Bonzini wrote:
-> On 15/04/21 17:54, Ashish Kalra wrote:
->> +    }
->> +
->> +    sev->handle = start->handle;
->> +    sev->fd = argp->sev_fd;
-> 
-> These two lines are spurious, I'll delete them.
+mbox_send_message is called by passing a local dummy message or
+a function parameter. As the message is queued, it is dereferenced.
+This works because the message field is not used by the stm32 ipcc
+driver, but it is not clean.
 
-And this is wrong as well.  My apologies.
+Fix by passing a constant string in all cases.
 
-Paolo
+The associated comments are removed because rproc should not have to
+deal with the behavior of the mailbox frame.
+
+Reported-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+---
+ drivers/remoteproc/stm32_rproc.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+index 7353f9e7e7af..0e8203a432ab 100644
+--- a/drivers/remoteproc/stm32_rproc.c
++++ b/drivers/remoteproc/stm32_rproc.c
+@@ -474,14 +474,12 @@ static int stm32_rproc_attach(struct rproc *rproc)
+ static int stm32_rproc_detach(struct rproc *rproc)
+ {
+ 	struct stm32_rproc *ddata = rproc->priv;
+-	int err, dummy_data, idx;
++	int err, idx;
+ 
+ 	/* Inform the remote processor of the detach */
+ 	idx = stm32_rproc_mbox_idx(rproc, STM32_MBX_DETACH);
+ 	if (idx >= 0 && ddata->mb[idx].chan) {
+-		/* A dummy data is sent to allow to block on transmit */
+-		err = mbox_send_message(ddata->mb[idx].chan,
+-					&dummy_data);
++		err = mbox_send_message(ddata->mb[idx].chan, "stop");
+ 		if (err < 0)
+ 			dev_warn(&rproc->dev, "warning: remote FW detach without ack\n");
+ 	}
+@@ -493,15 +491,13 @@ static int stm32_rproc_detach(struct rproc *rproc)
+ static int stm32_rproc_stop(struct rproc *rproc)
+ {
+ 	struct stm32_rproc *ddata = rproc->priv;
+-	int err, dummy_data, idx;
++	int err, idx;
+ 
+ 	/* request shutdown of the remote processor */
+ 	if (rproc->state != RPROC_OFFLINE) {
+ 		idx = stm32_rproc_mbox_idx(rproc, STM32_MBX_SHUTDOWN);
+ 		if (idx >= 0 && ddata->mb[idx].chan) {
+-			/* a dummy data is sent to allow to block on transmit */
+-			err = mbox_send_message(ddata->mb[idx].chan,
+-						&dummy_data);
++			err = mbox_send_message(ddata->mb[idx].chan, "detach");
+ 			if (err < 0)
+ 				dev_warn(&rproc->dev, "warning: remote FW shutdown without ack\n");
+ 		}
+@@ -556,7 +552,7 @@ static void stm32_rproc_kick(struct rproc *rproc, int vqid)
+ 			continue;
+ 		if (!ddata->mb[i].chan)
+ 			return;
+-		err = mbox_send_message(ddata->mb[i].chan, (void *)(long)vqid);
++		err = mbox_send_message(ddata->mb[i].chan, "kick");
+ 		if (err < 0)
+ 			dev_err(&rproc->dev, "%s: failed (%s, err:%d)\n",
+ 				__func__, ddata->mb[i].name, err);
+-- 
+2.17.1
 
