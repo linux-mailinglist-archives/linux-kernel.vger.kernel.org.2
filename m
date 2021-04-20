@@ -2,102 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECD1C365BC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69CA1365BC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232778AbhDTPDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 11:03:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232831AbhDTPDq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 11:03:46 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D07D5C06174A;
-        Tue, 20 Apr 2021 08:03:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mb5AHdWBCTJM8bFehTa04Nsq1Os4J64P/LDxyzO0Yeg=; b=UI+BSFtg25/pMsqycT+l3czzlQ
-        sg7/zIeDawUqPk57u9sobI1ZmEQXlEftNjJIRZdV6sHQBTDSEpQJQm+nru3Y2LmODxuTHehfQxQRo
-        0IH2TPFYAzI0M7wloosTsHx2wJuX49GcOZ+PtCmK2GHzhm8mXE7WCaxKIWvHwstW9vrh63CB4xCoM
-        GfPVLCU4UfDkAtPfHRxssXmibhDWdC7LA5SkFXzNakqsqAnAx60yb6FoK5Q5XklRsUWY3cWCMqEwI
-        /Rv/rBSK/I5UoLCRBT9+62xU4Orz+g0dEm4JVQGCq1MBQPagPkPNpfdXVvlI64PqAPppnqbxyMz8l
-        j1wQB4ig==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYru4-00CPhG-MK; Tue, 20 Apr 2021 15:03:04 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D20CA30018E;
-        Tue, 20 Apr 2021 17:03:03 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7AE3F2BCEDE6D; Tue, 20 Apr 2021 17:03:03 +0200 (CEST)
-Date:   Tue, 20 Apr 2021 17:03:03 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        id S232974AbhDTPDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 11:03:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232902AbhDTPDv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 11:03:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB1B9610A1;
+        Tue, 20 Apr 2021 15:03:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618930999;
+        bh=j2AhiOXhAEFdSXlVtOmuTch74/ss0CH34AqlDj2lObw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rghGQ4Jms/10w+c2YUoA0xR7pEvFY+pxR5xN1nGHNOtIWuVhOZjS4OjDGWh0wTPzI
+         RUuP17zgJlqsGRhFIpV2eRuid/0uqrYF74K5VpG4lVFZWkqrPIcbIkHikAMeITJKVU
+         WhjGYkyswCKkggInHbmvW57ScJAZxQ3UUloLx6rEPnUsWD6H6pql50reuV5IONOLNM
+         seMsNftgoixkTpCGEgvGDiOb+PlXgfV+0OMBu9tnscaCRp61/9BC0qt1zQ9w1w4Rdr
+         1n0zGLpmgjzZrjQpdUQCNSL1blMLFdzLl/ObWLC+ohd+RDp4p1ZkAn5AS3/acz9zlU
+         /SNxFd6Pbb/Jg==
+Date:   Tue, 20 Apr 2021 18:03:11 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        George Dunlap <george.dunlap@eu.citrix.com>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf/x86: Fix integer overflow when left shifting an
- integer more than 32 bits
-Message-ID: <YH7tJz6WnPH7s8yO@hirez.programming.kicks-ass.net>
-References: <20210420142907.382417-1-colin.king@canonical.com>
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 2/4] memblock: update initialization of reserved pages
+Message-ID: <YH7tL77Z9UzTAFca@kernel.org>
+References: <20210420090925.7457-1-rppt@kernel.org>
+ <20210420090925.7457-3-rppt@kernel.org>
+ <ed8f10a0-9b68-1d12-0305-90fd378af6b9@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210420142907.382417-1-colin.king@canonical.com>
+In-Reply-To: <ed8f10a0-9b68-1d12-0305-90fd378af6b9@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 03:29:07PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Tue, Apr 20, 2021 at 03:56:28PM +0200, David Hildenbrand wrote:
+> On 20.04.21 11:09, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > The struct pages representing a reserved memory region are initialized
+> > using reserve_bootmem_range() function. This function is called for each
+> > reserved region just before the memory is freed from memblock to the buddy
+> > page allocator.
+> > 
+> > The struct pages for MEMBLOCK_NOMAP regions are kept with the default
+> > values set by the memory map initialization which makes it necessary to
+> > have a special treatment for such pages in pfn_valid() and
+> > pfn_valid_within().
 > 
-> The 64 bit value read from MSR_ARCH_PERFMON_FIXED_CTR_CTRL is being
-> bit-wise masked with the value (0x03 << i*4). However, the shifted value
-> is evaluated using 32 bit arithmetic, so will overflow when i > 8.
-> Fix this by making 0x03 a ULL so that the shift is performed using
-> 64 bit arithmetic.
+> Just a general question while thinking about it:
 > 
-> Addresses-Coverity: ("Unintentional integer overflow")
+> Would we right now initialize the memmap of these pages already via
+> memmap_init_zone()->memmap_init_range()? (IOW, not marking the
+> PageReserved?)
 
-Strange tag that, also inaccurate, wide shifts are UB and don't behave
-consistently.
+Yep. These pages are part of memblock.memory so they are initialized in
+memmap_init_zone()->memmap_init_range() to the default values.
 
-As is, we've not had hardware with that many fixed counters, but yes,
-worth fixing I suppose.
-
-> Fixes: a5ebe0ba3dff ("perf/x86: Check all MSRs before passing hw check")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  arch/x86/events/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-> index bafd93c54ffa..59c665c8c2e9 100644
-> --- a/arch/x86/events/core.c
-> +++ b/arch/x86/events/core.c
-> @@ -261,7 +261,7 @@ static bool check_hw_exists(void)
->  		for (i = 0; i < x86_pmu.num_counters_fixed; i++) {
->  			if (fixed_counter_disabled(i))
->  				continue;
-> -			if (val & (0x03 << i*4)) {
-> +			if (val & (0x03ULL << i*4)) {
->  				bios_fail = 1;
->  				val_fail = val;
->  				reg_fail = reg;
-> -- 
-> 2.30.2
-> 
+-- 
+Sincerely yours,
+Mike.
