@@ -2,108 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B314336556B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BDC365571
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbhDTJby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 05:31:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbhDTJbx (ORCPT
+        id S231324AbhDTJcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 05:32:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23049 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229729AbhDTJca (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 05:31:53 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30860C06174A;
-        Tue, 20 Apr 2021 02:31:22 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: benjamin.gaignard)
-        with ESMTPSA id 906181F4277A
-Subject: Re: [PATCH v9 03/13] media: hantro: Use syscon instead of 'ctrl'
- register
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Lucas Stach <l.stach@pengutronix.de>, ezequiel@collabora.com,
-        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        lee.jones@linaro.org, gregkh@linuxfoundation.org,
-        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
-        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-        Jacky Bai <ping.bai@nxp.com>
-Cc:     devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-imx@nxp.com,
-        kernel@pengutronix.de, kernel@collabora.com, cphealy@gmail.com,
-        linux-arm-kernel@lists.infradead.org
-References: <20210407073534.376722-1-benjamin.gaignard@collabora.com>
- <20210407073534.376722-4-benjamin.gaignard@collabora.com>
- <7bcbb787d82f21d42563d8fb7e3c2e7d40123932.camel@pengutronix.de>
- <ffe9b3f5-94f5-453e-73f0-4b42d0454b63@collabora.com>
- <529b61b1b1e6030c92a7944c4864246521b2ccdd.camel@pengutronix.de>
- <36008691-d075-203d-0cac-2a012773ea34@collabora.com>
- <43a767f8-77f5-7937-c484-753a3123f6a2@xs4all.nl>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <e7064bb1-69e6-4214-380d-c464b7832da5@collabora.com>
-Date:   Tue, 20 Apr 2021 11:31:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Tue, 20 Apr 2021 05:32:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618911118;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=18C/p49aePuANugYrk1JFsP03OKBgzLm8htKV+f/SOM=;
+        b=OLFXTo5WUsFgSF+81woMWAFyPq9AQatzj5uyIPLfk8PcfcBYkvCytqG5dTTLJ3lpDK0+AJ
+        6bz5v3gDBtNEKBH7EjCLvqBjia3843uM97lgq/aeBVqHbtrHAEMHM62ue5cu+4YqkBKT33
+        EUlsP8jDzKjqQXPFaKHXgsVz8Xd7L0I=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-90-vTGn_hWfMk2DtkeHR6fzyQ-1; Tue, 20 Apr 2021 05:31:56 -0400
+X-MC-Unique: vTGn_hWfMk2DtkeHR6fzyQ-1
+Received: by mail-ej1-f71.google.com with SMTP id g7-20020a1709065d07b029037c872d9cdcso4562225ejt.11
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 02:31:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=18C/p49aePuANugYrk1JFsP03OKBgzLm8htKV+f/SOM=;
+        b=J3ZrIoK5Di1my5pioDzg8ohHT3adFqtuGyPY4vhH2vV2LAz4+jD/kKeQih+xIoWx0g
+         4o5cE7xve1c6Y8qb5+dkbq5TMIbLOrlB8edY4eJz8BXCbzA6MSKn83ZohsyQ1Ei6o/cP
+         4MHXcKz+dkVTq9J/MwHxOKsIQA9L7Og+cynSQ2ysAL0rQzseiSWWQl2cANaF+fIjqq+8
+         K8IC3KxflmNPHHeaZCr63K4IRkRqQv5fvZgS6jvcrIgM5Mdep8ysAvfRfeccbD6YPvPO
+         T3VnsRUWd8DmV0I1We4JkgoXh1rM9EhHaRlPTFPSqyCDOUF6tkyEnXnMmov1QO6goqt5
+         t80g==
+X-Gm-Message-State: AOAM531RKcfZ6CLKpGZSSRiCmmWow3zCgaCrEIv4HIDurnmWgBBTNSqS
+        FazlLJREtIYWqWZqvBS4RYlvbJiQArV296YtsNe6g7gZFXcld+wCVtNLS9PjmhOqte+czYIhnlP
+        uVx0NGjEPLWffx6ipx+vYAYGd
+X-Received: by 2002:aa7:c456:: with SMTP id n22mr30101153edr.255.1618911115744;
+        Tue, 20 Apr 2021 02:31:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwUeQq/g5WwZUbmm4yqZa8is7EVp2d+iPwnDabIxtMc72bPSvFrQpjzcIDj+MnBLsIiMdFLbA==
+X-Received: by 2002:aa7:c456:: with SMTP id n22mr30101141edr.255.1618911115583;
+        Tue, 20 Apr 2021 02:31:55 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id bh14sm12070314ejb.104.2021.04.20.02.31.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 02:31:55 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     mikelley@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
+        sthemmin@microsoft.com, wei.liu@kernel.org,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        decui@microsoft.com
+Subject: Re: ** POTENTIAL FRAUD ALERT - RED HAT ** [PATCH v2 1/1] Drivers:
+ hv: vmbus: Increase wait time for VMbus unload
+In-Reply-To: <1618894089-126662-1-git-send-email-mikelley@microsoft.com>
+References: <1618894089-126662-1-git-send-email-mikelley@microsoft.com>
+Date:   Tue, 20 Apr 2021 11:31:54 +0200
+Message-ID: <87tuo1i9o5.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <43a767f8-77f5-7937-c484-753a3123f6a2@xs4all.nl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Michael Kelley <mikelley@microsoft.com> writes:
 
-Le 20/04/2021 à 11:16, Hans Verkuil a écrit :
-> On 20/04/2021 11:10, Benjamin Gaignard wrote:
->> Le 16/04/2021 à 17:14, Lucas Stach a écrit :
->>> Am Freitag, dem 16.04.2021 um 15:08 +0200 schrieb Benjamin Gaignard:
->>>> Le 16/04/2021 à 12:54, Lucas Stach a écrit :
->>>>> Am Mittwoch, dem 07.04.2021 um 09:35 +0200 schrieb Benjamin Gaignard:
->>>>>> In order to be able to share the control hardware block between
->>>>>> VPUs use a syscon instead a ioremap it in the driver.
->>>>>> To keep the compatibility with older DT if 'nxp,imx8mq-vpu-ctrl'
->>>>>> phandle is not found look at 'ctrl' reg-name.
->>>>>> With the method it becomes useless to provide a list of register
->>>>>> names so remove it.
->>>>> Sorry for putting a spoke in the wheel after many iterations of the
->>>>> series.
->>>>>
->>>>> We just discussed a way forward on how to handle the clocks and resets
->>>>> provided by the blkctl block on i.MX8MM and later and it seems there is
->>>>> a consensus on trying to provide virtual power domains from a blkctl
->>>>> driver, controlling clocks and resets for the devices in the power
->>>>> domain. I would like to avoid introducing yet another way of handling
->>>>> the blkctl and thus would like to align the i.MX8MQ VPU blkctl with
->>>>> what we are planning to do on the later chip generations.
->>>>>
->>>>> CC'ing Jacky Bai and Peng Fan from NXP, as they were going to give this
->>>>> virtual power domain thing a shot.
->>>> That could replace the 3 first patches and Dt patche of this series
->>>> but that will not impact the hevc part, so I wonder if pure hevc patches
->>>> could be merged anyway ?
->>>> They are reviewed and don't depend of how the ctrl block is managed.
->>> I'm not really in a position to give any informed opinion about that
->>> hvec patches, as I only skimmed them, but I don't see any reason to
->>> delay patches 04-11 from this series until the i.MX8M platform issues
->>> are sorted. AFAICS those things are totally orthogonal.
->> Hi Hans,
->> What do you think about this proposal to split this series ?
->> Get hevc part merged could allow me to continue to add features
->> like scaling lists, compressed reference buffers and 10-bit supports.
-> Makes sense to me!
-
-Great !
-If the latest version match your expectations how would you like to processed ?
-Can you merged patches 4 to 12 ? or should I resend them in a new shorted series ?
-
-Regards,
-Benjamin
-
+> When running in Azure, disks may be connected to a Linux VM with
+> read/write caching enabled. If a VM panics and issues a VMbus
+> UNLOAD request to Hyper-V, the response is delayed until all dirty
+> data in the disk cache is flushed.  In extreme cases, this flushing
+> can take 10's of seconds, depending on the disk speed and the amount
+> of dirty data. If kdump is configured for the VM, the current 10 second
+> timeout in vmbus_wait_for_unload() may be exceeded, and the UNLOAD
+> complete message may arrive well after the kdump kernel is already
+> running, causing problems.  Note that no problem occurs if kdump is
+> not enabled because Hyper-V waits for the cache flush before doing
+> a reboot through the BIOS/UEFI code.
 >
-> Regards,
+> Fix this problem by increasing the timeout in vmbus_wait_for_unload()
+> to 100 seconds. Also output periodic messages so that if anyone is
+> watching the serial console, they won't think the VM is completely
+> hung.
 >
-> 	Hans
+> Fixes: 911e1987efc8 ("Drivers: hv: vmbus: Add timeout to vmbus_wait_for_unload")
+> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+> ---
 >
+> Changed in v2: Fixed silly error in the argument to mdelay()
+>
+> ---
+>  drivers/hv/channel_mgmt.c | 30 +++++++++++++++++++++++++-----
+>  1 file changed, 25 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
+> index f3cf4af..ef4685c 100644
+> --- a/drivers/hv/channel_mgmt.c
+> +++ b/drivers/hv/channel_mgmt.c
+> @@ -755,6 +755,12 @@ static void init_vp_index(struct vmbus_channel *channel)
+>  	free_cpumask_var(available_mask);
+>  }
+>  
+> +#define UNLOAD_DELAY_UNIT_MS	10		/* 10 milliseconds */
+> +#define UNLOAD_WAIT_MS		(100*1000)	/* 100 seconds */
+> +#define UNLOAD_WAIT_LOOPS	(UNLOAD_WAIT_MS/UNLOAD_DELAY_UNIT_MS)
+> +#define UNLOAD_MSG_MS		(5*1000)	/* Every 5 seconds */
+> +#define UNLOAD_MSG_LOOPS	(UNLOAD_MSG_MS/UNLOAD_DELAY_UNIT_MS)
+> +
+>  static void vmbus_wait_for_unload(void)
+>  {
+>  	int cpu;
+> @@ -772,12 +778,17 @@ static void vmbus_wait_for_unload(void)
+>  	 * vmbus_connection.unload_event. If not, the last thing we can do is
+>  	 * read message pages for all CPUs directly.
+>  	 *
+> -	 * Wait no more than 10 seconds so that the panic path can't get
+> -	 * hung forever in case the response message isn't seen.
+> +	 * Wait up to 100 seconds since an Azure host must writeback any dirty
+> +	 * data in its disk cache before the VMbus UNLOAD request will
+> +	 * complete. This flushing has been empirically observed to take up
+> +	 * to 50 seconds in cases with a lot of dirty data, so allow additional
+> +	 * leeway and for inaccuracies in mdelay(). But eventually time out so
+> +	 * that the panic path can't get hung forever in case the response
+> +	 * message isn't seen.
+
+I vaguely remember debugging cases when CHANNELMSG_UNLOAD_RESPONSE never
+arrives, it was kind of pointless to proceed to kexec as attempts to
+reconnect Vmbus devices were failing (no devices were offered after
+CHANNELMSG_REQUESTOFFERS AFAIR). Would it maybe make sense to just do
+emergency reboot instead of proceeding to kexec when this happens? Just
+wondering.
+
+>  	 */
+> -	for (i = 0; i < 1000; i++) {
+> +	for (i = 1; i <= UNLOAD_WAIT_LOOPS; i++) {
+>  		if (completion_done(&vmbus_connection.unload_event))
+> -			break;
+> +			goto completed;
+>  
+>  		for_each_online_cpu(cpu) {
+>  			struct hv_per_cpu_context *hv_cpu
+> @@ -800,9 +811,18 @@ static void vmbus_wait_for_unload(void)
+>  			vmbus_signal_eom(msg, message_type);
+>  		}
+>  
+> -		mdelay(10);
+> +		/*
+> +		 * Give a notice periodically so someone watching the
+> +		 * serial output won't think it is completely hung.
+> +		 */
+> +		if (!(i % UNLOAD_MSG_LOOPS))
+> +			pr_notice("Waiting for VMBus UNLOAD to complete\n");
+> +
+> +		mdelay(UNLOAD_DELAY_UNIT_MS);
+>  	}
+> +	pr_err("Continuing even though VMBus UNLOAD did not complete\n");
+>  
+> +completed:
+>  	/*
+>  	 * We're crashing and already got the UNLOAD_RESPONSE, cleanup all
+>  	 * maybe-pending messages on all CPUs to be able to receive new
+
+This is definitely an improvement,
+
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+
+-- 
+Vitaly
+
