@@ -2,83 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5445365016
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 04:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C04365019
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 04:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233511AbhDTCDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 22:03:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233501AbhDTCDo (ORCPT
+        id S233505AbhDTCGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 22:06:25 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:60999 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229534AbhDTCGX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 22:03:44 -0400
-Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE93DC06138A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 19:03:13 -0700 (PDT)
-Received: by mail-ua1-x92f.google.com with SMTP id g24so542172uak.11
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 19:03:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=SRW6B2l3evCXSdkMXhtncIWNHnatMPLHmgfTJZssxJE=;
-        b=OcZYWiYjOx2mIwK5CtdpMAlAd4IaEvEDFU0TPQO94DzoR647nXkgfjfC/jlmL8SlnU
-         zcwivITDXmDFDv1ihS38tlefhBShQliYmUoAdp791CurT2byJ1krHuikbGQFz/oNWFhM
-         YrxCa/5rz6FsCekyrcW3ZbHLdBOiOyV/bm2/JcwE9N4EuXCPy0XjcYbQB/w7lyeJJCWZ
-         DGIZFHYy2iorq/PohzqJv5eUufvUxytdXBpCjAwS8zVLoGa5o1dJElJXLdmznC1cVo0Q
-         4EZNTqPheEnb/xbstGSnjdjpOtHCwT62hUNuZ24p+Z35W1tyQ3gJ3CsprI4dIY1iM96f
-         xsfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=SRW6B2l3evCXSdkMXhtncIWNHnatMPLHmgfTJZssxJE=;
-        b=XirYZ+6J88EZh9WCM/Vo7rbDWNOAVCcSWWx2xesMuLhQHi1zGyW2WEsa4XyVxjmjUC
-         sCJmxh5TRBA5TBP/2Y9ZVeJkJF4XNzXZWbFbr4szzkd8pMwSQAUQjuI9dZud8qj/O71h
-         /CPMfB1Uul93CWjHNjmwSx9mcqMGqNCPFmoqEPBS5aU8XSnQxY627kduUxwy3KyTXfCE
-         TzieBeuyUzRg1Dro2zginTO+z7pAiZ/F3jEUVekuy8N3VFJEPpk7v6K57otpGioIk6DG
-         io2lk6shvF+XFLe4/iDVZtJTeMfJqPCnVtYoD5yNZKn7QtHSXVgSL/6+Mr86z61Qzb1g
-         ftqQ==
-X-Gm-Message-State: AOAM531b1vZx4a2ebJ3fIXVvz9AP0e321cJauIE0Jdnga9Ua95zMOPmV
-        jM4T4WTBsBv85MXymJM1VvICf0qDO4G1nBUjZ/PfnA==
-X-Google-Smtp-Source: ABdhPJwuRmWnDH0KhG10/fSZj/4TzlbSYwhk8Pz+wH6szF4U95OMogzAqlSvjL+IHQAO8+XobgnxG3QIm/nFOhMPGGU=
-X-Received: by 2002:ab0:7216:: with SMTP id u22mr404027uao.83.1618884192864;
- Mon, 19 Apr 2021 19:03:12 -0700 (PDT)
-MIME-Version: 1.0
-From:   Jue Wang <juew@google.com>
-Date:   Mon, 19 Apr 2021 19:03:01 -0700
-Message-ID: <CAPcxDJ5gH9XvZ1bMsRqqU8bTpGLsz75+pWMnj52b-nMZHKhdtQ@mail.gmail.com>
-Subject: Re: [PATCH v1 3/3] mm,hwpoison: add kill_accessing_process() to find
- error virtual address
-To:     nao.horiguchi@gmail.com, "Luck, Tony" <tony.luck@intel.com>
-Cc:     akpm@linux-foundation.org, bp@alien8.de, david@redhat.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, luto@kernel.org,
-        naoya.horiguchi@nec.com, osalvador@suse.de, yaoaili@kingsoft.com
+        Mon, 19 Apr 2021 22:06:23 -0400
+X-UUID: a621cc90d6e44dd98733707a5bf2256c-20210420
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Z09ggkvCRJiJ4/N9vlMDVPDlpKZyre12NKJNa+h4uZw=;
+        b=el27YFigHbltheeF4/OrPPrBwGB/2mHaIOAp+PXxxgVwIwshaC+8F2fLog3fC3+dmQCMX7EyKm+58C8AYmUb45XQO84O5L5U/yEorDJvd8tJkOn/DHmhouO+WbN6CfSW7kGufDz/ySduHg1FBDIHofn4NGgElDwv01qVdnZqcYE=;
+X-UUID: a621cc90d6e44dd98733707a5bf2256c-20210420
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <jianjun.wang@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 127489997; Tue, 20 Apr 2021 10:05:44 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 20 Apr
+ 2021 10:05:39 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 20 Apr 2021 10:05:38 +0800
+Message-ID: <1618884338.29460.3.camel@mhfsdcap03>
+Subject: Re: [v9,0/7] PCI: mediatek: Add new generation controller support
+From:   Jianjun Wang <jianjun.wang@mediatek.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+CC:     Bjorn Helgaas <helgaas@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        "Philipp Zabel" <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <youlin.pei@mediatek.com>,
+        <chuanjia.liu@mediatek.com>, <qizhong.cheng@mediatek.com>,
+        <sin_jieyang@mediatek.com>, <drinkcat@chromium.org>,
+        <Rex-BC.Chen@mediatek.com>, <anson.chuang@mediatek.com>,
+        Krzysztof Wilczyski <kw@linux.com>,
+        Pali =?ISO-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Date:   Tue, 20 Apr 2021 10:05:38 +0800
+In-Reply-To: <20210419104432.GA2427@lpieralisi>
+References: <20210324030510.29177-1-jianjun.wang@mediatek.com>
+         <20210416192100.GA2745484@bjorn-Precision-5520>
+         <20210419104432.GA2427@lpieralisi>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: B45CF740E0F6667A28FE967807155FA258A3BB8BAE458FD2526271E6569C26AC2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Apr 2021 07:43:20 +0900, Naoya Horiguchi wrote:
+T24gTW9uLCAyMDIxLTA0LTE5IGF0IDExOjQ0ICswMTAwLCBMb3JlbnpvIFBpZXJhbGlzaSB3cm90
+ZToNCj4gT24gRnJpLCBBcHIgMTYsIDIwMjEgYXQgMDI6MjE6MDBQTSAtMDUwMCwgQmpvcm4gSGVs
+Z2FhcyB3cm90ZToNCj4gPiBPbiBXZWQsIE1hciAyNCwgMjAyMSBhdCAxMTowNTowM0FNICswODAw
+LCBKaWFuanVuIFdhbmcgd3JvdGU6DQo+ID4gPiBUaGVzZSBzZXJpZXMgcGF0Y2hlcyBhZGQgcGNp
+ZS1tZWRpYXRlay1nZW4zLmMgYW5kIGR0LWJpbmRpbmdzIGZpbGUgdG8NCj4gPiA+IHN1cHBvcnQg
+bmV3IGdlbmVyYXRpb24gUENJZSBjb250cm9sbGVyLg0KPiA+IA0KPiA+IEluY2lkZW50YWw6IGI0
+IGRvZXNuJ3Qgd29yayBvbiB0aGlzIHRocmVhZCwgSSBzdXNwZWN0IGJlY2F1c2UgdGhlDQo+ID4g
+dXN1YWwgc3ViamVjdCBsaW5lIGZvcm1hdCBpczoNCj4gPiANCj4gPiAgIFtQQVRDSCB2OSA5Lzdd
+DQo+ID4gDQo+ID4gaW5zdGVhZCBvZjoNCj4gPiANCj4gPiAgIFt2OSwwLzddDQo+ID4gDQo+ID4g
+Rm9yIGI0IGluZm8sIHNlZSBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vdXRpbHMvYjQv
+YjQuZ2l0L3RyZWUvUkVBRE1FLnJzdA0KPiANCj4gSmlhbmp1biB3aWxsIHVwZGF0ZSB0aGUgc2Vy
+aWVzIGFjY29yZGluZ2x5IChhbmQgcGxlYXNlIGFkZCB0byB2MTAgdGhlDQo+IHJldmlldyB0YWdz
+IHlvdSByZWNlaXZlZC4NCj4gDQo+IExvcmVuem8NCg0KWWVzLCBJIHdpbGwgdXBkYXRlIHRoaXMg
+c2VyaWVzIGluIHYxMCB0byBmaXggdGhlIHN1YmplY3QgbGluZSBmb3JtYXQgYW5kDQp1c2UgRVhQ
+T1JUX1NZTUJPTF9HUEwoKSwgdGhhbmtzIGZvciB5b3VyIGNvbW1lbnRzLg0KDQpUaGFua3MuDQoN
+Cg==
 
-> This patch suggests to do page table walk to find the error virtual
-> address.  If we find multiple virtual addresses in walking, we now can't
-> determine which one is correct, so we fall back to sending SIGBUS in
-> kill_me_maybe() without error info as we do now.  This corner case needs
-> to be solved in the future.
-
-Instead of walking the page tables, I wonder what about the following idea:
-
-When failing to get vaddr, memory_failure just ensures the mapping is removed
-and an hwpoisoned swap pte is put in place; or the original page is flagged with
-PG_HWPOISONED and kept in the radix tree (e.g., for SHMEM THP).
-
-NOTE: no SIGBUS is sent to user space.
-
-Then do_machine_check just returns to user space to resume execution, the
-re-execution will result in a #PF and should land to the exact page fault
-handling code that generates a SIGBUS with the precise vaddr info:
-
-https://github.com/torvalds/linux/blob/7af08140979a6e7e12b78c93b8625c8d25b084e2/mm/memory.c#L3290
-https://github.com/torvalds/linux/blob/7af08140979a6e7e12b78c93b8625c8d25b084e2/mm/memory.c#L3647
-
-Thanks,
--Jue
