@@ -2,370 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE27D3651A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 06:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0743651AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 06:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229824AbhDTEzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 00:55:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229594AbhDTEzG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 00:55:06 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9769DC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 21:54:35 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id y3so7122563eds.5
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 21:54:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xFIkJ2fkl9LC0QMBhUlEdtBeZKjOJi1lQiDp3v4zRCQ=;
-        b=nmK2lL6z+fNNFNFweN/mY7XmHviUetgxARCEO+u7HbHS0leKwOlxrL5OnCJqLEFzQb
-         y7Oia113JfJT/2uMjTKYOh7zDdSumpZJWDpWpflxfj0/MsdM82MZilrb6QL7EDZ9Mdep
-         toSkRTawvyAo0Vv0K934c0AogTfXCoEfneAkA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xFIkJ2fkl9LC0QMBhUlEdtBeZKjOJi1lQiDp3v4zRCQ=;
-        b=MzS1rDJ5AAEOX4ONMesATOXoKR3xIAlxP2bCBQYVDM3vFJPK/2nerYLthTHjXe9w3V
-         Bt0mTPPzVqUoKaJjUyd8eMl+qwwz6jBjxEVJyv2bApIn005JUP5Vaoh2JnVyNaT/eBHl
-         udgPD+IzNTdCGaNcWsfNIcb2SqKBbdKAiFp8Osr51495m59EkN+GK+7rMxZZgVk8dYKZ
-         9QbKwiOQoJpmF4x4BpUHHzDCB+/YPvgjLJw4u5GQDakWFOCDiP3iOvy4MTyuyLvIvEW8
-         5Rgbd8pO1Sb+VlVou0DaFrHY65rEOwNnQ6nXg5fEaJbUuyjbJ9KB8nwS5obUkMv1PfCD
-         gbVQ==
-X-Gm-Message-State: AOAM532Y3+tbLoXgLXSnQDg4BykIJD6noJ843UavAKjvaR4wlYpPxXDx
-        IVKtNXCbmF0hhrv9YzNYvTLcsyv7QWd/aw==
-X-Google-Smtp-Source: ABdhPJwi8sIMf2nmrH+NAyH7diUv6lxgbsncRCwQ3gObSIdkHpoCKaqVmQ7eOqO7+SeUatApJnW8KA==
-X-Received: by 2002:a50:ee88:: with SMTP id f8mr30113356edr.69.1618894474020;
-        Mon, 19 Apr 2021 21:54:34 -0700 (PDT)
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com. [209.85.221.44])
-        by smtp.gmail.com with ESMTPSA id e16sm14665881edu.94.2021.04.19.21.54.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Apr 2021 21:54:33 -0700 (PDT)
-Received: by mail-wr1-f44.google.com with SMTP id h4so27125422wrt.12
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 21:54:33 -0700 (PDT)
-X-Received: by 2002:adf:d1ce:: with SMTP id b14mr18718192wrd.159.1618894472584;
- Mon, 19 Apr 2021 21:54:32 -0700 (PDT)
+        id S229950AbhDTE4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 00:56:53 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:3843 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229553AbhDTE4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 00:56:45 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FPWb91nFPz9vBKZ;
+        Tue, 20 Apr 2021 06:55:33 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id ie5cxGwG9F7s; Tue, 20 Apr 2021 06:55:33 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FPWb90hkBz9vBKT;
+        Tue, 20 Apr 2021 06:55:33 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C58218B7D6;
+        Tue, 20 Apr 2021 06:55:33 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id wk-bweOaRv6E; Tue, 20 Apr 2021 06:55:33 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3642D8B7CB;
+        Tue, 20 Apr 2021 06:55:33 +0200 (CEST)
+Subject: Re: PPC_FPU, ALTIVEC: enable_kernel_fp, put_vr, get_vr
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <7107fcae-5c7a-ac94-8d89-326f2cd4cd33@infradead.org>
+ <8b1cb0a2-ed3a-7da0-a73a-febbda528703@csgroup.eu>
+ <20210418174648.GN26583@gate.crashing.org>
+ <bf119bfe-7db1-e7f3-d837-f910635eeebb@infradead.org>
+ <87sg3mct3x.fsf@mpe.ellerman.id.au>
+ <bd83b06d-ed36-e600-e988-c1e0014fb9cf@infradead.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <1f337b4c-940e-110c-d0a2-2ad95cfb2dc8@csgroup.eu>
+Date:   Tue, 20 Apr 2021 06:55:32 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-References: <20201221164819.792019-1-ribalda@chromium.org> <20201221164819.792019-10-ribalda@chromium.org>
- <X+HKpxzbVC29lNlk@pendragon.ideasonboard.com> <CANiDSCv_+Usx4QkG4ypGWbCKvusiugYGgeNRYP8GZJ_pvuhjEQ@mail.gmail.com>
- <X+L6KSlpKERPAxsm@pendragon.ideasonboard.com> <CANiDSCsvOdB7oAGBwupb_UrV=SND96Pc2AuWu=dPAbTA-boXhQ@mail.gmail.com>
- <CANiDSCvMWtWUJT76T_4ksoc9bA0ev14kGs1S8Ashw+06iPw6tA@mail.gmail.com>
-In-Reply-To: <CANiDSCvMWtWUJT76T_4ksoc9bA0ev14kGs1S8Ashw+06iPw6tA@mail.gmail.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Tue, 20 Apr 2021 13:54:21 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5By3GVrzww4AvnhCOdBxdC6udu5=kBCVk_yr6aZ7M1wQg@mail.gmail.com>
-Message-ID: <CAAFQd5By3GVrzww4AvnhCOdBxdC6udu5=kBCVk_yr6aZ7M1wQg@mail.gmail.com>
-Subject: Re: [PATCH v5 09/12] media: uvcvideo: Implement UVC_QUIRK_PRIVACY_DURING_STREAM
-To:     Ricardo Ribalda <ribalda@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <bd83b06d-ed36-e600-e988-c1e0014fb9cf@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 9:56 PM Ricardo Ribalda <ribalda@chromium.org> wrote:
->
-> Hi again
->
-> On Wed, Dec 23, 2020 at 9:31 AM Ricardo Ribalda <ribalda@chromium.org> wrote:
-> >
-> > Hi Laurent
-> >
-> > On Wed, Dec 23, 2020 at 9:05 AM Laurent Pinchart
-> > <laurent.pinchart@ideasonboard.com> wrote:
-> > >
-> > > Hi Ricardo,
-> > >
-> > > On Tue, Dec 22, 2020 at 09:04:19PM +0100, Ricardo Ribalda wrote:
-> > > > On Tue, Dec 22, 2020 at 11:30 AM Laurent Pinchart wrote:
-> > > > > On Mon, Dec 21, 2020 at 05:48:16PM +0100, Ricardo Ribalda wrote:
-> > > > > > Some devices, can only read the privacy_pin if the device is
-> > > > >
-> > > > > s/devices,/devices/
-> > > > >
-> > > > > > streaming.
-> > > > > >
-> > > > > > This patch implement a quirk for such devices, in order to avoid invalid
-> > > > > > reads and/or spurious events.
-> > > > > >
-> > > > > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > > > > > ---
-> > > > > >  drivers/media/usb/uvc/uvc_driver.c | 57 ++++++++++++++++++++++++++++--
-> > > > > >  drivers/media/usb/uvc/uvc_queue.c  |  3 ++
-> > > > > >  drivers/media/usb/uvc/uvcvideo.h   |  4 +++
-> > > > > >  3 files changed, 61 insertions(+), 3 deletions(-)
-> > > > > >
-> > > > > > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> > > > > > index 72516101fdd0..7af37d4bd60a 100644
-> > > > > > --- a/drivers/media/usb/uvc/uvc_driver.c
-> > > > > > +++ b/drivers/media/usb/uvc/uvc_driver.c
-> > > > > > @@ -7,6 +7,7 @@
-> > > > > >   */
-> > > > > >
-> > > > > >  #include <linux/atomic.h>
-> > > > > > +#include <linux/dmi.h>
-> > > > > >  #include <linux/gpio/consumer.h>
-> > > > > >  #include <linux/kernel.h>
-> > > > > >  #include <linux/list.h>
-> > > > > > @@ -1472,6 +1473,17 @@ static int uvc_parse_control(struct uvc_device *dev)
-> > > > > >  /* -----------------------------------------------------------------------------
-> > > > > >   * Privacy GPIO
-> > > > > >   */
-> > > > >
-> > > > > There should be a blank line here.
-> > > > >
-> > > > > > +static bool uvc_gpio_is_streaming(struct uvc_device *dev)
-> > > > > > +{
-> > > > > > +     struct uvc_streaming *streaming;
-> > > > > > +
-> > > > > > +     list_for_each_entry(streaming, &dev->streams, list) {
-> > > > > > +             if (uvc_queue_streaming(&streaming->queue))
-> > > > > > +                     return true;
-> > > > > > +     }
-> > > > > > +
-> > > > > > +     return false;
-> > > > > > +}
-> > > > > >
-> > > > > >
-> > > > >
-> > > > > But not too blank lines here.
-> > > > >
-> > > > > >  static u8 uvc_gpio_update_value(struct uvc_device *dev,
-> > > > > > @@ -1499,7 +1511,12 @@ static int uvc_gpio_get_cur(struct uvc_device *dev, struct uvc_entity *entity,
-> > > > > >       if (cs != UVC_CT_PRIVACY_CONTROL || size < 1)
-> > > > > >               return -EINVAL;
-> > > > > >
-> > > > > > +     if ((dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM) &&
-> > > > > > +         !uvc_gpio_is_streaming(dev))
-> > > > > > +             return -EBUSY;
-> > > > > > +
-> > > > > >       *(uint8_t *)data = uvc_gpio_update_value(dev, entity);
-> > > > > > +
-> > > > > >       return 0;
-> > > > > >  }
-> > > > > >
-> > > > > > @@ -1528,19 +1545,50 @@ static struct uvc_entity *uvc_gpio_find_entity(struct uvc_device *dev)
-> > > > > >       return NULL;
-> > > > > >  }
-> > > > > >
-> > > > > > -static irqreturn_t uvc_gpio_irq(int irq, void *data)
-> > > > > > +void uvc_privacy_gpio_event(struct uvc_device *dev)
-> > > > > >  {
-> > > > > > -     struct uvc_device *dev = data;
-> > > > > >       struct uvc_entity *unit;
-> > > > > >
-> > > > > > +
-> > > > > >       unit = uvc_gpio_find_entity(dev);
-> > > > > >       if (!unit)
-> > > > > > -             return IRQ_HANDLED;
-> > > > > > +             return;
-> > > > > >
-> > > > > >       uvc_gpio_update_value(dev, unit);
-> > > > > > +}
-> > > > > > +
-> > > > > > +static irqreturn_t uvc_gpio_irq(int irq, void *data)
-> > > > > > +{
-> > > > > > +     struct uvc_device *dev = data;
-> > > > > > +
-> > > > > > +     /* Ignore privacy events during streamoff */
-> > > > > > +     if (dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM)
-> > > > > > +             if (!uvc_gpio_is_streaming(dev))
-> > > > > > +                     return IRQ_HANDLED;
-> > > > >
-> > > > > I'm still a bit concerned of race conditions. When stopping the stream,
-> > > > > vb2_queue.streaming is set to 0 after calling the driver's .stop_stream()
-> > > > > handler. This means that the device will cut power before
-> > > > > uvc_gpio_is_streaming() can detect that streaming has stopped, and the
-> > > > > GPIO could thus trigger an IRQ.
-> > > >
-> > > > On the affected devices I have not seen this. I guess it takes some
-> > > > time to discharge. Anyway I am implementing a workaround. Tell me if
-> > > > it is too ugly.
-> > > >
-> > > > > You mentioned that devices have a pull-up or pull-down on the GPIO line.
-> > > > > As there are only two devices affected, do you know if it's a pull-up or
-> > > > > pull-down ? Would it be worse to expose that state to userspace than to
-> > > > > return -EBUSY when reading the control ?
-> > > >
-> > > > The module has a 100K pull up. This is, it will return "Privacy = 0".
-> > > >
-> > > > We cannot return the default value, as it would make the user believe
-> > > > that the privacy is in a different state that currently is.
-> > > > In other words, userspace needs to know at all times if the privacy is
-> > > > in : unknow_state, on, off.
-> > >
-> > > This seems to be the core of the issue: we're trying to shove 3 states
-> > > into a boolean. Would this call for turning the V4L2_CID_PRIVACY control
-> > > into a menu ? Or maybe setting V4L2_CTRL_FLAG_INACTIVE ? Returning
-> > > -EBUSY when the control is read while not streaming, and not generating
-> > > an event that tells the control value becomes unknown, seems like a hack
-> > > designed to work with a single userspace implementation.
-> > >
-> >
-> > I think that the V4L2_CTRL_FLAG_INACTIVE seems more correct. I will
-> > see how can I wire that up.
->
-> Let me correct myself here. FLAG_INACTIVE is also not a good idea.
->
-> you need two ioctls to read the value:
-> -queryctrl()
-> -g_ctrl()
-> and you cannot send both at the same time.
->
-> I guess we need to keep the -EBUSY or move to a menu. Since we will
-> probably delay this patch for  a while. I will resend based on -EBUSY
-> at the end of my patchset, so it can be easily ignored if we find a
-> better solution.
 
-Hi Laurent, Kieran,
 
-Would it be okay to keep the behavior as suggested by Ricardo?
+Le 19/04/2021 à 23:39, Randy Dunlap a écrit :
+> On 4/19/21 6:16 AM, Michael Ellerman wrote:
+>> Randy Dunlap <rdunlap@infradead.org> writes:
+> 
+>>> Sure.  I'll post them later today.
+>>> They keep FPU and ALTIVEC as independent (build) features.
+>>
+>> Those patches look OK.
+>>
+>> But I don't think it makes sense to support that configuration, FPU=n
+>> ALTVEC=y. No one is ever going to make a CPU like that. We have enough
+>> testing surface due to configuration options, without adding artificial
+>> combinations that no one is ever going to use.
+>>
+>> IMHO :)
+>>
+>> So I'd rather we just make ALTIVEC depend on FPU.
+> 
+> That's rather simple. See below.
+> I'm doing a bunch of randconfig builds with it now.
+> 
+> ---
+> From: Randy Dunlap <rdunlap@infradead.org>
+> Subject: [PATCH] powerpc: make ALTIVEC depend PPC_FPU
+> 
+> On a kernel config with ALTIVEC=y and PPC_FPU not set/enabled,
+> there are build errors:
+> 
+> drivers/cpufreq/pmac32-cpufreq.c:262:2: error: implicit declaration of function 'enable_kernel_fp' [-Werror,-Wimplicit-function-declaration]
+>             enable_kernel_fp();
+> ../arch/powerpc/lib/sstep.c: In function 'do_vec_load':
+> ../arch/powerpc/lib/sstep.c:637:3: error: implicit declaration of function 'put_vr' [-Werror=implicit-function-declaration]
+>    637 |   put_vr(rn, &u.v);
+>        |   ^~~~~~
+> ../arch/powerpc/lib/sstep.c: In function 'do_vec_store':
+> ../arch/powerpc/lib/sstep.c:660:3: error: implicit declaration of function 'get_vr'; did you mean 'get_oc'? [-Werror=implicit-function-declaration]
+>    660 |   get_vr(rn, &u.v);
+>        |   ^~~~~~
+> 
+> In theory ALTIVEC is independent of PPC_FPU but in practice nobody
+> is going to build such a machine, so make ALTIVEC require PPC_FPU
+> by depending on PPC_FPU.
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Cc: Segher Boessenkool <segher@kernel.crashing.org>
+> Cc: lkp@intel.com
+> ---
+>   arch/powerpc/platforms/86xx/Kconfig    |    1 +
+>   arch/powerpc/platforms/Kconfig.cputype |    2 ++
+>   2 files changed, 3 insertions(+)
+> 
+> --- linux-next-20210416.orig/arch/powerpc/platforms/86xx/Kconfig
+> +++ linux-next-20210416/arch/powerpc/platforms/86xx/Kconfig
+> @@ -4,6 +4,7 @@ menuconfig PPC_86xx
+>   	bool "86xx-based boards"
+>   	depends on PPC_BOOK3S_32
+>   	select FSL_SOC
+> +	select PPC_FPU
+>   	select ALTIVEC
+>   	help
+>   	  The Freescale E600 SoCs have 74xx cores.
+> --- linux-next-20210416.orig/arch/powerpc/platforms/Kconfig.cputype
+> +++ linux-next-20210416/arch/powerpc/platforms/Kconfig.cputype
+> @@ -186,6 +186,7 @@ config E300C3_CPU
+>   config G4_CPU
+>   	bool "G4 (74xx)"
+>   	depends on PPC_BOOK3S_32
+> +	select PPC_FPU
+>   	select ALTIVEC
+>   
+>   endchoice
+> @@ -309,6 +310,7 @@ config PHYS_64BIT
+>   
+>   config ALTIVEC
+>   	bool "AltiVec Support"
+> +	depends on PPC_FPU
 
-Best regards,
-Tomasz
+Shouldn't we do it the other way round ? In extenso make ALTIVEC select PPC_FPU and avoid the two 
+selects that are above ?
 
->
-> Thanks!
->
-> >
-> >
-> > > As the rest of the series is getting ready, I'd propose merging it
-> > > without this patch until we figure out what should be done to support
-> > > these lovely devices. Would that work for you ?
-> >
-> > Yes that sounds good to me. Thanks!
-> >
-> >
-> > >
-> > > > > > +
-> > > > > > +     uvc_privacy_gpio_event(dev);
-> > > > > > +
-> > > > > >       return IRQ_HANDLED;
-> > > > > >  }
-> > > > > >
-> > > > > > +static const struct dmi_system_id privacy_valid_during_streamon[] = {
-> > > > > > +     {
-> > > > > > +             .ident = "HP Elite c1030 Chromebook",
-> > > > > > +             .matches = {
-> > > > > > +                     DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-> > > > > > +                     DMI_MATCH(DMI_PRODUCT_NAME, "Jinlon"),
-> > > > > > +             },
-> > > > > > +     },
-> > > > > > +     {
-> > > > > > +             .ident = "HP Pro c640 Chromebook",
-> > > > > > +             .matches = {
-> > > > > > +                     DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-> > > > > > +                     DMI_MATCH(DMI_PRODUCT_NAME, "Dratini"),
-> > > > > > +             },
-> > > > > > +     },
-> > > > > > +     { } /* terminate list */
-> > > > > > +};
-> > > > > > +
-> > > > > >  static int uvc_gpio_parse(struct uvc_device *dev)
-> > > > > >  {
-> > > > > >       struct uvc_entity *unit;
-> > > > > > @@ -1577,6 +1625,9 @@ static int uvc_gpio_parse(struct uvc_device *dev)
-> > > > > >
-> > > > > >       list_add_tail(&unit->list, &dev->entities);
-> > > > > >
-> > > > > > +     if (dmi_check_system(privacy_valid_during_streamon))
-> > > > > > +             dev->quirks |= UVC_QUIRK_PRIVACY_DURING_STREAM;
-> > > > >
-> > > > > This will also match any external UVC camera plugged to one of the
-> > > > > affected systems, right ? It shouldn't matter in practice as those
-> > > > > devices won't have a GPIO entity.
-> > > >
-> > > > I did think about that but did not make it explicit in the code.
-> > > > Adding a comment.
-> > > >
-> > > > > I suppose we can't match on VID:PID instead because the same VID:PID is
-> > > > > used in both devices affected by this issue, and devices immune to it ?
-> > > >
-> > > > The problem with VID:PID, is that the manufacturer can decide to
-> > > > change the camera module and then the quirk will not work.
-> > > >
-> > > > We cannot rely ONLY in VID:PID as these modules are also used in other
-> > > > models not affected by the quirk.
-> > > >
-> > > > I believe that it is also correct to rely on the dmi, as the quirk is
-> > > > caused for the way the camera module is wired, which is on the
-> > > > motherboard.
-> > >
-> > > I can't comment on the hardware side as I lack details. Using the
-> > > VID:PID only seems a problem indeed. We could combine DMI and VID:PID,
-> > > but that wouldn't make a difference in practice, so I suppose this is
-> > > good enough.
-> > >
-> > > > > > +
-> > > > > >       return 0;
-> > > > > >  }
-> > > > > >
-> > > > > > diff --git a/drivers/media/usb/uvc/uvc_queue.c b/drivers/media/usb/uvc/uvc_queue.c
-> > > > > > index cd60c6c1749e..e800d491303f 100644
-> > > > > > --- a/drivers/media/usb/uvc/uvc_queue.c
-> > > > > > +++ b/drivers/media/usb/uvc/uvc_queue.c
-> > > > > > @@ -337,9 +337,12 @@ int uvc_dequeue_buffer(struct uvc_video_queue *queue, struct v4l2_buffer *buf,
-> > > > > >  int uvc_queue_streamon(struct uvc_video_queue *queue, enum v4l2_buf_type type)
-> > > > > >  {
-> > > > > >       int ret;
-> > > > > > +     struct uvc_streaming *stream = uvc_queue_to_stream(queue);
-> > > > >
-> > > > > Please swap the two lines.
-> > > > >
-> > > > > >
-> > > > > >       mutex_lock(&queue->mutex);
-> > > > > >       ret = vb2_streamon(&queue->queue, type);
-> > > > > > +     if (stream->dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM)
-> > > > > > +             uvc_privacy_gpio_event(stream->dev);
-> > > > >
-> > > > > Even when vb2_streamon() failed ?
-> > > > >
-> > > > > >       mutex_unlock(&queue->mutex);
-> > > > > >
-> > > > > >       return ret;
-> > > > > > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> > > > > > index 079a407ebba5..32c1ba246d97 100644
-> > > > > > --- a/drivers/media/usb/uvc/uvcvideo.h
-> > > > > > +++ b/drivers/media/usb/uvc/uvcvideo.h
-> > > > > > @@ -209,6 +209,7 @@
-> > > > > >  #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT      0x00000400
-> > > > > >  #define UVC_QUIRK_FORCE_Y8           0x00000800
-> > > > > >  #define UVC_QUIRK_FORCE_BPP          0x00001000
-> > > > > > +#define UVC_QUIRK_PRIVACY_DURING_STREAM      0x00002000
-> > > > > >
-> > > > > >  /* Format flags */
-> > > > > >  #define UVC_FMT_FLAG_COMPRESSED              0x00000001
-> > > > > > @@ -826,6 +827,9 @@ extern const struct v4l2_file_operations uvc_fops;
-> > > > > >  int uvc_mc_register_entities(struct uvc_video_chain *chain);
-> > > > > >  void uvc_mc_cleanup_entity(struct uvc_entity *entity);
-> > > > > >
-> > > > > > +/* Privacy gpio */
-> > > > > > +void uvc_privacy_gpio_event(struct uvc_device *dev);
-> > > > > > +
-> > > > > >  /* Video */
-> > > > > >  int uvc_video_init(struct uvc_streaming *stream);
-> > > > > >  int uvc_video_suspend(struct uvc_streaming *stream);
-> > >
-> > > --
-> > > Regards,
-> > >
-> > > Laurent Pinchart
-> >
-> >
-> >
-> > --
-> > Ricardo Ribalda
->
->
->
-> --
-> Ricardo Ribalda
+>   	depends on PPC_BOOK3S_32 || PPC_BOOK3S_64 || (PPC_E500MC && PPC64)
+>   	help
+>   	  This option enables kernel support for the Altivec extensions to the
+> 
