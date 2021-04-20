@@ -2,109 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71941366041
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 21:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5BF36603F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 21:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233758AbhDTTd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 15:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34360 "EHLO
+        id S233730AbhDTTdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 15:33:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233544AbhDTTd0 (ORCPT
+        with ESMTP id S233544AbhDTTdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 15:33:26 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222F4C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 12:32:54 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id g17so45799883edm.6
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 12:32:54 -0700 (PDT)
+        Tue, 20 Apr 2021 15:33:24 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A587BC06174A;
+        Tue, 20 Apr 2021 12:32:52 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id i12so9065606qke.3;
+        Tue, 20 Apr 2021 12:32:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CeykSAZI90ujQ36EqZV5t9vjKLz3qOJxleoK2VZMDEQ=;
-        b=h7ND65/2bTQV5sECygtsgHLlJLV6CmUcPs5PTFxMtc5gX0SgwqTfEoqiedHIt0PmaL
-         VQL94Ost3SRLMDK71qcFPng5iVODZivCqLDGx8Cd+ylWX9slFJknB1Ijaz171uj1OHCu
-         pIW9WhLsEPkYdDKaSs/LA4ZhyriN8Raan3BlYsRuk0qBxZEJabHxBqi+W/2cX1SKvVY8
-         DyYYfziamSk0hUO64IbrT3cLjLdYrUaNa5UsGfqosGEo0BTCUPVW1h3wUr4qRafdqffj
-         +KadtNdwcrceKfLLopkaXWiBtJzEnuazKo9hNpRiZrZwsBvxCxA3bF3Me7Lb7jB7E6UW
-         nzjw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+SxMgumr24PRznk/dw2CQAvRlHHtf2Bm9jyWKNq7r2U=;
+        b=tXFpeh2kvp8PPMCJjFV0Ko5/Zf56vNqWdARCa2gbOjxq5Hb4geDXZiXFOqK8PUBSL+
+         mz+NP+2E5PKTYzsTsYkQwV1riQMIJgYDp3uYRo75rgDCs5qo20xxKeKSjGx527n8pON3
+         fzKKBWLam9WkgZhTt0yaRgiQkQkd/tySAUkND3xHWxJDkuVJzM7+/V503E2CE4aDeFv8
+         gx3ZmP6Jnx2uzaNEuO5pD8HWcIDO0kfQL6lZ5w4L+gRjyxX2MGqLTCuTEewhle6gy0QV
+         w+IyILdqvPzS+BYN70+rCDorHf6ZiKGdF6mNtMQTN5xvZUB6JrGePgYog+cUpXyDYYdI
+         TE6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CeykSAZI90ujQ36EqZV5t9vjKLz3qOJxleoK2VZMDEQ=;
-        b=cnBPmKNe2i30gOwqOfKseKGnHG7XxsjiLUN7cbgb5RbmzbiXBuChsy4GLxaXGWRCVG
-         ini1h831f6lkfgzngX9cx0EdaWgVTur5ntvj9Lp/9g/ZDt8qM/RmVhl7Z8CATVsfA/3c
-         tJg5sljhDKFx61uhaC5NKf4yeqYTE1rRkC3KNnh1POtsW7qgL9i8AEc9+hbGj35SCrEh
-         4caXe86ublLCcHO5t1noE4xtCIuFIjtF5aM7losOU04ABDkO8sp9v9/UraALFFPqk6ym
-         2xYiNHAJY1hdY9VAxwyPyTscc4AQSDOkMRNlkT/+ziSDh941xl8uIE9WZW/aoLReM8xS
-         13gg==
-X-Gm-Message-State: AOAM5301g2RQagvizB4qtwnxFKme5l1wOakzZbVIOESd/2tKXSWydzzj
-        FKm7Wvd33ksFyDoFwWXNVmXFMRgQi6ORZcgOmwdobA==
-X-Google-Smtp-Source: ABdhPJwoHDKggO51DoyBf4DW1dLBL0p5lO7dSdRN5XmLDceKbF7ENZxcl1MKXX+InaL/b6kc++73caSq3OlYa/fsdSc=
-X-Received: by 2002:a05:6402:35c8:: with SMTP id z8mr9829147edc.210.1618947172905;
- Tue, 20 Apr 2021 12:32:52 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+SxMgumr24PRznk/dw2CQAvRlHHtf2Bm9jyWKNq7r2U=;
+        b=s5um6eosDUBLLKfYz59YQL3rv3wJaDdL7SnHyxIA8a4aLiFtSqYafzRS2J89+nnEUL
+         eiAVBptydWIfJ3W3HSgL1tXp8YLaFfml7INKMA6W+c6tv6W7Slzv4bPMqiWGNQJgBKe7
+         AF9NzOTS8bU8dD3K8clablrwudwdB9OPuuwEUwvgj2rjwZFqn92nH8hJkjzbOolfpcy7
+         pHSr40Jqy7dAoo6P8bp1zzWK+3GTZQMBmKRsF8eANqXj5eI12r6AGJDcJe3B6HEvduas
+         feh68fHlcZucJuUnX434vufbdNKD8cWXIVwPPE1/tFS9BXUm9EYqqbB6/yFC4I53eURu
+         o+kw==
+X-Gm-Message-State: AOAM531RO1DaSPEqbh03Qzd6AfxqYWHBjN4fD1pHrAirjTpPtYPbqmAh
+        bUPYl2FwpXiEuao5ncfMzwc=
+X-Google-Smtp-Source: ABdhPJxOXz6kQ5QWRK8Nhz0L1WsC2GU2HHhVMn/9pslWTIRT6dkBOzzNxHOBecAxh8oYa3FWPowLGg==
+X-Received: by 2002:a37:8906:: with SMTP id l6mr632740qkd.198.1618947171788;
+        Tue, 20 Apr 2021 12:32:51 -0700 (PDT)
+Received: from localhost ([207.98.216.60])
+        by smtp.gmail.com with ESMTPSA id t21sm15515qkj.32.2021.04.20.12.32.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 12:32:51 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 12:32:50 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH 1/2] bitmap_parse: support 'all' semantics
+Message-ID: <20210420193250.GA61766@yury-ThinkPad>
+References: <20210420000131.21038-1-yury.norov@gmail.com>
+ <20210420000131.21038-2-yury.norov@gmail.com>
+ <YH6qUDJmUflEmper@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20210419112725.42145-1-wanjiabing@vivo.com> <20210419160411.GG1904484@iweiny-DESK2.sc.intel.com>
- <874kg1yt0o.fsf@fossix.org>
-In-Reply-To: <874kg1yt0o.fsf@fossix.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 20 Apr 2021 12:32:43 -0700
-Message-ID: <CAPcyv4hD8gGdT6LABSBHRG2Bb59Zp1MycdQjB-CF9QHY-VHepQ@mail.gmail.com>
-Subject: Re: [PATCH] libnvdimm.h: Remove duplicate struct declaration
-To:     Santosh Sivaraj <santosh@fossix.org>
-Cc:     Ira Weiny <ira.weiny@intel.com>, Wan Jiabing <wanjiabing@vivo.com>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kael_w@yeah.net
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YH6qUDJmUflEmper@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 6:39 AM Santosh Sivaraj <santosh@fossix.org> wrote:
->
-> Hi Ira,
->
-> Ira Weiny <ira.weiny@intel.com> writes:
->
-> > On Mon, Apr 19, 2021 at 07:27:25PM +0800, Wan Jiabing wrote:
-> >> struct device is declared at 133rd line.
-> >> The declaration here is unnecessary. Remove it.
-> >>
-> >> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> >> ---
-> >>  include/linux/libnvdimm.h | 1 -
-> >>  1 file changed, 1 deletion(-)
-> >>
-> >> diff --git a/include/linux/libnvdimm.h b/include/linux/libnvdimm.h
-> >> index 01f251b6e36c..89b69e645ac7 100644
-> >> --- a/include/linux/libnvdimm.h
-> >> +++ b/include/linux/libnvdimm.h
-> >> @@ -141,7 +141,6 @@ static inline void __iomem *devm_nvdimm_ioremap(struct device *dev,
-> >>
-> >>  struct nvdimm_bus;
-> >>  struct module;
-> >> -struct device;
-> >>  struct nd_blk_region;
-> >
-> > What is the coding style preference for pre-declarations like this?  Should
-> > they be placed at the top of the file?
-> >
-> > The patch is reasonable but if the intent is to declare right before use for
-> > clarity, both devm_nvdimm_memremap() and nd_blk_region_desc() use struct
-> > device.  So perhaps this duplicate is on purpose?
->
-> There are other struct device usage much later in the file, which doesn't have
-> any pre-declarations for struct device. So I assume this might not be on
-> purpose :-)
+On Tue, Apr 20, 2021 at 01:17:52PM +0300, Andy Shevchenko wrote:
+> On Mon, Apr 19, 2021 at 05:01:30PM -0700, Yury Norov wrote:
+> > RCU code supports an 'all' group as a special case when parsing
+> > rcu_nocbs parameter. This patch moves the 'all' support to the core
+> > bitmap_parse code, so that all bitmap users can enjoy this extension.
+> > 
+> > Moving 'all' parsing to a bitmap_parse level, also allows users to
+> > pass patterns together with 'all' in regular group:pattern format
+> 
+> ...
+> 
+> >  	{0, "0-31:1/3,1-31:1/3,2-31:1/3",	&exp1[8 * step], 32, 0},
+> >  	{0, "1-10:8/12,8-31:24/29,0-31:0/3",	&exp1[9 * step], 32, 0},
+> >  
+> > +	{0,	  "all",		&exp1[8 * step], 32, 0},
+> > +	{0,	  "0, 1, all,  ",	&exp1[8 * step], 32, 0},
+> > +	{0,	  "all:1/2",		&exp1[4 * step], 32, 0},
+> > +	{0,	  "ALL:1/2",		&exp1[4 * step], 32, 0},
+> 
+> > +	{-EINVAL, "al", NULL, 8, 0},
+> > +	{-EINVAL, "alll", NULL, 8, 0},
+> > +
+> 
+> Looking at the below hunk it seems like the two above should be actually placed
+> there.
+> 
+> >  	{-EINVAL, "-1",	NULL, 8, 0},
+> >  	{-EINVAL, "-0",	NULL, 8, 0},
+> >  	{-EINVAL, "10-1", NULL, 8, 0},
+> > @@ -384,7 +391,6 @@ static const struct test_bitmap_parselist parselist_tests[] __initconst = {
+> >  	{-EINVAL, "a-31:10/1", NULL, 8, 0},
+> >  	{-EINVAL, "0-31:a/1", NULL, 8, 0},
+> >  	{-EINVAL, "0-\n", NULL, 8, 0},
+> > -
+> 
+> Otherwise this change doesn't belong to the series.
 
-Yeah, I believe it was just code movement and the duplicate was
-inadvertently introduced. Patch looks ok to me.
-
->
-> On a side note, types.h can also be removed, since it's already included in
-> kernel.h.
-
-That I don't necessarily agree with, it just makes future header
-reworks more fraught for not much benefit.
+My bad, I'll fix it in v2.
