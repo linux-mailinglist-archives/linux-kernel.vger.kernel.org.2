@@ -2,181 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58CD93655BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07DA73655BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231438AbhDTJsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 05:48:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20448 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231475AbhDTJsM (ORCPT
+        id S231453AbhDTJte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 05:49:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231246AbhDTJtd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 05:48:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618912061;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bVDi/lRKyldoeNVBBM3pbdbQ6CqtTOJB+nDOMn2FFKA=;
-        b=DrGxl6CAGqRwJOSdmzbR0aVIkGFRxttwe2FX84HgtUPfn0hvvNJRzpwmNrCSrzUKtnTs1+
-        qyE6iUuHEhRTyhWtfrVxbCu+GCa11kPkjKK5C7ruA/gjCHibRpAJWvufMZnvIvUlD0MsXk
-        6ejpIAbn0WrI8W19moUsSFLxEDbBl4U=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-592-Pe0S9HitM72knms1kd1CEw-1; Tue, 20 Apr 2021 05:47:38 -0400
-X-MC-Unique: Pe0S9HitM72knms1kd1CEw-1
-Received: by mail-ed1-f69.google.com with SMTP id cz7-20020a0564021ca7b02903853d41d8adso3514967edb.17
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 02:47:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bVDi/lRKyldoeNVBBM3pbdbQ6CqtTOJB+nDOMn2FFKA=;
-        b=oHqy957cx3rkWfP08MU0F0SrPXuIs5FNUFTqepDFxeBZp1IrGcQZLwRTPue01Jv5RF
-         Wgy++N7LQbRUetcFEXPqjCE3uhx+FG2hYl07APOmR0O0mXK0//jiIbhrZ/pbiiyjAShC
-         udNFCqO/pmi0ZqkNnn1SH6vAv3cFTYcjM1L8DHNyMAkzjAzlMToz9b2Bo3etRjrk60TN
-         7PnJNxBA0NCRvtBFdOoNlQaGOP23sgV5Azgka25bwuwEoHdEmHJ7hLlZh6sNrHWgntnf
-         r0lvcikyFJP2dr17gL+o5k9kpNWkbty1DbPszCRQgfy/r44mYe9fvfsf8b6SWYVA46mb
-         itdg==
-X-Gm-Message-State: AOAM533Bmawbe5huuvrPn2E6eNOR/YOcm0hmZOp1ZK0SBUbWk3ClnTZ/
-        OisI1Kqdi79Mivqm/Ogv9nQ/yRJOmUnx7sOEU1D7AxdziCai4yjzk3B9IsUBvdM5UqN1ZPNi6jF
-        E2DaiuvftomzaLO6Hh38Ux0FG
-X-Received: by 2002:a05:6402:5149:: with SMTP id n9mr30497686edd.195.1618912056826;
-        Tue, 20 Apr 2021 02:47:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyhMZrQSldyakYEaZC6AS5CmQFDfgNlHmxgl3WD87k/fK3UEyKkefZ5a1EsyFol8jgK2bTY2w==
-X-Received: by 2002:a05:6402:5149:: with SMTP id n9mr30497674edd.195.1618912056670;
-        Tue, 20 Apr 2021 02:47:36 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id z4sm13927171edb.97.2021.04.20.02.47.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 02:47:36 -0700 (PDT)
-Subject: Re: [PATCH v13 10/12] KVM: x86: Introduce new
- KVM_FEATURE_SEV_LIVE_MIGRATION feature & Custom MSR.
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        joro@8bytes.org, bp@suse.de, thomas.lendacky@amd.com,
-        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srutherford@google.com, seanjc@google.com,
-        venu.busireddy@oracle.com, brijesh.singh@amd.com
-References: <cover.1618498113.git.ashish.kalra@amd.com>
- <3232806199b2f4b307d28f6fd4f756d487b4e482.1618498113.git.ashish.kalra@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <34df8458-3dbf-d03d-d7f6-56e7e6abfb2a@redhat.com>
-Date:   Tue, 20 Apr 2021 11:47:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 20 Apr 2021 05:49:33 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9695C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 02:49:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=c/4ebdPoDkXsRQNBUYWS70TUfZuUFjko8Cp0we1f+BM=; b=BulSmpljSK+FX7V38AZr3XoNb6
+        CylJg8sIm/YyS9UMI9z82G6/ycIVoB1vQmu5dk/kLGkmceZn4UpjRT4zo4gdKSX7M6WwQW9MmG8Ft
+        ZQTHBEI7RT5iiEFnu3nJHmGBSppCeMcXBjWd7Ls3VLLAR0dy/ElHWx8nrM0D+kJKXY6IwID4zHaho
+        rEEOxgoEOyBlY/w5FwZCtypV53bhyWVj+teXoScwmnrdlbh1RwRbZTmMJBk9CvUIZOXdyJ7isAEsh
+        W8EQZX3vlPg/nHJIJ6wrviZvJHVOpMOt6U2PZBIyDhLUHxxnV4WoFcioPLYE0w7yBYcwMKRrhafmv
+        /NV1+A5g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lYmzx-00BoJe-4j; Tue, 20 Apr 2021 09:48:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 58725300130;
+        Tue, 20 Apr 2021 11:48:48 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3E6EE2C48E3A3; Tue, 20 Apr 2021 11:48:48 +0200 (CEST)
+Date:   Tue, 20 Apr 2021 11:48:48 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Stephane Eranian <eranian@google.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Song Liu <songliubraving@fb.com>, Tejun Heo <tj@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v3 1/2] perf/core: Share an event with multiple cgroups
+Message-ID: <YH6jgMWpFXy+pFVP@hirez.programming.kicks-ass.net>
+References: <20210413155337.644993-1-namhyung@kernel.org>
+ <20210413155337.644993-2-namhyung@kernel.org>
+ <YHhS6kjeA8AvcFgz@hirez.programming.kicks-ass.net>
+ <CABPqkBTncWfeFWY=kYXTAr3gRjpyFVL-YJN4K1YOPpHO35PHBw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <3232806199b2f4b307d28f6fd4f756d487b4e482.1618498113.git.ashish.kalra@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABPqkBTncWfeFWY=kYXTAr3gRjpyFVL-YJN4K1YOPpHO35PHBw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/04/21 17:58, Ashish Kalra wrote:
-> From: Ashish Kalra <ashish.kalra@amd.com>
-> 
-> Add new KVM_FEATURE_SEV_LIVE_MIGRATION feature for guest to check
-> for host-side support for SEV live migration. Also add a new custom
-> MSR_KVM_SEV_LIVE_MIGRATION for guest to enable the SEV live migration
-> feature.
-> 
-> MSR is handled by userspace using MSR filters.
-> 
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> Reviewed-by: Steve Rutherford <srutherford@google.com>
+On Tue, Apr 20, 2021 at 01:34:40AM -0700, Stephane Eranian wrote:
+> The sampling approach will certainly incur more overhead and be at
+> risk of losing the ability to
+> reconstruct the total counter per-cgroup, unless  you set the period
+> for SW_CGROUP_SWITCHES to
+> 1. But then, you run the risk of losing samples if the buffer is full
+> or sampling is throtlled.
+> In some scenarios, we believe the number of context switches between
+> cgroup could be quite high (>> 1000/s).
+> And on top you would have to add the processing of the samples to
+> extract the counts per cgroup. That would require
+> a synthesis on cgroup on perf record and some post-processing on perf
+> report. We are interested in using the data live
+> to make some policy decisions, so a counting approach with perf stat
+> will always be best.
 
-Let's leave the MSR out for now and rename the feature to 
-KVM_FEATURE_HC_PAGE_ENC_STATUS.
-
-Paolo
-
-> ---
->   Documentation/virt/kvm/cpuid.rst     |  5 +++++
->   Documentation/virt/kvm/msr.rst       | 12 ++++++++++++
->   arch/x86/include/uapi/asm/kvm_para.h |  4 ++++
->   arch/x86/kvm/cpuid.c                 |  3 ++-
->   4 files changed, 23 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/virt/kvm/cpuid.rst b/Documentation/virt/kvm/cpuid.rst
-> index cf62162d4be2..0bdb6cdb12d3 100644
-> --- a/Documentation/virt/kvm/cpuid.rst
-> +++ b/Documentation/virt/kvm/cpuid.rst
-> @@ -96,6 +96,11 @@ KVM_FEATURE_MSI_EXT_DEST_ID        15          guest checks this feature bit
->                                                  before using extended destination
->                                                  ID bits in MSI address bits 11-5.
->   
-> +KVM_FEATURE_SEV_LIVE_MIGRATION     16          guest checks this feature bit before
-> +                                               using the page encryption state
-> +                                               hypercall to notify the page state
-> +                                               change
-> +
->   KVM_FEATURE_CLOCKSOURCE_STABLE_BIT 24          host will warn if no guest-side
->                                                  per-cpu warps are expected in
->                                                  kvmclock
-> diff --git a/Documentation/virt/kvm/msr.rst b/Documentation/virt/kvm/msr.rst
-> index e37a14c323d2..020245d16087 100644
-> --- a/Documentation/virt/kvm/msr.rst
-> +++ b/Documentation/virt/kvm/msr.rst
-> @@ -376,3 +376,15 @@ data:
->   	write '1' to bit 0 of the MSR, this causes the host to re-scan its queue
->   	and check if there are more notifications pending. The MSR is available
->   	if KVM_FEATURE_ASYNC_PF_INT is present in CPUID.
-> +
-> +MSR_KVM_SEV_LIVE_MIGRATION:
-> +        0x4b564d08
-> +
-> +	Control SEV Live Migration features.
-> +
-> +data:
-> +        Bit 0 enables (1) or disables (0) host-side SEV Live Migration feature,
-> +        in other words, this is guest->host communication that it's properly
-> +        handling the shared pages list.
-> +
-> +        All other bits are reserved.
-> diff --git a/arch/x86/include/uapi/asm/kvm_para.h b/arch/x86/include/uapi/asm/kvm_para.h
-> index 950afebfba88..f6bfa138874f 100644
-> --- a/arch/x86/include/uapi/asm/kvm_para.h
-> +++ b/arch/x86/include/uapi/asm/kvm_para.h
-> @@ -33,6 +33,7 @@
->   #define KVM_FEATURE_PV_SCHED_YIELD	13
->   #define KVM_FEATURE_ASYNC_PF_INT	14
->   #define KVM_FEATURE_MSI_EXT_DEST_ID	15
-> +#define KVM_FEATURE_SEV_LIVE_MIGRATION	16
->   
->   #define KVM_HINTS_REALTIME      0
->   
-> @@ -54,6 +55,7 @@
->   #define MSR_KVM_POLL_CONTROL	0x4b564d05
->   #define MSR_KVM_ASYNC_PF_INT	0x4b564d06
->   #define MSR_KVM_ASYNC_PF_ACK	0x4b564d07
-> +#define MSR_KVM_SEV_LIVE_MIGRATION	0x4b564d08
->   
->   struct kvm_steal_time {
->   	__u64 steal;
-> @@ -136,4 +138,6 @@ struct kvm_vcpu_pv_apf_data {
->   #define KVM_PV_EOI_ENABLED KVM_PV_EOI_MASK
->   #define KVM_PV_EOI_DISABLED 0x0
->   
-> +#define KVM_SEV_LIVE_MIGRATION_ENABLED BIT_ULL(0)
-> +
->   #endif /* _UAPI_ASM_X86_KVM_PARA_H */
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 6bd2f8b830e4..4e2e69a692aa 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -812,7 +812,8 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
->   			     (1 << KVM_FEATURE_PV_SEND_IPI) |
->   			     (1 << KVM_FEATURE_POLL_CONTROL) |
->   			     (1 << KVM_FEATURE_PV_SCHED_YIELD) |
-> -			     (1 << KVM_FEATURE_ASYNC_PF_INT);
-> +			     (1 << KVM_FEATURE_ASYNC_PF_INT) |
-> +			     (1 << KVM_FEATURE_SEV_LIVE_MIGRATION);
->   
->   		if (sched_info_on())
->   			entry->eax |= (1 << KVM_FEATURE_STEAL_TIME);
-> 
-
+Can you please configure your MUA to sanely (re)flow text? The above
+random line-breaks are *so* painful to read.
