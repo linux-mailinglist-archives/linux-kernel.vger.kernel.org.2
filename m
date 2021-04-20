@@ -2,204 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D28236544F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB410365453
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbhDTIju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 04:39:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231158AbhDTIjl (ORCPT
+        id S231136AbhDTIk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 04:40:28 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:33373 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231144AbhDTIk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 04:39:41 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F2BC061763
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:39:09 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id n2so56996295ejy.7
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:39:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=QIuUvofPDIxQ2Xnl6piPnzkNIqnBx7iSqqUtBV1i2j0=;
-        b=Xnd6JnKSx5ncA48VE+FTvvtirGFWCchXMRV4SfEqivGWhjUvPdOZyS7rzr3hRLISKc
-         weIsohPM6Wg51S1mW+tn3cfIa2s8u8yB9vUogpu+6KQmBSUbWT+KvqgBI6cu2VXCdsiO
-         sotdRA0g5M5McqiCGqhvdJ7x/IDU+n1iO9xsY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=QIuUvofPDIxQ2Xnl6piPnzkNIqnBx7iSqqUtBV1i2j0=;
-        b=Mp7fyB5uBARlWcdPp5bm3PVcojCVvN1sm5dE4DINYOf0kAJ6iYs8JTFH+laBnboXZk
-         NUPXZtf9S20q0cXPP6buc1iouK/kbrHEqfaEaF4W0ujyBlQr9b+ipxzn8Oimkfbhc9N6
-         n+T/wz1cX7GbinmH4ocQYMadK3nHwFNS9CiCDfNZcuOt73NYQ6ELKH0Qki5Qn2kOWasn
-         22FHGyMiinAy+qLRLANq+hM8FsBAk/6N6iB+MmDOZcsHNz8Zw9Bih4ZMf4EB3vB5vYNt
-         7X6AWsoBw7vKnZqgv4eOov6uk6HPRbSL75a3vF27yNb5QPgEf7r5Z1fnMsUM92X9qxg7
-         RCuQ==
-X-Gm-Message-State: AOAM533loKDHeyugN/j4xI3ZwzCyjtwjrODy1dFiKyLI3cbU/9Nx8nr1
-        RJ1lR96+faplnyYHBjlEmG/i7g==
-X-Google-Smtp-Source: ABdhPJzKnx+yvsmmawjlL/WEDsrn4hsPU7R8EEIXmiKkO0qNGO+CRRMLxdwpSEpKHtNvyrET6RvyuA==
-X-Received: by 2002:a17:906:f949:: with SMTP id ld9mr26715530ejb.236.1618907948397;
-        Tue, 20 Apr 2021 01:39:08 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id d5sm10345824edt.49.2021.04.20.01.39.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 01:39:07 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 10:39:05 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Peter.Enderborg@sony.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, sumit.semwal@linaro.org,
-        adobriyan@gmail.com, akpm@linux-foundation.org,
-        songmuchun@bytedance.com, guro@fb.com, shakeelb@google.com,
-        mhocko@suse.com, neilb@suse.de, samitolvanen@google.com,
-        rppt@kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        willy@infradead.org
-Subject: Re: [PATCH v4] dma-buf: Add DmaBufTotal counter in meminfo
-Message-ID: <YH6TKQQ9kAEIrJ3y@phenom.ffwll.local>
-Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Peter.Enderborg@sony.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, sumit.semwal@linaro.org,
-        adobriyan@gmail.com, akpm@linux-foundation.org,
-        songmuchun@bytedance.com, guro@fb.com, shakeelb@google.com,
-        mhocko@suse.com, neilb@suse.de, samitolvanen@google.com,
-        rppt@kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        willy@infradead.org
-References: <20210417104032.5521-1-peter.enderborg@sony.com>
- <d983aef9-3dde-54cc-59a0-d9d42130b513@amd.com>
- <d822adcc-2a3c-1923-0d1d-4ecabd76a0e5@sony.com>
- <2420ea7a-4746-b11a-3c0e-2f962059d071@amd.com>
+        Tue, 20 Apr 2021 04:40:26 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-41-LdMxTme-MY-UX7jiXf2mLw-1; Tue, 20 Apr 2021 09:39:52 +0100
+X-MC-Unique: LdMxTme-MY-UX7jiXf2mLw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Tue, 20 Apr 2021 09:39:51 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Tue, 20 Apr 2021 09:39:51 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Geert Uytterhoeven' <geert@linux-m68k.org>,
+        Matthew Wilcox <willy@infradead.org>
+CC:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, netdev <netdev@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        "mcroce@linux.microsoft.com" <mcroce@linux.microsoft.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        "Mel Gorman" <mgorman@suse.de>
+Subject: RE: [PATCH 1/2] mm: Fix struct page layout on 32-bit systems
+Thread-Topic: [PATCH 1/2] mm: Fix struct page layout on 32-bit systems
+Thread-Index: AQHXNbhaf1yRrc3ugkWz9MvyD1ZvgKq9FGTg
+Date:   Tue, 20 Apr 2021 08:39:51 +0000
+Message-ID: <bb8805a33371468892a7271dbe321e1f@AcuMS.aculab.com>
+References: <20210416230724.2519198-1-willy@infradead.org>
+ <20210416230724.2519198-2-willy@infradead.org>
+ <20210417024522.GP2531743@casper.infradead.org>
+ <CAMuHMdXm1Zg=Wm-=tn5jUJwqVGUvCi5yDaW0PXWC2DEDYGcy5A@mail.gmail.com>
+In-Reply-To: <CAMuHMdXm1Zg=Wm-=tn5jUJwqVGUvCi5yDaW0PXWC2DEDYGcy5A@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2420ea7a-4746-b11a-3c0e-2f962059d071@amd.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 01:54:08PM +0200, Christian König wrote:
-> Am 17.04.21 um 13:20 schrieb Peter.Enderborg@sony.com:
-> > On 4/17/21 12:59 PM, Christian König wrote:
-> > > Am 17.04.21 um 12:40 schrieb Peter Enderborg:
-> > > > This adds a total used dma-buf memory. Details
-> > > > can be found in debugfs, however it is not for everyone
-> > > > and not always available. dma-buf are indirect allocated by
-> > > > userspace. So with this value we can monitor and detect
-> > > > userspace applications that have problems.
-> > > > 
-> > > > Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
-> > > Reviewed-by: Christian König <christian.koenig@amd.com>
-> > > 
-> > > How do you want to upstream this?
-> > I don't understand that question. The patch applies on Torvalds 5.12-rc7,
-> > but I guess 5.13 is what we work on right now.
-> 
-> Yeah, but how do you want to get it into Linus tree?
-> 
-> I can push it together with other DMA-buf patches through drm-misc-next and
-> then Dave will send it to Linus for inclusion in 5.13.
+RnJvbTogR2VlcnQgVXl0dGVyaG9ldmVuDQo+IFNlbnQ6IDIwIEFwcmlsIDIwMjEgMDg6NDANCj4g
+DQo+IEhpIFdpbGx5LA0KPiANCj4gT24gU2F0LCBBcHIgMTcsIDIwMjEgYXQgNDo0OSBBTSBNYXR0
+aGV3IFdpbGNveCA8d2lsbHlAaW5mcmFkZWFkLm9yZz4gd3JvdGU6DQo+ID4gUmVwbGFjZW1lbnQg
+cGF0Y2ggdG8gZml4IGNvbXBpbGVyIHdhcm5pbmcuDQo+ID4NCj4gPiAzMi1iaXQgYXJjaGl0ZWN0
+dXJlcyB3aGljaCBleHBlY3QgOC1ieXRlIGFsaWdubWVudCBmb3IgOC1ieXRlIGludGVnZXJzDQo+
+ID4gYW5kIG5lZWQgNjQtYml0IERNQSBhZGRyZXNzZXMgKGFyYywgYXJtLCBtaXBzLCBwcGMpIGhh
+ZCB0aGVpciBzdHJ1Y3QNCj4gPiBwYWdlIGluYWR2ZXJ0ZW50bHkgZXhwYW5kZWQgaW4gMjAxOS4g
+IFdoZW4gdGhlIGRtYV9hZGRyX3Qgd2FzIGFkZGVkLA0KPiA+IGl0IGZvcmNlZCB0aGUgYWxpZ25t
+ZW50IG9mIHRoZSB1bmlvbiB0byA4IGJ5dGVzLCB3aGljaCBpbnNlcnRlZCBhIDQgYnl0ZQ0KPiA+
+IGdhcCBiZXR3ZWVuICdmbGFncycgYW5kIHRoZSB1bmlvbi4NCj4gPg0KPiA+IEZpeCB0aGlzIGJ5
+IHN0b3JpbmcgdGhlIGRtYV9hZGRyX3QgaW4gb25lIG9yIHR3byBhZGphY2VudCB1bnNpZ25lZCBs
+b25ncy4NCj4gPiBUaGlzIHJlc3RvcmVzIHRoZSBhbGlnbm1lbnQgdG8gdGhhdCBvZiBhbiB1bnNp
+Z25lZCBsb25nLCBhbmQgYWxzbyBmaXhlcyBhDQo+ID4gcG90ZW50aWFsIHByb2JsZW0gd2hlcmUg
+KG9uIGEgYmlnIGVuZGlhbiBwbGF0Zm9ybSksIHRoZSBiaXQgdXNlZCB0byBkZW5vdGUNCj4gPiBQ
+YWdlVGFpbCBjb3VsZCBpbmFkdmVydGVudGx5IGdldCBzZXQsIGFuZCBhIHJhY2luZyBnZXRfdXNl
+cl9wYWdlc19mYXN0KCkNCj4gPiBjb3VsZCBkZXJlZmVyZW5jZSBhIGJvZ3VzIGNvbXBvdW5kX2hl
+YWQoKS4NCj4gPg0KPiA+IEZpeGVzOiBjMjVmZmY3MTcxYmUgKCJtbTogYWRkIGRtYV9hZGRyX3Qg
+dG8gc3RydWN0IHBhZ2UiKQ0KPiA+IFNpZ25lZC1vZmYtYnk6IE1hdHRoZXcgV2lsY294IChPcmFj
+bGUpIDx3aWxseUBpbmZyYWRlYWQub3JnPg0KPiANCj4gVGhhbmtzIGZvciB5b3VyIHBhdGNoIQ0K
+PiANCj4gPiAtLS0gYS9pbmNsdWRlL2xpbnV4L21tX3R5cGVzLmgNCj4gPiArKysgYi9pbmNsdWRl
+L2xpbnV4L21tX3R5cGVzLmgNCj4gPiBAQCAtOTcsMTAgKzk3LDEwIEBAIHN0cnVjdCBwYWdlIHsN
+Cj4gPiAgICAgICAgICAgICAgICAgfTsNCj4gPiAgICAgICAgICAgICAgICAgc3RydWN0IHsgICAg
+ICAgIC8qIHBhZ2VfcG9vbCB1c2VkIGJ5IG5ldHN0YWNrICovDQo+ID4gICAgICAgICAgICAgICAg
+ICAgICAgICAgLyoqDQo+ID4gLSAgICAgICAgICAgICAgICAgICAgICAgICogQGRtYV9hZGRyOiBt
+aWdodCByZXF1aXJlIGEgNjQtYml0IHZhbHVlIGV2ZW4gb24NCj4gPiArICAgICAgICAgICAgICAg
+ICAgICAgICAgKiBAZG1hX2FkZHI6IG1pZ2h0IHJlcXVpcmUgYSA2NC1iaXQgdmFsdWUgb24NCj4g
+PiAgICAgICAgICAgICAgICAgICAgICAgICAgKiAzMi1iaXQgYXJjaGl0ZWN0dXJlcy4NCj4gPiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgKi8NCj4gPiAtICAgICAgICAgICAgICAgICAgICAgICBk
+bWFfYWRkcl90IGRtYV9hZGRyOw0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIHVuc2lnbmVk
+IGxvbmcgZG1hX2FkZHJbMl07DQo+IA0KPiBTbyB3ZSBnZXQgdHdvIDY0LWJpdCB3b3JkcyBvbiA2
+NC1iaXQgcGxhdGZvcm1zLCB3aGlsZSBvbmx5IG9uZSBpcw0KPiBuZWVkZWQ/DQo+IA0KPiBXb3Vs
+ZA0KPiANCj4gICAgIHVuc2lnbmVkIGxvbmcgX2RtYV9hZGRyW3NpemVvZihkbWFfYWRkcl90KSAv
+IHNpemVvZih1bnNpZ25lZCBsb25nKV07DQo+IA0KPiB3b3JrPw0KPiANCj4gT3Igd2lsbCB0aGUg
+Y29tcGlsZXIgYmVjb21lIHRvbyBvdmVyemVhbG91cywgYW5kIHdhcm4gYWJvdXQgdGhlIHVzZQ0K
+PiBvZiAuLi5bMV0gYmVsb3csIGV2ZW4gd2hlbiB1bnJlYWNoYWJsZT8NCj4gSSB3b3VsZG4ndCBt
+aW5kIGFuICNpZmRlZiBpbnN0ZWFkIG9mIGFuIGlmICgpIGluIHRoZSBjb2RlIGJlbG93LCB0aG91
+Z2guDQoNCllvdSBjb3VsZCB1c2UgW0FSUkFZX1NJWkUoKS0xXSBpbnN0ZWFkIG9mIFsxXS4NCk9y
+LCBzaW5jZSBJSVJDIGl0IGlzIHRoZSBsYXN0IG1lbWJlciBvZiB0aGF0IHNwZWNpZmljIHN0cnVj
+dCwgZGVmaW5lIGFzOg0KCQl1bnNpZ25lZCBsb25nIGRtYV9hZGRyW107DQoNCi4uLg0KPiA+IC0g
+ICAgICAgcmV0dXJuIHBhZ2UtPmRtYV9hZGRyOw0KPiA+ICsgICAgICAgZG1hX2FkZHJfdCByZXQg
+PSBwYWdlLT5kbWFfYWRkclswXTsNCj4gPiArICAgICAgIGlmIChzaXplb2YoZG1hX2FkZHJfdCkg
+PiBzaXplb2YodW5zaWduZWQgbG9uZykpDQo+ID4gKyAgICAgICAgICAgICAgIHJldCB8PSAoZG1h
+X2FkZHJfdClwYWdlLT5kbWFfYWRkclsxXSA8PCAxNiA8PCAxNjsNCj4gDQo+IFdlIGRvbid0IHNl
+ZW0gdG8gaGF2ZSBhIGhhbmR5IG1hY3JvIGZvciBhIDMyLWJpdCBsZWZ0IHNoaWZ0IHlldC4uLg0K
+PiANCj4gQnV0IHlvdSBjYW4gYWxzbyBhdm9pZCB0aGUgd2FybmluZyB1c2luZw0KPiANCj4gICAg
+IHJldCB8PSAodTY0KXBhZ2UtPmRtYV9hZGRyWzFdIDw8IDMyOw0KDQpPcjoNCglyZXQgfD0gcGFn
+ZS0+ZG1hX2FkZHJbMV0gKyAwdWxsIDw8IDMyOw0KDQpXaGljaCByZWxpZXMgaW4gaW50ZWdlciBw
+cm9tb3Rpb24gcmF0aGVyIHRoYW4gYSBjYXN0Lg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBB
+ZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMs
+IE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-Small correction, we've already frozen for the merge window so this will
-land in 5.14.
--Daniel
-
-> 
-> But could be that you are pushing multiple changes towards Linus through
-> some other branch. In this case I'm fine if you pick that way instead if you
-> want to keep your patches together for some reason.
-> 
-> Christian.
-> 
-> > 
-> > > > ---
-> > > >    drivers/dma-buf/dma-buf.c | 13 +++++++++++++
-> > > >    fs/proc/meminfo.c         |  5 ++++-
-> > > >    include/linux/dma-buf.h   |  1 +
-> > > >    3 files changed, 18 insertions(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-> > > > index f264b70c383e..197e5c45dd26 100644
-> > > > --- a/drivers/dma-buf/dma-buf.c
-> > > > +++ b/drivers/dma-buf/dma-buf.c
-> > > > @@ -37,6 +37,7 @@ struct dma_buf_list {
-> > > >    };
-> > > >      static struct dma_buf_list db_list;
-> > > > +static atomic_long_t dma_buf_global_allocated;
-> > > >      static char *dmabuffs_dname(struct dentry *dentry, char *buffer, int buflen)
-> > > >    {
-> > > > @@ -79,6 +80,7 @@ static void dma_buf_release(struct dentry *dentry)
-> > > >        if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
-> > > >            dma_resv_fini(dmabuf->resv);
-> > > >    +    atomic_long_sub(dmabuf->size, &dma_buf_global_allocated);
-> > > >        module_put(dmabuf->owner);
-> > > >        kfree(dmabuf->name);
-> > > >        kfree(dmabuf);
-> > > > @@ -586,6 +588,7 @@ struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info)
-> > > >        mutex_lock(&db_list.lock);
-> > > >        list_add(&dmabuf->list_node, &db_list.head);
-> > > >        mutex_unlock(&db_list.lock);
-> > > > +    atomic_long_add(dmabuf->size, &dma_buf_global_allocated);
-> > > >          return dmabuf;
-> > > >    @@ -1346,6 +1349,16 @@ void dma_buf_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map)
-> > > >    }
-> > > >    EXPORT_SYMBOL_GPL(dma_buf_vunmap);
-> > > >    +/**
-> > > > + * dma_buf_allocated_pages - Return the used nr of pages
-> > > > + * allocated for dma-buf
-> > > > + */
-> > > > +long dma_buf_allocated_pages(void)
-> > > > +{
-> > > > +    return atomic_long_read(&dma_buf_global_allocated) >> PAGE_SHIFT;
-> > > > +}
-> > > > +EXPORT_SYMBOL_GPL(dma_buf_allocated_pages);
-> > > > +
-> > > >    #ifdef CONFIG_DEBUG_FS
-> > > >    static int dma_buf_debug_show(struct seq_file *s, void *unused)
-> > > >    {
-> > > > diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-> > > > index 6fa761c9cc78..ccc7c40c8db7 100644
-> > > > --- a/fs/proc/meminfo.c
-> > > > +++ b/fs/proc/meminfo.c
-> > > > @@ -16,6 +16,7 @@
-> > > >    #ifdef CONFIG_CMA
-> > > >    #include <linux/cma.h>
-> > > >    #endif
-> > > > +#include <linux/dma-buf.h>
-> > > >    #include <asm/page.h>
-> > > >    #include "internal.h"
-> > > >    @@ -145,7 +146,9 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
-> > > >        show_val_kb(m, "CmaFree:        ",
-> > > >                global_zone_page_state(NR_FREE_CMA_PAGES));
-> > > >    #endif
-> > > > -
-> > > > +#ifdef CONFIG_DMA_SHARED_BUFFER
-> > > > +    show_val_kb(m, "DmaBufTotal:    ", dma_buf_allocated_pages());
-> > > > +#endif
-> > > >        hugetlb_report_meminfo(m);
-> > > >          arch_report_meminfo(m);
-> > > > diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
-> > > > index efdc56b9d95f..5b05816bd2cd 100644
-> > > > --- a/include/linux/dma-buf.h
-> > > > +++ b/include/linux/dma-buf.h
-> > > > @@ -507,4 +507,5 @@ int dma_buf_mmap(struct dma_buf *, struct vm_area_struct *,
-> > > >             unsigned long);
-> > > >    int dma_buf_vmap(struct dma_buf *dmabuf, struct dma_buf_map *map);
-> > > >    void dma_buf_vunmap(struct dma_buf *dmabuf, struct dma_buf_map *map);
-> > > > +long dma_buf_allocated_pages(void);
-> > > >    #endif /* __DMA_BUF_H__ */
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
