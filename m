@@ -2,70 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F22365C35
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD42365C38
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233003AbhDTP3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 11:29:09 -0400
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:41285 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232994AbhDTP3I (ORCPT
+        id S233035AbhDTP3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 11:29:25 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:57767 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S233033AbhDTP3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 11:29:08 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d56 with ME
-        id v3Ua2400k21Fzsu033UboS; Tue, 20 Apr 2021 17:28:36 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 20 Apr 2021 17:28:36 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     yishaih@nvidia.com, dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] RDMA/mlx4: remove an unused variable
-Date:   Tue, 20 Apr 2021 17:28:33 +0200
-Message-Id: <413dc6e2ea9d85bda1131bbd6a730b7620839eab.1618932283.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
+        Tue, 20 Apr 2021 11:29:20 -0400
+Received: (qmail 174910 invoked by uid 1000); 20 Apr 2021 11:28:48 -0400
+Date:   Tue, 20 Apr 2021 11:28:48 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Chris Chiu <chris.chiu@canonical.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, m.v.b@runbox.com,
+        hadess@hadess.net, linux-usb@vger.kernel.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] USB: Don't set USB_PORT_FEAT_SUSPEND on WD19's
+ Realtek Hub
+Message-ID: <20210420152848.GC170810@rowland.harvard.edu>
+References: <20210415114856.4555-1-chris.chiu@canonical.com>
+ <YHgyP8tGNM1Wi5dJ@kroah.com>
+ <CABTNMG0MuaSkWZhiTwtWjPTg5WZ-Vdt9Ju9-RzBke9JjCBJo8Q@mail.gmail.com>
+ <20210415184637.GA15445@rowland.harvard.edu>
+ <CABTNMG3aweq43eQcONif2_M4JF3ARmBgOKE18v7vzHvaJnjrtA@mail.gmail.com>
+ <20210416153932.GD42403@rowland.harvard.edu>
+ <CABTNMG25qPvVu7+EsvEgaUsU_v6jKkSKCaU5VR8CiX3oLQ4VFg@mail.gmail.com>
+ <20210419141921.GA133494@rowland.harvard.edu>
+ <CABTNMG0hnfXH8yqd6Zbk3EiZtg4JUpJomn180NHUyAdgZjL7pA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABTNMG0hnfXH8yqd6Zbk3EiZtg4JUpJomn180NHUyAdgZjL7pA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'in6' is unused. It is just declared and filled-in.
-It can be removed.
+On Tue, Apr 20, 2021 at 03:14:56PM +0800, Chris Chiu wrote:
+> On Mon, Apr 19, 2021 at 10:19 PM Alan Stern <stern@rowland.harvard.edu> wrote:
+> >
+> > On Mon, Apr 19, 2021 at 01:11:38AM -0400, Chris Chiu wrote:
+> > > Sorry that I didn't make myself clear. I found that if I applied RESET_RESUME
+> > > quirk on the problematic hub, the Set-Port-Feature(suspend) timeout error
+> > > disappeared. SInce the timeout is not happening for each suspend by default,
+> > > I suspect maybe reset-resume take everything back to clean state for the hub
+> > > and the Set-Port-Feature(suspend) can be taken care of w/o problems.
+> >
+> > Okay, that's a good solution for system suspend.
+> >
+> > > I didn't like RESET_RESUME because runtime PM would not work on the quirked
+> > > device.
+> >
+> > A more interesting question is whether it will work for devices plugged
+> > into the hub.  Even though the hub won't be runtime suspended, the
+> > things attached to it might be.
+> >
+> > >  But if the Set-Port-Feature(suspend) can't be handled and
+> > > skipped, I can't
+> > > expect the runtime PM to work for all devices connected to the hub either.
+> > > Is that right? If what I proposed in the patch can not get better
+> > > result than existing
+> > > quirk, I think using the RESET_RESUME would be a better option. Any suggestions?
+> >
+> > Try the RESET_RESUME quirk and see how well it works with runtime
+> > suspend.
+> >
+> > Alan Stern
+> 
+> [  453.064346] usb 3-4: finish reset-resume
+> [  453.192387] usb 3-4: reset high-speed USB device number 2 using xhci_hcd
+> [  453.339916] usb 3-4: USB quirks for this device: 2
 
-This is a left over from commit 5ea8bbfc4929
-("mlx4: Implement IP based gids support for RoCE/SRIOV")
+Here 3-4 is problematic RealTek hub, right?
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/infiniband/hw/mlx4/qp.c | 3 ---
- 1 file changed, 3 deletions(-)
+> Seems that even w/ the RESET_RESUME enabled, the connected device still
+> can runtime suspend/resume. That's acceptable to me. I'll send the patch
+> with the reset-resume quirk later.
+> 
+> [  626.081068] usb 3-4.3.1: usb auto-suspend, wakeup 0
+> [  632.552071] usb 3-4.3.1: usb auto-resume
+> [  632.617467] usb 3-4.3.1: Waited 0ms for CONNECT
+> [  632.617471] usb 3-4.3.1: finish resume
 
-diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
-index 651785bd57f2..92ddbcc00eb2 100644
---- a/drivers/infiniband/hw/mlx4/qp.c
-+++ b/drivers/infiniband/hw/mlx4/qp.c
-@@ -3135,7 +3135,6 @@ static int build_mlx_header(struct mlx4_ib_qp *qp, const struct ib_ud_wr *wr,
- 	}
- 
- 	if (is_eth) {
--		struct in6_addr in6;
- 		u16 ether_type;
- 		u16 pcp = (be32_to_cpu(ah->av.ib.sl_tclass_flowlabel) >> 29) << 13;
- 
-@@ -3148,8 +3147,6 @@ static int build_mlx_header(struct mlx4_ib_qp *qp, const struct ib_ud_wr *wr,
- 		memcpy(sqp->ud_header.eth.dmac_h, ah->av.eth.mac, 6);
- 		memcpy(&ctrl->srcrb_flags16[0], ah->av.eth.mac, 2);
- 		memcpy(&ctrl->imm, ah->av.eth.mac + 2, 4);
--		memcpy(&in6, sgid.raw, sizeof(in6));
--
- 
- 		if (!memcmp(sqp->ud_header.eth.smac_h, sqp->ud_header.eth.dmac_h, 6))
- 			mlx->flags |= cpu_to_be32(MLX4_WQE_CTRL_FORCE_LOOPBACK);
--- 
-2.27.0
+Then 3-4.3 is another hub plugged into the Realtek hub, and 3-4.3.1 (the 
+device being suspended and resumed) is plugged into that other hub.
 
+I'm concerned about devices that are plugged directly into the Realtek 
+hub.  For example, did you try allowing the 3-4.3 hub in the experiment 
+above to suspend and resume?
+
+Alan Stern
