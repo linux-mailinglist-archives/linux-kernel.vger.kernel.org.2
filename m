@@ -2,116 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAAF936511C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 05:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A472936511E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 05:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230024AbhDTDtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 23:49:02 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:51894 "EHLO 1wt.eu"
+        id S230217AbhDTDtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 23:49:13 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:33105 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229579AbhDTDtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 23:49:00 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 13K3lniw030310;
-        Tue, 20 Apr 2021 05:47:49 +0200
-Date:   Tue, 20 Apr 2021 05:47:49 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Wedson Almeida Filho <wedsonaf@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-Message-ID: <20210420034749.GA28662@1wt.eu>
-References: <20210414184604.23473-1-ojeda@kernel.org>
- <YHlz54rd1YQHsOA/@hirez.programming.kicks-ass.net>
- <YHmMJWmzz2vZ3qQH@google.com>
- <YHmc2+bKQJ/XAATF@hirez.programming.kicks-ass.net>
- <YHmuX1NA5RF7C7XS@google.com>
- <20210416161444.GA10484@1wt.eu>
- <CANiq72nbkJFPmiJXX=L8PmkouKgKG1k-CxhZYpL1hcncYwa8JA@mail.gmail.com>
- <20210416173717.GA10846@1wt.eu>
- <CAKwvOd=RadTs7Skv6KUBo4qZQtdi0kugTzxvZM+5X_2gstjyaQ@mail.gmail.com>
+        id S230037AbhDTDtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 23:49:09 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FPV5w0KQFz9vDw;
+        Tue, 20 Apr 2021 13:48:36 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618890516;
+        bh=c13wjuyn1jdn7WOn1rpm2sz80sbvyU3wO/avQ8o6z64=;
+        h=Date:From:To:Cc:Subject:From;
+        b=OmhkWKizozd3g57+AlGpefnn4bPDWQSJfaIM/m3AuhGYFz/w/a6HJXug3RAQe72Jv
+         tbW82jntJdPWYXOkAFbYWZUTds/9WtmYsP9DBkAjZqcrsD2Kq7f4gzhOCKROJSjnAj
+         ZXIAwuiSsw6oIDq0B98j0BrGzTqBJCPoBXku9iBasjQfGIPxKSUx8Qcf72UUYL7cNa
+         vxfOEX9U+P1oUXmLu7DG7oErwtA5B70CchInyGRx6CzsAx5O31yKwiin42Xgog2ZMz
+         jir4HBh6hPrJv09AR55Akp1O7XjQiBvTeI3Wp/c2gFxGwKaAzgRZNT5XHNVCSvlISv
+         d7uSU2eklWj2Q==
+Date:   Tue, 20 Apr 2021 13:48:34 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Patrice Chotard <patrice.chotard@foss.st.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the spi tree
+Message-ID: <20210420134834.57467d47@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOd=RadTs7Skv6KUBo4qZQtdi0kugTzxvZM+5X_2gstjyaQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_//=fx.T/036XDD7cF/3NPOQP";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nick,
+--Sig_//=fx.T/036XDD7cF/3NPOQP
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 19, 2021 at 05:24:33PM -0700, Nick Desaulniers wrote:
-> I don't think the introduction of Rust made Firefox _more_ insecure.
-> https://wiki.mozilla.org/Oxidation#Within_Firefox
+Hi all,
 
-Browsers are human interfaces and do not fundamentally require low
-level access to memory/hardware/whatever. They can be written in
-about any language, only the resource usage and performance will
-make a difference. As such, some were even written in Java or JS
-for example.
+After merging the spi tree, today's linux-next build (x86_64 allmodconfig)
+produced this warning:
 
-Operating systems, and particularly drivers *do* require low-level
-accesses, and stuff that can hardly be abstracted or understood by
-a compiler. You may have to perform two 16-bit reads/writes on a
-32-bit MMIO address to perform an operation and the compiler does
-not have to know it, just to obey.
+In file included from include/linux/printk.h:409,
+                 from include/linux/kernel.h:16,
+                 from include/linux/clk.h:13,
+                 from drivers/spi/spi-stm32-qspi.c:7:
+drivers/spi/spi-stm32-qspi.c: In function 'stm32_qspi_dirmap_read':
+drivers/spi/spi-stm32-qspi.c:481:21: warning: format '%x' expects argument =
+of type 'unsigned int', but argument 5 has type 'size_t' {aka 'long unsigne=
+d int'} [-Wformat=3D]
+  481 |  dev_dbg(qspi->dev, "%s len =3D 0x%x offs =3D 0x%llx buf =3D 0x%p\n=
+", __func__, len, offs, buf);
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/dynamic_debug.h:129:15: note: in definition of macro '__dynam=
+ic_func_call'
+  129 |   func(&id, ##__VA_ARGS__);  \
+      |               ^~~~~~~~~~~
+include/linux/dynamic_debug.h:161:2: note: in expansion of macro '_dynamic_=
+func_call'
+  161 |  _dynamic_func_call(fmt,__dynamic_dev_dbg,   \
+      |  ^~~~~~~~~~~~~~~~~~
+include/linux/dev_printk.h:123:2: note: in expansion of macro 'dynamic_dev_=
+dbg'
+  123 |  dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
+      |  ^~~~~~~~~~~~~~~
+include/linux/dev_printk.h:123:23: note: in expansion of macro 'dev_fmt'
+  123 |  dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
+      |                       ^~~~~~~
+drivers/spi/spi-stm32-qspi.c:481:2: note: in expansion of macro 'dev_dbg'
+  481 |  dev_dbg(qspi->dev, "%s len =3D 0x%x offs =3D 0x%llx buf =3D 0x%p\n=
+", __func__, len, offs, buf);
+      |  ^~~~~~~
+drivers/spi/spi-stm32-qspi.c:481:34: note: format string is defined here
+  481 |  dev_dbg(qspi->dev, "%s len =3D 0x%x offs =3D 0x%llx buf =3D 0x%p\n=
+", __func__, len, offs, buf);
+      |                                 ~^
+      |                                  |
+      |                                  unsigned int
+      |                                 %lx
 
-> Really, a key point is that a lot of common mistakes in C are compile
-> time errors in Rust. I know no "true" kernel dev would make such
-> mistakes in C,
+Introduced by commit
 
-Everyone makes mistakes, the level of attention varies over time and
-the focus often changes when dealing with build errors. How many time
-some of us facing a bug remembered having changed the code very late
-after a build error, and being less careful from this point when the
-goal changed from "let's do it right" to "let's get this to build" ?
+  18674dee3cd6 ("spi: stm32-qspi: Add dirmap support")
 
-> but is there nothing we can do to help our peers
-> writing drivers?  The point is to transfer cost from runtime to
-> compile time to avoid costs at runtime; like all of the memory safety
-> bugs which are costing our industry.
+--=20
+Cheers,
+Stephen Rothwell
 
-And do we have stats on the number of logical bugs, some of which are
-caused by developers trying to work around compilers' stubbornness ?
-For me, personally speaking, they have *increased* over time, usually
-trying to avoid some annoying modern gcc warnings, resulting in integer
-casts being placed close to string formats, or returns being placed in
-switch/case to avoid the fall-through warning, etc. Thus I'm worried that
-a non-negligible part of the 70% of bugs caused by memory safety issues
-could be replaced with logic bugs to get to the point where the rust
-compiler finally accepts to compile the code. It makes me think about
-researchers trying to reduce the causes of certain deaths and claiming
-to "save lives" while in the end the people they "save" will simply die
-from something else.
+--Sig_//=fx.T/036XDD7cF/3NPOQP
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-And I'm not particularly trying to blindly defend C here. I'm complaining
-every single day about some of its shortcomings like the vast amount of
-UB, stupid type promotion, counter-intuitive operators precedence when
-combining bit-ops with arithmetic, limited size of enums, lack of rotate
-operator, strict aliasing, or the recourse to asm() statements every 10
-lines to do stuff that can hardly be expressed in a way understandable
-by a compiler. I'm just seeing that a lot of the griefs I'm having
-against C come from the compiler trying to be too smart or too stubborn,
-so giving even more of the handle to a compiler doesn't appeal me at all.
+-----BEGIN PGP SIGNATURE-----
 
-In addition, we all know how painful it is to work around compiler bugs
-by writing complex code that carefully avoids certain constructs. I'm
-wondering if we'll still have that luxury with a stricter compiler, or
-if the only response will have to be between "let's disable this driver
-that does not compile" or "please force distros to upgrade their
-compilers".
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB+TxIACgkQAVBC80lX
+0Gz+7Af/RgSlzBNib302c4CXa9omBv5QRFGqaIWmsYcqYHhyVblU7qvm8sUgXakV
+0Xj+BZTQWbipJwE2NFNS/XON8rcSQcM5fKIWxh+mLb4ezKDFQlc0iuorNRza1PgX
+lmOZu0GDuk2UuCaUw9TJWAeOSdTJpuxz/53meoemhLElez3/9S5PPOzwoasfzpwN
+K+wj/f6hFNtQuw11zWgc4sPSxsHgGhv/CPJJX93NbalYMaFEyS2dmPfAisMsIQPe
+aBoMWKZAsPBmCPkcD/9AZWQ72oOjf8HrJEuKPzRgCx/mXGYcjYcCf2CJS28nLh3U
+jENssrx6ObIzFYJDs486OnHlKAUIHA==
+=uvLD
+-----END PGP SIGNATURE-----
 
-But we'll see :-/
-
-Regards,
-Willy
+--Sig_//=fx.T/036XDD7cF/3NPOQP--
