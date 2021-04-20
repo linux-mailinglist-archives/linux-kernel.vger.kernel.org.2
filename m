@@ -2,102 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B05236629D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 01:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DEAF3662A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 01:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234422AbhDTXya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 19:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35052 "EHLO
+        id S234458AbhDTXyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 19:54:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233992AbhDTXy3 (ORCPT
+        with ESMTP id S233992AbhDTXyj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 19:54:29 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61A9C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 16:53:57 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id u17so60865984ejk.2
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 16:53:57 -0700 (PDT)
+        Tue, 20 Apr 2021 19:54:39 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE30C06174A;
+        Tue, 20 Apr 2021 16:54:07 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id u80so7148049oia.0;
+        Tue, 20 Apr 2021 16:54:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F1HVqw2u+ZEVP3LLHwLN3iHI1fOIOC87ihGMFz6AjvQ=;
-        b=b1J20iHm9woqr0rW5wfn/QNVzNKS/tbNwU/8AHh1VWxJYJjPKn7fyCzGkkLajwpoEQ
-         Q68quh7pNoBXlSWxJTq+kC4PxdR7SyMdBk2cXUfROUdNWSfNRV68IY9Xu3a9515AWa0A
-         OfIxQooTfPELmkSEShUytc9HSqM+7JVpKS0J7J9IPJBhKTd0kZ3SM4PaIExchFWkLJMq
-         SDdMqMl0GWDuNbIVmPpy6HB9RC9Oseo099u46R3ddDpo0BvxQSmuqiwPa07LiXcq6ifF
-         X2G5yxAOHhv6+SNHF/Xc77dIPxGSBrri5xNklqftApMVughkKRtDZJJHTsD4bfc9fnNw
-         GQQA==
+         :cc:content-transfer-encoding;
+        bh=6XeojVc4nyUM/MQvlUlo6lItw91qVr2k9CimuPL8jlQ=;
+        b=Ct4dRSFyUsi54UAOvvZIvEg4fPzL45AZTUMb/sdsjtCErpl/mHQMGI5QiTZU/GyRrq
+         abRyZtIlu9qx60U1Ft1bOqICI7TkI492gsrG30ZR4nVWcIUiNPIWc8gLfLvXSxh0+s+7
+         CUZV1m+DyeJrjQn478NNPrfYKOIFY9K9/aDJzrMYYswwi2jErFXkq+NRnbJAOZq0tgiq
+         s+iP5nxz/CvYSqrTYOsmj8mbuB4LBBYWAVWBM0T4dG21A/r0ljBAg8jbjQbBBJe7yX51
+         D72F9W9HUdC21PN7s0uMs/Yuvy19IiCM31gTWKHOywbcM27eU5ZBXgPBbFvS0AWdOxRj
+         CXVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F1HVqw2u+ZEVP3LLHwLN3iHI1fOIOC87ihGMFz6AjvQ=;
-        b=OqL+ua8KrNSYVsAF+obDjOputYZw4WOIr02yl7burmPCOEa7DsGq5tEtIMpNsFUvjC
-         qdGEoAGHgTOhISOUa9oY3qffx023LoUlIYEKHJvk99A3Box3CNiYV++9k4Uf4Cfa2Ynh
-         TFTvVrxbYBgTBlgp4yPzHv4PSw4K6IHLy+8Q/DUPYhviW1np3V5ziA0nbhq2Iq9i+KNX
-         8LR6mp8skA9Negag4Kjra4yKJBbecnvnJZRcXFMtpVkv9nWuMFVwGAImNIj20lCDbHnx
-         zF3GZy9PrtlF6g0QEu4tzOHyx0CcmxKHVYCtyH2hL8MEekEVzhGcLrKs+FjCiW71cF6p
-         Nmuw==
-X-Gm-Message-State: AOAM530LOEtrLYQsThW1mbmDbPQE3jwx6/eHmiOZP+6GFDygIKqOUXzP
-        vj7YJn+aIVTqBtY68dfMkOXvcjJGqNGf4iw2N+UUvQ==
-X-Google-Smtp-Source: ABdhPJx7DVe4eGYTkfyHx5Ac3TAE1uFjzufLq7qJsb3b/XxdLVyHpG3GbU43jLpdqE9RHaPhLD54mGNKJr/i1JUafb8=
-X-Received: by 2002:a17:906:18e1:: with SMTP id e1mr13565044ejf.341.1618962836302;
- Tue, 20 Apr 2021 16:53:56 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6XeojVc4nyUM/MQvlUlo6lItw91qVr2k9CimuPL8jlQ=;
+        b=YQCp3utblKoholj2OuZCGJ6X9iDV+s4nq7NMKglKuv1N51eBbnaTK5d4y9/2aL7b+7
+         pmT6JEbmMuv3XspsFIPpsSpFsVRIMqkj9pNDU3w8Fu310q2GlGzU/tZwR/Dx4yfxjYHK
+         iT6b5OdlusaAWD3SIZtIFRC7SnSatUSEO85sZTKTn6/Dx7Pga5O4jgMJ9NbjnkLiDwHv
+         v8HFeyv4GPBI8RRhzZySLmiCtuxsBJHaGOFsbsoRfJnd+fQdZDTxX18k02fRIsp+ZSQk
+         7FWDj1wZlsGnye4D5j5oTCOLrMpAoNXJgFT6FxNco33uFjMpOILkMugt8IxtuUhJ2KqN
+         1kxg==
+X-Gm-Message-State: AOAM530sdDjiwkTBmv6oucW1N/dkxKX0ZLFVp/nimrMp00vRVTwWsT9j
+        9a36uZog991BUdRl8lO/3oTaHlG7L1n13QOmXDE=
+X-Google-Smtp-Source: ABdhPJxk1HdpfsnIkAez4V3KMV5UFoxztuT1Gwv0FNgu63EJQOuxbUXCCc2R2DYBsi9R8QOsf/YqzPKQuzS/Bn6QgOM=
+X-Received: by 2002:aca:c08a:: with SMTP id q132mr4689757oif.5.1618962846514;
+ Tue, 20 Apr 2021 16:54:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <8723950c-e07c-9a03-503a-ab232701d1e9@linux.intel.com>
- <c015093fdbc8e6a5aa9fc43f78fec8d9c38295c7.1616801167.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <77a13ae9-0220-030e-7ae4-fd26edd7b110@intel.com> <2a3f6b3d-cd80-0734-ce83-c067666c8326@linux.intel.com>
- <14332abf-c78c-3bc2-9a7c-ceacfa7a0661@intel.com> <596175e3-9d1e-6c9c-fadb-ad02c396e3ad@linux.intel.com>
-In-Reply-To: <596175e3-9d1e-6c9c-fadb-ad02c396e3ad@linux.intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 20 Apr 2021 16:53:48 -0700
-Message-ID: <CAPcyv4hmA=V+wQA7JsvBNYnm+dHkRZtJSSxSZM8b2Xwnjq2kWQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] x86/tdx: Add __tdcall() and __tdvmcall() helper functions
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210416143725.2769053-1-lee.jones@linaro.org> <20210416143725.2769053-27-lee.jones@linaro.org>
+In-Reply-To: <20210416143725.2769053-27-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 20 Apr 2021 19:53:55 -0400
+Message-ID: <CADnq5_N71QW79-MnbeUGrMSrSM7UnESz_4vKteOr_3z1obPM3w@mail.gmail.com>
+Subject: Re: [PATCH 26/40] drm/amd/amdgpu/amdgpu_device: Remove unused
+ variable 'r'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media <linux-media@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 4:12 PM Kuppuswamy, Sathyanarayanan
-<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
-[..]
-> >>> Also, do you *REALLY* need to do this from assembly?  Can't it be done
-> >>> in the C wrapper?
-> >> Its common for all use cases of TDVMCALL (vendor specific, in/out, etc).
-> >> so added
-> >> it here.
-> >
+Applied.  Thanks!
 
-Can I ask a favor?
+Alex
 
-Please put a line break between quoted lines and your reply.
-
-> > That's not a good reason.  You could just as easily have a C wrapper
-> > which all uses of TDVMCALL go through.
-
-...because this runs together when reading otherwise.
-
-> Any reason for not preferring it in assembly code?
-> Also, using wrapper will add more complication for in/out instruction
-> substitution use case. please check the use case in following patch.
-> https://github.com/intel/tdx/commit/1b73f60aa5bb93554f3b15cd786a9b10b53c1543
-
-This commit still has open coded assembly for the TDVMCALL? I thought
-we talked about it being unified with the common definition, or has
-this patch not been reworked with that feedback yet? I expect there is
-no performance reason why in/out need to get their own custom coded
-TDVMCALL implementation. It should also be the case the failure should
-behave the same as native in/out failure i.e. all ones on read
-failure, and silent drops on write failure.
+On Fri, Apr 16, 2021 at 10:38 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c: In function =E2=80=98amdgpu_=
+device_suspend=E2=80=99:
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c:3733:6: warning: variable =E2=
+=80=98r=E2=80=99 set but not used [-Wunused-but-set-variable]
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm=
+/amd/amdgpu/amdgpu_device.c
+> index b4ad1c055c702..eef54b265ffdd 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> @@ -3730,7 +3730,6 @@ void amdgpu_device_fini(struct amdgpu_device *adev)
+>  int amdgpu_device_suspend(struct drm_device *dev, bool fbcon)
+>  {
+>         struct amdgpu_device *adev =3D drm_to_adev(dev);
+> -       int r;
+>
+>         if (dev->switch_power_state =3D=3D DRM_SWITCH_POWER_OFF)
+>                 return 0;
+> @@ -3745,7 +3744,7 @@ int amdgpu_device_suspend(struct drm_device *dev, b=
+ool fbcon)
+>
+>         amdgpu_ras_suspend(adev);
+>
+> -       r =3D amdgpu_device_ip_suspend_phase1(adev);
+> +       amdgpu_device_ip_suspend_phase1(adev);
+>
+>         if (!adev->in_s0ix)
+>                 amdgpu_amdkfd_suspend(adev, adev->in_runpm);
+> @@ -3755,7 +3754,7 @@ int amdgpu_device_suspend(struct drm_device *dev, b=
+ool fbcon)
+>
+>         amdgpu_fence_driver_suspend(adev);
+>
+> -       r =3D amdgpu_device_ip_suspend_phase2(adev);
+> +       amdgpu_device_ip_suspend_phase2(adev);
+>         /* evict remaining vram memory
+>          * This second call to evict vram is to evict the gart page table
+>          * using the CPU.
+> --
+> 2.27.0
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
