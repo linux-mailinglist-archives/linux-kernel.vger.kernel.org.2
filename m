@@ -2,82 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF09A3659C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:19:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CF53659D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232401AbhDTNTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:19:33 -0400
-Received: from mga02.intel.com ([134.134.136.20]:44700 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232303AbhDTNTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:19:32 -0400
-IronPort-SDR: 1MGHfaHRFLlOFpZYOYsoR+3V4kqGtRwkDARfxGZ0Jq9uKX7PPEUcAjhGVo+LVUsIHRsuw4KysL
- +8sSAmwUOpTw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="182635238"
-X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
-   d="scan'208";a="182635238"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 06:19:00 -0700
-IronPort-SDR: 7ohHJHBTs4yR61BAujVsrQwlVfsHlvcPtg7fufCWG7lok+h7eZCxoSzIY0T2YsAFCMOnvJC12r
- czHC3A8dgq4A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
-   d="scan'208";a="445508759"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga004.fm.intel.com with ESMTP; 20 Apr 2021 06:18:59 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 0A6141A1; Tue, 20 Apr 2021 16:19:02 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] spi: Don't overwrite num_chipselect with error code
-Date:   Tue, 20 Apr 2021 16:19:01 +0300
-Message-Id: <20210420131901.80233-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S232091AbhDTNUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:20:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60645 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230408AbhDTNUg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 09:20:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618924804;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QYX7/AuHi6hgPHf6tRYqK2+HrNaM+fnSnNKD7KzrRzs=;
+        b=PsIxidk2VL1Haws0VepSOhtQixvPqgXe2QYnKFTXvZAH+iWJCoIcPLgLTP/LaCj1UkoPIk
+        PLiOCG6hG5mW6DWKWr5VeiNK2ajRr6/Z6OgSSl/qpvMlPC9SpBNqAsLpRwXvb8H5RsICJD
+        HvcrE5nlRkLGt8LsN0TieLuc+ZZXCkA=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-40-71yXg2dgMxG_2hIoFl2FKw-1; Tue, 20 Apr 2021 09:20:00 -0400
+X-MC-Unique: 71yXg2dgMxG_2hIoFl2FKw-1
+Received: by mail-wr1-f70.google.com with SMTP id j16-20020adfd2100000b02901022328749eso10846218wrh.4
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 06:20:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=QYX7/AuHi6hgPHf6tRYqK2+HrNaM+fnSnNKD7KzrRzs=;
+        b=FIVe4z9RzStlEC/1f3WWaLLqpWSKakJxfX9u4g9SJO36QXxGfyL7V2aIHkbe/uFsrs
+         it/Y5SMI8pRj9l1bgC9FwPAALHSIQHMZTjAm61EkhI11fxpF9jvIj49buTIWIbHni2B4
+         rlAscUXVnyaFMzuSL9RgXqlytOSTH9COnaxcqR6msniEAGnIiJYsTbHxiCa217Bgzq0l
+         Ybn+Fw2J0H16H4DrR/CUhYo6o+h0kjrRGVGl4c/gQQ2Xu/0eBFCgy7Z23aUYwZPfSvqo
+         IwPkz5/OkpCQEmX3A1J+lv15GQjMaUEYRjpeMsmy3GVTeTbetdj7TSnEMV4dDMnzwxbD
+         Dtjg==
+X-Gm-Message-State: AOAM531ThMYYO9Q1DrBt0DHzquFzG0zpprMe0a6aSXR2WlPzwGV/ZamY
+        y9oqVhz2Ep2oCcWXdJ3f+Hh8etqbSBFu7va6cLAQIWzcaTdU6G9H5qvG16q9ZVqhPm2I70KgDsl
+        fpZGuK804HhjMcmj8k29tLcwe
+X-Received: by 2002:a05:6000:128f:: with SMTP id f15mr20916779wrx.19.1618924799172;
+        Tue, 20 Apr 2021 06:19:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyfOGjRv02X/zmH7pcY7EIgqs8w+z5KR0gU0RfoaYN+dlGesRC5fI0lFDDiwZRbvB39JmbKYA==
+X-Received: by 2002:a05:6000:128f:: with SMTP id f15mr20916761wrx.19.1618924798995;
+        Tue, 20 Apr 2021 06:19:58 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff2390a.dip0.t-ipconnect.de. [79.242.57.10])
+        by smtp.gmail.com with ESMTPSA id f6sm3291518wmf.28.2021.04.20.06.19.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 06:19:58 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] secretmem/gup: don't check if page is secretmem
+ without reference
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+References: <20210420131611.8259-1-rppt@kernel.org>
+ <20210420131611.8259-2-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <95b7fa81-f72e-c63f-0456-4c25dee8a5eb@redhat.com>
+Date:   Tue, 20 Apr 2021 15:19:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210420131611.8259-2-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code currently organized in a way that num_chipselect is overwritten
-each time we call spi_get_gpio_descs(). It might be potentially dangerous
-in case when the gpiod_count() returns an error code.
+On 20.04.21 15:16, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> The check in gup_pte_range() whether a page belongs to a secretmem mapping
+> is performed before grabbing the page reference.
+> 
+> To avoid potential race move the check after try_grab_compound_head().
+> 
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> ---
+>   mm/gup.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/mm/gup.c b/mm/gup.c
+> index c3a17b189064..4b58c016e949 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -2080,13 +2080,13 @@ static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
+>   		VM_BUG_ON(!pfn_valid(pte_pfn(pte)));
+>   		page = pte_page(pte);
+>   
+> -		if (page_is_secretmem(page))
+> -			goto pte_unmap;
+> -
+>   		head = try_grab_compound_head(page, 1, flags);
+>   		if (!head)
+>   			goto pte_unmap;
+>   
+> +		if (page_is_secretmem(page))
+> +			goto pte_unmap;
+> +
 
-Note, that gpiod_count() never returns 0, take this into account as well.
+Looking at the hunk below, I wonder if you're missing a put_compound_head().
 
-Fixes: f3186dd87669 ("spi: Optionally use GPIO descriptors for CS GPIOs")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/spi/spi.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+(also, I'd do if unlikely(page_is_secretmem()) but that's a different 
+discussion)
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 74b2b1dd358b..36c46feab6d4 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -2558,13 +2558,14 @@ static int spi_get_gpio_descs(struct spi_controller *ctlr)
- 	unsigned int num_cs_gpios = 0;
- 
- 	nb = gpiod_count(dev, "cs");
--	ctlr->num_chipselect = max_t(int, nb, ctlr->num_chipselect);
--
--	/* No GPIOs at all is fine, else return the error */
--	if (nb == 0 || nb == -ENOENT)
--		return 0;
--	else if (nb < 0)
-+	if (nb < 0) {
-+		/* No GPIOs at all is fine, else return the error */
-+		if (nb == -ENOENT)
-+			return 0;
- 		return nb;
-+	}
-+
-+	ctlr->num_chipselect = max_t(int, nb, ctlr->num_chipselect);
- 
- 	cs = devm_kcalloc(dev, ctlr->num_chipselect, sizeof(*cs),
- 			  GFP_KERNEL);
+>   		if (unlikely(pte_val(pte) != pte_val(*ptep))) {
+>   			put_compound_head(head, 1, flags);
+>   			goto pte_unmap;
+> 
+
+
 -- 
-2.30.2
+Thanks,
+
+David / dhildenb
 
