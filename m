@@ -2,128 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12727365EA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5574F365EA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233487AbhDTRcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 13:32:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44117 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233288AbhDTRb7 (ORCPT
+        id S233490AbhDTRdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 13:33:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233381AbhDTRcy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 13:31:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618939887;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DCnO9SMNXtq3N/cBHfFZ4OlAcq+Y22z5ByVxA35w6dg=;
-        b=bOSPI2fwFnUfugPyTyo0fvGdNkIjLp9MJsBEom+CM0yqkr4b99ZSr/OXGIA5o/0NUASM7N
-        F2jk7VNykDAu4zSEDpPV/LvBWAltSJWTcSxMKv9lAAE/3MgsDwn56bP0PK3fp/tI7VU6W9
-        3NsdY2UZdCuY6R3CFy8Au/sp/VZz2u0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-603-ij-8fh4bOSab0eh2HCKxew-1; Tue, 20 Apr 2021 13:31:22 -0400
-X-MC-Unique: ij-8fh4bOSab0eh2HCKxew-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F2DF2835B4B;
-        Tue, 20 Apr 2021 17:31:20 +0000 (UTC)
-Received: from krava (unknown [10.40.196.37])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 3C0BF5D9C0;
-        Tue, 20 Apr 2021 17:31:19 +0000 (UTC)
-Date:   Tue, 20 Apr 2021 19:31:18 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Song Liu <song@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, acme@kernel.org,
-        acme@redhat.com, namhyung@kernel.org, jolsa@kernel.org,
-        songliubraving@fb.com
-Subject: Re: [PATCH v4 3/4] perf-stat: introduce config
- stat.bpf-counter-events
-Message-ID: <YH8P5ol5JRr5JO5v@krava>
-References: <20210419203649.164121-1-song@kernel.org>
- <20210419203649.164121-4-song@kernel.org>
+        Tue, 20 Apr 2021 13:32:54 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E7AC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:32:22 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id g5so52781523ejx.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:32:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8gplG+9IWvQuoNRL+JXMPE+0PdJp+Z/VjGIXtau6h+I=;
+        b=h11A4XqVQ5m+6C611s/dtODxxzHe4778dEl548tUa84MqdLN/1XV7WK1IMzUSSN9Od
+         VnvgJdVbSHQ/ImL9hfmZeA/wPSbzQWrsgOeMqo4LrMFTgKVLQXo/kssnETIoiOSNqXF2
+         +9CKxEzjfMwY19mG4Z7SY4V9KjsQEt4vbNotk2uwPu8nZYZW2of5Fu6ATNssl2Jl+ADN
+         KprCeg0geSqGm1BuM/VAe8s2otgrvGsf50x9RNc8/FX5fX/n4m1wYTTYc3OgXUnis36k
+         6JhVjFqzN1QdwciBjvJBIkgOj6l410ZvUVqd9RdJqPWewVChWgInz7coHNkFB8O18R2f
+         UZ1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8gplG+9IWvQuoNRL+JXMPE+0PdJp+Z/VjGIXtau6h+I=;
+        b=oCRM5auO/ncqsa2Pd9RpQWfuQsBj37QUwRYz72ge0MOWpnEZYs9ZIyoOaTTqgVITyC
+         kB1vkRusZiNDFBLXSVG6JGCREPmgrHY2bN83l7TTHaIk6saMVoOyCg9VUM2sBtfdJneX
+         0p8VjRA3Qt10khcFK3OAWoOjcQI5HC5r/Ed4ZhoQ3xPHggzQzkLqW0Mq6FVTsw0Dgxfh
+         XPGfL63lSbdLbJdlQGXFjngaB1MPkDu0v/qMpY/gKjByCnCjEEO0O6PkDEOEaH9jsk+V
+         YCvStds+okChrviKgiFh65/cG0UBB/O1mHUgS8Ewxml+2Lx2kbebKbQRRGeK+RPNdYBs
+         tvcw==
+X-Gm-Message-State: AOAM530Efrg11zi8f8eXZA4joz1j+542BKhtl7t5Q3hzqB6k9iNPIRUu
+        RB7dNJnTRMsHwM1DiEdcipmujwf5fMDlAMAqc8sUjA==
+X-Google-Smtp-Source: ABdhPJzOn7y5okWAFlw0xW1bqDHcjSKKZ3FzjRQhbt0MYpvhmlpKo3RbVc4qKURwgiYCMCk8hFP4aX57tXHPp1o0sM8=
+X-Received: by 2002:a17:906:4e51:: with SMTP id g17mr14564426ejw.18.1618939941345;
+ Tue, 20 Apr 2021 10:32:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210419203649.164121-4-song@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <CA+G9fYskw4f8GDnn+YngdXihFGs5vP5EekDNqECY7XKTd9cbRg@mail.gmail.com>
+ <CANn89iKKXcuczM9XUbg3ntLUFMLdaJCO5ojNJ+UT4kaTVKuE+g@mail.gmail.com>
+In-Reply-To: <CANn89iKKXcuczM9XUbg3ntLUFMLdaJCO5ojNJ+UT4kaTVKuE+g@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 20 Apr 2021 23:02:10 +0530
+Message-ID: <CA+G9fYusGV=Qn45EvHU34VS=dkUh0DUPZkCffm=25tz+4_f3Yw@mail.gmail.com>
+Subject: Re: BUG: KASAN: use-after-free in page_to_skb.isra.0+0x300/0x418
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, linux-mm <linux-mm@kvack.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Alan Bennett <alan.bennett@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 01:36:48PM -0700, Song Liu wrote:
+On Tue, 20 Apr 2021 at 19:47, Eric Dumazet <edumazet@google.com> wrote:
+>
+> On Tue, Apr 20, 2021 at 3:45 PM Naresh Kamboju
+> <naresh.kamboju@linaro.org> wrote:
+> >
+> > Following kernel BUG reported on qemu-arm64 running linux next 20210420
+> > the config is enabled with KASAN.
+> >
+> > steps to reproduce:
+> > ----------------------------
+> > - Build the arm64 kernel with KASAN enabled.
+> > - boot it with below command and you will notice
+> >  /usr/bin/qemu-system-aarch64 -cpu host -machine virt,accel=kvm
+> > -nographic -net nic,model=virtio,macaddr=BA:DD:AD:CC:09:10 -net tap -m
+> > 1024 -monitor none -kernel kernel/Image.gz --append "console=ttyAMA0
+> > root=/dev/vda rw" -hda
+> > rootfs/rpb-console-image-lkft-juno-20210414125244-133.rootfs.ext4 -m
+> > 4096 -smp 4 -nographic
+> >
+> >
+> > crash log:
+> > -------------
+> >
+>
+> This is the fifth report, have you tried the proposed fix ?
+>
+> https://patchwork.kernel.org/project/netdevbpf/patch/20210420094341.3259328-1-eric.dumazet@gmail.com/
 
-SNIP
+I have tested your patch now and the reported issue got fixed.
 
->  	if (stat_config.initial_delay < 0) {
-> @@ -784,11 +790,11 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
->  	if (affinity__setup(&affinity) < 0)
->  		return -1;
->  
-> -	if (target__has_bpf(&target)) {
-> -		evlist__for_each_entry(evsel_list, counter) {
-> -			if (bpf_counter__load(counter, &target))
-> -				return -1;
-> -		}
-> +	evlist__for_each_entry(evsel_list, counter) {
-> +		if (bpf_counter__load(counter, &target))
-> +			return -1;
-> +		if (!evsel__is_bpf(counter))
-> +			all_counters_use_bpf = false;
+Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
-could be done in bpf_counter__load, check below:
+Tested log link,
+https://lkft.validation.linaro.org/scheduler/job/2555544#L208
 
->  	}
->  
->  	evlist__for_each_cpu (evsel_list, i, cpu) {
-> diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
-> index 5de991ab46af9..33b1888103dfa 100644
-> --- a/tools/perf/util/bpf_counter.c
-> +++ b/tools/perf/util/bpf_counter.c
-> @@ -790,7 +790,8 @@ int bpf_counter__load(struct evsel *evsel, struct target *target)
->  {
->  	if (target->bpf_str)
->  		evsel->bpf_counter_ops = &bpf_program_profiler_ops;
-> -	else if (target->use_bpf)
-> +	else if (target->use_bpf ||
-> +		 evsel__match_bpf_counter_events(evsel->name))
->  		evsel->bpf_counter_ops = &bperf_ops;
-
-with:
-	else
-		all_counters_use_bpf = false;
-
-I was also thinking of oving it to evlist, but it's sat specific,
-so I think it's good as static.. thanks for changing the implementation
-
-jirka
-
->  
->  	if (evsel->bpf_counter_ops)
-> diff --git a/tools/perf/util/config.c b/tools/perf/util/config.c
-> index 6bcb5ef221f8c..63d472b336de2 100644
-> --- a/tools/perf/util/config.c
-> +++ b/tools/perf/util/config.c
-> @@ -18,6 +18,7 @@
->  #include "util/hist.h"  /* perf_hist_config */
->  #include "util/llvm-utils.h"   /* perf_llvm_config */
->  #include "util/stat.h"  /* perf_stat__set_big_num */
-> +#include "util/evsel.h"  /* evsel__hw_names, evsel__use_bpf_counters */
->  #include "build-id.h"
->  #include "debug.h"
->  #include "config.h"
-> @@ -460,6 +461,9 @@ static int perf_stat_config(const char *var, const char *value)
->  	if (!strcmp(var, "stat.no-csv-summary"))
->  		perf_stat__set_no_csv_summary(perf_config_bool(var, value));
->  
-> +	if (!strcmp(var, "stat.bpf-counter-events"))
-> +		evsel__bpf_counter_events = strdup(value);
-> +
->  	/* Add other config variables here. */
->  	return 0;
->  }
-
-SNIP
-
+- Naresh
