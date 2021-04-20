@@ -2,119 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C673660BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 22:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A123660DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 22:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233806AbhDTURU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 16:17:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233548AbhDTURT (ORCPT
+        id S233888AbhDTU0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 16:26:09 -0400
+Received: from gateway21.websitewelcome.com ([192.185.45.89]:30163 "EHLO
+        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233886AbhDTUZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 16:17:19 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 971DAC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 13:16:47 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id q2so2076476pfk.9
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 13:16:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=baguO7314vCrN8/3Lvu6Ck0/6YUj93gK/SeIRlHPkHY=;
-        b=VDk6YLqqHBjXELr908Vy3WBsu/P3T1SUqT+ZE+rHFrt/R8+YWT9gMDUBRfkEmzdvrH
-         n2heHViq5NBoovkpWFoJ9szOnoaDxi0rQNrCxGxXw+go42e2mkquPT5Kn1c7hw/UZGAK
-         SHxReazCEAgCJd3ktuLdhBRBu5hNh4DOGBm+1lIe0NjGPMbcR3KZQ0w/f8nrgB+CX5Uz
-         wItuzAE2l0q92ZY28tv0EmYCx4IIh8LSjN8Xrz7J8Wg9OTlhyUTGoTonMJLfygkOTxxl
-         JiloQ2+INXgN+FVI5Bc65zkU3dsdO9rQc4jouA3KmoeAT339FhlBhZmIyKqljJqnbQDt
-         fDeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=baguO7314vCrN8/3Lvu6Ck0/6YUj93gK/SeIRlHPkHY=;
-        b=TncF0FKlxbED+EAzFE438RjxKBLCdp1AfWSYfrOTWOkZPwjnfh+wh9b+NhW/Yko/pd
-         DZVy02/P8+/yPzxLtyxzs2iGVxXvTVAVP783M4lKaHiPK7woaNBC/1OmF+Xy1x9xn63w
-         MV/T/plBsMc96qE58T37NlCRTVyb9dZHG6faeA08PG7tk9PgG7LzcbiLgHsXuHAmZN/m
-         Lc9vbpS2HgxJL7vThBc2fy04wFB3AqV+xXqyhRwFjz4nlDbIwW6uIqDcl5JcCCHkwl2b
-         YUCQspmSgJ1+sdVn/pYbFdGRneef3e1CS3gXs8h/fmogF4J8NkJVhQGqOx6bw9eYnqpk
-         iEuw==
-X-Gm-Message-State: AOAM533jYjtmyjUGdfxh6yzobnzlMgH2YPXpMFvgxmDHyE8BrCB/NrjN
-        iY2pcSUHgTmEoRaowjUXui4Cjg==
-X-Google-Smtp-Source: ABdhPJzHP5mB0IkvpDfWhhTGznEdghO0p6TOY9+Gmafh1xpRpiI1fIGjEWEv/6LcbyNjpPa6ucTahw==
-X-Received: by 2002:a17:90b:1955:: with SMTP id nk21mr7031347pjb.198.1618949806996;
-        Tue, 20 Apr 2021 13:16:46 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id k15sm16500650pfi.0.2021.04.20.13.16.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 13:16:46 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 20:16:42 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        srutherford@google.com, joro@8bytes.org, brijesh.singh@amd.com,
-        thomas.lendacky@amd.com, venu.busireddy@oracle.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@suse.de>,
-        x86@kernel.org, Ashish Kalra <ashish.kalra@amd.com>
-Subject: Re: [PATCH 0/3] KVM: x86: guest interface for SEV live migration
-Message-ID: <YH82qgTLCKUoSyNa@google.com>
-References: <20210420112006.741541-1-pbonzini@redhat.com>
- <YH8P26OibEfxvJAu@google.com>
- <05129de6-c8d9-de94-89e7-6257197433ef@redhat.com>
- <YH8lMTMzfD7KugRg@google.com>
+        Tue, 20 Apr 2021 16:25:53 -0400
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+        by gateway21.websitewelcome.com (Postfix) with ESMTP id 160B7400E2713
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 15:25:13 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id YwnxlOMR0MGeEYwnxll3BN; Tue, 20 Apr 2021 15:17:05 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=F5p4y3pPoJpbflq7AGI1HGvEHHOc3V0/dn0FtRdvyVM=; b=uKF3fvHRTs/RZaqnTRchNI/UnV
+        +Xvq8dLa82Hu+Br0wFIxmWbnbPw21YQo64g5nNZ6vohiEN/+4e0ErqWQl+XWcisq3+sEz8U6qQ/iD
+        lcEgMUYt1gDI7I5twle7QrNcdmE3UHCO5QsPlD3pz7vJOEwYAV8ZdZt1zbmOyMVXpc6l8XzP15vmQ
+        +S26ytgri7Rd/HaMdaI8EZXGVLlbj1hU5j65z/mz+rZx4kn/fTDgDen4t0xfF63oDPRbZyxh3ljZ1
+        RsKv1TC4UC0fncNG/SX7xFwQqs4ntpJ8E1U0W+1YMUsg0JXi0cTkvsFhOCtuj57Gu/N+hi2ncAGQS
+        LRdFydJQ==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:49000 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lYwnv-002qjo-A9; Tue, 20 Apr 2021 15:17:03 -0500
+Subject: Re: [PATCH 070/141] atm: fore200e: Fix fall-through warnings for
+ Clang
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Chas Williams <3chas3@gmail.com>
+Cc:     linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <cover.1605896059.git.gustavoars@kernel.org>
+ <613a064fad28ee2afbc14d9a81d4a67b3c1634f7.1605896059.git.gustavoars@kernel.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <511007ca-b8d4-239e-b861-3b661035923a@embeddedor.com>
+Date:   Tue, 20 Apr 2021 15:17:19 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YH8lMTMzfD7KugRg@google.com>
+In-Reply-To: <613a064fad28ee2afbc14d9a81d4a67b3c1634f7.1605896059.git.gustavoars@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lYwnv-002qjo-A9
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:49000
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 122
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021, Sean Christopherson wrote:
-> On Tue, Apr 20, 2021, Paolo Bonzini wrote:
-> > On 20/04/21 19:31, Sean Christopherson wrote:
-> > > > +	case KVM_HC_PAGE_ENC_STATUS: {
-> > > > +		u64 gpa = a0, npages = a1, enc = a2;
-> > > > +
-> > > > +		ret = -KVM_ENOSYS;
-> > > > +		if (!vcpu->kvm->arch.hypercall_exit_enabled)
-> > > 
-> > > I don't follow, why does the hypercall need to be gated by a capability?  What
-> > > would break if this were changed to?
-> > > 
-> > > 		if (!guest_pv_has(vcpu, KVM_FEATURE_HC_PAGE_ENC_STATUS))
-> > 
-> > The problem is that it's valid to take KVM_GET_SUPPORTED_CPUID and send it
-> > unmodified to KVM_SET_CPUID2.  For this reason, features that are
-> > conditional on other ioctls, or that require some kind of userspace support,
-> > must not be in KVM_GET_SUPPORTED_CPUID.  For example:
-> > 
-> > - TSC_DEADLINE because it is only implemented after KVM_CREATE_IRQCHIP (or
-> > after KVM_ENABLE_CAP of KVM_CAP_IRQCHIP_SPLIT)
-> > 
-> > - MONITOR only makes sense if userspace enables KVM_CAP_X86_DISABLE_EXITS
-> > 
-> > X2APIC is reported even though it shouldn't be.  Too late to fix that, I
-> > think.
-> > 
-> > In this particular case, if userspace sets the bit in CPUID2 but doesn't
-> > handle KVM_EXIT_HYPERCALL, the guest will probably trigger some kind of
-> > assertion failure as soon as it invokes the HC_PAGE_ENC_STATUS hypercall.
-> 
-> Gah, I was thinking of the MSR behavior and forgot that the hypercall exiting
-> behavior intentionally doesn't require extra filtering.
-> 
-> It's also worth noting that guest_pv_has() is particularly useless since it
-> will unconditionally return true for older VMMs that dont' enable
-> KVM_CAP_ENFORCE_PV_FEATURE_CPUID.
-> 
-> Bummer.
+Hi all,
 
-Oh!  Almost forgot my hail mary idea.  Instead of a new capability, can we
-reject the hypercall if userspace has _not_ set KVM_CAP_ENFORCE_PV_FEATURE_CPUID?
+Friendly ping: who can take this, please?
 
-			if (vcpu->arch.pv_cpuid.enforce &&
-			    !guest_pv_has(vcpu, KVM_FEATURE_HC_PAGE_ENC_STATUS)
-				break;
+Thanks
+--
+Gustavo
+
+On 11/20/20 12:34, Gustavo A. R. Silva wrote:
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a warning
+> by explicitly adding a fallthrough pseudo-keyword.
+> 
+> Link: https://github.com/KSPP/linux/issues/115
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/atm/fore200e.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/atm/fore200e.c b/drivers/atm/fore200e.c
+> index 9a70bee84125..ba3ed1b77bc5 100644
+> --- a/drivers/atm/fore200e.c
+> +++ b/drivers/atm/fore200e.c
+> @@ -423,6 +423,7 @@ fore200e_shutdown(struct fore200e* fore200e)
+>  	/* XXX shouldn't we *start* by deregistering the device? */
+>  	atm_dev_deregister(fore200e->atm_dev);
+>  
+> +	fallthrough;
+>      case FORE200E_STATE_BLANK:
+>  	/* nothing to do for that state */
+>  	break;
+> 
