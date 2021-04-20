@@ -2,96 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E49D365EF8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 20:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E564F365EFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 20:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233598AbhDTSDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 14:03:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42454 "EHLO
+        id S233572AbhDTSDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 14:03:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233593AbhDTSCp (ORCPT
+        with ESMTP id S233629AbhDTSC5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 14:02:45 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5063C06138B
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 11:02:13 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id o16so6494564plg.5
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 11:02:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hbT6P4sTnHjPVBNP+gpODkwhWALRT12GXZ+BrAU9z6c=;
-        b=IK3Klm6cN5YqBN7qVuJ4lLmzTgfg3eCcqpFIHbGZOJH1ExUBQp0z3TU+fzS11X9elp
-         nMS/d5adt4C5erUZjmqL3j0sGxixcUKBKBU/XVjwwhNYpvycOGFJUZunmlzn5qykoY3E
-         t6lZw6dvzFt5qu67rp+6m0PPfV6Phco9cMnWg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hbT6P4sTnHjPVBNP+gpODkwhWALRT12GXZ+BrAU9z6c=;
-        b=JqTFdnGJDpekjBV8cN5+Dr99/pK6IXjoRYWh4A6lm7sp7lsbvijg4FuXTv9205ni2V
-         CIb8aqhIuKf6hYyrKC1l8ybZFlwxiEsha2Us2aEcprfp5p0gzLUxphKzEhkA49+s1t/+
-         R5AN+vCP82R2lqtBReDWYCrkIDP5004l3XZ8dbKf304KB3PVydU4b9Rrvsnx0RLtrQol
-         HXi5dTnxbws2dxNf0tA4w57xY3lUbLvw+L5sAmPUDLeQQGh5j2waI165nFUyVN6nZgda
-         W960jvFN0CNFldtOfCzXwCUmke7gGPL+w+f8DrYDlWuyMhPkO0CvXKrU6OIN9I0P886s
-         DnRw==
-X-Gm-Message-State: AOAM532yf5c2+H5VRoMl3CV9muvz0aJzPMGiD2ES6HptwBDq6Jgy1IeZ
-        j4OKhXzT9pfQlNaPcucYMefym5xTyBRmdA==
-X-Google-Smtp-Source: ABdhPJx1smAbs/nJboZ6ngogE39uC6bgXMI37IgfFLX/P1zHxGxFgpyakNxvN7zFAybgcJgGWkDOiQ==
-X-Received: by 2002:a17:90a:302:: with SMTP id 2mr6540846pje.34.1618941732683;
-        Tue, 20 Apr 2021 11:02:12 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:7a9:7e56:e9c3:13e8])
-        by smtp.gmail.com with UTF8SMTPSA id f10sm3103078pju.27.2021.04.20.11.02.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 11:02:12 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 11:02:11 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, kgunda@codeaurora.org
-Subject: Re: [RESEND PATCH V3 5/5] arm64: dts: qcom: sc7280: Include PMIC DT
- files for sc7280
-Message-ID: <YH8XIyp/l4C0JPvc@google.com>
-References: <1618398783-7834-1-git-send-email-skakit@codeaurora.org>
- <1618398783-7834-6-git-send-email-skakit@codeaurora.org>
+        Tue, 20 Apr 2021 14:02:57 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6983AC06138E;
+        Tue, 20 Apr 2021 11:02:25 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id C6FCC92009C; Tue, 20 Apr 2021 20:02:24 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id BFB4692009B;
+        Tue, 20 Apr 2021 20:02:24 +0200 (CEST)
+Date:   Tue, 20 Apr 2021 20:02:24 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Khalid Aziz <khalid@gonehiking.org>
+cc:     Ondrej Zary <linux@zary.sk>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/5] Bring the BusLogic host bus adapter driver up to
+ Y2021
+In-Reply-To: <d7dc08a6-92be-e524-1f11-cd9f7326a0fd@gonehiking.org>
+Message-ID: <alpine.DEB.2.21.2104200456100.44318@angie.orcam.me.uk>
+References: <alpine.DEB.2.21.2104141244520.44318@angie.orcam.me.uk> <a099f7f8-9601-fd1c-03a4-93587e7276e6@gonehiking.org> <alpine.DEB.2.21.2104162157360.44318@angie.orcam.me.uk> <202104182221.21533.linux@zary.sk> <e3fe98a2-c480-e9bf-67b3-7f51b87975bd@gonehiking.org>
+ <alpine.DEB.2.21.2104191747010.44318@angie.orcam.me.uk> <d7dc08a6-92be-e524-1f11-cd9f7326a0fd@gonehiking.org>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1618398783-7834-6-git-send-email-skakit@codeaurora.org>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 04:43:03PM +0530, satya priya wrote:
+On Mon, 19 Apr 2021, Khalid Aziz wrote:
 
-> Subject: arm64: dts: qcom: sc7280: Include PMIC DT files for sc7280
+> >  Khalid: I have skimmed over these documents and I infer 24-bit addressing 
+> > can be verified with any MultiMaster adapter, including ones that do have 
+> > 32-bit addressing implemented, by using the legacy Initialize Mailbox HBA 
+> > command.  That could be used to stop Christoph's recent changes for older 
+> > adapter support removal and replace them with proper fixes for whatever 
+> > has become broken.  Is that something you'd be willing as the driver's 
+> > maintainer to look into, or shall I?
+> 
+> Do you mean use OpCode 01 (INITIALIZE MAILBOX) to set a 24-bit address
+> for mailbox in place of OpCode 81? Verifying the change would be a
+> challenge. Do you have an old adapter to test it with? If you do, go
+> ahead and make the changes. I will be happy to review. I have only a
+> BT-757 adapter.
 
-Please make sure to distinguish between the SoC (sc7280) and the
-board (sc7280-idp), this patch primarily adds stuff to the board not
-the SoC, this should be clear from the subject.
+ Yes, but upon inspection it looks like our driver doesn't use that opcode 
+and relies solely on 32-bit Mode Initialize Mailbox (0x81) even with ISA 
+devices.  That makes sense as documentation indicates the firmware has 
+been designed to be unified so that the same binary microcontroller code 
+runs across all BusLogic MultiMaster devices.
 
-> Include pm7325, pm8350c, pmk8350 and pmr735a DT files.
+ Anyway given the unified API it should be straightforward to simulate an 
+older adapter with a newer one, except for host bus protocol differences.  
+So verifying the workaround for broken BT-445S adapters continues to work 
+once modernised is not going to be a problem as it can be unconditionally 
+activated in a debug environment.  That would verify correct DMA bounce 
+buffer operation under the new scheme.
 
-How about something like 'The sc7280-idp has four PMICs, include their
-.dtsi files'?
+ Verifying actual ISA operations (third-party DMA, etc.) cannot be made 
+this way, but as I understand the issue there is merely with passing data 
+structures around and that may not require too much attention beyond 
+getting things syntactically correct, which I gather someone forgot to do 
+with a change made a while ago.  So that should be doable as well.
 
-> Add channel nodes for pmk8350_vadc.
+ NB as noted before I only have a BT-958 readily wired for operation.  I 
+don't expect I have any other BusLogic hardware, but I may yet have to 
+double-check a stash of hardware I have accumulated over the years.  But 
+that is overseas, so I won't be able to get at it before we're at least 
+somewhat closer to normality.  If all else fails I could possibly buy one.
 
-It's not super important, but I don't like it when things like this get
-sneaked in with a commit message saying 'Include PMIC DT files for
-sc7280'. I would suggest a separate patch. And please mention that
-the channels are for the on die temperatures of the PMICs.
+ I have respun the series now as promised.  Does your BT-757 adapter avoid 
+the issue with trailing allocation somehow?
 
-> Also, add the thermal_zones node in dtsi.
-
-This is not the right patch to add it. This patch is about the sc7280-board
-and doesn't do anything (directly) with thermal zones. However other
-patches further down in the stack of in this series require the
-'thermal-zones' to exist, hence the node should exist before these patches
-reference it. A dedicated patch adding the node seems like the best option
-to me.
-
+  Maciej
