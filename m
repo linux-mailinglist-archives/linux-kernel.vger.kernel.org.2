@@ -2,123 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DE71365E43
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E66365E45
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233308AbhDTRMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 13:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59648 "EHLO
+        id S233357AbhDTRMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 13:12:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232913AbhDTRMY (ORCPT
+        with ESMTP id S233281AbhDTRMh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 13:12:24 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BAC8C06138A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:11:52 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id k128so20626988wmk.4
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:11:52 -0700 (PDT)
+        Tue, 20 Apr 2021 13:12:37 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC820C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:12:05 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id u8so29150850qtq.12
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:12:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=myKHdFwpoKzTsa/Xj/reG757o1iV2SMy+GaKdMs9Nd8=;
-        b=hQHBRzGD5X9iOOj5IVE4mokydlp7T0xfd7ChDgBDkNYY4MCnQAJeQg/PHmxBWanvja
-         00QmxA7BkxVDfgr93keTS/uw4qbx8AG2JSFPhutLrohZUHSql9j2R870yOiHTLTyRUPb
-         6uwpLkbb/IxA1xVIE3w8hBj36CbBFwqpya1/YJMmog13WApw6hZU0qMkukzzA2PRiDA8
-         DqSBGt5SjrMz9nd4L6lpa3+QwQ0RP2rZhDijHnQE245rFLz/7ogYogpiCO3HIqPPDkC6
-         ZZna3bf5YMufluV+tJNBZrusL0P5eoBuALbGEVIDvkQxCu+TyZc5rMP5eAmQJCoDatHY
-         fmvw==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vYRqF4CHPCCN117xwzw8BkK9BpE5HcxJRT8xDh3fal0=;
+        b=DdlrJegkSCSy9AsWRXtdsRvZe4HeZHOa1vzaISWjF8o8KW32U39DYIzW7yw32fxRx2
+         AX62bDW245Cmonky4OcfyMBykKbqbt3C3oAdohiDLYDKIa5OwvCJv7FaapcMe4LCqrcB
+         aUd2lm7tqHdrzP0Fy8msoQiaEdvQr/iPd9GcE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=myKHdFwpoKzTsa/Xj/reG757o1iV2SMy+GaKdMs9Nd8=;
-        b=UJcXPCbml+IyL6ouCklNn5UNDAdH+BlQimYeC3fAfO/6Kaf8lcMdmfris3TRWfHazv
-         +qIGa8d5mEff5oDMtcx8Pl5PlaP7RZGOk7WIO1qkvD9IFmTKJs7rBS58z2r6Guo+hVv7
-         0uTw08IFn1/c03DIbBipKENGkUTfVAAAjg3HtN9d5R58r17ZxcDkPWC792iZxCCAcd7o
-         et/GBV4IAj7sz4D+5ruLmUqKb1opYcX2YL5ai4tmFcywYjTfO0lh2tfnfanMQrJ4l8eJ
-         x/12rOGR9Zzs1cWM8KFb+ZlGU/j3l1B6bBIUebkuAESQT2CWI//JFj27W9MS0BLn2c2+
-         +17w==
-X-Gm-Message-State: AOAM5312uPbkfNmS+lCYLpWSl8Q5dSA3muxs86emJRw+KyUXDFhL3nkS
-        r1ZP7Q+Ml7NOHX8gJH1QYtcxB70vVfS4rD+k
-X-Google-Smtp-Source: ABdhPJx0F/M9jruFk1OxQ7jSDx6lUsEzt5yTN43x0G2gTHn74JFGNoDHbnW3xCYETr//yRba4NP8jg==
-X-Received: by 2002:a1c:a78b:: with SMTP id q133mr5602279wme.68.1618938710867;
-        Tue, 20 Apr 2021 10:11:50 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:a079:f96:da87:2d00? ([2a01:e34:ed2f:f020:a079:f96:da87:2d00])
-        by smtp.googlemail.com with ESMTPSA id l25sm4014033wmi.17.2021.04.20.10.11.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 10:11:50 -0700 (PDT)
-Subject: Re: [PATCH v2] thermal: mediatek: add sensors-support
-To:     Frank Wunderlich <linux@fw-web.de>,
-        linux-mediatek@lists.infradead.org
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Amit Kucheria <amitk@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20210420155410.132141-1-linux@fw-web.de>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <34942537-79f4-bfab-43cc-7af100d0a433@linaro.org>
-Date:   Tue, 20 Apr 2021 19:11:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vYRqF4CHPCCN117xwzw8BkK9BpE5HcxJRT8xDh3fal0=;
+        b=SWha0JgV6EeAY9qrkug+pMO6t12eIwiQKpo4M5hifJnaYoBjkyqaBy+0Ppy7jCPhQA
+         7sEWuAh6afCjyw2aH8TYJoosRqkusm7PIkMERjoQX/r9CPubxRJJF4lyPl8vlq1hlgjh
+         xB49CsY516trd5bWGj7TkT9n+ByypIKpA5YCZbjVvXe9KIvVXhmVzp7qXlEVVcTOA/Pu
+         uJj4LV1WfHvd8EzbNxw/GWktCVbaoopcDsQn6rcKIU7kieK25+vxuAn95COXtxl0VcOL
+         HT8DpzA/K3vdPA4G/pTPAEcu0KfXAzJ5kyMil0JN1QK8kUXnlJgNxbOGby9tDISZfsDE
+         q0Hw==
+X-Gm-Message-State: AOAM532d/o1zZFn3nYtAhxsSmo5FULkQfSlfek+WOER3RH7laFKf1IUf
+        C6vE7aXOlBoauEeeITtPjnYqn2irD87xiswhi4mJHw==
+X-Google-Smtp-Source: ABdhPJzG+BkNtdjZXJlAyMBT0l/xNAejtnCOnIJEjUGHksRXE8u0W20/sODV76lxa9JYaqf3TnBN7GJnXzOlBXo2sfA=
+X-Received: by 2002:a05:622a:1044:: with SMTP id f4mr18398911qte.224.1618938724951;
+ Tue, 20 Apr 2021 10:12:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210420155410.132141-1-linux@fw-web.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210416182739.2938473-1-pmalani@chromium.org> <172e5982-5544-7170-4c88-95e196e28fac@collabora.com>
+In-Reply-To: <172e5982-5544-7170-4c88-95e196e28fac@collabora.com>
+From:   Prashant Malani <pmalani@chromium.org>
+Date:   Tue, 20 Apr 2021 10:11:53 -0700
+Message-ID: <CACeCKafNfDZzXM72PdzCO5FTK4YKV-bkhJ=nR=+R_gszGoY4Zg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] platform/chrome: cros_ec: Add Type C hard reset
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Utkarsh Patel <utkarsh.h.patel@intel.com>,
+        Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/04/2021 17:54, Frank Wunderlich wrote:
-> From: Frank Wunderlich <frank-w@public-files.de>
-> 
-> add HWMON-support to mediateks thermal driver to allow lm-sensors
-> userspace tools read soc temperature
-> 
-> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
-> ---
-> v2: drop ifdef and used devm_thermal_add_hwmon_sysfs
-> ---
->  drivers/thermal/mtk_thermal.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/thermal/mtk_thermal.c b/drivers/thermal/mtk_thermal.c
-> index 149c6d7fd5a0..32be8a715c7d 100644
-> --- a/drivers/thermal/mtk_thermal.c
-> +++ b/drivers/thermal/mtk_thermal.c
-> @@ -23,6 +23,8 @@
->  #include <linux/reset.h>
->  #include <linux/types.h>
->  
-> +#include "thermal_hwmon.h"
-> +
->  /* AUXADC Registers */
->  #define AUXADC_CON1_SET_V	0x008
->  #define AUXADC_CON1_CLR_V	0x00c
-> @@ -1087,6 +1089,11 @@ static int mtk_thermal_probe(struct platform_device *pdev)
->  		goto err_disable_clk_peri_therm;
->  	}
->  
-> +	tzdev->tzp->no_hwmon = false;
+Hi Enric,
 
-	^^^^^^ you can drop this line
-
-> +	ret = devm_thermal_add_hwmon_sysfs(tzdev);
-> +	if (ret)
-> +		dev_err(&pdev->dev, "error in thermal_add_hwmon_sysfs");
-> +
->  	return 0;
->  
->  err_disable_clk_peri_therm:
-> 
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+On Tue, Apr 20, 2021 at 3:00 AM Enric Balletbo i Serra
+<enric.balletbo@collabora.com> wrote:
+>
+> Hi Prashant,
+>
+> On 16/4/21 20:27, Prashant Malani wrote:
+> > Update the EC command header to include the new event bit. This bit
+> > is included in the latest version of the Chrome EC headers[1].
+> >
+> > [1] https://chromium.googlesource.com/chromiumos/platform/ec/+/refs/heads/main/include/ec_commands.h
+> >
+> > Change-Id: I52a36e725d945665814d4e59ddd1e76a3692db9f
+>
+> Please remember to remove the ChromeOS specific tags and add properly the Signed-off
+Sorry, missed this. Will send another version.
