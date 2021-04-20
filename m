@@ -2,145 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47553365C16
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75BBF365C19
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232450AbhDTPYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 11:24:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232965AbhDTPYH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 11:24:07 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E32C06174A;
-        Tue, 20 Apr 2021 08:23:34 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id m7so33170110ljp.10;
-        Tue, 20 Apr 2021 08:23:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EjKoa8Hb8NJHG5oHC5Qy7PkfK1T1P6HlwUTWtNshDX0=;
-        b=o0dj0xGcs+C6QHRe8wvzo6TjGXc1YXF5jX29xHml7ACBMh/BHPWzwyDZUwDNIxkTgY
-         Q/ha0GpXwqWVNu7zzB/GijpBhqWp+OCYCVTDI3lwR8CLcY20U5IMhPuMvIbjJYrUfnZl
-         M4NkQcVjnQe8mckDgknRB+HmTXKfpzqKZiINa0/ED9IMf1I8HyVtB59aJzKxfkXfdBd9
-         mlb79D/k8UK68UAt6mfrtds8/XT8xWTF5HwkOjftgnbYxd23xq8imEOcLEU6TSYjAuQs
-         34aiSQ2LVNmUy/auRBCGo2rQiF4dWn9y4ehiJ/iPFipMeQiDrj1+uO4Rkbowy7HbtHxu
-         dKKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EjKoa8Hb8NJHG5oHC5Qy7PkfK1T1P6HlwUTWtNshDX0=;
-        b=bz5dNkvnL3aLlTB9mghpKGeH7/GOnyo8ArRkQDKZQckgtqNwnrYzILzg0WsPyaVSVQ
-         8fpGzkeOww29rXky7JQrNshO6yh271bbNi0bbNYtjVgEB4YvdvgwgDj+qYtpuhsxPxSU
-         oQvmRy3NSsOGdLG7+WxCHHXMctD3D3UmfMud3f0Xk/5IlwndgcXne+3wbDFWQuz1ni1P
-         U0nJsv6lyV4KSimhexEN2O52Ooan0fQNb16yjXcRCM+bhu8v9fMMvOvQP5HTPUCrar/q
-         eyKJg3cP2QGRzKKu89EHbQeSvvswi2zZzQ1vbULk5dYlG498wxLY4+7TMyS/J0eKd2pc
-         BRJw==
-X-Gm-Message-State: AOAM532XzBJHXSQ2ks5Mmf6h4v/6hFJnGDKepnkNpCvATPP+DWqavbIx
-        klPJsG2oiyMpPEcGRMMQQo38N3ql/l6xJmyFYRoaU5De
-X-Google-Smtp-Source: ABdhPJwaQqluiwc9vDRTAoQ9Bss3qMuRW/xYdZ1oNcJpCD20dFcdgeVhkuZgFH6l6VenpGU7NLpL/uxmOFgQ9q3T8B0=
-X-Received: by 2002:a2e:3511:: with SMTP id z17mr11571026ljz.32.1618932212699;
- Tue, 20 Apr 2021 08:23:32 -0700 (PDT)
+        id S232900AbhDTPZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 11:25:07 -0400
+Received: from mout.gmx.net ([212.227.15.18]:33059 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232174AbhDTPZG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 11:25:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1618932256;
+        bh=hVQLEwhfpRjsVnuKwpAXjLX06PhCisojyl1TbE7YIJI=;
+        h=X-UI-Sender-Class:Date:In-Reply-To:References:Subject:Reply-to:To:
+         CC:From;
+        b=B5daLXcRBUfZ4q5jCyjFrCq69sgTrDWI9eZ/QcvkNB8tfi3BhMXqJ3paedV7Jwh+f
+         YhBQwMCqF1dGYXQ3reR0TFUaSXlP5bk+GmGHq7Nr7BcqRLnECs+r0FQ4+quNkXsyz9
+         Les1iNUD2zGOHcwj6GzMMr2CT8Kv6DKwru6XSlDs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from frank-s9 ([80.245.77.151]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mt79P-1loLt30fk1-00tUuy; Tue, 20
+ Apr 2021 17:24:16 +0200
+Date:   Tue, 20 Apr 2021 17:24:11 +0200
+User-Agent: K-9 Mail for Android
+In-Reply-To: <b38c3539-c864-67b3-95e8-9b652cf6fcbf@linaro.org>
+References: <20210320080646.49615-1-linux@fw-web.de> <f4329b1a-02e0-aad5-55bd-82d30a38fc55@linaro.org> <trinity-4a3f024e-c01d-44e4-a884-530135853d33-1618930770250@3c-app-gmx-bs72> <b38c3539-c864-67b3-95e8-9b652cf6fcbf@linaro.org>
 MIME-Version: 1.0
-References: <20210419155243.1632274-1-revest@chromium.org> <20210419155243.1632274-3-revest@chromium.org>
- <20210419225404.chlkiaku5vaxmmyh@ast-mbp.dhcp.thefacebook.com> <CABRcYmJO5+tFtGuL9pdtFqLnBV7fGugEjaPbNRtJ3iXpbs3kFg@mail.gmail.com>
-In-Reply-To: <CABRcYmJO5+tFtGuL9pdtFqLnBV7fGugEjaPbNRtJ3iXpbs3kFg@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 20 Apr 2021 08:23:21 -0700
-Message-ID: <CAADnVQKrc1Rz_qr5R50vJ2H7-K+9AzBVQZ4OMgGEno+8r6sHpw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 2/6] bpf: Add a ARG_PTR_TO_CONST_STR argument type
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: Aw: Re: [PATCH] thermal: mediatek: add sensors-support
+Reply-to: frank-w@public-files.de
+To:     linux-mediatek@lists.infradead.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+CC:     Frank Wunderlich <linux@fw-web.de>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+From:   Frank Wunderlich <frank-w@public-files.de>
+Message-ID: <846366E9-5029-4C6A-B2EC-F70D901DC379@public-files.de>
+X-Provags-ID: V03:K1:qFuuvC3OlH8wiI0uAUwIouverCIxk4Zh6maix0KNR/wBu6KQ9ev
+ PmnQbGVqCpI86dfVRGhDB+Oz0h7VKfnVUy+XYZTUPvCMo796TC4z7GCS1hakQjTzMKMt5pi
+ 3SmiuV2id/1hB/7OHJYi/pxoZO2Ipq2MEzqHQJ33vba3PHbCjEJg5D6TelBQrppipOFkl3T
+ Tyg7Ru+LN5Zy1sdyOV4HA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oz4RHvbnNho=:tXJISebCrSiN4iZZwwTbe2
+ ydjY+XWqFzS9xGX+qZyIyH2yxzBVDdkd71rw6Z6jjRmVdSH1Y5DZ2OJxoynvazDJ46rU8NowF
+ V8dYIMZ/HnqhOmK135T1zTsZcTZB1OgUUsipLv4flIzjjdNuUXcvV7qOHk0kZiEKoDIOPNqmT
+ 10VUn68/euizm9nYXaNnXTSj1Tzt817bhPOAwvw5xp9JYdaW43lsxxawEcrBe9iKt7K5u7bC/
+ Xo75MIal9lpxVhM9AmFBClTPqplyZNJCFkgVoT3ig6KNOVkM9GDIO0VYJ7LnStnH/VgVoUqj9
+ 2/G7KYzoPChRwG/Me1Dgr2L6uEujA0dRVfVtvsk2ePoI777D7uIvr1W2aFP3NU813EmsJc2Ua
+ rheSMcgiz721yU9mugWMiMWvsaate0t28+Jh1lUzar1xj+Uo8eaxUIJP+lB6Axan9xacXB1J+
+ Kvy5YWVcdhoLU8uJH5b7mOLuX4AwiOQBbhvWRtQJhqkpCqrN+8jlXe6GnFHybIpnYS3bc1txC
+ vWk3tb1WeB8f7aVzZGFkDRXEiRV7Lfqmjs3y8cM5p5eqUu7h1ra8BQuFl8JIxXWnVETF4N/K0
+ a9U50yzbmtcoZRgZfJx845X6coKz8BmFNHQj4JlkH3fyE4CCp492Tzc/vMfRz1ChjN6oqiY/u
+ 6PvPcxYdzorbs3SdzK0DzzoQ95K7/3PEYybeMsChpYjHuHCoVRlVNsWT+Wm8G6um2AnQYfhB/
+ yw8q6e6KIFITo8GiBiTHdSMF9kLlVHNvTyWEOfD2Qsk4Qi3lIKtcAYRArrkfcaOmWUOz75kVv
+ xpLw4/eQt+EuaHilryyH2FRMnsN0ipR2oBxNJidjUai5Vf7Aeo0XZEgAwLfhyinZapMJFV8gK
+ cPCL3818Vb2DbD8YY21iTU8sQOX8SB1ACRDx0/orxGBKBqZpqWeOqVdgCO4EY8I3lOz/oFiYe
+ yMTBvAf05WszTO4kiq1bT8okWs5YPAiedVamWymFUBQP2XXnokvdfOriibyVlN6NXatc0Kb5Q
+ 9hLO6DGGxKV4xrbVEIX9roR6gZXeSjo0g0vSbMgjFgXEMh6YAVoZQNCvJqlTNSXOmmZJzGUtg
+ hv442VSmo1BpWkWoOT7dA9AojBdSd0p/SdMDckfa6oeDa8nmm6Ms5tQMfVNtM1CgrHnz7zpmU
+ ++D3eo1WB4Lg/iZfhO5IvEdx93frqrK9h9aWIg4Sz+FhEl/VkIPDc3ejrnlB7V8qH0Mixu1gW
+ RamW1HMnxVC5WByZD
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 5:35 AM Florent Revest <revest@chromium.org> wrote:
+Am 20=2E April 2021 17:18:32 MESZ schrieb Daniel Lezcano <daniel=2Elezcano@=
+linaro=2Eorg>:
 >
-> On Tue, Apr 20, 2021 at 12:54 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Mon, Apr 19, 2021 at 05:52:39PM +0200, Florent Revest wrote:
-> > > This type provides the guarantee that an argument is going to be a const
-> > > pointer to somewhere in a read-only map value. It also checks that this
-> > > pointer is followed by a zero character before the end of the map value.
-> > >
-> > > Signed-off-by: Florent Revest <revest@chromium.org>
-> > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
-> > >  include/linux/bpf.h   |  1 +
-> > >  kernel/bpf/verifier.c | 41 +++++++++++++++++++++++++++++++++++++++++
-> > >  2 files changed, 42 insertions(+)
-> > >
-> > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > index 77d1d8c65b81..c160526fc8bf 100644
-> > > --- a/include/linux/bpf.h
-> > > +++ b/include/linux/bpf.h
-> > > @@ -309,6 +309,7 @@ enum bpf_arg_type {
-> > >       ARG_PTR_TO_PERCPU_BTF_ID,       /* pointer to in-kernel percpu type */
-> > >       ARG_PTR_TO_FUNC,        /* pointer to a bpf program function */
-> > >       ARG_PTR_TO_STACK_OR_NULL,       /* pointer to stack or NULL */
-> > > +     ARG_PTR_TO_CONST_STR,   /* pointer to a null terminated read-only string */
-> > >       __BPF_ARG_TYPE_MAX,
-> > >  };
-> > >
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index 852541a435ef..5f46dd6f3383 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -4787,6 +4787,7 @@ static const struct bpf_reg_types spin_lock_types = { .types = { PTR_TO_MAP_VALU
-> > >  static const struct bpf_reg_types percpu_btf_ptr_types = { .types = { PTR_TO_PERCPU_BTF_ID } };
-> > >  static const struct bpf_reg_types func_ptr_types = { .types = { PTR_TO_FUNC } };
-> > >  static const struct bpf_reg_types stack_ptr_types = { .types = { PTR_TO_STACK } };
-> > > +static const struct bpf_reg_types const_str_ptr_types = { .types = { PTR_TO_MAP_VALUE } };
-> > >
-> > >  static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
-> > >       [ARG_PTR_TO_MAP_KEY]            = &map_key_value_types,
-> > > @@ -4817,6 +4818,7 @@ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
-> > >       [ARG_PTR_TO_PERCPU_BTF_ID]      = &percpu_btf_ptr_types,
-> > >       [ARG_PTR_TO_FUNC]               = &func_ptr_types,
-> > >       [ARG_PTR_TO_STACK_OR_NULL]      = &stack_ptr_types,
-> > > +     [ARG_PTR_TO_CONST_STR]          = &const_str_ptr_types,
-> > >  };
-> > >
-> > >  static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
-> > > @@ -5067,6 +5069,45 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
-> > >               if (err)
-> > >                       return err;
-> > >               err = check_ptr_alignment(env, reg, 0, size, true);
-> > > +     } else if (arg_type == ARG_PTR_TO_CONST_STR) {
-> > > +             struct bpf_map *map = reg->map_ptr;
-> > > +             int map_off;
-> > > +             u64 map_addr;
-> > > +             char *str_ptr;
-> > > +
-> > > +             if (reg->type != PTR_TO_MAP_VALUE || !map ||
-> >
-> > I think the 'type' check is redundant,
-> > since check_reg_type() did it via compatible_reg_types.
-> > If so it's probably better to remove it here ?
-> >
-> > '!map' looks unnecessary. Can it ever happen? If yes, it's a verifier bug.
-> > For example in check_mem_access() we just deref reg->map_ptr without checking
-> > which, I think, is correct.
->
-> I agree with all of the above. I only thought it's better to be safe
-> than sorry but if you'd like I could follow up with a patch that
-> removes some checks?
-...
-> Sure, does not hurt. I can also follow up with a patch unless if you
-> prefer doing it yourself.
+>Hi Frank,
 
-Please send a follow up patch.
-I consider this kind of "safe than sorry" to be defensive programming that
-promotes less-thinking-is-fine-because-its-faster-to-code style.
-I'm sure you've seen my rants against defensive programming in the past :)
+>The no_hwmon usage is a bit fuzzy in the thermal core code=2E
+
+Maybe add depency in Kconfig? Else we can get undefined symbols on linking
+
+regards Frank
