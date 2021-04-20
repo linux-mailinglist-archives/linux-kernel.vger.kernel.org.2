@@ -2,152 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45979365104
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 05:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AED87365106
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 05:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235130AbhDTDhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 23:37:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49382 "EHLO
+        id S234084AbhDTDiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 23:38:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234501AbhDTDhW (ORCPT
+        with ESMTP id S229903AbhDTDiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 23:37:22 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D6DC061763;
-        Mon, 19 Apr 2021 20:36:51 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id k18so32737875oik.1;
-        Mon, 19 Apr 2021 20:36:51 -0700 (PDT)
+        Mon, 19 Apr 2021 23:38:18 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2EFC061763
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 20:37:47 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id m11so24603366pfc.11
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 20:37:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=6XG3fkhjr8ceZuhijXZ4eXGWUd9gy7HjGg3nn0yIwW8=;
-        b=gWmYXLeQhuYLVI9cHZEdbFXDvL3y0mgaSoP1ZU3VE/z4oRzVvS/yr8Rfo5CJMc3wjP
-         Jqd1QzX4Lq3odDi8Aekls8+ySQwmUcIaFjQuCIr8OpiGIpwtOjmH/aJRfxfI4eLFbQfF
-         ogLEiqvv8J8HXApPcPiLN87w7lJ661rnvXwvwo1NS2aZGayANB4T9Nnh3BMaaangMSuF
-         z33oKSIiUbCLO7+reSyk8Y3AZpjhlLcDZVXU6ZUOO89NKjLvu4h5SyN5qDwqm7YfPnec
-         DzQaqJaBUp9VhDde71gZNjIyKpjjyeOtIPCr2hMr3kCQJIvuM921tcuug3936CTPo/Cv
-         X33Q==
+        bh=4Dp71bvPzPe1wCYmcL3dWmnHaA9IPMYpDW9V8NfdSkc=;
+        b=cOHrtIRKKzf406ywioOpMEaI+JxTsgk24dfL1j85yEFOTioqe/Wkk3sfhI44Q1dE7j
+         65QSzSe7Z5qv4E353StbnoU87r08IMCCsvDePdtRLfyeOfxq2KcvK1buyUuUmOqvWSqz
+         ISCulD8eTGSSTliYfl+gFyTSGoWap85k4iVgMnhZuvi6VpsbrnE+2Jx5THcQE3SMLZdK
+         MrcBDFn56VUg1JySPufcM+Ap2ekmV7xJGFyRvg4QYL9JAZALlwWWOP5KAZszoNI30/p5
+         3APL0pQTHzjyYoZTfbdeoS2N20VdZ+QdFjt1sZ6ThujTFMch4srMEWYVFTghQ5kbijRi
+         sTuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6XG3fkhjr8ceZuhijXZ4eXGWUd9gy7HjGg3nn0yIwW8=;
-        b=EbOFq4niyusa2XoyDr9wuxhjyjyFdirQ/KEVTEEnMVIAL0z0zuKCGradXZgV8zRn0v
-         I2YseUxLwi8LJQ7/8Wlw4cY/DjyRdiRc7Mbz2TzvTF5cwz1Lbg7KkYmtImVksXoElyLM
-         2ZIz9dZ/WaMB3jY/wU8aNRhFfwTVS6SIrPcSk59WLgSuHNgS1/INlXKRgICRxoqgMnJi
-         EUaOo1Ahopt2lmjfgZSTaLgpGrc8cm9cprPJezqigeabSWjoCa99AoYb9BIOPc8oL3Vu
-         gigks3GvIz6tHIdiblxK71xbuoL6PO+qnsywAFto7W3DQJL95x7rIwcUw+1id+AcMIfa
-         WQ6g==
-X-Gm-Message-State: AOAM531aNyNOxDuYN/RNAYDi3qmaAKoMKb6hRcO6QF48v4fhYG7oQ5GH
-        EEXSwk0DlIzC4c64b2WgpBT6m2fR/QM=
-X-Google-Smtp-Source: ABdhPJwJZWI9tqpuP/pL5CC/QGebjE08pvie9whyWllC59GxbS/gXXc0/Q2rpA6BUnhqmX7OWJsbOw==
-X-Received: by 2002:aca:d693:: with SMTP id n141mr1580814oig.107.1618889810746;
-        Mon, 19 Apr 2021 20:36:50 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id b2sm808087otq.80.2021.04.19.20.36.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 19 Apr 2021 20:36:50 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 19 Apr 2021 20:36:48 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     Mark Brown <broonie@kernel.org>, Jean Delvare <jdelvare@suse.com>,
-        linux-hwmon@vger.kernel.org, Andrew Jeffery <andrew@aj.id.au>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org
-Subject: Re: Enabling pmbus power control
-Message-ID: <20210420033648.GA227111@roeck-us.net>
-References: <YGLepYLvtlO6Ikzs@hatter.bewilderbeest.net>
- <5105ada1-643a-8e58-a52d-d3c8dbef86b9@roeck-us.net>
- <20210330112254.GB4976@sirena.org.uk>
- <YGNdoYq5lyERVGLO@hatter.bewilderbeest.net>
- <20210330174221.GJ4976@sirena.org.uk>
- <YGNmaNzWOYrJROvX@hatter.bewilderbeest.net>
- <20210330180200.GK4976@sirena.org.uk>
- <20210330193810.GA235990@roeck-us.net>
- <YH4ukR5egB2eG0Vo@hatter.bewilderbeest.net>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4Dp71bvPzPe1wCYmcL3dWmnHaA9IPMYpDW9V8NfdSkc=;
+        b=T7nBjYC7p6g8Eq1a6stILUERN8dG/7VoNab6R68dD15aDo5EYs2h4dQLqw/04V7dGr
+         iLIgRYsdBku3pA0WQrGS5YjC1k/DUkhQYFTuo3NHy0VvH2qIDqlDCOedZkGXEHr1ZaQP
+         tkS21h+S7MsOi6ZuSGvtvb5VBV1JXXjcXsm9A3mNZn3vhT1kZ1xrCy+Gr7zKV8R3m4uD
+         Tn6XqkKXqnzFtFE1xLnwR0Fs2PjpW1RCmRgLc7pQCHQqtxfk1UJC0c4bzJBTqmyXQ1v7
+         R64t3PLUimgCPFe+L2Foi3vscrSxbVTQoOFMzzSiZcDJn+wGdK9C4+CQTP8J3dZfpBKX
+         oZNg==
+X-Gm-Message-State: AOAM531kghK+qDDcoz0wdadJbCG5Rc2MvNULik2XBZThHGaFc4CMEJLB
+        yPz4MLnOekoLj8X9I4wTdlSQ6w==
+X-Google-Smtp-Source: ABdhPJzltqFZqUcdsXgG1fCqHZwqiJ17U3Dp9tAYxqC2lP00fX+Ti2Epbbf3KvGFjg7XD1qjZj+9gg==
+X-Received: by 2002:a63:48c:: with SMTP id 134mr8927069pge.448.1618889866955;
+        Mon, 19 Apr 2021 20:37:46 -0700 (PDT)
+Received: from localhost ([136.185.154.93])
+        by smtp.gmail.com with ESMTPSA id 71sm8454476pfu.19.2021.04.19.20.37.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 20:37:45 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 09:07:43 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>, agross@kernel.org,
+        rjw@rjwysocki.net, devicetree@vger.kernel.org, robh+dt@kernel.org,
+        amit.kucheria@linaro.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, jeffrey.l.hugo@gmail.com
+Subject: Re: [PATCH v4 5/7] cpufreq: qcom-hw: Implement CPRh aware OSM
+ programming
+Message-ID: <20210420033743.cqfw7vb4zrewdsbl@vireshk-i7>
+References: <20210119174557.227318-1-angelogioacchino.delregno@somainline.org>
+ <20210119174557.227318-6-angelogioacchino.delregno@somainline.org>
+ <20210419185203.GQ1538589@yoga>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YH4ukR5egB2eG0Vo@hatter.bewilderbeest.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210419185203.GQ1538589@yoga>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 08:29:53PM -0500, Zev Weiss wrote:
-> On Tue, Mar 30, 2021 at 02:38:10PM CDT, Guenter Roeck wrote:
-> > On Tue, Mar 30, 2021 at 07:02:00PM +0100, Mark Brown wrote:
-> > > On Tue, Mar 30, 2021 at 12:56:56PM -0500, Zev Weiss wrote:
-> > > 
-> > > > Okay, to expand a bit on the description in my initial message -- we've
-> > > > got a single chassis with multiple server boards and a single manager board
-> > > > that handles, among other things, power control for the servers.
-> > > > The manager board has one LM25066 for each attached server, which acts as
-> > > > the "power switch" for that server.  There thus really isn't any driver to
-> > > > speak of for the downstream device.
-> > > 
-> > > This sounds like you need a driver representing those server boards (or
-> > > the slots they plug into perhaps) that represents everything about those
-> > > boards to userspace, including power switching.  I don't see why you
-> > > wouldn't have a driver for that - it's a thing that physically exists
-> > > and clearly has some software control, and you'd presumably also expect
-> > > to represent some labelling about the slot as well.
-> > 
-> > Absolutely agree.
-> > 
-> > Thanks,
-> > Guenter
-> 
-> Hi Guenter, Mark,
-> 
-> I wanted to return to this to try to explain why structuring the kernel
-> support for this in a way that's specific to the device behind the PMIC
-> seems like an awkward fit to me, and ultimately kind of artificial.
-> 
-> In the system I described, the manager board with the LM25066 devices is its
-> own little self-contained BMC system running its own Linux kernel (though
-> "BMC" is perhaps a slightly misleading term because there's no host system
-> that it manages).  The PMICs are really the only relevant connection it has
-> to the servers it controls power for -- they have their own dedicated local
-> BMCs on board as well doing all the usual BMC tasks.  A hypothetical
-> dedicated driver for this on the manager board wouldn't have any other
-> hardware to touch aside from the pmbus interface of the LM25066 itself, so
-> calling it a server board driver seems pretty arbitrary -- and in fact the
-> same system also has another LM25066 that controls the power supply to the
-> chassis cooling fans (a totally different downstream device, but one that
-> would be equally well-served by the same software).
-> 
-> More recently, another system has entered the picture for us that might
-> illustrate it more starkly -- the Delta Open19 power shelf [0] supported by
-> a recent code release from LinkedIn [1].  This is a rackmount power supply
+On 19-04-21, 13:52, Bjorn Andersson wrote:
+> On Tue 19 Jan 11:45 CST 2021, AngeloGioacchino Del Regno wrote:
+> @Viresh, do you have any suggestion regarding my last comment?
 
-All I can see is that this code is a mess.
-
-> with fifty outputs, each independently switchable via an LM25066 attached to
-> an on-board BMC-style management controller (though again, no host system
-> involved).  We (Equinix Metal) are interested in porting a modern OpenBMC to
-> it to replace the dated, crufty, pre-Linux-Foundation version of OpenBMC it
-> currently runs (as found in the linked repo).  The exact nature of the
-> devices powered by its outputs is well outside the scope of the firmware
-> running on that controller (it could be any arbitrary thing that runs on
-> 12VDC), but we still want to be able to both (a) retrieve per-output
-> voltage/current/power readings as provided by the existing LM25066 hwmon
-> support, and (b) control the on/off state of those outputs from userspace.
+> >  static int qcom_cpufreq_hw_driver_probe(struct platform_device *pdev)
+> >  {
+> > +	const struct qcom_cpufreq_soc_data *soc_data;
+> > +	struct device_node *pd_node;
+> > +	struct platform_device *pd_dev;
+> >  	struct device *cpu_dev;
+> >  	struct clk *clk;
+> > -	int ret;
+> > +	int clk_div, ret;
+> > +
+> > +	cpu_dev = get_cpu_device(0);
+> > +	if (!cpu_dev)
+> > +		return -EPROBE_DEFER;
+> > +
+> > +	soc_data = of_device_get_match_data(&pdev->dev);
+> > +	if (!soc_data)
+> > +		return -EINVAL;
+> > +
+> > +	if (!soc_data->uses_tz) {
+> > +		/*
+> > +		 * When the OSM is not pre-programmed from TZ, we will
+> > +		 * need to program the sequencer through SCM calls.
+> > +		 */
+> > +		if (!qcom_scm_is_available())
+> > +			return -EPROBE_DEFER;
+> > +
+> > +		/*
+> > +		 * If there are no power-domains, OSM programming cannot be
+> > +		 * performed, as in that case, we wouldn't know where to take
+> > +		 * the params from...
+> > +		 */
+> > +		pd_node = of_parse_phandle(cpu_dev->of_node,
+> > +					   "power-domains", 0);
+> > +		if (!pd_node) {
+> > +			ret = PTR_ERR(pd_node);
+> > +			dev_err(cpu_dev, "power domain not found: %d\n", ret);
+> > +			return ret;
+> > +		}
+> > +
+> > +		/*
+> > +		 * If the power domain device is not registered yet, then
+> > +		 * defer probing this driver until that is available.
+> > +		 */
+> > +		pd_dev = of_find_device_by_node(pd_node);
+> > +		if (!pd_dev || !pd_dev->dev.driver ||
+> > +		    !device_is_bound(&pd_dev->dev))
+> > +			return -EPROBE_DEFER;
 > 
-> Given the array of possible use-cases, an approach of adding power-switch
-> functionality to the existing LM25066 support seems like the most obvious
-> way to support this, so I'm hoping to see if I can get some idea of what an
-> acceptable implementation of that might look like.
-> 
+> I wonder if there's a more appropriate way to probe defer on resources
+> described in the CPU nodes...
 
-Sorry, that is simply a no-go for the LM25066 driver. I mentioned it before,
-and it is still true: The hwmon subsystem is not in the business of power
-control.
+Recently we made some updates to the OPP core to start returning
+EPROBE_DEFER on failure to acquire resources. I think you can get rid
+of many checks for resources here by just trying to create the OPP
+table and check its return value for EPROBE_DEFER.
 
-Have you looked into enclosures (drivers/misc/enclosure.c) ? Maybe that
-or something similar could be used for your purposes.
-
-Thanks,
-Guenter
+-- 
+viresh
