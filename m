@@ -2,149 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9430F3653B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2C33653B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbhDTIDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 04:03:21 -0400
-Received: from mail-eopbgr80043.outbound.protection.outlook.com ([40.107.8.43]:4074
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229521AbhDTIDN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 04:03:13 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Vci5s/DxAeh95SwIovTlKdA4oX0fVZcfOIZAyw0O0VZG3EDeG4aGpKqVFdrMe76o2Fa4EyTt+m881YvEXFViuaGz79o6dWX2xoFFT2Y4GoALJgr1gtvPqNSik7v6aQr0zj01e6+9bw2pAbe0Aqt2Zk7lxbbPZUIRLTGLfT0yfJzm2hJynVZEcX9ujuTHE1hJRLzNY9t458wnMrFtaL0kuvTQsfnNO7R8K9I0+NW3sVUZG6Yn8Yha9do4pJhLrmLmpE0E1XzapIqwOTfCO/9fVQ8d78lE6nrKUStQLEib/S1waV/vVfnKmb9bhQBzlllS3ccruwZR9aemOvj/NCgB3w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nSEwdiOiFVcb+F/ZF8BpR5gf/Lv3X8bsxW4O4PbF38E=;
- b=ejhU4HhoziRR8a433fF9kF4D6nXUuNEHWDWhh97VmLCUt/cYHyvOBIAG0uMZ/3rhDK8vMs1BnkaK5MHEJK1mMSs0PI5QiSSp3rIhIMtmCf+cX1wu+VuxaLNsdqCJiwmohQlbzTMCotHktlp+ArsU7t/Y8zsVROE8Z541C3XNEOdkSV1MTP/5O3AKqfm6ajyPPHKPUpYJRLAGs94ic3z1evdk8tTk26Jyux6da/ImOzCLPeE0hdVOvtnY/2dL87n+QlEWKN5TRA0irF8T8soKYfKlaSAOuGZsRp4Ba7fHtNlLSIkhCkxW9dr44j6UXKm6zvOGNtgJ0N3Ky5wFLbYudA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nSEwdiOiFVcb+F/ZF8BpR5gf/Lv3X8bsxW4O4PbF38E=;
- b=UxPCLGA/oFGeE9cc62XA4PPbVIW0SlX0+dNApEfsRf9JdZgsaNKtsbvJagw9viJmDzXBBXoGMtN4hO+YDPQ9j5M3sHpc76ZwpXX6v8tcuUVBWqCQXbDLYM1NDQ6UkL7SoZ4RcbornEnrHWxmO0Ow8yp0vHnaqb9PaRuxRpq1Qgs=
-Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
- header.d=none;lists.freedesktop.org; dmarc=none action=none
- header.from=nxp.com;
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
- by VI1PR04MB5184.eurprd04.prod.outlook.com (2603:10a6:803:5d::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.18; Tue, 20 Apr
- 2021 08:02:37 +0000
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::a5f3:fde9:1d85:5f28]) by VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::a5f3:fde9:1d85:5f28%7]) with mapi id 15.20.4042.024; Tue, 20 Apr 2021
- 08:02:37 +0000
-From:   Liu Ying <victor.liu@nxp.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: [PATCH] drm/panel: lvds: Drop unnecessary NULL pointer checks for lvds->enable_gpio
-Date:   Tue, 20 Apr 2021 15:47:20 +0800
-Message-Id: <1618904840-29078-1-git-send-email-victor.liu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: HK0PR03CA0119.apcprd03.prod.outlook.com
- (2603:1096:203:b0::35) To VI1PR04MB3983.eurprd04.prod.outlook.com
- (2603:10a6:803:4c::16)
+        id S229981AbhDTIEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 04:04:02 -0400
+Received: from mga04.intel.com ([192.55.52.120]:14466 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229521AbhDTIEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 04:04:00 -0400
+IronPort-SDR: UEZpNDsqzVzHchKrFGWcQIU7pWP6xyAWAnIk6vFzUjeW9N4/y2ITvvm7xFB8jhajKOIcaHWmPQ
+ ujlrufLaHAQg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9959"; a="193342073"
+X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
+   d="scan'208";a="193342073"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 01:03:29 -0700
+IronPort-SDR: Z/FXrr1+Q8RHYWYTPCkRgeeVNOB0M1lOdZtfcdF5lOyNzlNN1zJuhw7h+LSq846Ny0wAAABWVv
+ KsyxWlidK47A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,236,1613462400"; 
+   d="scan'208";a="426828770"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
+  by orsmga008.jf.intel.com with ESMTP; 20 Apr 2021 01:03:24 -0700
+Cc:     baolu.lu@linux.intel.com,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com,
+        yuzenghui@huawei.com, lushenming@huawei.com
+Subject: Re: [PATCH v3 02/12] iommu: Add iommu_split_block interface
+To:     Keqian Zhu <zhukeqian1@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Yi Sun <yi.y.sun@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Tian Kevin <kevin.tian@intel.com>
+References: <20210413085457.25400-1-zhukeqian1@huawei.com>
+ <20210413085457.25400-3-zhukeqian1@huawei.com>
+ <fb350f27-be8b-80bf-1ce8-e7e8aba26f02@linux.intel.com>
+ <491da550-dc54-42e6-ac91-13d411575fad@huawei.com>
+ <bc2da48b-f4f7-5a46-2696-2c412a83d190@linux.intel.com>
+ <ac966fbc-7bc6-9d88-e53e-bcd92d536fdb@huawei.com>
+ <3c34baf1-6a57-5666-38a2-0c9d6188b8b8@linux.intel.com>
+ <a09830f8-b08f-9b80-8f75-17f13088ff6d@huawei.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <8a25f78b-9153-d21b-013d-d7f64ab48c54@linux.intel.com>
+Date:   Tue, 20 Apr 2021 15:53:42 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by HK0PR03CA0119.apcprd03.prod.outlook.com (2603:1096:203:b0::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4042.17 via Frontend Transport; Tue, 20 Apr 2021 08:02:35 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 34ca23fe-a2ab-4a4f-a637-08d903d2a99c
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5184:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB5184E0EBB860D676842088E898489@VI1PR04MB5184.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hB0TEspuEccRQ9VDKFkQ6U/L9DJRaSeuA4oJ8EkdHXtsFhLQkFlY3qdRSRbTEJk7IQ9/hHKSdt7VX9D1/mr80nu4GjoUcoUiZWrMbclWq39L3JuRWvTkd70z1KnCHOG5LP3oXlYD6O1X/xxZWdL+i8UaMJk5xB72eB0crFgVOU6/Lj7IZSq9Y1TQAkmTPd1M7lGwZdl705b8Xk8r6l7hQFk1XZ2niFlGah2gLu8tvFvOXmfDQWgxbp6UMOBggQQL8noNxpz334mUDLjHRSsvtbBrJHvlyJNG8g5uXVuQXEpebUNsBN/1u0ofoT5ibwx8LdhhQkx0sHA/dFQt2xHarN+hiNB/jiHCWKXtYKGFwI9PdFreainqSDEAdJ1Nt8TDNgDQ/BP+KCUke0GExubfXauUKh6Tv9Qgfc1ZOvuaHmyJqR7g9h9yAlBNy2fytXCSSu8jKRtusOB0kZUJ4aqy99N1uyGlvQWosmrkXtVQpEfn0ZPJh+7asnkY7fJ6u8Vimiqbd/XZuGQZY+vQUJKXE+QONdfgFXQ8TfN3Ydaa4QkzxWnkdrZoJHqIxxTSJ73pceIQPXcPbHZqSyuzu1/5c0NwiFrAozM0Wk6OAP2484UceNBXWU1XolDFKeZpKlzgwB1wDiZEyrYHU+CBdUd5onbKSI7cumWqL2bdAAaPDIt0DILndrwKMU8laUeZru+V
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(498600001)(8936002)(6916009)(26005)(66946007)(186003)(4326008)(66476007)(36756003)(6486002)(83380400001)(6512007)(2616005)(8676002)(52116002)(2906002)(38350700002)(86362001)(956004)(6666004)(6506007)(54906003)(16526019)(5660300002)(38100700002)(66556008)(69590400013);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?vnmET0cmqDb66GgNMbB9jFXuHB2oA+y9FZocZNwSJz+8kiZviE7zIhpdXmiT?=
- =?us-ascii?Q?n+YHkKfqs/Rqom9RxhK/YT2TnaPsRRE4uuH2erP46bbN9u1WQUg7tqTi5r7r?=
- =?us-ascii?Q?HYEWYZPJ+hTRpocHdf11hDiTJJfDp4Wac9Dc2uDrUjQvmYOi+rRhy9aXPyNb?=
- =?us-ascii?Q?zqwpkiJtUYHrvRwLcPUs6eoKeVeDpZLR3oHRMaoLq+bNSIIxv2HpR6SEdIB6?=
- =?us-ascii?Q?JObBmAlZ+6VLWx8J6x0Bcf+yzqFM7sbpsP1wGFOFZgMwoC6yHl5YcT2pPTaB?=
- =?us-ascii?Q?BXz6sJqhymzmHjOHfke20GycQZj37NQELyn8BQDmP8q8xoA4ReATsGtnHmyO?=
- =?us-ascii?Q?7RDquKd03EV7m8An5opTc/PqQuEeAuj+glvxubu6rjfkhszlshv2VeyzKBV/?=
- =?us-ascii?Q?i/4+FjdUE5Z2VEXZzXogPA8bL2Wp27oHwk6hs6IeuJMrOJ8pbxXhUPs+HnHK?=
- =?us-ascii?Q?gNqtBk28zNGI7FKPcRSznwOUVREo76XZqkHMeS6kCds0f2wOS/CR71uXx9/k?=
- =?us-ascii?Q?1OLTQx7GyPXOTmg6udLLvJaDpb/mi21a51XBodVvEtQCfe/MJeKQ26KAgi8x?=
- =?us-ascii?Q?rAc1ghZacqt3MX3EGZBi3OmUTI6uSHi2EY675PrcahjUTAf5qKRCivi19zco?=
- =?us-ascii?Q?HHbGaRx8MzCT1pykfiFC/HY4uN8ijvoh/gifO8PwA1vDUkMaMQSgQD1qOxN5?=
- =?us-ascii?Q?50VeFd7W+jlRnXfTmHL19502w+1Vze6gfBelPCTn98PcV/pPl93uaaiBnEKh?=
- =?us-ascii?Q?vP5aHmH9SrRJHTMhxiUkFMCjAzA+A1TrJwl2xZCrotU+m9swNaN1H3D/eyqw?=
- =?us-ascii?Q?+SxSUcAGjaTwWYhU7ls/WvHdGX1yJyrLVFxMPqYl0FJWsxUrelehl0gVsaDd?=
- =?us-ascii?Q?MbqvzTBDzYDDyjH8uKSfOjqXKDMd/cENpQdqMJPkL7OwLacjFDjmXPDJORDN?=
- =?us-ascii?Q?t9+GV5kTWxIIFH1zW5erxbvr7ygHiUZrxtxwtAYPIeVorGDmayI8RYmbM+N0?=
- =?us-ascii?Q?AquuRk+qF/ucGGM3cotQLzVIK8Ehmki09zJgrnIjRZ0voutY+kJrXLW8FVa+?=
- =?us-ascii?Q?LCslY++yoQ5PjXNMaFCDYPg6TJzarBhey8sBMYk0kaPCJm2W/rQHqMh/5gPy?=
- =?us-ascii?Q?nZQ3TLHr8HfLgB8UOCoYI4BCMVF6ZnFrym5fUADT1414EIVWSdP4HWQvAOgE?=
- =?us-ascii?Q?fVQc/eIxvv9k9YdwHdOBuFl1onxZKjm5dvnssMcxsMPzhRjP29Va21CN+5Bn?=
- =?us-ascii?Q?KUvC8AgTpxlQuYCXR8RPATqw0isr9ONODs2WKVWNpJEljjx+ikwUTcjHXRtV?=
- =?us-ascii?Q?kra/31LH6axGToPy0Umqmng3?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 34ca23fe-a2ab-4a4f-a637-08d903d2a99c
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2021 08:02:37.7654
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YuI0InDgfOpoFM2oLcyu0CeADpePLRpeQhQu8cBiMrlqIzZ0Il7mTkscwzOqSzx1elrX4z3LdIEfOFV1t31NuQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5184
+In-Reply-To: <a09830f8-b08f-9b80-8f75-17f13088ff6d@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-gpiod_set_value_cansleep() does NULL pointer check for passed in
-gpio descriptor's pointer, so it's unnecessary to do that check
-before calling that function. This patch drops those checks from
-this panel driver.
+On 4/20/21 3:32 PM, Keqian Zhu wrote:
+> Hi Baolu,
+> 
+> Cheers for the your quick reply.
+> 
+> On 2021/4/20 10:09, Lu Baolu wrote:
+>> Hi Keqian,
+>>
+>> On 4/20/21 9:25 AM, Keqian Zhu wrote:
+>>> Hi Baolu,
+>>>
+>>> On 2021/4/19 21:33, Lu Baolu wrote:
+>>>> Hi Keqian,
+>>>>
+>>>> On 2021/4/19 17:32, Keqian Zhu wrote:
+>>>>>>> +EXPORT_SYMBOL_GPL(iommu_split_block);
+>>>>>> Do you really have any consumers of this interface other than the dirty
+>>>>>> bit tracking? If not, I don't suggest to make this as a generic IOMMU
+>>>>>> interface.
+>>>>>>
+>>>>>> There is an implicit requirement for such interfaces. The
+>>>>>> iommu_map/unmap(iova, size) shouldn't be called at the same time.
+>>>>>> Currently there's no such sanity check in the iommu core. A poorly
+>>>>>> written driver could mess up the kernel by misusing this interface.
+>>>>> Yes, I don't think up a scenario except dirty tracking.
+>>>>>
+>>>>> Indeed, we'd better not make them as a generic interface.
+>>>>>
+>>>>> Do you have any suggestion that underlying iommu drivers can share these code but
+>>>>> not make it as a generic iommu interface?
+>>>>>
+>>>>> I have a not so good idea. Make the "split" interfaces as a static function, and
+>>>>> transfer the function pointer to start_dirty_log. But it looks weird and inflexible.
+>>>>
+>>>> I understand splitting/merging super pages is an optimization, but not a
+>>>> functional requirement. So is it possible to let the vendor iommu driver
+>>>> decide whether splitting super pages when starting dirty bit tracking
+>>>> and the opposite operation during when stopping it? The requirement for
+>>> Right. If I understand you correct, actually that is what this series does.
+>>
+>> I mean to say no generic APIs, jut do it by the iommu subsystem itself.
+>> It's totally transparent to the upper level, just like what map() does.
+>> The upper layer doesn't care about either super page or small page is
+>> in use when do a mapping, right?
+>>
+>> If you want to consolidate some code, how about putting them in
+>> start/stop_tracking()?
+> 
+> Yep, this reminds me. What we want to reuse is the logic of "chunk by chunk" in split().
+> We can implement switch_dirty_log to be "chunk by chunk" too (just the same as sync/clear),
+> then the vendor iommu driver can invoke it's own private implementation of split().
+> So we can completely remove split() in the IOMMU core layer.
+> 
+> example code logic
+> 
+> iommu.c:
+> switch_dirty_log(big range) {
+>      for_each_iommu_page(big range) {
+>            ops->switch_dirty_log(iommu_pgsize)
+>      }
+> }
+> 
+> vendor iommu driver:
+> switch_dirty_log(iommu_pgsize) {
+> 
+>      if (enable) {
+>          ops->split_block(iommu_pgsize)
+>          /* And other actions, such as enable hardware capability */
+>      } else {
+>          for_each_continuous_physical_address(iommu_pgsize)
+>              ops->merge_page()
+>      }
+> }
+> 
+> Besides, vendor iommu driver can invoke split() in clear_dirty_log instead of in switch_dirty_log.
+> The benefit is that we usually clear dirty log gradually during dirty tracking, then we can split
+> large page mapping gradually, which speedup start_dirty_log and make less side effect on DMA performance.
+> 
+> Does it looks good for you?
 
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Thierry Reding <thierry.reding@gmail.com>
-Cc: Sam Ravnborg <sam@ravnborg.org>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Signed-off-by: Liu Ying <victor.liu@nxp.com>
----
- drivers/gpu/drm/panel/panel-lvds.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Yes. It's clearer now.
 
-diff --git a/drivers/gpu/drm/panel/panel-lvds.c b/drivers/gpu/drm/panel/panel-lvds.c
-index 59a8d99..19f11fa 100644
---- a/drivers/gpu/drm/panel/panel-lvds.c
-+++ b/drivers/gpu/drm/panel/panel-lvds.c
-@@ -50,8 +50,7 @@ static int panel_lvds_unprepare(struct drm_panel *panel)
- {
- 	struct panel_lvds *lvds = to_panel_lvds(panel);
- 
--	if (lvds->enable_gpio)
--		gpiod_set_value_cansleep(lvds->enable_gpio, 0);
-+	gpiod_set_value_cansleep(lvds->enable_gpio, 0);
- 
- 	if (lvds->supply)
- 		regulator_disable(lvds->supply);
-@@ -74,8 +73,7 @@ static int panel_lvds_prepare(struct drm_panel *panel)
- 		}
- 	}
- 
--	if (lvds->enable_gpio)
--		gpiod_set_value_cansleep(lvds->enable_gpio, 1);
-+	gpiod_set_value_cansleep(lvds->enable_gpio, 1);
- 
- 	return 0;
- }
--- 
-2.7.4
+> 
+> Thanks,
+> Keqian
+> 
 
+Best regards,
+baolu
