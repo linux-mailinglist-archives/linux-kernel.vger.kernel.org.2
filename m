@@ -2,87 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 604F5364F64
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 02:18:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B142364F71
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 02:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233339AbhDTAS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 20:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232527AbhDTASz (ORCPT
+        id S230334AbhDTA0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 20:26:36 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16136 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229758AbhDTA0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 20:18:55 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 529FBC06174A;
-        Mon, 19 Apr 2021 17:18:24 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id o13-20020a9d404d0000b029028e0a0ae6b4so15268786oti.10;
-        Mon, 19 Apr 2021 17:18:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=fP3aa6c5tIgwFmEx8ak6noxZ6ifeoBFJ+haYU+phzpY=;
-        b=sniyFxZ8Eru1SuAp0l95bQxJLZtphlBLnYCJyiLXe6WXSuqhABFfP/b5atSWIhmeSg
-         /KgXUd5VYh3oyAPry9dGoN0FfeFH0gae5MIq4hVADNbkSaJNYCV/QXKASJpTd1RMco4Q
-         mgYpZiLkGUATmqrB0YMTgybowDfBSEEM08q422I2nMJL+iQ57UnGd7vWoZ7RyuCmrZdz
-         MBYnpw8X1Uq24GCEDHx1I9v4ppbXU0MYXxcN+avV0kttGUrKyB2EnG4Dwk5trecVMzfS
-         +gW22i9SLvmhieFVI1v+519SyOQp2AdAro4YFYcb58Le57TQmy0fDNO6xoP770/E9smE
-         e5fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=fP3aa6c5tIgwFmEx8ak6noxZ6ifeoBFJ+haYU+phzpY=;
-        b=ln6jKbvYhQNnUndYQdY6Ci//pzl8nVgTU3xpp2iRy9+OXW1vbCBOnJTQ+KlmxOgPyk
-         cSm92veXCLj2v6ZbpMhU581XasMCvDHvarI/vkHsKRhmG0B3dQZ6snfQUUDrhHpmPCtH
-         QsySyUDuU/mTLfA9hHhUqFBZsCNGwORlQJrMo2nxnqiOslbm3vLSGaj24AqJXGvkJ/zV
-         hb2aIxY9/GI47hJRVG79M6QeD1l8XG2FiiSCtscnYOgOQKiuLDgzsn1cnwYYWFI/8RCR
-         /7Gf39EDVqyoJzqaKulQhRArsV40yzAmONw9pzIAEoyoaftgwNrf4rL2rUIzLWOvVCAu
-         i/vQ==
-X-Gm-Message-State: AOAM531m0McuYZ28UL3BEj7k/TB8PwyxVG0MlEhYv6TyEMO5hT7PzG5Y
-        jf8tA499REp6YmHXxbjCsYM=
-X-Google-Smtp-Source: ABdhPJzcaTvUVzz7bcFmkqGlJUjab5PcSkC45gei+2yAE+Q7UoBlkEZk2Bchua+mviGmTZ36eH8xlA==
-X-Received: by 2002:a05:6830:1e3a:: with SMTP id t26mr3729606otr.134.1618877903823;
-        Mon, 19 Apr 2021 17:18:23 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c7sm3203784oot.42.2021.04.19.17.18.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 19 Apr 2021 17:18:23 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 19 Apr 2021 17:18:22 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.11 000/122] 5.11.16-rc1 review
-Message-ID: <20210420001822.GB218430@roeck-us.net>
-References: <20210419130530.166331793@linuxfoundation.org>
+        Mon, 19 Apr 2021 20:26:32 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FPPXj076pzmdWf;
+        Tue, 20 Apr 2021 08:23:01 +0800 (CST)
+Received: from SWX921481.china.huawei.com (10.126.200.79) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 20 Apr 2021 08:25:52 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <tim.c.chen@linux.intel.com>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <rjw@rjwysocki.net>,
+        <vincent.guittot@linaro.org>, <bp@alien8.de>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <lenb@kernel.org>, <peterz@infradead.org>,
+        <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <mgorman@suse.de>
+CC:     <msys.mizuma@gmail.com>, <valentin.schneider@arm.com>,
+        <gregkh@linuxfoundation.org>, <jonathan.cameron@huawei.com>,
+        <juri.lelli@redhat.com>, <mark.rutland@arm.com>,
+        <sudeep.holla@arm.com>, <aubrey.li@linux.intel.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        <x86@kernel.org>, <xuwei5@huawei.com>, <prime.zeng@hisilicon.com>,
+        <guodong.xu@linaro.org>, <yangyicong@huawei.com>,
+        <liguozhu@hisilicon.com>, <linuxarm@openeuler.org>,
+        <hpa@zytor.com>, Barry Song <song.bao.hua@hisilicon.com>
+Subject: [RFC PATCH v6 0/4] scheduler: expose the topology of clusters and add cluster scheduler
+Date:   Tue, 20 Apr 2021 12:18:40 +1200
+Message-ID: <20210420001844.9116-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210419130530.166331793@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.200.79]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 03:04:40PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.11.16 release.
-> There are 122 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 21 Apr 2021 13:05:09 +0000.
-> Anything received after that time might be too late.
-> 
+ARM64 server chip Kunpeng 920 has 6 or 8 clusters in each NUMA node, and each
+cluster has 4 cpus. All clusters share L3 cache data while each cluster has
+local L3 tag. On the other hand, each cluster will share some internal system
+bus. This means cache is much more affine inside one cluster than across
+clusters.
 
-Build results:
-	total: 155 pass: 155 fail: 0
-Qemu test results:
-	total: 461 pass: 461 fail: 0
+    +-----------------------------------+                          +---------+
+    |  +------+    +------+            +---------------------------+         |
+    |  | CPU0 |    | cpu1 |             |    +-----------+         |         |
+    |  +------+    +------+             |    |           |         |         |
+    |                                   +----+    L3     |         |         |
+    |  +------+    +------+   cluster   |    |    tag    |         |         |
+    |  | CPU2 |    | CPU3 |             |    |           |         |         |
+    |  +------+    +------+             |    +-----------+         |         |
+    |                                   |                          |         |
+    +-----------------------------------+                          |         |
+    +-----------------------------------+                          |         |
+    |  +------+    +------+             +--------------------------+         |
+    |  |      |    |      |             |    +-----------+         |         |
+    |  +------+    +------+             |    |           |         |         |
+    |                                   |    |    L3     |         |         |
+    |  +------+    +------+             +----+    tag    |         |         |
+    |  |      |    |      |             |    |           |         |         |
+    |  +------+    +------+             |    +-----------+         |         |
+    |                                   |                          |         |
+    +-----------------------------------+                          |   L3    |
+                                                                   |   data  |
+    +-----------------------------------+                          |         |
+    |  +------+    +------+             |    +-----------+         |         |
+    |  |      |    |      |             |    |           |         |         |
+    |  +------+    +------+             +----+    L3     |         |         |
+    |                                   |    |    tag    |         |         |
+    |  +------+    +------+             |    |           |         |         |
+    |  |      |    |      |            ++    +-----------+         |         |
+    |  +------+    +------+            |---------------------------+         |
+    +-----------------------------------|                          |         |
+    +-----------------------------------|                          |         |
+    |  +------+    +------+            +---------------------------+         |
+    |  |      |    |      |             |    +-----------+         |         |
+    |  +------+    +------+             |    |           |         |         |
+    |                                   +----+    L3     |         |         |
+    |  +------+    +------+             |    |    tag    |         |         |
+    |  |      |    |      |             |    |           |         |         |
+    |  +------+    +------+             |    +-----------+         |         |
+    |                                   |                          |         |
+    +-----------------------------------+                          |         |
+    +-----------------------------------+                          |         |
+    |  +------+    +------+             +--------------------------+         |
+    |  |      |    |      |             |   +-----------+          |         |
+    |  +------+    +------+             |   |           |          |         |
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Guenter
+There is a similar need for clustering in x86.  Some x86 cores could share L2 caches
+that is similar to the cluster in Kupeng 920 (e.g. on Jacobsville there are 6 clusters
+of 4 Atom cores, each cluster sharing a separate L2, and 24 cores sharing L3).  
+
+Having a sched_domain for clusters will bring two aspects of improvement:
+1. spreading unrelated tasks among clusters, which decreases the contention of resources
+and improve the throughput.
+unrelated tasks might be put randomly without cluster sched_domain:
++-------------------+            +-----------------+
+| +----+   +----+   |            |                 |
+| |task|   |task|   |            |                 |
+| |1   |   |2   |   |            |                 |
+| +----+   +----+   |            |                 |
+|                   |            |                 |
+|       cluster1    |            |     cluster2    |
++-------------------+            +-----------------+
+
+but with cluster sched_domain, they are likely to spread due to LB:
++-------------------+            +-----------------+
+| +----+            |            | +----+          |
+| |task|            |            | |task|          |
+| |1   |            |            | |2   |          |
+| +----+            |            | +----+          |
+|                   |            |                 |
+|       cluster1    |            |     cluster2    |
++-------------------+            +-----------------+
+
+2. gathering related tasks within a cluster, which improves the cache affinity of tasks
+talking with each other.
+Without cluster sched_domain, related tasks might be put randomly. In case task1-8 have
+relationship as below:
+Task1 talks with task5
+Task2 talks with task6
+Task3 talks with task7
+Task4 talks with task8
+With the tuning of select_idle_cpu() to scan local cluster first, those tasks might
+get a chance to be gathered like:
++---------------------------+    +----------------------+
+| +----+        +-----+     |    | +----+      +-----+  |
+| |task|        |task |     |    | |task|      |task |  |
+| |1   |        | 5   |     |    | |3   |      |7    |  |
+| +----+        +-----+     |    | +----+      +-----+  |
+|                           |    |                      |
+|       cluster1            |    |     cluster2         |
+|                           |    |                      |
+|                           |    |                      |
+| +-----+       +------+    |    | +-----+     +------+ |
+| |task |       | task |    |    | |task |     |task  | |
+| |2    |       |  6   |    |    | |4    |     |8     | |
+| +-----+       +------+    |    | +-----+     +------+ |
++---------------------------+    +----------------------+
+Otherwise, the result might be:
++---------------------------+    +----------------------+
+| +----+        +-----+     |    | +----+      +-----+  |
+| |task|        |task |     |    | |task|      |task |  |
+| |1   |        | 2   |     |    | |5   |      |6    |  |
+| +----+        +-----+     |    | +----+      +-----+  |
+|                           |    |                      |
+|       cluster1            |    |     cluster2         |
+|                           |    |                      |
+|                           |    |                      |
+| +-----+       +------+    |    | +-----+     +------+ |
+| |task |       | task |    |    | |task |     |task  | |
+| |3    |       |  4   |    |    | |7    |     |8     | |
+| +-----+       +------+    |    | +-----+     +------+ |
++---------------------------+    +----------------------+
+
+-v6:
+  * added topology_cluster_cpumask() for x86, code provided by Tim.
+
+  * emulated a two-level spreading/packing heuristic by only scanning cluster
+    in wake_affine path for tasks running in same LLC(also NUMA).
+
+    This partially addressed Dietmar's comment in RFC v3:
+    "In case we would like to further distinguish between llc-packing and
+     even narrower (cluster or MC-L2)-packing, we would introduce a 2. level
+     packing vs. spreading heuristic further down in sis().
+   
+     IMHO, Barry's current implementation doesn't do this right now. Instead
+     he's trying to pack on cluster first and if not successful look further
+     among the remaining llc CPUs for an idle CPU."
+
+  * adjusted the hackbench parameter to make relatively low and high load.
+    previous patchsets with "-f 10" ran under an extremely high load with
+    hundreds of threads, which seems not real use cases.
+
+    This also addressed Vincent's question in RFC v4:
+    "In particular, I'm still not convinced that the modification of the wakeup
+    path is the root of the hackbench improvement; especially with g=14 where
+    there should not be much idle CPUs with 14*40 tasks on at most 32 CPUs."
+
+-v5:
+  * split "add scheduler level for clusters" into two patches to evaluate the
+    impact of spreading and gathering separately;
+  * add a tracepoint of select_idle_cpu for debug purpose; add bcc script in
+    commit log;
+  * add cluster_id = -1 in reset_cpu_topology()
+  * rebased to tip/sched/core
+
+-v4:
+  * rebased to tip/sched/core with the latest unified code of select_idle_cpu
+  * added Tim's patch for x86 Jacobsville
+  * also added benchmark data of spreading unrelated tasks
+  * avoided the iteration of sched_domain by moving to static_key(addressing
+    Vincent's comment
+  * used acpi_cpu_id for acpi_find_processor_node(addressing Masa's comment)
+
+Barry Song (2):
+  scheduler: add scheduler level for clusters
+  scheduler: scan idle cpu in cluster for tasks within one LLC
+
+Jonathan Cameron (1):
+  topology: Represent clusters of CPUs within a die
+
+Tim Chen (1):
+  scheduler: Add cluster scheduler level for x86
+
+ Documentation/admin-guide/cputopology.rst | 26 +++++++++++--
+ arch/arm64/Kconfig                        |  7 ++++
+ arch/arm64/kernel/topology.c              |  2 +
+ arch/x86/Kconfig                          |  8 ++++
+ arch/x86/include/asm/smp.h                |  7 ++++
+ arch/x86/include/asm/topology.h           |  2 +
+ arch/x86/kernel/cpu/cacheinfo.c           |  1 +
+ arch/x86/kernel/cpu/common.c              |  3 ++
+ arch/x86/kernel/smpboot.c                 | 43 ++++++++++++++++++++-
+ block/blk-mq.c                            |  2 +-
+ drivers/acpi/pptt.c                       | 63 +++++++++++++++++++++++++++++++
+ drivers/base/arch_topology.c              | 15 ++++++++
+ drivers/base/topology.c                   | 10 +++++
+ include/linux/acpi.h                      |  5 +++
+ include/linux/arch_topology.h             |  5 +++
+ include/linux/sched/cluster.h             | 19 ++++++++++
+ include/linux/sched/sd_flags.h            |  9 +++++
+ include/linux/sched/topology.h            | 12 +++++-
+ include/linux/topology.h                  | 13 +++++++
+ kernel/sched/core.c                       | 29 ++++++++++++--
+ kernel/sched/fair.c                       | 51 +++++++++++++++----------
+ kernel/sched/sched.h                      |  4 ++
+ kernel/sched/topology.c                   | 18 +++++++++
+ 23 files changed, 324 insertions(+), 30 deletions(-)
+ create mode 100644 include/linux/sched/cluster.h
+
+-- 
+1.8.3.1
+
