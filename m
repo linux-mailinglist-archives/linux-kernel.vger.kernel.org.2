@@ -2,181 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D29365F78
+	by mail.lfdr.de (Postfix) with ESMTP id DE442365F79
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 20:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233761AbhDTSfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 14:35:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233654AbhDTSeu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 14:34:50 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92102C06138B;
-        Tue, 20 Apr 2021 11:34:16 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id w3so59796741ejc.4;
-        Tue, 20 Apr 2021 11:34:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Ka7h2yhzf5rJ0AJdlIXPMvLZF9eZ+jtPp29EnOmIYbU=;
-        b=oKWLl9k0s7WTJasrDiDiAxKaZzVOW4BwfeeHeegWvS5lhoAyu71WNwbvZnxM/16GQD
-         Pyix+a1HY9AUESgF0zPeRFZQfCSkYtMmv0hEqOel51zdqLfIFPxruajDiAZQ/YOqf6eb
-         z7W8hsZR+NcVREh2l6JM0x27BPc9+FwqtJTQvoqwIF5nVitTE5LN9uSvw4Bz/s83v2NU
-         Cj8GzUNhJ9WZLN2YoO/JuIc6feN8Hglh9oAR+g5jGb/YpXXttSyPz8kAz1vbOgxEk3sw
-         qTvwBP6Ms0/hEzdSEOgmYQW6DYX3qPANNA/WuyfmM4VyTj1WEzBkUkvUTTNc8zhT4Tf0
-         so5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Ka7h2yhzf5rJ0AJdlIXPMvLZF9eZ+jtPp29EnOmIYbU=;
-        b=folzH3lbQqfRQYguDaInjB+8ZgJwDggMDR0EWNDWe8irH3PC2UE7TcrDnbvO+1VBAI
-         UNgCw/prX33H//NbhGbjS9y3zT4w7aLXVtHF+ZP+w1jI3bS5oK7D0fwc2N4mBT4Mvc5V
-         1o/LpO1BagT3athvdCKXRuxeSZPcGChojhTTAHnHtJfSOIRtUXgD4lgcBDUausnyI4Mh
-         9jDa/HVLZbXboAfV21zRmox6Xs8wGVKPwcaGxrqXNC2LuiW09QVqZ5pe0nH6RL2s6y/R
-         vWfrBiCijDtql9IvlpDF1pSDgmohev+M7vQ2imdGDS2HL6ONF+M7bzwsz5C0fmBYeW2Z
-         HeyQ==
-X-Gm-Message-State: AOAM5320tssxivPlv1YGfJNjZwPsPA2uN0KMLhwg2wTqId/fztpl5yED
-        HWzOKGi3FgACbj2LhHMLkXc=
-X-Google-Smtp-Source: ABdhPJwv33CLEGrYqkVhLcx/Zsnzo17NjXob6cnEp3+3K39m61LeH+SiigeB+XdpgiNkkvWZCufheQ==
-X-Received: by 2002:a17:907:7283:: with SMTP id dt3mr28992621ejc.47.1618943655052;
-        Tue, 20 Apr 2021 11:34:15 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
-        by smtp.googlemail.com with ESMTPSA id n10sm13357141ejg.124.2021.04.20.11.34.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 11:34:14 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>, Rob Herring <robh@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [thermal PATCH v15 9/9] dt-bindings: thermal: tsens: Document ipq8064 bindings
-Date:   Tue, 20 Apr 2021 20:33:43 +0200
-Message-Id: <20210420183343.2272-10-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210420183343.2272-1-ansuelsmth@gmail.com>
-References: <20210420183343.2272-1-ansuelsmth@gmail.com>
+        id S233245AbhDTSfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 14:35:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59126 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233587AbhDTSey (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 14:34:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3055361002;
+        Tue, 20 Apr 2021 18:34:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618943662;
+        bh=em6cx2HBxMwbhr6KaCllMTUwubhy8v8uRwj/RBaSigs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=a+7/zfIUj3cUkwkz8a8LdV1bB3rMoS404I/qpQ6nWScZNcmnHWVJYDsgiyHbs/yAc
+         4T/oS7l7fNHWbir/e8V3oFJ0zBgVCkrsqKHBmgqjoa0B9DW1Kvv6u/UrfEWgUcfk2w
+         qSwmoatNxQkeOC+CDgHJgHYxmIBRpcjh3j8ZA60gMvQIvbO6B2DZgipb1n+33+00JG
+         VwcWkpdoNK6olKESeBIvP208KaIEyBOaBP7PrwHkRyJV60aforGAmeV3/rWfgRKgXG
+         nwb0wp0IPHW0fT1F9y4l2HLlbUqIAoGlzlokPDGTm2lLMy9RAJjTIzPMexHYdd7bqt
+         +5Gr54GLIMtsA==
+Date:   Tue, 20 Apr 2021 11:34:20 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Hayes Wang <hayeswang@realtek.com>
+Cc:     "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        nic_swsd <nic_swsd@realtek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
+Subject: Re: [PATCH net-next 4/6] r8152: support new chips
+Message-ID: <20210420113420.79d7c65a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <0de9842749db4718b8f45a0f2fff7967@realtek.com>
+References: <1394712342-15778-350-Taiwan-albertk@realtek.com>
+        <1394712342-15778-354-Taiwan-albertk@realtek.com>
+        <20210416145017.1946f013@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <0de9842749db4718b8f45a0f2fff7967@realtek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the use of bindings used for msm8960 tsens based devices.
-msm8960 use the same gcc regs and is set as a child of the qcom gcc.
+On Tue, 20 Apr 2021 07:00:39 +0000 Hayes Wang wrote:
+> > > @@ -6878,7 +8942,11 @@ static int rtl8152_probe(struct usb_interface *intf,  
+> > >  	set_ethernet_addr(tp);
+> > >
+> > >  	usb_set_intfdata(intf, tp);
+> > > -	netif_napi_add(netdev, &tp->napi, r8152_poll, RTL8152_NAPI_WEIGHT);
+> > > +
+> > > +	if (tp->support_2500full)
+> > > +		netif_napi_add(netdev, &tp->napi, r8152_poll, 256);  
+> > 
+> > why 256? We have 100G+ drivers all using 64 what's special here?
+> >   
+> > > +	else
+> > > +		netif_napi_add(netdev, &tp->napi, r8152_poll, 64);  
+> 
+> We test 2.5G Ethernet on some embedded platform.
+> And we find 64 is not large enough, and the performance
+> couldn't reach 2.5 G bits/s.
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../bindings/thermal/qcom-tsens.yaml          | 56 ++++++++++++++++---
- 1 file changed, 48 insertions(+), 8 deletions(-)
+Did you manage to identify what the cause is?
 
-diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-index d7be931b4..2e762596b 100644
---- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-+++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-@@ -19,6 +19,11 @@ description: |
- properties:
-   compatible:
-     oneOf:
-+      - description: msm9860 TSENS based
-+        items:
-+          - enum:
-+              - qcom,ipq8064-tsens
-+
-       - description: v0.1 of TSENS
-         items:
-           - enum:
-@@ -70,7 +75,9 @@ properties:
-     maxItems: 2
-     items:
-       - const: calib
--      - const: calib_sel
-+      - enum:
-+          - calib_backup
-+          - calib_sel
- 
-   "#qcom,sensors":
-     description:
-@@ -85,12 +92,20 @@ properties:
-       Number of cells required to uniquely identify the thermal sensors. Since
-       we have multiple sensors this is set to 1
- 
-+required:
-+  - compatible
-+  - interrupts
-+  - interrupt-names
-+  - "#thermal-sensor-cells"
-+  - "#qcom,sensors"
-+
- allOf:
-   - if:
-       properties:
-         compatible:
-           contains:
-             enum:
-+              - qcom,ipq8064-tsens
-               - qcom,msm8916-tsens
-               - qcom,msm8974-tsens
-               - qcom,msm8976-tsens
-@@ -111,17 +126,42 @@ allOf:
-         interrupt-names:
-           minItems: 2
- 
--required:
--  - compatible
--  - reg
--  - "#qcom,sensors"
--  - interrupts
--  - interrupt-names
--  - "#thermal-sensor-cells"
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,tsens-v0_1
-+              - qcom,tsens-v1
-+              - qcom,tsens-v2
-+
-+    then:
-+      required:
-+        - reg
- 
- additionalProperties: false
- 
- examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    // Example msm9860 based SoC (ipq8064):
-+    gcc: clock-controller {
-+
-+           /* ... */
-+
-+           tsens: thermal-sensor {
-+                compatible = "qcom,ipq8064-tsens";
-+
-+                 nvmem-cells = <&tsens_calib>, <&tsens_calib_backup>;
-+                 nvmem-cell-names = "calib", "calib_backup";
-+                 interrupts = <GIC_SPI 178 IRQ_TYPE_LEVEL_HIGH>;
-+                 interrupt-names = "uplow";
-+
-+                 #qcom,sensors = <11>;
-+                 #thermal-sensor-cells = <1>;
-+          };
-+    };
-+
-   - |
-     #include <dt-bindings/interrupt-controller/arm-gic.h>
-     // Example 1 (legacy: for pre v1 IP):
--- 
-2.30.2
+NAPI will keep calling your driver if the budget was exhausted, the
+only difference between 64 and 256 should be the setup cost of the
+driver's internal loop. And perhaps more frequent GRO flush - what's
+the CONFIG_HZ set to?
 
