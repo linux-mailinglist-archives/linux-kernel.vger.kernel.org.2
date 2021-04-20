@@ -2,68 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57236365F2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 20:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 489A2365F32
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 20:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233537AbhDTS2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 14:28:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233092AbhDTS2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 14:28:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CE106052B;
-        Tue, 20 Apr 2021 18:27:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618943271;
-        bh=KKqI0CtdBHnooIUsDeB/ucsXCbS8kOelphJ+U2dDNfE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tMeUBUM/+jZCj2JdxtT/7Fdp9QL90Wfk11n0DYy8kF9zUtstSlzZN75u9JANQoyCf
-         s2eYbxuLp8hFXHKeEoM9SMAAnGuNGH9IGy6e8ZQMGVfM0Efc5qkoAMRe7GbWk0CwiJ
-         8fCgLcHp90AtT5MsUZU5H8POYsc9S/wk1n/xtaAbubyT3EOtVCmgRVaClPCRLP81pa
-         IHbMn+pBSQ6ORV5tVGXFHbVlVtXUqXfWrWuayR1YfIXBO+af2Pg/2dgIIuqvX7ptY5
-         to6xfFGwQSclnbqdu7mXMM+edDGlcydVnovqox9ILTBOjqX/IaaOadJbBCvu1jj0xX
-         4ekaxTRy6V+og==
-Date:   Tue, 20 Apr 2021 11:27:49 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Salvatore Bonaccorso <carnil@debian.org>
-Cc:     Chao Yu <yuchao0@huawei.com>,
-        butt3rflyh4ck <butterflyhuangxx@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH] f2fs: fix to avoid out-of-bounds memory access
-Message-ID: <YH8dJQCJm7iqsC+a@google.com>
-References: <20210322114730.71103-1-yuchao0@huawei.com>
- <CAFcO6XMak8GSRqQbZ3nPdGvV_eM6DL0+P0z1X2y0G9hkrccaCg@mail.gmail.com>
- <beff8953-d91a-c677-f50a-3aba27c15dde@huawei.com>
- <YH8SvK+OLSKAEYpJ@eldamar.lan>
+        id S233554AbhDTS2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 14:28:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58442 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233513AbhDTS2j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 14:28:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618943287;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rt/t+I/KtcZ1bXATJ8JrmYabWuJFiLedZQY+lkzmzzc=;
+        b=CpfmGmizcXJcUzDNySa1winMtKbqdqqmz8rZt6UK+6aMxd4W4keogO/803wsMS0/7TsFEx
+        H6eftKtmM+Slvf1lBxImFwOhc30j2AsSJbdMNTGxEtx0G06pOIKf3tcH45z8U4dZYMIZPO
+        1n1ibAQNoD0c7EF0IkfzJFA3QQj/MbI=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-597-zZt0hFhrPd-hd7hLzEQYDQ-1; Tue, 20 Apr 2021 14:27:54 -0400
+X-MC-Unique: zZt0hFhrPd-hd7hLzEQYDQ-1
+Received: by mail-ed1-f70.google.com with SMTP id t11-20020aa7d4cb0000b0290382e868be07so13572266edr.20
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 11:27:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rt/t+I/KtcZ1bXATJ8JrmYabWuJFiLedZQY+lkzmzzc=;
+        b=s5mxy12RTmVNnFw39Ioyi4xEDd2LR+kcSpRG6obJFRODdAJ8PiBmMeOpLyqcpATnah
+         LMZF0Hi3Zpam1SQ/dPRPS4bQZPfPiE5dUTDxpnU0cZtMGKEuEhO5O412NIRd6bS/b+Bo
+         G2/nr/nEHdn5iJhqB1vNT9oGh/vOTsucsFdE1nwLbvsren8flZUXxPAjL7bVTXPEGgYW
+         pddSssMBV+rMOHwTS4KMGOCzr26EZZIyQz6Tw7OrXq1ltjfMq+cjUV/EKF20Gs3LEBGr
+         lDMp4eA0uXOa08Q7YX1Ur5s+oMzJehOy3NOs1kWNMrI57K3d+qdLmC7TG5245oAuvTfO
+         l+Ww==
+X-Gm-Message-State: AOAM530bvsUNy++iJsVd3Whg5RuL0SfyitUPSLVB7G8noGJu1XBpELYk
+        nWnjA9/0K6MVqR9ZdFQAbJIufKfoIgOekWXRfxgQDJqxS/TN10IT4bTZa4roXlUM8haVbQkWZaV
+        WgHgbbvjXgIiwEc9EaQ0DCKqN
+X-Received: by 2002:a17:907:3ac1:: with SMTP id fi1mr28976532ejc.139.1618943272712;
+        Tue, 20 Apr 2021 11:27:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxEdOZkYCgIf/rLx/m6BBXcl0kUNchsFF0jNoefPiJKHN2UivzWKjaJQk29HdPJtEGSlDj93A==
+X-Received: by 2002:a17:907:3ac1:: with SMTP id fi1mr28976513ejc.139.1618943272489;
+        Tue, 20 Apr 2021 11:27:52 -0700 (PDT)
+Received: from [192.168.10.118] ([93.56.169.140])
+        by smtp.gmail.com with ESMTPSA id li16sm13295075ejb.101.2021.04.20.11.27.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 11:27:51 -0700 (PDT)
+Subject: Re: [PATCH 0/3] KVM: x86: guest interface for SEV live migration
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        srutherford@google.com, joro@8bytes.org, brijesh.singh@amd.com,
+        thomas.lendacky@amd.com, venu.busireddy@oracle.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, Ashish Kalra <ashish.kalra@amd.com>
+References: <20210420112006.741541-1-pbonzini@redhat.com>
+ <YH7wAh0t+eQ5n1M2@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <2b1f1764-bcb0-096a-8d44-aee94f2c85f3@redhat.com>
+Date:   Tue, 20 Apr 2021 20:27:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YH8SvK+OLSKAEYpJ@eldamar.lan>
+In-Reply-To: <YH7wAh0t+eQ5n1M2@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 04/20, Salvatore Bonaccorso wrote:
-> Hi,
+On 20/04/21 17:15, Sean Christopherson wrote:
+> On Tue, Apr 20, 2021, Paolo Bonzini wrote:
+>> Do not return the SEV-ES bit from KVM_GET_SUPPORTED_CPUID unless
+>> the corresponding module parameter is 1, and clear the memory encryption
+>> leaf completely if SEV is disabled.
 > 
-> On Tue, Mar 23, 2021 at 02:43:29PM +0800, Chao Yu wrote:
-> > Hi butt3rflyh4ck,
-> > 
-> > On 2021/3/23 13:48, butt3rflyh4ck wrote:
-> > > Hi, I have tested the patch on 5.12.0-rc4+, it seems to fix the problem.
-> > 
-> > Thanks for helping to test this patch.
+> Impeccable timing, I was planning on refreshing my SEV cleanup series[*] today.
+> There's going to be an annoying conflict with the svm_set_cpu_caps() change
+> (see below), any objecting to folding your unintentional feedback into my series?
+
+That's fine of course.
+
+>> diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
+>> index 888e88b42e8d..e873a60a4830 100644
+>> --- a/arch/x86/kvm/cpuid.h
+>> +++ b/arch/x86/kvm/cpuid.h
+>> @@ -99,6 +99,7 @@ static const struct cpuid_reg reverse_cpuid[] = {
+>>   	[CPUID_7_EDX]         = {         7, 0, CPUID_EDX},
+>>   	[CPUID_7_1_EAX]       = {         7, 1, CPUID_EAX},
+>>   	[CPUID_12_EAX]        = {0x00000012, 0, CPUID_EAX},
+>> +	[CPUID_8000_001F_EAX] = {0x8000001F, 0, CPUID_EAX},
+>>   };
+>>   
+>>   /*
+>> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+>> index cd8c333ed2dc..acdb8457289e 100644
+>> --- a/arch/x86/kvm/svm/svm.c
+>> +++ b/arch/x86/kvm/svm/svm.c
+>> @@ -923,6 +923,13 @@ static __init void svm_set_cpu_caps(void)
+>>   	if (boot_cpu_has(X86_FEATURE_LS_CFG_SSBD) ||
+>>   	    boot_cpu_has(X86_FEATURE_AMD_SSBD))
+>>   		kvm_cpu_cap_set(X86_FEATURE_VIRT_SSBD);
+>> +
+>> +	/* CPUID 0x8000001F */
+>> +	if (sev) {
+>> +		kvm_cpu_cap_set(X86_FEATURE_SEV);
+>> +		if (sev_es)
+>> +			kvm_cpu_cap_set(X86_FEATURE_SEV_ES);
 > 
-> Was this patch applied? I do not see it in mainline (unless
-> miss-checked).
+> Gah, I completely spaced on the module params in my series, which is more
+> problematic than normal because it also moves "sev" and "sev_es" to sev.c.  The
+> easy solution is to add sev_set_cpu_caps().
 
-Not yet. Queue for next merge window.
+Sounds good.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev&id=b862676e371715456c9dade7990c8004996d0d9e
+Paolo
 
-> 
-> Regards,
-> Salvatore
