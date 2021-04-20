@@ -2,162 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00902365A2F
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD7E365A30
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232599AbhDTNd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:33:27 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:45060 "EHLO pegase1.c-s.fr"
+        id S232495AbhDTNdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:33:36 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:40693 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232600AbhDTNdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232601AbhDTNdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 20 Apr 2021 09:33:22 -0400
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FPl3z4k02z9vBKk;
-        Tue, 20 Apr 2021 15:32:47 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 4FPl402GBrz9vBL3;
+        Tue, 20 Apr 2021 15:32:48 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id kny706gwQGVr; Tue, 20 Apr 2021 15:32:47 +0200 (CEST)
+        with ESMTP id CdJ_Rbk7WgIU; Tue, 20 Apr 2021 15:32:48 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FPl3z3ndPz9vBKj;
-        Tue, 20 Apr 2021 15:32:47 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C307A8B80A;
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FPl401SmBz9vBKm;
         Tue, 20 Apr 2021 15:32:48 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 905058B7ED;
+        Tue, 20 Apr 2021 15:32:49 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id iymder7MgE1A; Tue, 20 Apr 2021 15:32:48 +0200 (CEST)
+        with ESMTP id 1E2egr5WWqn7; Tue, 20 Apr 2021 15:32:49 +0200 (CEST)
 Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6A55A8B7ED;
-        Tue, 20 Apr 2021 15:32:48 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 47FDF8B807;
+        Tue, 20 Apr 2021 15:32:49 +0200 (CEST)
 Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 2DA1A6770B; Tue, 20 Apr 2021 13:32:48 +0000 (UTC)
-Message-Id: <0d51620eacf036d683d1a3c41328f69adb601dc0.1618925560.git.christophe.leroy@csgroup.eu>
+        id 28B6B6770B; Tue, 20 Apr 2021 13:32:49 +0000 (UTC)
+Message-Id: <103ed8ee9e5973c958ec1da2d0b0764f69395d01.1618925560.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <0d51620eacf036d683d1a3c41328f69adb601dc0.1618925560.git.christophe.leroy@csgroup.eu>
+References: <0d51620eacf036d683d1a3c41328f69adb601dc0.1618925560.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 1/2] powerpc/64: Fix the definition of the fixmap area
+Subject: [PATCH v2 2/2] powerpc/legacy_serial: Use early_ioremap()
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>,
         chris.packham@alliedtelesis.co.nz
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue, 20 Apr 2021 13:32:48 +0000 (UTC)
+Date:   Tue, 20 Apr 2021 13:32:49 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At the time being, the fixmap area is defined at the top of
-the address space or just below KASAN.
+From: Christophe Leroy <christophe.leroy@c-s.fr>
 
-This definition is not valid for PPC64.
+[    0.000000] ioremap() called early from find_legacy_serial_ports+0x3cc/0x474. Use early_ioremap() instead
 
-For PPC64, use the top of the I/O space.
+find_legacy_serial_ports() is called early from setup_arch(), before
+paging_init(). vmalloc is not available yet, ioremap shouldn't be
+used that early.
 
-Because of circular dependencies, it is not possible to include
-asm/fixmap.h in asm/book3s/64/pgtable.h , so define a fixed size
-AREA at the top of the I/O space for fixmap and ensure during
-build that the size is big enough.
+Use early_ioremap() and switch to a regular ioremap() later.
 
-Fixes: 265c3491c4bc ("powerpc: Add support for GENERIC_EARLY_IOREMAP")
+Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/include/asm/book3s/64/pgtable.h | 4 +++-
- arch/powerpc/include/asm/fixmap.h            | 9 +++++++++
- arch/powerpc/include/asm/nohash/64/pgtable.h | 5 ++++-
- 3 files changed, 16 insertions(+), 2 deletions(-)
+ arch/powerpc/kernel/legacy_serial.c | 33 +++++++++++++++++++++++++----
+ 1 file changed, 29 insertions(+), 4 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/book3s/64/pgtable.h b/arch/powerpc/include/asm/book3s/64/pgtable.h
-index 0c89977ec10b..a666d561b44d 100644
---- a/arch/powerpc/include/asm/book3s/64/pgtable.h
-+++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
-@@ -7,6 +7,7 @@
- #ifndef __ASSEMBLY__
- #include <linux/mmdebug.h>
- #include <linux/bug.h>
-+#include <linux/sizes.h>
- #endif
+diff --git a/arch/powerpc/kernel/legacy_serial.c b/arch/powerpc/kernel/legacy_serial.c
+index f061e06e9f51..8b2c1a8553a0 100644
+--- a/arch/powerpc/kernel/legacy_serial.c
++++ b/arch/powerpc/kernel/legacy_serial.c
+@@ -15,6 +15,7 @@
+ #include <asm/udbg.h>
+ #include <asm/pci-bridge.h>
+ #include <asm/ppc-pci.h>
++#include <asm/early_ioremap.h>
  
- /*
-@@ -324,7 +325,8 @@ extern unsigned long pci_io_base;
- #define  PHB_IO_END	(KERN_IO_START + FULL_IO_SIZE)
- #define IOREMAP_BASE	(PHB_IO_END)
- #define IOREMAP_START	(ioremap_bot)
--#define IOREMAP_END	(KERN_IO_END)
-+#define IOREMAP_END	(KERN_IO_END - FIXADDR_SIZE)
-+#define FIXADDR_SIZE	SZ_32M
+ #undef DEBUG
  
- /* Advertise special mapping type for AGP */
- #define HAVE_PAGE_AGP
-diff --git a/arch/powerpc/include/asm/fixmap.h b/arch/powerpc/include/asm/fixmap.h
-index 8d03c16a3663..947b5b9c4424 100644
---- a/arch/powerpc/include/asm/fixmap.h
-+++ b/arch/powerpc/include/asm/fixmap.h
-@@ -23,12 +23,17 @@
- #include <asm/kmap_size.h>
- #endif
+@@ -34,6 +35,7 @@ static struct legacy_serial_info {
+ 	unsigned int			clock;
+ 	int				irq_check_parent;
+ 	phys_addr_t			taddr;
++	void __iomem			*early_addr;
+ } legacy_serial_infos[MAX_LEGACY_SERIAL_PORTS];
  
-+#ifdef CONFIG_PPC64
-+#define FIXADDR_TOP	(IOREMAP_END + FIXADDR_SIZE)
-+#else
-+#define FIXADDR_SIZE	0
- #ifdef CONFIG_KASAN
- #include <asm/kasan.h>
- #define FIXADDR_TOP	(KASAN_SHADOW_START - PAGE_SIZE)
- #else
- #define FIXADDR_TOP	((unsigned long)(-PAGE_SIZE))
- #endif
-+#endif
- 
- /*
-  * Here we define all the compile-time 'special' virtual
-@@ -50,6 +55,7 @@
-  */
- enum fixed_addresses {
- 	FIX_HOLE,
-+#ifdef CONFIG_PPC32
- 	/* reserve the top 128K for early debugging purposes */
- 	FIX_EARLY_DEBUG_TOP = FIX_HOLE,
- 	FIX_EARLY_DEBUG_BASE = FIX_EARLY_DEBUG_TOP+(ALIGN(SZ_128K, PAGE_SIZE)/PAGE_SIZE)-1,
-@@ -72,6 +78,7 @@ enum fixed_addresses {
- 		       FIX_IMMR_SIZE,
- #endif
- 	/* FIX_PCIE_MCFG, */
-+#endif /* CONFIG_PPC32 */
- 	__end_of_permanent_fixed_addresses,
- 
- #define NR_FIX_BTMAPS		(SZ_256K / PAGE_SIZE)
-@@ -98,6 +105,8 @@ enum fixed_addresses {
- static inline void __set_fixmap(enum fixed_addresses idx,
- 				phys_addr_t phys, pgprot_t flags)
+ static const struct of_device_id legacy_serial_parents[] __initconst = {
+@@ -325,17 +327,16 @@ static void __init setup_legacy_serial_console(int console)
  {
-+	BUILD_BUG_ON(IS_ENABLED(CONFIG_PPC64) && __FIXADDR_SIZE > FIXADDR_SIZE);
+ 	struct legacy_serial_info *info = &legacy_serial_infos[console];
+ 	struct plat_serial8250_port *port = &legacy_serial_ports[console];
+-	void __iomem *addr;
+ 	unsigned int stride;
+ 
+ 	stride = 1 << port->regshift;
+ 
+ 	/* Check if a translated MMIO address has been found */
+ 	if (info->taddr) {
+-		addr = ioremap(info->taddr, 0x1000);
+-		if (addr == NULL)
++		info->early_addr = early_ioremap(info->taddr, 0x1000);
++		if (info->early_addr == NULL)
+ 			return;
+-		udbg_uart_init_mmio(addr, stride);
++		udbg_uart_init_mmio(info->early_addr, stride);
+ 	} else {
+ 		/* Check if it's PIO and we support untranslated PIO */
+ 		if (port->iotype == UPIO_PORT && isa_io_special)
+@@ -353,6 +354,30 @@ static void __init setup_legacy_serial_console(int console)
+ 	udbg_uart_setup(info->speed, info->clock);
+ }
+ 
++static int __init ioremap_legacy_serial_console(void)
++{
++	struct legacy_serial_info *info = &legacy_serial_infos[legacy_serial_console];
++	struct plat_serial8250_port *port = &legacy_serial_ports[legacy_serial_console];
++	void __iomem *vaddr;
 +
- 	if (__builtin_constant_p(idx))
- 		BUILD_BUG_ON(idx >= __end_of_fixed_addresses);
- 	else if (WARN_ON(idx >= __end_of_fixed_addresses))
-diff --git a/arch/powerpc/include/asm/nohash/64/pgtable.h b/arch/powerpc/include/asm/nohash/64/pgtable.h
-index 6cb8aa357191..57cd3892bfe0 100644
---- a/arch/powerpc/include/asm/nohash/64/pgtable.h
-+++ b/arch/powerpc/include/asm/nohash/64/pgtable.h
-@@ -6,6 +6,8 @@
-  * the ppc64 non-hashed page table.
-  */
- 
-+#include <linux/sizes.h>
++	if (legacy_serial_console < 0)
++		return 0;
 +
- #include <asm/nohash/64/pgtable-4k.h>
- #include <asm/barrier.h>
- #include <asm/asm-const.h>
-@@ -54,7 +56,8 @@
- #define  PHB_IO_END	(KERN_IO_START + FULL_IO_SIZE)
- #define IOREMAP_BASE	(PHB_IO_END)
- #define IOREMAP_START	(ioremap_bot)
--#define IOREMAP_END	(KERN_VIRT_START + KERN_VIRT_SIZE)
-+#define IOREMAP_END	(KERN_VIRT_START + KERN_VIRT_SIZE - FIXADDR_SIZE)
-+#define FIXADDR_SIZE	SZ_32M
- 
- 
++	if (!info->early_addr)
++		return 0;
++
++	vaddr = ioremap(info->taddr, 0x1000);
++	if (WARN_ON(!vaddr))
++		return -ENOMEM;
++
++	udbg_uart_init_mmio(vaddr, 1 << port->regshift);
++	early_iounmap(info->early_addr, 0x1000);
++	info->early_addr = NULL;
++
++	return 0;
++}
++early_initcall(ioremap_legacy_serial_console);
++
  /*
+  * This is called very early, as part of setup_system() or eventually
+  * setup_arch(), basically before anything else in this file. This function
 -- 
 2.25.0
 
