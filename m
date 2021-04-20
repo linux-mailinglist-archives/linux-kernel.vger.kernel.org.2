@@ -2,55 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1C83661C0
+	by mail.lfdr.de (Postfix) with ESMTP id DF20C3661C2
 	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 23:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234246AbhDTVuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 17:50:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36412 "EHLO
+        id S234191AbhDTVu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 17:50:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234203AbhDTVun (ORCPT
+        with ESMTP id S234218AbhDTVup (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 17:50:43 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C468C06138E
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 14:50:10 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id e9so3453604plj.2
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 14:50:10 -0700 (PDT)
+        Tue, 20 Apr 2021 17:50:45 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168B3C06138F
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 14:50:11 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id n10so9286842plc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 14:50:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=br6Q9nB7EzUYGhvzSIch8sIAGewUeFhxJoVc038K6FM=;
-        b=Ec+7pf8QFOQGETswMvOwtCRnFSRRBh6lgonx4jun1dk6+8y4PtaKE2ursXiRrg09fb
-         oaXLDuTuNy5OI63T9ZRfLkbe6d9Jiccq/+/AViB8L7ikRzkcy2FO2GXqXL9w7nesdi/K
-         tvVxkFehtsUBOhsmh2vqumM4MHbE1anmyBtjU=
+        bh=TgjLxTMswgoGuX5Ufpd99mf4WDXQ7EH22iq7Xe02XNg=;
+        b=ADzfPOozkAyPGGkprom2jYtHCQwH6uB1cl0/Z+8TbX+7HImHE4WHLpNxw6M8aIx9FA
+         7wRPPnFQT87XvfdZ/kCEuPm2w4Cq1lDCJ9PnLvhiyYZdgpKbpD86kSKKmbHaFFgfpAIB
+         xMD6Bqyefxk0KdY7+oRIlSKLLna05jDv/u910=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=br6Q9nB7EzUYGhvzSIch8sIAGewUeFhxJoVc038K6FM=;
-        b=RDpza5kdMTgr5gpgVnLLP+QRx6ZPemOAej2UsRI+D/PV9TNL5sfUZHIARbnNrJkYd1
-         pTALumiaNqFRkLnxBYVUNGM2HyxuF0GeiU3WcT6n86L72e+pIlK9oIUmNEBqfO0TuSQT
-         tQ/EZ4HZ/OE59VXHAPzWS4DXHUw6s2yiBJJzkS037lg0qw9l+V47M6jJP1R9JlZub7cy
-         QsNCo7LnhcNSPuONNdjIPavzBgP1ypvLsYohtE+OydhdQi6waLhB4rQzS8aXrSb16hFh
-         lz4izzKzMimilHSHIZR6G4qkb9Lv9rMbSDH/Nar+zdmzMnFAc4mY8eYa63gD4XLC115X
-         urBQ==
-X-Gm-Message-State: AOAM532sGVBH3MA6Y13JTrPWZRRNmOJP7cFix0D1QDuv7LQKkgXFvBRB
-        5LXZqbLIF5xDc/fVzKPxeSVaBw==
-X-Google-Smtp-Source: ABdhPJzuTnBpFyGRqoJZe6cfnkCyoMW/W7XlUttLH2iWotczB0vRzufkAo6PBx/lCSNDhKMfGxFErg==
-X-Received: by 2002:a17:902:70c5:b029:ec:9a57:9cc8 with SMTP id l5-20020a17090270c5b02900ec9a579cc8mr13011264plt.73.1618955409659;
-        Tue, 20 Apr 2021 14:50:09 -0700 (PDT)
+        bh=TgjLxTMswgoGuX5Ufpd99mf4WDXQ7EH22iq7Xe02XNg=;
+        b=WZYlvYvL01jt+rJpGzibUEUCo1G4aUOdf6BjEJily+gfPm6gufQNbkVVZ3bbdRFXtb
+         GX3E2yA/0Fxh2YaDAw94kN9K6RQjRZon1fS1oqwcNCcP/bzypsBF5/ea7uC+GlWpGxJ/
+         YJ751X5bvvjG1oZNaUn+YmzCwAxw8iqHYhPNup7o5OboyDKZc7EB6Hco1MDYI3BilxmR
+         2JyTrh6lb44RceGhSCR106oo2iz3xfB9XYPNQRIOBfdnTHWrINCFR9Y+zBav4qFlaSGz
+         Ohg783+l7ogEFWEpuj16WhubPW3mxi2RPoZ1pH/Zibjpp6t/TGeaZX1LSG5qjJSBJK7Q
+         /5sA==
+X-Gm-Message-State: AOAM530io+dg6WQtgdrvNimLtFJLN2aKmeUiw+T1Mhk1XtL6GsOLBkZA
+        Z1n+9PRHcdwdiGgQDno93Zd9xQ==
+X-Google-Smtp-Source: ABdhPJyYSt/sp/vHAPAJ0wTY88n203xox8pvJ907wdKtGaU3egQTlP7ZTjlkH6j9/lBlPwBpRsB/Xg==
+X-Received: by 2002:a17:902:64:b029:eb:1827:de61 with SMTP id 91-20020a1709020064b02900eb1827de61mr30793889pla.32.1618955410684;
+        Tue, 20 Apr 2021 14:50:10 -0700 (PDT)
 Received: from smtp.gmail.com ([2620:15c:202:201:bf8b:4b8b:2315:3719])
-        by smtp.gmail.com with ESMTPSA id c21sm31481pfo.91.2021.04.20.14.50.08
+        by smtp.gmail.com with ESMTPSA id c21sm31481pfo.91.2021.04.20.14.50.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 14:50:09 -0700 (PDT)
+        Tue, 20 Apr 2021 14:50:10 -0700 (PDT)
 From:   Stephen Boyd <swboyd@chromium.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, Jiri Olsa <jolsa@kernel.org>,
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Jiri Olsa <jolsa@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Jessica Yu <jeyu@kernel.org>,
         Evan Green <evgreen@chromium.org>,
@@ -59,9 +58,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH v5 06/13] arm64: stacktrace: Use %pSb for backtrace printing
-Date:   Tue, 20 Apr 2021 14:49:56 -0700
-Message-Id: <20210420215003.3510247-7-swboyd@chromium.org>
+Subject: [PATCH v5 07/13] x86/dumpstack: Use %pSb/%pBb for backtrace printing
+Date:   Tue, 20 Apr 2021 14:49:57 -0700
+Message-Id: <20210420215003.3510247-8-swboyd@chromium.org>
 X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
 In-Reply-To: <20210420215003.3510247-1-swboyd@chromium.org>
 References: <20210420215003.3510247-1-swboyd@chromium.org>
@@ -71,14 +70,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's use the new printk format to print the stacktrace entry when
+Let's use the new printk formats to print the stacktrace entries when
 printing a backtrace to the kernel logs. This will include any module's
 build ID[1] in it so that offline/crash debugging can easily locate the
 debuginfo for a module via something like debuginfod[2].
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: <linux-arm-kernel@lists.infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: <x86@kernel.org>
 Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: Alexei Starovoitov <ast@kernel.org>
 Cc: Jessica Yu <jeyu@kernel.org>
@@ -92,22 +92,22 @@ Link: https://fedoraproject.org/wiki/Releases/FeatureBuildId [1]
 Link: https://sourceware.org/elfutils/Debuginfod.html [2]
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- arch/arm64/kernel/stacktrace.c | 2 +-
+ arch/x86/kernel/dumpstack.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-index ad20981dfda4..9d38da01ff98 100644
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -129,7 +129,7 @@ NOKPROBE_SYMBOL(walk_stackframe);
- 
- static void dump_backtrace_entry(unsigned long where, const char *loglvl)
+diff --git a/arch/x86/kernel/dumpstack.c b/arch/x86/kernel/dumpstack.c
+index 299c20f0a38b..ea4fe192189d 100644
+--- a/arch/x86/kernel/dumpstack.c
++++ b/arch/x86/kernel/dumpstack.c
+@@ -69,7 +69,7 @@ static void printk_stack_address(unsigned long address, int reliable,
+ 				 const char *log_lvl)
  {
--	printk("%s %pS\n", loglvl, (void *)where);
-+	printk("%s %pSb\n", loglvl, (void *)where);
+ 	touch_nmi_watchdog();
+-	printk("%s %s%pB\n", log_lvl, reliable ? "" : "? ", (void *)address);
++	printk("%s %s%pBb\n", log_lvl, reliable ? "" : "? ", (void *)address);
  }
  
- void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk,
+ static int copy_code(struct pt_regs *regs, u8 *buf, unsigned long src,
 -- 
 https://chromeos.dev
 
