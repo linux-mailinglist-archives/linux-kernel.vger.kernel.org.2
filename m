@@ -2,88 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95246365423
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 902D5365425
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbhDTIap convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 20 Apr 2021 04:30:45 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:28887 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230447AbhDTIao (ORCPT
+        id S230517AbhDTIa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 04:30:56 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:3342 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230495AbhDTIaz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 04:30:44 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-271-NKPQNoYbP8uEJWWfFkVBNA-1; Tue, 20 Apr 2021 09:30:09 +0100
-X-MC-Unique: NKPQNoYbP8uEJWWfFkVBNA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Tue, 20 Apr 2021 09:30:07 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Tue, 20 Apr 2021 09:30:07 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'H. Peter Anvin'" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Kbuild Mailing List" <linux-kbuild@vger.kernel.org>
-Subject: RE: [PATCH 0/3] x86 disk image and modules initramfs generation
-Thread-Topic: [PATCH 0/3] x86 disk image and modules initramfs generation
-Thread-Index: AQHXNXA3hW9Bgwsx/EekG3uw9oZ0YKq9EYRw
-Date:   Tue, 20 Apr 2021 08:30:07 +0000
-Message-ID: <75fc46bae17f4fa4958f5ad7d49d9244@AcuMS.aculab.com>
-References: <20210419230252.1583169-1-hpa@zytor.com>
-In-Reply-To: <20210419230252.1583169-1-hpa@zytor.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 20 Apr 2021 04:30:55 -0400
+Received: from DGGEML402-HUB.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4FPcGg3sCZz14JV1;
+        Tue, 20 Apr 2021 16:26:35 +0800 (CST)
+Received: from dggpeml500013.china.huawei.com (7.185.36.41) by
+ DGGEML402-HUB.china.huawei.com (10.3.17.38) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Tue, 20 Apr 2021 16:30:21 +0800
+Received: from [10.174.187.161] (10.174.187.161) by
+ dggpeml500013.china.huawei.com (7.185.36.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 20 Apr 2021 16:30:20 +0800
+Subject: Re: [PATCH v5 10/16] KVM: x86: Set PEBS_UNAVAIL in IA32_MISC_ENABLE
+ when PEBS is enabled
+To:     Like Xu <like.xu@linux.intel.com>, <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+References: <20210415032016.166201-1-like.xu@linux.intel.com>
+ <20210415032016.166201-11-like.xu@linux.intel.com>
+CC:     <andi@firstfloor.org>, <kan.liang@linux.intel.com>,
+        <wei.w.wang@intel.com>, <eranian@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, <kvm@vger.kernel.org>,
+        <x86@kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Fangyi (Eric)" <eric.fangyi@huawei.com>,
+        Xiexiangyou <xiexiangyou@huawei.com>
+From:   Liuxiangdong <liuxiangdong5@huawei.com>
+Message-ID: <607E911C.4090706@huawei.com>
+Date:   Tue, 20 Apr 2021 16:30:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210415032016.166201-11-like.xu@linux.intel.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.187.161]
+X-ClientProxiedBy: dggeme712-chm.china.huawei.com (10.1.199.108) To
+ dggpeml500013.china.huawei.com (7.185.36.41)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: H. Peter Anvin
-> Sent: 20 April 2021 00:03
-> 
-> When compiling on a different machine than the runtime target,
-> including but not limited to simulators, it is rather handy to be able
-> to produce a bootable image. The scripts for that in x86 are
-> relatively old, and assume a BIOS system.
 
-I've given up and copied the kernel tree onto all my test systems.
 
-I needed something like 'make modules_install' and 'make install'
-that would generated a directory tree that could be copied (scp -r)
-onto the target system.
+On 2021/4/15 11:20, Like Xu wrote:
+> The bit 12 represents "Processor Event Based Sampling Unavailable (RO)" :
+> 	1 = PEBS is not supported.
+> 	0 = PEBS is supported.
+>
+> A write to this PEBS_UNAVL available bit will bring #GP(0) when guest PEBS
+> is enabled. Some PEBS drivers in guest may care about this bit.
+>
+> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> ---
+>   arch/x86/kvm/vmx/pmu_intel.c | 2 ++
+>   arch/x86/kvm/x86.c           | 4 ++++
+>   2 files changed, 6 insertions(+)
+>
+> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> index 58f32a55cc2e..c846d3eef7a7 100644
+> --- a/arch/x86/kvm/vmx/pmu_intel.c
+> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> @@ -588,6 +588,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
+>   		bitmap_set(pmu->all_valid_pmc_idx, INTEL_PMC_IDX_FIXED_VLBR, 1);
+>   
+>   	if (vcpu->arch.perf_capabilities & PERF_CAP_PEBS_FORMAT) {
+> +		vcpu->arch.ia32_misc_enable_msr &= ~MSR_IA32_MISC_ENABLE_PEBS_UNAVAIL;
+>   		if (vcpu->arch.perf_capabilities & PERF_CAP_PEBS_BASELINE) {
+>   			pmu->pebs_enable_mask = ~pmu->global_ctrl;
+>   			pmu->reserved_bits &= ~ICL_EVENTSEL_ADAPTIVE;
+> @@ -597,6 +598,7 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
+>   			}
+>   			pmu->pebs_data_cfg_mask = ~0xff00000full;
+>   		} else {
+> +			vcpu->arch.ia32_misc_enable_msr |= MSR_IA32_MISC_ENABLE_PEBS_UNAVAIL;
+>   			pmu->pebs_enable_mask =
+>   				~((1ull << pmu->nr_arch_gp_counters) - 1);
+>   		}
 
-But the script to run 'update-grub' is all intwined in the commands.
+I guess what we want is
 
-You also don't get a copy of the headers.
-Even for the local system (as root) you just get a symlink into
-the source tree.
-This causes a problem trying to build 'out of tree' modules
-after updating the kernel source tree (but not rebulding).
+         if (vcpu->arch.perf_capabilities & PERF_CAP_PEBS_FORMAT) {
+                 vcpu->arch.ia32_misc_enable_msr &= 
+~MSR_IA32_MISC_ENABLE_PEBS_UNAVAIL;
+                 if (vcpu->arch.perf_capabilities & 
+PERF_CAP_PEBS_BASELINE) {
+                         pmu->pebs_enable_mask = ~pmu->global_ctrl;
+                         pmu->reserved_bits &= ~ICL_EVENTSEL_ADAPTIVE;
+                         for (i = 0; i < pmu->nr_arch_fixed_counters; i++) {
+                                 pmu->fixed_ctr_ctrl_mask &=
+                                         ~(1ULL << (INTEL_PMC_IDX_FIXED 
++ i * 4));
+                         }
+                         pmu->pebs_data_cfg_mask = ~0xff00000full;
+                 } else {
+                         pmu->pebs_enable_mask =
+                                 ~((1ull << pmu->nr_arch_gp_counters) - 1);
+                 }
+         } else {
+                 vcpu->arch.ia32_misc_enable_msr |= 
+MSR_IA32_MISC_ENABLE_PEBS_UNAVAIL;
+                 vcpu->arch.perf_capabilities &= ~PERF_CAP_PEBS_MASK;
+         }
 
-I can (and do) write 'horrid' makefiles (gmake and nmake)
-but this seemed to need more refactoring that I wanted to do.
 
-	David
+But here is
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+         if (vcpu->arch.perf_capabilities & PERF_CAP_PEBS_FORMAT) {
+                 vcpu->arch.ia32_misc_enable_msr &= 
+~MSR_IA32_MISC_ENABLE_PEBS_UNAVAIL;
+                 if (vcpu->arch.perf_capabilities & 
+PERF_CAP_PEBS_BASELINE) {
+                         pmu->pebs_enable_mask = ~pmu->global_ctrl;
+                         pmu->reserved_bits &= ~ICL_EVENTSEL_ADAPTIVE;
+                         for (i = 0; i < pmu->nr_arch_fixed_counters; i++) {
+                                 pmu->fixed_ctr_ctrl_mask &=
+                                         ~(1ULL << (INTEL_PMC_IDX_FIXED 
++ i * 4));
+                         }
+                         pmu->pebs_data_cfg_mask = ~0xff00000full;
+                 } else {
+                         vcpu->arch.ia32_misc_enable_msr |= 
+MSR_IA32_MISC_ENABLE_PEBS_UNAVAIL;
+                         pmu->pebs_enable_mask =
+                                 ~((1ull << pmu->nr_arch_gp_counters) - 1);
+                 }
+         } else {
+                 vcpu->arch.perf_capabilities &= ~PERF_CAP_PEBS_MASK;
+         }
+
+
+Wrong else branch?
+
+
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 1a64e816e06d..ed38f1dada63 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -3126,6 +3126,10 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>   		break;
+>   	case MSR_IA32_MISC_ENABLE:
+>   		data &= ~MSR_IA32_MISC_ENABLE_EMON;
+> +		if (!msr_info->host_initiated &&
+> +		    (vcpu->arch.perf_capabilities & PERF_CAP_PEBS_FORMAT) &&
+> +		    (data & MSR_IA32_MISC_ENABLE_PEBS_UNAVAIL))
+> +			return 1;
+>   		if (!kvm_check_has_quirk(vcpu->kvm, KVM_X86_QUIRK_MISC_ENABLE_NO_MWAIT) &&
+>   		    ((vcpu->arch.ia32_misc_enable_msr ^ data) & MSR_IA32_MISC_ENABLE_MWAIT)) {
+>   			if (!guest_cpuid_has(vcpu, X86_FEATURE_XMM3))
 
