@@ -2,92 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3007D365A1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3348365A20
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232483AbhDTNaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:30:00 -0400
-Received: from mail.efficios.com ([167.114.26.124]:33372 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232295AbhDTN37 (ORCPT
+        id S232428AbhDTNa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:30:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232376AbhDTNax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:29:59 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id A740D2FE916;
-        Tue, 20 Apr 2021 09:29:27 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 3m9Gwf_gMSRu; Tue, 20 Apr 2021 09:29:27 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 37A4F2FED9B;
-        Tue, 20 Apr 2021 09:29:27 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 37A4F2FED9B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1618925367;
-        bh=QsxHLQuZ6/NmxdwKl3bSdvfvXYh8C1ZBM9eOhl6zdvc=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=W13i74aXhgRV/poLcJPrRQkcqPt2WSqaN0cI+vQiU5C9DMd4vWvKN8rO9lEmZl6gi
-         8tnGknzEh8o3FYv3mssQtpK2AhjCCGuxLYqOcsfr3GKvwX53Wc59s0cV9NFXl6NraV
-         cfsm8VBVNtBH5L6w/wtR0g1Et0jmLyXNu1j5y84u83tGE0N4zWjF5ZRX+z1kIV3Uwm
-         MX4qUntdQAnGa/N2vjVaIPMXkNISOWp+tvvKWsCVjf9cyEIPrppnOEpR5v1Wj2ybXj
-         rWU5hYzqcLjGdQWrrpNuz5rsOpUOSOXl9MNi5VELORBIa3rDqhPl8LJBWIgleOYtvI
-         qpMkn09ksCaKg==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id cwFy8b8gn99W; Tue, 20 Apr 2021 09:29:27 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 255132FED21;
-        Tue, 20 Apr 2021 09:29:27 -0400 (EDT)
-Date:   Tue, 20 Apr 2021 09:29:27 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        fweisbec <fweisbec@gmail.com>, Jessica Yu <jeyu@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@elte.hu>, chris@chris-wilson.co.uk,
-        yuanhan liu <yuanhan.liu@linux.intel.com>,
-        "Grumbach, Emmanuel" <emmanuel.grumbach@intel.com>
-Message-ID: <1154727029.2004.1618925367044.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20210420085532.4062b15e@gandalf.local.home>
-References: <1299622684.20306.77.camel@gandalf.stny.rr.com> <20130813111442.632f3421@gandalf.local.home> <87siybk8yl.fsf@rustcorp.com.au> <20130814233228.778f25d0@gandalf.local.home> <77a6e40b57df092d1bd8967305906a210f286111.camel@intel.com> <20210419181111.5eb582e8@gandalf.local.home> <CAPcyv4gw7KoL8U66LLx_DVAE+5Jguz7tb3Rax-bdTz4BrpwhvQ@mail.gmail.com> <20210420085532.4062b15e@gandalf.local.home>
-Subject: Re: [PATCH][RFC] tracing: Enable tracepoints via module parameters
+        Tue, 20 Apr 2021 09:30:53 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F30C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 06:30:22 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id p10-20020a1c544a0000b02901387e17700fso1069137wmi.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 06:30:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jzWHsyN0ouTXQZ1m1iLRKWJKUoOGAIFoQPUyqNWL1Rk=;
+        b=C5cHo69OGH5oEJK7cJBWcWEdCHdi+ff0qQaNXid3xwJg+My0bUKSGba0wFoh5moxfX
+         EHkq3de9MDLRdTuXPkz76TqPmbLRp3ZizPXaSgBBOlSuklWnhyqJGLgM96E15we/N/kE
+         W1a/hCBgdjZLvboXZOqD57RI3VlzgN93b3O1luWTA/G5omKUHwC5sTMUGwFTImlMOcCA
+         lV4eAZtVappiXv1RWw3Cc2T/wkGrtlVrP7AXAUlYy/rgxzYonF0qN1cIk9K1PNTdEEar
+         FYTh2L+3Md7+JrUT07hzyLGFeBENeQDXSWU2jj5ffkaZ1Hz87/3LGCdZjWT2hRkOd/PC
+         rcrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jzWHsyN0ouTXQZ1m1iLRKWJKUoOGAIFoQPUyqNWL1Rk=;
+        b=Kfwm1izjWpw3Qd5JQZHIGU4VeeYxrFm8fzDbKzPQpq7A/QkGA/HR71UW5LkdYIpnbv
+         D1uTE42QvO/g0mkmfj66TpWKSMshwOT0fc7RqMDUn3Pe3pMFeuBQhGRwW8GxZmzN5XgL
+         CemqnfUmCC2yrybjTdMnUrcfCw29XJGx+yNEtWrGiTJT2uxqYf0ZNzRuQGrckYH0FBnu
+         kMEdhn3a/OX+7us+i/QgFLDo2sYTR8n58jw/SBA3IYsPfZwckNNwp1NJmb9el7tdSih/
+         AjH4ui1kmuwHtU/1kt9JzVWrO5j/0iuYUJv4uFA0kWt0R3uRPNWQSbgCreF/cZ4BqIdp
+         hFpg==
+X-Gm-Message-State: AOAM532QJmvHQA7E0OXms0J0eqLF99vm7qPtLR6Pm6I9Oyn+4GwrFCcL
+        Ulh+xXk43V5owBzZ1tSFBXWcaA==
+X-Google-Smtp-Source: ABdhPJzzfK8CwIY0cZqsrLMW7HsEAgftwvJVT/pIFM4iaWSK86lBUUOpYf0omAIh+EmsC7+fZu7mKw==
+X-Received: by 2002:a7b:ce84:: with SMTP id q4mr4554602wmj.149.1618925421002;
+        Tue, 20 Apr 2021 06:30:21 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:a079:f96:da87:2d00? ([2a01:e34:ed2f:f020:a079:f96:da87:2d00])
+        by smtp.googlemail.com with ESMTPSA id f24sm3325837wmb.32.2021.04.20.06.30.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 06:30:20 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] thermal: power_allocator: update once cooling
+ devices when temp is low
+To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
+Cc:     linux-pm@vger.kernel.org, amitk@kernel.org, rui.zhang@intel.com
+References: <20210419084536.25000-1-lukasz.luba@arm.com>
+ <20210419084536.25000-3-lukasz.luba@arm.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <c69e2ba0-b382-01a0-292f-019fffd365e0@linaro.org>
+Date:   Tue, 20 Apr 2021 15:30:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210419084536.25000-3-lukasz.luba@arm.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - FF87 (Linux)/8.8.15_GA_4007)
-Thread-Topic: tracing: Enable tracepoints via module parameters
-Thread-Index: sM+iKvNdasbLkp1rglxClIfh9BgdaA==
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Apr 20, 2021, at 8:55 AM, rostedt rostedt@goodmis.org wrote:
-[...]
+On 19/04/2021 10:45, Lukasz Luba wrote:
+> The cooling device state change generates an event, also when there is no
+> need, because temperature is low and device is not throttled. Avoid to
+> unnecessary update the cooling device which means also not sending event.
+> The cooling device state has not changed because the temperature is still
+> below the first activation trip point value, so we can do this.
+> Add a tracking mechanism to make sure it updates cooling devices only
+> once - when the temperature dropps below first trip point.
 > 
-> Would adding automatic module parameters be an issue? That is, you can add
-> in the insmod command line a parameter that will enable tracepoints. We
-> could have a way to even see them from the modinfo. I think I had that
-> working once, and it wasn't really that hard to do.
+> Reported-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>  drivers/thermal/gov_power_allocator.c | 14 ++++++++++----
+>  1 file changed, 10 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
+> index d393409fb786..f379f1aaa3b5 100644
+> --- a/drivers/thermal/gov_power_allocator.c
+> +++ b/drivers/thermal/gov_power_allocator.c
+> @@ -571,7 +571,7 @@ static void reset_pid_controller(struct power_allocator_params *params)
+>  	params->prev_err = 0;
+>  }
+>  
+> -static void allow_maximum_power(struct thermal_zone_device *tz)
+> +static void allow_maximum_power(struct thermal_zone_device *tz, bool update)
+>  {
+>  	struct thermal_instance *instance;
+>  	struct power_allocator_params *params = tz->governor_data;
+> @@ -594,9 +594,13 @@ static void allow_maximum_power(struct thermal_zone_device *tz)
+>  		 */
+>  		cdev->ops->get_requested_power(cdev, &req_power);
+>  
+> -		instance->cdev->updated = false;
+> +		if (update)
+> +			instance->cdev->updated = false;
+> +
+>  		mutex_unlock(&instance->cdev->lock);
+> -		(instance->cdev);
+> +
+> +		if (update)
+> +			thermal_cdev_update(instance->cdev);
 
-There is one thing we should consider here in terms of namespacing: those module
-command line parameters should be specific to each tracer (e.g. ftrace, perf, ebpf).
+This cdev update has something bad IMHO. It is protected by a mutex but
+the 'updated' field is left unprotected before calling
+thermal_cdev_update().
 
-LTTng for instance already tackles early module load tracing in a different
-way: users can enable instrumentation of yet-to-be loaded kernel modules. So
-it would not make sense in that scheme to have module load parameters.
+It is not the fault of this code but how the cooling device are updated
+and how it interacts with the thermal instances.
 
-It's a different trade-off in terms of error reporting though: for instance,
-LTTng won't report an error if a user does a typo when entering an event name.
+IMO, part of the core code needs to revisited.
 
-So I think those command line parameters should be tracer-specific, do you agree ?
+This change tight a bit more the knot.
 
-Thanks,
+Would it make sense to you if we create a function eg.
+__thermal_cdev_update()
 
-Mathieu
+And then we have:
+
+void thermal_cdev_update(struct thermal_cooling_device *cdev)
+{
+        mutex_lock(&cdev->lock);
+        /* cooling device is updated*/
+        if (cdev->updated) {
+                mutex_unlock(&cdev->lock);
+                return;
+        }
+
+	__thermal_cdev_update(cdev);
+
+        thermal_cdev_set_cur_state(cdev, target);
+
+        cdev->updated = true;
+        mutex_unlock(&cdev->lock);
+        trace_cdev_update(cdev, target);
+        dev_dbg(&cdev->device, "set to state %lu\n", target);
+}
+
+And in this file we do instead:
+
+-		instance->cdev->updated = false;
++		if (update)
++			__thermal_cdev_update(instance->cdev);
+  		mutex_unlock(&instance->cdev->lock);
+-		thermal_cdev_update(instance->cdev);
+
+>  	}
+>  	mutex_unlock(&tz->lock);
+>  }
+> @@ -710,6 +714,7 @@ static int power_allocator_throttle(struct thermal_zone_device *tz, int trip)
+>  	int ret;
+>  	int switch_on_temp, control_temp;
+>  	struct power_allocator_params *params = tz->governor_data;
+> +	bool update;
+>  
+>  	/*
+>  	 * We get called for every trip point but we only need to do
+> @@ -721,9 +726,10 @@ static int power_allocator_throttle(struct thermal_zone_device *tz, int trip)
+>  	ret = tz->ops->get_trip_temp(tz, params->trip_switch_on,
+>  				     &switch_on_temp);
+>  	if (!ret && (tz->temperature < switch_on_temp)) {
+> +		update = (tz->last_temperature >= switch_on_temp);
+>  		tz->passive = 0;
+>  		reset_pid_controller(params);
+> -		allow_maximum_power(tz);
+> +		allow_maximum_power(tz, update);
+>  		return 0;
+>  	}
+>  
+> 
+
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
