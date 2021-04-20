@@ -2,131 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165E8365A3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:34:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9519365A40
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232592AbhDTNfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:35:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232628AbhDTNeY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:34:24 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B6F6C06138A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 06:33:53 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id b17so32040572ilh.6
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 06:33:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Xgfc7mO4E1wXWUmekqC8sEt5bIbUy15Zn+YoHQva8NI=;
-        b=PYyvqtFzdzRakpUOqbunR4I7/Lj/8HDyE7lqd9tAm0PNx6Uh1yOIHCDmuaqBR1ViP4
-         mmStHq4YHDIb9iNLpswctc4T/0gjz0QMypKb9sh/woNGTQHvzByI8qY89af1f2aYk6+S
-         wieFezmrOmmKh35TaWQ/tU2N5mVDzf8HRzVYk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xgfc7mO4E1wXWUmekqC8sEt5bIbUy15Zn+YoHQva8NI=;
-        b=BgoFlRp1csws15Ei4534ryGsA9+MS29lkcYdEd5im8nEBYJgg83L6ytrtCy9nSrJlV
-         QZwXbsEGD76qO9esgaWq24rfCJ1ajYLA7bqSbxPUrbKFMeCGtpzQEn+yNLBxZXLjb3fZ
-         uItPdmIPnl6jiLhJN33u+QVC2mqVwksvPWxGp2B9Jadsx6zAB6w+Cn9X3wN+6Pc7HnOu
-         d78WXI3hqbqrvf5ofI0V0iZW+rZmKDrdO1NF0ys0n0rNOY0UuE4PIxJCXh5StIvWvyhn
-         T2N+zpDZRqNViDF+NqpM2yAD6I6nt5gpqsnqO3SOndqQCTgT8o+/Lcu5pLmEbS/K29ny
-         vpWA==
-X-Gm-Message-State: AOAM530WXu6g/JMmDUV+it13L4N/nbPSUYYFbvHZ1VDwx7+b/DdUzuY2
-        zT59Usk7bvxsjxl3Mka3g1VemOihYlBv5bOSm2fFVg==
-X-Google-Smtp-Source: ABdhPJy6RgMFJUk30o3Bp+6VqEWzChzCOkzvaHDVug4JPECZShpDcemglkoDMMwZ/VXKrU9wV09fLSo20xOiZ0XVnHs=
-X-Received: by 2002:a92:d684:: with SMTP id p4mr22468413iln.150.1618925632435;
- Tue, 20 Apr 2021 06:33:52 -0700 (PDT)
+        id S232493AbhDTNfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:35:54 -0400
+Received: from mga07.intel.com ([134.134.136.100]:50262 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232465AbhDTNfm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 09:35:42 -0400
+IronPort-SDR: bILwQ565G30IsTYKyhGk26y3IPyarqPjG69YdfqYjhFKbiqI69pvTGvENBpZ9fSRkjVG8VIkXU
+ QaVXXcH955TQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="259461976"
+X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
+   d="scan'208";a="259461976"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 06:35:08 -0700
+IronPort-SDR: lqYtGxNfcxD25tzGygmG1bheEOAeRq+jpj9laQT3kb5GtMzvQi6AmT/7DVGR8tbTdtyxpRtDlz
+ wsgCeNPeFcWg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
+   d="scan'208";a="534489584"
+Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 20 Apr 2021 06:35:06 -0700
+Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lYqWw-0002V7-6E; Tue, 20 Apr 2021 13:35:06 +0000
+Date:   Tue, 20 Apr 2021 21:34:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:testing/warray-bounds] BUILD SUCCESS WITH
+ WARNING 2dad8399b273b5a6cc50406b0d621f93c4bc61cc
+Message-ID: <607ed863.g3HrLRZSPT8iAC6m%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210414172916.2689361-1-hsinyi@chromium.org> <20210414172916.2689361-5-hsinyi@chromium.org>
- <CAMpxmJUGxUPYC9NEnJDHYq7Nu=akP5GTpU0ts9htf1vELhK15Q@mail.gmail.com>
-In-Reply-To: <CAMpxmJUGxUPYC9NEnJDHYq7Nu=akP5GTpU0ts9htf1vELhK15Q@mail.gmail.com>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Tue, 20 Apr 2021 21:33:25 +0800
-Message-ID: <CAJMQK-huKTYepZ+xCZDG01RBGB5Tu4ic=Hs03=remLii0WBTaQ@mail.gmail.com>
-Subject: Re: [PATCH v19 4/6] misc: eeprom: at24: check suspend status before
- disable regulator
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Wolfram Sang <wsa@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Qii Wang <qii.wang@mediatek.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC..." 
-        <linux-mediatek@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        intel-gfx@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 10:09 PM Bartosz Golaszewski
-<bgolaszewski@baylibre.com> wrote:
->
-> On Wed, Apr 14, 2021 at 7:29 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
-> >
-> > cd5676db0574 ("misc: eeprom: at24: support pm_runtime control") disables
-> > regulator in runtime suspend. If runtime suspend is called before
-> > regulator disable, it will results in regulator unbalanced disabling.
-> >
-> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
->
-> Please add the Fixes tag.
->
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/warray-bounds
+branch HEAD: 2dad8399b273b5a6cc50406b0d621f93c4bc61cc  media: ngene: Fix out-of-bounds bug in ngene_command_config_free_buf()
 
-Hi,
+Warning reports:
 
-I resend the patch with the fix tag separately since other patches in
-this series are not changed.
+https://lore.kernel.org/lkml/202104160817.a5FOA0xa-lkp@intel.com
 
-https://patchwork.ozlabs.org/project/linux-i2c/patch/20210420133050.377209-1-hsinyi@chromium.org/
+Warning in current branch:
 
-Thanks
+arch/alpha/include/asm/string.h:22:16: warning: '__builtin_memcpy' offset [17, 24] from the object at 'alloc' is out of the bounds of referenced subobject 'key' with type 'struct bkey' at offset 0 [-Warray-bounds]
+arch/alpha/include/asm/string.h:22:16: warning: '__builtin_memcpy' offset [3, 7] from the object at 'cmd' is out of the bounds of referenced subobject 'feature' with type 'unsigned char' at offset 1 [-Warray-bounds]
 
-> > ---
-> >  drivers/misc/eeprom/at24.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
-> > index 926408b41270..7a6f01ace78a 100644
-> > --- a/drivers/misc/eeprom/at24.c
-> > +++ b/drivers/misc/eeprom/at24.c
-> > @@ -763,7 +763,8 @@ static int at24_probe(struct i2c_client *client)
-> >         at24->nvmem = devm_nvmem_register(dev, &nvmem_config);
-> >         if (IS_ERR(at24->nvmem)) {
-> >                 pm_runtime_disable(dev);
-> > -               regulator_disable(at24->vcc_reg);
-> > +               if (!pm_runtime_status_suspended(dev))
-> > +                       regulator_disable(at24->vcc_reg);
-> >                 return PTR_ERR(at24->nvmem);
-> >         }
-> >
-> > @@ -774,7 +775,8 @@ static int at24_probe(struct i2c_client *client)
-> >         err = at24_read(at24, 0, &test_byte, 1);
-> >         if (err) {
-> >                 pm_runtime_disable(dev);
-> > -               regulator_disable(at24->vcc_reg);
-> > +               if (!pm_runtime_status_suspended(dev))
-> > +                       regulator_disable(at24->vcc_reg);
-> >                 return -ENODEV;
-> >         }
-> >
-> > --
-> > 2.31.1.295.g9ea45b61b8-goog
-> >
->
-> Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+possible Warning in current branch:
+
+drivers/hid/hid-cp2112.c:333:2: warning: 'memcpy' offset [3, 64] from the object at 'report' is out of the bounds of referenced subobject 'report' with type 'unsigned char' at offset 1 [-Warray-bounds]
+drivers/ide/ide-acpi.c:332:3: warning: 'memcpy' offset [3, 8] from the object at 'cmd' is out of the bounds of referenced subobject 'feature' with type 'unsigned char' at offset 1 [-Warray-bounds]
+drivers/media/platform/omap3isp/ispstat.c:524:2: warning: 'memcpy' offset [21, 32] from the object at 'data64' is out of the bounds of referenced subobject 'buf' with type 'void *' at offset 16 [-Warray-bounds]
+drivers/media/platform/omap3isp/ispstat.c:524:2: warning: 'memcpy' offset [25, 32] from the object at 'data64' is out of the bounds of referenced subobject 'buf' with type 'void *' at offset 16 [-Warray-bounds]
+include/linux/fortify-string.h:20:29: warning: '__builtin_memcpy' offset [21, 80] from the object at 'init' is out of the bounds of referenced subobject 'chipset' with type 'int' at offset 16 [-Warray-bounds]
+include/linux/skbuff.h:3723:2: warning: 'memcpy' offset [17, 38] from the object at 'txdesc' is out of the bounds of referenced subobject 'frame_control' with type 'short unsigned int' at offset 14 [-Warray-bounds]
+net/wireless/wext-spy.c:178:2: warning: 'memcpy' offset [25, 28] from the object at 'threshold' is out of the bounds of referenced subobject 'low' with type 'struct iw_quality' at offset 20 [-Warray-bounds]
+
+Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- alpha-allmodconfig
+|   |-- arch-alpha-include-asm-string.h:warning:__builtin_memcpy-offset-from-the-object-at-alloc-is-out-of-the-bounds-of-referenced-subobject-key-with-type-struct-bkey-at-offset
+|   `-- arch-alpha-include-asm-string.h:warning:__builtin_memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|-- alpha-allyesconfig
+|   |-- arch-alpha-include-asm-string.h:warning:__builtin_memcpy-offset-from-the-object-at-alloc-is-out-of-the-bounds-of-referenced-subobject-key-with-type-struct-bkey-at-offset
+|   `-- arch-alpha-include-asm-string.h:warning:__builtin_memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|-- alpha-defconfig
+|   `-- arch-alpha-include-asm-string.h:warning:__builtin_memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|-- csky-randconfig-r031-20210420
+|   |-- drivers-media-platform-omap3isp-ispstat.c:warning:memcpy-offset-from-the-object-at-data64-is-out-of-the-bounds-of-referenced-subobject-buf-with-type-void-at-offset
+|   |-- include-linux-skbuff.h:warning:memcpy-offset-from-the-object-at-txdesc-is-out-of-the-bounds-of-referenced-subobject-frame_control-with-type-short-unsigned-int-at-offset
+|   `-- net-wireless-wext-spy.c:warning:memcpy-offset-from-the-object-at-threshold-is-out-of-the-bounds-of-referenced-subobject-low-with-type-struct-iw_quality-at-offset
+|-- ia64-allmodconfig
+|   |-- drivers-ide-ide-acpi.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|   |-- drivers-media-platform-omap3isp-ispstat.c:warning:memcpy-offset-from-the-object-at-data64-is-out-of-the-bounds-of-referenced-subobject-buf-with-type-void-at-offset
+|   |-- include-linux-skbuff.h:warning:memcpy-offset-from-the-object-at-txdesc-is-out-of-the-bounds-of-referenced-subobject-frame_control-with-type-short-unsigned-int-at-offset
+|   `-- net-wireless-wext-spy.c:warning:memcpy-offset-from-the-object-at-threshold-is-out-of-the-bounds-of-referenced-subobject-low-with-type-struct-iw_quality-at-offset
+|-- ia64-randconfig-r032-20210420
+|   `-- drivers-ide-ide-acpi.c:warning:memcpy-offset-from-the-object-at-cmd-is-out-of-the-bounds-of-referenced-subobject-feature-with-type-unsigned-char-at-offset
+|-- nds32-allyesconfig
+|   |-- drivers-media-platform-omap3isp-ispstat.c:warning:memcpy-offset-from-the-object-at-data64-is-out-of-the-bounds-of-referenced-subobject-buf-with-type-void-at-offset
+|   |-- include-linux-skbuff.h:warning:memcpy-offset-from-the-object-at-txdesc-is-out-of-the-bounds-of-referenced-subobject-frame_control-with-type-short-unsigned-int-at-offset
+|   `-- net-wireless-wext-spy.c:warning:memcpy-offset-from-the-object-at-threshold-is-out-of-the-bounds-of-referenced-subobject-low-with-type-struct-iw_quality-at-offset
+|-- parisc-randconfig-r011-20210419
+|   `-- drivers-hid-hid-cp2112.c:warning:memcpy-offset-from-the-object-at-report-is-out-of-the-bounds-of-referenced-subobject-report-with-type-unsigned-char-at-offset
+`-- powerpc-allmodconfig
+    `-- include-linux-fortify-string.h:warning:__builtin_memcpy-offset-from-the-object-at-init-is-out-of-the-bounds-of-referenced-subobject-chipset-with-type-int-at-offset
+
+elapsed time: 724m
+
+configs tested: 97
+configs skipped: 2
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+i386                             allyesconfig
+powerpc                  mpc866_ads_defconfig
+sh                          r7780mp_defconfig
+powerpc                       ebony_defconfig
+powerpc                     rainier_defconfig
+sh                           se7750_defconfig
+sh                         apsh4a3a_defconfig
+sparc                       sparc32_defconfig
+um                               alldefconfig
+m68k                        m5272c3_defconfig
+arm                         hackkit_defconfig
+powerpc                      ep88xc_defconfig
+powerpc                     ep8248e_defconfig
+xtensa                       common_defconfig
+h8300                               defconfig
+nios2                         3c120_defconfig
+sh                          landisk_defconfig
+arm                          pcm027_defconfig
+arc                    vdk_hs38_smp_defconfig
+arm                          imote2_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a003-20210419
+x86_64               randconfig-a001-20210419
+x86_64               randconfig-a005-20210419
+x86_64               randconfig-a002-20210419
+x86_64               randconfig-a006-20210419
+x86_64               randconfig-a004-20210419
+i386                 randconfig-a003-20210419
+i386                 randconfig-a001-20210419
+i386                 randconfig-a006-20210419
+i386                 randconfig-a005-20210419
+i386                 randconfig-a004-20210419
+i386                 randconfig-a002-20210419
+i386                 randconfig-a015-20210419
+i386                 randconfig-a013-20210419
+i386                 randconfig-a014-20210419
+i386                 randconfig-a016-20210419
+i386                 randconfig-a012-20210419
+i386                 randconfig-a011-20210419
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a014-20210419
+x86_64               randconfig-a015-20210419
+x86_64               randconfig-a013-20210419
+x86_64               randconfig-a011-20210419
+x86_64               randconfig-a012-20210419
+x86_64               randconfig-a016-20210419
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
