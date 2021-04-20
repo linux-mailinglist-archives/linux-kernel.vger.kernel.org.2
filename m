@@ -2,105 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5794364EE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 01:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9269F364EEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 02:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232415AbhDSX6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 19:58:06 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:36241 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbhDSX6F (ORCPT
+        id S231434AbhDTACH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 20:02:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhDTACG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 19:58:05 -0400
+        Mon, 19 Apr 2021 20:02:06 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA53FC06174A;
+        Mon, 19 Apr 2021 17:01:35 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id j3so17798513qvs.1;
+        Mon, 19 Apr 2021 17:01:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1618876656; x=1650412656;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=sJXxVXx4KCMJyv3wNLapHiDM+z+uwVIJUTlM2adv4g4=;
-  b=JawrN/FYadVYZh1TnaA/Zb9VqLy/XWqX+SjfCTqB8h4rIwMxtoeB1Bbv
-   mdhQV8l5VywnV/LmcCY89M+nnJ9hGbdj8YchZih3RSjTYlOQ1hG80RtWW
-   YkntuG5PfaCRHEZ9Q9mZ3idS7mfiIBemtzRQO2lvcJZ8AiGgTpGXEoCli
-   g=;
-X-IronPort-AV: E=Sophos;i="5.82,235,1613433600"; 
-   d="scan'208";a="128968883"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1a-67b371d8.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 19 Apr 2021 23:57:35 +0000
-Received: from EX13MTAUWA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1a-67b371d8.us-east-1.amazon.com (Postfix) with ESMTPS id 2397FA1BCA;
-        Mon, 19 Apr 2021 23:57:32 +0000 (UTC)
-Received: from EX13D01UWA002.ant.amazon.com (10.43.160.74) by
- EX13MTAUWA001.ant.amazon.com (10.43.160.118) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 19 Apr 2021 23:57:32 +0000
-Received: from u87e72aa3c6c25c.ant.amazon.com (10.43.161.253) by
- EX13d01UWA002.ant.amazon.com (10.43.160.74) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 19 Apr 2021 23:57:31 +0000
-From:   Samuel Mendoza-Jonas <samjonas@amazon.com>
-To:     <bpf@vger.kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bsingharora@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Samuel Mendoza-Jonas <samjonas@amazon.com>
-Subject: [PATCH] bpf: Fix backport of "bpf: restrict unknown scalars of mixed signed bounds for unprivileged"
-Date:   Mon, 19 Apr 2021 16:56:41 -0700
-Message-ID: <20210419235641.5442-1-samjonas@amazon.com>
-X-Mailer: git-send-email 2.17.1
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VCsvR8ed7Ced6QtfotFXE2oWXUOCJco3BBQfcsvrgLs=;
+        b=rEvQ3g81yMTfKkZquowAjEOOmoQgzWEJ/Lr00Y1XDZoHZYcAPwQsSS4xtMj+N9L4s+
+         F+0tgKsL4iTPDj6cXX5VTiwZegk3eQnqH79G/2i/3DmIUJ/uYnxG8uwIfq6bu1s8xIbM
+         QGl+6hV32570u1oEWFhqW32djMvQFzq+uX8dIpBCgwgEd03g2OEFUDPKGUOPlyoD2NIe
+         M4ZwGX6d9Vmmwt4f/soST0K9gfYSWyA0ZAX7pa+7VvdO7Eq73arCnm82nzsJOfbcSWTw
+         UuiVpJgW9iZQ8iXoalOEpJC7zZ9j5JdK3xBmrAthxhwHwwlXOoKoG6/gDR7DuJ3xEHYL
+         SMSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VCsvR8ed7Ced6QtfotFXE2oWXUOCJco3BBQfcsvrgLs=;
+        b=Pi/lcd8xcn620GF2V7aqZ9Sjb9YJ9ED+t5vf277Nda/6bx4sBbusOHixq4pqthzi7v
+         fQ7FmfmJ7ZOZ/ehNI24rpPP/rntTwRYzDlf49UC//Y9XNNTJOb0E3ESC5Ut3NfK/zIDp
+         AoOa7sMe3XWCBCWaPZ7w0Gy6IUGyjbWKmE6Fxn7HFquzOsf4o/Qwzj2/eLtW9GvvEPvo
+         cfhATHjG0g4BK5ST4i8YKs3P4SH8E4YIbhv0iA61u8kt+szhCY+w0+6QqbswFQYWxkra
+         q6vhPfam31rkgS4/C+N5gA+JR4XuZYxEBEFSgDvZ+NmwZzsKlMrLCT1vag7JQx2SzbYX
+         ksOQ==
+X-Gm-Message-State: AOAM532a4Zcj7k+avcY2JqfJ0611KZ6XuMbTyLDAsYJTudInorAXQERX
+        vaeVN3VNNLEL3rVd5K6hojMupgJpTHw=
+X-Google-Smtp-Source: ABdhPJxuIH+fhGRayqCDTr9el+KOvpGwN79zRS8qZxelpgUMNF1e3e/0zmpI1iyYs19IU/xmHrN+2Q==
+X-Received: by 2002:a0c:db05:: with SMTP id d5mr23857323qvk.41.1618876894388;
+        Mon, 19 Apr 2021 17:01:34 -0700 (PDT)
+Received: from localhost ([207.98.216.60])
+        by smtp.gmail.com with ESMTPSA id o12sm10497099qtg.14.2021.04.19.17.01.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 17:01:34 -0700 (PDT)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCH 0/2] bitmap_parselist: support 'all' semantics
+Date:   Mon, 19 Apr 2021 17:01:29 -0700
+Message-Id: <20210420000131.21038-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.253]
-X-ClientProxiedBy: EX13D46UWC003.ant.amazon.com (10.43.162.119) To
- EX13d01UWA002.ant.amazon.com (10.43.160.74)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 4.14 backport of 9d7eceede ("bpf: restrict unknown scalars of mixed
-signed bounds for unprivileged") adds the PTR_TO_MAP_VALUE check to the
-wrong location in adjust_ptr_min_max_vals(), most likely because 4.14
-doesn't include the commit that updates the if-statement to a
-switch-statement (aad2eeaf4 "bpf: Simplify ptr_min_max_vals adjustment").
+RCU code supports a special group 'all' which selects all bits in a bitmap.
+We have recently added 'N' extension for bitmap parse, so that '0-N' would
+have exactly the same meaning as 'all'. But because the 'all' is already
+used by RCU, it would be reasonable to support it in core bitmap code as a
+common and easy-readable alias for '0-N'.
 
-Move the check to the proper location in adjust_ptr_min_max_vals().
+Moving the 'all' support to core bitmap code adds another level of
+flexibility for system configuration by supporting patterns. For example,
+every second bit in cpumask may be selected like this:
+	isolcpus=all:1/2
 
-Fixes: 17efa65350c5a ("bpf: restrict unknown scalars of mixed signed bounds for unprivileged")
-Signed-off-by: Samuel Mendoza-Jonas <samjonas@amazon.com>
-Reviewed-by: Frank van der Linden <fllinden@amazon.com>
-Reviewed-by: Ethan Chen <yishache@amazon.com>
----
- kernel/bpf/verifier.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 0c3a9302be93..9e9b7c076bcb 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2204,6 +2204,13 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 				dst);
- 		return -EACCES;
- 	}
-+	if (ptr_reg->type == PTR_TO_MAP_VALUE) {
-+		if (!env->allow_ptr_leaks && !known && (smin_val < 0) != (smax_val < 0)) {
-+			verbose("R%d has unknown scalar with mixed signed bounds, pointer arithmetic with it prohibited for !root\n",
-+				off_reg == dst_reg ? dst : src);
-+			return -EACCES;
-+		}
-+	}
- 
- 	/* In case of 'scalar += pointer', dst_reg inherits pointer type and id.
- 	 * The id may be overwritten later if we create a new variable offset.
-@@ -2349,13 +2356,6 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 			verbose("R%d bitwise operator %s on pointer prohibited\n",
- 				dst, bpf_alu_string[opcode >> 4]);
- 		return -EACCES;
--	case PTR_TO_MAP_VALUE:
--		if (!env->allow_ptr_leaks && !known && (smin_val < 0) != (smax_val < 0)) {
--			verbose("R%d has unknown scalar with mixed signed bounds, pointer arithmetic with it prohibited for !root\n",
--				off_reg == dst_reg ? dst : src);
--			return -EACCES;
--		}
--		/* fall-through */
- 	default:
- 		/* other operators (e.g. MUL,LSH) produce non-pointer results */
- 		if (!env->allow_ptr_leaks)
+Yury Norov (2):
+  bitmap_parse: support 'all' semantics
+  rcu/tree_plugin: don't handle the case of 'all' CPU range
+
+ Documentation/admin-guide/kernel-parameters.rst | 5 +++++
+ kernel/rcu/tree_plugin.h                        | 9 +++------
+ lib/bitmap.c                                    | 9 +++++++++
+ lib/test_bitmap.c                               | 8 +++++++-
+ 4 files changed, 24 insertions(+), 7 deletions(-)
+
 -- 
-2.17.1
+2.25.1
 
