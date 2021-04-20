@@ -2,186 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EFA6365A6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC33365A6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:45:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232295AbhDTNpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:45:47 -0400
-Received: from mail-bn8nam11on2062.outbound.protection.outlook.com ([40.107.236.62]:14368
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230479AbhDTNpp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:45:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KTK9FOBHoSM1IWQlHfXF43VjDTv+KyZ0ix1Kapp9pOnk+T7m1QDwBxiLk6lwSmZ9jWTgSzrqbE3YCkY/0V+5g2iuWJpHDIyijgAf5vEUiKqDSOr0zXn+xsOG5amdh2XgtxZQygHY2h4BykNgDqTCXmzDGQHC1pt+iLBkEYgtqdrEIy257LwuKe6IfASbXqj2D1CJEW5WcRQc46NCv/Vjhr/e5n6PrKZG+TmiqZgMtzSs46/QBcv1OxJlfJrhrvj8gSDkhA6tbnT2Uuha0n4EXjB4HOZM7j65ml1AbrhjoBbU8PLYKQudk7xRHEdKsr1JHq+4MhRcjq9UVqSk/smY3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m/vED/fqhGDPG5rGpCrF9DbKxLkq4Ld0heVT/s1BQ48=;
- b=covIJJxQKtckiJIz09yZO9JreCl0PruKRME233ea6r1zd3X5yRg9V7YgPsOAiXuFXAiS0ymepq6Woe7X5fMlQYeCaHTWrfJETOWykNbwoupD2nubwC9cdDADIAcZtlpJkq+HXK64bicTJoLmKU9qbR02RKPUVR8PjudFYdmaFRbW48q2+tlCjyVu3CVcnFRKay+yaY0PuSurNAyDIbUfI+XgSgkT/sDsArnruqVsLNH7C7JJ+6KN/kENHKwvqHuHBaS8lND41gYQTArszaJUGzgS6HFBHz1cmZHRVR4hrxcPjzjCVuw7wTdFWQcBjTC4YKCCnBpCfGZGz4/hVT7XlQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
- dkim=pass header.d=xilinx.com; arc=none
+        id S232594AbhDTNqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:46:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232367AbhDTNp7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 09:45:59 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD845C06138A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 06:45:27 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id g5so51657166ejx.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 06:45:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m/vED/fqhGDPG5rGpCrF9DbKxLkq4Ld0heVT/s1BQ48=;
- b=mTaZi2vJHISLz6YcN5gyAmwk2OhrvLbO0AF2V1l074hptLoWRdnE7uMa2DReTbh1InAf/Iofsyh8OqS2dLMUswN+ybs6FaJGkLiEYJwgctFtbm2aU80AtQeGP6guZcObAmTxtIRd1+X0zfWj8+YpdQnNXNwYMsgs7vcZBF1PKJw=
-Received: from MWHPR02MB2623.namprd02.prod.outlook.com (2603:10b6:300:44::9)
- by CO6PR02MB7697.namprd02.prod.outlook.com (2603:10b6:303:ad::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Tue, 20 Apr
- 2021 13:45:08 +0000
-Received: from MWHPR02MB2623.namprd02.prod.outlook.com
- ([fe80::297d:1fb:ad07:1b26]) by MWHPR02MB2623.namprd02.prod.outlook.com
- ([fe80::297d:1fb:ad07:1b26%9]) with mapi id 15.20.4042.024; Tue, 20 Apr 2021
- 13:45:08 +0000
-From:   Nava kishore Manne <navam@xilinx.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        Michal Simek <michals@xilinx.com>,
-        Derek Kiernan <dkiernan@xilinx.com>,
-        Dragan Cvetic <draganc@xilinx.com>,
-        "arnd@arndb.de" <arnd@arndb.de>, Rajan Vaja <RAJANV@xilinx.com>,
-        Jolly Shah <JOLLYS@xilinx.com>,
-        Tejas Patel <tejasp@xlnx.xilinx.com>,
-        Amit Sunil Dhamne <amitsuni@xilinx.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "chinnikishore369@gmail.com" <chinnikishore369@gmail.com>,
-        git <git@xilinx.com>
-Subject: RE: [PATCH 5/5] misc: zynqmp: Add afi config driver
-Thread-Topic: [PATCH 5/5] misc: zynqmp: Add afi config driver
-Thread-Index: AQHXNb4YA+92oo6dgkaPdwzLOSQ8W6q9GD0AgABSIaA=
-Date:   Tue, 20 Apr 2021 13:45:08 +0000
-Message-ID: <MWHPR02MB2623C9BAFBA0CB47449E8724C2489@MWHPR02MB2623.namprd02.prod.outlook.com>
-References: <20210420081153.17020-1-nava.manne@xilinx.com>
- <20210420081153.17020-6-nava.manne@xilinx.com> <YH6VPt6qfxdFhFEB@kroah.com>
-In-Reply-To: <YH6VPt6qfxdFhFEB@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=xilinx.com;
-x-originating-ip: [149.199.50.130]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1cdee38e-f422-4972-a218-08d9040282f8
-x-ms-traffictypediagnostic: CO6PR02MB7697:
-x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CO6PR02MB7697DD405386D092C64DD070C2489@CO6PR02MB7697.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3yKRwB+6pVP36TR1cLAqeTGsbvdv36tlfMn4Mg6VhSLP4HKAZLC1AhWv+lFZNrJJRDi09lMgHuApDkhLseVno58wEoifMaYhhBePVxhtvaOaP3hJXrXljz/EWQRwRXndBzge+qjJROgDt7ZZmpnSmT7gpPEWOOHDcWeoC87kIFTsOrBrpUpRTD6Wo7JTFepRi5i5cO/deOJ027vIyQVLOIexnIpc1RMBdYu21nZ1Lz9VItdN05uvOPHxmGi4YezyuwRzk+a+RhRU3nZAktyZBCfvC2XfsSQ8bhCBnZaqw9CGkSHkGCJ24C81Zsvqc5ZvtmLeZMoWzh5kzmsbh1bIWtDzL9BbLcxSu74JaMWZ4+KsvF/niSNMQHdo0NK7Hkg5hv3/JswzSdLm7xNiG8784KGTwXmZFuLPtxh895TLuua7jLz3cxyTkGKILfcCellur2XOVopaTdWzh3OMXce4ze1mK1IaWyTrbnQ7Q/WXtHyQ32AvuNTsFOTZN8o85nyii9OMo3BJY9tZPC/Lu5qDRu3INBp0Mc6mKCoHTCLuPxNWZwlCdDSq5lkSioLftP8NqKOWDfJvXMKrNYFdI7QqrrFpfF77CBvLi7Wjfuy+3U0=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR02MB2623.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(136003)(376002)(39860400002)(396003)(83380400001)(54906003)(86362001)(4326008)(71200400001)(6916009)(52536014)(33656002)(76116006)(53546011)(26005)(478600001)(5660300002)(316002)(66446008)(186003)(8936002)(9686003)(2906002)(64756008)(66946007)(7696005)(66556008)(107886003)(38100700002)(66476007)(55016002)(6506007)(122000001)(8676002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?q2iQCDTyJ3fTPpkyn1GuXQH0o/3Y8fEgu6f4W5vO5TgPhg4RWPVdbvpTwqVH?=
- =?us-ascii?Q?TUnWyS6oQfF0/UWP1fXFXH53sP0W9ZSbDmobue10X3uZZgk7FIMJ/2zkC8a4?=
- =?us-ascii?Q?j/n+G/vgPP7t+qUwZ8FTzyt4UoaIUHH6W6FlxyGBhMa6PvR2tjp9ieMAnSuV?=
- =?us-ascii?Q?qoFP0+hUX9CqduA9GGrrk00PVdna2h1rXzZMJA+1+psL+RZuJrhRw5sljXNB?=
- =?us-ascii?Q?jof8HGmLIY4/BMfGzsZlbjoYBgS2LH5KGYg65yV+XxcbQDmmZazIrqs1+wz5?=
- =?us-ascii?Q?3kgYwiXejqtB7p2EUqaDChbSQntIvMqHAo789BR1kcYu4zBhoflog1GzqBOm?=
- =?us-ascii?Q?CipyiQ1I1wmZc8b++KxLyVdoLxcIgiDYH0r4qd3D8PRO7YXNHN/UpHvcxWpi?=
- =?us-ascii?Q?99V4wjod8ULG/Xqn330tqO4/gM8I9VQz/nwceQ8EUxxDdzlcwCc0nSn+6ibb?=
- =?us-ascii?Q?QlO0NZ+b7bPF317paeYrfWtyLBeBIgk3ez/xNj05lSsT0hPPgbviXmTgMU/d?=
- =?us-ascii?Q?6e97EmS61FPZPB2883Oxw8pac/nR78vt9Ph9eWn04a8o2cQjq+KzJOug+NTE?=
- =?us-ascii?Q?XUx3o505iDeH83rfz1kJPHJ4Di/rgFFpy4Mk3TLgT9QuVsu1Ps7fXaJbaSN+?=
- =?us-ascii?Q?O+PLnfG5dZCkNeTMhfox+g2pM+DXqVs2BJumB8DulIVGafHNtdqkgpAAwdoz?=
- =?us-ascii?Q?rrHFyYjqYmGv/L9+jZm81tcZBvhuf9WLsxhKtsi0Puyv7rfxfWN58Q4mu7jl?=
- =?us-ascii?Q?dkZtGwessJZg9Ye4TWlDBScMqyYlX7i+YFxfg1MTNg4I8mVMsH0R1ABlfABW?=
- =?us-ascii?Q?sFQtyFC7cAnSzvoIeW27f4PN0t6Ah6qBdW3rBkLAvsKyhpnlHnPVYOCHTzv3?=
- =?us-ascii?Q?yZUYGn0pJnV7irCyMYm/KFSo+dS90lub7hJv2SKjKV55pMkP58q5ah1CQqDx?=
- =?us-ascii?Q?ddWtC8EkRk5T1T9jgq79lILahltzpeXknQ0hctuXAquXKnFIZjly6XjvjCXE?=
- =?us-ascii?Q?wBdaPzV6Jbl6ct6t+JjSQfZQqFLlecsFlpQd4u61KNVJlcIzPzr8BKCZNRWX?=
- =?us-ascii?Q?slWGILdFaoXfWGVNqqSXcPGjDSR3E2iN1Whq6FcU8C8mXfibvIRPDwJj1LGw?=
- =?us-ascii?Q?o+upa86OV3WSnKpysWP6+FOPvzCKPSRriKugswVEg7fxSfw3/c44f1dlHt/3?=
- =?us-ascii?Q?SzmXDK2e+lpukqfzqzIdjzqeM82Aa/osWaQjUhzH9TOHnFGir7DtLw1jIXXD?=
- =?us-ascii?Q?BEehRpfq+4qX8JGCiLodnD3lcqeDvQaT/gl/Cl3LTDKsv/5bfis5cIUaBo6f?=
- =?us-ascii?Q?+cjURQsz/HFdRkss+kvWl+0R?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=JM/icD7T6W7gUmifoxKrWVUnrbXmjHlobg/xWhxiON8=;
+        b=nrm4jqVJyL/uYF050/4PlBVj3Tyyl/gfqAr6HJ7EE2l5bTfhJvfimT+d/Dp0DcMSKR
+         pQBxjkglRZhBHwOMtFnvFg6AgIAG6Jpey+RTKIxgRiutULFS1exLDXsQLhbtapqukAsr
+         NSOZywKZSUjpAljZN50HWftvvDIZ7KDtl6ezkZFKT33tUbCWwVJIqb23qLv0k0SijJaG
+         NvXqYmOKtgGV0PAPcNKAWfuTunuOrzp+gI+apgM7v4Pi5PLk4/8itLsDXszbc1bMh8xo
+         MuxHtb4dng353Y5eLleEcfQThMhDTC8TdgMrfBlTmf024D3EqCvGqhkkSah20eaLB7Lu
+         EhZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=JM/icD7T6W7gUmifoxKrWVUnrbXmjHlobg/xWhxiON8=;
+        b=g9DBMzz/qorOJMMVV0mVF3EVoZEi42bjHhy45Fadp/cc6dytpbAKMa+d7EK27/2EW0
+         lRpm4eLWM4nqPk4uKgoRHwIvw0HS6taEp2rsRnE0nCxYBZWMOwKtK5Lm4/azia8ibF2f
+         pmB3OSKpEiTbYdxqXr4Cb4p6W990iG1Zq2VAFo5awdOUT63I7L91V/yuWd7NDkcOMOZ6
+         zfWTPInxxRnG+xXjzBeDPyNxt01EMRHDYFyj4AVnisR5dvvnr7camF5QIKwW4xCtGAoo
+         IJobmEpumc6tbAvKLY43R+gswE22NyapI9WD4PWY8OdX5Ou4I9gMOgISeOcXPZNcwhiL
+         wREg==
+X-Gm-Message-State: AOAM530Zfw/DpxDUpEPSRmBtGzHG0VAbwnxli0oKfdPFimre+VJaxwHf
+        i5fhPMBd7xgZPy5bH6rvN9hTkj0epEdm9Rtu6VFHSx4AMCKwx8fu
+X-Google-Smtp-Source: ABdhPJw3XlRc1ZNbIgf8VyJD9I/aKgCKRkxwe3MDwn0+iYuhZN3brndS+Lf8tTAvUaQGs0JIVIsEh2wuQNNGzeWL4BQ=
+X-Received: by 2002:a17:906:3749:: with SMTP id e9mr18435125ejc.247.1618926326304;
+ Tue, 20 Apr 2021 06:45:26 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR02MB2623.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1cdee38e-f422-4972-a218-08d9040282f8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Apr 2021 13:45:08.2024
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: v0nrIOGoo8Xx0PKUv4qiCtT75kQT+uYM9izyg2plmuuU0dSiR6MfjVkvUE2phuYgdSkJwaUGhCp5ptwNRfVshg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR02MB7697
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 20 Apr 2021 19:15:14 +0530
+Message-ID: <CA+G9fYskw4f8GDnn+YngdXihFGs5vP5EekDNqECY7XKTd9cbRg@mail.gmail.com>
+Subject: BUG: KASAN: use-after-free in page_to_skb.isra.0+0x300/0x418
+To:     virtualization@lists.linux-foundation.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, linux-mm <linux-mm@kvack.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Alan Bennett <alan.bennett@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Following kernel BUG reported on qemu-arm64 running linux next 20210420
+the config is enabled with KASAN.
 
-	Please find my response inline.
+steps to reproduce:
+----------------------------
+- Build the arm64 kernel with KASAN enabled.
+- boot it with below command and you will notice
+ /usr/bin/qemu-system-aarch64 -cpu host -machine virt,accel=kvm
+-nographic -net nic,model=virtio,macaddr=BA:DD:AD:CC:09:10 -net tap -m
+1024 -monitor none -kernel kernel/Image.gz --append "console=ttyAMA0
+root=/dev/vda rw" -hda
+rootfs/rpb-console-image-lkft-juno-20210414125244-133.rootfs.ext4 -m
+4096 -smp 4 -nographic
 
-> -----Original Message-----
-> From: Greg KH <gregkh@linuxfoundation.org>
-> Sent: Tuesday, April 20, 2021 2:18 PM
-> To: Nava kishore Manne <navam@xilinx.com>
-> Cc: robh+dt@kernel.org; Michal Simek <michals@xilinx.com>; Derek Kiernan
-> <dkiernan@xilinx.com>; Dragan Cvetic <draganc@xilinx.com>;
-> arnd@arndb.de; Rajan Vaja <RAJANV@xilinx.com>; Jolly Shah
-> <JOLLYS@xilinx.com>; Tejas Patel <tejasp@xlnx.xilinx.com>; Amit Sunil
-> Dhamne <amitsuni@xilinx.com>; devicetree@vger.kernel.org; linux-arm-
-> kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
-> chinnikishore369@gmail.com; git <git@xilinx.com>
-> Subject: Re: [PATCH 5/5] misc: zynqmp: Add afi config driver
->=20
-> On Tue, Apr 20, 2021 at 01:41:53PM +0530, Nava kishore Manne wrote:
-> > This patch adds zynqmp afi config driver.This is useful for the
-> > configuration of the PS-PL interface on Zynq US+ MPSoC platform.
->=20
-> Again, please spell out what those terms mean, as I have no idea :(
->=20
 
-Will fix in v2
+crash log:
+-------------
+[   23.711647] BUG: KASAN: use-after-free in page_to_skb.isra.0+0x300/0x418
+[   23.715349] Read of size 12 at addr ffff0000cf63f800 by task systemd/1
+[   23.718528]
+[   23.719331] CPU: 0 PID: 1 Comm: systemd Not tainted
+5.12.0-rc8-next-20210420 #1
+[   23.722836] Hardware name: linux,dummy-virt (DT)
+[   23.725114] Call trace:
+[   23.726345]  dump_backtrace+0x0/0x2f0
+[   23.728167]  show_stack+0x20/0x30
+[   23.729843]  dump_stack+0x120/0x19c
+[   23.731576]  print_address_description.constprop.0+0x6c/0x30c
+[   23.734357]  kasan_report+0x1e0/0x248
+[   23.736155]  kasan_check_range+0x100/0x1b8
+[   23.738183]  memcpy+0x54/0x100
+[   23.739707]  page_to_skb.isra.0+0x300/0x418
+[   23.742027]  receive_buf+0x113c/0x2118
+[   23.743881]  virtnet_poll+0x28c/0x980
+[   23.745712]  __napi_poll+0x64/0x2e8
+[   23.747450]  net_rx_action+0x204/0x448
+[   23.749315]  __do_softirq+0x20c/0x70c
+[   23.751124]  irq_exit+0x184/0x190
+[   23.752786]  __handle_domain_irq+0x8c/0xf0
+[   23.754790]  gic_handle_irq+0xe4/0x128
+[   23.756612]  el1_irq+0xb4/0x14c
+[   23.758194]  copy_page+0x48/0xe8
+[   23.759815]  copy_user_highpage+0x20/0x50
+[   23.761791]  wp_page_copy+0x178/0xe00
+[   23.763592]  do_wp_page+0x10c/0x890
+[   23.765330]  __handle_mm_fault+0xbb8/0x1560
+[   23.767381]  handle_mm_fault+0x160/0x360
+[   23.769320]  do_page_fault+0x1d4/0x5b0
+[   23.771122]  do_mem_abort+0x68/0x100
+[   23.772849]  el0_da+0x3c/0x50
+[   23.774295]  el0_sync_handler+0x88/0xb8
+[   23.776133]  el0_sync+0x18c/0x1c0
+[   23.777751]
+[   23.778520] Unable to handle kernel paging request at virtual
+address dead000000000418
+[   23.782211] Mem abort info:
+[   23.783557]   ESR = 0x96000004
+[   23.785383]   EC = 0x25: DABT (current EL), IL = 32 bits
+[   23.787934]   SET = 0, FnV = 0
+[   23.789451]   EA = 0, S1PTW = 0
+[   23.791000] Data abort info:
+[   23.792418]   ISV = 0, ISS = 0x00000004
+[   23.794293]   CM = 0, WnR = 0
+[   23.795756] [dead000000000418] address between user and kernel address ranges
+[   23.799181] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+[   23.801878] Modules linked in: rfkill crct10dif_ce fuse
+[   23.804467] CPU: 0 PID: 1 Comm: systemd Not tainted
+5.12.0-rc8-next-20210420 #1
+[   23.807965] Hardware name: linux,dummy-virt (DT)
+[   23.810215] pstate: 000000c5 (nzcv daIF -PAN -UAO -TCO BTYPE=--)
+[   23.813114] pc : print_address_description.constprop.0+0xb4/0x30c
+[   23.816067] lr : print_address_description.constprop.0+0x78/0x30c
+[   23.819042] sp : ffff8000100077d0
+[   23.820694] x29: ffff8000100077d0 x28: ffff0000cf63f80c
+[   23.823289] x27: 000000000000780c x26: 000000000000000c
+[   23.825884] x25: ffff0000c623e934 x24: ffff800015779000
+[   23.828476] x23: ffff8000129f1888 x22: dead000000000400
+[   23.831080] x21: 000000000000000c x20: fffffc00033d8fc0
+[   23.833672] x19: ffff0000cf63f800 x18: 0000000000000000
+[   23.836262] x17: 0000000000000000 x16: 0000000000000000
+[   23.838866] x15: 0000000000000000 x14: 0000000000000000
+[   23.841454] x13: 0000000000000000 x12: ffff60001b568d2c
+[   23.844033] x11: 1fffe0001b568d2b x10: ffff60001b568d2b
+[   23.846652] x9 : ffff8000101768f4 x8 : ffff0000dab4695b
+[   23.849250] x7 : 0000000000000001 x6 : ffff0000dab46958
+[   23.851827] x5 : 00009fffe4a972d5 x4 : dfff800000000000
+[   23.854581] x3 : ffff000000000000 x2 : 00000000000cf63f
+[   23.857178] x1 : 0000000000000000 x0 : dead000000000400
+[   23.859756] Call trace:
+[   23.860996]  print_address_description.constprop.0+0xb4/0x30c
+[   23.863786]  kasan_report+0x1e0/0x248
+[   23.865613]  kasan_check_range+0x100/0x1b8
+[   23.867627]  memcpy+0x54/0x100
+[   23.869179]  page_to_skb.isra.0+0x300/0x418
+[   23.871234]  receive_buf+0x113c/0x2118
+[   23.873092]  virtnet_poll+0x28c/0x980
+[   23.874888]  __napi_poll+0x64/0x2e8
+[   23.876609]  net_rx_action+0x204/0x448
+[   23.878482]  __do_softirq+0x20c/0x70c
+[   23.880278]  irq_exit+0x184/0x190
+[   23.881950]  __handle_domain_irq+0x8c/0xf0
+[   23.883952]  gic_handle_irq+0xe4/0x128
+[   23.885800]  el1_irq+0xb4/0x14c
+[   23.887344]  copy_page+0x48/0xe8
+[   23.888964]  copy_user_highpage+0x20/0x50
+[   23.890922]  wp_page_copy+0x178/0xe00
+[   23.892753]  do_wp_page+0x10c/0x890
+[   23.894491]  __handle_mm_fault+0xbb8/0x1560
+[   23.896528]  handle_mm_fault+0x160/0x360
+[   23.898475]  do_page_fault+0x1d4/0x5b0
+[   23.900321]  do_mem_abort+0x68/0x100
+[   23.902096]  el0_da+0x3c/0x50
+[   23.903567]  el0_sync_handler+0x88/0xb8
+[   23.905462]  el0_sync+0x18c/0x1c0
+[   23.907123] Code: d2ffffe3 79405681 aa1603e0 d346fc42 (b9401ac6)
+[   23.910073] ---[ end trace fd09da2bec4267c7 ]---
+[   23.912299] Kernel panic - not syncing: Oops: Fatal exception in interrupt
+[   23.915576] SMP: stopping secondary CPUs
+[   23.917615] Kernel Offset: disabled
+[   23.919303] CPU features: 0x00240002,20002004
+[   23.921405] Memory Limit: none
+[   23.922914] ---[ end Kernel panic - not syncing: Oops: Fatal
+exception in interrupt ]---
 
-> >
-> > Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
-> > ---
-> >  drivers/misc/Kconfig      | 11 ++++++
-> >  drivers/misc/Makefile     |  1 +
-> >  drivers/misc/zynqmp-afi.c | 83
-> > +++++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 95 insertions(+)
-> >  create mode 100644 drivers/misc/zynqmp-afi.c
-> >
-> > diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig index
-> > 877b43b3377d..d1ea1eeb3ac1 100644
-> > --- a/drivers/misc/Kconfig
-> > +++ b/drivers/misc/Kconfig
-> > @@ -456,6 +456,17 @@ config ZYNQ_AFI
-> >  	  between PS and PL, the AXI port data path should be configured
-> >  	  with the proper Bus-width values
-> >
-> > +config ZYNQMP_AFI
-> > +        tristate "Xilinx ZYNQMP AFI support"
-> > +        help
-> > +	  ZynqMP AFI driver support for writing to the AFI registers for
-> > +	  configuring PS_PL Bus-width. Xilinx Zynq US+ MPSoC connect the
-> > +	  PS to the programmable logic (PL) through the AXI port. This AXI
-> > +	  port helps to establish the data path between the PS and PL.
-> > +	  In-order to establish the proper communication path between
-> > +	  PS and PL, the AXI port data path should be configured with
-> > +	  the proper Bus-width values
->=20
-> Please use tabs properly, you mix them above, checkpatch should have
-> caught that.
->=20
-Yes, Ideally check patch should report this issue but it's failed to report=
-.
-Will fix this issue in v2.
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
-Regards,
-Navakishore.
+Full test log:
+------------------
+https://lkft.validation.linaro.org/scheduler/job/2555059#L646
+https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20210420/testrun/4398870/suite/linux-log-parser/test/check-kernel-bug-2555059/log
+
+
+metadata:
+  git branch: master
+  git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+  git describe: next-20210420
+  kernel-config: https://builds.tuxbuild.com/1rQkHtEDo0W1xQ7zqLlKg72HPil/config
+
+--
+Linaro LKFT
+https://lkft.linaro.org
