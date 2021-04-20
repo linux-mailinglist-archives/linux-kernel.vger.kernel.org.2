@@ -2,149 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE31365974
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77BB9365971
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232276AbhDTNDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:03:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232181AbhDTNDF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:03:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C421FC06174A;
-        Tue, 20 Apr 2021 06:02:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XA8ackuYZkYPd0YCzSUWLtkDmbgSkK7b4qPd/Wb+YNQ=; b=diKXWHLIKs2q20H2gdMgpGEZcg
-        6JF64Jta0m4+MF4B0jlaRxVvDxPKP1ZZYFZkxBufK9SNFx3hPTdQutAwZZ0ghpwxpFyPxOsI9VLiF
-        gl2//OmCX6w2E3XRWfrpD3z7ydCvibLHqjutozJnj4dyK07vtMFlrb7ykjeYp0oMwZFBlhCIQZjZf
-        zdJWUgEOvuiqeYoGqbSDD8h9NknrOi0a072Kym/+xZHueh+BEQC23LrNIaVq6cztYmmQu4J4MGB8I
-        s6xaUyadNIbDgqwZHaNSdHm6Q68p0UN13QoCcIpaB18iQlGwyXaWWmmmNp27oDhiniRuCwHaov3w+
-        eguwjMdw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lYpy3-00FB8t-9J; Tue, 20 Apr 2021 12:59:35 +0000
-Date:   Tue, 20 Apr 2021 13:59:03 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     rafael@kernel.org, gregkh@linuxfoundation.org,
-        viro@zeniv.linux.org.uk, jack@suse.cz, bvanassche@acm.org,
-        jeyu@kernel.org, ebiederm@xmission.com, mchehab@kernel.org,
-        keescook@chromium.org, linux-fsdevel@vger.kernel.org,
-        kernel@tuxforce.de, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC v2 6/6] fs: add automatic kernel fs freeze / thaw and
- remove kthread freezing
-Message-ID: <20210420125903.GC3604224@infradead.org>
-References: <20210417001026.23858-1-mcgrof@kernel.org>
- <20210417001026.23858-7-mcgrof@kernel.org>
+        id S232372AbhDTNCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:02:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232091AbhDTNB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 09:01:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA9EC613D0;
+        Tue, 20 Apr 2021 13:01:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618923686;
+        bh=rtORbGc3mPMhlArrUrjghPvRhVtKXaf7d9TRrasS6l0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VMumAygSE2Ss89tpuyftaMuLsWVlHbuUiOCbE8Ai7UM5E6RsNHIG9Vf4xtaC5qwKr
+         O/qTpB4pkucmnZ3hez0dd3jHy+B2ziZ24j2pdzihRTrnG631AEEeFTonndrokzneRV
+         fAlejQkAack3j+VindxNlgBzaFt6E33gc8tfDylJhzkcXhrUMNnxV+lZ6QtSmdN5EQ
+         +1QNhVUNNq7EWbL1+0+jlludkTmVA2DTA/EPQmmN7+A2XDrkH6E/Edh5Is/S5zN1UY
+         Dm+m093pRdDh3yhZFuuV6lxhG7ADpLJlcxGCBoTiokyTGU3rhh236EaQmxjuveju2R
+         kvvrKuGcEAYbA==
+Received: by mail-qk1-f178.google.com with SMTP id u20so6964803qku.10;
+        Tue, 20 Apr 2021 06:01:26 -0700 (PDT)
+X-Gm-Message-State: AOAM532WT6gnQe63xUoGePZXcK7WyX/GXoJ7+pOe0StbObSIXubVf7A+
+        EbKcqHzZXqEzJFsLhyOuPFlscIl7Po8e5aATzQ==
+X-Google-Smtp-Source: ABdhPJytCtVfQJCSrxQnJlrByY2ajWXURyVePKmlcnaE97mOqQU4IvcMx9ee78uVQZawM9qyCusf98X4PqudjDjJq+I=
+X-Received: by 2002:ae9:f819:: with SMTP id x25mr9783240qkh.68.1618923685847;
+ Tue, 20 Apr 2021 06:01:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210417001026.23858-7-mcgrof@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20210126011759.1605641-1-drinkcat@chromium.org> <20210126091747.v11.1.Ie74d3355761aab202d4825ac6f66d990bba0130e@changeid>
+In-Reply-To: <20210126091747.v11.1.Ie74d3355761aab202d4825ac6f66d990bba0130e@changeid>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 20 Apr 2021 08:01:13 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+gWm+94zF1XN2KiRYgAZewiDkCk5B5bhLB=M+-HbD=fA@mail.gmail.com>
+Message-ID: <CAL_Jsq+gWm+94zF1XN2KiRYgAZewiDkCk5B5bhLB=M+-HbD=fA@mail.gmail.com>
+Subject: Re: [PATCH v11 1/4] dt-bindings: gpu: mali-bifrost: Add Mediatek MT8183
+To:     Nicolas Boichat <drinkcat@chromium.org>
+Cc:     Steven Price <steven.price@arm.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Fei Shao <fshao@chromium.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> This also removes all the superflous freezer calls on all filesystems
-> as they are no longer needed as the VFS now performs filesystem
-> freezing/thaw if the filesystem has support for it. The filesystem
-> therefore is in charge of properly dealing with quiescing of the
-> filesystem through its callbacks.
-
-Can you split that out from the main logic change?  Maybe even into one
-patch per file system?
-
-> +#ifdef CONFIG_PM_SLEEP
-> +static bool super_should_freeze(struct super_block *sb)
-> +{
-> +	if (!sb->s_root)
-> +		return false;
-> +	if (!(sb->s_flags & MS_BORN))
-> +		return false;
-
-This is already done in the iterate_supers_excl and
-iterate_supers_reverse_excl helpers that this helper is always called
-through.
-
-> +	/*
-> +	 * We don't freeze virtual filesystems, we skip those filesystems with
-> +	 * no backing device.
-> +	 */
-> +	if (sb->s_bdi == &noop_backing_dev_info)
-> +		return false;
-
-Why?
-
-> +	/* No need to freeze read-only filesystems */
-> +	if (sb_rdonly(sb))
-> +		return false;
-
-freeze_super/thaw_super already takes care of read-only file systems,
-and IMHO in a better way.
-
-> +	int error = 0;
+On Mon, Jan 25, 2021 at 7:18 PM Nicolas Boichat <drinkcat@chromium.org> wrote:
+>
+> Define a compatible string for the Mali Bifrost GPU found in
+> Mediatek's MT8183 SoCs.
+>
+> Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+> ---
+>
+> Changes in v11:
+>  - binding: power-domain-names not power-domainS-names
+>
+> Changes in v10:
+>  - Fix the binding to make sure sram-supply property can be provided.
+>
+> Changes in v9: None
+> Changes in v8: None
+> Changes in v7: None
+> Changes in v6:
+>  - Rebased, actually tested with recent mesa driver.
+>
+> Changes in v5:
+>  - Rename "2d" power domain to "core2"
+>
+> Changes in v4:
+>  - Add power-domain-names description
+>    (kept Alyssa's reviewed-by as the change is minor)
+>
+> Changes in v3: None
+> Changes in v2: None
+>
+>  .../bindings/gpu/arm,mali-bifrost.yaml        | 28 +++++++++++++++++++
+>  1 file changed, 28 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml b/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml
+> index 184492162e7e..3e758f88e2cd 100644
+> --- a/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml
+> +++ b/Documentation/devicetree/bindings/gpu/arm,mali-bifrost.yaml
+> @@ -17,6 +17,7 @@ properties:
+>      items:
+>        - enum:
+>            - amlogic,meson-g12a-mali
+> +          - mediatek,mt8183-mali
+>            - realtek,rtd1619-mali
+>            - rockchip,px30-mali
+>        - const: arm,mali-bifrost # Mali Bifrost GPU model/revision is fully discoverable
+> @@ -41,6 +42,8 @@ properties:
+>
+>    mali-supply: true
+>
+> +  sram-supply: true
 > +
-> +	spin_lock(&sb_lock);
-> +	if (!super_should_freeze(sb))
-> +		goto out;
-> +
-> +	pr_info("%s (%s): freezing\n", sb->s_type->name, sb->s_id);
-> +
-> +	spin_unlock(&sb_lock);
+>    operating-points-v2: true
+>
+>    power-domains:
+> @@ -87,6 +90,31 @@ allOf:
+>      then:
+>        required:
+>          - resets
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: mediatek,mt8183-mali
+> +    then:
+> +      properties:
+> +        power-domains:
+> +          description:
+> +            List of phandle and PM domain specifier as documented in
+> +            Documentation/devicetree/bindings/power/power_domain.txt
+> +          minItems: 3
+> +          maxItems: 3
 
-I don't see how super_should_freeze needs sb_lock.  But if it does
-the lock should be taken in the function.
+This won't work because the top level schema restricts this to 1. The
+top level needs to say:
 
-> +	atomic_inc(&sb->s_active);
+power-domains:
+  minItems: 1
+  maxItems: 3
 
-Doesn't this need a atomic_inc_not_zero if we're racing with a delayed
-unmount?
+And you need just 'minItems: 3' here and 'maxItems: 1' in the else clause.
 
-> +	error = freeze_locked_super(sb, false);
-> +	if (error)
-> +		atomic_dec(&sb->s_active);
+And drop the description. That's every 'power-domains' property.
 
-And this really needs something like deactivate_locked_super.
+> +        power-domain-names:
+> +          items:
+> +            - const: core0
+> +            - const: core1
+> +            - const: core2
 
-> +	spin_lock(&sb_lock);
-> +	if (error && error != -EBUSY)
-> +		pr_notice("%s (%s): Unable to freeze, error=%d",
-> +			  sb->s_type->name, sb->s_id, error);
-> +
-> +out:
-> +	spin_unlock(&sb_lock);
+Blank line
 
-Huh, what is the point of sb_lock here?
-
-> +int fs_suspend_freeze(void)
-> +{
-> +	return iterate_supers_reverse_excl(fs_suspend_freeze_sb, NULL);
-> +}
-
-I'd just fold this helper into its only caller.
-
-> +	error = __thaw_super_locked(sb, false);
-> +	if (!error)
-> +		atomic_dec(&sb->s_active);
-> +
-> +	spin_lock(&sb_lock);
-> +	if (error && error != -EBUSY)
-> +		pr_notice("%s (%s): Unable to unfreeze, error=%d",
-> +			  sb->s_type->name, sb->s_id, error);
-> +
-> +out:
-> +	spin_unlock(&sb_lock);
-> +	return error;
-> +}
-> +
-> +int fs_resume_unfreeze(void)
-> +{
-> +	return iterate_supers_excl(fs_suspend_thaw_sb, NULL);
-> +}
-
-Same comments as on the freeze side.
+> +      required:
+> +        - sram-supply
+> +        - power-domains
+> +        - power-domain-names
+> +    else:
+> +      properties:
+> +        sram-supply: false
+>
+>  examples:
+>    - |
+> --
+> 2.30.0.280.ga3ce27912f-goog
+>
