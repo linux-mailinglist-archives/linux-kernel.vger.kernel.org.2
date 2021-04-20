@@ -2,108 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B26E365470
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EFA0365472
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbhDTIqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 04:46:09 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:33530 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbhDTIqH (ORCPT
+        id S231178AbhDTIrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 04:47:00 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51042 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230395AbhDTIqs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 04:46:07 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13K8j6lp025053;
-        Tue, 20 Apr 2021 08:45:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=lRi5+pXSkvGHuYVuTVlpgKCbheDLoFERK+hwvLGTTm4=;
- b=rPGDywR2n/XgUYKjKiZzArVQCXQq7aQte3E1qE3AiRrvViVCuX/9lJ7ApStjxoQWtK3X
- fAaxJEriwG9CBx99zm1I3agaBwpAS1BPkaiDkuTNyXOxjX7bqSkrOn8Z0/J1Z99rE9Or
- 5rg8u49KnQkJmyyK1GVvlimhCFldSi+3Ek8GcynT+L50vQ+RkyyCRMgpisU6bT8AUnz6
- r5jN+lIdohK8WdXh/kHV4QyOASbvjYXTnVa2byr2LleY7UUUsvJXcPi8qt6sLjSwWlQI
- sqHHH8mb/lZgT4OVgDL0W5XPcnl/pe+iXZDu/Asmr06GLM2WS73j5+LXDm2G3y9/ei5O KQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 37yqmnebth-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Apr 2021 08:45:06 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13K8bScF008096;
-        Tue, 20 Apr 2021 08:45:05 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 3809es9jrn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Apr 2021 08:45:05 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13K8fX8q021403;
-        Tue, 20 Apr 2021 08:45:05 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 3809es9jq5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Apr 2021 08:45:05 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 13K8ixFD000725;
-        Tue, 20 Apr 2021 08:45:00 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 20 Apr 2021 01:44:59 -0700
-Date:   Tue, 20 Apr 2021 11:44:51 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] mtd: rawnand: silence static checker warning in
- nand_setup_interface()
-Message-ID: <YH6Ugwz3gcga+q8X@mwanda>
+        Tue, 20 Apr 2021 04:46:48 -0400
+Date:   Tue, 20 Apr 2021 08:46:15 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618908376;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uuQixnNEBiCNiqwfuVnyZrvDsy6wXRftDK7IKYjxUnI=;
+        b=Cjqngsl++da7k9RbP0aGTQsolZXDJTW97aIR3B17pxuNY/KH7RH66iuVFf64wp7srJ3aic
+        at4TUofs/y2H6y1W2ujpnEGPAN4VyqULiOiwBD8jXbWGUwyuMxtJBStH5Z1gz8aI8Sx7vR
+        XFQGv+HaCOMZoHKcERksAAaWWG6QNnwjxeb8xAGC2qb0YGaHsP/6A5wptqMoLCNEpVEtzs
+        eO+3gS2nrsZRj1F/+6EPtwiKmB07la5Y9VTey/DOe0WeBn16gXZbYFlRa0PpMymbdsdE2z
+        1dx6Fpfds5Ue217SpoBUvbsbN8Sf90MVLZuKTdqKQWEp5Id/ItzGlzCiepiThg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618908376;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uuQixnNEBiCNiqwfuVnyZrvDsy6wXRftDK7IKYjxUnI=;
+        b=0CqVaCeyHteop9JNkBVozRyDsvFug00WL5qAh5JQzejSd0KsA41X9MK7q7mGkykWPYSHpl
+        GHhhZ6CXD7Hm16Ag==
+From:   "tip-bot2 for YueHaibing" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/fair: Move update_nohz_stats() to the
+ CONFIG_NO_HZ_COMMON block to simplify the code & fix an unused function
+ warning
+Cc:     YueHaibing <yuehaibing@huawei.com>, Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210329144029.29200-1-yuehaibing@huawei.com>
+References: <20210329144029.29200-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-ORIG-GUID: FWLbufaOYH_RWGtVqbl2ylxaOcmejjKG
-X-Proofpoint-GUID: FWLbufaOYH_RWGtVqbl2ylxaOcmejjKG
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9959 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxscore=0 adultscore=0
- impostorscore=0 spamscore=0 malwarescore=0 clxscore=1015
- lowpriorityscore=0 priorityscore=1501 suspectscore=0 mlxlogscore=999
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104200065
+Message-ID: <161890837554.29796.9442405099846421634.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Smatch complains that the error code is not set on this error path:
+The following commit has been merged into the sched/core branch of tip:
 
-    drivers/mtd/nand/raw/nand_base.c:842 nand_setup_interface()
-    warn: missing error code 'ret'
+Commit-ID:     3f5ad91488e813026f8c5f46b839e91a83912703
+Gitweb:        https://git.kernel.org/tip/3f5ad91488e813026f8c5f46b839e91a839=
+12703
+Author:        YueHaibing <yuehaibing@huawei.com>
+AuthorDate:    Mon, 29 Mar 2021 22:40:29 +08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 20 Apr 2021 10:14:15 +02:00
 
-But actually returning success is intentional because the NAND chip will
-still work in mode 0.  This patch adds a "ret = 0;" assignment to make
-the intent more clear and to silence the static checker warning.  It
-doesn't affect the compiled code because GCC optimises the assignment
-away.
+sched/fair: Move update_nohz_stats() to the CONFIG_NO_HZ_COMMON block to simp=
+lify the code & fix an unused function warning
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+When !CONFIG_NO_HZ_COMMON we get this new GCC warning:
+
+   kernel/sched/fair.c:8398:13: warning: =E2=80=98update_nohz_stats=E2=80=99 =
+defined but not used [-Wunused-function]
+
+Move update_nohz_stats() to an already existing CONFIG_NO_HZ_COMMON #ifdef
+block.
+
+Beyond fixing the GCC warning, this also simplifies the update_nohz_stats() f=
+unction.
+
+[ mingo: Rewrote the changelog. ]
+
+Fixes: 0826530de3cb ("sched/fair: Remove update of blocked load from newidle_=
+balance")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Link: https://lore.kernel.org/r/20210329144029.29200-1-yuehaibing@huawei.com
 ---
- drivers/mtd/nand/raw/nand_base.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/sched/fair.c | 40 ++++++++++++++++++----------------------
+ 1 file changed, 18 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index fb072c444495..e29e5b3d31bf 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -880,6 +880,7 @@ static int nand_setup_interface(struct nand_chip *chip, int chipnr)
- 	if (tmode_param[0] != chip->best_interface_config->timings.mode) {
- 		pr_warn("timing mode %d not acknowledged by the NAND chip\n",
- 			chip->best_interface_config->timings.mode);
-+		ret = 0;
- 		goto err_reset_chip;
- 	}
- 
--- 
-2.30.2
-
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 49636a4..7ea3b93 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -8430,28 +8430,6 @@ group_type group_classify(unsigned int imbalance_pct,
+ 	return group_has_spare;
+ }
+=20
+-static bool update_nohz_stats(struct rq *rq)
+-{
+-#ifdef CONFIG_NO_HZ_COMMON
+-	unsigned int cpu =3D rq->cpu;
+-
+-	if (!rq->has_blocked_load)
+-		return false;
+-
+-	if (!cpumask_test_cpu(cpu, nohz.idle_cpus_mask))
+-		return false;
+-
+-	if (!time_after(jiffies, READ_ONCE(rq->last_blocked_load_update_tick)))
+-		return true;
+-
+-	update_blocked_averages(cpu);
+-
+-	return rq->has_blocked_load;
+-#else
+-	return false;
+-#endif
+-}
+-
+ /**
+  * update_sg_lb_stats - Update sched_group's statistics for load balancing.
+  * @env: The load balancing environment.
+@@ -10406,6 +10384,24 @@ out:
+ 	WRITE_ONCE(nohz.has_blocked, 1);
+ }
+=20
++static bool update_nohz_stats(struct rq *rq)
++{
++	unsigned int cpu =3D rq->cpu;
++
++	if (!rq->has_blocked_load)
++		return false;
++
++	if (!cpumask_test_cpu(cpu, nohz.idle_cpus_mask))
++		return false;
++
++	if (!time_after(jiffies, READ_ONCE(rq->last_blocked_load_update_tick)))
++		return true;
++
++	update_blocked_averages(cpu);
++
++	return rq->has_blocked_load;
++}
++
+ /*
+  * Internal function that runs load balance for all idle cpus. The load bala=
+nce
+  * can be a simple update of blocked load or a complete load balance with
