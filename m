@@ -2,76 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B733653B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD70C3653B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbhDTIHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 04:07:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56074 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229552AbhDTIHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 04:07:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 302DFB2D8;
-        Tue, 20 Apr 2021 08:07:05 +0000 (UTC)
-Date:   Tue, 20 Apr 2021 10:07:01 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     Terry Bowman <terry.bowman@amd.com>, lenb@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        calvin.walton@kepstin.ca, wei.huang2@amd.com, aros@gmx.com
-Subject: Re: [PATCH v2] tools/power turbostat: Fix RAPL summary collection on
- AMD processors
-Message-ID: <20210420080701.GA2326@zn.tnic>
-References: <20210419195812.147710-1-terry.bowman@amd.com>
- <20210420020336.GA386151@chenyu-desktop>
+        id S230183AbhDTIH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 04:07:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26632 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229552AbhDTIHz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 04:07:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618906043;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EbjQNPsOmd61SNUpmUILydUwe8xQv3dWwe1PfTSygNQ=;
+        b=IDDuuQzbAtgygr5j6HoXkqBXAjkh8bnw9d07DUgCPS49KNHhzZo6zifGQ3frmYbhJMkq12
+        xV5pnRYRZv5hlR3FuGODGUA/OO3IyZj8UCl0fF3yDszCznbrLru3f9Gd6IsEoowLa7Mo85
+        BaRKJydYN/pViC76rBbnO0vKPWdvTrc=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-234-J51HJ-H2NCOrk4i1c6-ufw-1; Tue, 20 Apr 2021 04:07:21 -0400
+X-MC-Unique: J51HJ-H2NCOrk4i1c6-ufw-1
+Received: by mail-ed1-f71.google.com with SMTP id p16-20020a0564021550b029038522733b66so4606993edx.11
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:07:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EbjQNPsOmd61SNUpmUILydUwe8xQv3dWwe1PfTSygNQ=;
+        b=ghzrMtTRoHsRxaXYUm7qw+lKxBukD75XA2cG5HsxbCTwzjxSQ51N2A45Atk+NvTQDZ
+         77f17ndjDYB3cPl9zPEfPuCOTRDRhtj5PYvlRTnJhdr6dbAiJodRy9LQ/RpxzFFSl/Tl
+         4XLk3nqG0sYgSP2gxM2qqmyK7VLeVyvO9ZLGet1FaAbs9g515ky31DIGVNbjVNrr7uez
+         q//SZQCqZcb/Mu7dweGIzE/UWieAll3NOKlVAVQC48nwLn0Lk0VbQ/qF/arX7/pOLJ/t
+         GmMz0R8Lj8Ui1phgO5Q2/q8i+24BtI3E+QcFJ8kYeRuCigZOht+1QdZ44Q5kr5S5pNPq
+         Fr4w==
+X-Gm-Message-State: AOAM532hSiJHzV3rbz9d7/GTSqTIu3V7GJQ8E0TC/A20gGFZVYXwrOic
+        dUVMBn8SRxe9QZFiZ8b134dtvWFc1dK4x9pQQsNu6x/W0HYTv9Ed7OtK/vHIsYhUxPXJ8zfSiUd
+        LI+co1IvGFXEjX2aPTzCQtUy6
+X-Received: by 2002:a17:906:1749:: with SMTP id d9mr25347656eje.12.1618906040320;
+        Tue, 20 Apr 2021 01:07:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzestOU1Hx/42FM/Q3tA4Y7DK3c7QFqfr3eVFbwu9JBEgEh6CabEu6bBrY3mmy/2UZJSk8H2Q==
+X-Received: by 2002:a17:906:1749:: with SMTP id d9mr25347637eje.12.1618906040103;
+        Tue, 20 Apr 2021 01:07:20 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id g26sm11921805ejz.70.2021.04.20.01.07.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 01:07:17 -0700 (PDT)
+Subject: Re: [PATCH v3 1/2] KVM: selftests: Sync data verify of dirty logging
+ with guest sync
+To:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Andrew Jones <drjones@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+References: <20210417143602.215059-1-peterx@redhat.com>
+ <20210417143602.215059-2-peterx@redhat.com> <20210418124351.GW4440@xz-x1>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <60b0c96c-161d-676d-c30a-a7ffeccab417@redhat.com>
+Date:   Tue, 20 Apr 2021 10:07:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210420020336.GA386151@chenyu-desktop>
+In-Reply-To: <20210418124351.GW4440@xz-x1>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 10:03:36AM +0800, Chen Yu wrote:
-> On Mon, Apr 19, 2021 at 02:58:12PM -0500, Terry Bowman wrote:
-> > Turbostat fails to correctly collect and display RAPL summary information
-> > on Family 17h and 19h AMD processors. Running turbostat on these processors
-> > returns immediately. If turbostat is working correctly then RAPL summary
-> > data is displayed until the user provided command completes. If a command
-> > is not provided by the user then turbostat is designed to continuously
-> > display RAPL information until interrupted.
-> > 
-> > The issue is due to offset_to_idx() and idx_to_offset() missing support for
-> > AMD MSR addresses/offsets. offset_to_idx()'s switch statement is missing
-> > cases for AMD MSRs and idx_to_offset() does not include a path to return
-> > AMD MSR(s) for any idx.
-> > 
-> > The solution is add AMD MSR support to offset_to_idx() and idx_to_offset().
-> > These functions are split-out and renamed along architecture vendor lines
-> > for supporting both AMD and Intel MSRs.
-> > 
-> > Fixes: 9972d5d84d76 ("tools/power turbostat: Enable accumulate RAPL display")
-> > Signed-off-by: Terry Bowman <terry.bowman@amd.com>
-> Thanks for fixing, Terry, and previously there was a patch for this from Bas Nieuwenhuizen:
-> https://lkml.org/lkml/2021/3/12/682
-> and it is expected to have been merged in Len's branch already.
+On 18/04/21 14:43, Peter Xu wrote:
+> ----8<-----
+> diff --git a/tools/testing/selftests/kvm/dirty_log_test.c b/tools/testing/selftests/kvm/dirty_log_test.c
+> index 25230e799bc4..d3050d1c2cd0 100644
+> --- a/tools/testing/selftests/kvm/dirty_log_test.c
+> +++ b/tools/testing/selftests/kvm/dirty_log_test.c
+> @@ -377,7 +377,7 @@ static void dirty_ring_after_vcpu_run(struct kvm_vm *vm, int ret, int err)
+>          /* A ucall-sync or ring-full event is allowed */
+>          if (get_ucall(vm, VCPU_ID, NULL) == UCALL_SYNC) {
+>                  /* We should allow this to continue */
+> -               ;
+> +               vcpu_handle_sync_stop();
+>          } else if (run->exit_reason == KVM_EXIT_DIRTY_RING_FULL ||
+>                     (ret == -1 && err == EINTR)) {
+>                  /* Update the flag first before pause */
+> ----8<-----
+> 
+> That's my intention when I introduce vcpu_handle_sync_stop(), but forgot to
+> add...
 
-Expected?
+And possibly even this (untested though):
 
-So is it or is it not?
+diff --git a/tools/testing/selftests/kvm/dirty_log_test.c b/tools/testing/selftests/kvm/dirty_log_test.c
+index ffa4e2791926..918954f01cef 100644
+--- a/tools/testing/selftests/kvm/dirty_log_test.c
++++ b/tools/testing/selftests/kvm/dirty_log_test.c
+@@ -383,6 +383,7 @@ static void dirty_ring_after_vcpu_run(struct kvm_vm *vm, int ret, int err)
+  		/* Update the flag first before pause */
+  		WRITE_ONCE(dirty_ring_vcpu_ring_full,
+  			   run->exit_reason == KVM_EXIT_DIRTY_RING_FULL);
++		atomic_set(&vcpu_sync_stop_requested, false);
+  		sem_post(&sem_vcpu_stop);
+  		pr_info("vcpu stops because %s...\n",
+  			dirty_ring_vcpu_ring_full ?
+@@ -804,8 +805,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+  		 * the flush of the last page, and since we handle the last
+  		 * page specially verification will succeed anyway.
+  		 */
+-		assert(host_log_mode == LOG_MODE_DIRTY_RING ||
+-		       atomic_read(&vcpu_sync_stop_requested) == false);
++		assert(atomic_read(&vcpu_sync_stop_requested) == false);
+  		vm_dirty_log_verify(mode, bmap);
+  		sem_post(&sem_vcpu_cont);
+  
 
-And can you folks agree on a patch already and give it to Artem for
-testing (CCed) because he's triggering it too:
+You can submit all these as a separate patch.
 
-https://bugzilla.kernel.org/show_bug.cgi?id=212357
+Paolo
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
