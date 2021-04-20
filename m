@@ -2,122 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F053655AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2253655AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231231AbhDTJqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 05:46:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47304 "EHLO mx2.suse.de"
+        id S231364AbhDTJrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 05:47:14 -0400
+Received: from foss.arm.com ([217.140.110.172]:59782 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229937AbhDTJq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 05:46:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618911955; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=14X461r6HBwVx+hhqwaqj6dMjiJR1g/Aupr5pNSp110=;
-        b=pS/ibClZ+PdVBaXkraMfXYWWZyknMiWXYB0cOI3dg24PtHbbhEV2BLo3bWAsUSvzYYUhYS
-        qu0SkdwpWsw4gquNGRqcNTtcrDSM5/NnKQqa8pNXEgkkqnOZNJE0SHgCKIX/LACaiMQUhp
-        nsSi7QSEcymIN3J4n/1qtCZpvXkdUeo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CCB0AADD7;
-        Tue, 20 Apr 2021 09:45:55 +0000 (UTC)
-Date:   Tue, 20 Apr 2021 11:45:55 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        id S229937AbhDTJrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 05:47:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 698B31474;
+        Tue, 20 Apr 2021 02:46:40 -0700 (PDT)
+Received: from e120877-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 863CA3F85F;
+        Tue, 20 Apr 2021 02:46:38 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 10:46:33 +0100
+From:   Vincent Donnefort <vincent.donnefort@arm.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        mingo@kernel.org, bigeasy@linutronix.de, swood@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, qais.yousef@arm.com,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 3/8] mm,memory_hotplug: Factor out adjusting present
- pages into adjust_present_page_count()
-Message-ID: <YH6i09ieDte+xog8@dhcp22.suse.cz>
-References: <20210416112411.9826-1-osalvador@suse.de>
- <20210416112411.9826-4-osalvador@suse.de>
+Subject: Re: [PATCH 3/3] sched: Use cpu_dying() to fix balance_push vs
+ hotplug-rollback
+Message-ID: <20210420094632.GA165360@e120877-lin.cambridge.arm.com>
+References: <20210310145258.899619710@infradead.org>
+ <20210310150109.259726371@infradead.org>
+ <871rclu3jz.mognet@e113632-lin.i-did-not-set--mail-host-address--so-tickle-me>
+ <YHQ3Iy7QfL+0UoM0@hirez.programming.kicks-ass.net>
+ <87r1jfmn8d.mognet@arm.com>
+ <YHU/a9HvGLYpOLKZ@hirez.programming.kicks-ass.net>
+ <YHgAYef83VQhKdC2@hirez.programming.kicks-ass.net>
+ <87a6pzmxec.mognet@arm.com>
+ <20210419105541.GA40111@e120877-lin.cambridge.arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210416112411.9826-4-osalvador@suse.de>
+In-Reply-To: <20210419105541.GA40111@e120877-lin.cambridge.arm.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 16-04-21 13:24:06, Oscar Salvador wrote:
-> From: David Hildenbrand <david@redhat.com>
+On Mon, Apr 19, 2021 at 11:56:30AM +0100, Vincent Donnefort wrote:
+> On Thu, Apr 15, 2021 at 03:32:11PM +0100, Valentin Schneider wrote:
+> > On 15/04/21 10:59, Peter Zijlstra wrote:
+> > > Can't make sense of what I did.. I've removed that hunk. Patch now looks
+> > > like this.
+> > >
+> > 
+> > Small nit below, but regardless feel free to apply to the whole lot:
+> > Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+> > 
+> > @VincentD, ISTR you had tested the initial version of this with your fancy
+> > shmancy hotplug rollback stresser. Feel like doing this
 > 
-> Let's have a single place (inspired by adjust_managed_page_count()) where
-> we adjust present pages.
-> In contrast to adjust_managed_page_count(), only memory onlining/offlining
-> is allowed to modify the number of present pages.
+> I indeed wrote a test to verify all the rollback cases, up and down.
 > 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> It seems I encounter an intermitent issue while running several iterations of
+> that test ... but I need more time to debug and figure-out where it is blocking.
 
-Not sure self review counts ;)
+Found the issue:
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+$ cat hotplug/states:
+219: sched:active
+220: online
 
-Btw. I strongly suspect the resize lock is quite pointless here.
-Something for a follow up patch.
+CPU0: 
 
-> ---
->  mm/memory_hotplug.c | 22 ++++++++++++----------
->  1 file changed, 12 insertions(+), 10 deletions(-)
+$ echo 219 > hotplug/fail
+$ echo 0 > online
+
+=> cpu_active = 1 cpu_dying = 1
+
+which means that later on, for another CPU hotunplug, in
+__balance_push_cpu_stop(), the fallback rq for a kthread can select that
+CPU0, but __migrate_task() would fail and we end-up in an infinite loop,
+trying to migrate that task to CPU0.
+
+The problem is that for a failure in sched:active, as "online" has no callback,
+there will be no call to cpuhp_invoke_callback(). Hence, the cpu_dying bit would
+not be reset.
+
+Maybe cpuhp_reset_state() and cpuhp_set_state() would then be a better place to
+switch the dying bit?
+
 > 
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index 25e59d5dc13c..d05056b3c173 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -829,6 +829,16 @@ struct zone * zone_for_pfn_range(int online_type, int nid, unsigned start_pfn,
->  	return default_zone_for_pfn(nid, start_pfn, nr_pages);
->  }
->  
-> +static void adjust_present_page_count(struct zone *zone, long nr_pages)
-> +{
-> +	unsigned long flags;
-> +
-> +	zone->present_pages += nr_pages;
-> +	pgdat_resize_lock(zone->zone_pgdat, &flags);
-> +	zone->zone_pgdat->node_present_pages += nr_pages;
-> +	pgdat_resize_unlock(zone->zone_pgdat, &flags);
-> +}
-> +
->  int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
->  		       int online_type, int nid)
->  {
-> @@ -882,11 +892,7 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
->  	}
->  
->  	online_pages_range(pfn, nr_pages);
-> -	zone->present_pages += nr_pages;
-> -
-> -	pgdat_resize_lock(zone->zone_pgdat, &flags);
-> -	zone->zone_pgdat->node_present_pages += nr_pages;
-> -	pgdat_resize_unlock(zone->zone_pgdat, &flags);
-> +	adjust_present_page_count(zone, nr_pages);
->  
->  	node_states_set_node(nid, &arg);
->  	if (need_zonelists_rebuild)
-> @@ -1701,11 +1707,7 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
->  
->  	/* removal success */
->  	adjust_managed_page_count(pfn_to_page(start_pfn), -nr_pages);
-> -	zone->present_pages -= nr_pages;
-> -
-> -	pgdat_resize_lock(zone->zone_pgdat, &flags);
-> -	zone->zone_pgdat->node_present_pages -= nr_pages;
-> -	pgdat_resize_unlock(zone->zone_pgdat, &flags);
-> +	adjust_present_page_count(zone, -nr_pages);
->  
->  	init_per_zone_wmark_min();
->  
-> -- 
-> 2.16.3
-
--- 
-Michal Hocko
-SUSE Labs
+> > 
+> > > So instead, make sure balance_push is enabled between
+> > > sched_cpu_deactivate() and sched_cpu_activate() (eg. when
+> > > !cpu_active()), and gate it's utility with cpu_dying().
+> > 
+> > I'd word that "is enabled below sched_cpu_activate()", since
+> > sched_cpu_deactivate() is now out of the picture.
+> > 
+> > [...]
+> > > @@ -7639,6 +7639,9 @@ static DEFINE_PER_CPU(struct cpu_stop_wo
+> > >
+> > >  /*
+> > >   * Ensure we only run per-cpu kthreads once the CPU goes !active.
+> > > + *
+> > > + * This is active/set between sched_cpu_deactivate() / sched_cpu_activate().
+> > 
+> > Ditto
+> > 
+> > > + * But only effective when the hotplug motion is down.
+> > >   */
+> > >  static void balance_push(struct rq *rq)
+> > >  {
