@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9C6365645
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2ED365649
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231629AbhDTKgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 06:36:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58584 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231388AbhDTKgL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 06:36:11 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AE038AFC8;
-        Tue, 20 Apr 2021 10:35:38 +0000 (UTC)
-Date:   Tue, 20 Apr 2021 12:35:33 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        rdunlap@infradead.org, oneukum@suse.com, anshuman.khandual@arm.com,
-        jroedel@suse.de, almasrymina@google.com, rientjes@google.com,
-        willy@infradead.org, mhocko@suse.com, song.bao.hua@hisilicon.com,
-        david@redhat.com, naoya.horiguchi@nec.com,
-        joao.m.martins@oracle.com, duanxiongchun@bytedance.com,
-        fam.zheng@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v20 8/9] mm: memory_hotplug: disable memmap_on_memory
- when hugetlb_free_vmemmap enabled
-Message-ID: <YH6udU5rKmDcx5dY@localhost.localdomain>
-References: <20210415084005.25049-1-songmuchun@bytedance.com>
- <20210415084005.25049-9-songmuchun@bytedance.com>
+        id S231641AbhDTKhI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 20 Apr 2021 06:37:08 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:30226 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231388AbhDTKhH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 06:37:07 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-191-YHdEDlu2P2KuNLjymnM4BQ-1; Tue, 20 Apr 2021 11:36:32 +0100
+X-MC-Unique: YHdEDlu2P2KuNLjymnM4BQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Tue, 20 Apr 2021 11:36:32 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Tue, 20 Apr 2021 11:36:32 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Dan Carpenter' <dan.carpenter@oracle.com>
+CC:     'Mauro Carvalho Chehab' <mchehab@kernel.org>,
+        Ashish Kalra <eashishkalra@gmail.com>,
+        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
+Subject: RE: [PATCH] media: atomisp: silence "dubious: !x | !y" warning
+Thread-Topic: [PATCH] media: atomisp: silence "dubious: !x | !y" warning
+Thread-Index: AQHXM7teiyJWcTifxUyFg0sAh0Hgi6q5OhAggAPtUoCAABHiYA==
+Date:   Tue, 20 Apr 2021 10:36:32 +0000
+Message-ID: <ee70a3553f3143fe9d64ec20688782d2@AcuMS.aculab.com>
+References: <20210417153627.GA50228@ashish-NUC8i5BEH>
+ <20210417205613.5c1aac74@coco.lan>
+ <509f019decae433cab6cb367cdfa6fa9@AcuMS.aculab.com>
+ <20210420102747.GB1981@kadam>
+In-Reply-To: <20210420102747.GB1981@kadam>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210415084005.25049-9-songmuchun@bytedance.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 04:40:04PM +0800, Muchun Song wrote:
->  bool mhp_supports_memmap_on_memory(unsigned long size)
->  {
-> +	bool supported;
->  	unsigned long nr_vmemmap_pages = size / PAGE_SIZE;
->  	unsigned long vmemmap_size = nr_vmemmap_pages * sizeof(struct page);
->  	unsigned long remaining_size = size - vmemmap_size;
-> @@ -1011,11 +1012,18 @@ bool mhp_supports_memmap_on_memory(unsigned long size)
->  	 *	 altmap as an alternative source of memory, and we do not exactly
->  	 *	 populate a single PMD.
->  	 */
-> -	return memmap_on_memory &&
-> -	       IS_ENABLED(CONFIG_MHP_MEMMAP_ON_MEMORY) &&
-> -	       size == memory_block_size_bytes() &&
-> -	       IS_ALIGNED(vmemmap_size, PMD_SIZE) &&
-> -	       IS_ALIGNED(remaining_size, pageblock_nr_pages << PAGE_SHIFT);
-> +	supported = memmap_on_memory &&
-> +		    IS_ENABLED(CONFIG_MHP_MEMMAP_ON_MEMORY) &&
-> +		    size == memory_block_size_bytes() &&
-> +		    IS_ALIGNED(vmemmap_size, PMD_SIZE) &&
-> +		    IS_ALIGNED(remaining_size, pageblock_nr_pages << PAGE_SHIFT);
-> +
-> +	if (supported && is_hugetlb_free_vmemmap_enabled()) {
-> +		pr_info("Cannot enable memory_hotplug.memmap_on_memory, it is not compatible with hugetlb_free_vmemmap\n");
-> +		supported = false;
-> +	}
+From: Dan Carpenter
+> Sent: 20 April 2021 11:28
+> 
+> On Sat, Apr 17, 2021 at 09:31:32PM +0000, David Laight wrote:
+> > From: Mauro Carvalho Chehab
+> > > Sent: 17 April 2021 19:56
+> > >
+> > > Em Sat, 17 Apr 2021 21:06:27 +0530
+> > > Ashish Kalra <eashishkalra@gmail.com> escreveu:
+> > >
+> > > > Upon running sparse, "warning: dubious: !x | !y" is brought to notice
+> > > > for this file.  Logical and bitwise OR are basically the same in this
+> > > > context so it doesn't cause a runtime bug.  But let's change it to
+> > > > logical OR to make it cleaner and silence the Sparse warning.
+> >
+> > The old code is very likely to by slightly more efficient.
+> >
+> > It may not matter here, but it might in a really hot path.
+> >
+> > Since !x | !y and !x || !y always have the same value
+> > why is sparse complaining at all.
+> >
+> 
+> Smatch doesn't warn about | vs || if both sides are true/false.  But
+> I've occasionally asked people if they were trying to do a fast path
+> optimization but it's always just a typo.
 
-I would not print anything and rather have
+The problem is with people blindly patching code to 'fix'
+these warnings.
+It might just be a fast path optimisation - which they break.
 
-return memmap_on_memory &&
-       !is_hugetlb_free_vmemmap_enabled &&
-       IS_ENABLED(CONFIG_MHP_MEMMAP_ON_MEMORY) &&
-       size == memory_block_size_bytes() &&
-       IS_ALIGNED(vmemmap_size, PMD_SIZE) &&
-       IS_ALIGNED(remaining_size, pageblock_nr_pages << PAGE_SHIFT);
+Trying to beat the compiler into submission can be hard though.
+Getting it to 'or' together the outputs from a series of x86
+'setne' instructions isn't for the faint hearted.
+Not helped by the instruction only setting %al.
 
-Documentation/admin-guide/kernel-parameters.txt already provides an
-explanation on memory_hotplug.memmap_on_memory parameter that states
-that the feature cannot be enabled when using hugetlb-vmemmap
-optimization.
+	David
 
-Users can always check whether the feature is enabled via
-/sys/modules/memory_hotplug/parameters/memmap_on_memory.
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-Also, I did not check if it is, but if not, the fact about hugetlb-vmemmmap vs
-hotplug-vmemmap should also be called out in the hugetlb-vmemmap kernel
-parameter.
-
-Thanks
-
--- 
-Oscar Salvador
-SUSE L3
