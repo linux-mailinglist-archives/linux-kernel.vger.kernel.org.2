@@ -2,107 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1275365C0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 258DC365C0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232853AbhDTPVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 11:21:16 -0400
-Received: from shelob.surriel.com ([96.67.55.147]:54008 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232174AbhDTPVP (ORCPT
+        id S232927AbhDTPVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 11:21:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232827AbhDTPVq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 11:21:15 -0400
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1lYsB2-0002O2-MJ; Tue, 20 Apr 2021 11:20:36 -0400
-Message-ID: <5e21452a727dcd6d3257496a2c42f49bd16e9cb5.camel@surriel.com>
-Subject: Re: [PATCH v2] sched,fair: skip newidle_balance if a wakeup is
- pending
-From:   Rik van Riel <riel@surriel.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Date:   Tue, 20 Apr 2021 11:20:36 -0400
-In-Reply-To: <CAKfTPtDjEMJeoZgE1an9Nh9QZPc2gJetsZHL+8QAWzqX5_znvw@mail.gmail.com>
-References: <20210419125134.5cab12ea@imladris.surriel.com>
-         <CAKfTPtDjEMJeoZgE1an9Nh9QZPc2gJetsZHL+8QAWzqX5_znvw@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-EQ+bP/elTcYHGVQ0YZqy"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Tue, 20 Apr 2021 11:21:46 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 078D3C06174A;
+        Tue, 20 Apr 2021 08:21:15 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id h15so8094826pfv.2;
+        Tue, 20 Apr 2021 08:21:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=IubIvA+FZc+EgYaLla1wNxM0Nrtj3DHof/IpDLSwAko=;
+        b=I4yP89FRP5i2uxVxl6i5lyAw3mredKc46Hjeoi7O9yUplQ1n0j3Y0o1SaATIVNfyq4
+         teur2VlRjebXnJrXtmJM5UKcyINF7y9nt7eJ4h2Nj9VKcW4SDr7ASpYqevicADvLjSpZ
+         BcdUWRI28kdfl/QTUrSbHWrX4bxcKg5kigsvPFmraKk01TgCjRpIdrWz8rCxHFi/mdal
+         s4BKA5FrT8bg+QmBXI5iysCGKPMPo2xeM4LNJb3Mzab1E/x16D7j6SnHvvknf4k5KLD+
+         UqDskbF3E4p7if1FPMyCFMP8IPbcI/hh0NmL9fW95RDqIIZlVko2His34l8P33AB9Kyv
+         EjXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=IubIvA+FZc+EgYaLla1wNxM0Nrtj3DHof/IpDLSwAko=;
+        b=TQBHOiHzFIkxl5NhxtCzM8qNSnB5sLh4BHghLmmnbAyg+f6Nly9PpqkceG8S6vy7y1
+         cvZzP+U71/kc5NKhIULvEGftlIupfsPhTulYHZVhA7AEZfviPfurPgma9tRaY2OLM0Vk
+         rbl2YJxfRuN15dYKR+IVl5DsC5IywsvedUankyTA8ciTq/LEeYYDC920jDFVkO2hCCyr
+         4QAHqeCV/rxBLtoT5zDsmFJZx9F9pDu+oHv7GTEvRK4bdl9JFy022kFshh919m4JGjus
+         OlYtlhrfFKVdTtMLuEpvNGmCP31XhF4L6V36NEKXAaWO5ckQ/dzpYBpvJXW+lOZ/x27e
+         k2Eg==
+X-Gm-Message-State: AOAM531ab7kn17PFO6KQA+/hRomQEj9BZWbsV9xReRRVZO8zaztvbA8a
+        w5pIClat6xdD1s8BsxsHnnky1G7qtStPQqDcC6OeGQG+sdI=
+X-Google-Smtp-Source: ABdhPJzGghpoDCwO9kK2QCglkrPkmiAPcjJ3yQECzehAQ/Rh2Lt07/rbOaMl18l4ndllh1JWFu8ageLFbFdjGhXx2wQ=
+X-Received: by 2002:a62:ed0f:0:b029:257:7278:e72b with SMTP id
+ u15-20020a62ed0f0000b02902577278e72bmr24791289pfh.17.1618932074554; Tue, 20
+ Apr 2021 08:21:14 -0700 (PDT)
 MIME-Version: 1.0
-Sender: riel@shelob.surriel.com
+References: <1618925829-90071-1-git-send-email-guoren@kernel.org>
+In-Reply-To: <1618925829-90071-1-git-send-email-guoren@kernel.org>
+From:   Greentime Hu <green.hu@gmail.com>
+Date:   Tue, 20 Apr 2021 23:20:37 +0800
+Message-ID: <CAEbi=3fdKep_szy3jNYZrDr847avKYTHOQyNoUm5vy5ijv7Z0w@mail.gmail.com>
+Subject: Re: [PATCH 1/3] nds32: Cleanup deprecated function strlen_user
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-riscv@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+<guoren@kernel.org> =E6=96=BC 2021=E5=B9=B44=E6=9C=8820=E6=97=A5 =E9=80=B1=
+=E4=BA=8C =E4=B8=8B=E5=8D=889:38=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> From: Guo Ren <guoren@linux.alibaba.com>
+>
+> $ grep strlen_user * -r
+> arch/csky/include/asm/uaccess.h:#define strlen_user(str) strnlen_user(str=
+, 32767)
+> arch/csky/lib/usercopy.c: * strlen_user: - Get the size of a string in us=
+er space.
+> arch/ia64/lib/strlen.S: // Please note that in the case of strlen() as op=
+posed to strlen_user()
+> arch/mips/lib/strnlen_user.S: *  make strlen_user and strnlen_user access=
+ the first few KSEG0
+> arch/nds32/include/asm/uaccess.h:extern __must_check long strlen_user(con=
+st char __user * str);
+> arch/nios2/include/asm/uaccess.h:extern __must_check long strlen_user(con=
+st char __user *str);
+> arch/riscv/include/asm/uaccess.h:extern long __must_check strlen_user(con=
+st char __user *str);
+> kernel/trace/trace_probe_tmpl.h:static nokprobe_inline int fetch_store_st=
+rlen_user(unsigned long addr);
+> kernel/trace/trace_probe_tmpl.h:                        ret +=3D fetch_st=
+ore_strlen_user(val + code->offset);
+> kernel/trace/trace_uprobe.c:fetch_store_strlen_user(unsigned long addr)
+> kernel/trace/trace_kprobe.c:fetch_store_strlen_user(unsigned long addr)
+> kernel/trace/trace_kprobe.c:            return fetch_store_strlen_user(ad=
+dr);
+>
+> See grep result, nobody uses it.
+>
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  arch/nds32/include/asm/uaccess.h | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/arch/nds32/include/asm/uaccess.h b/arch/nds32/include/asm/ua=
+ccess.h
+> index 010ba5f..d4cbf06 100644
+> --- a/arch/nds32/include/asm/uaccess.h
+> +++ b/arch/nds32/include/asm/uaccess.h
+> @@ -260,7 +260,6 @@ do {                                                 =
+                       \
+>
+>  extern unsigned long __arch_clear_user(void __user * addr, unsigned long=
+ n);
+>  extern long strncpy_from_user(char *dest, const char __user * src, long =
+count);
+> -extern __must_check long strlen_user(const char __user * str);
+>  extern __must_check long strnlen_user(const char __user * str, long n);
+>  extern unsigned long __arch_copy_from_user(void *to, const void __user *=
+ from,
+>                                             unsigned long n);
 
---=-EQ+bP/elTcYHGVQ0YZqy
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, 2021-04-20 at 11:04 +0200, Vincent Guittot wrote:
-> On Mon, 19 Apr 2021 at 18:51, Rik van Riel <riel@surriel.com> wrote:
-> >=20
-> > @@ -10688,7 +10697,7 @@ static int newidle_balance(struct rq
-> > *this_rq, struct rq_flags *rf)
-> >         if (this_rq->nr_running !=3D this_rq->cfs.h_nr_running)
-> >                 pulled_task =3D -1;
-> >=20
-> > -       if (pulled_task)
-> > +       if (pulled_task || this_rq->ttwu_pending)
->=20
-> This needs at least a comment to explain why we must clear
-> this_rq->idle_stamp when this_rq->ttwu_pending is set whereas it is
-> also done during sched_ttwu_pending()
->=20
-> >                 this_rq->idle_stamp =3D 0;
-
-I spent some time staring at sched_ttwu_pending and
-the functions it calls, but I can't seem to spot
-where it clears rq->idle_stamp, except inside
-ttwu_do_wakeup where it will end up adding a
-non-idle period into the rq->avg_idle, which seems
-wrong.
-
-If we are actually idle, and get woken up with a
-ttwu_queue task, we do not come through newidle_balance,
-and we end up counting the idle time into the avg_idle
-number.
-
-However, if a task is woken up while the CPU is
-in newidle_balance, because prev !=3D idle, we should
-not count that period towards rq->avg_idle, for
-the same reason we do so when we pulled a task.
-
-I'll add a comment in v3 explaining why idle_stamp
-needs to be 0.
-
---=20
-All Rights Reversed.
-
---=-EQ+bP/elTcYHGVQ0YZqy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAmB+8UQACgkQznnekoTE
-3oNf9gf/fqJNMjAsb+l+f0a8DZOeWp0jOFn9CKfgNVt8IIdBSl42GLR8WlUa6YBa
-DMITTb+oFqIFlg2SNVbP3dZ3BnVY7oscerSqoMijvJesIWW1JqdNyH2LiFIBqSA+
-fmXSEhkb16e1OGh7rY0JuO1zISj2HIoMV2nr5TQFdn9t2xK9Rdim8rsYBQ4oT/kT
-fDwyWbCv+3DBGr/wythDgFrvQfprN/1MLjnRK24Mw0U55gttDObdERKcnY0GKNFb
-DmHiVdbwg28P5UUhG3+gWYwlKbMR+4nKbg9yGZ+J/PCJP/GFFNN4q6SrzpxaAGQk
-V/ePa0wO8Va1ApMyJgQq47Qc7xZsMA==
-=UM3R
------END PGP SIGNATURE-----
-
---=-EQ+bP/elTcYHGVQ0YZqy--
-
+Thank you, Guo.
+Acked-by: Greentime Hu <green.hu@gmail.com>
