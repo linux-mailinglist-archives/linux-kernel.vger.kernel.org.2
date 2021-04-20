@@ -2,197 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8BD364FF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 03:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D075364FF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 03:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231378AbhDTBk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 21:40:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37092 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229672AbhDTBkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 21:40:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E0A5613B4;
-        Tue, 20 Apr 2021 01:39:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618882794;
-        bh=4hnsU6WgBldaH5Kc/ypeWx+AWLTPQMMNvcxsiJYBBkg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GKKZM3WH2aaOJjXA0A5WX/j0yTLVn6aIouOZrGe4BSZEIgtnM8GmefhIsCcwwv7dY
-         7veRjisZ0dKei5rYPCwT4ui+jVsB+l2ntjpjoqtp+plBTN3osuRg0THfPJanEbEd3J
-         8B6AN5vrXCX8mgTa/TJ6mJn0XEpnw2z8mt8RPcpFmxw84CMuK9sBG1k/vgHZjCwkPe
-         c+wVNKMS/Vvp/pqJHJ6f1EzuLdeq6GLyFl8EPqh/ecCSCIE2BgoK9ytRumGj/0eCVz
-         0ARwfRTV8hpQa1b8SHWZD11AShS0LitOlN2eIUivlkepbvFY1u25S+Oh6SCw11bs3N
-         Av4CmukllAIow==
-Received: by mail-ed1-f48.google.com with SMTP id j12so17995542edy.3;
-        Mon, 19 Apr 2021 18:39:54 -0700 (PDT)
-X-Gm-Message-State: AOAM530G/TRXugRczeOGkEJ1dVVvmOjvIGdcn+lrCiq/OTcpZZiyVR4r
-        5H+vVJ8U6zAGdohhnQcztRiFBTrkeZZSUuZqGQ==
-X-Google-Smtp-Source: ABdhPJzL539IeB90J7kR3Vg99rgF+MueHkcjtqv9jhH5Ep57lt5lKVldzfpolOY/uGqJaUJhlTJAJe2hskSJxl0fpYI=
-X-Received: by 2002:aa7:cd51:: with SMTP id v17mr29099818edw.137.1618882792776;
- Mon, 19 Apr 2021 18:39:52 -0700 (PDT)
+        id S233087AbhDTBou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 21:44:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231550AbhDTBos (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 21:44:48 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A397C06174A;
+        Mon, 19 Apr 2021 18:44:17 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id w3so55866849ejc.4;
+        Mon, 19 Apr 2021 18:44:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GG3AMLwW94KT5mM9V06bUHeizVVCnRQZ6QXetNPR3KA=;
+        b=GxRli68U2EHb5GjgleYcN4PW/4VgVhahrEbye12uoKi0BDuMQbjcq9I9rmiADpyDxb
+         G4uopTYtvNuoSItvuL/ENt+D4qa8VQPZ+oRHnGsx1xyyuODlre9qb9kVsb7mxVOFW3yM
+         SHjm+Dnsrot5yj0CkdHlDqie6zoh+kuuWrjwBxX+gV3wTy64jt7QueXtj8a1/3wqBWW7
+         Lru4wecO2/0aPX8IALErX+m8EiIedl82+chKWajH/gyuTaSyDqLTIu09HWRPFrPYT4QU
+         busBQKWvqvtWlN3A98Xatw27HRE+vRaC+9zpiTYQ9vWZ4rj8XcKRhDNCR2qIBLHSIsJg
+         69iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GG3AMLwW94KT5mM9V06bUHeizVVCnRQZ6QXetNPR3KA=;
+        b=jHwBMIuHw/XWDHan7L4o9/L7F6bpzJGefvIkn5LiaGbrEHO06IHRlIO3uRFUj3Fvja
+         ZbsgPZSoHpwD0tdEBhnfMtsngHKVsNSQ2eSo9XlzMnHOgYg4BNRnF7Ou24GWQnV0Ip+t
+         0Z4whlolUPRwXzuivxZgve2jNiYWxpLEx7TJv3HkslHEc0IlZRA5AfuhD8yrUiOqIFhc
+         7kzVUxgNNBv2DOeMg23WC4TMvpcjeXlBNLAVg3nh+EtJ13sXfA6s9K92+0/pudVG6y1c
+         sueC+ZlUGWP87uRBH2/ycgMqfI97QX3mjrueNTU19OmYDTNEe46LpiL72meOq+LYHSX5
+         x9Yg==
+X-Gm-Message-State: AOAM530RX2q6U/5gV+jOPPxySUHv+ROf5fb5OuLtd9oUUc1mr+HxR5Am
+        bdjSiaX//gp24U+0nBm3LYd5+Puf4hiTZg==
+X-Google-Smtp-Source: ABdhPJzcX3ZPsLdifrkBw6SMEl6ypGtf6u3LN2r5IwyAlNyecQBfTZRNG0qznOYFBF936OeVGJ81Uw==
+X-Received: by 2002:a17:906:c419:: with SMTP id u25mr25466022ejz.332.1618883055902;
+        Mon, 19 Apr 2021 18:44:15 -0700 (PDT)
+Received: from anparri.mshome.net ([151.76.104.230])
+        by smtp.gmail.com with ESMTPSA id t1sm11495321eju.88.2021.04.19.18.44.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Apr 2021 18:44:15 -0700 (PDT)
+From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, linux-hyperv@vger.kernel.org,
+        mikelley@microsoft.com,
+        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+Subject: [PATCH v2] Drivers: hv: vmbus: Initialize unload_event statically
+Date:   Tue, 20 Apr 2021 03:43:50 +0200
+Message-Id: <20210420014350.2002-1-parri.andrea@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210415180050.373791-1-leobras.c@gmail.com> <CAL_Jsq+WwAeziGN4EfPAWfA0fieAjfcxfi29=StOx0GeKjAe_g@mail.gmail.com>
- <7b089cd48b90f2445c7cb80da1ce8638607c46fc.camel@gmail.com>
- <CAL_Jsq+m6CkGj_NYGvwxoKwoQ4PkEu6hfGdMTT3i4APoHSkNeg@mail.gmail.com> <b875ef1778e17a87ee1f4b71d26f2782831b1d07.camel@gmail.com>
-In-Reply-To: <b875ef1778e17a87ee1f4b71d26f2782831b1d07.camel@gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 19 Apr 2021 20:39:41 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqK83MFqZ4yCz+i7sunpXFmi+vvjCSxVmcCh1YG=mOxY9A@mail.gmail.com>
-Message-ID: <CAL_JsqK83MFqZ4yCz+i7sunpXFmi+vvjCSxVmcCh1YG=mOxY9A@mail.gmail.com>
-Subject: Re: [PATCH 1/1] of/pci: Add IORESOURCE_MEM_64 to resource flags for
- 64-bit memory addresses
-To:     Leonardo Bras <leobras.c@gmail.com>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 7:35 PM Leonardo Bras <leobras.c@gmail.com> wrote:
->
-> On Mon, 2021-04-19 at 10:44 -0500, Rob Herring wrote:
-> > On Fri, Apr 16, 2021 at 3:58 PM Leonardo Bras <leobras.c@gmail.com> wrote:
-> > >
-> > > Hello Rob, thanks for this feedback!
-> > >
-> > > On Thu, 2021-04-15 at 13:59 -0500, Rob Herring wrote:
-> > > > +PPC and PCI lists
-> > > >
-> > > > On Thu, Apr 15, 2021 at 1:01 PM Leonardo Bras <leobras.c@gmail.com> wrote:
-> > > > >
-> > > > > Many other resource flag parsers already add this flag when the input
-> > > > > has bits 24 & 25 set, so update this one to do the same.
-> > > >
-> > > > Many others? Looks like sparc and powerpc to me.
-> > > >
-> > >
-> > > s390 also does that, but it look like it comes from a device-tree.
-> >
-> > I'm only looking at DT based platforms, and s390 doesn't use DT.
->
-> Correct.
-> Sorry, I somehow write above the opposite of what I was thinking.
->
-> >
-> > > > Those would be the
-> > > > ones I worry about breaking. Sparc doesn't use of/address.c so it's
-> > > > fine. Powerpc version of the flags code was only fixed in 2019, so I
-> > > > don't think powerpc will care either.
-> > >
-> > > In powerpc I reach this function with this stack, while configuring a
-> > > virtio-net device for a qemu/KVM pseries guest:
-> > >
-> > > pci_process_bridge_OF_ranges+0xac/0x2d4
-> > > pSeries_discover_phbs+0xc4/0x158
-> > > discover_phbs+0x40/0x60
-> > > do_one_initcall+0x60/0x2d0
-> > > kernel_init_freeable+0x308/0x3a8
-> > > kernel_init+0x2c/0x168
-> > > ret_from_kernel_thread+0x5c/0x70
-> > >
-> > > For this, both MMIO32 and MMIO64 resources will have flags 0x200.
-> >
-> > Oh good, powerpc has 2 possible flags parsing functions. So in the
-> > above path, do we need to set PCI_BASE_ADDRESS_MEM_TYPE_64?
-> >
-> > Does pci_parse_of_flags() get called in your case?
-> >
->
-> It's called in some cases, but not for the device I am debugging
-> (virtio-net pci@800000020000000).
->
-> For the above device, here is an expanded stack trace:
->
-> of_bus_pci_get_flags() (from parser->bus->get_flags())
-> of_pci_range_parser_one() (from macro for_each_of_pci_range)
-> pci_process_bridge_OF_ranges+0xac/0x2d4
-> pSeries_discover_phbs+0xc4/0x158
-> discover_phbs+0x40/0x60
-> do_one_initcall+0x60/0x2d0
-> kernel_init_freeable+0x308/0x3a8
-> kernel_init+0x2c/0x168
-> ret_from_kernel_thread+0x5c/0x70
->
-> For other devices, I could also see the following stack trace:
-> ## device ethernet@8
->
-> pci_parse_of_flags()
-> of_create_pci_dev+0x7f0/0xa40
-> __of_scan_bus+0x248/0x320
-> pcibios_scan_phb+0x370/0x3b0
-> pcibios_init+0x8c/0x12c
-> do_one_initcall+0x60/0x2d0
-> kernel_init_freeable+0x308/0x3a8
-> kernel_init+0x2c/0x168
-> ret_from_kernel_thread+0x5c/0x70
->
-> Devices that get parsed with of_bus_pci_get_flags() appears first at
-> dmesg (around 0.015s in my test), while devices that get parsed by
-> pci_parse_of_flags() appears later (0.025s in my test).
->
-> I am not really used to this code, but having the term "discover phbs"
-> in the first trace and the term "scan phb" in the second, makes me
-> wonder if the first trace is seen on devices that are seen/described in
-> the device-tree and the second trace is seen in devices not present in
-> the device-tree and found scanning pci bus.
+If a malicious or compromised Hyper-V sends a spurious message of type
+CHANNELMSG_UNLOAD_RESPONSE, the function vmbus_unload_response() will
+call complete() on an uninitialized event, and cause an oops.
 
-That was my guess as well. I think on pSeries that most PCI devices
-are in the DT whereas on Arm and other flattened DT (non OpenFirmware)
-platforms PCI devices are not in DT. Of course, for virtio devices,
-they would not be in DT in either case.
+Reported-by: Michael Kelley <mikelley@microsoft.com>
+Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+---
+Changes since v1[1]:
+  - add inline comment in vmbus_unload_response()
 
-> > > > I noticed both sparc and powerpc set PCI_BASE_ADDRESS_MEM_TYPE_64 in
-> > > > the flags. AFAICT, that's not set anywhere outside of arch code. So
-> > > > never for riscv, arm and arm64 at least. That leads me to
-> > > > pci_std_update_resource() which is where the PCI code sets BARs and
-> > > > just copies the flags in PCI_BASE_ADDRESS_MEM_MASK ignoring
-> > > > IORESOURCE_* flags. So it seems like 64-bit is still not handled and
-> > > > neither is prefetch.
-> > > >
-> > >
-> > > I am not sure if you mean here:
-> > > a) it's ok to add IORESOURCE_MEM_64 here, because it does not affect
-> > > anything else, or
-> > > b) it should be using PCI_BASE_ADDRESS_MEM_TYPE_64
-> > > (or IORESOURCE_MEM_64 | PCI_BASE_ADDRESS_MEM_TYPE_64) instead, since
-> > > it's how it's added in powerpc/sparc, and else there is no point.
-> >
-> > I'm wondering if a) is incomplete and PCI_BASE_ADDRESS_MEM_TYPE_64
-> > also needs to be set. The question is ultimately are BARs getting set
-> > correctly for 64-bit? It looks to me like they aren't.
->
-> I am not used to these terms, does BAR means 'Base Address Register'?
+[1] https://lkml.kernel.org/r/20210416143932.16512-1-parri.andrea@gmail.com
 
-Yes. Standard PCI thing.
+ drivers/hv/channel_mgmt.c | 7 ++++++-
+ drivers/hv/connection.c   | 2 ++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-> If so, those are the addresses stored in pci->phb->mem_resources[i] and
-> pci->phb->mem_offset[i], printed from enable_ddw() (which takes place a
-> lot after discovering the device (0.17s in my run)).
->
-> resource #1 pci@800000020000000: start=0x200080000000
-> end=0x2000ffffffff flags=0x200 desc=0x0 offset=0x200000000000
-> resource #2 pci@800000020000000: start=0x210000000000
-> end=0x21ffffffffff flags=0x200 desc=0x0 offset=0x0
->
-> The message above was printed without this patch.
-> With the patch, the flags for memory resource #2 gets ORed with
-> 0x00100000.
+diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
+index 4c9e45d1f462c..335a10ee03a5e 100644
+--- a/drivers/hv/channel_mgmt.c
++++ b/drivers/hv/channel_mgmt.c
+@@ -826,6 +826,11 @@ static void vmbus_unload_response(struct vmbus_channel_message_header *hdr)
+ 	/*
+ 	 * This is a global event; just wakeup the waiting thread.
+ 	 * Once we successfully unload, we can cleanup the monitor state.
++	 *
++	 * NB.  A malicious or compromised Hyper-V could send a spurious
++	 * message of type CHANNELMSG_UNLOAD_RESPONSE, and trigger a call
++	 * of the complete() below.  Make sure that unload_event has been
++	 * initialized by the time this complete() is executed.
+ 	 */
+ 	complete(&vmbus_connection.unload_event);
+ }
+@@ -841,7 +846,7 @@ void vmbus_initiate_unload(bool crash)
+ 	if (vmbus_proto_version < VERSION_WIN8_1)
+ 		return;
+ 
+-	init_completion(&vmbus_connection.unload_event);
++	reinit_completion(&vmbus_connection.unload_event);
+ 	memset(&hdr, 0, sizeof(struct vmbus_channel_message_header));
+ 	hdr.msgtype = CHANNELMSG_UNLOAD;
+ 	vmbus_post_msg(&hdr, sizeof(struct vmbus_channel_message_header),
+diff --git a/drivers/hv/connection.c b/drivers/hv/connection.c
+index dc19d5ae4373c..311cd005b3be6 100644
+--- a/drivers/hv/connection.c
++++ b/drivers/hv/connection.c
+@@ -26,6 +26,8 @@
+ 
+ struct vmbus_connection vmbus_connection = {
+ 	.conn_state		= DISCONNECTED,
++	.unload_event		= COMPLETION_INITIALIZER(
++				  vmbus_connection.unload_event),
+ 	.next_gpadl_handle	= ATOMIC_INIT(0xE1E10),
+ 
+ 	.ready_for_suspend_event = COMPLETION_INITIALIZER(
+-- 
+2.25.1
 
-Right, as expected.
-
-> Is it enough to know if BARs are correctly set for 64-bit?
-
-No, because AFAICT, bit 2 in the BAR would not be set.
-
-> If it's not, how can I check?
-
-Can you try 'lspci -vv' and look at the 'Region X:' lines which will
-say 32 or 64-bit. I *think* that should reflect what actually got
-written into the BARs.
-
-Rob
