@@ -2,74 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53D16365E50
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE534365E59
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 19:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233328AbhDTRQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 13:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60572 "EHLO
+        id S233448AbhDTRQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 13:16:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233245AbhDTRQg (ORCPT
+        with ESMTP id S233417AbhDTRQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 13:16:36 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA33DC06138B
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:16:04 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id e2so15724461plh.8
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:16:04 -0700 (PDT)
+        Tue, 20 Apr 2021 13:16:55 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68531C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:16:23 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id y1so4381071plg.11
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 10:16:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=irTmuEe2pRr0Rl3uOVQJ+XhzXrvVBN56ZxLdfK0T+Z8=;
-        b=SCqmMaRSS1gGfkcJyngj89CG845AhRXkGK2F88BZk5KT1u/+c8BoliHPu42RtXIaml
-         8iugl8CuYxLqemFK5aOFf5DZYEjC+eiO5TfkbqxtZxDATPZ+aYB+W14vHXDVKGgQE/P7
-         wXRpK+/sPm8NdC1J6Hd0yPwtPFDMMpRQnxGFw=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r6DmW3TpogHtwf05Mzz4gRFI9mozL7Twx+0WqjuCaWQ=;
+        b=d5aRXR9grdGoscfdsmnCGO3EqpwppVHw/H7vXUKtgEugFtUUQmyl/XjhPuVsIkdrGZ
+         +jtaZ+ZlUZ+mheP28N5LZQl6F43CLPeyJc7OlAYMeEF8RQ2XgvA4z6CcV7d2qsnqSUSY
+         bZstMcHHhoJgRugPEBCFaunGu+nYCE9v9zHQY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=irTmuEe2pRr0Rl3uOVQJ+XhzXrvVBN56ZxLdfK0T+Z8=;
-        b=Ey3Daj5p8Bpp3W/RIuwyllaCba/69kLsBBDZWS5oFzFmcrMOx6k4JJtLAjS8bBFlrE
-         U2sipk8fOrxsjFrykN77JcsmyyEOdd804er6bNjilejbvppdsC1YT0TOwK10BVm1l+5O
-         E5ilLMZt2ygTxCKgQXbIdC2xaDT0ysmU9gTTaZJPmno1OPRtt1n+xgYQUii/gkp/f1v6
-         A+1cJ5dPwwWYaaSFgrgnSc18CgWjQGF3h2ocf3QxA1cCy0vMt+m6BOqUjdMRJzEVHWZC
-         jZ6ALeCJi72sG4MpddCSGBb9o+JGudpvKBgFHgUploukxRzcgWZV/5ekxSiR2h075sY5
-         Tz6w==
-X-Gm-Message-State: AOAM533puyhrLhCmk1LiMhdJOYlzPnEH5CTTbwNf+IvB6fhDvaTQI8Mf
-        B18EQwi+IxsSsPw9InYZrlEamA==
-X-Google-Smtp-Source: ABdhPJzFEFl6Idin15/xKtXbEuWZIi6Nr1FUejohVJutVMscIDnw3HwfW6EcMFACHdsyzlselUTI3Q==
-X-Received: by 2002:a17:90b:3646:: with SMTP id nh6mr6049573pjb.119.1618938964244;
-        Tue, 20 Apr 2021 10:16:04 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:7a9:7e56:e9c3:13e8])
-        by smtp.gmail.com with UTF8SMTPSA id a4sm10234479pff.140.2021.04.20.10.16.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 10:16:03 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 10:16:02 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, kgunda@codeaurora.org
-Subject: Re: [RESEND PATCH V3 3/5] arm64: dts: qcom: pmr735a: Add temp-alarm
- support
-Message-ID: <YH8MUkYJdZbkuXt/@google.com>
-References: <1618398783-7834-1-git-send-email-skakit@codeaurora.org>
- <1618398783-7834-4-git-send-email-skakit@codeaurora.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r6DmW3TpogHtwf05Mzz4gRFI9mozL7Twx+0WqjuCaWQ=;
+        b=LMIE089tSImszUIBlwniV7omG4HJkWxRPn35x6GeFIli1lw+4vcj54a6Ze4/dOc8rY
+         IcmNXGsVtkitn7zG2jHCLy39xpkvljeRyopmNU5gI1MXZgrKKwMzdXVqFE/Q6PGYAit1
+         2AFro+7Vy2IILtkECQi8QLWrAe7zH1fbtZhRZtHjVgxZ6Z6YXt0QxEk5J3BXWqCBryni
+         HkA2u3IqazGD0cr5UvAyhXnrCLSCjyu29d0/6rar32CUVOAEiXFr/+J1SsnLzIH3rUjL
+         4CIfV73XbSL+5dgp7sAOV7QhRZRRo+DtfnLQYLzCifTeRGeqS1aJkJC5WRA9ErEeYUhD
+         8Jtw==
+X-Gm-Message-State: AOAM530//18GwKGbZpgxE/PrIruBEpdAsx61ee/bJGbw44pg8XpS6FM3
+        bVtqsKV5Ec39WQD8iI3UkcDKJGz5fv95Yw==
+X-Google-Smtp-Source: ABdhPJzpBQvmisC9OIliXURa2dyI8c+yKtcag4eruYgRexoeHp1zN6Zzinu4OoHYh6hcfT4/cc/2jg==
+X-Received: by 2002:a17:90a:1190:: with SMTP id e16mr6124673pja.110.1618938982810;
+        Tue, 20 Apr 2021 10:16:22 -0700 (PDT)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:ee88:6ec6:b8ee:20b9])
+        by smtp.gmail.com with ESMTPSA id n48sm2260384pfv.130.2021.04.20.10.16.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 10:16:22 -0700 (PDT)
+From:   Prashant Malani <pmalani@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Utkarsh Patel <utkarsh.h.patel@intel.com>,
+        Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Subject: [PATCH v3 1/2] platform/chrome: cros_ec: Add Type C hard reset
+Date:   Tue, 20 Apr 2021 10:16:11 -0700
+Message-Id: <20210420171617.3830902-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.31.1.368.gbe11c130af-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1618398783-7834-4-git-send-email-skakit@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 14, 2021 at 04:43:01PM +0530, satya priya wrote:
-> Add temp-alarm node for PMR735A pmic and also modify gpio
-> node to add gpio ranges and "qcom,spmi-gpio" compatible.
-> 
-> Signed-off-by: satya priya <skakit@codeaurora.org>
+Update the EC command header to include the new event bit. This bit
+is included in the latest version of the Chrome EC headers[1].
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+[1] https://chromium.googlesource.com/chromiumos/platform/ec/+/refs/heads/main/include/ec_commands.h
+
+Signed-off-by: Prashant Malani <pmalani@chromium.org>
+---
+
+Changes in v3:
+- Remove Change-Id tag and add Signed-off-by tag to the commit message.
+
+v2 is the first version the patch was introduced.
+
+ include/linux/platform_data/cros_ec_commands.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
+index 5ff8597ceabd..9156078c6fc6 100644
+--- a/include/linux/platform_data/cros_ec_commands.h
++++ b/include/linux/platform_data/cros_ec_commands.h
+@@ -5678,6 +5678,7 @@ enum tcpc_cc_polarity {
+ 
+ #define PD_STATUS_EVENT_SOP_DISC_DONE		BIT(0)
+ #define PD_STATUS_EVENT_SOP_PRIME_DISC_DONE	BIT(1)
++#define PD_STATUS_EVENT_HARD_RESET		BIT(2)
+ 
+ struct ec_params_typec_status {
+ 	uint8_t port;
+-- 
+2.31.1.368.gbe11c130af-goog
+
