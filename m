@@ -2,122 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D075364FF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 03:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E36C4364FF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 03:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233087AbhDTBou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 21:44:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53222 "EHLO
+        id S231290AbhDTBor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 21:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231550AbhDTBos (ORCPT
+        with ESMTP id S229575AbhDTBoq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 21:44:48 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A397C06174A;
-        Mon, 19 Apr 2021 18:44:17 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id w3so55866849ejc.4;
-        Mon, 19 Apr 2021 18:44:17 -0700 (PDT)
+        Mon, 19 Apr 2021 21:44:46 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D94C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 18:44:15 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id i10so23125299lfe.11
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 18:44:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GG3AMLwW94KT5mM9V06bUHeizVVCnRQZ6QXetNPR3KA=;
-        b=GxRli68U2EHb5GjgleYcN4PW/4VgVhahrEbye12uoKi0BDuMQbjcq9I9rmiADpyDxb
-         G4uopTYtvNuoSItvuL/ENt+D4qa8VQPZ+oRHnGsx1xyyuODlre9qb9kVsb7mxVOFW3yM
-         SHjm+Dnsrot5yj0CkdHlDqie6zoh+kuuWrjwBxX+gV3wTy64jt7QueXtj8a1/3wqBWW7
-         Lru4wecO2/0aPX8IALErX+m8EiIedl82+chKWajH/gyuTaSyDqLTIu09HWRPFrPYT4QU
-         busBQKWvqvtWlN3A98Xatw27HRE+vRaC+9zpiTYQ9vWZ4rj8XcKRhDNCR2qIBLHSIsJg
-         69iA==
+        d=google.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=bezKEnQ/LitrlU1FItFHrI7Y2YVJfuRBU3xne3s9Vgk=;
+        b=Bu/zPqRGatAudfvgMRtfHORM5ajt+SWWeYSwfUAXy2SBpqh4GIe4jQ5SDAyT0yAjKT
+         SU7AcAeynquuZ7f/VQ6aJC/djUIvdySL3/6Zdr5d9ul/NcQqMBi511EhmnE56lzaycL3
+         Z4yORcyHVSRgclUahRtaTQ2P2Rn3PvmFq9IUEWSM3ng3i3jKMLLiFbl69dgg6YSSIkKF
+         tcib5o4ww7pm/IFycc1+sK68dSCNeq4DroDY+3SGSSce/Kqq6g8M01NIEbT4OktgkiQc
+         HfQG6g/+fe2m5nioirOe3Va1SawyYnbuXSDJUD7TYpJ7f1o8UrRECj6x2lxm42EWGDME
+         rVpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GG3AMLwW94KT5mM9V06bUHeizVVCnRQZ6QXetNPR3KA=;
-        b=jHwBMIuHw/XWDHan7L4o9/L7F6bpzJGefvIkn5LiaGbrEHO06IHRlIO3uRFUj3Fvja
-         ZbsgPZSoHpwD0tdEBhnfMtsngHKVsNSQ2eSo9XlzMnHOgYg4BNRnF7Ou24GWQnV0Ip+t
-         0Z4whlolUPRwXzuivxZgve2jNiYWxpLEx7TJv3HkslHEc0IlZRA5AfuhD8yrUiOqIFhc
-         7kzVUxgNNBv2DOeMg23WC4TMvpcjeXlBNLAVg3nh+EtJ13sXfA6s9K92+0/pudVG6y1c
-         sueC+ZlUGWP87uRBH2/ycgMqfI97QX3mjrueNTU19OmYDTNEe46LpiL72meOq+LYHSX5
-         x9Yg==
-X-Gm-Message-State: AOAM530RX2q6U/5gV+jOPPxySUHv+ROf5fb5OuLtd9oUUc1mr+HxR5Am
-        bdjSiaX//gp24U+0nBm3LYd5+Puf4hiTZg==
-X-Google-Smtp-Source: ABdhPJzcX3ZPsLdifrkBw6SMEl6ypGtf6u3LN2r5IwyAlNyecQBfTZRNG0qznOYFBF936OeVGJ81Uw==
-X-Received: by 2002:a17:906:c419:: with SMTP id u25mr25466022ejz.332.1618883055902;
-        Mon, 19 Apr 2021 18:44:15 -0700 (PDT)
-Received: from anparri.mshome.net ([151.76.104.230])
-        by smtp.gmail.com with ESMTPSA id t1sm11495321eju.88.2021.04.19.18.44.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 18:44:15 -0700 (PDT)
-From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, linux-hyperv@vger.kernel.org,
-        mikelley@microsoft.com,
-        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-Subject: [PATCH v2] Drivers: hv: vmbus: Initialize unload_event statically
-Date:   Tue, 20 Apr 2021 03:43:50 +0200
-Message-Id: <20210420014350.2002-1-parri.andrea@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=bezKEnQ/LitrlU1FItFHrI7Y2YVJfuRBU3xne3s9Vgk=;
+        b=dC2+BNyGTNTrKSSbkzjPga/JkrBY+sY/RROjpB6lXbd7R5Hu0mNAE38lM8JVxULIIV
+         lZH7HHFJ5dKIlxl46EFZGySgZ1UNB+/+OlrYzUfOZQYcJ3Ki/uah50S5M/bMJxGJSKoV
+         1WFDFeA1ZwOOWUG19cwJS//UD0q20ypVafQji61z5K2Vdj80LqvebM+S2b0XkFLE6O6s
+         daGNgKKkzkHi8AclGqzDxU1XAKehAfT54t2xk7PKOS0zKgL5RGvuu9M8uLD7AOOIF6zR
+         3ERzzwJDBsyu+QyXFUtb1q4n5JHESVdXs+j7Essp+Sat72V8QYJZdnEAs5d8d5hMPl1B
+         wWVA==
+X-Gm-Message-State: AOAM533dFXFD9OOuOYOyTfXwCCXbnT5GQpGl2s0teGs1rrKZt+Tfdi7A
+        z1yd9vliAsL5Z7vi8W90gH4Vc/PHF2Vthg2gqI7cIQ==
+X-Google-Smtp-Source: ABdhPJyhnBg1I+7NiPaJ33vTWY5b8W0D2ApPWLMGgZCQfXgMaQ2nptq5VKIekwtNkE7jtgOkxv3YzGxUSzOrSba8vrw=
+X-Received: by 2002:ac2:58ee:: with SMTP id v14mr13888531lfo.83.1618883053836;
+ Mon, 19 Apr 2021 18:44:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 19 Apr 2021 18:44:02 -0700
+Message-ID: <CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz+u3bFFyOLg@mail.gmail.com>
+Subject: [RFC] memory reserve for userspace oom-killer
+To:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>
+Cc:     Greg Thelen <gthelen@google.com>,
+        Dragos Sbirlea <dragoss@google.com>,
+        Priya Duraisamy <padmapriyad@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a malicious or compromised Hyper-V sends a spurious message of type
-CHANNELMSG_UNLOAD_RESPONSE, the function vmbus_unload_response() will
-call complete() on an uninitialized event, and cause an oops.
+Proposal: Provide memory guarantees to userspace oom-killer.
 
-Reported-by: Michael Kelley <mikelley@microsoft.com>
-Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
----
-Changes since v1[1]:
-  - add inline comment in vmbus_unload_response()
+Background:
 
-[1] https://lkml.kernel.org/r/20210416143932.16512-1-parri.andrea@gmail.com
+Issues with kernel oom-killer:
+1. Very conservative and prefer to reclaim. Applications can suffer
+for a long time.
+2. Borrows the context of the allocator which can be resource limited
+(low sched priority or limited CPU quota).
+3. Serialized by global lock.
+4. Very simplistic oom victim selection policy.
 
- drivers/hv/channel_mgmt.c | 7 ++++++-
- drivers/hv/connection.c   | 2 ++
- 2 files changed, 8 insertions(+), 1 deletion(-)
+These issues are resolved through userspace oom-killer by:
+1. Ability to monitor arbitrary metrics (PSI, vmstat, memcg stats) to
+early detect suffering.
+2. Independent process context which can be given dedicated CPU quota
+and high scheduling priority.
+3. Can be more aggressive as required.
+4. Can implement sophisticated business logic/policies.
 
-diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
-index 4c9e45d1f462c..335a10ee03a5e 100644
---- a/drivers/hv/channel_mgmt.c
-+++ b/drivers/hv/channel_mgmt.c
-@@ -826,6 +826,11 @@ static void vmbus_unload_response(struct vmbus_channel_message_header *hdr)
- 	/*
- 	 * This is a global event; just wakeup the waiting thread.
- 	 * Once we successfully unload, we can cleanup the monitor state.
-+	 *
-+	 * NB.  A malicious or compromised Hyper-V could send a spurious
-+	 * message of type CHANNELMSG_UNLOAD_RESPONSE, and trigger a call
-+	 * of the complete() below.  Make sure that unload_event has been
-+	 * initialized by the time this complete() is executed.
- 	 */
- 	complete(&vmbus_connection.unload_event);
- }
-@@ -841,7 +846,7 @@ void vmbus_initiate_unload(bool crash)
- 	if (vmbus_proto_version < VERSION_WIN8_1)
- 		return;
- 
--	init_completion(&vmbus_connection.unload_event);
-+	reinit_completion(&vmbus_connection.unload_event);
- 	memset(&hdr, 0, sizeof(struct vmbus_channel_message_header));
- 	hdr.msgtype = CHANNELMSG_UNLOAD;
- 	vmbus_post_msg(&hdr, sizeof(struct vmbus_channel_message_header),
-diff --git a/drivers/hv/connection.c b/drivers/hv/connection.c
-index dc19d5ae4373c..311cd005b3be6 100644
---- a/drivers/hv/connection.c
-+++ b/drivers/hv/connection.c
-@@ -26,6 +26,8 @@
- 
- struct vmbus_connection vmbus_connection = {
- 	.conn_state		= DISCONNECTED,
-+	.unload_event		= COMPLETION_INITIALIZER(
-+				  vmbus_connection.unload_event),
- 	.next_gpadl_handle	= ATOMIC_INIT(0xE1E10),
- 
- 	.ready_for_suspend_event = COMPLETION_INITIALIZER(
--- 
-2.25.1
+Android's LMKD and Facebook's oomd are the prime examples of userspace
+oom-killers. One of the biggest challenges for userspace oom-killers
+is to potentially function under intense memory pressure and are prone
+to getting stuck in memory reclaim themselves. Current userspace
+oom-killers aim to avoid this situation by preallocating user memory
+and protecting themselves from global reclaim by either mlocking or
+memory.min. However a new allocation from userspace oom-killer can
+still get stuck in the reclaim and policy rich oom-killer do trigger
+new allocations through syscalls or even heap.
 
+Our attempt of userspace oom-killer faces similar challenges.
+Particularly at the tail on the very highly utilized machines we have
+observed userspace oom-killer spectacularly failing in many possible
+ways in the direct reclaim. We have seen oom-killer stuck in direct
+reclaim throttling, stuck in reclaim and allocations from interrupts
+keep stealing reclaimed memory. We have even observed systems where
+all the processes were stuck in throttle_direct_reclaim() and only
+kswapd was running and the interrupts kept stealing the memory
+reclaimed by kswapd.
+
+To reliably solve this problem, we need to give guaranteed memory to
+the userspace oom-killer. At the moment we are contemplating between
+the following options and I would like to get some feedback.
+
+1. prctl(PF_MEMALLOC)
+
+The idea is to give userspace oom-killer (just one thread which is
+finding the appropriate victims and will be sending SIGKILLs) access
+to MEMALLOC reserves. Most of the time the preallocation, mlock and
+memory.min will be good enough but for rare occasions, when the
+userspace oom-killer needs to allocate, the PF_MEMALLOC flag will
+protect it from reclaim and let the allocation dip into the memory
+reserves.
+
+The misuse of this feature would be risky but it can be limited to
+privileged applications. Userspace oom-killer is the only appropriate
+user of this feature. This option is simple to implement.
+
+2. Mempool
+
+The idea is to preallocate mempool with a given amount of memory for
+userspace oom-killer. Preferably this will be per-thread and
+oom-killer can preallocate mempool for its specific threads. The core
+page allocator can check before going to the reclaim path if the task
+has private access to the mempool and return page from it if yes.
+
+This option would be more complicated than the previous option as the
+lifecycle of the page from the mempool would be more sophisticated.
+Additionally the current mempool does not handle higher order pages
+and we might need to extend it to allow such allocations. Though this
+feature might have more use-cases and it would be less risky than the
+previous option.
+
+Another idea I had was to use kthread based oom-killer and provide the
+policies through eBPF program. Though I am not sure how to make it
+monitor arbitrary metrics and if that can be done without any
+allocations.
+
+Please do provide feedback on these approaches.
+
+thanks,
+Shakeel
