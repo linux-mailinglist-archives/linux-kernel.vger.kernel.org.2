@@ -2,93 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4C4365CC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 18:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD248365CB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233056AbhDTQAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 12:00:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232303AbhDTQAh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 12:00:37 -0400
-Received: from mxwww.masterlogin.de (mxwww.masterlogin.de [IPv6:2a03:2900:1:1::a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA79BC06174A;
-        Tue, 20 Apr 2021 09:00:05 -0700 (PDT)
-Received: from mxout1.routing.net (unknown [192.168.10.81])
-        by backup.mxwww.masterlogin.de (Postfix) with ESMTPS id 34AC32C4D4;
-        Tue, 20 Apr 2021 15:54:22 +0000 (UTC)
-Received: from mxbox2.masterlogin.de (unknown [192.168.10.89])
-        by mxout1.routing.net (Postfix) with ESMTP id 7B6583FE0A;
-        Tue, 20 Apr 2021 15:54:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailerdienst.de;
-        s=20200217; t=1618934057;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=kQYv4OtNr6e//YkMopHLbwWlrJMzWOHnE8M1UCzYfGU=;
-        b=NFmpEG8uJGS8FmvRAXIb9Ilqih45UNHL7PMvflMewmrdAAN+fveZC0qe0TIkbKNKjHreuX
-        uySf7rYOuumh3KADGmogaJ1lkRutiRxOE8XN8e3xbgWhNvGayANhpv1Hg/TpczHP778rGR
-        mqS+7i9INHrirEqcbbZOCS7aNyB/FKE=
-Received: from localhost.localdomain (fttx-pool-80.245.77.151.bambit.de [80.245.77.151])
-        by mxbox2.masterlogin.de (Postfix) with ESMTPSA id 88927100396;
-        Tue, 20 Apr 2021 15:54:16 +0000 (UTC)
-From:   Frank Wunderlich <linux@fw-web.de>
-To:     linux-mediatek@lists.infradead.org
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] thermal: mediatek: add sensors-support
-Date:   Tue, 20 Apr 2021 17:54:10 +0200
-Message-Id: <20210420155410.132141-1-linux@fw-web.de>
-X-Mailer: git-send-email 2.25.1
+        id S232990AbhDTPzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 11:55:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48462 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232303AbhDTPzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 11:55:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B923A613C3;
+        Tue, 20 Apr 2021 15:54:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618934089;
+        bh=KZq5/wRY4YGDVOPORw3nU8SC0AVzsWcVeDZv4TcVeDY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gqqC/lZMF78AIjK+lsYvmr4WeYe5ZzfxljlcTDFpJPdmD/iMCurTItPSMmY8qH3St
+         LFMHXEd4bj9GBcX5akpIBLRU6sBCgmxrZgwmml38S2BadsFjKZrmvo5OeJkRcdd/c+
+         a09cKwfoZT3RRWka6JkQUZalxHE1agf30nepJCsyc4HjP7K5MvgAFrRVM/4D3uRqKu
+         0s6Y789OfQCvviSpha1bC93pp+yLuAT5oy2Y31IQxryQ6WQfvlBQ0OiDEHwjtRoYsy
+         tF/d+Mt71HhkqbgPmI0mhMPnmcQnOMd/up7jkZiR5EhGpWA3vX4WME9ZVzQqKPFTB/
+         0OP/iZ4zkTfRA==
+Received: by mail-ej1-f44.google.com with SMTP id sd23so50385088ejb.12;
+        Tue, 20 Apr 2021 08:54:49 -0700 (PDT)
+X-Gm-Message-State: AOAM531bxZH+F/u9WK+v0IPJRdE2AlIByI+N9g1XC4nw3LtkcsBypHsx
+        Ry7ftzMpnHwRtcCxWCvD6+zWTcwUx2HybMUFWw==
+X-Google-Smtp-Source: ABdhPJzp3lYZdPdNVLhuX/2phA/xrwQbMnDUOzFFLWg1gmLwSoM6HCDWBOhQ5OgOMvK39G8i6DxgWSIwuIi02EQ5Cwg=
+X-Received: by 2002:a17:907:217b:: with SMTP id rl27mr28429006ejb.359.1618934088130;
+ Tue, 20 Apr 2021 08:54:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mail-ID: a26884df-a290-43e7-8bcd-1a1379261d7e
+References: <4a4734d6-49df-677b-71d3-b926c44d89a9@foss.st.com>
+ <CAL_JsqKGG8E9Y53+az+5qAOOGiZRAA-aD-1tKB-hcOp+m3CJYw@mail.gmail.com> <001f8550-b625-17d2-85a6-98a483557c70@foss.st.com>
+In-Reply-To: <001f8550-b625-17d2-85a6-98a483557c70@foss.st.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 20 Apr 2021 10:54:36 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+LUPZFhXd+j-xM67rZB=pvEvZM+1sfckip0Lqq02PkZQ@mail.gmail.com>
+Message-ID: <CAL_Jsq+LUPZFhXd+j-xM67rZB=pvEvZM+1sfckip0Lqq02PkZQ@mail.gmail.com>
+Subject: Re: [v5.4 stable] arm: stm32: Regression observed on "no-map"
+ reserved memory region
+To:     Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Quentin Perret <qperret@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        stable <stable@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        KarimAllah Ahmed <karahmed@amazon.de>,
+        Android Kernel Team <kernel-team@android.com>,
+        Architecture Mailman List <boot-architecture@lists.linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Wunderlich <frank-w@public-files.de>
+On Tue, Apr 20, 2021 at 10:12 AM Alexandre TORGUE
+<alexandre.torgue@foss.st.com> wrote:
+>
+>
+>
+> On 4/20/21 4:45 PM, Rob Herring wrote:
+> > On Tue, Apr 20, 2021 at 9:03 AM Alexandre TORGUE
+> > <alexandre.torgue@foss.st.com> wrote:
+> >>
+> >> Hi,
+> >
+> > Greg or Sasha won't know what to do with this. Not sure who follows
+> > the stable list either. Quentin sent the patch, but is not the author.
+> > Given the patch in question is about consistency between EFI memory
+> > map boot and DT memory map boot, copying EFI knowledgeable folks would
+> > help (Ard B for starters).
+>
+> Ok thanks for the tips. I add Ard in the loop.
 
-add HWMON-support to mediateks thermal driver to allow lm-sensors
-userspace tools read soc temperature
+Sigh. If it was only Ard I was suggesting I would have done that
+myself. Now everyone on the patch in question and relevant lists are
+Cc'ed.
 
-Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
----
-v2: drop ifdef and used devm_thermal_add_hwmon_sysfs
----
- drivers/thermal/mtk_thermal.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/thermal/mtk_thermal.c b/drivers/thermal/mtk_thermal.c
-index 149c6d7fd5a0..32be8a715c7d 100644
---- a/drivers/thermal/mtk_thermal.c
-+++ b/drivers/thermal/mtk_thermal.c
-@@ -23,6 +23,8 @@
- #include <linux/reset.h>
- #include <linux/types.h>
- 
-+#include "thermal_hwmon.h"
-+
- /* AUXADC Registers */
- #define AUXADC_CON1_SET_V	0x008
- #define AUXADC_CON1_CLR_V	0x00c
-@@ -1087,6 +1089,11 @@ static int mtk_thermal_probe(struct platform_device *pdev)
- 		goto err_disable_clk_peri_therm;
- 	}
- 
-+	tzdev->tzp->no_hwmon = false;
-+	ret = devm_thermal_add_hwmon_sysfs(tzdev);
-+	if (ret)
-+		dev_err(&pdev->dev, "error in thermal_add_hwmon_sysfs");
-+
- 	return 0;
- 
- err_disable_clk_peri_therm:
--- 
-2.25.1
-
+>
+> Ard, let me know if other people have to be directly added or if I have
+> to resend to another mailing list.
+>
+> thanks
+> alex
+>
+> >
+> >>
+> >> Since v5.4.102 I observe a regression on stm32mp1 platform: "no-map"
+> >> reserved-memory regions are no more "reserved" and make part of the
+> >> kernel System RAM. This causes allocation failure for devices which try
+> >> to take a reserved-memory region.
+> >>
+> >> It has been introduced by the following path:
+> >>
+> >> "fdt: Properly handle "no-map" field in the memory region
+> >> [ Upstream commit 86588296acbfb1591e92ba60221e95677ecadb43 ]"
+> >> which replace memblock_remove by memblock_mark_nomap in no-map case.
+> >>
+> >> Reverting this patch it's fine.
+> >>
+> >> I add part of my DT (something is maybe wrong inside):
+> >>
+> >> memory@c0000000 {
+> >>          reg = <0xc0000000 0x20000000>;
+> >> };
+> >>
+> >> reserved-memory {
+> >>          #address-cells = <1>;
+> >>          #size-cells = <1>;
+> >>          ranges;
+> >>
+> >>          gpu_reserved: gpu@d4000000 {
+> >>                  reg = <0xd4000000 0x4000000>;
+> >>                  no-map;
+> >>          };
+> >> };
+> >>
+> >> Sorry if this issue has already been raised and discussed.
+> >>
+> >> Thanks
+> >> alex
