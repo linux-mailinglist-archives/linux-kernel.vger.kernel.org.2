@@ -2,187 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3348365A20
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6A1365A29
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232428AbhDTNa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:30:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232376AbhDTNax (ORCPT
+        id S232531AbhDTNc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:32:27 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:17802 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231718AbhDTNcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:30:53 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F30C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 06:30:22 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id p10-20020a1c544a0000b02901387e17700fso1069137wmi.2
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 06:30:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jzWHsyN0ouTXQZ1m1iLRKWJKUoOGAIFoQPUyqNWL1Rk=;
-        b=C5cHo69OGH5oEJK7cJBWcWEdCHdi+ff0qQaNXid3xwJg+My0bUKSGba0wFoh5moxfX
-         EHkq3de9MDLRdTuXPkz76TqPmbLRp3ZizPXaSgBBOlSuklWnhyqJGLgM96E15we/N/kE
-         W1a/hCBgdjZLvboXZOqD57RI3VlzgN93b3O1luWTA/G5omKUHwC5sTMUGwFTImlMOcCA
-         lV4eAZtVappiXv1RWw3Cc2T/wkGrtlVrP7AXAUlYy/rgxzYonF0qN1cIk9K1PNTdEEar
-         FYTh2L+3Md7+JrUT07hzyLGFeBENeQDXSWU2jj5ffkaZ1Hz87/3LGCdZjWT2hRkOd/PC
-         rcrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jzWHsyN0ouTXQZ1m1iLRKWJKUoOGAIFoQPUyqNWL1Rk=;
-        b=Kfwm1izjWpw3Qd5JQZHIGU4VeeYxrFm8fzDbKzPQpq7A/QkGA/HR71UW5LkdYIpnbv
-         D1uTE42QvO/g0mkmfj66TpWKSMshwOT0fc7RqMDUn3Pe3pMFeuBQhGRwW8GxZmzN5XgL
-         CemqnfUmCC2yrybjTdMnUrcfCw29XJGx+yNEtWrGiTJT2uxqYf0ZNzRuQGrckYH0FBnu
-         kMEdhn3a/OX+7us+i/QgFLDo2sYTR8n58jw/SBA3IYsPfZwckNNwp1NJmb9el7tdSih/
-         AjH4ui1kmuwHtU/1kt9JzVWrO5j/0iuYUJv4uFA0kWt0R3uRPNWQSbgCreF/cZ4BqIdp
-         hFpg==
-X-Gm-Message-State: AOAM532QJmvHQA7E0OXms0J0eqLF99vm7qPtLR6Pm6I9Oyn+4GwrFCcL
-        Ulh+xXk43V5owBzZ1tSFBXWcaA==
-X-Google-Smtp-Source: ABdhPJzzfK8CwIY0cZqsrLMW7HsEAgftwvJVT/pIFM4iaWSK86lBUUOpYf0omAIh+EmsC7+fZu7mKw==
-X-Received: by 2002:a7b:ce84:: with SMTP id q4mr4554602wmj.149.1618925421002;
-        Tue, 20 Apr 2021 06:30:21 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:a079:f96:da87:2d00? ([2a01:e34:ed2f:f020:a079:f96:da87:2d00])
-        by smtp.googlemail.com with ESMTPSA id f24sm3325837wmb.32.2021.04.20.06.30.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 06:30:20 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] thermal: power_allocator: update once cooling
- devices when temp is low
-To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
-Cc:     linux-pm@vger.kernel.org, amitk@kernel.org, rui.zhang@intel.com
-References: <20210419084536.25000-1-lukasz.luba@arm.com>
- <20210419084536.25000-3-lukasz.luba@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <c69e2ba0-b382-01a0-292f-019fffd365e0@linaro.org>
-Date:   Tue, 20 Apr 2021 15:30:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 20 Apr 2021 09:32:18 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FPl022LFTzBrVN;
+        Tue, 20 Apr 2021 21:29:22 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Tue, 20 Apr 2021
+ 21:31:36 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <ying.huang@intel.com>, <dennis@kernel.org>,
+        <tim.c.chen@linux.intel.com>, <hughd@google.com>,
+        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
+        <alexs@kernel.org>, <willy@infradead.org>, <minchan@kernel.org>,
+        <richard.weiyang@gmail.com>, <shy828301@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH v3 0/4] close various race windows for swap
+Date:   Tue, 20 Apr 2021 09:30:44 -0400
+Message-ID: <20210420133048.6773-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-In-Reply-To: <20210419084536.25000-3-lukasz.luba@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/04/2021 10:45, Lukasz Luba wrote:
-> The cooling device state change generates an event, also when there is no
-> need, because temperature is low and device is not throttled. Avoid to
-> unnecessary update the cooling device which means also not sending event.
-> The cooling device state has not changed because the temperature is still
-> below the first activation trip point value, so we can do this.
-> Add a tracking mechanism to make sure it updates cooling devices only
-> once - when the temperature dropps below first trip point.
-> 
-> Reported-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> ---
->  drivers/thermal/gov_power_allocator.c | 14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/thermal/gov_power_allocator.c b/drivers/thermal/gov_power_allocator.c
-> index d393409fb786..f379f1aaa3b5 100644
-> --- a/drivers/thermal/gov_power_allocator.c
-> +++ b/drivers/thermal/gov_power_allocator.c
-> @@ -571,7 +571,7 @@ static void reset_pid_controller(struct power_allocator_params *params)
->  	params->prev_err = 0;
->  }
->  
-> -static void allow_maximum_power(struct thermal_zone_device *tz)
-> +static void allow_maximum_power(struct thermal_zone_device *tz, bool update)
->  {
->  	struct thermal_instance *instance;
->  	struct power_allocator_params *params = tz->governor_data;
-> @@ -594,9 +594,13 @@ static void allow_maximum_power(struct thermal_zone_device *tz)
->  		 */
->  		cdev->ops->get_requested_power(cdev, &req_power);
->  
-> -		instance->cdev->updated = false;
-> +		if (update)
-> +			instance->cdev->updated = false;
-> +
->  		mutex_unlock(&instance->cdev->lock);
-> -		(instance->cdev);
-> +
-> +		if (update)
-> +			thermal_cdev_update(instance->cdev);
+Hi all,
+When I was investigating the swap code, I found some possible race
+windows. This series aims to fix all these races. But using current
+get/put_swap_device() to guard against concurrent swapoff for
+swap_readpage() looks terrible because swap_readpage() may take really
+long time. And to reduce the performance overhead on the hot-path as
+much as possible, it appears we can use the percpu_ref to close this
+race window(as suggested by Huang, Ying). The patch 1 adds percpu_ref
+support for swap and most of the remaining patches try to use this to
+close various race windows. More details can be found in the respective
+changelogs. Thanks!
 
-This cdev update has something bad IMHO. It is protected by a mutex but
-the 'updated' field is left unprotected before calling
-thermal_cdev_update().
+v2->v3:
+  some commit log and comment enhance per Huang, Ying
+  remove ref_initialized field
+  squash PATCH 1-2
 
-It is not the fault of this code but how the cooling device are updated
-and how it interacts with the thermal instances.
+v1->v2:
+  reorganize the patch-2/5
+  various enhance and fixup per Huang, Ying
+  Many thanks for the comments of Huang, Ying, Dennis Zhou and Tim Chen.
 
-IMO, part of the core code needs to revisited.
+Miaohe Lin (4):
+  mm/swapfile: use percpu_ref to serialize against concurrent swapoff
+  swap: fix do_swap_page() race with swapoff
+  mm/swap: remove confusing checking for non_swap_entry() in
+    swap_ra_info()
+  mm/shmem: fix shmem_swapin() race with swapoff
 
-This change tight a bit more the knot.
-
-Would it make sense to you if we create a function eg.
-__thermal_cdev_update()
-
-And then we have:
-
-void thermal_cdev_update(struct thermal_cooling_device *cdev)
-{
-        mutex_lock(&cdev->lock);
-        /* cooling device is updated*/
-        if (cdev->updated) {
-                mutex_unlock(&cdev->lock);
-                return;
-        }
-
-	__thermal_cdev_update(cdev);
-
-        thermal_cdev_set_cur_state(cdev, target);
-
-        cdev->updated = true;
-        mutex_unlock(&cdev->lock);
-        trace_cdev_update(cdev, target);
-        dev_dbg(&cdev->device, "set to state %lu\n", target);
-}
-
-And in this file we do instead:
-
--		instance->cdev->updated = false;
-+		if (update)
-+			__thermal_cdev_update(instance->cdev);
-  		mutex_unlock(&instance->cdev->lock);
--		thermal_cdev_update(instance->cdev);
-
->  	}
->  	mutex_unlock(&tz->lock);
->  }
-> @@ -710,6 +714,7 @@ static int power_allocator_throttle(struct thermal_zone_device *tz, int trip)
->  	int ret;
->  	int switch_on_temp, control_temp;
->  	struct power_allocator_params *params = tz->governor_data;
-> +	bool update;
->  
->  	/*
->  	 * We get called for every trip point but we only need to do
-> @@ -721,9 +726,10 @@ static int power_allocator_throttle(struct thermal_zone_device *tz, int trip)
->  	ret = tz->ops->get_trip_temp(tz, params->trip_switch_on,
->  				     &switch_on_temp);
->  	if (!ret && (tz->temperature < switch_on_temp)) {
-> +		update = (tz->last_temperature >= switch_on_temp);
->  		tz->passive = 0;
->  		reset_pid_controller(params);
-> -		allow_maximum_power(tz);
-> +		allow_maximum_power(tz, update);
->  		return 0;
->  	}
->  
-> 
-
+ include/linux/swap.h | 14 ++++++--
+ mm/memory.c          |  9 +++++
+ mm/shmem.c           |  6 ++++
+ mm/swap_state.c      |  6 ----
+ mm/swapfile.c        | 79 +++++++++++++++++++++++++++-----------------
+ 5 files changed, 76 insertions(+), 38 deletions(-)
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.19.1
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
