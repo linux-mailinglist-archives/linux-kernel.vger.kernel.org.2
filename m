@@ -2,98 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 779AF36563A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:33:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72BF1365639
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231633AbhDTKeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 06:34:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231518AbhDTKeL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231618AbhDTKeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 06:34:17 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:47706 "EHLO mail.ispras.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231483AbhDTKeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 20 Apr 2021 06:34:11 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5286EC06174A;
-        Tue, 20 Apr 2021 03:33:36 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so20206557pjv.1;
-        Tue, 20 Apr 2021 03:33:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=u3Nzr15z81WtZpDHgfqJlJJcLPK//uWHmdJqHtGbaJ4=;
-        b=iBYQ5xmPpHEih9gCrzuAtNh0FzwE/z6Tt+NO3d5cx7DsrOnmgUqSWRvZCof/hC7nYC
-         ASoue6ZUil2+oG5/BdpUn0ZFrBsdm1tQnRRmwmOU/2nsXIFzh/2vAB4vb7E1b7Y4/1zi
-         vor67QqrTUQ64CzgV60npjBXOGfXd0lIHc1UWs5ACbwk6CCmEPzCUs6EhF9PNiE3miQ/
-         Fn0KiDi4+YEq0zsb35cW/aIxS3QArxZlC95/d4ijB4jsw93kwZJDRnQtVBkRrgwaFIzk
-         /jNx9eGzM7LW7VXwXjJufhx2abL8ln4JdU3hac5/DaAB9B4d3+6UlhQP6HXpIher9aff
-         XfOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=u3Nzr15z81WtZpDHgfqJlJJcLPK//uWHmdJqHtGbaJ4=;
-        b=osNDEiWo0Ev2QsoRt7Ny3Et0HI9iG7/8srT+Fqiuq5ZlT48dflGp/n6DDvJPyfyYmS
-         +zor+MYhKCS7kvG6m8k3v9e7lnBxNNahkocKIUi6EraRy+8bzX86/UFhIpxCqWWdadHj
-         pdv5mSN90gVDZ35rdyVBHxlOTqw3OcYuNcAU/dP3ofBt4gmjMHVcvETLl5yXfnB9lCcz
-         e7p9GC7ERnbKqryCK1Mo1U7bFxAcTXUDDWk7t+2HbO+yF5PA4vBvxRmggC1XRHRPUGGQ
-         JDyYYOfJVdGqh0e971oCP6SiIThPWUQdwnW3izjOrl9cOIH0DEyZ/UzoPtdXL1jWnN4h
-         oyFw==
-X-Gm-Message-State: AOAM5336KYYO5VuDe2Z3FvXKypYY1GL9c4UxB5HbpI+tgkBNmq19LjJy
-        Oay6Mpfvd7tyiFzrQZb918g=
-X-Google-Smtp-Source: ABdhPJwrcBwxwNKOx+Mccv9rEkF/D9SSC0GsMPoHu/x2QLHqLlLx/O+NXEP3GCcAT8SNo6Iorc263g==
-X-Received: by 2002:a17:902:a38d:b029:ec:8faf:2007 with SMTP id x13-20020a170902a38db02900ec8faf2007mr16393342pla.75.1618914815820;
-        Tue, 20 Apr 2021 03:33:35 -0700 (PDT)
-Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
-        by smtp.gmail.com with ESMTPSA id n11sm9268572pff.96.2021.04.20.03.33.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 03:33:35 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 13:33:19 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Arvid.Brodin@xdin.com,
-        m-karicheri2@ti.com, vinicius.gomes@intel.com,
-        michael.chan@broadcom.com, vishal@chelsio.com, saeedm@mellanox.com,
-        jiri@mellanox.com, idosch@mellanox.com,
-        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
-        ivan.khoronzhuk@linaro.org, andre.guedes@linux.intel.com,
-        yuehaibing@huawei.com, allan.nielsen@microchip.com,
-        joergen.andreasen@microchip.com, colin.king@canonical.com,
-        po.liu@nxp.com, mingkai.hu@nxp.com, claudiu.manoil@nxp.com,
-        vladimir.oltean@nxp.com, leoyang.li@nxp.com
-Subject: Re: [net-next] net: dsa: felix: disable always guard band bit for
- TAS config
-Message-ID: <20210420103319.6nbh3fivjgwupjgl@skbuf>
-References: <20210419102530.20361-1-xiaoliang.yang_1@nxp.com>
+Received: from monopod.intra.ispras.ru (unknown [10.10.3.121])
+        by mail.ispras.ru (Postfix) with ESMTPS id 20A4840D3BFF;
+        Tue, 20 Apr 2021 10:33:35 +0000 (UTC)
+Date:   Tue, 20 Apr 2021 13:33:35 +0300 (MSK)
+From:   Alexander Monakov <amonakov@ispras.ru>
+To:     "Suthikulpanit, Suravee" <suravee.suthikulpanit@amd.com>
+cc:     David Coe <david.coe@live.co.uk>, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, joro@8bytes.org, will@kernel.org,
+        jsnitsel@redhat.com, pmenzel@molgen.mpg.de, Jon.Grimm@amd.com,
+        Tj <ml.linux@elloe.vision>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Alex Hung <1917203@bugs.launchpad.net>
+Subject: Re: [PATCH 2/2] iommu/amd: Remove performance counter pre-initialization
+ test
+In-Reply-To: <9d5fa4ff-9666-6475-7f61-2b45cbd83456@amd.com>
+Message-ID: <alpine.LNX.2.20.13.2104201310520.19608@monopod.intra.ispras.ru>
+References: <20210409085848.3908-1-suravee.suthikulpanit@amd.com> <20210409085848.3908-3-suravee.suthikulpanit@amd.com> <VI1PR09MB26380EED406F2F08ACB6B5BBC7729@VI1PR09MB2638.eurprd09.prod.outlook.com> <9d5fa4ff-9666-6475-7f61-2b45cbd83456@amd.com>
+User-Agent: Alpine 2.20.13 (LNX 116 2015-12-14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210419102530.20361-1-xiaoliang.yang_1@nxp.com>
+Content-Type: multipart/mixed; boundary="168458499-181975079-1618914815=:19608"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 06:25:30PM +0800, Xiaoliang Yang wrote:
-> ALWAYS_GUARD_BAND_SCH_Q bit in TAS config register is descripted as
-> this:
-> 	0: Guard band is implemented for nonschedule queues to schedule
-> 	   queues transition.
-> 	1: Guard band is implemented for any queue to schedule queue
-> 	   transition.
-> 
-> The driver set guard band be implemented for any queue to schedule queue
-> transition before, which will make each GCL time slot reserve a guard
-> band time that can pass the max SDU frame. Because guard band time could
-> not be set in tc-taprio now, it will use about 12000ns to pass 1500B max
-> SDU. This limits each GCL time interval to be more than 12000ns.
-> 
-> This patch change the guard band to be only implemented for nonschedule
-> queues to schedule queues transition, so that there is no need to reserve
-> guard band on each GCL. Users can manually add guard band time for each
-> schedule queues in their configuration if they want.
-> 
-> Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-> ---
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+--168458499-181975079-1618914815=:19608
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+
+On Tue, 20 Apr 2021, Suthikulpanit, Suravee wrote:
+
+> David / Joerg,
+> 
+> On 4/10/2021 5:03 PM, David Coe wrote:
+> > 
+> > The immediately obvious difference is the with the enormous count seen on
+> > mem_dte_mis on the older Ryzen 2400G. Will do some RTFM but anyone
+> > with comments and insight?
+> > 
+> > 841,689,151,202,939       amd_iommu_0/mem_dte_mis/              (33.44%)
+> > 
+> > Otherwise, all seems to running smoothly (especially for a distribution
+> > still in β). Bravo and many thanks all!
+> 
+> The initial hypothesis is that the issue happens only when users specify more
+> number of events than
+> the available counters, which Perf will time-multiplex the events onto the
+> counters.
+> 
+> Looking at the Perf and AMD IOMMU PMU multiplexing logic, it requires:
+>  1. Stop the counter (i.e. set CSOURCE to zero to stop counting)
+>  2. Save the counter value of the current event
+>  3. Reload the counter value of the new event (previously saved)
+>  4. Start the counter (i.e. set CSOURCE to count new events)
+> 
+> The problem here is that when the driver writes zero to CSOURCE register in
+> step 1, this would enable power-gating,
+> which prevents access to the counter and result in writing/reading value in
+> step 2 and 3.
+> 
+> I have found a system that reproduced this case (w/ unusually large number of
+> count), and debug the issue further.
+> As a hack, I have tried skipping step 1, and it seems to eliminate this issue.
+> However, this is logically incorrect,
+> and might result in inaccurate data depending on the events.
+> 
+> Here are the options:
+> 1. Continue to look for workaround for this issue.
+> 2. Find a way to disable event time-multiplexing (e.g. only limit the number
+> of counters to 8)
+>    if power gating is enabled on the platform.
+> 3. Back to the original logic where we had the pre-init check of the counter
+> vlues, which is still the safest choice
+>    at the moment unless
+
+If the "power-gated" counter only ignores writes, but yields correct values on
+reads, you don't need to change its value.
+
+0. When initializing the counter, save its value as 'raw_counter_value'.
+
+When switching:
+
+1. Set CSOURCE to zero (pauses the counter).
+2. Read current counter value ('new_value').
+3. Add '(new_value - raw_counter_value) & mask' to the current event count;
+   where 'mask' is '(1ULL << 48) - 1' to account for overflow correctly.
+4. Assign 'raw_counter_value = new_value'.
+5. Set CSOURCE to new configuration value.
+
+Modifying the hardware counter value is only needed to get overflow interrupts,
+but there's no code to handle them on Linux (since the interrupts are
+asynchronous, and given the nature of the events, I don't see how it would be
+useful).
+
+Alexander
+--168458499-181975079-1618914815=:19608--
