@@ -2,197 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2371B36542D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5C7365433
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 10:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbhDTIdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 04:33:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57084 "EHLO
+        id S230372AbhDTIel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 04:34:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbhDTIdU (ORCPT
+        with ESMTP id S229543AbhDTIej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 04:33:20 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E02DC061763
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:32:48 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id d16-20020a4a3c100000b02901f0590a614eso509071ooa.8
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:32:48 -0700 (PDT)
+        Tue, 20 Apr 2021 04:34:39 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B854C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:34:08 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id g5so50297617ejx.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 01:34:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q1T8M/4Hes3NzluLQXBUJj6LcT4nx2E+5/+ymNCi9rc=;
-        b=ednZnGG6fwzO6JD8Iu0xjnPY9PBOnCxmbRtJXT5RpgtoGAE21UQyh6whya2/H0Yo4q
-         NRqYrxQL1FGM+4oaNfUzQv/K0iLxeorhv1irOU7PwJqZHfeF6lmQLSzXgALQJZpPutfb
-         MBYvAn1iOUQmRdcugUOAX0DN/kiZuOBrnD4jbarZ3NaAHVXk+snwzBDuNT6dxvYRXqOT
-         CEVDB+YVnvTTiFUkk5kNNb2yN7ANz4m7tdxSk+Hu/ZG2RFVBWzVJRBBcqBq0woNjCuIj
-         apNPLT3YzRHIxQeyjuSulaUzuTqT4SdC2Zg/j/EQLzHQt/sIhnXN2evYU3NVRNpFryLY
-         QAyA==
+        d=devtank-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fEyunwwdlfOesu6cu8znhTRdSvHiaQimv53Nkvu2/Ms=;
+        b=A5tGY/62El4/U8UQgU4S13zEeq4lQO4yo6U+yMUh7uIXXxkUeGk3dMPiNXhRr60ozY
+         mWoGrqx8xCoGS15Gx3RknYSGLXLRC/nLW3LWNa+pWUKT/2W6nL6mbF21FfxAJZlNFhBv
+         8CPyW7TfBxL9sk9c8uK5NM84wPYZ8ULCz0Y6FZSCIRC22h5KFgmAw3dMSa3iYvKM+SyM
+         IjtN/LwR+vZyUHStTnNE8adY3GSa3jEe2PygF71NQnoDptvxibLI7bi3kuOjW1j0y83h
+         izsXaBaIYH6pL7o9BbzwbObOZPQZk7p1R6uY/AuREo5+GsSaWYnQEiCvuDzk8uNQB/xG
+         +3UA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q1T8M/4Hes3NzluLQXBUJj6LcT4nx2E+5/+ymNCi9rc=;
-        b=bXlHKSY9lxJzyls//bfkr7hbg1IkZfyjwf6BfzDFJk9XTjggNEXVJeEkdLmTkObuC9
-         XJ2Qm2J8p2DZ9puvFdkk8zO0bcWc9cwyTLJ7rMsdrULYxe4ep8BMCFw4Fg5/WpnqBD7T
-         EwLRxEB9eFv5ok5BraSrHuTFPVGAa5pKdzwcbHz1WJ6VUNi653/ni9FH+PLUMNfRrMFY
-         PlN/JGIvi7b8gI5zWxwPLZaZxqqO0yhmhF4L1h3YW7dNOlfoHMeaI4793Rxlk25ouBy6
-         IDLcAC7yznZ/ZMvExqXTLZeXpTM2ddneSR4IHIoxslPMw13mdW3l4c/2ZIG13LG6kUxV
-         Q5Jg==
-X-Gm-Message-State: AOAM5305EvQJtqTVISSCFsxVCEecslhMI3Jte9YiPbkJzpvSSfYKheUT
-        MHkTqUf4ojljoY0TGp8gPZ1FOjzwMqqguKn7QuKzeA==
-X-Google-Smtp-Source: ABdhPJzx0AqbEbHfxy4WRTGw1GawrenTKJY7KmD+6guym0U5AIFEhAhHoBBVpomiPa0aA5zba/krjXiksupaaF95ezg=
-X-Received: by 2002:a4a:e153:: with SMTP id p19mr16412764oot.52.1618907567900;
- Tue, 20 Apr 2021 01:32:47 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fEyunwwdlfOesu6cu8znhTRdSvHiaQimv53Nkvu2/Ms=;
+        b=dPRhkeKh65jEqd322HA1+nQ+HZS3ivxj4G+AYBzK1WlxDg6GE354WQss7T/6Hgcoe2
+         GobDVpZsHeRmsGko9eT60CILtFxBVLtHaDNe0r2xa1uP9owc2CvyINhyt0gc2y/kjoM0
+         K+gx9MIc5r9imfeHm7Mq3DgYk1L7D+zT4m8QMiZ/V5YEZ4Osik7ondFUiMlDlPIO4AUh
+         hwfqg7wsvKPiKQxOulMPKkG/RV7zE/fHEkBJ0KIiGtJxPGyO06eIP34S0NlU8ejJqC9R
+         gMu28hhzc7YYcrz7NrOpjCE0no8nHbuYeLmtuvlHT9cGhq3CeUpWRK2pSC+PXJZ+CHfE
+         Xx6g==
+X-Gm-Message-State: AOAM5301dv0Fi1wO7zU7ytaxp3Wmxvv8urK9UqjJExwidWofzgepQ5an
+        hE3le/k86JZ1Xw+TxHnv1u9Hzw==
+X-Google-Smtp-Source: ABdhPJz7aM7Bwl/dR2pKbxiKX0S4UODEQmGieslAoRD1LKebcp9kK5wHO4fSQbWLdOvboV32vbl3sQ==
+X-Received: by 2002:a17:906:5490:: with SMTP id r16mr27211264ejo.352.1618907647259;
+        Tue, 20 Apr 2021 01:34:07 -0700 (PDT)
+Received: from jabjoe-desktop.lan ([2a02:8010:673b:0:27d5:da8f:c244:7b8a])
+        by smtp.googlemail.com with ESMTPSA id g11sm15483620edt.35.2021.04.20.01.34.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 01:34:06 -0700 (PDT)
+From:   Joe Burmeister <joe.burmeister@devtank.co.uk>
+To:     Mark Brown <broonie@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-spi@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     joe.burmeister@devtank.co.uk
+Subject: [PATCH] spi: bcm2835: Fix buffer overflow with CS able to go beyond limit.
+Date:   Tue, 20 Apr 2021 09:34:02 +0100
+Message-Id: <20210420083402.6950-1-joe.burmeister@devtank.co.uk>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210416222518.15801-1-nm@ti.com>
-In-Reply-To: <20210416222518.15801-1-nm@ti.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Tue, 20 Apr 2021 10:32:37 +0200
-Message-ID: <CAHUa44GZenrwVWRZW6BKB8cktfXvktJ4OCF0AgPKanYGV01m5g@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: arm: firmware: Convert linaro,optee-tz to
- json schema
-To:     Nishanth Menon <nm@ti.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 12:25 AM Nishanth Menon <nm@ti.com> wrote:
->
-> Convert linaro,optee-tz to json schema format for better documentation
-> and error checks.
->
-> NOTE:
-> 1. This change does introduce a stricter naming convention for
->    optee nodes.
-> 2. We do have false positive checkpatch warning with this patch:
->    "DT binding docs and includes should be a separate patch"
->
-> Signed-off-by: Nishanth Menon <nm@ti.com>
-> ---
->  .../bindings/arm/firmware/linaro,optee-tz.txt | 31 ----------
->  .../arm/firmware/linaro,optee-tz.yaml         | 62 +++++++++++++++++++
->  2 files changed, 62 insertions(+), 31 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml
->
-> diff --git a/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.txt b/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.txt
-> deleted file mode 100644
-> index d38834c67dff..000000000000
-> --- a/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.txt
-> +++ /dev/null
-> @@ -1,31 +0,0 @@
-> -OP-TEE Device Tree Bindings
-> -
-> -OP-TEE is a piece of software using hardware features to provide a Trusted
-> -Execution Environment. The security can be provided with ARM TrustZone, but
-> -also by virtualization or a separate chip.
-> -
-> -We're using "linaro" as the first part of the compatible property for
-> -the reference implementation maintained by Linaro.
-> -
-> -* OP-TEE based on ARM TrustZone required properties:
-> -
-> -- compatible     : should contain "linaro,optee-tz"
-> -
-> -- method         : The method of calling the OP-TEE Trusted OS. Permitted
-> -                   values are:
-> -
-> -                   "smc" : SMC #0, with the register assignments specified
-> -                          in drivers/tee/optee/optee_smc.h
-> -
-> -                   "hvc" : HVC #0, with the register assignments specified
-> -                          in drivers/tee/optee/optee_smc.h
-> -
-> -
-> -
-> -Example:
-> -       firmware {
-> -               optee {
-> -                       compatible = "linaro,optee-tz";
-> -                       method = "smc";
-> -               };
-> -       };
-> diff --git a/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml b/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml
-> new file mode 100644
-> index 000000000000..6513b5ac8b2c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/arm/firmware/linaro,optee-tz.yaml
-> @@ -0,0 +1,62 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/arm/firmware/linaro,optee-tz.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+It was previoulsy possible to have a device tree with more chips than
+the driver supports and go off the end of CS arrays.
 
-Are these links supposed to work?
+This patches inforces CS limit but sets that limit to the max of the
+default limit and what is in the device tree when driver is loaded.
 
-Thanks,
-Jens
+Signed-off-by: Joe Burmeister <joe.burmeister@devtank.co.uk>
+---
+ drivers/spi/spi-bcm2835.c | 77 +++++++++++++++++++++++++++++----------
+ 1 file changed, 58 insertions(+), 19 deletions(-)
 
+diff --git a/drivers/spi/spi-bcm2835.c b/drivers/spi/spi-bcm2835.c
+index aab6c7e5c114..cee761bfffe4 100644
+--- a/drivers/spi/spi-bcm2835.c
++++ b/drivers/spi/spi-bcm2835.c
+@@ -28,6 +28,7 @@
+ #include <linux/gpio/consumer.h>
+ #include <linux/gpio/machine.h> /* FIXME: using chip internals */
+ #include <linux/gpio/driver.h> /* FIXME: using chip internals */
++#include <linux/of_gpio.h>
+ #include <linux/of_irq.h>
+ #include <linux/spi/spi.h>
+ 
+@@ -134,7 +135,7 @@ struct bcm2835_spi {
+ 	int tx_prologue;
+ 	int rx_prologue;
+ 	unsigned int tx_spillover;
+-	u32 prepare_cs[BCM2835_SPI_NUM_CS];
++	u32 *prepare_cs;
+ 
+ 	struct dentry *debugfs_dir;
+ 	u64 count_transfer_polling;
+@@ -147,9 +148,9 @@ struct bcm2835_spi {
+ 	unsigned int rx_dma_active;
+ 	struct dma_async_tx_descriptor *fill_tx_desc;
+ 	dma_addr_t fill_tx_addr;
+-	struct dma_async_tx_descriptor *clear_rx_desc[BCM2835_SPI_NUM_CS];
++	struct dma_async_tx_descriptor **clear_rx_desc;
+ 	dma_addr_t clear_rx_addr;
+-	u32 clear_rx_cs[BCM2835_SPI_NUM_CS] ____cacheline_aligned;
++	u32 *clear_rx_cs;
+ };
+ 
+ #if defined(CONFIG_DEBUG_FS)
+@@ -875,14 +876,14 @@ static void bcm2835_dma_release(struct spi_controller *ctlr,
+ 	if (ctlr->dma_rx) {
+ 		dmaengine_terminate_sync(ctlr->dma_rx);
+ 
+-		for (i = 0; i < BCM2835_SPI_NUM_CS; i++)
++		for (i = 0; i < ctlr->num_chipselect; i++)
+ 			if (bs->clear_rx_desc[i])
+ 				dmaengine_desc_free(bs->clear_rx_desc[i]);
+ 
+ 		if (bs->clear_rx_addr)
+ 			dma_unmap_single(ctlr->dma_rx->device->dev,
+ 					 bs->clear_rx_addr,
+-					 sizeof(bs->clear_rx_cs),
++					 sizeof(u32) * ctlr->num_chipselect,
+ 					 DMA_TO_DEVICE);
+ 
+ 		dma_release_channel(ctlr->dma_rx);
+@@ -978,7 +979,7 @@ static int bcm2835_dma_init(struct spi_controller *ctlr, struct device *dev,
+ 
+ 	bs->clear_rx_addr = dma_map_single(ctlr->dma_rx->device->dev,
+ 					   bs->clear_rx_cs,
+-					   sizeof(bs->clear_rx_cs),
++					   sizeof(u32) * ctlr->num_chipselect,
+ 					   DMA_TO_DEVICE);
+ 	if (dma_mapping_error(ctlr->dma_rx->device->dev, bs->clear_rx_addr)) {
+ 		dev_err(dev, "cannot map clear_rx_cs - not using DMA mode\n");
+@@ -987,7 +988,7 @@ static int bcm2835_dma_init(struct spi_controller *ctlr, struct device *dev,
+ 		goto err_release;
+ 	}
+ 
+-	for (i = 0; i < BCM2835_SPI_NUM_CS; i++) {
++	for (i = 0; i < ctlr->num_chipselect; i++) {
+ 		bs->clear_rx_desc[i] = dmaengine_prep_dma_cyclic(ctlr->dma_rx,
+ 					   bs->clear_rx_addr + i * sizeof(u32),
+ 					   sizeof(u32), 0,
+@@ -1209,6 +1210,12 @@ static int bcm2835_spi_setup(struct spi_device *spi)
+ 	struct gpio_chip *chip;
+ 	u32 cs;
+ 
++	if (spi->chip_select >= ctlr->num_chipselect) {
++		dev_err(&spi->dev, "cs%d >= max %d\n", spi->chip_select,
++			ctlr->num_chipselect);
++		return -EINVAL;
++	}
++
+ 	/*
+ 	 * Precalculate SPI slave's CS register value for ->prepare_message():
+ 	 * The driver always uses software-controlled GPIO chip select, hence
+@@ -1233,7 +1240,7 @@ static int bcm2835_spi_setup(struct spi_device *spi)
+ 						    BCM2835_SPI_CS_CLEAR_RX;
+ 		dma_sync_single_for_device(ctlr->dma_rx->device->dev,
+ 					   bs->clear_rx_addr,
+-					   sizeof(bs->clear_rx_cs),
++					   sizeof(u32) * ctlr->num_chipselect,
+ 					   DMA_TO_DEVICE);
+ 	}
+ 
+@@ -1286,39 +1293,71 @@ static int bcm2835_spi_setup(struct spi_device *spi)
+ 	return 0;
+ }
+ 
++
++#ifdef CONFIG_OF
++static int bcm2835_spi_get_num_chipselect(struct platform_device *pdev)
++{
++	return max_t(int, of_gpio_named_count(pdev->dev.of_node, "cs-gpios"),
++		BCM2835_SPI_NUM_CS);
++}
++#else
++static int bcm2835_spi_get_num_chipselect(struct platform_device *pdev)
++{
++	return BCM2835_SPI_NUM_CS;
++}
++#endif
++
++
+ static int bcm2835_spi_probe(struct platform_device *pdev)
+ {
++	struct device *dev = &pdev->dev;
+ 	struct spi_controller *ctlr;
+ 	struct bcm2835_spi *bs;
++	int num_chipselect;
+ 	int err;
+ 
+-	ctlr = devm_spi_alloc_master(&pdev->dev, ALIGN(sizeof(*bs),
++	ctlr = devm_spi_alloc_master(dev, ALIGN(sizeof(*bs),
+ 						  dma_get_cache_alignment()));
+ 	if (!ctlr)
+ 		return -ENOMEM;
+ 
++	num_chipselect = bcm2835_spi_get_num_chipselect(pdev);
++
+ 	platform_set_drvdata(pdev, ctlr);
+ 
+ 	ctlr->use_gpio_descriptors = true;
+ 	ctlr->mode_bits = BCM2835_SPI_MODE_BITS;
+ 	ctlr->bits_per_word_mask = SPI_BPW_MASK(8);
+-	ctlr->num_chipselect = BCM2835_SPI_NUM_CS;
++	ctlr->num_chipselect = num_chipselect;
+ 	ctlr->setup = bcm2835_spi_setup;
+ 	ctlr->transfer_one = bcm2835_spi_transfer_one;
+ 	ctlr->handle_err = bcm2835_spi_handle_err;
+ 	ctlr->prepare_message = bcm2835_spi_prepare_message;
+-	ctlr->dev.of_node = pdev->dev.of_node;
++	ctlr->dev.of_node = dev->of_node;
+ 
+ 	bs = spi_controller_get_devdata(ctlr);
+ 	bs->ctlr = ctlr;
+ 
++	bs->prepare_cs = devm_kmalloc(dev, num_chipselect * sizeof(u32), GFP_KERNEL);
++	if (!bs->prepare_cs)
++		return -ENOMEM;
++
++	bs->clear_rx_desc = devm_kmalloc(dev, num_chipselect *
++		sizeof(struct dma_async_tx_descriptor *), GFP_KERNEL);
++	if (!bs->clear_rx_desc)
++		return -ENOMEM;
++
++	bs->clear_rx_cs = devm_kmalloc(dev, num_chipselect * sizeof(u32), GFP_DMA);
++	if (!bs->clear_rx_cs)
++		return -ENOMEM;
++
+ 	bs->regs = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(bs->regs))
+ 		return PTR_ERR(bs->regs);
+ 
+-	bs->clk = devm_clk_get(&pdev->dev, NULL);
++	bs->clk = devm_clk_get(dev, NULL);
+ 	if (IS_ERR(bs->clk))
+-		return dev_err_probe(&pdev->dev, PTR_ERR(bs->clk),
++		return dev_err_probe(dev, PTR_ERR(bs->clk),
+ 				     "could not get clk\n");
+ 
+ 	bs->irq = platform_get_irq(pdev, 0);
+@@ -1327,7 +1366,7 @@ static int bcm2835_spi_probe(struct platform_device *pdev)
+ 
+ 	clk_prepare_enable(bs->clk);
+ 
+-	err = bcm2835_dma_init(ctlr, &pdev->dev, bs);
++	err = bcm2835_dma_init(ctlr, dev, bs);
+ 	if (err)
+ 		goto out_clk_disable;
+ 
+@@ -1335,22 +1374,22 @@ static int bcm2835_spi_probe(struct platform_device *pdev)
+ 	bcm2835_wr(bs, BCM2835_SPI_CS,
+ 		   BCM2835_SPI_CS_CLEAR_RX | BCM2835_SPI_CS_CLEAR_TX);
+ 
+-	err = devm_request_irq(&pdev->dev, bs->irq, bcm2835_spi_interrupt,
++	err = devm_request_irq(dev, bs->irq, bcm2835_spi_interrupt,
+ 			       IRQF_SHARED,
+-			       dev_name(&pdev->dev), bs);
++			       dev_name(dev), bs);
+ 	if (err) {
+-		dev_err(&pdev->dev, "could not request IRQ: %d\n", err);
++		dev_err(dev, "could not request IRQ: %d\n", err);
+ 		goto out_dma_release;
+ 	}
+ 
+ 	err = spi_register_controller(ctlr);
+ 	if (err) {
+-		dev_err(&pdev->dev, "could not register SPI controller: %d\n",
++		dev_err(dev, "could not register SPI controller: %d\n",
+ 			err);
+ 		goto out_dma_release;
+ 	}
+ 
+-	bcm2835_debugfs_create(bs, dev_name(&pdev->dev));
++	bcm2835_debugfs_create(bs, dev_name(dev));
+ 
+ 	return 0;
+ 
+-- 
+2.30.2
 
-> +
-> +title: OP-TEE Device Tree Bindings
-> +
-> +maintainers:
-> +  - Jens Wiklander <jens.wiklander@linaro.org>
-> +
-> +description: |
-> +  OP-TEE is a piece of software using hardware features to provide a Trusted
-> +  Execution Environment. The security can be provided with ARM TrustZone, but
-> +  also by virtualization or a separate chip.
-> +
-> +  We're using "linaro" as the first part of the compatible property for
-> +  the reference implementation maintained by Linaro.
-> +
-> +properties:
-> +  $nodename:
-> +    const: 'optee'
-> +
-> +  compatible:
-> +    const: linaro,optee-tz
-> +
-> +  method:
-> +    description: The method of calling the OP-TEE Trusted OS.
-> +    oneOf:
-> +      - description: |
-> +          SMC #0, with the register assignments specified
-> +          in drivers/tee/optee/optee_smc.h
-> +        items:
-> +          - const: smc
-> +      - description: |
-> +          HVC #0, with the register assignments specified
-> +          in drivers/tee/optee/optee_smc.h
-> +        items:
-> +          - const: hvc
-> +
-> +required:
-> +  - compatible
-> +  - method
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    firmware  {
-> +        optee  {
-> +            compatible = "linaro,optee-tz";
-> +            method = "smc";
-> +        };
-> +    };
-> +
-> +  - |
-> +    firmware  {
-> +        optee  {
-> +            compatible = "linaro,optee-tz";
-> +            method = "hvc";
-> +        };
-> +    };
-> --
-> 2.31.0
->
