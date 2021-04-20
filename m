@@ -2,298 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD3A36559C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB39365591
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbhDTJk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 05:40:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23465 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229937AbhDTJk5 (ORCPT
+        id S231421AbhDTJjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 05:39:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229878AbhDTJjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 05:40:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618911624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7sWRozUdZOTDSWH44pqId+a7eHo5mZxw3UWB7bjXCJI=;
-        b=Bvx1TkWgtqoit79hVMtFryhGzRtpOSwLiv/pUWisjY7TYIFJKMZeRUBNlSNejWVwxj+Por
-        8L70EDru6LEbQJOqNQRxWq05SgEI5jKXqI48RlTVVD9IUcMZixrOFF9eUG+mRaWhFq19zV
-        YfCEPt0iwVukoaN6mTRv6L4BHOIR0Qk=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-444-GrXrrxpNPcakBufc7ij9HQ-1; Tue, 20 Apr 2021 05:39:19 -0400
-X-MC-Unique: GrXrrxpNPcakBufc7ij9HQ-1
-Received: by mail-ej1-f72.google.com with SMTP id ji8-20020a1709079808b029037c921a9ea0so4554034ejc.9
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 02:39:19 -0700 (PDT)
+        Tue, 20 Apr 2021 05:39:35 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B974BC06174A;
+        Tue, 20 Apr 2021 02:39:03 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id a5so5785428ljk.0;
+        Tue, 20 Apr 2021 02:39:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0cgFeiaCJmuEwdxXqsfxCg9P2r8ydkzAaV1kqEK2h0w=;
+        b=gvB2Kjtuq3c6hDrfV3q09iYFnvk6b3RYxllwzrHlnk+X8nahI/9ZgjrPXry5x6L08J
+         ZqUJbyfgrU/17jihKD9RUFrWkKnPLnaOIz5SfrAgdH3V6GQqhJBsJvkRB5ags8nff6/g
+         3cv4VDvDqV2sSqUfb8205g5G7kjLsdASVbSOa0/k/nLxNeajkm1KtVIIys66vWeGWX+c
+         R9IfZtnbhr3czfjp/hluYCcP4dflvCu/ccDgljZf5znlxpNeSE4/7JXLhxawyn0f1SMK
+         6r42KR2eqy29tw7Neimeshqmq4hBcMWCqRWk5EiKSmXItxwa+o1xYehRrMSSHpcpkKnQ
+         slWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=7sWRozUdZOTDSWH44pqId+a7eHo5mZxw3UWB7bjXCJI=;
-        b=TS0CPGZJCQeJj0rMjEcCD6yb1HL6WHY7JbbXJ8gdgrSpd2VW3n6UHkUz4z3flsRaSx
-         NKOnpo20cJALh1eXj2O1GouU0CtynNVpecQXUkFe5nJTuyTz2+b1fxbyVGxIDJ15QKKd
-         LawGrpOIC4eXyQKOondIphUKSSzQeG/fk3yRSqmlxkAwNdbv+DZCn94Sdi9unNHEo6cV
-         ob+eO9t0pIiSz8dhIUMRucK94OUJH5uu5A1HVopIn5q7NU0+H6hwTFGLaMV7fWm12rYc
-         IwfhhCHNYBU2IVVvFfsqLGCAQsHlvxXMBQovsRIgmRcrkklhQjkA4aVRAO9OyZTZnodc
-         DYMw==
-X-Gm-Message-State: AOAM530sbA+SntrLPgTha9TY4olx3ul4Z6DCr0R3znHJ6TuxEl3HfS2i
-        3URNMbyabVhHIWhr6hqqlKfgbEgx+U3S5cA+Fd48EYrDFi0xyORgyK2QhzKSZ9fa3GK0nlKVgsA
-        NHjWSiBW24Lv5q0/fMQeUh6QJ
-X-Received: by 2002:aa7:d85a:: with SMTP id f26mr19697543eds.305.1618911558274;
-        Tue, 20 Apr 2021 02:39:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwEmxJ2tCRr0SWSOMB8OVKhoPXgyNNIywNQY/un8EStcgKNNZOrvJF2rM2tTEb/g9xrL+QMog==
-X-Received: by 2002:aa7:d85a:: with SMTP id f26mr19697511eds.305.1618911558108;
-        Tue, 20 Apr 2021 02:39:18 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id t17sm3662738edv.3.2021.04.20.02.39.16
+        bh=0cgFeiaCJmuEwdxXqsfxCg9P2r8ydkzAaV1kqEK2h0w=;
+        b=ZDyLVsvmS97vdLdIHk4HltbWTD7b7zNTv5Zv0eN2YlpxyPpgmErFv5kZu8skEq6pfh
+         vxq+1aU7NReOTmNoutWjs4XfTqwvTH3xkbbVBRfJIZJmdDIO8eAy4OzzydSGRHx2EKmi
+         YCxZohN5vmAuAHhdwG3sQihnF9/FpLz5SAmy9PRVEhD360VKL/zfOUzhAx5QDLXNc87a
+         9ybsBVfOZbIl03G6Eq328W7XZ7KS5ODOvs8lwti3F26LVWd9FmHCpM3iy0PDsS2Bg6xH
+         EV9ZaKPAs6WxNStDYBX/CPFnurowIFpHvg+lf5O6j35v8H7kOGR8KN4r+woc3lrLJAa9
+         MaUw==
+X-Gm-Message-State: AOAM533MPVJGV9S8bJbfOTifeiRiknGlJ/Pqt+FLZodPoLAIaJLX6Q5b
+        pyUfyQt8fzdBkHSm6ylFSFaH1cah+qHUdqvm
+X-Google-Smtp-Source: ABdhPJxU9OnhgUvmhfsaX0XQNxKFEPf1HsBVx73r0wgo9gbzwsyEGSVJJz6LhIbQa4C3GIRFxd4WnA==
+X-Received: by 2002:a2e:9f49:: with SMTP id v9mr14102607ljk.44.1618911541931;
+        Tue, 20 Apr 2021 02:39:01 -0700 (PDT)
+Received: from [10.0.0.42] (91-155-111-71.elisa-laajakaista.fi. [91.155.111.71])
+        by smtp.gmail.com with ESMTPSA id n22sm723197lfu.144.2021.04.20.02.38.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Apr 2021 02:39:17 -0700 (PDT)
-Subject: Re: [PATCH v13 09/12] mm: x86: Invoke hypercall when page encryption
- status is changed
-To:     Ashish Kalra <Ashish.Kalra@amd.com>, bp@suse.de
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        joro@8bytes.org, thomas.lendacky@amd.com, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srutherford@google.com, seanjc@google.com,
-        venu.busireddy@oracle.com, brijesh.singh@amd.com
-References: <cover.1618498113.git.ashish.kalra@amd.com>
- <f2340642c5b8d597a099285194fca8d05c9843bd.1618498113.git.ashish.kalra@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <faf98f6d-3f7a-978b-5705-614e4e692bfb@redhat.com>
-Date:   Tue, 20 Apr 2021 11:39:15 +0200
+        Tue, 20 Apr 2021 02:39:01 -0700 (PDT)
+To:     "Alice Guo (OSS)" <alice.guo@oss.nxp.com>,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        horia.geanta@nxp.com, aymen.sghaier@nxp.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net, tony@atomide.com,
+        geert+renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
+        vkoul@kernel.org, a.hajda@samsung.com, narmstrong@baylibre.com,
+        robert.foss@linaro.org, airlied@linux.ie, daniel@ffwll.ch,
+        khilman@baylibre.com, tomba@kernel.org, jyri.sarha@iki.fi,
+        joro@8bytes.org, will@kernel.org, mchehab@kernel.org,
+        ulf.hansson@linaro.org, adrian.hunter@intel.com, kishon@ti.com,
+        kuba@kernel.org, linus.walleij@linaro.org, Roy.Pledge@nxp.com,
+        leoyang.li@nxp.com, ssantosh@kernel.org, matthias.bgg@gmail.com,
+        edubezval@gmail.com, j-keerthy@ti.com, balbi@kernel.org,
+        linux@prisktech.co.nz, stern@rowland.harvard.edu,
+        wim@linux-watchdog.org, linux@roeck-us.net
+Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, dmaengine@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, linux-media@vger.kernel.org,
+        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-phy@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-staging@lists.linux.dev,
+        linux-mediatek@lists.infradead.org, linux-pm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org
+References: <20210419042722.27554-1-alice.guo@oss.nxp.com>
+ <20210419042722.27554-4-alice.guo@oss.nxp.com>
+From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+Subject: Re: [RFC v1 PATCH 3/3] driver: update all the code that use
+ soc_device_match
+Message-ID: <2924b8af-d176-01b1-a221-5219c1128494@gmail.com>
+Date:   Tue, 20 Apr 2021 12:40:13 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <f2340642c5b8d597a099285194fca8d05c9843bd.1618498113.git.ashish.kalra@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210419042722.27554-4-alice.guo@oss.nxp.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/04/21 17:57, Ashish Kalra wrote:
-> From: Brijesh Singh <brijesh.singh@amd.com>
+Hi Alice,
+
+On 4/19/21 7:27 AM, Alice Guo (OSS) wrote:
+> From: Alice Guo <alice.guo@nxp.com>
 > 
-> Invoke a hypercall when a memory region is changed from encrypted ->
-> decrypted and vice versa. Hypervisor needs to know the page encryption
-> status during the guest migration.
-
-Boris, can you ack this patch?
-
-Paolo
-
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Borislav Petkov <bp@suse.de>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: x86@kernel.org
-> Cc: kvm@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Reviewed-by: Steve Rutherford <srutherford@google.com>
-> Reviewed-by: Venu Busireddy <venu.busireddy@oracle.com>
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> Update all the code that use soc_device_match because add support for
+> soc_device_match returning -EPROBE_DEFER.
+> 
+> Signed-off-by: Alice Guo <alice.guo@nxp.com>
 > ---
->   arch/x86/include/asm/paravirt.h       | 10 +++++
->   arch/x86/include/asm/paravirt_types.h |  2 +
->   arch/x86/kernel/paravirt.c            |  1 +
->   arch/x86/mm/mem_encrypt.c             | 57 ++++++++++++++++++++++++++-
->   arch/x86/mm/pat/set_memory.c          |  7 ++++
->   5 files changed, 76 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
-> index 4abf110e2243..efaa3e628967 100644
-> --- a/arch/x86/include/asm/paravirt.h
-> +++ b/arch/x86/include/asm/paravirt.h
-> @@ -84,6 +84,12 @@ static inline void paravirt_arch_exit_mmap(struct mm_struct *mm)
->   	PVOP_VCALL1(mmu.exit_mmap, mm);
->   }
->   
-> +static inline void page_encryption_changed(unsigned long vaddr, int npages,
-> +						bool enc)
-> +{
-> +	PVOP_VCALL3(mmu.page_encryption_changed, vaddr, npages, enc);
-> +}
-> +
->   #ifdef CONFIG_PARAVIRT_XXL
->   static inline void load_sp0(unsigned long sp0)
->   {
-> @@ -799,6 +805,10 @@ static inline void paravirt_arch_dup_mmap(struct mm_struct *oldmm,
->   static inline void paravirt_arch_exit_mmap(struct mm_struct *mm)
->   {
->   }
-> +
-> +static inline void page_encryption_changed(unsigned long vaddr, int npages, bool enc)
-> +{
-> +}
->   #endif
->   #endif /* __ASSEMBLY__ */
->   #endif /* _ASM_X86_PARAVIRT_H */
-> diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
-> index de87087d3bde..69ef9c207b38 100644
-> --- a/arch/x86/include/asm/paravirt_types.h
-> +++ b/arch/x86/include/asm/paravirt_types.h
-> @@ -195,6 +195,8 @@ struct pv_mmu_ops {
->   
->   	/* Hook for intercepting the destruction of an mm_struct. */
->   	void (*exit_mmap)(struct mm_struct *mm);
-> +	void (*page_encryption_changed)(unsigned long vaddr, int npages,
-> +					bool enc);
->   
->   #ifdef CONFIG_PARAVIRT_XXL
->   	struct paravirt_callee_save read_cr2;
-> diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-> index c60222ab8ab9..9f206e192f6b 100644
-> --- a/arch/x86/kernel/paravirt.c
-> +++ b/arch/x86/kernel/paravirt.c
-> @@ -335,6 +335,7 @@ struct paravirt_patch_template pv_ops = {
->   			(void (*)(struct mmu_gather *, void *))tlb_remove_page,
->   
->   	.mmu.exit_mmap		= paravirt_nop,
-> +	.mmu.page_encryption_changed	= paravirt_nop,
->   
->   #ifdef CONFIG_PARAVIRT_XXL
->   	.mmu.read_cr2		= __PV_IS_CALLEE_SAVE(native_read_cr2),
-> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-> index ae78cef79980..fae9ccbd0da7 100644
-> --- a/arch/x86/mm/mem_encrypt.c
-> +++ b/arch/x86/mm/mem_encrypt.c
-> @@ -19,6 +19,7 @@
->   #include <linux/kernel.h>
->   #include <linux/bitops.h>
->   #include <linux/dma-mapping.h>
-> +#include <linux/kvm_para.h>
->   
->   #include <asm/tlbflush.h>
->   #include <asm/fixmap.h>
-> @@ -29,6 +30,7 @@
->   #include <asm/processor-flags.h>
->   #include <asm/msr.h>
->   #include <asm/cmdline.h>
-> +#include <asm/kvm_para.h>
->   
->   #include "mm_internal.h"
->   
-> @@ -229,6 +231,47 @@ void __init sev_setup_arch(void)
->   	swiotlb_adjust_size(size);
->   }
->   
-> +static void set_memory_enc_dec_hypercall(unsigned long vaddr, int npages,
-> +					bool enc)
-> +{
-> +	unsigned long sz = npages << PAGE_SHIFT;
-> +	unsigned long vaddr_end, vaddr_next;
-> +
-> +	vaddr_end = vaddr + sz;
-> +
-> +	for (; vaddr < vaddr_end; vaddr = vaddr_next) {
-> +		int psize, pmask, level;
-> +		unsigned long pfn;
-> +		pte_t *kpte;
-> +
-> +		kpte = lookup_address(vaddr, &level);
-> +		if (!kpte || pte_none(*kpte))
-> +			return;
-> +
-> +		switch (level) {
-> +		case PG_LEVEL_4K:
-> +			pfn = pte_pfn(*kpte);
-> +			break;
-> +		case PG_LEVEL_2M:
-> +			pfn = pmd_pfn(*(pmd_t *)kpte);
-> +			break;
-> +		case PG_LEVEL_1G:
-> +			pfn = pud_pfn(*(pud_t *)kpte);
-> +			break;
-> +		default:
-> +			return;
-> +		}
-> +
-> +		psize = page_level_size(level);
-> +		pmask = page_level_mask(level);
-> +
-> +		kvm_sev_hypercall3(KVM_HC_PAGE_ENC_STATUS,
-> +				   pfn << PAGE_SHIFT, psize >> PAGE_SHIFT, enc);
-> +
-> +		vaddr_next = (vaddr & pmask) + psize;
-> +	}
-> +}
-> +
->   static void __init __set_clr_pte_enc(pte_t *kpte, int level, bool enc)
->   {
->   	pgprot_t old_prot, new_prot;
-> @@ -286,12 +329,13 @@ static void __init __set_clr_pte_enc(pte_t *kpte, int level, bool enc)
->   static int __init early_set_memory_enc_dec(unsigned long vaddr,
->   					   unsigned long size, bool enc)
->   {
-> -	unsigned long vaddr_end, vaddr_next;
-> +	unsigned long vaddr_end, vaddr_next, start;
->   	unsigned long psize, pmask;
->   	int split_page_size_mask;
->   	int level, ret;
->   	pte_t *kpte;
->   
-> +	start = vaddr;
->   	vaddr_next = vaddr;
->   	vaddr_end = vaddr + size;
->   
-> @@ -346,6 +390,8 @@ static int __init early_set_memory_enc_dec(unsigned long vaddr,
->   
->   	ret = 0;
->   
-> +	set_memory_enc_dec_hypercall(start, PAGE_ALIGN(size) >> PAGE_SHIFT,
-> +					enc);
->   out:
->   	__flush_tlb_all();
->   	return ret;
-> @@ -481,6 +527,15 @@ void __init mem_encrypt_init(void)
->   	if (sev_active() && !sev_es_active())
->   		static_branch_enable(&sev_enable_key);
->   
-> +#ifdef CONFIG_PARAVIRT
-> +	/*
-> +	 * With SEV, we need to make a hypercall when page encryption state is
-> +	 * changed.
-> +	 */
-> +	if (sev_active())
-> +		pv_ops.mmu.page_encryption_changed = set_memory_enc_dec_hypercall;
-> +#endif
-> +
->   	print_mem_encrypt_feature_info();
->   }
->   
-> diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-> index 16f878c26667..3576b583ac65 100644
-> --- a/arch/x86/mm/pat/set_memory.c
-> +++ b/arch/x86/mm/pat/set_memory.c
-> @@ -27,6 +27,7 @@
->   #include <asm/proto.h>
->   #include <asm/memtype.h>
->   #include <asm/set_memory.h>
-> +#include <asm/paravirt.h>
->   
->   #include "../mm_internal.h"
->   
-> @@ -2012,6 +2013,12 @@ static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
->   	 */
->   	cpa_flush(&cpa, 0);
->   
-> +	/* Notify hypervisor that a given memory range is mapped encrypted
-> +	 * or decrypted. The hypervisor will use this information during the
-> +	 * VM migration.
-> +	 */
-> +	page_encryption_changed(addr, numpages, enc);
-> +
->   	return ret;
->   }
->   
+>  drivers/bus/ti-sysc.c                         |  2 +-
+>  drivers/clk/renesas/r8a7795-cpg-mssr.c        |  4 +++-
+>  drivers/clk/renesas/rcar-gen2-cpg.c           |  2 +-
+>  drivers/clk/renesas/rcar-gen3-cpg.c           |  2 +-
+>  drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c       |  7 ++++++-
+>  drivers/dma/ti/k3-psil.c                      |  3 +++
+>  drivers/dma/ti/k3-udma.c                      |  2 +-
+>  drivers/gpu/drm/bridge/nwl-dsi.c              |  2 +-
+>  drivers/gpu/drm/meson/meson_drv.c             |  4 +++-
+>  drivers/gpu/drm/omapdrm/dss/dispc.c           |  2 +-
+>  drivers/gpu/drm/omapdrm/dss/dpi.c             |  4 +++-
+>  drivers/gpu/drm/omapdrm/dss/dsi.c             |  3 +++
+>  drivers/gpu/drm/omapdrm/dss/dss.c             |  3 +++
+>  drivers/gpu/drm/omapdrm/dss/hdmi4_core.c      |  3 +++
+>  drivers/gpu/drm/omapdrm/dss/venc.c            |  4 +++-
+>  drivers/gpu/drm/omapdrm/omap_drv.c            |  3 +++
+>  drivers/gpu/drm/rcar-du/rcar_du_crtc.c        |  4 +++-
+>  drivers/gpu/drm/rcar-du/rcar_lvds.c           |  2 +-
+>  drivers/gpu/drm/tidss/tidss_dispc.c           |  4 +++-
+>  drivers/iommu/ipmmu-vmsa.c                    |  7 +++++--
+>  drivers/media/platform/rcar-vin/rcar-core.c   |  2 +-
+>  drivers/media/platform/rcar-vin/rcar-csi2.c   |  2 +-
+>  drivers/media/platform/vsp1/vsp1_uif.c        |  4 +++-
+>  drivers/mmc/host/renesas_sdhi_core.c          |  2 +-
+>  drivers/mmc/host/renesas_sdhi_internal_dmac.c |  2 +-
+>  drivers/mmc/host/sdhci-of-esdhc.c             | 21 ++++++++++++++-----
+>  drivers/mmc/host/sdhci-omap.c                 |  2 +-
+>  drivers/mmc/host/sdhci_am654.c                |  2 +-
+>  drivers/net/ethernet/renesas/ravb_main.c      |  4 +++-
+>  drivers/net/ethernet/ti/am65-cpsw-nuss.c      |  2 +-
+>  drivers/net/ethernet/ti/cpsw.c                |  2 +-
+>  drivers/net/ethernet/ti/cpsw_new.c            |  2 +-
+>  drivers/phy/ti/phy-omap-usb2.c                |  4 +++-
+>  drivers/pinctrl/renesas/core.c                |  2 +-
+>  drivers/pinctrl/renesas/pfc-r8a7790.c         |  5 ++++-
+>  drivers/pinctrl/renesas/pfc-r8a7794.c         |  5 ++++-
+>  drivers/soc/fsl/dpio/dpio-driver.c            | 13 ++++++++----
+>  drivers/soc/renesas/r8a774c0-sysc.c           |  5 ++++-
+>  drivers/soc/renesas/r8a7795-sysc.c            |  2 +-
+>  drivers/soc/renesas/r8a77990-sysc.c           |  5 ++++-
+>  drivers/soc/ti/k3-ringacc.c                   |  2 +-
+>  drivers/staging/mt7621-pci/pci-mt7621.c       |  2 +-
+>  drivers/thermal/rcar_gen3_thermal.c           |  4 +++-
+>  drivers/thermal/ti-soc-thermal/ti-bandgap.c   | 10 +++++++--
+>  drivers/usb/gadget/udc/renesas_usb3.c         |  2 +-
+>  drivers/usb/host/ehci-platform.c              |  4 +++-
+>  drivers/usb/host/xhci-rcar.c                  |  2 +-
+>  drivers/watchdog/renesas_wdt.c                |  2 +-
+>  48 files changed, 131 insertions(+), 52 deletions(-)
 > 
 
+...
+
+> diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
+> index 96ad21869ba7..50a4c8f0993d 100644
+> --- a/drivers/dma/ti/k3-udma.c
+> +++ b/drivers/dma/ti/k3-udma.c
+> @@ -5188,7 +5188,7 @@ static int udma_probe(struct platform_device *pdev)
+>  	ud->match_data = match->data;
+>  
+>  	soc = soc_device_match(k3_soc_devices);
+> -	if (!soc) {
+> +	if (!IS_ERR(soc) && !soc) {
+
+this does not sound right...
+
+if (!soc || IS_ERR(soc))
+or
+if (IS_ERR_OR_NULL(soc))
+is even better.
+
+>  		dev_err(dev, "No compatible SoC found\n");
+>  		return -ENODEV;
+
+There might be a clever macro for it, but:
+
+return soc ? PTR_ERR(soc) : -ENODEV;
+
+>  	}
+
+-- 
+Péter
