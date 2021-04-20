@@ -2,119 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E27B636595F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 14:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2220C365961
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 14:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232206AbhDTM6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 08:58:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54976 "EHLO mail.kernel.org"
+        id S232218AbhDTM7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 08:59:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231718AbhDTM6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 08:58:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89A4A613C3;
-        Tue, 20 Apr 2021 12:57:57 +0000 (UTC)
+        id S231718AbhDTM7B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 08:59:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEAD6613C8;
+        Tue, 20 Apr 2021 12:58:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618923481;
-        bh=pj7iH5/7ryvKV0103e/WzDqoTVMCnCeOsU1aueXSSWs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AELGbPakwwA189udgGAWTMEERvHJSzMiJJ6zXc+pUHeHypJdz0V2fLe+BD1bzM3Nx
-         u9j/1K2l5BkbehD9ogeiYm7EMiRtZo3pybYvM6cZGY5LcQAnHIi9VRZ7v8vxG+stQK
-         GZ2TdxDIffeM0R+97tZrgAqWdhdoTu45VU5HxgOq9PfOoGh0glAUuurDI2Bad4nDOo
-         KZECeDYreSNaGkVAIyk8uMOKfQSmqol2Tr19JuTT7Jw0eQB08RumVkZeFP3Qz2yLts
-         SHCbpptQUT2ALWZS3QX0qSFE7JldhhO5+xK9SIm7k9tZyQCR2vjrXrovnnIkVMTz5M
-         Ap+IrrXFwGzUw==
-Date:   Tue, 20 Apr 2021 15:57:52 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v1 1/4] include/linux/mmzone.h: add documentation for
- pfn_valid()
-Message-ID: <YH7P0J4+1erJK7v5@kernel.org>
-References: <20210420090925.7457-1-rppt@kernel.org>
- <20210420090925.7457-2-rppt@kernel.org>
- <f900f889-f059-7d48-dfc7-145c8cd54cf6@redhat.com>
+        s=k20201202; t=1618923509;
+        bh=99lo4qWbGVchdHKfpjjskiYnwE4yEy5FKLw4Af2QoTY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RUEWNT2PyeNkdlvSJo+acObbtrRfEiqgQ1Ee0G+X38ArnLck1tCi5FSCq2rfCgS7C
+         uDLjo8e2I6Wepze6WBvSBu1itzRv4WL8tNhOlo71yztcw7qENhawp9yWm3uiXYFa7t
+         2k87vF2TCUh7WrlS63hBbvXmCEcZi3VwV9jUBZmsrec/d4/90FmJgPWsEOG3pg24TO
+         ITS1Ut3vJEL+H4aSwIzWh8r36U75FUYbP0uikMHxqpeJCtFy21Vb73QlT3nNWZjXYf
+         3vcy3tEuz2dLDxKUUC/TZ6B/31JUabcNsWoLF5Vt0fhNjz1SwGfqquHzF1a+Cbz8jo
+         5up3KsbI05NLg==
+Received: by mail-ej1-f46.google.com with SMTP id sd23so49470673ejb.12;
+        Tue, 20 Apr 2021 05:58:29 -0700 (PDT)
+X-Gm-Message-State: AOAM532f1q3turMCHV3lm4WUuS0msdy92r3Evgx3RiM3QQbQJ8U/llLo
+        u5rACIsxMwpn2t+708BuGKWbOvcuNdv70xC3mg==
+X-Google-Smtp-Source: ABdhPJw7wi8fw9oOO7qnDlntNFZJyzsrZFVwINbXEnj2d321/UyqKkStdDq602PvgaUm3VtOxj3OOyejbMRwi5kf5vU=
+X-Received: by 2002:a17:907:367:: with SMTP id rs7mr28084034ejb.468.1618923508307;
+ Tue, 20 Apr 2021 05:58:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f900f889-f059-7d48-dfc7-145c8cd54cf6@redhat.com>
+References: <20210126011759.1605641-1-drinkcat@chromium.org>
+ <20210126091747.v11.1.Ie74d3355761aab202d4825ac6f66d990bba0130e@changeid>
+ <20210205175543.GA3363048@robh.at.kernel.org> <CANMq1KAshVgWPp=4KpjkwfAD=N4ZOw0xBCZHkfGob-TY0RCGew@mail.gmail.com>
+In-Reply-To: <CANMq1KAshVgWPp=4KpjkwfAD=N4ZOw0xBCZHkfGob-TY0RCGew@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 20 Apr 2021 07:58:12 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKSSfuy0b9x70rd2u7Af=FDRY8S39PW8y+fS-Q4pevVig@mail.gmail.com>
+Message-ID: <CAL_JsqKSSfuy0b9x70rd2u7Af=FDRY8S39PW8y+fS-Q4pevVig@mail.gmail.com>
+Subject: Re: [PATCH v11 1/4] dt-bindings: gpu: mali-bifrost: Add Mediatek MT8183
+To:     Nicolas Boichat <drinkcat@chromium.org>
+Cc:     "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Fei Shao <fshao@chromium.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Steven Price <steven.price@arm.com>,
+        Kristian Kristensen <hoegsberg@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 11:22:53AM +0200, David Hildenbrand wrote:
-> On 20.04.21 11:09, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
-> > 
-> > Add comment describing the semantics of pfn_valid() that clarifies that
-> > pfn_valid() only checks for availability of a memory map entry (i.e. struct
-> > page) for a PFN rather than availability of usable memory backing that PFN.
-> > 
-> > The most "generic" version of pfn_valid() used by the configurations with
-> > SPARSEMEM enabled resides in include/linux/mmzone.h so this is the most
-> > suitable place for documentation about semantics of pfn_valid().
-> > 
-> > Suggested-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > ---
-> >   include/linux/mmzone.h | 11 +++++++++++
-> >   1 file changed, 11 insertions(+)
-> > 
-> > diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> > index 47946cec7584..961f0eeefb62 100644
-> > --- a/include/linux/mmzone.h
-> > +++ b/include/linux/mmzone.h
-> > @@ -1410,6 +1410,17 @@ static inline int pfn_section_valid(struct mem_section *ms, unsigned long pfn)
-> >   #endif
-> >   #ifndef CONFIG_HAVE_ARCH_PFN_VALID
-> > +/**
-> > + * pfn_valid - check if there is a valid memory map entry for a PFN
-> > + * @pfn: the page frame number to check
-> > + *
-> > + * Check if there is a valid memory map entry aka struct page for the @pfn.
-> > + * Note, that availability of the memory map entry does not imply that
-> > + * there is actual usable memory at that @pfn. The struct page may
-> > + * represent a hole or an unusable page frame.
-> > + *
-> > + * Return: 1 for PFNs that have memory map entries and 0 otherwise
-> > + */
-> >   static inline int pfn_valid(unsigned long pfn)
-> >   {
-> >   	struct mem_section *ms;
-> > 
-> 
-> I'd rephrase all "there is a valid memory map" to "there is a memory map"
-> and add "pfn_valid() does to indicate whether the memory map as actually
-> initialized -- see pfn_to_online_page()."
-> 
-> pfn_valid() means that we can do a pfn_to_page() and don't get a fault when
-> accessing the "struct page". It doesn't state anything about the content.
+On Fri, Feb 5, 2021 at 9:02 PM Nicolas Boichat <drinkcat@chromium.org> wrote:
+>
+> On Sat, Feb 6, 2021 at 1:55 AM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Tue, 26 Jan 2021 09:17:56 +0800, Nicolas Boichat wrote:
+> > > Define a compatible string for the Mali Bifrost GPU found in
+> > > Mediatek's MT8183 SoCs.
+> > >
+> > > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+> > > ---
+> > >
+> > > Changes in v11:
+> > >  - binding: power-domain-names not power-domainS-names
+> > >
+> > > Changes in v10:
+> > >  - Fix the binding to make sure sram-supply property can be provided.
+> > >
+> > > Changes in v9: None
+> > > Changes in v8: None
+> > > Changes in v7: None
+> > > Changes in v6:
+> > >  - Rebased, actually tested with recent mesa driver.
+> > >
+> > > Changes in v5:
+> > >  - Rename "2d" power domain to "core2"
+> > >
+> > > Changes in v4:
+> > >  - Add power-domain-names description
+> > >    (kept Alyssa's reviewed-by as the change is minor)
+> > >
+> > > Changes in v3: None
+> > > Changes in v2: None
+> > >
+> > >  .../bindings/gpu/arm,mali-bifrost.yaml        | 28 +++++++++++++++++++
+> > >  1 file changed, 28 insertions(+)
+> > >
+> >
+> >
+> > Please add Acked-by/Reviewed-by tags when posting new versions. However,
+> > there's no need to repost patches *only* to add the tags. The upstream
+> > maintainer will do that for acks received on the version they apply.
+> >
+> > If a tag was not added on purpose, please state why and what changed.
+>
+> There were changes in v11, I thought you'd want to review again?
 
-Well, I mean valid in the sense you can access the struct page :)
-How about:
+Looked like a minor change from the changelog, so it would have been
+appropriate to keep. However, I see another issue.
 
-/**
- * pfn_valid - check if there is a memory map entry for a PFN
- * @pfn: the page frame number to check
- *
- * Check if there is a memory map entry aka struct page for the @pfn and it
- * is safe to access that struct page; the struct page state may be
- * uninitialized -- see pfn_to_online_page().
- *
- * Note, that availability of the memory map entry does not imply that
- * there is actual usable memory at that @pfn. The struct page may
- * represent a hole or an unusable page frame.
- *
- * Return: 1 for PFNs that have memory map entries and 0 otherwise.
- */
-
--- 
-Sincerely yours,
-Mike.
+Rob
