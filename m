@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 258A136569D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E553656A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231927AbhDTKrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 06:47:24 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51682 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231206AbhDTKrO (ORCPT
+        id S231928AbhDTKrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 06:47:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231651AbhDTKrR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 06:47:14 -0400
-Date:   Tue, 20 Apr 2021 10:46:42 -0000
+        Tue, 20 Apr 2021 06:47:17 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5285C06174A;
+        Tue, 20 Apr 2021 03:46:45 -0700 (PDT)
+Date:   Tue, 20 Apr 2021 10:46:43 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618915602;
+        s=2020; t=1618915604;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fXnWYx1oC1inS8jIMWZ8M9ReyYHGqltZ55Wd68D19aI=;
-        b=gh2u4k+ctxITS+QqMynxevhb8wO7mw9alA7po1kH6PbjHfgOTvfsdyTITp1+ymjtZHtEA/
-        RzcmPwl/YBRO40dyuZEsbA4XUMj5S5tW5V5AQ6p0dGwj4Q3H5wrE6FB4qLjyBc9xgqxS5f
-        tgHbhjC835QIvadQc0S0xleXddHBMcOJcb6RTeicoVVwglXwhic+OHIq2qxG6PtuCa4EHX
-        yv0IzZkgmIZdgpMPWjCg8UFW4aru/G+mX42ZdmoDvAB9LIExim5l2iByBjI2p6lseKMkpW
-        xx8T/ip0HNfxLH6ezXydsz5vPTs/UO5VOs3NtoGojqRvpwzBqiIRwMMWWxbyOw==
+        bh=B4llrK+JCpLTIotqAYqDWtVVp9zOKApfOtbN+TY6GIk=;
+        b=B1aEWw0x6ava1P9TVlXzsX8CxXMio/MjdIbBo+8e+GJmQphjD7o7Yo1x8n/YKht6j3/TBJ
+        bh6LKf0gBEk6uA6dNF3p/7Z6TZoqawWxty2NACfj+m/8vmPb7Q3Mi8iVewJrLSgYhi9uQg
+        UWLTTRnYz7p8XcgP3e99xLhmxl2+Enr4x4FtRILYq0XAoaTZIPYsKNivMvXhRJEsyo4nk1
+        XvKZrZVrrvP7E3iH7fc9mzx8fSYMV3Yz2A2uG9pYdmgrMdjld0ybigXPQoczt87TEjEY4k
+        O+u8I8AqnJqwM+ZBwyeHUBlJpGKePtzCAb5GiyfcGDYMhtibCppNCfqBvOXRUg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618915602;
+        s=2020e; t=1618915604;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fXnWYx1oC1inS8jIMWZ8M9ReyYHGqltZ55Wd68D19aI=;
-        b=BwFMU6RsxYpBKXQG+3Se6kjjL8cdgAGTVjQ5ODXTOonqSbnIDfRrbfKHXtTnTHp1jzPbHX
-        TycInrufZvBLJaAQ==
+        bh=B4llrK+JCpLTIotqAYqDWtVVp9zOKApfOtbN+TY6GIk=;
+        b=fG+uNW8Ly9efWM6951RjUN7z4aVVxsU5tB0qRlXBc7Tt6WLHbS+aLvQIbDZ0yNg0rxdfVC
+        wNlyYq/gZhMNErDQ==
 From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf: Extend PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>, x86@kernel.org,
+Subject: [tip: perf/core] perf/x86: Add structures for the attributes of Hybrid PMUs
+Cc:     Kan Liang <kan.liang@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Andi Kleen <ak@linux.intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <1618237865-33448-22-git-send-email-kan.liang@linux.intel.com>
-References: <1618237865-33448-22-git-send-email-kan.liang@linux.intel.com>
+In-Reply-To: <1618237865-33448-18-git-send-email-kan.liang@linux.intel.com>
+References: <1618237865-33448-18-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Message-ID: <161891560206.29796.845366321803619606.tip-bot2@tip-bot2>
+Message-ID: <161891560361.29796.6013328590594444170.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,172 +62,160 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     55bcf6ef314ae8ba81bcd74aa760247b635ed47b
-Gitweb:        https://git.kernel.org/tip/55bcf6ef314ae8ba81bcd74aa760247b635ed47b
+Commit-ID:     a9c81ccdf52dd73a20178c40bca34cf52991fdea
+Gitweb:        https://git.kernel.org/tip/a9c81ccdf52dd73a20178c40bca34cf52991fdea
 Author:        Kan Liang <kan.liang@linux.intel.com>
-AuthorDate:    Mon, 12 Apr 2021 07:31:01 -07:00
+AuthorDate:    Mon, 12 Apr 2021 07:30:57 -07:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Mon, 19 Apr 2021 20:03:29 +02:00
+CommitterDate: Mon, 19 Apr 2021 20:03:28 +02:00
 
-perf: Extend PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE
+perf/x86: Add structures for the attributes of Hybrid PMUs
 
-Current Hardware events and Hardware cache events have special perf
-types, PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE. The two types don't
-pass the PMU type in the user interface. For a hybrid system, the perf
-subsystem doesn't know which PMU the events belong to. The first capable
-PMU will always be assigned to the events. The events never get a chance
-to run on the other capable PMUs.
+Hybrid PMUs have different events and formats. In theory, Hybrid PMU
+specific attributes should be maintained in the dedicated struct
+x86_hybrid_pmu, but it wastes space because the events and formats are
+similar among Hybrid PMUs.
 
-Extend the two types to become PMU aware types. The PMU type ID is
-stored at attr.config[63:32].
+To reduce duplication, all hybrid PMUs will share a group of attributes
+in the following patch. To distinguish an attribute from different
+Hybrid PMUs, a PMU aware attribute structure is introduced. A PMU type
+is required for the attribute structure. The type is internal usage. It
+is not visible in the sysfs API.
 
-Add a new PMU capability, PERF_PMU_CAP_EXTENDED_HW_TYPE, to indicate a
-PMU which supports the extended PERF_TYPE_HARDWARE and
-PERF_TYPE_HW_CACHE.
+Hybrid PMUs may support the same event name, but with different event
+encoding, e.g., the mem-loads event on an Atom PMU has different event
+encoding from a Core PMU. It brings issue if two attributes are
+created for them. Current sysfs_update_group finds an attribute by
+searching the attr name (aka event name). If two attributes have the
+same event name, the first attribute will be replaced.
+To address the issue, only one attribute is created for the event. The
+event_str is extended and stores event encodings from all Hybrid PMUs.
+Each event encoding is divided by ";". The order of the event encodings
+must follow the order of the hybrid PMU index. The event_str is internal
+usage as well. When a user wants to show the attribute of a Hybrid PMU,
+only the corresponding part of the string is displayed.
 
-The PMU type is only required when searching a specific PMU. The PMU
-specific codes will only be interested in the 'real' config value, which
-is stored in the low 32 bit of the event->attr.config. Update the
-event->attr.config in the generic code, so the PMU specific codes don't
-need to calculate it separately.
-
-If a user specifies a PMU type, but the PMU doesn't support the extended
-type, error out.
-
-If an event cannot be initialized in a PMU specified by a user, error
-out immediately. Perf should not try to open it on other PMUs.
-
-The new PMU capability is only set for the X86 hybrid PMUs for now.
-Other architectures, e.g., ARM, may need it as well. The support on ARM
-may be implemented later separately.
-
-Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/1618237865-33448-22-git-send-email-kan.liang@linux.intel.com
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Link: https://lkml.kernel.org/r/1618237865-33448-18-git-send-email-kan.liang@linux.intel.com
 ---
- arch/x86/events/core.c          |  1 +
- include/linux/perf_event.h      | 19 ++++++++++---------
- include/uapi/linux/perf_event.h | 15 +++++++++++++++
- kernel/events/core.c            | 19 ++++++++++++++++---
- 4 files changed, 42 insertions(+), 12 deletions(-)
+ arch/x86/events/core.c       | 43 +++++++++++++++++++++++++++++++++++-
+ arch/x86/events/perf_event.h | 19 +++++++++++++++-
+ include/linux/perf_event.h   | 12 ++++++++++-
+ 3 files changed, 74 insertions(+)
 
 diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 4f6595e..3fe66b7 100644
+index bd465a8..37ab109 100644
 --- a/arch/x86/events/core.c
 +++ b/arch/x86/events/core.c
-@@ -2173,6 +2173,7 @@ static int __init init_hw_perf_events(void)
- 			hybrid_pmu->pmu.type = -1;
- 			hybrid_pmu->pmu.attr_update = x86_pmu.attr_update;
- 			hybrid_pmu->pmu.capabilities |= PERF_PMU_CAP_HETEROGENEOUS_CPUS;
-+			hybrid_pmu->pmu.capabilities |= PERF_PMU_CAP_EXTENDED_HW_TYPE;
+@@ -1860,6 +1860,49 @@ ssize_t events_ht_sysfs_show(struct device *dev, struct device_attribute *attr,
+ 			pmu_attr->event_str_noht);
+ }
  
- 			err = perf_pmu_register(&hybrid_pmu->pmu, hybrid_pmu->name,
- 						(hybrid_pmu->cpu_type == hybrid_big) ? PERF_TYPE_RAW : -1);
++ssize_t events_hybrid_sysfs_show(struct device *dev,
++				 struct device_attribute *attr,
++				 char *page)
++{
++	struct perf_pmu_events_hybrid_attr *pmu_attr =
++		container_of(attr, struct perf_pmu_events_hybrid_attr, attr);
++	struct x86_hybrid_pmu *pmu;
++	const char *str, *next_str;
++	int i;
++
++	if (hweight64(pmu_attr->pmu_type) == 1)
++		return sprintf(page, "%s", pmu_attr->event_str);
++
++	/*
++	 * Hybrid PMUs may support the same event name, but with different
++	 * event encoding, e.g., the mem-loads event on an Atom PMU has
++	 * different event encoding from a Core PMU.
++	 *
++	 * The event_str includes all event encodings. Each event encoding
++	 * is divided by ";". The order of the event encodings must follow
++	 * the order of the hybrid PMU index.
++	 */
++	pmu = container_of(dev_get_drvdata(dev), struct x86_hybrid_pmu, pmu);
++
++	str = pmu_attr->event_str;
++	for (i = 0; i < x86_pmu.num_hybrid_pmus; i++) {
++		if (!(x86_pmu.hybrid_pmu[i].cpu_type & pmu_attr->pmu_type))
++			continue;
++		if (x86_pmu.hybrid_pmu[i].cpu_type & pmu->cpu_type) {
++			next_str = strchr(str, ';');
++			if (next_str)
++				return snprintf(page, next_str - str + 1, "%s", str);
++			else
++				return sprintf(page, "%s", str);
++		}
++		str = strchr(str, ';');
++		str++;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(events_hybrid_sysfs_show);
++
+ EVENT_ATTR(cpu-cycles,			CPU_CYCLES		);
+ EVENT_ATTR(instructions,		INSTRUCTIONS		);
+ EVENT_ATTR(cache-references,		CACHE_REFERENCES	);
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index 4282ce4..e2be927 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -979,6 +979,22 @@ static struct perf_pmu_events_ht_attr event_attr_##v = {		\
+ 	.event_str_ht	= ht,						\
+ }
+ 
++#define EVENT_ATTR_STR_HYBRID(_name, v, str, _pmu)			\
++static struct perf_pmu_events_hybrid_attr event_attr_##v = {		\
++	.attr		= __ATTR(_name, 0444, events_hybrid_sysfs_show, NULL),\
++	.id		= 0,						\
++	.event_str	= str,						\
++	.pmu_type	= _pmu,						\
++}
++
++#define FORMAT_HYBRID_PTR(_id) (&format_attr_hybrid_##_id.attr.attr)
++
++#define FORMAT_ATTR_HYBRID(_name, _pmu)					\
++static struct perf_pmu_format_hybrid_attr format_attr_hybrid_##_name = {\
++	.attr		= __ATTR_RO(_name),				\
++	.pmu_type	= _pmu,						\
++}
++
+ struct pmu *x86_get_pmu(unsigned int cpu);
+ extern struct x86_pmu x86_pmu __read_mostly;
+ 
+@@ -1149,6 +1165,9 @@ ssize_t events_sysfs_show(struct device *dev, struct device_attribute *attr,
+ 			  char *page);
+ ssize_t events_ht_sysfs_show(struct device *dev, struct device_attribute *attr,
+ 			  char *page);
++ssize_t events_hybrid_sysfs_show(struct device *dev,
++				 struct device_attribute *attr,
++				 char *page);
+ 
+ static inline bool fixed_counter_disabled(int i, struct pmu *pmu)
+ {
 diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 61b3851..a763928 100644
+index 8989b2b..61b3851 100644
 --- a/include/linux/perf_event.h
 +++ b/include/linux/perf_event.h
-@@ -260,15 +260,16 @@ struct perf_event;
- /**
-  * pmu::capabilities flags
-  */
--#define PERF_PMU_CAP_NO_INTERRUPT		0x01
--#define PERF_PMU_CAP_NO_NMI			0x02
--#define PERF_PMU_CAP_AUX_NO_SG			0x04
--#define PERF_PMU_CAP_EXTENDED_REGS		0x08
--#define PERF_PMU_CAP_EXCLUSIVE			0x10
--#define PERF_PMU_CAP_ITRACE			0x20
--#define PERF_PMU_CAP_HETEROGENEOUS_CPUS		0x40
--#define PERF_PMU_CAP_NO_EXCLUDE			0x80
--#define PERF_PMU_CAP_AUX_OUTPUT			0x100
-+#define PERF_PMU_CAP_NO_INTERRUPT		0x0001
-+#define PERF_PMU_CAP_NO_NMI			0x0002
-+#define PERF_PMU_CAP_AUX_NO_SG			0x0004
-+#define PERF_PMU_CAP_EXTENDED_REGS		0x0008
-+#define PERF_PMU_CAP_EXCLUSIVE			0x0010
-+#define PERF_PMU_CAP_ITRACE			0x0020
-+#define PERF_PMU_CAP_HETEROGENEOUS_CPUS		0x0040
-+#define PERF_PMU_CAP_NO_EXCLUDE			0x0080
-+#define PERF_PMU_CAP_AUX_OUTPUT			0x0100
-+#define PERF_PMU_CAP_EXTENDED_HW_TYPE		0x0200
- 
- struct perf_output_handle;
- 
-diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-index 0b58970..e54e639 100644
---- a/include/uapi/linux/perf_event.h
-+++ b/include/uapi/linux/perf_event.h
-@@ -38,6 +38,21 @@ enum perf_type_id {
+@@ -1549,6 +1549,18 @@ struct perf_pmu_events_ht_attr {
+ 	const char				*event_str_noht;
  };
  
- /*
-+ * attr.config layout for type PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE
-+ * PERF_TYPE_HARDWARE:			0xEEEEEEEE000000AA
-+ *					AA: hardware event ID
-+ *					EEEEEEEE: PMU type ID
-+ * PERF_TYPE_HW_CACHE:			0xEEEEEEEE00DDCCBB
-+ *					BB: hardware cache ID
-+ *					CC: hardware cache op ID
-+ *					DD: hardware cache op result ID
-+ *					EEEEEEEE: PMU type ID
-+ * If the PMU type ID is 0, the PERF_TYPE_RAW will be applied.
-+ */
-+#define PERF_PMU_TYPE_SHIFT		32
-+#define PERF_HW_EVENT_MASK		0xffffffff
++struct perf_pmu_events_hybrid_attr {
++	struct device_attribute			attr;
++	u64					id;
++	const char				*event_str;
++	u64					pmu_type;
++};
 +
-+/*
-  * Generalized performance event event_id types, used by the
-  * attr.event_id parameter of the sys_perf_event_open()
-  * syscall:
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 6f0723c..928b166 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -11220,6 +11220,7 @@ static int perf_try_init_event(struct pmu *pmu, struct perf_event *event)
- 
- static struct pmu *perf_init_event(struct perf_event *event)
- {
-+	bool extended_type = false;
- 	int idx, type, ret;
- 	struct pmu *pmu;
- 
-@@ -11238,16 +11239,27 @@ static struct pmu *perf_init_event(struct perf_event *event)
- 	 * are often aliases for PERF_TYPE_RAW.
- 	 */
- 	type = event->attr.type;
--	if (type == PERF_TYPE_HARDWARE || type == PERF_TYPE_HW_CACHE)
--		type = PERF_TYPE_RAW;
-+	if (type == PERF_TYPE_HARDWARE || type == PERF_TYPE_HW_CACHE) {
-+		type = event->attr.config >> PERF_PMU_TYPE_SHIFT;
-+		if (!type) {
-+			type = PERF_TYPE_RAW;
-+		} else {
-+			extended_type = true;
-+			event->attr.config &= PERF_HW_EVENT_MASK;
-+		}
-+	}
- 
- again:
- 	rcu_read_lock();
- 	pmu = idr_find(&pmu_idr, type);
- 	rcu_read_unlock();
- 	if (pmu) {
-+		if (event->attr.type != type && type != PERF_TYPE_RAW &&
-+		    !(pmu->capabilities & PERF_PMU_CAP_EXTENDED_HW_TYPE))
-+			goto fail;
++struct perf_pmu_format_hybrid_attr {
++	struct device_attribute			attr;
++	u64					pmu_type;
++};
 +
- 		ret = perf_try_init_event(pmu, event);
--		if (ret == -ENOENT && event->attr.type != type) {
-+		if (ret == -ENOENT && event->attr.type != type && !extended_type) {
- 			type = event->attr.type;
- 			goto again;
- 		}
-@@ -11268,6 +11280,7 @@ again:
- 			goto unlock;
- 		}
- 	}
-+fail:
- 	pmu = ERR_PTR(-ENOENT);
- unlock:
- 	srcu_read_unlock(&pmus_srcu, idx);
+ ssize_t perf_event_sysfs_show(struct device *dev, struct device_attribute *attr,
+ 			      char *page);
+ 
