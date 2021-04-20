@@ -2,209 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B093365B11
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 028B0365B16
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232563AbhDTOTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 10:19:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49318 "EHLO
+        id S232367AbhDTOYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 10:24:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231422AbhDTOTs (ORCPT
+        with ESMTP id S231758AbhDTOYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 10:19:48 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7354C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 07:19:16 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618928355;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+/ViRn2pNdErX4Ke8faeNKeEu3gSwpIw5ZJV1T1lJms=;
-        b=Kkx4pXQBA8MPU1gMYiLnM7bB+ugPip9rFs8XRABtI0+Bh9jmD4wMmtM0o6H6KG7Tu+VKzr
-        d7OX8h+LXdIyZCMVxRyA830ZvDoLnfkbESl2w6wd5scBHif7lFcPCY0UsdDSvwsWz39+4k
-        2J30J+8xYSxuI8HzYtadbEDm3CZs2NCLCNQtu3OHUnNAhTzCaxjpsv0UVEPKfWXAkSvI/A
-        VQiyJHWdJlCXi0YHj0qolZf738YBobae8PZQe7MmoHDzzja1uN2HoaXfill64b2jcV9X6T
-        4eP0STCIbnAeamavk6MCde8zaIyDHEdqsO78DpnSUt14DCYRzjLfxlvWS4G3/A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618928355;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+/ViRn2pNdErX4Ke8faeNKeEu3gSwpIw5ZJV1T1lJms=;
-        b=BkOUsKnSXOt0Ay39kwtTdXLbGOJVU3L/Jr/DsRuu8+LLBEWoG4pUWwAzvFS2dZyYAaWjWk
-        c9x96zoRdTz36FAA==
-To:     Lorenzo Colitti <lorenzo@google.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Maciej =?utf-8?Q?=C5=BBenczykows?= =?utf-8?Q?ki?= 
-        <zenczykowski@gmail.com>, Ingo Molnar <mingo@kernel.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        lkml <linux-kernel@vger.kernel.org>,
-        mikael.beckius@windriver.com,
-        Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH] hrtimer: Update softirq_expires_next correctly after __hrtimer_get_next_event()
-In-Reply-To: <CAKD1Yr1o=zN5K9PaB3wag5xOS2oY6AzEsV6dmL7pnTysK_GOhA@mail.gmail.com>
-References: <CAHo-OowM2jRNuvyDf-T8rzr6ZgUztXqY7m_JhuFvQ+uB8N3ZrQ@mail.gmail.com> <YHXRWoVIYLL4rYG9@kroah.com> <CAKD1Yr1DnDTELUX2DQtPDtAoDMqCz6dV+TZbBuC1CFm32O8MrA@mail.gmail.com> <87r1jbv6jc.ffs@nanos.tec.linutronix.de> <CAKD1Yr1o=zN5K9PaB3wag5xOS2oY6AzEsV6dmL7pnTysK_GOhA@mail.gmail.com>
-Date:   Tue, 20 Apr 2021 16:19:14 +0200
-Message-ID: <87eef5qbrx.ffs@nanos.tec.linutronix.de>
+        Tue, 20 Apr 2021 10:24:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E23AAC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 07:24:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HaQi9MTF9iUS9s/cCVbzybU/c0rgI9mA1EokPCwprLs=; b=PKWOQ9NIzA1G9YK9bNNrePGSmR
+        6UtPw6+9qmURcyuh0Ef4feQmDnGBeQM80C31f+eDaQ9u9q0ozy7vFUiT1TCKD87jMgTBCLSP51g3K
+        drVnn4nMNrDavs0Uv829E23z8NJemJAE7bfhLvxKzE8A5QYus/S2G2pkpKEtKuDu+ILCqLVSrQz6W
+        n6WvpTXhZMxTil/ac8rC+dfowKjpM7Doe6kuUuR3zQluXj7bsoGQbge7xUTtE8ABuDUeJBbh/Aid9
+        iy5gmSSoYux43UcC7R5shWFxCQ4jbzO3wCTzz21wnbzLZuswahx3XMgGHPr/rH/pd13fyEi6FFK1j
+        N5S9zsDw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lYrFK-00FGAG-Nu; Tue, 20 Apr 2021 14:21:15 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EC05430018E;
+        Tue, 20 Apr 2021 16:20:56 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 970A82BCEDE78; Tue, 20 Apr 2021 16:20:56 +0200 (CEST)
+Date:   Tue, 20 Apr 2021 16:20:56 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Donnefort <vincent.donnefort@arm.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        tglx@linutronix.de, mingo@kernel.org, bigeasy@linutronix.de,
+        swood@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, qais.yousef@arm.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] sched: Use cpu_dying() to fix balance_push vs
+ hotplug-rollback
+Message-ID: <YH7jSPZx0BhyHoLe@hirez.programming.kicks-ass.net>
+References: <20210310145258.899619710@infradead.org>
+ <20210310150109.259726371@infradead.org>
+ <871rclu3jz.mognet@e113632-lin.i-did-not-set--mail-host-address--so-tickle-me>
+ <YHQ3Iy7QfL+0UoM0@hirez.programming.kicks-ass.net>
+ <87r1jfmn8d.mognet@arm.com>
+ <YHU/a9HvGLYpOLKZ@hirez.programming.kicks-ass.net>
+ <YHgAYef83VQhKdC2@hirez.programming.kicks-ass.net>
+ <87a6pzmxec.mognet@arm.com>
+ <20210419105541.GA40111@e120877-lin.cambridge.arm.com>
+ <20210420094632.GA165360@e120877-lin.cambridge.arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210420094632.GA165360@e120877-lin.cambridge.arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20 2021 at 17:15, Lorenzo Colitti wrote:
-> On Fri, Apr 16, 2021 at 1:47 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->> Enable tracing and enable the following tracepoints:
->> [...]
->
-> Sorry for the delay. I had to learn a bit about how to use the tracing
-> infrastructure. I don't know if I can post here, but to my untrained
-> eye, one big difference between the old (fast) code and the new (slow)
-> code is that the new code calls tick_program_event() much more. It
-> looks like that makes most of the difference.
->
-> With the old code, hrtimer_start_range_ns almost never calls
-> tick_program_event at all, but the new code seems to call it twice on
-> every timer update.
+On Tue, Apr 20, 2021 at 10:46:33AM +0100, Vincent Donnefort wrote:
 
-Yes, I figured out why that happens by now, but the old behaviour was
-just incorrect. So now there are clearly two issues:
+> Found the issue:
+> 
+> $ cat hotplug/states:
+> 219: sched:active
+> 220: online
+> 
+> CPU0: 
+> 
+> $ echo 219 > hotplug/fail
+> $ echo 0 > online
+> 
+> => cpu_active = 1 cpu_dying = 1
+> 
+> which means that later on, for another CPU hotunplug, in
+> __balance_push_cpu_stop(), the fallback rq for a kthread can select that
+> CPU0, but __migrate_task() would fail and we end-up in an infinite loop,
+> trying to migrate that task to CPU0.
+> 
+> The problem is that for a failure in sched:active, as "online" has no callback,
+> there will be no call to cpuhp_invoke_callback(). Hence, the cpu_dying bit would
+> not be reset.
 
-  1) hrtimer is contrary to timer_list not really suited for high
-     frequency start/cancel/start/... cycles of a timer. It's optimized
-     for the start and expire precisely case.
+Urgh! Good find.
 
-  2) The cost for reprogramming depends on the underlying hardware. With
-     halfways sane timer hardware it's minimal and as I measured in a
-     micro benchmark in the 1% range. Now when your system ends up
-     having one of the real timer trainwrecks which can be found in
-     drivers/clocksource/ which are even worse than the x86 HPET horror,
-     then it's going to be painful and a performance issue.
+> Maybe cpuhp_reset_state() and cpuhp_set_state() would then be a better place to
+> switch the dying bit?
 
-     I assume that's an ARM64 system. ARM64 CPUs have an architected per
-     CPU timer where the reprogramming is pretty fast as it's next to
-     the CPU, but who knows what your system is using.
+Yes, except now cpuhp_invoke_ap_callback() makes my head hurt, that runs
+the callbacks out of order. I _think_ we can ignore it, but ....
 
-Now in the meantime I looked into __hrtimer_start_range_ns() whether
-that double reprogram can be avoided without creating a total trainwreck
-and imposing penalty on all sensible use cases. Completely untested
-patch below should do the trick and it's not ugly enough that I hate it
-with a passion.
+Something like the below, let me see if I can reproduce and test.
 
-Even if that makes your problem go away #1 is still beyond suboptimal
-and #2 is something you really want to look into.
-
-Thanks,
-
-        tglx
 ---
---- a/kernel/time/hrtimer.c
-+++ b/kernel/time/hrtimer.c
-@@ -1030,12 +1030,13 @@ static void __remove_hrtimer(struct hrti
-  * remove hrtimer, called with base lock held
-  */
- static inline int
--remove_hrtimer(struct hrtimer *timer, struct hrtimer_clock_base *base, bool restart)
-+remove_hrtimer(struct hrtimer *timer, struct hrtimer_clock_base *base,
-+	       bool restart, bool keep_local)
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 838dcf238f92..05272bae953d 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -160,9 +160,6 @@ static int cpuhp_invoke_callback(unsigned int cpu, enum cpuhp_state state,
+ 	int (*cb)(unsigned int cpu);
+ 	int ret, cnt;
+ 
+-	if (cpu_dying(cpu) != !bringup)
+-		set_cpu_dying(cpu, !bringup);
+-
+ 	if (st->fail == state) {
+ 		st->fail = CPUHP_INVALID;
+ 		return -EAGAIN;
+@@ -467,13 +464,16 @@ static inline enum cpuhp_state
+ cpuhp_set_state(struct cpuhp_cpu_state *st, enum cpuhp_state target)
  {
- 	u8 state = timer->state;
+ 	enum cpuhp_state prev_state = st->state;
++	bool bringup = st->state < target;
  
- 	if (state & HRTIMER_STATE_ENQUEUED) {
--		int reprogram;
-+		bool reprogram;
+ 	st->rollback = false;
+ 	st->last = NULL;
  
- 		/*
- 		 * Remove the timer and force reprogramming when high
-@@ -1048,8 +1049,16 @@ remove_hrtimer(struct hrtimer *timer, st
- 		debug_deactivate(timer);
- 		reprogram = base->cpu_base == this_cpu_ptr(&hrtimer_bases);
+ 	st->target = target;
+ 	st->single = false;
+-	st->bringup = st->state < target;
++	st->bringup = bringup;
++	if (cpu_dying(cpu) != !bringup)
++		set_cpu_dying(cpu, !bringup);
  
-+		/*
-+		 * If the timer is not restarted then reprogramming is
-+		 * required if the timer is local. If it is local and about
-+		 * to be restarted, avoid programming it twice (on removal
-+		 * and a moment later when it's requeued).
-+		 */
- 		if (!restart)
- 			state = HRTIMER_STATE_INACTIVE;
-+		else
-+			reprogram &= !keep_local;
- 
- 		__remove_hrtimer(timer, base, state, reprogram);
- 		return 1;
-@@ -1103,9 +1112,31 @@ static int __hrtimer_start_range_ns(stru
- 				    struct hrtimer_clock_base *base)
+ 	return prev_state;
+ }
+@@ -481,6 +481,8 @@ cpuhp_set_state(struct cpuhp_cpu_state *st, enum cpuhp_state target)
+ static inline void
+ cpuhp_reset_state(struct cpuhp_cpu_state *st, enum cpuhp_state prev_state)
  {
- 	struct hrtimer_clock_base *new_base;
-+	bool force_local, first;
- 
--	/* Remove an active timer from the queue: */
--	remove_hrtimer(timer, base, true);
-+	/*
-+	 * If the timer is on the local cpu base and is the first expiring
-+	 * timer then this might end up reprogramming the hardware twice
-+	 * (on removal and on enqueue). To avoid that by prevent the
-+	 * reprogram on removal, keep the timer local to the current CPU
-+	 * and enforce reprogramming after it is queued no matter whether
-+	 * it is the new first expiring timer again or not.
-+	 */
-+	force_local = base->cpu_base == this_cpu_ptr(&hrtimer_bases);
-+	force_local &= base->cpu_base->next_timer == timer;
++	bool bringup = !st->bringup;
 +
-+	/*
-+	 * Remove an active timer from the queue. In case it is not queued
-+	 * on the current CPU, make sure that remove_hrtimer() updates the
-+	 * remote data correctly.
-+	 *
-+	 * If it's on the current CPU and the first expiring timer, then
-+	 * skip reprogramming, keep the timer local and enforce
-+	 * reprogramming later if it was the first expiring timer.  This
-+	 * avoids programming the underlying clock event twice (once at
-+	 * removal and once after enqueue).
-+	 */
-+	remove_hrtimer(timer, base, true, force_local);
+ 	st->target = prev_state;
  
- 	if (mode & HRTIMER_MODE_REL)
- 		tim = ktime_add_safe(tim, base->get_time());
-@@ -1115,9 +1146,24 @@ static int __hrtimer_start_range_ns(stru
- 	hrtimer_set_expires_range_ns(timer, tim, delta_ns);
+ 	/*
+@@ -503,7 +505,9 @@ cpuhp_reset_state(struct cpuhp_cpu_state *st, enum cpuhp_state prev_state)
+ 			st->state++;
+ 	}
  
- 	/* Switch the timer base, if necessary: */
--	new_base = switch_hrtimer_base(timer, base, mode & HRTIMER_MODE_PINNED);
-+	if (!force_local) {
-+		new_base = switch_hrtimer_base(timer, base,
-+					       mode & HRTIMER_MODE_PINNED);
-+	} else {
-+		new_base = base;
-+	}
- 
--	return enqueue_hrtimer(timer, new_base, mode);
-+	first = enqueue_hrtimer(timer, new_base, mode);
-+	if (!force_local)
-+		return first;
-+
-+	/*
-+	 * Timer was forced to stay on the current CPU to avoid
-+	 * reprogramming on removal and enqueue. Force reprogram the
-+	 * hardware by evaluating the new first expiring timer.
-+	 */
-+	hrtimer_force_reprogram(new_base->cpu_base, 1);
-+	return 0;
+-	st->bringup = !st->bringup;
++	st->bringup = bringup;
++	if (cpu_dying(cpu) != !bringup)
++		set_cpu_dying(cpu, !bringup);
  }
  
- /**
-@@ -1183,7 +1229,7 @@ int hrtimer_try_to_cancel(struct hrtimer
- 	base = lock_hrtimer_base(timer, &flags);
- 
- 	if (!hrtimer_callback_running(timer))
--		ret = remove_hrtimer(timer, base, false);
-+		ret = remove_hrtimer(timer, base, false, false);
- 
- 	unlock_hrtimer_base(timer, &flags);
- 
-
-
+ /* Regular hotplug invocation of the AP hotplug thread */
