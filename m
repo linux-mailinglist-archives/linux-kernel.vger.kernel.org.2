@@ -2,110 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5173F36518B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 06:34:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7444136518F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 06:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229684AbhDTEep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 00:34:45 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:34790 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhDTEem (ORCPT
+        id S229508AbhDTEgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 00:36:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229830AbhDTEft (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 00:34:42 -0400
-Received: by mail-oi1-f178.google.com with SMTP id k18so32829797oik.1;
-        Mon, 19 Apr 2021 21:34:12 -0700 (PDT)
+        Tue, 20 Apr 2021 00:35:49 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D12C06174A;
+        Mon, 19 Apr 2021 21:35:17 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id 65so41481865ybc.4;
+        Mon, 19 Apr 2021 21:35:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0r16BooCpXI0OcS9w6cnAMsct+lg08FmW3QWyViKSQk=;
+        b=X5+0tlIWiyhDTAUWiGXItZjWAL7xvDeJ4NG5fIxtZiL6jAu2OYANJ8lnv6x9kgtvgH
+         kiAOZrlmG7r3tnQtGYwCRfPrdNI0r2R3ussQOzl9epN0A3A2xF8URAZS7lvjBhwLfujN
+         HqON7bYoo5dM1WDLAM5YL3lUILVnJvODIFCBpISwgHGz6lpZJGrPxEkXPZ+tVkoTjvfg
+         8GX7RksbKzN7M1kTQlYO1oCysmMRMBTXhlHvNkz7QTursDn9BM2FF1uFyUfn2TgSIdJo
+         D7t8H2i+zBwWRjPhsmyIziYpVhSZyb2DQrmoY0mWI0VaoBLCbQx89hR3sxv3JtKevcUF
+         zz4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5qq8dgtGJwrS7fKasipW8Urc+VaRmsOcPysIaaEEznk=;
-        b=C37uCDsGjwa7puQ7LloX15GHytqOKEYLsuUETj9DwGmUvxVQwZb6mEt2jRtwwSUJmE
-         ier9FoILlIY+zsNZL4NlpnNs6Nvq/iueX5R5muBNbXeUT27mFoDqFrCUSPvMok6Ly1ER
-         dSSCzjVloX23rZZAs/+Vm+H+bm2W67uxX6B4BQhyYLkhgANpRFATK3AapM7RIsNMaBPU
-         7/TpRPhhwJhPaLq0g7z8ntP86q3D/LhnAHUpYvAgy+9caPL4Czj4jG4lN1ZVTscSsaZm
-         9CRxiG9ga8s6z1LWw87PGiDyWsiASCVLyxk7ICAKucMEXVaeJ2j+IDMEUTYm/H2HN4Ey
-         RtVw==
-X-Gm-Message-State: AOAM533wdgSlaXFMUOyia5aOquTzLj59Kwh2O14ENB5rMWzdqsBfJpv2
-        iX0hDW0k96UgsoJbP7swyHaqMjfH85A=
-X-Google-Smtp-Source: ABdhPJwxBQ/0nWO04t3JGQp5NWR6VdNPU11Xmuj2p7yK4kjZI5Fm4cVDPzNYb5IKEFNuqDF6I4BPoA==
-X-Received: by 2002:a54:470e:: with SMTP id k14mr1665713oik.151.1618893251487;
-        Mon, 19 Apr 2021 21:34:11 -0700 (PDT)
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com. [209.85.210.45])
-        by smtp.gmail.com with ESMTPSA id s7sm1342142oij.15.2021.04.19.21.34.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Apr 2021 21:34:10 -0700 (PDT)
-Received: by mail-ot1-f45.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so34723299otn.1;
-        Mon, 19 Apr 2021 21:34:10 -0700 (PDT)
-X-Received: by 2002:a9d:19c7:: with SMTP id k65mr17387755otk.221.1618893250401;
- Mon, 19 Apr 2021 21:34:10 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0r16BooCpXI0OcS9w6cnAMsct+lg08FmW3QWyViKSQk=;
+        b=UFtmWhUTnuebFOYzMYUFUrA5qbs5sgnr+19kjXI7IZQyx5txENaeePA0F2wRJcI+yo
+         Pq3bNK9SiGl5g8SqsCC9RzFo0W9cJumT/21kTZJWvPuIcwY4hHfNHLWHj928RMXYpFZ0
+         HJUpK6RGLm+S6cHVG+BaWO/777tPwjyNz0O4J9KzXlMcTsqdyN88XqUZ6hMdyn0DxC2x
+         jKfnDVU0qegqlQYhanXx8fY78WlUT/Wx1XIlgCQZuyppvnN1Lz8C+Hy5GrnXe0G1wZWN
+         Tcn26bJNv71Zx/jONLsX8rLhj3ZMZFU1SB3Fg3EfDVmU0cSw+ZE1h7gloFdwVvVeLh0c
+         Sbow==
+X-Gm-Message-State: AOAM533HbIJMwZscjB/K7fAI0boauGPfIJbjuY7FBqde9AleRG0CaMLI
+        6HQtxaYgFb9tFDgg4MhAtw3lVG2dcyH2L8C0fAo=
+X-Google-Smtp-Source: ABdhPJz7KTZm5BSvzN+r3/f2jOquX75Lj6og9mD80aAtZpjcfUVlv9zrnKFb6f3P6NytANbFWmNrCfbttcJNO7QEmRU=
+X-Received: by 2002:a25:9942:: with SMTP id n2mr22571317ybo.230.1618893317102;
+ Mon, 19 Apr 2021 21:35:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210330145027.16897-1-sahil.malhotra@oss.nxp.com>
-In-Reply-To: <20210330145027.16897-1-sahil.malhotra@oss.nxp.com>
-From:   Li Yang <leoyang.li@nxp.com>
-Date:   Mon, 19 Apr 2021 23:33:58 -0500
-X-Gmail-Original-Message-ID: <CADRPPNSdDU-G-sLe8j27Rmd923jSWKirRdYS9qzZMHotsMuKCQ@mail.gmail.com>
-Message-ID: <CADRPPNSdDU-G-sLe8j27Rmd923jSWKirRdYS9qzZMHotsMuKCQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: ls1028a-rdb: enable optee node
-To:     Sahil Malhotra <sahil.malhotra@oss.nxp.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sahil Malhotra <sahil.malhotra@nxp.com>,
-        Michael Walle <michael@walle.cc>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ARM/FREESCALE LAYERSCAPE ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20210419121811.117400-1-memxor@gmail.com> <20210419121811.117400-5-memxor@gmail.com>
+In-Reply-To: <20210419121811.117400-5-memxor@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 19 Apr 2021 21:35:06 -0700
+Message-ID: <CAEf4BzYs-YqD04rNfTELxVRH1tOai1HeWD4h0DNaJQtAZW5oHQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/4] libbpf: add selftests for TC-BPF API
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 9:53 AM Sahil Malhotra
-<sahil.malhotra@oss.nxp.com> wrote:
+On Mon, Apr 19, 2021 at 5:18 AM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> From: Sahil Malhotra <sahil.malhotra@nxp.com>
+> This adds some basic tests for the low level bpf_tc_cls_* API.
 >
-> optee node was disabled by default, enabling it for ls1028a-rdb.
->
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> Signed-off-by: Sahil Malhotra <sahil.malhotra@nxp.com>
-
-Acked-by: Li Yang <leoyang.li@nxp.com>
-
+> Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > ---
->  arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts | 4 ++++
->  arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi    | 2 +-
->  2 files changed, 5 insertions(+), 1 deletion(-)
+>  .../selftests/bpf/prog_tests/test_tc_bpf.c    | 112 ++++++++++++++++++
+>  .../selftests/bpf/progs/test_tc_bpf_kern.c    |  12 ++
+>  2 files changed, 124 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_tc_bpf.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_tc_bpf_kern.c
 >
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts
-> index 41ae6e7675ba..1bdf0104d492 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts
-> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-rdb.dts
-> @@ -274,6 +274,10 @@
->         status = "okay";
->  };
->
-> +&optee {
-> +       status = "okay";
-> +};
+> diff --git a/tools/testing/selftests/bpf/prog_tests/test_tc_bpf.c b/tools=
+/testing/selftests/bpf/prog_tests/test_tc_bpf.c
+> new file mode 100644
+> index 000000000000..945f3a1a72f8
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/test_tc_bpf.c
+> @@ -0,0 +1,112 @@
+> +// SPDX-License-Identifier: GPL-2.0
 > +
->  &sai4 {
->         status = "okay";
->  };
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-> index 262fbad8f0ec..fb155ac192b1 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-> @@ -92,7 +92,7 @@
->         };
->
->         firmware {
-> -               optee {
-> +               optee: optee  {
->                         compatible = "linaro,optee-tz";
->                         method = "smc";
->                         status = "disabled";
+> +#include <linux/bpf.h>
+> +#include <linux/err.h>
+> +#include <linux/limits.h>
+> +#include <bpf/libbpf.h>
+> +#include <errno.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <test_progs.h>
+> +#include <linux/if_ether.h>
+> +
+> +#define LO_IFINDEX 1
+> +
+> +static int test_tc_cls_internal(int fd, __u32 parent_id)
+> +{
+> +       DECLARE_LIBBPF_OPTS(bpf_tc_cls_opts, opts, .handle =3D 1, .priori=
+ty =3D 10,
+> +                           .class_id =3D TC_H_MAKE(1UL << 16, 1),
+> +                           .chain_index =3D 5);
+> +       struct bpf_tc_cls_attach_id id =3D {};
+> +       struct bpf_tc_cls_info info =3D {};
+> +       int ret;
+> +
+> +       ret =3D bpf_tc_cls_attach(fd, LO_IFINDEX, parent_id, &opts, &id);
+> +       if (CHECK_FAIL(ret < 0))
+> +               return ret;
+> +
+> +       ret =3D bpf_tc_cls_get_info(fd, LO_IFINDEX, parent_id, NULL, &inf=
+o);
+> +       if (CHECK_FAIL(ret < 0))
+> +               goto end;
+> +
+> +       ret =3D -1;
+> +
+> +       if (CHECK_FAIL(info.id.handle !=3D id.handle) ||
+> +           CHECK_FAIL(info.id.chain_index !=3D id.chain_index) ||
+> +           CHECK_FAIL(info.id.priority !=3D id.priority) ||
+> +           CHECK_FAIL(info.id.handle !=3D 1) ||
+> +           CHECK_FAIL(info.id.priority !=3D 10) ||
+> +           CHECK_FAIL(info.class_id !=3D TC_H_MAKE(1UL << 16, 1)) ||
+> +           CHECK_FAIL(info.id.chain_index !=3D 5))
+> +               goto end;
+> +
+> +       ret =3D bpf_tc_cls_replace(fd, LO_IFINDEX, parent_id, &opts, &id)=
+;
+> +       if (CHECK_FAIL(ret < 0))
+> +               return ret;
+> +
+> +       if (CHECK_FAIL(info.id.handle !=3D 1) ||
+> +           CHECK_FAIL(info.id.priority !=3D 10) ||
+> +           CHECK_FAIL(info.class_id !=3D TC_H_MAKE(1UL << 16, 1)))
+> +               goto end;
+> +
+> +       /* Demonstrate changing attributes */
+> +       opts.class_id =3D TC_H_MAKE(1UL << 16, 2);
+> +
+> +       ret =3D bpf_tc_cls_change(fd, LO_IFINDEX, parent_id, &opts, &info=
+.id);
+> +       if (CHECK_FAIL(ret < 0))
+> +               goto end;
+> +
+> +       ret =3D bpf_tc_cls_get_info(fd, LO_IFINDEX, parent_id, NULL, &inf=
+o);
+> +       if (CHECK_FAIL(ret < 0))
+> +               goto end;
+> +
+> +       if (CHECK_FAIL(info.class_id !=3D TC_H_MAKE(1UL << 16, 2)))
+> +               goto end;
+> +       if (CHECK_FAIL((info.bpf_flags & TCA_BPF_FLAG_ACT_DIRECT) !=3D 1)=
+)
+> +               goto end;
+> +
+> +end:
+> +       ret =3D bpf_tc_cls_detach(LO_IFINDEX, parent_id, &id);
+> +       CHECK_FAIL(ret < 0);
+> +       return ret;
+> +}
+> +
+> +void test_test_tc_bpf(void)
+> +{
+> +       const char *file =3D "./test_tc_bpf_kern.o";
+> +       struct bpf_program *clsp;
+> +       struct bpf_object *obj;
+> +       int cls_fd, ret;
+> +
+> +       obj =3D bpf_object__open(file);
+> +       if (CHECK_FAIL(IS_ERR_OR_NULL(obj)))
+> +               return;
+> +
+> +       clsp =3D bpf_object__find_program_by_title(obj, "classifier");
+> +       if (CHECK_FAIL(IS_ERR_OR_NULL(clsp)))
+> +               goto end;
+> +
+> +       ret =3D bpf_object__load(obj);
+> +       if (CHECK_FAIL(ret < 0))
+> +               goto end;
+> +
+> +       cls_fd =3D bpf_program__fd(clsp);
+> +
+> +       system("tc qdisc del dev lo clsact");
+> +
+> +       ret =3D test_tc_cls_internal(cls_fd, BPF_TC_CLSACT_INGRESS);
+> +       if (CHECK_FAIL(ret < 0))
+> +               goto end;
+> +
+> +       if (CHECK_FAIL(system("tc qdisc del dev lo clsact")))
+> +               goto end;
+> +
+> +       ret =3D test_tc_cls_internal(cls_fd, BPF_TC_CLSACT_EGRESS);
+> +       if (CHECK_FAIL(ret < 0))
+> +               goto end;
+> +
+> +       CHECK_FAIL(system("tc qdisc del dev lo clsact"));
+
+please don't use CHECK_FAIL. And prefer ASSERT_xxx over CHECK().
+
+> +
+> +end:
+> +       bpf_object__close(obj);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_tc_bpf_kern.c b/tools=
+/testing/selftests/bpf/progs/test_tc_bpf_kern.c
+> new file mode 100644
+> index 000000000000..3dd40e21af8e
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_tc_bpf_kern.c
+> @@ -0,0 +1,12 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +
+> +// Dummy prog to test TC-BPF API
+
+no C++-style comments, please (except for SPDX header, of course)
+> +
+> +SEC("classifier")
+> +int cls(struct __sk_buff *skb)
+> +{
+> +       return 0;
+> +}
 > --
-> 2.17.1
+> 2.30.2
 >
