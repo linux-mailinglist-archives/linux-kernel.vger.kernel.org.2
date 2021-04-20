@@ -2,94 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464F836551C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B860365523
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 11:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231287AbhDTJQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 05:16:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230090AbhDTJQR (ORCPT
+        id S231223AbhDTJR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 05:17:29 -0400
+Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:46179 "EHLO
+        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230090AbhDTJRV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 05:16:17 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2526C06174A;
-        Tue, 20 Apr 2021 02:15:44 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id c15so27872936wro.13;
-        Tue, 20 Apr 2021 02:15:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BkbCKM/k1ykwGySKHLTVANKO9KHTQV/DlbBFp2FzjMs=;
-        b=M0DDpb0hp6D4DqMInI/HFBWTD/8gQKbY/u8dISndEyYR9QvRKm0n7CEpLaw/I9r/d5
-         0QgLz2FPzyrfB9A+Fz5ZuGdrJJFbeB9XAM6QVDPOYfmQnQ5rG6346BHBztEFuWplnWpq
-         Cmf4TyGOjB5qI04TBa5cEAITTyDrmcIIvaWY8VGmyWDIDhFIzXtlnP5rqfM/vfY7Ho1M
-         gOaM8VboyfQDljar3foT3mTxKKUHvAFls1E69gk6X1RdBWWULe1M75mfk9pyiShRK4Wg
-         BOAFTEjVrlE/hXKIxSsdP4hjfIxQf//rQw1O7R8lnEE/45JqAuBZsW6cVk002Yytlbk9
-         lz8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BkbCKM/k1ykwGySKHLTVANKO9KHTQV/DlbBFp2FzjMs=;
-        b=bUtng2xLbVSQrNiLCtVcYKJCEbgIFDSNrZlfMwdfiDuO17FMwl1kIP/QsaXLFVU7Fz
-         JvbL6gMy8IpEepmFQv4+tQcI/3cLdi1T2TvWf/DFgu2c1UtEiu1oTALwORKu4cxyCF6T
-         0AVtHbNGEKHiN1NOk6U8K1G3xovxwA2zWtr+2x4P9d5SbJka/yB/ThHkNbYZRBqxqDbf
-         YdwC3kxLlDDIcrxomUiOdQzoPHKSWs2KtWZzUzMAUfKLEQa6NNod437JDWyjFL333t2K
-         fQYObyikglxuWcZinr+TprwgQPOFYrdkwd8enccKvSi2C36fxGGJcUpCJ3d1fQb6ouVE
-         mf2g==
-X-Gm-Message-State: AOAM533mgG02l9ENiULs+PER3YCB5INYmwetWahSmvc5XyrBrP9spzbU
-        YvlFJjqoY6Aru/ntCgy0MiGaZfxvhAJh1g==
-X-Google-Smtp-Source: ABdhPJzbQp3JWiuBvNFipFhamXUXU9wKt1r2BynNt+IHaJ0qA6iGjLO6SiPOg7ruDtS1GalfIIlO9g==
-X-Received: by 2002:a5d:47cb:: with SMTP id o11mr19052845wrc.378.1618910143573;
-        Tue, 20 Apr 2021 02:15:43 -0700 (PDT)
-Received: from debian (host-84-13-30-150.opaltelecom.net. [84.13.30.150])
-        by smtp.gmail.com with ESMTPSA id m15sm23588524wrx.32.2021.04.20.02.15.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 02:15:43 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 10:15:41 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/103] 5.10.32-rc1 review
-Message-ID: <YH6bvUWCkchQhHrT@debian>
-References: <20210419130527.791982064@linuxfoundation.org>
+        Tue, 20 Apr 2021 05:17:21 -0400
+Received: from [192.168.2.10] ([84.202.3.209])
+        by smtp.xs4all.nl with ESMTPA
+        id YmUllUgtKw8UmYmUpl1rqj; Tue, 20 Apr 2021 11:16:48 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1618910208; bh=Wx1b4HRfaZ+r/6ReWVRSHeFPp1P3g6TFkUyUkSeo2UI=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=gPsYn8b1c2epmHciLLZqj4RU6D/7VDgeFWXvH9Jc/tI77RwCdZ8MUBZzXKbf7iAEY
+         93Kdph32ov2MaeQ8+/mAur+oqiSFjQFV4Ipvyz1Z/EzRuUEuVvwhyB9QF+mJA+AM04
+         XtrlvOsMPoBd5uWKuoy/98yZBsDIt7X7NTEfeXzxPPZlHP/7unv/bXLHinCvRDGX8h
+         mKmk+OIOEPgReV/aybXBqgJac4i1JIU3pqTb+gx51jOzC3RvtnH644JB/fpSeiX1sa
+         s81zKOSMmL3tk6Fx5abobsbfjkGsxXF6rhveYSTjHoFDTM0xUXlWY1cfzSf1degZPo
+         MwxJNcdiWHjsQ==
+Subject: Re: [PATCH v9 03/13] media: hantro: Use syscon instead of 'ctrl'
+ register
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Lucas Stach <l.stach@pengutronix.de>, ezequiel@collabora.com,
+        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        lee.jones@linaro.org, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
+        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+        Jacky Bai <ping.bai@nxp.com>
+Cc:     devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-imx@nxp.com,
+        kernel@pengutronix.de, kernel@collabora.com, cphealy@gmail.com,
+        linux-arm-kernel@lists.infradead.org
+References: <20210407073534.376722-1-benjamin.gaignard@collabora.com>
+ <20210407073534.376722-4-benjamin.gaignard@collabora.com>
+ <7bcbb787d82f21d42563d8fb7e3c2e7d40123932.camel@pengutronix.de>
+ <ffe9b3f5-94f5-453e-73f0-4b42d0454b63@collabora.com>
+ <529b61b1b1e6030c92a7944c4864246521b2ccdd.camel@pengutronix.de>
+ <36008691-d075-203d-0cac-2a012773ea34@collabora.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <43a767f8-77f5-7937-c484-753a3123f6a2@xs4all.nl>
+Date:   Tue, 20 Apr 2021 11:16:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210419130527.791982064@linuxfoundation.org>
+In-Reply-To: <36008691-d075-203d-0cac-2a012773ea34@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfGZKFRcQnHrrB8Ipsf1CNmQf/Flx92YqSYDdOPDeZztqOUClUbawsWCu5A9lWIwXKcgePCyFjcQJwnPrdsJQ581cu0O+/K5cc8vdEdnlVnBbBOWkeAxR
+ xn7b0OpspojT5H+gVub8bgWR4QgtN/BKiSmbzMSQBI9vjK1f4N7lM3aSQrKfZiRoCsB8mpe5uURTYC+TOrhO65fcqUvPiGoZ8Oj9FM/1OZ0vU82342Ha44nz
+ 9ZM5w8MK6vrwqjVSF+ExkbNir/qCbvSxlkfkM+Wuy8q/9XrK5f4KHLWhsRCtIUpYuHlsuhath92nvMZqJinZipkBZlMqaQcUC9eoEWkSt1dhWUZC9U92xvbb
+ 8N24zp7jFCVUwLShy2QvxK2OCbWgvXGalLXabR+v8bty0BdimuRk9yFTyqAeAgSCf1xBuCa9GQaGhgAnXYCGNJTMOx0u7JKlBLbONBKp1UojBFKsRsIJ4vsL
+ PbrdK3xaBInoMdtEZTBH7+gSW78CbyzH6kCAG6LrVlZXTQFXO7wkMXZZB+rDLefpDV1FpGTxqkfXUkFpPdCusEPRk9nmlmeT9V82vcP3ztK8g8XGBjTCRBhE
+ CaqFLu7YJ+60+jBzUCP7c6PINBSG6GHXoH31Zjaqfz1UlHr8/age7N7xIlGvNPdcbRxa86WI9DxOgQW2Hm2OqjWjjI5sZiymulMw/T6Xr05TuKZOez2ZBm99
+ CGT+I1VWC1rWeshCf5HQND5qVauqaTw/1BumWrmDZosG3LtHNhFO7G1QyvL82vWV+CQcQT3TvAWPojjgYfQsoNSpxaMg/rH0pnUVT9eLDUJU8e5s+E2zKNzl
+ CpV25Pho0RD1R5pZBR2wP3iNBOnaJOUOIMdKCnM1cWDEgq9b2mW6wRr7udhvF2PcKhFm+kLWp2d8aBnFJkdriwC/sFktbmn2wl/dZi+3DnXh0xwpgu2dGE8M
+ 7lvx3DYzaPlOYsPXNxSzy2hCbNn1+5o3bEEZWUksr8r7onstlnX2QHZ2cwJZd9HZmIVIvr2cE7KAMtgtzIt4mnFS6Xi25UDJ02nwEfhOOXehxhUceHfV/eq6
+ RcVpiaZxfMZsGT6uKNiQd1bzHDnVQO6dYV19j2fqSyzKJB8Jl1Mza7dp8Eb9Qu7xNsrHQF7bVdJylvnf/04qV6XigCcweSUd5Ew=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Mon, Apr 19, 2021 at 03:05:11PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.32 release.
-> There are 103 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 20/04/2021 11:10, Benjamin Gaignard wrote:
 > 
-> Responses should be made by Wed, 21 Apr 2021 13:05:09 +0000.
-> Anything received after that time might be too late.
+> Le 16/04/2021 à 17:14, Lucas Stach a écrit :
+>> Am Freitag, dem 16.04.2021 um 15:08 +0200 schrieb Benjamin Gaignard:
+>>> Le 16/04/2021 à 12:54, Lucas Stach a écrit :
+>>>> Am Mittwoch, dem 07.04.2021 um 09:35 +0200 schrieb Benjamin Gaignard:
+>>>>> In order to be able to share the control hardware block between
+>>>>> VPUs use a syscon instead a ioremap it in the driver.
+>>>>> To keep the compatibility with older DT if 'nxp,imx8mq-vpu-ctrl'
+>>>>> phandle is not found look at 'ctrl' reg-name.
+>>>>> With the method it becomes useless to provide a list of register
+>>>>> names so remove it.
+>>>> Sorry for putting a spoke in the wheel after many iterations of the
+>>>> series.
+>>>>
+>>>> We just discussed a way forward on how to handle the clocks and resets
+>>>> provided by the blkctl block on i.MX8MM and later and it seems there is
+>>>> a consensus on trying to provide virtual power domains from a blkctl
+>>>> driver, controlling clocks and resets for the devices in the power
+>>>> domain. I would like to avoid introducing yet another way of handling
+>>>> the blkctl and thus would like to align the i.MX8MQ VPU blkctl with
+>>>> what we are planning to do on the later chip generations.
+>>>>
+>>>> CC'ing Jacky Bai and Peng Fan from NXP, as they were going to give this
+>>>> virtual power domain thing a shot.
+>>> That could replace the 3 first patches and Dt patche of this series
+>>> but that will not impact the hevc part, so I wonder if pure hevc patches
+>>> could be merged anyway ?
+>>> They are reviewed and don't depend of how the ctrl block is managed.
+>> I'm not really in a position to give any informed opinion about that
+>> hvec patches, as I only skimmed them, but I don't see any reason to
+>> delay patches 04-11 from this series until the i.MX8M platform issues
+>> are sorted. AFAICS those things are totally orthogonal.
+> 
+> Hi Hans,
+> What do you think about this proposal to split this series ?
+> Get hevc part merged could allow me to continue to add features
+> like scaling lists, compressed reference buffers and 10-bit supports.
 
-Build test:
-mips (gcc version 10.3.1 20210419): 63 configs -> no new failure
-arm (gcc version 10.3.1 20210419): 105 configs -> no new failure
-x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
+Makes sense to me!
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression.
-arm: Booted on rpi3b. No regression.
+Regards,
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
-
---
-Regards
-Sudip
+	Hans
