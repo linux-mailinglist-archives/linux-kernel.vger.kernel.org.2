@@ -2,89 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A94E13651D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 07:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BCDC3651DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 07:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbhDTFfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 01:35:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbhDTFfG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 01:35:06 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B31D1C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 22:34:35 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id m12so5112707pgr.9
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 22:34:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=187MCoIPXpaJH9wXIfv1D4RfPEKy9wfY5kI0RoKayqY=;
-        b=kKH73qBqCs17YlrGPWGz+DvfO4xUHi/6tF1OZQVuEg9Nkv18uH9xahcRfT/GfYNdEp
-         fEuT9kZdMSfKdqTla+VYmuF5QB5XSOwZO7ZQ3O2JddZK8qDTqDJ+EdDje6p9w7T4Nlpw
-         vW44SYFyi6gLDMHvnjn3igzYF/IdjA6YdFQoIBYFuS//iI6FLKAP86lJ9tzTSr1dRFjR
-         BUByyiWp1KndQITXTNphxZ48ZZIZgH+Fh0FS1n5LITxN3KdCxdJkgHEWWPugWskWwOID
-         g9oZriZHHX8RDVoMg5wFa5QQC2lgvAzwl2HfwhJlfW35UIcvDkPYjO1M3CUYcU3ggOOY
-         m2ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=187MCoIPXpaJH9wXIfv1D4RfPEKy9wfY5kI0RoKayqY=;
-        b=Qqnr0Qjwb3Ino1X0CO8w1MGh4akqw4TeoE8UWAMdi5vJSSTE8b5Jo1nGt9Oy9XehtJ
-         Q2wMLhy5Gaw/HCxua4yjl8l6ECkcUmgzLdbr2PWsP23QrQ/Iwj/S+NYfBxSPeVxQn3uJ
-         gMayfFNogzkpbgORxmseWQylXI5lSlhINiJDkfIFZ0TIJyJ1dITnFhbYBClAlumoUdA1
-         +vT17Y0hN9ddq2DCZIKhrx6dt62ofp5vp0PJ+rT55BDYEK3vUsRhLiIF5eKmuO08MbLY
-         LSHUY1OFI/vWRU73jbYNAVy9jJ8f8KxBzENmEZmfiOTzLZB26vwqdgz9pxnjpoJxHlms
-         KCGQ==
-X-Gm-Message-State: AOAM533rULUyyObUuDoHsGWmZCradnW6N8gYD1PJ/VHz3EfdAhSscF1g
-        bxMMTUpRt1ERQ4K1kHL/uoSQRlvS06t5Sg==
-X-Google-Smtp-Source: ABdhPJw6+iHDkrfLgS9WIhXS11uyH/9iUXZ7DCEnmyeRf/nfUYDIeR1fEIzJ8vYHN0uPGLDIrHBYEg==
-X-Received: by 2002:a65:43c9:: with SMTP id n9mr15139505pgp.19.1618896875061;
-        Mon, 19 Apr 2021 22:34:35 -0700 (PDT)
-Received: from localhost ([222.112.70.84])
-        by smtp.gmail.com with ESMTPSA id f65sm1130035pjk.2.2021.04.19.22.34.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 22:34:34 -0700 (PDT)
-From:   Cao jin <jojing64@gmail.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        Cao jin <jojing64@gmail.com>
-Subject: [PATCH] x86/mm: Fix copy&paste error in comments
-Date:   Tue, 20 Apr 2021 13:34:32 +0800
-Message-Id: <20210420053432.4842-1-jojing64@gmail.com>
-X-Mailer: git-send-email 2.30.1
+        id S229757AbhDTFoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 01:44:16 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:17033 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229657AbhDTFoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 01:44:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618897424; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=7LkHj0VTOUKK/UXJch10kxBz5vG6doxMUBx721m/62w=;
+ b=Aq5Ddb826HHh+RNz3rYg9RjhvDylubp+mxwkiHs83193PLK5FXRLZDLWtLwNlA41W98MQkzN
+ Jh3gN5vJyeieg5Pv+Sb/OZnuafTeo1NqFmLzE2Cuuyqhp/TsVTCe91+NzcrV4ZyTWJeD/C5S
+ OEIPGlWxUGsWF/j0SzuAAz4Gf/0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 607e69fd853c0a2c4692af75 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 20 Apr 2021 05:43:25
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5C0CCC4323A; Tue, 20 Apr 2021 05:43:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 41B6DC433F1;
+        Tue, 20 Apr 2021 05:43:23 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 20 Apr 2021 11:13:19 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-watchdog@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] watchdog: qcom: Move suspend/resume to
+ suspend_late/resume_early
+In-Reply-To: <20210310202327.GA237124@roeck-us.net>
+References: <20210310202004.1436-1-saiprakash.ranjan@codeaurora.org>
+ <20210310202327.GA237124@roeck-us.net>
+Message-ID: <948130ae3a0781eb19b7431059852c23@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Direct page mapping in bottom-up way will allocate memory from low
-address for page structures in a range, which is the *bottom*,
-not the *end*.
+Hi Guenter,
 
-Signed-off-by: Cao jin <jojing64@gmail.com>
----
- arch/x86/mm/init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 2021-03-11 01:53, Guenter Roeck wrote:
+> On Thu, Mar 11, 2021 at 01:50:04AM +0530, Sai Prakash Ranjan wrote:
+>> During suspend/resume usecases and tests, it is common to see issues
+>> such as lockups either in suspend path or resume path because of the
+>> bugs in the corresponding device driver pm handling code. In such 
+>> cases,
+>> it is important that watchdog is active to make sure that we either
+>> receive a watchdog pretimeout notification or a bite causing reset
+>> instead of a hang causing us to hard reset the machine.
+>> 
+>> There are good reasons as to why we need this because:
+>> 
+>> * We can have a watchdog pretimeout governor set to panic in which
+>>   case we can have a backtrace which would help identify the issue
+>>   with the particular driver and cause a normal reboot.
+>> 
+>> * Even in case where there is no pretimeout support, a watchdog
+>>   bite is still useful because some firmware has debug support to dump
+>>   CPU core context on watchdog bite for post-mortem analysis.
+>> 
+>> * One more usecase which comes to mind is of warm reboot. In case we
+>>   hard reset the target, a cold reboot could be induced resulting in
+>>   lose of ddr contents thereby losing all the debug info.
+>> 
+>> Currently, the watchdog pm callback just invokes the usual suspend
+>> and resume callback which do not have any special ordering in the
+>> sense that a watchdog can be suspended before the buggy device driver
+>> suspend callback and watchdog resume can happen after the buggy device
+>> driver resume callback. This would mean that the watchdog will not be
+>> active when the buggy driver cause the lockups thereby hanging the
+>> system. So to make sure this doesn't happen, move the watchdog pm to
+>> use late/early system pm callbacks which will ensure that the watchdog
+>> is suspended late and resumed early so that it can catch such issues.
+>> 
+>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> 
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> 
 
-diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
-index e26f5c5c6565..bc2f871c75f1 100644
---- a/arch/x86/mm/init.c
-+++ b/arch/x86/mm/init.c
-@@ -663,7 +663,7 @@ static void __init memory_map_bottom_up(unsigned long map_start,
- 	/*
- 	 * We start from the bottom (@map_start) and go to the top (@map_end).
- 	 * The memblock_find_in_range() gets us a block of RAM from the
--	 * end of RAM in [min_pfn_mapped, max_pfn_mapped) used as new pages
-+	 * bottom of RAM in [min_pfn_mapped, max_pfn_mapped) used as new pages
- 	 * for page table.
- 	 */
- 	while (start < map_end) {
+Gentle Ping. I don't see this in linux-next or linux-watchdog, please 
+let
+me know if anything is pending from my side.
+
+Thanks,
+Sai
+
+>> ---
+>>  drivers/watchdog/qcom-wdt.c | 4 +++-
+>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/watchdog/qcom-wdt.c b/drivers/watchdog/qcom-wdt.c
+>> index e38a87ffe5f5..0d2209c5eaca 100644
+>> --- a/drivers/watchdog/qcom-wdt.c
+>> +++ b/drivers/watchdog/qcom-wdt.c
+>> @@ -329,7 +329,9 @@ static int __maybe_unused qcom_wdt_resume(struct 
+>> device *dev)
+>>  	return 0;
+>>  }
+>> 
+>> -static SIMPLE_DEV_PM_OPS(qcom_wdt_pm_ops, qcom_wdt_suspend, 
+>> qcom_wdt_resume);
+>> +static const struct dev_pm_ops qcom_wdt_pm_ops = {
+>> +	SET_LATE_SYSTEM_SLEEP_PM_OPS(qcom_wdt_suspend, qcom_wdt_resume)
+>> +};
+>> 
+>>  static const struct of_device_id qcom_wdt_of_table[] = {
+>>  	{ .compatible = "qcom,kpss-timer", .data = &match_data_apcs_tmr },
+>> --
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+>> member
+>> of Code Aurora Forum, hosted by The Linux Foundation
+>> 
+
 -- 
-2.30.1
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
