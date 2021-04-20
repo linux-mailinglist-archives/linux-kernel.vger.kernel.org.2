@@ -2,348 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE1236626C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 01:17:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE1436626D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Apr 2021 01:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234389AbhDTXSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 19:18:12 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:48430 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233964AbhDTXSK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 19:18:10 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13KN2pe7027749;
-        Tue, 20 Apr 2021 19:17:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=1dIihKNheRj3DD52LPeB9StYSyrd5TgRgcCXq/i15VU=;
- b=if536T0lzuNVet6LO1A4M73uVZnbs3Q5RC5RZjAbLW9v0rKYYRis5EY9Av/iHQ44qrKV
- vWTfN1J2xyKB6Bf1a+x+CCK6AtzB4dNY58vakUGRwRCLm4DYskuP7nbJkJ3J3aSgS9hd
- Gb40U8hq9vaRJvb8EzMMluA2WJ3rOZKE5DFdiYdLVrn1f4hakAZnexhGMvzfYapsmzwa
- HHlPjLutGr5qqNvwCmfkVrvCqCnhFoxaVuOfdnOcr8rubtUlDPYfMSSpZi0zZ6/ZyrHo
- do6GgHpFWtmAf05mNvdLxbH/9bELVMTobgy20EqHT3eL1M/Mr2h9kpLTAoKb7gagogzm NQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3826pbjg3w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Apr 2021 19:17:03 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13KN3Wn4030008;
-        Tue, 20 Apr 2021 19:17:03 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3826pbjg3k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Apr 2021 19:17:03 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13KNGjOM008572;
-        Tue, 20 Apr 2021 23:17:02 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma02dal.us.ibm.com with ESMTP id 37yqaad5pd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 20 Apr 2021 23:17:02 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13KNH1l420775312
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 20 Apr 2021 23:17:01 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 057CB78060;
-        Tue, 20 Apr 2021 23:17:01 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A90787805E;
-        Tue, 20 Apr 2021 23:16:57 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.85.203.222])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 20 Apr 2021 23:16:57 +0000 (GMT)
-Message-ID: <65dcc9fa28833e6beb1eadf98b0ed3402404d693.camel@linux.ibm.com>
-Subject: Re: [PATCH v9 1/4] KEYS: trusted: Add generic trusted keys framework
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Sumit Garg <sumit.garg@linaro.org>,
-        jarkko.sakkinen@linux.intel.com, zohar@linux.ibm.com
-Cc:     dhowells@redhat.com, jens.wiklander@linaro.org, corbet@lwn.net,
-        jmorris@namei.org, serge@hallyn.com, casey@schaufler-ca.com,
-        janne.karhunen@gmail.com, daniel.thompson@linaro.org,
-        Markus.Wamser@mixed-mode.de, lhinds@redhat.com,
-        erpalmer@us.ibm.com, a.fatoum@pengutronix.de,
-        keyrings@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        op-tee@lists.trustedfirmware.org
-Date:   Tue, 20 Apr 2021 16:16:56 -0700
-In-Reply-To: <20210301131127.793707-2-sumit.garg@linaro.org>
-References: <20210301131127.793707-1-sumit.garg@linaro.org>
-         <20210301131127.793707-2-sumit.garg@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S234381AbhDTXTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 19:19:09 -0400
+Received: from mail-bn8nam12on2059.outbound.protection.outlook.com ([40.107.237.59]:19425
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233964AbhDTXTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 19:19:06 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hA90E/E3CjVmkSVDi0IGHmq7Pm3ft/535TAuuS7x5auJAahxkFixWiEN+RaMCbsJCidLCwBlpQHUqemMNn1VIAWJxBos6xvPN4DGyCgWHvWZGn7IjPd21J7NONBsEfzZqM6Cd8DtsLqKyBd2t1xCpC4UryxbnZGEgeyeEHdpmxDPWN8+pxNZB0oPLBr2pkrsIDhn2lbNFqQ4yuL6pxoBHzW8vyg6j68sqlWchiE39u/XlrdsGo/DEJDYWeOc4GCpOruaHa1ffxh/2x0IMEagQhUqlCJnJkRbHJ39PJo5HnU8qtLw55ldZ6rm+iMxA6wlzUyQb/Kc0gH9thPsRQj4IA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zFwTuCgk6W2ycCiH3+0t1hGsbEm4qYurCuMHIUiPFfM=;
+ b=kNS/JrPT7WEPDO6NxIhnj0nAnG92XFuFw+vJF+Kl8RpsgZH23UOCFdoP5/cq+I8jO2TJu6siioE/pSV7Tg4xRZ4bVaPUfNkg9sOrGiZo+L9b2Jz43O2H7oeyF5RXZTac3auCJS4GRPB0iGK7hg2Ynfkwv3DMNV8IuhUDqeOYJ+8c9/t9NRZGmeoP63drtBnjekMYzNr0uyiBia3+IgD+YJcT7ozBZWDh6YgAjRjoLJX2ZYPCMPo25MvR5+3kADWeLXPOQD5bpYcDPIze7+ZgccgxGIUYffEm1qUUdDpc9IFOa8aiSSDyc0Xk9Ga270s2p3Ad0fjECHaj+BXPLGN+qA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zFwTuCgk6W2ycCiH3+0t1hGsbEm4qYurCuMHIUiPFfM=;
+ b=j10Wk19e/qsQgxkVgTp3S25m0Srr76ztLLfscFzrjm7+IOy0U8SbXM6MjrUVSx6JY/nIZ/RDIPeCtSsIcv/f4Imhizmp7mRxYzMrj6FMWpzK4nDrvoEb2TqO3f1w6EYa0iM0B/48ogrGxqRqdZS1adKvD/RTHQj0GO5kn0oT0mZfY4yKRhheavuY86+66ngTsMsGWN68KqdBNiR9JhKW9i83UcClCjv2c9CyLSe6jhFyfj4tBzlq1qZPwfG+jCB8JiROX7m3ZXsYcicxEOdhlXtGn4C4E72w/9VcW41Tho4byOtfyFB8G8B5SXxYzuapZ6HtJTWw9CSFcATuDu4IaA==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3402.namprd12.prod.outlook.com (2603:10b6:5:3b::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.24; Tue, 20 Apr
+ 2021 23:18:32 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.4042.024; Tue, 20 Apr 2021
+ 23:18:32 +0000
+Date:   Tue, 20 Apr 2021 20:18:30 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     liulongfang <liulongfang@huawei.com>, cohuck@redhat.com,
+        linux-kernel@vger.kernel.org, linuxarm@openeuler.org
+Subject: Re: [RFC PATCH 2/3] vfio/hisilicon: register the driver to vfio
+Message-ID: <20210420231830.GD1370958@nvidia.com>
+References: <1618284983-55581-1-git-send-email-liulongfang@huawei.com>
+ <1618284983-55581-3-git-send-email-liulongfang@huawei.com>
+ <20210415220137.GA1672608@nvidia.com>
+ <10d53c5d-e6d5-a165-84b2-eaf8a3b7dcce@huawei.com>
+ <20210419123314.GT1370958@nvidia.com>
+ <00c4fa43-21fa-a48b-b95d-a2310ffab725@huawei.com>
+ <20210420125957.GA1370958@nvidia.com>
+ <20210420160457.6b91850a@x1.home.shazbot.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210420160457.6b91850a@x1.home.shazbot.org>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: BL1PR13CA0183.namprd13.prod.outlook.com
+ (2603:10b6:208:2be::8) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Kxqcmd9hhCUhx8lvYAs_EcvRp6NNSOls
-X-Proofpoint-ORIG-GUID: HtJEB5WM4I2IjoYGEO79dIhwU6c1Xhpm
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-20_11:2021-04-20,2021-04-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 bulkscore=0 suspectscore=0 adultscore=0 phishscore=0
- mlxscore=0 malwarescore=0 priorityscore=1501 impostorscore=0 clxscore=1011
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104200163
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0183.namprd13.prod.outlook.com (2603:10b6:208:2be::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.6 via Frontend Transport; Tue, 20 Apr 2021 23:18:32 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lYzdW-009HTe-Ut; Tue, 20 Apr 2021 20:18:30 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e553d706-df6c-484a-97c9-08d904529d34
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3402:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB34027F29FC3A7BD87946CFC2C2489@DM6PR12MB3402.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iv8ZNwj15NGBau7vjIQXV8wvx1U5Ly2XeBfEulgyPg+/tO9mns3ld4/tX8owhj8Tj7wvuyQFME6LaxSC/einWyz5ZBiFjIAr7TTF7KmswzzWZ1wkGM5a7NGXU7D8FxjoilQo0or6zqMstE4IRQoLzveJa8snb17fRKQv5LoylxhsFpa3EOzv+ogU/ROu2EiBMyWPiANd5LaaOL1g5RVlpMtEoda2eA1QLhFPi6yQzXymvnMDN17fbXAReQPWDTucrb+4LyA8mqX673uQXvTklvu9228nBAs0hTMxKWeZDDcRG/wAzNkSrQiDUl+QPslEyEtnSl9/2f/8QLGkOgyYXyKgxecg9aN5a3e7ZEiXPnsCrd+UFBZs+r6qaDi9FR32aabrvTF+8BLh9m9MQPjjKbfKYWVoMAjhoNY/mjCCjf2wu75whX17mA1Oz5Bw2m4QxJ18wLVqJl2yfr1BHJffsQ7sVvT1eJkpbMM0dbiVg78DFxfliH0DOamLiBlq8cQHFMYNR3TeiZb1UW6LPSjzYuR0pFr8o35zMBBfHibH8MffySPfgVOFtpEFPap0H62hgJcGmg7Z080ojItrpRBicXdCjo5TCFqXyxeQnk+8wss=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(39860400002)(396003)(376002)(86362001)(8676002)(5660300002)(426003)(38100700002)(478600001)(316002)(66476007)(66556008)(6916009)(33656002)(66946007)(83380400001)(36756003)(9746002)(26005)(9786002)(186003)(1076003)(4326008)(8936002)(2906002)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?eIv39XSXaKZJucdYCEs8tlDKLPmcJYzOkxIODRcM2FjP08WiWUDE7SdccOIM?=
+ =?us-ascii?Q?pfirUMv6bWi2GQvlduB+pRHeI0LZ0Z8cW0Jr7gEKxZw2L8859p+YfKiS/waC?=
+ =?us-ascii?Q?KvMUIEO8/oQroh3cpH6XDIY6lvRv8ciQBB3iCeNIj7CfM1o8nkKC+2fIbDKS?=
+ =?us-ascii?Q?JxvtdVjgtXuRGpMjsnEkhOgHOxE+dZiG+QKAXPSe2dGfCeN+iLSburU8wkNy?=
+ =?us-ascii?Q?rHaC41QbmNR4uNZbtV9dP2X9XBm0NhiVZQPMFPwcYl1xfL9/eI6yzptOo8Iv?=
+ =?us-ascii?Q?53RJvabl1yYIegQLEUkGwASETB+qClJdzMiv9EOllOhnJj6ZeEXGji+2dNTb?=
+ =?us-ascii?Q?hlIzZRdTberD/r+DI3jz+ENbqLlW1epGE86Gg3w41umqeZ/fmTG6AERUi0Jx?=
+ =?us-ascii?Q?LESDEO4fDyB/TPzshQzrGYqTC8jDnAGxZPPTyo/VeaA9JV84aPQSjh6b78ac?=
+ =?us-ascii?Q?X9eK9hbRpoVJnkB2Z8l/3S8Km/MOzHxqiy/9O6yNgISElEgr8EE8vNr0FHVJ?=
+ =?us-ascii?Q?ZXmbV2h/yv4IRVq5lkn9cqDlmms3WOScltm9q/tPvp1Kv2kCFA6pNFnyOFtq?=
+ =?us-ascii?Q?N6Nzhk4ZjG3vfLa00VZev6QJ5BWPiaJhzGMKpMwd1kPjdNLstFCtOqq/XWTh?=
+ =?us-ascii?Q?jSI1tE0gZPtISCQFFShwqwFQyJFOwNkM8lnPMrROH3c7W2d7FYLRq96HGZ8j?=
+ =?us-ascii?Q?MOFhTv1Yx3b6gwRo93Wt84WLuCwFQibljRBS7Xv1ukYpZda6nVw+eJeUw3+x?=
+ =?us-ascii?Q?jhUCvNZXcIgrySWyw1AYBhFjkuI0OldaMFEimy8pADMlLz6GLe4E3Jw+/AjX?=
+ =?us-ascii?Q?+4FlNR4yh8Ji9cpmsOpmlLXj/Y8MCmi4jnLbOjkMHw+sYT/2DlrwO32tTP0d?=
+ =?us-ascii?Q?6+u3fLWCPAV73W4IXt8Yt0nL0DPapAwY3GCJtaUWp7TTVsfIJR07Jfd9WiqT?=
+ =?us-ascii?Q?58SrRBokrHXkUsxWHZPCaMXW9VkbOu8Sg42dwcD5XvkooAvImRqnu9kX7XSJ?=
+ =?us-ascii?Q?ffuQvDhaWlIpHedBrWaSS9YphKT26kfhyKJNa247tIsqzzQUahGf2UrR+S29?=
+ =?us-ascii?Q?0e+s7PvtNQstiKMyNxCVt4OBMI6dvwJ2zkr4q6aeoejzE6EQUfARTG+fqN3q?=
+ =?us-ascii?Q?MhsTonID7SZQPKIDZ7ae2mDSEqQdHYAzmCUuGWFlhoVnKcdlu3Li3Y9fb+W8?=
+ =?us-ascii?Q?0+lqqjaUx6iBHR1RLw2jWVRBQWy2hkBIpnHtvsMVgpzN42D+QiaAQ6dT3oR7?=
+ =?us-ascii?Q?YJSkmPL6s43MjItIc1chMBf2CaopCy+xSN6mC0lqDaPFpxwu7M0yYMo5yN/d?=
+ =?us-ascii?Q?CYE1txUsaN8CTucghC9jwtJc?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e553d706-df6c-484a-97c9-08d904529d34
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Apr 2021 23:18:32.4652
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EbX9vXermgIgsAjqV8zFeVF2t3HuXDpgNvEpDnQihTsKV7e5PAb6IUeUgOxVOhHc
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3402
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-03-01 at 18:41 +0530, Sumit Garg wrote:
-> Current trusted keys framework is tightly coupled to use TPM device
-> as an underlying implementation which makes it difficult for
-> implementations like Trusted Execution Environment (TEE) etc. to
-> provide trusted keys support in case platform doesn't posses a TPM
-> device.
+On Tue, Apr 20, 2021 at 04:04:57PM -0600, Alex Williamson wrote:
+
+> > The migration control registers must be on a different VF from the VF
+> > being plugged into a guest and the two VFs have to be in different
+> > IOMMU groups to ensure they are isolated from each other.
 > 
-> Add a generic trusted keys framework where underlying implementations
-> can be easily plugged in. Create struct trusted_key_ops to achieve
-> this, which contains necessary functions of a backend.
-> 
-> Also, define a module parameter in order to select a particular trust
-> source in case a platform support multiple trust sources. In case its
-> not specified then implementation itetrates through trust sources
-> list starting with TPM and assign the first trust source as a backend
-> which has initiazed successfully during iteration.
-> 
-> Note that current implementation only supports a single trust source
-> at runtime which is either selectable at compile time or during boot
-> via aforementioned module parameter.
+> I think that's a solution, I don't know if it's the only solution.
 
-You never actually tested this, did you?  I'm now getting EINVAL from
-all the trusted TPM key operations because of this patch.
+Maybe, but that approach does offer DMA access for the migration. For
+instance to implement something that needs a lot of data like
+migrating a complicated device state, or dirty page tracking or
+whatver.
 
-The reason is quite simple:  this function:
+This driver seems very simple - it has only 17 state elements - and
+doesn't use DMA.
 
-> index 000000000000..0db86b44605d
-> --- /dev/null
-> +++ b/security/keys/trusted-keys/trusted_core.c
-[...]
-> +static int datablob_parse(char *datablob, struct trusted_key_payload
-> *p)
-> +{
-> +	substring_t args[MAX_OPT_ARGS];
-> +	long keylen;
-> +	int ret = -EINVAL;
-> +	int key_cmd;
-> +	char *c;
-> +
-> +	/* main command */
-> +	c = strsep(&datablob, " \t");
+I can't quite tell, but does this pass the hypervisor BAR into the
+guest anyhow? That would certainly be an adquate statement that it is
+safe, assuming someone did a good security analysis.
 
-Modifies its argument to consume tokens and separates them with NULL.
+> ways and it's not very interesting.  If the user can manipulate device
+> state in order to trigger an exploit of the host-side kernel driver,
+> that's obviously more of a problem.
 
-so the arguments for
+Well, for instance, we have an implementation of
+(VFIO_DEVICE_STATE_SAVING | VFIO_DEVICE_STATE_RUNNING) which means the
+guest CPUs are still running and a hostile guest can be manipulating
+the device.
 
-keyctl add trusted kmk "new 34 keyhandle=0x81000001"
+But this driver is running code, like vf_qm_state_pre_save() in this
+state. Looks very suspicious.
 
-Go into this function as
+One quick attack I can imagine is to use the guest CPU to DOS the
+migration and permanently block it, eg by causing qm_mb() or other
+looping functions to fail.
 
-datablob="new 34 keyhandle=0x81000001"
+There may be worse things possible, it is a bit hard to tell just from
+the code.
 
-After we leave it, it looks like
+.. also drivers should not be open coding ARM assembly as in
+qm_mb_write()
 
-datablob="new\034\0keyhandle=0x81000001"
+.. and also, code can not randomly call pci_get_drvdata() on a struct
+device it isn't attached to haven't verified the right driver is
+bound, or locked correctly.
 
-However here:
+> manipulate the BAR size to expose only the operational portion of MMIO
+> to the VM and use the remainder to support migration itself.  I'm
+> afraid that just like mdev, the vfio migration uAPI is going to be used
+> as an excuse to create kernel drivers simply to be able to make use of
+> that uAPI.
 
-> +static int trusted_instantiate(struct key *key,
-> +			       struct key_preparsed_payload *prep)
-> +{
-> +	struct trusted_key_payload *payload = NULL;
-> +	size_t datalen = prep->datalen;
-> +	char *datablob;
-> +	int ret = 0;
-> +	int key_cmd;
-> +	size_t key_len;
-> +
-> +	if (datalen <= 0 || datalen > 32767 || !prep->data)
-> +		return -EINVAL;
-> +
-> +	datablob = kmalloc(datalen + 1, GFP_KERNEL);
-> +	if (!datablob)
-> +		return -ENOMEM;
-> +	memcpy(datablob, prep->data, datalen);
-> +	datablob[datalen] = '\0';
-> +
-> +	payload = trusted_payload_alloc(key);
-> +	if (!payload) {
-> +		ret = -ENOMEM;
-> +		goto out;
-> +	}
-> +
-> +	key_cmd = datablob_parse(datablob, payload);
-> +	if (key_cmd < 0) {
-> +		ret = key_cmd;
-> +		goto out;
-> +	}
-> +
-> +	dump_payload(payload);
-> +
-> +	switch (key_cmd) {
-> +	case Opt_load:
-> +		ret = static_call(trusted_key_unseal)(payload,
-> datablob);
+I thought that is the general direction people had agreed on during
+the IDXD mdev discussion?
 
-We're passing the unmodified
+People want the IOCTLs from VFIO to be the single API to program all
+the VMMs to and to not implement user space drivers..
 
-datablob="new\034\0keyhandle=0x81000001"
+This actually seems like a great candidate for a userspace driver.
 
-Into the tpm trusted_key_unseal function.  However, it only sees "new"
-and promply gives EINVAL because you've removed the ability to process
-the new option from it.  What should have happened is you should have
-moved data blob up to passed the consumed tokens, so it actually reads
+I would like to know we are still settled on this direction as the
+mlx5 drivers we are working on also have some complicated option to be
+user space only.
 
-datablob="keyhandle=0x81000001"
-
-However, to do that you'd have to have the updated pointer passed out
-of your datablob_parse() above.
-
-There's also a lost !tpm2 in the check for options->keyhandle, but I
-suspect Jarkko lost that merging the two patches.  I think what's below
-fixes all of this, so if you can test it for trusted_tee, I'll package
-it up as two separate patches fixing all of this.
-
-James
-
----
-
-diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/trusted-keys/trusted_core.c
-index ec3a066a4b42..7c636212429b 100644
---- a/security/keys/trusted-keys/trusted_core.c
-+++ b/security/keys/trusted-keys/trusted_core.c
-@@ -62,7 +62,7 @@ static const match_table_t key_tokens = {
-  *
-  * On success returns 0, otherwise -EINVAL.
-  */
--static int datablob_parse(char *datablob, struct trusted_key_payload *p)
-+static int datablob_parse(char **datablob, struct trusted_key_payload *p)
- {
- 	substring_t args[MAX_OPT_ARGS];
- 	long keylen;
-@@ -71,14 +71,14 @@ static int datablob_parse(char *datablob, struct trusted_key_payload *p)
- 	char *c;
- 
- 	/* main command */
--	c = strsep(&datablob, " \t");
-+	c = strsep(datablob, " \t");
- 	if (!c)
- 		return -EINVAL;
- 	key_cmd = match_token(c, key_tokens, args);
- 	switch (key_cmd) {
- 	case Opt_new:
- 		/* first argument is key size */
--		c = strsep(&datablob, " \t");
-+		c = strsep(datablob, " \t");
- 		if (!c)
- 			return -EINVAL;
- 		ret = kstrtol(c, 10, &keylen);
-@@ -89,7 +89,7 @@ static int datablob_parse(char *datablob, struct trusted_key_payload *p)
- 		break;
- 	case Opt_load:
- 		/* first argument is sealed blob */
--		c = strsep(&datablob, " \t");
-+		c = strsep(datablob, " \t");
- 		if (!c)
- 			return -EINVAL;
- 		p->blob_len = strlen(c) / 2;
-@@ -138,7 +138,7 @@ static int trusted_instantiate(struct key *key,
- {
- 	struct trusted_key_payload *payload = NULL;
- 	size_t datalen = prep->datalen;
--	char *datablob;
-+	char *datablob, *orig_datablob;
- 	int ret = 0;
- 	int key_cmd;
- 	size_t key_len;
-@@ -146,7 +146,7 @@ static int trusted_instantiate(struct key *key,
- 	if (datalen <= 0 || datalen > 32767 || !prep->data)
- 		return -EINVAL;
- 
--	datablob = kmalloc(datalen + 1, GFP_KERNEL);
-+	orig_datablob = datablob = kmalloc(datalen + 1, GFP_KERNEL);
- 	if (!datablob)
- 		return -ENOMEM;
- 	memcpy(datablob, prep->data, datalen);
-@@ -158,7 +158,7 @@ static int trusted_instantiate(struct key *key,
- 		goto out;
- 	}
- 
--	key_cmd = datablob_parse(datablob, payload);
-+	key_cmd = datablob_parse(&datablob, payload);
- 	if (key_cmd < 0) {
- 		ret = key_cmd;
- 		goto out;
-@@ -194,7 +194,7 @@ static int trusted_instantiate(struct key *key,
- 		ret = -EINVAL;
- 	}
- out:
--	kfree_sensitive(datablob);
-+	kfree_sensitive(orig_datablob);
- 	if (!ret)
- 		rcu_assign_keypointer(key, payload);
- 	else
-@@ -218,7 +218,7 @@ static int trusted_update(struct key *key, struct key_preparsed_payload *prep)
- 	struct trusted_key_payload *p;
- 	struct trusted_key_payload *new_p;
- 	size_t datalen = prep->datalen;
--	char *datablob;
-+	char *datablob, *orig_datablob;
- 	int ret = 0;
- 
- 	if (key_is_negative(key))
-@@ -229,7 +229,7 @@ static int trusted_update(struct key *key, struct key_preparsed_payload *prep)
- 	if (datalen <= 0 || datalen > 32767 || !prep->data)
- 		return -EINVAL;
- 
--	datablob = kmalloc(datalen + 1, GFP_KERNEL);
-+	orig_datablob = datablob = kmalloc(datalen + 1, GFP_KERNEL);
- 	if (!datablob)
- 		return -ENOMEM;
- 
-@@ -241,7 +241,7 @@ static int trusted_update(struct key *key, struct key_preparsed_payload *prep)
- 
- 	memcpy(datablob, prep->data, datalen);
- 	datablob[datalen] = '\0';
--	ret = datablob_parse(datablob, new_p);
-+	ret = datablob_parse(&datablob, new_p);
- 	if (ret != Opt_update) {
- 		ret = -EINVAL;
- 		kfree_sensitive(new_p);
-@@ -265,7 +265,7 @@ static int trusted_update(struct key *key, struct key_preparsed_payload *prep)
- 	rcu_assign_keypointer(key, new_p);
- 	call_rcu(&p->rcu, trusted_rcu_free);
- out:
--	kfree_sensitive(datablob);
-+	kfree_sensitive(orig_datablob);
- 	return ret;
- }
- 
-diff --git a/security/keys/trusted-keys/trusted_tpm1.c b/security/keys/trusted-keys/trusted_tpm1.c
-index 4e5c50138f92..bc702ba0a596 100644
---- a/security/keys/trusted-keys/trusted_tpm1.c
-+++ b/security/keys/trusted-keys/trusted_tpm1.c
-@@ -747,6 +747,9 @@ static int getoptions(char *c, struct trusted_key_payload *pay,
- 
- 	opt->hash = tpm2 ? HASH_ALGO_SHA256 : HASH_ALGO_SHA1;
- 
-+	if (!c)
-+		return 0;
-+
- 	while ((p = strsep(&c, " \t"))) {
- 		if (*p == '\0' || *p == ' ' || *p == '\t')
- 			continue;
-@@ -944,7 +947,7 @@ static int trusted_tpm_unseal(struct trusted_key_payload *p, char *datablob)
- 		goto out;
- 	dump_options(options);
- 
--	if (!options->keyhandle) {
-+	if (!options->keyhandle && !tpm2) {
- 		ret = -EINVAL;
- 		goto out;
- 	}
-
-
+Jason
