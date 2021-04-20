@@ -2,77 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D04365DAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 18:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD3A365DAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 18:47:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233095AbhDTQrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 12:47:35 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:44974 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232473AbhDTQrb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 12:47:31 -0400
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 20 Apr 2021 09:46:59 -0700
-X-QCInternal: smtphost
-Received: from gurus-linux.qualcomm.com (HELO gurus-linux.localdomain) ([10.46.162.81])
-  by ironmsg05-sd.qualcomm.com with ESMTP; 20 Apr 2021 09:46:59 -0700
-Received: by gurus-linux.localdomain (Postfix, from userid 383780)
-        id 6773219D9; Tue, 20 Apr 2021 09:46:59 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 09:46:59 -0700
-From:   Guru Das Srinagesh <gurus@codeaurora.org>
-To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] Add Qualcomm Technologies, Inc. PM8008 MFD driver
-Message-ID: <20210420164659.GA21665@codeaurora.org>
-References: <cover.1618278453.git.gurus@codeaurora.org>
+        id S233110AbhDTQrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 12:47:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233133AbhDTQrp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 12:47:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8EF77613D7;
+        Tue, 20 Apr 2021 16:47:10 +0000 (UTC)
+Date:   Tue, 20 Apr 2021 18:47:07 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     "Serge E. Hallyn" <serge@hallyn.com>,
+        Linus Torvalds <torvalds@linuxfoundation.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Andrew G. Morgan" <morgan@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        security@kernel.org, Tycho Andersen <tycho@tycho.ws>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCH v3.4] capabilities: require CAP_SETFCAP to map uid 0
+Message-ID: <20210420164707.lzrpynsii3kqe2tm@wittgenstein>
+References: <20210416045851.GA13811@mail.hallyn.com>
+ <20210416150501.zam55gschpn2w56i@wittgenstein>
+ <20210416213453.GA29094@mail.hallyn.com>
+ <20210417021945.GA687@mail.hallyn.com>
+ <20210417200434.GA17430@mail.hallyn.com>
+ <20210419122514.GA20598@mail.hallyn.com>
+ <20210419160911.5pguvpj7kfuj6rnr@wittgenstein>
+ <20210420034208.GA2830@mail.hallyn.com>
+ <20210420083129.exyn7ptahx2fg72e@wittgenstein>
+ <20210420134334.GA11582@mail.hallyn.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <cover.1618278453.git.gurus@codeaurora.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20210420134334.GA11582@mail.hallyn.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 07:00:24PM -0700, Guru Das Srinagesh wrote:
-> Changes from v2:
->   - Collected Rob Herring's Acked-by for the IRQ listing patch
->   - Addressed Rob's comments for the dt-bindings patch
+On Tue, Apr 20, 2021 at 08:43:34AM -0500, Serge Hallyn wrote:
+> cap_setfcap is required to create file capabilities.
 > 
-> Changes from v1:
->   - Removed errant Change-Id from dt-bindings IRQ patch and gathered Bjorn's
->     Reviewed-by
->   - Fixed up YAML errors using make dt_binding_check
+> Since 8db6c34f1dbc ("Introduce v3 namespaced file capabilities"), a
+> process running as uid 0 but without cap_setfcap is able to work around
+> this as follows: unshare a new user namespace which maps parent uid 0
+> into the child namespace.  While this task will not have new
+> capabilities against the parent namespace, there is a loophole due to
+> the way namespaced file capabilities are represented as xattrs.  File
+> capabilities valid in userns 1 are distinguished from file capabilities
+> valid in userns 2 by the kuid which underlies uid 0.  Therefore the
+> restricted root process can unshare a new self-mapping namespace, add a
+> namespaced file capability onto a file, then use that file capability in
+> the parent namespace.
 > 
-> This driver is dependent on changes that have been made to the regmap-irq
-> framework that have currently been accepted [1][2] in regmap.git upstream by
-> Mark Brown but haven't made it to Linus' tree yet. For this reason, this driver
-> has been based on the tip of regmap.git and not mfd.git.
+> To prevent that, do not allow mapping parent uid 0 if the process which
+> opened the uid_map file does not have CAP_SETFCAP, which is the capability
+> for setting file capabilities.
 > 
-> Those changes, and this driver, are the result of a rewrite effort that was
-> promised a long ago [3]. The framework changes and this driver have been tested
-> and verified end-to-end on an internal platform.
+> As a further wrinkle:  a task can unshare its user namespace, then
+> open its uid_map file itself, and map (only) its own uid.  In this
+> case we do not have the credential from before unshare,  which was
+> potentially more restricted.  So, when creating a user namespace, we
+> record whether the creator had CAP_SETFCAP.  Then we can use that
+> during map_write().
 > 
-> [1] https://lore.kernel.org/lkml/20210318183607.gFxO2hoTO274vl3jUuxWbi19rq9wQELzN-y3B4jvO10@z/
-> [2] https://lore.kernel.org/lkml/161726943419.2413.4844313396830856637.b4-ty@kernel.org/
-> [3] https://lore.kernel.org/lkml/20200519185757.GA13992@codeaurora.org/
+> With this patch:
+> 
+> 1. Unprivileged user can still unshare -Ur
+> 
+> ubuntu@caps:~$ unshare -Ur
+> root@caps:~# logout
+> 
+> 2. Root user can still unshare -Ur
+> 
+> ubuntu@caps:~$ sudo bash
+> root@caps:/home/ubuntu# unshare -Ur
+> root@caps:/home/ubuntu# logout
+> 
+> 3. Root user without CAP_SETFCAP cannot unshare -Ur:
+> 
+> root@caps:/home/ubuntu# /sbin/capsh --drop=cap_setfcap --
+> root@caps:/home/ubuntu# /sbin/setcap cap_setfcap=p /sbin/setcap
+> unable to set CAP_SETFCAP effective capability: Operation not permitted
+> root@caps:/home/ubuntu# unshare -Ur
+> unshare: write failed /proc/self/uid_map: Operation not permitted
+> 
+> Note: an alternative solution would be to allow uid 0 mappings by
+> processes without CAP_SETFCAP, but to prevent such a namespace from
+> writing any file capabilities.  This approach can be seen here:
+>     https://git.kernel.org/pub/scm/linux/kernel/git/sergeh/linux.git/log/?h=2021-04-15/setfcap-nsfscaps-v4
+> 
+> History:
+> 
+> Commit 95ebabde382 ("capabilities: Don't allow writing ambiguous v3 file
+> capabilities") tried to fix the issue by preventing v3 fscaps to be
+> written to disk when the root uid would map to the same uid in nested
+> user namespaces. This led to regressions for various workloads. For
+> example, see [1]. Ultimately this is a valid use-case we have to support
+> meaning we had to revert this change in 3b0c2d3eaa83 ("Revert
+> 95ebabde382c ("capabilities: Don't allow writing ambiguous v3 file
+> capabilities")").
+> 
+> [1]: https://github.com/containers/buildah/issues/3071
+> 
+> Signed-off-by: Serge Hallyn <serge@hallyn.com>
+> Reviewed-by: Andrew G. Morgan <morgan@kernel.org>
+> Tested-by: Christian Brauner <christian.brauner@ubuntu.com>
+> Reviewed-by: Christian Brauner <christian.brauner@ubuntu.com>
+> Tested-by: Giuseppe Scrivano <gscrivan@redhat.com>
+> Cc: "Eric W. Biederman" <ebiederm@xmission.com>
 
-Hi Lee, mfd reviewers,
+If there's no objections then Linus can probably just pick up the single
+patch here directly:
+https://lore.kernel.org/lkml/20210420134334.GA11582@mail.hallyn.com
 
-This new driver depends on three regmap-irq framework changes that have
-been accepted by Mark (please see above) and hence will land only in the
-next rc-1 release. I just wanted to make sure that this patch series was
-on your radar [1]. The dt-bindings has been Acked by Rob already, and
-I'd be happy to address any review comments while patiently waiting for
-the dependencies to land.
+I'm not sure it's worth waiting and releasing another kernel with this
+bug. This tigthens the semantics nicely and makes for a simple check at
+userns creation time instead of repeatedly checking at setxattr(). With
+all the testing done we can be quite confident the risk of regressions
+is way lower than the old patch and even if we see one I think this
+version of the fix is actually worth the risk.
 
-[1] https://lore.kernel.org/lkml/20210419072229.GA4869@dell/
-
-Thank you.
-
-Guru Das.
+Christian
