@@ -2,283 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E94B365A64
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFA6365A6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 15:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232578AbhDTNoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 09:44:16 -0400
-Received: from mail.hallyn.com ([178.63.66.53]:40374 "EHLO mail.hallyn.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232443AbhDTNoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 09:44:06 -0400
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-        id 3D569471; Tue, 20 Apr 2021 08:43:34 -0500 (CDT)
-Date:   Tue, 20 Apr 2021 08:43:34 -0500
-From:   "Serge E. Hallyn" <serge@hallyn.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Andrew G. Morgan" <morgan@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        security@kernel.org, Tycho Andersen <tycho@tycho.ws>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: [PATCH v3.4] capabilities: require CAP_SETFCAP to map uid 0
-Message-ID: <20210420134334.GA11582@mail.hallyn.com>
-References: <20210416045851.GA13811@mail.hallyn.com>
- <20210416150501.zam55gschpn2w56i@wittgenstein>
- <20210416213453.GA29094@mail.hallyn.com>
- <20210417021945.GA687@mail.hallyn.com>
- <20210417200434.GA17430@mail.hallyn.com>
- <20210419122514.GA20598@mail.hallyn.com>
- <20210419160911.5pguvpj7kfuj6rnr@wittgenstein>
- <20210420034208.GA2830@mail.hallyn.com>
- <20210420083129.exyn7ptahx2fg72e@wittgenstein>
+        id S232295AbhDTNpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 09:45:47 -0400
+Received: from mail-bn8nam11on2062.outbound.protection.outlook.com ([40.107.236.62]:14368
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230479AbhDTNpp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 09:45:45 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KTK9FOBHoSM1IWQlHfXF43VjDTv+KyZ0ix1Kapp9pOnk+T7m1QDwBxiLk6lwSmZ9jWTgSzrqbE3YCkY/0V+5g2iuWJpHDIyijgAf5vEUiKqDSOr0zXn+xsOG5amdh2XgtxZQygHY2h4BykNgDqTCXmzDGQHC1pt+iLBkEYgtqdrEIy257LwuKe6IfASbXqj2D1CJEW5WcRQc46NCv/Vjhr/e5n6PrKZG+TmiqZgMtzSs46/QBcv1OxJlfJrhrvj8gSDkhA6tbnT2Uuha0n4EXjB4HOZM7j65ml1AbrhjoBbU8PLYKQudk7xRHEdKsr1JHq+4MhRcjq9UVqSk/smY3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=m/vED/fqhGDPG5rGpCrF9DbKxLkq4Ld0heVT/s1BQ48=;
+ b=covIJJxQKtckiJIz09yZO9JreCl0PruKRME233ea6r1zd3X5yRg9V7YgPsOAiXuFXAiS0ymepq6Woe7X5fMlQYeCaHTWrfJETOWykNbwoupD2nubwC9cdDADIAcZtlpJkq+HXK64bicTJoLmKU9qbR02RKPUVR8PjudFYdmaFRbW48q2+tlCjyVu3CVcnFRKay+yaY0PuSurNAyDIbUfI+XgSgkT/sDsArnruqVsLNH7C7JJ+6KN/kENHKwvqHuHBaS8lND41gYQTArszaJUGzgS6HFBHz1cmZHRVR4hrxcPjzjCVuw7wTdFWQcBjTC4YKCCnBpCfGZGz4/hVT7XlQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=m/vED/fqhGDPG5rGpCrF9DbKxLkq4Ld0heVT/s1BQ48=;
+ b=mTaZi2vJHISLz6YcN5gyAmwk2OhrvLbO0AF2V1l074hptLoWRdnE7uMa2DReTbh1InAf/Iofsyh8OqS2dLMUswN+ybs6FaJGkLiEYJwgctFtbm2aU80AtQeGP6guZcObAmTxtIRd1+X0zfWj8+YpdQnNXNwYMsgs7vcZBF1PKJw=
+Received: from MWHPR02MB2623.namprd02.prod.outlook.com (2603:10b6:300:44::9)
+ by CO6PR02MB7697.namprd02.prod.outlook.com (2603:10b6:303:ad::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.16; Tue, 20 Apr
+ 2021 13:45:08 +0000
+Received: from MWHPR02MB2623.namprd02.prod.outlook.com
+ ([fe80::297d:1fb:ad07:1b26]) by MWHPR02MB2623.namprd02.prod.outlook.com
+ ([fe80::297d:1fb:ad07:1b26%9]) with mapi id 15.20.4042.024; Tue, 20 Apr 2021
+ 13:45:08 +0000
+From:   Nava kishore Manne <navam@xilinx.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Michal Simek <michals@xilinx.com>,
+        Derek Kiernan <dkiernan@xilinx.com>,
+        Dragan Cvetic <draganc@xilinx.com>,
+        "arnd@arndb.de" <arnd@arndb.de>, Rajan Vaja <RAJANV@xilinx.com>,
+        Jolly Shah <JOLLYS@xilinx.com>,
+        Tejas Patel <tejasp@xlnx.xilinx.com>,
+        Amit Sunil Dhamne <amitsuni@xilinx.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "chinnikishore369@gmail.com" <chinnikishore369@gmail.com>,
+        git <git@xilinx.com>
+Subject: RE: [PATCH 5/5] misc: zynqmp: Add afi config driver
+Thread-Topic: [PATCH 5/5] misc: zynqmp: Add afi config driver
+Thread-Index: AQHXNb4YA+92oo6dgkaPdwzLOSQ8W6q9GD0AgABSIaA=
+Date:   Tue, 20 Apr 2021 13:45:08 +0000
+Message-ID: <MWHPR02MB2623C9BAFBA0CB47449E8724C2489@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <20210420081153.17020-1-nava.manne@xilinx.com>
+ <20210420081153.17020-6-nava.manne@xilinx.com> <YH6VPt6qfxdFhFEB@kroah.com>
+In-Reply-To: <YH6VPt6qfxdFhFEB@kroah.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=xilinx.com;
+x-originating-ip: [149.199.50.130]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1cdee38e-f422-4972-a218-08d9040282f8
+x-ms-traffictypediagnostic: CO6PR02MB7697:
+x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CO6PR02MB7697DD405386D092C64DD070C2489@CO6PR02MB7697.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 3yKRwB+6pVP36TR1cLAqeTGsbvdv36tlfMn4Mg6VhSLP4HKAZLC1AhWv+lFZNrJJRDi09lMgHuApDkhLseVno58wEoifMaYhhBePVxhtvaOaP3hJXrXljz/EWQRwRXndBzge+qjJROgDt7ZZmpnSmT7gpPEWOOHDcWeoC87kIFTsOrBrpUpRTD6Wo7JTFepRi5i5cO/deOJ027vIyQVLOIexnIpc1RMBdYu21nZ1Lz9VItdN05uvOPHxmGi4YezyuwRzk+a+RhRU3nZAktyZBCfvC2XfsSQ8bhCBnZaqw9CGkSHkGCJ24C81Zsvqc5ZvtmLeZMoWzh5kzmsbh1bIWtDzL9BbLcxSu74JaMWZ4+KsvF/niSNMQHdo0NK7Hkg5hv3/JswzSdLm7xNiG8784KGTwXmZFuLPtxh895TLuua7jLz3cxyTkGKILfcCellur2XOVopaTdWzh3OMXce4ze1mK1IaWyTrbnQ7Q/WXtHyQ32AvuNTsFOTZN8o85nyii9OMo3BJY9tZPC/Lu5qDRu3INBp0Mc6mKCoHTCLuPxNWZwlCdDSq5lkSioLftP8NqKOWDfJvXMKrNYFdI7QqrrFpfF77CBvLi7Wjfuy+3U0=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR02MB2623.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(136003)(376002)(39860400002)(396003)(83380400001)(54906003)(86362001)(4326008)(71200400001)(6916009)(52536014)(33656002)(76116006)(53546011)(26005)(478600001)(5660300002)(316002)(66446008)(186003)(8936002)(9686003)(2906002)(64756008)(66946007)(7696005)(66556008)(107886003)(38100700002)(66476007)(55016002)(6506007)(122000001)(8676002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?q2iQCDTyJ3fTPpkyn1GuXQH0o/3Y8fEgu6f4W5vO5TgPhg4RWPVdbvpTwqVH?=
+ =?us-ascii?Q?TUnWyS6oQfF0/UWP1fXFXH53sP0W9ZSbDmobue10X3uZZgk7FIMJ/2zkC8a4?=
+ =?us-ascii?Q?j/n+G/vgPP7t+qUwZ8FTzyt4UoaIUHH6W6FlxyGBhMa6PvR2tjp9ieMAnSuV?=
+ =?us-ascii?Q?qoFP0+hUX9CqduA9GGrrk00PVdna2h1rXzZMJA+1+psL+RZuJrhRw5sljXNB?=
+ =?us-ascii?Q?jof8HGmLIY4/BMfGzsZlbjoYBgS2LH5KGYg65yV+XxcbQDmmZazIrqs1+wz5?=
+ =?us-ascii?Q?3kgYwiXejqtB7p2EUqaDChbSQntIvMqHAo789BR1kcYu4zBhoflog1GzqBOm?=
+ =?us-ascii?Q?CipyiQ1I1wmZc8b++KxLyVdoLxcIgiDYH0r4qd3D8PRO7YXNHN/UpHvcxWpi?=
+ =?us-ascii?Q?99V4wjod8ULG/Xqn330tqO4/gM8I9VQz/nwceQ8EUxxDdzlcwCc0nSn+6ibb?=
+ =?us-ascii?Q?QlO0NZ+b7bPF317paeYrfWtyLBeBIgk3ez/xNj05lSsT0hPPgbviXmTgMU/d?=
+ =?us-ascii?Q?6e97EmS61FPZPB2883Oxw8pac/nR78vt9Ph9eWn04a8o2cQjq+KzJOug+NTE?=
+ =?us-ascii?Q?XUx3o505iDeH83rfz1kJPHJ4Di/rgFFpy4Mk3TLgT9QuVsu1Ps7fXaJbaSN+?=
+ =?us-ascii?Q?O+PLnfG5dZCkNeTMhfox+g2pM+DXqVs2BJumB8DulIVGafHNtdqkgpAAwdoz?=
+ =?us-ascii?Q?rrHFyYjqYmGv/L9+jZm81tcZBvhuf9WLsxhKtsi0Puyv7rfxfWN58Q4mu7jl?=
+ =?us-ascii?Q?dkZtGwessJZg9Ye4TWlDBScMqyYlX7i+YFxfg1MTNg4I8mVMsH0R1ABlfABW?=
+ =?us-ascii?Q?sFQtyFC7cAnSzvoIeW27f4PN0t6Ah6qBdW3rBkLAvsKyhpnlHnPVYOCHTzv3?=
+ =?us-ascii?Q?yZUYGn0pJnV7irCyMYm/KFSo+dS90lub7hJv2SKjKV55pMkP58q5ah1CQqDx?=
+ =?us-ascii?Q?ddWtC8EkRk5T1T9jgq79lILahltzpeXknQ0hctuXAquXKnFIZjly6XjvjCXE?=
+ =?us-ascii?Q?wBdaPzV6Jbl6ct6t+JjSQfZQqFLlecsFlpQd4u61KNVJlcIzPzr8BKCZNRWX?=
+ =?us-ascii?Q?slWGILdFaoXfWGVNqqSXcPGjDSR3E2iN1Whq6FcU8C8mXfibvIRPDwJj1LGw?=
+ =?us-ascii?Q?o+upa86OV3WSnKpysWP6+FOPvzCKPSRriKugswVEg7fxSfw3/c44f1dlHt/3?=
+ =?us-ascii?Q?SzmXDK2e+lpukqfzqzIdjzqeM82Aa/osWaQjUhzH9TOHnFGir7DtLw1jIXXD?=
+ =?us-ascii?Q?BEehRpfq+4qX8JGCiLodnD3lcqeDvQaT/gl/Cl3LTDKsv/5bfis5cIUaBo6f?=
+ =?us-ascii?Q?+cjURQsz/HFdRkss+kvWl+0R?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210420083129.exyn7ptahx2fg72e@wittgenstein>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR02MB2623.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1cdee38e-f422-4972-a218-08d9040282f8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Apr 2021 13:45:08.2024
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: v0nrIOGoo8Xx0PKUv4qiCtT75kQT+uYM9izyg2plmuuU0dSiR6MfjVkvUE2phuYgdSkJwaUGhCp5ptwNRfVshg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR02MB7697
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cap_setfcap is required to create file capabilities.
+Hi Greg,
 
-Since 8db6c34f1dbc ("Introduce v3 namespaced file capabilities"), a
-process running as uid 0 but without cap_setfcap is able to work around
-this as follows: unshare a new user namespace which maps parent uid 0
-into the child namespace.  While this task will not have new
-capabilities against the parent namespace, there is a loophole due to
-the way namespaced file capabilities are represented as xattrs.  File
-capabilities valid in userns 1 are distinguished from file capabilities
-valid in userns 2 by the kuid which underlies uid 0.  Therefore the
-restricted root process can unshare a new self-mapping namespace, add a
-namespaced file capability onto a file, then use that file capability in
-the parent namespace.
+	Please find my response inline.
 
-To prevent that, do not allow mapping parent uid 0 if the process which
-opened the uid_map file does not have CAP_SETFCAP, which is the capability
-for setting file capabilities.
+> -----Original Message-----
+> From: Greg KH <gregkh@linuxfoundation.org>
+> Sent: Tuesday, April 20, 2021 2:18 PM
+> To: Nava kishore Manne <navam@xilinx.com>
+> Cc: robh+dt@kernel.org; Michal Simek <michals@xilinx.com>; Derek Kiernan
+> <dkiernan@xilinx.com>; Dragan Cvetic <draganc@xilinx.com>;
+> arnd@arndb.de; Rajan Vaja <RAJANV@xilinx.com>; Jolly Shah
+> <JOLLYS@xilinx.com>; Tejas Patel <tejasp@xlnx.xilinx.com>; Amit Sunil
+> Dhamne <amitsuni@xilinx.com>; devicetree@vger.kernel.org; linux-arm-
+> kernel@lists.infradead.org; linux-kernel@vger.kernel.org;
+> chinnikishore369@gmail.com; git <git@xilinx.com>
+> Subject: Re: [PATCH 5/5] misc: zynqmp: Add afi config driver
+>=20
+> On Tue, Apr 20, 2021 at 01:41:53PM +0530, Nava kishore Manne wrote:
+> > This patch adds zynqmp afi config driver.This is useful for the
+> > configuration of the PS-PL interface on Zynq US+ MPSoC platform.
+>=20
+> Again, please spell out what those terms mean, as I have no idea :(
+>=20
 
-As a further wrinkle:  a task can unshare its user namespace, then
-open its uid_map file itself, and map (only) its own uid.  In this
-case we do not have the credential from before unshare,  which was
-potentially more restricted.  So, when creating a user namespace, we
-record whether the creator had CAP_SETFCAP.  Then we can use that
-during map_write().
+Will fix in v2
 
-With this patch:
+> >
+> > Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
+> > ---
+> >  drivers/misc/Kconfig      | 11 ++++++
+> >  drivers/misc/Makefile     |  1 +
+> >  drivers/misc/zynqmp-afi.c | 83
+> > +++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 95 insertions(+)
+> >  create mode 100644 drivers/misc/zynqmp-afi.c
+> >
+> > diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig index
+> > 877b43b3377d..d1ea1eeb3ac1 100644
+> > --- a/drivers/misc/Kconfig
+> > +++ b/drivers/misc/Kconfig
+> > @@ -456,6 +456,17 @@ config ZYNQ_AFI
+> >  	  between PS and PL, the AXI port data path should be configured
+> >  	  with the proper Bus-width values
+> >
+> > +config ZYNQMP_AFI
+> > +        tristate "Xilinx ZYNQMP AFI support"
+> > +        help
+> > +	  ZynqMP AFI driver support for writing to the AFI registers for
+> > +	  configuring PS_PL Bus-width. Xilinx Zynq US+ MPSoC connect the
+> > +	  PS to the programmable logic (PL) through the AXI port. This AXI
+> > +	  port helps to establish the data path between the PS and PL.
+> > +	  In-order to establish the proper communication path between
+> > +	  PS and PL, the AXI port data path should be configured with
+> > +	  the proper Bus-width values
+>=20
+> Please use tabs properly, you mix them above, checkpatch should have
+> caught that.
+>=20
+Yes, Ideally check patch should report this issue but it's failed to report=
+.
+Will fix this issue in v2.
 
-1. Unprivileged user can still unshare -Ur
-
-ubuntu@caps:~$ unshare -Ur
-root@caps:~# logout
-
-2. Root user can still unshare -Ur
-
-ubuntu@caps:~$ sudo bash
-root@caps:/home/ubuntu# unshare -Ur
-root@caps:/home/ubuntu# logout
-
-3. Root user without CAP_SETFCAP cannot unshare -Ur:
-
-root@caps:/home/ubuntu# /sbin/capsh --drop=cap_setfcap --
-root@caps:/home/ubuntu# /sbin/setcap cap_setfcap=p /sbin/setcap
-unable to set CAP_SETFCAP effective capability: Operation not permitted
-root@caps:/home/ubuntu# unshare -Ur
-unshare: write failed /proc/self/uid_map: Operation not permitted
-
-Note: an alternative solution would be to allow uid 0 mappings by
-processes without CAP_SETFCAP, but to prevent such a namespace from
-writing any file capabilities.  This approach can be seen here:
-    https://git.kernel.org/pub/scm/linux/kernel/git/sergeh/linux.git/log/?h=2021-04-15/setfcap-nsfscaps-v4
-
-History:
-
-Commit 95ebabde382 ("capabilities: Don't allow writing ambiguous v3 file
-capabilities") tried to fix the issue by preventing v3 fscaps to be
-written to disk when the root uid would map to the same uid in nested
-user namespaces. This led to regressions for various workloads. For
-example, see [1]. Ultimately this is a valid use-case we have to support
-meaning we had to revert this change in 3b0c2d3eaa83 ("Revert
-95ebabde382c ("capabilities: Don't allow writing ambiguous v3 file
-capabilities")").
-
-[1]: https://github.com/containers/buildah/issues/3071
-
-Signed-off-by: Serge Hallyn <serge@hallyn.com>
-Reviewed-by: Andrew G. Morgan <morgan@kernel.org>
-Tested-by: Christian Brauner <christian.brauner@ubuntu.com>
-Reviewed-by: Christian Brauner <christian.brauner@ubuntu.com>
-Tested-by: Giuseppe Scrivano <gscrivan@redhat.com>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>
-
-Changelog:
-   * fix logic in the case of writing to another task's uid_map
-   * rename 'ns' to 'map_ns', and make a file_ns local variable
-   * use /* comments */
-   * update the CAP_SETFCAP comment in capability.h
-   * rename parent_unpriv to parent_can_setfcap (and reverse the
-     logic)
-   * remove printks
-   * clarify (i hope) the code comments
-   * update capability.h comment
-   * renamed parent_can_setfcap to parent_could_setfcap
-   * made the check its own disallowed_0_mapping() fn
-   * moved the check into new_idmap_permitted
-   * rename disallowed_0_mapping to verify_root_mapping
-   * change verify_root_mapping to Christian's suggested flow
-   * correct+clarify comments: parent uid 0 mapping to any
-     child uid is a problem.
-   * remove unused lower_first variable.
----
- include/linux/user_namespace.h  |  3 ++
- include/uapi/linux/capability.h |  3 +-
- kernel/user_namespace.c         | 65 +++++++++++++++++++++++++++++++--
- 3 files changed, 67 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/user_namespace.h b/include/linux/user_namespace.h
-index 64cf8ebdc4ec..f6c5f784be5a 100644
---- a/include/linux/user_namespace.h
-+++ b/include/linux/user_namespace.h
-@@ -63,6 +63,9 @@ struct user_namespace {
- 	kgid_t			group;
- 	struct ns_common	ns;
- 	unsigned long		flags;
-+	/* parent_could_setfcap: true if the creator if this ns had CAP_SETFCAP
-+	 * in its effective capability set at the child ns creation time. */
-+	bool			parent_could_setfcap;
- 
- #ifdef CONFIG_KEYS
- 	/* List of joinable keyrings in this namespace.  Modification access of
-diff --git a/include/uapi/linux/capability.h b/include/uapi/linux/capability.h
-index c6ca33034147..2ddb4226cd23 100644
---- a/include/uapi/linux/capability.h
-+++ b/include/uapi/linux/capability.h
-@@ -335,7 +335,8 @@ struct vfs_ns_cap_data {
- 
- #define CAP_AUDIT_CONTROL    30
- 
--/* Set or remove capabilities on files */
-+/* Set or remove capabilities on files.
-+   Map uid=0 into a child user namespace. */
- 
- #define CAP_SETFCAP	     31
- 
-diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
-index af612945a4d0..9a4b980d695b 100644
---- a/kernel/user_namespace.c
-+++ b/kernel/user_namespace.c
-@@ -106,6 +106,7 @@ int create_user_ns(struct cred *new)
- 	if (!ns)
- 		goto fail_dec;
- 
-+	ns->parent_could_setfcap = cap_raised(new->cap_effective, CAP_SETFCAP);
- 	ret = ns_alloc_inum(&ns->ns);
- 	if (ret)
- 		goto fail_free;
-@@ -841,6 +842,60 @@ static int sort_idmaps(struct uid_gid_map *map)
- 	return 0;
- }
- 
-+/**
-+ * verify_root_map() - check the uid 0 mapping
-+ * @file: idmapping file
-+ * @map_ns: user namespace of the target process
-+ * @new_map: requested idmap
-+ *
-+ * If a process requests mapping parent uid 0 into the new ns, verify that the
-+ * process writing the map had the CAP_SETFCAP capability as the target process
-+ * will be able to write fscaps that are valid in ancestor user namespaces.
-+ *
-+ * Return: true if the mapping is allowed, false if not.
-+ */
-+static bool verify_root_map(const struct file *file,
-+			    struct user_namespace *map_ns,
-+			    struct uid_gid_map *new_map)
-+{
-+	int idx;
-+	const struct user_namespace *file_ns = file->f_cred->user_ns;
-+	struct uid_gid_extent *extent0 = NULL;
-+
-+	for (idx = 0; idx < new_map->nr_extents; idx++) {
-+		if (new_map->nr_extents <= UID_GID_MAP_MAX_BASE_EXTENTS)
-+			extent0 = &new_map->extent[idx];
-+		else
-+			extent0 = &new_map->forward[idx];
-+		if (extent0->lower_first == 0)
-+			break;
-+
-+		extent0 = NULL;
-+	}
-+
-+	if (!extent0)
-+		return true;
-+
-+	if (map_ns == file_ns) {
-+		/* The process unshared its ns and is writing to its own
-+		 * /proc/self/uid_map.  User already has full capabilites in
-+		 * the new namespace.  Verify that the parent had CAP_SETFCAP
-+		 * when it unshared.
-+		 * */
-+		if (!file_ns->parent_could_setfcap)
-+			return false;
-+	} else {
-+		/* Process p1 is writing to uid_map of p2, who is in a child
-+		 * user namespace to p1's.  Verify that the opener of the map
-+		 * file has CAP_SETFCAP against the parent of the new map
-+		 * namespace */
-+		if (!file_ns_capable(file, map_ns->parent, CAP_SETFCAP))
-+			return false;
-+	}
-+
-+	return true;
-+}
-+
- static ssize_t map_write(struct file *file, const char __user *buf,
- 			 size_t count, loff_t *ppos,
- 			 int cap_setid,
-@@ -848,7 +903,7 @@ static ssize_t map_write(struct file *file, const char __user *buf,
- 			 struct uid_gid_map *parent_map)
- {
- 	struct seq_file *seq = file->private_data;
--	struct user_namespace *ns = seq->private;
-+	struct user_namespace *map_ns = seq->private;
- 	struct uid_gid_map new_map;
- 	unsigned idx;
- 	struct uid_gid_extent extent;
-@@ -895,7 +950,7 @@ static ssize_t map_write(struct file *file, const char __user *buf,
- 	/*
- 	 * Adjusting namespace settings requires capabilities on the target.
- 	 */
--	if (cap_valid(cap_setid) && !file_ns_capable(file, ns, CAP_SYS_ADMIN))
-+	if (cap_valid(cap_setid) && !file_ns_capable(file, map_ns, CAP_SYS_ADMIN))
- 		goto out;
- 
- 	/* Parse the user data */
-@@ -965,7 +1020,7 @@ static ssize_t map_write(struct file *file, const char __user *buf,
- 
- 	ret = -EPERM;
- 	/* Validate the user is allowed to use user id's mapped to. */
--	if (!new_idmap_permitted(file, ns, cap_setid, &new_map))
-+	if (!new_idmap_permitted(file, map_ns, cap_setid, &new_map))
- 		goto out;
- 
- 	ret = -EPERM;
-@@ -1086,6 +1141,10 @@ static bool new_idmap_permitted(const struct file *file,
- 				struct uid_gid_map *new_map)
- {
- 	const struct cred *cred = file->f_cred;
-+
-+	if (cap_setid == CAP_SETUID && !verify_root_map(file, ns, new_map))
-+		return false;
-+
- 	/* Don't allow mappings that would allow anything that wouldn't
- 	 * be allowed without the establishment of unprivileged mappings.
- 	 */
--- 
-2.25.1
-
+Regards,
+Navakishore.
