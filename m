@@ -2,136 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED87365106
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 05:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F089336510E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 05:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234084AbhDTDiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 19 Apr 2021 23:38:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbhDTDiS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 19 Apr 2021 23:38:18 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2EFC061763
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 20:37:47 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id m11so24603366pfc.11
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Apr 2021 20:37:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4Dp71bvPzPe1wCYmcL3dWmnHaA9IPMYpDW9V8NfdSkc=;
-        b=cOHrtIRKKzf406ywioOpMEaI+JxTsgk24dfL1j85yEFOTioqe/Wkk3sfhI44Q1dE7j
-         65QSzSe7Z5qv4E353StbnoU87r08IMCCsvDePdtRLfyeOfxq2KcvK1buyUuUmOqvWSqz
-         ISCulD8eTGSSTliYfl+gFyTSGoWap85k4iVgMnhZuvi6VpsbrnE+2Jx5THcQE3SMLZdK
-         MrcBDFn56VUg1JySPufcM+Ap2ekmV7xJGFyRvg4QYL9JAZALlwWWOP5KAZszoNI30/p5
-         3APL0pQTHzjyYoZTfbdeoS2N20VdZ+QdFjt1sZ6ThujTFMch4srMEWYVFTghQ5kbijRi
-         sTuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4Dp71bvPzPe1wCYmcL3dWmnHaA9IPMYpDW9V8NfdSkc=;
-        b=T7nBjYC7p6g8Eq1a6stILUERN8dG/7VoNab6R68dD15aDo5EYs2h4dQLqw/04V7dGr
-         iLIgRYsdBku3pA0WQrGS5YjC1k/DUkhQYFTuo3NHy0VvH2qIDqlDCOedZkGXEHr1ZaQP
-         tkS21h+S7MsOi6ZuSGvtvb5VBV1JXXjcXsm9A3mNZn3vhT1kZ1xrCy+Gr7zKV8R3m4uD
-         Tn6XqkKXqnzFtFE1xLnwR0Fs2PjpW1RCmRgLc7pQCHQqtxfk1UJC0c4bzJBTqmyXQ1v7
-         R64t3PLUimgCPFe+L2Foi3vscrSxbVTQoOFMzzSiZcDJn+wGdK9C4+CQTP8J3dZfpBKX
-         oZNg==
-X-Gm-Message-State: AOAM531kghK+qDDcoz0wdadJbCG5Rc2MvNULik2XBZThHGaFc4CMEJLB
-        yPz4MLnOekoLj8X9I4wTdlSQ6w==
-X-Google-Smtp-Source: ABdhPJzltqFZqUcdsXgG1fCqHZwqiJ17U3Dp9tAYxqC2lP00fX+Ti2Epbbf3KvGFjg7XD1qjZj+9gg==
-X-Received: by 2002:a63:48c:: with SMTP id 134mr8927069pge.448.1618889866955;
-        Mon, 19 Apr 2021 20:37:46 -0700 (PDT)
-Received: from localhost ([136.185.154.93])
-        by smtp.gmail.com with ESMTPSA id 71sm8454476pfu.19.2021.04.19.20.37.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Apr 2021 20:37:45 -0700 (PDT)
-Date:   Tue, 20 Apr 2021 09:07:43 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>, agross@kernel.org,
-        rjw@rjwysocki.net, devicetree@vger.kernel.org, robh+dt@kernel.org,
-        amit.kucheria@linaro.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, jeffrey.l.hugo@gmail.com
-Subject: Re: [PATCH v4 5/7] cpufreq: qcom-hw: Implement CPRh aware OSM
- programming
-Message-ID: <20210420033743.cqfw7vb4zrewdsbl@vireshk-i7>
-References: <20210119174557.227318-1-angelogioacchino.delregno@somainline.org>
- <20210119174557.227318-6-angelogioacchino.delregno@somainline.org>
- <20210419185203.GQ1538589@yoga>
+        id S229741AbhDTDml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 19 Apr 2021 23:42:41 -0400
+Received: from mail.hallyn.com ([178.63.66.53]:55366 "EHLO mail.hallyn.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229508AbhDTDmk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 19 Apr 2021 23:42:40 -0400
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+        id D7C3DA8E; Mon, 19 Apr 2021 22:42:08 -0500 (CDT)
+Date:   Mon, 19 Apr 2021 22:42:08 -0500
+From:   "Serge E. Hallyn" <serge@hallyn.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Andrew G. Morgan" <morgan@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        security@kernel.org, Tycho Andersen <tycho@tycho.ws>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCH] capabilities: require CAP_SETFCAP to map uid 0 (v3.3)
+Message-ID: <20210420034208.GA2830@mail.hallyn.com>
+References: <20210416045851.GA13811@mail.hallyn.com>
+ <20210416150501.zam55gschpn2w56i@wittgenstein>
+ <20210416213453.GA29094@mail.hallyn.com>
+ <20210417021945.GA687@mail.hallyn.com>
+ <20210417200434.GA17430@mail.hallyn.com>
+ <20210419122514.GA20598@mail.hallyn.com>
+ <20210419160911.5pguvpj7kfuj6rnr@wittgenstein>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210419185203.GQ1538589@yoga>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210419160911.5pguvpj7kfuj6rnr@wittgenstein>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-04-21, 13:52, Bjorn Andersson wrote:
-> On Tue 19 Jan 11:45 CST 2021, AngeloGioacchino Del Regno wrote:
-> @Viresh, do you have any suggestion regarding my last comment?
-
-> >  static int qcom_cpufreq_hw_driver_probe(struct platform_device *pdev)
-> >  {
-> > +	const struct qcom_cpufreq_soc_data *soc_data;
-> > +	struct device_node *pd_node;
-> > +	struct platform_device *pd_dev;
-> >  	struct device *cpu_dev;
-> >  	struct clk *clk;
-> > -	int ret;
-> > +	int clk_div, ret;
-> > +
-> > +	cpu_dev = get_cpu_device(0);
-> > +	if (!cpu_dev)
-> > +		return -EPROBE_DEFER;
-> > +
-> > +	soc_data = of_device_get_match_data(&pdev->dev);
-> > +	if (!soc_data)
-> > +		return -EINVAL;
-> > +
-> > +	if (!soc_data->uses_tz) {
-> > +		/*
-> > +		 * When the OSM is not pre-programmed from TZ, we will
-> > +		 * need to program the sequencer through SCM calls.
-> > +		 */
-> > +		if (!qcom_scm_is_available())
-> > +			return -EPROBE_DEFER;
-> > +
-> > +		/*
-> > +		 * If there are no power-domains, OSM programming cannot be
-> > +		 * performed, as in that case, we wouldn't know where to take
-> > +		 * the params from...
-> > +		 */
-> > +		pd_node = of_parse_phandle(cpu_dev->of_node,
-> > +					   "power-domains", 0);
-> > +		if (!pd_node) {
-> > +			ret = PTR_ERR(pd_node);
-> > +			dev_err(cpu_dev, "power domain not found: %d\n", ret);
-> > +			return ret;
-> > +		}
-> > +
-> > +		/*
-> > +		 * If the power domain device is not registered yet, then
-> > +		 * defer probing this driver until that is available.
-> > +		 */
-> > +		pd_dev = of_find_device_by_node(pd_node);
-> > +		if (!pd_dev || !pd_dev->dev.driver ||
-> > +		    !device_is_bound(&pd_dev->dev))
-> > +			return -EPROBE_DEFER;
+On Mon, Apr 19, 2021 at 06:09:11PM +0200, Christian Brauner wrote:
+> On Mon, Apr 19, 2021 at 07:25:14AM -0500, Serge Hallyn wrote:
+> > cap_setfcap is required to create file capabilities.
+> > 
+> > Since 8db6c34f1dbc ("Introduce v3 namespaced file capabilities"), a
+> > process running as uid 0 but without cap_setfcap is able to work around
+> > this as follows: unshare a new user namespace which maps parent uid 0
+> > into the child namespace.  While this task will not have new
+> > capabilities against the parent namespace, there is a loophole due to
+> > the way namespaced file capabilities are represented as xattrs.  File
+> > capabilities valid in userns 1 are distinguished from file capabilities
+> > valid in userns 2 by the kuid which underlies uid 0.  Therefore the
+> > restricted root process can unshare a new self-mapping namespace, add a
+> > namespaced file capability onto a file, then use that file capability in
+> > the parent namespace.
+> > 
+> > To prevent that, do not allow mapping parent uid 0 if the process which
+> > opened the uid_map file does not have CAP_SETFCAP, which is the capability
+> > for setting file capabilities.
+> > 
+> > As a further wrinkle:  a task can unshare its user namespace, then
+> > open its uid_map file itself, and map (only) its own uid.  In this
+> > case we do not have the credential from before unshare,  which was
+> > potentially more restricted.  So, when creating a user namespace, we
+> > record whether the creator had CAP_SETFCAP.  Then we can use that
+> > during map_write().
+> > 
+> > With this patch:
+> > 
+> > 1. Unprivileged user can still unshare -Ur
+> > 
+> > ubuntu@caps:~$ unshare -Ur
+> > root@caps:~# logout
+> > 
+> > 2. Root user can still unshare -Ur
+> > 
+> > ubuntu@caps:~$ sudo bash
+> > root@caps:/home/ubuntu# unshare -Ur
+> > root@caps:/home/ubuntu# logout
+> > 
+> > 3. Root user without CAP_SETFCAP cannot unshare -Ur:
+> > 
+> > root@caps:/home/ubuntu# /sbin/capsh --drop=cap_setfcap --
+> > root@caps:/home/ubuntu# /sbin/setcap cap_setfcap=p /sbin/setcap
+> > unable to set CAP_SETFCAP effective capability: Operation not permitted
+> > root@caps:/home/ubuntu# unshare -Ur
+> > unshare: write failed /proc/self/uid_map: Operation not permitted
+> > 
+> > Note: an alternative solution would be to allow uid 0 mappings by
+> > processes without CAP_SETFCAP, but to prevent such a namespace from
+> > writing any file capabilities.  This approach can be seen here:
+> >     https://git.kernel.org/pub/scm/linux/kernel/git/sergeh/linux.git/log/?h=2021-04-15/setfcap-nsfscaps-v4
+> > 
 > 
-> I wonder if there's a more appropriate way to probe defer on resources
-> described in the CPU nodes...
+> Ah, can you link to the previous fix and its revert, please? I think
+> that was mentioned in the formerly private thread as well but we forgot:
+> 
+> commit 95ebabde382c371572297915b104e55403674e73
+> Author: Eric W. Biederman <ebiederm@xmission.com>
+> Date:   Thu Dec 17 09:42:00 2020 -0600
+> 
+>     capabilities: Don't allow writing ambiguous v3 file capabilities
+> 
+> commit 3b0c2d3eaa83da259d7726192cf55a137769012f
+> Author: Eric W. Biederman <ebiederm@xmission.com>
+> Date:   Fri Mar 12 15:07:09 2021 -0600
+> 
+>     Revert 95ebabde382c ("capabilities: Don't allow writing ambiguous v3 file capabilities")
 
-Recently we made some updates to the OPP core to start returning
-EPROBE_DEFER on failure to acquire resources. I think you can get rid
-of many checks for resources here by just trying to create the OPP
-table and check its return value for EPROBE_DEFER.
+Sure.
 
--- 
-viresh
+Is there a tag for that kind of thing or do I just mention it at the end
+of the description?
