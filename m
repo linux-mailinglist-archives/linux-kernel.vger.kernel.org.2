@@ -2,106 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D683655F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5502C3655FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 12:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbhDTKRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 06:17:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230264AbhDTKRc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 06:17:32 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB5FC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 03:17:01 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0e52003145dfcc247b909a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:5200:3145:dfcc:247b:909a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BE7571EC0347;
-        Tue, 20 Apr 2021 12:16:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1618913819;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OHKWCU6z/Def+S0XFUqT3Jd+HhaFJheSWWNeZEIUM0I=;
-        b=eGLMA1y4e9m6z6KXY6CN1sEVnvAOCxsMIzgZjG1nnbCQ62afOenS42QnvgPnXkrLoHQa6l
-        mLqj70tomCM8s8K3igeg8uWtQP4d/SbjVOQS3CDY5K4aVM+UrKxHG0ehl6NAAVdRKzBwjD
-        8B3QPAfNkUMO5O6h3aIHy98f0FWyOZU=
-Date:   Tue, 20 Apr 2021 12:16:57 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+j44CA55u05LmfKQ==?= 
-        <naoya.horiguchi@nec.com>
-Cc:     Naoya Horiguchi <nao.horiguchi@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Aili Yao <yaoaili@kingsoft.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 1/3] mm/memory-failure: Use a mutex to avoid
- memory_failure() races
-Message-ID: <20210420101657.GF5029@zn.tnic>
-References: <20210412224320.1747638-1-nao.horiguchi@gmail.com>
- <20210412224320.1747638-2-nao.horiguchi@gmail.com>
- <20210419170538.GG9093@zn.tnic>
- <20210420074625.GA24451@hori.linux.bs1.fc.nec.co.jp>
+        id S231477AbhDTKRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 06:17:51 -0400
+Received: from foss.arm.com ([217.140.110.172]:60142 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230264AbhDTKRu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 06:17:50 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 187A11474;
+        Tue, 20 Apr 2021 03:17:19 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9F6DC3F85F;
+        Tue, 20 Apr 2021 03:17:17 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     syzbot <syzbot+9362b31a2e0cad8b749d@syzkaller.appspotmail.com>,
+        bp@alien8.de, dwmw@amazon.co.uk, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
+Subject: Re: [syzbot] WARNING in kthread_is_per_cpu
+In-Reply-To: <YH6o6gd4oqqs6sHr@hirez.programming.kicks-ass.net>
+References: <000000000000a61f7705c050e601@google.com> <87im4ilddh.mognet@arm.com> <20210419184553.GA26214@worktop.programming.kicks-ass.net> <874kg2kpwd.mognet@arm.com> <YH6WJc825C4P0FCK@hirez.programming.kicks-ass.net> <87lf9duw8g.mognet@arm.com> <YH6o6gd4oqqs6sHr@hirez.programming.kicks-ass.net>
+Date:   Tue, 20 Apr 2021 11:17:15 +0100
+Message-ID: <87im4huuok.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210420074625.GA24451@hori.linux.bs1.fc.nec.co.jp>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 07:46:26AM +0000, HORIGUCHI NAOYA(堀口 直也) wrote:
-> If you have any other suggestion, please let me know.
+On 20/04/21 12:11, Peter Zijlstra wrote:
+> On Tue, Apr 20, 2021 at 10:43:43AM +0100, Valentin Schneider wrote:
+>> On 20/04/21 10:51, Peter Zijlstra wrote:
+>
+>> > I think free_kthread_struct() is ok, because a task at that point in its
+>> > lifetime cannot be also doing exec().
+>> >
+>>
+>> What if it's one of those kthreads created by directly invoking
+>> kernel_thread()? AFAICT right now it's only umh, and that one does execve()
+>> so it ends up stripped of PF_KTHREAD. It could however go through an error
+>> path, i.e. not call exec, and exit, giving us:
+>>
+>>   put_task_struct(p)
+>>   `\
+>>     free_task(p)
+>>     `\
+>>       if (tsk->flags & PF_KTHREAD)
+>>           free_kthread_struct(tsk);
+>>           `\
+>>             to_kthread(p)
+>
+> I'm not following, at the point we hit free_task() it had better be dead
+> and p->flags had better be stable. Either it will, or will not, have
+> PF_KTHREAD.
 
-Looks almost ok...
+Bah, don't mind me, for some reason I was obsessed by that umh thing of
+having
 
-> From: Tony Luck <tony.luck@intel.com>
-> Date: Tue, 20 Apr 2021 16:42:01 +0900
-> Subject: [PATCH 1/3] mm/memory-failure: Use a mutex to avoid memory_failure()
->  races
-> 
-> There can be races when multiple CPUs consume poison from the same
-> page. The first into memory_failure() atomically sets the HWPoison
-> page flag and begins hunting for tasks that map this page. Eventually
-> it invalidates those mappings and may send a SIGBUS to the affected
-> tasks.
-> 
-> But while all that work is going on, other CPUs see a "success"
-> return code from memory_failure() and so they believe the error
-> has been handled and continue executing.
-> 
-> Fix by wrapping most of the internal parts of memory_failure() in
-> a mutex.
-> 
-> Along with introducing an additional goto label, this patch also
+  (p->flags & PF_KTHREAD) && !p->set_child_tid
 
-... avoid having "This patch" or "This commit" in the commit message.
-It is tautologically useless. Also, you don't have to explain what the
-patch does - that's visible hopefully. :-)
-
-Other than that, it makes sense and the "sandwitching" looks correct:
-
-	mutex_lock
-	lock_page
-
-	...
-
-	unlock_page
-	mutex_unlock
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+but that's not a problem there. Sorry about that.
