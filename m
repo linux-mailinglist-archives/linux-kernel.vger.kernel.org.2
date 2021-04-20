@@ -2,170 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40AA1365AFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E05D5365B01
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 16:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232711AbhDTOOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 10:14:06 -0400
-Received: from mga18.intel.com ([134.134.136.126]:29082 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232720AbhDTON4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 10:13:56 -0400
-IronPort-SDR: Pyxp6PNjtCgSNtiqZtcR4wLkCuaJFhfqO6hTcpvtrTOyLWZblFIbKIHGO8Gm4yjgeO/s0AbR+U
- Aiydp4Cog+Ig==
-X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="183004607"
-X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
-   d="scan'208";a="183004607"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 07:13:24 -0700
-IronPort-SDR: wVhe9D9C3sL+Fo+bq+sz/h1SzlHMLQeggp2w3L00OeEnhRGPQOlN2pwuXVVvxx9Y792+GWJZry
- hQ+x8jZNcNvA==
-X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
-   d="scan'208";a="534511460"
-Received: from tzanussi-mobl4.amr.corp.intel.com (HELO [10.209.163.59]) ([10.209.163.59])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 07:13:21 -0700
-Subject: Re: [PATCH v2 1/1] dmaengine: idxd: Add IDXD performance monitor
- support
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     peterz@infradead.org, acme@kernel.org, mingo@kernel.org,
-        kan.liang@linux.intel.com, dave.jiang@intel.com,
-        tony.luck@intel.com, dan.j.williams@intel.com,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
-References: <cover.1617467772.git.zanussi@kernel.org>
- <d38a8b3a5d087f1df918fa98627938ef0c898208.1617467772.git.zanussi@kernel.org>
- <YH623ULPRbdi1ker@vkoul-mobl.Dlink>
-From:   "Zanussi, Tom" <tom.zanussi@linux.intel.com>
-Message-ID: <34f61cc9-a6d6-e5a3-5f8c-6ffae8858cce@linux.intel.com>
-Date:   Tue, 20 Apr 2021 09:13:20 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S232650AbhDTOPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 10:15:44 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:41728 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231758AbhDTOPj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 10:15:39 -0400
+Received: by mail-ot1-f50.google.com with SMTP id v19-20020a0568300913b029028423b78c2dso27271843ott.8;
+        Tue, 20 Apr 2021 07:15:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CQrvXF6jsBsxQM/n8Qq8tJqXRILLahzSGccdVi41rnI=;
+        b=ToVL/VuGHSudHLc3Ez+E+to+CYK4noz3cGRqs7Qb+MQwtWcg4399fb2/Xa8Vslf+0G
+         qofTEsCieHfXkXtyd+wLfRTKnvF+V4sQG3kol9BO+ddeH5hZjJNA2GZbOgNF2citgF+T
+         Ie3PQB0wxl7fQzbvpmi4FFdz1UEQ6E/k7syfUoPLpbNi1evzsoWEkNKHKINqOqy+C7/6
+         3V1JGjmIdEUTLbjOI4zw1pHNRyrFa6Xlq6h0Lm3Re0M9TQHUHuI4fNrTf66l94BJ7JyS
+         ynYxlh5gNvYuf7Q50wsotQQaa+zCaxV/bMq0aQT7y3Q9hMgWDd/qXMBfaB0qUd5k95tO
+         ktQQ==
+X-Gm-Message-State: AOAM5333HgueLmIvzFJLowUV1Dd5ahpUSQM3m1XKAvwnBa0uimoxHm81
+        0TE6PNAFs+El5iI5eSN7qA==
+X-Google-Smtp-Source: ABdhPJzBaI1//hsQGZTcOWdRWoMXwE1B6ZcuDc85ad+AzX0kLozdA0RkAjoMY5tiPLN4fWNr5i/Cpg==
+X-Received: by 2002:a9d:5f0c:: with SMTP id f12mr18888376oti.258.1618928106552;
+        Tue, 20 Apr 2021 07:15:06 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id r127sm224943oor.2.2021.04.20.07.15.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Apr 2021 07:15:05 -0700 (PDT)
+Received: (nullmailer pid 3257176 invoked by uid 1000);
+        Tue, 20 Apr 2021 14:15:04 -0000
+Date:   Tue, 20 Apr 2021 09:15:04 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Nava kishore Manne <nava.manne@xilinx.com>
+Cc:     michal.simek@xilinx.com, derek.kiernan@xilinx.com,
+        dragan.cvetic@xilinx.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org, rajan.vaja@xilinx.com,
+        jolly.shah@xilinx.com, tejas.patel@xilinx.com,
+        amit.sunil.dhamne@xilinx.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        chinnikishore369@gmail.com, git@xilinx.com
+Subject: Re: [PATCH 4/5] misc: doc: Add binding doc for the zynqmp afi config
+ driver
+Message-ID: <20210420141504.GA3250182@robh.at.kernel.org>
+References: <20210420081153.17020-1-nava.manne@xilinx.com>
+ <20210420081153.17020-5-nava.manne@xilinx.com>
 MIME-Version: 1.0
-In-Reply-To: <YH623ULPRbdi1ker@vkoul-mobl.Dlink>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210420081153.17020-5-nava.manne@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+On Tue, Apr 20, 2021 at 01:41:52PM +0530, Nava kishore Manne wrote:
+> This patch adds the binding document for the zynqmp afi
+> config driver.
 
-On 4/20/2021 6:11 AM, Vinod Koul wrote:
-> On 03-04-21, 11:45, Tom Zanussi wrote:
-> 
->> +config INTEL_IDXD_PERFMON
->> +	bool "Intel Data Accelerators performance monitor support"
->> +	depends on INTEL_IDXD
->> +	default y
-> 
-> default y..?
-
-Will change to n.
+Bindings are for h/w blocks, not drivers.
 
 > 
->>   /* IDXD software descriptor */
->> @@ -369,4 +399,19 @@ int idxd_cdev_get_major(struct idxd_device *idxd);
->>   int idxd_wq_add_cdev(struct idxd_wq *wq);
->>   void idxd_wq_del_cdev(struct idxd_wq *wq);
->>   
->> +/* perfmon */
->> +#ifdef CONFIG_INTEL_IDXD_PERFMON
+> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
+> ---
+>  .../bindings/misc/xlnx,zynqmp-afi-fpga.yaml   | 136 ++++++++++++++++++
+>  1 file changed, 136 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/misc/xlnx,zynqmp-afi-fpga.yaml
 > 
-> maybe use IS_ENABLED()
-> 
->> @@ -556,6 +562,8 @@ static int __init idxd_init_module(void)
->>   	for (i = 0; i < IDXD_TYPE_MAX; i++)
->>   		idr_init(&idxd_idrs[i]);
->>   
->> +	perfmon_init();
->> +
->>   	err = idxd_register_bus_type();
->>   	if (err < 0)
->>   		return err;
->> @@ -589,5 +597,6 @@ static void __exit idxd_exit_module(void)
->>   	pci_unregister_driver(&idxd_pci_driver);
->>   	idxd_cdev_remove();
->>   	idxd_unregister_bus_type();
->> +	perfmon_exit();
-> 
-> Ideally would make sense to add perfmon module first and then add use in
-> idxd..
-> 
+> diff --git a/Documentation/devicetree/bindings/misc/xlnx,zynqmp-afi-fpga.yaml b/Documentation/devicetree/bindings/misc/xlnx,zynqmp-afi-fpga.yaml
+> new file mode 100644
+> index 000000000000..3ae22096b22a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/misc/xlnx,zynqmp-afi-fpga.yaml
+> @@ -0,0 +1,136 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/misc/xlnx,zynqmp-afi-fpga.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Xilinx ZynqMP AFI interface Manager.
+> +
+> +maintainers:
+> +  - Nava kishore Manne <nava.manne@xilinx.com>
+> +
+> +description: |
+> +  The Zynq UltraScale+ MPSoC Processing System core provides access from PL
+> +  masters to PS internal peripherals, and memory through AXI FIFO interface(AFI)
+> +  interfaces.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - xlnx,zynqmp-afi-fpga
+> +
+> +  config-afi:
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    description: |
+> +      Pairs of  <regid value >
+> +      The possible values of regid and values are
+> +      regid - Regids of the register to be written possible values
 
-OK, I'll separate this out into a separate patch.
+If we wanted sequences of register accesses in DT, we'd have a 
+generic mechanism to do so.
 
->> +static ssize_t cpumask_show(struct device *dev, struct device_attribute *attr,
->> +			    char *buf);
->> +
->> +static cpumask_t		perfmon_dsa_cpu_mask;
->> +static bool			cpuhp_set_up;
->> +static enum cpuhp_state		cpuhp_slot;
->> +
->> +static DEVICE_ATTR_RO(cpumask);
+> +        0- AFIFM0_RDCTRL
+> +        1- AFIFM0_WRCTRL
+> +        2- AFIFM1_RDCTRL
+> +        3- AFIFM1_WRCTRL
+> +        4- AFIFM2_RDCTRL
+> +        5- AFIFM2_WRCTRL
+> +        6- AFIFM3_RDCTRL
+> +        7- AFIFM3_WRCTRL
+> +        8- AFIFM4_RDCTRL
+> +        9- AFIFM4_WRCTRL
+> +        10- AFIFM5_RDCTRL
+> +        11- AFIFM5_WRCTRL
+> +        12- AFIFM6_RDCTRL
+> +        13- AFIFM6_WRCTRL
+> +        14- AFIFS
+> +        15- AFIFS_SS2
+> +      value - Array of values to be written.
+> +        for FM0_RDCTRL(0) the valid values-fabric width
+> +          2 - 32-bit
+> +          1 - 64-bit
+> +          0 - 128-bit
+> +        for FM0_WRCTRL(1) the valid values-fabric width
+> +          2 - 32-bit
+> +          1 - 64-bit
+> +          0 - 128-bit
+> +        for FM1_RDCTRL(2) the valid values-fabric width
+> +          2 - 32-bit
+> +          1 - 64-bit
+> +          0 - 128-bit
+> +        for FM1_WRCTRL(3) the valid values-fabric width
+> +          2 - 32-bit
+> +          1 - 64-bit
+> +          0 - 128-bit
+> +        for FM2_RDCTRL(4) the valid values-fabric width
+> +          2 - 32-bit
+> +          1 - 64-bit
+> +          0 - 128-bit
+> +        for FM2_WRCTRL(5) the valid values-fabric width
+> +          2 - 32-bit
+> +          1 - 64-bit
+> +          0 - 128-bit
+> +        for FM3_RDCTRL(6) the valid values-fabric width
+> +          2 - 32-bit
+> +          1 - 64-bit
+> +          0 - 128-bit
+> +        for FM3_WRCTRL(7) the valid values-fabric width
+> +          2 - 32-bit
+> +          1 - 64-bit
+> +          0 - 128-bit
+> +        for FM4_RDCTRL(8) the valid values-fabric width
+> +          2 - 32-bit
+> +          1 - 64-bit
+> +          0 - 128-bit
+> +        for FM4_WRCTRL(9) the valid values-fabric width
+> +          2 - 32-bit
+> +          1 - 64-bit
+> +          0 - 128-bit
+> +        for FM5_RDCTRL(10) the valid values-fabric width
+> +          2 - 32-bit
+> +          1 - 64-bit
+> +          0 - 128-bit
+> +        for FM5_WRCTRL(11) the valid values-fabric width
+> +          2 - 32-bit
+> +          1 - 64-bit
+> +          0 - 128-bit
+> +        for FM6_RDCTRL(12) the valid values-fabric width
+> +          2 - 32-bit
+> +          1 - 64-bit
+> +          0 - 128-bit
+> +        for FM6_WRCTRL(13) the valid values-fabric width
+> +          2 - 32-bit
+> +          1 - 64-bit
+> +          0 - 128-bit
+> +        for AFI_FA(14)
+> +          dw_ss1_sel      bits (11:10)
+> +          dw_ss0_sel      bits (9:8)
+> +            0x0 - 32-bit AXI data width
+> +            0x1 - 64-bit AXI data width
+> +            0x2 - 128-bit AXI data width
+> +            All other bits are 0 write ignored.
+> +
+> +        for AFI_FA(15)  selects for ss2AXI data width valid values
+> +          0x000 - 32-bit AXI data width
+> +          0x100 - 64-bit AXI data width
+> +          0x200 - 128-bit AXI data width
+> +    minItems: 1
+> +    maxItems: 15
+> +
+> +required:
+> +  - compatible
+> +  - config-afi
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    firmware {
+> +      zynqmp_firmware: zynqmp-firmware {
+> +        compatible = "xlnx,zynqmp-firmware";
+> +        method = "smc";
+> +        afi0: afi {
+> +          compatible = "xlnx,afi-fpga";
+> +          config-afi = <0 2>, <1 1>, <2 1>;
+> +        };
+> +      };
+> +    };
+> +
+> +...
+> -- 
+> 2.18.0
 > 
-> Pls document these new attributes added
-> 
->> +static int perfmon_collect_events(struct idxd_pmu *idxd_pmu,
->> +				  struct perf_event *leader,
->> +				  bool dogrp)
-> 
-> dogrp..?
-> 
-
-Yeah, bad name, first thought on seeing it is always 'dog'. ;-)
-
->> +static int perfmon_validate_group(struct idxd_pmu *pmu,
->> +				  struct perf_event *event)
->> +{
->> +	struct perf_event *leader = event->group_leader;
->> +	struct idxd_pmu *fake_pmu;
->> +	int i, ret = 0, n;
->> +
->> +	fake_pmu = kzalloc(sizeof(*fake_pmu), GFP_KERNEL);
->> +	if (!fake_pmu)
->> +		return -ENOMEM;
->> +
->> +	fake_pmu->pmu.name = pmu->pmu.name;
->> +	fake_pmu->n_counters = pmu->n_counters;
->> +
->> +	n = perfmon_collect_events(fake_pmu, leader, true);
->> +	if (n < 0) {
->> +		ret = n;
->> +		goto out;
->> +	}
->> +
->> +	fake_pmu->n_events = n;
->> +	n = perfmon_collect_events(fake_pmu, event, false);
->> +	if (n < 0) {
->> +		ret = n;
->> +		goto out;
->> +	}
->> +
->> +	fake_pmu->n_events = n;
->> +
->> +	for (i = 0; i < n; i++) {
->> +		int idx;
-> 
-> lets move it to top of the function please
-> 
->> +static inline u64 perfmon_pmu_read_counter(struct perf_event *event)
->> +{
->> +	struct hw_perf_event *hwc = &event->hw;
->> +	struct idxd_device *idxd;
->> +	int cntr = hwc->idx;
->> +	u64 cntrdata;
->> +
->> +	idxd = event_to_idxd(event);
->> +
->> +	cntrdata = ioread64(CNTRDATA_REG(idxd, cntr));
->> +
->> +	return cntrdata;
-> 
-> return ioread64() ?
-> 
-
-Yeah, I removed some intervening code and didn't change this, will do.
-
-Thanks for reviewing this,
-
-Tom
