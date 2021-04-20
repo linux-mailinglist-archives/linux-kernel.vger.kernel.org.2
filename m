@@ -2,94 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02AE365887
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 14:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6201E365889
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 14:07:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232335AbhDTMHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 08:07:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47956 "EHLO
+        id S232347AbhDTMHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 08:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231929AbhDTMHP (ORCPT
+        with ESMTP id S231944AbhDTMHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 08:07:15 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA919C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 05:06:43 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id bx20so43619547edb.12
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 05:06:43 -0700 (PDT)
+        Tue, 20 Apr 2021 08:07:51 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 537A9C06138A
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 05:07:20 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id c15so28404678wro.13
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Apr 2021 05:07:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x9c3r13HPylppoMPao4ledc3mbYWLGl4YkdEgW4VZvA=;
-        b=Ek0bA+l5MzxGUC/5g7l67MICM4Uh7CjRfjjdhE9VBxIoPsksBobOlUj1JSFtCu6uEv
-         pE5sceaIYjsIQNK8fyzIEz+2jCQtoGdU0A1SAAsCfUKWkPG0CGLyqyiSHsVDlYhBxwm0
-         +ll6w1U7w1L1Z+qKeF3iPJr1RsBZYbKzMgoiI=
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fdjavbbnG38i/vDHVgTWk3tsDsi63+Qg6p2AfSLSokM=;
+        b=RWbQtV2xG8MQvtq5DQkUl4ClHY7MHwzMjFdlaJqjkzqrAzQwu0/vhsDJPHDqrWrzt5
+         yxeN4ErznjF7lzZ7E6ugBbEg0SJpEQIk82KoadIqfB/JmGZKj67z/BO2MzI9GKu7xfSV
+         KJkQtAf5s9TAz7ovZgbghlQKOn/zO8MjUjWXh9fG2YiGmYCYRFxclYfFKLXmB3xr4/Em
+         XsU7bkCfjSEAX0buiKDTgIv9ChpTTY2YpHcnisji9/5nbaNkKwqzj1UPQzFExpqZBrdM
+         Q2IgIZF1W3H4ZkQJsUhlXPG4zF7ly8p0rmCSMjkRm+gyz2ruVW8Ysz1BuNn2Uioz8mWg
+         0Odg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=x9c3r13HPylppoMPao4ledc3mbYWLGl4YkdEgW4VZvA=;
-        b=hHH1+GA+OOFHgFzxkXaIks51D4Ezv4AuS5j7iQHGGbKxUie3JadOSN7STljHsCglKX
-         ntiV5W7BtrcaRJ3gx12ojSXphAKlCWMEWfCnwkmu86PPi9vn6JvXwxV7GbXekXOkLI08
-         GZtXRJ6SNGJVetf2mxaK+8YCwgpSEdwyL74CHdgoXtOX6726vvsa6AqlxHBww04gVrm6
-         Fn1XVaxDtU+s+kluRyYIL/IvAN9by6HFz35pkJ5EW/0ld1YzZDt+CRrnBGcfPpfwn614
-         OHRLUGJeKWLOSrLcS9jCPHM453rW62wUUROO15s9Ud+hBQNExXdpaLWZ+fo5xafsQ5iq
-         p3yA==
-X-Gm-Message-State: AOAM533nfTTkUjiJiKWqAklg2lgRL+B40mWtDZFiQVSXqHa3SWRlH/y6
-        WkCTClpGqFIeYoUpNY6ztfSHCg==
-X-Google-Smtp-Source: ABdhPJzDMI1SxSR+7L9SKSloUbd8WrblJjsRu0Cg1QtdYfJSIJzmvkefnMruL+WbZ5Q8SoSrOP9AHA==
-X-Received: by 2002:a05:6402:2807:: with SMTP id h7mr31548676ede.217.1618920402614;
-        Tue, 20 Apr 2021 05:06:42 -0700 (PDT)
-Received: from prevas-ravi.prevas.se ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id q25sm15615644edt.51.2021.04.20.05.06.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 05:06:42 -0700 (PDT)
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Kay Sievers <kay.sievers@vrfy.org>,
-        Greg Kroah-Hartman <gregkh@suse.de>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] docs: admin-guide: update description for kernel.hotplug sysctl
-Date:   Tue, 20 Apr 2021 14:06:38 +0200
-Message-Id: <20210420120638.1104016-1-linux@rasmusvillemoes.dk>
-X-Mailer: git-send-email 2.29.2
+        bh=fdjavbbnG38i/vDHVgTWk3tsDsi63+Qg6p2AfSLSokM=;
+        b=SjcWLpEppBN23e+YhCQUNkK1u+qlfmZfonES1S851QLlYjXQUzB4NhPJbmzLIYpLJe
+         4ySQGp0fQBsBky+7dwzBtBLwI9Xz27CXcss3QY3uarxh5fkdykOEDlc3bJ/CBgdc2ktl
+         E5o1IzsOakw8pZMTl1Qrvk46Q8RFxt+BMadsQw3qkZFi4vjSBF9B3sF89S9O7MX/7vj1
+         EmTKk2Kr1lfYtZM2YNw+OZrSGs4zSGlSmQ2OY/Fv6x+gTAsCfmRAs6Yv0dFqzZ3RX9LA
+         9Aez+X19ix6Mhyf4SsITrGmavr3OSxlJ9okArDPrl828a6TJpLfH1P4xcY7ikQjEC33N
+         /INQ==
+X-Gm-Message-State: AOAM533GUvLKSxXJdXXbsVNsEtaGi0D7CF+vFw4Ufif/ICPjJC6xfHuC
+        5nJ+21TAzfqcO7gbVQSEU8NQu/atXrEzZmDw
+X-Google-Smtp-Source: ABdhPJz9J06FgmbJBAc678ICMLMmla+1EpbzsDA86Wii4YsPgv6y7FvJ0jnuRN5ZORqgbcqEgWao9g==
+X-Received: by 2002:adf:dd51:: with SMTP id u17mr20088833wrm.32.1618920438781;
+        Tue, 20 Apr 2021 05:07:18 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:a079:f96:da87:2d00? ([2a01:e34:ed2f:f020:a079:f96:da87:2d00])
+        by smtp.googlemail.com with ESMTPSA id b12sm8989862wmj.1.2021.04.20.05.07.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Apr 2021 05:07:18 -0700 (PDT)
+Subject: Re: [PATCH] thermal: mediatek: add sensors-support
+To:     Frank Wunderlich <linux@fw-web.de>,
+        linux-mediatek@lists.infradead.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20210320080646.49615-1-linux@fw-web.de>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <f4329b1a-02e0-aad5-55bd-82d30a38fc55@linaro.org>
+Date:   Tue, 20 Apr 2021 14:07:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210320080646.49615-1-linux@fw-web.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's been a few releases since this defaulted to /sbin/hotplug. Update
-the text, and include pointers to the two CONFIG_UEVENT_HELPER{,_PATH}
-config knobs whose help text could provide more info, but also hint
-that the user probably doesn't need to care at all.
+On 20/03/2021 09:06, Frank Wunderlich wrote:
+> From: Frank Wunderlich <frank-w@public-files.de>
+> 
+> add HWMON-support to mediateks thermanl driver to allow lm-sensors
+> userspace tools read soc temperature
+> 
+> Signed-off-by: Frank Wunderlich <frank-w@public-files.de>
+> ---
+>  drivers/thermal/mtk_thermal.c | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+> 
+> diff --git a/drivers/thermal/mtk_thermal.c b/drivers/thermal/mtk_thermal.c
+> index 149c6d7fd5a0..e22d77d57458 100644
+> --- a/drivers/thermal/mtk_thermal.c
+> +++ b/drivers/thermal/mtk_thermal.c
+> @@ -23,6 +23,8 @@
+>  #include <linux/reset.h>
+>  #include <linux/types.h>
+>  
+> +#include "thermal_hwmon.h"
+> +
+>  /* AUXADC Registers */
+>  #define AUXADC_CON1_SET_V	0x008
+>  #define AUXADC_CON1_CLR_V	0x00c
+> @@ -983,6 +985,13 @@ static void mtk_thermal_release_periodic_ts(struct mtk_thermal *mt,
+>  	writel((tmp & (~0x10e)), mt->thermal_base + TEMP_MSRCTL1);
+>  }
+>  
+> +static void mtk_thermal_hwmon_action(void *data)
+> +{
+> +	struct thermal_zone_device *zone = data;
+> +
+> +	thermal_remove_hwmon_sysfs(zone);
+> +}
+> +
+>  static int mtk_thermal_probe(struct platform_device *pdev)
+>  {
+>  	int ret, i, ctrl_id;
+> @@ -1087,6 +1096,19 @@ static int mtk_thermal_probe(struct platform_device *pdev)
+>  		goto err_disable_clk_peri_therm;
+>  	}
+>  
+> +#ifdef CONFIG_THERMAL_HWMON
 
-Fixes: 7934779a69f1 ("Driver-Core: disable /sbin/hotplug by default")
-Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
----
- Documentation/admin-guide/sysctl/kernel.rst | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+No #ifdef in C file.
 
-diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-index 1d56a6b73a4e..c24f57f2c782 100644
---- a/Documentation/admin-guide/sysctl/kernel.rst
-+++ b/Documentation/admin-guide/sysctl/kernel.rst
-@@ -333,7 +333,12 @@ hotplug
- =======
- 
- Path for the hotplug policy agent.
--Default value is "``/sbin/hotplug``".
-+Default value is ``CONFIG_UEVENT_HELPER_PATH``, which in turn defaults
-+to the empty string.
-+
-+This file only exists when ``CONFIG_UEVENT_HELPER`` is enabled. Most
-+modern systems rely exclusively on the netlink-based uevent source and
-+don't need this.
- 
- 
- hung_task_all_cpu_backtrace
+> +	tzdev->tzp->no_hwmon = false;
+> +	ret = thermal_add_hwmon_sysfs(tzdev);
+> +	if (ret)
+> +		dev_err(&pdev->dev, "error in thermal_add_hwmon_sysfs");
+> +
+> +	ret = devm_add_action(&pdev->dev, mtk_thermal_hwmon_action, tzdev);
+
+devm_thermal_add_hwmon_sysfs() ?
+
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "error in devm_add_action");
+> +		mtk_thermal_hwmon_action(tzdev);
+> +	}
+> +#endif
+> +
+>  	return 0;
+>  
+>  err_disable_clk_peri_therm:
+> 
+
+
 -- 
-2.29.2
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
