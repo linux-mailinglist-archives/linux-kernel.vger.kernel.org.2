@@ -2,74 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39213365CA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A6E365CA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Apr 2021 17:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233017AbhDTPtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Apr 2021 11:49:50 -0400
-Received: from mga01.intel.com ([192.55.52.88]:34178 "EHLO mga01.intel.com"
+        id S233023AbhDTPwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Apr 2021 11:52:20 -0400
+Received: from mga05.intel.com ([192.55.52.43]:40108 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232504AbhDTPts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Apr 2021 11:49:48 -0400
-IronPort-SDR: bU48S0RrUvJcDLVtv9EVqhiBxKf/8bcetaNgPxzam3Hb+ROEZ7BxVScNRc6luhw4C8eZemtutz
- OZ7eUYd5lBrw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="216140635"
+        id S232916AbhDTPwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Apr 2021 11:52:16 -0400
+IronPort-SDR: 30qJNd0AG1jjNlOhig5zZCoHYhB4hd7w+VyGSNXcyMwldJuOh4VB+hZuqyAxTQ9TxNOce240fK
+ N0a9hybgImjg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9960"; a="280860104"
 X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
-   d="scan'208";a="216140635"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 08:47:33 -0700
-IronPort-SDR: 3yWPQ97nJMs3J79JWj/qOc42O12pgrF77tfk72lUoKm5vBC6hK/t87dDAu9apgNncbsONx1W5G
- ez1juHxoRvYA==
+   d="scan'208";a="280860104"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 08:50:54 -0700
+IronPort-SDR: UWv3gxP9GGiLx+9PMo6a2uIMejjMXkv1kpYqX/ZV0uYKxD7h91qOQbIVyNT2ocI/mCPItsxKJY
+ BaTjF5OJBIHQ==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,237,1613462400"; 
-   d="scan'208";a="463164595"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2021 08:47:32 -0700
-Date:   Tue, 20 Apr 2021 08:47:30 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Jue Wang <juew@google.com>
-Cc:     nao.horiguchi@gmail.com, akpm@linux-foundation.org, bp@alien8.de,
-        david@redhat.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        luto@kernel.org, naoya.horiguchi@nec.com, osalvador@suse.de,
-        yaoaili@kingsoft.com
-Subject: Re: [PATCH v1 3/3] mm,hwpoison: add kill_accessing_process() to find
- error virtual address
-Message-ID: <20210420154730.GA577592@agluck-desk2.amr.corp.intel.com>
-References: <CAPcxDJ5gH9XvZ1bMsRqqU8bTpGLsz75+pWMnj52b-nMZHKhdtQ@mail.gmail.com>
+   d="scan'208";a="445564292"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by fmsmga004.fm.intel.com with ESMTP; 20 Apr 2021 08:50:51 -0700
+Subject: Re: [PATCH] perf auxtrace: Fix potential null pointer dereference
+To:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        linux-kernel@vger.kernel.org
+References: <20210420151554.2031768-1-leo.yan@linaro.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <22a1f6b4-0e4f-72df-2873-b4098a6c73dc@intel.com>
+Date:   Tue, 20 Apr 2021 18:51:06 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcxDJ5gH9XvZ1bMsRqqU8bTpGLsz75+pWMnj52b-nMZHKhdtQ@mail.gmail.com>
+In-Reply-To: <20210420151554.2031768-1-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 07:03:01PM -0700, Jue Wang wrote:
-> On Tue, 13 Apr 2021 07:43:20 +0900, Naoya Horiguchi wrote:
+On 20/04/21 6:15 pm, Leo Yan wrote:
+> In the function auxtrace_parse_snapshot_options(), the callback pointer
+> "itr->parse_snapshot_options" can be NULL if it has not been set during
+> the AUX record initialization.  This can cause tool crashing if the
+> callback pointer "itr->parse_snapshot_options" is dereferenced without
+> performing NULL check.
 > 
-> > This patch suggests to do page table walk to find the error virtual
-> > address.  If we find multiple virtual addresses in walking, we now can't
-> > determine which one is correct, so we fall back to sending SIGBUS in
-> > kill_me_maybe() without error info as we do now.  This corner case needs
-> > to be solved in the future.
+> Add a NULL check for the pointer "itr->parse_snapshot_options" before
+> invoke the callback.
 > 
-> Instead of walking the page tables, I wonder what about the following idea:
+> Fixes: d20031bb63dd ("perf tools: Add AUX area tracing Snapshot Mode")
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+
+> ---
+>  tools/perf/util/auxtrace.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> When failing to get vaddr, memory_failure just ensures the mapping is removed
-> and an hwpoisoned swap pte is put in place; or the original page is flagged with
-> PG_HWPOISONED and kept in the radix tree (e.g., for SHMEM THP).
-
-To remove the mapping, you need to know the virtual address :-)
-
-Well, I did try a patch that removed *all* user mappings (switched CR3 to
-swapper_pgdir) and returned to user. Then have the resulting page fault
-report the address. But that didn't work very well.
-
-> NOTE: no SIGBUS is sent to user space.
+> diff --git a/tools/perf/util/auxtrace.c b/tools/perf/util/auxtrace.c
+> index 953f4afacd3b..320b47f133d3 100644
+> --- a/tools/perf/util/auxtrace.c
+> +++ b/tools/perf/util/auxtrace.c
+> @@ -638,7 +638,7 @@ int auxtrace_parse_snapshot_options(struct auxtrace_record *itr,
+>  		break;
+>  	}
+>  
+> -	if (itr)
+> +	if (itr && itr->parse_snapshot_options)
+>  		return itr->parse_snapshot_options(itr, opts, str);
+>  
+>  	pr_err("No AUX area tracing to snapshot\n");
 > 
-> Then do_machine_check just returns to user space to resume execution, the
-> re-execution will result in a #PF and should land to the exact page fault
-> handling code that generates a SIGBUS with the precise vaddr info:
 
-That's how SRAO (and other races) are supposed to work.
-
--Tony
